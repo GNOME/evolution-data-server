@@ -28,7 +28,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 
 #include "camel-pop3-engine.h"
@@ -48,35 +47,31 @@ static void get_capabilities(CamelPOP3Engine *pe);
 
 static CamelObjectClass *parent_class = NULL;
 
-/* Returns the class for a CamelStream */
-#define CS_CLASS(so) CAMEL_POP3_ENGINE_CLASS(CAMEL_OBJECT_GET_CLASS(so))
+static void
+pop3_engine_finalize (CamelPOP3Engine *engine)
+{
+	/* FIXME: Also flush/free any outstanding requests, etc */
+
+	if (engine->stream)
+		camel_object_unref (engine->stream);
+
+	g_list_free (engine->auth);
+	g_free (engine->apop);
+}
 
 static void
-camel_pop3_engine_class_init (CamelPOP3EngineClass *camel_pop3_engine_class)
+camel_pop3_engine_class_init (CamelPOP3EngineClass *class)
 {
 	parent_class = camel_type_get_global_classfuncs( CAMEL_TYPE_OBJECT );
 }
 
 static void
-camel_pop3_engine_init(CamelPOP3Engine *pe, CamelPOP3EngineClass *peclass)
+camel_pop3_engine_init (CamelPOP3Engine *engine)
 {
-	camel_dlist_init(&pe->active);
-	camel_dlist_init(&pe->queue);
-	camel_dlist_init(&pe->done);
-	pe->state = CAMEL_POP3_ENGINE_DISCONNECT;
-}
-
-static void
-camel_pop3_engine_finalize(CamelPOP3Engine *pe)
-{
-	/* FIXME: Also flush/free any outstanding requests, etc */
-
-	if (pe->stream)
-		camel_object_unref (pe->stream);
-
-	g_list_free(pe->auth);
-	if (pe->apop)
-		g_free(pe->apop);
+	camel_dlist_init (&engine->active);
+	camel_dlist_init (&engine->queue);
+	camel_dlist_init (&engine->done);
+	engine->state = CAMEL_POP3_ENGINE_DISCONNECT;
 }
 
 CamelType
@@ -92,7 +87,7 @@ camel_pop3_engine_get_type (void)
 							     (CamelObjectClassInitFunc) camel_pop3_engine_class_init,
 							     NULL,
 							     (CamelObjectInitFunc) camel_pop3_engine_init,
-							     (CamelObjectFinalizeFunc) camel_pop3_engine_finalize );
+							     (CamelObjectFinalizeFunc) pop3_engine_finalize );
 	}
 
 	return camel_pop3_engine_type;
@@ -137,7 +132,7 @@ camel_pop3_engine_new(CamelStream *source, guint32 flags)
 {
 	CamelPOP3Engine *pe;
 
-	pe = (CamelPOP3Engine *)camel_object_new(camel_pop3_engine_get_type ());
+	pe = (CamelPOP3Engine *) camel_object_new(camel_pop3_engine_get_type ());
 
 	pe->stream = (CamelPOP3Stream *)camel_pop3_stream_new(source);
 	pe->state = CAMEL_POP3_ENGINE_AUTH;

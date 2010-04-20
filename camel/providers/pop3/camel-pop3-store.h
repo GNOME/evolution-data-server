@@ -37,20 +37,24 @@
 
 G_BEGIN_DECLS
 
-typedef struct {
+typedef struct _CamelPOP3Store CamelPOP3Store;
+typedef struct _CamelPOP3StoreClass CamelPOP3StoreClass;
+
+struct _CamelPOP3Store {
 	CamelStore parent;
 
 	CamelPOP3Engine *engine; /* pop processing engine */
 
-	struct _CamelDataCache *cache;
+	CamelDataCache *cache;
 
 	guint delete_after;
-} CamelPOP3Store;
+};
 
-typedef struct {
+struct _CamelPOP3StoreClass {
 	CamelStoreClass parent_class;
+};
 
-} CamelPOP3StoreClass;
+CamelType camel_pop3_store_get_type (void);
 
 /* public methods */
 void camel_pop3_store_expunge (CamelPOP3Store *store, CamelException *ex);
@@ -59,9 +63,6 @@ void camel_pop3_store_expunge (CamelPOP3Store *store, CamelException *ex);
 enum { CAMEL_POP3_OK, CAMEL_POP3_ERR, CAMEL_POP3_FAIL };
 gint camel_pop3_command (CamelPOP3Store *store, gchar **ret, CamelException *ex, gchar *fmt, ...);
 gchar *camel_pop3_command_get_additional_data (CamelPOP3Store *store, gint total, CamelException *ex);
-
-/* Standard Camel function */
-CamelType camel_pop3_store_get_type (void);
 
 G_END_DECLS
 

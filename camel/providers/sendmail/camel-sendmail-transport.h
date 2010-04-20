@@ -35,17 +35,17 @@
 
 G_BEGIN_DECLS
 
-typedef struct {
+typedef struct _CamelSendmailTransport CamelSendmailTransport;
+typedef struct _CamelSendmailTransportClass CamelSendmailTransportClass;
+
+struct _CamelSendmailTransport {
 	CamelTransport parent;
+};
 
-} CamelSendmailTransport;
-
-typedef struct {
+struct _CamelSendmailTransportClass {
 	CamelTransportClass parent_class;
+};
 
-} CamelSendmailTransportClass;
-
-/* Standard Camel function */
 CamelType camel_sendmail_transport_get_type (void);
 
 G_END_DECLS

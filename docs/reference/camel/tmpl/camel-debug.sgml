@@ -17,6 +17,9 @@ camel-debug
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### MACRO CAMEL_DEBUG_IMAP ##### -->
 <para>
 
@@ -36,6 +39,7 @@ camel-debug
 
 </para>
 
+@void: 
 
 
 <!-- ##### FUNCTION camel_debug ##### -->
@@ -61,5 +65,6 @@ camel-debug
 
 </para>
 
+@void: 
 
 

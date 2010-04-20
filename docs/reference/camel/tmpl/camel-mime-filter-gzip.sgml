@@ -17,6 +17,9 @@ CamelMimeFilterGZip
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelMimeFilterGZip ##### -->
 <para>
 

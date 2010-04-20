@@ -17,6 +17,9 @@ Miscellaneous utility functions for evolution-data-server.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT tm ##### -->
 <para>
 
@@ -82,15 +85,6 @@ Miscellaneous utility functions for evolution-data-server.
 @Returns: 
 
 
-<!-- ##### FUNCTION e_util_pthread_id ##### -->
-<para>
-
-</para>
-
-@t: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_filename_make_safe ##### -->
 <para>
 
@@ -128,6 +122,7 @@ Miscellaneous utility functions for evolution-data-server.
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -136,6 +131,7 @@ Miscellaneous utility functions for evolution-data-server.
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -144,6 +140,7 @@ Miscellaneous utility functions for evolution-data-server.
 
 </para>
 
+@void: 
 @Returns: 
 
 

@@ -17,11 +17,15 @@ e-categories
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### FUNCTION e_categories_get_list ##### -->
 <para>
 
 </para>
 
+@void: 
 @Returns: 
 
 

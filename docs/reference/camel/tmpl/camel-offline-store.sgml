@@ -17,6 +17,9 @@ CamelOfflineStore
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelOfflineStore ##### -->
 <para>
 
@@ -33,6 +36,7 @@ CamelOfflineStore
 @store: 
 @state: 
 @ex: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_offline_store_get_network_state ##### -->
@@ -52,5 +56,6 @@ CamelOfflineStore
 
 @store: 
 @ex: 
+@Returns: 
 
 

@@ -32,22 +32,20 @@
 
 G_BEGIN_DECLS
 
-typedef struct {
+typedef struct _CamelMhFolder CamelMhFolder;
+typedef struct _CamelMhFolderClass CamelMhFolderClass;
+
+struct _CamelMhFolder {
 	CamelLocalFolder parent;
+};
 
-} CamelMhFolder;
-
-typedef struct {
+struct _CamelMhFolderClass {
 	CamelLocalFolderClass parent_class;
-
-	/* Virtual methods */
-
-} CamelMhFolderClass;
+};
 
 /* public methods */
 CamelFolder *camel_mh_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 flags, CamelException *ex);
 
-/* Standard Camel function */
 CamelType camel_mh_folder_get_type(void);
 
 G_END_DECLS

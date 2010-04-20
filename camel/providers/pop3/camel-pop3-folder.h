@@ -35,7 +35,11 @@
 
 G_BEGIN_DECLS
 
-typedef struct {
+typedef struct _CamelPOP3Folder CamelPOP3Folder;
+typedef struct _CamelPOP3FolderClass CamelPOP3FolderClass;
+typedef struct _CamelPOP3FolderInfo CamelPOP3FolderInfo;
+
+struct _CamelPOP3FolderInfo {
 	guint32 id;
 	guint32 size;
 	guint32 flags;
@@ -44,27 +48,23 @@ typedef struct {
 	gint err;
 	struct _CamelPOP3Command *cmd;
 	struct _CamelStream *stream;
-} CamelPOP3FolderInfo;
+};
 
-typedef struct {
+struct _CamelPOP3Folder {
 	CamelFolder parent;
 
 	GPtrArray *uids;
 	GHashTable *uids_uid;	/* messageinfo by uid */
 	GHashTable *uids_id;	/* messageinfo by id */
-} CamelPOP3Folder;
+};
 
-typedef struct {
+struct _CamelPOP3FolderClass {
 	CamelFolderClass parent_class;
-
-	/* Virtual methods */
-
-} CamelPOP3FolderClass;
+};
 
 /* public methods */
 CamelFolder *camel_pop3_folder_new (CamelStore *parent, CamelException *ex);
 
-/* Standard Camel function */
 CamelType camel_pop3_folder_get_type (void);
 
 gint camel_pop3_delete_old(CamelFolder *folder, gint days_to_delete, CamelException *ex);

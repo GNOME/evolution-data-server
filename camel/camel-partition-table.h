@@ -96,7 +96,7 @@ gint		camel_partition_table_add	(CamelPartitionTable *cpi,
 						 camel_key_t keyid);
 camel_key_t	camel_partition_table_lookup	(CamelPartitionTable *cpi,
 						 const gchar *key);
-void		camel_partition_table_remove	(CamelPartitionTable *cpi,
+gboolean	camel_partition_table_remove	(CamelPartitionTable *cpi,
 						 const gchar *key);
 
 /* ********************************************************************** */
@@ -157,10 +157,10 @@ camel_key_t	camel_key_table_add		(CamelKeyTable *ki,
 						 const gchar *key,
 						 camel_block_t data,
 						 guint flags);
-void		camel_key_table_set_data	(CamelKeyTable *ki,
+gboolean	camel_key_table_set_data	(CamelKeyTable *ki,
 						 camel_key_t keyid,
 						 camel_block_t data);
-void		camel_key_table_set_flags	(CamelKeyTable *ki,
+gboolean	camel_key_table_set_flags	(CamelKeyTable *ki,
 						 camel_key_t keyid,
 						 guint flags,
 						 guint set);

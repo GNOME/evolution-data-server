@@ -17,6 +17,9 @@ CamelMsgPort
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelMsg ##### -->
 <para>
 
@@ -37,6 +40,7 @@ CamelMsgPort
 
 </para>
 
+@void: 
 @Returns: 
 
 

@@ -17,6 +17,9 @@ CamelMimePart
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelMimePart ##### -->
 <para>
 
@@ -31,6 +34,7 @@ CamelMimePart
 
 </para>
 
+@void: 
 @Returns: 
 
 

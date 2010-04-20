@@ -196,7 +196,7 @@ service_getv (CamelObject *object,
 	return CAMEL_OBJECT_CLASS (camel_service_parent_class)->getv (object, ex, args);
 }
 
-static void
+static gboolean
 service_construct (CamelService *service,
                    CamelSession *session,
                    CamelProvider *provider,
@@ -225,7 +225,7 @@ service_construct (CamelService *service,
 
 	service->status = CAMEL_SERVICE_DISCONNECTED;
 
-	return;
+	return TRUE;
 
 fail:
 	url_string = camel_url_to_string(url, CAMEL_URL_HIDE_PASSWORD);
@@ -233,6 +233,8 @@ fail:
 		ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
 		err, url_string);
 	g_free(url_string);
+
+	return FALSE;
 }
 
 static gboolean
@@ -379,8 +381,10 @@ camel_service_get_type (void)
  * @ex: a #CamelException
  *
  * Constructs a #CamelService initialized with the given parameters.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
  **/
-void
+gboolean
 camel_service_construct (CamelService *service,
                          CamelSession *session,
                          CamelProvider *provider,
@@ -389,13 +393,13 @@ camel_service_construct (CamelService *service,
 {
 	CamelServiceClass *class;
 
-	g_return_if_fail (CAMEL_IS_SERVICE (service));
-	g_return_if_fail (CAMEL_IS_SESSION (session));
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), FALSE);
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
 
 	class = CAMEL_SERVICE_GET_CLASS (service);
-	g_return_if_fail (class->construct != NULL);
+	g_return_val_if_fail (class->construct != NULL, FALSE);
 
-	class->construct (service, session, provider, url, ex);
+	return class->construct (service, session, provider, url, ex);
 }
 
 /**

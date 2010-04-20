@@ -169,7 +169,7 @@ vtrash_folder_getv (CamelObject *object,
 	return CAMEL_OBJECT_CLASS (camel_vtrash_folder_parent)->getv (object, ex, args);
 }
 
-static void
+static gboolean
 vtrash_folder_append_message (CamelFolder *folder,
                               CamelMimeMessage *message,
                               const CamelMessageInfo *info,
@@ -179,9 +179,11 @@ vtrash_folder_append_message (CamelFolder *folder,
 	camel_exception_setv (
 		ex, CAMEL_EXCEPTION_SYSTEM, "%s",
 		_(vdata[((CamelVTrashFolder *)folder)->type].error_copy));
+
+	return FALSE;
 }
 
-static void
+static gboolean
 vtrash_folder_transfer_messages_to (CamelFolder *source,
                                     GPtrArray *uids,
                                     CamelFolder *dest,
@@ -210,13 +212,13 @@ vtrash_folder_transfer_messages_to (CamelFolder *source,
 			camel_exception_setv (
 				ex, CAMEL_EXCEPTION_SYSTEM, "%s",
 				_(vdata[((CamelVTrashFolder *)dest)->type].error_copy));
-			return;
+			return FALSE;
 		}
 
 		/* Move to trash is the same as setting the message flag */
 		for (i = 0; i < uids->len; i++)
 			camel_folder_set_message_flags(source, uids->pdata[i], ((CamelVTrashFolder *)dest)->bit, ~0);
-		return;
+		return TRUE;
 	}
 
 	/* Moving/Copying from the trash to the original folder = undelete.
@@ -259,6 +261,8 @@ vtrash_folder_transfer_messages_to (CamelFolder *source,
 		g_hash_table_foreach(batch, (GHFunc)transfer_messages, ex);
 		g_hash_table_destroy(batch);
 	}
+
+	return TRUE;
 }
 
 static void

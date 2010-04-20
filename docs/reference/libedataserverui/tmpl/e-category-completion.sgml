@@ -17,6 +17,9 @@ ECategoryCompletion
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT ECategoryCompletion ##### -->
 <para>
 
@@ -30,6 +33,7 @@ ECategoryCompletion
 
 </para>
 
+@void: 
 @Returns: 
 
 

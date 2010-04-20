@@ -31,8 +31,8 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelPOP3EngineClass CamelPOP3EngineClass;
 typedef struct _CamelPOP3Engine CamelPOP3Engine;
+typedef struct _CamelPOP3EngineClass CamelPOP3EngineClass;
 typedef struct _CamelPOP3Command CamelPOP3Command;
 
 /* pop 3 connection states, actually since we're given a connected socket, we always start in auth state */

@@ -171,8 +171,10 @@ camel_provider_init (void)
  * Loads the provider at @path, and calls its initialization function,
  * passing @session as an argument. The provider should then register
  * itself with @session.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
  **/
-void
+gboolean
 camel_provider_load (const gchar *path,
                      CamelException *ex)
 {
@@ -186,7 +188,7 @@ camel_provider_load (const gchar *path,
 			ex, CAMEL_EXCEPTION_SYSTEM,
 			_("Could not load %s: Module loading "
 			  "not supported on this system."), path);
-		return;
+		return FALSE;
 	}
 
 	module = g_module_open (path, G_MODULE_BIND_LAZY);
@@ -195,7 +197,7 @@ camel_provider_load (const gchar *path,
 			ex, CAMEL_EXCEPTION_SYSTEM,
 			_("Could not load %s: %s"),
 			path, g_module_error ());
-		return;
+		return FALSE;
 	}
 
 	if (!g_module_symbol (module, "camel_provider_module_init",
@@ -205,10 +207,12 @@ camel_provider_load (const gchar *path,
 			_("Could not load %s: No initialization "
 			  "code in module."), path);
 		g_module_close (module);
-		return;
+		return FALSE;
 	}
 
 	provider_module_init ();
+
+	return TRUE;
 }
 
 /**
@@ -372,8 +376,7 @@ camel_provider_get (const gchar *url_string,
 		m = g_hash_table_lookup(module_table, protocol);
 		if (m && !m->loaded) {
 			m->loaded = 1;
-			camel_provider_load(m->path, ex);
-			if (camel_exception_is_set (ex))
+			if (!camel_provider_load (m->path, ex))
 				goto fail;
 		}
 		provider = g_hash_table_lookup(provider_table, protocol);

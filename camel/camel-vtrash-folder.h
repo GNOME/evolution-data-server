@@ -34,13 +34,13 @@
 #define CAMEL_VTRASH_FOLDER_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_vtrash_folder_get_type (), CamelVTrashFolderClass)
 #define CAMEL_IS_VTRASH_FOLDER(obj)      CAMEL_CHECK_TYPE (obj, camel_vtrash_folder_get_type ())
 
+#define CAMEL_VTRASH_NAME	".#evolution/Trash"
+#define CAMEL_VJUNK_NAME	".#evolution/Junk"
+
 G_BEGIN_DECLS
 
 typedef struct _CamelVTrashFolder CamelVTrashFolder;
 typedef struct _CamelVTrashFolderClass CamelVTrashFolderClass;
-
-#define CAMEL_VTRASH_NAME	".#evolution/Trash"
-#define CAMEL_VJUNK_NAME	".#evolution/Junk"
 
 typedef enum {
 	CAMEL_VTRASH_FOLDER_TRASH,

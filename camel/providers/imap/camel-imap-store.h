@@ -48,9 +48,9 @@ CamelImapMsg *camel_imap_msg_new(void (*receive)(CamelImapStore *store, struct _
 				 gsize size);
 void camel_imap_msg_queue(CamelImapStore *store, CamelImapMsg *msg);
 
-G_END_DECLS
-
 #endif
+
+G_END_DECLS
 
 #define CAMEL_IMAP_STORE_TYPE     (camel_imap_store_get_type ())
 #define CAMEL_IMAP_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAP_STORE_TYPE, CamelImapStore))

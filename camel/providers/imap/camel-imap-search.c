@@ -89,43 +89,52 @@ struct _match_record {
 	GArray *matches;
 };
 
-static void free_match(CamelImapSearch *is, struct _match_record *mr);
 static ESExpResult *imap_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
 
-static CamelFolderSearchClass *imap_search_parent_class;
+static gpointer camel_imap_search_parent_class;
 
 static void
-camel_imap_search_class_init (CamelImapSearchClass *camel_imap_search_class)
+free_match(CamelImapSearch *is, struct _match_record *mr)
 {
-	/* virtual method overload */
-	CamelFolderSearchClass *camel_folder_search_class =
-		CAMEL_FOLDER_SEARCH_CLASS (camel_imap_search_class);
+	gint i;
 
-	imap_search_parent_class = (CamelFolderSearchClass *)camel_type_get_global_classfuncs (camel_folder_search_get_type ());
-
-	/* virtual method overload */
-	camel_folder_search_class->body_contains = imap_body_contains;
+	for (i=0;i<mr->termcount;i++)
+		g_free(mr->terms[i]);
+	g_free(mr->terms);
+	g_array_free(mr->matches, TRUE);
+	g_free(mr);
 }
 
 static void
-camel_imap_search_init(CamelImapSearch *is)
+imap_search_finalize (CamelImapSearch *search)
+{
+	struct _match_record *mr;
+
+	while ((mr = (struct _match_record *)camel_dlist_remtail(&search->matches)))
+		free_match(search, mr);
+	g_hash_table_destroy(search->matches_hash);
+	if (search->cache != NULL)
+		camel_object_unref (search->cache);
+}
+
+static void
+camel_imap_search_class_init (CamelImapSearchClass *class)
+{
+	CamelFolderSearchClass *folder_search_class;
+
+	camel_imap_search_parent_class = (CamelFolderSearchClass *)camel_type_get_global_classfuncs (camel_folder_search_get_type ());
+
+	folder_search_class = CAMEL_FOLDER_SEARCH_CLASS (class);
+	folder_search_class->body_contains = imap_body_contains;
+}
+
+static void
+camel_imap_search_init (CamelImapSearch *is)
 {
 	camel_dlist_init(&is->matches);
 	is->matches_hash = g_hash_table_new(g_str_hash, g_str_equal);
 	is->matches_count = 0;
 	is->lastuid = 0;
-}
-
-static void
-camel_imap_search_finalize(CamelImapSearch *is)
-{
-	struct _match_record *mr;
-
-	while ((mr = (struct _match_record *)camel_dlist_remtail(&is->matches)))
-		free_match(is, mr);
-	g_hash_table_destroy(is->matches_hash);
-	if (is->cache)
-		camel_object_unref (is->cache);
 }
 
 CamelType
@@ -140,7 +149,7 @@ camel_imap_search_get_type (void)
 			sizeof (CamelImapSearchClass),
 			(CamelObjectClassInitFunc) camel_imap_search_class_init, NULL,
 			(CamelObjectInitFunc) camel_imap_search_init,
-			(CamelObjectFinalizeFunc) camel_imap_search_finalize);
+			(CamelObjectFinalizeFunc) imap_search_finalize);
 	}
 
 	return camel_imap_search_type;
@@ -239,18 +248,6 @@ save_match(CamelImapSearch *is, struct _match_record *mr)
 
 	camel_object_unref (stream);
 	return ret;
-}
-
-static void
-free_match(CamelImapSearch *is, struct _match_record *mr)
-{
-	gint i;
-
-	for (i=0;i<mr->termcount;i++)
-		g_free(mr->terms[i]);
-	g_free(mr->terms);
-	g_array_free(mr->matches, TRUE);
-	g_free(mr);
 }
 
 static struct _match_record *
@@ -434,7 +431,7 @@ imap_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Cam
 
 	/* If offline, search using the parent class, which can handle this manually */
 	if (CAMEL_OFFLINE_STORE (store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
-		return imap_search_parent_class->body_contains(f, argc, argv, s);
+		return CAMEL_FOLDER_SEARCH_CLASS (camel_imap_search_parent_class)->body_contains(f, argc, argv, s);
 
 	/* optimise the match "" case - match everything */
 	if (argc == 1 && argv[0]->value.string[0] == '\0') {

@@ -17,6 +17,9 @@ CamelAddress
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelAddress ##### -->
 <para>
 
@@ -31,6 +34,7 @@ CamelAddress
 
 </para>
 
+@void: 
 @Returns: 
 
 

@@ -31,19 +31,17 @@
 
 G_BEGIN_DECLS
 
-typedef struct {
+typedef struct _CamelMaildirStore CamelMaildirStore;
+typedef struct _CamelMaildirStoreClass CamelMaildirStoreClass;
+
+struct _CamelMaildirStore {
 	CamelLocalStore parent;
+};
 
-} CamelMaildirStore;
-
-typedef struct {
+struct _CamelMaildirStoreClass {
 	CamelLocalStoreClass parent_class;
+};
 
-} CamelMaildirStoreClass;
-
-/* public methods */
-
-/* Standard Camel function */
 CamelType camel_maildir_store_get_type(void);
 
 G_END_DECLS

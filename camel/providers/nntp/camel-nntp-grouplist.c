@@ -28,7 +28,6 @@
 #include <errno.h>
 #include <string.h>
 
-#include <glib.h>
 #include <glib/gstdio.h>
 
 #include "camel-nntp-grouplist.h"

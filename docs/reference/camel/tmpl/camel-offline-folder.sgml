@@ -17,6 +17,9 @@ CamelOfflineFolder
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelOfflineFolder ##### -->
 <para>
 
@@ -33,5 +36,6 @@ CamelOfflineFolder
 @offline: 
 @expression: 
 @ex: 
+@Returns: 
 
 

@@ -179,7 +179,7 @@ offline_folder_setv (CamelObject *object,
 	return ((CamelObjectClass *) camel_offline_folder_parent_class)->setv (object, ex, args);
 }
 
-static void
+static gboolean
 offline_folder_downsync (CamelOfflineFolder *offline,
                          const gchar *expression,
                          CamelException *ex)
@@ -219,6 +219,8 @@ done:
 		camel_folder_free_uids(folder, uncached_uids);
 
 	camel_operation_end (NULL);
+
+	return TRUE;
 }
 
 static void
@@ -278,18 +280,20 @@ camel_offline_folder_get_type (void)
  *
  * Syncs messages in @offline described by the search @expression to
  * the local machine for offline availability.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
  **/
-void
+gboolean
 camel_offline_folder_downsync (CamelOfflineFolder *offline,
                                const gchar *expression,
                                CamelException *ex)
 {
 	CamelOfflineFolderClass *class;
 
-	g_return_if_fail (CAMEL_IS_OFFLINE_FOLDER (offline));
+	g_return_val_if_fail (CAMEL_IS_OFFLINE_FOLDER (offline), FALSE);
 
 	class = CAMEL_OFFLINE_FOLDER_GET_CLASS (offline);
-	g_return_if_fail (class->downsync != NULL);
+	g_return_val_if_fail (class->downsync != NULL, FALSE);
 
-	class->downsync (offline, expression, ex);
+	return class->downsync (offline, expression, ex);
 }

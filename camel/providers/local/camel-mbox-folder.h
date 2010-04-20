@@ -32,24 +32,23 @@
 
 G_BEGIN_DECLS
 
-typedef struct {
+typedef struct _CamelMboxFolder CamelMboxFolder;
+typedef struct _CamelMboxFolderClass CamelMboxFolderClass;
+
+struct _CamelMboxFolder {
 	CamelLocalFolder parent;
 
 	gint lockfd;		/* for when we have a lock on the folder */
-} CamelMboxFolder;
+};
 
-typedef struct {
+struct _CamelMboxFolderClass {
 	CamelLocalFolderClass parent_class;
-
-	/* Virtual methods */
-
-} CamelMboxFolderClass;
+};
 
 /* public methods */
 /* flags are taken from CAMEL_STORE_FOLDER_* flags */
 CamelFolder *camel_mbox_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 flags, CamelException *ex);
 
-/* Standard Camel function */
 CamelType camel_mbox_folder_get_type(void);
 
 G_END_DECLS

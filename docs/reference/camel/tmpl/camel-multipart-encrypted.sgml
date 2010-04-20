@@ -17,6 +17,9 @@ CamelMultipartEncrypted
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelMultipartEncrypted ##### -->
 <para>
 
@@ -33,6 +36,7 @@ CamelMultipartEncrypted
 
 </para>
 
+@void: 
 @Returns: 
 
 

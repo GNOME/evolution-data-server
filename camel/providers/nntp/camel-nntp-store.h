@@ -93,7 +93,6 @@ struct _CamelNNTPStoreClass {
 
 };
 
-/* Standard Camel function */
 CamelType camel_nntp_store_get_type (void);
 
 gint camel_nntp_raw_commandv (CamelNNTPStore *store, struct _CamelException *ex, gchar **line, const gchar *fmt, va_list ap);

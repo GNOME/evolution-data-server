@@ -27,7 +27,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include <glib.h>
 #include <glib/gstdio.h>
 
 #include "camel-groupwise-utils.h"
@@ -277,7 +276,7 @@ add_recipients(GSList *recipient_list, CamelAddress *recipients, gint recipient_
 }
 
 static void
-send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, CamelContentType *type, CamelDataWrapper *dw, const gchar *filename, const gchar *cid, GSList **attach_list)
+send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStream *content, CamelContentType *type, CamelDataWrapper *dw, const gchar *filename, const gchar *cid, GSList **attach_list)
 {
 	EGwItemLinkInfo *info = NULL;
 	EGwConnectionStatus status;
@@ -291,7 +290,7 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 	if (cid)
 		attachment->contentid = camel_header_contentid_decode (cid);
 
-	byte_array = camel_stream_mem_get_byte_array (content);
+	byte_array = camel_stream_mem_get_byte_array (CAMEL_STREAM_MEM (content));
 
 	if (filename && byte_array->data) {
 		if (camel_content_type_is (type, "application", "pgp-signature")) {
@@ -413,10 +412,13 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 		do_multipart (cnc, item, mp, &attach_list);
 	} else {
 		/*only message*/
-		CamelStreamMem *content = (CamelStreamMem *)camel_stream_mem_new ();
+		CamelStream *content;
 		CamelDataWrapper *dw = NULL;
 		CamelContentType *type;
 		GByteArray *byte_array;
+
+		byte_array = g_byte_array_new ();
+		content = camel_stream_mem_new_with_byte_array (byte_array);
 
 		dw = camel_medium_get_content (CAMEL_MEDIUM (message));
 		type = camel_mime_part_get_content_type((CamelMimePart *)message);
@@ -434,7 +436,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 			charset = camel_content_type_param (type, "charset");
 			if (charset && g_ascii_strcasecmp (charset, "US-ASCII") && g_ascii_strcasecmp (charset, "UTF-8")) {
 				filter = camel_mime_filter_charset_new (charset, "UTF-8");
-				filtered_stream = camel_stream_filter_new ((CamelStream *) content);
+				filtered_stream = camel_stream_filter_new (content);
 				camel_stream_filter_add ((CamelStreamFilter *) filtered_stream, filter);
 				camel_object_unref (filter);
 			} else {
@@ -446,11 +448,10 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 			camel_stream_flush (filtered_stream);
 			camel_object_unref (filtered_stream);
 
-			camel_stream_write ((CamelStream *) content, "", 1);
-			byte_array = camel_stream_mem_get_byte_array (content);
+			camel_stream_write (content, "", 1);
 			e_gw_item_set_message (item, (const gchar *)byte_array->data);
 		} else {
-			camel_data_wrapper_decode_to_stream (dw, (CamelStream *) content);
+			camel_data_wrapper_decode_to_stream (dw, content);
 			send_as_attachment (cnc, item, content, type, dw, NULL, NULL, &attach_list);
 		}
 
@@ -604,12 +605,15 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 	for ( i=0; i<part_count; i++) {
 		CamelContentType *type;
 		CamelMimePart *part;
-		CamelStreamMem *content = (CamelStreamMem *)camel_stream_mem_new ();
+		CamelStream *content;
 		CamelDataWrapper *dw = NULL;
-		GByteArray *byte_array;
+		GByteArray *buffer;
 		const gchar *disposition, *filename;
 		const gchar *content_id = NULL;
 		gboolean is_alternative = FALSE;
+
+		buffer = g_byte_array_new ();
+		content = camel_stream_mem_new_with_byte_array (buffer);
 
 		/*
 		 * XXX:
@@ -633,14 +637,18 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 			/* eh... I don't think this code will ever get hit? */
 			CamelMimePart *temp_part;
 			const gchar *cid = NULL;
-			CamelStreamMem *temp_content = (CamelStreamMem *)camel_stream_mem_new ();
+			CamelStream *temp_content;
 			CamelDataWrapper *temp_dw = NULL;
+			GByteArray *temp_buffer;
+
+			temp_buffer = g_byte_array_new ();
+			temp_content = camel_stream_mem_new_with_byte_array (temp_buffer);
 
 			temp_part = camel_multipart_get_part ((CamelMultipart *)dw, 1);
 			if (temp_part) {
 				is_alternative = TRUE;
 				temp_dw = camel_medium_get_content (CAMEL_MEDIUM (temp_part));
-				camel_data_wrapper_write_to_stream(temp_dw, (CamelStream *)temp_content);
+				camel_data_wrapper_write_to_stream(temp_dw, temp_content);
 				filename = camel_mime_part_get_filename (temp_part);
 				disposition = camel_mime_part_get_disposition (temp_part);
 				cid = camel_mime_part_get_content_id (temp_part);
@@ -663,7 +671,7 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 			charset = camel_content_type_param (type, "charset");
 			if (charset && g_ascii_strcasecmp (charset, "US-ASCII") && g_ascii_strcasecmp (charset, "UTF-8")) {
 				filter = camel_mime_filter_charset_new (charset, "UTF-8");
-				filtered_stream = camel_stream_filter_new ((CamelStream *) content);
+				filtered_stream = camel_stream_filter_new (content);
 				camel_stream_filter_add ((CamelStreamFilter *) filtered_stream, filter);
 				camel_object_unref (filter);
 			} else {
@@ -675,15 +683,14 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 			camel_stream_flush (filtered_stream);
 			camel_object_unref (filtered_stream);
 
-			camel_stream_write ((CamelStream *) content, "", 1);
-			byte_array = camel_stream_mem_get_byte_array (content);
-			e_gw_item_set_message (item, (const gchar *) byte_array->data);
+			camel_stream_write (content, "", 1);
+			e_gw_item_set_message (item, (const gchar *) buffer->data);
 		} else {
 			filename = camel_mime_part_get_filename (part);
 			disposition = camel_mime_part_get_disposition (part);
 			content_id = camel_mime_part_get_content_id (part);
 
-			camel_data_wrapper_decode_to_stream (dw, (CamelStream *) content);
+			camel_data_wrapper_decode_to_stream (dw, content);
 			send_as_attachment (cnc, item, content, type, dw, filename, content_id, attach_list);
 		}
 

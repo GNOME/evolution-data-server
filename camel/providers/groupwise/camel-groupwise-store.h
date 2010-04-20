@@ -62,7 +62,6 @@ struct _CamelGroupwiseStoreClass {
 	CamelOfflineStoreClass parent_class;
 };
 
-/* Standard Camel function */
 CamelType camel_groupwise_store_get_type (void);
 gchar * groupwise_get_name(CamelService *service, gboolean brief);
 

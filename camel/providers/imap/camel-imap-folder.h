@@ -70,9 +70,6 @@ struct _CamelImapFolder {
 
 struct _CamelImapFolderClass {
 	CamelOfflineFolderClass parent_class;
-
-	/* Virtual methods */
-
 };
 
 /* public methods */
@@ -81,11 +78,11 @@ CamelFolder *camel_imap_folder_new (CamelStore *parent,
 				    const gchar *folder_dir,
 				    CamelException *ex);
 
-void camel_imap_folder_selected (CamelFolder *folder,
+gboolean camel_imap_folder_selected (CamelFolder *folder,
 				 CamelImapResponse *response,
 				 CamelException *ex);
 
-void camel_imap_folder_changed (CamelFolder *folder, gint exists,
+gboolean camel_imap_folder_changed (CamelFolder *folder, gint exists,
 				GArray *expunged, CamelException *ex);
 
 CamelStream *camel_imap_folder_fetch_data (CamelImapFolder *imap_folder,
@@ -93,15 +90,15 @@ CamelStream *camel_imap_folder_fetch_data (CamelImapFolder *imap_folder,
 					   const gchar *section_text,
 					   gboolean cache_only,
 					   CamelException *ex);
-void
+gboolean
 imap_append_resyncing (CamelFolder *folder, CamelMimeMessage *message,
 		       const CamelMessageInfo *info, gchar **appended_uid,
 		       CamelException *ex);
-void
+gboolean
 imap_transfer_resyncing (CamelFolder *source, GPtrArray *uids,
 			 CamelFolder *dest, GPtrArray **transferred_uids,
 			 gboolean delete_originals, CamelException *ex);
-void
+gboolean
 imap_expunge_uids_resyncing (CamelFolder *folder, GPtrArray *uids, CamelException *ex);
 
 /* Standard Camel function */

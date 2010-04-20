@@ -81,7 +81,7 @@ CamelServiceAuthType camel_nntp_password_authtype = {
 void
 camel_provider_module_init(void)
 {
-	news_provider.object_types[CAMEL_PROVIDER_STORE] = camel_nntp_store_get_type();
+	news_provider.object_types[CAMEL_PROVIDER_STORE] = camel_nntp_store_get_type ();
 
 	news_provider.url_hash = nntp_url_hash;
 	news_provider.url_equal = nntp_url_equal;

@@ -222,7 +222,7 @@ struct _CamelProviderModule {
 };
 
 void		camel_provider_init		(void);
-void		camel_provider_load		(const gchar *path,
+gboolean	camel_provider_load		(const gchar *path,
 						 CamelException *ex);
 void		camel_provider_register		(CamelProvider *provider);
 GList *		camel_provider_list		(gboolean load);

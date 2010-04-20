@@ -31,7 +31,7 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelSpoolSummary      CamelSpoolSummary;
+typedef struct _CamelSpoolSummary CamelSpoolSummary;
 typedef struct _CamelSpoolSummaryClass CamelSpoolSummaryClass;
 
 struct _CamelSpoolSummary {

@@ -17,6 +17,9 @@ CamelFolder
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelFolder ##### -->
 <para>
 
@@ -121,6 +124,7 @@ CamelFolder
 
 @folder: 
 @ex: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_folder_sync ##### -->
@@ -131,6 +135,7 @@ CamelFolder
 @folder: 
 @expunge: 
 @ex: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_folder_set_lock_async ##### -->
@@ -158,6 +163,7 @@ CamelFolder
 
 @folder: 
 @ex: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_folder_get_name ##### -->
@@ -263,6 +269,7 @@ CamelFolder
 @info: 
 @appended_uid: 
 @ex: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_folder_has_summary_capability ##### -->
@@ -338,6 +345,7 @@ CamelFolder
 @folder: 
 @uid: 
 @ex: 
+@Returns: 
 
 
 <!-- ##### MACRO camel_folder_delete_message ##### -->
@@ -489,6 +497,7 @@ CamelFolder
 @transferred_uids: 
 @delete_originals: 
 @ex: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_folder_delete ##### -->
@@ -613,6 +622,7 @@ CamelFolder
 
 </para>
 
+@void: 
 @Returns: 
 
 

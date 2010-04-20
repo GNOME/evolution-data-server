@@ -17,6 +17,9 @@ CamelFolderSearch
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelFolderSearch ##### -->
 <para>
 
@@ -38,6 +41,7 @@ CamelFolderSearch
 
 </para>
 
+@void: 
 @Returns: 
 
 

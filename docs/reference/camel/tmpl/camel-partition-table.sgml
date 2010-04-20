@@ -17,6 +17,9 @@ CamelKeyTable
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### TYPEDEF camel_hash_t ##### -->
 <para>
 
@@ -111,6 +114,7 @@ CamelKeyTable
 
 @cpi: 
 @key: 
+@Returns: 
 
 
 <!-- ##### STRUCT CamelKeyBlock ##### -->
@@ -195,6 +199,7 @@ CamelKeyTable
 @ki: 
 @keyid: 
 @data: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_key_table_set_flags ##### -->
@@ -206,6 +211,7 @@ CamelKeyTable
 @keyid: 
 @flags: 
 @set: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_key_table_lookup ##### -->

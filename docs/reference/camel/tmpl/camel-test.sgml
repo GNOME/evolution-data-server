@@ -17,6 +17,9 @@ camel-test
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### FUNCTION camel_test_failv ##### -->
 <para>
 
@@ -106,6 +109,7 @@ camel-test
 
 </para>
 
+@void: 
 
 
 <!-- ##### FUNCTION camel_test_push ##### -->
@@ -122,6 +126,7 @@ camel-test
 
 </para>
 
+@void: 
 
 
 <!-- ##### FUNCTION camel_test_fail ##### -->
@@ -147,6 +152,7 @@ camel-test
 
 </para>
 
+@void: 
 
 
 <!-- ##### FUNCTION string_equal ##### -->

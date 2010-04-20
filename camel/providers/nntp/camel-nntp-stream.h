@@ -29,8 +29,8 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelNNTPStreamClass CamelNNTPStreamClass;
 typedef struct _CamelNNTPStream CamelNNTPStream;
+typedef struct _CamelNNTPStreamClass CamelNNTPStreamClass;
 
 typedef enum {
 	CAMEL_NNTP_STREAM_LINE,
@@ -54,15 +54,21 @@ struct _CamelNNTPStreamClass {
 	CamelStreamClass parent_class;
 };
 
-CamelType		 camel_nntp_stream_get_type	(void);
+CamelType	camel_nntp_stream_get_type	(void);
 
-CamelStream     *camel_nntp_stream_new		(CamelStream *source);
+CamelStream *	camel_nntp_stream_new		(CamelStream *source);
 
-void		 camel_nntp_stream_set_mode     (CamelNNTPStream *is, camel_nntp_stream_mode_t mode);
-
-gint              camel_nntp_stream_line		(CamelNNTPStream *is, guchar **data, guint *len);
-gint		 camel_nntp_stream_gets		(CamelNNTPStream *is, guchar **start, guint *len);
-gint		 camel_nntp_stream_getd		(CamelNNTPStream *is, guchar **start, guint *len);
+void		camel_nntp_stream_set_mode	(CamelNNTPStream *is,
+						 camel_nntp_stream_mode_t mode);
+gint		camel_nntp_stream_line		(CamelNNTPStream *is,
+						 guchar **data,
+						 guint *len);
+gint		camel_nntp_stream_gets		(CamelNNTPStream *is,
+						 guchar **start,
+						 guint *len);
+gint		camel_nntp_stream_getd		(CamelNNTPStream *is,
+						 guchar **start,
+						 guint *len);
 
 G_END_DECLS
 

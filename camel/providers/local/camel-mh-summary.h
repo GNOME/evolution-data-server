@@ -30,19 +30,16 @@
 G_BEGIN_DECLS
 
 typedef struct _CamelMhSummary	CamelMhSummary;
-typedef struct _CamelMhSummaryClass	CamelMhSummaryClass;
+typedef struct _CamelMhSummaryClass CamelMhSummaryClass;
+typedef struct _CamelMhSummaryPrivate CamelMhSummaryPrivate;
 
 struct _CamelMhSummary {
 	CamelLocalSummary parent;
-	struct _CamelMhSummaryPrivate *priv;
+	CamelMhSummaryPrivate *priv;
 };
 
 struct _CamelMhSummaryClass {
 	CamelLocalSummaryClass parent_class;
-
-	/* virtual methods */
-
-	/* signals */
 };
 
 CamelType	 camel_mh_summary_get_type	(void);

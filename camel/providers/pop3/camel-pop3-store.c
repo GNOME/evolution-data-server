@@ -52,9 +52,7 @@
 /* defines the length of the server error message we can display in the error dialog */
 #define POP3_ERROR_SIZE_LIMIT 60
 
-static CamelStoreClass *parent_class = NULL;
-
-static void finalize (CamelObject *object);
+static gpointer camel_pop3_store_parent_class;
 
 static gboolean pop3_connect (CamelService *service, CamelException *ex);
 static gboolean pop3_disconnect (CamelService *service, gboolean clean, CamelException *ex);
@@ -68,29 +66,43 @@ static CamelFolder *get_trash  (CamelStore *store, CamelException *ex);
 static gboolean pop3_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex);
 
 static void
-camel_pop3_store_class_init (CamelPOP3StoreClass *camel_pop3_store_class)
+pop3_store_finalize (CamelObject *object)
 {
-	CamelServiceClass *camel_service_class =
-		CAMEL_SERVICE_CLASS (camel_pop3_store_class);
-	CamelStoreClass *camel_store_class =
-		CAMEL_STORE_CLASS (camel_pop3_store_class);
+	CamelPOP3Store *pop3_store = CAMEL_POP3_STORE (object);
 
-	parent_class = CAMEL_STORE_CLASS (camel_type_get_global_classfuncs (camel_store_get_type ()));
+	/* force disconnect so we dont have it run later, after we've cleaned up some stuff */
+	/* SIGH */
 
-	/* virtual method overload */
-	camel_service_class->query_auth_types = query_auth_types;
-	camel_service_class->connect = pop3_connect;
-	camel_service_class->disconnect = pop3_disconnect;
+	camel_service_disconnect((CamelService *)pop3_store, TRUE, NULL);
 
-	camel_store_class->get_folder = get_folder;
-	camel_store_class->get_trash = get_trash;
-	camel_store_class->can_refresh_folder = pop3_can_refresh_folder;
+	if (pop3_store->engine)
+		camel_object_unref (pop3_store->engine);
+	if (pop3_store->cache)
+		camel_object_unref (pop3_store->cache);
 }
 
 static void
-camel_pop3_store_init (gpointer object, gpointer klass)
+camel_pop3_store_class_init (CamelPOP3StoreClass *class)
 {
-	;
+	CamelServiceClass *service_class;
+	CamelStoreClass *store_class;
+
+	camel_pop3_store_parent_class = CAMEL_STORE_CLASS (camel_type_get_global_classfuncs (camel_store_get_type ()));
+
+	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->query_auth_types = query_auth_types;
+	service_class->connect = pop3_connect;
+	service_class->disconnect = pop3_disconnect;
+
+	store_class = CAMEL_STORE_CLASS (class);
+	store_class->get_folder = get_folder;
+	store_class->get_trash = get_trash;
+	store_class->can_refresh_folder = pop3_can_refresh_folder;
+}
+
+static void
+camel_pop3_store_init (CamelPOP3Store *pop3_store)
+{
 }
 
 CamelType
@@ -106,26 +118,10 @@ camel_pop3_store_get_type (void)
 							     (CamelObjectClassInitFunc) camel_pop3_store_class_init,
 							     NULL,
 							     (CamelObjectInitFunc) camel_pop3_store_init,
-							     finalize);
+							     pop3_store_finalize);
 	}
 
 	return camel_pop3_store_type;
-}
-
-static void
-finalize (CamelObject *object)
-{
-	CamelPOP3Store *pop3_store = CAMEL_POP3_STORE (object);
-
-	/* force disconnect so we dont have it run later, after we've cleaned up some stuff */
-	/* SIGH */
-
-	camel_service_disconnect((CamelService *)pop3_store, TRUE, NULL);
-
-	if (pop3_store->engine)
-		camel_object_unref (pop3_store->engine);
-	if (pop3_store->cache)
-		camel_object_unref (pop3_store->cache);
 }
 
 enum {
@@ -160,7 +156,10 @@ get_valid_utf8_error (const gchar *text)
 }
 
 static gboolean
-connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, CamelException *ex)
+connect_to_server (CamelService *service,
+                   struct addrinfo *ai,
+                   gint ssl_mode,
+                   CamelException *ex)
 {
 	CamelPOP3Store *store = CAMEL_POP3_STORE (service);
 	CamelStream *tcp_stream;
@@ -178,9 +177,10 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 			tcp_stream = camel_tcp_stream_ssl_new (service->session, service->url->host, SSL_PORT_FLAGS);
 		}
 #else
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-				_("Could not connect to %s: %s"),
-				service->url->host, _("SSL unavailable"));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+			_("Could not connect to %s: %s"),
+			service->url->host, _("SSL unavailable"));
 
 		return FALSE;
 #endif /* HAVE_SSL */
@@ -189,13 +189,14 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 
 	if ((ret = camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, ai)) == -1) {
 		if (errno == EINTR)
-			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
+			camel_exception_set (
+				ex, CAMEL_EXCEPTION_USER_CANCEL,
 				_("Connection canceled"));
 		else
-			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 				_("Could not connect to %s: %s"),
-				service->url->host,
-				g_strerror (errno));
+				service->url->host, g_strerror (errno));
 
 		camel_object_unref (tcp_stream);
 
@@ -203,7 +204,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 	}
 
 	/* parent class connect initialization */
-	if (CAMEL_SERVICE_CLASS (parent_class)->connect (service, ex) == FALSE) {
+	if (CAMEL_SERVICE_CLASS (camel_pop3_store_parent_class)->connect (service, ex) == FALSE) {
 		camel_object_unref (tcp_stream);
 		return FALSE;
 	}
@@ -215,7 +216,8 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 		store->delete_after =  atoi(delete_days);
 
 	if (!(store->engine = camel_pop3_engine_new (tcp_stream, flags))) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
 			_("Failed to read a valid greeting from POP server %s"),
 			service->url->host);
 		camel_object_unref (tcp_stream);
@@ -232,7 +234,8 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 	clean_quit = FALSE;
 
 	if (!(store->engine->capa & CAMEL_POP3_CAP_STLS)) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
 			_("Failed to connect to POP server %s in secure mode: %s"),
 			service->url->host, _("STLS not supported by server"));
 		goto stls_exception;
@@ -246,13 +249,14 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 	camel_pop3_engine_command_free (store->engine, pc);
 
 	if (ret == FALSE) {
-		gchar *tmp = get_valid_utf8_error ((gchar *) store->engine->line);
+		gchar *tmp;
 
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				/* Translators: Last %s is an optional explanation beginning with ": " separator */
-				_("Failed to connect to POP server %s in secure mode%s"),
-				service->url->host, tmp ? tmp:"");
-
+		tmp = get_valid_utf8_error ((gchar *) store->engine->line);
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			/* Translators: Last %s is an optional explanation beginning with ": " separator */
+			_("Failed to connect to POP server %s in secure mode%s"),
+			service->url->host, (tmp != NULL) ? tmp : "");
 		g_free (tmp);
 		goto stls_exception;
 	}
@@ -261,9 +265,10 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 	ret = camel_tcp_stream_ssl_enable_ssl (CAMEL_TCP_STREAM_SSL (tcp_stream));
 
 	if (ret == -1) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Failed to connect to POP server %s in secure mode: %s"),
-				      service->url->host, _("TLS negotiations failed"));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Failed to connect to POP server %s in secure mode: %s"),
+			service->url->host, _("TLS negotiations failed"));
 		goto stls_exception;
 	}
 #else
@@ -311,7 +316,8 @@ static struct {
 };
 
 static gboolean
-connect_to_server_wrapper (CamelService *service, CamelException *ex)
+connect_to_server_wrapper (CamelService *service,
+                           CamelException *ex)
 {
 	struct addrinfo hints, *ai;
 	const gchar *ssl_mode;
@@ -361,12 +367,17 @@ extern CamelServiceAuthType camel_pop3_password_authtype;
 extern CamelServiceAuthType camel_pop3_apop_authtype;
 
 static GList *
-query_auth_types (CamelService *service, CamelException *ex)
+query_auth_types (CamelService *service,
+                  CamelException *ex)
 {
+	CamelServiceClass *service_class;
 	CamelPOP3Store *store = CAMEL_POP3_STORE (service);
 	GList *types = NULL;
 
-	types = CAMEL_SERVICE_CLASS (parent_class)->query_auth_types (service, ex);
+	/* Chain up to parent's query_auth_types() method. */
+	service_class = CAMEL_SERVICE_CLASS (camel_pop3_store_parent_class);
+	types = service_class->query_auth_types (service, ex);
+
 	if (camel_exception_is_set (ex))
 		return NULL;
 
@@ -374,9 +385,10 @@ query_auth_types (CamelService *service, CamelException *ex)
 		types = g_list_concat(types, g_list_copy(store->engine->auth));
 		pop3_disconnect (service, TRUE, NULL);
 	} else {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-				      _("Could not connect to POP server %s"),
-				      service->url->host);
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+			_("Could not connect to POP server %s"),
+			service->url->host);
 	}
 
 	return types;
@@ -405,7 +417,9 @@ camel_pop3_store_expunge (CamelPOP3Store *store, CamelException *ex)
 }
 
 static gint
-try_sasl(CamelPOP3Store *store, const gchar *mech, CamelException *ex)
+try_sasl (CamelPOP3Store *store,
+          const gchar *mech,
+          CamelException *ex)
 {
 	CamelPOP3Stream *stream = store->engine->stream;
 	guchar *line, *resp;
@@ -415,10 +429,11 @@ try_sasl(CamelPOP3Store *store, const gchar *mech, CamelException *ex)
 
 	sasl = camel_sasl_new("pop", mech, (CamelService *)store);
 	if (sasl == NULL) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
-				      _("Unable to connect to POP server %s: "
-					"No support for requested authentication mechanism."),
-				      CAMEL_SERVICE (store)->url->host);
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
+			_("Unable to connect to POP server %s: "
+			  "No support for requested authentication mechanism."),
+			CAMEL_SERVICE (store)->url->host);
 		return -1;
 	}
 
@@ -431,14 +446,18 @@ try_sasl(CamelPOP3Store *store, const gchar *mech, CamelException *ex)
 		if (strncmp((gchar *) line, "+OK", 3) == 0)
 			break;
 		if (strncmp((gchar *) line, "-ERR", 4) == 0) {
-			gchar *tmp = get_valid_utf8_error ((gchar *) store->engine->line);
+			gchar *tmp;
 
-			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
-					      /* Translators: Last %s is an optional explanation beginning with ": " separator */
-					      _("SASL '%s' Login failed for POP server %s%s"),
-					      mech, CAMEL_SERVICE (store)->url->host, tmp ? tmp : "");
-
+			tmp = get_valid_utf8_error (
+				(gchar *) store->engine->line);
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+				/* Translators: Last %s is an optional explanation beginning with ": " separator */
+				_("SASL '%s' Login failed for POP server %s%s"),
+				mech, CAMEL_SERVICE (store)->url->host,
+				(tmp != NULL) ? tmp : "");
 			g_free (tmp);
+
 			goto done;
 		}
 		/* If we dont get continuation, or the sasl object's run out of work, or we dont get a challenge,
@@ -448,9 +467,10 @@ try_sasl(CamelPOP3Store *store, const gchar *mech, CamelException *ex)
 		    || (resp = (guchar *) camel_sasl_challenge_base64(sasl, (const gchar *) line+2, ex)) == NULL) {
 			camel_stream_printf((CamelStream *)stream, "*\r\n");
 			camel_pop3_stream_line(stream, &line, &len);
-			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
-					      _("Cannot login to POP server %s: SASL Protocol error"),
-					      CAMEL_SERVICE (store)->url->host);
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+				_("Cannot login to POP server %s: SASL Protocol error"),
+				CAMEL_SERVICE (store)->url->host);
 			goto done;
 		}
 
@@ -465,11 +485,13 @@ try_sasl(CamelPOP3Store *store, const gchar *mech, CamelException *ex)
 
  ioerror:
 	if (errno == EINTR) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL, _("Canceled"));
+		camel_exception_set (
+			ex, CAMEL_EXCEPTION_USER_CANCEL, _("Canceled"));
 	} else {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Failed to authenticate on POP server %s: %s"),
-				      CAMEL_SERVICE (store)->url->host, g_strerror (errno));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Failed to authenticate on POP server %s: %s"),
+			CAMEL_SERVICE (store)->url->host, g_strerror (errno));
 	}
  done:
 	camel_object_unref (sasl);
@@ -477,7 +499,10 @@ try_sasl(CamelPOP3Store *store, const gchar *mech, CamelException *ex)
 }
 
 static gint
-pop3_try_authenticate (CamelService *service, gboolean reprompt, const gchar *errmsg, CamelException *ex)
+pop3_try_authenticate (CamelService *service,
+                       gboolean reprompt,
+                       const gchar *errmsg,
+                       CamelException *ex)
 {
 	CamelPOP3Store *store = (CamelPOP3Store *)service;
 	CamelPOP3Command *pcu = NULL, *pcp = NULL;
@@ -526,9 +551,12 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const gchar *er
 			if (!isascii((gint)*d)) {
 
 				/* README for Translators: The string APOP should not be translated */
-				camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
-						_("Unable to connect to POP server %s:	Invalid APOP ID received. Impersonation attack suspected. Please contact your admin."),
-						CAMEL_SERVICE (store)->url->host);
+				camel_exception_setv (
+					ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
+					_("Unable to connect to POP server %s:	"
+					  "Invalid APOP ID received. Impersonation "
+					  "attack suspected. Please contact your admin."),
+					CAMEL_SERVICE (store)->url->host);
 
 				return 0;
 			}
@@ -553,10 +581,11 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const gchar *er
 			l = l->next;
 		}
 
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
-				      _("Unable to connect to POP server %s: "
-					"No support for requested authentication mechanism."),
-				      CAMEL_SERVICE (store)->url->host);
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
+			_("Unable to connect to POP server %s: "
+			  "No support for requested authentication mechanism."),
+			CAMEL_SERVICE (store)->url->host);
 		return 0;
 	}
 
@@ -565,33 +594,38 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const gchar *er
 
 	if (status == -1) {
 		if (errno == EINTR) {
-			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL, _("Canceled"));
+			camel_exception_set (
+				ex, CAMEL_EXCEPTION_USER_CANCEL, _("Canceled"));
 		} else {
-			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-					      _("Unable to connect to POP server %s.\n"
-						"Error sending password: %s"),
-					      CAMEL_SERVICE (store)->url->host,
-					      errno ? g_strerror (errno) : _("Unknown error"));
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_SYSTEM,
+				_("Unable to connect to POP server %s.\n"
+				  "Error sending password: %s"),
+				CAMEL_SERVICE (store)->url->host, errno ?
+				g_strerror (errno) : _("Unknown error"));
 		}
 	} else if (pcu && pcu->state != CAMEL_POP3_COMMAND_OK) {
 		gchar *tmp = get_valid_utf8_error ((gchar *) store->engine->line);
 
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
-				      /* Translators: Last %s is an optional explanation beginning with ": " separator */
-				      _("Unable to connect to POP server %s.\n"
-					"Error sending username%s"),
-				      CAMEL_SERVICE (store)->url->host,
-				      tmp ? tmp : "");
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+			/* Translators: Last %s is an optional explanation beginning with ": " separator */
+			_("Unable to connect to POP server %s.\n"
+			  "Error sending username%s"),
+			CAMEL_SERVICE (store)->url->host,
+			(tmp != NULL) ? tmp : "");
 		g_free (tmp);
 	} else if (pcp->state != CAMEL_POP3_COMMAND_OK) {
-		gchar *tmp = get_valid_utf8_error ((gchar *) store->engine->line);
+		gchar *tmp;
 
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
-				      /* Translators: Last %s is an optional explanation beginning with ": " separator */
-				      _("Unable to connect to POP server %s.\n"
-					"Error sending password%s"),
-				      CAMEL_SERVICE (store)->url->host,
-				      tmp ? tmp :"");
+		tmp = get_valid_utf8_error ((gchar *) store->engine->line);
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+			/* Translators: Last %s is an optional explanation beginning with ": " separator */
+			_("Unable to connect to POP server %s.\n"
+			  "Error sending password%s"),
+			CAMEL_SERVICE (store)->url->host,
+			(tmp != NULL) ? tmp : "");
 		g_free (tmp);
 	}
 
@@ -604,7 +638,8 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const gchar *er
 }
 
 static gboolean
-pop3_connect (CamelService *service, CamelException *ex)
+pop3_connect (CamelService *service,
+              CamelException *ex)
 {
 	CamelPOP3Store *store = (CamelPOP3Store *)service;
 	gboolean reprompt = FALSE;
@@ -619,7 +654,7 @@ pop3_connect (CamelService *service, CamelException *ex)
 
 		root = camel_session_get_storage_path (session, service, ex);
 		if (root) {
-			store->cache = camel_data_cache_new(root, ex);
+			store->cache = camel_data_cache_new (root, ex);
 			g_free(root);
 			if (store->cache) {
 				/* Default cache expiry - 1 week or not visited in a day */
@@ -633,16 +668,19 @@ pop3_connect (CamelService *service, CamelException *ex)
 		return FALSE;
 
 	while (1) {
-		status = pop3_try_authenticate (service, reprompt, errbuf, ex);
+		status = pop3_try_authenticate (
+			service, reprompt, errbuf, ex);
 		g_free (errbuf);
 		errbuf = NULL;
 
-		/* we only re-prompt if we failed to authenticate, any other error and we just abort */
+		/* we only re-prompt if we failed to authenticate,
+		 * any other error and we just abort */
 		if (status == 0 && camel_exception_get_id (ex) == CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE) {
 			errbuf = g_markup_printf_escaped ("%s\n\n", camel_exception_get_description (ex));
 			camel_exception_clear (ex);
 
-			camel_session_forget_password (session, service, NULL, "password", ex);
+			camel_session_forget_password (
+				session, service, NULL, "password", ex);
 			camel_exception_clear (ex);
 
 			g_free (service->url->passwd);
@@ -659,7 +697,8 @@ pop3_connect (CamelService *service, CamelException *ex)
 		return FALSE;
 	}
 
-	/* Now that we are in the TRANSACTION state, try regetting the capabilities */
+	/* Now that we are in the TRANSACTION state,
+	 * try regetting the capabilities */
 	store->engine->state = CAMEL_POP3_ENGINE_TRANSACTION;
 	camel_pop3_engine_reget_capabilities (store->engine);
 
@@ -667,8 +706,11 @@ pop3_connect (CamelService *service, CamelException *ex)
 }
 
 static gboolean
-pop3_disconnect (CamelService *service, gboolean clean, CamelException *ex)
+pop3_disconnect (CamelService *service,
+                 gboolean clean,
+                 CamelException *ex)
 {
+	CamelServiceClass *service_class;
 	CamelPOP3Store *store = CAMEL_POP3_STORE (service);
 
 	if (clean) {
@@ -680,7 +722,9 @@ pop3_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 		camel_pop3_engine_command_free(store->engine, pc);
 	}
 
-	if (!CAMEL_SERVICE_CLASS (parent_class)->disconnect (service, clean, ex))
+	/* Chain up to parent's disconnect() method. */
+	service_class = CAMEL_SERVICE_CLASS (camel_pop3_store_parent_class);
+	if (!service_class->disconnect (service, clean, ex))
 		return FALSE;
 
 	camel_object_unref (store->engine);
@@ -690,13 +734,18 @@ pop3_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 }
 
 static CamelFolder *
-get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelException *ex)
+get_folder (CamelStore *store,
+            const gchar *folder_name,
+            guint32 flags,
+            CamelException *ex)
 {
 	if (g_ascii_strcasecmp (folder_name, "inbox") != 0) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
-				      _("No such folder '%s'."), folder_name);
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_FOLDER_INVALID,
+			_("No such folder '%s'."), folder_name);
 		return NULL;
 	}
+
 	return camel_pop3_folder_new (store, ex);
 }
 

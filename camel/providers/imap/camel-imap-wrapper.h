@@ -49,7 +49,6 @@ struct _CamelImapWrapperClass {
 	CamelDataWrapperClass parent_class;
 };
 
-/* Standard Camel function */
 CamelType camel_imap_wrapper_get_type (void);
 
 /* Constructor */

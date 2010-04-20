@@ -17,6 +17,9 @@ camel-mime-utils
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### MACRO CAMEL_FOLD_SIZE ##### -->
 <para>
 
@@ -152,6 +155,7 @@ camel-mime-utils
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -698,6 +702,7 @@ camel-mime-utils
 
 </para>
 
+@void: 
 @Returns: 
 
 

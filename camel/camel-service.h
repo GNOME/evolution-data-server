@@ -90,7 +90,7 @@ struct _CamelService {
 struct _CamelServiceClass {
 	CamelObjectClass parent_class;
 
-	void		(*construct)		(CamelService *service,
+	gboolean	(*construct)		(CamelService *service,
 						 struct _CamelSession *session,
 						 CamelProvider *provider,
 						 CamelURL *url,
@@ -118,7 +118,7 @@ typedef struct {
 } CamelServiceAuthType;
 
 CamelType	camel_service_get_type		(void);
-void		camel_service_construct		(CamelService *service,
+gboolean	camel_service_construct		(CamelService *service,
 						 struct _CamelSession *session,
 						 CamelProvider *provider,
 						 CamelURL *url,

@@ -17,6 +17,9 @@ Utility functions for time structure manipulation.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### ENUM ETimeParseStatus ##### -->
 <para>
 
@@ -127,6 +130,7 @@ Utility functions for time structure manipulation.
 
 </para>
 
+@void: 
 @Returns: 
 
 

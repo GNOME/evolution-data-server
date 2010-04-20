@@ -17,6 +17,9 @@ CamelCipherContext
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelCipherContext ##### -->
 <para>
 
@@ -206,6 +209,7 @@ CamelCipherContext
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -291,8 +295,10 @@ CamelCipherContext
 @name: 
 @email: 
 @cert_data: 
-@cert_data_free: 
-@cert_data_clone: 
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data: 
 
 
 <!-- ##### FUNCTION camel_cipher_validity_envelope ##### -->

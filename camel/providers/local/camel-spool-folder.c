@@ -42,45 +42,32 @@
 
 static CamelFolderClass *parent_class = NULL;
 
-/* Returns the class for a CamelSpoolFolder */
-#define CSPOOLF_CLASS(so) CAMEL_SPOOL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
-#define CF_CLASS(so) CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
-#define CSPOOLS_CLASS(so) CAMEL_STORE_CLASS (CAMEL_OBJECT_GET_CLASS(so))
-
 static CamelLocalSummary *spool_create_summary(CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index);
 
 static gint spool_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
 static void spool_unlock(CamelLocalFolder *lf);
 
-static void spool_finalize(CamelObject * object);
-
 static void
-camel_spool_folder_class_init(CamelSpoolFolderClass *klass)
+camel_spool_folder_class_init (CamelSpoolFolderClass *class)
 {
-	CamelLocalFolderClass *lklass = (CamelLocalFolderClass *)klass;
+	CamelLocalFolderClass *local_folder_class;
 
 	parent_class = (CamelFolderClass *)camel_mbox_folder_get_type();
 
-	lklass->create_summary = spool_create_summary;
-	lklass->lock = spool_lock;
-	lklass->unlock = spool_unlock;
+	local_folder_class = CAMEL_LOCAL_FOLDER_CLASS (class);
+	local_folder_class->create_summary = spool_create_summary;
+	local_folder_class->lock = spool_lock;
+	local_folder_class->unlock = spool_unlock;
 }
 
 static void
-spool_init(gpointer object, gpointer klass)
+camel_spool_folder_init (CamelSpoolFolder *spool_folder)
 {
-	CamelSpoolFolder *spool_folder = object;
-
 	spool_folder->lockid = -1;
 }
 
-static void
-spool_finalize(CamelObject * object)
-{
-	/*CamelSpoolFolder *spool_folder = CAMEL_SPOOL_FOLDER(object);*/
-}
-
-CamelType camel_spool_folder_get_type(void)
+CamelType
+camel_spool_folder_get_type (void)
 {
 	static CamelType camel_spool_folder_type = CAMEL_INVALID_TYPE;
 
@@ -90,15 +77,18 @@ CamelType camel_spool_folder_get_type(void)
 							     sizeof(CamelSpoolFolderClass),
 							     (CamelObjectClassInitFunc) camel_spool_folder_class_init,
 							     NULL,
-							     (CamelObjectInitFunc) spool_init,
-							     (CamelObjectFinalizeFunc) spool_finalize);
+							     (CamelObjectInitFunc) camel_spool_folder_init,
+							     (CamelObjectFinalizeFunc) NULL);
 	}
 
 	return camel_spool_folder_type;
 }
 
 CamelFolder *
-camel_spool_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 flags, CamelException *ex)
+camel_spool_folder_new (CamelStore *parent_store,
+                        const gchar *full_name,
+                        guint32 flags,
+                        CamelException *ex)
 {
 	CamelFolder *folder;
 
@@ -121,13 +111,19 @@ camel_spool_folder_new(CamelStore *parent_store, const gchar *full_name, guint32
 }
 
 static CamelLocalSummary *
-spool_create_summary(CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index)
+spool_create_summary (CamelLocalFolder *lf,
+                      const gchar *path,
+                      const gchar *folder,
+                      CamelIndex *index)
 {
-	return (CamelLocalSummary *)camel_spool_summary_new((CamelFolder *)lf, folder);
+	return (CamelLocalSummary *) camel_spool_summary_new (
+		CAMEL_FOLDER (lf), folder);
 }
 
 static gint
-spool_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex)
+spool_lock (CamelLocalFolder *lf,
+            CamelLockType type,
+            CamelException *ex)
 {
 	gint retry = 0;
 	CamelMboxFolder *mf = (CamelMboxFolder *)lf;
@@ -135,9 +131,10 @@ spool_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex)
 
 	mf->lockfd = open(lf->folder_path, O_RDWR|O_LARGEFILE, 0);
 	if (mf->lockfd == -1) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot create folder lock on %s: %s"),
-				      lf->folder_path, g_strerror (errno));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Cannot create folder lock on %s: %s"),
+			lf->folder_path, g_strerror (errno));
 		return -1;
 	}
 
@@ -165,7 +162,7 @@ spool_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex)
 }
 
 static void
-spool_unlock(CamelLocalFolder *lf)
+spool_unlock (CamelLocalFolder *lf)
 {
 	CamelMboxFolder *mf = (CamelMboxFolder *)lf;
 	CamelSpoolFolder *sf = (CamelSpoolFolder *)lf;

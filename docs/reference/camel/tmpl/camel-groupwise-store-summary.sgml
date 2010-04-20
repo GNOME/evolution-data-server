@@ -17,6 +17,9 @@ CamelGroupwiseStoreSummary
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelGroupwiseStoreInfo ##### -->
 <para>
 
@@ -50,6 +53,7 @@ CamelGroupwiseStoreSummary
 
 </para>
 
+@void: 
 @Returns: 
 
 

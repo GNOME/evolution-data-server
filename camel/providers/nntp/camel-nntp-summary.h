@@ -33,13 +33,13 @@ struct _CamelNNTPStore;
 struct _CamelFolderChangeInfo;
 struct _CamelException;
 
-typedef struct _CamelNNTPSummary      CamelNNTPSummary;
+typedef struct _CamelNNTPSummary CamelNNTPSummary;
 typedef struct _CamelNNTPSummaryClass CamelNNTPSummaryClass;
+typedef struct _CamelNNTPSummaryPrivate CamelNNTPSummaryPrivate;
 
 struct _CamelNNTPSummary {
 	CamelFolderSummary parent;
-
-	struct _CamelNNTPSummaryPrivate *priv;
+	CamelNNTPSummaryPrivate *priv;
 
 	guint32 version;
 	guint32 high, low;

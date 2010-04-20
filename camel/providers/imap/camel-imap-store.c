@@ -32,7 +32,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
@@ -65,11 +64,11 @@
 
 extern gint camel_verbose_debug;
 
-static CamelOfflineStoreClass *parent_class = NULL;
+static gpointer camel_imap_store_parent_class;
 
 static gchar imap_tag_prefix = 'A';
 
-static void construct (CamelService *service, CamelSession *session,
+static gboolean construct (CamelService *service, CamelSession *session,
 		       CamelProvider *provider, CamelURL *url,
 		       CamelException *ex);
 
@@ -78,7 +77,7 @@ static gint imap_getv (CamelObject *object, CamelException *ex, CamelArgGetV *ar
 
 static gchar *imap_get_name (CamelService *service, gboolean brief);
 
-static void imap_noop (CamelStore *store, CamelException *ex);
+static gboolean imap_noop (CamelStore *store, CamelException *ex);
 static CamelFolder *imap_get_junk(CamelStore *store, CamelException *ex);
 static CamelFolder *imap_get_trash(CamelStore *store, CamelException *ex);
 static GList *query_auth_types (CamelService *service, CamelException *ex);
@@ -86,17 +85,17 @@ static guint hash_folder_name (gconstpointer key);
 static gint compare_folder_name (gconstpointer a, gconstpointer b);
 
 static CamelFolderInfo *create_folder (CamelStore *store, const gchar *parent_name, const gchar *folder_name, CamelException *ex);
-static void             delete_folder (CamelStore *store, const gchar *folder_name, CamelException *ex);
-static void             rename_folder (CamelStore *store, const gchar *old_name, const gchar *new_name, CamelException *ex);
+static gboolean delete_folder (CamelStore *store, const gchar *folder_name, CamelException *ex);
+static gboolean rename_folder (CamelStore *store, const gchar *old_name, const gchar *new_name, CamelException *ex);
 static gboolean folder_subscribed (CamelStore *store, const gchar *folder_name);
-static void subscribe_folder (CamelStore *store, const gchar *folder_name,
+static gboolean subscribe_folder (CamelStore *store, const gchar *folder_name,
 			      CamelException *ex);
-static void unsubscribe_folder (CamelStore *store, const gchar *folder_name,
+static gboolean unsubscribe_folder (CamelStore *store, const gchar *folder_name,
 				CamelException *ex);
 
-static void get_folders_sync(CamelImapStore *imap_store, const gchar *pattern, CamelException *ex);
+static gboolean get_folders_sync(CamelImapStore *imap_store, const gchar *pattern, CamelException *ex);
 
-static void imap_folder_effectively_unsubscribed(CamelImapStore *imap_store, const gchar *folder_name, CamelException *ex);
+static gboolean imap_folder_effectively_unsubscribed(CamelImapStore *imap_store, const gchar *folder_name, CamelException *ex);
 static gboolean imap_check_folder_still_extant (CamelImapStore *imap_store, const gchar *full_name,  CamelException *ex);
 static void imap_forget_folder(CamelImapStore *imap_store, const gchar *folder_name, CamelException *ex);
 static void imap_set_server_level (CamelImapStore *store);
@@ -109,45 +108,6 @@ static CamelFolderInfo * get_folder_info (CamelStore *store, const gchar *top, g
 static CamelFolder * get_folder_offline (CamelStore *store, const gchar *folder_name, guint32 flags, CamelException *ex);
 static CamelFolderInfo * get_folder_info_offline (CamelStore *store, const gchar *top, guint32 flags, CamelException *ex);
 
-static void
-camel_imap_store_class_init (CamelImapStoreClass *camel_imap_store_class)
-{
-	CamelObjectClass *camel_object_class =
-		CAMEL_OBJECT_CLASS (camel_imap_store_class);
-	CamelServiceClass *camel_service_class =
-		CAMEL_SERVICE_CLASS (camel_imap_store_class);
-	CamelStoreClass *camel_store_class =
-		CAMEL_STORE_CLASS (camel_imap_store_class);
-
-	parent_class = CAMEL_OFFLINE_STORE_CLASS (camel_type_get_global_classfuncs (camel_offline_store_get_type ()));
-
-	/* virtual method overload */
-	camel_object_class->setv = imap_setv;
-	camel_object_class->getv = imap_getv;
-
-	camel_service_class->construct = construct;
-	camel_service_class->query_auth_types = query_auth_types;
-	camel_service_class->get_name = imap_get_name;
-	camel_service_class->connect = imap_connect;
-	camel_service_class->disconnect = imap_disconnect;
-
-	camel_store_class->hash_folder_name = hash_folder_name;
-	camel_store_class->compare_folder_name = compare_folder_name;
-	camel_store_class->get_folder = get_folder;
-	camel_store_class->create_folder = create_folder;
-	camel_store_class->delete_folder = delete_folder;
-	camel_store_class->rename_folder = rename_folder;
-	camel_store_class->get_folder_info = get_folder_info;
-	camel_store_class->free_folder_info = camel_store_free_folder_info_full;
-	camel_store_class->folder_subscribed = folder_subscribed;
-	camel_store_class->subscribe_folder = subscribe_folder;
-	camel_store_class->unsubscribe_folder = unsubscribe_folder;
-	camel_store_class->noop = imap_noop;
-	camel_store_class->get_trash = imap_get_trash;
-	camel_store_class->get_junk = imap_get_junk;
-	camel_store_class->can_refresh_folder = imap_can_refresh_folder;
-}
-
 static gboolean
 free_key (gpointer key, gpointer value, gpointer user_data)
 {
@@ -156,34 +116,64 @@ free_key (gpointer key, gpointer value, gpointer user_data)
 }
 
 static void
-camel_imap_store_finalize (CamelObject *object)
+imap_store_finalize (CamelImapStore *imap_store)
 {
-	CamelImapStore *imap_store = CAMEL_IMAP_STORE (object);
-
 	/* This frees current_folder, folders, authtypes, streams, and namespace. */
 	camel_service_disconnect((CamelService *)imap_store, TRUE, NULL);
 
-	if (imap_store->summary) {
-		camel_store_summary_save((CamelStoreSummary *)imap_store->summary);
+	if (imap_store->summary != NULL) {
+		camel_store_summary_save (
+			CAMEL_STORE_SUMMARY (imap_store->summary));
 		camel_object_unref (imap_store->summary);
 	}
 
-	if (imap_store->base_url)
-		g_free (imap_store->base_url);
-	if (imap_store->storage_path)
-		g_free (imap_store->storage_path);
-
+	g_free (imap_store->base_url);
+	g_free (imap_store->storage_path);
 	g_free (imap_store->users_namespace);
-	imap_store->users_namespace = NULL;
-
 	g_free (imap_store->custom_headers);
 }
 
 static void
-camel_imap_store_init (gpointer object, gpointer klass)
+camel_imap_store_class_init (CamelImapStoreClass *class)
 {
-	CamelImapStore *imap_store = CAMEL_IMAP_STORE (object);
+	CamelObjectClass *camel_object_class;
+	CamelServiceClass *service_class;
+	CamelStoreClass *store_class;
 
+	camel_imap_store_parent_class = CAMEL_OFFLINE_STORE_CLASS (camel_type_get_global_classfuncs (camel_offline_store_get_type ()));
+
+	camel_object_class = CAMEL_OBJECT_CLASS (class);
+	camel_object_class->setv = imap_setv;
+	camel_object_class->getv = imap_getv;
+
+	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->construct = construct;
+	service_class->query_auth_types = query_auth_types;
+	service_class->get_name = imap_get_name;
+	service_class->connect = imap_connect;
+	service_class->disconnect = imap_disconnect;
+
+	store_class = CAMEL_STORE_CLASS (class);
+	store_class->hash_folder_name = hash_folder_name;
+	store_class->compare_folder_name = compare_folder_name;
+	store_class->get_folder = get_folder;
+	store_class->create_folder = create_folder;
+	store_class->delete_folder = delete_folder;
+	store_class->rename_folder = rename_folder;
+	store_class->get_folder_info = get_folder_info;
+	store_class->free_folder_info = camel_store_free_folder_info_full;
+	store_class->folder_subscribed = folder_subscribed;
+	store_class->subscribe_folder = subscribe_folder;
+	store_class->unsubscribe_folder = unsubscribe_folder;
+	store_class->noop = imap_noop;
+	store_class->get_trash = imap_get_trash;
+	store_class->get_junk = imap_get_junk;
+	store_class->can_refresh_folder = imap_can_refresh_folder;
+}
+
+static void
+camel_imap_store_init (CamelImapStore *imap_store)
+{
 	imap_store->istream = NULL;
 	imap_store->ostream = NULL;
 
@@ -213,29 +203,31 @@ camel_imap_store_get_type (void)
 					     (CamelObjectClassInitFunc) camel_imap_store_class_init,
 					     NULL,
 					     (CamelObjectInitFunc) camel_imap_store_init,
-					     (CamelObjectFinalizeFunc) camel_imap_store_finalize);
+					     (CamelObjectFinalizeFunc) imap_store_finalize);
 	}
 
 	return camel_imap_store_type;
 }
 
-static void
+static gboolean
 construct (CamelService *service, CamelSession *session,
 	   CamelProvider *provider, CamelURL *url,
 	   CamelException *ex)
 {
+	CamelServiceClass *service_class;
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (service);
 	CamelStore *store = CAMEL_STORE (service);
 	gchar *tmp;
 	CamelURL *summary_url;
 
-	CAMEL_SERVICE_CLASS (parent_class)->construct (service, session, provider, url, ex);
-	if (camel_exception_is_set (ex))
-		return;
+	/* Chain up to parent's construct() method. */
+	service_class = CAMEL_SERVICE_CLASS (camel_imap_store_parent_class);
+	if (!service_class->construct (service, session, provider, url, ex))
+		return FALSE;
 
 	imap_store->storage_path = camel_session_get_storage_path (session, service, ex);
 	if (!imap_store->storage_path)
-		return;
+		return FALSE;
 
 	/* FIXME */
 	imap_store->base_url = camel_url_to_string (service->url, (CAMEL_URL_HIDE_PASSWORD |
@@ -294,6 +286,8 @@ construct (CamelService *service, CamelSession *session,
 		imap_store->capabilities = is->capabilities;
 		imap_set_server_level(imap_store);
 	}
+
+	return TRUE;
 }
 
 static gint
@@ -367,7 +361,7 @@ imap_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
            we need to do it here... or, better yet, somehow chain it
            up to CamelService's setv implementation. */
 
-	return CAMEL_OBJECT_CLASS (parent_class)->setv (object, ex, args);
+	return CAMEL_OBJECT_CLASS (camel_imap_store_parent_class)->setv (object, ex, args);
 }
 
 static gint
@@ -413,7 +407,7 @@ imap_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 		}
 	}
 
-	return CAMEL_OBJECT_CLASS (parent_class)->getv (object, ex, args);
+	return CAMEL_OBJECT_CLASS (camel_imap_store_parent_class)->getv (object, ex, args);
 }
 
 static gchar *
@@ -550,7 +544,8 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 		else
 			tcp_stream = camel_tcp_stream_ssl_new (service->session, service->url->host, SSL_PORT_FLAGS);
 #else
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 			_("Could not connect to %s: %s"),
 			service->url->host, _("SSL unavailable"));
 
@@ -562,16 +557,15 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 
 	if (camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, ai) == -1) {
 		if (errno == EINTR)
-			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
-					     _("Connection cancelled"));
+			camel_exception_set (
+				ex, CAMEL_EXCEPTION_USER_CANCEL,
+				_("Connection cancelled"));
 		else
-			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-					      _("Could not connect to %s: %s"),
-					      service->url->host,
-					      g_strerror (errno));
-
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+				_("Could not connect to %s: %s"),
+				service->url->host, g_strerror (errno));
 		camel_object_unref (tcp_stream);
-
 		return FALSE;
 	}
 
@@ -673,7 +667,8 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 	clean_quit = FALSE;
 
 	if (!(store->capabilities & IMAP_CAPABILITY_STARTTLS)) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
 			_("Failed to connect to IMAP server %s in secure mode: %s"),
 			service->url->host, _("STARTTLS not supported"));
 
@@ -692,15 +687,17 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 
 	/* Okay, now toggle SSL/TLS mode */
 	if (camel_tcp_stream_ssl_enable_ssl (CAMEL_TCP_STREAM_SSL (tcp_stream)) == -1) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Failed to connect to IMAP server %s in secure mode: %s"),
-				      service->url->host, _("SSL negotiations failed"));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Failed to connect to IMAP server %s in secure mode: %s"),
+			service->url->host, _("SSL negotiations failed"));
 		goto exception;
 	}
 #else
-	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-			      _("Failed to connect to IMAP server %s in secure mode: %s"),
-			      service->url->host, _("SSL is not available in this build"));
+	camel_exception_setv (
+		ex, CAMEL_EXCEPTION_SYSTEM,
+		_("Failed to connect to IMAP server %s in secure mode: %s"),
+		service->url->host, _("SSL is not available in this build"));
 	goto exception;
 #endif /* HAVE_SSL */
 
@@ -724,7 +721,8 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 
 	if (store->capabilities & IMAP_CAPABILITY_LOGINDISABLED ) {
 		clean_quit = TRUE;
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
 			_("Failed to connect to IMAP server %s in secure mode: %s"),
 			service->url->host, _("Unknown error"));
 		goto exception;
@@ -844,12 +842,14 @@ connect_to_server_process (CamelService *service, const gchar *cmd, CamelExcepti
 
 	if (ret == -1) {
 		if (errno == EINTR)
-			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
-					     _("Connection cancelled"));
+			camel_exception_set (
+				ex, CAMEL_EXCEPTION_USER_CANCEL,
+				_("Connection cancelled"));
 		else
-			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-					      _("Could not connect with command \"%s\": %s"),
-					      full_cmd, g_strerror (errno));
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+				_("Could not connect with command \"%s\": %s"),
+				full_cmd, g_strerror (errno));
 
 		camel_object_unref (cmd_stream);
 		g_free (full_cmd);
@@ -985,8 +985,9 @@ query_auth_types (CamelService *service, CamelException *ex)
 	gboolean connected;
 
 	if (CAMEL_OFFLINE_STORE (store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-				     _("You must be working online to complete this operation"));
+		camel_exception_set (
+			ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
 		return NULL;
 	}
 
@@ -1052,9 +1053,10 @@ imap_build_folder_info(CamelImapStore *imap_store, const gchar *folder_name)
 	return fi;
 }
 
-static void
-imap_folder_effectively_unsubscribed(CamelImapStore *imap_store,
-				     const gchar *folder_name, CamelException *ex)
+static gboolean
+imap_folder_effectively_unsubscribed (CamelImapStore *imap_store,
+                                      const gchar *folder_name,
+                                      CamelException *ex)
 {
 	CamelFolderInfo *fi;
 	CamelStoreInfo *si;
@@ -1073,13 +1075,15 @@ imap_folder_effectively_unsubscribed(CamelImapStore *imap_store,
 		/* we don't need to emit a "folder_unsubscribed" signal
                    if we are in the process of renaming folders, so we
                    are done here... */
-		return;
+		return TRUE;
 
 	}
 
 	fi = imap_build_folder_info(imap_store, folder_name);
 	camel_object_trigger_event (CAMEL_OBJECT (imap_store), "folder_unsubscribed", fi);
 	camel_folder_info_free (fi);
+
+	return TRUE;
 }
 
 static void
@@ -1184,7 +1188,7 @@ imap_store_refresh_folders (CamelImapStore *store, CamelException *ex)
 
 		CAMEL_IMAP_FOLDER (folder)->need_rescan = TRUE;
 		if (!camel_exception_is_set(ex))
-			CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(folder))->refresh_info(folder, ex);
+			CAMEL_FOLDER_GET_CLASS (folder)->refresh_info (folder, ex);
 
 		if (camel_exception_is_set (ex) &&
 		    imap_check_folder_still_extant (store, folder->full_name, ex) == FALSE) {
@@ -1256,8 +1260,9 @@ try_auth (CamelImapStore *store, const gchar *mech, CamelException *ex)
 
  lose:
 	if (!camel_exception_is_set (ex)) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
-				     _("Bad authentication response from server."));
+		camel_exception_set (
+			ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+			_("Bad authentication response from server."));
 	}
 
 	camel_object_unref (sasl);
@@ -1287,7 +1292,8 @@ imap_auth_loop (CamelService *service, CamelException *ex)
 
 	if (service->url->authmech) {
 		if (!g_hash_table_lookup (store->authtypes, service->url->authmech)) {
-			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
 				_("IMAP server %s does not support requested "
 				  "authentication type %s"),
 				service->url->host,
@@ -1297,9 +1303,10 @@ imap_auth_loop (CamelService *service, CamelException *ex)
 
 		authtype = camel_sasl_authtype (service->url->authmech);
 		if (!authtype) {
-			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
-					      _("No support for authentication type %s"),
-					      service->url->authmech);
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+				_("No support for authentication type %s"),
+				service->url->authmech);
 			return FALSE;
 		}
 
@@ -1340,7 +1347,8 @@ imap_auth_loop (CamelService *service, CamelException *ex)
 			errbuf = NULL;
 
 			if (!service->url->passwd) {
-				camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
+				camel_exception_set (
+					ex, CAMEL_EXCEPTION_USER_CANCEL,
 					_("You did not enter a password."));
 				return FALSE;
 			}
@@ -1526,8 +1534,7 @@ imap_connect (CamelService *service, CamelException *ex)
 		CamelStoreInfo *si;
 
 		/* look in all namespaces */
-		get_folders_sync (store, NULL, ex);
-		if (camel_exception_is_set(ex))
+		if (!get_folders_sync (store, NULL, ex))
 			goto done;
 
 		/* Make sure INBOX is present/subscribed */
@@ -1623,35 +1630,43 @@ imap_summary_is_dirty (CamelFolderSummary *summary)
 	return FALSE;
 }
 
-static void
-imap_noop (CamelStore *store, CamelException *ex)
+static gboolean
+imap_noop (CamelStore *store,
+           CamelException *ex)
 {
 	CamelImapStore *imap_store = (CamelImapStore *) store;
 	CamelImapResponse *response;
 	CamelFolder *current_folder;
+	gboolean success = TRUE;
 
 	camel_service_lock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
 
-	if (!camel_imap_store_connected(imap_store, ex))
+	if (!camel_imap_store_connected(imap_store, ex)) {
+		success = FALSE;
 		goto done;
+	}
 
 	current_folder = imap_store->current_folder;
 	if (current_folder && imap_summary_is_dirty (current_folder->summary)) {
 		/* let's sync the flags instead.  NB: must avoid folder lock */
-		((CamelFolderClass *)((CamelObject *)current_folder)->klass)->sync(current_folder, FALSE, ex);
+		success = CAMEL_FOLDER_GET_CLASS (current_folder)->sync (current_folder, FALSE, ex);
 	} else {
 		response = camel_imap_command (imap_store, NULL, ex, "NOOP");
 		if (response)
 			camel_imap_response_free (imap_store, response);
+		else
+			success = FALSE;
 	}
 done:
 	camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+
+	return success;
 }
 
 static CamelFolder *
 imap_get_trash(CamelStore *store, CamelException *ex)
 {
-	CamelFolder *folder = CAMEL_STORE_CLASS(parent_class)->get_trash(store, ex);
+	CamelFolder *folder = CAMEL_STORE_CLASS(camel_imap_store_parent_class)->get_trash(store, ex);
 
 	if (folder) {
 		gchar *state = g_build_filename(((CamelImapStore *)store)->storage_path, "system", "Trash.cmeta", NULL);
@@ -1668,7 +1683,7 @@ imap_get_trash(CamelStore *store, CamelException *ex)
 static CamelFolder *
 imap_get_junk(CamelStore *store, CamelException *ex)
 {
-	CamelFolder *folder = CAMEL_STORE_CLASS(parent_class)->get_junk(store, ex);
+	CamelFolder *folder = CAMEL_STORE_CLASS(camel_imap_store_parent_class)->get_junk(store, ex);
 
 	if (folder) {
 		gchar *state = g_build_filename(((CamelImapStore *)store)->storage_path, "system", "Junk.cmeta", NULL);
@@ -1827,8 +1842,9 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 		return new_folder;
 
 	if (CAMEL_OFFLINE_STORE (store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-				     _("You must be working online to complete this operation"));
+		camel_exception_set (
+			ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
 		return NULL;
 	}
 
@@ -1863,8 +1879,9 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 
 		if (!(flags & CAMEL_STORE_FOLDER_CREATE)) {
 			camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
-			camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-					      _("No such folder %s"), folder_name);
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+				_("No such folder %s"), folder_name);
 			return NULL;
 		}
 
@@ -1875,9 +1892,10 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 
 		if (*c != '\0') {
 			camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
-			camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID_PATH,
-					      _("The folder name \"%s\" is invalid because it contains the character \"%c\""),
-					      folder_name, *c);
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_FOLDER_INVALID_PATH,
+				_("The folder name \"%s\" is invalid because it contains the character \"%c\""),
+				folder_name, *c);
 			return NULL;
 		}
 
@@ -1938,8 +1956,9 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 				imap_status_item_free (items);
 
 				if (messages > 0) {
-					camel_exception_set (ex, CAMEL_EXCEPTION_FOLDER_INVALID_STATE,
-							     _("The parent folder is not allowed to contain subfolders"));
+					camel_exception_set (
+						ex, CAMEL_EXCEPTION_FOLDER_INVALID_STATE,
+						_("The parent folder is not allowed to contain subfolders"));
 					camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
 					g_free (parent_name);
 					g_free (parent_real);
@@ -1992,9 +2011,10 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 			return NULL;
 		}
 	} else if (flags & CAMEL_STORE_FOLDER_EXCL) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot create folder '%s': folder exists."),
-				      folder_name);
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Cannot create folder '%s': folder exists."),
+			folder_name);
 
 		camel_imap_response_free_without_processing (imap_store, response);
 
@@ -2009,14 +2029,9 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 	new_folder = camel_imap_folder_new (store, folder_name, folder_dir, ex);
 	g_free (folder_dir);
 	if (new_folder) {
-		CamelException local_ex;
-
 		imap_store->current_folder = camel_object_ref (new_folder);
-		camel_exception_init (&local_ex);
-		camel_imap_folder_selected (new_folder, response, &local_ex);
+		if (!camel_imap_folder_selected (new_folder, response, ex)) {
 
-		if (camel_exception_is_set (&local_ex)) {
-			camel_exception_xfer (ex, &local_ex);
 			camel_object_unref (imap_store->current_folder);
 			imap_store->current_folder = NULL;
 			camel_object_unref (new_folder);
@@ -2060,28 +2075,36 @@ get_folder_offline (CamelStore *store, const gchar *folder_name,
 
 		camel_store_summary_info_free((CamelStoreSummary *)imap_store->summary, si);
 	} else {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-				      _("No such folder %s"), folder_name);
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+			_("No such folder %s"), folder_name);
 	}
 
 	return new_folder;
 }
 
-static void
-delete_folder (CamelStore *store, const gchar *folder_name, CamelException *ex)
+static gboolean
+delete_folder (CamelStore *store,
+               const gchar *folder_name,
+               CamelException *ex)
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
 	CamelImapResponse *response;
+	gboolean success = TRUE;
 
 	camel_service_lock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
 
-	if (!camel_imap_store_connected(imap_store, ex))
+	if (!camel_imap_store_connected(imap_store, ex)) {
+		success = FALSE;
 		goto fail;
+	}
 
 	/* make sure this folder isn't currently SELECTed */
 	response = camel_imap_command (imap_store, NULL, ex, "SELECT INBOX");
-	if (!response)
+	if (!response) {
+		success = FALSE;
 		goto fail;
+	}
 
 	camel_imap_response_free_without_processing (imap_store, response);
 	if (imap_store->current_folder)
@@ -2093,9 +2116,13 @@ delete_folder (CamelStore *store, const gchar *folder_name, CamelException *ex)
 	if (response) {
 		camel_imap_response_free (imap_store, response);
 		imap_forget_folder (imap_store, folder_name, ex);
-	}
+	} else
+		success = FALSE;
+
 fail:
 	camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+
+	return success;
 }
 
 static void
@@ -2166,24 +2193,32 @@ rename_folder_info (CamelImapStore *imap_store, const gchar *old_name, const gch
 	}
 }
 
-static void
-rename_folder (CamelStore *store, const gchar *old_name, const gchar *new_name_in, CamelException *ex)
+static gboolean
+rename_folder (CamelStore *store,
+               const gchar *old_name,
+               const gchar *new_name_in,
+               CamelException *ex)
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
 	CamelImapResponse *response;
 	gchar *oldpath, *newpath, *storage_path;
+	gboolean success = TRUE;
 
 	camel_service_lock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
 
-	if (!camel_imap_store_connected(imap_store, ex))
+	if (!camel_imap_store_connected(imap_store, ex)) {
+		success = FALSE;
 		goto fail;
+	}
 
 	/* make sure this folder isn't currently SELECTed - it's
            actually possible to rename INBOX but if you do another
            INBOX will immediately be created by the server */
 	response = camel_imap_command (imap_store, NULL, ex, "SELECT INBOX");
-	if (!response)
+	if (!response) {
+		success = FALSE;
 		goto fail;
+	}
 
 	camel_imap_response_free_without_processing (imap_store, response);
 	if (imap_store->current_folder)
@@ -2199,6 +2234,7 @@ rename_folder (CamelStore *store, const gchar *old_name, const gchar *new_name_i
 	if (!response) {
 		if (imap_store->parameters & IMAP_PARAM_SUBSCRIPTIONS)
 			manage_subscriptions(store, old_name, TRUE);
+		success = FALSE;
 		goto fail;
 	}
 
@@ -2247,6 +2283,8 @@ rename_folder (CamelStore *store, const gchar *old_name, const gchar *new_name_i
 fail:
 	imap_store->renaming = FALSE;
 	camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+
+	return success;
 }
 
 static CamelFolderInfo *
@@ -2256,15 +2294,15 @@ create_folder (CamelStore *store, const gchar *parent_name,
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
 	gchar *full_name, *resp, *thisone, *parent_real, *real_name;
 	CamelImapResponse *response;
-	CamelException internal_ex;
 	CamelFolderInfo *root = NULL;
 	gboolean need_convert;
 	gint i = 0, flags;
 	const gchar *c;
 
 	if (CAMEL_OFFLINE_STORE (store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-				     _("You must be working online to complete this operation"));
+		camel_exception_set (
+			ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
 		return NULL;
 	}
 
@@ -2276,9 +2314,10 @@ create_folder (CamelStore *store, const gchar *parent_name,
 		c++;
 
 	if (*c != '\0') {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID_PATH,
-				      _("The folder name \"%s\" is invalid because it contains the character \"%c\""),
-				      folder_name, *c);
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_FOLDER_INVALID_PATH,
+			_("The folder name \"%s\" is invalid because it contains the character \"%c\""),
+			folder_name, *c);
 		return NULL;
 	}
 
@@ -2317,8 +2356,6 @@ create_folder (CamelStore *store, const gchar *parent_name,
 
 	camel_imap_response_free (imap_store, response);
 
-	camel_exception_init (&internal_ex);
-
 	/* if not, check if we can delete it and recreate it */
 	if (need_convert) {
 		struct imap_status_item *items, *item;
@@ -2338,18 +2375,16 @@ create_folder (CamelStore *store, const gchar *parent_name,
 		imap_status_item_free (items);
 
 		if (messages > 0) {
-			camel_exception_set (ex, CAMEL_EXCEPTION_FOLDER_INVALID_STATE,
-					     _("The parent folder is not allowed to contain subfolders"));
+			camel_exception_set (
+				ex, CAMEL_EXCEPTION_FOLDER_INVALID_STATE,
+				_("The parent folder is not allowed to contain subfolders"));
 			g_free(parent_real);
 			return NULL;
 		}
 
 		/* delete the old parent and recreate it */
-		delete_folder (store, parent_name, &internal_ex);
-		if (camel_exception_is_set (&internal_ex)) {
-			camel_exception_xfer (ex, &internal_ex);
+		if (!delete_folder (store, parent_name, ex))
 			return NULL;
-		}
 
 		/* add the dirsep to the end of parent_name */
 		name = g_strdup_printf ("%s%c", parent_real, imap_store->dir_sep);
@@ -2525,7 +2560,7 @@ get_folders_free(gpointer k, gpointer v, gpointer d)
 	camel_folder_info_free(v);
 }
 
-static void
+static gboolean
 get_folders_sync (CamelImapStore *imap_store, const gchar *ppattern, CamelException *ex)
 {
 	CamelImapResponse *response;
@@ -2536,6 +2571,7 @@ get_folders_sync (CamelImapStore *imap_store, const gchar *ppattern, CamelExcept
 	CamelStoreInfo *si;
 	const gchar *pattern = ppattern;
 	CamelImapStoreNamespace *ns;
+	gboolean success = TRUE;
 
 	/* We do a LIST followed by LSUB, and merge the results.  LSUB may not be a strict
 	   subset of LIST for some servers, so we can't use either or separately */
@@ -2564,8 +2600,10 @@ get_folders_sync (CamelImapStore *imap_store, const gchar *ppattern, CamelExcept
 				response = camel_imap_command (imap_store, NULL, ex,
 								"%s \"\" %G", j==1 ? "LSUB" : "LIST",
 								pattern);
-				if (!response)
+				if (!response) {
+					success = FALSE;
 					goto fail;
+				}
 
 				for (i = 0; i < response->untagged->len; i++) {
 					list = response->untagged->pdata[i];
@@ -2652,6 +2690,8 @@ get_folders_sync (CamelImapStore *imap_store, const gchar *ppattern, CamelExcept
 fail:
 	g_hash_table_foreach(present, get_folders_free, NULL);
 	g_hash_table_destroy(present);
+
+	return success;
 }
 
 #if 0
@@ -2721,8 +2761,7 @@ refresh_refresh(CamelSession *session, CamelSessionThreadMsg *msg)
 		goto done;
 
 	if (store->users_namespace && store->users_namespace[0]) {
-		get_folders_sync (store, "INBOX", &m->ex);
-		if (camel_exception_is_set (&m->ex))
+		if (!get_folders_sync (store, "INBOX", &m->ex))
 			goto done;
 	} else {
 		get_folders_sync (store, "*", &m->ex);
@@ -2750,7 +2789,10 @@ static CamelSessionThreadOps refresh_ops = {
 };
 
 static CamelFolderInfo *
-get_folder_info (CamelStore *store, const gchar *top, guint32 flags, CamelException *ex)
+get_folder_info (CamelStore *store,
+                 const gchar *top,
+                 guint32 flags,
+                 CamelException *ex)
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
 	CamelFolderInfo *tree = NULL;
@@ -2821,8 +2863,7 @@ get_folder_info (CamelStore *store, const gchar *top, guint32 flags, CamelExcept
 		}
 
 		ns = camel_imap_store_summary_get_main_namespace (imap_store->summary);
-		get_folders_sync(imap_store, pattern, ex);
-		if (camel_exception_is_set(ex))
+		if (!get_folders_sync (imap_store, pattern, ex))
 			goto fail;
 		if (pattern[0] != '*' && ns) {
 			pattern[i] = ns->sep;
@@ -2963,24 +3004,31 @@ folder_subscribed (CamelStore *store, const gchar *folder_name)
 }
 
 /* Note: folder_name must match a folder as listed with get_folder_info() -> full_name */
-static void
-subscribe_folder (CamelStore *store, const gchar *folder_name,
-		  CamelException *ex)
+static gboolean
+subscribe_folder (CamelStore *store,
+                  const gchar *folder_name,
+                  CamelException *ex)
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
 	CamelImapResponse *response;
 	CamelFolderInfo *fi;
 	CamelStoreInfo *si;
+	gboolean success = TRUE;
 
 	camel_service_lock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
 
-	if (!camel_imap_store_connected (imap_store, ex))
+	if (!camel_imap_store_connected (imap_store, ex)) {
+		success = FALSE;
 		goto done;
+	}
 
 	response = camel_imap_command (imap_store, NULL, ex,
 				       "SUBSCRIBE %F", folder_name);
-	if (!response)
+	if (!response) {
+		success = FALSE;
 		goto done;
+	}
+
 	camel_imap_response_free (imap_store, response);
 
 	si = camel_store_summary_path((CamelStoreSummary *)imap_store->summary, folder_name);
@@ -3007,29 +3055,41 @@ subscribe_folder (CamelStore *store, const gchar *folder_name,
 	camel_folder_info_free (fi);
 done:
 	camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+
+	return success;
 }
 
-static void
-unsubscribe_folder (CamelStore *store, const gchar *folder_name,
-		    CamelException *ex)
+static gboolean
+unsubscribe_folder (CamelStore *store,
+                    const gchar *folder_name,
+                    CamelException *ex)
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
 	CamelImapResponse *response;
+	gboolean success = TRUE;
 
 	camel_service_lock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
 
-	if (!camel_imap_store_connected (imap_store, ex))
+	if (!camel_imap_store_connected (imap_store, ex)) {
+		success = FALSE;
 		goto done;
+	}
 
 	response = camel_imap_command (imap_store, NULL, ex,
 				       "UNSUBSCRIBE %F", folder_name);
-	if (!response)
+	if (!response) {
+		success = FALSE;
 		goto done;
+	}
+
 	camel_imap_response_free (imap_store, response);
 
-	imap_folder_effectively_unsubscribed (imap_store, folder_name, ex);
+	success = imap_folder_effectively_unsubscribed (imap_store, folder_name, ex);
+
 done:
 	camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+
+	return success;
 }
 
 #if 0
@@ -3071,8 +3131,9 @@ camel_imap_store_connected (CamelImapStore *store, CamelException *ex)
 		return TRUE;
 
 	if (!camel_exception_is_set(ex))
-		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-				     _("You must be working online to complete this operation"));
+		camel_exception_set (
+			ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
 
 	return FALSE;
 }
@@ -3109,13 +3170,18 @@ camel_imap_store_readline (CamelImapStore *store, gchar **dest, CamelException *
 
 	if (nread <= 0) {
 		if (errno == EINTR)
-			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL, _("Operation cancelled"));
+			camel_exception_set (
+				ex, CAMEL_EXCEPTION_USER_CANCEL,
+				_("Operation cancelled"));
 		else if (errno == 0)
-			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE, _("Server unexpectedly disconnected"));
+			camel_exception_set (
+				ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+				_("Server unexpectedly disconnected"));
 		else
-			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-					      _("Server unexpectedly disconnected: %s"),
-					      g_strerror (errno));
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+				_("Server unexpectedly disconnected: %s"),
+				g_strerror (errno));
 
 		camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
 		g_byte_array_free (ba, TRUE);
@@ -3143,11 +3209,13 @@ camel_imap_store_readline (CamelImapStore *store, gchar **dest, CamelException *
 }
 
 static gboolean
-imap_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex)
+imap_can_refresh_folder (CamelStore *store,
+                         CamelFolderInfo *info,
+                         CamelException *ex)
 {
 	gboolean res;
 
-	res = CAMEL_STORE_CLASS(parent_class)->can_refresh_folder (store, info, ex) ||
+	res = CAMEL_STORE_CLASS(camel_imap_store_parent_class)->can_refresh_folder (store, info, ex) ||
 	      (camel_url_get_param (((CamelService *)store)->url, "check_all") != NULL) ||
 	      (camel_url_get_param (((CamelService *)store)->url, "check_lsub") != NULL && (info->flags & CAMEL_FOLDER_SUBSCRIBED) != 0);
 

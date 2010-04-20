@@ -31,7 +31,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <glib.h>
 #include <glib/gstdio.h>
 
 #include "camel-nntp-newsrc.h"

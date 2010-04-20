@@ -27,8 +27,6 @@
 
 #include <camel/camel.h>
 
-/*  #include "camel-store.h" */
-
 #define CAMEL_NNTP_FOLDER_TYPE     (camel_nntp_folder_get_type ())
 #define CAMEL_NNTP_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_NNTP_FOLDER_TYPE, CamelNNTPFolder))
 #define CAMEL_NNTP_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_NNTP_FOLDER_TYPE, CamelNNTPFolderClass))
@@ -54,14 +52,11 @@ struct _CamelNNTPFolderClass {
 	CamelDiscoFolderClass parent;
 };
 
-/* public methods */
-
-/* Standard Camel function */
 CamelType camel_nntp_folder_get_type (void);
 
 CamelFolder *camel_nntp_folder_new (CamelStore *parent, const gchar *folder_name, CamelException *ex);
 
-void camel_nntp_folder_selected(CamelNNTPFolder *folder, gchar *line, CamelException *ex);
+gboolean camel_nntp_folder_selected(CamelNNTPFolder *folder, gchar *line, CamelException *ex);
 
 G_END_DECLS
 

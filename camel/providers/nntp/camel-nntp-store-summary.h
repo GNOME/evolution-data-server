@@ -32,8 +32,9 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelNNTPStoreSummary      CamelNNTPStoreSummary;
+typedef struct _CamelNNTPStoreSummary CamelNNTPStoreSummary;
 typedef struct _CamelNNTPStoreSummaryClass CamelNNTPStoreSummaryClass;
+typedef struct _CamelNNTPStoreSummaryPrivate CamelNNTPStoreSummaryPrivate;
 
 typedef struct _CamelNNTPStoreInfo CamelNNTPStoreInfo;
 
@@ -53,8 +54,7 @@ struct _CamelNNTPStoreInfo {
 
 struct _CamelNNTPStoreSummary {
 	CamelStoreSummary summary;
-
-	struct _CamelNNTPStoreSummaryPrivate *priv;
+	CamelNNTPStoreSummaryPrivate *priv;
 
 	/* header info */
 	guint32 version;	/* version of base part of file */

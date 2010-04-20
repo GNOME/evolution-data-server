@@ -54,19 +54,53 @@
 
 #define DUMP_EXTENSIONS
 
-static CamelDiscoStoreClass *parent_class = NULL;
-static CamelServiceClass *service_class = NULL;
-
-/* Returns the class for a CamelNNTPStore */
-#define CNNTPS_CLASS(so) CAMEL_NNTP_STORE_CLASS (CAMEL_OBJECT_GET_CLASS(so))
-#define CF_CLASS(so) CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
-#define CNNTPF_CLASS(so) CAMEL_NNTP_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
+static gpointer camel_nntp_store_parent_class;
 
 static gint camel_nntp_try_authenticate (CamelNNTPStore *store, CamelException *ex);
 
-static void nntp_construct (CamelService *service, CamelSession *session,
-			    CamelProvider *provider, CamelURL *url,
-			    CamelException *ex);
+static void
+nntp_store_finalize (CamelObject *object)
+{
+	/* call base finalize */
+	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (object);
+	CamelDiscoStore *disco_store = (CamelDiscoStore *) nntp_store;
+	struct _CamelNNTPStorePrivate *p = nntp_store->priv;
+	struct _xover_header *xover, *xn;
+
+	camel_service_disconnect ((CamelService *)object, TRUE, NULL);
+
+	if (nntp_store->summary) {
+		camel_store_summary_save ((CamelStoreSummary *) nntp_store->summary);
+		camel_object_unref (nntp_store->summary);
+	}
+
+	camel_object_unref (nntp_store->mem);
+	nntp_store->mem = NULL;
+	if (nntp_store->stream)
+		camel_object_unref (nntp_store->stream);
+
+	if (nntp_store->base_url)
+		g_free (nntp_store->base_url);
+	if (nntp_store->storage_path)
+		g_free (nntp_store->storage_path);
+
+	xover = nntp_store->xover;
+	while (xover) {
+		xn = xover->next;
+		g_free(xover);
+		xover = xn;
+	}
+
+	if (nntp_store->cache)
+		camel_object_unref (nntp_store->cache);
+
+	if (disco_store->diary) {
+		camel_object_unref (disco_store->diary);
+		disco_store->diary = NULL;
+	}
+
+	g_free(p);
+}
 
 static gboolean
 nntp_can_work_offline(CamelDiscoStore *store)
@@ -170,10 +204,10 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 			tcp_stream = camel_tcp_stream_ssl_new (service->session, service->url->host, SSL_PORT_FLAGS);
 		}
 #else
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-				      _("Could not connect to %s: %s"),
-				      service->url->host, _("SSL unavailable"));
-
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+			_("Could not connect to %s: %s"),
+			service->url->host, _("SSL unavailable"));
 		goto fail;
 #endif /* HAVE_SSL */
 	} else {
@@ -182,14 +216,14 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 
 	if (camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, ai) == -1) {
 		if (errno == EINTR)
-			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
-					     _("Connection canceled"));
+			camel_exception_set (
+				ex, CAMEL_EXCEPTION_USER_CANCEL,
+				_("Connection canceled"));
 		else
-			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-					      _("Could not connect to %s: %s"),
-					      service->url->host,
-					      g_strerror (errno));
-
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+				_("Could not connect to %s: %s"),
+				service->url->host, g_strerror (errno));
 		camel_object_unref (tcp_stream);
 
 		goto fail;
@@ -353,7 +387,10 @@ static gboolean
 nntp_disconnect_online (CamelService *service, gboolean clean, CamelException *ex)
 {
 	CamelNNTPStore *store = CAMEL_NNTP_STORE (service);
+	CamelServiceClass *service_class;
 	gchar *line;
+
+	service_class = CAMEL_SERVICE_GET_CLASS (service);
 
 	camel_service_lock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
 
@@ -362,6 +399,7 @@ nntp_disconnect_online (CamelService *service, gboolean clean, CamelException *e
 		camel_exception_clear(ex);
 	}
 
+	/* Chain up to parent's disconnect() method. */
 	if (!service_class->disconnect (service, clean, ex)) {
 		camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
 		return FALSE;
@@ -381,7 +419,10 @@ static gboolean
 nntp_disconnect_offline (CamelService *service, gboolean clean, CamelException *ex)
 {
 	CamelDiscoStore *disco = CAMEL_DISCO_STORE(service);
+	CamelServiceClass *service_class;
 
+	/* Chain up to parent's disconnect() method. */
+	service_class = CAMEL_SERVICE_CLASS (camel_nntp_store_parent_class);
 	if (!service_class->disconnect (service, clean, ex))
 		return FALSE;
 
@@ -807,8 +848,9 @@ nntp_store_get_folder_info_all(CamelNNTPStore *nntp_store, const gchar *top, gui
 			if (ret == -1)
 				goto error;
 			else if (ret != 215) {
-				camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_INVALID,
-						      _("Error retrieving newsgroups:\n\n%s"), line);
+				camel_exception_setv (
+					ex, CAMEL_EXCEPTION_SERVICE_INVALID,
+					_("Error retrieving newsgroups:\n\n%s"), line);
 				goto error;
 			}
 
@@ -889,21 +931,25 @@ nntp_store_folder_subscribed (CamelStore *store, const gchar *folder_name)
 	return truth;
 }
 
-static void
+static gboolean
 nntp_store_subscribe_folder (CamelStore *store, const gchar *folder_name,
 			     CamelException *ex)
 {
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE(store);
 	CamelStoreInfo *si;
 	CamelFolderInfo *fi;
+	gboolean success = TRUE;
 
 	camel_service_lock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 
 	si = camel_store_summary_path(CAMEL_STORE_SUMMARY(nntp_store->summary), folder_name);
 	if (!si) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
-				      _("You cannot subscribe to this newsgroup:\n\n"
-					"No such newsgroup. The selected item is a probably a parent folder."));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_FOLDER_INVALID,
+			_("You cannot subscribe to this newsgroup:\n\n"
+			  "No such newsgroup. The selected item is a "
+			  "probably a parent folder."));
+		success = FALSE;
 	} else {
 		if (!(si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)) {
 			si->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
@@ -914,28 +960,34 @@ nntp_store_subscribe_folder (CamelStore *store, const gchar *folder_name,
 			camel_service_unlock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 			camel_object_trigger_event ((CamelObject *) nntp_store, "folder_subscribed", fi);
 			camel_folder_info_free (fi);
-			return;
+			return TRUE;
 		}
 	}
 
 	camel_service_unlock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
+
+	return success;
 }
 
-static void
+static gboolean
 nntp_store_unsubscribe_folder (CamelStore *store, const gchar *folder_name,
 			       CamelException *ex)
 {
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE(store);
 	CamelFolderInfo *fi;
 	CamelStoreInfo *fitem;
+	gboolean success = TRUE;
+
 	camel_service_lock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 
 	fitem = camel_store_summary_path(CAMEL_STORE_SUMMARY(nntp_store->summary), folder_name);
 
 	if (!fitem) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
-				      _("You cannot unsubscribe to this newsgroup:\n\n"
-					"newsgroup does not exist!"));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_FOLDER_INVALID,
+			_("You cannot unsubscribe to this newsgroup:\n\n"
+			  "newsgroup does not exist!"));
+		success = FALSE;
 	} else {
 		if (fitem->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) {
 			fitem->flags &= ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
@@ -945,11 +997,13 @@ nntp_store_unsubscribe_folder (CamelStore *store, const gchar *folder_name,
 			camel_service_unlock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 			camel_object_trigger_event ((CamelObject *) nntp_store, "folder_unsubscribed", fi);
 			camel_folder_info_free (fi);
-			return;
+			return TRUE;
 		}
 	}
 
 	camel_service_unlock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
+
+	return success;
 }
 
 /* stubs for various folder operations we're not implementing */
@@ -958,69 +1012,35 @@ static CamelFolderInfo *
 nntp_create_folder (CamelStore *store, const gchar *parent_name,
                     const gchar *folder_name, CamelException *ex)
 {
-	camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
-		    _("You cannot create a folder in a News store: subscribe instead."));
+	camel_exception_setv (
+		ex, CAMEL_EXCEPTION_FOLDER_INVALID,
+		_("You cannot create a folder in a News store: "
+		  "subscribe instead."));
+
 	return NULL;
 }
 
-static void
+static gboolean
 nntp_rename_folder (CamelStore *store, const gchar *old_name, const gchar *new_name_in, CamelException *ex)
 {
-	camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
-		  _("You cannot rename a folder in a News store."));
+	camel_exception_setv (
+		ex, CAMEL_EXCEPTION_FOLDER_INVALID,
+		_("You cannot rename a folder in a News store."));
+
+	return FALSE;
 }
 
-static void
+static gboolean
 nntp_delete_folder (CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
 	nntp_store_unsubscribe_folder (store, folder_name, ex);
-	camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
-		  _("You cannot remove a folder in a News store: unsubscribe instead."));
-	return;
-}
 
-static void
-nntp_store_finalize (CamelObject *object)
-{
-	/* call base finalize */
-	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (object);
-	CamelDiscoStore *disco_store = (CamelDiscoStore *) nntp_store;
-	struct _CamelNNTPStorePrivate *p = nntp_store->priv;
-	struct _xover_header *xover, *xn;
+	camel_exception_setv (
+		ex, CAMEL_EXCEPTION_FOLDER_INVALID,
+		_("You cannot remove a folder in a News store: "
+		  "unsubscribe instead."));
 
-	camel_service_disconnect ((CamelService *)object, TRUE, NULL);
-
-	if (nntp_store->summary) {
-		camel_store_summary_save ((CamelStoreSummary *) nntp_store->summary);
-		camel_object_unref (nntp_store->summary);
-	}
-
-	camel_object_unref (nntp_store->mem);
-	nntp_store->mem = NULL;
-	if (nntp_store->stream)
-		camel_object_unref (nntp_store->stream);
-
-	if (nntp_store->base_url)
-		g_free (nntp_store->base_url);
-	if (nntp_store->storage_path)
-		g_free (nntp_store->storage_path);
-
-	xover = nntp_store->xover;
-	while (xover) {
-		xn = xover->next;
-		g_free(xover);
-		xover = xn;
-	}
-
-	if (nntp_store->cache)
-		camel_object_unref (nntp_store->cache);
-
-	if (disco_store->diary) {
-		camel_object_unref (disco_store->diary);
-		disco_store->diary = NULL;
-	}
-
-	g_free(p);
+	return FALSE;
 }
 
 static gboolean
@@ -1030,65 +1050,26 @@ nntp_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelExceptio
 	return TRUE;
 }
 
-static void
-nntp_store_class_init (CamelNNTPStoreClass *camel_nntp_store_class)
-{
-	CamelDiscoStoreClass *camel_disco_store_class = CAMEL_DISCO_STORE_CLASS (camel_nntp_store_class);
-	CamelStoreClass *camel_store_class = CAMEL_STORE_CLASS (camel_nntp_store_class);
-	CamelServiceClass *camel_service_class = CAMEL_SERVICE_CLASS (camel_nntp_store_class);
-
-	parent_class = CAMEL_DISCO_STORE_CLASS (camel_type_get_global_classfuncs (camel_disco_store_get_type ()));
-	service_class = CAMEL_SERVICE_CLASS (camel_type_get_global_classfuncs (camel_service_get_type ()));
-
-	/* virtual method overload */
-	camel_service_class->construct = nntp_construct;
-	camel_service_class->query_auth_types = nntp_store_query_auth_types;
-	camel_service_class->get_name = nntp_store_get_name;
-
-	camel_disco_store_class->can_work_offline = nntp_can_work_offline;
-	camel_disco_store_class->connect_online = nntp_connect_online;
-	camel_disco_store_class->connect_offline = nntp_connect_offline;
-	camel_disco_store_class->disconnect_online = nntp_disconnect_online;
-	camel_disco_store_class->disconnect_offline = nntp_disconnect_offline;
-	camel_disco_store_class->get_folder_online = nntp_get_folder;
-	camel_disco_store_class->get_folder_resyncing = nntp_get_folder;
-	camel_disco_store_class->get_folder_offline = nntp_get_folder;
-
-	camel_disco_store_class->get_folder_info_online = nntp_get_folder_info_online;
-	camel_disco_store_class->get_folder_info_resyncing = nntp_get_folder_info_online;
-	camel_disco_store_class->get_folder_info_offline = nntp_get_folder_info_offline;
-
-	camel_store_class->free_folder_info = camel_store_free_folder_info_full;
-
-	camel_store_class->folder_subscribed = nntp_store_folder_subscribed;
-	camel_store_class->subscribe_folder = nntp_store_subscribe_folder;
-	camel_store_class->unsubscribe_folder = nntp_store_unsubscribe_folder;
-
-	camel_store_class->create_folder = nntp_create_folder;
-	camel_store_class->delete_folder = nntp_delete_folder;
-	camel_store_class->rename_folder = nntp_rename_folder;
-	camel_store_class->can_refresh_folder = nntp_can_refresh_folder;
-}
-
 /* construction function in which we set some basic store properties */
-static void
+static gboolean
 nntp_construct (CamelService *service, CamelSession *session,
 		CamelProvider *provider, CamelURL *url,
 		CamelException *ex)
 {
+	CamelServiceClass *service_class;
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE(service);
 	CamelURL *summary_url;
 	gchar *tmp;
 
 	/* construct the parent first */
-	CAMEL_SERVICE_CLASS (parent_class)->construct (service, session, provider, url, ex);
-	if (camel_exception_is_set (ex))
-		return;
+	service_class = CAMEL_SERVICE_CLASS (camel_nntp_store_parent_class);
+	if (!service_class->construct (service, session, provider, url, ex))
+		return FALSE;
 
 	/* find out the storage path, base url */
 	nntp_store->storage_path = camel_session_get_storage_path (session, service, ex);
 	if (!nntp_store->storage_path)
-		return;
+		return FALSE;
 
 	/* FIXME */
 	nntp_store->base_url = camel_url_to_string (service->url, (CAMEL_URL_HIDE_PASSWORD |
@@ -1118,25 +1099,63 @@ nntp_construct (CamelService *service, CamelSession *session,
 	/* setup store-wide cache */
 	nntp_store->cache = camel_data_cache_new(nntp_store->storage_path, ex);
 	if (nntp_store->cache == NULL)
-		return;
+		return FALSE;
 
 	/* Default cache expiry - 2 weeks old, or not visited in 5 days */
 	camel_data_cache_set_expire_age(nntp_store->cache, 60*60*24*14);
 	camel_data_cache_set_expire_access(nntp_store->cache, 60*60*24*5);
+
+	return TRUE;
 }
 
 static void
-nntp_store_init (gpointer object, gpointer klass)
+camel_nntp_store_class_init (CamelNNTPStoreClass *class)
 {
-	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE(object);
-	CamelStore *store = CAMEL_STORE (object);
-	struct _CamelNNTPStorePrivate *p;
+	CamelServiceClass *service_class;
+	CamelStoreClass *store_class;
+	CamelDiscoStoreClass *disco_store_class;
+
+	camel_nntp_store_parent_class = CAMEL_DISCO_STORE_CLASS (camel_type_get_global_classfuncs (camel_disco_store_get_type ()));
+
+	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->construct = nntp_construct;
+	service_class->query_auth_types = nntp_store_query_auth_types;
+	service_class->get_name = nntp_store_get_name;
+
+	store_class = CAMEL_STORE_CLASS (class);
+	store_class->free_folder_info = camel_store_free_folder_info_full;
+	store_class->folder_subscribed = nntp_store_folder_subscribed;
+	store_class->subscribe_folder = nntp_store_subscribe_folder;
+	store_class->unsubscribe_folder = nntp_store_unsubscribe_folder;
+	store_class->create_folder = nntp_create_folder;
+	store_class->delete_folder = nntp_delete_folder;
+	store_class->rename_folder = nntp_rename_folder;
+	store_class->can_refresh_folder = nntp_can_refresh_folder;
+
+	disco_store_class = CAMEL_DISCO_STORE_CLASS (class);
+	disco_store_class->can_work_offline = nntp_can_work_offline;
+	disco_store_class->connect_online = nntp_connect_online;
+	disco_store_class->connect_offline = nntp_connect_offline;
+	disco_store_class->disconnect_online = nntp_disconnect_online;
+	disco_store_class->disconnect_offline = nntp_disconnect_offline;
+	disco_store_class->get_folder_online = nntp_get_folder;
+	disco_store_class->get_folder_resyncing = nntp_get_folder;
+	disco_store_class->get_folder_offline = nntp_get_folder;
+	disco_store_class->get_folder_info_online = nntp_get_folder_info_online;
+	disco_store_class->get_folder_info_resyncing = nntp_get_folder_info_online;
+	disco_store_class->get_folder_info_offline = nntp_get_folder_info_offline;
+}
+
+static void
+camel_nntp_store_init (CamelNNTPStore *nntp_store)
+{
+	CamelStore *store = CAMEL_STORE (nntp_store);
 
 	store->flags = CAMEL_STORE_SUBSCRIPTIONS;
 
 	nntp_store->mem = (CamelStreamMem *)camel_stream_mem_new();
 
-	p = nntp_store->priv = g_malloc0(sizeof(*p));
+	nntp_store->priv = g_new0 (CamelNNTPStorePrivate, 1);
 }
 
 CamelType
@@ -1150,9 +1169,9 @@ camel_nntp_store_get_type (void)
 					     "CamelNNTPStore",
 					     sizeof (CamelNNTPStore),
 					     sizeof (CamelNNTPStoreClass),
-					     (CamelObjectClassInitFunc) nntp_store_class_init,
+					     (CamelObjectClassInitFunc) camel_nntp_store_class_init,
 					     NULL,
-					     (CamelObjectInitFunc) nntp_store_init,
+					     (CamelObjectInitFunc) camel_nntp_store_init,
 					     (CamelObjectFinalizeFunc) nntp_store_finalize);
 	}
 
@@ -1168,8 +1187,9 @@ camel_nntp_try_authenticate (CamelNNTPStore *store, CamelException *ex)
 	gchar *line = NULL;
 
 	if (!service->url->user) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_INVALID_PARAM,
-				     _("Authentication requested but no username provided"));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_INVALID_PARAM,
+			_("Authentication requested but no username provided"));
 		return -1;
 	}
 
@@ -1279,10 +1299,10 @@ camel_nntp_raw_commandv (CamelNNTPStore *store, CamelException *ex, gchar **line
 		}
 	}
 
-	byte_array = camel_stream_mem_get_byte_array (store->mem);
 	camel_stream_write ((CamelStream *) store->mem, (const gchar *) ps, p-ps-1);
-	dd(printf("NNTP_COMMAND: '%.*s'\n", (gint)byte_array->len, byte_array->data));
 	camel_stream_write ((CamelStream *) store->mem, "\r\n", 2);
+
+	byte_array = camel_stream_mem_get_byte_array (store->mem);
 
 	if (camel_stream_write((CamelStream *) store->stream, (const gchar *) byte_array->data, byte_array->len) == -1)
 		goto ioerror;
@@ -1304,9 +1324,13 @@ camel_nntp_raw_commandv (CamelNNTPStore *store, CamelException *ex, gchar **line
 
 ioerror:
 	if (errno == EINTR)
-		camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("User cancelled the operation"));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_USER_CANCEL,
+			_("User cancelled the operation"));
 	else
-		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("NNTP Command failed: %s"), g_strerror(errno));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("NNTP Command failed: %s"), g_strerror(errno));
 	return -1;
 }
 
@@ -1359,8 +1383,9 @@ camel_nntp_command (CamelNNTPStore *store, CamelException *ex, CamelNNTPFolder *
 	guint u;
 
 	if (((CamelDiscoStore *)store)->status == CAMEL_DISCO_STORE_OFFLINE) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_SERVICE_NOT_CONNECTED,
-				     _("Not connected."));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SERVICE_NOT_CONNECTED,
+			_("Not connected."));
 		return -1;
 	}
 
@@ -1412,8 +1437,9 @@ camel_nntp_command (CamelNNTPStore *store, CamelException *ex, CamelNNTPFolder *
 			ret = -1;
 			continue;
 		case 411:	/* no such group */
-			camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID,
-					     _("No such folder: %s"), line);
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_FOLDER_INVALID,
+				_("No such folder: %s"), line);
 			return -1;
 		case 400:	/* service discontinued */
 		case 401:	/* wrong client state - this should quit but this is what the old code did */

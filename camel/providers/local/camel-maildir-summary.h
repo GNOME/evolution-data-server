@@ -29,8 +29,9 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelMaildirSummary	CamelMaildirSummary;
-typedef struct _CamelMaildirSummaryClass	CamelMaildirSummaryClass;
+typedef struct _CamelMaildirSummary CamelMaildirSummary;
+typedef struct _CamelMaildirSummaryClass CamelMaildirSummaryClass;
+typedef struct _CamelMaildirSummaryPrivate CamelMaildirSummaryPrivate;
 
 typedef struct _CamelMaildirMessageContentInfo {
 	CamelMessageContentInfo info;
@@ -49,15 +50,11 @@ typedef struct _CamelMaildirMessageInfo {
 
 struct _CamelMaildirSummary {
 	CamelLocalSummary parent;
-	struct _CamelMaildirSummaryPrivate *priv;
+	CamelMaildirSummaryPrivate *priv;
 };
 
 struct _CamelMaildirSummaryClass {
 	CamelLocalSummaryClass parent_class;
-
-	/* virtual methods */
-
-	/* signals */
 };
 
 CamelType	 camel_maildir_summary_get_type	(void);

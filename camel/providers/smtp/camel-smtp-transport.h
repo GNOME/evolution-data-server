@@ -45,7 +45,10 @@
 
 G_BEGIN_DECLS
 
-typedef struct {
+typedef struct _CamelSmtpTransport CamelSmtpTransport;
+typedef struct _CamelSmtpTransportClass CamelSmtpTransportClass;
+
+struct _CamelSmtpTransport {
 	CamelTransport parent;
 
 	CamelStream *istream, *ostream;
@@ -57,14 +60,12 @@ typedef struct {
 	socklen_t localaddrlen;
 
 	GHashTable *authtypes;
-} CamelSmtpTransport;
+};
 
-typedef struct {
+struct _CamelSmtpTransportClass {
 	CamelTransportClass parent_class;
+};
 
-} CamelSmtpTransportClass;
-
-/* Standard Camel function */
 CamelType camel_smtp_transport_get_type (void);
 
 G_END_DECLS

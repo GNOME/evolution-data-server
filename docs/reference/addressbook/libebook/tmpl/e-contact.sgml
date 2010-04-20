@@ -17,6 +17,9 @@ A convenient way of accessing the contact information in EVCard objects.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT EContact ##### -->
 <para>
 #EContact has no publicly available members. 
@@ -859,6 +862,7 @@ The URI of the contact's calendar.
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -915,6 +919,7 @@ The URI of the contact's calendar.
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -951,6 +956,7 @@ The URI of the contact's calendar.
 
 </para>
 
+@void: 
 @Returns: 
 
 

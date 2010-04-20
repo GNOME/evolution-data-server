@@ -311,11 +311,11 @@ folder_free (CamelObject *object,
 	}
 }
 
-static void
+static gboolean
 folder_refresh_info (CamelFolder *folder,
                      CamelException *ex)
 {
-	/* No op */
+	return TRUE;
 }
 
 static const gchar *
@@ -577,7 +577,7 @@ folder_free_message_info (CamelFolder *folder,
 	camel_message_info_free (info);
 }
 
-static void
+static gboolean
 folder_transfer_messages_to (CamelFolder *source,
                              GPtrArray *uids,
                              CamelFolder *dest,
@@ -616,6 +616,7 @@ folder_transfer_messages_to (CamelFolder *source,
 			ret_uid, delete_originals, ex);
 		camel_operation_progress (NULL, i * 100 / uids->len);
 	}
+
 	if (uids->len > 1) {
 		camel_folder_thaw (dest);
 		if (delete_originals)
@@ -624,6 +625,8 @@ folder_transfer_messages_to (CamelFolder *source,
 
 	camel_operation_end (NULL);
 	camel_exception_clear (&local);
+
+	return TRUE;
 }
 
 static void
@@ -854,25 +857,30 @@ camel_folder_construct (CamelFolder *folder,
  *
  * Sync changes made to a folder to its backing store, possibly
  * expunging deleted messages as well.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
  **/
-void
+gboolean
 camel_folder_sync (CamelFolder *folder,
                    gboolean expunge,
                    CamelException *ex)
 {
 	CamelFolderClass *class;
+	gboolean success = TRUE;
 
-	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_if_fail (class->sync != NULL);
+	g_return_val_if_fail (class->sync != NULL, FALSE);
 
 	camel_folder_lock (folder, CF_REC_LOCK);
 
 	if (!(folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED))
-		class->sync (folder, expunge, ex);
+		success = class->sync (folder, expunge, ex);
 
 	camel_folder_unlock (folder, CF_REC_LOCK);
+
+	return success;
 }
 
 /**
@@ -881,21 +889,26 @@ camel_folder_sync (CamelFolder *folder,
  * @ex: a #CamelException
  *
  * Updates a folder's summary to be in sync with its backing store.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
  **/
-void
+gboolean
 camel_folder_refresh_info (CamelFolder *folder,
                            CamelException *ex)
 {
 	CamelFolderClass *class;
+	gboolean success;
 
-	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_if_fail (class->refresh_info != NULL);
+	g_return_val_if_fail (class->refresh_info != NULL, FALSE);
 
 	camel_folder_lock (folder, CF_REC_LOCK);
-	class->refresh_info (folder, ex);
+	success = class->refresh_info (folder, ex);
 	camel_folder_unlock (folder, CF_REC_LOCK);
+
+	return success;
 }
 
 /**
@@ -966,24 +979,29 @@ camel_folder_get_parent_store (CamelFolder *folder)
  * @ex: a #CamelException
  *
  * Delete messages which have been marked as "DELETED"
+ *
+ * Returns: %TRUE on success, %FALSE on failure
  **/
-void
+gboolean
 camel_folder_expunge (CamelFolder *folder,
                       CamelException *ex)
 {
 	CamelFolderClass *class;
+	gboolean success = TRUE;
 
-	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_if_fail (class->expunge != NULL);
+	g_return_val_if_fail (class->expunge != NULL, FALSE);
 
 	camel_folder_lock (folder, CF_REC_LOCK);
 
 	if (!(folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED))
-		class->expunge (folder, ex);
+		success = class->expunge (folder, ex);
 
 	camel_folder_unlock (folder, CF_REC_LOCK);
+
+	return success;
 }
 
 /**
@@ -1057,8 +1075,10 @@ camel_folder_get_deleted_message_count (CamelFolder *folder)
  *
  * Append @message to @folder. Only the flag and tag data from @info
  * are used. If @info is %NULL, no flags or tags will be set.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
  **/
-void
+gboolean
 camel_folder_append_message (CamelFolder *folder,
                              CamelMimeMessage *message,
                              const CamelMessageInfo *info,
@@ -1066,17 +1086,21 @@ camel_folder_append_message (CamelFolder *folder,
                              CamelException *ex)
 {
 	CamelFolderClass *class;
+	gboolean success;
 
-	g_return_if_fail (CAMEL_IS_FOLDER (folder));
-	g_return_if_fail (CAMEL_IS_MIME_MESSAGE (message));
-	g_return_if_fail (info != NULL);
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), FALSE);
+	g_return_val_if_fail (info != NULL, FALSE);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_if_fail (class->append_message != NULL);
+	g_return_val_if_fail (class->append_message != NULL, FALSE);
 
 	camel_folder_lock (folder, CF_REC_LOCK);
-	class->append_message (folder, message, info, appended_uid, ex);
+	success = class->append_message (
+		folder, message, info, appended_uid, ex);
 	camel_folder_unlock (folder, CF_REC_LOCK);
+
+	return success;
 }
 
 /**
@@ -1429,35 +1453,42 @@ camel_folder_get_message (CamelFolder *folder,
  * Ensure that a message identified by UID has been synced in the folder (so
  * that camel_folder_get_message on it later will work in offline mode).
  *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
  * Since: 2.26
  **/
-void
+gboolean
 camel_folder_sync_message (CamelFolder *folder,
                            const gchar *uid,
                            CamelException *ex)
 {
 	CamelFolderClass *class;
+	gboolean success = FALSE;
 
-	g_return_if_fail (CAMEL_IS_FOLDER (folder));
-	g_return_if_fail (uid != NULL);
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_if_fail (class->get_message != NULL);
+	g_return_val_if_fail (class->get_message != NULL, FALSE);
 
 	camel_folder_lock (folder, CF_REC_LOCK);
 
 	/* Use the sync_message method if the class implements it. */
 	if (class->sync_message != NULL)
-		class->sync_message (folder, uid, ex);
+		success = class->sync_message (folder, uid, ex);
 	else {
 		CamelMimeMessage *message;
 
 		message = class->get_message (folder, uid, ex);
-		if (message != NULL)
-			  camel_object_unref (message);
+		if (message != NULL) {
+			camel_object_unref (message);
+			success = TRUE;
+		}
 	}
 
 	camel_folder_unlock (folder, CF_REC_LOCK);
+
+	return success;
 }
 
 /**
@@ -1778,8 +1809,10 @@ camel_folder_search_free (CamelFolder *folder,
  * This copies or moves messages from one folder to another. If the
  * @source and @dest folders have the same parent_store, this may be
  * more efficient than using #camel_folder_append_message.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
  **/
-void
+gboolean
 camel_folder_transfer_messages_to (CamelFolder *source,
                                    GPtrArray *uids,
                                    CamelFolder *dest,
@@ -1788,14 +1821,15 @@ camel_folder_transfer_messages_to (CamelFolder *source,
                                    CamelException *ex)
 {
 	CamelFolderClass *class;
+	gboolean success;
 
-	g_return_if_fail (CAMEL_IS_FOLDER (source));
-	g_return_if_fail (CAMEL_IS_FOLDER (dest));
-	g_return_if_fail (uids != NULL);
+	g_return_val_if_fail (CAMEL_IS_FOLDER (source), FALSE);
+	g_return_val_if_fail (CAMEL_IS_FOLDER (dest), FALSE);
+	g_return_val_if_fail (uids != NULL, FALSE);
 
 	if (source == dest || uids->len == 0) {
 		/* source and destination folders are the same, or no work to do, do nothing. */
-		return;
+		return TRUE;
 	}
 
 	if (source->parent_store == dest->parent_store) {
@@ -1805,13 +1839,15 @@ camel_folder_transfer_messages_to (CamelFolder *source,
 			class = CAMEL_FOLDER_GET_CLASS (dest);
 		else
 			class = CAMEL_FOLDER_GET_CLASS (source);
-		class->transfer_messages_to (
+		success = class->transfer_messages_to (
 			source, uids, dest, transferred_uids,
 			delete_originals, ex);
 	} else
-		folder_transfer_messages_to (
+		success = folder_transfer_messages_to (
 			source, uids, dest, transferred_uids,
 			delete_originals, ex);
+
+	return success;
 }
 
 /**

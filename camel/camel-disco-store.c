@@ -36,23 +36,27 @@
 
 #define d(x)
 
-static CamelStoreClass *parent_class = NULL;
+static gpointer camel_disco_store_parent_class;
 
-static void
+static gboolean
 disco_store_construct (CamelService *service,
                        CamelSession *session,
                        CamelProvider *provider,
                        CamelURL *url,
                        CamelException *ex)
 {
+	CamelServiceClass *service_class;
 	CamelDiscoStore *disco = CAMEL_DISCO_STORE (service);
 
-	CAMEL_SERVICE_CLASS (parent_class)->construct (service, session, provider, url, ex);
-	if (camel_exception_is_set (ex))
-		return;
+	/* Chain up to parent's construct() method. */
+	service_class = CAMEL_SERVICE_CLASS (camel_disco_store_parent_class);
+	if (!service_class->construct (service, session, provider, url, ex))
+		return FALSE;
 
 	disco->status = camel_session_is_online (session) ?
 		CAMEL_DISCO_STORE_ONLINE : CAMEL_DISCO_STORE_OFFLINE;
+
+	return TRUE;
 }
 
 static gboolean
@@ -65,7 +69,7 @@ disco_store_connect (CamelService *service,
 
 	status = camel_disco_store_status (store);
 	if (status != CAMEL_DISCO_STORE_OFFLINE) {
-		if (!CAMEL_SERVICE_CLASS (parent_class)->connect (service, ex)) {
+		if (!CAMEL_SERVICE_CLASS (camel_disco_store_parent_class)->connect (service, ex)) {
 			status = camel_disco_store_status (store);
 			if (status != CAMEL_DISCO_STORE_OFFLINE)
 				return FALSE;
@@ -129,7 +133,7 @@ disco_store_disconnect (CamelService *service,
 
 	}
 
-	return CAMEL_SERVICE_CLASS (parent_class)->disconnect (service, clean, ex);
+	return CAMEL_SERVICE_CLASS (camel_disco_store_parent_class)->disconnect (service, clean, ex);
 }
 
 static void
@@ -139,7 +143,7 @@ disco_store_cancel_connect (CamelService *service)
 
 	/* Fall back */
 	store->status = CAMEL_DISCO_STORE_OFFLINE;
-	CAMEL_SERVICE_CLASS (parent_class)->cancel_connect (service);
+	CAMEL_SERVICE_CLASS (camel_disco_store_parent_class)->cancel_connect (service);
 }
 
 static CamelFolder *
@@ -262,7 +266,7 @@ camel_disco_store_class_init (CamelDiscoStoreClass *class)
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 
-	parent_class = CAMEL_STORE_CLASS (camel_type_get_global_classfuncs (camel_store_get_type ()));
+	camel_disco_store_parent_class = CAMEL_STORE_CLASS (camel_type_get_global_classfuncs (camel_store_get_type ()));
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->construct = disco_store_construct;

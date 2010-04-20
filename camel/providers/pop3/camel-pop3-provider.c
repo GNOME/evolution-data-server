@@ -92,7 +92,7 @@ camel_provider_module_init(void)
 {
 	CamelServiceAuthType *auth;
 
-	pop3_provider.object_types[CAMEL_PROVIDER_STORE] = camel_pop3_store_get_type();
+	pop3_provider.object_types[CAMEL_PROVIDER_STORE] = camel_pop3_store_get_type ();
 	pop3_provider.url_hash = pop3_url_hash;
 	pop3_provider.url_equal = pop3_url_equal;
 

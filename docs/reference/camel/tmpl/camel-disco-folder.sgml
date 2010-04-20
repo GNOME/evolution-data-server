@@ -17,6 +17,9 @@ CamelDiscoFolder
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelDiscoFolder ##### -->
 <para>
 
@@ -33,6 +36,7 @@ CamelDiscoFolder
 @folder: 
 @uids: 
 @ex: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_disco_folder_cache_message ##### -->
@@ -43,6 +47,7 @@ CamelDiscoFolder
 @disco_folder: 
 @uid: 
 @ex: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_disco_folder_prepare_for_offline ##### -->
@@ -53,5 +58,6 @@ CamelDiscoFolder
 @disco_folder: 
 @expression: 
 @ex: 
+@Returns: 
 
 

@@ -102,7 +102,7 @@ store_finalize (CamelStore *store)
 	g_free (store->priv);
 }
 
-static void
+static gboolean
 store_construct (CamelService *service,
                  CamelSession *session,
                  CamelProvider *provider,
@@ -115,9 +115,8 @@ store_construct (CamelService *service,
 
 	/* Chain up to parent's construct() method. */
 	service_class = CAMEL_SERVICE_CLASS (camel_store_parent_class);
-	service_class->construct(service, session, provider, url, ex);
-	if (camel_exception_is_set (ex))
-		return;
+	if (!service_class->construct(service, session, provider, url, ex))
+		return FALSE;
 
 	store_db_path = g_build_filename (service->url->path, CAMEL_DB_FILE, NULL);
 
@@ -155,24 +154,26 @@ store_construct (CamelService *service,
 			g_print("Retry with %s failed\n", store_db_path);
 			g_free(store_db_path);
 			camel_exception_clear(ex);
-			return;
+			return FALSE;
 		}
 	}
 	g_free (store_db_path);
 
-	if (camel_db_create_folders_table (store->cdb_r, ex))
+	if (camel_db_create_folders_table (store->cdb_r, ex)) {
 		g_warning ("something went wrong terribly during db creation \n");
-	else {
-		d(printf ("folders table successfully created \n"));
+		return FALSE;
 	}
 
 	if (camel_exception_is_set (ex))
-		return;
+		return FALSE;
+
 	/* This is for writing to the store */
 	store->cdb_w = camel_db_clone (store->cdb_r, ex);
 
 	if (camel_url_get_param(url, "filter"))
 		store->flags |= CAMEL_STORE_FILTER_INBOX;
+
+	return TRUE;
 }
 
 static CamelFolder *
@@ -200,7 +201,7 @@ store_get_junk (CamelStore *store,
 	return store_get_special (store, CAMEL_VTRASH_FOLDER_JUNK);
 }
 
-static void
+static gboolean
 store_sync (CamelStore *store,
             gint expunge,
             CamelException *ex)
@@ -208,10 +209,11 @@ store_sync (CamelStore *store,
 	GPtrArray *folders;
 	CamelFolder *folder;
 	CamelException x;
+	gboolean success = TRUE;
 	gint i;
 
 	if (store->folders == NULL)
-		return;
+		return TRUE;
 
 	/* We don't sync any vFolders, that is used to update certain
 	 * vfolder queries mainly, and we're really only interested in
@@ -231,13 +233,15 @@ store_sync (CamelStore *store,
 	camel_exception_xfer(ex, &x);
 
 	g_ptr_array_free (folders, TRUE);
+
+	return success;
 }
 
-static void
+static gboolean
 store_noop (CamelStore *store,
             CamelException *ex)
 {
-	/* no-op */
+	return TRUE;
 }
 
 static gboolean
@@ -409,16 +413,6 @@ camel_store_get_folder (CamelStore *store,
 			camel_object_trigger_event(store, "folder_opened", folder);
 	}
 
-	if (camel_debug_start(":store")) {
-		gchar *u = camel_url_to_string(((CamelService *)store)->url, CAMEL_URL_HIDE_PASSWORD);
-
-		printf("CamelStore('%s'):get_folder('%s', %u) = %p\n", u, folder_name, flags, (gpointer) folder);
-		if (ex && ex->id)
-			printf("  failed: '%s'\n", ex->desc);
-		g_free(u);
-		camel_debug_end();
-	}
-
 	return folder;
 }
 
@@ -503,20 +497,23 @@ cs_delete_cached_folder(CamelStore *store, const gchar *folder_name)
  * @ex: a #CamelException
  *
  * Deletes the named folder. The folder must be empty.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
  **/
-void
+gboolean
 camel_store_delete_folder (CamelStore *store,
                            const gchar *folder_name,
                            CamelException *ex)
 {
 	CamelStoreClass *class;
 	CamelException local;
+	gboolean success;
 
-	g_return_if_fail (CAMEL_IS_STORE (store));
-	g_return_if_fail (folder_name != NULL);
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
 
 	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_if_fail (class->delete_folder != NULL);
+	g_return_val_if_fail (class->delete_folder != NULL, FALSE);
 
 	/* TODO: should probably be a parameter/bit on the storeinfo */
 	if (((store->flags & CAMEL_STORE_VTRASH) && strcmp(folder_name, CAMEL_VTRASH_NAME) == 0)
@@ -525,14 +522,14 @@ camel_store_delete_folder (CamelStore *store,
 			ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
 			_("Cannot delete folder: %s: Invalid operation"),
 			folder_name);
-		return;
+		return FALSE;
 	}
 
 	camel_exception_init(&local);
 
 	camel_store_lock (store, CS_FOLDER_LOCK);
 
-	class->delete_folder(store, folder_name, &local);
+	success = class->delete_folder(store, folder_name, &local);
 
 	/* ignore 'no such table' errors */
 	if (camel_exception_is_set (&local) && camel_exception_get_description (&local) &&
@@ -545,6 +542,8 @@ camel_store_delete_folder (CamelStore *store,
 		camel_exception_xfer(ex, &local);
 
 	camel_store_unlock (store, CS_FOLDER_LOCK);
+
+	return success;
 }
 
 /**
@@ -555,8 +554,10 @@ camel_store_delete_folder (CamelStore *store,
  * @ex: a #CamelException
  *
  * Rename a named folder to a new name.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
  **/
-void
+gboolean
 camel_store_rename_folder (CamelStore *store,
                            const gchar *old_namein,
                            const gchar *new_name,
@@ -567,16 +568,17 @@ camel_store_rename_folder (CamelStore *store,
 	gint i, oldlen, namelen;
 	GPtrArray *folders = NULL;
 	gchar *old_name;
+	gboolean success;
 
-	g_return_if_fail (CAMEL_IS_STORE (store));
-	g_return_if_fail (old_namein != NULL);
-	g_return_if_fail (new_name != NULL);
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (old_namein != NULL, FALSE);
+	g_return_val_if_fail (new_name != NULL, FALSE);
 
 	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_if_fail (class->rename_folder != NULL);
+	g_return_val_if_fail (class->rename_folder != NULL, FALSE);
 
 	if (strcmp(old_namein, new_name) == 0)
-		return;
+		return TRUE;
 
 	if (((store->flags & CAMEL_STORE_VTRASH) && strcmp(old_namein, CAMEL_VTRASH_NAME) == 0)
 	    || ((store->flags & CAMEL_STORE_VJUNK) && strcmp(old_namein, CAMEL_VJUNK_NAME) == 0)) {
@@ -584,7 +586,7 @@ camel_store_rename_folder (CamelStore *store,
 			ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
 			_("Cannot rename folder: %s: Invalid operation"),
 			old_namein);
-		return;
+		return FALSE;
 	}
 
 	/* need to save this, since old_namein might be folder->full_name, which could go away */
@@ -616,11 +618,11 @@ camel_store_rename_folder (CamelStore *store,
 	}
 
 	/* Now try the real rename (will emit renamed event) */
-	class->rename_folder (store, old_name, new_name, ex);
+	success = class->rename_folder (store, old_name, new_name, ex);
 
 	/* If it worked, update all open folders/unlock them */
 	if (folders) {
-		if (!camel_exception_is_set(ex)) {
+		if (success) {
 			guint32 flags = CAMEL_STORE_FOLDER_INFO_RECURSIVE;
 			CamelRenameInfo reninfo;
 
@@ -662,6 +664,8 @@ camel_store_rename_folder (CamelStore *store,
 
 	g_ptr_array_free(folders, TRUE);
 	g_free(old_name);
+
+	return success;
 }
 
 /**
@@ -751,20 +755,22 @@ camel_store_get_junk (CamelStore *store,
  *
  * Syncs any changes that have been made to the store object and its
  * folders with the real store.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
  **/
-void
+gboolean
 camel_store_sync (CamelStore *store,
                   gint expunge,
                   CamelException *ex)
 {
 	CamelStoreClass *class;
 
-	g_return_if_fail (CAMEL_IS_STORE (store));
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
 
 	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_if_fail (class->sync != NULL);
+	g_return_val_if_fail (class->sync != NULL, FALSE);
 
-	class->sync (store, expunge, ex);
+	return class->sync (store, expunge, ex);
 }
 
 static void
@@ -1231,24 +1237,29 @@ camel_store_folder_subscribed (CamelStore *store,
  * @ex: a #CamelException
  *
  * Subscribe to the folder described by @folder_name.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
  **/
-void
+gboolean
 camel_store_subscribe_folder (CamelStore *store,
                               const gchar *folder_name,
                               CamelException *ex)
 {
 	CamelStoreClass *class;
+	gboolean success;
 
-	g_return_if_fail (CAMEL_IS_STORE (store));
-	g_return_if_fail (folder_name != NULL);
-	g_return_if_fail (store->flags & CAMEL_STORE_SUBSCRIPTIONS);
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
+	g_return_val_if_fail (store->flags & CAMEL_STORE_SUBSCRIPTIONS, FALSE);
 
 	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_if_fail (class->subscribe_folder != NULL);
+	g_return_val_if_fail (class->subscribe_folder != NULL, FALSE);
 
 	camel_store_lock (store, CS_FOLDER_LOCK);
-	class->subscribe_folder (store, folder_name, ex);
+	success = class->subscribe_folder (store, folder_name, ex);
 	camel_store_unlock (store, CS_FOLDER_LOCK);
+
+	return success;
 }
 
 /**
@@ -1258,34 +1269,34 @@ camel_store_subscribe_folder (CamelStore *store,
  * @ex: a #CamelException
  *
  * Unsubscribe from the folder described by @folder_name.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
  **/
-void
+gboolean
 camel_store_unsubscribe_folder (CamelStore *store,
                                 const gchar *folder_name,
                                 CamelException *ex)
 {
 	CamelStoreClass *class;
-	CamelException local;
+	gboolean success;
 
-	g_return_if_fail (CAMEL_IS_STORE (store));
-	g_return_if_fail (folder_name != NULL);
-	g_return_if_fail (store->flags & CAMEL_STORE_SUBSCRIPTIONS);
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
+	g_return_val_if_fail (store->flags & CAMEL_STORE_SUBSCRIPTIONS, FALSE);
 
 	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_if_fail (class->unsubscribe_folder != NULL);
-
-	camel_exception_init (&local);
+	g_return_val_if_fail (class->unsubscribe_folder != NULL, FALSE);
 
 	camel_store_lock (store, CS_FOLDER_LOCK);
 
-	class->unsubscribe_folder (store, folder_name, ex);
+	success = class->unsubscribe_folder (store, folder_name, ex);
 
-	if (!camel_exception_is_set (&local))
+	if (success)
 		cs_delete_cached_folder (store, folder_name);
-	else
-		camel_exception_xfer (ex, &local);
 
 	camel_store_unlock (store, CS_FOLDER_LOCK);
+
+	return success;
 }
 
 /**
@@ -1294,19 +1305,21 @@ camel_store_unsubscribe_folder (CamelStore *store,
  * @ex: a #CamelException
  *
  * Pings @store so that its connection doesn't timeout.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
  **/
-void
+gboolean
 camel_store_noop (CamelStore *store,
                   CamelException *ex)
 {
 	CamelStoreClass *class;
 
-	g_return_if_fail (CAMEL_IS_STORE (store));
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
 
 	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_if_fail (class->noop != NULL);
+	g_return_val_if_fail (class->noop != NULL, FALSE);
 
-	class->noop (store, ex);
+	return class->noop (store, ex);
 }
 
 /**

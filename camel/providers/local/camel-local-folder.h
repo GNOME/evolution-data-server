@@ -26,12 +26,12 @@
 
 #include "camel-local-summary.h"
 
-/*  #include "camel-store.h" */
-
 #define CAMEL_LOCAL_FOLDER_TYPE     (camel_local_folder_get_type ())
 #define CAMEL_LOCAL_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_LOCAL_FOLDER_TYPE, CamelLocalFolder))
 #define CAMEL_LOCAL_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_LOCAL_FOLDER_TYPE, CamelLocalFolderClass))
 #define CAMEL_IS_LOCAL_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_LOCAL_FOLDER_TYPE))
+#define CAMEL_LOCAL_FOLDER_GET_CLASS(obj) \
+	((CamelLocalFolderClass *) CAMEL_OBJECT_GET_CLASS (obj))
 
 G_BEGIN_DECLS
 

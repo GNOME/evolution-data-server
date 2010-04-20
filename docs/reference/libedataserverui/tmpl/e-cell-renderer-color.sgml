@@ -17,6 +17,9 @@ ECellRendererColor
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT ECellRendererColor ##### -->
 <para>
 
@@ -30,6 +33,7 @@ ECellRendererColor
 
 </para>
 
+@void: 
 @Returns: 
 
 

@@ -53,7 +53,7 @@ struct _CamelImapMessageCache {
 };
 
 struct _CamelImapMessageCacheClass {
-	CamelFolderClass parent_class;
+	CamelObjectClass parent_class;
 };
 
 /* public methods */
@@ -109,7 +109,6 @@ GPtrArray *  camel_imap_message_cache_filter_cached(CamelImapMessageCache *,
                                               GPtrArray *uids,
                                               CamelException *ex);
 
-/* Standard Camel function */
 CamelType camel_imap_message_cache_get_type (void);
 
 G_END_DECLS

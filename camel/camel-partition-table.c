@@ -309,7 +309,9 @@ camel_key_t camel_partition_table_lookup(CamelPartitionTable *cpi, const gchar *
 	return keyid;
 }
 
-void camel_partition_table_remove(CamelPartitionTable *cpi, const gchar *key)
+gboolean
+camel_partition_table_remove (CamelPartitionTable *cpi,
+                              const gchar *key)
 {
 	CamelPartitionKeyBlock *pkb;
 	CamelPartitionMapBlock *ptb;
@@ -324,13 +326,13 @@ void camel_partition_table_remove(CamelPartitionTable *cpi, const gchar *key)
 	ptblock = find_partition(cpi, hashid, &index);
 	if (ptblock == NULL) {
 		CAMEL_PARTITION_TABLE_UNLOCK(cpi, lock);
-		return;
+		return TRUE;
 	}
 	ptb = (CamelPartitionMapBlock *)&ptblock->data;
 	block = camel_block_file_get_block(cpi->blocks, ptb->partition[index].blockid);
 	if (block == NULL) {
 		CAMEL_PARTITION_TABLE_UNLOCK(cpi, lock);
-		return;
+		return FALSE;
 	}
 	pkb = (CamelPartitionKeyBlock *)&block->data;
 
@@ -354,6 +356,8 @@ void camel_partition_table_remove(CamelPartitionTable *cpi, const gchar *key)
 	CAMEL_PARTITION_TABLE_UNLOCK(cpi, lock);
 
 	camel_block_file_unref_block(cpi->blocks, block);
+
+	return TRUE;
 }
 
 static gint
@@ -771,23 +775,24 @@ fail:
 	return keyid;
 }
 
-void
-camel_key_table_set_data(CamelKeyTable *ki, camel_key_t keyid, camel_block_t data)
+gboolean
+camel_key_table_set_data (CamelKeyTable *ki,
+                          camel_key_t keyid,
+                          camel_block_t data)
 {
 	CamelBlock *bl;
 	camel_block_t blockid;
 	gint index;
 	CamelKeyBlock *kb;
 
-	if (keyid == 0)
-		return;
+	g_return_val_if_fail (keyid != 0, FALSE);
 
 	blockid =  keyid & (~(CAMEL_BLOCK_SIZE-1));
 	index = keyid & (CAMEL_BLOCK_SIZE-1);
 
 	bl = camel_block_file_get_block(ki->blocks, blockid);
 	if (bl == NULL)
-		return;
+		return FALSE;
 	kb = (CamelKeyBlock *)&bl->data;
 
 	CAMEL_KEY_TABLE_LOCK(ki, lock);
@@ -800,10 +805,15 @@ camel_key_table_set_data(CamelKeyTable *ki, camel_key_t keyid, camel_block_t dat
 	CAMEL_KEY_TABLE_UNLOCK(ki, lock);
 
 	camel_block_file_unref_block(ki->blocks, bl);
+
+	return TRUE;
 }
 
-void
-camel_key_table_set_flags(CamelKeyTable *ki, camel_key_t keyid, guint flags, guint set)
+gboolean
+camel_key_table_set_flags (CamelKeyTable *ki,
+                           camel_key_t keyid,
+                           guint flags,
+                           guint set)
 {
 	CamelBlock *bl;
 	camel_block_t blockid;
@@ -811,15 +821,14 @@ camel_key_table_set_flags(CamelKeyTable *ki, camel_key_t keyid, guint flags, gui
 	CamelKeyBlock *kb;
 	guint old;
 
-	if (keyid == 0)
-		return;
+	g_return_val_if_fail (keyid != 0, FALSE);
 
 	blockid =  keyid & (~(CAMEL_BLOCK_SIZE-1));
 	index = keyid & (CAMEL_BLOCK_SIZE-1);
 
 	bl = camel_block_file_get_block(ki->blocks, blockid);
 	if (bl == NULL)
-		return;
+		return FALSE;
 	kb = (CamelKeyBlock *)&bl->data;
 
 #if 0
@@ -828,7 +837,7 @@ camel_key_table_set_flags(CamelKeyTable *ki, camel_key_t keyid, guint flags, gui
 #else
 	if (kb->used >=127 || index >= kb->used) {
 		g_warning("Block %x: Invalid index or content: index %d used %d\n", blockid, index, kb->used);
-		return;
+		return FALSE;
 	}
 #endif
 
@@ -843,6 +852,8 @@ camel_key_table_set_flags(CamelKeyTable *ki, camel_key_t keyid, guint flags, gui
 	CAMEL_KEY_TABLE_UNLOCK(ki, lock);
 
 	camel_block_file_unref_block(ki->blocks, bl);
+
+	return TRUE;
 }
 
 camel_block_t

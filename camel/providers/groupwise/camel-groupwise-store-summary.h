@@ -19,8 +19,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef CAMEL_GW_STORE_SUMMARY_H
-#define CAMEL_GW_STORE_SUMMARY_H
+#ifndef CAMEL_GROUPWISE_STORE_SUMMARY_H
+#define CAMEL_GROUPWISE_STORE_SUMMARY_H
 
 #include <camel/camel.h>
 
@@ -30,8 +30,9 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelGroupwiseStoreSummary      CamelGroupwiseStoreSummary;
+typedef struct _CamelGroupwiseStoreSummary CamelGroupwiseStoreSummary;
 typedef struct _CamelGroupwiseStoreSummaryClass CamelGroupwiseStoreSummaryClass;
+typedef struct _CamelGroupwiseStoreSummaryPrivate CamelGroupwiseStoreSummaryPrivate;
 
 typedef struct _CamelGroupwiseStoreInfo CamelGroupwiseStoreInfo;
 
@@ -55,8 +56,7 @@ struct _CamelGroupwiseStoreNamespace {
 
 struct _CamelGroupwiseStoreSummary {
 	CamelStoreSummary summary;
-
-	struct _CamelGroupwiseStoreSummaryPrivate *priv;
+	CamelGroupwiseStoreSummaryPrivate *priv;
 
 	/* header info */
 	guint32 version;        /* version of base part of file */
@@ -85,4 +85,4 @@ void camel_groupwise_store_summary_namespace_set(CamelGroupwiseStoreSummary *s, 
 
 G_END_DECLS
 
-#endif /* CAMEL_IMAP_STORE_SUMMARY_H */
+#endif /* CAMEL_GROUPWISE_STORE_SUMMARY_H */

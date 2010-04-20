@@ -29,10 +29,12 @@
 #define CAMEL_MBOX_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_mbox_summary_get_type (), CamelMboxSummary)
 #define CAMEL_MBOX_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_mbox_summary_get_type (), CamelMboxSummaryClass)
 #define CAMEL_IS_MBOX_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_mbox_summary_get_type ())
+#define CAMEL_MBOX_SUMMARY_GET_CLASS(obj) \
+	((CamelMboxSummaryClass *) CAMEL_OBJECT_GET_CLASS (obj))
 
 G_BEGIN_DECLS
 
-typedef struct _CamelMboxSummary      CamelMboxSummary;
+typedef struct _CamelMboxSummary CamelMboxSummary;
 typedef struct _CamelMboxSummaryClass CamelMboxSummaryClass;
 
 typedef struct _CamelMboxMessageContentInfo {

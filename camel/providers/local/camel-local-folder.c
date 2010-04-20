@@ -33,7 +33,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
@@ -52,13 +51,8 @@
 #define PATH_MAX _POSIX_PATH_MAX
 #endif
 
-static CamelFolderClass *parent_class;
+static gpointer camel_local_folder_parent_class;
 static GSList *local_folder_properties;
-
-/* Returns the class for a CamelLocalFolder */
-#define CLOCALF_CLASS(so) CAMEL_LOCAL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
-#define CF_CLASS(so) CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
-#define CLOCALS_CLASS(so) CAMEL_STORE_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
 static gint local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args);
 static gint local_setv(CamelObject *object, CamelException *ex, CamelArgV *args);
@@ -66,10 +60,10 @@ static gint local_setv(CamelObject *object, CamelException *ex, CamelArgV *args)
 static gint local_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
 static void local_unlock(CamelLocalFolder *lf);
 
-static void local_refresh_info(CamelFolder *folder, CamelException *ex);
+static gboolean local_refresh_info(CamelFolder *folder, CamelException *ex);
 
-static void local_sync(CamelFolder *folder, gboolean expunge, CamelException *ex);
-static void local_expunge(CamelFolder *folder, CamelException *ex);
+static gboolean local_sync(CamelFolder *folder, gboolean expunge, CamelException *ex);
+static gboolean local_expunge(CamelFolder *folder, CamelException *ex);
 
 static GPtrArray *local_search_by_expression(CamelFolder *folder, const gchar *expression, CamelException *ex);
 static guint32 local_count_by_expression(CamelFolder *folder, const gchar *expression, CamelException *ex);
@@ -80,66 +74,19 @@ static GPtrArray * local_get_uncached_uids (CamelFolder *folder, GPtrArray * uid
 static void local_delete(CamelFolder *folder);
 static void local_rename(CamelFolder *folder, const gchar *newname);
 
-static void local_finalize(CamelObject * object);
+static CamelProperty local_property_list[] = {
+	{ CAMEL_LOCAL_FOLDER_INDEX_BODY, "index_body", N_("Index message body data") },
+};
 
 static void
-camel_local_folder_class_init(CamelLocalFolderClass * camel_local_folder_class)
+local_folder_finalize (CamelLocalFolder *local_folder)
 {
-	CamelFolderClass *camel_folder_class = CAMEL_FOLDER_CLASS(camel_local_folder_class);
-	CamelObjectClass *oklass = (CamelObjectClass *)camel_local_folder_class;
-
-	/* virtual method definition */
-
-	/* virtual method overload */
-	oklass->getv = local_getv;
-	oklass->setv = local_setv;
-
-	camel_folder_class->refresh_info = local_refresh_info;
-	camel_folder_class->sync = local_sync;
-	camel_folder_class->expunge = local_expunge;
-	camel_folder_class->get_uncached_uids = local_get_uncached_uids;
-
-	camel_folder_class->search_by_expression = local_search_by_expression;
-	camel_folder_class->count_by_expression = local_count_by_expression;
-	camel_folder_class->search_by_uids = local_search_by_uids;
-	camel_folder_class->search_free = local_search_free;
-
-	camel_folder_class->delete = local_delete;
-	camel_folder_class->rename = local_rename;
-
-	camel_local_folder_class->lock = local_lock;
-	camel_local_folder_class->unlock = local_unlock;
-}
-
-static void
-local_init(gpointer object, gpointer klass)
-{
-	CamelFolder *folder = object;
-	CamelLocalFolder *local_folder = object;
-
-	folder->folder_flags |= (CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |
-				 CAMEL_FOLDER_HAS_SEARCH_CAPABILITY);
-
-	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED |
-	    CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_DRAFT |
-	    CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN |
-	    CAMEL_MESSAGE_ANSWERED_ALL | CAMEL_MESSAGE_USER;
-
-	folder->summary = NULL;
-	local_folder->search = NULL;
-
-	local_folder->priv = g_malloc0(sizeof(*local_folder->priv));
-	local_folder->priv->search_lock = g_mutex_new();
-}
-
-static void
-local_finalize(CamelObject * object)
-{
-	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER(object);
-	CamelFolder *folder = (CamelFolder *)object;
+	CamelFolder *folder = CAMEL_FOLDER (local_folder);
 
 	if (folder->summary) {
-		camel_local_summary_sync((CamelLocalSummary *)folder->summary, FALSE, local_folder->changes, NULL);
+		camel_local_summary_sync (
+			CAMEL_LOCAL_SUMMARY (folder->summary),
+			FALSE, local_folder->changes, NULL);
 		camel_object_unref (folder->summary);
 		folder->summary = NULL;
 	}
@@ -153,21 +100,73 @@ local_finalize(CamelObject * object)
 	while (local_folder->locked> 0)
 		camel_local_folder_unlock(local_folder);
 
-	g_free(local_folder->base_path);
-	g_free(local_folder->folder_path);
-	g_free(local_folder->summary_path);
-	g_free(local_folder->index_path);
+	g_free (local_folder->base_path);
+	g_free (local_folder->folder_path);
+	g_free (local_folder->summary_path);
+	g_free (local_folder->index_path);
 
-	camel_folder_change_info_free(local_folder->changes);
+	camel_folder_change_info_free (local_folder->changes);
 
-	g_mutex_free(local_folder->priv->search_lock);
+	g_mutex_free (local_folder->priv->search_lock);
 
-	g_free(local_folder->priv);
+	g_free (local_folder->priv);
 }
 
-static CamelProperty local_property_list[] = {
-	{ CAMEL_LOCAL_FOLDER_INDEX_BODY, "index_body", N_("Index message body data") },
-};
+static void
+camel_local_folder_class_init (CamelLocalFolderClass *class)
+{
+	CamelObjectClass *camel_object_class;
+	CamelFolderClass *folder_class;
+	gint ii;
+
+	camel_local_folder_parent_class = (CamelFolderClass *)camel_folder_get_type();
+
+	camel_object_class = CAMEL_OBJECT_CLASS (class);
+	camel_object_class->getv = local_getv;
+	camel_object_class->setv = local_setv;
+
+	folder_class = CAMEL_FOLDER_CLASS (class);
+	folder_class->refresh_info = local_refresh_info;
+	folder_class->sync = local_sync;
+	folder_class->expunge = local_expunge;
+	folder_class->get_uncached_uids = local_get_uncached_uids;
+	folder_class->search_by_expression = local_search_by_expression;
+	folder_class->count_by_expression = local_count_by_expression;
+	folder_class->search_by_uids = local_search_by_uids;
+	folder_class->search_free = local_search_free;
+	folder_class->delete = local_delete;
+	folder_class->rename = local_rename;
+
+	class->lock = local_lock;
+	class->unlock = local_unlock;
+
+	for (ii = 0; ii < G_N_ELEMENTS (local_property_list); ii++) {
+		local_property_list[ii].description =
+			_(local_property_list[ii].description);
+		local_folder_properties = g_slist_prepend (
+			local_folder_properties, &local_property_list[ii]);
+	}
+}
+
+static void
+camel_local_folder_init (CamelLocalFolder *local_folder)
+{
+	CamelFolder *folder = CAMEL_FOLDER (local_folder);
+
+	local_folder->priv = g_new0 (CamelLocalFolderPrivate, 1);
+	local_folder->priv->search_lock = g_mutex_new();
+
+	folder->folder_flags |= (CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |
+				 CAMEL_FOLDER_HAS_SEARCH_CAPABILITY);
+
+	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED |
+	    CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_DRAFT |
+	    CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN |
+	    CAMEL_MESSAGE_ANSWERED_ALL | CAMEL_MESSAGE_USER;
+
+	folder->summary = NULL;
+	local_folder->search = NULL;
+}
 
 CamelType
 camel_local_folder_get_type(void)
@@ -175,21 +174,13 @@ camel_local_folder_get_type(void)
 	static CamelType camel_local_folder_type = CAMEL_INVALID_TYPE;
 
 	if (camel_local_folder_type == CAMEL_INVALID_TYPE) {
-		gint i;
-
-		parent_class = (CamelFolderClass *)camel_folder_get_type();
 		camel_local_folder_type = camel_type_register(camel_folder_get_type(), "CamelLocalFolder",
 							     sizeof(CamelLocalFolder),
 							     sizeof(CamelLocalFolderClass),
 							     (CamelObjectClassInitFunc) camel_local_folder_class_init,
 							     NULL,
-							     (CamelObjectInitFunc) local_init,
-							     (CamelObjectFinalizeFunc) local_finalize);
-
-		for (i = 0; i < G_N_ELEMENTS (local_property_list); i++) {
-			local_property_list[i].description = _(local_property_list[i].description);
-			local_folder_properties = g_slist_prepend(local_folder_properties, &local_property_list[i]);
-		}
+							     (CamelObjectInitFunc) camel_local_folder_init,
+							     (CamelObjectFinalizeFunc) local_folder_finalize);
 	}
 
 	return camel_local_folder_type;
@@ -281,7 +272,7 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 		forceindex = FALSE;
 	}
 
-	folder->summary = (CamelFolderSummary *)CLOCALF_CLASS(lf)->create_summary(lf, lf->summary_path, lf->folder_path, lf->index);
+	folder->summary = (CamelFolderSummary *)CAMEL_LOCAL_FOLDER_GET_CLASS(lf)->create_summary(lf, lf->summary_path, lf->folder_path, lf->index);
 	if (!(flags & CAMEL_STORE_IS_MIGRATING) && camel_local_summary_load((CamelLocalSummary *)folder->summary, forceindex, NULL) == -1) {
 		/* ? */
 		if (camel_local_summary_check((CamelLocalSummary *)folder->summary, lf->changes, ex) == 0) {
@@ -334,7 +325,7 @@ gint camel_local_folder_lock(CamelLocalFolder *lf, CamelLockType type, CamelExce
 		/* lets be anal here - its important the code knows what its doing */
 		g_assert(lf->locktype == type || lf->locktype == CAMEL_LOCK_WRITE);
 	} else {
-		if (CLOCALF_CLASS(lf)->lock(lf, type, ex) == -1)
+		if (CAMEL_LOCAL_FOLDER_GET_CLASS(lf)->lock(lf, type, ex) == -1)
 			return -1;
 		lf->locktype = type;
 	}
@@ -350,7 +341,7 @@ gint camel_local_folder_unlock(CamelLocalFolder *lf)
 	g_assert(lf->locked>0);
 	lf->locked--;
 	if (lf->locked == 0)
-		CLOCALF_CLASS(lf)->unlock(lf);
+		CAMEL_LOCAL_FOLDER_GET_CLASS(lf)->unlock(lf);
 
 	return 0;
 }
@@ -415,7 +406,7 @@ local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 
 			props.argc = 1;
 			props.argv[0] = *arg;
-			((CamelObjectClass *)parent_class)->getv(object, ex, &props);
+			((CamelObjectClass *)camel_local_folder_parent_class)->getv(object, ex, &props);
 			*arg->ca_ptr = g_slist_concat(*arg->ca_ptr, g_slist_copy(local_folder_properties));
 
 			break; }
@@ -432,7 +423,7 @@ local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
 	}
 
-	return ((CamelObjectClass *)parent_class)->getv(object, ex, args);
+	return ((CamelObjectClass *)camel_local_folder_parent_class)->getv(object, ex, args);
 }
 
 static gint
@@ -463,7 +454,7 @@ local_setv(CamelObject *object, CamelException *ex, CamelArgV *args)
 		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
 	}
 
-	return ((CamelObjectClass *)parent_class)->setv(object, ex, args);
+	return ((CamelObjectClass *)camel_local_folder_parent_class)->setv(object, ex, args);
 }
 
 static gint
@@ -479,13 +470,13 @@ local_unlock(CamelLocalFolder *lf)
 }
 
 /* for auto-check to work */
-static void
+static gboolean
 local_refresh_info(CamelFolder *folder, CamelException *ex)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 
 	if (camel_local_summary_check((CamelLocalSummary *)folder->summary, lf->changes, ex) == -1) {
-		return;
+		return FALSE;
 	}
 
 	if (camel_folder_change_info_changed(lf->changes)) {
@@ -493,6 +484,7 @@ local_refresh_info(CamelFolder *folder, CamelException *ex)
 		camel_folder_change_info_clear(lf->changes);
 	}
 
+	return TRUE;
 }
 
 static GPtrArray *
@@ -503,7 +495,7 @@ local_get_uncached_uids (CamelFolder *folder, GPtrArray * uids, CamelException *
 	return result;
 }
 
-static void
+static gboolean
 local_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 {
 	CamelLocalFolder *lf = CAMEL_LOCAL_FOLDER(folder);
@@ -511,7 +503,7 @@ local_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 	d(printf("local sync '%s' , expunge=%s\n", folder->full_name, expunge?"true":"false"));
 
 	if (camel_local_folder_lock(lf, CAMEL_LOCK_WRITE, ex) == -1)
-		return;
+		return FALSE;
 
 	camel_object_state_write(lf);
 
@@ -523,16 +515,18 @@ local_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 		camel_object_trigger_event(CAMEL_OBJECT(folder), "folder_changed", lf->changes);
 		camel_folder_change_info_clear(lf->changes);
 	}
+
+	return TRUE;
 }
 
-static void
+static gboolean
 local_expunge(CamelFolder *folder, CamelException *ex)
 {
 	d(printf("expunge\n"));
 
 	/* Just do a sync with expunge, serves the same purpose */
 	/* call the callback directly, to avoid locking problems */
-	CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(folder))->sync(folder, TRUE, ex);
+	return CAMEL_FOLDER_GET_CLASS (folder)->sync (folder, TRUE, ex);
 }
 
 static void
@@ -543,7 +537,7 @@ local_delete(CamelFolder *folder)
 	if (lf->index)
 		camel_index_delete(lf->index);
 
-	parent_class->delete(folder);
+	CAMEL_FOLDER_CLASS (camel_local_folder_parent_class)->delete (folder);
 }
 
 static void
@@ -573,7 +567,7 @@ local_rename(CamelFolder *folder, const gchar *newname)
 	g_free(((CamelLocalSummary *)folder->summary)->folder_path);
 	((CamelLocalSummary *)folder->summary)->folder_path = g_strdup(lf->folder_path);
 
-	parent_class->rename(folder, newname);
+	CAMEL_FOLDER_CLASS (camel_local_folder_parent_class)->rename (folder, newname);
 }
 
 static GPtrArray *

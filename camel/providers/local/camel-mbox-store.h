@@ -31,19 +31,17 @@
 
 G_BEGIN_DECLS
 
-typedef struct {
+typedef struct _CamelMboxStore CamelMboxStore;
+typedef struct _CamelMboxStoreClass CamelMboxStoreClass;
+
+struct _CamelMboxStore {
 	CamelLocalStore parent;
+};
 
-} CamelMboxStore;
-
-typedef struct {
+struct _CamelMboxStoreClass {
 	CamelLocalStoreClass parent_class;
+};
 
-} CamelMboxStoreClass;
-
-/* public methods */
-
-/* Standard Camel function */
 CamelType camel_mbox_store_get_type (void);
 
 G_END_DECLS

@@ -17,6 +17,9 @@ camel-provider
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelProvider ##### -->
 <para>
 
@@ -438,6 +441,7 @@ camel-provider
 
 </para>
 
+@void: 
 
 
 <!-- ##### FUNCTION camel_provider_load ##### -->
@@ -447,6 +451,7 @@ camel-provider
 
 @path: 
 @ex: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_provider_register ##### -->
@@ -481,6 +486,7 @@ camel-provider
 
 </para>
 
+@void: 
 
 
 <!-- ##### FUNCTION camel_provider_auto_detect ##### -->

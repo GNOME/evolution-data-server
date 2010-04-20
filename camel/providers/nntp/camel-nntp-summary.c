@@ -39,8 +39,8 @@
 
 #define w(x)
 #define io(x)
-#define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
-#define dd(x) (camel_debug("nntp")?(x):0)
+#define d(x) /*(printf ("%s (%d): ", __FILE__, __LINE__),(x))*/
+#define dd(x) (camel_debug ("nntp")?(x):0)
 
 #define CAMEL_NNTP_SUMMARY_VERSION (1)
 
@@ -57,15 +57,46 @@ struct _CamelNNTPSummaryPrivate {
 #define _PRIVATE(o) (((CamelNNTPSummary *)(o))->priv)
 
 static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
-static gint summary_header_load(CamelFolderSummary *, FILE *);
-static gint summary_header_save(CamelFolderSummary *, FILE *);
+static gint summary_header_load (CamelFolderSummary *, FILE *);
+static gint summary_header_save (CamelFolderSummary *, FILE *);
 static gint summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
 static CamelFIRecord * summary_header_to_db (CamelFolderSummary *s, CamelException *ex);
 
-static void camel_nntp_summary_class_init (CamelNNTPSummaryClass *klass);
-static void camel_nntp_summary_init       (CamelNNTPSummary *obj);
-static void camel_nntp_summary_finalize   (CamelObject *obj);
-static CamelFolderSummaryClass *camel_nntp_summary_parent;
+static gpointer camel_nntp_summary_parent_class;
+
+static void
+nntp_summary_finalize (CamelNNTPSummary *nntp_summary)
+{
+	g_free (nntp_summary->priv);
+}
+
+static void
+camel_nntp_summary_class_init (CamelNNTPSummaryClass *class)
+{
+	CamelFolderSummaryClass *folder_summary_class;
+
+	camel_nntp_summary_parent_class = CAMEL_FOLDER_SUMMARY_CLASS(camel_type_get_global_classfuncs(camel_folder_summary_get_type()));
+
+	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
+	folder_summary_class->message_info_size = sizeof (CamelMessageInfoBase);
+	folder_summary_class->content_info_size = sizeof (CamelMessageContentInfo);
+	folder_summary_class->message_info_new_from_header = message_info_new_from_header;
+	folder_summary_class->summary_header_load = summary_header_load;
+	folder_summary_class->summary_header_save = summary_header_save;
+	folder_summary_class->summary_header_from_db = summary_header_from_db;
+	folder_summary_class->summary_header_to_db = summary_header_to_db;
+}
+
+static void
+camel_nntp_summary_init (CamelNNTPSummary *nntp_summary)
+{
+	CamelFolderSummary *summary = CAMEL_FOLDER_SUMMARY (nntp_summary);
+
+	nntp_summary->priv = g_new0 (CamelNNTPSummaryPrivate, 1);
+
+	/* and a unique file version */
+	summary->version += CAMEL_NNTP_SUMMARY_VERSION;
+}
 
 CamelType
 camel_nntp_summary_get_type(void)
@@ -79,63 +110,29 @@ camel_nntp_summary_get_type(void)
 					   (CamelObjectClassInitFunc) camel_nntp_summary_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_nntp_summary_init,
-					   (CamelObjectFinalizeFunc) camel_nntp_summary_finalize);
+					   (CamelObjectFinalizeFunc) nntp_summary_finalize);
 	}
 
 	return type;
 }
 
-static void
-camel_nntp_summary_class_init(CamelNNTPSummaryClass *klass)
-{
-	CamelFolderSummaryClass *sklass = (CamelFolderSummaryClass *) klass;
-
-	camel_nntp_summary_parent = CAMEL_FOLDER_SUMMARY_CLASS(camel_type_get_global_classfuncs(camel_folder_summary_get_type()));
-
-	sklass->message_info_size = sizeof(CamelMessageInfoBase);
-	sklass->content_info_size = sizeof(CamelMessageContentInfo);
-	sklass->message_info_new_from_header  = message_info_new_from_header;
-	sklass->summary_header_load = summary_header_load;
-	sklass->summary_header_save = summary_header_save;
-	sklass->summary_header_from_db = summary_header_from_db;
-	sklass->summary_header_to_db = summary_header_to_db;
-}
-
-static void
-camel_nntp_summary_init(CamelNNTPSummary *obj)
-{
-	struct _CamelNNTPSummaryPrivate *p;
-	struct _CamelFolderSummary *s = (CamelFolderSummary *)obj;
-
-	p = _PRIVATE(obj) = g_malloc0(sizeof(*p));
-
-	/* and a unique file version */
-	s->version += CAMEL_NNTP_SUMMARY_VERSION;
-}
-
-static void
-camel_nntp_summary_finalize(CamelObject *obj)
-{
-	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY(obj);
-
-	g_free(cns->priv);
-}
-
 CamelNNTPSummary *
-camel_nntp_summary_new(struct _CamelFolder *folder, const gchar *path)
+camel_nntp_summary_new (CamelFolder *folder, const gchar *path)
 {
-	CamelNNTPSummary *cns = (CamelNNTPSummary *)camel_object_new(camel_nntp_summary_get_type());
+	CamelNNTPSummary *cns;
 
+	cns = (CamelNNTPSummary *)camel_object_new(camel_nntp_summary_get_type());
 	((CamelFolderSummary *)cns)->folder = folder;
 
-	camel_folder_summary_set_filename((CamelFolderSummary *)cns, path);
-	camel_folder_summary_set_build_content((CamelFolderSummary *)cns, FALSE);
+	camel_folder_summary_set_filename ((CamelFolderSummary *)cns, path);
+	camel_folder_summary_set_build_content ((CamelFolderSummary *)cns, FALSE);
 
 	return cns;
 }
 
 static CamelMessageInfo *
-message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
+message_info_new_from_header (CamelFolderSummary *s,
+                              struct _camel_header_raw *h)
 {
 	CamelMessageInfoBase *mi;
 	CamelNNTPSummary *cns = (CamelNNTPSummary *)s;
@@ -144,11 +141,11 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 	if (cns->priv->uid == NULL)
 		return NULL;
 
-	mi = (CamelMessageInfoBase *)((CamelFolderSummaryClass *)camel_nntp_summary_parent)->message_info_new_from_header(s, h);
+	mi = (CamelMessageInfoBase *)CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->message_info_new_from_header(s, h);
 	if (mi) {
-		camel_pstring_free(mi->uid);
-		mi->uid = camel_pstring_strdup(cns->priv->uid);
-		g_free(cns->priv->uid);
+		camel_pstring_free (mi->uid);
+		mi->uid = camel_pstring_strdup (cns->priv->uid);
+		g_free (cns->priv->uid);
 		cns->priv->uid = NULL;
 	}
 
@@ -158,10 +155,10 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 static gint
 summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 {
-	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY(s);
+	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY (s);
 	gchar *part;
 
-	if (camel_nntp_summary_parent->summary_header_from_db (s, mir) == -1)
+	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->summary_header_from_db (s, mir) == -1)
 		return -1;
 
 	part = mir->bdata;
@@ -182,30 +179,30 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 }
 
 static gint
-summary_header_load(CamelFolderSummary *s, FILE *in)
+summary_header_load (CamelFolderSummary *s, FILE *in)
 {
-	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY(s);
+	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY (s);
 
-	if (((CamelFolderSummaryClass *)camel_nntp_summary_parent)->summary_header_load(s, in) == -1)
+	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->summary_header_load (s, in) == -1)
 		return -1;
 
 	/* Legacy version */
 	if (s->version == 0x20c) {
-		camel_file_util_decode_fixed_int32(in, (gint32 *) &cns->high);
-		return camel_file_util_decode_fixed_int32(in, (gint32 *) &cns->low);
+		camel_file_util_decode_fixed_int32 (in, (gint32 *) &cns->high);
+		return camel_file_util_decode_fixed_int32 (in, (gint32 *) &cns->low);
 	}
 
-	if (camel_file_util_decode_fixed_int32(in, (gint32 *) &cns->version) == -1)
+	if (camel_file_util_decode_fixed_int32 (in, (gint32 *) &cns->version) == -1)
 		return -1;
 
 	if (cns->version > CAMEL_NNTP_SUMMARY_VERSION) {
-		g_warning("Unknown NNTP summary version");
+		g_warning ("Unknown NNTP summary version");
 		errno = EINVAL;
 		return -1;
 	}
 
-	if (camel_file_util_decode_fixed_int32(in, (gint32 *) &cns->high) == -1
-	    || camel_file_util_decode_fixed_int32(in, (gint32 *) &cns->low) == -1)
+	if (camel_file_util_decode_fixed_int32 (in, (gint32 *) &cns->high) == -1
+	    || camel_file_util_decode_fixed_int32 (in, (gint32 *) &cns->low) == -1)
 		return -1;
 
 	return 0;
@@ -214,10 +211,10 @@ summary_header_load(CamelFolderSummary *s, FILE *in)
 static CamelFIRecord *
 summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 {
-	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY(s);
+	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY (s);
 	struct _CamelFIRecord *fir;
 
-	fir = camel_nntp_summary_parent->summary_header_to_db (s, ex);
+	fir = CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->summary_header_to_db (s, ex);
 	if (!fir)
 		return NULL;
 	fir->bdata = g_strdup_printf ("%d %d %d", CAMEL_NNTP_SUMMARY_VERSION, cns->high, cns->low);
@@ -226,14 +223,14 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 }
 
 static gint
-summary_header_save(CamelFolderSummary *s, FILE *out)
+summary_header_save (CamelFolderSummary *s, FILE *out)
 {
-	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY(s);
+	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY (s);
 
-	if (((CamelFolderSummaryClass *)camel_nntp_summary_parent)->summary_header_save(s, out) == -1
-	    || camel_file_util_encode_fixed_int32(out, CAMEL_NNTP_SUMMARY_VERSION) == -1
-	    || camel_file_util_encode_fixed_int32(out, cns->high) == -1
-	    || camel_file_util_encode_fixed_int32(out, cns->low) == -1)
+	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->summary_header_save (s, out) == -1
+	    || camel_file_util_encode_fixed_int32 (out, CAMEL_NNTP_SUMMARY_VERSION) == -1
+	    || camel_file_util_encode_fixed_int32 (out, cns->high) == -1
+	    || camel_file_util_encode_fixed_int32 (out, cns->low) == -1)
 		return -1;
 
 	return 0;
@@ -243,7 +240,7 @@ summary_header_save(CamelFolderSummary *s, FILE *out)
 
 /* Note: This will be called from camel_nntp_command, so only use camel_nntp_raw_command */
 static gint
-add_range_xover(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint low, CamelFolderChangeInfo *changes, CamelException *ex)
+add_range_xover (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint low, CamelFolderChangeInfo *changes, CamelException *ex)
 {
 	CamelFolderSummary *s;
 	CamelMessageInfoBase *mi;
@@ -256,28 +253,29 @@ add_range_xover(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint 
 	GHashTable *summary_table;
 
 	s = (CamelFolderSummary *)cns;
-	summary_table = camel_folder_summary_get_hashtable(s);
+	summary_table = camel_folder_summary_get_hashtable (s);
 
-	camel_operation_start(NULL, _("%s: Scanning new messages"), ((CamelService *)store)->url->host);
+	camel_operation_start (NULL, _("%s: Scanning new messages"), ((CamelService *)store)->url->host);
 
 	ret = camel_nntp_raw_command_auth (store, ex, &line, "over %r", low, high);
 	if (ret != 224)
 		ret = camel_nntp_raw_command_auth (store, ex, &line, "xover %r", low, high);
 
 	if (ret != 224) {
-		camel_operation_end(NULL);
+		camel_operation_end (NULL);
 		if (ret != -1)
-			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-					     _("Unexpected server response from xover: %s"), line);
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_SYSTEM,
+				_("Unexpected server response from xover: %s"), line);
 		return -1;
 	}
 
 	count = 0;
 	total = high-low+1;
-	while ((ret = camel_nntp_stream_line(store->stream, (guchar **)&line, &len)) > 0) {
-		camel_operation_progress(NULL, (count * 100) / total);
+	while ((ret = camel_nntp_stream_line (store->stream, (guchar **)&line, &len)) > 0) {
+		camel_operation_progress (NULL, (count * 100) / total);
 		count++;
-		n = strtoul(line, &tab, 10);
+		n = strtoul (line, &tab, 10);
 		if (*tab != '\t')
 			continue;
 		tab++;
@@ -285,25 +283,25 @@ add_range_xover(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint 
 		size = 0;
 		for (;tab[0] && xover;xover = xover->next) {
 			line = tab;
-			tab = strchr(line, '\t');
+			tab = strchr (line, '\t');
 			if (tab)
 				*tab++ = 0;
 			else
-				tab = line+strlen(line);
+				tab = line+strlen (line);
 
 			/* do we care about this column? */
 			if (xover->name) {
 				line += xover->skip;
 				if (line < tab) {
-					camel_header_raw_append(&headers, xover->name, line, -1);
+					camel_header_raw_append (&headers, xover->name, line, -1);
 					switch (xover->type) {
 					case XOVER_STRING:
 						break;
 					case XOVER_MSGID:
-						cns->priv->uid = g_strdup_printf("%u,%s", n, line);
+						cns->priv->uid = g_strdup_printf ("%u,%s", n, line);
 						break;
 					case XOVER_SIZE:
-						size = strtoul(line, NULL, 10);
+						size = strtoul (line, NULL, 10);
 						break;
 					}
 				}
@@ -316,34 +314,34 @@ add_range_xover(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint 
 
 		/* truncated line? ignore? */
 		if (xover == NULL) {
-			if (!GPOINTER_TO_INT(g_hash_table_lookup (summary_table, cns->priv->uid))) {
-				mi = (CamelMessageInfoBase *)camel_folder_summary_add_from_header(s, headers);
+			if (!GPOINTER_TO_INT (g_hash_table_lookup (summary_table, cns->priv->uid))) {
+				mi = (CamelMessageInfoBase *)camel_folder_summary_add_from_header (s, headers);
 				if (mi) {
 					mi->size = size;
 					cns->high = n;
-					camel_folder_change_info_add_uid(changes, camel_message_info_uid(mi));
+					camel_folder_change_info_add_uid (changes, camel_message_info_uid (mi));
 				}
 			}
 		}
 
 		if (cns->priv->uid) {
-			g_free(cns->priv->uid);
+			g_free (cns->priv->uid);
 			cns->priv->uid = NULL;
 		}
 
-		camel_header_raw_clear(&headers);
+		camel_header_raw_clear (&headers);
 	}
 
-	camel_operation_end(NULL);
+	camel_operation_end (NULL);
 
-	camel_folder_summary_free_hashtable(summary_table);
+	camel_folder_summary_free_hashtable (summary_table);
 
 	return ret;
 }
 
 /* Note: This will be called from camel_nntp_command, so only use camel_nntp_raw_command */
 static gint
-add_range_head(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint low, CamelFolderChangeInfo *changes, CamelException *ex)
+add_range_head (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint low, CamelFolderChangeInfo *changes, CamelException *ex)
 {
 	CamelFolderSummary *s;
 	gint ret = -1;
@@ -355,75 +353,82 @@ add_range_head(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint l
 
 	s = (CamelFolderSummary *)cns;
 
-	summary_table = camel_folder_summary_get_hashtable(s);
+	summary_table = camel_folder_summary_get_hashtable (s);
 
-	mp = camel_mime_parser_new();
+	mp = camel_mime_parser_new ();
 
-	camel_operation_start(NULL, _("%s: Scanning new messages"), ((CamelService *)store)->url->host);
+	camel_operation_start (NULL, _("%s: Scanning new messages"), ((CamelService *)store)->url->host);
 
 	count = 0;
 	total = high-low+1;
 	for (i=low;i<high+1;i++) {
-		camel_operation_progress(NULL, (count * 100) / total);
+		camel_operation_progress (NULL, (count * 100) / total);
 		count++;
-		ret = camel_nntp_raw_command_auth(store, ex, &line, "head %u", i);
+		ret = camel_nntp_raw_command_auth (store, ex, &line, "head %u", i);
 		/* unknown article, ignore */
 		if (ret == 423)
 			continue;
 		else if (ret == -1)
 			goto ioerror;
 		else if (ret != 221) {
-			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Unexpected server response from head: %s"), line);
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_SYSTEM,
+				_("Unexpected server response from head: %s"),
+				line);
 			goto ioerror;
 		}
 		line += 3;
-		n = strtoul(line, &line, 10);
+		n = strtoul (line, &line, 10);
 		if (n != i)
-			g_warning("retrieved message '%u' when i expected '%u'?\n", n, i);
+			g_warning ("retrieved message '%u' when i expected '%u'?\n", n, i);
 
 		/* FIXME: use camel-mime-utils.c function for parsing msgid? */
-		if ((msgid = strchr(line, '<')) && (line = strchr(msgid+1, '>'))) {
+		if ((msgid = strchr (line, '<')) && (line = strchr (msgid+1, '>'))) {
 			line[1] = 0;
-			cns->priv->uid = g_strdup_printf("%u,%s\n", n, msgid);
-			if (!GPOINTER_TO_INT(g_hash_table_lookup (summary_table, cns->priv->uid))) {
-				if (camel_mime_parser_init_with_stream(mp, (CamelStream *)store->stream) == -1)
+			cns->priv->uid = g_strdup_printf ("%u,%s\n", n, msgid);
+			if (!GPOINTER_TO_INT (g_hash_table_lookup (summary_table, cns->priv->uid))) {
+				if (camel_mime_parser_init_with_stream (mp, (CamelStream *)store->stream) == -1)
 					goto error;
-				mi = camel_folder_summary_add_from_parser(s, mp);
-				while (camel_mime_parser_step(mp, NULL, NULL) != CAMEL_MIME_PARSER_STATE_EOF)
+				mi = camel_folder_summary_add_from_parser (s, mp);
+				while (camel_mime_parser_step (mp, NULL, NULL) != CAMEL_MIME_PARSER_STATE_EOF)
 					;
 				if (mi == NULL) {
 					goto error;
 				}
 				cns->high = i;
-				camel_folder_change_info_add_uid(changes, camel_message_info_uid(mi));
+				camel_folder_change_info_add_uid (changes, camel_message_info_uid (mi));
 			}
 			if (cns->priv->uid) {
-				g_free(cns->priv->uid);
+				g_free (cns->priv->uid);
 				cns->priv->uid = NULL;
 			}
 		}
 	}
 
 	ret = 0;
-error:
 
+error:
 	if (ret == -1) {
 		if (errno == EINTR)
-			camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("User cancelled the operation"));
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_USER_CANCEL,
+				_("User cancelled the operation"));
 		else
-			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Operation failed: %s"), g_strerror(errno));
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_SYSTEM,
+				_("Operation failed: %s"), g_strerror(errno));
 	}
-ioerror:
 
+ioerror:
 	if (cns->priv->uid) {
-		g_free(cns->priv->uid);
+		g_free (cns->priv->uid);
 		cns->priv->uid = NULL;
 	}
 	camel_object_unref (mp);
 
-	camel_operation_end(NULL);
+	camel_operation_end (NULL);
 
-	camel_folder_summary_free_hashtable(summary_table);
+	camel_folder_summary_free_hashtable (summary_table);
 
 	return ret;
 }
@@ -431,7 +436,7 @@ ioerror:
 /* Assumes we have the stream */
 /* Note: This will be called from camel_nntp_command, so only use camel_nntp_raw_command */
 gint
-camel_nntp_summary_check(CamelNNTPSummary *cns, CamelNNTPStore *store, gchar *line, CamelFolderChangeInfo *changes, CamelException *ex)
+camel_nntp_summary_check (CamelNNTPSummary *cns, CamelNNTPStore *store, gchar *line, CamelFolderChangeInfo *changes, CamelException *ex)
 {
 	CamelFolderSummary *s;
 	gint ret = 0, i;
@@ -451,16 +456,16 @@ camel_nntp_summary_check(CamelNNTPSummary *cns, CamelNNTPStore *store, gchar *li
 		gchar *tmp;
 
 		folder = line+1;
-		tmp = strchr(folder, ' ');
+		tmp = strchr (folder, ' ');
 		if (tmp)
 			*tmp = 0;
-		tmp = g_alloca(strlen(folder)+1);
-		strcpy(tmp, folder);
+		tmp = g_alloca (strlen (folder)+1);
+		strcpy (tmp, folder);
 		folder = tmp;
 	}
 
 	if (cns->low == f && cns->high == l) {
-		dd(printf("nntp_summary: no work to do!\n"));
+		dd (printf ("nntp_summary: no work to do!\n"));
 		goto update;
 	}
 
@@ -468,23 +473,23 @@ camel_nntp_summary_check(CamelNNTPSummary *cns, CamelNNTPStore *store, gchar *li
 
 	/* Check for messages no longer on the server */
 	if (cns->low != f) {
-		count = camel_folder_summary_count(s);
+		count = camel_folder_summary_count (s);
 		for (i = 0; i < count; i++) {
 			gchar *uid;
 			const gchar *msgid;
 
-			uid  = camel_folder_summary_uid_from_index(s, i);
-			n = strtoul(uid, NULL, 10);
+			uid  = camel_folder_summary_uid_from_index (s, i);
+			n = strtoul (uid, NULL, 10);
 
 			if (n < f || n > l) {
-				dd(printf("nntp_summary: %u is lower/higher than lowest/highest article, removed\n", n));
+				dd (printf ("nntp_summary: %u is lower/higher than lowest/highest article, removed\n", n));
 				/* Since we use a global cache this could prematurely remove
 				   a cached message that might be in another folder - not that important as
 				   it is a true cache */
-				msgid = strchr(uid, ',');
+				msgid = strchr (uid, ',');
 				if (msgid)
-					camel_data_cache_remove(store->cache, "cache", msgid+1, NULL);
-				camel_folder_change_info_remove_uid(changes, uid);
+					camel_data_cache_remove (store->cache, "cache", msgid+1, NULL);
+				camel_folder_change_info_remove_uid (changes, uid);
 				del = g_slist_prepend (del, uid);
 				camel_folder_summary_remove_uid_fast (s, uid);
 				uid = NULL; /*Lets not free it */
@@ -505,20 +510,20 @@ camel_nntp_summary_check(CamelNNTPSummary *cns, CamelNNTPStore *store, gchar *li
 			cns->high = f-1;
 
 		if (store->xover) {
-			ret = add_range_xover(cns, store, l, cns->high+1, changes, ex);
+			ret = add_range_xover (cns, store, l, cns->high+1, changes, ex);
 		} else {
-			ret = add_range_head(cns, store, l, cns->high+1, changes, ex);
+			ret = add_range_head (cns, store, l, cns->high+1, changes, ex);
 		}
 	}
 
 	/* TODO: not from here */
-	camel_folder_summary_touch(s);
+	camel_folder_summary_touch (s);
 	camel_folder_summary_save_to_db (s, ex);
 
 update:
 	/* update store summary if we have it */
 	if (folder
-	    && (si = (CamelNNTPStoreInfo *)camel_store_summary_path((CamelStoreSummary *)store->summary, folder))) {
+	    && (si = (CamelNNTPStoreInfo *)camel_store_summary_path ((CamelStoreSummary *)store->summary, folder))) {
 		guint32 unread = 0;
 
 		count = camel_folder_summary_count (s);
@@ -532,15 +537,15 @@ update:
 			si->info.total = count;
 			si->first = f;
 			si->last = l;
-			camel_store_summary_touch((CamelStoreSummary *)store->summary);
-			camel_store_summary_save((CamelStoreSummary *)store->summary);
+			camel_store_summary_touch ((CamelStoreSummary *)store->summary);
+			camel_store_summary_save ((CamelStoreSummary *)store->summary);
 		}
 		camel_store_summary_info_free ((CamelStoreSummary *)store->summary, (CamelStoreInfo *)si);
 	} else {
 		if (folder)
-			g_warning("Group '%s' not present in summary", folder);
+			g_warning ("Group '%s' not present in summary", folder);
 		else
-			g_warning("Missing group from group response");
+			g_warning ("Missing group from group response");
 	}
 
 	return ret;

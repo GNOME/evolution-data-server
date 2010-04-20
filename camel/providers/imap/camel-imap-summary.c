@@ -57,10 +57,53 @@ static CamelMessageInfo * message_info_from_db (CamelFolderSummary *s, CamelMIRe
 static gint content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelMIRecord *mir);
 static CamelMessageContentInfo * content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir);
 
-static void camel_imap_summary_class_init (CamelImapSummaryClass *klass);
-static void camel_imap_summary_init       (CamelImapSummary *obj);
+static gpointer camel_imap_summary_parent_class;
 
-static CamelFolderSummaryClass *camel_imap_summary_parent;
+static CamelMessageInfo *
+imap_message_info_clone(CamelFolderSummary *s, const CamelMessageInfo *mi)
+{
+	CamelImapMessageInfo *to;
+	const CamelImapMessageInfo *from = (const CamelImapMessageInfo *)mi;
+
+	to = (CamelImapMessageInfo *) CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->message_info_clone(s, mi);
+	to->server_flags = from->server_flags;
+
+	/* FIXME: parent clone should do this */
+	to->info.content = camel_folder_summary_content_info_new(s);
+
+	return (CamelMessageInfo *)to;
+}
+
+static void
+camel_imap_summary_class_init (CamelImapSummaryClass *class)
+{
+	CamelFolderSummaryClass *folder_summary_class;
+
+	camel_imap_summary_parent_class = CAMEL_FOLDER_SUMMARY_CLASS (camel_type_get_global_classfuncs (camel_folder_summary_get_type()));
+
+	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
+	folder_summary_class->message_info_size = sizeof (CamelImapMessageInfo);
+	folder_summary_class->content_info_size = sizeof (CamelImapMessageContentInfo);
+	folder_summary_class->message_info_clone = imap_message_info_clone;
+	folder_summary_class->summary_header_load = summary_header_load;
+	folder_summary_class->summary_header_save = summary_header_save;
+	folder_summary_class->message_info_load = message_info_load;
+	folder_summary_class->message_info_save = message_info_save;
+	folder_summary_class->content_info_load = content_info_load;
+	folder_summary_class->content_info_save = content_info_save;
+	folder_summary_class->summary_header_to_db = summary_header_to_db;
+	folder_summary_class->summary_header_from_db = summary_header_from_db;
+	folder_summary_class->message_info_to_db = message_info_to_db;
+	folder_summary_class->message_info_from_db = message_info_from_db;
+	folder_summary_class->content_info_to_db = content_info_to_db;
+	folder_summary_class->content_info_from_db = content_info_from_db;
+	folder_summary_class->info_set_user_flag = info_set_user_flag;
+}
+
+static void
+camel_imap_summary_init (CamelImapSummary *imap_summary)
+{
+}
 
 CamelType
 camel_imap_summary_get_type (void)
@@ -79,53 +122,6 @@ camel_imap_summary_get_type (void)
 	}
 
 	return type;
-}
-
-static CamelMessageInfo *
-imap_message_info_clone(CamelFolderSummary *s, const CamelMessageInfo *mi)
-{
-	CamelImapMessageInfo *to;
-	const CamelImapMessageInfo *from = (const CamelImapMessageInfo *)mi;
-
-	to = (CamelImapMessageInfo *)camel_imap_summary_parent->message_info_clone(s, mi);
-	to->server_flags = from->server_flags;
-
-	/* FIXME: parent clone should do this */
-	to->info.content = camel_folder_summary_content_info_new(s);
-
-	return (CamelMessageInfo *)to;
-}
-
-static void
-camel_imap_summary_class_init (CamelImapSummaryClass *klass)
-{
-	CamelFolderSummaryClass *cfs_class = (CamelFolderSummaryClass *) klass;
-
-	camel_imap_summary_parent = CAMEL_FOLDER_SUMMARY_CLASS (camel_type_get_global_classfuncs (camel_folder_summary_get_type()));
-
-	cfs_class->message_info_clone = imap_message_info_clone;
-	cfs_class->message_info_size = sizeof (CamelImapMessageInfo);
-	cfs_class->content_info_size = sizeof (CamelImapMessageContentInfo);
-	cfs_class->summary_header_load = summary_header_load;
-	cfs_class->summary_header_save = summary_header_save;
-	cfs_class->message_info_load = message_info_load;
-	cfs_class->message_info_save = message_info_save;
-	cfs_class->content_info_load = content_info_load;
-	cfs_class->content_info_save = content_info_save;
-
-	cfs_class->summary_header_to_db = summary_header_to_db;
-	cfs_class->summary_header_from_db = summary_header_from_db;
-	cfs_class->message_info_to_db = message_info_to_db;
-	cfs_class->message_info_from_db = message_info_from_db;
-	cfs_class->content_info_to_db = content_info_to_db;
-	cfs_class->content_info_from_db = content_info_from_db;
-
-	cfs_class->info_set_user_flag = info_set_user_flag;
-}
-
-static void
-camel_imap_summary_init (CamelImapSummary *obj)
-{
 }
 
 static gint
@@ -181,10 +177,11 @@ uid_compare (gconstpointer va, gconstpointer vb)
 CamelFolderSummary *
 camel_imap_summary_new (struct _CamelFolder *folder, const gchar *filename)
 {
-	CamelFolderSummary *summary = CAMEL_FOLDER_SUMMARY (camel_object_new (camel_imap_summary_get_type ()));
+	CamelFolderSummary *summary;
 	CamelException ex;
 	camel_exception_init (&ex);
 
+	summary = CAMEL_FOLDER_SUMMARY (camel_object_new (camel_imap_summary_get_type ()));
 	summary->folder = folder;
 	/* Don't do DB sort. Its pretty slow to load */
 	if (folder && 0) {
@@ -216,7 +213,7 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 	CamelImapSummary *ims = CAMEL_IMAP_SUMMARY (s);
 	gchar *part;
 
-	if (camel_imap_summary_parent->summary_header_from_db (s, mir) == -1)
+	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->summary_header_from_db (s, mir) == -1)
 		return -1;
 
 	part = mir->bdata;
@@ -243,7 +240,7 @@ summary_header_load (CamelFolderSummary *s, FILE *in)
 {
 	CamelImapSummary *ims = CAMEL_IMAP_SUMMARY (s);
 
-	if (camel_imap_summary_parent->summary_header_load (s, in) == -1)
+	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->summary_header_load (s, in) == -1)
 		return -1;
 
 	/* Legacy version */
@@ -280,7 +277,7 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 	CamelImapSummary *ims = CAMEL_IMAP_SUMMARY(s);
 	struct _CamelFIRecord *fir;
 
-	fir = camel_imap_summary_parent->summary_header_to_db (s, ex);
+	fir = CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->summary_header_to_db (s, ex);
 	if (!fir)
 		return NULL;
 	fir->bdata = g_strdup_printf ("%d %u", CAMEL_IMAP_SUMMARY_VERSION, ims->validity);
@@ -293,7 +290,7 @@ summary_header_save (CamelFolderSummary *s, FILE *out)
 {
 	CamelImapSummary *ims = CAMEL_IMAP_SUMMARY(s);
 
-	if (camel_imap_summary_parent->summary_header_save (s, out) == -1)
+	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->summary_header_save (s, out) == -1)
 		return -1;
 
 	camel_file_util_encode_fixed_int32(out, CAMEL_IMAP_SUMMARY_VERSION);
@@ -307,7 +304,7 @@ message_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 	CamelMessageInfo *info;
 	CamelImapMessageInfo *iinfo;
 
-	info = camel_imap_summary_parent->message_info_from_db (s, mir);
+	info = CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->message_info_from_db (s, mir);
 	if (info) {
 		gchar *part = g_strdup (mir->bdata), *tmp;
 		tmp = part;
@@ -325,7 +322,7 @@ message_info_load (CamelFolderSummary *s, FILE *in)
 	CamelMessageInfo *info;
 	CamelImapMessageInfo *iinfo;
 
-	info = camel_imap_summary_parent->message_info_load (s, in);
+	info = CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->message_info_load (s, in);
 	if (info) {
 		iinfo = (CamelImapMessageInfo *)info;
 
@@ -345,7 +342,7 @@ message_info_to_db (CamelFolderSummary *s, CamelMessageInfo *info)
 	CamelImapMessageInfo *iinfo = (CamelImapMessageInfo *)info;
 	struct _CamelMIRecord *mir;
 
-	mir = camel_imap_summary_parent->message_info_to_db (s, info);
+	mir = CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->message_info_to_db (s, info);
 	if (mir)
 		mir->bdata = g_strdup_printf ("%u", iinfo->server_flags);
 
@@ -357,7 +354,7 @@ message_info_save (CamelFolderSummary *s, FILE *out, CamelMessageInfo *info)
 {
 	CamelImapMessageInfo *iinfo = (CamelImapMessageInfo *)info;
 
-	if (camel_imap_summary_parent->message_info_save (s, out, info) == -1)
+	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->message_info_save (s, out, info) == -1)
 		return -1;
 
 	return camel_file_util_encode_uint32 (out, iinfo->server_flags);
@@ -368,7 +365,7 @@ info_set_user_flag (CamelMessageInfo *info, const gchar *id, gboolean state)
 {
 	gboolean res;
 
-	res = camel_imap_summary_parent->info_set_user_flag (info, id, state);
+	res = CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->info_set_user_flag (info, id, state);
 
 	/* there was a change, so do not forget to store it to server */
 	if (res)
@@ -392,7 +389,7 @@ content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 	}
 	mir->cinfo = part;
 	if (type)
-		return camel_imap_summary_parent->content_info_from_db (s, mir);
+		return CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->content_info_from_db (s, mir);
 	else
 		return camel_folder_summary_content_info_new (s);
 }
@@ -401,7 +398,7 @@ static CamelMessageContentInfo *
 content_info_load (CamelFolderSummary *s, FILE *in)
 {
 	if (fgetc (in))
-		return camel_imap_summary_parent->content_info_load (s, in);
+		return CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->content_info_load (s, in);
 	else
 		return camel_folder_summary_content_info_new (s);
 }
@@ -414,7 +411,7 @@ content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelM
 		oldr = mir->cinfo;
 		mir->cinfo = oldr ? g_strdup_printf("%s 1", oldr) : g_strdup ("1");
 		g_free(oldr);
-		return camel_imap_summary_parent->content_info_to_db (s, info, mir);
+		return CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->content_info_to_db (s, info, mir);
 	} else {
 		oldr = mir->cinfo;
 		mir->cinfo = oldr ? g_strdup_printf("%s 0", oldr) : g_strdup ("0");
@@ -429,7 +426,7 @@ content_info_save (CamelFolderSummary *s, FILE *out,
 {
 	if (info->type) {
 		fputc (1, out);
-		return camel_imap_summary_parent->content_info_save (s, out, info);
+		return CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->content_info_save (s, out, info);
 	} else
 		return fputc (0, out);
 }

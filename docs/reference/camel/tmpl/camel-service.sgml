@@ -17,6 +17,9 @@ CamelService
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelService ##### -->
 <para>
 
@@ -95,6 +98,7 @@ CamelService
 @provider: 
 @url: 
 @ex: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_service_connect ##### -->

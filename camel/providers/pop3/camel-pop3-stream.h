@@ -32,8 +32,8 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelPOP3StreamClass CamelPOP3StreamClass;
 typedef struct _CamelPOP3Stream CamelPOP3Stream;
+typedef struct _CamelPOP3StreamClass CamelPOP3StreamClass;
 
 typedef enum {
 	CAMEL_POP3_STREAM_LINE,

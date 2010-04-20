@@ -29,7 +29,6 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
@@ -38,65 +37,55 @@
 
 #define d(x)
 
-/* Returns the class for a CamelLocalStore */
-#define CLOCALS_CLASS(so) CAMEL_LOCAL_STORE_CLASS (CAMEL_OBJECT_GET_CLASS(so))
-#define CF_CLASS(so) CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
-
-static void construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex);
+static gboolean construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex);
 static CamelFolder *get_folder(CamelStore * store, const gchar *folder_name, guint32 flags, CamelException * ex);
 static gchar *get_name(CamelService *service, gboolean brief);
 static CamelFolder *local_get_inbox (CamelStore *store, CamelException *ex);
 static CamelFolder *local_get_junk(CamelStore *store, CamelException *ex);
 static CamelFolder *local_get_trash(CamelStore *store, CamelException *ex);
 static CamelFolderInfo *get_folder_info (CamelStore *store, const gchar *top, guint32 flags, CamelException *ex);
-static void delete_folder(CamelStore *store, const gchar *folder_name, CamelException *ex);
-static void rename_folder(CamelStore *store, const gchar *old, const gchar *new, CamelException *ex);
+static gboolean delete_folder(CamelStore *store, const gchar *folder_name, CamelException *ex);
+static gboolean rename_folder(CamelStore *store, const gchar *old, const gchar *new, CamelException *ex);
 static CamelFolderInfo *create_folder(CamelStore *store, const gchar *parent_name, const gchar *folder_name, CamelException *ex);
 static gboolean local_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex);
 
 static gchar *local_get_full_path(CamelLocalStore *lf, const gchar *full_name);
 static gchar *local_get_meta_path(CamelLocalStore *lf, const gchar *full_name, const gchar *ext);
 
-static CamelStoreClass *parent_class = NULL;
+static gpointer camel_local_store_parent_class;
 
 static void
-camel_local_store_class_init (CamelLocalStoreClass *camel_local_store_class)
+local_store_finalize (CamelLocalStore *local_store)
 {
-	CamelStoreClass *camel_store_class = CAMEL_STORE_CLASS (camel_local_store_class);
-	CamelServiceClass *camel_service_class = CAMEL_SERVICE_CLASS (camel_local_store_class);
-
-	parent_class = CAMEL_STORE_CLASS (camel_type_get_global_classfuncs (camel_store_get_type ()));
-
-	/* virtual method overload */
-	camel_service_class->construct = construct;
-	camel_service_class->get_name = get_name;
-	camel_store_class->get_folder = get_folder;
-	camel_store_class->get_inbox = local_get_inbox;
-	camel_store_class->get_trash = local_get_trash;
-	camel_store_class->get_junk = local_get_junk;
-	camel_store_class->get_folder_info = get_folder_info;
-	camel_store_class->free_folder_info = camel_store_free_folder_info_full;
-
-	camel_store_class->create_folder = create_folder;
-	camel_store_class->delete_folder = delete_folder;
-	camel_store_class->rename_folder = rename_folder;
-	camel_store_class->can_refresh_folder = local_can_refresh_folder;
-
-	camel_local_store_class->get_full_path = local_get_full_path;
-	camel_local_store_class->get_meta_path = local_get_meta_path;
+	g_free (local_store->toplevel_dir);
 }
 
 static void
-camel_local_store_finalize (CamelLocalStore *local_store)
+camel_local_store_class_init (CamelLocalStoreClass *class)
 {
-	CamelStore *store;
+	CamelServiceClass *service_class;
+	CamelStoreClass *store_class;
 
-	if (local_store->toplevel_dir)
-		g_free (local_store->toplevel_dir);
+	camel_local_store_parent_class = CAMEL_STORE_CLASS (camel_type_get_global_classfuncs (camel_store_get_type ()));
 
-	store = ((CamelStore *)local_store);
-	d(printf ("\n\aLocal Store Finalize \n\a"));
+	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->construct = construct;
+	service_class->get_name = get_name;
 
+	store_class = CAMEL_STORE_CLASS (class);
+	store_class->get_folder = get_folder;
+	store_class->get_inbox = local_get_inbox;
+	store_class->get_trash = local_get_trash;
+	store_class->get_junk = local_get_junk;
+	store_class->get_folder_info = get_folder_info;
+	store_class->free_folder_info = camel_store_free_folder_info_full;
+	store_class->create_folder = create_folder;
+	store_class->delete_folder = delete_folder;
+	store_class->rename_folder = rename_folder;
+	store_class->can_refresh_folder = local_can_refresh_folder;
+
+	class->get_full_path = local_get_full_path;
+	class->get_meta_path = local_get_meta_path;
 }
 
 CamelType
@@ -111,27 +100,35 @@ camel_local_store_get_type (void)
 							     (CamelObjectClassInitFunc) camel_local_store_class_init,
 							     NULL,
 							     NULL,
-							     (CamelObjectFinalizeFunc) camel_local_store_finalize);
+							     (CamelObjectFinalizeFunc) local_store_finalize);
 	}
 
 	return camel_local_store_type;
 }
 
-static void
-construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex)
+static gboolean
+construct (CamelService *service,
+           CamelSession *session,
+           CamelProvider *provider,
+           CamelURL *url,
+           CamelException *ex)
 {
 	CamelLocalStore *local_store = CAMEL_LOCAL_STORE (service);
+	CamelServiceClass *service_class;
 	gint len;
 
-	CAMEL_SERVICE_CLASS (parent_class)->construct (service, session, provider, url, ex);
-	if (camel_exception_is_set (ex))
-		return;
+	/* Chain up to parent's construct() method. */
+	service_class = CAMEL_SERVICE_CLASS (camel_local_store_parent_class);
+	if (!service_class->construct (service, session, provider, url, ex))
+		return FALSE;
 
 	len = strlen (service->url->path);
 	if (!G_IS_DIR_SEPARATOR (service->url->path[len - 1]))
 		local_store->toplevel_dir = g_strdup_printf ("%s/", service->url->path);
 	else
 		local_store->toplevel_dir = g_strdup (service->url->path);
+
+	return TRUE;
 }
 
 const gchar *
@@ -152,15 +149,17 @@ get_folder(CamelStore * store, const gchar *folder_name, guint32 flags, CamelExc
 		path[len-1] = '\0';
 
 	if (!g_path_is_absolute(path)) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-				     _("Store root %s is not an absolute path"), path);
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+			_("Store root %s is not an absolute path"), path);
 		return NULL;
 	}
 
 	if (g_stat(path, &st) == 0) {
 		if (!S_ISDIR(st.st_mode)) {
-			camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-					     _("Store root %s is not a regular directory"), path);
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+				_("Store root %s is not a regular directory"), path);
 			return NULL;
 		}
 		return (CamelFolder *) 0xdeadbeef;
@@ -168,17 +167,19 @@ get_folder(CamelStore * store, const gchar *folder_name, guint32 flags, CamelExc
 
 	if (errno != ENOENT
 	    || (flags & CAMEL_STORE_FOLDER_CREATE) == 0) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-				      _("Cannot get folder: %s: %s"),
-				      path, g_strerror (errno));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+			_("Cannot get folder: %s: %s"),
+			path, g_strerror (errno));
 		return NULL;
 	}
 
 	/* need to create the dir heirarchy */
 	if (g_mkdir_with_parents (path, 0700) == -1 && errno != EEXIST) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-				      _("Cannot get folder: %s: %s"),
-				      path, g_strerror (errno));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+			_("Cannot get folder: %s: %s"),
+			path, g_strerror (errno));
 		return NULL;
 	}
 
@@ -188,15 +189,21 @@ get_folder(CamelStore * store, const gchar *folder_name, guint32 flags, CamelExc
 static CamelFolder *
 local_get_inbox(CamelStore *store, CamelException *ex)
 {
-	camel_exception_set(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-			    _("Local stores do not have an inbox"));
+	camel_exception_set (
+		ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+		_("Local stores do not have an inbox"));
+
 	return NULL;
 }
 
 static CamelFolder *
-local_get_trash(CamelStore *store, CamelException *ex)
+local_get_trash (CamelStore *store,
+                 CamelException *ex)
 {
-	CamelFolder *folder = CAMEL_STORE_CLASS(parent_class)->get_trash(store, ex);
+	CamelFolder *folder;
+
+	/* Chain up to parent's get_trash() method. */
+	folder = CAMEL_STORE_CLASS (camel_local_store_parent_class)->get_trash (store, ex);
 
 	if (folder) {
 		gchar *state = camel_local_store_get_meta_path(store, CAMEL_VTRASH_NAME, ".cmeta");
@@ -211,9 +218,13 @@ local_get_trash(CamelStore *store, CamelException *ex)
 }
 
 static CamelFolder *
-local_get_junk(CamelStore *store, CamelException *ex)
+local_get_junk (CamelStore *store,
+                CamelException *ex)
 {
-	CamelFolder *folder = CAMEL_STORE_CLASS(parent_class)->get_junk(store, ex);
+	CamelFolder *folder;
+
+	/* Chain up to parent's get_junk() method. */
+	folder = CAMEL_STORE_CLASS (camel_local_store_parent_class)->get_junk (store, ex);
 
 	if (folder) {
 		gchar *state = camel_local_store_get_meta_path(store, CAMEL_VJUNK_NAME, ".cmeta");
@@ -252,7 +263,10 @@ get_folder_info (CamelStore *store, const gchar *top,
 }
 
 static CamelFolderInfo *
-create_folder(CamelStore *store, const gchar *parent_name, const gchar *folder_name, CamelException *ex)
+create_folder (CamelStore *store,
+               const gchar *parent_name,
+               const gchar *folder_name,
+               CamelException *ex)
 {
 	gchar *path = ((CamelLocalStore *)store)->toplevel_dir;
 	gchar *name;
@@ -263,8 +277,9 @@ create_folder(CamelStore *store, const gchar *parent_name, const gchar *folder_n
 	/* This is a pretty hacky version of create folder, but should basically work */
 
 	if (!g_path_is_absolute(path)) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-				     _("Store root %s is not an absolute path"), path);
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+			_("Store root %s is not an absolute path"), path);
 		return NULL;
 	}
 
@@ -274,9 +289,10 @@ create_folder(CamelStore *store, const gchar *parent_name, const gchar *folder_n
 		name = g_strdup_printf("%s/%s", path, folder_name);
 
 	if (g_stat(name, &st) == 0 || errno != ENOENT) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-				      _("Cannot get folder: %s: %s"),
-				      name, g_strerror (errno));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+			_("Cannot get folder: %s: %s"),
+			name, g_strerror (errno));
 		g_free(name);
 		return NULL;
 	}
@@ -288,10 +304,12 @@ create_folder(CamelStore *store, const gchar *parent_name, const gchar *folder_n
 	else
 		name = g_strdup_printf("%s", folder_name);
 
-	folder = ((CamelStoreClass *)((CamelObject *)store)->klass)->get_folder(store, name, CAMEL_STORE_FOLDER_CREATE, ex);
+	folder = CAMEL_STORE_GET_CLASS (store)->get_folder (
+		store, name, CAMEL_STORE_FOLDER_CREATE, ex);
 	if (folder) {
 		camel_object_unref (folder);
-		info = ((CamelStoreClass *)((CamelObject *)store)->klass)->get_folder_info(store, name, 0, ex);
+		info = CAMEL_STORE_GET_CLASS (store)->get_folder_info (
+			store, name, 0, ex);
 
 		/* get_folder(CREATE) will emit a folder_created event for us */
 		/*if (info)
@@ -303,7 +321,13 @@ create_folder(CamelStore *store, const gchar *parent_name, const gchar *folder_n
 	return info;
 }
 
-static gint xrename(const gchar *oldp, const gchar *newp, const gchar *prefix, const gchar *suffix, gint missingok, CamelException *ex)
+static gint
+xrename (const gchar *oldp,
+         const gchar *newp,
+         const gchar *prefix,
+         const gchar *suffix,
+         gint missingok,
+         CamelException *ex)
 {
 	struct stat st;
 	gchar *old = g_strconcat(prefix, oldp, suffix, NULL);
@@ -329,9 +353,10 @@ static gint xrename(const gchar *oldp, const gchar *newp, const gchar *prefix, c
 	}
 
 	if (ret == -1) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not rename folder %s to %s: %s"),
-				      old, new, g_strerror (err));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Could not rename folder %s to %s: %s"),
+			old, new, g_strerror (err));
 	}
 
 	g_free(old);
@@ -340,8 +365,11 @@ static gint xrename(const gchar *oldp, const gchar *newp, const gchar *prefix, c
 }
 
 /* default implementation, rename all */
-static void
-rename_folder(CamelStore *store, const gchar *old, const gchar *new, CamelException *ex)
+static gboolean
+rename_folder(CamelStore *store,
+              const gchar *old,
+              const gchar *new,
+              CamelException *ex)
 {
 	gchar *path = CAMEL_LOCAL_STORE (store)->toplevel_dir;
 	CamelLocalFolder *folder = NULL;
@@ -380,7 +408,7 @@ rename_folder(CamelStore *store, const gchar *old, const gchar *new, CamelExcept
 	if (folder)
 		camel_object_unref (folder);
 
-	return;
+	return TRUE;
 
 	/* The (f)utility of this recovery effort is quesitonable */
 
@@ -397,20 +425,25 @@ summary_failed:
 	} else
 		camel_text_index_rename(newibex, oldibex);
 ibex_failed:
-	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-			      _("Could not rename '%s': %s"),
-			      old, g_strerror (errno));
+	camel_exception_setv (
+		ex, CAMEL_EXCEPTION_SYSTEM,
+		_("Could not rename '%s': %s"),
+		old, g_strerror (errno));
 
 	g_free(newibex);
 	g_free(oldibex);
 
 	if (folder)
 		camel_object_unref (folder);
+
+	return FALSE;
 }
 
 /* default implementation, only delete metadata */
-static void
-delete_folder(CamelStore *store, const gchar *folder_name, CamelException *ex)
+static gboolean
+delete_folder (CamelStore *store,
+               const gchar *folder_name,
+               CamelException *ex)
 {
 	CamelFolderInfo *fi;
 	CamelException lex;
@@ -422,12 +455,13 @@ delete_folder(CamelStore *store, const gchar *folder_name, CamelException *ex)
 	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
 	str = g_strdup_printf("%s.ibex", name);
 	if (camel_text_index_remove(str) == -1 && errno != ENOENT) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not delete folder index file '%s': %s"),
-				      str, g_strerror (errno));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Could not delete folder index file '%s': %s"),
+			str, g_strerror (errno));
 		g_free(str);
 		g_free (name);
-		return;
+		return FALSE;
 	}
 	g_free(str);
 
@@ -445,12 +479,13 @@ delete_folder(CamelStore *store, const gchar *folder_name, CamelException *ex)
 		str = g_strdup_printf ("%s.cmeta", name);
 
 	if (g_unlink (str) == -1 && errno != ENOENT) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not delete folder meta file '%s': %s"),
-				      str, g_strerror (errno));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Could not delete folder meta file '%s': %s"),
+			str, g_strerror (errno));
 		g_free (name);
 		g_free (str);
-		return;
+		return FALSE;
 	}
 
 	g_free (str);
@@ -466,6 +501,8 @@ delete_folder(CamelStore *store, const gchar *folder_name, CamelException *ex)
 	camel_object_trigger_event (store, "folder_deleted", fi);
 
 	camel_folder_info_free (fi);
+
+	return TRUE;
 }
 
 static gchar *

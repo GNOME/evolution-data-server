@@ -25,8 +25,6 @@
 #include "camel-mbox-folder.h"
 #include "camel-spool-summary.h"
 
-/*  #include "camel-store.h" */
-
 #define CAMEL_SPOOL_FOLDER_TYPE     (camel_spool_folder_get_type ())
 #define CAMEL_SPOOL_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_SPOOL_FOLDER_TYPE, CamelSpoolFolder))
 #define CAMEL_SPOOL_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_SPOOL_FOLDER_TYPE, CamelSpoolFolderClass))
@@ -34,19 +32,21 @@
 
 G_BEGIN_DECLS
 
-typedef struct {
-	CamelMboxFolder parent;
+typedef struct _CamelSpoolFolder CamelSpoolFolder;
+typedef struct _CamelSpoolFolderClass CamelSpoolFolderClass;
+typedef struct _CamelSpoolFolderPrivate CamelSpoolFolderPrivate;
 
-	struct _CamelSpoolFolderPrivate *priv;
+struct _CamelSpoolFolder {
+	CamelMboxFolder parent;
+	CamelSpoolFolderPrivate *priv;
 
 	gint lockid;		/* lock id for dot locking */
-} CamelSpoolFolder;
+};
 
-typedef struct {
+struct _CamelSpoolFolderClass {
 	CamelMboxFolderClass parent_class;
-} CamelSpoolFolderClass;
+};
 
-/* Standard Camel function */
 CamelType camel_spool_folder_get_type(void);
 
 CamelFolder *camel_spool_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 flags, CamelException *ex);

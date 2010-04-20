@@ -17,6 +17,9 @@ CamelStore
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelStore ##### -->
 <para>
 
@@ -375,6 +378,7 @@ CamelStore
 @store: 
 @folder_name: 
 @ex: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_store_rename_folder ##### -->
@@ -386,6 +390,7 @@ CamelStore
 @old_namein: 
 @new_name: 
 @ex: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_store_sync ##### -->
@@ -396,6 +401,7 @@ CamelStore
 @store: 
 @expunge: 
 @ex: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_store_get_folder_info ##### -->
@@ -442,6 +448,7 @@ CamelStore
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -501,6 +508,7 @@ CamelStore
 @store: 
 @folder_name: 
 @ex: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_store_unsubscribe_folder ##### -->
@@ -511,6 +519,7 @@ CamelStore
 @store: 
 @folder_name: 
 @ex: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_store_noop ##### -->
@@ -520,6 +529,7 @@ CamelStore
 
 @store: 
 @ex: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_store_folder_uri_equal ##### -->

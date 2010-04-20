@@ -38,12 +38,13 @@
 
 G_BEGIN_DECLS
 
-typedef struct  _CamelGroupwiseFolder CamelGroupwiseFolder;
-typedef struct  _CamelGroupwiseFolderClass CamelGroupwiseFolderClass;
+typedef struct _CamelGroupwiseFolder CamelGroupwiseFolder;
+typedef struct _CamelGroupwiseFolderClass CamelGroupwiseFolderClass;
+typedef struct _CamelGroupwiseFolderPrivate CamelGroupwiseFolderPrivate;
+
 struct _CamelGroupwiseFolder {
 	CamelOfflineFolder parent;
-
-	struct _CamelGroupwiseFolderPrivate *priv;
+	CamelGroupwiseFolderPrivate *priv;
 
 	CamelFolderSearch *search;
 
@@ -63,7 +64,6 @@ struct _CamelGroupwiseFolderClass {
 
 } ;
 
-/* Standard Camel function */
 CamelType camel_groupwise_folder_get_type (void);
 
 /* implemented */

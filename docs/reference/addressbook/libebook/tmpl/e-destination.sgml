@@ -17,6 +17,9 @@ EDestination
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT EDestination ##### -->
 <para>
 
@@ -252,6 +255,7 @@ EDestination
 
 </para>
 
+@void: 
 @Returns: 
 
 

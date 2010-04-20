@@ -17,6 +17,9 @@ CamelSession
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelSession ##### -->
 <para>
 
@@ -158,6 +161,7 @@ CamelSession
 @domain: 
 @item: 
 @ex: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_session_alert_user ##### -->

@@ -33,7 +33,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 
 #include "camel-groupwise-folder.h"
@@ -42,16 +41,31 @@
 
 #define d(x)
 
-static void camel_groupwise_journal_class_init (CamelGroupwiseJournalClass *klass);
-static void camel_groupwise_journal_init (CamelGroupwiseJournal *journal, CamelGroupwiseJournalClass *klass);
-static void camel_groupwise_journal_finalize (CamelObject *object);
-
 static void groupwise_entry_free (CamelOfflineJournal *journal, CamelDListNode *entry);
 static CamelDListNode *groupwise_entry_load (CamelOfflineJournal *journal, FILE *in);
 static gint groupwise_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
 static gint groupwise_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
 
-static CamelOfflineJournalClass *parent_class = NULL;
+static gpointer camel_groupwise_journal_parent_class;
+
+static void
+camel_groupwise_journal_class_init (CamelGroupwiseJournalClass *class)
+{
+	CamelOfflineJournalClass *offline_journal_class;
+
+	camel_groupwise_journal_parent_class = (CamelOfflineJournalClass *) camel_type_get_global_classfuncs (CAMEL_TYPE_OFFLINE_JOURNAL);
+
+	offline_journal_class = CAMEL_OFFLINE_JOURNAL_CLASS (class);
+	offline_journal_class->entry_free = groupwise_entry_free;
+	offline_journal_class->entry_load = groupwise_entry_load;
+	offline_journal_class->entry_write = groupwise_entry_write;
+	offline_journal_class->entry_play = groupwise_entry_play;
+}
+
+static void
+camel_groupwise_journal_init (CamelGroupwiseJournal *groupwise_journal)
+{
+}
 
 CamelType
 camel_groupwise_journal_get_type (void)
@@ -66,35 +80,10 @@ camel_groupwise_journal_get_type (void)
 					    (CamelObjectClassInitFunc) camel_groupwise_journal_class_init,
 					    NULL,
 					    (CamelObjectInitFunc) camel_groupwise_journal_init,
-					    (CamelObjectFinalizeFunc) camel_groupwise_journal_finalize);
+					    (CamelObjectFinalizeFunc) NULL);
 	}
 
 	return type;
-}
-
-static void
-camel_groupwise_journal_class_init (CamelGroupwiseJournalClass *klass)
-{
-	CamelOfflineJournalClass *journal_class = (CamelOfflineJournalClass *) klass;
-
-	parent_class = (CamelOfflineJournalClass *) camel_type_get_global_classfuncs (CAMEL_TYPE_OFFLINE_JOURNAL);
-
-	journal_class->entry_free = groupwise_entry_free;
-	journal_class->entry_load = groupwise_entry_load;
-	journal_class->entry_write = groupwise_entry_write;
-	journal_class->entry_play = groupwise_entry_play;
-}
-
-static void
-camel_groupwise_journal_init (CamelGroupwiseJournal *journal, CamelGroupwiseJournalClass *klass)
-{
-
-}
-
-static void
-camel_groupwise_journal_finalize (CamelObject *object)
-{
-
 }
 
 static void
@@ -195,7 +184,7 @@ groupwise_entry_play_append (CamelOfflineJournal *journal, CamelGroupwiseJournal
 	CamelMimeMessage *message;
 	CamelMessageInfo *info;
 	CamelStream *stream;
-	CamelException lex;
+	gboolean success;
 
 	/* if the message isn't in the cache, the user went behind our backs so "not our problem" */
 	if (!gw_folder->cache || !(stream = camel_data_cache_get (gw_folder->cache, "cache", entry->uid, ex)))
@@ -215,15 +204,12 @@ groupwise_entry_play_append (CamelOfflineJournal *journal, CamelGroupwiseJournal
 		info = camel_message_info_new (NULL);
 	}
 
-	camel_exception_init (&lex);
-	camel_folder_append_message (folder, message, info, NULL, &lex);
+	success = camel_folder_append_message (folder, message, info, NULL, ex);
 	camel_message_info_free (info);
 	camel_object_unref (message);
 
-	if (camel_exception_is_set (&lex)) {
-		camel_exception_xfer (ex, &lex);
+	if (!success)
 		return -1;
-	}
 
  done:
 
@@ -241,7 +227,6 @@ groupwise_entry_play_transfer (CamelOfflineJournal *journal, CamelGroupwiseJourn
 	CamelGroupwiseMessageInfo *real;
 	CamelMessageInfoBase *info;
 	GPtrArray *xuids, *uids;
-	CamelException lex;
 	CamelFolder *src;
 	const gchar *name;
 
@@ -255,16 +240,13 @@ groupwise_entry_play_transfer (CamelOfflineJournal *journal, CamelGroupwiseJourn
 		uids = g_ptr_array_sized_new (1);
 		g_ptr_array_add (uids, entry->original_uid);
 
-		camel_exception_init (&lex);
-		camel_folder_transfer_messages_to (src, uids, folder, &xuids, FALSE, &lex);
-		if (!camel_exception_is_set (&lex)) {
+		if (camel_folder_transfer_messages_to (src, uids, folder, &xuids, FALSE, ex)) {
 			real = (CamelGroupwiseMessageInfo *) camel_folder_summary_uid (folder->summary, xuids->pdata[0]);
 
 			/* transfer all the system flags, user flags/tags, etc */
 			gw_message_info_dup_to ((CamelMessageInfoBase *) real, (CamelMessageInfoBase *) info);
 			camel_message_info_free (real);
 		} else {
-			camel_exception_xfer (ex, &lex);
 			goto exception;
 		}
 
@@ -272,8 +254,10 @@ groupwise_entry_play_transfer (CamelOfflineJournal *journal, CamelGroupwiseJourn
 		g_ptr_array_free (uids, TRUE);
 		camel_object_unref (src);
 	} else if (!name) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot get folder container %s"),
-				      entry->source_container);
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Cannot get folder container %s"),
+			entry->source_container);
 		goto exception;
 	}
 
@@ -333,8 +317,9 @@ update_cache (CamelGroupwiseJournal *groupwise_journal, CamelMimeMessage *messag
 	gchar *uid;
 
 	if (groupwise_folder->cache == NULL) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
-				     _("Cannot append message in offline mode: cache unavailable"));
+		camel_exception_set (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Cannot append message in offline mode: cache unavailable"));
 		return FALSE;
 	}
 
@@ -349,9 +334,10 @@ update_cache (CamelGroupwiseJournal *groupwise_journal, CamelMimeMessage *messag
 
 	if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) message, cache) == -1
 	    || camel_stream_flush (cache) == -1) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot append message in offline mode: %s"),
-				      g_strerror (errno));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Cannot append message in offline mode: %s"),
+			g_strerror (errno));
 		camel_data_cache_remove (groupwise_folder->cache, "cache", uid, NULL);
 		folder->summary->nextuid--;
 		camel_object_unref (cache);

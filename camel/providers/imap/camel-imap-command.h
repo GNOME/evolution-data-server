@@ -26,7 +26,6 @@
 #ifndef CAMEL_IMAP_COMMAND_H
 #define CAMEL_IMAP_COMMAND_H
 
-#include <glib.h>
 #include "camel-imap-store.h"
 
 G_BEGIN_DECLS

@@ -112,7 +112,7 @@ gint		camel_block_file_delete		(CamelBlockFile *kf);
 CamelBlock *	camel_block_file_new_block	(CamelBlockFile *bs);
 gint		camel_block_file_free_block	(CamelBlockFile *bs,
 						 camel_block_t id);
-CamelBlock 	*camel_block_file_get_block	(CamelBlockFile *bs,
+CamelBlock *	camel_block_file_get_block	(CamelBlockFile *bs,
 						 camel_block_t id);
 void		camel_block_file_detach_block	(CamelBlockFile *bs,
 						 CamelBlock *bl);

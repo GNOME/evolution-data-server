@@ -17,6 +17,9 @@ camel-operation
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelOperation ##### -->
 <para>
 
@@ -141,6 +144,7 @@ camel-operation
 
 </para>
 
+@void: 
 @Returns: 
 
 

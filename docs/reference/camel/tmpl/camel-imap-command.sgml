@@ -17,6 +17,9 @@ camel-imap-command
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### ENUM CamelImapResponseType ##### -->
 <para>
 

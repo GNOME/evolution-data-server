@@ -33,18 +33,18 @@
 
 G_BEGIN_DECLS
 
-typedef struct {
+typedef struct _CamelGroupwiseTransport CamelGroupwiseTransport;
+typedef struct _CamelGroupwiseTransportClass CamelGroupwiseTransportClass;
+
+struct _CamelGroupwiseTransport {
 	CamelTransport parent;
 	gboolean connected;
+};
 
-} CamelGroupwiseTransport;
-
-typedef struct {
+struct _CamelGroupwiseTransportClass {
 	CamelTransportClass parent_class;
+};
 
-} CamelGroupwiseTransportClass;
-
-/* Standard Camel function */
 CamelType camel_groupwise_transport_get_type (void);
 
 G_END_DECLS

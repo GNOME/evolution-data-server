@@ -33,7 +33,7 @@
 
 static gpointer camel_offline_store_parent_class;
 
-static void
+static gboolean
 offline_store_construct (CamelService *service,
                          CamelSession *session,
                          CamelProvider *provider,
@@ -45,13 +45,14 @@ offline_store_construct (CamelService *service,
 
 	/* Chain up to parent's construct() method. */
 	service_class = CAMEL_SERVICE_CLASS (camel_offline_store_parent_class);
-	service_class->construct (service, session, provider, url, ex);
-	if (camel_exception_is_set (ex))
-		return;
+	if (!service_class->construct (service, session, provider, url, ex))
+		return FALSE;
 
 	store->state = camel_session_is_online (session) ?
 		CAMEL_OFFLINE_STORE_NETWORK_AVAIL :
 		CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL;
+
+	return TRUE;
 }
 
 static void
@@ -116,7 +117,7 @@ camel_offline_store_get_network_state (CamelOfflineStore *store,
  * Set the network state to either #CAMEL_OFFLINE_STORE_NETWORK_AVAIL
  * or #CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL.
  **/
-void
+gboolean
 camel_offline_store_set_network_state (CamelOfflineStore *store,
                                        gint state,
                                        CamelException *ex)
@@ -126,7 +127,7 @@ camel_offline_store_set_network_state (CamelOfflineStore *store,
 	gboolean network_state = camel_session_get_network_state (service->session);
 
 	if (store->state == state)
-		return;
+		return TRUE;
 
 	camel_exception_init (&lex);
 	if (store->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) {
@@ -160,17 +161,19 @@ camel_offline_store_set_network_state (CamelOfflineStore *store,
 		}
 
 		if (!camel_service_disconnect (CAMEL_SERVICE (store), network_state, ex))
-			return;
+			return FALSE;
 	} else {
 		store->state = state;
 		/* network unavailable -> network available */
 		if (!camel_service_connect (CAMEL_SERVICE (store), ex)) {
 			store->state = CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL;
-			return;
+			return FALSE;
 		}
 	}
 
 	store->state = state;
+
+	return TRUE;
 }
 
 /**
@@ -178,7 +181,7 @@ camel_offline_store_set_network_state (CamelOfflineStore *store,
  *
  * Since: 2.22
  **/
-void
+gboolean
 camel_offline_store_prepare_for_offline (CamelOfflineStore *store,
                                          CamelException *ex)
 {
@@ -213,6 +216,7 @@ camel_offline_store_prepare_for_offline (CamelOfflineStore *store,
 
 		camel_store_sync (CAMEL_STORE (store), FALSE, &lex);
 		camel_exception_clear (&lex);
-
 	}
+
+	return TRUE;
 }
