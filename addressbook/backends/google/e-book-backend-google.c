@@ -1175,7 +1175,8 @@ e_book_backend_google_get_supported_fields (EBookBackendSync *backend, EDataBook
 		E_CONTACT_ORG,
 		E_CONTACT_ORG_UNIT,
 		E_CONTACT_TITLE,
-		E_CONTACT_ROLE
+		E_CONTACT_ROLE,
+		E_CONTACT_NOTE
 	};
 
 	__debug__ (G_STRFUNC);

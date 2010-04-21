@@ -68,7 +68,7 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry, EContact *contact)
 	gboolean have_phone_primary = FALSE;
 	gboolean have_postal_primary = FALSE;
 	gboolean have_org_primary = FALSE;
-	const gchar *title, *role;
+	const gchar *title, *role, *note;
 
 	attributes = e_vcard_get_attributes (E_VCARD (contact));
 
@@ -96,6 +96,13 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry, EContact *contact)
 		g_object_unref (name);
 	}
 
+	/* NOTE */
+	note = e_contact_get (contact, E_CONTACT_NOTE);
+	if (note)
+		gdata_entry_set_content (entry, note);
+	else
+		gdata_entry_set_content (entry, NULL);
+
 	/* Clear out all the old attributes */
 	gdata_contacts_contact_remove_all_email_addresses (GDATA_CONTACTS_CONTACT (entry));
 	gdata_contacts_contact_remove_all_phone_numbers (GDATA_CONTACTS_CONTACT (entry));
@@ -120,8 +127,9 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry, EContact *contact)
 		    0 == g_ascii_strcasecmp (name, EVC_VERSION) ||
 		    0 == g_ascii_strcasecmp (name, EVC_X_FILE_AS) ||
 		    0 == g_ascii_strcasecmp (name, EVC_TITLE) ||
-		    0 == g_ascii_strcasecmp (name, EVC_ROLE)) {
-			/* Ignore UID, VERSION, X-EVOLUTION-FILE-AS, N, FN, LABEL, TITLE, ROLE */
+		    0 == g_ascii_strcasecmp (name, EVC_ROLE) ||
+		    0 == g_ascii_strcasecmp (name, EVC_NOTE)) {
+			/* Ignore UID, VERSION, X-EVOLUTION-FILE-AS, N, FN, LABEL, TITLE, ROLE, NOTE */
 		} else if (0 == g_ascii_strcasecmp (name, EVC_EMAIL)) {
 			/* EMAIL */
 			GDataGDEmailAddress *email;
@@ -224,7 +232,7 @@ _e_contact_new_from_gdata_entry (GDataEntry *entry)
 	EVCard *vcard;
 	EVCardAttribute *attr;
 	GList *email_addresses, *im_addresses, *phone_numbers, *postal_addresses, *orgs;
-	const gchar *uid;
+	const gchar *uid, *note;
 	GList *itr;
 	GDataGDName *name;
 	GDataGDEmailAddress *email;
@@ -262,6 +270,11 @@ _e_contact_new_from_gdata_entry (GDataEntry *entry)
 
 		e_contact_set (E_CONTACT (vcard), E_CONTACT_NAME, &name_struct);
 	}
+
+	/* NOTE */
+	note = gdata_entry_get_content (entry);
+	if (note)
+		e_contact_set (E_CONTACT (vcard), E_CONTACT_NOTE, note);
 
 	/* EMAIL - primary first */
 	email = gdata_contacts_contact_get_primary_email_address (GDATA_CONTACTS_CONTACT (entry));
