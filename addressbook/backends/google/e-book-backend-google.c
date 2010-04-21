@@ -1171,7 +1171,11 @@ e_book_backend_google_get_supported_fields (EBookBackendSync *backend, EDataBook
 		E_CONTACT_IM_SKYPE_WORK_1,
 		E_CONTACT_IM_SKYPE_WORK_2,
 		E_CONTACT_IM_SKYPE_WORK_3,
-		E_CONTACT_SIP
+		E_CONTACT_SIP,
+		E_CONTACT_ORG,
+		E_CONTACT_ORG_UNIT,
+		E_CONTACT_TITLE,
+		E_CONTACT_ROLE
 	};
 
 	__debug__ (G_STRFUNC);

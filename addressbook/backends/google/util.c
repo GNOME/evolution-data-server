@@ -35,11 +35,13 @@ static void add_attribute_from_gdata_gd_email_address (EVCard *vcard, GDataGDEma
 static void add_attribute_from_gdata_gd_im_address (EVCard *vcard, GDataGDIMAddress *im);
 static void add_attribute_from_gdata_gd_phone_number (EVCard *vcard, GDataGDPhoneNumber *number);
 static void add_attribute_from_gdata_gd_postal_address (EVCard *vcard, GDataGDPostalAddress *address);
+static void add_attribute_from_gdata_gd_organization (EVCard *vcard, GDataGDOrganization *org);
 
 static GDataGDEmailAddress *gdata_gd_email_address_from_attribute (EVCardAttribute *attr, gboolean *primary);
 static GDataGDIMAddress *gdata_gd_im_address_from_attribute (EVCardAttribute *attr, gboolean *primary);
 static GDataGDPhoneNumber *gdata_gd_phone_number_from_attribute (EVCardAttribute *attr, gboolean *primary);
 static GDataGDPostalAddress *gdata_gd_postal_address_from_attribute (EVCardAttribute *attr, gboolean *primary);
+static GDataGDOrganization *gdata_gd_organization_from_attribute (EVCardAttribute *attr, gboolean *primary);
 
 static gboolean is_known_google_im_protocol (const gchar *protocol);
 
@@ -65,6 +67,8 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry, EContact *contact)
 	gboolean have_im_primary = FALSE;
 	gboolean have_phone_primary = FALSE;
 	gboolean have_postal_primary = FALSE;
+	gboolean have_org_primary = FALSE;
+	const gchar *title, *role;
 
 	attributes = e_vcard_get_attributes (E_VCARD (contact));
 
@@ -97,6 +101,7 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry, EContact *contact)
 	gdata_contacts_contact_remove_all_phone_numbers (GDATA_CONTACTS_CONTACT (entry));
 	gdata_contacts_contact_remove_all_postal_addresses (GDATA_CONTACTS_CONTACT (entry));
 	gdata_contacts_contact_remove_all_im_addresses (GDATA_CONTACTS_CONTACT (entry));
+	gdata_contacts_contact_remove_all_organizations (GDATA_CONTACTS_CONTACT (entry));
 
 	/* We walk them in reverse order, so we can find
 	 * the correct primaries */
@@ -113,8 +118,10 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry, EContact *contact)
 		    0 == g_ascii_strcasecmp (name, EVC_FN) ||
 		    0 == g_ascii_strcasecmp (name, EVC_LABEL) ||
 		    0 == g_ascii_strcasecmp (name, EVC_VERSION) ||
-		    0 == g_ascii_strcasecmp (name, EVC_X_FILE_AS)) {
-			/* Ignore UID, VERSION, X-EVOLUTION-FILE-AS, N, FN, LABEL */
+		    0 == g_ascii_strcasecmp (name, EVC_X_FILE_AS) ||
+		    0 == g_ascii_strcasecmp (name, EVC_TITLE) ||
+		    0 == g_ascii_strcasecmp (name, EVC_ROLE)) {
+			/* Ignore UID, VERSION, X-EVOLUTION-FILE-AS, N, FN, LABEL, TITLE, ROLE */
 		} else if (0 == g_ascii_strcasecmp (name, EVC_EMAIL)) {
 			/* EMAIL */
 			GDataGDEmailAddress *email;
@@ -142,6 +149,15 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry, EContact *contact)
 				gdata_contacts_contact_add_postal_address (GDATA_CONTACTS_CONTACT (entry), address);
 				g_object_unref (address);
 			}
+		} else if (0 == g_ascii_strcasecmp (name, EVC_ORG)) {
+			/* ORG */
+			GDataGDOrganization *org;
+
+			org = gdata_gd_organization_from_attribute (attr, &have_org_primary);
+			if (org) {
+				gdata_contacts_contact_add_organization (GDATA_CONTACTS_CONTACT (entry), org);
+				g_object_unref (org);
+			}
 		} else if (0 == g_ascii_strncasecmp (name, "X-", 2) && is_known_google_im_protocol (name + 2)) {
 			/* X-IM */
 			GDataGDIMAddress *im;
@@ -167,6 +183,29 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry, EContact *contact)
 		}
 	}
 
+	/* TITLE and ROLE */
+	title = e_contact_get (contact, E_CONTACT_TITLE);
+	role = e_contact_get (contact, E_CONTACT_ROLE);
+	if (title || role) {
+		GDataGDOrganization *org = NULL;
+
+		/* Find an appropriate org: try to add them to the primary organization, but fall back to the first listed organization if none
+		 * are marked as primary. */
+		if (have_org_primary) {
+			org = gdata_contacts_contact_get_primary_organization (GDATA_CONTACTS_CONTACT (entry));
+		} else {
+			GList *orgs = gdata_contacts_contact_get_organizations (GDATA_CONTACTS_CONTACT (entry));
+			if (orgs)
+				org = orgs->data;
+		}
+
+		/* Set the title and role */
+		if (org && title)
+			gdata_gd_organization_set_title (org, title);
+		if (org && role)
+			gdata_gd_organization_set_job_description (org, role);
+	}
+
 	return TRUE;
 }
 
@@ -184,7 +223,7 @@ _e_contact_new_from_gdata_entry (GDataEntry *entry)
 {
 	EVCard *vcard;
 	EVCardAttribute *attr;
-	GList *email_addresses, *im_addresses, *phone_numbers, *postal_addresses;
+	GList *email_addresses, *im_addresses, *phone_numbers, *postal_addresses, *orgs;
 	const gchar *uid;
 	GList *itr;
 	GDataGDName *name;
@@ -192,6 +231,7 @@ _e_contact_new_from_gdata_entry (GDataEntry *entry)
 	GDataGDIMAddress *im;
 	GDataGDPhoneNumber *phone_number;
 	GDataGDPostalAddress *postal_address;
+	GDataGDOrganization *org;
 	GHashTable *extended_props;
 
 	uid = gdata_entry_get_id (entry);
@@ -269,6 +309,30 @@ _e_contact_new_from_gdata_entry (GDataEntry *entry)
 		if (gdata_gd_postal_address_is_primary (postal_address) == TRUE)
 			continue;
 		add_attribute_from_gdata_gd_postal_address (vcard, postal_address);
+	}
+
+	/* ORG - primary first */
+	org = gdata_contacts_contact_get_primary_organization (GDATA_CONTACTS_CONTACT (entry));
+	orgs = gdata_contacts_contact_get_organizations (GDATA_CONTACTS_CONTACT (entry));
+	add_attribute_from_gdata_gd_organization (vcard, org);
+
+	if (org || orgs) {
+		if (!org)
+			org = orgs->data;
+
+		/* EVC_TITLE and EVC_ROLE from the primary organization (or the first organization in the list if there isn't a primary org) */
+		attr = e_vcard_attribute_new (NULL, EVC_TITLE);
+		e_vcard_add_attribute_with_value (vcard, attr, gdata_gd_organization_get_title (org));
+
+		attr = e_vcard_attribute_new (NULL, EVC_ROLE);
+		e_vcard_add_attribute_with_value (vcard, attr, gdata_gd_organization_get_job_description (org));
+	}
+
+	for (itr = orgs; itr; itr = itr->next) {
+		org = itr->data;
+		if (gdata_gd_organization_is_primary (org) == TRUE)
+			continue;
+		add_attribute_from_gdata_gd_organization (vcard, org);
 	}
 
 	/* Extended properties */
@@ -680,6 +744,35 @@ add_attribute_from_gdata_gd_postal_address (EVCard *vcard, GDataGDPostalAddress 
 		e_vcard_add_attribute (vcard, attr);
 }
 
+static void
+add_attribute_from_gdata_gd_organization (EVCard *vcard, GDataGDOrganization *org)
+{
+	EVCardAttribute *attr;
+	gboolean has_type;
+
+	if (!org || !gdata_gd_organization_get_name (org))
+		return;
+
+	/* Add the LABEL */
+	attr = e_vcard_attribute_new (NULL, EVC_ORG);
+	has_type = add_type_param_from_google_rel (attr, gdata_gd_organization_get_relation_type (org));
+	if (gdata_gd_organization_is_primary (org))
+		add_primary_param (attr, has_type);
+	add_label_param (attr, gdata_gd_organization_get_label (org));
+
+	e_vcard_attribute_add_value (attr, gdata_gd_organization_get_name (org));
+	e_vcard_attribute_add_value (attr, gdata_gd_organization_get_department (org));
+
+	/* The following bits of data provided by the Google Contacts API can't be fitted into the vCard format:
+	 *   gdata_gd_organization_get_title
+	 *   gdata_gd_organization_get_job_description
+	 *   gdata_gd_organization_get_symbol
+	 *   gdata_gd_organization_get_location */
+
+	if (attr)
+		e_vcard_add_attribute (vcard, attr);
+}
+
 static GDataGDEmailAddress *
 gdata_gd_email_address_from_attribute (EVCardAttribute *attr, gboolean *have_primary)
 {
@@ -846,4 +939,41 @@ gdata_gd_postal_address_from_attribute (EVCardAttribute *attr, gboolean *have_pr
 	}
 
 	return address;
+}
+
+static GDataGDOrganization *
+gdata_gd_organization_from_attribute (EVCardAttribute *attr, gboolean *have_primary)
+{
+	GDataGDOrganization *org = NULL;
+	GList *values;
+
+	values = e_vcard_attribute_get_values (attr);
+	if (values) {
+		GList *types;
+		gboolean primary;
+		gchar *rel;
+		const gchar *label;
+
+		types = get_google_primary_type_label (attr, &primary, &label);
+		if (!*have_primary)
+			*have_primary = primary;
+		else
+			primary = FALSE;
+
+		rel = google_rel_from_types (types);
+		org = gdata_gd_organization_new (values->data, NULL, rel, label, primary);
+		if (values->next)
+			gdata_gd_organization_set_department (org, values->next->data);
+		g_free (rel);
+
+		/* TITLE and ROLE are dealt with separately in _gdata_entry_update_from_e_contact() */
+
+		__debug__ ("New %sorganization entry %s (%s/%s)",
+		           gdata_gd_organization_is_primary (org) ? "primary " : "",
+		           gdata_gd_organization_get_name (org),
+		           gdata_gd_organization_get_relation_type (org),
+		           gdata_gd_organization_get_label (org));
+	}
+
+	return org;
 }
