@@ -1407,7 +1407,6 @@ calendar/backends/groupwise/Makefile
 calendar/backends/http/Makefile
 calendar/backends/contacts/Makefile
 calendar/backends/weather/Makefile
-calendar/backends/google/Makefile
 calendar/tests/Makefile
 calendar/tests/ecal/Makefile
 camel/Makefile
