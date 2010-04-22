@@ -29,6 +29,10 @@
 
 #include "camel-mime-filter-progress.h"
 
+#define CAMEL_MIME_FILTER_PROGRESS_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_FILTER_PROGRESS, CamelMimeFilterProgressPrivate))
+
 #define d(x)
 #define w(x)
 
@@ -38,13 +42,7 @@ struct _CamelMimeFilterProgressPrivate {
 	gsize count;
 };
 
-static CamelMimeFilterClass *parent_class = NULL;
-
-static void
-mime_filter_progress_finalize (CamelMimeFilterProgress *mime_filter)
-{
-	g_free (mime_filter->priv);
-}
+G_DEFINE_TYPE (CamelMimeFilterProgress, camel_mime_filter_progress, CAMEL_TYPE_MIME_FILTER)
 
 static void
 mime_filter_progress_filter (CamelMimeFilter *mime_filter,
@@ -58,8 +56,7 @@ mime_filter_progress_filter (CamelMimeFilter *mime_filter,
 	CamelMimeFilterProgressPrivate *priv;
 	gdouble percent;
 
-	priv = CAMEL_MIME_FILTER_PROGRESS (mime_filter)->priv;
-
+	priv = CAMEL_MIME_FILTER_PROGRESS_GET_PRIVATE (mime_filter);
 	priv->count += len;
 
 	if (priv->count < priv->total)
@@ -93,7 +90,7 @@ mime_filter_progress_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterProgressPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_PROGRESS (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_PROGRESS_GET_PRIVATE (mime_filter);
 
 	priv->count = 0;
 }
@@ -103,7 +100,7 @@ camel_mime_filter_progress_class_init (CamelMimeFilterProgressClass *class)
 {
 	CamelMimeFilterClass *mime_filter_class;
 
-	parent_class = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelMimeFilterProgressPrivate));
 
 	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
 	mime_filter_class->filter = mime_filter_progress_filter;
@@ -112,28 +109,9 @@ camel_mime_filter_progress_class_init (CamelMimeFilterProgressClass *class)
 }
 
 static void
-camel_mime_filter_progress_init (CamelMimeFilterProgress *mime_filter)
+camel_mime_filter_progress_init (CamelMimeFilterProgress *filter)
 {
-	mime_filter->priv = g_new0 (CamelMimeFilterProgressPrivate, 1);
-}
-
-CamelType
-camel_mime_filter_progress_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_mime_filter_get_type (),
-					    "CamelMimeFilterProgress",
-					    sizeof (CamelMimeFilterProgress),
-					    sizeof (CamelMimeFilterProgressClass),
-					    (CamelObjectClassInitFunc) camel_mime_filter_progress_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_filter_progress_init,
-					    (CamelObjectFinalizeFunc) mime_filter_progress_finalize);
-	}
-
-	return type;
+	filter->priv = CAMEL_MIME_FILTER_PROGRESS_GET_PRIVATE (filter);
 }
 
 /**
@@ -155,8 +133,10 @@ camel_mime_filter_progress_new (CamelOperation *operation,
 	CamelMimeFilter *filter;
 	CamelMimeFilterProgressPrivate *priv;
 
-	filter = (CamelMimeFilter *) camel_object_new (camel_mime_filter_progress_get_type ());
-	priv = CAMEL_MIME_FILTER_PROGRESS (filter)->priv;
+	g_return_val_if_fail (operation != NULL, NULL);
+
+	filter = g_object_new (CAMEL_TYPE_MIME_FILTER_PROGRESS, NULL);
+	priv = CAMEL_MIME_FILTER_PROGRESS_GET_PRIVATE (filter);
 
 	priv->operation = operation;
 	priv->total = total;

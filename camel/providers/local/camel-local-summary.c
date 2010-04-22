@@ -60,22 +60,46 @@ static gint local_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFo
 static CamelMessageInfo *local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, CamelException *ex);
 static gint local_summary_need_index(void);
 
-static gpointer camel_local_summary_parent_class;
+G_DEFINE_TYPE (CamelLocalSummary, camel_local_summary, CAMEL_TYPE_FOLDER_SUMMARY)
 
 static void
-local_summary_finalize (CamelLocalSummary *local_summary)
+local_summary_dispose (GObject *object)
 {
-	if (local_summary->index)
-		camel_object_unref (local_summary->index);
+	CamelLocalSummary *local_summary;
+
+	local_summary = CAMEL_LOCAL_SUMMARY (object);
+
+	if (local_summary->index != NULL) {
+		g_object_unref (local_summary->index);
+		local_summary->index = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_local_summary_parent_class)->dispose (object);
+}
+
+static void
+local_summary_finalize (GObject *object)
+{
+	CamelLocalSummary *local_summary;
+
+	local_summary = CAMEL_LOCAL_SUMMARY (object);
+
 	g_free (local_summary->folder_path);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_local_summary_parent_class)->finalize (object);
 }
 
 static void
 camel_local_summary_class_init (CamelLocalSummaryClass *class)
 {
+	GObjectClass *object_class;
 	CamelFolderSummaryClass *folder_summary_class;
 
-	camel_local_summary_parent_class = CAMEL_FOLDER_SUMMARY_CLASS(camel_type_get_global_classfuncs(camel_folder_summary_get_type()));
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = local_summary_dispose;
+	object_class->finalize = local_summary_finalize;
 
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
 	folder_summary_class->message_info_size = sizeof (CamelLocalMessageInfo);
@@ -106,24 +130,6 @@ camel_local_summary_init (CamelLocalSummary *local_summary)
 	folder_summary->version += CAMEL_LOCAL_SUMMARY_VERSION;
 }
 
-CamelType
-camel_local_summary_get_type(void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register(camel_folder_summary_get_type(), "CamelLocalSummary",
-					   sizeof (CamelLocalSummary),
-					   sizeof (CamelLocalSummaryClass),
-					   (CamelObjectClassInitFunc) camel_local_summary_class_init,
-					   NULL,
-					   (CamelObjectInitFunc) camel_local_summary_init,
-					   (CamelObjectFinalizeFunc) local_summary_finalize);
-	}
-
-	return type;
-}
-
 void
 camel_local_summary_construct(CamelLocalSummary *new, const gchar *filename, const gchar *local_name, CamelIndex *index)
 {
@@ -132,7 +138,7 @@ camel_local_summary_construct(CamelLocalSummary *new, const gchar *filename, con
 	new->folder_path = g_strdup(local_name);
 	new->index = index;
 	if (index)
-		camel_object_ref (index);
+		g_object_ref (index);
 }
 
 static gint
@@ -516,7 +522,7 @@ local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMess
 
 			camel_data_wrapper_write_to_stream((CamelDataWrapper *)msg, (CamelStream *)sn);
 			mi->info.size = sn->written;
-			camel_object_unref (sn);
+			g_object_unref (sn);
 		}
 
 		mi->info.flags &= ~(CAMEL_MESSAGE_FOLDER_NOXEV|CAMEL_MESSAGE_FOLDER_FLAGGED);

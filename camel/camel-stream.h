@@ -33,12 +33,24 @@
 #include <unistd.h>
 #include <camel/camel-object.h>
 
-#define CAMEL_STREAM_TYPE     (camel_stream_get_type ())
-#define CAMEL_STREAM(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_STREAM_TYPE, CamelStream))
-#define CAMEL_STREAM_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_STREAM_TYPE, CamelStreamClass))
-#define CAMEL_IS_STREAM(o)    (CAMEL_CHECK_TYPE((o), CAMEL_STREAM_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_STREAM \
+	(camel_stream_get_type ())
+#define CAMEL_STREAM(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_STREAM, CamelStream))
+#define CAMEL_STREAM_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_STREAM, CamelStreamClass))
+#define CAMEL_IS_STREAM(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_STREAM))
+#define CAMEL_IS_STREAM_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_STREAM))
 #define CAMEL_STREAM_GET_CLASS(obj) \
-	((CamelStreamClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_STREAM, CamelStreamClass))
 
 G_BEGIN_DECLS
 
@@ -66,7 +78,7 @@ struct _CamelStreamClass {
 	gint		(*reset)		(CamelStream *stream);
 };
 
-CamelType	camel_stream_get_type		(void);
+GType		camel_stream_get_type		(void);
 gssize		camel_stream_read		(CamelStream *stream,
 						 gchar *buffer,
 						 gsize n);

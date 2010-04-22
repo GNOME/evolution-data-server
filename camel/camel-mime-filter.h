@@ -31,12 +31,24 @@
 #include <sys/types.h>
 #include <camel/camel-object.h>
 
-#define CAMEL_MIME_FILTER_TYPE         (camel_mime_filter_get_type ())
-#define CAMEL_MIME_FILTER(obj)         CAMEL_CHECK_CAST (obj, camel_mime_filter_get_type (), CamelMimeFilter)
-#define CAMEL_MIME_FILTER_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_mime_filter_get_type (), CamelMimeFilterClass)
-#define CAMEL_IS_MIME_FILTER(obj)      CAMEL_CHECK_TYPE (obj, camel_mime_filter_get_type ())
+/* Standard GObject macros */
+#define CAMEL_TYPE_MIME_FILTER \
+	(camel_mime_filter_get_type ())
+#define CAMEL_MIME_FILTER(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj),  CAMEL_TYPE_MIME_FILTER, CamelMimeFilter))
+#define CAMEL_MIME_FILTER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_MIME_FILTER, CamelMimeFilterClass))
+#define CAMEL_IS_MIME_FILTER(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_MIME_FILTER))
+#define CAMEL_IS_MIME_FILTER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_MIME_FILTER))
 #define CAMEL_MIME_FILTER_GET_CLASS(obj) \
-	((CamelMimeFilterClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_MIME_FILTER, CamelMimeFilterClass))
 
 G_BEGIN_DECLS
 
@@ -79,7 +91,7 @@ struct _CamelMimeFilterClass {
 	void		(*reset)		(CamelMimeFilter *filter);
 };
 
-CamelType	camel_mime_filter_get_type	(void);
+GType		camel_mime_filter_get_type	(void);
 CamelMimeFilter *
 		camel_mime_filter_new		(void);
 void		camel_mime_filter_filter	(CamelMimeFilter *filter,

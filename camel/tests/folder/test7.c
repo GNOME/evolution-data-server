@@ -7,7 +7,7 @@
 #include "session.h"
 
 static const gchar *nntp_drivers[] = { "nntp" };
-static gchar *remote_providers[] = {
+static const gchar *remote_providers[] = {
 	"NNTP_TEST_URL",
 };
 

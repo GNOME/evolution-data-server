@@ -41,6 +41,10 @@
 
 #define CAMEL_MH_SUMMARY_VERSION (0x2000)
 
+#define CAMEL_MH_SUMMARY_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MH_SUMMARY, CamelMhSummaryPrivate))
+
 static gint mh_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, CamelException *ex);
 static gint mh_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
 /*static gint mh_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, CamelMessageInfo *info, CamelFolderChangeInfo *, CamelException *ex);*/
@@ -51,13 +55,7 @@ struct _CamelMhSummaryPrivate {
 	gchar *current_uid;
 };
 
-static gpointer camel_mh_summary_parent_class;
-
-static void
-mh_summary_finalize (CamelMhSummary *mh_summary)
-{
-	g_free (mh_summary->priv);
-}
+G_DEFINE_TYPE (CamelMhSummary, camel_mh_summary, CAMEL_TYPE_LOCAL_SUMMARY)
 
 static void
 camel_mh_summary_class_init (CamelMhSummaryClass *class)
@@ -65,7 +63,7 @@ camel_mh_summary_class_init (CamelMhSummaryClass *class)
 	CamelFolderSummaryClass *folder_summary_class;
 	CamelLocalSummaryClass *local_summary_class;
 
-	camel_mh_summary_parent_class = (CamelLocalSummaryClass *)camel_type_get_global_classfuncs(camel_local_summary_get_type ());
+	g_type_class_add_private (class, sizeof (CamelMhSummaryPrivate));
 
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
 	folder_summary_class->next_uid_string = mh_summary_next_uid_string;
@@ -80,30 +78,12 @@ camel_mh_summary_init (CamelMhSummary *mh_summary)
 {
 	CamelFolderSummary *folder_summary;
 
-	mh_summary->priv = g_new0 (CamelMhSummaryPrivate, 1);
+	mh_summary->priv = CAMEL_MH_SUMMARY_GET_PRIVATE (mh_summary);
 
 	folder_summary = CAMEL_FOLDER_SUMMARY (mh_summary);
 
 	/* set unique file version */
 	folder_summary->version += CAMEL_MH_SUMMARY_VERSION;
-}
-
-CamelType
-camel_mh_summary_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register(camel_local_summary_get_type (), "CamelMhSummary",
-					   sizeof(CamelMhSummary),
-					   sizeof(CamelMhSummaryClass),
-					   (CamelObjectClassInitFunc)camel_mh_summary_class_init,
-					   NULL,
-					   (CamelObjectInitFunc)camel_mh_summary_init,
-					   (CamelObjectFinalizeFunc)mh_summary_finalize);
-	}
-
-	return type;
 }
 
 /**
@@ -121,7 +101,7 @@ camel_mh_summary_new (CamelFolder *folder,
 {
 	CamelMhSummary *o;
 
-	o = (CamelMhSummary *)camel_object_new(camel_mh_summary_get_type ());
+	o = g_object_new (CAMEL_TYPE_MH_SUMMARY, NULL);
 	((CamelFolderSummary *)o)->folder = folder;
 	if (folder) {
 		camel_db_set_collate (folder->parent_store->cdb_r, "uid", "mh_uid_sort", (CamelDBCollate)camel_local_frompos_sort);
@@ -198,7 +178,7 @@ camel_mh_summary_add (CamelLocalSummary *cls,
 	}
 	mhs->priv->current_uid = (gchar *)name;
 	camel_folder_summary_add_from_parser((CamelFolderSummary *)mhs, mp);
-	camel_object_unref (mp);
+	g_object_unref (mp);
 	mhs->priv->current_uid = NULL;
 	camel_folder_summary_set_index((CamelFolderSummary *)mhs, NULL);
 	g_free(filename);

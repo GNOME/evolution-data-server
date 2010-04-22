@@ -29,10 +29,24 @@
 
 #include <camel/camel-mime-filter.h>
 
-#define CAMEL_MIME_FILTER_CRLF_TYPE         (camel_mime_filter_crlf_get_type ())
-#define CAMEL_MIME_FILTER_CRLF(obj)         CAMEL_CHECK_CAST (obj, CAMEL_MIME_FILTER_CRLF_TYPE, CamelMimeFilterCRLF)
-#define CAMEL_MIME_FILTER_CRLF_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, CAMEL_MIME_FILTER_CRLF_TYPE, CamelMimeFilterCRLFClass)
-#define CAMEL_IS_MIME_FILTER_CRLF(obj)      CAMEL_CHECK_TYPE (obj, CAMEL_MIME_FILTER_CRLF_TYPE)
+/* Standard GObject macros */
+#define CAMEL_TYPE_MIME_FILTER_CRLF \
+	(camel_mime_filter_crlf_get_type ())
+#define CAMEL_MIME_FILTER_CRLF(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_MIME_FILTER_CRLF, CamelMimeFilterCRLF))
+#define CAMEL_MIME_FILTER_CRLF_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_MIME_FILTER_CRLF, CamelMimeFilterCRLFClass))
+#define CAMEL_IS_MIME_FILTER_CRLF(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_MIME_FILTER_CRLF))
+#define CAMEL_IS_MIME_FILTER_CRLF_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_MIME_FILTER_CRLF))
+#define CAMEL_MIME_FILTER_CRLF_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_MIME_FILTER_CRLF, CamelMimeFilterCRLFClass))
 
 G_BEGIN_DECLS
 
@@ -59,7 +73,7 @@ struct _CamelMimeFilterCRLFClass {
 	CamelMimeFilterClass parent_class;
 };
 
-CamelType	camel_mime_filter_crlf_get_type	(void);
+GType		camel_mime_filter_crlf_get_type	(void);
 CamelMimeFilter *
 		camel_mime_filter_crlf_new	(CamelMimeFilterCRLFDirection direction,
 						 CamelMimeFilterCRLFMode mode);

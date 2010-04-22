@@ -43,6 +43,10 @@
 #include "camel-vtrash-folder.h"
 #include "camel-string-utils.h"
 
+#define CAMEL_FOLDER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_FOLDER, CamelFolderPrivate))
+
 #define d(x)
 #define w(x)
 
@@ -55,7 +59,7 @@ struct _CamelFolderPrivate {
 	gboolean skip_folder_lock;
 };
 
-static CamelObjectClass *parent_class = NULL;
+G_DEFINE_ABSTRACT_TYPE (CamelFolder, camel_folder, CAMEL_TYPE_OBJECT)
 
 /* Forward Declarations */
 static gboolean folder_changed (CamelObject *object, gpointer event_data);
@@ -103,7 +107,7 @@ folder_transfer_message_to (CamelFolder *source,
 	camel_message_info_set_flags (info, CAMEL_MESSAGE_DELETED, 0);
 
 	camel_folder_append_message (dest, msg, info, transferred_uid, ex);
-	camel_object_unref (msg);
+	g_object_unref (msg);
 
 	if (delete_original && !camel_exception_is_set (ex))
 		camel_folder_set_message_flags (source, uid, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN, ~0);
@@ -112,29 +116,47 @@ folder_transfer_message_to (CamelFolder *source,
 }
 
 static void
-folder_finalize (CamelObject *object)
+folder_dispose (GObject *object)
 {
-	CamelFolder *camel_folder = CAMEL_FOLDER (object);
-	struct _CamelFolderPrivate *p = camel_folder->priv;
+	CamelFolder *folder;
 
-	g_free (camel_folder->name);
-	g_free (camel_folder->full_name);
-	g_free (camel_folder->description);
+	folder = CAMEL_FOLDER (object);
 
-	if (camel_folder->parent_store)
-		camel_object_unref (camel_folder->parent_store);
-
-	if (camel_folder->summary) {
-		camel_folder->summary->folder = NULL;
-		camel_object_unref (camel_folder->summary);
+	if (folder->parent_store != NULL) {
+		g_object_unref (folder->parent_store);
+		folder->parent_store = NULL;
 	}
 
-	camel_folder_change_info_free (p->changed_frozen);
+	if (folder->summary) {
+		folder->summary->folder = NULL;
+		g_object_unref (folder->summary);
+		folder->summary = NULL;
+	}
 
-	g_static_rec_mutex_free (&p->lock);
-	g_static_mutex_free (&p->change_lock);
+	/* Chain up to parent's dispose () method. */
+	G_OBJECT_CLASS (camel_folder_parent_class)->dispose (object);
+}
 
-	g_free (p);
+static void
+folder_finalize (GObject *object)
+{
+	CamelFolder *folder;
+	CamelFolderPrivate *priv;
+
+	folder = CAMEL_FOLDER (object);
+	priv = CAMEL_FOLDER_GET_PRIVATE (object);
+
+	g_free (folder->name);
+	g_free (folder->full_name);
+	g_free (folder->description);
+
+	camel_folder_change_info_free (priv->changed_frozen);
+
+	g_static_rec_mutex_free (&priv->lock);
+	g_static_mutex_free (&priv->change_lock);
+
+	/* Chain up to parent's finalize () method. */
+	G_OBJECT_CLASS (camel_folder_parent_class)->finalize (object);
 }
 
 static gint
@@ -281,7 +303,7 @@ folder_getv (CamelObject *object,
 		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
 	}
 
-	return parent_class->getv (object, ex, args);
+	return CAMEL_OBJECT_CLASS (camel_folder_parent_class)->getv (object, ex, args);
 }
 
 static void
@@ -307,7 +329,7 @@ folder_free (CamelObject *object,
 		g_slist_free (val);
 		break;
 	default:
-		parent_class->free (object, tag, val);
+		CAMEL_OBJECT_CLASS (camel_folder_parent_class)->free (object, tag, val);
 	}
 }
 
@@ -706,9 +728,14 @@ folder_get_quota_info (CamelFolder *folder)
 static void
 camel_folder_class_init (CamelFolderClass *class)
 {
+	GObjectClass *object_class;
 	CamelObjectClass *camel_object_class;
 
-	parent_class = camel_type_get_global_classfuncs (camel_object_get_type ());
+	g_type_class_add_private (class, sizeof (CamelFolderPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = folder_dispose;
+	object_class->finalize = folder_finalize;
 
 	camel_object_class = CAMEL_OBJECT_CLASS (class);
 	camel_object_class->getv = folder_getv;
@@ -756,30 +783,13 @@ camel_folder_class_init (CamelFolderClass *class)
 static void
 camel_folder_init (CamelFolder *folder)
 {
-	folder->priv = g_malloc0 (sizeof (*folder->priv));
+	folder->priv = CAMEL_FOLDER_GET_PRIVATE (folder);
+
 	folder->priv->frozen = 0;
 	folder->priv->changed_frozen = camel_folder_change_info_new ();
 
 	g_static_rec_mutex_init (&folder->priv->lock);
 	g_static_mutex_init (&folder->priv->change_lock);
-}
-
-CamelType
-camel_folder_get_type (void)
-{
-	static CamelType camel_folder_type = CAMEL_INVALID_TYPE;
-
-	if (camel_folder_type == CAMEL_INVALID_TYPE)	{
-		camel_folder_type = camel_type_register (CAMEL_TYPE_OBJECT, "CamelFolder",
-							 sizeof (CamelFolder),
-							 sizeof (CamelFolderClass),
-							 (CamelObjectClassInitFunc) camel_folder_class_init,
-							 NULL,
-							 (CamelObjectInitFunc) camel_folder_init,
-							 (CamelObjectFinalizeFunc) folder_finalize );
-	}
-
-	return camel_folder_type;
 }
 
 /**
@@ -843,7 +853,7 @@ camel_folder_construct (CamelFolder *folder,
 
 	folder->parent_store = parent_store;
 	if (parent_store)
-		camel_object_ref (parent_store);
+		g_object_ref (parent_store);
 
 	folder->name = g_strdup (name);
 	folder->full_name = g_strdup (full_name);
@@ -905,7 +915,9 @@ camel_folder_refresh_info (CamelFolder *folder,
 	g_return_val_if_fail (class->refresh_info != NULL, FALSE);
 
 	camel_folder_lock (folder, CF_REC_LOCK);
+
 	success = class->refresh_info (folder, ex);
+
 	camel_folder_unlock (folder, CF_REC_LOCK);
 
 	return success;
@@ -1096,8 +1108,10 @@ camel_folder_append_message (CamelFolder *folder,
 	g_return_val_if_fail (class->append_message != NULL, FALSE);
 
 	camel_folder_lock (folder, CF_REC_LOCK);
+
 	success = class->append_message (
 		folder, message, info, appended_uid, ex);
+
 	camel_folder_unlock (folder, CF_REC_LOCK);
 
 	return success;
@@ -1481,7 +1495,7 @@ camel_folder_sync_message (CamelFolder *folder,
 
 		message = class->get_message (folder, uid, ex);
 		if (message != NULL) {
-			camel_object_unref (message);
+			g_object_unref (message);
 			success = TRUE;
 		}
 	}
@@ -2120,7 +2134,7 @@ filter_filter (CamelSession *session, CamelSessionThreadMsg *tmsg)
 
 			if (msg) {
 				camel_junk_plugin_report_junk (csp, msg);
-				camel_object_unref (msg);
+				g_object_unref (msg);
 			}
 		}
 		camel_operation_end (NULL);
@@ -2138,7 +2152,7 @@ filter_filter (CamelSession *session, CamelSessionThreadMsg *tmsg)
 
 			if (msg) {
 				camel_junk_plugin_report_notjunk (csp, msg);
-				camel_object_unref (msg);
+				g_object_unref (msg);
 			}
 		}
 		camel_operation_end (NULL);
@@ -2197,7 +2211,7 @@ filter_free (CamelSession *session, CamelSessionThreadMsg *msg)
 	struct _folder_filter_msg *m = (struct _folder_filter_msg *)msg;
 
 	if (m->driver)
-		camel_object_unref (m->driver);
+		g_object_unref (m->driver);
 	if (m->recents)
 		camel_folder_free_deep (m->folder, m->recents);
 	if (m->junk)
@@ -2207,7 +2221,7 @@ filter_free (CamelSession *session, CamelSessionThreadMsg *msg)
 
 	camel_folder_summary_save_to_db (m->folder->summary, &m->ex);
 	camel_folder_thaw (m->folder);
-	camel_object_unref (m->folder);
+	g_object_unref (m->folder);
 }
 
 static CamelSessionThreadOps filter_ops = {
@@ -2302,7 +2316,7 @@ folder_changed (CamelObject *obj, gpointer event_data)
 		msg->recents = recents;
 		msg->junk = junk;
 		msg->notjunk = notjunk;
-		msg->folder = camel_object_ref (folder);
+		msg->folder = g_object_ref (folder);
 		camel_folder_freeze (folder);
 		/* Copy changes back to changed_frozen list to retain
 		 * them while we are filtering */
@@ -2822,24 +2836,24 @@ camel_folder_change_info_free (CamelFolderChangeInfo *info)
  *
  * Locks #folder's #lock. Unlock it with camel_folder_unlock().
  *
- * Since: 2.31.1
+ * Since: 3.0
  **/
 void
-camel_folder_lock (CamelFolder *folder, CamelFolderLock lock)
+camel_folder_lock (CamelFolder *folder,
+                   CamelFolderLock lock)
 {
-	g_return_if_fail (folder != NULL);
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
-	g_return_if_fail (folder->priv != NULL);
 
 	switch (lock) {
-	case CF_CHANGE_LOCK:
-		g_static_mutex_lock (&folder->priv->change_lock);
-		break;
-	case CF_REC_LOCK:
-		if (folder->priv->skip_folder_lock == FALSE) g_static_rec_mutex_lock (&folder->priv->lock);
-		break;
-	default:
-		g_return_if_reached ();
+		case CF_CHANGE_LOCK:
+			g_static_mutex_lock (&folder->priv->change_lock);
+			break;
+		case CF_REC_LOCK:
+			if (folder->priv->skip_folder_lock == FALSE)
+				g_static_rec_mutex_lock (&folder->priv->lock);
+			break;
+		default:
+			g_return_if_reached ();
 	}
 }
 
@@ -2850,23 +2864,23 @@ camel_folder_lock (CamelFolder *folder, CamelFolderLock lock)
  *
  * Unlocks #folder's #lock, previously locked with camel_folder_lock().
  *
- * Since: 2.31.1
+ * Since: 3.0
  **/
 void
-camel_folder_unlock (CamelFolder *folder, CamelFolderLock lock)
+camel_folder_unlock (CamelFolder *folder,
+                     CamelFolderLock lock)
 {
-	g_return_if_fail (folder != NULL);
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
-	g_return_if_fail (folder->priv != NULL);
 
 	switch (lock) {
-	case CF_CHANGE_LOCK:
-		g_static_mutex_unlock (&folder->priv->change_lock);
-		break;
-	case CF_REC_LOCK:
-		if (folder->priv->skip_folder_lock == FALSE) g_static_rec_mutex_unlock (&folder->priv->lock);
-		break;
-	default:
-		g_return_if_reached ();
+		case CF_CHANGE_LOCK:
+			g_static_mutex_unlock (&folder->priv->change_lock);
+			break;
+		case CF_REC_LOCK:
+			if (folder->priv->skip_folder_lock == FALSE)
+				g_static_rec_mutex_unlock (&folder->priv->lock);
+			break;
+		default:
+			g_return_if_reached ();
 	}
 }

@@ -51,7 +51,10 @@
 #define PATH_MAX _POSIX_PATH_MAX
 #endif
 
-static gpointer camel_local_folder_parent_class;
+#define CAMEL_LOCAL_FOLDER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_LOCAL_FOLDER, CamelLocalFolderPrivate))
+
 static GSList *local_folder_properties;
 
 static gint local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args);
@@ -78,27 +81,48 @@ static CamelProperty local_property_list[] = {
 	{ CAMEL_LOCAL_FOLDER_INDEX_BODY, "index_body", N_("Index message body data") },
 };
 
-static void
-local_folder_finalize (CamelLocalFolder *local_folder)
-{
-	CamelFolder *folder = CAMEL_FOLDER (local_folder);
+G_DEFINE_TYPE (CamelLocalFolder, camel_local_folder, CAMEL_TYPE_FOLDER)
 
-	if (folder->summary) {
+static void
+local_folder_dispose (GObject *object)
+{
+	CamelFolder *folder;
+	CamelLocalFolder *local_folder;
+
+	folder = CAMEL_FOLDER (object);
+	local_folder = CAMEL_LOCAL_FOLDER (object);
+
+	if (folder->summary != NULL) {
 		camel_local_summary_sync (
 			CAMEL_LOCAL_SUMMARY (folder->summary),
 			FALSE, local_folder->changes, NULL);
-		camel_object_unref (folder->summary);
+		g_object_unref (folder->summary);
 		folder->summary = NULL;
 	}
 
-	if (local_folder->search)
-		camel_object_unref (local_folder->search);
+	if (local_folder->search != NULL) {
+		g_object_unref (local_folder->search);
+		local_folder->search = NULL;
+	}
 
-	if (local_folder->index)
-		camel_object_unref (local_folder->index);
+	if (local_folder->index != NULL) {
+		g_object_unref (local_folder->index);
+		local_folder->index = NULL;
+	}
 
-	while (local_folder->locked> 0)
-		camel_local_folder_unlock(local_folder);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_local_folder_parent_class)->dispose (object);
+}
+
+static void
+local_folder_finalize (GObject *object)
+{
+	CamelLocalFolder *local_folder;
+
+	local_folder = CAMEL_LOCAL_FOLDER (object);
+
+	while (local_folder->locked > 0)
+		camel_local_folder_unlock (local_folder);
 
 	g_free (local_folder->base_path);
 	g_free (local_folder->folder_path);
@@ -109,17 +133,23 @@ local_folder_finalize (CamelLocalFolder *local_folder)
 
 	g_mutex_free (local_folder->priv->search_lock);
 
-	g_free (local_folder->priv);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_local_folder_parent_class)->finalize (object);
 }
 
 static void
 camel_local_folder_class_init (CamelLocalFolderClass *class)
 {
+	GObjectClass *object_class;
 	CamelObjectClass *camel_object_class;
 	CamelFolderClass *folder_class;
 	gint ii;
 
-	camel_local_folder_parent_class = (CamelFolderClass *)camel_folder_get_type();
+	g_type_class_add_private (class, sizeof (CamelLocalFolderPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = local_folder_dispose;
+	object_class->finalize = local_folder_finalize;
 
 	camel_object_class = CAMEL_OBJECT_CLASS (class);
 	camel_object_class->getv = local_getv;
@@ -153,7 +183,7 @@ camel_local_folder_init (CamelLocalFolder *local_folder)
 {
 	CamelFolder *folder = CAMEL_FOLDER (local_folder);
 
-	local_folder->priv = g_new0 (CamelLocalFolderPrivate, 1);
+	local_folder->priv = CAMEL_LOCAL_FOLDER_GET_PRIVATE (local_folder);
 	local_folder->priv->search_lock = g_mutex_new();
 
 	folder->folder_flags |= (CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |
@@ -166,24 +196,6 @@ camel_local_folder_init (CamelLocalFolder *local_folder)
 
 	folder->summary = NULL;
 	local_folder->search = NULL;
-}
-
-CamelType
-camel_local_folder_get_type(void)
-{
-	static CamelType camel_local_folder_type = CAMEL_INVALID_TYPE;
-
-	if (camel_local_folder_type == CAMEL_INVALID_TYPE) {
-		camel_local_folder_type = camel_type_register(camel_folder_get_type(), "CamelLocalFolder",
-							     sizeof(CamelLocalFolder),
-							     sizeof(CamelLocalFolderClass),
-							     (CamelObjectClassInitFunc) camel_local_folder_class_init,
-							     NULL,
-							     (CamelObjectInitFunc) camel_local_folder_init,
-							     (CamelObjectFinalizeFunc) local_folder_finalize);
-	}
-
-	return camel_local_folder_type;
 }
 
 CamelLocalFolder *
@@ -278,7 +290,7 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 		if (camel_local_summary_check((CamelLocalSummary *)folder->summary, lf->changes, ex) == 0) {
 			/* we sync here so that any hard work setting up the folder isn't lost */
 			if (camel_local_summary_sync((CamelLocalSummary *)folder->summary, FALSE, lf->changes, ex) == -1) {
-				camel_object_unref (CAMEL_OBJECT (folder));
+				g_object_unref (CAMEL_OBJECT (folder));
 				g_free(name);
 				return NULL;
 			}
@@ -290,7 +302,7 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 	/*if (camel_local_summary_check((CamelLocalSummary *)folder->summary, lf->changes, ex) == -1) {*/
 	/* we sync here so that any hard work setting up the folder isn't lost */
 	/*if (camel_local_summary_sync((CamelLocalSummary *)folder->summary, FALSE, lf->changes, ex) == -1) {
-		camel_object_unref (CAMEL_OBJECT (folder));
+		g_object_unref (CAMEL_OBJECT (folder));
 		g_free(name);
 		return NULL;
 		}*/

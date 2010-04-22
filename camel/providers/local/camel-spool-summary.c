@@ -49,15 +49,13 @@ static gint spool_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *c
 static gint spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
 static gint spool_summary_need_index(void);
 
-static gpointer camel_spool_summary_parent_class;
+G_DEFINE_TYPE (CamelSpoolSummary, camel_spool_summary, CAMEL_TYPE_MBOX_SUMMARY)
 
 static void
 camel_spool_summary_class_init (CamelSpoolSummaryClass *class)
 {
 	CamelLocalSummaryClass *local_summary_class;
 	CamelMboxSummaryClass *mbox_summary_class;
-
-	camel_spool_summary_parent_class = CAMEL_FOLDER_SUMMARY_CLASS(camel_mbox_summary_get_type());
 
 	local_summary_class = CAMEL_LOCAL_SUMMARY_CLASS (class);
 	local_summary_class->load = spool_summary_load;
@@ -81,31 +79,13 @@ camel_spool_summary_init(CamelSpoolSummary *spool_summary)
 	folder_summary->version += CAMEL_SPOOL_SUMMARY_VERSION;
 }
 
-CamelType
-camel_spool_summary_get_type(void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register(camel_mbox_summary_get_type(), "CamelSpoolSummary",
-					   sizeof (CamelSpoolSummary),
-					   sizeof (CamelSpoolSummaryClass),
-					   (CamelObjectClassInitFunc) camel_spool_summary_class_init,
-					   NULL,
-					   (CamelObjectInitFunc) camel_spool_summary_init,
-					   (CamelObjectFinalizeFunc) NULL);
-	}
-
-	return type;
-}
-
 CamelSpoolSummary *
 camel_spool_summary_new (CamelFolder *folder,
                          const gchar *mbox_name)
 {
 	CamelSpoolSummary *new;
 
-	new = (CamelSpoolSummary *)camel_object_new(camel_spool_summary_get_type());
+	new = g_object_new (CAMEL_TYPE_SPOOL_SUMMARY, NULL);
 	((CamelFolderSummary *)new)->folder = folder;
 	if (folder) {
 		camel_db_set_collate (folder->parent_store->cdb_r, "bdata", "spool_frompos_sort", (CamelDBCollate)camel_local_frompos_sort);

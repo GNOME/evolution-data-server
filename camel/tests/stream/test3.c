@@ -29,7 +29,8 @@ struct {
 	{ 10245, CAMEL_STREAM_UNBOUND },
 };
 
-gint main(gint argc, gchar **argv)
+gint
+main(gint argc, gchar **argv)
 {
 	CamelSeekableStream *ss = NULL;
 	gint i, j;

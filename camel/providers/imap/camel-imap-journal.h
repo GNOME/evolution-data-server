@@ -27,12 +27,24 @@
 #include <stdarg.h>
 #include <camel/camel.h>
 
-#define CAMEL_TYPE_IMAP_JOURNAL            (camel_imap_journal_get_type ())
-#define CAMEL_IMAP_JOURNAL(obj)            (CAMEL_CHECK_CAST ((obj), CAMEL_TYPE_IMAP_JOURNAL, CamelIMAPJournal))
-#define CAMEL_IMAP_JOURNAL_CLASS(klass)    (CAMEL_CHECK_CLASS_CAST ((klass), CAMEL_TYPE_IMAP_JOURNAL, CamelIMAPJournalClass))
-#define CAMEL_IS_IMAP_JOURNAL(obj)         (CAMEL_CHECK_TYPE ((obj), CAMEL_TYPE_IMAP_JOURNAL))
-#define CAMEL_IS_IMAP_JOURNAL_CLASS(klass) (CAMEL_CHECK_CLASS_TYPE ((klass), CAMEL_TYPE_IMAP_JOURNAL))
-#define CAMEL_IMAP_JOURNAL_GET_CLASS(obj)  (CAMEL_CHECK_GET_CLASS ((obj), CAMEL_TYPE_IMAP_JOURNAL, CamelIMAPJournalClass))
+/* Standard GObject macros */
+#define CAMEL_TYPE_IMAP_JOURNAL \
+	(camel_imap_journal_get_type ())
+#define CAMEL_IMAP_JOURNAL(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_IMAP_JOURNAL, CamelIMAPJournal))
+#define CAMEL_IMAP_JOURNAL_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_IMAP_JOURNAL, CamelIMAPJournalClass))
+#define CAMEL_IS_IMAP_JOURNAL(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_IMAP_JOURNAL))
+#define CAMEL_IS_IMAP_JOURNAL_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_IMAP_JOURNAL))
+#define CAMEL_IMAP_JOURNAL_GET_CLASS(obj) \
+	(CAMEL_CHECK_GET_CLASS \
+	((obj), CAMEL_TYPE_IMAP_JOURNAL, CamelIMAPJournalClass))
 
 G_BEGIN_DECLS
 
@@ -73,7 +85,7 @@ struct _CamelIMAPJournalClass {
 
 };
 
-CamelType camel_imap_journal_get_type (void);
+GType camel_imap_journal_get_type (void);
 
 CamelOfflineJournal *camel_imap_journal_new (struct _CamelImapFolder *folder, const gchar *filename);
 void camel_imap_journal_log (CamelOfflineJournal *journal, CamelOfflineAction action, ...);

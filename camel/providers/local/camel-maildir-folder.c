@@ -41,8 +41,6 @@
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 
-static gpointer camel_maildir_folder_parent_class;
-
 static CamelLocalSummary *maildir_create_summary(CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index);
 
 static gboolean maildir_append_message(CamelFolder * folder, CamelMimeMessage * message, const CamelMessageInfo *info, gchar **appended_uid, CamelException * ex);
@@ -51,6 +49,8 @@ static gchar * maildir_get_filename (CamelFolder *folder, const gchar *uid, Came
 static gint maildir_cmp_uids (CamelFolder *folder, const gchar *uid1, const gchar *uid2);
 static void maildir_sort_uids (CamelFolder *folder, GPtrArray *uids);
 static gboolean maildir_transfer_messages_to (CamelFolder *source, GPtrArray *uids, CamelFolder *dest, GPtrArray **transferred_uids, gboolean delete_originals, CamelException *ex);
+
+G_DEFINE_TYPE (CamelMaildirFolder, camel_maildir_folder, CAMEL_TYPE_LOCAL_FOLDER)
 
 static gint
 maildir_folder_getv (CamelObject *object,
@@ -90,8 +90,6 @@ camel_maildir_folder_class_init (CamelMaildirFolderClass *class)
 	CamelFolderClass *folder_class;
 	CamelLocalFolderClass *local_folder_class;
 
-	camel_maildir_folder_parent_class = CAMEL_LOCAL_FOLDER_CLASS (camel_type_get_global_classfuncs(camel_local_folder_get_type()));
-
 	camel_object_class = CAMEL_OBJECT_CLASS (class);
 	camel_object_class->getv = maildir_folder_getv;
 
@@ -112,24 +110,6 @@ camel_maildir_folder_init (CamelMaildirFolder *maildir_folder)
 {
 }
 
-CamelType
-camel_maildir_folder_get_type(void)
-{
-	static CamelType camel_maildir_folder_type = CAMEL_INVALID_TYPE;
-
-	if (camel_maildir_folder_type == CAMEL_INVALID_TYPE) {
-		camel_maildir_folder_type = camel_type_register(CAMEL_LOCAL_FOLDER_TYPE, "CamelMaildirFolder",
-							   sizeof(CamelMaildirFolder),
-							   sizeof(CamelMaildirFolderClass),
-							   (CamelObjectClassInitFunc) camel_maildir_folder_class_init,
-							   NULL,
-							   (CamelObjectInitFunc) camel_maildir_folder_init,
-							   (CamelObjectFinalizeFunc) NULL);
-	}
-
-	return camel_maildir_folder_type;
-}
-
 CamelFolder *
 camel_maildir_folder_new (CamelStore *parent_store,
                           const gchar *full_name,
@@ -140,7 +120,7 @@ camel_maildir_folder_new (CamelStore *parent_store,
 
 	d(printf("Creating maildir folder: %s\n", full_name));
 
-	folder = (CamelFolder *)camel_object_new(CAMEL_MAILDIR_FOLDER_TYPE);
+	folder = g_object_new (CAMEL_TYPE_MAILDIR_FOLDER, NULL);
 
 	if (parent_store->flags & CAMEL_STORE_FILTER_INBOX
 	    && strcmp(full_name, ".") == 0)
@@ -220,7 +200,7 @@ maildir_append_message (CamelFolder *folder,
 		*appended_uid = g_strdup(camel_message_info_uid(mi));
 
 	if (output_stream)
-		camel_object_unref (output_stream);
+		g_object_unref (output_stream);
 
 	goto check_changed;
 
@@ -241,7 +221,7 @@ maildir_append_message (CamelFolder *folder,
 			name, g_strerror (errno));
 
 	if (output_stream) {
-		camel_object_unref (CAMEL_OBJECT (output_stream));
+		g_object_unref (CAMEL_OBJECT (output_stream));
 		unlink (name);
 	}
 
@@ -329,11 +309,11 @@ maildir_get_message (CamelFolder *folder,
 			ex, (errno==EINTR) ?
 			CAMEL_EXCEPTION_USER_CANCEL : CAMEL_EXCEPTION_SYSTEM,
 			uid, lf->folder_path, _("Invalid message contents"));
-		camel_object_unref (message);
+		g_object_unref (message);
 		message = NULL;
 
 	}
-	camel_object_unref (message_stream);
+	g_object_unref (message_stream);
  fail:
 	g_free (name);
 

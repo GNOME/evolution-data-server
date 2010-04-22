@@ -31,6 +31,10 @@
 #include "camel-url-scanner.h"
 #include "camel-utf8.h"
 
+#define CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_FILTER_TOHTML, CamelMimeFilterToHTMLPrivate))
+
 struct _CamelMimeFilterToHTMLPrivate {
 
 	CamelUrlScanner *scanner;
@@ -79,7 +83,7 @@ static struct {
 	{ CONVERT_ADDRSPEC, { "@",         "mailto:", camel_url_addrspec_start, camel_url_addrspec_end } },
 };
 
-static CamelMimeFilterClass *camel_mime_filter_tohtml_parent;
+G_DEFINE_TYPE (CamelMimeFilterToHTML, camel_mime_filter_tohtml, CAMEL_TYPE_MIME_FILTER)
 
 static gchar *
 check_size (CamelMimeFilter *mime_filter,
@@ -155,7 +159,7 @@ writeln (CamelMimeFilter *mime_filter,
 	CamelMimeFilterToHTMLPrivate *priv;
 	const guchar *inptr = in;
 
-	priv = CAMEL_MIME_FILTER_TOHTML (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (mime_filter);
 
 	while (inptr < inend) {
 		guint32 u;
@@ -235,7 +239,7 @@ html_convert (CamelMimeFilter *mime_filter,
 	const gchar *inend;
 	gint depth;
 
-	priv = CAMEL_MIME_FILTER_TOHTML (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (mime_filter);
 
 	if (inlen == 0) {
 		if (priv->pre_open) {
@@ -389,11 +393,16 @@ html_convert (CamelMimeFilter *mime_filter,
 }
 
 static void
-camel_mime_filter_tohtml_finalize (CamelMimeFilterToHTML *mime_filter)
+mime_filter_tohtml_finalize (GObject *object)
 {
-	camel_url_scanner_free (mime_filter->priv->scanner);
+	CamelMimeFilterToHTMLPrivate *priv;
 
-	g_free (mime_filter->priv);
+	priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (object);
+
+	camel_url_scanner_free (priv->scanner);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_mime_filter_tohtml_parent_class)->finalize (object);
 }
 
 static void
@@ -429,7 +438,7 @@ mime_filter_tohtml_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterToHTMLPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_TOHTML (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (mime_filter);
 
 	priv->column = 0;
 	priv->pre_open = FALSE;
@@ -438,41 +447,26 @@ mime_filter_tohtml_reset (CamelMimeFilter *mime_filter)
 static void
 camel_mime_filter_tohtml_class_init (CamelMimeFilterToHTMLClass *class)
 {
-	CamelMimeFilterClass *mime_filter_class;
+	GObjectClass *object_class;
+	CamelMimeFilterClass *filter_class;
 
-	camel_mime_filter_tohtml_parent = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelMimeFilterToHTMLPrivate));
 
-	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
-	mime_filter_class->filter = mime_filter_tohtml_filter;
-	mime_filter_class->complete = mime_filter_tohtml_complete;
-	mime_filter_class->reset = mime_filter_tohtml_reset;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = mime_filter_tohtml_finalize;
+
+	filter_class = CAMEL_MIME_FILTER_CLASS (class);
+	filter_class->filter = mime_filter_tohtml_filter;
+	filter_class->complete = mime_filter_tohtml_complete;
+	filter_class->reset = mime_filter_tohtml_reset;
 }
 
 static void
 camel_mime_filter_tohtml_init (CamelMimeFilterToHTML *filter)
 {
-	filter->priv = g_new0 (CamelMimeFilterToHTMLPrivate, 1);
+	filter->priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (filter);
 
 	filter->priv->scanner = camel_url_scanner_new ();
-}
-
-CamelType
-camel_mime_filter_tohtml_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_mime_filter_get_type (),
-					    "CamelMimeFilterToHTML",
-					    sizeof (CamelMimeFilterToHTML),
-					    sizeof (CamelMimeFilterToHTMLClass),
-					    (CamelObjectClassInitFunc) camel_mime_filter_tohtml_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_filter_tohtml_init,
-					    (CamelObjectFinalizeFunc) camel_mime_filter_tohtml_finalize);
-	}
-
-	return type;
 }
 
 /**
@@ -492,8 +486,8 @@ camel_mime_filter_tohtml_new (guint32 flags, guint32 color)
 	CamelMimeFilterToHTMLPrivate *priv;
 	gint i;
 
-	filter = CAMEL_MIME_FILTER (camel_object_new (camel_mime_filter_tohtml_get_type ()));
-	priv = CAMEL_MIME_FILTER_TOHTML (filter)->priv;
+	filter = g_object_new (CAMEL_TYPE_MIME_FILTER_TOHTML, NULL);
+	priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (filter);
 
 	priv->flags = flags;
 	priv->color = color;
@@ -534,7 +528,7 @@ camel_text_to_html (const gchar *in, guint32 flags, guint32 color)
 
 	outbuf = g_strndup (outbuf, outlen);
 
-	camel_object_unref (filter);
+	g_object_unref (filter);
 
 	return outbuf;
 }

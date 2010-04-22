@@ -34,12 +34,24 @@
 #include <camel/camel-mime-utils.h>
 #include <camel/camel-mime-parser.h>
 
-#define CAMEL_MIME_PART_TYPE     (camel_mime_part_get_type ())
-#define CAMEL_MIME_PART(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MIME_PART_TYPE, CamelMimePart))
-#define CAMEL_MIME_PART_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MIME_PART_TYPE, CamelMimePartClass))
-#define CAMEL_IS_MIME_PART(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MIME_PART_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_MIME_PART \
+	(camel_mime_part_get_type ())
+#define CAMEL_MIME_PART(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_MIME_PART, CamelMimePart))
+#define CAMEL_MIME_PART_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_MIME_PART, CamelMimePartClass))
+#define CAMEL_IS_MIME_PART(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_MIME_PART))
+#define CAMEL_IS_MIME_PART_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_MIME_PART))
 #define CAMEL_MIME_PART_GET_CLASS(obj) \
-	((CamelMimePartClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_MIME_PART, CamelMimePartClass))
 
 G_BEGIN_DECLS
 
@@ -61,7 +73,7 @@ struct _CamelMimePartClass {
 						 CamelMimeParser *parser);
 };
 
-CamelType camel_mime_part_get_type (void);
+GType camel_mime_part_get_type (void);
 
 /* public methods */
 CamelMimePart *  camel_mime_part_new                    (void);

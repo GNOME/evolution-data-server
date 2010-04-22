@@ -4,13 +4,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
 
 #include "camel-test.h"
 
 static struct {
 	guchar *utf8;
-	gchar *utf7;
+	const gchar *utf7;
 	guint32 unicode[200];
 } tests[] = {
 	/* the escape gchar */

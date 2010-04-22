@@ -24,13 +24,28 @@
 
 #include <camel/camel.h>
 
-#define CAMEL_IMAPX_STORE_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_imapx_store_summary_get_type (), CamelIMAPXStoreSummary)
-#define CAMEL_IMAPX_STORE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_imapx_store_summary_get_type (), CamelIMAPXStoreSummaryClass)
-#define CAMEL_IS_IMAPX_STORE_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_imapx_store_summary_get_type ())
+/* Standard GObject macros */
+#define CAMEL_TYPE_IMAPX_STORE_SUMMARY \
+	(camel_imapx_store_summary_get_type ())
+#define CAMEL_IMAPX_STORE_SUMMARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_IMAPX_STORE_SUMMARY, CamelIMAPXStoreSummary)
+#define CAMEL_IMAPX_STORE_SUMMARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_IMAPX_STORE_SUMMARY, CamelIMAPXStoreSummaryClass)
+#define CAMEL_IS_IMAPX_STORE_SUMMARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_IMAPX_STORE_SUMMARY))
+#define CAMEL_IS_IMAPX_STORE_SUMMARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_IMAPX_STORE_SUMMARY))
+#define CAMEL_IMAPX_STORE_SUMMARY_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_IMAPX_STORE_SUMMARY, CamelIMAPXStoreSummaryClass))
 
 G_BEGIN_DECLS
 
-typedef struct _CamelIMAPXStoreSummary      CamelIMAPXStoreSummary;
+typedef struct _CamelIMAPXStoreSummary CamelIMAPXStoreSummary;
 typedef struct _CamelIMAPXStoreSummaryClass CamelIMAPXStoreSummaryClass;
 
 typedef struct _CamelIMAPXStoreInfo CamelIMAPXStoreInfo;
@@ -48,7 +63,7 @@ struct _CamelIMAPXStoreInfo {
 typedef struct _CamelIMAPXStoreNamespace CamelIMAPXStoreNamespace;
 
 struct _CamelIMAPXStoreNamespace {
-	struct _CamelIMAPXStoreNamespace *next;
+	CamelIMAPXStoreNamespace *next;
 	gchar *path;		/* display path */
 	gchar *full_name;	/* real name */
 	gchar sep;		/* directory separator */
@@ -61,9 +76,7 @@ typedef struct _CamelIMAPXNamespaceList {
 } CamelIMAPXNamespaceList;
 
 struct _CamelIMAPXStoreSummary {
-	CamelStoreSummary summary;
-
-	struct _CamelIMAPXStoreSummaryPrivate *priv;
+	CamelStoreSummary parent;
 
 	/* header info */
 	guint32 version;	/* version of base part of file */
@@ -72,32 +85,65 @@ struct _CamelIMAPXStoreSummary {
 };
 
 struct _CamelIMAPXStoreSummaryClass {
-	CamelStoreSummaryClass summary_class;
+	CamelStoreSummaryClass parent_class;
 };
 
-CamelType			 camel_imapx_store_summary_get_type	(void);
-CamelIMAPXStoreSummary      *camel_imapx_store_summary_new	(void);
+GType		camel_imapx_store_summary_get_type (void);
+CamelIMAPXStoreSummary *
+		camel_imapx_store_summary_new	(void);
 
 /* TODO: this api needs some more work, needs to support lists */
-CamelIMAPXStoreNamespace *camel_imapx_store_summary_namespace_new(CamelIMAPXStoreSummary *s, const gchar *full_name, gchar dir_sep);
-void camel_imapx_store_summary_namespace_set(CamelIMAPXStoreSummary *s, CamelIMAPXStoreNamespace *ns);
-CamelIMAPXStoreNamespace *camel_imapx_store_summary_namespace_find_path(CamelIMAPXStoreSummary *s, const gchar *path);
-CamelIMAPXStoreNamespace *camel_imapx_store_summary_namespace_find_full(CamelIMAPXStoreSummary *s, const gchar *full_name);
+CamelIMAPXStoreNamespace *
+		camel_imapx_store_summary_namespace_new
+						(CamelIMAPXStoreSummary *s,
+						 const gchar *full_name,
+						 gchar dir_sep);
+void		camel_imapx_store_summary_namespace_set
+						(CamelIMAPXStoreSummary *s,
+						 CamelIMAPXStoreNamespace *ns);
+CamelIMAPXStoreNamespace *
+		camel_imapx_store_summary_namespace_find_path
+						(CamelIMAPXStoreSummary *s,
+						 const gchar *path);
+CamelIMAPXStoreNamespace *
+		camel_imapx_store_summary_namespace_find_full
+						(CamelIMAPXStoreSummary *s,
+						 const gchar *full_name);
 
 /* converts to/from utf8 canonical nasmes */
-gchar *camel_imapx_store_summary_full_to_path(CamelIMAPXStoreSummary *s, const gchar *full_name, gchar dir_sep);
-gchar *camel_imapx_store_summary_path_to_full(CamelIMAPXStoreSummary *s, const gchar *path, gchar dir_sep);
+gchar *		camel_imapx_store_summary_full_to_path
+						(CamelIMAPXStoreSummary *s,
+						 const gchar *full_name,
+						 gchar dir_sep);
+gchar *		camel_imapx_store_summary_path_to_full
+						(CamelIMAPXStoreSummary *s,
+						 const gchar *path,
+						 gchar dir_sep);
 
-CamelIMAPXStoreInfo *camel_imapx_store_summary_full_name(CamelIMAPXStoreSummary *s, const gchar *full_name);
-CamelIMAPXStoreInfo *camel_imapx_store_summary_add_from_full(CamelIMAPXStoreSummary *s, const gchar *full_name, gchar dir_sep);
+CamelIMAPXStoreInfo *
+		camel_imapx_store_summary_full_name
+						(CamelIMAPXStoreSummary *s,
+						 const gchar *full_name);
+CamelIMAPXStoreInfo *
+		camel_imapx_store_summary_add_from_full
+						(CamelIMAPXStoreSummary *s,
+						 const gchar *full_name,
+						 gchar dir_sep);
 
 /* a convenience lookup function. always use this if path known */
-gchar *camel_imapx_store_summary_full_from_path(CamelIMAPXStoreSummary *s, const gchar *path);
+gchar *		camel_imapx_store_summary_full_from_path
+						(CamelIMAPXStoreSummary *s,
+						 const gchar *path);
 
-void camel_imapx_store_summary_set_namespaces (CamelIMAPXStoreSummary *summary, const CamelIMAPXNamespaceList *nsl);
+void		camel_imapx_store_summary_set_namespaces
+						(CamelIMAPXStoreSummary *summary,
+						 const CamelIMAPXNamespaceList *nsl);
 
 /* helpe macro's */
-#define camel_imapx_store_info_full_name(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_IMAPX_STORE_INFO_FULL_NAME))
+#define camel_imapx_store_info_full_name(s, i) \
+	(camel_store_info_string ( \
+		(CamelStoreSummary *)s, (const CamelStoreInfo *)i, \
+		CAMEL_IMAPX_STORE_INFO_FULL_NAME))
 
 G_END_DECLS
 

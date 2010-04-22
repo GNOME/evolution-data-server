@@ -91,7 +91,7 @@ struct _match_record {
 
 static ESExpResult *imap_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
 
-static gpointer camel_imap_search_parent_class;
+G_DEFINE_TYPE (CamelImapSearch, camel_imap_search, CAMEL_TYPE_FOLDER_SEARCH)
 
 static void
 free_match(CamelImapSearch *is, struct _match_record *mr)
@@ -106,23 +106,47 @@ free_match(CamelImapSearch *is, struct _match_record *mr)
 }
 
 static void
-imap_search_finalize (CamelImapSearch *search)
+imap_search_dispose (GObject *object)
 {
+	CamelImapSearch *search;
+
+	search = CAMEL_IMAP_SEARCH (object);
+
+	if (search->cache != NULL) {
+		g_object_unref (search->cache);
+		search->cache = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_imap_search_parent_class)->dispose (object);
+}
+
+static void
+imap_search_finalize (GObject *object)
+{
+	CamelImapSearch *search;
 	struct _match_record *mr;
 
+	search = CAMEL_IMAP_SEARCH (object);
+
 	while ((mr = (struct _match_record *)camel_dlist_remtail(&search->matches)))
-		free_match(search, mr);
-	g_hash_table_destroy(search->matches_hash);
-	if (search->cache != NULL)
-		camel_object_unref (search->cache);
+		free_match (search, mr);
+
+	g_hash_table_destroy (search->matches_hash);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_imap_search_parent_class)->finalize (object);
 }
 
 static void
 camel_imap_search_class_init (CamelImapSearchClass *class)
 {
+	GObjectClass *object_class;
 	CamelFolderSearchClass *folder_search_class;
 
-	camel_imap_search_parent_class = (CamelFolderSearchClass *)camel_type_get_global_classfuncs (camel_folder_search_get_type ());
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = imap_search_dispose;
+	object_class->finalize = imap_search_finalize;
 
 	folder_search_class = CAMEL_FOLDER_SEARCH_CLASS (class);
 	folder_search_class->body_contains = imap_body_contains;
@@ -137,24 +161,6 @@ camel_imap_search_init (CamelImapSearch *is)
 	is->lastuid = 0;
 }
 
-CamelType
-camel_imap_search_get_type (void)
-{
-	static CamelType camel_imap_search_type = CAMEL_INVALID_TYPE;
-
-	if (camel_imap_search_type == CAMEL_INVALID_TYPE) {
-		camel_imap_search_type = camel_type_register (
-			CAMEL_FOLDER_SEARCH_TYPE, "CamelImapSearch",
-			sizeof (CamelImapSearch),
-			sizeof (CamelImapSearchClass),
-			(CamelObjectClassInitFunc) camel_imap_search_class_init, NULL,
-			(CamelObjectInitFunc) camel_imap_search_init,
-			(CamelObjectFinalizeFunc) imap_search_finalize);
-	}
-
-	return camel_imap_search_type;
-}
-
 /**
  * camel_imap_search_new:
  *
@@ -163,7 +169,7 @@ camel_imap_search_get_type (void)
 CamelFolderSearch *
 camel_imap_search_new (const gchar *cachedir)
 {
-	CamelFolderSearch *new = CAMEL_FOLDER_SEARCH (camel_object_new (camel_imap_search_get_type ()));
+	CamelFolderSearch *new = g_object_new (CAMEL_TYPE_IMAP_SEARCH, NULL);
 	CamelImapSearch *is = (CamelImapSearch *)new;
 
 	camel_folder_search_construct (new);
@@ -246,7 +252,7 @@ save_match(CamelImapSearch *is, struct _match_record *mr)
 		ret = -1;
 	}
 
-	camel_object_unref (stream);
+	g_object_unref (stream);
 	return ret;
 }
 
@@ -292,7 +298,7 @@ load_match(CamelImapSearch *is, gchar hash[17], gint argc, struct _ESExpResult *
 			d(printf(" file format invalid/validity changed\n"));
 			memset(&header, 0, sizeof(header));
 		}
-		camel_object_unref (stream);
+		g_object_unref (stream);
 	} else {
 		d(printf(" no cache entry found\n"));
 	}

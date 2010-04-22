@@ -31,10 +31,24 @@
 #include "camel-imap-command.h"
 #include "camel-imap-message-cache.h"
 
-#define CAMEL_IMAP_FOLDER_TYPE     (camel_imap_folder_get_type ())
-#define CAMEL_IMAP_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAP_FOLDER_TYPE, CamelImapFolder))
-#define CAMEL_IMAP_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_IMAP_FOLDER_TYPE, CamelImapFolderClass))
-#define CAMEL_IS_IMAP_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_IMAP_FOLDER_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_IMAP_FOLDER \
+	(camel_imap_folder_get_type ())
+#define CAMEL_IMAP_FOLDER(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_IMAP_FOLDER, CamelImapFolder))
+#define CAMEL_IMAP_FOLDER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_IMAP_FOLDER, CamelImapFolderClass))
+#define CAMEL_IS_IMAP_FOLDER(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_IMAP_FOLDER))
+#define CAMEL_IS_IMAP_FOLDER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_IMAP_FOLDER))
+#define CAMEL_IMAP_FOLDER_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_IMAP_FOLDER, CamelImapFolderClass))
 
 G_BEGIN_DECLS
 
@@ -101,8 +115,7 @@ imap_transfer_resyncing (CamelFolder *source, GPtrArray *uids,
 gboolean
 imap_expunge_uids_resyncing (CamelFolder *folder, GPtrArray *uids, CamelException *ex);
 
-/* Standard Camel function */
-CamelType camel_imap_folder_get_type (void);
+GType camel_imap_folder_get_type (void);
 
 G_END_DECLS
 

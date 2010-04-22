@@ -49,6 +49,10 @@
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 
+#define CAMEL_MIME_PART_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_PART, CamelMimePartPrivate))
+
 struct _CamelMimePartPrivate {
 
 	/* TODO: these should be in a camelcontentinfo */
@@ -59,6 +63,16 @@ struct _CamelMimePartPrivate {
 	gchar *content_location;
 	GList *content_languages;
 	CamelTransferEncoding encoding;
+};
+
+enum {
+	PROP_0,
+	PROP_CONTENT_ID,
+	PROP_CONTENT_LOCATION,
+	PROP_CONTENT_MD5,
+	PROP_DESCRIPTION,
+	PROP_DISPOSITION,
+	PROP_FILENAME
 };
 
 typedef enum {
@@ -76,7 +90,7 @@ typedef enum {
 static GHashTable *header_name_table;
 static GHashTable *header_formatted_table;
 
-static gpointer camel_mime_part_parent_class;
+G_DEFINE_TYPE (CamelMimePart, camel_mime_part, CAMEL_TYPE_MEDIUM)
 
 static gssize
 write_raw (CamelStream *stream,
@@ -264,9 +278,93 @@ mime_part_process_header (CamelMedium *medium,
 }
 
 static void
-mime_part_finalize (CamelMimePart *mime_part)
+mime_part_set_property (GObject *object,
+                        guint property_id,
+                        const GValue *value,
+                        GParamSpec *pspec)
 {
-	CamelMimePartPrivate *priv = mime_part->priv;
+	switch (property_id) {
+		case PROP_CONTENT_ID:
+			camel_mime_part_set_content_id (
+				CAMEL_MIME_PART (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_CONTENT_MD5:
+			camel_mime_part_set_content_md5 (
+				CAMEL_MIME_PART (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_CONTENT_LOCATION:
+			camel_mime_part_set_content_location (
+				CAMEL_MIME_PART (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_DESCRIPTION:
+			camel_mime_part_set_description (
+				CAMEL_MIME_PART (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_DISPOSITION:
+			camel_mime_part_set_disposition (
+				CAMEL_MIME_PART (object),
+				g_value_get_string (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+mime_part_get_property (GObject *object,
+                        guint property_id,
+                        GValue *value,
+                        GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_CONTENT_ID:
+			g_value_set_string (
+				value, camel_mime_part_get_content_id (
+				CAMEL_MIME_PART (object)));
+			return;
+
+		case PROP_CONTENT_MD5:
+			g_value_set_string (
+				value, camel_mime_part_get_content_md5 (
+				CAMEL_MIME_PART (object)));
+			return;
+
+		case PROP_CONTENT_LOCATION:
+			g_value_set_string (
+				value, camel_mime_part_get_content_location (
+				CAMEL_MIME_PART (object)));
+			return;
+
+		case PROP_DESCRIPTION:
+			g_value_set_string (
+				value, camel_mime_part_get_description (
+				CAMEL_MIME_PART (object)));
+			return;
+
+		case PROP_DISPOSITION:
+			g_value_set_string (
+				value, camel_mime_part_get_disposition (
+				CAMEL_MIME_PART (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+mime_part_finalize (GObject *object)
+{
+	CamelMimePartPrivate *priv;
+
+	priv = CAMEL_MIME_PART_GET_PRIVATE (object);
 
 	g_free (priv->description);
 	g_free (priv->content_id);
@@ -276,9 +374,10 @@ mime_part_finalize (CamelMimePart *mime_part)
 	camel_string_list_free (priv->content_languages);
 	camel_content_disposition_unref (priv->disposition);
 
-	camel_header_raw_clear(&mime_part->headers);
+	camel_header_raw_clear(&CAMEL_MIME_PART (object)->headers);
 
-	g_free (priv);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_mime_part_parent_class)->finalize (object);
 }
 
 static void
@@ -293,7 +392,7 @@ mime_part_add_header (CamelMedium *medium,
 	/* we simply add the header in a raw fashion                      */
 
 	/* If it was one of the headers we handled, it must be unique, set it instead of add */
-	if (mime_part_process_header(medium, name, value))
+	if (mime_part_process_header (medium, name, value))
 		camel_header_raw_replace (&part->headers, name, value, -1);
 	else
 		camel_header_raw_append (&part->headers, name, value, -1);
@@ -479,7 +578,7 @@ mime_part_write_to_stream (CamelDataWrapper *dw,
 			if (charenc) {
 				camel_stream_filter_add (
 					CAMEL_STREAM_FILTER (filter_stream), charenc);
-				camel_object_unref (charenc);
+				g_object_unref (charenc);
 			}
 
 			/* we only re-do crlf on encoded blocks */
@@ -489,13 +588,13 @@ mime_part_write_to_stream (CamelDataWrapper *dw,
 
 				camel_stream_filter_add (
 					CAMEL_STREAM_FILTER (filter_stream), crlf);
-				camel_object_unref (crlf);
+				g_object_unref (crlf);
 			}
 
 			if (filter) {
 				camel_stream_filter_add (
 					CAMEL_STREAM_FILTER (filter_stream), filter);
-				camel_object_unref (filter);
+				g_object_unref (filter);
 			}
 
 			stream = filter_stream;
@@ -511,7 +610,7 @@ mime_part_write_to_stream (CamelDataWrapper *dw,
 		if (filter_stream) {
 			errnosav = errno;
 			camel_stream_flush (stream);
-			camel_object_unref (filter_stream);
+			g_object_unref (filter_stream);
 			errno = errnosav;
 		}
 
@@ -550,7 +649,7 @@ mime_part_construct_from_stream (CamelDataWrapper *dw,
 		ret = camel_mime_part_construct_from_parser (
 			CAMEL_MIME_PART (dw), mp);
 	}
-	camel_object_unref (mp);
+	g_object_unref (mp);
 	return ret;
 }
 
@@ -611,10 +710,16 @@ mime_part_construct_from_parser (CamelMimePart *mime_part,
 static void
 camel_mime_part_class_init (CamelMimePartClass *class)
 {
+	GObjectClass *object_class;
 	CamelMediumClass *medium_class;
 	CamelDataWrapperClass *data_wrapper_class;
 
-	camel_mime_part_parent_class = CAMEL_MEDIUM_CLASS (camel_type_get_global_classfuncs (camel_medium_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelMimePartPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = mime_part_set_property;
+	object_class->get_property = mime_part_get_property;
+	object_class->finalize = mime_part_finalize;
 
 	medium_class = CAMEL_MEDIUM_CLASS (class);
 	medium_class->add_header = mime_part_add_header;
@@ -631,6 +736,46 @@ camel_mime_part_class_init (CamelMimePartClass *class)
 
 	class->construct_from_parser = mime_part_construct_from_parser;
 
+	g_object_class_install_property (
+		object_class,
+		PROP_CONTENT_ID,
+		g_param_spec_string (
+			"content-id",
+			"Content ID",
+			NULL,
+			NULL,
+			G_PARAM_READWRITE));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_CONTENT_MD5,
+		g_param_spec_string (
+			"content-md5",
+			"Content MD5",
+			NULL,
+			NULL,
+			G_PARAM_READWRITE));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_DESCRIPTION,
+		g_param_spec_string (
+			"description",
+			"Description",
+			NULL,
+			NULL,
+			G_PARAM_READWRITE));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_DISPOSITION,
+		g_param_spec_string (
+			"disposition",
+			"Disposition",
+			NULL,
+			NULL,
+			G_PARAM_READWRITE));
+
 	init_header_name_table ();
 }
 
@@ -639,7 +784,7 @@ camel_mime_part_init (CamelMimePart *mime_part)
 {
 	CamelDataWrapper *data_wrapper;
 
-	mime_part->priv = g_new0 (CamelMimePartPrivate, 1);
+	mime_part->priv = CAMEL_MIME_PART_GET_PRIVATE (mime_part);
 	mime_part->priv->encoding = CAMEL_TRANSFER_ENCODING_DEFAULT;
 
 	data_wrapper = CAMEL_DATA_WRAPPER (mime_part);
@@ -648,25 +793,6 @@ camel_mime_part_init (CamelMimePart *mime_part)
 		camel_content_type_unref (data_wrapper->mime_type);
 
 	data_wrapper->mime_type = camel_content_type_new ("text", "plain");
-}
-
-CamelType
-camel_mime_part_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE)	{
-		type = camel_type_register (CAMEL_MEDIUM_TYPE,
-					    "CamelMimePart",
-					    sizeof (CamelMimePart),
-					    sizeof (CamelMimePartClass),
-					    (CamelObjectClassInitFunc) camel_mime_part_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_part_init,
-					    (CamelObjectFinalizeFunc) mime_part_finalize);
-	}
-
-	return type;
 }
 
 /* **** Content-Description */
@@ -693,6 +819,8 @@ camel_mime_part_set_description (CamelMimePart *mime_part,
 	text = camel_header_encode_string ((guchar *) description);
 	camel_medium_set_header (medium, "Content-Description", text);
 	g_free (text);
+
+	g_object_notify (G_OBJECT (mime_part), "description");
 }
 
 /**
@@ -743,6 +871,8 @@ camel_mime_part_set_disposition (CamelMimePart *mime_part,
 	text = camel_content_disposition_format (mime_part->priv->disposition);
 	camel_medium_set_header (medium, "Content-Disposition", text);
 	g_free (text);
+
+	g_object_notify (G_OBJECT (mime_part), "disposition");
 }
 
 /**
@@ -872,6 +1002,8 @@ camel_mime_part_set_content_id (CamelMimePart *mime_part,
 	g_free (cid);
 
 	g_free (id);
+
+	g_object_notify (G_OBJECT (mime_part), "content-id");
 }
 
 /**
@@ -949,6 +1081,8 @@ camel_mime_part_set_content_location (CamelMimePart *mime_part,
 
 	/* FIXME: this should perform content-location folding */
 	camel_medium_set_header (medium, "Content-Location", location);
+
+	g_object_notify (G_OBJECT (mime_part), "content-location");
 }
 
 /**
@@ -1122,7 +1256,7 @@ camel_mime_part_construct_from_parser (CamelMimePart *mime_part,
 CamelMimePart *
 camel_mime_part_new (void)
 {
-	return (CamelMimePart *)camel_object_new (CAMEL_MIME_PART_TYPE);
+	return g_object_new (CAMEL_TYPE_MIME_PART, NULL);
 }
 
 /**
@@ -1152,9 +1286,9 @@ camel_mime_part_set_content (CamelMimePart *mime_part,
 		camel_data_wrapper_set_mime_type (dw, type);
 		stream = camel_stream_mem_new_with_buffer (data, length);
 		camel_data_wrapper_construct_from_stream (dw, stream);
-		camel_object_unref (stream);
+		g_object_unref (stream);
 		camel_medium_set_content (medium, dw);
-		camel_object_unref (dw);
+		g_object_unref (dw);
 	} else
 		camel_medium_set_content (medium, NULL);
 }
@@ -1184,7 +1318,7 @@ camel_mime_part_get_content_size (CamelMimePart *mime_part)
 	camel_data_wrapper_decode_to_stream (dw, (CamelStream *) null);
 	size = null->written;
 
-	camel_object_unref (null);
+	g_object_unref (null);
 
 	return size;
 }

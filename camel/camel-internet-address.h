@@ -28,9 +28,24 @@
 
 #include <camel/camel-address.h>
 
-#define CAMEL_INTERNET_ADDRESS(obj)         CAMEL_CHECK_CAST (obj, camel_internet_address_get_type (), CamelInternetAddress)
-#define CAMEL_INTERNET_ADDRESS_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_internet_address_get_type (), CamelInternetAddressClass)
-#define CAMEL_IS_INTERNET_ADDRESS(obj)      CAMEL_CHECK_TYPE (obj, camel_internet_address_get_type ())
+/* Standard GObject macros */
+#define CAMEL_TYPE_INTERNET_ADDRESS \
+	(camel_internet_address_get_type ())
+#define CAMEL_INTERNET_ADDRESS(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_INTERNET_ADDRESS, CamelInternetAddress))
+#define CAMEL_INTERNET_ADDRESS_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_INTERNET_ADDRESS, CamelInternetAddressClass))
+#define CAMEL_IS_INTERNET_ADDRESS(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_INTERNET_ADDRESS))
+#define CAMEL_IS_INTERNET_ADDRESS_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_INTERNET_ADDRESS))
+#define CAMEL_INTERNET_ADDRESS_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_INTERNET_ADDRESS, CamelInternetAddressClass))
 
 G_BEGIN_DECLS
 
@@ -47,7 +62,7 @@ struct _CamelInternetAddressClass {
 	CamelAddressClass parent_class;
 };
 
-CamelType	camel_internet_address_get_type	(void);
+GType		camel_internet_address_get_type	(void);
 CamelInternetAddress *
 		camel_internet_address_new	(void);
 gint		camel_internet_address_add	(CamelInternetAddress *addr,

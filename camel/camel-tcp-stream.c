@@ -35,36 +35,16 @@
 
 #define w(x)
 
-static CamelStreamClass *parent_class = NULL;
+G_DEFINE_TYPE (CamelTcpStream, camel_tcp_stream, CAMEL_TYPE_STREAM)
 
 static void
 camel_tcp_stream_class_init (CamelTcpStreamClass *class)
 {
-	parent_class = CAMEL_STREAM_CLASS (camel_type_get_global_classfuncs (CAMEL_STREAM_TYPE));
 }
 
 static void
 camel_tcp_stream_init (CamelTcpStream *tcp_stream)
 {
-}
-
-CamelType
-camel_tcp_stream_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (CAMEL_STREAM_TYPE,
-					    "CamelTcpStream",
-					    sizeof (CamelTcpStream),
-					    sizeof (CamelTcpStreamClass),
-					    (CamelObjectClassInitFunc) camel_tcp_stream_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_tcp_stream_init,
-					    NULL);
-	}
-
-	return type;
 }
 
 /**

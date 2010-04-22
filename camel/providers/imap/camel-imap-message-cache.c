@@ -58,6 +58,8 @@ struct _part_find {
 	gint found;
 };
 
+G_DEFINE_TYPE (CamelImapMessageCache, camel_imap_message_cache, CAMEL_TYPE_OBJECT)
+
 static void
 free_part (gpointer key, gpointer value, gpointer data)
 {
@@ -65,7 +67,7 @@ free_part (gpointer key, gpointer value, gpointer data)
 		if (strchr (key, '.')) {
 			camel_object_unhook_event (value, "finalize",
 						   stream_finalize, data);
-			camel_object_unref (value);
+			g_object_unref (value);
 		} else
 			g_ptr_array_free (value, TRUE);
 	}
@@ -73,10 +75,14 @@ free_part (gpointer key, gpointer value, gpointer data)
 }
 
 static void
-imap_message_cache_finalize (CamelImapMessageCache *cache)
+imap_message_cache_finalize (GObject *object)
 {
+	CamelImapMessageCache *cache;
+
+	cache = CAMEL_IMAP_MESSAGE_CACHE (object);
+
 	g_free (cache->path);
-\
+
 	if (cache->parts) {
 		g_hash_table_foreach (cache->parts, free_part, cache);
 		g_hash_table_destroy (cache->parts);
@@ -84,25 +90,23 @@ imap_message_cache_finalize (CamelImapMessageCache *cache)
 
 	if (cache->cached)
 		g_hash_table_destroy (cache->cached);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_imap_message_cache_parent_class)->finalize (object);
 }
 
-CamelType
-camel_imap_message_cache_get_type (void)
+static void
+camel_imap_message_cache_class_init (CamelImapMessageCacheClass *class)
 {
-	static CamelType camel_imap_message_cache_type = CAMEL_INVALID_TYPE;
+	GObjectClass *object_class;
 
-	if (camel_imap_message_cache_type == CAMEL_INVALID_TYPE) {
-		camel_imap_message_cache_type = camel_type_register (
-			CAMEL_TYPE_OBJECT, "CamelImapMessageCache",
-			sizeof (CamelImapMessageCache),
-			sizeof (CamelImapMessageCacheClass),
-			NULL,
-			NULL,
-			NULL,
-			(CamelObjectFinalizeFunc) imap_message_cache_finalize);
-	}
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = imap_message_cache_finalize;
+}
 
-	return camel_imap_message_cache_type;
+static void
+camel_imap_message_cache_init (CamelImapMessageCache *imap_message_cache)
+{
 }
 
 static void
@@ -129,7 +133,7 @@ cache_put (CamelImapMessageCache *cache, const gchar *uid, const gchar *key,
 			camel_object_unhook_event (ostream, "finalize",
 						   stream_finalize, cache);
 			g_hash_table_remove (cache->cached, ostream);
-			camel_object_unref (ostream);
+			g_object_unref (ostream);
 		}
 		hash_key = okey;
 	} else {
@@ -181,7 +185,7 @@ camel_imap_message_cache_new (const gchar *path,
 		return NULL;
 	}
 
-	cache = (CamelImapMessageCache *)camel_object_new (CAMEL_IMAP_MESSAGE_CACHE_TYPE);
+	cache = g_object_new (CAMEL_TYPE_IMAP_MESSAGE_CACHE, NULL);
 	cache->path = g_strdup (path);
 
 	cache->parts = g_hash_table_new (g_str_hash, g_str_equal);
@@ -321,7 +325,7 @@ insert_setup (CamelImapMessageCache *cache, const gchar *uid, const gchar *part_
 	*key = strrchr (*path, '/') + 1;
 	stream = g_hash_table_lookup (cache->parts, *key);
 	if (stream)
-		camel_object_unref (CAMEL_OBJECT (stream));
+		g_object_unref (CAMEL_OBJECT (stream));
 
 	fd = g_open (*path, O_RDWR | O_CREAT | O_TRUNC | O_BINARY, 0600);
 	if (fd == -1) {
@@ -341,7 +345,7 @@ insert_abort (gchar *path, CamelStream *stream)
 {
 	g_unlink (path);
 	g_free (path);
-	camel_object_unref (CAMEL_OBJECT (stream));
+	g_object_unref (CAMEL_OBJECT (stream));
 	return NULL;
 }
 
@@ -430,7 +434,7 @@ camel_imap_message_cache_insert_stream (CamelImapMessageCache *cache,
 		insert_abort (path, stream);
 	} else {
 		insert_finish (cache, uid, path, key, stream);
-		camel_object_unref (CAMEL_OBJECT (stream));
+		g_object_unref (CAMEL_OBJECT (stream));
 	}
 }
 
@@ -465,7 +469,7 @@ camel_imap_message_cache_insert_wrapper (CamelImapMessageCache *cache,
 		insert_abort (path, stream);
 	} else {
 		insert_finish (cache, uid, path, key, stream);
-		camel_object_unref (CAMEL_OBJECT (stream));
+		g_object_unref (CAMEL_OBJECT (stream));
 	}
 }
 
@@ -530,7 +534,7 @@ camel_imap_message_cache_get (CamelImapMessageCache *cache, const gchar *uid,
 	stream = g_hash_table_lookup (cache->parts, key);
 	if (stream) {
 		camel_stream_reset (CAMEL_STREAM (stream));
-		camel_object_ref (stream);
+		g_object_ref (stream);
 		g_free (path);
 		return stream;
 	}
@@ -576,7 +580,7 @@ camel_imap_message_cache_remove (CamelImapMessageCache *cache, const gchar *uid)
 		if (stream) {
 			camel_object_unhook_event (stream, "finalize",
 						   stream_finalize, cache);
-			camel_object_unref (stream);
+			g_object_unref (stream);
 			g_hash_table_remove (cache->cached, stream);
 		}
 		g_hash_table_remove (cache->parts, key);
@@ -646,7 +650,7 @@ camel_imap_message_cache_copy (CamelImapMessageCache *source,
 
 		if ((stream = camel_imap_message_cache_get (source, source_uid, part, ex))) {
 			camel_imap_message_cache_insert_stream (dest, dest_uid, part, stream, ex);
-			camel_object_unref (CAMEL_OBJECT (stream));
+			g_object_unref (CAMEL_OBJECT (stream));
 		}
 	}
 }

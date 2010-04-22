@@ -27,7 +27,7 @@
 
 #include "camel-seekable-substream.h"
 
-static CamelSeekableStreamClass *parent_class = NULL;
+G_DEFINE_TYPE (CamelSeekableSubstream, camel_seekable_substream, CAMEL_TYPE_SEEKABLE_STREAM)
 
 static gboolean
 seekable_substream_parent_reset (CamelSeekableSubstream *seekable_substream,
@@ -44,10 +44,19 @@ seekable_substream_parent_reset (CamelSeekableSubstream *seekable_substream,
 }
 
 static void
-camel_seekable_substream_finalize (CamelSeekableSubstream *seekable_substream)
+seekable_substream_dispose (GObject *object)
 {
-	if (seekable_substream->parent_stream != NULL)
-		camel_object_unref (seekable_substream->parent_stream);
+	CamelSeekableSubstream *seekable_substream;
+
+	seekable_substream = CAMEL_SEEKABLE_SUBSTREAM (object);
+
+	if (seekable_substream->parent_stream != NULL) {
+		g_object_unref (seekable_substream->parent_stream);
+		seekable_substream = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_seekable_substream_parent_class)->dispose (object);
 }
 
 static gssize
@@ -221,10 +230,12 @@ seekable_substream_seek (CamelSeekableStream *seekable_stream,
 static void
 camel_seekable_substream_class_init (CamelSeekableSubstreamClass *class)
 {
+	GObjectClass *object_class;
 	CamelStreamClass *stream_class;
 	CamelSeekableStreamClass *seekable_stream_class;
 
-	parent_class = CAMEL_SEEKABLE_STREAM_CLASS (camel_type_get_global_classfuncs (camel_seekable_stream_get_type ()));
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = seekable_substream_dispose;
 
 	stream_class = CAMEL_STREAM_CLASS (class);
 	stream_class->read = seekable_substream_read;
@@ -240,24 +251,6 @@ camel_seekable_substream_class_init (CamelSeekableSubstreamClass *class)
 static void
 camel_seekable_substream_init (CamelSeekableSubstream *seekable_substream)
 {
-}
-
-CamelType
-camel_seekable_substream_get_type (void)
-{
-	static CamelType camel_seekable_substream_type = CAMEL_INVALID_TYPE;
-
-	if (camel_seekable_substream_type == CAMEL_INVALID_TYPE) {
-		camel_seekable_substream_type = camel_type_register (camel_seekable_stream_get_type (), "CamelSeekableSubstream",
-								     sizeof (CamelSeekableSubstream),
-								     sizeof (CamelSeekableSubstreamClass),
-								     (CamelObjectClassInitFunc) camel_seekable_substream_class_init,
-								     NULL,
-								     (CamelObjectInitFunc) camel_seekable_substream_init,
-								     (CamelObjectFinalizeFunc) camel_seekable_substream_finalize);
-	}
-
-	return camel_seekable_substream_type;
 }
 
 /**
@@ -285,10 +278,10 @@ camel_seekable_substream_new(CamelSeekableStream *parent_stream, off_t start, of
 	g_return_val_if_fail (CAMEL_IS_SEEKABLE_STREAM (parent_stream), NULL);
 
 	/* Create the seekable substream. */
-	seekable_substream = CAMEL_SEEKABLE_SUBSTREAM (camel_object_new (camel_seekable_substream_get_type ()));
+	seekable_substream = g_object_new (CAMEL_TYPE_SEEKABLE_SUBSTREAM, NULL);
 
 	/* Initialize it. */
-	seekable_substream->parent_stream = camel_object_ref (parent_stream);
+	seekable_substream->parent_stream = g_object_ref (parent_stream);
 
 	/* Set the bound of the substream. We can ignore any possible error
 	 * here, because if we fail to seek now, it will try again later. */

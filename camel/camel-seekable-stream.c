@@ -27,7 +27,7 @@
 
 #include "camel-seekable-stream.h"
 
-static CamelStreamClass *parent_class = NULL;
+G_DEFINE_TYPE (CamelSeekableStream, camel_seekable_stream, CAMEL_TYPE_STREAM)
 
 static gint
 seekable_stream_reset (CamelStream *stream)
@@ -68,8 +68,6 @@ camel_seekable_stream_class_init (CamelSeekableStreamClass *class)
 {
 	CamelStreamClass *stream_class;
 
-	parent_class = CAMEL_STREAM_CLASS( camel_type_get_global_classfuncs( CAMEL_STREAM_TYPE ) );
-
 	stream_class = CAMEL_STREAM_CLASS (class);
 	stream_class->reset = seekable_stream_reset;
 
@@ -82,25 +80,6 @@ camel_seekable_stream_init (CamelSeekableStream *stream)
 {
 	stream->bound_start = 0;
 	stream->bound_end = CAMEL_STREAM_UNBOUND;
-}
-
-CamelType
-camel_seekable_stream_get_type (void)
-{
-	static CamelType camel_seekable_stream_type = CAMEL_INVALID_TYPE;
-
-	if (camel_seekable_stream_type == CAMEL_INVALID_TYPE) {
-		camel_seekable_stream_type = camel_type_register( CAMEL_STREAM_TYPE,
-								  "CamelSeekableStream",
-								  sizeof( CamelSeekableStream ),
-								  sizeof( CamelSeekableStreamClass ),
-								  (CamelObjectClassInitFunc) camel_seekable_stream_class_init,
-								  NULL,
-								  (CamelObjectInitFunc) camel_seekable_stream_init,
-								  NULL );
-	}
-
-	return camel_seekable_stream_type;
 }
 
 /**

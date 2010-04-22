@@ -31,12 +31,24 @@
 
 #include <camel/camel-folder-summary.h>
 
-#define CAMEL_FOLDER_TYPE     (camel_folder_get_type ())
-#define CAMEL_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_FOLDER_TYPE, CamelFolder))
-#define CAMEL_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_FOLDER_TYPE, CamelFolderClass))
-#define CAMEL_IS_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_FOLDER_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_FOLDER \
+	(camel_folder_get_type ())
+#define CAMEL_FOLDER(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_FOLDER, CamelFolder))
+#define CAMEL_FOLDER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_FOLDER, CamelFolderClass))
+#define CAMEL_IS_FOLDER(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_FOLDER))
+#define CAMEL_IS_FOLDER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_FOLDER))
 #define CAMEL_FOLDER_GET_CLASS(obj) \
-	((CamelFolderClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_FOLDER, CamelFolderClass))
 
 G_BEGIN_DECLS
 
@@ -86,7 +98,7 @@ enum {
 	CAMEL_FOLDER_PROPERTIES = CAMEL_FOLDER_ARG_PROPERTIES | CAMEL_ARG_PTR
 };
 
-typedef enum _CamelFolderLock {
+typedef enum {
 	CF_CHANGE_LOCK,
 	CF_REC_LOCK
 } CamelFolderLock;
@@ -242,7 +254,7 @@ struct _CamelFolderClass {
 						 CamelException *ex);
 };
 
-CamelType	camel_folder_get_type		(void);
+GType		camel_folder_get_type		(void);
 void		camel_folder_construct		(CamelFolder *folder,
 						 struct _CamelStore *parent_store,
 						 const gchar *full_name,
@@ -457,9 +469,10 @@ void		camel_folder_change_info_change_uid
 void		camel_folder_change_info_recent_uid
 						(CamelFolderChangeInfo *info,
 						 const gchar *uid);
-
-void		camel_folder_lock		(CamelFolder *folder, CamelFolderLock lock);
-void		camel_folder_unlock		(CamelFolder *folder, CamelFolderLock lock);
+void		camel_folder_lock		(CamelFolder *folder,
+						 CamelFolderLock lock);
+void		camel_folder_unlock		(CamelFolder *folder,
+						 CamelFolderLock lock);
 
 G_END_DECLS
 

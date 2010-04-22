@@ -30,15 +30,25 @@
 #include <camel/camel-list-utils.h>
 #include <camel/camel-mime-part.h>
 #include <camel/camel-session.h>
-#include <camel/camel-exception.h>
-#include <camel/camel-stream.h>
 
-#define CAMEL_CIPHER_CONTEXT_TYPE     (camel_cipher_context_get_type ())
-#define CAMEL_CIPHER_CONTEXT(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_CIPHER_CONTEXT_TYPE, CamelCipherContext))
-#define CAMEL_CIPHER_CONTEXT_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_CIPHER_CONTEXT_TYPE, CamelCipherContextClass))
-#define CAMEL_IS_CIPHER_CONTEXT(o)    (CAMEL_CHECK_TYPE((o), CAMEL_CIPHER_CONTEXT_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_CIPHER_CONTEXT \
+	(camel_cipher_context_get_type ())
+#define CAMEL_CIPHER_CONTEXT(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_CIPHER_CONTEXT, CamelCipherContext))
+#define CAMEL_CIPHER_CONTEXT_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_CIPHER_CONTEXT, CamelCipherContextClass))
+#define CAMEL_IS_CIPHER_CONTEXT(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_CIPHER_CONTEXT))
+#define CAMEL_IS_CIPHER_CONTEXT_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_CIPHER_CONTEXT))
 #define CAMEL_CIPHER_CONTEXT_GET_CLASS(obj) \
-	((CamelCipherContextClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_CIPHER_CONTEXT, CamelCipherContextClass))
 
 G_BEGIN_DECLS
 
@@ -155,10 +165,9 @@ struct _CamelCipherContextClass {
 						 CamelException *ex);
 };
 
-CamelType	camel_cipher_context_get_type	(void);
+GType		camel_cipher_context_get_type	(void);
 CamelCipherContext *
 		camel_cipher_context_new	(CamelSession *session);
-void		camel_cipher_context_construct	(CamelCipherContext *context, CamelSession *session);
 CamelSession *	camel_cipher_context_get_session(CamelCipherContext *context);
 
 /* cipher context util routines */

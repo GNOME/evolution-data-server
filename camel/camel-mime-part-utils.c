@@ -75,7 +75,7 @@ simple_data_wrapper_construct_from_parser (CamelDataWrapper *dw, CamelMimeParser
 
 	mem = camel_stream_mem_new_with_byte_array (buffer);
 	camel_data_wrapper_construct_from_stream (dw, mem);
-	camel_object_unref (mem);
+	g_object_unref (mem);
 }
 
 /**
@@ -136,7 +136,7 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw, CamelMimeParse
 		/* would you believe you have to set this BEFORE you set the content object???  oh my god !!!! */
 		camel_data_wrapper_set_mime_type_field (content, camel_mime_part_get_content_type (dw));
 		camel_medium_set_content ((CamelMedium *)dw, content);
-		camel_object_unref (content);
+		g_object_unref (content);
 	}
 
 	g_free (encoding);
@@ -213,9 +213,9 @@ camel_mime_message_build_preview (CamelMimePart *msg,
 			((CamelMessageInfoBase *) info)->preview = camel_utf8_make_valid(str->str);
 			g_string_free(str, TRUE);
 
-			camel_object_unref (bstream);
+			g_object_unref (bstream);
 		}
-		camel_object_unref (mstream);
+		g_object_unref (mstream);
 		return TRUE;
 	}
 

@@ -62,6 +62,10 @@
 
 #define d(x)
 
+#define CAMEL_SMIME_CONTEXT_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_SMIME_CONTEXT, CamelSMIMEContextPrivate))
+
 struct _CamelSMIMEContextPrivate {
 	CERTCertDBHandle *certdb;
 
@@ -72,7 +76,7 @@ struct _CamelSMIMEContextPrivate {
 	guint send_encrypt_key_prefs:1;
 };
 
-static CamelCipherContextClass *parent_class = NULL;
+G_DEFINE_TYPE (CamelSMIMEContext, camel_smime_context, CAMEL_TYPE_CIPHER_CONTEXT)
 
 static void
 smime_cert_data_free (gpointer cert_data)
@@ -559,7 +563,7 @@ sm_verify_cmsg (CamelCipherContext *context,
 			mem = camel_stream_mem_new_with_byte_array (buffer);
 			camel_stream_write_to_stream (extstream, mem);
 			NSS_CMSDigestContext_Update (digcx, buffer->data, buffer->len);
-			camel_object_unref (mem);
+			g_object_unref (mem);
 
 			if (NSS_CMSDigestContext_FinishMultiple (digcx, poolp, &digests) != SECSuccess) {
 				set_nss_error (ex, _("Cannot calculate digests"));
@@ -664,16 +668,6 @@ fail:
 	g_string_free (description, TRUE);
 
 	return NULL;
-}
-
-static void
-smime_context_finalize (CamelObject *object)
-{
-	CamelSMIMEContext *context = (CamelSMIMEContext *)object;
-
-	/* FIXME: do we have to free the certdb? */
-
-	g_free (context->priv);
 }
 
 static const gchar *
@@ -815,7 +809,7 @@ smime_context_sign (CamelCipherContext *context,
 		mps->signature = sigpart;
 		mps->contentraw = istream;
 		camel_stream_reset (istream);
-		camel_object_ref (istream);
+		g_object_ref (istream);
 
 		camel_medium_set_content ((CamelMedium *)opart, (CamelDataWrapper *)mps);
 	} else {
@@ -833,10 +827,10 @@ smime_context_sign (CamelCipherContext *context,
 		camel_mime_part_set_encoding (opart, CAMEL_TRANSFER_ENCODING_BASE64);
 	}
 
-	camel_object_unref (dw);
+	g_object_unref (dw);
 fail:
-	camel_object_unref (ostream);
-	camel_object_unref (istream);
+	g_object_unref (ostream);
+	g_object_unref (istream);
 
 	return res;
 }
@@ -920,9 +914,9 @@ smime_context_verify (CamelCipherContext *context,
 
 	NSS_CMSMessage_Destroy (cmsg);
 fail:
-	camel_object_unref (mem);
+	g_object_unref (mem);
 	if (constream)
-		camel_object_unref (constream);
+		g_object_unref (constream);
 
 	return valid;
 }
@@ -1055,11 +1049,11 @@ smime_context_encrypt (CamelCipherContext *context,
 	camel_data_wrapper_write_to_stream ((CamelDataWrapper *)ipart, mem);
 	if (NSS_CMSEncoder_Update (enc, (gchar *) buffer->data, buffer->len) != SECSuccess) {
 		NSS_CMSEncoder_Cancel (enc);
-		camel_object_unref (mem);
+		g_object_unref (mem);
 		set_nss_error (ex, _("Failed to add data to encoder"));
 		goto fail;
 	}
-	camel_object_unref (mem);
+	g_object_unref (mem);
 
 	if (NSS_CMSEncoder_Finish(enc) != SECSuccess) {
 		set_nss_error (ex, _("Failed to encode data"));
@@ -1074,7 +1068,7 @@ smime_context_encrypt (CamelCipherContext *context,
 
 	dw = camel_data_wrapper_new ();
 	camel_data_wrapper_construct_from_stream (dw, ostream);
-	camel_object_unref (ostream);
+	g_object_unref (ostream);
 	dw->encoding = CAMEL_TRANSFER_ENCODING_BINARY;
 
 	ct = camel_content_type_new ("application", "x-pkcs7-mime");
@@ -1084,7 +1078,7 @@ smime_context_encrypt (CamelCipherContext *context,
 	camel_content_type_unref (ct);
 
 	camel_medium_set_content ((CamelMedium *)opart, dw);
-	camel_object_unref (dw);
+	g_object_unref (dw);
 
 	camel_mime_part_set_disposition (opart, "attachment");
 	camel_mime_part_set_filename (opart, "smime.p7m");
@@ -1095,7 +1089,7 @@ smime_context_encrypt (CamelCipherContext *context,
 
 fail:
 	if (ostream)
-		camel_object_unref (ostream);
+		g_object_unref (ostream);
 	if (cmsg)
 		NSS_CMSMessage_Destroy (cmsg);
 	if (bulkkey)
@@ -1106,7 +1100,7 @@ fail:
 			CERT_DestroyCertificate (recipient_certs[i]);
 	}
 
-	PORT_FreeArena(poolp, PR_FALSE);
+	PORT_FreeArena (poolp, PR_FALSE);
 
 	return -1;
 }
@@ -1134,7 +1128,7 @@ smime_context_decrypt (CamelCipherContext *context,
 	buffer = g_byte_array_new ();
 	istream = camel_stream_mem_new_with_byte_array (buffer);
 	camel_data_wrapper_decode_to_stream (camel_medium_get_content ((CamelMedium *)ipart), istream);
-	camel_stream_reset ((CamelStream *)istream);
+	camel_stream_reset (istream);
 
 	dec = NSS_CMSDecoder_Start (NULL,
 				   sm_write_stream, ostream, /* content callback     */
@@ -1147,7 +1141,7 @@ smime_context_decrypt (CamelCipherContext *context,
 		cmsg = NSS_CMSDecoder_Finish (dec);
 	}
 
-	camel_object_unref (istream);
+	g_object_unref (istream);
 
 	if (cmsg == NULL) {
 		set_nss_error (ex, _("Decoder failed"));
@@ -1177,7 +1171,7 @@ smime_context_decrypt (CamelCipherContext *context,
 
 	NSS_CMSMessage_Destroy (cmsg);
 fail:
-	camel_object_unref (ostream);
+	g_object_unref (ostream);
 
 	return valid;
 }
@@ -1187,7 +1181,7 @@ camel_smime_context_class_init (CamelSMIMEContextClass *class)
 {
 	CamelCipherContextClass *cipher_context_class;
 
-	parent_class = CAMEL_CIPHER_CONTEXT_CLASS(camel_type_get_global_classfuncs(camel_cipher_context_get_type()));
+	g_type_class_add_private (class, sizeof (CamelSMIMEContextPrivate));
 
 	cipher_context_class = CAMEL_CIPHER_CONTEXT_CLASS (class);
 	cipher_context_class->sign_protocol = "application/x-pkcs7-signature";
@@ -1204,30 +1198,11 @@ camel_smime_context_class_init (CamelSMIMEContextClass *class)
 static void
 camel_smime_context_init (CamelSMIMEContext *smime_context)
 {
-	smime_context->priv = g_malloc0(sizeof(*smime_context->priv));
+	smime_context->priv = CAMEL_SMIME_CONTEXT_GET_PRIVATE (smime_context);
 
 	smime_context->priv->certdb = CERT_GetDefaultCertDB ();
 	smime_context->priv->sign_mode = CAMEL_SMIME_SIGN_CLEARSIGN;
 	smime_context->priv->password_tries = 0;
-}
-
-CamelType
-camel_smime_context_get_type(void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register(camel_cipher_context_get_type(),
-					   "CamelSMIMEContext",
-					   sizeof(CamelSMIMEContext),
-					   sizeof(CamelSMIMEContextClass),
-					   (CamelObjectClassInitFunc) camel_smime_context_class_init,
-					   NULL,
-					   (CamelObjectInitFunc) camel_smime_context_init,
-					   (CamelObjectFinalizeFunc) smime_context_finalize);
-	}
-
-	return type;
 }
 
 /**
@@ -1241,17 +1216,11 @@ camel_smime_context_get_type(void)
 CamelCipherContext *
 camel_smime_context_new (CamelSession *session)
 {
-	CamelCipherContext *cipher;
-	CamelSMIMEContext *ctx;
-
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 
-	ctx =(CamelSMIMEContext *) camel_object_new(camel_smime_context_get_type());
-
-	cipher = CAMEL_CIPHER_CONTEXT (ctx);
-	camel_cipher_context_construct (cipher, session);
-
-	return cipher;
+	return g_object_new (
+		CAMEL_TYPE_SMIME_CONTEXT,
+		"session", session, NULL);
 }
 
 void
@@ -1308,8 +1277,8 @@ camel_smime_context_describe_part (CamelSMIMEContext *context, CamelMimePart *pa
 					   NULL, NULL,	/* password callback    */
 					   NULL, NULL); /* decrypt key callback */
 
-		NSS_CMSDecoder_Update(dec, (gchar *) buffer->data, buffer->len);
-		camel_object_unref (istream);
+		NSS_CMSDecoder_Update (dec, (gchar *) buffer->data, buffer->len);
+		g_object_unref (istream);
 
 		cmsg = NSS_CMSDecoder_Finish (dec);
 		if (cmsg) {

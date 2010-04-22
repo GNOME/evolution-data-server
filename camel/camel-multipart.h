@@ -32,12 +32,24 @@
 
 #include <camel/camel-data-wrapper.h>
 
-#define CAMEL_MULTIPART_TYPE     (camel_multipart_get_type ())
-#define CAMEL_MULTIPART(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MULTIPART_TYPE, CamelMultipart))
-#define CAMEL_MULTIPART_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MULTIPART_TYPE, CamelMultipartClass))
-#define CAMEL_IS_MULTIPART(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MULTIPART_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_MULTIPART \
+	(camel_multipart_get_type ())
+#define CAMEL_MULTIPART(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_MULTIPART, CamelMultipart))
+#define CAMEL_MULTIPART_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_MULTIPART, CamelMultipartClass))
+#define CAMEL_IS_MULTIPART(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_MULTIPART))
+#define CAMEL_IS_MULTIPART_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_MULTIPART))
 #define CAMEL_MULTIPART_GET_CLASS(obj) \
-	((CamelMultipartClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_MULTIPART, CamelMultipartClass))
 
 G_BEGIN_DECLS
 
@@ -71,7 +83,7 @@ struct _CamelMultipartClass {
 	/*int (*construct_from_stream)(CamelMultipart *, CamelStream *);*/
 };
 
-CamelType camel_multipart_get_type (void);
+GType camel_multipart_get_type (void);
 
 /* public methods */
 CamelMultipart *    camel_multipart_new            (void);

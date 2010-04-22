@@ -30,9 +30,24 @@
 #include <camel/camel-mime-part.h>
 #include <camel/camel-charset-map.h>
 
-#define CAMEL_MIME_FILTER_BESTENC(obj)         CAMEL_CHECK_CAST (obj, camel_mime_filter_bestenc_get_type (), CamelMimeFilterBestenc)
-#define CAMEL_MIME_FILTER_BESTENC_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_mime_filter_bestenc_get_type (), CamelMimeFilterBestencClass)
-#define CAMEL_IS_MIME_FILTER_BESTENC(obj)      CAMEL_CHECK_TYPE (obj, camel_mime_filter_bestenc_get_type ())
+/* Standard GObject macros */
+#define CAMEL_TYPE_MIME_FILTER_BESTENC \
+	(camel_mime_filter_bestenc_get_type ())
+#define CAMEL_MIME_FILTER_BESTENC(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_MIME_FILTER_BESTENC, CamelMimeFilterBestenc))
+#define CAMEL_MIME_FILTER_BESTENC_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_MIME_FILTER_BESTENC, CamelMimeFilterBestencClass))
+#define CAMEL_IS_MIME_FILTER_BESTENC(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_MIME_FILTER_BESTENC))
+#define CAMEL_IS_MIME_FILTER_BESTENC_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_MIME_FILTER_BESTENC))
+#define CAMEL_MIME_FILTER_BESTENC_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_MIME_FILTER_BESTENC, CamelMimeFilterBestencClass))
 
 G_BEGIN_DECLS
 
@@ -68,7 +83,7 @@ struct _CamelMimeFilterBestencClass {
 	CamelMimeFilterClass parent_class;
 };
 
-CamelType	camel_mime_filter_bestenc_get_type (void);
+GType		camel_mime_filter_bestenc_get_type (void);
 CamelMimeFilter *
 		camel_mime_filter_bestenc_new	(guint flags);
 CamelTransferEncoding

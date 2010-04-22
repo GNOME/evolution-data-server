@@ -43,7 +43,7 @@ dump_mime_struct (CamelMimePart *mime_part, gint depth)
 		i++;
 	}
 
-	content = camel_medium_get_content_object ((CamelMedium *) mime_part);
+	content = camel_medium_get_content ((CamelMedium *) mime_part);
 
 	mime_type = camel_data_wrapper_get_mime_type (content);
 	printf ("Content-Type: %s\n", mime_type);
@@ -108,8 +108,8 @@ gint main (gint argc, gchar **argv)
 		/*dump_mime_struct ((CamelMimePart *) message, 0);*/
 		test_message_compare (message);
 
-		camel_object_unref (message);
-		camel_object_unref (stream);
+		g_object_unref (message);
+		g_object_unref (stream);
 
 		pull ();
 	}

@@ -209,6 +209,7 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-net-utils.c			\
 	camel-nntp-address.c			\
 	camel-object.c				\
+	camel-object-bag.c			\
 	camel-operation.c			\
 	camel-partition-table.c			\
 	camel-seekable-stream.c			\
@@ -281,6 +282,7 @@ libcamelinclude_HEADERS =			\
 	camel-net-utils.h			\
 	camel-nntp-address.h			\
 	camel-object.h				\
+	camel-object-bag.h			\
 	camel-operation.h			\
 	camel-partition-table.h			\
 	camel-search-private.h			\

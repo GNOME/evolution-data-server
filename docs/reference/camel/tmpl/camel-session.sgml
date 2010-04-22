@@ -25,13 +25,6 @@ CamelSession
 
 </para>
 
-@parent: 
-@priv: 
-@storage_path: 
-@junk_plugin: 
-@online: 
-@check_junk: 
-@network_state: 
 
 <!-- ##### USER_FUNCTION CamelTimeoutCallback ##### -->
 <para>

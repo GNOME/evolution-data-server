@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
 #include <camel/camel-search-private.h>
 
 #include "camel-test.h"
@@ -12,10 +11,10 @@
 /* TODO: should put utf8 stuff here too */
 
 static struct {
-	gchar *word;
+	const gchar *word;
 	gint count;
 	struct {
-		gchar *word;
+		const gchar *word;
 		gint type;
 	} splits[5];
 } split_tests[] = {
@@ -33,10 +32,10 @@ static struct {
 };
 
 static struct {
-	gchar *word;
+	const gchar *word;
 	gint count;
 	struct {
-		gchar *word;
+		const gchar *word;
 		gint type;
 	} splits[5];
 } simple_tests[] = {

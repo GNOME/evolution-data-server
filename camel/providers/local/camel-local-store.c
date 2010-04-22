@@ -52,21 +52,28 @@ static gboolean local_can_refresh_folder (CamelStore *store, CamelFolderInfo *in
 static gchar *local_get_full_path(CamelLocalStore *lf, const gchar *full_name);
 static gchar *local_get_meta_path(CamelLocalStore *lf, const gchar *full_name, const gchar *ext);
 
-static gpointer camel_local_store_parent_class;
+G_DEFINE_TYPE (CamelLocalStore, camel_local_store, CAMEL_TYPE_STORE)
 
 static void
-local_store_finalize (CamelLocalStore *local_store)
+local_store_finalize (GObject *object)
 {
+	CamelLocalStore *local_store = CAMEL_LOCAL_STORE (object);
+
 	g_free (local_store->toplevel_dir);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_local_store_parent_class)->finalize (object);
 }
 
 static void
 camel_local_store_class_init (CamelLocalStoreClass *class)
 {
+	GObjectClass *object_class;
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 
-	camel_local_store_parent_class = CAMEL_STORE_CLASS (camel_type_get_global_classfuncs (camel_store_get_type ()));
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = local_store_finalize;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->construct = construct;
@@ -88,22 +95,9 @@ camel_local_store_class_init (CamelLocalStoreClass *class)
 	class->get_meta_path = local_get_meta_path;
 }
 
-CamelType
-camel_local_store_get_type (void)
+static void
+camel_local_store_init (CamelLocalStore *local_store)
 {
-	static CamelType camel_local_store_type = CAMEL_INVALID_TYPE;
-
-	if (camel_local_store_type == CAMEL_INVALID_TYPE)	{
-		camel_local_store_type = camel_type_register (CAMEL_STORE_TYPE, "CamelLocalStore",
-							     sizeof (CamelLocalStore),
-							     sizeof (CamelLocalStoreClass),
-							     (CamelObjectClassInitFunc) camel_local_store_class_init,
-							     NULL,
-							     NULL,
-							     (CamelObjectFinalizeFunc) local_store_finalize);
-	}
-
-	return camel_local_store_type;
 }
 
 static gboolean
@@ -307,7 +301,7 @@ create_folder (CamelStore *store,
 	folder = CAMEL_STORE_GET_CLASS (store)->get_folder (
 		store, name, CAMEL_STORE_FOLDER_CREATE, ex);
 	if (folder) {
-		camel_object_unref (folder);
+		g_object_unref (folder);
 		info = CAMEL_STORE_GET_CLASS (store)->get_folder_info (
 			store, name, 0, ex);
 
@@ -406,7 +400,7 @@ rename_folder(CamelStore *store,
 	g_free(oldibex);
 
 	if (folder)
-		camel_object_unref (folder);
+		g_object_unref (folder);
 
 	return TRUE;
 
@@ -434,7 +428,7 @@ ibex_failed:
 	g_free(oldibex);
 
 	if (folder)
-		camel_object_unref (folder);
+		g_object_unref (folder);
 
 	return FALSE;
 }
@@ -470,7 +464,7 @@ delete_folder (CamelStore *store,
 	if ((lf = camel_store_get_folder (store, folder_name, 0, &lex))) {
 		camel_object_get (lf, NULL, CAMEL_OBJECT_STATE_FILE, &str, NULL);
 		camel_object_set (lf, NULL, CAMEL_OBJECT_STATE_FILE, NULL, NULL);
-		camel_object_unref (lf);
+		g_object_unref (lf);
 	} else {
 		camel_exception_clear (&lex);
 	}

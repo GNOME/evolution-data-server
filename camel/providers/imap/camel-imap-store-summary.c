@@ -49,14 +49,12 @@ static void		 store_info_free(CamelStoreSummary *, CamelStoreInfo *);
 static const gchar *store_info_string(CamelStoreSummary *, const CamelStoreInfo *, gint);
 static void store_info_set_string(CamelStoreSummary *, CamelStoreInfo *, int, const gchar *);
 
-static gpointer camel_imap_store_summary_parent_class;
+G_DEFINE_TYPE (CamelImapStoreSummary, camel_imap_store_summary, CAMEL_TYPE_STORE_SUMMARY)
 
 static void
 camel_imap_store_summary_class_init (CamelImapStoreSummaryClass *class)
 {
 	CamelStoreSummaryClass *store_summary_class;
-
-	camel_imap_store_summary_parent_class = (CamelStoreSummaryClass *)camel_store_summary_get_type();
 
 	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (class);
 	store_summary_class->summary_header_load = summary_header_load;
@@ -79,25 +77,6 @@ camel_imap_store_summary_init (CamelImapStoreSummary *imap_store_summary)
 	imap_store_summary->version = CAMEL_IMAP_STORE_SUMMARY_VERSION;
 }
 
-CamelType
-camel_imap_store_summary_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register(camel_store_summary_get_type (),
-					   "CamelImapStoreSummary",
-					   sizeof (CamelImapStoreSummary),
-					   sizeof (CamelImapStoreSummaryClass),
-					   (CamelObjectClassInitFunc) camel_imap_store_summary_class_init,
-					   NULL,
-					   (CamelObjectInitFunc) camel_imap_store_summary_init,
-					   (CamelObjectFinalizeFunc) NULL);
-	}
-
-	return type;
-}
-
 /**
  * camel_imap_store_summary_new:
  *
@@ -108,7 +87,7 @@ camel_imap_store_summary_get_type (void)
 CamelImapStoreSummary *
 camel_imap_store_summary_new (void)
 {
-	return CAMEL_IMAP_STORE_SUMMARY ( camel_object_new (camel_imap_store_summary_get_type ()));
+	return g_object_new (CAMEL_TYPE_IMAP_STORE_SUMMARY, NULL);
 }
 
 /**

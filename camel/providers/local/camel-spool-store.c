@@ -56,7 +56,7 @@ static gboolean delete_folder(CamelStore *store, const gchar *folder_name, Camel
 static gchar *spool_get_meta_path(CamelLocalStore *ls, const gchar *full_name, const gchar *ext);
 static gchar *spool_get_full_path(CamelLocalStore *ls, const gchar *full_name);
 
-static gpointer camel_spool_store_parent_class;
+G_DEFINE_TYPE (CamelSpoolStore, camel_spool_store, CAMEL_TYPE_MBOX_STORE)
 
 static void
 camel_spool_store_class_init (CamelSpoolStoreClass *class)
@@ -64,8 +64,6 @@ camel_spool_store_class_init (CamelSpoolStoreClass *class)
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 	CamelLocalStoreClass *local_store_class;
-
-	camel_spool_store_parent_class = CAMEL_STORE_CLASS(camel_mbox_store_get_type());
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->construct = construct;
@@ -84,22 +82,9 @@ camel_spool_store_class_init (CamelSpoolStoreClass *class)
 	local_store_class->get_meta_path = spool_get_meta_path;
 }
 
-CamelType
-camel_spool_store_get_type (void)
+static void
+camel_spool_store_init (CamelSpoolStore *spool_store)
 {
-	static CamelType camel_spool_store_type = CAMEL_INVALID_TYPE;
-
-	if (camel_spool_store_type == CAMEL_INVALID_TYPE)	{
-		camel_spool_store_type = camel_type_register (camel_mbox_store_get_type(), "CamelSpoolStore",
-							     sizeof (CamelSpoolStore),
-							     sizeof (CamelSpoolStoreClass),
-							     (CamelObjectClassInitFunc) camel_spool_store_class_init,
-							     NULL,
-							     NULL,
-							     NULL);
-	}
-
-	return camel_spool_store_type;
 }
 
 static gboolean
@@ -113,7 +98,7 @@ construct (CamelService *service,
 	struct stat st;
 
 	d(printf("constructing store of type %s '%s:%s'\n",
-		 camel_type_to_name(((CamelObject *)service)->s.type), url->protocol, url->path));
+		 G_OBJECT_CLASS_NAME(((CamelObject *)service)->s.type), url->protocol, url->path));
 
 	/* Chain up to parent's construct() method. */
 	service_class = CAMEL_SERVICE_CLASS (camel_spool_store_parent_class);
@@ -290,7 +275,7 @@ spool_fill_fi (CamelStore *store,
 			camel_folder_refresh_info(folder, NULL);
 		fi->unread = camel_folder_get_unread_message_count(folder);
 		fi->total = camel_folder_get_message_count(folder);
-		camel_object_unref (folder);
+		g_object_unref (folder);
 	}
 }
 
@@ -427,7 +412,7 @@ scan_dir (CamelStore *store,
 					spool_fill_fi(store, fi, flags);
 				}
 				if (folder)
-					camel_object_unref (folder);
+					g_object_unref (folder);
 
 			} else if (S_ISDIR(st.st_mode)) {
 				struct _inode in = { st.st_dev, st.st_ino };

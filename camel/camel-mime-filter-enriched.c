@@ -30,6 +30,10 @@
 #include "camel-mime-filter-enriched.h"
 #include "camel-string-utils.h"
 
+#define CAMEL_MIME_FILTER_ENRICHED_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_FILTER_ENRICHED, CamelMimeFilterEnrichedPrivate))
+
 struct _CamelMimeFilterEnrichedPrivate {
 	guint32 flags;
 	gint nofill;
@@ -95,13 +99,7 @@ static struct {
 
 static GHashTable *enriched_hash = NULL;
 
-static CamelMimeFilterClass *parent_class = NULL;
-
-static void
-mime_filter_enriched_finalize (CamelMimeFilterEnriched *filter)
-{
-	g_free (filter->priv);
-}
+G_DEFINE_TYPE (CamelMimeFilterEnriched, camel_mime_filter_enriched, CAMEL_TYPE_MIME_FILTER)
 
 #if 0
 static gboolean
@@ -230,7 +228,7 @@ enriched_to_html (CamelMimeFilter *mime_filter,
 	register const gchar *inptr;
 	register gchar *outptr;
 
-	priv = CAMEL_MIME_FILTER_ENRICHED (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_ENRICHED_GET_PRIVATE (mime_filter);
 
 	camel_mime_filter_set_size (mime_filter, inlen * 2 + 6, FALSE);
 
@@ -521,7 +519,7 @@ mime_filter_enriched_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterEnrichedPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_ENRICHED (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_ENRICHED_GET_PRIVATE (mime_filter);
 
 	priv->nofill = 0;
 }
@@ -532,7 +530,7 @@ camel_mime_filter_enriched_class_init (CamelMimeFilterEnrichedClass *class)
 	CamelMimeFilterClass *mime_filter_class;
 	gint i;
 
-	parent_class = CAMEL_MIME_FILTER_CLASS (camel_mime_filter_get_type ());
+	g_type_class_add_private (class, sizeof (CamelMimeFilterEnrichedPrivate));
 
 	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
 	mime_filter_class->filter = mime_filter_enriched_filter;
@@ -551,26 +549,7 @@ camel_mime_filter_enriched_class_init (CamelMimeFilterEnrichedClass *class)
 static void
 camel_mime_filter_enriched_init (CamelMimeFilterEnriched *filter)
 {
-	filter->priv = g_new0 (CamelMimeFilterEnrichedPrivate, 1);
-}
-
-CamelType
-camel_mime_filter_enriched_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_mime_filter_get_type (),
-					    "CamelMimeFilterEnriched",
-					    sizeof (CamelMimeFilterEnriched),
-					    sizeof (CamelMimeFilterEnrichedClass),
-					    (CamelObjectClassInitFunc) camel_mime_filter_enriched_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_filter_enriched_init,
-					    (CamelObjectFinalizeFunc) mime_filter_enriched_finalize);
-	}
-
-	return type;
+	filter->priv = CAMEL_MIME_FILTER_ENRICHED_GET_PRIVATE (filter);
 }
 
 /**
@@ -588,8 +567,8 @@ camel_mime_filter_enriched_new (guint32 flags)
 	CamelMimeFilter *new;
 	CamelMimeFilterEnrichedPrivate *priv;
 
-	new = CAMEL_MIME_FILTER (camel_object_new (CAMEL_TYPE_MIME_FILTER_ENRICHED));
-	priv = CAMEL_MIME_FILTER_ENRICHED (new)->priv;
+	new = g_object_new (CAMEL_TYPE_MIME_FILTER_ENRICHED, NULL);
+	priv = CAMEL_MIME_FILTER_ENRICHED_GET_PRIVATE (new);
 
 	priv->flags = flags;
 
@@ -621,7 +600,7 @@ camel_enriched_to_html(const gchar *in, guint32 flags)
 
 	camel_mime_filter_complete(filter, (gchar *)in, strlen(in), 0, &outbuf, &outlen, &outpre);
 	outbuf = g_strndup (outbuf, outlen);
-	camel_object_unref (filter);
+	g_object_unref (filter);
 
 	return outbuf;
 }

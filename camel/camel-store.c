@@ -44,11 +44,15 @@
 #define d(x)
 #define w(x)
 
+#define CAMEL_STORE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_STORE, CamelStorePrivate))
+
 struct _CamelStorePrivate {
 	GStaticRecMutex folder_lock;	/* for locking folder operations */
 };
 
-static gpointer camel_store_parent_class;
+G_DEFINE_ABSTRACT_TYPE (CamelStore, camel_store, CAMEL_TYPE_SERVICE)
 
 /**
  * ignore_no_such_table_exception:
@@ -74,7 +78,7 @@ store_get_special (CamelStore *store,
 	for (i=0;i<folders->len;i++) {
 		if (!CAMEL_IS_VTRASH_FOLDER(folders->pdata[i]))
 			camel_vee_folder_add_folder((CamelVeeFolder *)folder, (CamelFolder *)folders->pdata[i]);
-		camel_object_unref (folders->pdata[i]);
+		g_object_unref (folders->pdata[i]);
 	}
 	g_ptr_array_free(folders, TRUE);
 
@@ -82,8 +86,10 @@ store_get_special (CamelStore *store,
 }
 
 static void
-store_finalize (CamelStore *store)
+store_finalize (GObject *object)
 {
+	CamelStore *store = CAMEL_STORE (object);
+
 	if (store->folders != NULL)
 		camel_object_bag_destroy (store->folders);
 
@@ -99,7 +105,26 @@ store_finalize (CamelStore *store)
 		store->cdb_w = NULL;
 	}
 
-	g_free (store->priv);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_store_parent_class)->finalize (object);
+}
+
+static void
+store_constructed (GObject *object)
+{
+	CamelStore *store;
+	CamelStoreClass *class;
+
+	store = CAMEL_STORE (object);
+	class = CAMEL_STORE_GET_CLASS (store);
+
+	if (class->hash_folder_name != NULL)
+		store->folders = camel_object_bag_new (
+			class->hash_folder_name,
+			class->compare_folder_name,
+			(CamelCopyFunc) g_strdup, g_free);
+	else
+		store->folders = NULL;
 }
 
 static gboolean
@@ -115,7 +140,7 @@ store_construct (CamelService *service,
 
 	/* Chain up to parent's construct() method. */
 	service_class = CAMEL_SERVICE_CLASS (camel_store_parent_class);
-	if (!service_class->construct(service, session, provider, url, ex))
+	if (!service_class->construct (service, session, provider, url, ex))
 		return FALSE;
 
 	store_db_path = g_build_filename (service->url->path, CAMEL_DB_FILE, NULL);
@@ -228,7 +253,7 @@ store_sync (CamelStore *store,
 			ignore_no_such_table_exception (&x);
 		} else if (CAMEL_IS_VEE_FOLDER(folder))
 			camel_vee_folder_sync_headers(folder, NULL); /* Literally don't care of vfolder exceptions */
-		camel_object_unref (folder);
+		g_object_unref (folder);
 	}
 	camel_exception_xfer(ex, &x);
 
@@ -255,10 +280,15 @@ store_can_refresh_folder (CamelStore *store,
 static void
 camel_store_class_init (CamelStoreClass *class)
 {
+	GObjectClass *object_class;
 	CamelObjectClass *camel_object_class;
 	CamelServiceClass *service_class;
 
-	camel_store_parent_class = CAMEL_SERVICE_CLASS (camel_type_get_global_classfuncs (camel_service_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelStorePrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = store_finalize;
+	object_class->constructed = store_constructed;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->construct = store_construct;
@@ -284,40 +314,13 @@ camel_store_class_init (CamelStoreClass *class)
 static void
 camel_store_init (CamelStore *store)
 {
-	CamelStoreClass *store_class = CAMEL_STORE_GET_CLASS (store);
-
-	if (store_class->hash_folder_name) {
-		store->folders = camel_object_bag_new (
-			store_class->hash_folder_name,
-			store_class->compare_folder_name,
-			(CamelCopyFunc) g_strdup, g_free);
-	} else
-		store->folders = NULL;
+	store->priv = CAMEL_STORE_GET_PRIVATE (store);
 
 	/* set vtrash and vjunk on by default */
 	store->flags = CAMEL_STORE_VTRASH | CAMEL_STORE_VJUNK;
 	store->mode = CAMEL_STORE_READ | CAMEL_STORE_WRITE;
 
-	store->priv = g_malloc0 (sizeof (*store->priv));
 	g_static_rec_mutex_init (&store->priv->folder_lock);
-}
-
-CamelType
-camel_store_get_type (void)
-{
-	static CamelType camel_store_type = CAMEL_INVALID_TYPE;
-
-	if (camel_store_type == CAMEL_INVALID_TYPE) {
-		camel_store_type = camel_type_register (CAMEL_SERVICE_TYPE, "CamelStore",
-							sizeof (CamelStore),
-							sizeof (CamelStoreClass),
-							(CamelObjectClassInitFunc) camel_store_class_init,
-							NULL,
-							(CamelObjectInitFunc) camel_store_init,
-							(CamelObjectFinalizeFunc) store_finalize );
-	}
-
-	return camel_store_type;
 }
 
 /**
@@ -358,7 +361,7 @@ camel_store_get_folder (CamelStore *store,
 				_("Cannot create folder '%s': folder exists"),
 				folder_name);
                         camel_object_bag_abort (store->folders, folder_name);
-			camel_object_unref (folder);
+			g_object_unref (folder);
 			return NULL;
 		}
 	}
@@ -391,13 +394,13 @@ camel_store_get_folder (CamelStore *store,
 				if ((store->flags & CAMEL_STORE_VTRASH)
 				    && (vfolder = camel_object_bag_get(store->folders, CAMEL_VTRASH_NAME))) {
 					camel_vee_folder_add_folder(vfolder, folder);
-					camel_object_unref (vfolder);
+					g_object_unref (vfolder);
 				}
 
 				if ((store->flags & CAMEL_STORE_VJUNK)
 				    && (vfolder = camel_object_bag_get(store->folders, CAMEL_VJUNK_NAME))) {
 					camel_vee_folder_add_folder(vfolder, folder);
-					camel_object_unref (vfolder);
+					g_object_unref (vfolder);
 				}
 			}
 		}
@@ -474,19 +477,19 @@ cs_delete_cached_folder(CamelStore *store, const gchar *folder_name)
 		if ((store->flags & CAMEL_STORE_VTRASH)
 		    && (vfolder = camel_object_bag_get(store->folders, CAMEL_VTRASH_NAME))) {
 			camel_vee_folder_remove_folder(vfolder, folder);
-			camel_object_unref (vfolder);
+			g_object_unref (vfolder);
 		}
 
 		if ((store->flags & CAMEL_STORE_VJUNK)
 		    && (vfolder = camel_object_bag_get(store->folders, CAMEL_VJUNK_NAME))) {
 			camel_vee_folder_remove_folder(vfolder, folder);
-			camel_object_unref (vfolder);
+			g_object_unref (vfolder);
 		}
 
 		camel_folder_delete(folder);
 
 		camel_object_bag_remove(store->folders, folder);
-		camel_object_unref (folder);
+		g_object_unref (folder);
 	}
 }
 
@@ -529,7 +532,7 @@ camel_store_delete_folder (CamelStore *store,
 
 	camel_store_lock (store, CS_FOLDER_LOCK);
 
-	success = class->delete_folder(store, folder_name, &local);
+	success = class->delete_folder (store, folder_name, &local);
 
 	/* ignore 'no such table' errors */
 	if (camel_exception_is_set (&local) && camel_exception_get_description (&local) &&
@@ -612,7 +615,7 @@ camel_store_rename_folder (CamelStore *store,
 			} else {
 				g_ptr_array_remove_index_fast(folders, i);
 				i--;
-				camel_object_unref (folder);
+				g_object_unref (folder);
 			}
 		}
 	}
@@ -637,7 +640,7 @@ camel_store_rename_folder (CamelStore *store,
 				g_free(new);
 
 				camel_folder_unlock (folder, CF_REC_LOCK);
-				camel_object_unref (folder);
+				g_object_unref (folder);
 			}
 
 			/* Emit renamed signal */
@@ -655,7 +658,7 @@ camel_store_rename_folder (CamelStore *store,
 			for (i=0;i<folders->len;i++) {
 				folder = folders->pdata[i];
 				camel_folder_unlock (folder, CF_REC_LOCK);
-				camel_object_unref (folder);
+				g_object_unref (folder);
 			}
 		}
 	}
@@ -689,7 +692,9 @@ camel_store_get_inbox (CamelStore *store,
 	g_return_val_if_fail (class->get_inbox != NULL, NULL);
 
 	camel_store_lock (store, CS_FOLDER_LOCK);
+
 	folder = class->get_inbox (store, ex);
+
 	camel_store_unlock (store, CS_FOLDER_LOCK);
 
 	return folder;
@@ -1224,7 +1229,9 @@ camel_store_folder_subscribed (CamelStore *store,
 	g_return_val_if_fail (class->folder_subscribed != NULL, FALSE);
 
 	camel_store_lock (store, CS_FOLDER_LOCK);
+
 	ret = class->folder_subscribed (store, folder_name);
+
 	camel_store_unlock (store, CS_FOLDER_LOCK);
 
 	return ret;
@@ -1256,7 +1263,9 @@ camel_store_subscribe_folder (CamelStore *store,
 	g_return_val_if_fail (class->subscribe_folder != NULL, FALSE);
 
 	camel_store_lock (store, CS_FOLDER_LOCK);
+
 	success = class->subscribe_folder (store, folder_name, ex);
+
 	camel_store_unlock (store, CS_FOLDER_LOCK);
 
 	return success;
@@ -1422,21 +1431,20 @@ camel_store_can_refresh_folder (CamelStore *store,
  *
  * Locks #store's #lock. Unlock it with camel_store_unlock().
  *
- * Since: 2.31.1
+ * Since: 3.0
  **/
 void
-camel_store_lock (CamelStore *store, CamelStoreLock lock)
+camel_store_lock (CamelStore *store,
+                  CamelStoreLock lock)
 {
-	g_return_if_fail (store != NULL);
 	g_return_if_fail (CAMEL_IS_STORE (store));
-	g_return_if_fail (store->priv != NULL);
 
 	switch (lock) {
-	case CS_FOLDER_LOCK:
-		g_static_rec_mutex_lock (&store->priv->folder_lock);
-		break;
-	default:
-		g_return_if_reached ();
+		case CS_FOLDER_LOCK:
+			g_static_rec_mutex_lock (&store->priv->folder_lock);
+			break;
+		default:
+			g_return_if_reached ();
 	}
 }
 
@@ -1447,20 +1455,19 @@ camel_store_lock (CamelStore *store, CamelStoreLock lock)
  *
  * Unlocks #store's #lock, previously locked with camel_store_lock().
  *
- * Since: 2.31.1
+ * Since: 3.0
  **/
 void
-camel_store_unlock (CamelStore *store, CamelStoreLock lock)
+camel_store_unlock (CamelStore *store,
+                    CamelStoreLock lock)
 {
-	g_return_if_fail (store != NULL);
 	g_return_if_fail (CAMEL_IS_STORE (store));
-	g_return_if_fail (store->priv != NULL);
 
 	switch (lock) {
-	case CS_FOLDER_LOCK:
-		g_static_rec_mutex_unlock (&store->priv->folder_lock);
-		break;
-	default:
-		g_return_if_reached ();
+		case CS_FOLDER_LOCK:
+			g_static_rec_mutex_unlock (&store->priv->folder_lock);
+			break;
+		default:
+			g_return_if_reached ();
 	}
 }

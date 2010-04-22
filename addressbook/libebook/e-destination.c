@@ -751,7 +751,7 @@ e_destination_get_name (const EDestination *dest)
 				priv->name = g_strdup (camel_name);
 			}
 
-			camel_object_unref (CAMEL_OBJECT (addr));
+			g_object_unref (addr);
 		}
 	}
 
@@ -826,7 +826,7 @@ e_destination_get_email (const EDestination *dest)
 				priv->email = g_strdup (camel_email);
 			}
 
-			camel_object_unref (CAMEL_OBJECT (addr));
+			g_object_unref (addr);
 		}
 
 		/* Force e-mail to be non-null... */
@@ -903,7 +903,7 @@ e_destination_get_address (const EDestination *dest)
 			priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
 		}
 
-		camel_object_unref (CAMEL_OBJECT (addr));
+		g_object_unref (addr);
 	}
 
 	return priv->addr;
@@ -965,7 +965,7 @@ e_destination_get_textrep (const EDestination *dest, gboolean include_email)
 		camel_internet_address_add (addr, name, email);
 		g_free (dest->priv->textrep);
 		dest->priv->textrep = camel_address_format (CAMEL_ADDRESS (addr));
-		camel_object_unref (CAMEL_OBJECT (addr));
+		g_object_unref (addr);
 	}
 
 	if (dest->priv->textrep != NULL)

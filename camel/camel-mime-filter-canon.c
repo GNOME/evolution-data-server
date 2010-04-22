@@ -31,15 +31,15 @@
 
 #include "camel-mime-filter-canon.h"
 
+#define CAMEL_MIME_FILTER_CANON_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_FILTER_CANON, CamelMimeFilterCanonPrivate))
+
 struct _CamelMimeFilterCanonPrivate {
 	guint32 flags;
 };
 
-static void
-mime_filter_canon_finalize (CamelMimeFilterCanon *mime_filter)
-{
-	g_free (mime_filter->priv);
-}
+G_DEFINE_TYPE (CamelMimeFilterCanon, camel_mime_filter_canon, CAMEL_TYPE_MIME_FILTER)
 
 static void
 mime_filter_canon_run (CamelMimeFilter *mime_filter,
@@ -58,7 +58,7 @@ mime_filter_canon_run (CamelMimeFilter *mime_filter,
 	register gchar *o;
 	gint lf = 0;
 
-	priv = CAMEL_MIME_FILTER_CANON (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_CANON_GET_PRIVATE (mime_filter);
 
 	/* first, work out how much space we need */
 	inptr = (guchar *)in;
@@ -182,6 +182,8 @@ camel_mime_filter_canon_class_init (CamelMimeFilterCanonClass *class)
 {
 	CamelMimeFilterClass *mime_filter_class;
 
+	g_type_class_add_private (class, sizeof (CamelMimeFilterCanonPrivate));
+
 	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
 	mime_filter_class->filter = mime_filter_canon_filter;
 	mime_filter_class->complete = mime_filter_canon_complete;
@@ -191,25 +193,7 @@ camel_mime_filter_canon_class_init (CamelMimeFilterCanonClass *class)
 static void
 camel_mime_filter_canon_init (CamelMimeFilterCanon *filter)
 {
-	filter->priv = g_new0 (CamelMimeFilterCanonPrivate, 1);
-}
-
-CamelType
-camel_mime_filter_canon_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_mime_filter_get_type(), "CamelMimeFilterCanon",
-					    sizeof (CamelMimeFilterCanon),
-					    sizeof (CamelMimeFilterCanonClass),
-					    (CamelObjectClassInitFunc) camel_mime_filter_canon_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_filter_canon_init,
-					    (CamelObjectFinalizeFunc) mime_filter_canon_finalize);
-	}
-
-	return type;
+	filter->priv = CAMEL_MIME_FILTER_CANON_GET_PRIVATE (filter);
 }
 
 /**
@@ -225,7 +209,7 @@ camel_mime_filter_canon_new(guint32 flags)
 {
 	CamelMimeFilter *filter;
 
-	filter = CAMEL_MIME_FILTER (camel_object_new (CAMEL_MIME_FILTER_CANON_TYPE));
+	filter = g_object_new (CAMEL_TYPE_MIME_FILTER_CANON, NULL);
 	CAMEL_MIME_FILTER_CANON (filter)->priv->flags = flags;
 
 	return filter;

@@ -32,10 +32,23 @@
 #include <camel/camel-stream.h>
 #include <camel/camel-url.h>
 
-#define CAMEL_HTTP_STREAM_TYPE     (camel_http_stream_get_type ())
-#define CAMEL_HTTP_STREAM(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_HTTP_STREAM_TYPE, CamelHttpStream))
-#define CAMEL_HTTP_STREAM_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_HTTP_STREAM_TYPE, CamelHttpStreamClass))
-#define CAMEL_IS_HTTP_STREAM(o)    (CAMEL_CHECK_TYPE((o), CAMEL_HTTP_STREAM_TYPE))
+#define CAMEL_TYPE_HTTP_STREAM \
+	(camel_http_stream_get_type ())
+#define CAMEL_HTTP_STREAM(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_HTTP_STREAM, CamelHttpStream))
+#define CAMEL_HTTP_STREAM_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_HTTP_STREAM, CamelHttpStreamClass))
+#define CAMEL_IS_HTTP_STREAM(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_HTTP_STREAM))
+#define CAMEL_IS_HTTP_STREAM_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_HTTP_STREAM))
+#define CAMEL_HTTP_STREAM_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_HTTP_STREAM, CamelHttpStreamClass))
 
 G_BEGIN_DECLS
 
@@ -82,7 +95,7 @@ struct _CamelHttpStreamClass {
 	CamelStreamClass parent_class;
 };
 
-CamelType	camel_http_stream_get_type	(void);
+GType		camel_http_stream_get_type	(void);
 CamelStream *	camel_http_stream_new		(CamelHttpMethod method,
 						 struct _CamelSession *session,
 						 CamelURL *url);

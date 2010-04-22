@@ -34,8 +34,6 @@
 /* if defined, must also compile in dump_tag() below somewhere */
 #define d(x)
 
-static CamelObjectClass *camel_html_parser_parent;
-
 /* Parser definitions, see below object code for details */
 
 struct _CamelHTMLParserPrivate {
@@ -60,20 +58,28 @@ static CamelHTMLParserPrivate *tokenize_init(void);
 static void tokenize_free(CamelHTMLParserPrivate *p);
 static gint tokenize_step(CamelHTMLParserPrivate *p, gchar **datap, gint *lenp);
 
+G_DEFINE_TYPE (CamelHTMLParser, camel_html_parser, CAMEL_TYPE_OBJECT)
+
 /* ********************************************************************** */
 
 static void
-html_parser_finalize (CamelObject *o)
+html_parser_finalize (GObject *object)
 {
-	CamelHTMLParser *parser = (CamelHTMLParser *)o;
+	CamelHTMLParser *parser = CAMEL_HTML_PARSER (object);
 
 	tokenize_free (parser->priv);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_html_parser_parent_class)->finalize (object);
 }
 
 static void
-camel_html_parser_class_init (CamelHTMLParserClass *klass)
+camel_html_parser_class_init (CamelHTMLParserClass *class)
 {
-	camel_html_parser_parent = CAMEL_OBJECT_CLASS (camel_type_get_global_classfuncs (camel_object_get_type ()));
+	GObjectClass *object_class;
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = html_parser_finalize;
 
 	tokenize_setup();
 }
@@ -82,24 +88,6 @@ static void
 camel_html_parser_init (CamelHTMLParser *parser)
 {
 	parser->priv = tokenize_init();
-}
-
-CamelType
-camel_html_parser_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_object_get_type (), "CamelHTMLParser",
-					    sizeof (CamelHTMLParser),
-					    sizeof (CamelHTMLParserClass),
-					    (CamelObjectClassInitFunc) camel_html_parser_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_html_parser_init,
-					    (CamelObjectFinalizeFunc) html_parser_finalize);
-	}
-
-	return type;
 }
 
 /**
@@ -112,7 +100,7 @@ camel_html_parser_get_type (void)
 CamelHTMLParser *
 camel_html_parser_new (void)
 {
-	return CAMEL_HTML_PARSER ( camel_object_new (camel_html_parser_get_type ()));
+	return g_object_new (CAMEL_TYPE_HTML_PARSER, NULL);
 }
 
 void camel_html_parser_set_data(CamelHTMLParser *hp, const gchar *start, gint len, gint last)

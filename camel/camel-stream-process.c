@@ -44,14 +44,17 @@
 
 extern gint camel_verbose_debug;
 
-static CamelObjectClass *parent_class = NULL;
+G_DEFINE_TYPE (CamelStreamProcess, camel_stream_process, CAMEL_TYPE_STREAM)
 
 static void
-stream_process_finalize (CamelObject *object)
+stream_process_finalize (GObject *object)
 {
 	/* Ensure we clean up after ourselves -- kill
 	   the child process and reap it. */
 	camel_stream_close (CAMEL_STREAM (object));
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_stream_process_parent_class)->finalize (object);
 }
 
 static gssize
@@ -132,9 +135,11 @@ stream_process_flush (CamelStream *stream)
 static void
 camel_stream_process_class_init (CamelStreamProcessClass *class)
 {
+	GObjectClass *object_class;
 	CamelStreamClass *stream_class;
 
-	parent_class = camel_type_get_global_classfuncs (CAMEL_TYPE_OBJECT);
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = stream_process_finalize;
 
 	stream_class = CAMEL_STREAM_CLASS (class);
 	stream_class->read = stream_process_read;
@@ -150,25 +155,6 @@ camel_stream_process_init (CamelStreamProcess *stream)
 	stream->childpid = 0;
 }
 
-CamelType
-camel_stream_process_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type =  camel_type_register (camel_stream_get_type (),
-					     "CamelStreamProcess",
-					     sizeof (CamelStreamProcess),
-					     sizeof (CamelStreamProcessClass),
-					     (CamelObjectClassInitFunc) camel_stream_process_class_init,
-					     NULL,
-					     (CamelObjectInitFunc) camel_stream_process_init,
-					     (CamelObjectFinalizeFunc) stream_process_finalize);
-	}
-
-	return type;
-}
-
 /**
  * camel_stream_process_new:
  *
@@ -179,7 +165,7 @@ camel_stream_process_get_type (void)
 CamelStream *
 camel_stream_process_new (void)
 {
-	return (CamelStream *) camel_object_new (camel_stream_process_get_type ());
+	return g_object_new (CAMEL_TYPE_STREAM_PROCESS, NULL);
 }
 
 G_GNUC_NORETURN static void

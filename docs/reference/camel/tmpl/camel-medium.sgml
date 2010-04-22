@@ -25,8 +25,11 @@ CamelMedium
 
 </para>
 
-@parent: 
-@content: 
+
+<!-- ##### ARG CamelMedium:content ##### -->
+<para>
+
+</para>
 
 <!-- ##### STRUCT CamelMediumHeader ##### -->
 <para>
@@ -91,5 +94,23 @@ CamelMedium
 
 @medium: 
 @headers: 
+
+
+<!-- ##### FUNCTION camel_medium_get_content ##### -->
+<para>
+
+</para>
+
+@medium: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_medium_set_content ##### -->
+<para>
+
+</para>
+
+@medium: 
+@content: 
 
 

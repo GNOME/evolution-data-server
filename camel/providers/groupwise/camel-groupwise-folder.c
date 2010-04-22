@@ -61,7 +61,9 @@ which needs to be better organized via functions */
 #define MAX_ATTACHMENT_SIZE 1*1024*1024   /*In bytes*/
 #define GROUPWISE_BULK_DELETE_LIMIT 100
 
-static gpointer camel_groupwise_folder_parent_class;
+#define CAMEL_GROUPWISE_FOLDER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_GROUPWISE_FOLDER, CamelGroupwiseFolderPrivate))
 
 struct _CamelGroupwiseFolderPrivate {
 
@@ -95,6 +97,8 @@ static gboolean groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMess
 
 static const gchar * GET_ITEM_VIEW_WITH_CACHE = "peek default recipient threading attachments subject status priority startDate created delivered size recurrenceKey message notification";
 static const gchar * GET_ITEM_VIEW_WITHOUT_CACHE = "peek default recipient threading hasAttachment subject status priority startDate created delivered size recurrenceKey";
+
+G_DEFINE_TYPE (CamelGroupwiseFolder, camel_groupwise_folder, CAMEL_TYPE_OFFLINE_FOLDER)
 
 static gchar *
 groupwise_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
@@ -140,9 +144,9 @@ groupwise_folder_get_message( CamelFolder *folder, const gchar *uid, CamelExcept
 				camel_exception_setv (
 					ex, CAMEL_EXCEPTION_USER_CANCEL,
 					_("User canceled"));
-				camel_object_unref (msg);
-				camel_object_unref (cache_stream);
-				camel_object_unref (stream);
+				g_object_unref (msg);
+				g_object_unref (cache_stream);
+				g_object_unref (stream);
 				camel_message_info_free (&mi->info);
 				return NULL;
 			} else {
@@ -150,13 +154,13 @@ groupwise_folder_get_message( CamelFolder *folder, const gchar *uid, CamelExcept
 					ex, CAMEL_EXCEPTION_SYSTEM,
 					_("Cannot get message %s: %s"),
 					uid, g_strerror (errno));
-				camel_object_unref (msg);
+				g_object_unref (msg);
 				msg = NULL;
 			}
 		}
-		camel_object_unref (cache_stream);
+		g_object_unref (cache_stream);
 	}
-	camel_object_unref (stream);
+	g_object_unref (stream);
 
 	if (msg != NULL) {
 		camel_message_info_free (&mi->info);
@@ -219,7 +223,7 @@ groupwise_folder_get_message( CamelFolder *folder, const gchar *uid, CamelExcept
 		if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) msg, cache_stream) == -1
 				|| camel_stream_flush (cache_stream) == -1)
 			camel_data_cache_remove (gw_folder->cache, "cache", uid, NULL);
-		camel_object_unref (cache_stream);
+		g_object_unref (cache_stream);
 	}
 
 	CAMEL_GROUPWISE_FOLDER_REC_UNLOCK (folder, cache_lock);
@@ -335,7 +339,7 @@ groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMultipart *multi
 
 	camel_multipart_set_boundary (multipart, NULL);
 	camel_multipart_add_part (multipart, part);
-	camel_object_unref (part);
+	g_object_unref (part);
 }
 
 /* Set the recipients list in the message from the item */
@@ -985,7 +989,7 @@ camel_gw_folder_new(CamelStore *store, const gchar *folder_name, const gchar *fo
 	gchar *summary_file, *state_file, *journal_file;
 	gchar *short_name;
 
-	folder = CAMEL_FOLDER (camel_object_new(camel_groupwise_folder_get_type ()) );
+	folder = g_object_new (CAMEL_TYPE_GROUPWISE_FOLDER, NULL);
 
 	gw_folder = CAMEL_GROUPWISE_FOLDER(folder);
 	short_name = strrchr (folder_name, '/');
@@ -999,7 +1003,7 @@ camel_gw_folder_new(CamelStore *store, const gchar *folder_name, const gchar *fo
 	folder->summary = camel_groupwise_summary_new(folder, summary_file);
 	g_free(summary_file);
 	if (!folder->summary) {
-		camel_object_unref (CAMEL_OBJECT (folder));
+		g_object_unref (CAMEL_OBJECT (folder));
 		camel_exception_setv (
 			ex, CAMEL_EXCEPTION_SYSTEM,
 			_("Could not load summary for %s"), folder_name);
@@ -1014,7 +1018,7 @@ camel_gw_folder_new(CamelStore *store, const gchar *folder_name, const gchar *fo
 
 	gw_folder->cache = camel_data_cache_new (folder_dir ,ex);
 	if (!gw_folder->cache) {
-		camel_object_unref (folder);
+		g_object_unref (folder);
 		return NULL;
 	}
 
@@ -1022,7 +1026,7 @@ camel_gw_folder_new(CamelStore *store, const gchar *folder_name, const gchar *fo
 	gw_folder->journal = camel_groupwise_journal_new (gw_folder, journal_file);
 	g_free (journal_file);
 	if (!gw_folder->journal) {
-		camel_object_unref (folder);
+		g_object_unref (folder);
 		return NULL;
 	}
 
@@ -1033,7 +1037,7 @@ camel_gw_folder_new(CamelStore *store, const gchar *folder_name, const gchar *fo
 
 	gw_folder->search = camel_folder_search_new ();
 	if (!gw_folder->search) {
-		camel_object_unref (folder);
+		g_object_unref (folder);
 		return NULL;
 	}
 
@@ -1163,7 +1167,7 @@ update_free (CamelSession *session, CamelSessionThreadMsg *msg)
 
 	g_free (m->t_str);
 	g_free (m->container_id);
-	camel_object_unref (m->folder);
+	g_object_unref (m->folder);
 	g_slist_foreach (m->slist, (GFunc) g_free, NULL);
 	g_slist_free (m->slist);
 	m->slist = NULL;
@@ -1464,7 +1468,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		msg->cnc = cnc;
 		msg->t_str = g_strdup (old_sync_time);
 		msg->container_id = g_strdup (container_id);
-		msg->folder = camel_object_ref (folder);
+		msg->folder = g_object_ref (folder);
 		camel_session_thread_queue (session, &msg->msg, 0);
 		/*thread creation and queueing done*/
 	}
@@ -1760,7 +1764,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 				/* add to cache if its a new message*/
 				t_cache_stream  = camel_data_cache_get (gw_folder->cache, "cache", id, ex);
 				if (t_cache_stream) {
-						camel_object_unref (t_cache_stream);
+						g_object_unref (t_cache_stream);
 
 						mail_msg = groupwise_folder_item_to_msg (folder, item, ex);
 						if (mail_msg)
@@ -1770,10 +1774,10 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 						if ((cache_stream = camel_data_cache_add (gw_folder->cache, "cache", id, NULL))) {
 								if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) mail_msg,	cache_stream) == -1 || camel_stream_flush (cache_stream) == -1)
 										camel_data_cache_remove (gw_folder->cache, "cache", id, NULL);
-								camel_object_unref (cache_stream);
+								g_object_unref (cache_stream);
 						}
 
-						camel_object_unref (mail_msg);
+						g_object_unref (mail_msg);
 						CAMEL_GROUPWISE_FOLDER_REC_UNLOCK (folder, cache_lock);
 				}
 				/******************** Caching stuff ends *************************/
@@ -2110,8 +2114,8 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	if (has_mime_822 && body) {
 		temp_stream = camel_stream_mem_new_with_buffer (body, body_len);
 		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) msg, temp_stream) == -1) {
-			camel_object_unref (msg);
-			camel_object_unref (temp_stream);
+			g_object_unref (msg);
+			g_object_unref (temp_stream);
 			msg = NULL;
 			goto end;
 		}
@@ -2211,8 +2215,8 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 					camel_medium_set_content (CAMEL_MEDIUM (part),CAMEL_DATA_WRAPPER(temp_msg));
 
 					camel_multipart_add_part (multipart,part);
-					camel_object_unref (temp_msg);
-					camel_object_unref (part);
+					g_object_unref (temp_msg);
+					g_object_unref (part);
 				}
 				g_object_unref (temp_item);
 			} else {
@@ -2293,7 +2297,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 					camel_multipart_set_boundary(multipart, NULL);
 					camel_multipart_add_part (multipart, part);
 
-					camel_object_unref (part);
+					g_object_unref (part);
 					g_free (attachment);
 				} /* if attachment */
 			}
@@ -2310,7 +2314,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 		camel_medium_add_header ( CAMEL_MEDIUM (msg), "Security", e_gw_item_get_security(item));
 
 	camel_medium_set_content (CAMEL_MEDIUM (msg), CAMEL_DATA_WRAPPER(multipart));
-	camel_object_unref (multipart);
+	g_object_unref (multipart);
 
 end:
 	if (body)
@@ -2538,7 +2542,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 				break;
 
 			camel_groupwise_journal_transfer (journal, (CamelGroupwiseFolder *)source, message, info, uids->pdata[i], NULL, ex);
-			camel_object_unref (message);
+			g_object_unref (message);
 
 			if (camel_exception_is_set (ex))
 				break;
@@ -2798,23 +2802,35 @@ groupwise_cmp_uids (CamelFolder *folder, const gchar *uid1, const gchar *uid2)
 }
 
 static void
-groupwise_folder_finalize (CamelGroupwiseFolder *gw_folder)
+groupwise_folder_dispose (GObject *object)
 {
-	g_free (gw_folder->priv);
+	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER (object);
 
-	if (gw_folder->cache)
-		camel_object_unref (gw_folder->cache);
-	if (gw_folder->search)
-		camel_object_unref (gw_folder->search);
+	if (gw_folder->cache != NULL) {
+		g_object_unref (gw_folder->cache);
+		gw_folder->cache = NULL;
+	}
+
+	if (gw_folder->search != NULL) {
+		g_object_unref (gw_folder->search);
+		gw_folder->search = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_groupwise_folder_parent_class)->dispose (object);
 }
 
 static void
 camel_groupwise_folder_class_init (CamelGroupwiseFolderClass *class)
 {
+	GObjectClass *object_class;
 	CamelObjectClass *camel_object_class;
 	CamelFolderClass *folder_class;
 
-	camel_groupwise_folder_parent_class = CAMEL_OFFLINE_FOLDER_CLASS (camel_type_get_global_classfuncs (camel_offline_folder_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelGroupwiseFolderPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = groupwise_folder_dispose;
 
 	camel_object_class = CAMEL_OBJECT_CLASS (class);
 	camel_object_class->getv = gw_getv;
@@ -2841,7 +2857,7 @@ camel_groupwise_folder_init (CamelGroupwiseFolder *gw_folder)
 {
 	CamelFolder *folder = CAMEL_FOLDER (gw_folder);
 
-	gw_folder->priv = g_malloc0 (sizeof(*gw_folder->priv));
+	gw_folder->priv = CAMEL_GROUPWISE_FOLDER_GET_PRIVATE (gw_folder);
 
 	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED | CAMEL_MESSAGE_DELETED |
 		CAMEL_MESSAGE_DRAFT | CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN;
@@ -2854,26 +2870,6 @@ camel_groupwise_folder_init (CamelGroupwiseFolder *gw_folder)
 #endif
 
 	gw_folder->need_rescan = TRUE;
-}
-
-CamelType
-camel_groupwise_folder_get_type (void)
-{
-	static CamelType camel_groupwise_folder_type = CAMEL_INVALID_TYPE;
-
-	if (camel_groupwise_folder_type == CAMEL_INVALID_TYPE) {
-		camel_groupwise_folder_type =
-			camel_type_register (camel_offline_folder_get_type (),
-					"CamelGroupwiseFolder",
-					sizeof (CamelGroupwiseFolder),
-					sizeof (CamelGroupwiseFolderClass),
-					(CamelObjectClassInitFunc) camel_groupwise_folder_class_init,
-					NULL,
-					(CamelObjectInitFunc) camel_groupwise_folder_init,
-					(CamelObjectFinalizeFunc) groupwise_folder_finalize);
-	}
-
-	return camel_groupwise_folder_type;
 }
 
 static gint

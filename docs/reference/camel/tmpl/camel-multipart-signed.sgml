@@ -25,16 +25,6 @@ CamelMultipartSigned
 
 </para>
 
-@parent: 
-@content: 
-@signature: 
-@contentraw: 
-@protocol: 
-@micalg: 
-@start1: 
-@end1: 
-@start2: 
-@end2: 
 
 <!-- ##### FUNCTION camel_multipart_signed_new ##### -->
 <para>

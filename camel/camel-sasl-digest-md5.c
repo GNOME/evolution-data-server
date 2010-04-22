@@ -46,6 +46,10 @@
 
 #define PARANOID(x) x
 
+#define CAMEL_SASL_DIGEST_MD5_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_SASL_DIGEST_MD5, CamelSaslDigestMd5Private))
+
 /* Implements rfc2831 */
 
 CamelServiceAuthType camel_sasl_digest_md5_authtype = {
@@ -57,8 +61,6 @@ CamelServiceAuthType camel_sasl_digest_md5_authtype = {
 	"DIGEST-MD5",
 	TRUE
 };
-
-static CamelSaslClass *parent_class = NULL;
 
 enum {
 	STATE_AUTH,
@@ -166,6 +168,8 @@ struct _CamelSaslDigestMd5Private {
 	struct _DigestResponse *response;
 	gint state;
 };
+
+G_DEFINE_TYPE (CamelSaslDigestMd5, camel_sasl_digest_md5, CAMEL_TYPE_SASL)
 
 static void
 decode_lwsp (const gchar **in)
@@ -733,7 +737,7 @@ digest_response (struct _DigestResponse *resp)
 }
 
 static void
-sasl_digest_md5_finalize (CamelObject *object)
+sasl_digest_md5_finalize (GObject *object)
 {
 	CamelSaslDigestMd5 *sasl = CAMEL_SASL_DIGEST_MD5 (object);
 	struct _DigestChallenge *c = sasl->priv->challenge;
@@ -776,7 +780,8 @@ sasl_digest_md5_finalize (CamelObject *object)
 		g_free (r);
 	}
 
-	g_free (sasl->priv);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_sasl_digest_md5_parent_class)->finalize (object);
 }
 
 static GByteArray *
@@ -914,9 +919,13 @@ sasl_digest_md5_challenge (CamelSasl *sasl,
 static void
 camel_sasl_digest_md5_class_init (CamelSaslDigestMd5Class *class)
 {
+	GObjectClass *object_class;
 	CamelSaslClass *sasl_class;
 
-	parent_class = CAMEL_SASL_CLASS (camel_type_get_global_classfuncs (camel_sasl_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelSaslDigestMd5Private));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = sasl_digest_md5_finalize;
 
 	sasl_class = CAMEL_SASL_CLASS (class);
 	sasl_class->challenge = sasl_digest_md5_challenge;
@@ -925,24 +934,5 @@ camel_sasl_digest_md5_class_init (CamelSaslDigestMd5Class *class)
 static void
 camel_sasl_digest_md5_init (CamelSaslDigestMd5 *sasl)
 {
-	sasl->priv = g_new0 (CamelSaslDigestMd5Private, 1);
-}
-
-CamelType
-camel_sasl_digest_md5_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_sasl_get_type (),
-					    "CamelSaslDigestMd5",
-					    sizeof (CamelSaslDigestMd5),
-					    sizeof (CamelSaslDigestMd5Class),
-					    (CamelObjectClassInitFunc) camel_sasl_digest_md5_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_sasl_digest_md5_init,
-					    (CamelObjectFinalizeFunc) sasl_digest_md5_finalize);
-	}
-
-	return type;
+	sasl->priv = CAMEL_SASL_DIGEST_MD5_GET_PRIVATE (sasl);
 }

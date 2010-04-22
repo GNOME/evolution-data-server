@@ -30,10 +30,24 @@
 #include <camel/camel-cipher-context.h>
 #include <camel/camel-session.h>
 
-#define CAMEL_GPG_CONTEXT_TYPE     (camel_gpg_context_get_type ())
-#define CAMEL_GPG_CONTEXT(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_GPG_CONTEXT_TYPE, CamelGpgContext))
-#define CAMEL_GPG_CONTEXT_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_GPG_CONTEXT_TYPE, CamelGpgContextClass))
-#define CAMEL_IS_GPG_CONTEXT(o)    (CAMEL_CHECK_TYPE((o), CAMEL_GPG_CONTEXT_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_GPG_CONTEXT \
+	(camel_gpg_context_get_type ())
+#define CAMEL_GPG_CONTEXT(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_GPG_CONTEXT, CamelGpgContext))
+#define CAMEL_GPG_CONTEXT_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_GPG_CONTEXT, CamelGpgContextClass))
+#define CAMEL_IS_GPG_CONTEXT(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_GPG_CONTEXT))
+#define CAMEL_IS_GPG_CONTEXT_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_GPG_CONTEXT))
+#define CAMEL_GPG_CONTEXT_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_GPG_CONTEXT, CamelGpgContextClass))
 
 G_BEGIN_DECLS
 
@@ -50,7 +64,7 @@ struct _CamelGpgContextClass {
 	CamelCipherContextClass parent_class;
 };
 
-CamelType	camel_gpg_context_get_type	(void);
+GType		camel_gpg_context_get_type	(void);
 CamelCipherContext *
 		camel_gpg_context_new		(CamelSession *session);
 gboolean	camel_gpg_context_get_always_trust

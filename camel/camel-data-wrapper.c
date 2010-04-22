@@ -34,26 +34,44 @@
 
 #define d(x)
 
+#define CAMEL_DATA_WRAPPER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_DATA_WRAPPER, CamelDataWrapperPrivate))
+
 struct _CamelDataWrapperPrivate {
 	GStaticMutex stream_lock;
 };
 
-static CamelObjectClass *parent_class = NULL;
+G_DEFINE_TYPE (CamelDataWrapper, camel_data_wrapper, CAMEL_TYPE_OBJECT)
 
 static void
-camel_data_wrapper_finalize (CamelObject *object)
+data_wrapper_dispose (GObject *object)
 {
-	CamelDataWrapper *camel_data_wrapper = CAMEL_DATA_WRAPPER (object);
+	CamelDataWrapper *data_wrapper = CAMEL_DATA_WRAPPER (object);
 
-	g_static_mutex_free (&camel_data_wrapper->priv->stream_lock);
+	if (data_wrapper->mime_type != NULL) {
+		camel_content_type_unref (data_wrapper->mime_type);
+		data_wrapper->mime_type = NULL;
+	}
 
-	g_free (camel_data_wrapper->priv);
+	if (data_wrapper->stream != NULL) {
+		g_object_unref (data_wrapper->stream);
+		data_wrapper->stream = NULL;
+	}
 
-	if (camel_data_wrapper->mime_type)
-		camel_content_type_unref (camel_data_wrapper->mime_type);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_data_wrapper_parent_class)->dispose (object);
+}
 
-	if (camel_data_wrapper->stream)
-		camel_object_unref (camel_data_wrapper->stream);
+static void
+data_wrapper_finalize (GObject *object)
+{
+	CamelDataWrapper *data_wrapper = CAMEL_DATA_WRAPPER (object);
+
+	g_static_mutex_free (&data_wrapper->priv->stream_lock);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_data_wrapper_parent_class)->finalize (object);
 }
 
 static gssize
@@ -93,17 +111,17 @@ data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
 	case CAMEL_TRANSFER_ENCODING_BASE64:
 		filter = camel_mime_filter_basic_new (CAMEL_MIME_FILTER_BASIC_BASE64_DEC);
 		camel_stream_filter_add (CAMEL_STREAM_FILTER (fstream), filter);
-		camel_object_unref (filter);
+		g_object_unref (filter);
 		break;
 	case CAMEL_TRANSFER_ENCODING_QUOTEDPRINTABLE:
 		filter = camel_mime_filter_basic_new (CAMEL_MIME_FILTER_BASIC_QP_DEC);
 		camel_stream_filter_add (CAMEL_STREAM_FILTER (fstream), filter);
-		camel_object_unref (filter);
+		g_object_unref (filter);
 		break;
 	case CAMEL_TRANSFER_ENCODING_UUENCODE:
 		filter = camel_mime_filter_basic_new (CAMEL_MIME_FILTER_BASIC_UU_DEC);
 		camel_stream_filter_add (CAMEL_STREAM_FILTER (fstream), filter);
-		camel_object_unref (filter);
+		g_object_unref (filter);
 		break;
 	default:
 		break;
@@ -113,12 +131,13 @@ data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
 		filter = camel_mime_filter_crlf_new (CAMEL_MIME_FILTER_CRLF_DECODE,
 						     CAMEL_MIME_FILTER_CRLF_MODE_CRLF_ONLY);
 		camel_stream_filter_add (CAMEL_STREAM_FILTER (fstream), filter);
-		camel_object_unref (filter);
+		g_object_unref (filter);
 	}
 
 	ret = camel_data_wrapper_write_to_stream (data_wrapper, fstream);
+
 	camel_stream_flush (fstream);
-	camel_object_unref (fstream);
+	g_object_unref (fstream);
 
 	return ret;
 }
@@ -160,9 +179,9 @@ data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
                                     CamelStream *stream)
 {
 	if (data_wrapper->stream)
-		camel_object_unref (data_wrapper->stream);
+		g_object_unref (data_wrapper->stream);
 
-	data_wrapper->stream = camel_object_ref (stream);
+	data_wrapper->stream = g_object_ref (stream);
 
 	return 0;
 }
@@ -176,7 +195,13 @@ data_wrapper_is_offline (CamelDataWrapper *data_wrapper)
 static void
 camel_data_wrapper_class_init (CamelDataWrapperClass *class)
 {
-	parent_class = camel_type_get_global_classfuncs (camel_object_get_type ());
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (CamelDataWrapperPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = data_wrapper_dispose;
+	object_class->finalize = data_wrapper_finalize;
 
 	class->write_to_stream = data_wrapper_write_to_stream;
 	class->decode_to_stream = data_wrapper_decode_to_stream;
@@ -191,7 +216,7 @@ camel_data_wrapper_class_init (CamelDataWrapperClass *class)
 static void
 camel_data_wrapper_init (CamelDataWrapper *data_wrapper)
 {
-	data_wrapper->priv = g_malloc (sizeof (struct _CamelDataWrapperPrivate));
+	data_wrapper->priv = CAMEL_DATA_WRAPPER_GET_PRIVATE (data_wrapper);
 
 	g_static_mutex_init (&data_wrapper->priv->stream_lock);
 
@@ -199,25 +224,6 @@ camel_data_wrapper_init (CamelDataWrapper *data_wrapper)
 		"application", "octet-stream");
 	data_wrapper->encoding = CAMEL_TRANSFER_ENCODING_DEFAULT;
 	data_wrapper->offline = FALSE;
-}
-
-CamelType
-camel_data_wrapper_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (CAMEL_TYPE_OBJECT,
-					    "CamelDataWrapper",
-					    sizeof (CamelDataWrapper),
-					    sizeof (CamelDataWrapperClass),
-					    (CamelObjectClassInitFunc) camel_data_wrapper_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_data_wrapper_init,
-					    (CamelObjectFinalizeFunc) camel_data_wrapper_finalize);
-	}
-
-	return type;
 }
 
 /**
@@ -230,7 +236,7 @@ camel_data_wrapper_get_type (void)
 CamelDataWrapper *
 camel_data_wrapper_new (void)
 {
-	return (CamelDataWrapper *) camel_object_new (CAMEL_DATA_WRAPPER_TYPE);
+	return g_object_new (CAMEL_TYPE_DATA_WRAPPER, NULL);
 }
 
 /**
@@ -425,14 +431,13 @@ camel_data_wrapper_is_offline (CamelDataWrapper *data_wrapper)
  *
  * Locks #data_wrapper's #lock. Unlock it with camel_data_wrapper_unlock().
  *
- * Since: 2.31.1
+ * Since: 3.0
  **/
 void
-camel_data_wrapper_lock (CamelDataWrapper *data_wrapper, CamelDataWrapperLock lock)
+camel_data_wrapper_lock (CamelDataWrapper *data_wrapper,
+                         CamelDataWrapperLock lock)
 {
-	g_return_if_fail (data_wrapper != NULL);
 	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper));
-	g_return_if_fail (data_wrapper->priv != NULL);
 
 	switch (lock) {
 	case CDW_STREAM_LOCK:
@@ -450,14 +455,13 @@ camel_data_wrapper_lock (CamelDataWrapper *data_wrapper, CamelDataWrapperLock lo
  *
  * Unlocks #data_wrapper's #lock, previously locked with camel_data_wrapper_lock().
  *
- * Since: 2.31.1
+ * Since: 3.0
  **/
 void
-camel_data_wrapper_unlock (CamelDataWrapper *data_wrapper, CamelDataWrapperLock lock)
+camel_data_wrapper_unlock (CamelDataWrapper *data_wrapper,
+                           CamelDataWrapperLock lock)
 {
-	g_return_if_fail (data_wrapper != NULL);
 	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper));
-	g_return_if_fail (data_wrapper->priv != NULL);
 
 	switch (lock) {
 	case CDW_STREAM_LOCK:

@@ -58,9 +58,11 @@
  * octets) */
 #define UID_SET_LIMIT  (768)
 
-extern gint camel_application_is_exiting;
+#define CAMEL_IMAP_FOLDER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_IMAP_FOLDER, CamelImapFolderPrivate))
 
-static gpointer camel_imap_folder_parent_class;
+extern gint camel_application_is_exiting;
 
 static CamelProperty imap_property_list[] = {
 	{ CAMEL_IMAP_FOLDER_CHECK_FOLDER, "check_folder", N_("Always check for new mail in this folder") },
@@ -127,42 +129,69 @@ static CamelImapMessageInfo * imap_folder_summary_uid_or_error(
 #define strtok_r(s,sep,lasts) (*(lasts)=strtok((s),(sep)))
 #endif
 
+G_DEFINE_TYPE (CamelImapFolder, camel_imap_folder, CAMEL_TYPE_OFFLINE_FOLDER)
+
 static void
-imap_folder_finalize (CamelObject *object)
+imap_folder_dispose (GObject *object)
 {
 	CamelImapFolder *imap_folder;
 
 	imap_folder = CAMEL_IMAP_FOLDER (object);
 
-	if (imap_folder->search != NULL)
-		camel_object_unref (imap_folder->search);
-
-	if (imap_folder->cache != NULL)
-		camel_object_unref (imap_folder->cache);
-
-#ifdef ENABLE_THREADS
-	g_static_mutex_free(&imap_folder->priv->search_lock);
-	g_static_rec_mutex_free(&imap_folder->priv->cache_lock);
-#endif
-	if (imap_folder->priv->ignore_recent)
-		g_hash_table_unref (imap_folder->priv->ignore_recent);
-
-	if (imap_folder->journal) {
-		camel_offline_journal_write (imap_folder->journal, NULL);
-		camel_object_unref (imap_folder->journal);
+	if (imap_folder->search != NULL) {
+		g_object_unref (imap_folder->search);
+		imap_folder->search = NULL;
 	}
 
-	g_free(imap_folder->priv);
+	if (imap_folder->cache != NULL) {
+		g_object_unref (imap_folder->cache);
+		imap_folder->cache = NULL;
+	}
+
+	if (imap_folder->priv->ignore_recent != NULL) {
+		g_hash_table_unref (imap_folder->priv->ignore_recent);
+		imap_folder->priv->ignore_recent = NULL;
+	}
+
+	if (imap_folder->journal != NULL) {
+		camel_offline_journal_write (imap_folder->journal, NULL);
+		g_object_unref (imap_folder->journal);
+		imap_folder->journal = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_imap_folder_parent_class)->dispose (object);
+}
+
+static void
+imap_folder_finalize (GObject *object)
+{
+	CamelImapFolder *imap_folder;
+
+	imap_folder = CAMEL_IMAP_FOLDER (object);
+
+#ifdef ENABLE_THREADS
+	g_static_mutex_free (&imap_folder->priv->search_lock);
+	g_static_rec_mutex_free (&imap_folder->priv->cache_lock);
+#endif
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_imap_folder_parent_class)->finalize (object);
 }
 
 static void
 camel_imap_folder_class_init (CamelImapFolderClass *class)
 {
+	GObjectClass *object_class;
 	CamelObjectClass *camel_object_class;
 	CamelFolderClass *folder_class;
-	gint ii;
+	gint i;
 
-	camel_imap_folder_parent_class = CAMEL_OFFLINE_FOLDER_CLASS (camel_type_get_global_classfuncs (camel_offline_folder_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelImapFolderPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = imap_folder_dispose;
+	object_class->finalize = imap_folder_finalize;
 
 	camel_object_class = CAMEL_OBJECT_CLASS (class);
 	camel_object_class->getv = imap_getv;
@@ -187,9 +216,9 @@ camel_imap_folder_class_init (CamelImapFolderClass *class)
 	folder_class->get_filename = imap_get_filename;
 
 	/* only localize here, do not create GSList, we do not want to leak */
-	for (ii = 0; ii < G_N_ELEMENTS (imap_property_list); ii++)
-		imap_property_list[ii].description =
-			_(imap_property_list[ii].description);
+	for (i = 0; i < G_N_ELEMENTS (imap_property_list); i++)
+		imap_property_list[i].description =
+			_(imap_property_list[i].description);
 }
 
 static void
@@ -197,7 +226,7 @@ camel_imap_folder_init (CamelImapFolder *imap_folder)
 {
 	CamelFolder *folder = CAMEL_FOLDER (imap_folder);
 
-	imap_folder->priv = g_malloc0(sizeof(*imap_folder->priv));
+	imap_folder->priv = CAMEL_IMAP_FOLDER_GET_PRIVATE (imap_folder);
 
 	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED | CAMEL_MESSAGE_DELETED |
 		CAMEL_MESSAGE_DRAFT | CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN;
@@ -213,26 +242,6 @@ camel_imap_folder_init (CamelImapFolder *imap_folder)
 
 	imap_folder->journal = NULL;
 	imap_folder->need_rescan = TRUE;
-}
-
-CamelType
-camel_imap_folder_get_type (void)
-{
-	static CamelType camel_imap_folder_type = CAMEL_INVALID_TYPE;
-
-	if (camel_imap_folder_type == CAMEL_INVALID_TYPE) {
-		camel_imap_folder_type =
-			camel_type_register (camel_offline_folder_get_type (),
-					     "CamelImapFolder",
-					     sizeof (CamelImapFolder),
-					     sizeof (CamelImapFolderClass),
-					     (CamelObjectClassInitFunc) camel_imap_folder_class_init,
-					     NULL,
-					     (CamelObjectInitFunc) camel_imap_folder_init,
-					     (CamelObjectFinalizeFunc) imap_folder_finalize);
-	}
-
-	return camel_imap_folder_type;
 }
 
 static void
@@ -282,7 +291,7 @@ camel_imap_folder_new (CamelStore *parent, const gchar *folder_name,
 		return NULL;
 	}
 
-	folder = CAMEL_FOLDER (camel_object_new (camel_imap_folder_get_type ()));
+	folder = g_object_new (CAMEL_TYPE_IMAP_FOLDER, NULL);
 	short_name = strrchr (folder_name, '/');
 	if (short_name)
 		short_name++;
@@ -294,7 +303,7 @@ camel_imap_folder_new (CamelStore *parent, const gchar *folder_name,
 	folder->summary = camel_imap_summary_new (folder, summary_file);
 	g_free (summary_file);
 	if (!folder->summary) {
-		camel_object_unref (CAMEL_OBJECT (folder));
+		g_object_unref (CAMEL_OBJECT (folder));
 		camel_exception_setv (
 			ex, CAMEL_EXCEPTION_SYSTEM,
 			_("Could not load summary for %s"), folder_name);
@@ -314,7 +323,7 @@ camel_imap_folder_new (CamelStore *parent, const gchar *folder_name,
 
 	imap_folder->cache = camel_imap_message_cache_new (folder_dir, folder->summary, ex);
 	if (!imap_folder->cache) {
-		camel_object_unref (CAMEL_OBJECT (folder));
+		g_object_unref (CAMEL_OBJECT (folder));
 		return NULL;
 	}
 
@@ -1600,7 +1609,7 @@ imap_expunge_uids_online (CamelFolder *folder,
 	camel_service_lock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
 
 	if ((store->capabilities & IMAP_CAPABILITY_UIDPLUS) == 0) {
-		if (!CAMEL_FOLDER_GET_CLASS (folder)->sync(folder, 0, ex)) {
+		if (!CAMEL_FOLDER_GET_CLASS (folder)->sync (folder, 0, ex)) {
 			camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
 			return FALSE;
 		}
@@ -1963,9 +1972,9 @@ do_append (CamelFolder *folder,
 		CAMEL_STREAM_FILTER (streamfilter), crlf_filter);
 	camel_data_wrapper_write_to_stream (
 		CAMEL_DATA_WRAPPER (message), streamfilter);
-	camel_object_unref (streamfilter);
-	camel_object_unref (crlf_filter);
-	camel_object_unref (memstream);
+	g_object_unref (streamfilter);
+	g_object_unref (crlf_filter);
+	g_object_unref (memstream);
 
 	/* Some servers don't let us append with (CamelMessageInfo *)custom flags.  If the command fails for
 	   whatever reason, assume this is the case and save the state and try again */
@@ -2180,7 +2189,7 @@ imap_transfer_offline (CamelFolder *source,
 
 		if (message) {
 			camel_imap_summary_add_offline (dest->summary, destuid, message, mi);
-			camel_object_unref (CAMEL_OBJECT (message));
+			g_object_unref (CAMEL_OBJECT (message));
 		} else
 			camel_imap_summary_add_offline_uncached (dest->summary, destuid, mi);
 
@@ -2531,7 +2540,7 @@ imap_transfer_resyncing (CamelFolder *source,
 
 			imap_append_online (dest, message, info, NULL, ex);
 			camel_folder_free_message_info (source, info);
-			camel_object_unref (CAMEL_OBJECT (message));
+			g_object_unref (CAMEL_OBJECT (message));
 			if (delete_originals && !camel_exception_is_set (ex))
 				camel_folder_delete_message (source, uid);
 			i++;
@@ -2755,9 +2764,9 @@ get_content (CamelImapFolder *imap_folder, const gchar *uid,
 		if (stream) {
 			ret = camel_data_wrapper_construct_from_stream (
 				CAMEL_DATA_WRAPPER (body_mp), stream);
-			camel_object_unref (CAMEL_OBJECT (stream));
+			g_object_unref (CAMEL_OBJECT (stream));
 			if (ret == -1) {
-				camel_object_unref ( body_mp);
+				g_object_unref ( body_mp);
 				return NULL;
 			}
 		}
@@ -2795,10 +2804,10 @@ get_content (CamelImapFolder *imap_folder, const gchar *uid,
 
 				part = camel_mime_part_new ();
 				ret = camel_data_wrapper_construct_from_stream (CAMEL_DATA_WRAPPER (part), stream);
-				camel_object_unref (CAMEL_OBJECT (stream));
+				g_object_unref (CAMEL_OBJECT (stream));
 				if (ret == -1) {
-					camel_object_unref (CAMEL_OBJECT (part));
-					camel_object_unref (CAMEL_OBJECT (body_mp));
+					g_object_unref (CAMEL_OBJECT (part));
+					g_object_unref (CAMEL_OBJECT (body_mp));
 					g_free (child_spec);
 					return NULL;
 				}
@@ -2807,7 +2816,7 @@ get_content (CamelImapFolder *imap_folder, const gchar *uid,
 			}
 
 			if (!stream || !content) {
-				camel_object_unref (CAMEL_OBJECT (body_mp));
+				g_object_unref (CAMEL_OBJECT (body_mp));
 				g_free (child_spec);
 				return NULL;
 			}
@@ -2833,10 +2842,10 @@ get_content (CamelImapFolder *imap_folder, const gchar *uid,
 			}
 
 			camel_medium_set_content (CAMEL_MEDIUM (part), content);
-			camel_object_unref (content);
+			g_object_unref (content);
 
 			camel_multipart_add_part (body_mp, part);
-			camel_object_unref (part);
+			g_object_unref (part);
 
 			ci = ci->next;
 		}
@@ -2892,15 +2901,15 @@ get_message (CamelImapFolder *imap_folder, const gchar *uid,
 	msg = camel_mime_message_new ();
 	ret = camel_data_wrapper_construct_from_stream (
 		CAMEL_DATA_WRAPPER (msg), stream);
-	camel_object_unref (CAMEL_OBJECT (stream));
+	g_object_unref (CAMEL_OBJECT (stream));
 	if (ret == -1) {
-		camel_object_unref (CAMEL_OBJECT (msg));
+		g_object_unref (CAMEL_OBJECT (msg));
 		return NULL;
 	}
 
 	content = get_content (imap_folder, uid, CAMEL_MIME_PART (msg), ci, TRUE, ex);
 	if (!content) {
-		camel_object_unref (CAMEL_OBJECT (msg));
+		g_object_unref (CAMEL_OBJECT (msg));
 		return NULL;
 	}
 
@@ -2915,7 +2924,7 @@ get_message (CamelImapFolder *imap_folder, const gchar *uid,
 
 	camel_data_wrapper_set_mime_type_field(content, camel_mime_part_get_content_type((CamelMimePart *)msg));
 	camel_medium_set_content (CAMEL_MEDIUM (msg), content);
-	camel_object_unref (CAMEL_OBJECT (content));
+	g_object_unref (CAMEL_OBJECT (content));
 
 	return msg;
 }
@@ -2939,13 +2948,13 @@ get_message_simple (CamelImapFolder *imap_folder, const gchar *uid,
 	msg = camel_mime_message_new ();
 	ret = camel_data_wrapper_construct_from_stream (
 		CAMEL_DATA_WRAPPER (msg), stream);
-	camel_object_unref (CAMEL_OBJECT (stream));
+	g_object_unref (CAMEL_OBJECT (stream));
 	if (ret == -1) {
 		camel_exception_setv (
 			ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 			_("Unable to retrieve message: %s"),
 			g_strerror (errno));
-		camel_object_unref (CAMEL_OBJECT (msg));
+		g_object_unref (CAMEL_OBJECT (msg));
 		return NULL;
 	}
 
@@ -3184,12 +3193,12 @@ imap_sync_message (CamelFolder *folder,
 	/* If its cached in full, just get it as is, this is only a shortcut,
 	   since we get stuff from the cache anyway.  It affects a busted connection though. */
 	if ((stream = camel_imap_folder_fetch_data(imap_folder, uid, "", TRUE, NULL))) {
-		camel_object_unref (stream);
+		g_object_unref (stream);
 		return TRUE;
 	}
 	msg = imap_get_message(folder, uid, ex);
 	if (msg != NULL) {
-		camel_object_unref (msg);
+		g_object_unref (msg);
 		success = TRUE;
 	}
 
@@ -3206,7 +3215,7 @@ imap_cache_message (CamelDiscoFolder *disco_folder, const gchar *uid,
 
 	stream = camel_imap_folder_fetch_data (imap_folder, uid, "", FALSE, ex);
 	if (stream)
-		camel_object_unref (CAMEL_OBJECT (stream));
+		g_object_unref (CAMEL_OBJECT (stream));
 }
 */
 
@@ -3340,14 +3349,14 @@ add_message_from_data (CamelFolder *folder, GPtrArray *messages,
 	msg = camel_mime_message_new ();
 	if (camel_data_wrapper_construct_from_stream (
 		CAMEL_DATA_WRAPPER (msg), stream) == -1) {
-		camel_object_unref (CAMEL_OBJECT (msg));
+		g_object_unref (CAMEL_OBJECT (msg));
 		return;
 	}
 
 	bodystructure = g_datalist_get_data (&data, "BODY");
 
 	mi = (CamelImapMessageInfo *)camel_folder_summary_info_new_from_message (folder->summary, msg, bodystructure);
-	camel_object_unref (CAMEL_OBJECT (msg));
+	g_object_unref (CAMEL_OBJECT (msg));
 
 	if ((idate = g_datalist_get_data (&data, "INTERNALDATE")))
 		mi->info.date_received = decode_internaldate ((const guchar *) idate);
@@ -3949,7 +3958,7 @@ camel_imap_folder_fetch_data (CamelImapFolder *imap_folder, const gchar *uid,
 			ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 			_("Could not find message body in FETCH response."));
 	} else {
-		camel_object_ref (CAMEL_OBJECT (stream));
+		g_object_ref (CAMEL_OBJECT (stream));
 		g_datalist_clear (&fetch_data);
 	}
 
@@ -4100,7 +4109,7 @@ parse_fetch_response (CamelImapFolder *imap_folder, gchar *response)
 
 		if (stream)
 			g_datalist_set_data_full (&data, "BODY_PART_STREAM", stream,
-						  (GDestroyNotify) camel_object_unref);
+						  (GDestroyNotify) g_object_unref);
 	}
 
 	return data;

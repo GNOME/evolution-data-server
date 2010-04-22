@@ -28,23 +28,60 @@
 #include <camel/camel-exception.h>
 #include <camel/camel-object.h>
 
-#define CAMEL_INDEX(obj)         CAMEL_CHECK_CAST (obj, camel_index_get_type (), CamelIndex)
-#define CAMEL_INDEX_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_index_get_type (), CamelIndexClass)
-#define CAMEL_IS_INDEX(obj)      CAMEL_CHECK_TYPE (obj, camel_index_get_type ())
+/* Standard GObject macros */
+#define CAMEL_TYPE_INDEX \
+	(camel_index_get_type ())
+#define CAMEL_INDEX(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_INDEX, CamelIndex))
+#define CAMEL_INDEX_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_INDEX, CamelIndexClass))
+#define CAMEL_IS_INDEX(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_INDEX))
+#define CAMEL_IS_INDEX_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_INDEX))
 #define CAMEL_INDEX_GET_CLASS(obj) \
-	((CamelIndexClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_INDEX, CamelIndexClass))
 
-#define CAMEL_INDEX_NAME(obj)         CAMEL_CHECK_CAST (obj, camel_index_name_get_type (), CamelIndexName)
-#define CAMEL_INDEX_NAME_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_index_name_get_type (), CamelIndexNameClass)
-#define CAMEL_IS_INDEX_NAME(obj)      CAMEL_CHECK_TYPE (obj, camel_index_name_get_type ())
+#define CAMEL_TYPE_INDEX_NAME \
+	(camel_index_name_get_type ())
+#define CAMEL_INDEX_NAME(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_INDEX_NAME, CamelIndexName))
+#define CAMEL_INDEX_NAME_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_INDEX_NAME, CamelIndexNameClass))
+#define CAMEL_IS_INDEX_NAME(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_INDEX_NAME))
+#define CAMEL_IS_INDEX_NAME_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_INDEX_NAME))
 #define CAMEL_INDEX_NAME_GET_CLASS(obj) \
-	((CamelIndexNameClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_INDEX_NAME, CamelIndexNameClass))
 
-#define CAMEL_INDEX_CURSOR(obj)         CAMEL_CHECK_CAST (obj, camel_index_cursor_get_type (), CamelIndexCursor)
-#define CAMEL_INDEX_CURSOR_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_index_cursor_get_type (), CamelIndexCursorClass)
-#define CAMEL_IS_INDEX_CURSOR(obj)      CAMEL_CHECK_TYPE (obj, camel_index_cursor_get_type ())
+#define CAMEL_TYPE_INDEX_CURSOR \
+	(camel_index_cursor_get_type ())
+#define CAMEL_INDEX_CURSOR(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_INDEX_CURSOR, CamelIndexCursor))
+#define CAMEL_INDEX_CURSOR_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_INDEX_CURSOR, CamelIndexCursorClass))
+#define CAMEL_IS_INDEX_CURSOR(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_INDEX_CURSOR))
+#define CAMEL_IS_INDEX_CURSOR_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_INDEX_CURSOR))
 #define CAMEL_INDEX_CURSOR_GET_CLASS(obj) \
-	((CamelIndexCursorClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_INDEX_CURSOR, CamelIndexCursorClass))
 
 G_BEGIN_DECLS
 
@@ -78,7 +115,7 @@ struct _CamelIndexCursorClass {
 	void         (*reset) (CamelIndexCursor *idc);
 };
 
-CamelType		   camel_index_cursor_get_type(void);
+GType           camel_index_cursor_get_type(void);
 
 CamelIndexCursor  *camel_index_cursor_new(CamelIndex *index, const gchar *name);
 
@@ -107,7 +144,7 @@ struct _CamelIndexNameClass {
 	gsize (*add_buffer)(CamelIndexName *name, const gchar *buffer, gsize len);
 };
 
-CamelType		   camel_index_name_get_type	(void);
+GType           camel_index_name_get_type	(void);
 
 CamelIndexName    *camel_index_name_new(CamelIndex *index, const gchar *name);
 
@@ -160,7 +197,7 @@ struct _CamelIndexClass {
 /* flags, stored in 'state', set with set_state */
 #define CAMEL_INDEX_DELETED (1<<0)
 
-CamelType	camel_index_get_type		(void);
+GType		camel_index_get_type		(void);
 CamelIndex *	camel_index_new			(const gchar *path,
 						 gint flags);
 void		camel_index_construct		(CamelIndex *index,

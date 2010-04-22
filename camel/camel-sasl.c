@@ -39,6 +39,10 @@
 
 #define w(x)
 
+#define CAMEL_SASL_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_SASL, CamelSaslPrivate))
+
 struct _CamelSaslPrivate {
 	CamelService *service;
 	gboolean authenticated;
@@ -46,7 +50,15 @@ struct _CamelSaslPrivate {
 	gchar *mechanism;
 };
 
-static CamelObjectClass *parent_class = NULL;
+enum {
+	PROP_0,
+	PROP_AUTHENTICATED,
+	PROP_MECHANISM,
+	PROP_SERVICE,
+	PROP_SERVICE_NAME
+};
+
+G_DEFINE_ABSTRACT_TYPE (CamelSasl, camel_sasl, CAMEL_TYPE_OBJECT)
 
 static void
 sasl_set_mechanism (CamelSasl *sasl,
@@ -65,7 +77,7 @@ sasl_set_service (CamelSasl *sasl,
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
 	g_return_if_fail (sasl->priv->service == NULL);
 
-	sasl->priv->service = camel_object_ref (service);
+	sasl->priv->service = g_object_ref (service);
 }
 
 static void
@@ -79,43 +91,166 @@ sasl_set_service_name (CamelSasl *sasl,
 }
 
 static void
-sasl_finalize (CamelSasl *sasl)
+sasl_set_property (GObject *object,
+                   guint property_id,
+                   const GValue *value,
+                   GParamSpec *pspec)
 {
-	g_free (sasl->priv->mechanism);
-	g_free (sasl->priv->service_name);
-	camel_object_unref (sasl->priv->service);
-	g_free (sasl->priv);
+	switch (property_id) {
+		case PROP_AUTHENTICATED:
+			camel_sasl_set_authenticated (
+				CAMEL_SASL (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_MECHANISM:
+			sasl_set_mechanism (
+				CAMEL_SASL (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_SERVICE:
+			sasl_set_service (
+				CAMEL_SASL (object),
+				g_value_get_object (value));
+			return;
+
+		case PROP_SERVICE_NAME:
+			sasl_set_service_name (
+				CAMEL_SASL (object),
+				g_value_get_string (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static void
-camel_sasl_class_init (CamelSaslClass *camel_sasl_class)
+sasl_get_property (GObject *object,
+                   guint property_id,
+                   GValue *value,
+                   GParamSpec *pspec)
 {
-	parent_class = camel_type_get_global_classfuncs (CAMEL_TYPE_OBJECT);
+	switch (property_id) {
+		case PROP_AUTHENTICATED:
+			g_value_set_boolean (
+				value, camel_sasl_get_authenticated (
+				CAMEL_SASL (object)));
+			return;
+
+		case PROP_MECHANISM:
+			g_value_set_string (
+				value, camel_sasl_get_mechanism (
+				CAMEL_SASL (object)));
+			return;
+
+		case PROP_SERVICE:
+			g_value_set_object (
+				value, camel_sasl_get_service (
+				CAMEL_SASL (object)));
+			return;
+
+		case PROP_SERVICE_NAME:
+			g_value_set_string (
+				value, camel_sasl_get_service_name (
+				CAMEL_SASL (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+sasl_dispose (GObject *object)
+{
+	CamelSaslPrivate *priv;
+
+	priv = CAMEL_SASL_GET_PRIVATE (object);
+
+	if (priv->service != NULL) {
+		g_object_unref (priv->service);
+		priv->service = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_sasl_parent_class)->dispose (object);
+}
+
+static void
+sasl_finalize (GObject *object)
+{
+	CamelSaslPrivate *priv;
+
+	priv = CAMEL_SASL_GET_PRIVATE (object);
+
+	g_free (priv->mechanism);
+	g_free (priv->service_name);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_sasl_parent_class)->finalize (object);
+}
+
+static void
+camel_sasl_class_init (CamelSaslClass *class)
+{
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (CamelSaslPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = sasl_set_property;
+	object_class->get_property = sasl_get_property;
+	object_class->dispose = sasl_dispose;
+	object_class->finalize = sasl_finalize;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_AUTHENTICATED,
+		g_param_spec_boolean (
+			"authenticated",
+			"Authenticated",
+			NULL,
+			FALSE,
+			G_PARAM_READWRITE));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_MECHANISM,
+		g_param_spec_string (
+			"mechanism",
+			"Mechanism",
+			NULL,
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_SERVICE,
+		g_param_spec_object (
+			"service",
+			"Service",
+			NULL,
+			CAMEL_TYPE_SERVICE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_SERVICE_NAME,
+		g_param_spec_string (
+			"service-name",
+			"Service Name",
+			NULL,
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
 camel_sasl_init (CamelSasl *sasl)
 {
-	sasl->priv = g_new0 (CamelSaslPrivate, 1);
-}
-
-CamelType
-camel_sasl_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (CAMEL_TYPE_OBJECT,
-					    "CamelSasl",
-					    sizeof (CamelSasl),
-					    sizeof (CamelSaslClass),
-					    (CamelObjectClassInitFunc) camel_sasl_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_sasl_init,
-					    (CamelObjectFinalizeFunc) sasl_finalize);
-	}
-
-	return type;
+	sasl->priv = CAMEL_SASL_GET_PRIVATE (sasl);
 }
 
 /**
@@ -209,7 +344,7 @@ camel_sasl_new (const gchar *service_name,
                 const gchar *mechanism,
                 CamelService *service)
 {
-	CamelSasl *sasl;
+	GType type;
 
 	g_return_val_if_fail (service_name != NULL, NULL);
 	g_return_val_if_fail (mechanism != NULL, NULL);
@@ -218,29 +353,27 @@ camel_sasl_new (const gchar *service_name,
 	/* We don't do ANONYMOUS here, because it's a little bit weird. */
 
 	if (!strcmp (mechanism, "CRAM-MD5"))
-		sasl = (CamelSasl *) camel_object_new (CAMEL_SASL_CRAM_MD5_TYPE);
+		type = CAMEL_TYPE_SASL_CRAM_MD5;
 	else if (!strcmp (mechanism, "DIGEST-MD5"))
-		sasl = (CamelSasl *) camel_object_new (CAMEL_SASL_DIGEST_MD5_TYPE);
+		type = CAMEL_TYPE_SASL_DIGEST_MD5;
 #ifdef HAVE_KRB5
 	else if (!strcmp (mechanism, "GSSAPI"))
-		sasl = (CamelSasl *) camel_object_new (CAMEL_SASL_GSSAPI_TYPE);
+		type = CAMEL_TYPE_SASL_GSSAPI;
 #endif
 	else if (!strcmp (mechanism, "PLAIN"))
-		sasl = (CamelSasl *) camel_object_new (CAMEL_SASL_PLAIN_TYPE);
+		type = CAMEL_TYPE_SASL_PLAIN;
 	else if (!strcmp (mechanism, "LOGIN"))
-		sasl = (CamelSasl *) camel_object_new (CAMEL_SASL_LOGIN_TYPE);
+		type = CAMEL_TYPE_SASL_LOGIN;
 	else if (!strcmp (mechanism, "POPB4SMTP"))
-		sasl = (CamelSasl *) camel_object_new (CAMEL_SASL_POPB4SMTP_TYPE);
+		type = CAMEL_TYPE_SASL_POPB4SMTP;
 	else if (!strcmp (mechanism, "NTLM"))
-		sasl = (CamelSasl *) camel_object_new (CAMEL_SASL_NTLM_TYPE);
+		type = CAMEL_TYPE_SASL_NTLM;
 	else
 		return NULL;
 
-	sasl_set_mechanism (sasl, mechanism);
-	sasl_set_service (sasl, service);
-	sasl_set_service_name (sasl, service_name);
-
-	return sasl;
+	return g_object_new (
+		type, "mechanism", mechanism, "service",
+		service, "service-name", service_name, NULL);
 }
 
 /**
@@ -267,6 +400,8 @@ camel_sasl_set_authenticated (CamelSasl *sasl,
 	g_return_if_fail (CAMEL_IS_SASL (sasl));
 
 	sasl->priv->authenticated = authenticated;
+
+	g_object_notify (G_OBJECT (sasl), "authenticated");
 }
 
 const gchar *

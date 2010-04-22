@@ -25,11 +25,6 @@ CamelMultipartEncrypted
 
 </para>
 
-@parent: 
-@version: 
-@content: 
-@decrypted: 
-@protocol: 
 
 <!-- ##### FUNCTION camel_multipart_encrypted_new ##### -->
 <para>

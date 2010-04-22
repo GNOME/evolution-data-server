@@ -28,24 +28,16 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <glib.h>
 #include <glib/gstdio.h>
 
 #include "camel-file-utils.h"
-#include "camel-list-utils.h"
 #include "camel-object.h"
 
 #define d(x)
 #define b(x)			/* object bag */
 #define h(x)			/* hooks */
 
-/* I just mashed the keyboard for these... */
-#define CAMEL_OBJECT_MAGIC		 0x77A344ED
-#define CAMEL_OBJECT_CLASS_MAGIC	 0xEE26A997
-#define CAMEL_INTERFACE_MAGIC	 0xBCE137A7
-#define CAMEL_OBJECT_FINALISED_MAGIC       0x84AC365F
-#define CAMEL_OBJECT_CLASS_FINALISED_MAGIC 0x7621ABCD
-#define CAMEL_INTERFACE_FINALISED_MAGIC    0x7CB2FE71
+G_DEFINE_ABSTRACT_TYPE (CamelObject, camel_object, G_TYPE_OBJECT)
 
 /* ** Quickie type system ************************************************* */
 
@@ -84,59 +76,21 @@ typedef struct _CamelHookPair
 	gpointer data;
 } CamelHookPair;
 
-struct _CamelObjectBagKey {
-	struct _CamelObjectBagKey *next;
-
-	gpointer key;		/* the key reserved */
-	gint waiters;		/* count of threads waiting for key */
-	GThread *owner;		/* the thread that has reserved the bag for a new entry */
-	gint have_owner;
-	GCond *cond;
-};
-
-struct _CamelObjectBag {
-	GHashTable *object_table; /* object by key */
-	GHashTable *key_table;	/* key by object */
-	GEqualFunc equal_key;
-	CamelCopyFunc copy_key;
-	GFreeFunc free_key;
-
-	struct _CamelObjectBagKey *reserved;
-};
-
-/* used to tag a bag hookpair */
-static const gchar bag_name[] = "object:bag";
-
 /* meta-data stuff */
 static CamelHookPair *co_metadata_pair(CamelObject *obj, gint create);
 
 static const gchar meta_name[] = "object:meta";
 #define CAMEL_OBJECT_STATE_FILE_MAGIC "CLMD"
 
-/* interface stuff */
-static const gchar interface_name[] = "object:interface";
-
 /* ********************************************************************** */
 
 static CamelHookList *camel_object_get_hooks(CamelObject *o);
 static void camel_object_free_hooks(CamelObject *o);
-static void camel_object_bag_remove_unlocked(CamelObjectBag *inbag, CamelObject *o, CamelHookList *hooks);
 
 #define camel_object_unget_hooks(o) \
 	(g_static_rec_mutex_unlock(&CAMEL_OBJECT(o)->hooks->lock))
 
 /* ********************************************************************** */
-
-/* type-lock must be recursive, for atomically creating classes */
-static GStaticRecMutex type_lock = G_STATIC_REC_MUTEX_INIT;
-/* ref-lock must be global :-(  for object bags to work */
-static GMutex *ref_lock;
-
-static GHashTable *type_table;
-
-/* fundamental types are accessed via global */
-CamelType camel_object_type = CAMEL_INVALID_TYPE;
-CamelType camel_interface_type = CAMEL_INVALID_TYPE;
 
 #define CLASS_LOCK(k) (g_mutex_lock((((CamelObjectClass *)k)->lock)))
 #define CLASS_UNLOCK(k) (g_mutex_unlock((((CamelObjectClass *)k)->lock)))
@@ -181,53 +135,20 @@ hooks_free(CamelHookList *hooks)
 	g_slice_free (CamelHookList, hooks);
 }
 
-/* not checked locked, who cares, only required for people that want to redefine root objects */
-void
-camel_type_init(void)
-{
-	static gint init = FALSE;
-
-	if (init)
-		return;
-
-	init = TRUE;
-	type_table = g_hash_table_new(NULL, NULL);
-	ref_lock = g_mutex_new();
-}
-
 /* ************************************************************************ */
 
 /* CamelObject base methods */
 
-/* Should this return the object to the caller? */
-static void
-cobject_init(CamelObject *o, CamelObjectClass *klass)
-{
-	o->klass = klass;
-	o->magic = CAMEL_OBJECT_MAGIC;
-	o->ref_count = 1;
-	o->flags = 0;
-}
-
-static void
-cobject_finalize(CamelObject *o)
-{
-	/*printf("%p: finalize %s\n", o, o->klass->name);*/
-
-	if (o->ref_count == 0)
-		return;
-
-	camel_object_free_hooks(o);
-
-	o->magic = CAMEL_OBJECT_FINALISED_MAGIC;
-	o->klass = NULL;
-}
-
 static gint
-cobject_getv(CamelObject *o, CamelException *ex, CamelArgGetV *args)
+cobject_getv (CamelObject *o,
+              CamelException *ex,
+              CamelArgGetV *args)
 {
+	CamelObjectClass *class;
 	gint i;
 	guint32 tag;
+
+	class = CAMEL_OBJECT_GET_CLASS (o);
 
 	for (i=0;i<args->argc;i++) {
 		CamelArgGet *arg = &args->argv[i];
@@ -236,7 +157,7 @@ cobject_getv(CamelObject *o, CamelException *ex, CamelArgGetV *args)
 
 		switch (tag & CAMEL_ARG_TAG) {
 		case CAMEL_OBJECT_ARG_DESCRIPTION:
-			*arg->ca_str = (gchar *)o->klass->name;
+			*arg->ca_str = (gchar *) G_OBJECT_CLASS_NAME (class);
 			break;
 		case CAMEL_OBJECT_ARG_STATE_FILE: {
 			CamelHookPair *pair = co_metadata_pair(o, FALSE);
@@ -254,7 +175,9 @@ cobject_getv(CamelObject *o, CamelException *ex, CamelArgGetV *args)
 }
 
 static gint
-cobject_setv(CamelObject *o, CamelException *ex, CamelArgV *args)
+cobject_setv (CamelObject *o,
+              CamelException *ex,
+              CamelArgV *args)
 {
 	gint i;
 	guint32 tag;
@@ -474,453 +397,53 @@ abort:
 }
 
 static void
-cobject_class_init(CamelObjectClass *klass)
+object_dispose (GObject *object)
 {
-	klass->magic = CAMEL_OBJECT_CLASS_MAGIC;
+	CamelObject *camel_object = CAMEL_OBJECT (object);
 
-	klass->getv = cobject_getv;
-	klass->setv = cobject_setv;
-	klass->free = cobject_free;
+	if (camel_object->hooks != NULL) {
+		camel_object_trigger_event (object, "finalize", NULL);
+		camel_object_free_hooks (camel_object);
+	}
 
-	klass->state_read = cobject_state_read;
-	klass->state_write = cobject_state_write;
-
-	camel_object_class_add_event(klass, "finalize", NULL);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_object_parent_class)->dispose (object);
 }
 
 static void
-cobject_class_finalize(CamelObjectClass * klass)
+camel_object_class_init (CamelObjectClass *class)
 {
-	klass->magic = CAMEL_OBJECT_CLASS_FINALISED_MAGIC;
+	GObjectClass *object_class;
 
-	g_free(klass);
-}
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = object_dispose;
 
-/* this function must be called for any other in the object system */
-CamelType
-camel_object_get_type(void)
-{
-	if (camel_object_type == CAMEL_INVALID_TYPE) {
-		camel_type_init();
+	class->hooks = NULL;
 
-		camel_object_type = camel_type_register(NULL, "CamelObject", /*, 0, 0*/
-							sizeof(CamelObject), sizeof(CamelObjectClass),
-							cobject_class_init, cobject_class_finalize,
-							cobject_init, cobject_finalize);
-	}
+	class->getv = cobject_getv;
+	class->setv = cobject_setv;
+	class->free = cobject_free;
 
-	return camel_object_type;
+	class->state_read = cobject_state_read;
+	class->state_write = cobject_state_write;
+
+	camel_object_class_add_event (class, "finalize", NULL);
 }
 
 static void
-camel_type_class_init(CamelObjectClass *klass, CamelObjectClass *type)
+camel_object_init (CamelObject *object)
 {
-	if (type->parent)
-		camel_type_class_init(klass, type->parent);
-
-	if (type->klass_init)
-		type->klass_init(klass);
-}
-
-static CamelType
-co_type_register(CamelType parent, const gchar * name,
-		 /*guint ver, guint rev,*/
-		 gsize object_size, gsize klass_size,
-		 CamelObjectClassInitFunc class_init,
-		 CamelObjectClassFinalizeFunc class_finalize,
-		 CamelObjectInitFunc object_init,
-		 CamelObjectFinalizeFunc object_finalize)
-{
-	CamelObjectClass *klass;
-	/*int offset;
-	  gsize size;*/
-
-	TYPE_LOCK();
-
-	camel_type_init(); /* has a static boolean itself */
-
-	/* Have to check creation, it might've happened in another thread before we got here */
-	klass = g_hash_table_lookup(type_table, name);
-	if (klass != NULL) {
-		if (klass->klass_size != klass_size || klass->object_size != object_size
-		    || klass->klass_init != class_init || klass->klass_finalize != class_finalize
-		    || klass->init != object_init || klass->finalize != object_finalize) {
-			g_warning("camel_type_register: Trying to re-register class '%s'", name);
-			klass = NULL;
-		}
-		TYPE_UNLOCK();
-		return klass;
-	}
-
-	/* this is for objects with no parent as part of their struct ('interfaces'?) */
-	/*offset = parent?parent->klass_size:0;
-	offset = (offset + 3) & (~3);
-
-	size = offset + klass_size;
-
-	klass = g_slice_alloc0(size);
-
-	klass->klass_size = size;
-	klass->klass_data = offset;
-
-	offset = parent?parent->object_size:0;
-	offset = (offset + 3) & (~3);
-
-	klass->object_size = offset + object_size;
-	klass->object_data = offset;*/
-
-	if (parent
-	    && klass_size < parent->klass_size) {
-		g_warning("camel_type_register: '%s' has smaller class size than parent '%s'", name, parent->name);
-		TYPE_UNLOCK();
-		return NULL;
-	}
-
-	klass = g_slice_alloc0 (klass_size);
-	klass->klass_size = klass_size;
-	klass->object_size = object_size;
-	klass->lock = g_mutex_new();
-	klass->hooks = NULL;
-
-	klass->parent = parent;
-	if (parent) {
-		klass->next = parent->child;
-		parent->child = klass;
-	}
-	klass->name = name;
-
-	/*klass->version = ver;
-	  klass->revision = rev;*/
-
-	klass->klass_init = class_init;
-	klass->klass_finalize = class_finalize;
-
-	klass->init = object_init;
-	klass->finalize = object_finalize;
-
-	/* setup before class init, incase class init func uses the type or looks it up ? */
-	g_hash_table_insert(type_table, (gpointer)name, klass);
-
-	camel_type_class_init(klass, klass);
-
-	TYPE_UNLOCK();
-
-	return klass;
-}
-
-CamelType
-camel_type_register(CamelType parent, const gchar * name,
-		    /*guint ver, guint rev,*/
-		    gsize object_size, gsize klass_size,
-		    CamelObjectClassInitFunc class_init,
-		    CamelObjectClassFinalizeFunc class_finalize,
-		    CamelObjectInitFunc object_init,
-		    CamelObjectFinalizeFunc object_finalize)
-{
-	if (parent != NULL && parent->magic != CAMEL_OBJECT_CLASS_MAGIC) {
-		g_warning("camel_type_register: invalid junk parent class for '%s'", name);
-		return NULL;
-	}
-
-	return co_type_register(parent, name, object_size, klass_size, class_init, class_finalize, object_init, object_finalize);
-}
-
-static void
-camel_object_init(CamelObject *o, CamelObjectClass *klass, CamelType type)
-{
-	if (type->parent)
-		camel_object_init(o, klass, type->parent);
-
-	if (type->init)
-		type->init(o, klass);
-}
-
-CamelObject *
-camel_object_new(CamelType type)
-{
-	CamelObject *o;
-
-	if (type == NULL)
-		return NULL;
-
-	if (type->magic != CAMEL_OBJECT_CLASS_MAGIC)
-		return NULL;
-
-	CLASS_LOCK(type);
-
-	o = g_slice_alloc0 (type->object_size);
-
-#ifdef CAMEL_OBJECT_TRACK_INSTANCES
-	if (type->instances)
-		type->instances->prev = o;
-	o->next = type->instances;
-	o->prev = NULL;
-	type->instances = o;
-#endif
-
-	CLASS_UNLOCK(type);
-
-	camel_object_init(o, type, type);
-
-	d(printf("%p: new %s()\n", o, o->klass->name));
-
-	return o;
-}
-
-gpointer
-camel_object_ref (gpointer vo)
-{
-	register CamelObject *o = vo;
-
-	g_return_val_if_fail (CAMEL_IS_OBJECT (o), NULL);
-
-	REF_LOCK();
-
-	o->ref_count++;
-	d(printf("%p: ref %s(%d)\n", o, o->klass->name, o->ref_count));
-
-	REF_UNLOCK();
-
-	return vo;
-}
-
-void
-camel_object_unref (gpointer vo)
-{
-	register CamelObject *o = vo;
-	register CamelObjectClass *klass, *k;
-	CamelHookList *hooks = NULL;
-
-	g_return_if_fail(CAMEL_IS_OBJECT(o));
-
-	klass = o->klass;
-
-	if (o->hooks)
-		hooks = camel_object_get_hooks(o);
-
-	REF_LOCK();
-
-	o->ref_count--;
-
-	d(printf("%p: unref %s(%d)\n", o, o->klass->name, o->ref_count));
-
-	if (o->ref_count > 0
-	    || (o->flags & CAMEL_OBJECT_DESTROY)) {
-		REF_UNLOCK();
-		if (hooks)
-			camel_object_unget_hooks(o);
-		return;
-	}
-
-	o->flags |= CAMEL_OBJECT_DESTROY;
-
-	if (hooks)
-		camel_object_bag_remove_unlocked(NULL, o, hooks);
-
-	REF_UNLOCK();
-
-	if (hooks)
-		camel_object_unget_hooks(o);
-
-	camel_object_trigger_event(o, "finalize", NULL);
-
-	k = klass;
-	while (k) {
-		if (k->finalize)
-			k->finalize(o);
-		k = k->parent;
-	}
-
-	o->magic = CAMEL_OBJECT_FINALISED_MAGIC;
-
-	CLASS_LOCK(klass);
-#ifdef CAMEL_OBJECT_TRACK_INSTANCES
-	if (o->prev)
-		o->prev->next = o->next;
-	else
-		klass->instances = o->next;
-	if (o->next)
-		o->next->prev = o->prev;
-#endif
-	g_slice_free1 (klass->object_size, o);
-	CLASS_UNLOCK(klass);
-}
-
-const gchar *
-camel_type_to_name(CamelType type)
-{
-	if (type == NULL)
-		return "(NULL class)";
-
-	if (type->magic == CAMEL_OBJECT_CLASS_MAGIC)
-		return type->name;
-
-	if (type->magic == CAMEL_INTERFACE_MAGIC)
-		return type->name;
-
-	return "(Junk class)";
-}
-
-CamelType camel_name_to_type(const gchar *name)
-{
-	/* TODO: Load a class off disk (!) */
-
-	return g_hash_table_lookup(type_table, name);
-}
-
-static gchar *
-desc_data(CamelObject *o, guint32 ok)
-{
-	gchar *what;
-
-	if (o == NULL)
-		what = g_strdup("NULL OBJECT");
-	else if (o->magic == ok)
-		what = NULL;
-	else if (o->magic == CAMEL_OBJECT_MAGIC)
-		what = g_strdup_printf("CLASS '%s'", ((CamelObjectClass *)o)->name);
-	else if (o->magic == CAMEL_OBJECT_CLASS_MAGIC)
-		what = g_strdup_printf("CLASS '%s'", ((CamelObjectClass *)o)->name);
-	else if (o->magic == CAMEL_INTERFACE_MAGIC)
-		what = g_strdup_printf("INTERFACE '%s'", ((CamelObjectClass *)o)->name);
-	else if (o->magic == CAMEL_OBJECT_FINALISED_MAGIC)
-		what = g_strdup_printf("finalized OBJECT");
-	else if (o->magic == CAMEL_OBJECT_CLASS_FINALISED_MAGIC)
-		what = g_strdup_printf("finalized CLASS");
-	else if (o->magic == CAMEL_INTERFACE_FINALISED_MAGIC)
-		what = g_strdup_printf("finalized INTERFACE");
-	else
-		what = g_strdup_printf("junk data");
-
-	return what;
-}
-
-#define check_magic(o, ctype, omagic) \
-	( ((CamelObject *)(o))->magic == (omagic) \
-	&& (ctype)->magic == CAMEL_OBJECT_CLASS_MAGIC) \
-	? 1 : check_magic_fail(o, ctype, omagic)
-
-static gboolean
-check_magic_fail(gpointer o, CamelType ctype, guint32 omagic)
-{
-	gchar *what, *to;
-
-	what = desc_data(o, omagic);
-	to = desc_data((CamelObject *)ctype, CAMEL_OBJECT_CLASS_MAGIC);
-
-	if (what || to) {
-		if (what == NULL) {
-			if (omagic == CAMEL_OBJECT_MAGIC)
-				what = g_strdup_printf("OBJECT '%s'", ((CamelObject *)o)->klass->name);
-			else
-				what = g_strdup_printf("OBJECT '%s'", ((CamelObjectClass *)o)->name);
-		}
-		if (to == NULL)
-			to = g_strdup_printf("OBJECT '%s'", ctype->name);
-		g_warning("Trying to check %s is %s", what, to);
-		g_free(what);
-		g_free(to);
-
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-gboolean
-camel_object_is(CamelObject *o, CamelType ctype)
-{
-	CamelObjectClass *k;
-
-	g_return_val_if_fail(o != NULL, FALSE);
-	g_return_val_if_fail(check_magic(o, ctype, CAMEL_OBJECT_MAGIC), FALSE);
-
-	k = o->klass;
-	while (k) {
-		if (k == ctype)
-			return TRUE;
-		k = k->parent;
-	}
-
-	return FALSE;
-}
-
-gboolean
-camel_object_class_is(CamelObjectClass *k, CamelType ctype)
-{
-	g_return_val_if_fail(k != NULL, FALSE);
-	g_return_val_if_fail(check_magic(k, ctype, CAMEL_OBJECT_CLASS_MAGIC), FALSE);
-
-	while (k) {
-		if (k == ctype)
-			return TRUE;
-		k = k->parent;
-	}
-
-	return FALSE;
-}
-
-CamelObject *
-camel_object_cast(CamelObject *o, CamelType ctype)
-{
-	CamelObjectClass *k;
-
-        g_return_val_if_fail(o != NULL, NULL);
-	g_return_val_if_fail(check_magic(o, ctype, CAMEL_OBJECT_MAGIC), NULL);
-
-	k = o->klass;
-	while (k) {
-		if (k == ctype)
-			return o;
-		k = k->parent;
-	}
-
-	g_warning("Object %p (class '%s') doesn't have '%s' in its hierarchy", (gpointer) o, o->klass->name, ctype->name);
-
-	return NULL;
-}
-
-CamelObjectClass *
-camel_object_class_cast(CamelObjectClass *k, CamelType ctype)
-{
-	CamelObjectClass *r = k;
-
-	g_return_val_if_fail(check_magic(k, ctype, CAMEL_OBJECT_CLASS_MAGIC), NULL);
-
-	while (k) {
-		if (k == ctype)
-			return r;
-		k = k->parent;
-	}
-
-	g_warning("Class '%s' doesn't have '%s' in its hierarchy", r->name, ctype->name);
-
-	return NULL;
 }
 
 static CamelHookPair *
-co_find_pair(CamelObjectClass *klass, const gchar *name)
+co_find_pair (CamelObjectClass *class,
+              const gchar *name)
 {
 	CamelHookPair *hook;
 
-	hook = klass->hooks;
+	hook = class->hooks;
 	while (hook) {
-		if (strcmp(hook->name, name) == 0)
-			return hook;
-		hook = hook->next;
-	}
-
-	return NULL;
-}
-
-static CamelHookPair *
-co_find_pair_ptr(CamelObjectClass *klass, const gchar *name)
-{
-	CamelHookPair *hook;
-
-	hook = klass->hooks;
-	while (hook) {
-		if (hook->name == name)
+		if (strcmp (hook->name, name) == 0)
 			return hook;
 		hook = hook->next;
 	}
@@ -930,55 +453,51 @@ co_find_pair_ptr(CamelObjectClass *klass, const gchar *name)
 
 /* class functions */
 void
-camel_object_class_add_event(CamelObjectClass *klass, const gchar *name, CamelObjectEventPrepFunc prep)
+camel_object_class_add_event (CamelObjectClass *class,
+                              const gchar *name,
+                              CamelObjectEventPrepFunc prep)
 {
 	CamelHookPair *pair;
 
 	g_return_if_fail (name);
 
-	pair = co_find_pair(klass, name);
+	pair = co_find_pair (class, name);
 	if (pair) {
-		g_warning("camel_object_class_add_event: '%s' is already declared for '%s'",
-			  name, klass->name);
+		g_warning ("%s: '%s' is already declared for '%s'",
+			G_STRFUNC, name, G_OBJECT_CLASS_NAME (class));
 		return;
 	}
 
-	if (klass->magic == CAMEL_INTERFACE_MAGIC && prep != NULL) {
-		g_warning("camel_object_class_add_event: '%s', CamelInterface '%s' may not have an event prep function - ignored",
-			  name, klass->name);
-		prep = NULL;
-	}
-
-	pair = pair_alloc();
+	pair = pair_alloc ();
 	pair->name = name;
 	pair->func.prep = prep;
 	pair->flags = 0;
 
-	pair->next = klass->hooks;
-	klass->hooks = pair;
+	pair->next = class->hooks;
+	class->hooks = pair;
 }
 
 /* free hook data */
 static void
 camel_object_free_hooks(CamelObject *o)
 {
-	CamelHookPair *pair, *next;
+        CamelHookPair *pair, *next;
 
-	if (o->hooks) {
-		g_assert(o->hooks->depth == 0);
-		g_assert((o->hooks->flags & CAMEL_HOOK_PAIR_REMOVED) == 0);
+        if (o->hooks) {
+                g_assert(o->hooks->depth == 0);
+                g_assert((o->hooks->flags & CAMEL_HOOK_PAIR_REMOVED) == 0);
 
-		pair = o->hooks->list;
-		while (pair) {
-			next = pair->next;
+                pair = o->hooks->list;
+                while (pair) {
+                        next = pair->next;
 
-			pair_free(pair);
-			pair = next;
-		}
-		g_static_rec_mutex_free(&o->hooks->lock);
-		hooks_free(o->hooks);
-		o->hooks = NULL;
-	}
+                        pair_free(pair);
+                        pair = next;
+                }
+                g_static_rec_mutex_free(&o->hooks->lock);
+                hooks_free(o->hooks);
+                o->hooks = NULL;
+        }
 }
 
 /* return (allocate if required) the object's hook list, locking at the same time */
@@ -1010,9 +529,13 @@ camel_object_get_hooks(CamelObject *o)
 }
 
 guint
-camel_object_hook_event(gpointer vo, const gchar * name, CamelObjectEventHookFunc func, gpointer data)
+camel_object_hook_event (gpointer vo,
+                         const gchar *name,
+                         CamelObjectEventHookFunc func,
+                         gpointer data)
 {
 	CamelObject *obj = vo;
+	CamelObjectClass *class;
 	CamelHookPair *pair, *hook;
 	CamelHookList *hooks;
 	gint id;
@@ -1021,28 +544,18 @@ camel_object_hook_event(gpointer vo, const gchar * name, CamelObjectEventHookFun
 	g_return_val_if_fail(name != NULL, 0);
 	g_return_val_if_fail(func != NULL, 0);
 
-	hook = co_find_pair(obj->klass, name);
+	class = CAMEL_OBJECT_GET_CLASS (obj);
+
+	hook = co_find_pair(class, name);
 
 	/* Check all interfaces on this object for events defined on them */
 	if (hook == NULL) {
-		pair = co_find_pair_ptr(obj->klass, interface_name);
-		if (pair) {
-			GPtrArray *interfaces = pair->data;
-			gint i;
-
-			for (i=0;i<interfaces->len;i++) {
-				hook = co_find_pair(interfaces->pdata[i], name);
-				if (hook)
-					goto setup;
-			}
-		}
-
 		g_warning("camel_object_hook_event: trying to hook event '%s' in class '%s' with no defined events.",
-			  name, obj->klass->name);
+			  name, G_OBJECT_CLASS_NAME (class));
 
 		return 0;
 	}
-setup:
+
 	/* setup hook pair */
 	pair = pair_alloc();
 	pair->name = hook->name;	/* effectively static! */
@@ -1064,7 +577,8 @@ setup:
 }
 
 void
-camel_object_remove_event(gpointer vo, guint id)
+camel_object_remove_event (gpointer vo,
+                           guint id)
 {
 	CamelObject *obj = vo;
 	CamelHookList *hooks;
@@ -1075,7 +589,7 @@ camel_object_remove_event(gpointer vo, guint id)
 
 	if (obj->hooks == NULL) {
 		g_warning("camel_object_unhook_event: trying to unhook '%u' from an instance of '%s' with no hooks",
-			  id, obj->klass->name);
+			  id, G_OBJECT_TYPE_NAME (obj));
 		return;
 	}
 
@@ -1105,11 +619,14 @@ camel_object_remove_event(gpointer vo, guint id)
 	camel_object_unget_hooks(obj);
 
 	g_warning("camel_object_unhook_event: cannot find hook id %u in instance of '%s'",
-		  id, obj->klass->name);
+		  id, G_OBJECT_TYPE_NAME (obj));
 }
 
 void
-camel_object_unhook_event(gpointer vo, const gchar * name, CamelObjectEventHookFunc func, gpointer data)
+camel_object_unhook_event (gpointer vo,
+                           const gchar *name,
+                           CamelObjectEventHookFunc func,
+                           gpointer data)
 {
 	CamelObject *obj = vo;
 	CamelHookList *hooks;
@@ -1121,7 +638,7 @@ camel_object_unhook_event(gpointer vo, const gchar * name, CamelObjectEventHookF
 
 	if (obj->hooks == NULL) {
 		g_warning("camel_object_unhook_event: trying to unhook '%s' from an instance of '%s' with no hooks",
-			  name, obj->klass->name);
+			  name, G_OBJECT_TYPE_NAME (obj));
 		return;
 	}
 
@@ -1153,13 +670,16 @@ camel_object_unhook_event(gpointer vo, const gchar * name, CamelObjectEventHookF
 	camel_object_unget_hooks(obj);
 
 	g_warning("camel_object_unhook_event: cannot find hook/data pair %p/%p in an instance of '%s' attached to '%s'",
-		  (gpointer) func, data, obj->klass->name, name);
+		  (gpointer) func, data, G_OBJECT_TYPE_NAME (obj), name);
 }
 
 void
-camel_object_trigger_event(gpointer vo, const gchar * name, gpointer event_data)
+camel_object_trigger_event (gpointer vo,
+                            const gchar *name,
+                            gpointer event_data)
 {
 	CamelObject *obj = vo;
+	CamelObjectClass *class;
 	CamelHookList *hooks;
 	CamelHookPair *pair, **pairs, *parent, *hook;
 	gint i, size;
@@ -1168,27 +688,17 @@ camel_object_trigger_event(gpointer vo, const gchar * name, gpointer event_data)
 	g_return_if_fail (CAMEL_IS_OBJECT (obj));
 	g_return_if_fail (name);
 
-	hook = co_find_pair(obj->klass, name);
+	class = CAMEL_OBJECT_GET_CLASS (obj);
+
+	hook = co_find_pair(class, name);
 	if (hook)
 		goto trigger;
 
 	if (obj->hooks == NULL)
 		return;
 
-	/* interface events can't have prep functions */
-	pair = co_find_pair_ptr(obj->klass, interface_name);
-	if (pair) {
-		GPtrArray *interfaces = pair->data;
-
-		for (i=0;i<interfaces->len;i++) {
-			hook = co_find_pair(interfaces->pdata[i], name);
-			if (hook)
-				goto trigger_interface;
-		}
-	}
-
 	g_warning("camel_object_trigger_event: trying to trigger unknown event '%s' in class '%s'",
-		  name, obj->klass->name);
+		  name, G_OBJECT_TYPE_NAME (obj));
 
 	return;
 
@@ -1201,9 +711,8 @@ trigger:
 	if (obj->hooks == NULL)
 		return;
 
-trigger_interface:
 	/* lock the object for hook emission */
-	camel_object_ref (obj);
+	g_object_ref(obj);
 	hooks = camel_object_get_hooks(obj);
 
 	if (hooks->list) {
@@ -1246,64 +755,92 @@ trigger_interface:
 	}
 
 	camel_object_unget_hooks(obj);
-	camel_object_unref (obj);
+	g_object_unref(obj);
 }
 
 /* get/set arg methods */
-gint camel_object_set(gpointer vo, CamelException *ex, ...)
+gint
+camel_object_set (gpointer vo,
+                  CamelException *ex,
+                  ...)
 {
+	CamelObjectClass *class;
 	CamelArgV args;
 	CamelObject *o = vo;
-	CamelObjectClass *klass = o->klass;
 	gint ret = 0;
 
 	g_return_val_if_fail(CAMEL_IS_OBJECT(o), -1);
 
 	camel_argv_start(&args, ex);
+
+	class = CAMEL_OBJECT_GET_CLASS (o);
+	g_return_val_if_fail (class->setv != NULL, -1);
 
 	while (camel_argv_build(&args) && ret == 0)
-		ret = klass->setv(o, ex, &args);
+		ret = class->setv(o, ex, &args);
 	if (ret == 0)
-		ret = klass->setv(o, ex, &args);
+		ret = class->setv(o, ex, &args);
 
 	camel_argv_end(&args);
 
 	return ret;
 }
 
-gint camel_object_setv(gpointer vo, CamelException *ex, CamelArgV *args)
+gint
+camel_object_setv (gpointer vo,
+                   CamelException *ex,
+                   CamelArgV *args)
 {
+	CamelObjectClass *class;
+
 	g_return_val_if_fail(CAMEL_IS_OBJECT(vo), -1);
 
-	return ((CamelObject *)vo)->klass->setv(vo, ex, args);
+	class = CAMEL_OBJECT_GET_CLASS (vo);
+	g_return_val_if_fail (class->setv != NULL, -1);
+
+	return class->setv (vo, ex, args);
 }
 
-gint camel_object_get(gpointer vo, CamelException *ex, ...)
+gint
+camel_object_get (gpointer vo,
+                  CamelException *ex,
+                  ...)
 {
+	CamelObjectClass *class;
 	CamelObject *o = vo;
 	CamelArgGetV args;
-	CamelObjectClass *klass = o->klass;
 	gint ret = 0;
 
 	g_return_val_if_fail(CAMEL_IS_OBJECT(o), -1);
 
 	camel_argv_start(&args, ex);
 
+	class = CAMEL_OBJECT_GET_CLASS (o);
+	g_return_val_if_fail (class->getv != NULL, -1);
+
 	while (camel_arggetv_build(&args) && ret == 0)
-		ret = klass->getv(o, ex, &args);
+		ret = class->getv(o, ex, &args);
 	if (ret == 0)
-		ret = klass->getv(o, ex, &args);
+		ret = class->getv(o, ex, &args);
 
 	camel_argv_end(&args);
 
 	return ret;
 }
 
-gint camel_object_getv(gpointer vo, CamelException *ex, CamelArgGetV *args)
+gint
+camel_object_getv (gpointer vo,
+                   CamelException *ex,
+                   CamelArgGetV *args)
 {
+	CamelObjectClass *class;
+
 	g_return_val_if_fail(CAMEL_IS_OBJECT(vo), -1);
 
-	return ((CamelObject *)vo)->klass->getv(vo, ex, args);
+	class = CAMEL_OBJECT_GET_CLASS (vo);
+	g_return_val_if_fail (class->getv != NULL, -1);
+
+	return class->getv (vo, ex, args);
 }
 
 /* NB: If this doesn't return NULL, then you must unget_hooks when done */
@@ -1365,7 +902,7 @@ gint camel_object_state_read(gpointer vo)
 	if (fp != NULL) {
 		if (fread(magic, 4, 1, fp) == 1
 		    && memcmp(magic, CAMEL_OBJECT_STATE_FILE_MAGIC, 4) == 0)
-			res = obj->klass->state_read(obj, fp);
+			res = CAMEL_OBJECT_GET_CLASS (obj)->state_read(obj, fp);
 		else
 			res = -1;
 		fclose(fp);
@@ -1402,7 +939,7 @@ gint camel_object_state_write(gpointer vo)
 	fp = g_fopen(savename, "wb");
 	if (fp != NULL) {
 		if (fwrite(CAMEL_OBJECT_STATE_FILE_MAGIC, 4, 1, fp) == 1
-		    && obj->klass->state_write(obj, fp) == 0) {
+		    && CAMEL_OBJECT_GET_CLASS (obj)->state_write(obj, fp) == 0) {
 			if (fclose(fp) == 0) {
 				res = 0;
 				g_rename(savename, file);
@@ -1441,487 +978,5 @@ void camel_object_free(gpointer vo, guint32 tag, gpointer value)
 	   This would also let us copy and do other things with args
 	   we can't do, but i can't see a use for that yet ...  */
 
-	((CamelObject *)vo)->klass->free(vo, tag, value);
-}
-
-static void
-object_class_dump_tree_rec(CamelType root, gint depth)
-{
-	gchar *p;
-#ifdef CAMEL_OBJECT_TRACK_INSTANCES
-	struct _CamelObject *o;
-#endif
-
-	p = alloca(depth*2+1);
-	memset(p, ' ', depth*2);
-	p[depth*2] = 0;
-
-	while (root) {
-		CLASS_LOCK(root);
-		printf("%sClass: %s\n", p, root->name);
-		/*printf("%sVersion: %u.%u\n", p, root->version, root->revision);*/
-		if (root->hooks) {
-			CamelHookPair *pair = root->hooks;
-
-			while (pair) {
-				printf("%s  event '%s' prep %p\n", p, pair->name, (gpointer) pair->func.prep);
-				pair = pair->next;
-			}
-		}
-
-#ifdef CAMEL_OBJECT_TRACK_INSTANCES
-		o = root->instances;
-		while (o) {
-			printf("%s instance %p [%d]\n", p, (gpointer) o, o->ref_count);
-			/* todo: should lock hooks while it scans them */
-			if (o->hooks) {
-				CamelHookPair *pair = o->hooks->list;
-
-				while (pair) {
-					printf("%s  hook '%s' func %p data %p\n", p, pair->name, (gpointer) pair->func.event, (gpointer) pair->data);
-					pair = pair->next;
-				}
-			}
-			o = o->next;
-		}
-#endif
-		CLASS_UNLOCK(root);
-
-		if (root->child)
-			object_class_dump_tree_rec(root->child, depth+1);
-
-		root = root->next;
-	}
-}
-
-void
-camel_object_class_dump_tree(CamelType root)
-{
-	object_class_dump_tree_rec(root, 0);
-}
-
-/**
- * camel_object_bag_new:
- * @hash:
- * @equal:
- * @keycopy:
- * @keyfree:
- *
- * Allocate a new object bag.  Object bag's are key'd hash tables of
- * camel-objects which can be updated atomically using transaction
- * semantics.
- *
- * Returns:
- **/
-CamelObjectBag *
-camel_object_bag_new(GHashFunc hash, GEqualFunc equal, CamelCopyFunc keycopy, GFreeFunc keyfree)
-{
-	CamelObjectBag *bag;
-
-	bag = g_malloc(sizeof(*bag));
-	bag->object_table = g_hash_table_new(hash, equal);
-	bag->equal_key = equal;
-	bag->copy_key = keycopy;
-	bag->free_key = keyfree;
-	bag->key_table = g_hash_table_new(NULL, NULL);
-	bag->reserved = NULL;
-
-	return bag;
-}
-
-static void
-save_object(gpointer key, CamelObject *o, GPtrArray *objects)
-{
-	g_ptr_array_add(objects, o);
-}
-
-void
-camel_object_bag_destroy(CamelObjectBag *bag)
-{
-	GPtrArray *objects = g_ptr_array_new();
-	gint i;
-
-	g_assert(bag->reserved == NULL);
-
-	g_hash_table_foreach(bag->object_table, (GHFunc)save_object, objects);
-	for (i=0;i<objects->len;i++)
-		camel_object_bag_remove(bag, objects->pdata[i]);
-
-	g_ptr_array_free(objects, TRUE);
-	g_hash_table_destroy(bag->object_table);
-	g_hash_table_destroy(bag->key_table);
-	g_free(bag);
-}
-
-/* must be called with ref_lock held */
-static void
-co_bag_unreserve(CamelObjectBag *bag, gconstpointer key)
-{
-	struct _CamelObjectBagKey *res, *resp;
-
-	resp = (struct _CamelObjectBagKey *)&bag->reserved;
-	res = resp->next;
-	while (res) {
-		if (bag->equal_key(res->key, key))
-			break;
-		resp = res;
-		res = res->next;
-	}
-
-	g_assert(res != NULL);
-	g_assert(res->have_owner && res->owner == g_thread_self ());
-
-	if (res->waiters > 0) {
-		b(printf("unreserve bag '%s', waking waiters\n", (gchar *)key));
-		res->have_owner = FALSE;
-		g_cond_signal(res->cond);
-	} else {
-		b(printf("unreserve bag '%s', no waiters, freeing reservation\n", (gchar *)key));
-		resp->next = res->next;
-		bag->free_key(res->key);
-		g_cond_free(res->cond);
-		g_free(res);
-	}
-}
-
-/**
- * camel_object_bag_add:
- * @bag:
- * @key:
- * @vo:
- *
- * Add an object @vo to the object bag @bag.  The @key MUST have
- * previously been reserved using camel_object_bag_reserve().
- **/
-void
-camel_object_bag_add(CamelObjectBag *bag, gconstpointer key, gpointer vo)
-{
-	CamelObject *o = vo;
-	CamelHookList *hooks;
-	CamelHookPair *pair;
-	gpointer k;
-
-	hooks = camel_object_get_hooks(o);
-	REF_LOCK();
-
-	pair = hooks->list;
-	while (pair) {
-		if (pair->name == bag_name && pair->data == bag) {
-			REF_UNLOCK();
-			camel_object_unget_hooks(o);
-			return;
-		}
-		pair = pair->next;
-	}
-
-	pair = pair_alloc();
-	pair->name = bag_name;
-	pair->data = bag;
-	pair->flags = 0;
-	pair->func.event = NULL;
-
-	pair->next = hooks->list;
-	hooks->list = pair;
-	hooks->list_length++;
-
-	k = bag->copy_key(key);
-	g_hash_table_insert(bag->object_table, k, vo);
-	g_hash_table_insert(bag->key_table, vo, k);
-
-	co_bag_unreserve(bag, key);
-
-	REF_UNLOCK();
-	camel_object_unget_hooks(o);
-}
-
-/**
- * camel_object_bag_get:
- * @bag:
- * @key:
- *
- * Lookup an object by @key.  If the key is currently reserved, then
- * wait until the key has been committed before continuing.
- *
- * Returns: NULL if the object corresponding to @key is not
- * in the bag.  Otherwise a ref'd object pointer which the caller owns
- * the ref to.
- **/
-gpointer
-camel_object_bag_get(CamelObjectBag *bag, gconstpointer key)
-{
-	CamelObject *o;
-
-	REF_LOCK();
-
-	o = g_hash_table_lookup(bag->object_table, key);
-	if (o) {
-		b(printf("object bag get '%s' = %p\n", (gchar *)key, o));
-
-		/* we use the same lock as the refcount */
-		o->ref_count++;
-	} else {
-		struct _CamelObjectBagKey *res = bag->reserved;
-
-		/* check if this name is reserved currently, if so wait till its finished */
-		while (res) {
-			if (bag->equal_key(res->key, key))
-				break;
-			res = res->next;
-		}
-
-		if (res) {
-			b(printf("object bag get '%s', reserved, waiting\n", (gchar *)key));
-
-			res->waiters++;
-			g_assert(!res->have_owner || res->owner != g_thread_self ());
-			g_cond_wait(res->cond, ref_lock);
-			res->waiters--;
-
-			/* re-check if it slipped in */
-			o = g_hash_table_lookup(bag->object_table, key);
-			if (o)
-				o->ref_count++;
-
-			b(printf("object bag get '%s', finished waiting, got %p\n", (gchar *)key, o));
-
-			/* we don't actually reserve it */
-			res->owner = g_thread_self ();
-			res->have_owner = TRUE;
-			co_bag_unreserve(bag, key);
-		}
-	}
-
-	REF_UNLOCK();
-
-	return o;
-}
-
-/**
- * camel_object_bag_peek:
- * @bag:
- * @key:
- *
- * Lookup the object @key in @bag, ignoring any reservations.  If it
- * isn't committed, then it isn't considered.  This should only be
- * used where reliable transactional-based state is not required.
- *
- * Unlike other 'peek' operations, the object is still reffed if
- * found.
- *
- * Returns: A referenced object, or NULL if @key is not
- * present in the bag.
- **/
-gpointer
-camel_object_bag_peek(CamelObjectBag *bag, gconstpointer key)
-{
-	CamelObject *o;
-
-	REF_LOCK();
-
-	o = g_hash_table_lookup(bag->object_table, key);
-	if (o) {
-		/* we use the same lock as the refcount */
-		o->ref_count++;
-	}
-
-	REF_UNLOCK();
-
-	return o;
-}
-
-/**
- * camel_object_bag_reserve:
- * @bag:
- * @key:
- *
- * Reserve a key in the object bag.  If the key is already reserved in
- * another thread, then wait until the reservation has been committed.
- *
- * After reserving a key, you either get a reffed pointer to the
- * object corresponding to the key, similar to object_bag_get, or you
- * get NULL, signifying that you then MIST call either object_bag_add
- * or object_bag_abort.
- *
- * You may reserve multiple keys from the same thread, but they should
- * always be reserved in the same order, to avoid deadlocks.
- *
- * Returns:
- **/
-gpointer
-camel_object_bag_reserve(CamelObjectBag *bag, gconstpointer key)
-{
-	CamelObject *o;
-
-	REF_LOCK();
-
-	o = g_hash_table_lookup(bag->object_table, key);
-	if (o) {
-		o->ref_count++;
-	} else {
-		struct _CamelObjectBagKey *res = bag->reserved;
-
-		while (res) {
-			if (bag->equal_key(res->key, key))
-				break;
-			res = res->next;
-		}
-
-		if (res) {
-			b(printf("bag reserve %s, already reserved, waiting\n", (gchar *)key));
-			g_assert(!res->have_owner || res->owner != g_thread_self ());
-			res->waiters++;
-			g_cond_wait(res->cond, ref_lock);
-			res->waiters--;
-			/* incase its slipped in while we were waiting */
-			o = g_hash_table_lookup(bag->object_table, key);
-			if (o) {
-				b(printf("finished wait, someone else created '%s' = %p\n", (gchar *)key, o));
-				o->ref_count++;
-				/* in which case we dont need to reserve the bag either */
-				res->owner = g_thread_self ();
-				res->have_owner = TRUE;
-				co_bag_unreserve(bag, key);
-			} else {
-				b(printf("finished wait, now owner of '%s'\n", (gchar *)key));
-				res->owner = g_thread_self ();
-				res->have_owner = TRUE;
-			}
-		} else {
-			b(printf("bag reserve %s, no key, reserving\n", (gchar *)key));
-			res = g_malloc(sizeof(*res));
-			res->waiters = 0;
-			res->key = bag->copy_key(key);
-			res->cond = g_cond_new();
-			res->owner = g_thread_self ();
-			res->have_owner = TRUE;
-			res->next = bag->reserved;
-			bag->reserved = res;
-		}
-	}
-
-	REF_UNLOCK();
-
-	return o;
-}
-
-/**
- * camel_object_bag_abort:
- * @bag:
- * @key:
- *
- * Abort a key reservation.
- **/
-void
-camel_object_bag_abort(CamelObjectBag *bag, gconstpointer key)
-{
-	REF_LOCK();
-
-	co_bag_unreserve(bag, key);
-
-	REF_UNLOCK();
-}
-
-/**
- * camel_object_bag_rekey:
- * @bag:
- * @o:
- * @newkey:
- *
- * Re-key an object, atomically.  The key for object @o is set to
- * @newkey, in an atomic manner.
- *
- * It is an api (fatal) error if @o is not currently in the bag.
- **/
-void
-camel_object_bag_rekey(CamelObjectBag *bag, gpointer o, gconstpointer newkey)
-{
-	gpointer oldkey;
-
-	REF_LOCK();
-
-	if (g_hash_table_lookup_extended(bag->key_table, o, NULL, &oldkey)) {
-		g_hash_table_remove(bag->object_table, oldkey);
-		g_hash_table_remove(bag->key_table, o);
-		bag->free_key(oldkey);
-		oldkey = bag->copy_key(newkey);
-		g_hash_table_insert(bag->object_table, oldkey, o);
-		g_hash_table_insert(bag->key_table, o, oldkey);
-	} else {
-		abort();
-	}
-
-	REF_UNLOCK();
-}
-
-static void
-save_bag(gpointer key, CamelObject *o, GPtrArray *list)
-{
-	/* we have the refcount lock already */
-	o->ref_count++;
-	g_ptr_array_add(list, o);
-}
-
-/* get a list of all objects in the bag, ref'd
-   ignores any reserved keys */
-GPtrArray *
-camel_object_bag_list(CamelObjectBag *bag)
-{
-	GPtrArray *list;
-
-	list = g_ptr_array_new();
-
-	REF_LOCK();
-	g_hash_table_foreach(bag->object_table, (GHFunc)save_bag, list);
-	REF_UNLOCK();
-
-	return list;
-}
-
-/* if bag is NULL, remove all bags from object */
-static void
-camel_object_bag_remove_unlocked(CamelObjectBag *inbag, CamelObject *o, CamelHookList *hooks)
-{
-	CamelHookPair *pair, *parent;
-	gpointer oldkey;
-	CamelObjectBag *bag;
-
-	parent = (CamelHookPair *)&hooks->list;
-	pair = parent->next;
-	while (pair) {
-		if (pair->name == bag_name
-		    && (inbag == NULL || inbag == pair->data)) {
-			bag = pair->data;
-			/* lookup object in table? */
-			oldkey = g_hash_table_lookup(bag->key_table, o);
-			if (oldkey) {
-				g_hash_table_remove(bag->key_table, o);
-				g_hash_table_remove(bag->object_table, oldkey);
-				bag->free_key(oldkey);
-			}
-			parent->next = pair->next;
-			pair_free(pair);
-			hooks->list_length--;
-		} else {
-			parent = pair;
-		}
-		pair = parent->next;
-	}
-}
-
-void
-camel_object_bag_remove(CamelObjectBag *inbag, gpointer vo)
-{
-	CamelObject *o = vo;
-	CamelHookList *hooks;
-
-	if (o->hooks == NULL)
-		return;
-
-	hooks = camel_object_get_hooks(o);
-	REF_LOCK();
-
-	camel_object_bag_remove_unlocked(inbag, o, hooks);
-
-	REF_UNLOCK();
-	camel_object_unget_hooks(o);
+	CAMEL_OBJECT_GET_CLASS (vo)->free (vo, tag, value);
 }

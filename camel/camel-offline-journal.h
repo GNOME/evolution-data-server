@@ -33,12 +33,24 @@
 #include <camel/camel-list-utils.h>
 #include <camel/camel-object.h>
 
-#define CAMEL_TYPE_OFFLINE_JOURNAL            (camel_offline_journal_get_type ())
-#define CAMEL_OFFLINE_JOURNAL(obj)            (CAMEL_CHECK_CAST ((obj), CAMEL_TYPE_OFFLINE_JOURNAL, CamelOfflineJournal))
-#define CAMEL_OFFLINE_JOURNAL_CLASS(klass)    (CAMEL_CHECK_CLASS_CAST ((klass), CAMEL_TYPE_OFFLINE_JOURNAL, CamelOfflineJournalClass))
-#define CAMEL_IS_OFFLINE_JOURNAL(obj)         (CAMEL_CHECK_TYPE ((obj), CAMEL_TYPE_OFFLINE_JOURNAL))
-#define CAMEL_IS_OFFLINE_JOURNAL_CLASS(klass) (CAMEL_CHECK_CLASS_TYPE ((klass), CAMEL_TYPE_OFFLINE_JOURNAL))
-#define CAMEL_OFFLINE_JOURNAL_GET_CLASS(o) (CAMEL_OFFLINE_JOURNAL_CLASS (CAMEL_OBJECT_GET_CLASS (o)))
+/* Standard GObject macros */
+#define CAMEL_TYPE_OFFLINE_JOURNAL \
+	(camel_offline_journal_get_type ())
+#define CAMEL_OFFLINE_JOURNAL(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_OFFLINE_JOURNAL, CamelOfflineJournal))
+#define CAMEL_OFFLINE_JOURNAL_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_OFFLINE_JOURNAL, CamelOfflineJournalClass))
+#define CAMEL_IS_OFFLINE_JOURNAL(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_OFFLINE_JOURNAL))
+#define CAMEL_IS_OFFLINE_JOURNAL_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_OFFLINE_JOURNAL))
+#define CAMEL_OFFLINE_JOURNAL_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_OFFLINE_JOURNAL, CamelOfflineJournalClass))
 
 G_BEGIN_DECLS
 
@@ -67,7 +79,7 @@ struct _CamelOfflineJournalClass {
 	gint (* entry_play) (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
 };
 
-CamelType camel_offline_journal_get_type (void);
+GType camel_offline_journal_get_type (void);
 
 void camel_offline_journal_construct (CamelOfflineJournal *journal, struct _CamelFolder *folder, const gchar *filename);
 void camel_offline_journal_set_filename (CamelOfflineJournal *journal, const gchar *filename);

@@ -53,7 +53,7 @@
 
 #define FINFO_REFRESH_INTERVAL 60
 
-static CamelOfflineStoreClass *parent_class = NULL;
+G_DEFINE_TYPE (CamelIMAPXStore, camel_imapx_store, CAMEL_TYPE_STORE)
 
 static guint
 imapx_name_hash(gconstpointer key)
@@ -109,13 +109,32 @@ imapx_parse_receiving_options (CamelIMAPXStore *istore, CamelURL *url)
 		istore->rec_options |= IMAPX_USE_IDLE;
 }
 
+static void
+imapx_store_finalize (GObject *object)
+{
+	CamelIMAPXStore *imapx_store = CAMEL_IMAPX_STORE (object);
+
+	/* force disconnect so we dont have it run later, after we've cleaned up some stuff */
+	/* SIGH */
+
+	camel_service_disconnect((CamelService *)imapx_store, TRUE, NULL);
+	g_mutex_free (imapx_store->get_finfo_lock);
+
+	g_free (imapx_store->base_url);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_imapx_store_parent_class)->finalize (object);
+}
+
 static gboolean
 imapx_construct(CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex)
 {
 	gchar *summary;
 	CamelIMAPXStore *store = (CamelIMAPXStore *)service;
+	CamelServiceClass *service_class;
 
-	if (!CAMEL_SERVICE_CLASS (parent_class)->construct (service, session, provider, url, ex))
+	service_class = CAMEL_SERVICE_CLASS (camel_imapx_store_parent_class);
+	if (!service_class->construct (service, session, provider, url, ex))
 		return FALSE;
 
 	store->base_url = camel_url_to_string (service->url, (CAMEL_URL_HIDE_PASSWORD |
@@ -206,8 +225,10 @@ static gboolean
 imapx_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 {
 	CamelIMAPXStore *istore = CAMEL_IMAPX_STORE (service);
+	CamelServiceClass *service_class;
 
-	CAMEL_SERVICE_CLASS (parent_class)->disconnect (service, clean, ex);
+	service_class = CAMEL_SERVICE_CLASS (camel_imapx_store_parent_class);
+	service_class->disconnect (service, clean, ex);
 
 	if (istore->server)
 		camel_imapx_server_connect(istore->server, FALSE, ex);
@@ -218,7 +239,11 @@ imapx_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 static CamelFolder *
 imapx_get_junk(CamelStore *store, CamelException *ex)
 {
-	CamelFolder *folder = CAMEL_STORE_CLASS(parent_class)->get_junk(store, ex);
+	CamelFolder *folder;
+	CamelStoreClass *store_class;
+
+	store_class = CAMEL_STORE_CLASS (camel_imapx_store_parent_class);
+	folder = store_class->get_junk (store, ex);
 
 	if (folder) {
 		gchar *state = g_build_filename(((CamelIMAPXStore *)store)->storage_path, "system", "Junk.cmeta", NULL);
@@ -235,7 +260,11 @@ imapx_get_junk(CamelStore *store, CamelException *ex)
 static CamelFolder *
 imapx_get_trash (CamelStore *store, CamelException *ex)
 {
-	CamelFolder *folder = CAMEL_STORE_CLASS(parent_class)->get_trash(store, ex);
+	CamelFolder *folder;
+	CamelStoreClass *store_class;
+
+	store_class = CAMEL_STORE_CLASS (camel_imapx_store_parent_class);
+	folder = store_class->get_trash (store, ex);
 
 	if (folder) {
 		gchar *state = g_build_filename(((CamelIMAPXStore *)store)->storage_path, "system", "Trash.cmeta", NULL);
@@ -406,8 +435,8 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 		fi->total = ((CamelFolderSummary *)ims)->saved_count;
 
 		if (!folder->summary)
-			camel_object_unref (ims);
-		camel_object_unref (folder);
+			g_object_unref (ims);
+		g_object_unref (folder);
 	}
 }
 
@@ -1173,7 +1202,7 @@ imapx_refresh_free(CamelSession *session, CamelSessionThreadMsg *msg)
 {
 	struct _imapx_refresh_msg *m = (struct _imapx_refresh_msg *)msg;
 
-	camel_object_unref (m->store);
+	g_object_unref (m->store);
 	camel_exception_clear(&m->ex);
 }
 
@@ -1232,7 +1261,7 @@ imapx_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelE
 			istore->last_refresh_time = time (NULL);
 			m = camel_session_thread_msg_new(((CamelService *)store)->session, &imapx_refresh_ops, sizeof(*m));
 			m->store = store;
-			camel_object_ref (store);
+			g_object_ref (store);
 			camel_exception_init(&m->ex);
 			camel_session_thread_queue(((CamelService *)store)->session, &m->msg, 0);
 		}
@@ -1290,13 +1319,16 @@ imapx_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelE
 static gboolean
 imapx_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex)
 {
+	CamelStoreClass *store_class;
 	gboolean res;
 
-	res = CAMEL_STORE_CLASS(parent_class)->can_refresh_folder (store, info, ex) ||
+	store_class = CAMEL_STORE_CLASS (camel_imapx_store_parent_class);
+
+	res = store_class->can_refresh_folder (store, info, ex) ||
 	      (camel_url_get_param (((CamelService *)store)->url, "check_all") != NULL) ||
 	      (camel_url_get_param (((CamelService *)store)->url, "check_lsub") != NULL && (info->flags & CAMEL_FOLDER_SUBSCRIBED) != 0);
 
-	if (!res && !camel_exception_is_set (ex) && CAMEL_IS_IMAP_STORE (store)) {
+	if (!res && !camel_exception_is_set (ex) && CAMEL_IS_IMAPX_STORE (store)) {
 		CamelStoreInfo *si;
 		CamelStoreSummary *sm = CAMEL_STORE_SUMMARY (((CamelIMAPXStore *)(store))->summary);
 
@@ -1331,83 +1363,50 @@ imapx_folder_subscribed (CamelStore *store, const gchar *folder_name)
 }
 
 static void
-camel_imapx_store_class_init(CamelIMAPXStoreClass *klass)
+camel_imapx_store_class_init(CamelIMAPXStoreClass *class)
 {
-	CamelServiceClass *camel_service_class = CAMEL_SERVICE_CLASS(klass);
-	CamelStoreClass *camel_store_class = CAMEL_STORE_CLASS(klass);
+	GObjectClass *object_class;
+	CamelServiceClass *service_class;
+	CamelStoreClass *store_class;
 
-	parent_class = CAMEL_OFFLINE_STORE_CLASS (camel_type_get_global_classfuncs (camel_offline_store_get_type ()));
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = imapx_store_finalize;
 
-	camel_service_class->construct = imapx_construct;
-	camel_service_class->query_auth_types = imapx_query_auth_types;
-	camel_service_class->get_name = imapx_get_name;
-	camel_service_class->connect = imapx_connect;
-	camel_service_class->disconnect = imapx_disconnect;
+	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->construct = imapx_construct;
+	service_class->query_auth_types = imapx_query_auth_types;
+	service_class->get_name = imapx_get_name;
+	service_class->connect = imapx_connect;
+	service_class->disconnect = imapx_disconnect;
 
-	camel_store_class->get_trash = imapx_get_trash;
-	camel_store_class->get_junk = imapx_get_junk;
-	camel_store_class->noop = imapx_noop;
-	camel_store_class->get_folder = imapx_get_folder;
-	camel_store_class->get_inbox = imapx_get_inbox;
-	camel_store_class->hash_folder_name = imapx_hash_folder_name;
-	camel_store_class->compare_folder_name = imapx_compare_folder_name;
-
-	camel_store_class->can_refresh_folder = imapx_can_refresh_folder;
-	camel_store_class->create_folder = imapx_create_folder;
-	camel_store_class->rename_folder = imapx_rename_folder;
-	camel_store_class->delete_folder = imapx_delete_folder;
-	camel_store_class->subscribe_folder = imapx_store_subscribe_folder;
-	camel_store_class->unsubscribe_folder = imapx_store_unsubscribe_folder;
-	camel_store_class->get_folder_info = imapx_get_folder_info;
-	camel_store_class->folder_subscribed = imapx_folder_subscribed;
-	camel_store_class->free_folder_info = camel_store_free_folder_info_full;
-
-	((CamelStoreClass *)klass)->hash_folder_name = imapx_name_hash;
-	((CamelStoreClass *)klass)->compare_folder_name = imapx_name_equal;
+	store_class = CAMEL_STORE_CLASS (class);
+	store_class->get_trash = imapx_get_trash;
+	store_class->get_junk = imapx_get_junk;
+	store_class->noop = imapx_noop;
+	store_class->get_folder = imapx_get_folder;
+	store_class->get_inbox = imapx_get_inbox;
+	store_class->hash_folder_name = imapx_hash_folder_name;
+	store_class->compare_folder_name = imapx_compare_folder_name;
+	store_class->can_refresh_folder = imapx_can_refresh_folder;
+	store_class->create_folder = imapx_create_folder;
+	store_class->rename_folder = imapx_rename_folder;
+	store_class->delete_folder = imapx_delete_folder;
+	store_class->subscribe_folder = imapx_store_subscribe_folder;
+	store_class->unsubscribe_folder = imapx_store_unsubscribe_folder;
+	store_class->get_folder_info = imapx_get_folder_info;
+	store_class->folder_subscribed = imapx_folder_subscribed;
+	store_class->free_folder_info = camel_store_free_folder_info_full;
+	store_class->hash_folder_name = imapx_name_hash;
+	store_class->compare_folder_name = imapx_name_equal;
 }
 
 static void
-camel_imapx_store_init (gpointer object, gpointer klass)
+camel_imapx_store_init (CamelIMAPXStore *istore)
 {
-	CamelStore *store = (CamelStore *) object;
-	CamelIMAPXStore *istore = CAMEL_IMAPX_STORE (object);
+	CamelStore *store = CAMEL_STORE (istore);
 
 	store->flags |= CAMEL_STORE_ASYNC | CAMEL_STORE_SUBSCRIPTIONS;
 	istore->get_finfo_lock = g_mutex_new ();
 	istore->last_refresh_time = time (NULL) - (FINFO_REFRESH_INTERVAL + 10);
 	istore->dir_sep = '/';
-}
-
-static void
-imapx_store_finalize(CamelObject *object)
-{
-	CamelIMAPXStore *imapx_store = CAMEL_IMAPX_STORE (object);
-
-	/* force disconnect so we dont have it run later, after we've cleaned up some stuff */
-	/* SIGH */
-
-	camel_service_disconnect((CamelService *)imapx_store, TRUE, NULL);
-	g_mutex_free (imapx_store->get_finfo_lock);
-
-	if (imapx_store->base_url)
-		g_free (imapx_store->base_url);
-}
-
-CamelType
-camel_imapx_store_get_type (void)
-{
-	static CamelType camel_imapx_store_type = CAMEL_INVALID_TYPE;
-
-	if (!camel_imapx_store_type) {
-		camel_imapx_store_type = camel_type_register(camel_offline_store_get_type (),
-							    "CamelIMAPXStore",
-							    sizeof (CamelIMAPXStore),
-							    sizeof (CamelIMAPXStoreClass),
-							    (CamelObjectClassInitFunc) camel_imapx_store_class_init,
-							    NULL,
-							    (CamelObjectInitFunc) camel_imapx_store_init,
-							     imapx_store_finalize);
-	}
-
-	return camel_imapx_store_type;
 }

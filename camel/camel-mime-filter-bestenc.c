@@ -27,7 +27,9 @@
 
 #include "camel-mime-filter-bestenc.h"
 
-static CamelMimeFilterClass *camel_mime_filter_bestenc_parent;
+#define CAMEL_MIME_FILTER_BESTENC_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_FILTER_BESTENC, CamelMimeFilterBestencPrivate))
 
 struct _CamelMimeFilterBestencPrivate {
 
@@ -52,11 +54,7 @@ struct _CamelMimeFilterBestencPrivate {
 	CamelCharset charset;	/* used to determine the best charset to use */
 };
 
-static void
-mime_filter_bestenc_finalize (CamelMimeFilterBestenc *mime_filter)
-{
-	g_free (mime_filter->priv);
-}
+G_DEFINE_TYPE (CamelMimeFilterBestenc, camel_mime_filter_bestenc, CAMEL_TYPE_MIME_FILTER)
 
 static void
 mime_filter_bestenc_filter (CamelMimeFilter *mime_filter,
@@ -70,7 +68,7 @@ mime_filter_bestenc_filter (CamelMimeFilter *mime_filter,
 	CamelMimeFilterBestencPrivate *priv;
 	register guchar *p, *pend;
 
-	priv = CAMEL_MIME_FILTER_BESTENC (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_BESTENC_GET_PRIVATE (mime_filter);
 
 	if (len == 0)
 		goto donothing;
@@ -171,7 +169,7 @@ mime_filter_bestenc_complete (CamelMimeFilter *mime_filter,
 {
 	CamelMimeFilterBestencPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_BESTENC (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_BESTENC_GET_PRIVATE (mime_filter);
 
 	mime_filter_bestenc_filter (
 		mime_filter, in, len, prespace, out, outlen, outprespace);
@@ -186,7 +184,7 @@ mime_filter_bestenc_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterBestencPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_BESTENC (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_BESTENC_GET_PRIVATE (mime_filter);
 
 	priv->count0 = 0;
 	priv->count8 = 0;
@@ -206,7 +204,7 @@ camel_mime_filter_bestenc_class_init (CamelMimeFilterBestencClass *class)
 {
 	CamelMimeFilterClass *mime_filter_class;
 
-	camel_mime_filter_bestenc_parent = (CamelMimeFilterClass *)(camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelMimeFilterBestencPrivate));
 
 	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
 	mime_filter_class->filter = mime_filter_bestenc_filter;
@@ -217,27 +215,9 @@ camel_mime_filter_bestenc_class_init (CamelMimeFilterBestencClass *class)
 static void
 camel_mime_filter_bestenc_init (CamelMimeFilterBestenc *filter)
 {
-	filter->priv = g_new0 (CamelMimeFilterBestencPrivate, 1);
+	filter->priv = CAMEL_MIME_FILTER_BESTENC_GET_PRIVATE (filter);
 
 	mime_filter_bestenc_reset (CAMEL_MIME_FILTER (filter));
-}
-
-CamelType
-camel_mime_filter_bestenc_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_mime_filter_get_type (), "CamelMimeFilterBestenc",
-					    sizeof (CamelMimeFilterBestenc),
-					    sizeof (CamelMimeFilterBestencClass),
-					    (CamelObjectClassInitFunc) camel_mime_filter_bestenc_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_filter_bestenc_init,
-					    (CamelObjectFinalizeFunc) mime_filter_bestenc_finalize);
-	}
-
-	return type;
 }
 
 /**
@@ -253,7 +233,7 @@ camel_mime_filter_bestenc_new (guint flags)
 {
 	CamelMimeFilter *new;
 
-	new = (CamelMimeFilter *)camel_object_new(camel_mime_filter_bestenc_get_type());
+	new = g_object_new (CAMEL_TYPE_MIME_FILTER_BESTENC, NULL);
 	CAMEL_MIME_FILTER_BESTENC (new)->priv->flags = flags;
 
 	return new;
@@ -277,7 +257,7 @@ camel_mime_filter_bestenc_get_best_encoding (CamelMimeFilterBestenc *filter,
 	CamelTransferEncoding bestenc;
 	gint istext;
 
-	priv = CAMEL_MIME_FILTER_BESTENC (filter)->priv;
+	priv = CAMEL_MIME_FILTER_BESTENC_GET_PRIVATE (filter);
 
 	istext = (required & CAMEL_BESTENC_TEXT) ? 1 : 0;
 	required = required & ~CAMEL_BESTENC_TEXT;

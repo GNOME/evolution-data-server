@@ -30,9 +30,24 @@
 #include <camel/camel-operation.h>
 #include <camel/camel-mime-filter.h>
 
-#define CAMEL_MIME_FILTER_PROGRESS(obj)         CAMEL_CHECK_CAST (obj, camel_mime_filter_progress_get_type (), CamelMimeFilterProgress)
-#define CAMEL_MIME_FILTER_PROGRESS_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_mime_filter_progress_get_type (), CamelMimeFilterProgressClass)
-#define CAMEL_IS_MIME_FILTER_PROGRESS(obj)      CAMEL_CHECK_TYPE (obj, camel_mime_filter_progress_get_type ())
+/* Standard GObject macros */
+#define CAMEL_TYPE_MIME_FILTER_PROGRESS \
+	(camel_mime_filter_progress_get_type ())
+#define CAMEL_MIME_FILTER_PROGRESS(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_MIME_FILTER_PROGRESS, CamelMimeFilterProgress))
+#define CAMEL_MIME_FILTER_PROGRESS_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_MIME_FILTER_PROGRESS, CamelMimeFilterProgressClass))
+#define CAMEL_IS_MIME_FILTER_PROGRESS(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_MIME_FILTER_PROGRESS))
+#define CAMEL_IS_MIME_FILTER_PROGRESS_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_MIME_FILTER_PROGRESS))
+#define CAMEL_MIME_FILTER_PROGRESS_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_MIME_FILTER_PROGRESS, CamelMimeFilterProgressClass))
 
 G_BEGIN_DECLS
 
@@ -54,7 +69,7 @@ struct _CamelMimeFilterProgressClass {
 	CamelMimeFilterClass parent_class;
 };
 
-CamelType	camel_mime_filter_progress_get_type (void);
+GType		camel_mime_filter_progress_get_type (void);
 CamelMimeFilter *
 		camel_mime_filter_progress_new	(CamelOperation *operation,
 						 gsize total);

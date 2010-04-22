@@ -65,8 +65,10 @@ static CamelFolder *get_trash  (CamelStore *store, CamelException *ex);
 
 static gboolean pop3_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex);
 
+G_DEFINE_TYPE (CamelPOP3Store, camel_pop3_store, CAMEL_TYPE_STORE)
+
 static void
-pop3_store_finalize (CamelObject *object)
+pop3_store_finalize (GObject *object)
 {
 	CamelPOP3Store *pop3_store = CAMEL_POP3_STORE (object);
 
@@ -76,18 +78,23 @@ pop3_store_finalize (CamelObject *object)
 	camel_service_disconnect((CamelService *)pop3_store, TRUE, NULL);
 
 	if (pop3_store->engine)
-		camel_object_unref (pop3_store->engine);
+		g_object_unref (pop3_store->engine);
 	if (pop3_store->cache)
-		camel_object_unref (pop3_store->cache);
+		g_object_unref (pop3_store->cache);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_pop3_store_parent_class)->finalize (object);
 }
 
 static void
 camel_pop3_store_class_init (CamelPOP3StoreClass *class)
 {
+	GObjectClass *object_class;
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 
-	camel_pop3_store_parent_class = CAMEL_STORE_CLASS (camel_type_get_global_classfuncs (camel_store_get_type ()));
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = pop3_store_finalize;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->query_auth_types = query_auth_types;
@@ -103,25 +110,6 @@ camel_pop3_store_class_init (CamelPOP3StoreClass *class)
 static void
 camel_pop3_store_init (CamelPOP3Store *pop3_store)
 {
-}
-
-CamelType
-camel_pop3_store_get_type (void)
-{
-	static CamelType camel_pop3_store_type = CAMEL_INVALID_TYPE;
-
-	if (!camel_pop3_store_type) {
-		camel_pop3_store_type = camel_type_register (CAMEL_STORE_TYPE,
-							     "CamelPOP3Store",
-							     sizeof (CamelPOP3Store),
-							     sizeof (CamelPOP3StoreClass),
-							     (CamelObjectClassInitFunc) camel_pop3_store_class_init,
-							     NULL,
-							     (CamelObjectInitFunc) camel_pop3_store_init,
-							     pop3_store_finalize);
-	}
-
-	return camel_pop3_store_type;
 }
 
 enum {
@@ -198,14 +186,14 @@ connect_to_server (CamelService *service,
 				_("Could not connect to %s: %s"),
 				service->url->host, g_strerror (errno));
 
-		camel_object_unref (tcp_stream);
+		g_object_unref (tcp_stream);
 
 		return FALSE;
 	}
 
 	/* parent class connect initialization */
 	if (CAMEL_SERVICE_CLASS (camel_pop3_store_parent_class)->connect (service, ex) == FALSE) {
-		camel_object_unref (tcp_stream);
+		g_object_unref (tcp_stream);
 		return FALSE;
 	}
 
@@ -220,12 +208,12 @@ connect_to_server (CamelService *service,
 			ex, CAMEL_EXCEPTION_SYSTEM,
 			_("Failed to read a valid greeting from POP server %s"),
 			service->url->host);
-		camel_object_unref (tcp_stream);
+		g_object_unref (tcp_stream);
 		return FALSE;
 	}
 
 	if (ssl_mode != MODE_TLS) {
-		camel_object_unref (tcp_stream);
+		g_object_unref (tcp_stream);
 		return TRUE;
 	}
 
@@ -278,7 +266,7 @@ connect_to_server (CamelService *service,
 	goto stls_exception;
 #endif /* HAVE_SSL */
 
-	camel_object_unref (tcp_stream);
+	g_object_unref (tcp_stream);
 
 	/* rfc2595, section 4 states that after a successful STLS
 	   command, the client MUST discard prior CAPA responses */
@@ -295,8 +283,8 @@ connect_to_server (CamelService *service,
 		camel_pop3_engine_command_free (store->engine, pc);
 	}
 
-	camel_object_unref (CAMEL_OBJECT (store->engine));
-	camel_object_unref (CAMEL_OBJECT (tcp_stream));
+	g_object_unref (CAMEL_OBJECT (store->engine));
+	g_object_unref (CAMEL_OBJECT (tcp_stream));
 	store->engine = NULL;
 
 	return FALSE;
@@ -480,7 +468,7 @@ try_sasl (CamelPOP3Store *store,
 			goto ioerror;
 
 	}
-	camel_object_unref (sasl);
+	g_object_unref (sasl);
 	return 0;
 
  ioerror:
@@ -494,7 +482,7 @@ try_sasl (CamelPOP3Store *store,
 			CAMEL_SERVICE (store)->url->host, g_strerror (errno));
 	}
  done:
-	camel_object_unref (sasl);
+	g_object_unref (sasl);
 	return -1;
 }
 
@@ -727,7 +715,7 @@ pop3_disconnect (CamelService *service,
 	if (!service_class->disconnect (service, clean, ex))
 		return FALSE;
 
-	camel_object_unref (store->engine);
+	g_object_unref (store->engine);
 	store->engine = NULL;
 
 	return TRUE;

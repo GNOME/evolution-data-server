@@ -130,7 +130,7 @@ run_search(CamelFolder *folder, gint m)
 
 static const gchar *local_drivers[] = { "local" };
 
-static gchar *stores[] = {
+static const gchar *stores[] = {
 	"mbox:///tmp/camel-test/mbox",
 	"mh:///tmp/camel-test/mh",
 	"maildir:///tmp/camel-test/maildir"
@@ -162,7 +162,7 @@ gint main(gint argc, gchar **argv)
 
 	/* we iterate over all stores we want to test, with indexing or indexing turned on or off */
 	for (i = 0; i < G_N_ELEMENTS (stores); i++) {
-		gchar *name = stores[i];
+		const gchar *name = stores[i];
 		for (indexed = 0;indexed<2;indexed++) {
 			gchar *what = g_strdup_printf("folder search: %s (%sindexed)", name, indexed?"":"non-");
 			gint flags;

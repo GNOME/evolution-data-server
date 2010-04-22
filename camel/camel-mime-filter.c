@@ -29,6 +29,10 @@
 #include <mcheck.h>
 #endif
 
+#define CAMEL_MIME_FILTER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_FILTER, CamelMimeFilterPrivate))
+
 struct _CamelMimeFilterPrivate {
 	gchar *inbuf;
 	gsize inlen;
@@ -37,10 +41,10 @@ struct _CamelMimeFilterPrivate {
 #define PRE_HEAD (64)
 #define BACK_HEAD (64)
 
-static CamelObjectClass *camel_mime_filter_parent;
+G_DEFINE_ABSTRACT_TYPE (CamelMimeFilter, camel_mime_filter, CAMEL_TYPE_OBJECT)
 
 static void
-mime_filter_finalize (CamelObject *object)
+mime_filter_finalize (GObject *object)
 {
 	CamelMimeFilter *mime_filter;
 
@@ -49,7 +53,9 @@ mime_filter_finalize (CamelObject *object)
 	g_free (mime_filter->outreal);
 	g_free (mime_filter->backbuf);
 	g_free (mime_filter->priv->inbuf);
-	g_free (mime_filter->priv);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_mime_filter_parent_class)->finalize (object);
 }
 
 static void
@@ -67,7 +73,12 @@ mime_filter_complete (CamelMimeFilter *mime_filter,
 static void
 camel_mime_filter_class_init (CamelMimeFilterClass *class)
 {
-	camel_mime_filter_parent = camel_type_get_global_classfuncs (camel_object_get_type ());
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (CamelMimeFilterPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = mime_filter_finalize;
 
 	class->complete = mime_filter_complete;
 }
@@ -75,7 +86,7 @@ camel_mime_filter_class_init (CamelMimeFilterClass *class)
 static void
 camel_mime_filter_init (CamelMimeFilter *mime_filter)
 {
-	mime_filter->priv = g_malloc0(sizeof(*mime_filter->priv));
+	mime_filter->priv = CAMEL_MIME_FILTER_GET_PRIVATE (mime_filter);
 
 	mime_filter->outreal = NULL;
 	mime_filter->outbuf = NULL;
@@ -84,24 +95,6 @@ camel_mime_filter_init (CamelMimeFilter *mime_filter)
 	mime_filter->backbuf = NULL;
 	mime_filter->backsize = 0;
 	mime_filter->backlen = 0;
-}
-
-CamelType
-camel_mime_filter_get_type (void)
-{
-	static CamelType camel_mime_filter_type = CAMEL_INVALID_TYPE;
-
-	if (camel_mime_filter_type == CAMEL_INVALID_TYPE) {
-		camel_mime_filter_type = camel_type_register (CAMEL_TYPE_OBJECT, "CamelMimeFilter",
-							      sizeof (CamelMimeFilter),
-							      sizeof (CamelMimeFilterClass),
-							      (CamelObjectClassInitFunc) camel_mime_filter_class_init,
-							      NULL,
-							      (CamelObjectInitFunc) camel_mime_filter_init,
-							      (CamelObjectFinalizeFunc) mime_filter_finalize);
-	}
-
-	return camel_mime_filter_type;
 }
 
 /**
@@ -114,7 +107,7 @@ camel_mime_filter_get_type (void)
 CamelMimeFilter *
 camel_mime_filter_new (void)
 {
-	return CAMEL_MIME_FILTER ( camel_object_new (camel_mime_filter_get_type ()));
+	return g_object_new (CAMEL_TYPE_MIME_FILTER, NULL);
 }
 
 #ifdef MALLOC_CHECK
@@ -158,7 +151,7 @@ static void filter_run(CamelMimeFilter *f,
 	*/
 	if (prespace < f->backlen) {
 		gint newlen = len+prespace+f->backlen;
-		p = f->priv;
+		p = CAMEL_MIME_FILTER_GET_PRIVATE(f);
 		if (p->inlen < newlen) {
 			/* NOTE: g_realloc copies data, we dont need that (slower) */
 			g_free(p->inbuf);

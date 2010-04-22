@@ -25,11 +25,6 @@ CamelDiscoDiary
 
 </para>
 
-@parent: 
-@store: 
-@file: 
-@folders: 
-@uidmap: 
 
 <!-- ##### ENUM CamelDiscoDiaryAction ##### -->
 <para>

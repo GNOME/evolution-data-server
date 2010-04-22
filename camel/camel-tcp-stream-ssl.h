@@ -32,10 +32,24 @@
 #include <camel/camel-tcp-stream.h>
 #include <prio.h>
 
-#define CAMEL_TCP_STREAM_SSL_TYPE     (camel_tcp_stream_ssl_get_type ())
-#define CAMEL_TCP_STREAM_SSL(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_TCP_STREAM_SSL_TYPE, CamelTcpStreamSSL))
-#define CAMEL_TCP_STREAM_SSL_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_TCP_STREAM_SSL_TYPE, CamelTcpStreamSSLClass))
-#define CAMEL_IS_TCP_STREAM_SSL(o)    (CAMEL_CHECK_TYPE((o), CAMEL_TCP_STREAM_SSL_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_TCP_STREAM_SSL \
+	(camel_tcp_stream_ssl_get_type ())
+#define CAMEL_TCP_STREAM_SSL(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_TCP_STREAM_SSL, CamelTcpStreamSSL))
+#define CAMEL_TCP_STREAM_SSL_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_TCP_STREAM_SSL, CamelTcpStreamSSLClass))
+#define CAMEL_IS_TCP_STREAM_SSL(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_TCP_STREAM_SSL))
+#define CAMEL_IS_TCP_STREAM_SSL_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_TCP_STREAM_SSL))
+#define CAMEL_TCP_STREAM_SSL_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_TCP_STREAM_SSL, CamelTcpStreamSSLClass))
 
 #define CAMEL_TCP_STREAM_SSL_ENABLE_SSL2   (1 << 0)
 #define CAMEL_TCP_STREAM_SSL_ENABLE_SSL3   (1 << 1)
@@ -58,7 +72,7 @@ struct _CamelTcpStreamSSLClass {
 	CamelTcpStreamClass parent_class;
 };
 
-CamelType camel_tcp_stream_ssl_get_type (void);
+GType camel_tcp_stream_ssl_get_type (void);
 
 /* public methods */
 CamelStream *camel_tcp_stream_ssl_new (struct _CamelSession *session, const gchar *expected_host, guint32 flags);

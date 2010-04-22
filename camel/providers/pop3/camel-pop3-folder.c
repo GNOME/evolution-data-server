@@ -38,8 +38,6 @@
 
 #define d(x)
 
-static CamelFolderClass *parent_class;
-
 static gboolean pop3_refresh_info (CamelFolder *folder, CamelException *ex);
 static gboolean pop3_sync (CamelFolder *folder, gboolean expunge, CamelException *ex);
 static gint pop3_get_message_count (CamelFolder *folder);
@@ -48,8 +46,10 @@ static CamelMimeMessage *pop3_get_message (CamelFolder *folder, const gchar *uid
 static gboolean pop3_set_message_flags (CamelFolder *folder, const gchar *uid, guint32 flags, guint32 set);
 static gchar * pop3_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex);
 
+G_DEFINE_TYPE (CamelPOP3Folder, camel_pop3_folder, CAMEL_TYPE_FOLDER)
+
 static void
-pop3_folder_finalize (CamelObject *object)
+pop3_folder_finalize (GObject *object)
 {
 	CamelPOP3Folder *pop3_folder = CAMEL_POP3_FOLDER (object);
 	CamelPOP3FolderInfo **fi = (CamelPOP3FolderInfo **)pop3_folder->uids->pdata;
@@ -71,14 +71,19 @@ pop3_folder_finalize (CamelObject *object)
 		g_ptr_array_free(pop3_folder->uids, TRUE);
 		g_hash_table_destroy(pop3_folder->uids_uid);
 	}
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_pop3_folder_parent_class)->finalize (object);
 }
 
 static void
 camel_pop3_folder_class_init (CamelPOP3FolderClass *class)
 {
+	GObjectClass *object_class;
 	CamelFolderClass *folder_class;
 
-	parent_class = CAMEL_FOLDER_CLASS(camel_folder_get_type());
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = pop3_folder_finalize;
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
 	folder_class->refresh_info = pop3_refresh_info;
@@ -91,22 +96,9 @@ camel_pop3_folder_class_init (CamelPOP3FolderClass *class)
 	folder_class->set_message_flags = pop3_set_message_flags;
 }
 
-CamelType
-camel_pop3_folder_get_type (void)
+static void
+camel_pop3_folder_init (CamelPOP3Folder *pop3_folder)
 {
-	static CamelType camel_pop3_folder_type = CAMEL_INVALID_TYPE;
-
-	if (!camel_pop3_folder_type) {
-		camel_pop3_folder_type = camel_type_register (CAMEL_FOLDER_TYPE, "CamelPOP3Folder",
-							      sizeof (CamelPOP3Folder),
-							      sizeof (CamelPOP3FolderClass),
-							      (CamelObjectClassInitFunc) camel_pop3_folder_class_init,
-							      NULL,
-							      NULL,
-							      (CamelObjectFinalizeFunc) pop3_folder_finalize);
-	}
-
-	return camel_pop3_folder_type;
 }
 
 CamelFolder *
@@ -116,12 +108,12 @@ camel_pop3_folder_new (CamelStore *parent, CamelException *ex)
 
 	d(printf("opening pop3 INBOX folder\n"));
 
-	folder = CAMEL_FOLDER (camel_object_new (CAMEL_POP3_FOLDER_TYPE));
+	folder = g_object_new (CAMEL_TYPE_POP3_FOLDER, NULL);
 	camel_folder_construct (folder, parent, "inbox", "inbox");
 
 	/* mt-ok, since we dont have the folder-lock for new() */
 	if (!camel_folder_refresh_info (folder, ex)) { /* mt-ok */
-		camel_object_unref (folder);
+		g_object_unref (folder);
 		folder = NULL;
 	}
 
@@ -165,7 +157,7 @@ cmd_builduid(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 	default:
 		break;
 	}
-	camel_object_unref (mp);
+	g_object_unref (mp);
 	g_checksum_get_digest (checksum, digest, &length);
 	g_checksum_free (checksum);
 
@@ -385,7 +377,7 @@ pop3_get_message_time_from_cache (CamelFolder *folder, const gchar *uid, time_t 
 		message = camel_mime_message_new ();
 		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *)message, stream) == -1) {
 			g_warning (_("Cannot get message %s: %s"), uid, g_strerror (errno));
-			camel_object_unref (message);
+			g_object_unref (message);
 			message = NULL;
 		}
 
@@ -393,12 +385,12 @@ pop3_get_message_time_from_cache (CamelFolder *folder, const gchar *uid, time_t 
 			res = TRUE;
 			*message_time = message->date + message->date_offset;
 
-			camel_object_unref (message);
+			g_object_unref (message);
 		}
 	}
 
 	if (stream) {
-		camel_object_unref (stream);
+		g_object_unref (stream);
 	}
 	return res;
 }
@@ -429,7 +421,7 @@ camel_pop3_delete_old (CamelFolder *folder,
 			message = pop3_get_message (folder, fi->uid, ex);
 			if (message) {
 				message_time = message->date + message->date_offset;
-				camel_object_unref (message);
+				g_object_unref (message);
 			}
 		}
 
@@ -523,7 +515,7 @@ done:
 		fi->err = 0;
 	}
 
-	camel_object_unref (fi->stream);
+	g_object_unref (fi->stream);
 	fi->stream = NULL;
 }
 
@@ -611,7 +603,7 @@ pop3_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 			stream = camel_stream_mem_new();
 
 		/* ref it, the cache storage routine unref's when done */
-		fi->stream = camel_object_ref (stream);
+		fi->stream = g_object_ref (stream);
 		fi->err = EIO;
 		pcr = camel_pop3_engine_command_new(pop3_store->engine, CAMEL_POP3_COMMAND_MULTI, cmd_tocache, fi, "RETR %u\r\n", fi->id);
 
@@ -680,11 +672,11 @@ pop3_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 				ex, CAMEL_EXCEPTION_SYSTEM,
 				_("Cannot get message %s: %s"),
 				uid, g_strerror (errno));
-		camel_object_unref (message);
+		g_object_unref (message);
 		message = NULL;
 	}
 done:
-	camel_object_unref (stream);
+	g_object_unref (stream);
 fail:
 	camel_operation_end(NULL);
 

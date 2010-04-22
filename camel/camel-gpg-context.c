@@ -73,14 +73,20 @@
 static gint logid;
 #endif
 
-#define CAMEL_CIPHER_CONTEXT_GET_CLASS(obj) \
-	((CamelCipherContextClass *) CAMEL_OBJECT_GET_CLASS (obj))
-
-static CamelCipherContextClass *parent_class = NULL;
+#define CAMEL_GPG_CONTEXT_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_GPG_CONTEXT, CamelGpgContextPrivate))
 
 struct _CamelGpgContextPrivate {
 	gboolean always_trust;
 };
+
+enum {
+	PROP_0,
+	PROP_ALWAYS_TRUST
+};
+
+G_DEFINE_TYPE (CamelGpgContext, camel_gpg_context, CAMEL_TYPE_CIPHER_CONTEXT)
 
 static const gchar *
 gpg_hash_to_id (CamelCipherContext *context, CamelCipherHash hash)
@@ -217,7 +223,7 @@ gpg_ctx_new (CamelCipherContext *context)
 
 	gpg = g_new (struct _GpgCtx, 1);
 	gpg->mode = GPG_CTX_MODE_SIGN;
-	gpg->session = camel_object_ref (session);
+	gpg->session = g_object_ref (session);
 	gpg->userid_hint = g_hash_table_new (g_str_hash, g_str_equal);
 	gpg->complete = FALSE;
 	gpg->seen_eof1 = TRUE;
@@ -278,8 +284,8 @@ gpg_ctx_new (CamelCipherContext *context)
 			fstream = camel_stream_filter_new (stream);
 			camel_stream_filter_add (
 				CAMEL_STREAM_FILTER (fstream), filter);
-			camel_object_unref (filter);
-			camel_object_unref (stream);
+			g_object_unref (filter);
+			g_object_unref (stream);
 
 			stream = (CamelStream *) fstream;
 		}
@@ -346,18 +352,18 @@ gpg_ctx_set_armor (struct _GpgCtx *gpg, gboolean armor)
 static void
 gpg_ctx_set_istream (struct _GpgCtx *gpg, CamelStream *istream)
 {
-	camel_object_ref (istream);
+	g_object_ref (istream);
 	if (gpg->istream)
-		camel_object_unref (gpg->istream);
+		g_object_unref (gpg->istream);
 	gpg->istream = istream;
 }
 
 static void
 gpg_ctx_set_ostream (struct _GpgCtx *gpg, CamelStream *ostream)
 {
-	camel_object_ref (ostream);
+	g_object_ref (ostream);
 	if (gpg->ostream)
-		camel_object_unref (gpg->ostream);
+		g_object_unref (gpg->ostream);
 	gpg->ostream = ostream;
 	gpg->seen_eof1 = FALSE;
 }
@@ -393,7 +399,7 @@ gpg_ctx_free (struct _GpgCtx *gpg)
 		return;
 
 	if (gpg->session)
-		camel_object_unref (gpg->session);
+		g_object_unref (gpg->session);
 
 	g_hash_table_foreach (gpg->userid_hint, userid_hint_free, NULL);
 	g_hash_table_destroy (gpg->userid_hint);
@@ -430,12 +436,12 @@ gpg_ctx_free (struct _GpgCtx *gpg)
 	}
 
 	if (gpg->istream)
-		camel_object_unref (gpg->istream);
+		g_object_unref (gpg->istream);
 
 	if (gpg->ostream)
-		camel_object_unref (gpg->ostream);
+		g_object_unref (gpg->ostream);
 
-	camel_object_unref (gpg->diagnostics);
+	g_object_unref (gpg->diagnostics);
 
 	if (gpg->signers)
 		g_string_free (gpg->signers, TRUE);
@@ -726,6 +732,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 
 	if (strncmp ((const gchar *) status, "[GNUPG:] ", 9) != 0) {
 		gchar *message;
+
 		message = g_locale_to_utf8 (
 			(const gchar *) status, -1, NULL, NULL, NULL);
 		camel_exception_setv (
@@ -1372,7 +1379,7 @@ gpg_sign (CamelCipherContext *context,
 			printf("Writing gpg signing data to '%s'\n", name);
 			camel_stream_write_to_stream(istream, out);
 			camel_stream_reset(istream);
-			camel_object_unref (out);
+			g_object_unref (out);
 		}
 		g_free(name);
 		camel_debug_end();
@@ -1427,7 +1434,7 @@ gpg_sign (CamelCipherContext *context,
 	camel_content_type_unref(ct);
 
 	camel_medium_set_content ((CamelMedium *)sigpart, dw);
-	camel_object_unref (dw);
+	g_object_unref (dw);
 
 	camel_mime_part_set_description(sigpart, "This is a digitally signed message part");
 
@@ -1442,11 +1449,11 @@ gpg_sign (CamelCipherContext *context,
 	mps->signature = sigpart;
 	mps->contentraw = istream;
 	camel_stream_reset(istream);
-	camel_object_ref (istream);
+	g_object_ref (istream);
 
 	camel_medium_set_content ((CamelMedium *)opart, (CamelDataWrapper *)mps);
 fail:
-	camel_object_unref (ostream);
+	g_object_unref (ostream);
 
 	if (gpg)
 		gpg_ctx_free (gpg);
@@ -1478,7 +1485,7 @@ swrite (CamelMimePart *sigpart)
 			ret = camel_stream_close (ostream);
 	}
 
-	camel_object_unref (ostream);
+	g_object_unref (ostream);
 
 	if (ret == -1) {
 		g_unlink (template);
@@ -1513,7 +1520,7 @@ add_signers (CamelCipherValidity *validity, const GString *signers)
 		camel_cipher_validity_add_certinfo (validity, CAMEL_CIPHER_VALIDITY_SIGN, name, email);
 	}
 
-	camel_object_unref (address);
+	g_object_unref (address);
 }
 
 static CamelCipherValidity *
@@ -1567,7 +1574,7 @@ gpg_verify (CamelCipherContext *context,
 				ex, CAMEL_EXCEPTION_SYSTEM,
 				_("Cannot verify message signature: "
 				  "Incorrect message format"));
-			camel_object_unref (istream);
+			g_object_unref (istream);
 			return NULL;
 		}
 	} else if (camel_content_type_is(ct, "application", "x-inlinepgp-signed")) {
@@ -1599,7 +1606,7 @@ gpg_verify (CamelCipherContext *context,
 			printf("Writing gpg verify data to '%s'\n", name);
 			camel_stream_write_to_stream(istream, out);
 			camel_stream_reset(istream);
-			camel_object_unref (out);
+			g_object_unref (out);
 		}
 
 		g_free(name);
@@ -1610,7 +1617,7 @@ gpg_verify (CamelCipherContext *context,
 			if (out) {
 				printf("Writing gpg verify signature to '%s'\n", name);
 				camel_data_wrapper_write_to_stream((CamelDataWrapper *)sigpart, out);
-				camel_object_unref (out);
+				g_object_unref (out);
 			}
 			g_free(name);
 		}
@@ -1637,11 +1644,11 @@ gpg_verify (CamelCipherContext *context,
 	filter = camel_stream_filter_new (canon_stream);
 	canon = camel_mime_filter_canon_new (CAMEL_MIME_FILTER_CANON_CRLF | CAMEL_MIME_FILTER_CANON_STRIP);
 	camel_stream_filter_add (CAMEL_STREAM_FILTER (filter), canon);
-	camel_object_unref (canon);
+	g_object_unref (canon);
 
 	camel_stream_write_to_stream (istream, filter);
 
-	camel_object_unref (filter);
+	g_object_unref (filter);
 	camel_stream_reset (istream);
 
 	camel_stream_reset (canon_stream);
@@ -1702,8 +1709,8 @@ gpg_verify (CamelCipherContext *context,
 		g_unlink (sigfile);
 		g_free (sigfile);
 	}
-	camel_object_unref (istream);
-	camel_object_unref (canon_stream);
+	g_object_unref (istream);
+	g_object_unref (canon_stream);
 
 	return validity;
 
@@ -1713,7 +1720,7 @@ gpg_verify (CamelCipherContext *context,
 		gpg_ctx_free (gpg);
 
 	if (istream)
-		camel_object_unref (istream);
+		g_object_unref (istream);
 
 	if (sigfile) {
 		g_unlink (sigfile);
@@ -1802,7 +1809,7 @@ gpg_encrypt (CamelCipherContext *context,
 	camel_content_type_unref(ct);
 
 	camel_medium_set_content ((CamelMedium *)encpart, dw);
-	camel_object_unref (dw);
+	g_object_unref (dw);
 
 	camel_mime_part_set_description(encpart, _("This is a digitally encrypted message part"));
 
@@ -1814,9 +1821,9 @@ gpg_encrypt (CamelCipherContext *context,
 	dw = camel_data_wrapper_new();
 	camel_data_wrapper_set_mime_type(dw, class->encrypt_protocol);
 	camel_data_wrapper_construct_from_stream (dw, vstream);
-	camel_object_unref (vstream);
+	g_object_unref (vstream);
 	camel_medium_set_content ((CamelMedium *)verpart, dw);
-	camel_object_unref (dw);
+	g_object_unref (dw);
 
 	mpe = camel_multipart_encrypted_new();
 	ct = camel_content_type_new("multipart", "encrypted");
@@ -1825,19 +1832,19 @@ gpg_encrypt (CamelCipherContext *context,
 	camel_content_type_unref(ct);
 	camel_multipart_set_boundary((CamelMultipart *)mpe, NULL);
 
-	mpe->decrypted = camel_object_ref (ipart);
+	mpe->decrypted = g_object_ref (ipart);
 
 	camel_multipart_add_part((CamelMultipart *)mpe, verpart);
-	camel_object_unref (verpart);
+	g_object_unref (verpart);
 	camel_multipart_add_part((CamelMultipart *)mpe, encpart);
-	camel_object_unref (encpart);
+	g_object_unref (encpart);
 
 	camel_medium_set_content ((CamelMedium *)opart, (CamelDataWrapper *)mpe);
 fail:
 	gpg_ctx_free(gpg);
 fail1:
-	camel_object_unref (istream);
-	camel_object_unref (ostream);
+	g_object_unref (istream);
+	g_object_unref (ostream);
 
 	return res;
 }
@@ -1897,7 +1904,7 @@ gpg_decrypt (CamelCipherContext *context,
 
 	istream = camel_stream_mem_new();
 	camel_data_wrapper_decode_to_stream (content, istream);
-	camel_stream_reset(istream);
+	camel_stream_reset (istream);
 
 	ostream = camel_stream_mem_new();
 	camel_stream_mem_set_secure((CamelStreamMem *)ostream);
@@ -1932,7 +1939,7 @@ gpg_decrypt (CamelCipherContext *context,
 		goto fail;
 	}
 
-	camel_stream_reset(ostream);
+	camel_stream_reset (ostream);
 	if (camel_content_type_is(ct, "multipart", "encrypted")) {
 		CamelDataWrapper *dw;
 		CamelStream *null = camel_stream_null_new ();
@@ -1949,7 +1956,7 @@ gpg_decrypt (CamelCipherContext *context,
 			rv = camel_data_wrapper_construct_from_stream (dw, ostream);
 		}
 
-		camel_object_unref (null);
+		g_object_unref (null);
 	} else {
 		/* Inline signed - raw data (may not be a mime part) */
 		CamelDataWrapper *dw;
@@ -1957,7 +1964,7 @@ gpg_decrypt (CamelCipherContext *context,
 		rv = camel_data_wrapper_construct_from_stream (dw, ostream);
 		camel_data_wrapper_set_mime_type(dw, "application/octet-stream");
 		camel_medium_set_content ((CamelMedium *)opart, dw);
-		camel_object_unref (dw);
+		g_object_unref (dw);
 		/* Set mime/type of this new part to application/octet-stream to force type snooping */
 		camel_mime_part_set_content_type(opart, "application/octet-stream");
 	}
@@ -1990,8 +1997,8 @@ gpg_decrypt (CamelCipherContext *context,
 	}
 
  fail:
-	camel_object_unref (ostream);
-	camel_object_unref (istream);
+	g_object_unref (ostream);
+	g_object_unref (istream);
 	gpg_ctx_free (gpg);
 
 	return valid;
@@ -2097,17 +2104,51 @@ fail:
 /* ********************************************************************** */
 
 static void
-gpg_context_finalize (CamelObject *object)
+gpg_context_set_property (GObject *object,
+                          guint property_id,
+                          const GValue *value,
+                          GParamSpec *pspec)
 {
-	g_free (CAMEL_GPG_CONTEXT (object)->priv);
+	switch (property_id) {
+		case PROP_ALWAYS_TRUST:
+			camel_gpg_context_set_always_trust (
+				CAMEL_GPG_CONTEXT (object),
+				g_value_get_boolean (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+gpg_context_get_property (GObject *object,
+                          guint property_id,
+                          GValue *value,
+                          GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_ALWAYS_TRUST:
+			g_value_set_boolean (
+				value,
+				camel_gpg_context_get_always_trust (
+				CAMEL_GPG_CONTEXT (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static void
 camel_gpg_context_class_init (CamelGpgContextClass *class)
 {
+	GObjectClass *object_class;
 	CamelCipherContextClass *cipher_context_class;
 
-	parent_class = CAMEL_CIPHER_CONTEXT_CLASS (camel_type_get_global_classfuncs (camel_cipher_context_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelGpgContextClass));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = gpg_context_set_property;
+	object_class->get_property = gpg_context_get_property;
 
 	cipher_context_class = CAMEL_CIPHER_CONTEXT_CLASS (class);
 	cipher_context_class->sign_protocol = "application/pgp-signature";
@@ -2121,31 +2162,23 @@ camel_gpg_context_class_init (CamelGpgContextClass *class)
 	cipher_context_class->decrypt = gpg_decrypt;
 	cipher_context_class->import_keys = gpg_import_keys;
 	cipher_context_class->export_keys = gpg_export_keys;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_ALWAYS_TRUST,
+		g_param_spec_boolean (
+			"always-trust",
+			"Always Trust",
+			NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT));
 }
 
 static void
 camel_gpg_context_init (CamelGpgContext *context)
 {
-	context->priv = g_new0 (CamelGpgContextPrivate, 1);
-}
-
-CamelType
-camel_gpg_context_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_cipher_context_get_type (),
-					    "CamelGpgContext",
-					    sizeof (CamelGpgContext),
-					    sizeof (CamelGpgContextClass),
-					    (CamelObjectClassInitFunc) camel_gpg_context_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_gpg_context_init,
-					    (CamelObjectFinalizeFunc) gpg_context_finalize);
-	}
-
-	return type;
+	context->priv = CAMEL_GPG_CONTEXT_GET_PRIVATE (context);
 }
 
 /**
@@ -2159,17 +2192,11 @@ camel_gpg_context_get_type (void)
 CamelCipherContext *
 camel_gpg_context_new (CamelSession *session)
 {
-	CamelCipherContext *cipher;
-	CamelGpgContext *ctx;
-
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 
-	ctx = (CamelGpgContext *) camel_object_new (camel_gpg_context_get_type ());
-
-	cipher = CAMEL_CIPHER_CONTEXT (ctx);
-	camel_cipher_context_construct (CAMEL_CIPHER_CONTEXT (ctx), session);
-
-	return cipher;
+	return g_object_new (
+		CAMEL_TYPE_GPG_CONTEXT,
+		"session", session, NULL);
 }
 
 gboolean
@@ -2195,5 +2222,6 @@ camel_gpg_context_set_always_trust (CamelGpgContext *context,
 	g_return_if_fail (CAMEL_IS_GPG_CONTEXT (context));
 
 	context->priv->always_trust = always_trust;
-}
 
+	g_object_notify (G_OBJECT (context), "always-trust");
+}

@@ -29,12 +29,24 @@
 
 #include <camel/camel-store.h>
 
-#define CAMEL_TYPE_OFFLINE_STORE            (camel_offline_store_get_type ())
-#define CAMEL_OFFLINE_STORE(obj)            (CAMEL_CHECK_CAST ((obj), CAMEL_TYPE_OFFLINE_STORE, CamelOfflineStore))
-#define CAMEL_OFFLINE_STORE_CLASS(klass)    (CAMEL_CHECK_CLASS_CAST ((klass), CAMEL_TYPE_OFFLINE_STORE, CamelOfflineStoreClass))
-#define CAMEL_IS_OFFLINE_STORE(obj)         (CAMEL_CHECK_TYPE ((obj), CAMEL_TYPE_OFFLINE_STORE))
-#define CAMEL_IS_OFFLINE_STORE_CLASS(klass) (CAMEL_CHECK_CLASS_TYPE ((klass), CAMEL_TYPE_OFFLINE_STORE))
-#define CAMEL_OFFLINE_STORE_GET_CLASS(obj)  (CAMEL_CHECK_GET_CLASS ((obj), CAMEL_TYPE_OFFLINE_STORE, CamelOfflineStoreClass))
+/* Standard GObject macros */
+#define CAMEL_TYPE_OFFLINE_STORE \
+	(camel_offline_store_get_type ())
+#define CAMEL_OFFLINE_STORE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_OFFLINE_STORE, CamelOfflineStore))
+#define CAMEL_OFFLINE_STORE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_OFFLINE_STORE, CamelOfflineStoreClass))
+#define CAMEL_IS_OFFLINE_STORE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_OFFLINE_STORE))
+#define CAMEL_IS_OFFLINE_STORE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_OFFLINE_STORE))
+#define CAMEL_OFFLINE_STORE_GET_CLASS(obj) \
+	(CAMEL_CHECK_GET_CLASS \
+	((obj), CAMEL_TYPE_OFFLINE_STORE, CamelOfflineStoreClass))
 
 G_BEGIN_DECLS
 
@@ -62,7 +74,7 @@ struct _CamelOfflineStoreClass {
 	gboolean (* set_network_state) (CamelOfflineStore *store, gint state, CamelException *ex);
 };
 
-CamelType camel_offline_store_get_type (void);
+GType camel_offline_store_get_type (void);
 
 gboolean camel_offline_store_set_network_state (CamelOfflineStore *store, gint state, CamelException *ex);
 gint camel_offline_store_get_network_state (CamelOfflineStore *store, CamelException *ex);

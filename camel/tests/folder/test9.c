@@ -11,7 +11,7 @@
 static const gchar *local_drivers[] = { "local" };
 
 struct {
-	gchar *name;
+	const gchar *name;
 	CamelFolder *folder;
 } mailboxes[] = {
 	{ "INBOX", NULL },
@@ -22,7 +22,7 @@ struct {
 };
 
 struct {
-	gchar *name, *match, *action;
+	const gchar *name, *match, *action;
 } rules[] = {
 	{ "empty1", "(match-all (header-contains \"Frobnitz\"))", "(copy-to \"folder1\")" },
 	{ "empty2", "(header-contains \"Frobnitz\")", "(copy-to \"folder2\")" },
@@ -37,7 +37,7 @@ struct {
 
 /* broken match rules */
 struct {
-	gchar *name, *match, *action;
+	const gchar *name, *match, *action;
 } brokens[] = {
 	{ "count1", "(body-contains data50)", "(copy-to \"folder1\")" }, /* non string argument */
 	{ "count1", "(body-contains-stuff \"data3\")", "(move-to-folder \"folder2\")" }, /* invalid function */
@@ -53,7 +53,7 @@ struct {
 
 /* broken action rules */
 struct {
-	gchar *name, *match, *action;
+	const gchar *name, *match, *action;
 } brokena[] = {
 	{ "a", "(body-contains \"data2\")", "(body-contains \"help\")" }, /* rule in action */
 	{ "a", "(body-contains \"data2\")", "(move-to-folder-name \"folder2\")" }, /* unknown function */
@@ -65,13 +65,17 @@ struct {
 	{ "a", "(body-contains \"data2\")", "" }, /* empty */
 };
 
-static CamelFolder *get_folder(CamelFilterDriver *d, const gchar *uri, gpointer data, CamelException *ex)
+static CamelFolder *
+get_folder (CamelFilterDriver *d,
+            const gchar *uri,
+            gpointer data,
+            CamelException *ex);
 {
 	gint i;
 
 	for (i = 0; i < G_N_ELEMENTS (mailboxes); i++)
 		if (!strcmp(mailboxes[i].name, uri)) {
-			return camel_object_ref (mailboxes[i].folder);
+			return g_object_ref (mailboxes[i].folder);
 		}
 	return NULL;
 }

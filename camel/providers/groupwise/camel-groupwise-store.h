@@ -31,10 +31,24 @@
 #include <e-gw-connection.h>
 #include <e-gw-container.h>
 
-#define CAMEL_GROUPWISE_STORE_TYPE     (camel_groupwise_store_get_type ())
-#define CAMEL_GROUPWISE_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_GROUPWISE_STORE_TYPE, CamelGroupwiseStore))
-#define CAMEL_GROUPWISE_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_GROUPWISE_STORE_TYPE, CamelGroupwiseStoreClass))
-#define CAMEL_IS_GROUPWISE_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_GROUPWISE_STORE_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_GROUPWISE_STORE \
+	(camel_groupwise_store_get_type ())
+#define CAMEL_GROUPWISE_STORE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_GROUPWISE_STORE, CamelGroupwiseStore))
+#define CAMEL_GROUPWISE_STORE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_GROUPWISE_STORE, CamelGroupwiseStoreClass))
+#define CAMEL_IS_GROUPWISE_STORE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_GROUPWISE_STORE))
+#define CAMEL_IS_GROUPWISE_STORE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_GROUPWISE_STORE))
+#define CAMEL_GROUPWISE_STORE_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_GROUPWISE_STORE, CamelGroupwiseStoreClass))
 
 #define GW_PARAM_FILTER_INBOX		(1 << 0)
 
@@ -62,7 +76,7 @@ struct _CamelGroupwiseStoreClass {
 	CamelOfflineStoreClass parent_class;
 };
 
-CamelType camel_groupwise_store_get_type (void);
+GType camel_groupwise_store_get_type (void);
 gchar * groupwise_get_name(CamelService *service, gboolean brief);
 
 /*IMplemented*/

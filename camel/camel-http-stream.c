@@ -52,7 +52,7 @@
 
 #define d(x)
 
-static CamelStreamClass *parent_class = NULL;
+G_DEFINE_TYPE (CamelHttpStream, camel_http_stream, CAMEL_TYPE_STREAM)
 
 static CamelStream *
 http_connect (CamelHttpStream *http,
@@ -89,7 +89,7 @@ http_connect (CamelHttpStream *http,
 
 	ai = camel_getaddrinfo(url->host, serv, &hints, NULL);
 	if (ai == NULL) {
-		camel_object_unref (stream);
+		g_object_unref (stream);
 		return NULL;
 	}
 
@@ -97,7 +97,7 @@ http_connect (CamelHttpStream *http,
 
 	if (camel_tcp_stream_connect (tcp_stream, ai) == -1) {
 		errsave = errno;
-		camel_object_unref (stream);
+		g_object_unref (stream);
 		camel_freeaddrinfo(ai);
 		errno = errsave;
 		return NULL;
@@ -115,17 +115,17 @@ static void
 http_disconnect (CamelHttpStream *http)
 {
 	if (http->raw) {
-		camel_object_unref (http->raw);
+		g_object_unref (http->raw);
 		http->raw = NULL;
 	}
 
 	if (http->read) {
-		camel_object_unref (http->read);
+		g_object_unref (http->read);
 		http->read = NULL;
 	}
 
 	if (http->parser) {
-		camel_object_unref (http->parser);
+		g_object_unref (http->parser);
 		http->parser = NULL;
 	}
 }
@@ -215,7 +215,7 @@ http_get_headers (CamelHttpStream *http)
 	gint err;
 
 	if (http->parser)
-		camel_object_unref (http->parser);
+		g_object_unref (http->parser);
 
 	http->parser = camel_mime_parser_new ();
 	camel_mime_parser_init_with_stream (http->parser, http->read);
@@ -259,7 +259,7 @@ http_get_headers (CamelHttpStream *http)
 	err = camel_mime_parser_errno (http->parser);
 
 	if (err != 0) {
-		camel_object_unref (http->parser);
+		g_object_unref (http->parser);
 		http->parser = NULL;
 		goto exception;
 	}
@@ -314,19 +314,45 @@ http_get_statuscode (CamelHttpStream *http)
 }
 
 static void
-http_stream_finalize (CamelHttpStream *http)
+http_stream_dispose (GObject *object)
 {
-	if (http->parser)
-		camel_object_unref (http->parser);
+	CamelHttpStream *http = CAMEL_HTTP_STREAM (object);
 
-	if (http->content_type)
+	if (http->parser != NULL) {
+		g_object_unref (http->parser);
+		http->parser = NULL;
+	}
+
+	if (http->content_type != NULL) {
 		camel_content_type_unref (http->content_type);
+		http->content_type = NULL;
+	}
 
-	if (http->headers)
-		camel_header_raw_clear (&http->headers);
+	if (http->session != NULL) {
+		g_object_unref (http->session);
+		http->session = NULL;
+	}
 
-	if (http->session != NULL)
-		camel_object_unref (http->session);
+	if (http->raw != NULL) {
+		g_object_unref (http->raw);
+		http->raw = NULL;
+	}
+
+	if (http->read != NULL) {
+		g_object_unref (http->read);
+		http->read = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_http_stream_parent_class)->dispose (object);
+}
+
+static void
+http_stream_finalize (GObject *object)
+{
+	CamelHttpStream *http = CAMEL_HTTP_STREAM (object);
+
+	camel_header_raw_clear (&http->headers);
 
 	if (http->url != NULL)
 		camel_url_free (http->url);
@@ -337,11 +363,8 @@ http_stream_finalize (CamelHttpStream *http)
 	g_free (http->authrealm);
 	g_free (http->authpass);
 
-	if (http->raw != NULL)
-		camel_object_unref (http->raw);
-
-	if (http->read != NULL)
-		camel_object_unref (http->read);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_http_stream_parent_class)->finalize (object);
 }
 
 static gssize
@@ -489,9 +512,12 @@ http_stream_reset (CamelStream *stream)
 static void
 camel_http_stream_class_init (CamelHttpStreamClass *class)
 {
+	GObjectClass *object_class;
 	CamelStreamClass *stream_class;
 
-	parent_class = CAMEL_STREAM_CLASS (camel_type_get_global_classfuncs (camel_stream_get_type ()));
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = http_stream_dispose;
+	object_class->finalize = http_stream_finalize;
 
 	stream_class = CAMEL_STREAM_CLASS (class);
 	stream_class->read = http_stream_read;
@@ -504,35 +530,6 @@ camel_http_stream_class_init (CamelHttpStreamClass *class)
 static void
 camel_http_stream_init (CamelHttpStream *http)
 {
-	http->parser = NULL;
-	http->content_type = NULL;
-	http->headers = NULL;
-	http->session = NULL;
-	http->url = NULL;
-	http->proxy = NULL;
-	http->authrealm = NULL;
-	http->authpass = NULL;
-	http->statuscode = 0;
-	http->raw = NULL;
-}
-
-CamelType
-camel_http_stream_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_stream_get_type (),
-					    "CamelHttpStream",
-					    sizeof (CamelHttpStream),
-					    sizeof (CamelHttpStreamClass),
-					    (CamelObjectClassInitFunc) camel_http_stream_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_http_stream_init,
-					    (CamelObjectFinalizeFunc) http_stream_finalize);
-	}
-
-	return type;
 }
 
 /**
@@ -552,10 +549,10 @@ camel_http_stream_new (CamelHttpMethod method, struct _CamelSession *session, Ca
 	g_return_val_if_fail(CAMEL_IS_SESSION(session), NULL);
 	g_return_val_if_fail(url != NULL, NULL);
 
-	stream = CAMEL_HTTP_STREAM (camel_object_new (camel_http_stream_get_type ()));
+	stream = g_object_new (CAMEL_TYPE_HTTP_STREAM, NULL);
 
 	stream->method = method;
-	stream->session = camel_object_ref (session);
+	stream->session = g_object_ref (session);
 
 	str = camel_url_to_string (url, 0);
 	stream->url = camel_url_new (str, NULL);

@@ -31,7 +31,7 @@
 #include "camel-test.h"
 
 struct {
-	gchar *text, *url;
+	const gchar *text, *url;
 } url_tests[] = {
 	{ "bob@foo.com", "mailto:bob@foo.com" },
 	{ "Ends with bob@foo.com", "mailto:bob@foo.com" },

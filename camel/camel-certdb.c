@@ -42,6 +42,10 @@
 
 #define CAMEL_CERTDB_VERSION  0x100
 
+#define CAMEL_CERTDB_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_CERTDB, CamelCertDBPrivate))
+
 struct _CamelCertDBPrivate {
 	GMutex *db_lock;	/* for the db hashtable/array */
 	GMutex *io_lock;	/* load/save lock, for access to saved_count, etc */
@@ -59,15 +63,15 @@ static void certdb_cert_free (CamelCertDB *certdb, CamelCert *cert);
 static const gchar *cert_get_string (CamelCertDB *certdb, CamelCert *cert, gint string);
 static void cert_set_string (CamelCertDB *certdb, CamelCert *cert, gint string, const gchar *value);
 
-static CamelObjectClass *parent_class = NULL;
+G_DEFINE_TYPE (CamelCertDB, camel_certdb, CAMEL_TYPE_OBJECT)
 
 static void
-certdb_finalize (CamelObject *object)
+certdb_finalize (GObject *object)
 {
 	CamelCertDB *certdb = CAMEL_CERTDB (object);
 	CamelCertDBPrivate *priv;
 
-	priv = certdb->priv;
+	priv = CAMEL_CERTDB_GET_PRIVATE (object);
 
 	if (certdb->flags & CAMEL_CERTDB_DIRTY)
 		camel_certdb_save (certdb);
@@ -86,13 +90,19 @@ certdb_finalize (CamelObject *object)
 	g_mutex_free (priv->alloc_lock);
 	g_mutex_free (priv->ref_lock);
 
-	g_free (priv);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_certdb_parent_class)->finalize (object);
 }
 
 static void
 camel_certdb_class_init (CamelCertDBClass *class)
 {
-	parent_class = camel_type_get_global_classfuncs (camel_object_get_type ());
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (CamelCertDBPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = certdb_finalize;
 
 	class->header_load = certdb_header_load;
 	class->header_save = certdb_header_save;
@@ -108,7 +118,7 @@ camel_certdb_class_init (CamelCertDBClass *class)
 static void
 camel_certdb_init (CamelCertDB *certdb)
 {
-	certdb->priv = g_malloc (sizeof (CamelCertDBPrivate));
+	certdb->priv = CAMEL_CERTDB_GET_PRIVATE (certdb);
 
 	certdb->filename = NULL;
 	certdb->version = CAMEL_CERTDB_VERSION;
@@ -127,29 +137,10 @@ camel_certdb_init (CamelCertDB *certdb)
 	certdb->priv->ref_lock = g_mutex_new ();
 }
 
-CamelType
-camel_certdb_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_object_get_type (),
-					    "CamelCertDB",
-					    sizeof (CamelCertDB),
-					    sizeof (CamelCertDBClass),
-					    (CamelObjectClassInitFunc) camel_certdb_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_certdb_init,
-					    (CamelObjectFinalizeFunc) certdb_finalize);
-	}
-
-	return type;
-}
-
 CamelCertDB *
 camel_certdb_new (void)
 {
-	return (CamelCertDB *) camel_object_new (camel_certdb_get_type ());
+	return g_object_new (CAMEL_TYPE_CERTDB, NULL);
 }
 
 static CamelCertDB *default_certdb = NULL;
@@ -161,10 +152,10 @@ camel_certdb_set_default (CamelCertDB *certdb)
 	g_static_mutex_lock (&default_certdb_lock);
 
 	if (default_certdb)
-		camel_object_unref (default_certdb);
+		g_object_unref (default_certdb);
 
 	if (certdb)
-		camel_object_ref (certdb);
+		g_object_ref (certdb);
 
 	default_certdb = certdb;
 
@@ -179,7 +170,7 @@ camel_certdb_get_default (void)
 	g_static_mutex_lock (&default_certdb_lock);
 
 	if (default_certdb)
-		camel_object_ref (default_certdb);
+		g_object_ref (default_certdb);
 
 	certdb = default_certdb;
 
@@ -693,7 +684,7 @@ camel_cert_set_trust (CamelCertDB *certdb, CamelCert *cert, CamelCertTrust trust
  *
  * Locks #certdb's #lock. Unlock it with camel_certdb_unlock().
  *
- * Since: 2.31.1
+ * Since: 3.0
  **/
 void
 camel_certdb_lock (CamelCertDB *certdb, CamelCertDBLock lock)
@@ -727,7 +718,7 @@ camel_certdb_lock (CamelCertDB *certdb, CamelCertDBLock lock)
  *
  * Unlocks #certdb's #lock, previously locked with camel_certdb_lock().
  *
- * Since: 2.31.1
+ * Since: 3.0
  **/
 void
 camel_certdb_unlock (CamelCertDB *certdb, CamelCertDBLock lock)

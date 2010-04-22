@@ -20,121 +20,16 @@ CamelObject
 <!-- ##### SECTION Image ##### -->
 
 
-<!-- ##### MACRO CAMEL_OBJECT_TRACK_INSTANCES ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### TYPEDEF CamelType ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### STRUCT CamelObject ##### -->
 <para>
 
 </para>
-
-@klass: 
-@magic: 
-@hooks: 
-@ref_count: 
-@flags: 
-@next: 
-@prev: 
-
-<!-- ##### MACRO CAMEL_CHECK_CAST ##### -->
-<para>
-
-</para>
-
-@obj: 
-@ctype: 
-@ptype: 
-
-
-<!-- ##### MACRO CAMEL_CHECK_CLASS_CAST ##### -->
-<para>
-
-</para>
-
-@klass: 
-@ctype: 
-@ptype: 
-
-
-<!-- ##### MACRO CAMEL_CHECK_TYPE ##### -->
-<para>
-
-</para>
-
-@obj: 
-@ctype: 
-
-
-<!-- ##### MACRO CAMEL_CHECK_CLASS_TYPE ##### -->
-<para>
-
-</para>
-
-@klass: 
-@ctype: 
-
-
-<!-- ##### VARIABLE camel_object_type ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### MACRO CAMEL_OBJECT_GET_TYPE ##### -->
-<para>
-
-</para>
-
-@o: 
 
 
 <!-- ##### TYPEDEF CamelObjectHookID ##### -->
 <para>
 
 </para>
-
-
-<!-- ##### USER_FUNCTION CamelObjectClassInitFunc ##### -->
-<para>
-
-</para>
-
-@Param1: 
-
-
-<!-- ##### USER_FUNCTION CamelObjectClassFinalizeFunc ##### -->
-<para>
-
-</para>
-
-@Param1: 
-
-
-<!-- ##### USER_FUNCTION CamelObjectInitFunc ##### -->
-<para>
-
-</para>
-
-@Param1: 
-@Param2: 
-
-
-<!-- ##### USER_FUNCTION CamelObjectFinalizeFunc ##### -->
-<para>
-
-</para>
-
-@Param1: 
 
 
 <!-- ##### USER_FUNCTION CamelObjectEventPrepFunc ##### -->
@@ -157,70 +52,6 @@ CamelObject
 @Param3: 
 
 
-<!-- ##### MACRO CAMEL_INVALID_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### ENUM CamelObjectFlags ##### -->
-<para>
-
-</para>
-
-@CAMEL_OBJECT_DESTROY: 
-
-<!-- ##### FUNCTION camel_type_init ##### -->
-<para>
-
-</para>
-
-@void: 
-
-
-<!-- ##### FUNCTION camel_type_register ##### -->
-<para>
-
-</para>
-
-@parent: 
-@name: 
-@instance_size: 
-@classfuncs_size: 
-@class_init: 
-@class_finalize: 
-@instance_init: 
-@instance_finalize: 
-@Returns: 
-
-
-<!-- ##### MACRO camel_type_get_global_classfuncs ##### -->
-<para>
-
-</para>
-
-@x: 
-
-
-<!-- ##### FUNCTION camel_type_to_name ##### -->
-<para>
-
-</para>
-
-@type: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_name_to_type ##### -->
-<para>
-
-</para>
-
-@name: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_object_class_add_event ##### -->
 <para>
 
@@ -229,80 +60,6 @@ CamelObject
 @klass: 
 @name: 
 @prep: 
-
-
-<!-- ##### FUNCTION camel_object_class_dump_tree ##### -->
-<para>
-
-</para>
-
-@root: 
-
-
-<!-- ##### FUNCTION camel_object_cast ##### -->
-<para>
-
-</para>
-
-@obj: 
-@ctype: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_object_is ##### -->
-<para>
-
-</para>
-
-@obj: 
-@ctype: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_object_class_cast ##### -->
-<para>
-
-</para>
-
-@klass: 
-@ctype: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_object_class_is ##### -->
-<para>
-
-</para>
-
-@klass: 
-@ctype: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_object_new ##### -->
-<para>
-
-</para>
-
-@type: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_object_ref ##### -->
-<para>
-
-</para>
-
-@Param1: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_object_unref ##### -->
-<para>
-
-</para>
-
-@Param1: 
 
 
 <!-- ##### FUNCTION camel_object_hook_event ##### -->
@@ -430,7 +187,7 @@ CamelObject
 
 </para>
 
-@vo: 
+@object: 
 @Returns: 
 
 
@@ -439,10 +196,10 @@ CamelObject
 
 </para>
 
-@hash: 
-@equal: 
-@keycopy: 
-@keyfree: 
+@key_hash_func: 
+@key_equal_func: 
+@key_copy_func: 
+@key_free_func: 
 @Returns: 
 
 
@@ -483,7 +240,7 @@ CamelObject
 
 @bag: 
 @key: 
-@vo: 
+@object: 
 
 
 <!-- ##### FUNCTION camel_object_bag_abort ##### -->
@@ -501,8 +258,8 @@ CamelObject
 </para>
 
 @bag: 
-@o: 
-@newkey: 
+@object: 
+@new_key: 
 
 
 <!-- ##### FUNCTION camel_object_bag_list ##### -->
@@ -520,7 +277,7 @@ CamelObject
 </para>
 
 @bag: 
-@o: 
+@object: 
 
 
 <!-- ##### FUNCTION camel_object_bag_destroy ##### -->

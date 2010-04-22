@@ -79,13 +79,13 @@ static const gchar *header_names[] = {
 	"Bcc", "Resent-Bcc", "Date", "Message-ID", NULL
 };
 
-static gpointer camel_mime_message_parent_class = NULL;
-
 static const gchar *recipient_names[] = {
 	"To", "Cc", "Bcc", "Resent-To", "Resent-Cc", "Resent-Bcc", NULL
 };
 
 static GHashTable *header_name_table;
+
+G_DEFINE_TYPE (CamelMimeMessage, camel_mime_message, CAMEL_TYPE_MIME_PART)
 
 /* FIXME: check format of fields. */
 static gboolean
@@ -105,10 +105,10 @@ process_header (CamelMedium *medium,
 		addr = camel_internet_address_new();
 		unfolded = camel_header_unfold (value);
 		if (camel_address_decode ((CamelAddress *) addr, unfolded) <= 0) {
-			camel_object_unref (addr);
+			g_object_unref (addr);
 		} else {
 			if (message->from)
-				camel_object_unref (message->from);
+				g_object_unref (message->from);
 			message->from = addr;
 		}
 		g_free (unfolded);
@@ -117,10 +117,10 @@ process_header (CamelMedium *medium,
 		addr = camel_internet_address_new();
 		unfolded = camel_header_unfold (value);
 		if (camel_address_decode ((CamelAddress *) addr, unfolded) <= 0) {
-			camel_object_unref (addr);
+			g_object_unref (addr);
 		} else {
 			if (message->reply_to)
-				camel_object_unref (message->reply_to);
+				g_object_unref (message->reply_to);
 			message->reply_to = addr;
 		}
 		g_free (unfolded);
@@ -177,11 +177,30 @@ process_header (CamelMedium *medium,
 static void
 unref_recipient (gpointer key, gpointer value, gpointer user_data)
 {
-	camel_object_unref (value);
+	g_object_unref (value);
 }
 
 static void
-mime_message_finalize (CamelObject *object)
+mime_message_dispose (GObject *object)
+{
+	CamelMimeMessage *message = CAMEL_MIME_MESSAGE (object);
+
+	if (message->reply_to != NULL) {
+		g_object_unref (message->reply_to);
+		message->reply_to = NULL;
+	}
+
+	if (message->from != NULL) {
+		g_object_unref (message->from);
+		message->from = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_mime_message_parent_class)->dispose (object);
+}
+
+static void
+mime_message_finalize (GObject *object)
 {
 	CamelMimeMessage *message = CAMEL_MIME_MESSAGE (object);
 
@@ -189,14 +208,11 @@ mime_message_finalize (CamelObject *object)
 
 	g_free (message->message_id);
 
-	if (message->reply_to)
-		camel_object_unref (message->reply_to);
-
-	if (message->from)
-		camel_object_unref (message->from);
-
 	g_hash_table_foreach (message->recipients, unref_recipient, NULL);
 	g_hash_table_destroy (message->recipients);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_mime_message_parent_class)->finalize (object);
 }
 
 static gssize
@@ -318,12 +334,15 @@ mime_message_construct_from_parser (CamelMimePart *dw,
 static void
 camel_mime_message_class_init (CamelMimeMessageClass *class)
 {
+	GObjectClass *object_class;
 	CamelDataWrapperClass *data_wrapper_class;
 	CamelMimePartClass *mime_part_class;
 	CamelMediumClass *medium_class;
 	gint ii;
 
-	camel_mime_message_parent_class = CAMEL_MIME_PART_CLASS (camel_type_get_global_classfuncs (camel_mime_part_get_type ()));
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = mime_message_dispose;
+	object_class->finalize = mime_message_finalize;
 
 	data_wrapper_class = CAMEL_DATA_WRAPPER_CLASS (class);
 	data_wrapper_class->write_to_stream = mime_message_write_to_stream;
@@ -370,24 +389,6 @@ camel_mime_message_init (CamelMimeMessage *mime_message)
 	mime_message->message_id = NULL;
 }
 
-CamelType
-camel_mime_message_get_type (void)
-{
-	static CamelType camel_mime_message_type = CAMEL_INVALID_TYPE;
-
-	if (camel_mime_message_type == CAMEL_INVALID_TYPE)	{
-		camel_mime_message_type = camel_type_register (camel_mime_part_get_type(), "CamelMimeMessage",
-							       sizeof (CamelMimeMessage),
-							       sizeof (CamelMimeMessageClass),
-							       (CamelObjectClassInitFunc) camel_mime_message_class_init,
-							       NULL,
-							       (CamelObjectInitFunc) camel_mime_message_init,
-							       (CamelObjectFinalizeFunc) mime_message_finalize);
-	}
-
-	return camel_mime_message_type;
-}
-
 /**
  * camel_mime_message_new:
  *
@@ -398,10 +399,7 @@ camel_mime_message_get_type (void)
 CamelMimeMessage *
 camel_mime_message_new (void)
 {
-	CamelMimeMessage *mime_message;
-	mime_message = CAMEL_MIME_MESSAGE (camel_object_new (CAMEL_MIME_MESSAGE_TYPE));
-
-	return mime_message;
+	return g_object_new (CAMEL_TYPE_MIME_MESSAGE, NULL);
 }
 
 /* **** Date: */
@@ -546,7 +544,7 @@ camel_mime_message_set_reply_to (CamelMimeMessage *msg, CamelInternetAddress *re
 	g_assert(msg);
 
 	if (msg->reply_to) {
-		camel_object_unref (msg->reply_to);
+		g_object_unref (msg->reply_to);
 		msg->reply_to = NULL;
 	}
 
@@ -646,7 +644,7 @@ camel_mime_message_set_from (CamelMimeMessage *msg, CamelInternetAddress *from)
 	g_assert(msg);
 
 	if (msg->from) {
-		camel_object_unref (msg->from);
+		g_object_unref (msg->from);
 		msg->from = NULL;
 	}
 
@@ -902,11 +900,10 @@ find_best_encoding (CamelMimePart *part, CamelBestencRequired required, CamelBes
 		CAMEL_STREAM_FILTER (filter), bestenc);
 	d(printf("writing to checking stream\n"));
 	camel_data_wrapper_decode_to_stream (content, filter);
-	camel_stream_filter_remove (
-		CAMEL_STREAM_FILTER (filter), idb);
+	camel_stream_filter_remove (CAMEL_STREAM_FILTER (filter), idb);
 	if (idc != -1) {
 		camel_stream_filter_remove (CAMEL_STREAM_FILTER (filter), idc);
-		camel_object_unref (charenc);
+		g_object_unref (charenc);
 		charenc = NULL;
 	}
 
@@ -947,16 +944,16 @@ find_best_encoding (CamelMimePart *part, CamelBestencRequired required, CamelBes
 			/* and write it to the new stream */
 			camel_data_wrapper_write_to_stream (content, filter);
 
-			camel_object_unref (charenc);
+			g_object_unref (charenc);
 		}
 	}
 
 	encoding = camel_mime_filter_bestenc_get_best_encoding (
 		CAMEL_MIME_FILTER_BESTENC (bestenc), enctype);
 
-	camel_object_unref (filter);
-	camel_object_unref (bestenc);
-	camel_object_unref (null);
+	g_object_unref (filter);
+	g_object_unref (bestenc);
+	g_object_unref (null);
 
 	d(printf("done, best encoding = %d\n", encoding));
 
@@ -1071,7 +1068,7 @@ check_content_id (CamelMimeMessage *message, CamelMimePart *part, gpointer data)
 
 	found = content_id && !strcmp (content_id, check->content_id) ? TRUE : FALSE;
 	if (found)
-		check->part = camel_object_ref (part);
+		check->part = g_object_ref (part);
 
 	return !found;
 }
@@ -1235,7 +1232,7 @@ cmm_dump_rec(CamelMimeMessage *msg, CamelMimePart *part, gint body, gint depth)
 	memset(s, ' ', depth);
 	s[depth] = 0;
 	/* yes this leaks, so what its only debug stuff */
-	printf("%sclass: %s\n", s, ((CamelObject *)part)->klass->name);
+	printf("%sclass: %s\n", s, G_OBJECT_TYPE_NAME (part));
 	printf("%smime-type: %s\n", s, camel_content_type_format(((CamelDataWrapper *)part)->mime_type));
 
 	containee = camel_medium_get_content ((CamelMedium *)part);
@@ -1243,7 +1240,7 @@ cmm_dump_rec(CamelMimeMessage *msg, CamelMimePart *part, gint body, gint depth)
 	if (containee == NULL)
 		return;
 
-	printf("%scontent class: %s\n", s, ((CamelObject *)containee)->klass->name);
+	printf("%scontent class: %s\n", s, G_OBJECT_TYPE_NAME (containee));
 	printf("%scontent mime-type: %s\n", s, camel_content_type_format(((CamelDataWrapper *)containee)->mime_type));
 
 	/* using the object types is more accurate than using the mime/types */

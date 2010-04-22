@@ -27,6 +27,10 @@
 
 #include "camel-mime-filter-linewrap.h"
 
+#define CAMEL_MIME_FILTER_LINEWRAP_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_FILTER_LINEWRAP, CamelMimeFilterLinewrapPrivate))
+
 struct _CamelMimeFilterLinewrapPrivate {
 	guint wrap_len;
 	guint max_len;
@@ -35,11 +39,7 @@ struct _CamelMimeFilterLinewrapPrivate {
 	guint32 flags;
 };
 
-static void
-mime_filter_linewrap_finalize (CamelMimeFilterLinewrap *mime_filter)
-{
-	g_free (mime_filter->priv);
-}
+G_DEFINE_TYPE (CamelMimeFilterLinewrap, camel_mime_filter_linewrap, CAMEL_TYPE_MIME_FILTER)
 
 static void
 mime_filter_linewrap_filter (CamelMimeFilter *mime_filter,
@@ -55,7 +55,7 @@ mime_filter_linewrap_filter (CamelMimeFilter *mime_filter,
 	const gchar *inend, *p;
 	gint nchars;
 
-	priv = CAMEL_MIME_FILTER_LINEWRAP (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_LINEWRAP_GET_PRIVATE (mime_filter);
 
 	nchars = priv->nchars;
 
@@ -158,7 +158,7 @@ mime_filter_linewrap_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterLinewrapPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_LINEWRAP (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_LINEWRAP_GET_PRIVATE (mime_filter);
 
 	priv->nchars = 0;
 }
@@ -168,6 +168,8 @@ camel_mime_filter_linewrap_class_init (CamelMimeFilterLinewrapClass *class)
 {
 	CamelMimeFilterClass *mime_filter_class;
 
+	g_type_class_add_private (class, sizeof (CamelMimeFilterLinewrapPrivate));
+
 	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
 	mime_filter_class->filter = mime_filter_linewrap_filter;
 	mime_filter_class->complete = mime_filter_linewrap_complete;
@@ -175,27 +177,9 @@ camel_mime_filter_linewrap_class_init (CamelMimeFilterLinewrapClass *class)
 }
 
 static void
-camel_mime_filter_linewrap_init (CamelMimeFilterLinewrap *mime_filter)
+camel_mime_filter_linewrap_init (CamelMimeFilterLinewrap *filter)
 {
-	mime_filter->priv = g_new0 (CamelMimeFilterLinewrapPrivate, 1);
-}
-
-CamelType
-camel_mime_filter_linewrap_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_mime_filter_get_type(), "CamelMimeFilterLinewrap",
-					    sizeof (CamelMimeFilterLinewrap),
-					    sizeof (CamelMimeFilterLinewrapClass),
-					    (CamelObjectClassInitFunc) camel_mime_filter_linewrap_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_filter_linewrap_init,
-					    (CamelObjectFinalizeFunc) mime_filter_linewrap_finalize);
-	}
-
-	return type;
+	filter->priv = CAMEL_MIME_FILTER_LINEWRAP_GET_PRIVATE (filter);
 }
 
 CamelMimeFilter *
@@ -207,8 +191,8 @@ camel_mime_filter_linewrap_new (guint preferred_len,
 	CamelMimeFilter *filter;
 	CamelMimeFilterLinewrapPrivate *priv;
 
-	filter = CAMEL_MIME_FILTER (camel_object_new (CAMEL_MIME_FILTER_LINEWRAP_TYPE));
-	priv = CAMEL_MIME_FILTER_LINEWRAP (filter)->priv;
+	filter = g_object_new (CAMEL_TYPE_MIME_FILTER_LINEWRAP, NULL);
+	priv = CAMEL_MIME_FILTER_LINEWRAP_GET_PRIVATE (filter);
 
 	priv->indent = indent_char;
 	priv->wrap_len = preferred_len;

@@ -72,9 +72,6 @@ camel_init (const gchar *configdir, gboolean nss_init)
 
 	camel_debug_init();
 
-	/* initialise global camel_object_type */
-	camel_object_get_type ();
-
 #ifdef HAVE_NSS
 	if (nss_init) {
 		gchar *nss_configdir;
@@ -137,7 +134,7 @@ camel_init (const gchar *configdir, gboolean nss_init)
 	/* set this certdb as the default db */
 	camel_certdb_set_default (certdb);
 
-	camel_object_unref (certdb);
+	g_object_unref (certdb);
 
 	initialised = TRUE;
 

@@ -38,17 +38,31 @@
 
 #define d(x)
 
-static gpointer camel_multipart_parent_class;
+G_DEFINE_TYPE (CamelMultipart, camel_multipart, CAMEL_TYPE_DATA_WRAPPER)
 
 static void
-multipart_finalize (CamelMultipart *multipart)
+multipart_dispose (GObject *object)
 {
-	g_list_foreach (multipart->parts, (GFunc) camel_object_unref, NULL);
+	CamelMultipart *multipart = CAMEL_MULTIPART (object);
+
+	g_list_foreach (multipart->parts, (GFunc) g_object_unref, NULL);
 	g_list_free (multipart->parts);
 	multipart->parts = NULL;
 
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_multipart_parent_class)->dispose (object);
+}
+
+static void
+multipart_finalize (GObject *object)
+{
+	CamelMultipart *multipart = CAMEL_MULTIPART (object);
+
 	g_free (multipart->preface);
 	g_free (multipart->postface);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_multipart_parent_class)->finalize (object);
 }
 
 /* this is MIME specific, doesn't belong here really */
@@ -142,7 +156,7 @@ multipart_add_part (CamelMultipart *multipart,
                     CamelMimePart *part)
 {
 	multipart->parts = g_list_append (
-		multipart->parts, camel_object_ref (part));
+		multipart->parts, g_object_ref (part));
 }
 
 static void
@@ -151,7 +165,7 @@ multipart_add_part_at (CamelMultipart *multipart,
                        guint index)
 {
 	multipart->parts = g_list_insert (
-		multipart->parts, camel_object_ref (part), index);
+		multipart->parts, g_object_ref (part), index);
 }
 
 static void
@@ -163,7 +177,7 @@ multipart_remove_part (CamelMultipart *multipart,
 		return;
 
 	multipart->parts = g_list_remove (multipart->parts, part);
-	camel_object_unref (part);
+	g_object_unref (part);
 }
 
 static CamelMimePart *
@@ -186,7 +200,7 @@ multipart_remove_part_at (CamelMultipart *multipart,
 
 	multipart->parts = g_list_remove_link (multipart->parts, link);
 	if (link->data)
-		camel_object_unref (link->data);
+		g_object_unref (link->data);
 	g_list_free_1 (link);
 
 	return removed_part;
@@ -289,7 +303,7 @@ multipart_construct_from_parser (CamelMultipart *multipart,
 		bodypart = camel_mime_part_new();
 		camel_mime_part_construct_from_parser (bodypart, mp);
 		camel_multipart_add_part(multipart, bodypart);
-		camel_object_unref (bodypart);
+		g_object_unref (bodypart);
 	}
 
 	/* these are only return valid data in the MULTIPART_END state */
@@ -307,9 +321,12 @@ multipart_construct_from_parser (CamelMultipart *multipart,
 static void
 camel_multipart_class_init (CamelMultipartClass *class)
 {
+	GObjectClass *object_class;
 	CamelDataWrapperClass *data_wrapper_class;
 
-	camel_multipart_parent_class = (CamelDataWrapperClass *) camel_data_wrapper_get_type ();
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = multipart_dispose;
+	object_class->finalize = multipart_finalize;
 
 	data_wrapper_class = CAMEL_DATA_WRAPPER_CLASS (class);
 	data_wrapper_class->write_to_stream = multipart_write_to_stream;
@@ -337,24 +354,6 @@ camel_multipart_init (CamelMultipart *multipart)
 	multipart->postface = NULL;
 }
 
-CamelType
-camel_multipart_get_type (void)
-{
-	static CamelType camel_multipart_type = CAMEL_INVALID_TYPE;
-
-	if (camel_multipart_type == CAMEL_INVALID_TYPE) {
-		camel_multipart_type = camel_type_register (camel_data_wrapper_get_type (), "CamelMultipart",
-							    sizeof (CamelMultipart),
-							    sizeof (CamelMultipartClass),
-							    (CamelObjectClassInitFunc) camel_multipart_class_init,
-							    NULL,
-							    (CamelObjectInitFunc) camel_multipart_init,
-							    (CamelObjectFinalizeFunc) multipart_finalize);
-	}
-
-	return camel_multipart_type;
-}
-
 /**
  * camel_multipart_new:
  *
@@ -367,7 +366,7 @@ camel_multipart_new (void)
 {
 	CamelMultipart *multipart;
 
-	multipart = (CamelMultipart *)camel_object_new (CAMEL_MULTIPART_TYPE);
+	multipart = g_object_new (CAMEL_TYPE_MULTIPART, NULL);
 	multipart->preface = NULL;
 	multipart->postface = NULL;
 
@@ -451,7 +450,7 @@ camel_multipart_remove_part (CamelMultipart *multipart,
  *
  * Remove the indicated part from the multipart object.
  *
- * Returns: the removed part. Note that it is #camel_object_unref'ed
+ * Returns: the removed part. Note that it is #g_object_unref'ed
  * before being returned, which may cause it to be destroyed.
  **/
 CamelMimePart *

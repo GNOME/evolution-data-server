@@ -37,12 +37,24 @@
 #include <camel/camel-folder.h>
 #include <camel/camel-service.h>
 
-#define CAMEL_STORE_TYPE     (camel_store_get_type ())
-#define CAMEL_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_STORE_TYPE, CamelStore))
-#define CAMEL_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_STORE_TYPE, CamelStoreClass))
-#define CAMEL_IS_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_STORE_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_STORE \
+	(camel_store_get_type ())
+#define CAMEL_STORE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_STORE, CamelStore))
+#define CAMEL_STORE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_STORE, CamelStoreClass))
+#define CAMEL_IS_STORE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_STORE))
+#define CAMEL_IS_STORE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_STORE))
 #define CAMEL_STORE_GET_CLASS(obj) \
-	((CamelStoreClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_STORE, CamelStoreClass))
 
 G_BEGIN_DECLS
 
@@ -50,7 +62,7 @@ enum {
 	CAMEL_STORE_ARG_FIRST = CAMEL_SERVICE_ARG_FIRST + 100
 };
 
-typedef enum _CamelStoreLock {
+typedef enum {
 	CS_FOLDER_LOCK
 } CamelStoreLock;
 
@@ -235,7 +247,7 @@ struct _CamelStoreClass {
 						 CamelException *ex);
 };
 
-CamelType	camel_store_get_type		(void);
+GType		camel_store_get_type		(void);
 CamelFolder *	camel_store_get_folder		(CamelStore *store,
 						 const gchar *folder_name,
 						 guint32 flags,
@@ -303,9 +315,10 @@ gint		camel_store_folder_uri_equal	(CamelStore *store,
 gboolean	camel_store_can_refresh_folder	(CamelStore *store,
 						 CamelFolderInfo *info,
 						 CamelException *ex);
-
-void		camel_store_lock		(CamelStore *store, CamelStoreLock lock);
-void		camel_store_unlock		(CamelStore *store, CamelStoreLock lock);
+void		camel_store_lock		(CamelStore *store,
+						 CamelStoreLock lock);
+void		camel_store_unlock		(CamelStore *store,
+						 CamelStoreLock lock);
 
 G_END_DECLS
 

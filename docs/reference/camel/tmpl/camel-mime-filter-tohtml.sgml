@@ -25,8 +25,6 @@ CamelMimeFilterToHTML
 
 </para>
 
-@parent: 
-@priv: 
 
 <!-- ##### MACRO CAMEL_MIME_FILTER_TOHTML_PRE ##### -->
 <para>

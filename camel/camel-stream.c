@@ -30,7 +30,7 @@
 
 #include "camel-stream.h"
 
-static CamelObjectClass *parent_class = NULL;
+G_DEFINE_ABSTRACT_TYPE (CamelStream, camel_stream, CAMEL_TYPE_OBJECT)
 
 static gssize
 stream_read (CamelStream *stream,
@@ -75,8 +75,6 @@ stream_reset (CamelStream *stream)
 static void
 camel_stream_class_init (CamelStreamClass *class)
 {
-	parent_class = camel_type_get_global_classfuncs( CAMEL_TYPE_OBJECT );
-
 	class->read = stream_read;
 	class->write = stream_write;
 	class->close = stream_close;
@@ -88,25 +86,6 @@ camel_stream_class_init (CamelStreamClass *class)
 static void
 camel_stream_init (CamelStream *stream)
 {
-}
-
-CamelType
-camel_stream_get_type (void)
-{
-	static CamelType camel_stream_type = CAMEL_INVALID_TYPE;
-
-	if (camel_stream_type == CAMEL_INVALID_TYPE) {
-		camel_stream_type = camel_type_register( CAMEL_TYPE_OBJECT,
-							 "CamelStream",
-							 sizeof( CamelStream ),
-							 sizeof( CamelStreamClass ),
-							 (CamelObjectClassInitFunc) camel_stream_class_init,
-							 NULL,
-							 (CamelObjectInitFunc) camel_stream_init,
-							 NULL );
-	}
-
-	return camel_stream_type;
 }
 
 /**
@@ -262,7 +241,8 @@ camel_stream_reset (CamelStream *stream)
  * Returns: the number of characters written or %-1 on error.
  **/
 gssize
-camel_stream_write_string (CamelStream *stream, const gchar *string)
+camel_stream_write_string (CamelStream *stream,
+                           const gchar *string)
 {
 	return camel_stream_write (stream, string, strlen (string));
 }
@@ -277,7 +257,9 @@ camel_stream_write_string (CamelStream *stream, const gchar *string)
  * Returns: the number of characters written or %-1 on error.
  **/
 gssize
-camel_stream_printf (CamelStream *stream, const gchar *fmt, ... )
+camel_stream_printf (CamelStream *stream,
+                     const gchar *fmt,
+                     ...)
 {
 	va_list args;
 	gchar *string;

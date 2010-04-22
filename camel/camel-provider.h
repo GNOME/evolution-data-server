@@ -31,8 +31,9 @@
 #ifndef CAMEL_PROVIDER_H
 #define CAMEL_PROVIDER_H
 
-#include <camel/camel-object.h>
 #include <camel/camel-exception.h>
+#include <camel/camel-object.h>
+#include <camel/camel-object-bag.h>
 #include <camel/camel-url.h>
 
 #define CAMEL_PROVIDER(obj) ((CamelProvider *)(obj))
@@ -179,12 +180,12 @@ typedef struct {
 	/* auto-detection function */
 	CamelProviderAutoDetectFunc auto_detect;
 
-	/* CamelType(s) of its store and/or transport. If both are
+	/* GType(s) of its store and/or transport. If both are
 	 * set, then they are assumed to be linked together and the
 	 * transport type can only be used in an account that also
 	 * uses the store type (eg, Exchange or NNTP).
 	 */
-	CamelType object_types[CAMEL_NUM_PROVIDER_TYPES];
+	GType object_types[CAMEL_NUM_PROVIDER_TYPES];
 
 	/* GList of CamelServiceAuthTypes the provider supports */
 	GList *authtypes;

@@ -27,10 +27,24 @@
 
 #include <camel/camel.h>
 
-#define CAMEL_NNTP_FOLDER_TYPE     (camel_nntp_folder_get_type ())
-#define CAMEL_NNTP_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_NNTP_FOLDER_TYPE, CamelNNTPFolder))
-#define CAMEL_NNTP_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_NNTP_FOLDER_TYPE, CamelNNTPFolderClass))
-#define CAMEL_IS_NNTP_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_NNTP_FOLDER_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_NNTP_FOLDER \
+	(camel_nntp_folder_get_type ())
+#define CAMEL_NNTP_FOLDER(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_NNTP_FOLDER, CamelNNTPFolder))
+#define CAMEL_NNTP_FOLDER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_NNTP_FOLDER, CamelNNTPFolderClass))
+#define CAMEL_IS_NNTP_FOLDER(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_NNTP_FOLDER))
+#define CAMEL_IS_NNTP_FOLDER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_NNTP_FOLDER))
+#define CAMEL_NNTP_FOLDER_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_NNTP_FOLDER, CamelNNTPFolderClass))
 
 G_BEGIN_DECLS
 
@@ -52,7 +66,7 @@ struct _CamelNNTPFolderClass {
 	CamelDiscoFolderClass parent;
 };
 
-CamelType camel_nntp_folder_get_type (void);
+GType camel_nntp_folder_get_type (void);
 
 CamelFolder *camel_nntp_folder_new (CamelStore *parent, const gchar *folder_name, CamelException *ex);
 

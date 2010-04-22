@@ -59,7 +59,7 @@ struct _transfer_data {
 	gboolean delete;
 };
 
-static CamelVeeFolderClass *camel_vtrash_folder_parent;
+G_DEFINE_TYPE (CamelVTrashFolder, camel_vtrash_folder, CAMEL_TYPE_VEE_FOLDER)
 
 static void
 transfer_messages (CamelFolder *folder,
@@ -75,7 +75,7 @@ transfer_messages (CamelFolder *folder,
 	for (i=0;i<md->uids->len;i++)
 		g_free(md->uids->pdata[i]);
 	g_ptr_array_free(md->uids, TRUE);
-	camel_object_unref (md->folder);
+	g_object_unref (md->folder);
 	g_free(md);
 }
 
@@ -166,7 +166,7 @@ vtrash_folder_getv (CamelObject *object,
 		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
 	}
 
-	return CAMEL_OBJECT_CLASS (camel_vtrash_folder_parent)->getv (object, ex, args);
+	return CAMEL_OBJECT_CLASS (camel_vtrash_folder_parent_class)->getv (object, ex, args);
 }
 
 static gboolean
@@ -243,7 +243,7 @@ vtrash_folder_transfer_messages_to (CamelFolder *source,
 			md = g_hash_table_lookup(batch, mi->summary->folder);
 			if (md == NULL) {
 				md = g_malloc0(sizeof(*md));
-				md->folder = camel_object_ref (mi->summary->folder);
+				md->folder = g_object_ref (mi->summary->folder);
 				md->uids = g_ptr_array_new();
 				md->dest = dest;
 				g_hash_table_insert(batch, mi->summary->folder, md);
@@ -271,8 +271,6 @@ camel_vtrash_folder_class_init (CamelVTrashFolderClass *class)
 	CamelObjectClass *camel_object_class;
 	CamelFolderClass *folder_class;
 
-	camel_vtrash_folder_parent = CAMEL_VEE_FOLDER_CLASS(camel_vee_folder_get_type());
-
 	/* Not required from here on. We don't count */
 	camel_object_class = CAMEL_OBJECT_CLASS (class);
 	camel_object_class->getv = vtrash_folder_getv;
@@ -285,25 +283,6 @@ camel_vtrash_folder_class_init (CamelVTrashFolderClass *class)
 static void
 camel_vtrash_folder_init (CamelVTrashFolder *vtrash_folder)
 {
-}
-
-CamelType
-camel_vtrash_folder_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_vee_folder_get_type (),
-					    "CamelVTrashFolder",
-					    sizeof (CamelVTrashFolder),
-					    sizeof (CamelVTrashFolderClass),
-					    (CamelObjectClassInitFunc) camel_vtrash_folder_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_vtrash_folder_init,
-					    NULL);
-	}
-
-	return type;
 }
 
 /**
@@ -323,7 +302,7 @@ camel_vtrash_folder_new (CamelStore *parent_store, camel_vtrash_folder_t type)
 
 	g_assert(type < CAMEL_VTRASH_FOLDER_LAST);
 
-	vtrash = (CamelVTrashFolder *)camel_object_new(camel_vtrash_folder_get_type());
+	vtrash = g_object_new (CAMEL_TYPE_VTRASH_FOLDER, NULL);
 	camel_vee_folder_construct(CAMEL_VEE_FOLDER (vtrash), parent_store, vdata[type].full_name, _(vdata[type].name),
 				   CAMEL_STORE_FOLDER_PRIVATE|CAMEL_STORE_FOLDER_CREATE|CAMEL_STORE_VEE_FOLDER_AUTO|CAMEL_STORE_VEE_FOLDER_SPECIAL);
 

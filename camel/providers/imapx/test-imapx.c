@@ -24,7 +24,7 @@ main (gint argc, gchar *argv [])
 	camel_provider_init ();
 	ex = camel_exception_new ();
 
-	session = CAMEL_SESSION (camel_object_new (CAMEL_SESSION_TYPE));
+	session = g_object_new (CAMEL_TYPE_SESSION, NULL);
 	camel_session_construct (session, "/tmp/test-camel-imapx");
 
 	service = camel_session_get_service (session, uri, CAMEL_PROVIDER_STORE, ex);

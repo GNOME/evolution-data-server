@@ -7,10 +7,10 @@
 
 #include "camel-test.h"
 
-gchar *base = "http://a/b/c/d;p?q#f";
+const gchar *base = "http://a/b/c/d;p?q#f";
 
 struct {
-	gchar *url_string, *result;
+	const gchar *url_string, *result;
 } tests[] = {
 	{ "g:h", "g:h" },
 	{ "g", "http://a/b/c/g" },

@@ -31,21 +31,31 @@
 #include "camel-charset-map.h"
 #include "camel-mime-filter-windows.h"
 
+#define CAMEL_MIME_FILTER_WINDOWS_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_FILTER_WINDOWS, CamelMimeFilterWindowsPrivate))
+
 #define d(x)
 #define w(x)
-
-static CamelMimeFilterClass *parent_class = NULL;
 
 struct _CamelMimeFilterWindowsPrivate {
 	gboolean is_windows;
 	gchar *claimed_charset;
 };
 
+G_DEFINE_TYPE (CamelMimeFilterWindows, camel_mime_filter_windows, CAMEL_TYPE_MIME_FILTER)
+
 static void
-mime_filter_windows_finalize (CamelMimeFilterWindows *mime_filter)
+mime_filter_windows_finalize (GObject *object)
 {
-	g_free (mime_filter->priv->claimed_charset);
-	g_free (mime_filter->priv);
+	CamelMimeFilterWindowsPrivate *priv;
+
+	priv = CAMEL_MIME_FILTER_WINDOWS_GET_PRIVATE (object);
+
+	g_free (priv->claimed_charset);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_mime_filter_windows_parent_class)->finalize (object);
 }
 
 static void
@@ -61,7 +71,7 @@ mime_filter_windows_filter (CamelMimeFilter *mime_filter,
 	register guchar *inptr;
 	guchar *inend;
 
-	priv = CAMEL_MIME_FILTER_WINDOWS (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_WINDOWS_GET_PRIVATE (mime_filter);
 
 	if (!priv->is_windows) {
 		inptr = (guchar *) in;
@@ -103,7 +113,7 @@ mime_filter_windows_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterWindowsPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_WINDOWS (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_WINDOWS_GET_PRIVATE (mime_filter);
 
 	priv->is_windows = FALSE;
 }
@@ -111,9 +121,13 @@ mime_filter_windows_reset (CamelMimeFilter *mime_filter)
 static void
 camel_mime_filter_windows_class_init (CamelMimeFilterWindowsClass *class)
 {
+	GObjectClass *object_class;
 	CamelMimeFilterClass *mime_filter_class;
 
-	parent_class = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelMimeFilterWindowsPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = mime_filter_windows_finalize;
 
 	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
 	mime_filter_class->filter = mime_filter_windows_filter;
@@ -122,28 +136,9 @@ camel_mime_filter_windows_class_init (CamelMimeFilterWindowsClass *class)
 }
 
 static void
-camel_mime_filter_windows_init (CamelMimeFilterWindows *mime_filter)
+camel_mime_filter_windows_init (CamelMimeFilterWindows *filter)
 {
-	mime_filter->priv = g_new0 (CamelMimeFilterWindowsPrivate, 1);
-}
-
-CamelType
-camel_mime_filter_windows_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_mime_filter_get_type (),
-					    "CamelMimeFilterWindows",
-					    sizeof (CamelMimeFilterWindows),
-					    sizeof (CamelMimeFilterWindowsClass),
-					    (CamelObjectClassInitFunc) camel_mime_filter_windows_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_filter_windows_init,
-					    (CamelObjectFinalizeFunc) mime_filter_windows_finalize);
-	}
-
-	return type;
+	filter->priv = CAMEL_MIME_FILTER_WINDOWS_GET_PRIVATE (filter);
 }
 
 /**
@@ -163,8 +158,8 @@ camel_mime_filter_windows_new (const gchar *claimed_charset)
 
 	g_return_val_if_fail (claimed_charset != NULL, NULL);
 
-	filter = CAMEL_MIME_FILTER (camel_object_new (camel_mime_filter_windows_get_type ()));
-	priv = CAMEL_MIME_FILTER_WINDOWS (filter)->priv;
+	filter = g_object_new (CAMEL_TYPE_MIME_FILTER_WINDOWS, NULL);
+	priv = CAMEL_MIME_FILTER_WINDOWS_GET_PRIVATE (filter);
 
 	priv->claimed_charset = g_strdup (claimed_charset);
 

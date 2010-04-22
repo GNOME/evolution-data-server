@@ -7,7 +7,7 @@
 
 static const gchar *imap_drivers[] = { "imap4" };
 
-static gchar *remote_providers[] = {
+static const gchar *remote_providers[] = {
 	"IMAP_TEST_URL",
 };
 
@@ -44,7 +44,7 @@ gint main(gint argc, gchar **argv)
 		/*camel_test_fatal();*/
 	}
 
-	camel_object_unref (session);
+	g_object_unref (session);
 	camel_exception_free(ex);
 
 	return 0;

@@ -440,7 +440,7 @@ camel_search_header_match (const gchar *value, const gchar *match, camel_search_
 		for (i=0; !truth && camel_internet_address_get(cia, i, &name, &addr);i++)
 			truth = (name && header_match(name, match, how)) || (addr && header_match(addr, match, how));
 
-		camel_object_unref (cia);
+		g_object_unref (cia);
 		break;
 	}
 
@@ -483,7 +483,7 @@ camel_search_message_body_contains (CamelDataWrapper *object, regex_t *pattern)
 		camel_data_wrapper_write_to_stream (containee, stream);
 		camel_stream_write (stream, "", 1);
 		truth = regexec (pattern, (gchar *) byte_array->data, 0, NULL, 0) == 0;
-		camel_object_unref (stream);
+		g_object_unref (stream);
 	}
 
 	return truth;

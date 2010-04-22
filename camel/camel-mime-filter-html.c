@@ -33,11 +33,15 @@
 
 #define d(x)
 
-static CamelMimeFilterClass *camel_mime_filter_html_parent;
+#define CAMEL_MIME_FILTER_HTML_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_FILTER_HTML, CamelMimeFilterHTMLPrivate))
 
 struct _CamelMimeFilterHTMLPrivate {
 	CamelHTMLParser *ctxt;
 };
+
+G_DEFINE_TYPE (CamelMimeFilterHTML, camel_mime_filter_html, CAMEL_TYPE_MIME_FILTER)
 
 /* ********************************************************************** */
 
@@ -78,7 +82,7 @@ mime_filter_html_run (CamelMimeFilter *mime_filter,
 	camel_html_parser_t state;
 	gchar *outp;
 
-	priv = CAMEL_MIME_FILTER_HTML (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_HTML_GET_PRIVATE (mime_filter);
 
 	d(printf("converting html:\n%.*s\n", (gint)inlen, in));
 
@@ -116,10 +120,19 @@ mime_filter_html_run (CamelMimeFilter *mime_filter,
 }
 
 static void
-mime_filter_html_finalize (CamelMimeFilterHTML *filter)
+mime_filter_html_dispose (GObject *object)
 {
-	camel_object_unref (filter->priv->ctxt);
-	g_free (filter->priv);
+	CamelMimeFilterHTMLPrivate *priv;
+
+	priv = CAMEL_MIME_FILTER_HTML_GET_PRIVATE (object);
+
+	if (priv->ctxt != NULL) {
+		g_object_unref (priv->ctxt);
+		priv->ctxt = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_mime_filter_html_parent_class)->dispose (object);
 }
 
 static void
@@ -155,18 +168,22 @@ mime_filter_html_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterHTMLPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_HTML (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_HTML_GET_PRIVATE (mime_filter);
 
-	camel_object_unref (priv->ctxt);
+	g_object_unref (priv->ctxt);
 	priv->ctxt = camel_html_parser_new ();
 }
 
 static void
 camel_mime_filter_html_class_init (CamelMimeFilterHTMLClass *class)
 {
+	GObjectClass *object_class;
 	CamelMimeFilterClass *mime_filter_class;
 
-	camel_mime_filter_html_parent = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelMimeFilterHTMLPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = mime_filter_html_dispose;
 
 	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
 	mime_filter_class->filter = mime_filter_html_filter;
@@ -177,26 +194,8 @@ camel_mime_filter_html_class_init (CamelMimeFilterHTMLClass *class)
 static void
 camel_mime_filter_html_init (CamelMimeFilterHTML *mime_filter)
 {
-	mime_filter->priv = g_new0 (CamelMimeFilterHTMLPrivate, 1);
+	mime_filter->priv = CAMEL_MIME_FILTER_HTML_GET_PRIVATE (mime_filter);
 	mime_filter->priv->ctxt = camel_html_parser_new ();
-}
-
-CamelType
-camel_mime_filter_html_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_mime_filter_get_type (), "CamelMimeFilterHTML",
-					    sizeof (CamelMimeFilterHTML),
-					    sizeof (CamelMimeFilterHTMLClass),
-					    (CamelObjectClassInitFunc) camel_mime_filter_html_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_filter_html_init,
-					    (CamelObjectFinalizeFunc) mime_filter_html_finalize);
-	}
-
-	return type;
 }
 
 /**
@@ -209,5 +208,5 @@ camel_mime_filter_html_get_type (void)
 CamelMimeFilter *
 camel_mime_filter_html_new (void)
 {
-	return (CamelMimeFilter *) camel_object_new (camel_mime_filter_html_get_type ());
+	return g_object_new (CAMEL_TYPE_MIME_FILTER_HTML, NULL);
 }

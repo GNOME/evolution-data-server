@@ -36,7 +36,7 @@
 
 #define REPLY_VIEW "default message attachments threading"
 
-static gpointer camel_groupwise_transport_parent_class;
+G_DEFINE_TYPE (CamelGroupwiseTransport, camel_groupwise_transport, CAMEL_TYPE_TRANSPORT)
 
 static gboolean
 groupwise_transport_connect (CamelService *service,
@@ -173,8 +173,6 @@ camel_groupwise_transport_class_init (CamelGroupwiseTransportClass *class)
 	CamelServiceClass *service_class;
 	CamelTransportClass *transport_class;
 
-	camel_groupwise_transport_parent_class = CAMEL_TRANSPORT_CLASS (camel_type_get_global_classfuncs (camel_transport_get_type ()));
-
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->connect = groupwise_transport_connect;
 	service_class->get_name = groupwise_transport_get_name;
@@ -186,24 +184,4 @@ camel_groupwise_transport_class_init (CamelGroupwiseTransportClass *class)
 static void
 camel_groupwise_transport_init (CamelGroupwiseTransport *groupwise_transport)
 {
-}
-
-CamelType
-camel_groupwise_transport_get_type (void)
-{
-	static CamelType camel_groupwise_transport_type = CAMEL_INVALID_TYPE;
-
-	if (camel_groupwise_transport_type == CAMEL_INVALID_TYPE) {
-		camel_groupwise_transport_type =
-			camel_type_register (CAMEL_TRANSPORT_TYPE,
-					     "CamelGroupwiseTransport",
-					     sizeof (CamelGroupwiseTransport),
-					     sizeof (CamelGroupwiseTransportClass),
-					     (CamelObjectClassInitFunc) camel_groupwise_transport_class_init,
-					     NULL,
-					     (CamelObjectInitFunc) camel_groupwise_transport_init,
-					     NULL);
-	}
-
-	return camel_groupwise_transport_type;
 }

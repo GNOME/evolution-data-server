@@ -29,9 +29,24 @@
 #include <camel/camel-mime-filter.h>
 #include <iconv.h>
 
-#define CAMEL_MIME_FILTER_CHARSET(obj)         CAMEL_CHECK_CAST (obj, camel_mime_filter_charset_get_type (), CamelMimeFilterCharset)
-#define CAMEL_MIME_FILTER_CHARSET_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_mime_filter_charset_get_type (), CamelMimeFilterCharsetClass)
-#define CAMEL_IS_MIME_FILTER_CHARSET(obj)      CAMEL_CHECK_TYPE (obj, camel_mime_filter_charset_get_type ())
+/* Standard GObject macros */
+#define CAMEL_TYPE_MIME_FILTER_CHARSET \
+	(camel_mime_filter_charset_get_type ())
+#define CAMEL_MIME_FILTER_CHARSET(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_MIME_FILTER_CHARSET, CamelMimeFilterCharset))
+#define CAMEL_MIME_FILTER_CHARSET_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_MIME_FILTER_CHARSET, CamelMimeFilterCharsetClass))
+#define CAMEL_IS_MIME_FILTER_CHARSET(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_MIME_FILTER_CHARSET))
+#define CAMEL_IS_MIME_FILTER_CHARSET_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_MIME_FILTER_CHARSET))
+#define CAMEL_MIME_FILTER_CHARSET_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_MIME_FILTER_CHARSET, CamelMimeFilterCharsetClass))
 
 G_BEGIN_DECLS
 
@@ -48,7 +63,7 @@ struct _CamelMimeFilterCharsetClass {
 	CamelMimeFilterClass parent_class;
 };
 
-CamelType	camel_mime_filter_charset_get_type (void);
+GType		camel_mime_filter_charset_get_type (void);
 CamelMimeFilter *
 		camel_mime_filter_charset_new	(const gchar *from_charset,
 						 const gchar *to_charset);

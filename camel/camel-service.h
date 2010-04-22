@@ -34,12 +34,24 @@
 #include <camel/camel-provider.h>
 #include <camel/camel-operation.h>
 
-#define CAMEL_SERVICE_TYPE     (camel_service_get_type ())
-#define CAMEL_SERVICE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_SERVICE_TYPE, CamelService))
-#define CAMEL_SERVICE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_SERVICE_TYPE, CamelServiceClass))
-#define CAMEL_IS_SERVICE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_SERVICE_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_SERVICE \
+	(camel_service_get_type ())
+#define CAMEL_SERVICE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_SERVICE, CamelService))
+#define CAMEL_SERVICE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_SERVICE, CamelServiceClass))
+#define CAMEL_IS_SERVICE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_SERVICE))
+#define CAMEL_IS_SERVICE_CLASS(obj) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_SERVICE))
 #define CAMEL_SERVICE_GET_CLASS(obj) \
-	((CamelServiceClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_SERVICE, CamelServiceClass))
 
 G_BEGIN_DECLS
 
@@ -117,7 +129,7 @@ typedef struct {
 	gboolean need_password;   /* needs a password to authenticate */
 } CamelServiceAuthType;
 
-CamelType	camel_service_get_type		(void);
+GType		camel_service_get_type		(void);
 gboolean	camel_service_construct		(CamelService *service,
 						 struct _CamelSession *session,
 						 CamelProvider *provider,
@@ -138,9 +150,10 @@ struct _CamelSession *
 CamelProvider *	camel_service_get_provider	(CamelService *service);
 GList *		camel_service_query_auth_types	(CamelService *service,
 						 CamelException *ex);
-
-void		camel_service_lock		(CamelService *service, CamelServiceLock lock);
-void		camel_service_unlock		(CamelService *service, CamelServiceLock lock);
+void		camel_service_lock		(CamelService *service,
+						 CamelServiceLock lock);
+void		camel_service_unlock		(CamelService *service,
+						 CamelServiceLock lock);
 
 G_END_DECLS
 

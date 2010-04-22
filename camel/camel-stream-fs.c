@@ -39,21 +39,28 @@
 #include "camel-stream-fs.h"
 #include "camel-win32.h"
 
+#define CAMEL_STREAM_FS_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_STREAM_FS, CamelStreamFsPrivate))
+
 struct _CamelStreamFsPrivate {
 	gint fd;	/* file descriptor on the underlying file */
 };
 
-static CamelSeekableStreamClass *parent_class = NULL;
+G_DEFINE_TYPE (CamelStreamFs, camel_stream_fs, CAMEL_TYPE_SEEKABLE_STREAM)
 
 static void
-camel_stream_fs_finalize (CamelStreamFs *stream_fs)
+stream_fs_finalize (GObject *object)
 {
-	CamelStreamFsPrivate *priv = stream_fs->priv;
+	CamelStreamFsPrivate *priv;
+
+	priv = CAMEL_STREAM_FS_GET_PRIVATE (object);
 
 	if (priv->fd != -1)
 		close (priv->fd);
 
-	g_free (priv);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_stream_fs_parent_class)->finalize (object);
 }
 
 static gssize
@@ -65,7 +72,7 @@ stream_fs_read (CamelStream *stream,
 	CamelSeekableStream *seekable;
 	gssize nread;
 
-	priv = CAMEL_STREAM_FS (stream)->priv;
+	priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 	seekable = CAMEL_SEEKABLE_STREAM (stream);
 
 	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
@@ -88,7 +95,7 @@ stream_fs_write (CamelStream *stream,
 	CamelSeekableStream *seekable;
 	gssize nwritten;
 
-	priv = CAMEL_STREAM_FS (stream)->priv;
+	priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 	seekable = CAMEL_SEEKABLE_STREAM (stream);
 
 	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
@@ -105,7 +112,7 @@ stream_fs_flush (CamelStream *stream)
 {
 	CamelStreamFsPrivate *priv;
 
-	priv = CAMEL_STREAM_FS (stream)->priv;
+	priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 
 	return fsync (priv->fd);
 }
@@ -115,7 +122,7 @@ stream_fs_close (CamelStream *stream)
 {
 	CamelStreamFsPrivate *priv;
 
-	priv = CAMEL_STREAM_FS (stream)->priv;
+	priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 
 	if (close (priv->fd) == -1)
 		return -1;
@@ -133,7 +140,7 @@ stream_fs_seek (CamelSeekableStream *stream,
 	CamelStreamFsPrivate *priv;
 	off_t real = 0;
 
-	priv = CAMEL_STREAM_FS (stream)->priv;
+	priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 
 	switch (policy) {
 	case CAMEL_STREAM_SET:
@@ -175,10 +182,14 @@ stream_fs_seek (CamelSeekableStream *stream,
 static void
 camel_stream_fs_class_init (CamelStreamFsClass *class)
 {
+	GObjectClass *object_class;
 	CamelStreamClass *stream_class;
 	CamelSeekableStreamClass *seekable_stream_class;
 
-	parent_class = CAMEL_SEEKABLE_STREAM_CLASS (camel_type_get_global_classfuncs (camel_seekable_stream_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelStreamFsPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = stream_fs_finalize;
 
 	stream_class = CAMEL_STREAM_CLASS (class);
 	stream_class->read = stream_fs_read;
@@ -193,28 +204,10 @@ camel_stream_fs_class_init (CamelStreamFsClass *class)
 static void
 camel_stream_fs_init (CamelStreamFs *stream)
 {
-	stream->priv = g_new0 (CamelStreamFsPrivate, 1);
+	stream->priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 	stream->priv->fd = -1;
 
 	CAMEL_SEEKABLE_STREAM (stream)->bound_end = CAMEL_STREAM_UNBOUND;
-}
-
-CamelType
-camel_stream_fs_get_type (void)
-{
-	static CamelType camel_stream_fs_type = CAMEL_INVALID_TYPE;
-
-	if (camel_stream_fs_type == CAMEL_INVALID_TYPE) {
-		camel_stream_fs_type = camel_type_register (camel_seekable_stream_get_type (), "CamelStreamFs",
-							    sizeof (CamelStreamFs),
-							    sizeof (CamelStreamFsClass),
-							    (CamelObjectClassInitFunc) camel_stream_fs_class_init,
-							    NULL,
-							    (CamelObjectInitFunc) camel_stream_fs_init,
-							    (CamelObjectFinalizeFunc) camel_stream_fs_finalize);
-	}
-
-	return camel_stream_fs_type;
 }
 
 /**
@@ -237,8 +230,8 @@ camel_stream_fs_new_with_fd (gint fd)
 	if (fd == -1)
 		return NULL;
 
-	stream = CAMEL_STREAM (camel_object_new (camel_stream_fs_get_type ()));
-	priv = CAMEL_STREAM_FS (stream)->priv;
+	stream = g_object_new (CAMEL_TYPE_STREAM_FS, NULL);
+	priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 
 	priv->fd = fd;
 	offset = lseek (fd, 0, SEEK_CUR);

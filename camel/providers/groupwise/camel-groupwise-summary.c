@@ -63,7 +63,7 @@ static CamelMessageContentInfo * content_info_from_db (CamelFolderSummary *s, Ca
 
 /*End of Prototypes*/
 
-static gpointer camel_groupwise_summary_parent_class;
+G_DEFINE_TYPE (CamelGroupwiseSummary, camel_groupwise_summary, CAMEL_TYPE_FOLDER_SUMMARY)
 
 static CamelMessageInfo *
 gw_message_info_clone(CamelFolderSummary *s, const CamelMessageInfo *mi)
@@ -84,8 +84,6 @@ static void
 camel_groupwise_summary_class_init (CamelGroupwiseSummaryClass *class)
 {
 	CamelFolderSummaryClass *folder_summary_class;
-
-	camel_groupwise_summary_parent_class = CAMEL_FOLDER_SUMMARY_CLASS (camel_type_get_global_classfuncs (camel_folder_summary_get_type()));
 
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
 	folder_summary_class->message_info_size = sizeof (CamelGroupwiseMessageInfo);
@@ -115,25 +113,6 @@ camel_groupwise_summary_init (CamelGroupwiseSummary *gw_summary)
 	summary->meta_summary->uid_len = 2048;
 }
 
-CamelType
-camel_groupwise_summary_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register(
-				camel_folder_summary_get_type(), "CamelGroupwiseSummary",
-				sizeof (CamelGroupwiseSummary),
-				sizeof (CamelGroupwiseSummaryClass),
-				(CamelObjectClassInitFunc) camel_groupwise_summary_class_init,
-				NULL,
-				(CamelObjectInitFunc) camel_groupwise_summary_init,
-				NULL);
-	}
-
-	return type;
-}
-
 /**
  * camel_groupwise_summary_new:
  * @filename: the file to store the summary in.
@@ -149,7 +128,7 @@ camel_groupwise_summary_new (struct _CamelFolder *folder, const gchar *filename)
 	CamelFolderSummary *summary;
 	CamelException ex;
 
-	summary = CAMEL_FOLDER_SUMMARY (camel_object_new (camel_groupwise_summary_get_type ()));
+	summary = g_object_new (CAMEL_TYPE_GROUPWISE_SUMMARY, NULL);
 	summary->folder = folder;
 	camel_folder_summary_set_build_content (summary, TRUE);
 	camel_folder_summary_set_filename (summary, filename);

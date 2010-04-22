@@ -12,7 +12,7 @@
 
 static const gchar *local_drivers[] = { "local" };
 
-static gchar *stores[] = {
+static const gchar *stores[] = {
 	"mbox:///tmp/camel-test/mbox",
 	"mh:///tmp/camel-test/mh",
 	"maildir:///tmp/camel-test/maildir"

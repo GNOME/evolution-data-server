@@ -6,7 +6,7 @@
 #include "session.h"
 
 static const gchar *imap_drivers[] = { "imap4" };
-static gchar *remote_providers[] = {
+static const gchar *remote_providers[] = {
 	"IMAP_TEST_URL",
 };
 

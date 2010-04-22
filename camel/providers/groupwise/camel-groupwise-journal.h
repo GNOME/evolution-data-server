@@ -26,12 +26,24 @@
 #include <stdarg.h>
 #include <camel/camel.h>
 
-#define CAMEL_TYPE_GROUPWISE_JOURNAL            (camel_groupwise_journal_get_type ())
-#define CAMEL_GROUPWISE_JOURNAL(obj)            (CAMEL_CHECK_CAST ((obj), CAMEL_TYPE_GROUPWISE_JOURNAL, CamelGroupwiseJournal))
-#define CAMEL_GROUPWISE_JOURNAL_CLASS(klass)    (CAMEL_CHECK_CLASS_CAST ((klass), CAMEL_TYPE_GROUPWISE_JOURNAL, CamelGroupwiseJournalClass))
-#define CAMEL_IS_GROUPWISE_JOURNAL(obj)         (CAMEL_CHECK_TYPE ((obj), CAMEL_TYPE_GROUPWISE_JOURNAL))
-#define CAMEL_IS_GROUPWISE_JOURNAL_CLASS(klass) (CAMEL_CHECK_CLASS_TYPE ((klass), CAMEL_TYPE_GROUPWISE_JOURNAL))
-#define CAMEL_GROUPWISE_JOURNAL_GET_CLASS(obj)  (CAMEL_CHECK_GET_CLASS ((obj), CAMEL_TYPE_GROUPWISE_JOURNAL, CamelGroupwiseJournalClass))
+/* Standard GObject macros */
+#define CAMEL_TYPE_GROUPWISE_JOURNAL \
+	(camel_groupwise_journal_get_type ())
+#define CAMEL_GROUPWISE_JOURNAL(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_GROUPWISE_JOURNAL, CamelGroupwiseJournal))
+#define CAMEL_GROUPWISE_JOURNAL_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_GROUPWISE_JOURNAL, CamelGroupwiseJournalClass))
+#define CAMEL_IS_GROUPWISE_JOURNAL(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_GROUPWISE_JOURNAL))
+#define CAMEL_IS_GROUPWISE_JOURNAL_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_GROUPWISE_JOURNAL))
+#define CAMEL_GROUPWISE_JOURNAL_GET_CLASS(obj) \
+	(CAMEL_CHECK_GET_CLASS \
+	((obj), CAMEL_TYPE_GROUPWISE_JOURNAL, CamelGroupwiseJournalClass))
 
 G_BEGIN_DECLS
 
@@ -66,7 +78,7 @@ struct _CamelGroupwiseJournalClass {
 
 };
 
-CamelType camel_groupwise_journal_get_type (void);
+GType camel_groupwise_journal_get_type (void);
 
 CamelOfflineJournal *camel_groupwise_journal_new (struct _CamelGroupwiseFolder *folder, const gchar *filename);
 

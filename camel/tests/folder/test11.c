@@ -92,7 +92,8 @@ check_fi(CamelFolderInfo *fi, CamelFolderInfo *list, gint len)
 	g_ptr_array_free(folders, TRUE);
 }
 
-gint main(gint argc, gchar **argv)
+gint
+main(gint argc, gchar **argv)
 {
 	CamelException *ex;
 	CamelFolder *f1, *f2;

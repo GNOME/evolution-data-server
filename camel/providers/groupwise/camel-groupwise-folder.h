@@ -31,10 +31,24 @@
 
 #include "camel-groupwise-summary.h"
 
-#define CAMEL_GROUPWISE_FOLDER_TYPE     (camel_groupwise_folder_get_type ())
-#define CAMEL_GROUPWISE_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_GROUPWISE_FOLDER_TYPE, CamelGroupwiseFolder))
-#define CAMEL_GROUPWISE_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_GROUPWISE_FOLDER_TYPE, CamelGroupwiseFolderClass))
-#define CAMEL_IS_GROUPWISE_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_GROUPWISE_FOLDER_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_GROUPWISE_FOLDER \
+	(camel_groupwise_folder_get_type ())
+#define CAMEL_GROUPWISE_FOLDER(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_GROUPWISE_FOLDER, CamelGroupwiseFolder))
+#define CAMEL_GROUPWISE_FOLDER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_GROUPWISE_FOLDER, CamelGroupwiseFolderClass))
+#define CAMEL_IS_GROUPWISE_FOLDER(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_GROUPWISE_FOLDER))
+#define CAMEL_IS_GROUPWISE_FOLDER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_GROUPWISE_FOLDER))
+#define CAMEL_GROUPWISE_FOLDER_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_GROUPWISE_FOLDER, CamelGroupwiseFolderClass))
 
 G_BEGIN_DECLS
 
@@ -64,7 +78,7 @@ struct _CamelGroupwiseFolderClass {
 
 } ;
 
-CamelType camel_groupwise_folder_get_type (void);
+GType camel_groupwise_folder_get_type (void);
 
 /* implemented */
 CamelFolder * camel_gw_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *folder_name, CamelException *ex);

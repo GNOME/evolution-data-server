@@ -33,10 +33,24 @@
 #include <camel/camel-internet-address.h>
 #include <camel/camel-mime-filter-bestenc.h>
 
-#define CAMEL_MIME_MESSAGE_TYPE     (camel_mime_message_get_type ())
-#define CAMEL_MIME_MESSAGE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MIME_MESSAGE_TYPE, CamelMimeMessage))
-#define CAMEL_MIME_MESSAGE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MIME_MESSAGE_TYPE, CamelMimeMessageClass))
-#define CAMEL_IS_MIME_MESSAGE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MIME_MESSAGE_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_MIME_MESSAGE \
+	(camel_mime_message_get_type ())
+#define CAMEL_MIME_MESSAGE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_MIME_MESSAGE, CamelMimeMessage))
+#define CAMEL_MIME_MESSAGE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_MIME_MESSAGE, CamelMimeMessageClass))
+#define CAMEL_IS_MIME_MESSAGE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_MIME_MESSAGE))
+#define CAMEL_IS_MIME_MESSAGE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_MIME_MESSAGE))
+#define CAMEL_MIME_MESSAGE_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_MIME_MESSAGE, CamelMimeMessageClass))
 
 #define CAMEL_RECIPIENT_TYPE_TO "To"
 #define CAMEL_RECIPIENT_TYPE_CC "Cc"
@@ -79,8 +93,7 @@ struct _CamelMimeMessageClass {
 	CamelMimePartClass parent_class;
 };
 
-/* Standard Camel function */
-CamelType                   camel_mime_message_get_type           (void);
+GType                   camel_mime_message_get_type           (void);
 
 /* public methods */
 CamelMimeMessage           *camel_mime_message_new                (void);

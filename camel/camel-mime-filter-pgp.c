@@ -32,6 +32,10 @@
 
 #include "camel-mime-filter-pgp.h"
 
+#define CAMEL_MIME_FILTER_PGP_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_FILTER_PGP, CamelMimeFilterPgpPrivate))
+
 #define BEGIN_PGP_SIGNED_MESSAGE "-----BEGIN PGP SIGNED MESSAGE-----"
 #define BEGIN_PGP_SIGNATURE      "-----BEGIN PGP SIGNATURE-----"
 #define END_PGP_SIGNATURE        "-----END PGP SIGNATURE-----"
@@ -51,6 +55,8 @@ enum {
 	PGP_FOOTER
 };
 
+G_DEFINE_TYPE (CamelMimeFilterPgp, camel_mime_filter_pgp, CAMEL_TYPE_MIME_FILTER)
+
 static void
 mime_filter_pgp_run (CamelMimeFilter *mime_filter,
                      const gchar *in,
@@ -68,7 +74,7 @@ mime_filter_pgp_run (CamelMimeFilter *mime_filter,
 	gboolean blank;
 	gsize len;
 
-	priv = CAMEL_MIME_FILTER_PGP (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_PGP_GET_PRIVATE (mime_filter);
 
 	/* only need as much space as the input, we're stripping chars */
 	camel_mime_filter_set_size (mime_filter, inlen, FALSE);
@@ -145,12 +151,6 @@ mime_filter_pgp_run (CamelMimeFilter *mime_filter,
 }
 
 static void
-mime_filter_pgp_finalize (CamelMimeFilterPgp *mime_filter)
-{
-	g_free (mime_filter->priv);
-}
-
-static void
 mime_filter_pgp_filter (CamelMimeFilter *mime_filter,
                         const gchar *in,
                         gsize len,
@@ -183,7 +183,7 @@ mime_filter_pgp_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterPgpPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_PGP (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_PGP_GET_PRIVATE (mime_filter);
 
 	priv->state = PGP_PREFACE;
 }
@@ -193,6 +193,8 @@ camel_mime_filter_pgp_class_init (CamelMimeFilterPgpClass *class)
 {
 	CamelMimeFilterClass *mime_filter_class;
 
+	g_type_class_add_private (class, sizeof (CamelMimeFilterPgpPrivate));
+
 	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
 	mime_filter_class->filter = mime_filter_pgp_filter;
 	mime_filter_class->complete = mime_filter_pgp_complete;
@@ -200,32 +202,13 @@ camel_mime_filter_pgp_class_init (CamelMimeFilterPgpClass *class)
 }
 
 static void
-camel_mime_filter_pgp_init (CamelMimeFilterPgp *mime_filter)
+camel_mime_filter_pgp_init (CamelMimeFilterPgp *filter)
 {
-	mime_filter->priv = g_new0 (CamelMimeFilterPgpPrivate, 1);
-}
-
-CamelType
-camel_mime_filter_pgp_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_mime_filter_get_type (),
-					    "CamelMimeFilterPgp",
-					    sizeof (CamelMimeFilterPgp),
-					    sizeof (CamelMimeFilterPgpClass),
-					    (CamelObjectClassInitFunc) camel_mime_filter_pgp_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_filter_pgp_init,
-					    (CamelObjectFinalizeFunc) mime_filter_pgp_finalize);
-	}
-
-	return type;
+	filter->priv = CAMEL_MIME_FILTER_PGP_GET_PRIVATE (filter);
 }
 
 CamelMimeFilter *
 camel_mime_filter_pgp_new (void)
 {
-	return (CamelMimeFilter *) camel_object_new (camel_mime_filter_pgp_get_type ());
+	return g_object_new (CAMEL_TYPE_MIME_FILTER_PGP, NULL);
 }

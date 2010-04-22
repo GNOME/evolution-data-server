@@ -181,50 +181,36 @@ static gchar *states[] = {
 };
 #endif
 
-static CamelObjectClass *camel_mime_parser_parent;
+G_DEFINE_TYPE (CamelMimeParser, camel_mime_parser, CAMEL_TYPE_OBJECT)
 
 static void
-mime_parser_finalize (CamelObject *object)
+mime_parser_finalize (GObject *object)
 {
-	struct _header_scan_state *s = _PRIVATE(object);
+	struct _header_scan_state *s = _PRIVATE (object);
+
 #ifdef PURIFY
 	purify_watch_remove_all();
 #endif
 
 	folder_scan_close(s);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_mime_parser_parent_class)->finalize (object);
 }
 
 static void
 camel_mime_parser_class_init (CamelMimeParserClass *class)
 {
-	camel_mime_parser_parent = camel_type_get_global_classfuncs (camel_object_get_type ());
+	GObjectClass *object_class;
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = mime_parser_finalize;
 }
 
 static void
 camel_mime_parser_init (CamelMimeParser *parser)
 {
-	struct _header_scan_state *s;
-
-	s = folder_scan_init();
-	_PRIVATE(parser) = s;
-}
-
-CamelType
-camel_mime_parser_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_object_get_type (), "CamelMimeParser",
-					    sizeof (CamelMimeParser),
-					    sizeof (CamelMimeParserClass),
-					    (CamelObjectClassInitFunc) camel_mime_parser_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_parser_init,
-					    (CamelObjectFinalizeFunc) mime_parser_finalize);
-	}
-
-	return type;
+	parser->priv = folder_scan_init();
 }
 
 /**
@@ -237,7 +223,7 @@ camel_mime_parser_get_type (void)
 CamelMimeParser *
 camel_mime_parser_new (void)
 {
-	return CAMEL_MIME_PARSER (camel_object_new (camel_mime_parser_get_type ()));
+	return g_object_new (CAMEL_TYPE_MIME_PARSER, NULL);
 }
 
 /**
@@ -265,7 +251,7 @@ camel_mime_parser_filter_add(CamelMimeParser *m, CamelMimeFilter *mf)
 	struct _header_scan_filter *f, *new;
 
 	new = g_malloc(sizeof(*new));
-	new->filter = camel_object_ref (mf);
+	new->filter = mf;
 	new->id = s->filterid++;
 	if (s->filterid == -1)
 		s->filterid++;
@@ -299,7 +285,7 @@ camel_mime_parser_filter_remove(CamelMimeParser *m, gint id)
 	while (f && f->next) {
 		old = f->next;
 		if (old->id == id) {
-			camel_object_unref (old->filter);
+			g_object_unref (old->filter);
 			f->next = old->next;
 			g_free(old);
 			/* there should only be a single matching id, but
@@ -1429,7 +1415,7 @@ folder_scan_close(struct _header_scan_state *s)
 	if (s->fd != -1)
 		close(s->fd);
 	if (s->stream) {
-		camel_object_unref (s->stream);
+		g_object_unref (s->stream);
 	}
 	g_free(s);
 }
@@ -1500,7 +1486,7 @@ folder_scan_reset(struct _header_scan_state *s)
 		s->fd = -1;
 	}
 	if (s->stream) {
-		camel_object_unref (s->stream);
+		g_object_unref (s->stream);
 		s->stream = NULL;
 	}
 	s->ioerrno = 0;
@@ -1521,7 +1507,7 @@ folder_scan_init_with_stream (struct _header_scan_state *s,
                               CamelStream *stream)
 {
 	folder_scan_reset(s);
-	s->stream = camel_object_ref (stream);
+	s->stream = g_object_ref (stream);
 
 	return 0;
 }

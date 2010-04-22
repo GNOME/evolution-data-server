@@ -24,9 +24,24 @@
 
 #include <camel/camel.h>
 
-#define CAMEL_GW_STORE_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_groupwise_store_summary_get_type (), CamelGroupwiseStoreSummary)
-#define CAMEL_GW_STORE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_groupwise_store_summary_get_type (), CamelGroupwiseStoreSummaryClass)
-#define CAMEL_IS_GW_STORE_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_groupwise_store_summary_get_type ())
+/* Standard GObject macros */
+#define CAMEL_TYPE_GROUPWISE_STORE_SUMMARY \
+	(camel_groupwise_store_summary_get_type ())
+#define CAMEL_GROUPWISE_STORE_SUMMARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_GROUPWISE_STORE_SUMMARY, CamelGroupwiseStoreSummary))
+#define CAMEL_GROUPWISE_STORE_SUMMARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_GROUPWISE_STORE_SUMMARY, CamelGroupwiseStoreSummaryClass))
+#define CAMEL_IS_GROUPWISE_STORE_SUMMARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_GROUPWISE_STORE_SUMMARY))
+#define CAMEL_IS_GROUPWISE_STORE_SUMMARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_GROUPWISE_STORE_SUMMARY))
+#define CAMEL_GROUPWISE_STORE_SUMMARY_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_GROUPWISE_STORE_SUMMARY, CamelGroupwiseStoreSummaryClass))
 
 G_BEGIN_DECLS
 
@@ -68,7 +83,7 @@ struct _CamelGroupwiseStoreSummaryClass {
 	CamelStoreSummaryClass summary_class;
 };
 
-CamelType                        camel_groupwise_store_summary_get_type      (void);
+GType                        camel_groupwise_store_summary_get_type      (void);
 CamelGroupwiseStoreSummary      *camel_groupwise_store_summary_new        (void);
 CamelGroupwiseStoreInfo *camel_groupwise_store_summary_full_name(CamelGroupwiseStoreSummary *s, const gchar *full_name);
 CamelGroupwiseStoreInfo *camel_groupwise_store_summary_add_from_full(CamelGroupwiseStoreSummary *s, const gchar *full, gchar dir_sep);

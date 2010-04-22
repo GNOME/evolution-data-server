@@ -8,7 +8,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-gint main(gint argc, gchar **argv)
+gint
+main(gint argc, gchar **argv)
 {
 	CamelSeekableStream *ss = NULL;
 	gint i;

@@ -36,7 +36,7 @@
 
 #define d(x)
 
-static gpointer camel_disco_store_parent_class;
+G_DEFINE_TYPE (CamelDiscoStore, camel_disco_store, CAMEL_TYPE_STORE)
 
 static gboolean
 disco_store_construct (CamelService *service,
@@ -93,9 +93,9 @@ disco_store_connect (CamelService *service,
 		/* Need to resync.  Note we do the ref thing since during the replay
 		   disconnect could be called, which will remove store->diary and unref it */
 		store->status = CAMEL_DISCO_STORE_RESYNCING;
-		diary = camel_object_ref (store->diary);
+		diary = g_object_ref (store->diary);
 		camel_disco_diary_replay(diary, ex);
-		camel_object_unref (diary);
+		g_object_unref (diary);
 		store->status = CAMEL_DISCO_STORE_ONLINE;
 		if (camel_exception_is_set (ex))
 			return FALSE;
@@ -238,12 +238,12 @@ disco_store_set_status (CamelDiscoStore *disco_store,
 				folders = camel_object_bag_list(((CamelStore *)disco_store)->folders);
 				for (i=0;i<folders->len;i++) {
 					folder = folders->pdata[i];
-					if (CAMEL_CHECK_TYPE(folder, CAMEL_DISCO_FOLDER_TYPE)
+					if (G_TYPE_CHECK_INSTANCE_TYPE(folder, CAMEL_TYPE_DISCO_FOLDER)
 					    && (sync || ((CamelDiscoFolder *)folder)->offline_sync)) {
 						camel_disco_folder_prepare_for_offline((CamelDiscoFolder *)folder, "", &x);
 						camel_exception_clear(&x);
 					}
-					camel_object_unref (folder);
+					g_object_unref (folder);
 				}
 				g_ptr_array_free(folders, TRUE);
 			}
@@ -266,8 +266,6 @@ camel_disco_store_class_init (CamelDiscoStoreClass *class)
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 
-	camel_disco_store_parent_class = CAMEL_STORE_CLASS (camel_type_get_global_classfuncs (camel_store_get_type ()));
-
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->construct = disco_store_construct;
 	service_class->connect = disco_store_connect;
@@ -281,24 +279,9 @@ camel_disco_store_class_init (CamelDiscoStoreClass *class)
 	class->set_status = disco_store_set_status;
 }
 
-CamelType
-camel_disco_store_get_type (void)
+static void
+camel_disco_store_init (CamelDiscoStore *disco_store)
 {
-	static CamelType camel_disco_store_type = CAMEL_INVALID_TYPE;
-
-	if (camel_disco_store_type == CAMEL_INVALID_TYPE) {
-		camel_disco_store_type = camel_type_register (
-			CAMEL_STORE_TYPE,
-			"CamelDiscoStore",
-			sizeof (CamelDiscoStore),
-			sizeof (CamelDiscoStoreClass),
-			(CamelObjectClassInitFunc) camel_disco_store_class_init,
-			NULL,
-			NULL,
-			NULL);
-	}
-
-	return camel_disco_store_type;
 }
 
 /**
@@ -418,12 +401,12 @@ camel_disco_store_prepare_for_offline (CamelDiscoStore *disco_store,
 				folders = camel_object_bag_list(((CamelStore *)disco_store)->folders);
 				for (i=0;i<folders->len;i++) {
 					folder = folders->pdata[i];
-					if (CAMEL_CHECK_TYPE(folder, CAMEL_DISCO_FOLDER_TYPE)
+					if (G_TYPE_CHECK_INSTANCE_TYPE(folder, CAMEL_TYPE_DISCO_FOLDER)
 					    && (sync || ((CamelDiscoFolder *)folder)->offline_sync)) {
 						camel_disco_folder_prepare_for_offline((CamelDiscoFolder *)folder, "(match-all)", &x);
 						camel_exception_clear(&x);
 					}
-					camel_object_unref (folder);
+					g_object_unref (folder);
 				}
 				g_ptr_array_free(folders, TRUE);
 			}
@@ -433,4 +416,3 @@ camel_disco_store_prepare_for_offline (CamelDiscoStore *disco_store,
 		camel_exception_clear(&x);
 	}
 }
-

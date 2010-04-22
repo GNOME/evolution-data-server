@@ -57,7 +57,7 @@ static CamelMessageInfo * message_info_from_db (CamelFolderSummary *s, CamelMIRe
 static gint content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelMIRecord *mir);
 static CamelMessageContentInfo * content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir);
 
-static gpointer camel_imap_summary_parent_class;
+G_DEFINE_TYPE (CamelImapSummary, camel_imap_summary, CAMEL_TYPE_FOLDER_SUMMARY)
 
 static CamelMessageInfo *
 imap_message_info_clone(CamelFolderSummary *s, const CamelMessageInfo *mi)
@@ -78,8 +78,6 @@ static void
 camel_imap_summary_class_init (CamelImapSummaryClass *class)
 {
 	CamelFolderSummaryClass *folder_summary_class;
-
-	camel_imap_summary_parent_class = CAMEL_FOLDER_SUMMARY_CLASS (camel_type_get_global_classfuncs (camel_folder_summary_get_type()));
 
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
 	folder_summary_class->message_info_size = sizeof (CamelImapMessageInfo);
@@ -103,25 +101,6 @@ camel_imap_summary_class_init (CamelImapSummaryClass *class)
 static void
 camel_imap_summary_init (CamelImapSummary *imap_summary)
 {
-}
-
-CamelType
-camel_imap_summary_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register(
-			camel_folder_summary_get_type(), "CamelImapSummary",
-			sizeof (CamelImapSummary),
-			sizeof (CamelImapSummaryClass),
-			(CamelObjectClassInitFunc) camel_imap_summary_class_init,
-			NULL,
-			(CamelObjectInitFunc) camel_imap_summary_init,
-			NULL);
-	}
-
-	return type;
 }
 
 static gint
@@ -181,7 +160,7 @@ camel_imap_summary_new (struct _CamelFolder *folder, const gchar *filename)
 	CamelException ex;
 	camel_exception_init (&ex);
 
-	summary = CAMEL_FOLDER_SUMMARY (camel_object_new (camel_imap_summary_get_type ()));
+	summary = g_object_new (CAMEL_TYPE_IMAP_SUMMARY, NULL);
 	summary->folder = folder;
 	/* Don't do DB sort. Its pretty slow to load */
 	if (folder && 0) {

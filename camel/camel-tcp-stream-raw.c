@@ -53,10 +53,9 @@
 #undef ETIMEDOUT
 #endif
 #define ETIMEDOUT EAGAIN
-
 #endif
 
-static CamelTcpStreamClass *parent_class = NULL;
+G_DEFINE_TYPE (CamelTcpStreamRaw, camel_tcp_stream_raw, CAMEL_TYPE_TCP_STREAM)
 
 #ifdef SIMULATE_FLAKY_NETWORK
 static gssize
@@ -326,10 +325,15 @@ socket_connect(struct addrinfo *h)
 }
 
 static void
-tcp_stream_raw_finalize (CamelTcpStreamRaw *stream)
+tcp_stream_raw_finalize (GObject *object)
 {
+	CamelTcpStreamRaw *stream = CAMEL_TCP_STREAM_RAW (object);
+
 	if (stream->sockfd != -1)
 		SOCKET_CLOSE (stream->sockfd);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_tcp_stream_raw_parent_class)->finalize (object);
 }
 
 static gssize
@@ -501,10 +505,12 @@ tcp_stream_raw_get_remote_address (CamelTcpStream *stream,
 static void
 camel_tcp_stream_raw_class_init (CamelTcpStreamRawClass *class)
 {
+	GObjectClass *object_class;
 	CamelStreamClass *stream_class;
 	CamelTcpStreamClass *tcp_stream_class;
 
-	parent_class = CAMEL_TCP_STREAM_CLASS (camel_type_get_global_classfuncs (camel_tcp_stream_get_type ()));
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = tcp_stream_raw_finalize;
 
 	stream_class = CAMEL_STREAM_CLASS (class);
 	stream_class->read = tcp_stream_raw_read;
@@ -526,25 +532,6 @@ camel_tcp_stream_raw_init (CamelTcpStreamRaw *stream)
 	stream->sockfd = -1;
 }
 
-CamelType
-camel_tcp_stream_raw_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_tcp_stream_get_type (),
-					    "CamelTcpStreamRaw",
-					    sizeof (CamelTcpStreamRaw),
-					    sizeof (CamelTcpStreamRawClass),
-					    (CamelObjectClassInitFunc) camel_tcp_stream_raw_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_tcp_stream_raw_init,
-					    (CamelObjectFinalizeFunc) tcp_stream_raw_finalize);
-	}
-
-	return type;
-}
-
 /**
  * camel_tcp_stream_raw_new:
  *
@@ -555,5 +542,5 @@ camel_tcp_stream_raw_get_type (void)
 CamelStream *
 camel_tcp_stream_raw_new (void)
 {
-	return CAMEL_STREAM (camel_object_new (camel_tcp_stream_raw_get_type ()));
+	return g_object_new (CAMEL_TYPE_TCP_STREAM_RAW, NULL);
 }

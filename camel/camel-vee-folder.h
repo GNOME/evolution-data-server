@@ -31,11 +31,24 @@
 #include <camel/camel-store.h>
 #include <camel/camel-vee-summary.h>
 
-#define CAMEL_VEE_FOLDER(obj)         CAMEL_CHECK_CAST (obj, camel_vee_folder_get_type (), CamelVeeFolder)
-#define CAMEL_VEE_FOLDER_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_vee_folder_get_type (), CamelVeeFolderClass)
-#define CAMEL_IS_VEE_FOLDER(obj)      CAMEL_CHECK_TYPE (obj, camel_vee_folder_get_type ())
+/* Standard GObject macros */
+#define CAMEL_TYPE_VEE_FOLDER \
+	(camel_vee_folder_get_type ())
+#define CAMEL_VEE_FOLDER(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_VEE_FOLDER, CamelVeeFolder))
+#define CAMEL_VEE_FOLDER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_VEE_FOLDER, CamelVeeFolderClass))
+#define CAMEL_IS_VEE_FOLDER(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_VEE_FOLDER))
+#define CAMEL_IS_VEE_FOLDER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_VEE_FOLDER))
 #define CAMEL_VEE_FOLDER_GET_CLASS(obj) \
-	((CamelVeeFolderClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_VEE_FOLDER, CamelVeeFolderClass))
 
 G_BEGIN_DECLS
 
@@ -43,7 +56,7 @@ typedef struct _CamelVeeFolder CamelVeeFolder;
 typedef struct _CamelVeeFolderClass CamelVeeFolderClass;
 typedef struct _CamelVeeFolderPrivate CamelVeeFolderPrivate;
 
-typedef enum _CamelVeeFolderLock {
+typedef enum {
 	CVF_SUMMARY_LOCK,
 	CVF_SUBFOLDER_LOCK,
 	CVF_CHANGED_LOCK
@@ -87,7 +100,7 @@ struct _CamelVeeFolderClass {
 
 #define CAMEL_UNMATCHED_NAME "UNMATCHED"
 
-CamelType	      camel_vee_folder_get_type		(void);
+GType	      camel_vee_folder_get_type		(void);
 CamelFolder  *camel_vee_folder_new		(CamelStore *parent_store, const gchar *full, guint32 flags);
 void         camel_vee_folder_construct		(CamelVeeFolder *vf, CamelStore *parent_store, const gchar *full, const gchar *name, guint32 flags);
 

@@ -40,8 +40,9 @@
 
 #define d(x)
 
-static CamelFolderSummaryClass *camel_vee_summary_parent;
 static const gchar *unread_str = " (and\n  \n     (match-all (not (system-flag  \"Seen\")))\n    \n  )\n;  (or\n  \n     (match-all (not (system-flag  \"Seen\")))\n    \n  )\n; (match-threads \"all\"  (and\n  \n     (match-all (not (system-flag  \"Seen\")))\n    \n  )\n)\n;  (match-threads \"all\"  (or\n  \n     (match-all (not (system-flag  \"Seen\")))\n    \n  )\n)\n;";
+
+G_DEFINE_TYPE (CamelVeeSummary, camel_vee_summary, CAMEL_TYPE_FOLDER_SUMMARY)
 
 static void
 vee_message_info_free(CamelFolderSummary *s, CamelMessageInfo *info)
@@ -49,7 +50,7 @@ vee_message_info_free(CamelFolderSummary *s, CamelMessageInfo *info)
 	CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *)info;
 
 	camel_pstring_free(info->uid);
-	camel_object_unref (mi->summary);
+	g_object_unref (mi->summary);
 }
 
 static CamelMessageInfo *
@@ -60,7 +61,7 @@ vee_message_info_clone(CamelFolderSummary *s, const CamelMessageInfo *mi)
 
 	to = (CamelVeeMessageInfo *)camel_message_info_new(s);
 
-	to->summary = camel_object_ref (from->summary);
+	to->summary = g_object_ref (from->summary);
 	to->info.summary = s;
 	to->info.uid = camel_pstring_strdup(from->info.uid);
 
@@ -358,7 +359,7 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
 		strncpy(tmphash, uid, 8);
 		tmphash[8] = 0;
 		vinfo->summary = g_hash_table_lookup(((CamelVeeFolder *) s->folder)->hashes, tmphash);
-		camel_object_ref (vinfo->summary);
+		g_object_ref (vinfo->summary);
 		camel_folder_summary_insert (s, info, FALSE);
 	}
 	return info;
@@ -390,27 +391,6 @@ camel_vee_summary_init (CamelVeeSummary *vee_summary)
 {
 }
 
-CamelType
-camel_vee_summary_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		camel_vee_summary_parent = (CamelFolderSummaryClass *)camel_folder_summary_get_type();
-
-		type = camel_type_register(
-			camel_folder_summary_get_type(), "CamelVeeSummary",
-			sizeof (CamelVeeSummary),
-			sizeof (CamelVeeSummaryClass),
-			(CamelObjectClassInitFunc) camel_vee_summary_class_init,
-			NULL,
-			(CamelObjectInitFunc) camel_vee_summary_init,
-			NULL);
-	}
-
-	return type;
-}
-
 /**
  * camel_vee_summary_new:
  * @parent: Folder its attached to.
@@ -425,7 +405,7 @@ camel_vee_summary_new(CamelFolder *parent)
 {
 	CamelVeeSummary *s;
 
-	s = (CamelVeeSummary *)camel_object_new(camel_vee_summary_get_type());
+	s = g_object_new (CAMEL_TYPE_VEE_SUMMARY, NULL);
 	s->summary.folder = parent;
 	s->force_counts = FALSE;
 	s->fake_visible_count = 0;
@@ -479,7 +459,7 @@ camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const gch
 		d(g_message ("%s - already there\n", vuid));
 		g_free (vuid);
 		if (!mi->summary)
-			mi->summary = camel_object_ref (summary);
+			mi->summary = g_object_ref (summary);
 
 		camel_message_info_ref (mi);
 		return mi;
@@ -490,7 +470,7 @@ camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const gch
 	fcache = camel_folder_summary_get_flag_cache(summary);
 	mi->old_flags = GPOINTER_TO_UINT(g_hash_table_lookup (fcache, uid));
 	/* We would do lazy loading of flags, when the folders are loaded to memory through folder_reloaded signal */
-	camel_object_ref (summary);
+	g_object_ref (summary);
 	mi->info.uid = (gchar *) camel_pstring_strdup (vuid);
 	g_free (vuid);
 	camel_message_info_ref (mi);

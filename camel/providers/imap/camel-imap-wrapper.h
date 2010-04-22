@@ -24,10 +24,24 @@
 
 #include <camel/camel.h>
 
-#define CAMEL_IMAP_WRAPPER_TYPE     (camel_imap_wrapper_get_type ())
-#define CAMEL_IMAP_WRAPPER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAP_WRAPPER_TYPE, CamelImapWrapper))
-#define CAMEL_IMAP_WRAPPER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_IMAP_WRAPPER_TYPE, CamelImapWrapperClass))
-#define CAMEL_IS_IMAP_WRAPPER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_IMAP_WRAPPER_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_IMAP_WRAPPER \
+	(camel_imap_wrapper_get_type ())
+#define CAMEL_IMAP_WRAPPER(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_IMAP_WRAPPER, CamelImapWrapper))
+#define CAMEL_IMAP_WRAPPER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_IMAP_WRAPPER, CamelImapWrapperClass))
+#define CAMEL_IS_IMAP_WRAPPER(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_IMAP_WRAPPER))
+#define CAMEL_IS_IMAP_WRAPPER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_IMAP_WRAPPER))
+#define CAMEL_IMAP_WRAPPER_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_IMAP_WRAPPER, CamelImapWrapperClass))
 
 G_BEGIN_DECLS
 
@@ -49,7 +63,7 @@ struct _CamelImapWrapperClass {
 	CamelDataWrapperClass parent_class;
 };
 
-CamelType camel_imap_wrapper_get_type (void);
+GType camel_imap_wrapper_get_type (void);
 
 /* Constructor */
 CamelDataWrapper *camel_imap_wrapper_new (CamelImapFolder *imap_folder,

@@ -4,31 +4,16 @@
 
 #include "session.h"
 
+G_DEFINE_TYPE (CamelTestSession, camel_test_session, CAMEL_TYPE_SESSION)
+
 static void
-class_init (CamelTestSessionClass *camel_test_session_class)
+camel_test_session_class_init (CamelTestSessionClass *class)
 {
-	CamelSessionClass *camel_session_class =
-		CAMEL_SESSION_CLASS (camel_test_session_class);
 }
 
-CamelType
-camel_test_session_get_type (void)
+static void
+camel_test_session_init (CamelTestSession *test_session)
 {
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (
-			camel_session_get_type (),
-			"CamelTestSession",
-			sizeof (CamelTestSession),
-			sizeof (CamelTestSessionClass),
-			(CamelObjectClassInitFunc) class_init,
-			NULL,
-			NULL,
-			NULL);
-	}
-
-	return type;
 }
 
 CamelSession *
@@ -36,8 +21,7 @@ camel_test_session_new (const gchar *path)
 {
 	CamelSession *session;
 
-	session = CAMEL_SESSION (camel_object_new (CAMEL_TEST_SESSION_TYPE));
-
+	session = g_object_new (CAMEL_TYPE_TEST_SESSION, NULL);
 	camel_session_construct (session, path);
 
 	return session;

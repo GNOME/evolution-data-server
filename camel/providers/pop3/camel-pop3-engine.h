@@ -25,9 +25,24 @@
 
 #include "camel-pop3-stream.h"
 
-#define CAMEL_POP3_ENGINE(obj)         CAMEL_CHECK_CAST (obj, camel_pop3_engine_get_type (), CamelPOP3Engine)
-#define CAMEL_POP3_ENGINE_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_pop3_engine_get_type (), CamelPOP3EngineClass)
-#define CAMEL_IS_POP3_ENGINE(obj)      CAMEL_CHECK_TYPE (obj, camel_pop3_engine_get_type ())
+/* Standard GObject macros */
+#define CAMEL_TYPE_POP3_ENGINE \
+	(camel_pop3_engine_get_type ())
+#define CAMEL_POP3_ENGINE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_POP3_ENGINE, CamelPOP3Engine))
+#define CAMEL_POP3_ENGINE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_POP3_ENGINE, CamelPOP3EngineClass))
+#define CAMEL_IS_POP3_ENGINE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_POP3_ENGINE))
+#define CAMEL_IS_POP3_ENGINE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_POP3_ENGINE))
+#define CAMEL_POP3_ENGINE_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_POP3_ENGINE, CamelPOP3EngineClass))
 
 G_BEGIN_DECLS
 
@@ -121,7 +136,7 @@ struct _CamelPOP3EngineClass {
 	CamelObjectClass parent_class;
 };
 
-CamelType		  camel_pop3_engine_get_type	(void);
+GType		  camel_pop3_engine_get_type	(void);
 
 CamelPOP3Engine  *camel_pop3_engine_new		(CamelStream *source, guint32 flags);
 

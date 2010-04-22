@@ -35,8 +35,6 @@
 #include "camel-mh-store.h"
 #include "camel-mh-summary.h"
 
-static gpointer camel_mh_store_parent_class;
-
 #define d(x)
 
 static gboolean construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex);
@@ -46,13 +44,13 @@ static gboolean delete_folder(CamelStore * store, const gchar *folder_name, Came
 static gboolean rename_folder(CamelStore *store, const gchar *old, const gchar *new, CamelException *ex);
 static CamelFolderInfo * get_folder_info (CamelStore *store, const gchar *top, guint32 flags, CamelException *ex);
 
+G_DEFINE_TYPE (CamelMhStore, camel_mh_store, CAMEL_TYPE_LOCAL_STORE)
+
 static void
-camel_mh_store_class_init (CamelObjectClass *class)
+camel_mh_store_class_init (CamelMhStoreClass *class)
 {
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
-
-	camel_mh_store_parent_class = (CamelLocalStoreClass *)camel_type_get_global_classfuncs(camel_local_store_get_type());
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->construct = construct;
@@ -65,22 +63,9 @@ camel_mh_store_class_init (CamelObjectClass *class)
 	store_class->get_folder_info = get_folder_info;
 }
 
-CamelType
-camel_mh_store_get_type(void)
+static void
+camel_mh_store_init (CamelMhStore *mh_store)
 {
-	static CamelType camel_mh_store_type = CAMEL_INVALID_TYPE;
-
-	if (camel_mh_store_type == CAMEL_INVALID_TYPE) {
-		camel_mh_store_type = camel_type_register(CAMEL_LOCAL_STORE_TYPE, "CamelMhStore",
-							  sizeof(CamelMhStore),
-							  sizeof(CamelMhStoreClass),
-							  (CamelObjectClassInitFunc) camel_mh_store_class_init,
-							  NULL,
-							  NULL,
-							  NULL);
-	}
-
-	return camel_mh_store_type;
 }
 
 static gboolean
@@ -135,7 +120,7 @@ folders_update (const gchar *root,
 	stream = camel_stream_fs_new_with_name (tmp, O_RDONLY, 0);
 	if (stream) {
 		in = camel_stream_buffer_new(stream, CAMEL_STREAM_BUFFER_READ);
-		camel_object_unref (stream);
+		g_object_unref (stream);
 	}
 	if (in == NULL || stream == NULL) {
 		if (mode == UPDATE_ADD && camel_stream_printf (out, "%s\n", folder) == -1)
@@ -199,9 +184,9 @@ fail:
 	unlink(tmpnew);		/* remove it if its there */
 	g_free(line);
 	if (in)
-		camel_object_unref (in);
+		g_object_unref (in);
 	if (out)
-		camel_object_unref (out);
+		g_object_unref (out);
 }
 
 static CamelFolder *
@@ -348,7 +333,7 @@ fill_fi (CamelStore *store,
 			camel_folder_refresh_info(folder, NULL);
 		fi->unread = camel_folder_get_unread_message_count(folder);
 		fi->total = camel_folder_get_message_count(folder);
-		camel_object_unref (folder);
+		g_object_unref (folder);
 	} else {
 		gchar *path, *folderpath;
 		CamelFolderSummary *s;
@@ -368,7 +353,7 @@ fill_fi (CamelStore *store,
 			fi->unread = s->unread_count;
 			fi->total = s->saved_count;
 		}
-		camel_object_unref (s);
+		g_object_unref (s);
 		g_free(folderpath);
 		g_free(path);
 	}
@@ -509,7 +494,7 @@ folders_scan (CamelStore *store,
 		return;
 
 	in = camel_stream_buffer_new(stream, CAMEL_STREAM_BUFFER_READ);
-	camel_object_unref (stream);
+	g_object_unref (stream);
 	if (in == NULL)
 		return;
 
@@ -569,7 +554,7 @@ folders_scan (CamelStore *store,
 	g_hash_table_foreach(visited, (GHFunc)g_free, NULL);
 	g_hash_table_destroy(visited);
 
-	camel_object_unref (in);
+	g_object_unref (in);
 }
 
 /* FIXME: move to camel-local, this is shared with maildir code */

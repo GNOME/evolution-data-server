@@ -47,6 +47,10 @@
 #define EXTRACT_FIRST_DIGIT(val) val=strtoul (part, &part, 10);
 #define EXTRACT_DIGIT(val) part++; val=strtoul (part, &part, 10);
 
+#define CAMEL_NNTP_SUMMARY_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_NNTP_SUMMARY, CamelNNTPSummaryPrivate))
+
 struct _CamelNNTPSummaryPrivate {
 	gchar *uid;
 
@@ -62,20 +66,14 @@ static gint summary_header_save (CamelFolderSummary *, FILE *);
 static gint summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
 static CamelFIRecord * summary_header_to_db (CamelFolderSummary *s, CamelException *ex);
 
-static gpointer camel_nntp_summary_parent_class;
-
-static void
-nntp_summary_finalize (CamelNNTPSummary *nntp_summary)
-{
-	g_free (nntp_summary->priv);
-}
+G_DEFINE_TYPE (CamelNNTPSummary, camel_nntp_summary, CAMEL_TYPE_FOLDER_SUMMARY)
 
 static void
 camel_nntp_summary_class_init (CamelNNTPSummaryClass *class)
 {
 	CamelFolderSummaryClass *folder_summary_class;
 
-	camel_nntp_summary_parent_class = CAMEL_FOLDER_SUMMARY_CLASS(camel_type_get_global_classfuncs(camel_folder_summary_get_type()));
+	g_type_class_add_private (class, sizeof (CamelNNTPSummaryPrivate));
 
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
 	folder_summary_class->message_info_size = sizeof (CamelMessageInfoBase);
@@ -92,28 +90,10 @@ camel_nntp_summary_init (CamelNNTPSummary *nntp_summary)
 {
 	CamelFolderSummary *summary = CAMEL_FOLDER_SUMMARY (nntp_summary);
 
-	nntp_summary->priv = g_new0 (CamelNNTPSummaryPrivate, 1);
+	nntp_summary->priv = CAMEL_NNTP_SUMMARY_GET_PRIVATE (nntp_summary);
 
 	/* and a unique file version */
 	summary->version += CAMEL_NNTP_SUMMARY_VERSION;
-}
-
-CamelType
-camel_nntp_summary_get_type(void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register(camel_folder_summary_get_type(), "CamelNNTPSummary",
-					   sizeof (CamelNNTPSummary),
-					   sizeof (CamelNNTPSummaryClass),
-					   (CamelObjectClassInitFunc) camel_nntp_summary_class_init,
-					   NULL,
-					   (CamelObjectInitFunc) camel_nntp_summary_init,
-					   (CamelObjectFinalizeFunc) nntp_summary_finalize);
-	}
-
-	return type;
 }
 
 CamelNNTPSummary *
@@ -121,7 +101,7 @@ camel_nntp_summary_new (CamelFolder *folder, const gchar *path)
 {
 	CamelNNTPSummary *cns;
 
-	cns = (CamelNNTPSummary *)camel_object_new(camel_nntp_summary_get_type());
+	cns = g_object_new (CAMEL_TYPE_NNTP_SUMMARY, NULL);
 	((CamelFolderSummary *)cns)->folder = folder;
 
 	camel_folder_summary_set_filename ((CamelFolderSummary *)cns, path);
@@ -424,7 +404,7 @@ ioerror:
 		g_free (cns->priv->uid);
 		cns->priv->uid = NULL;
 	}
-	camel_object_unref (mp);
+	g_object_unref (mp);
 
 	camel_operation_end (NULL);
 

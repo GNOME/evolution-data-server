@@ -533,8 +533,8 @@ camel_movemail_solaris (gint oldsfd,
 		g_free(from);
 	}
 
-	camel_object_unref (mp);
-	camel_object_unref (ffrom);
+	g_object_unref (mp);
+	g_object_unref (ffrom);
 
 	return ret;
 
@@ -546,8 +546,8 @@ fail:
 		_("Error copying mail temp file: %s"),
 		g_strerror (errno));
 
-	camel_object_unref (mp);
-	camel_object_unref (ffrom);
+	g_object_unref (mp);
+	g_object_unref (ffrom);
 
 	return -1;
 }

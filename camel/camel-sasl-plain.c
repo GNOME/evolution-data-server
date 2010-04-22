@@ -31,6 +31,10 @@
 #include "camel-sasl-plain.h"
 #include "camel-service.h"
 
+#define CAMEL_SASL_PLAIN_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_SASL_PLAIN, CamelSaslPlainPrivate))
+
 struct _CamelSaslPlainPrivate {
 	gint placeholder;  /* allow for future expansion */
 };
@@ -45,7 +49,7 @@ CamelServiceAuthType camel_sasl_plain_authtype = {
 	TRUE
 };
 
-static CamelSaslClass *parent_class = NULL;
+G_DEFINE_TYPE (CamelSaslPlain, camel_sasl_plain, CAMEL_TYPE_SASL)
 
 static GByteArray *
 sasl_plain_challenge (CamelSasl *sasl,
@@ -77,27 +81,14 @@ camel_sasl_plain_class_init (CamelSaslPlainClass *class)
 {
 	CamelSaslClass *sasl_class;
 
-	parent_class = CAMEL_SASL_CLASS (camel_type_get_global_classfuncs (camel_sasl_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelSaslPlainPrivate));
 
 	sasl_class = CAMEL_SASL_CLASS (class);
 	sasl_class->challenge = sasl_plain_challenge;
 }
 
-CamelType
-camel_sasl_plain_get_type (void)
+static void
+camel_sasl_plain_init (CamelSaslPlain *sasl)
 {
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_sasl_get_type (),
-					    "CamelSaslPlain",
-					    sizeof (CamelSaslPlain),
-					    sizeof (CamelSaslPlainClass),
-					    (CamelObjectClassInitFunc) camel_sasl_plain_class_init,
-					    NULL,
-					    NULL,
-					    NULL);
-	}
-
-	return type;
+	sasl->priv = CAMEL_SASL_PLAIN_GET_PRIVATE (sasl);
 }

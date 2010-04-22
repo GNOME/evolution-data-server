@@ -49,6 +49,10 @@
 
 #define d(x)
 
+#define CAMEL_SESSION_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_SESSION, CamelSessionPrivate))
+
 struct _CamelSessionPrivate {
 	GMutex *lock;		/* for locking everything basically */
 	GMutex *thread_lock;	/* locking threads */
@@ -59,8 +63,9 @@ struct _CamelSessionPrivate {
 
 	GHashTable *thread_msg_op;
 	GHashTable *junk_headers;
-
 };
+
+G_DEFINE_TYPE (CamelSession, camel_session, CAMEL_TYPE_OBJECT)
 
 static void
 cs_thread_status (CamelOperation *op,
@@ -78,7 +83,7 @@ cs_thread_status (CamelOperation *op,
 }
 
 static void
-session_finalize (CamelObject *object)
+session_finalize (GObject *object)
 {
 	CamelSession *session = CAMEL_SESSION (object);
 	GThreadPool *thread_pool = session->priv->thread_pool;
@@ -101,7 +106,8 @@ session_finalize (CamelObject *object)
 		g_hash_table_destroy (session->priv->junk_headers);
 	}
 
-	g_free(session->priv);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_session_parent_class)->finalize (object);
 }
 
 static CamelService *
@@ -113,7 +119,6 @@ session_get_service (CamelSession *session,
 	CamelURL *url;
 	CamelProvider *provider;
 	CamelService *service;
-	CamelException internal_ex;
 
 	url = camel_url_new (url_string, ex);
 	if (!url)
@@ -144,12 +149,9 @@ session_get_service (CamelSession *session,
 	/* Now look up the service in the provider's cache */
 	service = camel_object_bag_reserve(provider->service_cache[type], url);
 	if (service == NULL) {
-		service = (CamelService *)camel_object_new (provider->object_types[type]);
-		camel_exception_init (&internal_ex);
-		camel_service_construct (service, session, provider, url, &internal_ex);
-		if (camel_exception_is_set (&internal_ex)) {
-			camel_exception_xfer (ex, &internal_ex);
-			camel_object_unref (service);
+		service = g_object_new (provider->object_types[type], NULL);
+		if (!camel_service_construct (service, session, provider, url, ex)) {
+			g_object_unref (service);
 			service = NULL;
 			camel_object_bag_abort(provider->service_cache[type], url);
 		} else {
@@ -201,7 +203,7 @@ session_thread_msg_new (CamelSession *session,
 
 	m = g_malloc0(size);
 	m->ops = ops;
-	m->session = camel_object_ref (session);
+	m->session = g_object_ref (session);
 	m->op = camel_operation_new(cs_thread_status, m);
 	camel_exception_init(&m->ex);
 	camel_session_lock (session, CS_THREAD_LOCK);
@@ -232,7 +234,7 @@ session_thread_msg_free (CamelSession *session,
 	if (msg->op)
 		camel_operation_unref(msg->op);
 	camel_exception_clear(&msg->ex);
-	camel_object_unref (msg->session);
+	g_object_unref (msg->session);
 	g_free(msg);
 }
 
@@ -303,7 +305,13 @@ session_thread_status (CamelSession *session,
 static void
 camel_session_class_init (CamelSessionClass *class)
 {
+	GObjectClass *object_class;
 	CamelObjectClass *camel_object_class;
+
+	g_type_class_add_private (class, sizeof (CamelSessionPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = session_finalize;
 
 	class->get_service = session_get_service;
 	class->get_storage_path = session_get_storage_path;
@@ -320,7 +328,7 @@ camel_session_class_init (CamelSessionClass *class)
 static void
 camel_session_init (CamelSession *session)
 {
-	session->priv = g_malloc0(sizeof(*session->priv));
+	session->priv = CAMEL_SESSION_GET_PRIVATE (session);
 
 	session->online = TRUE;
 	session->network_state = TRUE;
@@ -331,25 +339,6 @@ camel_session_init (CamelSession *session)
 	session->priv->thread_active = g_hash_table_new(NULL, NULL);
 	session->priv->thread_pool = NULL;
 	session->priv->junk_headers = NULL;
-}
-
-CamelType
-camel_session_get_type (void)
-{
-	static CamelType camel_session_type = CAMEL_INVALID_TYPE;
-
-	if (camel_session_type == CAMEL_INVALID_TYPE) {
-		camel_session_type = camel_type_register (
-			camel_object_get_type (), "CamelSession",
-			sizeof (CamelSession),
-			sizeof (CamelSessionClass),
-			(CamelObjectClassInitFunc) camel_session_class_init,
-			NULL,
-			(CamelObjectInitFunc) camel_session_init,
-			(CamelObjectFinalizeFunc) session_finalize);
-	}
-
-	return camel_session_type;
 }
 
 /**
@@ -401,7 +390,9 @@ camel_session_get_service (CamelSession *session,
 	g_return_val_if_fail (class->get_service != NULL, NULL);
 
 	camel_session_lock (session, CS_SESSION_LOCK);
+
 	service = class->get_service (session, url_string, type, ex);
+
 	camel_session_unlock (session, CS_SESSION_LOCK);
 
 	return service;
@@ -434,7 +425,7 @@ camel_session_get_service_connected (CamelSession *session,
 
 	if (svc->status != CAMEL_SERVICE_CONNECTED) {
 		if (camel_service_connect (svc, ex) == FALSE) {
-			camel_object_unref (svc);
+			g_object_unref (svc);
 			return NULL;
 		}
 	}
@@ -944,24 +935,23 @@ camel_session_forward_to (CamelSession *session,
  *
  * Locks #session's #lock. Unlock it with camel_session_unlock().
  *
- * Since: 2.31.1
+ * Since: 3.0
  **/
 void
-camel_session_lock (CamelSession *session, CamelSessionLock lock)
+camel_session_lock (CamelSession *session,
+                    CamelSessionLock lock)
 {
-	g_return_if_fail (session != NULL);
 	g_return_if_fail (CAMEL_IS_SESSION (session));
-	g_return_if_fail (session->priv != NULL);
 
 	switch (lock) {
-	case CS_SESSION_LOCK:
-		g_mutex_lock (session->priv->lock);
-		break;
-	case CS_THREAD_LOCK:
-		g_mutex_lock (session->priv->thread_lock);
-		break;
-	default:
-		g_return_if_reached ();
+		case CS_SESSION_LOCK:
+			g_mutex_lock (session->priv->lock);
+			break;
+		case CS_THREAD_LOCK:
+			g_mutex_lock (session->priv->thread_lock);
+			break;
+		default:
+			g_return_if_reached ();
 	}
 }
 
@@ -972,23 +962,22 @@ camel_session_lock (CamelSession *session, CamelSessionLock lock)
  *
  * Unlocks #session's #lock, previously locked with camel_session_lock().
  *
- * Since: 2.31.1
+ * Since: 3.0
  **/
 void
-camel_session_unlock (CamelSession *session, CamelSessionLock lock)
+camel_session_unlock (CamelSession *session,
+                      CamelSessionLock lock)
 {
-	g_return_if_fail (session != NULL);
 	g_return_if_fail (CAMEL_IS_SESSION (session));
-	g_return_if_fail (session->priv != NULL);
 
 	switch (lock) {
-	case CS_SESSION_LOCK:
-		g_mutex_unlock (session->priv->lock);
-		break;
-	case CS_THREAD_LOCK:
-		g_mutex_unlock (session->priv->thread_lock);
-		break;
-	default:
-		g_return_if_reached ();
+		case CS_SESSION_LOCK:
+			g_mutex_unlock (session->priv->lock);
+			break;
+		case CS_THREAD_LOCK:
+			g_mutex_unlock (session->priv->thread_lock);
+			break;
+		default:
+			g_return_if_reached ();
 	}
 }

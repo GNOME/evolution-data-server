@@ -15,9 +15,13 @@ camel_address_remove
 <SUBSECTION Standard>
 CAMEL_ADDRESS
 CAMEL_IS_ADDRESS
+CAMEL_TYPE_ADDRESS
 CAMEL_ADDRESS_CLASS
+CAMEL_IS_ADDRESS_CLASS
+CAMEL_ADDRESS_GET_CLASS
 CamelAddressClass
 <SUBSECTION Private>
+CamelAddressPrivate
 camel_address_get_type
 </SECTION>
 
@@ -54,9 +58,23 @@ camel_key_file_delete
 camel_key_file_write
 camel_key_file_read
 <SUBSECTION Standard>
+CAMEL_BLOCK_FILE
+CAMEL_IS_BLOCK_FILE
+CAMEL_TYPE_BLOCK_FILE
+CAMEL_BLOCK_FILE_CLASS
+CAMEL_IS_BLOCK_FILE_CLASS
+CAMEL_BLOCK_FILE_GET_CLASS
+CAMEL_KEY_FILE
+CAMEL_IS_KEY_FILE
+CAMEL_TYPE_KEY_FILE
+CAMEL_KEY_FILE_CLASS
+CAMEL_IS_KEY_FILE_CLASS
+CAMEL_KEY_FILE_GET_CLASS
 CamelBlockFileClass
 CamelKeyFileClass
 <SUBSECTION Private>
+CamelBlockFilePrivate
+CamelKeyFilePrivate
 camel_block_file_get_type
 camel_key_file_get_type
 </SECTION>
@@ -96,10 +114,13 @@ camel_cert_set_trust
 <SUBSECTION Standard>
 CAMEL_CERTDB
 CAMEL_IS_CERTDB
-CAMEL_CERTDB_TYPE
+CAMEL_TYPE_CERTDB
 CAMEL_CERTDB_CLASS
+CAMEL_IS_CERTDB_CLASS
+CAMEL_CERTDB_GET_CLASS
 CamelCertDBClass
 <SUBSECTION Private>
+CamelCertDBPrivate
 camel_certdb_get_type
 </SECTION>
 
@@ -114,7 +135,7 @@ camel_cipher_validity_sign_t
 camel_cipher_validity_encrypt_t
 camel_cipher_validity_mode_t
 camel_cipher_context_new
-camel_cipher_context_construct
+camel_cipher_context_get_session
 camel_cipher_id_to_hash
 camel_cipher_hash_to_id
 camel_cipher_sign
@@ -139,10 +160,13 @@ camel_cipher_canonical_to_stream
 <SUBSECTION Standard>
 CAMEL_CIPHER_CONTEXT
 CAMEL_IS_CIPHER_CONTEXT
-CAMEL_CIPHER_CONTEXT_TYPE
+CAMEL_TYPE_CIPHER_CONTEXT
 CAMEL_CIPHER_CONTEXT_CLASS
+CAMEL_IS_CIPHER_CONTEXT_CLASS
+CAMEL_CIPHER_CONTEXT_GET_CLASS
 CamelCipherContextClass
 <SUBSECTION Private>
+CamelCipherContextPrivate
 camel_cipher_context_get_type
 </SECTION>
 
@@ -153,19 +177,20 @@ CamelDataCache
 camel_data_cache_new
 camel_data_cache_set_expire_age
 camel_data_cache_set_expire_access
-camel_data_cache_rename
 camel_data_cache_add
 camel_data_cache_get
 camel_data_cache_remove
-camel_data_cache_clear
 camel_data_cache_get_filename
 <SUBSECTION Standard>
 CAMEL_DATA_CACHE
 CAMEL_IS_DATA_CACHE
-CAMEL_DATA_CACHE_TYPE
+CAMEL_TYPE_DATA_CACHE
 CAMEL_DATA_CACHE_CLASS
+CAMEL_IS_DATA_CACHE_CLASS
+CAMEL_DATA_CACHE_GET_CLASS
 CamelDataCacheClass
 <SUBSECTION Private>
+CamelDataCachePrivate
 camel_data_cache_get_type
 </SECTION>
 
@@ -185,10 +210,13 @@ camel_data_wrapper_is_offline
 <SUBSECTION Standard>
 CAMEL_DATA_WRAPPER
 CAMEL_IS_DATA_WRAPPER
-CAMEL_DATA_WRAPPER_TYPE
+CAMEL_TYPE_DATA_WRAPPER
 CAMEL_DATA_WRAPPER_CLASS
+CAMEL_IS_DATA_WRAPPER_CLASS
+CAMEL_DATA_WRAPPER_GET_CLASS
 CamelDataWrapperClass
 <SUBSECTION Private>
+CamelDataWrapperPrivate
 camel_data_wrapper_get_type
 </SECTION>
 
@@ -281,8 +309,10 @@ camel_disco_diary_uidmap_lookup
 <SUBSECTION Standard>
 CAMEL_DISCO_DIARY
 CAMEL_IS_DISCO_DIARY
-CAMEL_DISCO_DIARY_TYPE
+CAMEL_TYPE_DISCO_DIARY
 CAMEL_DISCO_DIARY_CLASS
+CAMEL_IS_DISCO_DIARY_CLASS
+CAMEL_DISCO_DIARY_GET_CLASS
 CamelDiscoDiaryClass
 <SUBSECTION Private>
 camel_disco_diary_get_type
@@ -298,11 +328,35 @@ camel_disco_folder_prepare_for_offline
 <SUBSECTION Standard>
 CAMEL_DISCO_FOLDER
 CAMEL_IS_DISCO_FOLDER
-CAMEL_DISCO_FOLDER_TYPE
+CAMEL_TYPE_DISCO_FOLDER
 CAMEL_DISCO_FOLDER_CLASS
+CAMEL_IS_DISCO_FOLDER_CLASS
+CAMEL_DISCO_FOLDER_GET_CLASS
 CamelDiscoFolderClass
 <SUBSECTION Private>
 camel_disco_folder_get_type
+</SECTION>
+
+<SECTION>
+<FILE>camel-disco-store</FILE>
+<TITLE>CamelDiscoStore</TITLE>
+CamelDiscoStore
+CamelDiscoStoreStatus
+camel_disco_store_status
+camel_disco_store_set_status
+camel_disco_store_can_work_offline
+camel_disco_store_check_online
+camel_disco_store_prepare_for_offline
+<SUBSECTION Standard>
+CAMEL_DISCO_STORE
+CAMEL_IS_DISCO_STORE
+CAMEL_TYPE_DISCO_STORE
+CAMEL_DISCO_STORE_CLASS
+CAMEL_IS_DISCO_STORE_CLASS
+CAMEL_DISCO_STORE_GET_CLASS
+CamelDiscoStoreClass
+<SUBSECTION Private>
+camel_disco_store_get_type
 </SECTION>
 
 <SECTION>
@@ -327,10 +381,13 @@ camel_filter_driver_filter_folder
 <SUBSECTION Standard>
 CAMEL_FILTER_DRIVER
 CAMEL_IS_FILTER_DRIVER
-CAMEL_FILTER_DRIVER_TYPE
+CAMEL_TYPE_FILTER_DRIVER
 CAMEL_FILTER_DRIVER_CLASS
+CAMEL_IS_FILTER_DRIVER_CLASS
+CAMEL_FILTER_DRIVER_GET_CLASS
 CamelFilterDriverClass
 <SUBSECTION Private>
+CamelFilterDriverPrivate
 camel_filter_driver_get_type
 </SECTION>
 
@@ -416,10 +473,13 @@ camel_folder_change_info_recent_uid
 <SUBSECTION Standard>
 CAMEL_FOLDER
 CAMEL_IS_FOLDER
-CAMEL_FOLDER_TYPE
+CAMEL_TYPE_FOLDER
 CAMEL_FOLDER_CLASS
+CAMEL_IS_FOLDER_CLASS
+CAMEL_FOLDER_GET_CLASS
 CamelFolderClass
 <SUBSECTION Private>
+CamelFolderPrivate
 camel_folder_get_type
 </SECTION>
 
@@ -439,10 +499,13 @@ camel_folder_search_free_result
 <SUBSECTION Standard>
 CAMEL_FOLDER_SEARCH
 CAMEL_IS_FOLDER_SEARCH
-CAMEL_FOLDER_SEARCH_TYPE
+CAMEL_TYPE_FOLDER_SEARCH
 CAMEL_FOLDER_SEARCH_CLASS
+CAMEL_IS_FOLDER_SEARCH_CLASS
+CAMEL_FOLDER_SEARCH_GET_CLASS
 CamelFolderSearchClass
 <SUBSECTION Private>
+CamelFolderSearchPrivate
 camel_folder_search_get_type
 </SECTION>
 
@@ -563,10 +626,13 @@ camel_folder_summary_migrate_infos
 <SUBSECTION Standard>
 CAMEL_FOLDER_SUMMARY
 CAMEL_IS_FOLDER_SUMMARY
-CAMEL_FOLDER_SUMMARY_TYPE
+CAMEL_TYPE_FOLDER_SUMMARY
 CAMEL_FOLDER_SUMMARY_CLASS
+CAMEL_IS_FOLDER_SUMMARY_CLASS
+CAMEL_FOLDER_SUMMARY_GET_CLASS
 CamelFolderSummaryClass
 <SUBSECTION Private>
+CamelFolderSummaryPrivate
 camel_folder_summary_get_type
 </SECTION>
 
@@ -579,10 +645,13 @@ camel_gpg_context_set_always_trust
 <SUBSECTION Standard>
 CAMEL_GPG_CONTEXT
 CAMEL_IS_GPG_CONTEXT
-CAMEL_GPG_CONTEXT_TYPE
+CAMEL_TYPE_GPG_CONTEXT
 CAMEL_GPG_CONTEXT_CLASS
+CAMEL_IS_GPG_CONTEXT_CLASS
+CAMEL_GPG_CONTEXT_GET_CLASS
 CamelGpgContextClass
 <SUBSECTION Private>
+CamelGpgContextPrivate
 camel_gpg_context_get_type
 </SECTION>
 
@@ -601,9 +670,13 @@ camel_html_parser_attr_list
 <SUBSECTION Standard>
 CAMEL_HTML_PARSER
 CAMEL_IS_HTML_PARSER
+CAMEL_TYPE_HTML_PARSER
 CAMEL_HTML_PARSER_CLASS
+CAMEL_IS_HTML_PARSER_CLASS
+CAMEL_HTML_PARSER_GET_CLASS
 CamelHTMLParserClass
 <SUBSECTION Private>
+CamelHTMLParserPrivate
 camel_html_parser_get_type
 </SECTION>
 
@@ -621,8 +694,10 @@ camel_http_stream_get_content_type
 <SUBSECTION Standard>
 CAMEL_HTTP_STREAM
 CAMEL_IS_HTTP_STREAM
-CAMEL_HTTP_STREAM_TYPE
+CAMEL_TYPE_HTTP_STREAM
 CAMEL_HTTP_STREAM_CLASS
+CAMEL_IS_HTTP_STREAM_CLASS
+CAMEL_HTTP_STREAM_GET_CLASS
 CamelHttpStreamClass
 <SUBSECTION Private>
 camel_http_stream_get_type
@@ -647,7 +722,6 @@ CAMEL_INDEX_DELETED
 camel_index_new
 camel_index_construct
 camel_index_rename
-camel_index_set_normalise
 camel_index_sync
 camel_index_compress
 camel_index_delete
@@ -662,21 +736,32 @@ camel_index_names
 <SUBSECTION Standard>
 CAMEL_INDEX
 CAMEL_IS_INDEX
-camel_index_get_type
+CAMEL_TYPE_INDEX
 CAMEL_INDEX_CLASS
+CAMEL_IS_INDEX_CLASS
+CAMEL_INDEX_GET_CLASS
 CAMEL_INDEX_NAME
 CAMEL_IS_INDEX_NAME
-camel_index_name_get_type
+CAMEL_TYPE_INDEX_NAME
 CAMEL_INDEX_NAME_CLASS
+CAMEL_IS_INDEX_NAME_CLASS
+CAMEL_INDEX_NAME_GET_CLASS
 CAMEL_INDEX_CURSOR
 CAMEL_IS_INDEX_CURSOR
-camel_index_cursor_get_type
+CAMEL_TYPE_INDEX_CURSOR
 CAMEL_INDEX_CURSOR_CLASS
+CAMEL_IS_INDEX_CURSOR_CLASS
+CAMEL_INDEX_CURSOR_GET_CLASS
 CamelIndexClass
 CamelIndexCursorClass
 CamelIndexNameClass
 <SUBSECTION Private>
+CamelIndexPrivate
+CamelIndexNamePrivate
+CamelIndexCursorPrivate
+camel_index_get_type
 camel_index_name_get_type
+camel_index_cursor_get_type
 </SECTION>
 
 <SECTION>
@@ -693,9 +778,13 @@ camel_internet_address_format_address
 <SUBSECTION Standard>
 CAMEL_INTERNET_ADDRESS
 CAMEL_IS_INTERNET_ADDRESS
+CAMEL_TYPE_INTERNET_ADDRESS
 CAMEL_INTERNET_ADDRESS_CLASS
+CAMEL_IS_INTERNET_ADDRESS_CLASS
+CAMEL_INTERNET_ADDRESS_GET_CLASS
 CamelInternetAddressClass
 <SUBSECTION Private>
+CamelInternetAddressPrivate
 camel_internet_address_get_type
 </SECTION>
 
@@ -710,15 +799,18 @@ camel_medium_remove_header
 camel_medium_get_header
 camel_medium_get_headers
 camel_medium_free_headers
-camel_medium_get_content_object
-camel_medium_set_content_object
+camel_medium_get_content
+camel_medium_set_content
 <SUBSECTION Standard>
 CAMEL_MEDIUM
 CAMEL_IS_MEDIUM
-CAMEL_MEDIUM_TYPE
+CAMEL_TYPE_MEDIUM
 CAMEL_MEDIUM_CLASS
+CAMEL_IS_MEDIUM_CLASS
+CAMEL_MEDIUM_GET_CLASS
 CamelMediumClass
 <SUBSECTION Private>
+CamelMediumPrivate
 camel_medium_get_type
 </SECTION>
 
@@ -728,13 +820,16 @@ camel_medium_get_type
 CamelMimeFilterBasic
 CamelMimeFilterBasicType
 camel_mime_filter_basic_new
-camel_mime_filter_basic_new_type
 <SUBSECTION Standard>
 CAMEL_MIME_FILTER_BASIC
 CAMEL_IS_MIME_FILTER_BASIC
+CAMEL_TYPE_MIME_FILTER_BASIC
 CAMEL_MIME_FILTER_BASIC_CLASS
+CAMEL_IS_MIME_FILTER_BASIC_CLASS
+CAMEL_MIME_FILTER_BASIC_GET_CLASS
 CamelMimeFilterBasicClass
 <SUBSECTION Private>
+CamelMimeFilterBasicPrivate
 camel_mime_filter_basic_get_type
 </SECTION>
 
@@ -751,9 +846,13 @@ camel_mime_filter_bestenc_set_flags
 <SUBSECTION Standard>
 CAMEL_MIME_FILTER_BESTENC
 CAMEL_IS_MIME_FILTER_BESTENC
+CAMEL_TYPE_MIME_FILTER_BESTENC
 CAMEL_MIME_FILTER_BESTENC_CLASS
+CAMEL_IS_MIME_FILTER_BESTENC_CLASS
+CAMEL_MIME_FILTER_BESTENC_GET_CLASS
 CamelMimeFilterBestencClass
 <SUBSECTION Private>
+CamelMimeFilterBestencPrivate
 camel_mime_filter_bestenc_get_type
 </SECTION>
 
@@ -765,10 +864,13 @@ camel_mime_filter_canon_new
 <SUBSECTION Standard>
 CAMEL_MIME_FILTER_CANON
 CAMEL_IS_MIME_FILTER_CANON
-CAMEL_MIME_FILTER_CANON_TYPE
+CAMEL_TYPE_MIME_FILTER_CANON
 CAMEL_MIME_FILTER_CANON_CLASS
+CAMEL_IS_MIME_FILTER_CANON_CLASS
+CAMEL_MIME_FILTER_CANON_GET_CLASS
 CamelMimeFilterCanonClass
 <SUBSECTION Private>
+CamelMimeFilterCanonPrivate
 camel_mime_filter_canon_get_type
 </SECTION>
 
@@ -777,13 +879,16 @@ camel_mime_filter_canon_get_type
 <TITLE>CamelMimeFilterCharset</TITLE>
 CamelMimeFilterCharset
 camel_mime_filter_charset_new
-camel_mime_filter_charset_new_convert
 <SUBSECTION Standard>
 CAMEL_MIME_FILTER_CHARSET
 CAMEL_IS_MIME_FILTER_CHARSET
+CAMEL_TYPE_MIME_FILTER_CHARSET
 CAMEL_MIME_FILTER_CHARSET_CLASS
+CAMEL_IS_MIME_FILTER_CHARSET_CLASS
+CAMEL_MIME_FILTER_CHARSET_GET_CLASS
 CamelMimeFilterCharsetClass
 <SUBSECTION Private>
+CamelMimeFilterCharsetPrivate
 camel_mime_filter_charset_get_type
 </SECTION>
 
@@ -797,10 +902,13 @@ camel_mime_filter_crlf_new
 <SUBSECTION Standard>
 CAMEL_MIME_FILTER_CRLF
 CAMEL_IS_MIME_FILTER_CRLF
-CAMEL_MIME_FILTER_CRLF_TYPE
+CAMEL_TYPE_MIME_FILTER_CRLF
 CAMEL_MIME_FILTER_CRLF_CLASS
+CAMEL_IS_MIME_FILTER_CRLF_CLASS
+CAMEL_MIME_FILTER_CRLF_GET_CLASS
 CamelMimeFilterCRLFClass
 <SUBSECTION Private>
+CamelMimeFilterCRLFPrivate
 camel_mime_filter_crlf_get_type
 </SECTION>
 
@@ -816,8 +924,11 @@ CAMEL_MIME_FILTER_ENRICHED
 CAMEL_IS_MIME_FILTER_ENRICHED
 CAMEL_TYPE_MIME_FILTER_ENRICHED
 CAMEL_MIME_FILTER_ENRICHED_CLASS
+CAMEL_IS_MIME_FILTER_ENRICHED_CLASS
+CAMEL_MIME_FILTER_ENRICHED_GET_CLASS
 CamelMimeFilterEnrichedClass
 <SUBSECTION Private>
+CamelMimeFilterEnrichedPrivate
 camel_mime_filter_enriched_get_type
 </SECTION>
 
@@ -829,9 +940,13 @@ camel_mime_filter_from_new
 <SUBSECTION Standard>
 CAMEL_MIME_FILTER_FROM
 CAMEL_IS_MIME_FILTER_FROM
+CAMEL_TYPE_MIME_FILTER_FROM
 CAMEL_MIME_FILTER_FROM_CLASS
+CAMEL_IS_MIME_FILTER_FROM_CLASS
+CAMEL_MIME_FILTER_FROM_GET_CLASS
 CamelMimeFilterFromClass
 <SUBSECTION Private>
+CamelMimeFilterFromPrivate
 camel_mime_filter_from_get_type
 </SECTION>
 
@@ -850,6 +965,7 @@ CAMEL_IS_MIME_FILTER_GZIP_CLASS
 CAMEL_MIME_FILTER_GZIP_GET_CLASS
 CamelMimeFilterGZipClass
 <SUBSECTION Private>
+CamelMimeFilterGZipPrivate
 camel_mime_filter_gzip_get_type
 </SECTION>
 
@@ -861,9 +977,13 @@ camel_mime_filter_html_new
 <SUBSECTION Standard>
 CAMEL_MIME_FILTER_HTML
 CAMEL_IS_MIME_FILTER_HTML
+CAMEL_TYPE_MIME_FILTER_HTML
 CAMEL_MIME_FILTER_HTML_CLASS
+CAMEL_IS_MIME_FILTER_HTML_CLASS
+CAMEL_MIME_FILTER_HTML_GET_CLASS
 CamelMimeFilterHTMLClass
 <SUBSECTION Private>
+CamelMimeFilterHTMLPrivate
 camel_mime_filter_html_get_type
 </SECTION>
 
@@ -872,15 +992,18 @@ camel_mime_filter_html_get_type
 <TITLE>CamelMimeFilterIndex</TITLE>
 CamelMimeFilterIndex
 camel_mime_filter_index_new
-camel_mime_filter_index_new_index
 camel_mime_filter_index_set_name
 camel_mime_filter_index_set_index
 <SUBSECTION Standard>
 CAMEL_MIME_FILTER_INDEX
 CAMEL_IS_MIME_FILTER_INDEX
+CAMEL_TYPE_MIME_FILTER_INDEX
 CAMEL_MIME_FILTER_INDEX_CLASS
+CAMEL_IS_MIME_FILTER_INDEX_CLASS
+CAMEL_MIME_FILTER_INDEX_GET_CLASS
 CamelMimeFilterIndexClass
 <SUBSECTION Private>
+CamelMimeFilterIndexPrivate
 camel_mime_filter_index_get_type
 </SECTION>
 
@@ -892,10 +1015,13 @@ camel_mime_filter_linewrap_new
 <SUBSECTION Standard>
 CAMEL_MIME_FILTER_LINEWRAP
 CAMEL_IS_MIME_FILTER_LINEWRAP
-CAMEL_MIME_FILTER_LINEWRAP_TYPE
+CAMEL_TYPE_MIME_FILTER_LINEWRAP
 CAMEL_MIME_FILTER_LINEWRAP_CLASS
+CAMEL_IS_MIME_FILTER_LINEWRAP_CLASS
+CAMEL_MIME_FILTER_LINEWRAP_GET_CLASS
 CamelMimeFilterLinewrapClass
 <SUBSECTION Private>
+CamelMimeFilterLinewrapPrivate
 camel_mime_filter_linewrap_get_type
 </SECTION>
 
@@ -905,12 +1031,15 @@ camel_mime_filter_linewrap_get_type
 CamelMimeFilterPgp
 camel_mime_filter_pgp_new
 <SUBSECTION Standard>
-CAMEL_MIME_FILTER_PGP_TYPE
 CAMEL_MIME_FILTER_PGP
-CAMEL_MIME_FILTER_PGP_CLASS
 CAMEL_IS_MIME_FILTER_PGP
+CAMEL_TYPE_MIME_FILTER_PGP
+CAMEL_MIME_FILTER_PGP_CLASS
+CAMEL_IS_MIME_FILTER_PGP_CLASS
+CAMEL_MIME_FILTER_PGP_GET_CLASS
 CamelMimeFilterPgpClass
 <SUBSECTION Private>
+CamelMimeFilterPgpPrivate
 camel_mime_filter_pgp_get_type
 </SECTION>
 
@@ -919,14 +1048,16 @@ camel_mime_filter_pgp_get_type
 <TITLE>CamelMimeFilterSave</TITLE>
 CamelMimeFilterSave
 camel_mime_filter_save_new
-camel_mime_filter_save_new_with_stream
 <SUBSECTION Standard>
 CAMEL_MIME_FILTER_SAVE
 CAMEL_IS_MIME_FILTER_SAVE
-CAMEL_MIME_FILTER_SAVE_TYPE
+CAMEL_TYPE_MIME_FILTER_SAVE
 CAMEL_MIME_FILTER_SAVE_CLASS
+CAMEL_IS_MIME_FILTER_SAVE_CLASS
+CAMEL_MIME_FILTER_SAVE_GET_CLASS
 CamelMimeFilterSaveClass
 <SUBSECTION Private>
+CamelMimeFilterSavePrivate
 camel_mime_filter_save_get_type
 </SECTION>
 
@@ -949,9 +1080,13 @@ camel_text_to_html
 <SUBSECTION Standard>
 CAMEL_MIME_FILTER_TOHTML
 CAMEL_IS_MIME_FILTER_TOHTML
+CAMEL_TYPE_MIME_FILTER_TOHTML
 CAMEL_MIME_FILTER_TOHTML_CLASS
+CAMEL_IS_MIME_FILTER_TOHTML_CLASS
+CAMEL_MIME_FILTER_TOHTML_GET_CLASS
 CamelMimeFilterToHTMLClass
 <SUBSECTION Private>
+CamelMimeFilterToHTMLPrivate
 camel_mime_filter_tohtml_get_type
 </SECTION>
 
@@ -965,9 +1100,13 @@ camel_mime_filter_windows_real_charset
 <SUBSECTION Standard>
 CAMEL_MIME_FILTER_WINDOWS
 CAMEL_IS_MIME_FILTER_WINDOWS
+CAMEL_TYPE_MIME_FILTER_WINDOWS
 CAMEL_MIME_FILTER_WINDOWS_CLASS
+CAMEL_IS_MIME_FILTER_WINDOWS_CLASS
+CAMEL_MIME_FILTER_WINDOWS_GET_CLASS
 CamelMimeFilterWindowsClass
 <SUBSECTION Private>
+CamelMimeFilterWindowsPrivate
 camel_mime_filter_windows_get_type
 </SECTION>
 
@@ -1003,6 +1142,7 @@ CAMEL_IS_MIME_FILTER_YENC_CLASS
 CAMEL_MIME_FILTER_YENC_GET_CLASS
 CamelMimeFilterYencClass
 <SUBSECTION Private>
+CamelMimeFilterYencPrivate
 camel_mime_filter_yenc_get_type
 </SECTION>
 
@@ -1019,10 +1159,13 @@ camel_mime_filter_set_size
 <SUBSECTION Standard>
 CAMEL_MIME_FILTER
 CAMEL_IS_MIME_FILTER
-CAMEL_MIME_FILTER_TYPE
+CAMEL_TYPE_MIME_FILTER
 CAMEL_MIME_FILTER_CLASS
+CAMEL_IS_MIME_FILTER_CLASS
+CAMEL_MIME_FILTER_GET_CLASS
 CamelMimeFilterClass
 <SUBSECTION Private>
+CamelMimeFilterPrivate
 camel_mime_filter_get_type
 </SECTION>
 
@@ -1033,10 +1176,14 @@ CamelMimeFilterProgress
 camel_mime_filter_progress_new
 <SUBSECTION Standard>
 CAMEL_MIME_FILTER_PROGRESS
-CAMEL_MIME_FILTER_PROGRESS_CLASS
 CAMEL_IS_MIME_FILTER_PROGRESS
+CAMEL_TYPE_MIME_FILTER_PROGRESS
+CAMEL_MIME_FILTER_PROGRESS_CLASS
+CAMEL_IS_MIME_FILTER_PROGRESS_CLASS
+CAMEL_MIME_FILTER_PROGRESS_GET_CLASS
 CamelMimeFilterProgressClass
 <SUBSECTION Private>
+CamelMimeFilterProgressPrivate
 camel_mime_filter_progress_get_type
 </SECTION>
 
@@ -1077,8 +1224,10 @@ camel_mime_message_dump
 <SUBSECTION Standard>
 CAMEL_MIME_MESSAGE
 CAMEL_IS_MIME_MESSAGE
-CAMEL_MIME_MESSAGE_TYPE
+CAMEL_TYPE_MIME_MESSAGE
 CAMEL_MIME_MESSAGE_CLASS
+CAMEL_IS_MIME_MESSAGE_CLASS
+CAMEL_MIME_MESSAGE_GET_CLASS
 CamelMimeMessageClass
 <SUBSECTION Private>
 camel_mime_message_get_type
@@ -1120,9 +1269,13 @@ camel_mime_parser_tell_start_boundary
 <SUBSECTION Standard>
 CAMEL_MIME_PARSER
 CAMEL_IS_MIME_PARSER
+CAMEL_TYPE_MIME_PARSER
 CAMEL_MIME_PARSER_CLASS
+CAMEL_IS_MIME_PARSER_CLASS
+CAMEL_MIME_PARSER_GET_CLASS
 CamelMimeParserClass
 <SUBSECTION Private>
+CamelMimeParserPrivate
 camel_mime_parser_get_type
 </SECTION>
 
@@ -1140,8 +1293,8 @@ camel_mime_part_set_filename
 camel_mime_part_get_filename
 camel_mime_part_set_content_id
 camel_mime_part_get_content_id
-camel_mime_part_set_content_MD5
-camel_mime_part_get_content_MD5
+camel_mime_part_set_content_md5
+camel_mime_part_get_content_md5
 camel_mime_part_set_content_location
 camel_mime_part_get_content_location
 camel_mime_part_set_encoding
@@ -1158,10 +1311,13 @@ camel_mime_message_build_preview
 <SUBSECTION Standard>
 CAMEL_MIME_PART
 CAMEL_IS_MIME_PART
-CAMEL_MIME_PART_TYPE
+CAMEL_TYPE_MIME_PART
 CAMEL_MIME_PART_CLASS
+CAMEL_IS_MIME_PART_CLASS
+CAMEL_MIME_PART_GET_CLASS
 CamelMimePartClass
 <SUBSECTION Private>
+CamelMimePartPrivate
 camel_mime_part_get_type
 </SECTION>
 
@@ -1189,8 +1345,10 @@ camel_multipart_encrypted_new
 <SUBSECTION Standard>
 CAMEL_MULTIPART_ENCRYPTED
 CAMEL_IS_MULTIPART_ENCRYPTED
-CAMEL_MULTIPART_ENCRYPTED_TYPE
+CAMEL_TYPE_MULTIPART_ENCRYPTED
 CAMEL_MULTIPART_ENCRYPTED_CLASS
+CAMEL_IS_MULTIPART_ENCRYPTED_CLASS
+CAMEL_MULTIPART_ENCRYPTED_GET_CLASS
 CamelMultipartEncryptedClass
 <SUBSECTION Private>
 camel_multipart_encrypted_get_type
@@ -1205,8 +1363,10 @@ camel_multipart_signed_get_content_stream
 <SUBSECTION Standard>
 CAMEL_MULTIPART_SIGNED
 CAMEL_IS_MULTIPART_SIGNED
-CAMEL_MULTIPART_SIGNED_TYPE
+CAMEL_TYPE_MULTIPART_SIGNED
 CAMEL_MULTIPART_SIGNED_CLASS
+CAMEL_IS_MULTIPART_SIGNED_CLASS
+CAMEL_MULTIPART_SIGNED_GET_CLASS
 CamelMultipartSignedClass
 <SUBSECTION Private>
 camel_multipart_signed_get_type
@@ -1231,49 +1391,43 @@ camel_multipart_construct_from_parser
 <SUBSECTION Standard>
 CAMEL_MULTIPART
 CAMEL_IS_MULTIPART
-CAMEL_MULTIPART_TYPE
+CAMEL_TYPE_MULTIPART
 CAMEL_MULTIPART_CLASS
+CAMEL_IS_MULTIPART_CLASS
+CAMEL_MULTIPART_GET_CLASS
 CamelMultipartClass
 <SUBSECTION Private>
 camel_multipart_get_type
 </SECTION>
 
 <SECTION>
+<FILE>camel-nntp-address</FILE>
+<TITLE>CamelNNTPAddress</TITLE>
+CamelNNTPAddress
+camel_nntp_address_new
+camel_nntp_address_add
+camel_nntp_address_get
+<SUBSECTION Standard>
+CAMEL_NNTP_ADDRESS
+CAMEL_IS_NNTP_ADDRESS
+CAMEL_TYPE_NNTP_ADDRESS
+CAMEL_NNTP_ADDRESS_CLASS
+CAMEL_IS_NNTP_ADDRESS_CLASS
+CAMEL_NNTP_ADDRESS_GET_CLASS
+CamelNNTPAddressClass
+<SUBSECTION Private>
+CamelNNTPAddressPrivate
+camel_nntp_address_get_type
+</SECTION>
+
+<SECTION>
 <FILE>camel-object</FILE>
 <TITLE>CamelObject</TITLE>
-CAMEL_OBJECT_TRACK_INSTANCES
-CamelType
 CamelObject
-CAMEL_CHECK_CAST
-CAMEL_CHECK_CLASS_CAST
-CAMEL_CHECK_TYPE
-CAMEL_CHECK_CLASS_TYPE
-camel_object_type
-CAMEL_OBJECT_TYPE
-CAMEL_OBJECT_GET_TYPE
 CamelObjectHookID
-CamelObjectClassInitFunc
-CamelObjectClassFinalizeFunc
-CamelObjectInitFunc
-CamelObjectFinalizeFunc
 CamelObjectEventPrepFunc
 CamelObjectEventHookFunc
-CAMEL_INVALID_TYPE
-CamelObjectFlags
-camel_type_init
-camel_type_register
-camel_type_get_global_classfuncs
-camel_type_to_name
-camel_name_to_type
 camel_object_class_add_event
-camel_object_class_dump_tree
-camel_object_cast
-camel_object_is
-camel_object_class_cast
-camel_object_class_is
-camel_object_new
-camel_object_ref
-camel_object_unref
 camel_object_hook_event
 camel_object_remove_event
 camel_object_unhook_event
@@ -1300,12 +1454,119 @@ camel_object_bag_destroy
 <SUBSECTION Standard>
 CAMEL_OBJECT
 CAMEL_IS_OBJECT
+CAMEL_TYPE_OBJECT
 CAMEL_OBJECT_CLASS
 CAMEL_IS_OBJECT_CLASS
 CAMEL_OBJECT_GET_CLASS
 CamelObjectClass
 <SUBSECTION Private>
 camel_object_get_type
+</SECTION>
+
+<SECTION>
+<FILE>camel-offline-folder</FILE>
+<TITLE>CamelOfflineFolder</TITLE>
+CamelOfflineFolder
+camel_offline_folder_downsync
+<SUBSECTION Standard>
+CAMEL_OFFLINE_FOLDER
+CAMEL_IS_OFFLINE_FOLDER
+CAMEL_TYPE_OFFLINE_FOLDER
+CAMEL_OFFLINE_FOLDER_CLASS
+CAMEL_IS_OFFLINE_FOLDER_CLASS
+CAMEL_OFFLINE_FOLDER_GET_CLASS
+CamelOfflineFolderClass
+<SUBSECTION Private>
+camel_offline_folder_get_type
+</SECTION>
+
+<SECTION>
+<FILE>camel-offline-journal</FILE>
+<TITLE>CamelOfflineJournal</TITLE>
+CamelOfflineJournal
+CamelOfflineJournalEntry
+camel_offline_journal_construct
+camel_offline_journal_set_filename
+camel_offline_journal_write
+camel_offline_journal_replay
+<SUBSECTION Standard>
+CAMEL_OFFLINE_JOURNAL
+CAMEL_IS_OFFLINE_JOURNAL
+CAMEL_TYPE_OFFLINE_JOURNAL
+CAMEL_OFFLINE_JOURNAL_CLASS
+CAMEL_IS_OFFLINE_JOURNAL_CLASS
+CAMEL_OFFLINE_JOURNAL_GET_CLASS
+CamelOfflineJournalClass
+<SUBSECTION Private>
+camel_offline_journal_get_type
+</SECTION>
+
+<SECTION>
+<FILE>camel-offline-store</FILE>
+<TITLE>CamelOfflineStore</TITLE>
+CamelOfflineStore
+camel_offline_store_set_network_state
+camel_offline_store_get_network_state
+camel_offline_store_prepare_for_offline
+<SUBSECTION Standard>
+CAMEL_OFFLINE_STORE
+CAMEL_IS_OFFLINE_STORE
+CAMEL_TYPE_OFFLINE_STORE
+CAMEL_OFFLINE_STORE_CLASS
+CAMEL_IS_OFFLINE_STORE_CLASS
+CAMEL_OFFLINE_STORE_GET_CLASS
+CamelOfflineStoreClass
+<SUBSECTION Private>
+camel_offline_store_get_type
+</SECTION>
+
+<SECTION>
+<FILE>camel-partition-table</FILE>
+<TITLE>CamelPartitionTable</TITLE>
+<TITLE>CamelKeyTable</TITLE>
+camel_hash_t
+CamelPartitionKey
+CamelPartitionKeyBlock
+CamelPartitionMap
+CamelPartitionMapBlock
+CamelPartitionTable
+camel_partition_table_new
+camel_partition_table_sync
+camel_partition_table_add
+camel_partition_table_lookup
+camel_partition_table_remove
+CamelKeyBlock
+CamelKeyRootBlock
+CamelKeyKey
+CAMEL_KEY_TABLE_MAX_KEY
+CamelKeyTable
+camel_key_table_new
+camel_key_table_sync
+camel_key_table_add
+camel_key_table_set_data
+camel_key_table_set_flags
+camel_key_table_lookup
+camel_key_table_next
+<SUBSECTION Standard>
+CAMEL_PARTITION_TABLE
+CAMEL_IS_PARTITION_TABLE
+CAMEL_TYPE_PARTITION_TABLE
+CAMEL_PARTITION_TABLE_CLASS
+CAMEL_IS_PARTITION_TABLE_CLASS
+CAMEL_PARTITION_TABLE_GET_CLASS
+CAMEL_KEY_TABLE
+CAMEL_IS_KEY_TABLE
+CAMEL_TYPE_KEY_TABLE
+CAMEL_KEY_TABLE_CLASS
+CAMEL_IS_KEY_TABLE_CLASS
+CAMEL_KEY_TABLE_GET_CLASS
+CamelPartitionTableClass
+CamelKeyTableClass
+<SUBSECTION Private>
+CamelPartitionTablePrivate
+CamelKeyTablePrivate
+camel_partition_table_get_type
+camel_key_table_get_type
 </SECTION>
 
 <SECTION>
@@ -1383,8 +1644,10 @@ camel_sasl_anonymous_authtype
 <SUBSECTION Standard>
 CAMEL_SASL_ANONYMOUS
 CAMEL_IS_SASL_ANONYMOUS
-CAMEL_SASL_ANONYMOUS_TYPE
+CAMEL_TYPE_SASL_ANONYMOUS
 CAMEL_SASL_ANONYMOUS_CLASS
+CAMEL_IS_SASL_ANONYMOUS_CLASS
+CAMEL_SASL_ANONYMOUS_GET_CLASS
 CamelSaslAnonymousClass
 <SUBSECTION Private>
 camel_sasl_anonymous_get_type
@@ -1398,10 +1661,13 @@ camel_sasl_cram_md5_authtype
 <SUBSECTION Standard>
 CAMEL_SASL_CRAM_MD5
 CAMEL_IS_SASL_CRAM_MD5
-CAMEL_SASL_CRAM_MD5_TYPE
+CAMEL_TYPE_SASL_CRAM_MD5
 CAMEL_SASL_CRAM_MD5_CLASS
+CAMEL_IS_SASL_CRAM_MD5_CLASS
+CAMEL_SASL_CRAM_MD5_GET_CLASS
 CamelSaslCramMd5Class
 <SUBSECTION Private>
+CamelSaslCramMd5Private
 camel_sasl_cram_md5_get_type
 </SECTION>
 
@@ -1413,10 +1679,13 @@ camel_sasl_digest_md5_authtype
 <SUBSECTION Standard>
 CAMEL_SASL_DIGEST_MD5
 CAMEL_IS_SASL_DIGEST_MD5
-CAMEL_SASL_DIGEST_MD5_TYPE
+CAMEL_TYPE_SASL_DIGEST_MD5
 CAMEL_SASL_DIGEST_MD5_CLASS
+CAMEL_IS_SASL_DIGEST_MD5_CLASS
+CAMEL_SASL_DIGEST_MD5_GET_CLASS
 CamelSaslDigestMd5Class
 <SUBSECTION Private>
+CamelSaslDigestMd5Private
 camel_sasl_digest_md5_get_type
 </SECTION>
 
@@ -1428,10 +1697,13 @@ camel_sasl_gssapi_authtype
 <SUBSECTION Standard>
 CAMEL_SASL_GSSAPI
 CAMEL_IS_SASL_GSSAPI
-CAMEL_SASL_GSSAPI_TYPE
+CAMEL_TYPE_SASL_GSSAPI
 CAMEL_SASL_GSSAPI_CLASS
+CAMEL_IS_SASL_GSSAPI_CLASS
+CAMEL_SASL_GSSAPI_GET_CLASS
 CamelSaslGssapiClass
 <SUBSECTION Private>
+CamelSaslGssapiPrivate
 camel_sasl_gssapi_get_type
 </SECTION>
 
@@ -1443,10 +1715,13 @@ camel_sasl_login_authtype
 <SUBSECTION Standard>
 CAMEL_SASL_LOGIN
 CAMEL_IS_SASL_LOGIN
-CAMEL_SASL_LOGIN_TYPE
+CAMEL_TYPE_SASL_LOGIN
 CAMEL_SASL_LOGIN_CLASS
+CAMEL_IS_SASL_LOGIN_CLASS
+CAMEL_SASL_LOGIN_GET_CLASS
 CamelSaslLoginClass
 <SUBSECTION Private>
+CamelSaslLoginPrivate
 camel_sasl_login_get_type
 </SECTION>
 
@@ -1458,10 +1733,13 @@ camel_sasl_ntlm_authtype
 <SUBSECTION Standard>
 CAMEL_SASL_NTLM
 CAMEL_IS_SASL_NTLM
-CAMEL_SASL_NTLM_TYPE
+CAMEL_TYPE_SASL_NTLM
 CAMEL_SASL_NTLM_CLASS
+CAMEL_IS_SASL_NTLM_CLASS
+CAMEL_SASL_NTLM_GET_CLASS
 CamelSaslNTLMClass
 <SUBSECTION Private>
+CamelSaslNTLMPrivate
 camel_sasl_ntlm_get_type
 </SECTION>
 
@@ -1473,10 +1751,13 @@ camel_sasl_plain_authtype
 <SUBSECTION Standard>
 CAMEL_SASL_PLAIN
 CAMEL_IS_SASL_PLAIN
-CAMEL_SASL_PLAIN_TYPE
+CAMEL_TYPE_SASL_PLAIN
 CAMEL_SASL_PLAIN_CLASS
+CAMEL_IS_SASL_PLAIN_CLASS
+CAMEL_SASL_PLAIN_GET_CLASS
 CamelSaslPlainClass
 <SUBSECTION Private>
+CamelSaslPlainPrivate
 camel_sasl_plain_get_type
 </SECTION>
 
@@ -1488,10 +1769,13 @@ camel_sasl_popb4smtp_authtype
 <SUBSECTION Standard>
 CAMEL_SASL_POPB4SMTP
 CAMEL_IS_SASL_POPB4SMTP
-CAMEL_SASL_POPB4SMTP_TYPE
+CAMEL_TYPE_SASL_POPB4SMTP
 CAMEL_SASL_POPB4SMTP_CLASS
+CAMEL_IS_SASL_POPB4SMTP_CLASS
+CAMEL_SASL_POPB4SMTP_GET_CLASS
 CamelSaslPOPB4SMTPClass
 <SUBSECTION Private>
+CamelSaslPOPB4SMTPPrivate
 camel_sasl_popb4smtp_get_type
 </SECTION>
 
@@ -1501,17 +1785,19 @@ camel_sasl_popb4smtp_get_type
 CamelSasl
 camel_sasl_challenge
 camel_sasl_challenge_base64
-camel_sasl_authenticated
 camel_sasl_new
 camel_sasl_authtype_list
 camel_sasl_authtype
 <SUBSECTION Standard>
 CAMEL_SASL
 CAMEL_IS_SASL
-CAMEL_SASL_TYPE
+CAMEL_TYPE_SASL
 CAMEL_SASL_CLASS
+CAMEL_IS_SASL_CLASS
+CAMEL_SASL_GET_CLASS
 CamelSaslClass
 <SUBSECTION Private>
+CamelSaslPrivate
 camel_sasl_get_type
 </SECTION>
 
@@ -1537,8 +1823,10 @@ camel_seekable_stream_set_bounds
 <SUBSECTION Standard>
 CAMEL_SEEKABLE_STREAM
 CAMEL_IS_SEEKABLE_STREAM
-CAMEL_SEEKABLE_STREAM_TYPE
+CAMEL_TYPE_SEEKABLE_STREAM
 CAMEL_SEEKABLE_STREAM_CLASS
+CAMEL_IS_SEEKABLE_STREAM_CLASS
+CAMEL_SEEKABLE_STREAM_GET_CLASS
 CamelSeekableStreamClass
 <SUBSECTION Private>
 camel_seekable_stream_get_type
@@ -1552,8 +1840,10 @@ camel_seekable_substream_new
 <SUBSECTION Standard>
 CAMEL_SEEKABLE_SUBSTREAM
 CAMEL_IS_SEEKABLE_SUBSTREAM
-CAMEL_SEEKABLE_SUBSTREAM_TYPE
+CAMEL_TYPE_SEEKABLE_SUBSTREAM
 CAMEL_SEEKABLE_SUBSTREAM_CLASS
+CAMEL_IS_SEEKABLE_SUBSTREAM_CLASS
+CAMEL_SEEKABLE_SUBSTREAM_GET_CLASS
 CamelSeekableSubstreamClass
 <SUBSECTION Private>
 camel_seekable_substream_get_type
@@ -1583,10 +1873,13 @@ camel_service_query_auth_types
 <SUBSECTION Standard>
 CAMEL_SERVICE
 CAMEL_IS_SERVICE
-CAMEL_SERVICE_TYPE
+CAMEL_TYPE_SERVICE
 CAMEL_SERVICE_CLASS
+CAMEL_IS_SERVICE_CLASS
+CAMEL_SERVICE_GET_CLASS
 CamelServiceClass
 <SUBSECTION Private>
+CamelServicePrivate
 camel_service_get_type
 </SECTION>
 
@@ -1626,10 +1919,13 @@ camel_session_forward_to
 <SUBSECTION Standard>
 CAMEL_SESSION
 CAMEL_IS_SESSION
-CAMEL_SESSION_TYPE
+CAMEL_TYPE_SESSION
 CAMEL_SESSION_CLASS
+CAMEL_IS_SESSION_CLASS
+CAMEL_SESSION_GET_CLASS
 CamelSessionClass
 <SUBSECTION Private>
+CamelSessionPrivate
 camel_session_get_type
 </SECTION>
 
@@ -1646,10 +1942,13 @@ camel_smime_context_describe_part
 <SUBSECTION Standard>
 CAMEL_SMIME_CONTEXT
 CAMEL_IS_SMIME_CONTEXT
-CAMEL_SMIME_CONTEXT_TYPE
+CAMEL_TYPE_SMIME_CONTEXT
 CAMEL_SMIME_CONTEXT_CLASS
+CAMEL_IS_SMIME_CONTEXT_CLASS
+CAMEL_SMIME_CONTEXT_GET_CLASS
 CamelSMIMEContextClass
 <SUBSECTION Private>
+CamelSMIMEContextPrivate
 camel_smime_context_get_type
 </SECTION>
 
@@ -1691,9 +1990,13 @@ camel_store_info_name
 <SUBSECTION Standard>
 CAMEL_STORE_SUMMARY
 CAMEL_IS_STORE_SUMMARY
+CAMEL_TYPE_STORE_SUMMARY
 CAMEL_STORE_SUMMARY_CLASS
+CAMEL_IS_STORE_SUMMARY_CLASS
+CAMEL_STORE_SUMMARY_GET_CLASS
 CamelStoreSummaryClass
 <SUBSECTION Private>
+CamelStoreSummaryPrivate
 camel_store_summary_get_type
 </SECTION>
 
@@ -1766,10 +2069,13 @@ camel_store_can_refresh_folder
 <SUBSECTION Standard>
 CAMEL_STORE
 CAMEL_IS_STORE
-CAMEL_STORE_TYPE
+CAMEL_TYPE_STORE
 CAMEL_STORE_CLASS
+CAMEL_IS_STORE_CLASS
+CAMEL_STORE_GET_CLASS
 CamelStoreClass
 <SUBSECTION Private>
+CamelStorePrivate
 camel_isubscribe_get_type
 camel_store_get_type
 </SECTION>
@@ -1791,8 +2097,10 @@ camel_stream_write_to_stream
 <SUBSECTION Standard>
 CAMEL_STREAM
 CAMEL_IS_STREAM
-CAMEL_STREAM_TYPE
+CAMEL_TYPE_STREAM
 CAMEL_STREAM_CLASS
+CAMEL_IS_STREAM_CLASS
+CAMEL_STREAM_GET_CLASS
 CamelStreamClass
 <SUBSECTION Private>
 camel_stream_get_type
@@ -1810,10 +2118,13 @@ camel_stream_buffer_read_line
 <SUBSECTION Standard>
 CAMEL_STREAM_BUFFER
 CAMEL_IS_STREAM_BUFFER
-CAMEL_STREAM_BUFFER_TYPE
+CAMEL_TYPE_STREAM_BUFFER
 CAMEL_STREAM_BUFFER_CLASS
+CAMEL_IS_STREAM_BUFFER_CLASS
+CAMEL_STREAM_BUFFER_GET_CLASS
 CamelStreamBufferClass
 <SUBSECTION Private>
+CamelStreamBufferPrivate
 camel_stream_buffer_get_type
 </SECTION>
 
@@ -1821,15 +2132,18 @@ camel_stream_buffer_get_type
 <FILE>camel-stream-filter</FILE>
 <TITLE>CamelStreamFilter</TITLE>
 CamelStreamFilter
-camel_stream_filter_new_with_stream
 camel_stream_filter_add
 camel_stream_filter_remove
 <SUBSECTION Standard>
 CAMEL_STREAM_FILTER
 CAMEL_IS_STREAM_FILTER
+CAMEL_TYPE_STREAM_FILTER
 CAMEL_STREAM_FILTER_CLASS
+CAMEL_IS_STREAM_FILTER_CLASS
+CAMEL_STREAM_FILTER_GET_CLASS
 CamelStreamFilterClass
 <SUBSECTION Private>
+CamelStreamFilterPrivate
 camel_stream_filter_get_type
 </SECTION>
 
@@ -1844,10 +2158,13 @@ camel_stream_fs_new_with_fd_and_bounds
 <SUBSECTION Standard>
 CAMEL_STREAM_FS
 CAMEL_IS_STREAM_FS
-CAMEL_STREAM_FS_TYPE
+CAMEL_TYPE_STREAM_FS
 CAMEL_STREAM_FS_CLASS
+CAMEL_IS_STREAM_FS_CLASS
+CAMEL_STREAM_FS_GET_CLASS
 CamelStreamFsClass
 <SUBSECTION Private>
+CamelStreamFsPrivate
 camel_stream_fs_get_type
 </SECTION>
 
@@ -1864,10 +2181,13 @@ camel_stream_mem_set_buffer
 <SUBSECTION Standard>
 CAMEL_STREAM_MEM
 CAMEL_IS_STREAM_MEM
-CAMEL_STREAM_MEM_TYPE
+CAMEL_TYPE_STREAM_MEM
 CAMEL_STREAM_MEM_CLASS
+CAMEL_IS_STREAM_MEM_CLASS
+CAMEL_STREAM_MEM_GET_CLASS
 CamelStreamMemClass
 <SUBSECTION Private>
+CamelStreamMemPrivate
 camel_stream_mem_get_type
 </SECTION>
 
@@ -1879,7 +2199,10 @@ camel_stream_null_new
 <SUBSECTION Standard>
 CAMEL_STREAM_NULL
 CAMEL_IS_STREAM_NULL
+CAMEL_TYPE_STREAM_NULL
 CAMEL_STREAM_NULL_CLASS
+CAMEL_IS_STREAM_NULL_CLASS
+CAMEL_STREAM_NULL_GET_CLASS
 CamelStreamNullClass
 <SUBSECTION Private>
 camel_stream_null_get_type
@@ -1894,7 +2217,10 @@ camel_stream_process_connect
 <SUBSECTION Standard>
 CAMEL_STREAM_PROCESS
 CAMEL_IS_STREAM_PROCESS
+CAMEL_TYPE_STREAM_PROCESS
 CAMEL_STREAM_PROCESS_CLASS
+CAMEL_IS_STREAM_PROCESS_CLASS
+CAMEL_STREAM_PROCESS_GET_CLASS
 CamelStreamProcessClass
 <SUBSECTION Private>
 camel_stream_process_get_type
@@ -1909,10 +2235,12 @@ camel_stream_vfs_new_with_uri
 camel_stream_vfs_new_with_stream
 camel_stream_vfs_is_writable
 <SUBSECTION Standard>
-CAMEL_STREAM_VFS_TYPE
 CAMEL_STREAM_VFS
-CAMEL_STREAM_VFS_CLASS
 CAMEL_IS_STREAM_VFS
+CAMEL_TYPE_STREAM_VFS
+CAMEL_STREAM_VFS_CLASS
+CAMEL_IS_STREAM_VFS_CLASS
+CAMEL_STREAM_VFS_GET_CLASS
 CamelStreamVFSClass
 <SUBSECTION Private>
 camel_stream_vfs_get_type
@@ -1926,8 +2254,10 @@ camel_tcp_stream_raw_new
 <SUBSECTION Standard>
 CAMEL_TCP_STREAM_RAW
 CAMEL_IS_TCP_STREAM_RAW
-CAMEL_TCP_STREAM_RAW_TYPE
+CAMEL_TYPE_TCP_STREAM_RAW
 CAMEL_TCP_STREAM_RAW_CLASS
+CAMEL_IS_TCP_STREAM_RAW_CLASS
+CAMEL_TCP_STREAM_RAW_GET_CLASS
 CamelTcpStreamRawClass
 <SUBSECTION Private>
 camel_tcp_stream_raw_get_type
@@ -1947,10 +2277,13 @@ camel_tcp_stream_ssl_sockfd
 <SUBSECTION Standard>
 CAMEL_TCP_STREAM_SSL
 CAMEL_IS_TCP_STREAM_SSL
-CAMEL_TCP_STREAM_SSL_TYPE
+CAMEL_TYPE_TCP_STREAM_SSL
 CAMEL_TCP_STREAM_SSL_CLASS
+CAMEL_IS_TCP_STREAM_SSL_CLASS
+CAMEL_TCP_STREAM_SSL_GET_CLASS
 CamelTcpStreamSSLClass
 <SUBSECTION Private>
+CamelTcpStreamSSLPrivate
 camel_tcp_stream_ssl_get_type
 </SECTION>
 
@@ -1969,8 +2302,10 @@ camel_tcp_stream_get_remote_address
 <SUBSECTION Standard>
 CAMEL_TCP_STREAM
 CAMEL_IS_TCP_STREAM
-CAMEL_TCP_STREAM_TYPE
+CAMEL_TYPE_TCP_STREAM
 CAMEL_TCP_STREAM_CLASS
+CAMEL_IS_TCP_STREAM_CLASS
+CAMEL_TCP_STREAM_GET_CLASS
 CamelTcpStreamClass
 <SUBSECTION Private>
 camel_tcp_stream_get_type
@@ -1997,12 +2332,37 @@ camel_text_index_validate
 <SUBSECTION Standard>
 CAMEL_TEXT_INDEX
 CAMEL_IS_TEXT_INDEX
+CAMEL_TYPE_TEXT_INDEX
 CAMEL_TEXT_INDEX_CLASS
+CAMEL_IS_TEXT_INDEX_CLASS
+CAMEL_TEXT_INDEX_GET_CLASS
+CAMEL_TEXT_INDEX_CURSOR
+CAMEL_IS_TEXT_INDEX_CURSOR
+CAMEL_TYPE_TEXT_INDEX_CURSOR
+CAMEL_TEXT_INDEX_CURSOR_CLASS
+CAMEL_IS_TEXT_INDEX_CURSOR_CLASS
+CAMEL_TEXT_INDEX_CURSOR_GET_CLASS
+CAMEL_TEXT_INDEX_KEY_CURSOR
+CAMEL_IS_TEXT_INDEX_KEY_CURSOR
+CAMEL_TYPE_TEXT_INDEX_KEY_CURSOR
+CAMEL_TEXT_INDEX_KEY_CURSOR_CLASS
+CAMEL_IS_TEXT_INDEX_KEY_CURSOR_CLASS
+CAMEL_TEXT_INDEX_KEY_CURSOR_GET_CLASS
+CAMEL_TEXT_INDEX_NAME
+CAMEL_IS_TEXT_INDEX_NAME
+CAMEL_TYPE_TEXT_INDEX_NAME
+CAMEL_TEXT_INDEX_NAME_CLASS
+CAMEL_IS_TEXT_INDEX_NAME_CLASS
+CAMEL_TEXT_INDEX_NAME_GET_CLASS
 CamelTextIndexClass
 CamelTextIndexCursorClass
 CamelTextIndexKeyCursorClass
 CamelTextIndexNameClass
 <SUBSECTION Private>
+CamelTextIndexPrivate
+CamelTextIndexCursorPrivate
+CamelTextIndexKeyCursorPrivate
+CamelTextIndexNamePrivate
 camel_text_index_get_type
 camel_text_index_cursor_get_type
 camel_text_index_key_cursor_get_type
@@ -2017,10 +2377,13 @@ camel_transport_send_to
 <SUBSECTION Standard>
 CAMEL_TRANSPORT
 CAMEL_IS_TRANSPORT
-CAMEL_TRANSPORT_TYPE
+CAMEL_TYPE_TRANSPORT
 CAMEL_TRANSPORT_CLASS
+CAMEL_IS_TRANSPORT_CLASS
+CAMEL_TRANSPORT_GET_CLASS
 CamelTransportClass
 <SUBSECTION Private>
+CamelTransportPrivate
 camel_transport_get_type
 </SECTION>
 
@@ -2053,9 +2416,13 @@ camel_vee_folder_sync_headers
 <SUBSECTION Standard>
 CAMEL_VEE_FOLDER
 CAMEL_IS_VEE_FOLDER
+CAMEL_TYPE_VEE_FOLDER
 CAMEL_VEE_FOLDER_CLASS
+CAMEL_IS_VEE_FOLDER_CLASS
+CAMEL_VEE_FOLDER_GET_CLASS
 CamelVeeFolderClass
 <SUBSECTION Private>
+CamelVeeFolderPrivate
 camel_vee_folder_get_type
 </SECTION>
 
@@ -2069,7 +2436,10 @@ camel_vee_store_new
 <SUBSECTION Standard>
 CAMEL_VEE_STORE
 CAMEL_IS_VEE_STORE
+CAMEL_TYPE_VEE_STORE
 CAMEL_VEE_STORE_CLASS
+CAMEL_IS_VEE_STORE_CLASS
+CAMEL_VEE_STORE_GET_CLASS
 CamelVeeStoreClass
 <SUBSECTION Private>
 camel_vee_store_get_type
@@ -2087,7 +2457,10 @@ camel_vee_summary_load_check_unread_vfolder
 <SUBSECTION Standard>
 CAMEL_VEE_SUMMARY
 CAMEL_IS_VEE_SUMMARY
+CAMEL_TYPE_VEE_SUMMARY
 CAMEL_VEE_SUMMARY_CLASS
+CAMEL_IS_VEE_SUMMARY_CLASS
+CAMEL_VEE_SUMMARY_GET_CLASS
 CamelVeeSummaryClass
 <SUBSECTION Private>
 camel_vee_summary_get_type
@@ -2104,1078 +2477,13 @@ camel_vtrash_folder_new
 <SUBSECTION Standard>
 CAMEL_VTRASH_FOLDER
 CAMEL_IS_VTRASH_FOLDER
+CAMEL_TYPE_VTRASH_FOLDER
 CAMEL_VTRASH_FOLDER_CLASS
+CAMEL_IS_VTRASH_FOLDER_CLASS
+CAMEL_VTRASH_FOLDER_GET_CLASS
 CamelVTrashFolderClass
 <SUBSECTION Private>
 camel_vtrash_folder_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-disco-store</FILE>
-<TITLE>CamelDiscoStore</TITLE>
-CamelDiscoStore
-CamelDiscoStoreStatus
-camel_disco_store_status
-camel_disco_store_set_status
-camel_disco_store_can_work_offline
-camel_disco_store_check_online
-camel_disco_store_prepare_for_offline
-<SUBSECTION Standard>
-CAMEL_DISCO_STORE
-CAMEL_IS_DISCO_STORE
-CAMEL_DISCO_STORE_TYPE
-CAMEL_DISCO_STORE_CLASS
-CamelDiscoStoreClass
-<SUBSECTION Private>
-camel_disco_store_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-offline-journal</FILE>
-<TITLE>CamelOfflineJournal</TITLE>
-CamelOfflineJournal
-CamelOfflineJournalEntry
-camel_offline_journal_construct
-camel_offline_journal_set_filename
-camel_offline_journal_write
-camel_offline_journal_replay
-<SUBSECTION Standard>
-CAMEL_OFFLINE_JOURNAL
-CAMEL_IS_OFFLINE_JOURNAL
-CAMEL_TYPE_OFFLINE_JOURNAL
-CAMEL_OFFLINE_JOURNAL_CLASS
-CAMEL_IS_OFFLINE_JOURNAL_CLASS
-CAMEL_OFFLINE_JOURNAL_GET_CLASS
-CamelOfflineJournalClass
-<SUBSECTION Private>
-camel_offline_journal_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-offline-folder</FILE>
-<TITLE>CamelOfflineFolder</TITLE>
-CamelOfflineFolder
-camel_offline_folder_downsync
-<SUBSECTION Standard>
-CAMEL_OFFLINE_FOLDER
-CAMEL_IS_OFFLINE_FOLDER
-CAMEL_OFFLINE_FOLDER_TYPE
-CAMEL_OFFLINE_FOLDER_CLASS
-CamelOfflineFolderClass
-<SUBSECTION Private>
-camel_offline_folder_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-offline-store</FILE>
-<TITLE>CamelOfflineStore</TITLE>
-CamelOfflineStore
-camel_offline_store_set_network_state
-camel_offline_store_get_network_state
-camel_offline_store_prepare_for_offline
-<SUBSECTION Standard>
-CAMEL_OFFLINE_STORE
-CAMEL_IS_OFFLINE_STORE
-CAMEL_TYPE_OFFLINE_STORE
-CAMEL_OFFLINE_STORE_CLASS
-CAMEL_IS_OFFLINE_STORE_CLASS
-CAMEL_OFFLINE_STORE_GET_CLASS
-CamelOfflineStoreClass
-<SUBSECTION Private>
-camel_offline_store_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-nntp-address</FILE>
-<TITLE>CamelNNTPAddress</TITLE>
-CamelNNTPAddress
-camel_nntp_address_new
-camel_nntp_address_add
-camel_nntp_address_get
-<SUBSECTION Standard>
-CAMEL_NNTP_ADDRESS
-CAMEL_IS_NNTP_ADDRESS
-CAMEL_NNTP_ADDRESS_CLASS
-CamelNNTPAddressClass
-<SUBSECTION Private>
-camel_nntp_address_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap-folder</FILE>
-<TITLE>CamelImapFolder</TITLE>
-CamelImapFolder
-camel_imap_folder_new
-camel_imap_folder_selected
-camel_imap_folder_changed
-camel_imap_folder_fetch_data
-imap_append_resyncing
-imap_transfer_resyncing
-imap_expunge_uids_resyncing
-<SUBSECTION Standard>
-CAMEL_IMAP_FOLDER
-CAMEL_IS_IMAP_FOLDER
-CAMEL_IMAP_FOLDER_TYPE
-CAMEL_IMAP_FOLDER_CLASS
-CamelImapFolderClass
-<SUBSECTION Private>
-CamelImapFolderPrivate
-camel_imap_folder_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap-journal</FILE>
-<TITLE>CamelImapJournal</TITLE>
-CamelOfflineAction
-CamelIMAPJournalEntry
-CamelIMAPJournal
-camel_imap_journal_new
-camel_imap_journal_log
-camel_imap_journal_uidmap_add
-camel_imap_journal_uidmap_lookup
-camel_imap_journal_close_folders
-<SUBSECTION Standard>
-CAMEL_TYPE_IMAP_JOURNAL
-CAMEL_IMAP_JOURNAL
-CAMEL_IMAP_JOURNAL_CLASS
-CAMEL_IS_IMAP_JOURNAL
-CAMEL_IS_IMAP_JOURNAL_CLASS
-CAMEL_IMAP_JOURNAL_GET_CLASS
-CamelIMAPJournalClass
-<SUBSECTION Private>
-camel_imap_journal_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap-message-cache</FILE>
-<TITLE>CamelImapMessageCache</TITLE>
-CamelImapMessageCache
-camel_imap_message_cache_new
-camel_imap_message_cache_set_path
-camel_imap_message_cache_max_uid
-camel_imap_message_cache_insert
-camel_imap_message_cache_insert_stream
-camel_imap_message_cache_insert_wrapper
-camel_imap_message_cache_get
-camel_imap_message_cache_get_filename
-camel_imap_message_cache_remove
-camel_imap_message_cache_clear
-camel_imap_message_cache_copy
-camel_imap_message_cache_delete
-camel_imap_message_cache_filter_cached
-<SUBSECTION Standard>
-CAMEL_IMAP_MESSAGE_CACHE
-CAMEL_IS_IMAP_MESSAGE_CACHE
-CAMEL_IMAP_MESSAGE_CACHE_TYPE
-CAMEL_IMAP_MESSAGE_CACHE_CLASS
-CamelImapMessageCacheClass
-<SUBSECTION Private>
-camel_imap_message_cache_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap-search</FILE>
-<TITLE>CamelImapSearch</TITLE>
-CamelImapSearch
-camel_imap_search_new
-<SUBSECTION Standard>
-CAMEL_IMAP_SEARCH
-CAMEL_IS_IMAP_SEARCH
-CAMEL_IMAP_SEARCH_TYPE
-CAMEL_IMAP_SEARCH_CLASS
-CamelImapSearchClass
-<SUBSECTION Private>
-camel_imap_search_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap-store-summary</FILE>
-<TITLE>CamelImapStoreSummary</TITLE>
-CamelImapStoreInfo
-CamelImapStoreNamespace
-CamelImapStoreSummary
-camel_imap_store_summary_new
-camel_imap_store_summary_namespace_set_main
-camel_imap_store_summary_namespace_add_secondary
-camel_imap_store_summary_get_main_namespace
-camel_imap_store_summary_namespace_find_path
-camel_imap_store_summary_namespace_find_full
-camel_imap_store_summary_full_to_path
-camel_imap_store_summary_path_to_full
-camel_imap_store_summary_full_name
-camel_imap_store_summary_add_from_full
-camel_imap_store_summary_full_from_path
-camel_imap_store_info_full_name
-<SUBSECTION Standard>
-CAMEL_IMAP_STORE_SUMMARY
-CAMEL_IS_IMAP_STORE_SUMMARY
-CAMEL_IMAP_STORE_SUMMARY_CLASS
-CamelImapStoreSummaryClass
-<SUBSECTION Private>
-camel_imap_store_summary_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap-store</FILE>
-<TITLE>CamelImapStore</TITLE>
-CamelImapMsg
-CamelImapStore
-camel_imap_msg_new
-camel_imap_msg_queue
-CAMEL_IMAP_STORE_NAMESPACE
-CAMEL_IMAP_STORE_OVERRIDE_NAMESPACE
-CAMEL_IMAP_STORE_CHECK_ALL
-CAMEL_IMAP_STORE_FILTER_INBOX
-CAMEL_IMAP_STORE_FILTER_JUNK
-CAMEL_IMAP_STORE_FILTER_JUNK_INBOX
-CAMEL_IMAP_STORE_CHECK_LSUB
-CAMEL_IMAP_FOLDER_MARKED
-CAMEL_IMAP_FOLDER_UNMARKED
-CamelImapServerLevel
-IMAP_CAPABILITY_IMAP4
-IMAP_CAPABILITY_IMAP4REV1
-IMAP_CAPABILITY_STATUS
-IMAP_CAPABILITY_NAMESPACE
-IMAP_CAPABILITY_UIDPLUS
-IMAP_CAPABILITY_LITERALPLUS
-IMAP_CAPABILITY_STARTTLS
-IMAP_CAPABILITY_useful_lsub
-IMAP_CAPABILITY_utf8_search
-IMAP_CAPABILITY_XGWEXTENSIONS
-IMAP_CAPABILITY_XGWMOVE
-IMAP_CAPABILITY_LOGINDISABLED
-IMAP_CAPABILITY_QUOTA
-IMAP_PARAM_OVERRIDE_NAMESPACE
-IMAP_PARAM_CHECK_ALL
-IMAP_PARAM_FILTER_INBOX
-IMAP_PARAM_FILTER_JUNK
-IMAP_PARAM_FILTER_JUNK_INBOX
-IMAP_PARAM_SUBSCRIPTIONS
-IMAP_PARAM_CHECK_LSUB
-IMAP_FETCH_ALL_HEADERS
-IMAP_FETCH_MAILING_LIST_HEADERS
-IMAP_FETCH_MINIMAL_HEADERS
-camel_imap_store_connected
-camel_imap_store_readline
-<SUBSECTION Standard>
-CAMEL_IMAP_STORE
-CAMEL_IS_IMAP_STORE
-CAMEL_IMAP_STORE_TYPE
-CAMEL_IMAP_STORE_CLASS
-CamelImapStoreClass
-<SUBSECTION Private>
-camel_imap_store_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap-summary</FILE>
-<TITLE>CamelImapSummary</TITLE>
-CAMEL_IMAP_SERVER_FLAGS
-CamelImapMessageContentInfo
-CamelImapMessageInfo
-CamelImapSummary
-camel_imap_summary_new
-camel_imap_summary_add_offline
-camel_imap_summary_add_offline_uncached
-<SUBSECTION Standard>
-CAMEL_IMAP_SUMMARY
-CAMEL_IS_IMAP_SUMMARY
-CAMEL_IMAP_SUMMARY_CLASS
-CamelImapSummaryClass
-<SUBSECTION Private>
-camel_imap_summary_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap-wrapper</FILE>
-<TITLE>CamelImapWrapper</TITLE>
-CamelImapWrapper
-camel_imap_wrapper_new
-<SUBSECTION Standard>
-CAMEL_IMAP_WRAPPER
-CAMEL_IS_IMAP_WRAPPER
-CAMEL_IMAP_WRAPPER_TYPE
-CAMEL_IMAP_WRAPPER_CLASS
-CamelImapWrapperClass
-<SUBSECTION Private>
-camel_imap_wrapper_get_type
-CamelImapWrapperPrivate
-</SECTION>
-
-<SECTION>
-<FILE>camel-groupwise-folder</FILE>
-<TITLE>CamelGroupwiseFolder</TITLE>
-CamelGroupwiseFolder
-camel_gw_folder_new
-gw_update_summary
-<SUBSECTION Standard>
-CAMEL_GROUPWISE_FOLDER
-CAMEL_IS_GROUPWISE_FOLDER
-CAMEL_GROUPWISE_FOLDER_TYPE
-CAMEL_GROUPWISE_FOLDER_CLASS
-CamelGroupwiseFolderClass
-<SUBSECTION Private>
-camel_groupwise_folder_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-groupwise-store-summary</FILE>
-<TITLE>CamelGroupwiseStoreSummary</TITLE>
-CamelGroupwiseStoreInfo
-CamelGroupwiseStoreNamespace
-CamelGroupwiseStoreSummary
-camel_groupwise_store_summary_new
-camel_groupwise_store_summary_full_name
-camel_groupwise_store_summary_add_from_full
-camel_groupwise_store_summary_full_to_path
-camel_groupwise_store_summary_path_to_full
-camel_groupwise_store_summary_full_from_path
-camel_groupwise_store_summary_namespace_new
-camel_groupwise_store_summary_namespace_find_path
-camel_groupwise_store_summary_namespace_set
-camel_groupwise_store_info_full_name
-<SUBSECTION Standard>
-CAMEL_GW_STORE_SUMMARY
-CAMEL_IS_GW_STORE_SUMMARY
-CAMEL_GW_STORE_SUMMARY_CLASS
-CamelGroupwiseStoreSummaryClass
-<SUBSECTION Private>
-camel_groupwise_store_summary_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-groupwise-store</FILE>
-<TITLE>CamelGroupwiseStore</TITLE>
-GW_PARAM_FILTER_INBOX
-CamelGroupwiseStore
-CamelGroupwiseStorePrivate
-groupwise_get_name
-camel_groupwise_store_container_id_lookup
-camel_groupwise_store_folder_lookup
-cnc_lookup
-storage_path_lookup
-groupwise_base_url_lookup
-create_junk_folder
-camel_groupwise_store_connected
-gw_store_reload_folder
-groupwise_store_set_current_folder
-<SUBSECTION Standard>
-CAMEL_GROUPWISE_STORE
-CAMEL_IS_GROUPWISE_STORE
-CAMEL_GROUPWISE_STORE_TYPE
-CAMEL_GROUPWISE_STORE_CLASS
-CamelGroupwiseStoreClass
-<SUBSECTION Private>
-camel_groupwise_store_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-groupwise-summary</FILE>
-<TITLE>CamelGroupwiseSummary</TITLE>
-CamelGroupwiseSummary
-CamelGroupwiseMessageInfo
-CamelGroupwiseMessageContentInfo
-camel_groupwise_summary_new
-camel_gw_summary_add_offline
-camel_gw_summary_add_offline_uncached
-groupwise_summary_clear
-<SUBSECTION Standard>
-CAMEL_GROUPWISE_SUMMARY
-CAMEL_IS_GROUPWISE_SUMMARY
-CAMEL_GROUPWISE_SUMMARY_CLASS
-CamelGroupwiseSummaryClass
-<SUBSECTION Private>
-camel_groupwise_summary_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-groupwise-transport</FILE>
-<TITLE>CamelGroupwiseTransport</TITLE>
-CamelGroupwiseTransport
-<SUBSECTION Standard>
-CAMEL_GROUPWISE_TRANSPORT
-CAMEL_IS_GROUPWISE_TRANSPORT
-CAMEL_GROUPWISE_TRANSPORT_TYPE
-CAMEL_GROUPWISE_TRANSPORT_CLASS
-CamelGroupwiseTransportClass
-<SUBSECTION Private>
-camel_groupwise_transport_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-groupwise-journal</FILE>
-<TITLE>CamelGroupwiseJournal</TITLE>
-CamelGroupwiseJournal
-CamelGroupwiseJournalEntry
-camel_groupwise_journal_new
-camel_groupwise_journal_append
-camel_groupwise_journal_transfer
-<SUBSECTION Standard>
-CAMEL_GROUPWISE_JOURNAL
-CAMEL_IS_GROUPWISE_JOURNAL
-CAMEL_TYPE_GROUPWISE_JOURNAL
-CAMEL_GROUPWISE_JOURNAL_CLASS
-CAMEL_IS_GROUPWISE_JOURNAL_CLASS
-CAMEL_GROUPWISE_JOURNAL_GET_CLASS
-CamelGroupwiseJournalClass
-<SUBSECTION Private>
-camel_groupwise_journal_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap4-engine</FILE>
-<TITLE>CamelIMAP4Engine</TITLE>
-CamelIMAP4Engine
-camel_imap4_engine_t
-camel_imap4_level_t
-camel_imap4_resp_code_t
-CamelIMAP4RespCode
-CamelIMAP4Namespace
-CamelIMAP4NamespaceList
-CamelIMAP4ReconnectFunc
-camel_imap4_engine_new
-camel_imap4_engine_take_stream
-camel_imap4_engine_disconnect
-camel_imap4_engine_capability
-camel_imap4_engine_namespace
-camel_imap4_engine_select_folder
-camel_imap4_engine_queue
-camel_imap4_engine_prequeue
-camel_imap4_engine_dequeue
-camel_imap4_engine_iterate
-camel_imap4_engine_handle_untagged_1
-camel_imap4_engine_handle_untagged
-camel_imap4_engine_next_token
-camel_imap4_engine_line
-camel_imap4_engine_literal
-camel_imap4_engine_nstring
-camel_imap4_engine_eat_line
-camel_imap4_engine_parse_resp_code
-camel_imap4_resp_code_free
-<SUBSECTION Standard>
-CAMEL_IMAP4_ENGINE
-CAMEL_IS_IMAP4_ENGINE
-CAMEL_TYPE_IMAP4_ENGINE
-CAMEL_IMAP4_ENGINE_CLASS
-CAMEL_IS_IMAP4_ENGINE_CLASS
-CAMEL_IMAP4_ENGINE_GET_CLASS
-CamelIMAP4EngineClass
-<SUBSECTION Private>
-camel_imap4_engine_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap4-folder</FILE>
-<TITLE>CamelIMAP4Folder</TITLE>
-CamelIMAP4Folder
-camel_imap4_folder_new
-camel_imap4_folder_utf7_name
-<SUBSECTION Standard>
-CAMEL_IMAP4_FOLDER
-CAMEL_IS_IMAP4_FOLDER
-CAMEL_TYPE_IMAP4_FOLDER
-CAMEL_IMAP4_FOLDER_CLASS
-CAMEL_IS_IMAP4_FOLDER_CLASS
-CAMEL_IMAP4_FOLDER_GET_CLASS
-CamelIMAP4FolderClass
-<SUBSECTION Private>
-camel_imap4_folder_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap4-search</FILE>
-<TITLE>CamelIMAP4Search</TITLE>
-CamelIMAP4Search
-camel_imap4_search_new
-<SUBSECTION Standard>
-CAMEL_IMAP4_SEARCH
-CAMEL_IS_IMAP4_SEARCH
-CAMEL_IMAP4_SEARCH_TYPE
-CAMEL_IMAP4_SEARCH_CLASS
-CamelIMAP4SearchClass
-<SUBSECTION Private>
-camel_imap4_search_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap4-store-summary</FILE>
-<TITLE>CamelIMAP4StoreSummary</TITLE>
-CamelIMAP4StoreInfo
-CamelIMAP4StoreSummary
-camel_imap4_store_summary_new
-camel_imap4_store_summary_set_capabilities
-camel_imap4_store_summary_set_namespaces
-camel_imap4_store_summary_note_info
-camel_imap4_store_summary_unnote_info
-camel_imap4_store_summary_get_folder_info
-<SUBSECTION Standard>
-CAMEL_IMAP4_STORE_SUMMARY
-CAMEL_IS_IMAP4_STORE_SUMMARY
-CAMEL_IMAP4_STORE_SUMMARY_CLASS
-CamelIMAP4StoreSummaryClass
-<SUBSECTION Private>
-camel_imap4_store_summary_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap4-store</FILE>
-<TITLE>CamelIMAP4Store</TITLE>
-CamelIMAP4Store
-<SUBSECTION Standard>
-CAMEL_IMAP4_STORE
-CAMEL_IS_IMAP4_STORE
-CAMEL_TYPE_IMAP4_STORE
-CAMEL_IMAP4_STORE_CLASS
-CAMEL_IS_IMAP4_STORE_CLASS
-CAMEL_IMAP4_STORE_GET_CLASS
-CamelIMAP4StoreClass
-<SUBSECTION Private>
-camel_imap4_store_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap4-stream</FILE>
-<TITLE>CamelIMAP4Stream</TITLE>
-IMAP4_READ_PRELEN
-IMAP4_READ_BUFLEN
-camel_imap4_token_t
-CamelIMAP4Stream
-camel_imap4_stream_new
-camel_imap4_stream_next_token
-camel_imap4_stream_unget_token
-camel_imap4_stream_line
-camel_imap4_stream_literal
-<SUBSECTION Standard>
-CAMEL_IMAP4_STREAM
-CAMEL_IS_IMAP4_STREAM
-CAMEL_TYPE_IMAP4_STREAM
-CAMEL_IMAP4_STREAM_CLASS
-CamelIMAP4StreamClass
-<SUBSECTION Private>
-camel_imap4_stream_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap4-summary</FILE>
-<TITLE>CamelIMAP4Summary</TITLE>
-CamelIMAP4Summary
-CamelIMAP4MessageInfo
-CamelIMAP4MessageContentInfo
-CAMEL_IMAP4_MESSAGE_RECENT
-camel_imap4_summary_new
-camel_imap4_summary_set_exists
-camel_imap4_summary_set_recent
-camel_imap4_summary_set_unseen
-camel_imap4_summary_set_uidnext
-camel_imap4_summary_set_uidvalidity
-camel_imap4_summary_expunge
-camel_imap4_summary_flush_updates
-<SUBSECTION Standard>
-CAMEL_IMAP4_SUMMARY
-CAMEL_IS_IMAP4_SUMMARY
-CAMEL_TYPE_IMAP4_SUMMARY
-CAMEL_IMAP4_SUMMARY_CLASS
-CAMEL_IS_IMAP4_SUMMARY_CLASS
-CAMEL_IMAP4_SUMMARY_GET_CLASS
-CamelIMAP4SummaryClass
-<SUBSECTION Private>
-camel_imap4_summary_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap4-journal</FILE>
-<TITLE>CamelIMAP4Journal</TITLE>
-CamelIMAP4Journal
-CamelIMAP4JournalEntry
-camel_imap4_journal_new
-camel_imap4_journal_readd_failed
-camel_imap4_journal_append
-<SUBSECTION Standard>
-CAMEL_IMAP4_JOURNAL
-CAMEL_IS_IMAP4_JOURNAL
-CAMEL_TYPE_IMAP4_JOURNAL
-CAMEL_IMAP4_JOURNAL_CLASS
-CAMEL_IS_IMAP4_JOURNAL_CLASS
-CAMEL_IMAP4_JOURNAL_GET_CLASS
-CamelIMAP4JournalClass
-<SUBSECTION Private>
-camel_imap4_journal_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-local-folder</FILE>
-<TITLE>CamelLocalFolder</TITLE>
-CamelLocalFolder
-camel_local_folder_construct
-camel_local_folder_lock
-camel_local_folder_unlock
-<SUBSECTION Standard>
-CAMEL_LOCAL_FOLDER
-CAMEL_IS_LOCAL_FOLDER
-CAMEL_LOCAL_FOLDER_TYPE
-CAMEL_LOCAL_FOLDER_CLASS
-CamelLocalFolderClass
-<SUBSECTION Private>
-CamelLocalFolderPrivate
-camel_local_folder_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-local-store</FILE>
-<TITLE>CamelLocalStore</TITLE>
-CamelLocalStore
-camel_local_store_get_toplevel_dir
-camel_local_store_get_full_path
-camel_local_store_get_meta_path
-<SUBSECTION Standard>
-CAMEL_LOCAL_STORE
-CAMEL_IS_LOCAL_STORE
-CAMEL_LOCAL_STORE_TYPE
-CAMEL_LOCAL_STORE_CLASS
-CamelLocalStoreClass
-<SUBSECTION Private>
-camel_local_store_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-local-summary</FILE>
-<TITLE>CamelLocalSummary</TITLE>
-CamelLocalSummary
-CamelLocalMessageInfo
-camel_local_summary_construct
-camel_local_summary_load
-camel_local_summary_check
-camel_local_summary_sync
-camel_local_summary_add
-camel_local_summary_check_force
-camel_local_summary_encode_x_evolution
-camel_local_summary_decode_x_evolution
-camel_local_summary_write_headers
-<SUBSECTION Standard>
-CAMEL_LOCAL_SUMMARY
-CAMEL_IS_LOCAL_SUMMARY
-CAMEL_LOCAL_SUMMARY_CLASS
-CamelLocalSummaryClass
-<SUBSECTION Private>
-camel_local_summary_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-maildir-folder</FILE>
-<TITLE>CamelMaildirFolder</TITLE>
-CamelMaildirFolder
-camel_maildir_folder_new
-<SUBSECTION Standard>
-CAMEL_MAILDIR_FOLDER
-CAMEL_IS_MAILDIR_FOLDER
-CAMEL_MAILDIR_FOLDER_TYPE
-CAMEL_MAILDIR_FOLDER_CLASS
-CamelMaildirFolderClass
-<SUBSECTION Private>
-camel_maildir_folder_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-maildir-store</FILE>
-<TITLE>CamelMaildirStore</TITLE>
-CamelMaildirStore
-<SUBSECTION Standard>
-CAMEL_MAILDIR_STORE
-CAMEL_IS_MAILDIR_STORE
-CAMEL_MAILDIR_STORE_TYPE
-CAMEL_MAILDIR_STORE_CLASS
-CamelMaildirStoreClass
-<SUBSECTION Private>
-camel_maildir_store_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-maildir-summary</FILE>
-<TITLE>CamelMaildirSummary</TITLE>
-CamelMaildirSummary
-CamelMaildirMessageContentInfo
-CamelMaildirMessageInfo
-camel_maildir_summary_new
-camel_maildir_summary_info_to_name
-camel_maildir_summary_name_to_info
-camel_maildir_info_filename
-camel_maildir_info_set_filename
-<SUBSECTION Standard>
-CAMEL_MAILDIR_SUMMARY
-CAMEL_IS_MAILDIR_SUMMARY
-CAMEL_MAILDIR_SUMMARY_CLASS
-CamelMaildirSummaryClass
-<SUBSECTION Private>
-camel_maildir_summary_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-mbox-folder</FILE>
-<TITLE>CamelMboxFolder</TITLE>
-CamelMboxFolder
-camel_mbox_folder_new
-<SUBSECTION Standard>
-CAMEL_MBOX_FOLDER
-CAMEL_IS_MBOX_FOLDER
-CAMEL_MBOX_FOLDER_TYPE
-CAMEL_MBOX_FOLDER_CLASS
-CamelMboxFolderClass
-<SUBSECTION Private>
-camel_mbox_folder_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-mbox-store</FILE>
-<TITLE>CamelMboxStore</TITLE>
-CamelMboxStore
-<SUBSECTION Standard>
-CAMEL_MBOX_STORE
-CAMEL_IS_MBOX_STORE
-CAMEL_MBOX_STORE_TYPE
-CAMEL_MBOX_STORE_CLASS
-CamelMboxStoreClass
-<SUBSECTION Private>
-camel_mbox_store_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-mbox-summary</FILE>
-<TITLE>CamelMboxSummary</TITLE>
-STATUS_PINE
-CamelMboxSummary
-CamelMboxMessageContentInfo
-CamelMboxMessageInfo
-camel_mbox_summary_new
-camel_mbox_summary_xstatus
-camel_mbox_summary_sync_mbox
-<SUBSECTION Standard>
-CAMEL_MBOX_SUMMARY
-CAMEL_IS_MBOX_SUMMARY
-CAMEL_MBOX_SUMMARY_CLASS
-CamelMboxSummaryClass
-<SUBSECTION Private>
-camel_mbox_summary_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-mh-folder</FILE>
-<TITLE>CamelMhFolder</TITLE>
-CamelMhFolder
-camel_mh_folder_new
-<SUBSECTION Standard>
-CAMEL_MH_FOLDER
-CAMEL_IS_MH_FOLDER
-CAMEL_MH_FOLDER_TYPE
-CAMEL_MH_FOLDER_CLASS
-CamelMhFolderClass
-<SUBSECTION Private>
-camel_mh_folder_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-mh-store</FILE>
-<TITLE>CamelMhStore</TITLE>
-CamelMhStore
-<SUBSECTION Standard>
-CAMEL_MH_STORE
-CAMEL_IS_MH_STORE
-CAMEL_MH_STORE_TYPE
-CAMEL_MH_STORE_CLASS
-CamelMhStoreClass
-<SUBSECTION Private>
-camel_mh_store_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-mh-summary</FILE>
-<TITLE>CamelMhSummary</TITLE>
-CamelMhSummary
-camel_mh_summary_new
-<SUBSECTION Standard>
-CAMEL_MH_SUMMARY
-CAMEL_IS_MH_SUMMARY
-CAMEL_MH_SUMMARY_CLASS
-CamelMhSummaryClass
-<SUBSECTION Private>
-camel_mh_summary_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-spool-folder</FILE>
-<TITLE>CamelSpoolFolder</TITLE>
-CamelSpoolFolder
-camel_spool_folder_new
-<SUBSECTION Standard>
-CAMEL_SPOOL_FOLDER
-CAMEL_IS_SPOOL_FOLDER
-CAMEL_SPOOL_FOLDER_TYPE
-CAMEL_SPOOL_FOLDER_CLASS
-CamelSpoolFolderClass
-<SUBSECTION Private>
-camel_spool_folder_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-spool-store</FILE>
-<TITLE>CamelSpoolStore</TITLE>
-CamelSpoolStore
-camel_spool_store_t
-<SUBSECTION Standard>
-CAMEL_SPOOL_STORE
-CAMEL_IS_SPOOL_STORE
-CAMEL_SPOOL_STORE_TYPE
-CAMEL_SPOOL_STORE_CLASS
-CamelSpoolStoreClass
-<SUBSECTION Private>
-camel_spool_store_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-spool-summary</FILE>
-<TITLE>CamelSpoolSummary</TITLE>
-CamelSpoolSummary
-camel_spool_summary_construct
-camel_spool_summary_new
-camel_spool_summary_load
-camel_spool_summary_check
-camel_spool_summary_sync
-camel_spool_summary_add
-camel_spool_summary_encode_x_evolution
-camel_spool_summary_decode_x_evolution
-camel_spool_summary_write_headers
-<SUBSECTION Standard>
-CAMEL_SPOOL_SUMMARY
-CAMEL_IS_SPOOL_SUMMARY
-CAMEL_SPOOL_SUMMARY_CLASS
-CamelSpoolSummaryClass
-<SUBSECTION Private>
-camel_spool_summary_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-nntp-folder</FILE>
-<TITLE>CamelNNTPFolder</TITLE>
-CamelNNTPFolder
-camel_nntp_folder_new
-camel_nntp_folder_selected
-<SUBSECTION Standard>
-CAMEL_NNTP_FOLDER
-CAMEL_IS_NNTP_FOLDER
-CAMEL_NNTP_FOLDER_TYPE
-CAMEL_NNTP_FOLDER_CLASS
-CamelNNTPFolderClass
-<SUBSECTION Private>
-CamelNNTPFolderPrivate
-camel_nntp_folder_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-nntp-store-summary</FILE>
-<TITLE>CamelNNTPStoreSummary</TITLE>
-CamelNNTPStoreInfo
-CamelNNTPStoreSummary
-NNTP_DATE_SIZE
-camel_nntp_store_summary_new
-camel_nntp_store_info_full_name
-camel_nntp_store_summary_full_to_path
-camel_nntp_store_summary_path_to_full
-camel_nntp_store_summary_dotted_to_full
-camel_nntp_store_summary_full_name
-camel_nntp_store_summary_add_from_full
-camel_nntp_store_summary_full_from_path
-<SUBSECTION Standard>
-CAMEL_NNTP_STORE_SUMMARY
-CAMEL_IS_NNTP_STORE_SUMMARY
-CAMEL_NNTP_STORE_SUMMARY_CLASS
-CamelNNTPStoreSummaryClass
-<SUBSECTION Private>
-camel_nntp_store_summary_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-nntp-store</FILE>
-<TITLE>CamelNNTPStore</TITLE>
-CamelNNTPStore
-CAMEL_NNTP_EXT_SEARCH
-CAMEL_NNTP_EXT_SETGET
-CAMEL_NNTP_EXT_OVER
-CAMEL_NNTP_EXT_XPATTEXT
-CAMEL_NNTP_EXT_XACTIVE
-CAMEL_NNTP_EXT_LISTMOTD
-CAMEL_NNTP_EXT_LISTSUBSCR
-CAMEL_NNTP_EXT_LISTPNAMES
-xover_t
-xover_header
-camel_nntp_raw_commandv
-camel_nntp_raw_command
-camel_nntp_raw_command_auth
-camel_nntp_command
-<SUBSECTION Standard>
-CAMEL_NNTP_STORE
-CAMEL_IS_NNTP_STORE
-CAMEL_NNTP_STORE_TYPE
-CAMEL_NNTP_STORE_CLASS
-CamelNNTPStoreClass
-<SUBSECTION Private>
-CamelNNTPStorePrivate
-camel_nntp_store_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-nntp-stream</FILE>
-<TITLE>CamelNNTPStream</TITLE>
-CamelNNTPStream
-camel_nntp_stream_mode_t
-camel_nntp_stream_new
-camel_nntp_stream_set_mode
-camel_nntp_stream_line
-camel_nntp_stream_gets
-camel_nntp_stream_getd
-<SUBSECTION Standard>
-CAMEL_NNTP_STREAM
-CAMEL_IS_NNTP_STREAM
-CAMEL_NNTP_STREAM_CLASS
-CamelNNTPStreamClass
-<SUBSECTION Private>
-camel_nntp_stream_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-nntp-summary</FILE>
-<TITLE>CamelNNTPSummary</TITLE>
-CamelNNTPSummary
-camel_nntp_summary_new
-camel_nntp_summary_check
-<SUBSECTION Standard>
-CAMEL_NNTP_SUMMARY
-CAMEL_IS_LOCAL_SUMMARY
-CAMEL_NNTP_SUMMARY_CLASS
-CamelNNTPSummaryClass
-<SUBSECTION Private>
-camel_nntp_summary_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-pop3-engine</FILE>
-<TITLE>CamelPOP3Engine</TITLE>
-CamelPOP3Engine
-CamelPOP3Command
-camel_pop3_engine_t
-camel_pop3_command_t
-CamelPOP3CommandFunc
-camel_pop3_engine_new
-camel_pop3_engine_reget_capabilities
-camel_pop3_engine_command_free
-camel_pop3_engine_iterate
-camel_pop3_engine_command_new
-<SUBSECTION Standard>
-CAMEL_POP3_ENGINE
-CAMEL_IS_POP3_ENGINE
-CAMEL_POP3_ENGINE_CLASS
-CamelPOP3EngineClass
-<SUBSECTION Private>
-camel_pop3_engine_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-pop3-folder</FILE>
-<TITLE>CamelPOP3Folder</TITLE>
-CamelPOP3Folder
-CamelPOP3FolderInfo
-camel_pop3_folder_new
-camel_pop3_delete_old
-<SUBSECTION Standard>
-CAMEL_POP3_FOLDER
-CAMEL_IS_POP3_FOLDER
-CAMEL_POP3_FOLDER_TYPE
-CAMEL_POP3_FOLDER_CLASS
-CamelPOP3FolderClass
-<SUBSECTION Private>
-camel_pop3_folder_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-pop3-store</FILE>
-<TITLE>CamelPOP3Store</TITLE>
-CamelPOP3Store
-camel_pop3_store_expunge
-camel_pop3_command
-camel_pop3_command_get_additional_data
-<SUBSECTION Standard>
-CAMEL_POP3_STORE
-CAMEL_IS_POP3_STORE
-CAMEL_POP3_STORE_TYPE
-CAMEL_POP3_STORE_CLASS
-CamelPOP3StoreClass
-<SUBSECTION Private>
-camel_pop3_store_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-pop3-stream</FILE>
-<TITLE>CamelPOP3Stream</TITLE>
-CamelPOP3Stream
-camel_pop3_stream_mode_t
-camel_pop3_stream_new
-camel_pop3_stream_set_mode
-camel_pop3_stream_line
-camel_pop3_stream_gets
-camel_pop3_stream_getd
-<SUBSECTION Standard>
-CAMEL_POP3_STREAM
-CAMEL_IS_POP3_STREAM
-CAMEL_POP3_STREAM_CLASS
-CamelPOP3StreamClass
-<SUBSECTION Private>
-camel_pop3_stream_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-sendmail-transport</FILE>
-<TITLE>CamelSendmailTransport</TITLE>
-CamelSendmailTransport
-<SUBSECTION Standard>
-CAMEL_SENDMAIL_TRANSPORT
-CAMEL_IS_SENDMAIL_TRANSPORT
-CAMEL_SENDMAIL_TRANSPORT_TYPE
-CAMEL_SENDMAIL_TRANSPORT_CLASS
-CamelSendmailTransportClass
-<SUBSECTION Private>
-camel_sendmail_transport_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-smtp-transport</FILE>
-<TITLE>CamelSmtpTransport</TITLE>
-CamelSmtpTransport
-CAMEL_SMTP_TRANSPORT_IS_ESMTP
-CAMEL_SMTP_TRANSPORT_8BITMIME
-CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES
-CAMEL_SMTP_TRANSPORT_STARTTLS
-CAMEL_SMTP_TRANSPORT_AUTH_EQUAL
-<SUBSECTION Standard>
-CAMEL_SMTP_TRANSPORT
-CAMEL_IS_SMTP_TRANSPORT
-CAMEL_SMTP_TRANSPORT_TYPE
-CAMEL_SMTP_TRANSPORT_CLASS
-CamelSmtpTransportClass
-<SUBSECTION Private>
-camel_smtp_transport_get_type
-</SECTION>
-
-<SECTION>
-<FILE>session</FILE>
-<TITLE>CamelTestSession</TITLE>
-CamelTestSession
-camel_test_session_new
-<SUBSECTION Standard>
-CAMEL_TEST_SESSION
-CAMEL_TEST_IS_SESSION
-CAMEL_TEST_SESSION_TYPE
-CAMEL_TEST_SESSION_CLASS
-CamelTestSessionClass
-<SUBSECTION Private>
-camel_test_session_get_type
 </SECTION>
 
 <SECTION>
@@ -3497,8 +2805,6 @@ camel_operation_cancel
 camel_operation_uncancel
 camel_operation_register
 camel_operation_unregister
-camel_operation_cancel_block
-camel_operation_cancel_unblock
 camel_operation_cancel_check
 camel_operation_cancel_fd
 camel_operation_cancel_prfd
@@ -3506,43 +2812,7 @@ camel_operation_registered
 camel_operation_start
 camel_operation_start_transient
 camel_operation_progress
-camel_operation_progress_count
 camel_operation_end
-</SECTION>
-
-<SECTION>
-<FILE>camel-partition-table</FILE>
-<TITLE>CamelPartitionTable</TITLE>
-<TITLE>CamelKeyTable</TITLE>
-camel_hash_t
-CamelPartitionKey
-CamelPartitionKeyBlock
-CamelPartitionMap
-CamelPartitionMapBlock
-CamelPartitionTable
-camel_partition_table_new
-camel_partition_table_sync
-camel_partition_table_add
-camel_partition_table_lookup
-camel_partition_table_remove
-CamelKeyBlock
-CamelKeyRootBlock
-CamelKeyKey
-CAMEL_KEY_TABLE_MAX_KEY
-CamelKeyTable
-camel_key_table_new
-camel_key_table_sync
-camel_key_table_add
-camel_key_table_set_data
-camel_key_table_set_flags
-camel_key_table_lookup
-camel_key_table_next
-<SUBSECTION Standard>
-CamelPartitionTableClass
-CamelKeyTableClass
-<SUBSECTION Private>
-camel_partition_table_get_type
-camel_key_table_get_type
 </SECTION>
 
 <SECTION>
@@ -3664,262 +2934,5 @@ camel_freeaddrinfo
 camel_getnameinfo
 <SUBSECTION Private>
 WIN32_LEAN_AND_MEAN
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap-command</FILE>
-CamelImapResponseType
-CamelImapResponse
-camel_imap_command
-camel_imap_command_continuation
-camel_imap_response_free
-camel_imap_response_free_without_processing
-camel_imap_response_extract
-camel_imap_response_extract_continuation
-camel_imap_command_start
-camel_imap_command_response
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap-utils</FILE>
-imap_next_word
-namespace
-namespaces
-imap_namespaces_destroy
-imap_parse_namespace_response
-imap_parse_list_response
-imap_parse_folder_name
-imap_create_flag_list
-imap_parse_flag_list
-imap_parse_string_generic
-imap_parse_string
-imap_parse_nstring
-imap_parse_astring
-imap_parse_body
-imap_is_atom
-imap_quote_string
-imap_skip_list
-imap_uid_array_to_set
-imap_uid_set_to_array
-imap_uid_array_free
-imap_concat
-imap_namespace_concat
-imap_mailbox_encode
-imap_mailbox_decode
-IMAPPathFindFoldersCallback
-imap_path_to_physical
-imap_path_find_folders
-</SECTION>
-
-<SECTION>
-<FILE>camel-groupwise-utils</FILE>
-X_SEND_OPTIONS
-X_SEND_OPT_PRIORITY
-X_SEND_OPT_SECURITY
-X_REPLY_CONVENIENT
-X_REPLY_WITHIN
-X_EXPIRE_AFTER
-X_DELAY_UNTIL
-X_TRACK_WHEN
-X_AUTODELETE
-X_RETURN_NOTIFY_OPEN
-X_RETURN_NOTIFY_DELETE
-RECEIVED
-SENT
-DRAFT
-PERSONAL
-flags_diff_t
-EPathFindFoldersCallback
-e_path_to_physical
-e_path_find_folders
-e_path_rmdir
-camel_groupwise_util_item_from_message
-do_flags_diff
-gw_concat
-strip_lt_gt
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap4-command</FILE>
-CamelIMAP4Command
-CamelIMAP4Literal
-CamelIMAP4PlusCallback
-CamelIMAP4UntaggedCallback
-CamelIMAP4CommandReset
-CamelIMAP4CommandPart
-camel_imap4_command_new
-camel_imap4_command_newv
-camel_imap4_command_register_untagged
-camel_imap4_command_ref
-camel_imap4_command_unref
-camel_imap4_command_step
-camel_imap4_command_reset
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap4-specials</FILE>
-is_atom
-is_ctrl
-is_lwsp
-is_type
-is_qsafe
-is_wild
-camel_imap4_specials_init
-</SECTION>
-
-<SECTION>
-<FILE>camel-imap4-utils</FILE>
-flags_diff_t
-camel_imap4_flags_diff
-camel_imap4_flags_merge
-camel_imap4_merge_flags
-camel_imap4_build_folder_info_tree
-camel_imap4_namespace_clear
-camel_imap4_namespace_list_copy
-camel_imap4_namespace_list_free
-camel_imap4_get_path_delim
-camel_imap4_get_uid_set
-camel_imap4_utils_set_unexpected_token_error
-camel_imap4_parse_flags_list
-CAMEL_IMAP4_FOLDER_MARKED
-CAMEL_IMAP4_FOLDER_UNMARKED
-camel_imap4_list_t
-camel_imap4_untagged_list
-camel_imap4_status_attr_t
-camel_imap4_status_t
-camel_imap4_status_free
-camel_imap4_untagged_status
-</SECTION>
-
-<SECTION>
-<FILE>camel-nntp-auth</FILE>
-camel_nntp_auth_authenticate
-</SECTION>
-
-<SECTION>
-<FILE>camel-nntp-grouplist</FILE>
-_CamelNNTPGroupList
-_CamelNNTPGroupListEntry
-camel_nntp_grouplist_fetch
-camel_nntp_grouplist_update
-camel_nntp_grouplist_save
-camel_nntp_grouplist_free
-</SECTION>
-
-<SECTION>
-<FILE>camel-nntp-newsrc</FILE>
-CamelNNTPNewsrc
-camel_nntp_newsrc_get_highest_article_read
-camel_nntp_newsrc_get_num_articles_read
-camel_nntp_newsrc_mark_article_read
-camel_nntp_newsrc_mark_range_read
-camel_nntp_newsrc_article_is_read
-camel_nntp_newsrc_group_is_subscribed
-camel_nntp_newsrc_subscribe_group
-camel_nntp_newsrc_unsubscribe_group
-camel_nntp_newsrc_get_subscribed_group_names
-camel_nntp_newsrc_get_all_group_names
-camel_nntp_newsrc_free_group_names
-camel_nntp_newsrc_write_to_file
-camel_nntp_newsrc_write
-camel_nntp_newsrc_read_for_server
-</SECTION>
-
-<SECTION>
-<FILE>camel-nntp-resp-codes</FILE>
-CAMEL_NNTP_OK
-CAMEL_NNTP_ERR
-CAMEL_NNTP_FAIL
-NNTP_GREETING_POSTING_OK
-NNTP_GREETING_NO_POSTING
-NNTP_EXTENSIONS_SUPPORTED
-NNTP_GROUP_SELECTED
-NNTP_LIST_FOLLOWS
-NNTP_ARTICLE_FOLLOWS
-NNTP_HEAD_FOLLOWS
-NNTP_DATA_FOLLOWS
-NNTP_NEW_ARTICLE_LIST_FOLLOWS
-NNTP_NEW_GROUP_LIST_FOLLOWS
-NNTP_NO_SUCH_GROUP
-NNTP_NO_SUCH_ARTICLE
-NNTP_NO_PERMISSION
-NNTP_AUTH_ACCEPTED
-NNTP_AUTH_CONTINUE
-NNTP_AUTH_REQUIRED
-NNTP_AUTH_REJECTED
-NNTP_PROTOCOL_ERROR
-</SECTION>
-
-<SECTION>
-<FILE>camel-nntp-utils</FILE>
-camel_nntp_get_headers
-</SECTION>
-
-<SECTION>
-<FILE>address-data</FILE>
-</SECTION>
-
-<SECTION>
-<FILE>addresses</FILE>
-test_address_compare
-</SECTION>
-
-<SECTION>
-<FILE>camel-test</FILE>
-camel_test_failv
-check
-check_msg
-check_count
-check_unref
-test_free
-push
-pull
-camel_test_init
-camel_test_start
-camel_test_end
-camel_test_push
-camel_test_pull
-camel_test_fail
-camel_test_nonfatal
-camel_test_fatal
-string_equal
-</SECTION>
-
-<SECTION>
-<FILE>folders</FILE>
-test_folder_counts
-test_message_info
-test_folder_message
-test_folder_not_message
-test_folder_basic
-test_folder_message_ops
-</SECTION>
-
-<SECTION>
-<FILE>messages</FILE>
-SET_CONTENT_WAYS
-test_message_create_simple
-test_message_set_content_simple
-test_message_write_file
-test_message_read_file
-test_message_compare_content
-test_message_compare
-test_message_dump_structure
-test_message_compare_header
-test_message_compare_messages
-</SECTION>
-
-<SECTION>
-<FILE>streams</FILE>
-test_stream_seekable_writepart
-test_stream_seekable_readpart
-SEEKABLE_SUBSTREAM_WAYS
-test_seekable_substream_writepart
-test_seekable_substream_readpart
-</SECTION>
-
-<SECTION>
-<FILE>camel-test-provider</FILE>
-camel_test_provider_init
 </SECTION>
 

@@ -23,9 +23,24 @@
 
 #include "camel-local-summary.h"
 
-#define CAMEL_MAILDIR_SUMMARY(obj)	CAMEL_CHECK_CAST (obj, camel_maildir_summary_get_type (), CamelMaildirSummary)
-#define CAMEL_MAILDIR_SUMMARY_CLASS(klass)	CAMEL_CHECK_CLASS_CAST (klass, camel_maildir_summary_get_type (), CamelMaildirSummaryClass)
-#define CAMEL_IS_MAILDIR_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_maildir_summary_get_type ())
+/* Standard GObject macros */
+#define CAMEL_TYPE_MAILDIR_SUMMARY \
+	(camel_maildir_summary_get_type ())
+#define CAMEL_MAILDIR_SUMMARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_MAILDIR_SUMMARY, CamelMaildirSummary))
+#define CAMEL_MAILDIR_SUMMARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_MAILDIR_SUMMARY, CamelMaildirSummaryClass))
+#define CAMEL_IS_MAILDIR_SUMMARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_MAILDIR_SUMMARY))
+#define CAMEL_IS_MAILDIR_SUMMARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_MAILDIR_SUMMARY))
+#define CAMEL_MAILDIR_SUMMARY_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_MAILDIR_SUMMARY, CamelMaildirSummaryClass))
 
 G_BEGIN_DECLS
 
@@ -57,7 +72,7 @@ struct _CamelMaildirSummaryClass {
 	CamelLocalSummaryClass parent_class;
 };
 
-CamelType	 camel_maildir_summary_get_type	(void);
+GType	 camel_maildir_summary_get_type	(void);
 CamelMaildirSummary	*camel_maildir_summary_new	(struct _CamelFolder *folder, const gchar *filename, const gchar *maildirdir, CamelIndex *index);
 
 /* convert some info->flags to/from the messageinfo */

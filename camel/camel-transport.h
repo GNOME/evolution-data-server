@@ -34,12 +34,24 @@
 #include <camel/camel-mime-message.h>
 #include <camel/camel-service.h>
 
-#define CAMEL_TRANSPORT_TYPE     (camel_transport_get_type ())
-#define CAMEL_TRANSPORT(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_TRANSPORT_TYPE, CamelTransport))
-#define CAMEL_TRANSPORT_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_TRANSPORT_TYPE, CamelTransportClass))
-#define CAMEL_IS_TRANSPORT(o)    (CAMEL_CHECK_TYPE((o), CAMEL_TRANSPORT_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_TRANSPORT \
+	(camel_transport_get_type ())
+#define CAMEL_TRANSPORT(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_TRANSPORT, CamelTransport))
+#define CAMEL_TRANSPORT_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_TRANSPORT, CamelTransportClass))
+#define CAMEL_IS_TRANSPORT(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_TRANSPORT))
+#define CAMEL_IS_TRANSPORT_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_TRANSPORT))
 #define CAMEL_TRANSPORT_GET_CLASS(obj) \
-	((CamelTransportClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_TRANSPORT, CamelTransportClass))
 
 G_BEGIN_DECLS
 
@@ -51,7 +63,7 @@ enum {
 	CAMEL_TRANSPORT_ARG_FIRST  = CAMEL_SERVICE_ARG_FIRST + 100
 };
 
-typedef enum _CamelTransportLock {
+typedef enum {
 	CT_SEND_LOCK
 } CamelTransportLock;
 
@@ -63,23 +75,23 @@ struct _CamelTransport {
 struct _CamelTransportClass {
 	CamelServiceClass parent_class;
 
-	gboolean (*send_to) (CamelTransport *transport,
-			     CamelMimeMessage *message,
-			     CamelAddress *from, CamelAddress *recipients,
-			     CamelException *ex);
+	gboolean	(*send_to)		(CamelTransport *transport,
+						 CamelMimeMessage *message,
+						 CamelAddress *from,
+						 CamelAddress *recipients,
+						 CamelException *ex);
 };
 
-/* public methods */
-gboolean camel_transport_send_to (CamelTransport *transport,
-				  CamelMimeMessage *message,
-				  CamelAddress *from,
-				  CamelAddress *recipients,
-				  CamelException *ex);
-
-CamelType camel_transport_get_type (void);
-
-void camel_transport_lock	(CamelTransport *transport, CamelTransportLock lock);
-void camel_transport_unlock	(CamelTransport *transport, CamelTransportLock lock);
+GType		camel_transport_get_type	(void);
+gboolean	camel_transport_send_to		(CamelTransport *transport,
+						 CamelMimeMessage *message,
+						 CamelAddress *from,
+						 CamelAddress *recipients,
+						 CamelException *ex);
+void		camel_transport_lock		(CamelTransport *transport,
+						 CamelTransportLock lock);
+void		camel_transport_unlock		(CamelTransport *transport,
+						 CamelTransportLock lock);
 
 G_END_DECLS
 

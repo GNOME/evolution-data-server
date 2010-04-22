@@ -33,7 +33,9 @@
 
 #include "camel-stream-buffer.h"
 
-static CamelStreamClass *parent_class = NULL;
+#define CAMEL_STREAM_BUFFER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_STREAM_BUFFER, CamelStreamBufferPrivate))
 
 struct _CamelStreamBufferPrivate {
 
@@ -48,6 +50,8 @@ struct _CamelStreamBufferPrivate {
 	CamelStreamBufferMode mode;
 	guint flags;
 };
+
+G_DEFINE_TYPE (CamelStreamBuffer, camel_stream_buffer, CAMEL_TYPE_STREAM)
 
 enum {
 	BUF_USER = 1<<0	/* user-supplied buffer, do not free */
@@ -82,7 +86,7 @@ set_vbuf (CamelStreamBuffer *stream,
 {
 	CamelStreamBufferPrivate *priv;
 
-	priv = CAMEL_STREAM_BUFFER (stream)->priv;
+	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
 
 	if (priv->buf && !(priv->flags & BUF_USER))
 		g_free (priv->buf);
@@ -102,19 +106,35 @@ set_vbuf (CamelStreamBuffer *stream,
 }
 
 static void
-stream_buffer_finalize (CamelStreamBuffer *stream_buffer)
+stream_buffer_dispose (GObject *object)
 {
-	CamelStreamBufferPrivate *priv = stream_buffer->priv;
+	CamelStreamBufferPrivate *priv;
+
+	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (object);
+
+	if (priv->stream != NULL) {
+		g_object_unref (priv->stream);
+		priv->stream = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_stream_buffer_parent_class)->dispose (object);
+}
+
+static void
+stream_buffer_finalize (GObject *object)
+{
+	CamelStreamBufferPrivate *priv;
+
+	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (object);
 
 	if (!(priv->flags & BUF_USER))
 		g_free (priv->buf);
 
-	if (priv->stream)
-		camel_object_unref (priv->stream);
-
 	g_free (priv->linebuf);
 
-	g_free (priv);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_stream_buffer_parent_class)->finalize (object);
 }
 
 static gssize
@@ -127,7 +147,7 @@ stream_buffer_read (CamelStream *stream,
 	gssize bytes_left;
 	gchar *bptr = buffer;
 
-	priv = CAMEL_STREAM_BUFFER (stream)->priv;
+	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
 
 	g_return_val_if_fail (
 		(priv->mode & CAMEL_STREAM_BUFFER_MODE) ==
@@ -184,7 +204,7 @@ stream_buffer_write (CamelStream *stream,
 	gssize total = n;
 	gssize left, todo;
 
-	priv = CAMEL_STREAM_BUFFER (stream)->priv;
+	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
 
 	g_return_val_if_fail (
 		(priv->mode & CAMEL_STREAM_BUFFER_MODE) ==
@@ -229,7 +249,7 @@ stream_buffer_flush (CamelStream *stream)
 {
 	CamelStreamBufferPrivate *priv;
 
-	priv = CAMEL_STREAM_BUFFER (stream)->priv;
+	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
 
 	if ((priv->mode & CAMEL_STREAM_BUFFER_MODE) == CAMEL_STREAM_BUFFER_WRITE) {
 		gsize len = priv->ptr - priv->buf;
@@ -251,7 +271,7 @@ stream_buffer_close (CamelStream *stream)
 {
 	CamelStreamBufferPrivate *priv;
 
-	priv = CAMEL_STREAM_BUFFER (stream)->priv;
+	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
 
 	if (stream_buffer_flush (stream) == -1)
 		return -1;
@@ -264,7 +284,7 @@ stream_buffer_eos (CamelStream *stream)
 {
 	CamelStreamBufferPrivate *priv;
 
-	priv = CAMEL_STREAM_BUFFER (stream)->priv;
+	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
 
 	return camel_stream_eos(priv->stream) && priv->ptr == priv->end;
 }
@@ -278,14 +298,14 @@ stream_buffer_init_vbuf (CamelStreamBuffer *stream,
 {
 	CamelStreamBufferPrivate *priv;
 
-	priv = CAMEL_STREAM_BUFFER (stream)->priv;
+	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
 
 	set_vbuf (stream, buf, mode, size);
 
-	if (priv->stream)
-		camel_object_unref (priv->stream);
+	if (priv->stream != NULL)
+		g_object_unref (priv->stream);
 
-	priv->stream = camel_object_ref (other_stream);
+	priv->stream = g_object_ref (other_stream);
 }
 
 static void
@@ -299,9 +319,14 @@ stream_buffer_init_method (CamelStreamBuffer *stream,
 static void
 camel_stream_buffer_class_init (CamelStreamBufferClass *class)
 {
+	GObjectClass *object_class;
 	CamelStreamClass *stream_class;
 
-	parent_class = CAMEL_STREAM_CLASS (camel_type_get_global_classfuncs (camel_stream_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelStreamBufferPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = stream_buffer_dispose;
+	object_class->finalize = stream_buffer_finalize;
 
 	stream_class = CAMEL_STREAM_CLASS (class);
 	stream_class->read = stream_buffer_read;
@@ -317,7 +342,7 @@ camel_stream_buffer_class_init (CamelStreamBufferClass *class)
 static void
 camel_stream_buffer_init (CamelStreamBuffer *stream)
 {
-	stream->priv = g_new0 (CamelStreamBufferPrivate, 1);
+	stream->priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
 
 	stream->priv->flags = 0;
 	stream->priv->size = BUF_SIZE;
@@ -330,24 +355,6 @@ camel_stream_buffer_init (CamelStreamBuffer *stream)
 	stream->priv->stream = NULL;
 	stream->priv->linesize = 80;
 	stream->priv->linebuf = g_malloc (stream->priv->linesize);
-}
-
-CamelType
-camel_stream_buffer_get_type (void)
-{
-	static CamelType camel_stream_buffer_type = CAMEL_INVALID_TYPE;
-
-	if (camel_stream_buffer_type == CAMEL_INVALID_TYPE)	{
-		camel_stream_buffer_type = camel_type_register (camel_stream_get_type (), "CamelStreamBuffer",
-								sizeof (CamelStreamBuffer),
-								sizeof (CamelStreamBufferClass),
-								(CamelObjectClassInitFunc) camel_stream_buffer_class_init,
-								NULL,
-								(CamelObjectInitFunc) camel_stream_buffer_init,
-								(CamelObjectFinalizeFunc) stream_buffer_finalize);
-	}
-
-	return camel_stream_buffer_type;
 }
 
 /**
@@ -373,7 +380,7 @@ camel_stream_buffer_new (CamelStream *stream,
 
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), NULL);
 
-	sbf = CAMEL_STREAM_BUFFER (camel_object_new (camel_stream_buffer_get_type ()));
+	sbf = g_object_new (CAMEL_TYPE_STREAM_BUFFER, NULL);
 
 	class = CAMEL_STREAM_BUFFER_GET_CLASS (sbf);
 	g_return_val_if_fail (class->init != NULL, NULL);
@@ -430,7 +437,7 @@ camel_stream_buffer_new_with_vbuf (CamelStream *stream,
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), NULL);
 	g_return_val_if_fail (buf != NULL, NULL);
 
-	sbf = CAMEL_STREAM_BUFFER (camel_object_new (camel_stream_buffer_get_type ()));
+	sbf = g_object_new (CAMEL_TYPE_STREAM_BUFFER, NULL);
 
 	class = CAMEL_STREAM_BUFFER_GET_CLASS (sbf);
 	g_return_val_if_fail (class->init_vbuf != NULL, NULL);

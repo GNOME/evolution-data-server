@@ -147,7 +147,7 @@ test_seekable_substream_writepart(CamelStream *s, gint type)
 		len = (ss->bound_end-ss->bound_start) % sizeof(teststring);
 		check(camel_stream_write(s, teststring, len) == len);
 		check(camel_seekable_stream_tell(CAMEL_SEEKABLE_STREAM(s)) == ss->bound_end);
-		if (type == 0) {
+		if (G_UNLIKELY (type == G_TYPE_INVALID)) {
 			check(camel_stream_write(s, teststring, sizeof(teststring)) == 0);
 			check(camel_stream_eos(s));
 			check(camel_seekable_stream_tell(CAMEL_SEEKABLE_STREAM(s)) == ss->bound_end);

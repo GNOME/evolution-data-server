@@ -46,12 +46,24 @@ struct addrinfo;
 
 #include <camel/camel-stream.h>
 
-#define CAMEL_TCP_STREAM_TYPE     (camel_tcp_stream_get_type ())
-#define CAMEL_TCP_STREAM(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_TCP_STREAM_TYPE, CamelTcpStream))
-#define CAMEL_TCP_STREAM_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_TCP_STREAM_TYPE, CamelTcpStreamClass))
-#define CAMEL_IS_TCP_STREAM(o)    (CAMEL_CHECK_TYPE((o), CAMEL_TCP_STREAM_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_TCP_STREAM \
+	(camel_tcp_stream_get_type ())
+#define CAMEL_TCP_STREAM(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_TCP_STREAM, CamelTcpStream))
+#define CAMEL_TCP_STREAM_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_TCP_STREAM, CamelTcpStreamClass))
+#define CAMEL_IS_TCP_STREAM(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_TCP_STREAM))
+#define CAMEL_IS_TCP_STREAM_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_TCP_STREAM))
 #define CAMEL_TCP_STREAM_GET_CLASS(obj) \
-	((CamelTcpStreamClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_TCP_STREAM, CamelTcpStreamClass))
 
 G_BEGIN_DECLS
 
@@ -121,7 +133,7 @@ struct _CamelTcpStreamClass {
 						 socklen_t *len);
 };
 
-CamelType	camel_tcp_stream_get_type	(void);
+GType		camel_tcp_stream_get_type	(void);
 gint		camel_tcp_stream_connect	(CamelTcpStream *stream,
 						 struct addrinfo *host);
 gint		camel_tcp_stream_getsockopt	(CamelTcpStream *stream,

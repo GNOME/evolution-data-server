@@ -29,13 +29,26 @@
 #ifndef CAMEL_STREAM_VFS_H
 #define CAMEL_STREAM_VFS_H
 
-#include <glib-object.h>
 #include <camel/camel-stream.h>
 
-#define CAMEL_STREAM_VFS_TYPE     (camel_stream_vfs_get_type ())
-#define CAMEL_STREAM_VFS(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_STREAM_VFS_TYPE, CamelStreamVFS))
-#define CAMEL_STREAM_VFS_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_STREAM_VFS_TYPE, CamelStreamVFSClass))
-#define CAMEL_IS_STREAM_VFS(o)    (CAMEL_CHECK_TYPE((o), CAMEL_STREAM_VFS_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_STREAM_VFS \
+	(camel_stream_vfs_get_type ())
+#define CAMEL_STREAM_VFS(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_STREAM_VFS, CamelStreamVFS))
+#define CAMEL_STREAM_VFS_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_STREAM_VFS, CamelStreamVFSClass))
+#define CAMEL_IS_STREAM_VFS(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_STREAM_VFS))
+#define CAMEL_IS_STREAM_VFS_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_STREAM_VFS))
+#define CAMEL_STREAM_VFS_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_STREAM_VFS, CamelStreamVFSClass))
 
 G_BEGIN_DECLS
 
@@ -52,7 +65,7 @@ struct _CamelStreamVFSClass {
 	CamelStreamClass parent_class;
 };
 
-CamelType camel_stream_vfs_get_type (void);
+GType camel_stream_vfs_get_type (void);
 
 /**
  * CamelStreamVFSOpenMethod:

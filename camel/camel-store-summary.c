@@ -44,12 +44,6 @@
 #define d(x)
 #define io(x)			/* io debug */
 
-struct _CamelStoreSummaryPrivate {
-	GMutex *summary_lock;	/* for the summary hashtable/array */
-	GMutex *io_lock;	/* load/save lock, for access to saved_count, etc */
-	GMutex *ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before CSS_SUMMARY_LOCK */
-};
-
 /* possible versions, for versioning changes */
 #define CAMEL_STORE_SUMMARY_VERSION_0 (1)
 #define CAMEL_STORE_SUMMARY_VERSION_2 (2)
@@ -57,13 +51,23 @@ struct _CamelStoreSummaryPrivate {
 /* current version */
 #define CAMEL_STORE_SUMMARY_VERSION (2)
 
-#define CAMEL_STORE_SUMMARY_GET_PRIVATE(o) (((CamelStoreSummary *)(o))->priv)
+#define CAMEL_STORE_SUMMARY_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_STORE_SUMMARY, CamelStoreSummaryPrivate))
 
-static CamelObjectClass *camel_store_summary_parent;
+struct _CamelStoreSummaryPrivate {
+	GMutex *summary_lock;	/* for the summary hashtable/array */
+	GMutex *io_lock;	/* load/save lock, for access to saved_count, etc */
+	GMutex *ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before CSS_SUMMARY_LOCK */
+};
+
+G_DEFINE_TYPE (CamelStoreSummary, camel_store_summary, CAMEL_TYPE_OBJECT)
 
 static void
-store_summary_finalize (CamelStoreSummary *summary)
+store_summary_finalize (GObject *object)
 {
+	CamelStoreSummary *summary = CAMEL_STORE_SUMMARY (object);
+
 	camel_store_summary_clear (summary);
 	g_ptr_array_free (summary->folders, TRUE);
 	g_hash_table_destroy (summary->folders_path);
@@ -77,7 +81,8 @@ store_summary_finalize (CamelStoreSummary *summary)
 	g_mutex_free (summary->priv->io_lock);
 	g_mutex_free (summary->priv->ref_lock);
 
-	g_free (summary->priv);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_store_summary_parent_class)->finalize (object);
 }
 
 static gint
@@ -295,7 +300,12 @@ store_summary_store_info_set_string (CamelStoreSummary *summary,
 static void
 camel_store_summary_class_init (CamelStoreSummaryClass *class)
 {
-	camel_store_summary_parent = camel_type_get_global_classfuncs (camel_object_get_type ());
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (CamelStoreSummaryPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = store_summary_finalize;
 
 	class->summary_header_load = store_summary_summary_header_load;
 	class->summary_header_save = store_summary_summary_header_save;
@@ -310,7 +320,7 @@ camel_store_summary_class_init (CamelStoreSummaryClass *class)
 static void
 camel_store_summary_init (CamelStoreSummary *summary)
 {
-	summary->priv = g_new0 (CamelStoreSummaryPrivate, 1);
+	summary->priv = CAMEL_STORE_SUMMARY_GET_PRIVATE (summary);
 
 	summary->store_info_size = sizeof (CamelStoreInfo);
 
@@ -329,24 +339,6 @@ camel_store_summary_init (CamelStoreSummary *summary)
 	summary->priv->ref_lock = g_mutex_new ();
 }
 
-CamelType
-camel_store_summary_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_object_get_type (), "CamelStoreSummary",
-					    sizeof (CamelStoreSummary),
-					    sizeof (CamelStoreSummaryClass),
-					    (CamelObjectClassInitFunc) camel_store_summary_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_store_summary_init,
-					    (CamelObjectFinalizeFunc) store_summary_finalize);
-	}
-
-	return type;
-}
-
 /**
  * camel_store_summary_new:
  *
@@ -357,7 +349,7 @@ camel_store_summary_get_type (void)
 CamelStoreSummary *
 camel_store_summary_new (void)
 {
-	return CAMEL_STORE_SUMMARY (camel_object_new (camel_store_summary_get_type ()));
+	return g_object_new (CAMEL_TYPE_STORE_SUMMARY, NULL);
 }
 
 /**
@@ -1095,27 +1087,26 @@ camel_store_info_set_string (CamelStoreSummary *summary,
  *
  * Locks #summary's #lock. Unlock it with camel_store_summary_unlock().
  *
- * Since: 2.31.1
+ * Since: 3.0
  **/
 void
-camel_store_summary_lock (CamelStoreSummary *summary, CamelStoreSummaryLock lock)
+camel_store_summary_lock (CamelStoreSummary *summary,
+                          CamelStoreSummaryLock lock)
 {
-	g_return_if_fail (summary != NULL);
 	g_return_if_fail (CAMEL_IS_STORE_SUMMARY (summary));
-	g_return_if_fail (summary->priv != NULL);
 
 	switch (lock) {
-	case CSS_SUMMARY_LOCK:
-		g_mutex_lock (summary->priv->summary_lock);
-		break;
-	case CSS_IO_LOCK:
-		g_mutex_lock (summary->priv->io_lock);
-		break;
-	case CSS_REF_LOCK:
-		g_mutex_lock (summary->priv->ref_lock);
-		break;
-	default:
-		g_return_if_reached ();
+		case CSS_SUMMARY_LOCK:
+			g_mutex_lock (summary->priv->summary_lock);
+			break;
+		case CSS_IO_LOCK:
+			g_mutex_lock (summary->priv->io_lock);
+			break;
+		case CSS_REF_LOCK:
+			g_mutex_lock (summary->priv->ref_lock);
+			break;
+		default:
+			g_return_if_reached ();
 	}
 }
 
@@ -1126,26 +1117,25 @@ camel_store_summary_lock (CamelStoreSummary *summary, CamelStoreSummaryLock lock
  *
  * Unlocks #summary's #lock, previously locked with camel_store_summary_lock().
  *
- * Since: 2.31.1
+ * Since: 3.0
  **/
 void
-camel_store_summary_unlock (CamelStoreSummary *summary, CamelStoreSummaryLock lock)
+camel_store_summary_unlock (CamelStoreSummary *summary,
+                            CamelStoreSummaryLock lock)
 {
-	g_return_if_fail (summary != NULL);
 	g_return_if_fail (CAMEL_IS_STORE_SUMMARY (summary));
-	g_return_if_fail (summary->priv != NULL);
 
 	switch (lock) {
-	case CSS_SUMMARY_LOCK:
-		g_mutex_unlock (summary->priv->summary_lock);
-		break;
-	case CSS_IO_LOCK:
-		g_mutex_unlock (summary->priv->io_lock);
-		break;
-	case CSS_REF_LOCK:
-		g_mutex_unlock (summary->priv->ref_lock);
-		break;
-	default:
-		g_return_if_reached ();
+		case CSS_SUMMARY_LOCK:
+			g_mutex_unlock (summary->priv->summary_lock);
+			break;
+		case CSS_IO_LOCK:
+			g_mutex_unlock (summary->priv->io_lock);
+			break;
+		case CSS_REF_LOCK:
+			g_mutex_unlock (summary->priv->ref_lock);
+			break;
+		default:
+			g_return_if_reached ();
 	}
 }

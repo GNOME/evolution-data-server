@@ -54,35 +54,63 @@
 
 #define DUMP_EXTENSIONS
 
-static gpointer camel_nntp_store_parent_class;
+#define CAMEL_NNTP_STORE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_NNTP_STORE, CamelNNTPStorePrivate))
 
 static gint camel_nntp_try_authenticate (CamelNNTPStore *store, CamelException *ex);
 
+G_DEFINE_TYPE (CamelNNTPStore, camel_nntp_store, CAMEL_TYPE_DISCO_STORE)
+
 static void
-nntp_store_finalize (CamelObject *object)
+nntp_store_dispose (GObject *object)
 {
-	/* call base finalize */
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (object);
-	CamelDiscoStore *disco_store = (CamelDiscoStore *) nntp_store;
-	struct _CamelNNTPStorePrivate *p = nntp_store->priv;
-	struct _xover_header *xover, *xn;
+	CamelDiscoStore *disco_store = CAMEL_DISCO_STORE (object);
 
-	camel_service_disconnect ((CamelService *)object, TRUE, NULL);
+	/* Only run this the first time. */
+	if (nntp_store->summary != NULL)
+		camel_service_disconnect (CAMEL_SERVICE (object), TRUE, NULL);
 
-	if (nntp_store->summary) {
-		camel_store_summary_save ((CamelStoreSummary *) nntp_store->summary);
-		camel_object_unref (nntp_store->summary);
+	if (nntp_store->summary != NULL) {
+		camel_store_summary_save (
+			CAMEL_STORE_SUMMARY (nntp_store->summary));
+		g_object_unref (nntp_store->summary);
+		nntp_store->summary = NULL;
 	}
 
-	camel_object_unref (nntp_store->mem);
-	nntp_store->mem = NULL;
-	if (nntp_store->stream)
-		camel_object_unref (nntp_store->stream);
+	if (nntp_store->mem != NULL) {
+		g_object_unref (nntp_store->mem);
+		nntp_store->mem = NULL;
+	}
 
-	if (nntp_store->base_url)
-		g_free (nntp_store->base_url);
-	if (nntp_store->storage_path)
-		g_free (nntp_store->storage_path);
+	if (nntp_store->stream != NULL) {
+		g_object_unref (nntp_store->stream);
+		nntp_store->stream = NULL;
+	}
+
+	if (nntp_store->cache != NULL) {
+		g_object_unref (nntp_store->cache);
+		nntp_store->cache = NULL;
+	}
+
+	if (disco_store->diary != NULL) {
+		g_object_unref (disco_store->diary);
+		disco_store->diary = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_nntp_store_parent_class)->dispose (object);
+}
+
+static void
+nntp_store_finalize (GObject *object)
+{
+	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (object);
+	struct _xover_header *xover, *xn;
+
+	g_free (nntp_store->base_url);
+	g_free (nntp_store->storage_path);
 
 	xover = nntp_store->xover;
 	while (xover) {
@@ -91,15 +119,8 @@ nntp_store_finalize (CamelObject *object)
 		xover = xn;
 	}
 
-	if (nntp_store->cache)
-		camel_object_unref (nntp_store->cache);
-
-	if (disco_store->diary) {
-		camel_object_unref (disco_store->diary);
-		disco_store->diary = NULL;
-	}
-
-	g_free(p);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_nntp_store_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -224,13 +245,13 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 				ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 				_("Could not connect to %s: %s"),
 				service->url->host, g_strerror (errno));
-		camel_object_unref (tcp_stream);
+		g_object_unref (tcp_stream);
 
 		goto fail;
 	}
 
 	store->stream = (CamelNNTPStream *) camel_nntp_stream_new (tcp_stream);
-	camel_object_unref (tcp_stream);
+	g_object_unref (tcp_stream);
 
 	/* Read the greeting, if any. */
 	if (camel_nntp_stream_line (store->stream, &buf, &len) == -1) {
@@ -242,7 +263,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 					      _("Could not read greeting from %s: %s"),
 					      service->url->host, g_strerror (errno));
 
-		camel_object_unref (store->stream);
+		g_object_unref (store->stream);
 		store->stream = NULL;
 
 		goto fail;
@@ -254,7 +275,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 				      _("NNTP server %s returned error code %d: %s"),
 				      service->url->host, len, buf);
 
-		camel_object_unref (store->stream);
+		g_object_unref (store->stream);
 		store->stream = NULL;
 
 		goto fail;
@@ -399,13 +420,12 @@ nntp_disconnect_online (CamelService *service, gboolean clean, CamelException *e
 		camel_exception_clear(ex);
 	}
 
-	/* Chain up to parent's disconnect() method. */
 	if (!service_class->disconnect (service, clean, ex)) {
 		camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
 		return FALSE;
 	}
 
-	camel_object_unref (store->stream);
+	g_object_unref (store->stream);
 	store->stream = NULL;
 	g_free(store->current_folder);
 	store->current_folder = NULL;
@@ -427,7 +447,7 @@ nntp_disconnect_offline (CamelService *service, gboolean clean, CamelException *
 		return FALSE;
 
 	if (disco->diary) {
-		camel_object_unref (disco->diary);
+		g_object_unref (disco->diary);
 		disco->diary = NULL;
 	}
 
@@ -658,7 +678,7 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *store, const gchar *top, 
 						camel_object_trigger_event((CamelObject *) folder, "folder_changed", changes);
 						camel_folder_change_info_free(changes);
 					}
-					camel_object_unref (folder);
+					g_object_unref (folder);
 				}
 				camel_exception_clear(ex);
 			}
@@ -1111,11 +1131,16 @@ nntp_construct (CamelService *service, CamelSession *session,
 static void
 camel_nntp_store_class_init (CamelNNTPStoreClass *class)
 {
+	GObjectClass *object_class;
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 	CamelDiscoStoreClass *disco_store_class;
 
-	camel_nntp_store_parent_class = CAMEL_DISCO_STORE_CLASS (camel_type_get_global_classfuncs (camel_disco_store_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelNNTPStorePrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = nntp_store_dispose;
+	object_class->finalize = nntp_store_finalize;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->construct = nntp_construct;
@@ -1155,27 +1180,7 @@ camel_nntp_store_init (CamelNNTPStore *nntp_store)
 
 	nntp_store->mem = (CamelStreamMem *)camel_stream_mem_new();
 
-	nntp_store->priv = g_new0 (CamelNNTPStorePrivate, 1);
-}
-
-CamelType
-camel_nntp_store_get_type (void)
-{
-	static CamelType camel_nntp_store_type = CAMEL_INVALID_TYPE;
-
-	if (camel_nntp_store_type == CAMEL_INVALID_TYPE) {
-		camel_nntp_store_type =
-			camel_type_register (CAMEL_DISCO_STORE_TYPE,
-					     "CamelNNTPStore",
-					     sizeof (CamelNNTPStore),
-					     sizeof (CamelNNTPStoreClass),
-					     (CamelObjectClassInitFunc) camel_nntp_store_class_init,
-					     NULL,
-					     (CamelObjectInitFunc) camel_nntp_store_init,
-					     (CamelObjectFinalizeFunc) nntp_store_finalize);
-	}
-
-	return camel_nntp_store_type;
+	nntp_store->priv = CAMEL_NNTP_STORE_GET_PRIVATE (nntp_store);
 }
 
 static gint

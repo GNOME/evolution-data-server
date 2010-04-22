@@ -27,9 +27,11 @@
 
 #include "camel-mime-filter-from.h"
 
-#define d(x)
+#define CAMEL_MIME_FILTER_FROM_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_FILTER_FROM, CamelMimeFilterFromPrivate))
 
-static CamelMimeFilterClass *camel_mime_filter_from_parent;
+#define d(x)
 
 struct _CamelMimeFilterFromPrivate {
 	gboolean midline;	/* are we between lines? */
@@ -40,11 +42,7 @@ struct fromnode {
 	const gchar *pointer;
 };
 
-static void
-mime_filter_from_finalize (CamelMimeFilterFrom *filter)
-{
-	g_free (filter->priv);
-}
+G_DEFINE_TYPE (CamelMimeFilterFrom, camel_mime_filter_from, CAMEL_TYPE_MIME_FILTER)
 
 /* Yes, it is complicated ... */
 static void
@@ -63,7 +61,7 @@ mime_filter_from_filter (CamelMimeFilter *mime_filter,
 	struct fromnode *head = NULL, *tail = (struct fromnode *)&head, *node;
 	gchar *outptr;
 
-	priv = CAMEL_MIME_FILTER_FROM (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_FROM_GET_PRIVATE (mime_filter);
 
 	inptr = in;
 	inend = inptr+len;
@@ -156,7 +154,7 @@ camel_mime_filter_from_class_init (CamelMimeFilterFromClass *class)
 {
 	CamelMimeFilterClass *mime_filter_class;
 
-	camel_mime_filter_from_parent = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelMimeFilterFromPrivate));
 
 	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
 	mime_filter_class->filter = mime_filter_from_filter;
@@ -166,25 +164,7 @@ camel_mime_filter_from_class_init (CamelMimeFilterFromClass *class)
 static void
 camel_mime_filter_from_init (CamelMimeFilterFrom *filter)
 {
-	filter->priv = g_new0 (CamelMimeFilterFromPrivate, 1);
-}
-
-CamelType
-camel_mime_filter_from_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_mime_filter_get_type (), "CamelMimeFilterFrom",
-					    sizeof (CamelMimeFilterFrom),
-					    sizeof (CamelMimeFilterFromClass),
-					    (CamelObjectClassInitFunc) camel_mime_filter_from_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_filter_from_init,
-					    (CamelObjectFinalizeFunc) mime_filter_from_finalize);
-	}
-
-	return type;
+	filter->priv = CAMEL_MIME_FILTER_FROM_GET_PRIVATE (filter);
 }
 
 /**
@@ -194,10 +174,10 @@ camel_mime_filter_from_get_type (void)
  *
  * Returns: a new #CamelMimeFilterFrom object
  **/
-CamelMimeFilter*
+CamelMimeFilter *
 camel_mime_filter_from_new (void)
 {
-	return (CamelMimeFilter *) camel_object_new (camel_mime_filter_from_get_type ());
+	return g_object_new (CAMEL_TYPE_MIME_FILTER_FROM, NULL);
 }
 
 #if 0

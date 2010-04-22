@@ -24,9 +24,24 @@
 
 #include <camel/camel.h>
 
-#define CAMEL_GROUPWISE_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_groupwise_summary_get_type (), CamelGroupwiseSummary)
-#define CAMEL_GROUPWISE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_groupwise_summary_get_type (), CamelGroupwiseSummaryClass)
-#define CAMEL_IS_GROUPWISE_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_groupwise_summary_get_type ())
+/* Standard GObject macros */
+#define CAMEL_TYPE_GROUPWISE_SUMMARY \
+	(camel_groupwise_summary_get_type ())
+#define CAMEL_GROUPWISE_SUMMARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_GROUPWISE_SUMMARY, CamelGroupwiseSummary))
+#define CAMEL_GROUPWISE_SUMMARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_GROUPWISE_SUMMARY, CamelGroupwiseSummaryClass))
+#define CAMEL_IS_GROUPWISE_SUMMARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_GROUPWISE_SUMMARY))
+#define CAMEL_IS_GROUPWISE_SUMMARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_GROUPWISE_SUMMARY))
+#define CAMEL_GROUPWISE_SUMMARY_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_GROUPWISE_SUMMARY, CamelGroupwiseSummaryClass))
 
 G_BEGIN_DECLS
 
@@ -63,7 +78,7 @@ struct _CamelGroupwiseSummaryClass {
 	CamelFolderSummaryClass parent_class;
 } ;
 
-CamelType camel_groupwise_summary_get_type (void);
+GType camel_groupwise_summary_get_type (void);
 
 CamelFolderSummary *camel_groupwise_summary_new (struct _CamelFolder *folder, const gchar *filename);
 

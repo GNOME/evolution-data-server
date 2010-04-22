@@ -14,7 +14,7 @@
 #define d(x)
 
 static const gchar *local_drivers[] = { "local" };
-static gchar *local_providers[] = {
+static const gchar *local_providers[] = {
 	"mbox",
 	"mh",
 	"maildir"
@@ -38,11 +38,11 @@ worker(gpointer d)
 		folder = camel_store_get_folder(store, "testbox", CAMEL_STORE_FOLDER_CREATE, ex);
 		camel_exception_clear(ex);
 		if (testid == 0) {
-			camel_object_unref (folder);
-			camel_object_unref (store);
+			g_object_unref (folder);
+			g_object_unref (store);
 		} else {
-			camel_object_unref (store);
-			camel_object_unref (folder);
+			g_object_unref (store);
+			g_object_unref (folder);
 		}
 	}
 
@@ -51,7 +51,8 @@ worker(gpointer d)
 	return NULL;
 }
 
-gint main(gint argc, gchar **argv)
+gint
+main(gint argc, gchar **argv)
 {
 	CamelException *ex;
 	gint i, j;
@@ -101,7 +102,7 @@ gint main(gint argc, gchar **argv)
 		camel_test_end();
 	}
 
-	camel_object_unref (session);
+	g_object_unref (session);
 	camel_exception_free(ex);
 
 	return 0;

@@ -30,12 +30,24 @@
 #include <stdio.h>
 #include <camel/camel-object.h>
 
-#define CAMEL_CERTDB_TYPE         (camel_certdb_get_type ())
-#define CAMEL_CERTDB(obj)         (CAMEL_CHECK_CAST (obj, camel_certdb_get_type (), CamelCertDB))
-#define CAMEL_CERTDB_CLASS(klass) (CAMEL_CHECK_CLASS_CAST (klass, camel_certdb_get_type (), CamelCertDBClass))
-#define CAMEL_IS_CERTDB(obj)      (CAMEL_CHECK_TYPE (obj, camel_certdb_get_type ()))
+/* Standard GObject macros */
+#define CAMEL_TYPE_CERTDB \
+	(camel_certdb_get_type ())
+#define CAMEL_CERTDB(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_CERTDB, CamelCertDB))
+#define CAMEL_CERTDB_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_CERTDB, CamelCertDBClass))
+#define CAMEL_IS_CERTDB(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_CERTDB))
+#define CAMEL_IS_CERTDB_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_CERTDB))
 #define CAMEL_CERTDB_GET_CLASS(obj) \
-	((CamelCertDBClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_CERTDB, CamelCertDBClass))
 
 G_BEGIN_DECLS
 
@@ -114,7 +126,7 @@ struct _CamelCertDBClass {
 	void (*cert_set_string) (CamelCertDB *certdb, CamelCert *cert, gint string, const gchar *value);
 };
 
-CamelType camel_certdb_get_type (void);
+GType camel_certdb_get_type (void);
 
 CamelCertDB *camel_certdb_new (void);
 

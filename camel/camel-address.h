@@ -28,9 +28,24 @@
 
 #include <camel/camel-object.h>
 
-#define CAMEL_ADDRESS(obj)         CAMEL_CHECK_CAST (obj, camel_address_get_type (), CamelAddress)
-#define CAMEL_ADDRESS_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_address_get_type (), CamelAddressClass)
-#define CAMEL_IS_ADDRESS(obj)      CAMEL_CHECK_TYPE (obj, camel_address_get_type ())
+/* Standard GObject macros */
+#define CAMEL_TYPE_ADDRESS \
+	(camel_address_get_type ())
+#define CAMEL_ADDRESS(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_ADDRESS, CamelAddress))
+#define CAMEL_ADDRESS_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_ADDRESS, CamelAddressClass))
+#define CAMEL_IS_ADDRESS(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_ADDRESS))
+#define CAMEL_IS_ADDRESS_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_ADDRESS))
+#define CAMEL_ADDRESS_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_ADDRESS, CamelAddressClass))
 
 G_BEGIN_DECLS
 
@@ -61,7 +76,7 @@ struct _CamelAddressClass {
 						 gint index);
 };
 
-CamelType	camel_address_get_type		(void);
+GType		camel_address_get_type		(void);
 CamelAddress *	camel_address_new		(void);
 CamelAddress *	camel_address_new_clone		(CamelAddress *addr);
 gint		camel_address_length		(CamelAddress *addr);

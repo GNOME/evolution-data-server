@@ -28,7 +28,7 @@
 
 #include "camel-stream-null.h"
 
-static CamelObjectClass *parent_class = NULL;
+G_DEFINE_TYPE (CamelStreamNull, camel_stream_null, CAMEL_TYPE_STREAM)
 
 static gssize
 stream_null_write (CamelStream *stream,
@@ -59,8 +59,6 @@ camel_stream_null_class_init (CamelStreamNullClass *class)
 {
 	CamelStreamClass *stream_class;
 
-	parent_class = camel_type_get_global_classfuncs( CAMEL_TYPE_OBJECT );
-
 	stream_class = CAMEL_STREAM_CLASS (class);
 	stream_class->write = stream_null_write;
 	stream_class->eos = stream_null_eos;
@@ -70,25 +68,6 @@ camel_stream_null_class_init (CamelStreamNullClass *class)
 static void
 camel_stream_null_init (CamelStreamNull *stream_null)
 {
-}
-
-CamelType
-camel_stream_null_get_type (void)
-{
-	static CamelType camel_stream_null_type = CAMEL_INVALID_TYPE;
-
-	if (camel_stream_null_type == CAMEL_INVALID_TYPE) {
-		camel_stream_null_type = camel_type_register( camel_stream_get_type(),
-							      "CamelStreamNull",
-							      sizeof( CamelStreamNull ),
-							      sizeof( CamelStreamNullClass ),
-							      (CamelObjectClassInitFunc) camel_stream_null_class_init,
-							      NULL,
-							      (CamelObjectInitFunc) camel_stream_null_init,
-							      NULL );
-	}
-
-	return camel_stream_null_type;
 }
 
 /**
@@ -102,5 +81,5 @@ camel_stream_null_get_type (void)
 CamelStream *
 camel_stream_null_new(void)
 {
-	return (CamelStream *)camel_object_new(camel_stream_null_get_type ());
+	return g_object_new (CAMEL_TYPE_STREAM_NULL, NULL);
 }

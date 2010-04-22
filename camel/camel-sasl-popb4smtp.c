@@ -34,6 +34,10 @@
 #include "camel-session.h"
 #include "camel-store.h"
 
+#define CAMEL_SASL_POPB4SMTP_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_SASL_POPB4SMTP, CamelSaslPOPB4SMTPPrivate))
+
 struct _CamelSaslPOPB4SMTPPrivate {
 	gint placeholder;  /* allow for future expansion */
 };
@@ -57,7 +61,7 @@ static GStaticMutex lock = G_STATIC_MUTEX_INIT;
 #define POPB4SMTP_LOCK(l) g_static_mutex_lock(&l)
 #define POPB4SMTP_UNLOCK(l) g_static_mutex_unlock(&l)
 
-static CamelSaslClass *parent_class = NULL;
+G_DEFINE_TYPE (CamelSaslPOPB4SMTP, camel_sasl_popb4smtp, CAMEL_TYPE_SASL)
 
 static GByteArray *
 sasl_popb4smtp_challenge (CamelSasl *sasl,
@@ -115,7 +119,7 @@ sasl_popb4smtp_challenge (CamelSasl *sasl,
 	store = camel_session_get_store(session, popuri, ex);
 	if (store) {
 		camel_sasl_set_authenticated (sasl, TRUE);
-		camel_object_unref (store);
+		g_object_unref (store);
 		*timep = now;
 	} else {
 		camel_sasl_set_authenticated (sasl, FALSE);
@@ -134,7 +138,7 @@ camel_sasl_popb4smtp_class_init (CamelSaslPOPB4SMTPClass *class)
 {
 	CamelSaslClass *sasl_class;
 
-	parent_class = CAMEL_SASL_CLASS (camel_type_get_global_classfuncs (camel_sasl_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelSaslPOPB4SMTPPrivate));
 
 	sasl_class = CAMEL_SASL_CLASS (class);
 	sasl_class->challenge = sasl_popb4smtp_challenge;
@@ -142,21 +146,8 @@ camel_sasl_popb4smtp_class_init (CamelSaslPOPB4SMTPClass *class)
 	poplast = g_hash_table_new (g_str_hash, g_str_equal);
 }
 
-CamelType
-camel_sasl_popb4smtp_get_type (void)
+static void
+camel_sasl_popb4smtp_init (CamelSaslPOPB4SMTP *sasl)
 {
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_sasl_get_type (),
-					    "CamelSaslPOPB4SMTP",
-					    sizeof (CamelSaslPOPB4SMTP),
-					    sizeof (CamelSaslPOPB4SMTPClass),
-					    (CamelObjectClassInitFunc) camel_sasl_popb4smtp_class_init,
-					    NULL,
-					    NULL,
-					    NULL);
-	}
-
-	return type;
+	sasl->priv = CAMEL_SASL_POPB4SMTP_GET_PRIVATE (sasl);
 }

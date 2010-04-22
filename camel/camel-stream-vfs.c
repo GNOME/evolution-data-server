@@ -34,14 +34,20 @@
 #include "camel-operation.h"
 #include "camel-stream-vfs.h"
 
-static CamelStreamClass *parent_class = NULL;
-
+G_DEFINE_TYPE (CamelStreamVFS, camel_stream_vfs, CAMEL_TYPE_STREAM)
 
 static void
-stream_vfs_finalize (CamelStreamVFS *stream_vfs)
+stream_vfs_dispose (GObject *object)
 {
-	if (stream_vfs->stream)
-		g_object_unref (stream_vfs->stream);
+	CamelStreamVFS *stream = CAMEL_STREAM_VFS (object);
+
+	if (stream->stream != NULL) {
+		g_object_unref (stream->stream);
+		stream->stream = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_stream_vfs_parent_class)->dispose (object);
 }
 
 static gssize
@@ -138,9 +144,11 @@ stream_vfs_close (CamelStream *stream)
 static void
 camel_stream_vfs_class_init (CamelStreamVFSClass *class)
 {
+	GObjectClass *object_class;
 	CamelStreamClass *stream_class;
 
-	parent_class = CAMEL_STREAM_CLASS (camel_type_get_global_classfuncs (camel_stream_get_type ()));
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = stream_vfs_dispose;
 
 	stream_class = CAMEL_STREAM_CLASS (class);
 	stream_class->read = stream_vfs_read;
@@ -153,24 +161,6 @@ static void
 camel_stream_vfs_init (CamelStreamVFS *stream)
 {
 	stream->stream = NULL;
-}
-
-CamelType
-camel_stream_vfs_get_type (void)
-{
-	static CamelType camel_stream_vfs_type = CAMEL_INVALID_TYPE;
-
-	if (camel_stream_vfs_type == CAMEL_INVALID_TYPE) {
-		camel_stream_vfs_type = camel_type_register (camel_stream_get_type (), "CamelStreamVFS",
-							    sizeof (CamelStreamVFS),
-							    sizeof (CamelStreamVFSClass),
-							    (CamelObjectClassInitFunc) camel_stream_vfs_class_init,
-							    NULL,
-							    (CamelObjectInitFunc) camel_stream_vfs_init,
-							    (CamelObjectFinalizeFunc) stream_vfs_finalize);
-	}
-
-	return camel_stream_vfs_type;
 }
 
 /**
@@ -198,7 +188,7 @@ camel_stream_vfs_new_with_stream (GObject *stream)
 	g_return_val_if_fail (G_IS_OUTPUT_STREAM (stream) || G_IS_INPUT_STREAM (stream), NULL);
 
 	errno = 0;
-	stream_vfs = CAMEL_STREAM_VFS (camel_object_new (camel_stream_vfs_get_type ()));
+	stream_vfs = g_object_new (CAMEL_TYPE_STREAM_VFS, NULL);
 	stream_vfs->stream = stream;
 
 	return CAMEL_STREAM (stream_vfs);

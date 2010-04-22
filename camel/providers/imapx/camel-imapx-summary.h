@@ -25,32 +25,48 @@
 
 #include <camel/camel.h>
 
-#define CAMEL_IMAPX_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_imapx_summary_get_type (), CamelIMAPXSummary)
-#define CAMEL_IMAPX_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_imapx_summary_get_type (), CamelIMAPXSummaryClass)
-#define CAMEL_IS_IMAPX_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_imapx_summary_get_type ())
+/* Standard GObject macros */
+#define CAMEL_TYPE_IMAPX_SUMMARY \
+	(camel_imapx_summary_get_type ())
+#define CAMEL_IMAPX_SUMMARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_IMAPX_SUMMARY, CamelIMAPXSummary))
+#define CAMEL_IMAPX_SUMMARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_IMAPX_SUMMARY, CamelIMAPXSummaryClass))
+#define CAMEL_IS_IMAPX_SUMMARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_IMAPX_SUMMARY))
+#define CAMEL_IS_IMAPX_SUMMARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_IMAPX_SUMMARY))
+#define CAMEL_IMAPX_SUMMARY_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_IMAPX_SUMMARY, CamelIMAPXSummaryClass))
 
-#define CAMEL_IMAPX_SERVER_FLAGS (CAMEL_MESSAGE_ANSWERED | \
-				 CAMEL_MESSAGE_DELETED | \
-				 CAMEL_MESSAGE_DRAFT | \
-				 CAMEL_MESSAGE_FLAGGED | \
-				 CAMEL_MESSAGE_SEEN)
+#define CAMEL_IMAPX_SERVER_FLAGS \
+	(CAMEL_MESSAGE_ANSWERED | CAMEL_MESSAGE_DELETED | \
+	 CAMEL_MESSAGE_DRAFT | CAMEL_MESSAGE_FLAGGED | \
+	 CAMEL_MESSAGE_SEEN)
 
 G_BEGIN_DECLS
 
-typedef struct _CamelIMAPXSummaryClass CamelIMAPXSummaryClass;
 typedef struct _CamelIMAPXSummary CamelIMAPXSummary;
+typedef struct _CamelIMAPXSummaryClass CamelIMAPXSummaryClass;
 
-typedef struct _CamelIMAPXMessageContentInfo {
+typedef struct _CamelIMAPXMessageInfo CamelIMAPXMessageInfo;
+typedef struct _CamelIMAPXMessageContentInfo CamelIMAPXMessageContentInfo;
+
+struct _CamelIMAPXMessageContentInfo {
 	CamelMessageContentInfo info;
+};
 
-} CamelIMAPXMessageContentInfo;
-
-typedef struct _CamelIMAPXMessageInfo {
+struct _CamelIMAPXMessageInfo {
 	CamelMessageInfoBase info;
 
 	guint32 server_flags;
-	struct _CamelFlag *server_user_flags;
-} CamelIMAPXMessageInfo;
+	CamelFlag *server_user_flags;
+};
 
 struct _CamelIMAPXSummary {
 	CamelFolderSummary parent;
@@ -61,20 +77,20 @@ struct _CamelIMAPXSummary {
 
 struct _CamelIMAPXSummaryClass {
 	CamelFolderSummaryClass parent_class;
-
 };
 
-CamelType               camel_imapx_summary_get_type     (void);
-CamelFolderSummary *camel_imapx_summary_new          (struct _CamelFolder *folder, const gchar *filename);
-
-void camel_imapx_summary_add_offline (CamelFolderSummary *summary,
-				     const gchar *uid,
-				     CamelMimeMessage *message,
-				     const CamelMessageInfo *info);
-
-void camel_imapx_summary_add_offline_uncached (CamelFolderSummary *summary,
-					      const gchar *uid,
-					      const CamelMessageInfo *info);
+GType		camel_imapx_summary_get_type	(void);
+CamelFolderSummary *
+		camel_imapx_summary_new		(CamelFolder *folder,
+						 const gchar *filename);
+void		camel_imapx_summary_add_offline	(CamelFolderSummary *summary,
+						 const gchar *uid,
+						 CamelMimeMessage *message,
+						 const CamelMessageInfo *info);
+void		camel_imapx_summary_add_offline_uncached
+						(CamelFolderSummary *summary,
+						 const gchar *uid,
+						 const CamelMessageInfo *info);
 
 G_END_DECLS
 

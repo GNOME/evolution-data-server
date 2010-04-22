@@ -24,7 +24,9 @@
 #include "camel-mime-filter-basic.h"
 #include "camel-mime-utils.h"
 
-static CamelMimeFilterClass *camel_mime_filter_basic_parent;
+#define CAMEL_MIME_FILTER_BASIC_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_FILTER_BASIC, CamelMimeFilterBasicPrivate))
 
 struct _CamelMimeFilterBasicPrivate {
 	CamelMimeFilterBasicType type;
@@ -33,11 +35,7 @@ struct _CamelMimeFilterBasicPrivate {
 	gint save;
 };
 
-static void
-mime_filter_basic_finalize (CamelMimeFilterBasic *filter)
-{
-	g_free (filter->priv);
-}
+G_DEFINE_TYPE (CamelMimeFilterBasic, camel_mime_filter_basic, CAMEL_TYPE_MIME_FILTER)
 
 /* here we do all of the basic mime filtering */
 static void
@@ -52,7 +50,7 @@ mime_filter_basic_filter (CamelMimeFilter *mime_filter,
 	CamelMimeFilterBasicPrivate *priv;
 	gsize newlen;
 
-	priv = CAMEL_MIME_FILTER_BASIC (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_BASIC_GET_PRIVATE (mime_filter);
 
 	switch (priv->type) {
 	case CAMEL_MIME_FILTER_BASIC_BASE64_ENC:
@@ -157,7 +155,7 @@ mime_filter_basic_complete (CamelMimeFilter *mime_filter,
 	CamelMimeFilterBasicPrivate *priv;
 	gsize newlen = 0;
 
-	priv = CAMEL_MIME_FILTER_BASIC (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_BASIC_GET_PRIVATE (mime_filter);
 
 	switch (priv->type) {
 	case CAMEL_MIME_FILTER_BASIC_BASE64_ENC:
@@ -223,7 +221,7 @@ mime_filter_basic_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterBasicPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_BASIC (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_BASIC_GET_PRIVATE (mime_filter);
 
 	switch (priv->type) {
 	case CAMEL_MIME_FILTER_BASIC_QP_ENC:
@@ -240,7 +238,7 @@ camel_mime_filter_basic_class_init (CamelMimeFilterBasicClass *class)
 {
 	CamelMimeFilterClass *mime_filter_class;
 
-	camel_mime_filter_basic_parent = CAMEL_MIME_FILTER_CLASS(camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelMimeFilterBasicPrivate));
 
 	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
 	mime_filter_class->filter = mime_filter_basic_filter;
@@ -251,25 +249,7 @@ camel_mime_filter_basic_class_init (CamelMimeFilterBasicClass *class)
 static void
 camel_mime_filter_basic_init (CamelMimeFilterBasic *filter)
 {
-	filter->priv = g_new0 (CamelMimeFilterBasicPrivate, 1);
-}
-
-CamelType
-camel_mime_filter_basic_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_mime_filter_get_type (), "CamelMimeFilterBasic",
-					    sizeof (CamelMimeFilterBasic),
-					    sizeof (CamelMimeFilterBasicClass),
-					    (CamelObjectClassInitFunc) camel_mime_filter_basic_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_filter_basic_init,
-					    (CamelObjectFinalizeFunc) mime_filter_basic_finalize);
-	}
-
-	return type;
+	filter->priv = CAMEL_MIME_FILTER_BASIC_GET_PRIVATE (filter);
 }
 
 /**
@@ -292,7 +272,7 @@ camel_mime_filter_basic_new (CamelMimeFilterBasicType type)
 	case CAMEL_MIME_FILTER_BASIC_QP_DEC:
 	case CAMEL_MIME_FILTER_BASIC_UU_ENC:
 	case CAMEL_MIME_FILTER_BASIC_UU_DEC:
-		new = CAMEL_MIME_FILTER (camel_object_new (camel_mime_filter_basic_get_type ()));
+		new = g_object_new (CAMEL_TYPE_MIME_FILTER_BASIC, NULL);
 		CAMEL_MIME_FILTER_BASIC (new)->priv->type = type;
 		break;
 	default:

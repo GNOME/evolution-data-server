@@ -28,10 +28,24 @@
 
 #include <camel/camel-mime-filter.h>
 
-#define CAMEL_MIME_FILTER_LINEWRAP_TYPE         (camel_mime_filter_linewrap_get_type ())
-#define CAMEL_MIME_FILTER_LINEWRAP(obj)         CAMEL_CHECK_CAST (obj, CAMEL_MIME_FILTER_LINEWRAP_TYPE, CamelMimeFilterLinewrap)
-#define CAMEL_MIME_FILTER_LINEWRAP_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, CAMEL_MIME_FILTER_LINEWRAP_TYPE, CamelMimeFilterLinewrapClass)
-#define CAMEL_IS_MIME_FILTER_LINEWRAP(obj)      CAMEL_CHECK_TYPE (obj, CAMEL_MIME_FILTER_LINEWRAP_TYPE)
+/* Standard GObject macros */
+#define CAMEL_TYPE_MIME_FILTER_LINEWRAP \
+	(camel_mime_filter_linewrap_get_type ())
+#define CAMEL_MIME_FILTER_LINEWRAP(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_MIME_FILTER_LINEWRAP, CamelMimeFilterLinewrap))
+#define CAMEL_MIME_FILTER_LINEWRAP_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_MIME_FILTER_LINEWRAP, CamelMimeFilterLinewrapClass))
+#define CAMEL_IS_MIME_FILTER_LINEWRAP(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_MIME_FILTER_LINEWRAP))
+#define CAMEL_IS_MIME_FILTER_LINEWRAP_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_MIME_FILTER_LINEWRAP))
+#define CAMEL_MIME_FILTER_LINEWRAP_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_MIME_FILTER_LINEWRAP, CamelMimeFilterLinewrapClass))
 
 G_BEGIN_DECLS
 
@@ -53,7 +67,7 @@ struct _CamelMimeFilterLinewrapClass {
 	CamelMimeFilterClass parent_class;
 };
 
-CamelType	camel_mime_filter_linewrap_get_type (void);
+GType		camel_mime_filter_linewrap_get_type (void);
 CamelMimeFilter *
 		camel_mime_filter_linewrap_new	(guint preferred_len,
 						 guint max_len,

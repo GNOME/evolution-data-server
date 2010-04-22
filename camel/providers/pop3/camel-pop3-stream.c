@@ -31,25 +31,40 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <glib.h>
-
 #include "camel-pop3-stream.h"
 
 extern gint camel_verbose_debug;
 #define dd(x) (camel_verbose_debug?(x):0)
 
-static CamelObjectClass *parent_class = NULL;
-
 #define CAMEL_POP3_STREAM_SIZE (4096)
 #define CAMEL_POP3_STREAM_LINE (1024) /* maximum line size */
 
+G_DEFINE_TYPE (CamelPOP3Stream, camel_pop3_stream, CAMEL_TYPE_STREAM)
+
 static void
-pop3_stream_finalize (CamelPOP3Stream *is)
+pop3_stream_dispose (GObject *object)
 {
-	g_free (is->buf);
-	g_free (is->linebuf);
-	if (is->source)
-		camel_object_unref (is->source);
+	CamelPOP3Stream *stream = CAMEL_POP3_STREAM (object);
+
+	if (stream->source != NULL) {
+		g_object_unref (stream->source);
+		stream->source = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_pop3_stream_parent_class)->dispose (object);
+}
+
+static void
+pop3_stream_finalize (GObject *object)
+{
+	CamelPOP3Stream *stream = CAMEL_POP3_STREAM (object);
+
+	g_free (stream->buf);
+	g_free (stream->linebuf);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_pop3_stream_parent_class)->finalize (object);
 }
 
 static gint
@@ -195,11 +210,14 @@ stream_reset (CamelStream *stream)
 }
 
 static void
-camel_pop3_stream_class_init (CamelStreamClass *class)
+camel_pop3_stream_class_init (CamelPOP3StreamClass *class)
 {
+	GObjectClass *object_class;
 	CamelStreamClass *stream_class;
 
-	parent_class = camel_type_get_global_classfuncs( CAMEL_TYPE_OBJECT );
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = pop3_stream_dispose;
+	object_class->finalize = pop3_stream_finalize;
 
 	stream_class = CAMEL_STREAM_CLASS (class);
 	stream_class->read = stream_read;
@@ -225,25 +243,6 @@ camel_pop3_stream_init (CamelPOP3Stream *is)
 	is->mode = CAMEL_POP3_STREAM_LINE;
 }
 
-CamelType
-camel_pop3_stream_get_type (void)
-{
-	static CamelType camel_pop3_stream_type = CAMEL_INVALID_TYPE;
-
-	if (camel_pop3_stream_type == CAMEL_INVALID_TYPE) {
-		camel_pop3_stream_type = camel_type_register( camel_stream_get_type(),
-							    "CamelPOP3Stream",
-							    sizeof( CamelPOP3Stream ),
-							    sizeof( CamelPOP3StreamClass ),
-							    (CamelObjectClassInitFunc) camel_pop3_stream_class_init,
-							    NULL,
-							    (CamelObjectInitFunc) camel_pop3_stream_init,
-							    (CamelObjectFinalizeFunc) pop3_stream_finalize );
-	}
-
-	return camel_pop3_stream_type;
-}
-
 /**
  * camel_pop3_stream_new:
  *
@@ -257,8 +256,8 @@ camel_pop3_stream_new (CamelStream *source)
 {
 	CamelPOP3Stream *is;
 
-	is = (CamelPOP3Stream *)camel_object_new(camel_pop3_stream_get_type ());
-	is->source = camel_object_ref (source);
+	is = g_object_new (CAMEL_TYPE_POP3_STREAM, NULL);
+	is->source = g_object_ref (source);
 
 	return (CamelStream *)is;
 }

@@ -31,12 +31,24 @@
 #include <camel/camel-exception.h>
 #include <camel/camel-service.h>
 
-#define CAMEL_SASL_TYPE     (camel_sasl_get_type ())
-#define CAMEL_SASL(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_SASL_TYPE, CamelSasl))
-#define CAMEL_SASL_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_SASL_TYPE, CamelSaslClass))
-#define CAMEL_IS_SASL(o)    (CAMEL_CHECK_TYPE((o), CAMEL_SASL_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_SASL \
+	(camel_sasl_get_type ())
+#define CAMEL_SASL(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_SASL, CamelSasl))
+#define CAMEL_SASL_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_SASL, CamelSaslClass))
+#define CAMEL_IS_SASL(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_SASL))
+#define CAMEL_IS_SASL_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_SASL))
 #define CAMEL_SASL_GET_CLASS(obj) \
-	((CamelSaslClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_SASL, CamelSaslClass))
 
 G_BEGIN_DECLS
 
@@ -57,7 +69,7 @@ struct _CamelSaslClass {
 						 CamelException *ex);
 };
 
-CamelType	camel_sasl_get_type		(void);
+GType		camel_sasl_get_type		(void);
 GByteArray *	camel_sasl_challenge		(CamelSasl *sasl,
 						 GByteArray *token,
 						 CamelException *ex);

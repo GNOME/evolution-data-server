@@ -33,15 +33,72 @@
 
 #define d(x)
 
-static CamelDataWrapperClass *camel_medium_parent_class = NULL;
+#define CAMEL_MEDIUM_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MEDIUM, CamelMediumPrivate))
+
+struct _CamelMediumPrivate {
+	/* The content of the medium, as opposed to our parent
+	 * CamelDataWrapper, which wraps both the headers and
+	 * the content. */
+	CamelDataWrapper *content;
+};
+
+enum {
+	PROP_0,
+	PROP_CONTENT
+};
+
+G_DEFINE_ABSTRACT_TYPE (CamelMedium, camel_medium, CAMEL_TYPE_DATA_WRAPPER)
 
 static void
-medium_finalize (CamelObject *object)
+medium_set_property (GObject *object,
+                     guint property_id,
+                     const GValue *value,
+                     GParamSpec *pspec)
 {
-	CamelMedium *medium = CAMEL_MEDIUM (object);
+	switch (property_id) {
+		case PROP_CONTENT:
+			camel_medium_set_content (
+				CAMEL_MEDIUM (object),
+				g_value_get_object (value));
+			return;
+	}
 
-	if (medium->content != NULL)
-		camel_object_unref (medium->content);
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+medium_get_property (GObject *object,
+                     guint property_id,
+                     GValue *value,
+                     GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_CONTENT:
+			g_value_set_object (
+				value, camel_medium_get_content (
+				CAMEL_MEDIUM (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+medium_dispose (GObject *object)
+{
+	CamelMediumPrivate *priv;
+
+	priv = CAMEL_MEDIUM_GET_PRIVATE (object);
+
+	if (priv->content != NULL) {
+		g_object_unref (priv->content);
+		priv->content = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_medium_parent_class)->dispose (object);
 }
 
 static gboolean
@@ -60,55 +117,56 @@ medium_set_content (CamelMedium *medium,
                     CamelDataWrapper *content)
 {
 	if (content != NULL)
-		camel_object_ref (content);
+		g_object_ref (content);
 
-	if (medium->content != NULL)
-		camel_object_unref (medium->content);
+	if (medium->priv->content != NULL)
+		g_object_unref (medium->priv->content);
 
-	medium->content = content;
+	medium->priv->content = content;
+
+	g_object_notify (G_OBJECT (medium), "content");
 }
 
 static CamelDataWrapper *
 medium_get_content (CamelMedium *medium)
 {
-	return medium->content;
+	return medium->priv->content;
 }
 
 static void
 camel_medium_class_init (CamelMediumClass *class)
 {
+	GObjectClass *object_class;
 	CamelDataWrapperClass *data_wrapper_class;
 
-	camel_medium_parent_class = CAMEL_DATA_WRAPPER_CLASS (camel_type_get_global_classfuncs (camel_data_wrapper_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelMediumPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = medium_set_property;
+	object_class->get_property = medium_get_property;
+	object_class->dispose = medium_dispose;
 
 	data_wrapper_class = CAMEL_DATA_WRAPPER_CLASS (class);
 	data_wrapper_class->is_offline = medium_is_offline;
 
 	class->set_content = medium_set_content;
 	class->get_content = medium_get_content;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_CONTENT,
+		g_param_spec_object (
+			"content",
+			"Content",
+			NULL,
+			CAMEL_TYPE_DATA_WRAPPER,
+			G_PARAM_READWRITE));
 }
 
 static void
 camel_medium_init (CamelMedium *medium)
 {
-}
-
-CamelType
-camel_medium_get_type (void)
-{
-	static CamelType camel_medium_type = CAMEL_INVALID_TYPE;
-
-	if (camel_medium_type == CAMEL_INVALID_TYPE) {
-		camel_medium_type = camel_type_register (CAMEL_DATA_WRAPPER_TYPE, "medium",
-							 sizeof (CamelMedium),
-							 sizeof (CamelMediumClass),
-							 (CamelObjectClassInitFunc) camel_medium_class_init,
-							 NULL,
-							 (CamelObjectInitFunc) camel_medium_init,
-							 (CamelObjectFinalizeFunc) medium_finalize);
-	}
-
-	return camel_medium_type;
+	medium->priv = CAMEL_MEDIUM_GET_PRIVATE (medium);
 }
 
 /**

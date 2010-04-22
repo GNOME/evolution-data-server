@@ -34,12 +34,24 @@
 #include <camel/camel-mime-utils.h>
 #include <camel/camel-stream.h>
 
-#define CAMEL_DATA_WRAPPER_TYPE     (camel_data_wrapper_get_type ())
-#define CAMEL_DATA_WRAPPER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_DATA_WRAPPER_TYPE, CamelDataWrapper))
-#define CAMEL_DATA_WRAPPER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_DATA_WRAPPER_TYPE, CamelDataWrapperClass))
-#define CAMEL_IS_DATA_WRAPPER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_DATA_WRAPPER_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_DATA_WRAPPER \
+	(camel_data_wrapper_get_type ())
+#define CAMEL_DATA_WRAPPER(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_DATA_WRAPPER, CamelDataWrapper))
+#define CAMEL_DATA_WRAPPER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_DATA_WRAPPER, CamelDataWrapperClass))
+#define CAMEL_IS_DATA_WRAPPER(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_DATA_WRAPPER))
+#define CAMEL_IS_DATA_WRAPPER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_DATA_WRAPPER))
 #define CAMEL_DATA_WRAPPER_GET_CLASS(obj) \
-	((CamelDataWrapperClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_DATA_WRAPPER, CamelDataWrapperClass))
 
 G_BEGIN_DECLS
 
@@ -82,7 +94,7 @@ struct _CamelDataWrapperClass {
 	gboolean	(*is_offline)		(CamelDataWrapper *data_wrapper);
 };
 
-CamelType	camel_data_wrapper_get_type	(void);
+GType		camel_data_wrapper_get_type	(void);
 CamelDataWrapper *
 		camel_data_wrapper_new		(void);
 gssize		camel_data_wrapper_write_to_stream
@@ -104,9 +116,10 @@ gint		camel_data_wrapper_construct_from_stream
 						(CamelDataWrapper *data_wrapper,
 						 CamelStream *stream);
 gboolean	camel_data_wrapper_is_offline	(CamelDataWrapper *data_wrapper);
-
-void		camel_data_wrapper_lock		(CamelDataWrapper *data_wrapper, CamelDataWrapperLock lock);
-void		camel_data_wrapper_unlock	(CamelDataWrapper *data_wrapper, CamelDataWrapperLock lock);
+void		camel_data_wrapper_lock		(CamelDataWrapper *data_wrapper,
+						 CamelDataWrapperLock lock);
+void		camel_data_wrapper_unlock	(CamelDataWrapper *data_wrapper,
+						 CamelDataWrapperLock lock);
 
 G_END_DECLS
 

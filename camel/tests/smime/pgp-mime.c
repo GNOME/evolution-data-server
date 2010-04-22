@@ -37,9 +37,9 @@ static gchar test_msg[] = "Since we need to make sure that\nFrom lines work okay
 "the basics at least...\n";
 
 #define CAMEL_PGP_SESSION_TYPE     (camel_pgp_session_get_type ())
-#define CAMEL_PGP_SESSION(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_PGP_SESSION_TYPE, CamelPgpSession))
-#define CAMEL_PGP_SESSION_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_PGP_SESSION_TYPE, CamelPgpSessionClass))
-#define CAMEL_PGP_IS_SESSION(o)    (CAMEL_CHECK_TYPE((o), CAMEL_PGP_SESSION_TYPE))
+#define CAMEL_PGP_SESSION(obj)     (G_TYPE_CHECK_INSTANCE_CAST((obj), CAMEL_PGP_SESSION_TYPE, CamelPgpSession))
+#define CAMEL_PGP_SESSION_CLASS(k) (G_TYPE_CHECK_CLASS_CAST ((k), CAMEL_PGP_SESSION_TYPE, CamelPgpSessionClass))
+#define CAMEL_PGP_IS_SESSION(o)    (G_TYPE_CHECK_INSTANCE_TYPE((o), CAMEL_PGP_SESSION_TYPE))
 
 typedef struct _CamelPgpSession {
 	CamelSession parent_object;
@@ -68,26 +68,24 @@ class_init (CamelPgpSessionClass *camel_pgp_session_class)
 	CamelSessionClass *camel_session_class =
 		CAMEL_SESSION_CLASS (camel_pgp_session_class);
 
-	/* virtual method override */
 	camel_session_class->get_password = get_password;
 }
 
-static CamelType
+static GType
 camel_pgp_session_get_type (void)
 {
-	static CamelType type = CAMEL_INVALID_TYPE;
+	static GType type = G_TYPE_INVALID;
 
-	if (type == CAMEL_INVALID_TYPE) {
+	if (G_UNLIKELY (type == G_TYPE_INVALID))
 		type = camel_type_register (
-			camel_test_session_get_type (),
+			CAMEL_TYPE_TEST_SESSION,
 			"CamelPgpSession",
 			sizeof (CamelPgpSession),
 			sizeof (CamelPgpSessionClass),
-			(CamelObjectClassInitFunc) class_init,
+			(GClassInitFunc) class_init,
 			NULL,
-			(CamelObjectInitFunc) init,
+			(GInstanceInitFunc) init,
 			NULL);
-	}
 
 	return type;
 }
@@ -104,8 +102,7 @@ camel_pgp_session_new (const gchar *path)
 {
 	CamelSession *session;
 
-	session = CAMEL_SESSION (camel_object_new (CAMEL_PGP_SESSION_TYPE));
-
+	session = g_object_new (CAMEL_TYPE_PGP_SESSION, NULL);
 	camel_session_construct (session, path);
 
 	return session;
@@ -158,7 +155,7 @@ gint main (gint argc, gchar **argv)
 	check_msg (!camel_exception_is_set (ex), "%s", camel_exception_get_description (ex));
 	camel_test_pull ();
 
-	camel_object_unref (mime_part);
+	g_object_unref (mime_part);
 	camel_exception_clear (ex);
 
 	camel_test_push ("PGP/MIME verify");
@@ -168,7 +165,7 @@ gint main (gint argc, gchar **argv)
 	camel_cipher_validity_free (valid);
 	camel_test_pull ();
 
-	camel_object_unref (mps);
+	g_object_unref (mps);
 	camel_exception_clear (ex);
 
 	mime_part = camel_mime_part_new ();
@@ -186,17 +183,17 @@ gint main (gint argc, gchar **argv)
 	camel_test_pull ();
 
 	camel_exception_clear (ex);
-	camel_object_unref (mime_part);
+	g_object_unref (mime_part);
 
 	camel_test_push ("PGP/MIME decrypt");
 	mime_part = camel_multipart_encrypted_decrypt (mpe, ctx, ex);
 	check_msg (!camel_exception_is_set (ex), "%s", camel_exception_get_description (ex));
-	camel_object_unref (mime_part);
-	camel_object_unref (mpe);
+	g_object_unref (mime_part);
+	g_object_unref (mpe);
 	camel_test_pull ();
 
-	camel_object_unref (CAMEL_OBJECT (ctx));
-	camel_object_unref (CAMEL_OBJECT (session));
+	g_object_unref (CAMEL_OBJECT (ctx));
+	g_object_unref (CAMEL_OBJECT (session));
 
 	camel_test_end ();
 

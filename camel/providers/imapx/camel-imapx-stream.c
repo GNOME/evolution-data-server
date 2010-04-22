@@ -38,16 +38,13 @@
 #define t(x) 
 #define io(x)
 
-static CamelObjectClass *parent_class = NULL;
-
-/* Returns the class for a CamelStream */
-#define CS_CLASS(so) CAMEL_IMAPX_STREAM_CLASS(CAMEL_OBJECT_GET_CLASS(so))
-
 #define CAMEL_IMAPX_STREAM_SIZE (4096)
 #define CAMEL_IMAPX_STREAM_TOKEN (4096) /* maximum token size */
 
+G_DEFINE_TYPE (CamelIMAPXStream, camel_imapx_stream, CAMEL_TYPE_STREAM)
+
 static gint
-stream_fill(CamelIMAPXStream *is)
+imapx_stream_fill (CamelIMAPXStream *is)
 {
 	gint left = 0;
 
@@ -72,8 +69,35 @@ stream_fill(CamelIMAPXStream *is)
 	return -1;
 }
 
+static void
+imapx_stream_dispose (GObject *object)
+{
+	CamelIMAPXStream *stream = CAMEL_IMAPX_STREAM (object);
+
+	if (stream->source != NULL) {
+		g_object_unref (stream->source);
+		stream->source = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_imapx_stream_parent_class)->dispose (object);
+}
+
+static void
+imapx_stream_finalize (GObject *object)
+{
+	CamelIMAPXStream *stream = CAMEL_IMAPX_STREAM (object);
+
+	g_free (stream->buf);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_imapx_stream_parent_class)->finalize (object);
+}
+
 static gssize
-stream_read(CamelStream *stream, gchar *buffer, gsize n)
+imapx_stream_read (CamelStream *stream,
+                   gchar *buffer,
+                   gsize n)
 {
 	CamelIMAPXStream *is = (CamelIMAPXStream *)stream;
 	gssize max;
@@ -102,7 +126,9 @@ stream_read(CamelStream *stream, gchar *buffer, gsize n)
 }
 
 static gssize
-stream_write(CamelStream *stream, const gchar *buffer, gsize n)
+imapx_stream_write (CamelStream *stream,
+                    const gchar *buffer,
+                    gsize n)
 {
 	CamelIMAPXStream *is = (CamelIMAPXStream *)stream;
 
@@ -112,21 +138,21 @@ stream_write(CamelStream *stream, const gchar *buffer, gsize n)
 }
 
 static gint
-stream_close(CamelStream *stream)
+imapx_stream_close (CamelStream *stream)
 {
 	/* nop? */
 	return 0;
 }
 
 static gint
-stream_flush(CamelStream *stream)
+imapx_stream_flush (CamelStream *stream)
 {
 	/* nop? */
 	return 0;
 }
 
 static gboolean
-stream_eos(CamelStream *stream)
+imapx_stream_eos (CamelStream *stream)
 {
 	CamelIMAPXStream *is = (CamelIMAPXStream *)stream;
 
@@ -134,62 +160,38 @@ stream_eos(CamelStream *stream)
 }
 
 static gint
-stream_reset(CamelStream *stream)
+imapx_stream_reset (CamelStream *stream)
 {
 	/* nop?  reset literal mode? */
 	return 0;
 }
 
 static void
-camel_imapx_stream_class_init (CamelStreamClass *camel_imapx_stream_class)
+camel_imapx_stream_class_init (CamelIMAPXStreamClass *class)
 {
-	CamelStreamClass *camel_stream_class = (CamelStreamClass *)camel_imapx_stream_class;
+	GObjectClass *object_class;
+	CamelStreamClass *stream_class;
 
-	parent_class = camel_type_get_global_classfuncs( CAMEL_TYPE_OBJECT );
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = imapx_stream_dispose;
+	object_class->finalize = imapx_stream_finalize;
 
-	/* virtual method definition */
-	camel_stream_class->read = stream_read;
-	camel_stream_class->write = stream_write;
-	camel_stream_class->close = stream_close;
-	camel_stream_class->flush = stream_flush;
-	camel_stream_class->eos = stream_eos;
-	camel_stream_class->reset = stream_reset;
+	stream_class = CAMEL_STREAM_CLASS (class);
+	stream_class->read = imapx_stream_read;
+	stream_class->write = imapx_stream_write;
+	stream_class->close = imapx_stream_close;
+	stream_class->flush = imapx_stream_flush;
+	stream_class->eos = imapx_stream_eos;
+	stream_class->reset = imapx_stream_reset;
 }
 
 static void
-camel_imapx_stream_init(CamelIMAPXStream *is, CamelIMAPXStreamClass *isclass)
+camel_imapx_stream_init (CamelIMAPXStream *is)
 {
 	/* +1 is room for appending a 0 if we need to for a token */
 	is->ptr = is->end = is->buf = g_malloc(CAMEL_IMAPX_STREAM_SIZE+1);
 	is->tokenptr = is->tokenbuf = g_malloc(CAMEL_IMAPX_STREAM_SIZE+1);
 	is->tokenend = is->tokenbuf + CAMEL_IMAPX_STREAM_SIZE;
-}
-
-static void
-camel_imapx_stream_finalize(CamelIMAPXStream *is)
-{
-	g_free(is->buf);
-	if (is->source)
-		camel_object_unref (is->source);
-}
-
-CamelType
-camel_imapx_stream_get_type (void)
-{
-	static CamelType camel_imapx_stream_type = CAMEL_INVALID_TYPE;
-
-	if (camel_imapx_stream_type == CAMEL_INVALID_TYPE) {
-		camel_imapx_stream_type = camel_type_register( camel_stream_get_type(),
-							    "CamelIMAPXStream",
-							    sizeof( CamelIMAPXStream ),
-							    sizeof( CamelIMAPXStreamClass ),
-							    (CamelObjectClassInitFunc) camel_imapx_stream_class_init,
-							    NULL,
-							    (CamelObjectInitFunc) camel_imapx_stream_init,
-							    (CamelObjectFinalizeFunc) camel_imapx_stream_finalize );
-	}
-
-	return camel_imapx_stream_type;
 }
 
 /**
@@ -205,9 +207,8 @@ camel_imapx_stream_new(CamelStream *source)
 {
 	CamelIMAPXStream *is;
 
-	is = (CamelIMAPXStream *)camel_object_new(camel_imapx_stream_get_type ());
-	camel_object_ref (source);
-	is->source = source;
+	is = g_object_new (CAMEL_TYPE_IMAPX_STREAM, NULL);
+	is->source = g_object_ref (source);
 
 	return (CamelStream *)is;
 }
@@ -233,7 +234,7 @@ skip_ws(CamelIMAPXStream *is, guchar *pp, guchar *pe)
 	do {
 		while (p >= e ) {
 			is->ptr = p;
-			if (stream_fill(is) == IMAPX_TOK_ERROR)
+			if (imapx_stream_fill(is) == IMAPX_TOK_ERROR)
 				return IMAPX_TOK_ERROR;
 			p = is->ptr;
 			e = is->end;
@@ -380,7 +381,7 @@ camel_imapx_stream_nstring_stream(CamelIMAPXStream *is, CamelStream **stream, Ca
 			mem = camel_stream_mem_new();
 			if (camel_stream_write_to_stream((CamelStream *)is, mem) == -1) {
 				camel_exception_setv (ex, 1, "nstring: io error: %s", strerror(errno));
-				camel_object_unref (mem);
+				g_object_unref (mem);
 				ret = -1;
 				break;
 			}
@@ -482,7 +483,7 @@ camel_imapx_stream_token(CamelIMAPXStream *is, guchar **data, guint *len, CamelE
 	do {
 		while (p >= e ) {
 			is->ptr = p;
-			if (stream_fill(is) == IMAPX_TOK_ERROR)
+			if (imapx_stream_fill(is) == IMAPX_TOK_ERROR)
 				goto io_error;
 			p = is->ptr;
 			e = is->end;
@@ -516,7 +517,7 @@ camel_imapx_stream_token(CamelIMAPXStream *is, guchar **data, guint *len, CamelE
 							}
 						}
 						is->ptr = p;
-						if (stream_fill(is) == IMAPX_TOK_ERROR)
+						if (imapx_stream_fill(is) == IMAPX_TOK_ERROR)
 							goto io_error;
 						p = is->ptr;
 						e = is->end;
@@ -531,7 +532,7 @@ camel_imapx_stream_token(CamelIMAPXStream *is, guchar **data, guint *len, CamelE
 				}
 			}
 			is->ptr = p;
-			if (stream_fill(is) == IMAPX_TOK_ERROR)
+			if (imapx_stream_fill(is) == IMAPX_TOK_ERROR)
 				goto io_error;
 			p = is->ptr;
 			e = is->end;
@@ -545,7 +546,7 @@ camel_imapx_stream_token(CamelIMAPXStream *is, guchar **data, guint *len, CamelE
 				if (c == '\\') {
 					while (p >= e) {
 						is->ptr = p;
-						if (stream_fill(is) == IMAPX_TOK_ERROR)
+						if (imapx_stream_fill(is) == IMAPX_TOK_ERROR)
 							goto io_error;
 						p = is->ptr;
 						e = is->end;
@@ -574,7 +575,7 @@ camel_imapx_stream_token(CamelIMAPXStream *is, guchar **data, guint *len, CamelE
 				}
 			}
 			is->ptr = p;
-			if (stream_fill(is) == IMAPX_TOK_ERROR)
+			if (imapx_stream_fill(is) == IMAPX_TOK_ERROR)
 				goto io_error;
 			p = is->ptr;
 			e = is->end;
@@ -607,7 +608,7 @@ camel_imapx_stream_token(CamelIMAPXStream *is, guchar **data, guint *len, CamelE
 				}
 			}
 			is->ptr = p;
-			if (stream_fill(is) == IMAPX_TOK_ERROR)
+			if (imapx_stream_fill(is) == IMAPX_TOK_ERROR)
 				goto io_error;
 			p = is->ptr;
 			e = is->end;
@@ -652,7 +653,7 @@ gint camel_imapx_stream_gets(CamelIMAPXStream *is, guchar **start, guint *len)
 
 	max = is->end - is->ptr;
 	if (max == 0) {
-		max = stream_fill(is);
+		max = imapx_stream_fill(is);
 		if (max <= 0)
 			return max;
 	}
@@ -683,7 +684,7 @@ gint camel_imapx_stream_getl(CamelIMAPXStream *is, guchar **start, guint *len)
 	if (is->literal > 0) {
 		max = is->end - is->ptr;
 		if (max == 0) {
-			max = stream_fill(is);
+			max = imapx_stream_fill(is);
 			if (max <= 0)
 				return max;
 		}

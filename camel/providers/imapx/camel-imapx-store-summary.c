@@ -39,8 +39,6 @@
 
 #define CAMEL_IMAPX_STORE_SUMMARY_VERSION (0)
 
-#define _PRIVATE(o) (((CamelIMAPXStoreSummary *)(o))->priv)
-
 static gint summary_header_load(CamelStoreSummary *, FILE *);
 static gint summary_header_save(CamelStoreSummary *, FILE *);
 
@@ -52,67 +50,28 @@ static void		 store_info_free(CamelStoreSummary *, CamelStoreInfo *);
 static const gchar *store_info_string(CamelStoreSummary *, const CamelStoreInfo *, gint);
 static void store_info_set_string(CamelStoreSummary *, CamelStoreInfo *, int, const gchar *);
 
-static void camel_imapx_store_summary_class_init (CamelIMAPXStoreSummaryClass *klass);
-static void camel_imapx_store_summary_init       (CamelIMAPXStoreSummary *obj);
-static void camel_imapx_store_summary_finalize   (CamelObject *obj);
-
-static CamelStoreSummaryClass *camel_imapx_store_summary_parent;
+G_DEFINE_TYPE (CamelIMAPXStoreSummary, camel_imapx_store_summary, CAMEL_TYPE_STORE_SUMMARY)
 
 static void
-camel_imapx_store_summary_class_init (CamelIMAPXStoreSummaryClass *klass)
+camel_imapx_store_summary_class_init (CamelIMAPXStoreSummaryClass *class)
 {
-	CamelStoreSummaryClass *ssklass = (CamelStoreSummaryClass *)klass;
+	CamelStoreSummaryClass *store_summary_class;
 
-	ssklass->summary_header_load = summary_header_load;
-	ssklass->summary_header_save = summary_header_save;
-
-	/*ssklass->store_info_new  = store_info_new;*/
-	ssklass->store_info_load = store_info_load;
-	ssklass->store_info_save = store_info_save;
-	ssklass->store_info_free = store_info_free;
-
-	ssklass->store_info_string = store_info_string;
-	ssklass->store_info_set_string = store_info_set_string;
+	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (class);
+	store_summary_class->summary_header_load = summary_header_load;
+	store_summary_class->summary_header_save = summary_header_save;
+	store_summary_class->store_info_load = store_info_load;
+	store_summary_class->store_info_save = store_info_save;
+	store_summary_class->store_info_free = store_info_free;
+	store_summary_class->store_info_string = store_info_string;
+	store_summary_class->store_info_set_string = store_info_set_string;
 }
 
 static void
 camel_imapx_store_summary_init (CamelIMAPXStoreSummary *s)
 {
-	/*struct _CamelImapStoreSummaryPrivate *p;
-
-	  p = _PRIVATE(s) = g_malloc0(sizeof(*p));*/
-
 	((CamelStoreSummary *)s)->store_info_size = sizeof(CamelIMAPXStoreInfo);
 	s->version = CAMEL_IMAPX_STORE_SUMMARY_VERSION;
-}
-
-static void
-camel_imapx_store_summary_finalize (CamelObject *obj)
-{
-	/*struct _CamelImapStoreSummaryPrivate *p;*/
-	/*CamelImapStoreSummary *s = (CamelImapStoreSummary *)obj;*/
-
-	/*p = _PRIVATE(obj);
-	  g_free(p);*/
-}
-
-CamelType
-camel_imapx_store_summary_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		camel_imapx_store_summary_parent = (CamelStoreSummaryClass *)camel_store_summary_get_type();
-		type = camel_type_register((CamelType)camel_imapx_store_summary_parent, "CamelIMAPXStoreSummary",
-					   sizeof (CamelIMAPXStoreSummary),
-					   sizeof (CamelIMAPXStoreSummaryClass),
-					   (CamelObjectClassInitFunc) camel_imapx_store_summary_class_init,
-					   NULL,
-					   (CamelObjectInitFunc) camel_imapx_store_summary_init,
-					   (CamelObjectFinalizeFunc) camel_imapx_store_summary_finalize);
-	}
-
-	return type;
 }
 
 /**
@@ -125,9 +84,7 @@ camel_imapx_store_summary_get_type (void)
 CamelIMAPXStoreSummary *
 camel_imapx_store_summary_new (void)
 {
-	CamelIMAPXStoreSummary *new = CAMEL_IMAPX_STORE_SUMMARY ( camel_object_new (camel_imapx_store_summary_get_type ()));
-
-	return new;
+	return g_object_new (CAMEL_TYPE_IMAPX_STORE_SUMMARY, NULL);
 }
 
 /**
@@ -549,11 +506,13 @@ static gint
 summary_header_load(CamelStoreSummary *s, FILE *in)
 {
 	CamelIMAPXStoreSummary *is = (CamelIMAPXStoreSummary *)s;
+	CamelStoreSummaryClass *store_summary_class;
 	gint32 version, capabilities;
 
 	camel_imapx_namespace_list_clear (is->namespaces);
 
-	if (camel_imapx_store_summary_parent->summary_header_load((CamelStoreSummary *)s, in) == -1
+	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (camel_imapx_store_summary_parent_class);
+	if (store_summary_class->summary_header_load((CamelStoreSummary *)s, in) == -1
 	    || camel_file_util_decode_fixed_int32(in, &version) == -1)
 		return -1;
 
@@ -581,9 +540,11 @@ static gint
 summary_header_save(CamelStoreSummary *s, FILE *out)
 {
 	CamelIMAPXStoreSummary *is = (CamelIMAPXStoreSummary *)s;
+	CamelStoreSummaryClass *store_summary_class;
 
 	/* always write as latest version */
-	if (camel_imapx_store_summary_parent->summary_header_save((CamelStoreSummary *)s, out) == -1
+	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (camel_imapx_store_summary_parent_class);
+	if (store_summary_class->summary_header_save((CamelStoreSummary *)s, out) == -1
 	    || camel_file_util_encode_fixed_int32(out, CAMEL_IMAPX_STORE_SUMMARY_VERSION) == -1
 	    || camel_file_util_encode_fixed_int32(out, is->capabilities) == -1)
 		return -1;
@@ -598,8 +559,10 @@ static CamelStoreInfo *
 store_info_load(CamelStoreSummary *s, FILE *in)
 {
 	CamelIMAPXStoreInfo *mi;
+	CamelStoreSummaryClass *store_summary_class;
 
-	mi = (CamelIMAPXStoreInfo *)camel_imapx_store_summary_parent->store_info_load(s, in);
+	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (camel_imapx_store_summary_parent_class);
+	mi = (CamelIMAPXStoreInfo *)store_summary_class->store_info_load(s, in);
 	if (mi) {
 		if (camel_file_util_decode_string(in, &mi->full_name) == -1) {
 			camel_store_summary_info_free(s, (CamelStoreInfo *)mi);
@@ -618,8 +581,10 @@ static gint
 store_info_save(CamelStoreSummary *s, FILE *out, CamelStoreInfo *mi)
 {
 	CamelIMAPXStoreInfo *isi = (CamelIMAPXStoreInfo *)mi;
+	CamelStoreSummaryClass *store_summary_class;
 
-	if (camel_imapx_store_summary_parent->store_info_save(s, out, mi) == -1
+	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (camel_imapx_store_summary_parent_class);
+	if (store_summary_class->store_info_save(s, out, mi) == -1
 	    || camel_file_util_encode_string(out, isi->full_name) == -1)
 		return -1;
 
@@ -630,25 +595,31 @@ static void
 store_info_free(CamelStoreSummary *s, CamelStoreInfo *mi)
 {
 	CamelIMAPXStoreInfo *isi = (CamelIMAPXStoreInfo *)mi;
+	CamelStoreSummaryClass *store_summary_class;
 
 	g_free(isi->full_name);
-	camel_imapx_store_summary_parent->store_info_free(s, mi);
+
+	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (camel_imapx_store_summary_parent_class);
+	store_summary_class->store_info_free(s, mi);
 }
 
 static const gchar *
 store_info_string(CamelStoreSummary *s, const CamelStoreInfo *mi, gint type)
 {
 	CamelIMAPXStoreInfo *isi = (CamelIMAPXStoreInfo *)mi;
+	CamelStoreSummaryClass *store_summary_class;
 
 	/* FIXME: Locks? */
 
 	g_assert (mi != NULL);
 
+	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (camel_imapx_store_summary_parent_class);
+
 	switch (type) {
 	case CAMEL_IMAPX_STORE_INFO_FULL_NAME:
 		return isi->full_name;
 	default:
-		return camel_imapx_store_summary_parent->store_info_string(s, mi, type);
+		return store_summary_class->store_info_string(s, mi, type);
 	}
 }
 
@@ -656,8 +627,11 @@ static void
 store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, gint type, const gchar *str)
 {
 	CamelIMAPXStoreInfo *isi = (CamelIMAPXStoreInfo *)mi;
+	CamelStoreSummaryClass *store_summary_class;
 
 	g_assert(mi != NULL);
+
+	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (camel_imapx_store_summary_parent_class);
 
 	switch (type) {
 	case CAMEL_IMAPX_STORE_INFO_FULL_NAME:
@@ -668,7 +642,7 @@ store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, gint type, const
 		camel_store_summary_unlock (s, CSS_SUMMARY_LOCK);
 		break;
 	default:
-		camel_imapx_store_summary_parent->store_info_set_string(s, mi, type, str);
+		store_summary_class->store_info_set_string(s, mi, type, str);
 		break;
 	}
 }

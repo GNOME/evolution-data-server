@@ -46,14 +46,12 @@ static CamelDListNode *groupwise_entry_load (CamelOfflineJournal *journal, FILE 
 static gint groupwise_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
 static gint groupwise_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
 
-static gpointer camel_groupwise_journal_parent_class;
+G_DEFINE_TYPE (CamelGroupwiseJournal, camel_groupwise_journal, CAMEL_TYPE_OFFLINE_JOURNAL)
 
 static void
 camel_groupwise_journal_class_init (CamelGroupwiseJournalClass *class)
 {
 	CamelOfflineJournalClass *offline_journal_class;
-
-	camel_groupwise_journal_parent_class = (CamelOfflineJournalClass *) camel_type_get_global_classfuncs (CAMEL_TYPE_OFFLINE_JOURNAL);
 
 	offline_journal_class = CAMEL_OFFLINE_JOURNAL_CLASS (class);
 	offline_journal_class->entry_free = groupwise_entry_free;
@@ -65,25 +63,6 @@ camel_groupwise_journal_class_init (CamelGroupwiseJournalClass *class)
 static void
 camel_groupwise_journal_init (CamelGroupwiseJournal *groupwise_journal)
 {
-}
-
-CamelType
-camel_groupwise_journal_get_type (void)
-{
-	static CamelType type = NULL;
-
-	if (!type) {
-		type = camel_type_register (camel_offline_journal_get_type (),
-					    "CamelGroupwiseJournal",
-					    sizeof (CamelGroupwiseJournal),
-					    sizeof (CamelGroupwiseJournalClass),
-					    (CamelObjectClassInitFunc) camel_groupwise_journal_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_groupwise_journal_init,
-					    (CamelObjectFinalizeFunc) NULL);
-	}
-
-	return type;
 }
 
 static void
@@ -192,12 +171,12 @@ groupwise_entry_play_append (CamelOfflineJournal *journal, CamelGroupwiseJournal
 
 	message = camel_mime_message_new ();
 	if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) message, stream) == -1) {
-		camel_object_unref (message);
-		camel_object_unref (stream);
+		g_object_unref (message);
+		g_object_unref (stream);
 		goto done;
 	}
 
-	camel_object_unref (stream);
+	g_object_unref (stream);
 
 	if (!(info = camel_folder_summary_uid (folder->summary, entry->uid))) {
 		/* Note: this should never happen, but rather than crash lets make a new info */
@@ -206,7 +185,7 @@ groupwise_entry_play_append (CamelOfflineJournal *journal, CamelGroupwiseJournal
 
 	success = camel_folder_append_message (folder, message, info, NULL, ex);
 	camel_message_info_free (info);
-	camel_object_unref (message);
+	g_object_unref (message);
 
 	if (!success)
 		return -1;
@@ -252,7 +231,7 @@ groupwise_entry_play_transfer (CamelOfflineJournal *journal, CamelGroupwiseJourn
 
 		g_ptr_array_free (xuids, TRUE);
 		g_ptr_array_free (uids, TRUE);
-		camel_object_unref (src);
+		g_object_unref (src);
 	} else if (!name) {
 		camel_exception_setv (
 			ex, CAMEL_EXCEPTION_SYSTEM,
@@ -298,7 +277,7 @@ camel_groupwise_journal_new (CamelGroupwiseFolder *folder, const gchar *filename
 
 	g_return_val_if_fail (CAMEL_IS_GROUPWISE_FOLDER (folder), NULL);
 
-	journal = (CamelOfflineJournal *) camel_object_new (camel_groupwise_journal_get_type ());
+	journal = g_object_new (CAMEL_TYPE_OFFLINE_JOURNAL, NULL);
 	camel_offline_journal_construct (journal, (CamelFolder *) folder, filename);
 
 	return journal;
@@ -340,12 +319,12 @@ update_cache (CamelGroupwiseJournal *groupwise_journal, CamelMimeMessage *messag
 			g_strerror (errno));
 		camel_data_cache_remove (groupwise_folder->cache, "cache", uid, NULL);
 		folder->summary->nextuid--;
-		camel_object_unref (cache);
+		g_object_unref (cache);
 		g_free (uid);
 		return FALSE;
 	}
 
-	camel_object_unref (cache);
+	g_object_unref (cache);
 
 	info = camel_folder_summary_info_new_from_message (folder->summary, message, NULL);
 	camel_pstring_free(info->uid);

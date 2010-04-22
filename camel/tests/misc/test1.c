@@ -8,8 +8,8 @@
 #include "camel-test.h"
 
 struct {
-	gchar *header;
-	gchar *values[5];
+	const gchar *header;
+	const gchar *values[5];
 } test1[] = {
 	{ "<test@camel.host>", { "test@camel.host" } },
 	{ "(this is a comment) <test@camel.host>", { "test@camel.host" } },

@@ -42,15 +42,19 @@
 #define d(x)
 #define w(x)
 
+#define CAMEL_SERVICE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_SERVICE, CamelServicePrivate))
+
 struct _CamelServicePrivate {
 	GStaticRecMutex connect_lock;	/* for locking connection operations */
 	GStaticMutex connect_op_lock;	/* for locking the connection_op */
 };
 
-static CamelObjectClass *camel_service_parent_class = NULL;
+G_DEFINE_ABSTRACT_TYPE (CamelService, camel_service, CAMEL_TYPE_OBJECT)
 
 static void
-camel_service_finalize (CamelObject *object)
+service_finalize (GObject *object)
 {
 	CamelService *service = CAMEL_SERVICE (object);
 
@@ -70,12 +74,13 @@ camel_service_finalize (CamelObject *object)
 		camel_url_free (service->url);
 
 	if (service->session)
-		camel_object_unref (service->session);
+		g_object_unref (service->session);
 
 	g_static_rec_mutex_free (&service->priv->connect_lock);
 	g_static_mutex_free (&service->priv->connect_op_lock);
 
-	g_free (service->priv);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_service_parent_class)->finalize (object);
 }
 
 static gint
@@ -221,7 +226,7 @@ service_construct (CamelService *service,
 
 	service->provider = provider;
 	service->url = camel_url_copy(url);
-	service->session = camel_object_ref (session);
+	service->session = g_object_ref (session);
 
 	service->status = CAMEL_SERVICE_DISCONNECTED;
 
@@ -275,9 +280,9 @@ service_get_name (CamelService *service,
 {
 	g_warning (
 		"%s does not implement CamelServiceClass::get_name()",
-		camel_type_to_name (CAMEL_OBJECT_GET_TYPE (service)));
+		G_OBJECT_TYPE_NAME (service));
 
-	return g_strdup (camel_type_to_name (CAMEL_OBJECT_GET_TYPE (service)));
+	return g_strdup (G_OBJECT_TYPE_NAME (service));
 }
 
 static gchar *
@@ -326,9 +331,13 @@ service_get_path (CamelService *service)
 static void
 camel_service_class_init (CamelServiceClass *class)
 {
+	GObjectClass *object_class;
 	CamelObjectClass *camel_object_class;
 
-	camel_service_parent_class = camel_type_get_global_classfuncs (CAMEL_TYPE_OBJECT);
+	g_type_class_add_private (class, sizeof (CamelServicePrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = service_finalize;
 
 	camel_object_class = CAMEL_OBJECT_CLASS (class);
 	camel_object_class->setv = service_setv;
@@ -346,30 +355,10 @@ camel_service_class_init (CamelServiceClass *class)
 static void
 camel_service_init (CamelService *service)
 {
-	service->priv = g_malloc0(sizeof(*service->priv));
+	service->priv = CAMEL_SERVICE_GET_PRIVATE (service);
 
 	g_static_rec_mutex_init (&service->priv->connect_lock);
 	g_static_mutex_init (&service->priv->connect_op_lock);
-}
-
-CamelType
-camel_service_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type =
-			camel_type_register (CAMEL_TYPE_OBJECT,
-					     "CamelService",
-					     sizeof (CamelService),
-					     sizeof (CamelServiceClass),
-					     (CamelObjectClassInitFunc) camel_service_class_init,
-					     NULL,
-					     (CamelObjectInitFunc) camel_service_init,
-					     camel_service_finalize );
-	}
-
-	return type;
 }
 
 /**
@@ -520,6 +509,7 @@ camel_service_disconnect (CamelService *service,
 	camel_service_unlock (service, CS_REC_CONNECT_LOCK);
 
 	service->status = CAMEL_SERVICE_DISCONNECTED;
+
 	return res;
 }
 
@@ -690,24 +680,23 @@ camel_service_query_auth_types (CamelService *service,
  *
  * Locks #service's #lock. Unlock it with camel_service_unlock().
  *
- * Since: 2.31.1
+ * Since: 3.0
  **/
 void
-camel_service_lock (CamelService *service, CamelServiceLock lock)
+camel_service_lock (CamelService *service,
+                    CamelServiceLock lock)
 {
-	g_return_if_fail (service != NULL);
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
-	g_return_if_fail (service->priv != NULL);
 
 	switch (lock) {
-	case CS_REC_CONNECT_LOCK:
-		g_static_rec_mutex_lock (&service->priv->connect_lock);
-		break;
-	case CS_CONNECT_OP_LOCK:
-		g_static_mutex_lock (&service->priv->connect_op_lock);
-		break;
-	default:
-		g_return_if_reached ();
+		case CS_REC_CONNECT_LOCK:
+			g_static_rec_mutex_lock (&service->priv->connect_lock);
+			break;
+		case CS_CONNECT_OP_LOCK:
+			g_static_mutex_lock (&service->priv->connect_op_lock);
+			break;
+		default:
+			g_return_if_reached ();
 	}
 }
 
@@ -718,23 +707,22 @@ camel_service_lock (CamelService *service, CamelServiceLock lock)
  *
  * Unlocks #service's #lock, previously locked with camel_service_lock().
  *
- * Since: 2.31.1
+ * Since: 3.0
  **/
 void
-camel_service_unlock (CamelService *service, CamelServiceLock lock)
+camel_service_unlock (CamelService *service,
+                      CamelServiceLock lock)
 {
-	g_return_if_fail (service != NULL);
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
-	g_return_if_fail (service->priv != NULL);
 
 	switch (lock) {
-	case CS_REC_CONNECT_LOCK:
-		g_static_rec_mutex_unlock (&service->priv->connect_lock);
-		break;
-	case CS_CONNECT_OP_LOCK:
-		g_static_mutex_unlock (&service->priv->connect_op_lock);
-		break;
-	default:
-		g_return_if_reached ();
+		case CS_REC_CONNECT_LOCK:
+			g_static_rec_mutex_unlock (&service->priv->connect_lock);
+			break;
+		case CS_CONNECT_OP_LOCK:
+			g_static_mutex_unlock (&service->priv->connect_op_lock);
+			break;
+		default:
+			g_return_if_reached ();
 	}
 }

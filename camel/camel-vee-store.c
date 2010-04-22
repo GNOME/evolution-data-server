@@ -43,7 +43,7 @@
 #define CHANGE_DELETE (1)
 #define CHANGE_NOSELECT (2)
 
-static gpointer camel_vee_store_parent_class;
+G_DEFINE_TYPE (CamelVeeStore, camel_vee_store, CAMEL_TYPE_STORE)
 
 static gint
 vee_folder_cmp (gconstpointer ap,
@@ -93,11 +93,16 @@ cvs_free_unmatched (gpointer key, gpointer value, gpointer data)
 }
 
 static void
-vee_store_finalize (CamelVeeStore *vee_store)
+vee_store_finalize (GObject *object)
 {
+	CamelVeeStore *vee_store = CAMEL_VEE_STORE (object);
+
 	g_hash_table_foreach (vee_store->unmatched_uids, cvs_free_unmatched, NULL);
 	g_hash_table_destroy (vee_store->unmatched_uids);
-	camel_object_unref (vee_store->folder_unmatched);
+	g_object_unref (vee_store->folder_unmatched);
+
+	/* Chain up to parent's finalize () method. */
+	G_OBJECT_CLASS (camel_vee_store_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -122,7 +127,7 @@ vee_store_construct (CamelService *service,
 	/* Set up unmatched folder */
 #ifndef VEE_UNMATCHED_ENABLE
 	vee_store->unmatched_uids = g_hash_table_new (g_str_hash, g_str_equal);
-	vee_store->folder_unmatched = (CamelVeeFolder *)camel_object_new (camel_vee_folder_get_type ());
+	vee_store->folder_unmatched = g_object_new (CAMEL_TYPE_VEE_FOLDER, NULL);
 	camel_vee_folder_construct (vee_store->folder_unmatched, store, CAMEL_UNMATCHED_NAME, _("Unmatched"), CAMEL_STORE_FOLDER_PRIVATE);
 	camel_db_create_vfolder (store->cdb_r, _("Unmatched"), NULL);
 #endif
@@ -164,7 +169,7 @@ vee_store_get_folder (CamelStore *store,
 				change_folder (store, name, CHANGE_ADD|CHANGE_NOSELECT, 0);
 				/* FIXME: this sort of leaks folder, nobody owns a ref to it but us */
 			} else {
-				camel_object_unref (folder);
+				g_object_unref (folder);
 			}
 			*p++='/';
 		}
@@ -217,12 +222,12 @@ vee_store_rename_folder (CamelStore *store,
 			change_folder (store, name, CHANGE_ADD|CHANGE_NOSELECT, 0);
 			/* FIXME: this sort of leaks folder, nobody owns a ref to it but us */
 		} else {
-			camel_object_unref (folder);
+			g_object_unref (folder);
 		}
 		*p++='/';
 	}
 
-	camel_object_unref (oldfolder);
+	g_object_unref (oldfolder);
 
 	return TRUE;
 }
@@ -258,7 +263,7 @@ vee_store_delete_folder (CamelStore *store,
 			change_folder (store, folder_name, CHANGE_DELETE, -1);
 		}
 
-		camel_object_unref (folder);
+		g_object_unref (folder);
 	} else {
 		camel_exception_setv (
 			ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
@@ -370,7 +375,7 @@ vee_store_get_folder_info (CamelStore *store,
 		}
 
 		g_free (pname);
-		camel_object_unref (folder);
+		g_object_unref (folder);
 	}
 	g_ptr_array_free (folders, TRUE);
 	g_hash_table_destroy (infos_hash);
@@ -420,10 +425,12 @@ vee_store_get_junk (CamelStore *store,
 static void
 camel_vee_store_class_init (CamelVeeStoreClass *class)
 {
+	GObjectClass *object_class;
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 
-	camel_vee_store_parent_class = (CamelStoreClass *)camel_store_get_type ();
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = vee_store_finalize;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->construct = vee_store_construct;
@@ -448,24 +455,6 @@ camel_vee_store_init (CamelVeeStore *vee_store)
 	store->flags &= ~(CAMEL_STORE_VTRASH | CAMEL_STORE_VJUNK);
 }
 
-CamelType
-camel_vee_store_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_store_get_type (), "CamelVeeStore",
-					    sizeof (CamelVeeStore),
-					    sizeof (CamelVeeStoreClass),
-					    (CamelObjectClassInitFunc) camel_vee_store_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_vee_store_init,
-					    (CamelObjectFinalizeFunc) vee_store_finalize);
-	}
-
-	return type;
-}
-
 /**
  * camel_vee_store_new:
  *
@@ -476,5 +465,5 @@ camel_vee_store_get_type (void)
 CamelVeeStore *
 camel_vee_store_new (void)
 {
-	return CAMEL_VEE_STORE (camel_object_new (camel_vee_store_get_type ()));
+	return g_object_new (CAMEL_TYPE_VEE_STORE, NULL);
 }

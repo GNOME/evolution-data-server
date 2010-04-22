@@ -22,6 +22,10 @@
 
 #include "camel-mime-filter-crlf.h"
 
+#define CAMEL_MIME_FILTER_CRLF_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_FILTER_CRLF, CamelMimeFilterCRLFPrivate))
+
 struct _CamelMimeFilterCRLFPrivate {
 	CamelMimeFilterCRLFDirection direction;
 	CamelMimeFilterCRLFMode mode;
@@ -30,11 +34,7 @@ struct _CamelMimeFilterCRLFPrivate {
 	gboolean saw_dot;
 };
 
-static void
-mime_filter_crlf_finalize (CamelMimeFilterCRLF *filter)
-{
-	g_free (filter->priv);
-}
+G_DEFINE_TYPE (CamelMimeFilterCRLF, camel_mime_filter_crlf, CAMEL_TYPE_MIME_FILTER)
 
 static void
 mime_filter_crlf_filter (CamelMimeFilter *mime_filter,
@@ -51,7 +51,7 @@ mime_filter_crlf_filter (CamelMimeFilter *mime_filter,
 	gboolean do_dots;
 	gchar *outptr;
 
-	priv = CAMEL_MIME_FILTER_CRLF (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_CRLF_GET_PRIVATE (mime_filter);
 
 	do_dots = priv->mode == CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS;
 
@@ -147,7 +147,7 @@ mime_filter_crlf_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterCRLFPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_CRLF (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_CRLF_GET_PRIVATE (mime_filter);
 
 	priv->saw_cr = FALSE;
 	priv->saw_lf = TRUE;
@@ -159,6 +159,8 @@ camel_mime_filter_crlf_class_init (CamelMimeFilterCRLFClass *class)
 {
 	CamelMimeFilterClass *mime_filter_class;
 
+	g_type_class_add_private (class, sizeof (CamelMimeFilterCRLFPrivate));
+
 	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
 	mime_filter_class->filter = mime_filter_crlf_filter;
 	mime_filter_class->complete = mime_filter_crlf_complete;
@@ -168,29 +170,11 @@ camel_mime_filter_crlf_class_init (CamelMimeFilterCRLFClass *class)
 static void
 camel_mime_filter_crlf_init (CamelMimeFilterCRLF *filter)
 {
-	filter->priv = g_new0 (CamelMimeFilterCRLFPrivate, 1);
+	filter->priv = CAMEL_MIME_FILTER_CRLF_GET_PRIVATE (filter);
 
 	filter->priv->saw_cr = FALSE;
 	filter->priv->saw_lf = TRUE;
 	filter->priv->saw_dot = FALSE;
-}
-
-CamelType
-camel_mime_filter_crlf_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_mime_filter_get_type(), "CamelMimeFilterCRLF",
-					    sizeof (CamelMimeFilterCRLF),
-					    sizeof (CamelMimeFilterCRLFClass),
-					    (CamelObjectClassInitFunc) camel_mime_filter_crlf_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_filter_crlf_init,
-					    (CamelObjectFinalizeFunc) mime_filter_crlf_finalize);
-	}
-
-	return type;
 }
 
 /**
@@ -209,8 +193,8 @@ camel_mime_filter_crlf_new (CamelMimeFilterCRLFDirection direction,
 	CamelMimeFilter *filter;
 	CamelMimeFilterCRLFPrivate *priv;
 
-	filter = CAMEL_MIME_FILTER (camel_object_new (CAMEL_MIME_FILTER_CRLF_TYPE));
-	priv = CAMEL_MIME_FILTER_CRLF (filter)->priv;
+	filter = g_object_new (CAMEL_TYPE_MIME_FILTER_CRLF, NULL);
+	priv = CAMEL_MIME_FILTER_CRLF_GET_PRIVATE (filter);
 
 	priv->direction = direction;
 	priv->mode = mode;

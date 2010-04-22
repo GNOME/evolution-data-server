@@ -39,9 +39,7 @@
 
 #define d(x)
 
-#define CF_CLASS(o) (CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(o)))
-static CamelObjectClass *parent_class;
-static CamelOfflineFolderClass *offline_folder_class = NULL;
+G_DEFINE_TYPE (CamelIMAPXFolder, camel_imapx_folder, CAMEL_TYPE_FOLDER)
 
 CamelFolder *
 camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *folder_name, CamelException *ex)
@@ -60,7 +58,7 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 	else
 		short_name = folder_name;
 
-	folder = CAMEL_FOLDER (camel_object_new (CAMEL_IMAPX_FOLDER_TYPE));
+	folder = g_object_new (CAMEL_TYPE_IMAPX_FOLDER, NULL);
 	camel_folder_construct(folder, store, folder_name, short_name);
 	ifolder = (CamelIMAPXFolder *) folder;
 
@@ -107,6 +105,40 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 	g_free (summary_file);
 
 	return folder;
+}
+
+static void
+imapx_folder_dispose (GObject *object)
+{
+	CamelIMAPXFolder *folder = CAMEL_IMAPX_FOLDER (object);
+
+	if (folder->cache != NULL) {
+		g_object_unref (folder->cache);
+		folder->cache = NULL;
+	}
+
+	if (folder->search != NULL) {
+		g_object_unref (folder->search);
+		folder->search = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_imapx_folder_parent_class)->dispose (object);
+}
+
+static void
+imapx_folder_finalize (GObject *object)
+{
+	CamelIMAPXFolder *folder = CAMEL_IMAPX_FOLDER (object);
+
+	if (folder->ignore_recent != NULL)
+		g_hash_table_unref (folder->ignore_recent);
+
+	g_mutex_free (folder->search_lock);
+	g_mutex_free (folder->stream_lock);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_imapx_folder_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -205,11 +237,11 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 	
 		g_mutex_lock (ifolder->stream_lock);
 		if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)msg, stream) == -1) {
-			camel_object_unref (msg);
+			g_object_unref (msg);
 			msg = NULL;
 		}
 		g_mutex_unlock (ifolder->stream_lock);
-		camel_object_unref (stream);
+		g_object_unref (stream);
 	}
 
 	return msg;
@@ -394,29 +426,34 @@ imapx_search_by_expression (CamelFolder *folder, const gchar *expression, CamelE
 }
 
 static void
-imapx_folder_class_init (CamelIMAPXFolderClass *klass)
+camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 {
-	offline_folder_class = CAMEL_OFFLINE_FOLDER_CLASS (camel_type_get_global_classfuncs (camel_offline_folder_get_type ()));
+	GObjectClass *object_class;
+	CamelFolderClass *folder_class;
 
-	((CamelFolderClass *)klass)->refresh_info = imapx_refresh_info;
-	((CamelFolderClass *)klass)->sync = imapx_sync;
-	((CamelFolderClass *)klass)->search_by_expression = imapx_search_by_expression;
-	((CamelFolderClass *)klass)->search_by_uids = imapx_search_by_uids;
-	((CamelFolderClass *)klass)->count_by_expression = imapx_count_by_expression;
-	((CamelFolderClass *)klass)->search_free = imapx_search_free;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = imapx_folder_dispose;
+	object_class->finalize = imapx_folder_finalize;
 
-	((CamelFolderClass *)klass)->expunge = imapx_expunge;
-	((CamelFolderClass *)klass)->get_message = imapx_get_message;
-	((CamelFolderClass *)klass)->sync_message = imapx_sync_message;
-	((CamelFolderClass *)klass)->append_message = imapx_append_message;
-	((CamelFolderClass *)klass)->transfer_messages_to = imapx_transfer_messages_to;
-	((CamelFolderClass *)klass)->get_filename = imapx_get_filename;
+	folder_class = CAMEL_FOLDER_CLASS (class);
+	folder_class->refresh_info = imapx_refresh_info;
+	folder_class->sync = imapx_sync;
+	folder_class->search_by_expression = imapx_search_by_expression;
+	folder_class->search_by_uids = imapx_search_by_uids;
+	folder_class->count_by_expression = imapx_count_by_expression;
+	folder_class->search_free = imapx_search_free;
+	folder_class->expunge = imapx_expunge;
+	folder_class->get_message = imapx_get_message;
+	folder_class->sync_message = imapx_sync_message;
+	folder_class->append_message = imapx_append_message;
+	folder_class->transfer_messages_to = imapx_transfer_messages_to;
+	folder_class->get_filename = imapx_get_filename;
 }
 
 static void
-imapx_folder_init(CamelObject *o, CamelObjectClass *klass)
+camel_imapx_folder_init (CamelIMAPXFolder *imapx_folder)
 {
-	CamelFolder *folder = (CamelFolder *)o;
+	CamelFolder *folder = CAMEL_FOLDER (imapx_folder);
 
 	folder->folder_flags |= (CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |
 				 CAMEL_FOLDER_HAS_SEARCH_CAPABILITY);
@@ -428,37 +465,3 @@ imapx_folder_init(CamelObject *o, CamelObjectClass *klass)
 	camel_folder_set_lock_async (folder, TRUE);
 }
 
-static void
-imapx_finalize (CamelObject *object)
-{
-	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) object;
-
-	camel_object_unref (CAMEL_OBJECT (ifolder->cache));
-	
-	if (ifolder->ignore_recent)
-		g_hash_table_unref (ifolder->ignore_recent);
-
-	g_mutex_free (ifolder->search_lock);
-	g_mutex_free (ifolder->stream_lock);
-	if (ifolder->search)
-		camel_object_unref (CAMEL_OBJECT (ifolder->search));
-}
-
-CamelType
-camel_imapx_folder_get_type (void)
-{
-	static CamelType camel_imapx_folder_type = CAMEL_INVALID_TYPE;
-
-	if (!camel_imapx_folder_type) {
-		parent_class = camel_offline_folder_get_type();
-		camel_imapx_folder_type = camel_type_register (parent_class, "CamelIMAPXFolder",
-							      sizeof (CamelIMAPXFolder),
-							      sizeof (CamelIMAPXFolderClass),
-							      (CamelObjectClassInitFunc)imapx_folder_class_init,
-							      NULL,
-							      imapx_folder_init,
-							      (CamelObjectFinalizeFunc) imapx_finalize);
-	}
-
-	return camel_imapx_folder_type;
-}

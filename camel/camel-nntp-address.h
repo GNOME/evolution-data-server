@@ -28,9 +28,24 @@
 
 #include <camel/camel-address.h>
 
-#define CAMEL_NNTP_ADDRESS(obj)         CAMEL_CHECK_CAST (obj, camel_nntp_address_get_type (), CamelNNTPAddress)
-#define CAMEL_NNTP_ADDRESS_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_nntp_address_get_type (), CamelNNTPAddressClass)
-#define CAMEL_IS_NNTP_ADDRESS(obj)      CAMEL_CHECK_TYPE (obj, camel_nntp_address_get_type ())
+/* Standard GObject macros */
+#define CAMEL_TYPE_NNTP_ADDRESS \
+	(camel_nntp_address_get_type ())
+#define CAMEL_NNTP_ADDRESS(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_NNTP_ADDRESS, CamelNNTPAddress))
+#define CAMEL_NNTP_ADDRESS_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_NNTP_ADDRESS, CamelNNTPAddressClass))
+#define CAMEL_IS_NNTP_ADDRESS(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_NNTP_ADDRESS))
+#define CAMEL_IS_NNTP_ADDRESS_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_NNTP_ADDRESS))
+#define CAMEL_NNTP_ADDRESS_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_NTTP_ADDRESS, CamelNNTPAddressClass))
 
 G_BEGIN_DECLS
 
@@ -47,7 +62,7 @@ struct _CamelNNTPAddressClass {
 	CamelAddressClass parent_class;
 };
 
-CamelType	camel_nntp_address_get_type	(void);
+GType		camel_nntp_address_get_type	(void);
 CamelNNTPAddress *
 		camel_nntp_address_new		(void);
 gint		camel_nntp_address_add		(CamelNNTPAddress *a,

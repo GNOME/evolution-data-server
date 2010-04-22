@@ -36,10 +36,24 @@
 
 #include <camel/camel-seekable-stream.h>
 
-#define CAMEL_STREAM_FS_TYPE     (camel_stream_fs_get_type ())
-#define CAMEL_STREAM_FS(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_STREAM_FS_TYPE, CamelStreamFs))
-#define CAMEL_STREAM_FS_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_STREAM_FS_TYPE, CamelStreamFsClass))
-#define CAMEL_IS_STREAM_FS(o)    (CAMEL_CHECK_TYPE((o), CAMEL_STREAM_FS_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_STREAM_FS \
+	(camel_stream_fs_get_type ())
+#define CAMEL_STREAM_FS(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_STREAM_FS, CamelStreamFs))
+#define CAMEL_STREAM_FS_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_STREAM_FS, CamelStreamFsClass))
+#define CAMEL_IS_STREAM_FS(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_STREAM_FS))
+#define CAMEL_IS_STREAM_FS_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_STREAM_FS))
+#define CAMEL_STREAM_FS_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_STREAM_FS, CamelStreamFsClass))
 
 G_BEGIN_DECLS
 
@@ -56,7 +70,7 @@ struct _CamelStreamFsClass {
 	CamelSeekableStreamClass parent_class;
 };
 
-CamelType	camel_stream_fs_get_type	(void);
+GType		camel_stream_fs_get_type	(void);
 CamelStream *	camel_stream_fs_new_with_name	(const gchar *name,
 						 gint flags,
 						 mode_t mode);

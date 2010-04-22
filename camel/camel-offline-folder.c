@@ -31,8 +31,6 @@
 #include "camel-service.h"
 #include "camel-session.h"
 
-static gpointer camel_offline_folder_parent_class;
-
 static GSList *offline_folder_props = NULL;
 
 static CamelProperty offline_prop_list[] = {
@@ -45,6 +43,8 @@ struct _offline_downsync_msg {
 	CamelFolder *folder;
 	CamelFolderChangeInfo *changes;
 };
+
+G_DEFINE_TYPE (CamelOfflineFolder, camel_offline_folder, CAMEL_TYPE_FOLDER)
 
 static void
 offline_downsync_sync (CamelSession *session, CamelSessionThreadMsg *mm)
@@ -61,7 +61,7 @@ offline_downsync_sync (CamelSession *session, CamelSessionThreadMsg *mm)
 
 			camel_operation_progress (NULL, pc);
 			if ((message = camel_folder_get_message (m->folder, m->changes->uid_added->pdata[i], &mm->ex)))
-				camel_object_unref (message);
+				g_object_unref (message);
 		}
 	} else {
 		camel_offline_folder_downsync ((CamelOfflineFolder *) m->folder, "(match-all)", &mm->ex);
@@ -78,7 +78,7 @@ offline_downsync_free (CamelSession *session, CamelSessionThreadMsg *mm)
 	if (m->changes)
 		camel_folder_change_info_free (m->changes);
 
-	camel_object_unref (m->folder);
+	g_object_unref (m->folder);
 }
 
 static CamelSessionThreadOps offline_downsync_ops = {
@@ -99,7 +99,7 @@ offline_folder_changed (CamelFolder *folder, CamelFolderChangeInfo *changes, gpo
 		m = camel_session_thread_msg_new (session, &offline_downsync_ops, sizeof (*m));
 		m->changes = camel_folder_change_info_new ();
 		camel_folder_change_info_cat (m->changes, changes);
-		m->folder = camel_object_ref (folder);
+		m->folder = g_object_ref (folder);
 
 		camel_session_thread_queue (session, &m->msg, 0);
 	}
@@ -229,8 +229,6 @@ camel_offline_folder_class_init (CamelOfflineFolderClass *class)
 	CamelObjectClass *camel_object_class;
 	gint ii;
 
-	camel_offline_folder_parent_class = (CamelFolderClass *) camel_type_get_global_classfuncs (CAMEL_FOLDER_TYPE);
-
 	camel_object_class = CAMEL_OBJECT_CLASS (class);
 	camel_object_class->getv = offline_folder_getv;
 	camel_object_class->setv = offline_folder_setv;
@@ -251,25 +249,6 @@ camel_offline_folder_init (CamelOfflineFolder *folder)
 	camel_object_hook_event (
 		folder, "folder_changed",
 		(CamelObjectEventHookFunc) offline_folder_changed, NULL);
-}
-
-CamelType
-camel_offline_folder_get_type (void)
-{
-	static CamelType type = NULL;
-
-	if (!type) {
-		type = camel_type_register (CAMEL_FOLDER_TYPE,
-					    "CamelOfflineFolder",
-					    sizeof (CamelOfflineFolder),
-					    sizeof (CamelOfflineFolderClass),
-					    (CamelObjectClassInitFunc) camel_offline_folder_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_offline_folder_init,
-					    (CamelObjectFinalizeFunc) NULL);
-	}
-
-	return type;
 }
 
 /**

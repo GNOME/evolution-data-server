@@ -29,10 +29,24 @@
 
 #include <camel/camel-sasl.h>
 
-#define CAMEL_SASL_CRAM_MD5_TYPE     (camel_sasl_cram_md5_get_type ())
-#define CAMEL_SASL_CRAM_MD5(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_SASL_CRAM_MD5_TYPE, CamelSaslCramMd5))
-#define CAMEL_SASL_CRAM_MD5_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_SASL_CRAM_MD5_TYPE, CamelSaslCramMd5Class))
-#define CAMEL_IS_SASL_CRAM_MD5(o)    (CAMEL_CHECK_TYPE((o), CAMEL_SASL_CRAM_MD5_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_SASL_CRAM_MD5 \
+	(camel_sasl_cram_md5_get_type ())
+#define CAMEL_SASL_CRAM_MD5(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_SASL_CRAM_MD5, CamelSaslCramMd5))
+#define CAMEL_SASL_CRAM_MD5_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_SASL_CRAM_MD5, CamelSaslCramMd5Class))
+#define CAMEL_IS_SASL_CRAM_MD5(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_SASL_CRAM_MD5))
+#define CAMEL_IS_SASL_CRAM_MD5_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_SASL_CRAM_MD5))
+#define CAMEL_SASL_CRAM_MD5_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_SASL_CRAM_MD5, CamelSaslCramMd5Class))
 
 G_BEGIN_DECLS
 
@@ -49,7 +63,7 @@ struct _CamelSaslCramMd5Class {
 	CamelSaslClass parent_class;
 };
 
-CamelType camel_sasl_cram_md5_get_type (void);
+GType camel_sasl_cram_md5_get_type (void);
 
 extern CamelServiceAuthType camel_sasl_cram_md5_authtype;
 

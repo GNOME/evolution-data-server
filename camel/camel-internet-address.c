@@ -26,12 +26,12 @@
 
 #define d(x)
 
-static CamelAddressClass *camel_internet_address_parent;
-
 struct _address {
 	gchar *name;
 	gchar *address;
 };
+
+G_DEFINE_TYPE (CamelInternetAddress, camel_internet_address, CAMEL_TYPE_ADDRESS)
 
 static gint
 internet_address_decode (CamelAddress *a, const gchar *raw)
@@ -225,8 +225,6 @@ camel_internet_address_class_init (CamelInternetAddressClass *class)
 {
 	CamelAddressClass *address_class;
 
-	camel_internet_address_parent = CAMEL_ADDRESS_CLASS(camel_type_get_global_classfuncs(camel_address_get_type()));
-
 	address_class = CAMEL_ADDRESS_CLASS (class);
 	address_class->decode = internet_address_decode;
 	address_class->encode = internet_address_encode;
@@ -241,24 +239,6 @@ camel_internet_address_init (CamelInternetAddress *internet_address)
 {
 }
 
-CamelType
-camel_internet_address_get_type(void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register(camel_address_get_type(), "CamelInternetAddress",
-					   sizeof (CamelInternetAddress),
-					   sizeof (CamelInternetAddressClass),
-					   (CamelObjectClassInitFunc) camel_internet_address_class_init,
-					   NULL,
-					   (CamelObjectInitFunc) camel_internet_address_init,
-					   NULL);
-	}
-
-	return type;
-}
-
 /**
  * camel_internet_address_new:
  *
@@ -269,7 +249,7 @@ camel_internet_address_get_type(void)
 CamelInternetAddress *
 camel_internet_address_new (void)
 {
-	return CAMEL_INTERNET_ADDRESS(camel_object_new(camel_internet_address_get_type()));
+	return g_object_new (CAMEL_TYPE_INTERNET_ADDRESS, NULL);
 }
 
 /**

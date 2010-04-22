@@ -91,6 +91,7 @@
 #include <camel/camel-net-utils.h>
 #include <camel/camel-nntp-address.h>
 #include <camel/camel-object.h>
+#include <camel/camel-object-bag.h>
 #include <camel/camel-offline-folder.h>
 #include <camel/camel-offline-journal.h>
 #include <camel/camel-offline-store.h>

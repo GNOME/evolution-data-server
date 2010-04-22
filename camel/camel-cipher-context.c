@@ -45,12 +45,21 @@
 
 #define d(x)
 
+#define CAMEL_CIPHER_CONTEXT_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_CIPHER_CONTEXT, CamelCipherContextPrivate))
+
 struct _CamelCipherContextPrivate {
 	CamelSession *session;
 	GMutex *lock;
 };
 
-static CamelObjectClass *parent_class = NULL;
+enum {
+	PROP_0,
+	PROP_SESSION
+};
+
+G_DEFINE_TYPE (CamelCipherContext, camel_cipher_context, CAMEL_TYPE_OBJECT)
 
 static gint
 cipher_sign (CamelCipherContext *ctx,
@@ -631,25 +640,84 @@ cipher_context_set_session (CamelCipherContext *context,
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 	g_return_if_fail (context->priv->session == NULL);
 
-	context->priv->session = camel_object_ref (session);
+	context->priv->session = g_object_ref (session);
 }
 
 static void
-cipher_context_finalize (CamelObject *object)
+cipher_context_set_property (GObject *object,
+                             guint property_id,
+                             const GValue *value,
+                             GParamSpec *pspec)
 {
-	CamelCipherContext *context = (CamelCipherContext *) object;
+	switch (property_id) {
+		case PROP_SESSION:
+			cipher_context_set_session (
+				CAMEL_CIPHER_CONTEXT (object),
+				g_value_get_object (value));
+			return;
+	}
 
-	camel_object_unref (context->priv->session);
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
 
-	g_mutex_free (context->priv->lock);
+static void
+cipher_context_get_property (GObject *object,
+                             guint property_id,
+                             GValue *value,
+                             GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_SESSION:
+			g_value_set_object (
+				value, camel_cipher_context_get_session (
+				CAMEL_CIPHER_CONTEXT (object)));
+			return;
+	}
 
-	g_free (context->priv);
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+cipher_context_dispose (GObject *object)
+{
+	CamelCipherContextPrivate *priv;
+
+	priv = CAMEL_CIPHER_CONTEXT_GET_PRIVATE (object);
+
+	if (priv->session != NULL) {
+		g_object_unref (priv->session);
+		priv->session = NULL;
+	}
+
+	/* Chain up to parent's dispose () method. */
+	G_OBJECT_CLASS (camel_cipher_context_parent_class)->dispose (object);
+}
+
+static void
+cipher_context_finalize (GObject *object)
+{
+	CamelCipherContextPrivate *priv;
+
+	priv = CAMEL_CIPHER_CONTEXT_GET_PRIVATE (object);
+
+	g_mutex_free (priv->lock);
+
+	/* Chain up to parent's finalize () method. */
+	G_OBJECT_CLASS (camel_cipher_context_parent_class)->finalize (object);
 }
 
 static void
 camel_cipher_context_class_init (CamelCipherContextClass *class)
 {
-	parent_class = camel_type_get_global_classfuncs (camel_object_get_type ());
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (CamelCipherContextPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = cipher_context_set_property;
+	object_class->get_property = cipher_context_get_property;
+	object_class->dispose = cipher_context_dispose;
+	object_class->finalize = cipher_context_finalize;
 
 	class->hash_to_id = cipher_hash_to_id;
 	class->id_to_hash = cipher_id_to_hash;
@@ -659,37 +727,29 @@ camel_cipher_context_class_init (CamelCipherContextClass *class)
 	class->decrypt = cipher_decrypt;
 	class->import_keys = cipher_import_keys;
 	class->export_keys = cipher_export_keys;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_SESSION,
+		g_param_spec_object (
+			"session",
+			"Session",
+			NULL,
+			CAMEL_TYPE_SESSION,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
 camel_cipher_context_init (CamelCipherContext *context)
 {
-	context->priv = g_new0 (struct _CamelCipherContextPrivate, 1);
+	context->priv = CAMEL_CIPHER_CONTEXT_GET_PRIVATE (context);
 	context->priv->lock = g_mutex_new ();
-}
-
-CamelType
-camel_cipher_context_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_object_get_type (),
-					    "CamelCipherContext",
-					    sizeof (CamelCipherContext),
-					    sizeof (CamelCipherContextClass),
-					    (CamelObjectClassInitFunc) camel_cipher_context_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_cipher_context_init,
-					    (CamelObjectFinalizeFunc) cipher_context_finalize);
-	}
-
-	return type;
 }
 
 /**
  * camel_cipher_context_new:
- * @session: CamelSession
+ * @session: a #CamelSession
  *
  * This creates a new CamelCipherContext object which is used to sign,
  * verify, encrypt and decrypt streams.
@@ -699,39 +759,25 @@ camel_cipher_context_get_type (void)
 CamelCipherContext *
 camel_cipher_context_new (CamelSession *session)
 {
-	CamelCipherContext *context;
-
 	g_return_val_if_fail (session != NULL, NULL);
 
-	context = CAMEL_CIPHER_CONTEXT (camel_object_new (CAMEL_CIPHER_CONTEXT_TYPE));
-
-	cipher_context_set_session (context, session);
-
-	return context;
+	return g_object_new (
+		CAMEL_TYPE_CIPHER_CONTEXT,
+		"session", session, NULL);
 }
 
+/**
+ * camel_cipher_context_get_session:
+ * @context: a #CamelCipherContext
+ *
+ * Since: 3.0
+ **/
 CamelSession *
 camel_cipher_context_get_session (CamelCipherContext *context)
 {
 	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), NULL);
 
 	return context->priv->session;
-}
-
-/**
- * camel_cipher_context_construct:
- * @context: CamelCipherContext
- * @session: CamelSession
- *
- * Constucts the CamelCipherContext
- **/
-void
-camel_cipher_context_construct (CamelCipherContext *context, CamelSession *session)
-{
-	g_return_if_fail (CAMEL_IS_CIPHER_CONTEXT (context));
-	g_return_if_fail (CAMEL_IS_SESSION (session));
-
-	cipher_context_set_session (context, session);
 }
 
 /* See rfc3156, section 2 and others */
@@ -792,13 +838,13 @@ camel_cipher_canonical_to_stream (CamelMimePart *part,
 	filter = camel_stream_filter_new (ostream);
 	canon = camel_mime_filter_canon_new (flags);
 	camel_stream_filter_add (CAMEL_STREAM_FILTER (filter), canon);
-	camel_object_unref (canon);
+	g_object_unref (canon);
 
 	if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *)part, filter) != -1
 	    && camel_stream_flush (filter) != -1)
 		res = 0;
 
-	camel_object_unref (filter);
+	g_object_unref (filter);
 	camel_stream_reset (ostream);
 
 	return res;

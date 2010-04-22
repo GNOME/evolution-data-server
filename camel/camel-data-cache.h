@@ -30,10 +30,24 @@
 #include <camel/camel-stream.h>
 #include <camel/camel-exception.h>
 
-#define CAMEL_DATA_CACHE_TYPE     (camel_data_cache_get_type ())
-#define CAMEL_DATA_CACHE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_DATA_CACHE_TYPE, CamelFolder))
-#define CAMEL_DATA_CACHE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_DATA_CACHE_TYPE, CamelFolderClass))
-#define CAMEL_IS_DATA_CACHE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_DATA_CACHE_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_DATA_CACHE \
+	(camel_data_cache_get_type ())
+#define CAMEL_DATA_CACHE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_DATA_CACHE, CamelDataCache))
+#define CAMEL_DATA_CACHE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_DATA_CACHE, CamelDataCacheClass))
+#define CAMEL_IS_DATA_CACHE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_DATA_CACHE))
+#define CAMEL_IS_DATA_CACHE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_DATA_CACHE))
+#define CAMEL_DATA_CACHE_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_DATA_CACHE, CamelDataCacheClass))
 
 G_BEGIN_DECLS
 
@@ -50,7 +64,7 @@ struct _CamelDataCacheClass {
 	CamelObjectClass parent_class;
 };
 
-CamelType	camel_data_cache_get_type	(void);
+GType		camel_data_cache_get_type	(void);
 CamelDataCache *camel_data_cache_new		(const gchar *path,
 						 CamelException *ex);
 const gchar *	camel_data_cache_get_path	(CamelDataCache *cdc);

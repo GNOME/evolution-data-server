@@ -41,6 +41,10 @@
 
 #define CAMEL_MAILDIR_SUMMARY_VERSION (0x2000)
 
+#define CAMEL_MAILDIR_SUMMARY_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MAILDIR_SUMMARY, CamelMaildirSummaryPrivate))
+
 static CamelMessageInfo *message_info_load(CamelFolderSummary *s, FILE *in);
 static CamelMessageInfo *message_info_new_from_header(CamelFolderSummary *, struct _camel_header_raw *);
 static void message_info_free(CamelFolderSummary *, CamelMessageInfo *mi);
@@ -62,23 +66,33 @@ struct _CamelMaildirSummaryPrivate {
 	GMutex *summary_lock;
 };
 
-static gpointer camel_maildir_summary_parent_class;
+G_DEFINE_TYPE (CamelMaildirSummary, camel_maildir_summary, CAMEL_TYPE_LOCAL_SUMMARY)
 
 static void
-maildir_summary_finalize (CamelMaildirSummary *summary)
+maildir_summary_finalize (GObject *object)
 {
-	g_free (summary->priv->hostname);
-	g_mutex_free (summary->priv->summary_lock);
-	g_free (summary->priv);
+	CamelMaildirSummaryPrivate *priv;
+
+	priv = CAMEL_MAILDIR_SUMMARY_GET_PRIVATE (object);
+
+	g_free (priv->hostname);
+	g_mutex_free (priv->summary_lock);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_maildir_summary_parent_class)->finalize (object);
 }
 
 static void
 camel_maildir_summary_class_init (CamelMaildirSummaryClass *class)
 {
+	GObjectClass *object_class;
 	CamelFolderSummaryClass *folder_summary_class;
 	CamelLocalSummaryClass *local_summary_class;
 
-	camel_maildir_summary_parent_class = (CamelLocalSummaryClass *)camel_type_get_global_classfuncs(camel_local_summary_get_type ());
+	g_type_class_add_private (class, sizeof (CamelMaildirSummaryPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = maildir_summary_finalize;
 
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
 	folder_summary_class->message_info_size = sizeof (CamelMaildirMessageInfo);
@@ -105,7 +119,8 @@ camel_maildir_summary_init (CamelMaildirSummary *maildir_summary)
 
 	folder_summary = CAMEL_FOLDER_SUMMARY (maildir_summary);
 
-	maildir_summary->priv = g_new0 (CamelMaildirSummaryPrivate, 1);
+	maildir_summary->priv =
+		CAMEL_MAILDIR_SUMMARY_GET_PRIVATE (maildir_summary);
 
 	/* set unique file version */
 	folder_summary->version += CAMEL_MAILDIR_SUMMARY_VERSION;
@@ -116,24 +131,6 @@ camel_maildir_summary_init (CamelMaildirSummary *maildir_summary)
 		maildir_summary->priv->hostname = g_strdup("localhost");
 	}
 	maildir_summary->priv->summary_lock = g_mutex_new ();
-}
-
-CamelType
-camel_maildir_summary_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register(camel_local_summary_get_type (), "CamelMaildirSummary",
-					   sizeof(CamelMaildirSummary),
-					   sizeof(CamelMaildirSummaryClass),
-					   (CamelObjectClassInitFunc)camel_maildir_summary_class_init,
-					   NULL,
-					   (CamelObjectInitFunc)camel_maildir_summary_init,
-					   (CamelObjectFinalizeFunc)maildir_summary_finalize);
-	}
-
-	return type;
 }
 
 /**
@@ -151,7 +148,7 @@ CamelMaildirSummary
 {
 	CamelMaildirSummary *o;
 
-	o = (CamelMaildirSummary *)camel_object_new(camel_maildir_summary_get_type ());
+	o = g_object_new (CAMEL_TYPE_MAILDIR_SUMMARY, NULL);
 	((CamelFolderSummary *)o)->folder = folder;
 	if (folder) {
 		camel_db_set_collate (folder->parent_store->cdb_r, "dreceived", NULL, NULL);
@@ -497,7 +494,7 @@ camel_maildir_summary_add (CamelLocalSummary *cls, const gchar *name, gint force
 	}
 	maildirs->priv->current_file = (gchar *)name;
 	camel_folder_summary_add_from_parser((CamelFolderSummary *)maildirs, mp);
-	camel_object_unref (mp);
+	g_object_unref (mp);
 	maildirs->priv->current_file = NULL;
 	camel_folder_summary_set_index((CamelFolderSummary *)maildirs, NULL);
 	g_free(filename);

@@ -74,6 +74,10 @@ extern gss_OID gss_nt_service_name;
 #define DBUS_INTERFACE		"org.gnome.KrbAuthDialog"
 #define DBUS_METHOD		"org.gnome.KrbAuthDialog.acquireTgt"
 
+#define CAMEL_SASL_GSSAPI_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_SASL_GSSAPI, CamelSaslGssapiPrivate))
+
 CamelServiceAuthType camel_sasl_gssapi_authtype = {
 	N_("GSSAPI"),
 
@@ -103,7 +107,7 @@ struct _CamelSaslGssapiPrivate {
 	gss_name_t target;
 };
 
-static CamelSaslClass *parent_class = NULL;
+G_DEFINE_TYPE (CamelSaslGssapi, camel_sasl_gssapi, CAMEL_TYPE_SASL)
 
 static void
 gssapi_set_exception (OM_uint32 major,
@@ -162,7 +166,7 @@ gssapi_set_exception (OM_uint32 major,
 }
 
 static void
-sasl_gssapi_finalize (CamelObject *object)
+sasl_gssapi_finalize (GObject *object)
 {
 	CamelSaslGssapi *sasl = CAMEL_SASL_GSSAPI (object);
 	guint32 status;
@@ -174,7 +178,8 @@ sasl_gssapi_finalize (CamelObject *object)
 	if (sasl->priv->target != GSS_C_NO_NAME)
 		gss_release_name (&status, &sasl->priv->target);
 
-	g_free (sasl->priv);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_sasl_gssapi_parent_class)->finalize (object);
 }
 
 /* DBUS Specific code */
@@ -241,7 +246,7 @@ sasl_gssapi_challenge (CamelSasl *sasl,
                        GByteArray *token,
                        CamelException *ex)
 {
-	CamelSaslGssapiPrivate *priv = CAMEL_SASL_GSSAPI (sasl)->priv;
+	CamelSaslGssapiPrivate *priv;
 	CamelService *service;
 	OM_uint32 major, minor, flags, time;
 	gss_buffer_desc inbuf, outbuf;
@@ -253,6 +258,8 @@ sasl_gssapi_challenge (CamelSasl *sasl,
 	gchar *str;
 	struct addrinfo *ai, hints;
 	const gchar *service_name;
+
+	priv = CAMEL_SASL_GSSAPI_GET_PRIVATE (sasl);
 
 	service = camel_sasl_get_service (sasl);
 	service_name = camel_sasl_get_service_name (sasl);
@@ -402,9 +409,13 @@ sasl_gssapi_challenge (CamelSasl *sasl,
 static void
 camel_sasl_gssapi_class_init (CamelSaslGssapiClass *class)
 {
+	GObjectClass *object_class;
 	CamelSaslClass *sasl_class;
 
-	parent_class = CAMEL_SASL_CLASS (camel_type_get_global_classfuncs (camel_sasl_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelSaslGssapiPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = sasl_gssapi_finalize;
 
 	sasl_class = CAMEL_SASL_CLASS (class);
 	sasl_class->challenge = sasl_gssapi_challenge;
@@ -413,31 +424,11 @@ camel_sasl_gssapi_class_init (CamelSaslGssapiClass *class)
 static void
 camel_sasl_gssapi_init (CamelSaslGssapi *sasl)
 {
-	sasl->priv = g_new (struct _CamelSaslGssapiPrivate, 1);
+	sasl->priv = CAMEL_SASL_GSSAPI_GET_PRIVATE (sasl);
 
 	sasl->priv->state = GSSAPI_STATE_INIT;
 	sasl->priv->ctx = GSS_C_NO_CONTEXT;
 	sasl->priv->target = GSS_C_NO_NAME;
-}
-
-CamelType
-camel_sasl_gssapi_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (
-			camel_sasl_get_type (),
-			"CamelSaslGssapi",
-			sizeof (CamelSaslGssapi),
-			sizeof (CamelSaslGssapiClass),
-			(CamelObjectClassInitFunc) camel_sasl_gssapi_class_init,
-			NULL,
-			(CamelObjectInitFunc) camel_sasl_gssapi_init,
-			(CamelObjectFinalizeFunc) sasl_gssapi_finalize);
-	}
-
-	return type;
 }
 
 #endif /* HAVE_KRB5 */

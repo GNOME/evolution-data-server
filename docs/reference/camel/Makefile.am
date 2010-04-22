@@ -14,7 +14,7 @@ HTML_DIR = $(datadir)/gtk-doc/html
 SCAN_OPTIONS = --deprecated-guards="CAMEL_DISABLE_DEPRECATED"
 
 # Extra options to pass to gtkdoc-scangobj
-SCANGOBJ_OPTIONS=--type-init-func="camel_init (\".\", 0)"
+SCANGOBJ_OPTIONS =
 
 # Extra options to supply to gtkdoc-mkdb
 MKDB_OPTIONS = --sgml-mode --output-format=xml --name-space=camel
@@ -26,8 +26,9 @@ GTKDOC_CFLAGS = 		\
 	-I$(top_builddir)/camel	\
 	$(GLIB_CFLAGS)
 
-GTKDOC_LIBS = 					\
-	$(top_builddir)/camel/libcamel-2.0.la	\
+GTKDOC_LIBS = 						\
+	$(top_builddir)/camel/libcamel-1.2.la		\
+	$(top_builddir)/camel/libcamel-provider-1.2.la	\
 	$(GLIB_LIBS)
 
 # Extra SGML files that are included by $(DOC_MAIN_SGML_FILE)
@@ -51,19 +52,11 @@ IGNORE_HFILES = 			\
 	camel-net-utils-win32.h		\
 	camel-nntp-private.h		\
 	camel-nntp-types.h		\
-	camel-private.h			\
 	camel-search-private.h		\
 	camel-types.h			\
-	camel-imapx-exception.h		\
-	camel-imapx-folder.h		\
-	camel-imapx-server.h		\
-	camel-imapx-store.h		\
-	camel-imapx-store-summary.h	\
-	camel-imapx-stream.h		\
-	camel-imapx-summary.h		\
-	camel-imapx-tokenise.h		\
-	camel-imapx-utils.h		\
-	camel-imapx-view-summary.h
+	camel-win32.h			\
+	providers			\
+	tests
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make

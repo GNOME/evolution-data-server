@@ -24,10 +24,24 @@
 
 #include "camel-mbox-store.h"
 
-#define CAMEL_SPOOL_STORE_TYPE     (camel_spool_store_get_type ())
-#define CAMEL_SPOOL_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_SPOOL_STORE_TYPE, CamelSpoolStore))
-#define CAMEL_SPOOL_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_SPOOL_STORE_TYPE, CamelSpoolStoreClass))
-#define CAMEL_IS_SPOOL_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_SPOOL_STORE_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_SPOOL_STORE \
+	(camel_spool_store_get_type ())
+#define CAMEL_SPOOL_STORE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_SPOOL_STORE, CamelSpoolStore))
+#define CAMEL_SPOOL_STORE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_SPOOL_STORE, CamelSpoolStoreClass))
+#define CAMEL_IS_SPOOL_STORE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_SPOOL_STORE))
+#define CAMEL_IS_SPOOL_STORE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_SPOOL_STORE))
+#define CAMEL_SPOOL_STORE_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_SPOOL_STORE, CamelSpoolStoreClass))
 
 G_BEGIN_DECLS
 
@@ -49,7 +63,7 @@ struct _CamelSpoolStoreClass {
 	CamelMboxStoreClass parent_class;
 };
 
-CamelType camel_spool_store_get_type (void);
+GType camel_spool_store_get_type (void);
 
 G_END_DECLS
 

@@ -25,16 +25,6 @@ CamelCertDB
 
 </para>
 
-@parent: 
-@priv: 
-@filename: 
-@version: 
-@saved_certs: 
-@flags: 
-@cert_size: 
-@cert_chunks: 
-@certs: 
-@cert_hash: 
 
 <!-- ##### ENUM CamelCertTrust ##### -->
 <para>

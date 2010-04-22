@@ -32,11 +32,24 @@
 #include <camel/camel-object.h>
 #include <camel/camel-url.h>
 
-#define CAMEL_STORE_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_store_summary_get_type (), CamelStoreSummary)
-#define CAMEL_STORE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_store_summary_get_type (), CamelStoreSummaryClass)
-#define CAMEL_IS_STORE_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_store_summary_get_type ())
+/* Standard GObject macros */
+#define CAMEL_TYPE_STORE_SUMMARY \
+	(camel_store_summary_get_type ())
+#define CAMEL_STORE_SUMMARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_STORE_SUMMARY, CamelStoreSummary))
+#define CAMEL_STORE_SUMMARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_STORE_SUMMARY, CamelStoreSummaryClass))
+#define CAMEL_IS_STORE_SUMMARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_STORE_SUMMARY))
+#define CAMEL_IS_STORE_SUMMARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_STORE_SUMMARY))
 #define CAMEL_STORE_SUMMARY_GET_CLASS(obj) \
-	((CamelStoreSummaryClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_STORE_SUMMARY, CamelStoreSummaryClass))
 
 G_BEGIN_DECLS
 
@@ -89,7 +102,7 @@ typedef enum _CamelStoreSummaryFlags {
 	CAMEL_STORE_SUMMARY_FRAGMENT = 1<<1 /* path name is stored in fragment rather than path */
 } CamelStoreSummaryFlags;
 
-typedef enum _CamelStoreSummaryLock {
+typedef enum {
 	CSS_SUMMARY_LOCK,
 	CSS_IO_LOCK,
 	CSS_REF_LOCK
@@ -136,7 +149,7 @@ struct _CamelStoreSummaryClass {
 	void (*store_info_set_string)(CamelStoreSummary *, CamelStoreInfo *, int, const gchar *);
 };
 
-CamelType			 camel_store_summary_get_type	(void);
+GType			 camel_store_summary_get_type	(void);
 CamelStoreSummary      *camel_store_summary_new	(void);
 
 void camel_store_summary_set_filename(CamelStoreSummary *summary, const gchar *filename);

@@ -25,8 +25,11 @@ CamelCipherContext
 
 </para>
 
-@parent: 
-@priv: 
+
+<!-- ##### ARG CamelCipherContext:session ##### -->
+<para>
+
+</para>
 
 <!-- ##### STRUCT CamelCipherValidity ##### -->
 <para>
@@ -101,13 +104,13 @@ CamelCipherContext
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_cipher_context_construct ##### -->
+<!-- ##### FUNCTION camel_cipher_context_get_session ##### -->
 <para>
 
 </para>
 
 @context: 
-@session: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_cipher_id_to_hash ##### -->
@@ -295,6 +298,34 @@ CamelCipherContext
 @name: 
 @email: 
 @cert_data: 
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
 @gpointer cert_data: 
 @gpointer cert_data:
 @gpointer cert_data: 

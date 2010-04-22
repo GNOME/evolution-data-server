@@ -235,7 +235,7 @@ camel_provider_module_init(void)
 #else
 	mbox_conf_entries[0].value = "";  /* default path */
 #endif
-	mbox_provider.object_types[CAMEL_PROVIDER_STORE] = CAMEL_MBOX_STORE_TYPE;
+	mbox_provider.object_types[CAMEL_PROVIDER_STORE] = CAMEL_TYPE_MBOX_STORE;
 	mbox_provider.url_hash = local_url_hash;
 	mbox_provider.url_equal = local_url_equal;
 	mbox_provider.translation_domain = GETTEXT_PACKAGE;

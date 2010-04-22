@@ -25,10 +25,23 @@
 
 #include "camel-local-folder.h"
 
-#define CAMEL_MH_FOLDER_TYPE     (camel_mh_folder_get_type ())
-#define CAMEL_MH_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MH_FOLDER_TYPE, CamelMhFolder))
-#define CAMEL_MH_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MH_FOLDER_TYPE, CamelMhFolderClass))
-#define CAMEL_IS_MH_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MH_FOLDER_TYPE))
+#define CAMEL_TYPE_MH_FOLDER \
+	(camel_mh_folder_get_type ())
+#define CAMEL_MH_FOLDER(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_MH_FOLDER, CamelMhFolder))
+#define CAMEL_MH_FOLDER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_MH_FOLDER, CamelMhFolderClass))
+#define CAMEL_IS_MH_FOLDER(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_MH_FOLDER))
+#define CAMEL_IS_MH_FOLDER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_MH_FOLDER))
+#define CAMEL_MH_FOLDER_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_MH_FOLDER, CamelMhFolderClass))
 
 G_BEGIN_DECLS
 
@@ -46,7 +59,7 @@ struct _CamelMhFolderClass {
 /* public methods */
 CamelFolder *camel_mh_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 flags, CamelException *ex);
 
-CamelType camel_mh_folder_get_type(void);
+GType camel_mh_folder_get_type(void);
 
 G_END_DECLS
 

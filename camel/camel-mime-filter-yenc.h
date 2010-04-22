@@ -29,12 +29,24 @@
 
 #include <camel/camel-mime-filter.h>
 
-#define CAMEL_TYPE_MIME_FILTER_YENC            (camel_mime_filter_yenc_get_type ())
-#define CAMEL_MIME_FILTER_YENC(obj)            (CAMEL_CHECK_CAST ((obj), CAMEL_TYPE_MIME_FILTER_YENC, CamelMimeFilterYenc))
-#define CAMEL_MIME_FILTER_YENC_CLASS(klass)    (CAMEL_CHECK_CLASS_CAST ((klass), CAMEL_TYPE_MIME_FILTER_YENC, CamelMimeFilterYencClass))
-#define CAMEL_IS_MIME_FILTER_YENC(obj)         (CAMEL_CHECK_TYPE ((obj), CAMEL_TYPE_MIME_FILTER_YENC))
-#define CAMEL_IS_MIME_FILTER_YENC_CLASS(klass) (CAMEL_CHECK_CLASS_TYPE ((klass), CAMEL_TYPE_MIME_FILTER_YENC))
-#define CAMEL_MIME_FILTER_YENC_GET_CLASS(obj)  (CAMEL_CHECK_GET_CLASS ((obj), CAMEL_TYPE_MIME_FILTER_YENC, CamelMimeFilterYencClass))
+/* Standard GObject macros */
+#define CAMEL_TYPE_MIME_FILTER_YENC \
+	(camel_mime_filter_yenc_get_type ())
+#define CAMEL_MIME_FILTER_YENC(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_MIME_FILTER_YENC, CamelMimeFilterYenc))
+#define CAMEL_MIME_FILTER_YENC_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_MIME_FILTER_YENC, CamelMimeFilterYencClass))
+#define CAMEL_IS_MIME_FILTER_YENC(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_MIME_FILTER_YENC))
+#define CAMEL_IS_MIME_FILTER_YENC_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_MIME_FILTER_YENC))
+#define CAMEL_MIME_FILTER_YENC_GET_CLASS(obj) \
+	(CAMEL_CHECK_GET_CLASS \
+	((obj), CAMEL_TYPE_MIME_FILTER_YENC, CamelMimeFilterYencClass))
 
 G_BEGIN_DECLS
 
@@ -75,7 +87,7 @@ struct _CamelMimeFilterYencClass {
 	CamelMimeFilterClass parent_class;
 };
 
-CamelType	camel_mime_filter_yenc_get_type	(void);
+GType		camel_mime_filter_yenc_get_type	(void);
 CamelMimeFilter *
 		camel_mime_filter_yenc_new	(CamelMimeFilterYencDirection direction);
 void		camel_mime_filter_yenc_set_state(CamelMimeFilterYenc *yenc,

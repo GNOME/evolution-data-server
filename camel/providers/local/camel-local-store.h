@@ -25,12 +25,24 @@
 
 #include <camel/camel.h>
 
-#define CAMEL_LOCAL_STORE_TYPE     (camel_local_store_get_type ())
-#define CAMEL_LOCAL_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_LOCAL_STORE_TYPE, CamelLocalStore))
-#define CAMEL_LOCAL_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_LOCAL_STORE_TYPE, CamelLocalStoreClass))
-#define CAMEL_IS_LOCAL_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_LOCAL_STORE_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_LOCAL_STORE \
+	(camel_local_store_get_type ())
+#define CAMEL_LOCAL_STORE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_LOCAL_STORE, CamelLocalStore))
+#define CAMEL_LOCAL_STORE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_LOCAL_STORE, CamelLocalStoreClass))
+#define CAMEL_IS_LOCAL_STORE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_LOCAL_STORE))
+#define CAMEL_IS_LOCAL_STORE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_LOCAL_STORE))
 #define CAMEL_LOCAL_STORE_GET_CLASS(obj) \
-	((CamelLocalStoreClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_LOCAL_STORE, CamelLocalStoreClass))
 
 G_BEGIN_DECLS
 
@@ -50,7 +62,7 @@ struct _CamelLocalStoreClass {
 	gchar *(*get_meta_path)(CamelLocalStore *ls, const gchar *full_name, const gchar *ext);
 };
 
-CamelType camel_local_store_get_type (void);
+GType camel_local_store_get_type (void);
 
 const gchar *camel_local_store_get_toplevel_dir (CamelLocalStore *store);
 

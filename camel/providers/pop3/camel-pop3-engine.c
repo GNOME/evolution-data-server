@@ -45,24 +45,44 @@ extern gint camel_verbose_debug;
 
 static void get_capabilities(CamelPOP3Engine *pe);
 
-static CamelObjectClass *parent_class = NULL;
+G_DEFINE_TYPE (CamelPOP3Engine, camel_pop3_engine, CAMEL_TYPE_OBJECT)
 
 static void
-pop3_engine_finalize (CamelPOP3Engine *engine)
+pop3_engine_dispose (GObject *object)
 {
-	/* FIXME: Also flush/free any outstanding requests, etc */
+	CamelPOP3Engine *engine = CAMEL_POP3_ENGINE (object);
 
-	if (engine->stream)
-		camel_object_unref (engine->stream);
+	if (engine->stream != NULL) {
+		g_object_unref (engine->stream);
+		engine->stream = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_pop3_engine_parent_class)->dispose (object);
+}
+
+static void
+pop3_engine_finalize (GObject *object)
+{
+	CamelPOP3Engine *engine = CAMEL_POP3_ENGINE (object);
+
+	/* FIXME: Also flush/free any outstanding requests, etc */
 
 	g_list_free (engine->auth);
 	g_free (engine->apop);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_pop3_engine_parent_class)->finalize (object);
 }
 
 static void
 camel_pop3_engine_class_init (CamelPOP3EngineClass *class)
 {
-	parent_class = camel_type_get_global_classfuncs( CAMEL_TYPE_OBJECT );
+	GObjectClass *object_class;
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = pop3_engine_dispose;
+	object_class->finalize = pop3_engine_finalize;
 }
 
 static void
@@ -72,25 +92,6 @@ camel_pop3_engine_init (CamelPOP3Engine *engine)
 	camel_dlist_init (&engine->queue);
 	camel_dlist_init (&engine->done);
 	engine->state = CAMEL_POP3_ENGINE_DISCONNECT;
-}
-
-CamelType
-camel_pop3_engine_get_type (void)
-{
-	static CamelType camel_pop3_engine_type = CAMEL_INVALID_TYPE;
-
-	if (camel_pop3_engine_type == CAMEL_INVALID_TYPE) {
-		camel_pop3_engine_type = camel_type_register(camel_object_get_type(),
-							     "CamelPOP3Engine",
-							     sizeof( CamelPOP3Engine ),
-							     sizeof( CamelPOP3EngineClass ),
-							     (CamelObjectClassInitFunc) camel_pop3_engine_class_init,
-							     NULL,
-							     (CamelObjectInitFunc) camel_pop3_engine_init,
-							     (CamelObjectFinalizeFunc) pop3_engine_finalize );
-	}
-
-	return camel_pop3_engine_type;
 }
 
 static gint
@@ -132,14 +133,14 @@ camel_pop3_engine_new(CamelStream *source, guint32 flags)
 {
 	CamelPOP3Engine *pe;
 
-	pe = (CamelPOP3Engine *) camel_object_new(camel_pop3_engine_get_type ());
+	pe = g_object_new (CAMEL_TYPE_POP3_ENGINE, NULL);
 
 	pe->stream = (CamelPOP3Stream *)camel_pop3_stream_new(source);
 	pe->state = CAMEL_POP3_ENGINE_AUTH;
 	pe->flags = flags;
 
 	if (read_greeting (pe) == -1) {
-		camel_object_unref (pe);
+		g_object_unref (pe);
 		return NULL;
 	}
 

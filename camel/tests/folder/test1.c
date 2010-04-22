@@ -9,7 +9,7 @@ static const gchar *local_drivers[] = {
 	"local"
 };
 
-static gchar *local_providers[] = {
+static const gchar *local_providers[] = {
 	"mbox",
 	"mh",
 	"maildir"
@@ -43,7 +43,7 @@ gint main(gint argc, gchar **argv)
 		g_free(path);
 	}
 
-	camel_object_unref (session);
+	g_object_unref (session);
 	camel_exception_free(ex);
 
 	return 0;

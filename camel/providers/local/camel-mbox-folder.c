@@ -46,8 +46,6 @@
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 
-static gpointer camel_mbox_folder_parent_class;
-
 static gint mbox_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
 static void mbox_unlock(CamelLocalFolder *lf);
 
@@ -58,13 +56,13 @@ static gchar * mbox_get_filename (CamelFolder *folder, const gchar *uid, CamelEx
 static gint mbox_cmp_uids (CamelFolder *folder, const gchar *uid1, const gchar *uid2);
 static void mbox_sort_uids (CamelFolder *folder, GPtrArray *uids);
 
+G_DEFINE_TYPE (CamelMboxFolder, camel_mbox_folder, CAMEL_TYPE_LOCAL_FOLDER)
+
 static void
 camel_mbox_folder_class_init (CamelMboxFolderClass *class)
 {
 	CamelFolderClass *folder_class;
 	CamelLocalFolderClass *local_folder_class;
-
-	camel_mbox_folder_parent_class = (CamelLocalFolderClass *)camel_type_get_global_classfuncs(camel_local_folder_get_type());
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
 	folder_class->append_message = mbox_append_message;
@@ -85,24 +83,6 @@ camel_mbox_folder_init (CamelMboxFolder *mbox_folder)
 	mbox_folder->lockfd = -1;
 }
 
-CamelType
-camel_mbox_folder_get_type(void)
-{
-	static CamelType camel_mbox_folder_type = CAMEL_INVALID_TYPE;
-
-	if (camel_mbox_folder_type == CAMEL_INVALID_TYPE) {
-		camel_mbox_folder_type = camel_type_register(CAMEL_LOCAL_FOLDER_TYPE, "CamelMboxFolder",
-							     sizeof(CamelMboxFolder),
-							     sizeof(CamelMboxFolderClass),
-							     (CamelObjectClassInitFunc) camel_mbox_folder_class_init,
-							     NULL,
-							     (CamelObjectInitFunc) camel_mbox_folder_init,
-							     (CamelObjectFinalizeFunc) NULL);
-	}
-
-	return camel_mbox_folder_type;
-}
-
 CamelFolder *
 camel_mbox_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 flags, CamelException *ex)
 {
@@ -110,7 +90,7 @@ camel_mbox_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 
 
 	d(printf("Creating mbox folder: %s in %s\n", full_name, camel_local_store_get_toplevel_dir((CamelLocalStore *)parent_store)));
 
-	folder = (CamelFolder *)camel_object_new(CAMEL_MBOX_FOLDER_TYPE);
+	folder = g_object_new (CAMEL_TYPE_MBOX_FOLDER, NULL);
 	folder = (CamelFolder *)camel_local_folder_construct((CamelLocalFolder *)folder,
 							     parent_store, full_name, flags, ex);
 
@@ -231,7 +211,7 @@ mbox_append_message (CamelFolder *folder,
 	filter_stream = camel_stream_filter_new (output_stream);
 	filter_from = camel_mime_filter_from_new();
 	camel_stream_filter_add((CamelStreamFilter *) filter_stream, filter_from);
-	camel_object_unref (filter_from);
+	g_object_unref (filter_from);
 
 	if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) message, filter_stream) == -1 ||
 	    camel_stream_write (filter_stream, "\n", 1) == -1 ||
@@ -239,8 +219,8 @@ mbox_append_message (CamelFolder *folder,
 		goto fail_write;
 
 	/* filter stream ref's the output stream itself, so we need to unref it too */
-	camel_object_unref (filter_stream);
-	camel_object_unref (output_stream);
+	g_object_unref (filter_stream);
+	g_object_unref (output_stream);
 	g_free(fromline);
 
 	if (!((CamelMessageInfoBase *)mi)->preview && camel_folder_summary_get_need_preview(folder->summary)) {
@@ -289,11 +269,11 @@ fail_write:
 			retval = ftruncate (fd, mbs->folder_size);
 		} while (retval == -1 && errno == EINTR);
 
-		camel_object_unref (output_stream);
+		g_object_unref (output_stream);
 	}
 
 	if (filter_stream)
-		camel_object_unref (filter_stream);
+		g_object_unref (filter_stream);
 
 	g_free(fromline);
 
@@ -435,7 +415,7 @@ retry:
 			  (glong)camel_mime_parser_tell_start_from(parser),
 			  camel_mime_parser_state(parser));
 
-		camel_object_unref (parser);
+		g_object_unref (parser);
 		parser = NULL;
 
 		if (!retried) {
@@ -460,7 +440,7 @@ retry:
 			CAMEL_EXCEPTION_USER_CANCEL : CAMEL_EXCEPTION_SYSTEM,
 			uid, lf->folder_path,
 			_("Message construction failed."));
-		camel_object_unref (message);
+		g_object_unref (message);
 		message = NULL;
 		goto fail;
 	}
@@ -472,7 +452,7 @@ fail:
 	camel_local_folder_unlock(lf);
 
 	if (parser)
-		camel_object_unref (parser);
+		g_object_unref (parser);
 
 	/* use the opportunity to notify of changes (particularly if we had a rebuild) */
 	if (camel_folder_change_info_changed(lf->changes)) {

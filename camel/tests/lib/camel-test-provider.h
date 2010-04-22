@@ -4,6 +4,6 @@
 
 #include <glib.h>
 
-void camel_test_provider_init(gint argc, gchar **argv);
+void camel_test_provider_init(gint argc, const gchar **argv);
 
 #endif

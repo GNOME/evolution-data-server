@@ -32,9 +32,24 @@
 #include <camel/camel-mime-filter.h>
 #include <camel/camel-stream.h>
 
-#define CAMEL_MIME_PARSER(obj)         CAMEL_CHECK_CAST (obj, camel_mime_parser_get_type (), CamelMimeParser)
-#define CAMEL_MIME_PARSER_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_mime_parser_get_type (), CamelMimeParserClass)
-#define CAMEL_IS_MIME_PARSER(obj)      CAMEL_CHECK_TYPE (obj, camel_mime_parser_get_type ())
+/* Stardard GObject macros */
+#define CAMEL_TYPE_MIME_PARSER \
+	(camel_mime_parser_get_type ())
+#define CAMEL_MIME_PARSER(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_MIME_PARSER, CamelMimeParser))
+#define CAMEL_MIME_PARSER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_MIME_PARSER, CamelMimeParserClass))
+#define CAMEL_IS_MIME_PARSER(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_MIME_PARSER))
+#define CAMEL_IS_MIME_PARSER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_MIME_PARSER))
+#define CAMEL_MIME_PARSER_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_MIME_PARSER, CamelMimeParserClass))
 
 G_BEGIN_DECLS
 
@@ -80,7 +95,7 @@ struct _CamelMimeParserClass {
 	void (*content) (CamelMimeParser *parser);
 };
 
-CamelType camel_mime_parser_get_type (void);
+GType camel_mime_parser_get_type (void);
 CamelMimeParser *camel_mime_parser_new (void);
 
 /* quick-fix for parser not erroring, we can find out if it had an error afterwards */

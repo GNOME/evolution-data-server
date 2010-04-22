@@ -60,6 +60,10 @@ static gint text_index_compress_nosync (CamelIndex *idx);
 
 /* ********************************************************************** */
 
+#define CAMEL_TEXT_INDEX_NAME_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_TEXT_INDEX_NAME, CamelTextIndexNamePrivate))
+
 struct _CamelTextIndexNamePrivate {
 	GString *buffer;
 	camel_key_t nameid;
@@ -69,6 +73,10 @@ struct _CamelTextIndexNamePrivate {
 CamelTextIndexName *camel_text_index_name_new (CamelTextIndex *idx, const gchar *name, camel_key_t nameid);
 
 /* ****************************** */
+
+#define CAMEL_TEXT_INDEX_CURSOR_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_TEXT_INDEX_CURSOR, CamelTextIndexCursorPrivate))
 
 struct _CamelTextIndexCursorPrivate {
 	camel_block_t first;
@@ -86,6 +94,10 @@ CamelTextIndexCursor *camel_text_index_cursor_new (CamelTextIndex *idx, camel_bl
 
 /* ****************************** */
 
+#define CAMEL_TEXT_INDEX_KEY_CURSOR_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_TEXT_INDEX_KEY_CURSOR, CamelTextIndexKeyCursorPrivate))
+
 struct _CamelTextIndexKeyCursorPrivate {
 	CamelKeyTable *table;
 
@@ -101,6 +113,10 @@ CamelTextIndexKeyCursor *camel_text_index_key_cursor_new (CamelTextIndex *idx, C
 
 #define CAMEL_TEXT_INDEX_VERSION "TEXT.000"
 #define CAMEL_TEXT_INDEX_KEY_VERSION "KEYS.000"
+
+#define CAMEL_TEXT_INDEX_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_TEXT_INDEX, CamelTextIndexPrivate))
 
 struct _CamelTextIndexPrivate {
 	CamelBlockFile *blocks;
@@ -148,15 +164,74 @@ struct _CamelTextIndexWord {
 	camel_key_t names[32];
 };
 
-#define CAMEL_TEXT_INDEX_GET_PRIVATE(o) (((CamelTextIndex *)(o))->priv)
-
-#define CI_CLASS(o) ((CamelTextIndexClass *)(((CamelObject *)o)->classfuncs))
-
 /* ********************************************************************** */
 /* CamelTextIndex */
 /* ********************************************************************** */
 
-static CamelObjectClass *camel_text_index_parent;
+G_DEFINE_TYPE (CamelTextIndex, camel_text_index, CAMEL_TYPE_INDEX)
+
+static void
+text_index_dispose (GObject *object)
+{
+	CamelTextIndexPrivate *priv;
+
+	priv = CAMEL_TEXT_INDEX_GET_PRIVATE (object);
+
+	/* Only run this the first time. */
+	if (priv->word_index != NULL)
+		camel_index_sync (CAMEL_INDEX (object));
+
+	if (priv->word_index != NULL) {
+		g_object_unref (priv->word_index);
+		priv->word_index = NULL;
+	}
+
+	if (priv->word_hash != NULL) {
+		g_object_unref (priv->word_hash);
+		priv->word_hash = NULL;
+	}
+
+	if (priv->name_index != NULL) {
+		g_object_unref (priv->name_index);
+		priv->name_index = NULL;
+	}
+
+	if (priv->name_hash != NULL) {
+		g_object_unref (priv->name_hash);
+		priv->name_hash = NULL;
+	}
+
+	if (priv->blocks != NULL) {
+		g_object_unref (priv->blocks);
+		priv->blocks = NULL;
+	}
+
+	if (priv->links != NULL) {
+		g_object_unref (priv->links);
+		priv->links = NULL;
+	}
+
+	/* Chain up to parent's dispose () method. */
+	G_OBJECT_CLASS (camel_text_index_parent_class)->dispose (object);
+}
+
+static void
+text_index_finalize (GObject *object)
+{
+	CamelTextIndexPrivate *priv;
+
+	priv = CAMEL_TEXT_INDEX_GET_PRIVATE (object);
+
+	g_assert (camel_dlist_empty (&priv->word_cache));
+	g_assert (g_hash_table_size (priv->words) == 0);
+
+	g_hash_table_destroy (priv->words);
+
+	g_static_rec_mutex_free (&priv->lock);
+
+	/* Chain up to parent's finalize () method. */
+	G_OBJECT_CLASS (camel_text_index_parent_class)->finalize (object);
+}
 
 /* call locked */
 static void
@@ -512,7 +587,7 @@ fail:
 
 	camel_index_delete ((CamelIndex *)newidx);
 
-	camel_object_unref (newidx);
+	g_object_unref (newidx);
 	g_free (name);
 	g_hash_table_destroy (remap);
 
@@ -728,93 +803,47 @@ text_index_names (CamelIndex *idx)
 }
 
 static void
-camel_text_index_class_init (CamelTextIndexClass *klass)
+camel_text_index_class_init (CamelTextIndexClass *class)
 {
-	CamelIndexClass *iklass = (CamelIndexClass *)klass;
+	GObjectClass *object_class;
+	CamelIndexClass *index_class;
 
-	camel_text_index_parent = CAMEL_OBJECT_CLASS (camel_type_get_global_classfuncs (camel_object_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelTextIndexPrivate));
 
-	iklass->sync = text_index_sync;
-	iklass->compress = text_index_compress;
-	iklass->delete = text_index_delete;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = text_index_dispose;
+	object_class->finalize = text_index_finalize;
 
-	iklass->rename = text_index_rename;
-
-	iklass->has_name = text_index_has_name;
-	iklass->add_name = text_index_add_name;
-	iklass->write_name = text_index_write_name;
-	iklass->find_name = text_index_find_name;
-	iklass->delete_name = text_index_delete_name;
-	iklass->find = text_index_find;
-
-	iklass->words = text_index_words;
-	iklass->names = text_index_names;
+	index_class = CAMEL_INDEX_CLASS (class);
+	index_class->sync = text_index_sync;
+	index_class->compress = text_index_compress;
+	index_class->delete = text_index_delete;
+	index_class->rename = text_index_rename;
+	index_class->has_name = text_index_has_name;
+	index_class->add_name = text_index_add_name;
+	index_class->write_name = text_index_write_name;
+	index_class->find_name = text_index_find_name;
+	index_class->delete_name = text_index_delete_name;
+	index_class->find = text_index_find;
+	index_class->words = text_index_words;
+	index_class->names = text_index_names;
 }
 
 static void
-camel_text_index_init (CamelTextIndex *idx)
+camel_text_index_init (CamelTextIndex *text_index)
 {
-	CamelTextIndexPrivate *p;
+	text_index->priv = CAMEL_TEXT_INDEX_GET_PRIVATE (text_index);
 
-	p = CAMEL_TEXT_INDEX_GET_PRIVATE (idx) = g_malloc0(sizeof (*p));
+	camel_dlist_init (&text_index->priv->word_cache);
+	text_index->priv->words = g_hash_table_new (g_str_hash, g_str_equal);
+	text_index->priv->word_cache_count = 0;
 
-	camel_dlist_init (&p->word_cache);
-	p->words = g_hash_table_new (g_str_hash, g_str_equal);
-	p->word_cache_count = 0;
-	/* this cache size and the block cache size have been tuned for about the best
-	   with moderate memory usage.  Doubling the memory usage barely affects performance. */
-	p->word_cache_limit = 4096; /* 1024 = 128K */
+	/* This cache size and the block cache size have been tuned for
+	 * about the best with moderate memory usage.  Doubling the memory
+	 * usage barely affects performance. */
+	text_index->priv->word_cache_limit = 4096; /* 1024 = 128K */
 
-	g_static_rec_mutex_init (&p->lock);
-}
-
-static void
-camel_text_index_finalize (CamelTextIndex *idx)
-{
-	CamelTextIndexPrivate *p = CAMEL_TEXT_INDEX_GET_PRIVATE (idx);
-
-	camel_index_sync ((CamelIndex *)idx);
-
-	g_assert (camel_dlist_empty (&p->word_cache));
-	g_assert (g_hash_table_size (p->words) == 0);
-
-	g_hash_table_destroy (p->words);
-
-	if (p->word_index)
-		camel_object_unref (p->word_index);
-	if (p->word_hash)
-		camel_object_unref (p->word_hash);
-	if (p->name_index)
-		camel_object_unref (p->name_index);
-	if (p->name_hash)
-		camel_object_unref (p->name_hash);
-
-	if (p->blocks)
-		camel_object_unref (p->blocks);
-	if (p->links)
-		camel_object_unref (p->links);
-
-	g_static_rec_mutex_free (&p->lock);
-
-	g_free (p);
-}
-
-CamelType
-camel_text_index_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_index_get_type (), "CamelTextIndex",
-					   sizeof (CamelTextIndex),
-					   sizeof (CamelTextIndexClass),
-					   (CamelObjectClassInitFunc) camel_text_index_class_init,
-					   NULL,
-					   (CamelObjectInitFunc) camel_text_index_init,
-					   (CamelObjectFinalizeFunc) camel_text_index_finalize);
-	}
-
-	return type;
+	g_static_rec_mutex_init (&text_index->priv->lock);
 }
 
 static gchar *
@@ -832,7 +861,7 @@ text_index_normalize (CamelIndex *idx, const gchar *in, gpointer data)
 CamelTextIndex *
 camel_text_index_new (const gchar *path, gint flags)
 {
-	CamelTextIndex *idx = (CamelTextIndex *)camel_object_new (camel_text_index_get_type ());
+	CamelTextIndex *idx = g_object_new (CAMEL_TYPE_TEXT_INDEX, NULL);
 	CamelTextIndexPrivate *p = CAMEL_TEXT_INDEX_GET_PRIVATE (idx);
 	struct _CamelTextIndexRoot *rb;
 	gchar *link;
@@ -906,14 +935,14 @@ camel_text_index_new (const gchar *path, gint flags)
 
 	if (p->word_index == NULL || p->word_hash == NULL
 	    || p->name_index == NULL || p->name_hash == NULL) {
-		camel_object_unref (idx);
+		g_object_unref (idx);
 		idx = NULL;
 	}
 
 	return idx;
 
 fail:
-	camel_object_unref (idx);
+	g_object_unref (idx);
 	return NULL;
 }
 
@@ -937,12 +966,12 @@ camel_text_index_check (const gchar *path)
 	keys = camel_key_file_new (key, O_RDONLY, CAMEL_TEXT_INDEX_KEY_VERSION);
 	if (keys == NULL) {
 		io (printf ("Check failed: No key file: %s\n", g_strerror (errno)));
-		camel_object_unref (blocks);
+		g_object_unref (blocks);
 		return -1;
 	}
 
-	camel_object_unref (keys);
-	camel_object_unref (blocks);
+	g_object_unref (keys);
+	g_object_unref (blocks);
 
 	return 0;
 }
@@ -1236,7 +1265,7 @@ camel_text_index_dump (CamelTextIndex *idx)
 			printf (" %s", name);
 		}
 		printf ("\n");
-		camel_object_unref (idc);
+		g_object_unref (idc);
 		g_free (word);
 	}
 #else
@@ -1350,7 +1379,7 @@ camel_text_index_validate (CamelTextIndex *idx)
 				g_hash_table_insert (used, g_strdup (name), (gpointer)1);
 			}
 		}
-		camel_object_unref (idc);
+		g_object_unref (idc);
 
 		g_hash_table_foreach (used, (GHFunc)g_free, NULL);
 		g_hash_table_destroy (used);
@@ -1385,10 +1414,23 @@ camel_text_index_validate (CamelTextIndex *idx)
 /* CamelTextIndexName */
 /* ********************************************************************** */
 
-static CamelIndexNameClass *camel_text_index_name_parent;
+G_DEFINE_TYPE (CamelTextIndexName, camel_text_index_name, CAMEL_TYPE_INDEX_NAME)
 
-#define CIN_CLASS(o) ((CamelTextIndexNameClass *)(((CamelObject *)o)->classfuncs))
-#define CAMEL_TEXT_INDEX_NAME_GET_PRIVATE(o) (((CamelTextIndexName *)(o))->priv)
+static void
+text_index_name_finalize (GObject *object)
+{
+	CamelTextIndexNamePrivate *priv;
+
+	priv = CAMEL_TEXT_INDEX_NAME_GET_PRIVATE (object);
+
+	g_hash_table_destroy (CAMEL_TEXT_INDEX_NAME (object)->parent.words);
+
+	g_string_free (priv->buffer, TRUE);
+	camel_mempool_destroy (priv->pool);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_text_index_name_parent_class)->finalize (object);
+}
 
 static void
 text_index_name_add_word (CamelIndexName *idn, const gchar *word)
@@ -1505,67 +1547,43 @@ text_index_name_add_buffer (CamelIndexName *idn, const gchar *buffer, gsize len)
 }
 
 static void
-camel_text_index_name_class_init (CamelTextIndexNameClass *klass)
+camel_text_index_name_class_init (CamelTextIndexNameClass *class)
 {
-	CamelIndexNameClass *nklass = (CamelIndexNameClass *)klass;
+	GObjectClass *object_class;
+	CamelIndexNameClass *index_name_class;
 
-	camel_text_index_name_parent = CAMEL_INDEX_NAME_CLASS (camel_type_get_global_classfuncs (camel_index_name_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelTextIndexNamePrivate));
 
-	nklass->add_word = text_index_name_add_word;
-	nklass->add_buffer = text_index_name_add_buffer;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = text_index_name_finalize;
+
+	index_name_class = CAMEL_INDEX_NAME_CLASS (class);
+	index_name_class->add_word = text_index_name_add_word;
+	index_name_class->add_buffer = text_index_name_add_buffer;
 }
 
 static void
-camel_text_index_name_init (CamelTextIndexName *idn)
+camel_text_index_name_init (CamelTextIndexName *text_index_name)
 {
-	CamelTextIndexNamePrivate *p;
+	text_index_name->priv =
+		CAMEL_TEXT_INDEX_NAME_GET_PRIVATE (text_index_name);
 
-	idn->parent.words = g_hash_table_new (g_str_hash, g_str_equal);
+	text_index_name->parent.words = g_hash_table_new (
+		g_str_hash, g_str_equal);
 
-	p = idn->priv = g_malloc0(sizeof (*idn->priv));
-	p->buffer = g_string_new ("");
-	p->pool = camel_mempool_new (256, 128, CAMEL_MEMPOOL_ALIGN_BYTE);
-}
-
-static void
-camel_text_index_name_finalize (CamelTextIndexName *idn)
-{
-	CamelTextIndexNamePrivate *p = CAMEL_TEXT_INDEX_NAME_GET_PRIVATE (idn);
-
-	g_hash_table_destroy (idn->parent.words);
-
-	g_string_free (p->buffer, TRUE);
-	camel_mempool_destroy (p->pool);
-
-	g_free (p);
-}
-
-CamelType
-camel_text_index_name_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_index_name_get_type (), "CamelTextIndexName",
-					   sizeof (CamelTextIndexName),
-					   sizeof (CamelTextIndexNameClass),
-					   (CamelObjectClassInitFunc) camel_text_index_name_class_init,
-					   NULL,
-					   (CamelObjectInitFunc) camel_text_index_name_init,
-					   (CamelObjectFinalizeFunc) camel_text_index_name_finalize);
-	}
-
-	return type;
+	text_index_name->priv->buffer = g_string_new ("");
+	text_index_name->priv->pool =
+		camel_mempool_new (256, 128, CAMEL_MEMPOOL_ALIGN_BYTE);
 }
 
 CamelTextIndexName *
 camel_text_index_name_new (CamelTextIndex *idx, const gchar *name, camel_key_t nameid)
 {
-	CamelTextIndexName *idn = (CamelTextIndexName *)camel_object_new (camel_text_index_name_get_type ());
+	CamelTextIndexName *idn = g_object_new (CAMEL_TYPE_TEXT_INDEX_NAME, NULL);
 	CamelIndexName *cin = &idn->parent;
 	CamelTextIndexNamePrivate *p = CAMEL_TEXT_INDEX_NAME_GET_PRIVATE (idn);
 
-	cin->index = camel_object_ref (idx);
+	cin->index = g_object_ref (idx);
 	cin->name = camel_mempool_strdup (p->pool, name);
 	p->nameid = nameid;
 
@@ -1576,10 +1594,21 @@ camel_text_index_name_new (CamelTextIndex *idx, const gchar *name, camel_key_t n
 /* CamelTextIndexCursor */
 /* ********************************************************************** */
 
-static CamelIndexCursorClass *camel_text_index_cursor_parent;
+G_DEFINE_TYPE (CamelTextIndexCursor, camel_text_index_cursor, CAMEL_TYPE_INDEX_CURSOR)
 
-#define CIC_CLASS(o) ((CamelTextIndexCursorClass *)(((CamelObject *)o)->classfuncs))
-#define CAMEL_TEXT_INDEX_CURSOR_GET_PRIVATE(o) (((CamelTextIndexCursor *)(o))->priv)
+static void
+text_index_cursor_finalize (GObject *object)
+{
+	CamelTextIndexCursorPrivate *priv;
+
+	priv = CAMEL_TEXT_INDEX_CURSOR_GET_PRIVATE (object);
+
+	g_free (priv->records);
+	g_free (priv->current);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_text_index_cursor_parent_class)->finalize (object);
+}
 
 static const gchar *
 text_index_cursor_next (CamelIndexCursor *idc)
@@ -1631,58 +1660,36 @@ text_index_cursor_reset (CamelIndexCursor *idc)
 }
 
 static void
-camel_text_index_cursor_class_init (CamelTextIndexCursorClass *klass)
+camel_text_index_cursor_class_init (CamelTextIndexCursorClass *class)
 {
-	CamelIndexCursorClass *cklass = (CamelIndexCursorClass *)klass;
+	GObjectClass *object_class;
+	CamelIndexCursorClass *index_cursor_class;
 
-	camel_text_index_cursor_parent = CAMEL_INDEX_CURSOR_CLASS (camel_type_get_global_classfuncs (camel_index_cursor_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelTextIndexCursorPrivate));
 
-	cklass->next = text_index_cursor_next;
-	cklass->reset = text_index_cursor_reset;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = text_index_cursor_finalize;
+
+	index_cursor_class = CAMEL_INDEX_CURSOR_CLASS (class);
+	index_cursor_class->next = text_index_cursor_next;
+	index_cursor_class->reset = text_index_cursor_reset;
 }
 
 static void
-camel_text_index_cursor_init (CamelTextIndexCursor *idc)
+camel_text_index_cursor_init (CamelTextIndexCursor *text_index_cursor)
 {
-	CAMEL_TEXT_INDEX_CURSOR_GET_PRIVATE (idc) = g_malloc0(sizeof (CamelTextIndexCursorPrivate));
-}
-
-static void
-camel_text_index_cursor_finalize (CamelTextIndexCursor *idc)
-{
-	CamelTextIndexCursorPrivate *p = CAMEL_TEXT_INDEX_CURSOR_GET_PRIVATE (idc);
-
-	g_free (p->records);
-	g_free (p->current);
-	g_free (p);
-}
-
-CamelType
-camel_text_index_cursor_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_index_cursor_get_type (), "CamelTextIndexCursor",
-					   sizeof (CamelTextIndexCursor),
-					   sizeof (CamelTextIndexCursorClass),
-					   (CamelObjectClassInitFunc) camel_text_index_cursor_class_init,
-					   NULL,
-					   (CamelObjectInitFunc) camel_text_index_cursor_init,
-					   (CamelObjectFinalizeFunc) camel_text_index_cursor_finalize);
-	}
-
-	return type;
+	text_index_cursor->priv =
+		CAMEL_TEXT_INDEX_CURSOR_GET_PRIVATE (text_index_cursor);
 }
 
 CamelTextIndexCursor *
 camel_text_index_cursor_new (CamelTextIndex *idx, camel_block_t data)
 {
-	CamelTextIndexCursor *idc = (CamelTextIndexCursor *)camel_object_new (camel_text_index_cursor_get_type ());
+	CamelTextIndexCursor *idc = g_object_new (CAMEL_TYPE_TEXT_INDEX_CURSOR, NULL);
 	CamelIndexCursor *cic = &idc->parent;
 	CamelTextIndexCursorPrivate *p = CAMEL_TEXT_INDEX_CURSOR_GET_PRIVATE (idc);
 
-	cic->index = camel_object_ref (idx);
+	cic->index = g_object_ref (idx);
 	p->first = data;
 	p->next = data;
 	p->record_count = 0;
@@ -1695,10 +1702,36 @@ camel_text_index_cursor_new (CamelTextIndex *idx, camel_block_t data)
 /* CamelTextIndexKeyCursor */
 /* ********************************************************************** */
 
-static CamelIndexCursorClass *camel_text_index_key_cursor_parent;
+G_DEFINE_TYPE (CamelTextIndexKeyCursor, camel_text_index_key_cursor, CAMEL_TYPE_INDEX_CURSOR)
 
-#define CIKC_CLASS(o) ((CamelTextIndexKeyCursorClass *)(((CamelObject *)o)->classfuncs))
-#define CAMEL_TEXT_INDEX_KEY_CURSOR_GET_PRIVATE(o) (((CamelTextIndexKeyCursor *)(o))->priv)
+static void
+text_index_key_cursor_dispose (GObject *object)
+{
+	CamelTextIndexKeyCursorPrivate *priv;
+
+	priv = CAMEL_TEXT_INDEX_KEY_CURSOR_GET_PRIVATE (object);
+
+	if (priv->table != NULL) {
+		g_object_unref (priv->table);
+		priv->table = NULL;
+	}
+
+	/* Chain up parent's dispose() method. */
+	G_OBJECT_CLASS (camel_text_index_key_cursor_parent_class)->dispose (object);
+}
+
+static void
+text_index_key_cursor_finalize (GObject *object)
+{
+	CamelTextIndexKeyCursorPrivate *priv;
+
+	priv = CAMEL_TEXT_INDEX_KEY_CURSOR_GET_PRIVATE (object);
+
+	g_free (priv->current);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_text_index_key_cursor_parent_class)->finalize (object);
+}
 
 static const gchar *
 text_index_key_cursor_next (CamelIndexCursor *idc)
@@ -1735,66 +1768,43 @@ text_index_key_cursor_reset (CamelIndexCursor *idc)
 }
 
 static void
-camel_text_index_key_cursor_class_init (CamelTextIndexKeyCursorClass *klass)
+camel_text_index_key_cursor_class_init (CamelTextIndexKeyCursorClass *class)
 {
-	CamelIndexCursorClass *cklass = (CamelIndexCursorClass *)klass;
+	GObjectClass *object_class;
+	CamelIndexCursorClass *index_cursor_class;
 
-	camel_text_index_key_cursor_parent = CAMEL_INDEX_CURSOR_CLASS (camel_type_get_global_classfuncs (camel_index_cursor_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelTextIndexKeyCursorPrivate));
 
-	cklass->next = text_index_key_cursor_next;
-	cklass->reset = text_index_key_cursor_reset;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = text_index_key_cursor_dispose;
+	object_class->finalize = text_index_key_cursor_finalize;
+
+	index_cursor_class = CAMEL_INDEX_CURSOR_CLASS (class);
+	index_cursor_class->next = text_index_key_cursor_next;
+	index_cursor_class->reset = text_index_key_cursor_reset;
 }
 
 static void
-camel_text_index_key_cursor_init (CamelTextIndexKeyCursor *idc)
+camel_text_index_key_cursor_init (CamelTextIndexKeyCursor *text_index_key_cursor)
 {
-	CamelTextIndexKeyCursorPrivate *p;
+	text_index_key_cursor->priv =
+		CAMEL_TEXT_INDEX_KEY_CURSOR_GET_PRIVATE (text_index_key_cursor);
 
-	p = idc->priv = g_malloc0(sizeof (CamelTextIndexKeyCursorPrivate));
-	p->keyid = 0;
-	p->flags = 0;
-	p->data = 0;
-	p->current = NULL;
-}
-
-static void
-camel_text_index_key_cursor_finalize (CamelTextIndexKeyCursor *idc)
-{
-	CamelTextIndexKeyCursorPrivate *p = CAMEL_TEXT_INDEX_KEY_CURSOR_GET_PRIVATE (idc);
-
-	g_free (p->current);
-	if (p->table)
-		camel_object_unref (p->table);
-	g_free (p);
-}
-
-CamelType
-camel_text_index_key_cursor_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_index_cursor_get_type (), "CamelTextIndexKeyCursor",
-					   sizeof (CamelTextIndexKeyCursor),
-					   sizeof (CamelTextIndexKeyCursorClass),
-					   (CamelObjectClassInitFunc) camel_text_index_key_cursor_class_init,
-					   NULL,
-					   (CamelObjectInitFunc) camel_text_index_key_cursor_init,
-					   (CamelObjectFinalizeFunc) camel_text_index_key_cursor_finalize);
-	}
-
-	return type;
+	text_index_key_cursor->priv->keyid = 0;
+	text_index_key_cursor->priv->flags = 0;
+	text_index_key_cursor->priv->data = 0;
+	text_index_key_cursor->priv->current = NULL;
 }
 
 CamelTextIndexKeyCursor *
 camel_text_index_key_cursor_new (CamelTextIndex *idx, CamelKeyTable *table)
 {
-	CamelTextIndexKeyCursor *idc = (CamelTextIndexKeyCursor *)camel_object_new (camel_text_index_key_cursor_get_type ());
+	CamelTextIndexKeyCursor *idc = g_object_new (CAMEL_TYPE_TEXT_INDEX_KEY_CURSOR, NULL);
 	CamelIndexCursor *cic = &idc->parent;
 	CamelTextIndexKeyCursorPrivate *p = CAMEL_TEXT_INDEX_KEY_CURSOR_GET_PRIVATE (idc);
 
-	cic->index = camel_object_ref (idx);
-	p->table = camel_object_ref (table);
+	cic->index = g_object_ref (idx);
+	p->table = g_object_ref (table);
 
 	return idc;
 }
@@ -1860,7 +1870,7 @@ gint main (gint argc, gchar **argv)
 		idn = camel_index_add_name (idx, name);
 		camel_index_name_add_buffer (idn, wordbuffer, sizeof (wordbuffer)-1);
 		camel_index_write_name (idx, idn);
-		camel_object_unref (idn);
+		g_object_unref (idn);
 	}
 
 	printf ("Looking up which names contain word 'word'\n");
@@ -1868,7 +1878,7 @@ gint main (gint argc, gchar **argv)
 	while ((word = camel_index_cursor_next (idc)) != NULL) {
 		printf (" name is '%s'\n", word);
 	}
-	camel_object_unref (idc);
+	g_object_unref (idc);
 	printf ("done.\n");
 
 	printf ("Looking up which names contain word 'truncate'\n");
@@ -1876,11 +1886,11 @@ gint main (gint argc, gchar **argv)
 	while ((word = camel_index_cursor_next (idc)) != NULL) {
 		printf (" name is '%s'\n", word);
 	}
-	camel_object_unref (idc);
+	g_object_unref (idc);
 	printf ("done.\n");
 
 	camel_index_sync (idx);
-	camel_object_unref (idx);
+	g_object_unref (idx);
 
 #if 0
 	bs = camel_block_file_new ("blocks", "TESTINDX", CAMEL_BLOCK_SIZE);

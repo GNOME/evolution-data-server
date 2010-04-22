@@ -32,10 +32,24 @@
 #include <sys/types.h>
 #include <camel/camel-seekable-stream.h>
 
-#define CAMEL_STREAM_MEM_TYPE     (camel_stream_mem_get_type ())
-#define CAMEL_STREAM_MEM(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_STREAM_MEM_TYPE, CamelStreamMem))
-#define CAMEL_STREAM_MEM_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_STREAM_MEM_TYPE, CamelStreamMemClass))
-#define CAMEL_IS_STREAM_MEM(o)    (CAMEL_CHECK_TYPE((o), CAMEL_STREAM_MEM_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_STREAM_MEM \
+	(camel_stream_mem_get_type ())
+#define CAMEL_STREAM_MEM(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_STREAM_MEM, CamelStreamMem))
+#define CAMEL_STREAM_MEM_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_STREAM_MEM, CamelStreamMemClass))
+#define CAMEL_IS_STREAM_MEM(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_STREAM_MEM))
+#define CAMEL_IS_STREAM_MEM_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_STREAM_MEM))
+#define CAMEL_STREAM_MEM_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_STREAM_MEM, CamelStreamMemClass))
 
 G_BEGIN_DECLS
 
@@ -52,7 +66,7 @@ struct _CamelStreamMemClass {
 	CamelSeekableStreamClass parent_class;
 };
 
-CamelType	camel_stream_mem_get_type	(void);
+GType		camel_stream_mem_get_type	(void);
 CamelStream *	camel_stream_mem_new		(void);
 CamelStream *	camel_stream_mem_new_with_byte_array
 						(GByteArray *buffer);

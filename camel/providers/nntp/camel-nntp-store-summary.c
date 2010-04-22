@@ -49,14 +49,12 @@ static void		 store_info_free(CamelStoreSummary *, CamelStoreInfo *);
 static const gchar *store_info_string(CamelStoreSummary *, const CamelStoreInfo *, gint);
 static void store_info_set_string(CamelStoreSummary *, CamelStoreInfo *, int, const gchar *);
 
-static gpointer camel_nntp_store_summary_parent_class;
+G_DEFINE_TYPE (CamelNNTPStoreSummary, camel_nntp_store_summary, CAMEL_TYPE_STORE_SUMMARY)
 
 static void
 camel_nntp_store_summary_class_init (CamelNNTPStoreSummaryClass *class)
 {
 	CamelStoreSummaryClass *store_summary_class;
-
-	camel_nntp_store_summary_parent_class = CAMEL_STORE_SUMMARY_CLASS (camel_type_get_global_classfuncs (camel_store_summary_get_type ()));
 
 	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (class);
 	store_summary_class->summary_header_load = summary_header_load;
@@ -83,25 +81,6 @@ camel_nntp_store_summary_init (CamelNNTPStoreSummary *nntp_store_summary)
 		sizeof (nntp_store_summary->last_newslist));
 }
 
-CamelType
-camel_nntp_store_summary_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register(camel_store_summary_get_type (),
-					   "CamelNNTPStoreSummary",
-					   sizeof (CamelNNTPStoreSummary),
-					   sizeof (CamelNNTPStoreSummaryClass),
-					   (CamelObjectClassInitFunc) camel_nntp_store_summary_class_init,
-					   NULL,
-					   (CamelObjectInitFunc) camel_nntp_store_summary_init,
-					   (CamelObjectFinalizeFunc) NULL);
-	}
-
-	return type;
-}
-
 /**
  * camel_nntp_store_summary_new:
  *
@@ -112,7 +91,7 @@ camel_nntp_store_summary_get_type (void)
 CamelNNTPStoreSummary *
 camel_nntp_store_summary_new (void)
 {
-	return (CamelNNTPStoreSummary *) camel_object_new (camel_nntp_store_summary_get_type ());
+	return g_object_new (CAMEL_TYPE_NNTP_STORE_SUMMARY, NULL);
 }
 
 /**

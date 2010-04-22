@@ -25,10 +25,24 @@
 
 #include "camel-local-folder.h"
 
-#define CAMEL_MAILDIR_FOLDER_TYPE     (camel_maildir_folder_get_type ())
-#define CAMEL_MAILDIR_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MAILDIR_FOLDER_TYPE, CamelMaildirFolder))
-#define CAMEL_MAILDIR_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MAILDIR_FOLDER_TYPE, CamelMaildirFolderClass))
-#define CAMEL_IS_MAILDIR_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MAILDIR_FOLDER_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_MAILDIR_FOLDER \
+	(camel_maildir_folder_get_type ())
+#define CAMEL_MAILDIR_FOLDER(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_MAILDIR_FOLDER, CamelMaildirFolder))
+#define CAMEL_MAILDIR_FOLDER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_MAILDIR_FOLDER, CamelMaildirFolderClass))
+#define CAMEL_IS_MAILDIR_FOLDER(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_MAILDIR_FOLDER))
+#define CAMEL_IS_MAILDIR_FOLDER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_MAILDIR_FOLDER))
+#define CAMEL_MAILDIR_FOLDER_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_MAILDIR_FOLDER, CamelMaildirFolderClass))
 
 G_BEGIN_DECLS
 
@@ -46,7 +60,7 @@ struct _CamelMaildirFolderClass {
 /* public methods */
 CamelFolder *camel_maildir_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 flags, CamelException *ex);
 
-CamelType camel_maildir_folder_get_type(void);
+GType camel_maildir_folder_get_type(void);
 
 G_END_DECLS
 

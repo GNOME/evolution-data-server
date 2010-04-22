@@ -31,6 +31,10 @@
 #include "camel-sasl-login.h"
 #include "camel-service.h"
 
+#define CAMEL_SASL_LOGIN_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_SASL_LOGIN, CamelSaslLoginPrivate))
+
 CamelServiceAuthType camel_sasl_login_authtype = {
 	N_("Login"),
 
@@ -46,29 +50,23 @@ enum {
 	LOGIN_PASSWD
 };
 
-static CamelSaslClass *parent_class = NULL;
-
 struct _CamelSaslLoginPrivate {
 	gint state;
 };
 
-static void
-sasl_login_finalize (CamelObject *object)
-{
-	CamelSaslLogin *sasl = CAMEL_SASL_LOGIN (object);
-
-	g_free (sasl->priv);
-}
+G_DEFINE_TYPE (CamelSaslLogin, camel_sasl_login, CAMEL_TYPE_SASL)
 
 static GByteArray *
 sasl_login_challenge (CamelSasl *sasl,
                       GByteArray *token,
                       CamelException *ex)
 {
-	CamelSaslLoginPrivate *priv = CAMEL_SASL_LOGIN (sasl)->priv;
+	CamelSaslLoginPrivate *priv;
 	GByteArray *buf = NULL;
 	CamelService *service;
 	CamelURL *url;
+
+	priv = CAMEL_SASL_LOGIN_GET_PRIVATE (sasl);
 
 	service = camel_sasl_get_service (sasl);
 	url = service->url;
@@ -106,7 +104,7 @@ camel_sasl_login_class_init (CamelSaslLoginClass *class)
 {
 	CamelSaslClass *sasl_class;
 
-	parent_class = CAMEL_SASL_CLASS (camel_type_get_global_classfuncs (camel_sasl_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelSaslLoginPrivate));
 
 	sasl_class = CAMEL_SASL_CLASS (class);
 	sasl_class->challenge = sasl_login_challenge;
@@ -115,24 +113,5 @@ camel_sasl_login_class_init (CamelSaslLoginClass *class)
 static void
 camel_sasl_login_init (CamelSaslLogin *sasl)
 {
-	sasl->priv = g_new0 (struct _CamelSaslLoginPrivate, 1);
-}
-
-CamelType
-camel_sasl_login_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_sasl_get_type (),
-					    "CamelSaslLogin",
-					    sizeof (CamelSaslLogin),
-					    sizeof (CamelSaslLoginClass),
-					    (CamelObjectClassInitFunc) camel_sasl_login_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_sasl_login_init,
-					    (CamelObjectFinalizeFunc) sasl_login_finalize);
-	}
-
-	return type;
+	sasl->priv = CAMEL_SASL_LOGIN_GET_PRIVATE (sasl);
 }

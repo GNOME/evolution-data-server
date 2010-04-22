@@ -38,8 +38,6 @@
 
 #define d(x)
 
-static gpointer camel_mbox_store_parent_class;
-
 static CamelFolder *get_folder(CamelStore *store, const gchar *folder_name, guint32 flags, CamelException *ex);
 static gboolean delete_folder(CamelStore *store, const gchar *folder_name, CamelException *ex);
 static gboolean rename_folder(CamelStore *store, const gchar *old, const gchar *new, CamelException *ex);
@@ -48,13 +46,13 @@ static CamelFolderInfo *get_folder_info(CamelStore *store, const gchar *top, gui
 static gchar *mbox_get_meta_path(CamelLocalStore *ls, const gchar *full_name, const gchar *ext);
 static gchar *mbox_get_full_path(CamelLocalStore *ls, const gchar *full_name);
 
+G_DEFINE_TYPE (CamelMboxStore, camel_mbox_store, CAMEL_TYPE_LOCAL_STORE)
+
 static void
 camel_mbox_store_class_init (CamelMboxStoreClass *class)
 {
 	CamelStoreClass *store_class;
 	CamelLocalStoreClass *local_store_class;
-
-	camel_mbox_store_parent_class =(CamelLocalStoreClass *)camel_type_get_global_classfuncs(camel_local_store_get_type());
 
 	store_class = CAMEL_STORE_CLASS (class);
 	store_class->get_folder = get_folder;
@@ -69,22 +67,9 @@ camel_mbox_store_class_init (CamelMboxStoreClass *class)
 	local_store_class->get_meta_path = mbox_get_meta_path;
 }
 
-CamelType
-camel_mbox_store_get_type(void)
+static void
+camel_mbox_store_init (CamelMboxStore *mbox_store)
 {
-	static CamelType camel_mbox_store_type = CAMEL_INVALID_TYPE;
-
-	if (camel_mbox_store_type == CAMEL_INVALID_TYPE)	{
-		camel_mbox_store_type = camel_type_register(CAMEL_LOCAL_STORE_TYPE, "CamelMboxStore",
-							    sizeof(CamelMboxStore),
-							    sizeof(CamelMboxStoreClass),
-							    (CamelObjectClassInitFunc) camel_mbox_store_class_init,
-							    NULL,
-							    NULL,
-							    NULL);
-	}
-
-	return camel_mbox_store_type;
 }
 
 static const gchar *extensions[] = {
@@ -319,7 +304,7 @@ delete_folder(CamelStore *store, const gchar *folder_name, CamelException *ex)
 	if ((lf = camel_store_get_folder(store, folder_name, 0, &lex))) {
 		camel_object_get(lf, NULL, CAMEL_OBJECT_STATE_FILE, &path, NULL);
 		camel_object_set(lf, NULL, CAMEL_OBJECT_STATE_FILE, NULL, NULL);
-		camel_object_unref (lf);
+		g_object_unref (lf);
 	} else {
 		camel_exception_clear(&lex);
 	}
@@ -421,7 +406,7 @@ create_folder(CamelStore *store, const gchar *parent_name, const gchar *folder_n
 	folder = CAMEL_STORE_GET_CLASS (store)->get_folder (
 		store, name, CAMEL_STORE_FOLDER_CREATE, ex);
 	if (folder) {
-		camel_object_unref (folder);
+		g_object_unref (folder);
 		info = CAMEL_STORE_GET_CLASS (store)->get_folder_info (
 			store, name, 0, ex);
 	}
@@ -572,7 +557,7 @@ rename_folder(CamelStore *store, const gchar *old, const gchar *new, CamelExcept
 	g_free(newibex);
 
 	if (folder)
-		camel_object_unref (folder);
+		g_object_unref (folder);
 
 	return TRUE;
 
@@ -605,7 +590,7 @@ ibex_failed:
 	g_free(oldibex);
 
 	if (folder)
-		camel_object_unref (folder);
+		g_object_unref (folder);
 
 	return FALSE;
 }
@@ -652,7 +637,7 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 			camel_folder_refresh_info(folder, NULL);
 		fi->unread = camel_folder_get_unread_message_count(folder);
 		fi->total = camel_folder_get_message_count(folder);
-		camel_object_unref (folder);
+		g_object_unref (folder);
 	} else {
 		gchar *path, *folderpath;
 		CamelMboxSummary *mbs;
@@ -668,7 +653,7 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 			fi->total = ((CamelFolderSummary *)mbs)->saved_count;
 		}
 
-		camel_object_unref (mbs);
+		g_object_unref (mbs);
 		g_free(folderpath);
 		g_free(path);
 	}

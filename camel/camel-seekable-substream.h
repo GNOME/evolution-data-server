@@ -31,10 +31,24 @@
 
 #include <camel/camel-seekable-stream.h>
 
-#define CAMEL_SEEKABLE_SUBSTREAM_TYPE       (camel_seekable_substream_get_type ())
-#define CAMEL_SEEKABLE_SUBSTREAM(obj)       (CAMEL_CHECK_CAST((obj), CAMEL_SEEKABLE_SUBSTREAM_TYPE, CamelSeekableSubstream))
-#define CAMEL_SEEKABLE_SUBSTREAM_CLASS(k)   (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_SEEKABLE_SUBSTREAM_TYPE, CamelSeekableSubstreamClass))
-#define CAMEL_IS_SEEKABLE_SUBSTREAM(o)      (CAMEL_CHECK_TYPE((o), CAMEL_SEEKABLE_SUBSTREAM_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_SEEKABLE_SUBSTREAM \
+	(camel_seekable_substream_get_type ())
+#define CAMEL_SEEKABLE_SUBSTREAM(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_SEEKABLE_SUBSTREAM, CamelSeekableSubstream))
+#define CAMEL_SEEKABLE_SUBSTREAM_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_SEEKABLE_SUBSTREAM, CamelSeekableSubstreamClass))
+#define CAMEL_IS_SEEKABLE_SUBSTREAM(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_SEEKABLE_SUBSTREAM))
+#define CAMEL_IS_SEEKABLE_SUBSTREAM_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_SEEKABLE_SUBSTREAM))
+#define CAMEL_SEEKABLE_SUBSTREAM_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_SEEKABLE_SUBSTREAM, CamelSeekableSubstreamClass))
 
 G_BEGIN_DECLS
 
@@ -52,7 +66,7 @@ struct _CamelSeekableSubstreamClass {
 	CamelSeekableStreamClass parent_class;
 };
 
-CamelType camel_seekable_substream_get_type (void);
+GType camel_seekable_substream_get_type (void);
 
 /* public methods */
 

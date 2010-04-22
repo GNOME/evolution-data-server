@@ -35,10 +35,24 @@
 
 #include <camel/camel-disco-store.h>
 
-#define CAMEL_DISCO_DIARY_TYPE     (camel_disco_diary_get_type ())
-#define CAMEL_DISCO_DIARY(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_DISCO_DIARY_TYPE, CamelDiscoDiary))
-#define CAMEL_DISCO_DIARY_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_DISCO_DIARY_TYPE, CamelDiscoDiaryClass))
-#define CAMEL_IS_DISCO_DIARY(o)    (CAMEL_CHECK_TYPE((o), CAMEL_DISCO_DIARY_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_DISCO_DIARY \
+	(camel_disco_diary_get_type ())
+#define CAMEL_DISCO_DIARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_DISCO_DIARY, CamelDiscoDiary))
+#define CAMEL_DISCO_DIARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_DISCO_DIARY, CamelDiscoDiaryClass))
+#define CAMEL_IS_DISCO_DIARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_DISCO_DIARY))
+#define CAMEL_IS_DISCO_DIARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_DISCO_DIARY))
+#define CAMEL_DISCO_DIARY_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_DISCO_DIARY, CamelDiscoDiaryClass))
 
 G_BEGIN_DECLS
 
@@ -73,7 +87,7 @@ struct _CamelDiscoDiaryClass {
 	CamelObjectClass parent_class;
 };
 
-CamelType	camel_disco_diary_get_type	(void);
+GType		camel_disco_diary_get_type	(void);
 CamelDiscoDiary *
 		camel_disco_diary_new		(CamelDiscoStore *store,
 						 const gchar *filename,

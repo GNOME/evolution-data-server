@@ -30,6 +30,43 @@
 #include <stdio.h>
 #include <sys/types.h>
 
+/* Standard GObject macros */
+#define CAMEL_TYPE_BLOCK_FILE \
+	(camel_block_file_get_type ())
+#define CAMEL_BLOCK_FILE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_BLOCK_FILE, CamelBlockFile))
+#define CAMEL_BLOCK_FILE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_BLOCK_FILE, CamelBlockFileClass))
+#define CAMEL_IS_BLOCK_FILE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_BLOCK_FILE))
+#define CAMEL_IS_BLOCK_FILE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_BLOCK_FILE))
+#define CAMEL_BLOCK_FILE_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_BLOCK_FILE, CamelBlockFileClass))
+
+#define CAMEL_TYPE_KEY_FILE \
+	(camel_key_file_get_type ())
+#define CAMEL_KEY_FILE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_KEY_FILE, CamelKeyFile))
+#define CAMEL_KEY_FILE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_KEY_FILE, CamelKeyFileClass))
+#define CAMEL_IS_KEY_FILE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_KEY_FILE))
+#define CAMEL_IS_KEY_FILE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_KEY_FILE))
+#define CAMEL_KEY_FILE_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_KEY_FILE, CamelKeyFileClass))
+
 G_BEGIN_DECLS
 
 typedef guint32 camel_block_t;	/* block offset, absolute, bottom BLOCK_SIZE_BITS always 0 */
@@ -101,7 +138,7 @@ struct _CamelBlockFileClass {
 	gint (*init_root)(CamelBlockFile *);
 };
 
-CamelType	camel_block_file_get_type	(void);
+GType		camel_block_file_get_type	(void);
 CamelBlockFile *camel_block_file_new		(const gchar *path,
 						 gint flags,
 						 const gchar version[8],
@@ -146,7 +183,7 @@ struct _CamelKeyFileClass {
 	CamelObjectClass parent;
 };
 
-CamelType      camel_key_file_get_type(void);
+GType      camel_key_file_get_type(void);
 
 CamelKeyFile * camel_key_file_new(const gchar *path, gint flags, const gchar version[8]);
 gint	       camel_key_file_rename(CamelKeyFile *kf, const gchar *path);

@@ -30,16 +30,42 @@
 
 #include "camel-nntp-stream.h"
 
-#define dd(x) (camel_debug("nntp:stream")?(x):0)
+#define dd(x) (camel_debug ("nntp:stream")?(x):0)
 
 #ifndef ECONNRESET
 #define ECONNRESET EIO
 #endif
 
-static CamelObjectClass *parent_class = NULL;
-
 #define CAMEL_NNTP_STREAM_SIZE (4096)
 #define CAMEL_NNTP_STREAM_LINE_SIZE (1024) /* maximum line size */
+
+G_DEFINE_TYPE (CamelNNTPStream, camel_nntp_stream, CAMEL_TYPE_STREAM)
+
+static void
+nntp_stream_dispose (GObject *object)
+{
+	CamelNNTPStream *stream = CAMEL_NNTP_STREAM (object);
+
+	if (stream->source != NULL) {
+		g_object_unref (stream->source);
+		stream->source = NULL;
+	}
+
+	/* Chain up to parent's dispose () method. */
+	G_OBJECT_CLASS (camel_nntp_stream_parent_class)->dispose (object);
+}
+
+static void
+nntp_stream_finalize (GObject *object)
+{
+	CamelNNTPStream *stream = CAMEL_NNTP_STREAM (object);
+
+	g_free (stream->buf);
+	g_free (stream->linebuf);
+
+	/* Chain up to parent's finalize () method. */
+	G_OBJECT_CLASS (camel_nntp_stream_parent_class)->finalize (object);
+}
 
 static gint
 nntp_stream_fill (CamelNNTPStream *is)
@@ -66,16 +92,6 @@ nntp_stream_fill (CamelNNTPStream *is)
 
 	return 0;
 }
-
-static void
-camel_nntp_stream_finalize(CamelNNTPStream *is)
-{
-	g_free (is->buf);
-	g_free (is->linebuf);
-	if (is->source)
-		camel_object_unref (is->source);
-}
-
 
 static gssize
 nntp_stream_read (CamelStream *stream,
@@ -191,11 +207,14 @@ nntp_stream_reset (CamelStream *stream)
 }
 
 static void
-camel_nntp_stream_class_init (CamelStreamClass *class)
+camel_nntp_stream_class_init (CamelNNTPStreamClass *class)
 {
+	GObjectClass *object_class;
 	CamelStreamClass *stream_class;
 
-	parent_class = camel_type_get_global_classfuncs( CAMEL_TYPE_OBJECT );
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = nntp_stream_dispose;
+	object_class->finalize = nntp_stream_finalize;
 
 	stream_class = CAMEL_STREAM_CLASS (class);
 	stream_class->read = nntp_stream_read;
@@ -221,25 +240,6 @@ camel_nntp_stream_init (CamelNNTPStream *is)
 	is->mode = CAMEL_NNTP_STREAM_LINE;
 }
 
-CamelType
-camel_nntp_stream_get_type (void)
-{
-	static CamelType camel_nntp_stream_type = CAMEL_INVALID_TYPE;
-
-	if (camel_nntp_stream_type == CAMEL_INVALID_TYPE) {
-		camel_nntp_stream_type = camel_type_register( camel_stream_get_type(),
-							    "CamelNNTPStream",
-							    sizeof( CamelNNTPStream ),
-							    sizeof( CamelNNTPStreamClass ),
-							    (CamelObjectClassInitFunc) camel_nntp_stream_class_init,
-							    NULL,
-							    (CamelObjectInitFunc) camel_nntp_stream_init,
-							    (CamelObjectFinalizeFunc) camel_nntp_stream_finalize );
-	}
-
-	return camel_nntp_stream_type;
-}
-
 /**
  * camel_nntp_stream_new:
  *
@@ -253,8 +253,8 @@ camel_nntp_stream_new (CamelStream *source)
 {
 	CamelNNTPStream *is;
 
-	is = (CamelNNTPStream *)camel_object_new(camel_nntp_stream_get_type ());
-	is->source = camel_object_ref (source);
+	is = g_object_new (CAMEL_TYPE_NNTP_STREAM, NULL);
+	is->source = g_object_ref (source);
 
 	return (CamelStream *)is;
 }

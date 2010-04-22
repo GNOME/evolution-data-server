@@ -33,12 +33,24 @@
 #include <camel/camel-mime-parser.h>
 #include <camel/camel-index.h>
 
-#define CAMEL_FOLDER_SUMMARY_TYPE         camel_folder_summary_get_type ()
-#define CAMEL_FOLDER_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_folder_summary_get_type (), CamelFolderSummary)
-#define CAMEL_FOLDER_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_folder_summary_get_type (), CamelFolderSummaryClass)
-#define CAMEL_IS_FOLDER_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_folder_summary_get_type ())
+/* Standard GObject macros */
+#define CAMEL_TYPE_FOLDER_SUMMARY \
+	(camel_folder_summary_get_type ())
+#define CAMEL_FOLDER_SUMMARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_FOLDER_SUMMARY, CamelFolderSummary))
+#define CAMEL_FOLDER_SUMMARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_FOLDER_SUMMARY, CamelFolderSummaryClass))
+#define CAMEL_IS_FOLDER_SUMMARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_FOLDER_SUMMARY))
+#define CAMEL_IS_FOLDER_SUMMARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_FOLDER_SUMMARY))
 #define CAMEL_FOLDER_SUMMARY_GET_CLASS(obj) \
-	((CamelFolderSummaryClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_FOLDER_SUMMARY, CamelFolderSummaryClass))
 
 G_BEGIN_DECLS
 
@@ -337,7 +349,7 @@ struct _CamelFolderMetaSummary {
 	gchar *path;		/* Path to meta-summary-file */
 };
 
-CamelType			 camel_folder_summary_get_type	(void);
+GType			 camel_folder_summary_get_type	(void);
 CamelFolderSummary      *camel_folder_summary_new	(struct _CamelFolder *folder);
 
 /* Deprecated */

@@ -97,9 +97,9 @@ camel_imap_command (CamelImapStore *store,
 		cmd = imap_command_strdup_vprintf (store, fmt, ap);
 		va_end (ap);
 	} else {
-		camel_object_ref (folder);
+		g_object_ref (folder);
 		if (store->current_folder)
-			camel_object_unref (store->current_folder);
+			g_object_unref (store->current_folder);
 		store->current_folder = folder;
 		cmd = imap_command_strdup_printf (store, "SELECT %F", folder->full_name);
 	}
@@ -406,7 +406,7 @@ imap_read_response (CamelImapStore *store, CamelException *ex)
 	response = g_new0 (CamelImapResponse, 1);
 /*FIXME	if (store->current_folder && camel_disco_store_status (CAMEL_DISCO_STORE (store)) != CAMEL_DISCO_STORE_RESYNCING) {
 		response->folder = store->current_folder;
-		camel_object_ref (CAMEL_OBJECT (response->folder));
+		g_object_ref (CAMEL_OBJECT (response->folder));
 	} */
 
 	response->untagged = g_ptr_array_new ();
@@ -663,7 +663,7 @@ camel_imap_response_free (CamelImapStore *store, CamelImapResponse *response)
 				g_array_free (expunged, TRUE);
 		}
 
-		camel_object_unref (CAMEL_OBJECT (response->folder));
+		g_object_unref (CAMEL_OBJECT (response->folder));
 	}
 
 	g_free (response);
@@ -686,7 +686,7 @@ camel_imap_response_free_without_processing (CamelImapStore *store,
 		return;
 
 	if (response->folder) {
-		camel_object_unref (CAMEL_OBJECT (response->folder));
+		g_object_unref (CAMEL_OBJECT (response->folder));
 		response->folder = NULL;
 	}
 	camel_imap_response_free (store, response);

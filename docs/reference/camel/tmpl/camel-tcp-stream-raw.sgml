@@ -25,9 +25,6 @@ CamelTcpStreamRaw
 
 </para>
 
-@parent: 
-@sockfd: 
-@is_nonblocking: 
 
 <!-- ##### FUNCTION camel_tcp_stream_raw_new ##### -->
 <para>

@@ -24,19 +24,29 @@
 #ifndef CAMEL_IMAPX_STORE_H
 #define CAMEL_IMAPX_STORE_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <camel/camel.h>
 
+#include "camel-imapx-server.h"
 #include "camel-imapx-store-summary.h"
 
-#define CAMEL_IMAPX_STORE_TYPE     (camel_imapx_store_get_type ())
-#define CAMEL_IMAPX_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAPX_STORE_TYPE, CamelIMAPXStore))
-#define CAMEL_IMAPX_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_IMAPX_STORE_TYPE, CamelIMAPXStoreClass))
-#define CAMEL_IS_IMAP_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_IMAPX_STORE_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_IMAPX_STORE \
+	(camel_imapx_store_get_type ())
+#define CAMEL_IMAPX_STORE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_IMAPX_STORE, CamelIMAPXStore))
+#define CAMEL_IMAPX_STORE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_IMAPX_STORE, CamelIMAPXStoreClass))
+#define CAMEL_IS_IMAPX_STORE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_IMAPX_STORE))
+#define CAMEL_IS_IMAPX_STORE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_IMAPX_STORE))
+#define CAMEL_IMAPX_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_IMAPX_STORE, CamelIMAPXStoreClass))
 
 #define IMAPX_OVERRIDE_NAMESPACE	(1 << 0)
 #define IMAPX_CHECK_ALL			(1 << 1)
@@ -47,10 +57,15 @@ extern "C" {
 #define IMAPX_CHECK_LSUB		(1 << 6)
 #define IMAPX_USE_IDLE			(1 << 7)
 
-typedef struct {
+G_BEGIN_DECLS
+
+typedef struct _CamelIMAPXStore CamelIMAPXStore;
+typedef struct _CamelIMAPXStoreClass CamelIMAPXStoreClass;
+
+struct _CamelIMAPXStore {
 	CamelOfflineStore parent;
 
-	struct _CamelIMAPXServer *server;
+	CamelIMAPXServer *server;
 
 	CamelIMAPXStoreSummary *summary; /* in-memory list of folders */
 	gchar *namespace, dir_sep, *base_url, *storage_path;
@@ -69,19 +84,15 @@ typedef struct {
 	gchar *login_error;
 
 	GPtrArray *pending_list;
-} CamelIMAPXStore;
+};
 
-typedef struct {
+struct _CamelIMAPXStoreClass {
 	CamelOfflineStoreClass parent_class;
+};
 
-} CamelIMAPXStoreClass;
+GType		camel_imapx_store_get_type (void);
 
-/* Standard Camel function */
-CamelType camel_imapx_store_get_type (void);
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_IMAPX_STORE_H */
 

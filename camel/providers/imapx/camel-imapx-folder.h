@@ -24,19 +24,33 @@
 #ifndef CAMEL_IMAPX_FOLDER_H
 #define CAMEL_IMAPX_FOLDER_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus }*/
-
 #include <camel/camel.h>
 
-#define CAMEL_IMAPX_FOLDER_TYPE     (camel_imapx_folder_get_type ())
-#define CAMEL_IMAPX_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAPX_FOLDER_TYPE, CamelIMAPXFolder))
-#define CAMEL_IMAPX_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_IMAPX_FOLDER_TYPE, CamelIMAPXFolderClass))
-#define CAMEL_IS_IMAPX_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_IMAPX_FOLDER_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_IMAPX_FOLDER \
+	(camel_imapx_folder_get_type ())
+#define CAMEL_IMAPX_FOLDER(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_IMAPX_FOLDER, CamelIMAPXFolder))
+#define CAMEL_IMAPX_FOLDER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_IMAPX_FOLDER, CamelIMAPXFolderClass))
+#define CAMEL_IS_IMAPX_FOLDER(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_IMAPX_FOLDER))
+#define CAMEL_IS_IMAPX_FOLDER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_IMAPX_FOLDER))
+#define CAMEL_IMAPX_FOLDER_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_IMAPX_FOLDER, CamelIMAPXFolderClass))
 
-typedef struct _CamelIMAPXFolder {
+G_BEGIN_DECLS
+
+typedef struct _CamelIMAPXFolder CamelIMAPXFolder;
+typedef struct _CamelIMAPXFolderClass CamelIMAPXFolderClass;
+
+struct _CamelIMAPXFolder {
 	CamelOfflineFolder parent;
 
 	gchar *raw_name;
@@ -51,21 +65,21 @@ typedef struct _CamelIMAPXFolder {
 	
 	GMutex *search_lock;
 	GMutex *stream_lock;
-} CamelIMAPXFolder;
+};
 
-typedef struct _CamelIMAPXFolderClass {
+struct _CamelIMAPXFolderClass {
 	CamelOfflineFolderClass parent_class;
-} CamelIMAPXFolderClass;
+};
 
-/* Standard Camel function */
-CamelType camel_imapx_folder_get_type (void);
+GType		camel_imapx_folder_get_type	(void);
+CamelFolder *	camel_imapx_folder_new		(CamelStore *parent,
+						 const gchar *path,
+						 const gchar *raw,
+						 CamelException *ex);
+gchar *		imapx_get_filename		(CamelFolder *folder,
+						 const gchar *uid,
+						 CamelException *ex);
 
-/* public methods */
-CamelFolder *camel_imapx_folder_new(CamelStore *parent, const gchar *path, const gchar *raw, CamelException *ex);
-gchar * imapx_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex);
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* CAMEL_IMAPX_FOLDER_H */

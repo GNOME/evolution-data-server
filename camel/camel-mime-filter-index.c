@@ -21,20 +21,36 @@
 #include "camel-mime-filter-index.h"
 #include "camel-text-index.h"
 
+#define CAMEL_MIME_FILTER_INDEX_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_FILTER_INDEX, CamelMimeFilterIndexPrivate))
+
 struct _CamelMimeFilterIndexPrivate {
 	CamelIndex *index;
 	CamelIndexName *name;
 };
 
-static CamelMimeFilterClass *camel_mime_filter_index_parent;
+G_DEFINE_TYPE (CamelMimeFilterIndex, camel_mime_filter_index, CAMEL_TYPE_MIME_FILTER)
 
 static void
-mime_filter_index_finalize (CamelMimeFilterIndex *mime_filter)
+mime_filter_index_dispose (GObject *object)
 {
-	if (mime_filter->priv->name)
-		camel_object_unref (mime_filter->priv->name);
-	camel_object_unref (mime_filter->priv->index);
-	g_free (mime_filter->priv);
+	CamelMimeFilterIndexPrivate *priv;
+
+	priv = CAMEL_MIME_FILTER_INDEX_GET_PRIVATE (object);
+
+	if (priv->name != NULL) {
+		g_object_unref (priv->name);
+		priv->name = NULL;
+	}
+
+	if (priv->index != NULL) {
+		g_object_unref (priv->index);
+		priv->index = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_mime_filter_index_parent_class)->dispose (object);
 }
 
 static void
@@ -48,7 +64,7 @@ mime_filter_index_filter (CamelMimeFilter *mime_filter,
 {
 	CamelMimeFilterIndexPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_INDEX (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_INDEX_GET_PRIVATE (mime_filter);
 
 	if (priv->index == NULL || priv->name==NULL) {
 		goto donothing;
@@ -73,7 +89,7 @@ mime_filter_index_complete (CamelMimeFilter *mime_filter,
 {
 	CamelMimeFilterIndexPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_INDEX (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_INDEX_GET_PRIVATE (mime_filter);
 
 	if (priv->index == NULL || priv->name==NULL) {
 		goto donothing;
@@ -91,9 +107,13 @@ donothing:
 static void
 camel_mime_filter_index_class_init (CamelMimeFilterIndexClass *class)
 {
+	GObjectClass *object_class;
 	CamelMimeFilterClass *mime_filter_class;
 
-	camel_mime_filter_index_parent = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelMimeFilterIndexPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = mime_filter_index_dispose;
 
 	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
 	mime_filter_class->filter = mime_filter_index_filter;
@@ -101,27 +121,9 @@ camel_mime_filter_index_class_init (CamelMimeFilterIndexClass *class)
 }
 
 static void
-camel_mime_filter_index_init (CamelMimeFilterIndex *mime_filter)
+camel_mime_filter_index_init (CamelMimeFilterIndex *filter)
 {
-	mime_filter->priv = g_new0 (CamelMimeFilterIndexPrivate, 1);
-}
-
-CamelType
-camel_mime_filter_index_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_mime_filter_get_type (), "CamelMimeFilterIndex",
-					    sizeof (CamelMimeFilterIndex),
-					    sizeof (CamelMimeFilterIndexClass),
-					    (CamelObjectClassInitFunc) camel_mime_filter_index_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_filter_index_init,
-					    (CamelObjectFinalizeFunc) mime_filter_index_finalize);
-	}
-
-	return type;
+	filter->priv = CAMEL_MIME_FILTER_INDEX_GET_PRIVATE (filter);
 }
 
 /**
@@ -138,13 +140,13 @@ camel_mime_filter_index_new (CamelIndex *index)
 	CamelMimeFilter *new;
 	CamelMimeFilterIndexPrivate *priv;
 
-	new = CAMEL_MIME_FILTER (camel_object_new (camel_mime_filter_index_get_type ()));
+	new = g_object_new (CAMEL_TYPE_MIME_FILTER_INDEX, NULL);
 
 	if (new) {
-		priv = CAMEL_MIME_FILTER_INDEX (new)->priv;
+		priv = CAMEL_MIME_FILTER_INDEX_GET_PRIVATE (new);
 		priv->index = index;
 		if (index)
-			camel_object_ref (index);
+			g_object_ref (index);
 	}
 	return new;
 }
@@ -166,11 +168,11 @@ camel_mime_filter_index_set_name (CamelMimeFilterIndex *filter,
 
 	if (name != NULL) {
 		g_return_if_fail (CAMEL_IS_INDEX_NAME (name));
-		camel_object_ref (name);
+		g_object_ref (name);
 	}
 
 	if (filter->priv->name != NULL)
-		camel_object_unref (filter->priv->name);
+		g_object_unref (filter->priv->name);
 
 	filter->priv->name = name;
 }
@@ -190,7 +192,7 @@ camel_mime_filter_index_set_index (CamelMimeFilterIndex *filter,
 
 	if (index != NULL) {
 		g_return_if_fail (CAMEL_IS_INDEX (index));
-		camel_object_ref (index);
+		g_object_ref (index);
 	}
 
 	if (filter->priv->index) {
@@ -200,7 +202,7 @@ camel_mime_filter_index_set_index (CamelMimeFilterIndex *filter,
 		camel_mime_filter_complete (
 			CAMEL_MIME_FILTER (filter),
 			"", 0, 0, &out, &outlen, &outspace);
-		camel_object_unref (index);
+		g_object_unref (filter->priv->index);
 	}
 
 	filter->priv->index = index;

@@ -29,6 +29,10 @@
 
 #include "camel-sasl-ntlm.h"
 
+#define CAMEL_SASL_NTLM_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_SASL_NTLM, CamelSaslNTLMPrivate))
+
 struct _CamelSaslNTLMPrivate {
 	gint placeholder;  /* allow for future expansion */
 };
@@ -43,7 +47,7 @@ CamelServiceAuthType camel_sasl_ntlm_authtype = {
 	TRUE
 };
 
-static CamelSaslClass *parent_class = NULL;
+G_DEFINE_TYPE (CamelSaslNTLM, camel_sasl_ntlm, CAMEL_TYPE_SASL)
 
 #define NTLM_REQUEST "NTLMSSP\x00\x01\x00\x00\x00\x06\x82\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x30\x00\x00\x00\x00\x00\x00\x00\x30\x00\x00\x00"
 
@@ -722,25 +726,14 @@ camel_sasl_ntlm_class_init (CamelSaslNTLMClass *class)
 {
 	CamelSaslClass *sasl_class;
 
-	parent_class = CAMEL_SASL_CLASS (camel_type_get_global_classfuncs (camel_sasl_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelSaslNTLMPrivate));
 
 	sasl_class = CAMEL_SASL_CLASS (class);
 	sasl_class->challenge = sasl_ntlm_challenge;
 }
 
-CamelType
-camel_sasl_ntlm_get_type (void)
+static void
+camel_sasl_ntlm_init (CamelSaslNTLM *sasl)
 {
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (
-			camel_sasl_get_type (), "CamelSaslNTLM",
-			sizeof (CamelSaslNTLM),
-			sizeof (CamelSaslNTLMClass),
-			(CamelObjectClassInitFunc) camel_sasl_ntlm_class_init,
-			NULL, NULL, NULL);
-	}
-
-	return type;
+	sasl->priv = CAMEL_SASL_NTLM_GET_PRIVATE (sasl);
 }

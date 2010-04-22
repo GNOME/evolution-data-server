@@ -26,12 +26,12 @@
 
 #define d(x)
 
-static CamelAddressClass *camel_nntp_address_parent;
-
 struct _address {
 	gchar *name;
 	gchar *address;
 };
+
+G_DEFINE_TYPE (CamelNNTPAddress, camel_nntp_address, CAMEL_TYPE_ADDRESS)
 
 /* since newsgropus are 7bit ascii, decode/unformat are the same */
 static gint
@@ -110,8 +110,6 @@ camel_nntp_address_class_init (CamelNNTPAddressClass *class)
 {
 	CamelAddressClass *address_class;
 
-	camel_nntp_address_parent = CAMEL_ADDRESS_CLASS(camel_type_get_global_classfuncs(camel_address_get_type()));
-
 	address_class = CAMEL_ADDRESS_CLASS (class);
 	address_class->decode = nntp_address_decode;
 	address_class->encode = nntp_address_encode;
@@ -126,24 +124,6 @@ camel_nntp_address_init (CamelNNTPAddress *nntp_address)
 {
 }
 
-CamelType
-camel_nntp_address_get_type(void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register(camel_address_get_type(), "CamelNNTPAddress",
-					   sizeof (CamelNNTPAddress),
-					   sizeof (CamelNNTPAddressClass),
-					   (CamelObjectClassInitFunc) camel_nntp_address_class_init,
-					   NULL,
-					   (CamelObjectInitFunc) camel_nntp_address_init,
-					   NULL);
-	}
-
-	return type;
-}
-
 /**
  * camel_nntp_address_new:
  *
@@ -154,7 +134,7 @@ camel_nntp_address_get_type(void)
 CamelNNTPAddress *
 camel_nntp_address_new (void)
 {
-	return CAMEL_NNTP_ADDRESS(camel_object_new(camel_nntp_address_get_type()));
+	return g_object_new (CAMEL_TYPE_NNTP_ADDRESS, NULL);
 }
 
 /**

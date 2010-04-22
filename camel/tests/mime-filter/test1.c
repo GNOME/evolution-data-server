@@ -16,8 +16,8 @@
 
 struct {
 	gint flags;
-	gchar *in;
-	gchar *out;
+	const gchar *in;
+	const gchar *out;
 } tests[] = {
 	{ CAMEL_MIME_FILTER_CANON_FROM|CAMEL_MIME_FILTER_CANON_CRLF,
 	  "From \nRussia - with love.\n\n",
@@ -51,7 +51,7 @@ struct {
 gint
 main (gint argc, gchar **argv)
 {
-	CamelStreamFilter *filter;
+	CamelStream *filter;
 	CamelMimeFilter *sh;
 	gint i;
 
@@ -68,7 +68,7 @@ main (gint argc, gchar **argv)
 		for (step=1;step<20;step++) {
 			GByteArray *byte_array;
 			CamelStream *out;
-			gchar *p;
+			const gchar *p;
 
 			camel_test_push("Chunk size %d\n", step);
 

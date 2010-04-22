@@ -438,15 +438,15 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 				filter = camel_mime_filter_charset_new (charset, "UTF-8");
 				filtered_stream = camel_stream_filter_new (content);
 				camel_stream_filter_add ((CamelStreamFilter *) filtered_stream, filter);
-				camel_object_unref (filter);
+				g_object_unref (filter);
 			} else {
 				/* US-ASCII or UTF-8 */
-				filtered_stream = camel_object_ref (content);
+				filtered_stream = g_object_ref (content);
 			}
 
 			camel_data_wrapper_decode_to_stream (dw, filtered_stream);
 			camel_stream_flush (filtered_stream);
-			camel_object_unref (filtered_stream);
+			g_object_unref (filtered_stream);
 
 			camel_stream_write (content, "", 1);
 			e_gw_item_set_message (item, (const gchar *)byte_array->data);
@@ -455,7 +455,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 			send_as_attachment (cnc, item, content, type, dw, NULL, NULL, &attach_list);
 		}
 
-		camel_object_unref (content);
+		g_object_unref (content);
 	}
 	/*Populate EGwItem*/
 	/*From Address*/
@@ -654,7 +654,7 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 				cid = camel_mime_part_get_content_id (temp_part);
 				send_as_attachment (cnc, item, temp_content, type, temp_dw, filename, cid, attach_list);
 			}
-			camel_object_unref (temp_content);
+			g_object_unref (temp_content);
 			continue;
 		}
 
@@ -673,15 +673,15 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 				filter = camel_mime_filter_charset_new (charset, "UTF-8");
 				filtered_stream = camel_stream_filter_new (content);
 				camel_stream_filter_add ((CamelStreamFilter *) filtered_stream, filter);
-				camel_object_unref (filter);
+				g_object_unref (filter);
 			} else {
 				/* US-ASCII or UTF-8 */
-				filtered_stream = camel_object_ref (content);
+				filtered_stream = g_object_ref (content);
 			}
 
 			camel_data_wrapper_decode_to_stream (dw, filtered_stream);
 			camel_stream_flush (filtered_stream);
-			camel_object_unref (filtered_stream);
+			g_object_unref (filtered_stream);
 
 			camel_stream_write (content, "", 1);
 			e_gw_item_set_message (item, (const gchar *) buffer->data);
@@ -694,6 +694,6 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 			send_as_attachment (cnc, item, content, type, dw, filename, content_id, attach_list);
 		}
 
-		camel_object_unref (content);
+		g_object_unref (content);
 	} /*end of for*/
 }

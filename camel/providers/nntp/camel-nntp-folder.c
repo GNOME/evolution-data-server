@@ -39,21 +39,34 @@
 #include "camel-nntp-store.h"
 #include "camel-nntp-summary.h"
 
-static CamelDiscoFolderClass *parent_class = NULL;
+#define CAMEL_NNTP_FOLDER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_NNTP_FOLDER, CamelNNTPFolderPrivate))
+
+G_DEFINE_TYPE (CamelNNTPFolder, camel_nntp_folder, CAMEL_TYPE_DISCO_FOLDER)
 
 static void
-nntp_folder_finalize (CamelNNTPFolder *nntp_folder)
+nntp_folder_dispose (GObject *object)
 {
-	CamelException ex;
-
-	camel_exception_init (&ex);
+	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (object);
 
 	camel_folder_summary_save_to_db (
-		CAMEL_FOLDER (nntp_folder)->summary, &ex);
+		CAMEL_FOLDER (nntp_folder)->summary, NULL);
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_nntp_folder_parent_class)->dispose (object);
+}
+
+static void
+nntp_folder_finalize (GObject *object)
+{
+	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (object);
 
 	g_mutex_free (nntp_folder->priv->search_lock);
 	g_mutex_free (nntp_folder->priv->cache_lock);
-	g_free (nntp_folder->priv);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_nntp_folder_parent_class)->finalize (object);
 }
 
 gboolean
@@ -106,7 +119,9 @@ nntp_folder_sync_online (CamelFolder *folder, CamelException *ex)
 	gboolean success;
 
 	camel_service_lock (CAMEL_SERVICE (folder->parent_store), CS_REC_CONNECT_LOCK);
+
 	success = camel_folder_summary_save_to_db (folder->summary, ex);
+
 	camel_service_unlock (CAMEL_SERVICE (folder->parent_store), CS_REC_CONNECT_LOCK);
 
 	return success;
@@ -118,7 +133,9 @@ nntp_folder_sync_offline (CamelFolder *folder, CamelException *ex)
 	gboolean success;
 
 	camel_service_lock (CAMEL_SERVICE (folder->parent_store), CS_REC_CONNECT_LOCK);
+
 	success = camel_folder_summary_save_to_db (folder->summary, ex);
+
 	camel_service_unlock (CAMEL_SERVICE (folder->parent_store), CS_REC_CONNECT_LOCK);
 
 	return success;
@@ -161,7 +178,7 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder, const gchar *id, con
 			if (camel_stream_reset (stream) == -1)
 				goto fail;
 		} else {
-			stream = camel_object_ref (nntp_store->stream);
+			stream = g_object_ref (nntp_store->stream);
 		}
 	} else if (ret == 423 || ret == 430) {
 		camel_exception_setv (
@@ -215,7 +232,7 @@ nntp_folder_cache_message (CamelDiscoFolder *disco_folder,
 	stream = nntp_folder_download_message (
 		(CamelNNTPFolder *) disco_folder, article, msgid, ex);
 	if (stream)
-		camel_object_unref (stream);
+		g_object_unref (stream);
 	else
 		success = FALSE;
 
@@ -276,11 +293,11 @@ nntp_folder_get_message (CamelFolder *folder, const gchar *uid, CamelException *
 				ex, CAMEL_EXCEPTION_SYSTEM,
 				_("Cannot get message %s: %s"), uid,
 				g_strerror (errno));
-		camel_object_unref (message);
+		g_object_unref (message);
 		message = NULL;
 	}
 
-	camel_object_unref (stream);
+	g_object_unref (stream);
 fail:
 	if (camel_folder_change_info_changed (nntp_folder->changes)) {
 		changes = nntp_folder->changes;
@@ -414,7 +431,7 @@ nntp_folder_append_message_online (CamelFolder *folder,
 	filtered_stream = camel_stream_filter_new (stream);
 	camel_stream_filter_add (
 		CAMEL_STREAM_FILTER (filtered_stream), crlffilter);
-	camel_object_unref (crlffilter);
+	g_object_unref (crlffilter);
 
 	/* remove mail 'To', 'CC', and 'BCC' headers */
 	savedhdrs = NULL;
@@ -457,7 +474,7 @@ nntp_folder_append_message_online (CamelFolder *folder,
 		success = FALSE;
 	}
 
-	camel_object_unref (filtered_stream);
+	g_object_unref (filtered_stream);
 	g_free(group);
 	header->next = savedhdrs;
 
@@ -501,11 +518,15 @@ nntp_folder_transfer_message (CamelFolder *source,
 static void
 camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 {
+	GObjectClass *object_class;
 	CamelFolderClass *folder_class;
 	CamelDiscoFolderClass *disco_folder_class;
 
-	parent_class = CAMEL_DISCO_FOLDER_CLASS (camel_type_get_global_classfuncs (camel_disco_folder_get_type ()));
-	folder_class = CAMEL_FOLDER_CLASS (camel_type_get_global_classfuncs (camel_folder_get_type ()));
+	g_type_class_add_private (class, sizeof (CamelNNTPFolderPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = nntp_folder_dispose;
+	object_class->finalize = nntp_folder_finalize;
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
 	folder_class->get_message = nntp_folder_get_message;
@@ -532,29 +553,11 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 static void
 camel_nntp_folder_init (CamelNNTPFolder *nntp_folder)
 {
-	nntp_folder->priv = g_new0 (CamelNNTPFolderPrivate, 1);
+	nntp_folder->priv = CAMEL_NNTP_FOLDER_GET_PRIVATE (nntp_folder);
 
 	nntp_folder->changes = camel_folder_change_info_new ();
 	nntp_folder->priv->search_lock = g_mutex_new ();
 	nntp_folder->priv->cache_lock = g_mutex_new ();
-}
-
-CamelType
-camel_nntp_folder_get_type (void)
-{
-	static CamelType camel_nntp_folder_type = CAMEL_INVALID_TYPE;
-
-	if (camel_nntp_folder_type == CAMEL_INVALID_TYPE)	{
-		camel_nntp_folder_type = camel_type_register (CAMEL_DISCO_FOLDER_TYPE, "CamelNNTPFolder",
-							      sizeof (CamelNNTPFolder),
-							      sizeof (CamelNNTPFolderClass),
-							      (CamelObjectClassInitFunc) camel_nntp_folder_class_init,
-							      NULL,
-							      (CamelObjectInitFunc) camel_nntp_folder_init,
-							      (CamelObjectFinalizeFunc) nntp_folder_finalize);
-	}
-
-	return camel_nntp_folder_type;
 }
 
 CamelFolder *
@@ -577,7 +580,7 @@ camel_nntp_folder_new (CamelStore *parent,
 	/* If this doesn't work, stuff wont save, but let it continue anyway */
 	g_mkdir_with_parents (root, 0700);
 
-	folder = (CamelFolder *) camel_object_new (CAMEL_NNTP_FOLDER_TYPE);
+	folder = g_object_new (CAMEL_TYPE_NNTP_FOLDER, NULL);
 	nntp_folder = (CamelNNTPFolder *)folder;
 
 	camel_folder_construct (folder, parent, folder_name, folder_name);
@@ -604,7 +607,7 @@ camel_nntp_folder_new (CamelStore *parent,
 	}
 
 	if (subscribed && !camel_folder_refresh_info (folder, ex)) {
-		camel_object_unref (folder);
+		g_object_unref (folder);
 		folder = NULL;
         }
 

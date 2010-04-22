@@ -23,7 +23,28 @@
 
 #include "camel-view-summary-disk.h"
 
-typedef struct _CamelIMAPXViewSummary      CamelIMAPXViewSummary;
+/* Standard GObject macros */
+#define CAMEL_TYPE_IMAPX_VIEW_SUMMARY \
+	(camel_imapx_view_summary_get_type ())
+#define CAMEL_IMAPX_VIEW_SUMMARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_IMAPX_VIEW_SUMMARY, CamelIMAPXViewSummary))
+#define CAMEL_IMAPX_VIEW_SUMMARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_IMAPX_VIEW_SUMMARY, CamelIMAPXViewSummaryClass))
+#define CAMEL_IS_IMAPX_VIEW_SUMMARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_IMAPX_VIEW_SUMMARY))
+#define CAMEL_IS_IMAPX_VIEW_SUMMARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_IMAPX_VIEW_SUMMARY))
+#define CAMEL_IMAPX_VIEW_SUMMARY_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_IMAPX_VIEW_SUMMARY, CamelIMAPXViewSummaryClass))
+
+G_BEGIN_DECLS
+
+typedef struct _CamelIMAPXViewSummary CamelIMAPXViewSummary;
 typedef struct _CamelIMAPXViewSummaryClass CamelIMAPXViewSummaryClass;
 
 enum {
@@ -52,12 +73,17 @@ struct _CamelIMAPXViewSummaryClass {
 	CamelViewSummaryDiskClass parent_class;
 };
 
-CamelType		camel_imapx_view_summary_get_type	(void);
-CamelIMAPXViewSummary      *camel_imapx_view_summary_new	(const gchar *base, CamelException *ex);
+GType		camel_imapx_view_summary_get_type (void);
+CamelIMAPXViewSummary *
+		camel_imapx_view_summary_new	(const gchar *base,
+						 CamelException *ex);
 
 /* called on root view */
-guint32 camel_imapx_view_next_uid(CamelIMAPXView *view);
-void camel_imapx_view_last_uid(CamelIMAPXView *view, guint32 uid);
+guint32		camel_imapx_view_next_uid	(CamelIMAPXView *view);
+void		camel_imapx_view_last_uid	(CamelIMAPXView *view,
+						 guint32 uid);
+
+G_END_DECLS
 
 #endif /* CAMEL_IMAPX_VIEW_SUMMARY_H */
 

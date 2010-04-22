@@ -38,8 +38,6 @@
 
 #define d(x)
 
-static gpointer camel_maildir_store_parent_class;
-
 static CamelFolder *get_folder(CamelStore * store, const gchar *folder_name, guint32 flags, CamelException * ex);
 static CamelFolder *get_inbox (CamelStore *store, CamelException *ex);
 static gboolean delete_folder(CamelStore * store, const gchar *folder_name, CamelException * ex);
@@ -50,12 +48,12 @@ static CamelFolderInfo * get_folder_info (CamelStore *store, const gchar *top, g
 static gboolean maildir_compare_folder_name(gconstpointer a, gconstpointer b);
 static guint maildir_hash_folder_name(gconstpointer a);
 
+G_DEFINE_TYPE (CamelMaildirStore, camel_maildir_store, CAMEL_TYPE_LOCAL_STORE)
+
 static void
 camel_maildir_store_class_init (CamelMaildirStoreClass *class)
 {
 	CamelStoreClass *store_class;
-
-	camel_maildir_store_parent_class = (CamelLocalStoreClass *)camel_type_get_global_classfuncs(camel_local_store_get_type());
 
 	store_class = CAMEL_STORE_CLASS (class);
 	store_class->hash_folder_name = maildir_hash_folder_name;
@@ -68,22 +66,9 @@ camel_maildir_store_class_init (CamelMaildirStoreClass *class)
 	store_class->free_folder_info = camel_store_free_folder_info_full;
 }
 
-CamelType
-camel_maildir_store_get_type(void)
+static void
+camel_maildir_store_init (CamelMaildirStore *maildir_store)
 {
-	static CamelType camel_maildir_store_type = CAMEL_INVALID_TYPE;
-
-	if (camel_maildir_store_type == CAMEL_INVALID_TYPE) {
-		camel_maildir_store_type = camel_type_register(CAMEL_LOCAL_STORE_TYPE, "CamelMaildirStore",
-							  sizeof(CamelMaildirStore),
-							  sizeof(CamelMaildirStoreClass),
-							  (CamelObjectClassInitFunc) camel_maildir_store_class_init,
-							  NULL,
-							  NULL,
-							  NULL);
-	}
-
-	return camel_maildir_store_type;
 }
 
 /* This fixes up some historical cruft of names starting with "./" */
@@ -345,7 +330,7 @@ fill_fi (CamelStore *store,
 			camel_folder_refresh_info(folder, NULL);
 		fi->unread = camel_folder_get_unread_message_count(folder);
 		fi->total = camel_folder_get_message_count(folder);
-		camel_object_unref (folder);
+		g_object_unref (folder);
 	} else {
 		gchar *path, *folderpath;
 		CamelFolderSummary *s;
@@ -360,7 +345,7 @@ fill_fi (CamelStore *store,
 			fi->unread = s->unread_count;
 			fi->total = s->saved_count;
 		}
-		camel_object_unref (s);
+		g_object_unref (s);
 		g_free(folderpath);
 		g_free(path);
 	}

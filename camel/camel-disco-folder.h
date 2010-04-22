@@ -32,12 +32,24 @@
 
 #include <camel/camel-folder.h>
 
-#define CAMEL_DISCO_FOLDER_TYPE     (camel_disco_folder_get_type ())
-#define CAMEL_DISCO_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_DISCO_FOLDER_TYPE, CamelDiscoFolder))
-#define CAMEL_DISCO_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_DISCO_FOLDER_TYPE, CamelDiscoFolderClass))
-#define CAMEL_IS_DISCO_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_DISCO_FOLDER_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_DISCO_FOLDER \
+	(camel_disco_folder_get_type ())
+#define CAMEL_DISCO_FOLDER(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_DISCO_FOLDER, CamelDiscoFolder))
+#define CAMEL_DISCO_FOLDER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_DISCO_FOLDER, CamelDiscoFolderClass))
+#define CAMEL_IS_DISCO_FOLDER(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_DISCO_FOLDER))
+#define CAMEL_IS_DISCO_FOLDER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_DISCO_FOLDER))
 #define CAMEL_DISCO_FOLDER_GET_CLASS(obj) \
-	((CamelDiscoFolderClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_DISCO_FOLDER, CamelDiscoFolderClass))
 
 G_BEGIN_DECLS
 
@@ -124,7 +136,7 @@ struct _CamelDiscoFolderClass {
 						 const gchar *new_uid);
 };
 
-CamelType	camel_disco_folder_get_type	(void);
+GType		camel_disco_folder_get_type	(void);
 gboolean	camel_disco_folder_expunge_uids	(CamelFolder *folder,
 						 GPtrArray *uids,
 						 CamelException *ex);

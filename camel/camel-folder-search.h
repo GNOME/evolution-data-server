@@ -30,12 +30,24 @@
 #include <camel/camel-folder.h>
 #include <camel/camel-index.h>
 
-#define CAMEL_FOLDER_SEARCH_TYPE         (camel_folder_search_get_type ())
-#define CAMEL_FOLDER_SEARCH(obj)         CAMEL_CHECK_CAST (obj, camel_folder_search_get_type (), CamelFolderSearch)
-#define CAMEL_FOLDER_SEARCH_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_folder_search_get_type (), CamelFolderSearchClass)
-#define CAMEL_IS_FOLDER_SEARCH(obj)      CAMEL_CHECK_TYPE (obj, camel_folder_search_get_type ())
+/* Standard GObject macros */
+#define CAMEL_TYPE_FOLDER_SEARCH \
+	(camel_folder_search_get_type ())
+#define CAMEL_FOLDER_SEARCH(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_FOLDER_SEARCH, CamelFolderSearch))
+#define CAMEL_FOLDER_SEARCH_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_FOLDER_SEARCH, CamelFolderSearchClass))
+#define CAMEL_IS_FOLDER_SEARCH(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_FOLDER_SEARCH))
+#define CAMEL_IS_FOLDER_SEARCH_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_FOLDER_SEARCH))
 #define CAMEL_FOLDER_SEARCH_GET_CLASS(obj) \
-	((CamelFolderSearchClass *) CAMEL_OBJECT_GET_CLASS (obj))
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_FOLDER_SEARCH, CamelFolderSearchClass))
 
 G_BEGIN_DECLS
 
@@ -136,7 +148,7 @@ struct _CamelFolderSearchClass {
 
 };
 
-CamelType		camel_folder_search_get_type	(void);
+GType		camel_folder_search_get_type	(void);
 CamelFolderSearch      *camel_folder_search_new	(void);
 void camel_folder_search_construct (CamelFolderSearch *search);
 

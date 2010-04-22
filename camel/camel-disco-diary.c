@@ -43,10 +43,12 @@
 
 #define d(x)
 
+G_DEFINE_TYPE (CamelDiscoDiary, camel_disco_diary, CAMEL_TYPE_OBJECT)
+
 static void
 unref_folder (gpointer key, gpointer value, gpointer data)
 {
-	camel_object_unref (value);
+	g_object_unref (value);
 }
 
 static void
@@ -57,8 +59,10 @@ free_uid (gpointer key, gpointer value, gpointer data)
 }
 
 static void
-disco_diary_finalize (CamelDiscoDiary *diary)
+disco_diary_finalize (GObject *object)
 {
+	CamelDiscoDiary *diary = CAMEL_DISCO_DIARY (object);
+
 	if (diary->file)
 		fclose (diary->file);
 
@@ -71,11 +75,18 @@ disco_diary_finalize (CamelDiscoDiary *diary)
 		g_hash_table_foreach (diary->uidmap, free_uid, NULL);
 		g_hash_table_destroy (diary->uidmap);
 	}
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_disco_diary_parent_class)->finalize (object);
 }
 
 static void
 camel_disco_diary_class_init (CamelDiscoDiaryClass *class)
 {
+	GObjectClass *object_class;
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = disco_diary_finalize;
 }
 
 static void
@@ -83,25 +94,6 @@ camel_disco_diary_init (CamelDiscoDiary *diary)
 {
 	diary->folders = g_hash_table_new (g_str_hash, g_str_equal);
 	diary->uidmap = g_hash_table_new (g_str_hash, g_str_equal);
-}
-
-CamelType
-camel_disco_diary_get_type (void)
-{
-	static CamelType camel_disco_diary_type = CAMEL_INVALID_TYPE;
-
-	if (camel_disco_diary_type == CAMEL_INVALID_TYPE) {
-		camel_disco_diary_type = camel_type_register (
-			CAMEL_TYPE_OBJECT, "CamelDiscoDiary",
-			sizeof (CamelDiscoDiary),
-			sizeof (CamelDiscoDiaryClass),
-			(CamelObjectClassInitFunc) camel_disco_diary_class_init,
-			NULL,
-			(CamelObjectInitFunc) camel_disco_diary_init,
-			(CamelObjectFinalizeFunc) disco_diary_finalize);
-	}
-
-	return camel_disco_diary_type;
 }
 
 static gint
@@ -279,7 +271,7 @@ close_folder (gpointer name, gpointer folder, gpointer data)
 {
 	g_free (name);
 	camel_folder_sync (folder, FALSE, NULL);
-	camel_object_unref (folder);
+	g_object_unref (folder);
 }
 
 void
@@ -424,7 +416,7 @@ camel_disco_diary_new (CamelDiscoStore *store,
 	g_return_val_if_fail (CAMEL_IS_DISCO_STORE (store), NULL);
 	g_return_val_if_fail (filename != NULL, NULL);
 
-	diary = CAMEL_DISCO_DIARY (camel_object_new (CAMEL_DISCO_DIARY_TYPE));
+	diary = g_object_new (CAMEL_TYPE_DISCO_DIARY, NULL);
 	diary->store = store;
 
 	d(printf("diary log file '%s'\n", filename));
@@ -443,7 +435,7 @@ camel_disco_diary_new (CamelDiscoStore *store,
 
 	diary->file = g_fopen (filename, "a+b");
 	if (!diary->file) {
-		camel_object_unref (diary);
+		g_object_unref (diary);
 		camel_exception_setv (
 			ex, CAMEL_EXCEPTION_SYSTEM,
 			"Could not open journal file: %s",

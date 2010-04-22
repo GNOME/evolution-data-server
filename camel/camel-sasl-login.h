@@ -29,10 +29,24 @@
 
 #include <camel/camel-sasl.h>
 
-#define CAMEL_SASL_LOGIN_TYPE     (camel_sasl_login_get_type ())
-#define CAMEL_SASL_LOGIN(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_SASL_LOGIN_TYPE, CamelSaslLogin))
-#define CAMEL_SASL_LOGIN_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_SASL_LOGIN_TYPE, CamelSaslLoginClass))
-#define CAMEL_IS_SASL_LOGIN(o)    (CAMEL_CHECK_TYPE((o), CAMEL_SASL_LOGIN_TYPE))
+/* Standard GObject macros */
+#define CAMEL_TYPE_SASL_LOGIN \
+	(camel_sasl_login_get_type ())
+#define CAMEL_SASL_LOGIN(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_SASL_LOGIN, CamelSaslLogin))
+#define CAMEL_SASL_LOGIN_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_SASL_LOGIN, CamelSaslLoginClass))
+#define CAMEL_IS_SASL_LOGIN(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_SASL_LOGIN))
+#define CAMEL_IS_SASL_LOGIN_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_SASL_LOGIN))
+#define CAMEL_SASL_LOGIN_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_SASL_LOGIN, CamelSaslLoginClass))
 
 G_BEGIN_DECLS
 
@@ -49,7 +63,7 @@ struct _CamelSaslLoginClass {
 	CamelSaslClass parent_class;
 };
 
-CamelType camel_sasl_login_get_type (void);
+GType camel_sasl_login_get_type (void);
 
 extern CamelServiceAuthType camel_sasl_login_authtype;
 
