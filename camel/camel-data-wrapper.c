@@ -453,7 +453,8 @@ camel_data_wrapper_lock (CamelDataWrapper *data_wrapper,
  * @data_wrapper: a #CamelDataWrapper
  * @lock: lock type to unlock
  *
- * Unlocks #data_wrapper's #lock, previously locked with camel_data_wrapper_lock().
+ * Unlocks #data_wrapper's #lock, previously locked with
+ * camel_data_wrapper_lock().
  *
  * Since: 3.0
  **/

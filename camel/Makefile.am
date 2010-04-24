@@ -159,7 +159,6 @@ libcamel_1_2_la_CPPFLAGS = \
 
 libcamel_1_2_la_SOURCES = 			\
 	camel-address.c				\
-	camel-arg.c				\
 	camel-block-file.c			\
 	camel-certdb.c				\
 	camel-charset-map.c			\
@@ -232,7 +231,6 @@ libcamel_1_2_la_SOURCES = 			\
 
 libcamelinclude_HEADERS =			\
 	camel-address.h				\
-	camel-arg.h				\
 	camel-block-file.h			\
 	camel-certdb.h				\
 	camel-charset-map.h			\

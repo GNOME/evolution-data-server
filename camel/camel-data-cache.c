@@ -188,6 +188,16 @@ camel_data_cache_new (const gchar *path,
 	return g_object_new (CAMEL_TYPE_DATA_CACHE, "path", path, NULL);
 }
 
+/**
+ * camel_data_cache_get_path:
+ * @cdc: a #CamelDataCache
+ *
+ * Returns the path to the data cache.
+ *
+ * Returns: the path to the data cache
+ *
+ * Since: 3.0
+ **/
 const gchar *
 camel_data_cache_get_path (CamelDataCache *cdc)
 {
@@ -196,6 +206,15 @@ camel_data_cache_get_path (CamelDataCache *cdc)
 	return cdc->priv->path;
 }
 
+/**
+ * camel_data_cache_set_path:
+ * @cdc: a #CamelDataCache
+ * @path: path to the data cache
+ *
+ * Sets the path to the data cache.
+ *
+ * Since: 3.0
+ **/
 void
 camel_data_cache_set_path (CamelDataCache *cdc,
                            const gchar *path)

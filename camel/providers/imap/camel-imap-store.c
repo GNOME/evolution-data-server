@@ -70,9 +70,6 @@ static gboolean construct (CamelService *service, CamelSession *session,
 		       CamelProvider *provider, CamelURL *url,
 		       CamelException *ex);
 
-static gint imap_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
-static gint imap_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
-
 static gchar *imap_get_name (CamelService *service, gboolean brief);
 
 static gboolean imap_noop (CamelStore *store, CamelException *ex);
@@ -152,17 +149,12 @@ static void
 camel_imap_store_class_init (CamelImapStoreClass *class)
 {
 	GObjectClass *object_class;
-	CamelObjectClass *camel_object_class;
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = imap_store_dispose;
 	object_class->finalize = imap_store_finalize;
-
-	camel_object_class = CAMEL_OBJECT_CLASS (class);
-	camel_object_class->setv = imap_setv;
-	camel_object_class->getv = imap_getv;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->construct = construct;
@@ -286,126 +278,6 @@ construct (CamelService *service, CamelSession *session,
 	}
 
 	return TRUE;
-}
-
-static gint
-imap_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
-{
-	CamelImapStore *store = (CamelImapStore *) object;
-	guint32 tag, flags;
-	gint i;
-
-	for (i = 0; i < args->argc; i++) {
-		tag = args->argv[i].tag;
-
-		/* make sure this is an arg we're supposed to handle */
-		if ((tag & CAMEL_ARG_TAG) <= CAMEL_IMAP_STORE_ARG_FIRST ||
-		    (tag & CAMEL_ARG_TAG) >= CAMEL_IMAP_STORE_ARG_FIRST + 100)
-			continue;
-
-		switch (tag) {
-		case CAMEL_IMAP_STORE_NAMESPACE:
-			if (strcmp (store->users_namespace, args->argv[i].ca_str) != 0) {
-				g_free (store->users_namespace);
-				store->users_namespace = g_strdup (args->argv[i].ca_str);
-				/* the current imap code will need to do a reconnect for this to take effect */
-				/*reconnect = TRUE;*/
-			}
-			break;
-		case CAMEL_IMAP_STORE_OVERRIDE_NAMESPACE:
-			flags = args->argv[i].ca_int ? IMAP_PARAM_OVERRIDE_NAMESPACE : 0;
-			flags |= (store->parameters & ~IMAP_PARAM_OVERRIDE_NAMESPACE);
-
-			if (store->parameters != flags) {
-				store->parameters = flags;
-				/* the current imap code will need to do a reconnect for this to take effect */
-				/*reconnect = TRUE;*/
-			}
-			break;
-		case CAMEL_IMAP_STORE_CHECK_ALL:
-			flags = args->argv[i].ca_int ? IMAP_PARAM_CHECK_ALL : 0;
-			flags |= (store->parameters & ~IMAP_PARAM_CHECK_ALL);
-			store->parameters = flags;
-			/* no need to reconnect for this option to take effect... */
-			break;
-		case CAMEL_IMAP_STORE_CHECK_LSUB:
-			flags = args->argv[i].ca_int ? IMAP_PARAM_CHECK_LSUB : 0;
-			store->parameters = flags | (store->parameters & ~IMAP_PARAM_CHECK_LSUB);
-			break;
-		case CAMEL_IMAP_STORE_FILTER_INBOX:
-			flags = args->argv[i].ca_int ? IMAP_PARAM_FILTER_INBOX : 0;
-			flags |= (store->parameters & ~IMAP_PARAM_FILTER_INBOX);
-			store->parameters = flags;
-			/* no need to reconnect for this option to take effect... */
-			break;
-		case CAMEL_IMAP_STORE_FILTER_JUNK:
-			flags = args->argv[i].ca_int ? IMAP_PARAM_FILTER_JUNK : 0;
-			store->parameters = flags | (store->parameters & ~IMAP_PARAM_FILTER_JUNK);
-			break;
-		case CAMEL_IMAP_STORE_FILTER_JUNK_INBOX:
-			flags = args->argv[i].ca_int ? IMAP_PARAM_FILTER_JUNK_INBOX : 0;
-			store->parameters = flags | (store->parameters & ~IMAP_PARAM_FILTER_JUNK_INBOX);
-			break;
-		default:
-			/* error?? */
-			continue;
-		}
-
-		/* let our parent know that we've handled this arg */
-		camel_argv_ignore (args, i);
-	}
-
-	/* FIXME: if we need to reconnect for a change to take affect,
-           we need to do it here... or, better yet, somehow chain it
-           up to CamelService's setv implementation. */
-
-	return CAMEL_OBJECT_CLASS (camel_imap_store_parent_class)->setv (object, ex, args);
-}
-
-static gint
-imap_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
-{
-	CamelImapStore *store = (CamelImapStore *) object;
-	guint32 tag;
-	gint i;
-
-	for (i = 0; i < args->argc; i++) {
-		tag = args->argv[i].tag;
-
-		/* make sure this is an arg we're supposed to handle */
-		if ((tag & CAMEL_ARG_TAG) <= CAMEL_IMAP_STORE_ARG_FIRST ||
-		    (tag & CAMEL_ARG_TAG) >= CAMEL_IMAP_STORE_ARG_FIRST + 100)
-			continue;
-
-		switch (tag) {
-		case CAMEL_IMAP_STORE_NAMESPACE:
-			*args->argv[i].ca_str = store->users_namespace;
-			break;
-		case CAMEL_IMAP_STORE_OVERRIDE_NAMESPACE:
-			*args->argv[i].ca_int = store->parameters & IMAP_PARAM_OVERRIDE_NAMESPACE ? TRUE : FALSE;
-			break;
-		case CAMEL_IMAP_STORE_CHECK_ALL:
-			*args->argv[i].ca_int = store->parameters & IMAP_PARAM_CHECK_ALL ? TRUE : FALSE;
-			break;
-		case CAMEL_IMAP_STORE_CHECK_LSUB:
-			*args->argv[i].ca_int = store->parameters & IMAP_PARAM_CHECK_LSUB ? TRUE : FALSE;
-			break;
-		case CAMEL_IMAP_STORE_FILTER_INBOX:
-			*args->argv[i].ca_int = store->parameters & IMAP_PARAM_FILTER_INBOX ? TRUE : FALSE;
-			break;
-		case CAMEL_IMAP_STORE_FILTER_JUNK:
-			*args->argv[i].ca_int = store->parameters & IMAP_PARAM_FILTER_JUNK ? TRUE : FALSE;
-			break;
-		case CAMEL_IMAP_STORE_FILTER_JUNK_INBOX:
-			*args->argv[i].ca_int = store->parameters & IMAP_PARAM_FILTER_JUNK_INBOX ? TRUE : FALSE;
-			break;
-		default:
-			/* error? */
-			break;
-		}
-	}
-
-	return CAMEL_OBJECT_CLASS (camel_imap_store_parent_class)->getv (object, ex, args);
 }
 
 static gchar *
@@ -1667,12 +1539,13 @@ imap_get_trash(CamelStore *store, CamelException *ex)
 	CamelFolder *folder = CAMEL_STORE_CLASS(camel_imap_store_parent_class)->get_trash(store, ex);
 
 	if (folder) {
+		CamelObject *object = CAMEL_OBJECT (folder);
 		gchar *state = g_build_filename(((CamelImapStore *)store)->storage_path, "system", "Trash.cmeta", NULL);
 
-		camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, state, NULL);
+		camel_object_set_state_filename (object, state);
 		g_free(state);
 		/* no defaults? */
-		camel_object_state_read(folder);
+		camel_object_state_read (object);
 	}
 
 	return folder;
@@ -1684,12 +1557,13 @@ imap_get_junk(CamelStore *store, CamelException *ex)
 	CamelFolder *folder = CAMEL_STORE_CLASS(camel_imap_store_parent_class)->get_junk(store, ex);
 
 	if (folder) {
+		CamelObject *object = CAMEL_OBJECT (folder);
 		gchar *state = g_build_filename(((CamelImapStore *)store)->storage_path, "system", "Junk.cmeta", NULL);
 
-		camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, state, NULL);
+		camel_object_set_state_filename (object, state);
 		g_free(state);
 		/* no defaults? */
-		camel_object_state_read(folder);
+		camel_object_state_read (object);
 	}
 
 	return folder;

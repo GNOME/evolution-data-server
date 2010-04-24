@@ -61,43 +61,11 @@ typedef struct _CamelFolder CamelFolder;
 typedef struct _CamelFolderClass CamelFolderClass;
 typedef struct _CamelFolderPrivate CamelFolderPrivate;
 
-enum {
-	CAMEL_FOLDER_ARG_FIRST = CAMEL_ARG_FIRST + 0x1000,
-	CAMEL_FOLDER_ARG_NAME = CAMEL_FOLDER_ARG_FIRST,
-	CAMEL_FOLDER_ARG_FULL_NAME,
-	CAMEL_FOLDER_ARG_STORE,
-	CAMEL_FOLDER_ARG_PERMANENTFLAGS,
-	CAMEL_FOLDER_ARG_TOTAL,
-	CAMEL_FOLDER_ARG_UNREAD, /* unread messages */
-	CAMEL_FOLDER_ARG_DELETED, /* deleted messages */
-	CAMEL_FOLDER_ARG_JUNKED, /* junked messages */
-	CAMEL_FOLDER_ARG_VISIBLE, /* visible !(deleted or junked) */
-	CAMEL_FOLDER_ARG_UID_ARRAY,
-	CAMEL_FOLDER_ARG_INFO_ARRAY,
-	CAMEL_FOLDER_ARG_PROPERTIES,
-	CAMEL_FOLDER_ARG_JUNKED_NOT_DELETED, /* junked, but not deleted messages */
-	CAMEL_FOLDER_ARG_LAST = CAMEL_ARG_FIRST + 0x2000
-};
-
-enum {
-	CAMEL_FOLDER_NAME = CAMEL_FOLDER_ARG_NAME | CAMEL_ARG_STR,
-	CAMEL_FOLDER_FULL_NAME = CAMEL_FOLDER_ARG_FULL_NAME | CAMEL_ARG_STR,
-	CAMEL_FOLDER_STORE = CAMEL_FOLDER_ARG_STORE | CAMEL_ARG_OBJ,
-	CAMEL_FOLDER_PERMANENTFLAGS = CAMEL_FOLDER_ARG_PERMANENTFLAGS | CAMEL_ARG_INT,
-	CAMEL_FOLDER_TOTAL = CAMEL_FOLDER_ARG_TOTAL | CAMEL_ARG_INT,
-	CAMEL_FOLDER_UNREAD = CAMEL_FOLDER_ARG_UNREAD | CAMEL_ARG_INT,
-	CAMEL_FOLDER_DELETED = CAMEL_FOLDER_ARG_DELETED | CAMEL_ARG_INT,
-	CAMEL_FOLDER_JUNKED = CAMEL_FOLDER_ARG_JUNKED | CAMEL_ARG_INT,
-	CAMEL_FOLDER_JUNKED_NOT_DELETED = CAMEL_FOLDER_ARG_JUNKED_NOT_DELETED | CAMEL_ARG_INT,
-	CAMEL_FOLDER_VISIBLE = CAMEL_FOLDER_ARG_VISIBLE | CAMEL_ARG_INT,
-
-	CAMEL_FOLDER_UID_ARRAY = CAMEL_FOLDER_ARG_UID_ARRAY | CAMEL_ARG_PTR,
-	CAMEL_FOLDER_INFO_ARRAY = CAMEL_FOLDER_ARG_INFO_ARRAY | CAMEL_ARG_PTR,
-
-	/* GSList of settable folder properties */
-	CAMEL_FOLDER_PROPERTIES = CAMEL_FOLDER_ARG_PROPERTIES | CAMEL_ARG_PTR
-};
-
+/**
+ * CamelFolderLock:
+ *
+ * Since: 3.0
+ **/
 typedef enum {
 	CF_CHANGE_LOCK,
 	CF_REC_LOCK
@@ -131,12 +99,6 @@ struct _CamelFolder {
 	CamelObject parent;
 	CamelFolderPrivate *priv;
 
-	/* get these via the :get() method, they might not be set otherwise */
-	gchar *name;
-	gchar *full_name;
-	gchar *description;
-
-	struct _CamelStore *parent_store;
 	CamelFolderSummary *summary;
 
 	guint32 folder_flags;
@@ -162,10 +124,6 @@ struct _CamelFolderClass {
 	gboolean	(*sync)			(CamelFolder *folder,
 						 gboolean expunge,
 						 CamelException *ex);
-	const gchar *	(*get_name)		(CamelFolder *folder);
-	const gchar *	(*get_full_name)	(CamelFolder *folder);
-	struct _CamelStore *
-			(*get_parent_store)	(CamelFolder *folder);
 	gboolean	(*expunge)		(CamelFolder *folder,
 						 CamelException *ex);
 	gint		(*get_message_count)	(CamelFolder *folder);
@@ -255,10 +213,6 @@ struct _CamelFolderClass {
 };
 
 GType		camel_folder_get_type		(void);
-void		camel_folder_construct		(CamelFolder *folder,
-						 struct _CamelStore *parent_store,
-						 const gchar *full_name,
-						 const gchar *name);
 gboolean	camel_folder_refresh_info	(CamelFolder *folder,
 						 CamelException *ex);
 gboolean	camel_folder_sync		(CamelFolder *folder,
@@ -276,7 +230,14 @@ gboolean	camel_folder_expunge		(CamelFolder *folder,
 
 /* folder name operations */
 const gchar *	camel_folder_get_name		(CamelFolder *folder);
+void		camel_folder_set_name		(CamelFolder *folder,
+						 const gchar *name);
 const gchar *	camel_folder_get_full_name	(CamelFolder *folder);
+void		camel_folder_set_full_name	(CamelFolder *folder,
+						 const gchar *full_name);
+const gchar *	camel_folder_get_description	(CamelFolder *folder);
+void		camel_folder_set_description	(CamelFolder *folder,
+						 const gchar *description);
 
 /* various properties accessors */
 guint32		camel_folder_get_permanent_flags(CamelFolder *folder);

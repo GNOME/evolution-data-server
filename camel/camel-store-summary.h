@@ -102,6 +102,11 @@ typedef enum _CamelStoreSummaryFlags {
 	CAMEL_STORE_SUMMARY_FRAGMENT = 1<<1 /* path name is stored in fragment rather than path */
 } CamelStoreSummaryFlags;
 
+/**
+ * CamelStoreSummaryLock:
+ *
+ * Since: 3.0
+ **/
 typedef enum {
 	CSS_SUMMARY_LOCK,
 	CSS_IO_LOCK,

@@ -321,3 +321,30 @@ CamelStoreSummary
 @i: 
 
 
+<!-- ##### ENUM CamelStoreSummaryLock ##### -->
+<para>
+
+</para>
+
+@CSS_SUMMARY_LOCK: 
+@CSS_IO_LOCK: 
+@CSS_REF_LOCK: 
+
+<!-- ##### FUNCTION camel_store_summary_lock ##### -->
+<para>
+
+</para>
+
+@summary: 
+@lock: 
+
+
+<!-- ##### FUNCTION camel_store_summary_unlock ##### -->
+<para>
+
+</para>
+
+@summary: 
+@lock: 
+
+

@@ -54,10 +54,6 @@ typedef struct _CamelOfflineStore CamelOfflineStore;
 typedef struct _CamelOfflineStoreClass CamelOfflineStoreClass;
 
 enum {
-	CAMEL_OFFLINE_STORE_ARG_FIRST  = CAMEL_STORE_ARG_FIRST + 100
-};
-
-enum {
 	CAMEL_OFFLINE_STORE_NETWORK_AVAIL,
 	CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL
 };

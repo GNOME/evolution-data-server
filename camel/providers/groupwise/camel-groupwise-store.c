@@ -635,7 +635,9 @@ groupwise_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags
 			return NULL;
 		}
 
-		camel_operation_start (NULL, _("Fetching summary information for new messages in %s"), folder->name);
+		camel_operation_start (
+			NULL, _("Fetching summary information for new messages in %s"),
+			camel_folder_get_name (folder));
 		camel_folder_summary_clear (folder->summary);
 
 		while (!done) {
@@ -716,7 +718,12 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 	const gchar *position = E_GW_CURSOR_POSITION_END;
 	gint count = 0, cursor, summary_count = 0;
 	CamelStoreInfo *si = NULL;
+	const gchar *full_name;
+	const gchar *name;
 	guint total = 0;
+
+	name = camel_folder_get_name (folder);
+	full_name = camel_folder_get_full_name (folder);
 
 	camel_exception_clear (ex);
 
@@ -734,9 +741,9 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 		}
 	}
 
-	container_id =	g_strdup (g_hash_table_lookup (priv->name_hash, folder->full_name));
+	container_id =	g_strdup (g_hash_table_lookup (priv->name_hash, full_name));
 
-	si = camel_store_summary_path ((CamelStoreSummary *)gw_store->summary, folder->name);
+	si = camel_store_summary_path ((CamelStoreSummary *)gw_store->summary, name);
 	if (si) {
 		total = si->total;
 		camel_store_summary_info_free ((CamelStoreSummary *)(gw_store)->summary, si);
@@ -748,7 +755,7 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 
 	summary_count = camel_folder_summary_count (folder->summary);
 	if (!summary_count || !summary->time_string) {
-			d(g_print ("\n\n** %s **: Summary missing???? Reloading summary....\n\n", folder->name);)
+			d(g_print ("\n\n** %s **: Summary missing???? Reloading summary....\n\n", name);)
 
 					status = e_gw_connection_create_cursor (priv->cnc, container_id,
 									CREATE_CURSOR_VIEW,
@@ -765,7 +772,9 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 					return;
 			}
 
-			camel_operation_start (NULL, _("Fetching summary information for new messages in %s"), folder->name);
+			camel_operation_start (
+				NULL, _("Fetching summary information for new messages in %s"),
+				camel_folder_get_name (folder));
 
 			while (!done) {
 					status = e_gw_connection_read_cursor (priv->cnc, container_id,
@@ -919,7 +928,7 @@ convert_to_folder_info (CamelGroupwiseStore *store, EGwContainer *container, con
 	si->info.flags = fi->flags;
 	/*refresh info*/
 	if (store->current_folder
-	    && !strcmp (store->current_folder->full_name, fi->full_name)
+	    && !strcmp (camel_folder_get_full_name (store->current_folder), fi->full_name)
 	    && type != E_GW_CONTAINER_TYPE_INBOX) {
 		CAMEL_FOLDER_GET_CLASS (store->current_folder)->refresh_info (store->current_folder, ex);
 	}
@@ -1421,11 +1430,12 @@ groupwise_get_trash (CamelStore *store, CamelException *ex)
 {
 	CamelFolder *folder = camel_store_get_folder(store, "Trash", 0, ex);
 	if (folder) {
+		CamelObject *object = CAMEL_OBJECT (folder);
 		 gchar *state = g_build_filename((CAMEL_GROUPWISE_STORE(store))->priv->storage_path, "folders", "Trash", "cmeta", NULL);
 
-		camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, state, NULL);
+		camel_object_set_state_filename (object, state);
 		g_free(state);
-		camel_object_state_read(folder);
+		camel_object_state_read (object);
 
 		return folder;
 	} else

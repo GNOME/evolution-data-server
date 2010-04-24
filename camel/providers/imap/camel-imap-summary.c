@@ -154,17 +154,22 @@ uid_compare (gconstpointer va, gconstpointer vb)
  * Returns: A new CamelImapSummary object.
  **/
 CamelFolderSummary *
-camel_imap_summary_new (struct _CamelFolder *folder, const gchar *filename)
+camel_imap_summary_new (CamelFolder *folder, const gchar *filename)
 {
+	CamelStore *parent_store;
 	CamelFolderSummary *summary;
 	CamelException ex;
 	camel_exception_init (&ex);
+
+	parent_store = camel_folder_get_parent_store (folder);
 
 	summary = g_object_new (CAMEL_TYPE_IMAP_SUMMARY, NULL);
 	summary->folder = folder;
 	/* Don't do DB sort. Its pretty slow to load */
 	if (folder && 0) {
-		camel_db_set_collate (folder->parent_store->cdb_r, "uid", "imap_uid_sort", (CamelDBCollate)sort_uid_cmp);
+		camel_db_set_collate (
+			parent_store->cdb_r, "uid", "imap_uid_sort",
+			(CamelDBCollate) sort_uid_cmp);
 		summary->sort_by = "uid";
 		summary->collate = "imap_uid_sort";
 	}

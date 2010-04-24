@@ -61,21 +61,6 @@ typedef struct _CamelService CamelService;
 typedef struct _CamelServiceClass CamelServiceClass;
 typedef struct _CamelServicePrivate CamelServicePrivate;
 
-enum {
-	CAMEL_SERVICE_ARG_FIRST  = CAMEL_ARG_FIRST + 100,
-	CAMEL_SERVICE_ARG_USERNAME,
-	CAMEL_SERVICE_ARG_AUTH,
-	CAMEL_SERVICE_ARG_HOSTNAME,
-	CAMEL_SERVICE_ARG_PORT,
-	CAMEL_SERVICE_ARG_PATH
-};
-
-#define CAMEL_SERVICE_USERNAME     (CAMEL_SERVICE_ARG_USERNAME | CAMEL_ARG_STR)
-#define CAMEL_SERVICE_AUTH         (CAMEL_SERVICE_ARG_AUTH | CAMEL_ARG_STR)
-#define CAMEL_SERVICE_HOSTNAME     (CAMEL_SERVICE_ARG_HOSTNAME | CAMEL_ARG_STR)
-#define CAMEL_SERVICE_PORT         (CAMEL_SERVICE_ARG_PORT | CAMEL_ARG_INT)
-#define CAMEL_SERVICE_PATH         (CAMEL_SERVICE_ARG_PATH | CAMEL_ARG_STR)
-
 typedef enum {
 	CAMEL_SERVICE_DISCONNECTED,
 	CAMEL_SERVICE_CONNECTING,
@@ -83,7 +68,12 @@ typedef enum {
 	CAMEL_SERVICE_DISCONNECTING
 } CamelServiceConnectionStatus;
 
-typedef enum _CamelServiceLock {
+/**
+ * CamelServiceLock:
+ *
+ * Since: 3.0
+ **/
+typedef enum {
 	CS_REC_CONNECT_LOCK,
 	CS_CONNECT_OP_LOCK
 } CamelServiceLock;

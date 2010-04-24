@@ -207,15 +207,18 @@ groupwise_entry_play_transfer (CamelOfflineJournal *journal, CamelGroupwiseJourn
 	CamelMessageInfoBase *info;
 	GPtrArray *xuids, *uids;
 	CamelFolder *src;
+	CamelStore *parent_store;
 	const gchar *name;
+
+	parent_store = camel_folder_get_parent_store (folder);
 
 	if (!(info = (CamelMessageInfoBase *) camel_folder_summary_uid (folder->summary, entry->uid))) {
 		/* Note: this should never happen, but rather than crash lets make a new info */
 		info = camel_message_info_new (NULL);
 	}
 
-	name = camel_groupwise_store_folder_lookup ((CamelGroupwiseStore *) folder->parent_store, entry->source_container);
-	if (name && (src = camel_store_get_folder (folder->parent_store, name, 0, ex))) {
+	name = camel_groupwise_store_folder_lookup ((CamelGroupwiseStore *) parent_store, entry->source_container);
+	if (name && (src = camel_store_get_folder (parent_store, name, 0, ex))) {
 		uids = g_ptr_array_sized_new (1);
 		g_ptr_array_add (uids, entry->original_uid);
 
@@ -370,9 +373,13 @@ camel_groupwise_journal_transfer (CamelGroupwiseJournal *groupwise_journal, Came
 				  CamelException *ex)
 {
 	CamelOfflineJournal *journal = (CamelOfflineJournal *) groupwise_journal;
-	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(journal->folder->parent_store);
+	CamelGroupwiseStore *gw_store;
 	CamelGroupwiseJournalEntry *entry;
+	CamelStore *parent_store;
 	gchar *uid;
+
+	parent_store = camel_folder_get_parent_store (journal->folder);
+	gw_store = CAMEL_GROUPWISE_STORE (parent_store);
 
 	if (!update_cache (groupwise_journal, message, mi, &uid, ex))
 		return;
@@ -381,7 +388,7 @@ camel_groupwise_journal_transfer (CamelGroupwiseJournal *groupwise_journal, Came
 	entry->type = CAMEL_GROUPWISE_JOURNAL_ENTRY_APPEND;
 	entry->uid = uid;
 	entry->original_uid = g_strdup (original_uid);
-	entry->source_container = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, ((CamelFolder *)source_folder)->name));
+	entry->source_container = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, camel_folder_get_name (((CamelFolder *)source_folder))));
 
 	camel_dlist_addtail (&journal->queue, (CamelDListNode *) entry);
 

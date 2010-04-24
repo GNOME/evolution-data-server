@@ -302,8 +302,14 @@ delete_folder(CamelStore *store, const gchar *folder_name, CamelException *ex)
 	path = NULL;
 	camel_exception_init(&lex);
 	if ((lf = camel_store_get_folder(store, folder_name, 0, &lex))) {
-		camel_object_get(lf, NULL, CAMEL_OBJECT_STATE_FILE, &path, NULL);
-		camel_object_set(lf, NULL, CAMEL_OBJECT_STATE_FILE, NULL, NULL);
+		CamelObject *object = CAMEL_OBJECT (lf);
+		const gchar *state_filename;
+
+		state_filename = camel_object_get_state_filename (object);
+		path = g_strdup (state_filename);
+
+		camel_object_set_state_filename (object, NULL);
+
 		g_object_unref (lf);
 	} else {
 		camel_exception_clear(&lex);

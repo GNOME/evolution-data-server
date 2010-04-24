@@ -292,3 +292,31 @@ CamelCertDB
 @trust: 
 
 
+<!-- ##### ENUM CamelCertDBLock ##### -->
+<para>
+
+</para>
+
+@CCD_DB_LOCK: 
+@CCD_IO_LOCK: 
+@CCD_ALLOC_LOCK: 
+@CCD_REF_LOCK: 
+
+<!-- ##### FUNCTION camel_certdb_lock ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@lock: 
+
+
+<!-- ##### FUNCTION camel_certdb_unlock ##### -->
+<para>
+
+</para>
+
+@certdb: 
+@lock: 
+
+

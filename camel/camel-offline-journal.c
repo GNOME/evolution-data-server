@@ -141,7 +141,8 @@ camel_offline_journal_write (CamelOfflineJournal *journal,
 		camel_exception_setv (
 			ex, CAMEL_EXCEPTION_SYSTEM,
 			_("Cannot write offline journal for folder '%s': %s"),
-			journal->folder->full_name, g_strerror (errno));
+			camel_folder_get_full_name (journal->folder),
+			g_strerror (errno));
 		return -1;
 	}
 
@@ -165,7 +166,8 @@ camel_offline_journal_write (CamelOfflineJournal *journal,
 	camel_exception_setv (
 		ex, CAMEL_EXCEPTION_SYSTEM,
 		_("Cannot write offline journal for folder '%s': %s"),
-		journal->folder->full_name, g_strerror (errno));
+		camel_folder_get_full_name (journal->folder),
+		g_strerror (errno));
 
 	fclose (fp);
 

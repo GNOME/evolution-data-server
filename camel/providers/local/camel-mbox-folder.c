@@ -87,12 +87,18 @@ CamelFolder *
 camel_mbox_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 flags, CamelException *ex)
 {
 	CamelFolder *folder;
+	gchar *basename;
 
-	d(printf("Creating mbox folder: %s in %s\n", full_name, camel_local_store_get_toplevel_dir((CamelLocalStore *)parent_store)));
+	basename = g_path_get_basename (full_name);
 
-	folder = g_object_new (CAMEL_TYPE_MBOX_FOLDER, NULL);
-	folder = (CamelFolder *)camel_local_folder_construct((CamelLocalFolder *)folder,
-							     parent_store, full_name, flags, ex);
+	folder = g_object_new (
+		CAMEL_TYPE_MBOX_FOLDER,
+		"name", basename, "full-name", full_name,
+		"parent-store", parent_store, NULL);
+	folder = (CamelFolder *)camel_local_folder_construct (
+		(CamelLocalFolder *)folder, flags, ex);
+
+	g_free (basename);
 
 	return folder;
 }

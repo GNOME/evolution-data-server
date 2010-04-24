@@ -2199,6 +2199,12 @@ camel_gpg_context_new (CamelSession *session)
 		"session", session, NULL);
 }
 
+/**
+ * camel_gpg_context_get_always_trust:
+ * @context: a #CamelGpgContext
+ *
+ * Since: 3.0
+ **/
 gboolean
 camel_gpg_context_get_always_trust (CamelGpgContext *context)
 {

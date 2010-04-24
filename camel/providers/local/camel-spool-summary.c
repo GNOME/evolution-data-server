@@ -88,7 +88,10 @@ camel_spool_summary_new (CamelFolder *folder,
 	new = g_object_new (CAMEL_TYPE_SPOOL_SUMMARY, NULL);
 	((CamelFolderSummary *)new)->folder = folder;
 	if (folder) {
-		camel_db_set_collate (folder->parent_store->cdb_r, "bdata", "spool_frompos_sort", (CamelDBCollate)camel_local_frompos_sort);
+		CamelStore *parent_store;
+
+		parent_store = camel_folder_get_parent_store (folder);
+		camel_db_set_collate (parent_store->cdb_r, "bdata", "spool_frompos_sort", (CamelDBCollate)camel_local_frompos_sort);
 		((CamelFolderSummary *)new)->sort_by = "bdata";
 		((CamelFolderSummary *)new)->collate = "spool_frompos_sort";
 	}

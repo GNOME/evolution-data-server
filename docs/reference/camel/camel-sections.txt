@@ -111,6 +111,9 @@ camel_cert_set_hostname
 camel_cert_set_fingerprint
 camel_cert_get_trust
 camel_cert_set_trust
+CamelCertDBLock
+camel_certdb_lock
+camel_certdb_unlock
 <SUBSECTION Standard>
 CAMEL_CERTDB
 CAMEL_IS_CERTDB
@@ -175,6 +178,8 @@ camel_cipher_context_get_type
 <TITLE>CamelDataCache</TITLE>
 CamelDataCache
 camel_data_cache_new
+camel_data_cache_get_path
+camel_data_cache_set_path
 camel_data_cache_set_expire_age
 camel_data_cache_set_expire_access
 camel_data_cache_add
@@ -207,6 +212,9 @@ camel_data_wrapper_get_mime_type_field
 camel_data_wrapper_set_mime_type_field
 camel_data_wrapper_construct_from_stream
 camel_data_wrapper_is_offline
+CamelDataWrapperLock
+camel_data_wrapper_lock
+camel_data_wrapper_unlock
 <SUBSECTION Standard>
 CAMEL_DATA_WRAPPER
 CAMEL_IS_DATA_WRAPPER
@@ -299,7 +307,6 @@ CamelDBPrivate
 <TITLE>CamelDiscoDiary</TITLE>
 CamelDiscoDiary
 CamelDiscoDiaryAction
-CamelDiscoDiaryArgType
 camel_disco_diary_new
 camel_disco_diary_empty
 camel_disco_diary_log
@@ -322,6 +329,8 @@ camel_disco_diary_get_type
 <FILE>camel-disco-folder</FILE>
 <TITLE>CamelDiscoFolder</TITLE>
 CamelDiscoFolder
+camel_disco_folder_get_offline_sync
+camel_disco_folder_set_offline_sync
 camel_disco_folder_expunge_uids
 camel_disco_folder_cache_message
 camel_disco_folder_prepare_for_offline
@@ -334,6 +343,7 @@ CAMEL_IS_DISCO_FOLDER_CLASS
 CAMEL_DISCO_FOLDER_GET_CLASS
 CamelDiscoFolderClass
 <SUBSECTION Private>
+CamelDiscoFolderPrivate
 camel_disco_folder_get_type
 </SECTION>
 
@@ -404,14 +414,17 @@ CAMEL_FOLDER_HAS_BEEN_DELETED
 CAMEL_FOLDER_IS_TRASH
 CAMEL_FOLDER_IS_JUNK
 CAMEL_FOLDER_FILTER_JUNK
-camel_folder_construct
 camel_folder_refresh_info
 camel_folder_sync
 camel_folder_set_lock_async
 camel_folder_get_parent_store
 camel_folder_expunge
 camel_folder_get_name
+camel_folder_set_name
 camel_folder_get_full_name
+camel_folder_set_full_name
+camel_folder_get_description
+camel_folder_set_description
 camel_folder_get_permanent_flags
 camel_folder_get_message_flags
 camel_folder_set_message_flags
@@ -448,6 +461,7 @@ camel_folder_rename
 camel_folder_freeze
 camel_folder_thaw
 camel_folder_is_frozen
+camel_folder_get_frozen_count
 camel_folder_get_quota_info
 camel_folder_quota_info_new
 camel_folder_quota_info_clone
@@ -470,6 +484,9 @@ camel_folder_change_info_add_uid
 camel_folder_change_info_remove_uid
 camel_folder_change_info_change_uid
 camel_folder_change_info_recent_uid
+CamelFolderLock
+camel_folder_lock
+camel_folder_unlock
 <SUBSECTION Standard>
 CAMEL_FOLDER
 CAMEL_IS_FOLDER
@@ -480,6 +497,7 @@ CAMEL_FOLDER_GET_CLASS
 CamelFolderClass
 <SUBSECTION Private>
 CamelFolderPrivate
+CamelFolderChangeInfoPrivate
 camel_folder_get_type
 </SECTION>
 
@@ -542,9 +560,7 @@ camel_folder_summary_touch
 camel_folder_summary_add
 camel_folder_summary_peek_info
 camel_folder_summary_get_changed
-camel_folder_summary_cache_size
-camel_folder_summary_reload_from_db
-camel_folder_summary_ensure_infos_loaded
+camel_folder_summary_prepare_fetch_all
 camel_folder_summary_insert
 camel_folder_summary_remove_index_fast
 camel_folder_summary_remove_uid_fast
@@ -623,6 +639,9 @@ camel_folder_summary_guess_content_info
 camel_content_info_dump
 camel_message_info_dump
 camel_folder_summary_migrate_infos
+CamelFolderSummaryLock
+camel_folder_summary_lock
+camel_folder_summary_unlock
 <SUBSECTION Standard>
 CAMEL_FOLDER_SUMMARY
 CAMEL_IS_FOLDER_SUMMARY
@@ -641,6 +660,7 @@ camel_folder_summary_get_type
 <TITLE>CamelGpgContext</TITLE>
 CamelGpgContext
 camel_gpg_context_new
+camel_gpg_context_get_always_trust
 camel_gpg_context_set_always_trust
 <SUBSECTION Standard>
 CAMEL_GPG_CONTEXT
@@ -722,6 +742,7 @@ CAMEL_INDEX_DELETED
 camel_index_new
 camel_index_construct
 camel_index_rename
+camel_index_set_normalize
 camel_index_sync
 camel_index_compress
 camel_index_delete
@@ -1427,18 +1448,16 @@ CamelObject
 CamelObjectHookID
 CamelObjectEventPrepFunc
 CamelObjectEventHookFunc
+CamelParamFlags
 camel_object_class_add_event
 camel_object_hook_event
 camel_object_remove_event
 camel_object_unhook_event
 camel_object_trigger_event
-camel_object_set
-camel_object_setv
-camel_object_get
-camel_object_getv
 camel_object_state_read
 camel_object_state_write
-camel_object_free
+camel_object_get_state_filename
+camel_object_set_state_filename
 CamelObjectBag
 CamelCopyFunc
 camel_object_bag_new
@@ -1460,6 +1479,7 @@ CAMEL_IS_OBJECT_CLASS
 CAMEL_OBJECT_GET_CLASS
 CamelObjectClass
 <SUBSECTION Private>
+CamelObjectPrivate
 camel_object_get_type
 </SECTION>
 
@@ -1467,6 +1487,8 @@ camel_object_get_type
 <FILE>camel-offline-folder</FILE>
 <TITLE>CamelOfflineFolder</TITLE>
 CamelOfflineFolder
+camel_offline_folder_get_offline_sync
+camel_offline_folder_set_offline_sync
 camel_offline_folder_downsync
 <SUBSECTION Standard>
 CAMEL_OFFLINE_FOLDER
@@ -1477,6 +1499,7 @@ CAMEL_IS_OFFLINE_FOLDER_CLASS
 CAMEL_OFFLINE_FOLDER_GET_CLASS
 CamelOfflineFolderClass
 <SUBSECTION Private>
+CamelOfflineFolderPrivate
 camel_offline_folder_get_type
 </SECTION>
 
@@ -1786,6 +1809,11 @@ CamelSasl
 camel_sasl_challenge
 camel_sasl_challenge_base64
 camel_sasl_new
+camel_sasl_get_authenticated
+camel_sasl_set_authenticated
+camel_sasl_get_mechanism
+camel_sasl_get_service
+camel_sasl_get_service_name
 camel_sasl_authtype_list
 camel_sasl_authtype
 <SUBSECTION Standard>
@@ -1853,11 +1881,6 @@ camel_seekable_substream_get_type
 <FILE>camel-service</FILE>
 <TITLE>CamelService</TITLE>
 CamelService
-CAMEL_SERVICE_USERNAME
-CAMEL_SERVICE_AUTH
-CAMEL_SERVICE_HOSTNAME
-CAMEL_SERVICE_PORT
-CAMEL_SERVICE_PATH
 CamelServiceConnectionStatus
 CamelServiceAuthType
 camel_service_construct
@@ -1870,6 +1893,9 @@ camel_service_get_path
 camel_service_get_session
 camel_service_get_provider
 camel_service_query_auth_types
+CamelServiceLock
+camel_service_lock
+camel_service_unlock
 <SUBSECTION Standard>
 CAMEL_SERVICE
 CAMEL_IS_SERVICE
@@ -1916,6 +1942,9 @@ camel_session_get_junk_headers
 camel_session_set_junk_headers
 camel_session_lookup_addressbook
 camel_session_forward_to
+CamelSessionLock
+camel_session_lock
+camel_session_unlock
 <SUBSECTION Standard>
 CAMEL_SESSION
 CAMEL_IS_SESSION
@@ -1987,6 +2016,9 @@ camel_store_info_set_string
 camel_store_info_path
 camel_store_info_uri
 camel_store_info_name
+CamelStoreSummaryLock
+camel_store_summary_lock
+camel_store_summary_unlock
 <SUBSECTION Standard>
 CAMEL_STORE_SUMMARY
 CAMEL_IS_STORE_SUMMARY
@@ -2066,6 +2098,9 @@ camel_store_unsubscribe_folder
 camel_store_noop
 camel_store_folder_uri_equal
 camel_store_can_refresh_folder
+CamelStoreLock
+camel_store_lock
+camel_store_unlock
 <SUBSECTION Standard>
 CAMEL_STORE
 CAMEL_IS_STORE
@@ -2132,6 +2167,8 @@ camel_stream_buffer_get_type
 <FILE>camel-stream-filter</FILE>
 <TITLE>CamelStreamFilter</TITLE>
 CamelStreamFilter
+camel_stream_filter_new
+camel_stream_filter_get_source
 camel_stream_filter_add
 camel_stream_filter_remove
 <SUBSECTION Standard>
@@ -2155,6 +2192,7 @@ camel_stream_fs_new_with_name
 camel_stream_fs_new_with_name_and_bounds
 camel_stream_fs_new_with_fd
 camel_stream_fs_new_with_fd_and_bounds
+camel_stream_fs_get_fd
 <SUBSECTION Standard>
 CAMEL_STREAM_FS
 CAMEL_IS_STREAM_FS
@@ -2176,6 +2214,7 @@ camel_stream_mem_new
 camel_stream_mem_new_with_byte_array
 camel_stream_mem_new_with_buffer
 camel_stream_mem_set_secure
+camel_stream_mem_get_byte_array
 camel_stream_mem_set_byte_array
 camel_stream_mem_set_buffer
 <SUBSECTION Standard>
@@ -2260,6 +2299,9 @@ CAMEL_IS_TCP_STREAM_RAW_CLASS
 CAMEL_TCP_STREAM_RAW_GET_CLASS
 CamelTcpStreamRawClass
 <SUBSECTION Private>
+addrinfo
+sockaddr
+socklen_t
 camel_tcp_stream_raw_get_type
 </SECTION>
 
@@ -2374,6 +2416,9 @@ camel_text_index_name_get_type
 <TITLE>CamelTransport</TITLE>
 CamelTransport
 camel_transport_send_to
+CamelTransportLock
+camel_transport_lock
+camel_transport_unlock
 <SUBSECTION Standard>
 CAMEL_TRANSPORT
 CAMEL_IS_TRANSPORT
@@ -2413,6 +2458,11 @@ camel_vee_folder_mask_event_folder_changed
 camel_vee_folder_unmask_event_folder_changed
 camel_vee_folder_hash_folder
 camel_vee_folder_sync_headers
+camel_vee_folder_get_unread_vfolder
+camel_vee_folder_set_unread_vfolder
+CamelVeeFolderLock
+camel_vee_folder_lock
+camel_vee_folder_unlock
 <SUBSECTION Standard>
 CAMEL_VEE_FOLDER
 CAMEL_IS_VEE_FOLDER
@@ -2484,26 +2534,6 @@ CAMEL_VTRASH_FOLDER_GET_CLASS
 CamelVTrashFolderClass
 <SUBSECTION Private>
 camel_vtrash_folder_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-arg</FILE>
-CamelArg
-CamelArgV
-CamelArgGet
-CamelArgGetV
-ca_object
-ca_int
-ca_double
-ca_str
-ca_ptr
-CAMEL_ARGV_MAX
-camel_argv_start
-camel_argv_end
-camel_argv_build
-camel_arggetv_build
-camel_argv_ignore
-CamelProperty
 </SECTION>
 
 <SECTION>

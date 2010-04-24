@@ -71,21 +71,28 @@ camel_spool_folder_new (CamelStore *parent_store,
                         CamelException *ex)
 {
 	CamelFolder *folder;
+	gchar *basename;
 
-	d(printf("Creating spool folder: %s in %s\n", full_name, camel_local_store_get_toplevel_dir((CamelLocalStore *)parent_store)));
+	basename = g_path_get_basename (full_name);
 
-	folder = g_object_new (CAMEL_TYPE_SPOOL_FOLDER, NULL);
+	folder = g_object_new (
+		CAMEL_TYPE_SPOOL_FOLDER,
+		"name", basename, "full-name", full_name,
+		"parent-store", parent_store, NULL);
 
 	if (parent_store->flags & CAMEL_STORE_FILTER_INBOX
 	    && strcmp(full_name, "INBOX") == 0)
 		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 	flags &= ~CAMEL_STORE_FOLDER_BODY_INDEX;
 
-	folder = (CamelFolder *)camel_local_folder_construct((CamelLocalFolder *)folder, parent_store, full_name, flags, ex);
+	folder = (CamelFolder *)camel_local_folder_construct (
+		(CamelLocalFolder *)folder, flags, ex);
 	if (folder) {
 		if (camel_url_get_param(((CamelService *)parent_store)->url, "xstatus"))
 			camel_mbox_summary_xstatus((CamelMboxSummary *)folder->summary, TRUE);
 	}
+
+	g_free (basename);
 
 	return folder;
 }

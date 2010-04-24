@@ -347,18 +347,25 @@ void
 imapx_update_store_summary (CamelFolder *folder)
 {
 	CamelStoreInfo *si;
+	CamelStore *parent_store;
+	const gchar *full_name;
 
-	si = camel_store_summary_path ((CamelStoreSummary *) ((CamelIMAPXStore *) folder->parent_store)->summary, folder->full_name);
+	full_name = camel_folder_get_full_name (folder);
+	parent_store = camel_folder_get_parent_store (folder);
+
+	si = camel_store_summary_path ((CamelStoreSummary *) ((CamelIMAPXStore *) parent_store)->summary, full_name);
 	if (si) {
 		guint32 unread, total;
 
-		camel_object_get(folder, NULL, CAMEL_FOLDER_TOTAL, &total, CAMEL_FOLDER_UNREAD, &unread, NULL);
+		total = camel_folder_summary_count (folder->summary);
+		unread = folder->summary->unread_count;
+
 		if (si->unread != unread || si->total != total) {
 			si->unread = unread;
 			si->total = total;
 
-			camel_store_summary_touch ((CamelStoreSummary *)((CamelIMAPXStore *) folder->parent_store)->summary);
-			camel_store_summary_save ((CamelStoreSummary *)((CamelIMAPXStore *) folder->parent_store)->summary);
+			camel_store_summary_touch ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary);
+			camel_store_summary_save ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary);
 		}
 	}
 }

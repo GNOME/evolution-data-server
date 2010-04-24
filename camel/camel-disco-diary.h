@@ -67,14 +67,6 @@ typedef enum {
 	CAMEL_DISCO_DIARY_FOLDER_TRANSFER
 } CamelDiscoDiaryAction;
 
-typedef enum {
-	CAMEL_DISCO_DIARY_ARG_NONE = 0,
-
-	CAMEL_DISCO_DIARY_ARG_FOLDER,
-	CAMEL_DISCO_DIARY_ARG_UID,
-	CAMEL_DISCO_DIARY_ARG_UID_LIST
-} CamelDiscoDiaryArgType;
-
 struct _CamelDiscoDiary {
 	CamelObject parent;
 

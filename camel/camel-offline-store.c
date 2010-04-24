@@ -124,7 +124,7 @@ camel_offline_store_set_network_state (CamelOfflineStore *store,
 					folder = folders->pdata[i];
 
 					if (G_TYPE_CHECK_INSTANCE_TYPE (folder, CAMEL_TYPE_OFFLINE_FOLDER)
-					    && (sync || ((CamelOfflineFolder *) folder)->sync_offline)) {
+					    && (sync || camel_offline_folder_get_offline_sync (CAMEL_OFFLINE_FOLDER (folder)))) {
 						camel_offline_folder_downsync ((CamelOfflineFolder *) folder, NULL, &lex);
 						camel_exception_clear (&lex);
 					}
@@ -183,7 +183,7 @@ camel_offline_store_prepare_for_offline (CamelOfflineStore *store,
 					folder = folders->pdata[i];
 
 					if (G_TYPE_CHECK_INSTANCE_TYPE (folder, CAMEL_TYPE_OFFLINE_FOLDER)
-					    && (sync || ((CamelOfflineFolder *) folder)->sync_offline)) {
+					    && (sync || camel_offline_folder_get_offline_sync (CAMEL_OFFLINE_FOLDER (folder)))) {
 						camel_offline_folder_downsync ((CamelOfflineFolder *) folder, NULL, &lex);
 						camel_exception_clear (&lex);
 					}

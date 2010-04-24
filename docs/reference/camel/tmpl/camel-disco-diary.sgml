@@ -36,16 +36,6 @@ CamelDiscoDiary
 @CAMEL_DISCO_DIARY_FOLDER_APPEND: 
 @CAMEL_DISCO_DIARY_FOLDER_TRANSFER: 
 
-<!-- ##### ENUM CamelDiscoDiaryArgType ##### -->
-<para>
-
-</para>
-
-@CAMEL_DISCO_DIARY_ARG_NONE: 
-@CAMEL_DISCO_DIARY_ARG_FOLDER: 
-@CAMEL_DISCO_DIARY_ARG_UID: 
-@CAMEL_DISCO_DIARY_ARG_UID_LIST: 
-
 <!-- ##### FUNCTION camel_disco_diary_new ##### -->
 <para>
 

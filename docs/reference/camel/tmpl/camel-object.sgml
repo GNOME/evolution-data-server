@@ -26,6 +26,11 @@ CamelObject
 </para>
 
 
+<!-- ##### ARG CamelObject:state-filename ##### -->
+<para>
+
+</para>
+
 <!-- ##### TYPEDEF CamelObjectHookID ##### -->
 <para>
 
@@ -51,6 +56,13 @@ CamelObject
 @Param2: 
 @Param3: 
 
+
+<!-- ##### ENUM CamelParamFlags ##### -->
+<para>
+
+</para>
+
+@CAMEL_PARAM_PERSISTENT: 
 
 <!-- ##### FUNCTION camel_object_class_add_event ##### -->
 <para>
@@ -104,56 +116,12 @@ CamelObject
 @event_data: 
 
 
-<!-- ##### FUNCTION camel_object_set ##### -->
-<para>
-
-</para>
-
-@obj: 
-@ex: 
-@Varargs: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_object_setv ##### -->
-<para>
-
-</para>
-
-@obj: 
-@ex: 
-@Param3: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_object_get ##### -->
-<para>
-
-</para>
-
-@obj: 
-@ex: 
-@Varargs: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_object_getv ##### -->
-<para>
-
-</para>
-
-@obj: 
-@ex: 
-@Param3: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_object_state_read ##### -->
 <para>
 
 </para>
 
-@vo: 
+@object: 
 @Returns: 
 
 
@@ -162,18 +130,26 @@ CamelObject
 
 </para>
 
-@vo: 
+@object: 
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_object_free ##### -->
+<!-- ##### FUNCTION camel_object_get_state_filename ##### -->
 <para>
 
 </para>
 
-@vo: 
-@tag: 
-@value: 
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_object_set_state_filename ##### -->
+<para>
+
+</para>
+
+@object: 
+@state_filename: 
 
 
 <!-- ##### STRUCT CamelObjectBag ##### -->

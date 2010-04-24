@@ -495,6 +495,12 @@ camel_folder_search_count (CamelFolderSearch *search,
 		e_sexp_result_free(search->sexp, r);
 
 	} else {
+		CamelStore *parent_store;
+		const gchar *full_name;
+
+		full_name = camel_folder_get_full_name (search->folder);
+		parent_store = camel_folder_get_parent_store (search->folder);
+
 		/* Sync the db, so that we search the db for changes */
 		camel_folder_summary_save_to_db (search->folder->summary, ex);
 
@@ -503,13 +509,13 @@ camel_folder_search_count (CamelFolderSearch *search,
 			sql_query = camel_sexp_to_sql (expr);
 		else
 			sql_query = camel_sexp_to_sql_sexp (expr);
-		tmp1 = camel_db_sqlize_string(search->folder->full_name);
+		tmp1 = camel_db_sqlize_string (full_name);
 		tmp = g_strdup_printf ("SELECT COUNT (*) FROM %s %s %s", tmp1, sql_query ? "WHERE":"", sql_query?sql_query:"");
 		camel_db_free_sqlized_string (tmp1);
 		g_free (sql_query);
 		dd(printf("Equivalent sql %s\n", tmp));
 
-		cdb = (CamelDB *) (search->folder->parent_store->cdb_r);
+		cdb = (CamelDB *) (parent_store->cdb_r);
 		camel_db_count_message_info  (cdb, tmp, &count, ex);
 		if (ex && camel_exception_is_set(ex)) {
 			const gchar *exception = camel_exception_get_description (ex);
@@ -661,6 +667,12 @@ camel_folder_search_search (CamelFolderSearch *search,
 		e_sexp_result_free(search->sexp, r);
 
 	} else {
+		CamelStore *parent_store;
+		const gchar *full_name;
+
+		full_name = camel_folder_get_full_name (search->folder);
+		parent_store = camel_folder_get_parent_store (search->folder);
+
 		/* Sync the db, so that we search the db for changes */
 		camel_folder_summary_save_to_db (search->folder->summary, ex);
 
@@ -669,14 +681,14 @@ camel_folder_search_search (CamelFolderSearch *search,
 			sql_query = camel_sexp_to_sql (expr);
 		else
 			sql_query = camel_sexp_to_sql_sexp (expr);
-		tmp1 = camel_db_sqlize_string(search->folder->full_name);
+		tmp1 = camel_db_sqlize_string (full_name);
 		tmp = g_strdup_printf ("SELECT uid FROM %s %s %s", tmp1, sql_query ? "WHERE":"", sql_query?sql_query:"");
 		camel_db_free_sqlized_string (tmp1);
 		g_free (sql_query);
 		dd(printf("Equivalent sql %s\n", tmp));
 
 		matches = g_ptr_array_new();
-		cdb = (CamelDB *) (search->folder->parent_store->cdb_r);
+		cdb = (CamelDB *) (parent_store->cdb_r);
 		camel_db_select (cdb, tmp, (CamelDBSelectCB) read_uid_callback, matches, ex);
 		if (ex && camel_exception_is_set(ex)) {
 			const gchar *exception = camel_exception_get_description (ex);
@@ -1816,16 +1828,19 @@ read_uid_callback (gpointer  ref, gint ncol, gchar ** cols, gchar **name)
 static ESExpResult *
 search_message_location (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
 {
+	CamelStore *parent_store;
 	ESExpResult *r;
 	gboolean same = FALSE;
 
+	parent_store = camel_folder_get_parent_store (search->folder);
+
 	if (argc == 1 && argv[0]->type == ESEXP_RES_STRING) {
-		if (argv[0]->value.string && search->folder && search->folder->parent_store && camel_folder_get_full_name (search->folder)) {
-			CamelFolderInfo *fi = camel_store_get_folder_info (search->folder->parent_store, camel_folder_get_full_name (search->folder), 0, NULL);
+		if (argv[0]->value.string && search->folder && parent_store && camel_folder_get_full_name (search->folder)) {
+			CamelFolderInfo *fi = camel_store_get_folder_info (parent_store, camel_folder_get_full_name (search->folder), 0, NULL);
 			if (fi) {
 				same = g_str_equal (fi->uri ? fi->uri : "", argv[0]->value.string);
 
-				camel_store_free_folder_info (search->folder->parent_store, fi);
+				camel_store_free_folder_info (parent_store, fi);
 			}
 		}
 	}

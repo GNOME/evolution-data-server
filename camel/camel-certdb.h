@@ -86,7 +86,12 @@ typedef struct {
 	GByteArray *rawcert;
 } CamelCert;
 
-typedef enum _CamelCertDBLock {
+/**
+ * CamelCertDBLock:
+ *
+ * Since: 3.0
+ **/
+typedef enum {
 	CCD_DB_LOCK,
 	CCD_IO_LOCK,
 	CCD_ALLOC_LOCK,

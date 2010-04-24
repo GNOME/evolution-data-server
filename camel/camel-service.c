@@ -83,124 +83,6 @@ service_finalize (GObject *object)
 	G_OBJECT_CLASS (camel_service_parent_class)->finalize (object);
 }
 
-static gint
-service_setv (CamelObject *object,
-              CamelException *ex,
-              CamelArgV *args)
-{
-	CamelService *service = (CamelService *) object;
-	CamelURL *url = service->url;
-	gboolean reconnect = FALSE;
-	guint32 tag;
-	gint i;
-
-	for (i = 0; i < args->argc; i++) {
-		tag = args->argv[i].tag;
-
-		/* make sure this is an arg we're supposed to handle */
-		if ((tag & CAMEL_ARG_TAG) <= CAMEL_SERVICE_ARG_FIRST ||
-		    (tag & CAMEL_ARG_TAG) >= CAMEL_SERVICE_ARG_FIRST + 100)
-			continue;
-
-		if (tag == CAMEL_SERVICE_USERNAME) {
-			/* set the username */
-			if (strcmp (url->user, args->argv[i].ca_str) != 0) {
-				camel_url_set_user (url, args->argv[i].ca_str);
-				reconnect = TRUE;
-			}
-		} else if (tag == CAMEL_SERVICE_AUTH) {
-			/* set the auth mechanism */
-			if (strcmp (url->authmech, args->argv[i].ca_str) != 0) {
-				camel_url_set_authmech (url, args->argv[i].ca_str);
-				reconnect = TRUE;
-			}
-		} else if (tag == CAMEL_SERVICE_HOSTNAME) {
-			/* set the hostname */
-			if (strcmp (url->host, args->argv[i].ca_str) != 0) {
-				camel_url_set_host (url, args->argv[i].ca_str);
-				reconnect = TRUE;
-			}
-		} else if (tag == CAMEL_SERVICE_PORT) {
-			/* set the port */
-			if (url->port != args->argv[i].ca_int) {
-				camel_url_set_port (url, args->argv[i].ca_int);
-				reconnect = TRUE;
-			}
-		} else if (tag == CAMEL_SERVICE_PATH) {
-			/* set the path */
-			if (strcmp (url->path, args->argv[i].ca_str) != 0) {
-				camel_url_set_path (url, args->argv[i].ca_str);
-				reconnect = TRUE;
-			}
-		} else {
-			/* error? */
-			continue;
-		}
-
-		/* let our parent know that we've handled this arg */
-		camel_argv_ignore (args, i);
-	}
-
-	/* FIXME: what if we are in the process of connecting? */
-	if (reconnect && service->status == CAMEL_SERVICE_CONNECTED) {
-		/* reconnect the service using the new URL */
-		if (camel_service_disconnect (service, TRUE, ex))
-			camel_service_connect (service, ex);
-	}
-
-	/* Chain up to parent's setv() method. */
-	return CAMEL_OBJECT_CLASS (camel_service_parent_class)->setv (object, ex, args);
-}
-
-static gint
-service_getv (CamelObject *object,
-              CamelException *ex,
-              CamelArgGetV *args)
-{
-	CamelService *service = (CamelService *) object;
-	CamelURL *url = service->url;
-	guint32 tag;
-	gint i;
-
-	for (i = 0; i < args->argc; i++) {
-		tag = args->argv[i].tag;
-
-		/* make sure this is an arg we're supposed to handle */
-		if ((tag & CAMEL_ARG_TAG) <= CAMEL_SERVICE_ARG_FIRST ||
-		    (tag & CAMEL_ARG_TAG) >= CAMEL_SERVICE_ARG_FIRST + 100)
-			continue;
-
-		switch (tag) {
-		case CAMEL_SERVICE_USERNAME:
-			/* get the username */
-			*args->argv[i].ca_str = url->user;
-			break;
-		case CAMEL_SERVICE_AUTH:
-			/* get the auth mechanism */
-			*args->argv[i].ca_str = url->authmech;
-			break;
-		case CAMEL_SERVICE_HOSTNAME:
-			/* get the hostname */
-			*args->argv[i].ca_str = url->host;
-			break;
-		case CAMEL_SERVICE_PORT:
-			/* get the port */
-			*args->argv[i].ca_int = url->port;
-			break;
-		case CAMEL_SERVICE_PATH:
-			/* get the path */
-			*args->argv[i].ca_str = url->path;
-			break;
-		default:
-			/* error? */
-			break;
-		}
-	}
-
-	/* Chain up to parent's getv() method. */
-	return CAMEL_OBJECT_CLASS (camel_service_parent_class)->getv (object, ex, args);
-}
-
 static gboolean
 service_construct (CamelService *service,
                    CamelSession *session,
@@ -332,16 +214,11 @@ static void
 camel_service_class_init (CamelServiceClass *class)
 {
 	GObjectClass *object_class;
-	CamelObjectClass *camel_object_class;
 
 	g_type_class_add_private (class, sizeof (CamelServicePrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = service_finalize;
-
-	camel_object_class = CAMEL_OBJECT_CLASS (class);
-	camel_object_class->setv = service_setv;
-	camel_object_class->getv = service_getv;
 
 	class->construct = service_construct;
 	class->connect = service_connect;

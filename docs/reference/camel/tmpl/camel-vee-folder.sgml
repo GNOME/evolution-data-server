@@ -50,9 +50,6 @@ CamelVeeFolder
 </para>
 
 @vf: 
-@parent_store: 
-@full: 
-@name: 
 @flags: 
 
 
@@ -148,5 +145,50 @@ CamelVeeFolder
 
 @vf: 
 @ex: 
+
+
+<!-- ##### FUNCTION camel_vee_folder_get_unread_vfolder ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_vee_folder_set_unread_vfolder ##### -->
+<para>
+
+</para>
+
+@folder: 
+@unread_vfolder: 
+
+
+<!-- ##### ENUM CamelVeeFolderLock ##### -->
+<para>
+
+</para>
+
+@CVF_SUMMARY_LOCK: 
+@CVF_SUBFOLDER_LOCK: 
+@CVF_CHANGED_LOCK: 
+
+<!-- ##### FUNCTION camel_vee_folder_lock ##### -->
+<para>
+
+</para>
+
+@folder: 
+@lock: 
+
+
+<!-- ##### FUNCTION camel_vee_folder_unlock ##### -->
+<para>
+
+</para>
+
+@folder: 
+@lock: 
 
 

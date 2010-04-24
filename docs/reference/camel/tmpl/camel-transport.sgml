@@ -39,3 +39,28 @@ CamelTransport
 @Returns: 
 
 
+<!-- ##### ENUM CamelTransportLock ##### -->
+<para>
+
+</para>
+
+@CT_SEND_LOCK: 
+
+<!-- ##### FUNCTION camel_transport_lock ##### -->
+<para>
+
+</para>
+
+@transport: 
+@lock: 
+
+
+<!-- ##### FUNCTION camel_transport_unlock ##### -->
+<para>
+
+</para>
+
+@transport: 
+@lock: 
+
+

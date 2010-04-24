@@ -49,7 +49,13 @@ static gint
 vee_folder_cmp (gconstpointer ap,
                 gconstpointer bp)
 {
-	return strcmp (((CamelFolder **)ap)[0]->full_name, ((CamelFolder **)bp)[0]->full_name);
+	const gchar *full_name_a;
+	const gchar *full_name_b;
+
+	full_name_a = camel_folder_get_full_name (((CamelFolder **) ap)[0]);
+	full_name_b = camel_folder_get_full_name (((CamelFolder **) bp)[0]);
+
+	return g_strcmp0 (full_name_a, full_name_b);
 }
 
 static void
@@ -127,8 +133,11 @@ vee_store_construct (CamelService *service,
 	/* Set up unmatched folder */
 #ifndef VEE_UNMATCHED_ENABLE
 	vee_store->unmatched_uids = g_hash_table_new (g_str_hash, g_str_equal);
-	vee_store->folder_unmatched = g_object_new (CAMEL_TYPE_VEE_FOLDER, NULL);
-	camel_vee_folder_construct (vee_store->folder_unmatched, store, CAMEL_UNMATCHED_NAME, _("Unmatched"), CAMEL_STORE_FOLDER_PRIVATE);
+	vee_store->folder_unmatched = g_object_new (
+		CAMEL_TYPE_VEE_FOLDER,
+		"full-name", CAMEL_UNMATCHED_NAME,
+		"name", _("Unmatched"), "parent-store", store, NULL);
+	camel_vee_folder_construct (vee_store->folder_unmatched, CAMEL_STORE_FOLDER_PRIVATE);
 	camel_db_create_vfolder (store->cdb_r, _("Unmatched"), NULL);
 #endif
 
@@ -154,9 +163,13 @@ vee_store_get_folder (CamelStore *store,
 
 	vf = (CamelVeeFolder *)camel_vee_folder_new (store, folder_name, flags);
 	if (vf && ((vf->flags & CAMEL_STORE_FOLDER_PRIVATE) == 0)) {
+		const gchar *full_name;
+
+		full_name = camel_folder_get_full_name (CAMEL_FOLDER (vf));
+
 		/* Check that parents exist, if not, create dummy ones */
-		name = alloca (strlen (((CamelFolder *)vf)->full_name)+1);
-		strcpy (name, ((CamelFolder *)vf)->full_name);
+		name = alloca (strlen (full_name) + 1);
+		strcpy (name, full_name);
 		p = name;
 		while ( (p = strchr (p, '/'))) {
 			*p = 0;
@@ -174,7 +187,7 @@ vee_store_get_folder (CamelStore *store,
 			*p++='/';
 		}
 
-		change_folder (store, ((CamelFolder *)vf)->full_name, CHANGE_ADD, camel_folder_get_message_count ((CamelFolder *)vf));
+		change_folder (store, full_name, CHANGE_ADD, camel_folder_get_message_count ((CamelFolder *)vf));
 	}
 
 	return (CamelFolder *)vf;
@@ -249,13 +262,13 @@ vee_store_delete_folder (CamelStore *store,
 
 	folder = camel_object_bag_get (store->folders, folder_name);
 	if (folder) {
-		gchar *statefile;
+		CamelObject *object = CAMEL_OBJECT (folder);
+		const gchar *state_filename;
 
-		camel_object_get (folder, NULL, CAMEL_OBJECT_STATE_FILE, &statefile, NULL);
-		if (statefile) {
-			g_unlink (statefile);
-			camel_object_free (folder, CAMEL_OBJECT_STATE_FILE, statefile);
-			camel_object_set (folder, NULL, CAMEL_OBJECT_STATE_FILE, NULL, NULL);
+		state_filename = camel_object_get_state_filename (object);
+		if (state_filename != NULL) {
+			g_unlink (state_filename);
+			camel_object_set_state_filename (object, NULL);
 		}
 
 		if ((((CamelVeeFolder *)folder)->flags & CAMEL_STORE_FOLDER_PRIVATE) == 0) {
@@ -294,47 +307,51 @@ vee_store_get_folder_info (CamelStore *store,
 	qsort (folders->pdata, folders->len, sizeof (folders->pdata[0]), vee_folder_cmp);
 	for (i=0;i<folders->len;i++) {
 		CamelVeeFolder *folder = folders->pdata[i];
+		const gchar *full_name;
+		const gchar *name;
 		gint add = FALSE;
-		gchar *name = ((CamelFolder *)folder)->full_name, *pname, *tmp;
+		gchar *pname, *tmp;
 		CamelFolderInfo *pinfo;
 
-		d (printf ("folder '%s'\n", name));
+		name = camel_folder_get_name (CAMEL_FOLDER (folder));
+		full_name = camel_folder_get_full_name (CAMEL_FOLDER (folder));
 
 		/* check we have to include this one */
 		if (top) {
-			gint namelen = strlen (name);
+			gint namelen = strlen (full_name);
 			gint toplen = strlen (top);
 
 			add = ((namelen == toplen
-				&& strcmp (name, top) == 0)
+				&& strcmp (full_name, top) == 0)
 			       || ((namelen > toplen)
-				   && strncmp (name, top, toplen) == 0
-				   && name[toplen] == '/'
+				   && strncmp (full_name, top, toplen) == 0
+				   && full_name[toplen] == '/'
 				   && ((flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE)
-				       || strchr (name+toplen+1, '/') == NULL)));
+				       || strchr (full_name+toplen+1, '/') == NULL)));
 		} else {
 			add = (flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE)
-				|| strchr (name, '/') == NULL;
+				|| strchr (full_name, '/') == NULL;
 		}
 
 		d (printf ("%sadding '%s'\n", add?"":"not ", name));
 
 		if (add) {
+			CamelStore *parent_store;
+
 			/* ensures unread is correct */
 			if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
 				camel_folder_refresh_info ((CamelFolder *)folder, NULL);
 
+			parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (folder));
+
 			info = camel_folder_info_new ();
 			url = camel_url_new ("vfolder:", NULL);
-			camel_url_set_path (url, ((CamelService *)((CamelFolder *)folder)->parent_store)->url->path);
-			camel_url_set_fragment (url, ((CamelFolder *)folder)->full_name);
+			camel_url_set_path (url, ((CamelService *) parent_store)->url->path);
+			camel_url_set_fragment (url, full_name);
 			info->uri = camel_url_to_string (url, 0);
 			camel_url_free (url);
-/*
-			info->url = g_strdup_printf ("vfolder:%s#%s", ((CamelService *)((CamelFolder *)folder)->parent_store)->url->path,
-			((CamelFolder *)folder)->full_name);*/
-			info->full_name = g_strdup (((CamelFolder *)folder)->full_name);
-			info->name = g_strdup (((CamelFolder *)folder)->name);
+			info->full_name = g_strdup (full_name);
+			info->name = g_strdup (name);
 			info->unread = camel_folder_get_unread_message_count ((CamelFolder *)folder);
 			info->flags = CAMEL_FOLDER_NOCHILDREN|CAMEL_FOLDER_VIRTUAL;
 			g_hash_table_insert (infos_hash, info->full_name, info);
@@ -346,7 +363,7 @@ vee_store_get_folder_info (CamelStore *store,
 		}
 
 		/* check for parent, if present, update flags and if adding, update parent linkage */
-		pname = g_strdup (((CamelFolder *)folder)->full_name);
+		pname = g_strdup (full_name);
 		d (printf ("looking up parent of '%s'\n", pname));
 		tmp = strrchr (pname, '/');
 		if (tmp) {

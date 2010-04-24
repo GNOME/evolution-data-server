@@ -424,9 +424,14 @@ camel_nntp_summary_check (CamelNNTPSummary *cns, CamelNNTPStore *store, gchar *l
 	gint count;
 	gchar *folder = NULL;
 	CamelNNTPStoreInfo *si;
+	CamelStore *parent_store;
 	GSList *del = NULL;
+	const gchar *full_name;
 
 	s = (CamelFolderSummary *)cns;
+
+	full_name = camel_folder_get_full_name (s->folder);
+	parent_store = camel_folder_get_parent_store (s->folder);
 
 	line +=3;
 	n = strtoul(line, &line, 10);
@@ -481,7 +486,7 @@ camel_nntp_summary_check (CamelNNTPSummary *cns, CamelNNTPStore *store, gchar *l
 		cns->low = f;
 	}
 
-	camel_db_delete_uids (s->folder->parent_store->cdb_w, s->folder->full_name, del, ex);
+	camel_db_delete_uids (parent_store->cdb_w, full_name, del, ex);
 	g_slist_foreach (del, (GFunc) g_free, NULL);
 	g_slist_free (del);
 
@@ -507,7 +512,7 @@ update:
 		guint32 unread = 0;
 
 		count = camel_folder_summary_count (s);
-		camel_db_count_unread_message_info (s->folder->parent_store->cdb_r, s->folder->full_name, &unread, ex);
+		camel_db_count_unread_message_info (parent_store->cdb_r, full_name, &unread, ex);
 
 		if (si->info.unread != unread
 		    || si->info.total != count

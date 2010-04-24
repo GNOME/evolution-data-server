@@ -75,6 +75,11 @@ enum {
 	CAMEL_SESSION_PASSPHRASE = 1 << 4
 };
 
+/**
+ * CamelSessionLock:
+ *
+ * Since: 3.0
+ **/
 typedef enum {
 	CS_SESSION_LOCK,
 	CS_THREAD_LOCK

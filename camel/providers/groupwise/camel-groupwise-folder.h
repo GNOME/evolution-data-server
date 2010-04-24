@@ -73,10 +73,7 @@ struct _CamelGroupwiseFolder {
 
 struct _CamelGroupwiseFolderClass {
 	CamelOfflineFolderClass parent_class;
-
-	/* Virtual methods */
-
-} ;
+};
 
 GType camel_groupwise_folder_get_type (void);
 

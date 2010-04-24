@@ -55,10 +55,12 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_LOCAL_FOLDER, CamelLocalFolderPrivate))
 
-static GSList *local_folder_properties;
-
-static gint local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args);
-static gint local_setv(CamelObject *object, CamelException *ex, CamelArgV *args);
+/* The custom property ID is a CamelArg artifact.
+ * It still identifies the property in state files. */
+enum {
+	PROP_0,
+	PROP_INDEX_BODY = 0x2400
+};
 
 static gint local_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
 static void local_unlock(CamelLocalFolder *lf);
@@ -77,11 +79,41 @@ static GPtrArray * local_get_uncached_uids (CamelFolder *folder, GPtrArray * uid
 static void local_delete(CamelFolder *folder);
 static void local_rename(CamelFolder *folder, const gchar *newname);
 
-static CamelProperty local_property_list[] = {
-	{ CAMEL_LOCAL_FOLDER_INDEX_BODY, "index_body", N_("Index message body data") },
-};
-
 G_DEFINE_TYPE (CamelLocalFolder, camel_local_folder, CAMEL_TYPE_FOLDER)
+
+static void
+local_folder_set_property (GObject *object,
+                           guint property_id,
+                           const GValue *value,
+                           GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_INDEX_BODY:
+			camel_local_folder_set_index_body (
+				CAMEL_LOCAL_FOLDER (object),
+				g_value_get_boolean (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+local_folder_get_property (GObject *object,
+                           guint property_id,
+                           GValue *value,
+                           GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_INDEX_BODY:
+			g_value_set_boolean (
+				value, camel_local_folder_get_index_body (
+				CAMEL_LOCAL_FOLDER (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
 
 static void
 local_folder_dispose (GObject *object)
@@ -138,22 +170,83 @@ local_folder_finalize (GObject *object)
 }
 
 static void
+local_folder_constructed (GObject *object)
+{
+	CamelFolder *folder;
+	CamelStore *parent_store;
+	CamelURL *url;
+	const gchar *full_name;
+	const gchar *tmp;
+	gchar *description;
+	gchar *path;
+
+	folder = CAMEL_FOLDER (object);
+	full_name = camel_folder_get_full_name (folder);
+	parent_store = camel_folder_get_parent_store (folder);
+
+	url = CAMEL_SERVICE (parent_store)->url;
+	if (url->path == NULL)
+		return;
+
+	path = g_strdup_printf ("%s/%s", url->path, full_name);
+
+	if ((tmp = getenv ("HOME")) && strncmp (tmp, path, strlen (tmp)) == 0)
+		/* Translators: This is used for a folder description,
+		 * for folders being under $HOME.  The first %s is replaced
+		 * with a relative path under $HOME, the second %s is
+		 * replaced with a protocol name, like mbox/maldir/... */
+		description = g_strdup_printf (
+			_("~%s (%s)"),
+			path + strlen (tmp),
+			url->protocol);
+	else if ((tmp = "/var/spool/mail") && strncmp (tmp, path, strlen (tmp)) == 0)
+		/* Translators: This is used for a folder description, for
+		 * folders being under /var/spool/mail.  The first %s is
+		 * replaced with a relative path under /var/spool/mail,
+		 * the second %s is replaced with a protocol name, like
+		 * mbox/maldir/... */
+		description = g_strdup_printf (
+			_("mailbox: %s (%s)"),
+			path + strlen (tmp),
+			url->protocol);
+	else if ((tmp = "/var/mail") && strncmp (tmp, path, strlen (tmp)) == 0)
+		/* Translators: This is used for a folder description, for
+		 * folders being under /var/mail.  The first %s is replaced
+		 * with a relative path under /var/mail, the second %s is
+		 * replaced with a protocol name, like mbox/maldir/... */
+		description = g_strdup_printf (
+			_("mailbox: %s (%s)"),
+			path + strlen (tmp),
+			url->protocol);
+	else
+		/* Translators: This is used for a folder description.
+		 * The first %s is replaced with a folder's full path,
+		 * the second %s is replaced with a protocol name, like
+		 * mbox/maldir/... */
+		description = g_strdup_printf (
+			_("%s (%s)"), path,
+			url->protocol);
+
+	camel_folder_set_description (folder, description);
+
+	g_free (description);
+	g_free (path);
+}
+
+static void
 camel_local_folder_class_init (CamelLocalFolderClass *class)
 {
 	GObjectClass *object_class;
-	CamelObjectClass *camel_object_class;
 	CamelFolderClass *folder_class;
-	gint ii;
 
 	g_type_class_add_private (class, sizeof (CamelLocalFolderPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = local_folder_set_property;
+	object_class->get_property = local_folder_get_property;
 	object_class->dispose = local_folder_dispose;
 	object_class->finalize = local_folder_finalize;
-
-	camel_object_class = CAMEL_OBJECT_CLASS (class);
-	camel_object_class->getv = local_getv;
-	camel_object_class->setv = local_setv;
+	object_class->constructed = local_folder_constructed;
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
 	folder_class->refresh_info = local_refresh_info;
@@ -170,12 +263,16 @@ camel_local_folder_class_init (CamelLocalFolderClass *class)
 	class->lock = local_lock;
 	class->unlock = local_unlock;
 
-	for (ii = 0; ii < G_N_ELEMENTS (local_property_list); ii++) {
-		local_property_list[ii].description =
-			_(local_property_list[ii].description);
-		local_folder_properties = g_slist_prepend (
-			local_folder_properties, &local_property_list[ii]);
-	}
+	g_object_class_install_property (
+		object_class,
+		PROP_INDEX_BODY,
+		g_param_spec_boolean (
+			"index-body",
+			"Index Body",
+			N_("Index message body data"),
+			FALSE,
+			G_PARAM_READWRITE |
+			CAMEL_PARAM_PERSISTENT));
 }
 
 static void
@@ -199,12 +296,11 @@ camel_local_folder_init (CamelLocalFolder *local_folder)
 }
 
 CamelLocalFolder *
-camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, const gchar *full_name, guint32 flags, CamelException *ex)
+camel_local_folder_construct(CamelLocalFolder *lf, guint32 flags, CamelException *ex)
 {
-	CamelFolderInfo *fi;
 	CamelFolder *folder;
+	CamelFolderInfo *fi;
 	const gchar *root_dir_path;
-	gchar *name;
 	gchar *tmp, *statepath;
 #ifndef G_OS_WIN32
 	gchar folder_path[PATH_MAX];
@@ -212,13 +308,17 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 #endif
 	gint forceindex, len;
 	CamelURL *url;
-	CamelLocalStore *ls = (CamelLocalStore *)parent_store;
+	CamelLocalStore *ls;
+	CamelStore *parent_store;
+	const gchar *full_name;
+	const gchar *name;
 
-	folder = (CamelFolder *)lf;
+	folder = CAMEL_FOLDER (lf);
+	name = camel_folder_get_name (folder);
+	full_name = camel_folder_get_full_name (folder);
+	parent_store = camel_folder_get_parent_store (folder);
 
-	name = g_path_get_basename(full_name);
-
-	camel_folder_construct(folder, parent_store, full_name, name);
+	ls = CAMEL_LOCAL_STORE (parent_store);
 
 	root_dir_path = camel_local_store_get_toplevel_dir(ls);
 	/* strip the trailing '/' which is always present */
@@ -235,15 +335,15 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 	lf->index_path = camel_local_store_get_meta_path(ls, full_name, ".ibex");
 	statepath = camel_local_store_get_meta_path(ls, full_name, ".cmeta");
 
-	camel_object_set(lf, NULL, CAMEL_OBJECT_STATE_FILE, statepath, NULL);
+	camel_object_set_state_filename (CAMEL_OBJECT (lf), statepath);
 	g_free(statepath);
 
 	lf->flags = flags;
 
-	if (camel_object_state_read(lf) == -1) {
+	if (camel_object_state_read (CAMEL_OBJECT (lf)) == -1) {
 		/* No metadata - load defaults and persitify */
-		camel_object_set(lf, NULL, CAMEL_LOCAL_FOLDER_INDEX_BODY, TRUE, 0);
-		camel_object_state_write(lf);
+		camel_local_folder_set_index_body (lf, TRUE);
+		camel_object_state_write (CAMEL_OBJECT (lf));
 	}
 #ifndef G_OS_WIN32
 	/* follow any symlinks to the mailbox */
@@ -291,7 +391,6 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 			/* we sync here so that any hard work setting up the folder isn't lost */
 			if (camel_local_summary_sync((CamelLocalSummary *)folder->summary, FALSE, lf->changes, ex) == -1) {
 				g_object_unref (CAMEL_OBJECT (folder));
-				g_free(name);
 				return NULL;
 			}
 		}
@@ -325,8 +424,30 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 		camel_object_trigger_event(CAMEL_OBJECT (parent_store), "folder_created", fi);
 		camel_folder_info_free(fi);
 	}
-	g_free(name);
+
 	return lf;
+}
+
+gboolean
+camel_local_folder_get_index_body (CamelLocalFolder *local_folder)
+{
+	g_return_val_if_fail (CAMEL_IS_LOCAL_FOLDER (local_folder), FALSE);
+
+	return (local_folder->flags & CAMEL_STORE_FOLDER_BODY_INDEX);
+}
+
+void
+camel_local_folder_set_index_body (CamelLocalFolder *local_folder,
+                                   gboolean index_body)
+{
+	g_return_if_fail (CAMEL_IS_LOCAL_FOLDER (local_folder));
+
+	if (index_body)
+		local_folder->flags |= CAMEL_STORE_FOLDER_BODY_INDEX;
+	else
+		local_folder->flags &= ~CAMEL_STORE_FOLDER_BODY_INDEX;
+
+	g_object_notify (G_OBJECT (local_folder), "index-body");
 }
 
 /* lock the folder, may be called repeatedly (with matching unlock calls),
@@ -356,117 +477,6 @@ gint camel_local_folder_unlock(CamelLocalFolder *lf)
 		CAMEL_LOCAL_FOLDER_GET_CLASS(lf)->unlock(lf);
 
 	return 0;
-}
-
-static gint
-local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
-{
-	CamelFolder *folder = (CamelFolder *)object;
-	gint i;
-	guint32 tag;
-
-	for (i=0;i<args->argc;i++) {
-		CamelArgGet *arg = &args->argv[i];
-
-		tag = arg->tag;
-
-		switch (tag & CAMEL_ARG_TAG) {
-		case CAMEL_OBJECT_ARG_DESCRIPTION:
-			if (folder->description == NULL) {
-				const gchar *tmp;
-				gchar *path;
-
-				/* check some common prefixes to shorten the name */
-				tmp = ((CamelService *)folder->parent_store)->url->path;
-				if (tmp == NULL)
-					goto skip;
-
-				path = g_alloca (strlen (tmp) + strlen (folder->full_name) + 1);
-				sprintf (path, "%s/%s", tmp, folder->full_name);
-
-				if ((tmp = getenv("HOME")) && strncmp(tmp, path, strlen(tmp)) == 0)
-					/* Translators: This is used for a folder description, for folders being under $HOME.
-					   The first %s is replaced with a relative path under $HOME,
-					   the second %s is replaced with a protocol name, like mbox/maldir/... */
-					folder->description = g_strdup_printf(_("~%s (%s)"), path+strlen(tmp),
-									      ((CamelService *)folder->parent_store)->url->protocol);
-				else if ((tmp = "/var/spool/mail") && strncmp(tmp, path, strlen(tmp)) == 0)
-					/* Translators: This is used for a folder description, for folders being under /var/spool/mail.
-					   The first %s is replaced with a relative path under /var/spool/mail,
-					   the second %s is replaced with a protocol name, like mbox/maldir/... */
-					folder->description = g_strdup_printf(_("mailbox: %s (%s)"), path+strlen(tmp),
-									      ((CamelService *)folder->parent_store)->url->protocol);
-				else if ((tmp = "/var/mail") && strncmp(tmp, path, strlen(tmp)) == 0)
-					/* Translators: This is used for a folder description, for folders being under /var/mail.
-					   The first %s is replaced with a relative path under /var/mail,
-					   the second %s is replaced with a protocol name, like mbox/maldir/... */
-					folder->description = g_strdup_printf(_("mailbox: %s (%s)"), path+strlen(tmp),
-									      ((CamelService *)folder->parent_store)->url->protocol);
-				else
-					/* Translators: This is used for a folder description.
-					   The first %s is replaced with a folder's full path,
-					   the second %s is replaced with a protocol name, like mbox/maldir/... */
-					folder->description = g_strdup_printf(_("%s (%s)"), path,
-									      ((CamelService *)folder->parent_store)->url->protocol);
-			}
-			*arg->ca_str = folder->description;
-			break;
-
-		case CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES:
-		case CAMEL_FOLDER_ARG_PROPERTIES: {
-			CamelArgGetV props;
-
-			props.argc = 1;
-			props.argv[0] = *arg;
-			((CamelObjectClass *)camel_local_folder_parent_class)->getv(object, ex, &props);
-			*arg->ca_ptr = g_slist_concat(*arg->ca_ptr, g_slist_copy(local_folder_properties));
-
-			break; }
-
-		case CAMEL_LOCAL_FOLDER_ARG_INDEX_BODY:
-			/* FIXME: remove this from sotre flags */
-			*arg->ca_int = (((CamelLocalFolder *)folder)->flags & CAMEL_STORE_FOLDER_BODY_INDEX) != 0;
-			break;
-
-		default: skip:
-			continue;
-		}
-
-		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
-	}
-
-	return ((CamelObjectClass *)camel_local_folder_parent_class)->getv(object, ex, args);
-}
-
-static gint
-local_setv(CamelObject *object, CamelException *ex, CamelArgV *args)
-{
-	gint i;
-	guint32 tag;
-
-	for (i=0;i<args->argc;i++) {
-		CamelArg *arg = &args->argv[i];
-
-		tag = arg->tag;
-
-		switch (tag & CAMEL_ARG_TAG) {
-		case CAMEL_LOCAL_FOLDER_ARG_INDEX_BODY:
-			/* FIXME: implement */
-			/* TODO: When turning on (off?) the index, we want to launch a task for it,
-			   and make sure we dont have multiple tasks doing the same job */
-			if (arg->ca_int)
-				((CamelLocalFolder *)object)->flags |= CAMEL_STORE_FOLDER_BODY_INDEX;
-			else
-				((CamelLocalFolder *)object)->flags &= ~CAMEL_STORE_FOLDER_BODY_INDEX;
-			break;
-		default:
-			continue;
-		}
-
-		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
-	}
-
-	return ((CamelObjectClass *)camel_local_folder_parent_class)->setv(object, ex, args);
 }
 
 static gint
@@ -517,7 +527,7 @@ local_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 	if (camel_local_folder_lock(lf, CAMEL_LOCK_WRITE, ex) == -1)
 		return FALSE;
 
-	camel_object_state_write(lf);
+	camel_object_state_write (CAMEL_OBJECT (lf));
 
 	/* if sync fails, we'll pass it up on exit through ex */
 	camel_local_summary_sync((CamelLocalSummary *)folder->summary, expunge, lf->changes, ex);
@@ -557,7 +567,11 @@ local_rename(CamelFolder *folder, const gchar *newname)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	gchar *statepath;
-	CamelLocalStore *ls = (CamelLocalStore *)folder->parent_store;
+	CamelLocalStore *ls;
+	CamelStore *parent_store;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	ls = CAMEL_LOCAL_STORE (parent_store);
 
 	d(printf("renaming local folder paths to '%s'\n", newname));
 
@@ -571,7 +585,7 @@ local_rename(CamelFolder *folder, const gchar *newname)
 	lf->summary_path = camel_local_store_get_meta_path(ls, newname, ".ev-summary");
 	lf->index_path = camel_local_store_get_meta_path(ls, newname, ".ibex");
 	statepath = camel_local_store_get_meta_path(ls, newname, ".cmeta");
-	camel_object_set(lf, NULL, CAMEL_OBJECT_STATE_FILE, statepath, NULL);
+	camel_object_set_state_filename (CAMEL_OBJECT (lf), statepath);
 	g_free(statepath);
 
 	/* FIXME: Poke some internals, sigh */

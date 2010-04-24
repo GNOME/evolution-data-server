@@ -281,25 +281,28 @@ journal_decode_folder (CamelIMAPJournal *journal, const gchar *name)
 	CamelOfflineJournal *offline = CAMEL_OFFLINE_JOURNAL (journal);
 
 	folder = g_hash_table_lookup (journal->folders, name);
-	if (!folder && offline->folder && g_str_equal (offline->folder->full_name, name)) {
+	if (!folder && offline->folder && g_str_equal (camel_folder_get_full_name (offline->folder), name)) {
 		folder = offline->folder;
 	}
 	if (!folder) {
+		CamelStore *parent_store;
 		CamelException ex;
 		gchar *msg;
 
 		camel_exception_init (&ex);
-		folder = camel_store_get_folder (CAMEL_STORE (CAMEL_OFFLINE_JOURNAL (journal)->folder->parent_store),
-						 name, 0, &ex);
+		parent_store = camel_folder_get_parent_store (
+			CAMEL_OFFLINE_JOURNAL (journal)->folder);
+		folder = camel_store_get_folder (parent_store, name, 0, &ex);
 		if (folder)
 			g_hash_table_insert (journal->folders, (gchar *) name, folder);
 		else {
 			msg = g_strdup_printf (_("Could not open '%s':\n%s\nChanges made to this folder will not be resynchronized."),
 					       name, camel_exception_get_description (&ex));
 			camel_exception_clear (&ex);
-			camel_session_alert_user (camel_service_get_session (CAMEL_SERVICE (CAMEL_OFFLINE_JOURNAL (journal)->folder->parent_store)),
-						  CAMEL_SESSION_ALERT_WARNING,
-						  msg, FALSE);
+			camel_session_alert_user (
+				camel_service_get_session (CAMEL_SERVICE (parent_store)),
+				CAMEL_SESSION_ALERT_WARNING,
+				msg, FALSE);
 			g_free (msg);
 		}
 	}
@@ -316,7 +319,8 @@ imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelExcep
 
 	switch (imap_entry->type) {
 	case CAMEL_IMAP_JOURNAL_ENTRY_EXPUNGE:
-		imap_expunge_uids_resyncing (journal->folder, imap_entry->uids, ex);
+		camel_imap_expunge_uids_resyncing (
+			journal->folder, imap_entry->uids, ex);
 		return 0;
 	case CAMEL_IMAP_JOURNAL_ENTRY_APPEND:
 	{
@@ -329,7 +333,8 @@ imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelExcep
 			return -1;
 
 		info = camel_folder_get_message_info (journal->folder, imap_entry->append_uid);
-		imap_append_resyncing (journal->folder, message, info, &ret_uid, ex);
+		camel_imap_append_resyncing (
+			journal->folder, message, info, &ret_uid, ex);
 		camel_folder_free_message_info (journal->folder, info);
 
 		if (ret_uid) {
@@ -352,7 +357,9 @@ imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelExcep
 		}
 
 		camel_exception_clear (ex);
-		if (!imap_transfer_resyncing (journal->folder, imap_entry->uids, destination, &ret_uids, imap_entry->move, ex))
+		if (!camel_imap_transfer_resyncing (
+			journal->folder, imap_entry->uids, destination,
+			&ret_uids, imap_entry->move, ex))
 			return -1;
 
 		if (ret_uids) {
@@ -419,10 +426,12 @@ camel_imap_journal_log (CamelOfflineJournal *journal, CamelOfflineAction action,
 		case CAMEL_IMAP_JOURNAL_ENTRY_TRANSFER:
 		{
 			CamelFolder *dest = va_arg (ap, CamelFolder *);
+			const gchar *full_name;
 
+			full_name = camel_folder_get_full_name (dest);
 			entry->uids = copy_uids_array (va_arg (ap, GPtrArray *));
 			entry->move = va_arg (ap, gboolean);
-			entry->dest_folder_name = g_strdup (dest->full_name);
+			entry->dest_folder_name = g_strdup (full_name);
 			break;
 		}
 	}

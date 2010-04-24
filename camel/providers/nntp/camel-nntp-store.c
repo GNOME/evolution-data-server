@@ -1382,6 +1382,7 @@ camel_nntp_raw_command_auth(CamelNNTPStore *store, CamelException *ex, gchar **l
 gint
 camel_nntp_command (CamelNNTPStore *store, CamelException *ex, CamelNNTPFolder *folder, gchar **line, const gchar *fmt, ...)
 {
+	const gchar *full_name = NULL;
 	const guchar *p;
 	va_list ap;
 	gint ret, retry;
@@ -1393,6 +1394,9 @@ camel_nntp_command (CamelNNTPStore *store, CamelException *ex, CamelNNTPFolder *
 			_("Not connected."));
 		return -1;
 	}
+
+	if (folder != NULL)
+		full_name = camel_folder_get_full_name (CAMEL_FOLDER (folder));
 
 	retry = 0;
 	do {
@@ -1411,11 +1415,11 @@ camel_nntp_command (CamelNNTPStore *store, CamelException *ex, CamelNNTPFolder *
 		camel_nntp_stream_set_mode(store->stream, CAMEL_NNTP_STREAM_LINE);
 
 		if (folder != NULL
-		    && (store->current_folder == NULL || strcmp(store->current_folder, ((CamelFolder *)folder)->full_name) != 0)) {
-			ret = camel_nntp_raw_command_auth(store, ex, line, "group %s", ((CamelFolder *)folder)->full_name);
+		    && (store->current_folder == NULL || strcmp(store->current_folder, full_name) != 0)) {
+			ret = camel_nntp_raw_command_auth(store, ex, line, "group %s", full_name);
 			if (ret == 211) {
 				g_free(store->current_folder);
-				store->current_folder = g_strdup(((CamelFolder *)folder)->full_name);
+				store->current_folder = g_strdup (full_name);
 				camel_nntp_folder_selected(folder, *line, ex);
 				if (camel_exception_is_set(ex)) {
 					ret = -1;

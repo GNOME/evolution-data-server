@@ -58,8 +58,11 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 	else
 		short_name = folder_name;
 
-	folder = g_object_new (CAMEL_TYPE_IMAPX_FOLDER, NULL);
-	camel_folder_construct(folder, store, folder_name, short_name);
+	folder = g_object_new (
+		CAMEL_TYPE_IMAPX_FOLDER,
+		"name", short_name,
+		"full_name", folder_name,
+		"parent-store", store, NULL);
 	ifolder = (CamelIMAPXFolder *) folder;
 
 	((CamelIMAPXFolder *)folder)->raw_name = g_strdup(folder_name);
@@ -82,9 +85,9 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 	}
 
 	state_file = g_strdup_printf ("%s/cmeta", folder_dir);
-	camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, state_file, NULL);
+	camel_object_set_state_filename (CAMEL_OBJECT (folder), state_file);
 	g_free(state_file);
-	camel_object_state_read(folder);
+	camel_object_state_read (CAMEL_OBJECT (folder));
 
 	ifolder->search = camel_folder_search_new ();
 	ifolder->search_lock = g_mutex_new ();
@@ -144,7 +147,11 @@ imapx_folder_finalize (GObject *object)
 static gboolean
 imapx_refresh_info (CamelFolder *folder, CamelException *ex)
 {
-	CamelIMAPXStore *istore = (CamelIMAPXStore *)folder->parent_store;
+	CamelStore *parent_store;
+	CamelIMAPXStore *istore;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	istore = CAMEL_IMAPX_STORE (parent_store);
 
 	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return TRUE;
@@ -159,7 +166,11 @@ imapx_refresh_info (CamelFolder *folder, CamelException *ex)
 static gboolean
 imapx_expunge (CamelFolder *folder, CamelException *ex)
 {
-	CamelIMAPXStore *is = (CamelIMAPXStore *)folder->parent_store;
+	CamelStore *parent_store;
+	CamelIMAPXStore *is;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	is = CAMEL_IMAPX_STORE (parent_store);
 
 	if (CAMEL_OFFLINE_STORE (is)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return TRUE;
@@ -173,8 +184,12 @@ imapx_expunge (CamelFolder *folder, CamelException *ex)
 static gboolean
 imapx_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 {
-	CamelIMAPXStore *is = (CamelIMAPXStore *)folder->parent_store;
+	CamelStore *parent_store;
+	CamelIMAPXStore *is;
 	CamelException eex = CAMEL_EXCEPTION_INITIALISER;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	is = CAMEL_IMAPX_STORE (parent_store);
 
 	if (CAMEL_OFFLINE_STORE (is)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return TRUE;
@@ -202,10 +217,14 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
 	CamelMimeMessage *msg = NULL;
 	CamelStream *stream = NULL;
-	CamelIMAPXStore *istore = (CamelIMAPXStore *)folder->parent_store;
+	CamelStore *parent_store;
+	CamelIMAPXStore *istore;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
 	const gchar *path = NULL;
 	gboolean offline_message = FALSE;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	istore = CAMEL_IMAPX_STORE (parent_store);
 
 	if (!strchr (uid, '-'))
 		path = "cur";
@@ -250,7 +269,11 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 static gboolean
 imapx_sync_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
-	CamelIMAPXStore *istore = (CamelIMAPXStore *)folder->parent_store;
+	CamelStore *parent_store;
+	CamelIMAPXStore *istore;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	istore = CAMEL_IMAPX_STORE (parent_store);
 
 	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return TRUE;
@@ -266,7 +289,11 @@ imapx_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		      CamelFolder *dest, GPtrArray **transferred_uids,
 		      gboolean delete_originals, CamelException *ex)
 {
-	CamelIMAPXStore *istore = (CamelIMAPXStore *) source->parent_store;
+	CamelStore *parent_store;
+	CamelIMAPXStore *istore;
+
+	parent_store = camel_folder_get_parent_store (source);
+	istore = CAMEL_IMAPX_STORE (parent_store);
 
 	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return TRUE;
@@ -282,7 +309,11 @@ imapx_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 static gboolean
 imapx_append_message(CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *info, gchar **appended_uid, CamelException *ex)
 {
-	CamelIMAPXStore *istore = (CamelIMAPXStore *)folder->parent_store;
+	CamelStore *parent_store;
+	CamelIMAPXStore *istore;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	istore = CAMEL_IMAPX_STORE (parent_store);
 
 	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return TRUE;

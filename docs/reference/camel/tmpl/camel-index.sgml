@@ -143,6 +143,16 @@ CamelIndex
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_index_set_normalize ##### -->
+<para>
+
+</para>
+
+@index: 
+@func: 
+@data: 
+
+
 <!-- ##### FUNCTION camel_index_sync ##### -->
 <para>
 

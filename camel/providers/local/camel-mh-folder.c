@@ -75,13 +75,20 @@ camel_mh_folder_new (CamelStore *parent_store,
                      CamelException *ex)
 {
 	CamelFolder *folder;
+	gchar *basename;
 
 	d(printf("Creating mh folder: %s\n", full_name));
 
-	folder = g_object_new (CAMEL_TYPE_MH_FOLDER, NULL);
+	basename = g_path_get_basename (full_name);
+
+	folder = g_object_new (
+		CAMEL_TYPE_MH_FOLDER,
+		"name", basename, "full-name", full_name,
+		"parent-store", parent_store, NULL);
 	folder = (CamelFolder *) camel_local_folder_construct (
-		CAMEL_LOCAL_FOLDER (folder),
-		parent_store, full_name, flags, ex);
+		CAMEL_LOCAL_FOLDER (folder), flags, ex);
+
+	g_free (basename);
 
 	return folder;
 }

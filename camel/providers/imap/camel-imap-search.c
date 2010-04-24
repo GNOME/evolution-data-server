@@ -319,10 +319,14 @@ sync_match(CamelImapSearch *is, struct _match_record *mr)
 	CamelImapResponse *response = NULL;
 	guint32 uid;
 	CamelFolder *folder = ((CamelFolderSearch *)is)->folder;
-	CamelImapStore *store = (CamelImapStore *)folder->parent_store;
+	CamelStore *parent_store;
+	CamelImapStore *store;
 	struct _camel_search_words *words;
 	GString *search;
 	gint i;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	store = CAMEL_IMAP_STORE (parent_store);
 
 	if (mr->lastuid >= is->lastuid && mr->validity == is->validity)
 		return 0;
@@ -421,7 +425,8 @@ get_match(CamelImapSearch *is, gint argc, struct _ESExpResult **argv)
 static ESExpResult *
 imap_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s)
 {
-	CamelImapStore *store = CAMEL_IMAP_STORE (s->folder->parent_store);
+	CamelStore *parent_store;
+	CamelImapStore *store;
 	CamelImapSearch *is = (CamelImapSearch *)s;
 	gchar *uid;
 	ESExpResult *r;
@@ -430,6 +435,9 @@ imap_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Cam
 	gint i, j;
 	struct _match_record *mr;
 	guint32 uidn, *uidp;
+
+	parent_store = camel_folder_get_parent_store (s->folder);
+	store = CAMEL_IMAP_STORE (parent_store);
 
 	d(printf("Performing body search '%s'\n", argv[0]->value.string));
 

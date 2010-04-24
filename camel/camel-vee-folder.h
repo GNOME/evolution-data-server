@@ -56,6 +56,11 @@ typedef struct _CamelVeeFolder CamelVeeFolder;
 typedef struct _CamelVeeFolderClass CamelVeeFolderClass;
 typedef struct _CamelVeeFolderPrivate CamelVeeFolderPrivate;
 
+/**
+ * CamelVeeFolderLock:
+ *
+ * Since: 3.0
+ **/
 typedef enum {
 	CVF_SUMMARY_LOCK,
 	CVF_SUBFOLDER_LOCK,
@@ -102,7 +107,7 @@ struct _CamelVeeFolderClass {
 
 GType	      camel_vee_folder_get_type		(void);
 CamelFolder  *camel_vee_folder_new		(CamelStore *parent_store, const gchar *full, guint32 flags);
-void         camel_vee_folder_construct		(CamelVeeFolder *vf, CamelStore *parent_store, const gchar *full, const gchar *name, guint32 flags);
+void         camel_vee_folder_construct		(CamelVeeFolder *vf, guint32 flags);
 
 CamelFolder *camel_vee_folder_get_location(CamelVeeFolder *vf, const struct _CamelVeeMessageInfo *vinfo, gchar **realuid);
 

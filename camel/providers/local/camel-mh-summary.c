@@ -104,7 +104,10 @@ camel_mh_summary_new (CamelFolder *folder,
 	o = g_object_new (CAMEL_TYPE_MH_SUMMARY, NULL);
 	((CamelFolderSummary *)o)->folder = folder;
 	if (folder) {
-		camel_db_set_collate (folder->parent_store->cdb_r, "uid", "mh_uid_sort", (CamelDBCollate)camel_local_frompos_sort);
+		CamelStore *parent_store;
+
+		parent_store = camel_folder_get_parent_store (folder);
+		camel_db_set_collate (parent_store->cdb_r, "uid", "mh_uid_sort", (CamelDBCollate)camel_local_frompos_sort);
 		((CamelFolderSummary *)o)->sort_by = "uid";
 		((CamelFolderSummary *)o)->collate = "mh_uid_sort";
 	}

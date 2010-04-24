@@ -55,20 +55,11 @@ G_BEGIN_DECLS
 
 typedef struct _CamelDiscoFolder CamelDiscoFolder;
 typedef struct _CamelDiscoFolderClass CamelDiscoFolderClass;
-
-enum {
-	CAMEL_DISCO_FOLDER_ARG_OFFLINE_SYNC = CAMEL_FOLDER_ARG_LAST,
-	CAMEL_DISCO_FOLDER_ARG_LAST = CAMEL_FOLDER_ARG_LAST + 0x100
-};
-
-enum {
-	CAMEL_DISCO_FOLDER_OFFLINE_SYNC = CAMEL_DISCO_FOLDER_ARG_OFFLINE_SYNC | CAMEL_ARG_BOO
-};
+typedef struct _CamelDiscoFolderPrivate CamelDiscoFolderPrivate;
 
 struct _CamelDiscoFolder {
 	CamelFolder parent;
-
-	guint offline_sync:1;
+	CamelDiscoFolderPrivate *priv;
 };
 
 struct _CamelDiscoFolderClass {
@@ -137,6 +128,11 @@ struct _CamelDiscoFolderClass {
 };
 
 GType		camel_disco_folder_get_type	(void);
+gboolean	camel_disco_folder_get_offline_sync
+						(CamelDiscoFolder *disco_folder);
+void		camel_disco_folder_set_offline_sync
+						(CamelDiscoFolder *disco_folder,
+						 gboolean offline_sync);
 gboolean	camel_disco_folder_expunge_uids	(CamelFolder *folder,
 						 GPtrArray *uids,
 						 CamelException *ex);

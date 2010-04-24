@@ -54,6 +54,34 @@ address-data
 addresses
 
 
+<!-- ##### SECTION ./tmpl/camel-arg.sgml:Image ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-arg.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-arg.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-arg.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-arg.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-arg.sgml:Title ##### -->
+camel-arg
+
+
 <!-- ##### SECTION ./tmpl/camel-digest-folder.sgml:Long_Description ##### -->
 <para>
 
@@ -2226,6 +2254,12 @@ CamelTestSession
 streams
 
 
+<!-- ##### MACRO CAMEL_ARGV_MAX ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### MACRO CAMEL_CHECK_CAST ##### -->
 <para>
 
@@ -2550,6 +2584,36 @@ streams
 </para>
 
 
+<!-- ##### MACRO CAMEL_SERVICE_AUTH ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_SERVICE_HOSTNAME ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_SERVICE_PATH ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_SERVICE_PORT ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_SERVICE_USERNAME ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### MACRO CAMEL_SMTP_TRANSPORT_8BITMIME ##### -->
 <para>
 
@@ -2580,6 +2644,38 @@ streams
 </para>
 
 
+<!-- ##### STRUCT CamelArg ##### -->
+<para>
+
+</para>
+
+@tag: 
+
+<!-- ##### STRUCT CamelArgGet ##### -->
+<para>
+
+</para>
+
+@tag: 
+
+<!-- ##### STRUCT CamelArgGetV ##### -->
+<para>
+
+</para>
+
+@ap: 
+@argc: 
+@argv: 
+
+<!-- ##### STRUCT CamelArgV ##### -->
+<para>
+
+</para>
+
+@ap: 
+@argc: 
+@argv: 
+
 <!-- ##### STRUCT CamelDigestFolder ##### -->
 <para>
 
@@ -2601,6 +2697,16 @@ streams
 </para>
 
 @parent_object: 
+
+<!-- ##### ENUM CamelDiscoDiaryArgType ##### -->
+<para>
+
+</para>
+
+@CAMEL_DISCO_DIARY_ARG_NONE: 
+@CAMEL_DISCO_DIARY_ARG_FOLDER: 
+@CAMEL_DISCO_DIARY_ARG_UID: 
+@CAMEL_DISCO_DIARY_ARG_UID_LIST: 
 
 <!-- ##### STRUCT CamelGroupwiseFolder ##### -->
 <para>
@@ -3651,6 +3757,15 @@ streams
 @lineptr: 
 @lineend: 
 
+<!-- ##### STRUCT CamelProperty ##### -->
+<para>
+
+</para>
+
+@tag: 
+@name: 
+@description: 
+
 <!-- ##### STRUCT CamelSendmailTransport ##### -->
 <para>
 
@@ -4167,6 +4282,75 @@ streams
 @ai_canonname: 
 @ai_next: 
 
+<!-- ##### MACRO ca_double ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO ca_int ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO ca_object ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO ca_ptr ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO ca_str ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_arggetv_build ##### -->
+<para>
+
+</para>
+
+@tv: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_argv_build ##### -->
+<para>
+
+</para>
+
+@tv: 
+@Returns: 
+
+<!-- ##### MACRO camel_argv_end ##### -->
+<para>
+
+</para>
+
+@tv: 
+
+<!-- ##### MACRO camel_argv_ignore ##### -->
+<para>
+
+</para>
+
+@tv: 
+@i: 
+
+<!-- ##### MACRO camel_argv_start ##### -->
+<para>
+
+</para>
+
+@tv: 
+@last: 
+
 <!-- ##### FUNCTION camel_base64_decode_simple ##### -->
 <para>
 
@@ -4328,6 +4512,16 @@ streams
 @n: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_folder_construct ##### -->
+<para>
+
+</para>
+
+@folder: 
+@parent_store: 
+@full_name: 
+@name: 
+
 <!-- ##### FUNCTION camel_folder_summary_array_free ##### -->
 <para>
 
@@ -4335,6 +4529,32 @@ streams
 
 @summary: 
 @array: 
+
+<!-- ##### FUNCTION camel_folder_summary_cache_size ##### -->
+<para>
+
+</para>
+
+@s: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_folder_summary_ensure_infos_loaded ##### -->
+<para>
+
+</para>
+
+@s: 
+@at_least: 
+@ex: 
+
+<!-- ##### FUNCTION camel_folder_summary_reload_from_db ##### -->
+<para>
+
+</para>
+
+@s: 
+@ex: 
+@Returns: 
 
 <!-- ##### FUNCTION camel_groupwise_journal_append ##### -->
 <para>
@@ -6689,6 +6909,25 @@ streams
 @ctype: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_object_free ##### -->
+<para>
+
+</para>
+
+@vo: 
+@tag: 
+@value: 
+
+<!-- ##### FUNCTION camel_object_get ##### -->
+<para>
+
+</para>
+
+@obj: 
+@ex: 
+@Varargs: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_object_get_int ##### -->
 <para>
 
@@ -6716,6 +6955,16 @@ streams
 @vo: 
 @ex: 
 @tag: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_object_getv ##### -->
+<para>
+
+</para>
+
+@obj: 
+@ex: 
+@Param3: 
 @Returns: 
 
 <!-- ##### FUNCTION camel_object_is ##### -->
@@ -6768,6 +7017,26 @@ streams
 </para>
 
 @Param1: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_object_set ##### -->
+<para>
+
+</para>
+
+@obj: 
+@ex: 
+@Varargs: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_object_setv ##### -->
+<para>
+
+</para>
+
+@obj: 
+@ex: 
+@Param3: 
 @Returns: 
 
 <!-- ##### VARIABLE camel_object_type ##### -->

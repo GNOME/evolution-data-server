@@ -70,3 +70,12 @@ CamelStreamFs
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_stream_fs_get_fd ##### -->
+<para>
+
+</para>
+
+@stream: 
+@Returns: 
+
+

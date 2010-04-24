@@ -47,16 +47,6 @@
 
 G_BEGIN_DECLS
 
-enum {
-	CAMEL_LOCAL_FOLDER_ARG_INDEX_BODY = CAMEL_FOLDER_ARG_LAST,
-
-	CAMEL_LOCAL_FOLDER_ARG_LAST = CAMEL_FOLDER_ARG_LAST + 0x100
-};
-
-enum {
-	CAMEL_LOCAL_FOLDER_INDEX_BODY = CAMEL_LOCAL_FOLDER_ARG_INDEX_BODY | CAMEL_ARG_BOO
-};
-
 typedef struct _CamelLocalFolder CamelLocalFolder;
 typedef struct _CamelLocalFolderClass CamelLocalFolderClass;
 typedef struct _CamelLocalFolderPrivate CamelLocalFolderPrivate;
@@ -95,19 +85,31 @@ struct _CamelLocalFolderClass {
 	void (*unlock)(CamelLocalFolder *);
 };
 
-/* public methods */
-/* flags are taken from CAMEL_STORE_FOLDER_* flags */
-CamelLocalFolder *camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store,
-					       const gchar *full_name, guint32 flags, CamelException *ex);
+GType		camel_local_folder_get_type	(void);
 
-GType camel_local_folder_get_type(void);
+/* flags are taken from CAMEL_STORE_FOLDER_* flags */
+CamelLocalFolder *
+		camel_local_folder_construct	(CamelLocalFolder *local_folder,
+						 guint32 flags,
+						 CamelException *ex);
+gboolean	camel_local_folder_get_index_body
+						(CamelLocalFolder *local_folder);
+void		camel_local_folder_set_index_body
+						(CamelLocalFolder *local_folder,
+						 gboolean index_body);
 
 /* Lock the folder for internal use.  May be called repeatedly */
 /* UNIMPLEMENTED */
-gint camel_local_folder_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
-gint camel_local_folder_unlock(CamelLocalFolder *lf);
+gint		camel_local_folder_lock		(CamelLocalFolder *local_folder,
+						 CamelLockType type,
+						 CamelException *ex);
+gint		camel_local_folder_unlock	(CamelLocalFolder *local_folder);
 
-void set_cannot_get_message_ex (CamelException *ex, ExceptionId exId, const gchar *msgID, const gchar *folder_path, const gchar *detailErr);
+void		set_cannot_get_message_ex	(CamelException *ex,
+						 ExceptionId exId,
+						 const gchar *msgID,
+						 const gchar *folder_path,
+						 const gchar *detailErr);
 
 G_END_DECLS
 

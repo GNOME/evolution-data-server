@@ -52,46 +52,11 @@ static gboolean maildir_transfer_messages_to (CamelFolder *source, GPtrArray *ui
 
 G_DEFINE_TYPE (CamelMaildirFolder, camel_maildir_folder, CAMEL_TYPE_LOCAL_FOLDER)
 
-static gint
-maildir_folder_getv (CamelObject *object,
-                     CamelException *ex,
-                     CamelArgGetV *args)
-{
-	CamelFolder *folder = (CamelFolder *)object;
-	gint i;
-	guint32 tag;
-
-	for (i=0;i<args->argc;i++) {
-		CamelArgGet *arg = &args->argv[i];
-
-		tag = arg->tag;
-
-		switch (tag & CAMEL_ARG_TAG) {
-		case CAMEL_FOLDER_ARG_NAME:
-			if (!strcmp(folder->full_name, "."))
-				*arg->ca_str = _("Inbox");
-			else
-				*arg->ca_str = folder->name;
-			break;
-		default:
-			continue;
-		}
-
-		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
-	}
-
-	return ((CamelObjectClass *)camel_maildir_folder_parent_class)->getv(object, ex, args);
-}
-
 static void
 camel_maildir_folder_class_init (CamelMaildirFolderClass *class)
 {
-	CamelObjectClass *camel_object_class;
 	CamelFolderClass *folder_class;
 	CamelLocalFolderClass *local_folder_class;
-
-	camel_object_class = CAMEL_OBJECT_CLASS (class);
-	camel_object_class->getv = maildir_folder_getv;
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
 	folder_class->append_message = maildir_append_message;
@@ -117,18 +82,28 @@ camel_maildir_folder_new (CamelStore *parent_store,
                           CamelException *ex)
 {
 	CamelFolder *folder;
+	gchar *basename;
 
 	d(printf("Creating maildir folder: %s\n", full_name));
 
-	folder = g_object_new (CAMEL_TYPE_MAILDIR_FOLDER, NULL);
+	if (g_strcmp0 (full_name, ".") == 0)
+		basename = g_strdup (_("Inbox"));
+	else
+		basename = g_path_get_basename (full_name);
+
+	folder = g_object_new (
+		CAMEL_TYPE_MAILDIR_FOLDER,
+		"name", basename, "full-name", full_name,
+		"parent-store", parent_store, NULL);
 
 	if (parent_store->flags & CAMEL_STORE_FILTER_INBOX
 	    && strcmp(full_name, ".") == 0)
 		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 
 	folder = (CamelFolder *) camel_local_folder_construct (
-		CAMEL_LOCAL_FOLDER (folder),
-		parent_store, full_name, flags, ex);
+		CAMEL_LOCAL_FOLDER (folder), flags, ex);
+
+	g_free (basename);
 
 	return folder;
 }

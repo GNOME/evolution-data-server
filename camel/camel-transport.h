@@ -59,10 +59,11 @@ typedef struct _CamelTransport CamelTransport;
 typedef struct _CamelTransportClass CamelTransportClass;
 typedef struct _CamelTransportPrivate CamelTransportPrivate;
 
-enum {
-	CAMEL_TRANSPORT_ARG_FIRST  = CAMEL_SERVICE_ARG_FIRST + 100
-};
-
+/**
+ * CamelTransportLock:
+ *
+ * Since: 3.0
+ **/
 typedef enum {
 	CT_SEND_LOCK
 } CamelTransportLock;

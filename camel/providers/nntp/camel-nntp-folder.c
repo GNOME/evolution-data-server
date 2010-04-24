@@ -70,28 +70,37 @@ nntp_folder_finalize (GObject *object)
 }
 
 gboolean
-camel_nntp_folder_selected (CamelNNTPFolder *folder,
+camel_nntp_folder_selected (CamelNNTPFolder *nntp_folder,
                             gchar *line,
                             CamelException *ex)
 {
+	CamelFolder *folder;
+	CamelStore *parent_store;
+
+	folder = CAMEL_FOLDER (nntp_folder);
+	parent_store = camel_folder_get_parent_store (folder);
+
 	return camel_nntp_summary_check (
-		(CamelNNTPSummary *)((CamelFolder *)folder)->summary,
-		(CamelNNTPStore *)((CamelFolder *)folder)->parent_store,
-		line, folder->changes, ex);
+		CAMEL_NNTP_SUMMARY (folder->summary),
+		CAMEL_NNTP_STORE (parent_store),
+		line, nntp_folder->changes, ex);
 }
 
 static gboolean
 nntp_folder_refresh_info_online (CamelFolder *folder,
                                  CamelException *ex)
 {
+	CamelStore *parent_store;
 	CamelNNTPStore *nntp_store;
 	CamelFolderChangeInfo *changes = NULL;
 	CamelNNTPFolder *nntp_folder;
 	gchar *line;
 	gboolean success;
 
-	nntp_store = (CamelNNTPStore *) folder->parent_store;
-	nntp_folder = (CamelNNTPFolder *) folder;
+	parent_store = camel_folder_get_parent_store (folder);
+
+	nntp_folder = CAMEL_NNTP_FOLDER (folder);
+	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
 	camel_service_lock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 
@@ -134,10 +143,13 @@ unset_flagged_flag (const gchar *uid, CamelFolderSummary *summary)
 static gboolean
 nntp_folder_sync (CamelFolder *folder, CamelException *ex)
 {
+	CamelStore *parent_store;
 	GPtrArray *changed;
 	gboolean success;
 
-	camel_service_lock (CAMEL_SERVICE (folder->parent_store), CS_REC_CONNECT_LOCK);
+	parent_store = camel_folder_get_parent_store (folder);
+
+	camel_service_lock (CAMEL_SERVICE (parent_store), CS_REC_CONNECT_LOCK);
 
 	changed = camel_folder_summary_get_changed (folder->summary);
 	if (changed) {
@@ -148,7 +160,7 @@ nntp_folder_sync (CamelFolder *folder, CamelException *ex)
 	}
 	success = camel_folder_summary_save_to_db (folder->summary, ex);
 
-	camel_service_unlock (CAMEL_SERVICE (folder->parent_store), CS_REC_CONNECT_LOCK);
+	camel_service_unlock (CAMEL_SERVICE (parent_store), CS_REC_CONNECT_LOCK);
 
 	return success;
 }
@@ -168,8 +180,12 @@ nntp_folder_sync_offline (CamelFolder *folder, CamelException *ex)
 static gchar *
 nntp_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
-	CamelNNTPStore *nntp_store = (CamelNNTPStore *) folder->parent_store;
+	CamelStore *parent_store;
+	CamelNNTPStore *nntp_store;
 	gchar *article, *msgid;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
 	article = alloca(strlen(uid)+1);
 	strcpy(article, uid);
@@ -188,10 +204,16 @@ nntp_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
 static CamelStream *
 nntp_folder_download_message (CamelNNTPFolder *nntp_folder, const gchar *id, const gchar *msgid, CamelException *ex)
 {
-	CamelNNTPStore *nntp_store = (CamelNNTPStore *) ((CamelFolder *) nntp_folder)->parent_store;
+	CamelFolder *folder;
+	CamelStore *parent_store;
+	CamelNNTPStore *nntp_store;
 	CamelStream *stream = NULL;
 	gint ret;
 	gchar *line;
+
+	folder = CAMEL_FOLDER (nntp_folder);
+	parent_store = camel_folder_get_parent_store (folder);
+	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
 	ret = camel_nntp_command (nntp_store, ex, nntp_folder, &line, "article %s", id);
 	if (ret == 220) {
@@ -235,10 +257,16 @@ nntp_folder_cache_message (CamelDiscoFolder *disco_folder,
                            const gchar *uid,
                            CamelException *ex)
 {
-	CamelNNTPStore *nntp_store = (CamelNNTPStore *)((CamelFolder *) disco_folder)->parent_store;
+	CamelFolder *folder;
+	CamelStore *parent_store;
+	CamelNNTPStore *nntp_store;
 	CamelStream *stream;
 	gchar *article, *msgid;
 	gboolean success = TRUE;
+
+	folder = CAMEL_FOLDER (disco_folder);
+	parent_store = camel_folder_get_parent_store (folder);
+	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
 	article = alloca(strlen(uid)+1);
 	strcpy(article, uid);
@@ -268,6 +296,7 @@ nntp_folder_cache_message (CamelDiscoFolder *disco_folder,
 static CamelMimeMessage *
 nntp_folder_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
+	CamelStore *parent_store;
 	CamelMimeMessage *message = NULL;
 	CamelNNTPStore *nntp_store;
 	CamelFolderChangeInfo *changes;
@@ -275,8 +304,10 @@ nntp_folder_get_message (CamelFolder *folder, const gchar *uid, CamelException *
 	CamelStream *stream = NULL;
 	gchar *article, *msgid;
 
-	nntp_store = (CamelNNTPStore *) folder->parent_store;
-	nntp_folder = (CamelNNTPFolder *) folder;
+	parent_store = camel_folder_get_parent_store (folder);
+
+	nntp_folder = CAMEL_NNTP_FOLDER (folder);
+	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
 	article = alloca(strlen(uid)+1);
 	strcpy(article, uid);
@@ -417,15 +448,23 @@ nntp_folder_append_message_online (CamelFolder *folder,
                                    gchar **appended_uid,
                                    CamelException *ex)
 {
-	CamelNNTPStore *nntp_store = (CamelNNTPStore *) folder->parent_store;
-	CamelStream *stream = (CamelStream*)nntp_store->stream;
+	CamelStore *parent_store;
+	CamelNNTPStore *nntp_store;
 	CamelStream *filtered_stream;
+	CamelStream *stream;
 	CamelMimeFilter *crlffilter;
 	gint ret;
 	guint u;
 	struct _camel_header_raw *header, *savedhdrs, *n, *tail;
+	const gchar *full_name;
 	gchar *group, *line;
 	gboolean success = TRUE;
+
+	full_name = camel_folder_get_full_name (folder);
+	parent_store = camel_folder_get_parent_store (folder);
+
+	nntp_store = CAMEL_NNTP_STORE (parent_store);
+	stream = CAMEL_STREAM (nntp_store->stream);
 
 	camel_service_lock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 
@@ -448,7 +487,7 @@ nntp_folder_append_message_online (CamelFolder *folder,
 	}
 
 	/* the 'Newsgroups: ' header */
-	group = g_strdup_printf ("Newsgroups: %s\r\n", folder->full_name);
+	group = g_strdup_printf ("Newsgroups: %s\r\n", full_name);
 
 	/* setup stream filtering */
 	crlffilter = camel_mime_filter_crlf_new (CAMEL_MIME_FILTER_CRLF_ENCODE, CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS);
@@ -604,18 +643,21 @@ camel_nntp_folder_new (CamelStore *parent,
 	/* If this doesn't work, stuff wont save, but let it continue anyway */
 	g_mkdir_with_parents (root, 0700);
 
-	folder = g_object_new (CAMEL_TYPE_NNTP_FOLDER, NULL);
+	folder = g_object_new (
+		CAMEL_TYPE_NNTP_FOLDER,
+		"name", folder_name,
+		"full-name", folder_name,
+		"parent-store", parent, NULL);
 	nntp_folder = (CamelNNTPFolder *)folder;
 
-	camel_folder_construct (folder, parent, folder_name, folder_name);
 	folder->folder_flags |= CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY|CAMEL_FOLDER_HAS_SEARCH_CAPABILITY;
 
-	nntp_folder->storage_path = g_build_filename (root, folder->full_name, NULL);
+	nntp_folder->storage_path = g_build_filename (root, folder_name, NULL);
 	g_free (root);
 
 	root = g_strdup_printf ("%s.cmeta", nntp_folder->storage_path);
-	camel_object_set(nntp_folder, NULL, CAMEL_OBJECT_STATE_FILE, root, NULL);
-	camel_object_state_read(nntp_folder);
+	camel_object_set_state_filename (CAMEL_OBJECT (nntp_folder), root);
+	camel_object_state_read (CAMEL_OBJECT (nntp_folder));
 	g_free(root);
 
 	root = g_strdup_printf("%s.ev-summary", nntp_folder->storage_path);

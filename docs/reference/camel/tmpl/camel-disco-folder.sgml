@@ -26,6 +26,29 @@ CamelDiscoFolder
 </para>
 
 
+<!-- ##### ARG CamelDiscoFolder:offline-sync ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION camel_disco_folder_get_offline_sync ##### -->
+<para>
+
+</para>
+
+@disco_folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_disco_folder_set_offline_sync ##### -->
+<para>
+
+</para>
+
+@disco_folder: 
+@offline_sync: 
+
+
 <!-- ##### FUNCTION camel_disco_folder_expunge_uids ##### -->
 <para>
 

@@ -393,6 +393,13 @@ camel_sasl_get_authenticated (CamelSasl *sasl)
 	return sasl->priv->authenticated;
 }
 
+/**
+ * camel_sasl_set_authenticated:
+ * @sasl: a #CamelSasl
+ * @authenticated: whether we have successfully authenticated
+ *
+ * Since: 3.0
+ **/
 void
 camel_sasl_set_authenticated (CamelSasl *sasl,
                               gboolean authenticated)
@@ -404,6 +411,12 @@ camel_sasl_set_authenticated (CamelSasl *sasl,
 	g_object_notify (G_OBJECT (sasl), "authenticated");
 }
 
+/**
+ * camel_sasl_get_mechanism:
+ * @sasl: a #CamelSasl
+ *
+ * Since: 3.0
+ **/
 const gchar *
 camel_sasl_get_mechanism (CamelSasl *sasl)
 {
@@ -412,6 +425,12 @@ camel_sasl_get_mechanism (CamelSasl *sasl)
 	return sasl->priv->mechanism;
 }
 
+/**
+ * camel_sasl_get_service:
+ * @sasl: a #CamelSasl
+ *
+ * Since: 3.0
+ **/
 CamelService *
 camel_sasl_get_service (CamelSasl *sasl)
 {
@@ -420,6 +439,12 @@ camel_sasl_get_service (CamelSasl *sasl)
 	return sasl->priv->service;
 }
 
+/**
+ * camel_sasl_get_service_name:
+ * @sasl: a #CamelSasl
+ *
+ * Since: 3.0
+ **/
 const gchar *
 camel_sasl_get_service_name (CamelSasl *sasl)
 {

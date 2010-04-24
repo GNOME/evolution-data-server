@@ -1153,7 +1153,7 @@ camel_db_get_folder_junk_uids (CamelDB *db, gchar *folder_name, CamelException *
  * Since: 2.24
  **/
 GPtrArray *
-camel_db_get_folder_deleted_uids (CamelDB *db, gchar *folder_name, CamelException *ex)
+camel_db_get_folder_deleted_uids (CamelDB *db, const gchar *folder_name, CamelException *ex)
 {
 	 gchar *sel_query;
 	 gint ret;
@@ -1198,7 +1198,7 @@ read_preview_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
  * Since: 2.28
  **/
 GHashTable *
-camel_db_get_folder_preview (CamelDB *db, gchar *folder_name, CamelException *ex)
+camel_db_get_folder_preview (CamelDB *db, const gchar *folder_name, CamelException *ex)
 {
 	 gchar *sel_query;
 	 gint ret;
@@ -1223,7 +1223,7 @@ camel_db_get_folder_preview (CamelDB *db, gchar *folder_name, CamelException *ex
  * Since: 2.28
  **/
 gint
-camel_db_write_preview_record (CamelDB *db, gchar *folder_name, const gchar *uid, const gchar *msg, CamelException *ex)
+camel_db_write_preview_record (CamelDB *db, const gchar *folder_name, const gchar *uid, const gchar *msg, CamelException *ex)
 {
 	gchar *query;
 	gint ret;
@@ -1261,7 +1261,7 @@ read_vuids_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
  * Since: 2.24
  **/
 GPtrArray *
-camel_db_get_vuids_from_vfolder (CamelDB *db, gchar *folder_name, gchar *filter, CamelException *ex)
+camel_db_get_vuids_from_vfolder (CamelDB *db, const gchar *folder_name, gchar *filter, CamelException *ex)
 {
 	 gchar *sel_query;
 	 gchar *cond = NULL;
@@ -1954,7 +1954,7 @@ camel_db_delete_vuids (CamelDB *cdb, const gchar * folder_name, const gchar *has
  * Since: 2.24
  **/
 gint
-camel_db_clear_folder_summary (CamelDB *cdb, gchar *folder, CamelException *ex)
+camel_db_clear_folder_summary (CamelDB *cdb, const gchar *folder, CamelException *ex)
 {
 	gint ret;
 

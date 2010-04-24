@@ -41,6 +41,24 @@ CamelDataCache
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_data_cache_get_path ##### -->
+<para>
+
+</para>
+
+@cdc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_data_cache_set_path ##### -->
+<para>
+
+</para>
+
+@cdc: 
+@path: 
+
+
 <!-- ##### FUNCTION camel_data_cache_set_expire_age ##### -->
 <para>
 

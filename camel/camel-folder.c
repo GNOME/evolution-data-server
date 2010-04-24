@@ -57,6 +57,20 @@ struct _CamelFolderPrivate {
 	gint frozen;
 	struct _CamelFolderChangeInfo *changed_frozen; /* queues changed events */
 	gboolean skip_folder_lock;
+
+	CamelStore *parent_store;
+
+	gchar *name;
+	gchar *full_name;
+	gchar *description;
+};
+
+enum {
+	PROP_0,
+	PROP_DESCRIPTION,
+	PROP_FULL_NAME,
+	PROP_NAME,
+	PROP_PARENT_STORE
 };
 
 G_DEFINE_ABSTRACT_TYPE (CamelFolder, camel_folder, CAMEL_TYPE_OBJECT)
@@ -116,15 +130,95 @@ folder_transfer_message_to (CamelFolder *source,
 }
 
 static void
+folder_set_parent_store (CamelFolder *folder,
+                         CamelStore *parent_store)
+{
+	g_return_if_fail (CAMEL_IS_STORE (parent_store));
+	g_return_if_fail (folder->priv->parent_store == NULL);
+
+	folder->priv->parent_store = g_object_ref (parent_store);
+}
+
+static void
+folder_set_property (GObject *object,
+                     guint property_id,
+                     const GValue *value,
+                     GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_DESCRIPTION:
+			camel_folder_set_description (
+				CAMEL_FOLDER (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_FULL_NAME:
+			camel_folder_set_full_name (
+				CAMEL_FOLDER (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_NAME:
+			camel_folder_set_name (
+				CAMEL_FOLDER (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_PARENT_STORE:
+			folder_set_parent_store (
+				CAMEL_FOLDER (object),
+				g_value_get_object (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+folder_get_property (GObject *object,
+                     guint property_id,
+                     GValue *value,
+                     GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_DESCRIPTION:
+			g_value_set_string (
+				value, camel_folder_get_description (
+				CAMEL_FOLDER (object)));
+			return;
+
+		case PROP_FULL_NAME:
+			g_value_set_string (
+				value, camel_folder_get_full_name (
+				CAMEL_FOLDER (object)));
+			return;
+
+		case PROP_NAME:
+			g_value_set_string (
+				value, camel_folder_get_name (
+				CAMEL_FOLDER (object)));
+			return;
+
+		case PROP_PARENT_STORE:
+			g_value_set_object (
+				value, camel_folder_get_parent_store (
+				CAMEL_FOLDER (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
 folder_dispose (GObject *object)
 {
 	CamelFolder *folder;
 
 	folder = CAMEL_FOLDER (object);
 
-	if (folder->parent_store != NULL) {
-		g_object_unref (folder->parent_store);
-		folder->parent_store = NULL;
+	if (folder->priv->parent_store != NULL) {
+		g_object_unref (folder->priv->parent_store);
+		folder->priv->parent_store = NULL;
 	}
 
 	if (folder->summary) {
@@ -146,9 +240,9 @@ folder_finalize (GObject *object)
 	folder = CAMEL_FOLDER (object);
 	priv = CAMEL_FOLDER_GET_PRIVATE (object);
 
-	g_free (folder->name);
-	g_free (folder->full_name);
-	g_free (folder->description);
+	g_free (priv->name);
+	g_free (priv->full_name);
+	g_free (priv->description);
 
 	camel_folder_change_info_free (priv->changed_frozen);
 
@@ -159,203 +253,11 @@ folder_finalize (GObject *object)
 	G_OBJECT_CLASS (camel_folder_parent_class)->finalize (object);
 }
 
-static gint
-folder_getv (CamelObject *object,
-             CamelException *ex,
-             CamelArgGetV *args)
-{
-	CamelFolder *folder = (CamelFolder *)object;
-	gint i;
-	guint32 tag;
-	gint unread = -1, deleted = 0, junked = 0, junked_not_deleted = 0, visible = 0, count = -1;
-
-	for (i = 0; i < args->argc; i++) {
-		CamelArgGet *arg = &args->argv[i];
-
-		tag = arg->tag;
-
-		switch (tag & CAMEL_ARG_TAG) {
-			/* CamelObject args */
-		case CAMEL_OBJECT_ARG_DESCRIPTION:
-			if (folder->description == NULL)
-				folder->description = g_strdup_printf ("%s", folder->full_name);
-			*arg->ca_str = folder->description;
-			break;
-
-			/* CamelFolder args */
-		case CAMEL_FOLDER_ARG_NAME:
-			*arg->ca_str = folder->name;
-			break;
-		case CAMEL_FOLDER_ARG_FULL_NAME:
-			*arg->ca_str = folder->full_name;
-			break;
-		case CAMEL_FOLDER_ARG_STORE:
-			*arg->ca_object = folder->parent_store;
-			break;
-		case CAMEL_FOLDER_ARG_PERMANENTFLAGS:
-			*arg->ca_int = folder->permanent_flags;
-			break;
-		case CAMEL_FOLDER_ARG_TOTAL:
-			*arg->ca_int = camel_folder_summary_count (folder->summary);
-			break;
-		case CAMEL_FOLDER_ARG_UNREAD:
-		case CAMEL_FOLDER_ARG_DELETED:
-		case CAMEL_FOLDER_ARG_JUNKED:
-		case CAMEL_FOLDER_ARG_JUNKED_NOT_DELETED:
-		case CAMEL_FOLDER_ARG_VISIBLE:
-			/* This is so we can get the values atomically, and also so we can calculate them only once */
-
-			/* FIXME[disk-summary] Add a better base class
-			 * function to get counts specific to normal/vee
-			 * folder. */
-			if (unread == -1) {
-
-				if (1) {
-					unread = folder->summary->unread_count;
-					deleted = folder->summary->deleted_count;
-					junked = folder->summary->junk_count;
-					junked_not_deleted = folder->summary->junk_not_deleted_count;
-					visible = folder->summary->visible_count;
-				} else {
-					/* count = camel_folder_summary_count (folder->summary);
-					for (j = 0; j < count; j++) {
-						if ((info = camel_folder_summary_index (folder->summary, j))) {
-							guint32 flags = camel_message_info_flags (info);
-
-							if ((flags & (CAMEL_MESSAGE_SEEN|CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_JUNK)) == 0)
-								unread++;
-							if (flags & CAMEL_MESSAGE_DELETED)
-								deleted++;
-							if (flags & CAMEL_MESSAGE_JUNK) {
-								junked++;
-								if (!(flags & CAMEL_MESSAGE_DELETED))
-									junked_not_deleted++;
-							}
-							if ((flags & (CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_JUNK)) == 0)
-								visible++;
-							camel_message_info_free (info);
-						}
-
-					}*/
-                                        /* FIXME[disk-summary] I added it for
-					 * vfolders summary storage, does it
-					 * harm ? */
-					if (unread == -1) {
-						/*unread = folder->summary->unread_count;*/
-						/*
-						folder->summary->junk_count = junked;
-						folder->summary->deleted_count = deleted;
-						printf ("*************************** %s %d %d %d\n", folder->full_name, folder->summary->unread_count, unread, count);
-						folder->summary->unread_count = unread; */
-					}
-				}
-
-			}
-
-			switch (tag & CAMEL_ARG_TAG) {
-			case CAMEL_FOLDER_ARG_UNREAD:
-				count = unread == -1 ? 0 : unread;
-				break;
-			case CAMEL_FOLDER_ARG_DELETED:
-				count = deleted == -1 ? 0 : deleted;
-				break;
-			case CAMEL_FOLDER_ARG_JUNKED:
-				count = junked == -1 ? 0 : junked;
-				break;
-			case CAMEL_FOLDER_ARG_JUNKED_NOT_DELETED:
-				count = junked_not_deleted == -1 ? 0 : junked_not_deleted;
-				break;
-			case CAMEL_FOLDER_ARG_VISIBLE:
-				count = visible == -1 ? 0 : visible;
-				break;
-			}
-
-			*arg->ca_int = count;
-			break;
-		case CAMEL_FOLDER_ARG_UID_ARRAY: {
-/*			gint j;
-			CamelMessageInfo *info;
-			GPtrArray *array;
-
-			count = camel_folder_summary_count (folder->summary);
-			array = g_ptr_array_new ();
-			g_ptr_array_set_size (array, count);
-			for (j=0; j<count; j++) {
-				if ((info = camel_folder_summary_index (folder->summary, j))) {
-					array->pdata[i] = g_strdup (camel_message_info_uid (info));
-					camel_message_info_free (info);
-				}
-			}
-			*arg->ca_ptr = array;*/
-			/* WTH this is reqd ?, let it crash to find out who uses this */
-			g_assert_not_reached ();
-			break; }
-		case CAMEL_FOLDER_ARG_INFO_ARRAY:
-			*arg->ca_ptr = camel_folder_summary_array (folder->summary);
-			break;
-		case CAMEL_FOLDER_ARG_PROPERTIES:
-			*arg->ca_ptr = NULL;
-			break;
-		default:
-			continue;
-		}
-
-		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
-	}
-
-	return CAMEL_OBJECT_CLASS (camel_folder_parent_class)->getv (object, ex, args);
-}
-
-static void
-folder_free (CamelObject *object,
-             guint32 tag,
-             gpointer val)
-{
-	CamelFolder *folder = (CamelFolder *)object;
-
-	switch (tag & CAMEL_ARG_TAG) {
-	case CAMEL_FOLDER_ARG_UID_ARRAY: {
-		GPtrArray *array = val;
-		gint i;
-
-		for (i=0; i<array->len; i++)
-			g_free (array->pdata[i]);
-		g_ptr_array_free (array, TRUE);
-		break; }
-	case CAMEL_FOLDER_ARG_INFO_ARRAY:
-		camel_folder_free_summary (folder, val);
-		break;
-	case CAMEL_FOLDER_ARG_PROPERTIES:
-		g_slist_free (val);
-		break;
-	default:
-		CAMEL_OBJECT_CLASS (camel_folder_parent_class)->free (object, tag, val);
-	}
-}
-
 static gboolean
 folder_refresh_info (CamelFolder *folder,
                      CamelException *ex)
 {
 	return TRUE;
-}
-
-static const gchar *
-folder_get_name (CamelFolder *folder)
-{
-	return folder->name;
-}
-
-static const gchar *
-folder_get_full_name (CamelFolder *folder)
-{
-	return folder->full_name;
-}
-
-static CamelStore *
-folder_get_parent_store (CamelFolder * folder)
-{
-	return folder->parent_store;
 }
 
 static gint
@@ -666,11 +568,10 @@ folder_rename (CamelFolder *folder,
 
 	d (printf ("CamelFolder:rename ('%s')\n", new));
 
-	g_free (folder->full_name);
-	folder->full_name = g_strdup (new);
-	g_free (folder->name);
+	camel_folder_set_full_name (folder, new);
+
 	tmp = strrchr (new, '/');
-	folder->name = g_strdup (tmp?tmp+1:new);
+	camel_folder_set_name (folder, (tmp != NULL) ? tmp + 1 : new);
 }
 
 static void
@@ -734,17 +635,12 @@ camel_folder_class_init (CamelFolderClass *class)
 	g_type_class_add_private (class, sizeof (CamelFolderPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = folder_set_property;
+	object_class->get_property = folder_get_property;
 	object_class->dispose = folder_dispose;
 	object_class->finalize = folder_finalize;
 
-	camel_object_class = CAMEL_OBJECT_CLASS (class);
-	camel_object_class->getv = folder_getv;
-	camel_object_class->free = folder_free;
-
 	class->refresh_info = folder_refresh_info;
-	class->get_name = folder_get_name;
-	class->get_full_name = folder_get_full_name;
-	class->get_parent_store = folder_get_parent_store;
 	class->get_message_count = folder_get_message_count;
 	class->get_permanent_flags = folder_get_permanent_flags;
 	class->get_message_flags = folder_get_message_flags;
@@ -772,12 +668,77 @@ camel_folder_class_init (CamelFolderClass *class)
 	class->is_frozen = folder_is_frozen;
 	class->get_quota_info = folder_get_quota_info;
 
+	camel_object_class = CAMEL_OBJECT_CLASS (class);
 	camel_object_class_add_event (
 		camel_object_class, "folder_changed", folder_changed);
 	camel_object_class_add_event (
 		camel_object_class, "deleted", NULL);
 	camel_object_class_add_event (
 		camel_object_class, "renamed", NULL);
+
+	/**
+	 * CamelFolder:description
+	 *
+	 * The folder's description.
+	 **/
+	g_object_class_install_property (
+		object_class,
+		PROP_DESCRIPTION,
+		g_param_spec_string (
+			"description",
+			"Description",
+			"The folder's description",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT));
+
+	/**
+	 * CamelFolder:full-name
+	 *
+	 * The folder's fully qualified name.
+	 **/
+	g_object_class_install_property (
+		object_class,
+		PROP_FULL_NAME,
+		g_param_spec_string (
+			"full-name",
+			"Full Name",
+			"The folder's fully qualified name",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT));
+
+	/**
+	 * CamelFolder:name
+	 *
+	 * The folder's short name.
+	 **/
+	g_object_class_install_property (
+		object_class,
+		PROP_NAME,
+		g_param_spec_string (
+			"name",
+			"Name",
+			"The folder's short name",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT));
+
+	/**
+	 * CamelFolder:parent-store
+	 *
+	 * The #CamelStore to which the folder belongs.
+	 **/
+	g_object_class_install_property (
+		object_class,
+		PROP_PARENT_STORE,
+		g_param_spec_object (
+			"parent-store",
+			"Parent Store",
+			"The store to which the folder belongs",
+			CAMEL_TYPE_STORE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
@@ -829,34 +790,6 @@ camel_folder_get_filename (CamelFolder *folder,
 	g_return_val_if_fail (class->get_filename != NULL, NULL);
 
 	return class->get_filename (folder, uid, ex);
-}
-
-/**
- * camel_folder_construct:
- * @folder: a #CamelFolder to construct
- * @parent_store: parent #CamelStore object of the folder
- * @full_name: full name of the folder
- * @name: short name of the folder
- *
- * Initalizes the folder by setting the parent store and name.
- **/
-void
-camel_folder_construct (CamelFolder *folder,
-                        CamelStore *parent_store,
-                        const gchar *full_name,
-                        const gchar *name)
-{
-	g_return_if_fail (CAMEL_IS_FOLDER (folder));
-	g_return_if_fail (CAMEL_IS_STORE (parent_store));
-	g_return_if_fail (folder->parent_store == NULL);
-	g_return_if_fail (folder->name == NULL);
-
-	folder->parent_store = parent_store;
-	if (parent_store)
-		g_object_ref (parent_store);
-
-	folder->name = g_strdup (name);
-	folder->full_name = g_strdup (full_name);
 }
 
 /**
@@ -927,43 +860,114 @@ camel_folder_refresh_info (CamelFolder *folder,
  * camel_folder_get_name:
  * @folder: a #CamelFolder
  *
- * Get the (short) name of the folder. The fully qualified name
- * can be obtained with the #camel_folder_get_full_name method.
+ * Returns the short name of the folder.  The fully qualified name
+ * can be obtained with camel_folder_get_full_name().
  *
  * Returns: the short name of the folder
  **/
 const gchar *
 camel_folder_get_name (CamelFolder *folder)
 {
-	CamelFolderClass *class;
-
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_val_if_fail (class->get_name != NULL, NULL);
+	return folder->priv->name;
+}
 
-	return class->get_name (folder);
+/**
+ * camel_folder_set_name:
+ * @folder: a #CamelFolder
+ * @name: a name for the folder
+ *
+ * Sets the short name of the folder.
+ *
+ * Since: 3.0
+ **/
+void
+camel_folder_set_name (CamelFolder *folder,
+                       const gchar *name)
+{
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	g_free (folder->priv->name);
+	folder->priv->name = g_strdup (name);
+
+	g_object_notify (G_OBJECT (folder), "name");
 }
 
 /**
  * camel_folder_get_full_name:
  * @folder: a #CamelFolder
  *
- * Get the full name of the folder.
+ * Returns the fully qualified name of the folder.
  *
- * Returns: the full name of the folder
+ * Returns: the fully qualified name of the folder
  **/
 const gchar *
 camel_folder_get_full_name (CamelFolder *folder)
 {
-	CamelFolderClass *class;
-
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_val_if_fail (class->get_full_name != NULL, NULL);
+	return folder->priv->full_name;
+}
 
-	return class->get_full_name (folder);
+/**
+ * camel_folder_set_full_name:
+ * @folder: a #CamelFolder
+ * @full_name: a fully qualified name for the folder
+ *
+ * Sets the fully qualified name of the folder.
+ *
+ * Since: 3.0
+ **/
+void
+camel_folder_set_full_name (CamelFolder *folder,
+                            const gchar *full_name)
+{
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	g_free (folder->priv->full_name);
+	folder->priv->full_name = g_strdup (full_name);
+
+	g_object_notify (G_OBJECT (folder), "full-name");
+}
+
+/**
+ * camel_folder_get_description:
+ * @folder: a #CamelFolder
+ *
+ * Returns a description of the folder suitable for displaying to the user.
+ *
+ * Returns: a description of the folder
+ *
+ * Since: 3.0
+ **/
+const gchar *
+camel_folder_get_description (CamelFolder *folder)
+{
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
+
+	return folder->priv->description;
+}
+
+/**
+ * camel_folder_set_description:
+ * @folder: a #CamelFolder
+ * @description: a description of the folder
+ *
+ * Sets a description of the folder suitable for displaying to the user.
+ *
+ * Since: 3.0
+ **/
+void
+camel_folder_set_description (CamelFolder *folder,
+                              const gchar *description)
+{
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	g_free (folder->priv->description);
+	folder->priv->description = g_strdup (description);
+
+	g_object_notify (G_OBJECT (folder), "description");
 }
 
 /**
@@ -975,14 +979,9 @@ camel_folder_get_full_name (CamelFolder *folder)
 CamelStore *
 camel_folder_get_parent_store (CamelFolder *folder)
 {
-	CamelFolderClass *class;
-
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_val_if_fail (class->get_parent_store != NULL, NULL);
-
-	return class->get_parent_store (folder);
+	return folder->priv->parent_store;
 }
 
 /**
@@ -1047,13 +1046,10 @@ camel_folder_get_message_count (CamelFolder *folder)
 gint
 camel_folder_get_unread_message_count (CamelFolder *folder)
 {
-	gint count = -1;
-
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), -1);
+	g_return_val_if_fail (folder->summary != NULL, -1);
 
-	camel_object_get (folder, NULL, CAMEL_FOLDER_UNREAD, &count, 0);
-
-	return count;
+	return folder->summary->unread_count;
 }
 
 /**
@@ -1066,13 +1062,10 @@ camel_folder_get_unread_message_count (CamelFolder *folder)
 gint
 camel_folder_get_deleted_message_count (CamelFolder *folder)
 {
-	gint count = -1;
-
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), -1);
+	g_return_val_if_fail (folder->summary != NULL, -1);
 
-	camel_object_get (folder, NULL, CAMEL_FOLDER_DELETED, &count, 0);
-
-	return count;
+	return folder->summary->deleted_count;
 }
 
 /**
@@ -1450,7 +1443,8 @@ camel_folder_get_message (CamelFolder *folder,
 	camel_folder_unlock (folder, CF_REC_LOCK);
 
 	if (ret && camel_debug_start (":folder")) {
-		printf ("CamelFolder:get_message ('%s', '%s') =\n", folder->full_name, uid);
+		printf ("CamelFolder:get_message ('%s', '%s') =\n",
+			camel_folder_get_full_name (folder), uid);
 		camel_mime_message_dump (ret, FALSE);
 		camel_debug_end ();
 	}
@@ -1846,7 +1840,7 @@ camel_folder_transfer_messages_to (CamelFolder *source,
 		return TRUE;
 	}
 
-	if (source->parent_store == dest->parent_store) {
+	if (source->priv->parent_store == dest->priv->parent_store) {
 		/* If either folder is a vtrash, we need to use the
 		 * vtrash transfer method. */
 		if (CAMEL_IS_VTRASH_FOLDER (dest))
@@ -1874,6 +1868,8 @@ void
 camel_folder_delete (CamelFolder *folder)
 {
 	CamelFolderClass *class;
+	CamelStore *parent_store;
+	const gchar *full_name;
 
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
@@ -1893,7 +1889,9 @@ camel_folder_delete (CamelFolder *folder)
 	camel_folder_unlock (folder, CF_REC_LOCK);
 
 	/* Delete the references of the folder from the DB.*/
-	camel_db_delete_folder (folder->parent_store->cdb_w, folder->full_name, NULL);
+	full_name = camel_folder_get_full_name (folder);
+	parent_store = camel_folder_get_parent_store (folder);
+	camel_db_delete_folder (parent_store->cdb_w, full_name, NULL);
 
 	camel_object_trigger_event (folder, "deleted", NULL);
 }
@@ -1913,6 +1911,7 @@ camel_folder_rename (CamelFolder *folder,
                      const gchar *new)
 {
 	CamelFolderClass *class;
+	CamelStore *parent_store;
 	gchar *old;
 
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
@@ -1921,10 +1920,13 @@ camel_folder_rename (CamelFolder *folder,
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_if_fail (class->rename != NULL);
 
-	old = g_strdup (folder->full_name);
+	old = g_strdup (camel_folder_get_full_name (folder));
 
 	class->rename (folder, new);
-	camel_db_rename_folder (folder->parent_store->cdb_w, old, new, NULL);
+
+	parent_store = camel_folder_get_parent_store (folder);
+	camel_db_rename_folder (parent_store->cdb_w, old, new, NULL);
+
 	camel_object_trigger_event (folder, "renamed", old);
 
 	g_free (old);
@@ -1992,10 +1994,17 @@ camel_folder_is_frozen (CamelFolder *folder)
 	return class->is_frozen (folder);
 }
 
-/* FIXME: This function shouldn't be needed, but it's used in CamelVeeFolder */
+/**
+ * camel_folder_get_frozen_count:
+ * @folder: a #CamelFolder
+ *
+ * Since: 3.0
+ **/
 gint
 camel_folder_get_frozen_count (CamelFolder *folder)
 {
+	/* FIXME This function shouldn't be needed,
+	 *       but it's used in CamelVeeFolder */
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), 0);
 
 	return folder->priv->frozen;
@@ -2115,15 +2124,25 @@ filter_filter (CamelSession *session, CamelSessionThreadMsg *tmsg)
 {
 	struct _folder_filter_msg *m = (struct _folder_filter_msg *) tmsg;
 	CamelMessageInfo *info;
+	CamelStore *parent_store;
 	gint i, status = 0;
 	CamelURL *uri;
 	gchar *source_url;
 	CamelException ex = CAMEL_EXCEPTION_INITIALISER;
-	CamelJunkPlugin *csp = ((CamelService *)m->folder->parent_store)->session->junk_plugin;
+	CamelJunkPlugin *csp;
+	const gchar *full_name;
+
+	full_name = camel_folder_get_full_name (m->folder);
+	parent_store = camel_folder_get_parent_store (m->folder);
+	csp = CAMEL_SERVICE (parent_store)->session->junk_plugin;
 
 	if (m->junk) {
 		/* Translators: The %s is replaced with a folder name where the operation is running. */
-		camel_operation_start (NULL, ngettext ("Learning new spam message in '%s'", "Learning new spam messages in '%s'", m->junk->len), m->folder->full_name);
+		camel_operation_start (
+			NULL, ngettext (
+			"Learning new spam message in '%s'",
+			"Learning new spam messages in '%s'",
+			m->junk->len), full_name);
 
 		for (i = 0; i < m->junk->len; i ++) {
 			CamelMimeMessage *msg = camel_folder_get_message (m->folder, m->junk->pdata[i], &ex);
@@ -2142,7 +2161,11 @@ filter_filter (CamelSession *session, CamelSessionThreadMsg *tmsg)
 
 	if (m->notjunk) {
 		/* Translators: The %s is replaced with a folder name where the operation is running. */
-		camel_operation_start (NULL, ngettext ("Learning new ham message in '%s'", "Learning new ham messages in '%s'", m->notjunk->len), m->folder->full_name);
+		camel_operation_start (
+			NULL, ngettext (
+			"Learning new ham message in '%s'",
+			"Learning new ham messages in '%s'",
+			m->notjunk->len), full_name);
 		for (i = 0; i < m->notjunk->len; i ++) {
 			CamelMimeMessage *msg = camel_folder_get_message (m->folder, m->notjunk->pdata[i], &ex);
 			gint pc = 100 * i / m->notjunk->len;
@@ -2163,18 +2186,24 @@ filter_filter (CamelSession *session, CamelSessionThreadMsg *tmsg)
 
 	if (m->driver && m->recents) {
 		/* Translators: The %s is replaced with a folder name where the operation is running. */
-		camel_operation_start (NULL, ngettext ("Filtering new message in '%s'", "Filtering new messages in '%s'", m->recents->len), m->folder->full_name);
+		camel_operation_start (
+			NULL, ngettext (
+			"Filtering new message in '%s'",
+			"Filtering new messages in '%s'",
+			m->recents->len), full_name);
 
-		source_url = camel_service_get_url ((CamelService *)m->folder->parent_store);
+		source_url = camel_service_get_url (CAMEL_SERVICE (parent_store));
 		uri = camel_url_new (source_url, NULL);
 		g_free (source_url);
-		if (m->folder->full_name && m->folder->full_name[0] != '/') {
-			gchar *tmp = alloca (strlen (m->folder->full_name)+2);
 
-			sprintf (tmp, "/%s", m->folder->full_name);
+		if (full_name != NULL && *full_name != '/') {
+			gchar *tmp;
+
+			tmp = alloca (strlen (full_name) + 2);
+			sprintf (tmp, "/%s", full_name);
 			camel_url_set_path (uri, tmp);
 		} else
-			camel_url_set_path (uri, m->folder->full_name);
+			camel_url_set_path (uri, full_name);
 		source_url = camel_url_to_string (uri, CAMEL_URL_HIDE_ALL);
 		camel_url_free (uri);
 
@@ -2241,14 +2270,18 @@ static gboolean
 folder_changed (CamelObject *obj, gpointer event_data)
 {
 	CamelFolder *folder = (CamelFolder *)obj;
+	CamelStore *parent_store;
 	CamelFolderChangeInfo *changed = event_data;
 	struct _CamelFolderChangeInfoPrivate *p = changed->priv;
-	CamelSession *session = ((CamelService *)folder->parent_store)->session;
+	CamelSession *session;
 	CamelFilterDriver *driver = NULL;
 	GPtrArray *junk = NULL;
 	GPtrArray *notjunk = NULL;
 	GPtrArray *recents = NULL;
 	gint i;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	session = CAMEL_SERVICE (parent_store)->session;
 
 	d (printf ("folder_changed (%p:'%s', %p), frozen=%d\n", obj, folder->full_name, event_data, folder->priv->frozen));
 	d (printf (" added %d removed %d changed %d recent %d filter %d\n",

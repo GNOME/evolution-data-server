@@ -148,7 +148,10 @@ vee_info_set_user_flag(CamelMessageInfo *mi, const gchar *name, gboolean value)
 	CamelVeeFolder *vf = (CamelVeeFolder *)mi->summary->folder;
 
 	if (camel_debug("vfolderexp"))
-		printf("Expression for vfolder '%s' is '%s'\n", mi->summary->folder->full_name, g_strescape(vf->expression, ""));
+		printf (
+			"Expression for vfolder '%s' is '%s'\n",
+			camel_folder_get_full_name (mi->summary->folder),
+			g_strescape (vf->expression, ""));
 
 	if (camel_vee_folder_get_unread_vfolder (vf) == -1)
 		camel_vee_summary_load_check_unread_vfolder (CAMEL_VEE_SUMMARY (mi->summary));
@@ -234,7 +237,10 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 	gboolean hacked_unread_folder = FALSE;
 
 	if (camel_debug("vfolderexp"))
-		printf("Expression for vfolder '%s' is '%s'\n", mi->summary->folder->full_name, g_strescape(vf->expression, ""));
+		printf (
+			"Expression for vfolder '%s' is '%s'\n",
+			camel_folder_get_full_name (mi->summary->folder),
+			g_strescape (vf->expression, ""));
 
 	if (camel_vee_folder_get_unread_vfolder (vf) == -1)
 		camel_vee_summary_load_check_unread_vfolder (CAMEL_VEE_SUMMARY (mi->summary));
@@ -249,12 +255,12 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 		CamelVeeSummary *vsummary = (CamelVeeSummary *)mi->summary;
 
 		HANDLE_NULL_INFO(FALSE);
-		camel_object_get(rmi->summary->folder, NULL,
-				 CAMEL_FOLDER_DELETED, &old_deleted,
-				 CAMEL_FOLDER_VISIBLE, &old_visible,
-				 CAMEL_FOLDER_JUNKED, &old_junked,
-				 CAMEL_FOLDER_JUNKED_NOT_DELETED, &old_junked_not_deleted,
-				 CAMEL_FOLDER_UNREAD, &old_unread, NULL);
+
+		old_unread = rmi->summary->unread_count;
+		old_deleted = rmi->summary->deleted_count;
+		old_junked = rmi->summary->junk_count;
+		old_junked_not_deleted = rmi->summary->junk_not_deleted_count;
+		old_visible = rmi->summary->visible_count;
 
 		if (hacked_unread_folder)
 			camel_vee_folder_mask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
@@ -267,12 +273,12 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 		if (hacked_unread_folder)
 			camel_vee_folder_unmask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
 
-		camel_object_get(rmi->summary->folder, NULL,
-				 CAMEL_FOLDER_DELETED, &deleted,
-				 CAMEL_FOLDER_VISIBLE, &visible,
-				 CAMEL_FOLDER_JUNKED, &junked,
-				 CAMEL_FOLDER_JUNKED_NOT_DELETED, &junked_not_deleted,
-				 CAMEL_FOLDER_UNREAD, &unread, NULL);
+		unread = rmi->summary->unread_count;
+		deleted = rmi->summary->deleted_count;
+		junked = rmi->summary->junk_count;
+		junked_not_deleted = rmi->summary->junk_not_deleted_count;
+		visible = rmi->summary->visible_count;
+
 		if (hacked_unread_folder && !vsummary->fake_visible_count)
 			vsummary->fake_visible_count = mi->summary->visible_count;
 
@@ -404,6 +410,8 @@ CamelFolderSummary *
 camel_vee_summary_new(CamelFolder *parent)
 {
 	CamelVeeSummary *s;
+	CamelStore *parent_store;
+	const gchar *full_name;
 
 	s = g_object_new (CAMEL_TYPE_VEE_SUMMARY, NULL);
 	s->summary.folder = parent;
@@ -413,10 +421,13 @@ camel_vee_summary_new(CamelFolder *parent)
         /* FIXME[disk-summary] fix exceptions and note return values */
 	/* FIXME[disk-summary] if Evo's junk/trash vfolders make it VJunk
 	 * VTrash instead of .#evolution/Junk-or-whatever */
-	camel_db_create_vfolder (parent->parent_store->cdb_w, parent->full_name, NULL);
+	full_name = camel_folder_get_full_name (parent);
+	parent_store = camel_folder_get_parent_store (parent);
+	camel_db_create_vfolder (parent_store->cdb_w, full_name, NULL);
 
 	/* FIXME[disk-summary] handle excep and ret */
-	camel_folder_summary_header_load_from_db ((CamelFolderSummary *)s, parent->parent_store, parent->full_name, NULL);
+	camel_folder_summary_header_load_from_db ((CamelFolderSummary *)s, parent_store, full_name, NULL);
+
 	return &s->summary;
 }
 
@@ -430,10 +441,14 @@ camel_vee_summary_get_ids (CamelVeeSummary *summary, gchar hash[8])
 {
 	gchar *shash = g_strdup_printf("%c%c%c%c%c%c%c%c", hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7]);
 	CamelFolderSummary *cfs = (CamelFolderSummary *)summary;
+	CamelStore *parent_store;
 	GPtrArray *array;
+	const gchar *full_name;
 
 	/* FIXME[disk-summary] fix exception passing */
-	array = camel_db_get_vuids_from_vfolder(cfs->folder->parent_store->cdb_r, cfs->folder->full_name, shash, NULL);
+	full_name = camel_folder_get_full_name (cfs->folder);
+	parent_store = camel_folder_get_parent_store (cfs->folder);
+	array = camel_db_get_vuids_from_vfolder (parent_store->cdb_r, full_name, shash, NULL);
 
 	g_free(shash);
 

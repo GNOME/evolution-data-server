@@ -79,97 +79,6 @@ transfer_messages (CamelFolder *folder,
 	g_free(md);
 }
 
-/* This entire code will be useless, since we sync the counts always. */
-static gint
-vtrash_folder_getv (CamelObject *object,
-                    CamelException *ex,
-                    CamelArgGetV *args)
-{
-	CamelFolder *folder = (CamelFolder *)object;
-	gint i;
-	guint32 tag;
-	gint unread = -1, deleted = 0, junked = 0, visible = 0, count = -1, junked_not_deleted = -1;
-
-	for (i=0;i<args->argc;i++) {
-		CamelArgGet *arg = &args->argv[i];
-
-		tag = arg->tag;
-
-		/* NB: this is a copy of camel-folder.c with the unread count logic altered.
-		   makes sure its still atomically calculated */
-		switch (tag & CAMEL_ARG_TAG) {
-		case CAMEL_FOLDER_ARG_UNREAD:
-		case CAMEL_FOLDER_ARG_DELETED:
-		case CAMEL_FOLDER_ARG_JUNKED:
-		case CAMEL_FOLDER_ARG_JUNKED_NOT_DELETED:
-		case CAMEL_FOLDER_ARG_VISIBLE:
-
-			/* This is so we can get the values atomically, and also so we can calculate them only once */
-			if (unread == -1) {
-				gint j;
-				CamelMessageInfoBase *info;
-				CamelVeeMessageInfo *vinfo;
-
-				unread = deleted = visible = junked = junked_not_deleted = 0;
-				camel_folder_summary_prepare_fetch_all (folder->summary, ex);
-				count = camel_folder_summary_count(folder->summary);
-				for (j=0; j<count; j++) {
-					if ((info = (CamelMessageInfoBase *) camel_folder_summary_index(folder->summary, j))) {
-						guint32 flags;
-
-						vinfo = (CamelVeeMessageInfo *) info;
-						flags = vinfo->old_flags;/* ? vinfo->old_flags : camel_message_info_flags(info); */
-
-						if ((flags & (CAMEL_MESSAGE_SEEN)) == 0)
-							unread++;
-						if (flags & CAMEL_MESSAGE_DELETED)
-							deleted++;
-						if (flags & CAMEL_MESSAGE_JUNK) {
-							junked++;
-								if (!(flags & CAMEL_MESSAGE_DELETED))
-									junked_not_deleted++;
-						}
-						if ((flags & (CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_JUNK)) == 0)
-							visible++;
-						camel_message_info_free(info);
-					}
-				}
-			}
-
-			switch (tag & CAMEL_ARG_TAG) {
-			case CAMEL_FOLDER_ARG_UNREAD:
-				count = unread == -1 ? 0 : unread;
-				break;
-			case CAMEL_FOLDER_ARG_DELETED:
-				count = deleted == -1 ? 0 : deleted;
-				break;
-			case CAMEL_FOLDER_ARG_JUNKED:
-				count = junked == -1 ? 0 : junked;
-				break;
-			case CAMEL_FOLDER_ARG_JUNKED_NOT_DELETED:
-				count = junked_not_deleted == -1 ? 0 : junked_not_deleted;
-				break;
-			case CAMEL_FOLDER_ARG_VISIBLE:
-				count = visible == -1 ? 0 : visible;
-				break;
-			}
-			folder->summary->unread_count = unread == -1 ? 0 : unread;
-			folder->summary->deleted_count = deleted == -1 ? 0 : deleted;
-			junked = folder->summary->junk_count = junked == -1 ? 0 : junked;
-			folder->summary->junk_not_deleted_count = junked_not_deleted == -1 ? 0 : junked_not_deleted;
-			folder->summary->visible_count = visible == -1 ? 0 : visible;
-			*arg->ca_int = count;
-			break;
-		default:
-			continue;
-		}
-
-		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
-	}
-
-	return CAMEL_OBJECT_CLASS (camel_vtrash_folder_parent_class)->getv (object, ex, args);
-}
-
 static gboolean
 vtrash_folder_append_message (CamelFolder *folder,
                               CamelMimeMessage *message,
@@ -269,12 +178,7 @@ vtrash_folder_transfer_messages_to (CamelFolder *source,
 static void
 camel_vtrash_folder_class_init (CamelVTrashFolderClass *class)
 {
-	CamelObjectClass *camel_object_class;
 	CamelFolderClass *folder_class;
-
-	/* Not required from here on. We don't count */
-	camel_object_class = CAMEL_OBJECT_CLASS (class);
-	camel_object_class->getv = vtrash_folder_getv;
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
 	folder_class->append_message = vtrash_folder_append_message;
@@ -303,9 +207,18 @@ camel_vtrash_folder_new (CamelStore *parent_store, camel_vtrash_folder_t type)
 
 	g_assert(type < CAMEL_VTRASH_FOLDER_LAST);
 
-	vtrash = g_object_new (CAMEL_TYPE_VTRASH_FOLDER, NULL);
-	camel_vee_folder_construct(CAMEL_VEE_FOLDER (vtrash), parent_store, vdata[type].full_name, _(vdata[type].name),
-				   CAMEL_STORE_FOLDER_PRIVATE|CAMEL_STORE_FOLDER_CREATE|CAMEL_STORE_VEE_FOLDER_AUTO|CAMEL_STORE_VEE_FOLDER_SPECIAL);
+	vtrash = g_object_new (
+		CAMEL_TYPE_VTRASH_FOLDER,
+		"full-name", vdata[type].full_name,
+		"name", gettext (vdata[type].name),
+		"parent-store", parent_store, NULL);
+
+	camel_vee_folder_construct (
+		CAMEL_VEE_FOLDER (vtrash),
+		CAMEL_STORE_FOLDER_PRIVATE |
+		CAMEL_STORE_FOLDER_CREATE |
+		CAMEL_STORE_VEE_FOLDER_AUTO |
+		CAMEL_STORE_VEE_FOLDER_SPECIAL);
 
 	((CamelFolder *)vtrash)->folder_flags |= vdata[type].flags;
 	camel_vee_folder_set_expression((CamelVeeFolder *)vtrash, vdata[type].expr);

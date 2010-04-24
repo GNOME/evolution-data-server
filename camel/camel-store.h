@@ -58,10 +58,11 @@
 
 G_BEGIN_DECLS
 
-enum {
-	CAMEL_STORE_ARG_FIRST = CAMEL_SERVICE_ARG_FIRST + 100
-};
-
+/**
+ * CamelStoreLock:
+ *
+ * Since: 3.0
+ **/
 typedef enum {
 	CS_FOLDER_LOCK
 } CamelStoreLock;

@@ -27,7 +27,6 @@
 #define __CAMEL_H_INSIDE__
 
 #include <camel/camel-address.h>
-#include <camel/camel-arg.h>
 #include <camel/camel-block-file.h>
 #include <camel/camel-certdb.h>
 #include <camel/camel-charset-map.h>

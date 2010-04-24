@@ -303,6 +303,12 @@ camel_stream_mem_set_secure(CamelStreamMem *mem)
 
 /* note: with these functions the caller is the 'owner' of the buffer */
 
+/**
+ * camel_stream_mem_get_byte_array:
+ * @mem: a #CamelStreamMem
+ *
+ * Since: 3.0
+ **/
 GByteArray *
 camel_stream_mem_get_byte_array (CamelStreamMem *mem)
 {

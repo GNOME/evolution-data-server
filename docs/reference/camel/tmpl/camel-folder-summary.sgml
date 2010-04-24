@@ -323,32 +323,12 @@ CamelFolderSummary
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_folder_summary_cache_size ##### -->
+<!-- ##### FUNCTION camel_folder_summary_prepare_fetch_all ##### -->
 <para>
 
 </para>
 
 @s: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_folder_summary_reload_from_db ##### -->
-<para>
-
-</para>
-
-@s: 
-@ex: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_folder_summary_ensure_infos_loaded ##### -->
-<para>
-
-</para>
-
-@s: 
-@at_least: 
 @ex: 
 
 
@@ -1065,5 +1045,34 @@ CamelFolderSummary
 
 @s: 
 @Returns: 
+
+
+<!-- ##### ENUM CamelFolderSummaryLock ##### -->
+<para>
+
+</para>
+
+@CFS_SUMMARY_LOCK: 
+@CFS_IO_LOCK: 
+@CFS_FILTER_LOCK: 
+@CFS_ALLOC_LOCK: 
+@CFS_REF_LOCK: 
+
+<!-- ##### FUNCTION camel_folder_summary_lock ##### -->
+<para>
+
+</para>
+
+@summary: 
+@lock: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_unlock ##### -->
+<para>
+
+</para>
+
+@summary: 
+@lock: 
 
 

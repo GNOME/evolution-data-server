@@ -324,6 +324,12 @@ camel_stream_fs_new_with_name_and_bounds (const gchar *name,
 	return stream;
 }
 
+/**
+ * camel_stream_fs_get_fd:
+ * @stream: a #CamelStream
+ *
+ * Since: 3.0
+ **/
 gint
 camel_stream_fs_get_fd (CamelStreamFs *stream)
 {

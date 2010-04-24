@@ -26,6 +26,26 @@ CamelFolder
 </para>
 
 
+<!-- ##### ARG CamelFolder:description ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG CamelFolder:full-name ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG CamelFolder:name ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG CamelFolder:parent-store ##### -->
+<para>
+
+</para>
+
 <!-- ##### STRUCT CamelFolderChangeInfo ##### -->
 <para>
 
@@ -96,17 +116,6 @@ CamelFolder
 
 
 
-<!-- ##### FUNCTION camel_folder_construct ##### -->
-<para>
-
-</para>
-
-@folder: 
-@parent_store: 
-@full_name: 
-@name: 
-
-
 <!-- ##### FUNCTION camel_folder_refresh_info ##### -->
 <para>
 
@@ -165,6 +174,15 @@ CamelFolder
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_folder_set_name ##### -->
+<para>
+
+</para>
+
+@folder: 
+@name: 
+
+
 <!-- ##### FUNCTION camel_folder_get_full_name ##### -->
 <para>
 
@@ -172,6 +190,33 @@ CamelFolder
 
 @folder: 
 @Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_set_full_name ##### -->
+<para>
+
+</para>
+
+@folder: 
+@full_name: 
+
+
+<!-- ##### FUNCTION camel_folder_get_description ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_set_description ##### -->
+<para>
+
+</para>
+
+@folder: 
+@description: 
 
 
 <!-- ##### FUNCTION camel_folder_get_permanent_flags ##### -->
@@ -532,6 +577,15 @@ CamelFolder
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_folder_get_frozen_count ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_folder_get_quota_info ##### -->
 <para>
 
@@ -728,5 +782,31 @@ CamelFolder
 
 @info: 
 @uid: 
+
+
+<!-- ##### ENUM CamelFolderLock ##### -->
+<para>
+
+</para>
+
+@CF_CHANGE_LOCK: 
+@CF_REC_LOCK: 
+
+<!-- ##### FUNCTION camel_folder_lock ##### -->
+<para>
+
+</para>
+
+@folder: 
+@lock: 
+
+
+<!-- ##### FUNCTION camel_folder_unlock ##### -->
+<para>
+
+</para>
+
+@folder: 
+@lock: 
 
 

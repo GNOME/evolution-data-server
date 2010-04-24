@@ -110,3 +110,28 @@ CamelDataWrapper
 @Returns: 
 
 
+<!-- ##### ENUM CamelDataWrapperLock ##### -->
+<para>
+
+</para>
+
+@CDW_STREAM_LOCK: 
+
+<!-- ##### FUNCTION camel_data_wrapper_lock ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@lock: 
+
+
+<!-- ##### FUNCTION camel_data_wrapper_unlock ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@lock: 
+
+

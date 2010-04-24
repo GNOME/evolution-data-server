@@ -546,3 +546,28 @@ CamelStore
 @Returns: 
 
 
+<!-- ##### ENUM CamelStoreLock ##### -->
+<para>
+
+</para>
+
+@CS_FOLDER_LOCK: 
+
+<!-- ##### FUNCTION camel_store_lock ##### -->
+<para>
+
+</para>
+
+@store: 
+@lock: 
+
+
+<!-- ##### FUNCTION camel_store_unlock ##### -->
+<para>
+
+</para>
+
+@store: 
+@lock: 
+
+

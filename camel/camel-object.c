@@ -34,8 +34,20 @@
 #include "camel-object.h"
 
 #define d(x)
-#define b(x)			/* object bag */
 #define h(x)			/* hooks */
+
+#define CAMEL_OBJECT_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_OBJECT, CamelObjectPrivate))
+
+struct _CamelObjectPrivate {
+	gchar *state_filename;
+};
+
+enum {
+	PROP_0,
+	PROP_STATE_FILENAME
+};
 
 G_DEFINE_ABSTRACT_TYPE (CamelObject, camel_object, G_TYPE_OBJECT)
 
@@ -76,10 +88,6 @@ typedef struct _CamelHookPair
 	gpointer data;
 } CamelHookPair;
 
-/* meta-data stuff */
-static CamelHookPair *co_metadata_pair(CamelObject *obj, gint create);
-
-static const gchar meta_name[] = "object:meta";
 #define CAMEL_OBJECT_STATE_FILE_MAGIC "CLMD"
 
 /* ********************************************************************** */
@@ -91,13 +99,6 @@ static void camel_object_free_hooks(CamelObject *o);
 	(g_static_rec_mutex_unlock(&CAMEL_OBJECT(o)->hooks->lock))
 
 /* ********************************************************************** */
-
-#define CLASS_LOCK(k) (g_mutex_lock((((CamelObjectClass *)k)->lock)))
-#define CLASS_UNLOCK(k) (g_mutex_unlock((((CamelObjectClass *)k)->lock)))
-#define REF_LOCK() (g_mutex_lock(ref_lock))
-#define REF_UNLOCK() (g_mutex_unlock(ref_lock))
-#define TYPE_LOCK() (g_static_rec_mutex_lock(&type_lock))
-#define TYPE_UNLOCK() (g_static_rec_mutex_unlock(&type_lock))
 
 static struct _CamelHookPair *
 pair_alloc(void)
@@ -137,83 +138,6 @@ hooks_free(CamelHookList *hooks)
 
 /* ************************************************************************ */
 
-/* CamelObject base methods */
-
-static gint
-cobject_getv (CamelObject *o,
-              CamelException *ex,
-              CamelArgGetV *args)
-{
-	CamelObjectClass *class;
-	gint i;
-	guint32 tag;
-
-	class = CAMEL_OBJECT_GET_CLASS (o);
-
-	for (i=0;i<args->argc;i++) {
-		CamelArgGet *arg = &args->argv[i];
-
-		tag = arg->tag;
-
-		switch (tag & CAMEL_ARG_TAG) {
-		case CAMEL_OBJECT_ARG_DESCRIPTION:
-			*arg->ca_str = (gchar *) G_OBJECT_CLASS_NAME (class);
-			break;
-		case CAMEL_OBJECT_ARG_STATE_FILE: {
-			CamelHookPair *pair = co_metadata_pair(o, FALSE);
-
-			if (pair) {
-				*arg->ca_str = g_strdup(pair->func.filename);
-				camel_object_unget_hooks(o);
-			}
-			break; }
-		}
-	}
-
-	/* could have flags or stuff here? */
-	return 0;
-}
-
-static gint
-cobject_setv (CamelObject *o,
-              CamelException *ex,
-              CamelArgV *args)
-{
-	gint i;
-	guint32 tag;
-
-	for (i=0;i<args->argc;i++) {
-		CamelArg *arg = &args->argv[i];
-
-		tag = arg->tag;
-
-		switch (tag & CAMEL_ARG_TAG) {
-		case CAMEL_OBJECT_ARG_STATE_FILE: {
-			CamelHookPair *pair;
-
-			/* We store the filename on the meta-data hook-pair */
-			pair = co_metadata_pair(o, TRUE);
-			g_free(pair->func.filename);
-			pair->func.filename = g_strdup(arg->ca_str);
-			camel_object_unget_hooks(o);
-			break; }
-		}
-	}
-
-	/* could have flags or stuff here? */
-	return 0;
-}
-
-static void
-cobject_free(CamelObject *o, guint32 tag, gpointer value)
-{
-	switch (tag & CAMEL_ARG_TAG) {
-	case CAMEL_OBJECT_ARG_STATE_FILE:
-		g_free(value);
-		break;
-	}
-}
-
 /* State file for CamelObject data.  Any later versions should only append data.
 
    version:uint32
@@ -230,170 +154,248 @@ cobject_free(CamelObject *o, guint32 tag, gpointer value)
 
 */
 
-static gint
-cobject_state_read(CamelObject *obj, FILE *fp)
-{
-	guint32 i, count, version;
+/* XXX This is a holdover from Camel's old homegrown type system.
+ *     CamelArg was a kind of primitive version of GObject properties.
+ *     The argument ID and data type were encoded into a 32-bit integer.
+ *     Unfortunately the encoding was also used in the binary state file
+ *     format, so we still need the secret decoder ring. */
+enum camel_arg_t {
+	CAMEL_ARG_END = 0,
+	CAMEL_ARG_IGNORE = 1,	/* override/ignore an arg in-place */
 
-	/* NB: for later versions, just check the version is 1 .. known version */
-	if (camel_file_util_decode_uint32(fp, &version) == -1
-	    || version > 1
-	    || camel_file_util_decode_uint32(fp, &count) == -1)
+	CAMEL_ARG_FIRST = 1024,	/* 1024 args reserved for arg system */
+
+	CAMEL_ARG_TYPE = 0xf0000000, /* type field for tags */
+	CAMEL_ARG_TAG = 0x0fffffff, /* tag field for args */
+
+	CAMEL_ARG_OBJ = 0x00000000, /* object */
+	CAMEL_ARG_INT = 0x10000000, /* gint */
+	CAMEL_ARG_DBL = 0x20000000, /* gdouble */
+	CAMEL_ARG_STR = 0x30000000, /* c string */
+	CAMEL_ARG_PTR = 0x40000000, /* ptr */
+	CAMEL_ARG_BOO = 0x50000000  /* bool */
+};
+
+#define CAMEL_ARGV_MAX (20)
+
+static gint
+cobject_state_read (CamelObject *object, FILE *fp)
+{
+	GValue value;
+	GObjectClass *class;
+	GParamSpec **properties;
+	guint32 count, version;
+	guint ii, jj, n_properties;
+
+	if (camel_file_util_decode_uint32 (fp, &version) == -1)
 		return -1;
 
-	for (i=0;i<count;i++) {
-		gchar *name = NULL, *value = NULL;
+	if (version > 1)
+		return -1;
 
-		if (camel_file_util_decode_string(fp, &name) == 0
-		    && camel_file_util_decode_string(fp, &value) == 0) {
-			/* XXX This no longer does anything.
-			 *     We're just eating dead data. */
-			g_free(name);
-			g_free(value);
-		} else {
-			g_free(name);
-			g_free(value);
+	if (camel_file_util_decode_uint32 (fp, &count) == -1)
+		return -1;
 
+	/* XXX Camel no longer supports meta-data in state
+	 *     files, so we're just eating dead data here. */
+	for (ii = 0; ii < count; ii++) {
+		gchar *name = NULL;
+		gchar *value = NULL;
+		gboolean success;
+
+		success =
+			camel_file_util_decode_string (fp, &name) == 0 &&
+			camel_file_util_decode_string (fp, &value) == 0;
+
+		g_free (name);
+		g_free (value);
+
+		if (!success)
 			return -1;
-		}
 	}
 
-	if (version > 0) {
-		CamelArgV *argv;
+	if (version == 0)
+		return 0;
 
-		if (camel_file_util_decode_uint32(fp, &count) == -1
-			|| count == 0 || count > 1024) {
-			/* maybe it was just version 0 afterall */
-			return 0;
-		}
+	if (camel_file_util_decode_uint32 (fp, &count) == -1)
+		return 0;
 
-		count = MIN(count, CAMEL_ARGV_MAX);
+	if (count == 0 || count > 1024)
+		/* Maybe it was just version 0 afterall. */
+		return 0;
 
-		/* we batch up the properties and set them in one go */
-		argv = g_try_malloc(sizeof(CamelArgV) -
-			((CAMEL_ARGV_MAX - count) * sizeof(CamelArg)));
-		if (argv == NULL)
-			return -1;
+	count = MIN (count, CAMEL_ARGV_MAX);
+	memset (&value, 0, sizeof (GValue));
 
-		argv->argc = 0;
-		for (i=0;i<count;i++) {
-			if (camel_file_util_decode_uint32(fp, &argv->argv[argv->argc].tag) == -1)
-				goto cleanup;
+	class = G_OBJECT_GET_CLASS (object);
+	properties = g_object_class_list_properties (class, &n_properties);
 
-			/* so far,only do strings and ints, doubles could be added,
-			   object's would require a serialisation interface */
+	for (ii = 0; ii < count; ii++) {
+		gboolean property_set = FALSE;
+		guint32 tag, v_uint32;
 
-			switch (argv->argv[argv->argc].tag & CAMEL_ARG_TYPE) {
-			case CAMEL_ARG_INT:
+		if (camel_file_util_decode_uint32 (fp, &tag) == -1)
+			goto exit;
+
+		/* Record state file values into GValues.
+		 * XXX We currently only support booleans. */
+		switch (tag & CAMEL_ARG_TYPE) {
 			case CAMEL_ARG_BOO:
-				if (camel_file_util_decode_uint32(fp, (guint32 *) &argv->argv[argv->argc].ca_int) == -1)
-					goto cleanup;
-				break;
-			case CAMEL_ARG_STR:
-				if (camel_file_util_decode_string(fp, &argv->argv[argv->argc].ca_str) == -1)
-					goto cleanup;
+				if (camel_file_util_decode_uint32 (fp, &v_uint32) == -1)
+					goto exit;
+				g_value_init (&value, G_TYPE_BOOLEAN);
+				g_value_set_boolean (&value, (gboolean) v_uint32);
 				break;
 			default:
-				goto cleanup;
-			}
-
-			argv->argc++;
+				g_warn_if_reached ();
+				goto exit;
 		}
 
-		camel_object_setv(obj, NULL, argv);
-	cleanup:
-		for (i=0;i<argv->argc;i++) {
-			if ((argv->argv[i].tag & CAMEL_ARG_TYPE) == CAMEL_ARG_STR)
-				g_free(argv->argv[i].ca_str);
+		/* Now we have to match the legacy numeric CamelArg tag
+		 * value with a GObject property.  The GObject property
+		 * IDs have been set to the same legacy tag values, but
+		 * we have to access a private GParamSpec field to get
+		 * to them (pspec->param_id). */
+
+		tag &= CAMEL_ARG_TAG;  /* filter out the type code */
+
+		for (jj = 0; jj < n_properties; jj++) {
+			GParamSpec *pspec = properties[jj];
+
+			if (pspec->param_id != tag)
+				continue;
+
+			/* Sanity check. */
+			g_warn_if_fail (pspec->flags & CAMEL_PARAM_PERSISTENT);
+
+			g_object_set_property (
+				G_OBJECT (object), pspec->name, &value);
+
+			property_set = TRUE;
+			break;
 		}
-		g_free(argv);
+
+		if (!property_set)
+			g_warning (
+				"Could not find a corresponding %s "
+				"property for state file tag 0x%x",
+				G_OBJECT_TYPE_NAME (object), tag);
+
+		g_value_unset (&value);
 	}
+
+exit:
+	g_free (properties);
 
 	return 0;
 }
 
-/* TODO: should pass exception around */
 static gint
-cobject_state_write(CamelObject *obj, FILE *fp)
+cobject_state_write (CamelObject *object, FILE *fp)
 {
-	gint32 count, i;
-	gint res = -1;
-	GSList *props = NULL, *l;
-	CamelArgGetV *arggetv = NULL;
-	CamelArgV *argv = NULL;
+	GValue value;
+	GObjectClass *class;
+	GParamSpec **properties;
+	guint ii, n_properties;
+	guint32 n_persistent = 0;
 
-	/* current version is 1 */
-	if (camel_file_util_encode_uint32(fp, 1) == -1
-	    || camel_file_util_encode_uint32(fp, 0) == -1)
-		goto abort;
+	memset (&value, 0, sizeof (GValue));
 
-	camel_object_get(obj, NULL, CAMEL_OBJECT_PERSISTENT_PROPERTIES, &props, NULL);
+	class = G_OBJECT_GET_CLASS (object);
+	properties = g_object_class_list_properties (class, &n_properties);
 
-	/* we build an arggetv to query the object atomically,
-	   we also need an argv to store the results - bit messy */
+	/* Version = 1 */
+	if (camel_file_util_encode_uint32 (fp, 1) == -1)
+		goto exit;
 
-	count = g_slist_length(props);
-	count = MIN(count, CAMEL_ARGV_MAX);
+	/* No meta-data items. */
+	if (camel_file_util_encode_uint32 (fp, 0) == -1)
+		goto exit;
 
-	arggetv = g_malloc0(sizeof(CamelArgGetV) -
-		((CAMEL_ARGV_MAX - count) * sizeof(CamelArgGet)));
-	argv = g_malloc0(sizeof(CamelArgV) -
-		((CAMEL_ARGV_MAX - count) * sizeof(CamelArg)));
-	l = props;
-	i = 0;
-	while (l) {
-		CamelProperty *prop = l->data;
+	/* Count persistent properties. */
+	for (ii = 0; ii < n_properties; ii++)
+		if (properties[ii]->flags & CAMEL_PARAM_PERSISTENT)
+			n_persistent++;
 
-		argv->argv[i].tag = prop->tag;
-		arggetv->argv[i].tag = prop->tag;
-		arggetv->argv[i].ca_ptr = &argv->argv[i].ca_ptr;
+	if (camel_file_util_encode_uint32 (fp, n_persistent) == -1)
+		goto exit;
 
-		i++;
-		l = l->next;
-	}
-	arggetv->argc = i;
-	argv->argc = i;
+	/* Write a tag + value pair for each persistent property.
+	 * Tags identify the property ID and data type; they're an
+	 * artifact of CamelArgs.  The persistent GObject property
+	 * IDs are set to match the legacy CamelArg tag values. */
 
-	camel_object_getv(obj, NULL, arggetv);
+	for (ii = 0; ii < n_properties; ii++) {
+		GParamSpec *pspec = properties[ii];
+		guint32 tag, v_uint32;
 
-	if (camel_file_util_encode_uint32(fp, count) == -1)
-		goto abort;
+		if ((pspec->flags & CAMEL_PARAM_PERSISTENT) == 0)
+			continue;
 
-	for (i=0;i<argv->argc;i++) {
-		CamelArg *arg = &argv->argv[i];
+		g_value_init (&value, pspec->value_type);
 
-		if (camel_file_util_encode_uint32(fp, arg->tag) == -1)
-			goto abort;
+		g_object_get_property (
+			G_OBJECT (object), pspec->name, &value);
 
-		switch (arg->tag & CAMEL_ARG_TYPE) {
-		case CAMEL_ARG_INT:
-		case CAMEL_ARG_BOO:
-			if (camel_file_util_encode_uint32(fp, arg->ca_int) == -1)
-				goto abort;
-			break;
-		case CAMEL_ARG_STR:
-			if (camel_file_util_encode_string(fp, arg->ca_str) == -1)
-				goto abort;
-			break;
+		tag = pspec->param_id;
+
+		/* Record the GValue to the state file.
+		 * XXX We currently only support booleans. */
+		switch (pspec->value_type) {
+			case G_TYPE_BOOLEAN:
+				tag |= CAMEL_ARG_BOO;
+				v_uint32 = g_value_get_boolean (&value);
+				if (camel_file_util_encode_uint32 (fp, tag) == -1)
+					goto exit;
+				if (camel_file_util_encode_uint32 (fp, v_uint32) == -1)
+					goto exit;
+				break;
+			default:
+				g_warn_if_reached ();
+				goto exit;
 		}
+
+		g_value_unset (&value);
 	}
 
-	res = 0;
-abort:
-	for (i=0;i<argv->argc;i++) {
-		CamelArg *arg = &argv->argv[i];
+exit:
+	g_free (properties);
 
-		if ((argv->argv[i].tag & CAMEL_ARG_TYPE) == CAMEL_ARG_STR)
-			camel_object_free(obj, arg->tag, arg->ca_str);
+	return 0;
+}
+
+static void
+object_set_property (GObject *object,
+                     guint property_id,
+                     const GValue *value,
+                     GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_STATE_FILENAME:
+			camel_object_set_state_filename (
+				CAMEL_OBJECT (object),
+				g_value_get_string (value));
+			return;
 	}
 
-	g_free(argv);
-	g_free(arggetv);
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
 
-	if (props)
-		camel_object_free(obj, CAMEL_OBJECT_PERSISTENT_PROPERTIES, props);
+static void
+object_get_property (GObject *object,
+                     guint property_id,
+                     GValue *value,
+                     GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_STATE_FILENAME:
+			g_value_set_string (
+				value, camel_object_get_state_filename (
+				CAMEL_OBJECT (object)));
+			return;
+	}
 
-	return res;
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static void
@@ -411,28 +413,60 @@ object_dispose (GObject *object)
 }
 
 static void
+object_finalize (GObject *object)
+{
+	CamelObjectPrivate *priv;
+
+	priv = CAMEL_OBJECT_GET_PRIVATE (object);
+
+	g_free (priv->state_filename);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_object_parent_class)->finalize (object);
+}
+
+static void
 camel_object_class_init (CamelObjectClass *class)
 {
 	GObjectClass *object_class;
 
+	g_type_class_add_private (class, sizeof (CamelObjectPrivate));
+
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = object_set_property;
+	object_class->get_property = object_get_property;
 	object_class->dispose = object_dispose;
+	object_class->finalize = object_finalize;
 
 	class->hooks = NULL;
-
-	class->getv = cobject_getv;
-	class->setv = cobject_setv;
-	class->free = cobject_free;
 
 	class->state_read = cobject_state_read;
 	class->state_write = cobject_state_write;
 
 	camel_object_class_add_event (class, "finalize", NULL);
+
+	/**
+	 * CamelObject:state-filename
+	 *
+	 * The file in which to store persistent property values for this
+	 * instance.
+	 **/
+	g_object_class_install_property (
+		object_class,
+		PROP_STATE_FILENAME,
+		g_param_spec_string (
+			"state-filename",
+			"State Filename",
+			"File containing persistent property values",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT));
 }
 
 static void
 camel_object_init (CamelObject *object)
 {
+	object->priv = CAMEL_OBJECT_GET_PRIVATE (object);
 }
 
 static CamelHookPair *
@@ -758,191 +792,80 @@ trigger:
 	g_object_unref(obj);
 }
 
-/* get/set arg methods */
-gint
-camel_object_set (gpointer vo,
-                  CamelException *ex,
-                  ...)
-{
-	CamelObjectClass *class;
-	CamelArgV args;
-	CamelObject *o = vo;
-	gint ret = 0;
-
-	g_return_val_if_fail(CAMEL_IS_OBJECT(o), -1);
-
-	camel_argv_start(&args, ex);
-
-	class = CAMEL_OBJECT_GET_CLASS (o);
-	g_return_val_if_fail (class->setv != NULL, -1);
-
-	while (camel_argv_build(&args) && ret == 0)
-		ret = class->setv(o, ex, &args);
-	if (ret == 0)
-		ret = class->setv(o, ex, &args);
-
-	camel_argv_end(&args);
-
-	return ret;
-}
-
-gint
-camel_object_setv (gpointer vo,
-                   CamelException *ex,
-                   CamelArgV *args)
-{
-	CamelObjectClass *class;
-
-	g_return_val_if_fail(CAMEL_IS_OBJECT(vo), -1);
-
-	class = CAMEL_OBJECT_GET_CLASS (vo);
-	g_return_val_if_fail (class->setv != NULL, -1);
-
-	return class->setv (vo, ex, args);
-}
-
-gint
-camel_object_get (gpointer vo,
-                  CamelException *ex,
-                  ...)
-{
-	CamelObjectClass *class;
-	CamelObject *o = vo;
-	CamelArgGetV args;
-	gint ret = 0;
-
-	g_return_val_if_fail(CAMEL_IS_OBJECT(o), -1);
-
-	camel_argv_start(&args, ex);
-
-	class = CAMEL_OBJECT_GET_CLASS (o);
-	g_return_val_if_fail (class->getv != NULL, -1);
-
-	while (camel_arggetv_build(&args) && ret == 0)
-		ret = class->getv(o, ex, &args);
-	if (ret == 0)
-		ret = class->getv(o, ex, &args);
-
-	camel_argv_end(&args);
-
-	return ret;
-}
-
-gint
-camel_object_getv (gpointer vo,
-                   CamelException *ex,
-                   CamelArgGetV *args)
-{
-	CamelObjectClass *class;
-
-	g_return_val_if_fail(CAMEL_IS_OBJECT(vo), -1);
-
-	class = CAMEL_OBJECT_GET_CLASS (vo);
-	g_return_val_if_fail (class->getv != NULL, -1);
-
-	return class->getv (vo, ex, args);
-}
-
-/* NB: If this doesn't return NULL, then you must unget_hooks when done */
-static CamelHookPair *
-co_metadata_pair(CamelObject *obj, gint create)
-{
-	CamelHookPair *pair;
-	CamelHookList *hooks;
-
-	if (obj->hooks == NULL && !create)
-		return NULL;
-
-	hooks = camel_object_get_hooks(obj);
-	pair = hooks->list;
-	while (pair) {
-		if (pair->name == meta_name)
-			return pair;
-
-		pair = pair->next;
-	}
-
-	if (create) {
-		pair = pair_alloc();
-		pair->name = meta_name;
-		pair->data = NULL;
-		pair->flags = 0;
-		pair->func.filename = NULL;
-		pair->next = hooks->list;
-		hooks->list = pair;
-		hooks->list_length++;
-	} else {
-		camel_object_unget_hooks(obj);
-	}
-
-	return pair;
-}
-
 /**
  * camel_object_state_read:
- * @vo:
+ * @object: a #CamelObject
  *
- * Read persistent object state from object_set(CAMEL_OBJECT_STATE_FILE).
+ * Read persistent object state from #CamelObject:state-filename.
  *
  * Returns: -1 on error.
  **/
-gint camel_object_state_read(gpointer vo)
+gint
+camel_object_state_read (CamelObject *object)
 {
-	CamelObject *obj = vo;
+	CamelObjectClass *class;
+	const gchar *state_filename;
 	gint res = -1;
-	gchar *file;
 	FILE *fp;
 	gchar magic[4];
 
-	camel_object_get(vo, NULL, CAMEL_OBJECT_STATE_FILE, &file, NULL);
-	if (file == NULL)
+	g_return_val_if_fail (CAMEL_IS_OBJECT (object), -1);
+
+	class = CAMEL_OBJECT_GET_CLASS (object);
+
+	state_filename = camel_object_get_state_filename (object);
+	if (state_filename == NULL)
 		return 0;
 
-	fp = g_fopen(file, "rb");
+	fp = g_fopen (state_filename, "rb");
 	if (fp != NULL) {
-		if (fread(magic, 4, 1, fp) == 1
-		    && memcmp(magic, CAMEL_OBJECT_STATE_FILE_MAGIC, 4) == 0)
-			res = CAMEL_OBJECT_GET_CLASS (obj)->state_read(obj, fp);
-		else
-			res = -1;
-		fclose(fp);
+		if (fread (magic, 4, 1, fp) == 1
+		    && memcmp (magic, CAMEL_OBJECT_STATE_FILE_MAGIC, 4) == 0)
+			res = class->state_read (object, fp);
+		fclose (fp);
 	}
-
-	camel_object_free(vo, CAMEL_OBJECT_STATE_FILE, file);
 
 	return res;
 }
 
 /**
  * camel_object_state_write:
- * @vo:
+ * @object: a #CamelObject
  *
- * Write persistent state to the file as set by object_set(CAMEL_OBJECT_STATE_FILE).
+ * Write persistent object state #CamelObject:state-filename.
  *
  * Returns: -1 on error.
  **/
-gint camel_object_state_write(gpointer vo)
+gint
+camel_object_state_write (CamelObject *object)
 {
-	CamelObject *obj = vo;
+	CamelObjectClass *class;
+	const gchar *state_filename;
+	gchar *savename, *dirname;
 	gint res = -1;
-	gchar *file, *savename, *dirname;
 	FILE *fp;
 
-	camel_object_get(vo, NULL, CAMEL_OBJECT_STATE_FILE, &file, NULL);
-	if (file == NULL)
+	g_return_val_if_fail (CAMEL_IS_OBJECT (object), -1);
+
+	class = CAMEL_OBJECT_GET_CLASS (object);
+
+	state_filename = camel_object_get_state_filename (object);
+	if (state_filename == NULL)
 		return 0;
 
-	savename = camel_file_util_savename(file);
-	dirname = g_path_get_dirname(savename);
-	g_mkdir_with_parents(dirname, 0700);
-	g_free(dirname);
-	fp = g_fopen(savename, "wb");
+	savename = camel_file_util_savename (state_filename);
+
+	dirname = g_path_get_dirname (savename);
+	g_mkdir_with_parents (dirname, 0700);
+	g_free (dirname);
+
+	fp = g_fopen (savename, "wb");
 	if (fp != NULL) {
-		if (fwrite(CAMEL_OBJECT_STATE_FILE_MAGIC, 4, 1, fp) == 1
-		    && CAMEL_OBJECT_GET_CLASS (obj)->state_write(obj, fp) == 0) {
-			if (fclose(fp) == 0) {
+		if (fwrite (CAMEL_OBJECT_STATE_FILE_MAGIC, 4, 1, fp) == 1
+		    && class->state_write (object, fp) == 0) {
+			if (fclose (fp) == 0) {
 				res = 0;
-				g_rename(savename, file);
+				g_rename (savename, state_filename);
 			}
 		} else {
 			fclose(fp);
@@ -951,32 +874,50 @@ gint camel_object_state_write(gpointer vo)
 		g_warning("Could not save object state file to '%s': %s", savename, g_strerror(errno));
 	}
 
-	g_free(savename);
-	camel_object_free(vo, CAMEL_OBJECT_STATE_FILE, file);
+	g_free (savename);
 
 	return res;
 }
 
-/* free an arg object, you can only free objects 1 at a time */
-void camel_object_free(gpointer vo, guint32 tag, gpointer value)
+/**
+ * camel_object_get_state_filename:
+ * @object: a #CamelObject
+ *
+ * Returns the name of the file in which persistent property values for
+ * @object are stored.  The file is used by camel_object_state_write()
+ * and camel_object_state_read() to save and restore object state.
+ *
+ * Returns: the name of the persistent property file
+ *
+ * Since: 3.0
+ **/
+const gchar *
+camel_object_get_state_filename (CamelObject *object)
 {
-	g_return_if_fail(CAMEL_IS_OBJECT(vo));
+	g_return_val_if_fail (CAMEL_IS_OBJECT (object), NULL);
 
-	/* We could also handle freeing of args differently
+	return object->priv->state_filename;
+}
 
-	   Add a 'const' bit to the arg type field,
-	   specifying that the object should not be freed.
+/**
+ * camel_object_set_state_filename:
+ * @object: a #CamelObject
+ * @state_filename: path to a local file
+ *
+ * Sets the name of the file in which persistent property values for
+ * @object are stored.  The file is used by camel_object_state_write()
+ * and camel_object_state_read() to save and restore object state.
+ *
+ * Since: 3.0
+ **/
+void
+camel_object_set_state_filename (CamelObject *object,
+                                 const gchar *state_filename)
+{
+	g_return_if_fail (CAMEL_IS_OBJECT (object));
 
-	   And, add free handlers for any pointer objects which are
-	   not const.  The free handlers would be hookpairs off of the
-	   class.
+	g_free (object->priv->state_filename);
+	object->priv->state_filename = g_strdup (state_filename);
 
-	   Then we handle the basic types OBJ,STR here, and pass PTR
-	   types to their appropriate handler, without having to pass
-	   through the invocation heirarchy of the free method.
-
-	   This would also let us copy and do other things with args
-	   we can't do, but i can't see a use for that yet ...  */
-
-	CAMEL_OBJECT_GET_CLASS (vo)->free (vo, tag, value);
+	g_object_notify (G_OBJECT (object), "state-filename");
 }

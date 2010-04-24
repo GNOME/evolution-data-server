@@ -239,7 +239,7 @@ disco_store_set_status (CamelDiscoStore *disco_store,
 				for (i=0;i<folders->len;i++) {
 					folder = folders->pdata[i];
 					if (G_TYPE_CHECK_INSTANCE_TYPE(folder, CAMEL_TYPE_DISCO_FOLDER)
-					    && (sync || ((CamelDiscoFolder *)folder)->offline_sync)) {
+					    && (sync || camel_disco_folder_get_offline_sync (CAMEL_DISCO_FOLDER (folder)))) {
 						camel_disco_folder_prepare_for_offline((CamelDiscoFolder *)folder, "", &x);
 						camel_exception_clear(&x);
 					}
@@ -402,7 +402,7 @@ camel_disco_store_prepare_for_offline (CamelDiscoStore *disco_store,
 				for (i=0;i<folders->len;i++) {
 					folder = folders->pdata[i];
 					if (G_TYPE_CHECK_INSTANCE_TYPE(folder, CAMEL_TYPE_DISCO_FOLDER)
-					    && (sync || ((CamelDiscoFolder *)folder)->offline_sync)) {
+					    && (sync || camel_disco_folder_get_offline_sync (CAMEL_DISCO_FOLDER (folder)))) {
 						camel_disco_folder_prepare_for_offline((CamelDiscoFolder *)folder, "(match-all)", &x);
 						camel_exception_clear(&x);
 					}

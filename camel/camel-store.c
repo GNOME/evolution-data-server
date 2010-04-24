@@ -603,14 +603,17 @@ camel_store_rename_folder (CamelStore *store,
 	if (store->folders) {
 		folders = camel_object_bag_list(store->folders);
 		for (i=0;i<folders->len;i++) {
+			const gchar *full_name;
+
 			folder = folders->pdata[i];
-			namelen = strlen(folder->full_name);
+			full_name = camel_folder_get_full_name (folder);
+
+			namelen = strlen (full_name);
 			if ((namelen == oldlen &&
-			     strcmp(folder->full_name, old_name) == 0)
+			     strcmp (full_name, old_name) == 0)
 			    || ((namelen > oldlen)
-				&& strncmp(folder->full_name, old_name, oldlen) == 0
-				&& folder->full_name[oldlen] == '/')) {
-				d(printf("Found subfolder of '%s' == '%s'\n", old_name, folder->full_name));
+				&& strncmp (full_name, old_name, oldlen) == 0
+				&& full_name[oldlen] == '/')) {
 				camel_folder_lock (folder, CF_REC_LOCK);
 			} else {
 				g_ptr_array_remove_index_fast(folders, i);
@@ -630,11 +633,13 @@ camel_store_rename_folder (CamelStore *store,
 			CamelRenameInfo reninfo;
 
 			for (i=0;i<folders->len;i++) {
+				const gchar *full_name;
 				gchar *new;
 
 				folder = folders->pdata[i];
+				full_name = camel_folder_get_full_name (folder);
 
-				new = g_strdup_printf("%s%s", new_name, folder->full_name+strlen(old_name));
+				new = g_strdup_printf("%s%s", new_name, full_name+strlen(old_name));
 				camel_object_bag_rekey(store->folders, folder, new);
 				camel_folder_rename(folder, new);
 				g_free(new);

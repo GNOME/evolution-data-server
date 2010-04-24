@@ -30,11 +30,14 @@
 #include "camel-operation.h"
 #include "camel-service.h"
 #include "camel-session.h"
+#include "camel-store.h"
 
-static GSList *offline_folder_props = NULL;
+#define CAMEL_OFFLINE_FOLDER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_OFFLINE_FOLDER, CamelOfflineFolderPrivate))
 
-static CamelProperty offline_prop_list[] = {
-	{ CAMEL_OFFLINE_FOLDER_SYNC_OFFLINE, "sync_offline", N_("Copy folder content locally for offline operation") },
+struct _CamelOfflineFolderPrivate {
+	gboolean offline_sync;
 };
 
 struct _offline_downsync_msg {
@@ -42,6 +45,13 @@ struct _offline_downsync_msg {
 
 	CamelFolder *folder;
 	CamelFolderChangeInfo *changes;
+};
+
+/* The custom property ID is a CamelArg artifact.
+ * It still identifies the property in state files. */
+enum {
+	PROP_0,
+	PROP_OFFLINE_SYNC = 0x2400
 };
 
 G_DEFINE_TYPE (CamelOfflineFolder, camel_offline_folder, CAMEL_TYPE_FOLDER)
@@ -89,10 +99,17 @@ static CamelSessionThreadOps offline_downsync_ops = {
 static void
 offline_folder_changed (CamelFolder *folder, CamelFolderChangeInfo *changes, gpointer dummy)
 {
-	CamelOfflineFolder *offline = (CamelOfflineFolder *) folder;
-	CamelService *service = (CamelService *) folder->parent_store;
+	CamelStore *parent_store;
+	CamelService *service;
+	gboolean offline_sync;
 
-	if (changes->uid_added->len > 0 && (offline->sync_offline || camel_url_get_param (service->url, "sync_offline"))) {
+	parent_store = camel_folder_get_parent_store (folder);
+	service = CAMEL_SERVICE (parent_store);
+
+	offline_sync = camel_offline_folder_get_offline_sync (
+		CAMEL_OFFLINE_FOLDER (folder));
+
+	if (changes->uid_added->len > 0 && (offline_sync || camel_url_get_param (service->url, "sync_offline"))) {
 		CamelSession *session = service->session;
 		struct _offline_downsync_msg *m;
 
@@ -105,78 +122,38 @@ offline_folder_changed (CamelFolder *folder, CamelFolderChangeInfo *changes, gpo
 	}
 }
 
-static gint
-offline_folder_getv (CamelObject *object,
-                     CamelException *ex,
-                     CamelArgGetV *args)
+static void
+offline_folder_set_property (GObject *object,
+                             guint property_id,
+                             const GValue *value,
+                             GParamSpec *pspec)
 {
-	CamelArgGetV props;
-	gint i, count = 0;
-	guint32 tag;
-
-	for (i = 0; i < args->argc; i++) {
-		CamelArgGet *arg = &args->argv[i];
-
-		tag = arg->tag;
-
-		switch (tag & CAMEL_ARG_TAG) {
-		case CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES:
-		case CAMEL_FOLDER_ARG_PROPERTIES:
-			props.argc = 1;
-			props.argv[0] = *arg;
-			((CamelObjectClass *) camel_offline_folder_parent_class)->getv (object, ex, &props);
-			*arg->ca_ptr = g_slist_concat (*arg->ca_ptr, g_slist_copy (offline_folder_props));
-			break;
-		case CAMEL_OFFLINE_FOLDER_ARG_SYNC_OFFLINE:
-			*arg->ca_int = ((CamelOfflineFolder *) object)->sync_offline;
-			break;
-		default:
-			count++;
-			continue;
-		}
-
-		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
+	switch (property_id) {
+		case PROP_OFFLINE_SYNC:
+			camel_offline_folder_set_offline_sync (
+				CAMEL_OFFLINE_FOLDER (object),
+				g_value_get_boolean (value));
+			return;
 	}
 
-	if (count)
-		return ((CamelObjectClass *) camel_offline_folder_parent_class)->getv (object, ex, args);
-
-	return 0;
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
-static gint
-offline_folder_setv (CamelObject *object,
-                     CamelException *ex,
-                     CamelArgV *args)
+static void
+offline_folder_get_property (GObject *object,
+                             guint property_id,
+                             GValue *value,
+                             GParamSpec *pspec)
 {
-	CamelOfflineFolder *folder = (CamelOfflineFolder *) object;
-	gboolean save = FALSE;
-	guint32 tag;
-	gint i;
-
-	for (i = 0; i < args->argc; i++) {
-		CamelArg *arg = &args->argv[i];
-
-		tag = arg->tag;
-
-		switch (tag & CAMEL_ARG_TAG) {
-		case CAMEL_OFFLINE_FOLDER_ARG_SYNC_OFFLINE:
-			if (folder->sync_offline != arg->ca_int) {
-				folder->sync_offline = arg->ca_int;
-				save = TRUE;
-			}
-			break;
-		default:
-			continue;
-		}
-
-		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
+	switch (property_id) {
+		case PROP_OFFLINE_SYNC:
+			g_value_set_boolean (
+				value, camel_offline_folder_get_offline_sync (
+				CAMEL_OFFLINE_FOLDER (object)));
+			return;
 	}
 
-	if (save)
-		camel_object_state_write (object);
-
-	return ((CamelObjectClass *) camel_offline_folder_parent_class)->setv (object, ex, args);
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static gboolean
@@ -188,7 +165,9 @@ offline_folder_downsync (CamelOfflineFolder *offline,
 	GPtrArray *uids, *uncached_uids = NULL;
 	gint i;
 
-	camel_operation_start (NULL, _("Syncing messages in folder '%s' to disk"), folder->full_name);
+	camel_operation_start (
+		NULL, _("Syncing messages in folder '%s' to disk"),
+		camel_folder_get_full_name (folder));
 
 	if (expression)
 		uids = camel_folder_search_by_expression (folder, expression, ex);
@@ -226,29 +205,68 @@ done:
 static void
 camel_offline_folder_class_init (CamelOfflineFolderClass *class)
 {
-	CamelObjectClass *camel_object_class;
-	gint ii;
+	GObjectClass *object_class;
 
-	camel_object_class = CAMEL_OBJECT_CLASS (class);
-	camel_object_class->getv = offline_folder_getv;
-	camel_object_class->setv = offline_folder_setv;
+	g_type_class_add_private (class, sizeof (CamelOfflineFolderPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = offline_folder_set_property;
+	object_class->get_property = offline_folder_get_property;
 
 	class->downsync = offline_folder_downsync;
 
-	for (ii = 0; ii < G_N_ELEMENTS (offline_prop_list); ii++) {
-		offline_prop_list[ii].description =
-			_(offline_prop_list[ii].description);
-		offline_folder_props = g_slist_prepend (
-			offline_folder_props, &offline_prop_list[ii]);
-	}
+	g_object_class_install_property (
+		object_class,
+		PROP_OFFLINE_SYNC,
+		g_param_spec_boolean (
+			"offline-sync",
+			"Offline Sync",
+			N_("Copy folder content locally for offline operation"),
+			FALSE,
+			G_PARAM_READWRITE |
+			CAMEL_PARAM_PERSISTENT));
 }
 
 static void
 camel_offline_folder_init (CamelOfflineFolder *folder)
 {
+	folder->priv = CAMEL_OFFLINE_FOLDER_GET_PRIVATE (folder);
+
 	camel_object_hook_event (
 		folder, "folder_changed",
 		(CamelObjectEventHookFunc) offline_folder_changed, NULL);
+}
+
+/**
+ * camel_offline_folder_get_offline_sync:
+ * @offline_folder: a #CamelOfflineFolder
+ *
+ * Since: 3.0
+ **/
+gboolean
+camel_offline_folder_get_offline_sync (CamelOfflineFolder *offline_folder)
+{
+	g_return_val_if_fail (CAMEL_IS_OFFLINE_FOLDER (offline_folder), FALSE);
+
+	return offline_folder->priv->offline_sync;
+}
+
+/**
+ * camel_offline_folder_set_offline_sync:
+ * @offline_folder: a #CamelOfflineFolder
+ * @offline_sync: whether to synchronize for offline use
+ *
+ * Since: 3.0
+ **/
+void
+camel_offline_folder_set_offline_sync (CamelOfflineFolder *offline_folder,
+                                       gboolean offline_sync)
+{
+	g_return_if_fail (CAMEL_IS_OFFLINE_FOLDER (offline_folder));
+
+	offline_folder->priv->offline_sync = offline_sync;
+
+	g_object_notify (G_OBJECT (offline_folder), "offline-sync");
 }
 
 /**

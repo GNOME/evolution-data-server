@@ -246,12 +246,13 @@ imapx_get_junk(CamelStore *store, CamelException *ex)
 	folder = store_class->get_junk (store, ex);
 
 	if (folder) {
+		CamelObject *object = CAMEL_OBJECT (folder);
 		gchar *state = g_build_filename(((CamelIMAPXStore *)store)->storage_path, "system", "Junk.cmeta", NULL);
 
-		camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, state, NULL);
+		camel_object_set_state_filename (object, state);
 		g_free(state);
 		/* no defaults? */
-		camel_object_state_read(folder);
+		camel_object_state_read (object);
 	}
 
 	return folder;
@@ -267,12 +268,13 @@ imapx_get_trash (CamelStore *store, CamelException *ex)
 	folder = store_class->get_trash (store, ex);
 
 	if (folder) {
+		CamelObject *object = CAMEL_OBJECT (folder);
 		gchar *state = g_build_filename(((CamelIMAPXStore *)store)->storage_path, "system", "Trash.cmeta", NULL);
 
-		camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, state, NULL);
+		camel_object_set_state_filename (object, state);
 		g_free(state);
 		/* no defaults? */
-		camel_object_state_read(folder);
+		camel_object_state_read (object);
 	}
 
 	return folder;

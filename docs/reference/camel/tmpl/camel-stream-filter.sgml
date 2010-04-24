@@ -26,6 +26,24 @@ CamelStreamFilter
 </para>
 
 
+<!-- ##### FUNCTION camel_stream_filter_new ##### -->
+<para>
+
+</para>
+
+@source: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_stream_filter_get_source ##### -->
+<para>
+
+</para>
+
+@stream: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_stream_filter_add ##### -->
 <para>
 

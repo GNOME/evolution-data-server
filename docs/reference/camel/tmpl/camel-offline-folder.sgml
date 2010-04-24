@@ -26,6 +26,29 @@ CamelOfflineFolder
 </para>
 
 
+<!-- ##### ARG CamelOfflineFolder:offline-sync ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION camel_offline_folder_get_offline_sync ##### -->
+<para>
+
+</para>
+
+@offline: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_offline_folder_set_offline_sync ##### -->
+<para>
+
+</para>
+
+@offline: 
+@offline_sync: 
+
+
 <!-- ##### FUNCTION camel_offline_folder_downsync ##### -->
 <para>
 

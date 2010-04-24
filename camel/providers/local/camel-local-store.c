@@ -200,12 +200,13 @@ local_get_trash (CamelStore *store,
 	folder = CAMEL_STORE_CLASS (camel_local_store_parent_class)->get_trash (store, ex);
 
 	if (folder) {
+		CamelObject *object = CAMEL_OBJECT (folder);
 		gchar *state = camel_local_store_get_meta_path(store, CAMEL_VTRASH_NAME, ".cmeta");
 
-		camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, state, NULL);
+		camel_object_set_state_filename (object, state);
 		g_free(state);
 		/* no defaults? */
-		camel_object_state_read(folder);
+		camel_object_state_read (object);
 	}
 
 	return folder;
@@ -221,12 +222,13 @@ local_get_junk (CamelStore *store,
 	folder = CAMEL_STORE_CLASS (camel_local_store_parent_class)->get_junk (store, ex);
 
 	if (folder) {
+		CamelObject *object = CAMEL_OBJECT (folder);
 		gchar *state = camel_local_store_get_meta_path(store, CAMEL_VJUNK_NAME, ".cmeta");
 
-		camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, state, NULL);
+		camel_object_set_state_filename (object, state);
 		g_free(state);
 		/* no defaults? */
-		camel_object_state_read(folder);
+		camel_object_state_read (object);
 	}
 
 	return folder;
@@ -462,8 +464,14 @@ delete_folder (CamelStore *store,
 	str = NULL;
 	camel_exception_init (&lex);
 	if ((lf = camel_store_get_folder (store, folder_name, 0, &lex))) {
-		camel_object_get (lf, NULL, CAMEL_OBJECT_STATE_FILE, &str, NULL);
-		camel_object_set (lf, NULL, CAMEL_OBJECT_STATE_FILE, NULL, NULL);
+		CamelObject *object = CAMEL_OBJECT (lf);
+		const gchar *state_filename;
+
+		state_filename = camel_object_get_state_filename (object);
+		str = g_strdup (state_filename);
+
+		camel_object_set_state_filename (object, NULL);
+
 		g_object_unref (lf);
 	} else {
 		camel_exception_clear (&lex);

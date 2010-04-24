@@ -327,3 +327,29 @@ CamelSession
 @ex: 
 
 
+<!-- ##### ENUM CamelSessionLock ##### -->
+<para>
+
+</para>
+
+@CS_SESSION_LOCK: 
+@CS_THREAD_LOCK: 
+
+<!-- ##### FUNCTION camel_session_lock ##### -->
+<para>
+
+</para>
+
+@session: 
+@lock: 
+
+
+<!-- ##### FUNCTION camel_session_unlock ##### -->
+<para>
+
+</para>
+
+@session: 
+@lock: 
+
+

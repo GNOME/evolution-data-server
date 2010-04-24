@@ -339,6 +339,8 @@ camel_stream_filter_init (CamelStreamFilter *stream)
  * Create a new #CamelStreamFilter object.
  *
  * Returns: a new #CamelStreamFilter object.
+ *
+ * Since: 3.0
  **/
 CamelStream *
 camel_stream_filter_new (CamelStream *source)
@@ -356,6 +358,12 @@ camel_stream_filter_new (CamelStream *source)
 	return stream;
 }
 
+/**
+ * camel_stream_filter_get_source:
+ * @stream: a #CamelStreamFilter
+ *
+ * Since: 3.0
+ **/
 CamelStream *
 camel_stream_filter_get_source (CamelStreamFilter *stream)
 {

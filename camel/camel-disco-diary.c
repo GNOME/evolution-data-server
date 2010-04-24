@@ -130,10 +130,12 @@ camel_disco_diary_log (CamelDiscoDiary *diary, CamelDiscoDiaryAction action,
 	{
 		CamelFolder *folder = va_arg (ap, CamelFolder *);
 		GPtrArray *uids = va_arg (ap, GPtrArray *);
+		const gchar *full_name;
 
 		d(printf(" folder expunge '%s'\n", folder->full_name));
 
-		status = camel_file_util_encode_string (diary->file, folder->full_name);
+		full_name = camel_folder_get_full_name (folder);
+		status = camel_file_util_encode_string (diary->file, full_name);
 		if (status != -1)
 			status = diary_encode_uids (diary, uids);
 		break;
@@ -143,10 +145,12 @@ camel_disco_diary_log (CamelDiscoDiary *diary, CamelDiscoDiaryAction action,
 	{
 		CamelFolder *folder = va_arg (ap, CamelFolder *);
 		gchar *uid = va_arg (ap, gchar *);
+		const gchar *full_name;
 
 		d(printf(" folder append '%s'\n", folder->full_name));
 
-		status = camel_file_util_encode_string (diary->file, folder->full_name);
+		full_name = camel_folder_get_full_name (folder);
+		status = camel_file_util_encode_string (diary->file, full_name);
 		if (status != -1)
 			status = camel_file_util_encode_string (diary->file, uid);
 		break;
@@ -158,15 +162,18 @@ camel_disco_diary_log (CamelDiscoDiary *diary, CamelDiscoDiaryAction action,
 		CamelFolder *destination = va_arg (ap, CamelFolder *);
 		GPtrArray *uids = va_arg (ap, GPtrArray *);
 		gboolean delete_originals = va_arg (ap, gboolean);
+		const gchar *full_name;
 
-		d(printf(" folder transfer '%s' to '%s'\n", source->full_name, destination->full_name));
-
-		status = camel_file_util_encode_string (diary->file, source->full_name);
+		full_name = camel_folder_get_full_name (source);
+		status = camel_file_util_encode_string (diary->file, full_name);
 		if (status == -1)
 			break;
-		status = camel_file_util_encode_string (diary->file, destination->full_name);
+
+		full_name = camel_folder_get_full_name (destination);
+		status = camel_file_util_encode_string (diary->file, full_name);
 		if (status == -1)
 			break;
+
 		status = diary_encode_uids (diary, uids);
 		if (status == -1)
 			break;

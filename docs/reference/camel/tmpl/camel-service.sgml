@@ -26,41 +26,6 @@ CamelService
 </para>
 
 
-<!-- ##### MACRO CAMEL_SERVICE_USERNAME ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_SERVICE_AUTH ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_SERVICE_HOSTNAME ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_SERVICE_PORT ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_SERVICE_PATH ##### -->
-<para>
-
-</para>
-
-
-
 <!-- ##### ENUM CamelServiceConnectionStatus ##### -->
 <para>
 
@@ -177,5 +142,31 @@ CamelService
 @service: 
 @ex: 
 @Returns: 
+
+
+<!-- ##### ENUM CamelServiceLock ##### -->
+<para>
+
+</para>
+
+@CS_REC_CONNECT_LOCK: 
+@CS_CONNECT_OP_LOCK: 
+
+<!-- ##### FUNCTION camel_service_lock ##### -->
+<para>
+
+</para>
+
+@service: 
+@lock: 
+
+
+<!-- ##### FUNCTION camel_service_unlock ##### -->
+<para>
+
+</para>
+
+@service: 
+@lock: 
 
 

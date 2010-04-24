@@ -52,31 +52,30 @@ G_BEGIN_DECLS
 
 typedef struct _CamelOfflineFolder CamelOfflineFolder;
 typedef struct _CamelOfflineFolderClass CamelOfflineFolderClass;
-
-enum {
-	CAMEL_OFFLINE_FOLDER_ARG_SYNC_OFFLINE = CAMEL_FOLDER_ARG_LAST,
-	CAMEL_OFFLINE_FOLDER_ARG_LAST = CAMEL_FOLDER_ARG_LAST + 0x100
-};
-
-enum {
-	CAMEL_OFFLINE_FOLDER_SYNC_OFFLINE = CAMEL_OFFLINE_FOLDER_ARG_SYNC_OFFLINE | CAMEL_ARG_BOO
-};
+typedef struct _CamelOfflineFolderPrivate CamelOfflineFolderPrivate;
 
 struct _CamelOfflineFolder {
 	CamelFolder parent;
-
-	guint sync_offline:1;
+	CamelOfflineFolderPrivate *priv;
 };
 
 struct _CamelOfflineFolderClass {
 	CamelFolderClass parent_class;
 
-	gboolean (* downsync) (CamelOfflineFolder *folder, const gchar *expression, CamelException *ex);
+	gboolean	(*downsync)		(CamelOfflineFolder *folder,
+						 const gchar *expression,
+						 CamelException *ex);
 };
 
-GType camel_offline_folder_get_type (void);
-
-gboolean camel_offline_folder_downsync (CamelOfflineFolder *offline, const gchar *expression, CamelException *ex);
+GType		camel_offline_folder_get_type	(void);
+gboolean	camel_offline_folder_get_offline_sync
+						(CamelOfflineFolder *offline);
+void		camel_offline_folder_set_offline_sync
+						(CamelOfflineFolder *offline,
+						 gboolean offline_sync);
+gboolean	camel_offline_folder_downsync	(CamelOfflineFolder *offline,
+						 const gchar *expression,
+						 CamelException *ex);
 
 G_END_DECLS
 

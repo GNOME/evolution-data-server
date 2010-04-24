@@ -58,10 +58,6 @@ struct _CamelDiscoDiary;
 typedef struct _CamelDiscoStore CamelDiscoStore;
 typedef struct _CamelDiscoStoreClass CamelDiscoStoreClass;
 
-enum {
-	CAMEL_DISCO_STORE_ARG_FIRST  = CAMEL_STORE_ARG_FIRST + 100
-};
-
 typedef enum {
 	CAMEL_DISCO_STORE_ONLINE,
 	CAMEL_DISCO_STORE_OFFLINE,

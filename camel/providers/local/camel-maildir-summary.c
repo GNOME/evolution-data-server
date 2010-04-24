@@ -151,7 +151,10 @@ CamelMaildirSummary
 	o = g_object_new (CAMEL_TYPE_MAILDIR_SUMMARY, NULL);
 	((CamelFolderSummary *)o)->folder = folder;
 	if (folder) {
-		camel_db_set_collate (folder->parent_store->cdb_r, "dreceived", NULL, NULL);
+		CamelStore *parent_store;
+
+		parent_store = camel_folder_get_parent_store (folder);
+		camel_db_set_collate (parent_store->cdb_r, "dreceived", NULL, NULL);
 		((CamelFolderSummary *)o)->sort_by = "dreceived";
 		((CamelFolderSummary *)o)->collate = NULL;
 	}

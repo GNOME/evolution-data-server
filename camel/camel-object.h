@@ -34,7 +34,6 @@
 #include <stdlib.h>		/* gsize */
 #include <stdarg.h>
 
-#include <camel/camel-arg.h>
 #include <camel/camel-exception.h>
 
 /* Standard GObject macros */
@@ -60,29 +59,32 @@ G_BEGIN_DECLS
 
 typedef struct _CamelObject CamelObject;
 typedef struct _CamelObjectClass CamelObjectClass;
+typedef struct _CamelObjectPrivate CamelObjectPrivate;
+
 typedef guint CamelObjectHookID;
 
 typedef gboolean (*CamelObjectEventPrepFunc) (CamelObject *, gpointer);
 typedef void (*CamelObjectEventHookFunc) (CamelObject *, gpointer, gpointer);
 
-/* camel object args. */
-enum {
-	/* Get a description of the object. */
-	CAMEL_OBJECT_ARG_DESCRIPTION = CAMEL_ARG_FIRST,
-	CAMEL_OBJECT_ARG_STATE_FILE,
-	CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES
-};
-
-enum {
-	CAMEL_OBJECT_DESCRIPTION = CAMEL_OBJECT_ARG_DESCRIPTION | CAMEL_ARG_STR,
-	/* sets where the persistent data should reside, otherwise it isn't persistent */
-	CAMEL_OBJECT_STATE_FILE = CAMEL_OBJECT_ARG_STATE_FILE | CAMEL_ARG_STR,
-	/* returns a GSList CamelProperties of persistent properties */
-	CAMEL_OBJECT_PERSISTENT_PROPERTIES = CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES
-};
+/**
+ * CamelParamFlags:
+ * @CAMEL_PARAM_PERSISTENT:
+ *     The parameter is persistent, which means its value is saved to
+ *     #CamelObject:state-filename during camel_object_state_write(),
+ *     and restored during camel_object_state_read().
+ *
+ * These flags extend #GParamFlags.  Most of the time you will use them
+ * in conjunction with g_object_class_install_property().
+ *
+ * Since: 3.0
+ **/
+typedef enum {
+	CAMEL_PARAM_PERSISTENT = 1 << (G_PARAM_USER_SHIFT + 0)
+} CamelParamFlags;
 
 struct _CamelObject {
 	GObject parent;
+	CamelObjectPrivate *priv;
 
 	/* current hooks on this object */
 	struct _CamelHookList *hooks;
@@ -93,12 +95,6 @@ struct _CamelObjectClass {
 
 	/* available hooks for this class */
 	struct _CamelHookPair *hooks;
-
-	/* get/set interface */
-	gint (*setv)(CamelObject *, CamelException *ex, CamelArgV *args);
-	gint (*getv)(CamelObject *, CamelException *ex, CamelArgGetV *args);
-	/* we only free 1 at a time, and only pointer types, obviously */
-	void (*free)(CamelObject *, guint32 tag, gpointer ptr);
 
 	/* persistence stuff */
 	gint (*state_read)(CamelObject *, FILE *fp);
@@ -115,18 +111,13 @@ void camel_object_remove_event(gpointer obj, CamelObjectHookID id);
 void camel_object_unhook_event(gpointer obj, const gchar *name, CamelObjectEventHookFunc hook, gpointer data);
 void camel_object_trigger_event(gpointer obj, const gchar *name, gpointer event_data);
 
-/* get/set methods */
-gint camel_object_set(gpointer obj, CamelException *ex, ...);
-gint camel_object_setv(gpointer obj, CamelException *ex, CamelArgV *);
-gint camel_object_get(gpointer obj, CamelException *ex, ...);
-gint camel_object_getv(gpointer obj, CamelException *ex, CamelArgGetV *);
-
 /* reads/writes the state from/to the CAMEL_OBJECT_STATE_FILE */
-gint camel_object_state_read(gpointer vo);
-gint camel_object_state_write(gpointer vo);
+gint		camel_object_state_read		(CamelObject *object);
+gint		camel_object_state_write	(CamelObject *object);
 
-/* free a retrieved object.  May be a noop for static data. */
-void camel_object_free(gpointer vo, guint32 tag, gpointer value);
+const gchar *	camel_object_get_state_filename	(CamelObject *object);
+void		camel_object_set_state_filename	(CamelObject *object,
+						 const gchar *state_filename);
 
 G_END_DECLS
 
