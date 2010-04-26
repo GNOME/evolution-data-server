@@ -17,6 +17,9 @@ CamelTcpStreamRaw
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelTcpStreamRaw ##### -->
 <para>
 
@@ -31,6 +34,7 @@ CamelTcpStreamRaw
 
 </para>
 
+@void: 
 @Returns: 
 
 

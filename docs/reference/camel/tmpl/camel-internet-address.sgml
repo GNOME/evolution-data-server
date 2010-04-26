@@ -17,6 +17,9 @@ CamelInternetAddress
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelInternetAddress ##### -->
 <para>
 
@@ -30,6 +33,7 @@ CamelInternetAddress
 
 </para>
 
+@void: 
 @Returns: 
 
 

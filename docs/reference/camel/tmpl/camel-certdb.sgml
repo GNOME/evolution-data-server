@@ -17,6 +17,9 @@ CamelCertDB
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelCertDB ##### -->
 <para>
 
@@ -62,6 +65,7 @@ CamelCertDB
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -78,6 +82,7 @@ CamelCertDB
 
 </para>
 
+@void: 
 @Returns: 
 
 

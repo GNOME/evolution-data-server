@@ -17,6 +17,9 @@ CamelObject
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### MACRO CAMEL_OBJECT_TRACK_INSTANCES ##### -->
 <para>
 
@@ -209,6 +212,7 @@ CamelObject
 
 </para>
 
+@void: 
 
 
 <!-- ##### FUNCTION camel_type_register ##### -->

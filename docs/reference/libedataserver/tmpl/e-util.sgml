@@ -17,6 +17,9 @@ Miscellaneous utility functions for evolution-data-server.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT tm ##### -->
 <para>
 
@@ -138,6 +141,7 @@ Miscellaneous utility functions for evolution-data-server.
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -146,6 +150,7 @@ Miscellaneous utility functions for evolution-data-server.
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -154,6 +159,7 @@ Miscellaneous utility functions for evolution-data-server.
 
 </para>
 
+@void: 
 @Returns: 
 
 

@@ -17,6 +17,9 @@ ENameSelectorEntry
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### MACRO MINIMUM_QUERY_LENGTH ##### -->
 <para>
 
@@ -57,6 +60,7 @@ ENameSelectorEntry
 
 </para>
 
+@void: 
 @Returns: 
 
 

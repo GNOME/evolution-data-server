@@ -17,6 +17,9 @@ CamelImapStoreSummary
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelImapStoreInfo ##### -->
 <para>
 
@@ -51,6 +54,7 @@ CamelImapStoreSummary
 
 </para>
 
+@void: 
 @Returns: 
 
 

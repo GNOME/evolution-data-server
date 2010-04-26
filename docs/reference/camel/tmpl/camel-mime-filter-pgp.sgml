@@ -17,6 +17,9 @@ CamelMimeFilterPgp
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelMimeFilterPgp ##### -->
 <para>
 
@@ -30,6 +33,7 @@ CamelMimeFilterPgp
 
 </para>
 
+@void: 
 @Returns: 
 
 

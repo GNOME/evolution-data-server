@@ -17,6 +17,9 @@ camel-process
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### FUNCTION camel_process_fork ##### -->
 <para>
 

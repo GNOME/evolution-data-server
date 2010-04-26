@@ -17,6 +17,9 @@ CamelNNTPStoreSummary
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelNNTPStoreInfo ##### -->
 <para>
 
@@ -49,6 +52,7 @@ CamelNNTPStoreSummary
 
 </para>
 
+@void: 
 @Returns: 
 
 

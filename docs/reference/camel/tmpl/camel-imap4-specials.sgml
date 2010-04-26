@@ -17,6 +17,9 @@ camel-imap4-specials
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### MACRO is_atom ##### -->
 <para>
 
@@ -71,5 +74,6 @@ camel-imap4-specials
 
 </para>
 
+@void: 
 
 

@@ -17,6 +17,9 @@ CamelMultipartSigned
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelMultipartSigned ##### -->
 <para>
 
@@ -38,6 +41,7 @@ CamelMultipartSigned
 
 </para>
 
+@void: 
 @Returns: 
 
 

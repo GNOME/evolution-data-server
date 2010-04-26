@@ -17,6 +17,9 @@ CamelTcpStreamSSL
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelTcpStreamSSL ##### -->
 <para>
 

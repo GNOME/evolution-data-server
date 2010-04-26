@@ -17,6 +17,9 @@ CamelVeeStore
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelVeeStore ##### -->
 <para>
 
@@ -45,6 +48,7 @@ CamelVeeStore
 
 </para>
 
+@void: 
 @Returns: 
 
 

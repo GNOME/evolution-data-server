@@ -17,6 +17,9 @@ CamelMimeParser
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelMimeParser ##### -->
 <para>
 
@@ -52,6 +55,7 @@ CamelMimeParser
 
 </para>
 
+@void: 
 @Returns: 
 
 

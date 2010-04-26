@@ -17,6 +17,9 @@ e-xml-utils
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### FUNCTION e_xml_parse_file ##### -->
 <para>
 

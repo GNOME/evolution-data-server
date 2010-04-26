@@ -18,6 +18,9 @@ thread-safe flag that can be blocked on.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT EFlag ##### -->
 <para>
 The <structname>EFlag</structname> struct is an opaque data structure
@@ -31,6 +34,7 @@ the following functions.
 
 </para>
 
+@void: 
 @Returns: 
 
 

@@ -17,6 +17,9 @@ camel-imap4-utils
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT flags_diff_t ##### -->
 <para>
 

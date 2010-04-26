@@ -17,6 +17,9 @@ camel-nntp-auth
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### FUNCTION camel_nntp_auth_authenticate ##### -->
 <para>
 

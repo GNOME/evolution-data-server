@@ -17,6 +17,9 @@ Represents an entire calendar or task list, not individual items within them.2
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT ECal ##### -->
 <para>
 
@@ -115,6 +118,7 @@ Represents an entire calendar or task list, not individual items within them.2
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -123,6 +127,7 @@ Represents an entire calendar or task list, not individual items within them.2
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -131,6 +136,7 @@ Represents an entire calendar or task list, not individual items within them.2
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -139,6 +145,7 @@ Represents an entire calendar or task list, not individual items within them.2
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -167,6 +174,7 @@ Represents an entire calendar or task list, not individual items within them.2
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -175,6 +183,7 @@ Represents an entire calendar or task list, not individual items within them.2
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -183,6 +192,7 @@ Represents an entire calendar or task list, not individual items within them.2
 
 </para>
 
+@void: 
 @Returns: 
 
 

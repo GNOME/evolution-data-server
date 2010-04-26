@@ -17,6 +17,9 @@ CamelMimeMessage
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelMimeMessage ##### -->
 <para>
 
@@ -87,6 +90,7 @@ CamelMimeMessage
 
 </para>
 
+@void: 
 @Returns: 
 
 

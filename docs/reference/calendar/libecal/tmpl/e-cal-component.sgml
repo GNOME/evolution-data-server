@@ -17,6 +17,9 @@ ECalComponent
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT ECalComponent ##### -->
 <para>
 
@@ -173,6 +176,7 @@ ECalComponent
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -181,6 +185,7 @@ ECalComponent
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -1250,6 +1255,7 @@ ECalComponent
 
 </para>
 
+@void: 
 @Returns: 
 
 

@@ -17,6 +17,9 @@ CamelDataWrapper
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelDataWrapper ##### -->
 <para>
 
@@ -34,6 +37,7 @@ CamelDataWrapper
 
 </para>
 
+@void: 
 @Returns: 
 
 

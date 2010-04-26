@@ -17,6 +17,9 @@ CamelStreamProcess
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelStreamProcess ##### -->
 <para>
 
@@ -31,6 +34,7 @@ CamelStreamProcess
 
 </para>
 
+@void: 
 @Returns: 
 
 

@@ -17,6 +17,9 @@ camel
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### FUNCTION camel_init ##### -->
 <para>
 
@@ -32,5 +35,6 @@ camel
 
 </para>
 
+@void: 
 
 

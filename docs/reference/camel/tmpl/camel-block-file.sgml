@@ -17,6 +17,9 @@ CamelKeyFile
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### TYPEDEF camel_block_t ##### -->
 <para>
 

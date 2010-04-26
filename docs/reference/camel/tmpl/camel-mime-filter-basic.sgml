@@ -17,6 +17,9 @@ CamelMimeFilterBasic
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelMimeFilterBasic ##### -->
 <para>
 
@@ -46,6 +49,7 @@ CamelMimeFilterBasic
 
 </para>
 
+@void: 
 @Returns: 
 
 

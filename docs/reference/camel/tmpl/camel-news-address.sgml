@@ -17,6 +17,9 @@ CamelNewsAddress
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelNewsAddress ##### -->
 <para>
 
@@ -30,6 +33,7 @@ CamelNewsAddress
 
 </para>
 
+@void: 
 @Returns: 
 
 

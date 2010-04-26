@@ -17,11 +17,15 @@ Generate unique UIDs.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### FUNCTION e_uid_new ##### -->
 <para>
 
 </para>
 
+@void: 
 @Returns: 
 
 

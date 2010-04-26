@@ -17,6 +17,9 @@ Base class for synchronous backends.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT ECalBackendSync ##### -->
 <para>
 
@@ -34,6 +37,7 @@ Base class for synchronous backends.
 
 </para>
 
+@void: 
 @Returns: 
 
 

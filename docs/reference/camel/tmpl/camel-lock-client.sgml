@@ -17,6 +17,9 @@ camel-lock-client
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### FUNCTION camel_lock_helper_lock ##### -->
 <para>
 
