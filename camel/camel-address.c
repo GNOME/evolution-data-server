@@ -75,7 +75,7 @@ camel_address_new_clone (CamelAddress *addr)
 {
 	CamelAddress *new;
 
-	new = g_object_new (CAMEL_TYPE_ADDRESS, NULL);
+	new = g_object_new (G_OBJECT_TYPE (addr), NULL);
 	camel_address_cat (new, addr);
 
 	return new;
