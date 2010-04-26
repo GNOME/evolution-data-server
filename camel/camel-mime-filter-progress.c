@@ -133,7 +133,7 @@ camel_mime_filter_progress_new (CamelOperation *operation,
 	CamelMimeFilter *filter;
 	CamelMimeFilterProgressPrivate *priv;
 
-	g_return_val_if_fail (operation != NULL, NULL);
+	/* 'operation' can be NULL, then it means an active thread's operation */
 
 	filter = g_object_new (CAMEL_TYPE_MIME_FILTER_PROGRESS, NULL);
 	priv = CAMEL_MIME_FILTER_PROGRESS_GET_PRIVATE (filter);
