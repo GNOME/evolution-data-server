@@ -1,3 +1,39 @@
+Evolution-Data-Server 2.30.1 2010-04-26
+---------------------------------------
+
+Bug Fixes:
+
+	#418502 - Evolution causes gpg stale locks (Milan Crha)
+	#518876 - Does not display recent messages in nntp (Milan Crha)
+	#520233 - Crash in imap_body_decode at camel-imap-utils.c:979
+	          (Milan Crha)
+	#562595 - POP3 Delete after X days should depend on Leave messages
+	          (Milan Crha)
+	#567000 - [IMAP] Renaming folder generates errors (Milan Crha)
+	#570508 - Google Contacts does not display business phone (Jim McMahon)
+	#603773 - com_err.h doesn't exist on Solaris (Matthew Barnes)
+	#610353 - Search folder with label matches on substring (Milan Crha)
+	#611646 - Calendar shows recurring birthdays incorrectly (Milan Crha)
+	#611775 - IMAPX : support for folder rename (Chenthill Palanisamy)
+	#614388 - Broken Delete after X days behaviour (Lucian Langa)
+	#615290 - Fails to build with Heimdal Kerberos (Alexandre Rostovtsev)
+
+Other Changes:
+
+	* Compare the recurrence appointments using item id rather than
+	  rid while fetching deltas, Rid comparision may not be fool-proof
+	  as default_zone can change (Chenthill Palanisamy)
+	* Don't leave dangling stale pointers to ECal's in the backend
+	  (Michael Meeks)
+	* [win32] Get system timezone location by querying the registry
+	  (Fridrich Strba)
+
+Translations:
+
+	Carles Ferrando (ca@valencia)
+	Shankar Prasad (kn)
+	Wadim Dziedzic (pl)
+
 Evolution-Data-Server 2.30.0 2010-03-29
 ----------------------------------------
 
