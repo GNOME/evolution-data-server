@@ -298,7 +298,10 @@ match_all(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 	ESExpResult *r;
 
 	d(printf("executing match-all: %d", argc));
-	if (argv[0]->type != ESEXP_TERM_BOOL)
+	if (argc == 0) {
+		r = e_sexp_result_new (f, ESEXP_RES_STRING);
+		r->value.string = g_strdup ("1");
+	} else if (argv[0]->type != ESEXP_TERM_BOOL)
 		r = e_sexp_term_eval(f, argv[0]);
 	else {
 		r = e_sexp_result_new(f, ESEXP_RES_STRING);
