@@ -1351,7 +1351,7 @@ AC_SUBST(EVO_NAME_SERVER_RULE)
 dnl *******************
 dnl D-BUS service stuff
 dnl *******************
-EVO_SUBST_SERVICE_RULE='%.service: %.service.in Makefile ; sed -e "s|\@BINDIR\@|$(bindir)|" -e "s|\@LIBEXECDIR\@|$(libexecdir)|" -e "s|\@COMPONENTDIR\@|$(componentdir)|" -e "s|\@IMPORTERSDIR\@|$(importersdir)|" -e "s|\@VERSION\@|$(BASE_VERSION)|" -e "s|\@INTERFACE_VERSION\@|$(INTERFACE_VERSION)|" $< > $@'
+EVO_SUBST_SERVICE_RULE='%.service: %.service.in Makefile ; sed -e "s|\@BINDIR\@|$(bindir)|" -e "s|\@LIBEXECDIR\@|$(libexecdir)|" -e "s|\@COMPONENTDIR\@|$(componentdir)|" -e "s|\@IMPORTERSDIR\@|$(importersdir)|" -e "s|\@VERSION\@|$(BASE_VERSION)|" -e "s|\@EXEEXT\@|$(EXEEXT)|" -e "s|\@INTERFACE_VERSION\@|$(INTERFACE_VERSION)|" $< > $@'
 AC_SUBST(EVO_SUBST_SERVICE_RULE)
 
 dnl ******************************
