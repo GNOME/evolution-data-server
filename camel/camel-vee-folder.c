@@ -1412,7 +1412,7 @@ folder_changed_remove_uid(CamelFolder *sub, const gchar *uid, const gchar hash[8
 				}
 			} else {
 				if (vee_folder_add_uid_test (folder_unmatched, sub, uid, hash))
-					camel_folder_change_info_add_uid(folder_unmatched->changes, oldkey);
+					camel_folder_change_info_add_uid(folder_unmatched->changes, vuid);
 			}
 		} else {
 			if (g_hash_table_lookup_extended(unmatched_uids, vuid, (gpointer *)&oldkey, &oldval)) {
