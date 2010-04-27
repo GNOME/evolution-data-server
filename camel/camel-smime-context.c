@@ -1086,9 +1086,8 @@ sm_encrypt(CamelCipherContext *context, const gchar *userid, GPtrArray *recipien
 	}
 
 	/* FIXME: Stream the input */
-	/* FIXME: Canonicalise the input? */
 	mem = (CamelStreamMem *)camel_stream_mem_new();
-	camel_data_wrapper_write_to_stream((CamelDataWrapper *)ipart, (CamelStream *)mem);
+	camel_cipher_canonical_to_stream (ipart, CAMEL_MIME_FILTER_CANON_CRLF, (CamelStream *)mem);
 	if (NSS_CMSEncoder_Update(enc, (gchar *) mem->buffer->data, mem->buffer->len) != SECSuccess) {
 		NSS_CMSEncoder_Cancel(enc);
 		camel_object_unref(mem);
