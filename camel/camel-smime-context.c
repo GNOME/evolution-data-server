@@ -1043,10 +1043,9 @@ smime_context_encrypt (CamelCipherContext *context,
 	}
 
 	/* FIXME: Stream the input */
-	/* FIXME: Canonicalise the input? */
 	buffer = g_byte_array_new ();
 	mem = camel_stream_mem_new_with_byte_array (buffer);
-	camel_data_wrapper_write_to_stream ((CamelDataWrapper *)ipart, mem);
+	camel_cipher_canonical_to_stream (ipart, CAMEL_MIME_FILTER_CANON_CRLF, mem);
 	if (NSS_CMSEncoder_Update (enc, (gchar *) buffer->data, buffer->len) != SECSuccess) {
 		NSS_CMSEncoder_Cancel (enc);
 		g_object_unref (mem);
