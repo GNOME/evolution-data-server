@@ -2645,7 +2645,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 	}
 
 	status = e_gw_connection_create_cursor (priv->cnc, priv->container_id,
-						"name email default members", NULL, &cursor);
+						"default members", NULL, &cursor);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (enable_debug)
 			printf("No connection with the server \n");
