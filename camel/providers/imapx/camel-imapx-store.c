@@ -53,7 +53,7 @@
 
 #define FINFO_REFRESH_INTERVAL 60
 
-G_DEFINE_TYPE (CamelIMAPXStore, camel_imapx_store, CAMEL_TYPE_STORE)
+G_DEFINE_TYPE (CamelIMAPXStore, camel_imapx_store, CAMEL_TYPE_OFFLINE_STORE)
 
 static guint
 imapx_name_hash(gconstpointer key)
