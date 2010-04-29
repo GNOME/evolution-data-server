@@ -17,6 +17,9 @@ e-cal-check-timezones
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### FUNCTION e_cal_check_timezones ##### -->
 <para>
 
@@ -24,7 +27,7 @@ e-cal-check-timezones
 
 @comp: 
 @comps: 
-@tzlookup: 
+@const gchar *tzid, gconstpointer custom, GError **error: 
 @custom: 
 @error: 
 @Returns: 

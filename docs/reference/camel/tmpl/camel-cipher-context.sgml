@@ -329,6 +329,8 @@ CamelCipherContext
 @gpointer cert_data: 
 @gpointer cert_data:
 @gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
 @gpointer cert_data: 
 
 

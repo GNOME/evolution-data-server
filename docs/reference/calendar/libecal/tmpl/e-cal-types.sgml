@@ -17,6 +17,9 @@ e-cal-types
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### MACRO E_CALENDAR_ERROR ##### -->
 <para>
 
@@ -29,6 +32,7 @@ e-cal-types
 
 </para>
 
+@void: 
 @Returns: 
 
 
