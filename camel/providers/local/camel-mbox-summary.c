@@ -522,9 +522,8 @@ summary_update(CamelLocalSummary *cls, off_t offset, CamelFolderChangeInfo *chan
 	/* we mark messages as to whether we've seen them or not.
 	   If we're not starting from the start, we must be starting
 	   from the old end, so everything must be treated as new */
+	camel_folder_summary_prepare_fetch_all (s, ex);
 	count = camel_folder_summary_count(s);
-	if (count != camel_folder_summary_cache_size(s)) /* It makes sense to load summary, if it isn't there. */
-		camel_folder_summary_reload_from_db (s, ex);
 	for (i=0;i<count;i++) {
 		mi = (CamelMboxMessageInfo *)camel_folder_summary_index(s, i);
 		if (offset == 0)
@@ -635,6 +634,7 @@ mbox_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Camel
 	if (st.st_size == 0) {
 		/* empty?  No need to scan at all */
 		d(printf("Empty mbox, clearing summary\n"));
+		camel_folder_summary_prepare_fetch_all (s, ex);
 		count= camel_folder_summary_count(s);
 		for (i=0;i<count;i++) {
 			CamelMessageInfo *info = camel_folder_summary_index(s, i);
@@ -1070,6 +1070,7 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 	camel_mime_parser_scan_pre_from(mp, TRUE);
 	camel_mime_parser_init_with_fd(mp, fd);
 
+	camel_folder_summary_prepare_fetch_all (s, ex);
 	count = camel_folder_summary_count(s);
 	for (i = 0; i < count; i++) {
 		gint pc = (i + 1) * 100 / count;

@@ -113,13 +113,39 @@ nntp_folder_refresh_info_online (CamelFolder *folder,
 	return success;
 }
 
-static gboolean
-nntp_folder_sync_online (CamelFolder *folder, CamelException *ex)
+static void
+unset_flagged_flag (const gchar *uid, CamelFolderSummary *summary)
 {
+	CamelMessageInfo *info;
+
+	info = camel_folder_summary_uid (summary, uid);
+	if (info) {
+		CamelMessageInfoBase *base = (CamelMessageInfoBase *) info;
+
+		if ((base->flags & CAMEL_MESSAGE_FOLDER_FLAGGED) != 0) {
+			base->flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
+			base->dirty = TRUE;
+		}
+
+		camel_message_info_free (info);
+	}
+}
+
+static gboolean
+nntp_folder_sync (CamelFolder *folder, CamelException *ex)
+{
+	GPtrArray *changed;
 	gboolean success;
 
 	camel_service_lock (CAMEL_SERVICE (folder->parent_store), CS_REC_CONNECT_LOCK);
 
+	changed = camel_folder_summary_get_changed (folder->summary);
+	if (changed) {
+		g_ptr_array_foreach (changed, (GFunc) unset_flagged_flag, folder->summary);
+		g_ptr_array_foreach (changed, (GFunc) camel_pstring_free, NULL);
+		g_ptr_array_free (changed, TRUE);
+		camel_folder_summary_touch (folder->summary);
+	}
 	success = camel_folder_summary_save_to_db (folder->summary, ex);
 
 	camel_service_unlock (CAMEL_SERVICE (folder->parent_store), CS_REC_CONNECT_LOCK);
@@ -128,17 +154,15 @@ nntp_folder_sync_online (CamelFolder *folder, CamelException *ex)
 }
 
 static gboolean
+nntp_folder_sync_online (CamelFolder *folder, CamelException *ex)
+{
+	return nntp_folder_sync (folder, ex);
+}
+
+static gboolean
 nntp_folder_sync_offline (CamelFolder *folder, CamelException *ex)
 {
-	gboolean success;
-
-	camel_service_lock (CAMEL_SERVICE (folder->parent_store), CS_REC_CONNECT_LOCK);
-
-	success = camel_folder_summary_save_to_db (folder->summary, ex);
-
-	camel_service_unlock (CAMEL_SERVICE (folder->parent_store), CS_REC_CONNECT_LOCK);
-
-	return success;
+	return nntp_folder_sync (folder, ex);
 }
 
 static gchar *

@@ -782,6 +782,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 		return TRUE;
 
 	changes = camel_folder_change_info_new ();
+	camel_folder_summary_prepare_fetch_all (folder->summary, ex);
 	count = camel_folder_summary_count (folder->summary);
 	CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
 	for (i=0; i < count; i++) {
@@ -2724,6 +2725,7 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 
 	container_id =  g_strdup (camel_groupwise_store_container_id_lookup (groupwise_store, folder->full_name));
 
+	camel_folder_summary_prepare_fetch_all (folder->summary, ex);
 	max = camel_folder_summary_count (folder->summary);
 	for (i = 0; i < max; i++) {
 		info = camel_folder_summary_index (folder->summary, i);

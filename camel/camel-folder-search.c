@@ -849,8 +849,8 @@ search_match_all(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFol
 
 	v = search->summary_set?search->summary_set:search->summary;
 
-	if (v->len > g_hash_table_size (search->folder->summary->loaded_infos) && !CAMEL_IS_VEE_FOLDER (search->folder)) {
-		camel_folder_summary_reload_from_db (search->folder->summary, search->priv->ex);
+	if (!CAMEL_IS_VEE_FOLDER (search->folder)) {
+		camel_folder_summary_prepare_fetch_all (search->folder->summary, search->priv->ex);
 	}
 
 	for (i=0;i<v->len;i++) {

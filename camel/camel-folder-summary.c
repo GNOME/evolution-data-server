@@ -63,7 +63,7 @@
 	((obj), CAMEL_TYPE_FOLDER_SUMMARY, CamelFolderSummaryPrivate))
 
 /* Make 5 minutes as default cache drop */
-#define SUMMARY_CACHE_DROP 300 
+#define SUMMARY_CACHE_DROP 300
 #define dd(x) if (camel_debug("sync")) x
 
 struct _CamelFolderSummaryPrivate {
@@ -80,11 +80,11 @@ struct _CamelFolderSummaryPrivate {
 
 	struct _CamelIndex *index;
 
-	GMutex *summary_lock;	/* for the summary hashtable/array */
-	GMutex *io_lock;	/* load/save lock, for access to saved_count, etc */
-	GMutex *filter_lock;	/* for accessing any of the filtering/indexing stuff, since we share them */
-	GMutex *alloc_lock;	/* for setting up and using allocators */
-	GMutex *ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before summary_lock */
+	GStaticRecMutex summary_lock;	/* for the summary hashtable/array */
+	GStaticRecMutex io_lock;	/* load/save lock, for access to saved_count, etc */
+	GStaticRecMutex filter_lock;	/* for accessing any of the filtering/indexing stuff, since we share them */
+	GStaticRecMutex alloc_lock;	/* for setting up and using allocators */
+	GStaticRecMutex ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before summary_lock */
 	GHashTable *flag_cache;
 
 	gboolean need_preview;
@@ -121,6 +121,8 @@ extern gint strdup_count, malloc_count, free_count;
 struct _node {
 	struct _node *next;
 };
+
+static void cfs_schedule_info_release_timer (CamelFolderSummary *s);
 
 static struct _node *my_list_append(struct _node **list, struct _node *n);
 static gint my_list_size(struct _node **list);
@@ -239,11 +241,11 @@ folder_summary_finalize (GObject *object)
 	g_free(summary->meta_summary->path);
 	g_free(summary->meta_summary);
 
-	g_mutex_free(summary->priv->summary_lock);
-	g_mutex_free(summary->priv->io_lock);
-	g_mutex_free(summary->priv->filter_lock);
-	g_mutex_free(summary->priv->alloc_lock);
-	g_mutex_free(summary->priv->ref_lock);
+	g_static_rec_mutex_free (&summary->priv->summary_lock);
+	g_static_rec_mutex_free (&summary->priv->io_lock);
+	g_static_rec_mutex_free (&summary->priv->filter_lock);
+	g_static_rec_mutex_free (&summary->priv->alloc_lock);
+	g_static_rec_mutex_free (&summary->priv->ref_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_folder_summary_parent_class)->finalize (object);
@@ -959,11 +961,11 @@ camel_folder_summary_init (CamelFolderSummary *summary)
 	summary->uids = g_ptr_array_new ();
 	summary->loaded_infos = g_hash_table_new (g_str_hash, g_str_equal);
 
-	summary->priv->summary_lock = g_mutex_new();
-	summary->priv->io_lock = g_mutex_new();
-	summary->priv->filter_lock = g_mutex_new();
-	summary->priv->alloc_lock = g_mutex_new();
-	summary->priv->ref_lock = g_mutex_new();
+	g_static_rec_mutex_init (&summary->priv->summary_lock);
+	g_static_rec_mutex_init (&summary->priv->io_lock);
+	g_static_rec_mutex_init (&summary->priv->filter_lock);
+	g_static_rec_mutex_init (&summary->priv->alloc_lock);
+	g_static_rec_mutex_init (&summary->priv->ref_lock);
 
 	summary->meta_summary = g_malloc0(sizeof(CamelFolderMetaSummary));
 
@@ -1060,6 +1062,8 @@ camel_folder_summary_set_build_content(CamelFolderSummary *s, gboolean state)
  * Get the number of summary items stored in this summary.
  *
  * Returns: the number of items in the summary
+ *
+ * @see camel_folder_summary_prepare_fetch_all()
  **/
 guint
 camel_folder_summary_count(CamelFolderSummary *s)
@@ -1078,6 +1082,8 @@ camel_folder_summary_count(CamelFolderSummary *s)
  * ref'd or free'd as appropriate.
  *
  * Returns: the summary item, or %NULL if @index is out of range
+ *
+ * @see camel_folder_summary_prepare_fetch_all()
  **/
 CamelMessageInfo *
 camel_folder_summary_index (CamelFolderSummary *s, gint i)
@@ -1256,7 +1262,6 @@ camel_folder_summary_peek_info (CamelFolderSummary *s, const gchar *uid)
 
 struct _db_pass_data {
 	CamelFolderSummary *summary;
-	gboolean double_ref;
 	gboolean add; /* or just insert to hashtable */
 };
 
@@ -1283,21 +1288,19 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
 		folder_name = s->folder->full_name;
 		cdb = s->folder->parent_store->cdb_r;
 
-		camel_folder_summary_unlock (s, CFS_SUMMARY_LOCK);
-
 		data.summary = s;
-		data.double_ref = TRUE;
 		data.add = FALSE;
 
 		ret = camel_db_read_message_info_record_with_uid (
 			cdb, folder_name, uid, &data,
 			camel_read_mir_callback, &ex);
 		if (ret != 0) {
+			camel_folder_summary_unlock (s, CFS_SUMMARY_LOCK);
+			if (camel_exception_is_set (&ex))
+				g_warning ("%s: Failed read '%s' in '%s' from db: %s (0x%x)", G_STRFUNC, uid, folder_name, camel_exception_get_description (&ex), camel_exception_get_id (&ex));
 			camel_exception_clear (&ex);
 			return NULL;
 		}
-
-		camel_folder_summary_lock (s, CFS_SUMMARY_LOCK);
 
 		/* We would have double reffed at camel_read_mir_callback */
 		info = g_hash_table_lookup (s->loaded_infos, uid);
@@ -1311,6 +1314,8 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
 			camel_exception_clear (&ex);
 			g_free (errmsg);
 		}
+
+		cfs_schedule_info_release_timer (s);
 	}
 
 	if (info)
@@ -1332,6 +1337,8 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
  * ref'd or free'd as appropriate.
  *
  * Returns: the summary item, or %NULL if the uid @uid is not available
+ *
+ * @see camel_folder_summary_prepare_fetch_all()
  **/
 CamelMessageInfo *
 camel_folder_summary_uid (CamelFolderSummary *summary,
@@ -1547,18 +1554,14 @@ remove_cache (CamelSession *session, CamelSessionThreadMsg *msg)
 {
 	struct _folder_summary_free_msg *m = (struct _folder_summary_free_msg *)msg;
 	CamelFolderSummary *s = m->summary;
-	CamelException ex;
 	GSList *to_free_list = NULL, *l;
 
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
-	camel_exception_init (&ex);
-	camel_folder_sync (s->folder, FALSE, &ex);
-	camel_exception_clear (&ex);
 
 	if (time(NULL) - s->cache_load_time < SUMMARY_CACHE_DROP)
 		return;
 
-	dd(printf("removing cache for  %s %d %p\n", s->folder ? s->folder->full_name : s->summary_path, g_hash_table_size (s->loaded_infos), (gpointer) s->loaded_infos));
+	dd(printf("removing cache for  %s %d %p ", s->folder ? s->folder->full_name : s->summary_path, g_hash_table_size (s->loaded_infos), (gpointer) s->loaded_infos));
 	/* FIXME[disk-summary] hack. fix it */
 	camel_folder_summary_lock (s, CFS_SUMMARY_LOCK);
 
@@ -1572,8 +1575,8 @@ remove_cache (CamelSession *session, CamelSessionThreadMsg *msg)
 		camel_message_info_free (l->data);
 	g_slist_free (to_free_list);
 
+	dd(printf("   done .. now %d\n", g_hash_table_size (s->loaded_infos)));
 	camel_folder_summary_unlock (s, CFS_SUMMARY_LOCK);
-	dd(printf("done .. now %d\n",g_hash_table_size (s->loaded_infos)));
 
 	s->cache_load_time = time(NULL);
 }
@@ -1614,13 +1617,30 @@ cfs_try_release_memory (CamelFolderSummary *s)
 	return TRUE;
 }
 
-/**
- * camel_folder_summary_cache_size:
- *
- * Since: 2.24
- **/
-gint
-camel_folder_summary_cache_size (CamelFolderSummary *s)
+static void
+cfs_schedule_info_release_timer (CamelFolderSummary *s)
+{
+	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (s));
+
+	if (!s->timeout_handle) {
+		static gboolean know_can_do = FALSE, can_do = TRUE;
+
+		if (!know_can_do) {
+			can_do = !g_getenv ("CAMEL_FREE_INFOS");
+			know_can_do = TRUE;
+		}
+
+		/* FIXME[disk-summary] LRU please and not timeouts */
+		if (can_do)
+			s->timeout_handle = g_timeout_add_seconds (SUMMARY_CACHE_DROP, (GSourceFunc) cfs_try_release_memory, s);
+	}
+
+	/* update also cache load time to the actual, to not release something just loaded */
+	s->cache_load_time = time (NULL);
+}
+
+static gint
+cfs_cache_size (CamelFolderSummary *s)
 {
 	/* FIXME[disk-summary] this is a timely hack. fix it well */
 	if (!CAMEL_IS_VEE_FOLDER(s->folder))
@@ -1725,14 +1745,8 @@ static CamelSessionThreadOps preview_update_ops = {
 
 /* end */
 
-/**
- * camel_folder_summary_reload_from_db:
- *
- * Since: 2.24
- **/
-gint
-camel_folder_summary_reload_from_db (CamelFolderSummary *s,
-                                     CamelException *ex)
+static gint
+cfs_reload_from_db (CamelFolderSummary *s, CamelException *ex)
 {
 	CamelDB *cdb;
 	gchar *folder_name;
@@ -1748,14 +1762,10 @@ camel_folder_summary_reload_from_db (CamelFolderSummary *s,
 
 	/* FIXME FOR SANKAR: No need to pass the address of summary here. */
 	data.summary = s;
-	data.double_ref = FALSE;
 	data.add = FALSE;
 	ret = camel_db_read_message_info_records (cdb, folder_name, (gpointer)&data, camel_read_mir_callback, NULL);
 
-	s->cache_load_time = time (NULL);
-        /* FIXME[disk-summary] LRU please and not timeouts */
-	if (!g_getenv("CAMEL_FREE_INFOS") && !s->timeout_handle)
-		s->timeout_handle = g_timeout_add_seconds (SUMMARY_CACHE_DROP, (GSourceFunc) cfs_try_release_memory, s);
+	cfs_schedule_info_release_timer (s);
 
 	if (CAMEL_FOLDER_SUMMARY_GET_PRIVATE(s)->need_preview) {
 		struct _preview_update_msg *m;
@@ -1783,31 +1793,32 @@ camel_folder_summary_add_preview (CamelFolderSummary *s, CamelMessageInfo *info)
 }
 
 /**
- * camel_folder_summary_ensure_infos_loaded:
+ * camel_folder_summary_prepare_fetch_all:
  * @s: #CamelFolderSummary object
- * @at_least: How many infos already loaded are considered fine to not reload all of them.
- *    Use -1 to force reload of all of them if not in memory yet.
  * @ex: #CamelException object.
  *
- * Loads all infos into memory, if they are not yet.
+ * Loads all infos into memory, if they are not yet and ensures
+ * they will not be freed in next couple minutes. Call this function
+ * before any mass operation or when all message infos will be needed,
+ * for better performance.
  *
- * Since: 2.28
+ * Since: 2.31
  **/
 void
-camel_folder_summary_ensure_infos_loaded (CamelFolderSummary *s,
-                                          gint at_least,
-                                          CamelException *ex)
+camel_folder_summary_prepare_fetch_all (CamelFolderSummary *s, CamelException *ex)
 {
 	guint loaded, known;
 
 	g_return_if_fail (s != NULL);
 
-	loaded = camel_folder_summary_cache_size (s);
+	loaded = cfs_cache_size (s);
 	known = camel_folder_summary_count (s);
 
-	if ((at_least == -1 && known != loaded) || at_least > loaded) {
-		camel_folder_summary_reload_from_db (s, ex);
-	}
+	if (known - loaded > 50)
+		cfs_reload_from_db (s, ex);
+
+	/* update also cache load time, even when not loaded anything */
+	s->cache_load_time = time (NULL);
 }
 
 #if 0
@@ -1884,7 +1895,6 @@ camel_folder_summary_load_from_db (CamelFolderSummary *s,
 #if 0
 	data.summary = s;
 	data.add = TRUE;
-	data.double_ref = FALSE;
 	ret = camel_db_read_message_info_records (cdb, folder_name, (gpointer) &data, camel_read_mir_callback, ex);
 #endif
 
@@ -1994,10 +2004,6 @@ camel_read_mir_callback (gpointer  ref, gint ncol, gchar ** cols, gchar ** name)
 				return -1;
 			}
 		}
-
-		if (data->double_ref)
-			/* double reffing, because, at times frees before, I could read it. so we dont ref and give it again, just use it */
-			camel_message_info_ref(info);
 
 		/* Just now we are reading from the DB, it can't be dirty. */
 		((CamelMessageInfoBase *)info)->dirty = FALSE;
@@ -3219,7 +3225,7 @@ camel_folder_summary_remove_uid(CamelFolderSummary *s, const gchar *uid)
 		camel_folder_summary_lock (s, CFS_REF_LOCK);
 		if (g_hash_table_lookup_extended(s->loaded_infos, uid, (gpointer)&olduid, (gpointer)&oldinfo)) {
 				/* make sure it doesn't vanish while we're removing it */
-				oldinfo->refcount++;
+				camel_message_info_ref (oldinfo);
 				camel_folder_summary_unlock (s, CFS_REF_LOCK);
 				camel_folder_summary_unlock (s, CFS_SUMMARY_LOCK);
 				camel_folder_summary_remove(s, oldinfo);
@@ -3257,7 +3263,7 @@ camel_folder_summary_remove_uid_fast (CamelFolderSummary *s, const gchar *uid)
 		camel_folder_summary_lock (s, CFS_REF_LOCK);
 		if (g_hash_table_lookup_extended(s->loaded_infos, uid, (gpointer)&olduid, (gpointer)&oldinfo)) {
 				/* make sure it doesn't vanish while we're removing it */
-				oldinfo->refcount++;
+				camel_message_info_ref (oldinfo);
 				camel_folder_summary_unlock (s, CFS_REF_LOCK);
 				g_hash_table_remove (s->loaded_infos, olduid);
 				summary_remove_uid (s, olduid);
@@ -5283,19 +5289,19 @@ camel_folder_summary_lock (CamelFolderSummary *summary,
 
 	switch (lock) {
 		case CFS_SUMMARY_LOCK:
-			g_mutex_lock (summary->priv->summary_lock);
+			g_static_rec_mutex_lock (&summary->priv->summary_lock);
 			break;
 		case CFS_IO_LOCK:
-			g_mutex_lock (summary->priv->io_lock);
+			g_static_rec_mutex_lock (&summary->priv->io_lock);
 			break;
 		case CFS_FILTER_LOCK:
-			g_mutex_lock (summary->priv->filter_lock);
+			g_static_rec_mutex_lock (&summary->priv->filter_lock);
 			break;
 		case CFS_ALLOC_LOCK:
-			g_mutex_lock (summary->priv->alloc_lock);
+			g_static_rec_mutex_lock (&summary->priv->alloc_lock);
 			break;
 		case CFS_REF_LOCK:
-			g_mutex_lock (summary->priv->ref_lock);
+			g_static_rec_mutex_lock (&summary->priv->ref_lock);
 			break;
 		default:
 			g_return_if_reached ();
@@ -5319,19 +5325,19 @@ camel_folder_summary_unlock (CamelFolderSummary *summary,
 
 	switch (lock) {
 		case CFS_SUMMARY_LOCK:
-			g_mutex_unlock (summary->priv->summary_lock);
+			g_static_rec_mutex_unlock (&summary->priv->summary_lock);
 			break;
 		case CFS_IO_LOCK:
-			g_mutex_unlock (summary->priv->io_lock);
+			g_static_rec_mutex_unlock (&summary->priv->io_lock);
 			break;
 		case CFS_FILTER_LOCK:
-			g_mutex_unlock (summary->priv->filter_lock);
+			g_static_rec_mutex_unlock (&summary->priv->filter_lock);
 			break;
 		case CFS_ALLOC_LOCK:
-			g_mutex_unlock (summary->priv->alloc_lock);
+			g_static_rec_mutex_unlock (&summary->priv->alloc_lock);
 			break;
 		case CFS_REF_LOCK:
-			g_mutex_unlock (summary->priv->ref_lock);
+			g_static_rec_mutex_unlock (&summary->priv->ref_lock);
 			break;
 		default:
 			g_return_if_reached ();

@@ -302,6 +302,7 @@ spool_summary_check (CamelLocalSummary *cls,
 
 	/* check to see if we need to copy/update the file; missing xev headers prompt this */
 	work = FALSE;
+	camel_folder_summary_prepare_fetch_all (s, ex);
 	count = camel_folder_summary_count(s);
 	for (i=0;!work && i<count; i++) {
 		CamelMboxMessageInfo *info = (CamelMboxMessageInfo *)camel_folder_summary_index(s, i);

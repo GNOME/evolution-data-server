@@ -467,6 +467,7 @@ static gint
 mbox_cmp_uids (CamelFolder *folder, const gchar *uid1, const gchar *uid2)
 {
 	CamelMboxMessageInfo *a, *b;
+	gint res;
 
 	g_return_val_if_fail (folder != NULL, 0);
 	g_return_val_if_fail (folder->summary != NULL, 0);
@@ -477,7 +478,12 @@ mbox_cmp_uids (CamelFolder *folder, const gchar *uid1, const gchar *uid2)
 	g_return_val_if_fail (a != NULL, 0);
 	g_return_val_if_fail (b != NULL, 0);
 
-	return a->frompos < b->frompos ? -1 : a->frompos == b->frompos ? 0 : 1;
+	res = a->frompos < b->frompos ? -1 : a->frompos == b->frompos ? 0 : 1;
+
+	camel_message_info_free ((CamelMessageInfo *)a);
+	camel_message_info_free ((CamelMessageInfo *)b);
+
+	return res;
 }
 
 static void
@@ -491,8 +497,7 @@ mbox_sort_uids (CamelFolder *folder, GPtrArray *uids)
 
 		camel_exception_init (&ex);
 
-		camel_folder_summary_ensure_infos_loaded (
-			folder->summary, uids->len, &ex);
+		camel_folder_summary_prepare_fetch_all (folder->summary, &ex);
 
 		if (camel_exception_is_set (&ex))
 			g_warning ("%s: %s", G_STRFUNC, camel_exception_get_description (&ex));

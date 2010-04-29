@@ -607,10 +607,9 @@ camel_folder_thread_messages_new (CamelFolder *folder, GPtrArray *uids, gboolean
 	thread->node_chunks = e_memchunk_new(32, sizeof(CamelFolderThreadNode));
 	thread->folder = g_object_ref (folder);
 
+	camel_folder_summary_prepare_fetch_all (folder->summary, NULL);
 	fsummary = camel_folder_summary_array (folder->summary);
 	thread->summary = summary = g_ptr_array_new();
-	if (fsummary->len - camel_folder_summary_cache_size (folder->summary) > 50)
-		camel_folder_summary_reload_from_db (folder->summary, NULL);
 
 	/* prefer given order from the summary order */
 	if (!uids)

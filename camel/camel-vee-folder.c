@@ -564,6 +564,8 @@ subfolder_renamed_update (CamelVeeFolder *vf, CamelFolder *sub, gchar hash[8])
 
 	camel_vee_folder_lock (vf, CVF_SUMMARY_LOCK);
 
+	camel_folder_summary_prepare_fetch_all (((CamelFolder *)vf)->summary, NULL);
+
 	count = camel_folder_summary_count (((CamelFolder *)vf)->summary);
 	for (i=0;i<count;i++) {
 		CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *)camel_folder_summary_index (((CamelFolder *)vf)->summary, i);
@@ -966,6 +968,7 @@ vee_folder_getv (CamelObject *object,
 				CamelVeeMessageInfo *vinfo;
 
 				unread = deleted = visible = junked = junked_not_deleted = 0;
+				camel_folder_summary_prepare_fetch_all (folder->summary, ex);
 				count = camel_folder_summary_count (folder->summary);
 				for (j=0; j<count; j++) {
 					if ((info = (CamelMessageInfoBase *) camel_folder_summary_index (folder->summary, j))) {
@@ -1122,8 +1125,9 @@ vee_folder_sync (CamelFolder *folder,
 		/* Cleanup Junk/Trash uids */
 		GSList *del = NULL;
 		gint i, count;
-		count = folder->summary->uids->len;
 
+		camel_folder_summary_prepare_fetch_all (folder->summary, ex);
+		count = camel_folder_summary_count (folder->summary);
 		for (i=0; i < count; i++) {
 			CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *)camel_folder_summary_index (folder->summary, i);
 			if (mi->old_flags & CAMEL_MESSAGE_DELETED) {
@@ -1538,6 +1542,7 @@ vee_folder_remove_folder_helper (CamelVeeFolder *vf, CamelFolder *source)
 		if (killun) {
 			start = -1;
 			last = -1;
+			camel_folder_summary_prepare_fetch_all (((CamelFolder *)folder_unmatched)->summary, NULL);
 			count = camel_folder_summary_count (((CamelFolder *)folder_unmatched)->summary);
 			for (i=0;i<count;i++) {
 				CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *)camel_folder_summary_index (((CamelFolder *)folder_unmatched)->summary, i);
@@ -1566,6 +1571,7 @@ vee_folder_remove_folder_helper (CamelVeeFolder *vf, CamelFolder *source)
 	/*FIXME: This can be optimized a lot like, searching for UID in the summary uids */
 	start = -1;
 	last = -1;
+	camel_folder_summary_prepare_fetch_all (folder->summary, NULL);
 	count = camel_folder_summary_count (folder->summary);
 	for (i=0;i<count;i++) {
 		CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *)camel_folder_summary_index (folder->summary, i);
@@ -1766,6 +1772,7 @@ vee_folder_rebuild_folder (CamelVeeFolder *vee_folder,
 	   current source) */
 	start = -1;
 	last = -1;
+	camel_folder_summary_prepare_fetch_all (folder->summary, ex);
 	count = camel_folder_summary_count (folder->summary);
 	for (i=0;i<count;i++) {
 		CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *)camel_folder_summary_index (folder->summary, i);

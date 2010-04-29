@@ -986,8 +986,7 @@ imap_rescan (CamelFolder *folder, gint exists, CamelException *ex)
 	 */
 	removed = g_array_new (FALSE, FALSE, sizeof (gint));
 
-	if (summary_len - camel_folder_summary_cache_size (folder->summary) > 50)
-		camel_folder_summary_reload_from_db (folder->summary, ex);
+	camel_folder_summary_prepare_fetch_all (folder->summary, ex);
 
 	for (i = 0, j = 0; i < summary_len && new[j].uid; i++) {
 		gboolean changed = FALSE;
@@ -1450,6 +1449,7 @@ imap_sync (CamelFolder *folder,
 		/* Make sure we're connected before issuing commands */
 		if (!camel_imap_store_connected(store, ex)) {
 			g_free(set);
+			camel_message_info_free(info);
 			break;
 		}
 

@@ -268,6 +268,7 @@ disco_expunge (CamelFolder *folder,
 	gboolean success;
 
 	uids = g_ptr_array_new ();
+	camel_folder_summary_prepare_fetch_all (folder->summary, ex);
 	count = camel_folder_summary_count (folder->summary);
 	for (i = 0; i < count; i++) {
 		info = camel_folder_summary_index (folder->summary, i);

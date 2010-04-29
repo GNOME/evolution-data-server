@@ -111,6 +111,7 @@ vtrash_folder_getv (CamelObject *object,
 				CamelVeeMessageInfo *vinfo;
 
 				unread = deleted = visible = junked = junked_not_deleted = 0;
+				camel_folder_summary_prepare_fetch_all (folder->summary, ex);
 				count = camel_folder_summary_count(folder->summary);
 				for (j=0; j<count; j++) {
 					if ((info = (CamelMessageInfoBase *) camel_folder_summary_index(folder->summary, j))) {

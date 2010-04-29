@@ -560,11 +560,8 @@ maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Ca
 
 	/* keeps track of all uid's that have not been processed */
 	left = g_hash_table_new(g_str_hash, g_str_equal);
+	camel_folder_summary_prepare_fetch_all (s, ex);
 	count = camel_folder_summary_count (s);
-	if (count != camel_folder_summary_cache_size (s)) {
-		camel_folder_summary_reload_from_db (s, ex);
-		count = camel_folder_summary_count (s);
-	}
 	forceindex = count == 0;
 	for (i=0;i<count;i++) {
 		info = camel_folder_summary_index((CamelFolderSummary *)cls, i);
@@ -728,6 +725,7 @@ maildir_summary_sync (CamelLocalSummary *cls,
 
 	camel_operation_start(NULL, _("Storing folder"));
 
+	camel_folder_summary_prepare_fetch_all ((CamelFolderSummary *)cls, ex);
 	count = camel_folder_summary_count((CamelFolderSummary *)cls);
 	for (i=count-1;i>=0;i--) {
 		camel_operation_progress(NULL, (count-i)*100/count);

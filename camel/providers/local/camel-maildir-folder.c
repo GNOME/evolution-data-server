@@ -249,6 +249,7 @@ maildir_get_filename (CamelFolder *folder,
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelMaildirMessageInfo *mdi;
 	CamelMessageInfo *info;
+	gchar *res;
 
 	/* get the message summary info */
 	if ((info = camel_folder_summary_uid(folder->summary, uid)) == NULL) {
@@ -261,7 +262,11 @@ maildir_get_filename (CamelFolder *folder,
 	mdi = (CamelMaildirMessageInfo *)info;
 
 	/* what do we do if the message flags (and :info data) changes?  filename mismatch - need to recheck I guess */
-	return g_strdup_printf("%s/cur/%s", lf->folder_path, camel_maildir_info_filename(mdi));
+	res = g_strdup_printf("%s/cur/%s", lf->folder_path, camel_maildir_info_filename (mdi));
+
+	camel_message_info_free (info);
+
+	return res;
 }
 
 static CamelMimeMessage *
@@ -347,6 +352,9 @@ maildir_cmp_uids (CamelFolder *folder,
 	tma = camel_message_info_date_received (a);
 	tmb = camel_message_info_date_received (b);
 
+	camel_message_info_free (a);
+	camel_message_info_free (b);
+
 	return tma < tmb ? -1 : tma == tmb ? 0 : 1;
 }
 
@@ -362,8 +370,7 @@ maildir_sort_uids (CamelFolder *folder,
 
 		camel_exception_init (&ex);
 
-		camel_folder_summary_ensure_infos_loaded (
-			folder->summary, uids->len, &ex);
+		camel_folder_summary_prepare_fetch_all (folder->summary, &ex);
 
 		if (camel_exception_is_set (&ex))
 			g_warning ("%s: %s", G_STRFUNC, camel_exception_get_description (&ex));

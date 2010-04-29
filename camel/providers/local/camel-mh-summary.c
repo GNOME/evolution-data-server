@@ -228,6 +228,7 @@ mh_summary_check (CamelLocalSummary *cls,
 
 	/* keeps track of all uid's that have not been processed */
 	left = g_hash_table_new(g_str_hash, g_str_equal);
+	camel_folder_summary_prepare_fetch_all ((CamelFolderSummary *)cls, ex);
 	count = camel_folder_summary_count((CamelFolderSummary *)cls);
 	forceindex = count == 0;
 	for (i=0;i<count;i++) {
@@ -299,6 +300,7 @@ mh_summary_sync (CamelLocalSummary *cls,
 
 	/* FIXME: need to update/honour .mh_sequences or whatever it is */
 
+	camel_folder_summary_prepare_fetch_all ((CamelFolderSummary *)cls, ex);
 	count = camel_folder_summary_count((CamelFolderSummary *)cls);
 	for (i=count-1;i>=0;i--) {
 		info = (CamelLocalMessageInfo *)camel_folder_summary_index((CamelFolderSummary *)cls, i);

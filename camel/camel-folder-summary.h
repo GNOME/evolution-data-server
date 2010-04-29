@@ -386,12 +386,8 @@ CamelMessageInfo * camel_folder_summary_peek_info (CamelFolderSummary *s, const 
 
 /* Get only the uids of dirty/changed things to sync to server/db */
 GPtrArray * camel_folder_summary_get_changed (CamelFolderSummary *s);
-/* Gets the size of loaded mi's */
-gint camel_folder_summary_cache_size (CamelFolderSummary *s);
 /* reload the summary at any required point if required */
-gint camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *ex);
-/* ensures all CamelMessagesInfos loaded in memory */
-void camel_folder_summary_ensure_infos_loaded (CamelFolderSummary *s, gint at_least, CamelException *ex);
+void camel_folder_summary_prepare_fetch_all (CamelFolderSummary *s, CamelException *ex);
 /* insert mi to summary */
 void camel_folder_summary_insert (CamelFolderSummary *s, CamelMessageInfo *info, gboolean load);
 
