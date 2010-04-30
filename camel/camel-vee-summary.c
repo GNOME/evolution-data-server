@@ -333,14 +333,14 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
 
 	/* FIXME[disk-summary] too bad design. Need to peek it from cfs
 	 * instead of hacking ugly like this */
-	camel_folder_summary_lock (s, CFS_SUMMARY_LOCK);
+	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	info = g_hash_table_lookup (s->loaded_infos, uid);
 
 	if (info)
 		camel_message_info_ref (info);
 
-	camel_folder_summary_unlock (s, CFS_SUMMARY_LOCK);
+	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	if (!info) {
 		CamelVeeMessageInfo *vinfo;
@@ -465,9 +465,9 @@ camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const gch
 	memcpy(vuid, hash, 8);
 	strcpy(vuid+8, uid);
 
-	camel_folder_summary_lock (CAMEL_FOLDER_SUMMARY (s), CFS_SUMMARY_LOCK);
+	camel_folder_summary_lock (CAMEL_FOLDER_SUMMARY (s), CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 	mi = (CamelVeeMessageInfo *) g_hash_table_lookup(((CamelFolderSummary *) s)->loaded_infos, vuid);
-	camel_folder_summary_unlock (CAMEL_FOLDER_SUMMARY (s), CFS_SUMMARY_LOCK);
+	camel_folder_summary_unlock (CAMEL_FOLDER_SUMMARY (s), CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	if (mi) {
 		/* Possible that the entry is loaded, see if it has the summary */

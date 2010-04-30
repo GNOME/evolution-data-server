@@ -65,7 +65,7 @@ typedef struct _CamelDataWrapperPrivate CamelDataWrapperPrivate;
  * Since: 3.0
  **/
 typedef enum {
-	CDW_STREAM_LOCK
+	CAMEL_DATA_WRAPPER_STREAM_LOCK
 } CamelDataWrapperLock;
 
 struct _CamelDataWrapper {

@@ -173,7 +173,7 @@ imapx_query_auth_types (CamelService *service, CamelException *ex)
 		return NULL;
 	}
 
-	camel_service_lock (service, CS_REC_CONNECT_LOCK);
+	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 	
 	if (istore->server == NULL)
 		istore->server = camel_imapx_server_new((CamelStore *)istore, service->url);
@@ -181,7 +181,7 @@ imapx_query_auth_types (CamelService *service, CamelException *ex)
 	connected = istore->server->stream != NULL;
 	if (!connected)
 		connected = imapx_connect_to_server (istore->server, ex);
-	camel_service_unlock (service, CS_REC_CONNECT_LOCK);
+	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 	if (!connected)
 		return NULL;
 

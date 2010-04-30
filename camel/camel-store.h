@@ -64,7 +64,7 @@ G_BEGIN_DECLS
  * Since: 3.0
  **/
 typedef enum {
-	CS_FOLDER_LOCK
+	CAMEL_STORE_FOLDER_LOCK
 } CamelStoreLock;
 
 typedef struct _CamelFolderInfo {

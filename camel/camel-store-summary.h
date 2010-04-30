@@ -108,9 +108,9 @@ typedef enum _CamelStoreSummaryFlags {
  * Since: 3.0
  **/
 typedef enum {
-	CSS_SUMMARY_LOCK,
-	CSS_IO_LOCK,
-	CSS_REF_LOCK
+	CAMEL_STORE_SUMMARY_SUMMARY_LOCK,
+	CAMEL_STORE_SUMMARY_IO_LOCK,
+	CAMEL_STORE_SUMMARY_REF_LOCK
 } CamelStoreSummaryLock;
 
 struct _CamelStoreSummary {

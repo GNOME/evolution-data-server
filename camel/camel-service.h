@@ -74,8 +74,8 @@ typedef enum {
  * Since: 3.0
  **/
 typedef enum {
-	CS_REC_CONNECT_LOCK,
-	CS_CONNECT_OP_LOCK
+	CAMEL_SERVICE_REC_CONNECT_LOCK,
+	CAMEL_SERVICE_CONNECT_OP_LOCK
 } CamelServiceLock;
 
 struct _CamelService {

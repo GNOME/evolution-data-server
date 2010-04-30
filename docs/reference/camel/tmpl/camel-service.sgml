@@ -149,8 +149,8 @@ CamelService
 
 </para>
 
-@CS_REC_CONNECT_LOCK: 
-@CS_CONNECT_OP_LOCK: 
+@CAMEL_SERVICE_REC_CONNECT_LOCK: 
+@CAMEL_SERVICE_CONNECT_OP_LOCK: 
 
 <!-- ##### FUNCTION camel_service_lock ##### -->
 <para>

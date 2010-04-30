@@ -92,10 +92,10 @@ typedef struct {
  * Since: 3.0
  **/
 typedef enum {
-	CCD_DB_LOCK,
-	CCD_IO_LOCK,
-	CCD_ALLOC_LOCK,
-	CCD_REF_LOCK
+	CAMEL_CERTDB_DB_LOCK,
+	CAMEL_CERTDB_IO_LOCK,
+	CAMEL_CERTDB_ALLOC_LOCK,
+	CAMEL_CERTDB_REF_LOCK
 } CamelCertDBLock;
 
 struct _CamelCertDB {

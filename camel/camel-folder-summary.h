@@ -230,11 +230,11 @@ typedef enum _CamelFolderSummaryFlags {
 } CamelFolderSummaryFlags;
 
 typedef enum _CamelFolderSummaryLock {
-	CFS_SUMMARY_LOCK,
-	CFS_IO_LOCK,
-	CFS_FILTER_LOCK,
-	CFS_ALLOC_LOCK,
-	CFS_REF_LOCK
+	CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK,
+	CAMEL_FOLDER_SUMMARY_IO_LOCK,
+	CAMEL_FOLDER_SUMMARY_FILTER_LOCK,
+	CAMEL_FOLDER_SUMMARY_ALLOC_LOCK,
+	CAMEL_FOLDER_SUMMARY_REF_LOCK
 } CamelFolderSummaryLock;
 
 struct _CamelFolderSummary {

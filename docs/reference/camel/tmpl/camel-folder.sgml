@@ -789,8 +789,8 @@ CamelFolder
 
 </para>
 
-@CF_CHANGE_LOCK: 
-@CF_REC_LOCK: 
+@CAMEL_FOLDER_CHANGE_LOCK: 
+@CAMEL_FOLDER_REC_LOCK: 
 
 <!-- ##### FUNCTION camel_folder_lock ##### -->
 <para>

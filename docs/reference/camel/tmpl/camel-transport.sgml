@@ -44,7 +44,7 @@ CamelTransport
 
 </para>
 
-@CT_SEND_LOCK: 
+@CAMEL_TRANSPORT_SEND_LOCK: 
 
 <!-- ##### FUNCTION camel_transport_lock ##### -->
 <para>

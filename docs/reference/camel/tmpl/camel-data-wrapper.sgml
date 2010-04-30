@@ -115,7 +115,7 @@ CamelDataWrapper
 
 </para>
 
-@CDW_STREAM_LOCK: 
+@CAMEL_DATA_WRAPPER_STREAM_LOCK: 
 
 <!-- ##### FUNCTION camel_data_wrapper_lock ##### -->
 <para>

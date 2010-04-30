@@ -170,9 +170,9 @@ CamelVeeFolder
 
 </para>
 
-@CVF_SUMMARY_LOCK: 
-@CVF_SUBFOLDER_LOCK: 
-@CVF_CHANGED_LOCK: 
+@CAMEL_VEE_FOLDER_SUMMARY_LOCK: 
+@CAMEL_VEE_FOLDER_SUBFOLDER_LOCK: 
+@CAMEL_VEE_FOLDER_CHANGED_LOCK: 
 
 <!-- ##### FUNCTION camel_vee_folder_lock ##### -->
 <para>

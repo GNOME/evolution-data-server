@@ -525,10 +525,10 @@ store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, gint type, const
 	switch (type) {
 		case CAMEL_STORE_INFO_LAST:
 			d(printf("Set full name %s -> %s\n", isi->full_name, str));
-			camel_store_summary_lock (s, CSS_SUMMARY_LOCK);
+			camel_store_summary_lock (s, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 			g_free(isi->full_name);
 			isi->full_name = g_strdup(str);
-			camel_store_summary_unlock (s, CSS_SUMMARY_LOCK);
+			camel_store_summary_unlock (s, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 			break;
 		default:
 			CAMEL_STORE_SUMMARY_CLASS (camel_groupwise_store_summary_parent_class)->store_info_set_string(s, mi, type, str);

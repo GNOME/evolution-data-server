@@ -861,11 +861,11 @@ query_auth_types (CamelService *service, CamelException *ex)
 		return NULL;
 	}
 
-	camel_service_lock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 	connected = store->istream != NULL && store->connected;
 	if (!connected)
 		connected = connect_to_server_wrapper (service, ex);
-	camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 	if (!connected)
 		return NULL;
 
@@ -1270,10 +1270,10 @@ imap_connect (CamelService *service, CamelException *ex)
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return TRUE;
 
-	camel_service_lock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 	if (!connect_to_server_wrapper (service, ex) ||
 	    !imap_auth_loop (service, ex)) {
-		camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		camel_service_disconnect (service, TRUE, NULL);
 		return FALSE;
 	}
@@ -1428,7 +1428,7 @@ done:
 	/* save any changes we had */
 	camel_store_summary_save((CamelStoreSummary *)store->summary);
 
-	camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (camel_exception_is_set (ex))
 		camel_service_disconnect (service, TRUE, NULL);
@@ -1509,7 +1509,7 @@ imap_noop (CamelStore *store,
 	CamelFolder *current_folder;
 	gboolean success = TRUE;
 
-	camel_service_lock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+	camel_service_lock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (!camel_imap_store_connected(imap_store, ex)) {
 		success = FALSE;
@@ -1528,7 +1528,7 @@ imap_noop (CamelStore *store,
 			success = FALSE;
 	}
 done:
-	camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+	camel_service_unlock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return success;
 }
@@ -1722,10 +1722,10 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 
 	camel_exception_clear(ex);
 
-	camel_service_lock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+	camel_service_lock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (!camel_imap_store_connected(imap_store, ex)) {
-		camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+		camel_service_unlock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		return NULL;
 	}
 
@@ -1743,14 +1743,14 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 		const gchar *c;
 
 		if (camel_exception_get_id(ex) == CAMEL_EXCEPTION_USER_CANCEL) {
-			camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+			camel_service_unlock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 			return NULL;
 		}
 
 		camel_exception_clear (ex);
 
 		if (!(flags & CAMEL_STORE_FOLDER_CREATE)) {
-			camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+			camel_service_unlock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 			camel_exception_setv (
 				ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
 				_("No such folder %s"), folder_name);
@@ -1763,7 +1763,7 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 			c++;
 
 		if (*c != '\0') {
-			camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+			camel_service_unlock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 			camel_exception_setv (
 				ex, CAMEL_EXCEPTION_FOLDER_INVALID_PATH,
 				_("The folder name \"%s\" is invalid because it contains the character \"%c\""),
@@ -1785,7 +1785,7 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 			gint i;
 
 			if (!(response = camel_imap_command (imap_store, NULL, ex, "LIST \"\" %G", parent_real))) {
-				camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+				camel_service_unlock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 				g_free (parent_name);
 				g_free (parent_real);
 				return NULL;
@@ -1831,7 +1831,7 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 					camel_exception_set (
 						ex, CAMEL_EXCEPTION_FOLDER_INVALID_STATE,
 						_("The parent folder is not allowed to contain subfolders"));
-					camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+					camel_service_unlock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 					g_free (parent_name);
 					g_free (parent_real);
 					return NULL;
@@ -1841,7 +1841,7 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 				camel_exception_init (&lex);
 				delete_folder (store, parent_name, &lex);
 				if (camel_exception_is_set (&lex)) {
-					camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+					camel_service_unlock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 					camel_exception_xfer (ex, &lex);
 					g_free (parent_name);
 					g_free (parent_real);
@@ -1855,7 +1855,7 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 				g_free (name);
 
 				if (!response) {
-					camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+					camel_service_unlock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 					g_free (parent_name);
 					g_free (parent_real);
 					return NULL;
@@ -1879,7 +1879,7 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 		}
 		g_free(folder_real);
 		if (!response) {
-			camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+			camel_service_unlock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 			return NULL;
 		}
 	} else if (flags & CAMEL_STORE_FOLDER_EXCL) {
@@ -1890,7 +1890,7 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 
 		camel_imap_response_free_without_processing (imap_store, response);
 
-		camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+		camel_service_unlock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 		return NULL;
 	}
@@ -1912,7 +1912,7 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 	}
 	camel_imap_response_free_without_processing (imap_store, response);
 
-	camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+	camel_service_unlock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return new_folder;
 }
@@ -1964,7 +1964,7 @@ delete_folder (CamelStore *store,
 	CamelImapResponse *response;
 	gboolean success = TRUE;
 
-	camel_service_lock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+	camel_service_lock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (!camel_imap_store_connected(imap_store, ex)) {
 		success = FALSE;
@@ -1992,7 +1992,7 @@ delete_folder (CamelStore *store,
 		success = FALSE;
 
 fail:
-	camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+	camel_service_unlock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return success;
 }
@@ -2076,7 +2076,7 @@ rename_folder (CamelStore *store,
 	gchar *oldpath, *newpath, *storage_path;
 	gboolean success = TRUE;
 
-	camel_service_lock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+	camel_service_lock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (!camel_imap_store_connected(imap_store, ex)) {
 		success = FALSE;
@@ -2154,7 +2154,7 @@ rename_folder (CamelStore *store,
 	g_free (newpath);
 fail:
 	imap_store->renaming = FALSE;
-	camel_service_unlock (CAMEL_SERVICE (imap_store), CS_REC_CONNECT_LOCK);
+	camel_service_unlock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return success;
 }
@@ -2627,7 +2627,7 @@ refresh_refresh(CamelSession *session, CamelSessionThreadMsg *msg)
 	struct _refresh_msg *m = (struct _refresh_msg *)msg;
 	CamelImapStore *store = (CamelImapStore *)m->store;
 
-	camel_service_lock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (!camel_imap_store_connected (store, &m->ex))
 		goto done;
@@ -2643,7 +2643,7 @@ refresh_refresh(CamelSession *session, CamelSessionThreadMsg *msg)
 	get_folders_sync (store, NULL, &m->ex);
 	camel_store_summary_save ((CamelStoreSummary *)store->summary);
 done:
-	camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 }
 
 static void
@@ -2692,7 +2692,7 @@ get_folder_info (CamelStore *store,
 		now = time(NULL);
 		ref = now > imap_store->refresh_stamp+60*60*1;
 		if (ref) {
-			camel_service_lock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+			camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 			ref = now > imap_store->refresh_stamp+60*60*1;
 			if (ref) {
 				struct _refresh_msg *m;
@@ -2704,14 +2704,14 @@ get_folder_info (CamelStore *store,
 				camel_exception_init(&m->ex);
 				camel_session_thread_queue(((CamelService *)store)->session, &m->msg, 0);
 			}
-			camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+			camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		}
 	} else {
 		gchar *pattern;
 		gint i;
 		CamelImapStoreNamespace *ns;
 
-		camel_service_lock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+		camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 		if (!camel_imap_store_connected((CamelImapStore *)store, ex))
 			goto fail;
@@ -2744,14 +2744,14 @@ get_folder_info (CamelStore *store,
 			get_folders_sync(imap_store, pattern, ex);
 		}
 		camel_store_summary_save((CamelStoreSummary *)imap_store->summary);
-		camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 	}
 
 	tree = get_folder_info_offline(store, top, flags, ex);
 	return tree;
 
 fail:
-	camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 	return NULL;
 }
 
@@ -2887,7 +2887,7 @@ subscribe_folder (CamelStore *store,
 	CamelStoreInfo *si;
 	gboolean success = TRUE;
 
-	camel_service_lock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (!camel_imap_store_connected (imap_store, ex)) {
 		success = FALSE;
@@ -2926,7 +2926,7 @@ subscribe_folder (CamelStore *store,
 	camel_object_trigger_event (CAMEL_OBJECT (store), "folder_subscribed", fi);
 	camel_folder_info_free (fi);
 done:
-	camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return success;
 }
@@ -2940,7 +2940,7 @@ unsubscribe_folder (CamelStore *store,
 	CamelImapResponse *response;
 	gboolean success = TRUE;
 
-	camel_service_lock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (!camel_imap_store_connected (imap_store, ex)) {
 		success = FALSE;
@@ -2959,7 +2959,7 @@ unsubscribe_folder (CamelStore *store,
 	success = imap_folder_effectively_unsubscribed (imap_store, folder_name, ex);
 
 done:
-	camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return success;
 }

@@ -81,8 +81,8 @@ enum {
  * Since: 3.0
  **/
 typedef enum {
-	CS_SESSION_LOCK,
-	CS_THREAD_LOCK
+	CAMEL_SESSION_SESSION_LOCK,
+	CAMEL_SESSION_THREAD_LOCK
 } CamelSessionLock;
 
 struct _CamelSession {

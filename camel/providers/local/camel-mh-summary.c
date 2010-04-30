@@ -275,8 +275,8 @@ mh_summary_check (CamelLocalSummary *cls,
 	g_hash_table_destroy(left);
 
 	/* sort the summary based on message number (uid), since the directory order is not useful */
-	camel_folder_summary_lock (s, CFS_SUMMARY_LOCK);
-	camel_folder_summary_unlock (s, CFS_SUMMARY_LOCK);
+	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return 0;
 }

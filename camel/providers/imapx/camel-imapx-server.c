@@ -3977,7 +3977,7 @@ camel_imapx_server_connect (CamelIMAPXServer *is, gboolean connect, CamelExcepti
 {
 	gboolean ret = FALSE;
 
-	camel_service_lock (CAMEL_SERVICE (is->store), CS_REC_CONNECT_LOCK);
+	camel_service_lock (CAMEL_SERVICE (is->store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 	if (connect) {
 		if (is->state == IMAPX_AUTHENTICATED || is->state == IMAPX_SELECTED) {
 			ret = TRUE;
@@ -4004,7 +4004,7 @@ camel_imapx_server_connect (CamelIMAPXServer *is, gboolean connect, CamelExcepti
 	}
 
 exit:
-	camel_service_unlock (CAMEL_SERVICE (is->store), CS_REC_CONNECT_LOCK);
+	camel_service_unlock (CAMEL_SERVICE (is->store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 	return ret;
 }
 

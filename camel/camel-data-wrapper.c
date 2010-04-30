@@ -84,15 +84,15 @@ data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 		return -1;
 	}
 
-	camel_data_wrapper_lock (data_wrapper, CDW_STREAM_LOCK);
+	camel_data_wrapper_lock (data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
 	if (camel_stream_reset (data_wrapper->stream) == -1) {
-		camel_data_wrapper_unlock (data_wrapper, CDW_STREAM_LOCK);
+		camel_data_wrapper_unlock (data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
 		return -1;
 	}
 
 	ret = camel_stream_write_to_stream (data_wrapper->stream, stream);
 
-	camel_data_wrapper_unlock (data_wrapper, CDW_STREAM_LOCK);
+	camel_data_wrapper_unlock (data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
 
 	return ret;
 }
@@ -440,7 +440,7 @@ camel_data_wrapper_lock (CamelDataWrapper *data_wrapper,
 	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper));
 
 	switch (lock) {
-	case CDW_STREAM_LOCK:
+	case CAMEL_DATA_WRAPPER_STREAM_LOCK:
 		g_static_mutex_lock (&data_wrapper->priv->stream_lock);
 		break;
 	default:
@@ -465,7 +465,7 @@ camel_data_wrapper_unlock (CamelDataWrapper *data_wrapper,
 	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper));
 
 	switch (lock) {
-	case CDW_STREAM_LOCK:
+	case CAMEL_DATA_WRAPPER_STREAM_LOCK:
 		g_static_mutex_unlock (&data_wrapper->priv->stream_lock);
 		break;
 	default:

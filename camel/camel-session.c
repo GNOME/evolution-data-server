@@ -206,10 +206,10 @@ session_thread_msg_new (CamelSession *session,
 	m->session = g_object_ref (session);
 	m->op = camel_operation_new(cs_thread_status, m);
 	camel_exception_init(&m->ex);
-	camel_session_lock (session, CS_THREAD_LOCK);
+	camel_session_lock (session, CAMEL_SESSION_THREAD_LOCK);
 	m->id = session->priv->thread_id++;
 	g_hash_table_insert(session->priv->thread_active, GINT_TO_POINTER(m->id), m);
-	camel_session_unlock (session, CS_THREAD_LOCK);
+	camel_session_unlock (session, CAMEL_SESSION_THREAD_LOCK);
 
 	return m;
 }
@@ -223,9 +223,9 @@ session_thread_msg_free (CamelSession *session,
 
 	d(printf("free message %p session %p\n", msg, session));
 
-	camel_session_lock (session, CS_THREAD_LOCK);
+	camel_session_lock (session, CAMEL_SESSION_THREAD_LOCK);
 	g_hash_table_remove(session->priv->thread_active, GINT_TO_POINTER(msg->id));
-	camel_session_unlock (session, CS_THREAD_LOCK);
+	camel_session_unlock (session, CAMEL_SESSION_THREAD_LOCK);
 
 	d(printf("free msg, ops->free = %p\n", msg->ops->free));
 
@@ -261,7 +261,7 @@ session_thread_queue (CamelSession *session,
 	GThreadPool *thread_pool;
 	gint id;
 
-	camel_session_lock (session, CS_THREAD_LOCK);
+	camel_session_lock (session, CAMEL_SESSION_THREAD_LOCK);
 	thread_pool = session->priv->thread_pool;
 	if (thread_pool == NULL) {
 		thread_pool = g_thread_pool_new (
@@ -269,7 +269,7 @@ session_thread_queue (CamelSession *session,
 			session, 1, FALSE, NULL);
 		session->priv->thread_pool = thread_pool;
 	}
-	camel_session_unlock (session, CS_THREAD_LOCK);
+	camel_session_unlock (session, CAMEL_SESSION_THREAD_LOCK);
 
 	id = msg->id;
 	g_thread_pool_push(thread_pool, msg, NULL);
@@ -285,9 +285,9 @@ session_thread_wait (CamelSession *session,
 
 	/* we just busy wait, only other alternative is to setup a reply port? */
 	do {
-		camel_session_lock (session, CS_THREAD_LOCK);
+		camel_session_lock (session, CAMEL_SESSION_THREAD_LOCK);
 		wait = g_hash_table_lookup(session->priv->thread_active, GINT_TO_POINTER(id)) != NULL;
-		camel_session_unlock (session, CS_THREAD_LOCK);
+		camel_session_unlock (session, CAMEL_SESSION_THREAD_LOCK);
 		if (wait) {
 			g_usleep(20000);
 		}
@@ -389,11 +389,11 @@ camel_session_get_service (CamelSession *session,
 	class = CAMEL_SESSION_GET_CLASS (session);
 	g_return_val_if_fail (class->get_service != NULL, NULL);
 
-	camel_session_lock (session, CS_SESSION_LOCK);
+	camel_session_lock (session, CAMEL_SESSION_SESSION_LOCK);
 
 	service = class->get_service (session, url_string, type, ex);
 
-	camel_session_unlock (session, CS_SESSION_LOCK);
+	camel_session_unlock (session, CAMEL_SESSION_SESSION_LOCK);
 
 	return service;
 }
@@ -944,10 +944,10 @@ camel_session_lock (CamelSession *session,
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 
 	switch (lock) {
-		case CS_SESSION_LOCK:
+		case CAMEL_SESSION_SESSION_LOCK:
 			g_mutex_lock (session->priv->lock);
 			break;
-		case CS_THREAD_LOCK:
+		case CAMEL_SESSION_THREAD_LOCK:
 			g_mutex_lock (session->priv->thread_lock);
 			break;
 		default:
@@ -971,10 +971,10 @@ camel_session_unlock (CamelSession *session,
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 
 	switch (lock) {
-		case CS_SESSION_LOCK:
+		case CAMEL_SESSION_SESSION_LOCK:
 			g_mutex_unlock (session->priv->lock);
 			break;
-		case CS_THREAD_LOCK:
+		case CAMEL_SESSION_THREAD_LOCK:
 			g_mutex_unlock (session->priv->thread_lock);
 			break;
 		default:

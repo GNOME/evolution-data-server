@@ -90,7 +90,7 @@ camel_imap_command (CamelImapStore *store,
 	va_list ap;
 	gchar *cmd;
 
-	camel_service_lock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (fmt) {
 		va_start (ap, fmt);
@@ -110,7 +110,7 @@ camel_imap_command (CamelImapStore *store,
 
 	if (!imap_command_start (store, folder, cmd, ex)) {
 		g_free (cmd);
-		camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		return NULL;
 	}
 	g_free (cmd);
@@ -166,12 +166,12 @@ camel_imap_command_start (CamelImapStore *store,
 	cmd = imap_command_strdup_vprintf (store, fmt, ap);
 	va_end (ap);
 
-	camel_service_lock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 	ok = imap_command_start (store, folder, cmd, ex);
 	g_free (cmd);
 
 	if (!ok)
-		camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 	return ok;
 }
 
@@ -301,7 +301,7 @@ camel_imap_command_continuation (CamelImapStore *store,
 				ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 				g_strerror (errno));
 		camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
-		camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		return NULL;
 	}
 
@@ -331,7 +331,7 @@ camel_imap_command_response (CamelImapStore *store, gchar **response,
 	gchar *respbuf;
 
 	if (camel_imap_store_readline (store, &respbuf, ex) < 0) {
-		camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		return CAMEL_IMAP_RESPONSE_ERROR;
 	}
 
@@ -388,7 +388,7 @@ camel_imap_command_response (CamelImapStore *store, gchar **response,
 
 	if (type == CAMEL_IMAP_RESPONSE_ERROR ||
 	    type == CAMEL_IMAP_RESPONSE_TAGGED)
-		camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return type;
 }
@@ -405,7 +405,7 @@ imap_read_response (CamelImapStore *store, CamelException *ex)
 	 * we're still locked. This lock is owned by response
 	 * and gets unlocked when response is freed.
 	 */
-	camel_service_lock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	response = g_new0 (CamelImapResponse, 1);
 /*FIXME	if (store->current_folder && camel_disco_store_status (CAMEL_DISCO_STORE (store)) != CAMEL_DISCO_STORE_RESYNCING) {
@@ -671,7 +671,7 @@ camel_imap_response_free (CamelImapStore *store, CamelImapResponse *response)
 	}
 
 	g_free (response);
-	camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
+	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 }
 
 /**

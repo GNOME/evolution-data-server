@@ -105,9 +105,9 @@ camel_transport_send_to (CamelTransport *transport,
 	class = CAMEL_TRANSPORT_GET_CLASS (transport);
 	g_return_val_if_fail (class->send_to != NULL, FALSE);
 
-	camel_transport_lock (transport, CT_SEND_LOCK);
+	camel_transport_lock (transport, CAMEL_TRANSPORT_SEND_LOCK);
 	sent = class->send_to (transport, message, from, recipients, ex);
-	camel_transport_unlock (transport, CT_SEND_LOCK);
+	camel_transport_unlock (transport, CAMEL_TRANSPORT_SEND_LOCK);
 
 	return sent;
 }
@@ -128,7 +128,7 @@ camel_transport_lock (CamelTransport *transport,
 	g_return_if_fail (CAMEL_IS_TRANSPORT (transport));
 
 	switch (lock) {
-		case CT_SEND_LOCK:
+		case CAMEL_TRANSPORT_SEND_LOCK:
 			g_mutex_lock (transport->priv->send_lock);
 			break;
 		default:
@@ -152,7 +152,7 @@ camel_transport_unlock (CamelTransport *transport,
 	g_return_if_fail (CAMEL_IS_TRANSPORT (transport));
 
 	switch (lock) {
-		case CT_SEND_LOCK:
+		case CAMEL_TRANSPORT_SEND_LOCK:
 			g_mutex_unlock (transport->priv->send_lock);
 			break;
 		default:

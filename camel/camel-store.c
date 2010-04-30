@@ -457,9 +457,9 @@ camel_store_create_folder (CamelStore *store,
 		return NULL;
 	}
 
-	camel_store_lock (store, CS_FOLDER_LOCK);
+	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
 	fi = class->create_folder (store, parent_name, folder_name, ex);
-	camel_store_unlock (store, CS_FOLDER_LOCK);
+	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
 
 	return fi;
 }
@@ -530,7 +530,7 @@ camel_store_delete_folder (CamelStore *store,
 
 	camel_exception_init(&local);
 
-	camel_store_lock (store, CS_FOLDER_LOCK);
+	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
 
 	success = class->delete_folder (store, folder_name, &local);
 
@@ -544,7 +544,7 @@ camel_store_delete_folder (CamelStore *store,
 	else
 		camel_exception_xfer(ex, &local);
 
-	camel_store_unlock (store, CS_FOLDER_LOCK);
+	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
 
 	return success;
 }
@@ -596,7 +596,7 @@ camel_store_rename_folder (CamelStore *store,
 	old_name = g_strdup(old_namein);
 	oldlen = strlen(old_name);
 
-	camel_store_lock (store, CS_FOLDER_LOCK);
+	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
 
 	/* If the folder is open (or any subfolders of the open folder)
 	   We need to rename them atomically with renaming the actual folder path */
@@ -614,7 +614,7 @@ camel_store_rename_folder (CamelStore *store,
 			    || ((namelen > oldlen)
 				&& strncmp (full_name, old_name, oldlen) == 0
 				&& full_name[oldlen] == '/')) {
-				camel_folder_lock (folder, CF_REC_LOCK);
+				camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
 			} else {
 				g_ptr_array_remove_index_fast(folders, i);
 				i--;
@@ -644,7 +644,7 @@ camel_store_rename_folder (CamelStore *store,
 				camel_folder_rename(folder, new);
 				g_free(new);
 
-				camel_folder_unlock (folder, CF_REC_LOCK);
+				camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
 				g_object_unref (folder);
 			}
 
@@ -662,13 +662,13 @@ camel_store_rename_folder (CamelStore *store,
 			/* Failed, just unlock our folders for re-use */
 			for (i=0;i<folders->len;i++) {
 				folder = folders->pdata[i];
-				camel_folder_unlock (folder, CF_REC_LOCK);
+				camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
 				g_object_unref (folder);
 			}
 		}
 	}
 
-	camel_store_unlock (store, CS_FOLDER_LOCK);
+	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
 
 	g_ptr_array_free(folders, TRUE);
 	g_free(old_name);
@@ -696,11 +696,11 @@ camel_store_get_inbox (CamelStore *store,
 	class = CAMEL_STORE_GET_CLASS (store);
 	g_return_val_if_fail (class->get_inbox != NULL, NULL);
 
-	camel_store_lock (store, CS_FOLDER_LOCK);
+	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
 
 	folder = class->get_inbox (store, ex);
 
-	camel_store_unlock (store, CS_FOLDER_LOCK);
+	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
 
 	return folder;
 }
@@ -1233,11 +1233,11 @@ camel_store_folder_subscribed (CamelStore *store,
 	class = CAMEL_STORE_GET_CLASS (store);
 	g_return_val_if_fail (class->folder_subscribed != NULL, FALSE);
 
-	camel_store_lock (store, CS_FOLDER_LOCK);
+	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
 
 	ret = class->folder_subscribed (store, folder_name);
 
-	camel_store_unlock (store, CS_FOLDER_LOCK);
+	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
 
 	return ret;
 }
@@ -1267,11 +1267,11 @@ camel_store_subscribe_folder (CamelStore *store,
 	class = CAMEL_STORE_GET_CLASS (store);
 	g_return_val_if_fail (class->subscribe_folder != NULL, FALSE);
 
-	camel_store_lock (store, CS_FOLDER_LOCK);
+	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
 
 	success = class->subscribe_folder (store, folder_name, ex);
 
-	camel_store_unlock (store, CS_FOLDER_LOCK);
+	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
 
 	return success;
 }
@@ -1301,14 +1301,14 @@ camel_store_unsubscribe_folder (CamelStore *store,
 	class = CAMEL_STORE_GET_CLASS (store);
 	g_return_val_if_fail (class->unsubscribe_folder != NULL, FALSE);
 
-	camel_store_lock (store, CS_FOLDER_LOCK);
+	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
 
 	success = class->unsubscribe_folder (store, folder_name, ex);
 
 	if (success)
 		cs_delete_cached_folder (store, folder_name);
 
-	camel_store_unlock (store, CS_FOLDER_LOCK);
+	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
 
 	return success;
 }
@@ -1445,7 +1445,7 @@ camel_store_lock (CamelStore *store,
 	g_return_if_fail (CAMEL_IS_STORE (store));
 
 	switch (lock) {
-		case CS_FOLDER_LOCK:
+		case CAMEL_STORE_FOLDER_LOCK:
 			g_static_rec_mutex_lock (&store->priv->folder_lock);
 			break;
 		default:
@@ -1469,7 +1469,7 @@ camel_store_unlock (CamelStore *store,
 	g_return_if_fail (CAMEL_IS_STORE (store));
 
 	switch (lock) {
-		case CS_FOLDER_LOCK:
+		case CAMEL_STORE_FOLDER_LOCK:
 			g_static_rec_mutex_unlock (&store->priv->folder_lock);
 			break;
 		default:

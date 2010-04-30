@@ -67,8 +67,8 @@ typedef struct _CamelFolderPrivate CamelFolderPrivate;
  * Since: 3.0
  **/
 typedef enum {
-	CF_CHANGE_LOCK,
-	CF_REC_LOCK
+	CAMEL_FOLDER_CHANGE_LOCK,
+	CAMEL_FOLDER_REC_LOCK
 } CamelFolderLock;
 
 struct _CamelFolderChangeInfo {

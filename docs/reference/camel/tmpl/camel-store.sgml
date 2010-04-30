@@ -551,7 +551,7 @@ CamelStore
 
 </para>
 
-@CS_FOLDER_LOCK: 
+@CAMEL_STORE_FOLDER_LOCK: 
 
 <!-- ##### FUNCTION camel_store_lock ##### -->
 <para>
