@@ -521,6 +521,7 @@ e_book_backend_google_load_source (EBookBackend *backend,
     use_ssl_str = e_source_get_property (source, "ssl");
     use_cache_str = e_source_get_property (source, "offline_sync");
 
+    refresh_interval = 3600;
     if (refresh_interval_str) {
 	if (1 != sscanf (refresh_interval_str, "%u", &refresh_interval)) {
 	    g_warning ("Could not parse refresh-interval!");
