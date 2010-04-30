@@ -1423,7 +1423,7 @@ e_contact_get (EContact *contact, EContactField field_id)
 			GList *list = g_list_copy (e_vcard_attribute_get_values (attr));
 			GList *l;
 			for (l = list; l; l = l->next)
-				l->data = g_strstrip (g_strdup (l->data));
+				l->data = l->data ? g_strstrip (g_strdup (l->data)) : NULL;
 			return list;
 		}
 	}
@@ -1495,6 +1495,8 @@ e_contact_get (EContact *contact, EContactField field_id)
 
 		if (info->t & E_CONTACT_FIELD_TYPE_STRUCT)
 			return (gpointer)info->boxed_type_getter();
+		else if (!rv)
+			return NULL;
 		else
 			return g_strstrip (g_strdup (rv));
 	}
@@ -1517,7 +1519,7 @@ e_contact_get (EContact *contact, EContactField field_id)
 					str = e_contact_get_const (contact, E_CONTACT_EMAIL_1);
 			}
 
-			return g_strstrip (g_strdup (str));
+			return str ? g_strstrip (g_strdup (str)) : NULL;
 		}
 		case E_CONTACT_CATEGORIES: {
 			EVCardAttribute *attr = e_contact_get_first_attr (contact, EVC_CATEGORIES);
