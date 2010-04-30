@@ -443,6 +443,19 @@ impl_CalFactory_getCal (EDataCalFactory		*factory,
 }
 
 static void
+remove_data_cal_cb (gpointer data_cl, gpointer user_data)
+{
+	EDataCal *data_cal;
+
+	data_cal = E_DATA_CAL (data_cl);
+	g_return_if_fail (data_cal != NULL);
+
+	e_cal_backend_remove_client (e_data_cal_get_backend (data_cal), data_cal);
+
+	g_object_unref (data_cal);
+}
+
+static void
 name_owner_changed (DBusGProxy      *proxy,
                     const gchar      *name,
                     const gchar      *prev_owner,
@@ -453,11 +466,14 @@ name_owner_changed (DBusGProxy      *proxy,
 		gchar *key;
 		GList *list = NULL;
                 while (g_hash_table_lookup_extended (factory->priv->connections, prev_owner, (gpointer)&key, (gpointer)&list)) {
-                        /* this should trigger the book's weak ref notify
-                         * function, which will remove it from the list before
-                         * it's freed, and will remove the connection from
-                         * priv->connections once they're all gone */
-                        g_object_unref (list->data);
+			GList *copy = g_list_copy (list);
+
+			/* this should trigger the book's weak ref notify
+			 * function, which will remove it from the list before
+			 * it's freed, and will remove the connection from
+			 * priv->connections once they're all gone */
+			g_list_foreach (copy, remove_data_cal_cb, NULL);
+			g_list_free (copy);
                 }
 	}
 }

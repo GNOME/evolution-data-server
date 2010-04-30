@@ -358,6 +358,19 @@ impl_BookFactory_getBook(EDataBookFactory *factory, const gchar *IN_source, DBus
 }
 
 static void
+remove_data_book_cb (gpointer data_bk, gpointer user_data)
+{
+	EDataBook *data_book;
+
+	data_book = E_DATA_BOOK (data_bk);
+	g_return_if_fail (data_book != NULL);
+
+	e_book_backend_remove_client (e_data_book_get_backend (data_book), data_book);
+
+	g_object_unref (data_book);
+}
+
+static void
 name_owner_changed (DBusGProxy *proxy,
                     const gchar *name,
                     const gchar *prev_owner,
@@ -369,11 +382,14 @@ name_owner_changed (DBusGProxy *proxy,
 		GList *list = NULL;
 		g_mutex_lock (factory->priv->connections_lock);
 		while (g_hash_table_lookup_extended (factory->priv->connections, prev_owner, (gpointer)&key, (gpointer)&list)) {
+			GList *copy = g_list_copy (list);
+
 			/* this should trigger the book's weak ref notify
 			 * function, which will remove it from the list before
 			 * it's freed, and will remove the connection from
 			 * priv->connections once they're all gone */
-			g_object_unref (list->data);
+			g_list_foreach (copy, remove_data_book_cb, NULL);
+			g_list_free (copy);
 		}
 
 		g_mutex_unlock (factory->priv->connections_lock);
