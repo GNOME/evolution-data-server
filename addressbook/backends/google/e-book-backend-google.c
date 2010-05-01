@@ -483,7 +483,7 @@ get_new_contacts_in_chunks (EBookBackend *backend, gint chunk_size, GError **err
 	GError *our_error = NULL;
 	gboolean rv = TRUE;
 	GTimeVal current_time;
-	int results;
+	gint results;
 
 	__debug__ (G_STRFUNC);
 	g_return_val_if_fail (priv->service, FALSE);
@@ -641,8 +641,11 @@ e_book_backend_google_create_contact (EBookBackendSync *backend, EDataBook *book
 	g_free (xml);
 
 	/* Insert the entry on the server */
-	new_entry = GDATA_ENTRY (gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (priv->service), GDATA_CONTACTS_CONTACT (entry),
-	                                                                NULL, &error));
+	new_entry = GDATA_ENTRY (
+		gdata_contacts_service_insert_contact (
+			GDATA_CONTACTS_SERVICE (priv->service),
+			GDATA_CONTACTS_CONTACT (entry),
+			NULL, &error));
 	g_object_unref (entry);
 
 	if (!new_entry) {
@@ -767,8 +770,11 @@ e_book_backend_google_modify_contact (EBookBackendSync *backend, EDataBook *book
 	g_free (xml);
 
 	/* Update the contact on the server */
-	new_entry = GDATA_ENTRY (gdata_contacts_service_update_contact (GDATA_CONTACTS_SERVICE (priv->service), GDATA_CONTACTS_CONTACT (entry),
-	                                                                NULL, &error));
+	new_entry = GDATA_ENTRY (
+		gdata_contacts_service_update_contact (
+			GDATA_CONTACTS_SERVICE (priv->service),
+			GDATA_CONTACTS_CONTACT (entry),
+			NULL, &error));
 	g_object_unref (entry);
 
 	if (!new_entry) {

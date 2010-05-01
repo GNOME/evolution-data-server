@@ -214,11 +214,11 @@ _e_contact_new_from_gdata_entry (GDataEntry *entry)
 
 		/* We just need to set the E_CONTACT_NAME field, and all the other name attribute values
 		 * in the EContact will be populated automatically from that */
-		name_struct.family = (gchar*) gdata_gd_name_get_family_name (name);
-		name_struct.given = (gchar*) gdata_gd_name_get_given_name (name);
-		name_struct.additional = (gchar*) gdata_gd_name_get_additional_name (name);
-		name_struct.prefixes = (gchar*) gdata_gd_name_get_prefix (name);
-		name_struct.suffixes = (gchar*) gdata_gd_name_get_suffix (name);
+		name_struct.family = (gchar *) gdata_gd_name_get_family_name (name);
+		name_struct.given = (gchar *) gdata_gd_name_get_given_name (name);
+		name_struct.additional = (gchar *) gdata_gd_name_get_additional_name (name);
+		name_struct.prefixes = (gchar *) gdata_gd_name_get_prefix (name);
+		name_struct.suffixes = (gchar *) gdata_gd_name_get_suffix (name);
 
 		e_contact_set (E_CONTACT (vcard), E_CONTACT_NAME, &name_struct);
 	}
@@ -704,10 +704,10 @@ gdata_gd_email_address_from_attribute (EVCardAttribute *attr, gboolean *have_pri
 		g_free (rel);
 
 		__debug__ ("New %semail entry %s (%s/%s)",
-		           gdata_gd_email_address_is_primary (email) ? "primary " : "",
-		           gdata_gd_email_address_get_address (email),
-		           gdata_gd_email_address_get_relation_type (email),
-		           gdata_gd_email_address_get_label (email));
+			   gdata_gd_email_address_is_primary (email) ? "primary " : "",
+			   gdata_gd_email_address_get_address (email),
+			   gdata_gd_email_address_get_relation_type (email),
+			   gdata_gd_email_address_get_label (email));
 	}
 
 	return email;
@@ -742,11 +742,11 @@ gdata_gd_im_address_from_attribute (EVCardAttribute *attr, gboolean *have_primar
 		g_free (protocol);
 
 		__debug__ ("New %s%s entry %s (%s/%s)",
-		           gdata_gd_im_address_is_primary (im) ? "primary " : "",
-		           gdata_gd_im_address_get_protocol (im),
-		           gdata_gd_im_address_get_address (im),
-		           gdata_gd_im_address_get_relation_type (im),
-		           gdata_gd_im_address_get_label (im));
+			   gdata_gd_im_address_is_primary (im) ? "primary " : "",
+			   gdata_gd_im_address_get_protocol (im),
+			   gdata_gd_im_address_get_address (im),
+			   gdata_gd_im_address_get_relation_type (im),
+			   gdata_gd_im_address_get_label (im));
 	}
 
 	return im;
@@ -776,10 +776,10 @@ gdata_gd_phone_number_from_attribute (EVCardAttribute *attr, gboolean *have_prim
 		g_free (rel);
 
 		__debug__ ("New %sphone-number entry %s (%s/%s)",
-		           gdata_gd_phone_number_is_primary (number) ? "primary " : "",
-		           gdata_gd_phone_number_get_number (number),
-		           gdata_gd_phone_number_get_relation_type (number),
-		           gdata_gd_phone_number_get_label (number));
+			   gdata_gd_phone_number_is_primary (number) ? "primary " : "",
+			   gdata_gd_phone_number_get_number (number),
+			   gdata_gd_phone_number_get_relation_type (number),
+			   gdata_gd_phone_number_get_label (number));
 	}
 
 	return number;
@@ -809,40 +809,40 @@ gdata_gd_postal_address_from_attribute (EVCardAttribute *attr, gboolean *have_pr
 		g_free (rel);
 
 		__debug__ ("New %spostal address entry %s (%s/%s)",
-		           gdata_gd_postal_address_is_primary (address) ? "primary " : "",
-		           gdata_gd_postal_address_get_address (address),
-		           gdata_gd_postal_address_get_relation_type (address),
-		           gdata_gd_postal_address_get_label (address));
+			   gdata_gd_postal_address_is_primary (address) ? "primary " : "",
+			   gdata_gd_postal_address_get_address (address),
+			   gdata_gd_postal_address_get_relation_type (address),
+			   gdata_gd_postal_address_get_label (address));
 
 		/* Set the components of the address from the vCard's attribute values */
 		value = values;
 		if (!value)
 			return address;
-		gdata_gd_postal_address_set_po_box (address, (*((gchar*) value->data) != '\0') ? value->data : NULL);
+		gdata_gd_postal_address_set_po_box (address, (*((gchar *) value->data) != '\0') ? value->data : NULL);
 		value = value->next;
 		if (!value)
 			return address;
-		gdata_gd_postal_address_set_house_name (address, (*((gchar*) value->data) != '\0') ? value->data : NULL);
+		gdata_gd_postal_address_set_house_name (address, (*((gchar *) value->data) != '\0') ? value->data : NULL);
 		value = value->next;
 		if (!value)
 			return address;
-		gdata_gd_postal_address_set_street (address, (*((gchar*) value->data) != '\0') ? value->data : NULL);
+		gdata_gd_postal_address_set_street (address, (*((gchar *) value->data) != '\0') ? value->data : NULL);
 		value = value->next;
 		if (!value)
 			return address;
-		gdata_gd_postal_address_set_city (address, (*((gchar*) value->data) != '\0') ? value->data : NULL);
+		gdata_gd_postal_address_set_city (address, (*((gchar *) value->data) != '\0') ? value->data : NULL);
 		value = value->next;
 		if (!value)
 			return address;
-		gdata_gd_postal_address_set_region (address, (*((gchar*) value->data) != '\0') ? value->data : NULL);
+		gdata_gd_postal_address_set_region (address, (*((gchar *) value->data) != '\0') ? value->data : NULL);
 		value = value->next;
 		if (!value)
 			return address;
-		gdata_gd_postal_address_set_postcode (address, (*((gchar*) value->data) != '\0') ? value->data : NULL);
+		gdata_gd_postal_address_set_postcode (address, (*((gchar *) value->data) != '\0') ? value->data : NULL);
 		value = value->next;
 		if (!value)
 			return address;
-		gdata_gd_postal_address_set_country (address, (*((gchar*) value->data) != '\0') ? value->data : NULL, NULL);
+		gdata_gd_postal_address_set_country (address, (*((gchar *) value->data) != '\0') ? value->data : NULL, NULL);
 	}
 
 	return address;

@@ -299,7 +299,6 @@ groupwise_connect (CamelService *service, CamelException *ex)
 		camel_service_construct (service, service->session, service->provider, service->url, ex);
 	}
 
-
 	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (priv->cnc) {

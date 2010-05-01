@@ -70,11 +70,11 @@ GType camel_stream_vfs_get_type (void);
 /**
  * CamelStreamVFSOpenMethod:
  * CAMEL_STREAM_VFS_CREATE:
- * 	Writable, creates new file or replaces old file.
+ *	Writable, creates new file or replaces old file.
  * CAMEL_STREAM_VFS_APPEND:
- * 	Writable, creates new file or appends at the end of the old file.
+ *	Writable, creates new file or appends at the end of the old file.
  * CAMEL_STREAM_VFS_READ:
- * 	Readable, opens existing file for reading.
+ *	Readable, opens existing file for reading.
  *
  * Since: 2.24
  **/

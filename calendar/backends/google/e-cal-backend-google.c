@@ -73,7 +73,7 @@ struct _ECalBackendGooglePrivate {
 	gchar *username;
 	gchar *password;
 	gchar *uri;
-	gchar *local_attachments_store;	
+	gchar *local_attachments_store;
 
 	gboolean read_only;
 	gboolean mode_changed;
@@ -516,7 +516,7 @@ receive_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *icalcomp)
 	entry =	GDATA_ENTRY (e_gdata_event_from_cal_component (cbgo, comp));
 
 	if (!GDATA_IS_ENTRY (entry))
-		return GNOME_Evolution_Calendar_InvalidObject;	
+		return GNOME_Evolution_Calendar_InvalidObject;
 
 	updated_entry = gdata_service_insert_entry (GDATA_SERVICE (priv->service), priv->uri, entry, NULL, NULL);
 	g_object_unref (entry);
@@ -886,7 +886,7 @@ e_cal_backend_google_modify_object (ECalBackendSync *backend, EDataCal *cal, con
 			updated_entry = gdata_service_update_entry (GDATA_SERVICE (priv->service), entry, NULL, NULL);
 
 			if (updated_entry) {
-				/* FIXME Response from server contains additional info about GDataEntry 
+				/* FIXME Response from server contains additional info about GDataEntry
 				 * Store and use them later
 				 */
 				g_object_unref (updated_entry);
@@ -917,7 +917,7 @@ e_cal_backend_google_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	GDataEntry *entry;
 	ECalBackendGooglePrivate *priv;
 	ECalComponent *comp = NULL;
-	char *calobj = NULL;
+	gchar *calobj = NULL;
 
 	cbgo = E_CAL_BACKEND_GOOGLE (backend);
 	priv = cbgo->priv;
@@ -928,7 +928,7 @@ e_cal_backend_google_remove_object (ECalBackendSync *backend, EDataCal *cal,
 		ECalBackendSyncStatus status;
 		icalcomponent *icalcomp;
 		ECalComponentId *id;
-		char *comp_str;
+		gchar *comp_str;
 		GDataFeed *feed;
 
 		status = e_cal_backend_google_get_object (backend, cal, uid, rid, &calobj);

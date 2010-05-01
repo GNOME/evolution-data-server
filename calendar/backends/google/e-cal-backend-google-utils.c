@@ -156,7 +156,7 @@ e_cal_backend_google_utils_create_cache (ECalBackendGoogle *cbgo)
  * @handle:
  * Call this to update changes made to the calendar.
  *
- * Returns: %TRUE if update is successful, %FALSE otherwise 
+ * Returns: %TRUE if update is successful, %FALSE otherwise
  **/
 gpointer
 e_cal_backend_google_utils_update (gpointer handle)
@@ -222,7 +222,7 @@ e_cal_backend_google_utils_update (gpointer handle)
 	for (iter_list = entries_list; iter_list != NULL; iter_list = iter_list->next) {
 		const gchar *id;
 		id = gdata_entry_get_id (GDATA_ENTRY (iter_list->data));
-		ids_list = g_list_prepend (ids_list, (gchar*) id);
+		ids_list = g_list_prepend (ids_list, (gchar *) id);
 	}
 
 	/* Find the Removed Item */
@@ -494,10 +494,10 @@ e_gdata_event_to_cal_component (GDataCalendarEvent *event, ECalBackendGoogle *cb
 					org->value = g_strconcat ("MAILTO:", gdata_gd_who_get_email_address (go_attendee), NULL);
 				if (gdata_gd_who_get_value_string (go_attendee))
 					org->cn = g_strdup (gdata_gd_who_get_value_string (go_attendee));
-			}	
+			}
 		}
-		
-		attendee_list = g_slist_prepend (attendee_list, attendee);	
+
+		attendee_list = g_slist_prepend (attendee_list, attendee);
 	}
 	e_cal_component_set_attendee_list (comp, attendee_list);
 
@@ -773,7 +773,7 @@ comp_date_time_as_ical_string (ECalComponentDateTime *dt, icaltimezone *default_
 {
 	icaltimetype itt;
 	icalproperty *prop;
-	char *buf;
+	gchar *buf;
 
 	itt = icaltime_convert_to_zone (*(dt->value), default_zone);
 	dt->value = &itt;
@@ -802,7 +802,7 @@ e_gdata_event_update_from_cal_component (ECalBackendGoogle *cbgo, GDataCalendarE
 	ECalComponentText *t;
 	GSList *attendee_list = NULL, *l = NULL;
 	GString *recur_string;
-	char *buf;
+	gchar *buf;
 
 	priv = cbgo->priv;
 

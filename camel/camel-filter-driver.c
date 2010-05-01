@@ -1368,7 +1368,7 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 		report_status (driver, CAMEL_FILTER_STATUS_START, pc, _("Getting message %d of %d"), i+1,
 			       uids->len);
 
-		if (camel_folder_has_summary_capability (folder))                                    
+		if (camel_folder_has_summary_capability (folder))
 			info = camel_folder_get_message_info (folder, uids->pdata[i]);
 		else
 			info = NULL;

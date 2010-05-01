@@ -84,7 +84,7 @@ vtrash_folder_append_message (CamelFolder *folder,
                               CamelMimeMessage *message,
                               const CamelMessageInfo *info,
                               gchar **appended_uid,
-		              CamelException *ex)
+                              CamelException *ex)
 {
 	camel_exception_setv (
 		ex, CAMEL_EXCEPTION_SYSTEM, "%s",

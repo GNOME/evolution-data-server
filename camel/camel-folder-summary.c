@@ -5236,7 +5236,6 @@ camel_message_info_dump (CamelMessageInfo *mi)
 	camel_content_info_dump(((CamelMessageInfoBase *) mi)->content, 0);
 }
 
-
 /**
  * camel_folder_summary_set_need_preview:
  *

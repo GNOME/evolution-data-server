@@ -516,7 +516,7 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream, CamelException *ex)
 				if (!g_ascii_strncasecmp (node->path, "INBOX", 5) &&
 						(node->path [6] == '\0' || node->path [6] == node->sep ))
 					memcpy (node->path, "INBOX", 5);
-				
+
 				/* TODO remove full_name later. not required */
 				node->full_name = g_strdup (node->path);
 

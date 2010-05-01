@@ -826,7 +826,7 @@ e_gw_item_new_from_cal_component (const gchar *container, ECalBackendGroupwise *
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 
 	e_cal_backend_groupwise_priv_lock (cbgw);
-	
+
 	item = e_gw_item_new_empty ();
 	e_gw_item_set_container_id (item, container);
 	item = set_properties_from_cal_component (item, comp, cbgw);
@@ -1021,7 +1021,7 @@ get_cn_from_display_name (gchar *display_name)
 }
 
 static void
-sanitize_component (ECalComponent *comp, const gchar *server_uid, const char *container_id)
+sanitize_component (ECalComponent *comp, const gchar *server_uid, const gchar *container_id)
 {
 	icalproperty *icalprop;
 	gint i;
@@ -1072,9 +1072,9 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	EGwItemType item_type;
 
 	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
-	
+
 	e_cal_backend_groupwise_priv_lock (cbgw);
-	
+
 	default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
 	categories_by_id = e_cal_backend_groupwise_get_categories_by_id (cbgw);
 
@@ -1782,7 +1782,7 @@ e_gw_connection_get_freebusy_info (ECalBackendGroupwise *cbgw, GList *users, tim
 
 	default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
 	cnc = e_cal_backend_groupwise_get_connection (cbgw);
-	
+
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 
 	/* Perform startFreeBusySession */
@@ -1861,7 +1861,7 @@ e_gw_connection_get_freebusy_info (ECalBackendGroupwise *cbgw, GList *users, tim
 		GSList *attendee_list = NULL;
 		icalcomponent *icalcomp = NULL;
 		icaltimetype start_time, end_time;
-	
+
 		e_cal_backend_groupwise_priv_lock (cbgw);
 
 		tmp = soup_soap_parameter_get_first_child_by_name (subparam, "email");

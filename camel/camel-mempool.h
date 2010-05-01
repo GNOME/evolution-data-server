@@ -42,13 +42,13 @@ typedef struct _CamelMemPool CamelMemPool;
 /**
  * CamelMemPoolFlags:
  * @CAMEL_MEMPOOL_ALIGN_STRUCT:
- * 	Allocate to native structure alignment
+ *	Allocate to native structure alignment
  * @CAMEL_MEMPOOL_ALIGN_WORD:
- * 	Allocate to words - 16 bit alignment
+ *	Allocate to words - 16 bit alignment
  * @CAMEL_MEMPOOL_ALIGN_BYTE:
- * 	Allocate to bytes - 8 bit alignment
+ *	Allocate to bytes - 8 bit alignment
  * @CAMEL_MEMPOOL_ALIGN_MASK:
- * 	Which bits determine the alignment information
+ *	Which bits determine the alignment information
  *
  * Since: 3.0
  **/

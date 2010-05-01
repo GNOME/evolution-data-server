@@ -46,7 +46,7 @@ CamelProviderConfEntry imapx_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "check_lsub", NULL,
 	  N_("Ch_eck for new messages in subscribed folders"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
-#if 0	
+#if 0
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "cmdsection", NULL,
 	  N_("Connection to Server") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use_command", NULL,
@@ -61,12 +61,12 @@ CamelProviderConfEntry imapx_conf_entries[] = {
 	  N_("Folders") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use_lsub", NULL,
 	  N_("_Show only subscribed folders"), "1" },
-#if 0	
+#if 0
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "override_namespace", NULL,
 	  N_("O_verride server-supplied folder namespace"), "0" },
 	{ CAMEL_PROVIDER_CONF_ENTRY, "namespace", "override_namespace",
 	  N_("Namespace:") },
-#endif	
+#endif
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter", NULL,

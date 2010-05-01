@@ -30,7 +30,7 @@
 
 #line 3 "camel-imapx-tokens.txt"
 struct _imapx_keyword {const gchar *name; camel_imapx_id_t id; };
-struct _imapx_keyword *imapx_tokenise_struct (register const char *str, register unsigned int len);
+struct _imapx_keyword *imapx_tokenise_struct (register const gchar *str, register guint len);
 
 #define TOTAL_KEYWORDS 36
 #define MIN_WORD_LENGTH 2
@@ -46,10 +46,10 @@ __inline
 inline
 #endif
 #endif
-static unsigned int
-imapx_hash (register const char *str, register unsigned int len)
+static guint
+imapx_hash (register const gchar *str, register guint len)
 {
-  static unsigned char asso_values[] =
+  static guchar asso_values[] =
     {
       57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
       57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
@@ -78,7 +78,7 @@ imapx_hash (register const char *str, register unsigned int len)
       57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
       57, 57, 57, 57, 57, 57
     };
-  return len + asso_values[(unsigned char)str[len - 1]] + asso_values[(unsigned char)str[0]];
+  return len + asso_values[(guchar)str[len - 1]] + asso_values[(guchar)str[0]];
 }
 
 #ifdef __GNUC__
@@ -88,7 +88,7 @@ __attribute__ ((__gnu_inline__))
 #endif
 #endif
 struct _imapx_keyword *
-imapx_tokenise_struct (register const char *str, register unsigned int len)
+imapx_tokenise_struct (register const gchar *str, register guint len)
 {
   static struct _imapx_keyword wordlist[] =
     {
@@ -178,11 +178,11 @@ imapx_tokenise_struct (register const char *str, register unsigned int len)
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register int key = imapx_hash (str, len);
+      register gint key = imapx_hash (str, len);
 
       if (key <= MAX_HASH_VALUE && key >= 0)
         {
-          register const char *s = wordlist[key].name;
+          register const gchar *s = wordlist[key].name;
 
           if (*str == *s && !strcmp (str + 1, s + 1))
             return &wordlist[key];

@@ -166,7 +166,7 @@ imapx_query_auth_types (CamelService *service, CamelException *ex)
 	CamelServiceAuthType *authtype;
 	GList *sasl_types, *t, *next;
 	gboolean connected;
-	
+
 	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 				     _("You must be working online to complete this operation"));
@@ -174,10 +174,10 @@ imapx_query_auth_types (CamelService *service, CamelException *ex)
 	}
 
 	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
-	
+
 	if (istore->server == NULL)
 		istore->server = camel_imapx_server_new((CamelStore *)istore, service->url);
-	
+
 	connected = istore->server->stream != NULL;
 	if (!connected)
 		connected = imapx_connect_to_server (istore->server, ex);
@@ -537,7 +537,7 @@ imapx_mark_folder_subscribed (CamelIMAPXStore *istore, const gchar *folder_name,
 		}
 		camel_store_summary_info_free((CamelStoreSummary *)istore->summary, si);
 	}
-	
+
 	if (emit_signal) {
 		CamelFolderInfo *fi;
 
@@ -576,7 +576,7 @@ imapx_unsubscribe_folder (CamelStore *store, const gchar *folder_name, gboolean 
 
 	if (istore->server && camel_imapx_server_connect (istore->server, TRUE, ex))
 		camel_imapx_server_manage_subscription (istore->server, folder_name, FALSE, ex);
-	
+
 	if (!camel_exception_is_set (ex)) {
 		imapx_unmark_folder_subscribed (istore, folder_name, emit_signal, ex);
 		return TRUE;
@@ -595,7 +595,7 @@ static gboolean
 imapx_store_unsubscribe_folder (CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
 	CamelException eex = CAMEL_EXCEPTION_INITIALISER;
-	
+
 	if (!ex)
 		ex = &eex;
 
@@ -663,7 +663,6 @@ imapx_delete_folder (CamelStore *store, const gchar *folder_name, CamelException
 	return TRUE;
 }
 
-
 static void
 rename_folder_info (CamelIMAPXStore *istore, const gchar *old_name, const gchar *new_name, CamelException *ex)
 {
@@ -709,7 +708,6 @@ imapx_rename_folder (CamelStore *store, const gchar *old, const gchar *new, Came
 	CamelIMAPXStore *istore = (CamelIMAPXStore *) store;
 	gchar *oldpath, *newpath, *storage_path;
 
-
 	if (CAMEL_OFFLINE_STORE (store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 				     _("You must be working online to complete this operation"));
@@ -752,7 +750,7 @@ imapx_rename_folder (CamelStore *store, const gchar *old, const gchar *new, Came
 
 static CamelFolderInfo *
 imapx_create_folder (CamelStore *store, const gchar *parent_name, const gchar *folder_name, CamelException *ex)
-{	
+{
 	const gchar *c;
 	CamelStoreInfo *si;
 	CamelIMAPXStoreNamespace *ns;
@@ -760,13 +758,13 @@ imapx_create_folder (CamelStore *store, const gchar *parent_name, const gchar *f
 	gchar *real_name, *full_name, *parent_real;
 	CamelFolderInfo *fi = NULL;
 	gchar dir_sep;
-	
+
 	if (CAMEL_OFFLINE_STORE (store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 				     _("You must be working online to complete this operation"));
 		return NULL;
 	}
-	
+
 	if (!(istore->server && camel_imapx_server_connect (istore->server, TRUE, ex)))
 		return NULL;
 
@@ -789,7 +787,7 @@ imapx_create_folder (CamelStore *store, const gchar *parent_name, const gchar *f
 				      folder_name, *c);
 		return NULL;
 	}
-	
+
 	parent_real = camel_imapx_store_summary_full_from_path(istore->summary, parent_name);
 	if (parent_real == NULL) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_STATE,
@@ -823,13 +821,11 @@ imapx_create_folder (CamelStore *store, const gchar *parent_name, const gchar *f
 		camel_object_trigger_event (CAMEL_OBJECT (store), "folder_created", fi);
 	}
 
-
 	g_free (full_name);
 	g_free(parent_real);
 
 	return fi;
 }
-
 
 static CamelFolderInfo *
 get_folder_info_offline (CamelStore *store, const gchar *top,
@@ -1157,7 +1153,7 @@ sync_folders (CamelIMAPXStore *istore, const gchar *pattern, gboolean sync, Came
 					camel_exception_init (&eex);
 					imapx_unmark_folder_subscribed (istore,dup_folder_name, TRUE, &eex);
 					imapx_delete_folder_from_cache (istore, dup_folder_name, &eex);
-					
+
 					g_free (dup_folder_name);
 					camel_exception_clear (&eex);
 				} else {
@@ -1218,14 +1214,14 @@ discover_inbox (CamelStore *store, CamelException *ex)
 {
 	CamelStoreInfo *si;
 	CamelIMAPXStore *istore = (CamelIMAPXStore *)store;
-	
+
 	si = camel_store_summary_path((CamelStoreSummary *) istore->summary, "INBOX");
 	if (si == NULL || (si->flags & CAMEL_FOLDER_SUBSCRIBED) == 0) {
 		imapx_subscribe_folder (store, "INBOX", FALSE, ex);
-		
+
 		if (!camel_exception_is_set(ex) && !si)
 			sync_folders (istore, "INBOX", TRUE, ex);
-	
+
 		if (si)
 			camel_store_summary_info_free((CamelStoreSummary *) istore->summary, si);
 	}
@@ -1246,7 +1242,7 @@ imapx_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelE
 
 	if (CAMEL_OFFLINE_STORE(store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		fi = get_folder_info_offline (store, top, flags, ex);
-	
+
 		g_mutex_unlock (istore->get_finfo_lock);
 		return fi;
 	}
@@ -1259,7 +1255,7 @@ imapx_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelE
 
 		if (now - istore->last_refresh_time > FINFO_REFRESH_INTERVAL) {
 			struct _imapx_refresh_msg *m;
-			
+
 			istore->last_refresh_time = time (NULL);
 			m = camel_session_thread_msg_new(((CamelService *)store)->session, &imapx_refresh_ops, sizeof(*m));
 			m->store = store;
@@ -1267,12 +1263,12 @@ imapx_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelE
 			camel_exception_init(&m->ex);
 			camel_session_thread_queue(((CamelService *)store)->session, &m->msg, 0);
 		}
-		
+
 		fi = get_folder_info_offline (store, top, flags, ex);
 		g_mutex_unlock (istore->get_finfo_lock);
 		return fi;
 	}
-	
+
 	if (!camel_service_connect((CamelService *)store, ex)) {
 		g_mutex_unlock (istore->get_finfo_lock);
 		return NULL;

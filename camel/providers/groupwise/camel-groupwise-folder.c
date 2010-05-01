@@ -696,7 +696,7 @@ groupwise_sync_summary (CamelFolder *folder, CamelException *ex)
 
 	total = camel_folder_summary_count (folder->summary);
 	unread = folder->summary->unread_count;
-	
+
 	if (si) {
 		si->unread = unread;
 		si->total = total;
@@ -1006,7 +1006,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 	camel_service_lock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 	success = groupwise_sync_summary (folder, ex);
 	camel_service_unlock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-	
+
 	camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes);
 	camel_folder_change_info_free (changes);
 
@@ -1704,13 +1704,13 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		/************************ First populate summary *************************/
 
 		item_status = e_gw_item_get_item_status (item);
-	
-		/* skip the deleted items */	
+
+		/* skip the deleted items */
 		if (item_status & E_GW_ITEM_STAT_DELETED && strcmp (full_name, "Trash")) {
 			i++;
 			continue;
 		}
-		
+
 		mi = NULL;
 		pmi = NULL;
 		pmi = camel_folder_summary_uid (folder->summary, id);
