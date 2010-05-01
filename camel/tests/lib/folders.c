@@ -15,12 +15,7 @@ test_folder_counts(CamelFolder *folder, gint total, gint unread)
 
 	push("test folder counts %d total %d unread", total, unread);
 
-	/* first, use the standard functions */
-	camel_object_get(folder, NULL, CAMEL_FOLDER_TOTAL, &gettotal, CAMEL_FOLDER_UNREAD, &getunread, 0);
-	check(gettotal == total);
-	check(getunread == unread);
-
-	/* next, use the summary */
+	/* use the summary */
 	s = camel_folder_get_summary(folder);
 	check(s != NULL);
 	check(s->len == total);
@@ -33,7 +28,7 @@ test_folder_counts(CamelFolder *folder, gint total, gint unread)
 	check(unread == myunread);
 	camel_folder_free_summary(folder, s);
 
-	/* last, use the uid list */
+	/* use the uid list */
 	s = camel_folder_get_uids(folder);
 	check(s != NULL);
 	check(s->len == total);

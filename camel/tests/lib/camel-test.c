@@ -113,8 +113,6 @@ void camel_test_init(gint argc, gchar **argv)
 	camel_init (path, FALSE);
 	g_free (path);
 
-	camel_type_init ();
-
 	info_table = g_hash_table_new(0, 0);
 
 	signal(SIGSEGV, die);

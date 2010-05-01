@@ -47,12 +47,21 @@ typedef struct _CamelPgpSessionClass {
 
 } CamelPgpSessionClass;
 
-static gchar *get_password (CamelSession *session, const gchar *prompt,
-			   guint32 flags,
-			   CamelService *service, const gchar *item,
-			   CamelException *ex);
+GType camel_pgp_session_get_type (void);
 
 G_DEFINE_TYPE (CamelPgpSession, camel_pgp_session, camel_test_session_get_type ())
+
+static gchar *
+pgp_session_get_password (CamelSession *session,
+                          CamelService *service,
+                          const gchar *domain,
+                          const gchar *prompt,
+                          const gchar *item,
+                          guint32 flags,
+                          CamelException *ex)
+{
+	return g_strdup ("no.secret");
+}
 
 static void
 camel_pgp_session_class_init (CamelPgpSessionClass *class)
@@ -60,34 +69,12 @@ camel_pgp_session_class_init (CamelPgpSessionClass *class)
 	CamelSessionClass *session_class;
 
 	session_class = CAMEL_SESSION_CLASS (class);
-	camel_session_class->get_password = get_password;
+	session_class->get_password = pgp_session_get_password;
 }
 
 static void
 camel_pgp_session_init (CamelPgpSession *session)
 {
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (
-			camel_test_session_get_type (),
-			"CamelPgpSession",
-			sizeof (CamelPgpSession),
-			sizeof (CamelPgpSessionClass),
-			(CamelObjectClassInitFunc) class_init,
-			NULL,
-			(CamelObjectInitFunc) init,
-			NULL);
-	}
-
-	return type;
-}
-
-static gchar *
-get_password (CamelSession *session, const gchar *prompt, guint32 flags,
-	      CamelService *service, const gchar *item, CamelException *ex)
-{
-	return g_strdup ("no.secret");
 }
 
 static CamelSession *

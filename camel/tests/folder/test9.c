@@ -69,7 +69,7 @@ static CamelFolder *
 get_folder (CamelFilterDriver *d,
             const gchar *uri,
             gpointer data,
-            CamelException *ex);
+            CamelException *ex)
 {
 	gint i;
 
