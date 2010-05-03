@@ -88,7 +88,10 @@ change_folder (CamelStore *store,
 	fi->flags = CAMEL_FOLDER_VIRTUAL;
 	if (!(flags & CHANGE_DELETE))
 		fi->flags |= CAMEL_FOLDER_NOCHILDREN;
-	camel_object_trigger_event (store, (flags&CHANGE_DELETE)?"folder_deleted":"folder_created", fi);
+	if (flags & CHANGE_DELETE)
+		camel_store_folder_deleted (store, fi);
+	else
+		camel_store_folder_created (store, fi);
 	camel_folder_info_free (fi);
 }
 

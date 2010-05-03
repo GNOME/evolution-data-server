@@ -48,7 +48,7 @@ offline_store_construct (CamelService *service,
 	if (!service_class->construct (service, session, provider, url, ex))
 		return FALSE;
 
-	store->state = camel_session_is_online (session) ?
+	store->state = camel_session_get_online (session) ?
 		CAMEL_OFFLINE_STORE_NETWORK_AVAIL :
 		CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL;
 
@@ -103,15 +103,18 @@ camel_offline_store_set_network_state (CamelOfflineStore *store,
 {
 	CamelException lex;
 	CamelService *service = CAMEL_SERVICE (store);
-	gboolean network_state = camel_session_get_network_state (service->session);
+	gboolean network_available;
 
 	if (store->state == state)
 		return TRUE;
 
+	network_available =
+		camel_session_get_network_available (service->session);
+
 	camel_exception_init (&lex);
 	if (store->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) {
 		/* network available -> network unavailable */
-		if (network_state) {
+		if (network_available) {
 			if (((CamelStore *) store)->folders) {
 				GPtrArray *folders;
 				CamelFolder *folder;
@@ -139,7 +142,7 @@ camel_offline_store_set_network_state (CamelOfflineStore *store,
 			camel_exception_clear (&lex);
 		}
 
-		if (!camel_service_disconnect (CAMEL_SERVICE (store), network_state, ex))
+		if (!camel_service_disconnect (CAMEL_SERVICE (store), network_available, ex))
 			return FALSE;
 	} else {
 		store->state = state;
@@ -166,10 +169,12 @@ camel_offline_store_prepare_for_offline (CamelOfflineStore *store,
 {
 	CamelException lex;
 	CamelService *service = CAMEL_SERVICE (store);
-	gboolean network_state = camel_session_get_network_state (service->session);
+	gboolean network_available;
+
+	network_available = camel_session_get_network_available (service->session);
 
 	camel_exception_init (&lex);
-	if (network_state) {
+	if (network_available) {
 		if (store->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) {
 			if (((CamelStore *) store)->folders) {
 				GPtrArray *folders;

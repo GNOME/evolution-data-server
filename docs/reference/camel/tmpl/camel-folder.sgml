@@ -26,6 +26,28 @@ CamelFolder
 </para>
 
 
+<!-- ##### SIGNAL CamelFolder::changed ##### -->
+<para>
+
+</para>
+
+@camelfolder: the object which received the signal.
+
+<!-- ##### SIGNAL CamelFolder::deleted ##### -->
+<para>
+
+</para>
+
+@camelfolder: the object which received the signal.
+
+<!-- ##### SIGNAL CamelFolder::renamed ##### -->
+<para>
+
+</para>
+
+@camelfolder: the object which received the signal.
+@arg1: 
+
 <!-- ##### ARG CamelFolder:description ##### -->
 <para>
 
@@ -550,6 +572,15 @@ CamelFolder
 
 @folder: 
 @new: 
+
+
+<!-- ##### FUNCTION camel_folder_changed ##### -->
+<para>
+
+</para>
+
+@folder: 
+@changes: 
 
 
 <!-- ##### FUNCTION camel_folder_freeze ##### -->

@@ -63,6 +63,18 @@ struct _CamelSessionPrivate {
 
 	GHashTable *thread_msg_op;
 	GHashTable *junk_headers;
+
+	guint check_junk        : 1;
+	guint network_available : 1;
+	guint online            : 1;
+};
+
+enum {
+	PROP_0,
+	PROP_CHECK_JUNK,
+	PROP_NETWORK_AVAILABLE,
+	PROP_ONLINE,
+	PROP_STORAGE_PATH
 };
 
 G_DEFINE_TYPE (CamelSession, camel_session, CAMEL_TYPE_OBJECT)
@@ -80,6 +92,64 @@ cs_thread_status (CamelOperation *op,
 	g_return_if_fail (class->thread_status != NULL);
 
 	class->thread_status (msg->session, msg, what, pc);
+}
+
+static void
+session_set_property (GObject *object,
+                      guint property_id,
+                      const GValue *value,
+                      GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_CHECK_JUNK:
+			camel_session_set_check_junk (
+				CAMEL_SESSION (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_NETWORK_AVAILABLE:
+			camel_session_set_network_available (
+				CAMEL_SESSION (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_ONLINE:
+			camel_session_set_online (
+				CAMEL_SESSION (object),
+				g_value_get_boolean (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+session_get_property (GObject *object,
+                      guint property_id,
+                      GValue *value,
+                      GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_CHECK_JUNK:
+			g_value_set_boolean (
+				value, camel_session_get_check_junk (
+				CAMEL_SESSION (object)));
+			return;
+
+		case PROP_NETWORK_AVAILABLE:
+			g_value_set_boolean (
+				value, camel_session_get_network_available (
+				CAMEL_SESSION (object)));
+			return;
+
+		case PROP_ONLINE:
+			g_value_set_boolean (
+				value, camel_session_get_online (
+				CAMEL_SESSION (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static void
@@ -306,11 +376,12 @@ static void
 camel_session_class_init (CamelSessionClass *class)
 {
 	GObjectClass *object_class;
-	CamelObjectClass *camel_object_class;
 
 	g_type_class_add_private (class, sizeof (CamelSessionPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = session_set_property;
+	object_class->get_property = session_get_property;
 	object_class->finalize = session_finalize;
 
 	class->get_service = session_get_service;
@@ -321,17 +392,44 @@ camel_session_class_init (CamelSessionClass *class)
 	class->thread_wait = session_thread_wait;
 	class->thread_status = session_thread_status;
 
-	camel_object_class = CAMEL_OBJECT_CLASS (class);
-	camel_object_class_add_event (camel_object_class, "online", NULL);
+	g_object_class_install_property (
+		object_class,
+		PROP_CHECK_JUNK,
+		g_param_spec_boolean (
+			"check-junk",
+			"Check Junk",
+			"Check incoming messages for junk",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_NETWORK_AVAILABLE,
+		g_param_spec_boolean (
+			"network-available",
+			"Network Available",
+			"Whether the network is available",
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_ONLINE,
+		g_param_spec_boolean (
+			"online",
+			"Online",
+			"Whether the shell is online",
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT));
 }
 
 static void
 camel_session_init (CamelSession *session)
 {
 	session->priv = CAMEL_SESSION_GET_PRIVATE (session);
-
-	session->online = TRUE;
-	session->network_state = TRUE;
 
 	session->priv->lock = g_mutex_new();
 	session->priv->thread_lock = g_mutex_new();
@@ -652,30 +750,35 @@ camel_session_build_password_prompt (const gchar *type,
 }
 
 /**
- * camel_session_is_online:
- * @session: a #CamelSession object
+ * camel_session_get_online:
+ * @session: a #CamelSession
  *
  * Returns: whether or not @session is online
  **/
 gboolean
-camel_session_is_online (CamelSession *session)
+camel_session_get_online (CamelSession *session)
 {
-	return session->online;
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
+
+	return session->priv->online;
 }
 
 /**
  * camel_session_set_online:
- * @session: a #CamelSession object
+ * @session: a #CamelSession
  * @online: whether or not the session should be online
  *
  * Sets the online status of @session to @online.
  **/
 void
-camel_session_set_online (CamelSession *session, gboolean online)
+camel_session_set_online (CamelSession *session,
+                          gboolean online)
 {
-	session->online = online;
+	g_return_if_fail (CAMEL_IS_SESSION (session));
 
-	camel_object_trigger_event(session, "online", GINT_TO_POINTER(online));
+	session->priv->online = online;
+
+	g_object_notify (G_OBJECT (session), "online");
 }
 
 /**
@@ -809,25 +912,25 @@ camel_session_thread_wait (CamelSession *session,
 }
 
 /**
- * camel_session_check_junk:
- * @session: a #CamelSession object
+ * camel_session_get_check_junk:
+ * @session: a #CamelSession
  *
  * Do we have to check incoming messages to be junk?
  *
  * Returns: whether or not we are checking incoming messages for junk
  **/
 gboolean
-camel_session_check_junk (CamelSession *session)
+camel_session_get_check_junk (CamelSession *session)
 {
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
 
-	return session->check_junk;
+	return session->priv->check_junk;
 }
 
 /**
  * camel_session_set_check_junk:
- * @session: a #CamelSession object
- * @check_junk: state
+ * @session: a #CamelSession
+ * @check_junk: whether to check incoming messages for junk
  *
  * Set check_junk flag, if set, incoming mail will be checked for being junk.
  **/
@@ -837,24 +940,41 @@ camel_session_set_check_junk (CamelSession *session,
 {
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 
-	session->check_junk = check_junk;
+	session->priv->check_junk = check_junk;
+
+	g_object_notify (G_OBJECT (session), "check-junk");
 }
 
+/**
+ * camel_session_get_network_available:
+ * @session: a #CamelSession
+ *
+ * Since: 3.0
+ **/
 gboolean
-camel_session_get_network_state (CamelSession *session)
+camel_session_get_network_available (CamelSession *session)
 {
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
 
-	return session->network_state;
+	return session->priv->network_available;
 }
 
+/**
+ * camel_session_set_network_available:
+ * @session: a #CamelSession
+ * @network_available: whether a network is available
+ *
+ * Since: 3.0
+ **/
 void
-camel_session_set_network_state (CamelSession *session,
-                                 gboolean network_state)
+camel_session_set_network_available (CamelSession *session,
+                                     gboolean network_available)
 {
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 
-	session->network_state = network_state;
+	session->priv->network_available = network_available;
+
+	g_object_notify (G_OBJECT (session), "network-available");
 }
 
 /**

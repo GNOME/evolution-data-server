@@ -14,6 +14,9 @@ LIBCAMEL_PROVIDER_PLATFORM_DEP_SOURCES = camel-movemail.c
 LOCK_HELPER = camel-lock-helper-1.2
 endif
 
+MARSHAL_GENERATED = camel-marshal.c camel-marshal.h
+@EVO_MARSHAL_RULE@
+
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@
 
@@ -158,6 +161,7 @@ libcamel_1_2_la_CPPFLAGS = \
 	$(CAMEL_CFLAGS)
 
 libcamel_1_2_la_SOURCES = 			\
+	$(MARSHAL_GENERATED)			\
 	camel-address.c				\
 	camel-block-file.c			\
 	camel-certdb.c				\
@@ -394,10 +398,11 @@ noinst_HEADERS =				\
 	camel-charset-map-private.h		\
 	camel-win32.h				
 
-BUILT_SOURCES = camel-mime-tables.c
+BUILT_SOURCES = camel-mime-tables.c $(MARSHAL_GENERATED)
 
 EXTRA_DIST =					\
 	$(pkgconfig_in_files)	 		\
+	camel-marshal.list			\
 	gentables.pl				\
 	README
 

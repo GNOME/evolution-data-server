@@ -520,7 +520,7 @@ groupwise_forget_folder (CamelGroupwiseStore *gw_store, const gchar *folder_name
 	camel_store_summary_save ( (CamelStoreSummary *)gw_store->summary);
 
 	fi = groupwise_build_folder_info(gw_store, NULL, folder_name);
-	camel_object_trigger_event (CAMEL_OBJECT (gw_store), "folder_deleted", fi);
+	camel_store_folder_deleted (CAMEL_STORE (gw_store), fi);
 	camel_folder_info_free (fi);
 }
 
@@ -1201,7 +1201,7 @@ create_junk_folder (CamelStore *store)
 		g_hash_table_insert (priv->id_hash, g_strdup(child_container_id), g_strdup(folder_name));
 		g_hash_table_insert (priv->name_hash, g_strdup(folder_name), g_strdup(child_container_id));
 		g_hash_table_insert (priv->parent_hash, g_strdup(child_container_id), g_strdup(parent_id));
-		camel_object_trigger_event (CAMEL_OBJECT (store), "folder_created", root);
+		camel_store_folder_created (store, root);
 	}
 	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
@@ -1266,7 +1266,7 @@ groupwise_create_folder(CamelStore *store,
 		g_hash_table_insert (priv->name_hash, g_strdup(root->full_name), g_strdup(child_container_id));
 		g_hash_table_insert (priv->parent_hash, g_strdup(child_container_id), g_strdup(parent_id));
 
-		camel_object_trigger_event (CAMEL_OBJECT (store), "folder_created", root);
+		camel_store_folder_created (store, root);
 	}
 	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 	return root;

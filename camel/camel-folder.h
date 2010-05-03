@@ -119,6 +119,7 @@ struct _CamelFolder {
 struct _CamelFolderClass {
 	CamelObjectClass parent_class;
 
+	/* Methods */
 	gboolean	(*refresh_info)		(CamelFolder *folder,
 						 CamelException *ex);
 	gboolean	(*sync)			(CamelFolder *folder,
@@ -210,6 +211,13 @@ struct _CamelFolderClass {
 	gchar *		(*get_filename)		(CamelFolder *folder,
 						 const gchar *uid,
 						 CamelException *ex);
+
+	/* Signals */
+	void		(*changed)		(CamelFolder *folder,
+						 CamelFolderChangeInfo *info);
+	void		(*deleted)		(CamelFolder *folder);
+	void		(*renamed)		(CamelFolder *folder,
+						 const gchar *old_name);
 };
 
 GType		camel_folder_get_type		(void);
@@ -363,6 +371,8 @@ gboolean	camel_folder_transfer_messages_to
 void		camel_folder_delete		(CamelFolder *folder);
 void		camel_folder_rename		(CamelFolder *folder,
 						 const gchar *new);
+void		camel_folder_changed		(CamelFolder *folder,
+						 CamelFolderChangeInfo *changes);
 
 /* stop/restart getting events */
 void		camel_folder_freeze		(CamelFolder *folder);

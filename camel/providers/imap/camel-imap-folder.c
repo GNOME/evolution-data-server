@@ -1147,7 +1147,7 @@ imap_rescan (CamelFolder *folder, gint exists, CamelException *ex)
 	}
 
 	if (changes) {
-		camel_object_trigger_event(CAMEL_OBJECT (folder), "folder_changed", changes);
+		camel_folder_changed (folder, changes);
 		camel_folder_change_info_free(changes);
 	}
 
@@ -1631,7 +1631,7 @@ imap_expunge_uids_offline (CamelFolder *folder,
 	camel_imap_journal_log (CAMEL_IMAP_FOLDER (folder)->journal,
 			       CAMEL_IMAP_JOURNAL_ENTRY_EXPUNGE, uids);
 
-	camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes);
+	camel_folder_changed (folder, changes);
 	camel_folder_change_info_free (changes);
 
 	return TRUE;
@@ -1724,7 +1724,7 @@ imap_expunge_uids_online (CamelFolder *folder,
 	camel_db_delete_uids (parent_store->cdb_w, full_name, list, ex);
 	g_slist_free (list);
 	camel_folder_summary_save_to_db (folder->summary, ex);
-	camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes);
+	camel_folder_changed (folder, changes);
 	camel_folder_change_info_free (changes);
 
 	return TRUE;
@@ -1967,8 +1967,7 @@ imap_append_offline (CamelFolder *folder,
 
 	changes = camel_folder_change_info_new ();
 	camel_folder_change_info_add_uid (changes, uid);
-	camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed",
-				    changes);
+	camel_folder_changed (folder, changes);
 	camel_folder_change_info_free (changes);
 
 	camel_imap_journal_log (CAMEL_IMAP_FOLDER (folder)->journal,
@@ -2290,7 +2289,7 @@ imap_transfer_offline (CamelFolder *source,
 	CAMEL_IMAP_FOLDER_REC_UNLOCK (dest, cache_lock);
 	CAMEL_IMAP_FOLDER_REC_UNLOCK (source, cache_lock);
 
-	camel_object_trigger_event (CAMEL_OBJECT (dest), "folder_changed", changes);
+	camel_folder_changed (dest, changes);
 	camel_folder_change_info_free (changes);
 
 	camel_imap_journal_log (
@@ -3965,7 +3964,7 @@ camel_imap_folder_changed (CamelFolder *folder, gint exists,
 
 	camel_folder_summary_save_to_db (folder->summary, ex);
 	if (camel_folder_change_info_changed (changes))
-		camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes);
+		camel_folder_changed (folder, changes);
 
 	camel_folder_change_info_free (changes);
 

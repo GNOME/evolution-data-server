@@ -421,7 +421,7 @@ camel_local_folder_construct(CamelLocalFolder *lf, guint32 flags, CamelException
 
 		camel_url_free (url);
 
-		camel_object_trigger_event(CAMEL_OBJECT (parent_store), "folder_created", fi);
+		camel_store_folder_created (parent_store, fi);
 		camel_folder_info_free(fi);
 	}
 
@@ -502,7 +502,7 @@ local_refresh_info(CamelFolder *folder, CamelException *ex)
 	}
 
 	if (camel_folder_change_info_changed(lf->changes)) {
-		camel_object_trigger_event((CamelObject *)folder, "folder_changed", lf->changes);
+		camel_folder_changed (folder, lf->changes);
 		camel_folder_change_info_clear(lf->changes);
 	}
 
@@ -534,7 +534,7 @@ local_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 	camel_local_folder_unlock(lf);
 
 	if (camel_folder_change_info_changed(lf->changes)) {
-		camel_object_trigger_event(CAMEL_OBJECT(folder), "folder_changed", lf->changes);
+		camel_folder_changed (folder, lf->changes);
 		camel_folder_change_info_clear(lf->changes);
 	}
 

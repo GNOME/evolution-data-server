@@ -91,10 +91,6 @@ struct _CamelSession {
 
 	gchar *storage_path;
 	CamelJunkPlugin *junk_plugin;
-
-	guint online:1;
-	guint check_junk:1;
-	guint network_state:1;
 };
 
 typedef struct _CamelSessionThreadOps CamelSessionThreadOps;
@@ -103,72 +99,71 @@ typedef struct _CamelSessionThreadMsg CamelSessionThreadMsg;
 struct _CamelSessionClass {
 	CamelObjectClass parent_class;
 
-	CamelService *  (*get_service)       (CamelSession *session,
-					      const gchar *url_string,
-					      CamelProviderType type,
-					      CamelException *ex);
-	gchar *          (*get_storage_path)  (CamelSession *session,
-					      CamelService *service,
-					      CamelException *ex);
-
-	gchar *          (*get_password)      (CamelSession *session,
-					      CamelService *service,
-					      const gchar *domain,
-					      const gchar *prompt,
-					      const gchar *item,
-					      guint32 flags,
-					      CamelException *ex);
-	gboolean        (*forget_password)   (CamelSession *session,
-					      CamelService *service,
-					      const gchar *domain,
-					      const gchar *item,
-					      CamelException *ex);
-	gboolean        (*alert_user)        (CamelSession *session,
-					      CamelSessionAlertType type,
-					      const gchar *prompt,
-					      gboolean cancel);
-
-	CamelFilterDriver * (*get_filter_driver) (CamelSession *session,
-						  const gchar *type,
-						  CamelException *ex);
+	CamelService *	(*get_service)		(CamelSession *session,
+						 const gchar *url_string,
+						 CamelProviderType type,
+						 CamelException *ex);
+	gchar *		(*get_storage_path)	(CamelSession *session,
+						 CamelService *service,
+						 CamelException *ex);
+	gchar *		(*get_password)		(CamelSession *session,
+						 CamelService *service,
+						 const gchar *domain,
+						 const gchar *prompt,
+						 const gchar *item,
+						 guint32 flags,
+						 CamelException *ex);
+	gboolean	(*forget_password)	(CamelSession *session,
+						 CamelService *service,
+						 const gchar *domain,
+						 const gchar *item,
+						 CamelException *ex);
+	gboolean	(*alert_user)		(CamelSession *session,
+						 CamelSessionAlertType type,
+						 const gchar *prompt,
+						 gboolean cancel);
+	CamelFilterDriver *
+			(*get_filter_driver)	(CamelSession *session,
+						 const gchar *type,
+						 CamelException *ex);
 
 	/* mechanism for creating and maintaining multiple threads of control */
-	gpointer           (*thread_msg_new)    (CamelSession *session,
-					      CamelSessionThreadOps *ops,
-					      guint size);
-	void            (*thread_msg_free)   (CamelSession *session,
-					      CamelSessionThreadMsg *msg);
-	gint             (*thread_queue)      (CamelSession *session,
-					      CamelSessionThreadMsg *msg,
-					      gint flags);
-	void            (*thread_wait)       (CamelSession *session,
-					      gint id);
-	void            (*thread_status)     (CamelSession *session,
-					      CamelSessionThreadMsg *msg,
-					      const gchar *text,
-					      gint pc);
-	gboolean        (*lookup_addressbook)(CamelSession *session,
-					      const gchar *name);
-	void		(*forward_to)        (CamelSession *session,
-					      CamelFolder *folder,
-					      CamelMimeMessage *message,
-					      const gchar *address,
-					      CamelException *ex);
+	gpointer	(*thread_msg_new)	(CamelSession *session,
+						 CamelSessionThreadOps *ops,
+						 guint size);
+	void		(*thread_msg_free)	(CamelSession *session,
+						 CamelSessionThreadMsg *msg);
+	gint		(*thread_queue)		(CamelSession *session,
+						 CamelSessionThreadMsg *msg,
+						 gint flags);
+	void		(*thread_wait)		(CamelSession *session,
+						 gint id);
+	void		(*thread_status)	(CamelSession *session,
+						 CamelSessionThreadMsg *msg,
+						 const gchar *text,
+						 gint pc);
+
+	gboolean	(*lookup_addressbook)	(CamelSession *session,
+						 const gchar *name);
+	void		(*forward_to)		(CamelSession *session,
+						 CamelFolder *folder,
+						 CamelMimeMessage *message,
+						 const gchar *address,
+						 CamelException *ex);
 };
 
-GType camel_session_get_type (void);
-
-void            camel_session_construct             (CamelSession *session,
-						     const gchar *storage_path);
-
-CamelService *  camel_session_get_service           (CamelSession *session,
-						     const gchar *url_string,
-						     CamelProviderType type,
-						     CamelException *ex);
-CamelService *  camel_session_get_service_connected (CamelSession *session,
-						     const gchar *url_string,
-						     CamelProviderType type,
-						     CamelException *ex);
+GType		camel_session_get_type		(void);
+void		camel_session_construct		(CamelSession *session,
+						 const gchar *storage_path);
+CamelService *	camel_session_get_service	(CamelSession *session,
+						 const gchar *url_string,
+						 CamelProviderType type,
+						 CamelException *ex);
+CamelService *	camel_session_get_service_connected
+						(CamelSession *session,
+						 const gchar *url_string,
+						 CamelProviderType type,
+						 CamelException *ex);
 
 #define camel_session_get_store(session, url_string, ex) \
 	((CamelStore *) camel_session_get_service_connected \
@@ -177,43 +172,39 @@ CamelService *  camel_session_get_service_connected (CamelSession *session,
 	((CamelTransport *) camel_session_get_service_connected \
 	(session, url_string, CAMEL_PROVIDER_TRANSPORT, ex))
 
-gchar *             camel_session_get_storage_path   (CamelSession *session,
-						     CamelService *service,
-						     CamelException *ex);
-
-gchar *             camel_session_get_password       (CamelSession *session,
-						     CamelService *service,
-						     const gchar *domain,
-						     const gchar *prompt,
-						     const gchar *item,
-						     guint32 flags,
-						     CamelException *ex);
-gboolean            camel_session_forget_password    (CamelSession *session,
-						     CamelService *service,
-						     const gchar *domain,
-						     const gchar *item,
-						     CamelException *ex);
-gboolean           camel_session_alert_user         (CamelSession *session,
-						     CamelSessionAlertType type,
-						     const gchar *prompt,
-						     gboolean cancel);
-
-gchar *             camel_session_build_password_prompt
-						    (const gchar *type,
-						     const gchar *user,
-						     const gchar *host);
-
-gboolean           camel_session_is_online          (CamelSession *session);
-void               camel_session_set_online         (CamelSession *session,
-						     gboolean online);
-
-CamelFilterDriver *camel_session_get_filter_driver  (CamelSession *session,
-						     const gchar *type,
-						     CamelException *ex);
-
-gboolean           camel_session_check_junk         (CamelSession *session);
-void               camel_session_set_check_junk     (CamelSession *session,
-						     gboolean check_junk);
+gchar *		camel_session_get_storage_path	(CamelSession *session,
+						 CamelService *service,
+						 CamelException *ex);
+gchar *		camel_session_get_password	(CamelSession *session,
+						 CamelService *service,
+						 const gchar *domain,
+						 const gchar *prompt,
+						 const gchar *item,
+						 guint32 flags,
+						 CamelException *ex);
+gboolean	camel_session_forget_password	(CamelSession *session,
+						 CamelService *service,
+						 const gchar *domain,
+						 const gchar *item,
+						 CamelException *ex);
+gboolean	camel_session_alert_user	(CamelSession *session,
+						 CamelSessionAlertType type,
+						 const gchar *prompt,
+						 gboolean cancel);
+gchar *		camel_session_build_password_prompt
+						(const gchar *type,
+						 const gchar *user,
+						 const gchar *host);
+gboolean	camel_session_get_online	(CamelSession *session);
+void		camel_session_set_online	(CamelSession *session,
+						 gboolean online);
+CamelFilterDriver *
+		camel_session_get_filter_driver	(CamelSession *session,
+						 const gchar *type,
+						 CamelException *ex);
+gboolean	camel_session_get_check_junk	(CamelSession *session);
+void		camel_session_set_check_junk	(CamelSession *session,
+						 gboolean check_junk);
 
 struct _CamelSessionThreadOps {
 	void (*receive)(CamelSession *session, CamelSessionThreadMsg *m);
@@ -230,36 +221,40 @@ struct _CamelSessionThreadMsg {
 	CamelOperation *op;
 	CamelSession *session;
 
-	gpointer data; /* free for implementation to define, not used by camel, do not use in client code */
+	gpointer data;	/* Free for implementation to define, not
+			 * used by Camel, do not use in client code. */
+
 	/* user fields follow */
 };
 
-gpointer              camel_session_thread_msg_new     (CamelSession *session,
-						     CamelSessionThreadOps *ops,
-						     guint size);
-void               camel_session_thread_msg_free    (CamelSession *session,
-						     CamelSessionThreadMsg *msg);
-gint                camel_session_thread_queue       (CamelSession *session,
-						     CamelSessionThreadMsg *msg,
-						     gint flags);
-void               camel_session_thread_wait        (CamelSession *session,
-						     gint id);
-gboolean           camel_session_get_network_state  (CamelSession *session);
-void               camel_session_set_network_state  (CamelSession *session,
-						     gboolean network_state);
-const GHashTable * camel_session_get_junk_headers   (CamelSession *session);
-void               camel_session_set_junk_headers   (CamelSession *session,
-						     const gchar **headers,
-						     const gchar **values,
-						     gint len);
-gboolean           camel_session_lookup_addressbook (CamelSession *session,
-						     const gchar *name);
-
-void		   camel_session_forward_to         (CamelSession *session,
-						     CamelFolder *folder,
-						     CamelMimeMessage *message,
-						     const gchar *address,
-						     CamelException *ex);
+gpointer	camel_session_thread_msg_new	(CamelSession *session,
+						 CamelSessionThreadOps *ops,
+						 guint size);
+void		camel_session_thread_msg_free	(CamelSession *session,
+						 CamelSessionThreadMsg *msg);
+gint		camel_session_thread_queue	(CamelSession *session,
+						 CamelSessionThreadMsg *msg,
+						 gint flags);
+void		camel_session_thread_wait	(CamelSession *session,
+						 gint id);
+gboolean	camel_session_get_network_available
+						(CamelSession *session);
+void		camel_session_set_network_available
+						(CamelSession *session,
+						 gboolean network_state);
+const GHashTable *
+		camel_session_get_junk_headers	(CamelSession *session);
+void		camel_session_set_junk_headers	(CamelSession *session,
+						 const gchar **headers,
+						 const gchar **values,
+						 gint len);
+gboolean	camel_session_lookup_addressbook(CamelSession *session,
+						 const gchar *name);
+void		camel_session_forward_to	(CamelSession *session,
+						 CamelFolder *folder,
+						 CamelMimeMessage *message,
+						 const gchar *address,
+						 CamelException *ex);
 void		camel_session_lock		(CamelSession *session,
 						 CamelSessionLock lock);
 void		camel_session_unlock		(CamelSession *session,

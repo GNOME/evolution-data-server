@@ -49,6 +49,7 @@ IGNORE_HFILES = 			\
 	camel-imap-private.h		\
 	camel-imap-types.h		\
 	camel-local-private.h		\
+	camel-marshal.h			\
 	camel-net-utils-win32.h		\
 	camel-nntp-private.h		\
 	camel-nntp-types.h		\

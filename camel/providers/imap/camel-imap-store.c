@@ -82,7 +82,7 @@ static gint compare_folder_name (gconstpointer a, gconstpointer b);
 static CamelFolderInfo *create_folder (CamelStore *store, const gchar *parent_name, const gchar *folder_name, CamelException *ex);
 static gboolean delete_folder (CamelStore *store, const gchar *folder_name, CamelException *ex);
 static gboolean rename_folder (CamelStore *store, const gchar *old_name, const gchar *new_name, CamelException *ex);
-static gboolean folder_subscribed (CamelStore *store, const gchar *folder_name);
+static gboolean folder_is_subscribed (CamelStore *store, const gchar *folder_name);
 static gboolean subscribe_folder (CamelStore *store, const gchar *folder_name,
 			      CamelException *ex);
 static gboolean unsubscribe_folder (CamelStore *store, const gchar *folder_name,
@@ -172,7 +172,7 @@ camel_imap_store_class_init (CamelImapStoreClass *class)
 	store_class->rename_folder = rename_folder;
 	store_class->get_folder_info = get_folder_info;
 	store_class->free_folder_info = camel_store_free_folder_info_full;
-	store_class->folder_subscribed = folder_subscribed;
+	store_class->folder_is_subscribed = folder_is_subscribed;
 	store_class->subscribe_folder = subscribe_folder;
 	store_class->unsubscribe_folder = unsubscribe_folder;
 	store_class->noop = imap_noop;
@@ -950,7 +950,7 @@ imap_folder_effectively_unsubscribed (CamelImapStore *imap_store,
 	}
 
 	fi = imap_build_folder_info(imap_store, folder_name);
-	camel_object_trigger_event (CAMEL_OBJECT (imap_store), "folder_unsubscribed", fi);
+	camel_store_folder_unsubscribed (CAMEL_STORE (imap_store), fi);
 	camel_folder_info_free (fi);
 
 	return TRUE;
@@ -1004,7 +1004,7 @@ imap_forget_folder (CamelImapStore *imap_store, const gchar *folder_name, CamelE
 	camel_store_summary_save((CamelStoreSummary *)imap_store->summary);
 
 	fi = imap_build_folder_info(imap_store, folder_name);
-	camel_object_trigger_event (CAMEL_OBJECT (imap_store), "folder_deleted", fi);
+	camel_store_folder_deleted (CAMEL_STORE (imap_store), fi);
 	camel_folder_info_free (fi);
 }
 
@@ -2295,10 +2295,10 @@ create_folder (CamelStore *store, const gchar *parent_name,
 		} else {
 			root = fi;
 		}
-		camel_object_trigger_event (CAMEL_OBJECT (store), "folder_created", root);
+		camel_store_folder_created (store, root);
 	} else if (root) {
 		/* need to re-recreate the folder we just deleted */
-		camel_object_trigger_event (CAMEL_OBJECT (store), "folder_created", root);
+		camel_store_folder_created (store, root);
 		camel_folder_info_free(root);
 		root = NULL;
 	}
@@ -2534,8 +2534,8 @@ get_folders_sync (CamelImapStore *imap_store, const gchar *ppattern, CamelExcept
 					si->flags = (si->flags & ~CAMEL_FOLDER_SUBSCRIBED) | (fi->flags & CAMEL_FOLDER_SUBSCRIBED);
 					camel_store_summary_touch((CamelStoreSummary *)imap_store->summary);
 
-					camel_object_trigger_event (CAMEL_OBJECT (imap_store), "folder_created", fi);
-					camel_object_trigger_event (CAMEL_OBJECT (imap_store), "folder_subscribed", fi);
+					camel_store_folder_created (CAMEL_STORE (imap_store), fi);
+					camel_store_folder_subscribed (CAMEL_STORE (imap_store), fi);
 				}
 			} else {
 				gchar *dup_folder_name = g_strdup (camel_store_info_path (imap_store->summary, si));
@@ -2860,7 +2860,8 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 }
 
 static gboolean
-folder_subscribed (CamelStore *store, const gchar *folder_name)
+folder_is_subscribed (CamelStore *store,
+                      const gchar *folder_name)
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
 	CamelStoreInfo *si;
@@ -2923,7 +2924,7 @@ subscribe_folder (CamelStore *store,
 	fi = imap_build_folder_info(imap_store, folder_name);
 	fi->flags |= CAMEL_FOLDER_NOCHILDREN;
 
-	camel_object_trigger_event (CAMEL_OBJECT (store), "folder_subscribed", fi);
+	camel_store_folder_subscribed (store, fi);
 	camel_folder_info_free (fi);
 done:
 	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);

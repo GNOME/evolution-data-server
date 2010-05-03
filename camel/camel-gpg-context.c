@@ -516,7 +516,7 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg, gint status_fd, gchar **sfd, gint passwd_
 		g_ptr_array_add (argv, (guint8 *) "-");
 		break;
 	case GPG_CTX_MODE_VERIFY:
-		if (!camel_session_is_online (gpg->session)) {
+		if (!camel_session_get_online (gpg->session)) {
 			/* this is a deprecated flag to gpg since 1.0.7 */
 			/*g_ptr_array_add (argv, "--no-auto-key-retrieve");*/
 			g_ptr_array_add (argv, (guint8 *) "--keyserver-options");

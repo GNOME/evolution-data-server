@@ -115,7 +115,7 @@ nntp_folder_refresh_info_online (CamelFolder *folder,
 	camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (changes) {
-		camel_object_trigger_event ((CamelObject *) folder, "folder_changed", changes);
+		camel_folder_changed (folder, changes);
 		camel_folder_change_info_free (changes);
 	}
 
@@ -364,7 +364,7 @@ fail:
 	camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (changes) {
-		camel_object_trigger_event ((CamelObject *) folder, "folder_changed", changes);
+		camel_folder_changed (folder, changes);
 		camel_folder_change_info_free (changes);
 	}
 

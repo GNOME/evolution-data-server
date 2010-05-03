@@ -97,7 +97,8 @@ static CamelSessionThreadOps offline_downsync_ops = {
 };
 
 static void
-offline_folder_changed (CamelFolder *folder, CamelFolderChangeInfo *changes, gpointer dummy)
+offline_folder_changed (CamelFolder *folder,
+                        CamelFolderChangeInfo *changes)
 {
 	CamelStore *parent_store;
 	CamelService *service;
@@ -232,9 +233,9 @@ camel_offline_folder_init (CamelOfflineFolder *folder)
 {
 	folder->priv = CAMEL_OFFLINE_FOLDER_GET_PRIVATE (folder);
 
-	camel_object_hook_event (
-		folder, "folder_changed",
-		(CamelObjectEventHookFunc) offline_folder_changed, NULL);
+	g_signal_connect (
+		folder, "changed",
+		G_CALLBACK (offline_folder_changed), NULL);
 }
 
 /**

@@ -317,7 +317,7 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 			if (match)
 				camel_folder_search_free(rmi->summary->folder, match);
 
-			camel_object_trigger_event(mi->summary->folder, "folder_changed", changes);
+			camel_folder_changed (mi->summary->folder, changes);
 			camel_folder_change_info_free(changes);
 		}
 		camel_message_info_free (rmi);

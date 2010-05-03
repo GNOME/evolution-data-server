@@ -26,6 +26,54 @@ CamelStore
 </para>
 
 
+<!-- ##### SIGNAL CamelStore::folder-created ##### -->
+<para>
+
+</para>
+
+@camelstore: the object which received the signal.
+@Param2: 
+
+<!-- ##### SIGNAL CamelStore::folder-deleted ##### -->
+<para>
+
+</para>
+
+@camelstore: the object which received the signal.
+@Param2: 
+
+<!-- ##### SIGNAL CamelStore::folder-opened ##### -->
+<para>
+
+</para>
+
+@camelstore: the object which received the signal.
+
+<!-- ##### SIGNAL CamelStore::folder-renamed ##### -->
+<para>
+
+</para>
+
+@camelstore: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL CamelStore::folder-subscribed ##### -->
+<para>
+
+</para>
+
+@camelstore: the object which received the signal.
+@Param2: 
+
+<!-- ##### SIGNAL CamelStore::folder-unsubscribed ##### -->
+<para>
+
+</para>
+
+@camelstore: the object which received the signal.
+@Param2: 
+
 <!-- ##### STRUCT CamelFolderInfo ##### -->
 <para>
 
@@ -180,14 +228,6 @@ CamelStore
 </para>
 
 
-
-<!-- ##### STRUCT CamelRenameInfo ##### -->
-<para>
-
-</para>
-
-@old_base: 
-@new: 
 
 <!-- ##### MACRO CAMEL_STORE_SUBSCRIPTIONS ##### -->
 <para>
@@ -385,6 +425,52 @@ CamelStore
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_store_folder_created ##### -->
+<para>
+
+</para>
+
+@store: 
+@info: 
+
+
+<!-- ##### FUNCTION camel_store_folder_deleted ##### -->
+<para>
+
+</para>
+
+@store: 
+@info: 
+
+
+<!-- ##### FUNCTION camel_store_folder_renamed ##### -->
+<para>
+
+</para>
+
+@store: 
+@old_name: 
+@info: 
+
+
+<!-- ##### FUNCTION camel_store_folder_subscribed ##### -->
+<para>
+
+</para>
+
+@store: 
+@info: 
+
+
+<!-- ##### FUNCTION camel_store_folder_unsubscribed ##### -->
+<para>
+
+</para>
+
+@store: 
+@info: 
+
+
 <!-- ##### FUNCTION camel_store_sync ##### -->
 <para>
 
@@ -482,7 +568,7 @@ CamelStore
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_store_folder_subscribed ##### -->
+<!-- ##### FUNCTION camel_store_folder_is_subscribed ##### -->
 <para>
 
 </para>

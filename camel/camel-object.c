@@ -34,7 +34,6 @@
 #include "camel-object.h"
 
 #define d(x)
-#define h(x)			/* hooks */
 
 #define CAMEL_OBJECT_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -51,94 +50,8 @@ enum {
 
 G_DEFINE_ABSTRACT_TYPE (CamelObject, camel_object, G_TYPE_OBJECT)
 
-/* ** Quickie type system ************************************************* */
-
-/* A 'locked' hooklist, that is only allocated on demand */
-typedef struct _CamelHookList {
-	GStaticRecMutex lock;
-
-	guint depth:30;	/* recursive event depth */
-	guint flags:2;	/* flags, see below */
-
-	guint list_length;
-	struct _CamelHookPair *list;
-} CamelHookList;
-
-#define CAMEL_HOOK_PAIR_REMOVED (1<<0)
-
-/* a 'hook pair', actually a hook tuple, we just store all hooked events in the same list,
-   and just comapre as we go, rather than storing separate lists for each hook type
-
-   the name field just points directly to the key field in the class's preplist hashtable.
-   This way we can just use a direct pointer compare when scanning it, and also saves
-   copying the string */
-typedef struct _CamelHookPair
-{
-	struct _CamelHookPair *next; /* next MUST be the first member */
-
-	guint id:30;
-	guint flags:2;	/* removed, etc */
-
-	const gchar *name;	/* points to the key field in the classes preplist, static memory */
-	union {
-		CamelObjectEventHookFunc event;
-		CamelObjectEventPrepFunc prep;
-		gchar *filename;
-	} func;
-	gpointer data;
-} CamelHookPair;
-
-#define CAMEL_OBJECT_STATE_FILE_MAGIC "CLMD"
-
-/* ********************************************************************** */
-
-static CamelHookList *camel_object_get_hooks(CamelObject *o);
-static void camel_object_free_hooks(CamelObject *o);
-
-#define camel_object_unget_hooks(o) \
-	(g_static_rec_mutex_unlock(&CAMEL_OBJECT(o)->hooks->lock))
-
-/* ********************************************************************** */
-
-static struct _CamelHookPair *
-pair_alloc(void)
-{
-	static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
-	static guint next_id = 1;
-	CamelHookPair *pair;
-
-	pair = g_slice_new (CamelHookPair);
-
-	g_static_mutex_lock (&mutex);
-	pair->id = next_id++;
-	if (next_id == 0)
-		next_id = 1;
-	g_static_mutex_unlock (&mutex);
-
-	return pair;
-}
-
-static void
-pair_free(CamelHookPair *pair)
-{
-	g_slice_free (CamelHookPair, pair);
-}
-
-static struct _CamelHookList *
-hooks_alloc(void)
-{
-	return g_slice_new0 (CamelHookList);
-}
-
-static void
-hooks_free(CamelHookList *hooks)
-{
-	g_slice_free (CamelHookList, hooks);
-}
-
-/* ************************************************************************ */
-
-/* State file for CamelObject data.  Any later versions should only append data.
+/* State file for CamelObject data.
+   Any later versions should only append data.
 
    version:uint32
 
@@ -153,6 +66,8 @@ hooks_free(CamelHookList *hooks)
    ( tag:uing32 value:tagtype ) *count		-- persistent properties
 
 */
+
+#define CAMEL_OBJECT_STATE_FILE_MAGIC "CLMD"
 
 /* XXX This is a holdover from Camel's old homegrown type system.
  *     CamelArg was a kind of primitive version of GObject properties.
@@ -178,8 +93,56 @@ enum camel_arg_t {
 
 #define CAMEL_ARGV_MAX (20)
 
+static void
+object_set_property (GObject *object,
+                     guint property_id,
+                     const GValue *value,
+                     GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_STATE_FILENAME:
+			camel_object_set_state_filename (
+				CAMEL_OBJECT (object),
+				g_value_get_string (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+object_get_property (GObject *object,
+                     guint property_id,
+                     GValue *value,
+                     GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_STATE_FILENAME:
+			g_value_set_string (
+				value, camel_object_get_state_filename (
+				CAMEL_OBJECT (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+object_finalize (GObject *object)
+{
+	CamelObjectPrivate *priv;
+
+	priv = CAMEL_OBJECT_GET_PRIVATE (object);
+
+	g_free (priv->state_filename);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_object_parent_class)->finalize (object);
+}
+
 static gint
-cobject_state_read (CamelObject *object, FILE *fp)
+object_state_read (CamelObject *object,
+                   FILE *fp)
 {
 	GValue value;
 	GObjectClass *class;
@@ -291,7 +254,8 @@ exit:
 }
 
 static gint
-cobject_state_write (CamelObject *object, FILE *fp)
+object_state_write (CamelObject *object,
+                    FILE *fp)
 {
 	GValue value;
 	GObjectClass *class;
@@ -365,67 +329,6 @@ exit:
 }
 
 static void
-object_set_property (GObject *object,
-                     guint property_id,
-                     const GValue *value,
-                     GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_STATE_FILENAME:
-			camel_object_set_state_filename (
-				CAMEL_OBJECT (object),
-				g_value_get_string (value));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
-object_get_property (GObject *object,
-                     guint property_id,
-                     GValue *value,
-                     GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_STATE_FILENAME:
-			g_value_set_string (
-				value, camel_object_get_state_filename (
-				CAMEL_OBJECT (object)));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
-object_dispose (GObject *object)
-{
-	CamelObject *camel_object = CAMEL_OBJECT (object);
-
-	if (camel_object->hooks != NULL) {
-		camel_object_trigger_event (object, "finalize", NULL);
-		camel_object_free_hooks (camel_object);
-	}
-
-	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (camel_object_parent_class)->dispose (object);
-}
-
-static void
-object_finalize (GObject *object)
-{
-	CamelObjectPrivate *priv;
-
-	priv = CAMEL_OBJECT_GET_PRIVATE (object);
-
-	g_free (priv->state_filename);
-
-	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (camel_object_parent_class)->finalize (object);
-}
-
-static void
 camel_object_class_init (CamelObjectClass *class)
 {
 	GObjectClass *object_class;
@@ -435,15 +338,10 @@ camel_object_class_init (CamelObjectClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = object_set_property;
 	object_class->get_property = object_get_property;
-	object_class->dispose = object_dispose;
 	object_class->finalize = object_finalize;
 
-	class->hooks = NULL;
-
-	class->state_read = cobject_state_read;
-	class->state_write = cobject_state_write;
-
-	camel_object_class_add_event (class, "finalize", NULL);
+	class->state_read = object_state_read;
+	class->state_write = object_state_write;
 
 	/**
 	 * CamelObject:state-filename
@@ -467,329 +365,6 @@ static void
 camel_object_init (CamelObject *object)
 {
 	object->priv = CAMEL_OBJECT_GET_PRIVATE (object);
-}
-
-static CamelHookPair *
-co_find_pair (CamelObjectClass *class,
-              const gchar *name)
-{
-	CamelHookPair *hook;
-
-	hook = class->hooks;
-	while (hook) {
-		if (strcmp (hook->name, name) == 0)
-			return hook;
-		hook = hook->next;
-	}
-
-	return NULL;
-}
-
-/* class functions */
-void
-camel_object_class_add_event (CamelObjectClass *class,
-                              const gchar *name,
-                              CamelObjectEventPrepFunc prep)
-{
-	CamelHookPair *pair;
-
-	g_return_if_fail (name);
-
-	pair = co_find_pair (class, name);
-	if (pair) {
-		g_warning ("%s: '%s' is already declared for '%s'",
-			G_STRFUNC, name, G_OBJECT_CLASS_NAME (class));
-		return;
-	}
-
-	pair = pair_alloc ();
-	pair->name = name;
-	pair->func.prep = prep;
-	pair->flags = 0;
-
-	pair->next = class->hooks;
-	class->hooks = pair;
-}
-
-/* free hook data */
-static void
-camel_object_free_hooks(CamelObject *o)
-{
-        CamelHookPair *pair, *next;
-
-        if (o->hooks) {
-                g_assert(o->hooks->depth == 0);
-                g_assert((o->hooks->flags & CAMEL_HOOK_PAIR_REMOVED) == 0);
-
-                pair = o->hooks->list;
-                while (pair) {
-                        next = pair->next;
-
-                        pair_free(pair);
-                        pair = next;
-                }
-                g_static_rec_mutex_free(&o->hooks->lock);
-                hooks_free(o->hooks);
-                o->hooks = NULL;
-        }
-}
-
-/* return (allocate if required) the object's hook list, locking at the same time */
-static CamelHookList *
-camel_object_get_hooks(CamelObject *o)
-{
-	static GStaticMutex lock = G_STATIC_MUTEX_INIT;
-	CamelHookList *hooks;
-
-	/* if we have it, we dont have to do any other locking,
-	   otherwise use a global lock to setup the object's hook data */
-	if (o->hooks == NULL) {
-		g_static_mutex_lock(&lock);
-		if (o->hooks == NULL) {
-			hooks = hooks_alloc();
-			g_static_rec_mutex_init(&hooks->lock);
-			hooks->flags = 0;
-			hooks->depth = 0;
-			hooks->list_length = 0;
-			hooks->list = NULL;
-			o->hooks = hooks;
-		}
-		g_static_mutex_unlock(&lock);
-	}
-
-	g_static_rec_mutex_lock(&o->hooks->lock);
-
-	return o->hooks;
-}
-
-guint
-camel_object_hook_event (gpointer vo,
-                         const gchar *name,
-                         CamelObjectEventHookFunc func,
-                         gpointer data)
-{
-	CamelObject *obj = vo;
-	CamelObjectClass *class;
-	CamelHookPair *pair, *hook;
-	CamelHookList *hooks;
-	gint id;
-
-	g_return_val_if_fail(CAMEL_IS_OBJECT (obj), 0);
-	g_return_val_if_fail(name != NULL, 0);
-	g_return_val_if_fail(func != NULL, 0);
-
-	class = CAMEL_OBJECT_GET_CLASS (obj);
-
-	hook = co_find_pair(class, name);
-
-	/* Check all interfaces on this object for events defined on them */
-	if (hook == NULL) {
-		g_warning("camel_object_hook_event: trying to hook event '%s' in class '%s' with no defined events.",
-			  name, G_OBJECT_CLASS_NAME (class));
-
-		return 0;
-	}
-
-	/* setup hook pair */
-	pair = pair_alloc();
-	pair->name = hook->name;	/* effectively static! */
-	pair->func.event = func;
-	pair->data = data;
-	pair->flags = 0;
-	id = pair->id;
-
-	/* get the hook list object, locked, link in new event hook, unlock */
-	hooks = camel_object_get_hooks(obj);
-	pair->next = hooks->list;
-	hooks->list = pair;
-	hooks->list_length++;
-	camel_object_unget_hooks(obj);
-
-	h(printf("%p hook event '%s' %p %p = %d\n", vo, name, func, data, id));
-
-	return id;
-}
-
-void
-camel_object_remove_event (gpointer vo,
-                           guint id)
-{
-	CamelObject *obj = vo;
-	CamelHookList *hooks;
-	CamelHookPair *pair, *parent;
-
-	g_return_if_fail (CAMEL_IS_OBJECT (obj));
-	g_return_if_fail (id != 0);
-
-	if (obj->hooks == NULL) {
-		g_warning("camel_object_unhook_event: trying to unhook '%u' from an instance of '%s' with no hooks",
-			  id, G_OBJECT_TYPE_NAME (obj));
-		return;
-	}
-
-	h(printf("%p remove event %d\n", vo, id));
-
-	/* scan hooks for this event, remove it, or flag it if we're busy */
-	hooks = camel_object_get_hooks(obj);
-	parent = (CamelHookPair *)&hooks->list;
-	pair = parent->next;
-	while (pair) {
-		if (pair->id == id
-		    && (pair->flags & CAMEL_HOOK_PAIR_REMOVED) == 0) {
-			if (hooks->depth > 0) {
-				pair->flags |= CAMEL_HOOK_PAIR_REMOVED;
-				hooks->flags |= CAMEL_HOOK_PAIR_REMOVED;
-			} else {
-				parent->next = pair->next;
-				pair_free(pair);
-				hooks->list_length--;
-			}
-			camel_object_unget_hooks(obj);
-			return;
-		}
-		parent = pair;
-		pair = pair->next;
-	}
-	camel_object_unget_hooks(obj);
-
-	g_warning("camel_object_unhook_event: cannot find hook id %u in instance of '%s'",
-		  id, G_OBJECT_TYPE_NAME (obj));
-}
-
-void
-camel_object_unhook_event (gpointer vo,
-                           const gchar *name,
-                           CamelObjectEventHookFunc func,
-                           gpointer data)
-{
-	CamelObject *obj = vo;
-	CamelHookList *hooks;
-	CamelHookPair *pair, *parent;
-
-	g_return_if_fail (CAMEL_IS_OBJECT (obj));
-	g_return_if_fail (name != NULL);
-	g_return_if_fail (func != NULL);
-
-	if (obj->hooks == NULL) {
-		g_warning("camel_object_unhook_event: trying to unhook '%s' from an instance of '%s' with no hooks",
-			  name, G_OBJECT_TYPE_NAME (obj));
-		return;
-	}
-
-	h(printf("%p unhook event '%s' %p %p\n", vo, name, func, data));
-
-	/* scan hooks for this event, remove it, or flag it if we're busy */
-	hooks = camel_object_get_hooks(obj);
-	parent = (CamelHookPair *)&hooks->list;
-	pair = parent->next;
-	while (pair) {
-		if (pair->func.event == func
-		    && pair->data == data
-		    && strcmp(pair->name, name) == 0
-		    && (pair->flags & CAMEL_HOOK_PAIR_REMOVED) == 0) {
-			if (hooks->depth > 0) {
-				pair->flags |= CAMEL_HOOK_PAIR_REMOVED;
-				hooks->flags |= CAMEL_HOOK_PAIR_REMOVED;
-			} else {
-				parent->next = pair->next;
-				pair_free(pair);
-				hooks->list_length--;
-			}
-			camel_object_unget_hooks(obj);
-			return;
-		}
-		parent = pair;
-		pair = pair->next;
-	}
-	camel_object_unget_hooks(obj);
-
-	g_warning("camel_object_unhook_event: cannot find hook/data pair %p/%p in an instance of '%s' attached to '%s'",
-		  (gpointer) func, data, G_OBJECT_TYPE_NAME (obj), name);
-}
-
-void
-camel_object_trigger_event (gpointer vo,
-                            const gchar *name,
-                            gpointer event_data)
-{
-	CamelObject *obj = vo;
-	CamelObjectClass *class;
-	CamelHookList *hooks;
-	CamelHookPair *pair, **pairs, *parent, *hook;
-	gint i, size;
-	const gchar *prepname;
-
-	g_return_if_fail (CAMEL_IS_OBJECT (obj));
-	g_return_if_fail (name);
-
-	class = CAMEL_OBJECT_GET_CLASS (obj);
-
-	hook = co_find_pair(class, name);
-	if (hook)
-		goto trigger;
-
-	if (obj->hooks == NULL)
-		return;
-
-	g_warning("camel_object_trigger_event: trying to trigger unknown event '%s' in class '%s'",
-		  name, G_OBJECT_TYPE_NAME (obj));
-
-	return;
-
-trigger:
-	/* try prep function, if false, then quit */
-	if (hook->func.prep != NULL && !hook->func.prep(obj, event_data))
-		return;
-
-	/* also, no hooks, dont bother going further */
-	if (obj->hooks == NULL)
-		return;
-
-	/* lock the object for hook emission */
-	g_object_ref(obj);
-	hooks = camel_object_get_hooks(obj);
-
-	if (hooks->list) {
-		/* first, copy the items in the list, and say we're in an event */
-		hooks->depth++;
-		pair = hooks->list;
-		size = 0;
-		pairs = alloca(sizeof(pairs[0]) * hooks->list_length);
-		prepname = hook->name;
-		while (pair) {
-			if (pair->name == prepname)
-				pairs[size++] = pair;
-			pair = pair->next;
-		}
-
-		/* now execute the events we have, if they haven't been removed during our calls */
-		for (i=size-1;i>=0;i--) {
-			pair = pairs[i];
-			if ((pair->flags & CAMEL_HOOK_PAIR_REMOVED) == 0)
-				(pair->func.event) (obj, event_data, pair->data);
-		}
-		hooks->depth--;
-
-		/* and if we're out of any events, then clean up any pending removes */
-		if (hooks->depth == 0 && (hooks->flags & CAMEL_HOOK_PAIR_REMOVED)) {
-			parent = (CamelHookPair *)&hooks->list;
-			pair = parent->next;
-			while (pair) {
-				if (pair->flags & CAMEL_HOOK_PAIR_REMOVED) {
-					parent->next = pair->next;
-					pair_free(pair);
-					hooks->list_length--;
-				} else {
-					parent = pair;
-				}
-				pair = parent->next;
-			}
-			hooks->flags &= ~CAMEL_HOOK_PAIR_REMOVED;
-		}
-	}
-
-	camel_object_unget_hooks(obj);
-	g_object_unref(obj);
 }
 
 /**

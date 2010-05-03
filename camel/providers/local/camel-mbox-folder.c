@@ -245,7 +245,7 @@ mbox_append_message (CamelFolder *folder,
 	camel_local_folder_unlock(lf);
 
 	if (camel_folder_change_info_changed(lf->changes)) {
-		camel_object_trigger_event((CamelObject *)folder, "folder_changed", lf->changes);
+		camel_folder_changed (folder, lf->changes);
 		camel_folder_change_info_clear(lf->changes);
 	}
 
@@ -298,7 +298,7 @@ fail:
 
 	/* cascade the changes through, anyway, if there are any outstanding */
 	if (camel_folder_change_info_changed(lf->changes)) {
-		camel_object_trigger_event((CamelObject *)folder, "folder_changed", lf->changes);
+		camel_folder_changed (folder, lf->changes);
 		camel_folder_change_info_clear(lf->changes);
 	}
 
@@ -462,7 +462,7 @@ fail:
 
 	/* use the opportunity to notify of changes (particularly if we had a rebuild) */
 	if (camel_folder_change_info_changed(lf->changes)) {
-		camel_object_trigger_event((CamelObject *)folder, "folder_changed", lf->changes);
+		camel_folder_changed (folder, lf->changes);
 		camel_folder_change_info_clear(lf->changes);
 	}
 

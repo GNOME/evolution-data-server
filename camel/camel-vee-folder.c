@@ -557,7 +557,8 @@ folder_changed_change (CamelSession *session, CamelSessionThreadMsg *msg)
 	g_free (vuid);
 
 	if (unmatched_changes) {
-		camel_object_trigger_event ((CamelObject *)folder_unmatched, "folder_changed", unmatched_changes);
+		camel_folder_changed (
+			CAMEL_FOLDER (folder_unmatched), unmatched_changes);
 		camel_folder_change_info_free (unmatched_changes);
 	}
 
@@ -580,7 +581,7 @@ folder_changed_change (CamelSession *session, CamelSessionThreadMsg *msg)
 	}
 
 	if (vf_changes) {
-		camel_object_trigger_event ((CamelObject *)vf, "folder_changed", vf_changes);
+		camel_folder_changed (CAMEL_FOLDER (vf), vf_changes);
 		camel_folder_change_info_free (vf_changes);
 	}
 }
@@ -645,7 +646,7 @@ subfolder_renamed_update (CamelVeeFolder *vf, CamelFolder *sub, gchar hash[8])
 	camel_vee_folder_unlock (vf, CAMEL_VEE_FOLDER_SUMMARY_LOCK);
 
 	if (changes) {
-		camel_object_trigger_event ((CamelObject *)vf, "folder_changed", changes);
+		camel_folder_changed (CAMEL_FOLDER (vf), changes);
 		camel_folder_change_info_free (changes);
 	}
 }
@@ -882,9 +883,9 @@ vee_folder_stop_folder (CamelVeeFolder *vf, CamelFolder *sub)
 		return;
 	}
 
-	camel_object_unhook_event ((CamelObject *)sub, "folder_changed", (CamelObjectEventHookFunc) folder_changed, vf);
-	camel_object_unhook_event ((CamelObject *)sub, "deleted", (CamelObjectEventHookFunc) subfolder_deleted, vf);
-	camel_object_unhook_event ((CamelObject *)sub, "renamed", (CamelObjectEventHookFunc) folder_renamed, vf);
+	g_signal_handlers_disconnect_by_func (sub, folder_changed, vf);
+	g_signal_handlers_disconnect_by_func (sub, subfolder_deleted, vf);
+	g_signal_handlers_disconnect_by_func (sub, folder_renamed, vf);
 
 	p->folders = g_list_remove (p->folders, sub);
 
@@ -1589,12 +1590,13 @@ vee_folder_remove_folder_helper (CamelVeeFolder *vf, CamelFolder *source)
 	camel_vee_folder_unlock (vf, CAMEL_VEE_FOLDER_SUMMARY_LOCK);
 
 	if (unmatched_changes) {
-		camel_object_trigger_event ((CamelObject *)folder_unmatched, "folder_changed", unmatched_changes);
+		camel_folder_changed (
+			CAMEL_FOLDER (folder_unmatched), unmatched_changes);
 		camel_folder_change_info_free (unmatched_changes);
 	}
 
 	if (vf_changes) {
-		camel_object_trigger_event ((CamelObject *)vf, "folder_changed", vf_changes);
+		camel_folder_changed (CAMEL_FOLDER (vf), vf_changes);
 		camel_folder_change_info_free (vf_changes);
 	}
 }
@@ -1856,12 +1858,14 @@ vee_folder_rebuild_folder (CamelVeeFolder *vee_folder,
 	camel_folder_free_summary (source, all);
 
 	if (unmatched_changes) {
-		camel_object_trigger_event ((CamelObject *)folder_unmatched, "folder_changed", unmatched_changes);
+		camel_folder_changed (
+			CAMEL_FOLDER (folder_unmatched), unmatched_changes);
 		camel_folder_change_info_free (unmatched_changes);
 	}
 
 	if (vee_folder_changes) {
-		camel_object_trigger_event ((CamelObject *)vee_folder, "folder_changed", vee_folder_changes);
+		camel_folder_changed (
+			CAMEL_FOLDER (vee_folder), vee_folder_changes);
 		camel_folder_change_info_free (vee_folder_changes);
 	}
 
@@ -2096,9 +2100,17 @@ camel_vee_folder_add_folder (CamelVeeFolder *vf, CamelFolder *sub)
 
 	camel_vee_folder_unlock (vf, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
 
-	camel_object_hook_event ((CamelObject *)sub, "folder_changed", (CamelObjectEventHookFunc)folder_changed, vf);
-	camel_object_hook_event ((CamelObject *)sub, "deleted", (CamelObjectEventHookFunc)subfolder_deleted, vf);
-	camel_object_hook_event ((CamelObject *)sub, "renamed", (CamelObjectEventHookFunc)folder_renamed, vf);
+	g_signal_connect (
+		sub, "changed",
+		G_CALLBACK (folder_changed), vf);
+
+	g_signal_connect (
+		sub, "deleted",
+		G_CALLBACK (subfolder_deleted), vf);
+
+	g_signal_connect (
+		sub, "renamed",
+		G_CALLBACK (folder_renamed), vf);
 
 	CAMEL_VEE_FOLDER_GET_CLASS (vf)->add_folder (vf, sub);
 }
@@ -2128,9 +2140,9 @@ camel_vee_folder_remove_folder (CamelVeeFolder *vf, CamelFolder *sub)
 		return;
 	}
 
-	camel_object_unhook_event ((CamelObject *)sub, "folder_changed", (CamelObjectEventHookFunc) folder_changed, vf);
-	camel_object_unhook_event ((CamelObject *)sub, "deleted", (CamelObjectEventHookFunc) subfolder_deleted, vf);
-	camel_object_unhook_event ((CamelObject *)sub, "renamed", (CamelObjectEventHookFunc) folder_renamed, vf);
+	g_signal_handlers_disconnect_by_func (sub, folder_changed, vf);
+	g_signal_handlers_disconnect_by_func (sub, subfolder_deleted, vf);
+	g_signal_handlers_disconnect_by_func (sub, folder_renamed, vf);
 
 	p->folders = g_list_remove (p->folders, sub);
 
@@ -2333,10 +2345,10 @@ camel_vee_folder_get_location (CamelVeeFolder *vf, const CamelVeeMessageInfo *vi
  * Since: 2.26
  **/
 void
-camel_vee_folder_mask_event_folder_changed (CamelVeeFolder *vf, CamelFolder *sub)
+camel_vee_folder_mask_event_folder_changed (CamelVeeFolder *vf,
+                                            CamelFolder *sub)
 {
-	camel_object_unhook_event ((CamelObject *)sub, "folder_changed", (CamelObjectEventHookFunc) folder_changed, vf);
-
+	g_signal_handlers_block_by_func (sub, folder_changed, vf);
 }
 
 /**
@@ -2345,9 +2357,10 @@ camel_vee_folder_mask_event_folder_changed (CamelVeeFolder *vf, CamelFolder *sub
  * Since: 2.26
  **/
 void
-camel_vee_folder_unmask_event_folder_changed (CamelVeeFolder *vf, CamelFolder *sub)
+camel_vee_folder_unmask_event_folder_changed (CamelVeeFolder *vf,
+                                              CamelFolder *sub)
 {
-	camel_object_hook_event ((CamelObject *)sub, "folder_changed", (CamelObjectEventHookFunc) folder_changed, vf);
+	g_signal_handlers_unblock_by_func (sub, folder_changed, vf);
 }
 
 /**

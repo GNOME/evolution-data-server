@@ -47,8 +47,6 @@
 #define BASE_PART_SUFFIX "."
 #endif
 
-static void stream_finalize (CamelObject *stream, gpointer event_data, gpointer user_data);
-
 struct _part_find {
 	/* UID name on disk - e.g. "0." or "0.HEADERS". On windows "0." is
 	 * stored as "0.~"
@@ -61,12 +59,26 @@ struct _part_find {
 G_DEFINE_TYPE (CamelImapMessageCache, camel_imap_message_cache, CAMEL_TYPE_OBJECT)
 
 static void
+stream_finalize (CamelImapMessageCache *cache,
+                 GObject *where_the_object_was)
+{
+	gchar *key;
+
+	key = g_hash_table_lookup (cache->cached, where_the_object_was);
+	if (!key)
+		return;
+	g_hash_table_remove (cache->cached, where_the_object_was);
+	g_hash_table_insert (cache->parts, key, NULL);
+}
+
+static void
 free_part (gpointer key, gpointer value, gpointer data)
 {
 	if (value) {
 		if (strchr (key, '.')) {
-			camel_object_unhook_event (value, "finalize",
-						   stream_finalize, data);
+			g_object_weak_unref (
+				G_OBJECT (value), (GWeakNotify)
+				stream_finalize, data);
 			g_object_unref (value);
 		} else
 			g_ptr_array_free (value, TRUE);
@@ -130,8 +142,9 @@ cache_put (CamelImapMessageCache *cache, const gchar *uid, const gchar *key,
 
 	if (g_hash_table_lookup_extended (cache->parts, key, &okey, &ostream)) {
 		if (ostream) {
-			camel_object_unhook_event (ostream, "finalize",
-						   stream_finalize, cache);
+			g_object_weak_unref (
+				G_OBJECT (ostream), (GWeakNotify)
+				stream_finalize, cache);
 			g_hash_table_remove (cache->cached, ostream);
 			g_object_unref (ostream);
 		}
@@ -145,8 +158,9 @@ cache_put (CamelImapMessageCache *cache, const gchar *uid, const gchar *key,
 	g_hash_table_insert (cache->cached, stream, hash_key);
 
 	if (stream) {
-		camel_object_hook_event (CAMEL_OBJECT (stream), "finalize",
-					 stream_finalize, cache);
+		g_object_weak_ref (
+			G_OBJECT (stream), (GWeakNotify)
+			stream_finalize, cache);
 	}
 }
 
@@ -290,19 +304,6 @@ camel_imap_message_cache_set_path (CamelImapMessageCache *cache, const gchar *pa
 {
 	g_free(cache->path);
 	cache->path = g_strdup(path);
-}
-
-static void
-stream_finalize (CamelObject *stream, gpointer event_data, gpointer user_data)
-{
-	CamelImapMessageCache *cache = user_data;
-	gchar *key;
-
-	key = g_hash_table_lookup (cache->cached, stream);
-	if (!key)
-		return;
-	g_hash_table_remove (cache->cached, stream);
-	g_hash_table_insert (cache->parts, key, NULL);
 }
 
 static CamelStream *
@@ -578,8 +579,9 @@ camel_imap_message_cache_remove (CamelImapMessageCache *cache, const gchar *uid)
 		g_free (path);
 		stream = g_hash_table_lookup (cache->parts, key);
 		if (stream) {
-			camel_object_unhook_event (stream, "finalize",
-						   stream_finalize, cache);
+			g_object_weak_unref (
+				G_OBJECT (stream), (GWeakNotify)
+				stream_finalize, cache);
 			g_object_unref (stream);
 			g_hash_table_remove (cache->cached, stream);
 		}

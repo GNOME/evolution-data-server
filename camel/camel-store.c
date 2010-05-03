@@ -37,6 +37,7 @@
 #include "camel-debug.h"
 #include "camel-exception.h"
 #include "camel-folder.h"
+#include "camel-marshal.h"
 #include "camel-session.h"
 #include "camel-store.h"
 #include "camel-vtrash-folder.h"
@@ -51,6 +52,18 @@
 struct _CamelStorePrivate {
 	GStaticRecMutex folder_lock;	/* for locking folder operations */
 };
+
+enum {
+	FOLDER_CREATED,
+	FOLDER_DELETED,
+	FOLDER_OPENED,
+	FOLDER_RENAMED,
+	FOLDER_SUBSCRIBED,
+	FOLDER_UNSUBSCRIBED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
 
 G_DEFINE_ABSTRACT_TYPE (CamelStore, camel_store, CAMEL_TYPE_SERVICE)
 
@@ -281,7 +294,6 @@ static void
 camel_store_class_init (CamelStoreClass *class)
 {
 	GObjectClass *object_class;
-	CamelObjectClass *camel_object_class;
 	CamelServiceClass *service_class;
 
 	g_type_class_add_private (class, sizeof (CamelStorePrivate));
@@ -302,13 +314,66 @@ camel_store_class_init (CamelStoreClass *class)
 	class->noop = store_noop;
 	class->can_refresh_folder = store_can_refresh_folder;
 
-	camel_object_class = CAMEL_OBJECT_CLASS (class);
-	camel_object_class_add_event(camel_object_class, "folder_opened", NULL);
-	camel_object_class_add_event(camel_object_class, "folder_created", NULL);
-	camel_object_class_add_event(camel_object_class, "folder_deleted", NULL);
-	camel_object_class_add_event(camel_object_class, "folder_renamed", NULL);
-	camel_object_class_add_event(camel_object_class, "folder_subscribed", NULL);
-	camel_object_class_add_event(camel_object_class, "folder_unsubscribed", NULL);
+	signals[FOLDER_CREATED] = g_signal_new (
+		"folder-created",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (CamelStoreClass, folder_created),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1,
+		G_TYPE_POINTER);
+
+	signals[FOLDER_DELETED] = g_signal_new (
+		"folder-deleted",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (CamelStoreClass, folder_deleted),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1,
+		G_TYPE_POINTER);
+
+	signals[FOLDER_OPENED] = g_signal_new (
+		"folder-opened",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (CamelStoreClass, folder_opened),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__OBJECT,
+		G_TYPE_NONE, 1,
+		CAMEL_TYPE_FOLDER);
+
+	signals[FOLDER_RENAMED] = g_signal_new (
+		"folder-renamed",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (CamelStoreClass, folder_renamed),
+		NULL, NULL,
+		camel_marshal_VOID__STRING_POINTER,
+		G_TYPE_NONE, 2,
+		G_TYPE_STRING,
+		G_TYPE_POINTER);
+
+	signals[FOLDER_SUBSCRIBED] = g_signal_new (
+		"folder-subscribed",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (CamelStoreClass, folder_subscribed),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1,
+		G_TYPE_POINTER);
+
+	signals[FOLDER_UNSUBSCRIBED] = g_signal_new (
+		"folder-unsubscribed",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (CamelStoreClass, folder_unsubscribed),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1,
+		G_TYPE_POINTER);
 }
 
 static void
@@ -413,7 +478,7 @@ camel_store_get_folder (CamelStore *store,
 		}
 
 		if (folder)
-			camel_object_trigger_event(store, "folder_opened", folder);
+			g_signal_emit (store, signals[FOLDER_OPENED], 0, folder);
 	}
 
 	return folder;
@@ -623,14 +688,14 @@ camel_store_rename_folder (CamelStore *store,
 		}
 	}
 
-	/* Now try the real rename (will emit renamed event) */
+	/* Now try the real rename (will emit renamed signal) */
 	success = class->rename_folder (store, old_name, new_name, ex);
 
 	/* If it worked, update all open folders/unlock them */
 	if (folders) {
 		if (success) {
 			guint32 flags = CAMEL_STORE_FOLDER_INFO_RECURSIVE;
-			CamelRenameInfo reninfo;
+			CamelFolderInfo *folder_info;
 
 			for (i=0;i<folders->len;i++) {
 				const gchar *full_name;
@@ -652,11 +717,10 @@ camel_store_rename_folder (CamelStore *store,
 			if (store->flags & CAMEL_STORE_SUBSCRIPTIONS)
 				flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIBED;
 
-			reninfo.old_base = (gchar *)old_name;
-			reninfo.new = class->get_folder_info(store, new_name, flags, ex);
-			if (reninfo.new != NULL) {
-				camel_object_trigger_event (store, "folder_renamed", &reninfo);
-				class->free_folder_info(store, reninfo.new);
+			folder_info = class->get_folder_info(store, new_name, flags, ex);
+			if (folder_info != NULL) {
+				camel_store_folder_renamed (store, old_name, folder_info);
+				class->free_folder_info (store, folder_info);
 			}
 		} else {
 			/* Failed, just unlock our folders for re-use */
@@ -674,6 +738,114 @@ camel_store_rename_folder (CamelStore *store,
 	g_free(old_name);
 
 	return success;
+}
+
+/**
+ * camel_store_folder_created:
+ * @store: a #CamelStore
+ * @info: information about the created folder
+ *
+ * Emits the #CamelStore::folder-created signal.
+ *
+ * This function is only intended for Camel providers.
+ *
+ * Since: 3.0
+ **/
+void
+camel_store_folder_created (CamelStore *store,
+                            CamelFolderInfo *info)
+{
+	g_return_if_fail (CAMEL_STORE (store));
+	g_return_if_fail (info != NULL);
+
+	g_signal_emit (store, signals[FOLDER_CREATED], 0, info);
+}
+
+/**
+ * camel_store_folder_deleted:
+ * @store: a #CamelStore
+ * @info: information about the deleted folder
+ *
+ * Emits the #CamelStore::folder-deleted signal.
+ *
+ * This function is only intended for Camel providers.
+ *
+ * Since: 3.0
+ **/
+void
+camel_store_folder_deleted (CamelStore *store,
+                            CamelFolderInfo *info)
+{
+	g_return_if_fail (CAMEL_STORE (store));
+	g_return_if_fail (info != NULL);
+
+	g_signal_emit (store, signals[FOLDER_DELETED], 0, info);
+}
+
+/**
+ * camel_store_folder_renamed:
+ * @store: a #CamelStore
+ * @old_name: the old name of the folder
+ * @info: information about the renamed folder
+ *
+ * Emits the #CamelStore::folder-renamed signal.
+ *
+ * This function is only intended for Camel providers.
+ *
+ * Since: 3.0
+ **/
+void
+camel_store_folder_renamed (CamelStore *store,
+                            const gchar *old_name,
+                            CamelFolderInfo *info)
+{
+	g_return_if_fail (CAMEL_STORE (store));
+	g_return_if_fail (old_name != NULL);
+	g_return_if_fail (info != NULL);
+
+	g_signal_emit (store, signals[FOLDER_RENAMED], 0, old_name, info);
+}
+
+/**
+ * camel_store_folder_subscribed:
+ * @store: a #CamelStore
+ * @info: information about the subscribed folder
+ *
+ * Emits the #CamelStore::folder-subscribed signal.
+ *
+ * This function is only intended for Camel providers.
+ *
+ * Since: 3.0
+ **/
+void
+camel_store_folder_subscribed (CamelStore *store,
+                               CamelFolderInfo *info)
+{
+	g_return_if_fail (CAMEL_STORE (store));
+	g_return_if_fail (info != NULL);
+
+	g_signal_emit (store, signals[FOLDER_SUBSCRIBED], 0, info);
+}
+
+/**
+ * camel_store_folder_unsubscribed:
+ * @store: a #CamelStore
+ * @info: information about the unsubscribed folder
+ *
+ * Emits the #CamelStore::folder-unsubscribed signal.
+ *
+ * This function is only intended for Camel providers.
+ *
+ * Since: 3.0
+ **/
+void
+camel_store_folder_unsubscribed (CamelStore *store,
+                                 CamelFolderInfo *info)
+{
+	g_return_if_fail (CAMEL_STORE (store));
+	g_return_if_fail (info != NULL);
+
+	g_signal_emit (store, signals[FOLDER_UNSUBSCRIBED], 0, info);
 }
 
 /**
@@ -1211,7 +1383,7 @@ camel_store_supports_subscriptions (CamelStore *store)
 }
 
 /**
- * camel_store_folder_subscribed:
+ * camel_store_folder_is_subscribed:
  * @store: a #CamelStore object
  * @folder_name: full path of the folder
  *
@@ -1220,26 +1392,26 @@ camel_store_supports_subscriptions (CamelStore *store)
  * Returns: %TRUE if the folder has been subscribed to or %FALSE otherwise
  **/
 gboolean
-camel_store_folder_subscribed (CamelStore *store,
-                               const gchar *folder_name)
+camel_store_folder_is_subscribed (CamelStore *store,
+                                  const gchar *folder_name)
 {
 	CamelStoreClass *class;
-	gboolean ret;
+	gboolean is_subscribed;
 
 	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
 	g_return_val_if_fail (folder_name != NULL, FALSE);
 	g_return_val_if_fail (store->flags & CAMEL_STORE_SUBSCRIPTIONS, FALSE);
 
 	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->folder_subscribed != NULL, FALSE);
+	g_return_val_if_fail (class->folder_is_subscribed != NULL, FALSE);
 
 	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
 
-	ret = class->folder_subscribed (store, folder_name);
+	is_subscribed = class->folder_is_subscribed (store, folder_name);
 
 	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
 
-	return ret;
+	return is_subscribed;
 }
 
 /**

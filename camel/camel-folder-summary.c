@@ -784,7 +784,7 @@ info_set_user_flag(CamelMessageInfo *info, const gchar *name, gboolean value)
 		mi->dirty = TRUE;
 		camel_folder_summary_touch(mi->summary);
 		camel_folder_change_info_change_uid(changes, camel_message_info_uid(info));
-		camel_object_trigger_event(mi->summary->folder, "folder_changed", changes);
+		camel_folder_changed (mi->summary->folder, changes);
 		camel_folder_change_info_free(changes);
 	}
 
@@ -806,7 +806,7 @@ info_set_user_tag(CamelMessageInfo *info, const gchar *name, const gchar *value)
 		mi->dirty = TRUE;
 		camel_folder_summary_touch(mi->summary);
 		camel_folder_change_info_change_uid(changes, camel_message_info_uid(info));
-		camel_object_trigger_event(mi->summary->folder, "folder_changed", changes);
+		camel_folder_changed (mi->summary->folder, changes);
 		camel_folder_change_info_free(changes);
 	}
 
@@ -868,7 +868,7 @@ info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set)
 		CamelFolderChangeInfo *changes = camel_folder_change_info_new();
 
 		camel_folder_change_info_change_uid(changes, camel_message_info_uid(info));
-		camel_object_trigger_event(mi->summary->folder, "folder_changed", changes);
+		camel_folder_changed (mi->summary->folder, changes);
 		camel_folder_change_info_free(changes);
 	}
 

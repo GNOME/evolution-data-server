@@ -181,7 +181,7 @@ mh_append_message (CamelFolder *folder,
 	camel_local_folder_unlock (lf);
 
 	if (lf && camel_folder_change_info_changed (lf->changes)) {
-		camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", lf->changes);
+		camel_folder_changed (folder, lf->changes);
 		camel_folder_change_info_clear (lf->changes);
 	}
 
@@ -251,7 +251,7 @@ mh_get_message (CamelFolder *folder,
 	camel_local_folder_unlock (lf);
 
 	if (lf && camel_folder_change_info_changed (lf->changes)) {
-		camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", lf->changes);
+		camel_folder_changed (folder, lf->changes);
 		camel_folder_change_info_clear (lf->changes);
 	}
 

@@ -3624,6 +3624,24 @@ streams
 
 @Param1: 
 
+<!-- ##### USER_FUNCTION CamelObjectEventHookFunc ##### -->
+<para>
+
+</para>
+
+@Param1: 
+@Param2: 
+@Param3: 
+
+<!-- ##### USER_FUNCTION CamelObjectEventPrepFunc ##### -->
+<para>
+
+</para>
+
+@Param1: 
+@Param2: 
+@Returns: 
+
 <!-- ##### USER_FUNCTION CamelObjectFinalizeFunc ##### -->
 <para>
 
@@ -3637,6 +3655,12 @@ streams
 </para>
 
 @CAMEL_OBJECT_DESTROY: 
+
+<!-- ##### TYPEDEF CamelObjectHookID ##### -->
+<para>
+
+</para>
+
 
 <!-- ##### USER_FUNCTION CamelObjectInitFunc ##### -->
 <para>
@@ -3765,6 +3789,14 @@ streams
 @tag: 
 @name: 
 @description: 
+
+<!-- ##### STRUCT CamelRenameInfo ##### -->
+<para>
+
+</para>
+
+@old_base: 
+@new: 
 
 <!-- ##### STRUCT CamelSendmailTransport ##### -->
 <para>
@@ -6876,6 +6908,15 @@ streams
 @ctype: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_object_class_add_event ##### -->
+<para>
+
+</para>
+
+@klass: 
+@name: 
+@prep: 
+
 <!-- ##### FUNCTION camel_object_class_add_interface ##### -->
 <para>
 
@@ -6967,6 +7008,17 @@ streams
 @Param3: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_object_hook_event ##### -->
+<para>
+
+</para>
+
+@obj: 
+@name: 
+@hook: 
+@data: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_object_is ##### -->
 <para>
 
@@ -7019,6 +7071,14 @@ streams
 @Param1: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_object_remove_event ##### -->
+<para>
+
+</para>
+
+@obj: 
+@id: 
+
 <!-- ##### FUNCTION camel_object_set ##### -->
 <para>
 
@@ -7039,11 +7099,30 @@ streams
 @Param3: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_object_trigger_event ##### -->
+<para>
+
+</para>
+
+@obj: 
+@name: 
+@event_data: 
+
 <!-- ##### VARIABLE camel_object_type ##### -->
 <para>
 
 </para>
 
+
+<!-- ##### FUNCTION camel_object_unhook_event ##### -->
+<para>
+
+</para>
+
+@obj: 
+@name: 
+@hook: 
+@data: 
 
 <!-- ##### FUNCTION camel_object_unref ##### -->
 <para>
@@ -7381,6 +7460,38 @@ streams
 @len: 
 @type: 
 @words: 
+
+<!-- ##### FUNCTION camel_session_check_junk ##### -->
+<para>
+
+</para>
+
+@session: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_session_get_network_state ##### -->
+<para>
+
+</para>
+
+@session: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_session_is_online ##### -->
+<para>
+
+</para>
+
+@session: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_session_set_network_state ##### -->
+<para>
+
+</para>
+
+@session: 
+@network_state: 
 
 <!-- ##### FUNCTION camel_spool_folder_new ##### -->
 <para>

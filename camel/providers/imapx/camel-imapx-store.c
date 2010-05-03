@@ -518,7 +518,7 @@ imapx_unmark_folder_subscribed (CamelIMAPXStore *istore, const gchar *folder_nam
 		CamelFolderInfo *fi;
 
 		fi = imapx_build_folder_info(istore, folder_name);
-		camel_object_trigger_event (CAMEL_OBJECT (istore), "folder_unsubscribed", fi);
+		camel_store_folder_unsubscribed (CAMEL_STORE (istore), fi);
 		camel_folder_info_free (fi);
 	}
 }
@@ -542,7 +542,7 @@ imapx_mark_folder_subscribed (CamelIMAPXStore *istore, const gchar *folder_name,
 		CamelFolderInfo *fi;
 
 		fi = imapx_build_folder_info(istore, folder_name);
-		camel_object_trigger_event (CAMEL_OBJECT (istore), "folder_subscribed", fi);
+		camel_store_folder_subscribed (CAMEL_STORE (istore), fi);
 		camel_folder_info_free (fi);
 	}
 }
@@ -637,7 +637,7 @@ imapx_delete_folder_from_cache (CamelIMAPXStore *istore, const gchar *folder_nam
 	camel_store_summary_save((CamelStoreSummary *)istore->summary);
 
 	fi = imapx_build_folder_info(istore, folder_name);
-	camel_object_trigger_event (CAMEL_OBJECT (istore), "folder_deleted", fi);
+	camel_store_folder_deleted (CAMEL_STORE (istore), fi);
 	camel_folder_info_free (fi);
 }
 
@@ -818,7 +818,7 @@ imapx_create_folder (CamelStore *store, const gchar *parent_name, const gchar *f
 		camel_store_summary_save((CamelStoreSummary *)istore->summary);
 		fi = imapx_build_folder_info(istore, camel_store_info_path(istore->summary, si));
 		fi->flags |= CAMEL_FOLDER_NOCHILDREN;
-		camel_object_trigger_event (CAMEL_OBJECT (store), "folder_created", fi);
+		camel_store_folder_created (store, fi);
 	}
 
 	g_free (full_name);
@@ -1141,8 +1141,8 @@ sync_folders (CamelIMAPXStore *istore, const gchar *pattern, gboolean sync, Came
 					si->flags = (si->flags & ~CAMEL_FOLDER_SUBSCRIBED) | (fi->flags & CAMEL_FOLDER_SUBSCRIBED);
 					camel_store_summary_touch((CamelStoreSummary *)istore->summary);
 
-					camel_object_trigger_event (CAMEL_OBJECT (istore), "folder_created", fi);
-					camel_object_trigger_event (CAMEL_OBJECT (istore), "folder_subscribed", fi);
+					camel_store_folder_created (CAMEL_STORE (istore), fi);
+					camel_store_folder_subscribed (CAMEL_STORE (istore), fi);
 				}
 			} else {
 				gchar *dup_folder_name = g_strdup (camel_store_info_path (istore->summary, si));
@@ -1345,7 +1345,8 @@ imapx_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelExcepti
 }
 
 static gboolean
-imapx_folder_subscribed (CamelStore *store, const gchar *folder_name)
+imapx_folder_is_subscribed (CamelStore *store,
+                            const gchar *folder_name)
 {
 	CamelIMAPXStore *istore = CAMEL_IMAPX_STORE (store);
 	CamelStoreInfo *si;
@@ -1392,7 +1393,7 @@ camel_imapx_store_class_init(CamelIMAPXStoreClass *class)
 	store_class->subscribe_folder = imapx_store_subscribe_folder;
 	store_class->unsubscribe_folder = imapx_store_unsubscribe_folder;
 	store_class->get_folder_info = imapx_get_folder_info;
-	store_class->folder_subscribed = imapx_folder_subscribed;
+	store_class->folder_is_subscribed = imapx_folder_is_subscribed;
 	store_class->free_folder_info = camel_store_free_folder_info_full;
 	store_class->hash_folder_name = imapx_name_hash;
 	store_class->compare_folder_name = imapx_name_equal;

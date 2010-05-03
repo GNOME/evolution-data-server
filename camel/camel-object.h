@@ -34,8 +34,6 @@
 #include <stdlib.h>		/* gsize */
 #include <stdarg.h>
 
-#include <camel/camel-exception.h>
-
 /* Standard GObject macros */
 #define CAMEL_TYPE_OBJECT \
 	(camel_object_get_type ())
@@ -61,11 +59,6 @@ typedef struct _CamelObject CamelObject;
 typedef struct _CamelObjectClass CamelObjectClass;
 typedef struct _CamelObjectPrivate CamelObjectPrivate;
 
-typedef guint CamelObjectHookID;
-
-typedef gboolean (*CamelObjectEventPrepFunc) (CamelObject *, gpointer);
-typedef void (*CamelObjectEventHookFunc) (CamelObject *, gpointer, gpointer);
-
 /**
  * CamelParamFlags:
  * @CAMEL_PARAM_PERSISTENT:
@@ -85,36 +78,20 @@ typedef enum {
 struct _CamelObject {
 	GObject parent;
 	CamelObjectPrivate *priv;
-
-	/* current hooks on this object */
-	struct _CamelHookList *hooks;
 };
 
 struct _CamelObjectClass {
 	GObjectClass parent_class;
 
-	/* available hooks for this class */
-	struct _CamelHookPair *hooks;
-
-	/* persistence stuff */
-	gint (*state_read)(CamelObject *, FILE *fp);
-	gint (*state_write)(CamelObject *, FILE *fp);
+	gint		(*state_read)		(CamelObject *object,
+						 FILE *fp);
+	gint		(*state_write)		(CamelObject *object,
+						 FILE *fp);
 };
 
-void camel_object_class_add_event (CamelObjectClass *klass, const gchar *name, CamelObjectEventPrepFunc prep);
-
-GType camel_object_get_type (void);
-
-/* hooks */
-CamelObjectHookID camel_object_hook_event(gpointer obj, const gchar *name, CamelObjectEventHookFunc hook, gpointer data);
-void camel_object_remove_event(gpointer obj, CamelObjectHookID id);
-void camel_object_unhook_event(gpointer obj, const gchar *name, CamelObjectEventHookFunc hook, gpointer data);
-void camel_object_trigger_event(gpointer obj, const gchar *name, gpointer event_data);
-
-/* reads/writes the state from/to the CAMEL_OBJECT_STATE_FILE */
+GType		camel_object_get_type		(void);
 gint		camel_object_state_read		(CamelObject *object);
 gint		camel_object_state_write	(CamelObject *object);
-
 const gchar *	camel_object_get_state_filename	(CamelObject *object);
 void		camel_object_set_state_filename	(CamelObject *object,
 						 const gchar *state_filename);

@@ -53,7 +53,7 @@ disco_store_construct (CamelService *service,
 	if (!service_class->construct (service, session, provider, url, ex))
 		return FALSE;
 
-	disco->status = camel_session_is_online (session) ?
+	disco->status = camel_session_get_online (session) ?
 		CAMEL_DISCO_STORE_ONLINE : CAMEL_DISCO_STORE_OFFLINE;
 
 	return TRUE;
@@ -216,7 +216,7 @@ disco_store_set_status (CamelDiscoStore *disco_store,
 {
 	CamelException x;
 	CamelService *service = CAMEL_SERVICE (disco_store);
-	gboolean network_state = camel_session_get_network_state (service->session);
+	gboolean network_available;
 
 	if (disco_store->status == status)
 		return;
@@ -225,7 +225,10 @@ disco_store_set_status (CamelDiscoStore *disco_store,
 	/* Sync the folder fully if we've been told to sync online for this store or this folder
 	   and we're going offline */
 
-	if (network_state) {
+	network_available =
+		camel_session_get_network_available (service->session);
+
+	if (network_available) {
 		if (disco_store->status == CAMEL_DISCO_STORE_ONLINE
 		    && status == CAMEL_DISCO_STORE_OFFLINE) {
 			if (((CamelStore *)disco_store)->folders) {
@@ -253,7 +256,7 @@ disco_store_set_status (CamelDiscoStore *disco_store,
 		camel_exception_clear(&x);
 	}
 
-	if (!camel_service_disconnect (CAMEL_SERVICE (disco_store), network_state, ex))
+	if (!camel_service_disconnect (CAMEL_SERVICE (disco_store), network_available, ex))
 		return;
 
 	disco_store->status = status;
@@ -298,7 +301,7 @@ camel_disco_store_status (CamelDiscoStore *store)
 	g_return_val_if_fail (CAMEL_IS_DISCO_STORE (store), CAMEL_DISCO_STORE_ONLINE);
 
 	if (store->status != CAMEL_DISCO_STORE_OFFLINE
-	    && !camel_session_is_online (service->session))
+	    && !camel_session_get_online (service->session))
 		store->status = CAMEL_DISCO_STORE_OFFLINE;
 
 	return store->status;
@@ -389,7 +392,7 @@ camel_disco_store_prepare_for_offline (CamelDiscoStore *disco_store,
 	camel_exception_init(&x);
 	/* Sync the folder fully if we've been told to sync online for this store or this folder */
 
-	if (camel_session_get_network_state (service->session)) {
+	if (camel_session_get_network_available (service->session)) {
 		if (disco_store->status == CAMEL_DISCO_STORE_ONLINE) {
 			if (((CamelStore *)disco_store)->folders) {
 				GPtrArray *folders;

@@ -306,10 +306,6 @@ create_folder (CamelStore *store,
 		g_object_unref (folder);
 		info = CAMEL_STORE_GET_CLASS (store)->get_folder_info (
 			store, name, 0, ex);
-
-		/* get_folder(CREATE) will emit a folder_created event for us */
-		/*if (info)
-		  camel_object_trigger_event((CamelObject *)store, "folder_created", info);*/
 	}
 
 	g_free(name);
@@ -500,8 +496,7 @@ delete_folder (CamelStore *store,
 				   CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
 	fi->unread = -1;
 
-	camel_object_trigger_event (store, "folder_deleted", fi);
-
+	camel_store_folder_deleted (store, fi);
 	camel_folder_info_free (fi);
 
 	return TRUE;

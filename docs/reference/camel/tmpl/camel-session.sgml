@@ -26,6 +26,21 @@ CamelSession
 </para>
 
 
+<!-- ##### ARG CamelSession:check-junk ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG CamelSession:network-available ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG CamelSession:online ##### -->
+<para>
+
+</para>
+
 <!-- ##### USER_FUNCTION CamelTimeoutCallback ##### -->
 <para>
 
@@ -180,7 +195,7 @@ CamelSession
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_session_is_online ##### -->
+<!-- ##### FUNCTION camel_session_get_online ##### -->
 <para>
 
 </para>
@@ -209,7 +224,7 @@ CamelSession
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_session_check_junk ##### -->
+<!-- ##### FUNCTION camel_session_get_check_junk ##### -->
 <para>
 
 </para>
@@ -267,7 +282,7 @@ CamelSession
 @id: 
 
 
-<!-- ##### FUNCTION camel_session_get_network_state ##### -->
+<!-- ##### FUNCTION camel_session_get_network_available ##### -->
 <para>
 
 </para>
@@ -276,7 +291,7 @@ CamelSession
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_session_set_network_state ##### -->
+<!-- ##### FUNCTION camel_session_set_network_available ##### -->
 <para>
 
 </para>

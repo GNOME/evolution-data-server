@@ -126,12 +126,6 @@ typedef struct _CamelFolderInfo {
 #define CAMEL_STORE_READ  (1 << 0)
 #define CAMEL_STORE_WRITE (1 << 1)
 
-/* Structure of rename event's event_data */
-typedef struct _CamelRenameInfo {
-	gchar *old_base;
-	struct _CamelFolderInfo *new;
-} CamelRenameInfo;
-
 /* Flags for store flags */
 #define CAMEL_STORE_SUBSCRIPTIONS	(1 << 0)
 #define CAMEL_STORE_VTRASH		(1 << 1)
@@ -201,6 +195,7 @@ struct _CamelStoreClass {
 	GHashFunc hash_folder_name;
 	GCompareFunc compare_folder_name;
 
+	/* Methods */
 	CamelFolder *	(*get_folder)		(CamelStore *store,
 						 const gchar *folder_name,
 						 guint32 flags,
@@ -233,7 +228,7 @@ struct _CamelStoreClass {
 						 CamelException *ex);
 	void		(*free_folder_info)	(CamelStore *store,
 						 CamelFolderInfo *fi);
-	gboolean	(*folder_subscribed)	(CamelStore *store,
+	gboolean	(*folder_is_subscribed)	(CamelStore *store,
 						 const gchar *folder_name);
 	gboolean	(*subscribe_folder)	(CamelStore *store,
 						 const gchar *folder_name,
@@ -246,6 +241,21 @@ struct _CamelStoreClass {
 	gboolean	(*can_refresh_folder)	(CamelStore *store,
 						 CamelFolderInfo *info,
 						 CamelException *ex);
+
+	/* Signals */
+	void		(*folder_created)	(CamelStore *store,
+						 CamelFolderInfo *info);
+	void		(*folder_deleted)	(CamelStore *store,
+						 CamelFolderInfo *info);
+	void		(*folder_opened)	(CamelStore *store,
+						 CamelFolder *folder);
+	void		(*folder_renamed)	(CamelStore *store,
+						 const gchar *old_name,
+						 CamelFolderInfo *info);
+	void		(*folder_subscribed)	(CamelStore *store,
+						 CamelFolderInfo *info);
+	void		(*folder_unsubscribed)	(CamelStore *store,
+						 CamelFolderInfo *info);
 };
 
 GType		camel_store_get_type		(void);
@@ -271,6 +281,17 @@ gboolean	camel_store_rename_folder	(CamelStore *store,
 						 const gchar *old_namein,
 						 const gchar *new_name,
 						 CamelException *ex);
+void		camel_store_folder_created	(CamelStore *store,
+						 CamelFolderInfo *info);
+void		camel_store_folder_deleted	(CamelStore *store,
+						 CamelFolderInfo *info);
+void		camel_store_folder_renamed	(CamelStore *store,
+						 const gchar *old_name,
+						 CamelFolderInfo *info);
+void		camel_store_folder_subscribed	(CamelStore *store,
+						 CamelFolderInfo *info);
+void		camel_store_folder_unsubscribed	(CamelStore *store,
+						 CamelFolderInfo *info);
 gboolean	camel_store_sync		(CamelStore *store,
 						 gint expunge,
 						 CamelException *ex);
@@ -300,7 +321,7 @@ CamelFolderInfo *
 		camel_folder_info_clone		(CamelFolderInfo *fi);
 gboolean	camel_store_supports_subscriptions
 						(CamelStore *store);
-gboolean	camel_store_folder_subscribed	(CamelStore *store,
+gboolean	camel_store_folder_is_subscribed(CamelStore *store,
 						 const gchar *folder_name);
 gboolean	camel_store_subscribe_folder	(CamelStore *store,
 						 const gchar *folder_name,

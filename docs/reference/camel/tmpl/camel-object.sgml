@@ -31,90 +31,12 @@ CamelObject
 
 </para>
 
-<!-- ##### TYPEDEF CamelObjectHookID ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### USER_FUNCTION CamelObjectEventPrepFunc ##### -->
-<para>
-
-</para>
-
-@Param1: 
-@Param2: 
-@Returns: 
-
-
-<!-- ##### USER_FUNCTION CamelObjectEventHookFunc ##### -->
-<para>
-
-</para>
-
-@Param1: 
-@Param2: 
-@Param3: 
-
-
 <!-- ##### ENUM CamelParamFlags ##### -->
 <para>
 
 </para>
 
 @CAMEL_PARAM_PERSISTENT: 
-
-<!-- ##### FUNCTION camel_object_class_add_event ##### -->
-<para>
-
-</para>
-
-@klass: 
-@name: 
-@prep: 
-
-
-<!-- ##### FUNCTION camel_object_hook_event ##### -->
-<para>
-
-</para>
-
-@obj: 
-@name: 
-@hook: 
-@data: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_object_remove_event ##### -->
-<para>
-
-</para>
-
-@obj: 
-@id: 
-
-
-<!-- ##### FUNCTION camel_object_unhook_event ##### -->
-<para>
-
-</para>
-
-@obj: 
-@name: 
-@hook: 
-@data: 
-
-
-<!-- ##### FUNCTION camel_object_trigger_event ##### -->
-<para>
-
-</para>
-
-@obj: 
-@name: 
-@event_data: 
-
 
 <!-- ##### FUNCTION camel_object_state_read ##### -->
 <para>

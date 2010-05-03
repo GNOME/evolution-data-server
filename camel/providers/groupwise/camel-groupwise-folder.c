@@ -1007,7 +1007,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 	success = groupwise_sync_summary (folder, ex);
 	camel_service_unlock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
-	camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes);
+	camel_folder_changed (folder, changes);
 	camel_folder_change_info_free (changes);
 
 	return success;
@@ -1867,8 +1867,8 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 	g_free (container_id);
 	g_string_free (str, TRUE);
 	groupwise_sync_summary (folder, ex);
-	camel_object_trigger_event (folder, "folder_changed", changes);
 
+	camel_folder_changed (folder, changes);
 	camel_folder_change_info_free (changes);
 }
 
@@ -2073,8 +2073,8 @@ gw_update_summary (CamelFolder *folder, GList *list,CamelException *ex)
 	}
 	g_free (container_id);
 	g_string_free (str, TRUE);
-	camel_object_trigger_event (folder, "folder_changed", changes);
 
+	camel_folder_changed (folder, changes);
 	camel_folder_change_info_free (changes);
 }
 
@@ -2451,7 +2451,7 @@ gw_update_all_items (CamelFolder *folder, GList *item_list, CamelException *ex)
 	}
 
 	groupwise_sync_summary (folder, ex);
-	camel_object_trigger_event (folder, "folder_changed", changes);
+	camel_folder_changed (folder, changes);
 
 	if (item_list) {
 		CamelStore *parent_store;
@@ -2779,7 +2779,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		index ++;
 	}
 
-	camel_object_trigger_event (source, "folder_changed", changes);
+	camel_folder_changed (source, changes);
 	camel_folder_change_info_free (changes);
 
 	/* Refresh the destination folder, if its not refreshed already */
@@ -2902,7 +2902,7 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 	}
 
 	if (delete)
-		camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes);
+		camel_folder_changed (folder, changes);
 
 	g_free (container_id);
 	camel_folder_change_info_free (changes);

@@ -1131,7 +1131,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 				full_name = camel_folder_get_full_name (imap->select_folder);
 				camel_db_delete_uids (imap->store->cdb_w, full_name, imap->expunged, NULL);
 				imapx_update_store_summary (imap->select_folder);
-				camel_object_trigger_event(imap->select_folder, "folder_changed", imap->changes);
+				camel_folder_changed (imap->select_folder, imap->changes);
 
 				g_slist_foreach (imap->expunged, (GFunc) g_free, NULL);
 				imap->expunged = NULL;
@@ -1239,7 +1239,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 				if (imapx_idle_supported (imap) && changed && imapx_in_idle (imap)) {
 					camel_folder_summary_save_to_db (imap->select_folder->summary, NULL);
 					imapx_update_store_summary (imap->select_folder);
-					camel_object_trigger_event(imap->select_folder, "folder_changed", imap->changes);
+					camel_folder_changed (imap->select_folder, imap->changes);
 					camel_folder_change_info_clear (imap->changes);
 				}
 
@@ -1401,7 +1401,6 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		/* TODO: handle bye/preauth differently */
 		camel_imapx_stream_ungettoken(imap->stream, tok, token, len);
 		sinfo = imapx_parse_status(imap->stream, ex);
-		camel_object_trigger_event(imap, "status", sinfo);
 		switch (sinfo->condition) {
 		case IMAPX_READ_WRITE:
 			imap->mode = IMAPX_MODE_READ|IMAPX_MODE_WRITE;
@@ -1593,7 +1592,7 @@ imapx_completion(CamelIMAPXServer *imap, guchar *token, gint len, CamelException
 		}
 
 		imapx_update_store_summary (imap->select_folder);
-		camel_object_trigger_event(imap->select_folder, "folder_changed", imap->changes);
+		camel_folder_changed (imap->select_folder, imap->changes);
 		camel_folder_change_info_clear (imap->changes);
 	}
 
@@ -2678,8 +2677,7 @@ imapx_command_append_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 				changes = camel_folder_change_info_new ();
 				camel_folder_change_info_add_uid (changes, mi->uid);
-				camel_object_trigger_event (CAMEL_OBJECT (job->folder), "folder_changed",
-						changes);
+				camel_folder_changed (job->folder, changes);
 				camel_folder_change_info_free (changes);
 
 				g_free(cur);
@@ -2806,7 +2804,7 @@ imapx_command_step_fetch_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	if (camel_folder_change_info_changed(job->u.refresh_info.changes)) {
 		imapx_update_store_summary (job->folder);
 		camel_folder_summary_save_to_db (job->folder->summary, NULL);
-		camel_object_trigger_event(job->folder, "folder_changed", job->u.refresh_info.changes);
+		camel_folder_changed (job->folder, job->u.refresh_info.changes);
 	}
 
 	camel_folder_change_info_clear(job->u.refresh_info.changes);
@@ -2999,7 +2997,7 @@ imapx_job_scan_changes_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		imapx_update_store_summary (job->folder);
 
 		if (camel_folder_change_info_changed(job->u.refresh_info.changes))
-			camel_object_trigger_event(job->folder, "folder_changed", job->u.refresh_info.changes);
+			camel_folder_changed (job->folder, job->u.refresh_info.changes);
 		camel_folder_change_info_clear(job->u.refresh_info.changes);
 
 		camel_folder_free_uids (job->folder, uids);
@@ -3067,7 +3065,7 @@ imapx_command_fetch_new_messages_done (CamelIMAPXServer *is, CamelIMAPXCommand *
 	if (camel_folder_change_info_changed(ic->job->u.refresh_info.changes)) {
 		imapx_update_store_summary (ic->job->folder);
 		camel_folder_summary_save_to_db (ic->job->folder->summary, NULL);
-		camel_object_trigger_event(ic->job->folder, "folder_changed", ic->job->u.refresh_info.changes);
+		camel_folder_changed (ic->job->folder, ic->job->u.refresh_info.changes);
 		camel_folder_change_info_clear(ic->job->u.refresh_info.changes);
 	}
 
@@ -3238,7 +3236,7 @@ imapx_command_expunge_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 			camel_db_delete_uids (parent_store->cdb_w, full_name, removed, ic->job->ex);
 			camel_folder_summary_save_to_db (folder->summary, ic->job->ex);
-			camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes);
+			camel_folder_changed (folder, changes);
 			camel_folder_change_info_free (changes);
 
 			g_slist_free (removed);
@@ -3882,8 +3880,6 @@ camel_imapx_server_class_init(CamelIMAPXServerClass *class)
 	object_class->constructed = imapx_server_constructed;
 
 	class->tagprefix = 'A';
-
-//	camel_object_class_add_event((CamelObjectClass *)class, "status", NULL);
 }
 
 static void
@@ -4267,7 +4263,7 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is, CamelFolder *folder, Came
 		imapx_run_job (is, job);
 
 		if (camel_folder_change_info_changed(job->u.refresh_info.changes))
-			camel_object_trigger_event(folder, "folder_changed", job->u.refresh_info.changes);
+			camel_folder_changed (folder, job->u.refresh_info.changes);
 	}
 
 	camel_folder_change_info_free(job->u.refresh_info.changes);

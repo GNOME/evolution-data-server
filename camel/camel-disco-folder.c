@@ -101,7 +101,8 @@ static CamelSessionThreadOps cdf_sync_ops = {
 };
 
 static void
-cdf_folder_changed(CamelFolder *folder, CamelFolderChangeInfo *changes, gpointer dummy)
+cdf_folder_changed (CamelFolder *folder,
+                    CamelFolderChangeInfo *changes)
 {
 	CamelStore *parent_store;
 	gboolean offline_sync;
@@ -419,9 +420,9 @@ camel_disco_folder_init (CamelDiscoFolder *disco_folder)
 {
 	disco_folder->priv = CAMEL_DISCO_FOLDER_GET_PRIVATE (disco_folder);
 
-	camel_object_hook_event (
-		disco_folder, "folder_changed",
-		(CamelObjectEventHookFunc) cdf_folder_changed, NULL);
+	g_signal_connect (
+		disco_folder, "changed",
+		G_CALLBACK (cdf_folder_changed), NULL);
 }
 
 /**

@@ -675,7 +675,7 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *store, const gchar *top, 
 					}
 					camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 					if (changes) {
-						camel_object_trigger_event((CamelObject *) folder, "folder_changed", changes);
+						camel_folder_changed (CAMEL_FOLDER (folder), changes);
 						camel_folder_change_info_free(changes);
 					}
 					g_object_unref (folder);
@@ -1026,7 +1026,7 @@ nntp_get_folder_info_offline(CamelStore *store, const gchar *top, guint32 flags,
 }
 
 static gboolean
-nntp_store_folder_subscribed (CamelStore *store, const gchar *folder_name)
+nntp_store_folder_is_subscribed (CamelStore *store, const gchar *folder_name)
 {
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (store);
 	CamelStoreInfo *si;
@@ -1068,7 +1068,7 @@ nntp_store_subscribe_folder (CamelStore *store, const gchar *folder_name,
 			camel_store_summary_touch ((CamelStoreSummary *) nntp_store->summary);
 			camel_store_summary_save ((CamelStoreSummary *) nntp_store->summary);
 			camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-			camel_object_trigger_event ((CamelObject *) nntp_store, "folder_subscribed", fi);
+			camel_store_folder_subscribed (CAMEL_STORE (nntp_store), fi);
 			camel_folder_info_free (fi);
 			return TRUE;
 		}
@@ -1105,7 +1105,7 @@ nntp_store_unsubscribe_folder (CamelStore *store, const gchar *folder_name,
 			camel_store_summary_touch ((CamelStoreSummary *) nntp_store->summary);
 			camel_store_summary_save ((CamelStoreSummary *) nntp_store->summary);
 			camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-			camel_object_trigger_event ((CamelObject *) nntp_store, "folder_unsubscribed", fi);
+			camel_store_folder_unsubscribed (CAMEL_STORE (nntp_store), fi);
 			camel_folder_info_free (fi);
 			return TRUE;
 		}
@@ -1239,7 +1239,7 @@ camel_nntp_store_class_init (CamelNNTPStoreClass *class)
 
 	store_class = CAMEL_STORE_CLASS (class);
 	store_class->free_folder_info = camel_store_free_folder_info_full;
-	store_class->folder_subscribed = nntp_store_folder_subscribed;
+	store_class->folder_is_subscribed = nntp_store_folder_is_subscribed;
 	store_class->subscribe_folder = nntp_store_subscribe_folder;
 	store_class->unsubscribe_folder = nntp_store_unsubscribe_folder;
 	store_class->create_folder = nntp_create_folder;
