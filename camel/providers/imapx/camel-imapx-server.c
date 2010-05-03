@@ -2041,9 +2041,9 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) is->select_pending;
 		c(printf("Select ok!\n"));
 
+		is->select_folder = is->select_pending;
 		full_name = camel_folder_get_full_name (is->select_folder);
 
-		is->select_folder = is->select_pending;
 		is->select = g_strdup(full_name);
 		is->state = IMAPX_SELECTED;
 		ifolder->exists_on_server = is->exists;
