@@ -980,7 +980,8 @@ imapx_job_matches (const gchar *folder_name, CamelIMAPXJob *job, guint32 type, c
 {
 	const gchar *full_name;
 
-	full_name = camel_folder_get_full_name (job->folder);
+	if (job->folder)
+		full_name = camel_folder_get_full_name (job->folder);
 
 	switch (job->type) {
 		case IMAPX_JOB_GET_MESSAGE:
