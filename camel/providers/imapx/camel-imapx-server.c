@@ -2618,6 +2618,7 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is, CamelIMAPXCommand *
 	if (i < uids->len) {
 		camel_imapx_command_free (ic);
 		imapx_command_copy_messages_step_start (is, job, i);
+		return;
 	}
 
 cleanup:
