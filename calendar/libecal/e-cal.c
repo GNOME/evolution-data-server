@@ -879,23 +879,28 @@ e_cal_new (ESource *source, ECalSourceType type)
 
 /* for each known source calls check_func, which should return TRUE if the required
    source have been found. Function returns NULL or the source on which was returned
-   TRUE by the check_func. Non-NULL pointer should be unreffed by g_object_unref. */
+   TRUE by the check_func. Non-NULL pointer should be unreffed by g_object_unref.
+
+   'sources' is an output parameter and cannot be NULL. When returned non-NULL, then
+   should be freed with g_object_unref function. */
 static ESource *
-search_known_sources (ECalSourceType type, gboolean (*check_func)(ESource *source, gpointer user_data), gpointer user_data, GError **error)
+search_known_sources (ECalSourceType type, gboolean (*check_func)(ESource *source, gpointer user_data), gpointer user_data, ESourceList **sources, GError **error)
 {
-	ESourceList *sources;
 	ESource *res = NULL;
 	GSList *g;
 	GError *err = NULL;
 
+	g_return_val_if_fail (sources != NULL, NULL);
 	g_return_val_if_fail (check_func != NULL, NULL);
 
-	if (!e_cal_get_sources (&sources, type, &err)) {
+	*sources = NULL;
+
+	if (!e_cal_get_sources (sources, type, &err)) {
 		g_propagate_error (error, err);
 		return NULL;
 	}
 
-	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
+	for (g = e_source_list_peek_groups (*sources); g; g = g->next) {
 		ESourceGroup *group = E_SOURCE_GROUP (g->data);
 		GSList *s;
 
@@ -911,8 +916,6 @@ search_known_sources (ECalSourceType type, gboolean (*check_func)(ESource *sourc
 		if (res)
 			break;
 	}
-
-	g_object_unref (sources);
 
 	return res;
 }
@@ -944,16 +947,19 @@ check_uri (ESource *source, gpointer uri)
 ECal *
 e_cal_new_from_uri (const gchar *uri, ECalSourceType type)
 {
+	ESourceList *sources = NULL;
 	ESource *source;
 	ECal *cal;
 
-	source = search_known_sources (type, check_uri, (gpointer) uri, NULL);
+	source = search_known_sources (type, check_uri, (gpointer) uri, &sources, NULL);
 	if (!source)
 		source = e_source_new_with_absolute_uri ("", uri);
 
 	cal = e_cal_new (source, type);
 
 	g_object_unref (source);
+	if (sources)
+		g_object_unref (sources);
 
 	return cal;
 }
@@ -4057,6 +4063,7 @@ check_default (ESource *source, gpointer data)
 gboolean
 e_cal_open_default (ECal **ecal, ECalSourceType type, ECalAuthFunc func, gpointer data, GError **error)
 {
+	ESourceList *sources = NULL;
 	GError *err = NULL;
 	ESource *default_source;
 	gboolean res = TRUE;
@@ -4064,9 +4071,11 @@ e_cal_open_default (ECal **ecal, ECalSourceType type, ECalAuthFunc func, gpointe
 	e_return_error_if_fail (ecal != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	*ecal = NULL;
 
-	default_source = search_known_sources (type, check_default, NULL, &err);
+	default_source = search_known_sources (type, check_default, NULL, &sources, &err);
 
 	if (err) {
+		if (sources)
+			g_object_unref (sources);
 		g_propagate_error (error, err);
 		return FALSE;
 	}
@@ -4104,6 +4113,9 @@ e_cal_open_default (ECal **ecal, ECalSourceType type, ECalAuthFunc func, gpointe
 		g_object_unref (*ecal);
 		*ecal = NULL;
 	}
+
+	if (sources)
+		g_object_unref (sources);
 
 	return res;
 }
