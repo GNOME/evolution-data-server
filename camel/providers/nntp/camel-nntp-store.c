@@ -696,6 +696,91 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *store, const gchar *top, 
 	return first;
 }
 
+/* returns new root */
+static CamelFolderInfo *
+nntp_push_to_hierarchy (CamelURL *base_url, CamelFolderInfo *root, CamelFolderInfo *pfi, GHashTable *known)
+{
+	CamelFolderInfo *fi, *last = NULL, *kfi;
+	gchar *name, *dot;
+
+	g_return_val_if_fail (pfi != NULL, root);
+	g_return_val_if_fail (known != NULL, root);
+
+	name = pfi->full_name;
+	g_return_val_if_fail (name != NULL, root);
+
+	while (dot = strchr (name, '.'), dot) {
+		*dot = '\0';
+
+		kfi = g_hash_table_lookup (known, pfi->full_name);
+		if (!kfi) {
+			gchar *path;
+			CamelURL *url;
+
+			fi = camel_folder_info_new ();
+			fi->full_name = g_strdup (pfi->full_name);
+			fi->name = g_strdup (name);
+
+			fi->unread = 0;
+			fi->total = 0;
+			fi->flags = CAMEL_FOLDER_NOSELECT | CAMEL_FOLDER_CHILDREN;
+			path = alloca (strlen (fi->full_name) + 2);
+			sprintf (path, "/%s", fi->full_name);
+			url = camel_url_new_with_base (base_url, path);
+			fi->uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
+			camel_url_free (url);
+
+			g_hash_table_insert (known, fi->full_name, fi);
+			if (last) {
+				if (!last->child) {
+					last->child = fi;
+					fi->parent = last;
+				} else {
+					kfi = last->child;
+					while (kfi->next)
+						kfi = kfi->next;
+					kfi->next = fi;
+					fi->parent = last;
+				}
+			}
+			last = fi;
+			if (!root)
+				root = fi;
+		} else {
+			last = kfi;
+		}
+
+		*dot = '.';
+		name = dot + 1;
+	}
+
+	g_free (pfi->name);
+	pfi->name = g_strdup (name);
+
+	if (!root) {
+		root = pfi;
+	} else if (!last) {
+		kfi = root;
+		while (kfi->next)
+			kfi = kfi->next;
+		kfi->next = pfi;
+		pfi->parent = kfi->parent;
+	} else {
+		if (!last->child) {
+			last->child = pfi;
+			pfi->parent = last;
+		} else {
+			kfi = last->child;
+			while (kfi->next)
+				kfi = kfi->next;
+			kfi->next = pfi;
+			pfi->parent = last;
+		}
+	}
+
+	return root;
+}
+
 /*
  * get folder info, using the information in our StoreSummary
  */
@@ -705,17 +790,21 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store, const gchar *orig_top,
 	gint i;
 	gint subscribed_or_flag = (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) ? 0 : 1,
 	    root_or_flag = (orig_top == NULL || orig_top[0] == '\0') ? 1 : 0,
-	    recursive_flag = flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE;
+	    recursive_flag = flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE,
+	    is_folder_list = flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST;
 	CamelStoreInfo *si;
-	CamelFolderInfo *first = NULL, *last = NULL, *fi = NULL, *l;
+	CamelFolderInfo *first = NULL, *last = NULL, *fi = NULL;
+	GHashTable *known; /* folder name to folder info */
 	gchar *tmpname;
 	gchar *top = g_strconcat(orig_top?orig_top:"", ".", NULL);
 	gint toplen = strlen(top);
 
+	known = g_hash_table_new (g_str_hash, g_str_equal);
+
 	for (i = 0; (si = camel_store_summary_index ((CamelStoreSummary *) store->summary, i)); i++) {
 		if ((subscribed_or_flag || (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED))
 		    && (root_or_flag || strncmp (si->path, top, toplen) == 0)) {
-			if (recursive_flag || strchr (si->path + toplen, '.') == NULL) {
+			if (recursive_flag || is_folder_list || strchr (si->path + toplen, '.') == NULL) {
 				/* add the item */
 				fi = nntp_folder_info_from_store_info(store, FALSE, si);
 				if (!fi)
@@ -748,24 +837,24 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store, const gchar *orig_top,
 				}
 			}
 
-			for (l = first; l; l = l->next) {
-				if (l->full_name && fi->full_name && g_str_equal (l->full_name, fi->full_name)) {
-					/* it's there already, do not add it twice */
-					camel_folder_info_free (fi);
-					break;
-				}
-			}
-
-			if (l) {
+			if (fi->full_name && g_hash_table_lookup (known, fi->full_name)) {
 				/* a duplicate has been found above */
+				camel_folder_info_free (fi);
 				continue;
 			}
 
-			if (last)
-				last->next = fi;
-			else
-				first = fi;
-			last = fi;
+			g_hash_table_insert (known, fi->full_name, fi);
+
+			if (is_folder_list) {
+				/* create a folder hierarchy rather than a flat list */
+				first = nntp_push_to_hierarchy (((CamelService *)store)->url, first, fi, known);
+			} else {
+				if (last)
+					last->next = fi;
+				else
+					first = fi;
+				last = fi;
+			}
 		} else if (subscribed_or_flag && first) {
 			/* we have already added subitems, but this item is no longer a subitem */
 			camel_store_summary_info_free((CamelStoreSummary *)store->summary, si);
@@ -774,6 +863,7 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store, const gchar *orig_top,
 		camel_store_summary_info_free((CamelStoreSummary *)store->summary, si);
 	}
 
+	g_hash_table_destroy (known);
 	g_free(top);
 	return first;
 }
