@@ -49,7 +49,7 @@ static gchar * pop3_get_filename (CamelFolder *folder, const gchar *uid, CamelEx
 G_DEFINE_TYPE (CamelPOP3Folder, camel_pop3_folder, CAMEL_TYPE_FOLDER)
 
 static void
-pop3_folder_finalize (GObject *object)
+pop3_folder_dispose (GObject *object)
 {
 	CamelPOP3Folder *pop3_folder = CAMEL_POP3_FOLDER (object);
 	CamelPOP3FolderInfo **fi = (CamelPOP3FolderInfo **)pop3_folder->uids->pdata;
@@ -58,26 +58,28 @@ pop3_folder_finalize (GObject *object)
 	gint i;
 
 	parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (object));
-	pop3_store = CAMEL_POP3_STORE (parent_store);
+	if (parent_store) {
+		pop3_store = CAMEL_POP3_STORE (parent_store);
 
-	if (pop3_folder->uids) {
-		for (i=0;i<pop3_folder->uids->len;i++,fi++) {
-			if (fi[0]->cmd) {
-				while (camel_pop3_engine_iterate(pop3_store->engine, fi[0]->cmd) > 0)
-					;
-				camel_pop3_engine_command_free(pop3_store->engine, fi[0]->cmd);
+		if (pop3_folder->uids) {
+			for (i = 0; i < pop3_folder->uids->len; i++, fi++) {
+				if (fi[0]->cmd) {
+					while (camel_pop3_engine_iterate (pop3_store->engine, fi[0]->cmd) > 0)
+						;
+					camel_pop3_engine_command_free (pop3_store->engine, fi[0]->cmd);
+				}
+
+				g_free (fi[0]->uid);
+				g_free (fi[0]);
 			}
 
-			g_free(fi[0]->uid);
-			g_free(fi[0]);
+			g_ptr_array_free (pop3_folder->uids, TRUE);
+			g_hash_table_destroy (pop3_folder->uids_uid);
 		}
-
-		g_ptr_array_free(pop3_folder->uids, TRUE);
-		g_hash_table_destroy(pop3_folder->uids_uid);
 	}
 
-	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (camel_pop3_folder_parent_class)->finalize (object);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_pop3_folder_parent_class)->dispose (object);
 }
 
 static void
@@ -87,7 +89,7 @@ camel_pop3_folder_class_init (CamelPOP3FolderClass *class)
 	CamelFolderClass *folder_class;
 
 	object_class = G_OBJECT_CLASS (class);
-	object_class->finalize = pop3_folder_finalize;
+	object_class->dispose = pop3_folder_dispose;
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
 	folder_class->refresh_info = pop3_refresh_info;
