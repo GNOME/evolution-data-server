@@ -109,7 +109,6 @@ static EContact*
 download_contact(EBookBackendWebdav *webdav, const gchar *uri)
 {
 	SoupMessage *message;
-	const gchar  *content_type;
 	const gchar  *etag;
 	EContact    *contact;
 	guint        status;
@@ -124,17 +123,7 @@ download_contact(EBookBackendWebdav *webdav, const gchar *uri)
 		g_object_unref(message);
 		return NULL;
 	}
-	/* TODO: write a real Content-Type parser,
-	 * DECIDE: should we also accept text/plain for webdav servers that
-	 * don't know about text/x-vcard?*/
-	content_type = soup_message_headers_get(message->response_headers,
-						"Content-Type");
-	if (content_type != NULL && strstr(content_type, "text/x-vcard") == NULL) {
-		g_message("'%s' doesn't have mime-type text/x-vcard but '%s'", uri,
-			  content_type);
-		g_object_unref(message);
-		return NULL;
-	}
+
 	if (message->response_body == NULL) {
 		g_message("no response body after requesting '%s'", uri);
 		g_object_unref(message);
