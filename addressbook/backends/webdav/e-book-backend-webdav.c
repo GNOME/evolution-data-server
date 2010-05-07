@@ -157,7 +157,7 @@ upload_contact(EBookBackendWebdav *webdav, EContact *contact)
 	SoupMessage *message;
 	gchar       *uri;
 	gchar       *etag;
-	const gchar  *new_etag;
+	const gchar  *new_etag, *redir_uri;
 	gchar        *request;
 	guint        status;
 	const gchar  *property;
@@ -208,9 +208,29 @@ upload_contact(EBookBackendWebdav *webdav, EContact *contact)
 	status   = soup_session_send_message(webdav->priv->session, message);
 	new_etag = soup_message_headers_get(message->response_headers, "ETag");
 
+	redir_uri = soup_message_headers_get (message->response_headers, "Location");
+
 	/* set UID and REV fields */
 	e_contact_set(contact, E_CONTACT_REV, (gconstpointer) new_etag);
-	e_contact_set(contact, E_CONTACT_UID, uri);
+	if (redir_uri && *redir_uri) {
+		if (!strstr (redir_uri, "://")) {
+			/* it's a relative URI */
+			SoupURI *suri = soup_uri_new (uri);
+			gchar *full_uri;
+
+			soup_uri_set_path (suri, redir_uri);
+			full_uri = soup_uri_to_string (suri, TRUE);
+
+			e_contact_set (contact, E_CONTACT_UID, full_uri);
+
+			g_free (full_uri);
+			soup_uri_free (suri);
+		} else {
+			e_contact_set (contact, E_CONTACT_UID, redir_uri);
+		}
+	} else {
+		e_contact_set (contact, E_CONTACT_UID, uri);
+	}
 
 	g_object_unref(message);
 	g_free(request);
@@ -281,10 +301,12 @@ e_book_backend_webdav_create_contact(EBookBackend *backend,
 	}
 	/* PUT request didn't return an etag? try downloading to get one */
 	if (e_contact_get_const(contact, E_CONTACT_REV) == NULL) {
+		const gchar *new_uid;
 		EContact *new_contact;
 
 		g_warning("Server didn't return etag for new address resource");
-		new_contact = download_contact(webdav, uid);
+		new_uid = e_contact_get_const (contact, E_CONTACT_UID);
+		new_contact = download_contact (webdav, new_uid);
 		g_object_unref(contact);
 
 		if (new_contact == NULL) {
