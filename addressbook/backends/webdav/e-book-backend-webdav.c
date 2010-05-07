@@ -51,9 +51,12 @@
 
 #include <libxml/parser.h>
 #include <libxml/xmlreader.h>
+#include <libxml/xpath.h>
+#include <libxml/xpathInternals.h>
 
 #define USERAGENT             "Evolution/" VERSION
 #define WEBDAV_CLOSURE_NAME   "EBookBackendWebdav.BookView::closure"
+#define WEBDAV_CTAG_KEY "WEBDAV_CTAG"
 
 G_DEFINE_TYPE (EBookBackendWebdav, e_book_backend_webdav, E_TYPE_BOOK_BACKEND)
 
@@ -67,6 +70,7 @@ struct _EBookBackendWebdavPrivate {
 	gchar             *uri;
 	gchar              *username;
 	gchar              *password;
+	gboolean supports_getctag;
 
 	EBookBackendCache *cache;
 };
@@ -126,6 +130,11 @@ download_contact(EBookBackendWebdav *webdav, const gchar *uri)
 
 	if (message->response_body == NULL) {
 		g_message("no response body after requesting '%s'", uri);
+		g_object_unref(message);
+		return NULL;
+	}
+
+	if (message->response_body->length <= 11 || 0 != g_ascii_strncasecmp ((const gchar *) message->response_body->data, "BEGIN:VCARD", 11)) {
 		g_object_unref(message);
 		return NULL;
 	}
@@ -639,6 +648,149 @@ send_propfind(EBookBackendWebdav *webdav)
 	return message;
 }
 
+static xmlXPathObjectPtr
+xpath_eval (xmlXPathContextPtr ctx, const gchar *format, ...)
+{
+	xmlXPathObjectPtr  result;
+	va_list            args;
+	gchar              *expr;
+
+	if (ctx == NULL) {
+		return NULL;
+	}
+
+	va_start (args, format);
+	expr = g_strdup_vprintf (format, args);
+	va_end (args);
+
+	result = xmlXPathEvalExpression ((xmlChar *) expr, ctx);
+	g_free (expr);
+
+	if (result == NULL) {
+		return NULL;
+	}
+
+	if (result->type == XPATH_NODESET &&
+	    xmlXPathNodeSetIsEmpty (result->nodesetval)) {
+		xmlXPathFreeObject (result);
+		return NULL;
+	}
+
+	return result;
+}
+
+static gchar *
+xp_object_get_string (xmlXPathObjectPtr result)
+{
+	gchar *ret = NULL;
+
+	if (result == NULL)
+		return ret;
+
+	if (result->type == XPATH_STRING) {
+		ret = g_strdup ((gchar *) result->stringval);
+	}
+
+	xmlXPathFreeObject (result);
+	return ret;
+}
+
+static guint
+xp_object_get_status (xmlXPathObjectPtr result)
+{
+	gboolean res;
+	guint    ret = 0;
+
+	if (result == NULL)
+		return ret;
+
+	if (result->type == XPATH_STRING) {
+		res = soup_headers_parse_status_line ((gchar *) result->stringval, NULL, &ret, NULL);
+		if (!res) {
+			ret = 0;
+		}
+	}
+
+	xmlXPathFreeObject (result);
+	return ret;
+}
+
+static gboolean
+check_addressbook_changed (EBookBackendWebdav *webdav, gchar **new_ctag)
+{
+	gboolean res = TRUE;
+	const gchar *request = "<?xml version=\"1.0\" encoding=\"utf-8\"?><propfind xmlns=\"DAV:\"><prop><getctag/></prop></propfind>";
+	EBookBackendWebdavPrivate *priv;
+	SoupMessage *message;
+
+	g_return_val_if_fail (webdav != NULL, TRUE);
+	g_return_val_if_fail (new_ctag != NULL, TRUE);
+
+	*new_ctag = NULL;
+	priv = webdav->priv;
+
+	if (!priv->supports_getctag)
+		return TRUE;
+
+	priv->supports_getctag = FALSE;
+
+	message = soup_message_new (SOUP_METHOD_PROPFIND, priv->uri);
+	if (!message)
+		return TRUE;
+
+	soup_message_headers_append (message->request_headers, "User-Agent", USERAGENT);
+	soup_message_headers_append (message->request_headers, "Depth", "0");
+	soup_message_set_request (message, "text/xml", SOUP_MEMORY_TEMPORARY, (gchar *) request, strlen (request));
+	soup_session_send_message (priv->session, message);
+
+	if (message->status_code == 207 && message->response_body) {
+		xmlDocPtr xml;
+
+		xml = xmlReadMemory (message->response_body->data, message->response_body->length, NULL, NULL, XML_PARSE_NOWARNING);
+		if (xml) {
+			const gchar *GETCTAG_XPATH_STATUS = "string(/D:multistatus/D:response/D:propstat/D:prop/D:getctag/../../D:status)";
+			const gchar *GETCTAG_XPATH_VALUE = "string(/D:multistatus/D:response/D:propstat/D:prop/D:getctag)";
+			xmlXPathContextPtr xpctx;
+	
+			xpctx = xmlXPathNewContext (xml);
+			xmlXPathRegisterNs (xpctx, (xmlChar *) "D", (xmlChar *) "DAV:");
+
+			if (xp_object_get_status (xpath_eval (xpctx, GETCTAG_XPATH_STATUS)) == 200) {
+				gchar *txt = xp_object_get_string (xpath_eval (xpctx, GETCTAG_XPATH_VALUE));
+
+				if (txt && *txt) {
+					gint len = strlen (txt);
+
+					if (*txt == '\"' && len > 2 && txt [len - 1] == '\"') {
+						/* dequote */
+						*new_ctag = g_strndup (txt + 1, len - 2);
+					} else {
+						*new_ctag = txt;
+						txt = NULL;
+					}
+
+					if (*new_ctag) {
+						const gchar *my_ctag;
+
+						my_ctag = e_file_cache_get_object (E_FILE_CACHE (priv->cache), WEBDAV_CTAG_KEY);
+						res = !my_ctag || !g_str_equal (my_ctag, *new_ctag);
+						priv->supports_getctag = TRUE;
+					}
+				}
+
+				g_free (txt);
+			}
+
+			xmlXPathFreeContext (xpctx);
+			xmlFreeDoc (xml);
+		}
+	}
+
+	g_object_unref (message);
+
+	return res;
+}
+
 static GNOME_Evolution_Addressbook_CallStatus
 download_contacts(EBookBackendWebdav *webdav, EFlag *running,
                   EDataBookView *book_view)
@@ -652,6 +804,25 @@ download_contacts(EBookBackendWebdav *webdav, EFlag *running,
 	response_element_t        *next;
 	gint                        count;
 	gint                        i;
+	gchar                     *new_ctag = NULL;
+
+	if (!check_addressbook_changed (webdav, &new_ctag)) {
+		if (book_view) {
+			GList *contact_list, *cl;
+
+			contact_list = e_book_backend_cache_get_contacts (priv->cache, e_data_book_view_get_card_query (book_view));
+			for (cl = contact_list; cl != NULL; cl = g_list_next (cl)) {
+				EContact *contact = cl->data;
+
+				e_data_book_view_notify_update (book_view, contact);
+
+				g_object_unref (contact);
+			}
+			g_list_free (contact_list);
+		}
+		g_free (new_ctag);
+		return GNOME_Evolution_Addressbook_Success;
+	}
 
 	if (book_view != NULL) {
 		e_data_book_view_notify_status_message(book_view,
@@ -665,19 +836,25 @@ download_contacts(EBookBackendWebdav *webdav, EFlag *running,
 		GNOME_Evolution_Addressbook_CallStatus res
 			= e_book_backend_handle_auth_request(webdav);
 		g_object_unref(message);
-		e_data_book_view_unref(book_view);
+		g_free (new_ctag);
+		if (book_view)
+			e_data_book_view_unref(book_view);
 		return res;
 	}
 	if (status != 207) {
 		g_warning("PROPFIND on webdav failed with http status %d", status);
 		g_object_unref(message);
-		e_data_book_view_unref(book_view);
+		g_free (new_ctag);
+		if (book_view)
+			e_data_book_view_unref(book_view);
 		return GNOME_Evolution_Addressbook_OtherError;
 	}
 	if (message->response_body == NULL) {
 		g_warning("No response body in webdav PROPEFIND result");
 		g_object_unref(message);
-		e_data_book_view_unref(book_view);
+		g_free (new_ctag);
+		if (book_view)
+			e_data_book_view_unref(book_view);
 		return GNOME_Evolution_Addressbook_OtherError;
 	}
 
@@ -760,6 +937,12 @@ download_contacts(EBookBackendWebdav *webdav, EFlag *running,
 
 	xmlFreeTextReader(reader);
 	g_object_unref(message);
+
+	if (new_ctag) {
+		if (!e_file_cache_replace_object (E_FILE_CACHE (priv->cache), WEBDAV_CTAG_KEY, new_ctag))
+			e_file_cache_add_object (E_FILE_CACHE (priv->cache), WEBDAV_CTAG_KEY, new_ctag);
+	}
+	g_free (new_ctag);
 
 	return GNOME_Evolution_Addressbook_Success;
 }
@@ -1005,6 +1188,9 @@ e_book_backend_webdav_load_source(EBookBackend *backend,
 	const gchar                *use_ssl;
 	const gchar                *suffix;
 	SoupSession               *session;
+
+	/* will try fetch ctag for the first time, if it fails then sets this to FALSE */
+	priv->supports_getctag = TRUE;
 
 	uri = e_source_get_uri(source);
 	if (uri == NULL) {
