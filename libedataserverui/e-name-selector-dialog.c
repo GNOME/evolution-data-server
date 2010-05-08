@@ -521,13 +521,34 @@ selection_changed (GtkTreeSelection *selection, SelData *data)
 	gtk_widget_set_sensitive (GTK_WIDGET (data->button), have_selection);
 }
 
+static GtkTreeView *
+make_tree_view_for_section (ENameSelectorDialog *name_selector_dialog, EDestinationStore *destination_store)
+{
+	GtkTreeView *tree_view;
+	GtkTreeViewColumn *column;
+	GtkCellRenderer   *cell_renderer;
+
+	tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
+
+	column = gtk_tree_view_column_new ();
+	cell_renderer = GTK_CELL_RENDERER (gtk_cell_renderer_text_new ());
+	gtk_tree_view_column_pack_start (column, cell_renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func (column, cell_renderer,
+						 (GtkTreeCellDataFunc) destination_column_formatter,
+						 name_selector_dialog, NULL);
+	gtk_tree_view_append_column (tree_view, column);
+	gtk_tree_view_set_headers_visible (tree_view, FALSE);
+	gtk_tree_view_set_model (tree_view, GTK_TREE_MODEL (destination_store));
+
+
+	return tree_view;
+}
+
 static gint
 add_section (ENameSelectorDialog *name_selector_dialog,
 	     const gchar *name, const gchar *pretty_name, EDestinationStore *destination_store)
 {
 	Section            section;
-	GtkTreeViewColumn *column;
-	GtkCellRenderer   *cell_renderer;
 	GtkWidget	  *vbox, *hbox, *chbox;
 	GtkWidget	  *widget, *image, *label;
 	SelData		  *data;
@@ -545,7 +566,7 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	section.label = GTK_LABEL (gtk_label_new_with_mnemonic (pretty_name));
 	section.transfer_button  = GTK_BUTTON (gtk_button_new());
 	section.remove_button  = GTK_BUTTON (gtk_button_new());
-	section.destination_view = GTK_TREE_VIEW (gtk_tree_view_new ());
+	section.destination_view = make_tree_view_for_section (name_selector_dialog, destination_store);
 
 	gtk_label_set_mnemonic_widget (GTK_LABEL (section.label), GTK_WIDGET (section.destination_view));
 
@@ -570,17 +591,6 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 
 	g_signal_connect(section.remove_button, "clicked",
 				  G_CALLBACK (remove_button_clicked), data);
-
-	/* Set up view */
-	column = gtk_tree_view_column_new ();
-	cell_renderer = GTK_CELL_RENDERER (gtk_cell_renderer_text_new ());
-	gtk_tree_view_column_pack_start (column, cell_renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func (column, cell_renderer,
-						 (GtkTreeCellDataFunc) destination_column_formatter,
-						 name_selector_dialog, NULL);
-	gtk_tree_view_append_column (section.destination_view, column);
-	gtk_tree_view_set_headers_visible (section.destination_view, FALSE);
-	gtk_tree_view_set_model (section.destination_view, GTK_TREE_MODEL (destination_store));
 
 	vbox = gtk_vbox_new (FALSE, 0);
 	chbox = gtk_hbox_new (FALSE, 0);
