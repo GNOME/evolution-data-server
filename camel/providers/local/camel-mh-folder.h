@@ -56,10 +56,12 @@ struct _CamelMhFolderClass {
 	CamelLocalFolderClass parent_class;
 };
 
-/* public methods */
-CamelFolder *camel_mh_folder_new (CamelStore *parent_store, const gchar *full_name, guint32 flags, GError **error);
-
-GType camel_mh_folder_get_type (void);
+GType		camel_mh_folder_get_type	(void);
+CamelFolder *	camel_mh_folder_new		(CamelStore *parent_store,
+						 const gchar *full_name,
+						 guint32 flags,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

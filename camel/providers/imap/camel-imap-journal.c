@@ -44,10 +44,9 @@
 static void imap_entry_free (CamelOfflineJournal *journal, CamelDListNode *entry);
 static CamelDListNode *imap_entry_load (CamelOfflineJournal *journal, FILE *in);
 static gint imap_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
-static gint imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, GError **error);
+static gint imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, GCancellable *cancellable, GError **error);
 static void unref_folder (gpointer key, gpointer value, gpointer data);
 static void free_uids (GPtrArray *array);
-static void close_folder (gpointer name, gpointer folder, gpointer data);
 
 G_DEFINE_TYPE (CamelIMAPJournal, camel_imap_journal, CAMEL_TYPE_OFFLINE_JOURNAL)
 
@@ -275,7 +274,9 @@ imap_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out
 }
 
 static CamelFolder *
-journal_decode_folder (CamelIMAPJournal *journal, const gchar *name)
+journal_decode_folder (CamelIMAPJournal *journal,
+                       const gchar *name,
+                       GCancellable *cancellable)
 {
 	CamelFolder *folder;
 	CamelOfflineJournal *offline = CAMEL_OFFLINE_JOURNAL (journal);
@@ -291,7 +292,8 @@ journal_decode_folder (CamelIMAPJournal *journal, const gchar *name)
 
 		parent_store = camel_folder_get_parent_store (
 			CAMEL_OFFLINE_JOURNAL (journal)->folder);
-		folder = camel_store_get_folder (parent_store, name, 0, &local_error);
+		folder = camel_store_get_folder (
+			parent_store, name, 0, cancellable, &local_error);
 		if (folder)
 			g_hash_table_insert (journal->folders, (gchar *) name, folder);
 		else {
@@ -310,7 +312,10 @@ journal_decode_folder (CamelIMAPJournal *journal, const gchar *name)
 }
 
 static gint
-imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, GError **error)
+imap_entry_play (CamelOfflineJournal *journal,
+                 CamelDListNode *entry,
+                 GCancellable *cancellable,
+                 GError **error)
 {
 	CamelIMAPJournalEntry *imap_entry = (CamelIMAPJournalEntry *) entry;
 
@@ -319,7 +324,7 @@ imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, GError **e
 	switch (imap_entry->type) {
 	case CAMEL_IMAP_JOURNAL_ENTRY_EXPUNGE:
 		camel_imap_expunge_uids_resyncing (
-			journal->folder, imap_entry->uids, NULL);
+			journal->folder, imap_entry->uids, cancellable, NULL);
 		return 0;
 	case CAMEL_IMAP_JOURNAL_ENTRY_APPEND:
 	{
@@ -327,7 +332,9 @@ imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, GError **e
 		CamelMimeMessage *message;
 		CamelMessageInfo *info;
 
-		message = camel_folder_get_message (journal->folder, imap_entry->append_uid, error);
+		message = camel_folder_get_message (
+			journal->folder, imap_entry->append_uid,
+			cancellable, error);
 		if (!message) {
 			/* it seems message gone, just ignore the error and continue;
 			   otherwise the entry would not be removed from the list */
@@ -337,7 +344,7 @@ imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, GError **e
 
 		info = camel_folder_get_message_info (journal->folder, imap_entry->append_uid);
 		camel_imap_append_resyncing (
-			journal->folder, message, info, &ret_uid, NULL);
+			journal->folder, message, info, &ret_uid, cancellable, NULL);
 		camel_folder_free_message_info (journal->folder, info);
 
 		if (ret_uid) {
@@ -353,7 +360,9 @@ imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, GError **e
 		GPtrArray *ret_uids;
 		gint i;
 
-		destination = journal_decode_folder ((CamelIMAPJournal *)journal, imap_entry->dest_folder_name);
+		destination = journal_decode_folder (
+			(CamelIMAPJournal *) journal,
+			imap_entry->dest_folder_name, cancellable);
 		if (!destination) {
 			d(g_print ("Destination folder not found \n"));
 			return -1;
@@ -361,7 +370,7 @@ imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, GError **e
 
 		if (!camel_imap_transfer_resyncing (
 			journal->folder, imap_entry->uids, destination,
-			&ret_uids, imap_entry->move, error))
+			&ret_uids, imap_entry->move, cancellable, error))
 			return -1;
 
 		if (ret_uids) {
@@ -445,10 +454,11 @@ camel_imap_journal_log (CamelOfflineJournal *journal, CamelOfflineAction action,
 }
 
 static void
-close_folder (gpointer name, gpointer folder, gpointer data)
+close_folder (gchar *name,
+              CamelFolder *folder)
 {
 	g_free (name);
-	camel_folder_sync (folder, FALSE, NULL);
+	camel_folder_sync (folder, FALSE, NULL, NULL);
 	g_object_unref (folder);
 }
 
@@ -459,7 +469,8 @@ camel_imap_journal_close_folders (CamelIMAPJournal *journal)
 	if (!journal->folders)
 		return;
 
-	g_hash_table_foreach (journal->folders, close_folder, journal);
+	g_hash_table_foreach (
+		journal->folders, (GHFunc) close_folder, NULL);
 	g_hash_table_remove_all (journal->folders);
 }
 

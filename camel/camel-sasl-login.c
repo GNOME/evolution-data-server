@@ -59,6 +59,7 @@ G_DEFINE_TYPE (CamelSaslLogin, camel_sasl_login, CAMEL_TYPE_SASL)
 static GByteArray *
 sasl_login_challenge (CamelSasl *sasl,
                       GByteArray *token,
+                      GCancellable *cancellable,
                       GError **error)
 {
 	CamelSaslLoginPrivate *priv;

@@ -64,12 +64,14 @@ static gssize
 stream_write_all (CamelStream *stream,
                   const gchar *buffer,
                   gsize n,
+                  GCancellable *cancellable,
                   GError **error)
 {
 	gsize left = n, w;
 
 	while (left > 0) {
-		w = camel_stream_write (stream, buffer, left, error);
+		w = camel_stream_write (
+			stream, buffer, left, cancellable, error);
 		if (w == -1)
 			return -1;
 		left -= w;
@@ -142,6 +144,7 @@ static gssize
 stream_buffer_read (CamelStream *stream,
                     gchar *buffer,
                     gsize n,
+                    GCancellable *cancellable,
                     GError **error)
 {
 	CamelStreamBufferPrivate *priv;
@@ -168,15 +171,16 @@ stream_buffer_read (CamelStream *stream,
 			/* if we are reading a lot, then read directly to the destination buffer */
 			if (n >= priv->size/3) {
 				bytes_read = camel_stream_read (
-					priv->stream, bptr, n, &local_error);
+					priv->stream, bptr, n,
+					cancellable, &local_error);
 				if (bytes_read>0) {
 					n -= bytes_read;
 					bptr += bytes_read;
 				}
 			} else {
 				bytes_read = camel_stream_read (
-					priv->stream, (gchar *)
-					priv->buf, priv->size, &local_error);
+					priv->stream, (gchar *) priv->buf,
+					priv->size, cancellable, &local_error);
 				if (bytes_read>0) {
 					gsize bytes_used = bytes_read > n ? n : bytes_read;
 					priv->ptr = priv->buf;
@@ -214,6 +218,7 @@ static gssize
 stream_buffer_write (CamelStream *stream,
                      const gchar *buffer,
                      gsize n,
+                     GCancellable *cancellable,
                      GError **error)
 {
 	CamelStreamBufferPrivate *priv;
@@ -239,7 +244,7 @@ stream_buffer_write (CamelStream *stream,
 	if (left == todo) {
 		if (stream_write_all (
 			priv->stream, (gchar *) priv->buf,
-			priv->size, error) == -1)
+			priv->size, cancellable, error) == -1)
 			return -1;
 
 		priv->ptr = priv->buf;
@@ -249,7 +254,8 @@ stream_buffer_write (CamelStream *stream,
 	if (n > 0) {
 		if (n >= priv->size/3) {
 			if (stream_write_all (
-				priv->stream, buffer, n, error) == -1)
+				priv->stream, buffer, n,
+				cancellable, error) == -1)
 				return -1;
 		} else {
 			memcpy (priv->ptr, buffer, n);
@@ -262,6 +268,7 @@ stream_buffer_write (CamelStream *stream,
 
 static gint
 stream_buffer_flush (CamelStream *stream,
+                     GCancellable *cancellable,
                      GError **error)
 {
 	CamelStreamBufferPrivate *priv;
@@ -272,7 +279,8 @@ stream_buffer_flush (CamelStream *stream,
 		gsize len = priv->ptr - priv->buf;
 
 		if (camel_stream_write (
-			priv->stream, (gchar *) priv->buf, len, error) == -1)
+			priv->stream, (gchar *) priv->buf,
+			len, cancellable, error) == -1)
 			return -1;
 
 		priv->ptr = priv->buf;
@@ -280,21 +288,22 @@ stream_buffer_flush (CamelStream *stream,
 		/* nothing to do for read mode 'flush' */
 	}
 
-	return camel_stream_flush (priv->stream, error);
+	return camel_stream_flush (priv->stream, cancellable, error);
 }
 
 static gint
 stream_buffer_close (CamelStream *stream,
+                     GCancellable *cancellable,
                      GError **error)
 {
 	CamelStreamBufferPrivate *priv;
 
 	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
 
-	if (stream_buffer_flush (stream, error) == -1)
+	if (stream_buffer_flush (stream, cancellable, error) == -1)
 		return -1;
 
-	return camel_stream_close (priv->stream, error);
+	return camel_stream_close (priv->stream, cancellable, error);
 }
 
 static gboolean
@@ -470,6 +479,7 @@ camel_stream_buffer_new_with_vbuf (CamelStream *stream,
  * @sbf: a #CamelStreamBuffer object
  * @buf: Memory to write the string to.
  * @max: Maxmimum number of characters to store.
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Read a line of characters up to the next newline character or
@@ -485,6 +495,7 @@ gint
 camel_stream_buffer_gets (CamelStreamBuffer *sbf,
                           gchar *buf,
                           guint max,
+                          GCancellable *cancellable,
                           GError **error)
 {
 	register gchar *outptr, *inptr, *inend, c, *outend;
@@ -509,8 +520,8 @@ camel_stream_buffer_gets (CamelStreamBuffer *sbf,
 			break;
 
 		bytes_read = camel_stream_read (
-			sbf->priv->stream, (gchar *)
-			sbf->priv->buf, sbf->priv->size, error);
+			sbf->priv->stream, (gchar *) sbf->priv->buf,
+			sbf->priv->size, cancellable, error);
 		if (bytes_read == -1) {
 			if (buf == outptr)
 				return -1;
@@ -532,6 +543,7 @@ camel_stream_buffer_gets (CamelStreamBuffer *sbf,
 /**
  * camel_stream_buffer_read_line:
  * @sbf: a #CamelStreamBuffer object
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a @GError, or %NULL
  *
  * This function reads a complete newline-terminated line from the stream
@@ -543,6 +555,7 @@ camel_stream_buffer_gets (CamelStreamBuffer *sbf,
  **/
 gchar *
 camel_stream_buffer_read_line (CamelStreamBuffer *sbf,
+                               GCancellable *cancellable,
                                GError **error)
 {
 	guchar *p;
@@ -553,7 +566,7 @@ camel_stream_buffer_read_line (CamelStreamBuffer *sbf,
 	while (1) {
 		nread = camel_stream_buffer_gets (
 			sbf, (gchar *) p, sbf->priv->linesize -
-			(p - sbf->priv->linebuf), error);
+			(p - sbf->priv->linebuf), cancellable, error);
 		if (nread <=0) {
 			if (p > sbf->priv->linebuf)
 				break;

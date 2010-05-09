@@ -218,6 +218,7 @@ mime_message_finalize (GObject *object)
 static gssize
 mime_message_write_to_stream (CamelDataWrapper *data_wrapper,
                               CamelStream *stream,
+                              GCancellable *cancellable,
                               GError **error)
 {
 	CamelDataWrapperClass *data_wrapper_class;
@@ -244,8 +245,10 @@ mime_message_write_to_stream (CamelDataWrapper *data_wrapper,
 		camel_medium_set_header ((CamelMedium *)mm, "Mime-Version", "1.0");
 
 	/* Chain up to parent's write_to_stream() method. */
-	data_wrapper_class = CAMEL_DATA_WRAPPER_CLASS (camel_mime_message_parent_class);
-	return data_wrapper_class->write_to_stream (data_wrapper, stream, error);
+	data_wrapper_class = CAMEL_DATA_WRAPPER_CLASS (
+		camel_mime_message_parent_class);
+	return data_wrapper_class->write_to_stream (
+		data_wrapper, stream, cancellable, error);
 }
 
 static void
@@ -288,6 +291,7 @@ mime_message_remove_header (CamelMedium *medium,
 static gint
 mime_message_construct_from_parser (CamelMimePart *dw,
                                     CamelMimeParser *mp,
+                                    GCancellable *cancellable,
                                     GError **error)
 {
 	CamelMimePartClass *mime_part_class;
@@ -303,7 +307,8 @@ mime_message_construct_from_parser (CamelMimePart *dw,
 
 	/* let the mime-part construct the guts ... */
 	mime_part_class = CAMEL_MIME_PART_CLASS (camel_mime_message_parent_class);
-	ret = mime_part_class->construct_from_parser (dw, mp, error);
+	ret = mime_part_class->construct_from_parser (
+		dw, mp, cancellable, error);
 
 	if (ret == -1)
 		return -1;
@@ -905,7 +910,7 @@ find_best_encoding (CamelMimePart *part, CamelBestencRequired required, CamelBes
 	idb = camel_stream_filter_add (
 		CAMEL_STREAM_FILTER (filter), bestenc);
 	d(printf("writing to checking stream\n"));
-	camel_data_wrapper_decode_to_stream (content, filter, NULL);
+	camel_data_wrapper_decode_to_stream (content, filter, NULL, NULL);
 	camel_stream_filter_remove (CAMEL_STREAM_FILTER (filter), idb);
 	if (idc != -1) {
 		camel_stream_filter_remove (CAMEL_STREAM_FILTER (filter), idc);
@@ -949,7 +954,7 @@ find_best_encoding (CamelMimePart *part, CamelBestencRequired required, CamelBes
 
 			/* and write it to the new stream */
 			camel_data_wrapper_write_to_stream (
-				content, filter, NULL);
+				content, filter, NULL, NULL);
 
 			g_object_unref (charenc);
 		}

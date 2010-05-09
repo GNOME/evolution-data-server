@@ -85,6 +85,7 @@ camel_tcp_stream_init (CamelTcpStream *tcp_stream)
  * @host: Hostname for connection
  * @service: Service name or port number in string form
  * @fallback_port: Port number to retry if @service is not present in the system's services database, or 0 to avoid retrying.
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Create a socket and connect based upon the data provided.
@@ -93,7 +94,10 @@ camel_tcp_stream_init (CamelTcpStream *tcp_stream)
  **/
 gint
 camel_tcp_stream_connect (CamelTcpStream *stream,
-			  const gchar *host, const gchar *service, gint fallback_port,
+			  const gchar *host,
+                          const gchar *service,
+                          gint fallback_port,
+                          GCancellable *cancellable,
                           GError **error)
 {
 	CamelTcpStreamClass *class;
@@ -107,7 +111,8 @@ camel_tcp_stream_connect (CamelTcpStream *stream,
 	class = CAMEL_TCP_STREAM_GET_CLASS (stream);
 	g_return_val_if_fail (class->connect != NULL, -1);
 
-	retval = class->connect (stream, host, service, fallback_port, error);
+	retval = class->connect (
+		stream, host, service, fallback_port, cancellable, error);
 	CAMEL_CHECK_GERROR (stream, connect, retval == 0, error);
 
 	return retval;

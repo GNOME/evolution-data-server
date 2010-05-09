@@ -72,6 +72,7 @@ nntp_folder_finalize (GObject *object)
 gboolean
 camel_nntp_folder_selected (CamelNNTPFolder *nntp_folder,
                             gchar *line,
+                            GCancellable *cancellable,
                             GError **error)
 {
 	CamelFolder *folder;
@@ -83,11 +84,13 @@ camel_nntp_folder_selected (CamelNNTPFolder *nntp_folder,
 	return camel_nntp_summary_check (
 		CAMEL_NNTP_SUMMARY (folder->summary),
 		CAMEL_NNTP_STORE (parent_store),
-		line, nntp_folder->changes, error);
+		line, nntp_folder->changes,
+		cancellable, error);
 }
 
 static gboolean
 nntp_folder_refresh_info_online (CamelFolder *folder,
+                                 GCancellable *cancellable,
                                  GError **error)
 {
 	CamelStore *parent_store;
@@ -107,7 +110,7 @@ nntp_folder_refresh_info_online (CamelFolder *folder,
 	/* When invoked with no fmt, camel_nntp_command() just selects the folder
 	   and should return zero. */
 	success = !camel_nntp_command (
-		nntp_store, error, nntp_folder, &line, NULL);
+		nntp_store, cancellable, error, nntp_folder, &line, NULL);
 
 	if (camel_folder_change_info_changed (nntp_folder->changes)) {
 		changes = nntp_folder->changes;
@@ -203,7 +206,11 @@ nntp_get_filename (CamelFolder *folder, const gchar *uid, GError **error)
 }
 
 static CamelStream *
-nntp_folder_download_message (CamelNNTPFolder *nntp_folder, const gchar *id, const gchar *msgid, GError **error)
+nntp_folder_download_message (CamelNNTPFolder *nntp_folder,
+                              const gchar *id,
+                              const gchar *msgid,
+                              GCancellable *cancellable,
+                              GError **error)
 {
 	CamelFolder *folder;
 	CamelStore *parent_store;
@@ -216,11 +223,11 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder, const gchar *id, con
 	parent_store = camel_folder_get_parent_store (folder);
 	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
-	ret = camel_nntp_command (nntp_store, error, nntp_folder, &line, "article %s", id);
+	ret = camel_nntp_command (nntp_store, cancellable, error, nntp_folder, &line, "article %s", id);
 	if (ret == 220) {
 		stream = camel_data_cache_add (nntp_store->cache, "cache", msgid, NULL);
 		if (stream) {
-			if (camel_stream_write_to_stream ((CamelStream *) nntp_store->stream, stream, error) == -1)
+			if (camel_stream_write_to_stream ((CamelStream *) nntp_store->stream, stream, cancellable, error) == -1)
 				goto fail;
 			if (camel_stream_reset (stream, error) == -1)
 				goto fail;
@@ -249,6 +256,7 @@ fail:
 static gboolean
 nntp_folder_cache_message (CamelDiscoFolder *disco_folder,
                            const gchar *uid,
+                           GCancellable *cancellable,
                            GError **error)
 {
 	CamelFolder *folder;
@@ -276,7 +284,7 @@ nntp_folder_cache_message (CamelDiscoFolder *disco_folder,
 	camel_service_lock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	stream = nntp_folder_download_message (
-		(CamelNNTPFolder *) disco_folder, article, msgid, error);
+		(CamelNNTPFolder *) disco_folder, article, msgid, cancellable, error);
 	if (stream)
 		g_object_unref (stream);
 	else
@@ -288,7 +296,10 @@ nntp_folder_cache_message (CamelDiscoFolder *disco_folder,
 }
 
 static CamelMimeMessage *
-nntp_folder_get_message (CamelFolder *folder, const gchar *uid, GError **error)
+nntp_folder_get_message (CamelFolder *folder,
+                         const gchar *uid,
+                         GCancellable *cancellable,
+                         GError **error)
 {
 	CamelStore *parent_store;
 	CamelMimeMessage *message = NULL;
@@ -327,13 +338,13 @@ nntp_folder_get_message (CamelFolder *folder, const gchar *uid, GError **error)
 			goto fail;
 		}
 
-		stream = nntp_folder_download_message (nntp_folder, article, msgid, error);
+		stream = nntp_folder_download_message (nntp_folder, article, msgid, cancellable, error);
 		if (stream == NULL)
 			goto fail;
 	}
 
 	message = camel_mime_message_new ();
-	if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) message, stream, error) == -1) {
+	if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) message, stream, cancellable, error) == -1) {
 		g_prefix_error (error, _("Cannot get message %s: "), uid);
 		g_object_unref (message);
 		message = NULL;
@@ -433,6 +444,7 @@ nntp_folder_append_message_online (CamelFolder *folder,
                                    CamelMimeMessage *mime_message,
                                    const CamelMessageInfo *info,
                                    gchar **appended_uid,
+                                   GCancellable *cancellable,
                                    GError **error)
 {
 	CamelStore *parent_store;
@@ -456,7 +468,7 @@ nntp_folder_append_message_online (CamelFolder *folder,
 	camel_service_lock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	/* send 'POST' command */
-	ret = camel_nntp_command (nntp_store, error, NULL, &line, "post");
+	ret = camel_nntp_command (nntp_store, cancellable, error, NULL, &line, "post");
 	if (ret != 340) {
 		if (ret == 440) {
 			g_set_error (
@@ -505,11 +517,11 @@ nntp_folder_append_message_online (CamelFolder *folder,
 	}
 
 	/* write the message */
-	if (camel_stream_write (stream, group, strlen (group), error) == -1
-	    || camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (mime_message), filtered_stream, error) == -1
-	    || camel_stream_flush (filtered_stream, error) == -1
-	    || camel_stream_write (stream, "\r\n.\r\n", 5, error) == -1
-	    || (ret = camel_nntp_stream_line (nntp_store->stream, (guchar **)&line, &u, error)) == -1) {
+	if (camel_stream_write (stream, group, strlen (group), cancellable, error) == -1
+	    || camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (mime_message), filtered_stream, cancellable, error) == -1
+	    || camel_stream_flush (filtered_stream, cancellable, error) == -1
+	    || camel_stream_write (stream, "\r\n.\r\n", 5, cancellable, error) == -1
+	    || (ret = camel_nntp_stream_line (nntp_store->stream, (guchar **)&line, &u, cancellable, error)) == -1) {
 		g_prefix_error (error, _("Posting failed: "));
 		success = FALSE;
 	} else if (atoi (line) != 240) {
@@ -533,6 +545,7 @@ nntp_folder_append_message_offline (CamelFolder *folder,
                                     CamelMimeMessage *mime_message,
                                     const CamelMessageInfo *info,
                                     gchar **appended_uid,
+                                    GCancellable *cancellable,
                                     GError **error)
 {
 	g_set_error (
@@ -552,6 +565,7 @@ nntp_folder_transfer_message (CamelFolder *source,
                               CamelFolder *dest,
                               GPtrArray **transferred_uids,
                               gboolean delete_orig,
+                              GCancellable *cancellable,
                               GError **error)
 {
 	g_set_error (
@@ -610,6 +624,7 @@ camel_nntp_folder_init (CamelNNTPFolder *nntp_folder)
 CamelFolder *
 camel_nntp_folder_new (CamelStore *parent,
                        const gchar *folder_name,
+                       GCancellable *cancellable,
                        GError **error)
 {
 	CamelFolder *folder;
@@ -656,7 +671,8 @@ camel_nntp_folder_new (CamelStore *parent,
 		camel_store_summary_info_free ((CamelStoreSummary *) ((CamelNNTPStore*) parent)->summary, si);
 	}
 
-	if (subscribed && !camel_folder_refresh_info (folder, error)) {
+	if (subscribed && !camel_folder_refresh_info (
+			folder, cancellable, error)) {
 		g_object_unref (folder);
 		folder = NULL;
         }

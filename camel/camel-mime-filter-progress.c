@@ -28,6 +28,7 @@
 #include <string.h>
 
 #include "camel-mime-filter-progress.h"
+#include "camel-operation.h"
 
 #define CAMEL_MIME_FILTER_PROGRESS_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -37,12 +38,28 @@
 #define w(x)
 
 struct _CamelMimeFilterProgressPrivate {
-	CamelOperation *operation;
+	GCancellable *cancellable;
 	gsize total;
 	gsize count;
 };
 
 G_DEFINE_TYPE (CamelMimeFilterProgress, camel_mime_filter_progress, CAMEL_TYPE_MIME_FILTER)
+
+static void
+mime_filter_progress_dispose (GObject *object)
+{
+	CamelMimeFilterProgressPrivate *priv;
+
+	priv = CAMEL_MIME_FILTER_PROGRESS_GET_PRIVATE (object);
+
+	if (priv->cancellable != NULL) {
+		g_object_unref (priv->cancellable);
+		priv->cancellable = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_mime_filter_progress_parent_class)->dispose (object);
+}
 
 static void
 mime_filter_progress_filter (CamelMimeFilter *mime_filter,
@@ -64,7 +81,7 @@ mime_filter_progress_filter (CamelMimeFilter *mime_filter,
 	else
 		percent = 100.0;
 
-	camel_operation_progress (priv->operation, (gint) percent);
+	camel_operation_progress (priv->cancellable, (gint) percent);
 
 	*outprespace = prespace;
 	*outlen = len;
@@ -98,9 +115,13 @@ mime_filter_progress_reset (CamelMimeFilter *mime_filter)
 static void
 camel_mime_filter_progress_class_init (CamelMimeFilterProgressClass *class)
 {
+	GObjectClass *object_class;
 	CamelMimeFilterClass *mime_filter_class;
 
 	g_type_class_add_private (class, sizeof (CamelMimeFilterProgressPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = mime_filter_progress_dispose;
 
 	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
 	mime_filter_class->filter = mime_filter_progress_filter;
@@ -116,29 +137,31 @@ camel_mime_filter_progress_init (CamelMimeFilterProgress *filter)
 
 /**
  * camel_mime_filter_progress_new:
- * @operation: a #CamelOperation
+ * @cancellable: a #CamelOperation cast as a #GCancellable
  * @total: total number of bytes to report progress on
  *
- * Create a new #CamelMimeFilterProgress object that will report
- * streaming progress.
+ * Create a new #CamelMimeFilterProgress object that will report streaming
+ * progress.  While the function will silently accept @cancellable being
+ * %NULL or a plain #GCancellable for convenience sake, no progress will be
+ * reported unless @cancellable is a #CamelOperation.
  *
  * Returns: a new #CamelMimeFilter object
  *
  * Since: 2.24
  **/
 CamelMimeFilter *
-camel_mime_filter_progress_new (CamelOperation *operation,
+camel_mime_filter_progress_new (GCancellable *cancellable,
                                 gsize total)
 {
 	CamelMimeFilter *filter;
 	CamelMimeFilterProgressPrivate *priv;
 
-	/* 'operation' can be NULL, then it means an active thread's operation */
-
 	filter = g_object_new (CAMEL_TYPE_MIME_FILTER_PROGRESS, NULL);
 	priv = CAMEL_MIME_FILTER_PROGRESS_GET_PRIVATE (filter);
 
-	priv->operation = operation;
+	if (CAMEL_IS_OPERATION (cancellable))
+		priv->cancellable = cancellable;
+
 	priv->total = total;
 
 	return filter;

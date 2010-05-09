@@ -57,7 +57,9 @@ enum {
 G_DEFINE_TYPE (CamelDiscoFolder, camel_disco_folder, CAMEL_TYPE_FOLDER)
 
 /* Forward Declarations */
-static gboolean disco_expunge (CamelFolder *folder, GError **error);
+static gboolean		disco_expunge		(CamelFolder *folder,
+						 GCancellable *cancellable,
+						 GError **error);
 
 static void
 cdf_sync_offline (CamelSession *session, CamelSessionThreadMsg *mm)
@@ -65,24 +67,26 @@ cdf_sync_offline (CamelSession *session, CamelSessionThreadMsg *mm)
 	struct _cdf_sync_msg *m = (struct _cdf_sync_msg *)mm;
 	gint i;
 
-	camel_operation_start(NULL, _("Downloading new messages for offline mode"));
+	camel_operation_start (
+		mm->cancellable,
+		_("Downloading new messages for offline mode"));
 
 	if (m->changes) {
 		for (i=0;i<m->changes->uid_added->len;i++) {
 			gint pc = i * 100 / m->changes->uid_added->len;
 
-			camel_operation_progress (NULL, pc);
+			camel_operation_progress (mm->cancellable, pc);
 			camel_disco_folder_cache_message ((CamelDiscoFolder *)m->folder,
 							 m->changes->uid_added->pdata[i],
-							 &mm->error);
+							 NULL, &mm->error);
 		}
 	} else {
 		camel_disco_folder_prepare_for_offline ((CamelDiscoFolder *)m->folder,
 						       "(match-all)",
-						       &mm->error);
+						       NULL, &mm->error);
 	}
 
-	camel_operation_end (NULL);
+	camel_operation_end (mm->cancellable);
 }
 
 static void
@@ -161,6 +165,7 @@ disco_folder_get_property (GObject *object,
 
 static gboolean
 disco_refresh_info (CamelFolder *folder,
+                    GCancellable *cancellable,
                     GError **error)
 {
 	CamelDiscoFolderClass *disco_folder_class;
@@ -174,7 +179,8 @@ disco_refresh_info (CamelFolder *folder,
 
 	disco_folder_class = CAMEL_DISCO_FOLDER_GET_CLASS (folder);
 
-	success = disco_folder_class->refresh_info_online (folder, error);
+	success = disco_folder_class->refresh_info_online (
+		folder, cancellable, error);
 	CAMEL_CHECK_GERROR (folder, refresh_info_online, success, error);
 
 	return success;
@@ -183,13 +189,14 @@ disco_refresh_info (CamelFolder *folder,
 static gboolean
 disco_sync (CamelFolder *folder,
             gboolean expunge,
+            GCancellable *cancellable,
             GError **error)
 {
 	CamelDiscoFolderClass *disco_folder_class;
 	CamelStore *parent_store;
 	gboolean success;
 
-	if (expunge && !disco_expunge (folder, error))
+	if (expunge && !disco_expunge (folder, cancellable, error))
 		return FALSE;
 
 	camel_object_state_write (CAMEL_OBJECT (folder));
@@ -220,6 +227,7 @@ disco_sync (CamelFolder *folder,
 static gboolean
 disco_expunge_uids (CamelFolder *folder,
                     GPtrArray *uids,
+                    GCancellable *cancellable,
                     GError **error)
 {
 	CamelDiscoFolderClass *disco_folder_class;
@@ -260,6 +268,7 @@ disco_expunge_uids (CamelFolder *folder,
 
 static gboolean
 disco_expunge (CamelFolder *folder,
+               GCancellable *cancellable,
                GError **error)
 {
 	GPtrArray *uids;
@@ -278,7 +287,7 @@ disco_expunge (CamelFolder *folder,
 		camel_message_info_free (info);
 	}
 
-	success = disco_expunge_uids (folder, uids, error);
+	success = disco_expunge_uids (folder, uids, cancellable, error);
 
 	for (i = 0; i < uids->len; i++)
 		g_free (uids->pdata[i]);
@@ -292,6 +301,7 @@ disco_append_message (CamelFolder *folder,
                       CamelMimeMessage *message,
                       const CamelMessageInfo *info,
                       gchar **appended_uid,
+                      GCancellable *cancellable,
                       GError **error)
 {
 	CamelDiscoFolderClass *disco_folder_class;
@@ -304,19 +314,22 @@ disco_append_message (CamelFolder *folder,
 	switch (camel_disco_store_status (CAMEL_DISCO_STORE (parent_store))) {
 	case CAMEL_DISCO_STORE_ONLINE:
 		success = disco_folder_class->append_online (
-			folder, message, info, appended_uid, error);
+			folder, message, info,
+			appended_uid, cancellable, error);
 		CAMEL_CHECK_GERROR (folder, append_online, success, error);
 		return success;
 
 	case CAMEL_DISCO_STORE_OFFLINE:
 		success = disco_folder_class->append_offline (
-			folder, message, info, appended_uid, error);
+			folder, message, info,
+			appended_uid, cancellable, error);
 		CAMEL_CHECK_GERROR (folder, append_offline, success, error);
 		return success;
 
 	case CAMEL_DISCO_STORE_RESYNCING:
 		success = disco_folder_class->append_resyncing (
-			folder, message, info, appended_uid, error);
+			folder, message, info,
+			appended_uid, cancellable, error);
 		CAMEL_CHECK_GERROR (folder, append_resyncing, success, error);
 		return success;
 	}
@@ -330,6 +343,7 @@ disco_transfer_messages_to (CamelFolder *source,
                             CamelFolder *dest,
                             GPtrArray **transferred_uids,
                             gboolean delete_originals,
+                            GCancellable *cancellable,
                             GError **error)
 {
 	CamelDiscoFolderClass *disco_folder_class;
@@ -343,21 +357,21 @@ disco_transfer_messages_to (CamelFolder *source,
 	case CAMEL_DISCO_STORE_ONLINE:
 		success = disco_folder_class->transfer_online (
 			source, uids, dest, transferred_uids,
-			delete_originals, error);
+			delete_originals, cancellable, error);
 		CAMEL_CHECK_GERROR (source, transfer_online, success, error);
 		return success;
 
 	case CAMEL_DISCO_STORE_OFFLINE:
 		success = disco_folder_class->transfer_offline (
 			source, uids, dest, transferred_uids,
-			delete_originals, error);
+			delete_originals, cancellable, error);
 		CAMEL_CHECK_GERROR (source, transfer_offline, success, error);
 		return success;
 
 	case CAMEL_DISCO_STORE_RESYNCING:
 		success = disco_folder_class->transfer_resyncing (
 			source, uids, dest, transferred_uids,
-			delete_originals, error);
+			delete_originals, cancellable, error);
 		CAMEL_CHECK_GERROR (source, transfer_resyncing, success, error);
 		return success;
 	}
@@ -368,6 +382,7 @@ disco_transfer_messages_to (CamelFolder *source,
 static gboolean
 disco_prepare_for_offline (CamelDiscoFolder *disco_folder,
                            const gchar *expression,
+                           GCancellable *cancellable,
                            GError **error)
 {
 	CamelFolder *folder = CAMEL_FOLDER (disco_folder);
@@ -376,7 +391,7 @@ disco_prepare_for_offline (CamelDiscoFolder *disco_folder,
 	gboolean success = TRUE;
 
 	camel_operation_start (
-		NULL, _("Preparing folder '%s' for offline"),
+		cancellable, _("Preparing folder '%s' for offline"),
 		camel_folder_get_full_name (folder));
 
 	if (expression)
@@ -385,16 +400,15 @@ disco_prepare_for_offline (CamelDiscoFolder *disco_folder,
 		uids = camel_folder_get_uids (folder);
 
 	if (!uids) {
-		camel_operation_end (NULL);
+		camel_operation_end (cancellable);
 		return FALSE;
 	}
 
 	for (i = 0; i < uids->len && success; i++) {
-		gint pc = i * 100 / uids->len;
-
-		camel_operation_progress (NULL, pc);
+		camel_operation_progress (
+			cancellable, (i * 100) / uids->len);
 		success = camel_disco_folder_cache_message (
-			disco_folder, uids->pdata[i], error);
+			disco_folder, uids->pdata[i], cancellable, error);
 	}
 
 	if (expression)
@@ -402,13 +416,14 @@ disco_prepare_for_offline (CamelDiscoFolder *disco_folder,
 	else
 		camel_folder_free_uids (folder, uids);
 
-	camel_operation_end (NULL);
+	camel_operation_end (cancellable);
 
 	return success;
 }
 
 static gboolean
 disco_refresh_info_online (CamelFolder *folder,
+                           GCancellable *cancellable,
                            GError **error)
 {
 	return TRUE;
@@ -494,6 +509,7 @@ camel_disco_folder_set_offline_sync (CamelDiscoFolder *disco_folder,
  * camel_disco_folder_expunge_uids:
  * @folder: a (disconnectable) folder
  * @uids: array of UIDs to expunge
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * This expunges the messages in @uids from @folder. It should take
@@ -507,18 +523,20 @@ camel_disco_folder_set_offline_sync (CamelDiscoFolder *disco_folder,
 gboolean
 camel_disco_folder_expunge_uids (CamelFolder *folder,
                                  GPtrArray *uids,
+                                 GCancellable *cancellable,
                                  GError **error)
 {
 	g_return_val_if_fail (CAMEL_IS_DISCO_FOLDER (folder), FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
 
-	return disco_expunge_uids (folder, uids, error);
+	return disco_expunge_uids (folder, uids, cancellable, error);
 }
 
 /**
  * camel_disco_folder_cache_message:
  * @disco_folder: the folder
  * @uid: the UID of the message to cache
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Requests that @disco_folder cache message @uid to disk.
@@ -528,6 +546,7 @@ camel_disco_folder_expunge_uids (CamelFolder *folder,
 gboolean
 camel_disco_folder_cache_message (CamelDiscoFolder *disco_folder,
                                   const gchar *uid,
+                                  GCancellable *cancellable,
                                   GError **error)
 {
 	CamelDiscoFolderClass *class;
@@ -539,7 +558,8 @@ camel_disco_folder_cache_message (CamelDiscoFolder *disco_folder,
 	class = CAMEL_DISCO_FOLDER_GET_CLASS (disco_folder);
 	g_return_val_if_fail (class->cache_message != NULL, FALSE);
 
-	success = class->cache_message (disco_folder, uid, error);
+	success = class->cache_message (
+		disco_folder, uid, cancellable, error);
 	CAMEL_CHECK_GERROR (disco_folder, cache_message, success, error);
 
 	return success;
@@ -550,6 +570,7 @@ camel_disco_folder_cache_message (CamelDiscoFolder *disco_folder,
  * @disco_folder: the folder
  * @expression: an expression describing messages to synchronize, or %NULL
  * if all messages should be sync'ed.
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * This prepares @disco_folder for offline operation, by downloading
@@ -561,6 +582,7 @@ camel_disco_folder_cache_message (CamelDiscoFolder *disco_folder,
 gboolean
 camel_disco_folder_prepare_for_offline (CamelDiscoFolder *disco_folder,
                                         const gchar *expression,
+                                        GCancellable *cancellable,
                                         GError **error)
 {
 	CamelDiscoFolderClass *class;
@@ -571,7 +593,8 @@ camel_disco_folder_prepare_for_offline (CamelDiscoFolder *disco_folder,
 	class = CAMEL_DISCO_FOLDER_GET_CLASS (disco_folder);
 	g_return_val_if_fail (class->prepare_for_offline != NULL, FALSE);
 
-	success = class->prepare_for_offline (disco_folder, expression, error);
+	success = class->prepare_for_offline (
+		disco_folder, expression, cancellable, error);
 	CAMEL_CHECK_GERROR (disco_folder, prepare_for_offline, success, error);
 
 	return success;

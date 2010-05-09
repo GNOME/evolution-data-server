@@ -56,6 +56,7 @@ G_DEFINE_TYPE (CamelHttpStream, camel_http_stream, CAMEL_TYPE_STREAM)
 static CamelStream *
 http_connect (CamelHttpStream *http,
               CamelURL *url,
+              GCancellable *cancellable,
               GError **error)
 {
 	CamelTcpStream *tcp_stream;
@@ -91,7 +92,8 @@ http_connect (CamelHttpStream *http,
 
 	tcp_stream = CAMEL_TCP_STREAM (stream);
 
-	if (camel_tcp_stream_connect (tcp_stream, url->host, serv, 0, error) == -1) {
+	if (camel_tcp_stream_connect (
+		tcp_stream, url->host, serv, 0, cancellable, error) == -1) {
 		errsave = errno;
 		g_object_unref (stream);
 		errno = errsave;
@@ -125,6 +127,7 @@ http_disconnect (CamelHttpStream *http)
 
 static gint
 http_method_invoke (CamelHttpStream *http,
+                    GCancellable *cancellable,
                     GError **error)
 {
 	const gchar *method = NULL, *use_url;
@@ -202,8 +205,8 @@ http_method_invoke (CamelHttpStream *http,
 	}
 
 	/* end the headers */
-	if (camel_stream_write (http->raw, "\r\n", 2, error) == -1 ||
-		camel_stream_flush (http->raw, error) == -1) {
+	if (camel_stream_write (http->raw, "\r\n", 2, cancellable, error) == -1 ||
+		camel_stream_flush (http->raw, cancellable, error) == -1) {
 		http_disconnect (http);
 		return -1;
 	}
@@ -301,14 +304,15 @@ http_next_token (const guchar *in)
 
 static gint
 http_get_statuscode (CamelHttpStream *http,
+                     GCancellable *cancellable,
                      GError **error)
 {
 	const gchar *token;
 	gchar buffer[4096];
 
 	if (camel_stream_buffer_gets (
-		CAMEL_STREAM_BUFFER (http->read),
-		buffer, sizeof (buffer), error) <= 0)
+		CAMEL_STREAM_BUFFER (http->read), buffer,
+		sizeof (buffer), cancellable, error) <= 0)
 		return -1;
 
 	d(printf("HTTP Status: %s\n", buffer));
@@ -383,6 +387,7 @@ static gssize
 http_stream_read (CamelStream *stream,
                   gchar *buffer,
                   gsize n,
+                  GCancellable *cancellable,
                   GError **error)
 {
 	CamelHttpStream *http = CAMEL_HTTP_STREAM (stream);
@@ -404,15 +409,15 @@ http_stream_read (CamelStream *stream,
 	if (!http->raw) {
 		if (http_connect (
 			http, http->proxy ? http->proxy :
-			http->url, error) == NULL)
+			http->url, NULL, error) == NULL)
 			return -1;
 
-		if (http_method_invoke (http, error) == -1) {
+		if (http_method_invoke (http, cancellable, error) == -1) {
 			http_disconnect (http);
 			return -1;
 		}
 
-		if (http_get_statuscode (http, error) == -1) {
+		if (http_get_statuscode (http, cancellable, error) == -1) {
 			http_disconnect (http);
 			return -1;
 		}
@@ -486,6 +491,7 @@ static gssize
 http_stream_write (CamelStream *stream,
                    const gchar *buffer,
                    gsize n,
+                   GCancellable *cancellable,
                    GError **error)
 {
 	return -1;
@@ -493,24 +499,26 @@ http_stream_write (CamelStream *stream,
 
 static gint
 http_stream_flush (CamelStream *stream,
+                   GCancellable *cancellable,
                    GError **error)
 {
 	CamelHttpStream *http = (CamelHttpStream *) stream;
 
 	if (http->raw)
-		return camel_stream_flush (http->raw, error);
+		return camel_stream_flush (http->raw, cancellable, error);
 	else
 		return 0;
 }
 
 static gint
 http_stream_close (CamelStream *stream,
+                   GCancellable *cancellable,
                    GError **error)
 {
 	CamelHttpStream *http = (CamelHttpStream *) stream;
 
 	if (http->raw) {
-		if (camel_stream_close (http->raw, error) == -1)
+		if (camel_stream_close (http->raw, cancellable, error) == -1)
 			return -1;
 
 		http_disconnect (http);
@@ -591,7 +599,7 @@ camel_http_stream_get_content_type (CamelHttpStream *http_stream)
 	if (!http_stream->content_type && !http_stream->raw) {
 		CamelStream *stream = CAMEL_STREAM (http_stream);
 
-		if (http_stream_read (stream, NULL, 0, NULL) == -1)
+		if (http_stream_read (stream, NULL, 0, NULL, NULL) == -1)
 			return NULL;
 	}
 

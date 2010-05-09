@@ -379,6 +379,7 @@ CamelStore
 @store: 
 @folder_name: 
 @flags: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -389,6 +390,7 @@ CamelStore
 </para>
 
 @store: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -399,6 +401,7 @@ CamelStore
 </para>
 
 @store: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -409,6 +412,7 @@ CamelStore
 </para>
 
 @store: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -421,6 +425,7 @@ CamelStore
 @store: 
 @parent_name: 
 @folder_name: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -432,6 +437,7 @@ CamelStore
 
 @store: 
 @folder_name: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -444,6 +450,7 @@ CamelStore
 @store: 
 @old_namein: 
 @new_name: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -501,6 +508,7 @@ CamelStore
 
 @store: 
 @expunge: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -513,6 +521,7 @@ CamelStore
 @store: 
 @top: 
 @flags: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -608,6 +617,7 @@ CamelStore
 
 @store: 
 @folder_name: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -619,6 +629,7 @@ CamelStore
 
 @store: 
 @folder_name: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -629,6 +640,7 @@ CamelStore
 </para>
 
 @store: 
+@cancellable: 
 @error: 
 @Returns: 
 

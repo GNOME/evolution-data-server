@@ -96,7 +96,7 @@ void imapx_uidset_init (struct _uidset_state *ss, gint total, gint limit);
 gint imapx_uidset_done (struct _uidset_state *ss, struct _CamelIMAPXCommand *ic);
 gint imapx_uidset_add (struct _uidset_state *ss, struct _CamelIMAPXCommand *ic, const gchar *uid);
 static gboolean imapx_command_idle_stop (CamelIMAPXServer *is, GError **error);
-static gint imapx_continuation (CamelIMAPXServer *imap, gboolean litplus, GError **error);
+static gint imapx_continuation(CamelIMAPXServer *imap, gboolean litplus, GCancellable *cancellable, GError **error);
 static gboolean imapx_disconnect (CamelIMAPXServer *is);
 static gint imapx_uid_cmp (gconstpointer ap, gconstpointer bp, gpointer data);
 
@@ -146,6 +146,7 @@ struct _CamelIMAPXCommand {
 
 	/* If exception is set, it means we were not able to parse above status, it might be
 	   because user cancelled the operation or io error */
+	GCancellable *cancellable;
 	GError *error;
 
 	guint32 tag;
@@ -162,10 +163,10 @@ struct _CamelIMAPXCommand {
 	struct _CamelIMAPXJob *job;
 };
 
-CamelIMAPXCommand *camel_imapx_command_new (CamelIMAPXServer *is, const gchar *name, CamelFolder *select, const gchar *fmt, ...);
-void camel_imapx_command_add (CamelIMAPXCommand *ic, const gchar *fmt, ...);
-void camel_imapx_command_free (CamelIMAPXCommand *ic);
-void camel_imapx_command_close (CamelIMAPXCommand *ic);
+CamelIMAPXCommand *camel_imapx_command_new(CamelIMAPXServer *is, const gchar *name, CamelFolder *select, GCancellable *cancellable, const gchar *fmt, ...);
+void camel_imapx_command_add(CamelIMAPXCommand *ic, const gchar *fmt, ...);
+void camel_imapx_command_free(CamelIMAPXCommand *ic);
+void camel_imapx_command_close(CamelIMAPXCommand *ic);
 static gboolean imapx_is_command_queue_empty (CamelIMAPXServer *is);
 
 /* states for the connection? */
@@ -231,12 +232,10 @@ typedef struct _CamelIMAPXJob CamelIMAPXJob;
 struct _CamelIMAPXJob {
 	CamelMsg msg;
 
+	GCancellable *cancellable;
 	GError *error;
 
 	void (*start)(CamelIMAPXServer *is, struct _CamelIMAPXJob *job);
-
-	// ??
-	//CamelOperation *op;
 
 	gint noreply:1;		/* dont wait for reply */
 	guint32 type;		/* operation type */
@@ -244,7 +243,6 @@ struct _CamelIMAPXJob {
 	gshort commands;		/* counts how many commands are outstanding */
 
 	CamelFolder *folder;
-	CamelOperation *op;
 
 	union {
 		struct {
@@ -318,7 +316,7 @@ static void imapx_job_fetch_new_messages_start (CamelIMAPXServer *is, CamelIMAPX
 static void imapx_command_copy_messages_step_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic);
 static gint imapx_refresh_info_uid_cmp (gconstpointer ap, gconstpointer bp);
 static gint imapx_uids_array_cmp (gconstpointer ap, gconstpointer bp);
-static gboolean imapx_server_sync_changes (CamelIMAPXServer *is, CamelFolder *folder, gint pri, GError **error);
+static gboolean imapx_server_sync_changes(CamelIMAPXServer *is, CamelFolder *folder, gint pri, GCancellable *cancellable, GError **error);
 
 enum _idle_state {
 	IMAPX_IDLE_OFF,
@@ -349,7 +347,7 @@ static void imapx_start_idle (CamelIMAPXServer *is);
 static void imapx_exit_idle (CamelIMAPXServer *is);
 static void imapx_init_idle (CamelIMAPXServer *is);
 static gboolean imapx_stop_idle (CamelIMAPXServer *is, GError **error);
-static gboolean camel_imapx_server_idle (CamelIMAPXServer *is, CamelFolder *folder, GError **error);
+static gboolean camel_imapx_server_idle (CamelIMAPXServer *is, CamelFolder *folder, GCancellable *cancellable, GError **error);
 
 enum {
 	USE_SSL_NEVER,
@@ -360,7 +358,7 @@ enum {
 #define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
 #define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
 
-static gboolean imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean force, GError **error);
+static gboolean imapx_select(CamelIMAPXServer *is, CamelFolder *folder, gboolean force, GCancellable *cancellable, GError **error);
 
 G_DEFINE_TYPE (CamelIMAPXServer, camel_imapx_server, CAMEL_TYPE_OBJECT)
 
@@ -462,10 +460,10 @@ imapx_command_add_part (CamelIMAPXCommand *ic, camel_imapx_command_part_t type, 
 		/* TODO: seekable streams we could just seek to the end and back */
 		null = (CamelStreamNull *)camel_stream_null_new ();
 		if ( (type & CAMEL_IMAPX_COMMAND_MASK) == CAMEL_IMAPX_COMMAND_DATAWRAPPER) {
-			camel_data_wrapper_write_to_stream ((CamelDataWrapper *)ob, (CamelStream *)null, NULL);
+			camel_data_wrapper_write_to_stream ((CamelDataWrapper *)ob, (CamelStream *)null, NULL, NULL);
 		} else {
 			camel_stream_reset ((CamelStream *)ob, NULL);
-			camel_stream_write_to_stream ((CamelStream *)ob, (CamelStream *)null, NULL);
+			camel_stream_write_to_stream ((CamelStream *)ob, (CamelStream *)null, NULL, NULL);
 			camel_stream_reset ((CamelStream *)ob, NULL);
 		}
 		type |= CAMEL_IMAPX_COMMAND_LITERAL_PLUS;
@@ -568,11 +566,11 @@ imapx_command_addv (CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 		switch (c) {
 		case '%':
 			if (*p == '%') {
-				camel_stream_write ((CamelStream *)ic->mem, ps, p-ps, NULL);
+				camel_stream_write ((CamelStream *)ic->mem, ps, p-ps, ic->cancellable, NULL);
 				p++;
 				ps = p;
 			} else {
-				camel_stream_write ((CamelStream *)ic->mem, ps, p-ps-1, NULL);
+				camel_stream_write ((CamelStream *)ic->mem, ps, p-ps-1, ic->cancellable, NULL);
 				start = p-1;
 				width = 0;
 				left = FALSE;
@@ -625,7 +623,7 @@ imapx_command_addv (CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 					break;
 				case 't': /* token */
 					s = va_arg (ap, gchar *);
-					camel_stream_write ((CamelStream *)ic->mem, s, strlen (s), NULL);
+					camel_stream_write ((CamelStream *)ic->mem, s, strlen (s), ic->cancellable, NULL);
 					break;
 				case 's': /* simple string */
 					s = va_arg (ap, gchar *);
@@ -635,27 +633,27 @@ imapx_command_addv (CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 						guchar mask = imapx_is_mask (s);
 
 						if (mask & IMAPX_TYPE_ATOM_CHAR)
-							camel_stream_write ((CamelStream *)ic->mem, s, strlen (s), NULL);
+							camel_stream_write ((CamelStream *)ic->mem, s, strlen (s), ic->cancellable, NULL);
 						else if (mask & IMAPX_TYPE_TEXT_CHAR) {
-							camel_stream_write((CamelStream *)ic->mem, "\"", 1, NULL);
+							camel_stream_write((CamelStream *)ic->mem, "\"", 1, ic->cancellable, NULL);
 							while (*s) {
 								gchar *start = s;
 
 								while (*s && imapx_is_quoted_char (*s))
 									s++;
-								camel_stream_write ((CamelStream *)ic->mem, start, s-start, NULL);
+								camel_stream_write ((CamelStream *)ic->mem, start, s-start, ic->cancellable, NULL);
 								if (*s) {
-									camel_stream_write((CamelStream *)ic->mem, "\\", 1, NULL);
-									camel_stream_write ((CamelStream *)ic->mem, s, 1, NULL);
+									camel_stream_write((CamelStream *)ic->mem, "\\", 1, ic->cancellable, NULL);
+									camel_stream_write ((CamelStream *)ic->mem, s, 1, ic->cancellable, NULL);
 									s++;
 								}
 							}
-							camel_stream_write((CamelStream *)ic->mem, "\"", 1, NULL);
+							camel_stream_write((CamelStream *)ic->mem, "\"", 1, ic->cancellable, NULL);
 						} else {
 							imapx_command_add_part (ic, CAMEL_IMAPX_COMMAND_STRING, s);
 						}
 					} else {
-						camel_stream_write((CamelStream *)ic->mem, "\"\"", 2, NULL);
+						camel_stream_write((CamelStream *)ic->mem, "\"\"", 2, ic->cancellable, NULL);
 					}
 					if (encoded) {
 						g_free (encoded);
@@ -678,18 +676,18 @@ imapx_command_addv (CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 						s = encoded;
 						goto output_string;
 					} else
-						camel_stream_write((CamelStream *)ic->mem, "\"\"", 2, NULL);
+						camel_stream_write((CamelStream *)ic->mem, "\"\"", 2, ic->cancellable, NULL);
 
 					break;
 				case 'F': /* IMAP flags set */
 					f = va_arg (ap, guint32);
 					F = va_arg (ap, CamelFlag *);
-					imapx_write_flags ((CamelStream *)ic->mem, f, F, NULL);
+					imapx_write_flags ((CamelStream *)ic->mem, f, F, ic->cancellable, NULL);
 					break;
 				case 'c':
 					d = va_arg (ap, gint);
 					ch = d;
-					camel_stream_write ((CamelStream *)ic->mem, &ch, 1, NULL);
+					camel_stream_write ((CamelStream *)ic->mem, &ch, 1, ic->cancellable, NULL);
 					break;
 				case 'd': /* int/unsigned */
 				case 'u':
@@ -716,28 +714,36 @@ imapx_command_addv (CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 			c = *p;
 			if (c) {
 				g_assert (c == '\\');
-				camel_stream_write ((CamelStream *)ic->mem, ps, p-ps, NULL);
+				camel_stream_write ((CamelStream *)ic->mem, ps, p-ps, ic->cancellable, NULL);
 				p++;
 				ps = p;
 			}
 		}
 	}
 
-	camel_stream_write ((CamelStream *)ic->mem, ps, p-ps-1, NULL);
+	camel_stream_write ((CamelStream *)ic->mem, ps, p-ps-1, ic->cancellable, NULL);
 }
 
 CamelIMAPXCommand *
-camel_imapx_command_new (CamelIMAPXServer *is, const gchar *name, CamelFolder *select, const gchar *fmt, ...)
+camel_imapx_command_new (CamelIMAPXServer *is,
+                         const gchar *name,
+                         CamelFolder *select,
+                         GCancellable *cancellable,
+                         const gchar *fmt, ...)
 {
 	CamelIMAPXCommand *ic;
 	static gint tag = 0;
 	va_list ap;
 
-	ic = g_malloc0 (sizeof (*ic));
+	if (cancellable != NULL)
+		g_object_ref (cancellable);
+
+	ic = g_malloc0(sizeof(*ic));
 	ic->tag = tag++;
 	ic->name = name;
 	ic->mem = (CamelStreamMem *)camel_stream_mem_new ();
 	ic->select = select;
+	ic->cancellable = cancellable;
 	ic->is = is;
 	camel_dlist_init (&ic->parts);
 
@@ -790,6 +796,9 @@ camel_imapx_command_free (CamelIMAPXCommand *ic)
 		}
 		g_free (cp);
 	}
+
+	if (ic->cancellable != NULL)
+		g_object_unref (ic->cancellable);
 
 	/* Do NOT try to free the GError.  If set it should have been
 	 * propagated to the CamelIMAPXJob, so it's either NULL or the
@@ -852,7 +861,7 @@ imapx_command_start (CamelIMAPXServer *imap, CamelIMAPXCommand *ic)
 	while (imap->literal == ic &&
 	       ic->current->type & CAMEL_IMAPX_COMMAND_LITERAL_PLUS) {
 		/* Sent LITERAL+ continuation immediately */
-		if (!imapx_continuation (imap, TRUE, &ic->error))
+		if (!imapx_continuation(imap, TRUE, ic->cancellable, &ic->error))
 			goto err;
 	}
 
@@ -895,7 +904,9 @@ static gboolean duplicate_fetch_or_refresh (CamelIMAPXServer *is, CamelIMAPXComm
 	must have QUEUE lock */
 
 static void
-imapx_command_start_next (CamelIMAPXServer *is, GError **error)
+imapx_command_start_next (CamelIMAPXServer *is,
+                          GCancellable *cancellable,
+                          GError **error)
 {
 	CamelIMAPXCommand *ic, *nc;
 	gint count = 0;
@@ -1007,7 +1018,7 @@ imapx_command_start_next (CamelIMAPXServer *is, GError **error)
 	if (ic->select) {
 		c(is->tagprefix, "Selecting folder '%s' for command '%s'(%p)\n",
 		  camel_folder_get_full_name (ic->select), ic->name, ic);
-		imapx_select (is, ic->select, FALSE, error);
+		imapx_select (is, ic->select, FALSE, cancellable, error);
 	} else {
 		pri = ic->pri;
 		nc = ic->next;
@@ -1039,7 +1050,8 @@ imapx_is_command_queue_empty (CamelIMAPXServer *is)
 }
 
 static void
-imapx_command_queue (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+imapx_command_queue (CamelIMAPXServer *is,
+                     CamelIMAPXCommand *ic)
 {
 	CamelIMAPXCommand *scan;
 
@@ -1079,7 +1091,7 @@ imapx_command_queue (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		scan->prev = ic;
 	}
 
-	imapx_command_start_next (is, NULL);
+	imapx_command_start_next (is, ic->cancellable, NULL);
 
 	QUEUE_UNLOCK (is);
 
@@ -1222,7 +1234,9 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *imap, gchar *uid, gboolean uns
 
 /* handle any untagged responses */
 static gint
-imapx_untagged (CamelIMAPXServer *imap, GError **error)
+imapx_untagged (CamelIMAPXServer *imap,
+                GCancellable *cancellable,
+                GError **error)
 {
 	guint id, len;
 	guchar *token, *p, c;
@@ -1232,13 +1246,13 @@ imapx_untagged (CamelIMAPXServer *imap, GError **error)
 
 	e(imap->tagprefix, "got untagged response\n");
 	id = 0;
-	tok = camel_imapx_stream_token (imap->stream, &token, &len, error);
+	tok = camel_imapx_stream_token (imap->stream, &token, &len, cancellable, error);
 	if (tok < 0)
 		return -1;
 
 	if (tok == IMAPX_TOK_INT) {
 		id = strtoul ((gchar *) token, NULL, 10);
-		tok = camel_imapx_stream_token (imap->stream, &token, &len, error);
+		tok = camel_imapx_stream_token (imap->stream, &token, &len, cancellable, error);
 		if (tok < 0)
 			return -1;
 	}
@@ -1259,7 +1273,7 @@ imapx_untagged (CamelIMAPXServer *imap, GError **error)
 	case IMAPX_CAPABILITY:
 		if (imap->cinfo)
 			imapx_free_capability (imap->cinfo);
-		imap->cinfo = imapx_parse_capability (imap->stream, error);
+		imap->cinfo = imapx_parse_capability (imap->stream, cancellable, error);
 		if (imap->cinfo == NULL)
 			return -1;
 		c(imap->tagprefix, "got capability flags %08x\n", imap->cinfo->capa);
@@ -1293,21 +1307,21 @@ imapx_untagged (CamelIMAPXServer *imap, GError **error)
 		guchar *token;
 		gint tok;
 
-		tok = camel_imapx_stream_token (imap->stream, &token, &len, error);
+		tok = camel_imapx_stream_token (imap->stream, &token, &len, cancellable, error);
 		if (tok < 0)
 			return -1;
 		if (tok == '(') {
 			unsolicited = FALSE;
 			while (tok != ')') {
 				/* We expect this to be 'EARLIER' */
-				tok = camel_imapx_stream_token (imap->stream, &token, &len, error);
+				tok = camel_imapx_stream_token (imap->stream, &token, &len, cancellable, error);
 				if (tok < 0)
 					return -1;
 			}
 		} else
 			camel_imapx_stream_ungettoken (imap->stream, tok, token, len);
 
-		uids = imapx_parse_uids (imap->stream, error);
+		uids = imapx_parse_uids (imap->stream, cancellable, error);
 		if (uids == NULL)
 			return -1;
 		for (i = 0; i < uids->len; i++) {
@@ -1321,7 +1335,7 @@ imapx_untagged (CamelIMAPXServer *imap, GError **error)
 	case IMAPX_NAMESPACE: {
 		CamelIMAPXNamespaceList *nsl = NULL;
 
-		nsl = imapx_parse_namespace_list (imap->stream, error);
+		nsl = imapx_parse_namespace_list (imap->stream, cancellable, error);
 		if (nsl != NULL) {
 			CamelIMAPXStore *imapx_store = (CamelIMAPXStore *) imap->store;
 			CamelIMAPXStoreNamespace *ns;
@@ -1353,7 +1367,7 @@ imapx_untagged (CamelIMAPXServer *imap, GError **error)
 	case IMAPX_FLAGS: {
 		guint32 flags;
 
-		imapx_parse_flags (imap->stream, &flags, NULL, error);
+		imapx_parse_flags (imap->stream, &flags, NULL, cancellable, error);
 
 		c(imap->tagprefix, "flags: %08x\n", flags);
 		break;
@@ -1361,7 +1375,7 @@ imapx_untagged (CamelIMAPXServer *imap, GError **error)
 	case IMAPX_FETCH: {
 		struct _fetch_info *finfo;
 
-		finfo = imapx_parse_fetch (imap->stream, error);
+		finfo = imapx_parse_fetch (imap->stream, cancellable, error);
 		if (finfo == NULL) {
 			imapx_free_fetch (finfo);
 			return -1;
@@ -1379,7 +1393,7 @@ imapx_untagged (CamelIMAPXServer *imap, GError **error)
 					camel_seekable_stream_seek ((CamelSeekableStream *)job->u.get_message.stream, finfo->offset, CAMEL_STREAM_SET, NULL);
 				}
 
-				job->u.get_message.body_len = camel_stream_write_to_stream (finfo->body, job->u.get_message.stream, &job->error);
+				job->u.get_message.body_len = camel_stream_write_to_stream (finfo->body, job->u.get_message.stream, job->cancellable, &job->error);
 				if (job->u.get_message.body_len == -1)
 					g_prefix_error (
 						&job->error,
@@ -1541,6 +1555,7 @@ imapx_untagged (CamelIMAPXServer *imap, GError **error)
 
 					if (!camel_folder_summary_check_uid (job->folder->summary, mi->uid)) {
 						CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)job->folder;
+						gint cnt;
 
 						camel_folder_summary_add (job->folder->summary, mi);
 						imapx_set_message_info_flags_for_new_message (mi, server_flags, server_user_flags, job->folder);
@@ -1551,10 +1566,8 @@ imapx_untagged (CamelIMAPXServer *imap, GError **error)
 							g_hash_table_remove (ifolder->ignore_recent, mi->uid);
 						}
 
-						if (job->op) {
-							gint cnt = (camel_folder_summary_count (job->folder->summary) * 100 )/ifolder->exists_on_server;
-							camel_operation_progress (job->op, cnt?cnt:1);
-						}
+						cnt = (camel_folder_summary_count (job->folder->summary) * 100 )/ifolder->exists_on_server;
+						camel_operation_progress (job->cancellable, cnt?cnt:1);
 					}
 
 					if (free_user_flags && server_user_flags)
@@ -1570,7 +1583,7 @@ imapx_untagged (CamelIMAPXServer *imap, GError **error)
 	case IMAPX_LSUB:
 		lsub = TRUE;
 	case IMAPX_LIST: {
-		struct _list_info *linfo = imapx_parse_list (imap->stream, error);
+		struct _list_info *linfo = imapx_parse_list (imap->stream, cancellable, error);
 		CamelIMAPXJob *job;
 
 		if (!linfo)
@@ -1602,7 +1615,7 @@ imapx_untagged (CamelIMAPXServer *imap, GError **error)
 		imap->recent = id;
 		break;
 	case IMAPX_STATUS: {
-		struct _state_info *sinfo = imapx_parse_status_info (imap->stream, error);
+		struct _state_info *sinfo = imapx_parse_status_info (imap->stream, cancellable, error);
 		if (sinfo) {
 			CamelIMAPXStoreSummary *s = ((CamelIMAPXStore *)imap->store)->summary;
 			CamelIMAPXStoreNamespace *ns;
@@ -1615,7 +1628,7 @@ imapx_untagged (CamelIMAPXServer *imap, GError **error)
 				path_name = camel_imapx_store_summary_full_to_path (s, sinfo->name, ns->sep);
 				c(imap->tagprefix, "Got folder path '%s' for full '%s'\n", path_name, sinfo->name);
 				if (path_name) {
-					ifolder = (gpointer)camel_store_get_folder (imap->store, path_name, 0, error);
+					ifolder = (gpointer)camel_store_get_folder (imap->store, path_name, 0, cancellable, error);
 					g_free (path_name);
 				}
 			}
@@ -1637,7 +1650,7 @@ imapx_untagged (CamelIMAPXServer *imap, GError **error)
 	case IMAPX_BYE: {
 		guchar *token;
 
-		if (camel_imapx_stream_text (imap->stream, &token, NULL)) {
+		if (camel_imapx_stream_text (imap->stream, &token, cancellable, NULL)) {
 			c(imap->tagprefix, "BYE: %s\n", token);
 			g_set_error (
 				error, CAMEL_IMAPX_ERROR, 1,
@@ -1655,7 +1668,7 @@ imapx_untagged (CamelIMAPXServer *imap, GError **error)
 		/* TODO: validate which ones of these can happen as unsolicited responses */
 		/* TODO: handle bye/preauth differently */
 		camel_imapx_stream_ungettoken (imap->stream, tok, token, len);
-		sinfo = imapx_parse_status (imap->stream, error);
+		sinfo = imapx_parse_status (imap->stream, cancellable, error);
 		if (sinfo == NULL)
 			return -1;
 		switch (sinfo->condition) {
@@ -1714,13 +1727,16 @@ imapx_untagged (CamelIMAPXServer *imap, GError **error)
 		c(imap->tagprefix, "unknown token: %s\n", token);
 	}
 
-	return camel_imapx_stream_skip (imap->stream, error);
+	return camel_imapx_stream_skip (imap->stream, cancellable, error);
 }
 
 /* handle any continuation requests
    either data continuations, or auth continuation */
 static gint
-imapx_continuation (CamelIMAPXServer *imap, gboolean litplus, GError **error)
+imapx_continuation (CamelIMAPXServer *imap,
+                    gboolean litplus,
+                    GCancellable *cancellable,
+                    GError **error)
 {
 	CamelIMAPXCommand *ic, *newliteral = NULL;
 	CamelIMAPXCommandPart *cp;
@@ -1730,7 +1746,7 @@ imapx_continuation (CamelIMAPXServer *imap, gboolean litplus, GError **error)
 	   ohter lock here.  All other writes go through
 	   queue-lock */
 	if (imapx_idle_supported (imap) && imapx_in_idle (imap)) {
-		camel_imapx_stream_skip (imap->stream, error);
+		camel_imapx_stream_skip (imap->stream, cancellable, error);
 
 		c(imap->tagprefix, "Got continuation response for IDLE \n");
 		IDLE_LOCK (imap->idle);
@@ -1754,8 +1770,8 @@ imapx_continuation (CamelIMAPXServer *imap, gboolean litplus, GError **error)
 
 		QUEUE_LOCK (imap);
 		imap->literal = NULL;
-		imapx_command_start_next (imap, error);
-		QUEUE_UNLOCK (imap);
+		imapx_command_start_next (imap, cancellable, error);
+		QUEUE_UNLOCK(imap);
 
 		return 1;
 	}
@@ -1763,7 +1779,7 @@ imapx_continuation (CamelIMAPXServer *imap, gboolean litplus, GError **error)
 	ic = imap->literal;
 	if (!litplus) {
 		if (ic == NULL) {
-			camel_imapx_stream_skip (imap->stream, error);
+			camel_imapx_stream_skip (imap->stream, cancellable, error);
 			c(imap->tagprefix, "got continuation response with no outstanding continuation requests?\n");
 			return 1;
 		}
@@ -1776,26 +1792,28 @@ imapx_continuation (CamelIMAPXServer *imap, gboolean litplus, GError **error)
 	switch (cp->type & CAMEL_IMAPX_COMMAND_MASK) {
 	case CAMEL_IMAPX_COMMAND_DATAWRAPPER:
 		c(imap->tagprefix, "writing data wrapper to literal\n");
-		camel_data_wrapper_write_to_stream ((CamelDataWrapper *)cp->ob, (CamelStream *)imap->stream, NULL);
+		camel_data_wrapper_write_to_stream ((CamelDataWrapper *)cp->ob, (CamelStream *)imap->stream, cancellable, NULL);
 		break;
 	case CAMEL_IMAPX_COMMAND_STREAM:
 		c(imap->tagprefix, "writing stream to literal\n");
-		camel_stream_write_to_stream ((CamelStream *)cp->ob, (CamelStream *)imap->stream, NULL);
+		camel_stream_write_to_stream ((CamelStream *)cp->ob, (CamelStream *)imap->stream, cancellable, NULL);
 		break;
 	case CAMEL_IMAPX_COMMAND_AUTH: {
 		gchar *resp;
 		guchar *token;
 
-		if (camel_imapx_stream_text (imap->stream, &token, error))
+		if (camel_imapx_stream_text (imap->stream, &token, cancellable, error))
 			return -1;
-
-		resp = camel_sasl_challenge_base64 ((CamelSasl *)cp->ob, (const gchar *) token, error);
-		g_free (token);
+		    
+		resp = camel_sasl_challenge_base64 (
+			(CamelSasl *) cp->ob, (const gchar *) token,
+			cancellable, error);
+		g_free(token);
 		if (resp == NULL)
 			return -1;
 		c(imap->tagprefix, "got auth continuation, feeding token '%s' back to auth mech\n", resp);
 
-		camel_stream_write ((CamelStream *)imap->stream, resp, strlen (resp), NULL);
+		camel_stream_write ((CamelStream *)imap->stream, resp, strlen (resp), cancellable, NULL);
 		g_free (resp);
 		/* we want to keep getting called until we get a status reponse from the server
 		   ignore what sasl tells us */
@@ -1810,14 +1828,14 @@ imapx_continuation (CamelIMAPXServer *imap, gboolean litplus, GError **error)
 
 		// FIXME: errors
 		if (cp->ob && (file = camel_stream_fs_new_with_name (cp->ob, O_RDONLY, 0, NULL))) {
-			camel_stream_write_to_stream (file, (CamelStream *)imap->stream, NULL);
+			camel_stream_write_to_stream (file, (CamelStream *)imap->stream, cancellable, NULL);
 			g_object_unref (file);
 		} else if (cp->ob_size > 0) {
 			// Server is expecting data ... ummm, send it zeros?  abort?
 		}
 		break; }
 	case CAMEL_IMAPX_COMMAND_STRING:
-		camel_stream_write ((CamelStream *)imap->stream, cp->ob, cp->ob_size, NULL);
+		camel_stream_write ((CamelStream *)imap->stream, cp->ob, cp->ob_size, cancellable, NULL);
 		break;
 	default:
 		/* should we just ignore? */
@@ -1829,7 +1847,7 @@ imapx_continuation (CamelIMAPXServer *imap, gboolean litplus, GError **error)
 	}
 
 	if (!litplus)
-		camel_imapx_stream_skip (imap->stream, error);
+		camel_imapx_stream_skip (imap->stream, cancellable, error);
  noskip:
 	cp = cp->next;
 	if (cp->next) {
@@ -1850,15 +1868,19 @@ imapx_continuation (CamelIMAPXServer *imap, gboolean litplus, GError **error)
 	imap->literal = newliteral;
 
 	if (!litplus)
-		imapx_command_start_next (imap, error);
-	QUEUE_UNLOCK (imap);
+		imapx_command_start_next(imap, cancellable, error);
+	QUEUE_UNLOCK(imap);
 
 	return 1;
 }
 
 /* handle a completion line */
 static gint
-imapx_completion (CamelIMAPXServer *imap, guchar *token, gint len, GError **error)
+imapx_completion (CamelIMAPXServer *imap,
+                  guchar *token,
+                  gint len,
+                  GCancellable *cancellable,
+                  GError **error)
 {
 	CamelIMAPXCommand *ic;
 	guint tag;
@@ -1923,36 +1945,38 @@ imapx_completion (CamelIMAPXServer *imap, guchar *token, gint len, GError **erro
 	camel_dlist_remove ((CamelDListNode *) ic);
 	QUEUE_UNLOCK (imap);
 
-	ic->status = imapx_parse_status (imap->stream, error);
+	ic->status = imapx_parse_status (imap->stream, cancellable, error);
 
 	if (ic->complete)
 		ic->complete (imap, ic);
 
-	QUEUE_LOCK (imap);
-	imapx_command_start_next (imap, error);
-	QUEUE_UNLOCK (imap);
+	QUEUE_LOCK(imap);
+	imapx_command_start_next(imap, cancellable, error);
+	QUEUE_UNLOCK(imap);
 
 	return 1;
 }
 
 static void
-imapx_step (CamelIMAPXServer *is, GError **error)
+imapx_step (CamelIMAPXServer *is,
+            GCancellable *cancellable,
+            GError **error)
 {
 	guint len;
 	guchar *token;
 	gint tok;
 
 	// poll ?  wait for other stuff? loop?
-	tok = camel_imapx_stream_token (is->stream, &token, &len, error);
+	tok = camel_imapx_stream_token (is->stream, &token, &len, cancellable, error);
 	if (tok < 0)
 		return;
 
 	if (tok == '*')
-		imapx_untagged (is, error);
+		imapx_untagged (is, cancellable, error);
 	else if (tok == IMAPX_TOK_TOKEN)
-		imapx_completion (is, token, len, error);
+		imapx_completion (is, token, len, cancellable, error);
 	else if (tok == '+')
-		imapx_continuation (is, FALSE, error);
+		imapx_continuation (is, FALSE, cancellable, error);
 	else
 		g_set_error (
 			error, CAMEL_IMAPX_ERROR, 1,
@@ -1972,7 +1996,7 @@ imapx_command_run (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	QUEUE_UNLOCK (is);
 
 	while (ic->status == NULL && ic->error == NULL)
-		imapx_step (is, &ic->error);
+		imapx_step (is, ic->cancellable, &ic->error);
 
 	if (is->literal == ic)
 		is->literal = NULL;
@@ -2011,6 +2035,20 @@ imapx_command_run_sync (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 /* ********************************************************************** */
 /* Should be called when there are no more commands needed to complete the job */
+
+static CamelIMAPXJob *
+imapx_job_new (GCancellable *cancellable)
+{
+	CamelIMAPXJob *job;
+
+	if (cancellable != NULL)
+		g_object_ref (cancellable);
+
+	job = g_malloc0 (sizeof (CamelIMAPXJob));
+	job->cancellable = cancellable;
+
+	return job;
+}
 
 static void
 imapx_job_done (CamelIMAPXServer *is, CamelIMAPXJob *job)
@@ -2115,7 +2153,8 @@ imapx_command_idle_stop (CamelIMAPXServer *is, GError **error)
 }
 
 static void
-imapx_command_idle_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+imapx_command_idle_done (CamelIMAPXServer *is,
+                         CamelIMAPXCommand *ic)
 {
 	CamelIMAPXIdle *idle = is->idle;
 
@@ -2137,7 +2176,8 @@ imapx_command_idle_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 }
 
 static void
-imapx_job_idle_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+imapx_job_idle_start (CamelIMAPXServer *is,
+                      CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 	CamelIMAPXCommandPart *cp;
@@ -2145,7 +2185,9 @@ imapx_job_idle_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 
 	full_name = camel_folder_get_full_name (job->folder);
 
-	ic = camel_imapx_command_new (is, "IDLE", job->folder, "IDLE");
+	ic = camel_imapx_command_new (
+		is, "IDLE", job->folder,
+		job->cancellable, "IDLE");
 	ic->job = job;
 	ic->pri = job->pri;
 	ic->complete = imapx_command_idle_done;
@@ -2169,12 +2211,15 @@ imapx_job_idle_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 }
 
 static gboolean
-camel_imapx_server_idle (CamelIMAPXServer *is, CamelFolder *folder, GError **error)
+camel_imapx_server_idle (CamelIMAPXServer *is,
+                         CamelFolder *folder,
+                         GCancellable *cancellable,
+                         GError **error)
 {
 	CamelIMAPXJob *job;
 	gboolean success;
 
-	job = g_malloc0 (sizeof (*job));
+	job = imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_IDLE;
 	job->start = imapx_job_idle_start;
 	job->folder = folder;
@@ -2191,19 +2236,19 @@ imapx_server_fetch_new_messages (CamelIMAPXServer *is,
                                  CamelFolder *folder,
                                  gboolean async,
                                  gboolean update_unseen,
+                                 GCancellable *cancellable,
                                  GError **error)
 {
 	CamelIMAPXJob *job;
 	gboolean success;
 
-	job = g_malloc0 (sizeof (*job));
+	job = imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_FETCH_NEW_MESSAGES;
 	job->start = imapx_job_fetch_new_messages_start;
 	job->folder = folder;
 	job->noreply = async;
 	job->u.refresh_info.changes = camel_folder_change_info_new ();
 	job->u.refresh_info.update_unseen = update_unseen;
-	job->op = camel_operation_registered ();
 
 	success = imapx_submit_job (is, job, error);
 
@@ -2217,7 +2262,10 @@ static gpointer
 imapx_idle_thread (gpointer data)
 {
 	CamelIMAPXServer *is = (CamelIMAPXServer *) data;
+	GCancellable *cancellable;
 	GError *local_error = NULL;
+
+	cancellable = g_object_ref (is->cancellable);
 
 	while (TRUE) {
 		CamelIMAPXFolder *ifolder;
@@ -2237,11 +2285,12 @@ imapx_idle_thread (gpointer data)
 				continue;
 			}
 			IDLE_UNLOCK (is->idle);
-			camel_imapx_server_idle (is, (gpointer)ifolder, &local_error);
+
+			camel_imapx_server_idle (is, (gpointer)ifolder, cancellable, &local_error);
 
 			if (local_error == NULL && ifolder->exists_on_server >
 			    camel_folder_summary_count (((CamelFolder *) ifolder)->summary) && imapx_is_command_queue_empty (is))
-				imapx_server_fetch_new_messages (is, is->select_folder, TRUE, TRUE, &local_error);
+				imapx_server_fetch_new_messages (is, is->select_folder, TRUE, TRUE, cancellable, &local_error);
 
 			if (local_error != NULL) {
 				e (is->tagprefix, "Caught exception in idle thread:  %s \n", local_error->message);
@@ -2257,6 +2306,8 @@ imapx_idle_thread (gpointer data)
 		if (is->idle->idle_exit)
 			break;
 	}
+
+	g_object_unref (cancellable);
 
 	g_clear_error (&local_error);
 	is->idle->idle_thread = NULL;
@@ -2454,7 +2505,7 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		ifolder->exists_on_server = is->exists;
 		ifolder->modseq_on_server = is->highestmodseq;
 		if (ifolder->uidnext_on_server < is->uidnext) {
-			imapx_server_fetch_new_messages (is, is->select_pending, TRUE, TRUE, NULL);
+			imapx_server_fetch_new_messages (is, is->select_pending, TRUE, TRUE, NULL, NULL);
 			/* We don't do this right now because we want the new messages to
 			   update the unseen count. */
 			//ifolder->uidnext_on_server = is->uidnext;
@@ -2482,7 +2533,11 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 /* Should have a queue lock. TODO Change the way select is written */
 static gboolean
-imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, GError **error)
+imapx_select (CamelIMAPXServer *is,
+              CamelFolder *folder,
+              gboolean forced,
+              GCancellable *cancellable,
+              GError **error)
 {
 	CamelIMAPXCommand *ic;
 	const gchar *full_name;
@@ -2533,7 +2588,7 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, GError
 	/* Hrm, what about reconnecting? */
 	is->state = IMAPX_INITIALISED;
 
-	ic = camel_imapx_command_new(is, "SELECT", NULL, "SELECT %f", folder);
+	ic = camel_imapx_command_new(is, "SELECT", NULL, cancellable, "SELECT %f", folder);
 
 	if (is->use_qresync) {
 		CamelIMAPXSummary *isum = (CamelIMAPXSummary *)folder->summary;
@@ -2716,7 +2771,9 @@ connect_to_server_process (CamelIMAPXServer *is, const gchar *cmd, GError **erro
 #endif /* G_OS_WIN32 */
 
 gboolean
-imapx_connect_to_server (CamelIMAPXServer *is, GError **error)
+imapx_connect_to_server (CamelIMAPXServer *is,
+                         GCancellable *cancellable,
+                         GError **error)
 {
 	CamelStream * tcp_stream = NULL;
 	gchar *socks_host;
@@ -2781,7 +2838,9 @@ imapx_connect_to_server (CamelIMAPXServer *is, GError **error)
 		g_free (socks_host);
 	}
 
-	ret = camel_tcp_stream_connect (CAMEL_TCP_STREAM (tcp_stream), is->url->host, serv, fallback_port, error);
+	ret = camel_tcp_stream_connect (
+		CAMEL_TCP_STREAM (tcp_stream), is->url->host, serv,
+		fallback_port, cancellable, error);
 	if (ret == -1) {
 		g_prefix_error (
 			error, _("Could not connect to %s (port %s): "),
@@ -2815,24 +2874,26 @@ imapx_connect_to_server (CamelIMAPXServer *is, GError **error)
 			return FALSE;
 		}
 
-		tok = camel_imapx_stream_token (is->stream, &token, &len, error);
+		tok = camel_imapx_stream_token (is->stream, &token, &len, cancellable, error);
 		if (tok < 0)
 			return FALSE;
 
 		if (tok == '*') {
-			imapx_untagged (is, error);
+			imapx_untagged (is, cancellable, error);
 			break;
 		}
 		camel_imapx_stream_ungettoken (is->stream, tok, token, len);
-		if (camel_imapx_stream_text (is->stream, &token, error))
+		if (camel_imapx_stream_text (is->stream, &token, cancellable, error))
 			return FALSE;
 		e(is->tagprefix, "Got unexpected line before greeting:  '%s'\n", token);
 		g_free (token);
 	}
 
 	if (!is->cinfo) {
-		ic = camel_imapx_command_new(is, "CAPABILITY", NULL, "CAPABILITY");
-		imapx_command_run (is, ic);
+		ic = camel_imapx_command_new (
+			is, "CAPABILITY", NULL,
+			cancellable, "CAPABILITY");
+		imapx_command_run(is, ic);
 
 		if (ic->error != NULL || ic->status->result != IMAPX_OK) {
 			if (ic->error == NULL)
@@ -2862,7 +2923,9 @@ imapx_connect_to_server (CamelIMAPXServer *is, GError **error)
 			goto exit;
 		}
 
-		ic = camel_imapx_command_new (is, "STARTTLS", NULL, "STARTTLS");
+		ic = camel_imapx_command_new (
+			is, "STARTTLS", NULL,
+			cancellable, "STARTTLS");
 		imapx_command_run (is, ic);
 
 		if (ic->error != NULL || ic->status->result != IMAPX_OK) {
@@ -2899,7 +2962,9 @@ imapx_connect_to_server (CamelIMAPXServer *is, GError **error)
 		}
 		/* Get new capabilities if they weren't already given */
 		if (!is->cinfo) {
-			ic = camel_imapx_command_new(is, "CAPABILITY", NULL, "CAPABILITY");
+			ic = camel_imapx_command_new (
+				is, "CAPABILITY", NULL,
+				cancellable, "CAPABILITY");
 			if (!imapx_command_run (is, ic)) {
 				g_propagate_error (&local_error, ic->error);
 				camel_imapx_command_free (ic);
@@ -2931,7 +2996,9 @@ exit:
 }
 
 static gboolean
-imapx_reconnect (CamelIMAPXServer *is, GError **error)
+imapx_reconnect (CamelIMAPXServer *is,
+                 GCancellable *cancellable,
+                 GError **error)
 {
 	CamelSasl *sasl;
 	CamelIMAPXCommand *ic;
@@ -2950,7 +3017,7 @@ imapx_reconnect (CamelIMAPXServer *is, GError **error)
 			service->url->passwd = NULL;
 		}
 
-		if (!imapx_connect_to_server (is, error))
+		if (!imapx_connect_to_server (is, cancellable, error))
 			goto exception;
 
 		if (is->state == IMAPX_AUTHENTICATED)
@@ -3010,10 +3077,15 @@ imapx_reconnect (CamelIMAPXServer *is, GError **error)
 			}
 		}
 		if (authtype && (sasl = camel_sasl_new ("imap", authtype->authproto, service))) {
-			ic = camel_imapx_command_new (is, "AUTHENTICATE", NULL, "AUTHENTICATE %A", sasl);
+			ic = camel_imapx_command_new (
+				is, "AUTHENTICATE", NULL, cancellable,
+				"AUTHENTICATE %A", sasl);
 			g_object_unref (sasl);
 		} else {
-			ic = camel_imapx_command_new(is, "LOGIN", NULL, "LOGIN %s %s", service->url->user, service->url->passwd);
+			ic = camel_imapx_command_new (
+				is, "LOGIN", NULL, cancellable,
+				"LOGIN %s %s", service->url->user,
+				service->url->passwd);
 		}
 
 		imapx_command_run (is, ic);
@@ -3052,7 +3124,9 @@ imapx_reconnect (CamelIMAPXServer *is, GError **error)
 
 	/* After login we re-capa unless the server already told us */
 	if (!is->cinfo) {
-		ic = camel_imapx_command_new(is, "CAPABILITY", NULL, "CAPABILITY");
+		ic = camel_imapx_command_new (
+			is, "CAPABILITY", NULL,
+			cancellable, "CAPABILITY");
 		if (!imapx_command_run (is, ic)) {
 			g_propagate_error (error, ic->error);
 			camel_imapx_command_free (ic);
@@ -3075,7 +3149,9 @@ imapx_reconnect (CamelIMAPXServer *is, GError **error)
 
 	/* Fetch namespaces */
 	if (is->cinfo->capa & IMAPX_CAPABILITY_NAMESPACE) {
-		ic = camel_imapx_command_new (is, "NAMESPACE", NULL, "NAMESPACE");
+		ic = camel_imapx_command_new (
+			is, "NAMESPACE", NULL,
+			cancellable, "NAMESPACE");
 		if (!imapx_command_run (is, ic)) {
 			g_propagate_error (error, ic->error);
 			camel_imapx_command_free (ic);
@@ -3087,7 +3163,9 @@ imapx_reconnect (CamelIMAPXServer *is, GError **error)
 
 	if (((CamelIMAPXStore *)is->store)->rec_options & IMAPX_USE_QRESYNC &&
 	    is->cinfo->capa & IMAPX_CAPABILITY_QRESYNC) {
-		ic = camel_imapx_command_new (is, "ENABLE", NULL, "ENABLE CONDSTORE QRESYNC");
+		ic = camel_imapx_command_new (
+			is, "ENABLE", NULL, cancellable,
+			"ENABLE CONDSTORE QRESYNC");
 		if (!imapx_command_run (is, ic)) {
 			g_propagate_error (error, ic->error);
 			camel_imapx_command_free (ic);
@@ -3162,11 +3240,13 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		if (job->u.get_message.fetch_offset < job->u.get_message.size ||
 		    job->u.get_message.fetch_offset == really_fetched) {
 			camel_imapx_command_free (ic);
-			if (job->op)
-				camel_operation_progress (job->op, (job->u.get_message.fetch_offset *100)/job->u.get_message.size);
+			camel_operation_progress (
+				job->cancellable,
+				(job->u.get_message.fetch_offset *100)/job->u.get_message.size);
 
-			ic = camel_imapx_command_new(is, "FETCH", job->folder,
-					"UID FETCH %t (BODY.PEEK[]", job->u.get_message.uid);
+			ic = camel_imapx_command_new (
+				is, "FETCH", job->folder, job->cancellable,
+				"UID FETCH %t (BODY.PEEK[]", job->u.get_message.uid);
 			camel_imapx_command_add(ic, "<%u.%u>", job->u.get_message.fetch_offset, MULTI_SIZE);
 			camel_imapx_command_add(ic, ")");
 			ic->complete = imapx_command_fetch_message_done;
@@ -3199,7 +3279,7 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			if (stream) {
 				gchar *tmp = camel_data_cache_get_filename (ifolder->cache, "tmp", job->u.get_message.uid, NULL);
 
-				if (camel_stream_flush (stream, &job->error) == 0 && camel_stream_close (stream, &job->error) == 0) {
+				if (camel_stream_flush (stream, job->cancellable, &job->error) == 0 && camel_stream_close (stream, job->cancellable, &job->error) == 0) {
 					gchar *cache_file = camel_data_cache_get_filename  (ifolder->cache, "cur", job->u.get_message.uid, NULL);
 					gchar *temp = g_strrstr (cache_file, "/"), *dir;
 
@@ -3237,8 +3317,9 @@ imapx_job_get_message_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 
 	if (job->u.get_message.use_multi_fetch) {
 		for (i=0; i < 3 && job->u.get_message.fetch_offset < job->u.get_message.size;i++) {
-			ic = camel_imapx_command_new(is, "FETCH", job->folder,
-					"UID FETCH %t (BODY.PEEK[]", job->u.get_message.uid);
+			ic = camel_imapx_command_new (
+				is, "FETCH", job->folder, job->cancellable,
+				"UID FETCH %t (BODY.PEEK[]", job->u.get_message.uid);
 			camel_imapx_command_add(ic, "<%u.%u>", job->u.get_message.fetch_offset, MULTI_SIZE);
 			camel_imapx_command_add(ic, ")");
 			ic->complete = imapx_command_fetch_message_done;
@@ -3249,8 +3330,9 @@ imapx_job_get_message_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 			imapx_command_queue (is, ic);
 		}
 	} else {
-		ic = camel_imapx_command_new(is, "FETCH", job->folder,
-				"UID FETCH %t (BODY.PEEK[])", job->u.get_message.uid);
+		ic = camel_imapx_command_new (
+			is, "FETCH", job->folder, job->cancellable,
+			"UID FETCH %t (BODY.PEEK[])", job->u.get_message.uid);
 		ic->complete = imapx_command_fetch_message_done;
 		ic->job = job;
 		ic->pri = job->pri;
@@ -3262,13 +3344,16 @@ imapx_job_get_message_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 /* ********************************************************************** */
 
 static void
-imapx_command_copy_messages_step_start (CamelIMAPXServer *is, CamelIMAPXJob *job, gint index)
+imapx_command_copy_messages_step_start (CamelIMAPXServer *is,
+                                        CamelIMAPXJob *job, gint index)
 {
 	CamelIMAPXCommand *ic;
 	GPtrArray *uids = job->u.copy_messages.uids;
 	gint i = index;
 
-	ic = camel_imapx_command_new (is, "COPY", job->folder, "UID COPY ");
+	ic = camel_imapx_command_new (
+		is, "COPY", job->folder,
+		job->cancellable, "UID COPY ");
 	ic->complete = imapx_command_copy_messages_step_done;
 	ic->job = job;
 	ic->pri = job->pri;
@@ -3296,7 +3381,8 @@ imapx_command_copy_messages_step_start (CamelIMAPXServer *is, CamelIMAPXJob *job
 }
 
 static void
-imapx_command_copy_messages_step_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
+                                       CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job = ic->job;
 	gint i = job->u.copy_messages.index;
@@ -3349,9 +3435,11 @@ cleanup:
 }
 
 static void
-imapx_job_copy_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+imapx_job_copy_messages_start (CamelIMAPXServer *is,
+                               CamelIMAPXJob *job)
 {
-	if (!imapx_server_sync_changes (is, job->folder, job->pri, &job->error))
+	if (!imapx_server_sync_changes (
+		is, job->folder, job->pri, job->cancellable, &job->error))
 		imapx_job_done (is, job);
 
 	g_ptr_array_sort (job->u.copy_messages.uids, (GCompareFunc) imapx_uids_array_cmp);
@@ -3362,7 +3450,8 @@ imapx_job_copy_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 /* ********************************************************************** */
 
 static void
-imapx_command_append_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+imapx_command_append_message_done (CamelIMAPXServer *is,
+                                   CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job = ic->job;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
@@ -3426,17 +3515,18 @@ imapx_command_append_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 }
 
 static void
-imapx_job_append_message_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+imapx_job_append_message_start (CamelIMAPXServer *is,
+                                CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 
 	/* TODO: we could supply the original append date from the file timestamp */
-	ic = camel_imapx_command_new(is, "APPEND", NULL,
-				     "APPEND %f %F %P",
-				     job->folder,
-				     ((CamelMessageInfoBase *)job->u.append_message.info)->flags,
-				     ((CamelMessageInfoBase *)job->u.append_message.info)->user_flags,
-				     job->u.append_message.path);
+	ic = camel_imapx_command_new (
+		is, "APPEND", NULL, job->cancellable,
+		"APPEND %f %F %P", job->folder,
+		((CamelMessageInfoBase *)job->u.append_message.info)->flags,
+		((CamelMessageInfoBase *)job->u.append_message.info)->user_flags,
+		job->u.append_message.path);
 	ic->complete = imapx_command_append_message_done;
 	ic->job = job;
 	ic->pri = job->pri;
@@ -3509,7 +3599,8 @@ imapx_index_next (GPtrArray *uids, CamelFolderSummary *s, guint index)
 }
 
 static void
-imapx_command_step_fetch_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+imapx_command_step_fetch_done (CamelIMAPXServer *is,
+                               CamelIMAPXCommand *ic)
 {
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)ic->job->folder;
 	CamelIMAPXSummary *isum = (CamelIMAPXSummary *)ic->job->folder->summary;
@@ -3539,7 +3630,9 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	if (i<infos->len) {
 		camel_imapx_command_free (ic);
 
-		ic = camel_imapx_command_new(is, "FETCH", job->folder, "UID FETCH ");
+		ic = camel_imapx_command_new (
+			is, "FETCH", job->folder,
+			job->cancellable, "UID FETCH ");
 		ic->complete = imapx_command_step_fetch_done;
 		ic->job = job;
 		ic->pri = job->pri - 1;
@@ -3623,7 +3716,8 @@ imapx_uid_cmp (gconstpointer ap, gconstpointer bp, gpointer data)
 }
 
 static void
-imapx_job_scan_changes_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+imapx_job_scan_changes_done (CamelIMAPXServer *is,
+                             CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job = ic->job;
 	gint i;
@@ -3754,7 +3848,8 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		/* If we have any new messages, download their headers, but only a few (100?) at a time */
 		if (fetch_new) {
 			camel_operation_start (
-				job->op, _("Fetching summary information for new messages in %s"),
+				job->cancellable,
+				_("Fetching summary information for new messages in %s"),
 				camel_folder_get_name (job->folder));
 			imapx_uidset_init (&job->u.refresh_info.uidset, BATCH_FETCH_COUNT, 0);
 			/* These are new messages which arrived since we last knew the unseen count;
@@ -3789,16 +3884,19 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 }
 
 static void
-imapx_job_scan_changes_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+imapx_job_scan_changes_start (CamelIMAPXServer *is,
+                              CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 
 	camel_operation_start (
-		job->op, _("Scanning for changed messages in %s"),
+		job->cancellable,
+		_("Scanning for changed messages in %s"),
 		camel_folder_get_name (job->folder));
 
-	ic = camel_imapx_command_new (is, "FETCH", job->folder,
-				     "UID FETCH 1:* (UID FLAGS)");
+	ic = camel_imapx_command_new (
+		is, "FETCH", job->folder, job->cancellable,
+		"UID FETCH 1:* (UID FLAGS)");
 	ic->job = job;
 	ic->complete = imapx_job_scan_changes_done;
 	ic->pri = job->pri;
@@ -3807,7 +3905,8 @@ imapx_job_scan_changes_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 }
 
 static void
-imapx_command_fetch_new_messages_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+imapx_command_fetch_new_messages_done (CamelIMAPXServer *is,
+                                       CamelIMAPXCommand *ic)
 {
 	CamelIMAPXSummary *isum = (CamelIMAPXSummary *)ic->job->folder->summary;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)ic->job->folder;
@@ -3849,15 +3948,13 @@ imapx_command_fetch_new_messages_done (CamelIMAPXServer *is, CamelIMAPXCommand *
 exception:
 	camel_folder_change_info_free (ic->job->u.refresh_info.changes);
 
-	if (ic->job->op)
-		g_object_unref (ic->job->op);
-
 	imapx_job_done (is, ic->job);
 	camel_imapx_command_free (ic);
 }
 
 static void
-imapx_job_fetch_new_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+imapx_job_fetch_new_messages_start (CamelIMAPXServer *is,
+                                    CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 	CamelFolder *folder = job->folder;
@@ -3878,19 +3975,22 @@ imapx_job_fetch_new_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 		uid = g_strdup ("1");
 
 	camel_operation_start (
-		job->op, _("Fetching summary information for new messages in %s"),
+		job->cancellable,
+		_("Fetching summary information for new messages in %s"),
 		camel_folder_get_name (folder));
 
 	if (diff > BATCH_FETCH_COUNT) {
-		ic = camel_imapx_command_new (is, "FETCH", job->folder,
-				     "UID FETCH %s:* (UID FLAGS)", uid);
-		imapx_uidset_init (&job->u.refresh_info.uidset, BATCH_FETCH_COUNT, 0);
-		job->u.refresh_info.infos = g_array_new (0, 0, sizeof (struct _refresh_info));
+		ic = camel_imapx_command_new (
+			is, "FETCH", job->folder, job->cancellable,
+			"UID FETCH %s:* (UID FLAGS)", uid);
+		imapx_uidset_init(&job->u.refresh_info.uidset, BATCH_FETCH_COUNT, 0);
+		job->u.refresh_info.infos = g_array_new (0, 0, sizeof(struct _refresh_info));
 		ic->pri = job->pri;
 		ic->complete = imapx_command_step_fetch_done;
 	} else {
-		ic = camel_imapx_command_new (is, "FETCH", job->folder,
-					"UID FETCH %s:* (RFC822.SIZE RFC822.HEADER FLAGS)", uid);
+		ic = camel_imapx_command_new (
+			is, "FETCH", job->folder, job->cancellable,
+			"UID FETCH %s:* (RFC822.SIZE RFC822.HEADER FLAGS)", uid);
 		ic->pri = job->pri;
 		ic->complete = imapx_command_fetch_new_messages_done;
 	}
@@ -3901,7 +4001,8 @@ imapx_job_fetch_new_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 }
 
 static void
-imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+imapx_job_refresh_info_start (CamelIMAPXServer *is,
+                              CamelIMAPXJob *job)
 {
 	guint32 total;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
@@ -3916,7 +4017,9 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 
 	/* Sync changes first, else unread count will not
 	   match. Need to think about better ways for this */
-	if (!imapx_server_sync_changes (is, folder, job->pri, &job->error))
+	if (!imapx_server_sync_changes (
+		is, folder, job->pri,
+		job->cancellable, &job->error))
 		goto done;
 
 #if 0 /* There are issues with this still; continue with the buggy behaviour
@@ -3953,21 +4056,27 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 					if (!imapx_stop_idle (is, &job->error))
 						goto done;
 				/* This doesn't work -- this is an immediate command, not queued */
-				if (!imapx_select (is, folder, TRUE, &job->error))
+				if (!imapx_select (
+					is, folder, TRUE,
+					job->cancellable, &job->error))
 					goto done;
 			} else {
 				/* Or maybe just NOOP, unless we're in IDLE in which case do nothing */
-				if (!imapx_idle_supported (is) || !imapx_in_idle (is)) {
-					if (!camel_imapx_server_noop (is, folder, &job->error))
+				if (!imapx_idle_supported(is) || !imapx_in_idle(is)) {
+					if (!camel_imapx_server_noop (is, folder, job->cancellable, &job->error))
 						goto done;
 				}
 			}
 		} else {
 			if (is->cinfo->capa & IMAPX_CAPABILITY_CONDSTORE)
-				ic = camel_imapx_command_new (is, "STATUS", NULL, "STATUS %f (MESSAGES UNSEEN UIDVALIDITY UIDNEXT HIGHESTMODSEQ)", folder);
+				ic = camel_imapx_command_new (
+					is, "STATUS", NULL, job->cancellable,
+					"STATUS %f (MESSAGES UNSEEN UIDVALIDITY UIDNEXT HIGHESTMODSEQ)", folder);
 			else
-				ic = camel_imapx_command_new (is, "STATUS", NULL, "STATUS %f (MESSAGES UNSEEN UIDVALIDITY UIDNEXT)", folder);
-
+				ic = camel_imapx_command_new (
+					is, "STATUS", NULL, job->cancellable,
+					"STATUS %f (MESSAGES UNSEEN UIDVALIDITY UIDNEXT)", folder);
+		
 			ic->job = job;
 			ic->pri = job->pri;
 
@@ -4013,7 +4122,9 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 		if (!total)
 			need_rescan = FALSE;
 
-		if (!imapx_server_fetch_new_messages (is, folder, FALSE, FALSE, &job->error))
+		if (!imapx_server_fetch_new_messages (
+			is, folder, FALSE, FALSE,
+			job->cancellable, &job->error))
 			goto done;
 
 		/* If QRESYNC-capable we'll have got all flags changes in SELECT */
@@ -4026,7 +4137,7 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 
 	if (can_qresync) {
 		/* Actually we only want to select it; no need for the NOOP */
-		camel_imapx_server_noop (is, folder, &job->error);
+		camel_imapx_server_noop (is, folder, job->cancellable, &job->error);
 	qresync_done:
 		isum->modseq = ifolder->modseq_on_server;
 		total = camel_folder_summary_count (job->folder->summary);
@@ -4056,7 +4167,8 @@ done:
 /* ********************************************************************** */
 
 static void
-imapx_command_expunge_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+imapx_command_expunge_done (CamelIMAPXServer *is,
+                            CamelIMAPXCommand *ic)
 {
 	if (ic->error != NULL || ic->status->result != IMAPX_OK) {
 		if (ic->error == NULL)
@@ -4113,14 +4225,19 @@ imapx_command_expunge_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 }
 
 static void
-imapx_job_expunge_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+imapx_job_expunge_start (CamelIMAPXServer *is,
+                         CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 
-	imapx_server_sync_changes (is, job->folder, job->pri, &job->error);
+	imapx_server_sync_changes (
+		is, job->folder, job->pri,
+		job->cancellable, &job->error);
 
 	/* TODO handle UIDPLUS capability */
-	ic = camel_imapx_command_new(is, "EXPUNGE", job->folder, "EXPUNGE");
+	ic = camel_imapx_command_new (
+		is, "EXPUNGE", job->folder,
+		job->cancellable, "EXPUNGE");
 	ic->job = job;
 	ic->pri = job->pri;
 	ic->complete = imapx_command_expunge_done;
@@ -4130,7 +4247,8 @@ imapx_job_expunge_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 /* ********************************************************************** */
 
 static void
-imapx_command_list_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+imapx_command_list_done (CamelIMAPXServer *is,
+                         CamelIMAPXCommand *ic)
 {
 	if (ic->error != NULL || ic->status->result != IMAPX_OK) {
 		if (ic->error == NULL)
@@ -4147,13 +4265,17 @@ imapx_command_list_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 }
 
 static void
-imapx_job_list_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+imapx_job_list_start (CamelIMAPXServer *is,
+                      CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 
-	ic = camel_imapx_command_new(is, "LIST", NULL, "%s \"\" %s",
-				     (job->u.list.flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED)?"LSUB":"LIST",
-				     job->u.list.pattern);
+	ic = camel_imapx_command_new (
+		is, "LIST", NULL, job->cancellable,
+		"%s \"\" %s",
+		(job->u.list.flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) ?
+			"LSUB" : "LIST",
+		job->u.list.pattern);
 	if (job->u.list.ext) {
 		/* Hm, we need a way to add atoms _without_ quoting or using literals */
 		camel_imapx_command_add(ic, " ");
@@ -4182,7 +4304,8 @@ imapx_encode_folder_name (CamelIMAPXStore *istore, const gchar *folder_name)
 }
 
 static void
-imapx_command_subscription_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+imapx_command_subscription_done (CamelIMAPXServer *is,
+                                 CamelIMAPXCommand *ic)
 {
 	if (ic->error != NULL || ic->status->result != IMAPX_OK) {
 		if (ic->error == NULL)
@@ -4198,7 +4321,8 @@ imapx_command_subscription_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 }
 
 static void
-imapx_job_manage_subscription_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+imapx_job_manage_subscription_start (CamelIMAPXServer *is,
+                                     CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 	const gchar *str = NULL;
@@ -4209,8 +4333,12 @@ imapx_job_manage_subscription_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 	else
 		str = "UNSUBSCRIBE";
 
-	encoded_fname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, job->u.manage_subscriptions.folder_name);
-	ic = camel_imapx_command_new (is, str, NULL, "%s %s", str, encoded_fname);
+	encoded_fname = imapx_encode_folder_name (
+		(CamelIMAPXStore *) is->store,
+		job->u.manage_subscriptions.folder_name);
+	ic = camel_imapx_command_new (
+		is, str, NULL, job->cancellable,
+		"%s %s", str, encoded_fname);
 
 	ic->pri = job->pri;
 	ic->job = job;
@@ -4223,7 +4351,8 @@ imapx_job_manage_subscription_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 /* ********************************************************************** */
 
 static void
-imapx_command_create_folder_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+imapx_command_create_folder_done (CamelIMAPXServer *is,
+                                  CamelIMAPXCommand *ic)
 {
 	if (ic->error != NULL || ic->status->result != IMAPX_OK) {
 		if (ic->error == NULL)
@@ -4239,13 +4368,16 @@ imapx_command_create_folder_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 }
 
 static void
-imapx_job_create_folder_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+imapx_job_create_folder_start (CamelIMAPXServer *is,
+                               CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 	gchar *encoded_fname = NULL;
 
 	encoded_fname = camel_utf8_utf7 (job->u.folder_name);
-	ic = camel_imapx_command_new (is, "CREATE", NULL, "CREATE %s", encoded_fname);
+	ic = camel_imapx_command_new (
+		is, "CREATE", NULL, job->cancellable,
+		"CREATE %s", encoded_fname);
 	ic->pri = job->pri;
 	ic->job = job;
 	ic->complete = imapx_command_create_folder_done;
@@ -4257,7 +4389,8 @@ imapx_job_create_folder_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 /* ********************************************************************** */
 
 static void
-imapx_command_delete_folder_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+imapx_command_delete_folder_done (CamelIMAPXServer *is,
+                                  CamelIMAPXCommand *ic)
 {
 	if (ic->error != NULL || ic->status->result != IMAPX_OK) {
 		if (ic->error == NULL)
@@ -4273,17 +4406,21 @@ imapx_command_delete_folder_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 }
 
 static void
-imapx_job_delete_folder_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+imapx_job_delete_folder_start (CamelIMAPXServer *is,
+                               CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 	gchar *encoded_fname = NULL;
 
 	encoded_fname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, job->u.folder_name);
 
-	job->folder = camel_store_get_folder(is->store, "INBOX", 0, &job->error);
+	job->folder = camel_store_get_folder (
+		is->store, "INBOX", 0, job->cancellable, &job->error);
 
 	/* make sure to-be-deleted folder is not selected by selecting INBOX for this operation */
-	ic = camel_imapx_command_new (is, "DELETE", job->folder, "DELETE %s", encoded_fname);
+	ic = camel_imapx_command_new (
+		is, "DELETE", job->folder, job->cancellable,
+		"DELETE %s", encoded_fname);
 	ic->pri = job->pri;
 	ic->job = job;
 	ic->complete = imapx_command_delete_folder_done;
@@ -4295,7 +4432,8 @@ imapx_job_delete_folder_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 /* ********************************************************************** */
 
 static void
-imapx_command_rename_folder_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+imapx_command_rename_folder_done (CamelIMAPXServer *is,
+                                  CamelIMAPXCommand *ic)
 {
 	if (ic->error != NULL || ic->status->result != IMAPX_OK) {
 		if (ic->error == NULL)
@@ -4311,17 +4449,21 @@ imapx_command_rename_folder_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 }
 
 static void
-imapx_job_rename_folder_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+imapx_job_rename_folder_start (CamelIMAPXServer *is,
+                               CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 	gchar *en_ofname = NULL, *en_nfname = NULL;
 
-	job->folder = camel_store_get_folder(is->store, "INBOX", 0, &job->error);
+	job->folder = camel_store_get_folder (
+		is->store, "INBOX", 0, job->cancellable, &job->error);
 
 	en_ofname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, job->u.rename_folder.ofolder_name);
 	en_nfname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, job->u.rename_folder.nfolder_name);
 
-	ic = camel_imapx_command_new (is, "RENAME", job->folder, "RENAME %s %s", en_ofname, en_nfname);
+	ic = camel_imapx_command_new (
+		is, "RENAME", job->folder, job->cancellable,
+		"RENAME %s %s", en_ofname, en_nfname);
 	ic->pri = job->pri;
 	ic->job = job;
 	ic->complete = imapx_command_rename_folder_done;
@@ -4334,7 +4476,8 @@ imapx_job_rename_folder_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 /* ********************************************************************** */
 
 static void
-imapx_command_noop_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+imapx_command_noop_done (CamelIMAPXServer *is,
+                         CamelIMAPXCommand *ic)
 {
 	if (ic->error != NULL || ic->status->result != IMAPX_OK) {
 		if (ic->error == NULL)
@@ -4350,11 +4493,13 @@ imapx_command_noop_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 }
 
 static void
-imapx_job_noop_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+imapx_job_noop_start (CamelIMAPXServer *is,
+                      CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 
-	ic = camel_imapx_command_new (is, "NOOP", job->folder, "NOOP");
+	ic = camel_imapx_command_new (
+		is, "NOOP", job->folder, job->cancellable, "NOOP");
 
 	ic->job = job;
 	ic->complete = imapx_command_noop_done;
@@ -4512,7 +4657,9 @@ imapx_job_sync_changes_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 				if ( (on && (((flags ^ sflags) & flags) & flag))
 				     || (!on && (((flags ^ sflags) & ~flags) & flag))) {
 					if (ic == NULL) {
-						ic = camel_imapx_command_new(is, "STORE", job->folder, "UID STORE ");
+						ic = camel_imapx_command_new (
+							is, "STORE", job->folder,
+							job->cancellable, "UID STORE ");
 						ic->complete = imapx_command_sync_changes_done;
 						ic->job = job;
 						ic->pri = job->pri;
@@ -4548,7 +4695,9 @@ imapx_job_sync_changes_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 					CamelIMAPXMessageInfo *info = c->infos->pdata[i];
 
 					if (ic == NULL) {
-						ic = camel_imapx_command_new(is, "STORE", job->folder, "UID STORE ");
+						ic = camel_imapx_command_new (
+							is, "STORE", job->folder,
+							job->cancellable, "UID STORE ");
 						ic->complete = imapx_command_sync_changes_done;
 						ic->job = job;
 						ic->pri = job->pri;
@@ -4606,13 +4755,15 @@ cancel_all_jobs (CamelIMAPXServer *is, GError *error)
 /* ********************************************************************** */
 
 static void
-parse_contents (CamelIMAPXServer *is, GError **error)
+parse_contents (CamelIMAPXServer *is,
+                GCancellable *cancellable,
+                GError **error)
 {
 	gint buffered = 0;
 	GError *local_error = NULL;
 
 	do {
-		imapx_step (is, &local_error);
+		imapx_step (is, cancellable, &local_error);
 
 		buffered = camel_imapx_stream_buffered (is->stream);
 
@@ -4633,15 +4784,13 @@ static gpointer
 imapx_parser_thread (gpointer d)
 {
 	CamelIMAPXServer *is = d;
-	CamelOperation *op;
+	GCancellable *cancellable;
 	GError *local_error = NULL;
 
-	op = camel_operation_new ();
-	camel_operation_register (op);
-	is->op = op;
+	cancellable = g_object_ref (is->cancellable);
 
 	while (local_error == NULL && is->stream) {
-		camel_operation_uncancel (op);
+		g_cancellable_reset (cancellable);
 #ifndef G_OS_WIN32
 		if (is->is_process_stream)	{
 			GPollFD fds[2] = { {0, 0, 0}, {0, 0, 0} };
@@ -4649,7 +4798,7 @@ imapx_parser_thread (gpointer d)
 
 			fds[0].fd = ((CamelStreamProcess *)is->stream->source)->sockfd;
 			fds[0].events = G_IO_IN;
-			fds[1].fd = camel_operation_cancel_fd (op);
+			fds[1].fd = g_cancellable_get_fd (cancellable);
 			fds[1].events = G_IO_IN;
 			res = g_poll (fds, 2, 1000*30);
 			if (res == -1)
@@ -4657,9 +4806,10 @@ imapx_parser_thread (gpointer d)
 			else if (res == 0)
 				/* timed out */;
 			else if (fds[0].revents & G_IO_IN) {
-				parse_contents (is, &local_error);
+				parse_contents (is, cancellable, &local_error);
 			} else if (fds[1].revents & G_IO_IN)
 				errno = EINTR;
+			g_cancellable_release_fd (cancellable);
 		} else
 #endif
 		{
@@ -4668,7 +4818,7 @@ imapx_parser_thread (gpointer d)
 
 			pollfds[0].fd = camel_tcp_stream_get_file_desc (CAMEL_TCP_STREAM (is->stream->source));
 			pollfds[0].in_flags = PR_POLL_READ;
-			pollfds[1].fd = camel_operation_cancel_prfd (op);
+			pollfds[1].fd = camel_operation_cancel_prfd (CAMEL_OPERATION (cancellable));
 			pollfds[1].in_flags = PR_POLL_READ;
 
 #include <prio.h>
@@ -4679,7 +4829,7 @@ imapx_parser_thread (gpointer d)
 			else if (res == 0) {
 				/* timed out */
 			} else if ((pollfds[0].out_flags & PR_POLL_READ)) {
-				parse_contents (is, &local_error);
+				parse_contents (is, cancellable, &local_error);
 			} else if (pollfds[1].out_flags & PR_POLL_READ)
 				errno = EINTR;
 		}
@@ -4692,7 +4842,7 @@ imapx_parser_thread (gpointer d)
 			break;
 		}
 
-		if (camel_operation_cancel_check (op)) {
+		if (camel_operation_cancel_check (CAMEL_OPERATION (cancellable))) {
 			gint is_empty;
 
 			QUEUE_LOCK (is);
@@ -4700,7 +4850,7 @@ imapx_parser_thread (gpointer d)
 			QUEUE_UNLOCK (is);
 
 			if ((is_empty || (imapx_idle_supported (is) && imapx_in_idle (is))))
-				camel_operation_uncancel (op);
+				camel_operation_uncancel (CAMEL_OPERATION (cancellable));
 			else
 				g_set_error (
 					&local_error, G_IO_ERROR,
@@ -4717,11 +4867,7 @@ imapx_parser_thread (gpointer d)
 
 	g_clear_error (&local_error);
 
-	if (op) {
-		camel_operation_unregister ();
-		g_object_unref (op);
-	}
-	is->op = NULL;
+	g_object_unref (cancellable);
 
 	is->parser_thread = NULL;
 	is->parser_quit = FALSE;
@@ -4772,8 +4918,12 @@ imapx_server_dispose (GObject *object)
 	QUEUE_UNLOCK (server);
 
 	server->parser_quit = TRUE;
-	if (server->op)
-		camel_operation_cancel (server->op);
+
+	if (server->cancellable != NULL) {
+		g_cancellable_cancel (server->cancellable);
+		g_object_unref (server->cancellable);
+		server->cancellable = NULL;
+	}
 
 	if (server->parser_thread)
 		g_thread_join (server->parser_thread);
@@ -4873,7 +5023,7 @@ imapx_disconnect (CamelIMAPXServer *is)
 	g_static_rec_mutex_lock (&is->ostream_lock);
 
 	if (is->stream) {
-		if (camel_stream_close (is->stream->source, NULL) == -1)
+		if (camel_stream_close (is->stream->source, NULL, NULL) == -1)
 			ret = FALSE;
 
 		g_object_unref (CAMEL_OBJECT (is->stream));
@@ -4905,7 +5055,9 @@ imapx_disconnect (CamelIMAPXServer *is)
 
 /* Client commands */
 gboolean
-camel_imapx_server_connect (CamelIMAPXServer *is, GError **error)
+camel_imapx_server_connect (CamelIMAPXServer *is,
+                            GCancellable *cancellable,
+                            GError **error)
 {
 	gboolean success;
 
@@ -4918,7 +5070,7 @@ camel_imapx_server_connect (CamelIMAPXServer *is, GError **error)
 		return TRUE;
 
 	g_static_rec_mutex_lock (&is->ostream_lock);
-	success = imapx_reconnect (is, error);
+	success = imapx_reconnect (is, cancellable, error);
 	g_static_rec_mutex_unlock (&is->ostream_lock);
 
 	if (!success)
@@ -4929,7 +5081,12 @@ camel_imapx_server_connect (CamelIMAPXServer *is, GError **error)
 }
 
 static CamelStream *
-imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, CamelOperation *op, const gchar *uid, gint pri, GError **error)
+imapx_server_get_message (CamelIMAPXServer *is,
+                          CamelFolder *folder,
+                          const gchar *uid,
+                          gint pri,
+                          GCancellable *cancellable,
+                          GError **error)
 {
 	CamelStream *stream = NULL, *tmp_stream;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
@@ -4980,12 +5137,11 @@ imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, CamelOperat
 
 	tmp_stream = camel_data_cache_add (ifolder->cache, "tmp", uid, NULL);
 
-	job = g_malloc0 (sizeof (*job));
+	job = imapx_job_new (cancellable);
 	job->pri = pri;
 	job->type = IMAPX_JOB_GET_MESSAGE;
 	job->start = imapx_job_get_message_start;
 	job->folder = folder;
-	job->op = op;
 	job->u.get_message.uid = (gchar *)uid;
 	job->u.get_message.stream = tmp_stream;
 
@@ -5018,20 +5174,28 @@ imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, CamelOperat
 }
 
 CamelStream *
-camel_imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, const gchar *uid, GError **error)
+camel_imapx_server_get_message (CamelIMAPXServer *is,
+                                CamelFolder *folder,
+                                const gchar *uid,
+                                GCancellable *cancellable,
+                                GError **error)
 {
 	CamelStream *stream;
-	CamelOperation *op = camel_operation_registered ();
 
-	stream = imapx_server_get_message (is, folder, op, uid, IMAPX_PRIORITY_GET_MESSAGE, error);
-	if (op)
-		g_object_unref (op);
+	stream = imapx_server_get_message (
+		is, folder, uid,
+		IMAPX_PRIORITY_GET_MESSAGE,
+		cancellable, error);
 
 	return stream;
 }
 
 gboolean
-camel_imapx_server_sync_message (CamelIMAPXServer *is, CamelFolder *folder, const gchar *uid, GError **error)
+camel_imapx_server_sync_message (CamelIMAPXServer *is,
+                                 CamelFolder *folder,
+                                 const gchar *uid,
+                                 GCancellable *cancellable,
+                                 GError **error)
 {
 	gchar *cache_file = NULL;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
@@ -5043,7 +5207,10 @@ camel_imapx_server_sync_message (CamelIMAPXServer *is, CamelFolder *folder, cons
 		return TRUE;
 	}
 
-	stream = imapx_server_get_message (is, folder, NULL, uid, IMAPX_PRIORITY_SYNC_MESSAGE, error);
+	stream = imapx_server_get_message (
+		is, folder, uid,
+		IMAPX_PRIORITY_SYNC_MESSAGE,
+		cancellable, error);
 
 	if (stream == NULL)
 		return FALSE;
@@ -5054,11 +5221,17 @@ camel_imapx_server_sync_message (CamelIMAPXServer *is, CamelFolder *folder, cons
 }
 
 gboolean
-camel_imapx_server_copy_message (CamelIMAPXServer *is, CamelFolder *source, CamelFolder *dest, GPtrArray *uids, gboolean delete_originals, GError **error)
+camel_imapx_server_copy_message (CamelIMAPXServer *is,
+                                 CamelFolder *source,
+                                 CamelFolder *dest,
+                                 GPtrArray *uids,
+                                 gboolean delete_originals,
+                                 GCancellable *cancellable,
+                                 GError **error)
 {
 	CamelIMAPXJob *job;
 
-	job = g_malloc0 (sizeof (*job));
+	job = imapx_job_new (cancellable);
 	job->pri = IMAPX_PRIORITY_APPEND_MESSAGE;
 	job->type = IMAPX_JOB_COPY_MESSAGE;
 	job->start = imapx_job_copy_messages_start;
@@ -5074,7 +5247,12 @@ camel_imapx_server_copy_message (CamelIMAPXServer *is, CamelFolder *source, Came
 }
 
 gboolean
-camel_imapx_server_append_message (CamelIMAPXServer *is, CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *mi, GError **error)
+camel_imapx_server_append_message (CamelIMAPXServer *is,
+                                   CamelFolder *folder,
+                                   CamelMimeMessage *message,
+                                   const CamelMessageInfo *mi,
+                                   GCancellable *cancellable,
+                                   GError **error)
 {
 	gchar *uid = NULL, *tmp = NULL;
 	CamelStream *stream, *filter;
@@ -5108,7 +5286,7 @@ camel_imapx_server_append_message (CamelIMAPXServer *is, CamelFolder *folder, Ca
 	canon = camel_mime_filter_canon_new (CAMEL_MIME_FILTER_CANON_CRLF);
 	camel_stream_filter_add ((CamelStreamFilter *)filter, canon);
 	res = camel_data_wrapper_write_to_stream (
-		(CamelDataWrapper *)message, filter, error);
+		(CamelDataWrapper *)message, filter, cancellable, error);
 	g_object_unref (canon);
 	g_object_unref (filter);
 
@@ -5130,7 +5308,7 @@ camel_imapx_server_append_message (CamelIMAPXServer *is, CamelFolder *folder, Ca
 	   mechanism is used for normal uploading as well as
 	   offline re-syncing when we go back online */
 
-	job = g_malloc0 (sizeof (*job));
+	job = imapx_job_new (cancellable);
 	job->pri = IMAPX_PRIORITY_APPEND_MESSAGE;
 	job->type = IMAPX_JOB_APPEND_MESSAGE;
 	job->start = imapx_job_append_message_start;
@@ -5147,12 +5325,15 @@ camel_imapx_server_append_message (CamelIMAPXServer *is, CamelFolder *folder, Ca
 }
 
 gboolean
-camel_imapx_server_noop (CamelIMAPXServer *is, CamelFolder *folder, GError **error)
+camel_imapx_server_noop (CamelIMAPXServer *is,
+                         CamelFolder *folder,
+                         GCancellable *cancellable,
+                         GError **error)
 {
 	CamelIMAPXJob *job;
 	gboolean success;
 
-	job = g_malloc0 (sizeof (*job));
+	job = imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_NOOP;
 	job->start = imapx_job_noop_start;
 	job->folder = folder;
@@ -5166,7 +5347,10 @@ camel_imapx_server_noop (CamelIMAPXServer *is, CamelFolder *folder, GError **err
 }
 
 gboolean
-camel_imapx_server_refresh_info (CamelIMAPXServer *is, CamelFolder *folder, GError **error)
+camel_imapx_server_refresh_info (CamelIMAPXServer *is,
+                                 CamelFolder *folder,
+                                 GCancellable *cancellable,
+                                 GError **error)
 {
 	CamelIMAPXJob *job;
 	gboolean registered = TRUE;
@@ -5182,12 +5366,11 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is, CamelFolder *folder, GErr
 		return TRUE;
 	}
 
-	job = g_malloc0 (sizeof (*job));
+	job = imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_REFRESH_INFO;
 	job->start = imapx_job_refresh_info_start;
 	job->folder = folder;
-	job->op = camel_operation_registered ();
-	job->u.refresh_info.changes = camel_folder_change_info_new ();
+	job->u.refresh_info.changes = camel_folder_change_info_new();
 	job->pri = IMAPX_PRIORITY_REFRESH_INFO;
 
 	if (g_ascii_strcasecmp(full_name, "INBOX") == 0)
@@ -5204,8 +5387,8 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is, CamelFolder *folder, GErr
 
 	camel_folder_change_info_free (job->u.refresh_info.changes);
 
-	if (job->op)
-		g_object_unref (job->op);
+	if (job->cancellable)
+		g_object_unref (job->cancellable);
 	g_free (job);
 
 	return success;
@@ -5236,7 +5419,11 @@ imapx_sync_free_user (GArray *user_set)
 }
 
 static gboolean
-imapx_server_sync_changes (CamelIMAPXServer *is, CamelFolder *folder, gint pri, GError **error)
+imapx_server_sync_changes (CamelIMAPXServer *is,
+                           CamelFolder *folder,
+                           gint pri,
+                           GCancellable *cancellable,
+                           GError **error)
 {
 	guint i, on_orset, off_orset;
 	GPtrArray *uids;
@@ -5361,7 +5548,7 @@ imapx_server_sync_changes (CamelIMAPXServer *is, CamelFolder *folder, gint pri, 
 		goto done;
 	}
 
-	job = g_malloc0 (sizeof (*job));
+	job = imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_SYNC_CHANGES;
 	job->start = imapx_job_sync_changes_start;
 	job->pri = pri;
@@ -5390,14 +5577,22 @@ done:
 }
 
 gboolean
-camel_imapx_server_sync_changes (CamelIMAPXServer *is, CamelFolder *folder, GError **error)
+camel_imapx_server_sync_changes (CamelIMAPXServer *is,
+                                 CamelFolder *folder,
+                                 GCancellable *cancellable,
+                                 GError **error)
 {
-	return imapx_server_sync_changes (is, folder, IMAPX_PRIORITY_SYNC_CHANGES, error);
+	return imapx_server_sync_changes (
+		is, folder, IMAPX_PRIORITY_SYNC_CHANGES,
+		cancellable, error);
 }
 
 /* expunge-uids? */
 gboolean
-camel_imapx_server_expunge (CamelIMAPXServer *is, CamelFolder *folder, GError **error)
+camel_imapx_server_expunge (CamelIMAPXServer *is,
+                            CamelFolder *folder,
+                            GCancellable *cancellable,
+                            GError **error)
 {
 	CamelIMAPXJob *job;
 	gboolean registered;
@@ -5411,7 +5606,7 @@ camel_imapx_server_expunge (CamelIMAPXServer *is, CamelFolder *folder, GError **
 		return TRUE;
 	}
 
-	job = g_malloc0 (sizeof (*job));
+	job = imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_EXPUNGE;
 	job->start = imapx_job_expunge_start;
 	job->pri = IMAPX_PRIORITY_EXPUNGE;
@@ -5471,6 +5666,7 @@ camel_imapx_server_list (CamelIMAPXServer *is,
                          const gchar *top,
                          guint32 flags,
                          const gchar *ext,
+                         GCancellable *cancellable,
                          GError **error)
 {
 	CamelIMAPXJob *job;
@@ -5479,7 +5675,7 @@ camel_imapx_server_list (CamelIMAPXServer *is,
 
 	encoded_name = camel_utf8_utf7 (top);
 
-	job = g_malloc0 (sizeof (*job));
+	job = imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_LIST;
 	job->start = imapx_job_list_start;
 	job->pri = IMAPX_PRIORITY_LIST;
@@ -5510,12 +5706,16 @@ camel_imapx_server_list (CamelIMAPXServer *is,
 }
 
 gboolean
-camel_imapx_server_manage_subscription (CamelIMAPXServer *is, const gchar *folder_name, gboolean subscribe, GError **error)
+camel_imapx_server_manage_subscription (CamelIMAPXServer *is,
+                                        const gchar *folder_name,
+                                        gboolean subscribe,
+                                        GCancellable *cancellable,
+                                        GError **error)
 {
 	CamelIMAPXJob *job;
 	gboolean success;
 
-	job = g_malloc0 (sizeof (*job));
+	job = imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_MANAGE_SUBSCRIPTION;
 	job->start = imapx_job_manage_subscription_start;
 	job->pri = IMAPX_PRIORITY_MANAGE_SUBSCRIPTION;
@@ -5530,12 +5730,15 @@ camel_imapx_server_manage_subscription (CamelIMAPXServer *is, const gchar *folde
 }
 
 gboolean
-camel_imapx_server_create_folder (CamelIMAPXServer *is, const gchar *folder_name, GError **error)
+camel_imapx_server_create_folder (CamelIMAPXServer *is,
+                                  const gchar *folder_name,
+                                  GCancellable *cancellable,
+                                  GError **error)
 {
 	CamelIMAPXJob *job;
 	gboolean success;
 
-	job = g_malloc0 (sizeof (*job));
+	job = imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_CREATE_FOLDER;
 	job->start = imapx_job_create_folder_start;
 	job->pri = IMAPX_PRIORITY_CREATE_FOLDER;
@@ -5549,12 +5752,15 @@ camel_imapx_server_create_folder (CamelIMAPXServer *is, const gchar *folder_name
 }
 
 gboolean
-camel_imapx_server_delete_folder (CamelIMAPXServer *is, const gchar *folder_name, GError **error)
+camel_imapx_server_delete_folder (CamelIMAPXServer *is,
+                                  const gchar *folder_name,
+                                  GCancellable *cancellable,
+                                  GError **error)
 {
 	CamelIMAPXJob *job;
 	gboolean success;
 
-	job = g_malloc0 (sizeof (*job));
+	job = imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_DELETE_FOLDER;
 	job->start = imapx_job_delete_folder_start;
 	job->pri = IMAPX_PRIORITY_DELETE_FOLDER;
@@ -5568,12 +5774,16 @@ camel_imapx_server_delete_folder (CamelIMAPXServer *is, const gchar *folder_name
 }
 
 gboolean
-camel_imapx_server_rename_folder (CamelIMAPXServer *is, const gchar *old_name, const gchar *new_name, GError **error)
+camel_imapx_server_rename_folder (CamelIMAPXServer *is,
+                                  const gchar *old_name,
+                                  const gchar *new_name,
+                                  GCancellable *cancellable,
+                                  GError **error)
 {
 	CamelIMAPXJob *job;
 	gboolean success;
 
-	job = g_malloc0 (sizeof (*job));
+	job = imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_RENAME_FOLDER;
 	job->start = imapx_job_rename_folder_start;
 	job->pri = IMAPX_PRIORITY_RENAME_FOLDER;

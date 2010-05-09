@@ -54,7 +54,7 @@ free_connection (gpointer data, gpointer user_data)
 	ConnectionInfo *cinfo = (ConnectionInfo *) data;
 	CamelIMAPXServer *conn = cinfo->conn;
 
-	camel_imapx_server_connect (conn, NULL);
+	camel_imapx_server_connect (conn, NULL, NULL);
 
 	g_object_unref (conn);
 	g_hash_table_destroy (cinfo->folders);
@@ -242,7 +242,10 @@ imapx_find_connection (CamelIMAPXConnManager *con_man, const gchar *folder_name)
 }
 
 static CamelIMAPXServer *
-imapx_create_new_connection (CamelIMAPXConnManager *con_man, const gchar *folder_name, GError **error)
+imapx_create_new_connection (CamelIMAPXConnManager *con_man,
+                             const gchar *folder_name,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	CamelIMAPXServer *conn;
 	CamelStore *store = con_man->priv->store;
@@ -253,7 +256,7 @@ imapx_create_new_connection (CamelIMAPXConnManager *con_man, const gchar *folder
 	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	conn = camel_imapx_server_new (CAMEL_STORE (store), CAMEL_SERVICE (store)->url);
-	if (camel_imapx_server_connect (conn, error)) {
+	if (camel_imapx_server_connect (conn, cancellable, error)) {
 		g_object_ref (conn);
 	} else {
 		g_object_unref (conn);
@@ -307,7 +310,10 @@ camel_imapx_conn_manager_set_n_connections (CamelIMAPXConnManager *con_man, guin
 }
 
 CamelIMAPXServer *
-camel_imapx_conn_manager_get_connection (CamelIMAPXConnManager *con_man, const gchar *folder_name, GError **error)
+camel_imapx_conn_manager_get_connection (CamelIMAPXConnManager *con_man,
+                                         const gchar *folder_name,
+                                         GCancellable *cancellable,
+                                         GError **error)
 {
 	CamelIMAPXServer *conn = NULL;
 
@@ -317,7 +323,7 @@ camel_imapx_conn_manager_get_connection (CamelIMAPXConnManager *con_man, const g
 
 	conn = imapx_find_connection (con_man, folder_name);
 	if (!conn)
-		conn = imapx_create_new_connection (con_man, folder_name, error);
+		conn = imapx_create_new_connection (con_man, folder_name, cancellable, error);
 
 	CON_UNLOCK (con_man);
 

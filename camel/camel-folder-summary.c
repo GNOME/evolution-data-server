@@ -1634,7 +1634,8 @@ msg_update_preview (const gchar *uid, gpointer value, CamelFolder *folder)
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
 
-	msg = camel_folder_get_message (folder, uid, NULL);
+	/* FIXME Pass a GCancellable */
+	msg = camel_folder_get_message (folder, uid, NULL, NULL);
 	if (msg != NULL) {
 		if (camel_mime_message_build_preview ((CamelMimePart *)msg, (CamelMessageInfo *)info) && info->preview)
 			camel_db_write_preview_record (parent_store->cdb_w, full_name, info->uid, info->preview, NULL);
@@ -4043,8 +4044,8 @@ summary_build_content_info_message (CamelFolderSummary *s, CamelMessageInfo *msg
 			p->filter_index);
 
 		camel_data_wrapper_decode_to_stream (
-			containee, p->filter_stream, NULL);
-		camel_stream_flush (p->filter_stream, NULL);
+			containee, p->filter_stream, NULL, NULL);
+		camel_stream_flush (p->filter_stream, NULL, NULL);
 
 		camel_stream_filter_remove (
 			CAMEL_STREAM_FILTER (p->filter_stream), idx_id);

@@ -79,6 +79,7 @@ data_wrapper_finalize (GObject *object)
 static gssize
 data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
                               CamelStream *stream,
+                              GCancellable *cancellable,
                               GError **error)
 {
 	gssize ret;
@@ -97,7 +98,7 @@ data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 	}
 
 	ret = camel_stream_write_to_stream (
-		data_wrapper->stream, stream, error);
+		data_wrapper->stream, stream, cancellable, error);
 
 	camel_data_wrapper_unlock (data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
 
@@ -107,6 +108,7 @@ data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 static gssize
 data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
                                CamelStream *stream,
+                               GCancellable *cancellable,
                                GError **error)
 {
 	CamelMimeFilter *filter;
@@ -142,9 +144,10 @@ data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
 		g_object_unref (filter);
 	}
 
-	ret = camel_data_wrapper_write_to_stream (data_wrapper, fstream, error);
+	ret = camel_data_wrapper_write_to_stream (
+		data_wrapper, fstream, cancellable, error);
 
-	camel_stream_flush (fstream, NULL);
+	camel_stream_flush (fstream, NULL, NULL);
 	g_object_unref (fstream);
 
 	return ret;
@@ -185,6 +188,7 @@ data_wrapper_set_mime_type_field (CamelDataWrapper *data_wrapper,
 static gint
 data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
                                     CamelStream *stream,
+                                    GCancellable *cancellable,
                                     GError **error)
 {
 	if (data_wrapper->stream)
@@ -252,6 +256,7 @@ camel_data_wrapper_new (void)
  * camel_data_wrapper_write_to_stream:
  * @data_wrapper: a #CamelDataWrapper object
  * @stream: a #CamelStream for output
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Writes the content of @data_wrapper to @stream in a machine-independent
@@ -264,6 +269,7 @@ camel_data_wrapper_new (void)
 gssize
 camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
                                     CamelStream *stream,
+                                    GCancellable *cancellable,
                                     GError **error)
 {
 	CamelDataWrapperClass *class;
@@ -275,8 +281,10 @@ camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
 	g_return_val_if_fail (class->write_to_stream != NULL, -1);
 
-	n_bytes = class->write_to_stream (data_wrapper, stream, error);
-	CAMEL_CHECK_GERROR (data_wrapper, write_to_stream, n_bytes >= 0, error);
+	n_bytes = class->write_to_stream (
+		data_wrapper, stream, cancellable, error);
+	CAMEL_CHECK_GERROR (
+		data_wrapper, write_to_stream, n_bytes >= 0, error);
 
 	return n_bytes;
 }
@@ -285,6 +293,7 @@ camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
  * camel_data_wrapper_decode_to_stream:
  * @data_wrapper: a #CamelDataWrapper object
  * @stream: a #CamelStream for decoded data to be written to
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Writes the decoded data content to @stream.
@@ -294,6 +303,7 @@ camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 gssize
 camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
                                      CamelStream *stream,
+                                     GCancellable *cancellable,
                                      GError **error)
 {
 	CamelDataWrapperClass *class;
@@ -305,8 +315,10 @@ camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
 	g_return_val_if_fail (class->decode_to_stream != NULL, -1);
 
-	n_bytes = class->decode_to_stream (data_wrapper, stream, error);
-	CAMEL_CHECK_GERROR (data_wrapper, decode_to_stream, n_bytes >= 0, error);
+	n_bytes = class->decode_to_stream (
+		data_wrapper, stream, cancellable, error);
+	CAMEL_CHECK_GERROR (
+		data_wrapper, decode_to_stream, n_bytes >= 0, error);
 
 	return n_bytes;
 }
@@ -315,6 +327,7 @@ camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
  * camel_data_wrapper_construct_from_stream:
  * @data_wrapper: a #CamelDataWrapper object
  * @stream: an input #CamelStream
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Constructs the content of @data_wrapper from the supplied @stream.
@@ -324,6 +337,7 @@ camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
 gint
 camel_data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
                                           CamelStream *stream,
+                                          GCancellable *cancellable,
                                           GError **error)
 {
 	CamelDataWrapperClass *class;
@@ -335,7 +349,8 @@ camel_data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
 	g_return_val_if_fail (class->construct_from_stream != NULL, -1);
 
-	retval = class->construct_from_stream (data_wrapper, stream, error);
+	retval = class->construct_from_stream (
+		data_wrapper, stream, cancellable, error);
 	CAMEL_CHECK_GERROR (
 		data_wrapper, construct_from_stream, retval == 0, error);
 

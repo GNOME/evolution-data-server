@@ -95,6 +95,7 @@ struct _CamelIMAPXStoreClass {
 GType			camel_imapx_store_get_type	(void);
 CamelIMAPXServer *	camel_imapx_store_get_server	(CamelIMAPXStore *store,
 							const gchar *folder_name,
+							GCancellable *cancellable,
 							GError **error);
 void			camel_imapx_store_op_done	(CamelIMAPXStore *istore,
 							CamelIMAPXServer *server,

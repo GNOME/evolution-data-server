@@ -74,7 +74,6 @@ static GStaticRecMutex operation_lock = G_STATIC_REC_MUTEX_INIT;
 #define UNLOCK() g_static_rec_mutex_unlock (&operation_lock)
 
 static GQueue operation_list = G_QUEUE_INIT;
-static GStaticPrivate operation_key = G_STATIC_PRIVATE_INIT;
 
 static guint signals[LAST_SIGNAL];
 
@@ -96,12 +95,6 @@ status_node_free (StatusNode *node)
 {
 	g_free (node->msg);
 	g_slice_free (StatusNode, node);
-}
-
-static CamelOperation *
-co_getcc (void)
-{
-	return (CamelOperation *) g_static_private_get (&operation_key);
 }
 
 static guint
@@ -262,22 +255,6 @@ camel_operation_new (void)
 }
 
 /**
- * camel_operation_registered:
- *
- * Returns: the registered operation, or %NULL if none registered.
- **/
-CamelOperation *
-camel_operation_registered (void)
-{
-	CamelOperation *operation = co_getcc ();
-
-	if (operation != NULL)
-		g_object_ref (operation);
-
-	return operation;
-}
-
-/**
  * camel_operation_cancel:
  * @operation: a #CamelOperation
  *
@@ -325,8 +302,7 @@ camel_operation_cancel (CamelOperation *operation)
  * camel_operation_uncancel:
  * @operation: a #CamelOperation
  *
- * Uncancel a cancelled operation.  If @operation is %NULL then the current
- * operation is uncancelled.
+ * Uncancel a cancelled operation.
  *
  * This is useful, if e.g. you need to do some cleaning up where a
  * cancellation lying around in the same thread will abort any
@@ -335,9 +311,6 @@ camel_operation_cancel (CamelOperation *operation)
 void
 camel_operation_uncancel (CamelOperation *operation)
 {
-	if (operation == NULL)
-		operation = co_getcc ();
-
 	if (operation != NULL) {
 		g_return_if_fail (CAMEL_IS_OPERATION (operation));
 		operation_flush_msgport (operation);
@@ -346,45 +319,10 @@ camel_operation_uncancel (CamelOperation *operation)
 }
 
 /**
- * camel_operation_register:
- * @operation: a #CamelOperation
- *
- * Register a thread or the main thread for cancellation through @operation.
- * If @operation is NULL, then a new cancellation is created for this thread.
- *
- * All calls to camel_operation_register() should save their value and
- * call * camel_operation_register() again with that, to automatically
- * stack * registrations.
- *
- * Returns: the previously registered operatoin.
- **/
-CamelOperation *
-camel_operation_register (CamelOperation *operation)
-{
-	CamelOperation *old_operation = co_getcc ();
-
-	g_static_private_set (&operation_key, operation, NULL);
-
-	return old_operation;
-}
-
-/**
- * camel_operation_unregister:
- *
- * Unregister the current thread for all cancellations.
- **/
-void
-camel_operation_unregister (void)
-{
-	g_static_private_set (&operation_key, NULL, NULL);
-}
-
-/**
  * camel_operation_cancel_check:
  * @operation: a #CamelOperation
  *
- * Check if cancellation has been applied to @operation.  If @operation is
- * %NULL, then the #CamelOperation registered for the current thread is used.
+ * Check if cancellation has been applied to @operation.
  *
  * Returns: %TRUE if the operation has been cancelled
  **/
@@ -392,9 +330,6 @@ gboolean
 camel_operation_cancel_check (CamelOperation *operation)
 {
 	gboolean cancelled;
-
-	if (operation == NULL)
-		operation = co_getcc ();
 
 	if (operation == NULL)
 		return FALSE;
@@ -425,9 +360,6 @@ gint
 camel_operation_cancel_fd (CamelOperation *operation)
 {
 	if (operation == NULL)
-		operation = co_getcc ();
-
-	if (operation == NULL)
 		return -1;
 
 	return g_cancellable_get_fd (G_CANCELLABLE (operation));
@@ -450,9 +382,6 @@ camel_operation_cancel_prfd (CamelOperation *operation)
 	CamelOperationPrivate *priv;
 
 	if (operation == NULL)
-		operation = co_getcc ();
-
-	if (operation == NULL)
 		return NULL;
 
 	LOCK ();
@@ -470,31 +399,40 @@ camel_operation_cancel_prfd (CamelOperation *operation)
 
 /**
  * camel_operation_start:
- * @operation: a #CamelOperation
+ * @cancellable: a #GCancellable or %NULL
  * @what: action being performed (printf-style format string)
  * @Varargs: varargs
  *
  * Report the start of an operation.  All start operations should have
  * similar end operations.
+ *
+ * This function only works if @cancellable is a #CamelOperation cast as a
+ * #GCancellable.  If @cancellable is a plain #GCancellable or %NULL, the
+ * function does nothing and returns silently.
  **/
 void
-camel_operation_start (CamelOperation *operation,
+camel_operation_start (GCancellable *cancellable,
                        const gchar *what, ...)
 {
+	CamelOperation *operation;
 	const guint signal_id = signals[STATUS];
 	StatusNode *node;
 	va_list ap;
 
-	if (operation == NULL)
-		operation = co_getcc ();
-
-	if (operation == NULL)
+	if (cancellable == NULL)
 		return;
 
-	if (!g_signal_has_handler_pending (operation, signal_id, 0, TRUE))
+	if (G_OBJECT_TYPE (cancellable) == G_TYPE_CANCELLABLE)
+		return;
+
+	g_return_if_fail (CAMEL_IS_OPERATION (cancellable));
+
+	if (!g_signal_has_handler_pending (cancellable, signal_id, 0, TRUE))
 		return;
 
 	LOCK ();
+
+	operation = CAMEL_OPERATION (cancellable);
 
 	operation->priv->status_update = 0;
 
@@ -512,28 +450,37 @@ camel_operation_start (CamelOperation *operation,
 
 /**
  * camel_operation_start_transient:
- * @operation: a #CamelOperation
+ * @cancellable: a #GCancellable or %NULL
  * @what: printf-style format string describing the action being performed
  * @Varargs: varargs
  *
  * Start a transient event.  We only update this to the display if it
  * takes very long to process, and if we do, we then go back to the
  * previous state when finished.
+ *
+ * This function only works if @cancellable is a #CamelOperation cast as a
+ * #GCancellable.  If @cancellable is a plain #GCancellable or %NULL, the
+ * function does nothing and returns silently.
  **/
 void
-camel_operation_start_transient (CamelOperation *operation,
+camel_operation_start_transient (GCancellable *cancellable,
                                  const gchar *what, ...)
 {
+	CamelOperation *operation;
 	StatusNode *node;
 	va_list ap;
 
-	if (operation == NULL)
-		operation = co_getcc ();
-
-	if (operation == NULL)
+	if (cancellable == NULL)
 		return;
 
+	if (G_OBJECT_TYPE (cancellable) == G_TYPE_CANCELLABLE)
+		return;
+
+	g_return_if_fail (CAMEL_IS_OPERATION (cancellable));
+
 	LOCK ();
+
+	operation = CAMEL_OPERATION (cancellable);
 
 	operation->priv->status_update = 0;
 
@@ -551,36 +498,40 @@ camel_operation_start_transient (CamelOperation *operation,
 
 /**
  * camel_operation_progress:
- * @operation: a #CamelOperation
- * @pc: Percent complete, 0 to 100.
+ * @cancellable: a #GCancellable or %NULL
+ * @pc: percent complete, 0 to 100.
  *
- * Report progress on the current operation.  If @operation is %NULL, then
- * the currently registered operation is used.  @pc reports the current
+ * Report progress on the current operation.  @pc reports the current
  * percentage of completion, which should be in the range of 0 to 100.
  *
- * If the total percentage is not know, then use
- * camel_operation_progress_count().
+ * This function only works if @cancellable is a #CamelOperation cast as a
+ * #GCancellable.  If @cancellable is a plain #GCancellable or %NULL, the
+ * function does nothing and returns silently.
  **/
 void
-camel_operation_progress (CamelOperation *operation,
+camel_operation_progress (GCancellable *cancellable,
                           gint pc)
 {
+	CamelOperation *operation;
 	const guint signal_id = signals[STATUS];
 	CamelOperationPrivate *priv;
 	guint now;
 	StatusNode *node;
 
-	if (operation == NULL)
-		operation = co_getcc ();
-
-	if (operation == NULL)
+	if (cancellable == NULL)
 		return;
 
-	if (!g_signal_has_handler_pending (operation, signal_id, 0, TRUE))
+	if (G_OBJECT_TYPE (cancellable) == G_TYPE_CANCELLABLE)
+		return;
+
+	g_return_if_fail (CAMEL_IS_OPERATION (cancellable));
+
+	if (!g_signal_has_handler_pending (cancellable, signal_id, 0, TRUE))
 		return;
 
 	LOCK ();
 
+	operation = CAMEL_OPERATION (cancellable);
 	priv = operation->priv;
 
 	if (g_queue_is_empty (&priv->status_stack)) {
@@ -614,28 +565,36 @@ camel_operation_progress (CamelOperation *operation,
 
 /**
  * camel_operation_end:
- * @operation: a #CamelOperation
+ * @cancellable: a #GCancellable
  *
- * Report the end of an operation.  If @operation is %NULL, then the
- * currently registered operation is notified.
+ * Report the end of an operation.
+ *
+ * This function only works if @cancellable is a #CamelOperation cast as a
+ * #GCancellable.  If @cancellable is a plain #GCancellable or %NULL, the
+ * function does nothing and returns silently.
  **/
 void
-camel_operation_end (CamelOperation *operation)
+camel_operation_end (GCancellable *cancellable)
 {
+	CamelOperation *operation;
 	const guint signal_id = signals[STATUS];
 	GQueue *status_stack;
 	StatusNode *node;
 
-	if (operation == NULL)
-		operation = co_getcc ();
-
-	if (operation == NULL)
+	if (cancellable == NULL)
 		return;
 
-	if (!g_signal_has_handler_pending (operation, signal_id, 0, TRUE))
+	if (G_OBJECT_TYPE (cancellable) == G_TYPE_CANCELLABLE)
+		return;
+
+	g_return_if_fail (CAMEL_IS_OPERATION (cancellable));
+
+	if (!g_signal_has_handler_pending (cancellable, signal_id, 0, TRUE))
 		return;
 
 	LOCK ();
+
+	operation = CAMEL_OPERATION (cancellable);
 
 	status_stack = &operation->priv->status_stack;
 

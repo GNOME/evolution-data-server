@@ -93,34 +93,54 @@ static GHashTable *header_formatted_table;
 G_DEFINE_TYPE (CamelMimePart, camel_mime_part, CAMEL_TYPE_MEDIUM)
 
 static gssize
-write_raw (CamelStream *stream,
-           struct _camel_header_raw *h)
+write_header (CamelStream *stream,
+              const gchar *name,
+              const gchar *value,
+              GCancellable *cancellable,
+              GError **error)
 {
-	gchar *val = h->value;
+	GString *buffer;
+	gssize n_written;
 
-	return camel_stream_printf (
-		stream, "%s%s%s\n", h->name,
-		isspace(val[0]) ? ":" : ": ", val);
+	buffer = g_string_new (name);
+	g_string_append_c (buffer, ':');
+	if (!isspace (value[0]))
+		g_string_append_c (buffer, ' ');
+	g_string_append (buffer, value);
+	g_string_append_c (buffer, '\n');
+
+	n_written = camel_stream_write (
+		stream, buffer->str, buffer->len, cancellable, error);
+
+	g_string_free (buffer, TRUE);
+
+	return n_written;
 }
 
 static gssize
 write_references (CamelStream *stream,
-                  struct _camel_header_raw *h)
+                  const gchar *name,
+                  const gchar *value,
+                  GCancellable *cancellable,
+                  GError **error)
 {
-	gssize len, out, total;
-	gchar *value, *ids, *ide;
+	GString *buffer;
+	const gchar *ids, *ide;
+	gssize n_written;
+	gsize len;
 
-	/* this is only approximate, based on the next >, this way it retains any content
-	   from the original which may not be properly formatted, etc.  It also doesn't handle
-	   the case where an individual messageid is too long, however thats a bad mail to
-	   start with ... */
+	/* this is only approximate, based on the next >, this way it retains
+	 * any content from the original which may not be properly formatted,
+	 * etc.  It also doesn't handle the case where an individual messageid
+	 * is too long, however thats a bad mail to start with ... */
 
-	value = h->value;
-	len = strlen (h->name)+1;
-	total = camel_stream_printf (
-		stream, "%s%s", h->name, isspace(value[0])?":":": ");
-	if (total == -1)
-		return -1;
+	buffer = g_string_new (name);
+	g_string_append_c (buffer, ':');
+	if (!isspace (value[0]))
+		g_string_append_c (buffer, ' ');
+
+	len = buffer->len;
+
 	while (*value) {
 		ids = value;
 		ide = strchr (ids+1, '>');
@@ -129,22 +149,23 @@ write_references (CamelStream *stream,
 		else
 			ide = value = strlen (ids)+ids;
 
-		if (len>0 && len + (ide - ids) >= CAMEL_FOLD_SIZE) {
-			out = camel_stream_printf (stream, "\n\t");
-			if (out == -1)
-				return -1;
-			total += out;
+		if (len > 0 && len + (ide - ids) >= CAMEL_FOLD_SIZE) {
+			g_string_append_len (buffer, "\n\t", 2);
 			len = 0;
 		}
-		out = camel_stream_write (stream, ids, ide-ids, NULL);
-		if (out == -1)
-			return -1;
-		len += out;
-		total += out;
-	}
-	camel_stream_write (stream, "\n", 1, NULL);
 
-	return total;
+		g_string_append_len (buffer, ids, ide - ids);
+		len += (ide - ids);
+	}
+
+	g_string_append_c (buffer, '\n');
+
+	n_written = camel_stream_write (
+		stream, buffer->str, buffer->len, cancellable, error);
+
+	g_string_free (buffer, TRUE);
+
+	return n_written;
 }
 
 /* loads in a hash table the set of header names we */
@@ -188,22 +209,22 @@ init_header_name_table (void)
 		camel_strcase_hash, camel_strcase_equal);
 	g_hash_table_insert (
 		header_formatted_table,
-		(gpointer) "Content-Type", write_raw);
+		(gpointer) "Content-Type", write_header);
 	g_hash_table_insert (
 		header_formatted_table,
-		(gpointer) "Content-Disposition", write_raw);
+		(gpointer) "Content-Disposition", write_header);
 	g_hash_table_insert (
 		header_formatted_table,
-		(gpointer) "From", write_raw);
+		(gpointer) "From", write_header);
 	g_hash_table_insert (
 		header_formatted_table,
-		(gpointer) "Reply-To", write_raw);
+		(gpointer) "Reply-To", write_header);
 	g_hash_table_insert (
 		header_formatted_table,
-		(gpointer) "Message-ID", write_raw);
+		(gpointer) "Message-ID", write_header);
 	g_hash_table_insert (
 		header_formatted_table,
-		(gpointer) "In-Reply-To", write_raw);
+		(gpointer) "In-Reply-To", write_header);
 	g_hash_table_insert (
 		header_formatted_table,
 		(gpointer) "References", write_references);
@@ -478,6 +499,7 @@ mime_part_set_content (CamelMedium *medium,
 static gssize
 mime_part_write_to_stream (CamelDataWrapper *dw,
                            CamelStream *stream,
+                           GCancellable *cancellable,
                            GError **error)
 {
 	CamelMimePart *mp = CAMEL_MIME_PART (dw);
@@ -496,7 +518,11 @@ mime_part_write_to_stream (CamelDataWrapper *dw,
 	if (mp->headers) {
 		struct _camel_header_raw *h = mp->headers;
 		gchar *val;
-		gssize (*writefn)(CamelStream *stream, struct _camel_header_raw *);
+		gssize		(*writefn)	(CamelStream *stream,
+						 const gchar *name,
+						 const gchar *value,
+						 GCancellable *cancellable,
+						 GError **error);
 
 		/* fold/write the headers.   But dont fold headers that are already formatted
 		   (e.g. ones with parameter-lists, that we know about, and have created) */
@@ -507,24 +533,23 @@ mime_part_write_to_stream (CamelDataWrapper *dw,
 				count = 0;
 			} else if ((writefn = g_hash_table_lookup (header_formatted_table, h->name)) == NULL) {
 				val = camel_header_fold (val, strlen (h->name));
-				count = camel_stream_printf(stream, "%s%s%s\n", h->name, isspace(val[0]) ? ":" : ": ", val);
+				count = write_header (
+					stream, h->name, val,
+					cancellable, error);
 				g_free (val);
 			} else {
-				count = writefn (stream, h);
+				count = writefn (
+					stream, h->name, h->value,
+					cancellable, error);
 			}
-			if (count == -1) {
-				g_set_error (
-					error, G_IO_ERROR,
-					g_io_error_from_errno (errno),
-					"%s", g_strerror (errno));
+			if (count == -1)
 				return -1;
-			}
 			total += count;
 			h = h->next;
 		}
 	}
 
-	count = camel_stream_write (stream, "\n", 1, error);
+	count = camel_stream_write (stream, "\n", 1, cancellable, error);
 	if (count == -1)
 		return -1;
 	total += count;
@@ -615,14 +640,14 @@ mime_part_write_to_stream (CamelDataWrapper *dw,
 
 		if (reencode)
 			count = camel_data_wrapper_decode_to_stream (
-				content, stream, error);
+				content, stream, cancellable, error);
 		else
 			count = camel_data_wrapper_write_to_stream (
-				content, stream, error);
+				content, stream, cancellable, error);
 
 		if (filter_stream) {
 			errnosav = errno;
-			camel_stream_flush (stream, NULL);
+			camel_stream_flush (stream, NULL, NULL);
 			g_object_unref (filter_stream);
 			errno = errnosav;
 		}
@@ -633,7 +658,8 @@ mime_part_write_to_stream (CamelDataWrapper *dw,
 		total += count;
 
 		if (reencode && mp->priv->encoding == CAMEL_TRANSFER_ENCODING_UUENCODE) {
-			count = camel_stream_write (ostream, "end\n", 4, error);
+			count = camel_stream_write (
+				ostream, "end\n", 4, cancellable, error);
 			if (count == -1)
 				return -1;
 			total += count;
@@ -648,6 +674,7 @@ mime_part_write_to_stream (CamelDataWrapper *dw,
 static gint
 mime_part_construct_from_stream (CamelDataWrapper *dw,
                                  CamelStream *s,
+                                 GCancellable *cancellable,
                                  GError **error)
 {
 	CamelMimeParser *mp;
@@ -660,7 +687,7 @@ mime_part_construct_from_stream (CamelDataWrapper *dw,
 		ret = -1;
 	} else {
 		ret = camel_mime_part_construct_from_parser (
-			CAMEL_MIME_PART (dw), mp, error);
+			CAMEL_MIME_PART (dw), mp, cancellable, error);
 	}
 	g_object_unref (mp);
 	return ret;
@@ -669,6 +696,7 @@ mime_part_construct_from_stream (CamelDataWrapper *dw,
 static gint
 mime_part_construct_from_parser (CamelMimePart *mime_part,
                                  CamelMimeParser *mp,
+                                 GCancellable *cancellable,
                                  GError **error)
 {
 	CamelDataWrapper *dw = (CamelDataWrapper *) mime_part;
@@ -708,7 +736,7 @@ mime_part_construct_from_parser (CamelMimePart *mime_part,
 		}
 
 		success = camel_mime_part_construct_content_from_parser (
-			mime_part, mp, error);
+			mime_part, mp, cancellable, error);
 		retval = success ? 0 : -1;
 		break;
 	default:
@@ -1248,6 +1276,8 @@ camel_mime_part_get_content_type (CamelMimePart *mime_part)
  * camel_mime_part_construct_from_parser:
  * @mime_part: a #CamelMimePart object
  * @parser: a #CamelMimeParser object
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Constructs a MIME part from a parser.
  *
@@ -1256,6 +1286,7 @@ camel_mime_part_get_content_type (CamelMimePart *mime_part)
 gint
 camel_mime_part_construct_from_parser (CamelMimePart *mime_part,
                                        CamelMimeParser *mp,
+                                       GCancellable *cancellable,
                                        GError **error)
 {
 	CamelMimePartClass *class;
@@ -1267,8 +1298,10 @@ camel_mime_part_construct_from_parser (CamelMimePart *mime_part,
 	class = CAMEL_MIME_PART_GET_CLASS (mime_part);
 	g_return_val_if_fail (class->construct_from_parser != NULL, -1);
 
-	retval = class->construct_from_parser (mime_part, mp, error);
-	CAMEL_CHECK_GERROR (mime_part, construct_from_parser, retval == 0, error);
+	retval = class->construct_from_parser (
+		mime_part, mp, cancellable, error);
+	CAMEL_CHECK_GERROR (
+		mime_part, construct_from_parser, retval == 0, error);
 
 	return retval;
 }
@@ -1312,7 +1345,8 @@ camel_mime_part_set_content (CamelMimePart *mime_part,
 		dw = camel_data_wrapper_new ();
 		camel_data_wrapper_set_mime_type (dw, type);
 		stream = camel_stream_mem_new_with_buffer (data, length);
-		camel_data_wrapper_construct_from_stream (dw, stream, NULL);
+		camel_data_wrapper_construct_from_stream (
+			dw, stream, NULL, NULL);
 		g_object_unref (stream);
 		camel_medium_set_content (medium, dw);
 		g_object_unref (dw);
@@ -1333,7 +1367,7 @@ camel_mime_part_set_content (CamelMimePart *mime_part,
 gsize
 camel_mime_part_get_content_size (CamelMimePart *mime_part)
 {
-	CamelStreamNull *null;
+	CamelStream *null;
 	CamelDataWrapper *dw;
 	gsize size;
 
@@ -1341,9 +1375,9 @@ camel_mime_part_get_content_size (CamelMimePart *mime_part)
 
 	dw = camel_medium_get_content (CAMEL_MEDIUM (mime_part));
 
-	null = (CamelStreamNull *) camel_stream_null_new ();
-	camel_data_wrapper_decode_to_stream (dw, (CamelStream *) null, NULL);
-	size = null->written;
+	null = camel_stream_null_new ();
+	camel_data_wrapper_decode_to_stream (dw, null, NULL, NULL);
+	size = CAMEL_STREAM_NULL (null)->written;
 
 	g_object_unref (null);
 

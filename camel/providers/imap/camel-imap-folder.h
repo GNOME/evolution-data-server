@@ -87,33 +87,40 @@ void		camel_imap_folder_set_check_folder
 						 gboolean check_folder);
 gboolean	camel_imap_folder_selected	(CamelFolder *folder,
 						 CamelImapResponse *response,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imap_folder_changed	(CamelFolder *folder,
 						 gint exists,
 						 GArray *expunged,
+						 GCancellable *cancellable,
 						 GError **error);
 CamelStream *	camel_imap_folder_fetch_data	(CamelImapFolder *imap_folder,
 						 const gchar *uid,
 						 const gchar *section_text,
 						 gboolean cache_only,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imap_append_resyncing	(CamelFolder *folder,
 						 CamelMimeMessage *message,
 						 const CamelMessageInfo *info,
 						 gchar **appended_uid,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imap_transfer_resyncing	(CamelFolder *source,
 						 GPtrArray *uids,
 						 CamelFolder *dest,
 						 GPtrArray **transferred_uids,
 						 gboolean delete_originals,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imap_expunge_uids_resyncing
 						(CamelFolder *folder,
 						 GPtrArray *uids,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imap_expunge_uids_only	(CamelFolder *folder,
 						 GPtrArray *uids,
+						 GCancellable *cancellable,
 						 GError **error);
 
 G_END_DECLS

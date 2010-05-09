@@ -53,23 +53,6 @@ camel-operation
 @operation: 
 
 
-<!-- ##### FUNCTION camel_operation_register ##### -->
-<para>
-
-</para>
-
-@operation: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_operation_unregister ##### -->
-<para>
-
-</para>
-
-@void: 
-
-
 <!-- ##### FUNCTION camel_operation_cancel_check ##### -->
 <para>
 
@@ -97,21 +80,12 @@ camel-operation
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_operation_registered ##### -->
-<para>
-
-</para>
-
-@void: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_operation_start ##### -->
 <para>
 
 </para>
 
-@cc: 
+@cancellable: 
 @what: 
 @Varargs: 
 
@@ -121,7 +95,7 @@ camel-operation
 
 </para>
 
-@cc: 
+@cancellable: 
 @what: 
 @Varargs: 
 
@@ -131,7 +105,7 @@ camel-operation
 
 </para>
 
-@operation: 
+@cancellable: 
 @pc: 
 
 
@@ -140,6 +114,6 @@ camel-operation
 
 </para>
 
-@operation: 
+@cancellable: 
 
 

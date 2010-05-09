@@ -27,6 +27,7 @@
 #ifndef CAMEL_NET_UTILS_H
 #define CAMEL_NET_UTILS_H
 
+#include <gio/gio.h>
 #include <sys/types.h>
 
 #ifndef _WIN32
@@ -88,11 +89,20 @@ struct addrinfo {
 #endif
 #endif
 
-struct addrinfo *camel_getaddrinfo (const gchar *name, const gchar *service,
-				   const struct addrinfo *hints, GError **error);
-void camel_freeaddrinfo (struct addrinfo *host);
-gint camel_getnameinfo (const struct sockaddr *sa, socklen_t salen, gchar **host, gchar **serv,
-		      gint flags, GError **error);
+struct addrinfo *
+		camel_getaddrinfo		(const gchar *name,
+						 const gchar *service,
+						 const struct addrinfo *hints,
+						 GCancellable *cancellable,
+						 GError **error);
+void		camel_freeaddrinfo		(struct addrinfo *host);
+gint		camel_getnameinfo		(const struct sockaddr *sa,
+						 socklen_t salen,
+						 gchar **host,
+						 gchar **serv,
+						 gint flags,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

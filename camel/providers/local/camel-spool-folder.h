@@ -61,9 +61,12 @@ struct _CamelSpoolFolderClass {
 	CamelMboxFolderClass parent_class;
 };
 
-GType camel_spool_folder_get_type (void);
-
-CamelFolder *camel_spool_folder_new (CamelStore *parent_store, const gchar *full_name, guint32 flags, GError **error);
+GType		camel_spool_folder_get_type	(void);
+CamelFolder *	camel_spool_folder_new		(CamelStore *parent_store,
+						 const gchar *full_name,
+						 guint32 flags,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

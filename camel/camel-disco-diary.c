@@ -237,7 +237,8 @@ diary_decode_uids (CamelDiscoDiary *diary)
 }
 
 static CamelFolder *
-diary_decode_folder (CamelDiscoDiary *diary)
+diary_decode_folder (CamelDiscoDiary *diary,
+                     GCancellable *cancellable)
 {
 	CamelFolder *folder;
 	gchar *name;
@@ -250,7 +251,8 @@ diary_decode_folder (CamelDiscoDiary *diary)
 		gchar *msg;
 
 		folder = camel_store_get_folder (
-			CAMEL_STORE (diary->store), name, 0, &error);
+			CAMEL_STORE (diary->store),
+			name, 0, cancellable, &error);
 		if (folder)
 			g_hash_table_insert (diary->folders, name, folder);
 		else {
@@ -273,20 +275,22 @@ diary_decode_folder (CamelDiscoDiary *diary)
 }
 
 static void
-close_folder (gpointer name, gpointer folder, gpointer data)
+close_folder (gchar *name,
+              CamelFolder *folder,
+              GCancellable *cancellable)
 {
 	g_free (name);
-	camel_folder_sync (folder, FALSE, NULL);
+	camel_folder_sync (folder, FALSE, cancellable, NULL);
 	g_object_unref (folder);
 }
 
 void
 camel_disco_diary_replay (CamelDiscoDiary *diary,
+                          GCancellable *cancellable,
                           GError **error)
 {
 	guint32 action;
 	goffset size;
-	gdouble pc;
 	GError *local_error = NULL;
 
 	d(printf("disco diary replay\n"));
@@ -296,10 +300,11 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 	g_return_if_fail (size != 0);
 	rewind (diary->file);
 
-	camel_operation_start (NULL, _("Resynchronizing with server"));
+	camel_operation_start (cancellable, _("Resynchronizing with server"));
+
 	while (local_error == NULL) {
-		pc = ftell (diary->file) / size;
-		camel_operation_progress (NULL, pc * 100);
+		camel_operation_progress (
+			cancellable, (ftell (diary->file) / size) * 100);
 
 		if (camel_file_util_decode_uint32 (diary->file, &action) == -1)
 			break;
@@ -312,14 +317,15 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 			CamelFolder *folder;
 			GPtrArray *uids;
 
-			folder = diary_decode_folder (diary);
+			folder = diary_decode_folder (diary, cancellable);
 			uids = diary_decode_uids (diary);
 			if (!uids)
 				goto lose;
 
 			if (folder)
 				camel_disco_folder_expunge_uids (
-					folder, uids, &local_error);
+					folder, uids, cancellable,
+					&local_error);
 			free_uids (uids);
 			break;
 		}
@@ -331,7 +337,7 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 			CamelMimeMessage *message;
 			CamelMessageInfo *info;
 
-			folder = diary_decode_folder (diary);
+			folder = diary_decode_folder (diary, cancellable);
 			if (camel_file_util_decode_string (diary->file, &uid) == -1)
 				goto lose;
 
@@ -340,7 +346,8 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 				continue;
 			}
 
-			message = camel_folder_get_message (folder, uid, NULL);
+			message = camel_folder_get_message (
+				folder, uid, cancellable, NULL);
 			if (!message) {
 				/* The message was appended and then deleted. */
 				g_free (uid);
@@ -349,7 +356,8 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 			info = camel_folder_get_message_info (folder, uid);
 
 			camel_folder_append_message (
-				folder, message, info, &ret_uid, &local_error);
+				folder, message, info, &ret_uid,
+				cancellable, &local_error);
 			camel_folder_free_message_info (folder, info);
 
 			if (ret_uid) {
@@ -368,8 +376,8 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 			guint32 delete_originals;
 			gint i;
 
-			source = diary_decode_folder (diary);
-			destination = diary_decode_folder (diary);
+			source = diary_decode_folder (diary, cancellable);
+			destination = diary_decode_folder (diary, cancellable);
 			uids = diary_decode_uids (diary);
 			if (!uids)
 				goto lose;
@@ -383,7 +391,7 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 
 			camel_folder_transfer_messages_to (
 				source, uids, destination, &ret_uids,
-				delete_originals, &local_error);
+				delete_originals, cancellable, &local_error);
 
 			if (ret_uids) {
 				for (i = 0; i < uids->len; i++) {
@@ -402,10 +410,11 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 	}
 
  lose:
-	camel_operation_end (NULL);
+	camel_operation_end (cancellable);
 
 	/* Close folders */
-	g_hash_table_foreach (diary->folders, close_folder, diary);
+	g_hash_table_foreach (
+		diary->folders, (GHFunc) close_folder, cancellable);
 	g_hash_table_destroy (diary->folders);
 	diary->folders = NULL;
 

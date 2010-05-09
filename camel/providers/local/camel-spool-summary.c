@@ -45,9 +45,9 @@
 #define CAMEL_SPOOL_SUMMARY_VERSION (0x400)
 
 static gint spool_summary_load (CamelLocalSummary *cls, gint forceindex, GError **error);
-static gint spool_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GError **error);
+static gint spool_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
 
-static gint spool_summary_sync_full (CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GError **error);
+static gint spool_summary_sync_full (CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
 static gint spool_summary_need_index (void);
 
 G_DEFINE_TYPE (CamelSpoolSummary, camel_spool_summary, CAMEL_TYPE_MBOX_SUMMARY)
@@ -115,6 +115,7 @@ static gint
 spool_summary_sync_full (CamelMboxSummary *cls,
                          gboolean expunge,
                          CamelFolderChangeInfo *changeinfo,
+                         GCancellable *cancellable,
                          GError **error)
 {
 	gint fd = -1, fdout = -1;
@@ -127,7 +128,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 
 	d(printf("performing full summary/sync\n"));
 
-	camel_operation_start(NULL, _("Storing folder"));
+	camel_operation_start (cancellable, _("Storing folder"));
 
 	fd = open (((CamelLocalSummary *)cls)->folder_path, O_RDWR|O_LARGEFILE);
 	if (fd == -1) {
@@ -137,7 +138,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 			_("Could not open file: %s: %s"),
 			((CamelLocalSummary *)cls)->folder_path,
 			g_strerror (errno));
-		camel_operation_end (NULL);
+		camel_operation_end (cancellable);
 		return -1;
 	}
 
@@ -154,7 +155,9 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 		goto error;
 	}
 
-	if (camel_mbox_summary_sync_mbox ((CamelMboxSummary *)cls, flags, changeinfo, fd, fdout, error) == -1)
+	if (camel_mbox_summary_sync_mbox (
+		(CamelMboxSummary *)cls, flags, changeinfo,
+		fd, fdout, cancellable, error) == -1)
 		goto error;
 
 	/* sync out content */
@@ -283,7 +286,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 	if (tmpname[0] != '\0')
 		unlink (tmpname);
 
-	camel_operation_end (NULL);
+	camel_operation_end (cancellable);
 
 	return 0;
  error:
@@ -296,7 +299,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 	if (tmpname[0] != '\0')
 		unlink (tmpname);
 
-	camel_operation_end (NULL);
+	camel_operation_end (cancellable);
 
 	return -1;
 }
@@ -304,13 +307,14 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 static gint
 spool_summary_check (CamelLocalSummary *cls,
                      CamelFolderChangeInfo *changeinfo,
+                     GCancellable *cancellable,
                      GError **error)
 {
 	gint i, work, count;
 	struct stat st;
 	CamelFolderSummary *s = (CamelFolderSummary *)cls;
 
-	if (CAMEL_LOCAL_SUMMARY_CLASS (camel_spool_summary_parent_class)->check (cls, changeinfo, error) == -1)
+	if (CAMEL_LOCAL_SUMMARY_CLASS (camel_spool_summary_parent_class)->check (cls, changeinfo, cancellable, error) == -1)
 		return -1;
 
 	/* check to see if we need to copy/update the file; missing xev headers prompt this */
@@ -327,7 +331,9 @@ spool_summary_check (CamelLocalSummary *cls,
 	/* if we do, then write out the headers using sync_full, etc */
 	if (work) {
 		d(printf("Have to add new headers, re-syncing from the start to accomplish this\n"));
-		if (CAMEL_MBOX_SUMMARY_GET_CLASS (cls)->sync_full (CAMEL_MBOX_SUMMARY (cls), FALSE, changeinfo, error) == -1)
+		if (CAMEL_MBOX_SUMMARY_GET_CLASS (cls)->sync_full (
+			CAMEL_MBOX_SUMMARY (cls), FALSE,
+			changeinfo, cancellable, error) == -1)
 			return -1;
 
 		if (g_stat (cls->folder_path, &st) == -1) {

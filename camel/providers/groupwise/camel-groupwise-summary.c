@@ -293,7 +293,9 @@ content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelM
 }
 
 static gboolean
-gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
+gw_info_set_flags (CamelMessageInfo *info,
+                   guint32 flags,
+                   guint32 set)
 {
 		guint32 old;
 		CamelMessageInfoBase *mi = (CamelMessageInfoBase *)info;
@@ -357,7 +359,10 @@ gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
 }
 
 void
-camel_gw_summary_add_offline (CamelFolderSummary *summary, const gchar *uid, CamelMimeMessage *message, const CamelMessageInfo *info)
+camel_gw_summary_add_offline (CamelFolderSummary *summary,
+                              const gchar *uid,
+                              CamelMimeMessage *message,
+                              const CamelMessageInfo *info)
 {
 	CamelGroupwiseMessageInfo *mi;
 	const CamelFlag *flag;
@@ -388,7 +393,9 @@ camel_gw_summary_add_offline (CamelFolderSummary *summary, const gchar *uid, Cam
 }
 
 void
-camel_gw_summary_add_offline_uncached (CamelFolderSummary *summary, const gchar *uid, const CamelMessageInfo *info)
+camel_gw_summary_add_offline_uncached (CamelFolderSummary *summary,
+                                       const gchar *uid,
+                                       const CamelMessageInfo *info)
 {
 	CamelGroupwiseMessageInfo *mi;
 

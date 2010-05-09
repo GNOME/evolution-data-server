@@ -166,6 +166,7 @@ CamelFolder
 </para>
 
 @folder: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -177,6 +178,7 @@ CamelFolder
 
 @folder: 
 @expunge: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -205,6 +207,7 @@ CamelFolder
 </para>
 
 @folder: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -347,6 +350,7 @@ CamelFolder
 @message: 
 @info: 
 @appended_uid: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -412,6 +416,7 @@ CamelFolder
 
 @folder: 
 @uid: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -423,6 +428,7 @@ CamelFolder
 
 @folder: 
 @uid: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -575,6 +581,7 @@ CamelFolder
 @dest: 
 @transferred_uids: 
 @delete_originals: 
+@cancellable: 
 @error: 
 @Returns: 
 

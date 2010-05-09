@@ -69,14 +69,18 @@ struct _CamelStreamClass {
 	gssize		(*read)			(CamelStream *stream,
 						 gchar *buffer,
 						 gsize n,
+						 GCancellable *cancellable,
 						 GError **error);
 	gssize		(*write)		(CamelStream *stream,
 						 const gchar *buffer,
 						 gsize n,
+						 GCancellable *cancellable,
 						 GError **error);
 	gint		(*close)		(CamelStream *stream,
+						 GCancellable *cancellable,
 						 GError **error);
 	gint		(*flush)		(CamelStream *stream,
+						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(*eos)			(CamelStream *stream);
 	gint		(*reset)		(CamelStream *stream,
@@ -87,14 +91,18 @@ GType		camel_stream_get_type		(void);
 gssize		camel_stream_read		(CamelStream *stream,
 						 gchar *buffer,
 						 gsize n,
+						 GCancellable *cancellable,
 						 GError **error);
 gssize		camel_stream_write		(CamelStream *stream,
 						 const gchar *buffer,
 						 gsize n,
+						 GCancellable *cancellable,
 						 GError **error);
 gint		camel_stream_flush		(CamelStream *stream,
+						 GCancellable *cancellable,
 						 GError **error);
 gint		camel_stream_close		(CamelStream *stream,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_stream_eos		(CamelStream *stream);
 gint		camel_stream_reset		(CamelStream *stream,
@@ -103,6 +111,7 @@ gint		camel_stream_reset		(CamelStream *stream,
 /* utility macros and funcs */
 gssize		camel_stream_write_string	(CamelStream *stream,
 						 const gchar *string,
+						 GCancellable *cancellable,
 						 GError **error);
 gssize		camel_stream_printf		(CamelStream *stream,
 						 const gchar *fmt,
@@ -115,6 +124,7 @@ gssize		camel_stream_vprintf		(CamelStream *stream,
  * either stream.  */
 gssize		camel_stream_write_to_stream	(CamelStream *stream,
 						 CamelStream *output_stream,
+						 GCancellable *cancellable,
 						 GError **error);
 
 G_END_DECLS

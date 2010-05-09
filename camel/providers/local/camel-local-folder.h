@@ -76,13 +76,19 @@ struct _CamelLocalFolderClass {
 	/* Virtual methods */
 
 	/* summary factory, only used at init */
-	CamelLocalSummary *(*create_summary)(CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index);
+	CamelLocalSummary *
+			(*create_summary)	(CamelLocalFolder *lf,
+						 const gchar *path,
+						 const gchar *folder,
+						 CamelIndex *index);
 
 	/* Lock the folder for my operations */
-	gint (*lock)(CamelLocalFolder *, CamelLockType type, GError **error);
+	gint		(*lock)			(CamelLocalFolder *lf,
+						 CamelLockType type,
+						 GError **error);
 
 	/* Unlock the folder for my operations */
-	void (*unlock)(CamelLocalFolder *);
+	void		(*unlock)		(CamelLocalFolder *);
 };
 
 GType		camel_local_folder_get_type	(void);
@@ -91,6 +97,7 @@ GType		camel_local_folder_get_type	(void);
 CamelLocalFolder *
 		camel_local_folder_construct	(CamelLocalFolder *local_folder,
 						 guint32 flags,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_local_folder_get_index_body
 						(CamelLocalFolder *local_folder);

@@ -71,10 +71,6 @@ CamelOperation *camel_operation_new		(void);
 void		camel_operation_cancel		(CamelOperation *operation);
 void		camel_operation_uncancel	(CamelOperation *operation);
 
-/* subthread functions */
-CamelOperation *camel_operation_register	(CamelOperation *operation);
-void		camel_operation_unregister	(void);
-
 /* called internally by camel, for the current thread */
 gboolean	camel_operation_cancel_check	(CamelOperation *operation);
 gint		camel_operation_cancel_fd	(CamelOperation *operation);
@@ -83,18 +79,20 @@ struct PRFileDesc *
 		camel_operation_cancel_prfd	(CamelOperation *operation);
 #endif
 
-/* return the registered operation for this thread, if there is one */
-CamelOperation *camel_operation_registered	(void);
+/* Since Camel methods pass around GCancellable pointers instead of
+ * CamelOperation pointers, it's more convenient to callers to take
+ * a GCancellable pointer and just return silently if the pointer is
+ * NULL or the pointed to object actually is a plain GCancellable. */
 
-void		camel_operation_start		(CamelOperation *cc,
+void		camel_operation_start		(GCancellable *cancellable,
 						 const gchar *what,
 						 ...) G_GNUC_PRINTF (2, 3);
-void		camel_operation_start_transient	(CamelOperation *cc,
+void		camel_operation_start_transient	(GCancellable *cancellable,
 						 const gchar *what,
 						 ...) G_GNUC_PRINTF (2, 3);
-void		camel_operation_progress	(CamelOperation *operation,
+void		camel_operation_progress	(GCancellable *cancellable,
 						 gint pc);
-void		camel_operation_end		(CamelOperation *operation);
+void		camel_operation_end		(GCancellable *cancellable);
 
 G_END_DECLS
 

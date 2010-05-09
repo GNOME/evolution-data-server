@@ -220,7 +220,13 @@ summary_header_save (CamelFolderSummary *s, FILE *out)
 
 /* Note: This will be called from camel_nntp_command, so only use camel_nntp_raw_command */
 static gint
-add_range_xover (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint low, CamelFolderChangeInfo *changes, GError **error)
+add_range_xover (CamelNNTPSummary *cns,
+                 CamelNNTPStore *store,
+                 guint high,
+                 guint low,
+                 CamelFolderChangeInfo *changes,
+                 GCancellable *cancellable,
+                 GError **error)
 {
 	CamelFolderSummary *s;
 	CamelMessageInfoBase *mi;
@@ -235,14 +241,16 @@ add_range_xover (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint
 	s = (CamelFolderSummary *)cns;
 	summary_table = camel_folder_summary_get_hashtable (s);
 
-	camel_operation_start (NULL, _("%s: Scanning new messages"), ((CamelService *)store)->url->host);
+	camel_operation_start (
+		cancellable, _("%s: Scanning new messages"),
+		((CamelService *)store)->url->host);
 
-	ret = camel_nntp_raw_command_auth (store, error, &line, "over %r", low, high);
+	ret = camel_nntp_raw_command_auth (store, cancellable, error, &line, "over %r", low, high);
 	if (ret != 224)
-		ret = camel_nntp_raw_command_auth (store, error, &line, "xover %r", low, high);
+		ret = camel_nntp_raw_command_auth (store, cancellable, error, &line, "xover %r", low, high);
 
 	if (ret != 224) {
-		camel_operation_end (NULL);
+		camel_operation_end (cancellable);
 		if (ret != -1)
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
@@ -252,8 +260,8 @@ add_range_xover (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint
 
 	count = 0;
 	total = high-low+1;
-	while ((ret = camel_nntp_stream_line (store->stream, (guchar **)&line, &len, error)) > 0) {
-		camel_operation_progress (NULL, (count * 100) / total);
+	while ((ret = camel_nntp_stream_line (store->stream, (guchar **)&line, &len, cancellable, error)) > 0) {
+		camel_operation_progress (cancellable, (count * 100) / total);
 		count++;
 		n = strtoul (line, &tab, 10);
 		if (*tab != '\t')
@@ -295,7 +303,8 @@ add_range_xover (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint
 		/* truncated line? ignore? */
 		if (xover == NULL) {
 			if (!GPOINTER_TO_INT (g_hash_table_lookup (summary_table, cns->priv->uid))) {
-				mi = (CamelMessageInfoBase *)camel_folder_summary_add_from_header (s, headers);
+				mi = (CamelMessageInfoBase *)
+					camel_folder_summary_add_from_header (s, headers);
 				if (mi) {
 					mi->size = size;
 					cns->high = n;
@@ -312,7 +321,7 @@ add_range_xover (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint
 		camel_header_raw_clear (&headers);
 	}
 
-	camel_operation_end (NULL);
+	camel_operation_end (cancellable);
 
 	camel_folder_summary_free_hashtable (summary_table);
 
@@ -321,7 +330,13 @@ add_range_xover (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint
 
 /* Note: This will be called from camel_nntp_command, so only use camel_nntp_raw_command */
 static gint
-add_range_head (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint low, CamelFolderChangeInfo *changes, GError **error)
+add_range_head (CamelNNTPSummary *cns,
+                CamelNNTPStore *store,
+                guint high,
+                guint low,
+                CamelFolderChangeInfo *changes,
+                GCancellable *cancellable,
+                GError **error)
 {
 	CamelFolderSummary *s;
 	gint ret = -1;
@@ -337,14 +352,16 @@ add_range_head (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint 
 
 	mp = camel_mime_parser_new ();
 
-	camel_operation_start (NULL, _("%s: Scanning new messages"), ((CamelService *)store)->url->host);
+	camel_operation_start (
+		cancellable, _("%s: Scanning new messages"),
+		((CamelService *)store)->url->host);
 
 	count = 0;
 	total = high-low+1;
 	for (i=low;i<high+1;i++) {
-		camel_operation_progress (NULL, (count * 100) / total);
+		camel_operation_progress (cancellable, (count * 100) / total);
 		count++;
-		ret = camel_nntp_raw_command_auth (store, error, &line, "head %u", i);
+		ret = camel_nntp_raw_command_auth (store, cancellable, error, &line, "head %u", i);
 		/* unknown article, ignore */
 		if (ret == 423)
 			continue;
@@ -409,7 +426,7 @@ ioerror:
 	}
 	g_object_unref (mp);
 
-	camel_operation_end (NULL);
+	camel_operation_end (cancellable);
 
 	camel_folder_summary_free_hashtable (summary_table);
 
@@ -419,7 +436,12 @@ ioerror:
 /* Assumes we have the stream */
 /* Note: This will be called from camel_nntp_command, so only use camel_nntp_raw_command */
 gint
-camel_nntp_summary_check (CamelNNTPSummary *cns, CamelNNTPStore *store, gchar *line, CamelFolderChangeInfo *changes, GError **error)
+camel_nntp_summary_check (CamelNNTPSummary *cns,
+                          CamelNNTPStore *store,
+                          gchar *line,
+                          CamelFolderChangeInfo *changes,
+                          GCancellable *cancellable,
+                          GError **error)
 {
 	CamelFolderSummary *s;
 	gint ret = 0, i;
@@ -497,11 +519,14 @@ camel_nntp_summary_check (CamelNNTPSummary *cns, CamelNNTPStore *store, gchar *l
 		if (cns->high < f)
 			cns->high = f-1;
 
-		if (store->xover) {
-			ret = add_range_xover (cns, store, l, cns->high+1, changes, error);
-		} else {
-			ret = add_range_head (cns, store, l, cns->high+1, changes, error);
-		}
+		if (store->xover)
+			ret = add_range_xover (
+				cns, store, l, cns->high+1,
+				changes, cancellable, error);
+		else
+			ret = add_range_head (
+				cns, store, l, cns->high+1,
+				changes, cancellable, error);
 	}
 
 	/* TODO: not from here */

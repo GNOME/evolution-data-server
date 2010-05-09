@@ -840,7 +840,9 @@ folder_renamed (CamelFolder *sub,
 }
 
 static void
-vee_folder_stop_folder (CamelVeeFolder *vf, CamelFolder *sub)
+vee_folder_stop_folder (CamelVeeFolder *vf,
+                        CamelFolder *sub,
+                        GCancellable *cancellable)
 {
 	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
 	gint i;
@@ -949,7 +951,7 @@ vee_folder_dispose (GObject *object)
 			camel_folder_freeze ((CamelFolder *)vf);
 			while (vf->priv->folders) {
 				CamelFolder *f = vf->priv->folders->data;
-				vee_folder_stop_folder (vf, f);
+				vee_folder_stop_folder (vf, f, NULL);
 			}
 			camel_folder_thaw ((CamelFolder *)vf);
 		}
@@ -985,6 +987,7 @@ vee_folder_finalize (GObject *object)
 
 static gboolean
 vee_folder_refresh_info (CamelFolder *folder,
+                         GCancellable *cancellable,
                          GError **error)
 {
 	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
@@ -1017,6 +1020,7 @@ vee_folder_refresh_info (CamelFolder *folder,
 static gboolean
 vee_folder_sync (CamelFolder *folder,
                  gboolean expunge,
+                 GCancellable *cancellable,
                  GError **error)
 {
 	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
@@ -1034,7 +1038,7 @@ vee_folder_sync (CamelFolder *folder,
 	while (node) {
 		CamelFolder *f = node->data;
 
-		if (!camel_folder_sync (f, expunge, &local_error)) {
+		if (!camel_folder_sync (f, expunge, cancellable, &local_error)) {
 			if (strncmp (local_error->message, "no such table", 13) != 0) {
 				const gchar *desc;
 
@@ -1091,17 +1095,20 @@ vee_folder_sync (CamelFolder *folder,
 
 static gboolean
 vee_folder_expunge (CamelFolder *folder,
+                    GCancellable *cancellable,
                     GError **error)
 {
 	/* Force it to rebuild the counts, when some folders were expunged. */
 	((CamelVeeSummary *) folder->summary)->force_counts = TRUE;
 
-	return CAMEL_FOLDER_GET_CLASS (folder)->sync (folder, TRUE, error);
+	return CAMEL_FOLDER_GET_CLASS (folder)->
+		sync (folder, TRUE, cancellable, error);
 }
 
 static CamelMimeMessage *
 vee_folder_get_message (CamelFolder *folder,
                         const gchar *uid,
+                        GCancellable *cancellable,
                         GError **error)
 {
 	CamelVeeMessageInfo *mi;
@@ -1109,7 +1116,9 @@ vee_folder_get_message (CamelFolder *folder,
 
 	mi = (CamelVeeMessageInfo *)camel_folder_summary_uid (folder->summary, uid);
 	if (mi) {
-		msg = camel_folder_get_message (mi->summary->folder, camel_message_info_uid (mi)+8, error);
+		msg = camel_folder_get_message (
+			mi->summary->folder, camel_message_info_uid (mi)+8,
+			cancellable, error);
 		camel_message_info_free ((CamelMessageInfo *)mi);
 	} else {
 		g_set_error (
@@ -1127,10 +1136,11 @@ vee_folder_append_message (CamelFolder *folder,
                            CamelMimeMessage *message,
                            const CamelMessageInfo *info,
                            gchar **appended_uid,
+                           GCancellable *cancellable,
                            GError **error)
 {
 	g_set_error (
-		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
 		_("Cannot copy or move messages into a Virtual Folder"));
 
 	return FALSE;
@@ -1142,10 +1152,11 @@ vee_folder_transfer_messages_to (CamelFolder *folder,
                                  CamelFolder *dest,
                                  GPtrArray **transferred_uids,
                                  gboolean delete_originals,
+                                 GCancellable *cancellable,
                                  GError **error)
 {
 	g_set_error (
-		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
 		_("Cannot copy or move messages into a Virtual Folder"));
 
 	return FALSE;
@@ -2102,7 +2113,8 @@ camel_vee_folder_add_folder (CamelVeeFolder *vf, CamelFolder *sub)
  * Removed the source folder, @sub, from the virtual folder, @vf.
  **/
 void
-camel_vee_folder_remove_folder (CamelVeeFolder *vf, CamelFolder *sub)
+camel_vee_folder_remove_folder (CamelVeeFolder *vf,
+                                CamelFolder *sub)
 {
 	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
 	gint i;
@@ -2189,7 +2201,9 @@ camel_vee_folder_rebuild_folder (CamelVeeFolder *vf,
 }
 
 static void
-remove_folders (CamelFolder *folder, CamelFolder *foldercopy, CamelVeeFolder *vf)
+remove_folders (CamelFolder *folder,
+                CamelFolder *foldercopy,
+                CamelVeeFolder *vf)
 {
 	camel_vee_folder_remove_folder (vf, folder);
 	g_object_unref (folder);

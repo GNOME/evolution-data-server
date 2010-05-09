@@ -107,16 +107,29 @@ gint  camel_filter_driver_remove_rule_by_name  (CamelFilterDriver *d, const gcha
 
 void camel_filter_driver_flush                (CamelFilterDriver *driver, GError **error);
 
-gint  camel_filter_driver_filter_message       (CamelFilterDriver *driver, CamelMimeMessage *message,
-					       CamelMessageInfo *info, const gchar *uid,
-					       CamelFolder *source, const gchar *source_url,
-					       const gchar *original_source_url, GError **error);
-
-gint  camel_filter_driver_filter_mbox          (CamelFilterDriver *driver, const gchar *mbox,
-					       const gchar *original_source_url, GError **error);
-
-gint  camel_filter_driver_filter_folder        (CamelFilterDriver *driver, CamelFolder *folder, CamelUIDCache *cache,
-					       GPtrArray *uids, gboolean remove, GError **error);
+gint		camel_filter_driver_filter_message
+						(CamelFilterDriver *driver,
+						 CamelMimeMessage *message,
+						 CamelMessageInfo *info,
+						 const gchar *uid,
+						 CamelFolder *source,
+						 const gchar *source_url,
+						 const gchar *original_source_url,
+						 GCancellable *cancellable,
+						 GError **error);
+gint		camel_filter_driver_filter_mbox	(CamelFilterDriver *driver,
+						 const gchar *mbox,
+						 const gchar *original_source_url,
+						 GCancellable *cancellable,
+						 GError **error);
+gint		camel_filter_driver_filter_folder
+						(CamelFilterDriver *driver,
+						 CamelFolder *folder,
+						 CamelUIDCache *cache,
+						 GPtrArray *uids,
+						 gboolean remove,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

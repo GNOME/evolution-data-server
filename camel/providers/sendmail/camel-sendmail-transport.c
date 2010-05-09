@@ -37,31 +37,18 @@
 
 #include "camel-sendmail-transport.h"
 
-static gchar *get_name (CamelService *service, gboolean brief);
+G_DEFINE_TYPE (
+	CamelSendmailTransport,
+	camel_sendmail_transport, CAMEL_TYPE_TRANSPORT)
 
-static gboolean sendmail_send_to (CamelTransport *transport,
-				  CamelMimeMessage *message,
-				  CamelAddress *from, CamelAddress *recipients,
-				  GError **error);
-
-G_DEFINE_TYPE (CamelSendmailTransport, camel_sendmail_transport, CAMEL_TYPE_TRANSPORT)
-
-static void
-camel_sendmail_transport_class_init (CamelSendmailTransportClass *class)
+static gchar *
+sendmail_get_name (CamelService *service,
+                   gboolean brief)
 {
-	CamelServiceClass *service_class;
-	CamelTransportClass *transport_class;
-
-	service_class = CAMEL_SERVICE_CLASS (class);
-	service_class->get_name = get_name;
-
-	transport_class = CAMEL_TRANSPORT_CLASS (class);
-	transport_class->send_to = sendmail_send_to;
-}
-
-static void
-camel_sendmail_transport_init (CamelSendmailTransport *sendmail_transport)
-{
+	if (brief)
+		return g_strdup (_("sendmail"));
+	else
+		return g_strdup (_("Mail delivery via the sendmail program"));
 }
 
 static gboolean
@@ -69,6 +56,7 @@ sendmail_send_to (CamelTransport *transport,
                   CamelMimeMessage *message,
                   CamelAddress *from,
                   CamelAddress *recipients,
+                  GCancellable *cancellable,
                   GError **error)
 {
 	struct _camel_header_raw *header, *savedbcc, *n, *tail;
@@ -188,8 +176,8 @@ sendmail_send_to (CamelTransport *transport,
 
 	out = (CamelStream *) filter;
 	if (camel_data_wrapper_write_to_stream (
-		CAMEL_DATA_WRAPPER (message), out, error) == -1
-	    || camel_stream_close (out, error) == -1) {
+		CAMEL_DATA_WRAPPER (message), out, cancellable, error) == -1
+	    || camel_stream_close (out, cancellable, error) == -1) {
 		g_object_unref (CAMEL_OBJECT (out));
 		g_prefix_error (error, _("Could not send message: "));
 
@@ -241,11 +229,21 @@ sendmail_send_to (CamelTransport *transport,
 	return TRUE;
 }
 
-static gchar *
-get_name (CamelService *service, gboolean brief)
+static void
+camel_sendmail_transport_class_init (CamelSendmailTransportClass *class)
 {
-	if (brief)
-		return g_strdup (_("sendmail"));
-	else
-		return g_strdup (_("Mail delivery via the sendmail program"));
+	CamelServiceClass *service_class;
+	CamelTransportClass *transport_class;
+
+	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->get_name = sendmail_get_name;
+
+	transport_class = CAMEL_TRANSPORT_CLASS (class);
+	transport_class->send_to = sendmail_send_to;
 }
+
+static void
+camel_sendmail_transport_init (CamelSendmailTransport *sendmail_transport)
+{
+}
+

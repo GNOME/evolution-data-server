@@ -33,6 +33,7 @@ CamelOfflineStore
 
 @store: 
 @state: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -53,6 +54,7 @@ CamelOfflineStore
 </para>
 
 @store: 
+@cancellable: 
 @error: 
 @Returns: 
 

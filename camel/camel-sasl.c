@@ -258,6 +258,7 @@ camel_sasl_init (CamelSasl *sasl)
  * camel_sasl_challenge:
  * @sasl: a #CamelSasl object
  * @token: a token, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * If @token is %NULL, generate the initial SASL message to send to
@@ -265,12 +266,13 @@ camel_sasl_init (CamelSasl *sasl)
  * exchange.) Otherwise, @token is a challenge from the server, and
  * the return value is the response.
  *
- * Returns: the SASL response or %NULL. If an error occurred, @ex will
+ * Returns: the SASL response or %NULL. If an error occurred, @error will
  * also be set.
  **/
 GByteArray *
 camel_sasl_challenge (CamelSasl *sasl,
                       GByteArray *token,
+                      GCancellable *cancellable,
                       GError **error)
 {
 	CamelSaslClass *class;
@@ -281,7 +283,7 @@ camel_sasl_challenge (CamelSasl *sasl,
 	class = CAMEL_SASL_GET_CLASS (sasl);
 	g_return_val_if_fail (class->challenge != NULL, NULL);
 
-	response = class->challenge (sasl, token, error);
+	response = class->challenge (sasl, token, cancellable, error);
 	if (token)
 		CAMEL_CHECK_GERROR (sasl, challenge, response != NULL, error);
 
@@ -292,6 +294,7 @@ camel_sasl_challenge (CamelSasl *sasl,
  * camel_sasl_challenge_base64:
  * @sasl: a #CamelSasl object
  * @token: a base64-encoded token
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * As with #camel_sasl_challenge, but the challenge @token and the
@@ -302,6 +305,7 @@ camel_sasl_challenge (CamelSasl *sasl,
 gchar *
 camel_sasl_challenge_base64 (CamelSasl *sasl,
                              const gchar *token,
+                             GCancellable *cancellable,
                              GError **error)
 {
 	GByteArray *token_binary, *ret_binary;
@@ -320,7 +324,8 @@ camel_sasl_challenge_base64 (CamelSasl *sasl,
 	} else
 		token_binary = NULL;
 
-	ret_binary = camel_sasl_challenge (sasl, token_binary, error);
+	ret_binary = camel_sasl_challenge (
+		sasl, token_binary, cancellable, error);
 	if (token_binary)
 		g_byte_array_free (token_binary, TRUE);
 	if (!ret_binary)

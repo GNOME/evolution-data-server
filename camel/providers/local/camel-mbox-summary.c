@@ -61,14 +61,14 @@ static CamelMessageInfo * message_info_migrate (CamelFolderSummary *, FILE *);
 
 static gchar *mbox_summary_encode_x_evolution (CamelLocalSummary *cls, const CamelLocalMessageInfo *mi);
 
-static gint mbox_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GError **error);
-static gint mbox_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GError **error);
+static gint mbox_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
+static gint mbox_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
 #ifdef STATUS_PINE
 static CamelMessageInfo *mbox_summary_add (CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *ci, GError **error);
 #endif
 
-static gint mbox_summary_sync_quick (CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GError **error);
-static gint mbox_summary_sync_full (CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GError **error);
+static gint mbox_summary_sync_quick (CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
+static gint mbox_summary_sync_full (CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
 
 #ifdef STATUS_PINE
 /* Which status flags are stored in each separate header */
@@ -107,7 +107,9 @@ mbox_info_set_user_tag (CamelMessageInfo *mi, const gchar *name, const gchar *va
 
 #ifdef STATUS_PINE
 static gboolean
-mbox_info_set_flags (CamelMessageInfo *mi, guint32 flags, guint32 set)
+mbox_info_set_flags (CamelMessageInfo *mi,
+                     guint32 flags,
+                     guint32 set)
 {
 	/* Basically, if anything could change the Status line, presume it does */
 	if (((CamelMboxSummary *)mi->summary)->xstatus
@@ -116,7 +118,8 @@ mbox_info_set_flags (CamelMessageInfo *mi, guint32 flags, guint32 set)
 		set |= CAMEL_MESSAGE_FOLDER_XEVCHANGE|CAMEL_MESSAGE_FOLDER_FLAGGED;
 	}
 
-	return CAMEL_FOLDER_SUMMARY_CLASS (camel_mbox_summary_parent_class)->info_set_flags (mi, flags, set);
+	return CAMEL_FOLDER_SUMMARY_CLASS (camel_mbox_summary_parent_class)->
+		info_set_flags (mi, flags, set);
 }
 #endif
 
@@ -443,7 +446,11 @@ message_info_to_db (CamelFolderSummary *s, CamelMessageInfo *info)
 
 /* like summary_rebuild, but also do changeinfo stuff (if supplied) */
 static gint
-summary_update (CamelLocalSummary *cls, goffset offset, CamelFolderChangeInfo *changeinfo, GError **error)
+summary_update (CamelLocalSummary *cls,
+                goffset offset,
+                CamelFolderChangeInfo *changeinfo,
+                GCancellable *cancellable,
+                GError **error)
 {
 	gint i, count;
 	CamelFolderSummary *s = (CamelFolderSummary *)cls;
@@ -462,7 +469,7 @@ summary_update (CamelLocalSummary *cls, goffset offset, CamelFolderChangeInfo *c
 
 	cls->index_force = FALSE;
 
-	camel_operation_start(NULL, _("Storing folder"));
+	camel_operation_start (cancellable, _("Storing folder"));
 
 	fd = g_open (cls->folder_path, O_LARGEFILE | O_RDONLY | O_BINARY, 0);
 	if (fd == -1) {
@@ -472,7 +479,7 @@ summary_update (CamelLocalSummary *cls, goffset offset, CamelFolderChangeInfo *c
 			g_io_error_from_errno (errno),
 			_("Could not open folder: %s: %s"),
 			cls->folder_path, g_strerror (errno));
-		camel_operation_end (NULL);
+		camel_operation_end (cancellable);
 		return -1;
 	}
 
@@ -515,7 +522,8 @@ summary_update (CamelLocalSummary *cls, goffset offset, CamelFolderChangeInfo *c
 		CamelMessageInfo *info;
 		goffset pc = camel_mime_parser_tell_start_from (mp) + 1;
 
-		camel_operation_progress (NULL, (gint) (((gfloat) pc / size) * 100));
+		camel_operation_progress (
+			cancellable, (gint) (((gfloat) pc / size) * 100));
 
 		info = camel_folder_summary_add_from_parser (s, mp);
 		if (info == NULL) {
@@ -590,13 +598,16 @@ summary_update (CamelLocalSummary *cls, goffset offset, CamelFolderChangeInfo *c
 		}
 	}
 
-	camel_operation_end (NULL);
+	camel_operation_end (cancellable);
 
 	return ok;
 }
 
 static gint
-mbox_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changes, GError **error)
+mbox_summary_check (CamelLocalSummary *cls,
+                    CamelFolderChangeInfo *changes,
+                    GCancellable *cancellable,
+                    GError **error)
 {
 	CamelMboxSummary *mbs = (CamelMboxSummary *)cls;
 	CamelFolderSummary *s = (CamelFolderSummary *)cls;
@@ -642,10 +653,10 @@ mbox_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changes, GErr
 			if (mbs->folder_size < st.st_size) {
 				/* this will automatically rescan from 0 if there is a problem */
 				d(printf("folder grew, attempting to rebuild from %d\n", mbs->folder_size));
-				ret = summary_update (cls, mbs->folder_size, changes, error);
+				ret = summary_update (cls, mbs->folder_size, changes, cancellable, error);
 			} else {
 				d(printf("folder shrank!  rebuilding from start\n"));
-				 ret = summary_update (cls, 0, changes, error);
+				 ret = summary_update (cls, 0, changes, cancellable, error);
 			}
 		} else {
 			d(printf("Folder unchanged, do nothing\n"));
@@ -667,7 +678,11 @@ mbox_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changes, GErr
 
 /* perform a full sync */
 static gint
-mbox_summary_sync_full (CamelMboxSummary *mbs, gboolean expunge, CamelFolderChangeInfo *changeinfo, GError **error)
+mbox_summary_sync_full (CamelMboxSummary *mbs,
+                        gboolean expunge,
+                        CamelFolderChangeInfo *changeinfo,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	CamelLocalSummary *cls = (CamelLocalSummary *)mbs;
 	gint fd = -1, fdout = -1;
@@ -676,7 +691,7 @@ mbox_summary_sync_full (CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 
 	d(printf("performing full summary/sync\n"));
 
-	camel_operation_start(NULL, _("Storing folder"));
+	camel_operation_start (cancellable, _("Storing folder"));
 
 	fd = g_open (cls->folder_path, O_LARGEFILE | O_RDONLY | O_BINARY, 0);
 	if (fd == -1) {
@@ -685,7 +700,7 @@ mbox_summary_sync_full (CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 			g_io_error_from_errno (errno),
 			_("Could not open file: %s: %s"),
 			cls->folder_path, g_strerror (errno));
-		camel_operation_end (NULL);
+		camel_operation_end (cancellable);
 		return -1;
 	}
 
@@ -702,7 +717,9 @@ mbox_summary_sync_full (CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 		goto error;
 	}
 
-	if (camel_mbox_summary_sync_mbox ((CamelMboxSummary *)cls, flags, changeinfo, fd, fdout, error) == -1)
+	if (camel_mbox_summary_sync_mbox (
+		(CamelMboxSummary *)cls, flags, changeinfo,
+		fd, fdout, cancellable, error) == -1)
 		goto error;
 
 	d(printf("Closing folders\n"));
@@ -746,7 +763,7 @@ mbox_summary_sync_full (CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 	}
 	tmpname = NULL;
 
-	camel_operation_end (NULL);
+	camel_operation_end (cancellable);
 
 	return 0;
  error:
@@ -759,7 +776,7 @@ mbox_summary_sync_full (CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 	if (tmpname)
 		g_unlink (tmpname);
 
-	camel_operation_end (NULL);
+	camel_operation_end (cancellable);
 
 	return -1;
 }
@@ -790,7 +807,11 @@ cms_sort_frompos (gpointer a, gpointer b, gpointer data)
 
 /* perform a quick sync - only system flags have changed */
 static gint
-mbox_summary_sync_quick (CamelMboxSummary *mbs, gboolean expunge, CamelFolderChangeInfo *changeinfo, GError **error)
+mbox_summary_sync_quick (CamelMboxSummary *mbs,
+                         gboolean expunge,
+                         CamelFolderChangeInfo *changeinfo,
+                         GCancellable *cancellable,
+                         GError **error)
 {
 	CamelLocalSummary *cls = (CamelLocalSummary *)mbs;
 	CamelFolderSummary *s = (CamelFolderSummary *)mbs;
@@ -806,7 +827,7 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs, gboolean expunge, CamelFolderCha
 
 	d(printf("Performing quick summary sync\n"));
 
-	camel_operation_start(NULL, _("Storing folder"));
+	camel_operation_start (cancellable, _("Storing folder"));
 
 	fd = g_open (cls->folder_path, O_LARGEFILE|O_RDWR|O_BINARY, 0);
 	if (fd == -1) {
@@ -816,7 +837,7 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs, gboolean expunge, CamelFolderCha
 			_("Could not open file: %s: %s"),
 			cls->folder_path, g_strerror (errno));
 
-		camel_operation_end (NULL);
+		camel_operation_end (cancellable);
 		return -1;
 	}
 
@@ -847,7 +868,7 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs, gboolean expunge, CamelFolderCha
 		gint xevoffset;
 		gint pc = (i+1)*100/summary->len;
 
-		camel_operation_progress (NULL, pc);
+		camel_operation_progress (cancellable, pc);
 
 		info = (CamelMboxMessageInfo *)camel_folder_summary_uid (s, summary->pdata[i]);
 
@@ -939,7 +960,7 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs, gboolean expunge, CamelFolderCha
 	g_ptr_array_free (summary, TRUE);
 	g_object_unref (mp);
 
-	camel_operation_end (NULL);
+	camel_operation_end (cancellable);
 	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return 0;
@@ -953,14 +974,18 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs, gboolean expunge, CamelFolderCha
 	if (info)
 		camel_message_info_free ((CamelMessageInfo *)info);
 
-	camel_operation_end (NULL);
+	camel_operation_end (cancellable);
 	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return -1;
 }
 
 static gint
-mbox_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GError **error)
+mbox_summary_sync (CamelLocalSummary *cls,
+                   gboolean expunge,
+                   CamelFolderChangeInfo *changeinfo,
+                   GCancellable *cancellable,
+                   GError **error)
 {
 	struct stat st;
 	CamelMboxSummary *mbs = (CamelMboxSummary *)cls;
@@ -973,7 +998,7 @@ mbox_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeIn
 	GPtrArray *summary = NULL;
 
 	/* first, sync ourselves up, just to make sure */
-	if (camel_local_summary_check (cls, changeinfo, error) == -1)
+	if (camel_local_summary_check (cls, changeinfo, cancellable, error) == -1)
 		return -1;
 
 	full_name = camel_folder_get_full_name (s->folder);
@@ -1009,7 +1034,8 @@ mbox_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeIn
 	ret = -1;
 	if (quick) {
 		if (work) {
-			ret = CAMEL_MBOX_SUMMARY_GET_CLASS (cls)->sync_quick (mbs, expunge, changeinfo, NULL);
+			ret = CAMEL_MBOX_SUMMARY_GET_CLASS (cls)->sync_quick (
+				mbs, expunge, changeinfo, cancellable, NULL);
 			if (ret == -1)
 				g_warning("failed a quick-sync, trying a full sync");
 		} else {
@@ -1018,7 +1044,8 @@ mbox_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeIn
 	}
 
 	if (ret == -1)
-		ret = CAMEL_MBOX_SUMMARY_GET_CLASS (cls)->sync_full (mbs, expunge, changeinfo, error);
+		ret = CAMEL_MBOX_SUMMARY_GET_CLASS (cls)->sync_full (
+			mbs, expunge, changeinfo, cancellable, error);
 	if (ret == -1)
 		return -1;
 
@@ -1036,11 +1063,17 @@ mbox_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeIn
 		camel_folder_summary_touch (s);
 	}
 
-	return CAMEL_LOCAL_SUMMARY_CLASS (camel_mbox_summary_parent_class)->sync (cls, expunge, changeinfo, error);
+	return CAMEL_LOCAL_SUMMARY_CLASS (camel_mbox_summary_parent_class)->sync (cls, expunge, changeinfo, cancellable, error);
 }
 
 gint
-camel_mbox_summary_sync_mbox (CamelMboxSummary *cls, guint32 flags, CamelFolderChangeInfo *changeinfo, gint fd, gint fdout, GError **error)
+camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
+                              guint32 flags,
+                              CamelFolderChangeInfo *changeinfo,
+                              gint fd,
+                              gint fdout,
+                              GCancellable *cancellable,
+                              GError **error)
 {
 	CamelMboxSummary *mbs = (CamelMboxSummary *)cls;
 	CamelFolderSummary *s = (CamelFolderSummary *)mbs;
@@ -1083,7 +1116,7 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls, guint32 flags, CamelFolderC
 	for (i = 0; i < count; i++) {
 		gint pc = (i + 1) * 100 / count;
 
-		camel_operation_progress (NULL, pc);
+		camel_operation_progress (cancellable, pc);
 
 		info = (CamelMboxMessageInfo *)camel_folder_summary_index (s, i);
 
@@ -1272,7 +1305,11 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls, guint32 flags, CamelFolderC
 
 #ifdef STATUS_PINE
 static CamelMessageInfo *
-mbox_summary_add (CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *ci, GError **error)
+mbox_summary_add (CamelLocalSummary *cls,
+                  CamelMimeMessage *msg,
+                  const CamelMessageInfo *info,
+                  CamelFolderChangeInfo *ci,
+                  GError **error)
 {
 	CamelLocalSummaryClass *local_summary_class;
 	CamelMboxMessageInfo *mi;

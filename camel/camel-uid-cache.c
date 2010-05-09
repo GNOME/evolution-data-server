@@ -79,7 +79,7 @@ camel_uid_cache_new (const gchar *filename)
 
 	buf = g_malloc (st.st_size + 1);
 
-	if (st.st_size > 0 && camel_read (fd, buf, st.st_size, NULL) == -1) {
+	if (st.st_size > 0 && camel_read (fd, buf, st.st_size, NULL, NULL) == -1) {
 		close (fd);
 		g_free (buf);
 		return NULL;
@@ -124,8 +124,8 @@ maybe_write_uid (gpointer key, gpointer value, gpointer data)
 		return;
 
 	if (state && state->level == cache->level && state->save) {
-		if (camel_write (cache->fd, key, strlen (key), NULL) == -1 ||
-		    camel_write (cache->fd, "\n", 1, NULL) == -1) {
+		if (camel_write (cache->fd, key, strlen (key), NULL, NULL) == -1 ||
+		    camel_write (cache->fd, "\n", 1, NULL, NULL) == -1) {
 			cache->fd = -1;
 		} else {
 			cache->size += strlen (key) + 1;

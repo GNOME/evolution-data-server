@@ -76,19 +76,31 @@ struct _CamelGroupwiseStoreClass {
 	CamelOfflineStoreClass parent_class;
 };
 
-GType camel_groupwise_store_get_type (void);
-gchar * groupwise_get_name (CamelService *service, gboolean brief);
-
-/*IMplemented*/
-const gchar *camel_groupwise_store_container_id_lookup (CamelGroupwiseStore *gw_store, const gchar *folder_name);
-const gchar *camel_groupwise_store_folder_lookup (CamelGroupwiseStore *gw_store, const gchar *container_id);
-EGwConnection *cnc_lookup (CamelGroupwiseStorePrivate *priv);
-gchar *storage_path_lookup (CamelGroupwiseStorePrivate *priv);
-const gchar *groupwise_base_url_lookup (CamelGroupwiseStorePrivate *priv);
-CamelFolderInfo * create_junk_folder (CamelStore *store);
-gboolean camel_groupwise_store_connected (CamelGroupwiseStore *store, GError **error);
-gboolean gw_store_reload_folder (CamelGroupwiseStore *store, CamelFolder *folder, guint32 flags, GError **error);
-void groupwise_store_set_current_folder (CamelGroupwiseStore *groupwise_store, CamelFolder *folder);
+GType		camel_groupwise_store_get_type	(void);
+gchar *		groupwise_get_name		(CamelService *service,
+						 gboolean brief);
+const gchar *	camel_groupwise_store_container_id_lookup
+						(CamelGroupwiseStore *store,
+						 const gchar *folder_name);
+const gchar *	camel_groupwise_store_folder_lookup
+						(CamelGroupwiseStore *store,
+						 const gchar *container_id);
+EGwConnection *	cnc_lookup			(CamelGroupwiseStorePrivate *priv);
+gchar *		storage_path_lookup		(CamelGroupwiseStorePrivate *priv);
+const gchar *	groupwise_base_url_lookup	(CamelGroupwiseStorePrivate *priv);
+CamelFolderInfo *
+		create_junk_folder		(CamelStore *store);
+gboolean	camel_groupwise_store_connected	(CamelGroupwiseStore *store,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	gw_store_reload_folder		(CamelGroupwiseStore *store,
+						 CamelFolder *folder,
+						 guint32 flags,
+						 GCancellable *cancellable,
+						 GError **error);
+void		groupwise_store_set_current_folder
+						(CamelGroupwiseStore *store,
+						 CamelFolder *folder);
 
 G_END_DECLS
 

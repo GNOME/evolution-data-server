@@ -40,6 +40,7 @@ G_DEFINE_TYPE (CamelGroupwiseTransport, camel_groupwise_transport, CAMEL_TYPE_TR
 
 static gboolean
 groupwise_transport_connect (CamelService *service,
+                             GCancellable *cancellable,
                              GError **error)
 {
 	return TRUE;
@@ -64,6 +65,7 @@ groupwise_send_to (CamelTransport *transport,
                    CamelMimeMessage *message,
                    CamelAddress *from,
                    CamelAddress *recipients,
+                   GCancellable *cancellable,
                    GError **error)
 {
 	CamelService *service;
@@ -92,7 +94,7 @@ groupwise_send_to (CamelTransport *transport,
 				    CAMEL_URL_HIDE_PARAMS   |
 				    CAMEL_URL_HIDE_AUTH) );
 
-	camel_operation_start (NULL, _("Sending Message") );
+	camel_operation_start (cancellable, _("Sending Message") );
 
 	/*camel groupwise store and cnc*/
 	store = camel_session_get_store (service->session, url, NULL);
@@ -111,7 +113,7 @@ groupwise_send_to (CamelTransport *transport,
 	cnc = cnc_lookup (priv);
 	if (!cnc) {
 		g_warning ("||| Eh!!! Failure |||\n");
-		camel_operation_end (NULL);
+		camel_operation_end (cancellable);
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
@@ -138,7 +140,7 @@ groupwise_send_to (CamelTransport *transport,
 	status = e_gw_connection_send_item (cnc, item, &sent_item_list);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_warning (" Error Sending mail");
-		camel_operation_end (NULL);
+		camel_operation_end (cancellable);
 		e_gw_item_set_link_info (item, NULL);
 		g_object_unref (item);
 		if (temp_item)
@@ -167,7 +169,7 @@ groupwise_send_to (CamelTransport *transport,
 		g_object_unref (temp_item);
 	g_object_unref (item);
 
-	camel_operation_end (NULL);
+	camel_operation_end (cancellable);
 
 	return TRUE;
 }

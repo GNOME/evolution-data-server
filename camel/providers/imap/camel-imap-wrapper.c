@@ -92,6 +92,7 @@ imap_wrapper_finalize (GObject *object)
 static gssize
 imap_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
                               CamelStream *stream,
+                              GCancellable *cancellable,
                               GError **error)
 {
 	CamelImapWrapper *imap_wrapper = CAMEL_IMAP_WRAPPER (data_wrapper);
@@ -102,7 +103,7 @@ imap_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 
 		datastream = camel_imap_folder_fetch_data (
 			imap_wrapper->folder, imap_wrapper->uid,
-			imap_wrapper->part_spec, FALSE, NULL);
+			imap_wrapper->part_spec, FALSE, cancellable, NULL);
 
 		if (!datastream) {
 			CAMEL_IMAP_WRAPPER_UNLOCK (imap_wrapper, lock);
@@ -125,7 +126,7 @@ imap_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 	CAMEL_IMAP_WRAPPER_UNLOCK (imap_wrapper, lock);
 
 	return CAMEL_DATA_WRAPPER_CLASS (camel_imap_wrapper_parent_class)->
-		write_to_stream (data_wrapper, stream, error);
+		write_to_stream (data_wrapper, stream, cancellable, error);
 }
 
 static void
@@ -181,7 +182,7 @@ camel_imap_wrapper_new (CamelImapFolder *imap_folder,
 
 	/* Download the attachments if sync_offline is set, else skip them by checking only in cache */
 	stream = camel_imap_folder_fetch_data (imap_folder, uid, part_spec,
-			!sync_offline, NULL);
+			!sync_offline, NULL, NULL);
 
 	if (stream) {
 		imap_wrapper_hydrate (imap_wrapper, stream);

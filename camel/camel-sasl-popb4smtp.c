@@ -66,6 +66,7 @@ G_DEFINE_TYPE (CamelSaslPOPB4SMTP, camel_sasl_popb4smtp, CAMEL_TYPE_SASL)
 static GByteArray *
 sasl_popb4smtp_challenge (CamelSasl *sasl,
                           GByteArray *token,
+                          GCancellable *cancellable,
                           GError **error)
 {
 	gchar *popuri;

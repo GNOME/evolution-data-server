@@ -78,13 +78,18 @@ void		camel_nntp_stream_set_mode	(CamelNNTPStream *is,
 gint		camel_nntp_stream_line		(CamelNNTPStream *is,
 						 guchar **data,
 						 guint *len,
+						 GCancellable *cancellable,
 						 GError **error);
 gint		camel_nntp_stream_gets		(CamelNNTPStream *is,
 						 guchar **start,
-						 guint *len);
+						 guint *len,
+						 GCancellable *cancellable,
+						 GError **error);
 gint		camel_nntp_stream_getd		(CamelNNTPStream *is,
 						 guchar **start,
-						 guint *len);
+						 guint *len,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

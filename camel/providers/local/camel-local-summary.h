@@ -76,8 +76,8 @@ struct _CamelLocalSummaryClass {
 	CamelFolderSummaryClass parent_class;
 
 	gint (*load)(CamelLocalSummary *cls, gint forceindex, GError **error);
-	gint (*check)(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GError **error);
-	gint (*sync)(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GError **error);
+	gint (*check)(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
+	gint (*sync)(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
 	CamelMessageInfo *(*add)(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, GError **error);
 
 	gchar *(*encode_x_evolution)(CamelLocalSummary *cls, const CamelLocalMessageInfo *info);
@@ -91,9 +91,9 @@ void	camel_local_summary_construct	(CamelLocalSummary *new, const gchar *filenam
 /* load/check the summary */
 gint camel_local_summary_load (CamelLocalSummary *cls, gint forceindex, GError **error);
 /* check for new/removed messages */
-gint camel_local_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *, GError **error);
+gint camel_local_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *, GCancellable *cancellable, GError **error);
 /* perform a folder sync or expunge, if needed */
-gint camel_local_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *, GError **error);
+gint camel_local_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *, GCancellable *cancellable, GError **error);
 /* add a new message to the summary */
 CamelMessageInfo *camel_local_summary_add (CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, GError **error);
 

@@ -47,9 +47,11 @@ main (gint argc, gchar *argv[])
 	service = camel_session_get_service (session, uri, CAMEL_PROVIDER_STORE, NULL);
 	camel_service_connect (service, NULL);
 
-	camel_store_get_folder_info ((CamelStore *)service, "", 3, NULL);
-	folder = camel_store_get_folder ((CamelStore *)service, "INBOX", 0, NULL);
-	camel_folder_refresh_info (folder, NULL);
+	camel_store_get_folder_info (
+		CAMEL_STORE (service), "", 3, NULL, NULL);
+	folder = camel_store_get_folder (
+		CAMEL_STORE (service), "INBOX", 0, NULL, NULL);
+	camel_folder_refresh_info (folder, NULL, NULL);
 
 	while (1)
 	{

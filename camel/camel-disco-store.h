@@ -74,60 +74,82 @@ struct _CamelDiscoStore {
 struct _CamelDiscoStoreClass {
 	CamelStoreClass parent_class;
 
-	gboolean          (*set_status)              (CamelDiscoStore *,
-						      CamelDiscoStoreStatus,
-						      GError **error);
-	gboolean          (*can_work_offline)        (CamelDiscoStore *);
+	gboolean	(*set_status)		(CamelDiscoStore *,
+						 CamelDiscoStoreStatus,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(*can_work_offline)	(CamelDiscoStore *);
 
-	gboolean          (*connect_online)          (CamelService *,
-						      GError **error);
-	gboolean          (*connect_offline)         (CamelService *,
-						      GError **error);
+	gboolean	(*connect_online)	(CamelService *service,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(*connect_offline)	(CamelService *service,
+						 GCancellable *cancellable,
+						 GError **error);
 
-	gboolean          (*disconnect_online)       (CamelService *, gboolean,
-						      GError **error);
-	gboolean          (*disconnect_offline)      (CamelService *, gboolean,
-						      GError **error);
+	gboolean	(*disconnect_online)	(CamelService *service,
+						 gboolean,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(*disconnect_offline)	(CamelService *service,
+						 gboolean,
+						 GCancellable *cancellable,
+						 GError **error);
 
-	CamelFolder *     (*get_folder_online)       (CamelStore *store,
-						      const gchar *name,
-						      guint32 flags,
-						      GError **error);
-	CamelFolder *     (*get_folder_offline)      (CamelStore *store,
-						      const gchar *name,
-						      guint32 flags,
-						      GError **error);
-	CamelFolder *     (*get_folder_resyncing)    (CamelStore *store,
-						      const gchar *name,
-						      guint32 flags,
-						      GError **error);
+	CamelFolder *	(*get_folder_online)	(CamelStore *store,
+						 const gchar *name,
+						 guint32 flags,
+						 GCancellable *cancellable,
+						 GError **error);
+	CamelFolder *	(*get_folder_offline)	(CamelStore *store,
+						 const gchar *name,
+						 guint32 flags,
+						 GCancellable *cancellable,
+						 GError **error);
+	CamelFolder *	(*get_folder_resyncing)	(CamelStore *store,
+						 const gchar *name,
+						 guint32 flags,
+						 GCancellable *cancellable,
+						 GError **error);
 
-	CamelFolderInfo * (*get_folder_info_online)    (CamelStore *store,
-							const gchar *top,
-							guint32 flags,
-							GError **error);
-	CamelFolderInfo * (*get_folder_info_offline)   (CamelStore *store,
-							const gchar *top,
-							guint32 flags,
-							GError **error);
-	CamelFolderInfo * (*get_folder_info_resyncing) (CamelStore *store,
-							const gchar *top,
-							guint32 flags,
-							GError **error);
+	CamelFolderInfo *
+			(*get_folder_info_online)
+						(CamelStore *store,
+						 const gchar *top,
+						 guint32 flags,
+						 GCancellable *cancellable,
+						 GError **error);
+	CamelFolderInfo *
+			(*get_folder_info_offline)
+						(CamelStore *store,
+						 const gchar *top,
+						 guint32 flags,
+						 GCancellable *cancellable,
+						 GError **error);
+	CamelFolderInfo *
+			(*get_folder_info_resyncing)
+						(CamelStore *store,
+						 const gchar *top,
+						 guint32 flags,
+						 GCancellable *cancellable,
+						 GError **error);
 };
 
-GType camel_disco_store_get_type (void);
-
-/* Public methods */
-CamelDiscoStoreStatus camel_disco_store_status           (CamelDiscoStore *store);
-gboolean              camel_disco_store_set_status       (CamelDiscoStore *store,
-							  CamelDiscoStoreStatus status,
-							  GError **error);
-gboolean              camel_disco_store_can_work_offline (CamelDiscoStore *store);
-
-/* Convenience functions */
-gboolean camel_disco_store_check_online (CamelDiscoStore *store, GError **error);
-void camel_disco_store_prepare_for_offline (CamelDiscoStore *store, GError **error);
+GType		camel_disco_store_get_type	(void);
+CamelDiscoStoreStatus
+		camel_disco_store_status	(CamelDiscoStore *store);
+gboolean	camel_disco_store_set_status	(CamelDiscoStore *store,
+						 CamelDiscoStoreStatus status,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_disco_store_can_work_offline
+						(CamelDiscoStore *store);
+gboolean	camel_disco_store_check_online	(CamelDiscoStore *store,
+						 GError **error);
+void		camel_disco_store_prepare_for_offline
+						(CamelDiscoStore *store,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

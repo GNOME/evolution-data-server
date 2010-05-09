@@ -92,6 +92,7 @@ static gssize
 stream_filter_read (CamelStream *stream,
                     gchar *buffer,
                     gsize n,
+                    GCancellable *cancellable,
                     GError **error)
 {
 	CamelStreamFilterPrivate *priv;
@@ -108,7 +109,8 @@ stream_filter_read (CamelStream *stream,
 		gsize presize = READ_PAD;
 
 		size = camel_stream_read (
-			priv->source, priv->buffer, READ_SIZE, error);
+			priv->source, priv->buffer,
+			READ_SIZE, cancellable, error);
 		if (size <= 0) {
 			/* this is somewhat untested */
 			if (camel_stream_eos (priv->source)) {
@@ -168,6 +170,7 @@ static gssize
 stream_filter_write (CamelStream *stream,
                      const gchar *buf,
                      gsize n,
+                     GCancellable *cancellable,
                      GError **error)
 {
 	CamelStreamFilterPrivate *priv;
@@ -207,7 +210,7 @@ stream_filter_write (CamelStream *stream,
 			f = f->next;
 		}
 
-		if (camel_stream_write (priv->source, buffer, len, error) != len)
+		if (camel_stream_write (priv->source, buffer, len, cancellable, error) != len)
 			return -1;
 	}
 
@@ -218,6 +221,7 @@ stream_filter_write (CamelStream *stream,
 
 static gint
 stream_filter_flush (CamelStream *stream,
+                     GCancellable *cancellable,
                      GError **error)
 {
 	CamelStreamFilterPrivate *priv;
@@ -250,14 +254,15 @@ stream_filter_flush (CamelStream *stream,
 		f = f->next;
 	}
 
-	if (len > 0 && camel_stream_write (priv->source, buffer, len, error) == -1)
+	if (len > 0 && camel_stream_write (priv->source, buffer, len, cancellable, error) == -1)
 		return -1;
 
-	return camel_stream_flush (priv->source, error);
+	return camel_stream_flush (priv->source, cancellable, error);
 }
 
 static gint
 stream_filter_close (CamelStream *stream,
+                     GCancellable *cancellable,
                      GError **error)
 {
 	CamelStreamFilterPrivate *priv;
@@ -266,9 +271,9 @@ stream_filter_close (CamelStream *stream,
 
 	/* Ignore errors while flushing. */
 	if (!priv->last_was_read)
-		stream_filter_flush (stream, NULL);
+		stream_filter_flush (stream, cancellable, NULL);
 
-	return camel_stream_close (priv->source, error);
+	return camel_stream_close (priv->source, cancellable, error);
 }
 
 static gboolean

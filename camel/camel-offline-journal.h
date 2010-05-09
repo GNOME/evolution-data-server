@@ -71,21 +71,31 @@ struct _CamelOfflineJournal {
 struct _CamelOfflineJournalClass {
 	CamelObjectClass parent_class;
 
-	/* entry methods */
-	void (* entry_free) (CamelOfflineJournal *journal, CamelDListNode *entry);
-
-	CamelDListNode * (* entry_load) (CamelOfflineJournal *journal, FILE *in);
-	gint (* entry_write) (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
-	gint (* entry_play) (CamelOfflineJournal *journal, CamelDListNode *entry, GError **error);
+	void		(*entry_free)		(CamelOfflineJournal *journal,
+						 CamelDListNode *entry);
+	CamelDListNode *(*entry_load)		(CamelOfflineJournal *journal,
+						 FILE *in);
+	gint		(*entry_write)		(CamelOfflineJournal *journal,
+						 CamelDListNode *entry,
+						 FILE *out);
+	gint		(*entry_play)		(CamelOfflineJournal *journal,
+						 CamelDListNode *entry,
+						 GCancellable *cancellable,
+						 GError **error);
 };
 
-GType camel_offline_journal_get_type (void);
-
-void camel_offline_journal_construct (CamelOfflineJournal *journal, struct _CamelFolder *folder, const gchar *filename);
-void camel_offline_journal_set_filename (CamelOfflineJournal *journal, const gchar *filename);
-
-gint camel_offline_journal_write (CamelOfflineJournal *journal, GError **error);
-gint camel_offline_journal_replay (CamelOfflineJournal *journal, GError **error);
+GType		camel_offline_journal_get_type	(void);
+void		camel_offline_journal_construct	(CamelOfflineJournal *journal,
+						 CamelFolder *folder,
+						 const gchar *filename);
+void		camel_offline_journal_set_filename
+						(CamelOfflineJournal *journal,
+						 const gchar *filename);
+gint		camel_offline_journal_write	(CamelOfflineJournal *journal,
+						 GError **error);
+gint		camel_offline_journal_replay	(CamelOfflineJournal *journal,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

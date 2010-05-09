@@ -45,8 +45,8 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_MH_SUMMARY, CamelMhSummaryPrivate))
 
-static gint mh_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GError **error);
-static gint mh_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GError **error);
+static gint mh_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
+static gint mh_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
 /*static gint mh_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, CamelMessageInfo *info, CamelFolderChangeInfo *, GError **error);*/
 
 static gchar *mh_summary_next_uid_string (CamelFolderSummary *s);
@@ -155,7 +155,8 @@ mh_summary_next_uid_string (CamelFolderSummary *s)
 static gint
 camel_mh_summary_add (CamelLocalSummary *cls,
                       const gchar *name,
-                      gint forceindex)
+                      gint forceindex,
+                      GCancellable *cancellable)
 {
 	CamelMhSummary *mhs = (CamelMhSummary *)cls;
 	gchar *filename = g_strdup_printf("%s/%s", cls->folder_path, name);
@@ -203,6 +204,7 @@ remove_summary (gchar *key,
 static gint
 mh_summary_check (CamelLocalSummary *cls,
                   CamelFolderChangeInfo *changeinfo,
+                  GCancellable *cancellable,
                   GError **error)
 {
 	DIR *dir;
@@ -258,7 +260,7 @@ mh_summary_check (CamelLocalSummary *cls,
 					camel_folder_summary_remove ((CamelFolderSummary *)cls, info);
 					camel_message_info_free (info);
 				}
-				camel_mh_summary_add (cls, d->d_name, forceindex);
+				camel_mh_summary_add (cls, d->d_name, forceindex, cancellable);
 			} else {
 				const gchar *uid = camel_message_info_uid (info);
 				CamelMessageInfo *old = g_hash_table_lookup (left, uid);
@@ -287,6 +289,7 @@ static gint
 mh_summary_sync (CamelLocalSummary *cls,
                  gboolean expunge,
                  CamelFolderChangeInfo *changes,
+                 GCancellable *cancellable,
                  GError **error)
 {
 	CamelLocalSummaryClass *local_summary_class;
@@ -299,7 +302,7 @@ mh_summary_sync (CamelLocalSummary *cls,
 
 	/* we could probably get away without this ... but why not use it, esp if we're going to
 	   be doing any significant io already */
-	if (camel_local_summary_check (cls, changes, error) == -1)
+	if (camel_local_summary_check (cls, changes, cancellable, error) == -1)
 		return -1;
 
 	/* FIXME: need to update/honour .mh_sequences or whatever it is */
@@ -331,5 +334,5 @@ mh_summary_sync (CamelLocalSummary *cls,
 
 	/* Chain up to parent's sync() method. */
 	local_summary_class = CAMEL_LOCAL_SUMMARY_CLASS (camel_mh_summary_parent_class);
-	return local_summary_class->sync (cls, expunge, changes, error);
+	return local_summary_class->sync (cls, expunge, changes, cancellable, error);
 }

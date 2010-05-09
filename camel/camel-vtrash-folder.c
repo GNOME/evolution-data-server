@@ -52,6 +52,7 @@ static struct {
 };
 
 struct _transfer_data {
+	GCancellable *cancellable;
 	CamelFolder *folder;
 	CamelFolder *dest;
 	GPtrArray *uids;
@@ -68,10 +69,15 @@ transfer_messages (CamelFolder *folder,
 	gint i;
 
 	camel_folder_transfer_messages_to (
-		md->folder, md->uids, md->dest, NULL, md->delete, error);
+		md->folder, md->uids, md->dest,
+		NULL, md->delete, md->cancellable, error);
+
+	if (md->cancellable != NULL)
+		g_object_unref (md->cancellable);
 
 	for (i=0;i<md->uids->len;i++)
 		g_free (md->uids->pdata[i]);
+
 	g_ptr_array_free (md->uids, TRUE);
 	g_object_unref (md->folder);
 	g_free (md);
@@ -82,6 +88,7 @@ vtrash_folder_append_message (CamelFolder *folder,
                               CamelMimeMessage *message,
                               const CamelMessageInfo *info,
                               gchar **appended_uid,
+                              GCancellable *cancellable,
                               GError **error)
 {
 	g_set_error (
@@ -97,6 +104,7 @@ vtrash_folder_transfer_messages_to (CamelFolder *source,
                                     CamelFolder *dest,
                                     GPtrArray **transferred_uids,
                                     gboolean delete_originals,
+                                    GCancellable *cancellable,
                                     GError **error)
 {
 	CamelVeeMessageInfo *mi;
@@ -125,7 +133,9 @@ vtrash_folder_transfer_messages_to (CamelFolder *source,
 
 		/* Move to trash is the same as setting the message flag */
 		for (i = 0; i < uids->len; i++)
-			camel_folder_set_message_flags (source, uids->pdata[i], ((CamelVTrashFolder *)dest)->bit, ~0);
+			camel_folder_set_message_flags (
+				source, uids->pdata[i],
+				((CamelVTrashFolder *)dest)->bit, ~0);
 		return TRUE;
 	}
 
@@ -144,17 +154,21 @@ vtrash_folder_transfer_messages_to (CamelFolder *source,
 
 		if (dest == mi->summary->folder) {
 			/* Just unset the flag on the original message */
-			camel_folder_set_message_flags (source, uids->pdata[i], sbit, 0);
+			camel_folder_set_message_flags (
+				source, uids->pdata[i], sbit, 0);
 		} else {
 			if (batch == NULL)
 				batch = g_hash_table_new (NULL, NULL);
 			md = g_hash_table_lookup (batch, mi->summary->folder);
 			if (md == NULL) {
-				md = g_malloc0 (sizeof (*md));
+				md = g_malloc0(sizeof(*md));
+				md->cancellable = cancellable;
 				md->folder = g_object_ref (mi->summary->folder);
 				md->uids = g_ptr_array_new ();
 				md->dest = dest;
-				g_hash_table_insert (batch, mi->summary->folder, md);
+				if (cancellable != NULL)
+					g_object_ref (cancellable);
+				g_hash_table_insert(batch, mi->summary->folder, md);
 			}
 
 			tuid = uids->pdata[i];

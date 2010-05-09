@@ -57,6 +57,7 @@
 static gboolean
 simple_data_wrapper_construct_from_parser (CamelDataWrapper *dw,
                                            CamelMimeParser *mp,
+                                           GCancellable *cancellable,
                                            GError **error)
 {
 	gchar *buf;
@@ -77,7 +78,8 @@ simple_data_wrapper_construct_from_parser (CamelDataWrapper *dw,
 	d(printf("message part kept in memory!\n"));
 
 	mem = camel_stream_mem_new_with_byte_array (buffer);
-	retval = camel_data_wrapper_construct_from_stream (dw, mem, error);
+	retval = camel_data_wrapper_construct_from_stream (
+		dw, mem, cancellable, error);
 	g_object_unref (mem);
 
 	return (retval == 0);
@@ -91,6 +93,7 @@ simple_data_wrapper_construct_from_parser (CamelDataWrapper *dw,
 gboolean
 camel_mime_part_construct_content_from_parser (CamelMimePart *dw,
                                                CamelMimeParser *mp,
+                                               GCancellable *cancellable,
                                                GError **error)
 {
 	CamelDataWrapper *content = NULL;
@@ -114,14 +117,14 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw,
 		} else {
 			content = camel_data_wrapper_new ();
 			success = simple_data_wrapper_construct_from_parser (
-				content, mp, error);
+				content, mp, cancellable, error);
 		}
 		break;
 	case CAMEL_MIME_PARSER_STATE_MESSAGE:
 		d(printf("Creating message part\n"));
 		content = (CamelDataWrapper *) camel_mime_message_new ();
 		success = (camel_mime_part_construct_from_parser (
-			(CamelMimePart *)content, mp, error) == 0);
+			(CamelMimePart *)content, mp, cancellable, error) == 0);
 		break;
 	case CAMEL_MIME_PARSER_STATE_MULTIPART:
 		d(printf("Creating multi-part\n"));
@@ -184,7 +187,7 @@ camel_mime_message_build_preview (CamelMimePart *msg,
 		    !camel_content_type_is (dw->mime_type, "text", "calendar")) {
 		CamelStream *mstream, *bstream;
 		mstream = camel_stream_mem_new ();
-		if (camel_data_wrapper_decode_to_stream (dw, mstream, NULL) > 0) {
+		if (camel_data_wrapper_decode_to_stream (dw, mstream, NULL, NULL) > 0) {
 			gchar *line = NULL;
 			GString *str = g_string_new (NULL);
 
@@ -192,7 +195,7 @@ camel_mime_message_build_preview (CamelMimePart *msg,
 			bstream = camel_stream_buffer_new (mstream, CAMEL_STREAM_BUFFER_READ|CAMEL_STREAM_BUFFER_BUFFER);
 
 			/* We should fetch just 200 unquoted lines. */
-			while ((line = camel_stream_buffer_read_line ((CamelStreamBuffer *)bstream, NULL)) && str->len < 200) {
+			while ((line = camel_stream_buffer_read_line ((CamelStreamBuffer *)bstream, NULL, NULL)) && str->len < 200) {
 				gchar *tmp = line;
 				if (!line)
 					continue;

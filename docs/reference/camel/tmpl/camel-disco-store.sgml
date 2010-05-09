@@ -51,6 +51,7 @@ CamelDiscoStore
 
 @store: 
 @status: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -80,6 +81,7 @@ CamelDiscoStore
 </para>
 
 @store: 
+@cancellable: 
 @error: 
 
 

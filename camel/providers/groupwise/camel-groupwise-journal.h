@@ -78,15 +78,25 @@ struct _CamelGroupwiseJournalClass {
 
 };
 
-GType camel_groupwise_journal_get_type (void);
-
-CamelOfflineJournal *camel_groupwise_journal_new (struct _CamelGroupwiseFolder *folder, const gchar *filename);
-
-/* interfaces for adding a journal entry */
-gboolean camel_groupwise_journal_append (CamelGroupwiseJournal *journal, CamelMimeMessage *message, const CamelMessageInfo *mi,
-				     gchar **appended_uid, GError **error);
-gboolean camel_groupwise_journal_transfer (CamelGroupwiseJournal *journal, CamelGroupwiseFolder *source_folder, CamelMimeMessage *message,
-				       const CamelMessageInfo *mi, const gchar *orginal_uid, gchar **transferred_uid, GError **error);
+GType		camel_groupwise_journal_get_type (void);
+CamelOfflineJournal *
+		camel_groupwise_journal_new	(CamelGroupwiseFolder *folder,
+						 const gchar *filename);
+gboolean	camel_groupwise_journal_append	(CamelGroupwiseJournal *journal,
+						 CamelMimeMessage *message,
+						 const CamelMessageInfo *mi,
+						 gchar **appended_uid,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_groupwise_journal_transfer
+						(CamelGroupwiseJournal *journal,
+						 CamelGroupwiseFolder *source_folder,
+						 CamelMimeMessage *message,
+						 const CamelMessageInfo *mi,
+						 const gchar *orginal_uid,
+						 gchar **transferred_uid,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

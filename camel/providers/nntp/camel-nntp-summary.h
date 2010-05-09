@@ -63,10 +63,16 @@ struct _CamelNNTPSummaryClass {
 	CamelFolderSummaryClass parent_class;
 };
 
-GType	camel_nntp_summary_get_type	(void);
-CamelNNTPSummary *camel_nntp_summary_new (struct _CamelFolder *folder, const gchar *path);
-
-gint camel_nntp_summary_check (CamelNNTPSummary *cns, struct _CamelNNTPStore *store, gchar *line, struct _CamelFolderChangeInfo *changes, struct _GError **error);
+GType		camel_nntp_summary_get_type	(void);
+CamelNNTPSummary *
+		camel_nntp_summary_new		(CamelFolder *folder,
+						 const gchar *path);
+gint		camel_nntp_summary_check	(CamelNNTPSummary *cns,
+						 struct _CamelNNTPStore *store,
+						 gchar *line,
+						 CamelFolderChangeInfo *changes,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

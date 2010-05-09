@@ -38,6 +38,7 @@ G_BEGIN_DECLS
 gboolean	camel_mime_part_construct_content_from_parser
 						(CamelMimePart *mime_part,
 						 CamelMimeParser *mp,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_mime_message_build_preview (CamelMimePart *mime_part,
 						 CamelMessageInfo *info);

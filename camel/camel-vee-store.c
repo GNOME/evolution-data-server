@@ -157,6 +157,7 @@ static CamelFolder *
 vee_store_get_folder (CamelStore *store,
                       const gchar *folder_name,
                       guint32 flags,
+                      GCancellable *cancellable,
                       GError **error)
 {
 	CamelVeeFolder *vf;
@@ -199,6 +200,7 @@ static gboolean
 vee_store_rename_folder (CamelStore *store,
                          const gchar *old,
                          const gchar *new,
+                         GCancellable *cancellable,
                          GError **error)
 {
 	CamelFolder *folder, *oldfolder;
@@ -252,6 +254,7 @@ vee_store_rename_folder (CamelStore *store,
 static gboolean
 vee_store_delete_folder (CamelStore *store,
                          const gchar *folder_name,
+                         GCancellable *cancellable,
                          GError **error)
 {
 	CamelFolder *folder;
@@ -298,6 +301,7 @@ static CamelFolderInfo *
 vee_store_get_folder_info (CamelStore *store,
                            const gchar *top,
                            guint32 flags,
+                           GCancellable *cancellable,
                            GError **error)
 {
 	CamelFolderInfo *info, *res = NULL, *tail;
@@ -346,7 +350,9 @@ vee_store_get_folder_info (CamelStore *store,
 
 			/* ensures unread is correct */
 			if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
-				camel_folder_refresh_info ((CamelFolder *)folder, NULL);
+				camel_folder_refresh_info (
+					(CamelFolder *)folder,
+					cancellable, NULL);
 
 			parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (folder));
 
@@ -433,6 +439,7 @@ vee_store_get_folder_info (CamelStore *store,
 
 static CamelFolder *
 vee_store_get_trash (CamelStore *store,
+                     GCancellable *cancellable,
                      GError **error)
 {
 	return NULL;
@@ -440,6 +447,7 @@ vee_store_get_trash (CamelStore *store,
 
 static CamelFolder *
 vee_store_get_junk (CamelStore *store,
+                    GCancellable *cancellable,
                     GError **error)
 {
 	return NULL;

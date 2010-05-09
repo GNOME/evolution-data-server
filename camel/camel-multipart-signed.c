@@ -256,6 +256,7 @@ multipart_signed_set_mime_type_field (CamelDataWrapper *data_wrapper,
 static gssize
 multipart_signed_write_to_stream (CamelDataWrapper *data_wrapper,
                                   CamelStream *stream,
+                                  GCancellable *cancellable,
                                   GError **error)
 {
 	CamelMultipartSigned *mps = (CamelMultipartSigned *)data_wrapper;
@@ -275,7 +276,7 @@ multipart_signed_write_to_stream (CamelDataWrapper *data_wrapper,
 	if (data_wrapper->stream) {
 		camel_stream_reset (data_wrapper->stream, NULL);
 		return camel_stream_write_to_stream (
-			data_wrapper->stream, stream, error);
+			data_wrapper->stream, stream, cancellable, error);
 	}
 
 	/* 3 */
@@ -297,7 +298,8 @@ multipart_signed_write_to_stream (CamelDataWrapper *data_wrapper,
 	/* 2 */
 	boundary = camel_multipart_get_boundary (mp);
 	if (mp->preface) {
-		count = camel_stream_write_string (stream, mp->preface, error);
+		count = camel_stream_write_string (
+			stream, mp->preface, cancellable, error);
 		if (count == -1)
 			return -1;
 		total += count;
@@ -311,7 +313,8 @@ multipart_signed_write_to_stream (CamelDataWrapper *data_wrapper,
 
 	/* output content part */
 	camel_stream_reset (mps->contentraw, NULL);
-	count = camel_stream_write_to_stream (mps->contentraw, stream, error);
+	count = camel_stream_write_to_stream (
+		mps->contentraw, stream, cancellable, error);
 	if (count == -1)
 		return -1;
 	total += count;
@@ -324,7 +327,8 @@ multipart_signed_write_to_stream (CamelDataWrapper *data_wrapper,
 
 	/* signature */
 	count = camel_data_wrapper_write_to_stream (
-		CAMEL_DATA_WRAPPER (mps->signature), stream, error);
+		CAMEL_DATA_WRAPPER (mps->signature),
+		stream, cancellable, error);
 	if (count == -1)
 		return -1;
 	total += count;
@@ -337,7 +341,8 @@ multipart_signed_write_to_stream (CamelDataWrapper *data_wrapper,
 
 	/* and finally the postface */
 	if (mp->postface) {
-		count = camel_stream_write_string (stream, mp->postface, error);
+		count = camel_stream_write_string (
+			stream, mp->postface, cancellable, error);
 		if (count == -1)
 			return -1;
 		total += count;
@@ -357,12 +362,14 @@ file_error:
 static gint
 multipart_signed_construct_from_stream (CamelDataWrapper *data_wrapper,
                                         CamelStream *stream,
+                                        GCancellable *cancellable,
                                         GError **error)
 {
 	CamelMultipartSigned *mps = (CamelMultipartSigned *)data_wrapper;
 	CamelStream *mem = camel_stream_mem_new ();
 
-	if (camel_stream_write_to_stream (stream, mem, error) == -1)
+	if (camel_stream_write_to_stream (
+		stream, mem, cancellable, error) == -1)
 		return -1;
 
 	multipart_signed_set_stream (mps, mem);
@@ -430,7 +437,7 @@ multipart_signed_get_part (CamelMultipart *multipart,
 		camel_stream_reset (stream, NULL);
 		mps->content = camel_mime_part_new ();
 		camel_data_wrapper_construct_from_stream (
-			CAMEL_DATA_WRAPPER (mps->content), stream, NULL);
+			CAMEL_DATA_WRAPPER (mps->content), stream, NULL, NULL);
 		g_object_unref (stream);
 		return mps->content;
 	case CAMEL_MULTIPART_SIGNED_SIGNATURE:
@@ -447,7 +454,8 @@ multipart_signed_get_part (CamelMultipart *multipart,
 		camel_stream_reset (stream, NULL);
 		mps->signature = camel_mime_part_new ();
 		camel_data_wrapper_construct_from_stream (
-			CAMEL_DATA_WRAPPER (mps->signature), stream, NULL);
+			CAMEL_DATA_WRAPPER (mps->signature),
+			stream, NULL, NULL);
 		g_object_unref (stream);
 		return mps->signature;
 	default:
@@ -499,7 +507,7 @@ multipart_signed_construct_from_parser (CamelMultipart *multipart,
 
 	stream = camel_stream_mem_new ();
 	while (camel_mime_parser_step (mp, &buf, &len) != CAMEL_MIME_PARSER_STATE_BODY_END)
-		camel_stream_write (stream, buf, len, NULL);
+		camel_stream_write (stream, buf, len, NULL, NULL);
 
 	multipart_signed_set_stream (mps, stream);
 

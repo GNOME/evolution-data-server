@@ -348,7 +348,7 @@ insert_finish (CamelImapMessageCache *cache,
                gchar *key,
                CamelStream *stream)
 {
-	camel_stream_flush (stream, NULL);
+	camel_stream_flush (stream, NULL, NULL);
 	camel_stream_reset (stream, NULL);
 	cache_put (cache, uid, key, stream);
 	g_free (path);
@@ -363,6 +363,8 @@ insert_finish (CamelImapMessageCache *cache,
  * @part_spec: the IMAP part_spec of the data
  * @data: the data
  * @len: length of @data
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Caches the provided data into @cache.
  *
@@ -375,6 +377,7 @@ camel_imap_message_cache_insert (CamelImapMessageCache *cache,
                                  const gchar *part_spec,
                                  const gchar *data,
                                  gint len,
+                                 GCancellable *cancellable,
                                  GError **error)
 {
 	gchar *path, *key;
@@ -384,7 +387,7 @@ camel_imap_message_cache_insert (CamelImapMessageCache *cache,
 	if (!stream)
 		return NULL;
 
-	if (camel_stream_write (stream, data, len, error) == -1) {
+	if (camel_stream_write (stream, data, len, cancellable, error) == -1) {
 		g_prefix_error (error, _("Failed to cache message %s: "), uid);
 		return insert_abort (path, stream);
 	}
@@ -414,7 +417,7 @@ camel_imap_message_cache_insert_stream (CamelImapMessageCache *cache,
 	if (!stream)
 		return;
 
-	if (camel_stream_write_to_stream (data_stream, stream, NULL) == -1) {
+	if (camel_stream_write_to_stream (data_stream, stream, NULL, NULL) == -1) {
 		insert_abort (path, stream);
 	} else {
 		insert_finish (cache, uid, path, key, stream);
@@ -444,7 +447,7 @@ camel_imap_message_cache_insert_wrapper (CamelImapMessageCache *cache,
 	if (!stream)
 		return;
 
-	if (camel_data_wrapper_write_to_stream (wrapper, stream, NULL) == -1) {
+	if (camel_data_wrapper_write_to_stream (wrapper, stream, NULL, NULL) == -1) {
 		insert_abort (path, stream);
 	} else {
 		insert_finish (cache, uid, path, key, stream);

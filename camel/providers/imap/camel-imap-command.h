@@ -45,34 +45,41 @@ struct _CamelImapResponse {
 	gchar *status;
 };
 
-CamelImapResponse *camel_imap_command              (CamelImapStore *store,
-						    CamelFolder *folder,
-						    GError **error,
-						    const gchar *fmt, ...);
-CamelImapResponse *camel_imap_command_continuation (CamelImapStore *store,
-						    const gchar *cmd,
-						    gsize cmdlen,
-						    GError **error);
-
-void  camel_imap_response_free                     (CamelImapStore *store,
-						    CamelImapResponse *response);
-void  camel_imap_response_free_without_processing  (CamelImapStore *store,
-						    CamelImapResponse *response);
-gchar *camel_imap_response_extract                  (CamelImapStore *store,
-						    CamelImapResponse *response,
-						    const gchar *type,
-						    GError **error);
-gchar *camel_imap_response_extract_continuation     (CamelImapStore *store,
-						    CamelImapResponse *response,
-						    GError **error);
-
-gboolean           camel_imap_command_start        (CamelImapStore *store,
-						    CamelFolder *folder,
-						    GError **error,
-						    const gchar *fmt, ...);
-CamelImapResponseType camel_imap_command_response  (CamelImapStore *store,
-						    gchar **response,
-						    GError **error);
+CamelImapResponse *
+		camel_imap_command		(CamelImapStore *store,
+						 CamelFolder *folder,
+						 GCancellable *cancellable,
+						 GError **error,
+						 const gchar *fmt, ...);
+CamelImapResponse *
+		camel_imap_command_continuation	(CamelImapStore *store,
+						 const gchar *cmd,
+						 gsize cmdlen,
+						 GCancellable *cancellable,
+						 GError **error);
+void		camel_imap_response_free	(CamelImapStore *store,
+						 CamelImapResponse *response);
+void		camel_imap_response_free_without_processing
+						(CamelImapStore *store,
+						 CamelImapResponse *response);
+gchar *		camel_imap_response_extract	(CamelImapStore *store,
+						 CamelImapResponse *response,
+						 const gchar *type,
+						 GError **error);
+gchar *		camel_imap_response_extract_continuation
+						(CamelImapStore *store,
+						 CamelImapResponse *response,
+						 GError **error);
+gboolean	camel_imap_command_start	(CamelImapStore *store,
+						 CamelFolder *folder,
+						 GCancellable *cancellable,
+						 GError **error,
+						 const gchar *fmt, ...);
+CamelImapResponseType
+		camel_imap_command_response	(CamelImapStore *store,
+						 gchar **response,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

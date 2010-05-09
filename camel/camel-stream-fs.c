@@ -67,6 +67,7 @@ static gssize
 stream_fs_read (CamelStream *stream,
                 gchar *buffer,
                 gsize n,
+                GCancellable *cancellable,
                 GError **error)
 {
 	CamelStreamFsPrivate *priv;
@@ -79,7 +80,9 @@ stream_fs_read (CamelStream *stream,
 	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
 		n = MIN (seekable->bound_end - seekable->position, n);
 
-	if ((nread = camel_read (priv->fd, buffer, n, error)) > 0)
+	nread = camel_read (priv->fd, buffer, n, cancellable, error);
+
+	if (nread > 0)
 		seekable->position += nread;
 	else if (nread == 0)
 		stream->eos = TRUE;
@@ -91,6 +94,7 @@ static gssize
 stream_fs_write (CamelStream *stream,
                  const gchar *buffer,
                  gsize n,
+                 GCancellable *cancellable,
                  GError **error)
 {
 	CamelStreamFsPrivate *priv;
@@ -103,7 +107,9 @@ stream_fs_write (CamelStream *stream,
 	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
 		n = MIN (seekable->bound_end - seekable->position, n);
 
-	if ((nwritten = camel_write (priv->fd, buffer, n, error)) > 0)
+	nwritten = camel_write (priv->fd, buffer, n, cancellable, error);
+
+	if (nwritten > 0)
 		seekable->position += nwritten;
 
 	return nwritten;
@@ -111,6 +117,7 @@ stream_fs_write (CamelStream *stream,
 
 static gint
 stream_fs_flush (CamelStream *stream,
+                 GCancellable *cancellable,
                  GError **error)
 {
 	CamelStreamFsPrivate *priv;
@@ -130,6 +137,7 @@ stream_fs_flush (CamelStream *stream,
 
 static gint
 stream_fs_close (CamelStream *stream,
+                 GCancellable *cancellable,
                  GError **error)
 {
 	CamelStreamFsPrivate *priv;

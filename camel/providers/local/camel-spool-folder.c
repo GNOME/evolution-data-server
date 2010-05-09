@@ -40,77 +40,22 @@
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 
-static CamelLocalSummary *spool_create_summary (CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index);
-
-static gint spool_lock (CamelLocalFolder *lf, CamelLockType type, GError **error);
-static void spool_unlock (CamelLocalFolder *lf);
-
 G_DEFINE_TYPE (CamelSpoolFolder, camel_spool_folder, CAMEL_TYPE_MBOX_FOLDER)
 
-static void
-camel_spool_folder_class_init (CamelSpoolFolderClass *class)
-{
-	CamelLocalFolderClass *local_folder_class;
-
-	local_folder_class = CAMEL_LOCAL_FOLDER_CLASS (class);
-	local_folder_class->create_summary = spool_create_summary;
-	local_folder_class->lock = spool_lock;
-	local_folder_class->unlock = spool_unlock;
-}
-
-static void
-camel_spool_folder_init (CamelSpoolFolder *spool_folder)
-{
-	spool_folder->lockid = -1;
-}
-
-CamelFolder *
-camel_spool_folder_new (CamelStore *parent_store,
-                        const gchar *full_name,
-                        guint32 flags,
-                        GError **error)
-{
-	CamelFolder *folder;
-	gchar *basename;
-
-	basename = g_path_get_basename (full_name);
-
-	folder = g_object_new (
-		CAMEL_TYPE_SPOOL_FOLDER,
-		"name", basename, "full-name", full_name,
-		"parent-store", parent_store, NULL);
-
-	if (parent_store->flags & CAMEL_STORE_FILTER_INBOX
-	    && strcmp(full_name, "INBOX") == 0)
-		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
-	flags &= ~CAMEL_STORE_FOLDER_BODY_INDEX;
-
-	folder = (CamelFolder *)camel_local_folder_construct (
-		(CamelLocalFolder *)folder, flags, error);
-	if (folder) {
-		if (camel_url_get_param(((CamelService *)parent_store)->url, "xstatus"))
-			camel_mbox_summary_xstatus ((CamelMboxSummary *)folder->summary, TRUE);
-	}
-
-	g_free (basename);
-
-	return folder;
-}
-
 static CamelLocalSummary *
-spool_create_summary (CamelLocalFolder *lf,
-                      const gchar *path,
-                      const gchar *folder,
-                      CamelIndex *index)
+spool_folder_create_summary (CamelLocalFolder *lf,
+                             const gchar *path,
+                             const gchar *folder,
+                             CamelIndex *index)
 {
 	return (CamelLocalSummary *) camel_spool_summary_new (
 		CAMEL_FOLDER (lf), folder);
 }
 
 static gint
-spool_lock (CamelLocalFolder *lf,
-            CamelLockType type,
-            GError **error)
+spool_folder_lock (CamelLocalFolder *lf,
+                   CamelLockType type,
+                   GError **error)
 {
 	gint retry = 0;
 	CamelMboxFolder *mf = (CamelMboxFolder *)lf;
@@ -154,7 +99,7 @@ spool_lock (CamelLocalFolder *lf,
 }
 
 static void
-spool_unlock (CamelLocalFolder *lf)
+spool_folder_unlock (CamelLocalFolder *lf)
 {
 	CamelMboxFolder *mf = (CamelMboxFolder *)lf;
 	CamelSpoolFolder *sf = (CamelSpoolFolder *)lf;
@@ -167,3 +112,55 @@ spool_unlock (CamelLocalFolder *lf)
 	close (mf->lockfd);
 	mf->lockfd = -1;
 }
+
+static void
+camel_spool_folder_class_init (CamelSpoolFolderClass *class)
+{
+	CamelLocalFolderClass *local_folder_class;
+
+	local_folder_class = CAMEL_LOCAL_FOLDER_CLASS (class);
+	local_folder_class->create_summary = spool_folder_create_summary;
+	local_folder_class->lock = spool_folder_lock;
+	local_folder_class->unlock = spool_folder_unlock;
+}
+
+static void
+camel_spool_folder_init (CamelSpoolFolder *spool_folder)
+{
+	spool_folder->lockid = -1;
+}
+
+CamelFolder *
+camel_spool_folder_new (CamelStore *parent_store,
+                        const gchar *full_name,
+                        guint32 flags,
+                        GCancellable *cancellable,
+                        GError **error)
+{
+	CamelFolder *folder;
+	gchar *basename;
+
+	basename = g_path_get_basename (full_name);
+
+	folder = g_object_new (
+		CAMEL_TYPE_SPOOL_FOLDER,
+		"name", basename, "full-name", full_name,
+		"parent-store", parent_store, NULL);
+
+	if (parent_store->flags & CAMEL_STORE_FILTER_INBOX
+	    && strcmp(full_name, "INBOX") == 0)
+		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
+	flags &= ~CAMEL_STORE_FOLDER_BODY_INDEX;
+
+	folder = (CamelFolder *)camel_local_folder_construct (
+		(CamelLocalFolder *)folder, flags, cancellable, error);
+	if (folder) {
+		if (camel_url_get_param(((CamelService *)parent_store)->url, "xstatus"))
+			camel_mbox_summary_xstatus ((CamelMboxSummary *)folder->summary, TRUE);
+	}
+
+	g_free (basename);
+
+	return folder;
+}
+

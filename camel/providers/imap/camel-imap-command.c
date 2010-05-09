@@ -44,11 +44,13 @@
 extern gint camel_verbose_debug;
 
 static gboolean imap_command_start (CamelImapStore *store, CamelFolder *folder,
-				    const gchar *cmd, GError **error);
+				    const gchar *cmd, GCancellable *cancellable,
+				    GError **error);
 static CamelImapResponse *imap_read_response (CamelImapStore *store,
+					      GCancellable *cancellable,
 					      GError **error);
 static gchar *imap_read_untagged (CamelImapStore *store, gchar *line,
-				 GError **error);
+				 GCancellable *cancellable, GError **error);
 static gchar *imap_command_strdup_vprintf (CamelImapStore *store,
 					  const gchar *fmt, va_list ap);
 static gchar *imap_command_strdup_printf (CamelImapStore *store,
@@ -59,6 +61,7 @@ static gchar *imap_command_strdup_printf (CamelImapStore *store,
  * @store: the IMAP store
  * @folder: The folder to perform the operation in (or %NULL if not
  * relevant).
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  * @fmt: a sort of printf-style format string, followed by arguments
  *
@@ -84,6 +87,7 @@ static gchar *imap_command_strdup_printf (CamelImapStore *store,
 CamelImapResponse *
 camel_imap_command (CamelImapStore *store,
                     CamelFolder *folder,
+                    GCancellable *cancellable,
                     GError **error,
                     const gchar *fmt, ...)
 {
@@ -108,14 +112,14 @@ camel_imap_command (CamelImapStore *store,
 		cmd = imap_command_strdup_printf (store, "SELECT %F", full_name);
 	}
 
-	if (!imap_command_start (store, folder, cmd, error)) {
+	if (!imap_command_start (store, folder, cmd, cancellable, error)) {
 		g_free (cmd);
 		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		return NULL;
 	}
 	g_free (cmd);
 
-	return imap_read_response (store, error);
+	return imap_read_response (store, cancellable, error);
 }
 
 /**
@@ -123,6 +127,7 @@ camel_imap_command (CamelImapStore *store,
  * @store: the IMAP store
  * @folder: The folder to perform the operation in (or %NULL if not
  * relevant).
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  * @fmt: a sort of printf-style format string, followed by arguments
  *
@@ -155,6 +160,7 @@ camel_imap_command (CamelImapStore *store,
 gboolean
 camel_imap_command_start (CamelImapStore *store,
                           CamelFolder *folder,
+                          GCancellable *cancellable,
                           GError **error,
                           const gchar *fmt, ...)
 {
@@ -167,7 +173,7 @@ camel_imap_command_start (CamelImapStore *store,
 	va_end (ap);
 
 	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-	ok = imap_command_start (store, folder, cmd, error);
+	ok = imap_command_start (store, folder, cmd, cancellable, error);
 	g_free (cmd);
 
 	if (!ok)
@@ -179,6 +185,7 @@ static gboolean
 imap_command_start (CamelImapStore *store,
                     CamelFolder *folder,
                     const gchar *cmd,
+                    GCancellable *cancellable,
                     GError **error)
 {
 	gssize nwritten;
@@ -204,11 +211,14 @@ imap_command_start (CamelImapStore *store,
 		CamelImapResponse *response;
 		GError *local_error = NULL;
 
-		response = camel_imap_command (store, folder, error, NULL);
+		response = camel_imap_command (
+			store, folder, cancellable, error, NULL);
 		if (!response)
 			return FALSE;
 
-		camel_imap_folder_selected (folder, response, &local_error);
+		/* FIXME Pass a GCancellable */
+		camel_imap_folder_selected (
+			folder, response, NULL, &local_error);
 		camel_imap_response_free (store, response);
 
 		if (local_error != NULL) {
@@ -276,6 +286,7 @@ CamelImapResponse *
 camel_imap_command_continuation (CamelImapStore *store,
                                  const gchar *cmd,
                                  gsize cmdlen,
+                                 GCancellable *cancellable,
                                  GError **error)
 {
 	if (!camel_imap_store_connected (store, error))
@@ -297,20 +308,21 @@ camel_imap_command_continuation (CamelImapStore *store,
 		return NULL;
 	}
 
-	if (camel_stream_write (store->ostream, cmd, cmdlen, error) == -1 ||
-	    camel_stream_write (store->ostream, "\r\n", 2, error) == -1) {
+	if (camel_stream_write (store->ostream, cmd, cmdlen, cancellable, error) == -1 ||
+	    camel_stream_write (store->ostream, "\r\n", 2, cancellable, error) == -1) {
 		camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
 		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		return NULL;
 	}
 
-	return imap_read_response (store, error);
+	return imap_read_response (store, cancellable, error);
 }
 
 /**
  * camel_imap_command_response:
  * @store: the IMAP store
  * @response: a pointer to pass back the response data in
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * This reads a single tagged, untagged, or continuation response from
@@ -323,13 +335,15 @@ camel_imap_command_continuation (CamelImapStore *store,
  * command lock will be unlocked.
  **/
 CamelImapResponseType
-camel_imap_command_response (CamelImapStore *store, gchar **response,
-			     GError **error)
+camel_imap_command_response (CamelImapStore *store,
+                             gchar **response,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	CamelImapResponseType type;
 	gchar *respbuf;
 
-	if (camel_imap_store_readline (store, &respbuf, error) < 0) {
+	if (camel_imap_store_readline (store, &respbuf, cancellable, error) < 0) {
 		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		return CAMEL_IMAP_RESPONSE_ERROR;
 	}
@@ -360,7 +374,8 @@ camel_imap_command_response (CamelImapStore *store, gchar **response,
 
 		/* Read the rest of the response. */
 		type = CAMEL_IMAP_RESPONSE_UNTAGGED;
-		respbuf = imap_read_untagged (store, respbuf, error);
+		respbuf = imap_read_untagged (
+			store, respbuf, cancellable, error);
 		if (!respbuf)
 			type = CAMEL_IMAP_RESPONSE_ERROR;
 		else if (!g_ascii_strncasecmp (respbuf, "* OK [ALERT]", 12)
@@ -394,7 +409,9 @@ camel_imap_command_response (CamelImapStore *store, gchar **response,
 }
 
 static CamelImapResponse *
-imap_read_response (CamelImapStore *store, GError **error)
+imap_read_response (CamelImapStore *store,
+                    GCancellable *cancellable,
+                    GError **error)
 {
 	CamelImapResponse *response;
 	CamelImapResponseType type;
@@ -414,8 +431,9 @@ imap_read_response (CamelImapStore *store, GError **error)
 	} */
 
 	response->untagged = g_ptr_array_new ();
-	while ((type = camel_imap_command_response (store, &respbuf, error))
-	       == CAMEL_IMAP_RESPONSE_UNTAGGED)
+	while ((type = camel_imap_command_response (
+		store, &respbuf, cancellable, error))
+		== CAMEL_IMAP_RESPONSE_UNTAGGED)
 		g_ptr_array_add (response->untagged, respbuf);
 
 	if (type == CAMEL_IMAP_RESPONSE_ERROR) {
@@ -464,7 +482,10 @@ imap_read_response (CamelImapStore *store, GError **error)
  * of literals.
  */
 static gchar *
-imap_read_untagged (CamelImapStore *store, gchar *line, GError **error)
+imap_read_untagged (CamelImapStore *store,
+                    gchar *line,
+                    GCancellable *cancellable,
+                    GError **error)
 {
 	gint fulllen, ldigits, nread, n, i, sexp = 0;
 	guint length;
@@ -514,7 +535,8 @@ imap_read_untagged (CamelImapStore *store, gchar *line, GError **error)
 			n = camel_stream_read (
 				store->istream,
 				str->str + nread + 1,
-				length - nread, error);
+				length - nread,
+				cancellable, error);
 			if (n == -1) {
 				camel_service_disconnect (
 					CAMEL_SERVICE (store), FALSE, NULL);
@@ -583,7 +605,7 @@ imap_read_untagged (CamelImapStore *store, gchar *line, GError **error)
 
 		/* Read the next line. */
 		do {
-			if (camel_imap_store_readline (store, &line, error) < 0)
+			if (camel_imap_store_readline (store, &line, cancellable, error) < 0)
 				goto lose;
 
 			/* MAJOR HACK ALERT, gropuwise sometimes sends an extra blank line after literals, check that here
@@ -657,8 +679,10 @@ camel_imap_response_free (CamelImapStore *store, CamelImapResponse *response)
 	if (response->folder) {
 		if (exists > 0 || expunged) {
 			/* Update the summary */
-			camel_imap_folder_changed (response->folder,
-						   exists, expunged, NULL);
+			/* FIXME Pass a GCancellable */
+			camel_imap_folder_changed (
+				response->folder, exists,
+				expunged, NULL, NULL);
 			if (expunged)
 				g_array_free (expunged, TRUE);
 		}

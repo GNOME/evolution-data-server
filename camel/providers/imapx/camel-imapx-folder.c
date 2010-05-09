@@ -147,7 +147,9 @@ imapx_folder_finalize (GObject *object)
 }
 
 static gboolean
-imapx_refresh_info (CamelFolder *folder, GError **error)
+imapx_refresh_info (CamelFolder *folder,
+                    GCancellable *cancellable,
+                    GError **error)
 {
 	CamelStore *parent_store;
 	CamelIMAPXStore *istore;
@@ -168,9 +170,9 @@ imapx_refresh_info (CamelFolder *folder, GError **error)
 	if (!camel_service_connect ((CamelService *)istore, error))
 		return FALSE;
 
-	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), error);
+	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);
 	if (server != NULL) {
-		success = camel_imapx_server_refresh_info (server, folder, error);
+		success = camel_imapx_server_refresh_info (server, folder, cancellable, error);
 		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
 		g_object_unref (server);
 	}
@@ -179,7 +181,9 @@ imapx_refresh_info (CamelFolder *folder, GError **error)
 }
 
 static gboolean
-imapx_expunge (CamelFolder *folder, GError **error)
+imapx_expunge (CamelFolder *folder,
+               GCancellable *cancellable,
+               GError **error)
 {
 	CamelStore *parent_store;
 	CamelIMAPXStore *istore;
@@ -196,9 +200,9 @@ imapx_expunge (CamelFolder *folder, GError **error)
 		return FALSE;
 	}
 
-	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), error);
+	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);
 	if (server) {
-		camel_imapx_server_expunge (server, folder, error);
+		camel_imapx_server_expunge (server, folder, cancellable, error);
 		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
 		g_object_unref (server);
 		return TRUE;
@@ -208,7 +212,10 @@ imapx_expunge (CamelFolder *folder, GError **error)
 }
 
 static gboolean
-imapx_sync (CamelFolder *folder, gboolean expunge, GError **error)
+imapx_sync (CamelFolder *folder,
+            gboolean expunge,
+            GCancellable *cancellable,
+            GError **error)
 {
 	CamelStore *parent_store;
 	CamelIMAPXStore *istore;
@@ -225,17 +232,17 @@ imapx_sync (CamelFolder *folder, gboolean expunge, GError **error)
 		return FALSE;
 	}
 
-	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), error);
+	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);
 	if (!server)
 		return FALSE;
 
-	camel_imapx_server_sync_changes (server, folder, NULL);
+	camel_imapx_server_sync_changes (server, folder, cancellable NULL);
 
 	/* Sync twice - make sure deleted flags are written out,
 	   then sync again incase expunge changed anything */
 
 	if (expunge)
-		camel_imapx_server_expunge (server, folder, NULL);
+		camel_imapx_server_expunge (server, folder, cancellable, NULL);
 
 	camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
 	g_object_unref (server);
@@ -244,7 +251,10 @@ imapx_sync (CamelFolder *folder, gboolean expunge, GError **error)
 }
 
 static CamelMimeMessage *
-imapx_get_message (CamelFolder *folder, const gchar *uid, GError **error)
+imapx_get_message (CamelFolder *folder,
+                   const gchar *uid,
+                   GCancellable *cancellable,
+                   GError **error)
 {
 	CamelMimeMessage *msg = NULL;
 	CamelStream *stream = NULL;
@@ -283,9 +293,9 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, GError **error)
 			return NULL;
 		}
 
-		server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), error);
+		server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);
 		if (server) {
-			stream = camel_imapx_server_get_message (server, folder, uid, error);
+			stream = camel_imapx_server_get_message (server, folder, uid, cancellable, error);
 			camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
 			g_object_unref (server);
 		} else
@@ -296,7 +306,7 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, GError **error)
 		msg = camel_mime_message_new ();
 
 		g_mutex_lock (ifolder->stream_lock);
-		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *)msg, stream, error) == -1) {
+		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *)msg, stream, cancellable, error) == -1) {
 			g_object_unref (msg);
 			msg = NULL;
 		}
@@ -308,7 +318,10 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, GError **error)
 }
 
 static gboolean
-imapx_sync_message (CamelFolder *folder, const gchar *uid, GError **error)
+imapx_sync_message (CamelFolder *folder,
+                    const gchar *uid,
+                    GCancellable *cancellable,
+                    GError **error)
 {
 	CamelStore *parent_store;
 	CamelIMAPXStore *istore;
@@ -326,11 +339,11 @@ imapx_sync_message (CamelFolder *folder, const gchar *uid, GError **error)
 		return FALSE;
 	}
 
-	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), error);
+	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);
 	if (server == NULL)
 		return FALSE;
 
-	success = camel_imapx_server_sync_message (server, folder, uid, error);
+	success = camel_imapx_server_sync_message (server, folder, uid, cancellable, error);
 	camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
 	g_object_unref (server);
 
@@ -338,9 +351,13 @@ imapx_sync_message (CamelFolder *folder, const gchar *uid, GError **error)
 }
 
 static gboolean
-imapx_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
-		      CamelFolder *dest, GPtrArray **transferred_uids,
-		      gboolean delete_originals, GError **error)
+imapx_transfer_messages_to (CamelFolder *source,
+                            GPtrArray *uids,
+                            CamelFolder *dest,
+                            GPtrArray **transferred_uids,
+                            gboolean delete_originals,
+                            GCancellable *cancellable,
+                            GError **error)
 {
 	CamelStore *parent_store;
 	CamelIMAPXStore *istore;
@@ -358,20 +375,25 @@ imapx_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		return FALSE;
 	}
 
-	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (source), error);
+	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (source), cancellable, error);
 	if (server) {
-		success = camel_imapx_server_copy_message (server, source, dest, uids, delete_originals, error);
+		success = camel_imapx_server_copy_message (server, source, dest, uids, delete_originals, cancellable, error);
 		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (source));
 		g_object_unref (server);
 	}
 
-	imapx_refresh_info (dest, NULL);
+	imapx_refresh_info (dest, cancellable, NULL);
 
 	return success;
 }
 
 static gboolean
-imapx_append_message (CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *info, gchar **appended_uid, GError **error)
+imapx_append_message (CamelFolder *folder,
+                      CamelMimeMessage *message,
+                      const CamelMessageInfo *info,
+                      gchar **appended_uid,
+                      GCancellable *cancellable,
+                      GError **error)
 {
 	CamelStore *parent_store;
 	CamelIMAPXStore *istore;
@@ -392,9 +414,10 @@ imapx_append_message (CamelFolder *folder, CamelMimeMessage *message, const Came
 	if (appended_uid)
 		*appended_uid = NULL;
 
-	server = camel_imapx_store_get_server (istore, NULL, error);
+	server = camel_imapx_store_get_server (istore, NULL, cancellable, error);
 	if (server) {
-		success = camel_imapx_server_append_message (server, folder, message, info, error);
+		success = camel_imapx_server_append_message (
+			server, folder, message, info, cancellable, error);
 		g_object_unref (server);
 	}
 

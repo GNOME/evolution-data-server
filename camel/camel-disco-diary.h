@@ -89,6 +89,7 @@ void		camel_disco_diary_log		(CamelDiscoDiary *diary,
 						 CamelDiscoDiaryAction action,
 						 ...);
 void		camel_disco_diary_replay	(CamelDiscoDiary *diary,
+						 GCancellable *cancellable,
 						 GError **error);
 
 /* Temporary->Permanent UID map stuff */

@@ -56,6 +56,7 @@ CamelDiscoFolder
 
 @folder: 
 @uids: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -67,6 +68,7 @@ CamelDiscoFolder
 
 @disco_folder: 
 @uid: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -78,6 +80,7 @@ CamelDiscoFolder
 
 @disco_folder: 
 @expression: 
+@cancellable: 
 @error: 
 @Returns: 
 

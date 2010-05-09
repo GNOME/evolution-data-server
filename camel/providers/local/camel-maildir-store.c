@@ -39,12 +39,12 @@
 
 #define d(x)
 
-static CamelFolder *get_folder (CamelStore * store, const gchar *folder_name, guint32 flags, GError **error);
-static CamelFolder *get_inbox (CamelStore *store, GError **error);
-static gboolean delete_folder (CamelStore * store, const gchar *folder_name, GError **error);
-static gboolean maildir_rename_folder (CamelStore *store, const gchar *old, const gchar *new, GError **error);
+static CamelFolder *get_folder (CamelStore * store, const gchar *folder_name, guint32 flags, GCancellable *cancellable, GError **error);
+static CamelFolder *get_inbox (CamelStore *store, GCancellable *cancellable, GError **error);
+static gboolean delete_folder (CamelStore * store, const gchar *folder_name, GCancellable *cancellable, GError **error);
+static gboolean maildir_rename_folder (CamelStore *store, const gchar *old, const gchar *new, GCancellable *cancellable, GError **error);
 
-static CamelFolderInfo * get_folder_info (CamelStore *store, const gchar *top, guint32 flags, GError **error);
+static CamelFolderInfo * get_folder_info (CamelStore *store, const gchar *top, guint32 flags, GCancellable *cancellable, GError **error);
 
 static gboolean maildir_compare_folder_name (gconstpointer a, gconstpointer b);
 static guint maildir_hash_folder_name (gconstpointer a);
@@ -103,6 +103,7 @@ static CamelFolder *
 get_folder (CamelStore *store,
             const gchar *folder_name,
             guint32 flags,
+            GCancellable *cancellable,
             GError **error)
 {
 	CamelStoreClass *store_class;
@@ -114,7 +115,7 @@ get_folder (CamelStore *store,
 
 	/* Chain up to parent's get_folder() method. */
 	store_class = CAMEL_STORE_CLASS (camel_maildir_store_parent_class);
-	if (!store_class->get_folder (store, folder_name, flags, error))
+	if (!store_class->get_folder (store, folder_name, flags, cancellable, error))
 		return NULL;
 
 	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
@@ -141,7 +142,7 @@ get_folder (CamelStore *store,
 				goto fail;
 			}
 		}
-		folder = camel_maildir_folder_new (store, folder_name, flags, error);
+		folder = camel_maildir_folder_new (store, folder_name, flags, cancellable, error);
 	} else if (g_stat (name, &st) == -1) {
 		/* folder doesn't exist, see if we should create it */
 		if (errno != ENOENT) {
@@ -171,7 +172,7 @@ get_folder (CamelStore *store,
 				rmdir (new);
 				rmdir (name);
 			} else {
-				folder = camel_maildir_folder_new (store, folder_name, flags, error);
+				folder = camel_maildir_folder_new (store, folder_name, flags, cancellable, error);
 			}
 		}
 	} else if (!S_ISDIR (st.st_mode)
@@ -189,7 +190,7 @@ get_folder (CamelStore *store,
 			_("Cannot create folder '%s': folder exists."),
 			folder_name);
 	} else {
-		folder = camel_maildir_folder_new (store, folder_name, flags, error);
+		folder = camel_maildir_folder_new (store, folder_name, flags, cancellable, error);
 	}
 fail:
 	g_free (name);
@@ -202,15 +203,17 @@ fail:
 
 static CamelFolder *
 get_inbox (CamelStore *store,
+           GCancellable *cancellable,
            GError **error)
 {
 	return camel_store_get_folder (
-		store, ".", CAMEL_STORE_FOLDER_CREATE, error);
+		store, ".", CAMEL_STORE_FOLDER_CREATE, cancellable, error);
 }
 
 static gboolean
 delete_folder (CamelStore *store,
                const gchar *folder_name,
+               GCancellable *cancellable,
                GError **error)
 {
 	gchar *name, *tmp, *cur, *new;
@@ -287,7 +290,7 @@ delete_folder (CamelStore *store,
 			/* Chain up to parent's delete_folder() method. */
 			store_class = CAMEL_STORE_CLASS (camel_maildir_store_parent_class);
 			success = store_class->delete_folder (
-				store, folder_name, error);
+				store, folder_name, cancellable, error);
 		}
 	}
 
@@ -303,6 +306,7 @@ static gboolean
 maildir_rename_folder (CamelStore *store,
                        const gchar *old,
                        const gchar *new,
+                       GCancellable *cancellable,
                        GError **error)
 {
 	CamelStoreClass *store_class;
@@ -318,13 +322,14 @@ maildir_rename_folder (CamelStore *store,
 
 	/* Chain up to parent's rename_folder() method. */
 	store_class = CAMEL_STORE_CLASS (camel_maildir_store_parent_class);
-	return store_class->rename_folder (store, old, new, error);
+	return store_class->rename_folder (store, old, new, cancellable, error);
 }
 
 static void
 fill_fi (CamelStore *store,
          CamelFolderInfo *fi,
-         guint32 flags)
+         guint32 flags,
+         GCancellable *cancellable)
 {
 	CamelFolder *folder;
 
@@ -332,11 +337,11 @@ fill_fi (CamelStore *store,
 
 	if (folder == NULL
 	    && (flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
-		folder = camel_store_get_folder (store, fi->full_name, 0, NULL);
+		folder = camel_store_get_folder (store, fi->full_name, 0, cancellable, NULL);
 
 	if (folder) {
 		if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
-			camel_folder_refresh_info (folder, NULL);
+			camel_folder_refresh_info (folder, cancellable, NULL);
 		fi->unread = camel_folder_get_unread_message_count (folder);
 		fi->total = camel_folder_get_message_count (folder);
 		g_object_unref (folder);
@@ -397,7 +402,8 @@ scan_fi (CamelStore *store,
          guint32 flags,
          CamelURL *url,
          const gchar *full,
-         const gchar *name)
+         const gchar *name,
+         GCancellable *cancellable)
 {
 	CamelFolderInfo *fi;
 	gchar *tmp, *cur, *new;
@@ -431,7 +437,7 @@ scan_fi (CamelStore *store,
 	g_free (cur);
 	g_free (tmp);
 
-	fill_fi (store, fi, flags);
+	fill_fi (store, fi, flags, cancellable);
 
 	return fi;
 }
@@ -441,6 +447,7 @@ scan_dirs (CamelStore *store,
            guint32 flags,
            CamelFolderInfo *topfi,
            CamelURL *url,
+           GCancellable *cancellable,
            GError **error)
 {
 	CamelDList queue = CAMEL_DLIST_INITIALISER (queue);
@@ -512,7 +519,7 @@ scan_dirs (CamelStore *store,
 						full = g_strdup (d->d_name);
 					else
 						full = g_strdup_printf("%s/%s", sn->fi->full_name, d->d_name);
-					snew->fi = scan_fi (store, flags, url, full, d->d_name);
+					snew->fi = scan_fi (store, flags, url, full, d->d_name, cancellable);
 					g_free (full);
 
 					last->next =  snew->fi;
@@ -546,6 +553,7 @@ static CamelFolderInfo *
 get_folder_info (CamelStore *store,
                  const gchar *top,
                  guint32 flags,
+                 GCancellable *cancellable,
                  GError **error)
 {
 	CamelFolderInfo *fi = NULL;
@@ -559,8 +567,8 @@ get_folder_info (CamelStore *store,
 		CamelFolderInfo *scan;
 
 		/* create a dummy "." parent inbox, use to scan, then put back at the top level */
-		fi = scan_fi(store, flags, url, ".", _("Inbox"));
-		if (scan_dirs (store, flags, fi, url, error) == -1)
+		fi = scan_fi(store, flags, url, ".", _("Inbox"), cancellable);
+		if (scan_dirs (store, flags, fi, url, cancellable, error) == -1)
 			goto fail;
 		fi->next = fi->child;
 		scan = fi->child;
@@ -572,13 +580,13 @@ get_folder_info (CamelStore *store,
 		fi->flags &= ~CAMEL_FOLDER_CHILDREN;
 		fi->flags |= CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN|CAMEL_FOLDER_NOINFERIORS|CAMEL_FOLDER_TYPE_INBOX;
 	} else if (!strcmp(top, ".")) {
-		fi = scan_fi(store, flags, url, ".", _("Inbox"));
+		fi = scan_fi(store, flags, url, ".", _("Inbox"), cancellable);
 		fi->flags |= CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN|CAMEL_FOLDER_NOINFERIORS|CAMEL_FOLDER_TYPE_INBOX;
 	} else {
 		const gchar *name = strrchr (top, '/');
 
-		fi = scan_fi (store, flags, url, top, name?name+1:top);
-		if (scan_dirs (store, flags, fi, url, error) == -1)
+		fi = scan_fi (store, flags, url, top, name?name+1:top, cancellable);
+		if (scan_dirs (store, flags, fi, url, cancellable, error) == -1)
 			goto fail;
 	}
 

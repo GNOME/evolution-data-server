@@ -384,11 +384,11 @@ camel_certdb_nss_cert_set (CamelCertDB *certdb, CamelCert *ccert, CERTCertificat
 	if (stream != NULL) {
 		if (camel_stream_write (
 			stream, (const gchar *) ccert->rawcert->data,
-			ccert->rawcert->len, NULL) == -1) {
+			ccert->rawcert->len, NULL, NULL) == -1) {
 			g_warning ("Could not save cert: %s: %s", path, g_strerror (errno));
 			g_unlink (path);
 		}
-		camel_stream_close (stream, NULL);
+		camel_stream_close (stream, NULL, NULL);
 		g_object_unref (stream);
 	} else {
 		g_warning ("Could not save cert: %s: %s", path, g_strerror (errno));
@@ -706,12 +706,19 @@ rehandshake_ssl (PRFileDesc *fd, GError **error)
 }
 
 static gint
-tcp_stream_ssl_connect (CamelTcpStream *stream, const gchar *host, const gchar *service, gint fallback_port, GError **error)
+tcp_stream_ssl_connect (CamelTcpStream *stream,
+                        const gchar *host,
+                        const gchar *service,
+                        gint fallback_port,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
 	gint retval;
 
-	retval = CAMEL_TCP_STREAM_CLASS (camel_tcp_stream_ssl_parent_class)->connect (stream, host, service, fallback_port, error);
+	retval = CAMEL_TCP_STREAM_CLASS (camel_tcp_stream_ssl_parent_class)->
+		connect (stream, host, service,
+		fallback_port, cancellable, error);
 	if (retval != 0)
 		return retval;
 

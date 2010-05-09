@@ -85,6 +85,7 @@ CamelStream *camel_imap_message_cache_insert (CamelImapMessageCache *cache,
 					      const gchar *part_spec,
 					      const gchar *data,
 					      gint len,
+					      GCancellable *cancellable,
 					      GError **error);
 void camel_imap_message_cache_insert_stream  (CamelImapMessageCache *cache,
 					      const gchar *uid,

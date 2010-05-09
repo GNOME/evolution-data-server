@@ -76,12 +76,14 @@ struct _CamelPOP3FolderClass {
 	CamelFolderClass parent_class;
 };
 
-/* public methods */
-CamelFolder *camel_pop3_folder_new (CamelStore *parent, GError **error);
-
-GType camel_pop3_folder_get_type (void);
-
-gint camel_pop3_delete_old (CamelFolder *folder, gint days_to_delete, GError **error);
+GType		camel_pop3_folder_get_type	(void);
+CamelFolder *	camel_pop3_folder_new		(CamelStore *parent,
+						 GCancellable *cancellable,
+						 GError **error);
+gint		camel_pop3_delete_old		(CamelFolder *folder,
+						 gint days_to_delete,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

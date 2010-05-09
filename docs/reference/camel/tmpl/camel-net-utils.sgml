@@ -161,6 +161,7 @@ camel-net-utils
 @name: 
 @service: 
 @hints: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -183,6 +184,7 @@ camel-net-utils
 @host: 
 @serv: 
 @flags: 
+@cancellable: 
 @error: 
 @Returns: 
 

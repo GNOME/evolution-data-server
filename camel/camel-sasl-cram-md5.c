@@ -60,6 +60,7 @@ G_DEFINE_TYPE (CamelSaslCramMd5, camel_sasl_cram_md5, CAMEL_TYPE_SASL)
 static GByteArray *
 sasl_cram_md5_challenge (CamelSasl *sasl,
                          GByteArray *token,
+                         GCancellable *cancellable,
                          GError **error)
 {
 	CamelService *service;

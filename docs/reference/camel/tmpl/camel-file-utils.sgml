@@ -186,6 +186,7 @@ camel-file-utils
 @fd: 
 @buf: 
 @n: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -198,6 +199,7 @@ camel-file-utils
 @fd: 
 @buf: 
 @n: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -210,6 +212,7 @@ camel-file-utils
 @fd: 
 @buf: 
 @n: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -222,6 +225,7 @@ camel-file-utils
 @fd: 
 @buf: 
 @n: 
+@cancellable: 
 @error: 
 @Returns: 
 

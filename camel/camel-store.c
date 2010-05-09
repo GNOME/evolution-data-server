@@ -214,6 +214,7 @@ store_construct (CamelService *service,
 
 static CamelFolder *
 store_get_inbox (CamelStore *store,
+                 GCancellable *cancellable,
                  GError **error)
 {
 	CamelStoreClass *class;
@@ -221,7 +222,7 @@ store_get_inbox (CamelStore *store,
 
 	/* Assume the inbox's name is "inbox" and open with default flags. */
 	class = CAMEL_STORE_GET_CLASS (store);
-	folder = class->get_folder (store, "inbox", 0, error);
+	folder = class->get_folder (store, "inbox", 0, cancellable, error);
 	CAMEL_CHECK_GERROR (store, get_folder, folder != NULL, error);
 
 	return folder;
@@ -229,6 +230,7 @@ store_get_inbox (CamelStore *store,
 
 static CamelFolder *
 store_get_trash (CamelStore *store,
+                 GCancellable *cancellable,
                  GError **error)
 {
 	return store_get_special (store, CAMEL_VTRASH_FOLDER_TRASH);
@@ -236,6 +238,7 @@ store_get_trash (CamelStore *store,
 
 static CamelFolder *
 store_get_junk (CamelStore *store,
+                GCancellable *cancellable,
                 GError **error)
 {
 	return store_get_special (store, CAMEL_VTRASH_FOLDER_JUNK);
@@ -244,6 +247,7 @@ store_get_junk (CamelStore *store,
 static gboolean
 store_sync (CamelStore *store,
             gint expunge,
+            GCancellable *cancellable,
             GError **error)
 {
 	GPtrArray *folders;
@@ -263,7 +267,8 @@ store_sync (CamelStore *store,
 		folder = folders->pdata[i];
 		if (!CAMEL_IS_VEE_FOLDER (folder)
 		    && local_error == NULL) {
-			camel_folder_sync (folder, expunge, &local_error);
+			camel_folder_sync (
+				folder, expunge, cancellable, &local_error);
 			ignore_no_such_table_exception (&local_error);
 		} else if (CAMEL_IS_VEE_FOLDER (folder))
 			camel_vee_folder_sync_headers (folder, NULL); /* Literally don't care of vfolder exceptions */
@@ -282,6 +287,7 @@ store_sync (CamelStore *store,
 
 static gboolean
 store_noop (CamelStore *store,
+            GCancellable *cancellable,
             GError **error)
 {
 	return TRUE;
@@ -411,6 +417,7 @@ camel_store_error_quark (void)
  * @store: a #CamelStore object
  * @folder_name: name of the folder to get
  * @flags: folder flags (create, save body index, etc)
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Get a specific folder object from the store by name.
@@ -421,6 +428,7 @@ CamelFolder *
 camel_store_get_folder (CamelStore *store,
                         const gchar *folder_name,
                         guint32 flags,
+                        GCancellable *cancellable,
                         GError **error)
 {
 	CamelStoreClass *class;
@@ -465,14 +473,15 @@ camel_store_get_folder (CamelStore *store,
 				}
 		}
 
-		if ((store->flags & CAMEL_STORE_VTRASH) && strcmp (folder_name, CAMEL_VTRASH_NAME) == 0) {
-			folder = class->get_trash (store, error);
+		if ((store->flags & CAMEL_STORE_VTRASH) && strcmp(folder_name, CAMEL_VTRASH_NAME) == 0) {
+			folder = class->get_trash (store, cancellable, error);
 			CAMEL_CHECK_GERROR (store, get_trash, folder != NULL, error);
-		} else if ((store->flags & CAMEL_STORE_VJUNK) && strcmp (folder_name, CAMEL_VJUNK_NAME) == 0) {
-			folder = class->get_junk (store, error);
+		} else if ((store->flags & CAMEL_STORE_VJUNK) && strcmp(folder_name, CAMEL_VJUNK_NAME) == 0) {
+			folder = class->get_junk (store, cancellable, error);
 			CAMEL_CHECK_GERROR (store, get_junk, folder != NULL, error);
 		} else {
-			folder = class->get_folder (store, folder_name, flags, error);
+			folder = class->get_folder (
+				store, folder_name, flags, cancellable, error);
 			CAMEL_CHECK_GERROR (store, get_folder, folder != NULL, error);
 
 			if (folder) {
@@ -511,6 +520,7 @@ camel_store_get_folder (CamelStore *store,
  * @store: a #CamelStore object
  * @parent_name: name of the new folder's parent, or %NULL
  * @folder_name: name of the folder to create
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Creates a new folder as a child of an existing folder.
@@ -523,6 +533,7 @@ CamelFolderInfo *
 camel_store_create_folder (CamelStore *store,
                            const gchar *parent_name,
                            const gchar *folder_name,
+                           GCancellable *cancellable,
                            GError **error)
 {
 	CamelStoreClass *class;
@@ -546,8 +557,11 @@ camel_store_create_folder (CamelStore *store,
 	}
 
 	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
-	fi = class->create_folder (store, parent_name, folder_name, error);
+
+	fi = class->create_folder (
+		store, parent_name, folder_name, cancellable, error);
 	CAMEL_CHECK_GERROR (store, create_folder, fi != NULL, error);
+
 	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
 
 	return fi;
@@ -555,7 +569,8 @@ camel_store_create_folder (CamelStore *store,
 
 /* deletes folder/removes it from the folder cache, if it's there */
 static void
-cs_delete_cached_folder (CamelStore *store, const gchar *folder_name)
+cs_delete_cached_folder (CamelStore *store,
+                         const gchar *folder_name)
 {
 	CamelFolder *folder;
 
@@ -564,14 +579,14 @@ cs_delete_cached_folder (CamelStore *store, const gchar *folder_name)
 		CamelVeeFolder *vfolder;
 
 		if ((store->flags & CAMEL_STORE_VTRASH)
-		    && (vfolder = camel_object_bag_get (store->folders, CAMEL_VTRASH_NAME))) {
+		    && (vfolder = camel_object_bag_get(store->folders, CAMEL_VTRASH_NAME))) {
 			camel_vee_folder_remove_folder (vfolder, folder);
 			g_object_unref (vfolder);
 		}
 
 		if ((store->flags & CAMEL_STORE_VJUNK)
-		    && (vfolder = camel_object_bag_get (store->folders, CAMEL_VJUNK_NAME))) {
-			camel_vee_folder_remove_folder (vfolder, folder);
+		    && (vfolder = camel_object_bag_get(store->folders, CAMEL_VJUNK_NAME))) {
+			camel_vee_folder_remove_folder(vfolder, folder);
 			g_object_unref (vfolder);
 		}
 
@@ -586,6 +601,7 @@ cs_delete_cached_folder (CamelStore *store, const gchar *folder_name)
  * camel_store_delete_folder:
  * @store: a #CamelStore object
  * @folder_name: name of the folder to delete
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Deletes the named folder. The folder must be empty.
@@ -595,6 +611,7 @@ cs_delete_cached_folder (CamelStore *store, const gchar *folder_name)
 gboolean
 camel_store_delete_folder (CamelStore *store,
                            const gchar *folder_name,
+                           GCancellable *cancellable,
                            GError **error)
 {
 	CamelStoreClass *class;
@@ -620,7 +637,8 @@ camel_store_delete_folder (CamelStore *store,
 
 	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
 
-	success = class->delete_folder (store, folder_name, &local_error);
+	success = class->delete_folder (
+		store, folder_name, cancellable, &local_error);
 	CAMEL_CHECK_GERROR (store, delete_folder, success, &local_error);
 
 	/* ignore 'no such table' errors */
@@ -629,7 +647,7 @@ camel_store_delete_folder (CamelStore *store,
 		g_clear_error (&local_error);
 
 	if (local_error == NULL)
-		cs_delete_cached_folder (store, folder_name);
+		cs_delete_cached_folder(store, folder_name);
 	else
 		g_propagate_error (error, local_error);
 
@@ -643,6 +661,7 @@ camel_store_delete_folder (CamelStore *store,
  * @store: a #CamelStore object
  * @old_namein: the current name of the folder
  * @new_name: the new name of the folder
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Rename a named folder to a new name.
@@ -653,6 +672,7 @@ gboolean
 camel_store_rename_folder (CamelStore *store,
                            const gchar *old_namein,
                            const gchar *new_name,
+                           GCancellable *cancellable,
                            GError **error)
 {
 	CamelStoreClass *class;
@@ -714,7 +734,8 @@ camel_store_rename_folder (CamelStore *store,
 	}
 
 	/* Now try the real rename (will emit renamed signal) */
-	success = class->rename_folder (store, old_name, new_name, error);
+	success = class->rename_folder (
+		store, old_name, new_name, cancellable, error);
 	CAMEL_CHECK_GERROR (store, rename_folder, success, error);
 
 	/* If it worked, update all open folders/unlock them */
@@ -743,7 +764,8 @@ camel_store_rename_folder (CamelStore *store,
 			if (store->flags & CAMEL_STORE_SUBSCRIPTIONS)
 				flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIBED;
 
-			folder_info = class->get_folder_info (store, new_name, flags, error);
+			folder_info = class->get_folder_info (
+				store, new_name, flags, cancellable, error);
 			CAMEL_CHECK_GERROR (store, get_folder_info, folder_info != NULL, error);
 
 			if (folder_info != NULL) {
@@ -879,6 +901,7 @@ camel_store_folder_unsubscribed (CamelStore *store,
 /**
  * camel_store_get_inbox:
  * @store: a #CamelStore object
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Returns: the folder in the store into which new mail is delivered,
@@ -886,6 +909,7 @@ camel_store_folder_unsubscribed (CamelStore *store,
  **/
 CamelFolder *
 camel_store_get_inbox (CamelStore *store,
+                       GCancellable *cancellable,
                        GError **error)
 {
 	CamelStoreClass *class;
@@ -898,7 +922,7 @@ camel_store_get_inbox (CamelStore *store,
 
 	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
 
-	folder = class->get_inbox (store, error);
+	folder = class->get_inbox (store, cancellable, error);
 	CAMEL_CHECK_GERROR (store, get_inbox, folder != NULL, error);
 
 	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
@@ -909,6 +933,7 @@ camel_store_get_inbox (CamelStore *store,
 /**
  * camel_store_get_trash:
  * @store: a #CamelStore object
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Returns: the folder in the store into which trash is delivered, or
@@ -916,6 +941,7 @@ camel_store_get_inbox (CamelStore *store,
  **/
 CamelFolder *
 camel_store_get_trash (CamelStore *store,
+                       GCancellable *cancellable,
                        GError **error)
 {
 	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
@@ -927,18 +953,20 @@ camel_store_get_trash (CamelStore *store,
 		class = CAMEL_STORE_GET_CLASS (store);
 		g_return_val_if_fail (class->get_trash != NULL, NULL);
 
-		folder = class->get_trash (store, error);
+		folder = class->get_trash (store, cancellable, error);
 		CAMEL_CHECK_GERROR (store, get_trash, folder != NULL, error);
 
 		return folder;
 	}
 
-	return camel_store_get_folder (store, CAMEL_VTRASH_NAME, 0, error);
+	return camel_store_get_folder (
+		store, CAMEL_VTRASH_NAME, 0, cancellable, error);
 }
 
 /**
  * camel_store_get_junk:
  * @store: a #CamelStore object
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Returns: the folder in the store into which junk is delivered, or
@@ -946,6 +974,7 @@ camel_store_get_trash (CamelStore *store,
  **/
 CamelFolder *
 camel_store_get_junk (CamelStore *store,
+                      GCancellable *cancellable,
                       GError **error)
 {
 	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
@@ -957,19 +986,21 @@ camel_store_get_junk (CamelStore *store,
 		class = CAMEL_STORE_GET_CLASS (store);
 		g_return_val_if_fail (class->get_junk != NULL, NULL);
 
-		folder = class->get_junk (store, error);
+		folder = class->get_junk (store, cancellable, error);
 		CAMEL_CHECK_GERROR (store, get_junk, folder != NULL, error);
 
 		return folder;
 	}
 
-	return camel_store_get_folder (store, CAMEL_VJUNK_NAME, 0, error);
+	return camel_store_get_folder (
+		store, CAMEL_VJUNK_NAME, 0, cancellable, error);
 }
 
 /**
  * camel_store_sync:
  * @store: a #CamelStore object
  * @expunge: %TRUE if an expunge should be done after sync or %FALSE otherwise
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Syncs any changes that have been made to the store object and its
@@ -980,6 +1011,7 @@ camel_store_get_junk (CamelStore *store,
 gboolean
 camel_store_sync (CamelStore *store,
                   gint expunge,
+                  GCancellable *cancellable,
                   GError **error)
 {
 	CamelStoreClass *class;
@@ -990,7 +1022,7 @@ camel_store_sync (CamelStore *store,
 	class = CAMEL_STORE_GET_CLASS (store);
 	g_return_val_if_fail (class->sync != NULL, FALSE);
 
-	success = class->sync (store, expunge, error);
+	success = class->sync (store, expunge, cancellable, error);
 	CAMEL_CHECK_GERROR (store, sync, success, error);
 
 	return success;
@@ -1081,20 +1113,21 @@ dump_fi (CamelFolderInfo *fi, gint depth)
  * @store: a #CamelStore object
  * @top: the name of the folder to start from
  * @flags: various CAMEL_STORE_FOLDER_INFO_* flags to control behavior
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * This fetches information about the folder structure of @store,
  * starting with @top, and returns a tree of CamelFolderInfo
- * structures. If @flags includes #CAMEL_STORE_FOLDER_INFO_SUBSCRIBED,
+ * structures. If @flags includes %CAMEL_STORE_FOLDER_INFO_SUBSCRIBED,
  * only subscribed folders will be listed.   If the store doesn't support
  * subscriptions, then it will list all folders.  If @flags includes
- * #CAMEL_STORE_FOLDER_INFO_RECURSIVE, the returned tree will include
+ * %CAMEL_STORE_FOLDER_INFO_RECURSIVE, the returned tree will include
  * all levels of hierarchy below @top. If not, it will only include
  * the immediate subfolders of @top. If @flags includes
- * #CAMEL_STORE_FOLDER_INFO_FAST, the unread_message_count fields of
+ * %CAMEL_STORE_FOLDER_INFO_FAST, the unread_message_count fields of
  * some or all of the structures may be set to %-1, if the store cannot
  * determine that information quickly.  If @flags includes
- * #CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL, don't include special virtual
+ * %CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL, don't include special virtual
  * folders (such as vTrash or vJunk).
  *
  * The CAMEL_STORE_FOLDER_INFO_FAST flag should be considered
@@ -1109,6 +1142,7 @@ CamelFolderInfo *
 camel_store_get_folder_info (CamelStore *store,
                              const gchar *top,
                              guint32 flags,
+                             GCancellable *cancellable,
                              GError **error)
 {
 	CamelStoreClass *class;
@@ -1119,7 +1153,7 @@ camel_store_get_folder_info (CamelStore *store,
 	class = CAMEL_STORE_GET_CLASS (store);
 	g_return_val_if_fail (class->get_folder_info != NULL, NULL);
 
-	info = class->get_folder_info (store, top, flags, error);
+	info = class->get_folder_info (store, top, flags, cancellable, error);
 	if (!(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED))
 		CAMEL_CHECK_GERROR (store, get_folder_info, info != NULL, error);
 
@@ -1461,6 +1495,7 @@ camel_store_folder_is_subscribed (CamelStore *store,
  * camel_store_subscribe_folder:
  * @store: a #CamelStore object
  * @folder_name: full path of the folder
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Subscribe to the folder described by @folder_name.
@@ -1470,6 +1505,7 @@ camel_store_folder_is_subscribed (CamelStore *store,
 gboolean
 camel_store_subscribe_folder (CamelStore *store,
                               const gchar *folder_name,
+                              GCancellable *cancellable,
                               GError **error)
 {
 	CamelStoreClass *class;
@@ -1484,7 +1520,8 @@ camel_store_subscribe_folder (CamelStore *store,
 
 	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
 
-	success = class->subscribe_folder (store, folder_name, error);
+	success = class->subscribe_folder (
+		store, folder_name, cancellable, error);
 	CAMEL_CHECK_GERROR (store, subscribe_folder, success, error);
 
 	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
@@ -1496,6 +1533,7 @@ camel_store_subscribe_folder (CamelStore *store,
  * camel_store_unsubscribe_folder:
  * @store: a #CamelStore object
  * @folder_name: full path of the folder
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Unsubscribe from the folder described by @folder_name.
@@ -1505,6 +1543,7 @@ camel_store_subscribe_folder (CamelStore *store,
 gboolean
 camel_store_unsubscribe_folder (CamelStore *store,
                                 const gchar *folder_name,
+                                GCancellable *cancellable,
                                 GError **error)
 {
 	CamelStoreClass *class;
@@ -1519,7 +1558,8 @@ camel_store_unsubscribe_folder (CamelStore *store,
 
 	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
 
-	success = class->unsubscribe_folder (store, folder_name, error);
+	success = class->unsubscribe_folder (
+		store, folder_name, cancellable, error);
 	CAMEL_CHECK_GERROR (store, unsubscribe_folder, success, error);
 
 	if (success)
@@ -1533,6 +1573,7 @@ camel_store_unsubscribe_folder (CamelStore *store,
 /**
  * camel_store_noop:
  * @store: a #CamelStore object
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Pings @store so that its connection doesn't timeout.
@@ -1541,6 +1582,7 @@ camel_store_unsubscribe_folder (CamelStore *store,
  **/
 gboolean
 camel_store_noop (CamelStore *store,
+                  GCancellable *cancellable,
                   GError **error)
 {
 	CamelStoreClass *class;
@@ -1551,7 +1593,7 @@ camel_store_noop (CamelStore *store,
 	class = CAMEL_STORE_GET_CLASS (store);
 	g_return_val_if_fail (class->noop != NULL, FALSE);
 
-	success = class->noop (store, error);
+	success = class->noop (store, cancellable, error);
 	CAMEL_CHECK_GERROR (store, noop, success, error);
 
 	return success;

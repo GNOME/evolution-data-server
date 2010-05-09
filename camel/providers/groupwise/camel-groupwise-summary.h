@@ -76,16 +76,22 @@ struct _CamelGroupwiseSummary {
 
 struct _CamelGroupwiseSummaryClass {
 	CamelFolderSummaryClass parent_class;
-} ;
+};
 
-GType camel_groupwise_summary_get_type (void);
-
-CamelFolderSummary *camel_groupwise_summary_new (struct _CamelFolder *folder, const gchar *filename);
-
-void camel_gw_summary_add_offline (CamelFolderSummary *summary, const gchar *uid, CamelMimeMessage *messgae, const CamelMessageInfo *info);
-
-void camel_gw_summary_add_offline_uncached (CamelFolderSummary *summary, const gchar *uid, const CamelMessageInfo *info);
-void groupwise_summary_clear (CamelFolderSummary *summary, gboolean uncache);
+GType		camel_groupwise_summary_get_type (void);
+CamelFolderSummary *
+		camel_groupwise_summary_new	(CamelFolder *folder,
+						 const gchar *filename);
+void		camel_gw_summary_add_offline	(CamelFolderSummary *summary,
+						 const gchar *uid,
+						 CamelMimeMessage *messgae,
+						 const CamelMessageInfo *info);
+void		camel_gw_summary_add_offline_uncached
+						(CamelFolderSummary *summary,
+						 const gchar *uid,
+						 const CamelMessageInfo *info);
+void		groupwise_summary_clear		(CamelFolderSummary *summary,
+						 gboolean uncache);
 
 G_END_DECLS
 

@@ -1045,8 +1045,9 @@ get_current_message (CamelFolderSearch *search)
 	if (!search || !search->folder || !search->current)
 		return NULL;
 
+	/* FIXME Pass a GCancellable */
 	return camel_folder_get_message (
-		search->folder, search->current->uid, NULL);
+		search->folder, search->current->uid, NULL, NULL);
 }
 
 static ESExpResult *
@@ -1432,8 +1433,8 @@ match_words_1message (CamelDataWrapper *object, struct _camel_search_words *word
 		stream = camel_stream_mem_new_with_byte_array (byte_array);
 
 		/* FIXME: The match should be part of a stream op */
-		camel_data_wrapper_decode_to_stream (containee, stream, NULL);
-		camel_stream_write (stream, "", 1, NULL);
+		camel_data_wrapper_decode_to_stream (containee, stream, NULL, NULL);
+		camel_stream_write (stream, "", 1, NULL, NULL);
 		for (i=0;i<words->len;i++) {
 			/* FIXME: This is horridly slow, and should use a real search algorithm */
 			if (camel_ustrstrcase ((const gchar *) byte_array->data, words->words[i]->word) != NULL) {
@@ -1454,13 +1455,14 @@ static gboolean
 match_words_message (CamelFolder *folder,
                      const gchar *uid,
                      struct _camel_search_words *words,
+                     GCancellable *cancellable,
                      GError **error)
 {
 	guint32 mask;
 	CamelMimeMessage *msg;
 	gint truth = FALSE;
 
-	msg = camel_folder_get_message (folder, uid, NULL);
+	msg = camel_folder_get_message (folder, uid, cancellable, error);
 	if (msg) {
 		mask = 0;
 		truth = match_words_1message ((CamelDataWrapper *)msg, words, &mask);
@@ -1473,6 +1475,7 @@ match_words_message (CamelFolder *folder,
 static GPtrArray *
 match_words_messages (CamelFolderSearch *search,
                       struct _camel_search_words *words,
+                      GCancellable *cancellable,
                       GError **error)
 {
 	gint i;
@@ -1489,8 +1492,10 @@ match_words_messages (CamelFolderSearch *search,
 		for (i=0;i<indexed->len;i++) {
 			const gchar *uid = g_ptr_array_index (indexed, i);
 
-			if (match_words_message (search->folder, uid, words, error))
-				g_ptr_array_add (matches, (gchar *)uid);
+			if (match_words_message (
+					search->folder, uid, words,
+					cancellable, error))
+				g_ptr_array_add(matches, (gchar *)uid);
 		}
 
 		g_ptr_array_free (indexed, TRUE);
@@ -1500,8 +1505,10 @@ match_words_messages (CamelFolderSearch *search,
 		for (i=0;i<v->len;i++) {
 			gchar *uid  = g_ptr_array_index (v, i);
 
-			if (match_words_message (search->folder, uid, words, error))
-				g_ptr_array_add (matches, (gchar *)uid);
+			if (match_words_message (
+				search->folder, uid, words,
+				cancellable, error))
+				g_ptr_array_add(matches, (gchar *)uid);
 		}
 	}
 
@@ -1532,7 +1539,8 @@ search_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, C
 							truth = match_message_index (search->body_index, camel_message_info_uid (search->current), words->words[j]->word, error);
 					} else {
 						/* TODO: cache current message incase of multiple body search terms */
-						truth = match_words_message (search->folder, camel_message_info_uid (search->current), words, error);
+						/* FIXME Pass a GCancellable */
+						truth = match_words_message(search->folder, camel_message_info_uid(search->current), words, NULL, error);
 					}
 					camel_search_words_free (words);
 				}
@@ -1562,7 +1570,8 @@ search_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, C
 					if ((words->type & CAMEL_SEARCH_WORD_COMPLEX) == 0 && search->body_index) {
 						matches = match_words_index (search, words, error);
 					} else {
-						matches = match_words_messages (search, words, error);
+						/* FIXME Pass a GCancellable */
+						matches = match_words_messages(search, words, NULL, error);
 					}
 					for (j=0;j<matches->len;j++) {
 						g_hash_table_insert (ht, matches->pdata[j], matches->pdata[j]);
@@ -1612,7 +1621,9 @@ search_body_regex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Came
 			for (i = 0; i < v->len; i++) {
 				gchar *uid = g_ptr_array_index (v, i);
 
-				message = camel_folder_get_message (search->folder, uid, NULL);
+				/* FIXME Pass a GCancellable */
+				message = camel_folder_get_message (
+					search->folder, uid, NULL, NULL);
 				if (message) {
 					if (camel_search_message_body_contains ((CamelDataWrapper *) message, &pattern)) {
 						g_ptr_array_add (r->value.ptrarray, uid);
@@ -1826,7 +1837,8 @@ search_message_location (struct _ESExp *f, gint argc, struct _ESExpResult **argv
 
 	if (argc == 1 && argv[0]->type == ESEXP_RES_STRING) {
 		if (argv[0]->value.string && search->folder && parent_store && camel_folder_get_full_name (search->folder)) {
-			CamelFolderInfo *fi = camel_store_get_folder_info (parent_store, camel_folder_get_full_name (search->folder), 0, NULL);
+			/* FIXME Pass a GCancellable */
+			CamelFolderInfo *fi = camel_store_get_folder_info (parent_store, camel_folder_get_full_name (search->folder), 0, NULL, NULL);
 			if (fi) {
 				same = g_str_equal (fi->uri ? fi->uri : "", argv[0]->value.string);
 

@@ -97,7 +97,11 @@ static struct {
    shoudl this be part of imapx-driver? */
 /* mabye this should be a stream op? */
 void
-imapx_parse_flags (CamelIMAPXStream *stream, guint32 *flagsp, CamelFlag **user_flagsp, GError **error)
+imapx_parse_flags (CamelIMAPXStream *stream,
+                   guint32 *flagsp,
+                   CamelFlag **user_flagsp,
+                   GCancellable *cancellable,
+                   GError **error)
 /* throws IO,PARSE exception */
 {
 	gint tok, i;
@@ -107,10 +111,10 @@ imapx_parse_flags (CamelIMAPXStream *stream, guint32 *flagsp, CamelFlag **user_f
 
 	*flagsp = flags;
 
-	tok = camel_imapx_stream_token (stream, &token, &len, NULL);
+	tok = camel_imapx_stream_token (stream, &token, &len, cancellable, NULL);
 	if (tok == '(') {
 		do {
-			tok = camel_imapx_stream_token (stream, &token, &len, NULL);
+			tok = camel_imapx_stream_token (stream, &token, &len, cancellable, NULL);
 			if (tok == IMAPX_TOK_TOKEN || tok == IMAPX_TOK_INT) {
 				gchar *upper = g_ascii_strup ((gchar *) token, len);
 
@@ -177,13 +181,17 @@ rename_label_flag (const gchar *flag, gint len, gboolean server_to_evo)
 }
 
 void
-imapx_write_flags (CamelStream *stream, guint32 flags, CamelFlag *user_flags, GError **error)
+imapx_write_flags (CamelStream *stream,
+                   guint32 flags,
+                   CamelFlag *user_flags,
+                   GCancellable *cancellable,
+                   GError **error)
 /* throws IO exception */
 {
 	gint i;
 	gboolean first = TRUE;
 
-	if (camel_stream_write(stream, "(", 1, error) == -1) {
+	if (camel_stream_write(stream, "(", 1, cancellable, error) == -1) {
 		return;
 	}
 
@@ -191,11 +199,11 @@ imapx_write_flags (CamelStream *stream, guint32 flags, CamelFlag *user_flags, GE
 		if (flag_table[i].flag & flags) {
 			if (flags & CAMEL_IMAPX_MESSAGE_RECENT)
 				continue;
-			if (!first && camel_stream_write(stream, " ", 1, error) == -1) {
+			if (!first && camel_stream_write(stream, " ", 1, cancellable, error) == -1) {
 				return;
 			}
 			first = FALSE;
-			if (camel_stream_write (stream, flag_table[i].name, strlen (flag_table[i].name), error) == -1) {
+			if (camel_stream_write (stream, flag_table[i].name, strlen (flag_table[i].name), cancellable, error) == -1) {
 				return;
 			}
 
@@ -206,18 +214,18 @@ imapx_write_flags (CamelStream *stream, guint32 flags, CamelFlag *user_flags, GE
 	while (user_flags) {
 		const gchar *flag_name = rename_label_flag (user_flags->name, strlen (user_flags->name), FALSE);
 
-		if (!first && camel_stream_write(stream, " ", 1, error) == -1) {
+		if (!first && camel_stream_write(stream, " ", 1, cancellable, error) == -1) {
 			return;
 		}
 		first = FALSE;
-		if (camel_stream_write (stream, flag_name, strlen (flag_name), error) == -1) {
+		if (camel_stream_write (stream, flag_name, strlen (flag_name), cancellable, error) == -1) {
 			return;
 		}
 
 		user_flags = user_flags->next;
 	}
 
-	if (camel_stream_write(stream, ")", 1, error) == -1) {
+	if (camel_stream_write(stream, ")", 1, cancellable, error) == -1) {
 		return;
 	}
 }
@@ -443,7 +451,9 @@ struct {
 };
 
 struct _capability_info *
-imapx_parse_capability (CamelIMAPXStream *stream, GError **error)
+imapx_parse_capability (CamelIMAPXStream *stream,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	gint tok, i;
 	guint len;
@@ -456,7 +466,7 @@ imapx_parse_capability (CamelIMAPXStream *stream, GError **error)
 	cinfo->auth_types = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
 
 	/* FIXME: handle auth types */
-	while ((tok = camel_imapx_stream_token (stream, &token, &len, &local_error)) != '\n' &&
+	while ((tok = camel_imapx_stream_token (stream, &token, &len, cancellable, &local_error)) != '\n' &&
 		local_error == NULL) {
 		switch (tok) {
 			case ']':
@@ -510,7 +520,9 @@ void imapx_free_capability (struct _capability_info *cinfo)
 }
 
 struct _CamelIMAPXNamespaceList *
-imapx_parse_namespace_list (CamelIMAPXStream *stream, GError **error)
+imapx_parse_namespace_list (CamelIMAPXStream *stream,
+                            GCancellable *cancellable,
+                            GError **error)
 {
 	CamelIMAPXStoreNamespace *namespaces[3], *node, *tail;
 	CamelIMAPXNamespaceList *nsl = NULL;
@@ -524,16 +536,16 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream, GError **error)
 	nsl->shared = NULL;
 	nsl->other = NULL;
 
-	tok = camel_imapx_stream_token (stream, &token, &len, NULL);
+	tok = camel_imapx_stream_token (stream, &token, &len, cancellable, NULL);
 	do {
 		namespaces[n] = NULL;
 		tail = (CamelIMAPXStoreNamespace *) &namespaces[n];
 
 		if (tok == '(') {
-			tok = camel_imapx_stream_token (stream, &token, &len, NULL);
+			tok = camel_imapx_stream_token (stream, &token, &len, cancellable, NULL);
 
 			while (tok == '(') {
-				tok = camel_imapx_stream_token (stream, &token, &len, NULL);
+				tok = camel_imapx_stream_token (stream, &token, &len, cancellable, NULL);
 				if (tok != IMAPX_TOK_STRING) {
 					g_set_error (error, 1, CAMEL_IMAPX_ERROR, "namespace: expected a string path name");
 					goto exception;
@@ -543,7 +555,7 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream, GError **error)
 				node->next = NULL;
 				node->path = g_strdup ((gchar *) token);
 
-				tok = camel_imapx_stream_token (stream, &token, &len, NULL);
+				tok = camel_imapx_stream_token (stream, &token, &len, cancellable, NULL);
 
 				if (tok == IMAPX_TOK_STRING) {
 					if (strlen ((gchar *) token) == 1) {
@@ -577,13 +589,13 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream, GError **error)
 				/* TODO remove full_name later. not required */
 				node->full_name = g_strdup (node->path);
 
-				tok = camel_imapx_stream_token (stream, &token, &len, NULL);
+				tok = camel_imapx_stream_token (stream, &token, &len, cancellable, NULL);
 				if (tok != ')') {
 					g_set_error (error, CAMEL_IMAPX_ERROR, 1, "namespace: expected a ')'");
 					goto exception;
 				}
 
-				tok = camel_imapx_stream_token (stream, &token, &len, NULL);
+				tok = camel_imapx_stream_token (stream, &token, &len, cancellable, NULL);
 			}
 
 			if (tok != ')') {
@@ -598,7 +610,7 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream, GError **error)
 			goto exception;
 		}
 
-		tok = camel_imapx_stream_token (stream, &token, &len, NULL);
+		tok = camel_imapx_stream_token (stream, &token, &len, cancellable, NULL);
 		n++;
 	} while (n < 3);
 
@@ -754,7 +766,10 @@ imapx_free_body (struct _CamelMessageContentInfo *cinfo)
 }
 
 gboolean
-imapx_parse_param_list (CamelIMAPXStream *is, struct _camel_header_param **plist, GError **error)
+imapx_parse_param_list (CamelIMAPXStream *is,
+                        struct _camel_header_param **plist,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	gint tok;
 	guint len;
@@ -764,18 +779,18 @@ imapx_parse_param_list (CamelIMAPXStream *is, struct _camel_header_param **plist
 	p(is->tagprefix, "body_fld_param\n");
 
 	/* body_fld_param  ::= "(" 1#(string SPACE string) ")" / nil */
-	tok = camel_imapx_stream_token (is, &token, &len, NULL);
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 	if (tok == '(') {
 		while (1) {
-			tok = camel_imapx_stream_token (is, &token, &len, NULL);
+			tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 			if (tok == ')')
 				break;
 			camel_imapx_stream_ungettoken (is, tok, token, len);
 
-			camel_imapx_stream_astring (is, &token, NULL);
+			camel_imapx_stream_astring (is, &token, cancellable, NULL);
 			param = alloca (strlen ((gchar *) token)+1);
 			strcpy (param, (gchar *) token);
-			camel_imapx_stream_astring (is, &token, NULL);
+			camel_imapx_stream_astring (is, &token, cancellable, NULL);
 			camel_header_set_param (plist, param, (gchar *) token);
 		}
 	} /* else check nil?  no need */
@@ -784,7 +799,9 @@ imapx_parse_param_list (CamelIMAPXStream *is, struct _camel_header_param **plist
 }
 
 struct _CamelContentDisposition *
-imapx_parse_ext_optional (CamelIMAPXStream *is, GError **error)
+imapx_parse_ext_optional (CamelIMAPXStream *is,
+                          GCancellable *cancellable,
+                          GError **error)
 {
 	gint tok;
 	guint len;
@@ -809,16 +826,16 @@ imapx_parse_ext_optional (CamelIMAPXStream *is, GError **error)
 
 	/* body_fld_dsp    ::= "(" string SPACE body_fld_param ")" / nil */
 
-	tok = camel_imapx_stream_token (is, &token, &len, NULL);
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 	switch (tok) {
 		case '(':
 			dinfo = g_malloc0 (sizeof (*dinfo));
 			dinfo->refcount = 1;
 			/* should be string */
-			camel_imapx_stream_astring (is, &token, NULL);
+			camel_imapx_stream_astring (is, &token, cancellable, NULL);
 
 			dinfo->disposition = g_strdup ((gchar *) token);
-			imapx_parse_param_list (is, &dinfo->params, NULL);
+			imapx_parse_param_list (is, &dinfo->params, cancellable, NULL);
 		case IMAPX_TOK_TOKEN:
 			d(is->tagprefix, "body_fld_dsp: NIL\n");
 			break;
@@ -833,11 +850,11 @@ imapx_parse_ext_optional (CamelIMAPXStream *is, GError **error)
 
 	/* we just drop the lang string/list, save it somewhere? */
 
-	tok = camel_imapx_stream_token (is, &token, &len, &local_error);
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 	switch (tok) {
 		case '(':
 			while (1) {
-				tok = camel_imapx_stream_token (is, &token, &len, &local_error);
+				tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 				if (tok == ')') {
 					break;
 				} else if (tok != IMAPX_TOK_STRING) {
@@ -857,7 +874,7 @@ imapx_parse_ext_optional (CamelIMAPXStream *is, GError **error)
 		case IMAPX_TOK_LITERAL:
 			/* we have a literal string */
 			camel_imapx_stream_set_literal (is, len);
-			while ((tok = camel_imapx_stream_getl (is, &token, &len)) > 0) {
+			while ((tok = camel_imapx_stream_getl (is, &token, &len, cancellable, NULL)) > 0) {
 				d(is->tagprefix, "Skip literal data '%.*s'\n", (gint)len, token);
 			}
 			break;
@@ -875,7 +892,9 @@ imapx_parse_ext_optional (CamelIMAPXStream *is, GError **error)
 }
 
 struct _CamelMessageContentInfo *
-imapx_parse_body_fields (CamelIMAPXStream *is, GError **error)
+imapx_parse_body_fields (CamelIMAPXStream *is,
+                         GCancellable *cancellable,
+                         GError **error)
 {
 	guchar *token;
 	gchar  *type;
@@ -891,34 +910,34 @@ imapx_parse_body_fields (CamelIMAPXStream *is, GError **error)
 	cinfo = g_malloc0 (sizeof (*cinfo));
 
 	/* this should be string not astring */
-	if (camel_imapx_stream_astring (is, &token, error))
+	if (camel_imapx_stream_astring (is, &token, cancellable, error))
 		goto error;
 	type = alloca (strlen ( (gchar *) token)+1);
 	strcpy (type, (gchar *) token);
-	if (camel_imapx_stream_astring (is, &token, error))
+	if (camel_imapx_stream_astring (is, &token, cancellable, error))
 		goto error;
 	cinfo->type = camel_content_type_new (type, (gchar *) token);
-	if (!imapx_parse_param_list (is, &cinfo->type->params, error))
+	if (!imapx_parse_param_list (is, &cinfo->type->params, cancellable, error))
 		goto error;
 
 	/* body_fld_id     ::= nstring */
-	if (!camel_imapx_stream_nstring (is, &token, error))
+	if (!camel_imapx_stream_nstring (is, &token, cancellable, error))
 		goto error;
 	cinfo->id = g_strdup ((gchar *) token);
 
 	/* body_fld_desc   ::= nstring */
-	if (!camel_imapx_stream_nstring (is, &token, error))
+	if (!camel_imapx_stream_nstring (is, &token, cancellable, error))
 		goto error;
 	cinfo->description = g_strdup ((gchar *) token);
 
 	/* body_fld_enc    ::= (<"> ("7BIT" / "8BIT" / "BINARY" / "BASE64"/
 	   "QUOTED-PRINTABLE") <">) / string */
-	if (camel_imapx_stream_astring (is, &token, error))
+	if (camel_imapx_stream_astring (is, &token, cancellable, error))
 		goto error;
 	cinfo->encoding = g_strdup ((gchar *) token);
 
 	/* body_fld_octets ::= number */
-	cinfo->size = camel_imapx_stream_number (is, &local_error);
+	cinfo->size = camel_imapx_stream_number (is, cancellable, &local_error);
 	if (local_error != NULL) {
 		g_propagate_error (error, local_error);
 		goto error;
@@ -931,7 +950,9 @@ error:
 }
 
 struct _camel_header_address *
-imapx_parse_address_list (CamelIMAPXStream *is, GError **error)
+imapx_parse_address_list (CamelIMAPXStream *is,
+                          GCancellable *cancellable,
+                          GError **error)
 /* throws PARSE,IO exception */
 {
 	gint tok;
@@ -943,14 +964,14 @@ imapx_parse_address_list (CamelIMAPXStream *is, GError **error)
 
 	/* "(" 1*address ")" / nil */
 
-	tok = camel_imapx_stream_token (is, &token, &len, &local_error);
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 	if (tok == '(') {
 		while (1) {
 			struct _camel_header_address *addr, *group = NULL;
 
 			/* address         ::= "(" addr_name SPACE addr_adl SPACE addr_mailbox
 			   SPACE addr_host ")" */
-			tok = camel_imapx_stream_token (is, &token, &len, &local_error);
+			tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 			if (tok == ')')
 				break;
 			if (tok != '(') {
@@ -962,10 +983,10 @@ imapx_parse_address_list (CamelIMAPXStream *is, GError **error)
 
 			addr = camel_header_address_new ();
 			addr->type = CAMEL_HEADER_ADDRESS_NAME;
-			tok = camel_imapx_stream_nstring (is, &token, &local_error);
+			tok = camel_imapx_stream_nstring (is, &token, cancellable, &local_error);
 			addr->name = g_strdup ((gchar *) token);
 			/* we ignore the route, nobody uses it in the real world */
-			tok = camel_imapx_stream_nstring (is, &token, &local_error);
+			tok = camel_imapx_stream_nstring (is, &token, cancellable, &local_error);
 
 			/* [RFC-822] group syntax is indicated by a special
 			   form of address structure in which the host name
@@ -975,9 +996,9 @@ imapx_parse_address_list (CamelIMAPXStream *is, GError **error)
 			   non-NIL, this is a start of group marker, and the
 			   mailbox name field holds the group name phrase. */
 
-			tok = camel_imapx_stream_nstring (is,(guchar **) &mbox, &local_error);
+			tok = camel_imapx_stream_nstring (is,(guchar **) &mbox, cancellable, &local_error);
 			mbox = g_strdup (mbox);
-			tok = camel_imapx_stream_nstring (is, &host, &local_error);
+			tok = camel_imapx_stream_nstring (is, &host, cancellable, &local_error);
 			if (host == NULL) {
 				if (mbox == NULL) {
 					group = NULL;
@@ -999,7 +1020,7 @@ imapx_parse_address_list (CamelIMAPXStream *is, GError **error)
 					camel_header_address_list_append (&list, addr);
 			}
 			do {
-				tok = camel_imapx_stream_token (is, &token, &len, &local_error);
+				tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 			} while (tok != ')');
 		}
 	} else {
@@ -1014,7 +1035,9 @@ imapx_parse_address_list (CamelIMAPXStream *is, GError **error)
 }
 
 struct _CamelMessageInfo *
-imapx_parse_envelope (CamelIMAPXStream *is, GError **error)
+imapx_parse_envelope (CamelIMAPXStream *is,
+                      GCancellable *cancellable,
+                      GError **error)
 {
 	gint tok;
 	guint len;
@@ -1033,7 +1056,7 @@ imapx_parse_envelope (CamelIMAPXStream *is, GError **error)
 
 	minfo = (CamelMessageInfoBase *)camel_message_info_new (NULL);
 
-	tok = camel_imapx_stream_token (is, &token, &len, &local_error);
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 	if (tok != '(') {
 		g_clear_error (&local_error);
 		camel_message_info_free (minfo);
@@ -1042,20 +1065,20 @@ imapx_parse_envelope (CamelIMAPXStream *is, GError **error)
 	}
 
 	/* env_date        ::= nstring */
-	camel_imapx_stream_nstring (is, &token, &local_error);
+	camel_imapx_stream_nstring (is, &token, cancellable, &local_error);
 	minfo->date_sent = camel_header_decode_date ((gchar *) token, NULL);
 
 	/* env_subject     ::= nstring */
-	tok = camel_imapx_stream_nstring (is, &token, &local_error);
+	tok = camel_imapx_stream_nstring (is, &token, cancellable, &local_error);
 	minfo->subject = camel_pstring_strdup ((gchar *) token);
 
 	/* we merge from/sender into from, append should probably merge more smartly? */
 
 	/* env_from        ::= "(" 1*address ")" / nil */
-	addr_from = imapx_parse_address_list (is, &local_error);
+	addr_from = imapx_parse_address_list (is, cancellable, &local_error);
 
 	/* env_sender      ::= "(" 1*address ")" / nil */
-	addr = imapx_parse_address_list (is, &local_error);
+	addr = imapx_parse_address_list (is, cancellable, &local_error);
 	if (addr_from) {
 		camel_header_address_list_clear (&addr);
 #if 0
@@ -1077,11 +1100,11 @@ imapx_parse_envelope (CamelIMAPXStream *is, GError **error)
 	/* we dont keep reply_to */
 
 	/* env_reply_to    ::= "(" 1*address ")" / nil */
-	addr = imapx_parse_address_list (is, &local_error);
+	addr = imapx_parse_address_list (is, cancellable, &local_error);
 	camel_header_address_list_clear (&addr);
 
 	/* env_to          ::= "(" 1*address ")" / nil */
-	addr = imapx_parse_address_list (is, &local_error);
+	addr = imapx_parse_address_list (is, cancellable, &local_error);
 	if (addr) {
 		addrstr = camel_header_address_list_format (addr);
 		minfo->to = camel_pstring_strdup (addrstr);
@@ -1090,7 +1113,7 @@ imapx_parse_envelope (CamelIMAPXStream *is, GError **error)
 	}
 
 	/* env_cc          ::= "(" 1*address ")" / nil */
-	addr = imapx_parse_address_list (is, &local_error);
+	addr = imapx_parse_address_list (is, cancellable, &local_error);
 	if (addr) {
 		addrstr = camel_header_address_list_format (addr);
 		minfo->cc = camel_pstring_strdup (addrstr);
@@ -1101,20 +1124,20 @@ imapx_parse_envelope (CamelIMAPXStream *is, GError **error)
 	/* we dont keep bcc either */
 
 	/* env_bcc         ::= "(" 1*address ")" / nil */
-	addr = imapx_parse_address_list (is, &local_error);
+	addr = imapx_parse_address_list (is, cancellable, &local_error);
 	camel_header_address_list_clear (&addr);
 
 	/* FIXME: need to put in-reply-to into references hash list */
 
 	/* env_in_reply_to ::= nstring */
-	tok = camel_imapx_stream_nstring (is, &token, &local_error);
+	tok = camel_imapx_stream_nstring (is, &token, cancellable, &local_error);
 
 	/* FIXME: need to put message-id into message-id hash */
 
 	/* env_message_id  ::= nstring */
-	tok = camel_imapx_stream_nstring (is, &token, &local_error);
+	tok = camel_imapx_stream_nstring (is, &token, cancellable, &local_error);
 
-	tok = camel_imapx_stream_token (is, &token, &len, &local_error);
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 	if (tok != ')') {
 		g_clear_error (&local_error);
 		camel_message_info_free (minfo);
@@ -1130,7 +1153,9 @@ imapx_parse_envelope (CamelIMAPXStream *is, GError **error)
 }
 
 struct _CamelMessageContentInfo *
-imapx_parse_body (CamelIMAPXStream *is, GError **error)
+imapx_parse_body (CamelIMAPXStream *is,
+                  GCancellable *cancellable,
+                  GError **error)
 {
 	gint tok;
 	guint len;
@@ -1145,14 +1170,14 @@ imapx_parse_body (CamelIMAPXStream *is, GError **error)
 
 	p(is->tagprefix, "body\n");
 
-	tok = camel_imapx_stream_token (is, &token, &len, &local_error);
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 	if (tok != '(') {
 		g_set_error (error, CAMEL_IMAPX_ERROR, 1, "body: expecting '('");
 		return NULL;
 	}
 
 	/* 1*body (optional for multiparts) */
-	tok = camel_imapx_stream_token (is, &token, &len, &local_error);
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 	camel_imapx_stream_ungettoken (is, tok, token, len);
 	if (tok == '(') {
 		/* body_type_mpart ::= 1*body SPACE media_subtype
@@ -1161,17 +1186,17 @@ imapx_parse_body (CamelIMAPXStream *is, GError **error)
 		cinfo = g_malloc0 (sizeof (*cinfo));
 		last = (struct _CamelMessageContentInfo *)&cinfo->childs;
 		do {
-			subinfo = imapx_parse_body (is, &local_error);
+			subinfo = imapx_parse_body (is, cancellable, &local_error);
 			last->next = subinfo;
 			last = subinfo;
 			subinfo->parent = cinfo;
-			tok = camel_imapx_stream_token (is, &token, &len, &local_error);
+			tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 			camel_imapx_stream_ungettoken (is, tok, token, len);
 		} while (tok == '(');
 
 		d(is->tagprefix, "media_subtype\n");
 
-		camel_imapx_stream_astring (is, &token, &local_error);
+		camel_imapx_stream_astring (is, &token, cancellable, &local_error);
 		cinfo->type = camel_content_type_new("multipart", (gchar *) token);
 
 		/* body_ext_mpart  ::= body_fld_param
@@ -1182,17 +1207,17 @@ imapx_parse_body (CamelIMAPXStream *is, GError **error)
 
 		d(is->tagprefix, "body_ext_mpart\n");
 
-		tok = camel_imapx_stream_token (is, &token, &len, &local_error);
+		tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 		camel_imapx_stream_ungettoken (is, tok, token, len);
 		if (tok == '(') {
-			imapx_parse_param_list (is, &cinfo->type->params, &local_error);
+			imapx_parse_param_list (is, &cinfo->type->params, cancellable, &local_error);
 
 			/* body_fld_dsp    ::= "(" string SPACE body_fld_param ")" / nil */
 
-			tok = camel_imapx_stream_token (is, &token, &len, &local_error);
+			tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 			camel_imapx_stream_ungettoken (is, tok, token, len);
 			if (tok == '(' || tok == IMAPX_TOK_TOKEN) {
-				dinfo = imapx_parse_ext_optional (is, &local_error);
+				dinfo = imapx_parse_ext_optional (is, cancellable, &local_error);
 				/* other extension fields?, soaked up below */
 			} else {
 				camel_imapx_stream_ungettoken (is, tok, token, len);
@@ -1209,16 +1234,16 @@ imapx_parse_body (CamelIMAPXStream *is, GError **error)
 
 		d(is->tagprefix, "Single part body\n");
 
-		cinfo = imapx_parse_body_fields (is, &local_error);
+		cinfo = imapx_parse_body_fields (is, cancellable, &local_error);
 
 		d(is->tagprefix, "envelope?\n");
 
 		/* do we have an envelope following */
-		tok = camel_imapx_stream_token (is, &token, &len, &local_error);
+		tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 		camel_imapx_stream_ungettoken (is, tok, token, len);
 		if (tok == '(') {
 			/* what do we do with the envelope?? */
-			minfo = imapx_parse_envelope (is, &local_error);
+			minfo = imapx_parse_envelope (is, cancellable, &local_error);
 			/* what do we do with the message content info?? */
 			//((CamelMessageInfoBase *)minfo)->content = imapx_parse_body (is);
 			camel_message_info_free (minfo);
@@ -1229,10 +1254,10 @@ imapx_parse_body (CamelIMAPXStream *is, GError **error)
 		d(is->tagprefix, "fld_lines?\n");
 
 		/* do we have fld_lines following? */
-		tok = camel_imapx_stream_token (is, &token, &len, &local_error);
+		tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 		if (tok == IMAPX_TOK_INT) {
 			d(is->tagprefix, "field lines: %s\n", token);
-			tok = camel_imapx_stream_token (is, &token, &len, &local_error);
+			tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 		}
 		camel_imapx_stream_ungettoken (is, tok, token, len);
 
@@ -1245,16 +1270,16 @@ imapx_parse_body (CamelIMAPXStream *is, GError **error)
 		d(is->tagprefix, "extension data?\n");
 
 		if (tok != ')') {
-			camel_imapx_stream_nstring (is, &token, &local_error);
+			camel_imapx_stream_nstring (is, &token, cancellable, &local_error);
 
 			d(is->tagprefix, "md5: %s\n", token?(gchar *)token:"NIL");
 
 			/* body_fld_dsp    ::= "(" string SPACE body_fld_param ")" / nil */
 
-			tok = camel_imapx_stream_token (is, &token, &len, &local_error);
+			tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 			camel_imapx_stream_ungettoken (is, tok, token, len);
 			if (tok == '(' || tok == IMAPX_TOK_TOKEN) {
-				dinfo = imapx_parse_ext_optional (is, &local_error);
+				dinfo = imapx_parse_ext_optional (is, cancellable, &local_error);
 				/* then other extension fields, soaked up below */
 			}
 		}
@@ -1263,7 +1288,7 @@ imapx_parse_body (CamelIMAPXStream *is, GError **error)
 	/* soak up any other extension fields that may be present */
 	/* there should only be simple tokens, no lists */
 	do {
-		tok = camel_imapx_stream_token (is, &token, &len, &local_error);
+		tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 		if (tok != ')') {
 			d(is->tagprefix, "Dropping extension data '%s'\n", token);
 		}
@@ -1289,7 +1314,9 @@ imapx_parse_body (CamelIMAPXStream *is, GError **error)
 }
 
 gchar *
-imapx_parse_section (CamelIMAPXStream *is, GError **error)
+imapx_parse_section (CamelIMAPXStream *is,
+                     GCancellable *cancellable,
+                     GError **error)
 {
 	gint tok;
 	guint len;
@@ -1307,13 +1334,13 @@ imapx_parse_section (CamelIMAPXStream *is, GError **error)
 	  SPACE header_list / "TEXT"
 	*/
 
-	tok = camel_imapx_stream_token (is, &token, &len, NULL);
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 	if (tok != '[') {
 		g_set_error (error, CAMEL_IMAPX_ERROR, 1, "section: expecting '['");
 		return NULL;
 	}
 
-	tok = camel_imapx_stream_token (is, &token, &len, NULL);
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 	if (tok == IMAPX_TOK_INT || tok == IMAPX_TOK_TOKEN)
 		section = g_strdup ((gchar *) token);
 	else if (tok == ']') {
@@ -1328,10 +1355,10 @@ imapx_parse_section (CamelIMAPXStream *is, GError **error)
 	   header_fld_name ::= astring */
 
 	/* we dont need the header specifiers */
-	tok = camel_imapx_stream_token (is, &token, &len, NULL);
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 	if (tok == '(') {
 		do {
-			tok = camel_imapx_stream_token (is, &token, &len, NULL);
+			tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 			if (tok == IMAPX_TOK_STRING || tok == IMAPX_TOK_TOKEN || tok == IMAPX_TOK_INT) {
 				/* ?do something? */
 			} else if (tok != ')') {
@@ -1340,7 +1367,7 @@ imapx_parse_section (CamelIMAPXStream *is, GError **error)
 				return NULL;
 			}
 		} while (tok != ')');
-		tok = camel_imapx_stream_token (is, &token, &len, NULL);
+		tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 	}
 
 	if (tok != ']') {
@@ -1353,23 +1380,25 @@ imapx_parse_section (CamelIMAPXStream *is, GError **error)
 }
 
 static guint64
-imapx_parse_modseq (CamelIMAPXStream *is, GError **error)
+imapx_parse_modseq (CamelIMAPXStream *is,
+                    GCancellable *cancellable,
+                    GError **error)
 {
 	guint64 ret;
 	gint tok;
 	guint len;
 	guchar *token;
 
-	tok = camel_imapx_stream_token (is, &token, &len, NULL);
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 	if (tok != '(') {
 		g_set_error (error, CAMEL_IMAPX_ERROR, 1, "fetch: expecting '('");
 		return 0;
 	}
-	ret = camel_imapx_stream_number (is, error);
+	ret = camel_imapx_stream_number (is, cancellable, error);
 	if (ret == 0)
 		return 0;
 
-	tok = camel_imapx_stream_token (is, &token, &len, NULL);
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 	if (tok != ')') {
 		g_set_error (error, CAMEL_IMAPX_ERROR, 1, "fetch: expecting '('");
 		return 0;
@@ -1417,17 +1446,17 @@ imapx_dump_fetch (struct _fetch_info *finfo)
 	sout = camel_stream_fs_new_with_fd (fd);
 	if (finfo->body) {
 		camel_stream_printf(sout, "Body content:\n");
-		camel_stream_write_to_stream (finfo->body, sout, NULL);
+		camel_stream_write_to_stream (finfo->body, sout, NULL, NULL);
 		camel_stream_reset (finfo->body, NULL);
 	}
 	if (finfo->text) {
 		camel_stream_printf(sout, "Text content:\n");
-		camel_stream_write_to_stream (finfo->text, sout, NULL);
+		camel_stream_write_to_stream (finfo->text, sout, NULL, NULL);
 		camel_stream_reset (finfo->text, NULL);
 	}
 	if (finfo->header) {
 		camel_stream_printf(sout, "Header content:\n");
-		camel_stream_write_to_stream (finfo->header, sout, NULL);
+		camel_stream_write_to_stream (finfo->header, sout, NULL, NULL);
 		camel_stream_reset (finfo->header, NULL);
 	}
 	if (finfo->minfo) {
@@ -1454,7 +1483,9 @@ imapx_dump_fetch (struct _fetch_info *finfo)
 }
 
 struct _fetch_info *
-imapx_parse_fetch (CamelIMAPXStream *is, GError **error)
+imapx_parse_fetch (CamelIMAPXStream *is,
+                   GCancellable *cancellable,
+                   GError **error)
 {
 	gint tok;
 	guint len;
@@ -1463,14 +1494,14 @@ imapx_parse_fetch (CamelIMAPXStream *is, GError **error)
 
 	finfo = g_malloc0 (sizeof (*finfo));
 
-	tok = camel_imapx_stream_token (is, &token, &len, NULL);
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 	if (tok != '(') {
 		g_set_error (error, CAMEL_IMAPX_ERROR, 1, "fetch: expecting '('");
 		g_free (finfo);
 		return NULL;
 	}
 
-	while ((tok = camel_imapx_stream_token (is, &token, &len, NULL)) == IMAPX_TOK_TOKEN) {
+	while ((tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL)) == IMAPX_TOK_TOKEN) {
 
 		p = token;
 		while ((c=*p))
@@ -1478,55 +1509,55 @@ imapx_parse_fetch (CamelIMAPXStream *is, GError **error)
 
 		switch (imapx_tokenise ((gchar *) token, len)) {
 			case IMAPX_ENVELOPE:
-				finfo->minfo = imapx_parse_envelope (is, NULL);
+				finfo->minfo = imapx_parse_envelope (is, cancellable, NULL);
 				finfo->got |= FETCH_MINFO;
 				break;
 			case IMAPX_FLAGS:
-				imapx_parse_flags (is, &finfo->flags, &finfo->user_flags, NULL);
+				imapx_parse_flags (is, &finfo->flags, &finfo->user_flags, cancellable, NULL);
 				finfo->got |= FETCH_FLAGS;
 				break;
 			case IMAPX_INTERNALDATE:
-				camel_imapx_stream_nstring (is, &token, NULL);
+				camel_imapx_stream_nstring (is, &token, cancellable, NULL);
 				/* TODO: convert to camel format? */
 				finfo->date = g_strdup ((gchar *) token);
 				finfo->got |= FETCH_DATE;
 				break;
 			case IMAPX_RFC822_HEADER:
-				camel_imapx_stream_nstring_stream (is, &finfo->header, NULL);
+				camel_imapx_stream_nstring_stream (is, &finfo->header, cancellable, NULL);
 				finfo->got |= FETCH_HEADER;
 				break;
 			case IMAPX_RFC822_TEXT:
-				camel_imapx_stream_nstring_stream (is, &finfo->text, NULL);
+				camel_imapx_stream_nstring_stream (is, &finfo->text, cancellable, NULL);
 				finfo->got |= FETCH_TEXT;
 				break;
 			case IMAPX_RFC822_SIZE:
-				finfo->size = camel_imapx_stream_number (is, NULL);
+				finfo->size = camel_imapx_stream_number (is, cancellable, NULL);
 				finfo->got |= FETCH_SIZE;
 				break;
 			case IMAPX_BODYSTRUCTURE:
-				finfo->cinfo = imapx_parse_body (is, NULL);
+				finfo->cinfo = imapx_parse_body (is, cancellable, NULL);
 				finfo->got |= FETCH_CINFO;
 				break;
 			case IMAPX_MODSEQ:
-				finfo->modseq = imapx_parse_modseq (is, NULL);
+				finfo->modseq = imapx_parse_modseq (is, cancellable, NULL);
 				finfo->got |= FETCH_MODSEQ;
 				break;
 			case IMAPX_BODY:
-				tok = camel_imapx_stream_token (is, &token, &len, NULL);
+				tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 				camel_imapx_stream_ungettoken (is, tok, token, len);
 				if (tok == '(') {
-					finfo->cinfo = imapx_parse_body (is, NULL);
+					finfo->cinfo = imapx_parse_body (is, cancellable, NULL);
 					finfo->got |= FETCH_CINFO;
 				} else if (tok == '[') {
-					finfo->section = imapx_parse_section (is, NULL);
+					finfo->section = imapx_parse_section (is, cancellable, NULL);
 					finfo->got |= FETCH_SECTION;
-					tok = camel_imapx_stream_token (is, &token, &len, NULL);
+					tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 					if (token[0] == '<') {
 						finfo->offset = strtoul ((gchar *) token+1, NULL, 10);
 					} else {
 						camel_imapx_stream_ungettoken (is, tok, token, len);
 					}
-					camel_imapx_stream_nstring_stream (is, &finfo->body, NULL);
+					camel_imapx_stream_nstring_stream (is, &finfo->body, cancellable, NULL);
 					finfo->got |= FETCH_BODY;
 				} else {
 					g_set_error (error, CAMEL_IMAPX_ERROR, 1, "unknown body response");
@@ -1535,7 +1566,7 @@ imapx_parse_fetch (CamelIMAPXStream *is, GError **error)
 				}
 				break;
 			case IMAPX_UID:
-				tok = camel_imapx_stream_token (is, &token, &len, NULL);
+				tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 				if (tok != IMAPX_TOK_INT) {
 					g_set_error (error, CAMEL_IMAPX_ERROR, 1, "uid not integer");
 				}
@@ -1560,7 +1591,9 @@ imapx_parse_fetch (CamelIMAPXStream *is, GError **error)
 }
 
 struct _state_info *
-imapx_parse_status_info (struct _CamelIMAPXStream *is, GError **error)
+imapx_parse_status_info (CamelIMAPXStream *is,
+                         GCancellable *cancellable,
+                         GError **error)
 {
 	struct _state_info *sinfo;
 	gint tok;
@@ -1570,38 +1603,38 @@ imapx_parse_status_info (struct _CamelIMAPXStream *is, GError **error)
 	sinfo = g_malloc0 (sizeof (*sinfo));
 
 	/* skip the folder name */
-	if (camel_imapx_stream_astring (is, &token, error)) {
+	if (camel_imapx_stream_astring (is, &token, cancellable, error)) {
 		g_free (sinfo);
 		return NULL;
 	}
 	sinfo->name = camel_utf7_utf8 ((gchar *)token);
 
-	tok = camel_imapx_stream_token (is, &token, &len, NULL);
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 	if (tok != '(') {
 		g_set_error (error, CAMEL_IMAPX_ERROR, 1, "parse status info: expecting '('");
 		g_free (sinfo);
 		return NULL;
 	}
 
-	while ((tok = camel_imapx_stream_token (is, &token, &len, NULL)) == IMAPX_TOK_TOKEN) {
+	while ((tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL)) == IMAPX_TOK_TOKEN) {
 		switch (imapx_tokenise ((gchar *) token, len)) {
 			case IMAPX_MESSAGES:
-				sinfo->messages = camel_imapx_stream_number (is, NULL);
+				sinfo->messages = camel_imapx_stream_number (is, cancellable, NULL);
 				break;
 			case IMAPX_RECENT:
-				sinfo->recent = camel_imapx_stream_number (is, NULL);
+				sinfo->recent = camel_imapx_stream_number (is, cancellable, NULL);
 				break;
 			case IMAPX_UIDNEXT:
-				sinfo->uidnext = camel_imapx_stream_number (is, NULL);
+				sinfo->uidnext = camel_imapx_stream_number (is, cancellable, NULL);
 				break;
 			case IMAPX_UIDVALIDITY:
-				sinfo->uidvalidity = camel_imapx_stream_number (is, NULL);
+				sinfo->uidvalidity = camel_imapx_stream_number (is, cancellable, NULL);
 				break;
 			case IMAPX_UNSEEN:
-				sinfo->unseen = camel_imapx_stream_number (is, NULL);
+				sinfo->unseen = camel_imapx_stream_number (is, cancellable, NULL);
 				break;
 			case IMAPX_HIGHESTMODSEQ:
-				sinfo->highestmodseq = camel_imapx_stream_number (is, NULL);
+				sinfo->highestmodseq = camel_imapx_stream_number (is, cancellable, NULL);
 				break;
 			case IMAPX_NOMODSEQ:
 			break;
@@ -1631,7 +1664,9 @@ generate_uids_from_sequence (GPtrArray *uids, guint32 begin_uid, guint32 end_uid
 }
 
 GPtrArray *
-imapx_parse_uids (CamelIMAPXStream *is, GError **error)
+imapx_parse_uids (CamelIMAPXStream *is,
+                  GCancellable *cancellable,
+                  GError **error)
 {
 	GPtrArray *uids = g_ptr_array_new ();
 	guchar *token;
@@ -1639,7 +1674,7 @@ imapx_parse_uids (CamelIMAPXStream *is, GError **error)
 	guint len, str_len;
 	gint tok, i;
 
-	tok = camel_imapx_stream_token (is, &token, &len, error);
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, error);
 	if (tok < 0)
 		return NULL;
 
@@ -1668,7 +1703,9 @@ imapx_parse_uids (CamelIMAPXStream *is, GError **error)
 /* rfc 2060 section 7.1 Status Responses */
 /* shoudl this start after [ or before the [? token_unget anyone? */
 struct _status_info *
-imapx_parse_status (CamelIMAPXStream *is, GError **error)
+imapx_parse_status (CamelIMAPXStream *is,
+                    GCancellable *cancellable,
+                    GError **error)
 {
 	gint tok;
 	guint len;
@@ -1677,7 +1714,7 @@ imapx_parse_status (CamelIMAPXStream *is, GError **error)
 
 	sinfo = g_malloc0 (sizeof (*sinfo));
 
-	camel_imapx_stream_atom (is, &token, &len, NULL);
+	camel_imapx_stream_atom (is, &token, &len, cancellable, NULL);
 
 	/*
 	   resp_cond_auth  ::= ("OK" / "PREAUTH") SPACE resp_text
@@ -1703,9 +1740,9 @@ imapx_parse_status (CamelIMAPXStream *is, GError **error)
 			return NULL;
 	}
 
-	tok = camel_imapx_stream_token (is, &token, &len, NULL);
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 	if (tok == '[') {
-		camel_imapx_stream_atom (is, &token, &len, NULL);
+		camel_imapx_stream_atom (is, &token, &len, cancellable, NULL);
 		sinfo->condition = imapx_tokenise ((gchar *) token, len);
 
 		/* parse any details */
@@ -1718,39 +1755,39 @@ imapx_parse_status (CamelIMAPXStream *is, GError **error)
 			case IMAPX_CLOSED:
 				break;
 			case IMAPX_APPENDUID:
-				sinfo->u.appenduid.uidvalidity = camel_imapx_stream_number (is, NULL);
-				sinfo->u.appenduid.uid = camel_imapx_stream_number (is, NULL);
+				sinfo->u.appenduid.uidvalidity = camel_imapx_stream_number (is, cancellable, NULL);
+				sinfo->u.appenduid.uid = camel_imapx_stream_number (is, cancellable, NULL);
 				break;
 			case IMAPX_COPYUID:
-				sinfo->u.copyuid.uidvalidity = camel_imapx_stream_number (is, NULL);
-				sinfo->u.copyuid.uids = imapx_parse_uids (is, NULL);
-				sinfo->u.copyuid.copied_uids = imapx_parse_uids (is, NULL);
+				sinfo->u.copyuid.uidvalidity = camel_imapx_stream_number (is, cancellable, NULL);
+				sinfo->u.copyuid.uids = imapx_parse_uids (is, cancellable, NULL);
+				sinfo->u.copyuid.copied_uids = imapx_parse_uids (is, cancellable, NULL);
 				break;
 			case IMAPX_NEWNAME:
 				/* the rfc doesn't specify the bnf for this */
-				camel_imapx_stream_astring (is, &token, NULL);
+				camel_imapx_stream_astring (is, &token, cancellable, NULL);
 				sinfo->u.newname.oldname = g_strdup ((gchar *) token);
-				camel_imapx_stream_astring (is, &token, NULL);
+				camel_imapx_stream_astring (is, &token, cancellable, NULL);
 				sinfo->u.newname.newname = g_strdup ((gchar *) token);
 				break;
 			case IMAPX_PERMANENTFLAGS:
 				/* we only care about \* for permanent flags, not user flags */
-				imapx_parse_flags (is, &sinfo->u.permanentflags, NULL, NULL);
+				imapx_parse_flags (is, &sinfo->u.permanentflags, NULL, cancellable, NULL);
 				break;
 			case IMAPX_UIDVALIDITY:
-				sinfo->u.uidvalidity = camel_imapx_stream_number (is, NULL);
+				sinfo->u.uidvalidity = camel_imapx_stream_number (is, cancellable, NULL);
 				break;
 			case IMAPX_UIDNEXT:
-				sinfo->u.uidnext = camel_imapx_stream_number (is, NULL);
+				sinfo->u.uidnext = camel_imapx_stream_number (is, cancellable, NULL);
 				break;
 			case IMAPX_UNSEEN:
-				sinfo->u.unseen = camel_imapx_stream_number (is, NULL);
+				sinfo->u.unseen = camel_imapx_stream_number (is, cancellable, NULL);
 				break;
 			case IMAPX_HIGHESTMODSEQ:
-				sinfo->u.highestmodseq = camel_imapx_stream_number (is, NULL);
+				sinfo->u.highestmodseq = camel_imapx_stream_number (is, cancellable, NULL);
 				break;
 			case IMAPX_CAPABILITY:
-				sinfo->u.cinfo = imapx_parse_capability (is, NULL);
+				sinfo->u.cinfo = imapx_parse_capability (is, cancellable, NULL);
 				break;
 			default:
 				sinfo->condition = IMAPX_UNKNOWN;
@@ -1759,7 +1796,7 @@ imapx_parse_status (CamelIMAPXStream *is, GError **error)
 
 		/* ignore anything we dont know about */
 		do {
-			tok = camel_imapx_stream_token (is, &token, &len, NULL);
+			tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 			if (tok == '\n' || tok < 0) {
 				g_set_error (error, CAMEL_IMAPX_ERROR, 1, "server response truncated");
 				imapx_free_status (sinfo);
@@ -1771,7 +1808,7 @@ imapx_parse_status (CamelIMAPXStream *is, GError **error)
 	}
 
 	/* and take the human readable response */
-	camel_imapx_stream_text (is, (guchar **)&sinfo->text, NULL);
+	camel_imapx_stream_text (is, (guchar **)&sinfo->text, cancellable, NULL);
 
 	return sinfo;
 }
@@ -1833,7 +1870,9 @@ static struct {
 };
 
 struct _list_info *
-imapx_parse_list (CamelIMAPXStream *is, GError **error)
+imapx_parse_list (CamelIMAPXStream *is,
+                  GCancellable *cancellable,
+                  GError **error)
 /* throws io, parse */
 {
 	gint tok, i;
@@ -1847,14 +1886,14 @@ imapx_parse_list (CamelIMAPXStream *is, GError **error)
 	   "\Noselect" / "\Unmarked" / flag_extension) ")"
 	   SPACE (<"> QUOTED_CHAR <"> / nil) SPACE mailbox */
 
-	tok = camel_imapx_stream_token (is, &token, &len, NULL);
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 	if (tok != '(') {
 		g_set_error (error, CAMEL_IMAPX_ERROR, 1, "list: expecting '('");
 		g_free (linfo);
 		return NULL;
 	}
 
-	while ((tok = camel_imapx_stream_token (is, &token, &len, NULL)) != ')') {
+	while ((tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL)) != ')') {
 		if (tok == IMAPX_TOK_STRING || tok == IMAPX_TOK_TOKEN) {
 			p = token;
 			while ((c=*p))
@@ -1869,9 +1908,9 @@ imapx_parse_list (CamelIMAPXStream *is, GError **error)
 		}
 	}
 
-	camel_imapx_stream_nstring (is, &token, NULL);
+	camel_imapx_stream_nstring (is, &token, cancellable, NULL);
 	linfo->separator = token?*token:0;
-	camel_imapx_stream_astring (is, &token, NULL);
+	camel_imapx_stream_astring (is, &token, cancellable, NULL);
 	linfo->name = camel_utf7_utf8 ((gchar *) token);
 
 	return linfo;

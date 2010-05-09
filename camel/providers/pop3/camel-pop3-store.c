@@ -103,8 +103,11 @@ get_valid_utf8_error (const gchar *text)
 
 static gboolean
 connect_to_server (CamelService *service,
-		   const gchar *host, const gchar *serv, gint fallback_port,
+                   const gchar *host,
+                   const gchar *serv,
+                   gint fallback_port,
                    gint ssl_mode,
+                   GCancellable *cancellable,
                    GError **error)
 {
 	CamelPOP3Store *store = CAMEL_POP3_STORE (service);
@@ -141,17 +144,21 @@ connect_to_server (CamelService *service,
 	camel_session_get_socks_proxy (session, &socks_host, &socks_port);
 
 	if (socks_host) {
-		camel_tcp_stream_set_socks_proxy ((CamelTcpStream *) tcp_stream, socks_host, socks_port);
+		camel_tcp_stream_set_socks_proxy (
+			CAMEL_TCP_STREAM (tcp_stream),
+			socks_host, socks_port);
 		g_free (socks_host);
 	}
 
-	if (camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, host, serv, fallback_port, error) == -1) {
+	if (camel_tcp_stream_connect (
+		CAMEL_TCP_STREAM (tcp_stream), host, serv,
+		fallback_port, cancellable, error) == -1) {
 		g_object_unref (tcp_stream);
 		return FALSE;
 	}
 
 	/* parent class connect initialization */
-	if (CAMEL_SERVICE_CLASS (camel_pop3_store_parent_class)->connect (service, error) == FALSE) {
+	if (CAMEL_SERVICE_CLASS (camel_pop3_store_parent_class)->connect (service, cancellable, error) == FALSE) {
 		g_object_unref (tcp_stream);
 		return FALSE;
 	}
@@ -252,6 +259,7 @@ connect_to_server (CamelService *service,
 
 static gboolean
 connect_to_server_wrapper (CamelService *service,
+                           GCancellable *cancellable,
                            GError **error)
 {
 	const gchar *ssl_mode;
@@ -278,12 +286,15 @@ connect_to_server_wrapper (CamelService *service,
 		fallback_port = 0;
 	}
 
-	return connect_to_server (service, service->url->host, serv, fallback_port, mode, error);
+	return connect_to_server (
+		service, service->url->host, serv,
+		fallback_port, mode, cancellable, error);
 }
 
 static gint
 try_sasl (CamelPOP3Store *store,
           const gchar *mech,
+          GCancellable *cancellable,
           GError **error)
 {
 	CamelPOP3Stream *stream = store->engine->stream;
@@ -330,8 +341,8 @@ try_sasl (CamelPOP3Store *store,
 		/* If we dont get continuation, or the sasl object's run out of work, or we dont get a challenge,
 		   its a protocol error, so fail, and try reset the server */
 		if (strncmp((gchar *) line, "+ ", 2) != 0
-		    || camel_sasl_get_authenticated (sasl)
-		    || (resp = (guchar *) camel_sasl_challenge_base64 (sasl, (const gchar *) line+2, error)) == NULL) {
+		    || camel_sasl_get_authenticated(sasl)
+		    || (resp = (guchar *) camel_sasl_challenge_base64(sasl, (const gchar *) line+2, cancellable, NULL)) == NULL) {
 			camel_stream_printf((CamelStream *)stream, "*\r\n");
 			camel_pop3_stream_line (stream, &line, &len);
 			g_set_error (
@@ -366,6 +377,7 @@ static gint
 pop3_try_authenticate (CamelService *service,
                        gboolean reprompt,
                        const gchar *errmsg,
+                       GCancellable *cancellable,
                        GError **error)
 {
 	CamelPOP3Store *store = (CamelPOP3Store *)service;
@@ -441,8 +453,10 @@ pop3_try_authenticate (CamelService *service,
 		l = store->engine->auth;
 		while (l) {
 			auth = l->data;
-			if (strcmp (auth->authproto, service->url->authmech) == 0)
-				return try_sasl (store, service->url->authmech, error);
+			if (strcmp(auth->authproto, service->url->authmech) == 0)
+				return try_sasl (
+					store, service->url->authmech,
+					cancellable, error);
 			l = l->next;
 		}
 
@@ -452,6 +466,7 @@ pop3_try_authenticate (CamelService *service,
 			_("Unable to connect to POP server %s: "
 			  "No support for requested authentication mechanism."),
 			CAMEL_SERVICE (store)->url->host);
+
 		return 0;
 	}
 
@@ -530,6 +545,7 @@ pop3_store_finalize (GObject *object)
 
 static gboolean
 pop3_store_connect (CamelService *service,
+                    GCancellable *cancellable,
                     GError **error)
 {
 	CamelPOP3Store *store = (CamelPOP3Store *)service;
@@ -556,12 +572,13 @@ pop3_store_connect (CamelService *service,
 		}
 	}
 
-	if (!connect_to_server_wrapper (service, error))
+	if (!connect_to_server_wrapper (service, cancellable, error))
 		return FALSE;
 
 	while (1) {
 		status = pop3_try_authenticate (
-			service, reprompt, errbuf, &local_error);
+			service, reprompt, errbuf,
+			cancellable, &local_error);
 		g_free (errbuf);
 		errbuf = NULL;
 
@@ -600,6 +617,7 @@ pop3_store_connect (CamelService *service,
 static gboolean
 pop3_store_disconnect (CamelService *service,
                        gboolean clean,
+                       GCancellable *cancellable,
                        GError **error)
 {
 	CamelServiceClass *service_class;
@@ -616,7 +634,7 @@ pop3_store_disconnect (CamelService *service,
 
 	/* Chain up to parent's disconnect() method. */
 	service_class = CAMEL_SERVICE_CLASS (camel_pop3_store_parent_class);
-	if (!service_class->disconnect (service, clean, error))
+	if (!service_class->disconnect (service, clean, cancellable, error))
 		return FALSE;
 
 	g_object_unref (store->engine);
@@ -627,6 +645,7 @@ pop3_store_disconnect (CamelService *service,
 
 static GList *
 pop3_store_query_auth_types (CamelService *service,
+                             GCancellable *cancellable,
                              GError **error)
 {
 	CamelServiceClass *service_class;
@@ -636,16 +655,17 @@ pop3_store_query_auth_types (CamelService *service,
 
 	/* Chain up to parent's query_auth_types() method. */
 	service_class = CAMEL_SERVICE_CLASS (camel_pop3_store_parent_class);
-	types = service_class->query_auth_types (service, &local_error);
+	types = service_class->query_auth_types (
+		service, cancellable, &local_error);
 
 	if (local_error != NULL) {
 		g_propagate_error (error, local_error);
 		return NULL;
 	}
 
-	if (connect_to_server_wrapper (service, NULL)) {
+	if (connect_to_server_wrapper (service, cancellable, NULL)) {
 		types = g_list_concat (types, g_list_copy (store->engine->auth));
-		pop3_store_disconnect (service, TRUE, NULL);
+		pop3_store_disconnect (service, TRUE, cancellable, NULL);
 	} else {
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
@@ -676,6 +696,7 @@ static CamelFolder *
 pop3_store_get_folder (CamelStore *store,
                        const gchar *folder_name,
                        guint32 flags,
+                       GCancellable *cancellable,
                        GError **error)
 {
 	if (g_ascii_strcasecmp (folder_name, "inbox") != 0) {
@@ -686,11 +707,12 @@ pop3_store_get_folder (CamelStore *store,
 		return NULL;
 	}
 
-	return camel_pop3_folder_new (store, error);
+	return camel_pop3_folder_new (store, cancellable, error);
 }
 
 static CamelFolder *
 pop3_store_get_trash (CamelStore *store,
+                      GCancellable *cancellable,
                       GError **error)
 {
 	/* no-op */
@@ -701,6 +723,7 @@ static CamelFolderInfo *
 pop3_store_get_folder_info (CamelStore *store,
                             const gchar *top,
                             guint32 flags,
+                            GCancellable *cancellable,
                             GError **error)
 {
 	g_set_error (

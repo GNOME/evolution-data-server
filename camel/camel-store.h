@@ -224,32 +224,41 @@ struct _CamelStoreClass {
 	CamelFolder *	(*get_folder)		(CamelStore *store,
 						 const gchar *folder_name,
 						 guint32 flags,
+						 GCancellable *cancellable,
 						 GError **error);
 	CamelFolder *	(*get_inbox)		(CamelStore *store,
+						 GCancellable *cancellable,
 						 GError **error);
 	CamelFolder *	(*get_trash)		(CamelStore *store,
+						 GCancellable *cancellable,
 						 GError **error);
 	CamelFolder *	(*get_junk)		(CamelStore *store,
+						 GCancellable *cancellable,
 						 GError **error);
 	CamelFolderInfo *
 			(*create_folder)	(CamelStore *store,
 						 const gchar *parent_name,
 						 const gchar *folder_name,
+						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(*delete_folder)	(CamelStore *store,
 						 const gchar *folder_name,
+						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(*rename_folder)	(CamelStore *store,
 						 const gchar *old_name,
 						 const gchar *new_name,
+						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(*sync)			(CamelStore *store,
 						 gint expunge,
+						 GCancellable *cancellable,
 						 GError **error);
 	CamelFolderInfo *
 			(*get_folder_info)	(CamelStore *store,
 						 const gchar *top,
 						 guint32 flags,
+						 GCancellable *cancellable,
 						 GError **error);
 	void		(*free_folder_info)	(CamelStore *store,
 						 CamelFolderInfo *fi);
@@ -257,11 +266,14 @@ struct _CamelStoreClass {
 						 const gchar *folder_name);
 	gboolean	(*subscribe_folder)	(CamelStore *store,
 						 const gchar *folder_name,
+						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(*unsubscribe_folder)	(CamelStore *store,
 						 const gchar *folder_name,
+						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(*noop)			(CamelStore *store,
+						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(*can_refresh_folder)	(CamelStore *store,
 						 CamelFolderInfo *info,
@@ -288,24 +300,31 @@ GQuark		camel_store_error_quark		(void) G_GNUC_CONST;
 CamelFolder *	camel_store_get_folder		(CamelStore *store,
 						 const gchar *folder_name,
 						 guint32 flags,
+						 GCancellable *cancellable,
 						 GError **error);
 CamelFolder *	camel_store_get_inbox		(CamelStore *store,
+						 GCancellable *cancellable,
 						 GError **error);
 CamelFolder *	camel_store_get_trash		(CamelStore *store,
+						 GCancellable *cancellable,
 						 GError **error);
 CamelFolder *	camel_store_get_junk		(CamelStore *store,
+						 GCancellable *cancellable,
 						 GError **error);
 CamelFolderInfo *
 		camel_store_create_folder	(CamelStore *store,
 						 const gchar *parent_name,
 						 const gchar *folder_name,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_store_delete_folder	(CamelStore *store,
 						 const gchar *folder_name,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_store_rename_folder	(CamelStore *store,
 						 const gchar *old_namein,
 						 const gchar *new_name,
+						 GCancellable *cancellable,
 						 GError **error);
 void		camel_store_folder_created	(CamelStore *store,
 						 CamelFolderInfo *info);
@@ -320,11 +339,13 @@ void		camel_store_folder_unsubscribed	(CamelStore *store,
 						 CamelFolderInfo *info);
 gboolean	camel_store_sync		(CamelStore *store,
 						 gint expunge,
+						 GCancellable *cancellable,
 						 GError **error);
 CamelFolderInfo *
 		camel_store_get_folder_info	(CamelStore *store,
 						 const gchar *top,
 						 guint32 flags,
+						 GCancellable *cancellable,
 						 GError **error);
 void		camel_store_free_folder_info	(CamelStore *store,
 						 CamelFolderInfo *fi);
@@ -351,11 +372,14 @@ gboolean	camel_store_folder_is_subscribed (CamelStore *store,
 						 const gchar *folder_name);
 gboolean	camel_store_subscribe_folder	(CamelStore *store,
 						 const gchar *folder_name,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_store_unsubscribe_folder	(CamelStore *store,
 						 const gchar *folder_name,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_store_noop		(CamelStore *store,
+						 GCancellable *cancellable,
 						 GError **error);
 gint		camel_store_folder_uri_equal	(CamelStore *store,
 						 const gchar *uri0,

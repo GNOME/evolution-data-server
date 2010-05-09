@@ -917,7 +917,7 @@ folder_read (struct _header_scan_state *s)
 	}
 	if (s->stream) {
 		len = camel_stream_read (
-			s->stream, s->inbuf+inoffset, SCAN_BUF-inoffset, NULL);
+			s->stream, s->inbuf+inoffset, SCAN_BUF-inoffset, NULL, NULL);
 	} else {
 		len = read (s->fd, s->inbuf+inoffset, SCAN_BUF-inoffset);
 	}

@@ -91,16 +91,25 @@ struct _CamelVeeFolderClass {
 
 	/* TODO: Some of this may need some additional work/thinking through, it works for now*/
 
-	void (*add_folder)(CamelVeeFolder *, CamelFolder *);
-	void (*remove_folder)(CamelVeeFolder *, CamelFolder *);
-	gint (*rebuild_folder)(CamelVeeFolder *, CamelFolder *, GError **error);
+	void		(*add_folder)		(CamelVeeFolder *vee_folder,
+						 CamelFolder *folder);
+	void		(*remove_folder)	(CamelVeeFolder *vee_folder,
+						 CamelFolder *folder);
+	gint		(*rebuild_folder)	(CamelVeeFolder *vee_folder,
+						 CamelFolder *folder,
+						 GError **error);
 
-	void (*set_expression)(CamelVeeFolder *, const gchar *);
+	void		(*set_expression)	(CamelVeeFolder *vee_folder,
+						 const gchar *expression);
 
 	/* Called for a folder-changed event on a source folder */
-	void (*folder_changed)(CamelVeeFolder *, CamelFolder *sub, CamelFolderChangeInfo *changes);
+	void		(*folder_changed)	(CamelVeeFolder *vee_folder,
+						 CamelFolder *subfolder,
+						 CamelFolderChangeInfo *changes);
 	/* Called for a folder-renamed event on a source folder */
-	void (*folder_renamed)(CamelVeeFolder *, CamelFolder *sub, const gchar *old);
+	void		(*folder_renamed)	(CamelVeeFolder *vee_folder,
+						 CamelFolder *subfolder,
+						 const gchar *old);
 };
 
 #define CAMEL_UNMATCHED_NAME "UNMATCHED"
@@ -112,7 +121,8 @@ void         camel_vee_folder_construct		(CamelVeeFolder *vf, guint32 flags);
 CamelFolder *camel_vee_folder_get_location (CamelVeeFolder *vf, const struct _CamelVeeMessageInfo *vinfo, gchar **realuid);
 
 void         camel_vee_folder_add_folder        (CamelVeeFolder *vf, CamelFolder *sub);
-void         camel_vee_folder_remove_folder     (CamelVeeFolder *vf, CamelFolder *sub);
+void		camel_vee_folder_remove_folder	(CamelVeeFolder *vf,
+						 CamelFolder *sub);
 void	     camel_vee_folder_set_folders	(CamelVeeFolder *vf, GList *folders);
 gint          camel_vee_folder_rebuild_folder (CamelVeeFolder *vf, CamelFolder *sub, GError **error);
 void	     camel_vee_folder_set_expression	(CamelVeeFolder *vf, const gchar *expr);

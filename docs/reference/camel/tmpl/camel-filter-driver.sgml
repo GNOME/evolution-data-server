@@ -157,6 +157,7 @@ CamelFilterDriver
 @source: 
 @source_url: 
 @original_source_url: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -169,6 +170,7 @@ CamelFilterDriver
 @driver: 
 @mbox: 
 @original_source_url: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -183,6 +185,7 @@ CamelFilterDriver
 @cache: 
 @uids: 
 @remove: 
+@cancellable: 
 @error: 
 @Returns: 
 

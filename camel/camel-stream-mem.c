@@ -89,6 +89,7 @@ static gssize
 stream_mem_read (CamelStream *stream,
                  gchar *buffer,
                  gsize n,
+                 GCancellable *cancellable,
                  GError **error)
 {
 	CamelStreamMemPrivate *priv;
@@ -114,6 +115,7 @@ static gssize
 stream_mem_write (CamelStream *stream,
                   const gchar *buffer,
                   gsize n,
+                  GCancellable *cancellable,
                   GError **error)
 {
 	CamelStreamMemPrivate *priv;

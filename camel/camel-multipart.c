@@ -68,6 +68,7 @@ multipart_finalize (GObject *object)
 static gssize
 multipart_write_to_stream (CamelDataWrapper *data_wrapper,
                            CamelStream *stream,
+                           GCancellable *cancellable,
                            GError **error)
 {
 	CamelMultipart *multipart = CAMEL_MULTIPART (data_wrapper);
@@ -89,7 +90,7 @@ multipart_write_to_stream (CamelDataWrapper *data_wrapper,
 	 */
 	if (multipart->preface) {
 		count = camel_stream_write_string (
-			stream, multipart->preface, error);
+			stream, multipart->preface, cancellable, error);
 		if (count == -1)
 			return -1;
 		total += count;
@@ -108,7 +109,8 @@ multipart_write_to_stream (CamelDataWrapper *data_wrapper,
 		total += count;
 
 		count = camel_data_wrapper_write_to_stream (
-			CAMEL_DATA_WRAPPER (node->data), stream, error);
+			CAMEL_DATA_WRAPPER (node->data),
+			stream, cancellable, error);
 		if (count == -1)
 			return -1;
 		total += count;
@@ -125,7 +127,7 @@ multipart_write_to_stream (CamelDataWrapper *data_wrapper,
 	/* and finally the postface */
 	if (multipart->postface) {
 		count = camel_stream_write_string (
-			stream, multipart->postface, error);
+			stream, multipart->postface, cancellable, error);
 		if (count == -1)
 			return -1;
 		total += count;
@@ -310,7 +312,8 @@ multipart_construct_from_parser (CamelMultipart *multipart,
 	while (camel_mime_parser_step (mp, &buf, &len) != CAMEL_MIME_PARSER_STATE_MULTIPART_END) {
 		camel_mime_parser_unstep (mp);
 		bodypart = camel_mime_part_new ();
-		camel_mime_part_construct_from_parser (bodypart, mp, NULL);
+		camel_mime_part_construct_from_parser (
+			bodypart, mp, NULL, NULL);
 		camel_multipart_add_part (multipart, bodypart);
 		g_object_unref (bodypart);
 	}

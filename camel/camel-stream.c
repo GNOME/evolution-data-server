@@ -38,6 +38,7 @@ static gssize
 stream_read (CamelStream *stream,
              gchar *buffer,
              gsize n,
+             GCancellable *cancellable,
              GError **error)
 {
 	return 0;
@@ -47,6 +48,7 @@ static gssize
 stream_write (CamelStream *stream,
               const gchar *buffer,
               gsize n,
+              GCancellable *cancellable,
               GError **error)
 {
 	return n;
@@ -54,6 +56,7 @@ stream_write (CamelStream *stream,
 
 static gint
 stream_close (CamelStream *stream,
+              GCancellable *cancellable,
               GError **error)
 {
 	return 0;
@@ -61,6 +64,7 @@ stream_close (CamelStream *stream,
 
 static gint
 stream_flush (CamelStream *stream,
+              GCancellable *cancellable,
               GError **error)
 {
 	return 0;
@@ -100,6 +104,7 @@ camel_stream_init (CamelStream *stream)
  * @stream: a #CamelStream object.
  * @buffer: output buffer
  * @n: max number of bytes to read.
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Attempts to read up to @len bytes from @stream into @buf.
@@ -111,6 +116,7 @@ gssize
 camel_stream_read (CamelStream *stream,
                    gchar *buffer,
                    gsize n,
+                   GCancellable *cancellable,
                    GError **error)
 {
 	CamelStreamClass *class;
@@ -122,7 +128,7 @@ camel_stream_read (CamelStream *stream,
 	class = CAMEL_STREAM_GET_CLASS (stream);
 	g_return_val_if_fail (class->read != NULL, -1);
 
-	n_bytes = class->read (stream, buffer, n, error);
+	n_bytes = class->read (stream, buffer, n, cancellable, error);
 	CAMEL_CHECK_GERROR (stream, read, n_bytes >= 0, error);
 
 	return n_bytes;
@@ -133,6 +139,7 @@ camel_stream_read (CamelStream *stream,
  * @stream: a #CamelStream object
  * @buffer: buffer to write.
  * @n: number of bytes to write
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Attempts to write up to @n bytes of @buffer into @stream.
@@ -144,6 +151,7 @@ gssize
 camel_stream_write (CamelStream *stream,
                     const gchar *buffer,
                     gsize n,
+                    GCancellable *cancellable,
                     GError **error)
 {
 	CamelStreamClass *class;
@@ -155,7 +163,7 @@ camel_stream_write (CamelStream *stream,
 	class = CAMEL_STREAM_GET_CLASS (stream);
 	g_return_val_if_fail (class->write != NULL, -1);
 
-	n_bytes = class->write (stream, buffer, n, error);
+	n_bytes = class->write (stream, buffer, n, cancellable, error);
 	CAMEL_CHECK_GERROR (stream, write, n_bytes >= 0, error);
 
 	return n_bytes;
@@ -164,6 +172,7 @@ camel_stream_write (CamelStream *stream,
 /**
  * camel_stream_flush:
  * @stream: a #CamelStream object
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Flushes any buffered data to the stream's backing store.  Only
@@ -173,6 +182,7 @@ camel_stream_write (CamelStream *stream,
  **/
 gint
 camel_stream_flush (CamelStream *stream,
+                    GCancellable *cancellable,
                     GError **error)
 {
 	CamelStreamClass *class;
@@ -183,7 +193,7 @@ camel_stream_flush (CamelStream *stream,
 	class = CAMEL_STREAM_GET_CLASS (stream);
 	g_return_val_if_fail (class->flush != NULL, -1);
 
-	retval = class->flush (stream, error);
+	retval = class->flush (stream, cancellable, error);
 	CAMEL_CHECK_GERROR (stream, flush, retval == 0, error);
 
 	return retval;
@@ -192,6 +202,7 @@ camel_stream_flush (CamelStream *stream,
 /**
  * camel_stream_close:
  * @stream: a #CamelStream object
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Closes the stream.
@@ -200,6 +211,7 @@ camel_stream_flush (CamelStream *stream,
  **/
 gint
 camel_stream_close (CamelStream *stream,
+                    GCancellable *cancellable,
                     GError **error)
 {
 	CamelStreamClass *class;
@@ -210,7 +222,7 @@ camel_stream_close (CamelStream *stream,
 	class = CAMEL_STREAM_GET_CLASS (stream);
 	g_return_val_if_fail (class->close != NULL, -1);
 
-	retval = class->close (stream, error);
+	retval = class->close (stream, cancellable, error);
 	CAMEL_CHECK_GERROR (stream, close, retval == 0, error);
 
 	return retval;
@@ -281,12 +293,14 @@ camel_stream_reset (CamelStream *stream,
 gssize
 camel_stream_write_string (CamelStream *stream,
                            const gchar *string,
+                           GCancellable *cancellable,
                            GError **error)
 {
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
 	g_return_val_if_fail (string != NULL, -1);
 
-	return camel_stream_write (stream, string, strlen (string), error);
+	return camel_stream_write (
+		stream, string, strlen (string), cancellable, error);
 }
 
 /**
@@ -307,6 +321,9 @@ camel_stream_printf (CamelStream *stream,
 	gchar *string;
 	gssize ret;
 
+	/* XXX This function needs to die.  Use a GString to
+	 *     assemble formatted output. */
+
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
 
 	va_start (args, fmt);
@@ -316,7 +333,8 @@ camel_stream_printf (CamelStream *stream,
 	if (string == NULL)
 		return -1;
 
-	ret = camel_stream_write (stream, string, strlen (string), NULL);
+	ret = camel_stream_write (
+		stream, string, strlen (string), NULL, NULL);
 	g_free (string);
 
 	return ret;
@@ -326,6 +344,7 @@ camel_stream_printf (CamelStream *stream,
  * camel_stream_write_to_stream:
  * @stream: source #CamelStream object
  * @output_stream: destination #CamelStream object
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Write all of a stream (until eos) into another stream, in a
@@ -337,6 +356,7 @@ camel_stream_printf (CamelStream *stream,
 gssize
 camel_stream_write_to_stream (CamelStream *stream,
                               CamelStream *output_stream,
+                              GCancellable *cancellable,
                               GError **error)
 {
 	gchar tmp_buf[4096];
@@ -349,7 +369,8 @@ camel_stream_write_to_stream (CamelStream *stream,
 
 	while (!camel_stream_eos (stream)) {
 		nb_read = camel_stream_read (
-			stream, tmp_buf, sizeof (tmp_buf), error);
+			stream, tmp_buf, sizeof (tmp_buf),
+			cancellable, error);
 		if (nb_read < 0)
 			return -1;
 		else if (nb_read > 0) {
@@ -357,8 +378,10 @@ camel_stream_write_to_stream (CamelStream *stream,
 
 			while (nb_written < nb_read) {
 				gssize len = camel_stream_write (
-					output_stream, tmp_buf + nb_written,
-					nb_read - nb_written, error);
+					output_stream,
+					tmp_buf + nb_written,
+					nb_read - nb_written,
+					cancellable, error);
 				if (len < 0)
 					return -1;
 				nb_written += len;

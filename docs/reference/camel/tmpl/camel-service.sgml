@@ -158,6 +158,7 @@ CamelService
 </para>
 
 @service: 
+@cancellable: 
 @error: 
 @Returns: 
 

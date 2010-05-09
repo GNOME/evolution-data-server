@@ -55,8 +55,8 @@ static gint local_summary_decode_x_evolution (CamelLocalSummary *cls, const gcha
 static gchar *local_summary_encode_x_evolution (CamelLocalSummary *cls, const CamelLocalMessageInfo *mi);
 
 static gint local_summary_load (CamelLocalSummary *cls, gint forceindex, GError **error);
-static gint local_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GError **error);
-static gint local_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GError **error);
+static gint local_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
+static gint local_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
 static CamelMessageInfo *local_summary_add (CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, GError **error);
 static gint local_summary_need_index (void);
 
@@ -268,13 +268,14 @@ do_stat_mi (CamelLocalSummary *cls, struct _stat_info *info, CamelMessageInfo *m
 gint
 camel_local_summary_check (CamelLocalSummary *cls,
                            CamelFolderChangeInfo *changeinfo,
+                           GCancellable *cancellable,
                            GError **error)
 {
 	CamelLocalSummaryClass *local_summary_class;
 	gint ret;
 
 	local_summary_class = CAMEL_LOCAL_SUMMARY_GET_CLASS (cls);
-	ret = local_summary_class->check (cls, changeinfo, error);
+	ret = local_summary_class->check (cls, changeinfo, cancellable, error);
 
 #ifdef DOSTATS
 	if (ret != -1) {
@@ -304,13 +305,14 @@ gint
 camel_local_summary_sync (CamelLocalSummary *cls,
                           gboolean expunge,
                           CamelFolderChangeInfo *changeinfo,
+                          GCancellable *cancellable,
                           GError **error)
 {
 	CamelLocalSummaryClass *local_summary_class;
 
 	local_summary_class = CAMEL_LOCAL_SUMMARY_GET_CLASS (cls);
 
-	return local_summary_class->sync (cls, expunge, changeinfo, error);
+	return local_summary_class->sync (cls, expunge, changeinfo, cancellable, error);
 }
 
 CamelMessageInfo *
@@ -416,7 +418,10 @@ camel_local_summary_write_headers (gint fd, struct _camel_header_raw *header, co
 }
 
 static gint
-local_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GError **error)
+local_summary_check (CamelLocalSummary *cls,
+                     CamelFolderChangeInfo *changeinfo,
+                     GCancellable *cancellable,
+                     GError **error)
 {
 	/* FIXME: sync index here ? */
 	return 0;
@@ -426,6 +431,7 @@ static gint
 local_summary_sync (CamelLocalSummary *cls,
                     gboolean expunge,
                     CamelFolderChangeInfo *changeinfo,
+                    GCancellable *cancellable,
                     GError **error)
 {
 	CamelFolderSummary *folder_summary;
@@ -485,7 +491,11 @@ update_summary (CamelFolderSummary *summary, CamelMessageInfoBase *info, CamelMe
 }
 
 static CamelMessageInfo *
-local_summary_add (CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *ci, GError **error)
+local_summary_add (CamelLocalSummary *cls,
+                   CamelMimeMessage *msg,
+                   const CamelMessageInfo *info,
+                   CamelFolderChangeInfo *ci,
+                   GError **error)
 {
 	CamelLocalMessageInfo *mi;
 	CamelFolderSummary *s = (CamelFolderSummary *)cls;
@@ -520,7 +530,7 @@ local_summary_add (CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMes
 		if (mi->info.size == 0) {
 			CamelStreamNull *sn = (CamelStreamNull *)camel_stream_null_new ();
 
-			camel_data_wrapper_write_to_stream ((CamelDataWrapper *)msg, (CamelStream *)sn, NULL);
+			camel_data_wrapper_write_to_stream ((CamelDataWrapper *)msg, (CamelStream *)sn, NULL, NULL);
 			mi->info.size = sn->written;
 			g_object_unref (sn);
 		}

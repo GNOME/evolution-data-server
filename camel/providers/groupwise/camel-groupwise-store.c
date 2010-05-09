@@ -75,8 +75,8 @@ struct _CamelGroupwiseStorePrivate {
 };
 
 extern CamelServiceAuthType camel_groupwise_password_authtype; /*for the query_auth_types function*/
-static CamelFolderInfo *convert_to_folder_info (CamelGroupwiseStore *store, EGwContainer *container, const gchar *url, GError **error);
-static gboolean groupwise_folders_sync (CamelGroupwiseStore *store, GError **error);
+static CamelFolderInfo *convert_to_folder_info (CamelGroupwiseStore *store, EGwContainer *container, const gchar *url, GCancellable *cancellable, GError **error);
+static gboolean groupwise_folders_sync (CamelGroupwiseStore *store, GCancellable *cancellable, GError **error);
 static gint match_path (const gchar *path, const gchar *name);
 
 G_DEFINE_TYPE (CamelGroupwiseStore, camel_groupwise_store, CAMEL_TYPE_OFFLINE_STORE)
@@ -171,7 +171,9 @@ groupwise_compare_folder_name (gconstpointer a, gconstpointer b)
 }
 
 static gboolean
-groupwise_auth_loop (CamelService *service, GError **error)
+groupwise_auth_loop (CamelService *service,
+                     GCancellable *cancellable,
+                     GError **error)
 {
 	CamelSession *session = camel_service_get_session (service);
 	CamelStore *store = CAMEL_STORE (service);
@@ -239,7 +241,9 @@ groupwise_auth_loop (CamelService *service, GError **error)
 }
 
 static gboolean
-check_for_connection (CamelService *service, GError **error)
+check_for_connection (CamelService *service,
+                      GCancellable *cancellable,
+                      GError **error)
 {
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (service);
 	CamelGroupwiseStorePrivate *priv = groupwise_store->priv;
@@ -249,10 +253,10 @@ check_for_connection (CamelService *service, GError **error)
 	memset (&hints, 0, sizeof (hints));
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_family = PF_UNSPEC;
-	ai = camel_getaddrinfo(priv->server_name, "groupwise", &hints, &local_error);
+	ai = camel_getaddrinfo(priv->server_name, "groupwise", &hints, cancellable, &local_error);
 	if (ai == NULL && priv->port != NULL && g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
 		g_clear_error (&local_error);
-		ai = camel_getaddrinfo (priv->server_name, priv->port, &hints, &local_error);
+		ai = camel_getaddrinfo (priv->server_name, priv->port, &hints, cancellable, &local_error);
 	}
 
 	if (ai == NULL) {
@@ -285,7 +289,9 @@ groupwise_store_set_current_folder (CamelGroupwiseStore *groupwise_store, CamelF
 }
 
 static gboolean
-groupwise_connect (CamelService *service, GError **error)
+groupwise_connect (CamelService *service,
+                   GCancellable *cancellable,
+                   GError **error)
 {
 	CamelGroupwiseStore *store = CAMEL_GROUPWISE_STORE (service);
 	CamelGroupwiseStorePrivate *priv = store->priv;
@@ -313,7 +319,7 @@ groupwise_connect (CamelService *service, GError **error)
 		return TRUE;
 	}
 
-	if (!check_for_connection (service, error) || !groupwise_auth_loop (service, error)) {
+	if (!check_for_connection (service, cancellable, error) || !groupwise_auth_loop (service, cancellable, error)) {
 		camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 		camel_service_disconnect (service, TRUE, NULL);
 		return FALSE;
@@ -404,7 +410,10 @@ groupwise_disconnect_cleanup (CamelService *service, gboolean clean, GError **er
 #endif
 
 static gboolean
-groupwise_disconnect (CamelService *service, gboolean clean, GError **error)
+groupwise_disconnect (CamelService *service,
+                      gboolean clean,
+                      GCancellable *cancellable,
+                      GError **error)
 {
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (service);
 
@@ -425,7 +434,9 @@ groupwise_disconnect (CamelService *service, gboolean clean, GError **error)
 }
 
 static  GList*
-groupwise_store_query_auth_types (CamelService *service, GError **error)
+groupwise_store_query_auth_types (CamelService *service,
+                                  GCancellable *cancellable,
+                                  GError **error)
 {
 	GList *auth_types = NULL;
 
@@ -532,7 +543,11 @@ groupwise_forget_folder (CamelGroupwiseStore *gw_store, const gchar *folder_name
 }
 
 static CamelFolder *
-groupwise_get_folder_from_disk (CamelStore *store, const gchar *folder_name, guint32 flags, GError **error)
+groupwise_get_folder_from_disk (CamelStore *store,
+                                const gchar *folder_name,
+                                guint32 flags,
+                                GCancellable *cancellable,
+                                GError **error)
 {
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (store);
 	CamelGroupwiseStorePrivate *priv = gw_store->priv;
@@ -551,14 +566,18 @@ groupwise_get_folder_from_disk (CamelStore *store, const gchar *folder_name, gui
 		return NULL;
 	}
 
-	folder = camel_gw_folder_new (store, folder_name, folder_dir, error);
+	folder = camel_gw_folder_new (store, folder_name, folder_dir, cancellable, error);
 	g_free (folder_dir);
 
 	return folder;
 }
 
 static CamelFolder *
-groupwise_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, GError **error)
+groupwise_get_folder (CamelStore *store,
+                      const gchar *folder_name,
+                      guint32 flags,
+                      GCancellable *cancellable,
+                      GError **error)
 {
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (store);
 	CamelGroupwiseStorePrivate *priv = gw_store->priv;
@@ -575,7 +594,7 @@ groupwise_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags
 	GError *local_error = NULL;
 
 	folder = groupwise_get_folder_from_disk (
-		store, folder_name, flags, &local_error);
+		store, folder_name, flags, cancellable, &local_error);
 	if (folder) {
 		groupwise_store_set_current_folder (gw_store, folder);
 		return folder;
@@ -592,13 +611,13 @@ groupwise_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags
 
 	groupwise_store_set_current_folder (gw_store, NULL);
 
-	if (!camel_groupwise_store_connected (gw_store, error)) {
+	if (!camel_groupwise_store_connected (gw_store, cancellable, error)) {
 		camel_service_unlock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		return NULL;
 	}
 
 	if (!E_IS_GW_CONNECTION ( priv->cnc)) {
-		if (!groupwise_connect (CAMEL_SERVICE (store), error)) {
+		if (!groupwise_connect (CAMEL_SERVICE (store), cancellable, error)) {
 			camel_service_unlock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 			return NULL;
 		}
@@ -609,7 +628,7 @@ groupwise_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags
 	storage_path = g_strdup_printf("%s/folders", priv->storage_path);
 	folder_dir = e_path_to_physical (storage_path, folder_name);
 	g_free (storage_path);
-	folder = camel_gw_folder_new (store, folder_name, folder_dir, NULL);
+	folder = camel_gw_folder_new (store, folder_name, folder_dir, cancellable, NULL);
 	if (!folder) {
 		camel_service_unlock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		g_set_error (
@@ -651,7 +670,8 @@ groupwise_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags
 		}
 
 		camel_operation_start (
-			NULL, _("Fetching summary information for new messages in %s"),
+			cancellable,
+			_("Fetching summary information for new messages in %s"),
 			camel_folder_get_name (folder));
 		camel_folder_summary_clear (folder->summary);
 
@@ -669,15 +689,16 @@ groupwise_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags
 				count += CURSOR_ITEM_LIMIT;
 
 				if (total > 0) {
-						d(printf ("Doing readcursor : [total: %d] [count: %d]\n", total, count));
+					d(printf ("Doing readcursor : [total: %d] [count: %d]\n", total, count));
 
-						if (count > total)
-								count = total;
+					if (count > total)
+						count = total;
 
-						camel_operation_progress (NULL, (100*count)/total);
+					camel_operation_progress (
+						cancellable, (100*count)/total);
 				}
 
-				gw_update_summary (folder, list,  error);
+				gw_update_summary (folder, list, cancellable, error);
 
 				/* For shared-folders created by the user, we don't get the total number of messages,
 				in the getFolderList call. So, we need to wait until an empty list is returned in the
@@ -693,7 +714,7 @@ groupwise_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags
 
 		e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
 
-		camel_operation_end (NULL);
+		camel_operation_end (cancellable);
 	}
 	if (done && all_ok) {
 		if (summary->time_string)
@@ -712,7 +733,11 @@ groupwise_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags
 }
 
 gboolean
-gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guint32 flags, GError **error)
+gw_store_reload_folder (CamelGroupwiseStore *gw_store,
+                        CamelFolder *folder,
+                        guint32 flags,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	CamelGroupwiseStorePrivate *priv = gw_store->priv;
 	CamelGroupwiseSummary *summary;
@@ -732,13 +757,13 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 
 	camel_service_lock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
-	if (!camel_groupwise_store_connected (gw_store, error)) {
+	if (!camel_groupwise_store_connected (gw_store, cancellable, error)) {
 		camel_service_unlock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		return FALSE;
 	}
 
 	if (!E_IS_GW_CONNECTION ( priv->cnc)) {
-		if (!groupwise_connect (CAMEL_SERVICE ((CamelStore*)gw_store), error)) {
+		if (!groupwise_connect (CAMEL_SERVICE ((CamelStore*)gw_store), cancellable, error)) {
 			camel_service_unlock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 			return FALSE;
 		}
@@ -776,7 +801,8 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 			}
 
 			camel_operation_start (
-				NULL, _("Fetching summary information for new messages in %s"),
+				cancellable,
+				_("Fetching summary information for new messages in %s"),
 				camel_folder_get_name (folder));
 
 			while (!done) {
@@ -791,7 +817,7 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 								error, CAMEL_SERVICE_ERROR,
 								CAMEL_SERVICE_ERROR_INVALID,
 								_("Authentication failed"));
-							camel_operation_end (NULL);
+							camel_operation_end (cancellable);
 							g_free (container_id);
 							return FALSE;
 					}
@@ -805,10 +831,11 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 							if (count > total)
 									count = total;
 
-							camel_operation_progress (NULL, (100*count)/total);
+							camel_operation_progress (
+								cancellable, (100 * count) / total);
 					}
 
-					gw_update_summary (folder, list,  error);
+					gw_update_summary (folder, list, cancellable, error);
 
 					/* For shared-folders created by the user, we don't get the total number of messages,
 					   in the getFolderList call. So, we need to wait until an empty list is returned in the
@@ -824,7 +851,7 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 
 			e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
 
-			camel_operation_end (NULL);
+			camel_operation_end (cancellable);
 	}
 
 	if (done) {
@@ -843,7 +870,11 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 }
 
 static CamelFolderInfo *
-convert_to_folder_info (CamelGroupwiseStore *store, EGwContainer *container, const gchar *url, GError **error)
+convert_to_folder_info (CamelGroupwiseStore *store,
+                        EGwContainer *container,
+                        const gchar *url,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	const gchar *name = NULL, *id = NULL, *parent = NULL;
 	gchar *par_name = NULL;
@@ -934,7 +965,7 @@ convert_to_folder_info (CamelGroupwiseStore *store, EGwContainer *container, con
 	if (store->current_folder
 	    && !strcmp (camel_folder_get_full_name (store->current_folder), fi->full_name)
 	    && type != E_GW_CONTAINER_TYPE_INBOX) {
-		CAMEL_FOLDER_GET_CLASS (store->current_folder)->refresh_info (store->current_folder, error);
+		CAMEL_FOLDER_GET_CLASS (store->current_folder)->refresh_info (store->current_folder, cancellable, error);
 	}
 	return fi;
 }
@@ -947,7 +978,9 @@ get_folders_free (gpointer k, gpointer v, gpointer d)
 }
 
 static gboolean
-groupwise_folders_sync (CamelGroupwiseStore *store, GError **error)
+groupwise_folders_sync (CamelGroupwiseStore *store,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	CamelGroupwiseStorePrivate  *priv = store->priv;
 	gint status;
@@ -1013,7 +1046,7 @@ groupwise_folders_sync (CamelGroupwiseStore *store, GError **error)
 		if ((type == E_GW_CONTAINER_TYPE_CALENDAR) || (type == E_GW_CONTAINER_TYPE_CONTACTS))
 			continue;
 
-		info = convert_to_folder_info (store, E_GW_CONTAINER (folder_list->data), (const gchar *)url, error);
+		info = convert_to_folder_info (store, E_GW_CONTAINER (folder_list->data), (const gchar *)url, cancellable, error);
 		if (info) {
 			hfi = g_hash_table_lookup (present, info->full_name);
 			if (hfi == NULL)
@@ -1103,7 +1136,11 @@ groupwise_get_folder_info_offline (CamelStore *store, const gchar *top,
 }
 
 static CamelFolderInfo *
-groupwise_get_folder_info (CamelStore *store, const gchar *top, guint32 flags, GError **error)
+groupwise_get_folder_info (CamelStore *store,
+                           const gchar *top,
+                           guint32 flags,
+                           GCancellable *cancellable,
+                           GError **error)
 {
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (store);
 	CamelFolderInfo *info = NULL;
@@ -1116,7 +1153,7 @@ groupwise_get_folder_info (CamelStore *store, const gchar *top, guint32 flags, G
 
 	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
-	if (!groupwise_folders_sync (groupwise_store, error)) {
+	if (!groupwise_folders_sync (groupwise_store, cancellable, error)) {
 		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		return NULL;
 	}
@@ -1170,9 +1207,10 @@ create_junk_folder (CamelStore *store)
 
 static CamelFolderInfo*
 groupwise_create_folder (CamelStore *store,
-		const gchar *parent_name,
-		const gchar *folder_name,
-		GError **error)
+                         const gchar *parent_name,
+                         const gchar *folder_name,
+                         GCancellable *cancellable,
+                         GError **error)
 {
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (store);
 	CamelGroupwiseStorePrivate  *priv = groupwise_store->priv;
@@ -1211,7 +1249,7 @@ groupwise_create_folder (CamelStore *store,
 		parent_id = "";
 
 	if (!E_IS_GW_CONNECTION ( priv->cnc)) {
-		if (!groupwise_connect (CAMEL_SERVICE (store), error)) {
+		if (!groupwise_connect (CAMEL_SERVICE (store), cancellable, error)) {
 			return NULL;
 		}
 	}
@@ -1235,8 +1273,9 @@ groupwise_create_folder (CamelStore *store,
 
 static gboolean
 groupwise_delete_folder (CamelStore *store,
-				   const gchar *folder_name,
-				   GError **error)
+                         const gchar *folder_name,
+                         GCancellable *cancellable,
+                         GError **error)
 {
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (store);
 	CamelGroupwiseStorePrivate  *priv = groupwise_store->priv;
@@ -1245,7 +1284,7 @@ groupwise_delete_folder (CamelStore *store,
 
 	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
-	if (!camel_groupwise_store_connected (groupwise_store, error)) {
+	if (!camel_groupwise_store_connected (groupwise_store, cancellable, error)) {
 		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		return FALSE;
 	}
@@ -1273,9 +1312,10 @@ groupwise_delete_folder (CamelStore *store,
 
 static gboolean
 groupwise_rename_folder (CamelStore *store,
-			const gchar *old_name,
-			const gchar *new_name,
-			GError **error)
+                         const gchar *old_name,
+                         const gchar *new_name,
+                         GCancellable *cancellable,
+                         GError **error)
 {
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (store);
 	CamelGroupwiseStorePrivate  *priv = groupwise_store->priv;
@@ -1293,7 +1333,7 @@ groupwise_rename_folder (CamelStore *store,
 
 	camel_service_lock (CAMEL_SERVICE (groupwise_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
-	if (!camel_groupwise_store_connected (groupwise_store, error)) {
+	if (!camel_groupwise_store_connected (groupwise_store, cancellable, error)) {
 		camel_service_unlock (CAMEL_SERVICE (groupwise_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		return FALSE;
 	}
@@ -1386,9 +1426,13 @@ groupwise_base_url_lookup (CamelGroupwiseStorePrivate *priv)
 }
 
 static CamelFolder *
-groupwise_get_trash (CamelStore *store, GError **error)
+groupwise_get_trash (CamelStore *store,
+                     GCancellable *cancellable,
+                     GError **error)
 {
-	CamelFolder *folder = camel_store_get_folder(store, "Trash", 0, error);
+	CamelFolder *folder;
+
+	folder = camel_store_get_folder(store, "Trash", 0, cancellable, error);
 	if (folder) {
 		CamelObject *object = CAMEL_OBJECT (folder);
 		 gchar *state = g_build_filename((CAMEL_GROUPWISE_STORE(store))->priv->storage_path, "folders", "Trash", "cmeta", NULL);
@@ -1418,7 +1462,9 @@ groupwise_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, GError *
  * online. Based on an equivalient function in IMAP
  */
 gboolean
-camel_groupwise_store_connected (CamelGroupwiseStore *store, GError **error)
+camel_groupwise_store_connected (CamelGroupwiseStore *store,
+                                 GCancellable *cancellable,
+                                 GError **error)
 {
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL
 	    && camel_service_connect ((CamelService *)store, error)) {
@@ -1426,7 +1472,7 @@ camel_groupwise_store_connected (CamelGroupwiseStore *store, GError **error)
 		CamelGroupwiseStorePrivate *priv = gw_store->priv;
 
 		if (g_hash_table_size (priv->name_hash) == 0)
-			return groupwise_folders_sync ((CamelGroupwiseStore *) gw_store, error);
+			return groupwise_folders_sync ((CamelGroupwiseStore *) gw_store, cancellable, error);
 
 		return TRUE;
 	}

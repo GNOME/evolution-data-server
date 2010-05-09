@@ -7318,6 +7318,22 @@ streams
 
 @cc: 
 
+<!-- ##### FUNCTION camel_operation_register ##### -->
+<para>
+
+</para>
+
+@operation: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_operation_registered ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
 <!-- ##### ENUM camel_operation_status_t ##### -->
 <para>
 
@@ -7332,6 +7348,13 @@ streams
 </para>
 
 @cc: 
+
+<!-- ##### FUNCTION camel_operation_unregister ##### -->
+<para>
+
+</para>
+
+@void: 
 
 <!-- ##### FUNCTION camel_partition_table_get_type ##### -->
 <para>

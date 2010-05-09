@@ -179,6 +179,7 @@ camel_offline_journal_write (CamelOfflineJournal *journal,
 /**
  * camel_offline_journal_replay:
  * @journal: a #CamelOfflineJournal object
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Replay all entries in the journal.
@@ -187,6 +188,7 @@ camel_offline_journal_write (CamelOfflineJournal *journal,
  **/
 gint
 camel_offline_journal_replay (CamelOfflineJournal *journal,
+                              GCancellable *cancellable,
                               GError **error)
 {
 	CamelDListNode *entry, *next;
@@ -196,7 +198,8 @@ camel_offline_journal_replay (CamelOfflineJournal *journal,
 	entry = journal->queue.head;
 	while (entry->next) {
 		next = entry->next;
-		if (CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_play (journal, entry, &local_error) == -1) {
+		if (CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_play (
+			journal, entry, cancellable, &local_error) == -1) {
 			if (failed == 0) {
 				g_propagate_error (error, local_error);
 				local_error = NULL;

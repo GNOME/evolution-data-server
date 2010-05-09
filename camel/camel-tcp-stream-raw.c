@@ -261,18 +261,25 @@ _set_g_error_from_errno (GError **error, gboolean eintr_means_cancelled)
 }
 
 static gssize
-read_from_prfd (PRFileDesc *fd, gchar *buffer, gsize n, GError **error)
+read_from_prfd (PRFileDesc *fd,
+                gchar *buffer,
+                gsize n,
+                GCancellable *cancellable,
+                GError **error)
 {
-	PRFileDesc *cancel_fd;
+	PRFileDesc *cancel_fd = NULL;
 	gssize nread;
 
-	if (camel_operation_cancel_check (NULL)) {
+	if (g_cancellable_is_cancelled (cancellable)) {
 		errno = EINTR;
 		_set_g_error_from_errno (error, TRUE);
 		return -1;
 	}
 
-	cancel_fd = camel_operation_cancel_prfd (NULL);
+	if (CAMEL_IS_OPERATION (cancellable))
+		cancel_fd = camel_operation_cancel_prfd (
+			CAMEL_OPERATION (cancellable));
+
 	if (cancel_fd == NULL) {
 		do {
 			nread = PR_Read (fd, buffer, n);
@@ -350,27 +357,35 @@ static gssize
 tcp_stream_raw_read (CamelStream *stream,
                      gchar *buffer,
                      gsize n,
+                     GCancellable *cancellable,
                      GError **error)
 {
 	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
 	CamelTcpStreamRawPrivate *priv = raw->priv;
 
-	return read_from_prfd (priv->sockfd, buffer, n, error);
+	return read_from_prfd (priv->sockfd, buffer, n, cancellable, error);
 }
 
 static gssize
-write_to_prfd (PRFileDesc *fd, const gchar *buffer, gsize n, GError **error)
+write_to_prfd (PRFileDesc *fd,
+               const gchar *buffer,
+               gsize n,
+               GCancellable *cancellable,
+               GError **error)
 {
+	PRFileDesc *cancel_fd = NULL;
 	gssize w, written = 0;
-	PRFileDesc *cancel_fd;
 
-	if (camel_operation_cancel_check (NULL)) {
+	if (g_cancellable_is_cancelled (cancellable)) {
 		errno = EINTR;
 		_set_g_error_from_errno (error, TRUE);
 		return -1;
 	}
 
-	cancel_fd = camel_operation_cancel_prfd (NULL);
+	if (CAMEL_IS_OPERATION (cancellable))
+		cancel_fd = camel_operation_cancel_prfd (
+			CAMEL_OPERATION (cancellable));
+
 	if (cancel_fd == NULL) {
 		do {
 			do {
@@ -457,16 +472,18 @@ static gssize
 tcp_stream_raw_write (CamelStream *stream,
                       const gchar *buffer,
                       gsize n,
+                      GCancellable *cancellable,
                       GError **error)
 {
 	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
 	CamelTcpStreamRawPrivate *priv = raw->priv;
 
-	return write_to_prfd (priv->sockfd, buffer, n, error);
+	return write_to_prfd (priv->sockfd, buffer, n, cancellable, error);
 }
 
 static gint
 tcp_stream_raw_flush (CamelStream *stream,
+                      GCancellable *cancellable,
                       GError **error)
 {
 #if 0
@@ -480,6 +497,7 @@ tcp_stream_raw_flush (CamelStream *stream,
 
 static gint
 tcp_stream_raw_close (CamelStream *stream,
+                      GCancellable *cancellable,
                       GError **error)
 {
 	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
@@ -546,10 +564,12 @@ sockaddr_to_praddr (struct sockaddr *s, gint len, PRNetAddr *addr)
 }
 
 static PRFileDesc *
-socket_connect (struct addrinfo *host, GError **error)
+socket_connect (struct addrinfo *host,
+                GCancellable *cancellable,
+                GError **error)
 {
 	PRNetAddr netaddr;
-	PRFileDesc *fd, *cancel_fd;
+	PRFileDesc *fd, *cancel_fd = NULL;
 
 	if (sockaddr_to_praddr (host->ai_addr, host->ai_addrlen, &netaddr) != 0) {
 		errno = EINVAL;
@@ -564,7 +584,9 @@ socket_connect (struct addrinfo *host, GError **error)
 		return NULL;
 	}
 
-	cancel_fd = camel_operation_cancel_prfd (NULL);
+	if (CAMEL_IS_OPERATION (cancellable))
+		cancel_fd = camel_operation_cancel_prfd (
+			CAMEL_OPERATION (cancellable));
 
 	if (PR_Connect (fd, &netaddr, cancel_fd?0:CONNECT_TIMEOUT) == PR_FAILURE) {
 		gint errnosave;
@@ -629,7 +651,11 @@ out:
  * negotiate anything with the proxy; this is just to create the socket and connect.
  */
 static PRFileDesc *
-connect_to_proxy (CamelTcpStreamRaw *raw, const gchar *proxy_host, gint proxy_port, GError **error)
+connect_to_proxy (CamelTcpStreamRaw *raw,
+                  const gchar *proxy_host,
+                  gint proxy_port,
+                  GCancellable *cancellable,
+                  GError **error)
 {
 	struct addrinfo *addr, *ai, hints;
 	gchar serv[16];
@@ -645,7 +671,8 @@ connect_to_proxy (CamelTcpStreamRaw *raw, const gchar *proxy_host, gint proxy_po
 	memset (&hints, 0, sizeof (hints));
 	hints.ai_socktype = SOCK_STREAM;
 
-	addr = camel_getaddrinfo (proxy_host, serv, &hints, error);
+	addr = camel_getaddrinfo (
+		proxy_host, serv, &hints, cancellable, error);
 	if (!addr)
 		return NULL;
 
@@ -653,7 +680,7 @@ connect_to_proxy (CamelTcpStreamRaw *raw, const gchar *proxy_host, gint proxy_po
 
 	ai = addr;
 	while (ai) {
-		fd = socket_connect (ai, error);
+		fd = socket_connect (ai, cancellable, error);
 		if (fd)
 			goto out;
 
@@ -679,7 +706,12 @@ out:
  * connect_addr; if you want to traverse all the addrinfos, call this function for each of them.
  */
 static PRFileDesc *
-connect_to_socks4_proxy (CamelTcpStreamRaw *raw, const gchar *proxy_host, gint proxy_port, struct addrinfo *connect_addr, GError **error)
+connect_to_socks4_proxy (CamelTcpStreamRaw *raw,
+                         const gchar *proxy_host,
+                         gint proxy_port,
+                         struct addrinfo *connect_addr,
+                         GCancellable *cancellable,
+                         GError **error)
 {
 	PRFileDesc *fd;
 	gchar request[9];
@@ -689,7 +721,8 @@ connect_to_socks4_proxy (CamelTcpStreamRaw *raw, const gchar *proxy_host, gint p
 
 	g_assert (connect_addr->ai_addr->sa_family == AF_INET);
 
-	fd = connect_to_proxy (raw, proxy_host, proxy_port, error);
+	fd = connect_to_proxy (
+		raw, proxy_host, proxy_port, cancellable, error);
 	if (!fd)
 		goto error;
 
@@ -702,13 +735,13 @@ connect_to_socks4_proxy (CamelTcpStreamRaw *raw, const gchar *proxy_host, gint p
 	request[8] = 0x00;				/* terminator */
 
 	d (g_print ("  writing SOCKS4 request to connect to actual host\n"));
-	if (write_to_prfd (fd, request, sizeof (request), error) != sizeof (request)) {
+	if (write_to_prfd (fd, request, sizeof (request), cancellable, error) != sizeof (request)) {
 		d (g_print ("  failed: %d\n", errno));
 		goto error;
 	}
 
 	d (g_print ("  reading SOCKS4 reply\n"));
-	if (read_from_prfd (fd, reply, sizeof (reply), error) != sizeof (reply)) {
+	if (read_from_prfd (fd, reply, sizeof (reply), cancellable, error) != sizeof (reply)) {
 		d (g_print ("  failed: %d\n", errno));
 		g_set_error (error, CAMEL_PROXY_ERROR, CAMEL_PROXY_ERROR_PROXY_NOT_SUPPORTED,
 			     _("The proxy host does not support SOCKS4"));
@@ -762,7 +795,10 @@ out:
 
 /* Resolves a port number using getaddrinfo().  Returns 0 if the port can't be resolved or if the operation is cancelled */
 static gint
-resolve_port (const gchar *service, gint fallback_port, GError **error)
+resolve_port (const gchar *service,
+              gint fallback_port,
+              GCancellable *cancellable,
+              GError **error)
 {
 	struct addrinfo *ai;
 	GError *my_error;
@@ -775,7 +811,8 @@ resolve_port (const gchar *service, gint fallback_port, GError **error)
 	 * from the standard getaddrinfo(), which lets you pass a NULL hostname
 	 * if you just want to resolve a port number.
 	 */
-	ai = camel_getaddrinfo ("localhost", service, NULL, &my_error);
+	ai = camel_getaddrinfo (
+		"localhost", service, NULL, cancellable, &my_error);
 	if (ai == NULL && fallback_port != 0 && !g_error_matches (my_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
 		port = fallback_port;
 	else if (ai == NULL) {
@@ -802,7 +839,10 @@ resolve_port (const gchar *service, gint fallback_port, GError **error)
 }
 
 static gboolean
-socks5_initiate_and_request_authentication (CamelTcpStreamRaw *raw, PRFileDesc *fd, GError **error)
+socks5_initiate_and_request_authentication (CamelTcpStreamRaw *raw,
+                                            PRFileDesc *fd,
+                                            GCancellable *cancellable,
+                                            GError **error)
 {
 	gchar request[3];
 	gchar reply[2];
@@ -812,13 +852,13 @@ socks5_initiate_and_request_authentication (CamelTcpStreamRaw *raw, PRFileDesc *
 	request[2] = 0;		/* no authentication, please - extending this is left as an exercise for the reader */
 
 	d (g_print ("  writing SOCKS5 request for authentication\n"));
-	if (write_to_prfd (fd, request, sizeof (request), error) != sizeof (request)) {
+	if (write_to_prfd (fd, request, sizeof (request), cancellable, error) != sizeof (request)) {
 		d (g_print ("  failed: %d\n", errno));
 		return FALSE;
 	}
 
 	d (g_print ("  reading SOCKS5 reply\n"));
-	if (read_from_prfd (fd, reply, sizeof (reply), error) != sizeof (reply)) {
+	if (read_from_prfd (fd, reply, sizeof (reply), cancellable, error) != sizeof (reply)) {
 		d (g_print ("  failed: %d\n", errno));
 		g_clear_error (error);
 		g_set_error (error, CAMEL_PROXY_ERROR, CAMEL_PROXY_ERROR_PROXY_NOT_SUPPORTED,
@@ -859,7 +899,10 @@ socks5_reply_error_to_string (gchar error_code)
 }
 
 static gboolean
-socks5_consume_reply_address (CamelTcpStreamRaw *raw, PRFileDesc *fd, GError **error)
+socks5_consume_reply_address (CamelTcpStreamRaw *raw,
+                              PRFileDesc *fd,
+                              GCancellable *cancellable,
+                              GError **error)
 {
 	gchar address_type;
 	gint bytes_to_consume;
@@ -867,7 +910,7 @@ socks5_consume_reply_address (CamelTcpStreamRaw *raw, PRFileDesc *fd, GError **e
 
 	address_and_port = NULL;
 
-	if (read_from_prfd (fd, &address_type, sizeof (address_type), error) != sizeof (address_type))
+	if (read_from_prfd (fd, &address_type, sizeof (address_type), cancellable, error) != sizeof (address_type))
 		goto incomplete_reply;
 
 	if (address_type == 0x01)
@@ -879,7 +922,7 @@ socks5_consume_reply_address (CamelTcpStreamRaw *raw, PRFileDesc *fd, GError **e
 
 		/* we'll get an octet with the address length, and then the address itself */
 
-		if (read_from_prfd (fd, (gchar *) &address_len, sizeof (address_len), error) != sizeof (address_len))
+		if (read_from_prfd (fd, (gchar *) &address_len, sizeof (address_len), cancellable, error) != sizeof (address_len))
 			goto incomplete_reply;
 
 		bytes_to_consume = address_len;
@@ -891,7 +934,7 @@ socks5_consume_reply_address (CamelTcpStreamRaw *raw, PRFileDesc *fd, GError **e
 	bytes_to_consume += 2; /* 2 octets for port number */
 	address_and_port = g_new (gchar, bytes_to_consume);
 
-	if (read_from_prfd (fd, address_and_port, bytes_to_consume, error) != bytes_to_consume)
+	if (read_from_prfd (fd, address_and_port, bytes_to_consume, cancellable, error) != bytes_to_consume)
 		goto incomplete_reply;
 
 	g_free (address_and_port); /* Currently we don't do anything to these; maybe some authenticated method will need them later */
@@ -907,7 +950,12 @@ incomplete_reply:
 }
 
 static gboolean
-socks5_request_connect (CamelTcpStreamRaw *raw, PRFileDesc *fd, const gchar *host, gint port, GError **error)
+socks5_request_connect (CamelTcpStreamRaw *raw,
+                        PRFileDesc *fd,
+                        const gchar *host,
+                        gint port,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	gchar *request;
 	gchar reply[3];
@@ -934,7 +982,7 @@ socks5_request_connect (CamelTcpStreamRaw *raw, PRFileDesc *fd, const gchar *hos
 	request[5 + host_len + 1] = port & 0xff;      /* low byte of port */
 
 	d (g_print ("  writing SOCKS5 request for connection\n"));
-	num_written = write_to_prfd (fd, request, request_len, error);
+	num_written = write_to_prfd (fd, request, request_len, cancellable, error);
 	g_free (request);
 
 	if (num_written != request_len) {
@@ -943,7 +991,7 @@ socks5_request_connect (CamelTcpStreamRaw *raw, PRFileDesc *fd, const gchar *hos
 	}
 
 	d (g_print ("  reading SOCKS5 reply\n"));
-	if (read_from_prfd (fd, reply, sizeof (reply), error) != sizeof (reply)) {
+	if (read_from_prfd (fd, reply, sizeof (reply), cancellable, error) != sizeof (reply)) {
 		d (g_print ("  failed: %d\n", errno));
 		return FALSE;
 	}
@@ -967,7 +1015,7 @@ socks5_request_connect (CamelTcpStreamRaw *raw, PRFileDesc *fd, const gchar *hos
 	 * identify to the final host.  This is of variable length, so we must
 	 * consume it by hand.
 	 */
-	if (!socks5_consume_reply_address (raw, fd, error))
+	if (!socks5_consume_reply_address (raw, fd, cancellable, error))
 		return FALSE;
 
 	return TRUE;
@@ -976,25 +1024,30 @@ socks5_request_connect (CamelTcpStreamRaw *raw, PRFileDesc *fd, const gchar *hos
 /* RFC 1928 - SOCKS protocol version 5 */
 static PRFileDesc *
 connect_to_socks5_proxy (CamelTcpStreamRaw *raw,
-			 const gchar *proxy_host, gint proxy_port,
-			 const gchar *host, const gchar *service, gint fallback_port,
-			 GError **error)
+                         const gchar *proxy_host,
+                         gint proxy_port,
+                         const gchar *host,
+                         const gchar *service,
+                         gint fallback_port,
+                         GCancellable *cancellable,
+                         GError **error)
 {
 	PRFileDesc *fd;
 	gint port;
 
-	fd = connect_to_proxy (raw, proxy_host, proxy_port, error);
+	fd = connect_to_proxy (
+		raw, proxy_host, proxy_port, cancellable, error);
 	if (!fd)
 		goto error;
 
-	port = resolve_port (service, fallback_port, error);
+	port = resolve_port (service, fallback_port, cancellable, error);
 	if (port == 0)
 		goto error;
 
-	if (!socks5_initiate_and_request_authentication (raw, fd, error))
+	if (!socks5_initiate_and_request_authentication (raw, fd, cancellable, error))
 		goto error;
 
-	if (!socks5_request_connect (raw, fd, host, port, error))
+	if (!socks5_request_connect (raw, fd, host, port, cancellable, error))
 		goto error;
 
 	d (g_print ("  success\n"));
@@ -1024,7 +1077,10 @@ out:
 
 static gint
 tcp_stream_raw_connect (CamelTcpStream *stream,
-			const gchar *host, const gchar *service, gint fallback_port,
+                        const gchar *host,
+                        const gchar *service,
+                        gint fallback_port,
+                        GCancellable *cancellable,
                         GError **error)
 {
 	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
@@ -1042,7 +1098,9 @@ tcp_stream_raw_connect (CamelTcpStream *stream,
 		/* First, try SOCKS5, which does name resolution itself */
 
 		my_error = NULL;
-		priv->sockfd = connect_to_socks5_proxy (raw, proxy_host, proxy_port, host, service, fallback_port, &my_error);
+		priv->sockfd = connect_to_socks5_proxy (
+			raw, proxy_host, proxy_port, host, service,
+			fallback_port, cancellable, &my_error);
 		if (priv->sockfd)
 			return 0;
 		else if (g_error_matches (my_error, CAMEL_PROXY_ERROR, CAMEL_PROXY_ERROR_CANT_AUTHENTICATE)
@@ -1059,13 +1117,15 @@ tcp_stream_raw_connect (CamelTcpStream *stream,
 	hints.ai_family = PF_UNSPEC;
 
 	my_error = NULL;
-	addr = camel_getaddrinfo (host, service, &hints, &my_error);
+	addr = camel_getaddrinfo (
+		host, service, &hints, cancellable, &my_error);
 	if (addr == NULL && fallback_port != 0 && !g_error_matches (my_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
 		gchar str_port[16];
 
 		g_clear_error (&my_error);
 		sprintf (str_port, "%d", fallback_port);
-		addr = camel_getaddrinfo (host, str_port, &hints, &my_error);
+		addr = camel_getaddrinfo (
+			host, str_port, &hints, cancellable, &my_error);
 	}
 
 	if (addr == NULL) {
@@ -1079,9 +1139,11 @@ tcp_stream_raw_connect (CamelTcpStream *stream,
 		if (proxy_host) {
 			/* SOCKS4 only does IPv4 */
 			if (ai->ai_addr->sa_family == AF_INET)
-				priv->sockfd = connect_to_socks4_proxy (raw, proxy_host, proxy_port, ai, error);
+				priv->sockfd = connect_to_socks4_proxy (
+					raw, proxy_host, proxy_port,
+					ai, cancellable, error);
 		} else
-			priv->sockfd = socket_connect (ai, error);
+			priv->sockfd = socket_connect (ai, cancellable, error);
 
 		if (priv->sockfd) {
 			retval = 0;

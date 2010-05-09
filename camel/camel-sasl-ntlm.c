@@ -661,6 +661,7 @@ deskey (DES_KS k, guchar *key, gint decrypt)
 static GByteArray *
 sasl_ntlm_challenge (CamelSasl *sasl,
                      GByteArray *token,
+                     GCancellable *cancellable,
                      GError **error)
 {
 	CamelService *service;

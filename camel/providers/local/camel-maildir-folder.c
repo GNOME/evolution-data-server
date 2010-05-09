@@ -41,89 +41,15 @@
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 
-static CamelLocalSummary *maildir_create_summary (CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index);
-
-static gboolean maildir_append_message (CamelFolder * folder, CamelMimeMessage * message, const CamelMessageInfo *info, gchar **appended_uid, GError **error);
-static CamelMimeMessage *maildir_get_message (CamelFolder * folder, const gchar * uid, GError **error);
-static gchar * maildir_get_filename (CamelFolder *folder, const gchar *uid, GError **error);
-static gint maildir_cmp_uids (CamelFolder *folder, const gchar *uid1, const gchar *uid2);
-static void maildir_sort_uids (CamelFolder *folder, GPtrArray *uids);
-static gboolean maildir_transfer_messages_to (CamelFolder *source, GPtrArray *uids, CamelFolder *dest, GPtrArray **transferred_uids, gboolean delete_originals, GError **error);
-
 G_DEFINE_TYPE (CamelMaildirFolder, camel_maildir_folder, CAMEL_TYPE_LOCAL_FOLDER)
 
-static void
-camel_maildir_folder_class_init (CamelMaildirFolderClass *class)
-{
-	CamelFolderClass *folder_class;
-	CamelLocalFolderClass *local_folder_class;
-
-	folder_class = CAMEL_FOLDER_CLASS (class);
-	folder_class->append_message = maildir_append_message;
-	folder_class->get_message = maildir_get_message;
-	folder_class->get_filename = maildir_get_filename;
-	folder_class->cmp_uids = maildir_cmp_uids;
-	folder_class->sort_uids = maildir_sort_uids;
-	folder_class->transfer_messages_to = maildir_transfer_messages_to;
-
-	local_folder_class = CAMEL_LOCAL_FOLDER_CLASS (class);
-	local_folder_class->create_summary = maildir_create_summary;
-}
-
-static void
-camel_maildir_folder_init (CamelMaildirFolder *maildir_folder)
-{
-}
-
-CamelFolder *
-camel_maildir_folder_new (CamelStore *parent_store,
-                          const gchar *full_name,
-                          guint32 flags,
-                          GError **error)
-{
-	CamelFolder *folder;
-	gchar *basename;
-
-	d(printf("Creating maildir folder: %s\n", full_name));
-
-	if (g_strcmp0 (full_name, ".") == 0)
-		basename = g_strdup (_("Inbox"));
-	else
-		basename = g_path_get_basename (full_name);
-
-	folder = g_object_new (
-		CAMEL_TYPE_MAILDIR_FOLDER,
-		"name", basename, "full-name", full_name,
-		"parent-store", parent_store, NULL);
-
-	if (parent_store->flags & CAMEL_STORE_FILTER_INBOX
-	    && strcmp(full_name, ".") == 0)
-		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
-
-	folder = (CamelFolder *) camel_local_folder_construct (
-		CAMEL_LOCAL_FOLDER (folder), flags, error);
-
-	g_free (basename);
-
-	return folder;
-}
-
-static CamelLocalSummary *
-maildir_create_summary (CamelLocalFolder *lf,
-                        const gchar *path,
-                        const gchar *folder,
-                        CamelIndex *index)
-{
-	return (CamelLocalSummary *) camel_maildir_summary_new (
-		CAMEL_FOLDER (lf), path, folder, index);
-}
-
 static gboolean
-maildir_append_message (CamelFolder *folder,
-                        CamelMimeMessage *message,
-                        const CamelMessageInfo *info,
-                        gchar **appended_uid,
-                        GError **error)
+maildir_folder_append_message (CamelFolder *folder,
+                               CamelMimeMessage *message,
+                               const CamelMessageInfo *info,
+                               gchar **appended_uid,
+                               GCancellable *cancellable,
+                               GError **error)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelStream *output_stream;
@@ -160,8 +86,8 @@ maildir_append_message (CamelFolder *folder,
 		goto fail_write;
 
 	if (camel_data_wrapper_write_to_stream (
-		(CamelDataWrapper *)message, output_stream, error) == -1
-	    || camel_stream_close (output_stream, error) == -1)
+		(CamelDataWrapper *)message, output_stream, cancellable, error) == -1
+	    || camel_stream_close (output_stream, cancellable, error) == -1)
 		goto fail_write;
 
 	/* now move from tmp to cur (bypass new, does it matter?) */
@@ -216,38 +142,11 @@ maildir_append_message (CamelFolder *folder,
 	return success;
 }
 
-static gchar *
-maildir_get_filename (CamelFolder *folder,
-                      const gchar *uid,
-                      GError **error)
-{
-	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
-	CamelMaildirMessageInfo *mdi;
-	CamelMessageInfo *info;
-	gchar *res;
-
-	/* get the message summary info */
-	if ((info = camel_folder_summary_uid (folder->summary, uid)) == NULL) {
-		set_cannot_get_message_ex (
-			error, CAMEL_FOLDER_ERROR_INVALID_UID,
-			uid, lf->folder_path, _("No such message"));
-		return NULL;
-	}
-
-	mdi = (CamelMaildirMessageInfo *)info;
-
-	/* what do we do if the message flags (and :info data) changes?  filename mismatch - need to recheck I guess */
-	res = g_strdup_printf("%s/cur/%s", lf->folder_path, camel_maildir_info_filename (mdi));
-
-	camel_message_info_free (info);
-
-	return res;
-}
-
 static CamelMimeMessage *
-maildir_get_message (CamelFolder *folder,
-                     const gchar *uid,
-                     GError **error)
+maildir_folder_get_message (CamelFolder *folder,
+                            const gchar *uid,
+                            GCancellable *cancellable,
+                            GError **error)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelStream *message_stream = NULL;
@@ -286,7 +185,7 @@ maildir_get_message (CamelFolder *folder,
 	}
 
 	message = camel_mime_message_new ();
-	if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *)message, message_stream, error) == -1) {
+	if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *)message, message_stream, cancellable, error) == -1) {
 		g_prefix_error (
 			error, _("Cannot get message %s from folder %s: "),
 			uid, lf->folder_path);
@@ -309,9 +208,9 @@ maildir_get_message (CamelFolder *folder,
 }
 
 static gint
-maildir_cmp_uids (CamelFolder *folder,
-                  const gchar *uid1,
-                  const gchar *uid2)
+maildir_folder_cmp_uids (CamelFolder *folder,
+                         const gchar *uid1,
+                         const gchar *uid2)
 {
 	CamelMessageInfo *a, *b;
 	time_t tma, tmb;
@@ -335,8 +234,8 @@ maildir_cmp_uids (CamelFolder *folder,
 }
 
 static void
-maildir_sort_uids (CamelFolder *folder,
-                   GPtrArray *uids)
+maildir_folder_sort_uids (CamelFolder *folder,
+                          GPtrArray *uids)
 {
 	g_return_if_fail (camel_maildir_folder_parent_class != NULL);
 	g_return_if_fail (folder != NULL);
@@ -349,12 +248,13 @@ maildir_sort_uids (CamelFolder *folder,
 }
 
 static gboolean
-maildir_transfer_messages_to (CamelFolder *source,
-                              GPtrArray *uids,
-                              CamelFolder *dest,
-                              GPtrArray **transferred_uids,
-                              gboolean delete_originals,
-                              GError **error)
+maildir_folder_transfer_messages_to (CamelFolder *source,
+                                     GPtrArray *uids,
+                                     CamelFolder *dest,
+                                     GPtrArray **transferred_uids,
+                                     gboolean delete_originals,
+                                     GCancellable *cancellable,
+                                     GError **error)
 {
 	gboolean fallback = FALSE;
 
@@ -363,7 +263,7 @@ maildir_transfer_messages_to (CamelFolder *source,
 		CamelLocalFolder *lf = (CamelLocalFolder *) source;
 		CamelLocalFolder *df = (CamelLocalFolder *) dest;
 
-		camel_operation_start(NULL, _("Moving messages"));
+		camel_operation_start (cancellable, _("Moving messages"));
 
 		camel_folder_freeze (dest);
 		camel_folder_freeze (source);
@@ -402,7 +302,9 @@ maildir_transfer_messages_to (CamelFolder *source,
 					break;
 				}
 			} else {
-				camel_folder_set_message_flags (source, uid, CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_SEEN, ~0);
+				camel_folder_set_message_flags (
+					source, uid, CAMEL_MESSAGE_DELETED |
+					CAMEL_MESSAGE_SEEN, ~0);
 				camel_folder_summary_remove (source->summary, info);
 			}
 
@@ -414,7 +316,7 @@ maildir_transfer_messages_to (CamelFolder *source,
 		camel_folder_thaw (source);
 		camel_folder_thaw (dest);
 
-		camel_operation_end (NULL);
+		camel_operation_end (cancellable);
 	} else
 		fallback = TRUE;
 
@@ -425,8 +327,104 @@ maildir_transfer_messages_to (CamelFolder *source,
 		folder_class = CAMEL_FOLDER_CLASS (camel_maildir_folder_parent_class);
 		return folder_class->transfer_messages_to (
 			source, uids, dest, transferred_uids,
-			delete_originals, error);
+			delete_originals, cancellable, error);
 	}
 
 	return TRUE;
 }
+
+static gchar *
+maildir_folder_get_filename (CamelFolder *folder,
+                             const gchar *uid,
+                             GError **error)
+{
+	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
+	CamelMaildirMessageInfo *mdi;
+	CamelMessageInfo *info;
+	gchar *res;
+
+	/* get the message summary info */
+	if ((info = camel_folder_summary_uid (folder->summary, uid)) == NULL) {
+		set_cannot_get_message_ex (
+			error, CAMEL_FOLDER_ERROR_INVALID_UID,
+			uid, lf->folder_path, _("No such message"));
+		return NULL;
+	}
+
+	mdi = (CamelMaildirMessageInfo *)info;
+
+	/* what do we do if the message flags (and :info data) changes?  filename mismatch - need to recheck I guess */
+	res = g_strdup_printf("%s/cur/%s", lf->folder_path, camel_maildir_info_filename (mdi));
+
+	camel_message_info_free (info);
+
+	return res;
+}
+
+static CamelLocalSummary *
+maildir_folder_create_summary (CamelLocalFolder *lf,
+                               const gchar *path,
+                               const gchar *folder,
+                               CamelIndex *index)
+{
+	return (CamelLocalSummary *) camel_maildir_summary_new (
+		CAMEL_FOLDER (lf), path, folder, index);
+}
+
+static void
+camel_maildir_folder_class_init (CamelMaildirFolderClass *class)
+{
+	CamelFolderClass *folder_class;
+	CamelLocalFolderClass *local_folder_class;
+
+	folder_class = CAMEL_FOLDER_CLASS (class);
+	folder_class->append_message = maildir_folder_append_message;
+	folder_class->get_message = maildir_folder_get_message;
+	folder_class->cmp_uids = maildir_folder_cmp_uids;
+	folder_class->sort_uids = maildir_folder_sort_uids;
+	folder_class->transfer_messages_to = maildir_folder_transfer_messages_to;
+	folder_class->get_filename = maildir_folder_get_filename;
+
+	local_folder_class = CAMEL_LOCAL_FOLDER_CLASS (class);
+	local_folder_class->create_summary = maildir_folder_create_summary;
+}
+
+static void
+camel_maildir_folder_init (CamelMaildirFolder *maildir_folder)
+{
+}
+
+CamelFolder *
+camel_maildir_folder_new (CamelStore *parent_store,
+                          const gchar *full_name,
+                          guint32 flags,
+                          GCancellable *cancellable,
+                          GError **error)
+{
+	CamelFolder *folder;
+	gchar *basename;
+
+	d(printf("Creating maildir folder: %s\n", full_name));
+
+	if (g_strcmp0 (full_name, ".") == 0)
+		basename = g_strdup (_("Inbox"));
+	else
+		basename = g_path_get_basename (full_name);
+
+	folder = g_object_new (
+		CAMEL_TYPE_MAILDIR_FOLDER,
+		"name", basename, "full-name", full_name,
+		"parent-store", parent_store, NULL);
+
+	if (parent_store->flags & CAMEL_STORE_FILTER_INBOX
+	    && strcmp(full_name, ".") == 0)
+		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
+
+	folder = (CamelFolder *) camel_local_folder_construct (
+		CAMEL_LOCAL_FOLDER (folder), flags, cancellable, error);
+
+	g_free (basename);
+
+	return folder;
+}
+

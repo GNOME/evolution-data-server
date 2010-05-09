@@ -110,7 +110,7 @@ struct _CamelIMAPXServer {
 	   commands. Input stream does not require a lock since only parser_thread can operate on it */
 	GStaticRecMutex ostream_lock;
 	/* Used for canceling operations as well as signaling parser thread to disconnnect/quit */
-	CamelOperation *op;
+	GCancellable *cancellable;
 	gboolean parser_quit;
 
 	/* Idle */
@@ -138,60 +138,75 @@ CamelIMAPXServer *
 		camel_imapx_server_new		(CamelStore *store,
 						 CamelURL *url);
 gboolean	camel_imapx_server_connect	(CamelIMAPXServer *is,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	imapx_connect_to_server		(CamelIMAPXServer *is,
+						 GCancellable *cancellable,
 						 GError **error);
 GPtrArray *	camel_imapx_server_list		(CamelIMAPXServer *is,
 						 const gchar *top,
 						 guint32 flags,
 						 const gchar *ext,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_refresh_info	(CamelIMAPXServer *is,
 						 CamelFolder *folder,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_sync_changes	(CamelIMAPXServer *is,
 						 CamelFolder *folder,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_expunge	(CamelIMAPXServer *is,
 						 CamelFolder *folder,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_noop		(CamelIMAPXServer *is,
 						 CamelFolder *folder,
+						 GCancellable *cancellable,
 						 GError **error);
 CamelStream *	camel_imapx_server_get_message	(CamelIMAPXServer *is,
 						 CamelFolder *folder,
 						 const gchar *uid,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_copy_message	(CamelIMAPXServer *is,
 						 CamelFolder *source,
 						 CamelFolder *dest,
 						 GPtrArray *uids,
 						 gboolean delete_originals,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_append_message
 						(CamelIMAPXServer *is,
 						 CamelFolder *folder,
 						 CamelMimeMessage *message,
 						 const CamelMessageInfo *mi,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_sync_message (CamelIMAPXServer *is,
 						 CamelFolder *folder,
 						 const gchar *uid,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_manage_subscription
 						(CamelIMAPXServer *is,
 						 const gchar *folder_name,
 						 gboolean subscribe,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_create_folder (CamelIMAPXServer *is,
 						 const gchar *folder_name,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_delete_folder (CamelIMAPXServer *is,
 						 const gchar *folder_name,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_rename_folder (CamelIMAPXServer *is,
 						 const gchar *old_name,
 						 const gchar *new_name,
+						 GCancellable *cancellable,
 						 GError **error);
 struct _IMAPXJobQueueInfo *
 		camel_imapx_server_get_job_queue_info

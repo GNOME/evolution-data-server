@@ -69,53 +69,70 @@ struct _CamelMimePart {
 struct _CamelMimePartClass {
 	CamelMediumClass parent_class;
 
-	gint		(*construct_from_parser)(CamelMimePart *mime_part,
+	gint	(*construct_from_parser)	(CamelMimePart *mime_part,
 						 CamelMimeParser *parser,
+						 GCancellable *cancellable,
 						 GError **error);
 };
 
-GType camel_mime_part_get_type (void);
-
-/* public methods */
-CamelMimePart *  camel_mime_part_new                    (void);
-
-void		 camel_mime_part_set_description	(CamelMimePart *mime_part, const gchar *description);
-const     gchar  *camel_mime_part_get_description	(CamelMimePart *mime_part);
-
-void		 camel_mime_part_set_disposition	(CamelMimePart *mime_part, const gchar *disposition);
-const     gchar  *camel_mime_part_get_disposition	(CamelMimePart *mime_part);
-const CamelContentDisposition *camel_mime_part_get_content_disposition (CamelMimePart *mime_part);
-
-void		 camel_mime_part_set_filename		(CamelMimePart *mime_part, const gchar *filename);
-const	  gchar  *camel_mime_part_get_filename		(CamelMimePart *mime_part);
-
-void             camel_mime_part_set_content_id		(CamelMimePart *mime_part, const gchar *contentid);
-const	  gchar  *camel_mime_part_get_content_id		(CamelMimePart *mime_part);
-
-void		 camel_mime_part_set_content_md5	(CamelMimePart *mime_part, const gchar *md5sum);
-const	  gchar  *camel_mime_part_get_content_md5	(CamelMimePart *mime_part);
-
-void		 camel_mime_part_set_content_location	(CamelMimePart *mime_part, const gchar *location);
-const	  gchar  *camel_mime_part_get_content_location	(CamelMimePart *mime_part);
-
-void		 camel_mime_part_set_encoding		(CamelMimePart *mime_part, CamelTransferEncoding encoding);
-CamelTransferEncoding camel_mime_part_get_encoding	(CamelMimePart *mime_part);
-
-void		 camel_mime_part_set_content_languages	(CamelMimePart *mime_part, GList *content_languages);
-const	  GList *camel_mime_part_get_content_languages	(CamelMimePart *mime_part);
+GType		camel_mime_part_get_type	(void);
+CamelMimePart *	camel_mime_part_new		(void);
+void		camel_mime_part_set_description	(CamelMimePart *mime_part,
+						 const gchar *description);
+const gchar *	camel_mime_part_get_description	(CamelMimePart *mime_part);
+void		camel_mime_part_set_disposition	(CamelMimePart *mime_part,
+						 const gchar *disposition);
+const gchar *	camel_mime_part_get_disposition	(CamelMimePart *mime_part);
+const CamelContentDisposition *
+		camel_mime_part_get_content_disposition
+						(CamelMimePart *mime_part);
+void		camel_mime_part_set_filename	(CamelMimePart *mime_part,
+						 const gchar *filename);
+const gchar *	camel_mime_part_get_filename	(CamelMimePart *mime_part);
+void		camel_mime_part_set_content_id	(CamelMimePart *mime_part,
+						 const gchar *contentid);
+const gchar *	camel_mime_part_get_content_id	(CamelMimePart *mime_part);
+void		camel_mime_part_set_content_md5	(CamelMimePart *mime_part,
+						 const gchar *md5sum);
+const gchar *	camel_mime_part_get_content_md5	(CamelMimePart *mime_part);
+void		camel_mime_part_set_content_location
+						(CamelMimePart *mime_part,
+						 const gchar *location);
+const gchar *	camel_mime_part_get_content_location
+						(CamelMimePart *mime_part);
+void		camel_mime_part_set_encoding	(CamelMimePart *mime_part,
+						 CamelTransferEncoding encoding);
+CamelTransferEncoding
+		camel_mime_part_get_encoding	(CamelMimePart *mime_part);
+void		camel_mime_part_set_content_languages
+						(CamelMimePart *mime_part,
+						 GList *content_languages);
+const GList *	camel_mime_part_get_content_languages
+						(CamelMimePart *mime_part);
 
 /* FIXME: what about content-type parameters?   what about major/minor parts? */
-void               camel_mime_part_set_content_type	(CamelMimePart *mime_part, const gchar *content_type);
-CamelContentType  *camel_mime_part_get_content_type	(CamelMimePart *mime_part);
+void		camel_mime_part_set_content_type
+						(CamelMimePart *mime_part,
+						 const gchar *content_type);
+CamelContentType *
+		camel_mime_part_get_content_type
+						(CamelMimePart *mime_part);
 
 /* construction */
-gint		camel_mime_part_construct_from_parser  (CamelMimePart *mime_part, CamelMimeParser *parser, GError **error);
+gint		camel_mime_part_construct_from_parser
+						(CamelMimePart *mime_part,
+						 CamelMimeParser *parser,
+						 GCancellable *cancellable,
+						 GError **error);
 
 /* utility functions */
-void	camel_mime_part_set_content	       (CamelMimePart *mime_part,
-							const gchar *data, gint length, const gchar *type);
+void		camel_mime_part_set_content	(CamelMimePart *mime_part,
+						 const gchar *data,
+						 gint length,
+						 const gchar *type);
 
-gsize          camel_mime_part_get_content_size       (CamelMimePart *mime_part);
+gsize		camel_mime_part_get_content_size
+						(CamelMimePart *mime_part);
 
 G_END_DECLS
 

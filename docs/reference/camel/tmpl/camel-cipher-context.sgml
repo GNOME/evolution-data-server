@@ -146,6 +146,7 @@ CamelCipherContext
 @hash: 
 @ipart: 
 @opart: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -157,6 +158,7 @@ CamelCipherContext
 
 @context: 
 @ipart: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -171,6 +173,7 @@ CamelCipherContext
 @recipients: 
 @ipart: 
 @opart: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -183,6 +186,7 @@ CamelCipherContext
 @context: 
 @ipart: 
 @opart: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -194,6 +198,7 @@ CamelCipherContext
 
 @context: 
 @istream: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -206,6 +211,7 @@ CamelCipherContext
 @context: 
 @keys: 
 @ostream: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -480,6 +486,20 @@ CamelCipherContext
 @gpointer cert_data: 
 @gpointer cert_data:
 @gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
 @gpointer cert_data: 
 
 
@@ -508,6 +528,7 @@ CamelCipherContext
 @part: 
 @flags: 
 @ostream: 
+@cancellable: 
 @error: 
 @Returns: 
 

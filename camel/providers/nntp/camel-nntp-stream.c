@@ -70,6 +70,7 @@ nntp_stream_finalize (GObject *object)
 
 static gint
 nntp_stream_fill (CamelNNTPStream *is,
+                  GCancellable *cancellable,
                   GError **error)
 {
 	gint left = 0;
@@ -81,7 +82,8 @@ nntp_stream_fill (CamelNNTPStream *is,
 		is->ptr = is->buf;
 		left = camel_stream_read (
 			is->source, (gchar *) is->end,
-			CAMEL_NNTP_STREAM_SIZE - (is->end - is->buf), error);
+			CAMEL_NNTP_STREAM_SIZE - (is->end - is->buf),
+			cancellable, error);
 		if (left > 0) {
 			is->end += left;
 			is->end[0] = '\n';
@@ -106,6 +108,7 @@ static gssize
 nntp_stream_read (CamelStream *stream,
                   gchar *buffer,
                   gsize n,
+                  GCancellable *cancellable,
                   GError **error)
 {
 	CamelNNTPStream *is = (CamelNNTPStream *)stream;
@@ -129,7 +132,7 @@ nntp_stream_read (CamelStream *stream,
 	case 0:		/* start of line, always read at least 3 chars */
 		while (e - p < 3) {
 			is->ptr = p;
-			if (nntp_stream_fill (is, error) == -1)
+			if (nntp_stream_fill (is, cancellable, error) == -1)
 				return -1;
 			p = is->ptr;
 			e = is->end;
@@ -153,7 +156,7 @@ nntp_stream_read (CamelStream *stream,
 				/* end of input sentinal check */
 				if (p > e) {
 					is->ptr = e;
-					if (nntp_stream_fill (is, error) == -1)
+					if (nntp_stream_fill (is, cancellable, error) == -1)
 						return -1;
 					p = is->ptr;
 					e = is->end;
@@ -181,15 +184,17 @@ static gssize
 nntp_stream_write (CamelStream *stream,
                    const gchar *buffer,
                    gsize n,
+                   GCancellable *cancellable,
                    GError **error)
 {
 	CamelNNTPStream *is = (CamelNNTPStream *)stream;
 
-	return camel_stream_write (is->source, buffer, n, error);
+	return camel_stream_write (is->source, buffer, n, cancellable, error);
 }
 
 static gint
 nntp_stream_close (CamelStream *stream,
+                   GCancellable *cancellable,
                    GError **error)
 {
 	/* nop? */
@@ -198,6 +203,7 @@ nntp_stream_close (CamelStream *stream,
 
 static gint
 nntp_stream_flush (CamelStream *stream,
+                   GCancellable *cancellable,
                    GError **error)
 {
 	/* nop? */
@@ -278,6 +284,7 @@ gint
 camel_nntp_stream_line (CamelNNTPStream *is,
                         guchar **data,
                         guint *len,
+                        GCancellable *cancellable,
                         GError **error)
 {
 	register guchar c, *p, *o, *oe;
@@ -300,7 +307,7 @@ camel_nntp_stream_line (CamelNNTPStream *is,
 		/* need at least 3 chars in buffer */
 		while (e-p < 3) {
 			is->ptr = p;
-			if (nntp_stream_fill (is, error) == -1)
+			if (nntp_stream_fill (is, cancellable, error) == -1)
 				return -1;
 			p = is->ptr;
 			e = is->end;
@@ -330,7 +337,7 @@ camel_nntp_stream_line (CamelNNTPStream *is,
 				/* sentinal? */
 				if (p> e) {
 					is->ptr = e;
-					if (nntp_stream_fill (is, error) == -1)
+					if (nntp_stream_fill (is, cancellable, error) == -1)
 						return -1;
 					p = is->ptr;
 					e = is->end;
@@ -363,7 +370,9 @@ camel_nntp_stream_line (CamelNNTPStream *is,
 gint
 camel_nntp_stream_gets (CamelNNTPStream *is,
                         guchar **start,
-                        guint *len)
+                        guint *len,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	gint max;
 	guchar *end;
@@ -372,7 +381,7 @@ camel_nntp_stream_gets (CamelNNTPStream *is,
 
 	max = is->end - is->ptr;
 	if (max == 0) {
-		max = nntp_stream_fill (is, NULL);
+		max = nntp_stream_fill (is, cancellable, error);
 		if (max <= 0)
 			return max;
 	}
@@ -401,7 +410,9 @@ camel_nntp_stream_set_mode (CamelNNTPStream *is,
 gint
 camel_nntp_stream_getd (CamelNNTPStream *is,
                         guchar **start,
-                        guint *len)
+                        guint *len,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	guchar *p, *e, *s;
 	gint state;
@@ -422,7 +433,7 @@ camel_nntp_stream_getd (CamelNNTPStream *is,
 
 	while (e - p < 3) {
 		is->ptr = p;
-		if (nntp_stream_fill (is, NULL) == -1)
+		if (nntp_stream_fill (is, cancellable, error) == -1)
 			return -1;
 		p = is->ptr;
 		e = is->end;

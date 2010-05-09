@@ -75,11 +75,16 @@ struct _CamelGroupwiseFolderClass {
 	CamelOfflineFolderClass parent_class;
 };
 
-GType camel_groupwise_folder_get_type (void);
-
-/* implemented */
-CamelFolder * camel_gw_folder_new (CamelStore *store, const gchar *folder_dir, const gchar *folder_name, GError **error);
-void gw_update_summary ( CamelFolder *folder, GList *item_list,GError **error);
+GType		camel_groupwise_folder_get_type	(void);
+CamelFolder *	camel_gw_folder_new		(CamelStore *store,
+						 const gchar *folder_dir,
+						 const gchar *folder_name,
+						 GCancellable *cancellable,
+						 GError **error);
+void		gw_update_summary		(CamelFolder *folder,
+						 GList *item_list,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

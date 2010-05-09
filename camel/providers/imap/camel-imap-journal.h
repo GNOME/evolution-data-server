@@ -85,13 +85,19 @@ struct _CamelIMAPJournalClass {
 
 };
 
-GType camel_imap_journal_get_type (void);
-
-CamelOfflineJournal *camel_imap_journal_new (struct _CamelImapFolder *folder, const gchar *filename);
-void camel_imap_journal_log (CamelOfflineJournal *journal, CamelOfflineAction action, ...);
-void camel_imap_journal_uidmap_add (CamelIMAPJournal *journal, const gchar *old_uid, const gchar *n_uid);
-const gchar *camel_imap_journal_uidmap_lookup (CamelIMAPJournal *journal, const gchar *uid);
-void camel_imap_journal_close_folders (CamelIMAPJournal *journal);
+GType		camel_imap_journal_get_type (void);
+CamelOfflineJournal *
+		camel_imap_journal_new		(struct _CamelImapFolder *folder,
+						 const gchar *filename);
+void		camel_imap_journal_log		(CamelOfflineJournal *journal,
+						 CamelOfflineAction action,
+						 ...);
+void		camel_imap_journal_uidmap_add	(CamelIMAPJournal *journal,
+						 const gchar *old_uid,
+						 const gchar *n_uid);
+const gchar *	camel_imap_journal_uidmap_lookup(CamelIMAPJournal *journal,
+						 const gchar *uid);
+void		camel_imap_journal_close_folders(CamelIMAPJournal *journal);
 
 G_END_DECLS
 

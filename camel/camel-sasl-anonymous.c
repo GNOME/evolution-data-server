@@ -56,6 +56,7 @@ sasl_anonymous_finalize (GObject *object)
 static GByteArray *
 sasl_anonymous_challenge (CamelSasl *sasl,
                           GByteArray *token,
+                          GCancellable *cancellable,
                           GError **error)
 {
 	CamelSaslAnonymous *sasl_anon = CAMEL_SASL_ANONYMOUS (sasl);

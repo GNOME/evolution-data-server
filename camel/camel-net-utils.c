@@ -449,13 +449,14 @@ static gint
 cs_waitinfo (gpointer (worker)(gpointer),
              struct _addrinfo_msg *msg,
              const gchar *errmsg,
+             GCancellable *cancellable,
              GError **error)
 {
 	CamelMsgPort *reply_port;
 	GThread *thread;
 	gint cancel_fd, cancel = 0, fd;
 
-	cancel_fd = camel_operation_cancel_fd (NULL);
+	cancel_fd = g_cancellable_get_fd (cancellable);
 	if (cancel_fd == -1) {
 		worker (msg);
 		return 0;
@@ -532,6 +533,8 @@ cs_waitinfo (gpointer (worker)(gpointer),
 		}
 	}
 	camel_msgport_destroy (reply_port);
+
+	g_cancellable_release_fd (cancellable);
 
 	return cancel;
 }
@@ -675,6 +678,7 @@ struct addrinfo *
 camel_getaddrinfo (const gchar *name,
                    const gchar *service,
                    const struct addrinfo *hints,
+                   GCancellable *cancellable,
                    GError **error)
 {
 	struct _addrinfo_msg *msg;
@@ -684,15 +688,11 @@ camel_getaddrinfo (const gchar *name,
 #endif
 	g_return_val_if_fail (name != NULL, NULL);
 
-	if (camel_operation_cancel_check (NULL)) {
-		g_set_error (
-			error, G_IO_ERROR,
-			G_IO_ERROR_CANCELLED,
-			_("Cancelled"));
+	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return NULL;
-	}
 
-	camel_operation_start_transient(NULL, _("Resolving: %s"), name);
+	camel_operation_start_transient (
+		cancellable, _("Resolving: %s"), name);
 
 	/* force ipv4 addresses only */
 #ifndef ENABLE_IPv6
@@ -714,7 +714,10 @@ camel_getaddrinfo (const gchar *name,
 	msg->hostbuflen = 1024;
 	msg->hostbufmem = g_malloc (msg->hostbuflen);
 #endif
-	if (cs_waitinfo(cs_getaddrinfo, msg, _("Host lookup failed"), error) == 0) {
+	if (cs_waitinfo (
+		cs_getaddrinfo, msg, _("Host lookup failed"),
+		cancellable, error) == 0) {
+
 		if (msg->result != 0) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
@@ -725,7 +728,8 @@ camel_getaddrinfo (const gchar *name,
 		res = NULL;
 
 	cs_freeinfo (msg);
-	camel_operation_end (NULL);
+
+	camel_operation_end (cancellable);
 
 	return res;
 }
@@ -828,20 +832,17 @@ camel_getnameinfo (const struct sockaddr *sa,
                    gchar **host,
                    gchar **serv,
                    gint flags,
+                   GCancellable *cancellable,
                    GError **error)
 {
 	struct _addrinfo_msg *msg;
 	gint result;
 
-	if (camel_operation_cancel_check (NULL)) {
-		g_set_error (
-			error, G_IO_ERROR,
-			G_IO_ERROR_CANCELLED,
-			_("Cancelled"));
+	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return -1;
-	}
 
-	camel_operation_start_transient(NULL, _("Resolving address"));
+	camel_operation_start_transient (
+		cancellable, _("Resolving address"));
 
 	msg = g_malloc0 (sizeof (*msg));
 	msg->addr = sa;
@@ -861,7 +862,9 @@ camel_getnameinfo (const struct sockaddr *sa,
 	msg->hostbuflen = 1024;
 	msg->hostbufmem = g_malloc (msg->hostbuflen);
 #endif
-	cs_waitinfo(cs_getnameinfo, msg, _("Name lookup failed"), error);
+	cs_waitinfo (
+		cs_getnameinfo, msg, _("Name lookup failed"),
+		cancellable, error);
 
 	if ((result = msg->result) != 0)
 		g_set_error (
@@ -875,7 +878,8 @@ camel_getnameinfo (const struct sockaddr *sa,
 	}
 
 	cs_freeinfo (msg);
-	camel_operation_end (NULL);
+
+	camel_operation_end (cancellable);
 
 	return result;
 }

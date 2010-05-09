@@ -95,8 +95,10 @@ CamelStream *	camel_stream_buffer_new_with_vbuf
 gint		camel_stream_buffer_gets	(CamelStreamBuffer *sbf,
 						 gchar *buf,
 						 guint max,
+						 GCancellable *cancellable,
 						 GError **error);
 gchar *		camel_stream_buffer_read_line	(CamelStreamBuffer *sbf,
+						 GCancellable *cancellable,
 						 GError **error);
 
 G_END_DECLS

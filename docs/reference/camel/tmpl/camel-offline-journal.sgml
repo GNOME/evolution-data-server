@@ -67,6 +67,7 @@ CamelOfflineJournal
 </para>
 
 @journal: 
+@cancellable: 
 @error: 
 @Returns: 
 

@@ -233,6 +233,7 @@ CamelMimePart
 
 @mime_part: 
 @parser: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -264,6 +265,7 @@ CamelMimePart
 
 @mime_part: 
 @mp: 
+@cancellable: 
 @error: 
 @Returns: 
 

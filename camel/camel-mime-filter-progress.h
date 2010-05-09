@@ -27,7 +27,6 @@
 #ifndef CAMEL_MIME_FILTER_PROGRESS_H
 #define CAMEL_MIME_FILTER_PROGRESS_H
 
-#include <camel/camel-operation.h>
 #include <camel/camel-mime-filter.h>
 
 /* Standard GObject macros */
@@ -71,7 +70,7 @@ struct _CamelMimeFilterProgressClass {
 
 GType		camel_mime_filter_progress_get_type (void);
 CamelMimeFilter *
-		camel_mime_filter_progress_new	(CamelOperation *operation,
+		camel_mime_filter_progress_new	(GCancellable *cancellable,
 						 gsize total);
 
 G_END_DECLS

@@ -39,11 +39,11 @@
 #define d(x)
 
 static gboolean construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, GError **error);
-static CamelFolder *get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, GError **error);
-static CamelFolder *get_inbox (CamelStore *store, GError **error);
-static gboolean delete_folder (CamelStore *store, const gchar *folder_name, GError **error);
-static gboolean rename_folder (CamelStore *store, const gchar *old, const gchar *new, GError **error);
-static CamelFolderInfo * get_folder_info (CamelStore *store, const gchar *top, guint32 flags, GError **error);
+static CamelFolder *get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, GCancellable *cancellable, GError **error);
+static CamelFolder *get_inbox (CamelStore *store, GCancellable *cancellable, GError **error);
+static gboolean delete_folder (CamelStore *store, const gchar *folder_name, GCancellable *cancellable, GError **error);
+static gboolean rename_folder (CamelStore *store, const gchar *old, const gchar *new, GCancellable *cancellable, GError **error);
+static CamelFolderInfo * get_folder_info (CamelStore *store, const gchar *top, guint32 flags, GCancellable *cancellable, GError **error);
 
 G_DEFINE_TYPE (CamelMhStore, camel_mh_store, CAMEL_TYPE_LOCAL_STORE)
 
@@ -102,7 +102,8 @@ static void
 folders_update (const gchar *root,
                 gint mode,
                 const gchar *folder,
-                const gchar *new)
+                const gchar *new,
+                GCancellable *cancellable)
 {
 	gchar *tmp, *tmpnew, *line = NULL;
 	CamelStream *stream, *in = NULL, *out = NULL;
@@ -129,7 +130,7 @@ folders_update (const gchar *root,
 		goto done;
 	}
 
-	while ((line = camel_stream_buffer_read_line ((CamelStreamBuffer *)in, NULL))) {
+	while ((line = camel_stream_buffer_read_line ((CamelStreamBuffer *)in, cancellable, NULL))) {
 		gint copy = TRUE;
 
 		switch (mode) {
@@ -140,9 +141,9 @@ folders_update (const gchar *root,
 		case UPDATE_RENAME:
 			if (strncmp (line, folder, flen) == 0
 			    && (line[flen] == 0 || line[flen] == '/')) {
-				if (camel_stream_write (out, new, strlen (new), NULL) == -1
-				    || camel_stream_write (out, line+flen, strlen (line)-flen, NULL) == -1
-				    || camel_stream_write(out, "\n", 1, NULL) == -1)
+				if (camel_stream_write (out, new, strlen (new), cancellable, NULL) == -1
+				    || camel_stream_write (out, line+flen, strlen (line)-flen, cancellable, NULL) == -1
+				    || camel_stream_write(out, "\n", 1, cancellable, NULL) == -1)
 					goto fail;
 				copy = FALSE;
 			}
@@ -175,7 +176,7 @@ folders_update (const gchar *root,
 	if (mode == UPDATE_ADD && camel_stream_printf(out, "%s\n", folder) == -1)
 		goto fail;
 
-	if (camel_stream_close (out, NULL) == -1)
+	if (camel_stream_close (out, cancellable, NULL) == -1)
 		goto fail;
 
 done:
@@ -194,6 +195,7 @@ static CamelFolder *
 get_folder (CamelStore *store,
             const gchar *folder_name,
             guint32 flags,
+            GCancellable *cancellable,
             GError **error)
 {
 	CamelStoreClass *store_class;
@@ -202,7 +204,7 @@ get_folder (CamelStore *store,
 
 	/* Chain up to parent's get_folder() method. */
 	store_class = CAMEL_STORE_CLASS (camel_mh_store_parent_class);
-	if (store_class->get_folder (store, folder_name, flags, error) == NULL)
+	if (store_class->get_folder (store, folder_name, flags, cancellable, error) == NULL)
 		return NULL;
 
 	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
@@ -240,7 +242,7 @@ get_folder (CamelStore *store,
 		/* add to .folders if we are supposed to */
 		/* FIXME: throw exception on error */
 		if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS)
-			folders_update (((CamelLocalStore *)store)->toplevel_dir, UPDATE_ADD, folder_name, NULL);
+			folders_update (((CamelLocalStore *)store)->toplevel_dir, UPDATE_ADD, folder_name, NULL, cancellable);
 	} else if (!S_ISDIR (st.st_mode)) {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
@@ -260,19 +262,21 @@ get_folder (CamelStore *store,
 
 	g_free (name);
 
-	return camel_mh_folder_new (store, folder_name, flags, error);
+	return camel_mh_folder_new (store, folder_name, flags, cancellable, error);
 }
 
 static CamelFolder *
 get_inbox (CamelStore *store,
+           GCancellable *cancellable,
            GError **error)
 {
-	return get_folder (store, "inbox", 0, error);
+	return get_folder (store, "inbox", 0, cancellable, error);
 }
 
 static gboolean
 delete_folder (CamelStore *store,
                const gchar *folder_name,
+               GCancellable *cancellable,
                GError **error)
 {
 	CamelStoreClass *store_class;
@@ -293,29 +297,30 @@ delete_folder (CamelStore *store,
 
 	/* remove from .folders if we are supposed to */
 	if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS)
-		folders_update (((CamelLocalStore *)store)->toplevel_dir, UPDATE_REMOVE, folder_name, NULL);
+		folders_update (((CamelLocalStore *)store)->toplevel_dir, UPDATE_REMOVE, folder_name, NULL, cancellable);
 
 	/* Chain up to parent's delete_folder() method. */
 	store_class = CAMEL_STORE_CLASS (camel_mh_store_parent_class);
-	return store_class->delete_folder (store, folder_name, error);
+	return store_class->delete_folder (store, folder_name, cancellable, error);
 }
 
 static gboolean
 rename_folder (CamelStore *store,
                const gchar *old,
                const gchar *new,
+               GCancellable *cancellable,
                GError **error)
 {
 	CamelStoreClass *store_class;
 
 	/* Chain up to parent's rename_folder() method. */
 	store_class = CAMEL_STORE_CLASS (camel_mh_store_parent_class);
-	if (!store_class->rename_folder (store, old, new, error))
+	if (!store_class->rename_folder (store, old, new, cancellable, error))
 		return FALSE;
 
 	if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS) {
 		/* yeah this is messy, but so is mh! */
-		folders_update (((CamelLocalStore *)store)->toplevel_dir, UPDATE_RENAME, old, new);
+		folders_update (((CamelLocalStore *)store)->toplevel_dir, UPDATE_RENAME, old, new, cancellable);
 	}
 
 	return TRUE;
@@ -324,7 +329,8 @@ rename_folder (CamelStore *store,
 static void
 fill_fi (CamelStore *store,
          CamelFolderInfo *fi,
-         guint32 flags)
+         guint32 flags,
+         GCancellable *cancellable)
 {
 	CamelFolder *folder;
 
@@ -332,11 +338,11 @@ fill_fi (CamelStore *store,
 
 	if (folder == NULL
 	    && (flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
-		folder = camel_store_get_folder (store, fi->full_name, 0, NULL);
+		folder = camel_store_get_folder (store, fi->full_name, 0, cancellable, NULL);
 
 	if (folder) {
 		if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
-			camel_folder_refresh_info (folder, NULL);
+			camel_folder_refresh_info (folder, cancellable, NULL);
 		fi->unread = camel_folder_get_unread_message_count (folder);
 		fi->total = camel_folder_get_message_count (folder);
 		g_object_unref (folder);
@@ -370,7 +376,8 @@ folder_info_new (CamelStore *store,
                  CamelURL *url,
                  const gchar *root,
                  const gchar *path,
-                 guint32 flags)
+                 guint32 flags,
+                 GCancellable *cancellable)
 {
 	/* FIXME: need to set fi->flags = CAMEL_FOLDER_NOSELECT (and possibly others) when appropriate */
 	CamelFolderInfo *fi;
@@ -385,7 +392,7 @@ folder_info_new (CamelStore *store,
 	fi->uri = camel_url_to_string (url, 0);
 	fi->full_name = g_strdup (path);
 	fi->name = g_strdup (base?base+1:path);
-	fill_fi (store, fi, flags);
+	fill_fi (store, fi, flags, cancellable);
 
 	d(printf("New folderinfo:\n '%s'\n '%s'\n '%s'\n", fi->full_name, fi->uri, fi->path));
 
@@ -408,7 +415,8 @@ recursive_scan (CamelStore *store,
                 GHashTable *visited,
                 const gchar *root,
                 const gchar *path,
-                guint32 flags)
+                guint32 flags,
+                GCancellable *cancellable)
 {
 	gchar *fullpath, *tmp;
 	DIR *dp;
@@ -439,7 +447,7 @@ recursive_scan (CamelStore *store,
 	g_hash_table_insert (visited, inew, inew);
 
 	/* link in ... */
-	fi = folder_info_new (store, url, root, path, flags);
+	fi = folder_info_new (store, url, root, path, flags, cancellable);
 	fi->parent = parent;
 	fi->next = *fip;
 	*fip = fi;
@@ -465,10 +473,10 @@ recursive_scan (CamelStore *store,
 			/* otherwise, treat at potential node, and recurse, a bit more expensive than needed, but tough! */
 			if (path[0]) {
 				tmp = g_strdup_printf("%s/%s", path, d->d_name);
-				recursive_scan (store, url, &fi->child, fi, visited, root, tmp, flags);
+				recursive_scan (store, url, &fi->child, fi, visited, root, tmp, flags, cancellable);
 				g_free (tmp);
 			} else {
-				recursive_scan (store, url, &fi->child, fi, visited, root, d->d_name, flags);
+				recursive_scan (store, url, &fi->child, fi, visited, root, d->d_name, flags, cancellable);
 			}
 		}
 
@@ -483,7 +491,8 @@ folders_scan (CamelStore *store,
               const gchar *root,
               const gchar *top,
               CamelFolderInfo **fip,
-              guint32 flags)
+              guint32 flags,
+              GCancellable *cancellable)
 {
 	CamelFolderInfo *fi;
 	gchar  line[512], *path, *tmp;
@@ -507,7 +516,7 @@ folders_scan (CamelStore *store,
 	visited = g_hash_table_new (g_str_hash, g_str_equal);
 	folders = g_ptr_array_new ();
 
-	while ( (len = camel_stream_buffer_gets ((CamelStreamBuffer *)in, line, sizeof (line), NULL)) > 0) {
+	while ( (len = camel_stream_buffer_gets ((CamelStreamBuffer *)in, line, sizeof (line), cancellable, NULL)) > 0) {
 		/* ignore blank lines */
 		if (len <= 1)
 			continue;
@@ -547,7 +556,7 @@ folders_scan (CamelStore *store,
 
 		path = g_strdup_printf("%s/%s", root, line);
 		if (g_stat (path, &st) == 0 && S_ISDIR (st.st_mode)) {
-			fi = folder_info_new (store, url, root, line, flags);
+			fi = folder_info_new (store, url, root, line, flags, cancellable);
 			g_ptr_array_add (folders, fi);
 		}
 		g_free (path);
@@ -590,6 +599,7 @@ static CamelFolderInfo *
 get_folder_info (CamelStore *store,
                  const gchar *top,
                  guint32 flags,
+                 GCancellable *cancellable,
                  GError **error)
 {
 	CamelFolderInfo *fi = NULL;
@@ -602,14 +612,14 @@ get_folder_info (CamelStore *store,
 
 	/* use .folders if we are supposed to */
 	if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS) {
-		folders_scan (store, url, root, top, &fi, flags);
+		folders_scan (store, url, root, top, &fi, flags, cancellable);
 	} else {
 		GHashTable *visited = g_hash_table_new (inode_hash, inode_equal);
 
 		if (top == NULL)
 			top = "";
 
-		recursive_scan (store, url, &fi, NULL, visited, root, top, flags);
+		recursive_scan (store, url, &fi, NULL, visited, root, top, flags, cancellable);
 
 		/* if we actually scanned from root, we have a "" root node we dont want */
 		if (fi != NULL && top[0] == 0) {

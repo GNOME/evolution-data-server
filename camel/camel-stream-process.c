@@ -51,7 +51,7 @@ stream_process_finalize (GObject *object)
 {
 	/* Ensure we clean up after ourselves -- kill
 	   the child process and reap it. */
-	camel_stream_close (CAMEL_STREAM (object), NULL);
+	camel_stream_close (CAMEL_STREAM (object), NULL, NULL);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_stream_process_parent_class)->finalize (object);
@@ -61,26 +61,31 @@ static gssize
 stream_process_read (CamelStream *stream,
                      gchar *buffer,
                      gsize n,
+                     GCancellable *cancellable,
                      GError **error)
 {
 	CamelStreamProcess *stream_process = CAMEL_STREAM_PROCESS (stream);
+	gint fd = stream_process->sockfd;
 
-	return camel_read (stream_process->sockfd, buffer, n, error);
+	return camel_read (fd, buffer, n, cancellable, error);
 }
 
 static gssize
 stream_process_write (CamelStream *stream,
                       const gchar *buffer,
                       gsize n,
+                      GCancellable *cancellable,
                       GError **error)
 {
 	CamelStreamProcess *stream_process = CAMEL_STREAM_PROCESS (stream);
+	gint fd = stream_process->sockfd;
 
-	return camel_write (stream_process->sockfd, buffer, n, error);
+	return camel_write (fd, buffer, n, cancellable, error);
 }
 
 static gint
 stream_process_close (CamelStream *object,
+                      GCancellable *cancellable,
                       GError **error)
 {
 	CamelStreamProcess *stream = CAMEL_STREAM_PROCESS (object);
@@ -131,6 +136,7 @@ stream_process_close (CamelStream *object,
 
 static gint
 stream_process_flush (CamelStream *stream,
+                      GCancellable *cancellable,
                       GError **error)
 {
 	return 0;
@@ -228,7 +234,7 @@ camel_stream_process_connect (CamelStreamProcess *stream,
 	g_return_val_if_fail (command != NULL, -1);
 
 	if (stream->sockfd != -1 || stream->childpid)
-		camel_stream_close (CAMEL_STREAM (stream), NULL);
+		camel_stream_close (CAMEL_STREAM (stream), NULL, NULL);
 
 	if (socketpair (AF_UNIX, SOCK_STREAM, 0, sockfds))
 		return -1;

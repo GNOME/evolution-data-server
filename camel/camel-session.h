@@ -226,7 +226,7 @@ struct _CamelSessionThreadMsg {
 
 	GError *error;
 	CamelSessionThreadOps *ops;
-	CamelOperation *op;
+	GCancellable *cancellable;
 	CamelSession *session;
 
 	gpointer data;	/* Free for implementation to define, not

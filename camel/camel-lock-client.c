@@ -225,7 +225,7 @@ again:
 				error, CAMEL_ERROR,
 				CAMEL_ERROR_GENERIC,
 				_("Could not lock '%s'"), path);
-			d(printf("locking failed !status = %d\n", msg->id));
+			d(printf("locking failed ! status = %d\n", msg->id));
 			break;
 		}
 	} else if (retry > 0) {

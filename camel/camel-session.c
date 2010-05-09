@@ -83,7 +83,7 @@ enum {
 G_DEFINE_TYPE (CamelSession, camel_session, CAMEL_TYPE_OBJECT)
 
 static void
-cs_thread_status (CamelOperation *op,
+cs_thread_status (CamelOperation *operation,
                   const gchar *what,
                   gint pc,
                   CamelSessionThreadMsg *msg)
@@ -276,14 +276,15 @@ session_thread_msg_new (CamelSession *session,
 	m = g_malloc0 (size);
 	m->ops = ops;
 	m->session = g_object_ref (session);
-	m->op = camel_operation_new ();
-	g_signal_connect (
-		m->op, "status",
-		G_CALLBACK (cs_thread_status), m);
+	m->cancellable = (GCancellable *) camel_operation_new ();
 	camel_session_lock (session, CAMEL_SESSION_THREAD_LOCK);
 	m->id = session->priv->thread_id++;
 	g_hash_table_insert (session->priv->thread_active, GINT_TO_POINTER (m->id), m);
 	camel_session_unlock (session, CAMEL_SESSION_THREAD_LOCK);
+
+	g_signal_connect (
+		m->cancellable, "status",
+		G_CALLBACK (cs_thread_status), m);
 
 	return m;
 }
@@ -305,8 +306,8 @@ session_thread_msg_free (CamelSession *session,
 
 	if (msg->ops->free)
 		msg->ops->free (session, msg);
-	if (msg->op)
-		g_object_unref (msg->op);
+	if (msg->cancellable)
+		g_object_unref (msg->cancellable);
 	g_clear_error (&msg->error);
 	g_object_unref (msg->session);
 	g_free (msg);
@@ -316,13 +317,8 @@ static void
 session_thread_proxy (CamelSessionThreadMsg *msg,
                       CamelSession *session)
 {
-	if (msg->ops->receive) {
-		CamelOperation *oldop;
-
-		oldop = camel_operation_register (msg->op);
+	if (msg->ops->receive)
 		msg->ops->receive (session, msg);
-		camel_operation_register (oldop);
-	}
 
 	camel_session_thread_msg_free (session, msg);
 }

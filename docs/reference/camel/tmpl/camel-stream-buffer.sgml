@@ -67,6 +67,7 @@ CamelStreamBuffer
 @sbf: 
 @buf: 
 @max: 
+@cancellable: 
 @error: 
 @Returns: 
 
@@ -77,6 +78,7 @@ CamelStreamBuffer
 </para>
 
 @sbf: 
+@cancellable: 
 @error: 
 @Returns: 
 

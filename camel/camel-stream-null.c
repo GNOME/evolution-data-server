@@ -34,6 +34,7 @@ static gssize
 stream_null_write (CamelStream *stream,
                    const gchar *buffer,
                    gsize n,
+                   GCancellable *cancellable,
                    GError **error)
 {
 	CAMEL_STREAM_NULL (stream)->written += n;

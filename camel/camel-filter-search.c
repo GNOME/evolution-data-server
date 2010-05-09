@@ -591,8 +591,8 @@ run_command (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMess
 
 	stream = camel_stream_fs_new_with_fd (pipe_to_child);
 	camel_data_wrapper_write_to_stream (
-		CAMEL_DATA_WRAPPER (message), stream, NULL);
-	camel_stream_flush (stream, NULL);
+		CAMEL_DATA_WRAPPER (message), stream, NULL, NULL);
+	camel_stream_flush (stream, NULL, NULL);
 	g_object_unref (stream);
 
 	context = g_main_context_new ();

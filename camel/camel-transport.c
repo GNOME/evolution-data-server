@@ -80,6 +80,7 @@ camel_transport_init (CamelTransport *transport)
  * @message: a #CamelMimeMessage to send
  * @from: a #CamelAddress to send from
  * @recipients: a #CamelAddress containing all recipients
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Sends the message to the given recipients, regardless of the contents
@@ -93,6 +94,7 @@ camel_transport_send_to (CamelTransport *transport,
                          CamelMimeMessage *message,
                          CamelAddress *from,
                          CamelAddress *recipients,
+                         GCancellable *cancellable,
                          GError **error)
 {
 	CamelTransportClass *class;
@@ -108,7 +110,8 @@ camel_transport_send_to (CamelTransport *transport,
 
 	camel_transport_lock (transport, CAMEL_TRANSPORT_SEND_LOCK);
 
-	success = class->send_to (transport, message, from, recipients, error);
+	success = class->send_to (
+		transport, message, from, recipients, cancellable, error);
 	CAMEL_CHECK_GERROR (transport, send_to, success, error);
 
 	camel_transport_unlock (transport, CAMEL_TRANSPORT_SEND_LOCK);

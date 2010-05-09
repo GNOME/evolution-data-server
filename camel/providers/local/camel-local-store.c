@@ -38,15 +38,15 @@
 #define d(x)
 
 static gboolean construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, GError **error);
-static CamelFolder *get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, GError **error);
+static CamelFolder *get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, GCancellable *cancellable, GError **error);
 static gchar *get_name (CamelService *service, gboolean brief);
-static CamelFolder *local_get_inbox (CamelStore *store, GError **error);
-static CamelFolder *local_get_junk (CamelStore *store, GError **error);
-static CamelFolder *local_get_trash (CamelStore *store, GError **error);
-static CamelFolderInfo *get_folder_info (CamelStore *store, const gchar *top, guint32 flags, GError **error);
-static gboolean delete_folder (CamelStore *store, const gchar *folder_name, GError **error);
-static gboolean rename_folder (CamelStore *store, const gchar *old, const gchar *new, GError **error);
-static CamelFolderInfo *create_folder (CamelStore *store, const gchar *parent_name, const gchar *folder_name, GError **error);
+static CamelFolder *local_get_inbox (CamelStore *store, GCancellable *cancellable, GError **error);
+static CamelFolder *local_get_junk (CamelStore *store, GCancellable *cancellable, GError **error);
+static CamelFolder *local_get_trash (CamelStore *store, GCancellable *cancellable, GError **error);
+static CamelFolderInfo *get_folder_info (CamelStore *store, const gchar *top, guint32 flags, GCancellable *cancellable, GError **error);
+static gboolean delete_folder (CamelStore *store, const gchar *folder_name, GCancellable *cancellable, GError **error);
+static gboolean rename_folder (CamelStore *store, const gchar *old, const gchar *new, GCancellable *cancellable, GError **error);
+static CamelFolderInfo *create_folder (CamelStore *store, const gchar *parent_name, const gchar *folder_name, GCancellable *cancellable, GError **error);
 static gboolean local_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, GError **error);
 
 static gchar *local_get_full_path (CamelLocalStore *lf, const gchar *full_name);
@@ -132,7 +132,11 @@ camel_local_store_get_toplevel_dir (CamelLocalStore *store)
 }
 
 static CamelFolder *
-get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, GError **error)
+get_folder (CamelStore *store,
+            const gchar *folder_name,
+            guint32 flags,
+            GCancellable *cancellable,
+            GError **error)
 {
 	gint len = strlen (((CamelLocalStore *)store)->toplevel_dir);
 	gchar *path = g_alloca (len + 1);
@@ -185,7 +189,9 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, GError *
 }
 
 static CamelFolder *
-local_get_inbox (CamelStore *store, GError **error)
+local_get_inbox (CamelStore *store,
+                 GCancellable *cancellable,
+                 GError **error)
 {
 	g_set_error (
 		error, CAMEL_STORE_ERROR,
@@ -197,12 +203,14 @@ local_get_inbox (CamelStore *store, GError **error)
 
 static CamelFolder *
 local_get_trash (CamelStore *store,
+                 GCancellable *cancellable,
                  GError **error)
 {
 	CamelFolder *folder;
 
 	/* Chain up to parent's get_trash() method. */
-	folder = CAMEL_STORE_CLASS (camel_local_store_parent_class)->get_trash (store, error);
+	folder = CAMEL_STORE_CLASS (camel_local_store_parent_class)->
+		get_trash (store, cancellable, error);
 
 	if (folder) {
 		CamelObject *object = CAMEL_OBJECT (folder);
@@ -219,12 +227,14 @@ local_get_trash (CamelStore *store,
 
 static CamelFolder *
 local_get_junk (CamelStore *store,
+                GCancellable *cancellable,
                 GError **error)
 {
 	CamelFolder *folder;
 
 	/* Chain up to parent's get_junk() method. */
-	folder = CAMEL_STORE_CLASS (camel_local_store_parent_class)->get_junk (store, error);
+	folder = CAMEL_STORE_CLASS (camel_local_store_parent_class)->
+		get_junk (store, cancellable, error);
 
 	if (folder) {
 		CamelObject *object = CAMEL_OBJECT (folder);
@@ -251,8 +261,11 @@ get_name (CamelService *service, gboolean brief)
 }
 
 static CamelFolderInfo *
-get_folder_info (CamelStore *store, const gchar *top,
-		 guint32 flags, GError **error)
+get_folder_info (CamelStore *store,
+                 const gchar *top,
+                 guint32 flags,
+                 GCancellable *cancellable,
+                 GError **error)
 {
 	/* FIXME: This is broken, but it corresponds to what was
 	 * there before.
@@ -267,6 +280,7 @@ static CamelFolderInfo *
 create_folder (CamelStore *store,
                const gchar *parent_name,
                const gchar *folder_name,
+               GCancellable *cancellable,
                GError **error)
 {
 	gchar *path = ((CamelLocalStore *)store)->toplevel_dir;
@@ -308,11 +322,11 @@ create_folder (CamelStore *store,
 		name = g_strdup_printf("%s", folder_name);
 
 	folder = CAMEL_STORE_GET_CLASS (store)->get_folder (
-		store, name, CAMEL_STORE_FOLDER_CREATE, error);
+		store, name, CAMEL_STORE_FOLDER_CREATE, cancellable, error);
 	if (folder) {
 		g_object_unref (folder);
 		info = CAMEL_STORE_GET_CLASS (store)->get_folder_info (
-			store, name, 0, error);
+			store, name, 0, cancellable, error);
 	}
 
 	g_free (name);
@@ -369,6 +383,7 @@ static gboolean
 rename_folder (CamelStore *store,
               const gchar *old,
               const gchar *new,
+              GCancellable *cancellable,
               GError **error)
 {
 	gchar *path = CAMEL_LOCAL_STORE (store)->toplevel_dir;
@@ -444,6 +459,7 @@ ibex_failed:
 static gboolean
 delete_folder (CamelStore *store,
                const gchar *folder_name,
+               GCancellable *cancellable,
                GError **error)
 {
 	CamelFolderInfo *fi;
@@ -467,7 +483,7 @@ delete_folder (CamelStore *store,
 	g_free (str);
 
 	str = NULL;
-	if ((lf = camel_store_get_folder (store, folder_name, 0, NULL))) {
+	if ((lf = camel_store_get_folder (store, folder_name, 0, cancellable, NULL))) {
 		CamelObject *object = CAMEL_OBJECT (lf);
 		const gchar *state_filename;
 

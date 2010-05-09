@@ -38,11 +38,11 @@
 
 #define d(x)
 
-static CamelFolder *get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, GError **error);
-static gboolean delete_folder (CamelStore *store, const gchar *folder_name, GError **error);
-static gboolean rename_folder (CamelStore *store, const gchar *old, const gchar *new, GError **error);
-static CamelFolderInfo *create_folder (CamelStore *store, const gchar *parent_name, const gchar *folder_name, GError **error);
-static CamelFolderInfo *get_folder_info (CamelStore *store, const gchar *top, guint32 flags, GError **error);
+static CamelFolder *get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, GCancellable *cancellable, GError **error);
+static gboolean delete_folder (CamelStore *store, const gchar *folder_name, GCancellable *cancellable, GError **error);
+static gboolean rename_folder (CamelStore *store, const gchar *old, const gchar *new, GCancellable *cancellable, GError **error);
+static CamelFolderInfo *create_folder (CamelStore *store, const gchar *parent_name, const gchar *folder_name, GCancellable *cancellable, GError **error);
+static CamelFolderInfo *get_folder_info (CamelStore *store, const gchar *top, guint32 flags, GCancellable *cancellable, GError **error);
 static gchar *mbox_get_meta_path (CamelLocalStore *ls, const gchar *full_name, const gchar *ext);
 static gchar *mbox_get_full_path (CamelLocalStore *ls, const gchar *full_name);
 
@@ -102,6 +102,7 @@ static CamelFolder *
 get_folder (CamelStore *store,
             const gchar *folder_name,
             guint32 flags,
+            GCancellable *cancellable,
             GError **error)
 {
 	CamelStoreClass *store_class;
@@ -110,7 +111,7 @@ get_folder (CamelStore *store,
 
 	/* Chain up to parent's get_folder() method. */
 	store_class = CAMEL_STORE_CLASS (camel_mbox_store_parent_class);
-	if (!store_class->get_folder (store, folder_name, flags, error))
+	if (!store_class->get_folder (store, folder_name, flags, cancellable, error))
 		return NULL;
 
 	name = camel_local_store_get_full_path (store, folder_name);
@@ -197,11 +198,14 @@ get_folder (CamelStore *store,
 	} else
 		g_free (name);
 
-	return camel_mbox_folder_new (store, folder_name, flags, error);
+	return camel_mbox_folder_new (store, folder_name, flags, cancellable, error);
 }
 
 static gboolean
-delete_folder (CamelStore *store, const gchar *folder_name, GError **error)
+delete_folder (CamelStore *store,
+               const gchar *folder_name,
+               GCancellable *cancellable,
+               GError **error)
 {
 	CamelFolderInfo *fi;
 	CamelFolder *lf;
@@ -311,7 +315,7 @@ delete_folder (CamelStore *store, const gchar *folder_name, GError **error)
 	g_free (path);
 
 	path = NULL;
-	if ((lf = camel_store_get_folder (store, folder_name, 0, NULL))) {
+	if ((lf = camel_store_get_folder (store, folder_name, 0, cancellable, NULL))) {
 		CamelObject *object = CAMEL_OBJECT (lf);
 		const gchar *state_filename;
 
@@ -354,7 +358,11 @@ delete_folder (CamelStore *store, const gchar *folder_name, GError **error)
 }
 
 static CamelFolderInfo *
-create_folder (CamelStore *store, const gchar *parent_name, const gchar *folder_name, GError **error)
+create_folder (CamelStore *store,
+               const gchar *parent_name,
+               const gchar *folder_name,
+               GCancellable *cancellable,
+               GError **error)
 {
 	/* FIXME: this is almost an exact copy of CamelLocalStore::create_folder() except that we use
 	 * different path schemes... need to find a way to share parent's code? */
@@ -421,11 +429,11 @@ create_folder (CamelStore *store, const gchar *parent_name, const gchar *folder_
 	g_free (path);
 
 	folder = CAMEL_STORE_GET_CLASS (store)->get_folder (
-		store, name, CAMEL_STORE_FOLDER_CREATE, error);
+		store, name, CAMEL_STORE_FOLDER_CREATE, cancellable, error);
 	if (folder) {
 		g_object_unref (folder);
 		info = CAMEL_STORE_GET_CLASS (store)->get_folder_info (
-			store, name, 0, error);
+			store, name, 0, cancellable, error);
 	}
 
 	g_free (name);
@@ -495,7 +503,11 @@ xrename (CamelStore *store, const gchar *old_name, const gchar *new_name, const 
 }
 
 static gboolean
-rename_folder (CamelStore *store, const gchar *old, const gchar *new, GError **error)
+rename_folder (CamelStore *store,
+               const gchar *old,
+               const gchar *new,
+               GCancellable *cancellable,
+               GError **error)
 {
 	CamelLocalFolder *folder = NULL;
 	gchar *oldibex, *newibex, *newdir;
@@ -644,7 +656,9 @@ inode_free (gpointer k, gpointer v, gpointer d)
 
 /* NB: duplicated in maildir store */
 static void
-fill_fi (CamelStore *store, CamelFolderInfo *fi, guint32 flags)
+fill_fi (CamelStore *store,
+         CamelFolderInfo *fi,
+         guint32 flags)
 {
 	CamelFolder *folder;
 
@@ -653,7 +667,7 @@ fill_fi (CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 	folder = camel_object_bag_get (store->folders, fi->full_name);
 	if (folder) {
 		if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
-			camel_folder_refresh_info (folder, NULL);
+			camel_folder_refresh_info (folder, NULL, NULL);
 		fi->unread = camel_folder_get_unread_message_count (folder);
 		fi->total = camel_folder_get_message_count (folder);
 		g_object_unref (folder);
@@ -798,7 +812,11 @@ scan_dir (CamelStore *store, CamelURL *url, GHashTable *visited, CamelFolderInfo
 }
 
 static CamelFolderInfo *
-get_folder_info (CamelStore *store, const gchar *top, guint32 flags, GError **error)
+get_folder_info (CamelStore *store,
+                 const gchar *top,
+                 guint32 flags,
+                 GCancellable *cancellable,
+                 GError **error)
 {
 	GHashTable *visited;
 #ifndef G_OS_WIN32

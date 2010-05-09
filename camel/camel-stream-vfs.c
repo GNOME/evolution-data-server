@@ -54,6 +54,7 @@ static gssize
 stream_vfs_read (CamelStream *stream,
                  gchar *buffer,
                  gsize n,
+                 GCancellable *cancellable,
                  GError **error)
 {
 	CamelStreamVFS *stream_vfs = CAMEL_STREAM_VFS (stream);
@@ -62,7 +63,7 @@ stream_vfs_read (CamelStream *stream,
 
 	nread = g_input_stream_read (
 		G_INPUT_STREAM (stream_vfs->stream),
-		buffer, n, NULL, &local_error);
+		buffer, n, cancellable, &local_error);
 
 	if (nread == 0 || local_error != NULL)
 		stream->eos = TRUE;
@@ -77,6 +78,7 @@ static gssize
 stream_vfs_write (CamelStream *stream,
                   const gchar *buffer,
                   gsize n,
+                  GCancellable *cancellable,
                   GError **error)
 {
 	CamelStreamVFS *stream_vfs = CAMEL_STREAM_VFS (stream);
@@ -85,26 +87,28 @@ stream_vfs_write (CamelStream *stream,
 
 	success = g_output_stream_write_all (
 		G_OUTPUT_STREAM (stream_vfs->stream),
-		buffer, n, &bytes_written, NULL, error);
+		buffer, n, &bytes_written, cancellable, error);
 
 	return success ? bytes_written : -1;
 }
 
 static gint
 stream_vfs_flush (CamelStream *stream,
+                  GCancellable *cancellable,
                   GError **error)
 {
 	CamelStreamVFS *stream_vfs = CAMEL_STREAM_VFS (stream);
 	gboolean success;
 
 	success = g_output_stream_flush (
-		G_OUTPUT_STREAM (stream_vfs->stream), NULL, error);
+		G_OUTPUT_STREAM (stream_vfs->stream), cancellable, error);
 
 	return success ? 0 : -1;
 }
 
 static gint
 stream_vfs_close (CamelStream *stream,
+                  GCancellable *cancellable,
                   GError **error)
 {
 	CamelStreamVFS *stream_vfs = CAMEL_STREAM_VFS (stream);
@@ -112,10 +116,12 @@ stream_vfs_close (CamelStream *stream,
 
 	if (G_IS_OUTPUT_STREAM (stream_vfs->stream))
 		success = g_output_stream_close (
-			G_OUTPUT_STREAM (stream_vfs->stream), NULL, error);
+			G_OUTPUT_STREAM (stream_vfs->stream),
+			cancellable, error);
 	else
 		success = g_input_stream_close (
-			G_INPUT_STREAM (stream_vfs->stream), NULL, error);
+			G_INPUT_STREAM (stream_vfs->stream),
+			cancellable, error);
 
 	if (success) {
 		g_object_unref (stream_vfs->stream);

@@ -80,6 +80,7 @@ struct _CamelTransportClass {
 						 CamelMimeMessage *message,
 						 CamelAddress *from,
 						 CamelAddress *recipients,
+						 GCancellable *cancellable,
 						 GError **error);
 };
 
@@ -88,6 +89,7 @@ gboolean	camel_transport_send_to		(CamelTransport *transport,
 						 CamelMimeMessage *message,
 						 CamelAddress *from,
 						 CamelAddress *recipients,
+						 GCancellable *cancellable,
 						 GError **error);
 void		camel_transport_lock		(CamelTransport *transport,
 						 CamelTransportLock lock);

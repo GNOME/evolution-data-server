@@ -63,20 +63,28 @@ offline_downsync_sync (CamelSession *session, CamelSessionThreadMsg *mm)
 	struct _offline_downsync_msg *m = (struct _offline_downsync_msg *) mm;
 	gint i;
 
-	camel_operation_start (NULL, _("Downloading new messages for offline mode"));
+	camel_operation_start (
+		mm->cancellable,
+		_("Downloading new messages for offline mode"));
 
 	if (m->changes) {
 		for (i = 0; i < m->changes->uid_added->len; i++) {
 			gint pc = i * 100 / m->changes->uid_added->len;
 
-			camel_operation_progress (NULL, pc);
-			camel_folder_sync_message (m->folder, m->changes->uid_added->pdata[i], &mm->error);
+			camel_operation_progress (mm->cancellable, pc);
+			/* FIXME Pass a GCancellable */
+			camel_folder_sync_message (
+				m->folder, m->changes->uid_added->pdata[i],
+				NULL, &mm->error);
 		}
 	} else {
-		camel_offline_folder_downsync ((CamelOfflineFolder *) m->folder, "(match-all)", &mm->error);
+		/* FIXME Pass a GCancellable */
+		camel_offline_folder_downsync (
+			(CamelOfflineFolder *) m->folder,
+			"(match-all)", NULL, &mm->error);
 	}
 
-	camel_operation_end (NULL);
+	camel_operation_end (mm->cancellable);
 }
 
 static void
@@ -159,6 +167,7 @@ offline_folder_get_property (GObject *object,
 static gboolean
 offline_folder_downsync (CamelOfflineFolder *offline,
                          const gchar *expression,
+                         GCancellable *cancellable,
                          GError **error)
 {
 	CamelFolder *folder = (CamelFolder *) offline;
@@ -166,7 +175,7 @@ offline_folder_downsync (CamelOfflineFolder *offline,
 	gint i;
 
 	camel_operation_start (
-		NULL, _("Syncing messages in folder '%s' to disk"),
+		cancellable, _("Syncing messages in folder '%s' to disk"),
 		camel_folder_get_full_name (folder));
 
 	if (expression)
@@ -188,16 +197,17 @@ offline_folder_downsync (CamelOfflineFolder *offline,
 		goto done;
 
 	for (i = 0; i < uncached_uids->len; i++) {
-		gint pc = i * 100 / uncached_uids->len;
-		camel_folder_sync_message (folder, uncached_uids->pdata[i], NULL);
-		camel_operation_progress (NULL, pc);
+		camel_folder_sync_message (
+			folder, uncached_uids->pdata[i], cancellable, NULL);
+		camel_operation_progress (
+			cancellable, i * 100 / uncached_uids->len);
 	}
 
 done:
 	if (uncached_uids)
 		camel_folder_free_uids (folder, uncached_uids);
 
-	camel_operation_end (NULL);
+	camel_operation_end (cancellable);
 
 	return TRUE;
 }
@@ -272,7 +282,9 @@ camel_offline_folder_set_offline_sync (CamelOfflineFolder *offline_folder,
 /**
  * camel_offline_folder_downsync:
  * @offline: a #CamelOfflineFolder object
- * @expression: search expression describing which set of messages to downsync (%NULL for all)
+ * @expression: search expression describing which set of messages
+ *              to downsync (%NULL for all)
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Syncs messages in @offline described by the search @expression to
@@ -283,6 +295,7 @@ camel_offline_folder_set_offline_sync (CamelOfflineFolder *offline_folder,
 gboolean
 camel_offline_folder_downsync (CamelOfflineFolder *offline,
                                const gchar *expression,
+                               GCancellable *cancellable,
                                GError **error)
 {
 	CamelOfflineFolderClass *class;
@@ -293,7 +306,7 @@ camel_offline_folder_downsync (CamelOfflineFolder *offline,
 	class = CAMEL_OFFLINE_FOLDER_GET_CLASS (offline);
 	g_return_val_if_fail (class->downsync != NULL, FALSE);
 
-	success = class->downsync (offline, expression, error);
+	success = class->downsync (offline, expression, cancellable, error);
 	CAMEL_CHECK_GERROR (offline, downsync, success, error);
 
 	return success;

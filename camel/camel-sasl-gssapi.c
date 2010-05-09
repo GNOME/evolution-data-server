@@ -243,6 +243,7 @@ send_dbus_message (gchar *name)
 static GByteArray *
 sasl_gssapi_challenge (CamelSasl *sasl,
                        GByteArray *token,
+                       GCancellable *cancellable,
                        GError **error)
 {
 	CamelSaslGssapiPrivate *priv;
@@ -267,7 +268,10 @@ sasl_gssapi_challenge (CamelSasl *sasl,
 	case GSSAPI_STATE_INIT:
 		memset (&hints, 0, sizeof (hints));
 		hints.ai_flags = AI_CANONNAME;
-		ai = camel_getaddrinfo(service->url->host?service->url->host:"localhost", NULL, &hints, error);
+		ai = camel_getaddrinfo (
+			service->url->host ?
+			service->url->host : "localhost",
+			NULL, &hints, cancellable, error);
 		if (ai == NULL)
 			return NULL;
 

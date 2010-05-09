@@ -465,7 +465,10 @@ do_forward_to (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFil
 
 	/* make sure we have the message... */
 	if (p->message == NULL) {
-		if (!(p->message = camel_folder_get_message (p->source, p->uid, &p->error)))
+		/* FIXME Pass a GCancellable */
+		p->message = camel_folder_get_message (
+			p->source, p->uid, NULL, &p->error);
+		if (p->message == NULL)
 			return NULL;
 	}
 
@@ -501,16 +504,24 @@ do_copy (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDri
 
 				uids = g_ptr_array_new ();
 				g_ptr_array_add (uids, (gchar *) p->uid);
-				camel_folder_transfer_messages_to (p->source, uids, outbox, NULL, FALSE, &p->error);
+				/* FIXME Pass a GCancellable */
+				camel_folder_transfer_messages_to (
+					p->source, uids, outbox, NULL,
+					FALSE, NULL, &p->error);
 				g_ptr_array_free (uids, TRUE);
 			} else {
 				if (p->message == NULL)
-					p->message = camel_folder_get_message (p->source, p->uid, &p->error);
+					/* FIXME Pass a GCancellable */
+					p->message = camel_folder_get_message (
+						p->source, p->uid, NULL, &p->error);
 
 				if (!p->message)
 					continue;
 
-				camel_folder_append_message (outbox, p->message, p->info, NULL, &p->error);
+				/* FIXME Pass a GCancellable */
+				camel_folder_append_message (
+					outbox, p->message, p->info,
+					NULL, NULL, &p->error);
 			}
 
 			if (p->error == NULL)
@@ -554,27 +565,38 @@ do_move (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDri
 
 				uids = g_ptr_array_new ();
 				g_ptr_array_add (uids, (gchar *) p->uid);
+				/* FIXME Pass a GCancellable */
 				camel_folder_transfer_messages_to (
 					p->source, uids, outbox, NULL,
-					last, &p->error);
+					last, NULL, &p->error);
 				g_ptr_array_free (uids, TRUE);
 			} else {
 				if (p->message == NULL)
+					/* FIXME Pass a GCancellable */
 					p->message = camel_folder_get_message (
-						p->source, p->uid, &p->error);
+						p->source, p->uid, NULL, &p->error);
 
 				if (!p->message)
 					continue;
 
+				/* FIXME Pass a GCancellable */
 				camel_folder_append_message (
 					outbox, p->message, p->info,
-					NULL, &p->error);
+					NULL, NULL, &p->error);
 
 				if (p->error == NULL && last) {
 					if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
-						camel_folder_set_message_flags (p->source, p->uid, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN, ~0);
+						camel_folder_set_message_flags (
+							p->source, p->uid,
+							CAMEL_MESSAGE_DELETED |
+							CAMEL_MESSAGE_SEEN, ~0);
 					else
-						camel_message_info_set_flags (p->info, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN|CAMEL_MESSAGE_FOLDER_FLAGGED, ~0);
+						camel_message_info_set_flags (
+							p->info,
+							CAMEL_MESSAGE_DELETED |
+							CAMEL_MESSAGE_SEEN |
+							CAMEL_MESSAGE_FOLDER_FLAGGED,
+							~0);
 				}
 			}
 
@@ -702,9 +724,12 @@ set_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDr
 	if (argc == 1 && argv[0]->type == ESEXP_RES_STRING) {
 		flags = camel_system_flag (argv[0]->value.string);
 		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
-			camel_folder_set_message_flags (p->source, p->uid, flags, ~0);
+			camel_folder_set_message_flags (
+				p->source, p->uid, flags, ~0);
 		else
-			camel_message_info_set_flags (p->info, flags | CAMEL_MESSAGE_FOLDER_FLAGGED, ~0);
+			camel_message_info_set_flags (
+				p->info, flags |
+				CAMEL_MESSAGE_FOLDER_FLAGGED, ~0);
 		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Set %s flag", argv[0]->value.string);
 	}
 
@@ -721,9 +746,12 @@ unset_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilter
 	if (argc == 1 && argv[0]->type == ESEXP_RES_STRING) {
 		flags = camel_system_flag (argv[0]->value.string);
 		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
-			camel_folder_set_message_flags (p->source, p->uid, flags, 0);
+			camel_folder_set_message_flags (
+				p->source, p->uid, flags, 0);
 		else
-			camel_message_info_set_flags (p->info, flags | CAMEL_MESSAGE_FOLDER_FLAGGED, 0);
+			camel_message_info_set_flags (
+				p->info, flags |
+				CAMEL_MESSAGE_FOLDER_FLAGGED, 0);
 		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Unset %s flag", argv[0]->value.string);
 	}
 
@@ -779,7 +807,10 @@ pipe_to_system (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFi
 
 	/* make sure we have the message... */
 	if (p->message == NULL) {
-		if (!(p->message = camel_folder_get_message (p->source, p->uid, &p->error)))
+		/* FIXME Pass a GCancellable */
+		p->message = camel_folder_get_message (
+			p->source, p->uid, NULL, &p->error);
+		if (p->message == NULL)
 			return -1;
 	}
 
@@ -814,13 +845,13 @@ pipe_to_system (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFi
 	g_ptr_array_free (args, TRUE);
 
 	stream = camel_stream_fs_new_with_fd (pipe_to_child);
-	if (camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (p->message), stream, NULL) == -1) {
+	if (camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (p->message), stream, NULL, NULL) == -1) {
 		g_object_unref (stream);
 		close (pipe_from_child);
 		goto wait;
 	}
 
-	if (camel_stream_flush (stream, NULL) == -1) {
+	if (camel_stream_flush (stream, NULL, NULL) == -1) {
 		g_object_unref (stream);
 		close (pipe_from_child);
 		goto wait;
@@ -830,7 +861,7 @@ pipe_to_system (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFi
 
 	stream = camel_stream_fs_new_with_fd (pipe_from_child);
 	mem = camel_stream_mem_new ();
-	if (camel_stream_write_to_stream (stream, mem, NULL) == -1) {
+	if (camel_stream_write_to_stream (stream, mem, NULL, NULL) == -1) {
 		g_object_unref (stream);
 		g_object_unref (mem);
 		goto wait;
@@ -845,7 +876,7 @@ pipe_to_system (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFi
 	g_object_unref (mem);
 
 	message = camel_mime_message_new ();
-	if (camel_mime_part_construct_from_parser ((CamelMimePart *) message, parser, NULL) == -1) {
+	if (camel_mime_part_construct_from_parser ((CamelMimePart *) message, parser, NULL, NULL) == -1) {
 		gint err = camel_mime_parser_errno (parser);
 		g_set_error (
 			&p->error, G_IO_ERROR,
@@ -1029,7 +1060,10 @@ close_folder (gpointer key, gpointer value, gpointer data)
 	g_free (key);
 
 	if (folder != FOLDER_INVALID) {
-		camel_folder_sync (folder, FALSE, (p->error != NULL) ? NULL : &p->error);
+		/* FIXME Pass a GCancellable */
+		camel_folder_sync (
+			folder, FALSE, NULL,
+			(p->error != NULL) ? NULL : &p->error);
 		camel_folder_thaw (folder);
 		g_object_unref (folder);
 	}
@@ -1207,6 +1241,7 @@ decode_flags_from_xev (const gchar *xev, CamelMessageInfoBase *mi)
  * @driver: CamelFilterDriver
  * @mbox: mbox filename to be filtered
  * @original_source_url:
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Filters an mbox file based on rules defined in the FilterDriver
@@ -1221,6 +1256,7 @@ gint
 camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
                                  const gchar *mbox,
                                  const gchar *original_source_url,
+                                 GCancellable *cancellable,
                                  GError **error)
 {
 	struct _CamelFilterDriverPrivate *p = CAMEL_FILTER_DRIVER_GET_PRIVATE (driver);
@@ -1271,7 +1307,8 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 		message = camel_mime_message_new ();
 		mime_part = CAMEL_MIME_PART (message);
 
-		if (camel_mime_part_construct_from_parser (mime_part, mp, error) == -1) {
+		if (camel_mime_part_construct_from_parser (
+			mime_part, mp, cancellable, error) == -1) {
 			report_status (driver, CAMEL_FILTER_STATUS_END, 100, _("Failed on message %d"), i);
 			g_object_unref (message);
 			goto fail;
@@ -1288,8 +1325,8 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 		last = camel_mime_parser_tell (mp);
 		status = camel_filter_driver_filter_message (
 			driver, message, info, NULL, NULL, source_url,
-			original_source_url ? original_source_url : source_url,
-			&local_error);
+			original_source_url ? original_source_url :
+			source_url, cancellable, &local_error);
 		g_object_unref (message);
 		if (local_error != NULL || status == -1) {
 			report_status (
@@ -1310,7 +1347,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 
 	if (p->defaultfolder) {
 		report_status(driver, CAMEL_FILTER_STATUS_PROGRESS, 100, _("Syncing folder"));
-		camel_folder_sync (p->defaultfolder, FALSE, NULL);
+		camel_folder_sync (p->defaultfolder, FALSE, cancellable, NULL);
 	}
 
 	report_status (driver, CAMEL_FILTER_STATUS_END, 100, _("Complete"));
@@ -1331,8 +1368,10 @@ fail:
  * @driver: CamelFilterDriver
  * @folder: CamelFolder to be filtered
  * @cache: UID cache (needed for POP folders)
- * @uids: message uids to be filtered or NULL (as a shortcut to filter all messages)
+ * @uids: message uids to be filtered or NULL (as a shortcut to filter
+ *        all messages)
  * @remove: TRUE to mark filtered messages as deleted
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Filters a folder based on rules defined in the FilterDriver
@@ -1348,6 +1387,7 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
                                    CamelUIDCache *cache,
                                    GPtrArray *uids,
                                    gboolean remove,
+                                   GCancellable *cancellable,
                                    GError **error)
 {
 	struct _CamelFilterDriverPrivate *p = CAMEL_FILTER_DRIVER_GET_PRIVATE (driver);
@@ -1383,8 +1423,8 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 			info = NULL;
 
 		status = camel_filter_driver_filter_message (
-			driver, NULL, info, uids->pdata[i],
-			folder, source_url, source_url, &local_error);
+			driver, NULL, info, uids->pdata[i], folder,
+			source_url, source_url, cancellable, &local_error);
 
 		if (camel_folder_has_summary_capability (folder))
 			camel_folder_free_message_info (folder, info);
@@ -1400,8 +1440,10 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 		}
 
 		if (remove)
-			camel_folder_set_message_flags (folder, uids->pdata[i],
-							CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_SEEN, ~0);
+			camel_folder_set_message_flags (
+				folder, uids->pdata[i],
+				CAMEL_MESSAGE_DELETED |
+				CAMEL_MESSAGE_SEEN, ~0);
 
 		if (cache)
 			camel_uid_cache_save_uid (cache, uids->pdata[i]);
@@ -1409,7 +1451,7 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 
 	if (p->defaultfolder) {
 		report_status (driver, CAMEL_FILTER_STATUS_PROGRESS, 100, _("Syncing folder"));
-		camel_folder_sync (p->defaultfolder, FALSE, NULL);
+		camel_folder_sync (p->defaultfolder, FALSE, cancellable, NULL);
 	}
 
 	if (i == uids->len)
@@ -1446,7 +1488,9 @@ get_message_cb (gpointer data, GError **error)
 		else
 			uid = camel_message_info_uid (p->info);
 
-		message = camel_folder_get_message (p->source, uid, error);
+		/* FIXME Pass a GCancellable */
+		message = camel_folder_get_message (
+			p->source, uid, NULL, error);
 	}
 
 	if (source_url && message && camel_mime_message_get_source (message) == NULL)
@@ -1464,6 +1508,7 @@ get_message_cb (gpointer data, GError **error)
  * @source: source folder or NULL
  * @source_url: url of source folder or NULL
  * @original_source_url: url of original source folder (pre-movemail) or NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Filters a message based on rules defined in the FilterDriver
@@ -1484,6 +1529,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
                                     CamelFolder *source,
                                     const gchar *source_url,
                                     const gchar *original_source_url,
+                                    GCancellable *cancellable,
                                     GError **error)
 {
 	struct _CamelFilterDriverPrivate *p = CAMEL_FILTER_DRIVER_GET_PRIVATE (driver);
@@ -1505,7 +1551,8 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 		if (message) {
 			g_object_ref (message);
 		} else {
-			message = camel_folder_get_message (source, uid, error);
+			message = camel_folder_get_message (
+				source, uid, cancellable, error);
 			if (!message)
 				return -1;
 		}
@@ -1592,9 +1639,15 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 	/* *Now* we can set the DELETED flag... */
 	if (p->deleted) {
 		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
-			camel_folder_set_message_flags (p->source, p->uid, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN, ~0);
+			camel_folder_set_message_flags (
+				p->source, p->uid,
+				CAMEL_MESSAGE_DELETED |
+				CAMEL_MESSAGE_SEEN, ~0);
 		else
-			camel_message_info_set_flags (info, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN|CAMEL_MESSAGE_FOLDER_FLAGGED, ~0);
+			camel_message_info_set_flags (
+				info, CAMEL_MESSAGE_DELETED |
+				CAMEL_MESSAGE_SEEN |
+				CAMEL_MESSAGE_FOLDER_FLAGGED, ~0);
 	}
 
 	/* Logic: if !Moved and there exists a default folder... */
@@ -1615,18 +1668,19 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 			g_ptr_array_add (uids, (gchar *) p->uid);
 			camel_folder_transfer_messages_to (
 				p->source, uids, p->defaultfolder,
-				NULL, FALSE, &p->error);
+				NULL, FALSE, cancellable, &p->error);
 			g_ptr_array_free (uids, TRUE);
 		} else {
 			if (p->message == NULL) {
-				p->message = camel_folder_get_message (source, uid, error);
+				p->message = camel_folder_get_message (
+					source, uid, cancellable, error);
 				if (!p->message)
 					goto error;
 			}
 
 			camel_folder_append_message (
 				p->defaultfolder, p->message,
-				p->info, NULL, &p->error);
+				p->info, NULL, cancellable, &p->error);
 		}
 	}
 

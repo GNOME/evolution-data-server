@@ -71,6 +71,7 @@ CamelTcpStream
 @host: 
 @service: 
 @fallback_port: 
+@cancellable: 
 @error: 
 @Returns: 
 

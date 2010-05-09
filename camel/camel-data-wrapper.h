@@ -92,12 +92,15 @@ struct _CamelDataWrapperClass {
 						 CamelContentType *mime_type_field);
 	gssize		(*write_to_stream)	(CamelDataWrapper *data_wrapper,
 						 CamelStream *stream,
+						 GCancellable *cancellable,
 						 GError **error);
 	gssize		(*decode_to_stream)	(CamelDataWrapper *data_wrapper,
 						 CamelStream *stream,
+						 GCancellable *cancellable,
 						 GError **error);
 	gint		(*construct_from_stream)(CamelDataWrapper *data_wrapper,
 						 CamelStream *stream,
+						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(*is_offline)		(CamelDataWrapper *data_wrapper);
 };
@@ -108,10 +111,12 @@ CamelDataWrapper *
 gssize		camel_data_wrapper_write_to_stream
 						(CamelDataWrapper *data_wrapper,
 						 CamelStream *stream,
+						 GCancellable *cancellable,
 						 GError **error);
 gssize		camel_data_wrapper_decode_to_stream
 						(CamelDataWrapper *data_wrapper,
 						 CamelStream *stream,
+						 GCancellable *cancellable,
 						 GError **error);
 void		camel_data_wrapper_set_mime_type (CamelDataWrapper *data_wrapper,
 						 const gchar *mime_type);
@@ -125,6 +130,7 @@ void		camel_data_wrapper_set_mime_type_field
 gint		camel_data_wrapper_construct_from_stream
 						(CamelDataWrapper *data_wrapper,
 						 CamelStream *stream,
+						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_data_wrapper_is_offline	(CamelDataWrapper *data_wrapper);
 void		camel_data_wrapper_lock		(CamelDataWrapper *data_wrapper,

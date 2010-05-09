@@ -189,7 +189,7 @@ do_perf (gint argc, gchar **argv)
 			CAMEL_MIME_FILTER_INDEX (filter_index), idn);
 		name = g_strdup_printf("%s/%s", path, d->d_name);
 		stream = camel_stream_fs_new_with_name (name, O_RDONLY, 0, NULL);
-		camel_stream_write_to_stream (stream, filter, NULL);
+		camel_stream_write_to_stream (stream, filter, NULL, NULL);
 		g_object_unref (stream);
 		g_free (name);
 

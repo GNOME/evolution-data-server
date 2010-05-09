@@ -94,6 +94,7 @@ camel_imapx_token_t
 		camel_imapx_stream_token	(CamelIMAPXStream *is,
 						 guchar **start,
 						 guint *len,
+						 GCancellable *cancellable,
 						 GError **error);
 
 void		camel_imapx_stream_ungettoken	(CamelIMAPXStream *is,
@@ -104,10 +105,14 @@ void		camel_imapx_stream_set_literal	(CamelIMAPXStream *is,
 						 guint literal);
 gint		camel_imapx_stream_gets		(CamelIMAPXStream *is,
 						 guchar **start,
-						 guint *len);
+						 guint *len,
+						 GCancellable *cancellable,
+						 GError **error);
 gint		 camel_imapx_stream_getl	(CamelIMAPXStream *is,
 						 guchar **start,
-						 guint *len);
+						 guint *len,
+						 GCancellable *cancellable,
+						 GError **error);
 
 /* all throw IO,PARSE exceptions */
 
@@ -115,31 +120,38 @@ gint		 camel_imapx_stream_getl	(CamelIMAPXStream *is,
 gint		camel_imapx_stream_atom		(CamelIMAPXStream *is,
 						 guchar **start,
 						 guint *len,
+						 GCancellable *cancellable,
 						 GError **error);
 /* gets an atom or string */
 gint		camel_imapx_stream_astring	(CamelIMAPXStream *is,
 						 guchar **start,
+						 GCancellable *cancellable,
 						 GError **error);
 /* gets a NIL or a string, start==NULL if NIL */
 gint		camel_imapx_stream_nstring	(CamelIMAPXStream *is,
 						 guchar **start,
+						 GCancellable *cancellable,
 						 GError **error);
 /* gets a NIL or string into a stream, stream==NULL if NIL */
 gint		camel_imapx_stream_nstring_stream
 						(CamelIMAPXStream *is,
 						 CamelStream **stream,
+						 GCancellable *cancellable,
 						 GError **error);
 /* gets 'text' */
 gint		camel_imapx_stream_text		(CamelIMAPXStream *is,
 						 guchar **text,
+						 GCancellable *cancellable,
 						 GError **error);
 
 /* gets a 'number' */
 guint64		 camel_imapx_stream_number	(CamelIMAPXStream *is,
+						 GCancellable *cancellable,
 						 GError **error);
 
 /* skips the rest of a line, including literals, etc */
 gint		camel_imapx_stream_skip		(CamelIMAPXStream *is,
+						 GCancellable *cancellable,
 						 GError **error);
 
 G_END_DECLS

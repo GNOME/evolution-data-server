@@ -62,19 +62,218 @@ enum {
 
 G_DEFINE_TYPE (CamelCipherContext, camel_cipher_context, CAMEL_TYPE_OBJECT)
 
+static void
+cipher_context_set_session (CamelCipherContext *context,
+                            CamelSession *session)
+{
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+	g_return_if_fail (context->priv->session == NULL);
+
+	context->priv->session = g_object_ref (session);
+}
+
+static void
+cipher_context_set_property (GObject *object,
+                             guint property_id,
+                             const GValue *value,
+                             GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_SESSION:
+			cipher_context_set_session (
+				CAMEL_CIPHER_CONTEXT (object),
+				g_value_get_object (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+cipher_context_get_property (GObject *object,
+                             guint property_id,
+                             GValue *value,
+                             GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_SESSION:
+			g_value_set_object (
+				value, camel_cipher_context_get_session (
+				CAMEL_CIPHER_CONTEXT (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+cipher_context_dispose (GObject *object)
+{
+	CamelCipherContextPrivate *priv;
+
+	priv = CAMEL_CIPHER_CONTEXT_GET_PRIVATE (object);
+
+	if (priv->session != NULL) {
+		g_object_unref (priv->session);
+		priv->session = NULL;
+	}
+
+	/* Chain up to parent's dispose () method. */
+	G_OBJECT_CLASS (camel_cipher_context_parent_class)->dispose (object);
+}
+
+static void
+cipher_context_finalize (GObject *object)
+{
+	CamelCipherContextPrivate *priv;
+
+	priv = CAMEL_CIPHER_CONTEXT_GET_PRIVATE (object);
+
+	g_mutex_free (priv->lock);
+
+	/* Chain up to parent's finalize () method. */
+	G_OBJECT_CLASS (camel_cipher_context_parent_class)->finalize (object);
+}
+
+static const gchar *
+cipher_hash_to_id (CamelCipherContext *context,
+                   CamelCipherHash hash)
+{
+	return NULL;
+}
+
+static CamelCipherHash
+cipher_id_to_hash (CamelCipherContext *context,
+                   const gchar *id)
+{
+	return CAMEL_CIPHER_HASH_DEFAULT;
+}
+
 static gint
 cipher_sign (CamelCipherContext *ctx,
              const gchar *userid,
              CamelCipherHash hash,
              CamelMimePart *ipart,
              CamelMimePart *opart,
+             GCancellable *cancellable,
              GError **error)
 {
 	g_set_error (
-		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
 		_("Signing is not supported by this cipher"));
 
 	return -1;
+}
+
+static CamelCipherValidity *
+cipher_verify (CamelCipherContext *context,
+               CamelMimePart *sigpart,
+               GCancellable *cancellable,
+               GError **error)
+{
+	g_set_error (
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		_("Verifying is not supported by this cipher"));
+
+	return NULL;
+}
+
+static gint
+cipher_encrypt (CamelCipherContext *context,
+                const gchar *userid,
+                GPtrArray *recipients,
+                CamelMimePart *ipart,
+                CamelMimePart *opart,
+                GCancellable *cancellable,
+                GError **error)
+{
+	g_set_error (
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		_("Encryption is not supported by this cipher"));
+
+	return -1;
+}
+
+static CamelCipherValidity *
+cipher_decrypt (CamelCipherContext *context,
+                CamelMimePart *ipart,
+                CamelMimePart *opart,
+                GCancellable *cancellable,
+                GError **error)
+{
+	g_set_error (
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		_("Decryption is not supported by this cipher"));
+
+	return NULL;
+}
+
+static gint
+cipher_import_keys (CamelCipherContext *context,
+                    CamelStream *istream,
+                    GCancellable *cancellable,
+                    GError **error)
+{
+	g_set_error (
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		_("You may not import keys with this cipher"));
+
+	return -1;
+}
+
+static gint
+cipher_export_keys (CamelCipherContext *context,
+                    GPtrArray *keys,
+                    CamelStream *ostream,
+                    GCancellable *cancellable,
+                    GError **error)
+{
+	g_set_error (
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		_("You may not export keys with this cipher"));
+
+	return -1;
+}
+
+static void
+camel_cipher_context_class_init (CamelCipherContextClass *class)
+{
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (CamelCipherContextPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = cipher_context_set_property;
+	object_class->get_property = cipher_context_get_property;
+	object_class->dispose = cipher_context_dispose;
+	object_class->finalize = cipher_context_finalize;
+
+	class->hash_to_id = cipher_hash_to_id;
+	class->id_to_hash = cipher_id_to_hash;
+	class->sign = cipher_sign;
+	class->verify = cipher_verify;
+	class->encrypt = cipher_encrypt;
+	class->decrypt = cipher_decrypt;
+	class->import_keys = cipher_import_keys;
+	class->export_keys = cipher_export_keys;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_SESSION,
+		g_param_spec_object (
+			"session",
+			"Session",
+			NULL,
+			CAMEL_TYPE_SESSION,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY));
+}
+
+static void
+camel_cipher_context_init (CamelCipherContext *context)
+{
+	context->priv = CAMEL_CIPHER_CONTEXT_GET_PRIVATE (context);
+	context->priv->lock = g_mutex_new ();
 }
 
 /**
@@ -84,6 +283,7 @@ cipher_sign (CamelCipherContext *ctx,
  * @hash: preferred Message-Integrity-Check hash algorithm
  * @ipart: Input part.
  * @opart: output part.
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Converts the (unsigned) part @ipart into a new self-contained mime part @opart.
@@ -97,6 +297,7 @@ camel_cipher_sign (CamelCipherContext *context,
                    CamelCipherHash hash,
                    CamelMimePart *ipart,
                    CamelMimePart *opart,
+                   GCancellable *cancellable,
                    GError **error)
 {
 	CamelCipherContextClass *class;
@@ -107,36 +308,22 @@ camel_cipher_sign (CamelCipherContext *context,
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 	g_return_val_if_fail (class->sign != NULL, -1);
 
-	camel_operation_start (NULL, _("Signing message"));
-
 	CIPHER_LOCK (context);
 
-	retval = class->sign (context, userid, hash, ipart, opart, error);
+	retval = class->sign (
+		context, userid, hash, ipart, opart, cancellable, error);
 	CAMEL_CHECK_GERROR (context, sign, retval == 0, error);
 
 	CIPHER_UNLOCK (context);
 
-	camel_operation_end (NULL);
-
 	return retval;
-}
-
-static CamelCipherValidity *
-cipher_verify (CamelCipherContext *context,
-               CamelMimePart *sigpart,
-               GError **error)
-{
-	g_set_error (
-		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-		_("Verifying is not supported by this cipher"));
-
-	return NULL;
 }
 
 /**
  * camel_cipher_verify:
  * @context: Cipher Context
  * @ipart: part to verify
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Verifies the signature. If @istream is a clearsigned stream,
@@ -151,6 +338,7 @@ cipher_verify (CamelCipherContext *context,
 CamelCipherValidity *
 camel_cipher_verify (CamelCipherContext *context,
                      CamelMimePart *ipart,
+                     GCancellable *cancellable,
                      GError **error)
 {
 	CamelCipherContextClass *class;
@@ -161,33 +349,14 @@ camel_cipher_verify (CamelCipherContext *context,
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 	g_return_val_if_fail (class->verify != NULL, NULL);
 
-	camel_operation_start (NULL, _("Verifying message"));
-
 	CIPHER_LOCK (context);
 
-	valid = class->verify (context, ipart, error);
+	valid = class->verify (context, ipart, cancellable, error);
 	CAMEL_CHECK_GERROR (context, verify, valid != NULL, error);
 
 	CIPHER_UNLOCK (context);
 
-	camel_operation_end (NULL);
-
 	return valid;
-}
-
-static gint
-cipher_encrypt (CamelCipherContext *context,
-                const gchar *userid,
-                GPtrArray *recipients,
-                CamelMimePart *ipart,
-                CamelMimePart *opart,
-                GError **error)
-{
-	g_set_error (
-		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-		_("Encryption is not supported by this cipher"));
-
-	return -1;
 }
 
 /**
@@ -197,6 +366,7 @@ cipher_encrypt (CamelCipherContext *context,
  * @recipients: an array of recipient key ids and/or email addresses
  * @ipart: cleartext input stream
  * @opart: ciphertext output stream
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Encrypts (and optionally signs) the cleartext input stream and
@@ -210,6 +380,7 @@ camel_cipher_encrypt (CamelCipherContext *context,
                       GPtrArray *recipients,
                       CamelMimePart *ipart,
                       CamelMimePart *opart,
+                      GCancellable *cancellable,
                       GError **error)
 {
 	CamelCipherContextClass *class;
@@ -220,32 +391,16 @@ camel_cipher_encrypt (CamelCipherContext *context,
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 	g_return_val_if_fail (class->encrypt != NULL, -1);
 
-	camel_operation_start (NULL, _("Encrypting message"));
-
 	CIPHER_LOCK (context);
 
 	retval = class->encrypt (
-		context, userid, recipients, ipart, opart, error);
+		context, userid, recipients,
+		ipart, opart, cancellable, error);
 	CAMEL_CHECK_GERROR (context, encrypt, retval == 0, error);
 
 	CIPHER_UNLOCK (context);
 
-	camel_operation_end (NULL);
-
 	return retval;
-}
-
-static CamelCipherValidity *
-cipher_decrypt (CamelCipherContext *context,
-                CamelMimePart *ipart,
-                CamelMimePart *opart,
-                GError **error)
-{
-	g_set_error (
-		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-		_("Decryption is not supported by this cipher"));
-
-	return NULL;
 }
 
 /**
@@ -253,6 +408,7 @@ cipher_decrypt (CamelCipherContext *context,
  * @context:
  * @ipart:
  * @opart:
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Decrypts @ipart into @opart.
@@ -263,6 +419,7 @@ CamelCipherValidity *
 camel_cipher_decrypt (CamelCipherContext *context,
                       CamelMimePart *ipart,
                       CamelMimePart *opart,
+                      GCancellable *cancellable,
                       GError **error)
 {
 	CamelCipherContextClass *class;
@@ -273,36 +430,21 @@ camel_cipher_decrypt (CamelCipherContext *context,
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 	g_return_val_if_fail (class->decrypt != NULL, NULL);
 
-	camel_operation_start (NULL, _("Decrypting message"));
-
 	CIPHER_LOCK (context);
 
-	valid = class->decrypt (context, ipart, opart, error);
+	valid = class->decrypt (context, ipart, opart, cancellable, error);
 	CAMEL_CHECK_GERROR (context, decrypt, valid != NULL, error);
 
 	CIPHER_UNLOCK (context);
 
-	camel_operation_end (NULL);
-
 	return valid;
-}
-
-static gint
-cipher_import_keys (CamelCipherContext *context,
-                    CamelStream *istream,
-                    GError **error)
-{
-	g_set_error (
-		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-		_("You may not import keys with this cipher"));
-
-	return -1;
 }
 
 /**
  * camel_cipher_import_keys:
  * @context: Cipher Context
  * @istream: input stream (containing keys)
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Imports a stream of keys/certificates contained within @istream
@@ -313,6 +455,7 @@ cipher_import_keys (CamelCipherContext *context,
 gint
 camel_cipher_import_keys (CamelCipherContext *context,
                           CamelStream *istream,
+                          GCancellable *cancellable,
                           GError **error)
 {
 	CamelCipherContextClass *class;
@@ -324,23 +467,10 @@ camel_cipher_import_keys (CamelCipherContext *context,
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 	g_return_val_if_fail (class->import_keys != NULL, -1);
 
-	retval = class->import_keys (context, istream, error);
+	retval = class->import_keys (context, istream, cancellable, error);
 	CAMEL_CHECK_GERROR (context, import_keys, retval == 0, error);
 
 	return retval;
-}
-
-static gint
-cipher_export_keys (CamelCipherContext *context,
-                    GPtrArray *keys,
-                    CamelStream *ostream,
-                    GError **error)
-{
-	g_set_error (
-		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-		_("You may not export keys with this cipher"));
-
-	return -1;
 }
 
 /**
@@ -348,6 +478,7 @@ cipher_export_keys (CamelCipherContext *context,
  * @context: Cipher Context
  * @keys: an array of key ids
  * @ostream: output stream
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Exports the keys/certificates in @keys to the stream @ostream from
@@ -359,6 +490,7 @@ gint
 camel_cipher_export_keys (CamelCipherContext *context,
                           GPtrArray *keys,
                           CamelStream *ostream,
+                          GCancellable *cancellable,
                           GError **error)
 {
 	CamelCipherContextClass *class;
@@ -371,16 +503,11 @@ camel_cipher_export_keys (CamelCipherContext *context,
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 	g_return_val_if_fail (class->export_keys != NULL, -1);
 
-	retval = class->export_keys (context, keys, ostream, error);
+	retval = class->export_keys (
+		context, keys, ostream, cancellable, error);
 	CAMEL_CHECK_GERROR (context, export_keys, retval == 0, error);
 
 	return retval;
-}
-
-static CamelCipherHash
-cipher_id_to_hash (CamelCipherContext *context, const gchar *id)
-{
-	return CAMEL_CIPHER_HASH_DEFAULT;
 }
 
 /* a couple of util functions */
@@ -399,12 +526,6 @@ camel_cipher_id_to_hash (CamelCipherContext *context,
 		class->id_to_hash != NULL, CAMEL_CIPHER_HASH_DEFAULT);
 
 	return class->id_to_hash (context, id);
-}
-
-static const gchar *
-cipher_hash_to_id (CamelCipherContext *context, CamelCipherHash hash)
-{
-	return NULL;
 }
 
 const gchar *
@@ -646,120 +767,6 @@ camel_cipher_validity_free (CamelCipherValidity *validity)
 
 /* ********************************************************************** */
 
-static void
-cipher_context_set_session (CamelCipherContext *context,
-                            CamelSession *session)
-{
-	g_return_if_fail (CAMEL_IS_SESSION (session));
-	g_return_if_fail (context->priv->session == NULL);
-
-	context->priv->session = g_object_ref (session);
-}
-
-static void
-cipher_context_set_property (GObject *object,
-                             guint property_id,
-                             const GValue *value,
-                             GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_SESSION:
-			cipher_context_set_session (
-				CAMEL_CIPHER_CONTEXT (object),
-				g_value_get_object (value));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
-cipher_context_get_property (GObject *object,
-                             guint property_id,
-                             GValue *value,
-                             GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_SESSION:
-			g_value_set_object (
-				value, camel_cipher_context_get_session (
-				CAMEL_CIPHER_CONTEXT (object)));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
-cipher_context_dispose (GObject *object)
-{
-	CamelCipherContextPrivate *priv;
-
-	priv = CAMEL_CIPHER_CONTEXT_GET_PRIVATE (object);
-
-	if (priv->session != NULL) {
-		g_object_unref (priv->session);
-		priv->session = NULL;
-	}
-
-	/* Chain up to parent's dispose () method. */
-	G_OBJECT_CLASS (camel_cipher_context_parent_class)->dispose (object);
-}
-
-static void
-cipher_context_finalize (GObject *object)
-{
-	CamelCipherContextPrivate *priv;
-
-	priv = CAMEL_CIPHER_CONTEXT_GET_PRIVATE (object);
-
-	g_mutex_free (priv->lock);
-
-	/* Chain up to parent's finalize () method. */
-	G_OBJECT_CLASS (camel_cipher_context_parent_class)->finalize (object);
-}
-
-static void
-camel_cipher_context_class_init (CamelCipherContextClass *class)
-{
-	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (CamelCipherContextPrivate));
-
-	object_class = G_OBJECT_CLASS (class);
-	object_class->set_property = cipher_context_set_property;
-	object_class->get_property = cipher_context_get_property;
-	object_class->dispose = cipher_context_dispose;
-	object_class->finalize = cipher_context_finalize;
-
-	class->hash_to_id = cipher_hash_to_id;
-	class->id_to_hash = cipher_id_to_hash;
-	class->sign = cipher_sign;
-	class->verify = cipher_verify;
-	class->encrypt = cipher_encrypt;
-	class->decrypt = cipher_decrypt;
-	class->import_keys = cipher_import_keys;
-	class->export_keys = cipher_export_keys;
-
-	g_object_class_install_property (
-		object_class,
-		PROP_SESSION,
-		g_param_spec_object (
-			"session",
-			"Session",
-			NULL,
-			CAMEL_TYPE_SESSION,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY));
-}
-
-static void
-camel_cipher_context_init (CamelCipherContext *context)
-{
-	context->priv = CAMEL_CIPHER_CONTEXT_GET_PRIVATE (context);
-	context->priv->lock = g_mutex_new ();
-}
-
 /**
  * camel_cipher_context_new:
  * @session: a #CamelSession
@@ -829,6 +836,7 @@ cc_prepare_sign (CamelMimePart *part)
  * @part: Part to write.
  * @flags: flags for the canonicalisation filter (CamelMimeFilterCanon)
  * @ostream: stream to write canonicalised output to.
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Writes a part to a stream in a canonicalised format, suitable for signing/encrypting.
@@ -841,6 +849,7 @@ gint
 camel_cipher_canonical_to_stream (CamelMimePart *part,
                                   guint32 flags,
                                   CamelStream *ostream,
+                                  GCancellable *cancellable,
                                   GError **error)
 {
 	CamelStream *filter;
@@ -856,8 +865,8 @@ camel_cipher_canonical_to_stream (CamelMimePart *part,
 	g_object_unref (canon);
 
 	if (camel_data_wrapper_write_to_stream (
-		(CamelDataWrapper *)part, filter, error) != -1
-	    && camel_stream_flush (filter, error) != -1)
+		CAMEL_DATA_WRAPPER (part), filter, cancellable, error) != -1
+	    && camel_stream_flush (filter, cancellable, error) != -1)
 		res = 0;
 
 	g_object_unref (filter);

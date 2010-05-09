@@ -789,6 +789,7 @@ sasl_digest_md5_finalize (GObject *object)
 static GByteArray *
 sasl_digest_md5_challenge (CamelSasl *sasl,
                            GByteArray *token,
+                           GCancellable *cancellable,
                            GError **error)
 {
 	CamelSaslDigestMd5 *sasl_digest = CAMEL_SASL_DIGEST_MD5 (sasl);
@@ -843,7 +844,10 @@ sasl_digest_md5_challenge (CamelSasl *sasl,
 
 		memset (&hints, 0, sizeof (hints));
 		hints.ai_flags = AI_CANONNAME;
-		ai = camel_getaddrinfo(service->url->host?service->url->host:"localhost", NULL, &hints, NULL);
+		ai = camel_getaddrinfo (
+			service->url->host ?
+			service->url->host : "localhost",
+			NULL, &hints, cancellable, NULL);
 		if (ai && ai->ai_canonname)
 			ptr = ai->ai_canonname;
 		else

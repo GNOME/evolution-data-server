@@ -35,6 +35,7 @@ CamelTransport
 @message: 
 @from: 
 @recipients: 
+@cancellable: 
 @error: 
 @Returns: 
 

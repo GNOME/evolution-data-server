@@ -63,6 +63,7 @@ static gssize
 seekable_substream_read (CamelStream *stream,
                          gchar *buffer,
                          gsize n,
+                         GCancellable *cancellable,
                          GError **error)
 {
 	CamelSeekableStream *parent;
@@ -90,7 +91,8 @@ seekable_substream_read (CamelStream *stream,
 		return 0;
 	}
 
-	v = camel_stream_read (CAMEL_STREAM (parent), buffer, n, error);
+	v = camel_stream_read (
+		CAMEL_STREAM (parent), buffer, n, cancellable, error);
 
 	/* ignore <0 - it's an error, let the caller deal */
 	if (v > 0)
@@ -103,6 +105,7 @@ static gssize
 seekable_substream_write (CamelStream *stream,
                           const gchar *buffer,
                           gsize n,
+                          GCancellable *cancellable,
                           GError **error)
 {
 	CamelSeekableStream *parent;
@@ -130,7 +133,8 @@ seekable_substream_write (CamelStream *stream,
 		return 0;
 	}
 
-	v = camel_stream_write (CAMEL_STREAM (parent), buffer, n, error);
+	v = camel_stream_write (
+		CAMEL_STREAM (parent), buffer, n, cancellable, error);
 
 	/* ignore <0 - it's an error, let the caller deal */
 	if (v > 0)
@@ -142,15 +146,18 @@ seekable_substream_write (CamelStream *stream,
 
 static gint
 seekable_substream_flush (CamelStream *stream,
+                          GCancellable *cancellable,
                           GError **error)
 {
 	CamelSeekableSubstream *sus = (CamelSeekableSubstream *)stream;
 
-	return camel_stream_flush (CAMEL_STREAM (sus->parent_stream), error);
+	return camel_stream_flush (
+		CAMEL_STREAM (sus->parent_stream), cancellable, error);
 }
 
 static gint
 seekable_substream_close (CamelStream *stream,
+                          GCancellable *cancellable,
                           GError **error)
 {
 	/* we dont really want to close the substream ... */
