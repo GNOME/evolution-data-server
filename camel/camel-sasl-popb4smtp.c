@@ -66,7 +66,7 @@ G_DEFINE_TYPE (CamelSaslPOPB4SMTP, camel_sasl_popb4smtp, CAMEL_TYPE_SASL)
 static GByteArray *
 sasl_popb4smtp_challenge (CamelSasl *sasl,
                           GByteArray *token,
-                          CamelException *ex)
+                          GError **error)
 {
 	gchar *popuri;
 	CamelService *service;
@@ -80,18 +80,20 @@ sasl_popb4smtp_challenge (CamelSasl *sasl,
 
 	popuri = camel_session_get_password (
 		session, service, NULL, _("POP Source URI"),
-		"popb4smtp_uri", 0, ex);
+		"popb4smtp_uri", 0, error);
 
 	if (popuri == NULL) {
-		camel_exception_setv (
-			ex, 1,
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 			_("POP Before SMTP auth using an unknown transport"));
 		return NULL;
 	}
 
 	if (g_ascii_strncasecmp(popuri, "pop:", 4) != 0) {
-		camel_exception_setv (
-			ex, 1,
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 			_("POP Before SMTP auth using a non-pop source"));
 		return NULL;
 	}
@@ -116,7 +118,7 @@ sasl_popb4smtp_challenge (CamelSasl *sasl,
 	}
 
 	/* connect to pop session */
-	store = camel_session_get_store(session, popuri, ex);
+	store = camel_session_get_store(session, popuri, error);
 	if (store) {
 		camel_sasl_set_authenticated (sasl, TRUE);
 		g_object_unref (store);

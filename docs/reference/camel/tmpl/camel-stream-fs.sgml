@@ -34,6 +34,7 @@ CamelStreamFs
 @name: 
 @flags: 
 @mode: 
+@error: 
 @Returns: 
 
 
@@ -47,6 +48,7 @@ CamelStreamFs
 @mode: 
 @start: 
 @end: 
+@error: 
 @Returns: 
 
 
@@ -67,6 +69,7 @@ CamelStreamFs
 @fd: 
 @start: 
 @end: 
+@error: 
 @Returns: 
 
 

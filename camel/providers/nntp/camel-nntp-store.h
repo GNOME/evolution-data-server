@@ -59,7 +59,6 @@
 G_BEGIN_DECLS
 
 struct _CamelNNTPFolder;
-struct _CamelException;
 
 typedef struct _CamelNNTPStore CamelNNTPStore;
 typedef struct _CamelNNTPStoreClass CamelNNTPStoreClass;
@@ -110,10 +109,10 @@ struct _CamelNNTPStoreClass {
 
 GType camel_nntp_store_get_type (void);
 
-gint camel_nntp_raw_commandv (CamelNNTPStore *store, struct _CamelException *ex, gchar **line, const gchar *fmt, va_list ap);
-gint camel_nntp_raw_command(CamelNNTPStore *store, struct _CamelException *ex, gchar **line, const gchar *fmt, ...);
-gint camel_nntp_raw_command_auth(CamelNNTPStore *store, struct _CamelException *ex, gchar **line, const gchar *fmt, ...);
-gint camel_nntp_command (CamelNNTPStore *store, struct _CamelException *ex, struct _CamelNNTPFolder *folder, gchar **line, const gchar *fmt, ...);
+gint camel_nntp_raw_commandv (CamelNNTPStore *store, struct _GError **error, gchar **line, const gchar *fmt, va_list ap);
+gint camel_nntp_raw_command(CamelNNTPStore *store, struct _GError **error, gchar **line, const gchar *fmt, ...);
+gint camel_nntp_raw_command_auth(CamelNNTPStore *store, struct _GError **error, gchar **line, const gchar *fmt, ...);
+gint camel_nntp_command (CamelNNTPStore *store, struct _GError **error, struct _CamelNNTPFolder *folder, gchar **line, const gchar *fmt, ...);
 
 G_END_DECLS
 

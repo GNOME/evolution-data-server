@@ -74,7 +74,7 @@ CamelSession
 
 @msg: 
 @id: 
-@ex: 
+@error: 
 @ops: 
 @op: 
 @session: 
@@ -117,7 +117,7 @@ CamelSession
 @session: 
 @url_string: 
 @type: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -129,7 +129,7 @@ CamelSession
 @session: 
 @url_string: 
 @type: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -140,7 +140,7 @@ CamelSession
 
 @session: 
 @url_string: 
-@ex: 
+@error: 
 
 
 <!-- ##### MACRO camel_session_get_transport ##### -->
@@ -150,7 +150,7 @@ CamelSession
 
 @session: 
 @url_string: 
-@ex: 
+@error: 
 
 
 <!-- ##### FUNCTION camel_session_get_storage_path ##### -->
@@ -160,7 +160,7 @@ CamelSession
 
 @session: 
 @service: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -175,7 +175,7 @@ CamelSession
 @prompt: 
 @item: 
 @flags: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -188,7 +188,7 @@ CamelSession
 @service: 
 @domain: 
 @item: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -240,7 +240,7 @@ CamelSession
 
 @session: 
 @type: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -359,7 +359,8 @@ CamelSession
 @folder: 
 @message: 
 @address: 
-@ex: 
+@error: 
+@Returns: 
 
 
 <!-- ##### ENUM CamelSessionLock ##### -->

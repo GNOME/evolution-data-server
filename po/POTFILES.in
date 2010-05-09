@@ -38,7 +38,6 @@ camel/camel-debug.c
 camel/camel-disco-diary.c
 camel/camel-disco-folder.c
 camel/camel-disco-store.c
-camel/camel-exception.c
 camel/camel-file-utils.c
 camel/camel-filter-driver.c
 camel/camel-filter-search.c
@@ -153,6 +152,7 @@ camel/providers/imapx/camel-imapx-folder.c
 camel/providers/imapx/camel-imapx-provider.c
 camel/providers/imapx/camel-imapx-server.c
 camel/providers/imapx/camel-imapx-store.c
+camel/providers/imapx/camel-imapx-stream.c
 camel/providers/local/camel-local-folder.c
 camel/providers/local/camel-local-provider.c
 camel/providers/local/camel-local-store.c

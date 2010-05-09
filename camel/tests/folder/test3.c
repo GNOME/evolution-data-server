@@ -11,15 +11,16 @@
 static void
 test_folder_search_sub(CamelFolder *folder, const gchar *expr, gint expected)
 {
-	CamelException *ex = camel_exception_new();
 	GPtrArray *uids;
 	GHashTable *hash;
 	gint i;
+	GError *error = NULL;
 
-	uids = camel_folder_search_by_expression(folder, expr, ex);
+	uids = camel_folder_search_by_expression(folder, expr, &error);
 	check(uids != NULL);
 	check_msg(uids->len == expected, "search %s expected %d got %d", expr, expected, uids->len);
-	check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+	check_msg(error == NULL, "%s", error->message);
+	g_clear_error (&error);
 
 	/* check the uid's are actually unique, too */
 	hash = g_hash_table_new(g_str_hash, g_str_equal);
@@ -30,8 +31,6 @@ test_folder_search_sub(CamelFolder *folder, const gchar *expr, gint expected)
 	g_hash_table_destroy(hash);
 
 	camel_folder_search_free(folder, uids);
-
-	camel_exception_free(ex);
 }
 
 static void
@@ -57,7 +56,7 @@ test_folder_search(CamelFolder *folder, const gchar *expr, gint expected)
 
 static struct {
 	gint counts[3];
-	gchar *expr;
+	const gchar *expr;
 } searches[] = {
 	{ { 1, 1, 0 }, "(header-matches \"subject\" \"Test1 message99 subject\")" },
 
@@ -140,17 +139,15 @@ gint main(gint argc, gchar **argv)
 {
 	CamelSession *session;
 	CamelStore *store;
-	CamelException *ex;
 	CamelFolder *folder;
 	CamelMimeMessage *msg;
 	gint i, j;
 	gint indexed;
 	GPtrArray *uids;
+	GError *error = NULL;
 
 	camel_test_init(argc, argv);
 	camel_test_provider_init(1, local_drivers);
-
-	ex = camel_exception_new();
 
 	/* clear out any camel-test data */
 	system("/bin/rm -rf /tmp/camel-test");
@@ -171,9 +168,10 @@ gint main(gint argc, gchar **argv)
 			test_free(what);
 
 			push("getting store");
-			store = camel_session_get_store(session, stores[i], ex);
-			check_msg(!camel_exception_is_set(ex), "getting store: %s", camel_exception_get_description(ex));
+			store = camel_session_get_store(session, stores[i], &error);
+			check_msg(error == NULL, "getting store: %s", error->message);
 			check(store != NULL);
+			g_clear_error (&error);
 			pull();
 
 			push("creating %sindexed folder", indexed?"":"non-");
@@ -181,12 +179,13 @@ gint main(gint argc, gchar **argv)
 				flags = CAMEL_STORE_FOLDER_CREATE|CAMEL_STORE_FOLDER_BODY_INDEX;
 			else
 				flags = CAMEL_STORE_FOLDER_CREATE;
-			folder = camel_store_get_folder(store, "testbox", flags, ex);
-			check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+			folder = camel_store_get_folder(store, "testbox", flags, &error);
+			check_msg(error == NULL, "%s", error->message);
 			check(folder != NULL);
 
 			/* we need an empty folder for this to work */
 			test_folder_counts(folder, 0, 0);
+			g_clear_error (&error);
 			pull();
 
 			/* append a bunch of messages with specific content */
@@ -207,8 +206,9 @@ gint main(gint argc, gchar **argv)
 				pull();
 
 				push("appending simple message %d", j);
-				camel_folder_append_message(folder, msg, NULL, NULL, ex);
-				check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+				camel_folder_append_message(folder, msg, NULL, NULL, &error);
+				check_msg(error == NULL, "%s", error->message);
+				g_clear_error (&error);
 				pull();
 
 				test_free(subject);
@@ -248,12 +248,12 @@ gint main(gint argc, gchar **argv)
 			camel_test_fatal();
 
 			push("syncing folder, searching");
-			camel_folder_sync(folder, FALSE, ex);
+			camel_folder_sync(folder, FALSE, NULL);
 			run_search(folder, 100);
 			pull();
 
 			push("syncing wiht expunge, search");
-			camel_folder_sync(folder, TRUE, ex);
+			camel_folder_sync(folder, TRUE, NULL);
 			run_search(folder, 100);
 			pull();
 
@@ -267,24 +267,27 @@ gint main(gint argc, gchar **argv)
 			run_search(folder, 100);
 
 			push("syncing");
-			camel_folder_sync(folder, FALSE, ex);
-			check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+			camel_folder_sync(folder, FALSE, &error);
+			check_msg(error == NULL, "%s", error->message);
 			run_search(folder, 100);
+			g_clear_error (&error);
 			pull();
 
 			push("expunging");
-			camel_folder_expunge(folder, ex);
-			check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+			camel_folder_expunge(folder, &error);
+			check_msg(error == NULL, "%s", error->message);
 			run_search(folder, 50);
+			g_clear_error (&error);
 			pull();
 
 			pull();
 
 			push("closing and re-opening folder");
 			check_unref(folder, 1);
-			folder = camel_store_get_folder(store, "testbox", flags&~(CAMEL_STORE_FOLDER_CREATE), ex);
-			check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+			folder = camel_store_get_folder(store, "testbox", flags&~(CAMEL_STORE_FOLDER_CREATE), &error);
+			check_msg(error == NULL, "%s", error->message);
 			check(folder != NULL);
+			g_clear_error (&error);
 
 			push("deleting remaining messages");
 			uids = camel_folder_get_uids(folder);
@@ -296,15 +299,17 @@ gint main(gint argc, gchar **argv)
 			run_search(folder, 50);
 
 			push("syncing");
-			camel_folder_sync(folder, FALSE, ex);
-			check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+			camel_folder_sync(folder, FALSE, &error);
+			check_msg(error == NULL, "%s", error->message);
 			run_search(folder, 50);
+			g_clear_error (&error);
 			pull();
 
 			push("expunging");
-			camel_folder_expunge(folder, ex);
-			check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+			camel_folder_expunge(folder, &error);
+			check_msg(error == NULL, "%s", error->message);
 			run_search(folder, 0);
+			g_clear_error (&error);
 			pull();
 
 			pull();
@@ -313,8 +318,9 @@ gint main(gint argc, gchar **argv)
 			pull();
 
 			push("deleting test folder, with no messages in it");
-			camel_store_delete_folder(store, "testbox", ex);
-			check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+			camel_store_delete_folder(store, "testbox", &error);
+			check_msg(error == NULL, "%s", error->message);
+			g_clear_error (&error);
 			pull();
 
 			check_unref(store, 1);
@@ -323,7 +329,6 @@ gint main(gint argc, gchar **argv)
 	}
 
 	check_unref(session, 1);
-	camel_exception_free(ex);
 
 	return 0;
 }

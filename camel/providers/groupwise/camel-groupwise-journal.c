@@ -44,7 +44,7 @@
 static void groupwise_entry_free (CamelOfflineJournal *journal, CamelDListNode *entry);
 static CamelDListNode *groupwise_entry_load (CamelOfflineJournal *journal, FILE *in);
 static gint groupwise_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
-static gint groupwise_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
+static gint groupwise_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, GError **error);
 
 G_DEFINE_TYPE (CamelGroupwiseJournal, camel_groupwise_journal, CAMEL_TYPE_OFFLINE_JOURNAL)
 
@@ -156,21 +156,23 @@ gw_message_info_dup_to (CamelMessageInfoBase *dest, CamelMessageInfoBase *src)
 }
 
 static gint
-groupwise_entry_play_append (CamelOfflineJournal *journal, CamelGroupwiseJournalEntry *entry, CamelException *ex)
+groupwise_entry_play_append (CamelOfflineJournal *journal, CamelGroupwiseJournalEntry *entry, GError **error)
 {
 	CamelGroupwiseFolder *gw_folder = (CamelGroupwiseFolder *) journal->folder;
 	CamelFolder *folder = journal->folder;
 	CamelMimeMessage *message;
 	CamelMessageInfo *info;
 	CamelStream *stream;
-	gboolean success;
+	gboolean success = FALSE;
 
 	/* if the message isn't in the cache, the user went behind our backs so "not our problem" */
-	if (!gw_folder->cache || !(stream = camel_data_cache_get (gw_folder->cache, "cache", entry->uid, ex)))
+	if (!gw_folder->cache || !(stream = camel_data_cache_get (gw_folder->cache, "cache", entry->uid, error))) {
+		success = TRUE;
 		goto done;
+	}
 
 	message = camel_mime_message_new ();
-	if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) message, stream) == -1) {
+	if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) message, stream, error) == -1) {
 		g_object_unref (message);
 		g_object_unref (stream);
 		goto done;
@@ -183,23 +185,20 @@ groupwise_entry_play_append (CamelOfflineJournal *journal, CamelGroupwiseJournal
 		info = camel_message_info_new (NULL);
 	}
 
-	success = camel_folder_append_message (folder, message, info, NULL, ex);
+	success = camel_folder_append_message (folder, message, info, NULL, error);
 	camel_message_info_free (info);
 	g_object_unref (message);
 
-	if (!success)
-		return -1;
-
- done:
+done:
 
 	camel_folder_summary_remove_uid (folder->summary, entry->uid);
 	camel_data_cache_remove (gw_folder->cache, "cache", entry->uid, NULL);
 
-	return 0;
+	return (success == 0);
 }
 
 static gint
-groupwise_entry_play_transfer (CamelOfflineJournal *journal, CamelGroupwiseJournalEntry *entry, CamelException *ex)
+groupwise_entry_play_transfer (CamelOfflineJournal *journal, CamelGroupwiseJournalEntry *entry, GError **error)
 {
 	CamelGroupwiseFolder *gw_folder = (CamelGroupwiseFolder *) journal->folder;
 	CamelFolder *folder = journal->folder;
@@ -218,11 +217,11 @@ groupwise_entry_play_transfer (CamelOfflineJournal *journal, CamelGroupwiseJourn
 	}
 
 	name = camel_groupwise_store_folder_lookup ((CamelGroupwiseStore *) parent_store, entry->source_container);
-	if (name && (src = camel_store_get_folder (parent_store, name, 0, ex))) {
+	if (name && (src = camel_store_get_folder (parent_store, name, 0, error))) {
 		uids = g_ptr_array_sized_new (1);
 		g_ptr_array_add (uids, entry->original_uid);
 
-		if (camel_folder_transfer_messages_to (src, uids, folder, &xuids, FALSE, ex)) {
+		if (camel_folder_transfer_messages_to (src, uids, folder, &xuids, FALSE, error)) {
 			real = (CamelGroupwiseMessageInfo *) camel_folder_summary_uid (folder->summary, xuids->pdata[0]);
 
 			/* transfer all the system flags, user flags/tags, etc */
@@ -236,8 +235,8 @@ groupwise_entry_play_transfer (CamelOfflineJournal *journal, CamelGroupwiseJourn
 		g_ptr_array_free (uids, TRUE);
 		g_object_unref (src);
 	} else if (!name) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Cannot get folder container %s"),
 			entry->source_container);
 		goto exception;
@@ -258,15 +257,15 @@ groupwise_entry_play_transfer (CamelOfflineJournal *journal, CamelGroupwiseJourn
 }
 
 static gint
-groupwise_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex)
+groupwise_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, GError **error)
 {
 	CamelGroupwiseJournalEntry *groupwise_entry = (CamelGroupwiseJournalEntry *) entry;
 
 	switch (groupwise_entry->type) {
 	case CAMEL_GROUPWISE_JOURNAL_ENTRY_APPEND:
-		return groupwise_entry_play_append (journal, groupwise_entry, ex);
+		return groupwise_entry_play_append (journal, groupwise_entry, error);
 	case CAMEL_GROUPWISE_JOURNAL_ENTRY_TRANSFER:
-		return groupwise_entry_play_transfer (journal, groupwise_entry, ex);
+		return groupwise_entry_play_transfer (journal, groupwise_entry, error);
 	default:
 		g_assert_not_reached ();
 		return -1;
@@ -288,7 +287,7 @@ camel_groupwise_journal_new (CamelGroupwiseFolder *folder, const gchar *filename
 
 static gboolean
 update_cache (CamelGroupwiseJournal *groupwise_journal, CamelMimeMessage *message,
-	      const CamelMessageInfo *mi, gchar **updated_uid, CamelException *ex)
+	      const CamelMessageInfo *mi, gchar **updated_uid, GError **error)
 {
 	CamelOfflineJournal *journal = (CamelOfflineJournal *) groupwise_journal;
 	CamelGroupwiseFolder *groupwise_folder = (CamelGroupwiseFolder *) journal->folder;
@@ -299,8 +298,8 @@ update_cache (CamelGroupwiseJournal *groupwise_journal, CamelMimeMessage *messag
 	gchar *uid;
 
 	if (groupwise_folder->cache == NULL) {
-		camel_exception_set (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Cannot append message in offline mode: cache unavailable"));
 		return FALSE;
 	}
@@ -308,18 +307,17 @@ update_cache (CamelGroupwiseJournal *groupwise_journal, CamelMimeMessage *messag
 	nextuid = camel_folder_summary_next_uid (folder->summary);
 	uid = g_strdup_printf ("-%u", nextuid);
 
-	if (!(cache = camel_data_cache_add (groupwise_folder->cache, "cache", uid, ex))) {
+	if (!(cache = camel_data_cache_add (groupwise_folder->cache, "cache", uid, error))) {
 		folder->summary->nextuid--;
 		g_free (uid);
 		return FALSE;
 	}
 
-	if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) message, cache) == -1
-	    || camel_stream_flush (cache) == -1) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
-			_("Cannot append message in offline mode: %s"),
-			g_strerror (errno));
+	if (camel_data_wrapper_write_to_stream (
+		(CamelDataWrapper *) message, cache, error) == -1
+	    || camel_stream_flush (cache, error) == -1) {
+		g_prefix_error (
+			error, _("Cannot append message in offline mode: "));
 		camel_data_cache_remove (groupwise_folder->cache, "cache", uid, NULL);
 		folder->summary->nextuid--;
 		g_object_unref (cache);
@@ -345,16 +343,16 @@ update_cache (CamelGroupwiseJournal *groupwise_journal, CamelMimeMessage *messag
 	return TRUE;
 }
 
-void
+gboolean
 camel_groupwise_journal_append (CamelGroupwiseJournal *groupwise_journal, CamelMimeMessage *message,
-				const CamelMessageInfo *mi, gchar **appended_uid, CamelException *ex)
+				const CamelMessageInfo *mi, gchar **appended_uid, GError **error)
 {
 	CamelOfflineJournal *journal = (CamelOfflineJournal *) groupwise_journal;
 	CamelGroupwiseJournalEntry *entry;
 	gchar *uid;
 
-	if (!update_cache (groupwise_journal, message, mi, &uid, ex))
-		return;
+	if (!update_cache (groupwise_journal, message, mi, &uid, error))
+		return FALSE;
 
 	entry = g_new (CamelGroupwiseJournalEntry, 1);
 	entry->type = CAMEL_GROUPWISE_JOURNAL_ENTRY_APPEND;
@@ -364,13 +362,15 @@ camel_groupwise_journal_append (CamelGroupwiseJournal *groupwise_journal, CamelM
 
 	if (appended_uid)
 		*appended_uid = g_strdup (uid);
+
+	return TRUE;
 }
 
-void
+gboolean
 camel_groupwise_journal_transfer (CamelGroupwiseJournal *groupwise_journal, CamelGroupwiseFolder *source_folder,
 				  CamelMimeMessage *message,  const CamelMessageInfo *mi,
 				  const gchar *original_uid, gchar **transferred_uid,
-				  CamelException *ex)
+				  GError **error)
 {
 	CamelOfflineJournal *journal = (CamelOfflineJournal *) groupwise_journal;
 	CamelGroupwiseStore *gw_store;
@@ -381,8 +381,8 @@ camel_groupwise_journal_transfer (CamelGroupwiseJournal *groupwise_journal, Came
 	parent_store = camel_folder_get_parent_store (journal->folder);
 	gw_store = CAMEL_GROUPWISE_STORE (parent_store);
 
-	if (!update_cache (groupwise_journal, message, mi, &uid, ex))
-		return;
+	if (!update_cache (groupwise_journal, message, mi, &uid, error))
+		return FALSE;
 
 	entry = g_new (CamelGroupwiseJournalEntry, 1);
 	entry->type = CAMEL_GROUPWISE_JOURNAL_ENTRY_APPEND;
@@ -394,4 +394,6 @@ camel_groupwise_journal_transfer (CamelGroupwiseJournal *groupwise_journal, Came
 
 	if (transferred_uid)
 		*transferred_uid = g_strdup (uid);
+
+	return TRUE;
 }

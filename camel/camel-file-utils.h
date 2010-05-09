@@ -66,11 +66,11 @@ gchar *camel_file_util_safe_filename (const gchar *name);
  * camel_read_socket() and camel_write_socket(). These are cancellable
  * also on Win32.
  */
-gssize camel_read (gint fd, gchar *buf, gsize n);
-gssize camel_write (gint fd, const gchar *buf, gsize n);
+gssize camel_read (gint fd, gchar *buf, gsize n, GError **error);
+gssize camel_write (gint fd, const gchar *buf, gsize n, GError **error);
 
-gssize camel_read_socket (gint fd, gchar *buf, gsize n);
-gssize camel_write_socket (gint fd, const gchar *buf, gsize n);
+gssize camel_read_socket (gint fd, gchar *buf, gsize n, GError **error);
+gssize camel_write_socket (gint fd, const gchar *buf, gsize n, GError **error);
 
 gchar *camel_file_util_savename(const gchar *filename);
 

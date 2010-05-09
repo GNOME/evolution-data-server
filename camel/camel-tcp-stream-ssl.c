@@ -182,7 +182,9 @@ tcp_stream_ssl_finalize (GObject *object)
 }
 
 static gssize
-read_from_prfd (PRFileDesc *fd, gchar *buffer, gsize n)
+read_from_prfd (PRFileDesc *fd,
+                gchar *buffer,
+                gsize n)
 {
 	PRFileDesc *cancel_fd;
 	gssize nread;
@@ -266,7 +268,8 @@ read_from_prfd (PRFileDesc *fd, gchar *buffer, gsize n)
 static gssize
 tcp_stream_ssl_read (CamelStream *stream,
                      gchar *buffer,
-                     gsize n)
+                     gsize n,
+                     GError **error)
 {
 	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
 	gssize result;
@@ -274,6 +277,12 @@ tcp_stream_ssl_read (CamelStream *stream,
 	d (g_print ("SSL stream %p: reading %" G_GSIZE_FORMAT " bytes...\n", ssl, n));
 
 	result = read_from_prfd (ssl->priv->sockfd, buffer, n);
+
+	if (result == -1)
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			"%s", g_strerror (errno));
 
 	d (g_print ("SSL stream %p: read %" G_GSSIZE_FORMAT " bytes, errno = %d\n", ssl, result, result == -1 ? errno : 0));
 
@@ -377,7 +386,8 @@ write_to_prfd (PRFileDesc *fd, const gchar *buffer, gsize n)
 static gssize
 tcp_stream_ssl_write (CamelStream *stream,
                       const gchar *buffer,
-                      gsize n)
+                      gsize n,
+                      GError **error)
 {
 	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
 	gssize result;
@@ -386,29 +396,43 @@ tcp_stream_ssl_write (CamelStream *stream,
 
 	result = write_to_prfd (ssl->priv->sockfd, buffer, n);
 
+	if (result == -1)
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			"%s", g_strerror (errno));
+
 	d (g_print ("SSL stream %p: wrote %" G_GSSIZE_FORMAT " bytes, errno = %d\n", ssl, result, result == -1 ? errno : 0));
 
 	return result;
 }
 
 static gint
-tcp_stream_ssl_flush (CamelStream *stream)
+tcp_stream_ssl_flush (CamelStream *stream,
+                      GError **error)
 {
 	/*return PR_Sync (((CamelTcpStreamSSL *)stream)->priv->sockfd);*/
 	return 0;
 }
 
 static gint
-tcp_stream_ssl_close (CamelStream *stream)
+tcp_stream_ssl_close (CamelStream *stream,
+                      GError **error)
 {
 	d (g_print ("SSL stream %p: closing\n", stream));
 
 	if (((CamelTcpStreamSSL *)stream)->priv->sockfd == NULL) {
 		errno = EINVAL;
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			"%s", g_strerror (errno));
 		return -1;
 	}
 
 	PR_Shutdown (((CamelTcpStreamSSL *)stream)->priv->sockfd, PR_SHUTDOWN_BOTH);
+
+	/* FIXME Need to set the GError if this fails. */
 	if (PR_Close (((CamelTcpStreamSSL *)stream)->priv->sockfd) == PR_FAILURE)
 		return -1;
 
@@ -685,15 +709,15 @@ camel_certdb_nss_cert_set(CamelCertDB *certdb, CamelCert *ccert, CERTCertificate
 	g_free (dir);
 
 	stream = camel_stream_fs_new_with_name (
-		path, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+		path, O_WRONLY | O_CREAT | O_TRUNC, 0600, NULL);
 	if (stream != NULL) {
 		if (camel_stream_write (
 			stream, (const gchar *) ccert->rawcert->data,
-			ccert->rawcert->len) == -1) {
+			ccert->rawcert->len, NULL) == -1) {
 			g_warning ("Could not save cert: %s: %s", path, g_strerror (errno));
 			g_unlink (path);
 		}
-		camel_stream_close (stream);
+		camel_stream_close (stream, NULL);
 		g_object_unref (stream);
 	} else {
 		g_warning ("Could not save cert: %s: %s", path, g_strerror (errno));
@@ -1146,12 +1170,12 @@ connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint p
 	memset (&hints, 0, sizeof (hints));
 	hints.ai_socktype = SOCK_STREAM;
 
-	ai = camel_getaddrinfo (proxy_host, serv, &hints, NULL);  /* NULL-CamelException */
+	ai = camel_getaddrinfo (proxy_host, serv, &hints, NULL);  /* NULL-GError */
 	if (!ai) {
 #ifdef G_OS_WIN32
 		errno = WSAEHOSTUNREACH;
 #else
-		errno = EHOSTUNREACH; /* FIXME: this is not an accurate error; we should translate the CamelException to an errno */
+		errno = EHOSTUNREACH; /* FIXME: this is not an accurate error; we should translate the GError to an errno */
 #endif
 		d (g_print ("  camel_getaddrinfo() for the proxy failed\n}\n"));
 		return NULL;
@@ -1243,7 +1267,8 @@ out:
 
 static gint
 tcp_stream_ssl_connect (CamelTcpStream *stream,
-                        struct addrinfo *host)
+                        struct addrinfo *host,
+                        GError **error)
 {
 	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
 	const gchar *proxy_host;

@@ -13,7 +13,6 @@ static const gchar *remote_providers[] = {
 gint main(gint argc, gchar **argv)
 {
 	CamelSession *session;
-	CamelException *ex;
 	gint i;
 	gchar *path;
 
@@ -22,8 +21,6 @@ gint main(gint argc, gchar **argv)
 
 	/* clear out any camel-test data */
 	system("/bin/rm -rf /tmp/camel-test");
-
-	ex = camel_exception_new();
 
 	session = camel_test_session_new ("/tmp/camel-test");
 
@@ -43,7 +40,6 @@ gint main(gint argc, gchar **argv)
 	}
 
 	check_unref(session, 1);
-	camel_exception_free(ex);
 
 	return 0;
 }

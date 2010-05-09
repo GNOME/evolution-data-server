@@ -54,7 +54,7 @@ typedef struct _CamelPgpSessionClass {
 static gchar *get_password (CamelSession *session, const gchar *prompt,
 			   guint32 flags,
 			   CamelService *service, const gchar *item,
-			   CamelException *ex);
+			   GError **error);
 
 static void
 init (CamelPgpSession *session)
@@ -92,7 +92,7 @@ camel_pgp_session_get_type (void)
 
 static gchar *
 get_password (CamelSession *session, const gchar *prompt, guint32 flags,
-	      CamelService *service, const gchar *item, CamelException *ex)
+	      CamelService *service, const gchar *item, GError **error)
 {
 	return g_strdup ("no.secret");
 }
@@ -112,7 +112,7 @@ gint main (gint argc, gchar **argv)
 {
 	CamelSession *session;
 	CamelCipherContext *ctx;
-	CamelException *ex;
+	GError **error;
 	CamelCipherValidity *valid;
 	CamelMimePart *mime_part;
 	CamelMultipartSigned *mps;

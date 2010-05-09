@@ -106,7 +106,7 @@ CamelServiceAuthType camel_groupwise_password_authtype = {
 
 static gint
 groupwise_auto_detect_cb (CamelURL *url, GHashTable **auto_detected,
-			 CamelException *ex)
+			 GError **error)
 {
 	*auto_detected = g_hash_table_new (g_str_hash, g_str_equal);
 
@@ -120,11 +120,10 @@ void
 camel_provider_module_init(void)
 {
 	CamelProvider *imap_provider = NULL;
-	CamelException ex = CAMEL_EXCEPTION_INITIALISER;
 	gboolean use_imap = g_getenv ("USE_IMAP") != NULL;
 
 	if (use_imap)
-	    imap_provider = camel_provider_get("imapx://", &ex);
+		imap_provider = camel_provider_get("imapx://", NULL);
 
 	groupwise_provider.url_hash = groupwise_url_hash;
 	groupwise_provider.url_equal = groupwise_url_equal;

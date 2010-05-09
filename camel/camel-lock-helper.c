@@ -34,6 +34,8 @@
 #include <sys/time.h>
 #include <sys/types.h>
 
+#include <glib/gstdio.h>
+
 #define SETEUID_SAVES (1)
 
 /* we try and include as little as possible */
@@ -98,18 +100,6 @@ static gint write_n(gint fd, gpointer buffer, gint inlen)
 	return inlen;
 }
 
-void
-camel_exception_setv (CamelException *ex, ExceptionId id, const gchar *format, ...)
-{
-	;
-}
-
-void
-camel_exception_clear (CamelException *exception)
-{
-	;
-}
-
 gchar *gettext (const gchar *msgid);
 
 gchar *
@@ -138,7 +128,7 @@ static gint lock_path(const gchar *path, guint32 *lockid)
 	}
 
 	/* check we are allowed to lock it, we must own it, be able to write to it, and it has to exist */
-	if (stat(path, &st) == -1
+	if (g_stat(path, &st) == -1
 	    || st.st_uid != getuid()
 	    || !S_ISREG(st.st_mode)
 	    || (st.st_mode & 0400) == 0) {

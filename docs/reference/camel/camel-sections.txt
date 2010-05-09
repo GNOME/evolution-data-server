@@ -2560,23 +2560,6 @@ camel_debug_end
 </SECTION>
 
 <SECTION>
-<FILE>camel-exception</FILE>
-ExceptionId
-CamelException
-CAMEL_EXCEPTION_INITIALISER
-camel_exception_new
-camel_exception_free
-camel_exception_init
-camel_exception_clear
-camel_exception_set
-camel_exception_setv
-camel_exception_xfer
-camel_exception_get_id
-camel_exception_get_description
-camel_exception_is_set
-</SECTION>
-
-<SECTION>
 <FILE>camel-file-utils</FILE>
 O_BINARY
 camel_file_util_encode_fixed_int32

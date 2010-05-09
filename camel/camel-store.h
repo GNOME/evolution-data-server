@@ -56,7 +56,25 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_STORE, CamelStoreClass))
 
+/**
+ * CAMEL_STORE_ERROR:
+ *
+ * Since: 3.0
+ **/
+#define CAMEL_STORE_ERROR \
+	(camel_store_error_quark ())
+
 G_BEGIN_DECLS
+
+/**
+ * CamelStoreError:
+ *
+ * Since: 3.0
+ **/
+typedef enum {
+	CAMEL_STORE_ERROR_INVALID,
+	CAMEL_STORE_ERROR_NO_FOLDER
+} CamelStoreError;
 
 /**
  * CamelStoreLock:
@@ -206,48 +224,48 @@ struct _CamelStoreClass {
 	CamelFolder *	(*get_folder)		(CamelStore *store,
 						 const gchar *folder_name,
 						 guint32 flags,
-						 CamelException *ex);
+						 GError **error);
 	CamelFolder *	(*get_inbox)		(CamelStore *store,
-						 CamelException *ex);
+						 GError **error);
 	CamelFolder *	(*get_trash)		(CamelStore *store,
-						 CamelException *ex);
+						 GError **error);
 	CamelFolder *	(*get_junk)		(CamelStore *store,
-						 CamelException *ex);
+						 GError **error);
 	CamelFolderInfo *
 			(*create_folder)	(CamelStore *store,
 						 const gchar *parent_name,
 						 const gchar *folder_name,
-						 CamelException *ex);
+						 GError **error);
 	gboolean	(*delete_folder)	(CamelStore *store,
 						 const gchar *folder_name,
-						 CamelException *ex);
+						 GError **error);
 	gboolean	(*rename_folder)	(CamelStore *store,
 						 const gchar *old_name,
 						 const gchar *new_name,
-						 CamelException *ex);
+						 GError **error);
 	gboolean	(*sync)			(CamelStore *store,
 						 gint expunge,
-						 CamelException *ex);
+						 GError **error);
 	CamelFolderInfo *
 			(*get_folder_info)	(CamelStore *store,
 						 const gchar *top,
 						 guint32 flags,
-						 CamelException *ex);
+						 GError **error);
 	void		(*free_folder_info)	(CamelStore *store,
 						 CamelFolderInfo *fi);
 	gboolean	(*folder_is_subscribed)	(CamelStore *store,
 						 const gchar *folder_name);
 	gboolean	(*subscribe_folder)	(CamelStore *store,
 						 const gchar *folder_name,
-						 CamelException *ex);
+						 GError **error);
 	gboolean	(*unsubscribe_folder)	(CamelStore *store,
 						 const gchar *folder_name,
-						 CamelException *ex);
+						 GError **error);
 	gboolean	(*noop)			(CamelStore *store,
-						 CamelException *ex);
+						 GError **error);
 	gboolean	(*can_refresh_folder)	(CamelStore *store,
 						 CamelFolderInfo *info,
-						 CamelException *ex);
+						 GError **error);
 
 	/* Signals */
 	void		(*folder_created)	(CamelStore *store,
@@ -266,28 +284,29 @@ struct _CamelStoreClass {
 };
 
 GType		camel_store_get_type		(void);
+GQuark		camel_store_error_quark		(void) G_GNUC_CONST;
 CamelFolder *	camel_store_get_folder		(CamelStore *store,
 						 const gchar *folder_name,
 						 guint32 flags,
-						 CamelException *ex);
+						 GError **error);
 CamelFolder *	camel_store_get_inbox		(CamelStore *store,
-						 CamelException *ex);
+						 GError **error);
 CamelFolder *	camel_store_get_trash		(CamelStore *store,
-						 CamelException *ex);
+						 GError **error);
 CamelFolder *	camel_store_get_junk		(CamelStore *store,
-						 CamelException *ex);
+						 GError **error);
 CamelFolderInfo *
 		camel_store_create_folder	(CamelStore *store,
 						 const gchar *parent_name,
 						 const gchar *folder_name,
-						 CamelException *ex);
+						 GError **error);
 gboolean	camel_store_delete_folder	(CamelStore *store,
 						 const gchar *folder_name,
-						 CamelException *ex);
+						 GError **error);
 gboolean	camel_store_rename_folder	(CamelStore *store,
 						 const gchar *old_namein,
 						 const gchar *new_name,
-						 CamelException *ex);
+						 GError **error);
 void		camel_store_folder_created	(CamelStore *store,
 						 CamelFolderInfo *info);
 void		camel_store_folder_deleted	(CamelStore *store,
@@ -301,12 +320,12 @@ void		camel_store_folder_unsubscribed	(CamelStore *store,
 						 CamelFolderInfo *info);
 gboolean	camel_store_sync		(CamelStore *store,
 						 gint expunge,
-						 CamelException *ex);
+						 GError **error);
 CamelFolderInfo *
 		camel_store_get_folder_info	(CamelStore *store,
 						 const gchar *top,
 						 guint32 flags,
-						 CamelException *ex);
+						 GError **error);
 void		camel_store_free_folder_info	(CamelStore *store,
 						 CamelFolderInfo *fi);
 void		camel_store_free_folder_info_full
@@ -332,18 +351,18 @@ gboolean	camel_store_folder_is_subscribed(CamelStore *store,
 						 const gchar *folder_name);
 gboolean	camel_store_subscribe_folder	(CamelStore *store,
 						 const gchar *folder_name,
-						 CamelException *ex);
+						 GError **error);
 gboolean	camel_store_unsubscribe_folder	(CamelStore *store,
 						 const gchar *folder_name,
-						 CamelException *ex);
+						 GError **error);
 gboolean	camel_store_noop		(CamelStore *store,
-						 CamelException *ex);
+						 GError **error);
 gint		camel_store_folder_uri_equal	(CamelStore *store,
 						 const gchar *uri0,
 						 const gchar *uri1);
 gboolean	camel_store_can_refresh_folder	(CamelStore *store,
 						 CamelFolderInfo *info,
-						 CamelException *ex);
+						 GError **error);
 void		camel_store_lock		(CamelStore *store,
 						 CamelStoreLock lock);
 void		camel_store_unlock		(CamelStore *store,

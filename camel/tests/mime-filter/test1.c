@@ -83,10 +83,10 @@ main (gint argc, gchar **argv)
 			while (*p) {
 				gint w = MIN(strlen(p), step);
 
-				check(camel_stream_write((CamelStream *)filter, p, w) == w);
+				check(camel_stream_write((CamelStream *)filter, p, w, NULL) == w);
 				p += w;
 			}
-			camel_stream_flush((CamelStream *)filter);
+			camel_stream_flush((CamelStream *)filter, NULL);
 
 			check_msg(byte_array->len == strlen(tests[i].out), "Buffer length mismatch: expected %d got %d\n or '%s' got '%.*s'", strlen(tests[i].out), byte_array->len, tests[i].out, byte_array->len, byte_array->data);
 			check_msg(0 == memcmp(byte_array->data, tests[i].out, byte_array->len), "Buffer mismatch: expected '%s' got '%.*s'", tests[i].out, byte_array->len, byte_array->data);

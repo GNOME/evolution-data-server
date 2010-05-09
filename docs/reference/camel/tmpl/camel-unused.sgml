@@ -154,6 +154,34 @@ CamelDigestStore
 CamelDigestSummary
 
 
+<!-- ##### SECTION ./tmpl/camel-exception.sgml:Image ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-exception.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-exception.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-exception.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-exception.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-exception.sgml:Title ##### -->
+camel-exception
+
+
 <!-- ##### SECTION ./tmpl/camel-groupwise-folder.sgml:Image ##### -->
 
 
@@ -2294,6 +2322,12 @@ streams
 @obj: 
 @ctype: 
 
+<!-- ##### MACRO CAMEL_EXCEPTION_INITIALISER ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### MACRO CAMEL_GROUPWISE_FOLDER_LOCK ##### -->
 <para>
 
@@ -2707,6 +2741,12 @@ streams
 @CAMEL_DISCO_DIARY_ARG_FOLDER: 
 @CAMEL_DISCO_DIARY_ARG_UID: 
 @CAMEL_DISCO_DIARY_ARG_UID_LIST: 
+
+<!-- ##### STRUCT CamelException ##### -->
+<para>
+
+</para>
+
 
 <!-- ##### STRUCT CamelGroupwiseFolder ##### -->
 <para>
@@ -3884,6 +3924,12 @@ streams
 @user_data: 
 @Returns: 
 
+<!-- ##### ENUM ExceptionId ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### MACRO GW_PARAM_FILTER_INBOX ##### -->
 <para>
 
@@ -4498,6 +4544,85 @@ streams
 </para>
 
 @Returns: 
+
+<!-- ##### FUNCTION camel_exception_clear ##### -->
+<para>
+
+</para>
+
+@ex: 
+
+<!-- ##### FUNCTION camel_exception_free ##### -->
+<para>
+
+</para>
+
+@ex: 
+
+<!-- ##### FUNCTION camel_exception_get_description ##### -->
+<para>
+
+</para>
+
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_exception_get_id ##### -->
+<para>
+
+</para>
+
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_exception_init ##### -->
+<para>
+
+</para>
+
+@ex: 
+
+<!-- ##### MACRO camel_exception_is_set ##### -->
+<para>
+
+</para>
+
+@ex: 
+
+<!-- ##### FUNCTION camel_exception_new ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_exception_set ##### -->
+<para>
+
+</para>
+
+@ex: 
+@id: 
+@desc: 
+
+<!-- ##### FUNCTION camel_exception_setv ##### -->
+<para>
+
+</para>
+
+@ex: 
+@id: 
+@format: 
+@Varargs: 
+
+<!-- ##### FUNCTION camel_exception_xfer ##### -->
+<para>
+
+</para>
+
+@ex_dst: 
+@ex_src: 
 
 <!-- ##### FUNCTION camel_file_util_decode_size_t ##### -->
 <para>

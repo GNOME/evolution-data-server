@@ -76,7 +76,7 @@ struct _CamelIMAPXViewSummaryClass {
 GType		camel_imapx_view_summary_get_type (void);
 CamelIMAPXViewSummary *
 		camel_imapx_view_summary_new	(const gchar *base,
-						 CamelException *ex);
+						 GError **error);
 
 /* called on root view */
 guint32		camel_imapx_view_next_uid	(CamelIMAPXView *view);

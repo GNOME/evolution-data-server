@@ -252,7 +252,7 @@ engine_command_queue(CamelPOP3Engine *pe, CamelPOP3Command *pc)
 	}
 
 	/* ??? */
-	if (camel_stream_write((CamelStream *)pe->stream, pc->data, strlen(pc->data)) == -1) {
+	if (camel_stream_write((CamelStream *)pe->stream, pc->data, strlen(pc->data), NULL) == -1) {
 		camel_dlist_addtail(&pe->queue, (CamelDListNode *)pc);
 		return FALSE;
 	}
@@ -333,7 +333,7 @@ camel_pop3_engine_iterate(CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 		    && pe->current != NULL)
 			break;
 
-		if (camel_stream_write((CamelStream *)pe->stream, pw->data, strlen(pw->data)) == -1)
+		if (camel_stream_write((CamelStream *)pe->stream, pw->data, strlen(pw->data), NULL) == -1)
 			goto ioerror;
 
 		camel_dlist_remove((CamelDListNode *)pw);

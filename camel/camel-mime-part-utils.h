@@ -35,9 +35,10 @@
 
 G_BEGIN_DECLS
 
-void		camel_mime_part_construct_content_from_parser
+gboolean	camel_mime_part_construct_content_from_parser
 						(CamelMimePart *mime_part,
-						 CamelMimeParser *mp);
+						 CamelMimeParser *mp,
+						 GError **error);
 gboolean	camel_mime_message_build_preview(CamelMimePart *mime_part,
 						 CamelMessageInfo *info);
 

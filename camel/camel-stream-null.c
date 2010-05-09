@@ -33,7 +33,8 @@ G_DEFINE_TYPE (CamelStreamNull, camel_stream_null, CAMEL_TYPE_STREAM)
 static gssize
 stream_null_write (CamelStream *stream,
                    const gchar *buffer,
-                   gsize n)
+                   gsize n,
+                   GError **error)
 {
 	CAMEL_STREAM_NULL (stream)->written += n;
 
@@ -47,7 +48,8 @@ stream_null_eos (CamelStream *stream)
 }
 
 static gint
-stream_null_reset (CamelStream *stream)
+stream_null_reset (CamelStream *stream,
+                   GError **error)
 {
 	CAMEL_STREAM_NULL (stream)->written = 0;
 

@@ -40,7 +40,7 @@ G_DEFINE_TYPE (CamelGroupwiseTransport, camel_groupwise_transport, CAMEL_TYPE_TR
 
 static gboolean
 groupwise_transport_connect (CamelService *service,
-                             CamelException *ex)
+                             GError **error)
 {
 	return TRUE;
 }
@@ -64,7 +64,7 @@ groupwise_send_to (CamelTransport *transport,
                    CamelMimeMessage *message,
                    CamelAddress *from,
                    CamelAddress *recipients,
-                   CamelException *ex)
+                   GError **error)
 {
 	CamelService *service;
 	CamelStore *store =  NULL;
@@ -79,8 +79,9 @@ groupwise_send_to (CamelTransport *transport,
 	EGwItemLinkInfo *info = NULL;
 
 	if (!transport) {
-		camel_exception_set (
-			ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 			_("Authentication failed"));
 		return FALSE;
 	}
@@ -94,12 +95,13 @@ groupwise_send_to (CamelTransport *transport,
 	camel_operation_start (NULL, _("Sending Message") );
 
 	/*camel groupwise store and cnc*/
-	store = camel_session_get_store (service->session, url, ex );
+	store = camel_session_get_store (service->session, url, NULL);
 	g_free (url);
 	if (!store) {
 		g_warning ("ERROR: Could not get a pointer to the store");
-		camel_exception_set (
-			ex, CAMEL_EXCEPTION_STORE_INVALID,
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_INVALID,
 			_("Cannot get folder: Invalid operation on this store"));
 		return FALSE;
 	}
@@ -110,8 +112,9 @@ groupwise_send_to (CamelTransport *transport,
 	if (!cnc) {
 		g_warning ("||| Eh!!! Failure |||\n");
 		camel_operation_end (NULL);
-		camel_exception_set (
-			ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 			_("Authentication failed"));
 		return FALSE;
 	}
@@ -143,12 +146,14 @@ groupwise_send_to (CamelTransport *transport,
 
 		/* FIXME: 58652 should be changed with an enum.*/
 		if (status == 58652)
-			camel_exception_set (
-				ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_UNAVAILABLE,
 				_("You have exceeded this account's storage limit. Your messages are queued in your Outbox. Resend by pressing Send/Receive after deleting/archiving some of your mail.\n"));
 		else
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_UNAVAILABLE,
 				_("Could not send message: %s"),
 				_("Unknown error"));
 		status = 0;

@@ -38,7 +38,6 @@
 #include <camel/camel-disco-diary.h>
 #include <camel/camel-disco-folder.h>
 #include <camel/camel-disco-store.h>
-#include <camel/camel-exception.h>
 #include <camel/camel-file-utils.h>
 #include <camel/camel-filter-driver.h>
 #include <camel/camel-filter-search.h>

@@ -34,7 +34,7 @@ CamelFilterDriver
 @driver: 
 @uri: 
 @data: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -142,7 +142,7 @@ CamelFilterDriver
 </para>
 
 @driver: 
-@ex: 
+@error: 
 
 
 <!-- ##### FUNCTION camel_filter_driver_filter_message ##### -->
@@ -157,7 +157,7 @@ CamelFilterDriver
 @source: 
 @source_url: 
 @original_source_url: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -169,7 +169,7 @@ CamelFilterDriver
 @driver: 
 @mbox: 
 @original_source_url: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -183,7 +183,7 @@ CamelFilterDriver
 @cache: 
 @uids: 
 @remove: 
-@ex: 
+@error: 
 @Returns: 
 
 

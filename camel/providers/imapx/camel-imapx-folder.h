@@ -78,10 +78,10 @@ GType		camel_imapx_folder_get_type	(void);
 CamelFolder *	camel_imapx_folder_new		(CamelStore *parent,
 						 const gchar *path,
 						 const gchar *raw,
-						 CamelException *ex);
+						 GError **error);
 gchar *		imapx_get_filename		(CamelFolder *folder,
 						 const gchar *uid,
-						 CamelException *ex);
+						 GError **error);
 
 G_END_DECLS
 

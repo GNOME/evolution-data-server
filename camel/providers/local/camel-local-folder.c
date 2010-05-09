@@ -62,19 +62,19 @@ enum {
 	PROP_INDEX_BODY = 0x2400
 };
 
-static gint local_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
+static gint local_lock(CamelLocalFolder *lf, CamelLockType type, GError **error);
 static void local_unlock(CamelLocalFolder *lf);
 
-static gboolean local_refresh_info(CamelFolder *folder, CamelException *ex);
+static gboolean local_refresh_info(CamelFolder *folder, GError **error);
 
-static gboolean local_sync(CamelFolder *folder, gboolean expunge, CamelException *ex);
-static gboolean local_expunge(CamelFolder *folder, CamelException *ex);
+static gboolean local_sync(CamelFolder *folder, gboolean expunge, GError **error);
+static gboolean local_expunge(CamelFolder *folder, GError **error);
 
-static GPtrArray *local_search_by_expression(CamelFolder *folder, const gchar *expression, CamelException *ex);
-static guint32 local_count_by_expression(CamelFolder *folder, const gchar *expression, CamelException *ex);
-static GPtrArray *local_search_by_uids(CamelFolder *folder, const gchar *expression, GPtrArray *uids, CamelException *ex);
+static GPtrArray *local_search_by_expression(CamelFolder *folder, const gchar *expression, GError **error);
+static guint32 local_count_by_expression(CamelFolder *folder, const gchar *expression, GError **error);
+static GPtrArray *local_search_by_uids(CamelFolder *folder, const gchar *expression, GPtrArray *uids, GError **error);
 static void local_search_free(CamelFolder *folder, GPtrArray * result);
-static GPtrArray * local_get_uncached_uids (CamelFolder *folder, GPtrArray * uids, CamelException *ex);
+static GPtrArray * local_get_uncached_uids (CamelFolder *folder, GPtrArray * uids, GError **error);
 
 static void local_delete(CamelFolder *folder);
 static void local_rename(CamelFolder *folder, const gchar *newname);
@@ -296,7 +296,7 @@ camel_local_folder_init (CamelLocalFolder *local_folder)
 }
 
 CamelLocalFolder *
-camel_local_folder_construct(CamelLocalFolder *lf, guint32 flags, CamelException *ex)
+camel_local_folder_construct(CamelLocalFolder *lf, guint32 flags, GError **error)
 {
 	CamelFolder *folder;
 	CamelFolderInfo *fi;
@@ -347,7 +347,7 @@ camel_local_folder_construct(CamelLocalFolder *lf, guint32 flags, CamelException
 	}
 #ifndef G_OS_WIN32
 	/* follow any symlinks to the mailbox */
-	if (lstat (lf->folder_path, &st) != -1 && S_ISLNK (st.st_mode) &&
+	if (g_lstat (lf->folder_path, &st) != -1 && S_ISLNK (st.st_mode) &&
 	    realpath (lf->folder_path, folder_path) != NULL) {
 		g_free (lf->folder_path);
 		lf->folder_path = g_strdup (folder_path);
@@ -387,9 +387,9 @@ camel_local_folder_construct(CamelLocalFolder *lf, guint32 flags, CamelException
 	folder->summary = (CamelFolderSummary *)CAMEL_LOCAL_FOLDER_GET_CLASS(lf)->create_summary(lf, lf->summary_path, lf->folder_path, lf->index);
 	if (!(flags & CAMEL_STORE_IS_MIGRATING) && camel_local_summary_load((CamelLocalSummary *)folder->summary, forceindex, NULL) == -1) {
 		/* ? */
-		if (camel_local_summary_check((CamelLocalSummary *)folder->summary, lf->changes, ex) == 0) {
+		if (camel_local_summary_check((CamelLocalSummary *)folder->summary, lf->changes, error) == 0) {
 			/* we sync here so that any hard work setting up the folder isn't lost */
-			if (camel_local_summary_sync((CamelLocalSummary *)folder->summary, FALSE, lf->changes, ex) == -1) {
+			if (camel_local_summary_sync((CamelLocalSummary *)folder->summary, FALSE, lf->changes, error) == -1) {
 				g_object_unref (CAMEL_OBJECT (folder));
 				return NULL;
 			}
@@ -452,13 +452,13 @@ camel_local_folder_set_index_body (CamelLocalFolder *local_folder,
 
 /* lock the folder, may be called repeatedly (with matching unlock calls),
    with type the same or less than the first call */
-gint camel_local_folder_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex)
+gint camel_local_folder_lock(CamelLocalFolder *lf, CamelLockType type, GError **error)
 {
 	if (lf->locked > 0) {
 		/* lets be anal here - its important the code knows what its doing */
 		g_assert(lf->locktype == type || lf->locktype == CAMEL_LOCK_WRITE);
 	} else {
-		if (CAMEL_LOCAL_FOLDER_GET_CLASS(lf)->lock(lf, type, ex) == -1)
+		if (CAMEL_LOCAL_FOLDER_GET_CLASS(lf)->lock(lf, type, error) == -1)
 			return -1;
 		lf->locktype = type;
 	}
@@ -480,7 +480,7 @@ gint camel_local_folder_unlock(CamelLocalFolder *lf)
 }
 
 static gint
-local_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex)
+local_lock(CamelLocalFolder *lf, CamelLockType type, GError **error)
 {
 	return 0;
 }
@@ -493,13 +493,12 @@ local_unlock(CamelLocalFolder *lf)
 
 /* for auto-check to work */
 static gboolean
-local_refresh_info(CamelFolder *folder, CamelException *ex)
+local_refresh_info(CamelFolder *folder, GError **error)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 
-	if (camel_local_summary_check((CamelLocalSummary *)folder->summary, lf->changes, ex) == -1) {
+	if (camel_local_summary_check((CamelLocalSummary *)folder->summary, lf->changes, error) == -1)
 		return FALSE;
-	}
 
 	if (camel_folder_change_info_changed(lf->changes)) {
 		camel_folder_changed (folder, lf->changes);
@@ -510,7 +509,7 @@ local_refresh_info(CamelFolder *folder, CamelException *ex)
 }
 
 static GPtrArray *
-local_get_uncached_uids (CamelFolder *folder, GPtrArray * uids, CamelException *ex)
+local_get_uncached_uids (CamelFolder *folder, GPtrArray * uids, GError **error)
 {
 	GPtrArray *result = g_ptr_array_new ();
 	/* By default, we would have everything local. No need to fetch from anywhere. */
@@ -518,19 +517,19 @@ local_get_uncached_uids (CamelFolder *folder, GPtrArray * uids, CamelException *
 }
 
 static gboolean
-local_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
+local_sync(CamelFolder *folder, gboolean expunge, GError **error)
 {
 	CamelLocalFolder *lf = CAMEL_LOCAL_FOLDER(folder);
 
 	d(printf("local sync '%s' , expunge=%s\n", folder->full_name, expunge?"true":"false"));
 
-	if (camel_local_folder_lock(lf, CAMEL_LOCK_WRITE, ex) == -1)
+	if (camel_local_folder_lock(lf, CAMEL_LOCK_WRITE, error) == -1)
 		return FALSE;
 
 	camel_object_state_write (CAMEL_OBJECT (lf));
 
 	/* if sync fails, we'll pass it up on exit through ex */
-	camel_local_summary_sync((CamelLocalSummary *)folder->summary, expunge, lf->changes, ex);
+	camel_local_summary_sync((CamelLocalSummary *)folder->summary, expunge, lf->changes, error);
 	camel_local_folder_unlock(lf);
 
 	if (camel_folder_change_info_changed(lf->changes)) {
@@ -542,13 +541,13 @@ local_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 }
 
 static gboolean
-local_expunge(CamelFolder *folder, CamelException *ex)
+local_expunge(CamelFolder *folder, GError **error)
 {
 	d(printf("expunge\n"));
 
 	/* Just do a sync with expunge, serves the same purpose */
 	/* call the callback directly, to avoid locking problems */
-	return CAMEL_FOLDER_GET_CLASS (folder)->sync (folder, TRUE, ex);
+	return CAMEL_FOLDER_GET_CLASS (folder)->sync (folder, TRUE, error);
 }
 
 static void
@@ -597,7 +596,7 @@ local_rename(CamelFolder *folder, const gchar *newname)
 }
 
 static GPtrArray *
-local_search_by_expression(CamelFolder *folder, const gchar *expression, CamelException *ex)
+local_search_by_expression(CamelFolder *folder, const gchar *expression, GError **error)
 {
 	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER(folder);
 	GPtrArray *matches;
@@ -609,7 +608,7 @@ local_search_by_expression(CamelFolder *folder, const gchar *expression, CamelEx
 
 	camel_folder_search_set_folder(local_folder->search, folder);
 	camel_folder_search_set_body_index(local_folder->search, local_folder->index);
-	matches = camel_folder_search_search(local_folder->search, expression, NULL, ex);
+	matches = camel_folder_search_search(local_folder->search, expression, NULL, error);
 
 	CAMEL_LOCAL_FOLDER_UNLOCK(folder, search_lock);
 
@@ -617,7 +616,7 @@ local_search_by_expression(CamelFolder *folder, const gchar *expression, CamelEx
 }
 
 static guint32
-local_count_by_expression(CamelFolder *folder, const gchar *expression, CamelException *ex)
+local_count_by_expression(CamelFolder *folder, const gchar *expression, GError **error)
 {
 	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER(folder);
 	gint matches;
@@ -629,7 +628,7 @@ local_count_by_expression(CamelFolder *folder, const gchar *expression, CamelExc
 
 	camel_folder_search_set_folder(local_folder->search, folder);
 	camel_folder_search_set_body_index(local_folder->search, local_folder->index);
-	matches = camel_folder_search_count (local_folder->search, expression, ex);
+	matches = camel_folder_search_count (local_folder->search, expression, error);
 
 	CAMEL_LOCAL_FOLDER_UNLOCK(folder, search_lock);
 
@@ -637,7 +636,7 @@ local_count_by_expression(CamelFolder *folder, const gchar *expression, CamelExc
 }
 
 static GPtrArray *
-local_search_by_uids(CamelFolder *folder, const gchar *expression, GPtrArray *uids, CamelException *ex)
+local_search_by_uids(CamelFolder *folder, const gchar *expression, GPtrArray *uids, GError **error)
 {
 	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER(folder);
 	GPtrArray *matches;
@@ -652,7 +651,7 @@ local_search_by_uids(CamelFolder *folder, const gchar *expression, GPtrArray *ui
 
 	camel_folder_search_set_folder(local_folder->search, folder);
 	camel_folder_search_set_body_index(local_folder->search, local_folder->index);
-	matches = camel_folder_search_search(local_folder->search, expression, uids, ex);
+	matches = camel_folder_search_search(local_folder->search, expression, uids, error);
 
 	CAMEL_LOCAL_FOLDER_UNLOCK(folder, search_lock);
 
@@ -674,10 +673,13 @@ local_search_free(CamelFolder *folder, GPtrArray * result)
 }
 
 void
-set_cannot_get_message_ex (CamelException *ex, ExceptionId exId, const gchar *msgID, const gchar *folder_path, const gchar *detailErr)
+set_cannot_get_message_ex (GError **error, gint err_code, const gchar *msgID, const gchar *folder_path, const gchar *detailErr)
 {
 	/* Translators: The first %s is replaced with a message ID,
 	   the second %s is replaced with the folder path,
 	   the third %s is replaced with a detailed error string */
-	camel_exception_setv (ex, exId, _("Cannot get message %s from folder %s\n%s"), msgID, folder_path, detailErr);
+	g_set_error (
+		error, CAMEL_ERROR, err_code,
+		_("Cannot get message %s from folder %s\n%s"),
+		msgID, folder_path, detailErr);
 }

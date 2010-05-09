@@ -77,20 +77,20 @@ struct _CamelGroupwiseFolderPrivate {
 extern gint camel_application_is_exiting;
 
 /*prototypes*/
-static gboolean groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids, CamelFolder *destination, GPtrArray **transferred_uids, gboolean delete_originals, CamelException *ex);
+static gboolean groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids, CamelFolder *destination, GPtrArray **transferred_uids, gboolean delete_originals, GError **error);
 void convert_to_calendar (EGwItem *item, gchar **str, gint *len);
 static void convert_to_task (EGwItem *item, gchar **str, gint *len);
 static void convert_to_note (EGwItem *item, gchar **str, gint *len);
-static void gw_update_all_items ( CamelFolder *folder, GList *item_list, CamelException *ex);
+static void gw_update_all_items ( CamelFolder *folder, GList *item_list, GError **error);
 static void groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item);
 static void groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMultipart *multipart, EGwItem *item, gchar *body);
 static void groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *item);
-static void gw_update_cache ( CamelFolder *folder, GList *item_list, CamelException *ex, gboolean uid_flag);
-static CamelMimeMessage *groupwise_folder_item_to_msg ( CamelFolder *folder, EGwItem *item, CamelException *ex );
-static gchar * groupwise_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex);
+static void gw_update_cache ( CamelFolder *folder, GList *item_list, GError **error, gboolean uid_flag);
+static CamelMimeMessage *groupwise_folder_item_to_msg ( CamelFolder *folder, EGwItem *item, GError **error );
+static gchar * groupwise_get_filename (CamelFolder *folder, const gchar *uid, GError **error);
 static const gchar *get_from_from_org (EGwItemOrganizer *org);
-static void groupwise_refresh_folder(CamelFolder *folder, CamelException *ex);
-static gboolean groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_single, CamelException *ex);
+static void groupwise_refresh_folder(CamelFolder *folder, GError **error);
+static gboolean groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_single, GError **error);
 
 #define d(x)
 
@@ -100,16 +100,16 @@ static const gchar * GET_ITEM_VIEW_WITHOUT_CACHE = "peek default recipient threa
 G_DEFINE_TYPE (CamelGroupwiseFolder, camel_groupwise_folder, CAMEL_TYPE_OFFLINE_FOLDER)
 
 static gchar *
-groupwise_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
+groupwise_get_filename (CamelFolder *folder, const gchar *uid, GError **error)
 {
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER(folder);
 
-	return camel_data_cache_get_filename (gw_folder->cache, "cache", uid, ex);
+	return camel_data_cache_get_filename (gw_folder->cache, "cache", uid, error);
 }
 
 /* Get a message from cache if available otherwise get it from server */
 static CamelMimeMessage *
-groupwise_folder_get_message( CamelFolder *folder, const gchar *uid, CamelException *ex )
+groupwise_folder_get_message( CamelFolder *folder, const gchar *uid, GError **error )
 {
 	CamelMimeMessage *msg = NULL;
 	CamelGroupwiseFolder *gw_folder;
@@ -133,33 +133,29 @@ groupwise_folder_get_message( CamelFolder *folder, const gchar *uid, CamelExcept
 
 	mi = (CamelGroupwiseMessageInfo *) camel_folder_summary_uid (folder->summary, uid);
 	if (mi == NULL) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+		g_set_error (
+			error, CAMEL_FOLDER_ERROR,
+			CAMEL_FOLDER_ERROR_INVALID_UID,
 			_("Cannot get message: %s\n  %s"), uid, _("No such message"));
 		return NULL;
 	}
-	cache_stream  = camel_data_cache_get (gw_folder->cache, "cache", uid, ex);
+	cache_stream  = camel_data_cache_get (gw_folder->cache, "cache", uid, error);
 	stream = camel_stream_mem_new ();
 	if (cache_stream) {
 		msg = camel_mime_message_new ();
-		camel_stream_reset (stream);
-		camel_stream_write_to_stream (cache_stream, stream);
-		camel_stream_reset (stream);
-		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) msg, stream) == -1) {
+		camel_stream_reset (stream, NULL);
+		camel_stream_write_to_stream (cache_stream, stream, NULL);
+		camel_stream_reset (stream, NULL);
+		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) msg, stream, error) == -1) {
 			if (errno == EINTR) {
-				camel_exception_setv (
-					ex, CAMEL_EXCEPTION_USER_CANCEL,
-					_("User canceled"));
 				g_object_unref (msg);
 				g_object_unref (cache_stream);
 				g_object_unref (stream);
 				camel_message_info_free (&mi->info);
 				return NULL;
 			} else {
-				camel_exception_setv (
-					ex, CAMEL_EXCEPTION_SYSTEM,
-					_("Cannot get message %s: %s"),
-					uid, g_strerror (errno));
+				g_prefix_error (
+					error, _("Cannot get message %s: "), uid);
 				g_object_unref (msg);
 				msg = NULL;
 			}
@@ -174,17 +170,19 @@ groupwise_folder_get_message( CamelFolder *folder, const gchar *uid, CamelExcept
 	}
 
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
-		camel_exception_set (
-			ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
 			_("This message is not available in offline mode."));
 		camel_message_info_free (&mi->info);
 		return NULL;
 	}
 
 	/* Check if we are really offline */
-	if (!camel_groupwise_store_connected (gw_store, ex)) {
-		camel_exception_set (
-			ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+	if (!camel_groupwise_store_connected (gw_store, NULL)) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
 			_("This message is not available in offline mode."));
 		camel_message_info_free (&mi->info);
 		return NULL;
@@ -199,17 +197,19 @@ groupwise_folder_get_message( CamelFolder *folder, const gchar *uid, CamelExcept
 		status = e_gw_connection_get_item (cnc, container_id, uid, GET_ITEM_VIEW_WITH_CACHE, &item);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_free (container_id);
-		camel_exception_set (
-			ex, CAMEL_EXCEPTION_SERVICE_INVALID,
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_INVALID,
 			_("Could not get message"));
 		camel_message_info_free (&mi->info);
 		return NULL;
 	}
 
-	msg = groupwise_folder_item_to_msg (folder, item, ex);
+	msg = groupwise_folder_item_to_msg (folder, item, NULL);
 	if (!msg) {
-		camel_exception_set (
-			ex, CAMEL_EXCEPTION_SERVICE_INVALID,
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_INVALID,
 			_("Could not get message"));
 		g_free (container_id);
 		camel_message_info_free (&mi->info);
@@ -226,8 +226,8 @@ groupwise_folder_get_message( CamelFolder *folder, const gchar *uid, CamelExcept
 	/* add to cache */
 	CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
 	if ((cache_stream = camel_data_cache_add (gw_folder->cache, "cache", uid, NULL))) {
-		if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) msg, cache_stream) == -1
-				|| camel_stream_flush (cache_stream) == -1)
+		if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) msg, cache_stream, NULL) == -1
+				|| camel_stream_flush (cache_stream, NULL) == -1)
 			camel_data_cache_remove (gw_folder->cache, "cache", uid, NULL);
 		g_object_unref (cache_stream);
 	}
@@ -494,35 +494,35 @@ groupwise_folder_rename (CamelFolder *folder, const gchar *new)
 }
 
 static GPtrArray *
-groupwise_folder_search_by_expression (CamelFolder *folder, const gchar *expression, CamelException *ex)
+groupwise_folder_search_by_expression (CamelFolder *folder, const gchar *expression, GError **error)
 {
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER(folder);
 	GPtrArray *matches;
 
 	CAMEL_GROUPWISE_FOLDER_LOCK(gw_folder, search_lock);
 	camel_folder_search_set_folder (gw_folder->search, folder);
-	matches = camel_folder_search_search(gw_folder->search, expression, NULL, ex);
+	matches = camel_folder_search_search(gw_folder->search, expression, NULL, error);
 	CAMEL_GROUPWISE_FOLDER_UNLOCK(gw_folder, search_lock);
 
 	return matches;
 }
 
 static guint32
-groupwise_folder_count_by_expression (CamelFolder *folder, const gchar *expression, CamelException *ex)
+groupwise_folder_count_by_expression (CamelFolder *folder, const gchar *expression, GError **error)
 {
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER(folder);
 	guint32 matches;
 
 	CAMEL_GROUPWISE_FOLDER_LOCK(gw_folder, search_lock);
 	camel_folder_search_set_folder (gw_folder->search, folder);
-	matches = camel_folder_search_count (gw_folder->search, expression, ex);
+	matches = camel_folder_search_count (gw_folder->search, expression, error);
 	CAMEL_GROUPWISE_FOLDER_UNLOCK(gw_folder, search_lock);
 
 	return matches;
 }
 
 static GPtrArray *
-groupwise_folder_search_by_uids(CamelFolder *folder, const gchar *expression, GPtrArray *uids, CamelException *ex)
+groupwise_folder_search_by_uids(CamelFolder *folder, const gchar *expression, GPtrArray *uids, GError **error)
 {
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER(folder);
 	GPtrArray *matches;
@@ -533,7 +533,7 @@ groupwise_folder_search_by_uids(CamelFolder *folder, const gchar *expression, GP
 	CAMEL_GROUPWISE_FOLDER_LOCK(gw_folder, search_lock);
 
 	camel_folder_search_set_folder(gw_folder->search, folder);
-	matches = camel_folder_search_search(gw_folder->search, expression, uids, ex);
+	matches = camel_folder_search_search(gw_folder->search, expression, uids, error);
 
 	CAMEL_GROUPWISE_FOLDER_UNLOCK(gw_folder, search_lock);
 
@@ -626,7 +626,7 @@ error:
 }
 
 static void
-move_to_mailbox (CamelFolder *folder, CamelMessageInfo *info, CamelException *ex)
+move_to_mailbox (CamelFolder *folder, CamelMessageInfo *info, GError **error)
 {
 	CamelFolder *dest;
 	CamelStore *parent_store;
@@ -638,10 +638,10 @@ move_to_mailbox (CamelFolder *folder, CamelMessageInfo *info, CamelException *ex
 	uids = g_ptr_array_new ();
 	g_ptr_array_add (uids, (gpointer) uid);
 
-	dest = camel_store_get_folder (parent_store, "Mailbox", 0, ex);
+	dest = camel_store_get_folder (parent_store, "Mailbox", 0, error);
 	camel_message_info_set_flags (info, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_JUNK|CAMEL_MESSAGE_JUNK_LEARN|CAMEL_GW_MESSAGE_NOJUNK|CAMEL_GW_MESSAGE_JUNK, 0);
 	if (dest)
-		groupwise_transfer_messages_to (folder, uids, dest, NULL, TRUE, ex);
+		groupwise_transfer_messages_to (folder, uids, dest, NULL, TRUE, error);
 	else
 		g_warning ("No Mailbox folder found");
 
@@ -649,7 +649,7 @@ move_to_mailbox (CamelFolder *folder, CamelMessageInfo *info, CamelException *ex
 }
 
 static void
-move_to_junk (CamelFolder *folder, CamelMessageInfo *info, CamelException *ex)
+move_to_junk (CamelFolder *folder, CamelMessageInfo *info, GError **error)
 {
 	CamelFolder *dest;
 	CamelFolderInfo *fi;
@@ -662,17 +662,17 @@ move_to_junk (CamelFolder *folder, CamelMessageInfo *info, CamelException *ex)
 	uids = g_ptr_array_new ();
 	g_ptr_array_add (uids, (gpointer) uid);
 
-	dest = camel_store_get_folder (parent_store, JUNK_FOLDER, 0, ex);
+	dest = camel_store_get_folder (parent_store, JUNK_FOLDER, 0, error);
 
 	if (dest)
-		groupwise_transfer_messages_to (folder, uids, dest, NULL, TRUE, ex);
+		groupwise_transfer_messages_to (folder, uids, dest, NULL, TRUE, error);
 	else {
 		fi = create_junk_folder (parent_store);
-		dest = camel_store_get_folder (parent_store, JUNK_FOLDER, 0, ex);
+		dest = camel_store_get_folder (parent_store, JUNK_FOLDER, 0, error);
 		if (!dest)
 			g_warning ("Could not get JunkFolder:Message not moved");
 		else
-			groupwise_transfer_messages_to (folder, uids, dest, NULL, TRUE, ex);
+			groupwise_transfer_messages_to (folder, uids, dest, NULL, TRUE, error);
 	}
 	update_junk_list (parent_store, info, ADD_JUNK_ENTRY);
 }
@@ -680,7 +680,7 @@ move_to_junk (CamelFolder *folder, CamelMessageInfo *info, CamelException *ex)
 /********************* back to folder functions*************************/
 
 static gboolean
-groupwise_sync_summary (CamelFolder *folder, CamelException *ex)
+groupwise_sync_summary (CamelFolder *folder, GError **error)
 {
 	CamelStoreInfo *si;
 	CamelStore *parent_store;
@@ -690,7 +690,7 @@ groupwise_sync_summary (CamelFolder *folder, CamelException *ex)
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
 
-	camel_folder_summary_save_to_db (folder->summary, ex);
+	camel_folder_summary_save_to_db (folder->summary, error);
 
 	si = camel_store_summary_path ((CamelStoreSummary *) ((CamelGroupwiseStore *) parent_store)->summary, full_name);
 
@@ -749,27 +749,22 @@ groupwise_set_message_flags (CamelFolder *folder, const gchar *uid, guint32 flag
 
 	sync_immediately = g_getenv ("GW_SYNC_IMMEDIATE");
 
-	if (sync_immediately) {
-		CamelException ex;
-
-		camel_exception_init (&ex);
-		groupwise_sync (folder, FALSE, info, &ex);
-		camel_exception_clear (&ex);
-	}
+	if (sync_immediately)
+		groupwise_sync (folder, FALSE, info, NULL);
 
 	camel_message_info_free (info);
 	return res;
 }
 
 static gboolean
-groupwise_sync_all (CamelFolder *folder, gboolean expunge, CamelException *ex)
+groupwise_sync_all (CamelFolder *folder, gboolean expunge, GError **error)
 {
-	return groupwise_sync (folder, expunge, NULL, ex);
+	return groupwise_sync (folder, expunge, NULL, error);
 }
 
 /* This may need to be reorganized. */
 static gboolean
-groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_single, CamelException *ex)
+groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_single, GError **error)
 {
 	CamelGroupwiseStore *gw_store;
 	CamelGroupwiseFolder *gw_folder;
@@ -796,12 +791,11 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 	deleted_items = deleted_head = NULL;
 
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
-		return groupwise_sync_summary (folder, ex);
+		return groupwise_sync_summary (folder, error);
 
 	camel_service_lock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-	if (!camel_groupwise_store_connected (gw_store, ex)) {
+	if (!camel_groupwise_store_connected (gw_store, NULL)) {
 		camel_service_unlock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-		camel_exception_clear (ex);
 		return TRUE;
 	}
 	camel_service_unlock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
@@ -813,7 +807,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 		return TRUE;
 
 	changes = camel_folder_change_info_new ();
-	camel_folder_summary_prepare_fetch_all (folder->summary, ex);
+	camel_folder_summary_prepare_fetch_all (folder->summary, error);
 	count = camel_folder_summary_count (folder->summary);
 	CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
 	for (i=0; i < count; i++) {
@@ -840,7 +834,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 
 		if ((flags & CAMEL_MESSAGE_JUNK) && strcmp(camel_folder_get_name(folder), JUNK_FOLDER)) {
 			/*marked a message junk*/
-			move_to_junk (folder, info, ex);
+			move_to_junk (folder, info, error);
 			camel_folder_summary_remove_uid (folder->summary, camel_message_info_uid(info));
 			camel_data_cache_remove (gw_folder->cache, "cache", camel_message_info_uid(info), NULL);
 			continue;
@@ -848,7 +842,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 
 		if ((flags & CAMEL_GW_MESSAGE_NOJUNK) && !strcmp(camel_folder_get_name(folder), JUNK_FOLDER)) {
 			/*message was marked as junk, now unjunk*/
-			move_to_mailbox (folder, info, ex);
+			move_to_mailbox (folder, info, error);
 			camel_folder_summary_remove_uid (folder->summary, camel_message_info_uid(info));
 			camel_data_cache_remove (gw_folder->cache, "cache", camel_message_info_uid(info), NULL);
 			continue;
@@ -1004,7 +998,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 	}
 
 	camel_service_lock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-	success = groupwise_sync_summary (folder, ex);
+	success = groupwise_sync_summary (folder, error);
 	camel_service_unlock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	camel_folder_changed (folder, changes);
@@ -1014,7 +1008,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 }
 
 CamelFolder *
-camel_gw_folder_new(CamelStore *store, const gchar *folder_name, const gchar *folder_dir, CamelException *ex)
+camel_gw_folder_new(CamelStore *store, const gchar *folder_name, const gchar *folder_dir, GError **error)
 {
 	CamelFolder *folder;
 	CamelGroupwiseFolder *gw_folder;
@@ -1039,8 +1033,8 @@ camel_gw_folder_new(CamelStore *store, const gchar *folder_name, const gchar *fo
 	g_free(summary_file);
 	if (!folder->summary) {
 		g_object_unref (CAMEL_OBJECT (folder));
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Could not load summary for %s"), folder_name);
 		return NULL;
 	}
@@ -1051,7 +1045,7 @@ camel_gw_folder_new(CamelStore *store, const gchar *folder_name, const gchar *fo
 	g_free(state_file);
 	camel_object_state_read (CAMEL_OBJECT (folder));
 
-	gw_folder->cache = camel_data_cache_new (folder_dir ,ex);
+	gw_folder->cache = camel_data_cache_new (folder_dir, error);
 	if (!gw_folder->cache) {
 		g_object_unref (folder);
 		return NULL;
@@ -1094,7 +1088,6 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 {
 	struct _folder_update_msg *m = (struct _folder_update_msg *)msg;
 	EGwConnectionStatus status;
-	CamelException *ex = NULL;
 	CamelGroupwiseStore *gw_store;
 	CamelStore *parent_store;
 	GList *item_list, *items_full_list = NULL, *last_element=NULL;
@@ -1186,7 +1179,7 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 	  }*/
 
 	g_print ("\nNumber of items in the folder: %d \n", g_list_length(items_full_list));
-	gw_update_all_items (m->folder, items_full_list, ex);
+	gw_update_all_items (m->folder, items_full_list, NULL);
 	camel_operation_end (NULL);
 
 	return;
@@ -1219,7 +1212,7 @@ static CamelSessionThreadOps update_ops = {
 };
 
 static gboolean
-groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
+groupwise_refresh_info(CamelFolder *folder, GError **error)
 {
 	CamelGroupwiseSummary *summary = (CamelGroupwiseSummary *) folder->summary;
 	CamelStoreInfo *si;
@@ -1238,7 +1231,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	 * should not interfere with the process
 	 */
 	if (summary->time_string && (strlen (summary->time_string) > 0))  {
-		groupwise_refresh_folder(folder, ex);
+		groupwise_refresh_folder(folder, error);
 		si = camel_store_summary_path ((CamelStoreSummary *)((CamelGroupwiseStore *)parent_store)->summary, full_name);
 		if (si) {
 			guint32 unread, total;
@@ -1260,7 +1253,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 		 * so do a get_folder again. And hope that it works
 		 */
 		g_print("Reloading folder...something wrong with the summary....\n");
-		gw_store_reload_folder (gw_store, folder, 0, ex);
+		gw_store_reload_folder (gw_store, folder, 0, error);
 	}
 
 	return TRUE;
@@ -1337,7 +1330,7 @@ get_merge_lists_new_count (CamelGroupwiseSummary *summary, GSList *new, GSList *
 }
 
 static void
-update_summary_string (CamelFolder *folder, const gchar *time_string, CamelException *ex)
+update_summary_string (CamelFolder *folder, const gchar *time_string)
 {
 	CamelGroupwiseSummary *summary = (CamelGroupwiseSummary *) folder->summary;
 
@@ -1346,11 +1339,11 @@ update_summary_string (CamelFolder *folder, const gchar *time_string, CamelExcep
 
 	((CamelGroupwiseSummary *) folder->summary)->time_string = g_strdup (time_string);
 	camel_folder_summary_touch (folder->summary);
-	camel_folder_summary_save_to_db (folder->summary, ex);
+	camel_folder_summary_save_to_db (folder->summary, NULL);
 }
 
 static void
-groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
+groupwise_refresh_folder(CamelFolder *folder, GError **error)
 {
 	CamelGroupwiseStore *gw_store;
 	CamelGroupwiseFolder *gw_folder;
@@ -1384,7 +1377,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 
 	/* Sync-up the (un)read changes before getting updates,
 	so that the getFolderList will reflect the most recent changes too */
-	groupwise_sync_all (folder, FALSE, ex);
+	groupwise_sync_all (folder, FALSE, error);
 
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		g_warning ("In offline mode. Cannot refresh!!!\n");
@@ -1407,31 +1400,10 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 
 	camel_service_lock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
-	if (!camel_groupwise_store_connected (gw_store, ex))
+	if (!camel_groupwise_store_connected (gw_store, error))
 		goto end1;
 
 	if (!strcmp (full_name, "Trash")) {
-#if 0
-		status = e_gw_connection_get_items (cnc, container_id, "peek recipient distribution created delivered attachments subject status size", NULL, &list);
-		if (status != E_GW_CONNECTION_STATUS_OK) {
-			if (status ==E_GW_CONNECTION_STATUS_OTHER) {
-				g_warning ("Trash full....Empty Trash!!!!\n");
-				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Trash Folder Full. Please Empty."));
-				goto end1;
-				/*groupwise_expunge (folder, ex);*/
-			} else
-				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
-			goto end1;
-		}
-		if (list || g_list_length(list)) {
-			camel_folder_summary_clear (folder->summary);
-			gw_update_summary (folder, list, ex);
-			g_list_foreach (list, (GFunc) g_object_unref, NULL);
-			g_list_free (list);
-			list = NULL;
-		}
-		goto end1;
-#endif
 		is_proxy = TRUE;
 	}
 
@@ -1456,8 +1428,9 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 					"peek id",
 					&new_sync_time, "New", NULL, source, -1, &new_items);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
-			camel_exception_set (
-				ex, CAMEL_EXCEPTION_SERVICE_INVALID,
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_INVALID,
 				_("Authentication failed"));
 			goto end2;
 		}
@@ -1473,7 +1446,10 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 					"peek id",
 					&modified_sync_time, "Modified", NULL, source, -1, &modified_items);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
-			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_INVALID,
+				_("Authentication failed"));
 			goto end3;
 		}
 
@@ -1505,10 +1481,10 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		g_object_unref (container);
 
 		if (list)
-			gw_update_cache (folder, list, ex, FALSE);
+			gw_update_cache (folder, list, error, FALSE);
 
 		/* update the new_sync_time to summary */
-		update_summary_string (folder, new_sync_time, ex);
+		update_summary_string (folder, new_sync_time);
 	}
 
 	camel_service_unlock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
@@ -1608,7 +1584,7 @@ groupwise_folder_set_threading_data (CamelGroupwiseMessageInfo *mi, EGwItem *ite
 
 /* Update the GroupWise cache with the list of items passed. should happen in thread. */
 static void
-gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean uid_flag)
+gw_update_cache (CamelFolder *folder, GList *list, GError **error, gboolean uid_flag)
 {
 	CamelGroupwiseMessageInfo *mi = NULL;
 	CamelMessageInfo *pmi = NULL;
@@ -1834,17 +1810,17 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		if (folder_needs_caching) {
 				/******************** Begine Caching ************************/
 				/* add to cache if its a new message*/
-				t_cache_stream  = camel_data_cache_get (gw_folder->cache, "cache", id, ex);
+				t_cache_stream  = camel_data_cache_get (gw_folder->cache, "cache", id, error);
 				if (t_cache_stream) {
 						g_object_unref (t_cache_stream);
 
-						mail_msg = groupwise_folder_item_to_msg (folder, item, ex);
+						mail_msg = groupwise_folder_item_to_msg (folder, item, error);
 						if (mail_msg)
 								camel_medium_set_header (CAMEL_MEDIUM (mail_msg), "X-Evolution-Source", groupwise_base_url_lookup (gw_store->priv));
 
 						CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
 						if ((cache_stream = camel_data_cache_add (gw_folder->cache, "cache", id, NULL))) {
-								if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) mail_msg,	cache_stream) == -1 || camel_stream_flush (cache_stream) == -1)
+								if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) mail_msg,	cache_stream, NULL) == -1 || camel_stream_flush (cache_stream, NULL) == -1)
 										camel_data_cache_remove (gw_folder->cache, "cache", id, NULL);
 								g_object_unref (cache_stream);
 						}
@@ -1861,7 +1837,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 	camel_operation_end (NULL);
 	g_free (container_id);
 	g_string_free (str, TRUE);
-	groupwise_sync_summary (folder, ex);
+	groupwise_sync_summary (folder, error);
 
 	camel_folder_changed (folder, changes);
 	camel_folder_change_info_free (changes);
@@ -1900,7 +1876,7 @@ get_from_from_org (EGwItemOrganizer *org)
 
 /* Update summary, if there is none existing, create one */
 void
-gw_update_summary (CamelFolder *folder, GList *list,CamelException *ex)
+gw_update_summary (CamelFolder *folder, GList *list,GError **error)
 {
 	CamelGroupwiseMessageInfo *mi = NULL;
 	CamelGroupwiseStore *gw_store;
@@ -2076,7 +2052,7 @@ gw_update_summary (CamelFolder *folder, GList *list,CamelException *ex)
 static CamelMimeMessage *
 groupwise_folder_item_to_msg( CamelFolder *folder,
 		EGwItem *item,
-		CamelException *ex )
+		GError **error )
 {
 	CamelMimeMessage *msg = NULL;
 	CamelGroupwiseStore *gw_store;
@@ -2127,8 +2103,9 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 					(const gchar **)&attachment, &len);
 			if (status != E_GW_CONNECTION_STATUS_OK) {
 				g_warning ("Could not get attachment\n");
-				camel_exception_set (
-					ex, CAMEL_EXCEPTION_SERVICE_INVALID,
+				g_set_error (
+					error, CAMEL_SERVICE_ERROR,
+					CAMEL_SERVICE_ERROR_INVALID,
 					_("Could not get message"));
 				return NULL;
 			}
@@ -2180,8 +2157,9 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 								(const gchar **)&attachment, &len);
 						if (status != E_GW_CONNECTION_STATUS_OK) {
 							g_warning ("Could not get attachment\n");
-							camel_exception_set (
-								ex, CAMEL_EXCEPTION_SERVICE_INVALID,
+							g_set_error (
+								error, CAMEL_SERVICE_ERROR,
+								CAMEL_SERVICE_ERROR_INVALID,
 								_("Could not get message"));
 							return NULL;
 						}
@@ -2199,7 +2177,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	msg = camel_mime_message_new ();
 	if (has_mime_822 && body) {
 		temp_stream = camel_stream_mem_new_with_buffer (body, body_len);
-		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) msg, temp_stream) == -1) {
+		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) msg, temp_stream, error) == -1) {
 			g_object_unref (msg);
 			g_object_unref (temp_stream);
 			msg = NULL;
@@ -2292,7 +2270,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 					g_warning ("Could not get attachment\n");
 					continue;
 				}
-				temp_msg = groupwise_folder_item_to_msg(folder, temp_item, ex);
+				temp_msg = groupwise_folder_item_to_msg(folder, temp_item, error);
 				if (temp_msg) {
 					CamelContentType *ct = camel_content_type_new("message", "rfc822");
 					part = camel_mime_part_new ();
@@ -2410,7 +2388,7 @@ end:
 }
 
 static void
-gw_update_all_items (CamelFolder *folder, GList *item_list, CamelException *ex)
+gw_update_all_items (CamelFolder *folder, GList *item_list, GError **error)
 {
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER (folder);
 	GPtrArray *summary = NULL;
@@ -2445,7 +2423,7 @@ gw_update_all_items (CamelFolder *folder, GList *item_list, CamelException *ex)
 		index ++;
 	}
 
-	groupwise_sync_summary (folder, ex);
+	groupwise_sync_summary (folder, error);
 	camel_folder_changed (folder, changes);
 
 	if (item_list) {
@@ -2454,7 +2432,7 @@ gw_update_all_items (CamelFolder *folder, GList *item_list, CamelException *ex)
 		parent_store = camel_folder_get_parent_store (folder);
 
 		camel_service_lock (CAMEL_SERVICE (parent_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-		gw_update_cache (folder, item_list, ex, TRUE);
+		gw_update_cache (folder, item_list, error, TRUE);
 		camel_service_unlock (CAMEL_SERVICE (parent_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 		g_list_foreach (item_list, (GFunc)g_free, NULL);
@@ -2467,7 +2445,7 @@ gw_update_all_items (CamelFolder *folder, GList *item_list, CamelException *ex)
 static gboolean
 groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		const CamelMessageInfo *info, gchar **appended_uid,
-		CamelException *ex)
+		GError **error)
 {
 	const gchar *container_id = NULL;
 	CamelGroupwiseStore *gw_store;
@@ -2491,8 +2469,8 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		is_ok = TRUE;
 
 	if (!is_ok) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Cannot append message to folder '%s': %s"),
 			full_name, e_gw_connection_get_error_message (status));
 		return FALSE;
@@ -2502,7 +2480,7 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	offline = CAMEL_OFFLINE_STORE (parent_store);
 
 	if (offline->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
-		camel_groupwise_journal_append ((CamelGroupwiseJournal *) ((CamelGroupwiseFolder *)folder)->journal, message, info, appended_uid, ex);
+		camel_groupwise_journal_append ((CamelGroupwiseJournal *) ((CamelGroupwiseFolder *)folder)->journal, message, info, appended_uid, error);
 		return FALSE;
 	}
 	cnc = cnc_lookup (gw_store->priv);
@@ -2527,8 +2505,9 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 
 	status = e_gw_connection_create_item (cnc, item, &id);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot create message: %s"),
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Cannot create message: %s"),
 			e_gw_connection_get_error_message (status));
 
 		if (appended_uid)
@@ -2540,8 +2519,8 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	status = e_gw_connection_add_item (cnc, container_id, id);
 	g_message ("Adding %s to %s", id, container_id);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Cannot append message to folder '%s': %s"),
 			full_name, e_gw_connection_get_error_message (status));
 
@@ -2582,7 +2561,7 @@ uid_compar (gconstpointer va, gconstpointer vb)
 static gboolean
 groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		CamelFolder *destination, GPtrArray **transferred_uids,
-		gboolean delete_originals, CamelException *ex)
+		gboolean delete_originals, GError **error)
 {
 	gint count, index = 0;
 	GList *item_ids = NULL;
@@ -2643,23 +2622,25 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 
 		for (l = item_ids, i = 0; l; l = l->next, i++) {
 			CamelMessageInfo *info;
+			gboolean success;
 
 			if (!(info = camel_folder_summary_uid (source->summary, uids->pdata[i])))
 				continue;
 
-			if (!(message = groupwise_folder_get_message (source, camel_message_info_uid (info), ex)))
+			if (!(message = groupwise_folder_get_message (source, camel_message_info_uid (info), error)))
 				break;
 
-			camel_groupwise_journal_transfer (journal, (CamelGroupwiseFolder *)source, message, info, uids->pdata[i], NULL, ex);
+			success = camel_groupwise_journal_transfer (journal, (CamelGroupwiseFolder *)source, message, info, uids->pdata[i], NULL, error);
 			g_object_unref (message);
 
-			if (camel_exception_is_set (ex))
+			if (!success)
 				break;
 
 			if (delete_originals) {
 				if (!strcmp(source_full_name, SENT)) {
-					camel_exception_set (
-						ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+					g_set_error (
+						error, CAMEL_SERVICE_ERROR,
+						CAMEL_SERVICE_ERROR_UNAVAILABLE,
 						_("This message is not available in offline mode."));
 
 				} else {
@@ -2779,7 +2760,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 
 	/* Refresh the destination folder, if its not refreshed already */
 	if (gw_store->current_folder != destination )
-		camel_folder_refresh_info (destination, ex);
+		camel_folder_refresh_info (destination, error);
 
 	camel_folder_summary_touch (source->summary);
 	camel_folder_summary_touch (destination->summary);
@@ -2792,7 +2773,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 }
 
 static gboolean
-groupwise_expunge (CamelFolder *folder, CamelException *ex)
+groupwise_expunge (CamelFolder *folder, GError **error)
 {
 	CamelGroupwiseStore *gw_store;
 	CamelGroupwiseFolder *gw_folder;
@@ -2836,7 +2817,7 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 
 	container_id =  g_strdup (camel_groupwise_store_container_id_lookup (gw_store, full_name));
 
-	camel_folder_summary_prepare_fetch_all (folder->summary, ex);
+	camel_folder_summary_prepare_fetch_all (folder->summary, error);
 	max = camel_folder_summary_count (folder->summary);
 	for (i = 0; i < max; i++) {
 		info = camel_folder_summary_index (folder->summary, i);

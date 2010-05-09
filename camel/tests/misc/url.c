@@ -72,20 +72,20 @@ gint
 main (gint argc, gchar **argv)
 {
 	CamelURL *base_url, *url;
-	CamelException ex;
 	gchar *url_string;
 	gint i;
+	GError *error = NULL;
 
 	camel_test_init (argc, argv);
 
 	camel_test_start ("URL parsing");
 
 	camel_test_push ("base URL parsing");
-	camel_exception_init (&ex);
-	base_url = camel_url_new (base, &ex);
+	base_url = camel_url_new (base, &error);
 	if (!base_url) {
-		camel_test_fail ("Could not parse %s: %s\n", base,
-				 camel_exception_get_description (&ex));
+		camel_test_fail (
+			"Could not parse %s: %s\n",
+			base, error->message);
 	}
 	camel_test_pull ();
 

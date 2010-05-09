@@ -4,6 +4,7 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <glib/gstdio.h>
 #include <camel/camel.h>
 
 void camel_test_failv(const gchar *why, va_list ap);

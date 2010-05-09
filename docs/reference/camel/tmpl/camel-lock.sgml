@@ -69,7 +69,7 @@ camel-lock
 </para>
 
 @path: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -80,7 +80,7 @@ camel-lock
 
 @fd: 
 @type: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -91,7 +91,7 @@ camel-lock
 
 @fd: 
 @type: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -127,7 +127,7 @@ camel-lock
 @path: 
 @fd: 
 @type: 
-@ex: 
+@error: 
 @Returns: 
 
 

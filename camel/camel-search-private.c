@@ -35,7 +35,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-exception.h"
 #include "camel-mime-message.h"
 #include "camel-multipart.h"
 #include "camel-search-private.h"
@@ -56,7 +55,7 @@ camel_search_build_match_regex (regex_t *pattern,
                                 camel_search_flags_t type,
                                 gint argc,
                                 struct _ESExpResult **argv,
-                                CamelException *ex)
+                                GError **error)
 {
 	GString *match = g_string_new("");
 	gint c, i, count=0, err;
@@ -108,8 +107,8 @@ camel_search_build_match_regex (regex_t *pattern,
 		gchar *buffer = g_malloc0 (len + 1);
 
 		regerror (err, pattern, buffer, len);
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Regular expression compilation failed: %s: %s"),
 			match->str, buffer);
 
@@ -480,8 +479,8 @@ camel_search_message_body_contains (CamelDataWrapper *object, regex_t *pattern)
 
 		byte_array = g_byte_array_new ();
 		stream = camel_stream_mem_new_with_byte_array (byte_array);
-		camel_data_wrapper_write_to_stream (containee, stream);
-		camel_stream_write (stream, "", 1);
+		camel_data_wrapper_write_to_stream (containee, stream, NULL);
+		camel_stream_write (stream, "", 1, NULL);
 		truth = regexec (pattern, (gchar *) byte_array->data, 0, NULL, 0) == 0;
 		g_object_unref (stream);
 	}

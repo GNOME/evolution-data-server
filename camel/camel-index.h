@@ -25,7 +25,6 @@
 #ifndef CAMEL_INDEX_H
 #define CAMEL_INDEX_H
 
-#include <camel/camel-exception.h>
 #include <camel/camel-object.h>
 
 /* Standard GObject macros */

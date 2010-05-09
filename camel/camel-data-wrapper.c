@@ -25,8 +25,10 @@
 #endif
 
 #include <errno.h>
+#include <glib/gi18n-lib.h>
 
 #include "camel-data-wrapper.h"
+#include "camel-debug.h"
 #include "camel-mime-filter-basic.h"
 #include "camel-mime-filter-crlf.h"
 #include "camel-stream-filter.h"
@@ -76,21 +78,26 @@ data_wrapper_finalize (GObject *object)
 
 static gssize
 data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
-                              CamelStream *stream)
+                              CamelStream *stream,
+                              GError **error)
 {
 	gssize ret;
 
 	if (data_wrapper->stream == NULL) {
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("No stream available"));
 		return -1;
 	}
 
 	camel_data_wrapper_lock (data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
-	if (camel_stream_reset (data_wrapper->stream) == -1) {
+	if (camel_stream_reset (data_wrapper->stream, error) == -1) {
 		camel_data_wrapper_unlock (data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
 		return -1;
 	}
 
-	ret = camel_stream_write_to_stream (data_wrapper->stream, stream);
+	ret = camel_stream_write_to_stream (
+		data_wrapper->stream, stream, error);
 
 	camel_data_wrapper_unlock (data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
 
@@ -99,7 +106,8 @@ data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 
 static gssize
 data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
-                               CamelStream *stream)
+                               CamelStream *stream,
+                               GError **error)
 {
 	CamelMimeFilter *filter;
 	CamelStream *fstream;
@@ -134,9 +142,9 @@ data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
 		g_object_unref (filter);
 	}
 
-	ret = camel_data_wrapper_write_to_stream (data_wrapper, fstream);
+	ret = camel_data_wrapper_write_to_stream (data_wrapper, fstream, error);
 
-	camel_stream_flush (fstream);
+	camel_stream_flush (fstream, NULL);
 	g_object_unref (fstream);
 
 	return ret;
@@ -176,7 +184,8 @@ data_wrapper_set_mime_type_field (CamelDataWrapper *data_wrapper,
 
 static gint
 data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
-                                    CamelStream *stream)
+                                    CamelStream *stream,
+                                    GError **error)
 {
 	if (data_wrapper->stream)
 		g_object_unref (data_wrapper->stream);
@@ -243,6 +252,7 @@ camel_data_wrapper_new (void)
  * camel_data_wrapper_write_to_stream:
  * @data_wrapper: a #CamelDataWrapper object
  * @stream: a #CamelStream for output
+ * @error: return location for a #GError, or %NULL
  *
  * Writes the content of @data_wrapper to @stream in a machine-independent
  * format appropriate for the data. It should be possible to construct an
@@ -253,9 +263,11 @@ camel_data_wrapper_new (void)
  **/
 gssize
 camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
-                                    CamelStream *stream)
+                                    CamelStream *stream,
+                                    GError **error)
 {
 	CamelDataWrapperClass *class;
+	gssize n_bytes;
 
 	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
@@ -263,13 +275,17 @@ camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
 	g_return_val_if_fail (class->write_to_stream != NULL, -1);
 
-	return class->write_to_stream (data_wrapper, stream);
+	n_bytes = class->write_to_stream (data_wrapper, stream, error);
+	CAMEL_CHECK_GERROR (data_wrapper, write_to_stream, n_bytes >= 0, error);
+
+	return n_bytes;
 }
 
 /**
  * camel_data_wrapper_decode_to_stream:
  * @data_wrapper: a #CamelDataWrapper object
  * @stream: a #CamelStream for decoded data to be written to
+ * @error: return location for a #GError, or %NULL
  *
  * Writes the decoded data content to @stream.
  *
@@ -277,9 +293,11 @@ camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
  **/
 gssize
 camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
-                                     CamelStream *stream)
+                                     CamelStream *stream,
+                                     GError **error)
 {
 	CamelDataWrapperClass *class;
+	gssize n_bytes;
 
 	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
@@ -287,13 +305,17 @@ camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
 	g_return_val_if_fail (class->decode_to_stream != NULL, -1);
 
-	return class->decode_to_stream (data_wrapper, stream);
+	n_bytes = class->decode_to_stream (data_wrapper, stream, error);
+	CAMEL_CHECK_GERROR (data_wrapper, decode_to_stream, n_bytes >= 0, error);
+
+	return n_bytes;
 }
 
 /**
  * camel_data_wrapper_construct_from_stream:
  * @data_wrapper: a #CamelDataWrapper object
  * @stream: an input #CamelStream
+ * @error: return location for a #GError, or %NULL
  *
  * Constructs the content of @data_wrapper from the supplied @stream.
  *
@@ -301,9 +323,11 @@ camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
  **/
 gint
 camel_data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
-                                          CamelStream *stream)
+                                          CamelStream *stream,
+                                          GError **error)
 {
 	CamelDataWrapperClass *class;
+	gint retval;
 
 	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
@@ -311,7 +335,11 @@ camel_data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
 	g_return_val_if_fail (class->construct_from_stream != NULL, -1);
 
-	return class->construct_from_stream (data_wrapper, stream);
+	retval = class->construct_from_stream (data_wrapper, stream, error);
+	CAMEL_CHECK_GERROR (
+		data_wrapper, construct_from_stream, retval == 0, error);
+
+	return retval;
 }
 
 /**

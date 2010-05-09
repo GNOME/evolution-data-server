@@ -28,6 +28,7 @@
 #endif
 
 #include "camel-address.h"
+#include "camel-debug.h"
 #include "camel-mime-message.h"
 #include "camel-transport.h"
 
@@ -79,7 +80,7 @@ camel_transport_init (CamelTransport *transport)
  * @message: a #CamelMimeMessage to send
  * @from: a #CamelAddress to send from
  * @recipients: a #CamelAddress containing all recipients
- * @ex: a #CamelException
+ * @error: return location for a #GError, or %NULL
  *
  * Sends the message to the given recipients, regardless of the contents
  * of @message. If the message contains a "Bcc" header, the transport
@@ -92,10 +93,10 @@ camel_transport_send_to (CamelTransport *transport,
                          CamelMimeMessage *message,
                          CamelAddress *from,
                          CamelAddress *recipients,
-                         CamelException *ex)
+                         GError **error)
 {
 	CamelTransportClass *class;
-	gboolean sent;
+	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_TRANSPORT (transport), FALSE);
 	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), FALSE);
@@ -106,10 +107,13 @@ camel_transport_send_to (CamelTransport *transport,
 	g_return_val_if_fail (class->send_to != NULL, FALSE);
 
 	camel_transport_lock (transport, CAMEL_TRANSPORT_SEND_LOCK);
-	sent = class->send_to (transport, message, from, recipients, ex);
+
+	success = class->send_to (transport, message, from, recipients, error);
+	CAMEL_CHECK_GERROR (transport, send_to, success, error);
+
 	camel_transport_unlock (transport, CAMEL_TRANSPORT_SEND_LOCK);
 
-	return sent;
+	return success;
 }
 
 /**

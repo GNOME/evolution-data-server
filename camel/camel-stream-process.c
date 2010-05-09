@@ -51,7 +51,7 @@ stream_process_finalize (GObject *object)
 {
 	/* Ensure we clean up after ourselves -- kill
 	   the child process and reap it. */
-	camel_stream_close (CAMEL_STREAM (object));
+	camel_stream_close (CAMEL_STREAM (object), NULL);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_stream_process_parent_class)->finalize (object);
@@ -60,25 +60,28 @@ stream_process_finalize (GObject *object)
 static gssize
 stream_process_read (CamelStream *stream,
                      gchar *buffer,
-                     gsize n)
+                     gsize n,
+                     GError **error)
 {
 	CamelStreamProcess *stream_process = CAMEL_STREAM_PROCESS (stream);
 
-	return camel_read (stream_process->sockfd, buffer, n);
+	return camel_read (stream_process->sockfd, buffer, n, error);
 }
 
 static gssize
 stream_process_write (CamelStream *stream,
                       const gchar *buffer,
-                      gsize n)
+                      gsize n,
+                      GError **error)
 {
 	CamelStreamProcess *stream_process = CAMEL_STREAM_PROCESS (stream);
 
-	return camel_write (stream_process->sockfd, buffer, n);
+	return camel_write (stream_process->sockfd, buffer, n, error);
 }
 
 static gint
-stream_process_close (CamelStream *object)
+stream_process_close (CamelStream *object,
+                      GError **error)
 {
 	CamelStreamProcess *stream = CAMEL_STREAM_PROCESS (object);
 
@@ -127,7 +130,8 @@ stream_process_close (CamelStream *object)
 }
 
 static gint
-stream_process_flush (CamelStream *stream)
+stream_process_flush (CamelStream *stream,
+                      GError **error)
 {
 	return 0;
 }
@@ -224,7 +228,7 @@ camel_stream_process_connect (CamelStreamProcess *stream,
 	g_return_val_if_fail (command != NULL, -1);
 
 	if (stream->sockfd != -1 || stream->childpid)
-		camel_stream_close (CAMEL_STREAM (stream));
+		camel_stream_close (CAMEL_STREAM (stream), NULL);
 
 	if (socketpair (AF_UNIX, SOCK_STREAM, 0, sockfds))
 		return -1;

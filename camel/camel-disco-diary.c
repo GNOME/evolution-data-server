@@ -246,12 +246,11 @@ diary_decode_folder (CamelDiscoDiary *diary)
 		return NULL;
 	folder = g_hash_table_lookup (diary->folders, name);
 	if (!folder) {
-		CamelException ex;
+		GError *error = NULL;
 		gchar *msg;
 
-		camel_exception_init (&ex);
 		folder = camel_store_get_folder (
-			CAMEL_STORE (diary->store), name, 0, &ex);
+			CAMEL_STORE (diary->store), name, 0, &error);
 		if (folder)
 			g_hash_table_insert (diary->folders, name, folder);
 		else {
@@ -259,8 +258,8 @@ diary_decode_folder (CamelDiscoDiary *diary)
 				_("Could not open '%s':\n%s\n"
 				  "Changes made to this folder "
 				  "will not be resynchronized."),
-				name, camel_exception_get_description (&ex));
-			camel_exception_clear (&ex);
+				name, error->message);
+			g_error_free (error);
 			camel_session_alert_user (
 				camel_service_get_session (CAMEL_SERVICE (diary->store)),
 				CAMEL_SESSION_ALERT_WARNING,
@@ -283,11 +282,12 @@ close_folder (gpointer name, gpointer folder, gpointer data)
 
 void
 camel_disco_diary_replay (CamelDiscoDiary *diary,
-                          CamelException *ex)
+                          GError **error)
 {
 	guint32 action;
 	off_t size;
 	gdouble pc;
+	GError *local_error = NULL;
 
 	d(printf("disco diary replay\n"));
 
@@ -297,7 +297,7 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 	rewind (diary->file);
 
 	camel_operation_start (NULL, _("Resynchronizing with server"));
-	while (!camel_exception_is_set (ex)) {
+	while (local_error == NULL) {
 		pc = ftell (diary->file) / size;
 		camel_operation_progress (NULL, pc * 100);
 
@@ -319,7 +319,7 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 
 			if (folder)
 				camel_disco_folder_expunge_uids (
-					folder, uids, ex);
+					folder, uids, &local_error);
 			free_uids (uids);
 			break;
 		}
@@ -349,7 +349,7 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 			info = camel_folder_get_message_info (folder, uid);
 
 			camel_folder_append_message (
-				folder, message, info, &ret_uid, ex);
+				folder, message, info, &ret_uid, &local_error);
 			camel_folder_free_message_info (folder, info);
 
 			if (ret_uid) {
@@ -383,7 +383,7 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 
 			camel_folder_transfer_messages_to (
 				source, uids, destination, &ret_uids,
-				delete_originals, ex);
+				delete_originals, &local_error);
 
 			if (ret_uids) {
 				for (i = 0; i < uids->len; i++) {
@@ -411,12 +411,14 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 
 	/* Truncate the log */
 	ftruncate (fileno (diary->file), 0);
+
+	g_propagate_error (error, local_error);
 }
 
 CamelDiscoDiary *
 camel_disco_diary_new (CamelDiscoStore *store,
                        const gchar *filename,
-                       CamelException *ex)
+                       GError **error)
 {
 	CamelDiscoDiary *diary;
 
@@ -443,8 +445,9 @@ camel_disco_diary_new (CamelDiscoStore *store,
 	diary->file = g_fopen (filename, "a+b");
 	if (!diary->file) {
 		g_object_unref (diary);
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
 			"Could not open journal file: %s",
 			g_strerror (errno));
 		return NULL;

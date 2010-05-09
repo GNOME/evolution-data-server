@@ -31,10 +31,6 @@
 #include <time.h>
 #include <sys/stat.h>
 
-#ifdef HAVE_ALLOCA_H
-#include <alloca.h>
-#endif
-
 #ifdef USE_DOT
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -50,6 +46,7 @@
 #include <sys/file.h>
 #endif
 
+#include <gio/gio.h>
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
@@ -64,7 +61,7 @@
 /**
  * camel_lock_dot:
  * @path:
- * @ex:
+ * @error: return location for a #GError, or %NULL
  *
  * Create an exclusive lock using .lock semantics.
  * All locks are equivalent to write locks (exclusive).
@@ -73,7 +70,7 @@
  **/
 gint
 camel_lock_dot (const gchar *path,
-                CamelException *ex)
+                GError **error)
 {
 #ifdef USE_DOT
 	gchar *locktmp, *lock;
@@ -99,8 +96,9 @@ camel_lock_dot (const gchar *path,
 		sprintf(locktmp, "%sXXXXXX", path);
 		fdtmp = g_mkstemp(locktmp);
 		if (fdtmp == -1) {
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SYSTEM,
+			g_set_error (
+				error, G_IO_ERROR,
+				g_io_error_from_errno (errno),
 				_("Could not create lock file for %s: %s"),
 				path, g_strerror (errno));
 			return -1;
@@ -111,7 +109,7 @@ camel_lock_dot (const gchar *path,
 		link(locktmp, lock);
 
 		/* but we check stat instead (again, see link(2)) */
-		if (stat(locktmp, &st) == -1) {
+		if (g_stat(locktmp, &st) == -1) {
 			d(printf("Our lock file %s vanished!?\n", locktmp));
 
 			/* well that was unexpected, try cleanup/retry */
@@ -128,7 +126,7 @@ camel_lock_dot (const gchar *path,
 		}
 
 		/* check for stale lock, kill it */
-		if (stat(lock, &st) == 0) {
+		if (g_stat(lock, &st) == 0) {
 			time_t now = time (NULL);
 			(printf("There is an existing lock %ld seconds old\n", now-st.st_ctime));
 			if (st.st_ctime < now - CAMEL_LOCK_DOT_STALE) {
@@ -142,9 +140,9 @@ camel_lock_dot (const gchar *path,
 
 	d(printf("failed to get lock after %d retries\n", retry));
 
-	camel_exception_setv (
-		ex, CAMEL_EXCEPTION_SYSTEM,
-		_("Timed out trying to get lock file on %s. "
+	g_set_error (
+		error, G_IO_ERROR, G_IO_ERROR_FAILED,
+		_("Timed out trying to get lock file on %s.  "
 		"Try again later."), path);
 	return -1;
 #else /* !USE_DOT */
@@ -175,7 +173,7 @@ camel_unlock_dot(const gchar *path)
  * camel_lock_fcntl:
  * @fd:
  * @type:
- * @ex:
+ * @error: return location for a #GError, or %NULL
  *
  * Create a lock using fcntl(2).
  *
@@ -187,7 +185,7 @@ camel_unlock_dot(const gchar *path)
 gint
 camel_lock_fcntl (gint fd,
                   CamelLockType type,
-                  CamelException *ex)
+                  GError **error)
 {
 #ifdef USE_FCNTL
 	struct flock lock;
@@ -201,8 +199,9 @@ camel_lock_fcntl (gint fd,
 		   we assume the filesystem doesn't support fcntl() locking */
 		/* this is somewhat system-dependent */
 		if (errno != EINVAL && errno != ENOLCK) {
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SYSTEM,
+			g_set_error (
+				error, G_IO_ERROR,
+				g_io_error_from_errno (errno),
 				_("Failed to get lock using fcntl(2): %s"),
 				g_strerror (errno));
 			return -1;
@@ -242,7 +241,7 @@ camel_unlock_fcntl(gint fd)
  * camel_lock_flock:
  * @fd:
  * @type:
- * @ex:
+ * @error: return location for a #GError, or %NULL
  *
  * Create a lock using flock(2).
  *
@@ -254,7 +253,7 @@ camel_unlock_fcntl(gint fd)
 gint
 camel_lock_flock (gint fd,
                   CamelLockType type,
-                  CamelException *ex)
+                  GError **error)
 {
 #ifdef USE_FLOCK
 	gint op;
@@ -267,8 +266,9 @@ camel_lock_flock (gint fd,
 		op = LOCK_EX|LOCK_NB;
 
 	if (flock(fd, op) == -1) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
 			_("Failed to get lock using flock(2): %s"),
 			g_strerror (errno));
 		return -1;
@@ -298,7 +298,7 @@ camel_unlock_flock(gint fd)
  * @path: Path to the file to lock (used for .locking only).
  * @fd: Open file descriptor of the right type to lock.
  * @type: Type of lock, CAMEL_LOCK_READ or CAMEL_LOCK_WRITE.
- * @ex:
+ * @error: return location for a #GError, or %NULL
  *
  * Attempt to lock a folder, multiple attempts will be made using all
  * locking strategies available.
@@ -309,7 +309,7 @@ gint
 camel_lock_folder (const gchar *path,
                    gint fd,
                    CamelLockType type,
-                   CamelException *ex)
+                   GError **error)
 {
 	gint retry = 0;
 
@@ -317,9 +317,9 @@ camel_lock_folder (const gchar *path,
 		if (retry > 0)
 			g_usleep(CAMEL_LOCK_DELAY*1000000);
 
-		if (camel_lock_fcntl(fd, type, ex) == 0) {
-			if (camel_lock_flock(fd, type, ex) == 0) {
-				if (camel_lock_dot(path, ex) == 0)
+		if (camel_lock_fcntl(fd, type, error) == 0) {
+			if (camel_lock_flock(fd, type, error) == 0) {
+				if (camel_lock_dot(path, error) == 0)
 					return 0;
 				camel_unlock_flock(fd);
 			}
@@ -349,24 +349,23 @@ camel_unlock_folder(const gchar *path, gint fd)
 #if 0
 gint main(gint argc, gchar **argv)
 {
-	CamelException *ex;
+	GError *error = NULL;
 	gint fd1, fd2;
 
-	ex = camel_exception_new();
-
 #if 0
-	if (camel_lock_dot("mylock", ex) == 0) {
-		if (camel_lock_dot("mylock", ex) == 0) {
+	if (camel_lock_dot("mylock", &error) == 0) {
+		if (camel_lock_dot("mylock", &error) == 0) {
 			printf("Got lock twice?\n");
 		} else {
-			printf("failed to get lock 2: %s\n", camel_exception_get_description(ex));
+			printf("failed to get lock 2: %s\n", error->message);
 		}
 		camel_unlock_dot("mylock");
 	} else {
-		printf("failed to get lock 1: %s\n", camel_exception_get_description(ex));
+		printf("failed to get lock 1: %s\n", error->message);
 	}
 
-	camel_exception_clear(ex);
+	if (error != NULL)
+		g_clear_error (&error);
 #endif
 
 	fd1 = open("mylock", O_RDWR);
@@ -381,49 +380,53 @@ gint main(gint argc, gchar **argv)
 		return 1;
 	}
 
-	if (camel_lock_fcntl(fd1, CAMEL_LOCK_WRITE, ex) == 0) {
+	if (camel_lock_fcntl(fd1, CAMEL_LOCK_WRITE, &error) == 0) {
 		printf("got fcntl write lock once\n");
 		g_usleep(5000000);
-		if (camel_lock_fcntl(fd2, CAMEL_LOCK_WRITE, ex) == 0) {
+		if (camel_lock_fcntl(fd2, CAMEL_LOCK_WRITE, &error) == 0) {
 			printf("got fcntl write lock twice!\n");
 		} else {
-			printf("failed to get write lock: %s\n", camel_exception_get_description(ex));
+			printf("failed to get write lock: %s\n", error->message);
 		}
 
-		camel_exception_clear(ex);
+		if (error != NULL)
+			g_clear_error (&error);
 
-		if (camel_lock_fcntl(fd2, CAMEL_LOCK_READ, ex) == 0) {
+		if (camel_lock_fcntl(fd2, CAMEL_LOCK_READ, &error) == 0) {
 			printf("got fcntl read lock as well?\n");
 			camel_unlock_fcntl(fd2);
 		} else {
-			printf("failed to get read lock: %s\n", camel_exception_get_description(ex));
+			printf("failed to get read lock: %s\n", error->message);
 		}
 
-		camel_exception_clear(ex);
+		if (error != NULL)
+			g_clear_error (&error);
 		camel_unlock_fcntl(fd1);
 	} else {
-		printf("failed to get write lock at all: %s\n", camel_exception_get_description(ex));
+		printf("failed to get write lock at all: %s\n", error->message);
 	}
 
-	if (camel_lock_fcntl(fd1, CAMEL_LOCK_READ, ex) == 0) {
+	if (camel_lock_fcntl(fd1, CAMEL_LOCK_READ, &error) == 0) {
 		printf("got fcntl read lock once\n");
 		g_usleep(5000000);
-		if (camel_lock_fcntl(fd2, CAMEL_LOCK_WRITE, ex) == 0) {
+		if (camel_lock_fcntl(fd2, CAMEL_LOCK_WRITE, &error) == 0) {
 			printf("got fcntl write lock too?!\n");
 		} else {
-			printf("failed to get write lock: %s\n", camel_exception_get_description(ex));
+			printf("failed to get write lock: %s\n", error->message);
 		}
 
-		camel_exception_clear(ex);
+		if (error != NULL)
+			g_clear_error (&error);
 
-		if (camel_lock_fcntl(fd2, CAMEL_LOCK_READ, ex) == 0) {
+		if (camel_lock_fcntl(fd2, CAMEL_LOCK_READ, &error) == 0) {
 			printf("got fcntl read lock twice\n");
 			camel_unlock_fcntl(fd2);
 		} else {
-			printf("failed to get read lock: %s\n", camel_exception_get_description(ex));
+			printf("failed to get read lock: %s\n", error->message);
 		}
 
-		camel_exception_clear(ex);
+		if (error != NULL)
+			g_clear_error (&error);
 		camel_unlock_fcntl(fd1);
 	}
 

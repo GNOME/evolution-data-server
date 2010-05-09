@@ -71,12 +71,12 @@ struct _CamelPOP3StoreClass {
 GType camel_pop3_store_get_type (void);
 
 /* public methods */
-void camel_pop3_store_expunge (CamelPOP3Store *store, CamelException *ex);
+void camel_pop3_store_expunge (CamelPOP3Store *store, GError **error);
 
 /* support functions */
 enum { CAMEL_POP3_OK, CAMEL_POP3_ERR, CAMEL_POP3_FAIL };
-gint camel_pop3_command (CamelPOP3Store *store, gchar **ret, CamelException *ex, gchar *fmt, ...);
-gchar *camel_pop3_command_get_additional_data (CamelPOP3Store *store, gint total, CamelException *ex);
+gint camel_pop3_command (CamelPOP3Store *store, gchar **ret, GError **error, gchar *fmt, ...);
+gchar *camel_pop3_command_get_additional_data (CamelPOP3Store *store, gint total, GError **error);
 
 G_END_DECLS
 

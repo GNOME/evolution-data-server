@@ -42,7 +42,6 @@
       <title>Fundamentals</title>
       <xi:include href="xml/camel.xml"/>
       <xi:include href="xml/camel-debug.xml"/>
-      <xi:include href="xml/camel-exception.xml"/>
       <xi:include href="xml/camel-object.xml"/>
       <xi:include href="xml/camel-operation.xml"/>
       <xi:include href="xml/camel-url.xml"/>

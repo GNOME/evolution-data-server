@@ -32,7 +32,6 @@
 #include "camel-imapx-store.h"
 #include "camel-imapx-folder.h"
 #include "camel-imapx-summary.h"
-#include "camel-imapx-exception.h"
 #include "camel-imapx-server.h"
 
 #include <stdlib.h>
@@ -43,7 +42,7 @@
 G_DEFINE_TYPE (CamelIMAPXFolder, camel_imapx_folder, CAMEL_TYPE_OFFLINE_FOLDER)
 
 CamelFolder *
-camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *folder_name, CamelException *ex)
+camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *folder_name, GError **error)
 {
 	CamelFolder *folder;
 	CamelIMAPXFolder *ifolder;
@@ -71,17 +70,18 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 	summary_file = g_strdup_printf ("%s/summary", folder_dir);
 	folder->summary = camel_imapx_summary_new(folder, summary_file);
 	if (!folder->summary) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				_("Could not create folder summary for %s"),
-				short_name);
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Could not create folder summary for %s"),
+			short_name);
 		return NULL;
 	}
 
-	ifolder->cache = camel_data_cache_new (folder_dir, ex);
+	ifolder->cache = camel_data_cache_new (folder_dir, error);
 	if (!ifolder->cache) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not create cache for %s"),
-				      short_name);
+		g_prefix_error (
+			error, _("Could not create cache for %s: "),
+			short_name);
 		return NULL;
 	}
 
@@ -148,11 +148,12 @@ imapx_folder_finalize (GObject *object)
 }
 
 static gboolean
-imapx_refresh_info (CamelFolder *folder, CamelException *ex)
+imapx_refresh_info (CamelFolder *folder, GError **error)
 {
 	CamelStore *parent_store;
 	CamelIMAPXStore *istore;
 	CamelIMAPXServer *server;
+	gboolean success = FALSE;
 
 	parent_store = camel_folder_get_parent_store (folder);
 	istore = CAMEL_IMAPX_STORE (parent_store);
@@ -160,18 +161,20 @@ imapx_refresh_info (CamelFolder *folder, CamelException *ex)
 	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return TRUE;
 
-	camel_service_connect((CamelService *)istore, ex);
-	server = camel_imapx_store_get_server(istore, ex);
-	if (server) {
-		camel_imapx_server_refresh_info(server, folder, ex);
+	if (!camel_service_connect((CamelService *)istore, error))
+		return FALSE;
+
+	server = camel_imapx_store_get_server(istore, error);
+	if (server != NULL) {
+		success = camel_imapx_server_refresh_info(server, folder, error);
 		g_object_unref(server);
 	}
 
-	return !camel_exception_is_set (ex);
+	return success;
 }
 
 static gboolean
-imapx_expunge (CamelFolder *folder, CamelException *ex)
+imapx_expunge (CamelFolder *folder, GError **error)
 {
 	CamelStore *parent_store;
 	CamelIMAPXStore *is;
@@ -183,22 +186,22 @@ imapx_expunge (CamelFolder *folder, CamelException *ex)
 	if (CAMEL_OFFLINE_STORE (is)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return TRUE;
 
-	server = camel_imapx_store_get_server(is, ex);
+	server = camel_imapx_store_get_server(is, error);
 	if (server) {
-		camel_imapx_server_expunge(server, folder, ex);
+		camel_imapx_server_expunge(server, folder, error);
 		g_object_unref(server);
+		return TRUE;
 	}
 
-	return !camel_exception_is_set (ex);
+	return FALSE;
 }
 
 static gboolean
-imapx_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
+imapx_sync (CamelFolder *folder, gboolean expunge, GError **error)
 {
 	CamelStore *parent_store;
 	CamelIMAPXStore *is;
 	CamelIMAPXServer *server;
-	CamelException eex = CAMEL_EXCEPTION_INITIALISER;
 
 	parent_store = camel_folder_get_parent_store (folder);
 	is = CAMEL_IMAPX_STORE (parent_store);
@@ -206,29 +209,23 @@ imapx_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	if (CAMEL_OFFLINE_STORE (is)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return TRUE;
 
-	if (!ex)
-		ex = &eex;
-
-	server = camel_imapx_store_get_server(is, ex);
+	server = camel_imapx_store_get_server(is, NULL);
 	if (server)
-		camel_imapx_server_sync_changes (server, folder, ex);
+		camel_imapx_server_sync_changes (server, folder, NULL);
 
 	/* Sync twice - make sure deleted flags are written out,
 	   then sync again incase expunge changed anything */
-	camel_exception_clear(ex);
 
-	if (server && expunge) {
-		camel_imapx_server_expunge(server, folder, ex);
-		camel_exception_clear(ex);
-	}
+	if (server && expunge)
+		camel_imapx_server_expunge(server, folder, NULL);
 	if (server)
 		g_object_unref(server);
 
-	return !camel_exception_is_set (ex);
+	return TRUE;
 }
 
 static CamelMimeMessage *
-imapx_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
+imapx_get_message (CamelFolder *folder, const gchar *uid, GError **error)
 {
 	CamelMimeMessage *msg = NULL;
 	CamelStream *stream = NULL;
@@ -252,30 +249,29 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 	stream = camel_data_cache_get (ifolder->cache, path, uid, NULL);
 	if (!stream) {
 		if (offline_message) {
-			camel_exception_setv(ex, 2, "Offline message vanished from disk: %s", uid);
+			g_set_error (
+				error, CAMEL_FOLDER_ERROR,
+				CAMEL_FOLDER_ERROR_INVALID_UID,
+				"Offline message vanished from disk: %s", uid);
 			return NULL;
 		}
 
 		if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 			return NULL;
 
-		server = camel_imapx_store_get_server(istore, ex);
+		server = camel_imapx_store_get_server(istore, error);
 		if (server) {
-			stream = camel_imapx_server_get_message(server, folder, uid, ex);
+			stream = camel_imapx_server_get_message(server, folder, uid, error);
 			g_object_unref(server);
-		} else {
-			/* It should _always_ be set */
-			if (!camel_exception_is_set (ex))
-				camel_exception_setv(ex, 1, "not authenticated");
+		} else
 			return NULL;
-		}
 	}
 
-	if (!camel_exception_is_set (ex) && stream) {
+	if (stream != NULL) {
 		msg = camel_mime_message_new();
 
 		g_mutex_lock (ifolder->stream_lock);
-		if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)msg, stream) == -1) {
+		if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)msg, stream, error) == -1) {
 			g_object_unref (msg);
 			msg = NULL;
 		}
@@ -287,11 +283,12 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 }
 
 static gboolean
-imapx_sync_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
+imapx_sync_message (CamelFolder *folder, const gchar *uid, GError **error)
 {
 	CamelStore *parent_store;
 	CamelIMAPXStore *istore;
 	CamelIMAPXServer *server;
+	gboolean success;
 
 	parent_store = camel_folder_get_parent_store (folder);
 	istore = CAMEL_IMAPX_STORE (parent_store);
@@ -299,22 +296,25 @@ imapx_sync_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return TRUE;
 
-	server = camel_imapx_store_get_server(istore, ex);
-	if (server) {
-		camel_imapx_server_sync_message (server, folder, uid, ex);
-		g_object_unref(server);
-	}
-	return !camel_exception_is_set (ex);
+	server = camel_imapx_store_get_server(istore, error);
+	if (server == NULL)
+		return FALSE;
+
+	success = camel_imapx_server_sync_message (server, folder, uid, error);
+	g_object_unref(server);
+
+	return success;
 }
 
 static gboolean
 imapx_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		      CamelFolder *dest, GPtrArray **transferred_uids,
-		      gboolean delete_originals, CamelException *ex)
+		      gboolean delete_originals, GError **error)
 {
 	CamelStore *parent_store;
 	CamelIMAPXStore *istore;
 	CamelIMAPXServer *server;
+	gboolean success = FALSE;
 
 	parent_store = camel_folder_get_parent_store (source);
 	istore = CAMEL_IMAPX_STORE (parent_store);
@@ -322,23 +322,24 @@ imapx_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return TRUE;
 
-	server = camel_imapx_store_get_server(istore, ex);
+	server = camel_imapx_store_get_server(istore, error);
 	if (server) {
-		camel_imapx_server_copy_message (server, source, dest, uids, delete_originals, ex);
+		success = camel_imapx_server_copy_message (server, source, dest, uids, delete_originals, error);
 		g_object_unref(server);
 	}
 
-	imapx_refresh_info (dest, ex);
+	imapx_refresh_info (dest, NULL);
 
-	return !camel_exception_is_set (ex);
+	return success;
 }
 
 static gboolean
-imapx_append_message(CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *info, gchar **appended_uid, CamelException *ex)
+imapx_append_message(CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *info, gchar **appended_uid, GError **error)
 {
 	CamelStore *parent_store;
 	CamelIMAPXStore *istore;
 	CamelIMAPXServer *server;
+	gboolean success = FALSE;
 
 	parent_store = camel_folder_get_parent_store (folder);
 	istore = CAMEL_IMAPX_STORE (parent_store);
@@ -349,21 +350,21 @@ imapx_append_message(CamelFolder *folder, CamelMimeMessage *message, const Camel
 	if (appended_uid)
 		*appended_uid = NULL;
 
-	server = camel_imapx_store_get_server(istore, ex);
+	server = camel_imapx_store_get_server(istore, error);
 	if (server) {
-		camel_imapx_server_append_message(server, folder, message, info, ex);
+		success = camel_imapx_server_append_message(server, folder, message, info, error);
 		g_object_unref(server);
 	}
 
-	return !camel_exception_is_set (ex);
+	return success;
 }
 
 gchar *
-imapx_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
+imapx_get_filename (CamelFolder *folder, const gchar *uid, GError **error)
 {
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
 
-	return camel_data_cache_get_filename (ifolder->cache, "cache", uid, NULL);
+	return camel_data_cache_get_filename (ifolder->cache, "cache", uid, error);
 }
 
 /* Algorithm for selecting a folder:
@@ -437,7 +438,7 @@ imapx_search_free (CamelFolder *folder, GPtrArray *uids)
 }
 
 static GPtrArray *
-imapx_search_by_uids (CamelFolder *folder, const gchar *expression, GPtrArray *uids, CamelException *ex)
+imapx_search_by_uids (CamelFolder *folder, const gchar *expression, GPtrArray *uids, GError **error)
 {
 	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER(folder);
 	GPtrArray *matches;
@@ -448,7 +449,7 @@ imapx_search_by_uids (CamelFolder *folder, const gchar *expression, GPtrArray *u
 	g_mutex_lock (ifolder->search_lock);
 
 	camel_folder_search_set_folder(ifolder->search, folder);
-	matches = camel_folder_search_search(ifolder->search, expression, uids, ex);
+	matches = camel_folder_search_search(ifolder->search, expression, uids, error);
 
 	g_mutex_unlock (ifolder->search_lock);
 
@@ -456,7 +457,7 @@ imapx_search_by_uids (CamelFolder *folder, const gchar *expression, GPtrArray *u
 }
 
 static guint32
-imapx_count_by_expression (CamelFolder *folder, const gchar *expression, CamelException *ex)
+imapx_count_by_expression (CamelFolder *folder, const gchar *expression, GError **error)
 {
 	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER(folder);
 	guint32 matches;
@@ -464,7 +465,7 @@ imapx_count_by_expression (CamelFolder *folder, const gchar *expression, CamelEx
 	g_mutex_lock (ifolder->search_lock);
 
 	camel_folder_search_set_folder (ifolder->search, folder);
-	matches = camel_folder_search_count (ifolder->search, expression, ex);
+	matches = camel_folder_search_count (ifolder->search, expression, error);
 
 	g_mutex_unlock (ifolder->search_lock);
 
@@ -472,7 +473,7 @@ imapx_count_by_expression (CamelFolder *folder, const gchar *expression, CamelEx
 }
 
 static GPtrArray *
-imapx_search_by_expression (CamelFolder *folder, const gchar *expression, CamelException *ex)
+imapx_search_by_expression (CamelFolder *folder, const gchar *expression, GError **error)
 {
 	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER (folder);
 	GPtrArray *matches;
@@ -480,7 +481,7 @@ imapx_search_by_expression (CamelFolder *folder, const gchar *expression, CamelE
 	g_mutex_lock (ifolder->search_lock);
 
 	camel_folder_search_set_folder (ifolder->search, folder);
-	matches = camel_folder_search_search(ifolder->search, expression, NULL, ex);
+	matches = camel_folder_search_search(ifolder->search, expression, NULL, error);
 
 	g_mutex_unlock (ifolder->search_lock);
 

@@ -13,21 +13,21 @@ libcamelnntp_la_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"camel-nntp-provider\"
 
 libcamelnntp_la_SOURCES = 			\
-	camel-nntp-provider.c			\
-	camel-nntp-store.c			\
 	camel-nntp-folder.c			\
+	camel-nntp-provider.c			\
+	camel-nntp-store-summary.c		\
+	camel-nntp-store.c			\
 	camel-nntp-stream.c			\
-	camel-nntp-summary.c			\
-	camel-nntp-store-summary.c
+	camel-nntp-summary.c
 
-noinst_HEADERS =			\
-	camel-nntp-store.h			\
+noinst_HEADERS =				\
 	camel-nntp-folder.h			\
+	camel-nntp-private.h			\
 	camel-nntp-resp-codes.h			\
-	camel-nntp-stream.h			\
-	camel-nntp-summary.h			\
 	camel-nntp-store-summary.h		\
-	camel-nntp-private.h
+	camel-nntp-store.h			\
+	camel-nntp-stream.h			\
+	camel-nntp-summary.h
 
 libcamelnntp_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED)
 

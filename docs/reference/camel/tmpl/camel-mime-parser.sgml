@@ -83,6 +83,7 @@ CamelMimeParser
 
 @m: 
 @stream: 
+@error: 
 @Returns: 
 
 
@@ -186,6 +187,7 @@ CamelMimeParser
 @parser: 
 @databuffer: 
 @len: 
+@error: 
 @Returns: 
 
 

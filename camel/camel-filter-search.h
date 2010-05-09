@@ -41,12 +41,12 @@ enum {
 	CAMEL_SEARCH_MATCHED  =  1
 };
 
-typedef CamelMimeMessage * (*CamelFilterSearchGetMessageFunc) (gpointer data, CamelException *ex);
+typedef CamelMimeMessage * (*CamelFilterSearchGetMessageFunc) (gpointer data, GError **error);
 
 gint camel_filter_search_match (struct _CamelSession *session,
 			       CamelFilterSearchGetMessageFunc get_message, gpointer data,
 			       CamelMessageInfo *info, const gchar *source,
-			       const gchar *expression, CamelException *ex);
+			       const gchar *expression, GError **error);
 
 G_END_DECLS
 

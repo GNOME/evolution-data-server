@@ -89,7 +89,8 @@ current_state(void)
 	return info;
 }
 
-void camel_test_init(gint argc, gchar **argv)
+void
+camel_test_init(gint argc, gchar **argv)
 {
 	struct stat st;
 	gchar *path;
@@ -104,7 +105,7 @@ void camel_test_init(gint argc, gchar **argv)
 	if (mkdir (path, 0700) == -1 && errno != EEXIST)
 		abort ();
 
-	if (stat (path, &st) == -1)
+	if (g_stat (path, &st) == -1)
 		abort ();
 
 	if (!S_ISDIR (st.st_mode) || access (path, R_OK | W_OK | X_OK) == -1)

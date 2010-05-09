@@ -243,10 +243,10 @@ save_match(CamelImapSearch *is, struct _match_record *mr)
 	header.lastuid = mr->lastuid;
 	header.validity = mr->validity;
 
-	if (camel_stream_write(stream, (gchar *)&header, sizeof(header)) != sizeof(header)
-	    || camel_stream_write(stream, mr->matches->data, mr->matches->len*sizeof(guint32)) != mr->matches->len*sizeof(guint32)
-	    || camel_seekable_stream_seek((CamelSeekableStream *)stream, 0, CAMEL_STREAM_SET) == -1
-	    || camel_stream_write(stream, (gchar *)&mark, sizeof(mark)) != sizeof(mark)) {
+	if (camel_stream_write(stream, (gchar *)&header, sizeof(header), NULL) != sizeof(header)
+	    || camel_stream_write(stream, mr->matches->data, mr->matches->len*sizeof(guint32), NULL) != mr->matches->len*sizeof(guint32)
+	    || camel_seekable_stream_seek((CamelSeekableStream *)stream, 0, CAMEL_STREAM_SET, NULL) == -1
+	    || camel_stream_write(stream, (gchar *)&mark, sizeof(mark), NULL) != sizeof(mark)) {
 		d(printf(" saving failed, removing cache entry\n"));
 		camel_data_cache_remove(is->cache, "search/body-contains", mr->hash, NULL);
 		ret = -1;
@@ -287,13 +287,13 @@ load_match(CamelImapSearch *is, gchar hash[17], gint argc, struct _ESExpResult *
 		   should be sufficient to key it */
 		/* This check should also handle endianness changes, we just throw away
 		   the data (its only a cache) */
-		if (camel_stream_read(stream, (gchar *)&header, sizeof(header)) == sizeof(header)
+		if (camel_stream_read(stream, (gchar *)&header, sizeof(header), NULL) == sizeof(header)
 		    && header.validity == is->validity
 		    && header.mark == MATCH_MARK
 		    && header.termcount == 0) {
 			d(printf(" found %d matches\n", header.matchcount));
 			g_array_set_size(mr->matches, header.matchcount);
-			camel_stream_read(stream, mr->matches->data, sizeof(guint32)*header.matchcount);
+			camel_stream_read(stream, mr->matches->data, sizeof(guint32)*header.matchcount, NULL);
 		} else {
 			d(printf(" file format invalid/validity changed\n"));
 			memset(&header, 0, sizeof(header));

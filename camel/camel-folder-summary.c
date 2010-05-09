@@ -138,7 +138,7 @@ static CamelMessageContentInfo * content_info_new_from_message(CamelFolderSummar
 static CamelMessageContentInfo * content_info_migrate(CamelFolderSummary *, FILE *);
 static void			 content_info_free(CamelFolderSummary *, CamelMessageContentInfo *);
 
-static gint save_message_infos_to_db (CamelFolderSummary *s, gboolean fresh_mir, CamelException *ex);
+static gint save_message_infos_to_db (CamelFolderSummary *s, gboolean fresh_mir, GError **error);
 static gint camel_read_mir_callback (gpointer  ref, gint ncol, gchar ** cols, gchar ** name);
 
 static gchar *next_uid_string(CamelFolderSummary *s);
@@ -278,7 +278,7 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *record)
 
 static	CamelFIRecord *
 summary_header_to_db (CamelFolderSummary *s,
-                      CamelException *ex)
+                      GError **error)
 {
 	CamelFIRecord * record = g_new0 (CamelFIRecord, 1);
 	CamelStore *parent_store;
@@ -1045,8 +1045,6 @@ camel_folder_summary_set_build_content(CamelFolderSummary *s, gboolean state)
  * Get the number of summary items stored in this summary.
  *
  * Returns: the number of items in the summary
- *
- * @see camel_folder_summary_prepare_fetch_all()
  **/
 guint
 camel_folder_summary_count(CamelFolderSummary *s)
@@ -1065,8 +1063,6 @@ camel_folder_summary_count(CamelFolderSummary *s)
  * ref'd or free'd as appropriate.
  *
  * Returns: the summary item, or %NULL if @index is out of range
- *
- * @see camel_folder_summary_prepare_fetch_all()
  **/
 CamelMessageInfo *
 camel_folder_summary_index (CamelFolderSummary *s, gint i)
@@ -1260,13 +1256,11 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
 
 	if (!info) {
 		CamelDB *cdb;
-		CamelException ex;
 		CamelStore *parent_store;
 		const gchar *folder_name;
 		struct _db_pass_data data;
 
 		d(printf ("\ncamel_folder_summary_uid called \n"));
-		camel_exception_init (&ex);
 		s->flags &= ~CAMEL_SUMMARY_DIRTY;
 
 		folder_name = camel_folder_get_full_name (s->folder);
@@ -1278,27 +1272,12 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
 
 		ret = camel_db_read_message_info_record_with_uid (
 			cdb, folder_name, uid, &data,
-			camel_read_mir_callback, &ex);
-		if (ret != 0) {
-			camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-			if (camel_exception_is_set (&ex))
-				g_warning ("%s: Failed read '%s' in '%s' from db: %s (0x%x)", G_STRFUNC, uid, folder_name, camel_exception_get_description (&ex), camel_exception_get_id (&ex));
-			camel_exception_clear (&ex);
+			camel_read_mir_callback, NULL);
+		if (ret != 0)
 			return NULL;
-		}
 
 		/* We would have double reffed at camel_read_mir_callback */
 		info = g_hash_table_lookup (s->loaded_infos, uid);
-
-		if (!info) {
-			gchar *errmsg = g_strdup_printf ("no uid [%s] exists", uid);
-
-			/* Makes no sense now as the exception is local as of now. FIXME: Pass exception from caller */
-			camel_exception_set (&ex, CAMEL_EXCEPTION_SYSTEM, _(errmsg));
-			d(g_warning ("No uid[%s] exists in %s\n", uid, folder_name));
-			camel_exception_clear (&ex);
-			g_free (errmsg);
-		}
 
 		cfs_schedule_info_release_timer (s);
 	}
@@ -1322,8 +1301,6 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
  * ref'd or free'd as appropriate.
  *
  * Returns: the summary item, or %NULL if the uid @uid is not available
- *
- * @see camel_folder_summary_prepare_fetch_all()
  **/
 CamelMessageInfo *
 camel_folder_summary_uid (CamelFolderSummary *summary,
@@ -1641,7 +1618,7 @@ struct _preview_update_msg {
 	CamelSessionThreadMsg msg;
 
 	CamelFolder *folder;
-	CamelException ex;
+	GError *error;
 };
 
 static void
@@ -1650,21 +1627,16 @@ msg_update_preview (const gchar *uid, gpointer value, CamelFolder *folder)
 	CamelMessageInfoBase *info = (CamelMessageInfoBase *)camel_folder_summary_uid (folder->summary, uid);
 	CamelMimeMessage *msg;
 	CamelStore *parent_store;
-	CamelException ex;
 	const gchar *full_name;
 
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
 
-	camel_exception_init(&ex);
-	msg = camel_folder_get_message (folder, uid, &ex);
-	if (camel_exception_is_set(&ex))
-		g_warning ("Error fetching message: %s", camel_exception_get_description(&ex));
-	else {
+	msg = camel_folder_get_message (folder, uid, NULL);
+	if (msg != NULL) {
 		if (camel_mime_message_build_preview ((CamelMimePart *)msg, (CamelMessageInfo *)info) && info->preview)
 			camel_db_write_preview_record (parent_store->cdb_w, full_name, info->uid, info->preview, NULL);
 	}
-	camel_exception_clear(&ex);
 	camel_message_info_free(info);
 }
 
@@ -1741,7 +1713,7 @@ static CamelSessionThreadOps preview_update_ops = {
 /* end */
 
 static gint
-cfs_reload_from_db (CamelFolderSummary *s, CamelException *ex)
+cfs_reload_from_db (CamelFolderSummary *s, GError **error)
 {
 	CamelDB *cdb;
 	CamelStore *parent_store;
@@ -1769,7 +1741,7 @@ cfs_reload_from_db (CamelFolderSummary *s, CamelException *ex)
 
 		m = camel_session_thread_msg_new(((CamelService *)parent_store)->session, &preview_update_ops, sizeof(*m));
 		m->folder = s->folder;
-		camel_exception_init(&m->ex);
+		m->error = NULL;
 		camel_session_thread_queue(((CamelService *)parent_store)->session, &m->msg, 0);
 	}
 
@@ -1792,7 +1764,7 @@ camel_folder_summary_add_preview (CamelFolderSummary *s, CamelMessageInfo *info)
 /**
  * camel_folder_summary_prepare_fetch_all:
  * @s: #CamelFolderSummary object
- * @ex: #CamelException object.
+ * @error: return location for a #GError, or %NULL
  *
  * Loads all infos into memory, if they are not yet and ensures
  * they will not be freed in next couple minutes. Call this function
@@ -1802,7 +1774,8 @@ camel_folder_summary_add_preview (CamelFolderSummary *s, CamelMessageInfo *info)
  * Since: 3.0
  **/
 void
-camel_folder_summary_prepare_fetch_all (CamelFolderSummary *s, CamelException *ex)
+camel_folder_summary_prepare_fetch_all (CamelFolderSummary *s,
+                                        GError **error)
 {
 	guint loaded, known;
 
@@ -1813,7 +1786,7 @@ camel_folder_summary_prepare_fetch_all (CamelFolderSummary *s, CamelException *e
 
 	if (known - loaded > 50) {
 		camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-		cfs_reload_from_db (s, ex);
+		cfs_reload_from_db (s, error);
 		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 	}
 
@@ -1841,14 +1814,14 @@ camel_folder_summary_get_flag_cache (CamelFolderSummary *summary)
  **/
 gint
 camel_folder_summary_load_from_db (CamelFolderSummary *s,
-                                   CamelException *ex)
+                                   GError **error)
 {
 	CamelDB *cdb;
 	CamelStore *parent_store;
 	const gchar *full_name;
 	gint ret = 0;
-	CamelException ex2;
 	struct _CamelFolderSummaryPrivate *p = CAMEL_FOLDER_SUMMARY_GET_PRIVATE(s);
+	GError *local_error = NULL;
 
 	/* struct _db_pass_data data; */
 	d(printf ("\ncamel_folder_summary_load_from_db called \n"));
@@ -1856,28 +1829,23 @@ camel_folder_summary_load_from_db (CamelFolderSummary *s,
 
 	full_name = camel_folder_get_full_name (s->folder);
 	parent_store = camel_folder_get_parent_store (s->folder);
-	ret = camel_folder_summary_header_load_from_db (s, parent_store, full_name, ex);
+	ret = camel_folder_summary_header_load_from_db (s, parent_store, full_name, error);
 
 	if (ret)
 		return ret;
 
 	cdb = parent_store->cdb_r;
 
-	camel_exception_init (&ex2);
-
 	ret = camel_db_get_folder_uids_flags (
 		cdb, full_name, s->sort_by, s->collate,
-		s->uids, p->flag_cache, &ex2);
+		s->uids, p->flag_cache, &local_error);
 
-	if (camel_exception_is_set (&ex2) && camel_exception_get_description (&ex2) &&
-	    strstr (camel_exception_get_description (&ex2), "no such table") != NULL) {
+	if (local_error != NULL && local_error->message != NULL &&
+		strstr (local_error->message, "no such table") != NULL) {
 		/* create table the first time it is accessed and missing */
-		ret = camel_db_prepare_message_info_table (cdb, full_name, ex);
-	} else if (ex) {
-		camel_exception_xfer (ex, &ex2);
-	}
-
-	camel_exception_clear (&ex2);
+		ret = camel_db_prepare_message_info_table (cdb, full_name, error);
+	} else if (local_error != NULL)
+		g_propagate_error (error, local_error);
 
 	return ret == 0 ? 0 : -1;
 }
@@ -2019,7 +1987,6 @@ camel_folder_summary_migrate_infos(CamelFolderSummary *s)
 	gint ret = 0;
 	CamelDB *cdb;
 	CamelFIRecord *record;
-	CamelException ex;
 
 	parent_store = camel_folder_get_parent_store (s->folder);
 	cdb = parent_store->cdb_w;
@@ -2029,7 +1996,6 @@ camel_folder_summary_migrate_infos(CamelFolderSummary *s)
 		g_source_remove (s->timeout_handle);
 	s->timeout_handle = 0;
 
-	camel_exception_init (&ex);
 	d(g_print ("\ncamel_folder_summary_load from FLAT FILE called \n"));
 
 	if (s->summary_path == NULL) {
@@ -2083,15 +2049,15 @@ camel_folder_summary_migrate_infos(CamelFolderSummary *s)
 		return -1;
 	}
 
-	ret = save_message_infos_to_db (s, TRUE, &ex);
+	ret = save_message_infos_to_db (s, TRUE, NULL);
 
 	if (ret != 0) {
 		return -1;
 	}
 
-	camel_db_begin_transaction (cdb, &ex);
-	ret = camel_db_write_folder_info_record (cdb, record, &ex);
-	camel_db_end_transaction (cdb, &ex);
+	camel_db_begin_transaction (cdb, NULL);
+	ret = camel_db_write_folder_info_record (cdb, record, NULL);
+	camel_db_end_transaction (cdb, NULL);
 
 	g_free (record->bdata);
 	g_free (record);
@@ -2137,7 +2103,7 @@ perform_content_info_save_to_db (CamelFolderSummary *s, CamelMessageContentInfo 
 }
 
 typedef struct {
-	CamelException *ex;
+	GError **error;
 	gboolean migration;
 	gint progress;
 } SaveToDBArgs;
@@ -2146,7 +2112,7 @@ static void
 save_to_db_cb (gpointer key, gpointer value, gpointer data)
 {
 	SaveToDBArgs *args = (SaveToDBArgs *) data;
-	CamelException *ex = args->ex;
+	GError **error = args->error;
 	CamelMessageInfoBase *mi = (CamelMessageInfoBase *)value;
 	CamelFolderSummary *s = (CamelFolderSummary *)mi->summary;
 	CamelStore *parent_store;
@@ -2173,20 +2139,20 @@ save_to_db_cb (gpointer key, gpointer value, gpointer data)
 	}
 
 	if (!args->migration) {
-			if (camel_db_write_message_info_record (cdb, full_name, mir, ex) != 0) {
+			if (camel_db_write_message_info_record (cdb, full_name, mir, error) != 0) {
 					camel_db_camel_mir_free (mir);
 					return;
 			}
 	} else {
-			if (camel_db_write_fresh_message_info_record (cdb, CAMEL_DB_IN_MEMORY_TABLE, mir, ex) != 0) {
+			if (camel_db_write_fresh_message_info_record (cdb, CAMEL_DB_IN_MEMORY_TABLE, mir, error) != 0) {
 					camel_db_camel_mir_free (mir);
 					return;
 			}
 
 			if (args->progress > CAMEL_DB_IN_MEMORY_TABLE_LIMIT) {
 			    g_print ("BULK INsert limit reached \n");
-				camel_db_flush_in_memory_transactions (cdb, full_name, ex);
-				camel_db_start_in_memory_transactions (cdb, ex);
+				camel_db_flush_in_memory_transactions (cdb, full_name, error);
+				camel_db_start_in_memory_transactions (cdb, error);
 				args->progress = 0;
 			} else {
 				args->progress ++;
@@ -2204,14 +2170,14 @@ save_to_db_cb (gpointer key, gpointer value, gpointer data)
 static gint
 save_message_infos_to_db (CamelFolderSummary *s,
                           gboolean fresh_mirs,
-                          CamelException *ex)
+                          GError **error)
 {
 	CamelStore *parent_store;
 	CamelDB *cdb;
 	const gchar *full_name;
 	SaveToDBArgs args;
 
-	args.ex = ex;
+	args.error = error;
 	args.migration = fresh_mirs;
 	args.progress = 0;
 
@@ -2219,7 +2185,7 @@ save_message_infos_to_db (CamelFolderSummary *s,
 	parent_store = camel_folder_get_parent_store (s->folder);
 	cdb = parent_store->cdb_w;
 
-	if (camel_db_prepare_message_info_table (cdb, full_name, ex) != 0)
+	if (camel_db_prepare_message_info_table (cdb, full_name, error) != 0)
 		return -1;
 
 	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
@@ -2252,7 +2218,7 @@ msg_save_preview (const gchar *uid, gpointer value, CamelFolder *folder)
  **/
 gint
 camel_folder_summary_save_to_db (CamelFolderSummary *s,
-                                 CamelException *ex)
+                                 GError **error)
 {
 	CamelStore *parent_store;
 	CamelDB *cdb;
@@ -2279,59 +2245,62 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s,
 
 	count = cfs_count_dirty(s);
 	if (!count)
-		return camel_folder_summary_header_save_to_db (s, ex);
+		return camel_folder_summary_header_save_to_db (s, error);
 
-	camel_db_begin_transaction (cdb, ex);
+	camel_db_begin_transaction (cdb, NULL);
 
-	ret = save_message_infos_to_db (s, FALSE, ex);
+	ret = save_message_infos_to_db (s, FALSE, error);
 	if (ret != 0) {
-		camel_db_abort_transaction (cdb, ex);
+		camel_db_abort_transaction (cdb, NULL);
 		/* Failed, so lets reset the flag */
 		s->flags |= CAMEL_SUMMARY_DIRTY;
 		return -1;
 	}
 
-	if (ex && camel_exception_is_set (ex) && strstr (camel_exception_get_description (ex), "26 columns but 28 values") != NULL) {
+	/* XXX So... if an error is set, how do we even reach this point
+	 *     given the above error check?  Oye vey this logic is nasty. */
+	if (error != NULL && *error != NULL &&
+		strstr ((*error)->message, "26 columns but 28 values") != NULL) {
 		const gchar *full_name;
 
 		/* This is an error is previous migration. Let remigrate this folder alone. */
-		camel_db_abort_transaction (cdb, ex);
+		camel_db_abort_transaction (cdb, NULL);
 		full_name = camel_folder_get_full_name (s->folder);
-		camel_db_reset_folder_version (cdb, full_name, 0, ex);
+		camel_db_reset_folder_version (cdb, full_name, 0, NULL);
 		g_warning ("Fixing up a broken summary migration on %s\n", full_name);
 		/* Begin everything again. */
-		camel_db_begin_transaction (cdb, ex);
+		camel_db_begin_transaction (cdb, NULL);
 
-		ret = save_message_infos_to_db (s, FALSE, ex);
+		ret = save_message_infos_to_db (s, FALSE, error);
 		if (ret != 0) {
-			camel_db_abort_transaction (cdb, ex);
+			camel_db_abort_transaction (cdb, NULL);
 			/* Failed, so lets reset the flag */
 			s->flags |= CAMEL_SUMMARY_DIRTY;
 			return -1;
 		}
 	}
 
-	camel_db_end_transaction (cdb, ex);
+	camel_db_end_transaction (cdb, NULL);
 
-	record = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->summary_header_to_db (s, ex);
+	record = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->summary_header_to_db (s, error);
 	if (!record) {
 		s->flags |= CAMEL_SUMMARY_DIRTY;
 		return -1;
 	}
 
-	camel_db_begin_transaction (cdb, ex);
-	ret = camel_db_write_folder_info_record (cdb, record, ex);
+	camel_db_begin_transaction (cdb, NULL);
+	ret = camel_db_write_folder_info_record (cdb, record, error);
 	g_free (record->folder_name);
 	g_free (record->bdata);
 	g_free (record);
 
 	if (ret != 0) {
-		camel_db_abort_transaction (cdb, ex);
+		camel_db_abort_transaction (cdb, NULL);
 		s->flags |= CAMEL_SUMMARY_DIRTY;
 		return -1;
 	}
 
-	camel_db_end_transaction (cdb, ex);
+	camel_db_end_transaction (cdb, NULL);
 
 	return ret;
 }
@@ -2343,7 +2312,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s,
  **/
 gint
 camel_folder_summary_header_save_to_db (CamelFolderSummary *s,
-                                        CamelException *ex)
+                                        GError **error)
 {
 	CamelStore *parent_store;
 	CamelFIRecord *record;
@@ -2355,22 +2324,22 @@ camel_folder_summary_header_save_to_db (CamelFolderSummary *s,
 
 	d(printf ("\ncamel_folder_summary_header_save_to_db called \n"));
 
-	record = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->summary_header_to_db (s, ex);
+	record = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->summary_header_to_db (s, error);
 	if (!record) {
 		return -1;
 	}
 
-	camel_db_begin_transaction (cdb, ex);
-	ret = camel_db_write_folder_info_record (cdb, record, ex);
+	camel_db_begin_transaction (cdb, NULL);
+	ret = camel_db_write_folder_info_record (cdb, record, error);
 	g_free (record->bdata);
 	g_free (record);
 
 	if (ret != 0) {
-		camel_db_abort_transaction (cdb, ex);
+		camel_db_abort_transaction (cdb, NULL);
 		return -1;
 	}
 
-	camel_db_end_transaction (cdb, ex);
+	camel_db_end_transaction (cdb, NULL);
 
 	return ret;
 }
@@ -2384,7 +2353,7 @@ gint
 camel_folder_summary_header_load_from_db (CamelFolderSummary *s,
                                           CamelStore *store,
                                           const gchar *folder_name,
-                                          CamelException *ex)
+                                          GError **error)
 {
 	CamelDB *cdb;
 	CamelFIRecord *record;
@@ -2396,7 +2365,7 @@ camel_folder_summary_header_load_from_db (CamelFolderSummary *s,
 	cdb = store->cdb_r;
 
 	record = g_new0 (CamelFIRecord, 1);
-	camel_db_read_folder_info_record (cdb, folder_name, &record, ex);
+	camel_db_read_folder_info_record (cdb, folder_name, &record, error);
 
 	if (record) {
 		if (CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->summary_header_from_db (s, record) == -1)
@@ -2570,12 +2539,18 @@ update_summary (CamelFolderSummary *summary, CamelMessageInfoBase *info)
  * Returns: the newly added record
  **/
 CamelMessageInfo *
-camel_folder_summary_add_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
+camel_folder_summary_add_from_header (CamelFolderSummary *summary,
+                                      struct _camel_header_raw *h)
 {
-	CamelMessageInfo *info = camel_folder_summary_info_new_from_header(s, h);
+	CamelMessageInfo *info;
 
-	camel_folder_summary_add (s, info);
-	update_summary (s, (CamelMessageInfoBase *) info);
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), NULL);
+
+	info = camel_folder_summary_info_new_from_header (summary, h);
+
+	camel_folder_summary_add (summary, info);
+	update_summary (summary, (CamelMessageInfoBase *) info);
+
 	return info;
 }
 
@@ -3090,7 +3065,6 @@ camel_folder_summary_remove_range (CamelFolderSummary *s, gint start, gint end)
 		gint i;
 		CamelDB *cdb;
 		CamelStore *parent_store;
-		CamelException ex; /* May be this should come from the caller  */
 		const gchar *folder_name;
 		GSList *uids = NULL;
 
@@ -3108,7 +3082,6 @@ camel_folder_summary_remove_range (CamelFolderSummary *s, gint start, gint end)
 				g_hash_table_remove (s->loaded_infos, uid);
 			}
 		}
-		camel_exception_init (&ex);
 
 		folder_name = camel_folder_get_full_name (s->folder);
 		parent_store = camel_folder_get_parent_store (s->folder);
@@ -3118,7 +3091,7 @@ camel_folder_summary_remove_range (CamelFolderSummary *s, gint start, gint end)
 		 * Add should add to db and del should del to db. Sync only
 		 * the changes at interval and remove those full sync on
 		 * folder switch */
-		camel_db_delete_uids (cdb, folder_name, uids, &ex);
+		camel_db_delete_uids (cdb, folder_name, uids, NULL);
 
 		g_slist_foreach (uids, (GFunc) camel_pstring_free, NULL);
 		g_slist_free (uids);
@@ -3129,8 +3102,6 @@ camel_folder_summary_remove_range (CamelFolderSummary *s, gint start, gint end)
 		s->flags |= CAMEL_SUMMARY_DIRTY;
 
 		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-
-		camel_exception_clear (&ex);
 	} else {
 		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 	}
@@ -4069,8 +4040,9 @@ summary_build_content_info_message(CamelFolderSummary *s, CamelMessageInfo *msgi
 			CAMEL_STREAM_FILTER (p->filter_stream),
 			p->filter_index);
 
-		camel_data_wrapper_decode_to_stream(containee, p->filter_stream);
-		camel_stream_flush(p->filter_stream);
+		camel_data_wrapper_decode_to_stream (
+			containee, p->filter_stream, NULL);
+		camel_stream_flush (p->filter_stream, NULL);
 
 		camel_stream_filter_remove (
 			CAMEL_STREAM_FILTER (p->filter_stream), idx_id);

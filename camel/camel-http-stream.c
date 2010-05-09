@@ -30,7 +30,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "camel-exception.h"
 #include "camel-http-stream.h"
 #include "camel-mime-utils.h"
 #include "camel-net-utils.h"
@@ -56,7 +55,8 @@ G_DEFINE_TYPE (CamelHttpStream, camel_http_stream, CAMEL_TYPE_STREAM)
 
 static CamelStream *
 http_connect (CamelHttpStream *http,
-              CamelURL *url)
+              CamelURL *url,
+              GError **error)
 {
 	CamelTcpStream *tcp_stream;
 	CamelStream *stream = NULL;
@@ -76,6 +76,10 @@ http_connect (CamelHttpStream *http,
 
 	if (stream == NULL) {
 		errno = EINVAL;
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			"%s", g_strerror (errno));
 		return NULL;
 	}
 
@@ -87,7 +91,7 @@ http_connect (CamelHttpStream *http,
 	}
 	hints.ai_socktype = SOCK_STREAM;
 
-	ai = camel_getaddrinfo(url->host, serv, &hints, NULL);
+	ai = camel_getaddrinfo(url->host, serv, &hints, error);
 	if (ai == NULL) {
 		g_object_unref (stream);
 		return NULL;
@@ -95,7 +99,7 @@ http_connect (CamelHttpStream *http,
 
 	tcp_stream = CAMEL_TCP_STREAM (stream);
 
-	if (camel_tcp_stream_connect (tcp_stream, ai) == -1) {
+	if (camel_tcp_stream_connect (tcp_stream, ai, error) == -1) {
 		errsave = errno;
 		g_object_unref (stream);
 		camel_freeaddrinfo(ai);
@@ -131,7 +135,8 @@ http_disconnect (CamelHttpStream *http)
 }
 
 static gint
-http_method_invoke (CamelHttpStream *http)
+http_method_invoke (CamelHttpStream *http,
+                    GError **error)
 {
 	const gchar *method = NULL, *use_url;
 	gchar *url;
@@ -167,6 +172,10 @@ http_method_invoke (CamelHttpStream *http)
 		"%s %s HTTP/1.0\r\nUser-Agent: %s\r\nHost: %s\r\n",
 		method, use_url, http->user_agent ? http->user_agent :
 		"CamelHttpStream/1.0", http->url->host) == -1) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			"%s", g_strerror (errno));
 		http_disconnect(http);
 		g_free (url);
 		return -1;
@@ -180,6 +189,10 @@ http_method_invoke (CamelHttpStream *http)
 	if (http->authrealm && camel_stream_printf (
 		http->raw, "WWW-Authenticate: %s\r\n",
 		http->authrealm) == -1) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			"%s", g_strerror (errno));
 		http_disconnect(http);
 		return -1;
 	}
@@ -191,13 +204,17 @@ http_method_invoke (CamelHttpStream *http)
 	if (http->authpass && http->proxy && camel_stream_printf (
 		http->raw, "Proxy-Authorization: Basic %s\r\n",
 		http->authpass) == -1) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			"%s", g_strerror (errno));
 		http_disconnect(http);
 		return -1;
 	}
 
 	/* end the headers */
-	if (camel_stream_write (http->raw, "\r\n", 2) == -1 ||
-		camel_stream_flush (http->raw) == -1) {
+	if (camel_stream_write (http->raw, "\r\n", 2, error) == -1 ||
+		camel_stream_flush (http->raw, error) == -1) {
 		http_disconnect(http);
 		return -1;
 	}
@@ -206,7 +223,8 @@ http_method_invoke (CamelHttpStream *http)
 }
 
 static gint
-http_get_headers (CamelHttpStream *http)
+http_get_headers (CamelHttpStream *http,
+                  GError **error)
 {
 	struct _camel_header_raw *headers, *node, *tail;
 	const gchar *type;
@@ -218,7 +236,7 @@ http_get_headers (CamelHttpStream *http)
 		g_object_unref (http->parser);
 
 	http->parser = camel_mime_parser_new ();
-	camel_mime_parser_init_with_stream (http->parser, http->read);
+	camel_mime_parser_init_with_stream (http->parser, http->read, NULL);
 
 	switch (camel_mime_parser_step (http->parser, &buf, &len)) {
 	case CAMEL_MIME_PARSER_STATE_MESSAGE:
@@ -259,6 +277,10 @@ http_get_headers (CamelHttpStream *http)
 	err = camel_mime_parser_errno (http->parser);
 
 	if (err != 0) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (err),
+			"%s", g_strerror (err));
 		g_object_unref (http->parser);
 		http->parser = NULL;
 		goto exception;
@@ -289,14 +311,15 @@ http_next_token (const guchar *in)
 }
 
 static gint
-http_get_statuscode (CamelHttpStream *http)
+http_get_statuscode (CamelHttpStream *http,
+                     GError **error)
 {
 	const gchar *token;
 	gchar buffer[4096];
 
 	if (camel_stream_buffer_gets (
 		CAMEL_STREAM_BUFFER (http->read),
-		buffer, sizeof (buffer)) <= 0)
+		buffer, sizeof (buffer), error) <= 0)
 		return -1;
 
 	d(printf("HTTP Status: %s\n", buffer));
@@ -370,14 +393,20 @@ http_stream_finalize (GObject *object)
 static gssize
 http_stream_read (CamelStream *stream,
                   gchar *buffer,
-                  gsize n)
+                  gsize n,
+                  GError **error)
 {
 	CamelHttpStream *http = CAMEL_HTTP_STREAM (stream);
 	const gchar *parser_buf;
 	gssize nread;
 
-	if (http->method != CAMEL_HTTP_METHOD_GET && http->method != CAMEL_HTTP_METHOD_HEAD) {
+	if (http->method != CAMEL_HTTP_METHOD_GET &&
+		http->method != CAMEL_HTTP_METHOD_HEAD) {
 		errno = EIO;
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			"%s", g_strerror (errno));
 		return -1;
 	}
 
@@ -386,20 +415,20 @@ http_stream_read (CamelStream *stream,
 	if (!http->raw) {
 		if (http_connect (
 			http, http->proxy ? http->proxy :
-			http->url) == NULL)
+			http->url, error) == NULL)
 			return -1;
 
-		if (http_method_invoke (http) == -1) {
+		if (http_method_invoke (http, error) == -1) {
 			http_disconnect(http);
 			return -1;
 		}
 
-		if (http_get_statuscode (http) == -1) {
+		if (http_get_statuscode (http, error) == -1) {
 			http_disconnect(http);
 			return -1;
 		}
 
-		if (http_get_headers (http) == -1) {
+		if (http_get_headers (http, error) == -1) {
 			http_disconnect(http);
 			return -1;
 		}
@@ -454,7 +483,7 @@ http_stream_read (CamelStream *stream,
 	if (n == 0)
 		return 0;
 
-	nread = camel_mime_parser_read (http->parser, &parser_buf, n);
+	nread = camel_mime_parser_read (http->parser, &parser_buf, n, error);
 
 	if (nread > 0)
 		memcpy (buffer, parser_buf, nread);
@@ -467,29 +496,32 @@ http_stream_read (CamelStream *stream,
 static gssize
 http_stream_write (CamelStream *stream,
                    const gchar *buffer,
-                   gsize n)
+                   gsize n,
+                   GError **error)
 {
 	return -1;
 }
 
 static gint
-http_stream_flush (CamelStream *stream)
+http_stream_flush (CamelStream *stream,
+                   GError **error)
 {
 	CamelHttpStream *http = (CamelHttpStream *) stream;
 
 	if (http->raw)
-		return camel_stream_flush (http->raw);
+		return camel_stream_flush (http->raw, error);
 	else
 		return 0;
 }
 
 static gint
-http_stream_close (CamelStream *stream)
+http_stream_close (CamelStream *stream,
+                   GError **error)
 {
 	CamelHttpStream *http = (CamelHttpStream *) stream;
 
 	if (http->raw) {
-		if (camel_stream_close (http->raw) == -1)
+		if (camel_stream_close (http->raw, error) == -1)
 			return -1;
 
 		http_disconnect(http);
@@ -499,7 +531,8 @@ http_stream_close (CamelStream *stream)
 }
 
 static gint
-http_stream_reset (CamelStream *stream)
+http_stream_reset (CamelStream *stream,
+                   GError **error)
 {
 	CamelHttpStream *http = CAMEL_HTTP_STREAM (stream);
 
@@ -569,7 +602,7 @@ camel_http_stream_get_content_type (CamelHttpStream *http_stream)
 	if (!http_stream->content_type && !http_stream->raw) {
 		CamelStream *stream = CAMEL_STREAM (http_stream);
 
-		if (http_stream_read (stream, NULL, 0) == -1)
+		if (http_stream_read (stream, NULL, 0, NULL) == -1)
 			return NULL;
 	}
 

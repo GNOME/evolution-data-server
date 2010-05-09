@@ -28,7 +28,6 @@
 #define CAMEL_SASL_H
 
 #include <camel/camel-object.h>
-#include <camel/camel-exception.h>
 #include <camel/camel-service.h>
 
 /* Standard GObject macros */
@@ -66,16 +65,16 @@ struct _CamelSaslClass {
 
 	GByteArray *	(*challenge)		(CamelSasl *sasl,
 						 GByteArray *token,
-						 CamelException *ex);
+						 GError **error);
 };
 
 GType		camel_sasl_get_type		(void);
 GByteArray *	camel_sasl_challenge		(CamelSasl *sasl,
 						 GByteArray *token,
-						 CamelException *ex);
+						 GError **error);
 gchar *		camel_sasl_challenge_base64	(CamelSasl *sasl,
 						 const gchar *token,
-						 CamelException *ex);
+						 GError **error);
 CamelSasl *	camel_sasl_new			(const gchar *service_name,
 						 const gchar *mechanism,
 						 CamelService *service);

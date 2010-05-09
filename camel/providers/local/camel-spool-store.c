@@ -32,10 +32,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#ifdef HAVE_ALLOCA_H
-#include <alloca.h>
-#endif
-
+#include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
 #include "camel-spool-folder.h"
@@ -43,15 +40,15 @@
 
 #define d(x)
 
-static gboolean construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex);
-static CamelFolder *get_folder(CamelStore * store, const gchar *folder_name, guint32 flags, CamelException * ex);
+static gboolean construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, GError **error);
+static CamelFolder *get_folder(CamelStore* store, const gchar *folder_name, guint32 flags, GError **error);
 static gchar *get_name(CamelService *service, gboolean brief);
-static CamelFolder *get_inbox (CamelStore *store, CamelException *ex);
-static gboolean rename_folder(CamelStore *store, const gchar *old_name, const gchar *new_name, CamelException *ex);
-static CamelFolderInfo *get_folder_info (CamelStore *store, const gchar *top, guint32 flags, CamelException *ex);
+static CamelFolder *get_inbox (CamelStore *store, GError **error);
+static gboolean rename_folder(CamelStore *store, const gchar *old_name, const gchar *new_name, GError **error);
+static CamelFolderInfo *get_folder_info (CamelStore *store, const gchar *top, guint32 flags, GError **error);
 static void free_folder_info (CamelStore *store, CamelFolderInfo *fi);
 
-static gboolean delete_folder(CamelStore *store, const gchar *folder_name, CamelException *ex);
+static gboolean delete_folder(CamelStore *store, const gchar *folder_name, GError **error);
 
 static gchar *spool_get_meta_path(CamelLocalStore *ls, const gchar *full_name, const gchar *ext);
 static gchar *spool_get_full_path(CamelLocalStore *ls, const gchar *full_name);
@@ -92,7 +89,7 @@ construct (CamelService *service,
            CamelSession *session,
            CamelProvider *provider,
            CamelURL *url,
-           CamelException *ex)
+           GError **error)
 {
 	CamelServiceClass *service_class;
 	struct stat st;
@@ -102,20 +99,22 @@ construct (CamelService *service,
 
 	/* Chain up to parent's construct() method. */
 	service_class = CAMEL_SERVICE_CLASS (camel_spool_store_parent_class);
-	if (!service_class->construct (service, session, provider, url, ex))
+	if (!service_class->construct (service, session, provider, url, error))
 		return FALSE;
 
 	if (service->url->path[0] != '/') {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
 			_("Store root %s is not an absolute path"),
 			service->url->path);
 		return FALSE;
 	}
 
-	if (stat(service->url->path, &st) == -1) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+	if (g_stat(service->url->path, &st) == -1) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
 			_("Spool '%s' cannot be opened: %s"),
 			service->url->path, g_strerror (errno));
 		return FALSE;
@@ -127,8 +126,9 @@ construct (CamelService *service,
 		/* we could check here for slight variations */
 		((CamelSpoolStore *)service)->type = CAMEL_SPOOL_STORE_ELM;
 	else {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
 			_("Spool '%s' is not a regular file or directory"),
 			service->url->path);
 		return FALSE;
@@ -141,7 +141,7 @@ static CamelFolder *
 get_folder (CamelStore *store,
             const gchar *folder_name,
             guint32 flags,
-            CamelException * ex)
+            GError **error)
 {
 	CamelFolder *folder = NULL;
 	struct stat st;
@@ -152,42 +152,47 @@ get_folder (CamelStore *store,
 	/* we only support an 'INBOX' in mbox mode */
 	if (((CamelSpoolStore *)store)->type == CAMEL_SPOOL_STORE_MBOX) {
 		if (strcmp(folder_name, "INBOX") != 0) {
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+			g_set_error (
+				error, CAMEL_STORE_ERROR,
+				CAMEL_STORE_ERROR_NO_FOLDER,
 				_("Folder '%s/%s' does not exist."),
 				((CamelService *)store)->url->path, folder_name);
 		} else {
-			folder = camel_spool_folder_new(store, folder_name, flags, ex);
+			folder = camel_spool_folder_new(store, folder_name, flags, error);
 		}
 	} else {
 		name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
-		if (stat(name, &st) == -1) {
+		if (g_stat(name, &st) == -1) {
 			if (errno != ENOENT) {
-				camel_exception_setv (
-					ex, CAMEL_EXCEPTION_SYSTEM,
+				g_set_error (
+					error, G_IO_ERROR,
+					g_io_error_from_errno (errno),
 					_("Could not open folder '%s':\n%s"),
 					folder_name, g_strerror (errno));
 			} else if ((flags & CAMEL_STORE_FOLDER_CREATE) == 0) {
-				camel_exception_setv (
-					ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+				g_set_error (
+					error, CAMEL_STORE_ERROR,
+					CAMEL_STORE_ERROR_NO_FOLDER,
 					_("Folder '%s' does not exist."),
 					folder_name);
 			} else {
 				if (creat (name, 0600) == -1) {
-					camel_exception_setv (
-						ex, CAMEL_EXCEPTION_SYSTEM,
+					g_set_error (
+						error, G_IO_ERROR,
+						g_io_error_from_errno (errno),
 						_("Could not create folder '%s':\n%s"),
 						folder_name, g_strerror (errno));
 				} else {
-					folder = camel_spool_folder_new(store, folder_name, flags, ex);
+					folder = camel_spool_folder_new(store, folder_name, flags, error);
 				}
 			}
 		} else if (!S_ISREG(st.st_mode)) {
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+			g_set_error (
+				error, CAMEL_STORE_ERROR,
+				CAMEL_STORE_ERROR_NO_FOLDER,
 				_("'%s' is not a mailbox file."), name);
 		} else {
-			folder = camel_spool_folder_new(store, folder_name, flags, ex);
+			folder = camel_spool_folder_new(store, folder_name, flags, error);
 		}
 		g_free(name);
 	}
@@ -197,13 +202,14 @@ get_folder (CamelStore *store,
 
 static CamelFolder *
 get_inbox (CamelStore *store,
-           CamelException *ex)
+           GError **error)
 {
 	if (((CamelSpoolStore *)store)->type == CAMEL_SPOOL_STORE_MBOX)
-		return get_folder (store, "INBOX", CAMEL_STORE_FOLDER_CREATE, ex);
+		return get_folder (store, "INBOX", CAMEL_STORE_FOLDER_CREATE, error);
 	else {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
 			_("Store does not support an INBOX"));
 		return NULL;
 	}
@@ -225,10 +231,10 @@ static gboolean
 rename_folder (CamelStore *store,
                const gchar *old,
                const gchar *new,
-               CamelException *ex)
+               GError **error)
 {
-	camel_exception_setv (
-		ex, CAMEL_EXCEPTION_SYSTEM,
+	g_set_error (
+		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 		_("Spool folders cannot be renamed"));
 
 	return FALSE;
@@ -238,10 +244,10 @@ rename_folder (CamelStore *store,
 static gboolean
 delete_folder (CamelStore *store,
                const gchar *folder_name,
-               CamelException *ex)
+               GError **error)
 {
-	camel_exception_setv (
-		ex, CAMEL_EXCEPTION_SYSTEM,
+	g_set_error (
+		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 		_("Spool folders cannot be deleted"));
 
 	return FALSE;
@@ -331,7 +337,7 @@ scan_dir (CamelStore *store,
           guint32 flags,
           CamelFolderInfo *parent,
           CamelFolderInfo **fip,
-          CamelException *ex)
+          GError **error)
 {
 	DIR *dir;
 	struct dirent *d;
@@ -351,9 +357,10 @@ scan_dir (CamelStore *store,
 	} else
 		name = root;
 
-	if (stat(name, &st) == -1) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+	if (g_stat(name, &st) == -1) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
 			_("Could not scan folder '%s': %s"),
 			name, g_strerror (errno));
 	} else if (S_ISREG(st.st_mode)) {
@@ -367,8 +374,9 @@ scan_dir (CamelStore *store,
 
 	dir = opendir(name);
 	if (dir == NULL) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
 			_("Could not scan folder '%s': %s"),
 			name, g_strerror (errno));
 		return -1;
@@ -386,7 +394,7 @@ scan_dir (CamelStore *store,
 			continue;
 
 		tmp = g_strdup_printf("%s/%s", name, d->d_name);
-		if (stat(tmp, &st) == 0) {
+		if (g_stat(tmp, &st) == 0) {
 			if (path)
 				fname = g_strdup_printf("%s/%s", path, d->d_name);
 			else
@@ -424,7 +432,7 @@ scan_dir (CamelStore *store,
 					*inew = in;
 					g_hash_table_insert(visited, inew, inew);
 
-					if (scan_dir(store, visited, root, fname, flags, parent, fip, ex) == -1) {
+					if (scan_dir(store, visited, root, fname, flags, parent, fip, error) == -1) {
 						g_free(tmp);
 						g_free(fname);
 						closedir(dir);
@@ -468,14 +476,14 @@ static CamelFolderInfo *
 get_folder_info_elm (CamelStore *store,
                      const gchar *top,
                      guint32 flags,
-                     CamelException *ex)
+                     GError **error)
 {
 	CamelFolderInfo *fi = NULL;
 	GHashTable *visited;
 
 	visited = g_hash_table_new(inode_hash, inode_equal);
 
-	if (scan_dir(store, visited, ((CamelService *)store)->url->path, top, flags, NULL, &fi, ex) == -1 && fi != NULL) {
+	if (scan_dir(store, visited, ((CamelService *)store)->url->path, top, flags, NULL, &fi, error) == -1 && fi != NULL) {
 		camel_store_free_folder_info_full(store, fi);
 		fi = NULL;
 	}
@@ -490,7 +498,7 @@ static CamelFolderInfo *
 get_folder_info_mbox (CamelStore *store,
                       const gchar *top,
                       guint32 flags,
-                      CamelException *ex)
+                      GError **error)
 {
 	CamelFolderInfo *fi = NULL, *fip = NULL;
 
@@ -508,12 +516,12 @@ static CamelFolderInfo *
 get_folder_info (CamelStore *store,
                  const gchar *top,
                  guint32 flags,
-                 CamelException *ex)
+                 GError **error)
 {
 	if (((CamelSpoolStore *)store)->type == CAMEL_SPOOL_STORE_MBOX)
-		return get_folder_info_mbox (store, top, flags, ex);
+		return get_folder_info_mbox (store, top, flags, error);
 	else
-		return get_folder_info_elm (store, top, flags, ex);
+		return get_folder_info_elm (store, top, flags, error);
 }
 
 static gchar *

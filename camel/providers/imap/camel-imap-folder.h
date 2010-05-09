@@ -79,7 +79,7 @@ GType		camel_imap_folder_get_type	(void);
 CamelFolder *	camel_imap_folder_new		(CamelStore *parent,
 						 const gchar *folder_name,
 						 const gchar *folder_dir,
-						 CamelException *ex);
+						 GError **error);
 gboolean	camel_imap_folder_get_check_folder
 						(CamelImapFolder *imap_folder);
 void		camel_imap_folder_set_check_folder
@@ -87,35 +87,34 @@ void		camel_imap_folder_set_check_folder
 						 gboolean check_folder);
 gboolean	camel_imap_folder_selected	(CamelFolder *folder,
 						 CamelImapResponse *response,
-						 CamelException *ex);
+						 GError **error);
 gboolean	camel_imap_folder_changed	(CamelFolder *folder,
 						 gint exists,
 						 GArray *expunged,
-						 CamelException *ex);
+						 GError **error);
 CamelStream *	camel_imap_folder_fetch_data	(CamelImapFolder *imap_folder,
 						 const gchar *uid,
 						 const gchar *section_text,
 						 gboolean cache_only,
-						 CamelException *ex);
+						 GError **error);
 gboolean	camel_imap_append_resyncing	(CamelFolder *folder,
 						 CamelMimeMessage *message,
 						 const CamelMessageInfo *info,
 						 gchar **appended_uid,
-						 CamelException *ex);
+						 GError **error);
 gboolean	camel_imap_transfer_resyncing	(CamelFolder *source,
 						 GPtrArray *uids,
 						 CamelFolder *dest,
 						 GPtrArray **transferred_uids,
 						 gboolean delete_originals,
-						 CamelException *ex);
+						 GError **error);
 gboolean	camel_imap_expunge_uids_resyncing
 						(CamelFolder *folder,
 						 GPtrArray *uids,
-						 CamelException *ex);
-
-void		camel_imap_expunge_uids_only	(CamelFolder *folder,
+						 GError **error);
+gboolean	camel_imap_expunge_uids_only	(CamelFolder *folder,
 						 GPtrArray *uids,
-						 CamelException *ex);
+						 GError **error);
 
 G_END_DECLS
 

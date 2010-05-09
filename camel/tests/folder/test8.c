@@ -27,9 +27,7 @@ test_add_message(CamelFolder *folder, gint j)
 	CamelMimeMessage *msg;
 	gchar *content;
 	gchar *subject;
-	CamelException ex;
-
-	camel_exception_init(&ex);
+	GError *error = NULL;
 
 	push("creating message %d\n", j);
 	msg = test_message_create_simple();
@@ -42,8 +40,9 @@ test_add_message(CamelFolder *folder, gint j)
 	pull();
 
 	push("appending simple message %d", j);
-	camel_folder_append_message(folder, msg, NULL, NULL, &ex);
-	check_msg(!camel_exception_is_set(&ex), "%s", camel_exception_get_description(&ex));
+	camel_folder_append_message(folder, msg, NULL, NULL, &error);
+	check_msg(error == NULL, "%s", error->message);
+	g_clear_error (&error);
 	pull();
 
 	check_unref(msg, 1);
@@ -61,8 +60,8 @@ worker(gpointer d)
 	gint i, j, id = info->id;
 	gchar *sub, *content;
 	GPtrArray *res;
-	CamelException *ex = camel_exception_new();
 	CamelMimeMessage *msg;
+	GError *error = NULL;
 
 	/* we add a message, search for it, twiddle some flags, delete it */
 	/* and flat out */
@@ -73,14 +72,16 @@ worker(gpointer d)
 		sub = g_strdup_printf("(match-all (header-contains \"subject\" \"message %08x subject\"))", id+i);
 
 		push("searching for message %d\n\tusing: %s", id+i, sub);
-		res = camel_folder_search_by_expression(info->folder, sub, ex);
-		check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+		res = camel_folder_search_by_expression(info->folder, sub, &error);
+		check_msg(error == NULL, "%s", error->message);
 		check_msg(res->len == 1, "res->len = %d", res->len);
+		g_clear_error (&error);
 		pull();
 
 		push("getting message '%s'", res->pdata[0]);
-		msg = camel_folder_get_message(info->folder, (gchar *)res->pdata[0], ex);
-		check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+		msg = camel_folder_get_message(info->folder, (gchar *)res->pdata[0], &error);
+		check_msg(error == NULL, "%s", error->message);
+		g_clear_error (&error);
 		pull();
 
 		content = g_strdup_printf("Test message %08x contents\n\n", id+i);
@@ -107,13 +108,11 @@ worker(gpointer d)
 		if (j<=2) {
 			d(printf("Forcing an expuge\n"));
 			push("expunging folder");
-			camel_folder_expunge(info->folder, ex);
-			check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+			camel_folder_expunge(info->folder, &error);
+			check_msg(error == NULL, "%s", error->message);
 			pull();
 		}
 	}
-
-	camel_exception_free(ex);
 
 	return info;
 }
@@ -121,7 +120,6 @@ worker(gpointer d)
 gint main(gint argc, gchar **argv)
 {
 	CamelSession *session;
-	CamelException *ex;
 	gint i, j, index;
 	gchar *path;
 	CamelStore *store;
@@ -129,11 +127,10 @@ gint main(gint argc, gchar **argv)
 	struct _threadinfo *info;
 	CamelFolder *folder;
 	GPtrArray *uids;
+	GError *error = NULL;
 
 	camel_test_init(argc, argv);
 	camel_test_provider_init(1, local_drivers);
-
-	ex = camel_exception_new();
 
 	/* clear out any camel-test data */
 	system("/bin/rm -rf /tmp/camel-test");
@@ -148,16 +145,18 @@ gint main(gint argc, gchar **argv)
 
 			push("trying %s index %d", local_providers[j], index);
 			path = g_strdup_printf("%s:///tmp/camel-test/%s", local_providers[j], local_providers[j]);
-			store = camel_session_get_store(session, path, ex);
-			check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+			store = camel_session_get_store(session, path, &error);
+			check_msg(error == NULL, "%s", error->message);
+			g_clear_error (&error);
 			test_free(path);
 
 			if (index == 0)
-				folder = camel_store_get_folder(store, "testbox", CAMEL_STORE_FOLDER_CREATE, ex);
+				folder = camel_store_get_folder(store, "testbox", CAMEL_STORE_FOLDER_CREATE, &error);
 			else
 				folder = camel_store_get_folder(store, "testbox",
-								CAMEL_STORE_FOLDER_CREATE|CAMEL_STORE_FOLDER_BODY_INDEX, ex);
-			check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+								CAMEL_STORE_FOLDER_CREATE|CAMEL_STORE_FOLDER_BODY_INDEX, &error);
+			check_msg(error == NULL, "%s", error->message);
+			g_clear_error (&error);
 
 			for (i = 0; i < MAX_THREADS; i++) {
 				GError *error = NULL;
@@ -188,13 +187,14 @@ gint main(gint argc, gchar **argv)
 			}
 			camel_folder_free_uids(folder, uids);
 
-			camel_folder_expunge(folder, ex);
-			check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+			camel_folder_expunge(folder, &error);
+			check_msg(error == NULL, "%s", error->message);
 
 			check_unref(folder, 1);
 
-			camel_store_delete_folder(store, "testbox", ex);
-			check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+			camel_store_delete_folder(store, "testbox", &error);
+			check_msg(error == NULL, "%s", error->message);
+			g_clear_error (&error);
 
 			check_unref(store, 1);
 
@@ -205,7 +205,6 @@ gint main(gint argc, gchar **argv)
 	}
 
 	g_object_unref (session);
-	camel_exception_free(ex);
 
 	return 0;
 }

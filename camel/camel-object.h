@@ -29,10 +29,10 @@
 #ifndef CAMEL_OBJECT_H
 #define CAMEL_OBJECT_H
 
-#include <glib-object.h>
 #include <stdio.h>		/* FILE */
 #include <stdlib.h>		/* gsize */
 #include <stdarg.h>
+#include <gio/gio.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_OBJECT \
@@ -52,6 +52,9 @@
 #define CAMEL_OBJECT_GET_CLASS(obj) \
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_OBJECT, CamelObjectClass))
+
+#define CAMEL_ERROR \
+	(camel_error_quark ())
 
 G_BEGIN_DECLS
 
@@ -75,6 +78,10 @@ typedef enum {
 	CAMEL_PARAM_PERSISTENT = 1 << (G_PARAM_USER_SHIFT + 0)
 } CamelParamFlags;
 
+typedef enum {
+	CAMEL_ERROR_GENERIC		/* lazy fallback error */
+} CamelError;
+
 struct _CamelObject {
 	GObject parent;
 	CamelObjectPrivate *priv;
@@ -90,6 +97,7 @@ struct _CamelObjectClass {
 };
 
 GType		camel_object_get_type		(void);
+GQuark		camel_error_quark		(void) G_GNUC_CONST;
 gint		camel_object_state_read		(CamelObject *object);
 gint		camel_object_state_write	(CamelObject *object);
 const gchar *	camel_object_get_state_filename	(CamelObject *object);

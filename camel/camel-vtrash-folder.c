@@ -30,7 +30,6 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-db.h"
-#include "camel-exception.h"
 #include "camel-mime-message.h"
 #include "camel-store.h"
 #include "camel-vee-store.h"
@@ -64,13 +63,12 @@ G_DEFINE_TYPE (CamelVTrashFolder, camel_vtrash_folder, CAMEL_TYPE_VEE_FOLDER)
 static void
 transfer_messages (CamelFolder *folder,
                    struct _transfer_data *md,
-                   CamelException *ex)
+                   GError **error)
 {
 	gint i;
 
-	if (!camel_exception_is_set (ex))
-		camel_folder_transfer_messages_to (
-			md->folder, md->uids, md->dest, NULL, md->delete, ex);
+	camel_folder_transfer_messages_to (
+		md->folder, md->uids, md->dest, NULL, md->delete, error);
 
 	for (i=0;i<md->uids->len;i++)
 		g_free(md->uids->pdata[i]);
@@ -84,10 +82,10 @@ vtrash_folder_append_message (CamelFolder *folder,
                               CamelMimeMessage *message,
                               const CamelMessageInfo *info,
                               gchar **appended_uid,
-                              CamelException *ex)
+                              GError **error)
 {
-	camel_exception_setv (
-		ex, CAMEL_EXCEPTION_SYSTEM, "%s",
+	g_set_error (
+		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",
 		_(vdata[((CamelVTrashFolder *)folder)->type].error_copy));
 
 	return FALSE;
@@ -99,7 +97,7 @@ vtrash_folder_transfer_messages_to (CamelFolder *source,
                                     CamelFolder *dest,
                                     GPtrArray **transferred_uids,
                                     gboolean delete_originals,
-                                    CamelException *ex)
+                                    GError **error)
 {
 	CamelVeeMessageInfo *mi;
 	gint i;
@@ -119,8 +117,8 @@ vtrash_folder_transfer_messages_to (CamelFolder *source,
 	if (CAMEL_IS_VTRASH_FOLDER (dest)) {
 		/* Copy to trash is meaningless. */
 		if (!delete_originals) {
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SYSTEM, "%s",
+			g_set_error (
+				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",
 				_(vdata[((CamelVTrashFolder *)dest)->type].error_copy));
 			return FALSE;
 		}
@@ -168,7 +166,7 @@ vtrash_folder_transfer_messages_to (CamelFolder *source,
 	}
 
 	if (batch) {
-		g_hash_table_foreach(batch, (GHFunc)transfer_messages, ex);
+		g_hash_table_foreach(batch, (GHFunc)transfer_messages, error);
 		g_hash_table_destroy(batch);
 	}
 

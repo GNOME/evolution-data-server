@@ -282,7 +282,7 @@ struct _CamelFolderSummaryClass {
 
 	/* Load/Save folder summary from DB*/
 	gint (*summary_header_from_db)(CamelFolderSummary *, struct _CamelFIRecord *);
-	struct _CamelFIRecord * (*summary_header_to_db)(CamelFolderSummary *, CamelException *ex);
+	struct _CamelFIRecord * (*summary_header_to_db)(CamelFolderSummary *, GError **error);
 	CamelMessageInfo * (*message_info_from_db) (CamelFolderSummary *, struct _CamelMIRecord*);
 	struct _CamelMIRecord * (*message_info_to_db) (CamelFolderSummary *, CamelMessageInfo *);
 	CamelMessageContentInfo * (*content_info_from_db) (CamelFolderSummary *, struct _CamelMIRecord *);
@@ -343,13 +343,13 @@ gchar    *camel_folder_summary_next_uid_string (CamelFolderSummary *summary);
 void	 camel_folder_summary_set_uid	      (CamelFolderSummary *summary, guint32 uid);
 
 /* load/save the full summary from/to the db */
-gint camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex);
-gint camel_folder_summary_load_from_db (CamelFolderSummary *s, CamelException *ex);
+gint camel_folder_summary_save_to_db (CamelFolderSummary *s, GError **error);
+gint camel_folder_summary_load_from_db (CamelFolderSummary *s, GError **error);
 
 /* only load the header */
 gint camel_folder_summary_header_load(CamelFolderSummary *summary);
-gint camel_folder_summary_header_load_from_db (CamelFolderSummary *s, struct _CamelStore *store, const gchar *folder_name, CamelException *ex);
-gint camel_folder_summary_header_save_to_db (CamelFolderSummary *s, CamelException *ex);
+gint camel_folder_summary_header_load_from_db (CamelFolderSummary *s, struct _CamelStore *store, const gchar *folder_name, GError **error);
+gint camel_folder_summary_header_save_to_db (CamelFolderSummary *s, GError **error);
 
 /* set the dirty bit on the summary */
 void camel_folder_summary_touch(CamelFolderSummary *summary);
@@ -363,7 +363,7 @@ CamelMessageInfo * camel_folder_summary_peek_info (CamelFolderSummary *s, const 
 /* Get only the uids of dirty/changed things to sync to server/db */
 GPtrArray * camel_folder_summary_get_changed (CamelFolderSummary *s);
 /* reload the summary at any required point if required */
-void camel_folder_summary_prepare_fetch_all (CamelFolderSummary *s, CamelException *ex);
+void camel_folder_summary_prepare_fetch_all (CamelFolderSummary *s, GError **error);
 /* insert mi to summary */
 void camel_folder_summary_insert (CamelFolderSummary *s, CamelMessageInfo *info, gboolean load);
 

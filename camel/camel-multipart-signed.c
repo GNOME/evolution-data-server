@@ -30,13 +30,8 @@
 #include <time.h>
 #include <unistd.h>
 
-#ifdef HAVE_ALLOCA_H
-#include <alloca.h>
-#endif
-
 #include <glib/gi18n-lib.h>
 
-#include "camel-exception.h"
 #include "camel-mime-filter-canon.h"
 #include "camel-mime-filter-crlf.h"
 #include "camel-mime-message.h"
@@ -118,9 +113,9 @@ multipart_signed_parse_content (CamelMultipartSigned *mps)
 	   This is so we can parse all cases properly, without altering the content.
 	   All we are doing is finding part offsets. */
 
-	camel_stream_reset (stream);
+	camel_stream_reset (stream, NULL);
 	cmp = camel_mime_parser_new ();
-	camel_mime_parser_init_with_stream (cmp, stream);
+	camel_mime_parser_init_with_stream (cmp, stream, NULL);
 	camel_mime_parser_push_state(cmp, CAMEL_MIME_PARSER_STATE_MULTIPART, boundary);
 
 	mps->start1 = -1;
@@ -260,7 +255,8 @@ multipart_signed_set_mime_type_field (CamelDataWrapper *data_wrapper,
 
 static gssize
 multipart_signed_write_to_stream (CamelDataWrapper *data_wrapper,
-                                  CamelStream *stream)
+                                  CamelStream *stream,
+                                  GError **error)
 {
 	CamelMultipartSigned *mps = (CamelMultipartSigned *)data_wrapper;
 	CamelMultipart *mp = (CamelMultipart *)mps;
@@ -277,18 +273,31 @@ multipart_signed_write_to_stream (CamelDataWrapper *data_wrapper,
 	/* 1 */
 	/* FIXME: locking? */
 	if (data_wrapper->stream) {
-		camel_stream_reset (data_wrapper->stream);
-		return camel_stream_write_to_stream (data_wrapper->stream, stream);
+		camel_stream_reset (data_wrapper->stream, NULL);
+		return camel_stream_write_to_stream (
+			data_wrapper->stream, stream, error);
 	}
 
 	/* 3 */
-	if (mps->signature == NULL || mps->contentraw == NULL)
+	if (mps->contentraw == NULL) {
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("No content available"));
 		return -1;
+	}
+
+	/* 3 */
+	if (mps->signature == NULL) {
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("No signature available"));
+		return -1;
+	}
 
 	/* 2 */
 	boundary = camel_multipart_get_boundary(mp);
 	if (mp->preface) {
-		count = camel_stream_write_string (stream, mp->preface);
+		count = camel_stream_write_string (stream, mp->preface, error);
 		if (count == -1)
 			return -1;
 		total += count;
@@ -297,12 +306,12 @@ multipart_signed_write_to_stream (CamelDataWrapper *data_wrapper,
 	/* first boundary */
 	count = camel_stream_printf (stream, "\n--%s\n", boundary);
 	if (count == -1)
-		return -1;
+		goto file_error;
 	total += count;
 
 	/* output content part */
-	camel_stream_reset (mps->contentraw);
-	count = camel_stream_write_to_stream (mps->contentraw, stream);
+	camel_stream_reset (mps->contentraw, NULL);
+	count = camel_stream_write_to_stream (mps->contentraw, stream, error);
 	if (count == -1)
 		return -1;
 	total += count;
@@ -310,12 +319,12 @@ multipart_signed_write_to_stream (CamelDataWrapper *data_wrapper,
 	/* boundary */
 	count = camel_stream_printf (stream, "\n--%s\n", boundary);
 	if (count == -1)
-		return -1;
+		goto file_error;
 	total += count;
 
 	/* signature */
 	count = camel_data_wrapper_write_to_stream (
-		CAMEL_DATA_WRAPPER (mps->signature), stream);
+		CAMEL_DATA_WRAPPER (mps->signature), stream, error);
 	if (count == -1)
 		return -1;
 	total += count;
@@ -323,28 +332,37 @@ multipart_signed_write_to_stream (CamelDataWrapper *data_wrapper,
 	/* write the terminating boudary delimiter */
 	count = camel_stream_printf (stream, "\n--%s--\n", boundary);
 	if (count == -1)
-		return -1;
+		goto file_error;
 	total += count;
 
 	/* and finally the postface */
 	if (mp->postface) {
-		count = camel_stream_write_string (stream, mp->postface);
+		count = camel_stream_write_string (stream, mp->postface, error);
 		if (count == -1)
 			return -1;
 		total += count;
 	}
 
 	return total;
+
+file_error:
+	g_set_error (
+		error, G_IO_ERROR,
+		g_io_error_from_errno (errno),
+		"%s", g_strerror (errno));
+
+	return -1;
 }
 
 static gint
 multipart_signed_construct_from_stream (CamelDataWrapper *data_wrapper,
-                                        CamelStream *stream)
+                                        CamelStream *stream,
+                                        GError **error)
 {
 	CamelMultipartSigned *mps = (CamelMultipartSigned *)data_wrapper;
 	CamelStream *mem = camel_stream_mem_new();
 
-	if (camel_stream_write_to_stream (stream, mem) == -1)
+	if (camel_stream_write_to_stream (stream, mem, error) == -1)
 		return -1;
 
 	multipart_signed_set_stream (mps, mem);
@@ -409,10 +427,10 @@ multipart_signed_get_part (CamelMultipart *multipart,
 		} else {
 			stream = camel_seekable_substream_new((CamelSeekableStream *)dw->stream, mps->start1, mps->end1);
 		}
-		camel_stream_reset (stream);
+		camel_stream_reset (stream, NULL);
 		mps->content = camel_mime_part_new();
 		camel_data_wrapper_construct_from_stream (
-			CAMEL_DATA_WRAPPER (mps->content), stream);
+			CAMEL_DATA_WRAPPER (mps->content), stream, NULL);
 		g_object_unref (stream);
 		return mps->content;
 	case CAMEL_MULTIPART_SIGNED_SIGNATURE:
@@ -426,10 +444,10 @@ multipart_signed_get_part (CamelMultipart *multipart,
 			return NULL;
 		}
 		stream = camel_seekable_substream_new((CamelSeekableStream *)dw->stream, mps->start2, mps->end2);
-		camel_stream_reset (stream);
+		camel_stream_reset (stream, NULL);
 		mps->signature = camel_mime_part_new();
 		camel_data_wrapper_construct_from_stream (
-			CAMEL_DATA_WRAPPER (mps->signature), stream);
+			CAMEL_DATA_WRAPPER (mps->signature), stream, NULL);
 		g_object_unref (stream);
 		return mps->signature;
 	default:
@@ -481,7 +499,7 @@ multipart_signed_construct_from_parser (CamelMultipart *multipart,
 
 	stream = camel_stream_mem_new();
 	while (camel_mime_parser_step(mp, &buf, &len) != CAMEL_MIME_PARSER_STATE_BODY_END)
-		camel_stream_write(stream, buf, len);
+		camel_stream_write(stream, buf, len, NULL);
 
 	multipart_signed_set_stream (mps, stream);
 
@@ -566,7 +584,7 @@ camel_multipart_signed_new (void)
 /**
  * camel_multipart_signed_get_content_stream:
  * @mps: a #CamlMultipartSigned object
- * @ex: a #CamelException
+ * @error: return location for a #GError, or %NULL
  *
  * Get the raw signed content stream of the multipart/signed MIME part
  * suitable for use with verification of the signature.
@@ -575,7 +593,7 @@ camel_multipart_signed_new (void)
  **/
 CamelStream *
 camel_multipart_signed_get_content_stream (CamelMultipartSigned *mps,
-                                           CamelException *ex)
+                                           GError **error)
 {
 	CamelStream *constream;
 
@@ -588,8 +606,9 @@ camel_multipart_signed_get_content_stream (CamelMultipartSigned *mps,
 		CamelMimeFilter *canon_filter;
 
 		if (mps->start1 == -1 && multipart_signed_parse_content(mps) == -1) {
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SYSTEM,
+			g_set_error (
+				error, CAMEL_ERROR,
+				CAMEL_ERROR_GENERIC,
 				_("parse error"));
 			return NULL;
 		}

@@ -51,7 +51,8 @@ CamelDiscoStore
 
 @store: 
 @status: 
-@ex: 
+@error: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_disco_store_can_work_offline ##### -->
@@ -69,7 +70,7 @@ CamelDiscoStore
 </para>
 
 @store: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -79,6 +80,6 @@ CamelDiscoStore
 </para>
 
 @store: 
-@ex: 
+@error: 
 
 

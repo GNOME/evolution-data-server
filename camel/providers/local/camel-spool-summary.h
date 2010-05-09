@@ -65,13 +65,13 @@ void	camel_spool_summary_construct	(CamelSpoolSummary *new, const gchar *filenam
 CamelSpoolSummary *camel_spool_summary_new(struct _CamelFolder *, const gchar *filename);
 
 /* load/check the summary */
-gint camel_spool_summary_load(CamelSpoolSummary *cls, gint forceindex, CamelException *ex);
+gint camel_spool_summary_load(CamelSpoolSummary *cls, gint forceindex, GError **error);
 /* check for new/removed messages */
-gint camel_spool_summary_check(CamelSpoolSummary *cls, CamelFolderChangeInfo *, CamelException *ex);
+gint camel_spool_summary_check(CamelSpoolSummary *cls, CamelFolderChangeInfo *, GError **error);
 /* perform a folder sync or expunge, if needed */
-gint camel_spool_summary_sync(CamelSpoolSummary *cls, gboolean expunge, CamelFolderChangeInfo *, CamelException *ex);
+gint camel_spool_summary_sync(CamelSpoolSummary *cls, gboolean expunge, CamelFolderChangeInfo *, GError **error);
 /* add a new message to the summary */
-CamelMessageInfo *camel_spool_summary_add(CamelSpoolSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, CamelException *ex);
+CamelMessageInfo *camel_spool_summary_add(CamelSpoolSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, GError **error);
 
 /* generate an X-Evolution header line */
 gchar *camel_spool_summary_encode_x_evolution(CamelSpoolSummary *cls, const CamelMessageInfo *info);

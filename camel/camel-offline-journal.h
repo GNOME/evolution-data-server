@@ -76,7 +76,7 @@ struct _CamelOfflineJournalClass {
 
 	CamelDListNode * (* entry_load) (CamelOfflineJournal *journal, FILE *in);
 	gint (* entry_write) (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
-	gint (* entry_play) (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
+	gint (* entry_play) (CamelOfflineJournal *journal, CamelDListNode *entry, GError **error);
 };
 
 GType camel_offline_journal_get_type (void);
@@ -84,8 +84,8 @@ GType camel_offline_journal_get_type (void);
 void camel_offline_journal_construct (CamelOfflineJournal *journal, struct _CamelFolder *folder, const gchar *filename);
 void camel_offline_journal_set_filename (CamelOfflineJournal *journal, const gchar *filename);
 
-gint camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex);
-gint camel_offline_journal_replay (CamelOfflineJournal *journal, CamelException *ex);
+gint camel_offline_journal_write (CamelOfflineJournal *journal, GError **error);
+gint camel_offline_journal_replay (CamelOfflineJournal *journal, GError **error);
 
 G_END_DECLS
 

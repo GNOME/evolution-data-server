@@ -121,7 +121,7 @@ struct _CamelFilterDriverPrivate {
 
 	CamelDList rules;		   /* list of _filter_rule structs */
 
-	CamelException *ex;
+	GError *error;
 
 	/* evaluator */
 	ESExp *eval;
@@ -465,12 +465,12 @@ do_forward_to (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFil
 
 	/* make sure we have the message... */
 	if (p->message == NULL) {
-		if (!(p->message = camel_folder_get_message (p->source, p->uid, p->ex)))
+		if (!(p->message = camel_folder_get_message (p->source, p->uid, &p->error)))
 			return NULL;
 	}
 
 	camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Forward message to '%s'", argv[0]->value.string);
-	camel_session_forward_to (p->session, p->source, p->message, argv[0]->value.string, p->ex);
+	camel_session_forward_to (p->session, p->source, p->message, argv[0]->value.string, &p->error);
 
 	return NULL;
 }
@@ -501,19 +501,19 @@ do_copy (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDri
 
 				uids = g_ptr_array_new ();
 				g_ptr_array_add (uids, (gchar *) p->uid);
-				camel_folder_transfer_messages_to (p->source, uids, outbox, NULL, FALSE, p->ex);
+				camel_folder_transfer_messages_to (p->source, uids, outbox, NULL, FALSE, &p->error);
 				g_ptr_array_free (uids, TRUE);
 			} else {
 				if (p->message == NULL)
-					p->message = camel_folder_get_message (p->source, p->uid, p->ex);
+					p->message = camel_folder_get_message (p->source, p->uid, &p->error);
 
 				if (!p->message)
 					continue;
 
-				camel_folder_append_message (outbox, p->message, p->info, NULL, p->ex);
+				camel_folder_append_message (outbox, p->message, p->info, NULL, &p->error);
 			}
 
-			if (!camel_exception_is_set (p->ex))
+			if (p->error == NULL)
 				p->copied = TRUE;
 
 			camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Copy to folder %s",
@@ -554,18 +554,23 @@ do_move (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDri
 
 				uids = g_ptr_array_new ();
 				g_ptr_array_add (uids, (gchar *) p->uid);
-				camel_folder_transfer_messages_to (p->source, uids, outbox, NULL, last, p->ex);
+				camel_folder_transfer_messages_to (
+					p->source, uids, outbox, NULL,
+					last, &p->error);
 				g_ptr_array_free (uids, TRUE);
 			} else {
 				if (p->message == NULL)
-					p->message = camel_folder_get_message (p->source, p->uid, p->ex);
+					p->message = camel_folder_get_message (
+						p->source, p->uid, &p->error);
 
 				if (!p->message)
 					continue;
 
-				camel_folder_append_message (outbox, p->message, p->info, NULL, p->ex);
+				camel_folder_append_message (
+					outbox, p->message, p->info,
+					NULL, &p->error);
 
-				if (!camel_exception_is_set(p->ex) && last) {
+				if (p->error == NULL && last) {
 					if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
 						camel_folder_set_message_flags(p->source, p->uid, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN, ~0);
 					else
@@ -573,7 +578,7 @@ do_move (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDri
 				}
 			}
 
-			if (!camel_exception_is_set (p->ex)) {
+			if (p->error == NULL) {
 				p->moved = TRUE;
 				camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Move to folder %s", folder);
 			}
@@ -774,7 +779,7 @@ pipe_to_system (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFi
 
 	/* make sure we have the message... */
 	if (p->message == NULL) {
-		if (!(p->message = camel_folder_get_message (p->source, p->uid, p->ex)))
+		if (!(p->message = camel_folder_get_message (p->source, p->uid, &p->error)))
 			return -1;
 	}
 
@@ -798,8 +803,8 @@ pipe_to_system (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFi
 				       &error)) {
 		g_ptr_array_free (args, TRUE);
 
-		camel_exception_setv (
-			p->ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			&p->error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Failed to create child process '%s': %s"),
 			argv[0]->value.string, error->message);
 		g_error_free (error);
@@ -809,13 +814,13 @@ pipe_to_system (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFi
 	g_ptr_array_free (args, TRUE);
 
 	stream = camel_stream_fs_new_with_fd (pipe_to_child);
-	if (camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (p->message), stream) == -1) {
+	if (camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (p->message), stream, NULL) == -1) {
 		g_object_unref (stream);
 		close (pipe_from_child);
 		goto wait;
 	}
 
-	if (camel_stream_flush (stream) == -1) {
+	if (camel_stream_flush (stream, NULL) == -1) {
 		g_object_unref (stream);
 		close (pipe_from_child);
 		goto wait;
@@ -825,27 +830,28 @@ pipe_to_system (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFi
 
 	stream = camel_stream_fs_new_with_fd (pipe_from_child);
 	mem = camel_stream_mem_new ();
-	if (camel_stream_write_to_stream (stream, mem) == -1) {
+	if (camel_stream_write_to_stream (stream, mem, NULL) == -1) {
 		g_object_unref (stream);
 		g_object_unref (mem);
 		goto wait;
 	}
 
 	g_object_unref (stream);
-	camel_stream_reset (mem);
+	camel_stream_reset (mem, NULL);
 
 	parser = camel_mime_parser_new ();
-	camel_mime_parser_init_with_stream (parser, mem);
+	camel_mime_parser_init_with_stream (parser, mem, NULL);
 	camel_mime_parser_scan_from (parser, FALSE);
 	g_object_unref (mem);
 
 	message = camel_mime_message_new ();
-	if (camel_mime_part_construct_from_parser ((CamelMimePart *) message, parser) == -1) {
-		camel_exception_setv (
-			p->ex, CAMEL_EXCEPTION_SYSTEM,
+	if (camel_mime_part_construct_from_parser ((CamelMimePart *) message, parser, NULL) == -1) {
+		gint err = camel_mime_parser_errno (parser);
+		g_set_error (
+			&p->error, G_IO_ERROR,
+			g_io_error_from_errno (err),
 			_("Invalid message stream received from %s: %s"),
-			argv[0]->value.string,
-			g_strerror (camel_mime_parser_errno (parser)));
+			argv[0]->value.string, g_strerror (err));
 		g_object_unref (message);
 		message = NULL;
 	} else {
@@ -997,13 +1003,9 @@ open_folder (CamelFilterDriver *driver, const gchar *folder_url)
 	   in duplicate mails, just mail going to inbox.  Otherwise,
 	   we want to know about exceptions and abort processing */
 	if (p->defaultfolder) {
-		CamelException ex;
-
-		camel_exception_init (&ex);
-		camelfolder = p->get_folder (driver, folder_url, p->data, &ex);
-		camel_exception_clear (&ex);
+		camelfolder = p->get_folder (driver, folder_url, p->data, NULL);
 	} else {
-		camelfolder = p->get_folder (driver, folder_url, p->data, p->ex);
+		camelfolder = p->get_folder (driver, folder_url, p->data, &p->error);
 	}
 
 	if (camelfolder) {
@@ -1027,7 +1029,7 @@ close_folder (gpointer key, gpointer value, gpointer data)
 	g_free (key);
 
 	if (folder != FOLDER_INVALID) {
-		camel_folder_sync (folder, FALSE, camel_exception_is_set(p->ex)?NULL : p->ex);
+		camel_folder_sync (folder, FALSE, (p->error != NULL) ? NULL : &p->error);
 		camel_folder_thaw (folder);
 		g_object_unref (folder);
 	}
@@ -1112,23 +1114,23 @@ camel_filter_driver_log (CamelFilterDriver *driver, enum filter_log_t status, co
 
 struct _run_only_once {
 	CamelFilterDriver *driver;
-	CamelException *ex;
+	GError *error;
 };
 
 static gboolean
 run_only_once (gpointer key, gchar *action, struct _run_only_once *data)
 {
 	struct _CamelFilterDriverPrivate *p = CAMEL_FILTER_DRIVER_GET_PRIVATE (data->driver);
-	CamelException *ex = data->ex;
 	ESExpResult *r;
 
 	d(printf ("evaluating: %s\n\n", action));
 
 	e_sexp_input_text (p->eval, action, strlen (action));
 	if (e_sexp_parse (p->eval) == -1) {
-		if (!camel_exception_is_set (ex))
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SYSTEM,
+		if (data->error == NULL)
+			g_set_error (
+				&data->error,
+				CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Error parsing filter: %s: %s"),
 				e_sexp_error (p->eval), action);
 		goto done;
@@ -1136,9 +1138,10 @@ run_only_once (gpointer key, gchar *action, struct _run_only_once *data)
 
 	r = e_sexp_eval (p->eval);
 	if (r == NULL) {
-		if (!camel_exception_is_set (ex))
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SYSTEM,
+		if (data->error == NULL)
+			g_set_error (
+				&data->error,
+				CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Error executing filter: %s: %s"),
 				e_sexp_error (p->eval), action);
 		goto done;
@@ -1157,13 +1160,13 @@ run_only_once (gpointer key, gchar *action, struct _run_only_once *data)
 /**
  * camel_filter_driver_flush:
  * @driver:
- * @ex:
+ * @error: return location for a #GError, or %NULL
  *
  * Flush all of the only-once filter actions.
  **/
 void
 camel_filter_driver_flush (CamelFilterDriver *driver,
-                           CamelException *ex)
+                           GError **error)
 {
 	struct _CamelFilterDriverPrivate *p = CAMEL_FILTER_DRIVER_GET_PRIVATE (driver);
 	struct _run_only_once data;
@@ -1172,9 +1175,11 @@ camel_filter_driver_flush (CamelFilterDriver *driver,
 		return;
 
 	data.driver = driver;
-	data.ex = ex;
+	data.error = NULL;
 
 	g_hash_table_foreach_remove (p->only_once, (GHRFunc) run_only_once, &data);
+
+	g_propagate_error (error, data.error);
 }
 
 static gint
@@ -1201,7 +1206,7 @@ decode_flags_from_xev(const gchar *xev, CamelMessageInfoBase *mi)
  * @driver: CamelFilterDriver
  * @mbox: mbox filename to be filtered
  * @original_source_url:
- * @ex: exception
+ * @error: return location for a #GError, or %NULL
  *
  * Filters an mbox file based on rules defined in the FilterDriver
  * object. Is more efficient as it doesn't need to open the folder
@@ -1215,7 +1220,7 @@ gint
 camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
                                  const gchar *mbox,
                                  const gchar *original_source_url,
-                                 CamelException *ex)
+                                 GError **error)
 {
 	struct _CamelFilterDriverPrivate *p = CAMEL_FILTER_DRIVER_GET_PRIVATE (driver);
 	CamelMimeParser *mp = NULL;
@@ -1229,8 +1234,8 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 
 	fd = g_open (mbox, O_RDONLY|O_BINARY, 0);
 	if (fd == -1) {
-		camel_exception_set (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Unable to open spool folder"));
 		goto fail;
 	}
@@ -1240,8 +1245,8 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 	mp = camel_mime_parser_new ();
 	camel_mime_parser_scan_from (mp, TRUE);
 	if (camel_mime_parser_init_with_fd (mp, fd) == -1) {
-		camel_exception_set (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Unable to process spool folder"));
 		goto fail;
 	}
@@ -1255,6 +1260,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 		CamelMimePart *mime_part;
 		gint pc = 0;
 		const gchar *xev;
+		GError *local_error = NULL;
 
 		if (st.st_size > 0)
 			pc = (gint)(100.0 * ((double)camel_mime_parser_tell (mp) / (double)st.st_size));
@@ -1264,8 +1270,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 		message = camel_mime_message_new ();
 		mime_part = CAMEL_MIME_PART (message);
 
-		if (camel_mime_part_construct_from_parser (mime_part, mp) == -1) {
-			camel_exception_set (ex, (errno==EINTR)?CAMEL_EXCEPTION_USER_CANCEL:CAMEL_EXCEPTION_SYSTEM, _("Cannot open message"));
+		if (camel_mime_part_construct_from_parser (mime_part, mp, error) == -1) {
 			report_status (driver, CAMEL_FILTER_STATUS_END, 100, _("Failed on message %d"), i);
 			g_object_unref (message);
 			goto fail;
@@ -1282,13 +1287,15 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 		last = camel_mime_parser_tell(mp);
 		status = camel_filter_driver_filter_message (
 			driver, message, info, NULL, NULL, source_url,
-			original_source_url ? original_source_url : source_url, ex);
+			original_source_url ? original_source_url : source_url,
+			&local_error);
 		g_object_unref (message);
-		if (camel_exception_is_set (ex) || status == -1) {
+		if (local_error != NULL || status == -1) {
 			report_status (
 				driver, CAMEL_FILTER_STATUS_END, 100,
 				_("Failed on message %d"), i);
 			camel_message_info_free (info);
+			g_propagate_error (error, local_error);
 			goto fail;
 		}
 
@@ -1302,7 +1309,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 
 	if (p->defaultfolder) {
 		report_status(driver, CAMEL_FILTER_STATUS_PROGRESS, 100, _("Syncing folder"));
-		camel_folder_sync(p->defaultfolder, FALSE, camel_exception_is_set (ex) ? NULL : ex);
+		camel_folder_sync(p->defaultfolder, FALSE, NULL);
 	}
 
 	report_status (driver, CAMEL_FILTER_STATUS_END, 100, _("Complete"));
@@ -1325,7 +1332,7 @@ fail:
  * @cache: UID cache (needed for POP folders)
  * @uids: message uids to be filtered or NULL (as a shortcut to filter all messages)
  * @remove: TRUE to mark filtered messages as deleted
- * @ex: exception
+ * @error: return location for a #GError, or %NULL
  *
  * Filters a folder based on rules defined in the FilterDriver
  * object.
@@ -1340,7 +1347,7 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
                                    CamelUIDCache *cache,
                                    GPtrArray *uids,
                                    gboolean remove,
-                                   CamelException *ex)
+                                   GError **error)
 {
 	struct _CamelFilterDriverPrivate *p = CAMEL_FILTER_DRIVER_GET_PRIVATE (driver);
 	gboolean freeuids = FALSE;
@@ -1364,6 +1371,7 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 
 	for (i = 0; i < uids->len; i++) {
 		gint pc = (100 * i)/uids->len;
+		GError *local_error = NULL;
 
 		report_status (driver, CAMEL_FILTER_STATUS_START, pc, _("Getting message %d of %d"), i+1,
 			       uids->len);
@@ -1375,16 +1383,17 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 
 		status = camel_filter_driver_filter_message (
 			driver, NULL, info, uids->pdata[i],
-			folder, source_url, source_url, ex);
+			folder, source_url, source_url, &local_error);
 
 		if (camel_folder_has_summary_capability (folder))
 			camel_folder_free_message_info (folder, info);
 
-		if (camel_exception_is_set (ex) || status == -1) {
+		if (local_error != NULL || status == -1) {
 			report_status (
 				driver, CAMEL_FILTER_STATUS_END, 100,
 				_("Failed at message %d of %d"),
 				i+1, uids->len);
+			g_propagate_error (error, local_error);
 			status = -1;
 			break;
 		}
@@ -1399,7 +1408,7 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 
 	if (p->defaultfolder) {
 		report_status (driver, CAMEL_FILTER_STATUS_PROGRESS, 100, _("Syncing folder"));
-		camel_folder_sync (p->defaultfolder, FALSE, camel_exception_is_set (ex) ? NULL : ex);
+		camel_folder_sync (p->defaultfolder, FALSE, NULL);
 	}
 
 	if (i == uids->len)
@@ -1419,7 +1428,7 @@ struct _get_message {
 };
 
 static CamelMimeMessage *
-get_message_cb (gpointer data, CamelException *ex)
+get_message_cb (gpointer data, GError **error)
 {
 	struct _get_message *msgdata = data;
 	struct _CamelFilterDriverPrivate *p = msgdata->p;
@@ -1436,7 +1445,7 @@ get_message_cb (gpointer data, CamelException *ex)
 		else
 			uid = camel_message_info_uid (p->info);
 
-		message = camel_folder_get_message (p->source, uid, ex);
+		message = camel_folder_get_message (p->source, uid, error);
 	}
 
 	if (source_url && message && camel_mime_message_get_source (message) == NULL)
@@ -1454,7 +1463,7 @@ get_message_cb (gpointer data, CamelException *ex)
  * @source: source folder or NULL
  * @source_url: url of source folder or NULL
  * @original_source_url: url of original source folder (pre-movemail) or NULL
- * @ex: exception
+ * @error: return location for a #GError, or %NULL
  *
  * Filters a message based on rules defined in the FilterDriver
  * object. If the source folder (@source) and the uid (@uid) are
@@ -1474,7 +1483,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
                                     CamelFolder *source,
                                     const gchar *source_url,
                                     const gchar *original_source_url,
-                                    CamelException *ex)
+                                    GError **error)
 {
 	struct _CamelFilterDriverPrivate *p = CAMEL_FILTER_DRIVER_GET_PRIVATE (driver);
 	struct _filter_rule *node;
@@ -1495,7 +1504,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 		if (message) {
 			g_object_ref (message);
 		} else {
-			message = camel_folder_get_message (source, uid, ex);
+			message = camel_folder_get_message (source, uid, error);
 			if (!message)
 				return -1;
 		}
@@ -1513,7 +1522,6 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 			g_object_ref (message);
 	}
 
-	p->ex = ex;
 	p->terminated = FALSE;
 	p->deleted = FALSE;
 	p->copied = FALSE;
@@ -1539,7 +1547,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 		result = camel_filter_search_match (
 			p->session, get_message_cb, &data, p->info,
 			original_source_url ? original_source_url : source_url,
-			node->match, p->ex);
+			node->match, &p->error);
 
 		switch (result) {
 		case CAMEL_SEARCH_ERROR:
@@ -1555,18 +1563,20 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 			/* perform necessary filtering actions */
 			e_sexp_input_text (p->eval, node->action, strlen (node->action));
 			if (e_sexp_parse (p->eval) == -1) {
-				camel_exception_setv (
-					ex, 1, _("Error parsing filter: %s: %s"),
+				g_set_error (
+					error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+					_("Error parsing filter: %s: %s"),
 					e_sexp_error (p->eval), node->action);
 				goto error;
 			}
 			r = e_sexp_eval (p->eval);
-			if (camel_exception_is_set(p->ex))
+			if (p->error != NULL)
 				goto error;
 
 			if (r == NULL) {
-				camel_exception_setv (
-					ex, 1, _("Error executing filter: %s: %s"),
+				g_set_error (
+					error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+					_("Error executing filter: %s: %s"),
 					e_sexp_error (p->eval), node->action);
 				goto error;
 			}
@@ -1604,18 +1614,18 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 			g_ptr_array_add (uids, (gchar *) p->uid);
 			camel_folder_transfer_messages_to (
 				p->source, uids, p->defaultfolder,
-				NULL, FALSE, p->ex);
+				NULL, FALSE, &p->error);
 			g_ptr_array_free (uids, TRUE);
 		} else {
 			if (p->message == NULL) {
-				p->message = camel_folder_get_message (source, uid, ex);
+				p->message = camel_folder_get_message (source, uid, error);
 				if (!p->message)
 					goto error;
 			}
 
 			camel_folder_append_message (
 				p->defaultfolder, p->message,
-				p->info, NULL, p->ex);
+				p->info, NULL, &p->error);
 		}
 	}
 
@@ -1636,6 +1646,9 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 
 	if (freeinfo)
 		camel_message_info_free (info);
+
+	g_propagate_error (error, p->error);
+	p->error = NULL;
 
 	return -1;
 }

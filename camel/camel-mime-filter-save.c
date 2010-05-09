@@ -51,7 +51,7 @@ mime_filter_save_filter (CamelMimeFilter *mime_filter,
 	priv = CAMEL_MIME_FILTER_SAVE_GET_PRIVATE (mime_filter);
 
 	if (priv->stream != NULL)
-		camel_stream_write (priv->stream, in, len);
+		camel_stream_write (priv->stream, in, len, NULL);
 
 	*out = (gchar *) in;
 	*outlen = len;

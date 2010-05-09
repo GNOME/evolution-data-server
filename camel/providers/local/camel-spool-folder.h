@@ -63,7 +63,7 @@ struct _CamelSpoolFolderClass {
 
 GType camel_spool_folder_get_type(void);
 
-CamelFolder *camel_spool_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 flags, CamelException *ex);
+CamelFolder *camel_spool_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 flags, GError **error);
 
 G_END_DECLS
 

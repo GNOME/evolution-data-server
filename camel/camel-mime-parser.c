@@ -144,7 +144,7 @@ struct _header_scan_filter {
 static void folder_scan_step(struct _header_scan_state *s, gchar **databuffer, gsize *datalength);
 static void folder_scan_drop_step(struct _header_scan_state *s);
 static gint folder_scan_init_with_fd(struct _header_scan_state *s, gint fd);
-static gint folder_scan_init_with_stream(struct _header_scan_state *s, CamelStream *stream);
+static gint folder_scan_init_with_stream(struct _header_scan_state *s, CamelStream *stream, GError **error);
 static struct _header_scan_state *folder_scan_init(void);
 static void folder_scan_close(struct _header_scan_state *s);
 static struct _header_scan_stack *folder_scan_content(struct _header_scan_state *s, gint *lastone, gchar **data, gsize *length);
@@ -449,6 +449,7 @@ camel_mime_parser_init_with_fd(CamelMimeParser *m, gint fd)
  * camel_mime_parser_init_with_stream:
  * @m:
  * @stream:
+ * @error: return location for a #GError, or %NULL
  *
  * Initialise the scanner with a source stream.  The scanner's
  * offsets will be relative to the current file position of
@@ -459,11 +460,12 @@ camel_mime_parser_init_with_fd(CamelMimeParser *m, gint fd)
  **/
 gint
 camel_mime_parser_init_with_stream (CamelMimeParser *parser,
-                                    CamelStream *stream)
+                                    CamelStream *stream,
+                                    GError **error)
 {
 	struct _header_scan_state *s = _PRIVATE (parser);
 
-	return folder_scan_init_with_stream (s, stream);
+	return folder_scan_init_with_stream (s, stream, error);
 }
 
 /**
@@ -624,6 +626,7 @@ camel_mime_parser_step (CamelMimeParser *parser, gchar **databuffer, gsize *data
  * @parser: MIME parser object
  * @databuffer:
  * @len:
+ * @error: return location for a #GError, or %NULL
  *
  * Read at most @len bytes from the internal mime parser buffer.
  *
@@ -640,7 +643,10 @@ camel_mime_parser_step (CamelMimeParser *parser, gchar **databuffer, gsize *data
  * Returns: The number of bytes available, or -1 on error.
  **/
 gint
-camel_mime_parser_read (CamelMimeParser *parser, const gchar **databuffer, gint len)
+camel_mime_parser_read (CamelMimeParser *parser,
+                        const gchar **databuffer,
+                        gint len,
+                        GError **error)
 {
 	struct _header_scan_state *s = _PRIVATE (parser);
 	gint there;
@@ -658,8 +664,15 @@ camel_mime_parser_read (CamelMimeParser *parser, const gchar **databuffer, gint 
 		return there;
 	}
 
-	if (folder_read(s) == -1)
+	if (folder_read(s) == -1) {
+		gint err = camel_mime_parser_errno (parser);
+
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (err),
+			"%s", g_strerror (err));
 		return -1;
+	}
 
 	there = MIN(s->inend - s->inptr, len);
 	d(printf("parser::read() had to re-read, now there = %d bytes\n", there));
@@ -903,7 +916,8 @@ folder_read(struct _header_scan_state *s)
 		memmove(s->inbuf, s->inptr, inoffset);
 	}
 	if (s->stream) {
-		len = camel_stream_read(s->stream, s->inbuf+inoffset, SCAN_BUF-inoffset);
+		len = camel_stream_read (
+			s->stream, s->inbuf+inoffset, SCAN_BUF-inoffset, NULL);
 	} else {
 		len = read(s->fd, s->inbuf+inoffset, SCAN_BUF-inoffset);
 	}
@@ -952,7 +966,7 @@ folder_seek(struct _header_scan_state *s, off_t offset, gint whence)
 			   the case (or bloody well should've been) */
 			newoffset = camel_seekable_stream_seek (
 				CAMEL_SEEKABLE_STREAM (s->stream),
-				offset, whence);
+				offset, whence, NULL);
 		} else {
 			newoffset = -1;
 			errno = EINVAL;
@@ -1505,7 +1519,8 @@ folder_scan_init_with_fd(struct _header_scan_state *s, gint fd)
 
 static gint
 folder_scan_init_with_stream (struct _header_scan_state *s,
-                              CamelStream *stream)
+                              CamelStream *stream,
+                              GError **error)
 {
 	folder_scan_reset(s);
 	s->stream = g_object_ref (stream);

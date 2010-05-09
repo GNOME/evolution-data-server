@@ -26,7 +26,7 @@
 #ifndef CAMEL_LOCK_H
 #define CAMEL_LOCK_H
 
-#include <camel/camel-exception.h>
+#include <glib.h>
 
 /* for .lock locking, retry, delay and stale counts */
 #define CAMEL_LOCK_DOT_RETRY (5) /* number of times to retry lock */
@@ -45,16 +45,16 @@ typedef enum {
 } CamelLockType;
 
 /* specific locking strategies */
-gint camel_lock_dot(const gchar *path, CamelException *ex);
-gint camel_lock_fcntl(gint fd, CamelLockType type, CamelException *ex);
-gint camel_lock_flock(gint fd, CamelLockType type, CamelException *ex);
+gint camel_lock_dot(const gchar *path, GError **error);
+gint camel_lock_fcntl(gint fd, CamelLockType type, GError **error);
+gint camel_lock_flock(gint fd, CamelLockType type, GError **error);
 
 void camel_unlock_dot(const gchar *path);
 void camel_unlock_fcntl(gint fd);
 void camel_unlock_flock(gint fd);
 
 /* lock a folder in a standard way */
-gint camel_lock_folder(const gchar *path, gint fd, CamelLockType type, CamelException *ex);
+gint camel_lock_folder(const gchar *path, gint fd, CamelLockType type, GError **error);
 void camel_unlock_folder(const gchar *path, gint fd);
 
 G_END_DECLS

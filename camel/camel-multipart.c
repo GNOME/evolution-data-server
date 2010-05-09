@@ -31,7 +31,6 @@
 #include <time.h>   /* for time */
 #include <unistd.h> /* for getpid */
 
-#include "camel-exception.h"
 #include "camel-mime-part.h"
 #include "camel-multipart.h"
 #include "camel-stream-mem.h"
@@ -68,7 +67,8 @@ multipart_finalize (GObject *object)
 /* this is MIME specific, doesn't belong here really */
 static gssize
 multipart_write_to_stream (CamelDataWrapper *data_wrapper,
-                           CamelStream *stream)
+                           CamelStream *stream,
+                           GError **error)
 {
 	CamelMultipart *multipart = CAMEL_MULTIPART (data_wrapper);
 	const gchar *boundary;
@@ -88,7 +88,8 @@ multipart_write_to_stream (CamelDataWrapper *data_wrapper,
 	 *    your mail client probably doesn't support ...."
 	 */
 	if (multipart->preface) {
-		count = camel_stream_write_string (stream, multipart->preface);
+		count = camel_stream_write_string (
+			stream, multipart->preface, error);
 		if (count == -1)
 			return -1;
 		total += count;
@@ -103,11 +104,11 @@ multipart_write_to_stream (CamelDataWrapper *data_wrapper,
 		count = camel_stream_printf (
 			stream, "\n--%s\n", boundary);
 		if (count == -1)
-			return -1;
+			goto file_error;
 		total += count;
 
 		count = camel_data_wrapper_write_to_stream (
-			CAMEL_DATA_WRAPPER (node->data), stream);
+			CAMEL_DATA_WRAPPER (node->data), stream, error);
 		if (count == -1)
 			return -1;
 		total += count;
@@ -118,19 +119,27 @@ multipart_write_to_stream (CamelDataWrapper *data_wrapper,
 	count = camel_stream_printf (
 		stream, "\n--%s--\n", boundary);
 	if (count == -1)
-		return -1;
+		goto file_error;
 	total += count;
 
 	/* and finally the postface */
 	if (multipart->postface) {
 		count = camel_stream_write_string (
-			stream, multipart->postface);
+			stream, multipart->postface, error);
 		if (count == -1)
 			return -1;
 		total += count;
 	}
 
 	return total;
+
+file_error:
+	g_set_error (
+		error, G_IO_ERROR,
+		g_io_error_from_errno (errno),
+		"%s", g_strerror (errno));
+
+	return -1;
 }
 
 static gboolean
@@ -301,7 +310,7 @@ multipart_construct_from_parser (CamelMultipart *multipart,
 	while (camel_mime_parser_step(mp, &buf, &len) != CAMEL_MIME_PARSER_STATE_MULTIPART_END) {
 		camel_mime_parser_unstep(mp);
 		bodypart = camel_mime_part_new();
-		camel_mime_part_construct_from_parser (bodypart, mp);
+		camel_mime_part_construct_from_parser (bodypart, mp, NULL);
 		camel_multipart_add_part(multipart, bodypart);
 		g_object_unref (bodypart);
 	}

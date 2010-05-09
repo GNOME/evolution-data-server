@@ -26,7 +26,7 @@ camel-filter-search
 </para>
 
 @data: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -41,7 +41,7 @@ camel-filter-search
 @info: 
 @source: 
 @expression: 
-@ex: 
+@error: 
 @Returns: 
 
 

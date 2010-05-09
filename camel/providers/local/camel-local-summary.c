@@ -43,7 +43,7 @@
 
 #define EXTRACT_FIRST_DIGIT(val) val=strtoul (part, &part, 10);
 
-static CamelFIRecord * summary_header_to_db (CamelFolderSummary *, CamelException *ex);
+static CamelFIRecord * summary_header_to_db (CamelFolderSummary *, GError **error);
 static gint summary_header_from_db (CamelFolderSummary *, CamelFIRecord *);
 
 static gint summary_header_load (CamelFolderSummary *, FILE *);
@@ -54,10 +54,10 @@ static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, st
 static gint local_summary_decode_x_evolution(CamelLocalSummary *cls, const gchar *xev, CamelLocalMessageInfo *mi);
 static gchar *local_summary_encode_x_evolution(CamelLocalSummary *cls, const CamelLocalMessageInfo *mi);
 
-static gint local_summary_load(CamelLocalSummary *cls, gint forceindex, CamelException *ex);
-static gint local_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, CamelException *ex);
-static gint local_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
-static CamelMessageInfo *local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, CamelException *ex);
+static gint local_summary_load(CamelLocalSummary *cls, gint forceindex, GError **error);
+static gint local_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GError **error);
+static gint local_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GError **error);
+static CamelMessageInfo *local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, GError **error);
 static gint local_summary_need_index(void);
 
 G_DEFINE_TYPE (CamelLocalSummary, camel_local_summary, CAMEL_TYPE_FOLDER_SUMMARY)
@@ -142,15 +142,15 @@ camel_local_summary_construct(CamelLocalSummary *new, const gchar *filename, con
 }
 
 static gint
-local_summary_load(CamelLocalSummary *cls, gint forceindex, CamelException *ex)
+local_summary_load(CamelLocalSummary *cls, gint forceindex, GError **error)
 {
 	d(g_print ("\nlocal_summary_load called \n"));
-	return camel_folder_summary_load_from_db ((CamelFolderSummary *)cls, ex);
+	return camel_folder_summary_load_from_db ((CamelFolderSummary *)cls, error);
 }
 
 /* load/check the summary */
 gint
-camel_local_summary_load(CamelLocalSummary *cls, gint forceindex, CamelException *ex)
+camel_local_summary_load(CamelLocalSummary *cls, gint forceindex, GError **error)
 {
 	CamelLocalSummaryClass *class;
 
@@ -159,7 +159,7 @@ camel_local_summary_load(CamelLocalSummary *cls, gint forceindex, CamelException
 	class = CAMEL_LOCAL_SUMMARY_GET_CLASS (cls);
 
 	if ((forceindex && class->need_index())
-	    || class->load(cls, forceindex, ex) == -1) {
+	    || class->load(cls, forceindex, error) == -1) {
 		w(g_warning("Could not load summary: flags may be reset"));
 		camel_folder_summary_clear((CamelFolderSummary *)cls);
 		return -1;
@@ -268,13 +268,13 @@ do_stat_mi(CamelLocalSummary *cls, struct _stat_info *info, CamelMessageInfo *mi
 gint
 camel_local_summary_check (CamelLocalSummary *cls,
                            CamelFolderChangeInfo *changeinfo,
-                           CamelException *ex)
+                           GError **error)
 {
 	CamelLocalSummaryClass *local_summary_class;
 	gint ret;
 
 	local_summary_class = CAMEL_LOCAL_SUMMARY_GET_CLASS (cls);
-	ret = local_summary_class->check(cls, changeinfo, ex);
+	ret = local_summary_class->check(cls, changeinfo, error);
 
 #ifdef DOSTATS
 	if (ret != -1) {
@@ -304,13 +304,13 @@ gint
 camel_local_summary_sync (CamelLocalSummary *cls,
                           gboolean expunge,
                           CamelFolderChangeInfo *changeinfo,
-                          CamelException *ex)
+                          GError **error)
 {
 	CamelLocalSummaryClass *local_summary_class;
 
 	local_summary_class = CAMEL_LOCAL_SUMMARY_GET_CLASS (cls);
 
-	return local_summary_class->sync (cls, expunge, changeinfo, ex);
+	return local_summary_class->sync (cls, expunge, changeinfo, error);
 }
 
 CamelMessageInfo *
@@ -318,13 +318,13 @@ camel_local_summary_add (CamelLocalSummary *cls,
                          CamelMimeMessage *msg,
                          const CamelMessageInfo *info,
                          CamelFolderChangeInfo *ci,
-                         CamelException *ex)
+                         GError **error)
 {
 	CamelLocalSummaryClass *local_summary_class;
 
 	local_summary_class = CAMEL_LOCAL_SUMMARY_GET_CLASS (cls);
 
-	return local_summary_class->add (cls, msg, info, ci, ex);
+	return local_summary_class->add (cls, msg, info, ci, error);
 }
 
 /**
@@ -416,7 +416,7 @@ camel_local_summary_write_headers(gint fd, struct _camel_header_raw *header, con
 }
 
 static gint
-local_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, CamelException *ex)
+local_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GError **error)
 {
 	/* FIXME: sync index here ? */
 	return 0;
@@ -426,13 +426,13 @@ static gint
 local_summary_sync (CamelLocalSummary *cls,
                     gboolean expunge,
                     CamelFolderChangeInfo *changeinfo,
-                    CamelException *ex)
+                    GError **error)
 {
 	CamelFolderSummary *folder_summary;
 
 	folder_summary = CAMEL_FOLDER_SUMMARY (cls);
 
-	if (camel_folder_summary_save_to_db (folder_summary, ex) == -1) {
+	if (camel_folder_summary_save_to_db (folder_summary, error) == -1) {
 		g_warning ("Could not save summary for local providers");
 		return -1;
 	}
@@ -485,7 +485,7 @@ update_summary (CamelFolderSummary *summary, CamelMessageInfoBase *info, CamelMe
 }
 
 static CamelMessageInfo *
-local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *ci, CamelException *ex)
+local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *ci, GError **error)
 {
 	CamelLocalMessageInfo *mi;
 	CamelFolderSummary *s = (CamelFolderSummary *)cls;
@@ -520,7 +520,7 @@ local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMess
 		if (mi->info.size == 0) {
 			CamelStreamNull *sn = (CamelStreamNull *)camel_stream_null_new();
 
-			camel_data_wrapper_write_to_stream((CamelDataWrapper *)msg, (CamelStream *)sn);
+			camel_data_wrapper_write_to_stream((CamelDataWrapper *)msg, (CamelStream *)sn, NULL);
 			mi->info.size = sn->written;
 			g_object_unref (sn);
 		}
@@ -532,8 +532,8 @@ local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMess
 		camel_folder_change_info_add_uid(ci, camel_message_info_uid(mi));
 	} else {
 		d(printf("Failed!\n"));
-		camel_exception_set (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Unable to add message to summary: unknown reason"));
 	}
 	return (CamelMessageInfo *)mi;
@@ -702,14 +702,14 @@ summary_header_load(CamelFolderSummary *s, FILE *in)
 }
 
 static struct _CamelFIRecord *
-summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
+summary_header_to_db (CamelFolderSummary *s, GError **error)
 {
 	CamelFolderSummaryClass *folder_summary_class;
 	struct _CamelFIRecord *fir;
 
 	/* Chain up to parent's summary_header_to_db() method. */
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (camel_local_summary_parent_class);
-	fir = folder_summary_class->summary_header_to_db (s, ex);
+	fir = folder_summary_class->summary_header_to_db (s, NULL);
 	if (fir)
 		fir->bdata = g_strdup_printf ("%d", CAMEL_LOCAL_SUMMARY_VERSION);
 

@@ -80,7 +80,7 @@ test_message_set_content_simple(CamelMimePart *part, gint how, const gchar *type
 		dw = camel_data_wrapper_new();
                 camel_data_wrapper_set_mime_type (dw, type);
 
-		camel_data_wrapper_construct_from_stream(dw, (CamelStream *)content);
+		camel_data_wrapper_construct_from_stream(dw, (CamelStream *)content, NULL);
 		camel_medium_set_content ((CamelMedium *)part, dw);
 
 		check_unref(content, 2);
@@ -94,9 +94,9 @@ test_message_write_file(CamelMimeMessage *msg, const gchar *name)
 	CamelStreamFs *file;
 	gint ret;
 
-	file = (CamelStreamFs *)camel_stream_fs_new_with_name(name, O_CREAT|O_WRONLY, 0600);
-	camel_data_wrapper_write_to_stream((CamelDataWrapper *)msg, (CamelStream *)file);
-	ret = camel_stream_close((CamelStream *)file);
+	file = (CamelStreamFs *)camel_stream_fs_new_with_name(name, O_CREAT|O_WRONLY, 0600, NULL);
+	camel_data_wrapper_write_to_stream((CamelDataWrapper *)msg, (CamelStream *)file, NULL);
+	ret = camel_stream_close((CamelStream *)file, NULL);
 
 	check(G_OBJECT (file)->ref_count == 1);
 	g_object_unref (file);
@@ -110,10 +110,10 @@ test_message_read_file(const gchar *name)
 	CamelStreamFs *file;
 	CamelMimeMessage *msg2;
 
-	file = (CamelStreamFs *)camel_stream_fs_new_with_name(name, O_RDONLY, 0);
+	file = (CamelStreamFs *)camel_stream_fs_new_with_name(name, O_RDONLY, 0, NULL);
 	msg2 = camel_mime_message_new();
 
-	camel_data_wrapper_construct_from_stream((CamelDataWrapper *)msg2, (CamelStream *)file);
+	camel_data_wrapper_construct_from_stream((CamelDataWrapper *)msg2, (CamelStream *)file, NULL);
 	/* file's refcount may be > 1 if the message is real big */
 	check(G_OBJECT(file)->ref_count >=1);
 	g_object_unref (file);
@@ -164,7 +164,7 @@ test_message_compare_content(CamelDataWrapper *dw, const gchar *text, gint len)
 
 	byte_array = g_byte_array_new ();
 	content = camel_stream_mem_new_with_byte_array (byte_array);
-	camel_data_wrapper_decode_to_stream (dw, content);
+	camel_data_wrapper_decode_to_stream (dw, content, NULL);
 
 	if (byte_array->len != len) {
 		printf ("original text:\n");
@@ -192,17 +192,17 @@ test_message_compare (CamelMimeMessage *msg)
 
 	byte_array1 = g_byte_array_new ();
 	stream1 = camel_stream_mem_new_with_byte_array (byte_array1);
-	check_msg(camel_data_wrapper_write_to_stream ((CamelDataWrapper *) msg, stream1) != -1, "write_to_stream 1 failed");
-	camel_stream_reset (stream1);
+	check_msg(camel_data_wrapper_write_to_stream ((CamelDataWrapper *) msg, stream1, NULL) != -1, "write_to_stream 1 failed", NULL);
+	camel_stream_reset (stream1, NULL);
 
 	msg2 = camel_mime_message_new ();
-	check_msg(camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) msg2, (CamelStream *) stream1) != -1, "construct_from_stream 1 failed");
-	camel_stream_reset ((CamelStream *) stream1);
+	check_msg(camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) msg2, (CamelStream *) stream1, NULL) != -1, "construct_from_stream 1 failed");
+	camel_stream_reset ((CamelStream *) stream1, NULL);
 
 	byte_array2 = g_byte_array_new ();
 	stream2 = camel_stream_mem_new_with_byte_array (byte_array2);
-	check_msg(camel_data_wrapper_write_to_stream ((CamelDataWrapper *) msg2, stream2) != -1, "write_to_stream 2 failed");
-	camel_stream_reset (stream2);
+	check_msg(camel_data_wrapper_write_to_stream ((CamelDataWrapper *) msg2, stream2, NULL) != -1, "write_to_stream 2 failed");
+	camel_stream_reset (stream2, NULL);
 
 	if (byte_array1->len != byte_array2->len) {
 		CamelDataWrapper *content;

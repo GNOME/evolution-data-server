@@ -787,7 +787,7 @@ sasl_digest_md5_finalize (GObject *object)
 static GByteArray *
 sasl_digest_md5_challenge (CamelSasl *sasl,
                            GByteArray *token,
-                           CamelException *ex)
+                           GError **error)
 {
 	CamelSaslDigestMd5 *sasl_digest = CAMEL_SASL_DIGEST_MD5 (sasl);
 	struct _CamelSaslDigestMd5Private *priv = sasl_digest->priv;
@@ -812,8 +812,9 @@ sasl_digest_md5_challenge (CamelSasl *sasl,
 	switch (priv->state) {
 	case STATE_AUTH:
 		if (token->len > 2048) {
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Server challenge too long (>2048 octets)"));
 			return NULL;
 		}
@@ -822,15 +823,17 @@ sasl_digest_md5_challenge (CamelSasl *sasl,
 		priv->challenge = parse_server_challenge (tokens, &abort);
 		g_free (tokens);
 		if (!priv->challenge || abort) {
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Server challenge invalid\n"));
 			return NULL;
 		}
 
 		if (priv->challenge->qop == QOP_INVALID) {
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Server challenge contained invalid "
 				  "\"Quality of Protection\" token"));
 			return NULL;
@@ -860,8 +863,9 @@ sasl_digest_md5_challenge (CamelSasl *sasl,
 
 		if (!tokens || !*tokens) {
 			g_free (tokens);
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Server response did not contain "
 				  "authorization data"));
 			return NULL;
@@ -880,8 +884,9 @@ sasl_digest_md5_challenge (CamelSasl *sasl,
 		if (!rspauth->value) {
 			g_free (rspauth->name);
 			g_free (rspauth);
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Server response contained incomplete "
 				  "authorization data"));
 			return NULL;
@@ -892,8 +897,9 @@ sasl_digest_md5_challenge (CamelSasl *sasl,
 			g_free (rspauth->name);
 			g_free (rspauth->value);
 			g_free (rspauth);
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Server response does not match"));
 			camel_sasl_set_authenticated (sasl, TRUE);
 

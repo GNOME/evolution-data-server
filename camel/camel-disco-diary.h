@@ -83,13 +83,13 @@ GType		camel_disco_diary_get_type	(void);
 CamelDiscoDiary *
 		camel_disco_diary_new		(CamelDiscoStore *store,
 						 const gchar *filename,
-						 CamelException *ex);
+						 GError **error);
 gboolean	camel_disco_diary_empty		(CamelDiscoDiary *diary);
 void		camel_disco_diary_log		(CamelDiscoDiary *diary,
 						 CamelDiscoDiaryAction action,
 						 ...);
 void		camel_disco_diary_replay	(CamelDiscoDiary *diary,
-						 CamelException *ex);
+						 GError **error);
 
 /* Temporary->Permanent UID map stuff */
 void		camel_disco_diary_uidmap_add	(CamelDiscoDiary *diary,

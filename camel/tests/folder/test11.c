@@ -95,90 +95,96 @@ check_fi(CamelFolderInfo *fi, CamelFolderInfo *list, gint len)
 gint
 main(gint argc, gchar **argv)
 {
-	CamelException *ex;
 	CamelFolder *f1, *f2;
 	CamelStore *store;
 	CamelFolderInfo *fi;
+	GError *error = NULL;
 
 	camel_test_init(argc, argv);
 	camel_test_provider_init(1, local_drivers);
-
-	ex = camel_exception_new();
 
 	/* clear out any camel-test data */
 	system("/bin/rm -rf /tmp/camel-test");
 
 	session = camel_test_session_new("/tmp/camel-test");
-	store = camel_session_get_store(session, "maildir:///tmp/camel-test/maildir", ex);
-	camel_exception_clear(ex);
+	store = camel_session_get_store(session, "maildir:///tmp/camel-test/maildir", NULL);
 
 	camel_test_start("Maildir backward compatability tests");
 
 	camel_test_push("./ prefix path, one level");
-	f1 = camel_store_get_folder(store, "testbox", CAMEL_STORE_FOLDER_CREATE, ex);
-	check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
-	f2 = camel_store_get_folder(store, "./testbox", CAMEL_STORE_FOLDER_CREATE, ex);
-	check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+	f1 = camel_store_get_folder(store, "testbox", CAMEL_STORE_FOLDER_CREATE, &error);
+	check_msg(error == NULL, "%s", error->message);
+	g_clear_error (&error);
+	f2 = camel_store_get_folder(store, "./testbox", CAMEL_STORE_FOLDER_CREATE, &error);
+	check_msg(error == NULL, "%s", error->message);
+	g_clear_error (&error);
 	check(f1 == f2);
 	check_unref(f2, 2);
 	check_unref(f1, 1);
 	camel_test_pull();
 
 	camel_test_push("./ prefix path, one level, no create");
-	f1 = camel_store_get_folder(store, "testbox2", CAMEL_STORE_FOLDER_CREATE, ex);
-	check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
-	f2 = camel_store_get_folder(store, "./testbox2", 0, ex);
-	check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+	f1 = camel_store_get_folder(store, "testbox2", CAMEL_STORE_FOLDER_CREATE, &error);
+	check_msg(error == NULL, "%s", error->message);
+	g_clear_error (&error);
+	f2 = camel_store_get_folder(store, "./testbox2", 0, &error);
+	check_msg(error == NULL, "%s", error->message);
+	g_clear_error (&error);
 	check(f1 == f2);
 	check_unref(f2, 2);
 	check_unref(f1, 1);
 	camel_test_pull();
 
 	camel_test_push("./ prefix path, two levels");
-	f1 = camel_store_get_folder(store, "testbox/foo", CAMEL_STORE_FOLDER_CREATE, ex);
-	check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
-	f2 = camel_store_get_folder(store, "./testbox/foo", CAMEL_STORE_FOLDER_CREATE, ex);
-	check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+	f1 = camel_store_get_folder(store, "testbox/foo", CAMEL_STORE_FOLDER_CREATE, &error);
+	check_msg(error == NULL, "%s", error->message);
+	g_clear_error (&error);
+	f2 = camel_store_get_folder(store, "./testbox/foo", CAMEL_STORE_FOLDER_CREATE, &error);
+	check_msg(error == NULL, "%s", error->message);
+	g_clear_error (&error);
 	check(f1 == f2);
 	check_unref(f2, 2);
 	check_unref(f1, 1);
 	camel_test_pull();
 
 	camel_test_push("'.' == Inbox");
-	f2 = camel_store_get_inbox(store, ex);
-	check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
-	f1 = camel_store_get_folder(store, ".", 0, ex);
-	check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+	f2 = camel_store_get_inbox(store, &error);
+	check_msg(error == NULL, "%s", error->message);
+	g_clear_error (&error);
+	f1 = camel_store_get_folder(store, ".", 0, &error);
+	check_msg(error == NULL, "%s", error->message);
+	g_clear_error (&error);
 	check(f1 == f2);
 	check_unref(f2, 2);
 	check_unref(f1, 1);
 	camel_test_pull();
 
 	camel_test_push("folder info, recursive");
-	fi = camel_store_get_folder_info(store, "", CAMEL_STORE_FOLDER_INFO_RECURSIVE, ex);
-	check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+	fi = camel_store_get_folder_info(store, "", CAMEL_STORE_FOLDER_INFO_RECURSIVE, &error);
+	check_msg(error == NULL, "%s", error->message);
+	g_clear_error (&error);
 	check(fi != NULL);
 	check_fi(fi, fi_list_1, G_N_ELEMENTS (fi_list_1));
 	camel_test_pull();
 
 	camel_test_push("folder info, flat");
-	fi = camel_store_get_folder_info(store, "", 0, ex);
-	check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+	fi = camel_store_get_folder_info(store, "", 0, &error);
+	check_msg(error == NULL, "%s", error->message);
+	g_clear_error (&error);
 	check(fi != NULL);
 	check_fi(fi, fi_list_2, G_N_ELEMENTS (fi_list_2));
 	camel_test_pull();
 
 	camel_test_push("folder info, recursive, non root");
-	fi = camel_store_get_folder_info(store, "testbox", CAMEL_STORE_FOLDER_INFO_RECURSIVE, ex);
-	check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
+	fi = camel_store_get_folder_info(store, "testbox", CAMEL_STORE_FOLDER_INFO_RECURSIVE, &error);
+	check_msg(error == NULL, "%s", error->message);
+	g_clear_error (&error);
 	check(fi != NULL);
 	check_fi(fi, fi_list_3, G_N_ELEMENTS (fi_list_3));
 	camel_test_pull();
 
 	check_unref(store, 1);
 	check_unref(session, 1);
-
-	camel_exception_free(ex);
 
 	camel_test_end();
 

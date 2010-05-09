@@ -233,6 +233,7 @@ CamelMimePart
 
 @mime_part: 
 @parser: 
+@error: 
 @Returns: 
 
 
@@ -263,6 +264,8 @@ CamelMimePart
 
 @mime_part: 
 @mp: 
+@error: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_mime_message_build_preview ##### -->

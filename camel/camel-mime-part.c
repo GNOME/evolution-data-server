@@ -33,7 +33,7 @@
 #include <string.h>
 
 #include "camel-charset-map.h"
-#include "camel-exception.h"
+#include "camel-debug.h"
 #include "camel-iconv.h"
 #include "camel-mime-filter-basic.h"
 #include "camel-mime-filter-charset.h"
@@ -136,13 +136,13 @@ write_references (CamelStream *stream,
 			total += out;
 			len = 0;
 		}
-		out = camel_stream_write (stream, ids, ide-ids);
+		out = camel_stream_write (stream, ids, ide-ids, NULL);
 		if (out == -1)
 			return -1;
 		len += out;
 		total += out;
 	}
-	camel_stream_write (stream, "\n", 1);
+	camel_stream_write (stream, "\n", 1, NULL);
 
 	return total;
 }
@@ -477,7 +477,8 @@ mime_part_set_content (CamelMedium *medium,
 
 static gssize
 mime_part_write_to_stream (CamelDataWrapper *dw,
-                           CamelStream *stream)
+                           CamelStream *stream,
+                           GError **error)
 {
 	CamelMimePart *mp = CAMEL_MIME_PART (dw);
 	CamelMedium *medium = CAMEL_MEDIUM (dw);
@@ -511,14 +512,19 @@ mime_part_write_to_stream (CamelDataWrapper *dw,
 			} else {
 				count = writefn(stream, h);
 			}
-			if (count == -1)
+			if (count == -1) {
+				g_set_error (
+					error, G_IO_ERROR,
+					g_io_error_from_errno (errno),
+					"%s", g_strerror (errno));
 				return -1;
+			}
 			total += count;
 			h = h->next;
 		}
 	}
 
-	count = camel_stream_write (stream, "\n", 1);
+	count = camel_stream_write (stream, "\n", 1, error);
 	if (count == -1)
 		return -1;
 	total += count;
@@ -556,8 +562,13 @@ mime_part_write_to_stream (CamelDataWrapper *dw,
 				count = camel_stream_printf (
 					ostream, "begin 644 %s\n",
 					filename ? filename : "untitled");
-				if (count == -1)
+				if (count == -1) {
+					g_set_error (
+						error, G_IO_ERROR,
+						g_io_error_from_errno (errno),
+						"%s", g_strerror (errno));
 					return -1;
+				}
 				total += count;
 				filter = camel_mime_filter_basic_new (CAMEL_MIME_FILTER_BASIC_UU_ENC);
 				break;
@@ -603,13 +614,15 @@ mime_part_write_to_stream (CamelDataWrapper *dw,
 		}
 
 		if (reencode)
-			count = camel_data_wrapper_decode_to_stream (content, stream);
+			count = camel_data_wrapper_decode_to_stream (
+				content, stream, error);
 		else
-			count = camel_data_wrapper_write_to_stream (content, stream);
+			count = camel_data_wrapper_write_to_stream (
+				content, stream, error);
 
 		if (filter_stream) {
 			errnosav = errno;
-			camel_stream_flush (stream);
+			camel_stream_flush (stream, NULL);
 			g_object_unref (filter_stream);
 			errno = errnosav;
 		}
@@ -620,7 +633,7 @@ mime_part_write_to_stream (CamelDataWrapper *dw,
 		total += count;
 
 		if (reencode && mp->priv->encoding == CAMEL_TRANSFER_ENCODING_UUENCODE) {
-			count = camel_stream_write (ostream, "end\n", 4);
+			count = camel_stream_write (ostream, "end\n", 4, error);
 			if (count == -1)
 				return -1;
 			total += count;
@@ -634,7 +647,8 @@ mime_part_write_to_stream (CamelDataWrapper *dw,
 
 static gint
 mime_part_construct_from_stream (CamelDataWrapper *dw,
-                                 CamelStream *s)
+                                 CamelStream *s,
+                                 GError **error)
 {
 	CamelMimeParser *mp;
 	gint ret;
@@ -642,12 +656,11 @@ mime_part_construct_from_stream (CamelDataWrapper *dw,
 	d(printf("mime_part::construct_from_stream()\n"));
 
 	mp = camel_mime_parser_new();
-	if (camel_mime_parser_init_with_stream (mp, s) == -1) {
-		g_warning ("Cannot create parser for stream");
+	if (camel_mime_parser_init_with_stream (mp, s, error) == -1) {
 		ret = -1;
 	} else {
 		ret = camel_mime_part_construct_from_parser (
-			CAMEL_MIME_PART (dw), mp);
+			CAMEL_MIME_PART (dw), mp, error);
 	}
 	g_object_unref (mp);
 	return ret;
@@ -655,7 +668,8 @@ mime_part_construct_from_stream (CamelDataWrapper *dw,
 
 static gint
 mime_part_construct_from_parser (CamelMimePart *mime_part,
-                                 CamelMimeParser *mp)
+                                 CamelMimeParser *mp,
+                                 GError **error)
 {
 	CamelDataWrapper *dw = (CamelDataWrapper *) mime_part;
 	struct _camel_header_raw *headers;
@@ -663,6 +677,8 @@ mime_part_construct_from_parser (CamelMimePart *mime_part,
 	gchar *buf;
 	gsize len;
 	gint err;
+	gboolean success;
+	gboolean retval = 0;
 
 	d(printf("mime_part::construct_from_parser()\n"));
 
@@ -691,7 +707,9 @@ mime_part_construct_from_parser (CamelMimePart *mime_part,
 			headers = headers->next;
 		}
 
-		camel_mime_part_construct_content_from_parser (mime_part, mp);
+		success = camel_mime_part_construct_content_from_parser (
+			mime_part, mp, error);
+		retval = success ? 0 : -1;
 		break;
 	default:
 		g_warning("Invalid state encountered???: %u", camel_mime_parser_state(mp));
@@ -701,10 +719,14 @@ mime_part_construct_from_parser (CamelMimePart *mime_part,
 	err = camel_mime_parser_errno(mp);
 	if (err != 0) {
 		errno = err;
-		return -1;
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			"%s", g_strerror (errno));
+		retval = -1;
 	}
 
-	return 0;
+	return retval;
 }
 
 static void
@@ -1233,9 +1255,11 @@ camel_mime_part_get_content_type (CamelMimePart *mime_part)
  **/
 gint
 camel_mime_part_construct_from_parser (CamelMimePart *mime_part,
-                                       CamelMimeParser *mp)
+                                       CamelMimeParser *mp,
+                                       GError **error)
 {
 	CamelMimePartClass *class;
+	gint retval;
 
 	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), -1);
 	g_return_val_if_fail (CAMEL_IS_MIME_PARSER (mp), -1);
@@ -1243,7 +1267,10 @@ camel_mime_part_construct_from_parser (CamelMimePart *mime_part,
 	class = CAMEL_MIME_PART_GET_CLASS (mime_part);
 	g_return_val_if_fail (class->construct_from_parser != NULL, -1);
 
-	return class->construct_from_parser (mime_part, mp);
+	retval = class->construct_from_parser (mime_part, mp, error);
+	CAMEL_CHECK_GERROR (mime_part, construct_from_parser, retval == 0, error);
+
+	return retval;
 }
 
 /**
@@ -1285,7 +1312,7 @@ camel_mime_part_set_content (CamelMimePart *mime_part,
 		dw = camel_data_wrapper_new ();
 		camel_data_wrapper_set_mime_type (dw, type);
 		stream = camel_stream_mem_new_with_buffer (data, length);
-		camel_data_wrapper_construct_from_stream (dw, stream);
+		camel_data_wrapper_construct_from_stream (dw, stream, NULL);
 		g_object_unref (stream);
 		camel_medium_set_content (medium, dw);
 		g_object_unref (dw);
@@ -1315,7 +1342,7 @@ camel_mime_part_get_content_size (CamelMimePart *mime_part)
 	dw = camel_medium_get_content (CAMEL_MEDIUM (mime_part));
 
 	null = (CamelStreamNull *) camel_stream_null_new ();
-	camel_data_wrapper_decode_to_stream (dw, (CamelStream *) null);
+	camel_data_wrapper_decode_to_stream (dw, (CamelStream *) null, NULL);
 	size = null->written;
 
 	g_object_unref (null);

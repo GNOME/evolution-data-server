@@ -444,14 +444,14 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 				filtered_stream = g_object_ref (content);
 			}
 
-			camel_data_wrapper_decode_to_stream (dw, filtered_stream);
-			camel_stream_flush (filtered_stream);
+			camel_data_wrapper_decode_to_stream (dw, filtered_stream, NULL);
+			camel_stream_flush (filtered_stream, NULL);
 			g_object_unref (filtered_stream);
 
-			camel_stream_write (content, "", 1);
+			camel_stream_write (content, "", 1, NULL);
 			e_gw_item_set_message (item, (const gchar *)byte_array->data);
 		} else {
-			camel_data_wrapper_decode_to_stream (dw, content);
+			camel_data_wrapper_decode_to_stream (dw, content, NULL);
 			send_as_attachment (cnc, item, content, type, dw, NULL, NULL, &attach_list);
 		}
 
@@ -648,7 +648,7 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 			if (temp_part) {
 				is_alternative = TRUE;
 				temp_dw = camel_medium_get_content (CAMEL_MEDIUM (temp_part));
-				camel_data_wrapper_write_to_stream(temp_dw, temp_content);
+				camel_data_wrapper_write_to_stream(temp_dw, temp_content, NULL);
 				filename = camel_mime_part_get_filename (temp_part);
 				disposition = camel_mime_part_get_disposition (temp_part);
 				cid = camel_mime_part_get_content_id (temp_part);
@@ -679,18 +679,18 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 				filtered_stream = g_object_ref (content);
 			}
 
-			camel_data_wrapper_decode_to_stream (dw, filtered_stream);
-			camel_stream_flush (filtered_stream);
+			camel_data_wrapper_decode_to_stream (dw, filtered_stream, NULL);
+			camel_stream_flush (filtered_stream, NULL);
 			g_object_unref (filtered_stream);
 
-			camel_stream_write (content, "", 1);
+			camel_stream_write (content, "", 1, NULL);
 			e_gw_item_set_message (item, (const gchar *) buffer->data);
 		} else {
 			filename = camel_mime_part_get_filename (part);
 			disposition = camel_mime_part_get_disposition (part);
 			content_id = camel_mime_part_get_content_id (part);
 
-			camel_data_wrapper_decode_to_stream (dw, content);
+			camel_data_wrapper_decode_to_stream (dw, content, NULL);
 			send_as_attachment (cnc, item, content, type, dw, filename, content_id, attach_list);
 		}
 

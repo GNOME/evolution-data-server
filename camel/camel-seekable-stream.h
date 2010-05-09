@@ -78,21 +78,25 @@ struct _CamelSeekableStreamClass {
 
 	off_t		(*seek)			(CamelSeekableStream *stream,
 						 off_t offset,
-						 CamelStreamSeekPolicy policy);
+						 CamelStreamSeekPolicy policy,
+						 GError **error);
 	off_t		(*tell)			(CamelSeekableStream *stream);
 	gint		(*set_bounds)		(CamelSeekableStream *stream,
 						 off_t start,
-						 off_t end);
+						 off_t end,
+						 GError **error);
 };
 
 GType		camel_seekable_stream_get_type	(void);
 off_t		camel_seekable_stream_seek	(CamelSeekableStream *stream,
 						 off_t offset,
-						 CamelStreamSeekPolicy policy);
+						 CamelStreamSeekPolicy policy,
+						 GError **error);
 off_t		camel_seekable_stream_tell	(CamelSeekableStream *stream);
 gint		camel_seekable_stream_set_bounds(CamelSeekableStream *stream,
 						 off_t start,
-						 off_t end);
+						 off_t end,
+						 GError **error);
 
 G_END_DECLS
 

@@ -26,6 +26,7 @@
 
 #include <string.h>
 
+#include "camel-debug.h"
 #include "camel-mime-utils.h"
 #include "camel-sasl-cram-md5.h"
 #include "camel-sasl-digest-md5.h"
@@ -257,7 +258,7 @@ camel_sasl_init (CamelSasl *sasl)
  * camel_sasl_challenge:
  * @sasl: a #CamelSasl object
  * @token: a token, or %NULL
- * @ex: a #CamelException
+ * @error: return location for a #GError, or %NULL
  *
  * If @token is %NULL, generate the initial SASL message to send to
  * the server. (This will be %NULL if the client doesn't initiate the
@@ -270,23 +271,27 @@ camel_sasl_init (CamelSasl *sasl)
 GByteArray *
 camel_sasl_challenge (CamelSasl *sasl,
                       GByteArray *token,
-                      CamelException *ex)
+                      GError **error)
 {
 	CamelSaslClass *class;
+	GByteArray *response;
 
 	g_return_val_if_fail (CAMEL_IS_SASL (sasl), NULL);
 
 	class = CAMEL_SASL_GET_CLASS (sasl);
 	g_return_val_if_fail (class->challenge != NULL, NULL);
 
-	return class->challenge (sasl, token, ex);
+	response = class->challenge (sasl, token, error);
+	CAMEL_CHECK_GERROR (sasl, challenge, response != NULL, error);
+
+	return response;
 }
 
 /**
  * camel_sasl_challenge_base64:
  * @sasl: a #CamelSasl object
  * @token: a base64-encoded token
- * @ex: a #CamelException
+ * @error: return location for a #GError, or %NULL
  *
  * As with #camel_sasl_challenge, but the challenge @token and the
  * response are both base64-encoded.
@@ -296,7 +301,7 @@ camel_sasl_challenge (CamelSasl *sasl,
 gchar *
 camel_sasl_challenge_base64 (CamelSasl *sasl,
                              const gchar *token,
-                             CamelException *ex)
+                             GError **error)
 {
 	GByteArray *token_binary, *ret_binary;
 	gchar *ret;
@@ -314,7 +319,7 @@ camel_sasl_challenge_base64 (CamelSasl *sasl,
 	} else
 		token_binary = NULL;
 
-	ret_binary = camel_sasl_challenge (sasl, token_binary, ex);
+	ret_binary = camel_sasl_challenge (sasl, token_binary, error);
 	if (token_binary)
 		g_byte_array_free (token_binary, TRUE);
 	if (!ret_binary)

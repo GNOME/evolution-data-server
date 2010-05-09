@@ -64,7 +64,7 @@ struct _CamelOfflineFolderClass {
 
 	gboolean	(*downsync)		(CamelOfflineFolder *folder,
 						 const gchar *expression,
-						 CamelException *ex);
+						 GError **error);
 };
 
 GType		camel_offline_folder_get_type	(void);
@@ -75,7 +75,7 @@ void		camel_offline_folder_set_offline_sync
 						 gboolean offline_sync);
 gboolean	camel_offline_folder_downsync	(CamelOfflineFolder *offline,
 						 const gchar *expression,
-						 CamelException *ex);
+						 GError **error);
 
 G_END_DECLS
 

@@ -224,7 +224,7 @@ CamelFolderSummary
 </para>
 
 @s: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -234,7 +234,7 @@ CamelFolderSummary
 </para>
 
 @s: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -255,7 +255,7 @@ CamelFolderSummary
 @s: 
 @store: 
 @folder_name: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -265,7 +265,7 @@ CamelFolderSummary
 </para>
 
 @s: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -311,7 +311,7 @@ CamelFolderSummary
 </para>
 
 @s: 
-@ex: 
+@error: 
 
 
 <!-- ##### FUNCTION camel_folder_summary_insert ##### -->

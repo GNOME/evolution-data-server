@@ -66,7 +66,8 @@ stream_fs_finalize (GObject *object)
 static gssize
 stream_fs_read (CamelStream *stream,
                 gchar *buffer,
-                gsize n)
+                gsize n,
+                GError **error)
 {
 	CamelStreamFsPrivate *priv;
 	CamelSeekableStream *seekable;
@@ -78,7 +79,7 @@ stream_fs_read (CamelStream *stream,
 	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
 		n = MIN (seekable->bound_end - seekable->position, n);
 
-	if ((nread = camel_read (priv->fd, buffer, n)) > 0)
+	if ((nread = camel_read (priv->fd, buffer, n, error)) > 0)
 		seekable->position += nread;
 	else if (nread == 0)
 		stream->eos = TRUE;
@@ -89,7 +90,8 @@ stream_fs_read (CamelStream *stream,
 static gssize
 stream_fs_write (CamelStream *stream,
                  const gchar *buffer,
-                 gsize n)
+                 gsize n,
+                 GError **error)
 {
 	CamelStreamFsPrivate *priv;
 	CamelSeekableStream *seekable;
@@ -101,31 +103,46 @@ stream_fs_write (CamelStream *stream,
 	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
 		n = MIN (seekable->bound_end - seekable->position, n);
 
-	if ((nwritten = camel_write (priv->fd, buffer, n)) > 0)
+	if ((nwritten = camel_write (priv->fd, buffer, n, error)) > 0)
 		seekable->position += nwritten;
 
 	return nwritten;
 }
 
 static gint
-stream_fs_flush (CamelStream *stream)
+stream_fs_flush (CamelStream *stream,
+                 GError **error)
 {
 	CamelStreamFsPrivate *priv;
 
 	priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 
-	return fsync (priv->fd);
+	if (fsync (priv->fd) == -1) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			"%s", g_strerror (errno));
+		return -1;
+	}
+
+	return 0;
 }
 
 static gint
-stream_fs_close (CamelStream *stream)
+stream_fs_close (CamelStream *stream,
+                 GError **error)
 {
 	CamelStreamFsPrivate *priv;
 
 	priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 
-	if (close (priv->fd) == -1)
+	if (close (priv->fd) == -1) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			"%s", g_strerror (errno));
 		return -1;
+	}
 
 	priv->fd = -1;
 
@@ -135,7 +152,8 @@ stream_fs_close (CamelStream *stream)
 static off_t
 stream_fs_seek (CamelSeekableStream *stream,
                 off_t offset,
-                CamelStreamSeekPolicy policy)
+                CamelStreamSeekPolicy policy,
+                GError **error)
 {
 	CamelStreamFsPrivate *priv;
 	off_t real = 0;
@@ -156,7 +174,11 @@ stream_fs_seek (CamelSeekableStream *stream,
 				if (real<stream->bound_start)
 					real = stream->bound_start;
 				stream->position = real;
-			}
+			} else
+				g_set_error (
+					error, G_IO_ERROR,
+					g_io_error_from_errno (errno),
+					"%s", g_strerror (errno));
 			return real;
 		}
 		real = stream->bound_end + offset;
@@ -168,8 +190,13 @@ stream_fs_seek (CamelSeekableStream *stream,
 	real = MAX (real, stream->bound_start);
 
 	real = lseek(priv->fd, real, SEEK_SET);
-	if (real == -1)
+	if (real == -1) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			"%s", g_strerror (errno));
 		return -1;
+	}
 
 	if (real != stream->position && ((CamelStream *)stream)->eos)
 		((CamelStream *)stream)->eos = FALSE;
@@ -256,13 +283,14 @@ camel_stream_fs_new_with_fd (gint fd)
 CamelStream *
 camel_stream_fs_new_with_fd_and_bounds (gint fd,
                                         off_t start,
-                                        off_t end)
+                                        off_t end,
+                                        GError **error)
 {
 	CamelStream *stream;
 
 	stream = camel_stream_fs_new_with_fd (fd);
 	camel_seekable_stream_set_bounds (
-		CAMEL_SEEKABLE_STREAM (stream), start, end);
+		CAMEL_SEEKABLE_STREAM (stream), start, end, error);
 
 	return stream;
 }
@@ -272,6 +300,7 @@ camel_stream_fs_new_with_fd_and_bounds (gint fd,
  * @name: a local filename
  * @flags: flags as in open(2)
  * @mode: a file mode
+ * @error: return location for a #GError, or %NULL
  *
  * Creates a new #CamelStreamFs corresponding to the named file, flags,
  * and mode.
@@ -281,13 +310,19 @@ camel_stream_fs_new_with_fd_and_bounds (gint fd,
 CamelStream *
 camel_stream_fs_new_with_name (const gchar *name,
                                gint flags,
-                               mode_t mode)
+                               mode_t mode,
+                               GError **error)
 {
 	gint fd;
 
 	fd = g_open (name, flags|O_BINARY, mode);
-	if (fd == -1)
+	if (fd == -1) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			"%s", g_strerror (errno));
 		return NULL;
+	}
 
 	return camel_stream_fs_new_with_fd (fd);
 }
@@ -299,6 +334,7 @@ camel_stream_fs_new_with_name (const gchar *name,
  * @mode: a file mode
  * @start: the first valid position in the file
  * @end: the first invalid position in the file, or #CAMEL_STREAM_UNBOUND
+ * @error: return location for a #GError, or %NULL
  *
  * Creates a new CamelStream corresponding to the given arguments.
  *
@@ -309,17 +345,24 @@ camel_stream_fs_new_with_name_and_bounds (const gchar *name,
                                           gint flags,
                                           mode_t mode,
                                           off_t start,
-                                          off_t end)
+                                          off_t end,
+                                          GError **error)
 {
 	CamelStream *stream;
+	gint retval;
 
-	stream = camel_stream_fs_new_with_name (name, flags, mode);
+	stream = camel_stream_fs_new_with_name (name, flags, mode, error);
 	if (stream == NULL)
 		return NULL;
 
-	camel_seekable_stream_set_bounds (
+	retval = camel_seekable_stream_set_bounds (
 		CAMEL_SEEKABLE_STREAM (stream),
-		start, end);
+		start, end, error);
+
+	if (retval == -1) {
+		g_object_unref (stream);
+		stream = NULL;
+	}
 
 	return stream;
 }

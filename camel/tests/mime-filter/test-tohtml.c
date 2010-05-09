@@ -31,14 +31,14 @@ test_filter(CamelMimeFilter *f, const gchar *inname, const gchar *outname)
 
 	camel_test_push("setup");
 
-	indisk = camel_stream_fs_new_with_name(inname, O_RDONLY, 0);
+	indisk = camel_stream_fs_new_with_name(inname, O_RDONLY, 0, NULL);
 	check(indisk);
-	outdisk = camel_stream_fs_new_with_name(outname, O_RDONLY, 0);
+	outdisk = camel_stream_fs_new_with_name(outname, O_RDONLY, 0, NULL);
 	check(outdisk);
 
 	byte_array_out = g_byte_array_new ();
 	out = camel_stream_mem_new_with_byte_array (byte_array_out);
-	check(camel_stream_write_to_stream(outdisk, out) > 0);
+	check(camel_stream_write_to_stream(outdisk, out, NULL) > 0);
 
 	camel_test_pull();
 
@@ -52,7 +52,7 @@ test_filter(CamelMimeFilter *f, const gchar *inname, const gchar *outname)
 	id = camel_stream_filter_add((CamelStreamFilter *)filter, f);
 	check_count(f, 2);
 
-	check(camel_stream_write_to_stream(filter, in) > 0);
+	check(camel_stream_write_to_stream(filter, in, NULL) > 0);
 	check_msg(byte_array_in->len == byte_array_out->len
 		  && memcmp(byte_array_in->data, byte_array_out->data, byte_array_in->len) == 0,
 		  "Buffer content mismatch, %d != %d, in = '%.*s' != out = '%.*s'", byte_array_in->len, byte_array_out->len,
@@ -69,7 +69,7 @@ test_filter(CamelMimeFilter *f, const gchar *inname, const gchar *outname)
 	check_count(f, 1);
 	check_unref(in, 1);
 
-	check(camel_stream_reset(indisk) == 0);
+	check(camel_stream_reset(indisk, NULL) == 0);
 
 	camel_test_push("writing through filter stream");
 
@@ -80,8 +80,8 @@ test_filter(CamelMimeFilter *f, const gchar *inname, const gchar *outname)
 	id = camel_stream_filter_add((CamelStreamFilter *)filter, f);
 	check_count(f, 2);
 
-	check(camel_stream_write_to_stream(indisk, filter) > 0);
-	check(camel_stream_flush(filter) == 0);
+	check(camel_stream_write_to_stream(indisk, filter, NULL) > 0);
+	check(camel_stream_flush(filter, NULL) == 0);
 	check_msg(byte_array_in->len == byte_array_out->len
 		  && memcmp(byte_array_in->data, byte_array_out->data, byte_array_in->len) == 0,
 		  "Buffer content mismatch, %d != %d, in = '%.*s' != out = '%.*s'", byte_array_in->len, byte_array_out->len,
@@ -116,7 +116,7 @@ main (gint argc, gchar **argv)
 		sprintf(inname, "data/html.%d.in", i);
 		sprintf(outname, "data/html.%d.out", i);
 
-		if (stat(inname, &st) == -1)
+		if (g_stat(inname, &st) == -1)
 			break;
 
 		f = camel_mime_filter_tohtml_new(CAMEL_MIME_FILTER_TOHTML_CONVERT_URLS, 0);

@@ -73,7 +73,7 @@ struct _CamelImapMessageCacheClass {
 /* public methods */
 CamelImapMessageCache *camel_imap_message_cache_new (const gchar *path,
 						     CamelFolderSummary *summary,
-						     CamelException *ex);
+						     GError **error);
 
 void camel_imap_message_cache_set_path (CamelImapMessageCache *cache,
 					const gchar *path);
@@ -85,27 +85,25 @@ CamelStream *camel_imap_message_cache_insert (CamelImapMessageCache *cache,
 					      const gchar *part_spec,
 					      const gchar *data,
 					      gint len,
-					      CamelException *ex);
+					      GError **error);
 void camel_imap_message_cache_insert_stream  (CamelImapMessageCache *cache,
 					      const gchar *uid,
 					      const gchar *part_spec,
-					      CamelStream *data_stream,
-					      CamelException *ex);
+					      CamelStream *data_stream);
 void camel_imap_message_cache_insert_wrapper (CamelImapMessageCache *cache,
 					      const gchar *uid,
 					      const gchar *part_spec,
-					      CamelDataWrapper *wrapper,
-					      CamelException *ex);
+					      CamelDataWrapper *wrapper);
 
 CamelStream *camel_imap_message_cache_get    (CamelImapMessageCache *cache,
 					      const gchar *uid,
 					      const gchar *part_spec,
-					      CamelException *ex);
+					      GError **error);
 
 gchar *       camel_imap_message_cache_get_filename (CamelImapMessageCache *cache,
 					      const gchar *uid,
 					      const gchar *part_spec,
-					      CamelException *ex);
+					      GError **error);
 
 void         camel_imap_message_cache_remove (CamelImapMessageCache *cache,
 					      const gchar *uid);
@@ -115,13 +113,12 @@ void         camel_imap_message_cache_clear  (CamelImapMessageCache *cache);
 void         camel_imap_message_cache_copy   (CamelImapMessageCache *source,
 					      const gchar *source_uid,
 					      CamelImapMessageCache *dest,
-					      const gchar *dest_uid,
-					      CamelException *ex);
+					      const gchar *dest_uid);
 gboolean     camel_imap_message_cache_delete (const gchar *path,
-					      CamelException *ex);
+					      GError **error);
 GPtrArray *  camel_imap_message_cache_filter_cached(CamelImapMessageCache *,
                                               GPtrArray *uids,
-                                              CamelException *ex);
+                                              GError **error);
 
 GType camel_imap_message_cache_get_type (void);
 

@@ -145,7 +145,7 @@ CamelFolder
 </para>
 
 @folder: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -156,7 +156,7 @@ CamelFolder
 
 @folder: 
 @expunge: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -184,7 +184,7 @@ CamelFolder
 </para>
 
 @folder: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -326,7 +326,7 @@ CamelFolder
 @message: 
 @info: 
 @appended_uid: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -391,7 +391,7 @@ CamelFolder
 
 @folder: 
 @uid: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -402,7 +402,7 @@ CamelFolder
 
 @folder: 
 @uid: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -440,7 +440,7 @@ CamelFolder
 
 @folder: 
 @uids: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -480,7 +480,7 @@ CamelFolder
 
 @folder: 
 @expr: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -492,7 +492,7 @@ CamelFolder
 @folder: 
 @expr: 
 @uids: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -512,7 +512,7 @@ CamelFolder
 
 @folder: 
 @expression: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -554,7 +554,7 @@ CamelFolder
 @dest: 
 @transferred_uids: 
 @delete_originals: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -689,7 +689,7 @@ CamelFolder
 
 @folder: 
 @uid: 
-@ex: 
+@error: 
 @Returns: 
 
 

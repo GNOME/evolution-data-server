@@ -55,7 +55,7 @@ CamelService
 @session: 
 @provider: 
 @url: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -65,7 +65,7 @@ CamelService
 </para>
 
 @service: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -76,7 +76,7 @@ CamelService
 
 @service: 
 @clean: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -140,7 +140,7 @@ CamelService
 </para>
 
 @service: 
-@ex: 
+@error: 
 @Returns: 
 
 

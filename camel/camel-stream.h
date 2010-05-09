@@ -68,31 +68,42 @@ struct _CamelStreamClass {
 
 	gssize		(*read)			(CamelStream *stream,
 						 gchar *buffer,
-						 gsize n);
+						 gsize n,
+						 GError **error);
 	gssize		(*write)		(CamelStream *stream,
 						 const gchar *buffer,
-						 gsize n);
-	gint		(*close)		(CamelStream *stream);
-	gint		(*flush)		(CamelStream *stream);
+						 gsize n,
+						 GError **error);
+	gint		(*close)		(CamelStream *stream,
+						 GError **error);
+	gint		(*flush)		(CamelStream *stream,
+						 GError **error);
 	gboolean	(*eos)			(CamelStream *stream);
-	gint		(*reset)		(CamelStream *stream);
+	gint		(*reset)		(CamelStream *stream,
+						 GError **error);
 };
 
 GType		camel_stream_get_type		(void);
 gssize		camel_stream_read		(CamelStream *stream,
 						 gchar *buffer,
-						 gsize n);
+						 gsize n,
+						 GError **error);
 gssize		camel_stream_write		(CamelStream *stream,
 						 const gchar *buffer,
-						 gsize n);
-gint		camel_stream_flush		(CamelStream *stream);
-gint		camel_stream_close		(CamelStream *stream);
+						 gsize n,
+						 GError **error);
+gint		camel_stream_flush		(CamelStream *stream,
+						 GError **error);
+gint		camel_stream_close		(CamelStream *stream,
+						 GError **error);
 gboolean	camel_stream_eos		(CamelStream *stream);
-gint		camel_stream_reset		(CamelStream *stream);
+gint		camel_stream_reset		(CamelStream *stream,
+						 GError **error);
 
 /* utility macros and funcs */
 gssize		camel_stream_write_string	(CamelStream *stream,
-						 const gchar *string);
+						 const gchar *string,
+						 GError **error);
 gssize		camel_stream_printf		(CamelStream *stream,
 						 const gchar *fmt,
 						 ...) G_GNUC_PRINTF (2, 3);
@@ -103,7 +114,8 @@ gssize		camel_stream_vprintf		(CamelStream *stream,
 /* Write a whole stream to another stream, until eof or error on
  * either stream.  */
 gssize		camel_stream_write_to_stream	(CamelStream *stream,
-						 CamelStream *output_stream);
+						 CamelStream *output_stream,
+						 GError **error);
 
 G_END_DECLS
 

@@ -50,6 +50,14 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_FOLDER, CamelFolderClass))
 
+/**
+ * CAMEL_FOLDER_ERROR:
+ *
+ * Since: 3.0
+ **/
+#define CAMEL_FOLDER_ERROR \
+	(camel_folder_error_quark ())
+
 G_BEGIN_DECLS
 
 struct _CamelStore;
@@ -60,6 +68,22 @@ typedef struct _CamelFolderChangeInfoPrivate CamelFolderChangeInfoPrivate;
 typedef struct _CamelFolder CamelFolder;
 typedef struct _CamelFolderClass CamelFolderClass;
 typedef struct _CamelFolderPrivate CamelFolderPrivate;
+
+/**
+ * CamelFolderError:
+ *
+ * Since: 3.0
+ **/
+typedef enum {
+	CAMEL_FOLDER_ERROR_INVALID,
+	CAMEL_FOLDER_ERROR_INVALID_STATE,
+	CAMEL_FOLDER_ERROR_NON_EMPTY,
+	CAMEL_FOLDER_ERROR_NON_UID,
+	CAMEL_FOLDER_ERROR_INSUFFICIENT_PERMISSION,
+	CAMEL_FOLDER_ERROR_INVALID_PATH,
+	CAMEL_FOLDER_ERROR_INVALID_UID,
+	CAMEL_FOLDER_ERROR_SUMMARY_INVALID
+} CamelFolderError;
 
 /**
  * CamelFolderLock:
@@ -121,18 +145,18 @@ struct _CamelFolderClass {
 
 	/* Methods */
 	gboolean	(*refresh_info)		(CamelFolder *folder,
-						 CamelException *ex);
+						 GError **error);
 	gboolean	(*sync)			(CamelFolder *folder,
 						 gboolean expunge,
-						 CamelException *ex);
+						 GError **error);
 	gboolean	(*expunge)		(CamelFolder *folder,
-						 CamelException *ex);
+						 GError **error);
 	gint		(*get_message_count)	(CamelFolder *folder);
 	gboolean	(*append_message)	(CamelFolder *folder,
 						 CamelMimeMessage *message,
 						 const CamelMessageInfo *info,
 						 gchar **appended_uid,
-						 CamelException *ex);
+						 GError **error);
 	guint32		(*get_permanent_flags)	(CamelFolder *folder);
 	guint32		(*get_message_flags)	(CamelFolder *folder,
 						 const gchar *uid);
@@ -156,7 +180,7 @@ struct _CamelFolderClass {
 	CamelMimeMessage *
 			(*get_message)		(CamelFolder *folder,
 						 const gchar *uid,
-						 CamelException *ex);
+						 GError **error);
 	GPtrArray *	(*get_uids)		(CamelFolder *folder);
 	void		(*free_uids)		(CamelFolder *folder,
 						 GPtrArray *array);
@@ -171,11 +195,11 @@ struct _CamelFolderClass {
 	gboolean	(*has_search_capability)(CamelFolder *folder);
 	GPtrArray *	(*search_by_expression)	(CamelFolder *folder,
 						 const gchar *expression,
-						 CamelException *ex);
+						 GError **error);
 	GPtrArray *	(*search_by_uids)	(CamelFolder *folder,
 						 const gchar *expression,
 						 GPtrArray *uids,
-						 CamelException *ex);
+						 GError **error);
 	void		(*search_free)		(CamelFolder *folder,
 						 GPtrArray *result);
 	CamelMessageInfo *
@@ -190,7 +214,7 @@ struct _CamelFolderClass {
 						 CamelFolder *destination,
 						 GPtrArray **transferred_uids,
 						 gboolean delete_originals,
-						 CamelException *ex);
+						 GError **error);
 	void		(*delete)		(CamelFolder *folder);
 	void		(*rename)		(CamelFolder *folder,
 						 const gchar *newname);
@@ -201,16 +225,16 @@ struct _CamelFolderClass {
 			(*get_quota_info)	(CamelFolder *folder);
 	guint32		(*count_by_expression)	(CamelFolder *folder,
 						 const gchar *expression,
-						 CamelException *ex);
+						 GError **error);
 	gboolean	(*sync_message)		(CamelFolder *folder,
 						 const gchar *uid,
-						 CamelException *ex);
+						 GError **error);
 	GPtrArray *	(*get_uncached_uids)	(CamelFolder *folder,
-						 GPtrArray * uids,
-						 CamelException *ex);
+						 GPtrArray *uids,
+						 GError **error);
 	gchar *		(*get_filename)		(CamelFolder *folder,
 						 const gchar *uid,
-						 CamelException *ex);
+						 GError **error);
 
 	/* Signals */
 	void		(*changed)		(CamelFolder *folder,
@@ -221,11 +245,12 @@ struct _CamelFolderClass {
 };
 
 GType		camel_folder_get_type		(void);
+GQuark		camel_folder_error_quark	(void) G_GNUC_CONST;
 gboolean	camel_folder_refresh_info	(CamelFolder *folder,
-						 CamelException *ex);
+						 GError **error);
 gboolean	camel_folder_sync		(CamelFolder *folder,
 						 gboolean expunge,
-						 CamelException *ex);
+						 GError **error);
 void		camel_folder_set_lock_async	(CamelFolder *folder,
 						 gboolean skip_folder_lock);
 
@@ -234,7 +259,7 @@ struct _CamelStore *
 
 /* delete operations */
 gboolean	camel_folder_expunge		(CamelFolder *folder,
-						 CamelException *ex);
+						 GError **error);
 
 /* folder name operations */
 const gchar *	camel_folder_get_name		(CamelFolder *folder);
@@ -287,7 +312,7 @@ gboolean	camel_folder_append_message	(CamelFolder *folder,
 						 CamelMimeMessage *message,
 						 const CamelMessageInfo *info,
 						 gchar **appended_uid,
-						 CamelException *ex);
+						 GError **error);
 
 /* summary related operations */
 gboolean	camel_folder_has_summary_capability
@@ -311,10 +336,11 @@ void		camel_folder_free_summary	(CamelFolder *folder,
 CamelMimeMessage *
 		camel_folder_get_message	(CamelFolder *folder,
 						 const gchar *uid,
-						 CamelException *ex);
+						 GError **error);
 gboolean	camel_folder_sync_message	(CamelFolder *folder,
 						 const gchar *uid,
-						 CamelException *ex);
+						 GError **error);
+
 #define camel_folder_delete_message(folder, uid) \
 	(camel_folder_set_message_flags \
 	(folder, uid, CAMEL_MESSAGE_DELETED | \
@@ -325,7 +351,7 @@ void		camel_folder_free_uids		(CamelFolder *folder,
 						 GPtrArray *array);
 GPtrArray *	camel_folder_get_uncached_uids	(CamelFolder *folder,
 						 GPtrArray *uids,
-						 CamelException *ex);
+						 GError **error);
 gint		camel_folder_cmp_uids		(CamelFolder *folder,
 						 const gchar *uid1,
 						 const gchar *uid2);
@@ -338,16 +364,16 @@ gboolean	camel_folder_has_search_capability
 GPtrArray *	camel_folder_search_by_expression
 						(CamelFolder *folder,
 						 const gchar *expr,
-						 CamelException *ex);
+						 GError **error);
 GPtrArray *	camel_folder_search_by_uids	(CamelFolder *folder,
 						 const gchar *expr,
 						 GPtrArray *uids,
-						 CamelException *ex);
+						 GError **error);
 void		camel_folder_search_free	(CamelFolder *folder,
 						 GPtrArray *result);
 guint32		camel_folder_count_by_expression(CamelFolder *folder,
 						 const gchar *expression,
-						 CamelException *ex);
+						 GError **error);
 
 /* summary info */
 CamelMessageInfo *
@@ -366,7 +392,7 @@ gboolean	camel_folder_transfer_messages_to
 						 CamelFolder *dest,
 						 GPtrArray **transferred_uids,
 						 gboolean delete_originals,
-						 CamelException *ex);
+						 GError **error);
 
 void		camel_folder_delete		(CamelFolder *folder);
 void		camel_folder_rename		(CamelFolder *folder,
@@ -401,7 +427,7 @@ void		camel_folder_free_deep		(CamelFolder *folder,
 
 gchar *		camel_folder_get_filename	(CamelFolder *folder,
 						 const gchar *uid,
-						 CamelException *ex);
+						 GError **error);
 
 /* update functions for change info */
 CamelFolderChangeInfo *

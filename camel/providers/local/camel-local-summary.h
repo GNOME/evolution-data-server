@@ -75,10 +75,10 @@ struct _CamelLocalSummary {
 struct _CamelLocalSummaryClass {
 	CamelFolderSummaryClass parent_class;
 
-	gint (*load)(CamelLocalSummary *cls, gint forceindex, CamelException *ex);
-	gint (*check)(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, CamelException *ex);
-	gint (*sync)(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
-	CamelMessageInfo *(*add)(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, CamelException *ex);
+	gint (*load)(CamelLocalSummary *cls, gint forceindex, GError **error);
+	gint (*check)(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GError **error);
+	gint (*sync)(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GError **error);
+	CamelMessageInfo *(*add)(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, GError **error);
 
 	gchar *(*encode_x_evolution)(CamelLocalSummary *cls, const CamelLocalMessageInfo *info);
 	gint (*decode_x_evolution)(CamelLocalSummary *cls, const gchar *xev, CamelLocalMessageInfo *info);
@@ -89,13 +89,13 @@ GType	camel_local_summary_get_type	(void);
 void	camel_local_summary_construct	(CamelLocalSummary *new, const gchar *filename, const gchar *local_name, CamelIndex *index);
 
 /* load/check the summary */
-gint camel_local_summary_load(CamelLocalSummary *cls, gint forceindex, CamelException *ex);
+gint camel_local_summary_load(CamelLocalSummary *cls, gint forceindex, GError **error);
 /* check for new/removed messages */
-gint camel_local_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *, CamelException *ex);
+gint camel_local_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *, GError **error);
 /* perform a folder sync or expunge, if needed */
-gint camel_local_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *, CamelException *ex);
+gint camel_local_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *, GError **error);
 /* add a new message to the summary */
-CamelMessageInfo *camel_local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, CamelException *ex);
+CamelMessageInfo *camel_local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, GError **error);
 
 /* force the next check to be a full check/rebuild */
 void camel_local_summary_check_force(CamelLocalSummary *cls);

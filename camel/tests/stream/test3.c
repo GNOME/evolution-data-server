@@ -70,7 +70,7 @@ main(gint argc, gchar **argv)
 	camel_test_start("CamelSeekableSubstream, file backing");
 	for (j=0;j<SEEKABLE_SUBSTREAM_WAYS;j++) {
 		push("testing writing method %d", j);
-		ss = (CamelSeekableStream *)camel_stream_fs_new_with_name("stream.txt", O_RDWR|O_CREAT|O_TRUNC, 0600);
+		ss = (CamelSeekableStream *)camel_stream_fs_new_with_name("stream.txt", O_RDWR|O_CREAT|O_TRUNC, 0600, NULL);
 		check(ss != NULL);
 		for (i = 0; i < G_N_ELEMENTS (ranges); i++) {
 			push("stream subrange %d-%d", ranges[i].lower, ranges[i].upper);

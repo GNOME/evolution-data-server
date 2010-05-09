@@ -53,7 +53,7 @@ CamelSasl
 
 @sasl: 
 @token: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -64,7 +64,7 @@ CamelSasl
 
 @sasl: 
 @token: 
-@ex: 
+@error: 
 @Returns: 
 
 

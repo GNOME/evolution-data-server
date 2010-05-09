@@ -414,7 +414,7 @@ camel-provider
 
 @url: 
 @auto_detected: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -464,7 +464,7 @@ camel-provider
 </para>
 
 @path: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -491,7 +491,7 @@ camel-provider
 </para>
 
 @url_string: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -511,7 +511,7 @@ camel-provider
 @provider: 
 @url: 
 @auto_detected: 
-@ex: 
+@error: 
 @Returns: 
 
 

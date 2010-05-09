@@ -27,7 +27,7 @@ camel-movemail
 
 @source: 
 @dest: 
-@ex: 
+@error: 
 @Returns: 
 
 

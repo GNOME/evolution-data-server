@@ -32,8 +32,6 @@
 
 #include <glib.h>
 
-#include <camel/camel-exception.h>
-
 G_BEGIN_DECLS
 
 /* if this changes, remember to change camel_url_copy */
@@ -57,7 +55,7 @@ typedef struct _CamelURL {
 #define CAMEL_URL_HIDE_ALL (CAMEL_URL_HIDE_PASSWORD | CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH)
 
 CamelURL *camel_url_new_with_base (CamelURL *base, const gchar *url_string);
-CamelURL *camel_url_new (const gchar *url_string, CamelException *ex);
+CamelURL *camel_url_new (const gchar *url_string, GError **error);
 gchar *camel_url_to_string (CamelURL *url, guint32 flags);
 void camel_url_free (CamelURL *url);
 

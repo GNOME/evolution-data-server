@@ -88,7 +88,8 @@ stream_mem_finalize (GObject *object)
 static gssize
 stream_mem_read (CamelStream *stream,
                  gchar *buffer,
-                 gsize n)
+                 gsize n,
+                 GError **error)
 {
 	CamelStreamMemPrivate *priv;
 	CamelSeekableStream *seekable = CAMEL_SEEKABLE_STREAM (stream);
@@ -112,7 +113,8 @@ stream_mem_read (CamelStream *stream,
 static gssize
 stream_mem_write (CamelStream *stream,
                   const gchar *buffer,
-                  gsize n)
+                  gsize n,
+                  GError **error)
 {
 	CamelStreamMemPrivate *priv;
 	CamelSeekableStream *seekable = CAMEL_SEEKABLE_STREAM (stream);
@@ -149,7 +151,8 @@ stream_mem_eos (CamelStream *stream)
 static off_t
 stream_mem_seek (CamelSeekableStream *stream,
                  off_t offset,
-                 CamelStreamSeekPolicy policy)
+                 CamelStreamSeekPolicy policy,
+                 GError **error)
 {
 	CamelStreamMemPrivate *priv;
 	off_t position;

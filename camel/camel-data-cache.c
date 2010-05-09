@@ -29,9 +29,6 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
-#ifdef HAVE_ALLOCA_H
-#include <alloca.h>
-#endif
 
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
@@ -165,7 +162,7 @@ camel_data_cache_init (CamelDataCache *data_cache)
 /**
  * camel_data_cache_new:
  * @path: Base path of cache, subdirectories will be created here.
- * @ex:
+ * @error: return location for a #GError, or %NULL
  *
  * Create a new data cache.
  *
@@ -174,13 +171,13 @@ camel_data_cache_init (CamelDataCache *data_cache)
  **/
 CamelDataCache *
 camel_data_cache_new (const gchar *path,
-                      CamelException *ex)
+                      GError **error)
 {
 	g_return_val_if_fail (path != NULL, NULL);
 
 	if (g_mkdir_with_parents (path, 0700) == -1) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Unable to create cache path"));
 		return NULL;
 	}
@@ -224,6 +221,8 @@ camel_data_cache_set_path (CamelDataCache *cdc,
 
 	g_free (cdc->priv->path);
 	cdc->priv->path = g_strdup (path);
+
+	g_object_notify (G_OBJECT (cdc), "path");
 }
 
 /**
@@ -348,7 +347,7 @@ data_cache_path(CamelDataCache *cdc, gint create, const gchar *path, const gchar
  * @cdc: A #CamelDataCache
  * @path: Relative path of item to add.
  * @key: Key of item to add.
- * @ex:
+ * @error: return location for a #GError, or %NULL
  *
  * Add a new item to the cache.
  *
@@ -365,7 +364,7 @@ CamelStream *
 camel_data_cache_add (CamelDataCache *cdc,
                       const gchar *path,
                       const gchar *key,
-                      CamelException *ex)
+                      GError **error)
 {
 	gchar *real;
 	CamelStream *stream;
@@ -384,7 +383,7 @@ camel_data_cache_add (CamelDataCache *cdc,
 	} while (stream != NULL);
 
 	stream = camel_stream_fs_new_with_name (
-		real, O_RDWR|O_CREAT|O_TRUNC, 0600);
+		real, O_RDWR|O_CREAT|O_TRUNC, 0600, error);
 	if (stream)
 		camel_object_bag_add(cdc->priv->busy_bag, real, stream);
 	else
@@ -400,7 +399,7 @@ camel_data_cache_add (CamelDataCache *cdc,
  * @cdc: A #CamelDataCache
  * @path: Path to the (sub) cache the item exists in.
  * @key: Key for the cache item.
- * @ex:
+ * @error: return location for a #GError, or %NULL
  *
  * Lookup an item in the cache.  If the item exists, a stream
  * is returned for the item.  The stream may be shared by
@@ -413,7 +412,7 @@ CamelStream *
 camel_data_cache_get (CamelDataCache *cdc,
                       const gchar *path,
                       const gchar *key,
-                      CamelException *ex)
+                      GError **error)
 {
 	gchar *real;
 	CamelStream *stream;
@@ -422,7 +421,7 @@ camel_data_cache_get (CamelDataCache *cdc,
 	stream = camel_object_bag_reserve(cdc->priv->busy_bag, real);
 	if (!stream) {
 		stream = camel_stream_fs_new_with_name (
-			real, O_RDWR, 0600);
+			real, O_RDWR, 0600, error);
 		if (stream)
 			camel_object_bag_add(cdc->priv->busy_bag, real, stream);
 		else
@@ -438,7 +437,7 @@ camel_data_cache_get (CamelDataCache *cdc,
  * @cdc: A #CamelDataCache
  * @path: Path to the (sub) cache the item exists in.
  * @key: Key for the cache item.
- * @ex:
+ * @error: return location for a #GError, or %NULL
  *
  * Lookup the filename for an item in the cache
  *
@@ -450,7 +449,7 @@ gchar *
 camel_data_cache_get_filename (CamelDataCache *cdc,
                                const gchar *path,
                                const gchar *key,
-                               CamelException *ex)
+                               GError **error)
 {
 	gchar *real;
 
@@ -464,7 +463,7 @@ camel_data_cache_get_filename (CamelDataCache *cdc,
  * @cdc: A #CamelDataCache
  * @path:
  * @key:
- * @ex:
+ * @error: return location for a #GError, or %NULL
  *
  * Remove/expire a cache item.
  *
@@ -474,7 +473,7 @@ gint
 camel_data_cache_remove (CamelDataCache *cdc,
                          const gchar *path,
                          const gchar *key,
-                         CamelException *ex)
+                         GError **error)
 {
 	CamelStream *stream;
 	gchar *real;
@@ -489,8 +488,9 @@ camel_data_cache_remove (CamelDataCache *cdc,
 
 	/* maybe we were a mem stream */
 	if (g_unlink (real) == -1 && errno != ENOENT) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
 			_("Could not remove cache entry: %s: %s"),
 			real, g_strerror (errno));
 		ret = -1;

@@ -33,9 +33,9 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#include "camel-exception.h"
 #include "camel-lock-client.h"
 #include "camel-lock-helper.h"
+#include "camel-object.h"
 
 #define d(x)
 
@@ -90,7 +90,7 @@ static gint write_n(gint fd, gpointer buffer, gint inlen)
 }
 
 static gint
-lock_helper_init (CamelException *ex)
+lock_helper_init (GError **error)
 {
 	gint i;
 
@@ -100,8 +100,9 @@ lock_helper_init (CamelException *ex)
 	lock_stdout_pipe[1] = -1;
 	if (pipe(lock_stdin_pipe) == -1
 	    || pipe(lock_stdout_pipe) == -1) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
 			_("Cannot build locking helper pipe: %s"),
 			g_strerror (errno));
 		if (lock_stdin_pipe[0] != -1)
@@ -123,8 +124,9 @@ lock_helper_init (CamelException *ex)
 		close(lock_stdin_pipe[1]);
 		close(lock_stdout_pipe[0]);
 		close(lock_stdout_pipe[1]);
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
 			_("Cannot fork locking helper: %s"),
 			g_strerror (errno));
 		return -1;
@@ -156,7 +158,7 @@ lock_helper_init (CamelException *ex)
 
 gint
 camel_lock_helper_lock (const gchar *path,
-                        CamelException *ex)
+                        GError **error)
 {
 	struct _CamelLockHelperMsg *msg;
 	gint len = strlen(path);
@@ -166,7 +168,7 @@ camel_lock_helper_lock (const gchar *path,
 	LOCK();
 
 	if (lock_helper_pid == -1) {
-		if (lock_helper_init(ex) == -1) {
+		if (lock_helper_init(error) == -1) {
 			UNLOCK();
 			return -1;
 		}
@@ -203,8 +205,9 @@ again:
 		    || msg->seq > lock_sequence) {
 			res = CAMEL_LOCK_HELPER_STATUS_PROTOCOL;
 			d(printf("lock child protocol error\n"));
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SYSTEM,
+			g_set_error (
+				error, CAMEL_ERROR,
+				CAMEL_ERROR_GENERIC,
 				_("Could not lock '%s': protocol "
 				"error with lock-helper"), path);
 			goto fail;
@@ -218,10 +221,11 @@ again:
 			res = msg->data;
 			break;
 		default:
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SYSTEM,
+			g_set_error (
+				error, CAMEL_ERROR,
+				CAMEL_ERROR_GENERIC,
 				_("Could not lock '%s'"), path);
-			d(printf("locking failed !status = %d\n", msg->id));
+			d(printf("locking failed ! status = %d\n", msg->id));
 			break;
 		}
 	} else if (retry > 0) {
@@ -229,8 +233,9 @@ again:
 		retry--;
 		goto again;
 	} else {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, CAMEL_ERROR,
+			CAMEL_ERROR_GENERIC,
 			_("Could not lock '%s': protocol "
 			"error with lock-helper"), path);
 	}

@@ -38,13 +38,13 @@
 
 #define d(x)
 
-static gboolean pop3_refresh_info (CamelFolder *folder, CamelException *ex);
-static gboolean pop3_sync (CamelFolder *folder, gboolean expunge, CamelException *ex);
+static gboolean pop3_refresh_info (CamelFolder *folder, GError **error);
+static gboolean pop3_sync (CamelFolder *folder, gboolean expunge, GError **error);
 static gint pop3_get_message_count (CamelFolder *folder);
 static GPtrArray *pop3_get_uids (CamelFolder *folder);
-static CamelMimeMessage *pop3_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex);
+static CamelMimeMessage *pop3_get_message (CamelFolder *folder, const gchar *uid, GError **error);
 static gboolean pop3_set_message_flags (CamelFolder *folder, const gchar *uid, guint32 flags, guint32 set);
-static gchar * pop3_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex);
+static gchar * pop3_get_filename (CamelFolder *folder, const gchar *uid, GError **error);
 
 G_DEFINE_TYPE (CamelPOP3Folder, camel_pop3_folder, CAMEL_TYPE_FOLDER)
 
@@ -108,7 +108,7 @@ camel_pop3_folder_init (CamelPOP3Folder *pop3_folder)
 }
 
 CamelFolder *
-camel_pop3_folder_new (CamelStore *parent, CamelException *ex)
+camel_pop3_folder_new (CamelStore *parent, GError **error)
 {
 	CamelFolder *folder;
 
@@ -120,7 +120,7 @@ camel_pop3_folder_new (CamelStore *parent, CamelException *ex)
 		"parent-store", parent, NULL);
 
 	/* mt-ok, since we dont have the folder-lock for new() */
-	if (!camel_folder_refresh_info (folder, ex)) { /* mt-ok */
+	if (!camel_folder_refresh_info (folder, error)) { /* mt-ok */
 		g_object_unref (folder);
 		folder = NULL;
 	}
@@ -148,7 +148,7 @@ cmd_builduid(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 
 	checksum = g_checksum_new (G_CHECKSUM_MD5);
 	mp = camel_mime_parser_new();
-	camel_mime_parser_init_with_stream(mp, (CamelStream *)stream);
+	camel_mime_parser_init_with_stream(mp, (CamelStream *)stream, NULL);
 	switch (camel_mime_parser_step(mp, NULL, NULL)) {
 	case CAMEL_MIME_PARSER_STATE_HEADER:
 	case CAMEL_MIME_PARSER_STATE_MESSAGE:
@@ -236,7 +236,7 @@ cmd_uidl(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 }
 
 static gboolean
-pop3_refresh_info (CamelFolder *folder, CamelException *ex)
+pop3_refresh_info (CamelFolder *folder, GError **error)
 {
 	CamelStore *parent_store;
 	CamelPOP3Store *pop3_store;
@@ -263,12 +263,14 @@ pop3_refresh_info (CamelFolder *folder, CamelException *ex)
 
 	if (i == -1) {
 		if (errno == EINTR)
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_USER_CANCEL,
-				_("User canceled"));
+			g_set_error (
+				error, G_IO_ERROR,
+				G_IO_ERROR_CANCELLED,
+				_("Cancelled"));
 		else
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SYSTEM,
+			g_set_error (
+				error, G_IO_ERROR,
+				g_io_error_from_errno (errno),
 				_("Cannot get POP summary: %s"),
 				g_strerror (errno));
 		success = FALSE;
@@ -303,7 +305,7 @@ pop3_refresh_info (CamelFolder *folder, CamelException *ex)
 static gboolean
 pop3_sync (CamelFolder *folder,
            gboolean expunge,
-           CamelException *ex)
+           GError **error)
 {
 	CamelStore *parent_store;
 	CamelPOP3Folder *pop3_folder;
@@ -320,7 +322,7 @@ pop3_sync (CamelFolder *folder,
 		d(printf("%s(%d): pop3_store->delete_after = [%d], expunge=[%d]\n",
 			 __FILE__, __LINE__, pop3_store->delete_after, expunge));
 		camel_operation_start(NULL, _("Expunging old messages"));
-		camel_pop3_delete_old(folder, pop3_store->delete_after,ex);
+		camel_pop3_delete_old(folder, pop3_store->delete_after, error);
 	}
 
 	if (!expunge) {
@@ -367,7 +369,7 @@ pop3_sync (CamelFolder *folder,
 
 	camel_operation_end(NULL);
 
-	camel_pop3_store_expunge (pop3_store, ex);
+	camel_pop3_store_expunge (pop3_store, error);
 
 	return TRUE;
 }
@@ -391,12 +393,12 @@ pop3_get_message_time_from_cache (CamelFolder *folder, const gchar *uid, time_t 
 	g_return_val_if_fail (pop3_store->cache != NULL, FALSE);
 
 	if ((stream = camel_data_cache_get (pop3_store->cache, "cache", uid, NULL)) != NULL
-	    && camel_stream_read (stream, buffer, 1) == 1
+	    && camel_stream_read (stream, buffer, 1, NULL) == 1
 	    && buffer[0] == '#') {
 		CamelMimeMessage *message;
 
 		message = camel_mime_message_new ();
-		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *)message, stream) == -1) {
+		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *)message, stream, NULL) == -1) {
 			g_warning (_("Cannot get message %s: %s"), uid, g_strerror (errno));
 			g_object_unref (message);
 			message = NULL;
@@ -419,7 +421,7 @@ pop3_get_message_time_from_cache (CamelFolder *folder, const gchar *uid, time_t 
 gint
 camel_pop3_delete_old (CamelFolder *folder,
                        gint days_to_delete,
-                       CamelException *ex)
+                       GError **error)
 {
 	CamelStore *parent_store;
 	CamelPOP3Folder *pop3_folder;
@@ -442,7 +444,7 @@ camel_pop3_delete_old (CamelFolder *folder,
 		d(printf("%s(%d): fi->uid=[%s]\n", __FILE__, __LINE__, fi->uid));
 		if (!pop3_get_message_time_from_cache (folder, fi->uid, &message_time)) {
 			d(printf("could not get message time from cache, trying from pop3\n"));
-			message = pop3_get_message (folder, fi->uid, ex);
+			message = pop3_get_message (folder, fi->uid, error);
 			if (message) {
 				message_time = message->date + message->date_offset;
 				g_object_unref (message);
@@ -495,7 +497,7 @@ camel_pop3_delete_old (CamelFolder *folder,
 
 	camel_operation_end(NULL);
 
-	camel_pop3_store_expunge (pop3_store, ex);
+	camel_pop3_store_expunge (pop3_store, error);
 
 	return 0;
 }
@@ -511,11 +513,11 @@ cmd_tocache(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 
 	/* We write an '*' to the start of the stream to say its not complete yet */
 	/* This should probably be part of the cache code */
-	if ((n = camel_stream_write (fi->stream, "*", 1)) == -1)
+	if ((n = camel_stream_write (fi->stream, "*", 1, NULL)) == -1)
 		goto done;
 
-	while ((n = camel_stream_read((CamelStream *)stream, buffer, sizeof(buffer))) > 0) {
-		n = camel_stream_write(fi->stream, buffer, n);
+	while ((n = camel_stream_read((CamelStream *)stream, buffer, sizeof(buffer), NULL)) > 0) {
+		n = camel_stream_write(fi->stream, buffer, n, NULL);
 		if (n == -1)
 			break;
 
@@ -528,8 +530,8 @@ cmd_tocache(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 
 	/* it all worked, output a '#' to say we're a-ok */
 	if (n != -1) {
-		camel_stream_reset(fi->stream);
-		n = camel_stream_write(fi->stream, "#", 1);
+		camel_stream_reset(fi->stream, NULL);
+		n = camel_stream_write(fi->stream, "#", 1, NULL);
 	}
 done:
 	if (n == -1) {
@@ -544,7 +546,7 @@ done:
 }
 
 static gchar *
-pop3_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
+pop3_get_filename (CamelFolder *folder, const gchar *uid, GError **error)
 {
 	CamelStore *parent_store;
 	CamelPOP3Folder *pop3_folder;
@@ -558,8 +560,9 @@ pop3_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
 
 	fi = g_hash_table_lookup(pop3_folder->uids_uid, uid);
 	if (fi == NULL) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+		g_set_error (
+			error, CAMEL_FOLDER_ERROR,
+			CAMEL_FOLDER_ERROR_INVALID_UID,
 			_("No message with UID %s"), uid);
 		return NULL;
 	}
@@ -568,7 +571,7 @@ pop3_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
 }
 
 static CamelMimeMessage *
-pop3_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
+pop3_get_message (CamelFolder *folder, const gchar *uid, GError **error)
 {
 	CamelStore *parent_store;
 	CamelMimeMessage *message = NULL;
@@ -587,8 +590,9 @@ pop3_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 
 	fi = g_hash_table_lookup(pop3_folder->uids_uid, uid);
 	if (fi == NULL) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+		g_set_error (
+			error, CAMEL_FOLDER_ERROR,
+			CAMEL_FOLDER_ERROR_INVALID_UID,
 			_("No message with UID %s"), uid);
 		return NULL;
 	}
@@ -615,12 +619,14 @@ pop3_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 
 		if (fi->err != 0) {
 			if (fi->err == EINTR)
-				camel_exception_setv (
-					ex, CAMEL_EXCEPTION_USER_CANCEL,
-					_("User canceled"));
+				g_set_error (
+					error, G_IO_ERROR,
+					G_IO_ERROR_CANCELLED,
+					_("Cancelled"));
 			else
-				camel_exception_setv (
-					ex, CAMEL_EXCEPTION_SYSTEM,
+				g_set_error (
+					error, CAMEL_ERROR,
+					CAMEL_ERROR_GENERIC,
 					_("Cannot get message %s: %s"),
 					uid, g_strerror (fi->err));
 			goto fail;
@@ -630,7 +636,7 @@ pop3_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 	/* check to see if we have safely written flag set */
 	if (pop3_store->cache == NULL
 	    || (stream = camel_data_cache_get(pop3_store->cache, "cache", fi->uid, NULL)) == NULL
-	    || camel_stream_read(stream, buffer, 1) != 1
+	    || camel_stream_read(stream, buffer, 1, NULL) != 1
 	    || buffer[0] != '#') {
 
 		/* Initiate retrieval, if disk backing fails, use a memory backing */
@@ -673,41 +679,39 @@ pop3_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 		/* getting error code? */
 		/*g_assert (pcr->state == CAMEL_POP3_COMMAND_DATA);*/
 		camel_pop3_engine_command_free(pop3_store->engine, pcr);
-		camel_stream_reset(stream);
+		camel_stream_reset(stream, NULL);
 
 		/* Check to see we have safely written flag set */
 		if (fi->err != 0) {
 			if (fi->err == EINTR)
-				camel_exception_setv (
-					ex, CAMEL_EXCEPTION_USER_CANCEL,
-					_("User canceled"));
+				g_set_error (
+					error, G_IO_ERROR,
+					G_IO_ERROR_CANCELLED,
+					_("Cancelled"));
 			else
-				camel_exception_setv (
-					ex, CAMEL_EXCEPTION_SYSTEM,
+				g_set_error (
+					error, CAMEL_ERROR,
+					CAMEL_ERROR_GENERIC,
 					_("Cannot get message %s: %s"),
 					uid, g_strerror (fi->err));
 			goto done;
 		}
 
-		if (camel_stream_read(stream, buffer, 1) != 1 || buffer[0] != '#') {
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SYSTEM,
-				_("Cannot get message %s: %s"),
-				uid, _("Unknown reason"));
+		if (camel_stream_read (stream, buffer, 1, error) == -1)
+			goto done;
+
+		if (buffer[0] != '#') {
+			g_set_error (
+				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+				_("Cannot get message %s: %s"), uid,
+				_("Unknown reason"));
 			goto done;
 		}
 	}
 
 	message = camel_mime_message_new ();
-	if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)message, stream) == -1) {
-		if (errno == EINTR)
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_USER_CANCEL, _("User canceled"));
-		else
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SYSTEM,
-				_("Cannot get message %s: %s"),
-				uid, g_strerror (errno));
+	if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)message, stream, error) == -1) {
+		g_prefix_error (error, _("Cannot get message %s: "), uid);
 		g_object_unref (message);
 		message = NULL;
 	}

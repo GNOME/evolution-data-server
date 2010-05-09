@@ -115,7 +115,6 @@ CamelServiceAuthType camel_imapx_password_authtype = {
 
 void camel_imapx_module_init(void);
 
-extern void camel_exception_setup(void);
 extern void imapx_utils_init(void);
 
 void
@@ -129,7 +128,6 @@ camel_imapx_module_init(void)
 	imapx_provider.translation_domain = GETTEXT_PACKAGE;
 
 	/* TEMPORARY */
-	camel_exception_setup();
 	imapx_utils_init();
 
 	camel_provider_register(&imapx_provider);

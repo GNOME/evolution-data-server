@@ -112,7 +112,7 @@ G_DEFINE_TYPE (CamelSaslGssapi, camel_sasl_gssapi, CAMEL_TYPE_SASL)
 static void
 gssapi_set_exception (OM_uint32 major,
                       OM_uint32 minor,
-                      CamelException *ex)
+                      GError **error)
 {
 	const gchar *str;
 
@@ -162,7 +162,10 @@ gssapi_set_exception (OM_uint32 major,
 		str = _("Bad authentication response from server.");
 	}
 
-	camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, str);
+	g_set_error (
+		error, CAMEL_SERVICE_ERROR,
+		CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+		"%s", str);
 }
 
 static void
@@ -244,7 +247,7 @@ send_dbus_message (gchar *name)
 static GByteArray *
 sasl_gssapi_challenge (CamelSasl *sasl,
                        GByteArray *token,
-                       CamelException *ex)
+                       GError **error)
 {
 	CamelSaslGssapiPrivate *priv;
 	CamelService *service;
@@ -268,7 +271,7 @@ sasl_gssapi_challenge (CamelSasl *sasl,
 	case GSSAPI_STATE_INIT:
 		memset(&hints, 0, sizeof(hints));
 		hints.ai_flags = AI_CANONNAME;
-		ai = camel_getaddrinfo(service->url->host?service->url->host:"localhost", NULL, &hints, ex);
+		ai = camel_getaddrinfo(service->url->host?service->url->host:"localhost", NULL, &hints, error);
 		if (ai == NULL)
 			return NULL;
 
@@ -281,7 +284,7 @@ sasl_gssapi_challenge (CamelSasl *sasl,
 		g_free (str);
 
 		if (major != GSS_S_COMPLETE) {
-			gssapi_set_exception (major, minor, ex);
+			gssapi_set_exception (major, minor, error);
 			return NULL;
 		}
 
@@ -291,8 +294,9 @@ sasl_gssapi_challenge (CamelSasl *sasl,
 		break;
 	case GSSAPI_STATE_CONTINUE_NEEDED:
 		if (token == NULL) {
-			camel_exception_set (
-				ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Bad authentication response from server."));
 			return NULL;
 		}
@@ -322,7 +326,7 @@ sasl_gssapi_challenge (CamelSasl *sasl,
 			    send_dbus_message (service->url->user))
 					goto challenge;
 
-			gssapi_set_exception (major, minor, ex);
+			gssapi_set_exception (major, minor, error);
 			return NULL;
 		}
 
@@ -334,8 +338,9 @@ sasl_gssapi_challenge (CamelSasl *sasl,
 		break;
 	case GSSAPI_STATE_COMPLETE:
 		if (token == NULL) {
-			camel_exception_set (
-				ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Bad authentication response from server."));
 			return NULL;
 		}
@@ -345,13 +350,14 @@ sasl_gssapi_challenge (CamelSasl *sasl,
 
 		major = gss_unwrap (&minor, priv->ctx, &inbuf, &outbuf, &conf_state, &qop);
 		if (major != GSS_S_COMPLETE) {
-			gssapi_set_exception (major, minor, ex);
+			gssapi_set_exception (major, minor, error);
 			return NULL;
 		}
 
 		if (outbuf.length < 4) {
-			camel_exception_set (
-				ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Bad authentication response from server."));
 #ifndef HAVE_HEIMDAL_KRB5
 			gss_release_buffer (&minor, &outbuf);
@@ -361,8 +367,9 @@ sasl_gssapi_challenge (CamelSasl *sasl,
 
 		/* check that our desired security layer is supported */
 		if ((((guchar *) outbuf.value)[0] & DESIRED_SECURITY_LAYER) != DESIRED_SECURITY_LAYER) {
-			camel_exception_set (
-				ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Unsupported security layer."));
 #ifndef HAVE_HEIMDAL_KRB5
 			gss_release_buffer (&minor, &outbuf);
@@ -382,7 +389,7 @@ sasl_gssapi_challenge (CamelSasl *sasl,
 
 		major = gss_wrap (&minor, priv->ctx, FALSE, qop, &inbuf, &conf_state, &outbuf);
 		if (major != GSS_S_COMPLETE) {
-			gssapi_set_exception (major, minor, ex);
+			gssapi_set_exception (major, minor, error);
 			g_free (str);
 			return NULL;
 		}

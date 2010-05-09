@@ -77,7 +77,8 @@ void		camel_nntp_stream_set_mode	(CamelNNTPStream *is,
 						 camel_nntp_stream_mode_t mode);
 gint		camel_nntp_stream_line		(CamelNNTPStream *is,
 						 guchar **data,
-						 guint *len);
+						 guint *len,
+						 GError **error);
 gint		camel_nntp_stream_gets		(CamelNNTPStream *is,
 						 guchar **start,
 						 guint *len);

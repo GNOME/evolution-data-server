@@ -54,7 +54,7 @@ G_DEFINE_TYPE (CamelSaslPlain, camel_sasl_plain, CAMEL_TYPE_SASL)
 static GByteArray *
 sasl_plain_challenge (CamelSasl *sasl,
                       GByteArray *token,
-                      CamelException *ex)
+                      GError **error)
 {
 	GByteArray *buf = NULL;
 	CamelService *service;

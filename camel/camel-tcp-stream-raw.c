@@ -340,34 +340,43 @@ tcp_stream_raw_finalize (GObject *object)
 static gssize
 tcp_stream_raw_read (CamelStream *stream,
                      gchar *buffer,
-                     gsize n)
+                     gsize n,
+                     GError **error)
 {
 	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
 
-	return camel_read_socket (raw->sockfd, buffer, n);
+	return camel_read_socket (raw->sockfd, buffer, n, error);
 }
 
 static gssize
 tcp_stream_raw_write (CamelStream *stream,
                       const gchar *buffer,
-                      gsize n)
+                      gsize n,
+                      GError **error)
 {
 	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
 
-	return camel_write_socket (raw->sockfd, buffer, n);
+	return camel_write_socket (raw->sockfd, buffer, n, error);
 }
 
 static gint
-tcp_stream_raw_flush (CamelStream *stream)
+tcp_stream_raw_flush (CamelStream *stream,
+                      GError **error)
 {
 	return 0;
 }
 
 static gint
-tcp_stream_raw_close (CamelStream *stream)
+tcp_stream_raw_close (CamelStream *stream,
+                      GError **error)
 {
-	if (SOCKET_CLOSE (((CamelTcpStreamRaw *)stream)->sockfd) == -1)
+	if (SOCKET_CLOSE (((CamelTcpStreamRaw *)stream)->sockfd) == -1) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			"%s", g_strerror (errno));
 		return -1;
+	}
 
 	((CamelTcpStreamRaw *)stream)->sockfd = -1;
 	return 0;
@@ -395,12 +404,12 @@ connect_to_socks4_proxy (const gchar *proxy_host, gint proxy_port, struct addrin
 	memset (&hints, 0, sizeof (hints));
 	hints.ai_socktype = SOCK_STREAM;
 
-	ai = camel_getaddrinfo (proxy_host, serv, &hints, NULL); /* NULL-CamelException */
+	ai = camel_getaddrinfo (proxy_host, serv, &hints, NULL); /* NULL-GError */
 	if (!ai) {
 #ifdef G_OS_WIN32
 		errno = WSAEHOSTUNREACH;
 #else
-		errno = EHOSTUNREACH; /* FIXME: this is not an accurate error; we should translate the CamelException to an errno */
+		errno = EHOSTUNREACH; /* FIXME: this is not an accurate error; we should translate the GError to an errno */
 #endif
 		return -1;
 	}
@@ -424,10 +433,10 @@ connect_to_socks4_proxy (const gchar *proxy_host, gint proxy_port, struct addrin
 	memcpy (request + 4, &sin->sin_addr.s_addr, 4);	/* address in network byte order */
 	request[8] = 0x00;				/* terminator */
 
-	if (camel_write_socket (fd, request, sizeof (request)) != sizeof (request))
+	if (camel_write_socket (fd, request, sizeof (request), NULL) != sizeof (request))
 		goto error;
 
-	if (camel_read_socket (fd, reply, sizeof (reply)) != sizeof (reply))
+	if (camel_read_socket (fd, reply, sizeof (reply), NULL) != sizeof (reply))
 		goto error;
 
 	if (!(reply[0] == 0		/* first byte of reply is 0 */
@@ -457,7 +466,8 @@ out:
 
 static gint
 tcp_stream_raw_connect (CamelTcpStream *stream,
-                        struct addrinfo *host)
+                        struct addrinfo *host,
+                        GError **error)
 {
 	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
 	const gchar *proxy_host;

@@ -94,8 +94,10 @@ CamelStream *	camel_stream_buffer_new_with_vbuf
 						 guint32 size);
 gint		camel_stream_buffer_gets	(CamelStreamBuffer *sbf,
 						 gchar *buf,
-						 guint max);
-gchar *		camel_stream_buffer_read_line	(CamelStreamBuffer *sbf);
+						 guint max,
+						 GError **error);
+gchar *		camel_stream_buffer_read_line	(CamelStreamBuffer *sbf,
+						 GError **error);
 
 G_END_DECLS
 

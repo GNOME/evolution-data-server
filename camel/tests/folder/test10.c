@@ -28,15 +28,12 @@ static gpointer
 worker(gpointer d)
 {
 	gint i;
-	CamelException *ex = camel_exception_new();
 	CamelStore *store;
 	CamelFolder *folder;
 
 	for (i=0;i<MAX_LOOP;i++) {
-		store = camel_session_get_store(session, path, ex);
-		camel_exception_clear(ex);
-		folder = camel_store_get_folder(store, "testbox", CAMEL_STORE_FOLDER_CREATE, ex);
-		camel_exception_clear(ex);
+		store = camel_session_get_store(session, path, NULL);
+		folder = camel_store_get_folder(store, "testbox", CAMEL_STORE_FOLDER_CREATE, NULL);
 		if (testid == 0) {
 			g_object_unref (folder);
 			g_object_unref (store);
@@ -46,22 +43,17 @@ worker(gpointer d)
 		}
 	}
 
-	camel_exception_free(ex);
-
 	return NULL;
 }
 
 gint
 main(gint argc, gchar **argv)
 {
-	CamelException *ex;
 	gint i, j;
 	GThread *threads[MAX_THREADS];
 
 	camel_test_init(argc, argv);
 	camel_test_provider_init(1, local_drivers);
-
-	ex = camel_exception_new();
 
 	/* clear out any camel-test data */
 	system("/bin/rm -rf /tmp/camel-test");
@@ -103,7 +95,6 @@ main(gint argc, gchar **argv)
 	}
 
 	g_object_unref (session);
-	camel_exception_free(ex);
 
 	return 0;
 }

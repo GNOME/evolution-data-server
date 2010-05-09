@@ -57,7 +57,7 @@ struct _CamelMhFolderClass {
 };
 
 /* public methods */
-CamelFolder *camel_mh_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 flags, CamelException *ex);
+CamelFolder *camel_mh_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 flags, GError **error);
 
 GType camel_mh_folder_get_type(void);
 

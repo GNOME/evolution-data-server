@@ -75,9 +75,9 @@ struct _CamelMboxSummaryClass {
 	CamelLocalSummaryClass parent_class;
 
 	/* sync in-place */
-	gint (*sync_quick)(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
+	gint (*sync_quick)(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GError **error);
 	/* sync requires copy */
-	gint (*sync_full)(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
+	gint (*sync_full)(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GError **error);
 };
 
 GType		camel_mbox_summary_get_type	(void);
@@ -87,7 +87,7 @@ CamelMboxSummary      *camel_mbox_summary_new	(struct _CamelFolder *, const gcha
 void camel_mbox_summary_xstatus(CamelMboxSummary *mbs, gint state);
 
 /* build a new mbox from an existing mbox storing summary information */
-gint camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderChangeInfo *changeinfo, gint fd, gint fdout, CamelException *ex);
+gint camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderChangeInfo *changeinfo, gint fd, gint fdout, GError **error);
 
 G_END_DECLS
 

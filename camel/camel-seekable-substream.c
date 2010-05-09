@@ -40,7 +40,7 @@ seekable_substream_parent_reset (CamelSeekableSubstream *seekable_substream,
 
 	return camel_seekable_stream_seek (
 		parent, (off_t) seekable_stream->position,
-		CAMEL_STREAM_SET) == seekable_stream->position;
+		CAMEL_STREAM_SET, NULL) == seekable_stream->position;
 }
 
 static void
@@ -62,7 +62,8 @@ seekable_substream_dispose (GObject *object)
 static gssize
 seekable_substream_read (CamelStream *stream,
                          gchar *buffer,
-                         gsize n)
+                         gsize n,
+                         GError **error)
 {
 	CamelSeekableStream *parent;
 	CamelSeekableStream *seekable_stream = CAMEL_SEEKABLE_STREAM (stream);
@@ -89,7 +90,7 @@ seekable_substream_read (CamelStream *stream,
 		return 0;
 	}
 
-	v = camel_stream_read (CAMEL_STREAM (parent), buffer, n);
+	v = camel_stream_read (CAMEL_STREAM (parent), buffer, n, error);
 
 	/* ignore <0 - it's an error, let the caller deal */
 	if (v > 0)
@@ -101,7 +102,8 @@ seekable_substream_read (CamelStream *stream,
 static gssize
 seekable_substream_write (CamelStream *stream,
                           const gchar *buffer,
-                          gsize n)
+                          gsize n,
+                          GError **error)
 {
 	CamelSeekableStream *parent;
 	CamelSeekableStream *seekable_stream = CAMEL_SEEKABLE_STREAM(stream);
@@ -128,7 +130,7 @@ seekable_substream_write (CamelStream *stream,
 		return 0;
 	}
 
-	v = camel_stream_write (CAMEL_STREAM (parent), buffer, n);
+	v = camel_stream_write (CAMEL_STREAM (parent), buffer, n, error);
 
 	/* ignore <0 - it's an error, let the caller deal */
 	if (v > 0)
@@ -139,15 +141,17 @@ seekable_substream_write (CamelStream *stream,
 }
 
 static gint
-seekable_substream_flush (CamelStream *stream)
+seekable_substream_flush (CamelStream *stream,
+                          GError **error)
 {
 	CamelSeekableSubstream *sus = (CamelSeekableSubstream *)stream;
 
-	return camel_stream_flush (CAMEL_STREAM (sus->parent_stream));
+	return camel_stream_flush (CAMEL_STREAM (sus->parent_stream), error);
 }
 
 static gint
-seekable_substream_close (CamelStream *stream)
+seekable_substream_close (CamelStream *stream,
+                          GError **error)
 {
 	/* we dont really want to close the substream ... */
 	return 0;
@@ -180,7 +184,8 @@ seekable_substream_eos (CamelStream *stream)
 static off_t
 seekable_substream_seek (CamelSeekableStream *seekable_stream,
                          off_t offset,
-                         CamelStreamSeekPolicy policy)
+                         CamelStreamSeekPolicy policy,
+                         GError **error)
 {
 	CamelStream *stream;
 	CamelSeekableSubstream *seekable_substream;
@@ -204,7 +209,7 @@ seekable_substream_seek (CamelSeekableStream *seekable_stream,
 		if (seekable_stream->bound_end == CAMEL_STREAM_UNBOUND) {
 			real_offset = camel_seekable_stream_seek (
 				seekable_substream->parent_stream,
-				offset, CAMEL_STREAM_END);
+				offset, CAMEL_STREAM_END, error);
 			if (real_offset != -1) {
 				if (real_offset<seekable_stream->bound_start)
 					real_offset = seekable_stream->bound_start;
@@ -287,7 +292,7 @@ camel_seekable_substream_new(CamelSeekableStream *parent_stream, off_t start, of
 	 * here, because if we fail to seek now, it will try again later. */
 	camel_seekable_stream_set_bounds (
 		CAMEL_SEEKABLE_STREAM (seekable_substream),
-		start, end);
+		start, end, NULL);
 
 	return CAMEL_STREAM (seekable_substream);
 }

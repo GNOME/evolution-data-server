@@ -29,6 +29,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-cipher-context.h"
+#include "camel-debug.h"
 #include "camel-session.h"
 #include "camel-stream.h"
 #include "camel-operation.h"
@@ -67,10 +68,10 @@ cipher_sign (CamelCipherContext *ctx,
              CamelCipherHash hash,
              CamelMimePart *ipart,
              CamelMimePart *opart,
-             CamelException *ex)
+             GError **error)
 {
-	camel_exception_set (
-		ex, CAMEL_EXCEPTION_SYSTEM,
+	g_set_error (
+		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 		_("Signing is not supported by this cipher"));
 
 	return -1;
@@ -83,7 +84,7 @@ cipher_sign (CamelCipherContext *ctx,
  * @hash: preferred Message-Integrity-Check hash algorithm
  * @ipart: Input part.
  * @opart: output part.
- * @ex: exception
+ * @error: return location for a #GError, or %NULL
  *
  * Converts the (unsigned) part @ipart into a new self-contained mime part @opart.
  * This may be a multipart/signed part, or a simple part for enveloped types.
@@ -96,7 +97,7 @@ camel_cipher_sign (CamelCipherContext *context,
                    CamelCipherHash hash,
                    CamelMimePart *ipart,
                    CamelMimePart *opart,
-                   CamelException *ex)
+                   GError **error)
 {
 	CamelCipherContextClass *class;
 	gint retval;
@@ -110,7 +111,8 @@ camel_cipher_sign (CamelCipherContext *context,
 
 	CIPHER_LOCK (context);
 
-	retval = class->sign (context, userid, hash, ipart, opart, ex);
+	retval = class->sign (context, userid, hash, ipart, opart, error);
+	CAMEL_CHECK_GERROR (context, sign, retval == 0, error);
 
 	CIPHER_UNLOCK (context);
 
@@ -122,10 +124,10 @@ camel_cipher_sign (CamelCipherContext *context,
 static CamelCipherValidity *
 cipher_verify (CamelCipherContext *context,
                CamelMimePart *sigpart,
-               CamelException *ex)
+               GError **error)
 {
-	camel_exception_set (
-		ex, CAMEL_EXCEPTION_SYSTEM,
+	g_set_error (
+		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 		_("Verifying is not supported by this cipher"));
 
 	return NULL;
@@ -135,7 +137,7 @@ cipher_verify (CamelCipherContext *context,
  * camel_cipher_verify:
  * @context: Cipher Context
  * @ipart: part to verify
- * @ex: exception
+ * @error: return location for a #GError, or %NULL
  *
  * Verifies the signature. If @istream is a clearsigned stream,
  * you should pass %NULL as the sigstream parameter. Otherwise
@@ -149,7 +151,7 @@ cipher_verify (CamelCipherContext *context,
 CamelCipherValidity *
 camel_cipher_verify (CamelCipherContext *context,
                      CamelMimePart *ipart,
-                     CamelException *ex)
+                     GError **error)
 {
 	CamelCipherContextClass *class;
 	CamelCipherValidity *valid;
@@ -163,7 +165,8 @@ camel_cipher_verify (CamelCipherContext *context,
 
 	CIPHER_LOCK (context);
 
-	valid = class->verify (context, ipart, ex);
+	valid = class->verify (context, ipart, error);
+	CAMEL_CHECK_GERROR (context, verify, valid != NULL, error);
 
 	CIPHER_UNLOCK (context);
 
@@ -178,10 +181,10 @@ cipher_encrypt (CamelCipherContext *context,
                 GPtrArray *recipients,
                 CamelMimePart *ipart,
                 CamelMimePart *opart,
-                CamelException *ex)
+                GError **error)
 {
-	camel_exception_set (
-		ex, CAMEL_EXCEPTION_SYSTEM,
+	g_set_error (
+		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 		_("Encryption is not supported by this cipher"));
 
 	return -1;
@@ -194,7 +197,7 @@ cipher_encrypt (CamelCipherContext *context,
  * @recipients: an array of recipient key ids and/or email addresses
  * @ipart: cleartext input stream
  * @opart: ciphertext output stream
- * @ex: exception
+ * @error: return location for a #GError, or %NULL
  *
  * Encrypts (and optionally signs) the cleartext input stream and
  * writes the resulting ciphertext to the output stream.
@@ -207,7 +210,7 @@ camel_cipher_encrypt (CamelCipherContext *context,
                       GPtrArray *recipients,
                       CamelMimePart *ipart,
                       CamelMimePart *opart,
-                      CamelException *ex)
+                      GError **error)
 {
 	CamelCipherContextClass *class;
 	gint retval;
@@ -222,7 +225,8 @@ camel_cipher_encrypt (CamelCipherContext *context,
 	CIPHER_LOCK (context);
 
 	retval = class->encrypt (
-		context, userid, recipients, ipart, opart, ex);
+		context, userid, recipients, ipart, opart, error);
+	CAMEL_CHECK_GERROR (context, encrypt, retval == 0, error);
 
 	CIPHER_UNLOCK (context);
 
@@ -235,10 +239,10 @@ static CamelCipherValidity *
 cipher_decrypt (CamelCipherContext *context,
                 CamelMimePart *ipart,
                 CamelMimePart *opart,
-                CamelException *ex)
+                GError **error)
 {
-	camel_exception_set (
-		ex, CAMEL_EXCEPTION_SYSTEM,
+	g_set_error (
+		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 		_("Decryption is not supported by this cipher"));
 
 	return NULL;
@@ -249,7 +253,7 @@ cipher_decrypt (CamelCipherContext *context,
  * @context:
  * @ipart:
  * @opart:
- * @ex:
+ * @error: return location for a #GError, or %NULL
  *
  * Decrypts @ipart into @opart.
  *
@@ -259,7 +263,7 @@ CamelCipherValidity *
 camel_cipher_decrypt (CamelCipherContext *context,
                       CamelMimePart *ipart,
                       CamelMimePart *opart,
-                      CamelException *ex)
+                      GError **error)
 {
 	CamelCipherContextClass *class;
 	CamelCipherValidity *valid;
@@ -273,7 +277,8 @@ camel_cipher_decrypt (CamelCipherContext *context,
 
 	CIPHER_LOCK (context);
 
-	valid = class->decrypt (context, ipart, opart, ex);
+	valid = class->decrypt (context, ipart, opart, error);
+	CAMEL_CHECK_GERROR (context, decrypt, valid != NULL, error);
 
 	CIPHER_UNLOCK (context);
 
@@ -285,10 +290,10 @@ camel_cipher_decrypt (CamelCipherContext *context,
 static gint
 cipher_import_keys (CamelCipherContext *context,
                     CamelStream *istream,
-                    CamelException *ex)
+                    GError **error)
 {
-	camel_exception_set (
-		ex, CAMEL_EXCEPTION_SYSTEM,
+	g_set_error (
+		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 		_("You may not import keys with this cipher"));
 
 	return -1;
@@ -298,7 +303,7 @@ cipher_import_keys (CamelCipherContext *context,
  * camel_cipher_import_keys:
  * @context: Cipher Context
  * @istream: input stream (containing keys)
- * @ex: exception
+ * @error: return location for a #GError, or %NULL
  *
  * Imports a stream of keys/certificates contained within @istream
  * into the key/certificate database controlled by @ctx.
@@ -308,9 +313,10 @@ cipher_import_keys (CamelCipherContext *context,
 gint
 camel_cipher_import_keys (CamelCipherContext *context,
                           CamelStream *istream,
-                          CamelException *ex)
+                          GError **error)
 {
 	CamelCipherContextClass *class;
+	gint retval;
 
 	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), -1);
 	g_return_val_if_fail (CAMEL_IS_STREAM (istream), -1);
@@ -318,17 +324,20 @@ camel_cipher_import_keys (CamelCipherContext *context,
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 	g_return_val_if_fail (class->import_keys != NULL, -1);
 
-	return class->import_keys (context, istream, ex);
+	retval = class->import_keys (context, istream, error);
+	CAMEL_CHECK_GERROR (context, import_keys, retval == 0, error);
+
+	return retval;
 }
 
 static gint
 cipher_export_keys (CamelCipherContext *context,
                     GPtrArray *keys,
                     CamelStream *ostream,
-                    CamelException *ex)
+                    GError **error)
 {
-	camel_exception_set (
-		ex, CAMEL_EXCEPTION_SYSTEM,
+	g_set_error (
+		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 		_("You may not export keys with this cipher"));
 
 	return -1;
@@ -339,7 +348,7 @@ cipher_export_keys (CamelCipherContext *context,
  * @context: Cipher Context
  * @keys: an array of key ids
  * @ostream: output stream
- * @ex: exception
+ * @error: return location for a #GError, or %NULL
  *
  * Exports the keys/certificates in @keys to the stream @ostream from
  * the key/certificate database controlled by @ctx.
@@ -350,9 +359,10 @@ gint
 camel_cipher_export_keys (CamelCipherContext *context,
                           GPtrArray *keys,
                           CamelStream *ostream,
-                          CamelException *ex)
+                          GError **error)
 {
 	CamelCipherContextClass *class;
+	gint retval;
 
 	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), -1);
 	g_return_val_if_fail (CAMEL_IS_STREAM (ostream), -1);
@@ -361,7 +371,10 @@ camel_cipher_export_keys (CamelCipherContext *context,
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 	g_return_val_if_fail (class->export_keys != NULL, -1);
 
-	return class->export_keys (context, keys, ostream, ex);
+	retval = class->export_keys (context, keys, ostream, error);
+	CAMEL_CHECK_GERROR (context, export_keys, retval == 0, error);
+
+	return retval;
 }
 
 static CamelCipherHash
@@ -816,6 +829,7 @@ cc_prepare_sign (CamelMimePart *part)
  * @part: Part to write.
  * @flags: flags for the canonicalisation filter (CamelMimeFilterCanon)
  * @ostream: stream to write canonicalised output to.
+ * @error: return location for a #GError, or %NULL
  *
  * Writes a part to a stream in a canonicalised format, suitable for signing/encrypting.
  *
@@ -826,7 +840,8 @@ cc_prepare_sign (CamelMimePart *part)
 gint
 camel_cipher_canonical_to_stream (CamelMimePart *part,
                                   guint32 flags,
-                                  CamelStream *ostream)
+                                  CamelStream *ostream,
+                                  GError **error)
 {
 	CamelStream *filter;
 	CamelMimeFilter *canon;
@@ -840,12 +855,13 @@ camel_cipher_canonical_to_stream (CamelMimePart *part,
 	camel_stream_filter_add (CAMEL_STREAM_FILTER (filter), canon);
 	g_object_unref (canon);
 
-	if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *)part, filter) != -1
-	    && camel_stream_flush (filter) != -1)
+	if (camel_data_wrapper_write_to_stream (
+		(CamelDataWrapper *)part, filter, error) != -1
+	    && camel_stream_flush (filter, error) != -1)
 		res = 0;
 
 	g_object_unref (filter);
-	camel_stream_reset (ostream);
+	camel_stream_reset (ostream, NULL);
 
 	return res;
 }

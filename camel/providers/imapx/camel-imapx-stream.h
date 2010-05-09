@@ -42,6 +42,9 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_IMAPX_STREAM, CamelIMAPXStreamClass))
 
+#define CAMEL_IMAPX_ERROR \
+	(camel_imapx_error_quark ())
+
 G_BEGIN_DECLS
 
 typedef struct _CamelIMAPXStream CamelIMAPXStream;
@@ -78,6 +81,7 @@ struct _CamelIMAPXStreamClass {
 };
 
 GType		camel_imapx_stream_get_type	(void);
+GQuark		camel_imapx_error_quark		(void) G_GNUC_CONST;
 CamelStream *	camel_imapx_stream_new		(CamelStream *source);
 gint		camel_imapx_stream_buffered	(CamelIMAPXStream *is);
 
@@ -86,7 +90,7 @@ camel_imapx_token_t
 		camel_imapx_stream_token	(CamelIMAPXStream *is,
 						 guchar **start,
 						 guint *len,
-						 CamelException *ex);
+						 GError **error);
 
 void		camel_imapx_stream_ungettoken	(CamelIMAPXStream *is,
 						 camel_imapx_token_t tok,
@@ -107,32 +111,32 @@ gint		 camel_imapx_stream_getl	(CamelIMAPXStream *is,
 gint		camel_imapx_stream_atom		(CamelIMAPXStream *is,
 						 guchar **start,
 						 guint *len,
-						 CamelException *ex);
+						 GError **error);
 /* gets an atom or string */
 gint		camel_imapx_stream_astring	(CamelIMAPXStream *is,
 						 guchar **start,
-						 CamelException *ex);
+						 GError **error);
 /* gets a NIL or a string, start==NULL if NIL */
 gint		camel_imapx_stream_nstring	(CamelIMAPXStream *is,
 						 guchar **start,
-						 CamelException *ex);
+						 GError **error);
 /* gets a NIL or string into a stream, stream==NULL if NIL */
 gint		camel_imapx_stream_nstring_stream
 						(CamelIMAPXStream *is,
 						 CamelStream **stream,
-						 CamelException *ex);
+						 GError **error);
 /* gets 'text' */
 gint		camel_imapx_stream_text		(CamelIMAPXStream *is,
 						 guchar **text,
-						 CamelException *ex);
+						 GError **error);
 
 /* gets a 'number' */
 guint64		 camel_imapx_stream_number	(CamelIMAPXStream *is,
-						 CamelException *ex);
+						 GError **error);
 
 /* skips the rest of a line, including literals, etc */
 gint		camel_imapx_stream_skip		(CamelIMAPXStream *is,
-						 CamelException *ex);
+						 GError **error);
 
 G_END_DECLS
 

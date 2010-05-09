@@ -29,11 +29,11 @@
 #ifndef CAMEL_MOVEMAIL_H
 #define CAMEL_MOVEMAIL_H
 
-#include <camel/camel-exception.h>
+#include <glib.h>
 
 G_BEGIN_DECLS
 
-gint camel_movemail (const gchar *source, const gchar *dest, CamelException *ex);
+gint camel_movemail (const gchar *source, const gchar *dest, GError **error);
 
 G_END_DECLS
 

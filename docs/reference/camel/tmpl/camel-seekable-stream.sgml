@@ -50,6 +50,7 @@ CamelSeekableStream
 @stream: 
 @offset: 
 @policy: 
+@error: 
 @Returns: 
 
 
@@ -70,6 +71,7 @@ CamelSeekableStream
 @stream: 
 @start: 
 @end: 
+@error: 
 @Returns: 
 
 

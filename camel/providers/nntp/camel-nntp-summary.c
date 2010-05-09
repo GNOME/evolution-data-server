@@ -64,7 +64,7 @@ static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, st
 static gint summary_header_load (CamelFolderSummary *, FILE *);
 static gint summary_header_save (CamelFolderSummary *, FILE *);
 static gint summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
-static CamelFIRecord * summary_header_to_db (CamelFolderSummary *s, CamelException *ex);
+static CamelFIRecord * summary_header_to_db (CamelFolderSummary *s, GError **error);
 
 G_DEFINE_TYPE (CamelNNTPSummary, camel_nntp_summary, CAMEL_TYPE_FOLDER_SUMMARY)
 
@@ -189,12 +189,12 @@ summary_header_load (CamelFolderSummary *s, FILE *in)
 }
 
 static CamelFIRecord *
-summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
+summary_header_to_db (CamelFolderSummary *s, GError **error)
 {
 	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY (s);
 	struct _CamelFIRecord *fir;
 
-	fir = CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->summary_header_to_db (s, ex);
+	fir = CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->summary_header_to_db (s, error);
 	if (!fir)
 		return NULL;
 	fir->bdata = g_strdup_printf ("%d %d %d", CAMEL_NNTP_SUMMARY_VERSION, cns->high, cns->low);
@@ -220,7 +220,7 @@ summary_header_save (CamelFolderSummary *s, FILE *out)
 
 /* Note: This will be called from camel_nntp_command, so only use camel_nntp_raw_command */
 static gint
-add_range_xover (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint low, CamelFolderChangeInfo *changes, CamelException *ex)
+add_range_xover (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint low, CamelFolderChangeInfo *changes, GError **error)
 {
 	CamelFolderSummary *s;
 	CamelMessageInfoBase *mi;
@@ -237,22 +237,22 @@ add_range_xover (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint
 
 	camel_operation_start (NULL, _("%s: Scanning new messages"), ((CamelService *)store)->url->host);
 
-	ret = camel_nntp_raw_command_auth (store, ex, &line, "over %r", low, high);
+	ret = camel_nntp_raw_command_auth (store, error, &line, "over %r", low, high);
 	if (ret != 224)
-		ret = camel_nntp_raw_command_auth (store, ex, &line, "xover %r", low, high);
+		ret = camel_nntp_raw_command_auth (store, error, &line, "xover %r", low, high);
 
 	if (ret != 224) {
 		camel_operation_end (NULL);
 		if (ret != -1)
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SYSTEM,
+			g_set_error (
+				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Unexpected server response from xover: %s"), line);
 		return -1;
 	}
 
 	count = 0;
 	total = high-low+1;
-	while ((ret = camel_nntp_stream_line (store->stream, (guchar **)&line, &len)) > 0) {
+	while ((ret = camel_nntp_stream_line (store->stream, (guchar **)&line, &len, error)) > 0) {
 		camel_operation_progress (NULL, (count * 100) / total);
 		count++;
 		n = strtoul (line, &tab, 10);
@@ -321,7 +321,7 @@ add_range_xover (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint
 
 /* Note: This will be called from camel_nntp_command, so only use camel_nntp_raw_command */
 static gint
-add_range_head (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint low, CamelFolderChangeInfo *changes, CamelException *ex)
+add_range_head (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint low, CamelFolderChangeInfo *changes, GError **error)
 {
 	CamelFolderSummary *s;
 	gint ret = -1;
@@ -344,15 +344,15 @@ add_range_head (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint 
 	for (i=low;i<high+1;i++) {
 		camel_operation_progress (NULL, (count * 100) / total);
 		count++;
-		ret = camel_nntp_raw_command_auth (store, ex, &line, "head %u", i);
+		ret = camel_nntp_raw_command_auth (store, error, &line, "head %u", i);
 		/* unknown article, ignore */
 		if (ret == 423)
 			continue;
 		else if (ret == -1)
 			goto ioerror;
 		else if (ret != 221) {
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SYSTEM,
+			g_set_error (
+				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Unexpected server response from head: %s"),
 				line);
 			goto ioerror;
@@ -367,7 +367,7 @@ add_range_head (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint 
 			line[1] = 0;
 			cns->priv->uid = g_strdup_printf ("%u,%s\n", n, msgid);
 			if (!GPOINTER_TO_INT (g_hash_table_lookup (summary_table, cns->priv->uid))) {
-				if (camel_mime_parser_init_with_stream (mp, (CamelStream *)store->stream) == -1)
+				if (camel_mime_parser_init_with_stream (mp, (CamelStream *)store->stream, error) == -1)
 					goto error;
 				mi = camel_folder_summary_add_from_parser (s, mp);
 				while (camel_mime_parser_step (mp, NULL, NULL) != CAMEL_MIME_PARSER_STATE_EOF)
@@ -390,13 +390,16 @@ add_range_head (CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint 
 error:
 	if (ret == -1) {
 		if (errno == EINTR)
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_USER_CANCEL,
-				_("User cancelled the operation"));
+			g_set_error (
+				error, G_IO_ERROR,
+				G_IO_ERROR_CANCELLED,
+				_("Cancelled"));
 		else
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SYSTEM,
-				_("Operation failed: %s"), g_strerror(errno));
+			g_set_error (
+				error, G_IO_ERROR,
+				g_io_error_from_errno (errno),
+				_("Operation failed: %s"),
+				g_strerror(errno));
 	}
 
 ioerror:
@@ -416,7 +419,7 @@ ioerror:
 /* Assumes we have the stream */
 /* Note: This will be called from camel_nntp_command, so only use camel_nntp_raw_command */
 gint
-camel_nntp_summary_check (CamelNNTPSummary *cns, CamelNNTPStore *store, gchar *line, CamelFolderChangeInfo *changes, CamelException *ex)
+camel_nntp_summary_check (CamelNNTPSummary *cns, CamelNNTPStore *store, gchar *line, CamelFolderChangeInfo *changes, GError **error)
 {
 	CamelFolderSummary *s;
 	gint ret = 0, i;
@@ -486,7 +489,7 @@ camel_nntp_summary_check (CamelNNTPSummary *cns, CamelNNTPStore *store, gchar *l
 		cns->low = f;
 	}
 
-	camel_db_delete_uids (parent_store->cdb_w, full_name, del, ex);
+	camel_db_delete_uids (parent_store->cdb_w, full_name, del, NULL);
 	g_slist_foreach (del, (GFunc) g_free, NULL);
 	g_slist_free (del);
 
@@ -495,15 +498,15 @@ camel_nntp_summary_check (CamelNNTPSummary *cns, CamelNNTPStore *store, gchar *l
 			cns->high = f-1;
 
 		if (store->xover) {
-			ret = add_range_xover (cns, store, l, cns->high+1, changes, ex);
+			ret = add_range_xover (cns, store, l, cns->high+1, changes, error);
 		} else {
-			ret = add_range_head (cns, store, l, cns->high+1, changes, ex);
+			ret = add_range_head (cns, store, l, cns->high+1, changes, error);
 		}
 	}
 
 	/* TODO: not from here */
 	camel_folder_summary_touch (s);
-	camel_folder_summary_save_to_db (s, ex);
+	camel_folder_summary_save_to_db (s, NULL);
 
 update:
 	/* update store summary if we have it */
@@ -512,7 +515,7 @@ update:
 		guint32 unread = 0;
 
 		count = camel_folder_summary_count (s);
-		camel_db_count_unread_message_info (parent_store->cdb_r, full_name, &unread, ex);
+		camel_db_count_unread_message_info (parent_store->cdb_r, full_name, &unread, NULL);
 
 		if (si->info.unread != unread
 		    || si->info.total != count

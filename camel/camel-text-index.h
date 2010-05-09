@@ -26,7 +26,6 @@
 #ifndef CAMEL_TEXT_INDEX_H
 #define CAMEL_TEXT_INDEX_H
 
-#include <camel/camel-exception.h>
 #include <camel/camel-object.h>
 #include "camel-index.h"
 

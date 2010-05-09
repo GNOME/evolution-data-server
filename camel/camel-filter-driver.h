@@ -76,7 +76,7 @@ enum camel_filter_status_t {
 };
 
 typedef CamelFolder * (*CamelFilterGetFolderFunc) (CamelFilterDriver *driver, const gchar *uri,
-						   gpointer data, CamelException *ex);
+						   gpointer data, GError **error);
 /* report status */
 typedef void (CamelFilterStatusFunc) (CamelFilterDriver *driver, enum camel_filter_status_t status,
 				      gint pc, const gchar *desc, gpointer data);
@@ -105,18 +105,18 @@ gint  camel_filter_driver_remove_rule_by_name  (CamelFilterDriver *d, const gcha
 
 /*void camel_filter_driver_set_global(CamelFilterDriver *, const gchar *name, const gchar *value);*/
 
-void camel_filter_driver_flush                (CamelFilterDriver *driver, CamelException *ex);
+void camel_filter_driver_flush                (CamelFilterDriver *driver, GError **error);
 
 gint  camel_filter_driver_filter_message       (CamelFilterDriver *driver, CamelMimeMessage *message,
 					       CamelMessageInfo *info, const gchar *uid,
 					       CamelFolder *source, const gchar *source_url,
-					       const gchar *original_source_url, CamelException *ex);
+					       const gchar *original_source_url, GError **error);
 
 gint  camel_filter_driver_filter_mbox          (CamelFilterDriver *driver, const gchar *mbox,
-					       const gchar *original_source_url, CamelException *ex);
+					       const gchar *original_source_url, GError **error);
 
 gint  camel_filter_driver_filter_folder        (CamelFilterDriver *driver, CamelFolder *folder, CamelUIDCache *cache,
-					       GPtrArray *uids, gboolean remove, CamelException *ex);
+					       GPtrArray *uids, gboolean remove, GError **error);
 
 G_END_DECLS
 

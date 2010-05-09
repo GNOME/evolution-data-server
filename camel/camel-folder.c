@@ -32,7 +32,6 @@
 
 #include "camel-db.h"
 #include "camel-debug.h"
-#include "camel-exception.h"
 #include "camel-filter-driver.h"
 #include "camel-folder.h"
 #include "camel-mempool.h"
@@ -80,7 +79,7 @@ struct _folder_filter_msg {
 	GPtrArray *notjunk;
 	CamelFolder *folder;
 	CamelFilterDriver *driver;
-	CamelException ex;
+	GError *error;
 };
 
 enum {
@@ -111,9 +110,9 @@ filter_filter (CamelSession *session, CamelSessionThreadMsg *tmsg)
 	gint i, status = 0;
 	CamelURL *uri;
 	gchar *source_url;
-	CamelException ex = CAMEL_EXCEPTION_INITIALISER;
 	CamelJunkPlugin *csp;
 	const gchar *full_name;
+	GError *local_error = NULL;
 
 	full_name = camel_folder_get_full_name (m->folder);
 	parent_store = camel_folder_get_parent_store (m->folder);
@@ -128,10 +127,9 @@ filter_filter (CamelSession *session, CamelSessionThreadMsg *tmsg)
 			m->junk->len), full_name);
 
 		for (i = 0; i < m->junk->len; i ++) {
-			CamelMimeMessage *msg = camel_folder_get_message (m->folder, m->junk->pdata[i], &ex);
+			CamelMimeMessage *msg = camel_folder_get_message (m->folder, m->junk->pdata[i], NULL);
 			gint pc = 100 * i / m->junk->len;
 
-			camel_exception_clear (&ex);
 			camel_operation_progress (NULL, pc);
 
 			if (msg) {
@@ -150,10 +148,9 @@ filter_filter (CamelSession *session, CamelSessionThreadMsg *tmsg)
 			"Learning new ham messages in '%s'",
 			m->notjunk->len), full_name);
 		for (i = 0; i < m->notjunk->len; i ++) {
-			CamelMimeMessage *msg = camel_folder_get_message (m->folder, m->notjunk->pdata[i], &ex);
+			CamelMimeMessage *msg = camel_folder_get_message (m->folder, m->notjunk->pdata[i], NULL);
 			gint pc = 100 * i / m->notjunk->len;
 
-			camel_exception_clear (&ex);
 			camel_operation_progress (NULL, pc);
 
 			if (msg) {
@@ -202,14 +199,14 @@ filter_filter (CamelSession *session, CamelSessionThreadMsg *tmsg)
 				continue;
 			}
 
-			status = camel_filter_driver_filter_message (m->driver, NULL, info, uid, m->folder, source_url, source_url, &m->ex);
+			status = camel_filter_driver_filter_message (m->driver, NULL, info, uid, m->folder, source_url, source_url, NULL);
 
 			camel_folder_free_message_info (m->folder, info);
 		}
 
-		camel_filter_driver_flush (m->driver, &ex);
-		if (!camel_exception_is_set (&m->ex))
-			camel_exception_xfer (&m->ex, &ex);
+		camel_filter_driver_flush (m->driver, &local_error);
+		if (m->error == NULL)
+			g_propagate_error (&m->error, local_error);
 
 		g_free (source_url);
 
@@ -231,7 +228,7 @@ filter_free (CamelSession *session, CamelSessionThreadMsg *msg)
 	if (m->notjunk)
 		camel_folder_free_deep (m->folder, m->notjunk);
 
-	camel_folder_summary_save_to_db (m->folder->summary, &m->ex);
+	camel_folder_summary_save_to_db (m->folder->summary, &m->error);
 	camel_folder_thaw (m->folder);
 	g_object_unref (m->folder);
 }
@@ -261,14 +258,15 @@ folder_transfer_message_to (CamelFolder *source,
                             CamelFolder *dest,
                             gchar **transferred_uid,
                             gboolean delete_original,
-                            CamelException *ex)
+                            GError **error)
 {
 	CamelMimeMessage *msg;
 	CamelMessageInfo *minfo, *info;
+	GError *local_error = NULL;
 
 	/* Default implementation. */
 
-	msg = camel_folder_get_message (source, uid, ex);
+	msg = camel_folder_get_message (source, uid, error);
 	if (!msg)
 		return;
 
@@ -283,11 +281,16 @@ folder_transfer_message_to (CamelFolder *source,
 	/* we don't want to retain the deleted flag */
 	camel_message_info_set_flags (info, CAMEL_MESSAGE_DELETED, 0);
 
-	camel_folder_append_message (dest, msg, info, transferred_uid, ex);
+	camel_folder_append_message (
+		dest, msg, info, transferred_uid, &local_error);
 	g_object_unref (msg);
 
-	if (delete_original && !camel_exception_is_set (ex))
-		camel_folder_set_message_flags (source, uid, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN, ~0);
+	if (local_error != NULL)
+		g_propagate_error (error, local_error);
+	else if (delete_original)
+		camel_folder_set_message_flags (
+			source, uid, CAMEL_MESSAGE_DELETED |
+			CAMEL_MESSAGE_SEEN, ~0);
 
 	camel_message_info_free (info);
 }
@@ -418,7 +421,7 @@ folder_finalize (GObject *object)
 
 static gboolean
 folder_refresh_info (CamelFolder *folder,
-                     CamelException *ex)
+                     GError **error)
 {
 	return TRUE;
 }
@@ -564,7 +567,7 @@ folder_get_uids (CamelFolder *folder)
 static GPtrArray *
 folder_get_uncached_uids (CamelFolder *folder,
                           GPtrArray * uids,
-                          CamelException *ex)
+                          GError **error)
 {
 	GPtrArray *result;
 	gint i;
@@ -670,20 +673,16 @@ folder_transfer_messages_to (CamelFolder *source,
                              CamelFolder *dest,
                              GPtrArray **transferred_uids,
                              gboolean delete_originals,
-                             CamelException *ex)
+                             GError **error)
 {
-	CamelException local;
 	gchar **ret_uid = NULL;
 	gint i;
+	GError *local_error = NULL;
 
 	if (transferred_uids) {
 		*transferred_uids = g_ptr_array_new ();
 		g_ptr_array_set_size (*transferred_uids, uids->len);
 	}
-
-	camel_exception_init (&local);
-	if (ex == NULL)
-		ex = &local;
 
 	if (delete_originals)
 		camel_operation_start (NULL, _("Moving messages"));
@@ -695,12 +694,13 @@ folder_transfer_messages_to (CamelFolder *source,
 		if (delete_originals)
 			camel_folder_freeze (source);
 	}
-	for (i = 0; i < uids->len && !camel_exception_is_set (ex); i++) {
+
+	for (i = 0; i < uids->len && local_error != NULL; i++) {
 		if (transferred_uids)
 			ret_uid = (gchar **)&((*transferred_uids)->pdata[i]);
 		folder_transfer_message_to (
-			source, uids->pdata[i], dest,
-			ret_uid, delete_originals, ex);
+			source, uids->pdata[i], dest, ret_uid,
+			delete_originals, &local_error);
 		camel_operation_progress (NULL, i * 100 / uids->len);
 	}
 
@@ -711,7 +711,9 @@ folder_transfer_messages_to (CamelFolder *source,
 	}
 
 	camel_operation_end (NULL);
-	camel_exception_clear (&local);
+
+	if (local_error != NULL)
+		g_propagate_error (error, local_error);
 
 	return TRUE;
 }
@@ -870,7 +872,6 @@ folder_changed (CamelFolder *folder,
 		camel_folder_change_info_cat (folder->priv->changed_frozen, info);
 		camel_folder_unlock (folder, CAMEL_FOLDER_CHANGE_LOCK);
 		msg->driver = driver;
-		camel_exception_init (&msg->ex);
 		camel_session_thread_queue (session, &msg->msg, 0);
 		g_signal_stop_emission (folder, signals[CHANGED], 0);
 	}
@@ -1037,6 +1038,19 @@ camel_folder_init (CamelFolder *folder)
 	g_static_mutex_init (&folder->priv->change_lock);
 }
 
+GQuark
+camel_folder_error_quark (void)
+{
+	static GQuark quark = 0;
+
+	if (G_UNLIKELY (quark == 0)) {
+		const gchar *string = "camel-folder-error-quark";
+		quark = g_quark_from_static_string (string);
+	}
+
+	return quark;
+}
+
 /**
  * camel_folder_set_lock_async:
  * @folder: a #CamelFolder
@@ -1063,9 +1077,10 @@ camel_folder_set_lock_async (CamelFolder *folder,
 gchar *
 camel_folder_get_filename (CamelFolder *folder,
                            const gchar *uid,
-                           CamelException *ex)
+                           GError **error)
 {
 	CamelFolderClass *class;
+	gchar *filename;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
@@ -1073,14 +1088,17 @@ camel_folder_get_filename (CamelFolder *folder,
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_val_if_fail (class->get_filename != NULL, NULL);
 
-	return class->get_filename (folder, uid, ex);
+	filename = class->get_filename (folder, uid, error);
+	CAMEL_CHECK_GERROR (folder, get_filename, filename != NULL, error);
+
+	return filename;
 }
 
 /**
  * camel_folder_sync:
  * @folder: a #CamelFolder
  * @expunge: whether or not to expunge deleted messages
- * @ex: a #CamelException
+ * @error: return location for a #GError, or %NULL
  *
  * Sync changes made to a folder to its backing store, possibly
  * expunging deleted messages as well.
@@ -1090,7 +1108,7 @@ camel_folder_get_filename (CamelFolder *folder,
 gboolean
 camel_folder_sync (CamelFolder *folder,
                    gboolean expunge,
-                   CamelException *ex)
+                   GError **error)
 {
 	CamelFolderClass *class;
 	gboolean success = TRUE;
@@ -1102,8 +1120,10 @@ camel_folder_sync (CamelFolder *folder,
 
 	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
 
-	if (!(folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED))
-		success = class->sync (folder, expunge, ex);
+	if (!(folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED)) {
+		success = class->sync (folder, expunge, error);
+		CAMEL_CHECK_GERROR (folder, sync, success, error);
+	}
 
 	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
 
@@ -1113,7 +1133,7 @@ camel_folder_sync (CamelFolder *folder,
 /**
  * camel_folder_refresh_info:
  * @folder: a #CamelFolder
- * @ex: a #CamelException
+ * @error: return location for a #GError, or %NULL
  *
  * Updates a folder's summary to be in sync with its backing store.
  *
@@ -1121,7 +1141,7 @@ camel_folder_sync (CamelFolder *folder,
  **/
 gboolean
 camel_folder_refresh_info (CamelFolder *folder,
-                           CamelException *ex)
+                           GError **error)
 {
 	CamelFolderClass *class;
 	gboolean success;
@@ -1133,7 +1153,8 @@ camel_folder_refresh_info (CamelFolder *folder,
 
 	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
 
-	success = class->refresh_info (folder, ex);
+	success = class->refresh_info (folder, error);
+	CAMEL_CHECK_GERROR (folder, refresh_info, success, error);
 
 	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
 
@@ -1275,7 +1296,7 @@ camel_folder_get_parent_store (CamelFolder *folder)
 /**
  * camel_folder_expunge:
  * @folder: a #CamelFolder
- * @ex: a #CamelException
+ * @error: return location for a #GError, or %NULL
  *
  * Delete messages which have been marked as "DELETED"
  *
@@ -1283,7 +1304,7 @@ camel_folder_get_parent_store (CamelFolder *folder)
  **/
 gboolean
 camel_folder_expunge (CamelFolder *folder,
-                      CamelException *ex)
+                      GError **error)
 {
 	CamelFolderClass *class;
 	gboolean success = TRUE;
@@ -1295,8 +1316,10 @@ camel_folder_expunge (CamelFolder *folder,
 
 	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
 
-	if (!(folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED))
-		success = class->expunge (folder, ex);
+	if (!(folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED)) {
+		success = class->expunge (folder, error);
+		CAMEL_CHECK_GERROR (folder, expunge, success, error);
+	}
 
 	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
 
@@ -1364,7 +1387,7 @@ camel_folder_get_deleted_message_count (CamelFolder *folder)
  * new message, or %NULL
  * @appended_uid: if non-%NULL, the UID of the appended message will
  * be returned here, if it is known.
- * @ex: a #CamelException
+ * @error: return location for a #GError, or %NULL
  *
  * Append @message to @folder. Only the flag and tag data from @info
  * are used. If @info is %NULL, no flags or tags will be set.
@@ -1376,7 +1399,7 @@ camel_folder_append_message (CamelFolder *folder,
                              CamelMimeMessage *message,
                              const CamelMessageInfo *info,
                              gchar **appended_uid,
-                             CamelException *ex)
+                             GError **error)
 {
 	CamelFolderClass *class;
 	gboolean success;
@@ -1390,7 +1413,8 @@ camel_folder_append_message (CamelFolder *folder,
 	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
 
 	success = class->append_message (
-		folder, message, info, appended_uid, ex);
+		folder, message, info, appended_uid, error);
+	CAMEL_CHECK_GERROR (folder, append_message, success, error);
 
 	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
 
@@ -1703,7 +1727,7 @@ camel_folder_has_summary_capability (CamelFolder *folder)
  * camel_folder_get_message:
  * @folder: a #CamelFolder
  * @uid: the UID
- * @ex: a #CamelException
+ * @error: return location for a #GError, or %NULL
  *
  * Get a message from its UID in the folder.
  *
@@ -1712,7 +1736,7 @@ camel_folder_has_summary_capability (CamelFolder *folder)
 CamelMimeMessage *
 camel_folder_get_message (CamelFolder *folder,
                           const gchar *uid,
-                          CamelException *ex)
+                          GError **error)
 {
 	CamelFolderClass *class;
 	CamelMimeMessage *ret;
@@ -1725,7 +1749,8 @@ camel_folder_get_message (CamelFolder *folder,
 
 	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
 
-	ret = class->get_message (folder, uid, ex);
+	ret = class->get_message (folder, uid, error);
+	CAMEL_CHECK_GERROR (folder, get_message, ret != NULL, error);
 
 	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
 
@@ -1743,7 +1768,7 @@ camel_folder_get_message (CamelFolder *folder,
  * camel_folder_sync_message:
  * @folder: a #CamelFolder
  * @uid: the UID
- * @ex: a #CamelException
+ * @error: return location for a #GError, or %NULL
  *
  * Ensure that a message identified by UID has been synced in the folder (so
  * that camel_folder_get_message on it later will work in offline mode).
@@ -1755,7 +1780,7 @@ camel_folder_get_message (CamelFolder *folder,
 gboolean
 camel_folder_sync_message (CamelFolder *folder,
                            const gchar *uid,
-                           CamelException *ex)
+                           GError **error)
 {
 	CamelFolderClass *class;
 	gboolean success = FALSE;
@@ -1769,12 +1794,15 @@ camel_folder_sync_message (CamelFolder *folder,
 	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
 
 	/* Use the sync_message method if the class implements it. */
-	if (class->sync_message != NULL)
-		success = class->sync_message (folder, uid, ex);
-	else {
+	if (class->sync_message != NULL) {
+		success = class->sync_message (folder, uid, error);
+		CAMEL_CHECK_GERROR (folder, sync_message, success, error);
+	} else {
 		CamelMimeMessage *message;
 
-		message = class->get_message (folder, uid, ex);
+		message = class->get_message (folder, uid, error);
+		CAMEL_CHECK_GERROR (folder, get_message, message != NULL, error);
+
 		if (message != NULL) {
 			g_object_unref (message);
 			success = TRUE;
@@ -1847,10 +1875,11 @@ camel_folder_free_uids (CamelFolder *folder,
  **/
 GPtrArray *
 camel_folder_get_uncached_uids (CamelFolder *folder,
-                                GPtrArray * uids,
-                                CamelException *ex)
+                                GPtrArray *uids,
+                                GError **error)
 {
 	CamelFolderClass *class;
+	GPtrArray *uncached_uids;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 	g_return_val_if_fail (uids != NULL, NULL);
@@ -1858,7 +1887,10 @@ camel_folder_get_uncached_uids (CamelFolder *folder,
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_val_if_fail (class->get_uncached_uids != NULL, NULL);
 
-	return class->get_uncached_uids (folder, uids, ex);
+	uncached_uids = class->get_uncached_uids (folder, uids, error);
+	CAMEL_CHECK_GERROR (folder, get_uncached_uids, uncached_uids != NULL, error);
+
+	return uncached_uids;
 }
 
 /**
@@ -1980,7 +2012,7 @@ camel_folder_has_search_capability (CamelFolder *folder)
  * camel_folder_search_by_expression:
  * @folder: a #CamelFolder
  * @expr: a search expression
- * @ex: a #CamelException
+ * @error: return location for a #GError, or %NULL
  *
  * Searches the folder for messages matching the given search expression.
  *
@@ -1990,9 +2022,10 @@ camel_folder_has_search_capability (CamelFolder *folder)
 GPtrArray *
 camel_folder_search_by_expression (CamelFolder *folder,
                                    const gchar *expression,
-                                   CamelException *ex)
+                                   GError **error)
 {
 	CamelFolderClass *class;
+	GPtrArray *matches;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 	g_return_val_if_fail (folder->folder_flags & CAMEL_FOLDER_HAS_SEARCH_CAPABILITY, NULL);
@@ -2002,14 +2035,17 @@ camel_folder_search_by_expression (CamelFolder *folder,
 
 	/* NOTE: that it is upto the callee to CAMEL_FOLDER_REC_LOCK */
 
-	return class->search_by_expression (folder, expression, ex);
+	matches = class->search_by_expression (folder, expression, error);
+	CAMEL_CHECK_GERROR (folder, search_by_expression, matches != NULL, error);
+
+	return matches;
 }
 
 /**
  * camel_folder_count_by_expression:
  * @folder: a #CamelFolder
  * @expr: a search expression
- * @ex: a #CamelException
+ * @error: return location for a #GError, or %NULL
  *
  * Searches the folder for count of messages matching the given search expression.
  *
@@ -2020,7 +2056,7 @@ camel_folder_search_by_expression (CamelFolder *folder,
 guint32
 camel_folder_count_by_expression (CamelFolder *folder,
                                   const gchar *expression,
-                                  CamelException *ex)
+                                  GError **error)
 {
 	CamelFolderClass *class;
 
@@ -2032,7 +2068,7 @@ camel_folder_count_by_expression (CamelFolder *folder,
 
 	/* NOTE: that it is upto the callee to CAMEL_FOLDER_REC_LOCK */
 
-	return class->count_by_expression (folder, expression, ex);
+	return class->count_by_expression (folder, expression, error);
 }
 
 /**
@@ -2040,7 +2076,7 @@ camel_folder_count_by_expression (CamelFolder *folder,
  * @folder: a #CamelFolder
  * @expr: search expression
  * @uids: array of uid's to match against.
- * @ex: a #CamelException
+ * @error: return location for a #GError, or %NULL
  *
  * Search a subset of uid's for an expression match.
  *
@@ -2051,9 +2087,10 @@ GPtrArray *
 camel_folder_search_by_uids (CamelFolder *folder,
                              const gchar *expr,
                              GPtrArray *uids,
-                             CamelException *ex)
+                             GError **error)
 {
 	CamelFolderClass *class;
+	GPtrArray *matches;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 	g_return_val_if_fail (folder->folder_flags & CAMEL_FOLDER_HAS_SEARCH_CAPABILITY, NULL);
@@ -2063,7 +2100,10 @@ camel_folder_search_by_uids (CamelFolder *folder,
 
 	/* NOTE: that it is upto the callee to CAMEL_FOLDER_REC_LOCK */
 
-	return class->search_by_uids (folder, expr, uids, ex);
+	matches = class->search_by_uids (folder, expr, uids, error);
+	CAMEL_CHECK_GERROR (folder, search_by_uids, matches != NULL, error);
+
+	return matches;
 }
 
 /**
@@ -2099,7 +2139,7 @@ camel_folder_search_free (CamelFolder *folder,
  * @transferred_uids: if non-%NULL, the UIDs of the resulting messages
  * in @dest will be stored here, if known.
  * @delete_originals: whether or not to delete the original messages
- * @ex: a #CamelException
+ * @error: return location for a #GError, or %NULL
  *
  * This copies or moves messages from one folder to another. If the
  * @source and @dest folders have the same parent_store, this may be
@@ -2113,7 +2153,7 @@ camel_folder_transfer_messages_to (CamelFolder *source,
                                    CamelFolder *dest,
                                    GPtrArray **transferred_uids,
                                    gboolean delete_originals,
-                                   CamelException *ex)
+                                   GError **error)
 {
 	CamelFolderClass *class;
 	gboolean success;
@@ -2136,11 +2176,11 @@ camel_folder_transfer_messages_to (CamelFolder *source,
 			class = CAMEL_FOLDER_GET_CLASS (source);
 		success = class->transfer_messages_to (
 			source, uids, dest, transferred_uids,
-			delete_originals, ex);
+			delete_originals, error);
 	} else
 		success = folder_transfer_messages_to (
 			source, uids, dest, transferred_uids,
-			delete_originals, ex);
+			delete_originals, error);
 
 	return success;
 }

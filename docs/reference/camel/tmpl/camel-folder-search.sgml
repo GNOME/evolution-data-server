@@ -77,7 +77,7 @@ CamelFolderSearch
 
 @search: 
 @expr: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -89,7 +89,7 @@ CamelFolderSearch
 @search: 
 @expr: 
 @uids: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -100,7 +100,7 @@ CamelFolderSearch
 
 @search: 
 @expr: 
-@ex: 
+@error: 
 @Returns: 
 
 

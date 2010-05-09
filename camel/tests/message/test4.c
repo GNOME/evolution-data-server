@@ -87,7 +87,7 @@ gint main (gint argc, gchar **argv)
 			continue;
 
 		filename = g_strdup_printf ("../data/messages/%s", dent->d_name);
-		if (stat (filename, &st) == -1 || !S_ISREG (st.st_mode)) {
+		if (g_stat (filename, &st) == -1 || !S_ISREG (st.st_mode)) {
 			g_free (filename);
 			continue;
 		}
@@ -102,8 +102,8 @@ gint main (gint argc, gchar **argv)
 
 		stream = camel_stream_fs_new_with_fd (fd);
 		message = camel_mime_message_new ();
-		camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) message, stream);
-		camel_stream_reset (stream);
+		camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) message, stream, NULL);
+		camel_stream_reset (stream, NULL);
 
 		/*dump_mime_struct ((CamelMimePart *) message, 0);*/
 		test_message_compare (message);

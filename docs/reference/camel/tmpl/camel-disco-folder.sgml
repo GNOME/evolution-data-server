@@ -56,7 +56,7 @@ CamelDiscoFolder
 
 @folder: 
 @uids: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -67,7 +67,7 @@ CamelDiscoFolder
 
 @disco_folder: 
 @uid: 
-@ex: 
+@error: 
 @Returns: 
 
 
@@ -78,7 +78,7 @@ CamelDiscoFolder
 
 @disco_folder: 
 @expression: 
-@ex: 
+@error: 
 @Returns: 
 
 

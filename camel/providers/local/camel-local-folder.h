@@ -79,7 +79,7 @@ struct _CamelLocalFolderClass {
 	CamelLocalSummary *(*create_summary)(CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index);
 
 	/* Lock the folder for my operations */
-	gint (*lock)(CamelLocalFolder *, CamelLockType type, CamelException *ex);
+	gint (*lock)(CamelLocalFolder *, CamelLockType type, GError **error);
 
 	/* Unlock the folder for my operations */
 	void (*unlock)(CamelLocalFolder *);
@@ -91,7 +91,7 @@ GType		camel_local_folder_get_type	(void);
 CamelLocalFolder *
 		camel_local_folder_construct	(CamelLocalFolder *local_folder,
 						 guint32 flags,
-						 CamelException *ex);
+						 GError **error);
 gboolean	camel_local_folder_get_index_body
 						(CamelLocalFolder *local_folder);
 void		camel_local_folder_set_index_body
@@ -102,11 +102,11 @@ void		camel_local_folder_set_index_body
 /* UNIMPLEMENTED */
 gint		camel_local_folder_lock		(CamelLocalFolder *local_folder,
 						 CamelLockType type,
-						 CamelException *ex);
+						 GError **error);
 gint		camel_local_folder_unlock	(CamelLocalFolder *local_folder);
 
-void		set_cannot_get_message_ex	(CamelException *ex,
-						 ExceptionId exId,
+void		set_cannot_get_message_ex	(GError **error,
+						 gint err_code,
 						 const gchar *msgID,
 						 const gchar *folder_path,
 						 const gchar *detailErr);

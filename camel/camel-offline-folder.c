@@ -26,6 +26,7 @@
 
 #include <glib/gi18n-lib.h>
 
+#include "camel-debug.h"
 #include "camel-offline-folder.h"
 #include "camel-operation.h"
 #include "camel-service.h"
@@ -69,10 +70,10 @@ offline_downsync_sync (CamelSession *session, CamelSessionThreadMsg *mm)
 			gint pc = i * 100 / m->changes->uid_added->len;
 
 			camel_operation_progress (NULL, pc);
-			camel_folder_sync_message (m->folder, m->changes->uid_added->pdata[i], &mm->ex);
+			camel_folder_sync_message (m->folder, m->changes->uid_added->pdata[i], &mm->error);
 		}
 	} else {
-		camel_offline_folder_downsync ((CamelOfflineFolder *) m->folder, "(match-all)", &mm->ex);
+		camel_offline_folder_downsync ((CamelOfflineFolder *) m->folder, "(match-all)", &mm->error);
 	}
 
 	camel_operation_end (NULL);
@@ -158,7 +159,7 @@ offline_folder_get_property (GObject *object,
 static gboolean
 offline_folder_downsync (CamelOfflineFolder *offline,
                          const gchar *expression,
-                         CamelException *ex)
+                         GError **error)
 {
 	CamelFolder *folder = (CamelFolder *) offline;
 	GPtrArray *uids, *uncached_uids = NULL;
@@ -169,13 +170,13 @@ offline_folder_downsync (CamelOfflineFolder *offline,
 		camel_folder_get_full_name (folder));
 
 	if (expression)
-		uids = camel_folder_search_by_expression (folder, expression, ex);
+		uids = camel_folder_search_by_expression (folder, expression, NULL);
 	else
 		uids = camel_folder_get_uids (folder);
 
 	if (!uids)
 		goto done;
-	uncached_uids = camel_folder_get_uncached_uids(folder, uids, ex);
+	uncached_uids = camel_folder_get_uncached_uids(folder, uids, NULL);
 	if (uids) {
 		if (expression)
 			camel_folder_search_free (folder, uids);
@@ -188,7 +189,7 @@ offline_folder_downsync (CamelOfflineFolder *offline,
 
 	for (i = 0; i < uncached_uids->len; i++) {
 		gint pc = i * 100 / uncached_uids->len;
-		camel_folder_sync_message (folder, uncached_uids->pdata[i], ex);
+		camel_folder_sync_message (folder, uncached_uids->pdata[i], NULL);
 		camel_operation_progress (NULL, pc);
 	}
 
@@ -272,7 +273,7 @@ camel_offline_folder_set_offline_sync (CamelOfflineFolder *offline_folder,
  * camel_offline_folder_downsync:
  * @offline: a #CamelOfflineFolder object
  * @expression: search expression describing which set of messages to downsync (%NULL for all)
- * @ex: a #CamelException
+ * @error: return location for a #GError, or %NULL
  *
  * Syncs messages in @offline described by the search @expression to
  * the local machine for offline availability.
@@ -282,14 +283,18 @@ camel_offline_folder_set_offline_sync (CamelOfflineFolder *offline_folder,
 gboolean
 camel_offline_folder_downsync (CamelOfflineFolder *offline,
                                const gchar *expression,
-                               CamelException *ex)
+                               GError **error)
 {
 	CamelOfflineFolderClass *class;
+	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_OFFLINE_FOLDER (offline), FALSE);
 
 	class = CAMEL_OFFLINE_FOLDER_GET_CLASS (offline);
 	g_return_val_if_fail (class->downsync != NULL, FALSE);
 
-	return class->downsync (offline, expression, ex);
+	success = class->downsync (offline, expression, error);
+	CAMEL_CHECK_GERROR (offline, downsync, success, error);
+
+	return success;
 }

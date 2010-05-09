@@ -38,7 +38,6 @@
 #include <glib/gstdio.h>
 #include <gmodule.h>
 
-#include "camel-exception.h"
 #include "camel-provider.h"
 #include "camel-string-utils.h"
 #include "camel-vee-store.h"
@@ -166,7 +165,7 @@ camel_provider_init (void)
 /**
  * camel_provider_load:
  * @path: the path to a shared library
- * @ex: a CamelException
+ * @error: return location for a #GError, or %NULL
  *
  * Loads the provider at @path, and calls its initialization function,
  * passing @session as an argument. The provider should then register
@@ -176,7 +175,7 @@ camel_provider_init (void)
  **/
 gboolean
 camel_provider_load (const gchar *path,
-                     CamelException *ex)
+                     GError **error)
 {
 	GModule *module;
 	CamelProvider *(*provider_module_init) (void);
@@ -184,8 +183,8 @@ camel_provider_load (const gchar *path,
 	g_once (&setup_once, provider_setup, NULL);
 
 	if (!g_module_supported ()) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Could not load %s: Module loading "
 			  "not supported on this system."), path);
 		return FALSE;
@@ -193,8 +192,8 @@ camel_provider_load (const gchar *path,
 
 	module = g_module_open (path, G_MODULE_BIND_LAZY);
 	if (module == NULL) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Could not load %s: %s"),
 			path, g_module_error ());
 		return FALSE;
@@ -202,8 +201,8 @@ camel_provider_load (const gchar *path,
 
 	if (!g_module_symbol (module, "camel_provider_module_init",
 			      (gpointer *)&provider_module_init)) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Could not load %s: No initialization "
 			  "code in module."), path);
 		g_module_close (module);
@@ -344,16 +343,16 @@ camel_provider_list(gboolean load)
 /**
  * camel_provider_get:
  * @url_string: the URL for the service whose provider you want
- * @ex: a CamelException
+ * @error: return location for a #GError, or %NULL
  *
  * This returns the CamelProvider that would be used to handle
  * @url_string, loading it in from disk if necessary.
  *
- * Returns: the provider, or %NULL, in which case @ex will be set.
+ * Returns: the provider, or %NULL, in which case @error will be set.
  **/
 CamelProvider *
 camel_provider_get (const gchar *url_string,
-                    CamelException *ex)
+                    GError **error)
 {
 	CamelProvider *provider = NULL;
 	gchar *protocol;
@@ -376,15 +375,16 @@ camel_provider_get (const gchar *url_string,
 		m = g_hash_table_lookup(module_table, protocol);
 		if (m && !m->loaded) {
 			m->loaded = 1;
-			if (!camel_provider_load (m->path, ex))
+			if (!camel_provider_load (m->path, error))
 				goto fail;
 		}
 		provider = g_hash_table_lookup(provider_table, protocol);
 	}
 
 	if (provider == NULL)
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_URL_INVALID,
 			_("No provider available for protocol '%s'"),
 			protocol);
 fail:
@@ -398,7 +398,7 @@ fail:
  * @provider: camel provider
  * @url: a #CamelURL
  * @auto_detected: output hash table of auto-detected values
- * @ex: exception
+ * @error: return location for a #GError, or %NULL
  *
  * After filling in the standard Username/Hostname/Port/Path settings
  * (which must be set in @url), if the provider supports it, you
@@ -418,12 +418,12 @@ gint
 camel_provider_auto_detect (CamelProvider *provider,
                             CamelURL *url,
                             GHashTable **auto_detected,
-                            CamelException *ex)
+                            GError **error)
 {
 	g_return_val_if_fail (provider != NULL, -1);
 
 	if (provider->auto_detect) {
-		return provider->auto_detect (url, auto_detected, ex);
+		return provider->auto_detect (url, auto_detected, error);
 	} else {
 		*auto_detected = NULL;
 		return 0;

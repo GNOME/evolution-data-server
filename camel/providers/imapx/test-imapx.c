@@ -7,7 +7,6 @@ gint
 main (gint argc, gchar *argv [])
 {
 	CamelSession *session;
-	CamelException *ex;
 	gchar *uri = NULL;
 	CamelService *service;
 	CamelFolder *folder;
@@ -22,13 +21,12 @@ main (gint argc, gchar *argv [])
 	system ("rm -rf /tmp/test-camel-imapx");
 	camel_init ("/tmp/test-camel-imapx", TRUE);
 	camel_provider_init ();
-	ex = camel_exception_new ();
 
 	session = g_object_new (CAMEL_TYPE_SESSION, NULL);
 	camel_session_construct (session, "/tmp/test-camel-imapx");
 
-	service = camel_session_get_service (session, uri, CAMEL_PROVIDER_STORE, ex);
-	camel_service_connect (service, ex);
+	service = camel_session_get_service (session, uri, CAMEL_PROVIDER_STORE, NULL);
+	camel_service_connect (service, NULL);
 
 	camel_store_get_folder_info ((CamelStore *)service, "", 3, NULL);
 	folder = camel_store_get_folder ((CamelStore *)service, "INBOX", 0, NULL);

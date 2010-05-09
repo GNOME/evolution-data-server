@@ -59,7 +59,7 @@ G_DEFINE_TYPE (CamelSaslLogin, camel_sasl_login, CAMEL_TYPE_SASL)
 static GByteArray *
 sasl_login_challenge (CamelSasl *sasl,
                       GByteArray *token,
-                      CamelException *ex)
+                      GError **error)
 {
 	CamelSaslLoginPrivate *priv;
 	GByteArray *buf = NULL;
@@ -88,10 +88,10 @@ sasl_login_challenge (CamelSasl *sasl,
 		camel_sasl_set_authenticated (sasl, TRUE);
 		break;
 	default:
-		if (!camel_exception_is_set (ex))
-			camel_exception_set (
-				ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
-				_("Unknown authentication state."));
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+			_("Unknown authentication state."));
 	}
 
 	priv->state++;

@@ -104,7 +104,7 @@ GType camel_multipart_signed_get_type (void);
 /* public methods */
 CamelMultipartSigned *camel_multipart_signed_new           (void);
 
-CamelStream *camel_multipart_signed_get_content_stream(CamelMultipartSigned *mps, CamelException *ex);
+CamelStream *camel_multipart_signed_get_content_stream(CamelMultipartSigned *mps, GError **error);
 
 G_END_DECLS
 

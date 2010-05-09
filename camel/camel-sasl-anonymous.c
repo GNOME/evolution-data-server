@@ -56,15 +56,16 @@ sasl_anonymous_finalize (GObject *object)
 static GByteArray *
 sasl_anonymous_challenge (CamelSasl *sasl,
                           GByteArray *token,
-                          CamelException *ex)
+                          GError **error)
 {
 	CamelSaslAnonymous *sasl_anon = CAMEL_SASL_ANONYMOUS (sasl);
 	CamelInternetAddress *cia;
 	GByteArray *ret = NULL;
 
 	if (token) {
-		camel_exception_set (
-			ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 			_("Authentication failed."));
 		return NULL;
 	}
@@ -73,8 +74,9 @@ sasl_anonymous_challenge (CamelSasl *sasl,
 	case CAMEL_SASL_ANON_TRACE_EMAIL:
 		cia = camel_internet_address_new ();
 		if (camel_internet_address_add (cia, NULL, sasl_anon->trace_info) != 1) {
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Invalid email address trace information:\n%s"),
 				sasl_anon->trace_info);
 			g_object_unref (cia);
@@ -86,8 +88,9 @@ sasl_anonymous_challenge (CamelSasl *sasl,
 		break;
 	case CAMEL_SASL_ANON_TRACE_OPAQUE:
 		if (strchr (sasl_anon->trace_info, '@')) {
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Invalid opaque trace information:\n%s"),
 				sasl_anon->trace_info);
 			return NULL;
@@ -99,8 +102,9 @@ sasl_anonymous_challenge (CamelSasl *sasl,
 		ret = g_byte_array_new ();
 		break;
 	default:
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 			_("Invalid trace information:\n%s"),
 			sasl_anon->trace_info);
 		return NULL;

@@ -42,7 +42,7 @@
 
 static CamelLocalSummary *spool_create_summary(CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index);
 
-static gint spool_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
+static gint spool_lock(CamelLocalFolder *lf, CamelLockType type, GError **error);
 static void spool_unlock(CamelLocalFolder *lf);
 
 G_DEFINE_TYPE (CamelSpoolFolder, camel_spool_folder, CAMEL_TYPE_MBOX_FOLDER)
@@ -68,7 +68,7 @@ CamelFolder *
 camel_spool_folder_new (CamelStore *parent_store,
                         const gchar *full_name,
                         guint32 flags,
-                        CamelException *ex)
+                        GError **error)
 {
 	CamelFolder *folder;
 	gchar *basename;
@@ -86,7 +86,7 @@ camel_spool_folder_new (CamelStore *parent_store,
 	flags &= ~CAMEL_STORE_FOLDER_BODY_INDEX;
 
 	folder = (CamelFolder *)camel_local_folder_construct (
-		(CamelLocalFolder *)folder, flags, ex);
+		(CamelLocalFolder *)folder, flags, error);
 	if (folder) {
 		if (camel_url_get_param(((CamelService *)parent_store)->url, "xstatus"))
 			camel_mbox_summary_xstatus((CamelMboxSummary *)folder->summary, TRUE);
@@ -110,16 +110,18 @@ spool_create_summary (CamelLocalFolder *lf,
 static gint
 spool_lock (CamelLocalFolder *lf,
             CamelLockType type,
-            CamelException *ex)
+            GError **error)
 {
 	gint retry = 0;
 	CamelMboxFolder *mf = (CamelMboxFolder *)lf;
 	CamelSpoolFolder *sf = (CamelSpoolFolder *)lf;
+	GError *local_error = NULL;
 
 	mf->lockfd = open(lf->folder_path, O_RDWR|O_LARGEFILE, 0);
 	if (mf->lockfd == -1) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
 			_("Cannot create folder lock on %s: %s"),
 			lf->folder_path, g_strerror (errno));
 		return -1;
@@ -129,11 +131,11 @@ spool_lock (CamelLocalFolder *lf,
 		if (retry > 0)
 			sleep(CAMEL_LOCK_DELAY);
 
-		camel_exception_clear(ex);
+		g_clear_error (&local_error);
 
-		if (camel_lock_fcntl(mf->lockfd, type, ex) == 0) {
-			if (camel_lock_flock(mf->lockfd, type, ex) == 0) {
-				if ((sf->lockid = camel_lock_helper_lock(lf->folder_path, ex)) != -1)
+		if (camel_lock_fcntl(mf->lockfd, type, &local_error) == 0) {
+			if (camel_lock_flock(mf->lockfd, type, &local_error) == 0) {
+				if ((sf->lockid = camel_lock_helper_lock(lf->folder_path, &local_error)) != -1)
 					return 0;
 				camel_unlock_flock(mf->lockfd);
 			}
@@ -144,6 +146,9 @@ spool_lock (CamelLocalFolder *lf,
 
 	close (mf->lockfd);
 	mf->lockfd = -1;
+
+	if (local_error != NULL)
+		g_propagate_error (error, local_error);
 
 	return -1;
 }

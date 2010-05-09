@@ -91,20 +91,18 @@ imap_wrapper_finalize (GObject *object)
 
 static gssize
 imap_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
-                              CamelStream *stream)
+                              CamelStream *stream,
+                              GError **error)
 {
 	CamelImapWrapper *imap_wrapper = CAMEL_IMAP_WRAPPER (data_wrapper);
 
 	CAMEL_IMAP_WRAPPER_LOCK (imap_wrapper, lock);
 	if (data_wrapper->offline) {
-		CamelException ex = CAMEL_EXCEPTION_INITIALISER;
 		CamelStream *datastream;
 
 		datastream = camel_imap_folder_fetch_data (
 			imap_wrapper->folder, imap_wrapper->uid,
-			imap_wrapper->part_spec, FALSE, &ex);
-
-		camel_exception_clear (&ex);
+			imap_wrapper->part_spec, FALSE, NULL);
 
 		if (!datastream) {
 			CAMEL_IMAP_WRAPPER_UNLOCK (imap_wrapper, lock);
@@ -114,6 +112,10 @@ imap_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 /* FIXME[disk-summary] what errno to use if no ENETUNREACH */
 			errno = EINVAL;
 #endif
+			g_set_error (
+				error, G_IO_ERROR,
+				g_io_error_from_errno (errno),
+				"%s", g_strerror (errno));
 			return -1;
 		}
 
@@ -123,7 +125,7 @@ imap_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 	CAMEL_IMAP_WRAPPER_UNLOCK (imap_wrapper, lock);
 
 	return CAMEL_DATA_WRAPPER_CLASS (camel_imap_wrapper_parent_class)->
-		write_to_stream (data_wrapper, stream);
+		write_to_stream (data_wrapper, stream, error);
 }
 
 static void

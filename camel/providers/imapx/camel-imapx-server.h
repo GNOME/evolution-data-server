@@ -142,61 +142,61 @@ CamelIMAPXServer *
 		camel_imapx_server_new		(CamelStore *store,
 						 CamelURL *url);
 gboolean	camel_imapx_server_connect	(CamelIMAPXServer *is,
-						 CamelException *ex);
+						 GError **error);
 gboolean	imapx_connect_to_server		(CamelIMAPXServer *is,
-						 CamelException *ex);
+						 GError **error);
 GPtrArray *	camel_imapx_server_list		(CamelIMAPXServer *is,
 						 const gchar *top,
 						 guint32 flags,
 						 const gchar *ext,
-						 CamelException *ex);
-void		camel_imapx_server_refresh_info	(CamelIMAPXServer *is,
+						 GError **error);
+gboolean	camel_imapx_server_refresh_info	(CamelIMAPXServer *is,
 						 CamelFolder *folder,
-						 CamelException *ex);
-void		camel_imapx_server_sync_changes	(CamelIMAPXServer *is,
+						 GError **error);
+gboolean	camel_imapx_server_sync_changes	(CamelIMAPXServer *is,
 						 CamelFolder *folder,
-						 CamelException *ex);
-void		camel_imapx_server_expunge	(CamelIMAPXServer *is,
+						 GError **error);
+gboolean	camel_imapx_server_expunge	(CamelIMAPXServer *is,
 						 CamelFolder *folder,
-						 CamelException *ex);
-void		camel_imapx_server_noop		(CamelIMAPXServer *is,
+						 GError **error);
+gboolean	camel_imapx_server_noop		(CamelIMAPXServer *is,
 						 CamelFolder *folder,
-						 CamelException *ex);
+						 GError **error);
 CamelStream *	camel_imapx_server_get_message	(CamelIMAPXServer *is,
 						 CamelFolder *folder,
 						 const gchar *uid,
-						 CamelException *ex);
-void		camel_imapx_server_copy_message	(CamelIMAPXServer *is,
+						 GError **error);
+gboolean	camel_imapx_server_copy_message	(CamelIMAPXServer *is,
 						 CamelFolder *source,
 						 CamelFolder *dest,
 						 GPtrArray *uids,
 						 gboolean delete_originals,
-						 CamelException *ex);
-void		camel_imapx_server_append_message
+						 GError **error);
+gboolean	camel_imapx_server_append_message
 						(CamelIMAPXServer *is,
 						 CamelFolder *folder,
 						 CamelMimeMessage *message,
 						 const CamelMessageInfo *mi,
-						 CamelException *ex);
-void		camel_imapx_server_sync_message (CamelIMAPXServer *is,
+						 GError **error);
+gboolean	camel_imapx_server_sync_message (CamelIMAPXServer *is,
 						 CamelFolder *folder,
 						 const gchar *uid,
-						 CamelException *ex);
-void		camel_imapx_server_manage_subscription
+						 GError **error);
+gboolean	camel_imapx_server_manage_subscription
 						(CamelIMAPXServer *is,
 						 const gchar *folder_name,
 						 gboolean subscribe,
-						 CamelException *ex);
-void		camel_imapx_server_create_folder(CamelIMAPXServer *is,
+						 GError **error);
+gboolean	camel_imapx_server_create_folder(CamelIMAPXServer *is,
 						 const gchar *folder_name,
-						 CamelException *ex);
-void		camel_imapx_server_delete_folder(CamelIMAPXServer *is,
+						 GError **error);
+gboolean	camel_imapx_server_delete_folder(CamelIMAPXServer *is,
 						 const gchar *folder_name,
-						 CamelException *ex);
-void		camel_imapx_server_rename_folder(CamelIMAPXServer *is,
+						 GError **error);
+gboolean	camel_imapx_server_rename_folder(CamelIMAPXServer *is,
 						 const gchar *old_name,
 						 const gchar *new_name,
-						 CamelException *ex);
+						 GError **error);
 struct _IMAPXJobQueueInfo *	
 		camel_imapx_server_get_job_queue_info
 						(CamelIMAPXServer *is);

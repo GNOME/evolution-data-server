@@ -123,7 +123,8 @@ struct _CamelTcpStreamClass {
 	CamelStreamClass parent_class;
 
 	gint		(*connect)		(CamelTcpStream *stream,
-						 struct addrinfo *host);
+						 struct addrinfo *host,
+						 GError **error);
 	gint		(*getsockopt)		(CamelTcpStream *stream,
 						 CamelSockOptData *data);
 	gint		(*setsockopt)		(CamelTcpStream *stream,
@@ -138,7 +139,8 @@ struct _CamelTcpStreamClass {
 
 GType		camel_tcp_stream_get_type	(void);
 gint		camel_tcp_stream_connect	(CamelTcpStream *stream,
-						 struct addrinfo *host);
+						 struct addrinfo *host,
+						 GError **error);
 gint		camel_tcp_stream_getsockopt	(CamelTcpStream *stream,
 						 CamelSockOptData *data);
 gint		camel_tcp_stream_setsockopt	(CamelTcpStream *stream,
@@ -189,8 +191,13 @@ gint		camel_tcp_stream_setsockopt	(CamelTcpStream *stream,
  * support SOCKS4a/SOCKS5 proxies should be well-contained within Camel,
  * with no extra changes required in Evolution.
  */
-void camel_tcp_stream_set_socks_proxy (CamelTcpStream *stream, const gchar *socks_host, gint socks_port);
-void camel_tcp_stream_peek_socks_proxy (CamelTcpStream *stream, const gchar **socks_host_ret, gint *socks_port_ret);
+void		camel_tcp_stream_set_socks_proxy(CamelTcpStream *stream,
+						 const gchar *socks_host,
+						 gint socks_port);
+void		camel_tcp_stream_peek_socks_proxy
+						(CamelTcpStream *stream,
+						 const gchar **socks_host_ret,
+						 gint *socks_port_ret);
 
 struct sockaddr *
 		camel_tcp_stream_get_local_address

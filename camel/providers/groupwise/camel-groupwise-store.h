@@ -86,8 +86,8 @@ EGwConnection *cnc_lookup (CamelGroupwiseStorePrivate *priv);
 gchar *storage_path_lookup (CamelGroupwiseStorePrivate *priv);
 const gchar *groupwise_base_url_lookup (CamelGroupwiseStorePrivate *priv);
 CamelFolderInfo * create_junk_folder (CamelStore *store);
-gboolean camel_groupwise_store_connected (CamelGroupwiseStore *store, CamelException *ex);
-void gw_store_reload_folder (CamelGroupwiseStore *store, CamelFolder *folder, guint32 flags, CamelException *ex);
+gboolean camel_groupwise_store_connected (CamelGroupwiseStore *store, GError **error);
+gboolean gw_store_reload_folder (CamelGroupwiseStore *store, CamelFolder *folder, guint32 flags, GError **error);
 void groupwise_store_set_current_folder (CamelGroupwiseStore *groupwise_store, CamelFolder *folder);
 
 G_END_DECLS

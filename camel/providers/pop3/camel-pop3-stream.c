@@ -68,7 +68,8 @@ pop3_stream_finalize (GObject *object)
 }
 
 static gint
-stream_fill (CamelPOP3Stream *is)
+stream_fill (CamelPOP3Stream *is,
+             GError **error)
 {
 	gint left = 0;
 
@@ -79,22 +80,23 @@ stream_fill (CamelPOP3Stream *is)
 		is->ptr = is->buf;
 		left = camel_stream_read (
 			is->source, (gchar *) is->end,
-			CAMEL_POP3_STREAM_SIZE - (is->end - is->buf));
+			CAMEL_POP3_STREAM_SIZE - (is->end - is->buf), error);
 		if (left > 0) {
 			is->end += left;
 			is->end[0] = '\n';
 			return is->end - is->ptr;
-		} else {
-			dd (printf ("POP3_STREAM_FILL (ERROR): '%s'\n", g_strerror (errno)));
+		} else
 			return -1;
-		}
 	}
 
 	return 0;
 }
 
 static gssize
-stream_read (CamelStream *stream, gchar *buffer, gsize n)
+stream_read (CamelStream *stream,
+             gchar *buffer,
+             gsize n,
+             GError **error)
 {
 	CamelPOP3Stream *is = (CamelPOP3Stream *)stream;
 	gchar *o, *oe;
@@ -117,7 +119,7 @@ stream_read (CamelStream *stream, gchar *buffer, gsize n)
 	case 0:		/* start of line, always read at least 3 chars */
 		while (e - p < 3) {
 			is->ptr = p;
-			if (stream_fill (is) == -1)
+			if (stream_fill (is, error) == -1)
 				return -1;
 			p = is->ptr;
 			e = is->end;
@@ -141,7 +143,7 @@ stream_read (CamelStream *stream, gchar *buffer, gsize n)
 				/* end of input sentinal check */
 				if (p > e) {
 					is->ptr = e;
-					if (stream_fill (is) == -1)
+					if (stream_fill (is, error) == -1)
 						return -1;
 					p = is->ptr;
 					e = is->end;
@@ -168,7 +170,8 @@ stream_read (CamelStream *stream, gchar *buffer, gsize n)
 static gssize
 stream_write (CamelStream *stream,
               const gchar *buffer,
-              gsize n)
+              gsize n,
+              GError **error)
 {
 	CamelPOP3Stream *is = (CamelPOP3Stream *)stream;
 
@@ -177,18 +180,20 @@ stream_write (CamelStream *stream,
 	else
 		dd (printf ("POP3_STREAM_WRITE (%d):\nPASS xxxxxxxx\n", (gint)n));
 
-	return camel_stream_write (is->source, buffer, n);
+	return camel_stream_write (is->source, buffer, n, error);
 }
 
 static gint
-stream_close (CamelStream *stream)
+stream_close (CamelStream *stream,
+              GError **error)
 {
 	/* nop? */
 	return 0;
 }
 
 static gint
-stream_flush (CamelStream *stream)
+stream_flush (CamelStream *stream,
+              GError **error)
 {
 	/* nop? */
 	return 0;
@@ -203,7 +208,8 @@ stream_eos (CamelStream *stream)
 }
 
 static gint
-stream_reset (CamelStream *stream)
+stream_reset (CamelStream *stream,
+              GError **error)
 {
 	/* nop?  reset literal mode? */
 	return 0;
@@ -286,7 +292,7 @@ camel_pop3_stream_line (CamelPOP3Stream *is, guchar **data, guint *len)
 		/* need at least 3 chars in buffer */
 		while (e-p < 3) {
 			is->ptr = p;
-			if (stream_fill (is) == -1)
+			if (stream_fill (is, NULL) == -1)
 				return -1;
 			p = is->ptr;
 			e = is->end;
@@ -316,7 +322,7 @@ camel_pop3_stream_line (CamelPOP3Stream *is, guchar **data, guint *len)
 				/* sentinal? */
 				if (p> e) {
 					is->ptr = e;
-					if (stream_fill (is) == -1)
+					if (stream_fill (is, NULL) == -1)
 						return -1;
 					p = is->ptr;
 					e = is->end;
@@ -357,7 +363,7 @@ gint camel_pop3_stream_gets (CamelPOP3Stream *is, guchar **start, guint *len)
 
 	max = is->end - is->ptr;
 	if (max == 0) {
-		max = stream_fill (is);
+		max = stream_fill (is, NULL);
 		if (max <= 0)
 			return max;
 	}
@@ -402,7 +408,7 @@ gint camel_pop3_stream_getd (CamelPOP3Stream *is, guchar **start, guint *len)
 
 	while (e - p < 3) {
 		is->ptr = p;
-		if (stream_fill (is) == -1)
+		if (stream_fill (is, NULL) == -1)
 			return -1;
 		p = is->ptr;
 		e = is->end;

@@ -73,18 +73,21 @@ struct _CamelStreamFsClass {
 GType		camel_stream_fs_get_type	(void);
 CamelStream *	camel_stream_fs_new_with_name	(const gchar *name,
 						 gint flags,
-						 mode_t mode);
+						 mode_t mode,
+						 GError **error);
 CamelStream *	camel_stream_fs_new_with_name_and_bounds
 						(const gchar *name,
 						 gint flags,
 						 mode_t mode,
 						 off_t start,
-						 off_t end);
+						 off_t end,
+						 GError **error);
 CamelStream *	camel_stream_fs_new_with_fd	(gint fd);
 CamelStream *	camel_stream_fs_new_with_fd_and_bounds
 						(gint fd,
 						 off_t start,
-						 off_t end);
+						 off_t end,
+						 GError **error);
 gint		camel_stream_fs_get_fd		(CamelStreamFs *stream);
 
 G_END_DECLS

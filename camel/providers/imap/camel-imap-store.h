@@ -170,9 +170,9 @@ struct _CamelImapStoreClass {
 
 GType camel_imap_store_get_type (void);
 
-gboolean camel_imap_store_connected (CamelImapStore *store, CamelException *ex);
+gboolean camel_imap_store_connected (CamelImapStore *store, GError **error);
 
-gssize camel_imap_store_readline (CamelImapStore *store, gchar **dest, CamelException *ex);
+gssize camel_imap_store_readline (CamelImapStore *store, gchar **dest, GError **error);
 
 G_END_DECLS
 

@@ -74,60 +74,60 @@ struct _CamelDiscoStore {
 struct _CamelDiscoStoreClass {
 	CamelStoreClass parent_class;
 
-	void              (*set_status)              (CamelDiscoStore *,
+	gboolean          (*set_status)              (CamelDiscoStore *,
 						      CamelDiscoStoreStatus,
-						      CamelException *);
+						      GError **error);
 	gboolean          (*can_work_offline)        (CamelDiscoStore *);
 
 	gboolean          (*connect_online)          (CamelService *,
-						      CamelException *);
+						      GError **error);
 	gboolean          (*connect_offline)         (CamelService *,
-						      CamelException *);
+						      GError **error);
 
 	gboolean          (*disconnect_online)       (CamelService *, gboolean,
-						      CamelException *);
+						      GError **error);
 	gboolean          (*disconnect_offline)      (CamelService *, gboolean,
-						      CamelException *);
+						      GError **error);
 
 	CamelFolder *     (*get_folder_online)       (CamelStore *store,
 						      const gchar *name,
 						      guint32 flags,
-						      CamelException *ex);
+						      GError **error);
 	CamelFolder *     (*get_folder_offline)      (CamelStore *store,
 						      const gchar *name,
 						      guint32 flags,
-						      CamelException *ex);
+						      GError **error);
 	CamelFolder *     (*get_folder_resyncing)    (CamelStore *store,
 						      const gchar *name,
 						      guint32 flags,
-						      CamelException *ex);
+						      GError **error);
 
 	CamelFolderInfo * (*get_folder_info_online)    (CamelStore *store,
 							const gchar *top,
 							guint32 flags,
-							CamelException *ex);
+							GError **error);
 	CamelFolderInfo * (*get_folder_info_offline)   (CamelStore *store,
 							const gchar *top,
 							guint32 flags,
-							CamelException *ex);
+							GError **error);
 	CamelFolderInfo * (*get_folder_info_resyncing) (CamelStore *store,
 							const gchar *top,
 							guint32 flags,
-							CamelException *ex);
+							GError **error);
 };
 
 GType camel_disco_store_get_type (void);
 
 /* Public methods */
 CamelDiscoStoreStatus camel_disco_store_status           (CamelDiscoStore *store);
-void                  camel_disco_store_set_status       (CamelDiscoStore *store,
+gboolean              camel_disco_store_set_status       (CamelDiscoStore *store,
 							  CamelDiscoStoreStatus status,
-							  CamelException *ex);
+							  GError **error);
 gboolean              camel_disco_store_can_work_offline (CamelDiscoStore *store);
 
 /* Convenience functions */
-gboolean camel_disco_store_check_online (CamelDiscoStore *store, CamelException *ex);
-void camel_disco_store_prepare_for_offline(CamelDiscoStore *store, CamelException *ex);
+gboolean camel_disco_store_check_online (CamelDiscoStore *store, GError **error);
+void camel_disco_store_prepare_for_offline(CamelDiscoStore *store, GError **error);
 
 G_END_DECLS
 

@@ -28,7 +28,6 @@
 #define CAMEL_DATA_CACHE_H
 
 #include <camel/camel-stream.h>
-#include <camel/camel-exception.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_DATA_CACHE \
@@ -66,7 +65,7 @@ struct _CamelDataCacheClass {
 
 GType		camel_data_cache_get_type	(void);
 CamelDataCache *camel_data_cache_new		(const gchar *path,
-						 CamelException *ex);
+						 GError **error);
 const gchar *	camel_data_cache_get_path	(CamelDataCache *cdc);
 void		camel_data_cache_set_path	(CamelDataCache *cdc,
 						 const gchar *path);
@@ -78,19 +77,19 @@ void		camel_data_cache_set_expire_access
 CamelStream *	camel_data_cache_add		(CamelDataCache *cdc,
 						 const gchar *path,
 						 const gchar *key,
-						 CamelException *ex);
+						 GError **error);
 CamelStream *	camel_data_cache_get		(CamelDataCache *cdc,
 						 const gchar *path,
 						 const gchar *key,
-						 CamelException *ex);
+						 GError **error);
 gint		camel_data_cache_remove		(CamelDataCache *cdc,
 						 const gchar *path,
 						 const gchar *key,
-						 CamelException *ex);
+						 GError **error);
 gchar *		camel_data_cache_get_filename	(CamelDataCache *cdc,
 						 const gchar *path,
 						 const gchar *key,
-						 CamelException *ex);
+						 GError **error);
 
 G_END_DECLS
 

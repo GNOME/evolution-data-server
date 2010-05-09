@@ -34,6 +34,7 @@ CamelStream
 @stream: 
 @buffer: 
 @n: 
+@error: 
 @Returns: 
 
 
@@ -45,6 +46,7 @@ CamelStream
 @stream: 
 @buffer: 
 @n: 
+@error: 
 @Returns: 
 
 
@@ -54,6 +56,7 @@ CamelStream
 </para>
 
 @stream: 
+@error: 
 @Returns: 
 
 
@@ -63,6 +66,7 @@ CamelStream
 </para>
 
 @stream: 
+@error: 
 @Returns: 
 
 
@@ -81,6 +85,7 @@ CamelStream
 </para>
 
 @stream: 
+@error: 
 @Returns: 
 
 
@@ -91,6 +96,7 @@ CamelStream
 
 @stream: 
 @string: 
+@error: 
 @Returns: 
 
 
@@ -123,6 +129,7 @@ CamelStream
 
 @stream: 
 @output_stream: 
+@error: 
 @Returns: 
 
 

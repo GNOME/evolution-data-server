@@ -42,7 +42,7 @@ static gchar *get_name (CamelService *service, gboolean brief);
 static gboolean sendmail_send_to (CamelTransport *transport,
 				  CamelMimeMessage *message,
 				  CamelAddress *from, CamelAddress *recipients,
-				  CamelException *ex);
+				  GError **error);
 
 G_DEFINE_TYPE (CamelSendmailTransport, camel_sendmail_transport, CAMEL_TYPE_TRANSPORT)
 
@@ -69,7 +69,7 @@ sendmail_send_to (CamelTransport *transport,
                   CamelMimeMessage *message,
                   CamelAddress *from,
                   CamelAddress *recipients,
-                  CamelException *ex)
+                  GError **error)
 {
 	struct _camel_header_raw *header, *savedbcc, *n, *tail;
 	const gchar *from_addr, *addr, **argv;
@@ -93,8 +93,8 @@ sendmail_send_to (CamelTransport *transport,
 
 	for (i = 0; i < len; i++) {
 		if (!camel_internet_address_get (CAMEL_INTERNET_ADDRESS (recipients), i, NULL, &addr)) {
-			camel_exception_set (
-				ex, CAMEL_EXCEPTION_SYSTEM,
+			g_set_error (
+				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Could not parse recipient list"));
 			g_free (argv);
 			return FALSE;
@@ -125,8 +125,9 @@ sendmail_send_to (CamelTransport *transport,
 	}
 
 	if (pipe (fd) == -1) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
 			_("Could not create pipe to sendmail: %s: "
 			  "mail not sent"), g_strerror (errno));
 
@@ -146,8 +147,9 @@ sendmail_send_to (CamelTransport *transport,
 	pid = fork ();
 	switch (pid) {
 	case -1:
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
 			_("Could not fork sendmail: %s: "
 			  "mail not sent"), g_strerror (errno));
 		close (fd[0]);
@@ -185,13 +187,11 @@ sendmail_send_to (CamelTransport *transport,
 	g_object_unref (out);
 
 	out = (CamelStream *) filter;
-	if (camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (message), out) == -1
-	    || camel_stream_close (out) == -1) {
+	if (camel_data_wrapper_write_to_stream (
+		CAMEL_DATA_WRAPPER (message), out, error) == -1
+	    || camel_stream_close (out, error) == -1) {
 		g_object_unref (CAMEL_OBJECT (out));
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
-			_("Could not send message: %s"),
-			g_strerror (errno));
+		g_prefix_error (error, _("Could not send message: "));
 
 		/* Wait for sendmail to exit. */
 		while (waitpid (pid, &wstat, 0) == -1 && errno == EINTR)
@@ -217,20 +217,20 @@ sendmail_send_to (CamelTransport *transport,
 	header->next = savedbcc;
 
 	if (!WIFEXITED (wstat)) {
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("sendmail exited with signal %s: mail not sent."),
 			g_strsignal (WTERMSIG (wstat)));
 		return FALSE;
 	} else if (WEXITSTATUS (wstat) != 0) {
 		if (WEXITSTATUS (wstat) == 255) {
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SYSTEM,
+			g_set_error (
+				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Could not execute %s: mail not sent."),
 				SENDMAIL_PATH);
 		} else {
-			camel_exception_setv (
-				ex, CAMEL_EXCEPTION_SYSTEM,
+			g_set_error (
+				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("sendmail exited with status %d: "
 				  "mail not sent."),
 				WEXITSTATUS (wstat));

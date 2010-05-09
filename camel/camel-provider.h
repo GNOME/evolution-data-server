@@ -31,7 +31,6 @@
 #ifndef CAMEL_PROVIDER_H
 #define CAMEL_PROVIDER_H
 
-#include <camel/camel-exception.h>
 #include <camel/camel-object.h>
 #include <camel/camel-object-bag.h>
 #include <camel/camel-url.h>
@@ -147,7 +146,7 @@ typedef struct {
 #define CAMEL_PROVIDER_CONF_DEFAULT_HOSTNAME  { CAMEL_PROVIDER_CONF_LABEL, "hostname", NULL, N_("_Host:"), NULL }
 #define CAMEL_PROVIDER_CONF_DEFAULT_PATH      { CAMEL_PROVIDER_CONF_ENTRY, "path", NULL, N_("_Path:"), "" }
 
-typedef gint (*CamelProviderAutoDetectFunc) (CamelURL *url, GHashTable **auto_detected, CamelException *ex);
+typedef gint (*CamelProviderAutoDetectFunc) (CamelURL *url, GHashTable **auto_detected, GError **error);
 
 typedef struct {
 	/* Provider name used in CamelURLs. */
@@ -226,11 +225,11 @@ struct _CamelProviderModule {
 
 void		camel_provider_init		(void);
 gboolean	camel_provider_load		(const gchar *path,
-						 CamelException *ex);
+						 GError **error);
 void		camel_provider_register		(CamelProvider *provider);
 GList *		camel_provider_list		(gboolean load);
 CamelProvider *	camel_provider_get		(const gchar *url_string,
-						 CamelException *ex);
+						 GError **error);
 
 /* This is defined by each module, not by camel-provider.c. */
 void		camel_provider_module_init	(void);
@@ -238,7 +237,7 @@ void		camel_provider_module_init	(void);
 gint		camel_provider_auto_detect	(CamelProvider *provider,
 						 CamelURL *url,
 						 GHashTable **auto_detected,
-						 CamelException *ex);
+						 GError **error);
 
 G_END_DECLS
 

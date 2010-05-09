@@ -43,12 +43,12 @@
 
 static CamelLocalSummary *maildir_create_summary(CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index);
 
-static gboolean maildir_append_message(CamelFolder * folder, CamelMimeMessage * message, const CamelMessageInfo *info, gchar **appended_uid, CamelException * ex);
-static CamelMimeMessage *maildir_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex);
-static gchar * maildir_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex);
+static gboolean maildir_append_message(CamelFolder * folder, CamelMimeMessage * message, const CamelMessageInfo *info, gchar **appended_uid, GError **error);
+static CamelMimeMessage *maildir_get_message(CamelFolder * folder, const gchar * uid, GError **error);
+static gchar * maildir_get_filename (CamelFolder *folder, const gchar *uid, GError **error);
 static gint maildir_cmp_uids (CamelFolder *folder, const gchar *uid1, const gchar *uid2);
 static void maildir_sort_uids (CamelFolder *folder, GPtrArray *uids);
-static gboolean maildir_transfer_messages_to (CamelFolder *source, GPtrArray *uids, CamelFolder *dest, GPtrArray **transferred_uids, gboolean delete_originals, CamelException *ex);
+static gboolean maildir_transfer_messages_to (CamelFolder *source, GPtrArray *uids, CamelFolder *dest, GPtrArray **transferred_uids, gboolean delete_originals, GError **error);
 
 G_DEFINE_TYPE (CamelMaildirFolder, camel_maildir_folder, CAMEL_TYPE_LOCAL_FOLDER)
 
@@ -79,7 +79,7 @@ CamelFolder *
 camel_maildir_folder_new (CamelStore *parent_store,
                           const gchar *full_name,
                           guint32 flags,
-                          CamelException *ex)
+                          GError **error)
 {
 	CamelFolder *folder;
 	gchar *basename;
@@ -101,7 +101,7 @@ camel_maildir_folder_new (CamelStore *parent_store,
 		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 
 	folder = (CamelFolder *) camel_local_folder_construct (
-		CAMEL_LOCAL_FOLDER (folder), flags, ex);
+		CAMEL_LOCAL_FOLDER (folder), flags, error);
 
 	g_free (basename);
 
@@ -123,7 +123,7 @@ maildir_append_message (CamelFolder *folder,
                         CamelMimeMessage *message,
                         const CamelMessageInfo *info,
                         gchar **appended_uid,
-                        CamelException *ex)
+                        GError **error)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelStream *output_stream;
@@ -135,13 +135,13 @@ maildir_append_message (CamelFolder *folder,
 	d(printf("Appending message\n"));
 
 	/* If we can't lock, don't do anything */
-	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, ex) == -1)
+	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
 		return FALSE;
 
 	/* add it to the summary/assign the uid, etc */
 	mi = camel_local_summary_add (
 		CAMEL_LOCAL_SUMMARY (folder->summary),
-		message, info, lf->changes, ex);
+		message, info, lf->changes, error);
 	if (mi == NULL)
 		goto check_changed;
 
@@ -155,18 +155,24 @@ maildir_append_message (CamelFolder *folder,
 	/* write it out to tmp, use the uid we got from the summary */
 	name = g_strdup_printf ("%s/tmp/%s", lf->folder_path, camel_message_info_uid(mi));
 	output_stream = camel_stream_fs_new_with_name (
-		name, O_WRONLY|O_CREAT, 0600);
+		name, O_WRONLY|O_CREAT, 0600, error);
 	if (output_stream == NULL)
 		goto fail_write;
 
-	if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *)message, output_stream) == -1
-	    || camel_stream_close (output_stream) == -1)
+	if (camel_data_wrapper_write_to_stream (
+		(CamelDataWrapper *)message, output_stream, error) == -1
+	    || camel_stream_close (output_stream, error) == -1)
 		goto fail_write;
 
 	/* now move from tmp to cur (bypass new, does it matter?) */
 	dest = g_strdup_printf("%s/cur/%s", lf->folder_path, camel_maildir_info_filename (mdi));
-	if (rename (name, dest) == -1)
+	if (g_rename (name, dest) == -1) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			"%s", g_strerror (errno));
 		goto fail_write;
+	}
 
 	g_free (dest);
 	g_free (name);
@@ -185,15 +191,9 @@ maildir_append_message (CamelFolder *folder,
 	camel_folder_summary_remove_uid (CAMEL_FOLDER_SUMMARY (folder->summary),
 					 camel_message_info_uid (mi));
 
-	if (errno == EINTR)
-		camel_exception_set (
-			ex, CAMEL_EXCEPTION_USER_CANCEL,
-			_("Maildir append message canceled"));
-	else
-		camel_exception_setv (
-			ex, CAMEL_EXCEPTION_SYSTEM,
-			_("Cannot append message to maildir folder: %s: %s"),
-			name, g_strerror (errno));
+	g_prefix_error (
+		error, _("Cannot append message to maildir folder: %s: "),
+		name);
 
 	if (output_stream) {
 		g_object_unref (CAMEL_OBJECT (output_stream));
@@ -219,7 +219,7 @@ maildir_append_message (CamelFolder *folder,
 static gchar *
 maildir_get_filename (CamelFolder *folder,
                       const gchar *uid,
-                      CamelException *ex)
+                      GError **error)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelMaildirMessageInfo *mdi;
@@ -229,7 +229,7 @@ maildir_get_filename (CamelFolder *folder,
 	/* get the message summary info */
 	if ((info = camel_folder_summary_uid(folder->summary, uid)) == NULL) {
 		set_cannot_get_message_ex (
-			ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+			error, CAMEL_FOLDER_ERROR_INVALID_UID,
 			uid, lf->folder_path, _("No such message"));
 		return NULL;
 	}
@@ -247,7 +247,7 @@ maildir_get_filename (CamelFolder *folder,
 static CamelMimeMessage *
 maildir_get_message (CamelFolder *folder,
                      const gchar *uid,
-                     CamelException * ex)
+                     GError **error)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelStream *message_stream = NULL;
@@ -258,13 +258,13 @@ maildir_get_message (CamelFolder *folder,
 
 	d(printf("getting message: %s\n", uid));
 
-	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, ex) == -1)
+	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
 		return NULL;
 
 	/* get the message summary info */
 	if ((info = camel_folder_summary_uid(folder->summary, uid)) == NULL) {
 		set_cannot_get_message_ex (
-			ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+			error, CAMEL_FOLDER_ERROR_INVALID_UID,
 			uid, lf->folder_path, _("No such message"));
 		goto fail;
 	}
@@ -276,19 +276,20 @@ maildir_get_message (CamelFolder *folder,
 
 	camel_message_info_free(info);
 
-	if ((message_stream = camel_stream_fs_new_with_name(name, O_RDONLY, 0)) == NULL) {
-		set_cannot_get_message_ex (
-			ex, CAMEL_EXCEPTION_SYSTEM,
-			uid, lf->folder_path, g_strerror (errno));
+	message_stream = camel_stream_fs_new_with_name (
+		name, O_RDONLY, 0, error);
+	if (message_stream == NULL) {
+		g_prefix_error (
+			error, _("Cannot get message %s from folder %s: "),
+			uid, lf->folder_path);
 		goto fail;
 	}
 
 	message = camel_mime_message_new();
-	if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)message, message_stream) == -1) {
-		set_cannot_get_message_ex (
-			ex, (errno==EINTR) ?
-			CAMEL_EXCEPTION_USER_CANCEL : CAMEL_EXCEPTION_SYSTEM,
-			uid, lf->folder_path, _("Invalid message contents"));
+	if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)message, message_stream, error) == -1) {
+		g_prefix_error (
+			error, _("Cannot get message %s from folder %s: "),
+			uid, lf->folder_path);
 		g_object_unref (message);
 		message = NULL;
 
@@ -340,18 +341,8 @@ maildir_sort_uids (CamelFolder *folder,
 	g_return_if_fail (camel_maildir_folder_parent_class != NULL);
 	g_return_if_fail (folder != NULL);
 
-	if (uids && uids->len > 1) {
-		CamelException ex;
-
-		camel_exception_init (&ex);
-
-		camel_folder_summary_prepare_fetch_all (folder->summary, &ex);
-
-		if (camel_exception_is_set (&ex))
-			g_warning ("%s: %s", G_STRFUNC, camel_exception_get_description (&ex));
-
-		camel_exception_clear (&ex);
-	}
+	if (uids && uids->len > 1)
+		camel_folder_summary_prepare_fetch_all (folder->summary, NULL);
 
 	/* Chain up to parent's sort_uids() method. */
 	CAMEL_FOLDER_CLASS (camel_maildir_folder_parent_class)->sort_uids (folder, uids);
@@ -363,7 +354,7 @@ maildir_transfer_messages_to (CamelFolder *source,
                               CamelFolder *dest,
                               GPtrArray **transferred_uids,
                               gboolean delete_originals,
-                              CamelException *ex)
+                              GError **error)
 {
 	gboolean fallback = FALSE;
 
@@ -385,7 +376,7 @@ maildir_transfer_messages_to (CamelFolder *source,
 
 			if ((info = camel_folder_summary_uid (source->summary, uid)) == NULL) {
 				set_cannot_get_message_ex (
-					ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+					error, CAMEL_FOLDER_ERROR_INVALID_UID,
 					uid, lf->folder_path, _("No such message"));
 				return FALSE;
 			}
@@ -402,9 +393,11 @@ maildir_transfer_messages_to (CamelFolder *source,
 					i = uids->len + 1;
 					fallback = TRUE;
 				} else {
-					camel_exception_set (
-						ex, CAMEL_EXCEPTION_SYSTEM,
-						_("Cannot transfer message to destination folder"));
+					g_set_error (
+						error, G_IO_ERROR,
+						g_io_error_from_errno (errno),
+						_("Cannot transfer message to destination folder: %s"),
+						g_strerror (errno));
 					camel_message_info_free (info);
 					break;
 				}
@@ -432,7 +425,7 @@ maildir_transfer_messages_to (CamelFolder *source,
 		folder_class = CAMEL_FOLDER_CLASS (camel_maildir_folder_parent_class);
 		return folder_class->transfer_messages_to (
 			source, uids, dest, transferred_uids,
-			delete_originals, ex);
+			delete_originals, error);
 	}
 
 	return TRUE;
