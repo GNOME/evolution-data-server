@@ -48,6 +48,7 @@ CamelStore
 </para>
 
 @camelstore: the object which received the signal.
+@Param2: 
 
 <!-- ##### SIGNAL CamelStore::folder-renamed ##### -->
 <para>

@@ -32,6 +32,7 @@ CamelFolder
 </para>
 
 @camelfolder: the object which received the signal.
+@Param2: 
 
 <!-- ##### SIGNAL CamelFolder::deleted ##### -->
 <para>
