@@ -557,7 +557,9 @@ setup_section_button (ENameSelectorDialog *name_selector_dialog,
 	GtkWidget *label;
 	GtkWidget *image;
 
-	gtk_size_group_add_widget (name_selector_dialog->button_size_group, GTK_WIDGET (button));
+	gtk_size_group_add_widget (
+		name_selector_dialog->priv->button_size_group,
+		GTK_WIDGET (button));
 
 	alignment = gtk_alignment_new (halign, 0.5, 0.0, 0.0);
 	gtk_container_add (GTK_CONTAINER (button), GTK_WIDGET (alignment));
@@ -702,8 +704,9 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	gtk_widget_show_all (GTK_WIDGET (section.section_table));
 
 	/* Pack this section's table into the dialog */
-	gtk_box_pack_start (name_selector_dialog->destination_box,
-			    GTK_WIDGET (section.section_table), TRUE, TRUE, 0);
+	gtk_box_pack_start (
+		name_selector_dialog->priv->destination_box,
+		GTK_WIDGET (section.section_table), TRUE, TRUE, 0);
 
 	g_array_append_val (name_selector_dialog->priv->sections, section);
 
