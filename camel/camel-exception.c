@@ -36,6 +36,12 @@
 /* dont turn this off */
 #define w(x) x
 
+#define ERROR_OVERWRITTEN_WARNING \
+	"CamelException set over top of a previous CamelException.\n" \
+	"This indicates a bug in someone's code. You must ensure a " \
+	"CamelException is clear before it's set.\n" \
+	"The overwriting error message was: %s"
+
 /**
  * camel_exception_new: allocate a new exception object.
  *
@@ -133,6 +139,12 @@ camel_exception_set (CamelException *ex, ExceptionId id, const gchar *desc)
 		printf("CamelException.set(%p, %u, '%s')\n", (gpointer) ex, id, desc);
 	if (!ex)
 		return;
+
+	if (camel_exception_is_set (ex)) {
+		g_warning (ERROR_OVERWRITTEN_WARNING, desc);
+		return;
+	}
+
 	ex->id = id;
 	if (desc != ex->desc) {
 		g_free (ex->desc);
@@ -178,6 +190,11 @@ camel_exception_setv (CamelException *ex, ExceptionId id, const gchar *format, .
 		return;
 	}
 
+	if (camel_exception_is_set (ex)) {
+		g_warning (ERROR_OVERWRITTEN_WARNING, desc);
+		return;
+	}
+
 	g_free(ex->desc);
 	ex->desc = desc;
 	ex->id = id;
@@ -204,6 +221,11 @@ camel_exception_xfer (CamelException *ex_dst,
 	if (ex_dst == NULL) {
 		/* must have same side-effects */
 		camel_exception_clear (ex_src);
+		return;
+	}
+
+	if (camel_exception_is_set (ex_dst)) {
+		g_warning (ERROR_OVERWRITTEN_WARNING, ex_src->desc);
 		return;
 	}
 
