@@ -45,9 +45,7 @@
 #include <libedata-book/e-book-backend-cache.h>
 #include "e-book-backend-webdav.h"
 
-#include <libsoup/soup-uri.h>
-#include <libsoup/soup-session-sync.h>
-#include <libsoup/soup-auth.h>
+#include <libsoup/soup.h>
 
 #include <libxml/parser.h>
 #include <libxml/xmlreader.h>
@@ -76,6 +74,31 @@ typedef struct {
 	GThread            *thread;
 	EFlag              *running;
 } WebdavBackendSearchClosure;
+
+static void
+webdav_debug_setup (SoupSession *session)
+{
+	const gchar *debug_str;
+	SoupLogger *logger;
+	SoupLoggerLogLevel level;
+
+	g_return_if_fail (session != NULL);
+
+	debug_str = g_getenv ("WEBDAV_DEBUG");
+	if (!debug_str || !*debug_str)
+		return;
+
+	if (g_ascii_strcasecmp (debug_str, "all") == 0)
+		level = SOUP_LOGGER_LOG_BODY;
+	else if (g_ascii_strcasecmp (debug_str, "headers") == 0)
+		level = SOUP_LOGGER_LOG_HEADERS;
+	else
+		level = SOUP_LOGGER_LOG_MINIMAL;
+
+	logger = soup_logger_new (level, 100 * 1024 * 1024);
+	soup_session_add_feature (session, SOUP_SESSION_FEATURE (logger));
+	g_object_unref (logger);
+}
 
 static void
 closure_destroy(WebdavBackendSearchClosure *closure)
@@ -1003,17 +1026,23 @@ e_book_backend_webdav_load_source(EBookBackend *backend,
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV(backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
-	const gchar               *uri;
-	const gchar                *offline;
-	const gchar                *uri_without_protocol;
-	const gchar                *protocol;
-	const gchar                *use_ssl;
-	const gchar                *suffix;
+	gchar                     *uri;
+	const gchar               *offline;
+	const gchar               *use_ssl;
 	SoupSession               *session;
+	SoupURI                   *suri;
 
 	uri = e_source_get_uri(source);
 	if (uri == NULL) {
 		g_warning("no uri given for addressbook");
+		return  GNOME_Evolution_Addressbook_OtherError;
+	}
+
+	suri = soup_uri_new (uri);
+	g_free (uri);
+
+	if (!suri) {
+		g_warning ("invalid uri given for addressbook");
 		return  GNOME_Evolution_Addressbook_OtherError;
 	}
 
@@ -1023,29 +1052,51 @@ e_book_backend_webdav_load_source(EBookBackend *backend,
 
 	if (priv->mode == GNOME_Evolution_Addressbook_MODE_LOCAL
 			&& !priv->marked_for_offline ) {
+		soup_uri_free (suri);
 		return GNOME_Evolution_Addressbook_OfflineUnavailable;
 	}
 
-	if (strncmp(uri, "webdav://", 9) != 0) {
+	if (!suri->scheme || !g_str_equal (suri->scheme, "webdav")) {
 		/* the book is not for us */
+		soup_uri_free (suri);
 		return GNOME_Evolution_Addressbook_OtherError;
 	}
 
-	uri_without_protocol = uri + 9;
-	use_ssl              = e_source_get_property(source, "use_ssl");
-	if (use_ssl != NULL && strcmp(use_ssl, "1") == 0) {
-		protocol = "https://";
+	use_ssl = e_source_get_property (source, "use_ssl");
+	if (use_ssl != NULL && strcmp (use_ssl, "1") == 0) {
+		soup_uri_set_scheme (suri, "https");
 	} else {
-		protocol = "http://";
+		soup_uri_set_scheme (suri, "https");
 	}
 
 	/* append slash if missing */
-	suffix = "";
-	if (uri_without_protocol[strlen(uri_without_protocol) - 1] != '/')
-		suffix = "/";
+	if (!suri->path || !*suri->path || suri->path[strlen (suri->path) - 1]) {
+		gchar *new_path = g_strconcat (suri->path ? suri->path : "", "/", NULL);
+		soup_uri_set_path (suri, new_path);
+		g_free (new_path);
+	}
 
-	priv->uri
-		= g_strdup_printf("%s%s%s", protocol, uri_without_protocol, suffix);
+	if (suri->host && strchr (suri->host, '@')) {
+		gchar *at = strchr (suri->host, '@');
+		gchar *new_user;
+
+		*at = '\0';
+
+		new_user = g_strconcat (suri->user ? suri->user : "", "@", suri->host, NULL);
+
+		*at = '@';
+
+		soup_uri_set_host (suri, at + 1);
+		soup_uri_set_user (suri, new_user);
+
+		g_free (new_user);
+	}
+
+	priv->uri = soup_uri_to_string (suri, FALSE);
+	if (!priv->uri) {
+		soup_uri_free (suri);
+		return GNOME_Evolution_Addressbook_OtherError;
+	}
 
 	priv->cache = e_book_backend_cache_new(priv->uri);
 
@@ -1058,12 +1109,15 @@ e_book_backend_webdav_load_source(EBookBackend *backend,
 	e_proxy_setup_proxy (priv->proxy);
 	g_signal_connect (priv->proxy, "changed", G_CALLBACK (proxy_settings_changed), priv);
 	proxy_settings_changed (priv->proxy, priv);
+	webdav_debug_setup (priv->session);
 
 	e_book_backend_notify_auth_required(backend);
 	e_book_backend_set_is_loaded(backend, TRUE);
 	e_book_backend_notify_connection_status(backend, TRUE);
 	e_book_backend_set_is_writable(backend, TRUE);
 	e_book_backend_notify_writable(backend, TRUE);
+
+	soup_uri_free (suri);
 
 	return GNOME_Evolution_Addressbook_Success;
 }
