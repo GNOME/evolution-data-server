@@ -2281,11 +2281,12 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 	CamelService *service = (CamelService *) is->store;
 	const gchar *auth_domain = NULL;
 	gboolean authenticated = FALSE;
+	guint32 prompt_flags = CAMEL_SESSION_PASSWORD_SECRET;
 
 	while (!authenticated) {
 		if (errbuf) {
 			/* We need to un-cache the password before prompting again */
-			camel_session_forget_password (is->session, service, auth_domain, "password", ex);
+			prompt_flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
 			g_free (service->url->passwd);
 			service->url->passwd = NULL;
 			camel_exception_clear (ex);
@@ -2310,7 +2311,7 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 			auth_domain = camel_url_get_param (service->url, "auth-domain");
 			service->url->passwd = camel_session_get_password(is->session, (CamelService *)is->store,
 					auth_domain,
-					full_prompt, "password", CAMEL_SESSION_PASSWORD_SECRET, ex);
+					full_prompt, "password", prompt_flags, ex);
 
 			g_free (base_prompt);
 			g_free (full_prompt);

@@ -485,7 +485,6 @@ smtp_connect (CamelService *service, CamelException *ex)
 		while (!authenticated) {
 			if (errbuf) {
 				/* We need to un-cache the password before prompting again */
-				camel_session_forget_password (session, service, NULL, "password", NULL);
 				g_free (service->url->passwd);
 				service->url->passwd = NULL;
 			}

@@ -1307,12 +1307,14 @@ camel_nntp_try_authenticate (CamelNNTPStore *store, CamelException *ex)
 
 		service->url->passwd =
 			camel_session_get_password (session, service, NULL,
-						    prompt, "password", CAMEL_SESSION_PASSWORD_SECRET, ex);
+						    prompt, "password", CAMEL_SESSION_PASSWORD_SECRET | (store->password_reprompt ? CAMEL_SESSION_PASSWORD_REPROMPT : 0), ex);
 		g_free(prompt);
 		g_free(base);
 
 		if (!service->url->passwd)
 			return -1;
+
+		store->password_reprompt = FALSE;
 	}
 
 	/* now, send auth info (currently, only authinfo user/pass is supported) */
@@ -1326,8 +1328,8 @@ camel_nntp_try_authenticate (CamelNNTPStore *store, CamelException *ex)
 			    camel_exception_get_id (ex) == CAMEL_EXCEPTION_SERVICE_UNAVAILABLE)
 				return ret;
 
-			/* Need to forget the password here since we have no context on it */
-			camel_session_forget_password(session, service, NULL, "password", ex);
+			/* To force password reprompt */
+			store->password_reprompt = TRUE;
 			g_free (service->url->passwd);
 			service->url->passwd = NULL;
 			goto retry;

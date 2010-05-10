@@ -178,6 +178,7 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 	CamelGroupwiseStorePrivate *priv = groupwise_store->priv;
 	gboolean authenticated = FALSE;
 	gchar *uri;
+	guint32 prompt_flags = CAMEL_SESSION_PASSWORD_SECRET;
 	EGwConnectionErrors errors = {E_GW_CONNECTION_STATUS_INVALID_OBJECT, NULL};
 
 	if (priv->use_ssl && !g_str_equal (priv->use_ssl, "never"))
@@ -195,7 +196,7 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 				"GroupWise", service->url->user, service->url->host);
 			service->url->passwd =
 				camel_session_get_password (session, service, "Groupwise",
-							    prompt, "password", CAMEL_SESSION_PASSWORD_SECRET, ex);
+							    prompt, "password", prompt_flags, ex);
 			g_free (prompt);
 
 			if (!service->url->passwd) {
@@ -215,7 +216,7 @@ groupwise_auth_loop (CamelService *service, CamelException *ex)
 		if (!E_IS_GW_CONNECTION(priv->cnc)) {
 			if (errors.status == E_GW_CONNECTION_STATUS_INVALID_PASSWORD) {
 				/* We need to un-cache the password before prompting again */
-				camel_session_forget_password (session, service, "Groupwise", "password", ex);
+				prompt_flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
 				g_free (service->url->passwd);
 				service->url->passwd = NULL;
 				camel_exception_clear (ex);

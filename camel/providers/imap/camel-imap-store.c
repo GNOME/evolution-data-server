@@ -1150,6 +1150,7 @@ imap_auth_loop (CamelService *service, CamelException *ex)
 	gchar *errbuf = NULL;
 	gboolean authenticated = FALSE;
 	const gchar *auth_domain;
+	guint32 prompt_flags = CAMEL_SESSION_PASSWORD_SECRET;
 
 	auth_domain = camel_url_get_param (service->url, "auth-domain");
 
@@ -1190,7 +1191,7 @@ imap_auth_loop (CamelService *service, CamelException *ex)
 	while (!authenticated) {
 		if (errbuf) {
 			/* We need to un-cache the password before prompting again */
-			camel_session_forget_password (session, service, auth_domain, "password", ex);
+			prompt_flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
 			g_free (service->url->passwd);
 			service->url->passwd = NULL;
 		}
@@ -1209,7 +1210,7 @@ imap_auth_loop (CamelService *service, CamelException *ex)
 
 			service->url->passwd = camel_session_get_password (
 				session, service, auth_domain, full_prompt,
-				"password", CAMEL_SESSION_PASSWORD_SECRET, ex);
+				"password", prompt_flags, ex);
 
 			g_free (base_prompt);
 			g_free (full_prompt);

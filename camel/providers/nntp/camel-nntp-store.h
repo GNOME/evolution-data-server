@@ -89,6 +89,7 @@ struct _CamelNNTPStore {
 	guint posting_allowed:1;
 	guint do_short_folder_notation:1;
 	guint folder_hierarchy_relative:1;
+	gboolean password_reprompt;
 
 	struct _CamelNNTPStoreSummary *summary;
 

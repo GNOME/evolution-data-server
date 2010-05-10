@@ -667,10 +667,6 @@ pop3_connect (CamelService *service,
 			errbuf = g_markup_printf_escaped ("%s\n\n", camel_exception_get_description (ex));
 			camel_exception_clear (ex);
 
-			camel_session_forget_password (
-				session, service, NULL, "password", ex);
-			camel_exception_clear (ex);
-
 			g_free (service->url->passwd);
 			service->url->passwd = NULL;
 			reprompt = TRUE;
