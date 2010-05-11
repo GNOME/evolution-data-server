@@ -38,7 +38,7 @@
 typedef struct {
 	gchar        *name;
 
-	GtkTable     *section_table;
+	GtkBox       *section_box;
 	GtkLabel     *label;
 	GtkButton    *transfer_button;
 	GtkButton    *remove_button;
@@ -57,6 +57,7 @@ struct _ENameSelectorDialogPrivate
 {
 	guint destination_index;
 	GSList *user_query_fields;
+	GtkSizeGroup *dest_label_size_group;
 };
 
 static void     search_changed                (ENameSelectorDialog *name_selector_dialog);
@@ -209,6 +210,10 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 
 	name_selector_dialog->button_size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
+	/* Create size group for destination labels */
+
+	priv->dest_label_size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+
 	/* Set up contacts view */
 
 	column = gtk_tree_view_column_new ();
@@ -321,6 +326,7 @@ e_name_selector_dialog_finalize (GObject *object)
 
 	g_array_free (name_selector_dialog->sections, TRUE);
 	g_object_unref (name_selector_dialog->button_size_group);
+	g_object_unref (priv->dest_label_size_group);
 
 	if (G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->finalize)
 		G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->finalize (object);
@@ -569,6 +575,7 @@ static gint
 add_section (ENameSelectorDialog *name_selector_dialog,
 	     const gchar *name, const gchar *pretty_name, EDestinationStore *destination_store)
 {
+	ENameSelectorDialogPrivate *priv;
 	Section            section;
 	GtkWidget	  *vbox;
 	GtkWidget	  *alignment;
@@ -576,15 +583,18 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	SelData		  *data;
 	GtkTreeSelection  *selection;
 	gchar		  *text;
+	GtkWidget         *hbox;
 
 	g_assert (name != NULL);
 	g_assert (pretty_name != NULL);
 	g_assert (E_IS_DESTINATION_STORE (destination_store));
 
+	priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
+
 	memset (&section, 0, sizeof (Section));
 
 	section.name = g_strdup (name);
-	section.section_table = GTK_TABLE (gtk_table_new (2, 2, FALSE));
+	section.section_box = GTK_BOX (gtk_hbox_new (FALSE, 12));
 	section.label = GTK_LABEL (gtk_label_new_with_mnemonic (pretty_name));
 	section.transfer_button  = GTK_BUTTON (gtk_button_new());
 	section.remove_button  = GTK_BUTTON (gtk_button_new());
@@ -614,33 +624,10 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	g_signal_connect(section.remove_button, "clicked",
 				  G_CALLBACK (remove_button_clicked), data);
 
-	/* Toplevel table for the section
-	 *
-	 *          | label
-	 * ---------+-------------
-	 *  [add]   | +---------+
-	 * [remove] | |         |
-	 *          | +---------+
-	 */
-
-	gtk_table_set_row_spacings (section.section_table, 0);
-	gtk_table_set_col_spacings (section.section_table, 12);
-
-	/* Title label */
-
-	gtk_misc_set_alignment (GTK_MISC (section.label), 0.0, 0.5);
-	gtk_table_attach (section.section_table, GTK_WIDGET (section.label), 1, 2, 0, 1,
-			  GTK_EXPAND | GTK_FILL,
-			  0,
-			  0, 0);
-
 	/* Alignment and vbox for the add/remove buttons */
 
 	alignment = gtk_alignment_new (0.5, 0.0, 0.0, 0.0);
-	gtk_table_attach (section.section_table, alignment, 0, 1, 1, 2,
-			  0,
-			  GTK_EXPAND | GTK_FILL,
-			  0, 0);
+	gtk_box_pack_start (section.section_box, alignment, FALSE, FALSE, 0);
 
 	vbox = gtk_vbox_new (TRUE, 6);
 	gtk_container_add (GTK_CONTAINER (alignment), vbox);
@@ -654,13 +641,24 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	setup_section_button (name_selector_dialog, section.remove_button, 0.5, _("_Remove"), "gtk-go-back", TRUE);
 	gtk_widget_set_sensitive (GTK_WIDGET (section.remove_button), FALSE);
 
+	/* Hbox for label and scrolled window.  This is a separate hbox, instead
+	 * of just using the section.section_box directly, as it has a different
+	 * spacing.
+	 */
+
+	hbox = gtk_hbox_new (FALSE, 6);
+	gtk_box_pack_start (section.section_box, hbox, TRUE, TRUE, 0);
+
+	/* Title label */
+
+	gtk_size_group_add_widget (priv->dest_label_size_group, GTK_WIDGET (section.label));
+
+	gtk_misc_set_alignment (GTK_MISC (section.label), 0.0, 0.0);
+	gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (section.label), FALSE, FALSE, 0);
+
 	/* Treeview in a scrolled window */
 	scrollwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_table_attach (section.section_table, scrollwin, 1, 2, 1, 2,
-			  GTK_EXPAND | GTK_FILL | GTK_SHRINK,
-			  GTK_EXPAND | GTK_FILL | GTK_SHRINK,
-			  0, 0);
-
+	gtk_box_pack_start (GTK_BOX (hbox), scrollwin, TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_IN);
 	gtk_container_add (GTK_CONTAINER (scrollwin), GTK_WIDGET (section.destination_view));
@@ -683,11 +681,11 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 
 	/* Done! */
 
-	gtk_widget_show_all (GTK_WIDGET (section.section_table));
+	gtk_widget_show_all (GTK_WIDGET (section.section_box));
 
-	/* Pack this section's table into the dialog */
+	/* Pack this section's box into the dialog */
 	gtk_box_pack_start (name_selector_dialog->destination_box,
-			    GTK_WIDGET (section.section_table), TRUE, TRUE, 0);
+			    GTK_WIDGET (section.section_box), TRUE, TRUE, 0);
 
 	g_array_append_val (name_selector_dialog->sections, section);
 
@@ -708,7 +706,7 @@ free_section (ENameSelectorDialog *name_selector_dialog, gint n)
 	section = &g_array_index (name_selector_dialog->sections, Section, n);
 
 	g_free (section->name);
-	gtk_widget_destroy (GTK_WIDGET (section->section_table));
+	gtk_widget_destroy (GTK_WIDGET (section->section_box));
 }
 
 static void
