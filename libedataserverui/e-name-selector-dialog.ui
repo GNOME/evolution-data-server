@@ -342,7 +342,7 @@
               <object class="GtkVBox" id="destination-box">
                 <property name="visible">True</property>
                 <property name="homogeneous">True</property>
-                <property name="spacing">12</property>
+                <property name="spacing">6</property>
               </object>
               <packing>
                 <property name="padding">0</property>
