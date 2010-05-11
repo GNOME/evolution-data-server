@@ -1251,7 +1251,7 @@ e_book_backend_webdav_load_source(EBookBackend *backend,
 	}
 
 	/* append slash if missing */
-	if (!suri->path || !*suri->path || suri->path[strlen (suri->path) - 1]) {
+	if (!suri->path || !*suri->path || suri->path[strlen (suri->path) - 1] != '/') {
 		gchar *new_path = g_strconcat (suri->path ? suri->path : "", "/", NULL);
 		soup_uri_set_path (suri, new_path);
 		g_free (new_path);
