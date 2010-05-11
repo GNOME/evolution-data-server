@@ -302,6 +302,9 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	/* TODO: Remember last used source */
 
 	/* Set up dialog defaults */
+#if 0 // MEEGO - but we should consider for everyone
+	gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (name_selector_dialog->gui, "show-contacts-label")));
+#endif
 
 	gtk_dialog_add_buttons (GTK_DIALOG (name_selector_dialog),
 				GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
@@ -309,7 +312,7 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 
 	gtk_dialog_set_default_response (GTK_DIALOG (name_selector_dialog), GTK_RESPONSE_CLOSE);
 	gtk_window_set_modal            (GTK_WINDOW (name_selector_dialog), TRUE);
-	gtk_window_set_default_size     (GTK_WINDOW (name_selector_dialog), 472, -1);
+	gtk_window_set_default_size     (GTK_WINDOW (name_selector_dialog), 700, -1);
 	gtk_window_set_resizable        (GTK_WINDOW (name_selector_dialog), TRUE);
 	gtk_dialog_set_has_separator    (GTK_DIALOG (name_selector_dialog), FALSE);
 	gtk_container_set_border_width  (GTK_CONTAINER (name_selector_dialog), 4);
