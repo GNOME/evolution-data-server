@@ -220,7 +220,8 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 
 	/* Create size group for destination labels */
 
-	priv->dest_label_size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	name_selector_dialog->priv->dest_label_size_group =
+		gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
 	/* Set up contacts view */
 
@@ -702,7 +703,7 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	gtk_widget_show_all (GTK_WIDGET (section.section_box));
 
 	/* Pack this section's box into the dialog */
-	gtk_box_pack_start (name_selector_dialog->destination_box,
+	gtk_box_pack_start (name_selector_dialog->priv->destination_box,
 			    GTK_WIDGET (section.section_box), TRUE, TRUE, 0);
 
 	g_array_append_val (name_selector_dialog->priv->sections, section);
