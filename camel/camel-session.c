@@ -64,6 +64,9 @@ struct _CamelSessionPrivate {
 	GHashTable *thread_msg_op;
 	GHashTable *junk_headers;
 
+	char *socks_proxy_host;
+	int socks_proxy_port;
+
 	guint check_junk        : 1;
 	guint network_available : 1;
 	guint online            : 1;
@@ -1101,3 +1104,44 @@ camel_session_unlock (CamelSession *session,
 			g_return_if_reached ();
 	}
 }
+
+/**
+ * camel_session_set_socks_proxy:
+ * @session: A #CamelSession
+ * @socks_host: Hostname of the SOCKS proxy, or #NULL for none.
+ * @socks_port: Port number of the SOCKS proxy
+ *
+ * Sets a SOCKS proxy that will be used throughout the @session for TCP connections.
+ */
+void
+camel_session_set_socks_proxy (CamelSession *session, const gchar *socks_host, int socks_port)
+{
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+
+	if (session->priv->socks_proxy_host)
+		g_free (session->priv->socks_proxy_host);
+
+	session->priv->socks_proxy_host = g_strdup (socks_host);
+	session->priv->socks_proxy_port = socks_port;
+}
+
+/**
+ * camel_session_get_socks_proxy:
+ * @session: A #CamelSession
+ * @host_ret: Location to return the SOCKS proxy hostname
+ * @port_ret: Location to return the SOCKS proxy port
+ *
+ * Queries the SOCKS proxy that is configured for a @session.  This will
+ * put #NULL in @hosts_ret if there is no proxy configured.
+ */
+void
+camel_session_get_socks_proxy (CamelSession *session, const char **host_ret, int *port_ret)
+{
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+	g_return_if_fail (host_ret != NULL);
+	g_return_if_fail (port_ret != NULL);
+
+	*host_ret = g_strdup (session->priv->socks_proxy_host);
+	*port_ret = session->priv->socks_proxy_port;
+}
+

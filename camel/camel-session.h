@@ -155,6 +155,14 @@ struct _CamelSessionClass {
 GType		camel_session_get_type		(void);
 void		camel_session_construct		(CamelSession *session,
 						 const gchar *storage_path);
+
+void            camel_session_set_socks_proxy   (CamelSession *session,
+						 const gchar *socks_host,
+						 gint socks_port);
+void            camel_session_get_socks_proxy   (CamelSession *session,
+						 const char **host_ret,
+						 int *port_ret);
+
 CamelService *	camel_session_get_service	(CamelSession *session,
 						 const gchar *url_string,
 						 CamelProviderType type,
