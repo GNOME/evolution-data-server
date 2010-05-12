@@ -1290,12 +1290,13 @@ e_passwords_init (void)
 		 * We might be able to extract passwords from it. */
 		key_file = g_key_file_new ();
 		ep_key_file_load ();
+
+	#ifdef WITH_GNOME_KEYRING
+		if (gnome_keyring_is_available ())
+			gnome_keyring_get_default_keyring_sync (&default_keyring);
+	#endif
 	}
 
-#ifdef WITH_GNOME_KEYRING
-	if (gnome_keyring_is_available ())
-		gnome_keyring_get_default_keyring_sync (&default_keyring);
-#endif
 	G_UNLOCK (passwords);
 }
 
