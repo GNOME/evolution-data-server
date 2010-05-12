@@ -170,3 +170,23 @@ camel_tcp_stream_get_remote_address (CamelTcpStream *stream,
 
 	return class->get_remote_address (stream, len);
 }
+
+/**
+ * camel_tcp_stream_set_socks_proxy:
+ * @stream: a #CamelTcpStream object
+ * @socks_host: hostname to use for the SOCKS proxy
+ * @socks_port: port number to use for the SOCKS proxy
+ *
+ * Configures a SOCKS proxy for the specified @stream.  Instead of direct connections,
+ * this @stream will instead go through the proxy.
+ *
+ * Since: 2.32
+ */
+void
+camel_tcp_stream_set_socks_proxy (CamelTcpStream *stream, const char *socks_host, int socks_port)
+{
+	g_return_if_fail (CAMEL_IS_TCP_STREAM (stream));
+
+	/* FIXME */
+}
+
