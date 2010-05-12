@@ -159,6 +159,29 @@ camel_session_construct (CamelSession *session, const gchar *storage_path)
 	session->storage_path = g_strdup (storage_path);
 }
 
+void
+camel_session_set_socks_proxy (CamelSession *session, const gchar *socks_host, int socks_port)
+{
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+
+	if (session->priv->socks_proxy_host)
+		g_free (session->priv->socks_proxy_host);
+
+	session->priv->socks_proxy_host = g_strdup (socks_host);
+	session->priv->socks_proxy_port = socks_port;
+}
+
+void
+camel_session_get_socks_proxy (CamelSession *session, const char **host_ret, int *port_ret)
+{
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+	g_return_if_fail (host_ret != NULL);
+	g_return_if_fail (port_ret != NULL);
+
+	*host_ret = g_strdup (session->priv->socks_proxy_host);
+	*port_ret = session->priv->socks_proxy_port;
+}
+
 static CamelService *
 get_service (CamelSession *session, const gchar *url_string,
 	     CamelProviderType type, CamelException *ex)

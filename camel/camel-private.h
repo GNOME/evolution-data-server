@@ -97,6 +97,8 @@ struct _CamelSessionPrivate {
 	GHashTable *thread_msg_op;
 	GHashTable *junk_headers;
 
+	char *socks_proxy_host;
+	int socks_proxy_port;
 };
 
 #define CAMEL_SESSION_LOCK(f, l) \
