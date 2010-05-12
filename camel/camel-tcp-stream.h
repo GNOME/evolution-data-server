@@ -115,6 +115,8 @@ gint         camel_tcp_stream_connect    (CamelTcpStream *stream, struct addrinf
 gint         camel_tcp_stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data);
 gint         camel_tcp_stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data);
 
+void camel_tcp_stream_set_socks_proxy (CamelTcpStream *stream, const char *socks_host, int socks_port);
+
 struct sockaddr *camel_tcp_stream_get_local_address  (CamelTcpStream *stream, socklen_t *len);
 struct sockaddr *camel_tcp_stream_get_remote_address (CamelTcpStream *stream, socklen_t *len);
 

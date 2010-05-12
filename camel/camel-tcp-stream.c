@@ -154,6 +154,23 @@ camel_tcp_stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *dat
 	return CTS_CLASS (stream)->setsockopt (stream, data);
 }
 
+/**
+ * camel_tcp_stream_set_socks_proxy:
+ * @stream: a #CamelTcpStream object
+ * @socks_host: hostname to use for the SOCKS proxy
+ * @socks_port: port number to use for the SOCKS proxy
+ *
+ * Configures a SOCKS proxy for the specified @stream.  Instead of direct connections,
+ * this @stream will instead go through the proxy.
+ */
+void
+camel_tcp_stream_set_socks_proxy (CamelTcpStream *stream, const char *socks_host, int socks_port)
+{
+	g_return_if_fail (CAMEL_IS_TCP_STREAM (stream));
+
+	/* FIXME */
+}
+
 static struct sockaddr *
 tcp_get_local_address (CamelTcpStream *stream, socklen_t *len)
 {
