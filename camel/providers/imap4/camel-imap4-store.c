@@ -228,6 +228,9 @@ static gboolean
 connect_to_server (CamelIMAP4Engine *engine, struct addrinfo *ai, gint ssl_mode, CamelException *ex)
 {
 	CamelService *service = engine->service;
+	CamelSession *session;
+	char *socks_host;
+	int socks_port;
 	CamelSockOptData sockopt;
 	CamelStream *tcp_stream;
 #ifdef HAVE_SSL
@@ -251,6 +254,14 @@ connect_to_server (CamelIMAP4Engine *engine, struct addrinfo *ai, gint ssl_mode,
 #endif /* HAVE_SSL */
 	} else {
 		tcp_stream = camel_tcp_stream_raw_new ();
+	}
+
+	session = camel_service_get_session (service);
+	camel_session_get_socks_proxy (session, &socks_host, &socks_port);
+
+	if (socks_host) {
+		camel_tcp_stream_set_socks_proxy ((CamelTcpStream *) tcp_stream, socks_host, socks_port);
+		g_free (socks_host);
 	}
 
 	if (camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, ai) == -1) {
