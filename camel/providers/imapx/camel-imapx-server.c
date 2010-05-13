@@ -2122,6 +2122,8 @@ gboolean
 imapx_connect_to_server (CamelIMAPXServer *is, CamelException *ex)
 {
 	CamelStream * tcp_stream = NULL;
+	char *socks_host;
+	int socks_port;
 	CamelSockOptData sockopt;
 	gint ret, ssl_mode = 0;
 
@@ -2164,6 +2166,13 @@ imapx_connect_to_server (CamelIMAPXServer *is, CamelException *ex)
 	tcp_stream = camel_tcp_stream_raw_new ();
 	is->is_ssl_stream = FALSE;
 #endif /* HAVE_SSL */
+
+	camel_session_get_socks_proxy (is->session, &socks_host, &socks_port);
+
+	if (socks_host) {
+		camel_tcp_stream_set_socks_proxy ((CamelTcpStream *) tcp_stream, socks_host, socks_port);
+		g_free (socks_host);
+	}
 
 	hints.ai_socktype = SOCK_STREAM;
 	ai = camel_getaddrinfo(is->url->host, serv, &hints, ex);
