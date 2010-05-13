@@ -160,8 +160,8 @@ void            camel_session_set_socks_proxy   (CamelSession *session,
 						 const gchar *socks_host,
 						 gint socks_port);
 void            camel_session_get_socks_proxy   (CamelSession *session,
-						 const char **host_ret,
-						 int *port_ret);
+						 gchar **host_ret,
+						 gint *port_ret);
 
 CamelService *	camel_session_get_service	(CamelSession *session,
 						 const gchar *url_string,
