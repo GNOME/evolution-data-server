@@ -172,7 +172,7 @@ camel_session_set_socks_proxy (CamelSession *session, const gchar *socks_host, i
 }
 
 void
-camel_session_get_socks_proxy (CamelSession *session, const char **host_ret, int *port_ret)
+camel_session_get_socks_proxy (CamelSession *session, gchar **host_ret, gint *port_ret)
 {
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 	g_return_if_fail (host_ret != NULL);
