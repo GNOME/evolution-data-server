@@ -150,6 +150,9 @@ connect_to_server (CamelService *service,
                    CamelException *ex)
 {
 	CamelPOP3Store *store = CAMEL_POP3_STORE (service);
+	CamelSession *session;
+	gchar *socks_host;
+	gint socks_port;
 	CamelStream *tcp_stream;
 	CamelPOP3Command *pc;
 	guint32 flags = 0;
@@ -174,6 +177,14 @@ connect_to_server (CamelService *service,
 #endif /* HAVE_SSL */
 	} else
 		tcp_stream = camel_tcp_stream_raw_new ();
+
+	session = camel_service_get_session (service);
+	camel_session_get_socks_proxy (session, &socks_host, &socks_port);
+
+	if (socks_host) {
+		camel_tcp_stream_set_socks_proxy ((CamelTcpStream *) tcp_stream, socks_host, socks_port);
+		g_free (socks_host);
+	}
 
 	if ((ret = camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, ai)) == -1) {
 		if (errno == EINTR)
