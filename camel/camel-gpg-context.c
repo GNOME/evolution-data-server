@@ -1880,7 +1880,7 @@ gpg_decrypt (CamelCipherContext *context,
 		return NULL;
 	}
 
-	ct = camel_mime_part_get_content_type((CamelMimePart *)content);
+	ct = camel_data_wrapper_get_mime_type_field (content);
 	/* Encrypted part (using our fake mime type) or PGP/Mime multipart */
 	if (camel_content_type_is(ct, "multipart", "encrypted")) {
 		mp = (CamelMultipart *) camel_medium_get_content ((CamelMedium *) ipart);

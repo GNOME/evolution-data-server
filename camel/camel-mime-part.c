@@ -1219,7 +1219,7 @@ camel_mime_part_get_content_type (CamelMimePart *mime_part)
 {
 	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), NULL);
 
-	return ((CamelDataWrapper *) mime_part)->mime_type;
+	return camel_data_wrapper_get_mime_type_field ((CamelDataWrapper *) mime_part);
 }
 
 /**
