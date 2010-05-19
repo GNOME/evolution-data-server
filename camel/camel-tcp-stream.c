@@ -37,14 +37,45 @@
 
 G_DEFINE_TYPE (CamelTcpStream, camel_tcp_stream, CAMEL_TYPE_STREAM)
 
+struct _CamelTcpStreamPrivate {
+	gchar *socks_host;
+	gint socks_port;
+};
+
+#define CAMEL_TCP_STREAM_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_TCP_STREAM, CamelTcpStreamPrivate))
+
+static void
+camel_tcp_stream_finalize (GObject *object)
+{
+	CamelTcpStream *stream = CAMEL_TCP_STREAM (object);
+	CamelTcpStreamPrivate *priv = stream->priv;
+
+	priv = stream->priv;
+	g_free (priv->socks_host);
+	priv->socks_host = NULL;
+
+	G_OBJECT_CLASS (camel_tcp_stream_parent_class)->finalize (object);
+}
+
 static void
 camel_tcp_stream_class_init (CamelTcpStreamClass *class)
 {
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (CamelTcpStreamPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = camel_tcp_stream_finalize;
 }
 
 static void
 camel_tcp_stream_init (CamelTcpStream *tcp_stream)
 {
+	tcp_stream->priv = CAMEL_TCP_STREAM_GET_PRIVATE (cpi);
+	tcp_stream->priv->socks_host = NULL;
+	tcp_stream->priv->socks_port = 0;
 }
 
 /**

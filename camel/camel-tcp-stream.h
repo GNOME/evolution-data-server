@@ -69,6 +69,7 @@ G_BEGIN_DECLS
 
 typedef struct _CamelTcpStream CamelTcpStream;
 typedef struct _CamelTcpStreamClass CamelTcpStreamClass;
+typedef struct _CamelTcpStreamPrivate CamelTcpStreamPrivate;
 
 typedef enum {
 	CAMEL_SOCKOPT_NONBLOCKING,     /* nonblocking io */
@@ -114,6 +115,8 @@ typedef struct _CamelSockOptData {
 
 struct _CamelTcpStream {
 	CamelStream parent;
+
+	CamelTcpStreamPrivate *priv;
 };
 
 struct _CamelTcpStreamClass {
