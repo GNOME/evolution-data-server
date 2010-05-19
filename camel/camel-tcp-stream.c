@@ -214,10 +214,40 @@ camel_tcp_stream_get_remote_address (CamelTcpStream *stream,
  * Since: 2.32
  */
 void
-camel_tcp_stream_set_socks_proxy (CamelTcpStream *stream, const char *socks_host, int socks_port)
+camel_tcp_stream_set_socks_proxy (CamelTcpStream *stream, const gchar *socks_host, gint socks_port)
 {
+	CamelTcpStreamPrivate *priv;
+
 	g_return_if_fail (CAMEL_IS_TCP_STREAM (stream));
 
-	/* FIXME */
+	priv = stream->priv;
+
+	g_free (priv->socks_host);
+	priv->socks_host = g_strdup (socks_host);
+	priv->socks_port = socks_port;
 }
 
+/**
+ * camel_tcp_stream_peek_socks_proxy:
+ * @stream: a #CamelTcpStream
+ * @socks_host_ret: location to return the name of the SOCKS host
+ * @socks_port_ret: location to return the port number in the SOCKS host
+ *
+ * Queries the SOCKS proxy that is configured for a @stream.  This will
+ * return #NULL in @socks_host_ret if no proxy is configured.
+ */
+void
+camel_tcp_stream_peek_socks_proxy (CamelTcpStream *stream, const gchar **socks_host_ret, gint *socks_port_ret)
+{
+	CamelTcpStreamPrivate *priv;
+
+	g_return_if_fail (CAMEL_IS_TCP_STREAM (stream));
+
+	priv = stream->priv;
+
+	if (socks_host_ret)
+		*socks_host_ret = priv->socks_host;
+
+	if (socks_port_ret)
+		*socks_port_ret = priv->socks_port;
+}
