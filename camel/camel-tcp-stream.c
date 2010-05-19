@@ -190,11 +190,33 @@ camel_tcp_stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *dat
  * this @stream will instead go through the proxy.
  */
 void
-camel_tcp_stream_set_socks_proxy (CamelTcpStream *stream, const char *socks_host, int socks_port)
+camel_tcp_stream_set_socks_proxy (CamelTcpStream *stream, const gchar *socks_host, gint socks_port)
 {
+	CamelTcpStreamPrivate *priv;
+
 	g_return_if_fail (CAMEL_IS_TCP_STREAM (stream));
 
-	/* FIXME */
+	priv = stream->priv;
+
+	g_free (priv->socks_host);
+	priv->socks_host = g_strdup (socks_host);
+	priv->socks_port = socks_port;
+}
+
+void
+camel_tcp_stream_peek_socks_proxy (CamelTcpStream *stream, const gchar **socks_host_ret, gint *socks_port_ret)
+{
+	CamelTcpStreamPrivate *priv;
+
+	g_return_if_fail (CAMEL_IS_TCP_STREAM (stream));
+
+	priv = stream->priv;
+
+	if (socks_host_ret)
+		*socks_host_ret = priv->socks_host;
+
+	if (socks_port_ret)
+		*socks_port_ret = priv->socks_port;
 }
 
 static struct sockaddr *
