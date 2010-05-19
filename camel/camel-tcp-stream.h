@@ -93,6 +93,7 @@ typedef struct _CamelSockOptData {
 struct _CamelTcpStream {
 	CamelStream parent_object;
 
+	struct _CamelTcpStreamPrivate *priv;
 };
 
 typedef struct {

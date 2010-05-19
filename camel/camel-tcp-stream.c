@@ -30,6 +30,13 @@
 
 #define w(x)
 
+typedef struct _CamelTcpStreamPrivate CamelTcpStreamPrivate;
+
+struct _CamelTcpStreamPrivate {
+	gchar *socks_host;
+	gint socks_port;
+};
+
 static CamelStreamClass *parent_class = NULL;
 
 /* Returns the class for a CamelTcpStream */
@@ -59,7 +66,26 @@ camel_tcp_stream_class_init (CamelTcpStreamClass *camel_tcp_stream_class)
 static void
 camel_tcp_stream_init (gpointer o)
 {
-	;
+	CamelTcpStream *stream = o;
+	CamelTcpStreamPrivate *priv;
+
+	priv = g_slice_new0 (CamelTcpStreamPrivate);
+	stream->priv = priv;
+
+	priv->socks_host = NULL;
+	priv->socks_port = 0;
+}
+
+static void
+camel_tcp_stream_finalize (CamelTcpStream *stream)
+{
+	CamelTcpStreamPrivate *priv;
+
+	priv = stream->priv;
+	g_free (priv->socks_host);
+
+	g_slice_free (CamelTcpStreamPrivate, priv);
+	stream->priv = NULL;
 }
 
 CamelType
@@ -75,7 +101,7 @@ camel_tcp_stream_get_type (void)
 					    (CamelObjectClassInitFunc) camel_tcp_stream_class_init,
 					    NULL,
 					    (CamelObjectInitFunc) camel_tcp_stream_init,
-					    NULL);
+					    (CamelObjectFinalizeFunc) camel_tcp_stream_finalize);
 	}
 
 	return type;
