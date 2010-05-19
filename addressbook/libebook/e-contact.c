@@ -532,7 +532,7 @@ fn_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
 		EContactName *name = e_contact_name_from_string ((gchar *)data);
 
 		attr = e_vcard_attribute_new (NULL, EVC_N);
-		e_vcard_add_attribute (E_VCARD (contact), attr);
+		e_vcard_append_attribute (E_VCARD (contact), attr);
 
 		/* call the setter directly */
 		n_setter (contact, attr, name);
@@ -563,7 +563,7 @@ n_getter (EContact *contact, EVCardAttribute *attr)
 	new_attr = e_contact_get_first_attr (contact, EVC_FN);
 	if (!new_attr) {
 		new_attr = e_vcard_attribute_new (NULL, EVC_FN);
-		e_vcard_add_attribute (E_VCARD (contact), new_attr);
+		e_vcard_append_attribute (E_VCARD (contact), new_attr);
 		name_str = e_contact_name_to_string (name);
 		e_vcard_attribute_add_value (new_attr, name_str);
 		g_free (name_str);
@@ -589,7 +589,7 @@ n_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
 		gchar *strings[3], **stringptr;
 		gchar *string;
 		attr = e_vcard_attribute_new (NULL, EVC_X_FILE_AS);
-		e_vcard_add_attribute (E_VCARD (contact), attr);
+		e_vcard_append_attribute (E_VCARD (contact), attr);
 
 		stringptr = strings;
 		if (name->family && *name->family)
@@ -746,7 +746,7 @@ e_contact_set_property (GObject *object,
 		e_vcard_remove_attributes (E_VCARD (contact), NULL, info->vcard_field_name);
 
 		for (l = new_values; l; l = l->next)
-			e_vcard_add_attribute_with_value (E_VCARD (contact),
+			e_vcard_append_attribute_with_value (E_VCARD (contact),
 							  e_vcard_attribute_new (NULL, info->vcard_field_name),
 							  (gchar *)l->data);
 	}
@@ -796,7 +796,7 @@ e_contact_set_property (GObject *object,
 								e_vcard_attribute_param_new (EVC_TYPE),
 								"OTHER");
 					}
-					e_vcard_add_attribute (E_VCARD (contact), attr);
+					e_vcard_append_attribute (E_VCARD (contact), attr);
 				}
 
 				e_vcard_attribute_add_value (attr, sval);
@@ -884,7 +884,7 @@ e_contact_set_property (GObject *object,
 			else {
 				/* we didn't find it - add a new attribute */
 				attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
-				e_vcard_add_attribute (E_VCARD (contact), attr);
+				e_vcard_append_attribute (E_VCARD (contact), attr);
 				if (info->attr_type1)
 					e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_TYPE),
 										info->attr_type1);
@@ -924,7 +924,7 @@ e_contact_set_property (GObject *object,
 				d(printf ("adding new %s\n", info->vcard_field_name));
 
 				attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
-				e_vcard_add_attribute (E_VCARD (contact), attr);
+				e_vcard_append_attribute (E_VCARD (contact), attr);
 			}
 
 			values = e_vcard_attribute_get_values (attr);
@@ -956,7 +956,7 @@ e_contact_set_property (GObject *object,
 				else {
 					/* we didn't find it - add a new attribute */
 					attr = e_vcard_attribute_new (NULL, EVC_CATEGORIES);
-					e_vcard_add_attribute (E_VCARD (contact), attr);
+					e_vcard_append_attribute (E_VCARD (contact), attr);
 				}
 
 				str = g_value_get_string (value);
@@ -1009,7 +1009,7 @@ e_contact_set_property (GObject *object,
 			d(printf ("adding new %s\n", info->vcard_field_name));
 			attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
 
-			e_vcard_add_attribute (E_VCARD (contact), attr);
+			e_vcard_append_attribute (E_VCARD (contact), attr);
 
 			info->struct_setter (contact, attr, data);
 		}
@@ -1026,7 +1026,7 @@ e_contact_set_property (GObject *object,
 		}
 		else {
 			/* and if we don't find one we create a new attribute */
-			e_vcard_add_attribute_with_value (E_VCARD (contact),
+			e_vcard_append_attribute_with_value (E_VCARD (contact),
 							  e_vcard_attribute_new (NULL, info->vcard_field_name),
 							  g_value_get_boolean (value) ? "TRUE" : "FALSE");
 		}
@@ -1052,7 +1052,7 @@ e_contact_set_property (GObject *object,
 		}
 		else if (sval) {
 			/* and if we don't find one we create a new attribute */
-			e_vcard_add_attribute_with_value (E_VCARD (contact),
+			e_vcard_append_attribute_with_value (E_VCARD (contact),
 							  e_vcard_attribute_new (NULL, info->vcard_field_name),
 							  g_value_get_string (value));
 		}
@@ -1073,7 +1073,7 @@ e_contact_set_property (GObject *object,
 		}
 		else if (values) {
 			attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
-			e_vcard_add_attribute (E_VCARD (contact), attr);
+			e_vcard_append_attribute (E_VCARD (contact), attr);
 		}
 
 		for (l = values; l != NULL; l = l->next)
@@ -1671,6 +1671,7 @@ e_contact_get_attributes (EContact *contact, EContactField field_id)
  * @attributes: a #GList of pointers to #EVCardAttribute
  *
  * Sets the vcard attributes for @contact's @field_id.
+ * Attributes are added to the contact in the same order as they are in @attributes.
  **/
 void
 e_contact_set_attributes (EContact *contact, EContactField field_id, GList *attributes)
@@ -1686,7 +1687,7 @@ e_contact_set_attributes (EContact *contact, EContactField field_id, GList *attr
 	e_vcard_remove_attributes (E_VCARD (contact), NULL, info->vcard_field_name);
 
 	for (l = attributes; l; l = l->next)
-		e_vcard_add_attribute (E_VCARD (contact),
+		e_vcard_append_attribute (E_VCARD (contact),
 				       e_vcard_attribute_copy ((EVCardAttribute*)l->data));
 }
 
