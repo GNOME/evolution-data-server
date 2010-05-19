@@ -158,8 +158,10 @@ finalize (GObject *object)
 	g_free (account->bcc_addrs);
 
 	g_free (account->pgp_key);
+	g_free (account->pgp_hash_algorithm);
 	g_free (account->smime_sign_key);
 	g_free (account->smime_encrypt_key);
+	g_free (account->smime_hash_algorithm);
 
 	g_free (account->parent_uid);
 
@@ -464,6 +466,7 @@ e_account_set_from_xml (EAccount *account, const gchar *xml)
 			changed |= xml_set_bool (node, "always-trust", &account->pgp_always_trust);
 			changed |= xml_set_bool (node, "always-sign", &account->pgp_always_sign);
 			changed |= xml_set_bool (node, "no-imip-sign", &account->pgp_no_imip_sign);
+			changed |= xml_set_prop (node, "hash-algo", &account->pgp_hash_algorithm);
 
 			if (node->children) {
 				for (cur = node->children; cur; cur = cur->next) {
@@ -477,6 +480,7 @@ e_account_set_from_xml (EAccount *account, const gchar *xml)
 			changed |= xml_set_bool (node, "sign-default", &account->smime_sign_default);
 			changed |= xml_set_bool (node, "encrypt-to-self", &account->smime_encrypt_to_self);
 			changed |= xml_set_bool (node, "encrypt-default", &account->smime_encrypt_default);
+			changed |= xml_set_prop (node, "hash-algo", &account->smime_hash_algorithm);
 
 			if (node->children) {
 				for (cur = node->children; cur; cur = cur->next) {
@@ -561,6 +565,8 @@ e_account_import (EAccount *dest, EAccount *src)
 
 	g_free (dest->pgp_key);
 	dest->pgp_key = g_strdup (src->pgp_key);
+	g_free (dest->pgp_hash_algorithm);
+	dest->pgp_hash_algorithm = g_strdup (src->pgp_hash_algorithm);
 	dest->pgp_encrypt_to_self = src->pgp_encrypt_to_self;
 	dest->pgp_always_sign = src->pgp_always_sign;
 	dest->pgp_no_imip_sign = src->pgp_no_imip_sign;
@@ -569,6 +575,8 @@ e_account_import (EAccount *dest, EAccount *src)
 	dest->smime_sign_default = src->smime_sign_default;
 	g_free (dest->smime_sign_key);
 	dest->smime_sign_key = g_strdup (src->smime_sign_key);
+	g_free (dest->smime_hash_algorithm);
+	dest->smime_hash_algorithm = g_strdup (src->smime_hash_algorithm);
 
 	dest->smime_encrypt_default = src->smime_encrypt_default;
 	dest->smime_encrypt_to_self = src->smime_encrypt_to_self;
@@ -651,6 +659,8 @@ e_account_to_xml (EAccount *account)
 	xmlSetProp (node, (xmlChar*)"always-trust", (xmlChar*)(account->pgp_always_trust ? "true" : "false"));
 	xmlSetProp (node, (xmlChar*)"always-sign", (xmlChar*)(account->pgp_always_sign ? "true" : "false"));
 	xmlSetProp (node, (xmlChar*)"no-imip-sign", (xmlChar*)(account->pgp_no_imip_sign ? "true" : "false"));
+	if (account->pgp_hash_algorithm && *account->pgp_hash_algorithm)
+		xmlSetProp (node, (xmlChar*)"hash-algo", (xmlChar*) account->pgp_hash_algorithm);
 	if (account->pgp_key)
 		xmlNewTextChild (node, NULL, (xmlChar*)"key-id", (xmlChar*)account->pgp_key);
 
@@ -658,6 +668,8 @@ e_account_to_xml (EAccount *account)
 	xmlSetProp (node, (xmlChar*)"sign-default", (xmlChar*)(account->smime_sign_default ? "true" : "false"));
 	xmlSetProp (node, (xmlChar*)"encrypt-default", (xmlChar*)(account->smime_encrypt_default ? "true" : "false"));
 	xmlSetProp (node, (xmlChar*)"encrypt-to-self", (xmlChar*)(account->smime_encrypt_to_self ? "true" : "false"));
+	if (account->smime_hash_algorithm && *account->smime_hash_algorithm)
+		xmlSetProp (node, (xmlChar*)"hash-algo", (xmlChar*) account->smime_hash_algorithm);
 	if (account->smime_sign_key)
 		xmlNewTextChild (node, NULL, (xmlChar*)"sign-key-id", (xmlChar*)account->smime_sign_key);
 	if (account->smime_encrypt_key)
@@ -784,6 +796,7 @@ static struct _account_info {
 	{ /* E_ACCOUNT_RECEIPT_POLICY */ 0, TYPE_INT, G_STRUCT_OFFSET(EAccount, receipt_policy) },
 
 	{ /* E_ACCOUNT_PGP_KEY */ 0, TYPE_STRING, G_STRUCT_OFFSET(EAccount, pgp_key) },
+	{ /* E_ACCOUNT_PGP_HASH_ALGORITHM */ 0, TYPE_STRING, G_STRUCT_OFFSET(EAccount, pgp_hash_algorithm) },
 	{ /* E_ACCOUNT_PGP_ENCRYPT_TO_SELF */ 0, TYPE_BOOL, G_STRUCT_OFFSET(EAccount, pgp_encrypt_to_self) },
 	{ /* E_ACCOUNT_PGP_ALWAYS_SIGN */ 0, TYPE_BOOL, G_STRUCT_OFFSET(EAccount, pgp_always_sign) },
 	{ /* E_ACCOUNT_PGP_NO_IMIP_SIGN */ 0, TYPE_BOOL, G_STRUCT_OFFSET(EAccount, pgp_no_imip_sign) },
@@ -791,6 +804,7 @@ static struct _account_info {
 
 	{ /* E_ACCOUNT_SMIME_SIGN_KEY */ 0, TYPE_STRING, G_STRUCT_OFFSET(EAccount, smime_sign_key) },
 	{ /* E_ACCOUNT_SMIME_ENCRYPT_KEY */ 0, TYPE_STRING, G_STRUCT_OFFSET(EAccount, smime_encrypt_key) },
+	{ /* E_ACCOUNT_SMIME_HASH_ALGORITHM */ 0, TYPE_STRING, G_STRUCT_OFFSET(EAccount, smime_hash_algorithm) },
 	{ /* E_ACCOUNT_SMIME_SIGN_DEFAULT */ 0, TYPE_BOOL, G_STRUCT_OFFSET(EAccount, smime_sign_default) },
 	{ /* E_ACCOUNT_SMIME_ENCRYPT_TO_SELF */ 0, TYPE_BOOL, G_STRUCT_OFFSET(EAccount, smime_encrypt_to_self) },
 	{ /* E_ACCOUNT_SMIME_ENCRYPT_DEFAULT */ 0, TYPE_BOOL, G_STRUCT_OFFSET(EAccount, smime_encrypt_default) },

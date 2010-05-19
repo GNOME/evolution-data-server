@@ -99,6 +99,12 @@ gpg_hash_to_id (CamelCipherContext *context, CamelCipherHash hash)
 	case CAMEL_CIPHER_HASH_SHA1:
 	case CAMEL_CIPHER_HASH_DEFAULT:
 		return "pgp-sha1";
+	case CAMEL_CIPHER_HASH_SHA256:
+		return "pgp-sha256";
+	case CAMEL_CIPHER_HASH_SHA384:
+		return "pgp-sha384";
+	case CAMEL_CIPHER_HASH_SHA512:
+		return "pgp-sha512";
 	case CAMEL_CIPHER_HASH_RIPEMD160:
 		return "pgp-ripemd160";
 	case CAMEL_CIPHER_HASH_TIGER192:
@@ -120,6 +126,12 @@ gpg_id_to_hash (CamelCipherContext *context, const gchar *id)
 			return CAMEL_CIPHER_HASH_MD5;
 		else if (!strcmp (id, "pgp-sha1"))
 			return CAMEL_CIPHER_HASH_SHA1;
+		else if (!strcmp (id, "pgp-sha256"))
+			return CAMEL_CIPHER_HASH_SHA256;
+		else if (!strcmp (id, "pgp-sha384"))
+			return CAMEL_CIPHER_HASH_SHA384;
+		else if (!strcmp (id, "pgp-sha512"))
+			return CAMEL_CIPHER_HASH_SHA512;
 		else if (!strcmp (id, "pgp-ripemd160"))
 			return CAMEL_CIPHER_HASH_RIPEMD160;
 		else if (!strcmp (id, "tiger192"))
@@ -461,6 +473,12 @@ gpg_hash_str (CamelCipherHash hash)
 		return "--digest-algo=MD5";
 	case CAMEL_CIPHER_HASH_SHA1:
 		return "--digest-algo=SHA1";
+	case CAMEL_CIPHER_HASH_SHA256:
+		return "--digest-algo=SHA256";
+	case CAMEL_CIPHER_HASH_SHA384:
+		return "--digest-algo=SHA384";
+	case CAMEL_CIPHER_HASH_SHA512:
+		return "--digest-algo=SHA512";
 	case CAMEL_CIPHER_HASH_RIPEMD160:
 		return "--digest-algo=RIPEMD160";
 	default:
@@ -670,7 +688,7 @@ gpg_ctx_op_start (struct _GpgCtx *gpg)
 	errno = errnosave;
 #else
 	/* FIXME: Port me */
-	g_warning ("%s: Not implemented", __FUNCTION__);
+	g_warning ("%s: Not implemented", G_STRFUNC);
 
 	errno = EINVAL;
 #endif
@@ -898,7 +916,38 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 		switch (gpg->mode) {
 		case GPG_CTX_MODE_SIGN:
 			if (!strncmp ((gchar *) status, "SIG_CREATED ", 12)) {
-				/* FIXME: save this state? */
+				/* SIG_CREATED <type> <pubkey algo> <hash algo> <class> <timestamp> <key fpr> */
+				const gchar *str, *p;
+				gint i;
+
+				str = (const gchar *) status + 12;
+				while (p = strchr (str, ' '), i < 2 && p) {
+					str = p + 1;
+					i++;
+				}
+
+				if (str && *str && i == 2) {
+					struct {
+						gint gpg_hash_algo;
+						CamelCipherHash camel_hash_algo; 
+					} hash_algos[] = {
+						/* the rest are deprecated/not supported by gpg any more */
+						{  2, CAMEL_CIPHER_HASH_SHA1 },
+						{  3, CAMEL_CIPHER_HASH_RIPEMD160 },
+						{  8, CAMEL_CIPHER_HASH_SHA256 },
+						{  9, CAMEL_CIPHER_HASH_SHA384 },
+						{ 10, CAMEL_CIPHER_HASH_SHA512 }
+					};
+
+					gint gpg_hash = strtoul (str, NULL, 10);
+
+					for (i = 0; i < G_N_ELEMENTS (hash_algos); i++) {
+						if (hash_algos[i].gpg_hash_algo == gpg_hash) {
+							gpg->hash = hash_algos[i].camel_hash_algo;
+							break;
+						}
+					}
+				}
 			}
 			break;
 		case GPG_CTX_MODE_DECRYPT:
@@ -1440,7 +1489,7 @@ gpg_sign (CamelCipherContext *context,
 
 	mps = camel_multipart_signed_new();
 	ct = camel_content_type_new("multipart", "signed");
-	camel_content_type_set_param(ct, "micalg", camel_cipher_hash_to_id(context, hash));
+	camel_content_type_set_param(ct, "micalg", camel_cipher_hash_to_id (context, hash == CAMEL_CIPHER_HASH_DEFAULT ? gpg->hash : hash));
 	camel_content_type_set_param(ct, "protocol", class->sign_protocol);
 	camel_data_wrapper_set_mime_type_field((CamelDataWrapper *)mps, ct);
 	camel_content_type_unref(ct);

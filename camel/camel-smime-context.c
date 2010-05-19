@@ -323,7 +323,7 @@ set_nss_error (CamelException *ex,
 static NSSCMSMessage *
 sm_signing_cmsmessage (CamelSMIMEContext *context,
                        const gchar *nick,
-                       SECOidTag hash,
+                       SECOidTag *hash,
                        gint detached,
                        CamelException *ex)
 {
@@ -334,6 +334,8 @@ sm_signing_cmsmessage (CamelSMIMEContext *context,
 	NSSCMSSignerInfo *signerinfo;
 	CERTCertificate *cert= NULL, *ekpcert = NULL;
 
+	g_return_val_if_fail (hash != NULL, NULL);
+
 	if ((cert = CERT_FindUserCertByUsage (p->certdb,
 					     (gchar *)nick,
 					     certUsageEmailSigner,
@@ -343,6 +345,28 @@ sm_signing_cmsmessage (CamelSMIMEContext *context,
 			ex, CAMEL_EXCEPTION_SYSTEM,
 			_("Cannot find certificate for '%s'"), nick);
 		return NULL;
+	}
+
+	if (*hash == SEC_OID_UNKNOWN) {
+		/* use signature algorithm from the certificate */
+		switch (SECOID_GetAlgorithmTag (&cert->signature)) {
+		case SEC_OID_PKCS1_SHA256_WITH_RSA_ENCRYPTION:
+			*hash = SEC_OID_SHA256;
+			break;
+		case SEC_OID_PKCS1_SHA384_WITH_RSA_ENCRYPTION:
+			*hash = SEC_OID_SHA384;
+			break;
+		case SEC_OID_PKCS1_SHA512_WITH_RSA_ENCRYPTION:
+			*hash = SEC_OID_SHA512;
+			break;
+		case SEC_OID_PKCS1_MD5_WITH_RSA_ENCRYPTION:
+			*hash = SEC_OID_MD5;
+			break;
+		case SEC_OID_PKCS1_SHA1_WITH_RSA_ENCRYPTION:
+		default:
+			*hash = SEC_OID_SHA1;
+			break;
+		}
 	}
 
 	cmsg = NSS_CMSMessage_Create (NULL); /* create a message on its own pool */
@@ -369,7 +393,7 @@ sm_signing_cmsmessage (CamelSMIMEContext *context,
 		goto fail;
 	}
 
-	signerinfo = NSS_CMSSignerInfo_Create (cmsg, cert, hash);
+	signerinfo = NSS_CMSSignerInfo_Create (cmsg, cert, *hash);
 	if (signerinfo == NULL) {
 		set_nss_error (ex, _("Cannot create CMS Signer information"));
 		goto fail;
@@ -680,6 +704,12 @@ smime_context_hash_to_id (CamelCipherContext *context,
 	case CAMEL_CIPHER_HASH_SHA1:
 	case CAMEL_CIPHER_HASH_DEFAULT:
 		return "sha1";
+	case CAMEL_CIPHER_HASH_SHA256:
+		return "sha256";
+	case CAMEL_CIPHER_HASH_SHA384:
+		return "sha384";
+	case CAMEL_CIPHER_HASH_SHA512:
+		return "sha512";
 	default:
 		return NULL;
 	}
@@ -694,6 +724,33 @@ smime_context_id_to_hash (CamelCipherContext *context,
 			return CAMEL_CIPHER_HASH_MD5;
 		else if (!strcmp (id, "sha1"))
 			return CAMEL_CIPHER_HASH_SHA1;
+		else if (!strcmp (id, "sha256"))
+			return CAMEL_CIPHER_HASH_SHA256;
+		else if (!strcmp (id, "sha384"))
+			return CAMEL_CIPHER_HASH_SHA384;
+		else if (!strcmp (id, "sha512"))
+			return CAMEL_CIPHER_HASH_SHA512;
+	}
+
+	return CAMEL_CIPHER_HASH_DEFAULT;
+}
+
+static CamelCipherHash
+get_hash_from_oid (SECOidTag oidTag)
+{
+	switch (oidTag) {
+	case SEC_OID_SHA1:
+		return CAMEL_CIPHER_HASH_SHA1;
+	case SEC_OID_SHA256:
+		return CAMEL_CIPHER_HASH_SHA256;
+	case SEC_OID_SHA384:
+		return CAMEL_CIPHER_HASH_SHA384;
+	case SEC_OID_SHA512:
+		return CAMEL_CIPHER_HASH_SHA512;
+	case SEC_OID_MD5:
+		return CAMEL_CIPHER_HASH_MD5;
+	default:
+		break;
 	}
 
 	return CAMEL_CIPHER_HASH_DEFAULT;
@@ -720,10 +777,21 @@ smime_context_sign (CamelCipherContext *context,
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 
 	switch (hash) {
-	case CAMEL_CIPHER_HASH_SHA1:
 	case CAMEL_CIPHER_HASH_DEFAULT:
 	default:
+		sechash = SEC_OID_UNKNOWN;
+		break;
+	case CAMEL_CIPHER_HASH_SHA1:
 		sechash = SEC_OID_SHA1;
+		break;
+	case CAMEL_CIPHER_HASH_SHA256:
+		sechash = SEC_OID_SHA256;
+		break;
+	case CAMEL_CIPHER_HASH_SHA384:
+		sechash = SEC_OID_SHA384;
+		break;
+	case CAMEL_CIPHER_HASH_SHA512:
+		sechash = SEC_OID_SHA512;
 		break;
 	case CAMEL_CIPHER_HASH_MD5:
 		sechash = SEC_OID_MD5;
@@ -731,7 +799,7 @@ smime_context_sign (CamelCipherContext *context,
 	}
 
 	cmsg = sm_signing_cmsmessage (
-		(CamelSMIMEContext *)context, userid, sechash,
+		(CamelSMIMEContext *)context, userid, &sechash,
 		((CamelSMIMEContext *)context)->priv->sign_mode == CAMEL_SMIME_SIGN_CLEARSIGN, ex);
 	if (cmsg == NULL)
 		return -1;
@@ -800,7 +868,7 @@ smime_context_sign (CamelCipherContext *context,
 
 		mps = camel_multipart_signed_new ();
 		ct = camel_content_type_new ("multipart", "signed");
-		camel_content_type_set_param (ct, "micalg", camel_cipher_hash_to_id (context, hash));
+		camel_content_type_set_param (ct, "micalg", camel_cipher_hash_to_id (context, get_hash_from_oid (sechash)));
 		camel_content_type_set_param (ct, "protocol", class->sign_protocol);
 		camel_data_wrapper_set_mime_type_field ((CamelDataWrapper *)mps, ct);
 		camel_content_type_unref (ct);

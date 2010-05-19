@@ -60,6 +60,7 @@ typedef enum _e_account_item_t {
 	E_ACCOUNT_RECEIPT_POLICY,
 
 	E_ACCOUNT_PGP_KEY,
+	E_ACCOUNT_PGP_HASH_ALGORITHM,
 	E_ACCOUNT_PGP_ENCRYPT_TO_SELF,
 	E_ACCOUNT_PGP_ALWAYS_SIGN,
 	E_ACCOUNT_PGP_NO_IMIP_SIGN,
@@ -67,6 +68,7 @@ typedef enum _e_account_item_t {
 
 	E_ACCOUNT_SMIME_SIGN_KEY,
 	E_ACCOUNT_SMIME_ENCRYPT_KEY,
+	E_ACCOUNT_SMIME_HASH_ALGORITHM,
 	E_ACCOUNT_SMIME_SIGN_DEFAULT,
 	E_ACCOUNT_SMIME_ENCRYPT_TO_SELF,
 	E_ACCOUNT_SMIME_ENCRYPT_DEFAULT,
@@ -126,6 +128,7 @@ typedef struct _EAccount {
 	EAccountReceiptPolicy receipt_policy;
 
 	gchar *pgp_key;
+	gchar *pgp_hash_algorithm; /* "sha1", "sha256", "sha384", "sha512" are supported now; anything else is default */
 	gboolean pgp_encrypt_to_self;
 	gboolean pgp_always_sign;
 	gboolean pgp_no_imip_sign;
@@ -135,6 +138,7 @@ typedef struct _EAccount {
 
 	gchar *smime_sign_key;
 	gchar *smime_encrypt_key;
+	gchar *smime_hash_algorithm; /* "sha1", "sha256", "sha384", "sha512" are supported now; anything else is default */
 	gboolean smime_sign_default;
 	gboolean smime_encrypt_to_self;
 	gboolean smime_encrypt_default;
