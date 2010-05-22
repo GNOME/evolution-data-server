@@ -56,7 +56,7 @@ EDS_MICRO_VERSION=eds_micro_version
 dnl ******************************
 dnl Libtool versioning
 dnl ******************************
-LIBEDATASERVER_CURRENT=12
+LIBEDATASERVER_CURRENT=14
 LIBEDATASERVER_REVISION=0
 LIBEDATASERVER_AGE=0
 
