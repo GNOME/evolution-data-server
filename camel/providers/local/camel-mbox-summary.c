@@ -485,7 +485,7 @@ message_info_to_db(CamelFolderSummary *s, CamelMessageInfo *info)
 	struct _CamelMIRecord *mir;
 
 	mir = ((CamelFolderSummaryClass *)camel_mbox_summary_parent)->message_info_to_db(s, info);
-	mir->bdata = g_strdup_printf("%lu", mbi->frompos);
+	mir->bdata = g_strdup_printf("%" G_GOFFSET_FORMAT, mbi->frompos);
 
 	return mir;
 }
