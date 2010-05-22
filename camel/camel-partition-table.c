@@ -327,8 +327,8 @@ void camel_partition_table_remove(CamelPartitionTable *cpi, const gchar *key)
 	camel_hash_t hashid;
 	gint index, i;
 
-	g_return_val_if_fail (CAMEL_IS_PARTITION_TABLE (cpi), FALSE);
-	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_if_fail (CAMEL_IS_PARTITION_TABLE (cpi));
+	g_return_if_fail (key != NULL);
 
 	hashid = hash_key (key);
 
@@ -803,7 +803,7 @@ camel_key_table_set_data(CamelKeyTable *ki, camel_key_t keyid, camel_block_t dat
 	gint index;
 	CamelKeyBlock *kb;
 
-	g_return_val_if_fail (CAMEL_IS_KEY_TABLE (ki), FALSE);
+	g_return_if_fail (CAMEL_IS_KEY_TABLE (ki));
 
 	if (keyid == 0)
 		return;
@@ -837,7 +837,7 @@ camel_key_table_set_flags(CamelKeyTable *ki, camel_key_t keyid, guint flags, gui
 	CamelKeyBlock *kb;
 	guint old;
 
-	g_return_val_if_fail (CAMEL_IS_KEY_TABLE (ki), FALSE);
+	g_return_if_fail (CAMEL_IS_KEY_TABLE (ki));
 
 	if (keyid == 0)
 		return;

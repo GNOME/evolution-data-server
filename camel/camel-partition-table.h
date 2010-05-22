@@ -27,6 +27,16 @@
 #include "camel-block-file.h"
 #include "camel-list-utils.h"
 
+#define CAMEL_TYPE_PARTITION_TABLE \
+	(camel_partition_table_get_type ())
+#define CAMEL_IS_PARTITION_TABLE(obj) \
+	(CAMEL_CHECK_TYPE ((obj), CAMEL_TYPE_PARTITION_TABLE))
+
+#define CAMEL_TYPE_KEY_TABLE \
+	(camel_key_table_get_type ())
+#define CAMEL_IS_KEY_TABLE(obj) \
+	(CAMEL_CHECK_TYPE ((obj), CAMEL_TYPE_KEY_TABLE))
+
 G_BEGIN_DECLS
 
 /* ********************************************************************** */
