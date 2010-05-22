@@ -104,6 +104,7 @@ e_calendar_factory_CPPFLAGS = \
 	$(AM_CPPFLAGS)					\
 	-DG_LOG_DOMAIN=\"libedata-cal\"			\
 	-DE_PRGNAME=\"e-calendar-factory\"		\
+	-DEVOLUTION_LOCALEDIR=\"$(localedir)\"		\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/calendar			\
