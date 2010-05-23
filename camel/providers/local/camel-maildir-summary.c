@@ -45,7 +45,7 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_MAILDIR_SUMMARY, CamelMaildirSummaryPrivate))
 
-static CamelMessageInfo *message_info_load(CamelFolderSummary *s, FILE *in);
+static CamelMessageInfo *message_info_migrate (CamelFolderSummary *s, FILE *in);
 static CamelMessageInfo *message_info_new_from_header(CamelFolderSummary *, struct _camel_header_raw *);
 static void message_info_free(CamelFolderSummary *, CamelMessageInfo *mi);
 
@@ -97,7 +97,7 @@ camel_maildir_summary_class_init (CamelMaildirSummaryClass *class)
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
 	folder_summary_class->message_info_size = sizeof (CamelMaildirMessageInfo);
 	folder_summary_class->content_info_size = sizeof (CamelMaildirMessageContentInfo);
-	folder_summary_class->message_info_load = message_info_load;
+	folder_summary_class->message_info_migrate = message_info_migrate;
 	folder_summary_class->message_info_new_from_header = message_info_new_from_header;
 	folder_summary_class->message_info_free = message_info_free;
 	folder_summary_class->next_uid_string = maildir_summary_next_uid_string;
@@ -388,12 +388,12 @@ static gchar *maildir_summary_next_uid_string(CamelFolderSummary *s)
 }
 
 static CamelMessageInfo *
-message_info_load(CamelFolderSummary *s, FILE *in)
+message_info_migrate (CamelFolderSummary *s, FILE *in)
 {
 	CamelMessageInfo *mi;
 	CamelMaildirSummary *mds = (CamelMaildirSummary *)s;
 
-	mi = ((CamelFolderSummaryClass *) camel_maildir_summary_parent_class)->message_info_load(s, in);
+	mi = ((CamelFolderSummaryClass *) camel_maildir_summary_parent_class)->message_info_migrate (s, in);
 	if (mi) {
 		gchar *name;
 

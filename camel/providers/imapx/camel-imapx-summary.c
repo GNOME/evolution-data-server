@@ -41,13 +41,9 @@
 static gint summary_header_load (CamelFolderSummary *, FILE *);
 static gint summary_header_save (CamelFolderSummary *, FILE *);
 
-static CamelMessageInfo *message_info_load (CamelFolderSummary *s, FILE *in);
-static gint message_info_save (CamelFolderSummary *s, FILE *out,
-			      CamelMessageInfo *info);
+static CamelMessageInfo *message_info_migrate (CamelFolderSummary *s, FILE *in);
 static gboolean info_set_user_flag (CamelMessageInfo *info, const gchar *id, gboolean state);
-static CamelMessageContentInfo *content_info_load (CamelFolderSummary *s, FILE *in);
-static gint content_info_save (CamelFolderSummary *s, FILE *out,
-			      CamelMessageContentInfo *info);
+static CamelMessageContentInfo *content_info_migrate (CamelFolderSummary *s, FILE *in);
 
 static gint summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
 static CamelFIRecord * summary_header_to_db (CamelFolderSummary *s, CamelException *ex);
@@ -89,10 +85,8 @@ camel_imapx_summary_class_init (CamelIMAPXSummaryClass *class)
 	folder_summary_class->message_info_clone = imapx_message_info_clone;
 	folder_summary_class->summary_header_load = summary_header_load;
 	folder_summary_class->summary_header_save = summary_header_save;
-	folder_summary_class->message_info_load = message_info_load;
-	folder_summary_class->message_info_save = message_info_save;
-	folder_summary_class->content_info_load = content_info_load;
-	folder_summary_class->content_info_save = content_info_save;
+	folder_summary_class->message_info_migrate = message_info_migrate;
+	folder_summary_class->content_info_migrate = content_info_migrate;
 	folder_summary_class->summary_header_to_db = summary_header_to_db;
 	folder_summary_class->summary_header_from_db = summary_header_from_db;
 	folder_summary_class->message_info_to_db = message_info_to_db;
@@ -324,7 +318,7 @@ message_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 }
 
 static CamelMessageInfo *
-message_info_load (CamelFolderSummary *s, FILE *in)
+message_info_migrate (CamelFolderSummary *s, FILE *in)
 {
 	CamelMessageInfo *info;
 	CamelIMAPXMessageInfo *iinfo;
@@ -333,7 +327,7 @@ message_info_load (CamelFolderSummary *s, FILE *in)
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (
 		camel_imapx_summary_parent_class);
 
-	info = folder_summary_class->message_info_load (s, in);
+	info = folder_summary_class->message_info_migrate (s, in);
 	if (info) {
 		iinfo = (CamelIMAPXMessageInfo *)info;
 
@@ -362,21 +356,6 @@ message_info_to_db (CamelFolderSummary *s, CamelMessageInfo *info)
 		mir->bdata = g_strdup_printf ("%u", iinfo->server_flags);
 
 	return mir;
-}
-
-static gint
-message_info_save (CamelFolderSummary *s, FILE *out, CamelMessageInfo *info)
-{
-	CamelIMAPXMessageInfo *iinfo = (CamelIMAPXMessageInfo *)info;
-	CamelFolderSummaryClass *folder_summary_class;
-
-	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (
-		camel_imapx_summary_parent_class);
-
-	if (folder_summary_class->message_info_save (s, out, info) == -1)
-		return -1;
-
-	return camel_file_util_encode_uint32 (out, iinfo->server_flags);
 }
 
 static gboolean
@@ -422,7 +401,7 @@ content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 }
 
 static CamelMessageContentInfo *
-content_info_load (CamelFolderSummary *s, FILE *in)
+content_info_migrate (CamelFolderSummary *s, FILE *in)
 {
 	CamelFolderSummaryClass *folder_summary_class;
 
@@ -430,7 +409,7 @@ content_info_load (CamelFolderSummary *s, FILE *in)
 		camel_imapx_summary_parent_class);
 
 	if (fgetc (in))
-		return folder_summary_class->content_info_load (s, in);
+		return folder_summary_class->content_info_migrate (s, in);
 	else
 		return camel_folder_summary_content_info_new (s);
 }
@@ -455,22 +434,6 @@ content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelM
 		g_free(oldr);
 		return 0;
 	}
-}
-
-static gint
-content_info_save (CamelFolderSummary *s, FILE *out,
-		   CamelMessageContentInfo *info)
-{
-	CamelFolderSummaryClass *folder_summary_class;
-
-	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (
-		camel_imapx_summary_parent_class);
-
-	if (info->type) {
-		fputc (1, out);
-		return folder_summary_class->content_info_save (s, out, info);
-	} else
-		return fputc (0, out);
 }
 
 void

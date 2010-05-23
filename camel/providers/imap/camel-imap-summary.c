@@ -42,13 +42,9 @@
 static gint summary_header_load (CamelFolderSummary *, FILE *);
 static gint summary_header_save (CamelFolderSummary *, FILE *);
 
-static CamelMessageInfo *message_info_load (CamelFolderSummary *s, FILE *in);
-static gint message_info_save (CamelFolderSummary *s, FILE *out,
-			      CamelMessageInfo *info);
+static CamelMessageInfo *message_info_migrate (CamelFolderSummary *s, FILE *in);
 static gboolean info_set_user_flag (CamelMessageInfo *info, const gchar *id, gboolean state);
-static CamelMessageContentInfo *content_info_load (CamelFolderSummary *s, FILE *in);
-static gint content_info_save (CamelFolderSummary *s, FILE *out,
-			      CamelMessageContentInfo *info);
+static CamelMessageContentInfo *content_info_migrate (CamelFolderSummary *s, FILE *in);
 
 static gint summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
 static CamelFIRecord * summary_header_to_db (CamelFolderSummary *s, CamelException *ex);
@@ -85,10 +81,8 @@ camel_imap_summary_class_init (CamelImapSummaryClass *class)
 	folder_summary_class->message_info_clone = imap_message_info_clone;
 	folder_summary_class->summary_header_load = summary_header_load;
 	folder_summary_class->summary_header_save = summary_header_save;
-	folder_summary_class->message_info_load = message_info_load;
-	folder_summary_class->message_info_save = message_info_save;
-	folder_summary_class->content_info_load = content_info_load;
-	folder_summary_class->content_info_save = content_info_save;
+	folder_summary_class->message_info_migrate = message_info_migrate;
+	folder_summary_class->content_info_migrate = content_info_migrate;
 	folder_summary_class->summary_header_to_db = summary_header_to_db;
 	folder_summary_class->summary_header_from_db = summary_header_from_db;
 	folder_summary_class->message_info_to_db = message_info_to_db;
@@ -301,12 +295,12 @@ message_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 }
 
 static CamelMessageInfo *
-message_info_load (CamelFolderSummary *s, FILE *in)
+message_info_migrate (CamelFolderSummary *s, FILE *in)
 {
 	CamelMessageInfo *info;
 	CamelImapMessageInfo *iinfo;
 
-	info = CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->message_info_load (s, in);
+	info = CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->message_info_migrate (s, in);
 	if (info) {
 		iinfo = (CamelImapMessageInfo *)info;
 
@@ -331,17 +325,6 @@ message_info_to_db (CamelFolderSummary *s, CamelMessageInfo *info)
 		mir->bdata = g_strdup_printf ("%u", iinfo->server_flags);
 
 	return mir;
-}
-
-static gint
-message_info_save (CamelFolderSummary *s, FILE *out, CamelMessageInfo *info)
-{
-	CamelImapMessageInfo *iinfo = (CamelImapMessageInfo *)info;
-
-	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->message_info_save (s, out, info) == -1)
-		return -1;
-
-	return camel_file_util_encode_uint32 (out, iinfo->server_flags);
 }
 
 static gboolean
@@ -379,10 +362,10 @@ content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 }
 
 static CamelMessageContentInfo *
-content_info_load (CamelFolderSummary *s, FILE *in)
+content_info_migrate (CamelFolderSummary *s, FILE *in)
 {
 	if (fgetc (in))
-		return CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->content_info_load (s, in);
+		return CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->content_info_migrate (s, in);
 	else
 		return camel_folder_summary_content_info_new (s);
 }
@@ -402,17 +385,6 @@ content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelM
 		g_free(oldr);
 		return 0;
 	}
-}
-
-static gint
-content_info_save (CamelFolderSummary *s, FILE *out,
-		   CamelMessageContentInfo *info)
-{
-	if (info->type) {
-		fputc (1, out);
-		return CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->content_info_save (s, out, info);
-	} else
-		return fputc (0, out);
 }
 
 void
