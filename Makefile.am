@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS=-I m4
 
-DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
+DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --with-krb5=/usr
 
 if ENABLE_CALENDAR
 CALENDAR_DIR = calendar

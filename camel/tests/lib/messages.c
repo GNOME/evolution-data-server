@@ -32,9 +32,10 @@ test_message_create_simple(void)
 }
 
 static void
-content_finalize(CamelObject *folder, gpointer crap, gpointer ba)
+content_weak_notify (GByteArray *ba,
+                     GObject *where_the_object_was)
 {
-	g_byte_array_free(ba, TRUE);
+	g_byte_array_free (ba, TRUE);
 }
 
 void
@@ -69,7 +70,9 @@ test_message_set_content_simple(CamelMimePart *part, gint how, const gchar *type
 		content = (CamelStreamMem *)camel_stream_mem_new();
 		camel_stream_mem_set_byte_array(content, ba);
 
-		camel_object_hook_event((CamelObject *)content, "finalize", content_finalize, ba);
+		g_object_weak_ref (
+			G_OBJECT (content), (GWeakNotify)
+			content_weak_notify, ba);
 		break;
 	}
 

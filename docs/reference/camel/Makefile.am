@@ -24,12 +24,12 @@ GTKDOC_CFLAGS = 		\
 	-I$(top_srcdir)		\
 	-I$(top_builddir)	\
 	-I$(top_builddir)/camel	\
-	$(GLIB_CFLAGS)
+	$(CAMEL_CFLAGS)
 
 GTKDOC_LIBS = 						\
 	$(top_builddir)/camel/libcamel-1.2.la		\
 	$(top_builddir)/camel/libcamel-provider-1.2.la	\
-	$(GLIB_LIBS)
+	$(CAMEL_LIBS)
 
 # Extra SGML files that are included by $(DOC_MAIN_SGML_FILE)
 content_files = 			\
