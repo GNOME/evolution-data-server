@@ -1,5 +1,64 @@
+Evolution-Data-Server 2.31.2 2010-05-24
+---------------------------------------
+
+Bug Fixes:
+	#240317 - Allow searching in subscribe dialog (Milan Crha)
+	#304415 - Allow change of signature hash algorithm (Milan Crha)
+	#337479 - Evolution forgets password on any error (Milan Crha)
+	#531912 - Mail inline parser doesn't always work (Milan Crha)
+	#556061 - EContact/EVCard can re-order phone and email attributes
+	          (Milan Crha)
+	#566330 - WebDAV addressbook is too strict about content-type
+	          (Petr Tomasek)
+	#566354 - Handle server's resource rename on WebDAV PUT response
+	          (Milan Crha)
+	#604650 - Mishandling of '@' in WebDAV contacts username (Milan Crha)
+	#612596 - Crash in gnome_keyring_item_info_free from e-passwords.c
+	          (Milan Crha)
+	#617168 - WebDAV Addressbook backend should use ctags (Milan Crha)
+	#617881 - Crash on fetch finish with POP3 (Milan Crha)
+	#618474 - WebDAV backend not linking to libebackend (Matthew Barnes)
+	#618578 - Require automake >= 1.10 (Adrian Bunk)
+
+Other Changes:
+	* e_cal_new_from_uri/e_cal_open_default emits runtime warning
+	  (Milan Crha)
+	* Remove an unused label in the name selector dialog
+	  (Federico Mena Quintero)
+	* Convert CamelObject events to GObject signals. (Matthew Barnes)
+	* Remove border_width from the name selector's dialog toplevel
+	  contents (Federico Mena Quintero)
+	* Create a section in the name selector dialog in its own function
+	  (Federico Mena Quintero)
+	* Redo the container hierarchy in the name selector dialog
+	  (Federico Mena Quintero)
+	* Don't set a default vertical size for the name selector window
+	  (Federico Mena Quintero)
+	* Disallow overwriting one CamelException with another.
+	  (Matthew Barnes)
+	* Shrink the spacing between the name selector's sections
+	  (Federico Mena Quintero)
+	* Put the name selector's section labels in the same row as the
+	  treeviews (Federico Mena Quintero)
+	* Fix pointlessly narrow default width in the name selection dialog
+	  Name the pointless label at the top, so it can be disabled for
+	  MeeGo (Michael Meeks)
+	* Add ORG support to the Google Contacts backend (Philip Withnall)
+	* Add NOTE support to the Google Contacts backend (Philip Withnall)
+	* Remove Google Calendar backend (Philip Withnall)
+	* Add argument checks to camel-block-file.c. (Matthew Barnes)
+	* Add argument checks to camel-partition-table.c. (Matthew Barnes)
+	* Bump libedataserver soname twice. (Matthew Barnes)
+
+Translations:
+	Thomas Thurman (en@shaw)
+	Fran Diéguez (gl)
+	Kjartan Maraas (nb)
+	Manoj Kumar Giri (or)
+
 Evolution-Data-Server 2.31.1 2010-05-03
 ----------------------------------------
+
 Bug Fixes:
 	Bug #617263 - Crash of e-addressbook-factory on second start of evolution (Milan Crha)
 	Bug #545505 - Properly free unused message infos periodically (Milan Crha)
