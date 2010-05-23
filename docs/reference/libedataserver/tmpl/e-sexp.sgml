@@ -20,6 +20,55 @@ ESExp
 <!-- ##### SECTION Image ##### -->
 
 
+<!-- ##### ENUM ESExpResultType ##### -->
+<para>
+
+</para>
+
+@ESEXP_RES_ARRAY_PTR: 
+@ESEXP_RES_INT: 
+@ESEXP_RES_STRING: 
+@ESEXP_RES_BOOL: 
+@ESEXP_RES_TIME: 
+@ESEXP_RES_UNDEFINED: 
+
+<!-- ##### STRUCT ESExpResult ##### -->
+<para>
+
+</para>
+
+@type: 
+
+<!-- ##### ENUM ESExpTermType ##### -->
+<para>
+
+</para>
+
+@ESEXP_TERM_INT: 
+@ESEXP_TERM_BOOL: 
+@ESEXP_TERM_STRING: 
+@ESEXP_TERM_TIME: 
+@ESEXP_TERM_FUNC: 
+@ESEXP_TERM_IFUNC: 
+@ESEXP_TERM_VAR: 
+
+<!-- ##### STRUCT ESExpSymbol ##### -->
+<para>
+
+</para>
+
+@type: 
+@name: 
+@data: 
+
+<!-- ##### STRUCT ESExpTerm ##### -->
+<para>
+
+</para>
+
+@type: 
+@var: 
+
 <!-- ##### STRUCT ESExp ##### -->
 <para>
 
@@ -34,30 +83,6 @@ ESExp
 @operators: 
 @term_chunks: 
 @result_chunks: 
-
-<!-- ##### STRUCT ESExpSymbol ##### -->
-<para>
-
-</para>
-
-@type: 
-@name: 
-@data: 
-
-<!-- ##### STRUCT ESExpResult ##### -->
-<para>
-
-</para>
-
-@type: 
-
-<!-- ##### STRUCT ESExpTerm ##### -->
-<para>
-
-</para>
-
-@type: 
-@var: 
 
 <!-- ##### FUNCTION e_sexp_new ##### -->
 <para>

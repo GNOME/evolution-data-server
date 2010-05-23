@@ -100,6 +100,15 @@ ENameSelectorEntry
 @destination_store: 
 
 
+<!-- ##### FUNCTION e_name_selector_entry_get_popup_destination ##### -->
+<para>
+
+</para>
+
+@name_selector_entry: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_name_selector_entry_set_contact_editor_func ##### -->
 <para>
 

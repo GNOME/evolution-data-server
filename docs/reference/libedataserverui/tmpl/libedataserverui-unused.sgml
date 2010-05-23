@@ -1,3 +1,31 @@
+<!-- ##### SECTION ./tmpl/e-data-server-ui-marshal.sgml:Image ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/e-data-server-ui-marshal.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/e-data-server-ui-marshal.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/e-data-server-ui-marshal.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/e-data-server-ui-marshal.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/e-data-server-ui-marshal.sgml:Title ##### -->
+e-data-server-ui-marshal
+
+
 <!-- ##### SECTION ./tmpl/e-source-option-menu.sgml:Long_Description ##### -->
 <para>
 
@@ -59,6 +87,30 @@ ESourceOptionMenu
 
 </para>
 
+
+<!-- ##### FUNCTION e_data_server_ui_marshal_BOOLEAN__BOXED_OBJECT_FLAGS_UINT ##### -->
+<para>
+
+</para>
+
+@closure: 
+@return_value: 
+@n_param_values: 
+@param_values: 
+@invocation_hint: 
+@marshal_data: 
+
+<!-- ##### FUNCTION e_data_server_ui_marshal_BOOLEAN__OBJECT_BOXED ##### -->
+<para>
+
+</para>
+
+@closure: 
+@return_value: 
+@n_param_values: 
+@param_values: 
+@invocation_hint: 
+@marshal_data: 
 
 <!-- ##### MACRO e_data_server_ui_marshal_NONE__NONE ##### -->
 <para>

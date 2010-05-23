@@ -85,6 +85,15 @@ Miscellaneous utility functions for evolution-data-server.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_util_gthread_id ##### -->
+<para>
+
+</para>
+
+@thread: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_filename_make_safe ##### -->
 <para>
 

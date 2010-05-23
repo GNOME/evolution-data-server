@@ -120,3 +120,12 @@ EDestinationStore
 @Returns: 
 
 
+<!-- ##### FUNCTION e_destination_store_get_stamp ##### -->
+<para>
+
+</para>
+
+@destination_store: 
+@Returns: 
+
+

@@ -62,6 +62,9 @@ CamelCipherContext
 @CAMEL_CIPHER_HASH_MD2: 
 @CAMEL_CIPHER_HASH_MD5: 
 @CAMEL_CIPHER_HASH_SHA1: 
+@CAMEL_CIPHER_HASH_SHA256: 
+@CAMEL_CIPHER_HASH_SHA384: 
+@CAMEL_CIPHER_HASH_SHA512: 
 @CAMEL_CIPHER_HASH_RIPEMD160: 
 @CAMEL_CIPHER_HASH_TIGER192: 
 @CAMEL_CIPHER_HASH_HAVAL5160: 
@@ -298,6 +301,12 @@ CamelCipherContext
 @name: 
 @email: 
 @cert_data: 
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
 @gpointer cert_data: 
 @gpointer cert_data:
 @gpointer cert_data: 

@@ -313,10 +313,12 @@ e_memchunk_destroy
 <SECTION>
 <FILE>e-sexp</FILE>
 <TITLE>ESExp</TITLE>
-ESExp
-ESExpSymbol
+ESExpResultType
 ESExpResult
+ESExpTermType
+ESExpSymbol
 ESExpTerm
+ESExp
 e_sexp_new
 e_sexp_ref
 e_sexp_unref
@@ -391,7 +393,7 @@ e_util_utf8_strstrcase
 e_util_utf8_strstrcasedecomp
 e_util_utf8_strcasecmp
 e_util_utf8_remove_accents
-e_util_pthread_id
+e_util_gthread_id
 e_filename_make_safe
 e_utf8_strftime
 e_strftime
