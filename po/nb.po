@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.31.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-11 19:56+0200\n"
+"POT-Creation-Date: 2010-05-24 16:20+0200\n"
 "PO-Revision-Date: 2010-05-01 19:31+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
@@ -701,24 +701,6 @@ msgstr "Kan ikke lagre kalenderdata: Feil i URI."
 msgid "Cannot save calendar data"
 msgstr "Kan ikke lagre kalenderdata"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:321
-msgid "Could not create thread for getting deltas"
-msgstr "Kunne ikke opprette tråd for å få deltaer"
-
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:353
-#: ../calendar/backends/google/e-cal-backend-google.c:1120
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1086
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1384
-#: ../calendar/backends/http/e-cal-backend-http.c:678
-#: ../calendar/backends/weather/e-cal-backend-weather.c:492
-msgid "Could not create cache file"
-msgstr "Kunne ikke opprette bufferfil"
-
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:366
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1099
-msgid "Could not create thread for populating cache"
-msgstr "Kunne ikke opprette tråd for å populere buffer"
-
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1118
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2251
 msgid "Reply Requested: by "
@@ -756,6 +738,17 @@ msgstr "Ugyldig URI for tjener"
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:115
 msgid "Authentication failed"
 msgstr "Autentisering feilet"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1086
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1384
+#: ../calendar/backends/http/e-cal-backend-http.c:678
+#: ../calendar/backends/weather/e-cal-backend-weather.c:492
+msgid "Could not create cache file"
+msgstr "Kunne ikke opprette bufferfil"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1099
+msgid "Could not create thread for populating cache"
+msgstr "Kunne ikke opprette tråd for å populere buffer"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:335
 msgid "Redirected to Invalid URI"
@@ -1596,7 +1589,7 @@ msgstr "Flytter meldinger"
 msgid "Copying messages"
 msgstr "Kopierer meldinger"
 
-#: ../camel/camel-gpg-context.c:740
+#: ../camel/camel-gpg-context.c:758
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -1607,15 +1600,15 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/camel-gpg-context.c:757
+#: ../camel/camel-gpg-context.c:775
 msgid "Failed to parse gpg userid hint."
 msgstr "Feil under tolking av hint for gpg brukerid."
 
-#: ../camel/camel-gpg-context.c:782 ../camel/camel-gpg-context.c:797
+#: ../camel/camel-gpg-context.c:800 ../camel/camel-gpg-context.c:815
 msgid "Failed to parse gpg passphrase request."
 msgstr "Kunne ikke tolke forespørsel på gpg-passordfrase."
 
-#: ../camel/camel-gpg-context.c:817
+#: ../camel/camel-gpg-context.c:835
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -1624,7 +1617,7 @@ msgstr ""
 "Du trenger en PIN for å låse opp nøkkelen for\n"
 "ditt SmartCard: «%s»"
 
-#: ../camel/camel-gpg-context.c:821
+#: ../camel/camel-gpg-context.c:839
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -1633,88 +1626,88 @@ msgstr ""
 "Du trenger et passord for å låse opp nøkkelen for\n"
 "bruker «%s»"
 
-#: ../camel/camel-gpg-context.c:827
+#: ../camel/camel-gpg-context.c:845
 #, c-format
 msgid "Unexpected request from GnuPG for '%s'"
 msgstr "Uventet forespørsel fra GnuPG for «%s»"
 
-#: ../camel/camel-gpg-context.c:855 ../camel/camel-gpg-context.c:1107
+#: ../camel/camel-gpg-context.c:873 ../camel/camel-gpg-context.c:1156
 msgid "Canceled."
 msgstr "Avbrutt."
 
-#: ../camel/camel-gpg-context.c:870
+#: ../camel/camel-gpg-context.c:888
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "Feil ved åpning av hemmelig nøkkel: 3 ugyldige passord oppgitt."
 
-#: ../camel/camel-gpg-context.c:882
+#: ../camel/camel-gpg-context.c:900
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Uventet svar fra GnuPG: %s"
 
-#: ../camel/camel-gpg-context.c:982
+#: ../camel/camel-gpg-context.c:1031
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Kan ikke kryptere: Ingen gyldige mottakere spesifisert."
 
-#: ../camel/camel-gpg-context.c:1261 ../camel/camel-gpg-context.c:1400
-#: ../camel/camel-gpg-context.c:2022 ../camel/camel-gpg-context.c:2074
+#: ../camel/camel-gpg-context.c:1310 ../camel/camel-gpg-context.c:1449
+#: ../camel/camel-gpg-context.c:2071 ../camel/camel-gpg-context.c:2123
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Feil ved kjøring av gpg: %s"
 
-#: ../camel/camel-gpg-context.c:1366 ../camel/camel-smime-context.c:752
+#: ../camel/camel-gpg-context.c:1415 ../camel/camel-smime-context.c:820
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "Kan ikke generere signeringsdata: %s"
 
-#: ../camel/camel-gpg-context.c:1419 ../camel/camel-gpg-context.c:1665
-#: ../camel/camel-gpg-context.c:1684 ../camel/camel-gpg-context.c:1777
-#: ../camel/camel-gpg-context.c:1796 ../camel/camel-gpg-context.c:1920
-#: ../camel/camel-gpg-context.c:1938 ../camel/camel-gpg-context.c:2041
-#: ../camel/camel-gpg-context.c:2093
+#: ../camel/camel-gpg-context.c:1468 ../camel/camel-gpg-context.c:1714
+#: ../camel/camel-gpg-context.c:1733 ../camel/camel-gpg-context.c:1826
+#: ../camel/camel-gpg-context.c:1845 ../camel/camel-gpg-context.c:1969
+#: ../camel/camel-gpg-context.c:1987 ../camel/camel-gpg-context.c:2090
+#: ../camel/camel-gpg-context.c:2142
 msgid "Failed to execute gpg."
 msgstr "Feil ved kjøring av gpg."
 
-#: ../camel/camel-gpg-context.c:1559 ../camel/camel-gpg-context.c:1567
-#: ../camel/camel-gpg-context.c:1575 ../camel/camel-gpg-context.c:1592
-#: ../camel/camel-smime-context.c:874 ../camel/camel-smime-context.c:887
-#: ../camel/camel-smime-context.c:895
+#: ../camel/camel-gpg-context.c:1608 ../camel/camel-gpg-context.c:1616
+#: ../camel/camel-gpg-context.c:1624 ../camel/camel-gpg-context.c:1641
+#: ../camel/camel-smime-context.c:942 ../camel/camel-smime-context.c:955
+#: ../camel/camel-smime-context.c:963
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Kunne ikke verifisere meldingens signatur: Ugyldig meldingsformat"
 
-#: ../camel/camel-gpg-context.c:1633
+#: ../camel/camel-gpg-context.c:1682
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr ""
 "Kunne ikke verifisere meldingens signatur: kunne ikke opprette midlertidig "
 "fil: %s"
 
-#: ../camel/camel-gpg-context.c:1758
+#: ../camel/camel-gpg-context.c:1807
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "Kunne ikke generere krypteringsdata: %s"
 
-#: ../camel/camel-gpg-context.c:1814
+#: ../camel/camel-gpg-context.c:1863
 msgid "This is a digitally encrypted message part"
 msgstr "Dette er en digitalt kryptert meldingsdel"
 
-#: ../camel/camel-gpg-context.c:1870 ../camel/camel-gpg-context.c:1879
-#: ../camel/camel-gpg-context.c:1901
+#: ../camel/camel-gpg-context.c:1919 ../camel/camel-gpg-context.c:1928
+#: ../camel/camel-gpg-context.c:1950
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Kan ikke dekryptere e-post: Ikke korrekt e-postformat"
 
-#: ../camel/camel-gpg-context.c:1890
+#: ../camel/camel-gpg-context.c:1939
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Feil under dekryptering av MIME-del: protokollfeil"
 
-#: ../camel/camel-gpg-context.c:1974 ../camel/camel-smime-context.c:1167
+#: ../camel/camel-gpg-context.c:2023 ../camel/camel-smime-context.c:1235
 msgid "Encrypted content"
 msgstr "Kryptert innhold"
 
-#: ../camel/camel-gpg-context.c:1996
+#: ../camel/camel-gpg-context.c:2045
 msgid "Unable to parse message content"
 msgstr "Kunne ikke lese meldingsinnhold"
 
-#: ../camel/camel-gpg-context.c:2023 ../camel/camel-gpg-context.c:2075
+#: ../camel/camel-gpg-context.c:2072 ../camel/camel-gpg-context.c:2124
 #: ../camel/providers/smtp/camel-smtp-transport.c:115
 #: ../camel/providers/smtp/camel-smtp-transport.c:170
 msgid "Unknown"
@@ -2143,194 +2136,194 @@ msgstr ""
 msgid "Please enter the %s password for %s on host %s."
 msgstr "Vennligst oppgi %s-passord for %s på vert %s"
 
-#: ../camel/camel-smime-context.c:344 ../camel/camel-smime-context.c:969
+#: ../camel/camel-smime-context.c:346 ../camel/camel-smime-context.c:1037
 #, c-format
 msgid "Cannot find certificate for '%s'"
 msgstr "Kan ikke finne sertifikat for «%s»"
 
-#: ../camel/camel-smime-context.c:350
+#: ../camel/camel-smime-context.c:374
 msgid "Cannot create CMS message"
 msgstr "Kan ikke opprette CMS-melding"
 
-#: ../camel/camel-smime-context.c:355
+#: ../camel/camel-smime-context.c:379
 msgid "Cannot create CMS signed data"
 msgstr "Kan ikke opprette CMS-signerte data"
 
-#: ../camel/camel-smime-context.c:361
+#: ../camel/camel-smime-context.c:385
 msgid "Cannot attach CMS signed data"
 msgstr "Kan ikke legge ved CMS-signerte data"
 
-#: ../camel/camel-smime-context.c:368
+#: ../camel/camel-smime-context.c:392
 msgid "Cannot attach CMS data"
 msgstr "Kan ikke legge ved CMS-data"
 
-#: ../camel/camel-smime-context.c:374
+#: ../camel/camel-smime-context.c:398
 msgid "Cannot create CMS Signer information"
 msgstr "Kan ikke opprette informasjon om CMS-signerer"
 
-#: ../camel/camel-smime-context.c:380
+#: ../camel/camel-smime-context.c:404
 msgid "Cannot find certificate chain"
 msgstr "Kan ikke finne sertifikatkjede"
 
-#: ../camel/camel-smime-context.c:386
+#: ../camel/camel-smime-context.c:410
 msgid "Cannot add CMS Signing time"
 msgstr "Kan ikke legge til tid for CMS-signering"
 
-#: ../camel/camel-smime-context.c:410 ../camel/camel-smime-context.c:425
+#: ../camel/camel-smime-context.c:434 ../camel/camel-smime-context.c:449
 #, c-format
 msgid "Encryption certificate for '%s' does not exist"
 msgstr "Krypteringssertifikat for «%s» eksisterer ikke"
 
-#: ../camel/camel-smime-context.c:432
+#: ../camel/camel-smime-context.c:456
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
 msgstr "Kan ikke legge til SMIMEEncKeyPrefs-attributt"
 
-#: ../camel/camel-smime-context.c:437
+#: ../camel/camel-smime-context.c:461
 msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
 msgstr "Kan ikke legge til MS SMIMEEncKeyPrefs-attributt"
 
-#: ../camel/camel-smime-context.c:442
+#: ../camel/camel-smime-context.c:466
 msgid "Cannot add encryption certificate"
 msgstr "Kan ikke legge til sertifikat for kryptering"
 
-#: ../camel/camel-smime-context.c:448
+#: ../camel/camel-smime-context.c:472
 msgid "Cannot add CMS Signer information"
 msgstr "Kan ikke legge til informasjon om CMS-signerer"
 
-#: ../camel/camel-smime-context.c:480
+#: ../camel/camel-smime-context.c:504
 msgid "Unverified"
 msgstr "Uverifisert"
 
-#: ../camel/camel-smime-context.c:482
+#: ../camel/camel-smime-context.c:506
 msgid "Good signature"
 msgstr "Gyldig signatur"
 
-#: ../camel/camel-smime-context.c:484
+#: ../camel/camel-smime-context.c:508
 msgid "Bad signature"
 msgstr "Ugyldig signatur"
 
-#: ../camel/camel-smime-context.c:486
+#: ../camel/camel-smime-context.c:510
 msgid "Content tampered with or altered in transit"
 msgstr "Innholdet er endret under overføring"
 
-#: ../camel/camel-smime-context.c:488
+#: ../camel/camel-smime-context.c:512
 msgid "Signing certificate not found"
 msgstr "Sertifikat for signering ble ikke funnet"
 
-#: ../camel/camel-smime-context.c:490
+#: ../camel/camel-smime-context.c:514
 msgid "Signing certificate not trusted"
 msgstr "Stoler ikke på sertifikat for signering"
 
-#: ../camel/camel-smime-context.c:492
+#: ../camel/camel-smime-context.c:516
 msgid "Signature algorithm unknown"
 msgstr "Ukjent signeringsalgoritme"
 
-#: ../camel/camel-smime-context.c:494
+#: ../camel/camel-smime-context.c:518
 msgid "Signature algorithm unsupported"
 msgstr "Signaturalgoritmen er ikke støttet"
 
-#: ../camel/camel-smime-context.c:496
+#: ../camel/camel-smime-context.c:520
 msgid "Malformed signature"
 msgstr "Feilutformet signatur"
 
-#: ../camel/camel-smime-context.c:498
+#: ../camel/camel-smime-context.c:522
 msgid "Processing error"
 msgstr "Lesefeil"
 
-#: ../camel/camel-smime-context.c:540
+#: ../camel/camel-smime-context.c:564
 msgid "No signed data in signature"
 msgstr "Ingen signerte data i signatur"
 
-#: ../camel/camel-smime-context.c:545
+#: ../camel/camel-smime-context.c:569
 msgid "Digests missing from enveloped data"
 msgstr "Sammendrag av innpakkede data mangler"
 
-#: ../camel/camel-smime-context.c:558 ../camel/camel-smime-context.c:569
+#: ../camel/camel-smime-context.c:582 ../camel/camel-smime-context.c:593
 msgid "Cannot calculate digests"
 msgstr "Kan ikke beregne sammendrag"
 
-#: ../camel/camel-smime-context.c:576 ../camel/camel-smime-context.c:580
+#: ../camel/camel-smime-context.c:600 ../camel/camel-smime-context.c:604
 msgid "Cannot set message digests"
 msgstr "Kan ikke sette sammendrag for melding"
 
-#: ../camel/camel-smime-context.c:590 ../camel/camel-smime-context.c:595
+#: ../camel/camel-smime-context.c:614 ../camel/camel-smime-context.c:619
 msgid "Certificate import failed"
 msgstr "Import av sertifikat feilet"
 
-#: ../camel/camel-smime-context.c:605
+#: ../camel/camel-smime-context.c:629
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr ""
 "Sertifikatet er den eneste meldingen. Kan ikke verifisere sertifikatene"
 
-#: ../camel/camel-smime-context.c:608
+#: ../camel/camel-smime-context.c:632
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr ""
 "Sertifikatet er den eneste meldingen. Sertifikater importert og verifisert"
 
-#: ../camel/camel-smime-context.c:612
+#: ../camel/camel-smime-context.c:636
 msgid "Cannot find signature digests"
 msgstr "Kan ikke finne signatursammendrag"
 
-#: ../camel/camel-smime-context.c:628
+#: ../camel/camel-smime-context.c:652
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
 msgstr "Signeringspart: %s <%s>: %s\n"
 
-#: ../camel/camel-smime-context.c:763 ../camel/camel-smime-context.c:1041
+#: ../camel/camel-smime-context.c:831 ../camel/camel-smime-context.c:1109
 msgid "Cannot create encoder context"
 msgstr "Kan ikke opprette kontekst for koding"
 
-#: ../camel/camel-smime-context.c:769
+#: ../camel/camel-smime-context.c:837
 msgid "Failed to add data to CMS encoder"
 msgstr "Kunne ikke legge til data i CMS-koder"
 
-#: ../camel/camel-smime-context.c:774 ../camel/camel-smime-context.c:1058
+#: ../camel/camel-smime-context.c:842 ../camel/camel-smime-context.c:1126
 msgid "Failed to encode data"
 msgstr "Kunne ikke kode data"
 
-#: ../camel/camel-smime-context.c:909 ../camel/camel-smime-context.c:1146
+#: ../camel/camel-smime-context.c:977 ../camel/camel-smime-context.c:1214
 msgid "Decoder failed"
 msgstr "Dekoder feilet"
 
-#: ../camel/camel-smime-context.c:976
+#: ../camel/camel-smime-context.c:1044
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "Kan ikke finne felles krypteringsalgoritme"
 
-#: ../camel/camel-smime-context.c:984
+#: ../camel/camel-smime-context.c:1052
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "Kan ikke allokere plass for krypteringsnøkkel"
 
-#: ../camel/camel-smime-context.c:995
+#: ../camel/camel-smime-context.c:1063
 msgid "Cannot create CMS Message"
 msgstr "Kan ikke opprette CMS-melding"
 
-#: ../camel/camel-smime-context.c:1001
+#: ../camel/camel-smime-context.c:1069
 msgid "Cannot create CMS Enveloped data"
 msgstr "Kan ikke opprette CMS-innpakkede data"
 
-#: ../camel/camel-smime-context.c:1007
+#: ../camel/camel-smime-context.c:1075
 msgid "Cannot attach CMS Enveloped data"
 msgstr "Kan ikke legge ved CMS-innpakkede data"
 
-#: ../camel/camel-smime-context.c:1013
+#: ../camel/camel-smime-context.c:1081
 msgid "Cannot attach CMS data object"
 msgstr "Kan ikke legge ved dataobjekt for CMS"
 
-#: ../camel/camel-smime-context.c:1022
+#: ../camel/camel-smime-context.c:1090
 msgid "Cannot create CMS Recipient information"
 msgstr "Kan ikke opprette mottakerinformasjon for CMS"
 
-#: ../camel/camel-smime-context.c:1027
+#: ../camel/camel-smime-context.c:1095
 msgid "Cannot add CMS Recipient information"
 msgstr "Kan ikke legge til mottakerinformasjon for CMS"
 
-#: ../camel/camel-smime-context.c:1052
+#: ../camel/camel-smime-context.c:1120
 msgid "Failed to add data to encoder"
 msgstr "Klarte ikke å legge til data for koder"
 
-#: ../camel/camel-smime-context.c:1153
+#: ../camel/camel-smime-context.c:1221
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME dekryptering: Fant ikke kryptert innhold"
 
@@ -3337,9 +3330,9 @@ msgid "Checking for new messages"
 msgstr "Ser etter nye meldinger"
 
 #: ../camel/providers/local/camel-maildir-summary.c:729
-#: ../camel/providers/local/camel-mbox-summary.c:494
-#: ../camel/providers/local/camel-mbox-summary.c:696
-#: ../camel/providers/local/camel-mbox-summary.c:821
+#: ../camel/providers/local/camel-mbox-summary.c:462
+#: ../camel/providers/local/camel-mbox-summary.c:664
+#: ../camel/providers/local/camel-mbox-summary.c:789
 #: ../camel/providers/local/camel-spool-summary.c:129
 msgid "Storing folder"
 msgstr "Lagrer mappe"
@@ -3438,76 +3431,76 @@ msgstr "Kunne ikke endre navn på «%s»: «%s»: %s"
 msgid "Could not rename '%s' to %s: %s"
 msgstr "Kunne ikke endre navn på «%s» til %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:501
+#: ../camel/providers/local/camel-mbox-summary.c:469
 #, c-format
 msgid "Could not open folder: %s: %s"
 msgstr "Kunne ikke åpne mappe %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:552
+#: ../camel/providers/local/camel-mbox-summary.c:520
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
 msgstr "Fatal feil i lesing av postboksen nær posisjon %ld i mappe %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:632
+#: ../camel/providers/local/camel-mbox-summary.c:600
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "Kan ikke sjekke mappe: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:702
-#: ../camel/providers/local/camel-mbox-summary.c:827
+#: ../camel/providers/local/camel-mbox-summary.c:670
+#: ../camel/providers/local/camel-mbox-summary.c:795
 #: ../camel/providers/local/camel-spool-summary.c:135
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "Kunne ikke åpne fil %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:715
+#: ../camel/providers/local/camel-mbox-summary.c:683
 #: ../camel/providers/local/camel-spool-summary.c:149
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "Kan ikke åpne midlertidig postboks: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:729
-#: ../camel/providers/local/camel-mbox-summary.c:941
+#: ../camel/providers/local/camel-mbox-summary.c:697
+#: ../camel/providers/local/camel-mbox-summary.c:909
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Kunne ikke lukke kildemappe %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:739
+#: ../camel/providers/local/camel-mbox-summary.c:707
 #, c-format
 msgid "Could not close temporary folder: %s"
 msgstr "Kunne ikke lukke midlertidig mappe: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:755
+#: ../camel/providers/local/camel-mbox-summary.c:723
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "Kunne ikke endre navn på mappe: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:839
-#: ../camel/providers/local/camel-mbox-summary.c:1077
+#: ../camel/providers/local/camel-mbox-summary.c:807
+#: ../camel/providers/local/camel-mbox-summary.c:1045
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "Kunne ikke lagre mappe: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:879
-#: ../camel/providers/local/camel-mbox-summary.c:888
-#: ../camel/providers/local/camel-mbox-summary.c:1109
-#: ../camel/providers/local/camel-mbox-summary.c:1118
+#: ../camel/providers/local/camel-mbox-summary.c:847
+#: ../camel/providers/local/camel-mbox-summary.c:856
+#: ../camel/providers/local/camel-mbox-summary.c:1077
+#: ../camel/providers/local/camel-mbox-summary.c:1086
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "Sammendrag og mappe stemmer ikke overens selv etter synkronisering"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1037
+#: ../camel/providers/local/camel-mbox-summary.c:1005
 #: ../camel/providers/local/camel-spool-summary.c:326
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Ukjent feil: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1187
-#: ../camel/providers/local/camel-mbox-summary.c:1215
+#: ../camel/providers/local/camel-mbox-summary.c:1155
+#: ../camel/providers/local/camel-mbox-summary.c:1183
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "Skriving til midlertidig postboks feilet: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1205
+#: ../camel/providers/local/camel-mbox-summary.c:1173
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Skriving til midlertidig postboks feilet: %s: %s"
@@ -4690,3 +4683,6 @@ msgstr "Ingen svar fra tjener"
 #: ../servers/groupwise/e-gw-connection.c:239
 msgid "Bad parameter"
 msgstr "Ugyldig parameter"
+
+#~ msgid "Could not create thread for getting deltas"
+#~ msgstr "Kunne ikke opprette tråd for å få deltaer"
