@@ -24,7 +24,7 @@
 #include <string.h>
 #include <libxml/parser.h>
 #include <glib.h>
-#include <glib/gi18n.h>
+#include <glib/gi18n-lib.h>
 #include <gconf/gconf-client.h>
 #include "e-categories.h"
 
@@ -401,7 +401,7 @@ load_default_categories (void)
 		if (cat_info->icon_file != NULL)
 			icon_file = g_build_filename (E_DATA_SERVER_IMAGESDIR, cat_info->icon_file, NULL);
 		e_categories_add (
-			gettext (cat_info->category),
+			_ (cat_info->category),
 			NULL, icon_file, TRUE);
 		g_free (icon_file);
 		icon_file = NULL;
