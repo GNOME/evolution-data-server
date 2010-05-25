@@ -33,6 +33,7 @@
 #include <sys/types.h>
 
 #include "camel-file-utils.h"
+#include "camel-net-utils.h"
 #include "camel-operation.h"
 #include "camel-tcp-stream-raw.h"
 
@@ -396,6 +397,78 @@ socket_connect(struct addrinfo *h)
 		}
 #endif
 	}
+
+	return fd;
+}
+
+/* Returns the FD of a socket, already connected to and validated by the SOCKS4
+ * proxy that is configured in the stream.  Otherwise returns -1.  Assumes that
+ * a proxy *is* configured with camel_tcp_stream_set_socks_proxy().
+ */
+static gint
+connect_to_socks4_proxy (CamelTcpStreamRaw *raw, struct addrinfo *connect_addr)
+{
+	const gchar *host;
+	gint port;
+	struct addrinfo *ai, hints;
+	gchar serv[16];
+	gint fd;
+	gchar request[9];
+	struct sockaddr_in *sin;
+	guint32 network_address;
+	gchar reply[8];
+
+	camel_tcp_stream_peek_socks_proxy (CAMEL_TCP_STREAM (raw), &host, &port);
+
+	g_assert (host != NULL);
+
+	sprintf (serv, "%d", port);
+
+	memset (&hints, 0, sizeof (hints));
+	hints.ai_socktype = SOCK_STREAM;
+
+	ai = camel_getaddrinfo (host, serv, &hints, NULL);
+	if (!ai)
+		return -1;
+
+	fd = socket_connect (ai);
+
+	camel_freeaddrinfo (ai);
+
+	if (fd == -1)
+		goto error;
+
+	g_assert (connect_addr->ai_addr->sa_family == AF_INET); /* FIXME: what to do about IPv6?  Are we just screwed with SOCKS4? */
+	sin = (struct sockaddr_in *) connect_addr->ai_addr;
+	network_address = sin->sin_addr.s_addr;
+	network_address = htonl (network_address);
+
+	request[0] = 0x04;				/* SOCKS4 */
+	request[1] = 0x01;				/* CONNECT */
+	request[2] = sin->sin_port >> 8;		/* high byte of port */
+	request[3] = sin->sin_port & 0x00ff;		/* low byte of port */
+	memcpy (request + 4, &network_address, 4);	/* address in network byte order */
+	request[8] = 0x00;				/* terminator */
+
+	if (camel_write_socket (fd, request, sizeof (request)) != sizeof (request))
+		goto error;
+
+	if (camel_read_socket (fd, reply, sizeof (reply)) != sizeof (reply))
+		goto error;
+
+	if (!(reply[0] == 0		/* first byte of reply is 0 */
+	      && reply[1] != 90))	/* 90 means "request granted" */
+		goto error;
+
+	goto out;
+
+error:
+	if (fd != -1) {
+		SOCKET_CLOSE (fd);
+		fd = -1;
+	}
+
+out:
 
 	return fd;
 }
