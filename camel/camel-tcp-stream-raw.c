@@ -378,10 +378,8 @@ tcp_stream_raw_close (CamelStream *stream)
  * a proxy *is* configured with camel_tcp_stream_set_socks_proxy().
  */
 static gint
-connect_to_socks4_proxy (CamelTcpStreamRaw *raw, struct addrinfo *connect_addr)
+connect_to_socks4_proxy (const gchar *proxy_host, gint proxy_port, struct addrinfo *connect_addr)
 {
-	const gchar *host;
-	gint port;
 	struct addrinfo *ai, hints;
 	gchar serv[16];
 	gint fd;
@@ -390,16 +388,14 @@ connect_to_socks4_proxy (CamelTcpStreamRaw *raw, struct addrinfo *connect_addr)
 	guint32 network_address;
 	gchar reply[8];
 
-	camel_tcp_stream_peek_socks_proxy (CAMEL_TCP_STREAM (raw), &host, &port);
+	g_assert (proxy_host != NULL);
 
-	g_assert (host != NULL);
-
-	sprintf (serv, "%d", port);
+	sprintf (serv, "%d", proxy_port);
 
 	memset (&hints, 0, sizeof (hints));
 	hints.ai_socktype = SOCK_STREAM;
 
-	ai = camel_getaddrinfo (host, serv, &hints, NULL);
+	ai = camel_getaddrinfo (proxy_host, serv, &hints, NULL);
 	if (!ai)
 		return -1;
 
@@ -450,11 +446,19 @@ tcp_stream_raw_connect (CamelTcpStream *stream,
                         struct addrinfo *host)
 {
 	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
+	const gchar *proxy_host;
+	gint proxy_port;
 
 	g_return_val_if_fail (host != NULL, -1);
 
+	camel_tcp_stream_peek_socks_proxy (stream, &proxy_host, &proxy_port);
+
 	while (host) {
-		raw->sockfd = socket_connect(host);
+		if (proxy_host)
+			raw->sockfd = connect_to_socks4_proxy (proxy_host, proxy_port, host);
+		else
+			raw->sockfd = socket_connect (host);
+
 		if (raw->sockfd != -1)
 			return 0;
 
