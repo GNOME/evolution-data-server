@@ -977,9 +977,8 @@ sockaddr_to_praddr(struct sockaddr *s, gint len, PRNetAddr *addr)
 	return -1;
 }
 
-static gint
-tcp_socket_ssl_connect (CamelTcpStream *stream,
-                        struct addrinfo *host)
+static PRFileDesc *
+tcp_socket_ssl_connect (CamelTcpStream *stream, struct addrinfo *host, gboolean possibly_use_ssl)
 {
 	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
 	PRNetAddr netaddr;
@@ -987,16 +986,16 @@ tcp_socket_ssl_connect (CamelTcpStream *stream,
 
 	if (sockaddr_to_praddr(host->ai_addr, host->ai_addrlen, &netaddr) != 0) {
 		errno = EINVAL;
-		return -1;
+		return NULL;
 	}
 
 	fd = PR_OpenTCPSocket(netaddr.raw.family);
 	if (fd == NULL) {
 		set_errno (PR_GetError ());
-		return -1;
+		return NULL;
 	}
 
-	if (ssl->priv->ssl_mode) {
+	if (possibly_use_ssl && ssl->priv->ssl_mode) {
 		PRFileDesc *ssl_fd;
 
 		ssl_fd = enable_ssl (ssl, fd);
@@ -1009,7 +1008,7 @@ tcp_socket_ssl_connect (CamelTcpStream *stream,
 			PR_Close (fd);
 			errno = errnosave;
 
-			return -1;
+			return NULL;
 		}
 
 		fd = ssl_fd;
@@ -1059,27 +1058,28 @@ tcp_socket_ssl_connect (CamelTcpStream *stream,
 			errnosave = errno;
 			PR_Shutdown (fd, PR_SHUTDOWN_BOTH);
 			PR_Close (fd);
-			ssl->priv->sockfd = NULL;
 			errno = errnosave;
 
-			return -1;
+			return NULL;
 		}
 
 		errno = 0;
 	}
 
-	ssl->priv->sockfd = fd;
-
-	return 0;
+	return fd;
 }
 
 static gint
 tcp_stream_ssl_connect (CamelTcpStream *stream,
                         struct addrinfo *host)
 {
+	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
+
 	while (host) {
-		if (tcp_socket_ssl_connect (stream, host) == 0)
+		ssl->priv->sockfd = tcp_socket_ssl_connect (stream, host, TRUE);
+		if (ssl->priv->sockfd)
 			return 0;
+
 		host = host->ai_next;
 	}
 
