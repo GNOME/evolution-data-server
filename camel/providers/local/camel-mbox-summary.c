@@ -414,10 +414,13 @@ message_info_migrate (CamelFolderSummary *s, FILE *in)
 
 	mi = CAMEL_FOLDER_SUMMARY_CLASS (camel_mbox_summary_parent_class)->message_info_migrate (s, in);
 	if (mi) {
+		off_t ot = -1;
 		CamelMboxMessageInfo *mbi = (CamelMboxMessageInfo *)mi;
 
-		if (camel_file_util_decode_off_t(in, &mbi->frompos) == -1)
+		if (camel_file_util_decode_off_t(in, &ot) == -1)
 			goto error;
+
+		mbi->frompos = (goffset) ot;
 	}
 
 	return mi;
