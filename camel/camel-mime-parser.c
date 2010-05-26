@@ -256,6 +256,7 @@ camel_mime_parser_filter_add(CamelMimeParser *m, CamelMimeFilter *mf)
 	if (s->filterid == -1)
 		s->filterid++;
 	new->next = NULL;
+	g_object_ref (G_OBJECT (mf));
 
 	/* yes, this is correct, since 'next' is the first element of the struct */
 	f = (struct _header_scan_filter *)&s->filters;
