@@ -54,6 +54,7 @@
 
 #include "camel-certdb.h"
 #include "camel-file-utils.h"
+#include "camel-net-utils.h"
 #include "camel-operation.h"
 #include "camel-session.h"
 #include "camel-stream-fs.h"
@@ -1083,14 +1084,89 @@ tcp_socket_ssl_connect (CamelTcpStream *stream, struct addrinfo *host, gboolean 
 	return fd;
 }
 
+static PRFileDesc *
+connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint proxy_port, struct addrinfo *connect_addr)
+{
+	struct addrinfo *ai, hints;
+	gchar serv[16];
+	PRFileDesc *fd;
+	gchar request[9];
+	struct sockaddr_in *sin;
+	guint32 network_address;
+	gchar reply[8];
+
+	g_assert (proxy_host != NULL);
+
+	sprintf (serv, "%d", proxy_port);
+
+	memset (&hints, 0, sizeof (hints));
+	hints.ai_socktype = SOCK_STREAM;
+	
+	ai = camel_getaddrinfo (proxy_host, serv, &hints, NULL);
+	if (!ai)
+		return NULL;
+
+	fd = socket_connect (CAMEL_TCP_STREAM (ssl), ai, FALSE);
+
+	camel_freeaddrinfo (ai);
+
+	if (!fd)
+		goto error;
+
+	g_assert (connect_addr->ai_addr->sa_family == AF_INET); /* FIXME: what to do about IPv6?  Are we just screwed with SOCKS4? */
+	sin = (struct sockaddr_in *) connect_addr->ai_addr;
+	network_address = sin->sin_addr.s_addr;
+	network_address = htonl (network_address);
+
+	request[0] = 0x04;				/* SOCKS4 */
+	request[1] = 0x01;				/* CONNECT */
+	request[2] = sin->sin_port >> 8;		/* high byte of port */
+	request[3] = sin->sin_port & 0x00ff;		/* low byte of port */
+	memcpy (request + 4, &network_address, 4);	/* address in network byte order */
+	request[8] = 0x00;				/* terminator */
+
+	if (write_to_prfd (fd, request, sizeof (request)) != sizeof (request))
+		goto error;
+
+	if (read_from_prfd (fd, reply, sizeof (reply)) != sizeof (reply))
+		goto error;
+
+	if (!(reply[0] == 0		/* first byte of reply is 0 */
+	      && reply[1] != 90))	/* 90 means "request granted" */
+		goto error;
+
+	/* FMQ: turn on SSL on this fd */
+
+	goto out;
+
+error:
+	if (fd) {
+		PR_Shutdown (fd, PR_SHUTDOWN_BOTH);
+		PR_Close (fd);
+		fd = NULL;
+	}
+
+out:
+
+	return fd;
+}
+
 static gint
 tcp_stream_ssl_connect (CamelTcpStream *stream,
                         struct addrinfo *host)
 {
 	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
+	const gchar *proxy_host;
+	gint proxy_port;
+
+	camel_tcp_stream_peek_socks_proxy (stream, &proxy_host, &proxy_port);
 
 	while (host) {
-		ssl->priv->sockfd = tcp_socket_ssl_connect (stream, host, TRUE);
+		if (proxy_host)
+			ssl->priv->sockfd = connect_to_socks4_proxy (ssl, proxy_host, proxy_port, host);
+		else
+			ssl->priv->sockfd = tcp_socket_ssl_connect (stream, host, TRUE);
+
 		if (ssl->priv->sockfd)
 			return 0;
 
