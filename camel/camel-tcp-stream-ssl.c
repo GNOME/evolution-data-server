@@ -264,11 +264,8 @@ tcp_stream_ssl_read (CamelStream *stream,
 }
 
 static gssize
-tcp_stream_ssl_write (CamelStream *stream,
-                      const gchar *buffer,
-                      gsize n)
+write_to_prfd (PRFileDesc *fd, const gchar *buffer, gsize n)
 {
-	CamelTcpStreamSSL *tcp_stream_ssl = CAMEL_TCP_STREAM_SSL (stream);
 	gssize w, written = 0;
 	PRFileDesc *cancel_fd;
 
@@ -281,7 +278,7 @@ tcp_stream_ssl_write (CamelStream *stream,
 	if (cancel_fd == NULL) {
 		do {
 			do {
-				w = PR_Write (tcp_stream_ssl->priv->sockfd, buffer + written, n - written);
+				w = PR_Write (fd, buffer + written, n - written);
 				if (w == -1)
 					set_errno (PR_GetError ());
 			} while (w == -1 && (PR_GetError () == PR_PENDING_INTERRUPT_ERROR ||
@@ -299,13 +296,13 @@ tcp_stream_ssl_write (CamelStream *stream,
 
 		/* get O_NONBLOCK options */
 		sockopts.option = PR_SockOpt_Nonblocking;
-		PR_GetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
+		PR_GetSocketOption (fd, &sockopts);
 		sockopts.option = PR_SockOpt_Nonblocking;
 		nonblock = sockopts.value.non_blocking;
 		sockopts.value.non_blocking = TRUE;
-		PR_SetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
+		PR_SetSocketOption (fd, &sockopts);
 
-		pollfds[0].fd = tcp_stream_ssl->priv->sockfd;
+		pollfds[0].fd = fd;
 		pollfds[0].in_flags = PR_POLL_WRITE;
 		pollfds[1].fd = cancel_fd;
 		pollfds[1].in_flags = PR_POLL_READ;
@@ -332,7 +329,7 @@ tcp_stream_ssl_write (CamelStream *stream,
 				errno = EINTR;
 			} else {
 				do {
-					w = PR_Write (tcp_stream_ssl->priv->sockfd, buffer + written, n - written);
+					w = PR_Write (fd, buffer + written, n - written);
 					if (w == -1)
 						set_errno (PR_GetError ());
 				} while (w == -1 && PR_GetError () == PR_PENDING_INTERRUPT_ERROR);
@@ -350,7 +347,7 @@ tcp_stream_ssl_write (CamelStream *stream,
 		error = errno;
 		sockopts.option = PR_SockOpt_Nonblocking;
 		sockopts.value.non_blocking = nonblock;
-		PR_SetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
+		PR_SetSocketOption (fd, &sockopts);
 		errno = error;
 	}
 
@@ -358,6 +355,16 @@ tcp_stream_ssl_write (CamelStream *stream,
 		return -1;
 
 	return written;
+}
+
+static gssize
+tcp_stream_ssl_write (CamelStream *stream,
+                      const gchar *buffer,
+                      gsize n)
+{
+	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
+
+	return write_to_prfd (ssl->priv->sockfd, buffer, n);
 }
 
 static gint
