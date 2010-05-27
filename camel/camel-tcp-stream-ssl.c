@@ -1093,6 +1093,27 @@ enable_ssl (CamelTcpStreamSSL *ssl, PRFileDesc *fd)
 	return ssl_fd;
 }
 
+static PRFileDesc *
+enable_ssl_or_close_fd (CamelTcpStreamSSL *ssl, PRFileDesc *fd)
+{
+	PRFileDesc *ssl_fd;
+
+	ssl_fd = enable_ssl (ssl, fd);
+	if (ssl_fd == NULL) {
+		gint errnosave;
+
+		set_errno (PR_GetError ());
+		errnosave = errno;
+		PR_Shutdown (fd, PR_SHUTDOWN_BOTH);
+		PR_Close (fd);
+		errno = errnosave;
+
+		return NULL;
+	}
+
+	return ssl_fd;
+}
+
 static gint
 sockaddr_to_praddr(struct sockaddr *s, gint len, PRNetAddr *addr)
 {
@@ -1152,22 +1173,9 @@ socket_connect(CamelTcpStream *stream, struct addrinfo *host, gboolean possibly_
 	}
 
 	if (possibly_use_ssl && ssl->priv->ssl_mode) {
-		PRFileDesc *ssl_fd;
-
-		ssl_fd = enable_ssl (ssl, fd);
-		if (ssl_fd == NULL) {
-			gint errnosave;
-
-			set_errno (PR_GetError ());
-			errnosave = errno;
-			PR_Shutdown (fd, PR_SHUTDOWN_BOTH);
-			PR_Close (fd);
-			errno = errnosave;
-
+		fd = enable_ssl_or_close_fd (ssl, fd);
+		if (!fd)
 			return NULL;
-		}
-
-		fd = ssl_fd;
 	}
 
 	cancel_fd = camel_operation_cancel_prfd(NULL);
@@ -1276,7 +1284,13 @@ connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint p
 	      && reply[1] != 90))	/* 90 means "request granted" */
 		goto error;
 
-	/* FMQ: turn on SSL on this fd */
+	/* We are now proxied we are ready to send "normal" data through the socket */
+
+	if (ssl->priv->ssl_mode) {
+		fd = enable_ssl_or_close_fd (ssl, fd);
+		if (!fd)
+			goto error;
+	}
 
 	goto out;
 
