@@ -179,11 +179,8 @@ tcp_stream_ssl_finalize (GObject *object)
 }
 
 static gssize
-tcp_stream_ssl_read (CamelStream *stream,
-                     gchar *buffer,
-                     gsize n)
+read_from_prfd (PRFileDesc *fd, gchar *buffer, gsize n)
 {
-	CamelTcpStreamSSL *tcp_stream_ssl = CAMEL_TCP_STREAM_SSL (stream);
 	PRFileDesc *cancel_fd;
 	gssize nread;
 
@@ -195,7 +192,7 @@ tcp_stream_ssl_read (CamelStream *stream,
 	cancel_fd = camel_operation_cancel_prfd (NULL);
 	if (cancel_fd == NULL) {
 		do {
-			nread = PR_Read (tcp_stream_ssl->priv->sockfd, buffer, n);
+			nread = PR_Read (fd, buffer, n);
 			if (nread == -1)
 				set_errno (PR_GetError ());
 		} while (nread == -1 && (PR_GetError () == PR_PENDING_INTERRUPT_ERROR ||
@@ -209,13 +206,13 @@ tcp_stream_ssl_read (CamelStream *stream,
 
 		/* get O_NONBLOCK options */
 		sockopts.option = PR_SockOpt_Nonblocking;
-		PR_GetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
+		PR_GetSocketOption (fd, &sockopts);
 		sockopts.option = PR_SockOpt_Nonblocking;
 		nonblock = sockopts.value.non_blocking;
 		sockopts.value.non_blocking = TRUE;
-		PR_SetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
+		PR_SetSocketOption (fd, &sockopts);
 
-		pollfds[0].fd = tcp_stream_ssl->priv->sockfd;
+		pollfds[0].fd = fd
 		pollfds[0].in_flags = PR_POLL_READ;
 		pollfds[1].fd = cancel_fd;
 		pollfds[1].in_flags = PR_POLL_READ;
@@ -242,7 +239,7 @@ tcp_stream_ssl_read (CamelStream *stream,
 				goto failed;
 			} else {
 				do {
-					nread = PR_Read (tcp_stream_ssl->priv->sockfd, buffer, n);
+					nread = PR_Read (fd, buffer, n);
 					if (nread == -1)
 						set_errno (PR_GetError ());
 				} while (nread == -1 && PR_GetError () == PR_PENDING_INTERRUPT_ERROR);
@@ -256,11 +253,21 @@ tcp_stream_ssl_read (CamelStream *stream,
 		error = errno;
 		sockopts.option = PR_SockOpt_Nonblocking;
 		sockopts.value.non_blocking = nonblock;
-		PR_SetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
+		PR_SetSocketOption (fd, &sockopts);
 		errno = error;
 	}
 
 	return nread;
+}
+
+static gssize
+tcp_stream_ssl_read (CamelStream *stream,
+                     gchar *buffer,
+                     gsize n)
+{
+	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
+
+	return read_from_prfd (ssl->priv->sockfd, buffer, n);
 }
 
 static gssize
