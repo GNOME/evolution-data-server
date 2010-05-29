@@ -218,24 +218,6 @@ CamelFolderSummary
 @uid: 
 
 
-<!-- ##### FUNCTION camel_folder_summary_load ##### -->
-<para>
-
-</para>
-
-@summary: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_folder_summary_save ##### -->
-<para>
-
-</para>
-
-@summary: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_folder_summary_save_to_db ##### -->
 <para>
 

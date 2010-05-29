@@ -4579,6 +4579,14 @@ streams
 @at_least: 
 @ex: 
 
+<!-- ##### FUNCTION camel_folder_summary_load ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_folder_summary_reload_from_db ##### -->
 <para>
 
@@ -4586,6 +4594,14 @@ streams
 
 @s: 
 @ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_folder_summary_save ##### -->
+<para>
+
+</para>
+
+@summary: 
 @Returns: 
 
 <!-- ##### FUNCTION camel_groupwise_journal_append ##### -->
