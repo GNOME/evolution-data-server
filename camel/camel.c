@@ -74,7 +74,9 @@ camel_init (const gchar *configdir, gboolean nss_init)
 
 #ifdef HAVE_NSS
 	if (nss_init) {
-		gchar *nss_configdir;
+		gchar *nss_configdir = NULL;
+		gchar *nss_sql_configdir = NULL;
+		SECStatus status;
 		PRUint16 indx;
 
 		if (nss_initlock == NULL) {
@@ -83,26 +85,62 @@ camel_init (const gchar *configdir, gboolean nss_init)
 		}
 		PR_Lock (nss_initlock);
 
+		if (NSS_IsInitialized ())
+			goto skip_nss_init;
+
 #ifndef G_OS_WIN32
 		nss_configdir = g_strdup (configdir);
 #else
 		nss_configdir = g_win32_locale_filename_from_utf8 (configdir);
 #endif
 
-		if (!NSS_IsInitialized()) {
-			nss_initialized = 1;
+		/* XXX Currently we store the new shared NSS database in the
+		 *     same location we kept the original NSS databases in,
+		 *     but at least we have safe shared access between Camel
+		 *     and Evolution's S/MIME.  Once freedesktop.org comes
+		 *     up with a user-wide shared location, we should use
+		 *     that instead. */
+		nss_sql_configdir = g_strconcat ("sql:", nss_configdir, NULL);
 
-			if (NSS_InitReadWrite (nss_configdir) == SECFailure) {
-				/* fall back on using volatile dbs? */
-				if (NSS_NoDB_Init (nss_configdir) == SECFailure) {
-					g_free (nss_configdir);
-					g_warning ("Failed to initialize NSS");
-					nss_initialized = 0;
-					PR_Unlock(nss_initlock);
-					return -1;
-				}
+#if NSS_VMAJOR > 3 || (NSS_VMAJOR == 3 && NSS_VMINOR >= 12)
+		/* See: https://wiki.mozilla.org/NSS_Shared_DB,
+		 * particularly "Mode 3A".  Note that the target
+		 * directory MUST EXIST. */
+		status = NSS_InitWithMerge (
+			nss_sql_configdir,	/* dest dir */
+			"", "",			/* new DB name prefixes */
+			SECMOD_DB,		/* secmod name */
+			nss_configdir,		/* old DB dir */
+			"", "",			/* old DB name prefixes */
+			nss_configdir,		/* unique ID for old DB */
+			"Evolution S/MIME",	/* UI name for old DB */
+			0);			/* flags */
+
+		if (status == SECFailure) {
+			g_free (nss_configdir);
+			g_free (nss_sql_configdir);
+			g_warning ("Failed to initialize NSS");
+			PR_Unlock (nss_initlock);
+			return -1;
+		}
+#else
+		/* Support old versions of libnss, pre-sqlite support. */
+		status = NSS_InitReadWrite (nss_configdir);
+		if (status == SECFailure) {
+			/* Fall back to using volatile dbs? */
+			status = NSS_NoDB_Init (nss_config);
+			if (status == SECFailure) {
+				g_free (nss_configdir);
+				g_free (nss_sql_configdir);
+				g_warning ("Failed to initialize NSS");
+				PR_Unlock (nss_initlock);
+				return -1;
 			}
 		}
+#endif
+
+		nss_initialized = TRUE;
+skip_nss_init:
 
 		NSS_SetDomesticPolicy ();
 
@@ -120,6 +158,7 @@ camel_init (const gchar *configdir, gboolean nss_init)
 		SSL_OptionSetDefault (SSL_V2_COMPATIBLE_HELLO, PR_TRUE /* maybe? */);
 
 		g_free (nss_configdir);
+		g_free (nss_sql_configdir);
 	}
 #endif /* HAVE_NSS */
 
