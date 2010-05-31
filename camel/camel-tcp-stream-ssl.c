@@ -1241,7 +1241,6 @@ connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint p
 	PRFileDesc *fd;
 	gchar request[9];
 	struct sockaddr_in *sin;
-	guint32 network_address;
 	gchar reply[8];
 
 	g_assert (proxy_host != NULL);
@@ -1264,14 +1263,11 @@ connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint p
 
 	g_assert (connect_addr->ai_addr->sa_family == AF_INET); /* FIXME: what to do about IPv6?  Are we just screwed with SOCKS4? */
 	sin = (struct sockaddr_in *) connect_addr->ai_addr;
-	network_address = sin->sin_addr.s_addr;
-	network_address = htonl (network_address);
 
 	request[0] = 0x04;				/* SOCKS4 */
 	request[1] = 0x01;				/* CONNECT */
-	request[2] = sin->sin_port >> 8;		/* high byte of port */
-	request[3] = sin->sin_port & 0x00ff;		/* low byte of port */
-	memcpy (request + 4, &network_address, 4);	/* address in network byte order */
+	memcpy (request + 2, &sin->sin_port, 2);	/* port in network byte order */
+	memcpy (request + 4, &sin->sin_addr.s_addr, 4);	/* address in network byte order */
 	request[8] = 0x00;				/* terminator */
 
 	if (write_to_prfd (fd, request, sizeof (request)) != sizeof (request))
