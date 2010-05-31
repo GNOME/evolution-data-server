@@ -94,6 +94,10 @@ camel_init (const gchar *configdir, gboolean nss_init)
 		nss_configdir = g_win32_locale_filename_from_utf8 (configdir);
 #endif
 
+		/* Create the configdir if it does not exist
+		 * This prevents camel from bailing out on first run */
+		g_mkdir_with_parents (configdir, 0700);
+
 		/* XXX Currently we store the new shared NSS database in the
 		 *     same location we kept the original NSS databases in,
 		 *     but at least we have safe shared access between Camel
