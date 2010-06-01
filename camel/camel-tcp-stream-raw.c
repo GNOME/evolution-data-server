@@ -421,7 +421,7 @@ connect_to_socks4_proxy (const gchar *proxy_host, gint proxy_port, struct addrin
 		goto error;
 
 	if (!(reply[0] == 0		/* first byte of reply is 0 */
-	      && reply[1] != 90))	/* 90 means "request granted" */
+	      && reply[1] == 90))	/* 90 means "request granted" */
 		goto error;
 
 	goto out;

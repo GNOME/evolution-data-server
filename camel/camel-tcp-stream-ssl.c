@@ -1136,7 +1136,7 @@ connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint p
 		goto error;
 
 	if (!(reply[0] == 0		/* first byte of reply is 0 */
-	      && reply[1] != 90))	/* 90 means "request granted" */
+	      && reply[1] == 90))	/* 90 means "request granted" */
 		goto error;
 
 	/* We are now proxied we are ready to send "normal" data through the socket */
