@@ -1101,6 +1101,7 @@ connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint p
 	gchar request[9];
 	struct sockaddr_in *sin;
 	gchar reply[8];
+	gint save_errno;
 
 	g_assert (proxy_host != NULL);
 
@@ -1109,16 +1110,21 @@ connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint p
 	memset (&hints, 0, sizeof (hints));
 	hints.ai_socktype = SOCK_STREAM;
 	
-	ai = camel_getaddrinfo (proxy_host, serv, &hints, NULL);
-	if (!ai)
+	ai = camel_getaddrinfo (proxy_host, serv, &hints, NULL);  /* NULL-CamelException */
+	if (!ai) {
+		errno = EHOSTUNREACH; /* FIXME: this is not an accurate error; we should translate the CamelException to an errno */
 		return NULL;
+	}
 
 	fd = socket_connect (CAMEL_TCP_STREAM (ssl), ai, FALSE);
+	save_errno = errno;
 
 	camel_freeaddrinfo (ai);
 
-	if (!fd)
+	if (!fd) {
+		errno = save_errno;
 		goto error;
+	}
 
 	g_assert (connect_addr->ai_addr->sa_family == AF_INET); /* FIXME: what to do about IPv6?  Are we just screwed with SOCKS4? */
 	sin = (struct sockaddr_in *) connect_addr->ai_addr;
@@ -1136,8 +1142,10 @@ connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint p
 		goto error;
 
 	if (!(reply[0] == 0		/* first byte of reply is 0 */
-	      && reply[1] == 90))	/* 90 means "request granted" */
+	      && reply[1] == 90)) {	/* 90 means "request granted" */
+		errno = ECONNREFUSED;
 		goto error;
+	}
 
 	/* We are now proxied we are ready to send "normal" data through the socket */
 
@@ -1151,8 +1159,10 @@ connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint p
 
 error:
 	if (fd) {
+		save_errno = errno;
 		PR_Shutdown (fd, PR_SHUTDOWN_BOTH);
 		PR_Close (fd);
+		errno = save_errno;
 		fd = NULL;
 	}
 
