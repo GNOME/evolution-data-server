@@ -199,8 +199,14 @@ camel_tcp_stream_set_socks_proxy (CamelTcpStream *stream, const gchar *socks_hos
 	priv = stream->priv;
 
 	g_free (priv->socks_host);
-	priv->socks_host = g_strdup (socks_host);
-	priv->socks_port = socks_port;
+
+	if (socks_host && socks_host[0] != '\0') {
+		priv->socks_host = g_strdup (socks_host);
+		priv->socks_port = socks_port;
+	} else {
+		priv->socks_host = NULL;
+		priv->socks_port = 0;
+	}
 }
 
 void

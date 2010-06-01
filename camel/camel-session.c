@@ -167,8 +167,13 @@ camel_session_set_socks_proxy (CamelSession *session, const gchar *socks_host, i
 	if (session->priv->socks_proxy_host)
 		g_free (session->priv->socks_proxy_host);
 
-	session->priv->socks_proxy_host = g_strdup (socks_host);
-	session->priv->socks_proxy_port = socks_port;
+	if (socks_host && socks_host[0] != '\0') {
+		session->priv->socks_proxy_host = g_strdup (socks_host);
+		session->priv->socks_proxy_port = socks_port;
+	} else {
+		session->priv->socks_proxy_host = NULL;
+		session->priv->socks_proxy_port = 0;
+	}
 }
 
 void
