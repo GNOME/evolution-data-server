@@ -1110,6 +1110,22 @@ tcp_socket_ssl_connect (CamelTcpStream *stream, struct addrinfo *host, gboolean 
 	return fd;
 }
 
+static gboolean
+rehandshake_ssl (PRFileDesc *fd)
+{
+	if (SSL_ResetHandshake (fd, FALSE) == SECFailure) {
+		set_errno (PR_GetError ());
+		return FALSE;
+	}
+
+	if (SSL_ForceHandshake (fd) == SECFailure) {
+		set_errno (PR_GetError ());
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 static PRFileDesc *
 connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint proxy_port, struct addrinfo *connect_addr)
 {
@@ -1187,16 +1203,8 @@ connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint p
 			d (g_print ("  could not enable SSL\n"));
 			goto error;
 		} else {
-			d (g_print ("  SSL_ResetHandshake\n"));
-			if (SSL_ResetHandshake (fd, FALSE) == SECFailure) {
-				set_errno (PR_GetError ());
-				d (g_print ("  failed\n"));
-				goto error;
-			}
-
-			d (g_print ("  SSL_ForceHandshake\n"));
-			if (SSL_ForceHandshake (fd) == SECFailure) {
-				set_errno (PR_GetError ());
+			d (g_print ("  re-handshaking SSL\n"));
+			if (!rehandshake_ssl (fd)) {
 				d (g_print ("  failed\n"));
 				goto error;
 			}
@@ -1475,15 +1483,8 @@ camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl)
 
 		ssl->priv->sockfd = fd;
 
-		if (SSL_ResetHandshake (fd, FALSE) == SECFailure) {
-			set_errno (PR_GetError ());
+		if (!rehandshake_ssl (fd))
 			return -1;
-		}
-
-		if (SSL_ForceHandshake (fd) == SECFailure) {
-			set_errno (PR_GetError ());
-			return -1;
-		}
 	}
 
 	ssl->priv->ssl_mode = TRUE;
