@@ -65,6 +65,8 @@
 #include <ws2tcpip.h>
 #endif
 
+#define d(x)
+
 #define IO_TIMEOUT (PR_TicksPerSecond() * 4 * 60)
 #define CONNECT_TIMEOUT (PR_TicksPerSecond () * 4 * 60)
 
@@ -1105,24 +1107,30 @@ connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint p
 
 	g_assert (proxy_host != NULL);
 
+	d (g_print ("SSL: connecting to SOCKS4 proxy %s:%d {\n  resolving proxy host\n", proxy_host, proxy_port));
+
 	sprintf (serv, "%d", proxy_port);
 
 	memset (&hints, 0, sizeof (hints));
 	hints.ai_socktype = SOCK_STREAM;
-	
+
 	ai = camel_getaddrinfo (proxy_host, serv, &hints, NULL);  /* NULL-CamelException */
 	if (!ai) {
 		errno = EHOSTUNREACH; /* FIXME: this is not an accurate error; we should translate the CamelException to an errno */
+		d (g_print ("  camel_getaddrinfo() for the proxy failed\n}\n"));
 		return NULL;
 	}
 
-	fd = socket_connect (CAMEL_TCP_STREAM (ssl), ai, FALSE);
+	d (g_print ("  creating socket and connecting\n"));
+
+	fd = tcp_socket_ssl_connect (CAMEL_TCP_STREAM (ssl), ai, FALSE);
 	save_errno = errno;
 
 	camel_freeaddrinfo (ai);
 
 	if (!fd) {
 		errno = save_errno;
+		d (g_print ("  could not connect: %d\n", errno));
 		goto error;
 	}
 
@@ -1135,25 +1143,37 @@ connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint p
 	memcpy (request + 4, &sin->sin_addr.s_addr, 4);	/* address in network byte order */
 	request[8] = 0x00;				/* terminator */
 
-	if (write_to_prfd (fd, request, sizeof (request)) != sizeof (request))
+	d (g_print ("  writing SOCKS4 request to connect to actual host\n"));
+	if (write_to_prfd (fd, request, sizeof (request)) != sizeof (request)) {
+		d (g_print ("  failed: %d\n", errno));
 		goto error;
+	}
 
-	if (read_from_prfd (fd, reply, sizeof (reply)) != sizeof (reply))
+	d (g_print ("  reading SOCKS4 reply\n"));
+	if (read_from_prfd (fd, reply, sizeof (reply)) != sizeof (reply)) {
+		d (g_print ("  failed: %d\n", errno));
 		goto error;
+	}
 
 	if (!(reply[0] == 0		/* first byte of reply is 0 */
 	      && reply[1] == 90)) {	/* 90 means "request granted" */
 		errno = ECONNREFUSED;
+		d (g_print ("  proxy replied with code %d\n", reply[1]));
 		goto error;
 	}
 
 	/* We are now proxied we are ready to send "normal" data through the socket */
 
 	if (ssl->priv->ssl_mode) {
+		d (g_print ("  enabling SSL\n"));
 		fd = enable_ssl_or_close_fd (ssl, fd);
-		if (!fd)
+		if (!fd) {
+			d (g_print ("  could not enable SSL\n"));
 			goto error;
+		}
 	}
+
+	d (g_print ("  success\n"));
 
 	goto out;
 
@@ -1166,7 +1186,11 @@ error:
 		fd = NULL;
 	}
 
+	d (g_print ("  returning errno %d\n", errno));
+
 out:
+
+	d (g_print ("}\n"));
 
 	return fd;
 }
