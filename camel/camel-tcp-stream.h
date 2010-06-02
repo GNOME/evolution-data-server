@@ -116,6 +116,51 @@ gint         camel_tcp_stream_connect    (CamelTcpStream *stream, struct addrinf
 gint         camel_tcp_stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data);
 gint         camel_tcp_stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data);
 
+/* Note about SOCKS proxies:
+ *
+ * As of 2010/Jun/02, Camel supports SOCKS4 proxies, but not SOCKS4a nor SOCKS5.
+ * This comment leaves the implementation of those proxy types as an exercise
+ * for the reader, with some hints:
+ *
+ * The way SOCKS proxies work right now is that clients of Camel call
+ * camel_session_set_socks_proxy().  Later, users of TCP streams like
+ * the POP/IMAP providers will look at the CamelSession's proxy, and
+ * set it on the CamelTcpStream subclasses that they instantiate.
+ *
+ * Both SOCKS4a and SOCKS5 let you resolve hostnames on the proxy; while
+ * SOCKS5 also has extra features like passing a username/password to the
+ * proxy.  However, Camel's current API does not let us implement those
+ * features.
+ *
+ * You use a CamelTCPStream by essentially doing this:
+ *
+ *   struct addrinfo *ai;
+ *   CamelTcpStream *stream;
+ *   gint result;
+ *
+ *   stream = camel_tcp_stream_{raw/ssl}_new (session, ...);
+ *   camel_tcp_stream_set_socks_proxy (stream, ...);
+ *
+ *   ai = camel_getaddrinfo (host, port, ...);
+ *   result = camel_tcp_stream_connect (stream, ai);
+ *
+ * Since you pass a struct addrinfo directly to camel_tcp_stream_connect(), this means
+ * that the stream expects your hostname to be resolved already.  However, SOCKS4a/SOCKS5
+ * proxies would rather resolve the hostname themselves.
+ *
+ * The solution would be to make camel_tcp_stream_connect() a higher-level API, more or
+ * less like this:
+ *
+ *   gint camel_tcp_stream_connect (stream, host, port);
+ *
+ * Internally it would do camel_getaddrinfo() for the case without SOCKS proxies,
+ * and otherwise have the proxy itself resolve the host.
+ *
+ * Fortunately, it seems that the only callers of CamelTcpStream are *inside* Camel;
+ * Evolution doesn't use this API directly.  So all the changes required to
+ * support SOCKS4a/SOCKS5 proxies should be well-contained within Camel,
+ * with no extra changes required in Evolution.
+ */
 void camel_tcp_stream_set_socks_proxy (CamelTcpStream *stream, const gchar *socks_host, gint socks_port);
 void camel_tcp_stream_peek_socks_proxy (CamelTcpStream *stream, const gchar **socks_host_ret, gint *socks_port_ret);
 
