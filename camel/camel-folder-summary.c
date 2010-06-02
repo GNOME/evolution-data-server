@@ -1811,8 +1811,11 @@ camel_folder_summary_prepare_fetch_all (CamelFolderSummary *s, CamelException *e
 	loaded = cfs_cache_size (s);
 	known = camel_folder_summary_count (s);
 
-	if (known - loaded > 50)
+	if (known - loaded > 50) {
+		camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 		cfs_reload_from_db (s, ex);
+		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	}
 
 	/* update also cache load time, even when not loaded anything */
 	s->cache_load_time = time (NULL);
