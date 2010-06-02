@@ -269,8 +269,15 @@ tcp_stream_ssl_read (CamelStream *stream,
                      gsize n)
 {
 	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
+	gssize result;
 
-	return read_from_prfd (ssl->priv->sockfd, buffer, n);
+	d (g_print ("SSL stream %p: reading %" G_GSIZE_FORMAT " bytes...\n", ssl, n));
+
+	result = read_from_prfd (ssl->priv->sockfd, buffer, n);
+
+	d (g_print ("SSL stream %p: read %" G_GSSIZE_FORMAT " bytes, errno = %d\n", ssl, result, result == -1 ? errno : 0));
+
+	return result;
 }
 
 static gssize
@@ -373,8 +380,15 @@ tcp_stream_ssl_write (CamelStream *stream,
                       gsize n)
 {
 	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
+	gssize result;
 
-	return write_to_prfd (ssl->priv->sockfd, buffer, n);
+	d (g_print ("SSL stream %p: writing %" G_GSIZE_FORMAT " bytes...\n", ssl, n));
+
+	result = write_to_prfd (ssl->priv->sockfd, buffer, n);
+
+	d (g_print ("SSL stream %p: wrote %" G_GSSIZE_FORMAT " bytes, errno = %d\n", ssl, result, result == -1 ? errno : 0));
+
+	return result;
 }
 
 static gint
@@ -387,6 +401,8 @@ tcp_stream_ssl_flush (CamelStream *stream)
 static gint
 tcp_stream_ssl_close (CamelStream *stream)
 {
+	d (g_print ("SSL stream %p: closing\n", stream));
+
 	if (((CamelTcpStreamSSL *)stream)->priv->sockfd == NULL) {
 		errno = EINVAL;
 		return -1;
@@ -1107,7 +1123,7 @@ connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint p
 
 	g_assert (proxy_host != NULL);
 
-	d (g_print ("SSL: connecting to SOCKS4 proxy %s:%d {\n  resolving proxy host\n", proxy_host, proxy_port));
+	d (g_print ("SSL stream %p: connecting to SOCKS4 proxy %s:%d {\n  resolving proxy host\n", ssl, proxy_host, proxy_port));
 
 	sprintf (serv, "%d", proxy_port);
 
