@@ -1186,6 +1186,20 @@ connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint p
 		if (!fd) {
 			d (g_print ("  could not enable SSL\n"));
 			goto error;
+		} else {
+			d (g_print ("  SSL_ResetHandshake\n"));
+			if (SSL_ResetHandshake (fd, FALSE) == SECFailure) {
+				set_errno (PR_GetError ());
+				d (g_print ("  failed\n"));
+				goto error;
+			}
+
+			d (g_print ("  SSL_ForceHandshake\n"));
+			if (SSL_ForceHandshake (fd) == SECFailure) {
+				set_errno (PR_GetError ());
+				d (g_print ("  failed\n"));
+				goto error;
+			}
 		}
 	}
 
