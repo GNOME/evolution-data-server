@@ -37,7 +37,8 @@ libedataserverui_1_2_la_SOURCES =	\
 	e-source-selector-dialog.c	\
 	e-source-combo-box.c		\
 	e-tree-model-generator.c	\
-	e-cell-renderer-color.c
+	e-cell-renderer-color.c		\
+	gtk-compat.h
 
 libedataserverui_1_2_la_LIBADD = 				\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\

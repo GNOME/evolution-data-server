@@ -29,6 +29,7 @@
 
 #include "e-data-server-ui-marshal.h"
 #include "e-source-selector.h"
+#include "gtk-compat.h"
 
 #define E_SOURCE_SELECTOR_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
