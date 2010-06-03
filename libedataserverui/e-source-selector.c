@@ -964,10 +964,10 @@ source_selector_drag_motion (GtkWidget *widget,
 	pos = GTK_TREE_VIEW_DROP_INTO_OR_BEFORE;
 	gtk_tree_view_set_drag_dest_row (tree_view, path, pos);
 
-	if (context->actions & GDK_ACTION_MOVE)
+	if (gdk_drag_context_get_actions (context) & GDK_ACTION_MOVE)
 		action = GDK_ACTION_MOVE;
 	else
-		action = context->suggested_action;
+		action = gdk_drag_context_get_suggested_action (context);
 
 exit:
 	if (path != NULL)
@@ -1033,7 +1033,7 @@ source_selector_drag_data_received (GtkWidget *widget,
 
 	tree_view = GTK_TREE_VIEW (widget);
 	model = gtk_tree_view_get_model (tree_view);
-	delete = (context->action == GDK_ACTION_MOVE);
+	delete = (gdk_drag_context_get_selected_action (context) == GDK_ACTION_MOVE);
 
 	if (!gtk_tree_view_get_dest_row_at_pos (tree_view, x, y, &path, NULL))
 		goto exit;
@@ -1048,7 +1048,8 @@ source_selector_drag_data_received (GtkWidget *widget,
 
 	g_signal_emit (
 		widget, signals[DATA_DROPPED], 0, selection_data,
-		object, context->action, info, &success);
+		object, gdk_drag_context_get_selected_action (context),
+                info, &success);
 
 exit:
 	if (path != NULL)
