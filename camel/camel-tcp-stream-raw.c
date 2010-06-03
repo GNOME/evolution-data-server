@@ -397,7 +397,11 @@ connect_to_socks4_proxy (const gchar *proxy_host, gint proxy_port, struct addrin
 
 	ai = camel_getaddrinfo (proxy_host, serv, &hints, NULL); /* NULL-CamelException */
 	if (!ai) {
+#ifdef G_OS_WIN32
+		errno = WSAEHOSTUNREACH;
+#else
 		errno = EHOSTUNREACH; /* FIXME: this is not an accurate error; we should translate the CamelException to an errno */
+#endif
 		return -1;
 	}
 
@@ -428,7 +432,11 @@ connect_to_socks4_proxy (const gchar *proxy_host, gint proxy_port, struct addrin
 
 	if (!(reply[0] == 0		/* first byte of reply is 0 */
 	      && reply[1] == 90)) {	/* 90 means "request granted" */
+#ifdef G_OS_WIN32
+		errno = WSAECONNREFUSED;
+#else
 		errno = ECONNREFUSED;
+#endif
 		goto error;
 	}
 

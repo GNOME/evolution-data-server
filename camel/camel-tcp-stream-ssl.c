@@ -215,7 +215,7 @@ read_from_prfd (PRFileDesc *fd, gchar *buffer, gsize n)
 		sockopts.value.non_blocking = TRUE;
 		PR_SetSocketOption (fd, &sockopts);
 
-		pollfds[0].fd = fd
+		pollfds[0].fd = fd;
 		pollfds[0].in_flags = PR_POLL_READ;
 		pollfds[1].fd = cancel_fd;
 		pollfds[1].in_flags = PR_POLL_READ;
@@ -1148,7 +1148,11 @@ connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint p
 
 	ai = camel_getaddrinfo (proxy_host, serv, &hints, NULL);  /* NULL-CamelException */
 	if (!ai) {
+#ifdef G_OS_WIN32
+		errno = WSAEHOSTUNREACH;
+#else
 		errno = EHOSTUNREACH; /* FIXME: this is not an accurate error; we should translate the CamelException to an errno */
+#endif
 		d (g_print ("  camel_getaddrinfo() for the proxy failed\n}\n"));
 		return NULL;
 	}
@@ -1189,7 +1193,11 @@ connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint p
 
 	if (!(reply[0] == 0		/* first byte of reply is 0 */
 	      && reply[1] == 90)) {	/* 90 means "request granted" */
+#ifdef G_OS_WIN32
+		errno = WSAECONNREFUSED;
+#else
 		errno = ECONNREFUSED;
+#endif
 		d (g_print ("  proxy replied with code %d\n", reply[1]));
 		goto error;
 	}

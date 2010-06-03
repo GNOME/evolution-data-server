@@ -73,7 +73,7 @@ camel_tcp_stream_class_init (CamelTcpStreamClass *class)
 static void
 camel_tcp_stream_init (CamelTcpStream *tcp_stream)
 {
-	tcp_stream->priv = CAMEL_TCP_STREAM_GET_PRIVATE (cpi);
+	tcp_stream->priv = CAMEL_TCP_STREAM_GET_PRIVATE (tcp_stream);
 	tcp_stream->priv->socks_host = NULL;
 	tcp_stream->priv->socks_port = 0;
 }
