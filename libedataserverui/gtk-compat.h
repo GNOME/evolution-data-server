@@ -8,7 +8,7 @@
  * That way it is still possible to build with GTK+ 2.20.
  */
 
-#if !GTK_CHECK_VERSION(2, 21, 0)
+#if !GTK_CHECK_VERSION(2,21,2)
 
 #define gdk_drag_context_get_actions(context)          (context)->actions
 #define gdk_drag_context_get_suggested_action(context) (context)->suggested_action
