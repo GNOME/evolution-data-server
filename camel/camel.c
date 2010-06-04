@@ -132,7 +132,7 @@ camel_init (const gchar *configdir, gboolean nss_init)
 		status = NSS_InitReadWrite (nss_configdir);
 		if (status == SECFailure) {
 			/* Fall back to using volatile dbs? */
-			status = NSS_NoDB_Init (nss_config);
+			status = NSS_NoDB_Init (nss_configdir);
 			if (status == SECFailure) {
 				g_free (nss_configdir);
 				g_free (nss_sql_configdir);
