@@ -92,6 +92,26 @@ CamelTcpStream
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_tcp_stream_set_socks_proxy ##### -->
+<para>
+
+</para>
+
+@stream: 
+@socks_host: 
+@socks_port: 
+
+
+<!-- ##### FUNCTION camel_tcp_stream_peek_socks_proxy ##### -->
+<para>
+
+</para>
+
+@stream: 
+@socks_host_ret: 
+@socks_port_ret: 
+
+
 <!-- ##### FUNCTION camel_tcp_stream_get_local_address ##### -->
 <para>
 

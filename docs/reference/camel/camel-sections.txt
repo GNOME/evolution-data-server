@@ -550,8 +550,6 @@ camel_folder_summary_set_build_content
 camel_folder_summary_next_uid
 camel_folder_summary_next_uid_string
 camel_folder_summary_set_uid
-camel_folder_summary_load
-camel_folder_summary_save
 camel_folder_summary_save_to_db
 camel_folder_summary_load_from_db
 camel_folder_summary_header_load
@@ -1911,6 +1909,8 @@ CamelSessionAlertType
 CamelSessionThreadOps
 CamelSessionThreadMsg
 camel_session_construct
+camel_session_set_socks_proxy
+camel_session_get_socks_proxy
 camel_session_get_service
 camel_session_get_service_connected
 camel_session_get_store
@@ -2336,6 +2336,8 @@ CamelSockOptData
 camel_tcp_stream_connect
 camel_tcp_stream_getsockopt
 camel_tcp_stream_setsockopt
+camel_tcp_stream_set_socks_proxy
+camel_tcp_stream_peek_socks_proxy
 camel_tcp_stream_get_local_address
 camel_tcp_stream_get_remote_address
 <SUBSECTION Standard>
@@ -2347,6 +2349,7 @@ CAMEL_IS_TCP_STREAM_CLASS
 CAMEL_TCP_STREAM_GET_CLASS
 CamelTcpStreamClass
 <SUBSECTION Private>
+CamelTcpStreamPrivate
 camel_tcp_stream_get_type
 </SECTION>
 

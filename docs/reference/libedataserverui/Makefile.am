@@ -15,7 +15,8 @@ HFILE_GLOB = $(top_srcdir)/libedataserverui/*.h
 CFILE_GLOB = $(top_srcdir)/libedataserverui/*.c
 
 IGNORE_HFILES = 			\
-	e-data-server-ui-marshal.h
+	e-data-server-ui-marshal.h	\
+	gtk-compat.h
 
 GTKDOC_CFLAGS  =					\
 	-I$(top_srcdir)/libedataserverui		\

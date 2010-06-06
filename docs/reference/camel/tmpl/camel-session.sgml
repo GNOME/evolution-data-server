@@ -89,6 +89,26 @@ CamelSession
 @storage_path: 
 
 
+<!-- ##### FUNCTION camel_session_set_socks_proxy ##### -->
+<para>
+
+</para>
+
+@session: 
+@socks_host: 
+@socks_port: 
+
+
+<!-- ##### FUNCTION camel_session_get_socks_proxy ##### -->
+<para>
+
+</para>
+
+@session: 
+@host_ret: 
+@port_ret: 
+
+
 <!-- ##### FUNCTION camel_session_get_service ##### -->
 <para>
 

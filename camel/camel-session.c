@@ -1111,7 +1111,10 @@ camel_session_unlock (CamelSession *session,
  * @socks_host: Hostname of the SOCKS proxy, or #NULL for none.
  * @socks_port: Port number of the SOCKS proxy
  *
- * Sets a SOCKS proxy that will be used throughout the @session for TCP connections.
+ * Sets a SOCKS proxy that will be used throughout the @session for
+ * TCP connections.
+ *
+ * Since: 3.0
  */
 void
 camel_session_set_socks_proxy (CamelSession *session, const gchar *socks_host, int socks_port)
@@ -1138,6 +1141,8 @@ camel_session_set_socks_proxy (CamelSession *session, const gchar *socks_host, i
  *
  * Queries the SOCKS proxy that is configured for a @session.  This will
  * put #NULL in @hosts_ret if there is no proxy configured.
+ *
+ * Since: 3.0
  */
 void
 camel_session_get_socks_proxy (CamelSession *session, gchar **host_ret, gint *port_ret)
