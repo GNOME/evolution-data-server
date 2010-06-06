@@ -982,10 +982,10 @@ gdata_gd_organization_from_attribute (EVCardAttribute *attr, gboolean *have_prim
 		/* TITLE and ROLE are dealt with separately in _gdata_entry_update_from_e_contact() */
 
 		__debug__ ("New %sorganization entry %s (%s/%s)",
-		           gdata_gd_organization_is_primary (org) ? "primary " : "",
-		           gdata_gd_organization_get_name (org),
-		           gdata_gd_organization_get_relation_type (org),
-		           gdata_gd_organization_get_label (org));
+			   gdata_gd_organization_is_primary (org) ? "primary " : "",
+			   gdata_gd_organization_get_name (org),
+			   gdata_gd_organization_get_relation_type (org),
+			   gdata_gd_organization_get_label (org));
 	}
 
 	return org;

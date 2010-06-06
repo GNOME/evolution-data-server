@@ -2122,8 +2122,8 @@ gboolean
 imapx_connect_to_server (CamelIMAPXServer *is, CamelException *ex)
 {
 	CamelStream * tcp_stream = NULL;
-	char *socks_host;
-	int socks_port;
+	gchar *socks_host;
+	gint socks_port;
 	CamelSockOptData sockopt;
 	gint ret, ssl_mode = 0;
 

@@ -64,8 +64,8 @@ struct _CamelSessionPrivate {
 	GHashTable *thread_msg_op;
 	GHashTable *junk_headers;
 
-	char *socks_proxy_host;
-	int socks_proxy_port;
+	gchar *socks_proxy_host;
+	gint socks_proxy_port;
 
 	guint check_junk        : 1;
 	guint network_available : 1;
@@ -1117,7 +1117,7 @@ camel_session_unlock (CamelSession *session,
  * Since: 3.0
  */
 void
-camel_session_set_socks_proxy (CamelSession *session, const gchar *socks_host, int socks_port)
+camel_session_set_socks_proxy (CamelSession *session, const gchar *socks_host, gint socks_port)
 {
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 

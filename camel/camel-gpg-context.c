@@ -929,7 +929,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 				if (str && *str && i == 2) {
 					struct {
 						gint gpg_hash_algo;
-						CamelCipherHash camel_hash_algo; 
+						CamelCipherHash camel_hash_algo;
 					} hash_algos[] = {
 						/* the rest are deprecated/not supported by gpg any more */
 						{  2, CAMEL_CIPHER_HASH_SHA1 },

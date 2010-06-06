@@ -190,8 +190,8 @@ connect_to_server (CamelService *service,
 {
 	CamelSmtpTransport *transport = CAMEL_SMTP_TRANSPORT (service);
 	CamelSession *session;
-	char *socks_host;
-	int socks_port;
+	gchar *socks_host;
+	gint socks_port;
 	CamelStream *tcp_stream;
 	gchar *respbuf = NULL;
 	gint ret;

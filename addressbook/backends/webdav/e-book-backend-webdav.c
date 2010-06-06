@@ -774,7 +774,7 @@ check_addressbook_changed (EBookBackendWebdav *webdav, gchar **new_ctag)
 			const gchar *GETCTAG_XPATH_STATUS = "string(/D:multistatus/D:response/D:propstat/D:prop/D:getctag/../../D:status)";
 			const gchar *GETCTAG_XPATH_VALUE = "string(/D:multistatus/D:response/D:propstat/D:prop/D:getctag)";
 			xmlXPathContextPtr xpctx;
-	
+
 			xpctx = xmlXPathNewContext (xml);
 			xmlXPathRegisterNs (xpctx, (xmlChar *) "D", (xmlChar *) "DAV:");
 

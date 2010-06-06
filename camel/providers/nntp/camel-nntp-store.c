@@ -210,8 +210,8 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 	CamelNNTPStore *store = (CamelNNTPStore *) service;
 	CamelDiscoStore *disco_store = (CamelDiscoStore*) service;
 	CamelSession *session;
-	char *socks_host;
-	int socks_port;
+	gchar *socks_host;
+	gint socks_port;
 	CamelStream *tcp_stream;
 	gboolean retval = FALSE;
 	guchar *buf;

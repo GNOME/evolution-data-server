@@ -550,7 +550,6 @@ make_tree_view_for_section (ENameSelectorDialog *name_selector_dialog, EDestinat
 	gtk_tree_view_set_headers_visible (tree_view, FALSE);
 	gtk_tree_view_set_model (tree_view, GTK_TREE_MODEL (destination_store));
 
-
 	return tree_view;
 }
 
@@ -558,8 +557,8 @@ static void
 setup_section_button (ENameSelectorDialog *name_selector_dialog,
 		      GtkButton *button,
 		      double halign,
-		      const char *label_text,
-		      const char *icon_name,
+		      const gchar *label_text,
+		      const gchar *icon_name,
 		      gboolean icon_before_label)
 {
 	GtkWidget *alignment;

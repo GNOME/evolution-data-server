@@ -401,8 +401,8 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 {
 	CamelImapStore *store = (CamelImapStore *) service;
 	CamelSession *session;
-	char *socks_host;
-	int socks_port;
+	gchar *socks_host;
+	gint socks_port;
 	CamelImapResponse *response;
 	CamelStream *tcp_stream;
 	CamelSockOptData sockopt;
