@@ -1,3 +1,28 @@
+Evolution-Data-Server 2.31.3 2010-06-07
+---------------------------------------
+Bug Fixes:
+	Bug #619347 - Return formatted address in e_destination_get_address (David Ayers)
+	Bug #620522 - Build break: 'nss_config' undeclared (Matthew Barnes)
+	Bug #617261 - Evolution didn't quit due to deadlock (Milan Crha)
+	Bug #617439 - Fix translation of birthday and anniversary events (Gert Michael Kulyk)
+	Bug #585301 - Use NSS SQLite database, if available (Craig Ringer)
+	Bug #601535 - Fix translation domain for default categories (Gert Michael Kulyk)
+
+Miscellaneous Fixes:
+	Gtk-Doc updates. (Matthew Barnes)
+	Set the GTK+ backward compatibility check to 2.21.2. (Matthew Barnes)
+	Add compatibility with GTK+ 2.20 (Florian M¿¿llner)
+	Use accessors for newly sealed GdkDragContext members (Florian M¿¿llner)
+	Making e-d-s build on Windows and also build on other platforms :) (Fridrich ¿¿trba)
+	Factor out function to rehandshake SSL (Federico Mena Quintero)
+	Add support for SOCKS proxy support (Federico Mena Quintero)
+	Declare mbox' frompos as goffset, not off_t (Milan Crha)
+	Remove dead CamelFolderSummary methods. (Matthew Barnes)
+
+Translations:
+	Kjartan Maraas (nn)
+	Ivar Smolin (et)
+
 Evolution-Data-Server 2.31.2 2010-05-24
 ---------------------------------------
 
