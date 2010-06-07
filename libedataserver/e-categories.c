@@ -20,6 +20,7 @@
 #include <config.h>
 #include <string.h>
 #include <libxml/parser.h>
+#include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 #include <gconf/gconf-client.h>
 #include "e-data-server-util.h"
@@ -121,10 +122,24 @@ static gchar *
 build_categories_filename (void)
 {
 	const gchar *user_data_dir;
+	gchar *filename;
 
 	user_data_dir = e_get_user_data_dir ();
+	filename = g_build_filename (user_data_dir, "categories.xml", NULL);
 
-	return g_build_filename (user_data_dir, "categories.xml", NULL);
+	if (!g_file_test (filename, G_FILE_TEST_IS_REGULAR)) {
+		gchar *old_filename;
+
+		/* Try moving the file from its old 2.x location.
+		 * This is best effort; don't worry about errors. */
+		old_filename = g_build_filename (
+			g_get_home_dir (), ".evolution",
+			"categories.xml", NULL);
+		g_rename (old_filename, filename);
+		g_free (old_filename);
+	}
+
+	return filename;
 }
 
 static void

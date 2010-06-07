@@ -455,8 +455,7 @@ test_new_system_calendar(void)
 
 	user_data_dir = e_get_user_data_dir ();
 	filename = g_build_filename (
-		user_data_dir, "calendar", "local",
-		"system", "calendar.ics", NULL);
+		user_data_dir, "calendar", "system", "calendar.ics", NULL);
 	created = g_file_test (filename, G_FILE_TEST_EXISTS);
 	g_free (filename);
 
@@ -477,8 +476,7 @@ test_new_system_tasks(void)
 
 	user_data_dir = e_get_user_data_dir ();
 	filename = g_build_filename (
-		user_data_dir, "tasks", "local",
-		"system", "tasks.ics", NULL);
+		user_data_dir, "tasks", "system", "tasks.ics", NULL);
 	created = g_file_test (filename, G_FILE_TEST_EXISTS);
 	g_free (filename);
 
@@ -499,8 +497,7 @@ test_new_system_memos(void)
 
 	user_data_dir = e_get_user_data_dir ();
 	filename = g_build_filename (
-		user_data_dir, "memos", "local",
-		"system", "journal.ics", NULL);
+		user_data_dir, "memos", "system", "journal.ics", NULL);
 	created = g_file_test (filename, G_FILE_TEST_EXISTS);
 	g_free (filename);
 

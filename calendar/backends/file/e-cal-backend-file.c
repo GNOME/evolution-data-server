@@ -2707,10 +2707,11 @@ fetch_attachments (ECalBackendSync *backend, ECalComponent *comp)
 
 	e_cal_component_get_attachment_list (comp, &attach_list);
 	e_cal_component_get_uid (comp, &uid);
+
 	/*FIXME  get the uri rather than computing the path */
 	user_data_dir = e_get_user_data_dir ();
 	attach_store = g_build_filename (
-		user_data_dir, "calendar", "local", "system", NULL);
+		user_data_dir, "calendar", "system", NULL);
 
 	for (l = attach_list; l; l = l->next) {
 		gchar *sfname = (gchar *)l->data;
