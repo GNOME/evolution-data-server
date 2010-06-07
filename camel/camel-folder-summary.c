@@ -168,11 +168,11 @@ camel_folder_summary_init (CamelFolderSummary *s)
 	s->uids = g_ptr_array_new ();
 	s->loaded_infos = g_hash_table_new (g_str_hash, g_str_equal);
 
-	p->summary_lock = g_mutex_new();
-	p->io_lock = g_mutex_new();
-	p->filter_lock = g_mutex_new();
-	p->alloc_lock = g_mutex_new();
-	p->ref_lock = g_mutex_new();
+	g_static_rec_mutex_init (&p->summary_lock);
+	g_static_rec_mutex_init (&p->io_lock);
+	g_static_rec_mutex_init (&p->filter_lock);
+	g_static_rec_mutex_init (&p->alloc_lock);
+	g_static_rec_mutex_init (&p->ref_lock);
 
 	s->meta_summary = g_malloc0(sizeof(CamelFolderMetaSummary));
 
@@ -239,11 +239,11 @@ camel_folder_summary_finalize (CamelObject *obj)
 	g_free(s->meta_summary->path);
 	g_free(s->meta_summary);
 
-	g_mutex_free(p->summary_lock);
-	g_mutex_free(p->io_lock);
-	g_mutex_free(p->filter_lock);
-	g_mutex_free(p->alloc_lock);
-	g_mutex_free(p->ref_lock);
+	g_static_rec_mutex_free (&p->summary_lock);
+	g_static_rec_mutex_free (&p->io_lock);
+	g_static_rec_mutex_free (&p->filter_lock);
+	g_static_rec_mutex_free (&p->alloc_lock);
+	g_static_rec_mutex_free (&p->ref_lock);
 
 	g_free(p);
 }
@@ -573,8 +573,6 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
 		folder_name = s->folder->full_name;
 		cdb = s->folder->parent_store->cdb_r;
 
-		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
-
 		data.summary = s;
 		data.double_ref = TRUE;
 		data.add = FALSE;
@@ -582,10 +580,9 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
 		ret = camel_db_read_message_info_record_with_uid (cdb, folder_name, uid, &data, camel_read_mir_callback, &ex);
 		if (ret != 0) {
 			camel_exception_clear (&ex);
+			CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 			return NULL;
 		}
-
-		CAMEL_SUMMARY_LOCK(s, summary_lock);
 
 		/* We would have double reffed at camel_read_mir_callback */
 		info = g_hash_table_lookup (s->loaded_infos, uid);
@@ -5215,4 +5212,22 @@ camel_folder_summary_guess_content_info (CamelMessageInfo *mi, CamelContentType 
 	}
 
 	return NULL;
+}
+
+void
+camel_folder_summary_lock_summary (CamelFolderSummary *summary)
+{
+	g_return_if_fail (summary != NULL);
+	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
+
+	CAMEL_SUMMARY_LOCK (summary, summary_lock);
+}
+
+void
+camel_folder_summary_unlock_summary (CamelFolderSummary *summary)
+{
+	g_return_if_fail (summary != NULL);
+	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
+
+	CAMEL_SUMMARY_UNLOCK (summary, summary_lock);
 }

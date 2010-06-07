@@ -514,6 +514,9 @@ void camel_message_info_dump (CamelMessageInfo *mi);
 /* Migration code */
 gint camel_folder_summary_migrate_infos(CamelFolderSummary *s);
 
+void camel_folder_summary_lock_summary (CamelFolderSummary *summary);
+void camel_folder_summary_unlock_summary (CamelFolderSummary *summary);
+
 G_END_DECLS
 
 #endif /* _CAMEL_FOLDER_SUMMARY_H */

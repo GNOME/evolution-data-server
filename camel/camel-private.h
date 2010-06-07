@@ -119,11 +119,11 @@ struct _CamelFolderSummaryPrivate {
 
 	struct _CamelIndex *index;
 
-	GMutex *summary_lock;	/* for the summary hashtable/array */
-	GMutex *io_lock;	/* load/save lock, for access to saved_count, etc */
-	GMutex *filter_lock;	/* for accessing any of the filtering/indexing stuff, since we share them */
-	GMutex *alloc_lock;	/* for setting up and using allocators */
-	GMutex *ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before summary_lock */
+	GStaticRecMutex summary_lock;	/* for the summary hashtable/array */
+	GStaticRecMutex io_lock;	/* load/save lock, for access to saved_count, etc */
+	GStaticRecMutex filter_lock;	/* for accessing any of the filtering/indexing stuff, since we share them */
+	GStaticRecMutex alloc_lock;	/* for setting up and using allocators */
+	GStaticRecMutex ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before summary_lock */
 	GHashTable *flag_cache;
 
 	gboolean need_preview;
@@ -131,9 +131,9 @@ struct _CamelFolderSummaryPrivate {
 };
 
 #define CAMEL_SUMMARY_LOCK(f, l) \
-	(g_mutex_lock(((CamelFolderSummary *) (f))->priv->l))
+	(g_static_rec_mutex_lock (&((CamelFolderSummary *) (f))->priv->l))
 #define CAMEL_SUMMARY_UNLOCK(f, l) \
-	(g_mutex_unlock(((CamelFolderSummary *) (f))->priv->l))
+	(g_static_rec_mutex_unlock (&((CamelFolderSummary *) (f))->priv->l))
 
 struct _CamelStoreSummaryPrivate {
 	GMutex *summary_lock;	/* for the summary hashtable/array */
