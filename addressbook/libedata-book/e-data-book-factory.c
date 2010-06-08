@@ -81,6 +81,9 @@ struct _EDataBookFactoryPrivate {
         gint mode;
 };
 
+/* Forward Declarations */
+void e_data_book_migrate (void);
+
 /* Create the EDataBookFactory error quark */
 GQuark
 e_data_book_factory_error_quark (void)
@@ -527,6 +530,9 @@ main (gint argc, gchar **argv)
 		G_CALLBACK (offline_state_changed_cb), factory);
 
 	printf ("Server is up and running...\n");
+
+	/* Migrate user data from ~/.evolution to XDG base directories. */
+	e_data_book_migrate ();
 
 	g_main_loop_run (loop);
 

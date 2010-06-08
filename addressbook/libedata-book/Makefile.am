@@ -82,7 +82,10 @@ e_addressbook_factory_CPPFLAGS = \
 	-I$(top_srcdir)/addressbook		\
 	-I$(top_builddir)/addressbook
 
-e_addressbook_factory_SOURCES = e-data-book-factory.c e-data-book-factory.h
+e_addressbook_factory_SOURCES = \
+	e-data-book-factory.c \
+	e-data-book-factory.h \
+	e-data-book-migrate.c
 
 e_addressbook_factory_LDADD =					\
 	libedata-book-1.2.la					\
