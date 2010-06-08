@@ -142,6 +142,13 @@ typedef struct _CamelFolderInfo {
 
 #define CAMEL_STORE_ASYNC		(1 << 6)
 
+/**
+ * CAMEL_STORE_REAL_JUNK_FOLDER:
+ *
+ * Since: 3.0
+ **/
+#define CAMEL_STORE_REAL_JUNK_FOLDER	(1 << 7)
+
 struct _CamelDB;
 
 typedef struct _CamelStore CamelStore;
