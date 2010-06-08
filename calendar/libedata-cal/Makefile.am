@@ -98,6 +98,7 @@ factory_PROGRAMS = e-calendar-factory
 e_calendar_factory_SOURCES = \
 	e-data-cal-factory.c \
 	e-data-cal-factory.h \
+	e-data-cal-migrate.c \
 	e-cal-backend-loader-factory.c \
 	e-cal-backend-loader-factory.h
 

@@ -91,6 +91,9 @@ struct _EDataCalFactoryPrivate {
 	guint exit_timeout;
 };
 
+/* Forward Declarations */
+void e_data_cal_migrate (void);
+
 /* Create the EDataCalFactory error quark */
 GQuark
 e_data_cal_factory_error_quark (void)
@@ -845,6 +848,9 @@ main (gint argc, gchar **argv)
 		G_CALLBACK (offline_state_changed_cb), factory);
 
 	printf ("Server is up and running...\n");
+
+	/* Migrate user data from ~/.evolution to XDG base directories. */
+	e_data_cal_migrate ();
 
 	g_main_loop_run (loop);
 
