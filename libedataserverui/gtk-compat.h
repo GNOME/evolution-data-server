@@ -17,4 +17,8 @@
 
 #endif 
 
+#if GTK_CHECK_VERSION (2,21,1)
+#define gdk_drag_context_get_selected_action(context)  gdk_drag_context_get_action(context)
+#endif
+
 #endif /* __GTK_COMPAT_H__ */
