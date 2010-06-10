@@ -19,8 +19,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_STREAM_NULL_H
-#define _CAMEL_STREAM_NULL_H
+#ifndef _CAMEL_STREAM_PROCESS_H
+#define _CAMEL_STREAM_PROCESS_H
 
 #include <camel/camel-stream.h>
 

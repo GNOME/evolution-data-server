@@ -34,6 +34,9 @@
 #include "camel/camel-private.h"
 #include <camel/camel-tcp-stream-ssl.h>
 #include <camel/camel-tcp-stream-raw.h>
+#ifndef G_OS_WIN32
+#include <camel/camel-stream-process.h>
+#endif
 #include <camel/camel-db.h>
 
 #include <camel/camel-sasl.h>
@@ -2104,6 +2107,147 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, CamelE
 	imapx_command_start (is, ic);
 }
 
+#ifndef G_OS_WIN32
+
+/* Using custom commands to connect to IMAP servers is not supported on Win32 */
+
+static gboolean
+connect_to_server_process (CamelIMAPXServer *is, const gchar *cmd, CamelException *ex)
+{
+	CamelIMAPXCommand *ic;
+	CamelStream *cmd_stream;
+	gint ret, i = 0;
+	gchar *buf;
+	gchar *cmd_copy;
+	gchar *full_cmd;
+	gchar *child_env[7];
+	guchar *buffer = NULL;
+	guint len;
+
+	/* Put full details in the environment, in case the connection
+	   program needs them */
+	buf = camel_url_to_string(is->url, 0);
+	child_env[i++] = g_strdup_printf("URL=%s", buf);
+	g_free(buf);
+
+	child_env[i++] = g_strdup_printf("URLHOST=%s", is->url->host);
+	if (is->url->port)
+		child_env[i++] = g_strdup_printf("URLPORT=%d", is->url->port);
+	if (is->url->user)
+		child_env[i++] = g_strdup_printf("URLUSER=%s", is->url->user);
+	if (is->url->passwd)
+		child_env[i++] = g_strdup_printf("URLPASSWD=%s", is->url->passwd);
+	if (is->url->path)
+		child_env[i++] = g_strdup_printf("URLPATH=%s", is->url->path);
+	child_env[i] = NULL;
+
+	/* Now do %h, %u, etc. substitution in cmd */
+	buf = cmd_copy = g_strdup(cmd);
+
+	full_cmd = g_strdup("");
+
+	for (;;) {
+		gchar *pc;
+		gchar *tmp;
+		gchar *var;
+		gint len;
+
+		pc = strchr(buf, '%');
+	ignore:
+		if (!pc) {
+			tmp = g_strdup_printf("%s%s", full_cmd, buf);
+			g_free(full_cmd);
+			full_cmd = tmp;
+			break;
+		}
+
+		len = pc - buf;
+
+		var = NULL;
+
+		switch (pc[1]) {
+		case 'h':
+			var = is->url->host;
+			break;
+		case 'u':
+			var = is->url->user;
+			break;
+		}
+		if (!var) {
+			/* If there wasn't a valid %-code, with an actual
+			   variable to insert, pretend we didn't see the % */
+			pc = strchr(pc + 1, '%');
+			goto ignore;
+		}
+		tmp = g_strdup_printf("%s%.*s%s", full_cmd, len, buf, var);
+		g_free(full_cmd);
+		full_cmd = tmp;
+		buf = pc + 2;
+	}
+
+	g_free(cmd_copy);
+
+	cmd_stream = camel_stream_process_new ();
+
+	ret = camel_stream_process_connect (CAMEL_STREAM_PROCESS(cmd_stream),
+					    full_cmd, (const gchar **)child_env);
+
+	while (i)
+		g_free(child_env[--i]);
+
+	if (ret == -1) {
+		if (errno == EINTR)
+			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
+					     _("Connection cancelled"));
+		else
+			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+					      _("Could not connect with command \"%s\": %s"),
+					      full_cmd, g_strerror (errno));
+
+		camel_object_unref (cmd_stream);
+		g_free (full_cmd);
+		return FALSE;
+	}
+	g_free (full_cmd);
+
+	is->stream = (CamelIMAPXStream *) camel_imapx_stream_new(cmd_stream);
+	camel_object_unref(cmd_stream);
+	is->is_process_stream = TRUE;
+
+	camel_imapx_stream_gets (is->stream, &buffer, &len);
+	e(printf("Got greeting '%.*s'\n", len, buffer));
+
+	if (!buffer) {
+		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
+				     "No response from server.\n");
+		return FALSE;
+	} else if (!strncmp((gchar *)buffer, "* PREAUTH", 9)) {
+		is->state = IMAPX_AUTHENTICATED;
+	} else if (strncmp((gchar *)buffer, "* OK", 4)) {
+		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
+				     "Unrecognised greeting from server: %.*s\n",
+				     len, buffer);
+		return FALSE;
+	}
+
+	ic = camel_imapx_command_new("CAPABILITY", NULL, "CAPABILITY");
+	imapx_command_run(is, ic);
+
+	if (camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK) {
+		if (!camel_exception_is_set (ic->ex))
+			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, "%s", ic->status->text);
+		else
+			camel_exception_xfer (ex, ic->ex);
+
+		camel_imapx_command_free(ic);
+		return FALSE;
+	}
+	camel_imapx_command_free(ic);
+
+	return TRUE;
+}
+#endif /* !G_OS_WIN32 */
+
 gboolean
 imapx_connect_to_server (CamelIMAPXServer *is, CamelException *ex)
 {
@@ -2121,6 +2265,15 @@ imapx_connect_to_server (CamelIMAPXServer *is, CamelException *ex)
 	struct addrinfo *ai, hints = { 0 };
 	CamelIMAPXCommand *ic;
 
+#ifndef G_OS_WIN32
+	const gchar *command;
+
+	if (camel_url_get_param(is->url, "use_command") &&
+	    (command = camel_url_get_param(is->url, "command"))) {
+		connect_to_server_process(is, command, ex);
+		goto exit;
+	}
+#endif		
 	if (is->url->port) {
 		serv = g_alloca(16);
 		sprintf((gchar *) serv, "%d", is->url->port);
@@ -2281,6 +2434,9 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 		imapx_connect_to_server (is, ex);
 		if (camel_exception_is_set (ex))
 			goto exception;
+
+		if (is->state == IMAPX_AUTHENTICATED)
+			break;
 
 		if (service->url->passwd == NULL) {
 			gchar *base_prompt;
@@ -3722,8 +3878,28 @@ imapx_parser_thread (gpointer d)
 				errno = EINTR;
 		}
 #endif
+#ifndef G_OS_WIN32
+		if (is->is_process_stream)	{
+			GPollFD fds[2] = { {0, 0, 0}, {0, 0, 0} };
+			gint res;
 
-		if (!is->is_ssl_stream)	{
+			fds[0].fd = ((CamelStreamProcess *)is->stream->source)->sockfd;
+			fds[0].events = G_IO_IN;
+			fds[1].fd = camel_operation_cancel_fd (op);
+			fds[1].events = G_IO_IN;
+			res = g_poll(fds, 2, 1000*30);
+			if (res == -1)
+				g_usleep(1) /* ?? */ ;
+			else if (res == 0)
+				/* timed out */;
+			else if (fds[0].revents & G_IO_IN) {
+				parse_contents (is, &ex);
+			} else if (fds[1].revents & G_IO_IN)
+				errno = EINTR;
+		}
+#endif
+
+		if (!is->is_ssl_stream && !is->is_process_stream) {
 			GPollFD fds[2] = { {0, 0, 0}, {0, 0, 0} };
 			gint res;
 

@@ -52,6 +52,7 @@ struct _CamelIMAPXServer {
 	struct _CamelIMAPXStream *stream;
 	struct _capability_info *cinfo;
 	gboolean is_ssl_stream;
+	gboolean is_process_stream;
 
 	CamelIMAPXNamespaceList *nsl;
 
