@@ -46,15 +46,17 @@ CamelProviderConfEntry imapx_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "check_lsub", NULL,
 	  N_("Ch_eck for new messages in subscribed folders"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
-#if 0
+#ifndef G_OS_WIN32
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "cmdsection", NULL,
 	  N_("Connection to Server") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use_command", NULL,
 	  N_("_Use custom command to connect to server"), "0" },
 	{ CAMEL_PROVIDER_CONF_ENTRY, "command", "use_command",
-	  N_("Command:"), "ssh -C -l %u %h exec /usr/sbin/imapd" },
+	  N_("Command:"), "ssh -C -l %u %h exec /usr/sbin/dovecot --exec-mail imap" },
+#if 0
 	{ CAMEL_PROVIDER_CONF_CHECKSPIN, "cachedconn", NULL,
 	  N_("Numbe_r of cached connections to use"), "y:1:5:7" },
+#endif
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 #endif
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "folders", NULL,
