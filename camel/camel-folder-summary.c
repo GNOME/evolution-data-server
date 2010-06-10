@@ -1014,6 +1014,8 @@ camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *ex)
 	 * load better. */
 	d(printf ("\ncamel_folder_summary_reload_from_db called \n"));
 
+	CAMEL_SUMMARY_LOCK(s, summary_lock);
+
 	folder_name = s->folder->full_name;
 	cdb = s->folder->parent_store->cdb_r;
 
@@ -1027,6 +1029,8 @@ camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *ex)
         /* FIXME[disk-summary] LRU please and not timeouts */
 	if (!g_getenv("CAMEL_FREE_INFOS") && !s->timeout_handle)
 		s->timeout_handle = g_timeout_add_seconds (SUMMARY_CACHE_DROP, (GSourceFunc) cfs_try_release_memory, s);
+
+	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 
 	if (_PRIVATE(s)->need_preview) {
 		struct _preview_update_msg *m;
