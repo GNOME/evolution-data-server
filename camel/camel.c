@@ -58,6 +58,30 @@ static gint initialised = FALSE;
 
 gint camel_application_is_exiting = FALSE;
 
+#define NSS_SYSTEM_DB "/etc/pki/nssdb"
+
+static gint
+nss_has_system_db(void)
+{
+	int found = FALSE;
+#ifndef G_OS_WIN32
+	FILE *f;
+	char buf[80];
+
+	f = fopen(NSS_SYSTEM_DB "/pkcs11.txt", "r");
+	if (!f)
+		return FALSE;
+		
+	/* Check whether the system NSS db is actually enabled */
+	while (fgets(buf, 80, f) && !found) {
+		if (!strcmp(buf, "library=libnsssysinit.so\n"))
+			found = TRUE;
+	}
+	fclose(f);
+#endif
+	return found;
+}
+
 gint
 camel_init (const gchar *configdir, gboolean nss_init)
 {
@@ -94,17 +118,22 @@ camel_init (const gchar *configdir, gboolean nss_init)
 		nss_configdir = g_win32_locale_filename_from_utf8 (configdir);
 #endif
 
-		/* Create the configdir if it does not exist
-		 * This prevents camel from bailing out on first run */
-		g_mkdir_with_parents (configdir, 0700);
+		if (nss_has_system_db ()) {
+			nss_sql_configdir = g_strdup ("sql:" NSS_SYSTEM_DB );
+		} else {
+			/* Create the configdir if it does not exist
+			 * This prevents camel from bailing out on first run */
+			g_mkdir_with_parents (configdir, 0700);
 
-		/* XXX Currently we store the new shared NSS database in the
-		 *     same location we kept the original NSS databases in,
-		 *     but at least we have safe shared access between Camel
-		 *     and Evolution's S/MIME.  Once freedesktop.org comes
-		 *     up with a user-wide shared location, we should use
-		 *     that instead. */
-		nss_sql_configdir = g_strconcat ("sql:", nss_configdir, NULL);
+			/* XXX Currently we store the new shared NSS database in the
+			 *     same location we kept the original NSS databases in,
+			 *     but at least we have safe shared access between Camel
+			 *     and Evolution's S/MIME.  Once freedesktop.org comes
+			 *     up with a user-wide shared location, we should use
+			 *     that instead. */
+			nss_sql_configdir = g_strconcat ("sql:", nss_configdir, NULL);
+		}
+
 
 #if NSS_VMAJOR > 3 || (NSS_VMAJOR == 3 && NSS_VMINOR >= 12)
 		/* See: https://wiki.mozilla.org/NSS_Shared_DB,
