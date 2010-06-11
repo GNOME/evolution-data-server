@@ -2605,8 +2605,13 @@ imapx_command_fetch_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		failed = TRUE;
 		job->u.get_message.body_len = -1;
 	} else  if (job->u.get_message.use_multi_fetch) {
-
-		if (!failed && job->u.get_message.fetch_offset <= job->u.get_message.size) {
+		gsize really_fetched = CAMEL_SEEKABLE_STREAM(job->u.get_message.stream)->position;
+		/* Don't automatically stop when we reach the reported message
+		   size -- some crappy servers (like Microsoft Exchange) have
+		   a tendency to lie about it. Keep going (one request at a 
+		   time) until the data actually stop coming. */
+		if (job->u.get_message.fetch_offset < job->u.get_message.size ||
+		    job->u.get_message.fetch_offset == really_fetched) {
 			camel_imapx_command_free (ic);
 			if (job->op)
 				camel_operation_progress (job->op, (job->u.get_message.fetch_offset *100)/job->u.get_message.size);
