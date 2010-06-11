@@ -2523,6 +2523,27 @@ unwrap_gerror (GError *error, GError **client_error)
 	return FALSE;
 }
 
+static gboolean
+strcaseequal_no_underscore (const gchar *str1, const gchar *str2)
+{
+	int i, j;
+
+	if (!str1 || !str2)
+		return FALSE;
+
+	for (i = 0, j = 0; str1[i] && str2[j]; i++, j++) {
+		while (str1[i] == '_' && str1[i + 1])
+			i++;
+		while (str2[j] == '_' && str2[j + 1])
+			j++;
+
+		if (g_ascii_tolower (str1[i]) != g_ascii_tolower (str2[j]))
+			return FALSE;
+	}
+
+	return !str1[i] && !str2[j];
+}
+
 /**
  * If the GError is a remote error, extract the EBookStatus embedded inside.
  * Otherwise return CORBA_EXCEPTION (I know this is DBus...).
@@ -2569,7 +2590,8 @@ get_status_from_error (GError *error)
 		name = dbus_g_error_get_name (error);
 
 		for (i = 0; i < G_N_ELEMENTS (errors); i++) {
-			if (g_ascii_strcasecmp (errors[i].name, name) == 0)
+			if (g_ascii_strcasecmp (errors[i].name, name) == 0 ||
+			    strcaseequal_no_underscore (errors[i].name, name))
 				return errors[i].err_code;
 		}
 
