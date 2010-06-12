@@ -121,17 +121,24 @@ camel_init (const gchar *configdir, gboolean nss_init)
 		if (nss_has_system_db ()) {
 			nss_sql_configdir = g_strdup ("sql:" NSS_SYSTEM_DB );
 		} else {
-			/* Create the configdir if it does not exist
-			 * This prevents camel from bailing out on first run */
+			/* On Windows, we use the Evolution configdir. On other
+			 * operating systems we use ~/.pki/nssdb/, which is where
+			 * the user-specific part of the "shared system db" is
+			 * stored and is what Chrome uses too.
+			 *
+			 * We have to create the configdir if it does not exist,
+			 * to prevent camel from bailing out on first run. */
+#ifdef G_OS_WIN32
 			g_mkdir_with_parents (configdir, 0700);
-
-			/* XXX Currently we store the new shared NSS database in the
-			 *     same location we kept the original NSS databases in,
-			 *     but at least we have safe shared access between Camel
-			 *     and Evolution's S/MIME.  Once freedesktop.org comes
-			 *     up with a user-wide shared location, we should use
-			 *     that instead. */
 			nss_sql_configdir = g_strconcat ("sql:", nss_configdir, NULL);
+#else
+			gchar *user_nss_dir = g_build_filename ( g_get_home_dir (),
+								 ".pki/nssdb", NULL );
+			g_mkdir_with_parents (user_nss_dir, 0700);
+
+			nss_sql_configdir = g_strconcat ("sql:", user_nss_dir, NULL);
+			g_free(user_nss_dir);
+#endif
 		}
 
 
