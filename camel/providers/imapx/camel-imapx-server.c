@@ -620,7 +620,7 @@ imapx_command_addv(CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 					break;
 				case 'f': /* imap folder name */
 					folder = va_arg(ap, CamelFolder *);
-					c(printf("got folder '%s'\n", s));
+					c(printf("got folder '%s'\n", folder->full_name));
 					fname = camel_imapx_store_summary_full_from_path(((CamelIMAPXStore *) folder->parent_store)->summary, folder->full_name);
 					if (fname) {
 						encoded = camel_utf8_utf7(fname);
@@ -1490,11 +1490,13 @@ imapx_continuation(CamelIMAPXServer *imap, CamelException *ex)
 	case CAMEL_IMAPX_COMMAND_AUTH: {
 		gchar *resp;
 		guchar *token;
-		gint tok;
-		guint len;
 
-		tok = camel_imapx_stream_token(imap->stream, &token, &len, ex);
+		camel_imapx_stream_text (imap->stream, &token, ex);
+		if (camel_exception_is_set(ex))
+			return -1;
+		    
 		resp = camel_sasl_challenge_base64((CamelSasl *)cp->ob, (const gchar *) token, ex);
+		g_free(token);
 		if (camel_exception_is_set(ex))
 			return -1;
 
@@ -1505,7 +1507,7 @@ imapx_continuation(CamelIMAPXServer *imap, CamelException *ex)
 		/* we want to keep getting called until we get a status reponse from the server
 		   ignore what sasl tells us */
 		newliteral = ic;
-
+		goto noskip;
 		break; }
 	case CAMEL_IMAPX_COMMAND_FILE: {
 		CamelStream *file;
@@ -1531,7 +1533,7 @@ imapx_continuation(CamelIMAPXServer *imap, CamelException *ex)
 	}
 
 	camel_imapx_stream_skip(imap->stream, ex);
-
+ noskip:
 	cp = cp->next;
 	if (cp->next) {
 		ic->current = cp;
@@ -1667,6 +1669,8 @@ imapx_command_run(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	do {
 		imapx_step(is, ic->ex);
 	} while (ic->status == NULL && !camel_exception_is_set (ic->ex));
+	if (is->literal == ic)
+		is->literal = NULL; 
 
 	QUEUE_LOCK(is);
 	camel_dlist_remove((CamelDListNode *)ic);
@@ -2421,6 +2425,7 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 	CamelService *service = (CamelService *) is->store;
 	const gchar *auth_domain = NULL;
 	gboolean authenticated = FALSE;
+	CamelServiceAuthType *authtype = NULL;
 
 	while (!authenticated) {
 		if (errbuf) {
@@ -2438,7 +2443,28 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 		if (is->state == IMAPX_AUTHENTICATED)
 			break;
 
-		if (service->url->passwd == NULL) {
+		if (!authtype && service->url->authmech) {
+			if (is->cinfo && !g_hash_table_lookup (is->cinfo->auth_types, service->url->authmech)) {
+				camel_exception_setv (
+					ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+					_("IMAP server %s does not support requested "
+					  "authentication type %s"),
+					service->url->host,
+					service->url->authmech);
+				goto exception;
+			}
+
+			authtype = camel_sasl_authtype (service->url->authmech);
+			if (!authtype) {
+				camel_exception_setv (
+					ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+					_("No support for authentication type %s"),
+					service->url->authmech);
+				goto exception;
+			}
+		}
+
+		if (service->url->passwd == NULL && (!authtype || authtype->need_password)) {
 			gchar *base_prompt;
 			gchar *full_prompt;
 
@@ -2467,9 +2493,8 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 			}
 		}
 
-		if (service->url->authmech
-				&& (sasl = camel_sasl_new("imap", service->url->authmech, NULL))) {
-			ic = camel_imapx_command_new("AUTHENTICATE", NULL, "AUTHENTICATE %A", sasl);
+		if (authtype && (sasl = camel_sasl_new ("imap", authtype->authproto, service))) {
+			ic = camel_imapx_command_new ("AUTHENTICATE", NULL, "AUTHENTICATE %A", sasl);
 			camel_object_unref(sasl);
 		} else {
 			ic = camel_imapx_command_new("LOGIN", NULL, "LOGIN %s %s", service->url->user, service->url->passwd);
