@@ -4411,6 +4411,7 @@ camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, Cam
 
 	job = g_malloc0(sizeof(*job));
 	job->pri = IMAPX_PRIORITY_APPEND_MESSAGE;
+	job->ex = ex;
 	job->type = IMAPX_JOB_APPEND_MESSAGE;
 	job->start = imapx_job_append_message_start;
 	job->folder = folder;
