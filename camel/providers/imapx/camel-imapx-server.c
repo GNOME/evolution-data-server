@@ -33,7 +33,7 @@
 #endif
 
 #define c(x)
-#define e(x) 
+#define e(x)
 
 #define CFS_CLASS(x) ((CamelFolderSummaryClass *)((CamelObject *)x)->klass)
 
@@ -4412,7 +4412,6 @@ camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, Cam
 	job = g_malloc0(sizeof(*job));
 	job->pri = IMAPX_PRIORITY_APPEND_MESSAGE;
 	job->type = IMAPX_JOB_APPEND_MESSAGE;
-	job->noreply = 1;
 	job->start = imapx_job_append_message_start;
 	job->folder = folder;
 	g_object_ref (folder);
