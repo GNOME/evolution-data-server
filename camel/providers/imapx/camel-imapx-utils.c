@@ -144,6 +144,7 @@ imapx_write_flags(CamelStream *stream, guint32 flags, CamelFlag *user_flags, Cam
 /* throws IO exception */
 {
 	gint i;
+	gboolean first = TRUE;
 
 	if (camel_stream_write(stream, "(", 1) == -1) {
 		camel_exception_setv (ex, 1, "io error: %s", strerror(errno));
@@ -154,30 +155,29 @@ imapx_write_flags(CamelStream *stream, guint32 flags, CamelFlag *user_flags, Cam
 		if (flag_table[i].flag & flags) {
 			if (flags & CAMEL_IMAPX_MESSAGE_RECENT)
 				continue;
-
+			if (!first && camel_stream_write(stream, " ", 1) == -1) {
+				camel_exception_setv (ex, 1, "io error: %s", strerror(errno));
+				return;
+			}
+			first = FALSE;
 			if (camel_stream_write (stream, flag_table[i].name, strlen(flag_table[i].name)) == -1) {
 				camel_exception_setv (ex,1, "io error: %s", strerror(errno));
 				return;
 			}
 
 			flags &= ~flag_table[i].flag;
-			if (flags != 0 && user_flags == NULL)
-				if (camel_stream_write(stream, " ", 1) == -1) {
-					camel_exception_setv (ex, 1, "io error: %s", strerror(errno));
-					return;
-				}
 		}
 	}
 
 	while (user_flags) {
 		const gchar *flag_name = rename_label_flag (user_flags->name, strlen (user_flags->name), FALSE);
 
-		if (camel_stream_write(stream, flag_name, strlen (flag_name)) == -1) {
+		if (!first && camel_stream_write(stream, " ", 1) == -1) {
 			camel_exception_setv (ex, 1, "io error: %s", strerror(errno));
 			return;
 		}
-
-		if (user_flags->next && camel_stream_write(stream, " ", 1) == -1) {
+		first = FALSE;
+		if (camel_stream_write(stream, flag_name, strlen (flag_name)) == -1) {
 			camel_exception_setv (ex, 1, "io error: %s", strerror(errno));
 			return;
 		}
