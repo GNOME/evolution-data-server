@@ -113,6 +113,10 @@ gboolean	camel_imap_expunge_uids_resyncing
 						 GPtrArray *uids,
 						 CamelException *ex);
 
+void		camel_imap_expunge_uids_only	(CamelFolder *folder,
+						 GPtrArray *uids,
+						 CamelException *ex);
+
 G_END_DECLS
 
 #endif /* CAMEL_IMAP_FOLDER_H */

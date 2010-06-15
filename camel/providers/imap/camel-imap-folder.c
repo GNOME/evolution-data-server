@@ -121,6 +121,12 @@ static CamelImapMessageInfo * imap_folder_summary_uid_or_error(
 	const gchar * uid,
 	CamelException *ex);
 
+static gboolean
+imap_transfer_messages (CamelFolder *source, GPtrArray *uids,
+			CamelFolder *dest, GPtrArray **transferred_uids,
+			gboolean delete_originals, CamelException *ex,
+			gboolean can_call_sync);
+
 #ifdef G_OS_WIN32
 /* The strtok() in Microsoft's C library is MT-safe (but still uses
  * only one buffer pointer per thread, but for the use of strtok_r()
@@ -259,7 +265,7 @@ camel_imap_folder_class_init (CamelImapFolderClass *class)
 	folder_class->get_quota_info = imap_get_quota_info;
 	folder_class->refresh_info = imap_refresh_info;
 	folder_class->expunge = imap_expunge;
-	folder_class->sync= imap_sync;
+	folder_class->sync = imap_sync;
 	folder_class->append_message = imap_append_online;
 	folder_class->sync_message = imap_sync_message;
 	folder_class->transfer_messages_to = imap_transfer_online;
@@ -395,6 +401,14 @@ camel_imap_folder_new (CamelStore *parent, const gchar *folder_name,
 	} else {
 		if ((imap_store->parameters & (IMAP_PARAM_FILTER_JUNK|IMAP_PARAM_FILTER_JUNK_INBOX)) == (IMAP_PARAM_FILTER_JUNK))
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
+
+		if ((parent->flags & CAMEL_STORE_VTRASH) == 0 && imap_store->real_trash_path && g_ascii_strcasecmp (imap_store->real_trash_path, folder_name) == 0) {
+			folder->folder_flags |= CAMEL_FOLDER_IS_TRASH;
+		}
+
+		if ((parent->flags & CAMEL_STORE_VJUNK) == 0 && imap_store->real_junk_path && g_ascii_strcasecmp (imap_store->real_junk_path, folder_name) == 0) {
+			folder->folder_flags |= CAMEL_FOLDER_IS_JUNK;
+		}
 	}
 
 	imap_folder->search = camel_imap_search_new(folder_dir);
@@ -1245,7 +1259,7 @@ get_message_uid (CamelFolder *folder, CamelImapMessageInfo *info)
  * caller must free the infos, the array, and the set string.
  */
 static GPtrArray *
-get_matching (CamelFolder *folder, guint32 flags, guint32 mask, CamelMessageInfo *master_info, gchar **set, GPtrArray *summary)
+get_matching (CamelFolder *folder, guint32 flags, guint32 mask, CamelMessageInfo *master_info, gchar **set, GPtrArray *summary, GPtrArray *deleted_uids, GPtrArray *junked_uids)
 {
 	GPtrArray *matches;
 	CamelImapMessageInfo *info;
@@ -1343,6 +1357,12 @@ get_matching (CamelFolder *folder, guint32 flags, guint32 mask, CamelMessageInfo
 			}
 		}
 
+		if (deleted_uids && (info->info.flags & CAMEL_MESSAGE_DELETED) != 0) {
+			g_ptr_array_add (deleted_uids, (gpointer) camel_pstring_strdup (camel_message_info_uid (info)));
+		} else if (junked_uids && (info->info.flags & CAMEL_MESSAGE_JUNK) != 0) {
+			g_ptr_array_add (junked_uids, (gpointer) camel_pstring_strdup (camel_message_info_uid (info)));
+		}
+
 		g_ptr_array_add (matches, info);
 		/* Remove the uid from the list, to optimize*/
 		camel_pstring_free(summary->pdata[i]);
@@ -1414,6 +1434,26 @@ imap_sync_offline (CamelFolder *folder,
 	return TRUE;
 }
 
+static void
+move_messages (CamelFolder *src_folder, GPtrArray *uids, CamelFolder *des_folder, CamelException *ex)
+{
+	g_return_if_fail (src_folder != NULL);
+
+	/* it's OK to have these NULL */
+	if (!uids || uids->len == 0 || des_folder == NULL)
+		return;
+
+	/* moving to the same folder means expunge only */
+	if (src_folder != des_folder) {
+		/* do 'copy' to not be bothered with CAMEL_MESSAGE_DELETED again */
+		if (!imap_transfer_messages (src_folder, uids, des_folder, NULL, FALSE, ex, FALSE))
+			return;
+	}
+
+	if (!camel_exception_is_set (ex))
+		camel_imap_expunge_uids_only (src_folder, uids, ex);
+}
+
 static gboolean
 imap_sync (CamelFolder *folder,
            gboolean expunge,
@@ -1425,8 +1465,9 @@ imap_sync (CamelFolder *folder,
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
 	gboolean success;
 	CamelException local_ex;
+	CamelFolder *real_trash = NULL, *real_junk = NULL;
 
-	GPtrArray *matches, *summary;
+	GPtrArray *matches, *summary, *deleted_uids = NULL, *junked_uids = NULL;
 	gchar *set, *flaglist, *uid;
 	gint i, j, max;
 
@@ -1455,6 +1496,53 @@ imap_sync (CamelFolder *folder,
 	camel_folder_sort_uids (folder, summary);
 	max = summary->len;
 
+	/* deleted_uids is NULL when not using real trash */
+	if (store->real_trash_path && *store->real_trash_path) {
+		if ((folder->folder_flags & CAMEL_FOLDER_IS_TRASH) != 0) {
+			/* syncing the trash, expunge deleted when found any */
+			real_trash = folder;
+			g_object_ref (real_trash);
+		} else {
+			CamelException ex2;
+
+			camel_exception_init (&ex2);
+			real_trash = camel_store_get_trash (parent_store, &ex2);
+			camel_exception_clear (&ex2);
+
+			if (!store->real_trash_path && real_trash) {
+				/* failed to open real trash */
+				g_object_unref (real_trash);
+				real_trash = NULL;
+			}
+		}
+	}
+
+	if (real_trash)
+		deleted_uids = g_ptr_array_new ();
+
+	/* junked_uids is NULL when not using real junk */
+	if (store->real_junk_path && *store->real_junk_path) {
+		if ((folder->folder_flags & CAMEL_FOLDER_IS_JUNK) != 0) {
+			/* syncing the junk, but cannot move messages to itself, thus do nothing */
+			real_junk = NULL;
+		} else {
+			CamelException ex2;
+
+			camel_exception_init (&ex2);
+			real_junk = camel_store_get_junk (parent_store, &ex2);
+			camel_exception_clear (&ex2);
+
+			if (!store->real_junk_path && real_junk) {
+				/* failed to open real junk */
+				g_object_unref (real_junk);
+				real_junk = NULL;
+			}
+		}
+	}
+
+	if (real_junk)
+		junked_uids = g_ptr_array_new ();
+
 	for (i = 0; i < max; i++) {
 		gboolean unset = FALSE;
 		CamelImapResponse *response = NULL;
@@ -1479,7 +1567,8 @@ imap_sync (CamelFolder *folder,
 		   they will be scooped up later by our parent loop (I
 		   think?). -- Jeff */
 		matches = get_matching (folder, info->info.flags & (folder->permanent_flags | CAMEL_MESSAGE_FOLDER_FLAGGED),
-					folder->permanent_flags | CAMEL_MESSAGE_FOLDER_FLAGGED, (CamelMessageInfo *)info, &set, summary);
+					folder->permanent_flags | CAMEL_MESSAGE_FOLDER_FLAGGED, (CamelMessageInfo *)info, &set, summary,
+					deleted_uids, junked_uids);
 		if (matches == NULL) {
 			camel_message_info_free(info);
 			continue;
@@ -1490,6 +1579,11 @@ imap_sync (CamelFolder *folder,
 			g_free(set);
 			camel_message_info_free(info);
 			break;
+		}
+
+		if (deleted_uids && (info->info.flags & CAMEL_MESSAGE_DELETED) != 0) {
+			/* there is a real trash, do not set it on the server */
+			info->info.flags &= ~CAMEL_MESSAGE_DELETED;
 		}
 
 		flaglist = imap_create_flag_list (info->info.flags & folder->permanent_flags, (CamelMessageInfo *)info, folder->permanent_flags);
@@ -1539,6 +1633,11 @@ imap_sync (CamelFolder *folder,
 		if (!camel_exception_is_set (&local_ex)) {
 			for (j = 0; j < matches->len; j++) {
 				info = matches->pdata[j];
+				if (deleted_uids) {
+					/* there is a real trash, do not keep this set */
+					info->info.flags &= ~CAMEL_MESSAGE_DELETED;
+				}
+
 				info->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
 				((CamelImapMessageInfo *) info)->server_flags =	info->info.flags & CAMEL_IMAP_SERVER_FLAGS;
 				info->info.dirty = TRUE; /* Sync it back to the DB */
@@ -1560,6 +1659,18 @@ imap_sync (CamelFolder *folder,
 		/* check for an exception */
 		if (camel_exception_is_set (&local_ex)) {
 			camel_exception_xfer (ex, &local_ex);
+			if (deleted_uids) {
+				g_ptr_array_foreach (deleted_uids, (GFunc) camel_pstring_free, NULL);
+				g_ptr_array_free (deleted_uids, TRUE);
+			}
+			if (junked_uids) {
+				g_ptr_array_foreach (junked_uids, (GFunc) camel_pstring_free, NULL);
+				g_ptr_array_free (junked_uids, TRUE);
+			}
+			if (real_trash)
+				g_object_unref (real_trash);
+			if (real_junk)
+				g_object_unref (real_junk);
 			return FALSE;
 		}
 
@@ -1567,7 +1678,27 @@ imap_sync (CamelFolder *folder,
 		camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 	}
 
-	if (expunge)
+	if (!camel_exception_is_set (ex))
+		move_messages (folder, deleted_uids, real_trash, &local_ex);
+	if (!camel_exception_is_set (&local_ex))
+		move_messages (folder, junked_uids, real_junk, &local_ex);
+	if (camel_exception_is_set (&local_ex))
+		camel_exception_xfer (ex, &local_ex);
+
+	if (deleted_uids) {
+		g_ptr_array_foreach (deleted_uids, (GFunc) camel_pstring_free, NULL);
+		g_ptr_array_free (deleted_uids, TRUE);
+	}
+	if (junked_uids) {
+		g_ptr_array_foreach (junked_uids, (GFunc) camel_pstring_free, NULL);
+		g_ptr_array_free (junked_uids, TRUE);
+	}
+	if (real_trash)
+		g_object_unref (real_trash);
+	if (real_junk)
+		g_object_unref (real_junk);
+
+	if (expunge && !camel_exception_is_set (ex))
 		imap_expunge (folder, ex);
 
 	g_ptr_array_foreach (summary, (GFunc) camel_pstring_free, NULL);
@@ -1735,7 +1866,7 @@ imap_expunge (CamelFolder *folder,
               CamelException *ex)
 {
 	CamelStore *parent_store;
-	GPtrArray *uids;
+	GPtrArray *uids = NULL;
 	const gchar *full_name;
 	gboolean success;
 
@@ -1743,7 +1874,25 @@ imap_expunge (CamelFolder *folder,
 	parent_store = camel_folder_get_parent_store (folder);
 
 	camel_folder_summary_save_to_db (folder->summary, ex);
-	uids = camel_db_get_folder_deleted_uids (parent_store->cdb_r, full_name, ex);
+
+	if ((parent_store->flags & CAMEL_STORE_VTRASH) == 0) {
+		CamelFolder *trash;
+		CamelException ex2;
+
+		camel_exception_init (&ex2);
+		trash = camel_store_get_trash (parent_store, &ex2);
+
+		if (!camel_exception_is_set (&ex2) && trash && (folder == trash || g_ascii_strcasecmp (full_name, camel_folder_get_full_name (trash)) == 0)) {
+			/* it's a real trash folder, thus get all mails from there */
+			uids = camel_folder_summary_array (folder->summary);
+		}
+
+		camel_exception_clear (&ex2);
+	}
+
+	if (!uids)
+		uids = camel_db_get_folder_deleted_uids (parent_store->cdb_r, full_name, ex);
+
 	if (!uids)
 		return TRUE;
 
@@ -1927,6 +2076,24 @@ camel_imap_expunge_uids_resyncing (CamelFolder *folder,
 	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return TRUE;
+}
+
+void
+camel_imap_expunge_uids_only (CamelFolder *folder, GPtrArray *uids, CamelException *ex)
+{
+	CamelStore *parent_store;
+
+	g_return_if_fail (folder != NULL);
+
+	parent_store = camel_folder_get_parent_store (folder);
+	g_return_if_fail (parent_store != NULL);
+
+	g_return_if_fail (uids != NULL);
+
+	if (CAMEL_OFFLINE_STORE (parent_store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL)
+		camel_imap_expunge_uids_resyncing (folder, uids, ex);
+	else
+		imap_expunge_uids_offline (folder, uids, ex);
 }
 
 static gchar *
@@ -2528,12 +2695,13 @@ do_copy (CamelFolder *source,
 }
 
 static gboolean
-imap_transfer_online (CamelFolder *source,
-                      GPtrArray *uids,
-                      CamelFolder *dest,
-                      GPtrArray **transferred_uids,
-                      gboolean delete_originals,
-                      CamelException *ex)
+imap_transfer_messages (CamelFolder *source,
+			GPtrArray *uids,
+			CamelFolder *dest,
+			GPtrArray **transferred_uids,
+			gboolean delete_originals,
+			CamelException *ex,
+			gboolean can_call_sync)
 {
 	CamelStore *parent_store;
 	CamelImapStore *store;
@@ -2549,7 +2717,7 @@ imap_transfer_online (CamelFolder *source,
 			delete_originals, ex);
 
 	/* Sync message flags if needed. */
-	if (!imap_sync (source, FALSE, ex))
+	if (can_call_sync && !imap_sync (source, FALSE, ex))
 		return FALSE;
 
 	count = camel_folder_summary_count (dest->summary);
@@ -2570,6 +2738,17 @@ imap_transfer_online (CamelFolder *source,
 		*transferred_uids = NULL;
 
 	return success;
+}
+
+static gboolean
+imap_transfer_online (CamelFolder *source,
+                      GPtrArray *uids,
+                      CamelFolder *dest,
+                      GPtrArray **transferred_uids,
+                      gboolean delete_originals,
+                      CamelException *ex)
+{
+	return imap_transfer_messages (source, uids, dest, transferred_uids, delete_originals, ex, TRUE);
 }
 
 gboolean

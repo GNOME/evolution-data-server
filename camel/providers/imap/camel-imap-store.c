@@ -140,6 +140,8 @@ imap_store_finalize (GObject *object)
 	g_free (imap_store->storage_path);
 	g_free (imap_store->users_namespace);
 	g_free (imap_store->custom_headers);
+	g_free (imap_store->real_trash_path);
+	g_free (imap_store->real_junk_path);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imap_store_parent_class)->finalize (object);
@@ -253,6 +255,27 @@ construct (CamelService *service, CamelSession *session,
 
 	if (camel_url_get_param (url, "imap_custom_headers")) {
 		imap_store->custom_headers = g_strdup(camel_url_get_param (url, "imap_custom_headers"));
+	}
+
+	imap_store->real_trash_path = g_strdup (camel_url_get_param (url, "real_trash_path"));
+	imap_store->real_junk_path = g_strdup (camel_url_get_param (url, "real_junk_path"));
+
+	if (imap_store->real_trash_path && !*imap_store->real_trash_path) {
+		g_free (imap_store->real_trash_path);
+		imap_store->real_trash_path = NULL;
+	}
+
+	if (imap_store->real_trash_path && *imap_store->real_trash_path)
+		store->flags &= ~CAMEL_STORE_VTRASH;
+
+	if (imap_store->real_junk_path && !*imap_store->real_junk_path) {
+		g_free (imap_store->real_junk_path);
+		imap_store->real_junk_path = NULL;
+	}
+
+	if (imap_store->real_junk_path && *imap_store->real_junk_path) {
+		store->flags &= ~CAMEL_STORE_VJUNK;
+		store->flags |= CAMEL_STORE_REAL_JUNK_FOLDER;
 	}
 
 	/* setup/load the store summary */
@@ -1548,7 +1571,29 @@ done:
 static CamelFolder *
 imap_get_trash(CamelStore *store, CamelException *ex)
 {
-	CamelFolder *folder = CAMEL_STORE_CLASS(camel_imap_store_parent_class)->get_trash(store, ex);
+	CamelFolder *folder = NULL;
+	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
+
+	if (imap_store->real_trash_path && *imap_store->real_trash_path) {
+		CamelException ex2;
+
+		camel_exception_init (&ex2);
+
+		folder = camel_store_get_folder (store, imap_store->real_trash_path, 0, &ex2);
+		if (!folder) {
+			/* cannot find configured folder, just report on console and unset in a store structure to not try again */
+			g_print ("%s: Cannot open '%s': %s", G_STRFUNC, imap_store->real_trash_path, camel_exception_get_description (&ex2) ? camel_exception_get_description (&ex2) : "Unknown error.");
+			g_free (imap_store->real_trash_path);
+			imap_store->real_trash_path = NULL;
+		}
+
+		camel_exception_clear (&ex2);
+	}
+
+	if (folder)
+		return folder;
+
+	folder = CAMEL_STORE_CLASS(camel_imap_store_parent_class)->get_trash(store, ex);
 
 	if (folder) {
 		CamelObject *object = CAMEL_OBJECT (folder);
@@ -1566,7 +1611,29 @@ imap_get_trash(CamelStore *store, CamelException *ex)
 static CamelFolder *
 imap_get_junk(CamelStore *store, CamelException *ex)
 {
-	CamelFolder *folder = CAMEL_STORE_CLASS(camel_imap_store_parent_class)->get_junk(store, ex);
+	CamelFolder *folder = NULL;
+	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
+
+	if (imap_store->real_junk_path && *imap_store->real_junk_path) {
+		CamelException ex2;
+
+		camel_exception_init (&ex2);
+
+		folder = camel_store_get_folder (store, imap_store->real_junk_path, 0, &ex2);
+		if (!folder) {
+			/* cannot find configured folder, just report on console and unset in a store structure to not try again */
+			g_print ("%s: Cannot open '%s': %s", G_STRFUNC, imap_store->real_junk_path, camel_exception_get_description (&ex2) ? camel_exception_get_description (&ex2) : "Unknown error.");
+			g_free (imap_store->real_junk_path);
+			imap_store->real_junk_path = NULL;
+		}
+
+		camel_exception_clear (&ex2);
+	}
+
+	if (folder)
+		return folder;
+
+	folder = CAMEL_STORE_CLASS(camel_imap_store_parent_class)->get_junk(store, ex);
 
 	if (folder) {
 		CamelObject *object = CAMEL_OBJECT (folder);
@@ -2845,6 +2912,18 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 			/* blah, this gets lost somewhere, i can't be bothered finding out why */
 			if (!g_ascii_strcasecmp(fi->full_name, "inbox"))
 				fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK) | CAMEL_FOLDER_TYPE_INBOX;
+
+			if ((fi->flags & CAMEL_FOLDER_TYPE_MASK) == 0 &&
+			    imap_store->real_trash_path && *imap_store->real_trash_path &&
+			    g_ascii_strcasecmp (fi->full_name, imap_store->real_trash_path) == 0) {
+				fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK) | CAMEL_FOLDER_TYPE_TRASH;
+			}
+
+			if ((fi->flags & CAMEL_FOLDER_TYPE_MASK) == 0 &&
+			    imap_store->real_junk_path && *imap_store->real_junk_path &&
+			    g_ascii_strcasecmp (fi->full_name, imap_store->real_junk_path) == 0) {
+				fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK) | CAMEL_FOLDER_TYPE_JUNK;
+			}
 
 			if (si->flags & CAMEL_FOLDER_NOSELECT) {
 				CamelURL *url = camel_url_new(fi->uri, NULL);

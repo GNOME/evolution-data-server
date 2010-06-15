@@ -160,6 +160,8 @@ struct _CamelImapStore {
 
 	guint32 headers;
 	gchar *custom_headers;
+
+	gchar *real_trash_path, *real_junk_path;
 };
 
 struct _CamelImapStoreClass {
