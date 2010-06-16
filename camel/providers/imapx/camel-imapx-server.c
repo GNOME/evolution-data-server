@@ -903,11 +903,7 @@ imapx_command_start_next(CamelIMAPXServer *is, CamelException *ex)
 				c(printf("* queueing job %3d '%s'\n", (gint)ic->pri, ic->name));
 				pri = ic->pri;
 				camel_dlist_remove((CamelDListNode *)ic);
-				if (!imapx_command_start(is, ic)) {
-					QUEUE_UNLOCK (is);
-					ic->complete (is, ic);
-					QUEUE_LOCK (is);
-				}
+				imapx_command_start(is, ic);
 				count++;
 			}
 			ic = nc;
