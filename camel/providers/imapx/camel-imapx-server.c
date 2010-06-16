@@ -3814,34 +3814,27 @@ imapx_job_sync_changes_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 static void
 cancel_all_jobs (CamelIMAPXServer *is, CamelException *ex)
 {
-	CamelIMAPXCommand *cw, *cn;
+	CamelIMAPXCommand **cw, *ic;
 	gint i = 0;
 
 	while (i < 2) {
 		QUEUE_LOCK(is);
 		if (i == 1)
-			cw = (CamelIMAPXCommand *) is->queue.head;
+			cw = (CamelIMAPXCommand **) &is->queue.head;
 		else
-			cw = (CamelIMAPXCommand *) is->active.head;
+			cw = (CamelIMAPXCommand **) &is->active.head;
 
-		cn = cw->next;
-		QUEUE_UNLOCK(is);
-
-		while (cn) {
-			QUEUE_LOCK(is);
-			camel_dlist_remove ((CamelDListNode *)cw);
+		while ((*cw)->next) {
+			ic = *cw;
+			camel_dlist_remove ((CamelDListNode *)ic);
 			QUEUE_UNLOCK(is);
 
-			camel_exception_set (cw->ex, ex->id, ex->desc);
-
-			cw->complete (is, cw);
-			cw = cn;
+			camel_exception_set (ic->ex, ex->id, ex->desc);
+			ic->complete (is, ic);
 
 			QUEUE_LOCK(is);
-			cn = cn->next;
-			QUEUE_UNLOCK(is);
 		}
-
+		QUEUE_UNLOCK(is);
 		i++;
 	}
 }
