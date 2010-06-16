@@ -4077,8 +4077,6 @@ imapx_server_constructed (GObject *object)
 	class->tagprefix++;
 	if (class->tagprefix > 'Z')
 		class->tagprefix = 'A';
-	server->tagprefix = 'A';
-
 }
 
 static void
