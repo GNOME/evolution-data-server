@@ -1666,7 +1666,7 @@ imapx_command_run(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		imapx_step(is, ic->ex);
 	} while (ic->status == NULL && !camel_exception_is_set (ic->ex));
 	if (is->literal == ic)
-		is->literal = NULL; 
+		is->literal = NULL;
 
 	QUEUE_LOCK(is);
 	camel_dlist_remove((CamelDListNode *)ic);
@@ -4092,11 +4092,6 @@ imapx_disconnect (CamelIMAPXServer *is)
 	if (is->select_pending) {
 		camel_object_unref(is->select_pending);
 		is->select_pending = NULL;
-	}
-
-	if (is->literal) {
-		camel_imapx_command_free (is->literal);
-		is->literal = NULL;
 	}
 
 	if (is->cinfo) {
