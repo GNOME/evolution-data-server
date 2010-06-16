@@ -61,8 +61,11 @@ G_DEFINE_TYPE(EDataBookFactory, e_data_book_factory, G_TYPE_OBJECT);
 #define E_DATA_BOOK_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_DATA_BOOK_FACTORY, EDataBookFactoryPrivate))
 
 struct _EDataBookFactoryPrivate {
-	/* TODO: as the factory is not threaded these locks could be removed */
+	/* 'protocol' -> EBookBackendFactory hash table */
+	GHashTable *factories;
+
 	GMutex *backends_lock;
+	/* 'uri' -> EBookBackend */
 	GHashTable *backends;
 
 	GMutex *books_lock;
@@ -89,15 +92,15 @@ e_data_book_factory_error_quark (void)
 }
 
 /**
- * e_data_book_factory_register_backend:
+ * e_data_book_factory_register_backend_factory:
  * @factory: an #EDataBookFactory
  * @backend_factory: an #EBookBackendFactory
  *
  * Registers @backend_factory with @factory.
  **/
 static void
-e_data_book_factory_register_backend (EDataBookFactory      *book_factory,
-				      EBookBackendFactory   *backend_factory)
+e_data_book_factory_register_backend_factory (EDataBookFactory    *book_factory,
+					      EBookBackendFactory *backend_factory)
 {
 	const gchar *proto;
 
@@ -106,12 +109,11 @@ e_data_book_factory_register_backend (EDataBookFactory      *book_factory,
 
 	proto = E_BOOK_BACKEND_FACTORY_GET_CLASS (backend_factory)->get_protocol (backend_factory);
 
-	if (g_hash_table_lookup (book_factory->priv->backends, proto) != NULL) {
-		g_warning ("e_data_book_factory_register_backend: "
-			   "Proto \"%s\" already registered!\n", proto);
+	if (g_hash_table_lookup (book_factory->priv->factories, proto) != NULL) {
+		g_warning ("%s: Proto \"%s\" already registered!\n", G_STRFUNC, proto);
 	}
 
-	g_hash_table_insert (book_factory->priv->backends,
+	g_hash_table_insert (book_factory->priv->factories,
 			     g_strdup (proto), backend_factory);
 }
 
@@ -131,7 +133,7 @@ e_data_book_factory_register_backends (EDataBookFactory *book_factory)
 	for (f = factories; f; f = f->next) {
 		EBookBackendFactory *backend_factory = f->data;
 
-		e_data_book_factory_register_backend (book_factory, g_object_ref (backend_factory));
+		e_data_book_factory_register_backend_factory (book_factory, g_object_ref (backend_factory));
 	}
 
 	e_data_server_extension_list_free (factories);
@@ -141,13 +143,11 @@ e_data_book_factory_register_backends (EDataBookFactory *book_factory)
 static void
 set_backend_online_status (gpointer key, gpointer value, gpointer data)
 {
-	GList *books;
-	EBookBackend *backend = NULL;
+	EBookBackend *backend = E_BOOK_BACKEND (value);
 
-	for (books = (GList *) value; books; books = g_list_next (books)) {
-		backend =  E_BOOK_BACKEND (books->data);
-		e_book_backend_set_mode (backend,  GPOINTER_TO_INT (data));
-	}
+	g_return_if_fail (backend != NULL);
+
+	e_book_backend_set_mode (backend,  GPOINTER_TO_INT (data));
 }
 
 /**
@@ -163,9 +163,9 @@ e_data_book_factory_set_backend_mode (EDataBookFactory *factory, gint mode)
 	EDataBookFactoryPrivate *priv = factory->priv;
 
 	priv->mode = mode;
-	g_mutex_lock (priv->connections_lock);
-	g_hash_table_foreach (priv->connections, set_backend_online_status, GINT_TO_POINTER (priv->mode));
-	g_mutex_unlock (priv->connections_lock);
+	g_mutex_lock (priv->backends_lock);
+	g_hash_table_foreach (priv->backends, set_backend_online_status, GINT_TO_POINTER (priv->mode));
+	g_mutex_unlock (priv->backends_lock);
 }
 
 static void
@@ -181,8 +181,10 @@ e_data_book_factory_init (EDataBookFactory *factory)
 {
 	factory->priv = E_DATA_BOOK_FACTORY_GET_PRIVATE (factory);
 
+	factory->priv->factories = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
 	factory->priv->backends_lock = g_mutex_new ();
-	factory->priv->backends = g_hash_table_new (g_str_hash, g_str_equal);
+	factory->priv->backends = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
 	factory->priv->books_lock = g_mutex_new ();
 	factory->priv->books = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
@@ -223,7 +225,7 @@ e_data_book_factory_lookup_backend_factory (EDataBookFactory *factory,
 		return NULL;
 	}
 
-	backend_factory = g_hash_table_lookup (factory->priv->backends, proto);
+	backend_factory = g_hash_table_lookup (factory->priv->factories, proto);
 
 	g_free (proto);
 
@@ -277,6 +279,16 @@ my_remove (gchar *key, GObject *dead)
 }
 
 static void
+backend_gone_cb (const gchar *uri, GObject *backend)
+{
+	EDataBookFactoryPrivate *priv = factory->priv;
+
+	g_mutex_lock (priv->backends_lock);
+	g_hash_table_remove (priv->backends, uri);
+	g_mutex_unlock (priv->backends_lock);
+}
+
+static void
 impl_BookFactory_getBook(EDataBookFactory *factory, const gchar *IN_source, DBusGMethodInvocation *context)
 {
 	EDataBook *book;
@@ -318,7 +330,11 @@ impl_BookFactory_getBook(EDataBookFactory *factory, const gchar *IN_source, DBus
 			backend = e_book_backend_factory_new_backend (backend_factory);
 
 		if (backend) {
-			g_hash_table_insert (priv->backends, g_strdup (uri), backend);
+			gchar *uri_key = g_strdup (uri);
+
+			g_hash_table_insert (priv->backends, uri_key, backend);
+			g_object_weak_ref (G_OBJECT (backend), (GWeakNotify) backend_gone_cb, uri_key);
+			g_signal_connect (backend, "last-client-gone", G_CALLBACK (g_object_unref), NULL);
 			e_book_backend_set_mode (backend, priv->mode);
 		}
 	}

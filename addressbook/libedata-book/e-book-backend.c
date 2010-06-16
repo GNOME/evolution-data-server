@@ -1043,7 +1043,7 @@ e_book_backend_class_init (EBookBackendClass *klass)
 	object_class->dispose = e_book_backend_dispose;
 
 	e_book_backend_signals[LAST_CLIENT_GONE] =
-		g_signal_new ("last_client_gone",
+		g_signal_new ("last-client-gone",
 			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (EBookBackendClass, last_client_gone),

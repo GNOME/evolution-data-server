@@ -230,6 +230,7 @@ e_data_server_get_extensions_for_type (GType type)
 		if (G_TYPE_CHECK_INSTANCE_TYPE (G_OBJECT (l->data),
 						type)) {
 			g_object_ref (l->data);
+			g_message ("adding type `%s'", G_OBJECT_TYPE_NAME (l->data));
 			ret = g_list_prepend (ret, l->data);
 		}
 	}
@@ -252,8 +253,6 @@ void
 e_data_server_module_add_type (GType type)
 {
 	GObject *object;
-
-	g_message ("adding type `%s'", g_type_name (type));
 
 	object = g_object_new (type, NULL);
 	g_object_weak_ref (object,
