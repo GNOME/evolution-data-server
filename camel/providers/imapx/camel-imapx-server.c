@@ -4009,7 +4009,6 @@ imapx_server_init(CamelIMAPXServer *is, CamelIMAPXServerClass *isclass)
 	isclass->tagprefix++;
 	if (isclass->tagprefix > 'Z')
 		isclass->tagprefix = 'A';
-	is->tagprefix = 'A';
 
 	is->state = IMAPX_DISCONNECTED;
 
