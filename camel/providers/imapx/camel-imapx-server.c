@@ -2420,6 +2420,16 @@ imapx_connect_to_server (CamelIMAPXServer *is, CamelException *ex)
 			camel_imapx_command_free(ic);
 			goto exit;
 		}
+
+		/* See if we got new capabilities in the STARTTLS response */
+		imapx_free_capability(is->cinfo);
+		is->cinfo = NULL;
+		if (ic->status->condition == IMAPX_CAPABILITY) {
+			is->cinfo = ic->status->u.cinfo;
+			ic->status->u.cinfo = NULL;
+			c(printf("got capability flags %08x\n", is->cinfo->capa));
+		}
+
 		camel_imapx_command_free(ic);
 
 		if (camel_tcp_stream_ssl_enable_ssl (CAMEL_TCP_STREAM_SSL (tcp_stream)) == -1) {
@@ -2427,6 +2437,16 @@ imapx_connect_to_server (CamelIMAPXServer *is, CamelException *ex)
 					_("Failed to connect to IMAP server %s in secure mode: %s"),
 					is->url->host, _("SSL negotiations failed"));
 			goto exit;
+		}
+		/* Get new capabilities if they weren't already given */
+		if (!is->cinfo) {
+			ic = camel_imapx_command_new("CAPABILITY", NULL, "CAPABILITY");
+			imapx_command_run (is, ic);
+			camel_exception_xfer (ex, ic->ex);
+			camel_imapx_command_free(ic);
+
+			if (camel_exception_is_set (ex))
+				goto exit;
 		}
 	}
 #endif
