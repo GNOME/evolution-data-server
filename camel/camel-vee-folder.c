@@ -935,45 +935,63 @@ vee_folder_stop_folder (CamelVeeFolder *vf, CamelFolder *sub)
 }
 
 static void
+vee_folder_dispose (GObject *object)
+{
+	CamelFolder *folder;
+
+	folder = CAMEL_FOLDER (object);
+
+	/* parent's class frees summary on dispose, thus depend on it */
+	if (folder->summary) {
+		CamelVeeFolder *vf;
+		CamelVeeFolder *folder_unmatched;
+		GList *node;
+		CamelFIRecord * record;
+
+		vf = CAMEL_VEE_FOLDER (object);
+		vf->priv->destroyed = TRUE;
+
+		folder_unmatched = vf->parent_vee_store ? vf->parent_vee_store->folder_unmatched : NULL;
+
+		/* Save the counts to DB */
+		if (!vf->deleted) {
+			CamelFolder *folder;
+			CamelStore *parent_store;
+			CamelException ex = CAMEL_EXCEPTION_INITIALISER;
+
+			folder = CAMEL_FOLDER (vf);
+			parent_store = camel_folder_get_parent_store (folder);
+			record = summary_header_to_db (folder->summary, NULL);
+			camel_db_write_folder_info_record (parent_store->cdb_w, record, &ex);
+			g_free (record);
+			camel_exception_clear (&ex);
+		}
+
+		/* This may invoke sub-classes with partially destroyed state, they must deal with this */
+		if (vf == folder_unmatched) {
+			for (node = vf->priv->folders;node;node = g_list_next (node))
+				g_object_unref (node->data);
+		} else {
+			/* FIXME[disk-summary] See if it is really reqd */
+			camel_folder_freeze ((CamelFolder *)vf);
+			while (vf->priv->folders) {
+				CamelFolder *f = vf->priv->folders->data;
+				vee_folder_stop_folder (vf, f);
+			}
+			camel_folder_thaw ((CamelFolder *)vf);
+		}
+	}
+
+	/* Chain up to parent's dispose () method. */
+	G_OBJECT_CLASS (camel_vee_folder_parent_class)->dispose (object);
+}
+
+static void
 vee_folder_finalize (GObject *object)
 {
 	CamelVeeFolder *vf;
-	CamelVeeFolder *folder_unmatched;
-	GList *node;
-	CamelFIRecord * record;
 
 	vf = CAMEL_VEE_FOLDER (object);
-	vf->priv->destroyed = TRUE;
-
-	folder_unmatched = vf->parent_vee_store ? vf->parent_vee_store->folder_unmatched : NULL;
-
-	/* Save the counts to DB */
-	if (!vf->deleted) {
-		CamelFolder *folder;
-		CamelStore *parent_store;
-		CamelException ex = CAMEL_EXCEPTION_INITIALISER;
-
-		folder = CAMEL_FOLDER (vf);
-		parent_store = camel_folder_get_parent_store (folder);
-		record = summary_header_to_db (folder->summary, NULL);
-		camel_db_write_folder_info_record (parent_store->cdb_w, record, &ex);
-		g_free (record);
-		camel_exception_clear (&ex);
-	}
-
-	/* This may invoke sub-classes with partially destroyed state, they must deal with this */
-	if (vf == folder_unmatched) {
-		for (node = vf->priv->folders;node;node = g_list_next (node))
-			g_object_unref (node->data);
-	} else {
-		/* FIXME[disk-summary] See if it is really reqd */
-		camel_folder_freeze ((CamelFolder *)vf);
-		while (vf->priv->folders) {
-			CamelFolder *f = vf->priv->folders->data;
-			vee_folder_stop_folder (vf, f);
-		}
-		camel_folder_thaw ((CamelFolder *)vf);
-	}
 
 	g_free (vf->expression);
 
@@ -1925,6 +1943,7 @@ camel_vee_folder_class_init (CamelVeeFolderClass *class)
 	g_type_class_add_private (class, sizeof (CamelVeeFolderPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = vee_folder_dispose;
 	object_class->finalize = vee_folder_finalize;
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
