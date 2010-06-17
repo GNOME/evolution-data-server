@@ -3190,7 +3190,7 @@ imapx_job_scan_changes_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 	camel_operation_start (job->op, _("Scanning for changed messages in %s"), job->folder->name);
 
 	ic = camel_imapx_command_new ("FETCH", job->folder->full_name,
-				     "FETCH 1:* (UID FLAGS)");
+				     "UID FETCH 1:* (UID FLAGS)");
 	ic->job = job;
 	ic->complete = imapx_job_scan_changes_done;
 	ic->pri = job->pri;
