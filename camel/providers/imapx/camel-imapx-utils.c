@@ -406,8 +406,13 @@ imapx_parse_capability(CamelIMAPXStream *stream, CamelException *ex)
 	cinfo->auth_types = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
 
 	/* FIXME: handle auth types */
-	while (!camel_exception_is_set (ex) && (tok = camel_imapx_stream_token(stream, &token, &len, ex)) != '\n') {
+	while ((tok = camel_imapx_stream_token(stream, &token, &len, ex)) != '\n' &&
+	       !camel_exception_is_set (ex)) {
 		switch (tok) {
+			case ']':
+				/* Put it back so that imapx_untagged() isn't unhappy */
+				camel_imapx_stream_ungettoken(stream, tok, token, len);
+				return cinfo;
 			case 43:
 				token = (guchar *) g_strconcat ((gchar *)token, "+", NULL);
 				free_token = TRUE;
@@ -1635,6 +1640,9 @@ imapx_parse_status(CamelIMAPXStream *is, CamelException *ex)
 				break;
 			case IMAPX_UNSEEN:
 				sinfo->u.unseen = camel_imapx_stream_number(is, ex);
+				break;
+			case IMAPX_CAPABILITY:
+				sinfo->u.cinfo = imapx_parse_capability(is, ex);
 				break;
 			default:
 				sinfo->condition = IMAPX_UNKNOWN;
