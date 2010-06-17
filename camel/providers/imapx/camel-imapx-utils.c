@@ -1698,6 +1698,10 @@ imapx_free_status(struct _status_info *sinfo)
 		g_ptr_array_free (sinfo->u.copyuid.uids, FALSE);
 		g_ptr_array_free (sinfo->u.copyuid.copied_uids, FALSE);
 		break;
+	case IMAPX_CAPABILITY:
+		if (sinfo->u.cinfo)
+			imapx_free_capability(sinfo->u.cinfo);
+		break;
 	default:
 		break;
 	}

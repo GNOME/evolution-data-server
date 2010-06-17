@@ -1433,6 +1433,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 				if (imap->cinfo)
 					imapx_free_capability(imap->cinfo);
 				imap->cinfo = sinfo->u.cinfo;
+				sinfo->u.cinfo = NULL;
 				c(printf("got capability flags %08x\n", imap->cinfo->capa));
 			}
 			break;
@@ -2533,9 +2534,21 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 
 		imapx_command_run (is, ic);
 
-		if (!(camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK))
+		if (!(camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK)) {
+			/* Forget old capabilities after login */
+			if (is->cinfo) {
+				imapx_free_capability(is->cinfo);
+				is->cinfo = NULL;
+			}
+
+			if (ic->status->condition == IMAPX_CAPABILITY) {
+				is->cinfo = ic->status->u.cinfo;
+				ic->status->u.cinfo = NULL;
+				c(printf("got capability flags %08x\n", is->cinfo->capa));
+			}
+
 			authenticated = TRUE;
-		else {
+		} else {
 			/* If exception is set, it might be mostly due to cancellation and we would get an
 			   io error, else re-prompt. If authentication fails for other reasons ic->status would be
 			    set with the error message */
@@ -2558,20 +2571,16 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 	if (camel_exception_is_set (ex))
 		goto exception;
 
-	/* After login we re-capa */
-	if (is->cinfo) {
-		imapx_free_capability(is->cinfo);
-		is->cinfo = NULL;
+	/* After login we re-capa unless the server already told us */
+	if (!is->cinfo) {
+		ic = camel_imapx_command_new("CAPABILITY", NULL, "CAPABILITY");
+		imapx_command_run (is, ic);
+		camel_exception_xfer (ex, ic->ex);
+		camel_imapx_command_free(ic);
+
+		if (camel_exception_is_set (ex))
+			goto exception;
 	}
-	
-
-	ic = camel_imapx_command_new("CAPABILITY", NULL, "CAPABILITY");
-	imapx_command_run (is, ic);
-	camel_exception_xfer (ex, ic->ex);
-	camel_imapx_command_free(ic);
-
-	if (camel_exception_is_set (ex))
-		goto exception;
 
 	is->state = IMAPX_AUTHENTICATED;
 
