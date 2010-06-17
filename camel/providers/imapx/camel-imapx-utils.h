@@ -159,6 +159,7 @@ struct _status_info {
 			GPtrArray *uids;
 			GPtrArray *copied_uids;
 		} copyuid;
+		struct _capability_info *cinfo;
 	} u;
 
 	gchar *text;

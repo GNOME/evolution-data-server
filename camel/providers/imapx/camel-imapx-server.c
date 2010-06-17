@@ -604,8 +604,8 @@ imapx_command_addv(CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 					break;
 				case 'f': /* imap folder name */
 					folder = va_arg(ap, CamelFolder *);
-					c(printf("got folder '%s'\n", s));
 					full_name = camel_folder_get_full_name (folder);
+					c(printf("got folder '%s'\n", full_name));
 					parent_store = camel_folder_get_parent_store (folder);
 					fname = camel_imapx_store_summary_full_from_path(((CamelIMAPXStore *) parent_store)->summary, full_name);
 					if (fname) {
@@ -1392,11 +1392,18 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		}
 		break;
 	}
-	case IMAPX_BYE: case IMAPX_OK: case IMAPX_NO: case IMAPX_BAD: case IMAPX_PREAUTH:
+	case IMAPX_PREAUTH:
+		c(printf("preauthenticated\n"));
+		if (imap->state < IMAPX_AUTHENTICATED)
+			imap->state = IMAPX_AUTHENTICATED;
+		/* fall through... */
+	case IMAPX_BYE: case IMAPX_OK: case IMAPX_NO: case IMAPX_BAD:
 		/* TODO: validate which ones of these can happen as unsolicited responses */
 		/* TODO: handle bye/preauth differently */
 		camel_imapx_stream_ungettoken(imap->stream, tok, token, len);
 		sinfo = imapx_parse_status(imap->stream, ex);
+		if (camel_exception_is_set(ex))
+			return -1;
 		switch (sinfo->condition) {
 		case IMAPX_READ_WRITE:
 			imap->mode = IMAPX_MODE_READ|IMAPX_MODE_WRITE;
@@ -1420,6 +1427,14 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 			break;
 		case IMAPX_PARSE:
 			c(printf("PARSE: %s\n", sinfo->text));
+			break;
+		case IMAPX_CAPABILITY:
+			if (sinfo->u.cinfo) {
+				if (imap->cinfo)
+					imapx_free_capability(imap->cinfo);
+				imap->cinfo = sinfo->u.cinfo;
+				c(printf("got capability flags %08x\n", imap->cinfo->capa));
+			}
 			break;
 		default:
 			break;
@@ -2128,15 +2143,12 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, CamelE
 static gboolean
 connect_to_server_process (CamelIMAPXServer *is, const gchar *cmd, CamelException *ex)
 {
-	CamelIMAPXCommand *ic;
 	CamelStream *cmd_stream;
 	gint ret, i = 0;
 	gchar *buf;
 	gchar *cmd_copy;
 	gchar *full_cmd;
 	gchar *child_env[7];
-	guchar *buffer = NULL;
-	guint len;
 
 	/* Put full details in the environment, in case the connection
 	   program needs them */
@@ -2228,36 +2240,6 @@ connect_to_server_process (CamelIMAPXServer *is, const gchar *cmd, CamelExceptio
 	g_object_unref(cmd_stream);
 	is->is_process_stream = TRUE;
 
-	camel_imapx_stream_gets (is->stream, &buffer, &len);
-	e(printf("Got greeting '%.*s'\n", len, buffer));
-
-	if (!buffer) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-				     "No response from server.\n");
-		return FALSE;
-	} else if (!strncmp((gchar *)buffer, "* PREAUTH", 9)) {
-		is->state = IMAPX_AUTHENTICATED;
-	} else if (strncmp((gchar *)buffer, "* OK", 4)) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-				     "Unrecognised greeting from server: %.*s\n",
-				     len, buffer);
-		return FALSE;
-	}
-
-	ic = camel_imapx_command_new("CAPABILITY", NULL, "CAPABILITY");
-	imapx_command_run(is, ic);
-
-	if (camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK) {
-		if (!camel_exception_is_set (ic->ex))
-			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, "%s", ic->status->text);
-		else
-			camel_exception_xfer (ex, ic->ex);
-
-		camel_imapx_command_free(ic);
-		return FALSE;
-	}
-	camel_imapx_command_free(ic);
-
 	return TRUE;
 }
 #endif /* !G_OS_WIN32 */
@@ -2274,8 +2256,9 @@ imapx_connect_to_server (CamelIMAPXServer *is, CamelException *ex)
 #ifdef HAVE_SSL
 	const gchar *mode;
 #endif
-	guchar *buffer = NULL;
 	guint len;
+	guchar *token;
+	gint tok;
 	const gchar *serv;
 	const gchar *port = NULL;
 	struct addrinfo *ai, hints = { 0 };
@@ -2286,8 +2269,12 @@ imapx_connect_to_server (CamelIMAPXServer *is, CamelException *ex)
 
 	if (camel_url_get_param(is->url, "use_command") &&
 	    (command = camel_url_get_param(is->url, "command"))) {
+		camel_exception_clear(ex);
 		connect_to_server_process(is, command, ex);
-		goto exit;
+		if (camel_exception_is_set (ex))
+			goto exit;
+		else
+			goto connected;
 	}
 #endif		
 	if (is->url->port) {
@@ -2366,22 +2353,48 @@ imapx_connect_to_server (CamelIMAPXServer *is, CamelException *ex)
 	sockopt.value.keep_alive = TRUE;
 	camel_tcp_stream_setsockopt ((CamelTcpStream *)tcp_stream, &sockopt);
 
-	camel_imapx_stream_gets (is->stream, &buffer, &len);
-	e(printf("Got greeting '%.*s'\n", len, buffer));
+ connected:
+	while (1) {
+		// poll ?  wait for other stuff? loop?
+		if (camel_application_is_exiting || is->parser_quit) {
+			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
+					     "Connection to server cancelled\n");
+			return FALSE;
+		}
+			
+		tok = camel_imapx_stream_token (is->stream, &token, &len, ex);
+		if (camel_exception_is_set (ex)) {
+			return FALSE;
+		}
 
-	ic = camel_imapx_command_new("CAPABILITY", NULL, "CAPABILITY");
-	imapx_command_run(is, ic);
-
-	if (camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK) {
-		if (!camel_exception_is_set (ic->ex))
-			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, "%s", ic->status->text);
-		else
-			camel_exception_xfer (ex, ic->ex);
-
-		camel_imapx_command_free(ic);
-		goto exit;
+		if (tok == '*') {
+			imapx_untagged (is, ex);
+			break;
+		}
+		camel_imapx_stream_ungettoken(is->stream, tok, token, len);
+		camel_imapx_stream_text (is->stream, &token, ex);
+		if (camel_exception_is_set (ex)) {
+			return FALSE;
+		}
+		e(printf("Got unexpected line before greeting:  '%s'\n", token));
+		g_free(token);
 	}
-	camel_imapx_command_free(ic);
+
+	if (!is->cinfo) {
+		ic = camel_imapx_command_new("CAPABILITY", NULL, "CAPABILITY");
+		imapx_command_run(is, ic);
+
+		if (camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK) {
+			if (!camel_exception_is_set (ic->ex))
+				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, "%s", ic->status->text);
+			else
+				camel_exception_xfer (ex, ic->ex);
+
+			camel_imapx_command_free(ic);
+			return FALSE;
+		}
+		camel_imapx_command_free(ic);
+	}
 
 #ifdef HAVE_SSL
 	if (ssl_mode == 2)
@@ -2460,7 +2473,7 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 			goto exception;
 
 		if (is->state == IMAPX_AUTHENTICATED)
-			break;
+			goto preauthed;
 
 		if (!authtype && service->url->authmech) {
 			if (is->cinfo && !g_hash_table_lookup (is->cinfo->auth_types, service->url->authmech)) {
@@ -2562,6 +2575,7 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 
 	is->state = IMAPX_AUTHENTICATED;
 
+ preauthed:
 	if (((CamelIMAPXStore *)is->store)->rec_options & IMAPX_USE_IDLE)
 		is->use_idle = TRUE;
 	else
