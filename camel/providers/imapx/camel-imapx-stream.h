@@ -127,7 +127,7 @@ gint		camel_imapx_stream_text		(CamelIMAPXStream *is,
 						 CamelException *ex);
 
 /* gets a 'number' */
-guint32		 camel_imapx_stream_number	(CamelIMAPXStream *is,
+guint64		 camel_imapx_stream_number	(CamelIMAPXStream *is,
 						 CamelException *ex);
 
 /* skips the rest of a line, including literals, etc */

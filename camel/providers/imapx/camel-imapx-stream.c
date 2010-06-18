@@ -403,7 +403,7 @@ camel_imapx_stream_nstring_stream(CamelIMAPXStream *is, CamelStream **stream, Ca
 	return ret;
 }
 
-guint32
+guint64
 camel_imapx_stream_number(CamelIMAPXStream *is, CamelException *ex)
 {
 	guchar *token;
@@ -414,7 +414,7 @@ camel_imapx_stream_number(CamelIMAPXStream *is, CamelException *ex)
 		return 0;
 	}
 
-	return strtoul((gchar *)token, 0, 10);
+	return strtoull((gchar *)token, 0, 10);
 }
 
 gint
