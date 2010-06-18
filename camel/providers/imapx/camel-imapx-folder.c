@@ -246,7 +246,8 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 		if (istore->server && camel_imapx_server_connect (istore->server, TRUE, ex)) {
 			stream = camel_imapx_server_get_message(istore->server, folder, uid, ex);
 		} else {
-			camel_exception_setv(ex, 1, "not authenticated");
+			if (!camel_exception_is_set (ex))
+				camel_exception_setv(ex, 1, "not authenticated");
 			return NULL;
 		}
 	}

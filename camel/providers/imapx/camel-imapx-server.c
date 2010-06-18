@@ -1657,7 +1657,7 @@ imapx_step(CamelIMAPXServer *is, CamelException *ex)
 /* Used to run 1 command synchronously,
    use for capa, login, and namespaces only. */
 static void
-imapx_command_run(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+imapx_command_run (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 /* throws IO,PARSE exception */
 {
 	camel_imapx_command_close(ic);
@@ -1666,9 +1666,9 @@ imapx_command_run(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	imapx_command_start(is, ic);
 	QUEUE_UNLOCK(is);
 
-	do {
+	while (ic->status == NULL && !camel_exception_is_set (ic->ex))
 		imapx_step(is, ic->ex);
-	} while (ic->status == NULL && !camel_exception_is_set (ic->ex));
+	
 	if (is->literal == ic)
 		is->literal = NULL;
 
@@ -2542,11 +2542,15 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 		camel_imapx_command_free(ic);
 	}
 
+	if (camel_exception_is_set (ex))
+		goto exception;
+
 	/* After login we re-capa */
 	if (is->cinfo) {
 		imapx_free_capability(is->cinfo);
 		is->cinfo = NULL;
 	}
+	
 
 	ic = camel_imapx_command_new("CAPABILITY", NULL, "CAPABILITY");
 	imapx_command_run (is, ic);
@@ -3332,7 +3336,7 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 		camel_imapx_server_noop (is, folder, ex);
 
 		if (camel_exception_is_set (ex))
-			goto exception;
+			goto done;
 	}
 
 	/* Fetch the new messages */
@@ -3340,13 +3344,13 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 	{
 		imapx_server_fetch_new_messages (is, folder, FALSE, job->ex);
 		if (camel_exception_is_set (job->ex))
-			goto exception;
+			goto done;
 	}
 
 	/* Sync changes before fetching status, else unread count will not match. need to think about better ways for this */
 	imapx_server_sync_changes (is, folder, job->pri, ex);
 	if (camel_exception_is_set (job->ex))
-		goto exception;
+		goto done;
 
 	/* Check if a rescan is needed */
 	total = camel_folder_summary_count (folder->summary);
@@ -3367,19 +3371,19 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 				camel_exception_xfer (job->ex, ic->ex);
 
 			camel_imapx_command_free (ic);
-			goto exception;
+			goto done;
 		}
 		camel_imapx_command_free (ic);
 
 		unread = folder->summary->unread_count;
 		if (ifolder->exists_on_server == total && unread == ifolder->unread_on_server)
-			goto exception;
+			goto done;
 	}
 
 	imapx_job_scan_changes_start (is, job);
 	return;
 
-exception:
+done:
 	imapx_job_done (is, job);
 }
 
