@@ -1253,8 +1253,23 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 			}
 		}
 
-		if (finfo->got & FETCH_FLAGS && !(finfo->got & FETCH_UID)) {
-			if (imap->select_folder) {
+		if ((finfo->got & FETCH_FLAGS) && !(finfo->got & FETCH_HEADER)) {
+			CamelIMAPXJob *job = imapx_match_active_job (imap, IMAPX_JOB_FETCH_NEW_MESSAGES|IMAPX_JOB_REFRESH_INFO, NULL);
+			/* This is either a refresh_info job, check to see if it is and update
+			   if so, otherwise it must've been an unsolicited response, so update
+			   the summary to match */
+
+			if (job && (finfo->got & FETCH_UID)) {
+				struct _refresh_info r;
+
+				r.uid = finfo->uid;
+				finfo->uid = NULL;
+				r.server_flags = finfo->flags;
+				r.server_user_flags = finfo->user_flags;
+				finfo->user_flags = NULL;
+				r.exists = FALSE;
+				g_array_append_val(job->u.refresh_info.infos, r);
+			} else if (imap->select_folder) {
 				CamelFolder *folder;
 				CamelMessageInfo *mi = NULL;
 				gboolean changed = FALSE;
@@ -1265,11 +1280,22 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 
 				c(printf("flag changed: %d\n", id));
 
-				if ( (uid = camel_folder_summary_uid_from_index (folder->summary, id - 1)))
-				{
+				if (finfo->got & FETCH_UID) {
+					uid = finfo->uid;
+					finfo->uid = NULL;
+				} else {
+					uid = camel_folder_summary_uid_from_index (folder->summary, id - 1);
+				}
+
+				if (uid) {
 					mi = camel_folder_summary_uid (folder->summary, uid);
 					if (mi)
 						changed = imapx_update_message_info_flags (mi, finfo->flags, finfo->user_flags, folder);
+					else {
+						/* This (UID + FLAGS for previously unknown message) might
+						   happen during a SELECT (QRESYNC). We should use it. */
+						c(printf("flags changed for unknown uid %s\n.", uid));
+					}
 					finfo->user_flags = NULL;
 				}
 
@@ -1291,27 +1317,6 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 				if (mi)
 					camel_message_info_free (mi);
 				g_object_unref (folder);
-			}
-		}
-
-		if ((finfo->got & (FETCH_FLAGS|FETCH_UID)) == (FETCH_FLAGS|FETCH_UID) && !(finfo->got & FETCH_HEADER)) {
-			CamelIMAPXJob *job = imapx_match_active_job (imap, IMAPX_JOB_FETCH_NEW_MESSAGES|IMAPX_JOB_REFRESH_INFO, NULL);
-
-			/* This is either a refresh_info job, check to see if it is and update
-			   if so, otherwise it must've been an unsolicited response, so update
-			   the summary to match */
-
-			if (job) {
-				struct _refresh_info r;
-
-				r.uid = finfo->uid;
-				finfo->uid = NULL;
-				r.server_flags = finfo->flags;
-				r.server_user_flags = finfo->user_flags;
-				finfo->user_flags = NULL;
-				r.exists = FALSE;
-				g_array_append_val(job->u.refresh_info.infos, r);
-			} else {
 			}
 		}
 
