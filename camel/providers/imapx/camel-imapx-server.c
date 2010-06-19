@@ -1080,6 +1080,39 @@ imapx_is_job_in_queue (CamelIMAPXServer *is, const gchar *folder_name, guint32 t
 		return NULL;
 }
 
+static void
+imapx_expunge_uid_from_summary(CamelIMAPXServer *imap, gchar *uid)
+{
+	CamelMessageInfo *mi;
+
+	if (imap->changes == NULL)
+		imap->changes = camel_folder_change_info_new();
+
+	mi = camel_folder_summary_uid (imap->select_folder->summary, uid);
+	if (mi) {
+		imapx_update_summary_for_removed_message (mi, imap->select_folder);
+		camel_message_info_free (mi);
+	}
+
+	camel_folder_summary_remove_uid_fast (imap->select_folder->summary, uid);
+	imap->expunged = g_slist_prepend (imap->expunged, uid);
+
+	camel_folder_change_info_remove_uid (imap->changes, uid);
+
+	if (imapx_idle_supported (imap) && imapx_in_idle (imap)) {
+		const gchar *full_name;
+
+		full_name = camel_folder_get_full_name (imap->select_folder);
+		camel_db_delete_uids (imap->store->cdb_w, full_name, imap->expunged, NULL);
+		imapx_update_store_summary (imap->select_folder);
+		camel_folder_changed (imap->select_folder, imap->changes);
+
+		g_slist_foreach (imap->expunged, (GFunc) g_free, NULL);
+		imap->expunged = NULL;
+		camel_folder_change_info_clear (imap->changes);
+	}
+}
+
 /* handle any untagged responses */
 static gint
 imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
@@ -1129,38 +1162,12 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		c(printf("expunged: %d\n", id));
 		if (imap->select_folder) {
 			gchar *uid = NULL;
-			CamelMessageInfo *mi;
 
 			uid = camel_folder_summary_uid_from_index (imap->select_folder->summary, expunge - 1);
 			if (!uid)
 				break;
 
-			if (imap->changes == NULL)
-				imap->changes = camel_folder_change_info_new();
-
-			mi = camel_folder_summary_uid (imap->select_folder->summary, uid);
-			if (mi) {
-				imapx_update_summary_for_removed_message (mi, imap->select_folder);
-				camel_message_info_free (mi);
-			}
-
-			camel_folder_summary_remove_uid_fast (imap->select_folder->summary, uid);
-			imap->expunged = g_slist_prepend (imap->expunged, uid);
-
-			camel_folder_change_info_remove_uid (imap->changes, uid);
-
-			if (imapx_idle_supported (imap) && imapx_in_idle (imap)) {
-				const gchar *full_name;
-
-				full_name = camel_folder_get_full_name (imap->select_folder);
-				camel_db_delete_uids (imap->store->cdb_w, full_name, imap->expunged, NULL);
-				imapx_update_store_summary (imap->select_folder);
-				camel_folder_changed (imap->select_folder, imap->changes);
-
-				g_slist_foreach (imap->expunged, (GFunc) g_free, NULL);
-				imap->expunged = NULL;
-				camel_folder_change_info_clear (imap->changes);
-			}
+			imapx_expunge_uid_from_summary(imap, uid);
 		}
 
 		break;
