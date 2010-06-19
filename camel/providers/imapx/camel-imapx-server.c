@@ -2828,7 +2828,15 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 		if (camel_exception_is_set (ex))
 			goto exception;
 	}
+	if (is->cinfo->capa & IMAPX_CAPABILITY_QRESYNC) {
+		ic = camel_imapx_command_new (is, "ENABLE", NULL, "ENABLE CONDSTORE QRESYNC");
+		imapx_command_run (is, ic);
+		camel_exception_xfer (ex, ic->ex);
+		camel_imapx_command_free (ic);
 
+		if (camel_exception_is_set (ex))
+			goto exception;
+	}
 	if (((CamelIMAPXStore *) is->store)->summary->namespaces == NULL) {
 		CamelIMAPXNamespaceList *nsl = NULL;
 		CamelIMAPXStoreNamespace *ns = NULL;
