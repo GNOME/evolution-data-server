@@ -1403,11 +1403,6 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		container = e_gw_connection_get_container (cnc, container_id);
 		if (container) {
 			/* HACK: Refer to Novell bugzilla bug #464379 */
-			g_message ("Evolution's folder summary length with new items is : %u new items received from server %u \tserver has %u items",
-						camel_folder_summary_count (folder->summary), new_item_count, e_gw_container_get_total_count (container));
-
-			g_message ("Unread count on server %u items ", e_gw_container_get_unread_count (container));
-
 			if ((camel_folder_summary_count (folder->summary) + new_item_count) == e_gw_container_get_total_count (container))
 				sync_deleted = FALSE;
 			else
