@@ -39,6 +39,7 @@
 #include  "camel/camel-string-utils.h"
 #include "camel-folder-search.h"
 
+#include "camel-imapx-utils.h"
 #include "camel-imapx-store.h"
 #include "camel-imapx-folder.h"
 #include "camel-imapx-summary.h"
@@ -50,7 +51,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define d(x)
+#define d(x) camel_imapx_debug(debug, x)
 
 #define CF_CLASS(o) (CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(o)))
 static CamelObjectClass *parent_class;

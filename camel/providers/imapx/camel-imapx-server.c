@@ -53,8 +53,8 @@
 #include "camel-imapx-store.h"
 #include "camel-imapx-summary.h"
 
-#define c(x)
-#define e(x) 
+#define c(x) camel_imapx_debug(command, x)
+#define e(x) camel_imapx_debug(extra, x)
 
 #define CFS_CLASS(x) ((CamelFolderSummaryClass *)((CamelObject *)x)->klass)
 
@@ -870,8 +870,8 @@ imapx_command_start_next(CamelIMAPXServer *is, CamelException *ex)
 
 	c(printf("** Starting next command\n"));
 	if (is->literal != NULL || is->select_pending != NULL) {
-		c(if (is->select_pending))
-			c(printf("* no, waiting for literal/pending select '%s'\n", is->select_pending->full_name));
+		c(if (is->select_pending)
+			  printf("* no, waiting for literal/pending select '%s'\n", is->select_pending->full_name));
 
 		/* TODO prolly start the store operations which do not require any folder to be selected */
 		return;

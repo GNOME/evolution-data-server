@@ -27,12 +27,13 @@
 
 #include "camel-record.h"
 #include "camel-imapx-view-summary.h"
+#include "camel-imapx-utils.h"
 
 /* NB, this is only for the messy iterator_get interface, which could be better hidden */
 #include "libdb/dist/db.h"
 
-#define io(x)
-#define d(x) (printf("%s(%d): ", __FILE__, __LINE__),(x))
+#define d(x) camel_imapx_debug(debug, x)
+#define io(x) camel_imapx_debug(io, x)
 
 #define CVSD_CLASS(x) ((CamelViewSummaryDiskClass *)((CamelObject *)x)->klass)
 #define CVS_CLASS(x) ((CamelViewSummaryClass *)((CamelObject *)x)->klass)

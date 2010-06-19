@@ -37,8 +37,8 @@
 #include "camel-imapx-stream.h"
 #include "camel-imapx-exception.h"
 
-#define t(x) 
-#define io(x)
+#define t(x) camel_imapx_debug(token, x)
+#define io(x) camel_imapx_debug(io, x)
 
 static CamelObjectClass *parent_class = NULL;
 
