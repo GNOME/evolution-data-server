@@ -6,7 +6,7 @@ libedataserver_1_2_la_CPPFLAGS = \
 	-I$(top_srcdir)							\
 	-DG_LOG_DOMAIN=\"e-data-server\"				\
 	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"				\
-	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"			\
+	-DE_DATA_SERVER_LOCALEDIR=\""$(localedir)"\"			\
 	-DE_DATA_SERVER_EXTENSIONDIR=\"$(extensiondir)\"		\
 	-DE_DATA_SERVER_IMAGESDIR=\"$(imagesdir)\"			\
 	-DE_DATA_SERVER_UI_UIDIR=\""$(uidir)"\"			\

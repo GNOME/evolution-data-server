@@ -41,7 +41,7 @@ libcamel_provider_1_2_la_CPPFLAGS = \
 	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\"		\
 	-DG_LOG_DOMAIN=\"camel\"				\
 	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"			\
-	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		\
+	-DLOCALEDIR=\""$(localedir)"\"				\
 	-DCAMEL_COMPILATION					\
 	$(CAMEL_CFLAGS)						\
 	$(DBUS_GLIB_CFLAGS)
@@ -156,7 +156,7 @@ libcamel_1_2_la_CPPFLAGS = \
 	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\"		\
 	-DG_LOG_DOMAIN=\"camel\"				\
 	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"			\
-	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		\
+	-DLOCALEDIR=\""$(localedir)"\"				\
 	-DCAMEL_COMPILATION					\
 	$(CAMEL_CFLAGS)
 
@@ -324,7 +324,7 @@ camel_lock_helper_1_2_CPPFLAGS = \
 	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\"		\
 	-DG_LOG_DOMAIN=\"camel\"				\
 	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"			\
-	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		\
+	-DLOCALEDIR=\""$(localedir)"\"				\
 	-DCAMEL_COMPILATION					\
 	$(CAMEL_CFLAGS)
 
@@ -348,7 +348,7 @@ camel_index_control_1_2_CPPFLAGS = \
 	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\"		\
 	-DG_LOG_DOMAIN=\"camel\"				\
 	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"			\
-	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		\
+	-DLOCALEDIR=\""$(localedir)"\"				\
 	-DCAMEL_COMPILATION					\
 	$(CAMEL_CFLAGS)
 
