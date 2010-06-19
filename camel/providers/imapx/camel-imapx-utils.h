@@ -49,6 +49,7 @@ typedef enum _camel_imapx_id_t {
 	IMAPX_UIDVALIDITY,
 	IMAPX_UNSEEN,
 	IMAPX_UIDNEXT,
+	IMAPX_VANISHED,
 } camel_imapx_id_t;
 
 /* str MUST be in upper case, tokenised using gperf function */

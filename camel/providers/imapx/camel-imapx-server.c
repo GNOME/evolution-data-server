@@ -1172,6 +1172,20 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 
 		break;
 	}
+	case IMAPX_VANISHED: {
+		GPtrArray *uids = imapx_parse_uids(imap->stream, ex);
+		int i;
+
+		if (camel_exception_is_set(ex))
+			return -1;
+		for (i = 0; i < uids->len; i++) {
+			gchar *uid = g_strdup_printf("%u", GPOINTER_TO_UINT(g_ptr_array_index (uids, i)));
+			c(printf("vanished: %s\n", uid));
+			imapx_expunge_uid_from_summary(imap, uid);
+		}
+		g_ptr_array_free (uids, FALSE);
+		break;
+	}
 	case IMAPX_NAMESPACE: {
 		CamelIMAPXNamespaceList *nsl = NULL;
 
