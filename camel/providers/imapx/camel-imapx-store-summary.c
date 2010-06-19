@@ -32,8 +32,8 @@
 #include "camel-imapx-utils.h"
 #include "camel-imapx-store-summary.h"
 
-#define d(x)
-#define io(x)			/* io debug */
+#define d(x) camel_imapx_debug(debug, x)
+#define io(x) camel_imapx_debug(io, x)
 
 #define CAMEL_IMAPX_STORE_SUMMARY_VERSION_0 (0)
 

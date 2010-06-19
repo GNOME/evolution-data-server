@@ -28,6 +28,7 @@
 #include <errno.h>
 #include <glib/gi18n-lib.h>
 
+#include "camel-imapx-utils.h"
 #include "camel-imapx-store.h"
 #include "camel-imapx-folder.h"
 #include "camel-imapx-summary.h"
@@ -37,7 +38,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define d(x)
+#define d(x) camel_imapx_debug(debug, x)
 
 G_DEFINE_TYPE (CamelIMAPXFolder, camel_imapx_folder, CAMEL_TYPE_OFFLINE_FOLDER)
 

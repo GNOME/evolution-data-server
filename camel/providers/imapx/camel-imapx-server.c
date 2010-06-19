@@ -33,8 +33,8 @@
 #include <ws2tcpip.h>
 #endif
 
-#define c(x)
-#define e(x)
+#define c(x) camel_imapx_debug(command, x)
+#define e(x) camel_imapx_debug(extra, x)
 
 #define CFS_CLASS(x) ((CamelFolderSummaryClass *)((CamelObject *)x)->klass)
 
@@ -859,8 +859,8 @@ imapx_command_start_next(CamelIMAPXServer *is, CamelException *ex)
 
 	c(printf("** Starting next command\n"));
 	if (is->literal != NULL || is->select_pending != NULL) {
-		c(if (is->select_pending))
-			c(printf("* no, waiting for literal/pending select '%s'\n", camel_folder_get_full_name (is->select_pending)));
+		c(if (is->select_pending)
+			  printf("* no, waiting for literal/pending select '%s'\n", camel_folder_get_full_name (is->select_pending)));
 
 		/* TODO prolly start the store operations which do not require any folder to be selected */
 		return;

@@ -220,6 +220,19 @@ guchar imapx_is_mask(const gchar *p);
 
 #define imapx_is_atom(s) (imapx_is_mask(s) & IMAPX_TYPE_ATOM_CHAR)
 
+extern gint camel_imapx_debug_flags;
+#define CAMEL_IMAPX_DEBUG_command	(1<<0)
+#define CAMEL_IMAPX_DEBUG_debug		(1<<1)
+#define CAMEL_IMAPX_DEBUG_extra		(1<<2)
+#define CAMEL_IMAPX_DEBUG_io		(1<<3)
+#define CAMEL_IMAPX_DEBUG_token		(1<<4)
+#define CAMEL_IMAPX_DEBUG_parse		(1<<5)
+
+/* Set this to zero to remove all debug output at build time */
+#define CAMEL_IMAPX_DEBUG_ALL		((1<<6)-1)
+
+#define camel_imapx_debug(type, ...) do { if (camel_imapx_debug_flags & CAMEL_IMAPX_DEBUG_ALL & CAMEL_IMAPX_DEBUG_ ## type) { __VA_ARGS__ ; } } while (0)
+
 /* ********************************************************************** */
 
 void imapx_utils_init(void);

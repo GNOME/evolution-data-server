@@ -11,9 +11,32 @@
 #include "camel-imapx-exception.h"
 
 /* high-level parser state */
-#define p(x)
+#define p(x) camel_imapx_debug(parse, x)
 /* debug */
-#define d(x)
+#define d(x) camel_imapx_debug(debug, x)
+
+gint camel_imapx_debug_flags;
+
+#define debug_set_flag(flag) do { \
+	if ((CAMEL_IMAPX_DEBUG_ALL & CAMEL_IMAPX_DEBUG_ ## flag) &&	\
+	    camel_debug("imapx:" #flag))				\
+		camel_imapx_debug_flags |= CAMEL_IMAPX_DEBUG_ ## flag;	\
+	} while (0)
+
+static void camel_imapx_set_debug_flags(void)
+{
+	if (camel_debug("imapx")) {
+		camel_imapx_debug_flags = CAMEL_IMAPX_DEBUG_ALL;
+		return;
+	}
+
+	debug_set_flag(command);
+	debug_set_flag(debug);
+	debug_set_flag(extra);
+	debug_set_flag(io);
+	debug_set_flag(token);
+	debug_set_flag(parse);
+}
 
 #include "camel-imapx-tokenise.h"
 #define SUBFOLDER_DIR_NAME     "subfolders"
@@ -1897,6 +1920,7 @@ void imapx_utils_init(void)
 
 		imapx_specials[i] = v;
 	}
+	camel_imapx_set_debug_flags();
 }
 
 guchar imapx_is_mask(const gchar *p)

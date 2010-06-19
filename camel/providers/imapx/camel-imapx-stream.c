@@ -35,8 +35,8 @@
 #include "camel-imapx-stream.h"
 #include "camel-imapx-exception.h"
 
-#define t(x) 
-#define io(x)
+#define t(x) camel_imapx_debug(token, x)
+#define io(x) camel_imapx_debug(io, x)
 
 #define CAMEL_IMAPX_STREAM_SIZE (4096)
 #define CAMEL_IMAPX_STREAM_TOKEN (4096) /* maximum token size */
