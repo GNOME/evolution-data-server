@@ -1230,6 +1230,10 @@ camel_folder_get_description (CamelFolder *folder)
 {
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 
+	/* Default to full-name if there's no custom description. */
+	if (folder->priv->description == NULL)
+		return camel_folder_get_full_name (folder);
+
 	return folder->priv->description;
 }
 
