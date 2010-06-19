@@ -35,8 +35,8 @@
 
 #ifdef G_OS_WIN32
 #include "libedataserver/e-data-server-util.h"
-#undef EVOLUTION_LOCALEDIR
-#define EVOLUTION_LOCALEDIR e_util_get_localedir ()
+#undef LOCALEDIR
+#define LOCALEDIR e_util_get_localedir ()
 #endif
 
 #define d(x)
@@ -1315,7 +1315,7 @@ e_contact_pretty_name (EContactField field_id)
 	g_return_val_if_fail (field_id >= 1 && field_id <= E_CONTACT_FIELD_LAST, "");
 
 #ifdef ENABLE_NLS
-	bindtextdomain (GETTEXT_PACKAGE, EVOLUTION_LOCALEDIR);
+	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif
 

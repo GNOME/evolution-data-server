@@ -708,7 +708,7 @@ main (gint argc, gchar **argv)
 	EOfflineListener *eol;
 	
 	setlocale (LC_ALL, "");
-	bindtextdomain (GETTEXT_PACKAGE, EVOLUTION_LOCALEDIR);
+	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 
 	g_type_init ();
