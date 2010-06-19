@@ -33,7 +33,6 @@ imapx_tokenise (register const gchar *str, register guint len)
 
 static void imapx_namespace_clear (CamelIMAPXStoreNamespace **ns);
 static const gchar * rename_label_flag (const gchar *flag, gint len, gboolean server_to_evo);
-static GPtrArray *imapx_parse_uids (CamelIMAPXStream *is, CamelException *ex);
 
 /* flag table */
 static struct {
@@ -1528,7 +1527,7 @@ generate_uids_from_sequence (GPtrArray *uids, guint32 begin_uid, guint32 end_uid
 		g_ptr_array_add (uids, GUINT_TO_POINTER (i));
 }
 
-static GPtrArray *
+GPtrArray *
 imapx_parse_uids (CamelIMAPXStream *is, CamelException *ex)
 {
 	GPtrArray *uids = g_ptr_array_new ();
@@ -1550,7 +1549,7 @@ imapx_parse_uids (CamelIMAPXStream *is, CamelException *ex)
 			generate_uids_from_sequence (uids, uid1, uid2);
 			g_strfreev (seq);
 		} else {
-			guint32 uid = strtoul ((gchar *) token, NULL, 10);
+			guint32 uid = strtoul ((gchar *) splits[i], NULL, 10);
 			g_ptr_array_add (uids, GUINT_TO_POINTER (uid));
 		}
 	}

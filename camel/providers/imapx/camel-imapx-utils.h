@@ -61,6 +61,7 @@ enum {
 
 /* ********************************************************************** */
 
+GPtrArray *imapx_parse_uids (CamelIMAPXStream *is, CamelException *ex);
 void imapx_parse_flags(struct _CamelIMAPXStream *stream, guint32 *flagsp, struct _CamelFlag **user_flagsp, CamelException *ex);
 void imapx_write_flags(CamelStream *stream, guint32 flags, struct _CamelFlag *user_flags, CamelException *ex);
 gboolean imapx_update_message_info_flags (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags, CamelFolder *folder);
