@@ -154,8 +154,8 @@ e_cal_backend_groupwise_get_default_zone (ECalBackendGroupwise *cbgw) {
 	return cbgw->priv->default_zone;
 }
 
-const char *
-e_cal_backend_groupwise_get_container_id (ECalBackendGroupwise *cbgw) 
+const gchar *
+e_cal_backend_groupwise_get_container_id (ECalBackendGroupwise *cbgw)
 {
 	return cbgw->priv->container_id;
 }
@@ -214,7 +214,6 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	priv = cbgw->priv;
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
 	total = priv->total_count;
-
 
 	type = get_element_type (kind);
 
@@ -324,7 +323,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 typedef struct
 {
 	EGwItemCalId *calid;
-	ECalBackendStore *store;	
+	ECalBackendStore *store;
 } CompareIdData;
 
 static gint
@@ -334,14 +333,14 @@ compare_ids (gconstpointer a, gconstpointer b)
 	CompareIdData *data = (CompareIdData *) b;
 	EGwItemCalId *calid = data->calid;
 	ECalBackendStore *store = data->store;
-	
+
 	if (!calid->recur_key)
 		return g_strcmp0 (cache_id->uid, calid->ical_id);
 	else {
 		ECalComponent *comp;
 		gint ret = 1;
-		const char *cache_item_id;
-	       
+		const gchar *cache_item_id;
+
 		if (strcmp (cache_id->uid, calid->recur_key))
 			return 1;
 
@@ -432,7 +431,6 @@ get_deltas (gpointer handle)
 	status = e_gw_connection_get_items (cnc, priv->container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 		status = e_gw_connection_get_items (cnc, priv->container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
-
 
 	g_object_unref (filter);
 
@@ -603,7 +601,7 @@ get_deltas (gpointer handle)
 
 		data.calid = calid;
 		data.store = store;
-		
+
 		if (!(remove = g_slist_find_custom (cache_ids, &data,  (GCompareFunc) compare_ids))) {
 			g_ptr_array_add (uid_array, g_strdup (calid->item_id));
 			needs_to_get = TRUE;
@@ -1639,7 +1637,7 @@ e_cal_backend_groupwise_set_default_zone (ECalBackendSync *backend, EDataCal *ca
 	icaltimezone_set_component (zone, tz_comp);
 
 	PRIV_LOCK (priv);
-	
+
 	if (priv->default_zone)
 		icaltimezone_free (priv->default_zone, 1);
 

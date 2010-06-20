@@ -47,10 +47,10 @@ typedef struct _CamelIMAPXFolder {
 
 	guint32 exists_on_server;
 	guint32 unread_on_server;
-	
+
 	/* hash table of UIDs to ignore as recent when updating folder */
 	GHashTable *ignore_recent;
-	
+
 	GMutex *search_lock;
 	GMutex *stream_lock;
 } CamelIMAPXFolder;

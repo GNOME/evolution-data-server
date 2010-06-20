@@ -203,7 +203,7 @@ idle_saver_cb (gpointer user_data)
 		goto exit;
 
 	filename = build_categories_filename ();
-	
+
 	g_debug ("Saving categories to \"%s\"", filename);
 
 	/* Build the file contents. */

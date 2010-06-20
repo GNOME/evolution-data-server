@@ -2526,7 +2526,7 @@ unwrap_gerror (GError *error, GError **client_error)
 static gboolean
 strcaseequal_no_underscore (const gchar *str1, const gchar *str2)
 {
-	int i, j;
+	gint i, j;
 
 	if (!str1 || !str2)
 		return FALSE;

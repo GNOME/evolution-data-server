@@ -706,7 +706,7 @@ main (gint argc, gchar **argv)
 	DBusGProxy *bus_proxy;
 	guint32 request_name_ret;
 	EOfflineListener *eol;
-	
+
 	setlocale (LC_ALL, "");
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
