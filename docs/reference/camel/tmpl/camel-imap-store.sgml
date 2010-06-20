@@ -67,6 +67,15 @@ CamelImapStore
 @CamelImapStore *store, struct _CamelImapMsg *m:
 
 @CamelImapStore *store, struct _CamelImapMsg *m: 
+@CamelImapStore *store, struct _CamelImapMsg *m:
+
+@CamelImapStore *store, struct _CamelImapMsg *m: 
+@CamelImapStore *store, struct _CamelImapMsg *m:
+
+@CamelImapStore *store, struct _CamelImapMsg *m: 
+@CamelImapStore *store, struct _CamelImapMsg *m:
+
+@CamelImapStore *store, struct _CamelImapMsg *m: 
 @CamelImapStore *store, struct _CamelImapMsg *m: 
 @size: 
 @Returns: 

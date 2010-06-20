@@ -27,6 +27,8 @@ e-cal-check-timezones
 
 @comp: 
 @comps: 
+@const gchar *tzid, gconstpointer custom, GError **error:
+@const gchar *tzid, gconstpointer custom, GError **error:
 @const gchar *tzid, gconstpointer custom, GError **error: 
 @custom: 
 @error: 

@@ -300,6 +300,12 @@ ECalendarStatus
 
 <SECTION>
 <FILE>e-cal-system-timezone</FILE>
+ETC_TIMEZONE
+ETC_TIMEZONE_MAJ
+ETC_RC_CONF
+ETC_SYSCONFIG_CLOCK
+ETC_CONF_D_CLOCK
+ETC_LOCALTIME
 e_cal_system_timezone_get_location
 </SECTION>
 
