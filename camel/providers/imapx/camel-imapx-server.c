@@ -1460,6 +1460,16 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		if (camel_exception_is_set(ex))
 			return -1;
 		switch (sinfo->condition) {
+		case IMAPX_CLOSED:
+			c(printf("previously selected folder is now closed\n"));
+			if (imap->select_pending && !imap->select_folder) {
+				const gchar *full_name;
+				imap->select_folder = imap->select_pending;
+				full_name = camel_folder_get_full_name (imap->select_folder);
+
+				imap->select = g_strdup(full_name);
+			}
+			break;
 		case IMAPX_READ_WRITE:
 			imap->mode = IMAPX_MODE_READ|IMAPX_MODE_WRITE;
 			c(printf("folder is read-write\n"));
@@ -2114,17 +2124,27 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 				cn = cn->next;
 			}
 		}
-
 		if (is->select_pending)
 			g_object_unref (is->select_pending);
+
+		/* A [CLOSED] status may have caused us to assume that it had happened */
+		if (is->select) {
+			g_free(is->select);
+			is->select = NULL;
+			is->select_folder = NULL;
+		}
+		is->state = IMAPX_INITIALISED;
 	} else {
 		CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) is->select_pending;
 		c(printf("Select ok!\n"));
 
-		is->select_folder = is->select_pending;
-		full_name = camel_folder_get_full_name (is->select_folder);
+		if (!is->select_folder) {
+			/* This could have been done earlier by a [CLOSED] status */
+			is->select_folder = is->select_pending;
+			full_name = camel_folder_get_full_name (is->select_folder);
 
-		is->select = g_strdup(full_name);
+			is->select = g_strdup(full_name);
+		}
 		is->state = IMAPX_SELECTED;
 		ifolder->exists_on_server = is->exists;
 #if 0
@@ -2181,6 +2201,13 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, CamelE
 		g_object_unref (is->select_folder);
 		is->select = NULL;
 		is->select_folder = NULL;
+	} else {
+		/* If no folder was selected, we won't get a [CLOSED] status
+		   so just point select_folder at the new folder immediately */
+		is->select_folder = is->select_pending;
+		full_name = camel_folder_get_full_name (is->select_folder);
+
+		is->select = g_strdup(full_name);
 	}
 
 	is->uidvalidity = 0;

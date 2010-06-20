@@ -1609,6 +1609,7 @@ imapx_parse_status(CamelIMAPXStream *is, CamelException *ex)
 			case IMAPX_ALERT:
 			case IMAPX_PARSE:
 			case IMAPX_TRYCREATE:
+			case IMAPX_CLOSED:
 				break;
 			case IMAPX_APPENDUID:
 				sinfo->u.appenduid.uidvalidity = camel_imapx_stream_number(is, ex);
