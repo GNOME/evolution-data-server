@@ -1443,7 +1443,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		if (sinfo) {
 			/* this is what we use atm */
 			imap->exists = sinfo->messages;
-			imap->unread = sinfo->unseen;
+			imap->unseen = sinfo->unseen;
 
 			g_free (sinfo);
 		}
@@ -1771,7 +1771,7 @@ imapx_command_status_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) ic->job->folder;
 
-	ifolder->unread_on_server = is->unread;
+	ifolder->unread_on_server = is->unseen;
 	e_flag_set (ic->flag);
 }
 

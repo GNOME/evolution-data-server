@@ -84,7 +84,6 @@ struct _CamelIMAPXServer {
 	guint32 exists;
 	guint32 recent;
 	guint32 mode;
-	guint32 unread;
 
 	/* any expunges that happened from the last command, they are
 	   processed after the command completes. */
