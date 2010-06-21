@@ -575,6 +575,7 @@ imapx_command_addv(CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 				case 's': /* simple string */
 					s = va_arg(ap, gchar *);
 					c(printf("got string '%s'\n", s));
+				output_string:
 					if (*s) {
 						guchar mask = imapx_is_mask(s);
 
@@ -601,6 +602,10 @@ imapx_command_addv(CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 					} else {
 						camel_stream_write((CamelStream *)ic->mem, "\"\"", 2);
 					}
+					if (encoded) {
+						g_free(encoded);
+						encoded = NULL;
+					}
 					break;
 				case 'f': /* imap folder name */
 					folder = va_arg(ap, CamelFolder *);
@@ -614,9 +619,12 @@ imapx_command_addv(CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 					} else
 						encoded = camel_utf8_utf7 (full_name);
 
-					camel_stream_printf((CamelStream *)ic->mem, "\"%s\"", encoded?encoded:"");
+					if (encoded) {
+						s = encoded;
+						goto output_string;
+					} else 
+						camel_stream_write((CamelStream *)ic->mem, "\"\"", 2);
 
-					g_free (encoded);
 					break;
 				case 'F': /* IMAP flags set */
 					f = va_arg(ap, guint32);
