@@ -842,10 +842,12 @@ e_destination_get_email (const EDestination *dest)
  * e_destination_get_address:
  * @dest: an #EDestination
  *
- * Gets the formatted name and e-mail address, or in the case of
- * lists, the formatted list of e-mail addresses, from @dest.
+ * Gets the encoded name and email address, or in the case of lists, the
+ * encoded list of email addresses, from @dest.  The returned string is
+ * suitable for use in an email header, but not for displaying to users.
  *
- * Returns: A formatted destination string, or %NULL if the destination was empty.
+ * Returns: an encoded destination string suitable for use in an
+ *          email header, or %NULL if the destination was empty
  **/
 const gchar *
 e_destination_get_address (const EDestination *dest)
