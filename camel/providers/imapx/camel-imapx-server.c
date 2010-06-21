@@ -1812,6 +1812,7 @@ imapx_command_status_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) ic->job->folder;
 
 	ifolder->unread_on_server = is->unseen;
+	ifolder->exists_on_server = is->exists;
 	e_flag_set (ic->flag);
 }
 
