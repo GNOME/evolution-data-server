@@ -1477,7 +1477,7 @@ imapx_parse_status_info (struct _CamelIMAPXStream *is, CamelException *ex)
 	sinfo = g_malloc0 (sizeof(*sinfo));
 
 	/* skip the folder name */
-	camel_imapx_stream_token (is, &token, &len, ex);
+	camel_imapx_stream_astring (is, &token, ex);
 
 	tok = camel_imapx_stream_token(is, &token, &len, ex);
 	if (tok != '(') {
