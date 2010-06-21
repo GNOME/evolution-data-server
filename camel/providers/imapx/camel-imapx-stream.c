@@ -303,6 +303,7 @@ camel_imapx_stream_astring(CamelIMAPXStream *is, guchar **data, CamelException *
 			memcpy(p, start, inlen);
 			p += inlen;
 		} while (ret > 0);
+		*p = 0;
 		*data = is->tokenptr;
 		return 0;
 	case IMAPX_TOK_ERROR:
@@ -341,6 +342,7 @@ camel_imapx_stream_nstring(CamelIMAPXStream *is, guchar **data, CamelException *
 			memcpy(p, start, inlen);
 			p += inlen;
 		} while (ret > 0);
+		*p = 0;
 		*data = is->tokenptr;
 		return 0;
 	case IMAPX_TOK_TOKEN:
