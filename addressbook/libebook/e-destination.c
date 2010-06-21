@@ -881,11 +881,11 @@ e_destination_get_address (const EDestination *dest)
 				iter = g_list_next (iter);
 			}
 
-			priv->addr = camel_address_format (CAMEL_ADDRESS (addr));
+			priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
 		} else if (priv->raw) {
 
 			if (camel_address_unformat (CAMEL_ADDRESS (addr), priv->raw)) {
-				priv->addr = camel_address_format (CAMEL_ADDRESS (addr));
+				priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
 			}
 		} else {
 			const gchar *name, *email;
@@ -900,7 +900,7 @@ e_destination_get_address (const EDestination *dest)
 				nothing we can do here */
 				camel_address_decode (CAMEL_ADDRESS (addr), name);
 
-			priv->addr = camel_address_format (CAMEL_ADDRESS (addr));
+			priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
 		}
 
 		g_object_unref (addr);
