@@ -1002,7 +1002,7 @@ found:
 static gboolean
 imapx_job_matches (const gchar *folder_name, CamelIMAPXJob *job, guint32 type, const gchar *uid)
 {
-	const gchar *full_name;
+	const gchar *full_name = NULL;
 
 	if (job->folder)
 		full_name = camel_folder_get_full_name (job->folder);
