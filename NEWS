@@ -1,3 +1,9 @@
+Evolution-Data-Server 2.30.2.1 2010-06-21
+-----------------------------------------
+
+	This update reverts an API break in e_destination_get_address().
+	More details at https://bugzilla.gnome.org/show_bug.cgi?id=619347
+
 Evolution-Data-Server 2.30.2 2010-06-20
 ---------------------------------------
 
