@@ -3381,7 +3381,7 @@ imapx_job_fetch_new_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 
 	if (diff > BATCH_FETCH_COUNT) {
 		ic = camel_imapx_command_new (is, "FETCH", full_name,
-				     "FETCH %s:* (UID FLAGS)", uid);
+				     "UID FETCH %s:* (UID FLAGS)", uid);
 		imapx_uidset_init(&job->u.refresh_info.uidset, BATCH_FETCH_COUNT, 0);
 		job->u.refresh_info.infos = g_array_new (0, 0, sizeof(struct _refresh_info));
 		ic->pri = job->pri;
