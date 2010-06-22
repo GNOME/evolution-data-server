@@ -1383,7 +1383,6 @@ camel_folder_append_message (CamelFolder *folder,
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
 	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), FALSE);
-	g_return_val_if_fail (info != NULL, FALSE);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_val_if_fail (class->append_message != NULL, FALSE);
