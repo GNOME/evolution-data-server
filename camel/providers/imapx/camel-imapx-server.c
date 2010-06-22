@@ -142,6 +142,7 @@ enum {
 	IMAPX_DISCONNECTED,
 	IMAPX_CONNECTED,
 	IMAPX_AUTHENTICATED,
+	IMAPX_INITIALISED,
 	IMAPX_SELECTED
 };
 
@@ -1756,7 +1757,7 @@ imapx_job_done (CamelIMAPXServer *is, CamelIMAPXJob *job)
 static gboolean
 imapx_register_job (CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
-	if (is->state >= IMAPX_AUTHENTICATED) {
+	if (is->state >= IMAPX_INITIALISED) {
 		QUEUE_LOCK (is);
 		camel_dlist_addhead (&is->jobs, (CamelDListNode *)job);
 		QUEUE_UNLOCK (is);
@@ -2138,7 +2139,7 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, CamelE
 	is->mode = 0;
 
 	/* Hrm, what about reconnecting? */
-	is->state = IMAPX_AUTHENTICATED;
+	is->state = IMAPX_INITIALISED;
 
 	ic = camel_imapx_command_new("SELECT", NULL, "SELECT %f", folder);
 	ic->complete = imapx_command_select_done;
@@ -2650,8 +2651,10 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 		imapx_store->dir_sep = ns->sep;
 	}
 
-	if (!camel_exception_is_set (ex))
+	if (!camel_exception_is_set (ex)) {
+		is->state = IMAPX_INITIALISED;
 		return;
+	}
 
 exception:
 	imapx_disconnect (is);
@@ -4226,7 +4229,7 @@ camel_imapx_server_connect (CamelIMAPXServer *is, gboolean connect, CamelExcepti
 
 	camel_service_lock (CAMEL_SERVICE (is->store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 	if (connect) {
-		if (is->state == IMAPX_AUTHENTICATED || is->state == IMAPX_SELECTED) {
+		if (is->state >= IMAPX_INITIALISED) {
 			ret = TRUE;
 			goto exit;
 		}
