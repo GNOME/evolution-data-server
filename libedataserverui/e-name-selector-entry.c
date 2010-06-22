@@ -25,13 +25,16 @@
 #include <string.h>
 #include <glib/gi18n-lib.h>
 
+#include <camel/camel.h>
 #include <libebook/e-book.h>
 #include <libebook/e-contact.h>
 #include <libebook/e-destination.h>
 #include <libedataserverui/e-book-auth-util.h>
-#include "libedataserver/e-sexp.h"
+#include <libedataserver/e-sexp.h>
 
 #include "e-name-selector-entry.h"
+
+#include "gtk-compat.h"
 
 #define E_NAME_SELECTOR_ENTRY_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -136,6 +139,63 @@ name_selector_entry_realize (GtkWidget *widget)
 }
 
 static void
+name_selector_entry_drag_data_received (GtkWidget *widget,
+                                        GdkDragContext *context,
+                                        gint x,
+                                        gint y,
+                                        GtkSelectionData *selection_data,
+                                        guint info,
+                                        guint time)
+{
+	CamelInternetAddress *address;
+	gint n_addresses = 0;
+	gchar *text;
+
+	address = camel_internet_address_new ();
+	text = (gchar *) gtk_selection_data_get_text (selection_data);
+
+	/* See if Camel can parse a valid email address from the text. */
+	if (text != NULL && *text != '\0') {
+		camel_url_decode (text);
+		if (g_ascii_strncasecmp (text, "mailto:", 7) == 0)
+			n_addresses = camel_address_decode (
+				CAMEL_ADDRESS (address), text + 7);
+		else
+			n_addresses = camel_address_decode (
+				CAMEL_ADDRESS (address), text);
+	}
+
+	if (n_addresses > 0) {
+		GtkEditable *editable;
+		GdkDragAction action;
+		gboolean delete;
+		gint position;
+
+		editable = GTK_EDITABLE (widget);
+		gtk_editable_set_position (editable, -1);
+		position = gtk_editable_get_position (editable);
+
+		g_free (text);
+
+		text = camel_address_format (CAMEL_ADDRESS (address));
+		gtk_editable_insert_text (editable, text, -1, &position);
+
+		action = gdk_drag_context_get_selected_action (context);
+		delete = (action == GDK_ACTION_MOVE);
+		gtk_drag_finish (context, TRUE, delete, time);
+	}
+
+	g_object_unref (address);
+	g_free (text);
+
+	if (n_addresses <= 0)
+		/* Chain up to parent's drag_data_received() method. */
+		GTK_WIDGET_CLASS (e_name_selector_entry_parent_class)->
+			drag_data_received (widget, context, x, y,
+			selection_data, info, time);
+}
+
+static void
 e_name_selector_entry_class_init (ENameSelectorEntryClass *class)
 {
 	GObjectClass *object_class;
@@ -148,6 +208,7 @@ e_name_selector_entry_class_init (ENameSelectorEntryClass *class)
 
 	widget_class = GTK_WIDGET_CLASS (class);
 	widget_class->realize = name_selector_entry_realize;
+	widget_class->drag_data_received = name_selector_entry_drag_data_received;
 
 	signals[UPDATED] = g_signal_new (
 		"updated",
