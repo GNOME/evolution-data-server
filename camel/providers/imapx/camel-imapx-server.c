@@ -1354,7 +1354,8 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 						}
 
 						if (job->op)
-							camel_operation_progress (job->op, (camel_folder_summary_count (job->folder->summary) * 100)/imap->exists);
+							camel_operation_progress (job->op, (camel_folder_summary_count (job->folder->summary)
+											    * 100)/ifolder->exists_on_server?:1);
 					}
 				}
 			}
