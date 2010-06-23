@@ -111,8 +111,7 @@ offline_downsync_sync (CamelSession *session, CamelSessionThreadMsg *mm)
 			gint pc = i * 100 / m->changes->uid_added->len;
 
 			camel_operation_progress (NULL, pc);
-			if ((message = camel_folder_get_message (m->folder, m->changes->uid_added->pdata[i], &mm->ex)))
-				camel_object_unref (message);
+			camel_folder_sync_message (m->folder, m->changes->uid_added->pdata[i], &mm->ex);
 		}
 	} else {
 		camel_offline_folder_downsync ((CamelOfflineFolder *) m->folder, "(match-all)", &mm->ex);
