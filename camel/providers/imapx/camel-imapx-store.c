@@ -751,7 +751,6 @@ imapx_rename_folder (CamelStore *store, const gchar *old, const gchar *new, Came
 static CamelFolderInfo *
 imapx_create_folder (CamelStore *store, const gchar *parent_name, const gchar *folder_name, CamelException *ex)
 {
-	const gchar *c;
 	CamelStoreInfo *si;
 	CamelIMAPXStoreNamespace *ns;
 	CamelIMAPXStore *istore = (CamelIMAPXStore *) store;
@@ -777,14 +776,10 @@ imapx_create_folder (CamelStore *store, const gchar *parent_name, const gchar *f
 	else
 		dir_sep = '/';
 
-	c = folder_name;
-	while (*c && *c != dir_sep && !strchr ("#%*", *c))
-		c++;
-
-	if (*c != '\0') {
+	if (strchr(folder_name, dir_sep)) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID_PATH,
 				      _("The folder name \"%s\" is invalid because it contains the character \"%c\""),
-				      folder_name, *c);
+				      folder_name, dir_sep);
 		return NULL;
 	}
 
