@@ -1467,10 +1467,29 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 	case IMAPX_STATUS: {
 		struct _state_info *sinfo = imapx_parse_status_info (imap->stream, ex);
 		if (sinfo) {
-			/* this is what we use atm */
-			imap->exists = sinfo->messages;
-			imap->unseen = sinfo->unseen;
+			CamelIMAPXStoreSummary *s = ((CamelIMAPXStore *)imap->store)->summary;
+			CamelIMAPXStoreNamespace *ns;
+			CamelIMAPXFolder *ifolder = NULL;;
 
+			ns = camel_imapx_store_summary_namespace_find_full(s, sinfo->name);
+			if (ns) {
+				gchar *path_name;
+
+				path_name = camel_imapx_store_summary_full_to_path(s, sinfo->name, ns->sep);
+				c(printf("Got folder path '%s' for full '%s'\n", path_name, sinfo->name));
+				if (path_name) {
+					ifolder = (void *)camel_store_get_folder(imap->store, path_name, 0, ex);
+					g_free (path_name);
+				}
+			}
+			if (ifolder) {
+				ifolder->unread_on_server = sinfo->unseen;
+				ifolder->exists_on_server = sinfo->messages;
+			} else {
+				c(printf("Received STATUS for unknown folder '%s'\n", sinfo->name));
+			}
+
+			g_free (sinfo->name);
 			g_free (sinfo);
 		}
 		break;
@@ -1802,17 +1821,6 @@ imapx_command_run (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 static void
 imapx_command_complete (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
-	e_flag_set (ic->flag);
-}
-
-/* change status to a job and remove command_run_sync */
-static void
-imapx_command_status_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
-{
-	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) ic->job->folder;
-
-	ifolder->unread_on_server = is->unseen;
-	ifolder->exists_on_server = is->exists;
 	e_flag_set (ic->flag);
 }
 
@@ -3517,7 +3525,6 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 		ic = camel_imapx_command_new (is, "STATUS", folder->full_name, "STATUS %f (MESSAGES UNSEEN)", folder);
 		ic->job = job;
 		ic->pri = job->pri;
-		ic->complete = imapx_command_status_done;
 		imapx_command_run_sync (is, ic);
 
 		if (camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK) {

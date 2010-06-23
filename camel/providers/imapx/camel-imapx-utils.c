@@ -1502,6 +1502,11 @@ imapx_parse_status_info (struct _CamelIMAPXStream *is, CamelException *ex)
 
 	/* skip the folder name */
 	camel_imapx_stream_astring (is, &token, ex);
+	if (camel_exception_is_set(ex)) {
+		g_free (sinfo);
+		return NULL;
+	}
+	sinfo->name = camel_utf7_utf8 ((gchar *)token);
 
 	tok = camel_imapx_stream_token(is, &token, &len, ex);
 	if (tok != '(') {
