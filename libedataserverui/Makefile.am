@@ -18,7 +18,8 @@ libedataserverui_1_2_la_CPPFLAGS = \
 	-I$(top_builddir)/addressbook		\
 	-DG_LOG_DOMAIN=\"e-data-server-ui\"	\
 	-DE_DATA_SERVER_UI_UIDIR=\""$(uidir)"\"	\
-	$(E_DATA_SERVER_UI_CFLAGS)
+	$(E_DATA_SERVER_UI_CFLAGS)		\
+	$(CAMEL_CFLAGS)
 
 libedataserverui_1_2_la_SOURCES =	\
 	$(MARSHAL_GENERATED)		\
@@ -43,7 +44,8 @@ libedataserverui_1_2_la_SOURCES =	\
 libedataserverui_1_2_la_LIBADD = 				\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
-	$(E_DATA_SERVER_UI_LIBS)
+	$(E_DATA_SERVER_UI_LIBS)				\
+	$(CAMEL_LIBS)
 
 libedataserverui_1_2_la_LDFLAGS = 										\
 	-version-info $(LIBEDATASERVERUI_CURRENT):$(LIBEDATASERVERUI_REVISION):$(LIBEDATASERVERUI_AGE) $(NO_UNDEFINED)

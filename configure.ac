@@ -1161,7 +1161,7 @@ AC_SUBST(E_DATA_SERVER_LIBS)
 dnl ******************************
 dnl libedataserverui
 dnl ******************************
-E_DATA_SERVER_UI_DEPS="gtk+-2.0 libxml-2.0 gobject-2.0 gthread-2.0 gconf-2.0 camel-1.2 $GNOME_KEYRING_REQUIREMENT"
+E_DATA_SERVER_UI_DEPS="gtk+-2.0 libxml-2.0 gobject-2.0 gthread-2.0 gconf-2.0 $GNOME_KEYRING_REQUIREMENT"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, , )
 AC_SUBST(E_DATA_SERVER_UI_CFLAGS)
