@@ -175,6 +175,7 @@ void imapx_free_status(struct _status_info *sinfo);
 /* ********************************************************************** */
 /* parses the response from the status command */
 struct _state_info {
+	gchar *name;
 	guint32 messages;
 	guint32 recent;
 	guint32 uidnext;
