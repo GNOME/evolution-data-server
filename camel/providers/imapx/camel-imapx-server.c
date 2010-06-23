@@ -869,11 +869,32 @@ imapx_command_start_next(CamelIMAPXServer *is, CamelException *ex)
 	gint pri = -128;
 
 	c(printf("** Starting next command\n"));
-	if (is->literal != NULL || is->select_pending != NULL) {
-		c(if (is->select_pending)
-			  printf("* no, waiting for literal/pending select '%s'\n", is->select_pending->full_name));
+	if (is->literal) {
+		c(printf("* no; waiting for literal '%s'\n", is->literal->name));
+		return;
+	}
 
-		/* TODO prolly start the store operations which do not require any folder to be selected */
+	if (is->select_pending) {
+		c(printf("-- Checking job queue for non-folder jobs\n"));
+		ic = (CamelIMAPXCommand *)is->queue.head;
+		nc = ic->next;
+		while (nc && is->literal == NULL && count < MAX_COMMANDS && ic->pri >= pri) {
+			c(printf("-- %3d '%s'?\n", (gint)ic->pri, ic->name));
+			if (ic->select == NULL) {
+				c(printf("--> starting '%s'\n", ic->name));
+				pri = ic->pri;
+				camel_dlist_remove((CamelDListNode *)ic);
+				imapx_command_start(is, ic);
+				count++;
+			}
+			ic = nc;
+			nc = nc->next;
+		}
+
+		if (count)
+			return;
+
+		c(printf("* no, waiting for pending select '%s'\n", camel_folder_get_full_name (is->select_pending)));
 		return;
 	}
 
