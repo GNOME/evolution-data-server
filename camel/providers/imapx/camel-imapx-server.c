@@ -3,6 +3,7 @@
 #include <config.h>
 #endif
 
+#include <time.h>
 #include <errno.h>
 #include <string.h>
 #include <glib.h>
@@ -42,6 +43,9 @@
 #define QUEUE_LOCK(x) (g_static_rec_mutex_lock(&(x)->queue_lock))
 #define QUEUE_UNLOCK(x) (g_static_rec_mutex_unlock(&(x)->queue_lock))
 
+#define IDLE_LOCK(x) (g_mutex_lock((x)->idle_lock))
+#define IDLE_UNLOCK(x) (g_mutex_unlock((x)->idle_lock))
+
 /* All comms with server go here */
 
 /* Try pipelining fetch requests, 'in bits' */
@@ -68,6 +72,7 @@ struct _uidset_state {
 void imapx_uidset_init(struct _uidset_state *ss, gint total, gint limit);
 gint imapx_uidset_done(struct _uidset_state *ss, struct _CamelIMAPXCommand *ic);
 gint imapx_uidset_add(struct _uidset_state *ss, struct _CamelIMAPXCommand *ic, const gchar *uid);
+static gboolean imapx_command_idle_stop (CamelIMAPXServer *is, CamelException *ex);
 static gint imapx_continuation(CamelIMAPXServer *imap, CamelException *ex, gboolean litplus);
 static gboolean imapx_disconnect (CamelIMAPXServer *is);
 static gint imapx_uid_cmp(gconstpointer ap, gconstpointer bp, gpointer data);
@@ -287,14 +292,26 @@ static gint imapx_refresh_info_uid_cmp(gconstpointer ap, gconstpointer bp);
 static gint imapx_uids_array_cmp (gconstpointer ap, gconstpointer bp);
 static void imapx_server_sync_changes(CamelIMAPXServer *is, CamelFolder *folder, gint pri, CamelException *ex);
 
+enum _idle_state {
+	IMAPX_IDLE_OFF,
+	IMAPX_IDLE_PENDING,	/* Queue is idle; waiting to send IDLE command
+				   soon if nothing more interesting happens */
+	IMAPX_IDLE_ISSUED,	/* Sent IDLE command; waiting for response */
+	IMAPX_IDLE_STARTED,	/* IDLE continuation received; IDLE active */
+	IMAPX_IDLE_CANCEL,	/* Cancelled from ISSUED state; need to send
+				   DONE as soon as we receive continuation */
+};
+#define IMAPX_IDLE_DWELL_TIME	2 /* Number of seconds to remain in PENDING
+				     state waiting for other commands to be
+				     queued, before actually sending IDLE */
+
 struct _CamelIMAPXIdle {
 	GMutex *idle_lock;
 	EFlag *idle_start_watch;
 	GThread *idle_thread;
 
-	gboolean idle_issue_done;
-	gboolean in_idle;
-	gboolean started;
+	time_t started;
+	enum _idle_state state;
 	gboolean idle_exit;
 };
 
@@ -303,7 +320,7 @@ static gboolean imapx_idle_supported (CamelIMAPXServer *is);
 static void imapx_start_idle (CamelIMAPXServer *is);
 static void imapx_exit_idle (CamelIMAPXServer *is);
 static void imapx_init_idle (CamelIMAPXServer *is);
-static void imapx_stop_idle (CamelIMAPXServer *is, CamelException *ex);
+static gboolean imapx_stop_idle (CamelIMAPXServer *is, CamelException *ex);
 static void camel_imapx_server_idle (CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex);
 
 enum {
@@ -853,9 +870,13 @@ imapx_command_start_next(CamelIMAPXServer *is, CamelException *ex)
 		gboolean empty = imapx_is_command_queue_empty (is);
 
 		if (imapx_in_idle (is) && !camel_dlist_empty (&is->queue)) {
-			imapx_stop_idle (is, ex);
-			c(printf ("waiting for idle to stop \n"));
-			return;
+			/* if imapx_stop_idle() returns FALSE, it was only
+			   pending and we can go ahead and send a new command
+			   immediately. If it returns TRUE, we must wait. */
+			if (imapx_stop_idle (is, ex)) {
+				c(printf ("waiting for idle to stop \n"));
+				return;
+			}
 		} else if (empty && !imapx_in_idle (is)) {
 			imapx_start_idle (is);
 			c(printf ("starting idle \n"));
@@ -1536,7 +1557,21 @@ imapx_continuation(CamelIMAPXServer *imap, CamelException *ex, gboolean litplus)
 		camel_imapx_stream_skip (imap->stream, ex);
 
 		c(printf("Got continuation response for IDLE \n"));
-		imap->idle->started = TRUE;
+		IDLE_LOCK(imap->idle);
+		/* We might have actually sent the DONE already! */
+		if (imap->idle->state == IMAPX_IDLE_ISSUED)
+			imap->idle->state = IMAPX_IDLE_STARTED;
+		else if (imap->idle->state == IMAPX_IDLE_CANCEL) {
+			/* IDLE got cancelled after we sent the command, while
+			   we were waiting for this continuation. Send DONE
+			   immediately. */
+			imapx_command_idle_stop(imap, ex);
+			imap->idle->state = IMAPX_IDLE_OFF;
+		} else {
+			c(printf("idle starts in wrong state %d\n",
+				 imap->idle->state));
+		}
+		IDLE_UNLOCK(imap->idle);
 
 		QUEUE_LOCK(imap);
 		imap->literal = NULL;
@@ -1863,8 +1898,6 @@ imapx_run_job (CamelIMAPXServer *is, CamelIMAPXJob *job)
 /* ********************************************************************** */
 // IDLE support
 
-#define IDLE_LOCK(x) (g_mutex_lock((x)->idle_lock))
-#define IDLE_UNLOCK(x) (g_mutex_unlock((x)->idle_lock))
 
 /*TODO handle negative cases sanely */
 static gboolean
@@ -1891,9 +1924,7 @@ imapx_command_idle_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	}
 
 	IDLE_LOCK (idle);
-	idle->in_idle = FALSE;
-	idle->idle_issue_done = FALSE;
-	idle->started = FALSE;
+	idle->state = IMAPX_IDLE_OFF;
 	IDLE_UNLOCK (idle);
 
 	imapx_job_done (is, ic->job);
@@ -1919,7 +1950,16 @@ imapx_job_idle_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 	cp->type |= CAMEL_IMAPX_COMMAND_CONTINUATION;
 
 	QUEUE_LOCK (is);
-	imapx_command_start (is, ic);
+	IDLE_LOCK(is->idle);
+	/* Don't issue it if the idle was cancelled already */
+	if (is->idle->state == IMAPX_IDLE_PENDING) {
+		is->idle->state = IMAPX_IDLE_ISSUED;
+		imapx_command_start (is, ic);
+	} else {
+		imapx_job_done (is, ic->job);
+		camel_imapx_command_free (ic);
+	}
+	IDLE_UNLOCK(is->idle);
 	QUEUE_UNLOCK (is);
 }
 
@@ -1967,20 +2007,33 @@ imapx_idle_thread (gpointer data)
 	CamelIMAPXServer *is = (CamelIMAPXServer *) data;
 
 	while (TRUE) {
-		CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) is->select_folder;
-
+		CamelIMAPXFolder *ifolder;
 		e_flag_clear (is->idle->idle_start_watch);
-		camel_imapx_server_idle (is, is->select_folder, ex);
 
-		if (!camel_exception_is_set (ex) && ifolder->exists_on_server >
-				camel_folder_summary_count (((CamelFolder *) ifolder)->summary) && imapx_is_command_queue_empty (is))
-			imapx_server_fetch_new_messages (is, is->select_folder, TRUE, ex);
+		IDLE_LOCK(is->idle);
+		while ((ifolder = (CamelIMAPXFolder *) is->select_folder) &&
+		       is->idle->state == IMAPX_IDLE_PENDING) {
+			time_t dwelled = time(NULL) - is->idle->started;
 
-		if (camel_exception_is_set (ex)) {
-			e(printf ("Caught exception in idle thread:  %s \n", ex->desc));
-			/* No way to asyncronously notify UI ? */
-			camel_exception_clear (ex);
+			if (dwelled < IMAPX_IDLE_DWELL_TIME) {
+				IDLE_UNLOCK(is->idle);
+				sleep(IMAPX_IDLE_DWELL_TIME - dwelled);
+				continue;
+			}
+			IDLE_UNLOCK(is->idle);
+			camel_imapx_server_idle (is, (void *)ifolder, ex);
+
+			if (!camel_exception_is_set (ex) && ifolder->exists_on_server >
+			    camel_folder_summary_count (((CamelFolder *) ifolder)->summary) && imapx_is_command_queue_empty (is))
+				imapx_server_fetch_new_messages (is, is->select_folder, TRUE, ex);
+
+			if (camel_exception_is_set (ex)) {
+				e(printf ("Caught exception in idle thread:  %s \n", ex->desc));
+				/* No way to asyncronously notify UI ? */
+				camel_exception_clear (ex);
+			}
 		}
+		IDLE_UNLOCK(is->idle);
 
 		e_flag_wait (is->idle->idle_start_watch);
 
@@ -1993,19 +2046,37 @@ imapx_idle_thread (gpointer data)
 	return NULL;
 }
 
-static void
+static gboolean
 imapx_stop_idle (CamelIMAPXServer *is, CamelException *ex)
 {
 	CamelIMAPXIdle *idle = is->idle;
+	int stopped = FALSE;
+	time_t now;
 
+	time(&now);
 	IDLE_LOCK (idle);
 
-	if (!idle->idle_issue_done && idle->started) {
-		imapx_command_idle_stop (is, ex);
-		idle->idle_issue_done = TRUE;
-	}
+	switch(idle->state) {
+	case IMAPX_IDLE_ISSUED:
+		idle->state = IMAPX_IDLE_CANCEL;
+	case IMAPX_IDLE_CANCEL:
+		stopped = TRUE;
+		break;
 
+	case IMAPX_IDLE_STARTED:
+		imapx_command_idle_stop (is, ex);
+		idle->state = IMAPX_IDLE_OFF;
+		stopped = TRUE;
+		c(printf("Stopping idle after %ld seconds\n",
+			 (long)(now - idle->started)));
+	case IMAPX_IDLE_PENDING:
+		idle->state = IMAPX_IDLE_OFF;
+	case IMAPX_IDLE_OFF:
+		break;
+	}
 	IDLE_UNLOCK (idle);
+
+	return stopped;
 }
 
 static void
@@ -2054,13 +2125,15 @@ imapx_start_idle (CamelIMAPXServer *is)
 
 	IDLE_LOCK (idle);
 
+	g_assert (idle->state == IMAPX_IDLE_OFF);
+	time(&idle->started);
+	idle->state = IMAPX_IDLE_PENDING;
+
 	if (!idle->idle_thread) {
 		idle->idle_start_watch = e_flag_new ();
 		idle->idle_thread = g_thread_create ((GThreadFunc) imapx_idle_thread, is, TRUE, NULL);
 	} else
 		e_flag_set (idle->idle_start_watch);
-
-	idle->in_idle = TRUE;
 
 	IDLE_UNLOCK (idle);
 }
@@ -2072,7 +2145,7 @@ imapx_in_idle (CamelIMAPXServer *is)
 	CamelIMAPXIdle *idle = is->idle;
 
 	IDLE_LOCK (idle);
-	ret = idle->in_idle;
+	ret = (idle->state > IMAPX_IDLE_OFF);
 	IDLE_UNLOCK (idle);
 
 	return ret;
