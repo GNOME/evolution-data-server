@@ -896,8 +896,12 @@ imapx_command_start_next(CamelIMAPXServer *is, CamelException *ex)
 				camel_dlist_remove((CamelDListNode *)ic);
 				imapx_command_start(is, ic);
 				count++;
-			} else
-				break;
+			} else {
+				/* This job isn't for the selected folder, but we don't want to
+				   consider jobs with _lower_ priority than this, even if they
+				   are for the selected folder. */
+				pri = ic->pri;
+			}
 			ic = nc;
 			nc = nc->next;
 		}
