@@ -101,7 +101,6 @@ static void
 offline_downsync_sync (CamelSession *session, CamelSessionThreadMsg *mm)
 {
 	struct _offline_downsync_msg *m = (struct _offline_downsync_msg *) mm;
-	CamelMimeMessage *message;
 	gint i;
 
 	camel_operation_start (NULL, _("Downloading new messages for offline mode"));
