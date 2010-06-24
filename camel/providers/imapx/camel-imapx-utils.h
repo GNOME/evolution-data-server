@@ -87,6 +87,8 @@ enum {
 	IMAPX_CAPABILITY_IDLE			= (1 << 7),
 	IMAPX_CAPABILITY_CONDSTORE		= (1 << 8),
 	IMAPX_CAPABILITY_QRESYNC		= (1 << 9),
+	IMAPX_CAPABILITY_LIST_STATUS		= (1 << 10),
+	IMAPX_CAPABILITY_LIST_EXTENDED		= (1 << 11),
 };
 
 struct _capability_info {
