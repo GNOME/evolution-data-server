@@ -3342,11 +3342,17 @@ imapx_job_scan_changes_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		CamelMessageInfo *s_minfo = NULL;
 		CamelIMAPXMessageInfo *info;
 		CamelFolderSummary *s = job->folder->summary;
+		CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)job->folder;
 		GSList *removed = NULL, *l;
 		gboolean fetch_new = FALSE;
 		gint i;
 		guint j = 0;
 		GPtrArray *uids;
+
+		/* Actually we wanted to do this after the SELECT but before the
+		   FETCH command was issued. But this should suffice. */
+		((CamelIMAPXSummary *)s)->uidnext = ifolder->uidnext_on_server;
+		((CamelIMAPXSummary *)s)->modseq = ifolder->modseq_on_server;
 
 		/* Here we do the typical sort/iterate/merge loop.
 		   If the server flags dont match what we had, we modify our
