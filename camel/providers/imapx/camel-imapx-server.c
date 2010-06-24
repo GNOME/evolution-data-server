@@ -3422,6 +3422,10 @@ imapx_job_scan_changes_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		g_free(r->uid);
 	}
 
+	/* There's no sane way to get the server-side unseen count on the
+	   select mailbox. So just work it out from the flags */
+	((CamelIMAPXFolder *)job->folder)->unread_on_server = job->folder->summary->unread_count;
+
 	g_array_free(job->u.refresh_info.infos, TRUE);
 	imapx_job_done (is, job);
 	camel_imapx_command_free (ic);
