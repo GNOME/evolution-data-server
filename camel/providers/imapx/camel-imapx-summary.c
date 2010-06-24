@@ -40,10 +40,10 @@
 #include "camel-imapx-summary.h"
 //#include "camel-imap-utils.h"
 
-#define CAMEL_IMAPX_SUMMARY_VERSION (3)
+#define CAMEL_IMAPX_SUMMARY_VERSION (4)
 
-#define EXTRACT_FIRST_DIGIT(val) val=strtoul (part, &part, 10);
-#define EXTRACT_DIGIT(val) if (*part) part++; val=strtoul (part, &part, 10);
+#define EXTRACT_FIRST_DIGIT(val) val=strtoull (part, &part, 10);
+#define EXTRACT_DIGIT(val) if (*part) part++; val=strtoull (part, &part, 10);
 
 static gint summary_header_load (CamelFolderSummary *, FILE *);
 static gint summary_header_save (CamelFolderSummary *, FILE *);
@@ -239,8 +239,15 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 		EXTRACT_DIGIT (ims->validity)
 	}
 
+	if (ims->version >= 4) {
+		if (part)
+			EXTRACT_DIGIT (ims->uidnext);
+		if (part)
+			EXTRACT_DIGIT (ims->modseq);
+	}
+
 	if (ims->version > CAMEL_IMAPX_SUMMARY_VERSION) {
-		g_warning("Unkown summary version\n");
+		g_warning("Unknown summary version\n");
 		errno = EINVAL;
 		return -1;
 	}
@@ -252,13 +259,19 @@ static gint
 summary_header_load (CamelFolderSummary *s, FILE *in)
 {
 	CamelIMAPXSummary *ims = CAMEL_IMAPX_SUMMARY (s);
+	guint32 validity;
+	gint ret;
 
 	if (camel_imapx_summary_parent->summary_header_load (s, in) == -1)
 		return -1;
 
 	/* Legacy version */
-	if (s->version == 0x30c)
-		return camel_file_util_decode_uint32(in, &ims->validity);
+	if (s->version == 0x30c) {
+		ret = camel_file_util_decode_uint32(in, &validity);
+		if (!ret)
+			ims->validity = validity;
+		return ret;
+	}
 
 	/* Version 1 */
 	if (camel_file_util_decode_fixed_int32(in, (gint32 *) &ims->version) == -1)
@@ -272,11 +285,14 @@ summary_header_load (CamelFolderSummary *s, FILE *in)
 			return -1;
 	}
 
-	if (camel_file_util_decode_fixed_int32(in, (gint32 *) &ims->validity) == -1)
+	if (camel_file_util_decode_fixed_int32(in, (gint32 *) &validity) == -1)
 		return -1;
+	ims->validity = validity;
 
-	if (ims->version > CAMEL_IMAPX_SUMMARY_VERSION) {
-		g_warning("Unkown summary version\n");
+	/* This is only used for migration; will never be asked to load newer
+	   versions of the store format */
+	if (ims->version > 3) {
+		g_warning("Unknown summary version\n");
 		errno = EINVAL;
 		return -1;
 	}
@@ -293,22 +309,17 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 	fir = camel_imapx_summary_parent->summary_header_to_db (s, ex);
 	if (!fir)
 		return NULL;
-	fir->bdata = g_strdup_printf ("%d %u", CAMEL_IMAPX_SUMMARY_VERSION, ims->validity);
-
+	fir->bdata = g_strdup_printf ("%d %llu %u %llu", CAMEL_IMAPX_SUMMARY_VERSION,
+				      (unsigned long long)ims->validity, ims->uidnext,
+				      (unsigned long long)ims->modseq);
 	return fir;
 }
 
 static gint
 summary_header_save (CamelFolderSummary *s, FILE *out)
 {
-	CamelIMAPXSummary *ims = CAMEL_IMAPX_SUMMARY(s);
-
-	if (camel_imapx_summary_parent->summary_header_save (s, out) == -1)
-		return -1;
-
-	camel_file_util_encode_fixed_int32(out, CAMEL_IMAPX_SUMMARY_VERSION);
-
-	return camel_file_util_encode_fixed_int32(out, ims->validity);
+	g_warning("imapx %s called; should never happen!\n", __func__);
+	return -1;
 }
 
 static CamelMessageInfo *

@@ -58,8 +58,8 @@ struct _CamelIMAPXSummary {
 	CamelFolderSummary parent;
 
 	guint32 version;
-	guint32 validity;
 	guint32 uidnext;
+	guint64 validity;
 	guint64 modseq;
 };
 
