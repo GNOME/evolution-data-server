@@ -1439,10 +1439,11 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 			break;
 		case IMAPX_CAPABILITY:
 			if (sinfo->u.cinfo) {
-				if (imap->cinfo)
-					imapx_free_capability(imap->cinfo);
+				struct _capability_info *cinfo = imap->cinfo;
 				imap->cinfo = sinfo->u.cinfo;
 				sinfo->u.cinfo = NULL;
+				if (cinfo)
+					imapx_free_capability(cinfo);
 				c(printf("got capability flags %08x\n", imap->cinfo->capa));
 			}
 			break;
@@ -2015,7 +2016,7 @@ imapx_in_idle (CamelIMAPXServer *is)
 static gboolean
 imapx_idle_supported (CamelIMAPXServer *is)
 {
-	return (is->cinfo && is->cinfo->capa & IMAPX_CAPABILITY_IDLE && is->use_idle);
+	return (is->cinfo->capa & IMAPX_CAPABILITY_IDLE && is->use_idle);
 }
 
 // end IDLE
@@ -2506,7 +2507,7 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 			goto preauthed;
 
 		if (!authtype && service->url->authmech) {
-			if (is->cinfo && !g_hash_table_lookup (is->cinfo->auth_types, service->url->authmech)) {
+			if (!g_hash_table_lookup (is->cinfo->auth_types, service->url->authmech)) {
 				camel_exception_setv (
 					ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
 					_("IMAP server %s does not support requested "
