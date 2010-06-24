@@ -1130,6 +1130,10 @@ static void
 imapx_expunge_uid_from_summary(CamelIMAPXServer *imap, gchar *uid)
 {
 	CamelMessageInfo *mi;
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)imap->select_folder;
+
+	if (ifolder->exists_on_server)
+		ifolder->exists_on_server--;
 
 	if (imap->changes == NULL)
 		imap->changes = camel_folder_change_info_new();
