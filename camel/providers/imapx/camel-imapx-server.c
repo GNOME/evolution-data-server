@@ -3933,6 +3933,8 @@ imapx_job_delete_folder_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 
 	encoded_fname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, job->u.folder_name);
 
+	job->folder = camel_store_get_folder(is->store, "INBOX", 0, job->ex);
+
 	/* make sure to-be-deleted folder is not selected by selecting INBOX for this operation */
 	ic = camel_imapx_command_new (is, "DELETE", "INBOX", "DELETE %s", encoded_fname);
 	ic->pri = job->pri;
@@ -3964,6 +3966,8 @@ imapx_job_rename_folder_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 	gchar *en_ofname = NULL, *en_nfname = NULL;
+
+	job->folder = camel_store_get_folder(is->store, "INBOX", 0, job->ex);
 
 	en_ofname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, job->u.rename_folder.ofolder_name);
 	en_nfname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, job->u.rename_folder.nfolder_name);
