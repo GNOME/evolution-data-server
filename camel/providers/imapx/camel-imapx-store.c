@@ -886,7 +886,7 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 }
 
 static void
-add_folders_to_summary (CamelIMAPXStore *istore, GPtrArray *folders, GHashTable *table, gboolean subcribed)
+add_folders_to_summary (CamelIMAPXStore *istore, GPtrArray *folders, GHashTable *table, gboolean subscribed)
 {
 	gint i = 0;
 
@@ -894,9 +894,19 @@ add_folders_to_summary (CamelIMAPXStore *istore, GPtrArray *folders, GHashTable 
 		struct _list_info *li = folders->pdata[i];
 		CamelIMAPXStoreInfo *si;
 		guint32 new_flags;
-		CamelFolderInfo *fi, *hfi;
+		CamelFolderInfo *fi, *sfi;
 		gchar *path;
 		CamelURL *url;
+
+		if (subscribed) {
+			path = camel_imapx_store_summary_path_to_full (istore->summary, li->name, li->separator);
+			sfi = g_hash_table_lookup (table, path);
+			if (sfi)
+				sfi->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
+
+			g_free(path);
+			continue;
+		}
 
 		si = camel_imapx_store_summary_add_from_full (istore->summary, li->name, li->separator);
 		if (!si)
@@ -921,24 +931,12 @@ add_folders_to_summary (CamelIMAPXStore *istore, GPtrArray *folders, GHashTable 
 		} else
 			fi->name = g_strdup(camel_store_info_name(istore->summary, si));
 
-		hfi = g_hash_table_lookup (table, fi->full_name);
-		if (hfi) {
-			if (subcribed)
-				hfi->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-
-			camel_folder_info_free (fi);
-			continue;
-		}
-
 		/* HACK: some servers report noinferiors for all folders (uw-imapd)
 		   We just translate this into nochildren, and let the imap layer enforce
 		   it.  See create folder */
 		if (li->flags & CAMEL_FOLDER_NOINFERIORS)
 			li->flags = (li->flags & ~CAMEL_FOLDER_NOINFERIORS) | CAMEL_FOLDER_NOCHILDREN;
 		fi->flags = li->flags;
-
-		if (subcribed)
-			fi->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
 
 		url = camel_url_new (istore->base_url, NULL);
 		path = alloca(strlen(fi->full_name)+2);
