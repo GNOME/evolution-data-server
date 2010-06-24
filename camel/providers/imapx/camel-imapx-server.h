@@ -96,7 +96,7 @@ struct _CamelIMAPXServer {
 	CamelFolderChangeInfo *changes;
 	CamelFolder *select_pending;
 	guint32 permanentflags;
-	guint32 uidvalidity;
+	guint64 uidvalidity;
 	guint32 unseen;
 	guint32 exists;
 	guint32 recent;

@@ -150,15 +150,15 @@ struct _status_info {
 			gchar *newname;
 		} newname;
 		guint32 permanentflags;
-		guint32 uidvalidity;
+		guint64 uidvalidity;
 		guint32 uidnext;
 		guint32 unseen;
 		struct {
-			guint32 uidvalidity;
+			guint64 uidvalidity;
 			guint32 uid;
 		} appenduid;
 		struct {
-			guint32 uidvalidity;
+			guint64 uidvalidity;
 			GPtrArray *uids;
 			GPtrArray *copied_uids;
 		} copyuid;
@@ -179,7 +179,7 @@ struct _state_info {
 	guint32 messages;
 	guint32 recent;
 	guint32 uidnext;
-	guint32 uidvalidity;
+	guint64 uidvalidity;
 	guint32 unseen;
 };
 

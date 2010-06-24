@@ -61,7 +61,7 @@ struct _CamelIMAPXView {
 	/* This data is only set on the root views */
 	gchar *raw_name;
 	guint32 exists;
-	guint32 uidvalidity;
+	guint64 uidvalidityxx; /* Cope with it being 64-bit, if you ever build this file again */
 	guint32 permanentflags;
 };
 
