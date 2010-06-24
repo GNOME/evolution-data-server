@@ -1510,6 +1510,8 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 			if (ifolder) {
 				ifolder->unread_on_server = sinfo->unseen;
 				ifolder->exists_on_server = sinfo->messages;
+				ifolder->modseq_on_server = sinfo->highestmodseq;
+				ifolder->uidnext_on_server = sinfo->uidnext;
 			} else {
 				c(printf("Received STATUS for unknown folder '%s'\n", sinfo->name));
 			}
@@ -1557,8 +1559,14 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		case IMAPX_UNSEEN:
 			imap->unseen = sinfo->u.unseen;
 			break;
+		case IMAPX_HIGHESTMODSEQ:
+			imap->highestmodseq = sinfo->u.highestmodseq;
+			break;
 		case IMAPX_PERMANENTFLAGS:
 			imap->permanentflags = sinfo->u.permanentflags;
+			break;
+		case IMAPX_UIDNEXT:
+			imap->uidnext = sinfo->u.uidnext;
 			break;
 		case IMAPX_ALERT:
 			c(printf("ALERT!: %s\n", sinfo->text));
@@ -2247,6 +2255,8 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		}
 		is->state = IMAPX_SELECTED;
 		ifolder->exists_on_server = is->exists;
+		ifolder->modseq_on_server = is->highestmodseq;
+		ifolder->uidnext_on_server = is->uidnext;
 #if 0
 		/* This must trigger a complete index rebuild! */
 		if (is->uidvalidity && is->uidvalidity != ((CamelIMAPXSummary *)is->select_folder->summary)->uidvalidity)
@@ -2307,10 +2317,12 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, CamelE
 
 	is->uidvalidity = 0;
 	is->unseen = 0;
+	is->highestmodseq = 0;
 	is->permanentflags = 0;
 	is->exists = 0;
 	is->recent = 0;
 	is->mode = 0;
+	is->uidnext = 0;
 
 	/* Hrm, what about reconnecting? */
 	is->state = IMAPX_INITIALISED;
