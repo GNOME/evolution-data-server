@@ -3612,9 +3612,11 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 	if (camel_exception_is_set (job->ex))
 		goto done;
 
+#if 0 /* There are issues with this still; continue with the buggy behaviour
+	 where we issue STATUS on the current folder, for now...*/
 	if (is->select && !strcmp(full_name, is->select))
 		is_selected = TRUE;
-
+#endif
 	total = camel_folder_summary_count (folder->summary);
 
 	/* We don't have valid unread count or modseq for currently-selected server
