@@ -142,6 +142,7 @@ gboolean	imapx_connect_to_server		(CamelIMAPXServer *is,
 GPtrArray *	camel_imapx_server_list		(CamelIMAPXServer *is,
 						 const gchar *top,
 						 guint32 flags,
+						 const gchar *ext,
 						 CamelException *ex);
 void		camel_imapx_server_refresh_info	(CamelIMAPXServer *is,
 						 CamelFolder *folder,

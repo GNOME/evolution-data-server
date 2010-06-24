@@ -267,6 +267,7 @@ struct _CamelIMAPXJob {
 		struct {
 			gchar *pattern;
 			guint32 flags;
+			const gchar *ext;
 			GHashTable *folders;
 		} list;
 
@@ -3818,6 +3819,11 @@ imapx_job_list_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 	ic = camel_imapx_command_new(is, "LIST", NULL, "%s \"\" %s",
 				     (job->u.list.flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED)?"LSUB":"LIST",
 				     job->u.list.pattern);
+	if (job->u.list.ext) {
+		/* Hm, we need a way to add atoms _without_ quoting or using literals */
+		camel_imapx_command_add(ic, " ");
+		camel_imapx_command_add(ic, job->u.list.ext);
+	}
 	ic->pri = job->pri;
 	ic->job = job;
 	ic->complete = imapx_command_list_done;
@@ -5066,7 +5072,8 @@ imapx_list_cmp(gconstpointer ap, gconstpointer bp)
 }
 
 GPtrArray *
-camel_imapx_server_list(CamelIMAPXServer *is, const gchar *top, guint32 flags, CamelException *ex)
+camel_imapx_server_list(CamelIMAPXServer *is, const gchar *top, guint32 flags,
+			const gchar *ext, CamelException *ex)
 {
 	CamelIMAPXJob *job;
 	GPtrArray *folders = NULL;
@@ -5079,6 +5086,7 @@ camel_imapx_server_list(CamelIMAPXServer *is, const gchar *top, guint32 flags, C
 	job->start = imapx_job_list_start;
 	job->pri = IMAPX_PRIORITY_LIST;
 	job->ex = ex;
+	job->u.list.ext = ext;
 	job->u.list.flags = flags;
 	job->u.list.folders = g_hash_table_new(imapx_name_hash, imapx_name_equal);
 	job->u.list.pattern = g_alloca(strlen(encoded_name)+5);
