@@ -153,10 +153,9 @@ addressbook_authenticate (EBook *book, gboolean previous_failure, ESource *sourc
 	const gchar *auth;
 	const gchar *user;
 	const gchar *component_name;
-	const gchar *password     = NULL;
-	gchar *pass_dup           = NULL;
-	const gchar *uri               = e_book_get_uri (book);
-        gchar *stripped_uri      = remove_parameters_from_uri (uri);
+	gchar *password = NULL;
+	const gchar *uri = e_book_get_uri (book);
+        gchar *stripped_uri = remove_parameters_from_uri (uri);
 	const gchar *auth_domain = e_source_get_property (source, "auth-domain");
 
 	component_name = auth_domain ? auth_domain : "Addressbook";
@@ -203,7 +202,7 @@ addressbook_authenticate (EBook *book, gboolean previous_failure, ESource *sourc
 		g_free (password_prompt);
 
 		remember = get_remember_password (source);
-		pass_dup = e_passwords_ask_password (prompt, component_name, uri, prompt,
+		password = e_passwords_ask_password (prompt, component_name, uri, prompt,
 						     flags, &remember,
 						     NULL);
 		if (remember != get_remember_password (source))
@@ -212,11 +211,11 @@ addressbook_authenticate (EBook *book, gboolean previous_failure, ESource *sourc
 		g_free (prompt);
 	}
 
-	if (password || pass_dup) {
-		e_book_async_authenticate_user (book, user, password ? password : pass_dup,
+	if (password) {
+		e_book_async_authenticate_user (book, user, password,
 						e_source_get_property (source, "auth"),
 						cb, closure);
-		g_free (pass_dup);
+		g_free (password);
 	}
 	else {
 		/* they hit cancel */
