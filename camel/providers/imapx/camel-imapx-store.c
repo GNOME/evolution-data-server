@@ -650,12 +650,6 @@ rename_folder_info (CamelIMAPXStore *istore, const gchar *old_name, const gchar 
 				npath = g_strdup(new_name);
 			nfull = camel_imapx_store_summary_path_to_full(istore->summary, npath, istore->dir_sep);
 
-			/* workaround for broken server (courier uses '.') that doesn't rename
-			   subordinate folders as required by rfc 2060 */
-			if (istore->dir_sep == '.') {
-				camel_imapx_server_rename_folder (istore->server, path, nfull, ex);
-			}
-
 			camel_store_info_set_string((CamelStoreSummary *)istore->summary, si, CAMEL_STORE_INFO_PATH, npath);
 			camel_store_info_set_string((CamelStoreSummary *)istore->summary, si, CAMEL_IMAPX_STORE_INFO_FULL_NAME, nfull);
 
