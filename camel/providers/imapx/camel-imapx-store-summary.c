@@ -223,7 +223,6 @@ camel_imapx_store_summary_path_to_full(CamelIMAPXStoreSummary *s, const gchar *p
 	else
 		p = path;
 
-	printf("p is '%s'\n", p);
 	f = full = g_strdup(p);
 	if (dir_sep != '/') {
 		while (*f) {
