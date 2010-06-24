@@ -3597,64 +3597,121 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
 	guint32 total;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
+	CamelIMAPXSummary *isum = (CamelIMAPXSummary *)job->folder->summary;
 	CamelFolder *folder = job->folder;
 	CamelException *ex = job->ex;
 	const gchar *full_name;
+	gboolean need_rescan = FALSE;
+	gboolean is_selected = FALSE;
 
 	full_name = camel_folder_get_full_name (folder);
 
-	total = camel_folder_summary_count (folder->summary);
-	/* Check if there are any new messages. The old imap doc says one needs to reselect in case of inbox to fetch
-	   new messages. Need to check if its still true. Just use noop now */
-	if (ifolder->exists_on_server == total) {
-		camel_imapx_server_noop (is, folder, ex);
+	/* Sync changes first, else unread count will not
+	   match. Need to think about better ways for this */
+	imapx_server_sync_changes (is, folder, job->pri, ex);
+	if (camel_exception_is_set (job->ex))
+		goto done;
 
-		if (camel_exception_is_set (ex))
-			goto done;
+	if (is->select && !strcmp(full_name, is->select))
+		is_selected = TRUE;
+
+	total = camel_folder_summary_count (folder->summary);
+
+	/* We don't have valid unread count or modseq for currently-selected server
+	   (unless we want to re-SELECT it). We fake unread count when fetching
+	   message flags, but don't depend on modseq for the selected folder */
+	if (total != ifolder->exists_on_server ||
+	    isum->uidnext != ifolder->uidnext_on_server ||
+	    folder->summary->unread_count != ifolder->unread_on_server ||
+	    (!is_selected && isum->modseq != ifolder->modseq_on_server))
+		need_rescan = TRUE;
+	
+	/* This is probably the first check of this folder after startup;
+	   use STATUS to check whether the cached summary is valid, rather
+	   than blindly updating. Only for servers which support CONDSTORE
+	   though. */
+	if ((isum->modseq && !ifolder->modseq_on_server))
+		need_rescan = FALSE;
+
+	/* If we don't think there's anything to do, poke it to check */
+	if (!need_rescan) {
+		CamelIMAPXCommand *ic;
+		
+		if (is_selected) {
+			/* We may not issue STATUS on the current folder. Use SELECT or NOOP instead. */
+			if (0 /* server needs SELECT not just NOOP*/) {
+				if (imapx_idle_supported(is) && imapx_in_idle(is))
+					imapx_stop_idle(is, job->ex);
+				if (camel_exception_is_set(job->ex))
+					goto done;
+				/* This doesn't work -- this is an immediate command, not queued */
+				imapx_select(is, folder, TRUE, job->ex);
+				if (camel_exception_is_set(job->ex))
+					goto done;
+			} else {
+				/* Or maybe just NOOP, unless we're in IDLE in which case do nothing */
+				if (!imapx_idle_supported(is) || !imapx_in_idle(is)) {
+					camel_imapx_server_noop(is, folder, job->ex);
+					if (camel_exception_is_set(job->ex))
+						goto done;
+				}
+			}
+		} else {
+			if (is->cinfo->capa & IMAPX_CAPABILITY_CONDSTORE)
+				ic = camel_imapx_command_new (is, "STATUS", NULL, "STATUS %f (MESSAGES UNSEEN UIDNEXT HIGHESTMODSEQ)", folder);
+			else
+				ic = camel_imapx_command_new (is, "STATUS", NULL, "STATUS %f (MESSAGES UNSEEN UIDNEXT)", folder);
+		
+			ic->job = job;
+			ic->pri = job->pri;
+
+			imapx_command_run_sync (is, ic);
+
+			if (camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK) {
+				if (!camel_exception_is_set (ic->ex))
+					camel_exception_setv(job->ex, 1, "Error refreshing folder: %s", ic->status->text);
+				else
+					camel_exception_xfer (job->ex, ic->ex);
+
+				camel_imapx_command_free (ic);
+				goto done;
+			}
+			camel_imapx_command_free (ic);
+		}
+
+		/* Recalulate need_rescan */
+		if (total != ifolder->exists_on_server ||
+		    isum->uidnext != ifolder->uidnext_on_server ||
+		    folder->summary->unread_count != ifolder->unread_on_server ||
+		    (!is_selected && isum->modseq != ifolder->modseq_on_server))
+			need_rescan = TRUE;
+
 	}
 
-	/* Fetch the new messages */
-	if (ifolder->exists_on_server > total)
+	e(printf("folder %s is %sselected, total %u / %u, unread %u / %u, modseq %llu / %llu, uidnext %u / %u: will %srescan\n",
+		 full_name, is_selected?"": "not ", total, ifolder->exists_on_server,
+		 folder->summary->unread_count, ifolder->unread_on_server,
+		 (unsigned long long)isum->modseq, (unsigned long long)ifolder->modseq_on_server,
+		 isum->uidnext, ifolder->uidnext_on_server,
+		 need_rescan?"":"not "));
+
+	/* Fetch new messages first, so that they appear to the user ASAP */
+	if (ifolder->exists_on_server > total ||
+	    ifolder->uidnext_on_server > isum->uidnext)
 	{
+		if (!total)
+			need_rescan = FALSE;
+
 		imapx_server_fetch_new_messages (is, folder, FALSE, job->ex);
 		if (camel_exception_is_set (job->ex))
 			goto done;
 	}
 
-	/* Sync changes before fetching status, else unread count will not match. need to think about better ways for this */
-	imapx_server_sync_changes (is, folder, job->pri, ex);
-	if (camel_exception_is_set (job->ex))
-		goto done;
-
-	/* Check if a rescan is needed */
-	total = camel_folder_summary_count (folder->summary);
-	if (ifolder->exists_on_server == total) {
-		guint32 unread;
-		CamelIMAPXCommand *ic;
-
-		ic = camel_imapx_command_new (is, "STATUS", full_name, "STATUS %f (MESSAGES UNSEEN)", folder);
-		ic->job = job;
-		ic->pri = job->pri;
-		imapx_command_run_sync (is, ic);
-
-		if (camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK) {
-			if (!camel_exception_is_set (ic->ex))
-				camel_exception_setv(job->ex, 1, "Error refreshing folder: %s", ic->status->text);
-			else
-				camel_exception_xfer (job->ex, ic->ex);
-
-			camel_imapx_command_free (ic);
-			goto done;
-		}
-		camel_imapx_command_free (ic);
-
-		unread = folder->summary->unread_count;
-		if (ifolder->exists_on_server == total && unread == ifolder->unread_on_server)
-			goto done;
+	/* Refetch flags for the entire folder */
+	if (need_rescan) {
+		imapx_job_scan_changes_start (is, job);
+		return;
 	}
-
-	imapx_job_scan_changes_start (is, job);
-	return;
 
 done:
 	imapx_job_done (is, job);
