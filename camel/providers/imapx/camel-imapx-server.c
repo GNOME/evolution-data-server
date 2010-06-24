@@ -3440,9 +3440,9 @@ imapx_job_scan_changes_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			gchar *uid = (gchar *) l->data;
 			CamelMessageInfo *mi;
 
-			mi = camel_folder_summary_uid (is->select_folder->summary, uid);
+			mi = camel_folder_summary_uid (job->folder->summary, uid);
 			if (mi) {
-				imapx_update_summary_for_removed_message (mi, is->select_folder);
+				imapx_update_summary_for_removed_message (mi, job->folder);
 				camel_message_info_free (mi);
 			}
 
