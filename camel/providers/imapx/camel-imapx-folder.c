@@ -96,6 +96,8 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 	ifolder->ignore_recent = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
 	ifolder->exists_on_server = 0;
 	ifolder->unread_on_server = 0;
+	ifolder->modseq_on_server = 0;
+	ifolder->uidnext_on_server = 0;
 
 	istore = (CamelIMAPXStore *) store;
 	if (!g_ascii_strcasecmp (folder_name, "INBOX")) {

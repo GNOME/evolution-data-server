@@ -27,13 +27,16 @@ typedef enum _camel_imapx_id_t {
 	IMAPX_EXPUNGE,
 	IMAPX_FETCH,
 	IMAPX_FLAGS,
+	IMAPX_HIGHESTMODSEQ,
 	IMAPX_INTERNALDATE,
 	IMAPX_LIST,
 	IMAPX_LSUB,
 	IMAPX_MESSAGES,
+	IMAPX_MODSEQ,
 	IMAPX_NAMESPACE,
 	IMAPX_NEWNAME,
 	IMAPX_NO,
+	IMAPX_NOMODSEQ,
 	IMAPX_OK,
 	IMAPX_PARSE,
 	IMAPX_PERMANENTFLAGS,
@@ -116,6 +119,7 @@ struct _fetch_info {
 	guint32 size;		/* RFC822.SIZE */
 	guint32 offset;		/* start offset of a BODY[]<offset.length> request */
 	guint32 flags;		/* FLAGS */
+	guint64 modseq;		/* MODSEQ */
 	struct _CamelFlag *user_flags;
 	gchar *date;		/* INTERNALDATE */
 	gchar *section;		/* section for a BODY[section] request */
@@ -133,6 +137,7 @@ struct _fetch_info {
 #define FETCH_DATE (1<<8)
 #define FETCH_SECTION (1<<9)
 #define FETCH_UID (1<<10)
+#define FETCH_MODSEQ (1<<11)
 
 struct _fetch_info *imapx_parse_fetch(struct _CamelIMAPXStream *is, CamelException *ex);
 void imapx_free_fetch(struct _fetch_info *finfo);
@@ -142,7 +147,7 @@ void imapx_dump_fetch(struct _fetch_info *finfo);
 
 struct _status_info {
 	camel_imapx_id_t result; /* ok/no/bad/preauth only, user_cancel - client response */
-	camel_imapx_id_t condition; /* read-only/read-write/alert/parse/trycreate/newname/permanentflags/uidvalidity/unseen */
+	camel_imapx_id_t condition; /* read-only/read-write/alert/parse/trycreate/newname/permanentflags/uidvalidity/unseen/highestmodseq */
 
 	union {
 		struct {
@@ -153,6 +158,7 @@ struct _status_info {
 		guint64 uidvalidity;
 		guint32 uidnext;
 		guint32 unseen;
+		guint64 highestmodseq;
 		struct {
 			guint64 uidvalidity;
 			guint32 uid;
@@ -179,8 +185,9 @@ struct _state_info {
 	guint32 messages;
 	guint32 recent;
 	guint32 uidnext;
-	guint64 uidvalidity;
 	guint32 unseen;
+	guint64 uidvalidity;
+	guint64 highestmodseq;
 };
 
 /* use g_free to free the return value */

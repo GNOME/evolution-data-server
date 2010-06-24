@@ -1310,6 +1310,32 @@ imapx_parse_section(CamelIMAPXStream *is, CamelException *ex)
 	return section;
 }
 
+static guint64
+imapx_parse_modseq(CamelIMAPXStream *is, CamelException *ex)
+{
+	guint64 ret;
+	gint tok;
+	guint len;
+	guchar *token;
+
+	
+	tok = camel_imapx_stream_token(is, &token, &len, ex);
+	if (tok != '(') {
+		camel_exception_set (ex, 1, "fetch: expecting '('");
+		return 0;
+	}
+	ret = camel_imapx_stream_number(is, ex);
+	if (camel_exception_is_set(ex))
+		return 0;
+
+	tok = camel_imapx_stream_token(is, &token, &len, ex);
+	if (tok != ')') {
+		camel_exception_set (ex, 1, "fetch: expecting '('");
+		return 0;
+	}
+	return ret;
+}
+
 void
 imapx_free_fetch(struct _fetch_info *finfo)
 {
@@ -1440,6 +1466,10 @@ imapx_parse_fetch(CamelIMAPXStream *is, CamelException *ex)
 				finfo->cinfo = imapx_parse_body(is, ex);
 				finfo->got |= FETCH_CINFO;
 				break;
+			case IMAPX_MODSEQ:
+				finfo->modseq = imapx_parse_modseq(is, ex);
+				finfo->got |= FETCH_MODSEQ;
+				break;
 			case IMAPX_BODY:
 				tok = camel_imapx_stream_token(is, &token, &len, ex);
 				camel_imapx_stream_ungettoken(is, tok, token, len);
@@ -1530,6 +1560,11 @@ imapx_parse_status_info (struct _CamelIMAPXStream *is, CamelException *ex)
 			case IMAPX_UNSEEN:
 				sinfo->unseen = camel_imapx_stream_number (is, ex);
 				break;
+			case IMAPX_HIGHESTMODSEQ:
+				sinfo->highestmodseq = camel_imapx_stream_number (is, ex);
+				break;
+			case IMAPX_NOMODSEQ:
+			break;
 			default:
 				g_free (sinfo);
 				camel_exception_set (ex, 1, "unknown status response");
@@ -1667,6 +1702,9 @@ imapx_parse_status(CamelIMAPXStream *is, CamelException *ex)
 				break;
 			case IMAPX_UNSEEN:
 				sinfo->u.unseen = camel_imapx_stream_number(is, ex);
+				break;
+			case IMAPX_HIGHESTMODSEQ:
+				sinfo->u.highestmodseq = camel_imapx_stream_number(is, ex);
 				break;
 			case IMAPX_CAPABILITY:
 				sinfo->u.cinfo = imapx_parse_capability(is, ex);
