@@ -969,11 +969,11 @@ imapx_get_folders_free(gpointer k, gpointer v, gpointer d)
 }
 
 static void
-fetch_folders_for_pattern (CamelIMAPXStore *istore, const gchar *pattern, guint32 flags, GHashTable *table, CamelException *ex)
+fetch_folders_for_pattern (CamelIMAPXStore *istore, const gchar *pattern, guint32 flags, const gchar *ext, GHashTable *table, CamelException *ex)
 {
 	GPtrArray *folders = NULL;
 
-	folders = camel_imapx_server_list (istore->server, pattern, flags, ex);
+	folders = camel_imapx_server_list (istore->server, pattern, flags, ext, ex);
 	if (camel_exception_is_set (ex))
 		return;
 
@@ -1017,6 +1017,7 @@ fetch_folders_for_namespaces (CamelIMAPXStore *istore, const gchar *pattern, gbo
 		while (ns) {
 			guint32 flags = 0;
 			gchar *pat = NULL;
+			const gchar *list_ext = NULL;
 
 			if (!pattern) {
 				if (!*ns->path)
@@ -1029,20 +1030,25 @@ fetch_folders_for_namespaces (CamelIMAPXStore *istore, const gchar *pattern, gbo
 			if (sync)
 				flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST;
 
+			if (istore->server->cinfo->capa & IMAPX_CAPABILITY_LIST_EXTENDED)
+				list_ext = "RETURN (SUBSCRIBED)";
+
 			flags |= CAMEL_STORE_FOLDER_INFO_RECURSIVE;
-			fetch_folders_for_pattern (istore, pat, flags, folders, ex);
+			fetch_folders_for_pattern (istore, pat, flags, list_ext, folders, ex);
 			if (camel_exception_is_set (ex)) {
 				g_free (pat);
 				goto exception;
 			}
-
-			flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIBED;
-			fetch_folders_for_pattern (istore, pat, flags, folders, ex);
-			if (camel_exception_is_set (ex)) {
-				g_free (pat);
-				goto exception;
+			if (!list_ext) {
+				/* If the server doesn't support LIST-EXTENDED then we have to
+				   issue LSUB to list the subscribed folders separately */
+				flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIBED;
+				fetch_folders_for_pattern (istore, pat, flags, NULL, folders, ex);
+				if (camel_exception_is_set (ex)) {
+					g_free (pat);
+					goto exception;
+				}
 			}
-
 			g_free (pat);
 
 			if (pattern)

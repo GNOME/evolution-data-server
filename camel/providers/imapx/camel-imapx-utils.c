@@ -1790,6 +1790,7 @@ static struct {
 	{ "\\NOSELECT", CAMEL_FOLDER_NOSELECT },
 	{ "\\MARKED", 1<< 16},
 	{ "\\UNMARKED", 1<< 17},
+	{ "\\SUBSCRIBED", CAMEL_FOLDER_SUBSCRIBED },
 };
 
 struct _list_info *
