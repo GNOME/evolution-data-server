@@ -1522,12 +1522,22 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		}
 		break;
 	}
+	case IMAPX_BYE: {
+		guchar *token;
+
+		camel_imapx_stream_text (imap->stream, &token, ex);
+		if (!camel_exception_is_set(ex)) {
+			c(printf("BYE: %s\n", token));
+			camel_exception_setv(ex, 1, "IMAP server said BYE: %s", token);
+		}
+		break;
+	}
 	case IMAPX_PREAUTH:
 		c(printf("preauthenticated\n"));
 		if (imap->state < IMAPX_AUTHENTICATED)
 			imap->state = IMAPX_AUTHENTICATED;
 		/* fall through... */
-	case IMAPX_BYE: case IMAPX_OK: case IMAPX_NO: case IMAPX_BAD:
+	case IMAPX_OK: case IMAPX_NO: case IMAPX_BAD:
 		/* TODO: validate which ones of these can happen as unsolicited responses */
 		/* TODO: handle bye/preauth differently */
 		camel_imapx_stream_ungettoken(imap->stream, tok, token, len);
