@@ -2060,7 +2060,7 @@ imapx_idle_thread (gpointer data)
 
 			if (dwelled < IMAPX_IDLE_DWELL_TIME) {
 				IDLE_UNLOCK(is->idle);
-				g_usleep(IMAPX_IDLE_DWELL_TIME - dwelled);
+				g_usleep((IMAPX_IDLE_DWELL_TIME - dwelled) * G_USEC_PER_SEC);
 				continue;
 			}
 			IDLE_UNLOCK(is->idle);
