@@ -2061,16 +2061,19 @@ imapx_idle_thread (gpointer data)
 
 	while (TRUE) {
 		CamelIMAPXFolder *ifolder;
+
 		e_flag_clear (is->idle->idle_start_watch);
 
 		IDLE_LOCK(is->idle);
 		while ((ifolder = (CamelIMAPXFolder *) is->select_folder) &&
-		       is->idle->state == IMAPX_IDLE_PENDING) {
+		       is->idle->state == IMAPX_IDLE_PENDING &&
+		       !is->idle->idle_exit) {
 			time_t dwelled = time(NULL) - is->idle->started;
 
 			if (dwelled < IMAPX_IDLE_DWELL_TIME) {
 				IDLE_UNLOCK(is->idle);
 				g_usleep((IMAPX_IDLE_DWELL_TIME - dwelled) * G_USEC_PER_SEC);
+				IDLE_LOCK(is->idle);
 				continue;
 			}
 			IDLE_UNLOCK(is->idle);
@@ -2085,6 +2088,7 @@ imapx_idle_thread (gpointer data)
 				/* No way to asyncronously notify UI ? */
 				camel_exception_clear (ex);
 			}
+			IDLE_LOCK(is->idle);
 		}
 		IDLE_UNLOCK(is->idle);
 
@@ -2143,6 +2147,7 @@ static void
 imapx_exit_idle (CamelIMAPXServer *is)
 {
 	CamelIMAPXIdle *idle = is->idle;
+	GThread *thread = NULL;
 
 	if (!idle)
 		return;
@@ -2153,12 +2158,15 @@ imapx_exit_idle (CamelIMAPXServer *is)
 		idle->idle_exit = TRUE;
 		e_flag_set (idle->idle_start_watch);
 
-		if (idle->idle_thread)
-			g_thread_join (idle->idle_thread);
+		thread = idle->idle_thread;
+		idle->idle_thread = 0;
 	}
 
 	idle->idle_thread = NULL;
 	IDLE_UNLOCK (idle);
+
+	if (thread)
+		g_thread_join (thread);
 
 	g_mutex_free (idle->idle_lock);
 	if (idle->idle_start_watch)
