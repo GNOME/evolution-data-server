@@ -2196,7 +2196,7 @@ imapx_in_idle (CamelIMAPXServer *is)
 static gboolean
 imapx_idle_supported (CamelIMAPXServer *is)
 {
-	return (is->cinfo->capa & IMAPX_CAPABILITY_IDLE && is->use_idle);
+	return (is->cinfo && (is->cinfo->capa & IMAPX_CAPABILITY_IDLE) != 0 && is->use_idle);
 }
 
 // end IDLE
