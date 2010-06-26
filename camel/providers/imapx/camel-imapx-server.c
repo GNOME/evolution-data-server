@@ -148,6 +148,7 @@ static gboolean imapx_is_command_queue_empty (CamelIMAPXServer *is);
 /* states for the connection? */
 enum {
 	IMAPX_DISCONNECTED,
+	IMAPX_SHUTDOWN,
 	IMAPX_CONNECTED,
 	IMAPX_AUTHENTICATED,
 	IMAPX_INITIALISED,
@@ -1002,6 +1003,15 @@ imapx_command_queue(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 	QUEUE_LOCK(is);
 
+	if (is->state == IMAPX_SHUTDOWN) {
+		c(printf("refuse to queue job on disconnected server\n"));
+		camel_exception_set(ic->ex, 1, "Server disconnected");
+		QUEUE_UNLOCK(is);
+		if (ic->complete)
+			ic->complete(is, ic);
+		return;
+	}
+
 	scan = (CamelIMAPXCommand *)is->queue.head;
 	if (scan->next == NULL)
 		camel_dlist_addtail(&is->queue, (CamelDListNode *)ic);
@@ -1527,7 +1537,8 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 			c(printf("BYE: %s\n", token));
 			camel_exception_setv(ex, 1, "IMAP server said BYE: %s", token);
 		}
-		break;
+		imap->state = IMAPX_SHUTDOWN;
+		return -1;
 	}
 	case IMAPX_PREAUTH:
 		c(printf("preauthenticated\n"));
@@ -4368,7 +4379,7 @@ imapx_parser_thread (gpointer d)
 				errno = EINTR;
 		}
 
-		if (camel_application_is_exiting || is->parser_quit) {
+		if (is->parser_quit) {
 			camel_exception_setv (&ex, CAMEL_EXCEPTION_USER_CANCEL, "Operation Cancelled: %s", g_strerror(errno));
 			break;
 		}
@@ -4387,11 +4398,11 @@ imapx_parser_thread (gpointer d)
 		}
 	}
 
-	imapx_disconnect (is);
-	cancel_all_jobs (is, &ex);
+	QUEUE_LOCK(is);
+	is->state = IMAPX_SHUTDOWN;
+	QUEUE_UNLOCK(is);
 
-	if (imapx_idle_supported (is))
-		imapx_exit_idle (is);
+	cancel_all_jobs (is, &ex);
 
 	camel_exception_clear (&ex);
 
@@ -4435,6 +4446,29 @@ imapx_server_constructed (GObject *object)
 	if (class->tagprefix > 'Z')
 		class->tagprefix = 'A';
 }
+static void
+imapx_server_dispose (GObject *object)
+{
+	CamelIMAPXServer *server = CAMEL_IMAPX_SERVER (object);
+
+	QUEUE_LOCK(server);
+	server->state = IMAPX_SHUTDOWN;
+	QUEUE_UNLOCK(server);
+
+	server->parser_quit = TRUE;
+	camel_operation_cancel (server->op);
+
+	if (server->parser_thread)
+		g_thread_join (server->parser_thread);
+
+	if (imapx_idle_supported (server))
+		imapx_exit_idle (server);
+
+	imapx_disconnect (server);
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_imapx_server_parent_class)->dispose (object);
+}
 
 static void
 camel_imapx_server_class_init(CamelIMAPXServerClass *class)
@@ -4444,6 +4478,7 @@ camel_imapx_server_class_init(CamelIMAPXServerClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = imapx_server_finalize;
 	object_class->constructed = imapx_server_constructed;
+	object_class->dispose = imapx_server_dispose;
 
 	class->tagprefix = 'A';
 }
@@ -4529,39 +4564,23 @@ imapx_disconnect (CamelIMAPXServer *is)
 
 /* Client commands */
 gboolean
-camel_imapx_server_connect (CamelIMAPXServer *is, gboolean connect, CamelException *ex)
+camel_imapx_server_connect (CamelIMAPXServer *is, CamelException *ex)
 {
-	gboolean ret = FALSE;
+	if (is->state == IMAPX_SHUTDOWN)
+		return FALSE;
 
-	camel_service_lock (CAMEL_SERVICE (is->store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-	if (connect) {
-		if (is->state >= IMAPX_INITIALISED) {
-			ret = TRUE;
-			goto exit;
-		}
+	if (is->state >= IMAPX_INITIALISED)
+		return TRUE;
 
-		g_static_rec_mutex_lock (&is->ostream_lock);
-		imapx_reconnect (is, ex);
-		g_static_rec_mutex_unlock (&is->ostream_lock);
+	g_static_rec_mutex_lock (&is->ostream_lock);
+	imapx_reconnect (is, ex);
+	g_static_rec_mutex_unlock (&is->ostream_lock);
 
-		if (camel_exception_is_set (ex)) {
-			ret = FALSE;
-			goto exit;
-		}
+	if (camel_exception_is_set (ex))
+		return FALSE;
 
-		is->parser_thread = g_thread_create((GThreadFunc) imapx_parser_thread, is, TRUE, NULL);
-		ret = TRUE;
-	} else {
-		is->parser_quit = TRUE;
-		camel_operation_cancel (is->op);
-		if (is->parser_thread)
-			g_thread_join (is->parser_thread);
-		ret = TRUE;
-	}
-
-exit:
-	camel_service_unlock (CAMEL_SERVICE (is->store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-	return ret;
+	is->parser_thread = g_thread_create((GThreadFunc) imapx_parser_thread, is, TRUE, NULL);
+	return TRUE;
 }
 
 static CamelStream *

@@ -135,7 +135,6 @@ CamelIMAPXServer *
 		camel_imapx_server_new		(CamelStore *store,
 						 CamelURL *url);
 gboolean	camel_imapx_server_connect	(CamelIMAPXServer *is,
-						 gint state,
 						 CamelException *ex);
 gboolean	imapx_connect_to_server		(CamelIMAPXServer *is,
 						 CamelException *ex);

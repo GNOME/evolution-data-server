@@ -91,6 +91,7 @@ struct _CamelIMAPXStoreClass {
 };
 
 GType		camel_imapx_store_get_type (void);
+CamelIMAPXServer *camel_imapx_store_get_server(CamelIMAPXStore *store, CamelException *ex);
 
 G_END_DECLS
 
