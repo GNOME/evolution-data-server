@@ -707,6 +707,33 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *store, const gchar *top, 
 	return first;
 }
 
+static CamelFolderInfo *
+tree_insert(CamelFolderInfo *root, CamelFolderInfo *last, CamelFolderInfo *fi)
+{
+	CamelFolderInfo *kfi;
+
+	if (!root)
+		root = fi;
+	else if (!last) {
+		kfi = root;
+		while (kfi->next)
+			kfi = kfi->next;
+		kfi->next = fi;
+		fi->parent = kfi->parent;
+	} else {
+		if (!last->child) {
+			last->child = fi;
+			fi->parent = last;
+		} else {
+			kfi = last->child;
+			while (kfi->next)
+				kfi = kfi->next;
+			kfi->next = fi;
+			fi->parent = last;
+		}
+	}
+	return root;
+}
 /* returns new root */
 static CamelFolderInfo *
 nntp_push_to_hierarchy (CamelURL *base_url, CamelFolderInfo *root, CamelFolderInfo *pfi, GHashTable *known)
@@ -742,21 +769,8 @@ nntp_push_to_hierarchy (CamelURL *base_url, CamelFolderInfo *root, CamelFolderIn
 			camel_url_free (url);
 
 			g_hash_table_insert (known, fi->full_name, fi);
-			if (last) {
-				if (!last->child) {
-					last->child = fi;
-					fi->parent = last;
-				} else {
-					kfi = last->child;
-					while (kfi->next)
-						kfi = kfi->next;
-					kfi->next = fi;
-					fi->parent = last;
-				}
-			}
+			root = tree_insert(root, last, fi);
 			last = fi;
-			if (!root)
-				root = fi;
 		} else {
 			last = kfi;
 		}
@@ -768,28 +782,7 @@ nntp_push_to_hierarchy (CamelURL *base_url, CamelFolderInfo *root, CamelFolderIn
 	g_free (pfi->name);
 	pfi->name = g_strdup (name);
 
-	if (!root) {
-		root = pfi;
-	} else if (!last) {
-		kfi = root;
-		while (kfi->next)
-			kfi = kfi->next;
-		kfi->next = pfi;
-		pfi->parent = kfi->parent;
-	} else {
-		if (!last->child) {
-			last->child = pfi;
-			pfi->parent = last;
-		} else {
-			kfi = last->child;
-			while (kfi->next)
-				kfi = kfi->next;
-			kfi->next = pfi;
-			pfi->parent = last;
-		}
-	}
-
-	return root;
+	return tree_insert(root, last, pfi);
 }
 
 /*
