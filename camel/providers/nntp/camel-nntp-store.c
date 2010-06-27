@@ -419,21 +419,13 @@ static gboolean
 nntp_disconnect_online (CamelService *service, gboolean clean, CamelException *ex)
 {
 	CamelNNTPStore *store = CAMEL_NNTP_STORE (service);
-	CamelServiceClass *service_class;
 	gchar *line;
-
-	service_class = CAMEL_SERVICE_GET_CLASS (service);
 
 	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (clean) {
 		camel_nntp_raw_command (store, ex, &line, "quit");
 		camel_exception_clear(ex);
-	}
-
-	if (!service_class->disconnect (service, clean, ex)) {
-		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-		return FALSE;
 	}
 
 	g_object_unref (store->stream);
@@ -450,12 +442,6 @@ static gboolean
 nntp_disconnect_offline (CamelService *service, gboolean clean, CamelException *ex)
 {
 	CamelDiscoStore *disco = CAMEL_DISCO_STORE(service);
-	CamelServiceClass *service_class;
-
-	/* Chain up to parent's disconnect() method. */
-	service_class = CAMEL_SERVICE_CLASS (camel_nntp_store_parent_class);
-	if (!service_class->disconnect (service, clean, ex))
-		return FALSE;
 
 	if (disco->diary) {
 		g_object_unref (disco->diary);
