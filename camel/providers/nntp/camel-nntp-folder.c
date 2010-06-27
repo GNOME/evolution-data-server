@@ -104,7 +104,9 @@ nntp_folder_refresh_info_online (CamelFolder *folder,
 
 	camel_service_lock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
-	success = camel_nntp_command (
+	/* When invoked with no fmt, camel_nntp_command() just selects the folder
+	   and should return zero. */
+	success = !camel_nntp_command (
 		nntp_store, ex, nntp_folder, &line, NULL);
 
 	if (camel_folder_change_info_changed(nntp_folder->changes)) {
