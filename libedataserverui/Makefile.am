@@ -44,6 +44,7 @@ libedataserverui_1_2_la_SOURCES =	\
 libedataserverui_1_2_la_LIBADD = 				\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
+	$(top_builddir)/camel/libcamel-1.2.la			\
 	$(E_DATA_SERVER_UI_LIBS)				\
 	$(CAMEL_LIBS)
 
