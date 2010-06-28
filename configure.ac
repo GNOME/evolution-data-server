@@ -33,7 +33,6 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 dnl Required Package Versions
 m4_define([glib_minimum_version], [2.16.1])
-m4_define([gtk_minimum_version], [2.20.0])
 m4_define([gconf_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libxml_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libsoup_minimum_version], [2.3.0])
@@ -43,6 +42,17 @@ m4_define([sqlite_minimum_version], [3.5])
 m4_define([gweather_minimum_version], [2.25.4])
 m4_define([libical_minimum_version], [0.43])
 m4_define([dbus_glib_minimum_version], [0.6])
+
+dnl **********************************
+dnl GTK version
+dnl **********************************
+if $PKG_CONFIG --exists gtk+-3.0; then
+	GTK_PACKAGE="gtk+-3.0"
+	gtk_minimum_version="2.90.5"
+else	
+	GTK_PACKAGE="gtk+-2.0"
+	gtk_minimum_version="2.20.0"
+fi
 
 AC_SUBST([BASE_VERSION],[base_version])
 AC_SUBST([API_VERSION],[api_version])
@@ -279,7 +289,7 @@ dnl Check for base dependencies early.
 dnl ***********************************
 PKG_CHECK_MODULES(GNOME_PLATFORM,
 	[glib-2.0 >= glib_minimum_version
-	gtk+-2.0 >= gtk_minimum_version
+	$GTK_PACKAGE >= $gtk_minimum_version
 	gconf-2.0 >= gconf_minimum_version
 	libxml-2.0 >= libxml_minimum_version
 	libsoup-2.4 >= libsoup_minimum_version
