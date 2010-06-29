@@ -1,5 +1,69 @@
+Evolution-Data-Server 2.31.4 2010-06-29
+---------------------------------------
+
+Bug Fixes:
+	Bug 622392 - Build failure due to missing nspr includes (Matthew Barnes)
+	Bug 622799 - Fails to link libedataserverui-1.2.la (Matthew Barnes)
+	Bug 622710 - Crash in imapx_idle_supported due to cinfo being NULL (Milan Crha)
+	Bug 620815 - Memory leaks with Evolution (Milan Crha)
+	Bug 622008 - Don't trust is->select_folder in imapx_job_scan_changes_done() (David Woodhouse)
+	Bug 316783 - Broken dragging of email addresses (Matthew Barnes)
+	Bug 621851 - CamelFolder description should fall back to full-name (Matthew Barnes)
+	Bug 621961 - Remove GroupWise debugging messages. (Matthew Barnes)
+	Bug 601535 - Categories not translated in menus (Matthew Barnes)
+	Bug 621877 - Crash in summary_header_to_db at camel-vee-folder.c (Milan Crha)
+	Bug 621842 - use 'UID FETCH' instead of 'FETCH' for scan_changes (David Woodhouse)
+	Bug 621740 - Fix double-free of is->literal in cancel_all_jobs() (David Woodhouse)
+	Bug 621740 - Fix double command ->complete() in imapx_command_start_next() (David Woodhouse)
+	Bug 617723 - Critical warnings when going offline in contact view (Milan Crha)
+	Bug 206061 - Allow normal, non-vFolder, Trash and Junk folder (Milan Crha)
+	Bug 610919 - Remove superfluous space in flags in APPEND command (David Woodhouse)
+	Bug 610919 - to display the exceptions to the user. We still need to enable displaying exceptions asyncronously (Chenthill Palanisamy)
+	Bug 615239 - Fix GSSAPI (and other SASL) authentication for imapx (David Woodhouse)
+	Bug 599879 - Fix NULL return without exception on krb5-auth-dialog failure (David Woodhouse)
+	Bug 585301 - Use ~/.pki/nssdb for NSS SQL database, not Evolution directory. (David Woodhouse)
+	Bug 585301 - Use correct NSS system database where appropriate. (David Woodhouse)
+	Bug 621262 - Fix fetch of large mails from broken servers like Exchange (David Woodhouse)
+	Bug 621237 - Add imap-over-custom-command support for imapx (David Woodhouse)
+	Bug 585353 - Add new CAMEL_STORE_REAL_JUNK_FOLDER flag (Milan Crha)
+	Bug 550414 - Corruption of mailbox and can't expunge trash (Milan Crha)
+	Bug #622350 - CamelFolder's "deleted" signal prototype changed (Milan Crha)
+
+Miscellaneous Fixes:
+	For the sake of portability: sleep -> g_usleep (Fridrich ¿¿trba)
+	Revamp imapx_job_refresh_info_start() to make use of modseq and uidnext (David Woodhouse)
+	Always enable QRESYNC where it's available. (David Woodhouse)
+	Handle UIDNEXT and MODSEQ/HIGHESTMODSEQ information from server. (David Woodhouse)
+	Allow debugging to be enabled with CAMEL_DEBUG environment variable (David Woodhouse)
+	Permit all characters but dir_sep in imapx folder names. (David Woodhouse)
+	Simplify relationship between full and path names for imapx (David Woodhouse)
+	Queue non-folder specific jobs while waiting for SELECT to complete (David Woodhouse)
+	Propagate STATUS responses to folders directly from imapx_untagged() (David Woodhouse)
+	Fix overzealous IDLE handling (David Woodhouse)
+	Handle [CLOSED] status (RFC5162). (David Woodhouse)
+	Cope with unsolicited FETCH having both FLAGS and UID. (David Woodhouse)
+	Support VANISHED response (RFC5162) (David Woodhouse)
+	Extract EXPUNGE handling into imapx_expunge_uid_from_summary() function. (David Woodhouse)
+	Fix imapx_parse_flags to not just return the first UID repeatedly, export it. (David Woodhouse)
+	Fix batch fetch to use UID FETCH in imapx_job_fetch_new_messages_start() (David Woodhouse)
+	Add LITERALPLUS support. (David Woodhouse)
+	Encode folder names as literals when sending commands, where needed (David Woodhouse)
+	Accept unsolicited CAPABILITY report as part of LOGIN/AUTHENTICATE response (David Woodhouse)
+	Detect CONDSTORE and QRESYNC capabilities (David Woodhouse)
+	Use camel_folder_sync_message() to sync messages. (David Woodhouse)
+	camel_folder_append_message: 'info' can be NULL. (Matthew Barnes)
+	Clarify documentation for e_destination_get_address(). (Matthew Barnes)
+	s/EVOLUTION_LOCALEDIR/LOCALEDIR/ (Matthew Barnes)
+	Check EBook DBus error names without underscores too (Milan Crha)
+	Build with gtk3 and have backward compatibility (Chenthill Palanisamy, Matthew Barnes)
+	
+Translations:
+	Yaron Shahrabani (he)
+	Fran Di¿¿guez (gl)
+
 Evolution-Data-Server 2.31.3 2010-06-07
 ---------------------------------------
+
 Bug Fixes:
 	Bug #619347 - Return formatted address in e_destination_get_address (David Ayers)
 	Bug #620522 - Build break: 'nss_config' undeclared (Matthew Barnes)
