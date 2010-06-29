@@ -95,11 +95,17 @@ TEST_EDATASERVERUI_CPPFLAGS= \
 	$(CAMEL_CFLAGS)				\
 	$(E_DATA_SERVER_UI_CFLAGS)
 
+if ENABLE_GTK3
+TEST_EDATASERVERUI_LDFLAGS = \
+	libedataserverui-3.0.la 				\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
+	$(E_DATA_SERVER_UI_LIBS)
+else
 TEST_EDATASERVERUI_LDFLAGS = \
 	libedataserverui-1.2.la 				\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(E_DATA_SERVER_UI_LIBS)
-
+endif
 
 # Test programs
 test_category_completion_CPPFLAGS = $(TEST_EDATASERVERUI_CPPFLAGS)
