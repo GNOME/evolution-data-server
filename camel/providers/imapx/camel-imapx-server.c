@@ -3553,6 +3553,9 @@ imapx_job_scan_changes_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 static void
 imapx_command_fetch_new_messages_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
+	CamelIMAPXSummary *isum = (CamelIMAPXSummary *)ic->job->folder->summary;
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)ic->job->folder;
+
 	if (camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK) {
 		if (!camel_exception_is_set (ic->ex))
 			camel_exception_setv(ic->job->ex, 1, "Error fetching new messages : %s", ic->status->text);
@@ -3560,6 +3563,7 @@ imapx_command_fetch_new_messages_done (CamelIMAPXServer *is, CamelIMAPXCommand *
 			camel_exception_xfer (ic->job->ex, ic->ex);
 		goto exception;
 	}
+	isum->uidnext = ifolder->uidnext_on_server;
 
 	if (camel_folder_change_info_changed(ic->job->u.refresh_info.changes)) {
 		imapx_update_store_summary (ic->job->folder);
