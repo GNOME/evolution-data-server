@@ -848,7 +848,6 @@ folder_changed (CamelFolder *sub,
 /* track vanishing folders */
 static void
 subfolder_deleted (CamelFolder *folder,
-                   gpointer event_data,
                    CamelVeeFolder *vee_folder)
 {
 	camel_vee_folder_remove_folder (vee_folder, folder);
