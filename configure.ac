@@ -39,7 +39,6 @@ m4_define([libsoup_minimum_version], [2.3.0])
 m4_define([libgdata_minimum_version], [0.6.3])
 m4_define([gnome_keyring_minimum_version], [2.20.1])
 m4_define([sqlite_minimum_version], [3.5])
-m4_define([gweather_minimum_version], [2.25.4])
 m4_define([libical_minimum_version], [0.43])
 m4_define([dbus_glib_minimum_version], [0.6])
 
@@ -56,10 +55,12 @@ if test "x${enable_gtk3}" = "xyes"; then
 	LIBEDATASERVER_UI_API_VERSION=3.0
 	GTK_PACKAGE="gtk+-3.0"
 	gtk_minimum_version="2.90.5"
+	gweather_minimum_version="2.90.0"
 else	
 	LIBEDATASERVER_UI_API_VERSION=1.2
 	GTK_PACKAGE="gtk+-2.0"
 	gtk_minimum_version="2.20.0"
+	gweather_minimum_version="2.25.4"
 fi
 
 AM_CONDITIONAL([ENABLE_GTK3], [test "$enable_gtk3" = yes])
@@ -983,8 +984,8 @@ fi
 
 AC_MSG_RESULT([$use_gweather])
 if test "x$use_gweather" = "xyes"; then
-	PKG_CHECK_MODULES([LIBGWEATHER], [gweather >= gweather_minimum_version],[],
-	[AC_MSG_ERROR([The weather calendar backend requires GWeather >= gweather_minimum_version. Alternatively, you may specify --without-weather as a configure option to avoid building the backend.])])
+	PKG_CHECK_MODULES([LIBGWEATHER], [gweather >= $gweather_minimum_version],[],
+	[AC_MSG_ERROR([The weather calendar backend requires GWeather >= $gweather_minimum_version. Alternatively, you may specify --without-weather as a configure option to avoid building the backend.])])
 fi
 AM_CONDITIONAL(ENABLE_WEATHER, [test $use_gweather = yes])
 
