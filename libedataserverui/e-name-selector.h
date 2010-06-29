@@ -79,6 +79,8 @@ ENameSelectorList *
 		e_name_selector_peek_section_list
 						(ENameSelector *name_selector,
 						 const gchar *name);
+void		e_name_selector_show_dialog	(ENameSelector *name_selector,
+						 GtkWidget     *for_transient_widget);
 
 G_END_DECLS
 

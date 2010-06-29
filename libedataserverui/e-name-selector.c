@@ -301,6 +301,33 @@ e_name_selector_peek_dialog (ENameSelector *name_selector)
 }
 
 /**
+ * e_name_selector_show_dialog:
+ * @name_selector: an #ENameSelector
+ * @for_transient_widget: a widget parent or %NULL
+ *
+ * Shows the associated dialog, and sets the transient parent to the
+ * GtkWindow top-level of "for_transient_widget if set (it should be)
+ **/
+void
+e_name_selector_show_dialog (ENameSelector *name_selector,
+			     GtkWidget     *for_transient_widget)
+{
+	GtkWindow *top = NULL;
+	ENameSelectorDialog *dialog;
+
+	g_return_if_fail (E_IS_NAME_SELECTOR (name_selector));
+
+	dialog = e_name_selector_peek_dialog (name_selector);
+	if (for_transient_widget)
+		top = GTK_WINDOW (gtk_widget_get_toplevel (for_transient_widget));
+	if (top)
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), top);
+
+	gtk_widget_show (GTK_WIDGET (dialog));
+}
+
+
+/**
  * e_name_selector_peek_section_entry:
  * @name_selector: an #ENameSelector
  * @name: the name of the section to peek
