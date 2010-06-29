@@ -2,8 +2,6 @@
 MARSHAL_GENERATED = e-data-server-ui-marshal.c e-data-server-ui-marshal.h
 @EVO_MARSHAL_RULE@
 
-lib_LTLIBRARIES = libedataserverui-1.2.la
-
 noinst_PROGRAMS = 			\
 	test-category-completion	\
 	test-source-combo-box		\
@@ -11,7 +9,7 @@ noinst_PROGRAMS = 			\
 	test-contact-store		\
 	test-name-selector
 
-libedataserverui_1_2_la_CPPFLAGS = \
+CPPFLAGS = \
 	$(AM_CPPFLAGS)				\
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/addressbook		\
@@ -21,7 +19,7 @@ libedataserverui_1_2_la_CPPFLAGS = \
 	$(E_DATA_SERVER_UI_CFLAGS)		\
 	$(CAMEL_CFLAGS)
 
-libedataserverui_1_2_la_SOURCES =	\
+csources =				\
 	$(MARSHAL_GENERATED)		\
 	e-categories-dialog.c		\
 	e-category-completion.c		\
@@ -41,15 +39,32 @@ libedataserverui_1_2_la_SOURCES =	\
 	e-cell-renderer-color.c		\
 	gtk-compat.h
 
+
+if ENABLE_GTK3
+lib_LTLIBRARIES = libedataserverui-3.0.la
+libedataserverui_3_0_la_CPPFLAGS = $(CPPFLAGS)
+libedataserverui_3_0_la_SOURCES = $(csources)	
+libedataserverui_3_0_la_LIBADD = 				\
+	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
+	$(top_builddir)/camel/libcamel-1.2.la			\
+	$(E_DATA_SERVER_UI_LIBS)				\
+	$(CAMEL_LIBS)
+libedataserverui_3_0_la_LDFLAGS = 										\
+	-version-info $(LIBEDATASERVERUI_GTK3_CURRENT):$(LIBEDATASERVERUI_GTK3_REVISION):$(LIBEDATASERVERUI_GTK3_AGE) $(NO_UNDEFINED)
+else
+lib_LTLIBRARIES = libedataserverui-1.2.la
+libedataserverui_1_2_la_CPPFLAGS = $(CPPFLAGS)
+libedataserverui_1_2_la_SOURCES = $(csources)	
 libedataserverui_1_2_la_LIBADD = 				\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(top_builddir)/camel/libcamel-1.2.la			\
 	$(E_DATA_SERVER_UI_LIBS)				\
 	$(CAMEL_LIBS)
-
 libedataserverui_1_2_la_LDFLAGS = 										\
 	-version-info $(LIBEDATASERVERUI_CURRENT):$(LIBEDATASERVERUI_REVISION):$(LIBEDATASERVERUI_AGE) $(NO_UNDEFINED)
+endif
 
 libedataserveruiincludedir = $(privincludedir)/libedataserverui
 
@@ -107,11 +122,11 @@ test_name_selector_CPPFLAGS = $(TEST_EDATASERVERUI_CPPFLAGS)
 test_name_selector_SOURCES = test-name-selector.c
 test_name_selector_LDADD = $(TEST_EDATASERVERUI_LDFLAGS)
 
-%-$(API_VERSION).pc: %.pc
+%-$(LIBEDATASERVER_UI_API_VERSION).pc: %.pc
 	 cp $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libedataserverui-$(API_VERSION).pc
+pkgconfig_DATA = libedataserverui-$(LIBEDATASERVER_UI_API_VERSION).pc
 
 ui_DATA = e-categories-dialog.ui e-name-selector-dialog.ui
 
@@ -120,7 +135,7 @@ BUILT_SOURCES = $(MARSHAL_GENERATED)
 EXTRA_DIST = 						\
 	$(ui_DATA)					\
 	e-data-server-ui-marshal.list			\
-	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
+	$(pkgconfig_DATA:-$(LIBEDATASERVER_UI_API_VERSION).pc=.pc.in)
 
 CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)

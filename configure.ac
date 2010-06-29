@@ -44,18 +44,31 @@ m4_define([libical_minimum_version], [0.43])
 m4_define([dbus_glib_minimum_version], [0.6])
 
 dnl **********************************
-dnl GTK version
+dnl Gtk-3 compatibility
+dnl Use the API version 3.0 while compiling with gtk+-3
 dnl **********************************
-if $PKG_CONFIG --exists gtk+-3.0; then
+AC_ARG_ENABLE([gtk3],
+	AS_HELP_STRING([--enable-gtk3],
+	[Attempt to use gtk+-3]),
+	[enable_gtk3=$enableval],[enable_gtk3=no])
+
+if test "x${enable_gtk3}" = "xyes"; then
+	LIBEDATASERVER_UI_API_VERSION=3.0
 	GTK_PACKAGE="gtk+-3.0"
 	gtk_minimum_version="2.90.5"
 else	
+	LIBEDATASERVER_UI_API_VERSION=1.2
 	GTK_PACKAGE="gtk+-2.0"
 	gtk_minimum_version="2.20.0"
 fi
 
+AM_CONDITIONAL([ENABLE_GTK3], [test "$enable_gtk3" = yes])
+GTK_MODULE="$GTK_PACKAGE >= $gtk_minimum_version"
+AC_SUBST(GTK_MODULE)
+
 AC_SUBST([BASE_VERSION],[base_version])
 AC_SUBST([API_VERSION],[api_version])
+AC_SUBST(LIBEDATASERVER_UI_API_VERSION)
 AC_DEFINE_UNQUOTED(BASE_VERSION, ["$BASE_VERSION"], [Base version (Major.Minor)])
 AC_DEFINE_UNQUOTED(API_VERSION, ["$API_VERSION"], [API version (Major.Minor)])
 
@@ -73,6 +86,10 @@ LIBEDATASERVER_AGE=0
 LIBEDATASERVERUI_CURRENT=10
 LIBEDATASERVERUI_REVISION=0
 LIBEDATASERVERUI_AGE=0
+
+LIBEDATASERVERUI_GTK3_CURRENT=0
+LIBEDATASERVERUI_GTK3_REVISION=0
+LIBEDATASERVERUI_GTK3_AGE=0
 
 LIBECAL_CURRENT=9
 LIBECAL_REVISION=2
@@ -111,6 +128,9 @@ AC_SUBST(LIBEDATASERVER_AGE)
 AC_SUBST(LIBEDATASERVERUI_CURRENT)
 AC_SUBST(LIBEDATASERVERUI_REVISION)
 AC_SUBST(LIBEDATASERVERUI_AGE)
+AC_SUBST(LIBEDATASERVERUI_GTK3_CURRENT)
+AC_SUBST(LIBEDATASERVERUI_GTK3_REVISION)
+AC_SUBST(LIBEDATASERVERUI_GTK3_AGE)
 AC_SUBST(LIBECAL_CURRENT)
 AC_SUBST(LIBECAL_REVISION)
 AC_SUBST(LIBECAL_AGE)
@@ -289,7 +309,7 @@ dnl Check for base dependencies early.
 dnl ***********************************
 PKG_CHECK_MODULES(GNOME_PLATFORM,
 	[glib-2.0 >= glib_minimum_version
-	$GTK_PACKAGE >= $gtk_minimum_version
+	$GTK_MODULE
 	gconf-2.0 >= gconf_minimum_version
 	libxml-2.0 >= libxml_minimum_version
 	libsoup-2.4 >= libsoup_minimum_version
