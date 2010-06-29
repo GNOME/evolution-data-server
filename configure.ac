@@ -54,7 +54,7 @@ AC_ARG_ENABLE([gtk3],
 if test "x${enable_gtk3}" = "xyes"; then
 	LIBEDATASERVER_UI_API_VERSION=3.0
 	GTK_PACKAGE="gtk+-3.0"
-	gtk_minimum_version="2.90.5"
+	gtk_minimum_version="2.90.4"
 	gweather_minimum_version="2.90.0"
 else	
 	LIBEDATASERVER_UI_API_VERSION=1.2
