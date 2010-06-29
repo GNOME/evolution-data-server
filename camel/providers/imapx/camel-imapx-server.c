@@ -3123,7 +3123,10 @@ imapx_command_append_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 				/* should we update the message count ? */
 				camel_folder_summary_add (job->folder->summary, mi);
-
+				imapx_set_message_info_flags_for_new_message (mi, 
+									      ((CamelMessageInfoBase *)job->u.append_message.info)->flags,
+									      ((CamelMessageInfoBase *)job->u.append_message.info)->user_flags,
+									      job->folder);
 				changes = camel_folder_change_info_new ();
 				camel_folder_change_info_add_uid (changes, mi->uid);
 				camel_object_trigger_event (CAMEL_OBJECT (job->folder), "folder_changed",
