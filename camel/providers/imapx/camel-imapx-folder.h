@@ -48,6 +48,7 @@ typedef struct _CamelIMAPXFolder {
 	guint32 exists_on_server;
 	guint32 unread_on_server;
 	guint64 modseq_on_server;
+	guint64 uidvalidity_on_server;
 	guint32 uidnext_on_server;
 
 	/* hash table of UIDs to ignore as recent when updating folder */
