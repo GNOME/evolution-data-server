@@ -1488,6 +1488,7 @@ AC_OUTPUT
 
 echo "
 	evolution-data-server has been configured as follows:
+	GTK+ package:		$GTK_PACKAGE
 	Calendar:		$msg_calendar
 	Weather calendar:	$use_gweather
 	Mail Directory:		$system_mail_dir, $system_mail_perm
