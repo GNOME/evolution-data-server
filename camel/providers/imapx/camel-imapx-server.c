@@ -1516,6 +1516,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 				ifolder->exists_on_server = sinfo->messages;
 				ifolder->modseq_on_server = sinfo->highestmodseq;
 				ifolder->uidnext_on_server = sinfo->uidnext;
+				ifolder->uidvalidity_on_server = sinfo->uidvalidity;
 			} else {
 				c(printf("Received STATUS for unknown folder '%s'\n", sinfo->name));
 			}
@@ -2284,6 +2285,7 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		ifolder->exists_on_server = is->exists;
 		ifolder->modseq_on_server = is->highestmodseq;
 		ifolder->uidnext_on_server = is->uidnext;
+		ifolder->uidvalidity_on_server = is->uidvalidity;
 #if 0
 		/* This must trigger a complete index rebuild! */
 		if (is->uidvalidity && is->uidvalidity != ((CamelIMAPXSummary *)is->select_folder->summary)->uidvalidity)
@@ -3126,7 +3128,7 @@ imapx_command_append_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	if (!camel_exception_is_set (ic->ex) && ic->status->result == IMAPX_OK) {
 		if (ic->status->condition == IMAPX_APPENDUID) {
 			c(printf("Got appenduid %d %d\n", (gint)ic->status->u.appenduid.uidvalidity, (gint)ic->status->u.appenduid.uid));
-			if (ic->status->u.appenduid.uidvalidity == is->uidvalidity) {
+			if (ic->status->u.appenduid.uidvalidity == ifolder->uidvalidity_on_server) {
 				CamelFolderChangeInfo *changes;
 				gchar *uid;
 
@@ -3660,9 +3662,9 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 			}
 		} else {
 			if (is->cinfo->capa & IMAPX_CAPABILITY_CONDSTORE)
-				ic = camel_imapx_command_new (is, "STATUS", NULL, "STATUS %f (MESSAGES UNSEEN UIDNEXT HIGHESTMODSEQ)", folder);
+				ic = camel_imapx_command_new (is, "STATUS", NULL, "STATUS %f (MESSAGES UNSEEN UIDVALIDITY UIDNEXT HIGHESTMODSEQ)", folder);
 			else
-				ic = camel_imapx_command_new (is, "STATUS", NULL, "STATUS %f (MESSAGES UNSEEN UIDNEXT)", folder);
+				ic = camel_imapx_command_new (is, "STATUS", NULL, "STATUS %f (MESSAGES UNSEEN UIDVALIDITY UIDNEXT)", folder);
 		
 			ic->job = job;
 			ic->pri = job->pri;
