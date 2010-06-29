@@ -92,7 +92,6 @@ struct _CamelIMAPXServer {
 
 	/* info on currently selected folder */
 	CamelFolder *select_folder;
-	gchar *select;
 	CamelFolderChangeInfo *changes;
 	CamelFolder *select_pending;
 	guint32 permanentflags;
