@@ -42,6 +42,10 @@ static gint  imapx_url_equal (gconstpointer a, gconstpointer b);
 CamelProviderConfEntry imapx_conf_entries[] = {
 		{ CAMEL_PROVIDER_CONF_SECTION_START, "mailcheck", NULL,
 	  N_("Checking for New Mail") },
+#if 0 /* Not for stable branch -- new string. Set it with gconf-editor instead */
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use_qresync", NULL,
+	  N_("Use _Quick Resync if the server supports it"), "1" },
+#endif
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use_idle", NULL,
 	  N_("Use I_dle if the server supports it"), "1" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "check_all", NULL,
