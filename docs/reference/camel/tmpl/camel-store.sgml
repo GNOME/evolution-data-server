@@ -279,6 +279,13 @@ CamelStore
 
 
 
+<!-- ##### MACRO CAMEL_STORE_REAL_JUNK_FOLDER ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### MACRO CAMEL_STORE_FOLDER_CREATE ##### -->
 <para>
 

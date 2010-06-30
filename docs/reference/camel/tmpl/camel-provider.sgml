@@ -101,6 +101,20 @@ camel-provider
 
 
 
+<!-- ##### MACRO CAMEL_PROVIDER_ALLOW_REAL_TRASH_FOLDER ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_ALLOW_REAL_JUNK_FOLDER ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### MACRO CAMEL_URL_PART_USER ##### -->
 <para>
 

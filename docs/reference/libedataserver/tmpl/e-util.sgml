@@ -107,7 +107,7 @@ Miscellaneous utility functions for evolution-data-server.
 
 </para>
 
-@s: 
+@string: 
 @max: 
 @fmt: 
 @tm: 
@@ -119,7 +119,7 @@ Miscellaneous utility functions for evolution-data-server.
 
 </para>
 
-@s: 
+@string: 
 @max: 
 @fmt: 
 @tm: 

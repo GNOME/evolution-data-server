@@ -123,6 +123,7 @@ e_name_selector_peek_model
 e_name_selector_peek_dialog
 e_name_selector_peek_section_entry
 e_name_selector_peek_section_list
+e_name_selector_show_dialog
 <SUBSECTION Standard>
 E_NAME_SELECTOR
 E_IS_NAME_SELECTOR

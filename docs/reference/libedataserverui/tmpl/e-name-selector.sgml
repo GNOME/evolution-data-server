@@ -73,3 +73,12 @@ ENameSelector
 @Returns: 
 
 
+<!-- ##### FUNCTION e_name_selector_show_dialog ##### -->
+<para>
+
+</para>
+
+@name_selector: 
+@for_transient_widget: 
+
+
