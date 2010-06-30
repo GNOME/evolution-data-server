@@ -1238,9 +1238,26 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		break;
 	}
 	case IMAPX_VANISHED: {
-		GPtrArray *uids = imapx_parse_uids(imap->stream, ex);
+		GPtrArray *uids;
 		int i;
+		guint len;
+		guchar *token;
+		gint tok;
 
+		tok = camel_imapx_stream_token (imap->stream, &token, &len, ex);
+		if (camel_exception_is_set(ex))
+			return -1;
+		if (tok == '(') {
+			while (tok != ')') {
+				/* We expect this to be 'EARLIER' */
+				tok = camel_imapx_stream_token(imap->stream, &token, &len, ex);
+				if (camel_exception_is_set(ex))
+					return -1;
+			}
+		} else
+			camel_imapx_stream_ungettoken(imap->stream, tok, token, len);
+
+		uids = imapx_parse_uids(imap->stream, ex);
 		if (camel_exception_is_set(ex))
 			return -1;
 		for (i = 0; i < uids->len; i++) {
