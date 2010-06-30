@@ -107,6 +107,9 @@ imapx_parse_receiving_options (CamelIMAPXStore *istore, CamelURL *url)
 
 	if (camel_url_get_param (url, "use_idle"))
 		istore->rec_options |= IMAPX_USE_IDLE;
+
+	if (camel_url_get_param (url, "use_qresync"))
+		istore->rec_options |= IMAPX_USE_QRESYNC;
 }
 
 static void

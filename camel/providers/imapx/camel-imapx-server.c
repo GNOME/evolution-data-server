@@ -2380,6 +2380,66 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, CamelE
 	is->state = IMAPX_INITIALISED;
 
 	ic = camel_imapx_command_new(is, "SELECT", NULL, "SELECT %f", folder);
+
+	if (is->use_qresync) {
+		CamelIMAPXSummary *isum = (CamelIMAPXSummary *)folder->summary;
+		CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)folder;
+		gint total = camel_folder_summary_count(folder->summary);
+		const gchar *uid = "1";
+
+		if (total)
+		    uid = camel_folder_summary_uid_from_index (folder->summary, 1);
+
+		if (isum->modseq && ifolder->uidvalidity_on_server) {
+			c(printf("SELECT QRESYNC %ld %ld\n", ifolder->uidvalidity_on_server, isum->modseq));
+			camel_imapx_command_add(ic, " (QRESYNC (%ld %ld %s:*", ifolder->uidvalidity_on_server, isum->modseq, uid);
+
+			if (total > 10) {
+				int i;
+				GString *seqs, *uids;
+
+				seqs = g_string_new(" ");
+				uids = g_string_new(")");
+
+				/* Include some seq/uid pairs to avoid a huge VANISHED list 
+				   (see RFC5162 §3.1). Work backwards exponentially from the
+				   end of the mailbox, starting with the message 9 from the
+				   end, then 27 from the end, then 81 from the end... */
+				i = 3;
+				do {
+					gchar buf[10];
+
+					i *= 3;
+					if (i > total)
+						i = total;
+
+					if (i != 9) { /* If not the first time */
+						g_string_prepend(seqs, ",");
+						g_string_prepend(uids, ",");
+					}
+
+					/* IMAP sequence numbers are one higher than the corresponding
+					   indices in our folder summary -- they start from one, while
+					   the summary starts from zero. */
+					sprintf(buf, "%d", total - i + 1);
+					g_string_prepend(seqs, buf);
+ 					g_string_prepend(uids, camel_folder_summary_uid_from_index(folder->summary, total - i));
+				} while (i < total);
+
+				g_string_prepend(seqs, " (");
+
+				c(printf("adding QRESYNC seq/uidset %s%s\n", seqs->str, uids->str));
+				camel_imapx_command_add(ic, seqs->str);
+				camel_imapx_command_add(ic, uids->str);
+				
+				g_string_free(seqs, TRUE);
+				g_string_free(uids, TRUE);
+
+			}
+			camel_imapx_command_add(ic, "))");
+		}
+	}
+
 	ic->complete = imapx_command_select_done;
 	imapx_command_start (is, ic);
 }
@@ -2870,7 +2930,8 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 		if (camel_exception_is_set (ex))
 			goto exception;
 	}
-	if (is->cinfo->capa & IMAPX_CAPABILITY_QRESYNC) {
+	if (((CamelIMAPXStore *)is->store)->rec_options & IMAPX_USE_QRESYNC &&
+	    is->cinfo->capa & IMAPX_CAPABILITY_QRESYNC) {
 		ic = camel_imapx_command_new (is, "ENABLE", NULL, "ENABLE CONDSTORE QRESYNC");
 		imapx_command_run (is, ic);
 		camel_exception_xfer (ex, ic->ex);
@@ -2878,7 +2939,11 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 
 		if (camel_exception_is_set (ex))
 			goto exception;
-	}
+
+		is->use_qresync = TRUE;
+	} else
+		is->use_qresync = FALSE;
+
 	if (((CamelIMAPXStore *) is->store)->summary->namespaces == NULL) {
 		CamelIMAPXNamespaceList *nsl = NULL;
 		CamelIMAPXStoreNamespace *ns = NULL;
@@ -3631,6 +3696,7 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 	const gchar *full_name;
 	gboolean need_rescan = FALSE;
 	gboolean is_selected = FALSE;
+	gboolean can_qresync = FALSE;
 
 	full_name = camel_folder_get_full_name (folder);
 
@@ -3662,6 +3728,9 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 	   though. */
 	if ((isum->modseq && !ifolder->modseq_on_server))
 		need_rescan = FALSE;
+
+	if (is->use_qresync && isum->modseq && ifolder->uidvalidity_on_server)
+		can_qresync = TRUE;
 
 	/* If we don't think there's anything to do, poke it to check */
 	if (!need_rescan) {
@@ -3735,13 +3804,23 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 		imapx_server_fetch_new_messages (is, folder, FALSE, job->ex);
 		if (camel_exception_is_set (job->ex))
 			goto done;
+
+		/* If QRESYNC-capable we'll have got all flags changes in SELECT */
+		if (can_qresync)
+			goto done;
 	}
 
-	/* Refetch flags for the entire folder */
-	if (need_rescan) {
-		imapx_job_scan_changes_start (is, job);
-		return;
+	if (!need_rescan)
+		goto done;
+
+	if (can_qresync) {
+		/* Actually we only want to select it; no need for the NOOP */
+		camel_imapx_server_noop(is, folder, ex);
+		goto done;
 	}
+
+	imapx_job_scan_changes_start (is, job);
+	return;
 
 done:
 	imapx_job_done (is, job);

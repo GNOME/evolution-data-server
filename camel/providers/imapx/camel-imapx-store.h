@@ -56,6 +56,7 @@
 #define IMAPX_SUBSCRIPTIONS		(1 << 5)
 #define IMAPX_CHECK_LSUB		(1 << 6)
 #define IMAPX_USE_IDLE			(1 << 7)
+#define IMAPX_USE_QRESYNC		(1 << 8)
 
 G_BEGIN_DECLS
 
