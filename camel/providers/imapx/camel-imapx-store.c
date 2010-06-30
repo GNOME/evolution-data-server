@@ -915,7 +915,7 @@ add_folders_to_summary (CamelIMAPXStore *istore, GPtrArray *folders, GHashTable 
 		new_flags = (si->info.flags & (CAMEL_STORE_INFO_FOLDER_SUBSCRIBED | CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW)) |
 						(li->flags & ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED);
 
-		if (!(istore->server->cinfo->capa & IMAPX_CAPABILITY_NAMESPACE))
+		if (!istore->server->cinfo || !(istore->server->cinfo->capa & IMAPX_CAPABILITY_NAMESPACE))
 			istore->dir_sep = li->separator;
 
 		if (si->info.flags != new_flags) {

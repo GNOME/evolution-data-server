@@ -3619,7 +3619,7 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 				}
 			}
 		} else {
-			if (is->cinfo->capa & IMAPX_CAPABILITY_CONDSTORE)
+			if (is->cinfo && is->cinfo->capa & IMAPX_CAPABILITY_CONDSTORE)
 				ic = camel_imapx_command_new (is, "STATUS", NULL, "STATUS %f (MESSAGES UNSEEN UIDNEXT HIGHESTMODSEQ)", folder);
 			else
 				ic = camel_imapx_command_new (is, "STATUS", NULL, "STATUS %f (MESSAGES UNSEEN UIDNEXT)", folder);
