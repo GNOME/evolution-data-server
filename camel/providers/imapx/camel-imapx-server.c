@@ -2384,7 +2384,7 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, CamelE
 		const gchar *uid = "1";
 
 		if (total)
-		    uid = camel_folder_summary_uid_from_index (folder->summary, 1);
+		    uid = camel_folder_summary_uid_from_index (folder->summary, 0);
 
 		if (isum->modseq && ifolder->uidvalidity_on_server) {
 			c(printf("SELECT QRESYNC %ld %ld\n", ifolder->uidvalidity_on_server, isum->modseq));
