@@ -3729,9 +3729,6 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 	if ((isum->modseq && !ifolder->modseq_on_server))
 		need_rescan = FALSE;
 
-	if (is->use_qresync && isum->modseq && ifolder->uidvalidity_on_server)
-		can_qresync = TRUE;
-
 	/* If we don't think there's anything to do, poke it to check */
 	if (!need_rescan) {
 		CamelIMAPXCommand *ic;
@@ -3786,6 +3783,9 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 			need_rescan = TRUE;
 
 	}
+
+	if (is->use_qresync && isum->modseq && ifolder->uidvalidity_on_server)
+		can_qresync = TRUE;
 
 	e(printf("folder %s is %sselected, total %u / %u, unread %u / %u, modseq %llu / %llu, uidnext %u / %u: will %srescan\n",
 		 full_name, is_selected?"": "not ", total, ifolder->exists_on_server,
