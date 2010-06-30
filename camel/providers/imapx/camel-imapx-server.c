@@ -2275,7 +2275,13 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			while (cn) {
 				if (ic->status)
 					cw->status = imapx_copy_status(ic->status);
-				camel_exception_setv (cw->ex, 1, "select %s failed", cw->select);
+				if (camel_exception_is_set(ic->ex))
+					camel_exception_xfer (cw->ex, ic->ex);
+				else {
+					camel_exception_setv (cw->ex, 1, "SELECT %s failed: %s",
+							      camel_folder_get_full_name(cw->select),
+							      ic->status->text?:"<unknown reason>");
+				}
 				cw->complete(is, cw);
 				cw = cn;
 				cn = cn->next;
