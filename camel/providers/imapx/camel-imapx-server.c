@@ -1706,7 +1706,7 @@ imapx_continuation(CamelIMAPXServer *imap, CamelException *ex, gboolean litplus)
 		c(printf("got auth continuation, feeding token '%s' back to auth mech\n", resp));
 
 		camel_stream_write((CamelStream *)imap->stream, resp, strlen(resp));
-
+		g_free(resp);
 		/* we want to keep getting called until we get a status reponse from the server
 		   ignore what sasl tells us */
 		newliteral = ic;
@@ -3806,8 +3806,10 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 			goto done;
 
 		/* If QRESYNC-capable we'll have got all flags changes in SELECT */
-		if (can_qresync)
+		if (can_qresync) {
+			isum->modseq = ifolder->modseq_on_server;
 			goto done;
+		}
 	}
 
 	if (!need_rescan)
@@ -3816,6 +3818,7 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 	if (can_qresync) {
 		/* Actually we only want to select it; no need for the NOOP */
 		camel_imapx_server_noop(is, folder, ex);
+		isum->modseq = ifolder->modseq_on_server;
 		goto done;
 	}
 
