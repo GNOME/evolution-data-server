@@ -2321,6 +2321,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s,
 
 	camel_db_begin_transaction (cdb, ex);
 	ret = camel_db_write_folder_info_record (cdb, record, ex);
+	g_free (record->folder_name);
 	g_free (record->bdata);
 	g_free (record);
 
