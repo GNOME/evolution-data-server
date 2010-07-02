@@ -236,9 +236,10 @@ imapx_update_user_flags (CamelMessageInfo *info, CamelFlag *server_user_flags)
 }
 
 gboolean
-imapx_update_message_info_flags (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags, CamelFolder *folder)
+imapx_update_message_info_flags (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags, CamelFolder *folder, gboolean unsolicited)
 {
 	gboolean changed = FALSE;
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)folder;
 	CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) info;
 
 	if (server_flags != xinfo->server_flags)
@@ -268,8 +269,11 @@ imapx_update_message_info_flags (CamelMessageInfo *info, guint32 server_flags, C
 					deleted == 1 ? "deleted" : ( deleted == -1 ? "undeleted" : ""),
 					junk == 1 ? "junk" : ( junk == -1 ? "unjunked" : "")));
 
-		if (read)
+		if (read) {
 			folder->summary->unread_count -= read;
+			if (unsolicited)
+				ifolder->unread_on_server -= read;
+		}
 		if (deleted)
 			folder->summary->deleted_count += deleted;
 		if (junk)
@@ -341,9 +345,10 @@ imapx_set_message_info_flags_for_new_message (CamelMessageInfo *info, guint32 se
 }
 
 void
-imapx_update_summary_for_removed_message (CamelMessageInfo *info, CamelFolder *folder)
+imapx_update_summary_for_removed_message (CamelMessageInfo *info, CamelFolder *folder, gboolean unsolicited)
 {
 	CamelMessageInfoBase *dinfo = (CamelMessageInfoBase *) info;
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)folder;
 	gint unread=0, deleted=0, junk=0;
 	guint32 flags;
 
@@ -357,9 +362,11 @@ imapx_update_summary_for_removed_message (CamelMessageInfo *info, CamelFolder *f
 	if (flags & CAMEL_MESSAGE_JUNK)
 		junk = 1;
 
-	if (unread)
+	if (unread) {
 		folder->summary->unread_count--;
-
+		if (unsolicited)
+			ifolder->unread_on_server--;
+	}
 	if (deleted)
 		folder->summary->deleted_count--;
 	if (junk)

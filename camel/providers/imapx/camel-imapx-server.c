@@ -274,6 +274,7 @@ struct _CamelIMAPXJob {
 			guint32 off_set;
 			GArray *on_user; /* imapx_flag_change */
 			GArray *off_user;
+			gint unread_change;
 		} sync_changes;
 		struct {
 			gchar *path;
@@ -1145,12 +1146,12 @@ imapx_is_job_in_queue (CamelIMAPXServer *is, CamelFolder *folder, guint32 type, 
 }
 
 static void
-imapx_expunge_uid_from_summary(CamelIMAPXServer *imap, gchar *uid)
+imapx_expunge_uid_from_summary(CamelIMAPXServer *imap, gchar *uid, gboolean unsolicited)
 {
 	CamelMessageInfo *mi;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)imap->select_folder;
 
-	if (ifolder->exists_on_server)
+	if (unsolicited && ifolder->exists_on_server)
 		ifolder->exists_on_server--;
 
 	if (imap->changes == NULL)
@@ -1158,7 +1159,7 @@ imapx_expunge_uid_from_summary(CamelIMAPXServer *imap, gchar *uid)
 
 	mi = camel_folder_summary_uid (imap->select_folder->summary, uid);
 	if (mi) {
-		imapx_update_summary_for_removed_message (mi, imap->select_folder);
+		imapx_update_summary_for_removed_message (mi, imap->select_folder, unsolicited);
 		camel_message_info_free (mi);
 	}
 
@@ -1232,13 +1233,14 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 			if (!uid)
 				break;
 
-			imapx_expunge_uid_from_summary(imap, uid);
+			imapx_expunge_uid_from_summary(imap, uid, TRUE);
 		}
 
 		break;
 	}
 	case IMAPX_VANISHED: {
 		GPtrArray *uids;
+		gboolean unsolicited = TRUE;
 		int i;
 		guint len;
 		guchar *token;
@@ -1248,6 +1250,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		if (camel_exception_is_set(ex))
 			return -1;
 		if (tok == '(') {
+			unsolicited = FALSE;
 			while (tok != ')') {
 				/* We expect this to be 'EARLIER' */
 				tok = camel_imapx_stream_token(imap->stream, &token, &len, ex);
@@ -1263,7 +1266,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		for (i = 0; i < uids->len; i++) {
 			gchar *uid = g_strdup_printf("%u", GPOINTER_TO_UINT(g_ptr_array_index (uids, i)));
 			c(printf("vanished: %s\n", uid));
-			imapx_expunge_uid_from_summary(imap, uid);
+			imapx_expunge_uid_from_summary(imap, uid, unsolicited);
 		}
 		g_ptr_array_free (uids, FALSE);
 		break;
@@ -1371,9 +1374,11 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 
 				if (uid) {
 					mi = camel_folder_summary_uid (folder->summary, uid);
-					if (mi)
-						changed = imapx_update_message_info_flags (mi, finfo->flags, finfo->user_flags, folder);
-					else {
+					if (mi) {
+						/* It's unsolicited _unless_ imap->select_pending (i.e. during
+						   a QRESYNC SELECT */
+						changed = imapx_update_message_info_flags (mi, finfo->flags, finfo->user_flags, folder, !imap->select_pending);
+					} else {
 						/* This (UID + FLAGS for previously unknown message) might
 						   happen during a SELECT (QRESYNC). We should use it. */
 						c(printf("flags changed for unknown uid %s\n.", uid));
@@ -3479,7 +3484,7 @@ imapx_job_scan_changes_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			if (s_minfo && uid_cmp(s_minfo->uid, r->uid, s) == 0) {
 				info = (CamelIMAPXMessageInfo *)s_minfo;
 
-				if (imapx_update_message_info_flags ((CamelMessageInfo *) info, r->server_flags, r->server_user_flags, job->folder))
+				if (imapx_update_message_info_flags ((CamelMessageInfo *) info, r->server_flags, r->server_user_flags, job->folder, FALSE))
 					camel_folder_change_info_change_uid (job->u.refresh_info.changes, camel_message_info_uid (s_minfo));
 				r->exists = TRUE;
 			} else
@@ -3521,7 +3526,7 @@ imapx_job_scan_changes_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 			mi = camel_folder_summary_uid (job->folder->summary, uid);
 			if (mi) {
-				imapx_update_summary_for_removed_message (mi, job->folder);
+				imapx_update_summary_for_removed_message (mi, job->folder, FALSE);
 				camel_message_info_free (mi);
 			}
 
@@ -3848,7 +3853,7 @@ imapx_command_expunge_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 				CamelMessageInfo *mi = camel_folder_summary_uid (folder->summary, uid);
 
 				if (mi) {
-					imapx_update_summary_for_removed_message (mi, folder);
+					imapx_update_summary_for_removed_message (mi, folder, FALSE);
 					camel_message_info_free (mi);
 				}
 
@@ -4186,6 +4191,9 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 			/* FIXME: move over user flags too */
 		}
+		/* Apply the changes to server-side unread count; it won't tell
+		   us of these changes, of course. */
+		((CamelIMAPXFolder *)job->folder)->unread_on_server += job->u.sync_changes.unread_change;
 	}
 
 	if (job->commands == 0) {
@@ -4263,6 +4271,14 @@ imapx_job_sync_changes_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 					camel_imapx_command_add(ic, " %tFLAGS.SILENT (%t)", on?"+":"-", flags_table[j].name);
 					imapx_command_queue(is, ic);
 					ic = NULL;
+				}
+				if (flag == CAMEL_MESSAGE_SEEN) {
+					/* Remember how the server's unread count will change if this
+					   command succeeds */
+					if (on)
+						job->u.sync_changes.unread_change--;
+					else
+						job->u.sync_changes.unread_change++;
 				}
 				camel_message_info_free (info);
 			}
