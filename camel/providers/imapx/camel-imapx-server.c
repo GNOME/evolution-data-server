@@ -264,6 +264,7 @@ struct _CamelIMAPXJob {
 			/* used for biulding uidset stuff */
 			gint index;
 			gint last_index;
+			gboolean update_unseen;
 			struct _uidset_state uidset;
 			/* changes during refresh */
 			CamelFolderChangeInfo *changes;
@@ -1468,6 +1469,15 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 						finfo->user_flags = NULL;
 					}
 
+					if (!(server_flags & CAMEL_MESSAGE_SEEN)) {
+						if (job->u.refresh_info.update_unseen) {
+							c(printf("Updating unread count for new message %s\n", mi->uid));
+							((CamelIMAPXFolder *)job->folder)->unread_on_server++;
+						} else {
+							c(printf("Not updating unread count for new message %s\n", mi->uid));
+						}
+					}
+
 					binfo = (CamelMessageInfoBase *) mi;
 					binfo->size = finfo->size;
 
@@ -2058,7 +2068,8 @@ camel_imapx_server_idle (CamelIMAPXServer *is, CamelFolder *folder, CamelExcepti
 }
 
 static void
-imapx_server_fetch_new_messages (CamelIMAPXServer *is, CamelFolder *folder, gboolean async, CamelException *ex)
+imapx_server_fetch_new_messages (CamelIMAPXServer *is, CamelFolder *folder, gboolean async,
+				 gboolean update_unseen, CamelException *ex)
 {
 	CamelIMAPXJob *job;
 
@@ -2069,6 +2080,7 @@ imapx_server_fetch_new_messages (CamelIMAPXServer *is, CamelFolder *folder, gboo
 	job->noreply = async;
 	job->ex = ex;
 	job->u.refresh_info.changes = camel_folder_change_info_new();
+	job->u.refresh_info.update_unseen = update_unseen;
 	job->op = camel_operation_registered ();
 
 	if (imapx_register_job (is, job))
@@ -2106,7 +2118,7 @@ imapx_idle_thread (gpointer data)
 
 			if (!camel_exception_is_set (ex) && ifolder->exists_on_server >
 			    camel_folder_summary_count (((CamelFolder *) ifolder)->summary) && imapx_is_command_queue_empty (is))
-				imapx_server_fetch_new_messages (is, is->select_folder, TRUE, ex);
+				imapx_server_fetch_new_messages (is, is->select_folder, TRUE, TRUE, ex);
 
 			if (camel_exception_is_set (ex)) {
 				e(printf ("Caught exception in idle thread:  %s \n", ex->desc));
@@ -3552,7 +3564,9 @@ imapx_job_scan_changes_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		if (fetch_new) {
 			camel_operation_start (job->op, _("Fetching summary information for new messages in %s"), job->folder->name);
 			imapx_uidset_init(&job->u.refresh_info.uidset, BATCH_FETCH_COUNT, 0);
-			/* command will be free'ed in step_fetch_done */
+			/* These are new messages which arrived since we last knew the unseen count;
+			   update it as they arrive. */
+			job->u.refresh_info.update_unseen = TRUE;
 			imapx_command_step_fetch_done(is, ic);
 			return;
 		}
@@ -3784,7 +3798,7 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 		if (!total)
 			need_rescan = FALSE;
 
-		imapx_server_fetch_new_messages (is, folder, FALSE, job->ex);
+		imapx_server_fetch_new_messages (is, folder, FALSE, FALSE, job->ex);
 		if (camel_exception_is_set (job->ex))
 			goto done;
 
