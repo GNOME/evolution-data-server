@@ -3657,9 +3657,13 @@ imapx_job_fetch_new_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 	total = camel_folder_summary_count (folder->summary);
 	diff = ifolder->exists_on_server - total;
 
-	if (total > 0)
+	if (total > 0) {
+		unsigned long long uidl;
 		uid = camel_folder_summary_uid_from_index (folder->summary, total - 1);
-	else
+		uidl = strtoull(uid, NULL, 10);
+		g_free(uid);
+		uid = g_strdup_printf("%lld", uidl+1);
+	} else
 		uid = g_strdup ("1");
 
 	camel_operation_start (
