@@ -3780,10 +3780,8 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 			goto done;
 
 		/* If QRESYNC-capable we'll have got all flags changes in SELECT */
-		if (can_qresync) {
-			isum->modseq = ifolder->modseq_on_server;
-			goto done;
-		}
+		if (can_qresync)
+			goto qresync_done;
 	}
 
 	if (!need_rescan)
@@ -3792,8 +3790,23 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 	if (can_qresync) {
 		/* Actually we only want to select it; no need for the NOOP */
 		camel_imapx_server_noop(is, folder, ex);
+	qresync_done:
 		isum->modseq = ifolder->modseq_on_server;
-		goto done;
+		total = camel_folder_summary_count(job->folder->summary);
+		if (total != ifolder->exists_on_server ||
+		    folder->summary->unread_count != ifolder->unread_on_server ||
+		    (isum->modseq != ifolder->modseq_on_server)) {
+			c(printf("Eep, after QRESYNC we're out of sync. total %u / %u, unread %u / %u, modseq %lu / %lu\n",
+				 total, ifolder->exists_on_server,
+				 folder->summary->unread_count, ifolder->unread_on_server,
+				 isum->modseq, ifolder->modseq_on_server));
+		} else {
+			c(printf("OK, after QRESYNC we're still in sync. total %u / %u, unread %u / %u, modseq %lu / %lu\n",
+				 total, ifolder->exists_on_server,
+				 folder->summary->unread_count, ifolder->unread_on_server,
+				 isum->modseq, ifolder->modseq_on_server));
+			goto done;
+		}
 	}
 
 	imapx_job_scan_changes_start (is, job);
