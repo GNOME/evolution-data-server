@@ -32,6 +32,7 @@
 #include <prthread.h>
 #include "nss.h"      /* Don't use <> here or it will include the system nss.h instead */
 #include <ssl.h>
+#include <errno.h>
 #endif /* HAVE_NSS */
 
 #include <glib/gi18n-lib.h>
@@ -100,7 +101,7 @@ camel_init (const gchar *configdir, gboolean nss_init)
 	if (nss_init) {
 		gchar *nss_configdir = NULL;
 		gchar *nss_sql_configdir = NULL;
-		SECStatus status;
+		SECStatus status = SECFailure;
 		PRUint16 indx;
 
 		if (nss_initlock == NULL) {
@@ -134,7 +135,9 @@ camel_init (const gchar *configdir, gboolean nss_init)
 #else
 			gchar *user_nss_dir = g_build_filename ( g_get_home_dir (),
 								 ".pki/nssdb", NULL );
-			g_mkdir_with_parents (user_nss_dir, 0700);
+			if (g_mkdir_with_parents (user_nss_dir, 0700))
+				g_warning("Failed to create SQL database directory %s: %s\n",
+					  user_nss_dir, strerror(errno));
 
 			nss_sql_configdir = g_strconcat ("sql:", user_nss_dir, NULL);
 			g_free(user_nss_dir);
@@ -157,15 +160,14 @@ camel_init (const gchar *configdir, gboolean nss_init)
 			0);			/* flags */
 
 		if (status == SECFailure) {
-			g_free (nss_configdir);
-			g_free (nss_sql_configdir);
-			g_warning ("Failed to initialize NSS");
-			PR_Unlock (nss_initlock);
-			return -1;
+			g_warning ("Failed to initialize NSS SQL database in %s: NSS error %d",
+				   nss_sql_configdir, PORT_GetError());
+			/* Fall back to opening the old DBM database */
 		}
-#else
+#endif
 		/* Support old versions of libnss, pre-sqlite support. */
-		status = NSS_InitReadWrite (nss_configdir);
+		if (status == SECFailure)
+			status = NSS_InitReadWrite (nss_configdir);
 		if (status == SECFailure) {
 			/* Fall back to using volatile dbs? */
 			status = NSS_NoDB_Init (nss_configdir);
@@ -177,7 +179,6 @@ camel_init (const gchar *configdir, gboolean nss_init)
 				return -1;
 			}
 		}
-#endif
 
 		nss_initialized = TRUE;
 skip_nss_init:
