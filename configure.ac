@@ -55,11 +55,13 @@ if test "x${enable_gtk3}" = "xyes"; then
 	LIBEDATASERVERUI_API_VERSION=3.0
 	GTK_PACKAGE="gtk+-3.0"
 	gtk_minimum_version="2.90.4"
+	GWEATHER_PACKAGE="gweather-3.0"
 	gweather_minimum_version="2.90.0"
 else	
 	LIBEDATASERVERUI_API_VERSION=1.2
 	GTK_PACKAGE="gtk+-2.0"
 	gtk_minimum_version="2.20.0"
+	GWEATHER_PACKAGE="gweather"
 	gweather_minimum_version="2.25.4"
 fi
 
@@ -984,7 +986,7 @@ fi
 
 AC_MSG_RESULT([$use_gweather])
 if test "x$use_gweather" = "xyes"; then
-	PKG_CHECK_MODULES([LIBGWEATHER], [gweather >= $gweather_minimum_version],[],
+	PKG_CHECK_MODULES([LIBGWEATHER], [$GWEATHER_PACKAGE >= $gweather_minimum_version],[],
 	[AC_MSG_ERROR([The weather calendar backend requires GWeather >= $gweather_minimum_version. Alternatively, you may specify --without-weather as a configure option to avoid building the backend.])])
 fi
 AM_CONDITIONAL(ENABLE_WEATHER, [test $use_gweather = yes])
