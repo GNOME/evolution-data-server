@@ -128,11 +128,11 @@ test_name_selector_CPPFLAGS = $(TEST_EDATASERVERUI_CPPFLAGS)
 test_name_selector_SOURCES = test-name-selector.c
 test_name_selector_LDADD = $(TEST_EDATASERVERUI_LDFLAGS)
 
-%-$(LIBEDATASERVER_UI_API_VERSION).pc: %.pc
+%-$(LIBEDATASERVERUI_API_VERSION).pc: %.pc
 	 cp $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libedataserverui-$(LIBEDATASERVER_UI_API_VERSION).pc
+pkgconfig_DATA = libedataserverui-$(LIBEDATASERVERUI_API_VERSION).pc
 
 ui_DATA = e-categories-dialog.ui e-name-selector-dialog.ui
 
@@ -141,7 +141,7 @@ BUILT_SOURCES = $(MARSHAL_GENERATED)
 EXTRA_DIST = 						\
 	$(ui_DATA)					\
 	e-data-server-ui-marshal.list			\
-	$(pkgconfig_DATA:-$(LIBEDATASERVER_UI_API_VERSION).pc=.pc.in)
+	$(pkgconfig_DATA:-$(LIBEDATASERVERUI_API_VERSION).pc=.pc.in)
 
 CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)

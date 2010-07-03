@@ -52,12 +52,12 @@ AC_ARG_ENABLE([gtk3],
 	[enable_gtk3=$enableval],[enable_gtk3=no])
 
 if test "x${enable_gtk3}" = "xyes"; then
-	LIBEDATASERVER_UI_API_VERSION=3.0
+	LIBEDATASERVERUI_API_VERSION=3.0
 	GTK_PACKAGE="gtk+-3.0"
 	gtk_minimum_version="2.90.4"
 	gweather_minimum_version="2.90.0"
 else	
-	LIBEDATASERVER_UI_API_VERSION=1.2
+	LIBEDATASERVERUI_API_VERSION=1.2
 	GTK_PACKAGE="gtk+-2.0"
 	gtk_minimum_version="2.20.0"
 	gweather_minimum_version="2.25.4"
@@ -69,7 +69,7 @@ AC_SUBST(GTK_MODULE)
 
 AC_SUBST([BASE_VERSION],[base_version])
 AC_SUBST([API_VERSION],[api_version])
-AC_SUBST(LIBEDATASERVER_UI_API_VERSION)
+AC_SUBST([LIBEDATASERVERUI_API_VERSION])
 AC_DEFINE_UNQUOTED(BASE_VERSION, ["$BASE_VERSION"], [Base version (Major.Minor)])
 AC_DEFINE_UNQUOTED(API_VERSION, ["$API_VERSION"], [API version (Major.Minor)])
 

@@ -9,5 +9,5 @@ Name: libedataserverui
 Description: GUI utility library for Evolution Data Server
 Version: @VERSION@
 Requires: @GTK_MODULE@ libedataserver-@API_VERSION@ libebook-@API_VERSION@
-Libs: -L${libdir} -ledataserverui-1.2
+Libs: -L${libdir} -ledataserverui-@LIBEDATASERVERUI_API_VERSION@
 Cflags: -I${privincludedir}
