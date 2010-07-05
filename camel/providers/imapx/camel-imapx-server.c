@@ -69,6 +69,14 @@ struct _uidset_state {
 	guint32 last;
 };
 
+enum {
+	SELECT_CHANGED,
+	SHUTDOWN,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 void imapx_uidset_init(struct _uidset_state *ss, gint total, gint limit);
 gint imapx_uidset_done(struct _uidset_state *ss, struct _CamelIMAPXCommand *ic);
 gint imapx_uidset_add(struct _uidset_state *ss, struct _CamelIMAPXCommand *ic, const gchar *uid);
@@ -2341,6 +2349,8 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 	is->select_pending = NULL;
 	camel_imapx_command_free (ic);
+
+	g_signal_emit (is, signals[SELECT_CHANGED], 0);
 }
 
 /* Should have a queue lock. TODO Change the way select is written */
@@ -4534,6 +4544,9 @@ imapx_parser_thread (gpointer d)
 
 	is->parser_thread = NULL;
 	is->parser_quit = FALSE;
+
+	g_signal_emit (is, signals[SHUTDOWN], 0);
+
 	return NULL;
 }
 
@@ -4599,6 +4612,36 @@ camel_imapx_server_class_init(CamelIMAPXServerClass *class)
 	object_class->finalize = imapx_server_finalize;
 	object_class->constructed = imapx_server_constructed;
 	object_class->dispose = imapx_server_dispose;
+
+	class->select_changed = NULL;
+	class->shutdown = NULL;
+
+	/**
+	 * CamelIMAPXServer::select_changed
+	 * @server: the #CamelIMAPXServer which emitted the signal
+	 **/
+	signals[SELECT_CHANGED] = g_signal_new (
+		"select_changed",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (CamelIMAPXServerClass, select_changed),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__VOID,
+		G_TYPE_NONE, 0);
+
+	/**
+	 * CamelIMAPXServer::shutdown
+	 * @server: the #CamelIMAPXServer which emitted the signal
+	 **/
+	signals[SHUTDOWN] = g_signal_new (
+		"shutdown",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (CamelIMAPXServerClass, shutdown),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__VOID,
+		G_TYPE_NONE, 0);
+
 
 	class->tagprefix = 'A';
 }

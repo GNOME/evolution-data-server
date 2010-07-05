@@ -128,6 +128,10 @@ struct _CamelIMAPXServer {
 struct _CamelIMAPXServerClass {
 	CamelObjectClass parent_class;
 
+	/* Signals */
+	void	(*select_changed)	(CamelIMAPXServer *server);
+	void	(*shutdown)		(CamelIMAPXServer *server);
+
 	gchar tagprefix;
 };
 
