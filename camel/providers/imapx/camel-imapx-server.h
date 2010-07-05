@@ -57,6 +57,7 @@ typedef struct _CamelIMAPXServerClass CamelIMAPXServerClass;
 
 typedef struct _CamelIMAPXCommand CamelIMAPXCommand;
 typedef struct _CamelIMAPXIdle CamelIMAPXIdle;
+struct _IMAPXJobQueueInfo;
 
 struct _CamelIMAPXServer {
 	CamelObject parent;
@@ -135,6 +136,7 @@ struct _CamelIMAPXServerClass {
 	gchar tagprefix;
 };
 
+
 GType		camel_imapx_server_get_type	(void);
 CamelIMAPXServer *
 		camel_imapx_server_new		(CamelStore *store,
@@ -195,6 +197,9 @@ void		camel_imapx_server_rename_folder(CamelIMAPXServer *is,
 						 const gchar *old_name,
 						 const gchar *new_name,
 						 CamelException *ex);
+struct _IMAPXJobQueueInfo *	
+		camel_imapx_server_get_job_queue_info
+						(CamelIMAPXServer *is);
 
 G_END_DECLS
 

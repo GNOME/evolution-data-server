@@ -5374,3 +5374,29 @@ camel_imapx_server_rename_folder (CamelIMAPXServer *is, const gchar *old_name, c
 	g_free (job);
 
 }
+
+IMAPXJobQueueInfo *
+camel_imapx_server_get_job_queue_info (CamelIMAPXServer *is)
+{
+	IMAPXJobQueueInfo *jinfo = g_new0 (IMAPXJobQueueInfo, 1);
+	CamelDListNode *node;
+	CamelIMAPXJob *job = NULL;
+
+	QUEUE_LOCK(is);
+
+	jinfo->queue_len = camel_dlist_length (&is->jobs);
+	jinfo->folders = g_hash_table_new_full (g_int_hash, g_int_equal, (GDestroyNotify) g_free, NULL);
+
+	for (node = is->jobs.head;node->next;node = job->msg.ln.next) {
+		job = (CamelIMAPXJob *) node;
+
+		if (job->folder) {
+			const gchar *full_name = camel_folder_get_full_name (job->folder);
+			g_hash_table_insert (jinfo->folders, g_strdup (full_name), GINT_TO_POINTER (1));
+		}
+	}
+	
+	QUEUE_UNLOCK(is);
+
+	return jinfo;
+}

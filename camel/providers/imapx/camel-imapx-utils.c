@@ -2106,3 +2106,10 @@ imapx_get_temp_uid (void)
 
 	return res;
 }
+
+void
+camel_imapx_server_destroy_job_queue_info (IMAPXJobQueueInfo *jinfo)
+{
+	g_hash_table_destroy (jinfo->folders);
+	g_free (jinfo);
+}

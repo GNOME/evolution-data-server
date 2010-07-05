@@ -210,6 +210,16 @@ gchar *imapx_list_get_path(struct _list_info *li);
 void imapx_free_list(struct _list_info *linfo);
 
 /* ********************************************************************** */
+typedef struct _IMAPXJobQueueInfo {
+	guint queue_len;
+
+	/* list of folders for which jobs are in the queue */
+	GHashTable *folders;
+} IMAPXJobQueueInfo;	
+
+void camel_imapx_server_destroy_job_queue_info (IMAPXJobQueueInfo *jinfo);
+
+/* ********************************************************************** */
 
 extern guchar imapx_specials[256];
 
