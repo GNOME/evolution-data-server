@@ -398,7 +398,7 @@ cdb_sql_exec (sqlite3 *db, const gchar * stmt, CamelException *ex)
    case insensitively (ascii, not utf8, same as 'LIKE' in SQLite3)
 */
 static void
-cdb_match_func (sqlite3_context *ctx, int nArgs, sqlite3_value **values)
+cdb_match_func (sqlite3_context *ctx, gint nArgs, sqlite3_value **values)
 {
 	gboolean matches = FALSE;
 	const gchar *what, *where;
@@ -417,7 +417,7 @@ cdb_match_func (sqlite3_context *ctx, int nArgs, sqlite3_value **values)
 		gint i, j;
 
 		for (i = 0, j = 0; where[i] && !matches; i++) {
-			char c = where[i];
+			gchar c = where[i];
 
 			if (c == ' ') {
 				word = TRUE;

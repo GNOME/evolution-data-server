@@ -712,7 +712,7 @@ gint
 main (gint argc, gchar **argv)
 {
 	gchar *uri;
-	bindtextdomain (GETTEXT_PACKAGE, EVOLUTION_LOCALEDIR);
+	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	textdomain (GETTEXT_PACKAGE);
 
 	g_type_init ();

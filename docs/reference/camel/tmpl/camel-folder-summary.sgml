@@ -1096,3 +1096,19 @@ CamelFolderSummary
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_folder_summary_lock_summary ##### -->
+<para>
+
+</para>
+
+@summary: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_unlock_summary ##### -->
+<para>
+
+</para>
+
+@summary: 
+
+

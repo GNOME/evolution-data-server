@@ -37,8 +37,8 @@
 #include "camel-imapx-stream.h"
 #include "camel-imapx-exception.h"
 
-#define t(x) 
-#define io(x)
+#define t(x) camel_imapx_debug(token, x)
+#define io(x) camel_imapx_debug(io, x)
 
 static CamelObjectClass *parent_class = NULL;
 
@@ -303,6 +303,7 @@ camel_imapx_stream_astring(CamelIMAPXStream *is, guchar **data, CamelException *
 			memcpy(p, start, inlen);
 			p += inlen;
 		} while (ret > 0);
+		*p = 0;
 		*data = is->tokenptr;
 		return 0;
 	case IMAPX_TOK_ERROR:
@@ -341,6 +342,7 @@ camel_imapx_stream_nstring(CamelIMAPXStream *is, guchar **data, CamelException *
 			memcpy(p, start, inlen);
 			p += inlen;
 		} while (ret > 0);
+		*p = 0;
 		*data = is->tokenptr;
 		return 0;
 	case IMAPX_TOK_TOKEN:
@@ -402,7 +404,7 @@ camel_imapx_stream_nstring_stream(CamelIMAPXStream *is, CamelStream **stream, Ca
 	return ret;
 }
 
-guint32
+guint64
 camel_imapx_stream_number(CamelIMAPXStream *is, CamelException *ex)
 {
 	guchar *token;
@@ -413,7 +415,7 @@ camel_imapx_stream_number(CamelIMAPXStream *is, CamelException *ex)
 		return 0;
 	}
 
-	return strtoul((gchar *)token, 0, 10);
+	return strtoull((gchar *)token, 0, 10);
 }
 
 gint

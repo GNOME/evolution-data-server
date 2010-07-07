@@ -7,7 +7,7 @@ lib_LTLIBRARIES = libebook-1.2.la
 
 libebook_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)					\
-	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
+	-DLOCALEDIR=\""$(localedir)"\"			\
 	-DG_LOG_DOMAIN=\"libebook\"			\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\

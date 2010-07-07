@@ -88,55 +88,55 @@ struct _CamelDB {
 /**
  * CamelMIRecord:
  * @uid:
- * 	Message UID
+ *	Message UID
  * @flags:
- * 	Camel Message info flags
+ *	Camel Message info flags
  * @msg_type:
  * @dirty:
  * @read:
- * 	boolean read status
+ *	boolean read status
  * @deleted:
- * 	boolean deleted status
+ *	boolean deleted status
  * @replied:
- * 	boolean replied status
+ *	boolean replied status
  * @important:
- * 	boolean important status
+ *	boolean important status
  * @junk:
- * 	boolean junk status
+ *	boolean junk status
  * @attachment:
- * 	boolean attachment status
+ *	boolean attachment status
  * @size:
- * 	size of the mail
+ *	size of the mail
  * @dsent:
- * 	date sent
+ *	date sent
  * @dreceived:
- * 	date received
+ *	date received
  * @subject:
- * 	subject of the mail
+ *	subject of the mail
  * @from:
- * 	sender
+ *	sender
  * @to:
- * 	recipient
+ *	recipient
  * @cc:
- * 	CC members
+ *	CC members
  * @mlist:
- * 	message list headers
+ *	message list headers
  * @followup_flag:
- * 	followup flag / also can be queried to see for followup or not
+ *	followup flag / also can be queried to see for followup or not
  * @followup_completed_on:
- * 	completed date, can be used to see if completed
+ *	completed date, can be used to see if completed
  * @followup_due_by:
- * 	to see the due by date
+ *	to see the due by date
  * @part:
- * 	part / references / thread id
+ *	part / references / thread id
  * @labels:
- * 	labels of mails also called as userflags
+ *	labels of mails also called as userflags
  * @usertags:
- * 	composite string of user tags
+ *	composite string of user tags
  * @cinfo:
- * 	content info string - composite string
+ *	content info string - composite string
  * @bdata:
- * 	provider specific data
+ *	provider specific data
  * @bodystructure:
  *
  * The extensive DB format, supporting basic searching and sorting.

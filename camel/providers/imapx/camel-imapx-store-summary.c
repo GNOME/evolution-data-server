@@ -36,8 +36,8 @@
 #include "camel-imapx-utils.h"
 #include "camel-imapx-store-summary.h"
 
-#define d(x)
-#define io(x)			/* io debug */
+#define d(x) camel_imapx_debug(debug, x)
+#define io(x) camel_imapx_debug(io, x)
 
 #define CAMEL_IMAPX_STORE_SUMMARY_VERSION_0 (0)
 
@@ -171,44 +171,26 @@ gchar *
 camel_imapx_store_summary_full_to_path(CamelIMAPXStoreSummary *s, const gchar *full_name, gchar dir_sep)
 {
 	gchar *path, *p;
-	gint c;
-	const gchar *f;
+
+	p = path = g_strdup(full_name);
 
 	if (dir_sep != '/') {
-		p = path = alloca(strlen(full_name)*3+1);
-		f = full_name;
-		while ((c = *f++ & 0xff)) {
-			if (c == dir_sep)
-				*p++ = '/';
-			else if (c == '/' || c == '%')
-				p += sprintf(p, "%%%02X", c);
-			else
-				*p++ = c;
+		while (*p) {
+			if (*p == '/')
+				*p = dir_sep;
+			else if (*p == dir_sep)
+				*p = '/';
+			p++;
 		}
-		*p = 0;
-	} else
-		path = (gchar *)full_name;
-
-	return g_strdup(path);
-}
-
-static guint32 hexnib(guint32 c)
-{
-	if (c >= '0' && c <= '9')
-		return c-'0';
-	else if (c>='A' && c <= 'Z')
-		return c-'A'+10;
-	else
-		return 0;
+	}
+	return path;
 }
 
 gchar *
 camel_imapx_store_summary_path_to_full(CamelIMAPXStoreSummary *s, const gchar *path, gchar dir_sep)
 {
 	gchar *full, *f;
-	guint32 c, v = 0;
 	const gchar *p;
-	gint state=0;
 	gchar *subpath, *last = NULL;
 	CamelStoreInfo *si;
 	CamelIMAPXStoreNamespace *ns;
@@ -234,7 +216,6 @@ camel_imapx_store_summary_path_to_full(CamelIMAPXStoreSummary *s, const gchar *p
 
 	ns = camel_imapx_store_summary_namespace_find_path(s, path);
 
-	f = full = alloca(strlen(path)*2+1);
 	if (si)
 		p = path + strlen(subpath);
 	else if (ns)
@@ -242,32 +223,19 @@ camel_imapx_store_summary_path_to_full(CamelIMAPXStoreSummary *s, const gchar *p
 	else
 		p = path;
 
-	while ((c = camel_utf8_getc((const guchar **)&p))) {
-		switch (state) {
-		case 0:
-			if (c == '%')
-				state = 1;
-			else {
-				if (c == '/')
-					c = dir_sep;
-				camel_utf8_putc((guchar **) &f, c);
-			}
-			break;
-		case 1:
-			state = 2;
-			v = hexnib(c)<<4;
-			break;
-		case 2:
-			state = 0;
-			v |= hexnib(c);
-			camel_utf8_putc((guchar **) &f, v);
-			break;
+	f = full = g_strdup(p);
+	if (dir_sep != '/') {
+		while (*f) {
+			if (*f == '/')
+				*f = dir_sep;
+			else if (*f == dir_sep)
+				*f = '/';
+			f++;
 		}
 	}
-	camel_utf8_putc((guchar **) &f, c);
 
 	/* merge old path part if required */
-	f = g_strdup(full);
+	f = full;
 	if (si) {
 		full = g_strdup_printf("%s%s", camel_imapx_store_info_full_name(s, si), f);
 		g_free(f);

@@ -190,7 +190,7 @@ ep_key_file_save (void)
 		g_mkdir_with_parents (pathname, 0700);
 		g_file_set_contents (filename, contents, length, &error);
 	}
-	
+
 	g_free (pathname);
 
 	if (error != NULL) {

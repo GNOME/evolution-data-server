@@ -20,6 +20,48 @@ e-cal-system-timezone
 <!-- ##### SECTION Image ##### -->
 
 
+<!-- ##### MACRO ETC_TIMEZONE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO ETC_TIMEZONE_MAJ ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO ETC_RC_CONF ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO ETC_SYSCONFIG_CLOCK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO ETC_CONF_D_CLOCK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO ETC_LOCALTIME ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### FUNCTION e_cal_system_timezone_get_location ##### -->
 <para>
 

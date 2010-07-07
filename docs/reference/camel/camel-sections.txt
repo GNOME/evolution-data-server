@@ -54,6 +54,10 @@ camel_key_file_delete
 camel_key_file_write
 camel_key_file_read
 <SUBSECTION Standard>
+CAMEL_IS_BLOCK_FILE
+CAMEL_TYPE_BLOCK_FILE
+CAMEL_IS_KEY_FILE
+CAMEL_TYPE_KEY_FILE
 CamelBlockFileClass
 CamelKeyFileClass
 <SUBSECTION Private>
@@ -366,9 +370,6 @@ camel_filter_driver_flush
 camel_filter_driver_filter_message
 camel_filter_driver_filter_mbox
 camel_filter_driver_filter_folder
-camel_filter_driver_expand_option
-camel_filter_driver_rule_count
-camel_filter_driver_rule_get
 <SUBSECTION Standard>
 CAMEL_FILTER_DRIVER
 CAMEL_IS_FILTER_DRIVER
@@ -605,6 +606,8 @@ camel_folder_summary_guess_content_info
 camel_content_info_dump
 camel_message_info_dump
 camel_folder_summary_migrate_infos
+camel_folder_summary_lock_summary
+camel_folder_summary_unlock_summary
 <SUBSECTION Standard>
 CAMEL_FOLDER_SUMMARY
 CAMEL_IS_FOLDER_SUMMARY
@@ -1809,6 +1812,7 @@ CAMEL_STORE_FILTER_INBOX
 CAMEL_STORE_VJUNK
 CAMEL_STORE_PROXY
 CAMEL_STORE_IS_MIGRATING
+CAMEL_STORE_ASYNC
 CAMEL_STORE_FOLDER_CREATE
 CAMEL_STORE_FOLDER_EXCL
 CAMEL_STORE_FOLDER_BODY_INDEX
@@ -3617,6 +3621,10 @@ camel_key_table_set_flags
 camel_key_table_lookup
 camel_key_table_next
 <SUBSECTION Standard>
+CAMEL_IS_KEY_TABLE
+CAMEL_TYPE_KEY_TABLE
+CAMEL_IS_PARTITION_TABLE
+CAMEL_TYPE_PARTITION_TABLE
 CamelPartitionTableClass
 CamelKeyTableClass
 <SUBSECTION Private>

@@ -7,6 +7,7 @@
 #include <camel/camel-store.h>
 #include <camel/camel-utf8.h>
 #include <camel/camel-string-utils.h>
+#include <camel/camel-debug.h>
 
 #include "camel-imapx-folder.h"
 #include "camel-imapx-stream.h"
@@ -17,9 +18,32 @@
 #include "libedataserver/e-memory.h"
 
 /* high-level parser state */
-#define p(x)
+#define p(x) camel_imapx_debug(parse, x)
 /* debug */
-#define d(x)
+#define d(x) camel_imapx_debug(debug, x)
+
+gint camel_imapx_debug_flags;
+
+#define debug_set_flag(flag) do { \
+	if ((CAMEL_IMAPX_DEBUG_ALL & CAMEL_IMAPX_DEBUG_ ## flag) &&	\
+	    camel_debug("imapx:" #flag))				\
+		camel_imapx_debug_flags |= CAMEL_IMAPX_DEBUG_ ## flag;	\
+	} while (0)
+
+static void camel_imapx_set_debug_flags(void)
+{
+	if (camel_debug("imapx")) {
+		camel_imapx_debug_flags = CAMEL_IMAPX_DEBUG_ALL;
+		return;
+	}
+
+	debug_set_flag(command);
+	debug_set_flag(debug);
+	debug_set_flag(extra);
+	debug_set_flag(io);
+	debug_set_flag(token);
+	debug_set_flag(parse);
+}
 
 #include "camel-imapx-tokenise.h"
 #define SUBFOLDER_DIR_NAME     "subfolders"
@@ -39,7 +63,6 @@ imapx_tokenise (register const gchar *str, register guint len)
 
 static void imapx_namespace_clear (CamelIMAPXStoreNamespace **ns);
 static const gchar * rename_label_flag (const gchar *flag, gint len, gboolean server_to_evo);
-static GPtrArray *imapx_parse_uids (CamelIMAPXStream *is, CamelException *ex);
 
 /* flag table */
 static struct {
@@ -144,6 +167,7 @@ imapx_write_flags(CamelStream *stream, guint32 flags, CamelFlag *user_flags, Cam
 /* throws IO exception */
 {
 	gint i;
+	gboolean first = TRUE;
 
 	if (camel_stream_write(stream, "(", 1) == -1) {
 		camel_exception_setv (ex, 1, "io error: %s", strerror(errno));
@@ -154,30 +178,29 @@ imapx_write_flags(CamelStream *stream, guint32 flags, CamelFlag *user_flags, Cam
 		if (flag_table[i].flag & flags) {
 			if (flags & CAMEL_IMAPX_MESSAGE_RECENT)
 				continue;
-
+			if (!first && camel_stream_write(stream, " ", 1) == -1) {
+				camel_exception_setv (ex, 1, "io error: %s", strerror(errno));
+				return;
+			}
+			first = FALSE;
 			if (camel_stream_write (stream, flag_table[i].name, strlen(flag_table[i].name)) == -1) {
 				camel_exception_setv (ex,1, "io error: %s", strerror(errno));
 				return;
 			}
 
 			flags &= ~flag_table[i].flag;
-			if (flags != 0 && user_flags == NULL)
-				if (camel_stream_write(stream, " ", 1) == -1) {
-					camel_exception_setv (ex, 1, "io error: %s", strerror(errno));
-					return;
-				}
 		}
 	}
 
 	while (user_flags) {
 		const gchar *flag_name = rename_label_flag (user_flags->name, strlen (user_flags->name), FALSE);
 
-		if (camel_stream_write(stream, flag_name, strlen (flag_name)) == -1) {
+		if (!first && camel_stream_write(stream, " ", 1) == -1) {
 			camel_exception_setv (ex, 1, "io error: %s", strerror(errno));
 			return;
 		}
-
-		if (user_flags->next && camel_stream_write(stream, " ", 1) == -1) {
+		first = FALSE;
+		if (camel_stream_write(stream, flag_name, strlen (flag_name)) == -1) {
 			camel_exception_setv (ex, 1, "io error: %s", strerror(errno));
 			return;
 		}
@@ -389,6 +412,10 @@ struct {
 	{ "LITERAL+", IMAPX_CAPABILITY_LITERALPLUS },
 	{ "STARTTLS", IMAPX_CAPABILITY_STARTTLS },
 	{ "IDLE", IMAPX_CAPABILITY_IDLE },
+	{ "CONDSTORE", IMAPX_CAPABILITY_CONDSTORE },
+	{ "QRESYNC", IMAPX_CAPABILITY_QRESYNC },
+	{ "LIST-EXTENDED", IMAPX_CAPABILITY_LIST_EXTENDED },
+	{ "LIST-STATUS", IMAPX_CAPABILITY_LIST_STATUS },
 };
 
 struct _capability_info *
@@ -404,8 +431,13 @@ imapx_parse_capability(CamelIMAPXStream *stream, CamelException *ex)
 	cinfo->auth_types = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
 
 	/* FIXME: handle auth types */
-	while (!camel_exception_is_set (ex) && (tok = camel_imapx_stream_token(stream, &token, &len, ex)) != '\n') {
+	while ((tok = camel_imapx_stream_token(stream, &token, &len, ex)) != '\n' &&
+	       !camel_exception_is_set (ex)) {
 		switch (tok) {
+			case ']':
+				/* Put it back so that imapx_untagged() isn't unhappy */
+				camel_imapx_stream_ungettoken(stream, tok, token, len);
+				return cinfo;
 			case 43:
 				token = (guchar *) g_strconcat ((gchar *)token, "+", NULL);
 				free_token = TRUE;
@@ -515,7 +547,7 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream, CamelException *ex)
 				if (!g_ascii_strncasecmp (node->path, "INBOX", 5) &&
 						(node->path [6] == '\0' || node->path [6] == node->sep ))
 					memcpy (node->path, "INBOX", 5);
-				
+
 				/* TODO remove full_name later. not required */
 				node->full_name = g_strdup (node->path);
 
@@ -1280,6 +1312,32 @@ imapx_parse_section(CamelIMAPXStream *is, CamelException *ex)
 	return section;
 }
 
+static guint64
+imapx_parse_modseq(CamelIMAPXStream *is, CamelException *ex)
+{
+	guint64 ret;
+	gint tok;
+	guint len;
+	guchar *token;
+
+	
+	tok = camel_imapx_stream_token(is, &token, &len, ex);
+	if (tok != '(') {
+		camel_exception_set (ex, 1, "fetch: expecting '('");
+		return 0;
+	}
+	ret = camel_imapx_stream_number(is, ex);
+	if (camel_exception_is_set(ex))
+		return 0;
+
+	tok = camel_imapx_stream_token(is, &token, &len, ex);
+	if (tok != ')') {
+		camel_exception_set (ex, 1, "fetch: expecting '('");
+		return 0;
+	}
+	return ret;
+}
+
 void
 imapx_free_fetch(struct _fetch_info *finfo)
 {
@@ -1412,6 +1470,10 @@ imapx_parse_fetch(CamelIMAPXStream *is, CamelException *ex)
 				finfo->cinfo = imapx_parse_body(is, ex);
 				finfo->got |= FETCH_CINFO;
 				break;
+			case IMAPX_MODSEQ:
+				finfo->modseq = imapx_parse_modseq(is, ex);
+				finfo->got |= FETCH_MODSEQ;
+				break;
 			case IMAPX_BODY:
 				tok = camel_imapx_stream_token(is, &token, &len, ex);
 				camel_imapx_stream_ungettoken(is, tok, token, len);
@@ -1471,7 +1533,12 @@ imapx_parse_status_info (struct _CamelIMAPXStream *is, CamelException *ex)
 	sinfo = g_malloc0 (sizeof(*sinfo));
 
 	/* skip the folder name */
-	camel_imapx_stream_token (is, &token, &len, ex);
+	camel_imapx_stream_astring (is, &token, ex);
+	if (camel_exception_is_set(ex)) {
+		g_free (sinfo);
+		return NULL;
+	}
+	sinfo->name = camel_utf7_utf8 ((gchar *)token);
 
 	tok = camel_imapx_stream_token(is, &token, &len, ex);
 	if (tok != '(') {
@@ -1497,6 +1564,11 @@ imapx_parse_status_info (struct _CamelIMAPXStream *is, CamelException *ex)
 			case IMAPX_UNSEEN:
 				sinfo->unseen = camel_imapx_stream_number (is, ex);
 				break;
+			case IMAPX_HIGHESTMODSEQ:
+				sinfo->highestmodseq = camel_imapx_stream_number (is, ex);
+				break;
+			case IMAPX_NOMODSEQ:
+			break;
 			default:
 				g_free (sinfo);
 				camel_exception_set (ex, 1, "unknown status response");
@@ -1522,7 +1594,7 @@ generate_uids_from_sequence (GPtrArray *uids, guint32 begin_uid, guint32 end_uid
 		g_ptr_array_add (uids, GUINT_TO_POINTER (i));
 }
 
-static GPtrArray *
+GPtrArray *
 imapx_parse_uids (CamelIMAPXStream *is, CamelException *ex)
 {
 	GPtrArray *uids = g_ptr_array_new ();
@@ -1544,7 +1616,7 @@ imapx_parse_uids (CamelIMAPXStream *is, CamelException *ex)
 			generate_uids_from_sequence (uids, uid1, uid2);
 			g_strfreev (seq);
 		} else {
-			guint32 uid = strtoul ((gchar *) token, NULL, 10);
+			guint32 uid = strtoul ((gchar *) splits[i], NULL, 10);
 			g_ptr_array_add (uids, GUINT_TO_POINTER (uid));
 		}
 	}
@@ -1604,6 +1676,7 @@ imapx_parse_status(CamelIMAPXStream *is, CamelException *ex)
 			case IMAPX_ALERT:
 			case IMAPX_PARSE:
 			case IMAPX_TRYCREATE:
+			case IMAPX_CLOSED:
 				break;
 			case IMAPX_APPENDUID:
 				sinfo->u.appenduid.uidvalidity = camel_imapx_stream_number(is, ex);
@@ -1633,6 +1706,12 @@ imapx_parse_status(CamelIMAPXStream *is, CamelException *ex)
 				break;
 			case IMAPX_UNSEEN:
 				sinfo->u.unseen = camel_imapx_stream_number(is, ex);
+				break;
+			case IMAPX_HIGHESTMODSEQ:
+				sinfo->u.highestmodseq = camel_imapx_stream_number(is, ex);
+				break;
+			case IMAPX_CAPABILITY:
+				sinfo->u.cinfo = imapx_parse_capability(is, ex);
 				break;
 			default:
 				sinfo->condition = IMAPX_UNKNOWN;
@@ -1689,6 +1768,10 @@ imapx_free_status(struct _status_info *sinfo)
 		g_ptr_array_free (sinfo->u.copyuid.uids, FALSE);
 		g_ptr_array_free (sinfo->u.copyuid.copied_uids, FALSE);
 		break;
+	case IMAPX_CAPABILITY:
+		if (sinfo->u.cinfo)
+			imapx_free_capability(sinfo->u.cinfo);
+		break;
 	default:
 		break;
 	}
@@ -1707,6 +1790,7 @@ static struct {
 	{ "\\NOSELECT", CAMEL_FOLDER_NOSELECT },
 	{ "\\MARKED", 1<< 16},
 	{ "\\UNMARKED", 1<< 17},
+	{ "\\SUBSCRIBED", CAMEL_FOLDER_SUBSCRIBED },
 };
 
 struct _list_info *
@@ -1884,6 +1968,7 @@ void imapx_utils_init(void)
 
 		imapx_specials[i] = v;
 	}
+	camel_imapx_set_debug_flags();
 }
 
 guchar imapx_is_mask(const gchar *p)

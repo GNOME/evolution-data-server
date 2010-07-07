@@ -52,6 +52,7 @@ struct _CamelIMAPXServer {
 	struct _CamelIMAPXStream *stream;
 	struct _capability_info *cinfo;
 	gboolean is_ssl_stream;
+	gboolean is_process_stream;
 
 	CamelIMAPXNamespaceList *nsl;
 
@@ -78,12 +79,13 @@ struct _CamelIMAPXServer {
 	struct _CamelFolderChangeInfo *changes;
 	struct _CamelFolder *select_pending;
 	guint32 permanentflags;
-	guint32 uidvalidity;
 	guint32 unseen;
+	guint64 uidvalidity;
+	guint64 highestmodseq;
+	guint32 uidnext;
 	guint32 exists;
 	guint32 recent;
 	guint32 mode;
-	guint32 unread;
 
 	/* any expunges that happened from the last command, they are
 	   processed after the command completes. */
@@ -117,7 +119,7 @@ CamelIMAPXServer *camel_imapx_server_new(struct _CamelStore *store, struct _Came
 gboolean camel_imapx_server_connect(CamelIMAPXServer *is, gint state, CamelException *ex);
 gboolean imapx_connect_to_server (CamelIMAPXServer *is, CamelException *ex);
 
-GPtrArray *camel_imapx_server_list(CamelIMAPXServer *is, const gchar *top, guint32 flags, CamelException *ex);
+GPtrArray *camel_imapx_server_list(CamelIMAPXServer *is, const gchar *top, guint32 flags, const gchar *ext, CamelException *ex);
 
 void camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, struct _CamelException *ex);
 void camel_imapx_server_sync_changes(CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex);

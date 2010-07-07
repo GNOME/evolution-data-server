@@ -344,11 +344,11 @@ gssapi_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 		default:
 			if (major == (OM_uint32)GSS_S_FAILURE &&
 			    (minor == (OM_uint32)KRB5KRB_AP_ERR_TKT_EXPIRED ||
-			     minor == (OM_uint32)KRB5KDC_ERR_NEVER_VALID)) {
-				if (send_dbus_message (sasl->service->url->user))
+			     minor == (OM_uint32)KRB5KDC_ERR_NEVER_VALID) &&
+			    send_dbus_message (sasl->service->url->user))
 					goto challenge;
-			} else
-				gssapi_set_exception (major, minor, ex);
+
+			gssapi_set_exception (major, minor, ex);
 			return NULL;
 		}
 

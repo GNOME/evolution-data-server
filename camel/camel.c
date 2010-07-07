@@ -32,6 +32,7 @@
 #include <prthread.h>
 #include "nss.h"      /* Don't use <> here or it will include the system nss.h instead */
 #include <ssl.h>
+#include <errno.h>
 #endif /* HAVE_NSS */
 
 #include <glib.h>
@@ -59,6 +60,30 @@ static gint initialised = FALSE;
 
 gint camel_application_is_exiting = FALSE;
 
+#define NSS_SYSTEM_DB "/etc/pki/nssdb"
+
+static gint
+nss_has_system_db(void)
+{
+	gint found = FALSE;
+#ifndef G_OS_WIN32
+	FILE *f;
+	gchar buf[80];
+
+	f = fopen(NSS_SYSTEM_DB "/pkcs11.txt", "r");
+	if (!f)
+		return FALSE;
+
+	/* Check whether the system NSS db is actually enabled */
+	while (fgets(buf, 80, f) && !found) {
+		if (!strcmp(buf, "library=libnsssysinit.so\n"))
+			found = TRUE;
+	}
+	fclose(f);
+#endif
+	return found;
+}
+
 gint
 camel_init (const gchar *configdir, gboolean nss_init)
 {
@@ -68,7 +93,7 @@ camel_init (const gchar *configdir, gboolean nss_init)
 	if (initialised)
 		return 0;
 
-	bindtextdomain (GETTEXT_PACKAGE, EVOLUTION_LOCALEDIR);
+	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 
 	camel_debug_init();
@@ -78,7 +103,9 @@ camel_init (const gchar *configdir, gboolean nss_init)
 
 #ifdef HAVE_NSS
 	if (nss_init) {
-		gchar *nss_configdir;
+		gchar *nss_configdir = NULL;
+		gchar *nss_sql_configdir = NULL;
+		SECStatus status = SECFailure;
 		PRUint16 indx;
 
 		if (nss_initlock == NULL) {
@@ -87,26 +114,77 @@ camel_init (const gchar *configdir, gboolean nss_init)
 		}
 		PR_Lock (nss_initlock);
 
+		if (NSS_IsInitialized ())
+			goto skip_nss_init;
+
 #ifndef G_OS_WIN32
 		nss_configdir = g_strdup (configdir);
 #else
 		nss_configdir = g_win32_locale_filename_from_utf8 (configdir);
 #endif
 
-		if (!NSS_IsInitialized()) {
-			nss_initialized = 1;
+		if (nss_has_system_db ()) {
+			nss_sql_configdir = g_strdup ("sql:" NSS_SYSTEM_DB );
+		} else {
+			/* On Windows, we use the Evolution configdir. On other
+			 * operating systems we use ~/.pki/nssdb/, which is where
+			 * the user-specific part of the "shared system db" is
+			 * stored and is what Chrome uses too.
+			 *
+			 * We have to create the configdir if it does not exist,
+			 * to prevent camel from bailing out on first run. */
+#ifdef G_OS_WIN32
+			g_mkdir_with_parents (configdir, 0700);
+			nss_sql_configdir = g_strconcat ("sql:", nss_configdir, NULL);
+#else
+			gchar *user_nss_dir = g_build_filename ( g_get_home_dir (),
+								 ".pki/nssdb", NULL );
+			if (g_mkdir_with_parents (user_nss_dir, 0700))
+				g_warning("Failed to create SQL database directory %s: %s\n",
+					  user_nss_dir, strerror(errno));
 
-			if (NSS_InitReadWrite (nss_configdir) == SECFailure) {
-				/* fall back on using volatile dbs? */
-				if (NSS_NoDB_Init (nss_configdir) == SECFailure) {
-					g_free (nss_configdir);
-					g_warning ("Failed to initialize NSS");
-					nss_initialized = 0;
-					PR_Unlock(nss_initlock);
-					return -1;
-				}
+			nss_sql_configdir = g_strconcat ("sql:", user_nss_dir, NULL);
+			g_free(user_nss_dir);
+#endif
+		}
+
+#if NSS_VMAJOR > 3 || (NSS_VMAJOR == 3 && NSS_VMINOR >= 12)
+		/* See: https://wiki.mozilla.org/NSS_Shared_DB,
+		 * particularly "Mode 3A".  Note that the target
+		 * directory MUST EXIST. */
+		status = NSS_InitWithMerge (
+			nss_sql_configdir,	/* dest dir */
+			"", "",			/* new DB name prefixes */
+			SECMOD_DB,		/* secmod name */
+			nss_configdir,		/* old DB dir */
+			"", "",			/* old DB name prefixes */
+			nss_configdir,		/* unique ID for old DB */
+			"Evolution S/MIME",	/* UI name for old DB */
+			0);			/* flags */
+
+		if (status == SECFailure) {
+			g_warning ("Failed to initialize NSS SQL database in %s: NSS error %d",
+				   nss_sql_configdir, PORT_GetError());
+			/* Fall back to opening the old DBM database */
+		}
+#endif
+		/* Support old versions of libnss, pre-sqlite support. */
+		if (status == SECFailure)
+			status = NSS_InitReadWrite (nss_configdir);
+		if (status == SECFailure) {
+			/* Fall back to using volatile dbs? */
+			status = NSS_NoDB_Init (nss_configdir);
+			if (status == SECFailure) {
+				g_free (nss_configdir);
+				g_free (nss_sql_configdir);
+				g_warning ("Failed to initialize NSS");
+				PR_Unlock (nss_initlock);
+				return -1;
 			}
 		}
+
+		nss_initialized = TRUE;
+skip_nss_init:
 
 		NSS_SetDomesticPolicy ();
 
@@ -124,6 +202,7 @@ camel_init (const gchar *configdir, gboolean nss_init)
 		SSL_OptionSetDefault (SSL_V2_COMPATIBLE_HELLO, PR_TRUE /* maybe? */);
 
 		g_free (nss_configdir);
+		g_free (nss_sql_configdir);
 	}
 #endif /* HAVE_NSS */
 

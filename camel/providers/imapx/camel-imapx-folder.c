@@ -39,6 +39,7 @@
 #include  "camel/camel-string-utils.h"
 #include "camel-folder-search.h"
 
+#include "camel-imapx-utils.h"
 #include "camel-imapx-store.h"
 #include "camel-imapx-folder.h"
 #include "camel-imapx-summary.h"
@@ -50,7 +51,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define d(x)
+#define d(x) camel_imapx_debug(debug, x)
 
 #define CF_CLASS(o) (CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(o)))
 static CamelObjectClass *parent_class;
@@ -104,9 +105,11 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 	ifolder->search = camel_folder_search_new ();
 	ifolder->search_lock = g_mutex_new ();
 	ifolder->stream_lock = g_mutex_new ();
-	ifolder->ignore_recent = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL); 
+	ifolder->ignore_recent = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
 	ifolder->exists_on_server = 0;
 	ifolder->unread_on_server = 0;
+	ifolder->modseq_on_server = 0;
+	ifolder->uidnext_on_server = 0;
 
 	istore = (CamelIMAPXStore *) store;
 	if (!g_ascii_strcasecmp (folder_name, "INBOX")) {
@@ -115,7 +118,7 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 		if ((istore->rec_options & IMAPX_FILTER_INBOX))
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
 	} else if ((istore->rec_options & (IMAPX_FILTER_JUNK | IMAPX_FILTER_JUNK_INBOX)) == IMAPX_FILTER_JUNK)
-			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;	
+			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
 
 	g_free (summary_file);
 
@@ -203,14 +206,15 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 		if (istore->server && camel_imapx_server_connect (istore->server, TRUE, ex)) {
 			stream = camel_imapx_server_get_message(istore->server, folder, uid, ex);
 		} else {
-			camel_exception_setv(ex, 1, "not authenticated");
+			if (!camel_exception_is_set (ex))
+				camel_exception_setv(ex, 1, "not authenticated");
 			return NULL;
 		}
 	}
 
 	if (!camel_exception_is_set (ex) && stream) {
 		msg = camel_mime_message_new();
-	
+
 		g_mutex_lock (ifolder->stream_lock);
 		if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)msg, stream) == -1) {
 			camel_object_unref(msg);
@@ -436,7 +440,7 @@ imapx_finalize (CamelObject *object)
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) object;
 
 	camel_object_unref (CAMEL_OBJECT (ifolder->cache));
-	
+
 	if (ifolder->ignore_recent)
 		g_hash_table_unref (ifolder->ignore_recent);
 

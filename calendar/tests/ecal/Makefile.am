@@ -3,7 +3,7 @@ libecal_test_utils_la_SOURCES = ecal-test-utils.c ecal-test-utils.h
 
 libecal_test_utils_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)					\
-	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
+	-DLOCALEDIR=\""$(localedir)"\"			\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/calendar			\

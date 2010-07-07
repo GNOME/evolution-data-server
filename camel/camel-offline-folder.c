@@ -101,7 +101,6 @@ static void
 offline_downsync_sync (CamelSession *session, CamelSessionThreadMsg *mm)
 {
 	struct _offline_downsync_msg *m = (struct _offline_downsync_msg *) mm;
-	CamelMimeMessage *message;
 	gint i;
 
 	camel_operation_start (NULL, _("Downloading new messages for offline mode"));
@@ -111,8 +110,7 @@ offline_downsync_sync (CamelSession *session, CamelSessionThreadMsg *mm)
 			gint pc = i * 100 / m->changes->uid_added->len;
 
 			camel_operation_progress (NULL, pc);
-			if ((message = camel_folder_get_message (m->folder, m->changes->uid_added->pdata[i], &mm->ex)))
-				camel_object_unref (message);
+			camel_folder_sync_message (m->folder, m->changes->uid_added->pdata[i], &mm->ex);
 		}
 	} else {
 		camel_offline_folder_downsync ((CamelOfflineFolder *) m->folder, "(match-all)", &mm->ex);

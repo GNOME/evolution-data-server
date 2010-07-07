@@ -186,12 +186,16 @@ static CamelBlock *find_partition(CamelPartitionTable *cpi, camel_hash_t id, gin
 	return NULL;
 }
 
-CamelPartitionTable *camel_partition_table_new(struct _CamelBlockFile *bs, camel_block_t root)
+CamelPartitionTable *
+camel_partition_table_new (CamelBlockFile *bs,
+                           camel_block_t root)
 {
 	CamelPartitionTable *cpi;
 	CamelPartitionMapBlock *ptb;
 	CamelPartitionKeyBlock *kb;
 	CamelBlock *block, *pblock;
+
+	g_return_val_if_fail (CAMEL_IS_BLOCK_FILE (bs), NULL);
 
 	cpi = (CamelPartitionTable *)camel_object_new(camel_partition_table_get_type());
 	cpi->rootid = root;
@@ -247,6 +251,8 @@ camel_partition_table_sync(CamelPartitionTable *cpi)
 	CamelBlock *bl, *bn;
 	gint ret = 0;
 
+	g_return_val_if_fail (CAMEL_IS_PARTITION_TABLE (cpi), -1);
+
 	CAMEL_PARTITION_TABLE_LOCK(cpi, lock);
 
 	if (cpi->blocks) {
@@ -274,6 +280,9 @@ camel_key_t camel_partition_table_lookup(CamelPartitionTable *cpi, const gchar *
 	camel_hash_t hashid;
 	camel_key_t keyid = 0;
 	gint index, i;
+
+	g_return_val_if_fail (CAMEL_IS_PARTITION_TABLE (cpi), 0);
+	g_return_val_if_fail (key != NULL, 0);
 
 	hashid = hash_key(key);
 
@@ -318,7 +327,10 @@ void camel_partition_table_remove(CamelPartitionTable *cpi, const gchar *key)
 	camel_hash_t hashid;
 	gint index, i;
 
-	hashid = hash_key(key);
+	g_return_if_fail (CAMEL_IS_PARTITION_TABLE (cpi));
+	g_return_if_fail (key != NULL);
+
+	hashid = hash_key (key);
 
 	CAMEL_PARTITION_TABLE_LOCK(cpi, lock);
 
@@ -380,8 +392,11 @@ camel_partition_table_add(CamelPartitionTable *cpi, const gchar *key, camel_key_
 	CamelPartitionKeyBlock *kb, *newkb, *nkb = NULL, *pkb = NULL;
 	CamelBlock *block, *ptblock, *ptnblock;
 	gint i, half, len;
-	struct _CamelPartitionKey keys[CAMEL_BLOCK_SIZE/4];
+	CamelPartitionKey keys[CAMEL_BLOCK_SIZE/4];
 	gint ret = -1;
+
+	g_return_val_if_fail (CAMEL_IS_PARTITION_TABLE (cpi), -1);
+	g_return_val_if_fail (key != NULL, -1);
 
 	hashid = hash_key(key);
 
@@ -648,6 +663,8 @@ camel_key_table_new(CamelBlockFile *bs, camel_block_t root)
 {
 	CamelKeyTable *ki;
 
+	g_return_val_if_fail (CAMEL_IS_BLOCK_FILE (bs), NULL);
+
 	ki = (CamelKeyTable *)camel_object_new(camel_key_table_get_type());
 
 	ki->blocks = bs;
@@ -672,6 +689,8 @@ camel_key_table_new(CamelBlockFile *bs, camel_block_t root)
 gint
 camel_key_table_sync(CamelKeyTable *ki)
 {
+	g_return_val_if_fail (CAMEL_IS_KEY_TABLE (ki), -1);
+
 #ifdef SYNC_UPDATES
 	return 0;
 #else
@@ -687,6 +706,9 @@ camel_key_table_add(CamelKeyTable *ki, const gchar *key, camel_block_t data, gui
 	gint len, left;
 	guint offset;
 	camel_key_t keyid = 0;
+
+	g_return_val_if_fail (CAMEL_IS_KEY_TABLE (ki), 0);
+	g_return_val_if_fail (key != NULL, 0);
 
 	/* Maximum key size = 128 chars */
 	len = strlen(key);
@@ -781,6 +803,8 @@ camel_key_table_set_data(CamelKeyTable *ki, camel_key_t keyid, camel_block_t dat
 	gint index;
 	CamelKeyBlock *kb;
 
+	g_return_if_fail (CAMEL_IS_KEY_TABLE (ki));
+
 	if (keyid == 0)
 		return;
 
@@ -812,6 +836,8 @@ camel_key_table_set_flags(CamelKeyTable *ki, camel_key_t keyid, guint flags, gui
 	gint index;
 	CamelKeyBlock *kb;
 	guint old;
+
+	g_return_if_fail (CAMEL_IS_KEY_TABLE (ki));
 
 	if (keyid == 0)
 		return;
@@ -855,6 +881,8 @@ camel_key_table_lookup(CamelKeyTable *ki, camel_key_t keyid, gchar **keyp, guint
 	gint index, len, off;
 	gchar *key;
 	CamelKeyBlock *kb;
+
+	g_return_val_if_fail (CAMEL_IS_KEY_TABLE (ki), 0);
 
 	if (keyp)
 		*keyp = NULL;
@@ -914,6 +942,8 @@ camel_key_table_next(CamelKeyTable *ki, camel_key_t next, gchar **keyp, guint *f
 	CamelKeyBlock *kb;
 	camel_block_t blockid;
 	gint index;
+
+	g_return_val_if_fail (CAMEL_IS_KEY_TABLE (ki), 0);
 
 	if (keyp)
 		*keyp = NULL;

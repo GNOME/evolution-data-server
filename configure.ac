@@ -1,7 +1,7 @@
 dnl Evolution-Data-Server version
 m4_define([eds_major_version], [2])
 m4_define([eds_minor_version], [30])
-m4_define([eds_micro_version], [2])
+m4_define([eds_micro_version], [3])
 
 m4_define([eds_version],
 	[eds_major_version.eds_minor_version.eds_micro_version])
@@ -55,7 +55,7 @@ EDS_MICRO_VERSION=eds_micro_version
 dnl ******************************
 dnl Libtool versioning
 dnl ******************************
-LIBEDATASERVER_CURRENT=11
+LIBEDATASERVER_CURRENT=13
 LIBEDATASERVER_REVISION=1
 LIBEDATASERVER_AGE=0
 

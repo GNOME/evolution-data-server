@@ -714,7 +714,7 @@ camel_mime_part_set_content_type (CamelMimePart *mime_part, const gchar *content
 CamelContentType *
 camel_mime_part_get_content_type (CamelMimePart *mime_part)
 {
-	return ((CamelDataWrapper *) mime_part)->mime_type;
+	return camel_data_wrapper_get_mime_type_field ((CamelDataWrapper *) mime_part);
 }
 
 static void

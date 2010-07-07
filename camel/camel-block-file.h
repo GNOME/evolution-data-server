@@ -27,6 +27,16 @@
 #include <stdio.h>
 #include <sys/types.h>
 
+#define CAMEL_TYPE_BLOCK_FILE \
+	(camel_block_file_get_type ())
+#define CAMEL_IS_BLOCK_FILE(obj) \
+	(CAMEL_CHECK_TYPE ((obj), CAMEL_TYPE_BLOCK_FILE))
+
+#define CAMEL_TYPE_KEY_FILE \
+	(camel_key_file_get_type ())
+#define CAMEL_IS_KEY_FILE(obj) \
+	(CAMEL_CHECK_TYPE ((obj), CAMEL_TYPE_KEY_FILE))
+
 G_BEGIN_DECLS
 
 typedef guint32 camel_block_t;	/* block offset, absolute, bottom BLOCK_SIZE_BITS always 0 */

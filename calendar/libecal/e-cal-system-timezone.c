@@ -433,8 +433,8 @@ struct timezone_map_entry
 	const gchar *olson_string;
 };
 
-static gchar* 
-windows_timezone_string_to_olson(const gchar* windows_tz)
+static gchar *
+windows_timezone_string_to_olson(const gchar * windows_tz)
 {
 	/* source: http://www.chronos-st.org/Windows-to-Olson.txt */
 	static const struct timezone_map_entry timezone_map[] = {
@@ -588,7 +588,7 @@ windows_timezone_string_to_olson(const gchar* windows_tz)
 		{ "W. Australia", "Australia/Perth" },
 		{ "W. Australia Standard Time", "Australia/Perth" },
 		{ "W. Central Africa Standard Time", "Africa/Luanda" },
-	   	{ "W. Europe", "Europe/Berlin" },
+		{ "W. Europe", "Europe/Berlin" },
 		{ "W. Europe Standard Time", "Europe/Berlin" },
 		{ "Warsaw", "Europe/Warsaw" },
 		{ "West Asia", "Asia/Karachi" },
@@ -601,17 +601,17 @@ windows_timezone_string_to_olson(const gchar* windows_tz)
 		{ 0, 0 } // end marker
 	};
 
-	int i;
+	gint i;
 
 	for (i=0; timezone_map[i].windows_string && windows_tz; i++) {
-		int res = strcmp( timezone_map[i].windows_string, windows_tz);
+		gint res = strcmp( timezone_map[i].windows_string, windows_tz);
 		if (res > 0)
 			return NULL;
 		if (res == 0) {
 			return g_strdup(timezone_map[i].olson_string);
 		}
 	}
-	
+
 	return NULL;
 }
 
@@ -715,7 +715,7 @@ e_cal_system_timezone_get_location (void)
 #else
 	gchar *windows_timezone_string = NULL;
 	gchar *olson_timezone_string = NULL;
-	
+
 	if (!(windows_timezone_string = system_timezone_win32_query_registry ()))
 		return NULL;
 	olson_timezone_string = windows_timezone_string_to_olson (windows_timezone_string);
