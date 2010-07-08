@@ -26,6 +26,33 @@ Miscellaneous utility functions for evolution-data-server.
 </para>
 
 
+<!-- ##### FUNCTION e_get_user_cache_dir ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_get_user_config_dir ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_get_user_data_dir ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_util_strstrcase ##### -->
 <para>
 

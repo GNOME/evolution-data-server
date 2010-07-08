@@ -35,6 +35,73 @@
 #include "e-data-server-util.h"
 
 /**
+ * e_get_user_cache_dir:
+ *
+ * Returns a base directory in which to store user-specific,
+ * non-essential cached data for Evolution or Evolution-Data-Server.
+ *
+ * The returned string is owned by libedataserver and must not be
+ * modified or freed.
+ *
+ * Returns: base directory for user-specific, non-essential data
+ **/
+const gchar *
+e_get_user_cache_dir (void)
+{
+	static gchar *dirname = NULL;
+
+	if (G_UNLIKELY (dirname == NULL)) {
+		const gchar *data_dir = e_get_user_data_dir ();
+		dirname = g_build_filename (data_dir, "cache", NULL);
+		g_mkdir_with_parents (dirname, 0700);
+	}
+
+	return dirname;
+}
+
+/**
+ * e_get_user_config_dir:
+ *
+ * Returns a base directory in which to store user-specific configuration
+ * information for Evolution or Evolution-Data-Server.
+ *
+ * The returned string is owned by libedataserver and must not be
+ * modified or freed.
+ *
+ * Returns: base directory for user-specific configuration information
+ **/
+const gchar *
+e_get_user_config_dir (void)
+{
+	return e_get_user_data_dir ();
+}
+
+/**
+ * e_get_user_data_dir:
+ *
+ * Returns a base directory in which to store user-specific data for
+ * Evolution or Evolution-Data-Server.
+ *
+ * The returned string is owned by libedataserver and must not be
+ * modified or freed.
+ *
+ * Returns: base directory for user-specific data
+ **/
+const gchar *
+e_get_user_data_dir (void)
+{
+	static gchar *dirname = NULL;
+
+	if (G_UNLIKELY (dirname == NULL)) {
+		const gchar *home_dir = g_get_home_dir ();
+		dirname = g_build_filename (home_dir, ".evolution", NULL);
+		g_mkdir_with_parents (dirname, 0700);
+	}
+
+	return dirname;
+}
+
+/**
  * e_util_strstrcase:
  * @haystack: The string to search in.
  * @needle: The string to search for.
