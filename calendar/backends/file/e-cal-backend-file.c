@@ -2717,13 +2717,15 @@ fetch_attachments (ECalBackendSync *backend, ECalComponent *comp)
 	gchar  *attach_store;
 	gchar *dest_url, *dest_file;
 	gint fd;
+	const gchar *user_data_dir;
 	const gchar *uid;
 
 	e_cal_component_get_attachment_list (comp, &attach_list);
 	e_cal_component_get_uid (comp, &uid);
 	/*FIXME  get the uri rather than computing the path */
-	attach_store = g_build_filename (g_get_home_dir (),
-			".evolution/calendar/local/system", NULL);
+	user_data_dir = e_get_user_data_dir ();
+	attach_store = g_build_filename (
+		user_data_dir, "calendar", "local", "system", NULL);
 
 	for (l = attach_list; l; l = l->next) {
 		gchar *sfname = (gchar *)l->data;

@@ -22,6 +22,7 @@
 #include <libxml/parser.h>
 #include <glib/gi18n-lib.h>
 #include <gconf/gconf-client.h>
+#include "e-data-server-util.h"
 #include "e-categories.h"
 
 #include "libedataserver-private.h"
@@ -119,8 +120,11 @@ static gboolean changed = FALSE;
 static gchar *
 build_categories_filename (void)
 {
-	return g_build_filename (g_get_home_dir (),
-		".evolution", "categories.xml", NULL);
+	const gchar *user_data_dir;
+
+	user_data_dir = e_get_user_data_dir ();
+
+	return g_build_filename (user_data_dir, "categories.xml", NULL);
 }
 
 static void

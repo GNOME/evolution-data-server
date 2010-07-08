@@ -27,6 +27,7 @@
 #include <libecal/e-cal.h>
 #include <libecal/e-cal-component.h>
 #include <libecal/e-cal-time-util.h>
+#include <libedataserver/e-data-server-util.h>
 #include <libical/ical.h>
 
 /* start_testing_scaffold */
@@ -446,13 +447,18 @@ static const gchar *
 test_new_system_calendar(void)
 {
 	ECal *cal;
-	gchar *uri;
+	const gchar *user_data_dir;
+	gchar *filename;
 	gboolean created;
 
 	cal = e_cal_new_system_calendar ();
-	uri = g_build_filename (g_get_home_dir (), ".evolution", "calendar", "local", "system", "calendar.ics", NULL);
-	created = g_file_test (uri, G_FILE_TEST_EXISTS);
-	g_free (uri);
+
+	user_data_dir = e_get_user_data_dir ();
+	filename = g_build_filename (
+		user_data_dir, "calendar", "local",
+		"system", "calendar.ics", NULL);
+	created = g_file_test (filename, G_FILE_TEST_EXISTS);
+	g_free (filename);
 
 	mu_assert ("Test creation of default system calendar : Failed", created);
 
@@ -463,13 +469,18 @@ static const gchar *
 test_new_system_tasks(void)
 {
 	ECal *cal;
-	gchar *uri;
+	const gchar *user_data_dir;
+	gchar *filename;
 	gboolean created;
 
 	cal = e_cal_new_system_tasks ();
-	uri = g_build_filename (g_get_home_dir (), ".evolution", "tasks", "local", "system", "tasks.ics", NULL);
-	created = g_file_test (uri, G_FILE_TEST_EXISTS);
-	g_free (uri);
+
+	user_data_dir = e_get_user_data_dir ();
+	filename = g_build_filename (
+		user_data_dir, "tasks", "local",
+		"system", "tasks.ics", NULL);
+	created = g_file_test (filename, G_FILE_TEST_EXISTS);
+	g_free (filename);
 
 	mu_assert ("Test creation of default system tasks : Failed", created);
 
@@ -480,13 +491,18 @@ static const gchar *
 test_new_system_memos(void)
 {
 	ECal *cal;
-	gchar *uri;
+	const gchar *user_data_dir;
+	gchar *filename;
 	gboolean created;
 
 	cal = e_cal_new_system_memos ();
-	uri = g_build_filename (g_get_home_dir (), ".evolution", "memos", "local", "system", "journal.ics", NULL);
-	created = g_file_test (uri, G_FILE_TEST_EXISTS);
-	g_free (uri);
+
+	user_data_dir = e_get_user_data_dir ();
+	filename = g_build_filename (
+		user_data_dir, "memos", "local",
+		"system", "journal.ics", NULL);
+	created = g_file_test (filename, G_FILE_TEST_EXISTS);
+	g_free (filename);
 
 	mu_assert ("Test creation of default system memos : Failed", created);
 

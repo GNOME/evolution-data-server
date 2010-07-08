@@ -27,6 +27,7 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 #include <libecal/e-cal-util.h>
+#include <libedataserver/e-data-server-util.h>
 #include "e-cal-backend-cache.h"
 
 G_DEFINE_TYPE (ECalBackendCache, e_cal_backend_cache, E_TYPE_FILE_CACHE)
@@ -51,7 +52,7 @@ get_filename_from_uri (const gchar *uri, ECalSourceType source_type)
 {
 	gchar *mangled_uri, *filename;
 	const gchar *source = NULL;
-	gint i;
+	const gchar *user_cache_dir;
 
 	switch (source_type) {
 		case E_CAL_SOURCE_TYPE_EVENT :
@@ -61,28 +62,19 @@ get_filename_from_uri (const gchar *uri, ECalSourceType source_type)
 			source = "tasks";
 			break;
 		case E_CAL_SOURCE_TYPE_JOURNAL :
-			source = "journal";
+			source = "memos";
 			break;
 		case E_CAL_SOURCE_TYPE_LAST :
 		default :
 			break;
 	}
 
-	/* mangle the URI to not contain invalid characters */
-	mangled_uri = g_strdup (uri);
-	for (i = 0; i < strlen (mangled_uri); i++) {
-		switch (mangled_uri[i]) {
-		case ':' :
-		case '/' :
-			mangled_uri[i] = '_';
-		}
-	}
+	/* Mangle the URI to not contain invalid characters. */
+	mangled_uri = g_strdelimit (g_strdup (uri), ":/", '_');
 
-	/* generate the file name */
-	filename = g_build_filename (g_get_home_dir (), ".evolution/cache/",
-				source, mangled_uri, "cache.xml", NULL);
+	filename = g_build_filename (
+		user_cache_dir, source, mangled_uri, "cache.xml", NULL);
 
-	/* free memory */
 	g_free (mangled_uri);
 
 	return filename;

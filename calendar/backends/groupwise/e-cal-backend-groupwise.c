@@ -33,8 +33,9 @@
 #include <unistd.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
-#include "libedataserver/e-xml-hash-utils.h"
-#include "libedataserver/e-url.h"
+#include <libedataserver/e-data-server-util.h>
+#include <libedataserver/e-xml-hash-utils.h>
+#include <libedataserver/e-url.h>
 #include <libedata-cal/e-cal-backend-cache.h>
 #include <libedata-cal/e-cal-backend-file-store.h>
 #include <libedata-cal/e-cal-backend-util.h>
@@ -1332,9 +1333,9 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	ECalBackendSyncStatus status;
 	ECalSourceType source_type;
 	const gchar *source = NULL;
+	const gchar *user_cache_dir;
 	gchar *filename;
 	gchar *mangled_uri;
-	gint i;
 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
@@ -1396,27 +1397,20 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	priv->username = g_strdup (username);
 	priv->password = g_strdup (password);
 
-	/* Set the local attachment store*/
+	/* Set the local attachment store. */
 	mangled_uri = g_strdup (e_cal_backend_get_uri (E_CAL_BACKEND (cbgw)));
-	/* mangle the URI to not contain invalid characters */
-	for (i = 0; i < strlen (mangled_uri); i++) {
-		switch (mangled_uri[i]) {
-		case ':' :
-		case '/' :
-			mangled_uri[i] = '_';
-		}
-	}
 
-	filename = g_build_filename (g_get_home_dir (),
-				     ".evolution/cache/", source,
-				     mangled_uri,
-				     NULL);
-	g_free (mangled_uri);
-	if (priv->local_attachments_store)
-		g_free (priv->local_attachments_store);
+	/* Mangle the URI to not contain invalid characters. */
+	g_strdelimit (mangled_uri, ":/", '_');
 
+	user_cache_dir = e_get_user_cache_dir ();
+	filename = g_build_filename (user_cache_dir, source, mangled_uri, NULL);
+
+	g_free (priv->local_attachments_store);
 	priv->local_attachments_store =
 		g_filename_to_uri (filename, NULL, NULL);
+
+	g_free (mangled_uri);
 	g_free (filename);
 
 	/* FIXME: no need to set it online here when we implement the online/offline stuff correctly */

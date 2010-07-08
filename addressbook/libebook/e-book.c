@@ -27,6 +27,7 @@
 #include <glib/gi18n-lib.h>
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
+#include <libedataserver/e-data-server-util.h>
 #include "e-book.h"
 #include "e-error.h"
 #include "e-contact.h"
@@ -2410,11 +2411,12 @@ e_book_new_system_addressbook (GError **error)
 	ESource *system_source = NULL;
 	EBook *book;
 	gchar *uri, *filename;
+	const gchar *user_data_dir;
 	struct check_system_data csd;
 
-	filename = g_build_filename (g_get_home_dir(),
-				     ".evolution/addressbook/local/system",
-				     NULL);
+	user_data_dir = e_get_user_data_dir ();
+	filename = g_build_filename (
+		user_data_dir, "addressbook", "local", "system", NULL);
 	uri = g_filename_to_uri (filename, NULL, NULL);
 	g_free (filename);
 

@@ -3504,11 +3504,15 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	}
 
 	g_free (priv->summary_file_name);
-	tmp = g_build_filename (g_get_home_dir(), ".evolution/addressbook" , uri, priv->book_name, NULL);
-        priv->summary_file_name = g_strconcat (tmp, ".summary", NULL);
+	tmp = g_build_filename (
+		e_get_user_data_dir (), "addressbook",
+		uri, priv->book_name, NULL);
+	priv->summary_file_name = g_strconcat (tmp, ".summary", NULL);
 	g_free (tmp);
 
-	dirname = g_build_filename (g_get_home_dir(), ".evolution/cache/addressbook", uri, priv->book_name, NULL);
+	dirname = g_build_filename (
+		g_get_user_cache_dir (), "addressbook",
+		uri, priv->book_name, NULL);
 	filename = g_build_filename (dirname, "cache.db", NULL);
 
 	db_error = e_db3_utils_maybe_recover (filename);

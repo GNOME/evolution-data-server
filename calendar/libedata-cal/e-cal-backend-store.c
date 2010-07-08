@@ -21,6 +21,8 @@
 
 #include "e-cal-backend-store.h"
 
+#include <libedataserver/e-data-server-util.h>
+
 G_DEFINE_TYPE (ECalBackendStore, e_cal_backend_store, G_TYPE_OBJECT)
 
 #define GET_PRIVATE(o) \
@@ -64,19 +66,18 @@ set_store_path (ECalBackendStore *store)
 
 	priv = GET_PRIVATE(store);
 
-	if (priv->uri)
-	{
-		const gchar *component = get_component (priv->source_type);
+	if (priv->uri) {
+		const gchar *component;
+		const gchar *user_cache_dir;
 		gchar *mangled_uri = NULL;
 
-		mangled_uri = g_strdup (priv->uri);
-		mangled_uri = g_strdelimit (mangled_uri, ":/",'_');
+		user_cache_dir = e_get_user_cache_dir ();
+		component = get_component (priv->source_type);
+		mangled_uri = g_strdelimit (g_strdup (priv->uri), ":/", '_');
 
-		if (priv->path)
-			g_free (priv->path);
-
-		priv->path = g_build_filename (g_get_home_dir (), ".evolution/cache/",
-				component, mangled_uri, NULL);
+		g_free (priv->path);
+		priv->path = g_build_filename (
+			user_cache_dir, component, mangled_uri, NULL);
 
 		g_free (mangled_uri);
 	}

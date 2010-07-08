@@ -28,8 +28,9 @@
 #include <gconf/gconf-client.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
-#include "libedataserver/e-xml-hash-utils.h"
-#include "libedataserver/e-proxy.h"
+#include <libedataserver/e-data-server-util.h>
+#include <libedataserver/e-xml-hash-utils.h>
+#include <libedataserver/e-proxy.h>
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-util.h>
 #include <libecal/e-cal-time-util.h>
@@ -2133,6 +2134,7 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 	gsize                     len;
 	const gchar              *refresh;
 	const gchar              *stype;
+	const gchar              *user_cache_dir;
 	gchar                    *filename;
 	gchar                    *mangled_uri;
 
@@ -2253,11 +2255,9 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 	}
 
 	/* Set the local attachment store */
-	mangled_uri = g_strdup (uri);
-	mangled_uri = g_strdelimit (mangled_uri, ":/", '_');
-	filename = g_build_filename (g_get_home_dir (),
-			".evolution", "cache", stype,
-			mangled_uri, NULL);
+	user_cache_dir = e_get_user_cache_dir ();
+	mangled_uri = g_strdelimit (g_strdup (uri), ":/", '_');
+	filename = g_build_filename (user_cache_dir, stype, mangled_uri, NULL);
 	g_free (mangled_uri);
 	if (priv->local_attachments_store)
 		g_free (priv->local_attachments_store);

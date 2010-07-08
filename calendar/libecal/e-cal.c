@@ -32,6 +32,7 @@
 
 #include <libical/ical.h>
 #include <libedataserver/e-url.h>
+#include <libedataserver/e-data-server-util.h>
 
 #include <dbus/dbus-glib-lowlevel.h>
 #include <dbus/dbus.h>
@@ -730,29 +731,22 @@ static void
 set_local_attachment_store (ECal *ecal)
 {
 	ECalPrivate *priv;
+	const gchar *user_cache_dir;
 	gchar *mangled_uri;
-	gint i;
+
+	user_cache_dir = e_get_user_cache_dir ();
 
 	priv = ecal->priv;
-	mangled_uri = g_strdup (priv->uri);
-	/* mangle the URI to not contain invalid characters */
-	for (i = 0; i < strlen (mangled_uri); i++) {
-		switch (mangled_uri[i]) {
-		case ':' :
-		case '/' :
-			mangled_uri[i] = '_';
-		}
-	}
 
-	/* the file backend uses its uri as the attachment store*/
+	/* Mangle the URI to not contain invalid characters. */
+	mangled_uri = g_strdelimit (g_strdup (priv->uri), ":/", '_');
+
+	/* The file backend uses its uri as the attachment store. */
 	if (g_str_has_prefix (priv->uri, "file://")) {
 		priv->local_attachment_store = g_strdup (priv->uri);
 	} else if (g_str_has_prefix (priv->uri, "groupwise://")) {
-		/* points to the location of the cache*/
-		gchar *filename = g_build_filename (g_get_home_dir (),
-						    ".evolution/cache/calendar",
-						    mangled_uri,
-						    NULL);
+		gchar *filename = g_build_filename (
+			user_cache_dir, "calendar", mangled_uri, NULL);
 		priv->local_attachment_store =
 			g_filename_to_uri (filename, NULL, NULL);
 		g_free (filename);
@@ -765,35 +759,26 @@ set_local_attachment_store (ECal *ecal)
 			g_filename_to_uri (filename, NULL, NULL);
 		g_free (filename);
 	} else if (g_str_has_prefix (priv->uri, "scalix://")) {
-		gchar *filename = g_build_filename (g_get_home_dir (),
-						    ".evolution/cache/scalix",
-						    mangled_uri,
-						    "attach",
-						    NULL);
+		gchar *filename = g_build_filename (
+			user_cache_dir, "scalix", mangled_uri, "attach", NULL);
                 priv->local_attachment_store =
 			g_filename_to_uri (filename, NULL, NULL);
 		g_free (filename);
         } else if (g_str_has_prefix (priv->uri, "google://")) {
-		gchar *filename = g_build_filename (g_get_home_dir (),
-						    ".evolution/cache/calendar",
-						    mangled_uri,
-						    NULL);
+		gchar *filename = g_build_filename (
+			user_cache_dir, "calendar", mangled_uri, NULL);
 		priv->local_attachment_store =
 			g_filename_to_uri (filename, NULL, NULL);
 		g_free (filename);
 	} else if (g_str_has_prefix (priv->uri, "mapi://")) {
-		gchar *filename = g_build_filename (g_get_home_dir (),
-						    ".evolution/cache/calendar",
-						    mangled_uri,
-						    NULL);
+		gchar *filename = g_build_filename (
+			user_cache_dir, "calendar", mangled_uri, NULL);
 		priv->local_attachment_store =
 			g_filename_to_uri (filename, NULL, NULL);
 		g_free (filename);
 	} else if (g_str_has_prefix (priv->uri, "caldav://")) {
-		gchar *filename = g_build_filename (g_get_home_dir (),
-				".evolution/cache/calendar",
-				mangled_uri,
-				NULL);
+		gchar *filename = g_build_filename (
+			user_cache_dir, "calendar", mangled_uri, NULL);
 		priv->local_attachment_store =
 			g_filename_to_uri (filename, NULL, NULL);
 		g_free (filename);
@@ -966,26 +951,29 @@ e_cal_new_from_uri (const gchar *uri, ECalSourceType type)
 /**
  * e_cal_new_system_calendar:
  *
- * Create a calendar client for the system calendar, which should always be present in
- * all Evolution installations. This does not open the calendar itself,
- * for that, #e_cal_open or #e_cal_open_async needs to be called.
+ * Create a calendar client for the system calendar, which should always be
+ * present in all Evolution installations. This does not open the calendar
+ * itself -- for that use e_cal_open() or e_cal_open_async().
  *
- * Returns: A newly-created calendar client, or NULL if the client could
+ * Returns: A newly-created calendar client, or %NULL if the client could
  * not be constructed.
  */
 ECal *
 e_cal_new_system_calendar (void)
 {
 	ECal *ecal;
+	const gchar *user_data_dir;
 	gchar *filename;
 	gchar *uri;
 
-	filename = g_build_filename (g_get_home_dir (),
-				     ".evolution/calendar/local/system",
-				     NULL);
+	user_data_dir = e_get_user_data_dir ();
+	filename = g_build_filename (
+		user_data_dir, "calendar", "local", "system", NULL);
+
 	uri = g_filename_to_uri (filename, NULL, NULL);
-	g_free (filename);
 	ecal = e_cal_new_from_uri (uri, E_CAL_SOURCE_TYPE_EVENT);
+
+	g_free (filename);
 	g_free (uri);
 
 	return ecal;
@@ -994,26 +982,29 @@ e_cal_new_system_calendar (void)
 /**
  * e_cal_new_system_tasks:
  *
- * Create a calendar client for the system task list, which should always be present in
- * all Evolution installations. This does not open the tasks list itself,
- * for that, #e_cal_open or #e_cal_open_async needs to be called.
+ * Create a calendar client for the system task list, which should always
+ * be present in all Evolution installations. This does not open the task
+ * list itself -- for that use e_cal_open() or e_cal_open_async().
  *
- * Returns: A newly-created calendar client, or NULL if the client could
+ * Returns: A newly-created calendar client, or %NULL if the client could
  * not be constructed.
  */
 ECal *
 e_cal_new_system_tasks (void)
 {
 	ECal *ecal;
+	const gchar *user_data_dir;
 	gchar *filename;
 	gchar *uri;
 
-	filename = g_build_filename (g_get_home_dir (),
-				     ".evolution/tasks/local/system",
-				     NULL);
+	user_data_dir = e_get_user_data_dir ();
+	filename = g_build_filename (
+		user_data_dir, "tasks", "local", "system", NULL);
+
 	uri = g_filename_to_uri (filename, NULL, NULL);
-	g_free (filename);
 	ecal = e_cal_new_from_uri (uri, E_CAL_SOURCE_TYPE_TODO);
+
+	g_free (filename);
 	g_free (uri);
 
 	return ecal;
@@ -1022,26 +1013,29 @@ e_cal_new_system_tasks (void)
 /**
  * e_cal_new_system_memos:
  *
- * Create a calendar client for the system memos, which should always be present
- * in all Evolution installations. This does not open the memos itself, for
- * that, #e_cal_open or #e_cal_open_async needs to be called.
+ * Create a calendar client for the system memo list, which should always
+ * be present in all Evolution installations. This does not open the memo
+ * list itself -- for that use e_cal_open() or e_cal_open_async().
  *
- * Returns: A newly-created calendar client, or NULL if the client could
+ * Returns: A newly-created calendar client, or %NULL if the client could
  * not be constructed.
  */
 ECal *
 e_cal_new_system_memos (void)
 {
 	ECal *ecal;
-	gchar *uri;
+	const gchar *user_data_dir;
 	gchar *filename;
+	gchar *uri;
 
-	filename = g_build_filename (g_get_home_dir (),
-				     ".evolution/memos/local/system",
-				     NULL);
+	user_data_dir = e_get_user_data_dir ();
+	filename = g_build_filename (
+		user_data_dir, "memos", "local", "system", NULL);
+
 	uri = g_filename_to_uri (filename, NULL, NULL);
-	g_free (filename);
 	ecal = e_cal_new_from_uri (uri, E_CAL_SOURCE_TYPE_JOURNAL);
+
+	g_free (filename);
 	g_free (uri);
 
 	return ecal;

@@ -877,10 +877,8 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 
 #ifdef SUNLDAP
 	if (bl->priv->use_tls != E_BOOK_BACKEND_LDAP_TLS_NO) {
-		gchar *evolution_dir_path =
-			g_build_path ("/", g_get_home_dir (), ".evolution", NULL);
-		ldap_flag = ldapssl_client_init (evolution_dir_path, NULL);
-		g_free (evolution_dir_path);
+		const gchar *user_data_dir = e_get_user_data_dir ();
+		ldap_flag = ldapssl_client_init (user_data_dir, NULL);
 	}
 #endif
 
