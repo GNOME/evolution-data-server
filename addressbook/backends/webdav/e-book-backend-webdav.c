@@ -230,7 +230,7 @@ upload_contact(EBookBackendWebdav *webdav, EContact *contact)
 	e_contact_set(contact, E_CONTACT_UID, NULL);
 	e_contact_set(contact, E_CONTACT_REV, NULL);
 	request = e_vcard_to_string(E_VCARD(contact), EVC_FORMAT_VCARD_30);
-	soup_message_set_request(message, "text/x-vcard", SOUP_MEMORY_TEMPORARY,
+	soup_message_set_request(message, "text/vcard", SOUP_MEMORY_TEMPORARY,
 				 request, strlen(request));
 
 	status   = soup_session_send_message(webdav->priv->session, message);

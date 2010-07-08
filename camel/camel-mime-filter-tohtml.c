@@ -317,7 +317,7 @@ html_convert (CamelMimeFilter *filter, const gchar *in, gsize inlen, gsize presp
 			len = inptr - start;
 
 			do {
-				if (camel_url_scanner_scan (html->scanner, start, len, &match)) {
+				if (camel_url_scanner_scan (html->scanner, start, len - (len > 0 && start[len - 1] == 0 ? 1 : 0), &match)) {
 					/* write out anything before the first regex match */
 					outptr = writeln (filter, (const guchar *)start, (const guchar *)start + match.um_so,
 							  outptr, &outend);
