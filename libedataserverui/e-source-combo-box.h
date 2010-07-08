@@ -74,7 +74,7 @@ void		e_source_combo_box_set_active
 						 ESource *source);
 const gchar *	e_source_combo_box_get_active_uid
 						(ESourceComboBox *source_combo_box);
-void		e_source_combo_box_set_active_uid
+gboolean	e_source_combo_box_set_active_uid
 						(ESourceComboBox *source_combo_box,
 						 const gchar *uid);
 

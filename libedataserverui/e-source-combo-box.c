@@ -509,9 +509,11 @@ e_source_combo_box_get_active_uid (ESourceComboBox *source_combo_box)
  *
  * Sets the active item to the one corresponding to @uid.
  *
+ * Returns: whether found such @uid
+ *
  * Since: 2.22
  **/
-void
+gboolean
 e_source_combo_box_set_active_uid (ESourceComboBox *source_combo_box,
                                    const gchar *uid)
 {
@@ -521,19 +523,24 @@ e_source_combo_box_set_active_uid (ESourceComboBox *source_combo_box,
 	GtkTreeIter iter;
 	gboolean iter_was_set;
 
-	g_return_if_fail (E_IS_SOURCE_COMBO_BOX (source_combo_box));
-	g_return_if_fail (uid != NULL);
+	g_return_val_if_fail (E_IS_SOURCE_COMBO_BOX (source_combo_box), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
 
 	priv = source_combo_box->priv;
 	combo_box = GTK_COMBO_BOX (source_combo_box);
 
 	reference = g_hash_table_lookup (priv->uid_index, uid);
-	g_return_if_fail (gtk_tree_row_reference_valid (reference));
+	if (!reference)
+		return FALSE;
+
+	g_return_val_if_fail (gtk_tree_row_reference_valid (reference), FALSE);
 
 	iter_was_set = gtk_tree_model_get_iter (
 		gtk_combo_box_get_model (combo_box), &iter,
 		gtk_tree_row_reference_get_path (reference));
-	g_return_if_fail (iter_was_set);
+	g_return_val_if_fail (iter_was_set, FALSE);
 
 	gtk_combo_box_set_active_iter (combo_box, &iter);
+
+	return TRUE;
 }
