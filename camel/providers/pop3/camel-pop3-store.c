@@ -46,8 +46,8 @@
 #endif
 
 /* Specified in RFC 1939 */
-#define POP3_PORT "110"
-#define POP3S_PORT "995"
+#define POP3_PORT  110
+#define POP3S_PORT 995
 
 /* defines the length of the server error message we can display in the error dialog */
 #define POP3_ERROR_SIZE_LIMIT 60
@@ -66,7 +66,7 @@ enum {
 static struct {
 	const gchar *value;
 	const gchar *serv;
-	const gchar *port;
+	gint fallback_port;
 	gint mode;
 } ssl_options[] = {
 	{ "",              "pop3s", POP3S_PORT, MODE_SSL   },  /* really old (1.x) */
@@ -103,7 +103,7 @@ get_valid_utf8_error (const gchar *text)
 
 static gboolean
 connect_to_server (CamelService *service,
-                   struct addrinfo *ai,
+		   const char *host, const char *serv, gint fallback_port,
                    gint ssl_mode,
                    GError **error)
 {
@@ -145,7 +145,7 @@ connect_to_server (CamelService *service,
 		g_free (socks_host);
 	}
 
-	if (camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, ai, error) == -1) {
+	if (camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, host, serv, fallback_port, error) == -1) {
 		g_object_unref (tcp_stream);
 		return FALSE;
 	}
@@ -254,11 +254,10 @@ static gboolean
 connect_to_server_wrapper (CamelService *service,
                            GError **error)
 {
-	struct addrinfo hints, *ai;
 	const gchar *ssl_mode;
-	gint mode, ret, i;
+	gint mode, i;
 	gchar *serv;
-	const gchar *port;
+	gint fallback_port;
 	GError *local_error = NULL;
 
 	if ((ssl_mode = camel_url_get_param (service->url, "use_ssl"))) {
@@ -267,39 +266,20 @@ connect_to_server_wrapper (CamelService *service,
 				break;
 		mode = ssl_options[i].mode;
 		serv = (gchar *) ssl_options[i].serv;
-		port = ssl_options[i].port;
+		fallback_port = ssl_options[i].fallback_port;
 	} else {
 		mode = MODE_CLEAR;
 		serv = (gchar *) "pop3";
-		port = POP3S_PORT;
+		fallback_port = POP3S_PORT;
 	}
 
 	if (service->url->port) {
 		serv = g_alloca (16);
 		sprintf (serv, "%d", service->url->port);
-		port = NULL;
+		fallback_port = 0;
 	}
 
-	memset (&hints, 0, sizeof (hints));
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_family = PF_UNSPEC;
-	ai = camel_getaddrinfo(service->url->host, serv, &hints, &local_error);
-	if (ai == NULL && port != NULL &&
-		!g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
-		g_clear_error (&local_error);
-		ai = camel_getaddrinfo(service->url->host, port, &hints, &local_error);
-	}
-
-	if (ai == NULL) {
-		g_propagate_error (error, local_error);
-		return FALSE;
-	}
-
-	ret = connect_to_server (service, ai, mode, error);
-
-	camel_freeaddrinfo (ai);
-
-	return ret;
+	return connect_to_server (service, service->url->host, serv, fallback_port, mode, error);
 }
 
 static gint
