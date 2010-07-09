@@ -5,7 +5,7 @@ DOC_MODULE = libebook
 DOC_MAIN_SGML_FILE = libebook-docs.sgml
 
 # Extra options to supply to gtkdoc-scan
-SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED"
+SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED|E_BOOK_DISABLE_DEPRECATED"
 
 # The directory containing the source code. Relative to $(srcdir).
 DOC_SOURCE_DIR = $(top_srcdir)/addressbook/libebook

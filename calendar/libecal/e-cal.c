@@ -22,6 +22,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+/**
+ * SECTION:e-cal
+ *
+ * The old signal "cal-opened" is deprecated since 3.0 and is replaced with
+ * its equivalent "cal_opened_ex", which has a detailed #GError structure
+ * as a parameter, instead of a status code only.
+ */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif

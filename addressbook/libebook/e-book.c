@@ -20,6 +20,16 @@
  * Author: Ross Burton <ross@linux.intel.com>
  */
 
+/**
+ * SECTION:e-book
+ *
+ * The old asynchronous API was deprecated since 3.0 and is replaced with
+ * their equivalents with an _ex suffix, which has a detailed #GError
+ * structure in the asynchronous callback, instead of a status code only.
+ *
+ * As an example, e_book_async_open() is replaced by e_book_async_open_ex().
+ */
+
 #include <config.h>
 #include <unistd.h>
 #include <string.h>
