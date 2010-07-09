@@ -139,7 +139,7 @@ groupwise_folder_get_message( CamelFolder *folder, const gchar *uid, GError **er
 			_("Cannot get message: %s\n  %s"), uid, _("No such message"));
 		return NULL;
 	}
-	cache_stream  = camel_data_cache_get (gw_folder->cache, "cache", uid, error);
+	cache_stream  = camel_data_cache_get (gw_folder->cache, "cache", uid, NULL);
 	stream = camel_stream_mem_new ();
 	if (cache_stream) {
 		msg = camel_mime_message_new ();
