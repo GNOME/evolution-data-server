@@ -607,7 +607,7 @@ view_contacts_changed (EContactStore *contact_store, const GList *contacts, EBoo
 }
 
 static void
-view_sequence_complete (EContactStore *contact_store, EBookViewStatus status, EBookView *book_view)
+view_complete (EContactStore *contact_store, EBookViewStatus status, const gchar *error_msg, EBookView *book_view)
 {
 	ContactSource *source;
 	gint           offset;
@@ -688,8 +688,8 @@ start_view (EContactStore *contact_store, EBookView *view)
 				  G_CALLBACK (view_contacts_removed), contact_store);
 	g_signal_connect_swapped (view, "contacts_changed",
 				  G_CALLBACK (view_contacts_changed), contact_store);
-	g_signal_connect_swapped (view, "sequence_complete",
-				  G_CALLBACK (view_sequence_complete), contact_store);
+	g_signal_connect_swapped (view, "view_complete",
+				  G_CALLBACK (view_complete), contact_store);
 
 	e_book_view_start (view);
 }

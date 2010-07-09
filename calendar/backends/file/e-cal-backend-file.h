@@ -57,7 +57,7 @@ void                   e_cal_backend_file_set_file_name (ECalBackendFile *cbfile
 							 const gchar     *file_name);
 const gchar            *e_cal_backend_file_get_file_name (ECalBackendFile *cbfile);
 
-ECalBackendSyncStatus  e_cal_backend_file_reload        (ECalBackendFile *cbfile);
+void			e_cal_backend_file_reload        (ECalBackendFile *cbfile, GError **error);
 
 
 

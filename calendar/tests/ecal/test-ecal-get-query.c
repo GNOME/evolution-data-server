@@ -79,9 +79,9 @@ objects_removed_cb (GObject *object, GList *objects, gpointer data)
 }
 
 static void
-view_done_cb (GObject *object, ECalendarStatus status, gpointer data)
+view_complete_cb (GObject *object, ECalendarStatus status, const gchar *error_msg, gpointer data)
 {
-        test_print ("View done\n");
+        test_print ("View complete (status: %d, error_msg:%s\n", status, error_msg ? error_msg : "NULL");
 
 	g_source_remove (complete_timeout_id);
 
@@ -166,8 +166,8 @@ main (gint argc, gchar **argv)
 			G_CALLBACK (objects_modified_cb), cal);
 	g_signal_connect (G_OBJECT (view), "objects_removed",
 			G_CALLBACK (objects_removed_cb), cal);
-	g_signal_connect (G_OBJECT (view), "view_done",
-			G_CALLBACK (view_done_cb), cal);
+	g_signal_connect (G_OBJECT (view), "view_complete",
+			G_CALLBACK (view_complete_cb), cal);
 
 	e_cal_view_start (view);
 

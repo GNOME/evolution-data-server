@@ -65,6 +65,9 @@
 #define PAS_ID_PREFIX "pas-id-"
 #define SUMMARY_FLUSH_TIMEOUT 5000
 
+#define EDB_ERROR(_code) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, NULL)
+#define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
+
 G_DEFINE_TYPE (EBookBackendFile, e_book_backend_file, E_TYPE_BOOK_BACKEND_SYNC)
 
 struct _EBookBackendFilePrivate {
@@ -87,18 +90,24 @@ static struct {
 	DB_ENV *env;
 } global_env;
 
-static EBookBackendSyncStatus
-db_error_to_status (const gint db_error)
+static void
+db_error_to_gerror (const gint db_error, GError **perror)
 {
+	if (db_error && perror && *perror)
+		g_clear_error (perror);
+
 	switch (db_error) {
 	case 0:
-		return GNOME_Evolution_Addressbook_Success;
+		return;
 	case DB_NOTFOUND:
-		return GNOME_Evolution_Addressbook_ContactNotFound;
+		g_propagate_error (perror, EDB_ERROR (CONTACT_NOT_FOUND));
+		return;
 	case EACCES:
-		return GNOME_Evolution_Addressbook_PermissionDenied;
+		g_propagate_error (perror, EDB_ERROR (PERMISSION_DENIED));
+		return;
 	default:
-		return GNOME_Evolution_Addressbook_OtherError;
+		g_propagate_error (perror, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "db error 0x%x (%s)", db_error, db_strerror (db_error) ? db_strerror (db_error) : "Unknown error"));
+		return;
 	}
 }
 
@@ -184,10 +193,11 @@ set_revision (EContact *contact)
 
 }
 
-static EBookBackendSyncStatus
+static gboolean
 do_create(EBookBackendFile  *bf,
 	  const gchar      *vcard_req,
-	  EContact **contact)
+	  EContact **contact,
+	  GError **perror)
 {
 	DB             *db = bf->priv->file_db;
 	DBT            id_dbt, vcard_dbt;
@@ -230,32 +240,33 @@ do_create(EBookBackendFile  *bf,
 	}
 
 	g_free (id);
-	return db_error_to_status (db_error);
+	db_error_to_gerror (db_error, perror);
+
+	return db_error == 0;
 }
 
-static EBookBackendSyncStatus
+static void
 e_book_backend_file_create_contact (EBookBackendSync *backend,
 				    EDataBook *book,
 				    guint32 opid,
 				    const gchar *vcard,
-				    EContact **contact)
+				    EContact **contact,
+				    GError **perror)
 {
-	EBookBackendSyncStatus status;
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 
-	status = do_create (bf, vcard, contact);
-	if (status == GNOME_Evolution_Addressbook_Success) {
+	if (do_create (bf, vcard, contact, perror)) {
 		e_book_backend_summary_add_contact (bf->priv->summary, *contact);
 	}
-	return status;
 }
 
-static EBookBackendSyncStatus
+static void
 e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 				     EDataBook *book,
 				     guint32 opid,
 				     GList *id_list,
-				     GList **ids)
+				     GList **ids,
+				     GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	DB             *db = bf->priv->file_db;
@@ -264,7 +275,6 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 	gchar          *id;
 	GList         *l;
 	GList         *removed_cards = NULL;
-	GNOME_Evolution_Addressbook_CallStatus rv = GNOME_Evolution_Addressbook_Success;
 
 	for (l = id_list; l; l = l->next) {
 		id = l->data;
@@ -274,7 +284,7 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 		db_error = db->del (db, NULL, &id_dbt, 0);
 		if (0 != db_error) {
 			g_warning (G_STRLOC ": db->del failed with %s", db_strerror (db_error));
-			rv = db_error_to_status (db_error);
+			db_error_to_gerror (db_error, perror);
 			continue;
 		}
 
@@ -294,16 +304,15 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 		gchar *id = l->data;
 		e_book_backend_summary_remove_contact (bf->priv->summary, id);
 	}
-
-	return rv;
 }
 
-static EBookBackendSyncStatus
+static void
 e_book_backend_file_modify_contact (EBookBackendSync *backend,
 				    EDataBook *book,
 				    guint32 opid,
 				    const gchar *vcard,
-				    EContact **contact)
+				    EContact **contact,
+				    GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	DB             *db = bf->priv->file_db;
@@ -315,8 +324,10 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 	*contact = e_contact_new_from_vcard (vcard);
 	id = e_contact_get_const (*contact, E_CONTACT_UID);
 
-	if (id == NULL)
-		return GNOME_Evolution_Addressbook_OtherError;
+	if (id == NULL) {
+		g_propagate_error (perror, EDB_ERROR_EX (OTHER_ERROR, "No UID in the contact"));
+		return;
+	}
 
 	/* update the revision (modified time of contact) */
 	set_revision (*contact);
@@ -351,18 +362,16 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 	}
 	g_free (vcard_with_rev);
 
-	if (0 == db_error)
-		return GNOME_Evolution_Addressbook_Success;
-	else
-		return db_error_to_status (db_error);
+	db_error_to_gerror (db_error, perror);
 }
 
-static EBookBackendSyncStatus
+static void
 e_book_backend_file_get_contact (EBookBackendSync *backend,
 				 EDataBook *book,
 				 guint32 opid,
 				 const gchar *id,
-				 gchar **vcard)
+				 gchar **vcard,
+				 GError **perror)
 {
 	EBookBackendFile *bf;
 	DB             *db;
@@ -380,20 +389,21 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 
 	if (db_error == 0) {
 		*vcard = vcard_dbt.data;
-		return GNOME_Evolution_Addressbook_Success;
 	} else {
 		g_warning (G_STRLOC ": db->get failed with %s", db_strerror (db_error));
 		*vcard = g_strdup ("");
-		return GNOME_Evolution_Addressbook_ContactNotFound;
+
+		g_propagate_error (perror, EDB_ERROR (CONTACT_NOT_FOUND));
 	}
 }
 
-static EBookBackendSyncStatus
+static void
 e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 				      EDataBook *book,
 				      guint32 opid,
 				      const gchar *query,
-				      GList **contacts)
+				      GList **contacts,
+				      GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	DB             *db = bf->priv->file_db;
@@ -404,18 +414,18 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 	gboolean search_needed;
 	const gchar *search = query;
 	GList *contact_list = NULL;
-	EBookBackendSyncStatus status;
 
 	d(printf ("e_book_backend_file_get_contact_list (%s)\n", search));
-	status = GNOME_Evolution_Addressbook_Success;
 	if (e_book_backend_summary_is_summary_query (bf->priv->summary, search)) {
 
 		/* do a summary query */
 		GPtrArray *ids = e_book_backend_summary_search (bf->priv->summary, search);
 		gint i;
 
-		if (!ids)
-			return GNOME_Evolution_Addressbook_ContactNotFound;
+		if (!ids) {
+			g_propagate_error (perror, EDB_ERROR (CONTACT_NOT_FOUND));
+			return;
+		}
 
 		for (i = 0; i < ids->len; i ++) {
 			gchar *id = g_ptr_array_index (ids, i);
@@ -428,7 +438,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 				contact_list = g_list_prepend (contact_list, vcard_dbt.data);
 			} else {
 				g_warning (G_STRLOC ": db->get failed with %s", db_strerror (db_error));
-				status = db_error_to_status (db_error);
+				db_error_to_gerror (db_error, perror);
 				break;
 			}
 		}
@@ -440,8 +450,8 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 
 		card_sexp = e_book_backend_sexp_new (search);
 		if (!card_sexp) {
-			/* XXX this needs to be an invalid query error of some sort*/
-			return GNOME_Evolution_Addressbook_OtherError;
+			g_propagate_error (perror, EDB_ERROR (INVALID_QUERY));
+			return;
 		}
 
 		db_error = db->cursor (db, NULL, &dbc, 0);
@@ -449,7 +459,8 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 		if (db_error != 0) {
 			g_warning (G_STRLOC ": db->cursor failed with %s", db_strerror (db_error));
 			/* XXX this needs to be some CouldNotOpen error */
-			return db_error_to_status (db_error);
+			db_error_to_gerror (db_error, perror);
+			return;
 		}
 
 		memset (&vcard_dbt, 0, sizeof (vcard_dbt));
@@ -474,10 +485,10 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 		g_object_unref (card_sexp);
 
 		if (db_error == DB_NOTFOUND) {
-			status = GNOME_Evolution_Addressbook_Success;
+			/* Success */
 		} else {
 			g_warning (G_STRLOC ": dbc->c_get failed with %s", db_strerror (db_error));
-			status = db_error_to_status (db_error);
+			db_error_to_gerror (db_error, perror);
 		}
 
 		db_error = dbc->c_close(dbc);
@@ -487,7 +498,6 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 	}
 
 	*contacts = contact_list;
-	return status;
 }
 
 typedef struct {
@@ -641,7 +651,7 @@ book_view_thread (gpointer data)
 	}
 done:
 	if (e_flag_is_set (closure->running))
-		e_data_book_view_notify_complete (book_view, GNOME_Evolution_Addressbook_Success);
+		e_data_book_view_notify_complete (book_view, NULL /* Success */);
 
 	/* unref the */
 	printf("book_view file uref \n");
@@ -731,12 +741,13 @@ e_book_backend_file_changes_foreach_key (const gchar *key, gpointer user_data)
 	}
 }
 
-static EBookBackendSyncStatus
+static void
 e_book_backend_file_get_changes (EBookBackendSync *backend,
 				 EDataBook *book,
 				 guint32 opid,
 				 const gchar *change_id,
-				 GList **changes_out)
+				 GList **changes_out,
+				 GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	gint     db_error = 0;
@@ -748,7 +759,6 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 	DBC *dbc;
 	GList *changes = NULL;
 	EBookBackendFileChangeContext ctx;
-	EBookBackendSyncStatus result;
 
 	memset (&id_dbt, 0, sizeof (id_dbt));
 	memset (&vcard_dbt, 0, sizeof (vcard_dbt));
@@ -817,7 +827,7 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 	if (db_error != DB_NOTFOUND) {
 		g_warning ("e_book_backend_file_changes: error building list\n");
 		*changes_out = NULL;
-		result = db_error_to_status (db_error);
+		db_error_to_gerror (db_error, perror);
 	}
 	else {
 		/* Update the hash and build our changes list */
@@ -857,13 +867,10 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 
 		e_dbhash_write (ehash);
 
-		result = GNOME_Evolution_Addressbook_Success;
 		*changes_out = changes;
 	}
 
 	e_dbhash_destroy (ehash);
-
-	return GNOME_Evolution_Addressbook_Success;
 }
 
 static gchar *
@@ -874,45 +881,47 @@ e_book_backend_file_extract_path_from_uri (const gchar *uri)
 	return g_filename_from_uri (uri, NULL, NULL);
 }
 
-static EBookBackendSyncStatus
+static void
 e_book_backend_file_authenticate_user (EBookBackendSync *backend,
 				       EDataBook *book,
 				       guint32 opid,
 				       const gchar *user,
 				       const gchar *passwd,
-				       const gchar *auth_method)
+				       const gchar *auth_method,
+				       GError **perror)
 {
-	return GNOME_Evolution_Addressbook_Success;
+	/* Success */
 }
 
-static EBookBackendSyncStatus
+static void
 e_book_backend_file_get_required_fields (EBookBackendSync *backend,
 					  EDataBook *book,
 					  guint32 opid,
-					  GList **fields_out)
+					  GList **fields_out,
+					  GError **perror)
 {
 	GList *fields = NULL;
 
 	fields = g_list_append (fields , g_strdup(e_contact_field_name (E_CONTACT_FILE_AS)));
 	*fields_out = fields;
-	return GNOME_Evolution_Addressbook_Success;
 }
 
-static EBookBackendSyncStatus
+static void
 e_book_backend_file_get_supported_auth_methods (EBookBackendSync *backend,
 						EDataBook *book,
 						guint32 opid,
-						GList **methods_out)
+						GList **methods_out,
+						GError **perror)
 {
 	*methods_out = NULL;
-	return GNOME_Evolution_Addressbook_Success;
 }
 
-static EBookBackendSyncStatus
+static void
 e_book_backend_file_get_supported_fields (EBookBackendSync *backend,
 					  EDataBook *book,
 					  guint32 opid,
-					  GList **fields_out)
+					  GList **fields_out,
+					  GError **perror)
 {
 	GList *fields = NULL;
 	gint i;
@@ -923,7 +932,6 @@ e_book_backend_file_get_supported_fields (EBookBackendSync *backend,
 		fields = g_list_append (fields, g_strdup (e_contact_field_name (i)));
 
 	*fields_out = fields;
-	return GNOME_Evolution_Addressbook_Success;
 }
 
 /*
@@ -1069,10 +1077,11 @@ file_errcall (const gchar *buf1, gchar *buf2)
 	g_warning ("libdb error: %s", buf2);
 }
 
-static GNOME_Evolution_Addressbook_CallStatus
+static void
 e_book_backend_file_load_source (EBookBackend           *backend,
 				 ESource                *source,
-				 gboolean                only_if_exists)
+				 gboolean                only_if_exists,
+				 GError                **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	gchar           *dirname, *filename;
@@ -1095,7 +1104,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		g_warning ("db recovery failed with %s", db_strerror (db_error));
 		g_free (dirname);
 		g_free (filename);
-		return db_error_to_status (db_error);
+		db_error_to_gerror (db_error, perror);
+		return;
 	}
 
 	G_LOCK (global_env);
@@ -1109,7 +1119,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			G_UNLOCK (global_env);
 			g_free (dirname);
 			g_free (filename);
-			return db_error_to_status (db_error);
+			db_error_to_gerror (db_error, perror);
+			return;
 		}
 
 		env->set_errcall (env, file_errcall);
@@ -1126,7 +1137,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			G_UNLOCK (global_env);
 			g_free (dirname);
 			g_free (filename);
-			return db_error_to_status (db_error);
+			db_error_to_gerror (db_error, perror);
+			return;
 		}
 
 		global_env.env = env;
@@ -1141,7 +1153,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		g_warning ("db_create failed with %s", db_strerror (db_error));
 		g_free (dirname);
 		g_free (filename);
-		return db_error_to_status (db_error);
+		db_error_to_gerror (db_error, perror);
+		return;
 	}
 
 	db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_THREAD, 0666);
@@ -1153,7 +1166,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			g_warning ("db format upgrade failed with %s", db_strerror (db_error));
 			g_free (dirname);
 			g_free (filename);
-			return db_error_to_status (db_error);
+			db_error_to_gerror (db_error, perror);
+			return;
 		}
 
 		db->close (db, 0);
@@ -1162,7 +1176,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			g_warning ("db_create failed with %s", db_strerror (db_error));
 			g_free (dirname);
 			g_free (filename);
-			return db_error_to_status (db_error);
+			db_error_to_gerror (db_error, perror);
+			return;
 		}
 
 		db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_THREAD, 0666);
@@ -1177,7 +1192,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			g_warning ("db_create failed with %s", db_strerror (db_error));
 			g_free (dirname);
 			g_free (filename);
-			return db_error_to_status (db_error);
+			db_error_to_gerror (db_error, perror);
+			return;
 		}
 
 		db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_RDONLY | DB_THREAD, 0666);
@@ -1191,12 +1207,13 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			rv = g_mkdir_with_parents (dirname, 0700);
 			if (rv == -1 && errno != EEXIST) {
 				g_warning ("failed to make directory %s: %s", dirname, g_strerror (errno));
+				if (errno == EACCES || errno == EPERM)
+					g_propagate_error (perror, EDB_ERROR (PERMISSION_DENIED));
+				else
+					g_propagate_error (perror, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "Failed to make directory %s: %s", dirname, g_strerror (errno)));
 				g_free (dirname);
 				g_free (filename);
-				if (errno == EACCES || errno == EPERM)
-					return GNOME_Evolution_Addressbook_PermissionDenied;
-				else
-					return GNOME_Evolution_Addressbook_OtherError;
+				return;
 			}
 
 			db_error = db_create (&db, env, 0);
@@ -1204,7 +1221,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 				g_warning ("db_create failed with %s", db_strerror (db_error));
 				g_free (dirname);
 				g_free (filename);
-				return db_error_to_status (db_error);
+				db_error_to_gerror (db_error, perror);
+				return;
 			}
 
 			db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_CREATE | DB_THREAD, 0666);
@@ -1215,11 +1233,9 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			else {
 #ifdef CREATE_DEFAULT_VCARD
 				EContact *contact = NULL;
-				EBookBackendSyncStatus status;
 
-				status = do_create (bf, XIMIAN_VCARD, &contact);
-				if (status != GNOME_Evolution_Addressbook_Success)
-					g_warning ("Cannot create default contact: %d", status);
+				if (!do_create (bf, XIMIAN_VCARD, &contact, NULL))
+					g_warning ("Cannot create default contact");
 				if (contact)
 					g_object_unref (contact);
 #endif
@@ -1235,16 +1251,17 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		bf->priv->file_db = NULL;
 		g_free (dirname);
 		g_free (filename);
-		return db_error_to_status (db_error);
+		db_error_to_gerror (db_error, perror);
+		return;
 	}
 
 	if (!e_book_backend_file_maybe_upgrade_db (bf)) {
 		db->close (db, 0);
 		bf->priv->file_db = NULL;
-		g_warning ("e_book_backend_file_maybe_upgrade_db failed");
 		g_free (dirname);
 		g_free (filename);
-		return GNOME_Evolution_Addressbook_OtherError;
+		g_propagate_error (perror, EDB_ERROR_EX (OTHER_ERROR, "e_book_backend_file_maybe_upgrade_db failed"));
+		return;
 	}
 
 	g_free (bf->priv->dirname);
@@ -1255,8 +1272,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 	if (g_stat (bf->priv->filename, &sb) == -1) {
 		db->close (db, 0);
 		bf->priv->file_db = NULL;
-		g_warning ("stat(%s) failed", bf->priv->filename);
-		return GNOME_Evolution_Addressbook_OtherError;
+		g_propagate_error (perror, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "stat(%s) failed", bf->priv->filename));
+		return;
 	}
 	db_mtime = sb.st_mtime;
 
@@ -1267,14 +1284,13 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 	if (e_book_backend_summary_is_up_to_date (bf->priv->summary, db_mtime) == FALSE
 	    || e_book_backend_summary_load (bf->priv->summary) == FALSE ) {
 		if (!bf->priv->summary || !build_summary (bf->priv)) {
-			g_warning ("Failed to build summary for an address book %s", bf->priv->filename);
-			return GNOME_Evolution_Addressbook_OtherError;
+			g_propagate_error (perror, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "Failed to build summary for an address book %s", bf->priv->filename));
+			return;
 		}
 	}
 
 	e_book_backend_set_is_loaded (backend, TRUE);
 	e_book_backend_set_is_writable (backend, writable);
-	return GNOME_Evolution_Addressbook_Success;
 }
 
 static gboolean
@@ -1295,19 +1311,22 @@ select_changes (const gchar *name)
 	return TRUE;
 }
 
-static EBookBackendSyncStatus
+static void
 e_book_backend_file_remove (EBookBackendSync *backend,
 			    EDataBook        *book,
-			    guint32           opid)
+			    guint32           opid,
+			    GError          **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	GDir *dir;
 
 	if (-1 == g_unlink (bf->priv->filename)) {
-		if (errno == EACCES || errno == EPERM)
-			return GNOME_Evolution_Addressbook_PermissionDenied;
-		else
-			return GNOME_Evolution_Addressbook_OtherError;
+		if (errno == EACCES || errno == EPERM) {
+			g_propagate_error (perror, EDB_ERROR (PERMISSION_DENIED));
+		} else {
+			g_propagate_error (perror, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "Failed to remove file '%s': %s", bf->priv->filename, g_strerror (errno)));
+		}
+		return;
 	}
 
 	/* unref the summary before we remove the file so it's not written out again */
@@ -1341,7 +1360,6 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 	   it here..  the only time we should return failure is if we
 	   failed to remove the actual data.  a failure should mean
 	   that the addressbook is still valid */
-	return GNOME_Evolution_Addressbook_Success;
 }
 
 static gchar *
@@ -1350,13 +1368,14 @@ e_book_backend_file_get_static_capabilities (EBookBackend *backend)
 	return g_strdup("local,do-initial-query,bulk-removes,contact-lists");
 }
 
-static GNOME_Evolution_Addressbook_CallStatus
-e_book_backend_file_cancel_operation (EBookBackend *backend, EDataBook *book)
-{
-	return GNOME_Evolution_Addressbook_CouldNotCancel;
-}
 static void
-e_book_backend_file_set_mode (EBookBackend *backend,  GNOME_Evolution_Addressbook_BookMode mode)
+e_book_backend_file_cancel_operation (EBookBackend *backend, EDataBook *book, GError **perror)
+{
+	g_propagate_error (perror, EDB_ERROR (COULD_NOT_CANCEL));
+}
+
+static void
+e_book_backend_file_set_mode (EBookBackend *backend, EDataBookMode mode)
 {
 	if (e_book_backend_is_loaded (backend)) {
 		e_book_backend_notify_writable (backend, TRUE);

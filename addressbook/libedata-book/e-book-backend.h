@@ -50,7 +50,7 @@ struct _EBookBackendClass {
 	GObjectClass parent_class;
 
 	/* Virtual methods */
-	GNOME_Evolution_Addressbook_CallStatus (*load_source) (EBookBackend *backend, ESource *source, gboolean only_if_exists);
+	void (*load_source) (EBookBackend *backend, ESource *source, gboolean only_if_exists, GError **error);
 	void (*remove) (EBookBackend *backend, EDataBook *book, guint32 opid);
         gchar *(*get_static_capabilities) (EBookBackend *backend);
 
@@ -66,8 +66,8 @@ struct _EBookBackendClass {
 	void (*get_required_fields) (EBookBackend *backend, EDataBook *bokk, guint32 opid);
 	void (*get_supported_fields) (EBookBackend *backend, EDataBook *book, guint32 opid);
 	void (*get_supported_auth_methods) (EBookBackend *backend, EDataBook *book, guint32 opid);
-	GNOME_Evolution_Addressbook_CallStatus (*cancel_operation) (EBookBackend *backend, EDataBook *book);
-	void (*set_mode) (EBookBackend *backend, GNOME_Evolution_Addressbook_BookMode mode);
+	void (*cancel_operation) (EBookBackend *backend, EDataBook *book, GError **error);
+	void (*set_mode) (EBookBackend *backend, EDataBookMode mode);
 
 	/* Notification signals */
 	void (* last_client_gone) (EBookBackend *backend);
@@ -83,10 +83,10 @@ struct _EBookBackendClass {
 
 gboolean    e_book_backend_construct                (EBookBackend             *backend);
 
-GNOME_Evolution_Addressbook_CallStatus
-            e_book_backend_load_source              (EBookBackend             *backend,
+void        e_book_backend_load_source              (EBookBackend             *backend,
 						     ESource                  *source,
-						     gboolean                  only_if_exists);
+						     gboolean                  only_if_exists,
+						     GError		     **error);
 ESource    *e_book_backend_get_source               (EBookBackend             *backend);
 
 gboolean    e_book_backend_add_client               (EBookBackend             *backend,
@@ -150,10 +150,11 @@ void        e_book_backend_get_required_fields      (EBookBackend             *b
 void        e_book_backend_get_supported_auth_methods (EBookBackend           *backend,
 						       EDataBook              *book,
 						       guint32                 opid);
-GNOME_Evolution_Addressbook_CallStatus e_book_backend_cancel_operation (EBookBackend             *backend,
-									EDataBook                *book);
+void		e_book_backend_cancel_operation (EBookBackend           *backend,
+						 EDataBook              *book,
+						 GError **error);
 void        e_book_backend_set_mode (EBookBackend           *backend,
-				     GNOME_Evolution_Addressbook_BookMode                mode);
+				     EDataBookMode           mode);
 
 void        e_book_backend_start_book_view            (EBookBackend           *backend,
 						       EDataBookView          *view);
@@ -189,9 +190,9 @@ void        e_book_backend_set_is_removed           (EBookBackend             *b
 						     gboolean                  is_removed);
 
 /* useful for implementing _get_changes in backends */
-GNOME_Evolution_Addressbook_BookChangeItem* e_book_backend_change_add_new     (const gchar *vcard);
-GNOME_Evolution_Addressbook_BookChangeItem* e_book_backend_change_modify_new  (const gchar *vcard);
-GNOME_Evolution_Addressbook_BookChangeItem* e_book_backend_change_delete_new  (const gchar *id);
+EDataBookChange* e_book_backend_change_add_new     (const gchar *vcard);
+EDataBookChange* e_book_backend_change_modify_new  (const gchar *vcard);
+EDataBookChange* e_book_backend_change_delete_new  (const gchar *id);
 
 G_END_DECLS
 

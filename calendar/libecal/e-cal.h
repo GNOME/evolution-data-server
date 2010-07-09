@@ -81,7 +81,10 @@ struct _ECalClass {
 
 	/* Notification signals */
 
+	#ifndef E_CAL_DISABLE_DEPRECATED
 	void (* cal_opened) (ECal *ecal, ECalendarStatus status);
+	#endif
+	void (* cal_opened_ex) (ECal *ecal, const GError *error);
 	void (* cal_set_mode) (ECal *ecal, ECalSetModeStatus status, CalMode mode);
 
 	void (* backend_error) (ECal *ecal, const gchar *message);

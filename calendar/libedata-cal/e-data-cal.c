@@ -84,6 +84,8 @@ G_DEFINE_TYPE (EDataCal, e_data_cal, G_TYPE_OBJECT);
 
 #define E_DATA_CAL_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_DATA_CAL, EDataCalPrivate))
 
+#define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
+
 struct _EDataCalPrivate {
 	ECalBackend *backend;
 	ESource *source;
@@ -98,6 +100,92 @@ e_data_cal_error_quark (void)
   if (!quark)
     quark = g_quark_from_static_string ("e_data_cal_error");
   return quark;
+}
+
+const gchar *
+e_data_cal_status_to_string (EDataCalCallStatus status)
+{
+	gint i;
+	static struct _statuses {
+		EDataCalCallStatus status;
+		const gchar *msg;
+	} statuses[] = {
+		{ Success,				N_("Success") },
+		{ RepositoryOffline,			N_("Repository offline") },
+		{ PermissionDenied,			N_("Permission denied") },
+		{ InvalidRange,				N_("Invalid range") },
+		{ ObjectNotFound,			N_("Object not found") },
+		{ InvalidObject,			N_("Invalid object") },
+		{ ObjectIdAlreadyExists,		N_("Object ID already exists") },
+		{ AuthenticationFailed,			N_("Authentication Failed") },
+		{ AuthenticationRequired,		N_("Authentication Required") },
+		{ UnsupportedField,			N_("Unsupported field") },
+		{ UnsupportedMethod,			N_("Unsupported method") },
+		{ UnsupportedAuthenticationMethod,	N_("Unsupported authentication method") },
+		{ TLSNotAvailable,			N_("TLS not available") },
+		{ NoSuchCal,				N_("Calendar does not exist") },
+		{ UnknownUser,				N_("UnknownUser") },
+		{ OfflineUnavailable,			N_("Not available in offline mode") },
+		{ SearchSizeLimitExceeded,		N_("Search size limit exceeded") },
+		{ SearchTimeLimitExceeded,		N_("Search time limit exceeded") },
+		{ InvalidQuery,				N_("Invalid query") },
+		{ QueryRefused,				N_("Query refused") },
+		{ CouldNotCancel,			N_("Could not cancel") },
+		/* { OtherError,			N_("Other error") }, */
+		{ InvalidServerVersion,			N_("Invalid server version") },
+		{ InvalidArg,				N_("Invalid argument") },
+		{ NotSupported,				N_("Not supported") }
+	};
+
+	for (i = 0; i < G_N_ELEMENTS (statuses); i++) {
+		if (statuses[i].status == status)
+			return _(statuses[i].msg);
+	}
+
+	return _("Other error");
+}
+
+GError *
+e_data_cal_create_error (EDataCalCallStatus status, const gchar *custom_msg)
+{
+	if (status == Success)
+		return NULL;
+
+	return g_error_new_literal (E_DATA_CAL_ERROR, status, custom_msg ? custom_msg : e_data_cal_status_to_string (status));
+}
+
+GError *
+e_data_cal_create_error_fmt (EDataCalCallStatus status, const gchar *custom_msg_fmt, ...)
+{
+	GError *error;
+	gchar *custom_msg;
+	va_list ap;
+
+	if (!custom_msg_fmt)
+		return e_data_cal_create_error (status, NULL);
+
+	va_start (ap, custom_msg_fmt);
+	custom_msg = g_strdup_vprintf (custom_msg_fmt, ap);
+	va_end (ap);
+
+	error = e_data_cal_create_error (status, custom_msg);
+
+	g_free (custom_msg);
+
+	return error;
+}
+
+static void
+data_cal_return_error (DBusGMethodInvocation *context, const GError *perror, const gchar *error_fmt)
+{
+	GError *error;
+
+	g_return_if_fail (perror != NULL);
+
+	error = g_error_new (E_DATA_CAL_ERROR, perror->code, error_fmt, perror->message);
+	dbus_g_method_return_error (context, error);
+
+	g_error_free (error);
 }
 
 /* Class init */
@@ -422,7 +510,7 @@ impl_Cal_getQuery (EDataCal *cal,
 
 	obj_sexp = e_cal_backend_sexp_new (sexp);
 	if (!obj_sexp) {
-		e_data_cal_notify_query (cal, context, InvalidQuery, NULL);
+		e_data_cal_notify_query (cal, context, EDC_ERROR (InvalidQuery), NULL);
 		return;
 	}
 
@@ -430,13 +518,13 @@ impl_Cal_getQuery (EDataCal *cal,
 	query = e_data_cal_view_new (cal->priv->backend, path, obj_sexp);
 	if (!query) {
 		g_object_unref (obj_sexp);
-		e_data_cal_notify_query (cal, context, OtherError, NULL);
+		e_data_cal_notify_query (cal, context, EDC_ERROR (OtherError), NULL);
 		return;
 	}
 
 	e_cal_backend_add_query (cal->priv->backend, query);
 
-	e_data_cal_notify_query (cal, context, Success, path);
+	e_data_cal_notify_query (cal, context, EDC_ERROR (Success), path);
 
         g_free (path);
 }
@@ -471,160 +559,181 @@ impl_Cal_setDefaultTimezone (EDataCal *cal,
 /**
  * e_data_cal_notify_read_only:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  * @read_only: Read only value.
  *
  * Notifies listeners of the completion of the is_read_only method call.
  */
 void
-e_data_cal_notify_read_only (EDataCal *cal, EDataCalCallStatus status, gboolean read_only)
+e_data_cal_notify_read_only (EDataCal *cal, GError *error, gboolean read_only)
 {
 	g_return_if_fail (cal != NULL);
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
-	g_signal_emit (cal, signals[READ_ONLY], 0, read_only);
+	if (error) {
+		e_data_cal_notify_error (cal, error->message);
+		g_error_free (error);
+	} else {
+		g_signal_emit (cal, signals[READ_ONLY], 0, read_only);
+	}
 }
 
 /**
  * e_data_cal_notify_cal_address:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  * @address: Calendar address.
  *
  * Notifies listeners of the completion of the get_cal_address method call.
  */
 void
-e_data_cal_notify_cal_address (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status, const gchar *address)
+e_data_cal_notify_cal_address (EDataCal *cal, EServerMethodContext context, GError *error, const gchar *address)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success)
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot retrieve calendar address")));
-	else
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Cannot retrieve calendar address: %s"));
+		g_error_free (error);
+	} else
 		dbus_g_method_return (method, address ? address : "");
 }
 
 /**
  * e_data_cal_notify_alarm_email_address:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  * @address: Alarm email address.
  *
  * Notifies listeners of the completion of the get_alarm_email_address method call.
  */
 void
-e_data_cal_notify_alarm_email_address (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status, const gchar *address)
+e_data_cal_notify_alarm_email_address (EDataCal *cal, EServerMethodContext context, GError *error, const gchar *address)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success)
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot retrieve calendar alarm e-mail address")));
-	else
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Cannot retrieve calendar alarm e-mail address: %s"));
+		g_error_free (error);
+	} else
 		dbus_g_method_return (method, address ? address : "");
 }
 
 /**
  * e_data_cal_notify_ldap_attribute:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  * @attibute: LDAP attribute.
  *
  * Notifies listeners of the completion of the get_ldap_attribute method call.
  */
 void
-e_data_cal_notify_ldap_attribute (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status, const gchar *attribute)
+e_data_cal_notify_ldap_attribute (EDataCal *cal, EServerMethodContext context, GError *error, const gchar *attribute)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success)
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot retrieve calendar's ldap attribute")));
-	else
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Cannot retrieve calendar's ldap attribute: %s"));
+		g_error_free (error);
+	} else
 		dbus_g_method_return (method, attribute ? attribute : "");
 }
 
 /**
  * e_data_cal_notify_static_capabilities:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  * @capabilities: Static capabilities from the backend.
  *
  * Notifies listeners of the completion of the get_static_capabilities method call.
  */
 void
-e_data_cal_notify_static_capabilities (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status, const gchar *capabilities)
+e_data_cal_notify_static_capabilities (EDataCal *cal, EServerMethodContext context, GError *error, const gchar *capabilities)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success)
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot retrieve calendar scheduling information")));
-	else
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Cannot retrieve calendar scheduling information: %s"));
+		g_error_free (error);
+	} else
 		dbus_g_method_return (method, capabilities ? capabilities : "");
 }
 
 /**
  * e_data_cal_notify_open:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the open method call.
  */
 void
-e_data_cal_notify_open (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status)
+e_data_cal_notify_open (EDataCal *cal, EServerMethodContext context, GError *error)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success)
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot open calendar")));
-	else
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Cannot open calendar: %s"));
+		g_error_free (error);
+	} else
 		dbus_g_method_return (method);
 }
 
 /**
  * e_data_cal_notify_refresh:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the refresh method call.
  *
  * Since: 2.30
  */
 void
-e_data_cal_notify_refresh (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status)
+e_data_cal_notify_refresh (EDataCal *cal, EServerMethodContext context, GError *error)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success)
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot refresh calendar")));
-	else
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Cannot refresh calendar: %s"));
+		g_error_free (error);
+	} else
 		dbus_g_method_return (method);
 }
 
 /**
  * e_data_cal_notify_remove:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the remove method call.
  */
 void
-e_data_cal_notify_remove (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status)
+e_data_cal_notify_remove (EDataCal *cal, EServerMethodContext context, GError *error)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success)
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot remove calendar")));
-	else
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Cannot remove calendar: %s"));
+		g_error_free (error);
+	} else
 		dbus_g_method_return (method);
 }
 
 /**
  * e_data_cal_notify_object_created:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  * @uid: UID of the object created.
  * @object: The object created as an iCalendar string.
  *
  * Notifies listeners of the completion of the create_object method call.
  */void
-e_data_cal_notify_object_created (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status,
+e_data_cal_notify_object_created (EDataCal *cal, EServerMethodContext context, GError *error,
 				  const gchar *uid, const gchar *object)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success) {
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot create calendar object")));
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Cannot create calendar object: %s"));
+		g_error_free (error);
 	} else {
 		e_cal_backend_notify_object_created (cal->priv->backend, object);
 		dbus_g_method_return (method, uid ? uid : "");
@@ -634,19 +743,21 @@ e_data_cal_notify_object_created (EDataCal *cal, EServerMethodContext context, E
 /**
  * e_data_cal_notify_object_modified:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  * @old_object: The old object as an iCalendar string.
  * @object: The modified object as an iCalendar string.
  *
  * Notifies listeners of the completion of the modify_object method call.
  */
 void
-e_data_cal_notify_object_modified (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status,
+e_data_cal_notify_object_modified (EDataCal *cal, EServerMethodContext context, GError *error,
 				   const gchar *old_object, const gchar *object)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success) {
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot modify calendar object")));
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Cannot modify calendar object: %s"));
+		g_error_free (error);
 	} else {
 		e_cal_backend_notify_object_modified (cal->priv->backend, old_object, object);
 		dbus_g_method_return (method);
@@ -656,7 +767,7 @@ e_data_cal_notify_object_modified (EDataCal *cal, EServerMethodContext context, 
 /**
  * e_data_cal_notify_object_removed:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  * @uid: UID of the removed object.
  * @old_object: The old object as an iCalendar string.
  * @object: The new object as an iCalendar string. This will not be NULL only
@@ -665,12 +776,14 @@ e_data_cal_notify_object_modified (EDataCal *cal, EServerMethodContext context, 
  * Notifies listeners of the completion of the remove_object method call.
  */
 void
-e_data_cal_notify_object_removed (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status,
+e_data_cal_notify_object_removed (EDataCal *cal, EServerMethodContext context, GError *error,
 				  const ECalComponentId *id, const gchar *old_object, const gchar *object)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success) {
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot remove calendar object")));
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Cannot remove calendar object: %s"));
+		g_error_free (error);
 	} else {
 		e_cal_backend_notify_object_removed (cal->priv->backend, id, old_object, object);
 		dbus_g_method_return (method);
@@ -680,52 +793,58 @@ e_data_cal_notify_object_removed (EDataCal *cal, EServerMethodContext context, E
 /**
  * e_data_cal_notify_objects_received:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the receive_objects method call.
  */
 void
-e_data_cal_notify_objects_received (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status)
+e_data_cal_notify_objects_received (EDataCal *cal, EServerMethodContext context, GError *error)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success)
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot receive calendar objects")));
-	else
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Cannot receive calendar objects: %s"));
+		g_error_free (error);
+	} else
 		dbus_g_method_return (method);
 }
 
 /**
  * e_data_cal_notify_alarm_discarded:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the discard_alarm method call.
  */
 void
-e_data_cal_notify_alarm_discarded (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status)
+e_data_cal_notify_alarm_discarded (EDataCal *cal, EServerMethodContext context, GError *error)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success)
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot discard calendar alarm")));
-	else
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Cannot discard calendar alarm: %s"));
+		g_error_free (error);
+	} else
 		dbus_g_method_return (method);
 }
 
 /**
  * e_data_cal_notify_objects_sent:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  * @users: List of users.
  * @calobj: An iCalendar string representing the object sent.
  *
  * Notifies listeners of the completion of the send_objects method call.
  */
 void
-e_data_cal_notify_objects_sent (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status, GList *users, const gchar *calobj)
+e_data_cal_notify_objects_sent (EDataCal *cal, EServerMethodContext context, GError *error, GList *users, const gchar *calobj)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success) {
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot send calendar objects")));
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Cannot send calendar objects: %s"));
+		g_error_free (error);
 	} else {
 		gchar **users_array = NULL;
 
@@ -750,53 +869,59 @@ e_data_cal_notify_objects_sent (EDataCal *cal, EServerMethodContext context, EDa
 /**
  * e_data_cal_notify_default_object:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  * @object: The default object as an iCalendar string.
  *
  * Notifies listeners of the completion of the get_default_object method call.
  */
 void
-e_data_cal_notify_default_object (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status, const gchar *object)
+e_data_cal_notify_default_object (EDataCal *cal, EServerMethodContext context, GError *error, const gchar *object)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success)
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot retrieve default calendar object path")));
-	else
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Cannot retrieve default calendar object path: %s"));
+		g_error_free (error);
+	} else
 		dbus_g_method_return (method, object ? object : "");
 }
 
 /**
  * e_data_cal_notify_object:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  * @object: The object retrieved as an iCalendar string.
  *
  * Notifies listeners of the completion of the get_object method call.
  */
 void
-e_data_cal_notify_object (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status, const gchar *object)
+e_data_cal_notify_object (EDataCal *cal, EServerMethodContext context, GError *error, const gchar *object)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success)
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot retrieve calendar object path")));
-	else
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Cannot retrieve calendar object path: %s"));
+		g_error_free (error);
+	} else
 		dbus_g_method_return (method, object ? object : "");
 }
 
 /**
  * e_data_cal_notify_object_list:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  * @objects: List of retrieved objects.
  *
  * Notifies listeners of the completion of the get_object_list method call.
  */
 void
-e_data_cal_notify_object_list (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status, GList *objects)
+e_data_cal_notify_object_list (EDataCal *cal, EServerMethodContext context, GError *error, GList *objects)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success) {
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot retrieve calendar object list")));
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Cannot retrieve calendar object list: %s"));
+		g_error_free (error);
 	} else {
 		gchar **seq = NULL;
 		GList *l;
@@ -816,12 +941,12 @@ e_data_cal_notify_object_list (EDataCal *cal, EServerMethodContext context, EDat
 /**
  * e_data_cal_notify_attachment_list:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  * @attachments: List of retrieved attachment uri's.
  *
  * Notifies listeners of the completion of the get_attachment_list method call.+ */
 void
-e_data_cal_notify_attachment_list (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status, GSList *attachments)
+e_data_cal_notify_attachment_list (EDataCal *cal, EServerMethodContext context, GError *error, GSList *attachments)
 {
 	DBusGMethodInvocation *method = context;
 	gchar **seq;
@@ -833,91 +958,101 @@ e_data_cal_notify_attachment_list (EDataCal *cal, EServerMethodContext context, 
 		seq[i] = g_strdup (l->data);
 	}
 
-	if (status != Success)
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Could not retrieve attachment list")));
-	else
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Could not retrieve attachment list: %s"));
+		g_error_free (error);
+	} else
 		dbus_g_method_return (method, seq);
 }
 
 /**
  * e_data_cal_notify_query:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  * @query: The new live query.
  *
  * Notifies listeners of the completion of the get_query method call.
  */
 void
-e_data_cal_notify_query (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status, const gchar *query)
+e_data_cal_notify_query (EDataCal *cal, EServerMethodContext context, GError *error, const gchar *query)
 {
 	/*
 	 * Only have a seperate notify function to follow suit with the rest of this
 	 * file - it'd be much easier to just do the return in the above function
 	 */
 	DBusGMethodInvocation *method = context;
-	if (status != Success)
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Could not complete calendar query")));
-	else
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Could not complete calendar query: %s"));
+		g_error_free (error);
+	} else
 		dbus_g_method_return (method, query);
 }
 
 /**
  * e_data_cal_notify_timezone_requested:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  * @object: The requested timezone as an iCalendar string.
  *
  * Notifies listeners of the completion of the get_timezone method call.
  */
 void
-e_data_cal_notify_timezone_requested (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status, const gchar *object)
+e_data_cal_notify_timezone_requested (EDataCal *cal, EServerMethodContext context, GError *error, const gchar *object)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success)
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Could not retrieve calendar time zone")));
-	else
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Could not retrieve calendar time zone: %s"));
+		g_error_free (error);
+	} else
 		dbus_g_method_return (method, object ? object : "");
 }
 
 /**
  * e_data_cal_notify_timezone_added:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  * @tzid: ID of the added timezone.
  *
  * Notifies listeners of the completion of the add_timezone method call.
  */
 void
-e_data_cal_notify_timezone_added (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status, const gchar *tzid)
+e_data_cal_notify_timezone_added (EDataCal *cal, EServerMethodContext context, GError *error, const gchar *tzid)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success)
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Could not add calendar time zone")));
-	else
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Could not add calendar time zone: %s"));
+		g_error_free (error);
+	} else
 		dbus_g_method_return (method, tzid ? tzid : "");
 }
 
 /**
  * e_data_cal_notify_default_timezone_set:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the set_default_timezone method call.
  */
 void
-e_data_cal_notify_default_timezone_set (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status)
+e_data_cal_notify_default_timezone_set (EDataCal *cal, EServerMethodContext context, GError *error)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success)
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Could not set default calendar time zone")));
-	else
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Could not set default calendar time zone: %s"));
+		g_error_free (error);
+	} else
 		dbus_g_method_return (method);
 }
 
 /**
  * e_data_cal_notify_changes:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  * @adds: List of additions.
  * @modifies: List of modifications.
  * @deletes: List of removals.
@@ -925,12 +1060,14 @@ e_data_cal_notify_default_timezone_set (EDataCal *cal, EServerMethodContext cont
  * Notifies listeners of the completion of the get_changes method call.
  */
 void
-e_data_cal_notify_changes (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status,
+e_data_cal_notify_changes (EDataCal *cal, EServerMethodContext context, GError *error,
 			   GList *adds, GList *modifies, GList *deletes)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success) {
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot retrieve calendar changes")));
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Cannot retrieve calendar changes: %s"));
+		g_error_free (error);
 	} else {
 		gchar **additions, **modifications, **removals;
 		GList *l;
@@ -970,17 +1107,19 @@ e_data_cal_notify_changes (EDataCal *cal, EServerMethodContext context, EDataCal
 /**
  * e_data_cal_notify_free_busy:
  * @cal: A calendar client interface.
- * @status: Status code.
+ * @error: Operation error, if any, automatically freed if passed it.
  * @freebusy: List of free/busy objects.
  *
  * Notifies listeners of the completion of the get_free_busy method call.
  */
 void
-e_data_cal_notify_free_busy (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status, GList *freebusy)
+e_data_cal_notify_free_busy (EDataCal *cal, EServerMethodContext context, GError *error, GList *freebusy)
 {
 	DBusGMethodInvocation *method = context;
-	if (status != Success) {
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot retrieve calendar free/busy list")));
+	if (error) {
+		/* Translators: The '%s' is replaced with a detailed error message */
+		data_cal_return_error (method, error, _("Cannot retrieve calendar free/busy list: %s"));
+		g_error_free (error);
 	} else {
 		gchar **seq;
 		GList *l;

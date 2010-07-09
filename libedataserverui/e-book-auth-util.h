@@ -28,6 +28,10 @@
 
 #include <libebook/e-book.h>
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
 EBook *e_load_book_source (ESource *source, EBookCallback open_func, gpointer user_data);
+#endif
+
+EBook *e_load_book_source_ex (ESource *source, EBookExCallback open_func, gpointer user_data);
 
 #endif

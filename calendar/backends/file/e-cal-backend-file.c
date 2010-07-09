@@ -45,6 +45,9 @@
 #define O_BINARY 0
 #endif
 
+#define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
+#define EDC_ERROR_NO_URI() e_data_cal_create_error (OtherError, "Cannot get URI")
+
 G_DEFINE_TYPE (ECalBackendFile, e_cal_backend_file, E_TYPE_CAL_BACKEND_SYNC)
 
 /* Placeholder for each component and its recurrences */
@@ -118,8 +121,8 @@ static void e_cal_backend_file_finalize (GObject *object);
 
 static ECalBackendSyncClass *parent_class;
 
-static ECalBackendSyncStatus
-e_cal_backend_file_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj);
+static void
+e_cal_backend_file_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj, GError **perror);
 
 static void free_refresh_data (ECalBackendFile *cbfile);
 
@@ -389,56 +392,46 @@ lookup_component (ECalBackendFile *cbfile, const gchar *uid)
 /* Calendar backend methods */
 
 /* Is_read_only handler for the file backend */
-static ECalBackendSyncStatus
-e_cal_backend_file_is_read_only (ECalBackendSync *backend, EDataCal *cal, gboolean *read_only)
+static void
+e_cal_backend_file_is_read_only (ECalBackendSync *backend, EDataCal *cal, gboolean *read_only, GError **perror)
 {
 	ECalBackendFile *cbfile = (ECalBackendFile *) backend;
 
 	*read_only = cbfile->priv->read_only;
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
 /* Get_email_address handler for the file backend */
-static ECalBackendSyncStatus
-e_cal_backend_file_get_cal_address (ECalBackendSync *backend, EDataCal *cal, gchar **address)
+static void
+e_cal_backend_file_get_cal_address (ECalBackendSync *backend, EDataCal *cal, gchar **address, GError **perror)
 {
 	/* A file backend has no particular email address associated
 	 * with it (although that would be a useful feature some day).
 	 */
 	*address = NULL;
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
-e_cal_backend_file_get_ldap_attribute (ECalBackendSync *backend, EDataCal *cal, gchar **attribute)
+static void
+e_cal_backend_file_get_ldap_attribute (ECalBackendSync *backend, EDataCal *cal, gchar **attribute, GError **perror)
 {
 	*attribute = NULL;
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
-e_cal_backend_file_get_alarm_email_address (ECalBackendSync *backend, EDataCal *cal, gchar **address)
+static void
+e_cal_backend_file_get_alarm_email_address (ECalBackendSync *backend, EDataCal *cal, gchar **address, GError **perror)
 {
 	/* A file backend has no particular email address associated
 	 * with it (although that would be a useful feature some day).
 	 */
 	*address = NULL;
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
-e_cal_backend_file_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal, gchar **capabilities)
+static void
+e_cal_backend_file_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal, gchar **capabilities, GError **perror)
 {
 	*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS ","
 				  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
 				  CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED ","
 				  CAL_STATIC_CAPABILITY_NO_THISANDPRIOR);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
 /* function to resolve timezones */
@@ -784,7 +777,7 @@ refresh_thread_func (gpointer data)
 
 		if (modified != last_modified) {
 			last_modified = modified;
-			e_cal_backend_file_reload (cbfile);
+			e_cal_backend_file_reload (cbfile, NULL);
 		}
 	}
 
@@ -904,8 +897,8 @@ free_refresh_data (ECalBackendFile *cbfile)
 }
 
 /* Parses an open iCalendar file and loads it into the backend */
-static ECalBackendSyncStatus
-open_cal (ECalBackendFile *cbfile, const gchar *uristr)
+static void
+open_cal (ECalBackendFile *cbfile, const gchar *uristr, GError **perror)
 {
 	ECalBackendFilePrivate *priv;
 	icalcomponent *icalcomp;
@@ -915,8 +908,10 @@ open_cal (ECalBackendFile *cbfile, const gchar *uristr)
 	free_refresh_data (cbfile);
 
 	icalcomp = e_cal_util_parse_ics_file (uristr);
-	if (!icalcomp)
-		return GNOME_Evolution_Calendar_OtherError;
+	if (!icalcomp) {
+		g_propagate_error (perror, e_data_cal_create_error_fmt (OtherError, "Cannot parse ISC file '%s'", uristr));
+		return;
+	}
 
 	/* FIXME: should we try to demangle XROOT components and
 	 * individual components as well?
@@ -925,7 +920,8 @@ open_cal (ECalBackendFile *cbfile, const gchar *uristr)
 	if (icalcomponent_isa (icalcomp) != ICAL_VCALENDAR_COMPONENT) {
 		icalcomponent_free (icalcomp);
 
-		return GNOME_Evolution_Calendar_OtherError;
+		g_propagate_error (perror, e_data_cal_create_error_fmt (OtherError, "File '%s' is not v VCALENDAR component", uristr));
+		return;
 	}
 
 	priv->icalcomp = icalcomp;
@@ -937,8 +933,6 @@ open_cal (ECalBackendFile *cbfile, const gchar *uristr)
 	scan_vcalendar (cbfile);
 
 	prepare_refresh_data (cbfile);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
 typedef struct
@@ -1042,8 +1036,8 @@ notify_changes (ECalBackendFile *cbfile, GHashTable *old_uid_hash, GHashTable *n
 	g_hash_table_foreach (new_uid_hash, (GHFunc) notify_adds_modifies_cb, &context);
 }
 
-static ECalBackendSyncStatus
-reload_cal (ECalBackendFile *cbfile, const gchar *uristr)
+static void
+reload_cal (ECalBackendFile *cbfile, const gchar *uristr, GError **perror)
 {
 	ECalBackendFilePrivate *priv;
 	icalcomponent *icalcomp, *icalcomp_old;
@@ -1052,8 +1046,10 @@ reload_cal (ECalBackendFile *cbfile, const gchar *uristr)
 	priv = cbfile->priv;
 
 	icalcomp = e_cal_util_parse_ics_file (uristr);
-	if (!icalcomp)
-		return GNOME_Evolution_Calendar_OtherError;
+	if (!icalcomp) {
+		g_propagate_error (perror, e_data_cal_create_error_fmt (OtherError, "Cannot parse ISC file '%s'", uristr));
+		return;
+	}
 
 	/* FIXME: should we try to demangle XROOT components and
 	 * individual components as well?
@@ -1062,7 +1058,8 @@ reload_cal (ECalBackendFile *cbfile, const gchar *uristr)
 	if (icalcomponent_isa (icalcomp) != ICAL_VCALENDAR_COMPONENT) {
 		icalcomponent_free (icalcomp);
 
-		return GNOME_Evolution_Calendar_OtherError;
+		g_propagate_error (perror, e_data_cal_create_error_fmt (OtherError, "File '%s' is not v VCALENDAR component", uristr));
+		return;
 	}
 
 	/* Keep old data for comparison - free later */
@@ -1091,11 +1088,10 @@ reload_cal (ECalBackendFile *cbfile, const gchar *uristr)
 	/* Free old data */
 
 	free_calendar_components (comp_uid_hash_old, icalcomp_old);
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
-create_cal (ECalBackendFile *cbfile, const gchar *uristr)
+static void
+create_cal (ECalBackendFile *cbfile, const gchar *uristr, GError **perror)
 {
 	gchar *dirname;
 	ECalBackendFilePrivate *priv;
@@ -1108,7 +1104,8 @@ create_cal (ECalBackendFile *cbfile, const gchar *uristr)
 	dirname = g_path_get_dirname (uristr);
 	if (g_mkdir_with_parents (dirname, 0700) != 0) {
 		g_free (dirname);
-		return GNOME_Evolution_Calendar_NoSuchCal;
+		g_propagate_error (perror, EDC_ERROR (NoSuchCal));
+		return;
 	}
 
 	g_free (dirname);
@@ -1126,8 +1123,6 @@ create_cal (ECalBackendFile *cbfile, const gchar *uristr)
 	g_free (priv->custom_file);
 	priv->custom_file = g_strdup (uristr);
 	prepare_refresh_data (cbfile);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
 static gchar *
@@ -1278,14 +1273,14 @@ source_changed_cb (ESource *source, ECalBackend *backend)
 }
 
 /* Open handler for the file backend */
-static ECalBackendSyncStatus
+static void
 e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists,
-			 const gchar *username, const gchar *password)
+			 const gchar *username, const gchar *password, GError **perror)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	gchar *str_uri;
-	ECalBackendSyncStatus status;
+	GError *err = NULL;
 
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
@@ -1293,29 +1288,29 @@ e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 
 	/* Claim a succesful open if we are already open */
 	if (priv->path && priv->comp_uid_hash) {
-		status = GNOME_Evolution_Calendar_Success;
+		/* Success */
 		goto done;
         }
 
 	str_uri = get_uri_string (E_CAL_BACKEND (backend));
 	if (!str_uri) {
-		status = GNOME_Evolution_Calendar_OtherError;
+		err = EDC_ERROR_NO_URI ();
 		goto done;
         }
 
 	priv->read_only = FALSE;
 	if (g_access (str_uri, R_OK) == 0) {
-		status = open_cal (cbfile, str_uri);
+		open_cal (cbfile, str_uri, &err);
 		if (g_access (str_uri, W_OK) != 0)
 			priv->read_only = TRUE;
 	} else {
 		if (only_if_exists)
-			status = GNOME_Evolution_Calendar_NoSuchCal;
+			err = EDC_ERROR (NoSuchCal);
 		else
-			status = create_cal (cbfile, str_uri);
+			create_cal (cbfile, str_uri, &err);
 	}
 
-	if (status == GNOME_Evolution_Calendar_Success) {
+	if (!err) {
 		if (!priv->read_only) {
 			ESource *source = e_cal_backend_get_source (E_CAL_BACKEND (backend));
 
@@ -1336,11 +1331,13 @@ e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 
   done:
         g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-	return status;
+
+	if (err)
+		g_propagate_error (perror, err);
 }
 
-static ECalBackendSyncStatus
-e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal)
+static void
+e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal, GError **perror)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -1348,8 +1345,7 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal)
         gchar *full_path = NULL;
 	const gchar *fname;
 	GDir *dir = NULL;
-	GError *error = NULL;
-        ECalBackendSyncStatus status = GNOME_Evolution_Calendar_Success;
+	GError *error = NULL, *err = NULL;
 
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
@@ -1357,12 +1353,12 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal)
 
 	str_uri = get_uri_string (E_CAL_BACKEND (backend));
 	if (!str_uri) {
-		status = GNOME_Evolution_Calendar_OtherError;
+		err = EDC_ERROR_NO_URI ();
                 goto done;
         }
 
 	if (g_access (str_uri, W_OK) != 0) {
-		status = GNOME_Evolution_Calendar_PermissionDenied;
+		err = EDC_ERROR (PermissionDenied);
                 goto done;
 	}
 
@@ -1370,14 +1366,14 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal)
 	dirname = g_path_get_dirname (str_uri);
 	dir = g_dir_open (dirname, 0, &error);
 	if (!dir) {
-		status = GNOME_Evolution_Calendar_PermissionDenied;
+		err = e_data_cal_create_error (PermissionDenied, error ? error->message : NULL);
                 goto done;
 	}
 
 	while ((fname = g_dir_read_name (dir))) {
 		full_path = g_build_filename (dirname, fname, NULL);
 		if (g_unlink (full_path) != 0) {
-			status = GNOME_Evolution_Calendar_OtherError;
+			err = EDC_ERROR (OtherError);
                         goto done;
 		}
 
@@ -1387,7 +1383,7 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal)
 
 	/* remove the directory itself */
 	if (g_rmdir (dirname) != 0) {
-		status = GNOME_Evolution_Calendar_OtherError;
+		err = EDC_ERROR (OtherError);
         }
 
   done:
@@ -1401,10 +1397,13 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal)
         g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	/* lie here a bit, but otherwise the calendar will not be removed, even it should */
-	if (status != GNOME_Evolution_Calendar_Success)
-		g_print (G_STRLOC ": %s", e_cal_backend_status_to_string (status));
+	if (err) {
+		g_print (G_STRLOC ": %s", err->message);
+		g_error_free (err);
+	}
 
-        return GNOME_Evolution_Calendar_Success;
+	if (error)
+		g_error_free (error);
 }
 
 /* is_loaded handler for the file backend */
@@ -1437,14 +1436,12 @@ e_cal_backend_file_get_mode (ECalBackend *backend)
 static void
 e_cal_backend_file_set_mode (ECalBackend *backend, CalMode mode)
 {
-	e_cal_backend_notify_mode (backend,
-				   GNOME_Evolution_Calendar_CalListener_MODE_NOT_SUPPORTED,
-				   GNOME_Evolution_Calendar_MODE_LOCAL);
+	e_cal_backend_notify_mode (backend, ModeNotSupported, Local);
 
 }
 
-static ECalBackendSyncStatus
-e_cal_backend_file_get_default_object (ECalBackendSync *backend, EDataCal *cal, gchar **object)
+static void
+e_cal_backend_file_get_default_object (ECalBackendSync *backend, EDataCal *cal, gchar **object, GError **perror)
 {
 	ECalComponent *comp;
 
@@ -1462,13 +1459,12 @@ e_cal_backend_file_get_default_object (ECalBackendSync *backend, EDataCal *cal, 
 		break;
 	default:
 		g_object_unref (comp);
-		return GNOME_Evolution_Calendar_ObjectNotFound;
+		g_propagate_error (perror, EDC_ERROR (ObjectNotFound));
+		return;
 	}
 
 	*object = e_cal_component_get_as_string (comp);
 	g_object_unref (comp);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
 static void
@@ -1483,8 +1479,8 @@ add_detached_recur_to_vcalendar (gpointer key, gpointer value, gpointer user_dat
 }
 
 /* Get_object_component handler for the file backend */
-static ECalBackendSyncStatus
-e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, gchar **object)
+static void
+e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, gchar **object, GError **error)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -1493,8 +1489,8 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const gc
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	g_return_val_if_fail (priv->icalcomp != NULL, GNOME_Evolution_Calendar_InvalidObject);
-	g_return_val_if_fail (uid != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
+	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, InvalidObject);
+	e_return_data_cal_error_if_fail (uid != NULL, ObjectNotFound);
 	g_assert (priv->comp_uid_hash != NULL);
 
 	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
@@ -1502,7 +1498,8 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const gc
 	obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
 	if (!obj_data) {
 		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-		return GNOME_Evolution_Calendar_ObjectNotFound;
+		g_propagate_error (error, EDC_ERROR (ObjectNotFound));
+		return;
 	}
 
 	if (rid && *rid) {
@@ -1517,7 +1514,8 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const gc
 
 			if (!obj_data->full_object) {
 				g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-				return GNOME_Evolution_Calendar_ObjectNotFound;
+				g_propagate_error (error, EDC_ERROR (ObjectNotFound));
+				return;
 			}
 
 			itt = icaltime_from_string (rid);
@@ -1526,7 +1524,8 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const gc
 				itt);
 			if (!icalcomp) {
 				g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-				return GNOME_Evolution_Calendar_ObjectNotFound;
+				g_propagate_error (error, EDC_ERROR (ObjectNotFound));
+				return;
                         }
 
 			*object = icalcomponent_as_ical_string_r (icalcomp);
@@ -1557,12 +1556,11 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const gc
 	}
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-	return GNOME_Evolution_Calendar_Success;
 }
 
 /* Add_timezone handler for the file backend */
-static ECalBackendSyncStatus
-e_cal_backend_file_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj)
+static void
+e_cal_backend_file_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj, GError **error)
 {
 	icalcomponent *tz_comp;
 	ECalBackendFile *cbfile;
@@ -1570,14 +1568,16 @@ e_cal_backend_file_add_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 
 	cbfile = (ECalBackendFile *) backend;
 
-	g_return_val_if_fail (E_IS_CAL_BACKEND_FILE (cbfile), GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (tzobj != NULL, GNOME_Evolution_Calendar_OtherError);
+	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_FILE (cbfile), InvalidArg);
+	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
 
 	priv = cbfile->priv;
 
 	tz_comp = icalparser_parse_string (tzobj);
-	if (!tz_comp)
-		return GNOME_Evolution_Calendar_InvalidObject;
+	if (!tz_comp) {
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return;
+	}
 
 	if (icalcomponent_isa (tz_comp) == ICAL_VTIMEZONE_COMPONENT) {
 		icaltimezone *zone;
@@ -1595,12 +1595,10 @@ e_cal_backend_file_add_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 
 		icaltimezone_free (zone, 1);
 	}
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
-e_cal_backend_file_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj)
+static void
+e_cal_backend_file_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj, GError **error)
 {
 	icalcomponent *tz_comp;
 	ECalBackendFile *cbfile;
@@ -1609,14 +1607,16 @@ e_cal_backend_file_set_default_zone (ECalBackendSync *backend, EDataCal *cal, co
 
 	cbfile = (ECalBackendFile *) backend;
 
-	g_return_val_if_fail (E_IS_CAL_BACKEND_FILE (cbfile), GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (tzobj != NULL, GNOME_Evolution_Calendar_OtherError);
+	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_FILE (cbfile), InvalidArg);
+	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
 
 	priv = cbfile->priv;
 
 	tz_comp = icalparser_parse_string (tzobj);
-	if (!tz_comp)
-		return GNOME_Evolution_Calendar_InvalidObject;
+	if (!tz_comp) {
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return;
+	}
 
 	zone = icaltimezone_new ();
 	icaltimezone_set_component (zone, tz_comp);
@@ -1628,8 +1628,6 @@ e_cal_backend_file_set_default_zone (ECalBackendSync *backend, EDataCal *cal, co
 	/* Set the default timezone to it. */
 	priv->default_zone = zone;
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
 typedef struct {
@@ -1675,8 +1673,8 @@ match_object_sexp (gpointer key, gpointer value, gpointer data)
 }
 
 /* Get_objects_in_range handler for the file backend */
-static ECalBackendSyncStatus
-e_cal_backend_file_get_object_list (ECalBackendSync *backend, EDataCal *cal, const gchar *sexp, GList **objects)
+static void
+e_cal_backend_file_get_object_list (ECalBackendSync *backend, EDataCal *cal, const gchar *sexp, GList **objects, GError **perror)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -1697,8 +1695,10 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 		match_data.search_needed = FALSE;
 
 	match_data.obj_sexp = e_cal_backend_sexp_new (sexp);
-	if (!match_data.obj_sexp)
-		return GNOME_Evolution_Calendar_InvalidQuery;
+	if (!match_data.obj_sexp) {
+		g_propagate_error (perror, EDC_ERROR (InvalidQuery));
+		return;
+	}
 
 	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 	g_hash_table_foreach (priv->comp_uid_hash, (GHFunc) match_object_sexp, &match_data);
@@ -1707,17 +1707,14 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 	*objects = match_data.obj_list;
 
 	g_object_unref (match_data.obj_sexp);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
 /* Gets the list of attachments */
-static ECalBackendSyncStatus
-e_cal_backend_file_get_attachment_list (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, GSList **list)
+static void
+e_cal_backend_file_get_attachment_list (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, GSList **list, GError **perror)
 {
 
 	/* TODO implement the function */
-	return GNOME_Evolution_Calendar_Success;
 }
 
 /* get_query handler for the file backend */
@@ -1745,7 +1742,9 @@ e_cal_backend_file_start_query (ECalBackend *backend, EDataCalView *query)
 
 	match_data.obj_sexp = e_data_cal_view_get_object_sexp (query);
 	if (!match_data.obj_sexp) {
-		e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_InvalidQuery);
+		GError *error = EDC_ERROR (InvalidQuery);
+		e_data_cal_view_notify_done (query, error);
+		g_error_free (error);
 		return;
 	}
 
@@ -1763,7 +1762,7 @@ e_cal_backend_file_start_query (ECalBackend *backend, EDataCalView *query)
 	}
 	g_object_unref (match_data.obj_sexp);
 
-	e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_Success);
+	e_data_cal_view_notify_done (query, NULL /* Success */);
 }
 
 static gboolean
@@ -1876,9 +1875,9 @@ create_user_free_busy (ECalBackendFile *cbfile, const gchar *address, const gcha
 }
 
 /* Get_free_busy handler for the file backend */
-static ECalBackendSyncStatus
+static void
 e_cal_backend_file_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList *users,
-				time_t start, time_t end, GList **freebusy)
+				time_t start, time_t end, GList **freebusy, GError **error)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -1890,9 +1889,9 @@ e_cal_backend_file_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	g_return_val_if_fail (priv->icalcomp != NULL, GNOME_Evolution_Calendar_NoSuchCal);
-	g_return_val_if_fail (start != -1 && end != -1, GNOME_Evolution_Calendar_InvalidRange);
-	g_return_val_if_fail (start <= end, GNOME_Evolution_Calendar_InvalidRange);
+	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, NoSuchCal);
+	e_return_data_cal_error_if_fail (start != -1 && end != -1, InvalidRange);
+	e_return_data_cal_error_if_fail (start <= end, InvalidRange);
 
 	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 
@@ -1921,8 +1920,6 @@ e_cal_backend_file_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 	}
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
 typedef struct
@@ -1956,9 +1953,9 @@ e_cal_backend_file_compute_changes_foreach_key (const gchar *key, gpointer value
 	return FALSE;
 }
 
-static ECalBackendSyncStatus
+static void
 e_cal_backend_file_compute_changes (ECalBackendFile *cbfile, const gchar *change_id,
-				    GList **adds, GList **modifies, GList **deletes)
+				    GList **adds, GList **modifies, GList **deletes, GError **perror)
 {
 	ECalBackendFilePrivate *priv;
 	gchar    *filename;
@@ -1975,7 +1972,8 @@ e_cal_backend_file_compute_changes (ECalBackendFile *cbfile, const gchar *change
 	g_free (unescaped_uri);
 	if (!(ehash = e_xmlhash_new (filename))) {
 		g_free (filename);
-		return GNOME_Evolution_Calendar_OtherError;
+		g_propagate_error (perror, EDC_ERROR (OtherError));
+		return;
 	}
 
 	g_free (filename);
@@ -2023,13 +2021,12 @@ e_cal_backend_file_compute_changes (ECalBackendFile *cbfile, const gchar *change
 	e_xmlhash_destroy (ehash);
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-	return GNOME_Evolution_Calendar_Success;
 }
 
 /* Get_changes handler for the file backend */
-static ECalBackendSyncStatus
+static void
 e_cal_backend_file_get_changes (ECalBackendSync *backend, EDataCal *cal, const gchar *change_id,
-			      GList **adds, GList **modifies, GList **deletes)
+			      GList **adds, GList **modifies, GList **deletes, GError **error)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -2037,18 +2034,17 @@ e_cal_backend_file_get_changes (ECalBackendSync *backend, EDataCal *cal, const g
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	g_return_val_if_fail (priv->icalcomp != NULL, GNOME_Evolution_Calendar_NoSuchCal);
-	g_return_val_if_fail (change_id != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
+	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, NoSuchCal);
+	e_return_data_cal_error_if_fail (change_id != NULL, ObjectNotFound);
 
-	return e_cal_backend_file_compute_changes (cbfile, change_id, adds, modifies, deletes);
+	e_cal_backend_file_compute_changes (cbfile, change_id, adds, modifies, deletes, error);
 }
 
 /* Discard_alarm handler for the file backend */
-static ECalBackendSyncStatus
-e_cal_backend_file_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *auid)
+static void
+e_cal_backend_file_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *auid, GError **perror)
 {
 	/* we just do nothing with the alarm */
-	return GNOME_Evolution_Calendar_Success;
 }
 
 static icaltimezone *
@@ -2140,8 +2136,8 @@ sanitize_component (ECalBackendFile *cbfile, ECalComponent *comp)
 
 }
 
-static ECalBackendSyncStatus
-e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid)
+static void
+e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid, GError **error)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -2153,18 +2149,21 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, gchar
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	g_return_val_if_fail (priv->icalcomp != NULL, GNOME_Evolution_Calendar_NoSuchCal);
-	g_return_val_if_fail (*calobj != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
+	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, NoSuchCal);
+	e_return_data_cal_error_if_fail (*calobj != NULL, ObjectNotFound);
 
 	/* Parse the icalendar text */
 	icalcomp = icalparser_parse_string (*calobj);
-	if (!icalcomp)
-		return GNOME_Evolution_Calendar_InvalidObject;
+	if (!icalcomp) {
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return;
+	}
 
 	/* Check kind with the parent */
 	if (icalcomponent_isa (icalcomp) != e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
 		icalcomponent_free (icalcomp);
-		return GNOME_Evolution_Calendar_InvalidObject;
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return;
 	}
 
 	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
@@ -2178,7 +2177,8 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, gchar
 		if (!new_uid) {
 			icalcomponent_free (icalcomp);
 			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-			return GNOME_Evolution_Calendar_InvalidObject;
+			g_propagate_error (error, EDC_ERROR (InvalidObject));
+			return;
 		}
 
 		icalcomponent_set_uid (icalcomp, new_uid);
@@ -2191,7 +2191,8 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, gchar
 	if (lookup_component (cbfile, comp_uid)) {
 		icalcomponent_free (icalcomp);
 		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-		return GNOME_Evolution_Calendar_ObjectIdAlreadyExists;
+		g_propagate_error (error, EDC_ERROR (ObjectIdAlreadyExists));
+		return;
 	}
 
 	/* Create the cal component */
@@ -2218,7 +2219,6 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, gchar
 	*calobj = e_cal_component_get_as_string (comp);
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-	return GNOME_Evolution_Calendar_Success;
 }
 
 typedef struct {
@@ -2255,9 +2255,9 @@ remove_object_instance_cb (gpointer key, gpointer value, gpointer user_data)
 	return FALSE;
 }
 
-static ECalBackendSyncStatus
+static void
 e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj,
-				  CalObjModType mod, gchar **old_object, gchar **new_object)
+				  CalObjModType mod, gchar **old_object, gchar **new_object, GError **error)
 {
 	RemoveRecurrenceData rrdata;
 	ECalBackendFile *cbfile;
@@ -2274,18 +2274,21 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	g_return_val_if_fail (priv->icalcomp != NULL, GNOME_Evolution_Calendar_NoSuchCal);
-	g_return_val_if_fail (calobj != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
+	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, NoSuchCal);
+	e_return_data_cal_error_if_fail (calobj != NULL, ObjectNotFound);
 
 	/* Parse the icalendar text */
 	icalcomp = icalparser_parse_string ((gchar *) calobj);
-	if (!icalcomp)
-		return GNOME_Evolution_Calendar_InvalidObject;
+	if (!icalcomp) {
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return;
+	}
 
 	/* Check kind with the parent */
 	if (icalcomponent_isa (icalcomp) != e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
 		icalcomponent_free (icalcomp);
-		return GNOME_Evolution_Calendar_InvalidObject;
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return;
 	}
 
 	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
@@ -2297,7 +2300,8 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 	if (!(obj_data = g_hash_table_lookup (priv->comp_uid_hash, comp_uid))) {
 		icalcomponent_free (icalcomp);
 		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-		return GNOME_Evolution_Calendar_ObjectNotFound;
+		g_propagate_error (error, EDC_ERROR (ObjectNotFound));
+		return;
 	}
 
 	/* Create the cal component */
@@ -2342,7 +2346,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 
 			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 			g_free (rid);
-			return GNOME_Evolution_Calendar_Success;
+			return;
 		}
 
 		if (g_hash_table_lookup_extended (obj_data->recurrences, rid, (gpointer *)&real_rid, (gpointer *)&recurrence)) {
@@ -2479,7 +2483,6 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 		*new_object = e_cal_component_get_as_string (comp);
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-	return GNOME_Evolution_Calendar_Success;
 }
 
 static void
@@ -2550,11 +2553,11 @@ get_object_string_from_fileobject (ECalBackendFileObject *obj_data, const gchar 
 }
 
 /* Remove_object handler for the file backend */
-static ECalBackendSyncStatus
+static void
 e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 				  const gchar *uid, const gchar *rid,
 				  CalObjModType mod, gchar **old_object,
-				  gchar **object)
+				  gchar **object, GError **error)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -2566,8 +2569,8 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	g_return_val_if_fail (priv->icalcomp != NULL, GNOME_Evolution_Calendar_NoSuchCal);
-	g_return_val_if_fail (uid != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
+	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, NoSuchCal);
+	e_return_data_cal_error_if_fail (uid != NULL, ObjectNotFound);
 
 	*old_object = *object = NULL;
 
@@ -2576,7 +2579,8 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
 	if (!obj_data) {
 		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-		return GNOME_Evolution_Calendar_ObjectNotFound;
+		g_propagate_error (error, EDC_ERROR (ObjectNotFound));
+		return;
 	}
 
 	if (rid && *rid)
@@ -2608,7 +2612,8 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	case CALOBJ_MOD_THISANDFUTURE :
 		if (!recur_id || !*recur_id) {
 			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-			return GNOME_Evolution_Calendar_ObjectNotFound;
+			g_propagate_error (error, EDC_ERROR (ObjectNotFound));
+			return;
 		}
 
 		if (comp) {
@@ -2644,7 +2649,6 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	save (cbfile);
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-	return GNOME_Evolution_Calendar_Success;
 }
 
 static gboolean
@@ -2772,8 +2776,8 @@ fetch_attachments (ECalBackendSync *backend, ECalComponent *comp)
 }
 
 /* Update_objects handler for the file backend. */
-static ECalBackendSyncStatus
-e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj)
+static void
+e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GError **error)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -2785,18 +2789,20 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 	ECalComponent *comp;
 	struct icaltimetype current;
 	ECalBackendFileTzidData tzdata;
-	ECalBackendSyncStatus status = GNOME_Evolution_Calendar_Success;
+	GError *err = NULL;
 
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	g_return_val_if_fail (priv->icalcomp != NULL, GNOME_Evolution_Calendar_InvalidObject);
-	g_return_val_if_fail (calobj != NULL, GNOME_Evolution_Calendar_InvalidObject);
+	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, InvalidArg);
+	e_return_data_cal_error_if_fail (calobj != NULL, InvalidObject);
 
 	/* Pull the component from the string and ensure that it is sane */
 	toplevel_comp = icalparser_parse_string ((gchar *) calobj);
-	if (!toplevel_comp)
-		return GNOME_Evolution_Calendar_InvalidObject;
+	if (!toplevel_comp) {
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return;
+	}
 
 	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 
@@ -2852,7 +2858,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 		icalcomponent_foreach_tzid (subcomp, check_tzids, &tzdata);
 
 		if (!tzdata.found) {
-			status = GNOME_Evolution_Calendar_InvalidObject;
+			err = EDC_ERROR (InvalidObject);
 			goto error;
 		}
 
@@ -2865,7 +2871,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 				icalcomponent_set_uid (subcomp, new_uid);
 				g_free (new_uid);
 			} else {
-				status = GNOME_Evolution_Calendar_InvalidObject;
+				err = EDC_ERROR (InvalidObject);
 				goto error;
 			}
 
@@ -2949,17 +2955,17 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 			break;
 		case ICAL_METHOD_ADD:
 			/* FIXME This should be doable once all the recurid stuff is done */
-			status = GNOME_Evolution_Calendar_UnsupportedMethod;
+			err = EDC_ERROR (UnsupportedMethod);
 			g_free (rid);
 			goto error;
 			break;
 		case ICAL_METHOD_COUNTER:
-			status = GNOME_Evolution_Calendar_UnsupportedMethod;
+			err = EDC_ERROR (UnsupportedMethod);
 			g_free (rid);
 			goto error;
 			break;
 		case ICAL_METHOD_DECLINECOUNTER:
-			status = GNOME_Evolution_Calendar_UnsupportedMethod;
+			err = EDC_ERROR (UnsupportedMethod);
 			g_free (rid);
 			goto error;
 			break;
@@ -2984,7 +2990,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 			g_free (rid);
 			break;
 		default:
-			status = GNOME_Evolution_Calendar_UnsupportedMethod;
+			err = EDC_ERROR (UnsupportedMethod);
 			g_free (rid);
 			goto error;
 		}
@@ -3003,13 +3009,12 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 	g_list_free (del_comps);
 
         /* check and patch timezones */
-        {
-            GError *error = NULL;
+        if (!err) {
             if (!e_cal_check_timezones(toplevel_comp,
                                        NULL,
                                        e_cal_tzlookup_icomp,
                                        priv->icalcomp,
-                                       &error)) {
+                                       &err)) {
                 /*
                  * This makes assumptions about what kind of
                  * errors can occur inside e_cal_check_timezones().
@@ -3017,8 +3022,6 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
                  * is the code really identical with the calendar
                  * status?
                  */
-                status = error->code;
-                g_clear_error(&error);
                 goto error;
             }
         }
@@ -3032,17 +3035,17 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
  error:
 	g_hash_table_destroy (tzdata.zones);
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-	return status;
+
+	if (err)
+		g_propagate_error (error, err);
 }
 
-static ECalBackendSyncStatus
+static void
 e_cal_backend_file_send_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GList **users,
-				 gchar **modified_calobj)
+				 gchar **modified_calobj, GError **perror)
 {
 	*users = NULL;
 	*modified_calobj = g_strdup (calobj);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
 /* Object initialization function for the file backend */
@@ -3157,33 +3160,33 @@ e_cal_backend_file_get_file_name (ECalBackendFile *cbfile)
 	return priv->file_name;
 }
 
-ECalBackendSyncStatus
-e_cal_backend_file_reload (ECalBackendFile *cbfile)
+void
+e_cal_backend_file_reload (ECalBackendFile *cbfile, GError **perror)
 {
 	ECalBackendFilePrivate *priv;
 	gchar *str_uri;
-	ECalBackendSyncStatus status;
+	GError *err = NULL;
 
 	priv = cbfile->priv;
         g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	str_uri = get_uri_string (E_CAL_BACKEND (cbfile));
 	if (!str_uri) {
-		status = GNOME_Evolution_Calendar_OtherError;
+		err = EDC_ERROR_NO_URI ();
                 goto done;
         }
 
 	if (g_access (str_uri, R_OK) == 0) {
-		status = reload_cal (cbfile, str_uri);
+		reload_cal (cbfile, str_uri, &err);
 		if (g_access (str_uri, W_OK) != 0)
 			priv->read_only = TRUE;
 	} else {
-		status = GNOME_Evolution_Calendar_NoSuchCal;
+		err = EDC_ERROR (NoSuchCal);
 	}
 
 	g_free (str_uri);
 
-	if (status == GNOME_Evolution_Calendar_Success && !priv->read_only) {
+	if (!err && !priv->read_only) {
 		ESource *source = e_cal_backend_get_source (E_CAL_BACKEND (cbfile));
 
 		if (source && e_source_get_property (source, "custom-file-readonly") && g_str_equal (e_source_get_property (source, "custom-file-readonly"), "1"))
@@ -3191,5 +3194,7 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile)
 	}
   done:
         g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-	return status;
+
+	if (err)
+		g_propagate_error (perror, err);
 }

@@ -1948,7 +1948,7 @@ setup_default_contact_store (ENameSelectorEntry *name_selector_entry)
 			if (!completion || g_ascii_strcasecmp (completion, "true"))
 				continue;
 
-			book = e_load_book_source (source, NULL, NULL);
+			book = e_load_book_source_ex (source, NULL, NULL);
 			if (!book)
 				continue;
 

@@ -31,6 +31,8 @@
 
 
 
+#define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
+
 G_DEFINE_TYPE (ECalBackend, e_cal_backend, G_TYPE_OBJECT);
 
 /* Private part of the CalBackend structure */
@@ -78,8 +80,6 @@ enum props {
 /* Signal IDs */
 enum {
 	LAST_CLIENT_GONE,
-	OPENED,
-	REMOVED,
 	LAST_SIGNAL
 };
 static guint e_cal_backend_signals[LAST_SIGNAL];
@@ -225,28 +225,8 @@ e_cal_backend_class_init (ECalBackendClass *class)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
-	e_cal_backend_signals[OPENED] =
-		g_signal_new ("opened",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalBackendClass, opened),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__ENUM,
-			      G_TYPE_NONE, 1,
-			      G_TYPE_INT);
-	e_cal_backend_signals[REMOVED] =
-		g_signal_new ("removed",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalBackendClass, removed),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__ENUM,
-			      G_TYPE_NONE, 1,
-			      G_TYPE_INT);
 
 	class->last_client_gone = NULL;
-	class->opened = NULL;
-	class->obj_updated = NULL;
 
 	class->get_cal_address = NULL;
 	class->get_alarm_email_address = NULL;
@@ -551,7 +531,7 @@ e_cal_backend_notify_readonly (ECalBackend *backend, gboolean read_only)
 		return;
 	}
 	for (l = priv->clients; l; l = l->next)
-		e_data_cal_notify_read_only (l->data, GNOME_Evolution_Calendar_Success, read_only);
+		e_data_cal_notify_read_only (l->data, NULL /* Success */, read_only);
 }
 
 void
@@ -563,7 +543,7 @@ e_cal_backend_notify_cal_address (ECalBackend *backend, EServerMethodContext con
 	priv = backend->priv;
 
 	for (l = priv->clients; l; l = l->next)
-		e_data_cal_notify_cal_address (l->data, context, GNOME_Evolution_Calendar_Success, address);
+		e_data_cal_notify_cal_address (l->data, context, NULL /* Success */, address);
 }
 
 /**
@@ -933,7 +913,7 @@ e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, EServerMethodC
 	if (CLASS (backend)->create_object)
 		(* CLASS (backend)->create_object) (backend, cal, context, calobj);
 	else
-		e_data_cal_notify_object_created (cal, context, PermissionDenied, NULL, NULL);
+		e_data_cal_notify_object_created (cal, context, EDC_ERROR (UnsupportedMethod), NULL, NULL);
 }
 
 /**
@@ -955,7 +935,7 @@ e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, EServerMethodC
 	if (CLASS (backend)->modify_object)
 		(* CLASS (backend)->modify_object) (backend, cal, context, calobj, mod);
 	else
-		e_data_cal_notify_object_removed (cal, context, PermissionDenied, NULL, NULL, NULL);
+		e_data_cal_notify_object_removed (cal, context, EDC_ERROR (UnsupportedMethod), NULL, NULL, NULL);
 }
 
 /**
@@ -1288,12 +1268,12 @@ e_cal_backend_notify_view_progress (ECalBackend *backend, const gchar *message, 
 /**
  * e_cal_backend_notify_view_done:
  * @backend: A calendar backend.
- * @status: returns the status once the view is fully populated.
+ * @error: returns the error, if any, once the view is fully populated.
  *
  * Notifies each of the backend's listeners about the view_done in downloading the items.
  **/
 void
-e_cal_backend_notify_view_done (ECalBackend *backend, GNOME_Evolution_Calendar_CallStatus status)
+e_cal_backend_notify_view_done (ECalBackend *backend, const GError *error)
 {
 	ECalBackendPrivate *priv;
 	EList *queries;
@@ -1303,7 +1283,7 @@ e_cal_backend_notify_view_done (ECalBackend *backend, GNOME_Evolution_Calendar_C
 	priv = backend->priv;
 
 	if (priv->notification_proxy) {
-		e_cal_backend_notify_view_done (priv->notification_proxy, status);
+		e_cal_backend_notify_view_done (priv->notification_proxy, error);
 		return;
 	}
 
@@ -1315,7 +1295,7 @@ e_cal_backend_notify_view_done (ECalBackend *backend, GNOME_Evolution_Calendar_C
 
 		g_object_ref (query);
 
-		e_data_cal_view_notify_done (query, status);
+		e_data_cal_view_notify_done (query, error);
 
 		g_object_unref (query);
 

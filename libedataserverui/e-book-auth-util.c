@@ -33,13 +33,16 @@
 #include "e-book-auth-util.h"
 
 static void addressbook_authenticate (EBook *book, gboolean previous_failure,
-				      ESource *source, EBookCallback cb, gpointer closure);
+				      ESource *source, EBookExCallback cb, gpointer closure);
 static void auth_required_cb (EBook *book, gpointer data);
 typedef struct {
 	ESource       *source;
 	EBook         *book;
 
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback  open_func;
+	#endif
+	EBookExCallback  open_func_ex;
 	gpointer       open_func_data;
 } LoadSourceData;
 
@@ -68,11 +71,11 @@ remove_parameters_from_uri (const gchar *uri)
 }
 
 static void
-load_source_auth_cb (EBook *book, EBookStatus status, gpointer closure)
+load_source_auth_cb (EBook *book, const GError *error, gpointer closure)
 {
 	LoadSourceData *data = closure;
 
-	switch (status) {
+	switch (error ? error->code : E_BOOK_ERROR_OK) {
 
 		/* the user clicked cancel in the password dialog */
 		case E_BOOK_ERROR_CANCELLED:
@@ -94,7 +97,8 @@ load_source_auth_cb (EBook *book, EBookStatus status, gpointer closure)
 			break;
 
 		case E_BOOK_ERROR_INVALID_SERVER_VERSION:
-			status = E_BOOK_ERROR_OK;
+			/* aka E_BOOK_ERROR_OK */
+			error = NULL;
 			break;
 
 		case E_BOOK_ERROR_AUTHENTICATION_FAILED:
@@ -107,7 +111,7 @@ load_source_auth_cb (EBook *book, EBookStatus status, gpointer closure)
 
 			component_name = auth_domain ? auth_domain : "Addressbook";
 
-			if (status == E_BOOK_ERROR_AUTHENTICATION_FAILED)
+			if (error->code == E_BOOK_ERROR_AUTHENTICATION_FAILED)
 				e_passwords_forget_password (component_name, stripped_uri);
 
 			addressbook_authenticate (book, TRUE, data->source, load_source_auth_cb, closure);
@@ -121,8 +125,12 @@ load_source_auth_cb (EBook *book, EBookStatus status, gpointer closure)
 			break;
 	}
 
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (data->open_func)
-		data->open_func (book, status, data->open_func_data);
+		data->open_func (book, error ? error->code : E_BOOK_ERROR_OK, data->open_func_data);
+	#endif
+	if (data->open_func_ex)
+		data->open_func_ex (book, error, data->open_func_data);
 
 	free_load_source_data (data);
 }
@@ -148,7 +156,7 @@ set_remember_password (ESource *source, gboolean value)
 
 static void
 addressbook_authenticate (EBook *book, gboolean previous_failure, ESource *source,
-			  EBookCallback cb, gpointer closure)
+			  EBookExCallback cb, gpointer closure)
 {
 	const gchar *auth;
 	const gchar *user;
@@ -212,14 +220,18 @@ addressbook_authenticate (EBook *book, gboolean previous_failure, ESource *sourc
 	}
 
 	if (password) {
-		e_book_async_authenticate_user (book, user, password,
+		e_book_async_authenticate_user_ex (book, user, password,
 						e_source_get_property (source, "auth"),
 						cb, closure);
 		g_free (password);
 	}
 	else {
+		GError *error = g_error_new (E_BOOK_ERROR, E_BOOK_ERROR_CANCELLED, _("Cancelled"));
+
 		/* they hit cancel */
-		cb (book, E_BOOK_ERROR_CANCELLED, closure);
+		cb (book, error, closure);
+
+		g_error_free (error);
 	}
 
 	g_free (stripped_uri);
@@ -237,11 +249,11 @@ auth_required_cb (EBook *book, gpointer data)
 }
 
 static void
-load_source_cb (EBook *book, EBookStatus status, gpointer closure)
+load_source_cb (EBook *book, const GError *error, gpointer closure)
 {
 	LoadSourceData *load_source_data = closure;
 
-	if (status == E_BOOK_ERROR_OK && book != NULL) {
+	if (!error && book != NULL) {
 		const gchar *auth;
 
 		auth = e_source_get_property (load_source_data->source, "auth");
@@ -256,12 +268,17 @@ load_source_cb (EBook *book, EBookStatus status, gpointer closure)
 		}
 	}
 
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (load_source_data->open_func)
-		load_source_data->open_func (book, status, load_source_data->open_func_data);
+		load_source_data->open_func (book, error ? error->code : E_BOOK_ERROR_OK, load_source_data->open_func_data);
+	#endif
+	if (load_source_data->open_func_ex)
+		load_source_data->open_func_ex (book, error, load_source_data->open_func_data);
 
 	free_load_source_data (load_source_data);
 }
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_load_book_source:
  * @source: an #ESource
@@ -277,6 +294,8 @@ load_source_cb (EBook *book, EBookStatus status, gpointer closure)
  * @open_func, and no action will be taken on completion.
  *
  * Returns: A new #EBook that is being opened.
+ *
+ * Deprecated: 3.0: Use e_load_book_source_ex() instead.
  **/
 EBook *
 e_load_book_source (ESource *source, EBookCallback open_func, gpointer user_data)
@@ -294,6 +313,46 @@ e_load_book_source (ESource *source, EBookCallback open_func, gpointer user_data
 
 	load_source_data->book = book;
 	g_object_ref (book);
-	e_book_async_open (book, FALSE, load_source_cb, load_source_data);
+	e_book_async_open_ex (book, FALSE, load_source_cb, load_source_data);
+	return book;
+}
+#endif
+
+/**
+ * e_load_book_source_ex:
+ * @source: an #ESource
+ * @open_func_ex: a function to call when the operation finishes, or %NULL
+ * @user_data: data to pass to callback function
+ *
+ * Creates a new #EBook specified by @source, and starts a non-blocking
+ * open operation on it. If the book requires authorization, presents
+ * a window asking the user for such.
+ *
+ * When the operation finishes, calls the callback function indicating
+ * if it succeeded or not. If you don't care, you can pass %NULL for
+ * @open_func_ex, and no action will be taken on completion.
+ *
+ * Returns: A new #EBook that is being opened.
+ *
+ * Since: 3.0
+ **/
+EBook *
+e_load_book_source_ex (ESource *source, EBookExCallback open_func_ex, gpointer user_data)
+{
+	EBook          *book;
+	LoadSourceData *load_source_data = g_new0 (LoadSourceData, 1);
+
+	load_source_data->source = g_object_ref (source);
+	load_source_data->open_func_ex = open_func_ex;
+	load_source_data->open_func_data = user_data;
+
+	book = e_book_new (source, NULL);
+	if (!book)
+		return NULL;
+
+	load_source_data->book = book;
+	g_object_ref (book);
+	e_book_async_open_ex (book, FALSE, load_source_cb, load_source_data);
+
 	return book;
 }

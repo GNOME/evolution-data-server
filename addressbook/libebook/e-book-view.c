@@ -27,6 +27,7 @@
 #include "e-book-view-private.h"
 #include "e-data-book-view-bindings.h"
 #include "e-book-marshal.h"
+#include "libedata-book/e-data-book-types.h"
 
 G_DEFINE_TYPE(EBookView, e_book_view, G_TYPE_OBJECT);
 
@@ -44,7 +45,10 @@ enum {
 	CONTACTS_CHANGED,
 	CONTACTS_REMOVED,
 	CONTACTS_ADDED,
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	SEQUENCE_COMPLETE,
+	#endif
+	VIEW_COMPLETE,
 	STATUS_MESSAGE,
 	LAST_SIGNAL
 };
@@ -121,12 +125,37 @@ contacts_removed_cb (DBusGProxy *proxy, const gchar **ids, EBookView *book_view)
 }
 
 static void
-complete_cb (DBusGProxy *proxy, guint status, EBookView *book_view)
+complete_cb (DBusGProxy *proxy, EDataBookStatus status, const gchar *message, EBookView *book_view)
 {
+	EBookViewStatus bv_status = E_BOOK_VIEW_ERROR_OTHER_ERROR;
+
 	if (!book_view->priv->running)
 		return;
 
-	g_signal_emit (book_view, signals[SEQUENCE_COMPLETE], 0, status);
+	switch (status) {
+	case E_DATA_BOOK_STATUS_SUCCESS:
+		bv_status = E_BOOK_VIEW_STATUS_OK;
+		break;
+	case E_DATA_BOOK_STATUS_SEARCH_TIME_LIMIT_EXCEEDED:
+		bv_status = E_BOOK_VIEW_STATUS_TIME_LIMIT_EXCEEDED;
+		break;
+	case E_DATA_BOOK_STATUS_SEARCH_SIZE_LIMIT_EXCEEDED:
+		bv_status = E_BOOK_VIEW_STATUS_SIZE_LIMIT_EXCEEDED;
+		break;
+	case E_DATA_BOOK_STATUS_INVALID_QUERY:
+		bv_status = E_BOOK_VIEW_ERROR_INVALID_QUERY;
+		break;
+	case E_DATA_BOOK_STATUS_QUERY_REFUSED:
+		bv_status = E_BOOK_VIEW_ERROR_QUERY_REFUSED;
+		break;
+	default:
+		break;
+	}
+
+	#ifndef E_BOOK_DISABLE_DEPRECATED
+	g_signal_emit (book_view, signals[SEQUENCE_COMPLETE], 0, bv_status);
+	#endif
+	g_signal_emit (book_view, signals[VIEW_COMPLETE], 0, bv_status, message);
 }
 
 #define LOCK_CONN()   g_static_rec_mutex_lock (book_view->priv->view_proxy_lock)
@@ -159,6 +188,8 @@ _e_book_view_new (EBook *book, DBusGProxy *view_proxy, GStaticRecMutex *view_pro
 	priv->view_proxy_lock = view_proxy_lock;
 	g_object_add_weak_pointer (G_OBJECT (view_proxy), (gpointer)&priv->view_proxy);
 
+	dbus_g_object_register_marshaller (e_book_marshal_VOID__UINT_STRING, G_TYPE_NONE, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_INVALID);
+
 	dbus_g_proxy_add_signal (view_proxy, "StatusMessage", G_TYPE_STRING, G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal (view_proxy, "StatusMessage", G_CALLBACK (status_message_cb), view, NULL);
 	dbus_g_proxy_add_signal (view_proxy, "ContactsAdded", G_TYPE_STRV, G_TYPE_INVALID);
@@ -167,7 +198,7 @@ _e_book_view_new (EBook *book, DBusGProxy *view_proxy, GStaticRecMutex *view_pro
 	dbus_g_proxy_connect_signal (view_proxy, "ContactsChanged", G_CALLBACK (contacts_changed_cb), view, NULL);
 	dbus_g_proxy_add_signal (view_proxy, "ContactsRemoved", G_TYPE_STRV, G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal (view_proxy, "ContactsRemoved", G_CALLBACK (contacts_removed_cb), view, NULL);
-	dbus_g_proxy_add_signal (view_proxy, "Complete", G_TYPE_UINT, G_TYPE_INVALID);
+	dbus_g_proxy_add_signal (view_proxy, "Complete", G_TYPE_UINT, G_TYPE_STRING, G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal (view_proxy, "Complete", G_CALLBACK (complete_cb), view, NULL);
 
 	return view;
@@ -215,8 +246,10 @@ e_book_view_start (EBookView *book_view)
 
 			/* Fake a sequence-complete so that the application knows this failed */
 			/* TODO: use get_status_from_error */
-			g_signal_emit (book_view, signals[SEQUENCE_COMPLETE], 0,
-				       E_BOOK_ERROR_CORBA_EXCEPTION);
+			#ifndef E_BOOK_DISABLE_DEPRECATED
+			g_signal_emit (book_view, signals[SEQUENCE_COMPLETE], 0, E_BOOK_VIEW_ERROR_OTHER_ERROR);
+			#endif
+			g_signal_emit (book_view, signals[VIEW_COMPLETE], 0, E_BOOK_VIEW_ERROR_OTHER_ERROR, error->message);
 
 			g_error_free (error);
 		}
@@ -309,13 +342,22 @@ e_book_view_class_init (EBookViewClass *klass)
 						 NULL, NULL,
 						 e_book_marshal_NONE__POINTER,
 						 G_TYPE_NONE, 1, G_TYPE_POINTER);
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	signals [SEQUENCE_COMPLETE] = g_signal_new ("sequence_complete",
 						    G_OBJECT_CLASS_TYPE (object_class),
 						    G_SIGNAL_RUN_LAST,
 						    G_STRUCT_OFFSET (EBookViewClass, sequence_complete),
 						    NULL, NULL,
 						    e_book_marshal_NONE__INT,
-						    G_TYPE_NONE, 1, G_TYPE_INT);
+						    G_TYPE_NONE, 1, G_TYPE_UINT);
+	#endif
+	signals [VIEW_COMPLETE] = g_signal_new ("view_complete",
+						    G_OBJECT_CLASS_TYPE (object_class),
+						    G_SIGNAL_RUN_LAST,
+						    G_STRUCT_OFFSET (EBookViewClass, view_complete),
+						    NULL, NULL,
+						    e_book_marshal_NONE__UINT_STRING,
+						    G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
 	signals [STATUS_MESSAGE] = g_signal_new ("status_message",
 						 G_OBJECT_CLASS_TYPE (object_class),
 						 G_SIGNAL_RUN_LAST,

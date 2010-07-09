@@ -77,7 +77,7 @@ void         e_data_book_view_notify_update_prefiltered_vcard (EDataBookView    
 void         e_data_book_view_notify_remove          (EDataBookView                *book_view,
 						      const gchar                   *id);
 void         e_data_book_view_notify_complete        (EDataBookView                *book_view,
-						      EDataBookStatus               status);
+						      const GError                 *error);
 void         e_data_book_view_notify_status_message  (EDataBookView                *book_view,
 						      const gchar                   *message);
 void         e_data_book_view_ref                    (EDataBookView                *book_view);

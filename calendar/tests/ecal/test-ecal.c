@@ -86,9 +86,9 @@ objects_removed_cb (GObject *object, GList *objects, gpointer data)
 }
 
 static void
-view_done_cb (GObject *object, ECalendarStatus status, gpointer data)
+view_complete_cb (GObject *object, ECalendarStatus status, const gchar *error_msg, gpointer data)
 {
-	cl_printf (data, "View done\n");
+	cl_printf (data, "View complete (status:%d, error_msg:%s)\n", status, error_msg ? error_msg : "NULL");
 }
 
 static gboolean
@@ -707,8 +707,8 @@ create_client (ECal **client, const gchar *uri, ECalSourceType type, gboolean on
 			  G_CALLBACK (objects_modified_cb), client);
 	g_signal_connect (G_OBJECT (query), "objects_removed",
 			  G_CALLBACK (objects_removed_cb), client);
-	g_signal_connect (G_OBJECT (query), "view_done",
-			  G_CALLBACK (view_done_cb), client);
+	g_signal_connect (G_OBJECT (query), "view_complete",
+			  G_CALLBACK (view_complete_cb), client);
 
 	e_cal_view_start (query);
 

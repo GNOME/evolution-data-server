@@ -91,69 +91,6 @@ e_cal_backend_mail_account_is_valid (gchar *user, gchar **name)
 }
 
 /**
- * e_cal_backend_status_to_string:
- *
- * Converts status code to string.
- *
- * Since: 2.24
- **/
-const gchar *
-e_cal_backend_status_to_string (GNOME_Evolution_Calendar_CallStatus status)
-{
-	switch (status) {
-	case GNOME_Evolution_Calendar_Success:
-		return _("No error");
-	case GNOME_Evolution_Calendar_RepositoryOffline:
-		return _("Repository is offline");
-	case GNOME_Evolution_Calendar_PermissionDenied:
-		return _("Permission denied");
-	case GNOME_Evolution_Calendar_InvalidRange:
-		return _("Invalid range");
-	case GNOME_Evolution_Calendar_ObjectNotFound:
-		return _("Object not found");
-	case GNOME_Evolution_Calendar_InvalidObject:
-		return _("Invalid object");
-	case GNOME_Evolution_Calendar_ObjectIdAlreadyExists:
-		return _("Object ID already exists");
-	case GNOME_Evolution_Calendar_AuthenticationFailed:
-		return _("Authentication failed");
-	case GNOME_Evolution_Calendar_AuthenticationRequired:
-		return _("Authentication required");
-	case GNOME_Evolution_Calendar_UnsupportedField:
-		return _("Unsupported field");
-	case GNOME_Evolution_Calendar_UnsupportedMethod:
-		return _("Unsupported method");
-	case GNOME_Evolution_Calendar_UnsupportedAuthenticationMethod:
-		return _("Unsupported authentication method");
-	case GNOME_Evolution_Calendar_TLSNotAvailable:
-		return _("TLS not available");
-	case GNOME_Evolution_Calendar_NoSuchCal:
-		return _("No such calendar");
-	case GNOME_Evolution_Calendar_UnknownUser:
-		return _("Unknown User");
-	case GNOME_Evolution_Calendar_OfflineUnavailable:
-		return _("Offline mode unavailable");
-	case GNOME_Evolution_Calendar_SearchSizeLimitExceeded:
-		return _("Search size limit exceeded");
-	case GNOME_Evolution_Calendar_SearchTimeLimitExceeded:
-		return _("Search time limit exceeded");
-	case GNOME_Evolution_Calendar_InvalidQuery:
-		return _("Invalid query");
-	case GNOME_Evolution_Calendar_QueryRefused:
-		return _("Query refused");
-	case GNOME_Evolution_Calendar_CouldNotCancel:
-		return _("Could not cancel operation");
-	default:
-	case GNOME_Evolution_Calendar_OtherError:
-		return _("Unknown error");
-	case GNOME_Evolution_Calendar_InvalidServerVersion:
-		return _("Invalid server version");
-	}
-
-	return NULL;
-}
-
-/**
  * is_attendee_declined:
  * @icalcomp: Component where to check the attendee list.
  * @email: Attendee's email to look for.

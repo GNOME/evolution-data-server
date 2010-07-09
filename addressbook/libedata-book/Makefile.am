@@ -1,3 +1,7 @@
+# The marshallers
+MARSHAL_GENERATED = e-data-book-marshal.c e-data-book-marshal.h
+@EVO_MARSHAL_RULE@
+
 DBUS_GENERATED_H = e-data-book-glue.h e-data-book-factory-glue.h e-data-book-view-glue.h
 %-glue.h: %.xml
 	@DBUS_BINDING_TOOL@ --mode=glib-server --output=$@ --prefix=$(subst -,_,$*) $^
@@ -24,6 +28,7 @@ libedata_book_1_2_la_CPPFLAGS =				\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 libedata_book_1_2_la_SOURCES =				\
+	$(MARSHAL_GENERATED)				\
 	$(DBUS_GENERATED_H)				\
 	e-book-backend-factory.c			\
 	e-book-backend-sexp.c				\
@@ -94,11 +99,12 @@ servicedir = $(datadir)/dbus-1/services
 service_DATA = $(service_in_files:.service.in=.service)
 @EVO_SUBST_SERVICE_RULE@
 
-BUILT_SOURCES = $(DBUS_GENERATED_H) $(ENUM_GENERATED)
+BUILT_SOURCES = $(DBUS_GENERATED_H) $(MARSHAL_GENERATED) $(ENUM_GENERATED)
 CLEANFILES = $(BUILT_SOURCES) $(service_DATA)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = 						\
+	e-data-book-marshal.list			\
 	e-data-book-factory.xml				\
 	e-data-book-view.xml				\
 	e-data-book.xml					\

@@ -59,6 +59,9 @@
 /* in seconds */
 #define DEFAULT_REFRESH_TIME 60
 
+#define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
+#define EDC_ERROR_EX(_code, _msg) e_data_cal_create_error (_code, _msg)
+
 typedef enum {
 
 	SLAVE_SHOULD_SLEEP,
@@ -469,43 +472,41 @@ quote_etag (const gchar *etag)
 
 /* ************************************************************************* */
 
-static ECalBackendSyncStatus
-status_code_to_result (guint status_code, ECalBackendCalDAVPrivate  *priv)
+static gboolean
+status_code_to_result (guint status_code, ECalBackendCalDAVPrivate  *priv, GError **perror)
 {
-	ECalBackendSyncStatus result;
-
 	if (SOUP_STATUS_IS_SUCCESSFUL (status_code)) {
-		return GNOME_Evolution_Calendar_Success;
+		return TRUE;
 	}
 
 	switch (status_code) {
 
 	case 404:
-		result = GNOME_Evolution_Calendar_NoSuchCal;
+		g_propagate_error (perror, EDC_ERROR (NoSuchCal));
 		break;
 
 	case 403:
-		result = GNOME_Evolution_Calendar_AuthenticationFailed;
+		g_propagate_error (perror, EDC_ERROR (AuthenticationFailed));
 		break;
 
 	case 401:
 		if (priv && priv->need_auth)
-			result = GNOME_Evolution_Calendar_AuthenticationFailed;
+			g_propagate_error (perror, EDC_ERROR (AuthenticationFailed));
 		else
-			result = GNOME_Evolution_Calendar_AuthenticationRequired;
+			g_propagate_error (perror, EDC_ERROR (AuthenticationRequired));
 		break;
 
 	default:
 		d(g_debug ("CalDAV:%s: Unhandled status code %d\n", G_STRFUNC, status_code));
-		result = GNOME_Evolution_Calendar_OtherError;
+		g_propagate_error (perror, e_data_cal_create_error_fmt (OtherError, _("Unexpected HTTP status code %d returned"), status_code));
 	}
 
-	return result;
+	return FALSE;
 }
 
 /* !TS, call with lock held */
-static ECalBackendSyncStatus
-check_state (ECalBackendCalDAV *cbdav, gboolean *online)
+static gboolean
+check_state (ECalBackendCalDAV *cbdav, gboolean *online, GError **perror)
 {
 	ECalBackendCalDAVPrivate *priv;
 
@@ -514,20 +515,22 @@ check_state (ECalBackendCalDAV *cbdav, gboolean *online)
 	*online = FALSE;
 
 	if (!priv->loaded) {
-		return GNOME_Evolution_Calendar_OtherError;
+		g_propagate_error (perror, EDC_ERROR_EX (OtherError, "Not loaded"));
+		return FALSE;
 	}
 
 	if (priv->mode == CAL_MODE_LOCAL) {
 
 		if (!priv->do_offline) {
-			return GNOME_Evolution_Calendar_RepositoryOffline;
+			g_propagate_error (perror, EDC_ERROR (RepositoryOffline));
+			return FALSE;
 		}
 
 	} else {
 		*online = TRUE;
 	}
 
-	return	GNOME_Evolution_Calendar_Success;
+	return TRUE;
 }
 
 /* ************************************************************************* */
@@ -928,8 +931,8 @@ caldav_generate_uri (ECalBackendCalDAV *cbdav, const gchar *target)
 	return uri;
 }
 
-static ECalBackendSyncStatus
-caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
+static gboolean
+caldav_server_open_calendar (ECalBackendCalDAV *cbdav, GError **perror)
 {
 	ECalBackendCalDAVPrivate  *priv;
 	SoupMessage               *message;
@@ -943,19 +946,19 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
 	/* FIXME: setup text_uri */
 
 	message = soup_message_new (SOUP_METHOD_OPTIONS, priv->uri);
-	if (message == NULL)
-		return GNOME_Evolution_Calendar_NoSuchCal;
+	if (message == NULL) {
+		g_propagate_error (perror, EDC_ERROR (NoSuchCal));
+		return FALSE;
+	}
 	soup_message_headers_append (message->request_headers,
 				     "User-Agent", "Evolution/" VERSION);
 
 	send_and_handle_redirection (priv->session, message, NULL);
 
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
-		guint status_code = message->status_code;
-
+		status_code_to_result (message->status_code, priv, perror);
 		g_object_unref (message);
-
-		return status_code_to_result (status_code, priv);
+		return FALSE;
 	}
 
 	/* parse the dav header, we are intreseted in the
@@ -982,10 +985,11 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
 
 	if (calendar_access) {
 		priv->read_only = !(put_allowed && delete_allowed);
-		return GNOME_Evolution_Calendar_Success;
+		return TRUE;
 	}
 
-	return GNOME_Evolution_Calendar_NoSuchCal;
+	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
+	return FALSE;
 }
 
 /* Returns whether calendar changed on the server. This works only when server
@@ -1203,17 +1207,15 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, gint 
 	return result;
 }
 
-static ECalBackendSyncStatus
-caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
+static gboolean
+caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, GError **perror)
 {
 	ECalBackendCalDAVPrivate *priv;
-	ECalBackendSyncStatus     result;
 	SoupMessage              *message;
 	const gchar               *hdr;
 	gchar                     *uri;
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
-	result = GNOME_Evolution_Calendar_Success;
 
 	g_assert (object != NULL && object->href != NULL);
 
@@ -1221,7 +1223,8 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	message = soup_message_new (SOUP_METHOD_GET, uri);
 	if (message == NULL) {
 		g_free (uri);
-		return GNOME_Evolution_Calendar_NoSuchCal;
+		g_propagate_error (perror, EDC_ERROR (NoSuchCal));
+		return FALSE;
 	}
 
 	soup_message_headers_append (message->request_headers,
@@ -1230,22 +1233,22 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	send_and_handle_redirection (priv->session, message, NULL);
 
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
-		guint status_code = message->status_code;
-		g_object_unref (message);
+		status_code_to_result (message->status_code, priv, perror);
 
-		g_warning ("Could not fetch object '%s' from server, status:%d (%s)", uri, status_code, soup_status_get_phrase (status_code) ? soup_status_get_phrase (status_code) : "Unknown code");
+		g_warning ("Could not fetch object '%s' from server, status:%d (%s)", uri, message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
+		g_object_unref (message);
 		g_free (uri);
-		return status_code_to_result (status_code, priv);
+		return FALSE;
 	}
 
 	hdr = soup_message_headers_get (message->response_headers, "Content-Type");
 
 	if (hdr == NULL || g_ascii_strncasecmp (hdr, "text/calendar", 13)) {
-		result = GNOME_Evolution_Calendar_InvalidObject;
+		g_propagate_error (perror, EDC_ERROR (InvalidObject));
 		g_object_unref (message);
 		g_warning ("Object to fetch '%s' not of type text/calendar", uri);
 		g_free (uri);
-		return result;
+		return FALSE;
 	}
 
 	hdr = soup_message_headers_get (message->response_headers, "ETag");
@@ -1263,25 +1266,26 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 
 	g_object_unref (message);
 
-	return result;
+	return TRUE;
 }
 
-static ECalBackendSyncStatus
-caldav_post_freebusy (ECalBackendCalDAV *cbdav, const gchar *url, gchar **post_fb)
+static void
+caldav_post_freebusy (ECalBackendCalDAV *cbdav, const gchar *url, gchar **post_fb, GError **error)
 {
 	ECalBackendCalDAVPrivate *priv;
 	SoupMessage *message;
 
-	g_return_val_if_fail (cbdav != NULL, GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (url != NULL, GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (post_fb != NULL, GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (*post_fb != NULL, GNOME_Evolution_Calendar_OtherError);
+	e_return_data_cal_error_if_fail (cbdav != NULL, InvalidArg);
+	e_return_data_cal_error_if_fail (url != NULL, InvalidArg);
+	e_return_data_cal_error_if_fail (post_fb != NULL, InvalidArg);
+	e_return_data_cal_error_if_fail (*post_fb != NULL, InvalidArg);
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
 	message = soup_message_new (SOUP_METHOD_POST, url);
 	if (message == NULL) {
-		return GNOME_Evolution_Calendar_NoSuchCal;
+		g_propagate_error (error, EDC_ERROR (NoSuchCal));
+		return;
 	}
 
 	soup_message_headers_append (message->request_headers, "User-Agent", "Evolution/" VERSION);
@@ -1293,32 +1297,28 @@ caldav_post_freebusy (ECalBackendCalDAV *cbdav, const gchar *url, gchar **post_f
 	send_and_handle_redirection (priv->session, message, NULL);
 
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
-		guint status_code = message->status_code;
+		status_code_to_result (message->status_code, priv, error);
+		g_warning ("Could not post free/busy request to '%s', status:%d (%s)", url, message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
 		g_object_unref (message);
 
-		g_warning ("Could not post free/busy request to '%s', status:%d (%s)", url, status_code, soup_status_get_phrase (status_code) ? soup_status_get_phrase (status_code) : "Unknown code");
-		return status_code_to_result (status_code, priv);
+		return;
 	}
 
 	g_free (*post_fb);
 	*post_fb = g_strdup (message->response_body->data);
 
 	g_object_unref (message);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
-caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, icalcomponent *icalcomp)
+static gboolean
+caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, icalcomponent *icalcomp, GError **perror)
 {
 	ECalBackendCalDAVPrivate *priv;
-	ECalBackendSyncStatus     result;
 	SoupMessage              *message;
 	const gchar               *hdr;
 	gchar                     *uri;
 
 	priv   = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
-	result = GNOME_Evolution_Calendar_Success;
 	hdr    = NULL;
 
 	g_assert (object != NULL && object->cdata != NULL);
@@ -1326,8 +1326,10 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, icalco
 	uri = caldav_generate_uri (cbdav, object->href);
 	message = soup_message_new (SOUP_METHOD_PUT, uri);
 	g_free (uri);
-	if (message == NULL)
-		return GNOME_Evolution_Calendar_NoSuchCal;
+	if (message == NULL) {
+		g_propagate_error (perror, EDC_ERROR (NoSuchCal));
+		return FALSE;
+	}
 
 	soup_message_headers_append (message->request_headers,
 				     "User-Agent", "Evolution/" VERSION);
@@ -1370,9 +1372,7 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, icalco
 		g_free (uri);
 	}
 
-	result = status_code_to_result (message->status_code, priv);
-
-	if (result == GNOME_Evolution_Calendar_Success) {
+	if (status_code_to_result (message->status_code, priv, perror)) {
 		gboolean was_get = FALSE;
 
 		hdr = soup_message_headers_get (message->response_headers, "ETag");
@@ -1399,10 +1399,9 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, icalco
 			}
 		}
 
-		result = caldav_server_get_object (cbdav, object);
 		was_get = TRUE;
 
-		if (result == GNOME_Evolution_Calendar_Success) {
+		if (caldav_server_get_object (cbdav, object, perror)) {
 			icalcomponent *use_comp = NULL;
 
 			if (object->cdata && was_get) {
@@ -1421,27 +1420,28 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, icalco
 	}
 
 	g_object_unref (message);
-	return result;
+
+	return TRUE;
 }
 
-static ECalBackendSyncStatus
-caldav_server_delete_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
+static void
+caldav_server_delete_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, GError **perror)
 {
 	ECalBackendCalDAVPrivate *priv;
-	ECalBackendSyncStatus     result;
 	SoupMessage              *message;
 	gchar                     *uri;
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
-	result = GNOME_Evolution_Calendar_Success;
 
 	g_assert (object != NULL && object->href != NULL);
 
 	uri = caldav_generate_uri (cbdav, object->href);
 	message = soup_message_new (SOUP_METHOD_DELETE, uri);
 	g_free (uri);
-	if (message == NULL)
-		return GNOME_Evolution_Calendar_NoSuchCal;
+	if (message == NULL) {
+		g_propagate_error (perror, EDC_ERROR (NoSuchCal));
+		return;
+	}
 
 	soup_message_headers_append (message->request_headers,
 				     "User-Agent", "Evolution/" VERSION);
@@ -1453,11 +1453,9 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 
 	send_and_handle_redirection (priv->session, message, NULL);
 
-	result = status_code_to_result (message->status_code, priv);
+	status_code_to_result (message->status_code, priv, perror);
 
 	g_object_unref (message);
-
-	return result;
 }
 
 static gboolean
@@ -2028,10 +2026,11 @@ get_users_email (const gchar *username, const gchar *may_append)
 /* ************************************************************************* */
 /* ********** ECalBackendSync virtual function implementation *************  */
 
-static ECalBackendSyncStatus
+static void
 caldav_is_read_only (ECalBackendSync *backend,
 		     EDataCal        *cal,
-		     gboolean        *read_only)
+		     gboolean        *read_only,
+		     GError         **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -2045,14 +2044,13 @@ caldav_is_read_only (ECalBackendSync *backend,
 	} else {
 		*read_only = priv->read_only;
 	}
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
+static void
 caldav_get_cal_address (ECalBackendSync  *backend,
 			EDataCal         *cal,
-			gchar            **address)
+			gchar           **address,
+			GError          **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -2065,14 +2063,13 @@ caldav_get_cal_address (ECalBackendSync  *backend,
 	if (priv && priv->is_google && priv->username) {
 		*address = get_users_email (priv->username, "@gmail.com");
 	}
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
+static void
 caldav_get_alarm_email_address (ECalBackendSync  *backend,
 				EDataCal         *cal,
-				gchar            **address)
+				gchar           **address,
+				GError          **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -2085,23 +2082,22 @@ caldav_get_alarm_email_address (ECalBackendSync  *backend,
 	if (priv && priv->is_google && priv->username) {
 		*address = get_users_email (priv->username, "@gmail.com");
 	}
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
+static void
 caldav_get_ldap_attribute (ECalBackendSync  *backend,
 			   EDataCal         *cal,
-			   gchar           **attribute)
+			   gchar           **attribute,
+			   GError          **perror)
 {
 	*attribute = NULL;
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
+static void
 caldav_get_static_capabilities (ECalBackendSync  *backend,
 				EDataCal         *cal,
-				gchar            **capabilities)
+				gchar           **capabilities,
+				GError          **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -2118,14 +2114,11 @@ caldav_get_static_capabilities (ECalBackendSync  *backend,
 					  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
 					  CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
 					  CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
-initialize_backend (ECalBackendCalDAV *cbdav)
+static gboolean
+initialize_backend (ECalBackendCalDAV *cbdav, GError **perror)
 {
-	ECalBackendSyncStatus     result;
 	ECalBackendCalDAVPrivate *priv;
 	ECalSourceType            source_type;
 	ESource                  *source;
@@ -2140,7 +2133,6 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	result = GNOME_Evolution_Calendar_Success;
 	source = e_cal_backend_get_source (E_CAL_BACKEND (cbdav));
 
 	if (!g_signal_handler_find (G_OBJECT (source), G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, 0, 0, NULL, caldav_source_changed_cb, cbdav))
@@ -2247,8 +2239,8 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 		priv->store = (ECalBackendStore *) e_cal_backend_file_store_new (priv->uri, source_type);
 
 		if (priv->store == NULL) {
-			result = GNOME_Evolution_Calendar_OtherError;
-			goto out;
+			g_propagate_error (perror, EDC_ERROR_EX (OtherError, "Cannot create local store"));
+			return FALSE;
 		}
 
 		e_cal_backend_store_load (priv->store);
@@ -2263,8 +2255,8 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 		g_free (priv->local_attachments_store);
 	priv->local_attachments_store = filename;
 	if (g_mkdir_with_parents (filename, 0700) < 0) {
-		result = GNOME_Evolution_Calendar_OtherError;
-		goto out;
+		g_propagate_error (perror, EDC_ERROR_EX (OtherError, "mkdir failed"));
+		return FALSE;
 	}
 
 	refresh = e_source_get_property (source, "refresh");
@@ -2277,14 +2269,13 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 		slave = g_thread_create (caldav_synch_slave_loop, cbdav, FALSE, NULL);
 
 		if (slave == NULL) {
-			g_warning ("Could not create synch slave");
-			result = GNOME_Evolution_Calendar_OtherError;
+			g_propagate_error (perror, EDC_ERROR_EX (OtherError, "Could not create synch slave"));
 		}
 
 		priv->synch_slave = slave;
 	}
-out:
-	return result;
+
+	return TRUE;
 }
 
 static void
@@ -2322,40 +2313,35 @@ is_google_uri (const gchar *uri)
 	return res;
 }
 
-static ECalBackendSyncStatus
+static void
 caldav_do_open (ECalBackendSync *backend,
 		EDataCal        *cal,
 		gboolean         only_if_exists,
 		const gchar      *username,
-		const gchar      *password)
+		const gchar      *password,
+		GError          **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
-	ECalBackendSyncStatus     status;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
-
-	status = GNOME_Evolution_Calendar_Success;
 
 	g_mutex_lock (priv->busy_lock);
 
 	/* let it decide the 'getctag' extension availability again */
 	priv->ctag_supported = TRUE;
 
-	if (!priv->loaded) {
-		status = initialize_backend (cbdav);
-	}
-
-	if (status != GNOME_Evolution_Calendar_Success) {
+	if (!priv->loaded && !initialize_backend (cbdav, perror)) {
 		g_mutex_unlock (priv->busy_lock);
-		return status;
+		return;
 	}
 
 	if (priv->need_auth) {
 		if ((username == NULL || password == NULL)) {
 			g_mutex_unlock (priv->busy_lock);
-			return GNOME_Evolution_Calendar_AuthenticationRequired;
+			g_propagate_error (perror, EDC_ERROR (AuthenticationRequired));
+			return;
 		}
 
 		g_free (priv->username);
@@ -2366,7 +2352,8 @@ caldav_do_open (ECalBackendSync *backend,
 
 	if (!priv->do_offline && priv->mode == CAL_MODE_LOCAL) {
 		g_mutex_unlock (priv->busy_lock);
-		return GNOME_Evolution_Calendar_RepositoryOffline;
+		g_propagate_error (perror, EDC_ERROR (RepositoryOffline));
+		return;
 	}
 
 	priv->loaded = TRUE;
@@ -2376,9 +2363,7 @@ caldav_do_open (ECalBackendSync *backend,
 		/* set forward proxy */
 		proxy_settings_changed (priv->proxy, priv);
 
-		status = caldav_server_open_calendar (cbdav);
-
-		if (status == GNOME_Evolution_Calendar_Success) {
+		if (caldav_server_open_calendar (cbdav, perror)) {
 			priv->slave_cmd = SLAVE_SHOULD_WORK;
 			g_cond_signal (priv->cond);
 
@@ -2389,12 +2374,10 @@ caldav_do_open (ECalBackendSync *backend,
 	}
 
 	g_mutex_unlock (priv->busy_lock);
-
-	return status;
 }
 
-static ECalBackendSyncStatus
-caldav_refresh (ECalBackendSync *backend, EDataCal *cal)
+static void
+caldav_refresh (ECalBackendSync *backend, EDataCal *cal, GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -2407,10 +2390,10 @@ caldav_refresh (ECalBackendSync *backend, EDataCal *cal)
 
 	if (!priv->loaded
 	    || priv->slave_cmd != SLAVE_SHOULD_SLEEP
-	    || check_state (cbdav, &online) != GNOME_Evolution_Calendar_Success
+	    || !check_state (cbdav, &online, NULL)
 	    || !online) {
 		g_mutex_unlock (priv->busy_lock);
-		return GNOME_Evolution_Calendar_Success;
+		return;
 	}
 
 	priv->slave_cmd = SLAVE_SHOULD_WORK;
@@ -2418,17 +2401,15 @@ caldav_refresh (ECalBackendSync *backend, EDataCal *cal)
 	/* wake it up */
 	g_cond_signal (priv->cond);
 	g_mutex_unlock (priv->busy_lock);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
+static void
 caldav_remove (ECalBackendSync *backend,
-	       EDataCal        *cal)
+	       EDataCal        *cal,
+	       GError         **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
-	ECalBackendSyncStatus     status;
 	gboolean                  online;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
@@ -2441,14 +2422,13 @@ caldav_remove (ECalBackendSync *backend,
 
 	if (!priv->loaded) {
 		g_mutex_unlock (priv->busy_lock);
-		return GNOME_Evolution_Calendar_Success;
+		return;
 	}
 
-	status = check_state (cbdav, &online);
-
-	/* lie here a bit, but otherwise the calendar will not be removed, even it should */
-	if (status != GNOME_Evolution_Calendar_Success)
-		g_print (G_STRLOC ": %s", e_cal_backend_status_to_string (status));
+	if (!check_state (cbdav, &online, NULL)) {
+		/* lie here a bit, but otherwise the calendar will not be removed, even it should */
+		g_print (G_STRLOC ": Failed to check state");
+	}
 
 	e_cal_backend_store_remove (priv->store);
 	priv->store = NULL;
@@ -2462,8 +2442,6 @@ caldav_remove (ECalBackendSync *backend,
 	}
 
 	g_mutex_unlock (priv->busy_lock);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
 static void
@@ -3204,35 +3182,33 @@ replace_master (ECalBackendCalDAV *cbdav, icalcomponent *old_comp, icalcomponent
 }
 
 /* a busy_lock is supposed to be locked already, when calling this function */
-static ECalBackendSyncStatus
-do_create_object (ECalBackendCalDAV *cbdav, gchar **calobj, gchar **uid)
+static void
+do_create_object (ECalBackendCalDAV *cbdav, gchar **calobj, gchar **uid, GError **perror)
 {
 	ECalBackendCalDAVPrivate *priv;
-	ECalBackendSyncStatus     status;
 	ECalComponent            *comp;
-	gboolean                  online;
+	gboolean                  online, did_put = FALSE;
 	struct icaltimetype current;
 	icalcomponent *icalcomp;
 	const gchar *comp_uid;
 
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	status = check_state (cbdav, &online);
-
-	if (status != GNOME_Evolution_Calendar_Success) {
-		return status;
-	}
+	if (!check_state (cbdav, &online, perror))
+		return;
 
 	comp = e_cal_component_new_from_string (*calobj);
 
 	if (comp == NULL) {
-		return GNOME_Evolution_Calendar_InvalidObject;
+		g_propagate_error (perror, EDC_ERROR (InvalidObject));
+		return;
 	}
 
 	icalcomp = e_cal_component_get_icalcomponent (comp);
 	if (icalcomp == NULL) {
 		g_object_unref (comp);
-		return GNOME_Evolution_Calendar_InvalidObject;
+		g_propagate_error (perror, EDC_ERROR (InvalidObject));
+		return;
 	}
 
 	comp_uid = icalcomponent_get_uid (icalcomp);
@@ -3242,7 +3218,8 @@ do_create_object (ECalBackendCalDAV *cbdav, gchar **calobj, gchar **uid)
 		new_uid = e_cal_component_gen_uid ();
 		if (!new_uid) {
 			g_object_unref (comp);
-			return GNOME_Evolution_Calendar_InvalidObject;
+			g_propagate_error (perror, EDC_ERROR (InvalidObject));
+			return;
 		}
 
 		icalcomponent_set_uid (icalcomp, new_uid);
@@ -3254,7 +3231,8 @@ do_create_object (ECalBackendCalDAV *cbdav, gchar **calobj, gchar **uid)
 	/* check the object is not in our cache */
 	if (cache_contains (cbdav, comp_uid, NULL)) {
 		g_object_unref (comp);
-		return GNOME_Evolution_Calendar_ObjectIdAlreadyExists;
+		g_propagate_error (perror, EDC_ERROR (ObjectIdAlreadyExists));
+		return;
 	}
 
 	/* Set the created and last modified times on the component */
@@ -3272,7 +3250,7 @@ do_create_object (ECalBackendCalDAV *cbdav, gchar **calobj, gchar **uid)
 		object.etag  = NULL;
 		object.cdata = pack_cobj (cbdav, icalcomp);
 
-		status = caldav_server_put_object (cbdav, &object, icalcomp);
+		did_put = caldav_server_put_object (cbdav, &object, icalcomp, perror);
 
 		caldav_object_free (&object, FALSE);
 	} else {
@@ -3280,7 +3258,7 @@ do_create_object (ECalBackendCalDAV *cbdav, gchar **calobj, gchar **uid)
 		/*ecalcomp_set_synch_state (comp, ECALCOMP_LOCALLY_CREATED); */
 	}
 
-	if (status == GNOME_Evolution_Calendar_Success) {
+	if (did_put) {
 		if (uid)
 			*uid = g_strdup (comp_uid);
 
@@ -3301,19 +3279,16 @@ do_create_object (ECalBackendCalDAV *cbdav, gchar **calobj, gchar **uid)
 	}
 
 	g_object_unref (comp);
-
-	return status;
 }
 
 /* a busy_lock is supposed to be locked already, when calling this function */
-static ECalBackendSyncStatus
-do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType mod, gchar **old_object, gchar **new_object)
+static void
+do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType mod, gchar **old_object, gchar **new_object, GError **error)
 {
 	ECalBackendCalDAVPrivate *priv;
-	ECalBackendSyncStatus     status;
 	ECalComponent            *comp;
 	icalcomponent            *cache_comp;
-	gboolean                  online;
+	gboolean                  online, did_put = FALSE;
 	ECalComponentId		 *id;
 	struct icaltimetype current;
 	gchar *href = NULL, *etag = NULL;
@@ -3323,21 +3298,21 @@ do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType m
 	if (new_object)
 		*new_object = NULL;
 
-	status = check_state (cbdav, &online);
-	if (status != GNOME_Evolution_Calendar_Success) {
-		return status;
-	}
+	if (!check_state (cbdav, &online, error))
+		return;
 
 	comp = e_cal_component_new_from_string (calobj);
 
 	if (comp == NULL) {
-		return GNOME_Evolution_Calendar_InvalidObject;
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return;
 	}
 
 	if (!e_cal_component_get_icalcomponent (comp) ||
 	    icalcomponent_isa (e_cal_component_get_icalcomponent (comp)) != e_cal_backend_get_kind (E_CAL_BACKEND (cbdav))) {
 		g_object_unref (comp);
-		return GNOME_Evolution_Calendar_InvalidObject;
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return;
 	}
 
 	/* Set the last modified time on the component */
@@ -3348,7 +3323,7 @@ do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType m
 	sanitize_component ((ECalBackend *)cbdav, comp);
 
 	id = e_cal_component_get_id (comp);
-	g_return_val_if_fail (id != NULL, GNOME_Evolution_Calendar_OtherError);
+	e_return_data_cal_error_if_fail (id != NULL, InvalidObject);
 
 	/* fetch full component from cache, it will be pushed to the server */
 	cache_comp = get_comp_from_cache (cbdav, id->uid, NULL, &href, &etag);
@@ -3358,7 +3333,8 @@ do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType m
 		g_object_unref (comp);
 		g_free (href);
 		g_free (etag);
-		return GNOME_Evolution_Calendar_ObjectNotFound;
+		g_propagate_error (error, EDC_ERROR (ObjectNotFound));
+		return;
 	}
 
 	if (!online) {
@@ -3439,7 +3415,7 @@ do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType m
 		object.etag  = etag;
 		object.cdata = pack_cobj (cbdav, cache_comp);
 
-		status = caldav_server_put_object (cbdav, &object, cache_comp);
+		did_put = caldav_server_put_object (cbdav, &object, cache_comp, error);
 
 		caldav_object_free (&object, FALSE);
 		href = NULL;
@@ -3449,7 +3425,7 @@ do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType m
 		/*ecalcomp_set_synch_state (comp, ECALCOMP_LOCALLY_MODIFIED);*/
 	}
 
-	if (status == GNOME_Evolution_Calendar_Success) {
+	if (did_put) {
 		if (new_object && !*new_object) {
 			/* read the comp from cache again, as some servers can modify it on put */
 			icalcomponent *newcomp = get_comp_from_cache (cbdav, id->uid, NULL, NULL, NULL), *master;
@@ -3472,16 +3448,13 @@ do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType m
 	g_object_unref (comp);
 	g_free (href);
 	g_free (etag);
-
-	return status;
 }
 
 /* a busy_lock is supposed to be locked already, when calling this function */
-static ECalBackendSyncStatus
-do_remove_object (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid, CalObjModType mod, gchar **old_object, gchar **object)
+static void
+do_remove_object (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid, CalObjModType mod, gchar **old_object, gchar **object, GError **perror)
 {
 	ECalBackendCalDAVPrivate *priv;
-	ECalBackendSyncStatus     status;
 	icalcomponent            *cache_comp;
 	gboolean                  online;
 	gchar *href = NULL, *etag = NULL;
@@ -3491,15 +3464,14 @@ do_remove_object (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid, 
 	if (object)
 		*object = NULL;
 
-	status = check_state (cbdav, &online);
-	if (status != GNOME_Evolution_Calendar_Success) {
-		return status;
-	}
+	if (!check_state (cbdav, &online, perror))
+		return;
 
 	cache_comp = get_comp_from_cache (cbdav, uid, NULL, &href, &etag);
 
 	if (cache_comp == NULL) {
-		return GNOME_Evolution_Calendar_ObjectNotFound;
+		g_propagate_error (perror, EDC_ERROR (ObjectNotFound));
+		return;
 	}
 
 	if (old_object) {
@@ -3555,9 +3527,9 @@ do_remove_object (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid, 
 		if (mod == CALOBJ_MOD_THIS && rid && *rid) {
 			caldav_object.cdata = pack_cobj (cbdav, cache_comp);
 
-			status = caldav_server_put_object (cbdav, &caldav_object, cache_comp);
+			caldav_server_put_object (cbdav, &caldav_object, cache_comp, perror);
 		} else
-			status = caldav_server_delete_object (cbdav, &caldav_object);
+			caldav_server_delete_object (cbdav, &caldav_object, perror);
 
 		caldav_object_free (&caldav_object, FALSE);
 		href = NULL;
@@ -3574,30 +3546,30 @@ do_remove_object (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid, 
 	icalcomponent_free (cache_comp);
 	g_free (href);
 	g_free (etag);
-
-	return status;
 }
 
-static ECalBackendSyncStatus
+static void
 extract_objects (icalcomponent       *icomp,
 		 icalcomponent_kind   ekind,
-		 GList              **objects)
+		 GList              **objects,
+		 GError             **error)
 {
 	icalcomponent         *scomp;
 	icalcomponent_kind     kind;
 
-	g_return_val_if_fail (icomp, GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (objects, GNOME_Evolution_Calendar_OtherError);
+	e_return_data_cal_error_if_fail (icomp, InvalidArg);
+	e_return_data_cal_error_if_fail (objects, InvalidArg);
 
 	kind = icalcomponent_isa (icomp);
 
 	if (kind == ekind) {
 		*objects = g_list_prepend (NULL, icomp);
-		return GNOME_Evolution_Calendar_Success;
+		return;
 	}
 
 	if (kind != ICAL_VCALENDAR_COMPONENT) {
-		return GNOME_Evolution_Calendar_InvalidObject;
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return;
 	}
 
 	*objects = NULL;
@@ -3611,8 +3583,6 @@ extract_objects (icalcomponent       *icomp,
 
 		scomp = icalcomponent_get_next_component (icomp, ekind);
 	}
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
 static gboolean
@@ -3621,11 +3591,14 @@ extract_timezones (ECalBackendCalDAV *cbdav, icalcomponent *icomp)
 	ECalBackendCalDAVPrivate *priv;
 	GList *timezones = NULL, *iter;
 	icaltimezone *zone;
+	GError *err = NULL;
 
 	g_return_val_if_fail (cbdav != NULL, FALSE);
 	g_return_val_if_fail (icomp != NULL, FALSE);
 
-	if (extract_objects (icomp, ICAL_VTIMEZONE_COMPONENT, &timezones) != GNOME_Evolution_Calendar_Success) {
+	extract_objects (icomp, ICAL_VTIMEZONE_COMPONENT, &timezones, &err);
+	if (err) {
+		g_error_free (err);
 		return FALSE;
 	}
 
@@ -3646,25 +3619,26 @@ extract_timezones (ECalBackendCalDAV *cbdav, icalcomponent *icomp)
 	return TRUE;
 }
 
-static ECalBackendSyncStatus
+static void
 process_object (ECalBackendCalDAV   *cbdav,
 		ECalComponent       *ecomp,
 		gboolean             online,
-		icalproperty_method  method)
+		icalproperty_method  method,
+		GError             **error)
 {
 	ECalBackendCalDAVPrivate *priv;
-	ECalBackendSyncStatus     status;
 	ECalBackend              *backend;
 	struct icaltimetype       now;
 	gchar *new_obj_str;
 	gboolean is_declined, is_in_cache;
 	CalObjModType mod;
 	ECalComponentId *id = e_cal_component_get_id (ecomp);
+	GError *err = NULL;
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 	backend = E_CAL_BACKEND (cbdav);
 
-	g_return_val_if_fail (id != NULL, GNOME_Evolution_Calendar_InvalidObject);
+	e_return_data_cal_error_if_fail (id != NULL, InvalidObject);
 
 	/* ctime, mtime */
 	now = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
@@ -3676,7 +3650,6 @@ process_object (ECalBackendCalDAV   *cbdav,
 
 	new_obj_str = e_cal_component_get_as_string (ecomp);
 	mod = e_cal_component_is_instance (ecomp) ? CALOBJ_MOD_THIS : CALOBJ_MOD_ALL;
-	status = GNOME_Evolution_Calendar_Success;
 
 	switch (method) {
 	case ICAL_METHOD_PUBLISH:
@@ -3687,8 +3660,8 @@ process_object (ECalBackendCalDAV   *cbdav,
 			if (!is_declined) {
 				gchar *new_object = NULL, *old_object = NULL;
 
-				status = do_modify_object (cbdav, new_obj_str, mod, &old_object, &new_object);
-				if (status == GNOME_Evolution_Calendar_Success) {
+				do_modify_object (cbdav, new_obj_str, mod, &old_object, &new_object, &err);
+				if (!err) {
 					if (!old_object)
 						e_cal_backend_notify_object_created (backend, new_object);
 					else
@@ -3700,8 +3673,8 @@ process_object (ECalBackendCalDAV   *cbdav,
 			} else {
 				gchar *new_object = NULL, *old_object = NULL;
 
-				status = do_remove_object (cbdav, id->uid, id->rid, mod, &old_object, &new_object);
-				if (status == GNOME_Evolution_Calendar_Success) {
+				do_remove_object (cbdav, id->uid, id->rid, mod, &old_object, &new_object, &err);
+				if (!err) {
 					if (new_object) {
 						e_cal_backend_notify_object_modified (backend, old_object, new_object);
 					} else {
@@ -3715,8 +3688,8 @@ process_object (ECalBackendCalDAV   *cbdav,
 		} else if (!is_declined) {
 			gchar *new_object = new_obj_str;
 
-			status = do_create_object (cbdav, &new_object, NULL);
-			if (status == GNOME_Evolution_Calendar_Success) {
+			do_create_object (cbdav, &new_object, NULL, &err);
+			if (!err) {
 				e_cal_backend_notify_object_created (backend, new_object);
 			}
 
@@ -3728,8 +3701,8 @@ process_object (ECalBackendCalDAV   *cbdav,
 		if (is_in_cache) {
 			gchar *old_object = NULL, *new_object = NULL;
 
-			status = do_remove_object (cbdav, id->uid, id->rid, CALOBJ_MOD_THIS, &old_object, &new_object);
-			if (status == GNOME_Evolution_Calendar_Success) {
+			do_remove_object (cbdav, id->uid, id->rid, CALOBJ_MOD_THIS, &old_object, &new_object, &err);
+			if (!err) {
 				if (new_object) {
 					e_cal_backend_notify_object_modified (backend, old_object, new_object);
 				} else {
@@ -3740,55 +3713,56 @@ process_object (ECalBackendCalDAV   *cbdav,
 			g_free (old_object);
 			g_free (new_object);
 		} else {
-			status = GNOME_Evolution_Calendar_ObjectNotFound;
+			err = EDC_ERROR (ObjectNotFound);
 		}
 		break;
 
 	default:
-		status = GNOME_Evolution_Calendar_UnsupportedMethod;
+		err = EDC_ERROR (UnsupportedMethod);
 		break;
 	}
 
 	e_cal_component_free_id (id);
 	g_free (new_obj_str);
 
-	return status;
+	if (err)
+		g_propagate_error (error, err);
 }
 
-static ECalBackendSyncStatus
-do_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj)
+static void
+do_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
-	ECalBackendSyncStatus     status;
 	icalcomponent            *icomp;
 	icalcomponent_kind        kind;
 	icalproperty_method       tmethod;
 	gboolean                  online;
 	GList                    *objects;
 	GList                    *iter;
+	GError *err = NULL;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	status = check_state (cbdav, &online);
-	if (status != GNOME_Evolution_Calendar_Success) {
-		return status;
-	}
+	if (!check_state (cbdav, &online, perror))
+		return;
 
 	icomp = icalparser_parse_string (calobj);
 
 	/* Try to parse cal object string */
 	if (icomp == NULL) {
-		return GNOME_Evolution_Calendar_InvalidObject;
+		g_propagate_error (perror, EDC_ERROR (InvalidObject));
+		return;
 	}
 
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (backend));
-	status = extract_objects (icomp, kind, &objects);
+	extract_objects (icomp, kind, &objects, &err);
 
-	if (status != GNOME_Evolution_Calendar_Success) {
+	if (err) {
 		icalcomponent_free (icomp);
-		return status;
+		g_propagate_error (perror, err);
+		return;
 	}
 
 	/* Extract optional timezone compnents */
@@ -3796,7 +3770,7 @@ do_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj
 
 	tmethod = icalcomponent_get_method (icomp);
 
-	for (iter = objects; iter && status == GNOME_Evolution_Calendar_Success; iter = iter->next) {
+	for (iter = objects; iter && !err; iter = iter->next) {
 		icalcomponent       *scomp;
 		ECalComponent       *ecomp;
 		icalproperty_method  method;
@@ -3812,7 +3786,7 @@ do_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj
 			method = tmethod;
 		}
 
-		status = process_object (cbdav, ecomp, online, method);
+		process_object (cbdav, ecomp, online, method, &err);
 
 		g_object_unref (ecomp);
 	}
@@ -3821,16 +3795,16 @@ do_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj
 
 	icalcomponent_free (icomp);
 
-	return status;
+	if (err)
+		g_propagate_error (perror, err);
 }
 
 #define caldav_busy_stub(_func_name, _params, _call_func, _call_params)	\
-static ECalBackendSyncStatus						\
+static void						\
 _func_name _params							\
 {									\
 	ECalBackendCalDAV        *cbdav;				\
 	ECalBackendCalDAVPrivate *priv;					\
-	ECalBackendSyncStatus     status;				\
 	SlaveCommand		  old_slave_cmd;			\
 	gboolean		  was_slave_busy;			\
 									\
@@ -3846,7 +3820,7 @@ _func_name _params							\
 	}								\
 									\
 	g_mutex_lock (priv->busy_lock);					\
-	status = _call_func _call_params;				\
+	_call_func _call_params;				\
 									\
 	/* this is done before unlocking */				\
 	if (was_slave_busy) {						\
@@ -3855,52 +3829,38 @@ _func_name _params							\
 	}								\
 									\
 	g_mutex_unlock (priv->busy_lock);				\
-									\
-	return status;							\
 }
 
 caldav_busy_stub (
-	caldav_create_object, (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid),
-	do_create_object, (cbdav, calobj, uid))
+	caldav_create_object, (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid, GError **perror),
+	do_create_object, (cbdav, calobj, uid, perror))
 
 caldav_busy_stub (
-	caldav_modify_object, (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, CalObjModType mod, gchar **old_object, gchar **new_object),
-	do_modify_object, (cbdav, calobj, mod, old_object, new_object))
+	caldav_modify_object, (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, CalObjModType mod, gchar **old_object, gchar **new_object, GError **perror),
+	do_modify_object, (cbdav, calobj, mod, old_object, new_object, perror))
 
 caldav_busy_stub (
-	caldav_remove_object, (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, CalObjModType mod, gchar **old_object, gchar **object),
-	do_remove_object, (cbdav, uid, rid, mod, old_object, object))
+	caldav_remove_object, (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, CalObjModType mod, gchar **old_object, gchar **object, GError **perror),
+	do_remove_object, (cbdav, uid, rid, mod, old_object, object, perror))
 
 caldav_busy_stub (
-	caldav_receive_objects, (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj),
-	do_receive_objects, (backend, cal, calobj))
+	caldav_receive_objects, (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GError **perror),
+	do_receive_objects, (backend, cal, calobj, perror))
 
-static ECalBackendSyncStatus
-caldav_discard_alarm (ECalBackendSync *backend,
-		      EDataCal        *cal,
-		      const gchar      *uid,
-		      const gchar      *auid)
+static void
+caldav_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *auid, GError **perror)
 {
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
-caldav_send_objects (ECalBackendSync  *backend,
-		     EDataCal         *cal,
-		     const gchar       *calobj,
-		     GList           **users,
-		     gchar            **modified_calobj)
+static void
+caldav_send_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GList **users, gchar **modified_calobj, GError **perror)
 {
 	*users = NULL;
 	*modified_calobj = g_strdup (calobj);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
-caldav_get_default_object (ECalBackendSync  *backend,
-			   EDataCal         *cal,
-			   gchar            **object)
+static void
+caldav_get_default_object (ECalBackendSync *backend, EDataCal *cal, gchar **object, GError **perror)
 {
 	ECalComponent *comp;
 
@@ -3918,21 +3878,16 @@ caldav_get_default_object (ECalBackendSync  *backend,
 		break;
 	default:
 		g_object_unref (comp);
-		return GNOME_Evolution_Calendar_ObjectNotFound;
+		g_propagate_error (perror, EDC_ERROR (ObjectNotFound));
+		return;
 	}
 
 	*object = e_cal_component_get_as_string (comp);
 	g_object_unref (comp);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
-caldav_get_object (ECalBackendSync  *backend,
-		   EDataCal         *cal,
-		   const gchar       *uid,
-		   const gchar       *rid,
-		   gchar           **object)
+static void
+caldav_get_object (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, gchar **object, GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -3945,19 +3900,19 @@ caldav_get_object (ECalBackendSync  *backend,
 	icalcomp = get_comp_from_cache (cbdav, uid, rid, NULL, NULL);
 
 	if (!icalcomp) {
-		return GNOME_Evolution_Calendar_ObjectNotFound;
+		g_propagate_error (perror, EDC_ERROR (ObjectNotFound));
+		return;
 	}
 
 	*object = icalcomponent_as_ical_string_r (icalcomp);
 	icalcomponent_free (icalcomp);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
+static void
 caldav_add_timezone (ECalBackendSync *backend,
 		     EDataCal        *cal,
-		     const gchar      *tzobj)
+		     const gchar      *tzobj,
+		     GError **error)
 {
 	icalcomponent *tz_comp;
 	ECalBackendCalDAV *cbdav;
@@ -3965,14 +3920,16 @@ caldav_add_timezone (ECalBackendSync *backend,
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 
-	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav), GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (tzobj != NULL, GNOME_Evolution_Calendar_OtherError);
+	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav), InvalidArg);
+	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
 	tz_comp = icalparser_parse_string (tzobj);
-	if (!tz_comp)
-		return GNOME_Evolution_Calendar_InvalidObject;
+	if (!tz_comp) {
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return;
+	}
 
 	if (icalcomponent_isa (tz_comp) == ICAL_VTIMEZONE_COMPONENT) {
 		icaltimezone *zone;
@@ -3986,29 +3943,30 @@ caldav_add_timezone (ECalBackendSync *backend,
 	} else {
 		icalcomponent_free (tz_comp);
 	}
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
+static void
 caldav_set_default_zone (ECalBackendSync *backend,
 			     EDataCal        *cal,
-			     const gchar      *tzobj)
+			     const gchar      *tzobj,
+			     GError **error)
 {
 	icalcomponent *tz_comp;
 	ECalBackendCalDAV *cbdav;
 	ECalBackendCalDAVPrivate *priv;
 	icaltimezone *zone;
 
-	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (backend), GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (tzobj != NULL, GNOME_Evolution_Calendar_OtherError);
+	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_CALDAV (backend), InvalidArg);
+	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
 	tz_comp = icalparser_parse_string (tzobj);
-	if (!tz_comp)
-		return GNOME_Evolution_Calendar_InvalidObject;
+	if (!tz_comp) {
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return;
+	}
 
 	zone = icaltimezone_new ();
 	icaltimezone_set_component (zone, tz_comp);
@@ -4018,15 +3976,14 @@ caldav_set_default_zone (ECalBackendSync *backend,
 
 	/* Set the default timezone to it. */
 	priv->default_zone = zone;
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
+static void
 caldav_get_object_list (ECalBackendSync  *backend,
 			EDataCal         *cal,
 			const gchar       *sexp_string,
-			GList           **objects)
+			GList           **objects,
+			GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -4041,7 +3998,8 @@ caldav_get_object_list (ECalBackendSync  *backend,
 	sexp = e_cal_backend_sexp_new (sexp_string);
 
 	if (sexp == NULL) {
-		return GNOME_Evolution_Calendar_InvalidQuery;
+		g_propagate_error (perror, EDC_ERROR (InvalidQuery));
+		return;
 	}
 
 	if (g_str_equal (sexp_string, "#t")) {
@@ -4069,8 +4027,6 @@ caldav_get_object_list (ECalBackendSync  *backend,
 
 	g_object_unref (sexp);
 	g_slist_free (list);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
 static void
@@ -4119,20 +4075,20 @@ caldav_start_query (ECalBackend  *backend,
 	g_object_unref (sexp);
 	g_slist_free (list);
 
-	e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_Success);
+	e_data_cal_view_notify_done (query, NULL /* Success */);
 }
 
-static ECalBackendSyncStatus
+static void
 caldav_get_free_busy (ECalBackendSync  *backend,
 		      EDataCal         *cal,
 		      GList            *users,
 		      time_t            start,
 		      time_t            end,
-		      GList           **freebusy)
+		      GList           **freebusy,
+		      GError **error)
 {
 	ECalBackendCalDAV *cbdav;
 	ECalBackendCalDAVPrivate *priv;
-	ECalBackendSyncStatus status;
 	icalcomponent *icalcomp;
 	ECalComponent *comp;
 	ECalComponentDateTime dt;
@@ -4141,24 +4097,27 @@ caldav_get_free_busy (ECalBackendSync  *backend,
 	gchar *str;
 	GList *u;
 	GSList *attendees = NULL, *to_free = NULL;
+	GError *err = NULL;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	g_return_val_if_fail (priv != NULL, GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (users != NULL, GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (freebusy != NULL, GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (start < end, GNOME_Evolution_Calendar_OtherError);
+	e_return_data_cal_error_if_fail (priv != NULL, InvalidArg);
+	e_return_data_cal_error_if_fail (users != NULL, InvalidArg);
+	e_return_data_cal_error_if_fail (freebusy != NULL, InvalidArg);
+	e_return_data_cal_error_if_fail (start < end, InvalidArg);
 
 	if (!priv->calendar_schedule) {
-		return GNOME_Evolution_Calendar_OtherError;
+		g_propagate_error (error, EDC_ERROR_EX (OtherError, _("Calendar doesn't support Free/Busy")));
+		return;
 	}
 
 	if (!priv->schedule_outbox_url) {
 		caldav_receive_schedule_outbox_url (cbdav);
 		if (!priv->schedule_outbox_url) {
 			priv->calendar_schedule = FALSE;
-			return GNOME_Evolution_Calendar_OtherError;
+			g_propagate_error (error, EDC_ERROR_EX (OtherError, "Schedule outbox url not found"));
+			return;
 		}
 	}
 
@@ -4224,11 +4183,11 @@ caldav_get_free_busy (ECalBackendSync  *backend,
 	icalcomponent_free (icalcomp);
 	g_object_unref (comp);
 
-	g_return_val_if_fail (str != NULL, GNOME_Evolution_Calendar_OtherError);
+	e_return_data_cal_error_if_fail (str != NULL, OtherError);
 
-	status = caldav_post_freebusy (cbdav, priv->schedule_outbox_url, &str);
+	caldav_post_freebusy (cbdav, priv->schedule_outbox_url, &str, &err);
 
-	if (status == GNOME_Evolution_Calendar_Success) {
+	if (!err) {
 		/* parse returned xml */
 		xmlDocPtr doc;
 
@@ -4244,7 +4203,7 @@ caldav_get_free_busy (ECalBackendSync  *backend,
 			result = xpath_eval (xpctx, "/C:schedule-response/C:response");
 
 			if (result == NULL || result->type != XPATH_NODESET) {
-				status = GNOME_Evolution_Calendar_OtherError;
+				err = EDC_ERROR_EX (OtherError, "Unexpected result in schedule-response");
 			} else {
 				gint i, n;
 
@@ -4257,7 +4216,9 @@ caldav_get_free_busy (ECalBackendSync  *backend,
 						GList *objects = NULL, *o;
 
 						icalcomp = icalparser_parse_string (tmp);
-						if (icalcomp && extract_objects (icalcomp, ICAL_VFREEBUSY_COMPONENT, &objects) == GNOME_Evolution_Calendar_Success) {
+						if (icalcomp)
+							extract_objects (icalcomp, ICAL_VFREEBUSY_COMPONENT, &objects, &err);
+						if (icalcomp && !err) {
 							for (o = objects; o; o = o->next) {
 								gchar *obj_str = icalcomponent_as_ical_string_r (o->data);
 
@@ -4273,10 +4234,12 @@ caldav_get_free_busy (ECalBackendSync  *backend,
 
 						if (icalcomp)
 							icalcomponent_free (icalcomp);
+						if (err)
+							g_error_free (err);
+						err = NULL;
 					}
 
 					g_free (tmp);
-
 				}
 			}
 
@@ -4289,20 +4252,21 @@ caldav_get_free_busy (ECalBackendSync  *backend,
 
 	g_free (str);
 
-	return status;
+	if (err)
+		g_propagate_error (error, err);
 }
 
-static ECalBackendSyncStatus
+static void
 caldav_get_changes (ECalBackendSync  *backend,
 		    EDataCal         *cal,
 		    const gchar       *change_id,
 		    GList           **adds,
 		    GList           **modifies,
-		    GList **deletes)
+		    GList **deletes,
+		    GError **perror)
 {
 	/* FIXME: implement me! */
-	g_warning ("function not implemented %s", G_STRFUNC);
-	return GNOME_Evolution_Calendar_OtherError;
+	g_propagate_error (perror, EDC_ERROR (NotSupported));
 }
 
 static gboolean
@@ -4344,7 +4308,7 @@ caldav_set_mode (ECalBackend *backend, CalMode mode)
 	if (mode != CAL_MODE_REMOTE &&
 	    mode != CAL_MODE_LOCAL) {
 		e_cal_backend_notify_mode (backend,
-					   GNOME_Evolution_Calendar_CalListener_MODE_NOT_SUPPORTED,
+					   ModeNotSupported,
 					   cal_mode_to_corba (mode));
 		/*g_mutex_unlock (priv->busy_lock);*/
 		return;
@@ -4353,7 +4317,7 @@ caldav_set_mode (ECalBackend *backend, CalMode mode)
 	if (priv->mode == mode || !priv->loaded) {
 		priv->mode = mode;
 		e_cal_backend_notify_mode (backend,
-					   GNOME_Evolution_Calendar_CalListener_MODE_SET,
+					   ModeSet,
 					   cal_mode_to_corba (mode));
 		/*g_mutex_unlock (priv->busy_lock);*/
 		return;
@@ -4371,7 +4335,7 @@ caldav_set_mode (ECalBackend *backend, CalMode mode)
 	}
 
 	e_cal_backend_notify_mode (backend,
-				   GNOME_Evolution_Calendar_CalListener_MODE_SET,
+				   ModeSet,
 				   cal_mode_to_corba (mode));
 
 	/*g_mutex_unlock (priv->busy_lock);*/
@@ -4434,7 +4398,7 @@ caldav_source_changed_cb (ESource *source, ECalBackendCalDAV *cbdav)
 		g_mutex_lock (priv->busy_lock);
 	}
 
-	initialize_backend (cbdav);
+	initialize_backend (cbdav, NULL);
 
 	/* always wakeup thread, even when it was sleeping */
 	g_cond_signal (priv->cond);

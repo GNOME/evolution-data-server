@@ -61,14 +61,8 @@ struct _ECalBackendClass {
 	void (* last_client_gone) (ECalBackend *backend);
 	void (* cal_added) (ECalBackend *backend, EDataCal *cal);
 
-	gboolean (* is_loaded) (ECalBackend *backend);
-
-	/* FIXME What to pass back here */
-	void (* opened) (ECalBackend *backend, gint status);
-	void (* removed) (ECalBackend *backend, gint status);
-	void (* obj_updated) (ECalBackend *backend, const gchar *uid);
-
 	/* Virtual methods */
+	gboolean (* is_loaded) (ECalBackend *backend);
 	void (* is_read_only) (ECalBackend *backend, EDataCal *cal);
 	void (* get_cal_address) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
 	void (* get_alarm_email_address) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
@@ -181,7 +175,7 @@ void e_cal_backend_notify_mode      (ECalBackend *backend,
 void e_cal_backend_notify_auth_required (ECalBackend *backend);
 void e_cal_backend_notify_error     (ECalBackend *backend, const gchar *message);
 
-void e_cal_backend_notify_view_done (ECalBackend *backend, EDataCalCallStatus status);
+void e_cal_backend_notify_view_done (ECalBackend *backend, const GError *error);
 void e_cal_backend_notify_view_progress_start (ECalBackend *backend);
 void e_cal_backend_notify_view_progress (ECalBackend *backend, const gchar *message, gint percent);
 void e_cal_backend_notify_readonly (ECalBackend *backend, gboolean read_only);

@@ -63,7 +63,7 @@ gboolean              e_data_cal_view_object_matches (EDataCalView *query, const
 GList                *e_data_cal_view_get_matched_objects (EDataCalView *query);
 gboolean              e_data_cal_view_is_started (EDataCalView *query);
 gboolean              e_data_cal_view_is_done (EDataCalView *query);
-EDataCalCallStatus e_data_cal_view_get_done_status (EDataCalView *query);
+gboolean              e_data_cal_view_is_stopped (EDataCalView *query);
 
 void                  e_data_cal_view_notify_objects_added (EDataCalView       *query,
 							    const GList *objects);
@@ -81,7 +81,7 @@ void                  e_data_cal_view_notify_progress (EDataCalView      *query,
 						       const gchar *message,
 						       gint         percent);
 void                  e_data_cal_view_notify_done (EDataCalView                               *query,
-						   EDataCalCallStatus status);
+						   const GError *error);
 
 G_END_DECLS
 

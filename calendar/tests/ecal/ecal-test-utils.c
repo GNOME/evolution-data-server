@@ -112,17 +112,17 @@ ecal_test_utils_cal_open (ECal     *cal,
 }
 
 static void
-open_cb (ECal            *cal,
-	 ECalendarStatus  status,
+open_ex_cb (ECal            *cal,
+	 const GError *error,
 	 ECalTestClosure *closure)
 {
 	if (FALSE) {
-	} else if (status == E_CALENDAR_STATUS_BUSY) {
+	} else if (error && error->code == E_CALENDAR_STATUS_BUSY) {
 		test_print ("calendar server is busy; waiting...");
 		return;
-	} else if (status != E_CALENDAR_STATUS_OK) {
+	} else if (error) {
                 g_warning ("failed to asynchronously remove the calendar: "
-                                "status %d", status);
+                                "status %d (%s)", error->code, error->message);
                 exit (1);
         }
 
@@ -133,7 +133,7 @@ open_cb (ECal            *cal,
         if (closure)
                 (*closure->cb) (closure);
 
-	g_signal_handlers_disconnect_by_func (cal, open_cb, closure);
+	g_signal_handlers_disconnect_by_func (cal, open_ex_cb, closure);
 	g_free (closure);
 }
 
@@ -149,7 +149,7 @@ ecal_test_utils_cal_async_open (ECal        *cal,
         closure->cb = callback;
         closure->user_data = user_data;
 
-	g_signal_connect (G_OBJECT (cal), "cal_opened", G_CALLBACK (open_cb), closure);
+	g_signal_connect (G_OBJECT (cal), "cal_opened_ex", G_CALLBACK (open_ex_cb), closure);
 	e_cal_open_async (cal, only_if_exists);
 }
 

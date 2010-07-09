@@ -694,7 +694,7 @@ offline_state_changed_cb (EOfflineListener *eol, EDataCalFactory *factory)
 
 	g_return_if_fail (state == EOL_STATE_ONLINE || state == EOL_STATE_OFFLINE);
 
-	e_data_cal_factory_set_backend_mode (factory, state == EOL_STATE_ONLINE ? GNOME_Evolution_Calendar_MODE_REMOTE : GNOME_Evolution_Calendar_MODE_LOCAL);
+	e_data_cal_factory_set_backend_mode (factory, state == EOL_STATE_ONLINE ? Remote : Local);
 }
 
 #define E_DATA_CAL_FACTORY_SERVICE_NAME "org.gnome.evolution.dataserver.Calendar"

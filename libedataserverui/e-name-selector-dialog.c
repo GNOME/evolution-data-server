@@ -771,24 +771,29 @@ status_message(EBookView *view, const gchar *message, ENameSelectorDialog *dialo
 }
 
 static void
-sequence_complete(EBookView *view, EBookViewStatus status, ENameSelectorDialog *dialog)
+view_complete(EBookView *view, EBookViewStatus status, const gchar *error_msg, ENameSelectorDialog *dialog)
 {
 	status_message(view, NULL, dialog);
 }
 
 static void
-book_opened (EBook *book, EBookStatus status, gpointer data)
+book_opened (EBook *book, const GError *error, gpointer data)
 {
 	ENameSelectorDialog *name_selector_dialog = E_NAME_SELECTOR_DIALOG (data);
 	EContactStore       *contact_store;
 	EBookView           *view;
 
-	if (status != E_BOOK_ERROR_OK) {
-		/* TODO: Handle errors gracefully */
+	if (error) {
+		gchar *msg;
+
+		msg = g_strdup_printf ("Error loading addressbook, code:%d (%s)", error->code, error->message);
+
 		gtk_label_set_text(
 			name_selector_dialog->priv->status_label,
-			"Error loading addressbook");
-		g_warning ("ENameSelectorDialog failed to open book!");
+			msg);
+
+		g_warning ("ENameSelectorDialog failed to open book! (%d - %s)", error->code, error->message);
+
 		return;
 	}
 
@@ -797,7 +802,7 @@ book_opened (EBook *book, EBookStatus status, gpointer data)
 	e_contact_store_add_book (contact_store, book);
 	view = find_contact_source_by_book_return_view(contact_store, book);
 	g_signal_connect(view, "status_message", G_CALLBACK(status_message), name_selector_dialog);
-	g_signal_connect(view, "sequence_complete", G_CALLBACK(sequence_complete), name_selector_dialog);
+	g_signal_connect(view, "view_complete", G_CALLBACK(view_complete), name_selector_dialog);
 
 	g_object_unref (book);
 	name_selector_dialog->priv->pending_book = NULL;
@@ -815,7 +820,7 @@ source_changed (ENameSelectorDialog *name_selector_dialog,
 	remove_books (name_selector_dialog);
 
 	/* Start loading selected book */
-	name_selector_dialog->priv->pending_book = e_load_book_source (
+	name_selector_dialog->priv->pending_book = e_load_book_source_ex (
 		source, book_opened, name_selector_dialog);
 }
 

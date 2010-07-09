@@ -37,6 +37,7 @@
     </signal>
     <signal name="Complete">
     	<arg name="status" type="u"/>
+    	<arg name="message" type="s"/>
     </signal>
   </interface>
 

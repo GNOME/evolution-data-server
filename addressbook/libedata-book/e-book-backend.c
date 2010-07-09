@@ -56,32 +56,35 @@ e_book_backend_construct (EBookBackend *backend)
  * @backend: an #EBookBackend
  * @source: an #ESource to load
  * @only_if_exists: %TRUE to prevent the creation of a new book
+ * @error: #GError to set, when something fails
  *
  * Loads @source into @backend.
- *
- * Returns: A #GNOME_Evolution_Addressbook_CallStatus indicating the outcome.
  **/
-GNOME_Evolution_Addressbook_CallStatus
+void
 e_book_backend_load_source (EBookBackend           *backend,
 			    ESource                *source,
-			    gboolean                only_if_exists)
+			    gboolean                only_if_exists,
+			    GError		  **error)
 {
-	GNOME_Evolution_Addressbook_CallStatus status;
+	GError *err = NULL;
 
-	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
-	g_return_val_if_fail (source, FALSE);
-	g_return_val_if_fail (backend->priv->loaded == FALSE, FALSE);
+	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
+	e_return_data_book_error_if_fail (source, E_DATA_BOOK_STATUS_INVALID_ARG);
+	e_return_data_book_error_if_fail (backend->priv->loaded == FALSE, E_DATA_BOOK_STATUS_INVALID_ARG);
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->load_source);
 
-	status = (* E_BOOK_BACKEND_GET_CLASS (backend)->load_source) (backend, source, only_if_exists);
+	(* E_BOOK_BACKEND_GET_CLASS (backend)->load_source) (backend, source, only_if_exists, &err);
 
-	if (status == GNOME_Evolution_Addressbook_Success || status == GNOME_Evolution_Addressbook_InvalidServerVersion) {
+	if (err == NULL || g_error_matches (err, E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_INVALID_SERVER_VERSION)) {
 		g_object_ref (source);
 		backend->priv->source = source;
-	}
 
-	return status;
+		if (err)
+			g_error_free (err);
+	} else {
+		g_propagate_error (error, err);
+	}
 }
 
 /**
@@ -125,17 +128,18 @@ e_book_backend_open (EBookBackend *backend,
 		e_data_book_report_writable (book, backend->priv->writable);
 		e_data_book_report_connection_status (book, backend->priv->online);
 
-		e_data_book_respond_open (
-			book, opid, GNOME_Evolution_Addressbook_Success);
+		e_data_book_respond_open (book, opid, NULL);
 	} else {
-		GNOME_Evolution_Addressbook_CallStatus status =
-			e_book_backend_load_source (backend, e_data_book_get_source (book), only_if_exists);
+		GError *error = NULL;
 
-		if (status == GNOME_Evolution_Addressbook_Success || status == GNOME_Evolution_Addressbook_InvalidServerVersion)
+		e_book_backend_load_source (backend, e_data_book_get_source (book), only_if_exists, &error);
+
+		if (!error || g_error_matches (error, E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_INVALID_SERVER_VERSION)) {
 			e_data_book_report_writable (book, backend->priv->writable);
 			e_data_book_report_connection_status (book, backend->priv->online);
+		}
 
-		e_data_book_respond_open (book, opid, status);
+		e_data_book_respond_open (book, opid, error);
 	}
 
 	g_mutex_unlock (backend->priv->open_mutex);
@@ -454,21 +458,21 @@ e_book_backend_get_supported_auth_methods (EBookBackend *backend,
  * e_book_backend_cancel_operation:
  * @backend: an #EBookBackend
  * @book: an #EDataBook whose operation should be cancelled
+ * @error: #GError to set, when something fails
  *
  * Cancel @book's running operation on @backend.
- *
- * Returns: A GNOME_Evolution_Addressbook_CallStatus indicating the outcome.
  **/
-GNOME_Evolution_Addressbook_CallStatus
+void
 e_book_backend_cancel_operation (EBookBackend *backend,
-				 EDataBook    *book)
+				 EDataBook    *book,
+				 GError      **error)
 {
-	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), GNOME_Evolution_Addressbook_OtherError);
-	g_return_val_if_fail (E_IS_DATA_BOOK (book), GNOME_Evolution_Addressbook_OtherError);
+	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
+	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->cancel_operation);
 
-	return (* E_BOOK_BACKEND_GET_CLASS (backend)->cancel_operation) (backend, book);
+	(* E_BOOK_BACKEND_GET_CLASS (backend)->cancel_operation) (backend, book, error);
 }
 
 static void
@@ -729,7 +733,7 @@ e_book_backend_set_is_removed (EBookBackend *backend, gboolean is_removed)
  **/
 void
 e_book_backend_set_mode (EBookBackend *backend,
-			 GNOME_Evolution_Addressbook_BookMode  mode)
+			 EDataBookMode mode)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
@@ -765,7 +769,7 @@ e_book_backend_sync (EBookBackend *backend)
  * Creates a new change item indicating @vcard was added.
  * Meant to be used by backend implementations.
  *
- * Returns: A new #GNOME_Evolution_Addressbook_BookChangeItem.
+ * Returns: A new #EDataBookChange.
  **/
 EDataBookChange *
 e_book_backend_change_add_new     (const gchar *vcard)
@@ -785,7 +789,7 @@ e_book_backend_change_add_new     (const gchar *vcard)
  * Creates a new change item indicating @vcard was modified.
  * Meant to be used by backend implementations.
  *
- * Returns: A new #GNOME_Evolution_Addressbook_BookChangeItem.
+ * Returns: A new #EDataBookChange.
  **/
 EDataBookChange *
 e_book_backend_change_modify_new  (const gchar *vcard)
@@ -805,7 +809,7 @@ e_book_backend_change_modify_new  (const gchar *vcard)
  * Creates a new change item indicating @vcard was deleted.
  * Meant to be used by backend implementations.
  *
- * Returns: A new #GNOME_Evolution_Addressbook_BookChangeItem.
+ * Returns: A new #EDataBookChange.
  **/
 EDataBookChange *
 e_book_backend_change_delete_new  (const gchar *vcard)
@@ -897,7 +901,7 @@ e_book_backend_notify_remove (EBookBackend *backend, const gchar *id)
 static void
 view_notify_complete (EDataBookView *view, gpointer unused)
 {
-	e_data_book_view_notify_complete (view, GNOME_Evolution_Addressbook_Success);
+	e_data_book_view_notify_complete (view, NULL /* SUCCESS */);
 }
 
 /**

@@ -57,55 +57,92 @@ GQuark e_data_book_error_quark (void);
  **/
 #define E_DATA_BOOK_ERROR e_data_book_error_quark ()
 
+/**
+ * e_data_book_create_error:
+ * @status: #EDataBookStatus code
+ * @custom_msg: Custom message to use for the error. When NULL,
+ *              then uses a default message based on the @status code.
+ *
+ * Returns: NULL, when the @status is E_DATA_BOOK_STATUS_SUCCESS,
+ *          or a newly allocated GError, which should be freed
+ *          with g_error_free() call.
+ **/
+GError *e_data_book_create_error (EDataBookStatus status, const gchar *custom_msg);
+
+/**
+ * e_data_book_create_error_fmt:
+ *
+ * Similar as e_data_book_create_error(), only here, instead of custom_msg,
+ * is used a printf() format to create a custom_msg for the error.
+ **/
+GError *e_data_book_create_error_fmt (EDataBookStatus status, const gchar *custom_msg_fmt, ...) G_GNUC_PRINTF (2, 3);
+
+const gchar *e_data_book_status_to_string (EDataBookStatus status);
+
+#define e_return_data_book_error_if_fail(expr, _code)				\
+	G_STMT_START {								\
+		if (G_LIKELY(expr)) {						\
+		} else {							\
+			g_log (G_LOG_DOMAIN,					\
+				G_LOG_LEVEL_CRITICAL,				\
+				"file %s: line %d (%s): assertion `%s' failed",	\
+				__FILE__, __LINE__, G_STRFUNC, #expr);		\
+			g_set_error (error, E_DATA_BOOK_ERROR, (_code),		\
+				"file %s: line %d (%s): assertion `%s' failed",	\
+				__FILE__, __LINE__, G_STRFUNC, #expr);		\
+			return;							\
+		}								\
+	} G_STMT_END
+
 EDataBook		*e_data_book_new                    (EBookBackend *backend, ESource *source);
 EBookBackend		*e_data_book_get_backend            (EDataBook *book);
 ESource			*e_data_book_get_source             (EDataBook *book);
 
 void                    e_data_book_respond_open           (EDataBook *book,
 							    guint32 opid,
-							    EDataBookStatus status);
+							    GError *error);
 void                    e_data_book_respond_remove         (EDataBook *book,
 							    guint32 opid,
-							    EDataBookStatus status);
+							    GError *error);
 void                    e_data_book_respond_create         (EDataBook *book,
 							    guint32 opid,
-							    EDataBookStatus status,
+							    GError *error,
 							    EContact *contact);
 void                    e_data_book_respond_remove_contacts (EDataBook *book,
 							     guint32 opid,
-							     EDataBookStatus  status,
+							     GError *error,
 							     GList *ids);
 void                    e_data_book_respond_modify         (EDataBook *book,
 							    guint32 opid,
-							    EDataBookStatus status,
+							    GError *error,
 							    EContact *contact);
 void                    e_data_book_respond_authenticate_user (EDataBook *book,
 							       guint32 opid,
-							       EDataBookStatus status);
+							       GError *error);
 void                    e_data_book_respond_get_supported_fields (EDataBook *book,
 								  guint32 opid,
-								  EDataBookStatus status,
+								  GError *error,
 								  GList *fields);
 void                    e_data_book_respond_get_required_fields (EDataBook *book,
 								  guint32 opid,
-								  EDataBookStatus status,
+								  GError *error,
 								  GList *fields);
 void                    e_data_book_respond_get_supported_auth_methods (EDataBook *book,
 									guint32 opid,
-									EDataBookStatus status,
+									GError *error,
 									GList *fields);
 
 void                    e_data_book_respond_get_contact (EDataBook *book,
 							    guint32 opid,
-							    EDataBookStatus status,
+							    GError *error,
 							    const gchar *vcard);
 void                    e_data_book_respond_get_contact_list (EDataBook *book,
 							      guint32 opid,
-							      EDataBookStatus status,
+							      GError *error,
 							      GList *cards);
 void                    e_data_book_respond_get_changes    (EDataBook *book,
 							    guint32 opid,
-							    EDataBookStatus status,
+							    GError *error,
 							    GList *changes);
 
 void                    e_data_book_report_writable        (EDataBook                         *book,

@@ -43,7 +43,6 @@
 static gchar ** flatten_stringlist(GList *list);
 static GList *array_to_stringlist (gchar **list);
 static gboolean unwrap_gerror(GError *error, GError **client_error);
-static EBookStatus get_status_from_error (GError *error);
 
 G_DEFINE_TYPE(EBook, e_book, G_TYPE_OBJECT)
 #define E_BOOK_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_BOOK, EBookPrivate))
@@ -79,7 +78,10 @@ static GStaticRecMutex connection_lock = G_STATIC_REC_MUTEX_INIT;
 
 typedef struct {
 	EBook *book;
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	gpointer callback; /* TODO union */
+	#endif
+	gpointer excallback;
 	gpointer closure;
 	gpointer data;
 } AsyncData;
@@ -358,16 +360,29 @@ e_book_add_contact (EBook           *book,
 static void
 add_contact_reply (DBusGProxy *proxy, gchar *uid, GError *error, gpointer user_data)
 {
+	GError *err = NULL;
 	AsyncData *data = user_data;
+	EBookIdExCallback excb = data->excallback;
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookIdCallback cb = data->callback;
+	#endif
+
+	unwrap_gerror (error, &err);
 
 	/* If there is an error returned the GLib bindings currently return garbage
 	   for the OUT values. This is bad. */
 	if (error)
 		uid = NULL;
 
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
-		cb (data->book, get_status_from_error (error), uid, data->closure);
+		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, uid, data->closure);
+	#endif
+	if (excb)
+		excb (data->book, err, uid, data->closure);
+
+	if (err)
+		g_error_free (err);
 
 	if (uid)
 		g_free (uid);
@@ -376,6 +391,7 @@ add_contact_reply (DBusGProxy *proxy, gchar *uid, GError *error, gpointer user_d
 	g_slice_free (AsyncData, data);
 }
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_add_contact:
  * @book: an #EBook
@@ -386,6 +402,8 @@ add_contact_reply (DBusGProxy *proxy, gchar *uid, GError *error, gpointer user_d
  * Adds @contact to @book without blocking.
  *
  * Returns: %TRUE if the operation was started, %FALSE otherwise.
+ *
+ * Deprecated: 3.0: Use e_book_async_add_contact_ex() instead.
  **/
 gboolean
 e_book_async_add_contact (EBook                 *book,
@@ -412,6 +430,47 @@ e_book_async_add_contact (EBook                 *book,
 	UNLOCK_CONN ();
 	g_free (vcard);
 	return 0;
+}
+#endif
+
+/**
+ * e_book_async_add_contact_ex:
+ * @book: an #EBook
+ * @contact: an #EContact
+ * @cb: function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Adds @contact to @book without blocking.
+ *
+ * Returns: %TRUE if the operation was started, %FALSE otherwise.
+ * Since: 3.0
+ **/
+gboolean
+e_book_async_add_contact_ex (EBook              *book,
+			     EContact           *contact,
+			     EBookIdExCallback   cb,
+			     gpointer            closure)
+{
+	gchar *vcard;
+	AsyncData *data;
+
+	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_ex_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_val_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
+
+	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+
+	data = g_slice_new0 (AsyncData);
+	data->book = g_object_ref (book);
+	data->excallback = cb;
+	data->closure = closure;
+
+	LOCK_CONN ();
+	org_gnome_evolution_dataserver_addressbook_Book_add_contact_async (book->priv->proxy, vcard, add_contact_reply, data);
+	UNLOCK_CONN ();
+	g_free (vcard);
+
+	return TRUE;
 }
 
 /**
@@ -448,16 +507,30 @@ e_book_commit_contact (EBook           *book,
 static void
 modify_contact_reply (DBusGProxy *proxy, GError *error, gpointer user_data)
 {
+	GError *err = NULL;
 	AsyncData *data = user_data;
+	EBookExCallback excb = data->excallback;
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
+	#endif
 
+	unwrap_gerror (error, &err);
+
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
-		cb (data->book, get_status_from_error (error), data->closure);
+		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, data->closure);
+	#endif
 
+	if (excb)
+		excb (data->book, err, data->closure);
+
+	if (err)
+		g_error_free (err);
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
 }
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_commit_contact:
  * @book: an #EBook
@@ -469,6 +542,8 @@ modify_contact_reply (DBusGProxy *proxy, GError *error, gpointer user_data)
  * @book without blocking.
  *
  * Returns: %TRUE if the operation was started, %FALSE otherwise.
+ *
+ * Deprecated: 3.0: Use e_book_async_commit_contact_ex() instead.
  **/
 guint
 e_book_async_commit_contact (EBook                 *book,
@@ -495,6 +570,48 @@ e_book_async_commit_contact (EBook                 *book,
 	UNLOCK_CONN ();
 	g_free (vcard);
 	return 0;
+}
+#endif
+
+/**
+ * e_book_async_commit_contact_ex:
+ * @book: an #EBook
+ * @contact: an #EContact
+ * @cb: function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Applies the changes made to @contact to the stored version in
+ * @book without blocking.
+ *
+ * Returns: %TRUE if the operation was started, %FALSE otherwise.
+ * Since: 3.0
+ **/
+gboolean
+e_book_async_commit_contact_ex (EBook                 *book,
+			        EContact              *contact,
+			        EBookExCallback        cb,
+			        gpointer               closure)
+{
+	gchar *vcard;
+	AsyncData *data;
+
+	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_ex_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
+
+	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+
+	data = g_slice_new0 (AsyncData);
+	data->book = g_object_ref (book);
+	data->excallback = cb;
+	data->closure = closure;
+
+	LOCK_CONN ();
+	org_gnome_evolution_dataserver_addressbook_Book_modify_contact_async (book->priv->proxy, vcard, modify_contact_reply, data);
+	UNLOCK_CONN ();
+	g_free (vcard);
+
+	return TRUE;
 }
 
 /**
@@ -535,8 +652,12 @@ e_book_get_required_fields  (EBook            *book,
 static void
 get_required_fields_reply(DBusGProxy *proxy, gchar **fields, GError *error, gpointer user_data)
 {
+	GError *err = NULL;
 	AsyncData *data = user_data;
+	EBookEListExCallback excb = data->excallback;
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookEListCallback cb = data->callback;
+	#endif
 	gchar **i = fields;
 	EList *efields = e_list_new (NULL,
 				     (EListFreeFunc) g_free,
@@ -546,8 +667,17 @@ get_required_fields_reply(DBusGProxy *proxy, gchar **fields, GError *error, gpoi
 		e_list_append (efields, (*i++));
 	}
 
+	unwrap_gerror (error, &err);
+
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
-		cb (data->book, get_status_from_error (error), efields, data->closure);
+		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, efields, data->closure);
+	#endif
+	if (excb)
+		excb (data->book, err, efields, data->closure);
+
+	if (err)
+		g_error_free (err);
 
 	g_object_unref (efields);
 	g_free (fields);
@@ -555,6 +685,7 @@ get_required_fields_reply(DBusGProxy *proxy, gchar **fields, GError *error, gpoi
 	g_slice_free (AsyncData, data);
 }
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_get_required_fields:
  * @book: an #EBook
@@ -565,6 +696,8 @@ get_required_fields_reply(DBusGProxy *proxy, gchar **fields, GError *error, gpoi
  * all contacts in this @book. This function does not block.
  *
  * Returns: %TRUE if the operation was started, %FALSE otherwise.
+ *
+ * Deprecated: 3.0: Use e_book_async_get_required_fields_ex() instead.
  **/
 guint
 e_book_async_get_required_fields (EBook              *book,
@@ -585,6 +718,41 @@ e_book_async_get_required_fields (EBook              *book,
 	org_gnome_evolution_dataserver_addressbook_Book_get_required_fields_async (book->priv->proxy, get_required_fields_reply, data);
 	UNLOCK_CONN ();
 	return 0;
+}
+#endif
+
+/**
+ * e_book_async_get_required_fields_ex:
+ * @book: an #EBook
+ * @cb: function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Gets a list of fields that are required to be filled in for
+ * all contacts in this @book. This function does not block.
+ *
+ * Returns: %TRUE if the operation was started, %FALSE otherwise.
+ * Since: 3.0
+ **/
+gboolean
+e_book_async_get_required_fields_ex (EBook               *book,
+				     EBookEListExCallback cb,
+				     gpointer             closure)
+{
+	AsyncData *data;
+
+	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_ex_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+
+	data = g_slice_new0 (AsyncData);
+	data->book = g_object_ref (book);
+	data->excallback = cb;
+	data->closure = closure;
+
+	LOCK_CONN ();
+	org_gnome_evolution_dataserver_addressbook_Book_get_required_fields_async (book->priv->proxy, get_required_fields_reply, data);
+	UNLOCK_CONN ();
+
+	return TRUE;
 }
 
 /**
@@ -625,8 +793,12 @@ e_book_get_supported_fields  (EBook            *book,
 static void
 get_supported_fields_reply(DBusGProxy *proxy, gchar **fields, GError *error, gpointer user_data)
 {
+	GError *err = NULL;
 	AsyncData *data = user_data;
+	EBookEListExCallback excb = data->excallback;
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookEListCallback cb = data->callback;
+	#endif
 	gchar **i = fields;
 	EList *efields = e_list_new (NULL,  (EListFreeFunc) g_free, NULL);
 
@@ -634,8 +806,17 @@ get_supported_fields_reply(DBusGProxy *proxy, gchar **fields, GError *error, gpo
 		e_list_append (efields, (*i++));
 	}
 
+	unwrap_gerror (error, &err);
+
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
-		cb (data->book, get_status_from_error (error), efields, data->closure);
+		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, efields, data->closure);
+	#endif
+	if (excb)
+		excb (data->book, err, efields, data->closure);
+
+	if (err)
+		g_error_free (err);
 
 	g_object_unref (efields);
 	g_free (fields);
@@ -644,6 +825,7 @@ get_supported_fields_reply(DBusGProxy *proxy, gchar **fields, GError *error, gpo
 	g_slice_free (AsyncData, data);
 }
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_get_supported_fields:
  * @book: an #EBook
@@ -655,6 +837,8 @@ get_supported_fields_reply(DBusGProxy *proxy, gchar **fields, GError *error, gpo
  * function does not block.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Deprecated: 3.0: Use e_book_async_get_supported_fields_ex() instead.
  **/
 guint
 e_book_async_get_supported_fields (EBook              *book,
@@ -676,6 +860,42 @@ e_book_async_get_supported_fields (EBook              *book,
 	UNLOCK_CONN ();
 
 	return 0;
+}
+#endif
+
+/**
+ * e_book_async_get_supported_fields_ex:
+ * @book: an #EBook
+ * @cb: function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Gets a list of fields that can be stored for contacts
+ * in this @book. Other fields may be discarded. This
+ * function does not block.
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ * Since: 3.0
+ **/
+gboolean
+e_book_async_get_supported_fields_ex (EBook               *book,
+				      EBookEListExCallback cb,
+				      gpointer             closure)
+{
+	AsyncData *data;
+
+	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_ex_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+
+	data = g_slice_new0 (AsyncData);
+	data->book = g_object_ref (book);
+	data->excallback = cb;
+	data->closure = closure;
+
+	LOCK_CONN ();
+	org_gnome_evolution_dataserver_addressbook_Book_get_supported_fields_async (book->priv->proxy, get_supported_fields_reply, data);
+	UNLOCK_CONN ();
+
+	return TRUE;
 }
 
 /**
@@ -715,8 +935,12 @@ e_book_get_supported_auth_methods (EBook            *book,
 static void
 get_supported_auth_methods_reply(DBusGProxy *proxy, gchar **methods, GError *error, gpointer user_data)
 {
+	GError *err = NULL;
 	AsyncData *data = user_data;
+	EBookEListExCallback excb = data->excallback;
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookEListCallback cb = data->callback;
+	#endif
 	gchar **i = methods;
 	EList *emethods = e_list_new (NULL,
 				      (EListFreeFunc) g_free,
@@ -726,8 +950,17 @@ get_supported_auth_methods_reply(DBusGProxy *proxy, gchar **methods, GError *err
 		e_list_append (emethods, (*i++));
 	}
 
+	unwrap_gerror (error, &err);
+
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
-		cb (data->book, get_status_from_error (error), emethods, data->closure);
+		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, emethods, data->closure);
+	#endif
+	if (excb)
+		excb (data->book, err, emethods, data->closure);
+
+	if (err)
+		g_error_free (err);
 
 	g_object_unref (emethods);
 	g_free (methods);
@@ -736,6 +969,7 @@ get_supported_auth_methods_reply(DBusGProxy *proxy, gchar **methods, GError *err
 	g_slice_free (AsyncData, data);
 }
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_get_supported_auth_methods:
  * @book: an #EBook
@@ -746,7 +980,9 @@ get_supported_auth_methods_reply(DBusGProxy *proxy, gchar **methods, GError *err
  * This function does not block.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
-**/
+ *
+ * Deprecated: 3.0: Use e_book_async_get_supported_auth_methods_ex() instead.
+ **/
 guint
 e_book_async_get_supported_auth_methods (EBook              *book,
 					 EBookEListCallback  cb,
@@ -767,7 +1003,42 @@ e_book_async_get_supported_auth_methods (EBook              *book,
 	UNLOCK_CONN ();
 
 	return 0;
- }
+}
+#endif
+
+/**
+ * e_book_async_get_supported_auth_methods_ex:
+ * @book: an #EBook
+ * @cb: function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Queries @book for the list of authentication methods it supports.
+ * This function does not block.
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ * Since: 3.0
+ **/
+gboolean
+e_book_async_get_supported_auth_methods_ex (EBook               *book,
+					    EBookEListExCallback cb,
+					    gpointer             closure)
+{
+	AsyncData *data;
+
+	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_ex_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+
+	data = g_slice_new0 (AsyncData);
+	data->book = g_object_ref (book);
+	data->excallback = cb;
+	data->closure = closure;
+
+	LOCK_CONN ();
+	org_gnome_evolution_dataserver_addressbook_Book_get_supported_auth_methods_async (book->priv->proxy, get_supported_auth_methods_reply, data);
+	UNLOCK_CONN ();
+
+	return TRUE;
+}
 
 /**
  * e_book_authenticate_user:
@@ -805,16 +1076,30 @@ e_book_authenticate_user (EBook         *book,
 static void
 authenticate_user_reply(DBusGProxy *proxy, GError *error, gpointer user_data)
 {
+	GError *err = NULL;
 	AsyncData *data = user_data;
+	EBookExCallback excb = data->excallback;
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
+	#endif
 
+	unwrap_gerror (error, &err);
+
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
-		cb (data->book, get_status_from_error (error), data->closure);
+		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, data->closure);
+	#endif
+	if (excb)
+		excb (data->book, err, data->closure);
+
+	if (err)
+		g_error_free (err);
 
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
 }
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_authenticate_user:
  * @book: an #EBook
@@ -830,6 +1115,8 @@ authenticate_user_reply(DBusGProxy *proxy, GError *error, gpointer user_data)
  * This function does not block.
  *
  * Returns: %FALSE if successful, %TRUE otherwise.
+ *
+ * Deprecated: 3.0: Use e_book_async_authenticate_user_ex() instead.
  **/
 guint
 e_book_async_authenticate_user (EBook                 *book,
@@ -857,6 +1144,52 @@ e_book_async_authenticate_user (EBook                 *book,
 	UNLOCK_CONN ();
 
 	return 0;
+}
+#endif
+
+/**
+ * e_book_async_authenticate_user_ex:
+ * @book: an #EBook
+ * @user: user name
+ * @passwd: password
+ * @auth_method: string indicating authentication method
+ * @cb: function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Authenticate @user with @passwd, using the auth method
+ * @auth_method. @auth_method must be one of the authentication
+ * methods returned using e_book_get_supported_auth_methods.
+ * This function does not block.
+ *
+ * Returns: %FALSE if successful, %TRUE otherwise.
+ * Since: 3.0
+ **/
+gboolean
+e_book_async_authenticate_user_ex (EBook                 *book,
+				   const gchar           *user,
+				   const gchar           *passwd,
+				   const gchar           *auth_method,
+				   EBookExCallback        cb,
+				   gpointer               closure)
+{
+	AsyncData *data;
+
+	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_ex_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_if_fail (user, E_BOOK_ERROR_INVALID_ARG);
+	e_return_ex_async_error_if_fail (passwd, E_BOOK_ERROR_INVALID_ARG);
+	e_return_ex_async_error_if_fail (auth_method, E_BOOK_ERROR_INVALID_ARG);
+
+	data = g_slice_new0 (AsyncData);
+	data->book = g_object_ref (book);
+	data->excallback = cb;
+	data->closure = closure;
+
+	LOCK_CONN ();
+	org_gnome_evolution_dataserver_addressbook_Book_authenticate_user_async (book->priv->proxy, user, passwd, auth_method, authenticate_user_reply, data);
+	UNLOCK_CONN ();
+
+	return TRUE;
 }
 
 /**
@@ -897,31 +1230,34 @@ e_book_get_contact (EBook       *book,
 static void
 get_contact_reply(DBusGProxy *proxy, gchar *vcard, GError *error, gpointer user_data)
 {
+	GError *err = NULL;
 	AsyncData *data = user_data;
+	EBookContactExCallback excb = data->excallback;
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookContactCallback cb = data->callback;
-	EBookStatus status = get_status_from_error (error);
+	#endif
+
+	unwrap_gerror (error, &err);
 
 	/* Protect against garbage return values on error */
 	if (error)
 		vcard = NULL;
 
-	if (cb) {
-		if (error == NULL) {
-			cb (data->book, status, e_contact_new_from_vcard (vcard), data->closure);
-		} else {
-			cb (data->book, status, NULL, data->closure);
-		}
-	} else {
-		g_warning (G_STRLOC ": cannot get contact: %s", error->message);
-	}
+	#ifndef E_BOOK_DISABLE_DEPRECATED
+	if (cb)
+		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, err ? NULL : e_contact_new_from_vcard (vcard), data->closure);
+	#endif
+	if (excb)
+		excb (data->book, err, err ? NULL : e_contact_new_from_vcard (vcard), data->closure);
 
-	if (error)
-		g_error_free (error);
+	if (err)
+		g_error_free (err);
 	g_free (vcard);
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
 }
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_get_contact:
  * @book: an #EBook
@@ -932,6 +1268,8 @@ get_contact_reply(DBusGProxy *proxy, gchar *vcard, GError *error, gpointer user_
  * Retrieves a contact specified by @id from @book.
  *
  * Returns: %FALSE if successful, %TRUE otherwise
+ *
+ * Deprecated: 3.0: Use e_book_async_get_contact_ex() instead.
  **/
 guint
 e_book_async_get_contact (EBook                 *book,
@@ -955,6 +1293,43 @@ e_book_async_get_contact (EBook                 *book,
 	UNLOCK_CONN ();
 
 	return 0;
+}
+#endif
+
+/**
+ * e_book_async_get_contact_ex:
+ * @book: an #EBook
+ * @id: a unique string ID specifying the contact
+ * @cb: function to call when operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Retrieves a contact specified by @id from @book.
+ *
+ * Returns: %FALSE if successful, %TRUE otherwise
+ * Since: 3.0
+ **/
+gboolean
+e_book_async_get_contact_ex (EBook                 *book,
+			     const gchar           *id,
+			     EBookContactExCallback cb,
+			     gpointer               closure)
+{
+	AsyncData *data;
+
+	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_ex_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_val_if_fail (id, E_BOOK_ERROR_INVALID_ARG);
+
+	data = g_slice_new0 (AsyncData);
+	data->book = g_object_ref (book);
+	data->excallback = cb;
+	data->closure = closure;
+
+	LOCK_CONN ();
+	org_gnome_evolution_dataserver_addressbook_Book_get_contact_async (book->priv->proxy, id, get_contact_reply, data);
+	UNLOCK_CONN ();
+
+	return TRUE;
 }
 
 /**
@@ -992,11 +1367,24 @@ e_book_remove_contact (EBook       *book,
 static void
 remove_contact_reply (DBusGProxy *proxy, GError *error, gpointer user_data)
 {
+	GError *err = NULL;
 	AsyncData *data = user_data;
+	EBookExCallback excb = data->excallback;
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
+	#endif
 
+	unwrap_gerror (error, &err);
+
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
-		cb (data->book, get_status_from_error (error), data->closure);
+		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, data->closure);
+	#endif
+	if (excb)
+		excb (data->book, err, data->closure);
+
+	if (err)
+		g_error_free (err);
 
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
@@ -1038,6 +1426,7 @@ e_book_remove_contacts (EBook    *book,
 	return unwrap_gerror (err, error);
 }
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_remove_contact:
  * @book: an #EBook
@@ -1048,6 +1437,8 @@ e_book_remove_contacts (EBook    *book,
  * Removes @contact from @book.
  *
  * Returns: %TRUE if successful, %FALSE otherwise
+ *
+ * Deprecated: 3.0: Use e_book_async_remove_contact_ex() instead.
  **/
 guint
 e_book_async_remove_contact (EBook                 *book,
@@ -1075,21 +1466,76 @@ e_book_async_remove_contact (EBook                 *book,
 	UNLOCK_CONN ();
 
 	return 0;
- }
+}
+#endif
+
+/**
+ * e_book_async_remove_contact_ex:
+ * @book: an #EBook
+ * @contact: an #EContact
+ * @cb: a function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Removes @contact from @book.
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise
+ * Since: 3.0
+ **/
+gboolean
+e_book_async_remove_contact_ex (EBook                 *book,
+			        EContact              *contact,
+			        EBookExCallback        cb,
+			        gpointer               closure)
+{
+	AsyncData *data;
+	const gchar *l[2];
+
+	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_ex_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
+
+	l[0] = e_contact_get_const (contact, E_CONTACT_UID);
+	l[1] = NULL;
+
+	data = g_slice_new0 (AsyncData);
+	data->book = g_object_ref (book);
+	data->excallback = cb;
+	data->closure = closure;
+
+	LOCK_CONN ();
+	org_gnome_evolution_dataserver_addressbook_Book_remove_contacts_async (book->priv->proxy, l, remove_contact_reply, data);
+	UNLOCK_CONN ();
+
+	return TRUE;
+}
 
 static void
 remove_contact_by_id_reply (DBusGProxy *proxy, GError *error, gpointer user_data)
 {
+	GError *err = NULL;
 	AsyncData *data = user_data;
+	EBookExCallback excb = data->excallback;
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
+	#endif
 
+	unwrap_gerror (error, &err);
+
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
-		cb (data->book, get_status_from_error (error), data->closure);
+		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, data->closure);
+	#endif
+	if (excb)
+		excb (data->book, err, data->closure);
+
+	if (err)
+		g_error_free (err);
 
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
 }
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_remove_contact_by_id:
  * @book: an #EBook
@@ -1100,6 +1546,8 @@ remove_contact_by_id_reply (DBusGProxy *proxy, GError *error, gpointer user_data
  * Removes the contact with id @id from @book.
  *
  * Returns: %TRUE if successful, %FALSE otherwise
+ *
+ * Deprecated: 3.0: Use e_book_async_remove_contact_by_id_ex() instead.
  **/
 guint
 e_book_async_remove_contact_by_id (EBook                 *book,
@@ -1128,20 +1576,75 @@ e_book_async_remove_contact_by_id (EBook                 *book,
 
 	return 0;
 }
+#endif
+
+/**
+ * e_book_async_remove_contact_by_id_ex:
+ * @book: an #EBook
+ * @id: a unique ID string specifying the contact
+ * @cb: a function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Removes the contact with id @id from @book.
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise
+ * Since: 3.0
+ **/
+gboolean
+e_book_async_remove_contact_by_id_ex (EBook                 *book,
+				      const gchar           *id,
+				      EBookExCallback        cb,
+				      gpointer               closure)
+{
+	AsyncData *data;
+	const gchar *l[2];
+
+	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_ex_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_if_fail (id, E_BOOK_ERROR_INVALID_ARG);
+
+	l[0] = id;
+	l[1] = NULL;
+
+	data = g_slice_new0 (AsyncData);
+	data->book = g_object_ref (book);
+	data->excallback = cb;
+	data->closure = closure;
+
+	LOCK_CONN ();
+	org_gnome_evolution_dataserver_addressbook_Book_remove_contacts_async (book->priv->proxy, l, remove_contact_by_id_reply, data);
+	UNLOCK_CONN ();
+
+	return TRUE;
+}
 
 static void
 remove_contacts_reply (DBusGProxy *proxy, GError *error, gpointer user_data)
 {
+	GError *err = NULL;
 	AsyncData *data = user_data;
+	EBookExCallback excb = data->excallback;
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
+	#endif
 
+	unwrap_gerror (error, &err);
+
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
-		cb (data->book, get_status_from_error (error), data->closure);
+		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, data->closure);
+	#endif
+	if (excb)
+		excb (data->book, err, data->closure);
+
+	if (err)
+		g_error_free (err);
 
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
 }
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_remove_contacts:
  * @book: an #EBook
@@ -1155,6 +1658,8 @@ remove_contacts_reply (DBusGProxy *proxy, GError *error, gpointer user_data)
  * as a batch request.
  *
  * Returns: %TRUE if successful, %FALSE otherwise
+ *
+ * Deprecated: 3.0: Use e_book_async_remove_contacts_ex() instead.
  **/
 guint
 e_book_async_remove_contacts (EBook                 *book,
@@ -1188,6 +1693,56 @@ e_book_async_remove_contacts (EBook                 *book,
 	g_free (l);
 
 	return 0;
+}
+#endif
+
+/**
+ * e_book_async_remove_contacts_ex:
+ * @book: an #EBook
+ * @ids: a #GList of const gchar *id's
+ * @cb: a function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Removes the contacts with ids from the list @ids from @book.  This is
+ * always more efficient than calling e_book_remove_contact() if you
+ * have more than one id to remove, as some backends can implement it
+ * as a batch request.
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise
+ * Since: 3.0
+ **/
+gboolean
+e_book_async_remove_contacts_ex (EBook                 *book,
+			         GList                 *ids,
+			         EBookExCallback        cb,
+			         gpointer               closure)
+{
+	AsyncData *data;
+	gchar **l;
+
+	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_ex_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+
+	if (ids == NULL) {
+		if (cb)
+			cb (book, E_BOOK_ERROR_OK, closure);
+		return 0;
+	}
+
+	l = flatten_stringlist (ids);
+
+	data = g_slice_new0 (AsyncData);
+	data->book = g_object_ref (book);
+	data->excallback = cb;
+	data->closure = closure;
+
+	LOCK_CONN ();
+	org_gnome_evolution_dataserver_addressbook_Book_remove_contacts_async (book->priv->proxy, (const gchar **) l, remove_contacts_reply, data);
+	UNLOCK_CONN ();
+
+	g_free (l);
+
+	return TRUE;
 }
 
 /**
@@ -1239,7 +1794,7 @@ e_book_get_book_view (EBook       *book,
 		*book_view = _e_book_view_new (book, view_proxy, &connection_lock);
 	} else {
 		*book_view = NULL;
-		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CORBA_EXCEPTION,
+		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_DBUS_EXCEPTION,
 			     "Cannot get connection to view");
 		ret = FALSE;
 	}
@@ -1256,34 +1811,43 @@ get_book_view_reply (DBusGProxy *proxy, gchar *view_path, GError *error, gpointe
 	AsyncData *data = user_data;
 	GError *err = NULL;
 	EBookView *view = NULL;
+	EBookBookViewExCallback excb = data->excallback;
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookBookViewCallback cb = data->callback;
+	#endif
 	DBusGProxy *view_proxy;
-	EBookStatus status;
 
 	if (view_path) {
+		GError *dbus_error = NULL;
+
 		LOCK_CONN ();
 		view_proxy = dbus_g_proxy_new_for_name_owner (connection, E_DATA_BOOK_FACTORY_SERVICE_NAME, view_path,
-							      "org.gnome.evolution.dataserver.addressbook.BookView", &err);
+							      "org.gnome.evolution.dataserver.addressbook.BookView", &dbus_error);
 		UNLOCK_CONN ();
 		if (view_proxy) {
 			view = _e_book_view_new (data->book, view_proxy, &connection_lock);
-			status = E_BOOK_ERROR_OK;
 		} else {
-			g_warning (G_STRLOC ": cannot get connection to view: %s", err->message);
-			g_error_free (err);
-			status = E_BOOK_ERROR_CORBA_EXCEPTION;
+			unwrap_gerror (dbus_error, &err);
+			g_error_free (dbus_error);
 		}
 	} else {
-		status = get_status_from_error (error);
+		unwrap_gerror (error, &err);
 	}
 
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
-		cb (data->book, status, view, data->closure);
+		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, view, data->closure);
+	#endif
+	if (excb)
+		excb (data->book, err, view, data->closure);
 
+	if (err)
+		g_error_free (err);
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
 }
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_get_book_view:
  * @book: an #EBook
@@ -1297,6 +1861,8 @@ get_book_view_reply (DBusGProxy *proxy, gchar *view_path, GError *error, gpointe
  * specified by @requested_fields and limited at @max_results records.
  *
  * Returns: %FALSE if successful, %TRUE otherwise
+ *
+ * Deprecated: 3.0: Use e_book_async_get_book_view_ex() instead.
  **/
 guint
 e_book_async_get_book_view (EBook                 *book,
@@ -1327,6 +1893,53 @@ e_book_async_get_book_view (EBook                 *book,
 	g_free (sexp);
 	return 0;
 }
+#endif
+
+/**
+ * e_book_async_get_book_view_ex:
+ * @book: an #EBook
+ * @query: an #EBookQuery
+ * @requested_fields: a #GList containing the names of fields to return, or NULL for all
+ * @max_results: the maximum number of contacts to show (or 0 for all)
+ * @cb: a function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Query @book with @query, creating a #EBookView with the fields
+ * specified by @requested_fields and limited at @max_results records.
+ *
+ * Returns: %FALSE if successful, %TRUE otherwise
+ * Since: 3.0
+ **/
+gboolean
+e_book_async_get_book_view_ex (EBook                  *book,
+			       EBookQuery             *query,
+			       GList                  *requested_fields,
+			       gint                    max_results,
+			       EBookBookViewExCallback cb,
+			       gpointer                closure)
+{
+	AsyncData *data;
+	gchar *sexp;
+
+	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_ex_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_val_if_fail (query, E_BOOK_ERROR_INVALID_ARG);
+
+	data = g_slice_new0 (AsyncData);
+	data->book = g_object_ref (book);
+	data->excallback = cb;
+	data->closure = closure;
+
+	sexp = e_book_query_to_string (query);
+
+	LOCK_CONN ();
+	org_gnome_evolution_dataserver_addressbook_Book_get_book_view_async (book->priv->proxy, sexp, max_results, get_book_view_reply, data);
+	UNLOCK_CONN ();
+
+	g_free (sexp);
+	return TRUE;
+}
+
 /**
  * e_book_get_contacts:
  * @book: an #EBook
@@ -1374,9 +1987,15 @@ e_book_get_contacts (EBook       *book,
 static void
 get_contacts_reply(DBusGProxy *proxy, gchar **vcards, GError *error, gpointer user_data)
 {
+	GError *err = NULL;
 	AsyncData *data = user_data;
 	GList *list = NULL;
+	EBookListExCallback excb = data->excallback;
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookListCallback cb = data->callback;
+	#endif
+
+	unwrap_gerror (error, &err);
 
 	if (!error && vcards) {
 		gchar **i = vcards;
@@ -1390,13 +2009,22 @@ get_contacts_reply(DBusGProxy *proxy, gchar **vcards, GError *error, gpointer us
 		list = g_list_reverse (list);
 	}
 
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
-		cb (data->book, get_status_from_error (error), list, data->closure);
+		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, list, data->closure);
+	#endif
+
+	if (excb)
+		excb (data->book, err, list, data->closure);
+
+	if (err)
+		g_error_free (err);
 
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
 }
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_get_contacts:
  * @book: an #EBook
@@ -1407,6 +2035,8 @@ get_contacts_reply(DBusGProxy *proxy, gchar **vcards, GError *error, gpointer us
  * Query @book with @query.
  *
  * Returns: %FALSE on success, %TRUE otherwise
+ *
+ * Deprecated: 3.0: Use e_book_async_get_contacts_ex() instead.
  **/
 guint
 e_book_async_get_contacts (EBook             *book,
@@ -1433,6 +2063,47 @@ e_book_async_get_contacts (EBook             *book,
 	UNLOCK_CONN ();
 	g_free (sexp);
 	return 0;
+}
+#endif
+
+/**
+ * e_book_async_get_contacts_ex:
+ * @book: an #EBook
+ * @query: an #EBookQuery
+ * @cb: a function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Query @book with @query.
+ *
+ * Returns: %FALSE on success, %TRUE otherwise
+ * Since: 3.0
+ **/
+gboolean
+e_book_async_get_contacts_ex (EBook              *book,
+			      EBookQuery         *query,
+			      EBookListExCallback cb,
+			      gpointer            closure)
+{
+	AsyncData *data;
+	gchar *sexp;
+
+	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_ex_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_val_if_fail (query, E_BOOK_ERROR_INVALID_ARG);
+
+	sexp = e_book_query_to_string (query);
+
+	data = g_slice_new0 (AsyncData);
+	data->book = g_object_ref (book);
+	data->excallback = cb;
+	data->closure = closure;
+
+	LOCK_CONN ();
+	org_gnome_evolution_dataserver_addressbook_Book_get_contact_list_async (book->priv->proxy, sexp, get_contacts_reply, data);
+	UNLOCK_CONN ();
+	g_free (sexp);
+
+	return TRUE;
 }
 
 static GList *
@@ -1502,20 +2173,35 @@ e_book_get_changes (EBook       *book,
 static void
 get_changes_reply (DBusGProxy *proxy, GPtrArray *changes, GError *error, gpointer user_data)
 {
+	GError *err = NULL;
 	AsyncData *data = user_data;
+	EBookListExCallback excb = data->excallback;
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookListCallback cb = data->callback;
+	#endif
 	GList *list = NULL;
+
+	unwrap_gerror (error, &err);
 
 	if (changes)
 		list = parse_changes_array (changes);
 
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
-		cb (data->book, get_status_from_error (error), list, data->closure);
+		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, list, data->closure);
+	#endif
+
+	if (excb)
+		excb (data->book, err, list, data->closure);
+
+	if (err)
+		g_error_free (err);
 
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
 }
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_get_changes:
  * @book: an #EBook
@@ -1527,6 +2213,8 @@ get_changes_reply (DBusGProxy *proxy, GPtrArray *changes, GError *error, gpointe
  * for a given change ID.
  *
  * Returns: TRUE on success, FALSE otherwise
+ *
+ * Deprecated: 3.0: Use e_book_async_get_changes_ex() instead.
  */
 guint
 e_book_async_get_changes (EBook             *book,
@@ -1549,6 +2237,43 @@ e_book_async_get_changes (EBook             *book,
 	UNLOCK_CONN ();
 
 	return 0;
+}
+#endif
+
+/**
+ * e_book_async_get_changes_ex:
+ * @book: an #EBook
+ * @changeid:  the change ID
+ * @cb: function to call when operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Get the set of changes since the previous call to #e_book_async_get_changes
+ * for a given change ID.
+ *
+ * Returns: TRUE on success, FALSE otherwise
+ * Since: 3.0
+ */
+gboolean
+e_book_async_get_changes_ex (EBook              *book,
+			     const gchar        *changeid,
+			     EBookListExCallback cb,
+			     gpointer            closure)
+{
+	AsyncData *data;
+
+	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_ex_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+
+	data = g_slice_new0 (AsyncData);
+	data->book = g_object_ref (book);
+	data->excallback = cb;
+	data->closure = closure;
+
+	LOCK_CONN ();
+	org_gnome_evolution_dataserver_addressbook_Book_get_changes_async (book->priv->proxy, changeid, get_changes_reply, data);
+	UNLOCK_CONN ();
+
+	return TRUE;
 }
 
 /**
@@ -1643,7 +2368,6 @@ e_book_open (EBook     *book,
 	     GError   **error)
 {
 	GError *err = NULL;
-	EBookStatus status;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
@@ -1651,40 +2375,48 @@ e_book_open (EBook     *book,
 	LOCK_CONN ();
 	if (!org_gnome_evolution_dataserver_addressbook_Book_open (book->priv->proxy, only_if_exists, &err)) {
 		UNLOCK_CONN ();
-		g_propagate_error (error, err);
+
+		unwrap_gerror (err, error);
+
 		return FALSE;
 	}
 	UNLOCK_CONN ();
 
-	status = get_status_from_error (err);
-
-	if (status == E_BOOK_ERROR_OK) {
+	if (!err)
 		book->priv->loaded = TRUE;
-		return TRUE;
-	} else {
-		g_propagate_error (error, err);
-		return FALSE;
-	}
+
+	return unwrap_gerror (err, error);
 }
 
 static void
 open_reply(DBusGProxy *proxy, GError *error, gpointer user_data)
 {
+	GError *err = NULL;
 	AsyncData *data = user_data;
+	EBookExCallback excb = data->excallback;
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
-	EDataBookStatus status;
+	#endif
 
-	status = get_status_from_error (error);
+	unwrap_gerror (error, &err);
 
-	data->book->priv->loaded = (status == E_BOOK_ERROR_OK);
+	data->book->priv->loaded = !error;
 
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
-		cb (data->book, status, data->closure);
+		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, data->closure);
+	#endif
+	if (excb)
+		excb (data->book, err, data->closure);
+
+	if (err)
+		g_error_free (err);
 
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
 }
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_open:
  * @book: an #EBook
@@ -1696,6 +2428,8 @@ open_reply(DBusGProxy *proxy, GError *error, gpointer user_data)
  * This function does not block.
  *
  * Returns: %FALSE if successful, %TRUE otherwise.
+ *
+ * Deprecated: 3.0: Use e_book_async_open_ex() instead.
  **/
 guint
 e_book_async_open (EBook                 *book,
@@ -1718,6 +2452,43 @@ e_book_async_open (EBook                 *book,
 	UNLOCK_CONN ();
 
 	return 0;
+}
+#endif
+
+/**
+ * e_book_async_open_ex:
+ * @book: an #EBook
+ * @only_if_exists: if %TRUE, fail if this book doesn't already exist, otherwise create it first
+ * @open_response: a function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Opens the addressbook, making it ready for queries and other operations.
+ * This function does not block.
+ *
+ * Returns: %FALSE if successful, %TRUE otherwise.
+ * Since: 3.0
+ **/
+gboolean
+e_book_async_open_ex (EBook                 *book,
+		      gboolean               only_if_exists,
+		      EBookExCallback        cb,
+		      gpointer               closure)
+{
+	AsyncData *data;
+
+	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_ex_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+
+	data = g_slice_new0 (AsyncData);
+	data->book = g_object_ref (book);
+	data->excallback = cb;
+	data->closure = closure;
+
+	LOCK_CONN ();
+	org_gnome_evolution_dataserver_addressbook_Book_open_async (book->priv->proxy, only_if_exists, open_reply, data);
+	UNLOCK_CONN ();
+
+	return TRUE;
 }
 
 /**
@@ -1749,15 +2520,30 @@ e_book_remove (EBook   *book,
 static void
 remove_reply(DBusGProxy *proxy, GError *error, gpointer user_data)
 {
+	GError *err = NULL;
 	AsyncData *data = user_data;
+	EBookExCallback excb = data->excallback;
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
+	#endif
+
+	unwrap_gerror (error, &err);
+
+	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
-		cb (data->book, get_status_from_error (error), data->closure);
+		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, data->closure);
+	#endif
+	if (excb)
+		excb (data->book, err, data->closure);
+
+	if (err)
+		g_error_free (err);
 
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
 }
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_remove:
  * @book: an #EBook
@@ -1768,6 +2554,8 @@ remove_reply(DBusGProxy *proxy, GError *error, gpointer user_data)
  * deletes the database file. You cannot get it back!
  *
  * Returns: %FALSE if successful, %TRUE otherwise.
+ *
+ * Deprecated: 3.0: Use e_book_async_remove_ex() instead.
  **/
 guint
 e_book_async_remove (EBook   *book,
@@ -1789,6 +2577,41 @@ e_book_async_remove (EBook   *book,
 	UNLOCK_CONN ();
 
 	return 0;
+}
+#endif
+
+/**
+ * e_book_async_remove_ex:
+ * @book: an #EBook
+ * @cb: a function to call when the operation finishes
+ * @closure: data to pass to callback function
+ *
+ * Remove the backing data for this #EBook. For example, with the file backend this
+ * deletes the database file. You cannot get it back!
+ *
+ * Returns: %FALSE if successful, %TRUE otherwise.
+ * Since: 3.0
+ **/
+gboolean
+e_book_async_remove_ex (EBook   *book,
+		        EBookExCallback cb,
+		        gpointer closure)
+{
+	AsyncData *data;
+
+	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
+	e_return_ex_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+
+	data = g_slice_new0 (AsyncData);
+	data->book = g_object_ref (book);
+	data->excallback = cb;
+	data->closure = closure;
+
+	LOCK_CONN ();
+	org_gnome_evolution_dataserver_addressbook_Book_remove_async (book->priv->proxy, remove_reply, data);
+	UNLOCK_CONN ();
+
+	return TRUE;
 }
 
 /**
@@ -2498,33 +3321,6 @@ e_book_new_default_addressbook   (GError **error)
 	return book;
 }
 
-/**
- * If the specified GError is a remote error, then create a new error
- * representing the remote error.  If the error is anything else, then leave it
- * alone.
- */
-static gboolean
-unwrap_gerror (GError *error, GError **client_error)
-{
-	if (error == NULL)
-		return TRUE;
-
-	if (error->domain == DBUS_GERROR && error->code == DBUS_GERROR_REMOTE_EXCEPTION) {
-		GError *new;
-		gint code;
-		if (client_error) {
-			code = get_status_from_error (error);
-			new = g_error_new_literal (E_BOOK_ERROR, code, error->message);
-			*client_error = new;
-		}
-		g_error_free (error);
-	} else {
-		if (client_error)
-			*client_error = error;
-	}
-	return FALSE;
-}
-
 static gboolean
 strcaseequal_no_underscore (const gchar *str1, const gchar *str2)
 {
@@ -2548,7 +3344,7 @@ strcaseequal_no_underscore (const gchar *str1, const gchar *str2)
 
 /**
  * If the GError is a remote error, extract the EBookStatus embedded inside.
- * Otherwise return CORBA_EXCEPTION (I know this is DBus...).
+ * Otherwise return DBUS_EXCEPTION (I know this is DBus...).
  */
 static EBookStatus
 get_status_from_error (GError *error)
@@ -2578,7 +3374,9 @@ get_status_from_error (GError *error)
 		{ err ("E_DATA_BOOK_STATUS_COULD_NOT_CANCEL",			E_BOOK_ERROR_COULD_NOT_CANCEL) },
 		{ err ("E_DATA_BOOK_STATUS_OTHER_ERROR",			E_BOOK_ERROR_OTHER_ERROR) },
 		{ err ("E_DATA_BOOK_STATUS_INVALID_SERVER_VERSION",		E_BOOK_ERROR_INVALID_SERVER_VERSION) },
-		{ err ("E_DATA_BOOK_STATUS_NO_SPACE",				E_BOOK_ERROR_NO_SPACE) }
+		{ err ("E_DATA_BOOK_STATUS_NO_SPACE",				E_BOOK_ERROR_NO_SPACE) },
+		{ err ("E_DATA_BOOK_STATUS_INVALID_ARG",			E_BOOK_ERROR_INVALID_ARG) },
+		{ err ("E_DATA_BOOK_STATUS_NOT_SUPPORTED",			E_BOOK_ERROR_NOT_SUPPORTED) }
 	};
 	#undef err
 
@@ -2603,8 +3401,35 @@ get_status_from_error (GError *error)
 		/* In this case the error was caused by DBus. Dump the message to the
 		   console as otherwise we have no idea what the problem is. */
 		g_warning ("DBus error: %s", error->message);
-		return E_BOOK_ERROR_CORBA_EXCEPTION;
+		return E_BOOK_ERROR_DBUS_EXCEPTION;
 	}
+}
+
+/**
+ * If the specified GError is a remote error, then create a new error
+ * representing the remote error.  If the error is anything else, then leave it
+ * alone.
+ */
+static gboolean
+unwrap_gerror (GError *error, GError **client_error)
+{
+	if (error == NULL)
+		return TRUE;
+
+	if (error->domain == DBUS_GERROR && error->code == DBUS_GERROR_REMOTE_EXCEPTION) {
+		GError *new;
+		gint code;
+		if (client_error) {
+			code = get_status_from_error (error);
+			new = g_error_new_literal (E_BOOK_ERROR, code, error->message);
+			*client_error = new;
+		}
+		g_error_free (error);
+	} else {
+		if (client_error)
+			*client_error = error;
+	}
+	return FALSE;
 }
 
 /**

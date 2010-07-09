@@ -39,6 +39,7 @@
 extern DBusGConnection *connection;
 
 static gboolean impl_EDataCalView_start (EDataCalView *query, GError **error);
+static gboolean impl_EDataCalView_stop (EDataCalView *query, GError **error);
 #include "e-data-cal-view-glue.h"
 
 #define THRESHOLD 32
@@ -48,8 +49,8 @@ struct _EDataCalViewPrivate {
 	ECalBackend *backend;
 
 	gboolean started;
+	gboolean stopped;
 	gboolean done;
-	EDataCalCallStatus done_status;
 
 	/* Sexp that defines the query */
 	ECalBackendSExp *sexp;
@@ -148,8 +149,8 @@ e_data_cal_view_class_init (EDataCalViewClass *klass)
                         G_OBJECT_CLASS_TYPE (klass),
                         G_SIGNAL_RUN_LAST,
                         0, NULL, NULL,
-                        g_cclosure_marshal_VOID__UINT,
-                        G_TYPE_NONE, 1, G_TYPE_UINT);
+                        e_data_cal_marshal_NONE__UINT_STRING,
+                        G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
 
 	dbus_g_object_type_install_info (G_TYPE_FROM_CLASS (klass), &dbus_glib_e_data_cal_view_object_info);
 }
@@ -178,9 +179,8 @@ e_data_cal_view_init (EDataCalView *view)
 
 	priv->backend = NULL;
 	priv->started = FALSE;
+	priv->stopped = FALSE;
 	priv->done = FALSE;
-	priv->done_status = Success;
-	priv->started = FALSE;
 	priv->sexp = NULL;
 
 	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
@@ -324,15 +324,13 @@ notify_remove (EDataCalView *view, ECalComponentId *id)
 }
 
 static void
-notify_done (EDataCalView *view)
+notify_done (EDataCalView *view, const GError *error)
 {
-	EDataCalViewPrivate *priv = view->priv;
-
 	send_pending_adds (view);
 	send_pending_changes (view);
 	send_pending_removes (view);
 
-	g_signal_emit (view, signals[DONE], 0, priv->done_status);
+	g_signal_emit (view, signals[DONE], 0, error ? error->code : 0, error ? error->message : NULL);
 }
 
 static gboolean
@@ -346,6 +344,18 @@ impl_EDataCalView_start (EDataCalView *query, GError **error)
 		priv->started = TRUE;
 		e_cal_backend_start_query (priv->backend, query);
 	}
+
+	return TRUE;
+}
+
+static gboolean
+impl_EDataCalView_stop (EDataCalView *query, GError **error)
+{
+	EDataCalViewPrivate *priv;
+
+	priv = query->priv;
+
+	priv->stopped = TRUE;
 
 	return TRUE;
 }
@@ -527,6 +537,24 @@ e_data_cal_view_is_started (EDataCalView *view)
 }
 
 /**
+ * e_data_cal_view_is_stopped:
+ * @query: A query object.
+ *
+ * Checks whether the given query has been stopped.
+ *
+ * Returns: TRUE if the query has been stopped, FALSE otherwise.
+ *
+ * Since: 3.0
+ */
+gboolean
+e_data_cal_view_is_stopped (EDataCalView *view)
+{
+	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), FALSE);
+
+	return view->priv->stopped;
+}
+
+/**
  * e_data_cal_view_is_done:
  * @query: A query object.
  *
@@ -547,30 +575,6 @@ e_data_cal_view_is_done (EDataCalView *query)
 	priv = query->priv;
 
 	return priv->done;
-}
-
-/**
- * e_data_cal_view_get_done_status:
- * @query: A query object.
- *
- * Gets the status code obtained when the initial matching of objects was done
- * for the given query.
- *
- * Returns: The query status.
- */
-EDataCalCallStatus
-e_data_cal_view_get_done_status (EDataCalView *query)
-{
-	EDataCalViewPrivate *priv;
-
-	g_return_val_if_fail (IS_QUERY (query), FALSE);
-
-	priv = query->priv;
-
-	if (priv->done)
-		return priv->done_status;
-
-	return Success;
 }
 
 /**
@@ -727,7 +731,7 @@ e_data_cal_view_notify_progress (EDataCalView *view, const gchar *message, gint 
 	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
 	priv = view->priv;
 
-	if (!priv->started)
+	if (!priv->started || priv->stopped)
 		return;
 
 	g_signal_emit (view, signals[PROGRESS], 0, message, percent);
@@ -736,24 +740,23 @@ e_data_cal_view_notify_progress (EDataCalView *view, const gchar *message, gint 
 /**
  * e_data_cal_view_notify_done:
  * @query: A query object.
- * @status: Query completion status code.
+ * @error: Query completion error, if any.
  *
  * Notifies all query listeners of the completion of the query, including a
  * status code.
  */
 void
-e_data_cal_view_notify_done (EDataCalView *view, GNOME_Evolution_Calendar_CallStatus status)
+e_data_cal_view_notify_done (EDataCalView *view, const GError *error)
 {
 	EDataCalViewPrivate *priv;
 
 	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
 	priv = view->priv;
 
-	if (!priv->started)
+	if (!priv->started || priv->stopped)
 		return;
 
 	priv->done = TRUE;
-	priv->done_status = status;
 
-	notify_done (view);
+	notify_done (view, error);
 }

@@ -28,6 +28,7 @@
 #include <dbus/dbus.h>
 #include <libebook/e-contact.h>
 #include "e-data-book-view.h"
+#include "e-data-book-marshal.h"
 
 extern DBusGConnection *connection;
 
@@ -122,8 +123,8 @@ e_data_book_view_class_init (EDataBookViewClass *klass)
 			      G_OBJECT_CLASS_TYPE (klass),
 			      G_SIGNAL_RUN_LAST,
 			      0, NULL, NULL,
-			      g_cclosure_marshal_VOID__UINT,
-			      G_TYPE_NONE, 1, G_TYPE_UINT);
+			      e_data_book_marshal_NONE__UINT_STRING,
+			      G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
 
 	g_type_class_add_private (klass, sizeof (EDataBookViewPrivate));
 
@@ -434,14 +435,14 @@ e_data_book_view_notify_remove (EDataBookView *book_view, const gchar *id)
 /**
  * e_data_book_view_notify_complete:
  * @book_view: an #EDataBookView
- * @status: the status of the query
+ * @error: the error of the query, if any
  *
  * Notifies listeners that all pending updates on @book_view
  * have been sent. The listener's information should now be
  * in sync with the backend's.
  **/
 void
-e_data_book_view_notify_complete (EDataBookView *book_view, EDataBookStatus status)
+e_data_book_view_notify_complete (EDataBookView *book_view, const GError *error)
 {
 	EDataBookViewPrivate *priv = book_view->priv;
 
@@ -459,7 +460,7 @@ e_data_book_view_notify_complete (EDataBookView *book_view, EDataBookStatus stat
 	/* We're done now, so tell the backend to stop?  TODO: this is a bit different to
 	   how the CORBA backend works... */
 
-	g_signal_emit (book_view, signals[COMPLETE], 0, status);
+	g_signal_emit (book_view, signals[COMPLETE], 0, error ? error->code : 0, error ? error->message : NULL);
 }
 
 /**

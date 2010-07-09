@@ -59,7 +59,10 @@ enum {
 	OBJECTS_MODIFIED,
 	OBJECTS_REMOVED,
 	VIEW_PROGRESS,
+	#ifndef E_CAL_DISABLE_DEPRECATED
 	VIEW_DONE,
+	#endif
+	VIEW_COMPLETE,
 	LAST_SIGNAL
 };
 
@@ -178,13 +181,17 @@ progress_cb (DBusGProxy *proxy, const gchar *message, gint percent, gpointer dat
 }
 
 static void
-done_cb (DBusGProxy *proxy, ECalendarStatus status, gpointer data)
+done_cb (DBusGProxy *proxy, ECalendarStatus status, const gchar *message, gpointer data)
 {
 	ECalView *view;
 
 	view = E_CAL_VIEW (data);
 
+	#ifndef E_CAL_DISABLE_DEPRECATED
 	g_signal_emit (G_OBJECT (view), signals[VIEW_DONE], 0, status);
+	#endif
+
+	g_signal_emit (G_OBJECT (view), signals[VIEW_COMPLETE], 0, status, message);
 }
 
 /* Object initialization function for the calendar view */
@@ -223,7 +230,8 @@ e_cal_view_set_property (GObject *object, guint property_id, const GValue *value
                 dbus_g_proxy_add_signal (priv->view_proxy, "Progress", G_TYPE_STRING, G_TYPE_UINT, G_TYPE_INVALID);
                 dbus_g_proxy_connect_signal (priv->view_proxy, "Progress", G_CALLBACK (progress_cb), view, NULL);
 
-                dbus_g_proxy_add_signal (priv->view_proxy, "Done", G_TYPE_UINT, G_TYPE_INVALID);
+                dbus_g_object_register_marshaller (e_cal_marshal_VOID__UINT_STRING, G_TYPE_NONE, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_INVALID);
+                dbus_g_proxy_add_signal (priv->view_proxy, "Done", G_TYPE_UINT, G_TYPE_STRING, G_TYPE_INVALID);
                 dbus_g_proxy_connect_signal (priv->view_proxy, "Done", G_CALLBACK (done_cb), view, NULL);
 
 		break;
@@ -346,6 +354,8 @@ e_cal_view_class_init (ECalViewClass *klass)
 			      NULL, NULL,
 			      e_cal_marshal_VOID__STRING_UINT,
 			      G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_UINT);
+
+	#ifndef E_CAL_DISABLE_DEPRECATED
 	signals[VIEW_DONE] =
 		g_signal_new ("view_done",
 			      G_TYPE_FROM_CLASS (klass),
@@ -354,6 +364,16 @@ e_cal_view_class_init (ECalViewClass *klass)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__INT,
 			      G_TYPE_NONE, 1, G_TYPE_INT);
+	#endif
+
+	signals[VIEW_COMPLETE] =
+		g_signal_new ("view_complete",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (ECalViewClass, view_complete),
+			      NULL, NULL,
+			      e_cal_marshal_VOID__UINT_STRING,
+			      G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
 }
 
 /**
@@ -409,21 +429,60 @@ e_cal_view_get_client (ECalView *view)
 void
 e_cal_view_start (ECalView *view)
 {
-	ECalViewPrivate *priv;
 	GError *error = NULL;
+	ECalViewPrivate *priv;
 
 	g_return_if_fail (view != NULL);
 	g_return_if_fail (E_IS_CAL_VIEW (view));
 
 	priv = E_CAL_VIEW_GET_PRIVATE(view);
 
-	LOCK_VIEW ();
-	if (!org_gnome_evolution_dataserver_calendar_CalView_start (priv->view_proxy, &error)) {
+	if (priv->view_proxy) {
+		LOCK_VIEW ();
+		org_gnome_evolution_dataserver_calendar_CalView_start (priv->view_proxy, &error);
 		UNLOCK_VIEW ();
-		g_printerr("%s: %s\n", G_STRFUNC, error->message);
-		g_error_free (error);
-		g_warning (G_STRLOC ": Unable to start view");
-		return;
 	}
-	UNLOCK_VIEW ();
+
+	if (error) {
+		g_warning ("Cannot start cal view: %s\n", error->message);
+
+		/* Fake a sequence-complete so that the application knows this failed */
+		#ifndef E_CAL_DISABLE_DEPRECATED
+		g_signal_emit (view, signals[VIEW_DONE], 0, E_CALENDAR_STATUS_DBUS_EXCEPTION);
+		#endif
+		g_signal_emit (view, signals[VIEW_COMPLETE], 0, E_CALENDAR_STATUS_DBUS_EXCEPTION, error->message);
+
+		g_error_free (error);
+	}
+}
+
+/**
+ * e_cal_view_stop:
+ * @view: A #ECalView object.
+ *
+ * Stops a live query to the calendar/tasks backend.
+ *
+ * Since: 3.0
+ */
+void
+e_cal_view_stop (ECalView *view)
+{
+	GError *error = NULL;
+	ECalViewPrivate *priv;
+
+	g_return_if_fail (view != NULL);
+	g_return_if_fail (E_IS_CAL_VIEW (view));
+
+	priv = E_CAL_VIEW_GET_PRIVATE(view);
+
+	if (priv->view_proxy) {
+		LOCK_VIEW ();
+		org_gnome_evolution_dataserver_calendar_CalView_stop (priv->view_proxy, &error);
+		UNLOCK_VIEW ();
+	}
+
+	if (error) {
+		g_warning ("Failed to stop view: %s", error->message);
+		g_error_free (error);
+	}
 }

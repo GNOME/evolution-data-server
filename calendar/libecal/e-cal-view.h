@@ -52,13 +52,17 @@ struct _ECalViewClass {
 	void (* objects_modified) (ECalView *view, GList *objects);
 	void (* objects_removed) (ECalView *view, GList *uids);
 	void (* view_progress) (ECalView *view, gchar *message, gint percent);
+	#ifndef E_CAL_DISABLE_DEPRECATED
 	void (* view_done) (ECalView *view, ECalendarStatus status);
+	#endif
+	void (* view_complete) (ECalView *view, ECalendarStatus status, const gchar *error_msg);
 };
 
 GType      e_cal_view_get_type (void);
 
 struct _ECal *e_cal_view_get_client (ECalView *view);
 void e_cal_view_start (ECalView *view);
+void e_cal_view_stop (ECalView *view);
 
 G_END_DECLS
 

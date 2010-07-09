@@ -7,6 +7,10 @@
     <method name="start">
       <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_EDataCalView_start"/>
     </method>
+
+    <method name="stop">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_EDataCalView_stop"/>
+    </method>
     
     <signal name="ObjectsAdded">
       <arg name="objects" type="as"/>
@@ -27,6 +31,7 @@
 
     <signal name="Done">
       <arg name="status" type="u"/>
+      <arg name="message" type="s"/>
     </signal>
   </interface>
 </node>

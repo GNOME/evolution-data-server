@@ -26,16 +26,18 @@ print_email (EContact *contact)
 }
 
 static void
-print_all_emails_cb (EBook *book, EBookStatus status, GList *contacts, gpointer closure)
+print_all_emails_cb (EBook *book, const GError *error, GList *contacts, gpointer closure)
 {
 	GList *c;
 
-	if (status == E_BOOK_ERROR_OK) {
+	if (!error) {
 		for (c = contacts; c; c = c->next) {
 			EContact *contact = E_CONTACT (c->data);
 
 			print_email (contact);
 		}
+	} else {
+		g_warning ("%s: Got error %d (%s)", G_STRFUNC, error->code, error->message);
 	}
 
 	g_main_loop_quit (loop);
@@ -48,16 +50,18 @@ print_all_emails (EBook *book)
 
 	query = e_book_query_field_exists (E_CONTACT_FULL_NAME);
 
-	e_book_async_get_contacts (book, query, print_all_emails_cb, NULL);
+	e_book_async_get_contacts_ex (book, query, print_all_emails_cb, NULL);
 
 	e_book_query_unref (query);
 }
 
 static void
-print_email_cb (EBook *book, EBookStatus status, EContact *contact, gpointer closure)
+print_email_cb (EBook *book, const GError *error, EContact *contact, gpointer closure)
 {
-	if (status == E_BOOK_ERROR_OK)
+	if (!error)
 		print_email (contact);
+	else
+		g_warning ("%s: Got error %d (%s)", G_STRFUNC, error->code, error->message);
 
 	printf ("printing all contacts\n");
 	print_all_emails (book);
@@ -66,14 +70,16 @@ print_email_cb (EBook *book, EBookStatus status, EContact *contact, gpointer clo
 static void
 print_one_email (EBook *book)
 {
-	e_book_async_get_contact (book, "pas-id-0002023", print_email_cb, NULL);
+	e_book_async_get_contact_ex (book, "pas-id-0002023", print_email_cb, NULL);
 }
 
 static void
-book_loaded_cb (EBook *book, EBookStatus status, gpointer data)
+book_loaded_cb (EBook *book, const GError *error, gpointer data)
 {
-	if (status != E_BOOK_ERROR_OK)
+	if (error) {
+		g_warning ("%s: Got error %d (%s)", G_STRFUNC, error->code, error->message);
 		return;
+	}
 
 	printf ("printing one contact\n");
 	print_one_email (book);
@@ -94,7 +100,7 @@ main (gint argc, gchar **argv)
 	book = e_book_new_system_addressbook (NULL);
 
 	printf ("loading addressbook\n");
-	e_book_async_open (book, FALSE, book_loaded_cb, book);
+	e_book_async_open_ex (book, FALSE, book_loaded_cb, book);
 
 	g_main_loop_run (loop);
 

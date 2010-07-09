@@ -43,6 +43,8 @@
 
 #include "libedataserver/e-source-list.h"
 
+#define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
+
 G_DEFINE_TYPE (ECalBackendContacts, e_cal_backend_contacts, E_TYPE_CAL_BACKEND_SYNC)
 
 static ECalBackendSyncClass *parent_class;
@@ -104,7 +106,7 @@ static ECalComponent * create_anniversary (ECalBackendContacts *cbc, EContact *c
 static void contacts_changed_cb (EBookView *book_view, const GList *contacts, gpointer user_data);
 static void contacts_added_cb   (EBookView *book_view, const GList *contacts, gpointer user_data);
 static void contacts_removed_cb (EBookView *book_view, const GList *contact_ids, gpointer user_data);
-static ECalBackendSyncStatus e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj);
+static void e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj, GError **perror);
 static void setup_alarm (ECalBackendContacts *cbc, ECalComponent *comp);
 
 /* BookRecord methods */
@@ -783,110 +785,107 @@ create_anniversary (ECalBackendContacts *cbc, EContact *contact)
 
 /* First the empty stubs */
 
-static ECalBackendSyncStatus
+static void
 e_cal_backend_contacts_get_cal_address (ECalBackendSync *backend, EDataCal *cal,
-					gchar **address)
+					gchar **address, GError **perror)
 {
 	/* A contact backend has no particular email address associated
 	 * with it (although that would be a useful feature some day).
 	 */
 	*address = NULL;
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
+static void
 e_cal_backend_contacts_get_ldap_attribute (ECalBackendSync *backend, EDataCal *cal,
-					   gchar **attribute)
+					   gchar **attribute, GError **perror)
 {
 	*attribute = NULL;
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
+static void
 e_cal_backend_contacts_get_alarm_email_address (ECalBackendSync *backend, EDataCal *cal,
-						gchar **address)
+						gchar **address, GError **perror)
 {
 	/* A contact backend has no particular email address associated
 	 * with it (although that would be a useful feature some day).
 	 */
 	*address = NULL;
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
+static void
 e_cal_backend_contacts_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal,
-						gchar **capabilities)
+						gchar **capabilities, GError **perror)
 {
 	*capabilities = NULL;
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
-e_cal_backend_contacts_remove (ECalBackendSync *backend, EDataCal *cal)
+static void
+e_cal_backend_contacts_remove (ECalBackendSync *backend, EDataCal *cal, GError **perror)
 {
 	/* WRITE ME */
-	return GNOME_Evolution_Calendar_PermissionDenied;
+	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
-static ECalBackendSyncStatus
+static void
 e_cal_backend_contacts_get_default_object (ECalBackendSync *backend, EDataCal *cal,
-					   gchar **object)
+					   gchar **object, GError **perror)
 {
-	return GNOME_Evolution_Calendar_UnsupportedMethod;
+	g_propagate_error (perror, EDC_ERROR (UnsupportedMethod));
 }
 
-static ECalBackendSyncStatus
+static void
 e_cal_backend_contacts_get_object (ECalBackendSync *backend, EDataCal *cal,
 				   const gchar *uid, const gchar *rid,
-				   gchar **object)
+				   gchar **object, GError **perror)
 {
         ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (backend);
         ECalBackendContactsPrivate *priv = cbc->priv;
 	ContactRecord *record;
 	gchar *real_uid;
 
-	if (!uid)
-		return GNOME_Evolution_Calendar_ObjectNotFound;
-	else if (g_str_has_suffix (uid, ANNIVERSARY_UID_EXT))
+	if (!uid) {
+		g_propagate_error (perror, EDC_ERROR (ObjectNotFound));
+		return;
+	} else if (g_str_has_suffix (uid, ANNIVERSARY_UID_EXT))
 		real_uid = g_strndup (uid, strlen (uid) - strlen (ANNIVERSARY_UID_EXT));
 	else if (g_str_has_suffix (uid, BIRTHDAY_UID_EXT))
 		real_uid = g_strndup (uid, strlen (uid) - strlen (BIRTHDAY_UID_EXT));
-	else
-		return GNOME_Evolution_Calendar_ObjectNotFound;
+	else {
+		g_propagate_error (perror, EDC_ERROR (ObjectNotFound));
+		return;
+	}
 
 	record = g_hash_table_lookup (priv->tracked_contacts, real_uid);
 	g_free (real_uid);
 
-	if (!record)
-		return GNOME_Evolution_Calendar_ObjectNotFound;
+	if (!record) {
+		g_propagate_error (perror, EDC_ERROR (ObjectNotFound));
+		return;
+	}
 
         if (record->comp_birthday && g_str_has_suffix (uid, BIRTHDAY_UID_EXT)) {
                 *object = e_cal_component_get_as_string (record->comp_birthday);
 
 		d(g_message ("Return birthday: %s", *object));
-		return GNOME_Evolution_Calendar_Success;
+		return;
 	}
 
         if (record->comp_anniversary && g_str_has_suffix (uid, ANNIVERSARY_UID_EXT)) {
                 *object = e_cal_component_get_as_string (record->comp_anniversary);
 
 		d(g_message ("Return anniversary: %s", *object));
-		return GNOME_Evolution_Calendar_Success;
+		return;
         }
 
 	d(g_message ("Returning nothing for uid: %s", uid));
 
-	return GNOME_Evolution_Calendar_ObjectNotFound;
+	g_propagate_error (perror, EDC_ERROR (ObjectNotFound));
 }
 
-static ECalBackendSyncStatus
+static void
 e_cal_backend_contacts_get_free_busy (ECalBackendSync *backend, EDataCal *cal,
 				      GList *users, time_t start, time_t end,
-				      GList **freebusy)
+				      GList **freebusy, GError **perror)
 {
 	/* Birthdays/anniversaries don't count as busy time */
 
@@ -915,41 +914,39 @@ e_cal_backend_contacts_get_free_busy (ECalBackendSync *backend, EDataCal *cal,
 	icalcomponent_free (vfb);
 
 	/* WRITE ME */
-	return GNOME_Evolution_Calendar_Success;
+	/* Success */
 }
 
-static ECalBackendSyncStatus
+static void
 e_cal_backend_contacts_get_changes (ECalBackendSync *backend, EDataCal *cal,
 				    const gchar *change_id,
-				    GList **adds, GList **modifies, GList **deletes)
+				    GList **adds, GList **modifies, GList **deletes, GError **perror)
 {
 	/* WRITE ME */
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
+static void
 e_cal_backend_contacts_discard_alarm (ECalBackendSync *backend, EDataCal *cal,
-				      const gchar *uid, const gchar *auid)
+				      const gchar *uid, const gchar *auid, GError **perror)
 {
 	/* WRITE ME */
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
+static void
 e_cal_backend_contacts_receive_objects (ECalBackendSync *backend, EDataCal *cal,
-					const gchar *calobj)
+					const gchar *calobj, GError **perror)
 {
-	return GNOME_Evolution_Calendar_PermissionDenied;
+	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
-static ECalBackendSyncStatus
+static void
 e_cal_backend_contacts_send_objects (ECalBackendSync *backend, EDataCal *cal,
-				     const gchar *calobj, GList **users, gchar **modified_calobj)
+				     const gchar *calobj, GList **users, gchar **modified_calobj, GError **perror)
 {
 	*users = NULL;
 	*modified_calobj = NULL;
 	/* TODO: Investigate this */
-	return GNOME_Evolution_Calendar_PermissionDenied;
+	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
 /* Then the real implementations */
@@ -963,19 +960,14 @@ e_cal_backend_contacts_get_mode (ECalBackend *backend)
 static void
 e_cal_backend_contacts_set_mode (ECalBackend *backend, CalMode mode)
 {
-	e_cal_backend_notify_mode (backend,
-				   GNOME_Evolution_Calendar_CalListener_MODE_NOT_SUPPORTED,
-				   GNOME_Evolution_Calendar_MODE_LOCAL);
-
+	e_cal_backend_notify_mode (backend, ModeNotSupported, Local);
 }
 
-static ECalBackendSyncStatus
+static void
 e_cal_backend_contacts_is_read_only (ECalBackendSync *backend, EDataCal *cal,
-				     gboolean *read_only)
+				     gboolean *read_only, GError **perror)
 {
 	*read_only = TRUE;
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
 static gpointer
@@ -1005,17 +997,17 @@ init_sources_cb (ECalBackendContacts *cbc)
 	return NULL;
 }
 
-static ECalBackendSyncStatus
+static void
 e_cal_backend_contacts_open (ECalBackendSync *backend, EDataCal *cal,
 			     gboolean only_if_exists,
-			     const gchar *username, const gchar *password)
+			     const gchar *username, const gchar *password, GError **perror)
 {
         ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (backend);
         ECalBackendContactsPrivate *priv = cbc->priv;
 	GError *error = NULL;
 
         if (priv->addressbook_loaded)
-                return GNOME_Evolution_Calendar_Success;
+                return;
 
         if (priv->default_zone && priv->default_zone != icaltimezone_get_utc_timezone ()) {
 		icalcomponent *icalcomp = icaltimezone_get_component (priv->default_zone);
@@ -1033,12 +1025,11 @@ e_cal_backend_contacts_open (ECalBackendSync *backend, EDataCal *cal,
 		if (error)
 			g_error_free (error);
 
-		return GNOME_Evolution_Calendar_OtherError;
+		g_propagate_error (perror, EDC_ERROR (OtherError));
+		return;
 	}
 
         priv->addressbook_loaded = TRUE;
-
-        return GNOME_Evolution_Calendar_Success;
 }
 
 static gboolean
@@ -1051,8 +1042,8 @@ e_cal_backend_contacts_is_loaded (ECalBackend *backend)
 }
 
 /* Add_timezone handler for the file backend */
-static ECalBackendSyncStatus
-e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj)
+static void
+e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj, GError **error)
 {
 	ECalBackendContacts *cbcontacts;
 	ECalBackendContactsPrivate *priv;
@@ -1062,17 +1053,21 @@ e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, co
 
 	cbcontacts = (ECalBackendContacts *) backend;
 
-	g_return_val_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbcontacts), GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (tzobj != NULL, GNOME_Evolution_Calendar_OtherError);
+	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbcontacts), InvalidArg);
+	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
 
 	priv = cbcontacts->priv;
 
 	tz_comp = icalparser_parse_string (tzobj);
-	if (!tz_comp)
-		return GNOME_Evolution_Calendar_InvalidObject;
+	if (!tz_comp) {
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return;
+	}
 
-	if (icalcomponent_isa (tz_comp) != ICAL_VTIMEZONE_COMPONENT)
-		return GNOME_Evolution_Calendar_InvalidObject;
+	if (icalcomponent_isa (tz_comp) != ICAL_VTIMEZONE_COMPONENT) {
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return;
+	}
 
 	zone = icaltimezone_new ();
 	icaltimezone_set_component (zone, tz_comp);
@@ -1080,17 +1075,13 @@ e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, co
 
 	if (g_hash_table_lookup (priv->zones, tzid)) {
 		icaltimezone_free (zone, TRUE);
-
-		return GNOME_Evolution_Calendar_Success;
+	} else {
+		g_hash_table_insert (priv->zones, g_strdup (tzid), zone);
 	}
-
-	g_hash_table_insert (priv->zones, g_strdup (tzid), zone);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
-e_cal_backend_contacts_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj)
+static void
+e_cal_backend_contacts_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj, GError **error)
 {
 	icalcomponent *tz_comp;
 	ECalBackendContacts *cbcontacts;
@@ -1099,14 +1090,16 @@ e_cal_backend_contacts_set_default_zone (ECalBackendSync *backend, EDataCal *cal
 
 	cbcontacts = (ECalBackendContacts *) backend;
 
-	g_return_val_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbcontacts), GNOME_Evolution_Calendar_OtherError);
-	g_return_val_if_fail (tzobj != NULL, GNOME_Evolution_Calendar_OtherError);
+	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbcontacts), InvalidArg);
+	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
 
 	priv = cbcontacts->priv;
 
 	tz_comp = icalparser_parse_string (tzobj);
-	if (!tz_comp)
-		return GNOME_Evolution_Calendar_InvalidObject;
+	if (!tz_comp) {
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return;
+	}
 
 	zone = icaltimezone_new ();
 	icaltimezone_set_component (zone, tz_comp);
@@ -1116,21 +1109,21 @@ e_cal_backend_contacts_set_default_zone (ECalBackendSync *backend, EDataCal *cal
 
 	/* Set the default timezone to it. */
 	priv->default_zone = zone;
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
-static ECalBackendSyncStatus
+static void
 e_cal_backend_contacts_get_object_list (ECalBackendSync *backend, EDataCal *cal,
-					const gchar *sexp_string, GList **objects)
+					const gchar *sexp_string, GList **objects, GError **perror)
 {
         ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (backend);
         ECalBackendContactsPrivate *priv = cbc->priv;
         ECalBackendSExp *sexp = e_cal_backend_sexp_new (sexp_string);
         ContactRecordCB *cb_data;
 
-	if (!sexp)
-		return GNOME_Evolution_Calendar_InvalidQuery;
+	if (!sexp) {
+		g_propagate_error (perror, EDC_ERROR (InvalidQuery));
+		return;
+	}
 
 	cb_data = contact_record_cb_new (cbc, sexp);
         g_hash_table_foreach (priv->tracked_contacts, contact_record_cb, cb_data);
@@ -1139,8 +1132,6 @@ e_cal_backend_contacts_get_object_list (ECalBackendSync *backend, EDataCal *cal,
 	/* Don't call cb_data_free as that would destroy the results
 	 * in *objects */
 	g_free (cb_data);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
 static void
@@ -1153,7 +1144,9 @@ e_cal_backend_contacts_start_query (ECalBackend *backend, EDataCalView *query)
 
         sexp = e_data_cal_view_get_object_sexp (query);
 	if (!sexp) {
-		e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_InvalidQuery);
+		GError *error = EDC_ERROR (InvalidQuery);
+		e_data_cal_view_notify_done (query, error);
+		g_error_free (error);
 		return;
 	}
 
@@ -1164,7 +1157,7 @@ e_cal_backend_contacts_start_query (ECalBackend *backend, EDataCalView *query)
 
         contact_record_cb_free (cb_data);
 
-	e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_Success);
+	e_data_cal_view_notify_done (query, NULL /* Success */);
 }
 
 static icaltimezone *
@@ -1273,8 +1266,8 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbc), TRUE);
 }
 
-static ECalBackendSyncStatus
-e_cal_backend_contacts_create_object (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid)
+static void
+e_cal_backend_contacts_create_object (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid, GError **perror)
 {
         ECalBackendContacts *cbcontacts;
         ECalBackendContactsPrivate *priv;
@@ -1282,7 +1275,7 @@ e_cal_backend_contacts_create_object (ECalBackendSync *backend, EDataCal *cal, g
         cbcontacts = E_CAL_BACKEND_CONTACTS (backend);
         priv = cbcontacts->priv;
 
-        return GNOME_Evolution_Calendar_PermissionDenied;
+        g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
 /* Class initialization function for the contacts backend */
