@@ -3819,12 +3819,12 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 		if (total != ifolder->exists_on_server ||
 		    folder->summary->unread_count != ifolder->unread_on_server ||
 		    (isum->modseq != ifolder->modseq_on_server)) {
-			c(printf("Eep, after QRESYNC we're out of sync. total %u / %u, unread %u / %u, modseq %lu / %lu\n",
+			c(printf("Eep, after QRESYNC we're out of sync. total %u / %u, unread %u / %u, modseq %" G_GUINT64_FORMAT " / %" G_GUINT64_FORMAT "\n",
 				 total, ifolder->exists_on_server,
 				 folder->summary->unread_count, ifolder->unread_on_server,
 				 isum->modseq, ifolder->modseq_on_server));
 		} else {
-			c(printf("OK, after QRESYNC we're still in sync. total %u / %u, unread %u / %u, modseq %lu / %lu\n",
+			c(printf("OK, after QRESYNC we're still in sync. total %u / %u, unread %u / %u, modseq %" G_GUINT64_FORMAT " / %" G_GUINT64_FORMAT "\n",
 				 total, ifolder->exists_on_server,
 				 folder->summary->unread_count, ifolder->unread_on_server,
 				 isum->modseq, ifolder->modseq_on_server));
