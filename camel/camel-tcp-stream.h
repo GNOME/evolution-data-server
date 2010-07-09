@@ -123,7 +123,7 @@ struct _CamelTcpStreamClass {
 	CamelStreamClass parent_class;
 
 	gint		(*connect)		(CamelTcpStream *stream,
-						 struct addrinfo *host,
+						 const char *host, const char *service, gint fallback_port,
 						 GError **error);
 	gint		(*getsockopt)		(CamelTcpStream *stream,
 						 CamelSockOptData *data);
@@ -139,7 +139,7 @@ struct _CamelTcpStreamClass {
 
 GType		camel_tcp_stream_get_type	(void);
 gint		camel_tcp_stream_connect	(CamelTcpStream *stream,
-						 struct addrinfo *host,
+						 const char *host, const char *service, gint fallback_port,
 						 GError **error);
 gint		camel_tcp_stream_getsockopt	(CamelTcpStream *stream,
 						 CamelSockOptData *data);

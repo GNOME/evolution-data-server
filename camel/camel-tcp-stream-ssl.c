@@ -1194,7 +1194,7 @@ connect_to_socks4_proxy (CamelTcpStreamSSL *ssl, const gchar *proxy_host, gint p
 		goto error;
 	}
 
-	g_assert (connect_addr->ai_addr->sa_family == AF_INET); /* FIXME: what to do about IPv6?  Are we just screwed with SOCKS4? */
+	g_assert (connect_addr->ai_addr->sa_family == AF_INET); /* FMQ: check for AF_INET in the caller */
 	sin = (struct sockaddr_in *) connect_addr->ai_addr;
 
 	request[0] = 0x04;				/* SOCKS4 */
@@ -1267,28 +1267,61 @@ out:
 
 static gint
 tcp_stream_ssl_connect (CamelTcpStream *stream,
-                        struct addrinfo *host,
+			const char *host, const char *service, gint fallback_port,
                         GError **error)
 {
 	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
+	struct addrinfo *addr, *ai;
+	struct addrinfo hints;
+	GError *my_error;
+	gint retval;
 	const gchar *proxy_host;
 	gint proxy_port;
 
-	camel_tcp_stream_peek_socks_proxy (stream, &proxy_host, &proxy_port);
+	memset (&hints, 0, sizeof (hints));
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_family = PF_UNSPEC;
 
-	while (host) {
-		if (proxy_host)
-			ssl->priv->sockfd = connect_to_socks4_proxy (ssl, proxy_host, proxy_port, host);
-		else
-			ssl->priv->sockfd = tcp_socket_ssl_connect (stream, host, TRUE);
+	my_error = NULL;
+	addr = camel_getaddrinfo (host, service, &hints, &my_error);
+	if (addr == NULL && fallback_port != 0 && !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+		char str_port[16];
 
-		if (ssl->priv->sockfd)
-			return 0;
-
-		host = host->ai_next;
+		g_clear_error (&my_error);
+		sprintf (str_port, "%d", fallback_port);
+		addr = camel_getaddrinfo (host, str_port, &hints, &my_error);
 	}
 
-	return -1;
+	if (addr == NULL) {
+		g_propagate_error (error, my_error);
+		return -1;
+	}
+
+	camel_tcp_stream_peek_socks_proxy (stream, &proxy_host, &proxy_port);
+
+	ai = addr;
+
+	while (ai) {
+		if (proxy_host)
+			ssl->priv->sockfd = connect_to_socks4_proxy (ssl, proxy_host, proxy_port, ai);
+		else
+			ssl->priv->sockfd = socket_connect (stream, ai, TRUE);
+
+		if (ssl->priv->sockfd) {
+			retval = 0;
+			goto out;
+		}
+
+		ai = ai->ai_next;
+	}
+
+	retval = -1;
+
+out:
+
+	camel_freeaddrinfo (addr);
+
+	return retval;
 }
 
 static gint
