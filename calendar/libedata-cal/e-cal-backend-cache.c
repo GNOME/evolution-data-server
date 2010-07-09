@@ -69,6 +69,8 @@ get_filename_from_uri (const gchar *uri, ECalSourceType source_type)
 			break;
 	}
 
+	user_cache_dir = e_get_user_cache_dir ();
+
 	/* Mangle the URI to not contain invalid characters. */
 	mangled_uri = g_strdelimit (g_strdup (uri), ":/", '_');
 
