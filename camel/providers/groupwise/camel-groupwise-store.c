@@ -572,12 +572,21 @@ groupwise_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags
 	gint count = 0, cursor, summary_count = 0;
 	CamelStoreInfo *si = NULL;
 	guint total = 0;
+	GError *local_error = NULL;
 
-	folder = groupwise_get_folder_from_disk (store, folder_name, flags, error);
+	folder = groupwise_get_folder_from_disk (
+		store, folder_name, flags, &local_error);
 	if (folder) {
 		groupwise_store_set_current_folder (gw_store, folder);
 		return folder;
-	}
+
+	/* Ignore "no such folder" errors, fail on any other error. */
+	} else if (!g_error_matches (local_error,
+		CAMEL_STORE_ERROR, CAMEL_STORE_ERROR_NO_FOLDER)) {
+		g_propagate_error (error, local_error);
+		return NULL;
+	} else
+		g_clear_error (&local_error);
 
 	camel_service_lock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
