@@ -481,7 +481,7 @@ e_cal_backend_weather_open (ECalBackendSync *backend, EDataCal *cal, gboolean on
 		priv->store = (ECalBackendStore *) e_cal_backend_file_store_new (uri, E_CAL_SOURCE_TYPE_EVENT);
 
 		if (!priv->store) {
-			g_propagate_error (perror, EDC_ERROR_EX (OtherError, _("Could not create cache file"));
+			g_propagate_error (perror, EDC_ERROR_EX (OtherError, _("Could not create cache file")));
 			return;
 		}
 		e_cal_backend_store_load (priv->store);
