@@ -1586,7 +1586,7 @@ imapx_untagged(CamelIMAPXServer *imap, GError **error)
 	case IMAPX_BYE: {
 		guchar *token;
 
-		if (!camel_imapx_stream_text (imap->stream, &token, NULL)) {
+		if (camel_imapx_stream_text (imap->stream, &token, NULL)) {
 			c(printf("BYE: %s\n", token));
 			g_set_error (
 				error, CAMEL_IMAPX_ERROR, 1,
@@ -1732,7 +1732,7 @@ imapx_continuation(CamelIMAPXServer *imap, gboolean litplus, GError **error)
 		gchar *resp;
 		guchar *token;
 
-		if (!camel_imapx_stream_text (imap->stream, &token, error))
+		if (camel_imapx_stream_text (imap->stream, &token, error))
 			return -1;
 		    
 		resp = camel_sasl_challenge_base64((CamelSasl *)cp->ob, (const gchar *) token, error);
@@ -2771,7 +2771,7 @@ imapx_connect_to_server (CamelIMAPXServer *is, GError **error)
 			break;
 		}
 		camel_imapx_stream_ungettoken(is->stream, tok, token, len);
-		if (!camel_imapx_stream_text (is->stream, &token, error))
+		if (camel_imapx_stream_text (is->stream, &token, error))
 			return FALSE;
 		e(printf("Got unexpected line before greeting:  '%s'\n", token));
 		g_free(token);
