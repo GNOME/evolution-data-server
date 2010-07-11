@@ -13,14 +13,14 @@ libecal_test_utils_la_CPPFLAGS = \
 	$(NULL)
 
 libecal_test_utils_la_LIBADD = \
-        $(top_builddir)/calendar/libecal/libecal-1.2.la    \
-        $(EVOLUTION_CALENDAR_LIBS)                         \
-        $(NULL)
+	$(top_builddir)/calendar/libecal/libecal-1.2.la		\
+	$(EVOLUTION_CALENDAR_LIBS)				\
+	$(NULL)
 
 TEST_ECAL_LIBS = \
-        $(libecal_test_utils_la_LIBADD) \
-        libecal-test-utils.la           \
-        $(NULL)
+	$(libecal_test_utils_la_LIBADD) \
+	libecal-test-utils.la           \
+	$(NULL)
 
 EXTRA_DIST =                          \
 	$(test_scripts)               \
@@ -32,32 +32,32 @@ test_scripts =                         \
 
 # ordered by relative complexity
 TESTS = \
-        test-ecal-remove			\
-        test-ecal-open				\
-        test-ecal-get-free-busy			\
-        test-ecal-get-timezone			\
-        test-ecal-add-timezone			\
-        test-ecal-set-default-timezone		\
-        test-ecal-get-alarm-email-address	\
-        test-ecal-get-cal-address		\
-        test-ecal-get-ldap-attribute		\
-        test-ecal-get-capabilities		\
-        test-ecal-get-default-object		\
-        test-ecal-set-mode			\
-        test-ecal-create-object			\
-        test-ecal-create-object--2		\
-        test-ecal-get-objects-for-uid		\
-        test-ecal-remove-object			\
-        test-ecal-get-object-list		\
-        test-ecal-modify-object			\
-        test-ecal-send-objects			\
-        test-ecal-receive-objects		\
-        test-ecal-get-query			\
-        test-ecal-stress-factory--serial	\
-        test-ecal-stress-factory--fifo		\
-        test-ecal-stress-factory--single-cal	\
-        test-ecal-stress-factory--open-async	\
-        $(NULL)
+	test-ecal-remove			\
+	test-ecal-open				\
+	test-ecal-get-free-busy			\
+	test-ecal-get-timezone			\
+	test-ecal-add-timezone			\
+	test-ecal-set-default-timezone		\
+	test-ecal-get-alarm-email-address	\
+	test-ecal-get-cal-address		\
+	test-ecal-get-ldap-attribute		\
+	test-ecal-get-capabilities		\
+	test-ecal-get-default-object		\
+	test-ecal-set-mode			\
+	test-ecal-create-object			\
+	test-ecal-create-object--2		\
+	test-ecal-get-objects-for-uid		\
+	test-ecal-remove-object			\
+	test-ecal-get-object-list		\
+	test-ecal-modify-object			\
+	test-ecal-send-objects			\
+	test-ecal-receive-objects		\
+	test-ecal-get-query			\
+	test-ecal-stress-factory--serial	\
+	test-ecal-stress-factory--fifo		\
+	test-ecal-stress-factory--single-cal	\
+	test-ecal-stress-factory--open-async	\
+	$(NULL)
 
 # The test program
 noinst_PROGRAMS = $(TESTS) test-ecal test-recur test-search
@@ -124,9 +124,10 @@ test_ecal_CPPFLAGS = $(TEST_ECAL_CPPFLAGS)
 test_ecal_INCLUDES =			\
 	$(INCLUDES)			\
 	-DG_LOG_DOMAIN=\"test-ecal\"
-test_ecal_LDADD =								\
-	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
-	$(LIBICAL_LIBS)								\
+test_ecal_LDADD =							\
+	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
+	$(LIBICAL_LIBS)							\
 	$(EVOLUTION_CALENDAR_LIBS)
 
 test_recur_SOURCES = test-recur.c
@@ -134,9 +135,10 @@ test_recur_CPPFLAGS = $(TEST_ECAL_CPPFLAGS)
 test_recur_INCLUDES =			\
 	$(INCLUDES)			\
 	-DG_LOG_DOMAIN=\"test-ecal\"
-test_recur_LDADD =								\
-	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
-	$(LIBICAL_LIBS)								\
+test_recur_LDADD =							\
+	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
+	$(LIBICAL_LIBS)							\
 	$(EVOLUTION_CALENDAR_LIBS)
 
 test_search_SOURCES = test-search.c
@@ -144,9 +146,10 @@ test_search_CPPFLAGS = $(TEST_ECAL_CPPFLAGS)
 test_search_INCLUDES =			\
 	$(INCLUDES)			\
 	-DG_LOG_DOMAIN=\"test-ecal\"
-test_search_LDADD =								\
-	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
-	$(LIBICAL_LIBS)								\
+test_search_LDADD =							\
+	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
+	$(LIBICAL_LIBS)							\
 	$(EVOLUTION_CALENDAR_LIBS)
 
 -include $(top_srcdir)/git.mk

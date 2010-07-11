@@ -33,22 +33,6 @@ Base class for calendar/tasks backend implementations.
 
 @ecalbackend: the object which received the signal.
 
-<!-- ##### SIGNAL ECalBackend::opened ##### -->
-<para>
-
-</para>
-
-@ecalbackend: the object which received the signal.
-@arg1: 
-
-<!-- ##### SIGNAL ECalBackend::removed ##### -->
-<para>
-
-</para>
-
-@ecalbackend: the object which received the signal.
-@arg1: 
-
 <!-- ##### ARG ECalBackend:kind ##### -->
 <para>
 
@@ -528,7 +512,7 @@ Base class for calendar/tasks backend implementations.
 </para>
 
 @backend: 
-@status: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_notify_view_progress_start ##### -->

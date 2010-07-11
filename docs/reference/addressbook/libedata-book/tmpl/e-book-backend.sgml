@@ -50,7 +50,7 @@ EBookBackend
 @backend: 
 @source: 
 @only_if_exists: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_book_backend_get_source ##### -->
@@ -263,7 +263,7 @@ EBookBackend
 
 @backend: 
 @book: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_book_backend_set_mode ##### -->

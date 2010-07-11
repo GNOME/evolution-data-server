@@ -98,7 +98,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
-@status: 
+@error: 
 @read_only: 
 
 
@@ -109,7 +109,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 @address: 
 
 
@@ -120,7 +120,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 @address: 
 
 
@@ -131,7 +131,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 @attribute: 
 
 
@@ -142,7 +142,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 @capabilities: 
 
 
@@ -153,7 +153,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 
 
 <!-- ##### FUNCTION e_data_cal_notify_refresh ##### -->
@@ -163,7 +163,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 
 
 <!-- ##### FUNCTION e_data_cal_notify_remove ##### -->
@@ -173,7 +173,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 
 
 <!-- ##### FUNCTION e_data_cal_notify_object_created ##### -->
@@ -183,7 +183,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 @uid: 
 @object: 
 
@@ -195,7 +195,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 @old_object: 
 @object: 
 
@@ -207,7 +207,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 @id: 
 @old_object: 
 @object: 
@@ -220,7 +220,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 
 
 <!-- ##### FUNCTION e_data_cal_notify_objects_received ##### -->
@@ -230,7 +230,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 
 
 <!-- ##### FUNCTION e_data_cal_notify_objects_sent ##### -->
@@ -240,7 +240,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 @users: 
 @calobj: 
 
@@ -252,7 +252,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 @object: 
 
 
@@ -263,7 +263,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 @object: 
 
 
@@ -274,7 +274,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 @objects: 
 
 
@@ -285,7 +285,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 @query_path: 
 
 
@@ -296,7 +296,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 @object: 
 
 
@@ -307,7 +307,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 @tzid: 
 
 
@@ -318,7 +318,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 
 
 <!-- ##### FUNCTION e_data_cal_notify_changes ##### -->
@@ -328,7 +328,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 @adds: 
 @modifies: 
 @deletes: 
@@ -341,7 +341,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 @freebusy: 
 
 
@@ -379,7 +379,7 @@ Implementation of the calendar CORBA client interface.
 
 @cal: 
 @context: 
-@status: 
+@error: 
 @objects: 
 
 

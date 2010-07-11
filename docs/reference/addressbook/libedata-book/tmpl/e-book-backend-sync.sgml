@@ -20,12 +20,6 @@ EBookBackendSync
 <!-- ##### SECTION Image ##### -->
 
 
-<!-- ##### TYPEDEF EBookBackendSyncStatus ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### STRUCT EBookBackendSync ##### -->
 <para>
 
@@ -49,7 +43,7 @@ EBookBackendSync
 @backend: 
 @book: 
 @opid: 
-@Returns: 
+@perror: 
 
 
 <!-- ##### FUNCTION e_book_backend_sync_create_contact ##### -->
@@ -62,7 +56,7 @@ EBookBackendSync
 @opid: 
 @vcard: 
 @contact: 
-@Returns: 
+@perror: 
 
 
 <!-- ##### FUNCTION e_book_backend_sync_remove_contacts ##### -->
@@ -75,7 +69,7 @@ EBookBackendSync
 @opid: 
 @id_list: 
 @removed_ids: 
-@Returns: 
+@perror: 
 
 
 <!-- ##### FUNCTION e_book_backend_sync_modify_contact ##### -->
@@ -88,7 +82,7 @@ EBookBackendSync
 @opid: 
 @vcard: 
 @contact: 
-@Returns: 
+@perror: 
 
 
 <!-- ##### FUNCTION e_book_backend_sync_get_contact ##### -->
@@ -101,7 +95,7 @@ EBookBackendSync
 @opid: 
 @id: 
 @vcard: 
-@Returns: 
+@perror: 
 
 
 <!-- ##### FUNCTION e_book_backend_sync_get_contact_list ##### -->
@@ -114,7 +108,7 @@ EBookBackendSync
 @opid: 
 @query: 
 @contacts: 
-@Returns: 
+@perror: 
 
 
 <!-- ##### FUNCTION e_book_backend_sync_get_changes ##### -->
@@ -127,7 +121,7 @@ EBookBackendSync
 @opid: 
 @change_id: 
 @changes: 
-@Returns: 
+@perror: 
 
 
 <!-- ##### FUNCTION e_book_backend_sync_authenticate_user ##### -->
@@ -141,7 +135,7 @@ EBookBackendSync
 @user: 
 @passwd: 
 @auth_method: 
-@Returns: 
+@perror: 
 
 
 <!-- ##### FUNCTION e_book_backend_sync_get_required_fields ##### -->
@@ -153,7 +147,7 @@ EBookBackendSync
 @book: 
 @opid: 
 @fields: 
-@Returns: 
+@perror: 
 
 
 <!-- ##### FUNCTION e_book_backend_sync_get_supported_fields ##### -->
@@ -165,7 +159,7 @@ EBookBackendSync
 @book: 
 @opid: 
 @fields: 
-@Returns: 
+@perror: 
 
 
 <!-- ##### FUNCTION e_book_backend_sync_get_supported_auth_methods ##### -->
@@ -177,6 +171,6 @@ EBookBackendSync
 @book: 
 @opid: 
 @methods: 
-@Returns: 
+@perror: 
 
 

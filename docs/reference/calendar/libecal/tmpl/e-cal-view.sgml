@@ -51,6 +51,15 @@ ECalView is a view of the ECal.
 @ecalview: the object which received the signal.
 @arg1: 
 
+<!-- ##### SIGNAL ECalView::view-complete ##### -->
+<para>
+
+</para>
+
+@ecalview: the object which received the signal.
+@arg1: 
+@arg2: 
+
 <!-- ##### SIGNAL ECalView::view-done ##### -->
 <para>
 

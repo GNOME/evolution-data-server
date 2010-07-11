@@ -26,12 +26,6 @@ Base class for synchronous backends.
 </para>
 
 
-<!-- ##### TYPEDEF ECalBackendSyncStatus ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### USER_FUNCTION ECalBackendSyncFactoryFn ##### -->
 <para>
 
@@ -58,7 +52,7 @@ Base class for synchronous backends.
 @backend: 
 @cal: 
 @read_only: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_get_cal_address ##### -->
@@ -69,7 +63,7 @@ Base class for synchronous backends.
 @backend: 
 @cal: 
 @address: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_get_alarm_email_address ##### -->
@@ -80,7 +74,7 @@ Base class for synchronous backends.
 @backend: 
 @cal: 
 @address: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_get_ldap_attribute ##### -->
@@ -91,7 +85,7 @@ Base class for synchronous backends.
 @backend: 
 @cal: 
 @attribute: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_get_static_capabilities ##### -->
@@ -102,7 +96,7 @@ Base class for synchronous backends.
 @backend: 
 @cal: 
 @capabiliites: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_open ##### -->
@@ -115,7 +109,7 @@ Base class for synchronous backends.
 @only_if_exists: 
 @username: 
 @password: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_refresh ##### -->
@@ -125,7 +119,7 @@ Base class for synchronous backends.
 
 @backend: 
 @cal: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_remove ##### -->
@@ -135,7 +129,7 @@ Base class for synchronous backends.
 
 @backend: 
 @cal: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_create_object ##### -->
@@ -147,7 +141,7 @@ Base class for synchronous backends.
 @cal: 
 @calobj: 
 @uid: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_modify_object ##### -->
@@ -161,7 +155,7 @@ Base class for synchronous backends.
 @mod: 
 @old_object: 
 @new_object: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_remove_object ##### -->
@@ -176,7 +170,7 @@ Base class for synchronous backends.
 @mod: 
 @old_object: 
 @object: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_get_attachment_list ##### -->
@@ -189,7 +183,7 @@ Base class for synchronous backends.
 @uid: 
 @rid: 
 @attachments: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_discard_alarm ##### -->
@@ -201,7 +195,7 @@ Base class for synchronous backends.
 @cal: 
 @uid: 
 @auid: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_receive_objects ##### -->
@@ -212,7 +206,7 @@ Base class for synchronous backends.
 @backend: 
 @cal: 
 @calobj: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_send_objects ##### -->
@@ -225,7 +219,7 @@ Base class for synchronous backends.
 @calobj: 
 @users: 
 @modified_calobj: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_get_default_object ##### -->
@@ -236,7 +230,7 @@ Base class for synchronous backends.
 @backend: 
 @cal: 
 @object: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_get_object ##### -->
@@ -249,7 +243,7 @@ Base class for synchronous backends.
 @uid: 
 @rid: 
 @object: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_get_object_list ##### -->
@@ -261,7 +255,7 @@ Base class for synchronous backends.
 @cal: 
 @sexp: 
 @objects: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_get_timezone ##### -->
@@ -273,7 +267,7 @@ Base class for synchronous backends.
 @cal: 
 @tzid: 
 @object: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_add_timezone ##### -->
@@ -284,7 +278,7 @@ Base class for synchronous backends.
 @backend: 
 @cal: 
 @tzobj: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_set_default_timezone ##### -->
@@ -295,7 +289,7 @@ Base class for synchronous backends.
 @backend: 
 @cal: 
 @tzid: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_set_default_zone ##### -->
@@ -306,7 +300,7 @@ Base class for synchronous backends.
 @backend: 
 @cal: 
 @tzobj: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_get_changes ##### -->
@@ -320,7 +314,7 @@ Base class for synchronous backends.
 @adds: 
 @modifies: 
 @deletes: 
-@Returns: 
+@error: 
 
 
 <!-- ##### FUNCTION e_cal_backend_sync_get_free_busy ##### -->
@@ -334,6 +328,6 @@ Base class for synchronous backends.
 @start: 
 @end: 
 @freebusy: 
-@Returns: 
+@error: 
 
 

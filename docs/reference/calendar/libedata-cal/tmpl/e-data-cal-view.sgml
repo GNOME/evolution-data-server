@@ -111,15 +111,6 @@ Implementation of the calendar CORBA search interface.
 @Returns: 
 
 
-<!-- ##### FUNCTION e_data_cal_view_get_done_status ##### -->
-<para>
-
-</para>
-
-@query: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_data_cal_view_notify_objects_added ##### -->
 <para>
 
@@ -190,6 +181,6 @@ Implementation of the calendar CORBA search interface.
 </para>
 
 @query: 
-@status: 
+@error: 
 
 

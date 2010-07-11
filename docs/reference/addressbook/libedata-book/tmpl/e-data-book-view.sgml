@@ -33,6 +33,7 @@ EDataBookView
 
 @edatabookview: the object which received the signal.
 @arg1: 
+@Param3: 
 
 <!-- ##### SIGNAL EDataBookView::contacts-added ##### -->
 <para>
@@ -168,7 +169,7 @@ EDataBookView
 </para>
 
 @book_view: 
-@status: 
+@error: 
 
 
 <!-- ##### FUNCTION e_data_book_view_notify_status_message ##### -->

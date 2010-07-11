@@ -119,6 +119,12 @@ e-data-book-types
 </para>
 
 
+<!-- ##### TYPEDEF EBookBackendSyncStatus ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### STRUCT EDataBookClass ##### -->
 <para>
 
