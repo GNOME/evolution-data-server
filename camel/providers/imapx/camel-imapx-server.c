@@ -1478,8 +1478,16 @@ imapx_untagged(CamelIMAPXServer *imap, GError **error)
 						finfo->user_flags = NULL;
 					}
 
+					/* If the message is a really new one -- equal or higher than what
+					   we know as UIDNEXT for the folder, then it came in since we last
+					   fetched UIDNEXT and UNREAD count. We'll update UIDNEXT in the
+					   command completion, but update UNREAD count now according to the
+					   message SEEN flag */
 					if (!(server_flags & CAMEL_MESSAGE_SEEN)) {
-						if (job->u.refresh_info.update_unseen) {
+						CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)job->folder;
+						unsigned long long uidl = strtoull(mi->uid, NULL, 10);
+
+						if (uidl >= ifolder->uidnext_on_server) {
 							c(printf("Updating unread count for new message %s\n", mi->uid));
 							((CamelIMAPXFolder *)job->folder)->unread_on_server++;
 						} else {
@@ -2380,7 +2388,12 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		is->state = IMAPX_SELECTED;
 		ifolder->exists_on_server = is->exists;
 		ifolder->modseq_on_server = is->highestmodseq;
-		ifolder->uidnext_on_server = is->uidnext;
+		if (ifolder->uidnext_on_server < is->uidnext) {
+			imapx_server_fetch_new_messages (is, is->select_pending, TRUE, TRUE, NULL);
+			/* We don't do this right now because we want the new messages to
+			   update the unseen count. */
+			//ifolder->uidnext_on_server = is->uidnext;
+		}
 		ifolder->uidvalidity_on_server = is->uidvalidity;
 #if 0
 		/* This must trigger a complete index rebuild! */
@@ -3444,6 +3457,8 @@ imapx_index_next (GPtrArray *uids, CamelFolderSummary *s, guint index)
 static void
 imapx_command_step_fetch_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)ic->job->folder;
+	CamelIMAPXSummary *isum = (CamelIMAPXSummary *)ic->job->folder->summary;
 	CamelIMAPXJob *job = ic->job;
 	gint i = job->u.refresh_info.index;
 	GArray *infos = job->u.refresh_info.infos;
@@ -3498,6 +3513,22 @@ imapx_command_step_fetch_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			return;
 		}
 	}
+
+	if (camel_folder_summary_count(job->folder->summary)) {
+		gchar *uid = camel_folder_summary_uid_from_index (job->folder->summary,
+						  camel_folder_summary_count(job->folder->summary) - 1);
+		unsigned long long uidl = strtoull(uid, NULL, 10);
+		g_free(uid);
+
+		uidl++;
+
+		if (uidl > ifolder->uidnext_on_server) {
+			c(printf("Updating uidnext_on_server for '%s' to %lld\n",
+				 camel_folder_get_full_name(job->folder), uidl));
+			ifolder->uidnext_on_server = uidl;
+		}
+	}
+	isum->uidnext = ifolder->uidnext_on_server;
 
 cleanup:
 	for (i=0;i<infos->len;i++) {
@@ -3732,7 +3763,6 @@ imapx_command_fetch_new_messages_done (CamelIMAPXServer *is, CamelIMAPXCommand *
 			g_propagate_error (&ic->job->error, ic->error);
 		goto exception;
 	}
-	isum->uidnext = ifolder->uidnext_on_server;
 
 	if (camel_folder_change_info_changed(ic->job->u.refresh_info.changes)) {
 		imapx_update_store_summary (ic->job->folder);
@@ -3740,6 +3770,23 @@ imapx_command_fetch_new_messages_done (CamelIMAPXServer *is, CamelIMAPXCommand *
 		camel_folder_changed (ic->job->folder, ic->job->u.refresh_info.changes);
 		camel_folder_change_info_clear(ic->job->u.refresh_info.changes);
 	}
+
+	if (camel_folder_summary_count(ic->job->folder->summary)) {
+		gchar *uid = camel_folder_summary_uid_from_index (ic->job->folder->summary,
+					  camel_folder_summary_count(ic->job->folder->summary) - 1);
+		unsigned long long uidl = strtoull(uid, NULL, 10);
+		g_free(uid);
+
+		uidl++;
+
+		if (uidl > ifolder->uidnext_on_server) {
+			c(printf("Updating uidnext_on_server for '%s' to %lld\n",
+				 camel_folder_get_full_name(ic->job->folder), uidl));
+			ifolder->uidnext_on_server = uidl;
+		}
+	}
+
+	isum->uidnext = ifolder->uidnext_on_server;
 
 exception:
 	if (ic->job->noreply)
