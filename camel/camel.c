@@ -64,15 +64,15 @@ gint camel_application_is_exiting = FALSE;
 static gint
 nss_has_system_db(void)
 {
-	int found = FALSE;
+	gint found = FALSE;
 #ifndef G_OS_WIN32
 	FILE *f;
-	char buf[80];
+	gchar buf[80];
 
 	f = fopen(NSS_SYSTEM_DB "/pkcs11.txt", "r");
 	if (!f)
 		return FALSE;
-		
+
 	/* Check whether the system NSS db is actually enabled */
 	while (fgets(buf, 80, f) && !found) {
 		if (!strcmp(buf, "library=libnsssysinit.so\n"))
@@ -143,7 +143,6 @@ camel_init (const gchar *configdir, gboolean nss_init)
 			g_free(user_nss_dir);
 #endif
 		}
-
 
 #if NSS_VMAJOR > 3 || (NSS_VMAJOR == 3 && NSS_VMINOR >= 12)
 		/* See: https://wiki.mozilla.org/NSS_Shared_DB,

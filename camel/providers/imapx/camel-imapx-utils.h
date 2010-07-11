@@ -215,7 +215,7 @@ typedef struct _IMAPXJobQueueInfo {
 
 	/* list of folders for which jobs are in the queue */
 	GHashTable *folders;
-} IMAPXJobQueueInfo;	
+} IMAPXJobQueueInfo;
 
 void camel_imapx_server_destroy_job_queue_info (IMAPXJobQueueInfo *jinfo);
 

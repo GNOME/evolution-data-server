@@ -453,6 +453,7 @@ e_book_async_add_contact (EBook                 *book,
  * Adds @contact to @book without blocking.
  *
  * Returns: %TRUE if the operation was started, %FALSE otherwise.
+ *
  * Since: 3.0
  **/
 gboolean
@@ -594,13 +595,14 @@ e_book_async_commit_contact (EBook                 *book,
  * @book without blocking.
  *
  * Returns: %TRUE if the operation was started, %FALSE otherwise.
+ *
  * Since: 3.0
  **/
 gboolean
 e_book_async_commit_contact_ex (EBook                 *book,
-			        EContact              *contact,
-			        EBookExCallback        cb,
-			        gpointer               closure)
+                                EContact              *contact,
+                                EBookExCallback        cb,
+                                gpointer               closure)
 {
 	gchar *vcard;
 	AsyncData *data;
@@ -741,6 +743,7 @@ e_book_async_get_required_fields (EBook              *book,
  * all contacts in this @book. This function does not block.
  *
  * Returns: %TRUE if the operation was started, %FALSE otherwise.
+ *
  * Since: 3.0
  **/
 gboolean
@@ -884,6 +887,7 @@ e_book_async_get_supported_fields (EBook              *book,
  * function does not block.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
+ *
  * Since: 3.0
  **/
 gboolean
@@ -1026,6 +1030,7 @@ e_book_async_get_supported_auth_methods (EBook              *book,
  * This function does not block.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
+ *
  * Since: 3.0
  **/
 gboolean
@@ -1172,6 +1177,7 @@ e_book_async_authenticate_user (EBook                 *book,
  * This function does not block.
  *
  * Returns: %FALSE if successful, %TRUE otherwise.
+ *
  * Since: 3.0
  **/
 gboolean
@@ -1316,6 +1322,7 @@ e_book_async_get_contact (EBook                 *book,
  * Retrieves a contact specified by @id from @book.
  *
  * Returns: %FALSE if successful, %TRUE otherwise
+ *
  * Since: 3.0
  **/
 gboolean
@@ -1489,13 +1496,14 @@ e_book_async_remove_contact (EBook                 *book,
  * Removes @contact from @book.
  *
  * Returns: %TRUE if successful, %FALSE otherwise
+ *
  * Since: 3.0
  **/
 gboolean
 e_book_async_remove_contact_ex (EBook                 *book,
-			        EContact              *contact,
-			        EBookExCallback        cb,
-			        gpointer               closure)
+                                EContact              *contact,
+                                EBookExCallback        cb,
+                                gpointer               closure)
 {
 	AsyncData *data;
 	const gchar *l[2];
@@ -1598,6 +1606,7 @@ e_book_async_remove_contact_by_id (EBook                 *book,
  * Removes the contact with id @id from @book.
  *
  * Returns: %TRUE if successful, %FALSE otherwise
+ *
  * Since: 3.0
  **/
 gboolean
@@ -1719,13 +1728,14 @@ e_book_async_remove_contacts (EBook                 *book,
  * as a batch request.
  *
  * Returns: %TRUE if successful, %FALSE otherwise
+ *
  * Since: 3.0
  **/
 gboolean
 e_book_async_remove_contacts_ex (EBook                 *book,
-			         GList                 *ids,
-			         EBookExCallback        cb,
-			         gpointer               closure)
+                                 GList                 *ids,
+                                 EBookExCallback        cb,
+                                 gpointer               closure)
 {
 	AsyncData *data;
 	gchar **l;
@@ -1918,6 +1928,7 @@ e_book_async_get_book_view (EBook                 *book,
  * specified by @requested_fields and limited at @max_results records.
  *
  * Returns: %FALSE if successful, %TRUE otherwise
+ *
  * Since: 3.0
  **/
 gboolean
@@ -2086,6 +2097,7 @@ e_book_async_get_contacts (EBook             *book,
  * Query @book with @query.
  *
  * Returns: %FALSE on success, %TRUE otherwise
+ *
  * Since: 3.0
  **/
 gboolean
@@ -2261,6 +2273,7 @@ e_book_async_get_changes (EBook             *book,
  * for a given change ID.
  *
  * Returns: TRUE on success, FALSE otherwise
+ *
  * Since: 3.0
  */
 gboolean
@@ -2476,6 +2489,7 @@ e_book_async_open (EBook                 *book,
  * This function does not block.
  *
  * Returns: %FALSE if successful, %TRUE otherwise.
+ *
  * Since: 3.0
  **/
 gboolean
@@ -2600,12 +2614,13 @@ e_book_async_remove (EBook   *book,
  * deletes the database file. You cannot get it back!
  *
  * Returns: %FALSE if successful, %TRUE otherwise.
+ *
  * Since: 3.0
  **/
 gboolean
 e_book_async_remove_ex (EBook   *book,
-		        EBookExCallback cb,
-		        gpointer closure)
+                        EBookExCallback cb,
+                        gpointer closure)
 {
 	AsyncData *data;
 
@@ -3334,7 +3349,7 @@ e_book_new_default_addressbook   (GError **error)
 static gboolean
 strcaseequal_no_underscore (const gchar *str1, const gchar *str2)
 {
-	int i, j;
+	gint i, j;
 
 	if (!str1 || !str2)
 		return FALSE;

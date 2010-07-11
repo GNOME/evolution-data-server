@@ -326,7 +326,6 @@ e_name_selector_show_dialog (ENameSelector *name_selector,
 	gtk_widget_show (GTK_WIDGET (dialog));
 }
 
-
 /**
  * e_name_selector_peek_section_entry:
  * @name_selector: an #ENameSelector

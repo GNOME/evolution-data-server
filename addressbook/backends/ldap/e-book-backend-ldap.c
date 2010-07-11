@@ -4388,7 +4388,6 @@ ldap_search_handler (LDAPOp *op, LDAPMessage *res)
 				"LDAP error 0x%x (%s)", ldap_error,
 				ldap_err2string (ldap_error) ? ldap_err2string (ldap_error) : "Unknown error");
 
-
 		e_data_book_view_notify_complete (view, edb_err);
 		if (edb_err)
 			g_error_free (edb_err);

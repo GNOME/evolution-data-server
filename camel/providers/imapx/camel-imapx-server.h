@@ -136,7 +136,6 @@ struct _CamelIMAPXServerClass {
 	gchar tagprefix;
 };
 
-
 GType		camel_imapx_server_get_type	(void);
 CamelIMAPXServer *
 		camel_imapx_server_new		(CamelStore *store,
@@ -197,7 +196,7 @@ gboolean	camel_imapx_server_rename_folder(CamelIMAPXServer *is,
 						 const gchar *old_name,
 						 const gchar *new_name,
 						 GError **error);
-struct _IMAPXJobQueueInfo *	
+struct _IMAPXJobQueueInfo *
 		camel_imapx_server_get_job_queue_info
 						(CamelIMAPXServer *is);
 

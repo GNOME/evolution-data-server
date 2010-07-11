@@ -15,7 +15,7 @@
 #define gdk_drag_context_get_suggested_action(context) (context)->suggested_action
 #define gdk_drag_context_get_selected_action(context)  (context)->action
 
-#endif 
+#endif
 
 #if GTK_MAJOR_VERSION == 2 && GTK_MINOR_VERSION == 21 && GTK_MICRO_VERSION == 1
 #define gdk_drag_context_get_selected_action(context)  gdk_drag_context_get_action(context)

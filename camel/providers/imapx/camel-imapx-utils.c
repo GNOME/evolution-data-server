@@ -1338,7 +1338,6 @@ imapx_parse_modseq(CamelIMAPXStream *is, GError **error)
 	guint len;
 	guchar *token;
 
-	
 	tok = camel_imapx_stream_token(is, &token, &len, NULL);
 	if (tok != '(') {
 		g_set_error (error, CAMEL_IMAPX_ERROR, 1, "fetch: expecting '('");

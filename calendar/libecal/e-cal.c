@@ -1170,7 +1170,7 @@ async_signal_idle_cb (DBusGProxy *proxy, GError *error, gpointer user_data)
 	if (error) {
 	#ifndef E_CAL_DISABLE_DEPRECATED
 		status = get_status_from_error (error);
-		
+
 	} else {
 		status = E_CALENDAR_STATUS_OK;
 	#endif
