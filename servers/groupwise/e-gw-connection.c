@@ -1099,7 +1099,7 @@ e_gw_connection_get_items_from_ids (EGwConnection *cnc, const gchar *container, 
 	if (view)
 		e_gw_message_write_string_parameter (msg, "view", NULL, view);
 	soup_soap_message_start_element (msg, "items", NULL, NULL);
-	for (i = 0; i < item_ids->len; i ++) {
+	for (i = 0; i < item_ids->len; i++) {
 		gchar *id = g_ptr_array_index (item_ids, i);
 		e_gw_message_write_string_parameter (msg, "item", NULL, id);
 	}

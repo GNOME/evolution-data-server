@@ -520,7 +520,7 @@ namespaces_load (CamelImapStoreSummary *s, FILE *in, guint count)
 			tail = &ns->next;
 		}
 
-		count --;
+		count--;
 	}
 
 	return count == 0;

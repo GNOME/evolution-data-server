@@ -17,7 +17,7 @@ main (gint argc, gchar **argv)
 	gint i;
 	gboolean failure = FALSE;
 
-	for (i = 0; i < G_N_ELEMENTS (queries); i ++) {
+	for (i = 0; i < G_N_ELEMENTS (queries); i++) {
 		EBookQuery *query = e_book_query_from_string (queries[i]);
 		gchar *str;
 

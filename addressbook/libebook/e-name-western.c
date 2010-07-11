@@ -36,7 +36,7 @@ e_name_western_str_count_words (const gchar *str)
 	word_count = 0;
 
 	for (p = str; p != NULL; p = g_utf8_strchr (p, -1, ' ')) {
-		word_count ++;
+		word_count++;
 		p = g_utf8_next_char (p);
 	}
 
@@ -99,7 +99,7 @@ e_name_western_get_words_at_idx (gchar *str, gint idx, gint num_words)
 		while (g_unichar_isspace (g_utf8_get_char (p)) && *p != '\0')
 			p = g_utf8_next_char (p);
 
-		word_count ++;
+		word_count++;
 	}
 
 	return g_string_free (words, FALSE);

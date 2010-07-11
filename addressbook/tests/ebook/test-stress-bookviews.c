@@ -79,7 +79,7 @@ main (gint argc, gchar **argv)
 
 	query = e_book_query_any_field_contains ("");
 
-	for (i = 0; i < 500; i ++) {
+	for (i = 0; i < 500; i++) {
 		status = e_book_get_book_view (book, query, NULL, -1, &new_view, NULL);
 
 		g_signal_connect (new_view, "contacts_added", G_CALLBACK (contacts_added), NULL);

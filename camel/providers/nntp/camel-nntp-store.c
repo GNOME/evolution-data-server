@@ -1478,7 +1478,7 @@ camel_nntp_command (CamelNNTPStore *store, GError **error, CamelNNTPFolder *fold
 
 	retry = 0;
 	do {
-		retry ++;
+		retry++;
 
 		if (store->stream == NULL
 		    && !camel_service_connect (CAMEL_SERVICE (store), error))

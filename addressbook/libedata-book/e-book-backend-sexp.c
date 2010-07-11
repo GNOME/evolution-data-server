@@ -125,7 +125,7 @@ compare_email (EContact *contact, const gchar *str,
 {
 	gint i;
 
-	for (i = E_CONTACT_EMAIL_1; i <= E_CONTACT_EMAIL_4; i ++) {
+	for (i = E_CONTACT_EMAIL_1; i <= E_CONTACT_EMAIL_4; i++) {
 		const gchar *email = e_contact_get_const (contact, i);
 
 		if (email && compare(email, str))
@@ -142,7 +142,7 @@ compare_phone (EContact *contact, const gchar *str,
 	gint i;
 	gboolean rv = FALSE;
 
-	for (i = E_CONTACT_FIRST_PHONE_ID; i <= E_CONTACT_LAST_PHONE_ID; i ++) {
+	for (i = E_CONTACT_FIRST_PHONE_ID; i <= E_CONTACT_LAST_PHONE_ID; i++) {
 		gchar *phone = e_contact_get (contact, i);
 
 		rv = phone && compare(phone, str);
@@ -188,7 +188,7 @@ compare_address (EContact *contact, const gchar *str,
 	gint i;
 	gboolean rv = FALSE;
 
-	for (i = E_CONTACT_FIRST_ADDRESS_ID; i <= E_CONTACT_LAST_ADDRESS_ID; i ++) {
+	for (i = E_CONTACT_FIRST_ADDRESS_ID; i <= E_CONTACT_LAST_ADDRESS_ID; i++) {
 		EContactAddress *address = e_contact_get (contact, i);
 		if (address) {
 			rv =  (address->po && compare(address->po, str)) ||
@@ -309,7 +309,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 		propname = argv[0]->value.string;
 
 		any_field = !strcmp(propname, "x-evolution-any-field");
-		for (i = 0; i < G_N_ELEMENTS (prop_info_table); i ++) {
+		for (i = 0; i < G_N_ELEMENTS (prop_info_table); i++) {
 			if (any_field
 			    || !strcmp (prop_info_table[i].query_prop, propname)) {
 				saw_any = TRUE;
@@ -694,7 +694,7 @@ func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer da
 
 		propname = argv[0]->value.string;
 
-		for (i = 0; i < G_N_ELEMENTS (prop_info_table); i ++) {
+		for (i = 0; i < G_N_ELEMENTS (prop_info_table); i++) {
 			if (!strcmp (prop_info_table[i].query_prop, propname)) {
 				saw_any = TRUE;
 				info = &prop_info_table[i];

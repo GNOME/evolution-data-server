@@ -87,7 +87,7 @@ func_and(ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 	d(printf("executing and: %d", argc));
 
 	string = g_string_new("( ");
-	for (i = 0; i < argc; i ++) {
+	for (i = 0; i < argc; i++) {
 		r1 = e_sexp_term_eval(f, argv[i]);
 
 		if (r1->type != ESEXP_RES_STRING) {
@@ -120,7 +120,7 @@ func_or(ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 	d(printf("executing or: %d", argc));
 
 	string = g_string_new("( ");
-	for (i = 0; i < argc; i ++) {
+	for (i = 0; i < argc; i++) {
 		r1 = e_sexp_term_eval(f, argv[i]);
 
 		if (r1->type != ESEXP_RES_STRING) {

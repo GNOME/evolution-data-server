@@ -360,7 +360,7 @@ func_and(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 
 		qs = g_new0(EBookQuery*, argc);
 
-		for (i = 0; i < argc; i ++) {
+		for (i = 0; i < argc; i++) {
 			GList *list_head = *list;
 			if (!list_head)
 				break;
@@ -392,7 +392,7 @@ func_or(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 
 		qs = g_new0(EBookQuery*, argc);
 
-		for (i = 0; i < argc; i ++) {
+		for (i = 0; i < argc; i++) {
 			GList *list_head = *list;
 			if (!list_head)
 				break;
@@ -669,7 +669,7 @@ e_book_query_to_string    (EBookQuery *q)
 	switch (q->type) {
 	case E_BOOK_QUERY_TYPE_AND:
 		g_string_append (str, "and ");
-		for (i = 0; i < q->query.andor.nqs; i ++) {
+		for (i = 0; i < q->query.andor.nqs; i++) {
 			s = e_book_query_to_string (q->query.andor.qs[i]);
 			g_string_append (str, s);
 			g_free (s);
@@ -678,7 +678,7 @@ e_book_query_to_string    (EBookQuery *q)
 		break;
 	case E_BOOK_QUERY_TYPE_OR:
 		g_string_append (str, "or ");
-		for (i = 0; i < q->query.andor.nqs; i ++) {
+		for (i = 0; i < q->query.andor.nqs; i++) {
 			s = e_book_query_to_string (q->query.andor.qs[i]);
 			g_string_append (str, s);
 			g_free (s);

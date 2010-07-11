@@ -427,7 +427,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 			return;
 		}
 
-		for (i = 0; i < ids->len; i ++) {
+		for (i = 0; i < ids->len; i++) {
 			gchar *id = g_ptr_array_index (ids, i);
 			string_to_dbt (id, &id_dbt);
 			memset (&vcard_dbt, 0, sizeof (vcard_dbt));
@@ -585,7 +585,7 @@ book_view_thread (gpointer data)
 		if (!ids)
 			goto done;
 
-		for (i = 0; i < ids->len; i ++) {
+		for (i = 0; i < ids->len; i++) {
 			gchar *id = g_ptr_array_index (ids, i);
 
 			if (!e_flag_is_set (closure->running))
@@ -928,7 +928,7 @@ e_book_backend_file_get_supported_fields (EBookBackendSync *backend,
 
 	/* XXX we need a way to say "we support everything", since the
 	   file backend does */
-	for (i = 1; i < E_CONTACT_FIELD_LAST; i ++)
+	for (i = 1; i < E_CONTACT_FIELD_LAST; i++)
 		fields = g_list_append (fields, g_strdup (e_contact_field_name (i)));
 
 	*fields_out = fields;

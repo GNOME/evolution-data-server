@@ -457,7 +457,7 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 		} else {
 			gboolean source_changed;
 
-			group->priv->ignore_source_changed ++;
+			group->priv->ignore_source_changed++;
 
 			if (e_source_update_from_xml_node (existing_source, nodep, &source_changed)) {
 				new_sources_list = g_slist_prepend (new_sources_list, existing_source);
@@ -468,7 +468,7 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 					changed = TRUE;
 			}
 
-			group->priv->ignore_source_changed --;
+			group->priv->ignore_source_changed--;
 		}
 
 		g_free (uid);

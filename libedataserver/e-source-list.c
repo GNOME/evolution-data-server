@@ -114,7 +114,7 @@ load_from_gconf (ESourceList *list)
 		} else {
 			gboolean group_changed;
 
-			list->priv->ignore_group_changed ++;
+			list->priv->ignore_group_changed++;
 
 			if (e_source_group_update_from_xmldoc (existing_group, xmldoc, &group_changed)) {
 				new_groups_list = g_slist_prepend (new_groups_list, existing_group);
@@ -125,7 +125,7 @@ load_from_gconf (ESourceList *list)
 					changed = TRUE;
 			}
 
-			list->priv->ignore_group_changed --;
+			list->priv->ignore_group_changed--;
 		}
 
 		xmlFreeDoc (xmldoc);

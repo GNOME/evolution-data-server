@@ -1930,7 +1930,7 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 			if (!ids)
 				return;
 
-			for (i = 0; i < ids->len; i ++) {
+			for (i = 0; i < ids->len; i++) {
 				gchar *uid = g_ptr_array_index (ids, i);
 
 				EContact *contact =
@@ -1975,7 +1975,7 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 
 				if (!egwb->priv->is_writable) {
 					gint i;
-					for (i = 0; i < ids->len; i ++) {
+					for (i = 0; i < ids->len; i++) {
 						gchar *uid = g_ptr_array_index (ids, i);
 						contact = e_book_backend_db_cache_get_contact (egwb->priv->file_db, uid);
 						vcard_list = g_list_append (vcard_list,
@@ -2100,7 +2100,7 @@ get_contacts_from_cache (EBookBackendGroupwise *ebgw,
 
 	if (enable_debug)
 		printf ("\nread contacts from cache for the ids found in summary\n");
-	for (i = 0; i < ids->len; i ++) {
+	for (i = 0; i < ids->len; i++) {
 		gchar *uid;
 		EContact *contact;
 
@@ -2360,7 +2360,7 @@ book_view_thread (gpointer data)
 				break;
 			}
 
-			count ++;
+			count++;
 			contact = e_contact_new ();
 			fill_contact_from_gw_item (contact,
 						   E_GW_ITEM (gw_items->data),
@@ -3403,7 +3403,7 @@ e_book_backend_groupwise_get_supported_fields (EBookBackend *backend,
 	if (enable_debug)
 		printf ("\ne_book_backend_groupwise_get_supported_fields...\n");
 
-	for (i = 0; i < G_N_ELEMENTS (mappings); i ++)
+	for (i = 0; i < G_N_ELEMENTS (mappings); i++)
 		fields = g_list_append (fields, g_strdup (e_contact_field_name (mappings[i].field_id)));
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL_2)));
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL_3)));

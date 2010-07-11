@@ -1189,7 +1189,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 		propname = argv[0]->value.string;
 
 		any_field = !strcmp(propname, "x-evolution-any-field");
-		for (i = 0; i < G_N_ELEMENTS (prop_info_table); i ++) {
+		for (i = 0; i < G_N_ELEMENTS (prop_info_table); i++) {
 			if (any_field
 			    || !strcmp (prop_info_table[i].query_prop, propname)) {
 				info = &prop_info_table[i];

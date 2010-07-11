@@ -576,7 +576,7 @@ e_book_backend_vcf_get_supported_fields (EBookBackendSync *backend,
 
 	/* XXX we need a way to say "we support everything", since the
 	   vcf backend does */
-	for (i = 0; i < E_CONTACT_FIELD_LAST; i ++)
+	for (i = 0; i < E_CONTACT_FIELD_LAST; i++)
 		fields = g_list_append (fields, (gchar *)e_contact_field_name (i));
 
 	*fields_out = fields;

@@ -513,7 +513,7 @@ e_book_backend_summary_load (EBookBackendSummary *summary)
 	if (!e_book_backend_summary_open (summary))
 		return FALSE;
 
-	for (i = 0; i < summary->priv->num_items; i ++) {
+	for (i = 0; i < summary->priv->num_items; i++) {
 		if (!e_book_backend_summary_load_item (summary, &new_item)) {
 			g_warning ("error while reading summary item");
 			clear_items (summary);
@@ -684,7 +684,7 @@ e_book_backend_summary_save (EBookBackendSummary *summary)
 		goto lose;
 	}
 
-	for (i = 0; i < summary->priv->items->len; i ++) {
+	for (i = 0; i < summary->priv->items->len; i++) {
 		EBookBackendSummaryItem *item = g_ptr_array_index (summary->priv->items, i);
 		if (!e_book_backend_summary_save_item (summary, fp, item)) {
 			g_warning ("failed to write an item to new summary file, errno = %d", errno);
@@ -1009,7 +1009,7 @@ do_compare (EBookBackendSummary *summary, struct _ESExp *f, gint argc,
 	    && argv[0]->type == ESEXP_RES_STRING
 	    && argv[1]->type == ESEXP_RES_STRING) {
 
-		for (i = 0; i < summary->priv->items->len; i ++) {
+		for (i = 0; i < summary->priv->items->len; i++) {
 			EBookBackendSummaryItem *item = g_ptr_array_index (summary->priv->items, i);
 			if (!strcmp (argv[0]->value.string, "full_name")) {
 				gchar *given = item->given_name;
@@ -1214,7 +1214,7 @@ e_book_backend_summary_search (EBookBackendSummary *summary, const gchar *query)
 		GPtrArray *ptrarray = r->value.ptrarray;
 		gint i;
 
-		for (i = 0; i < ptrarray->len; i ++)
+		for (i = 0; i < ptrarray->len; i++)
 			g_ptr_array_add (retval, g_ptr_array_index (ptrarray, i));
 	}
 

@@ -126,7 +126,7 @@ filter_filter (CamelSession *session, CamelSessionThreadMsg *tmsg)
 			"Learning new spam messages in '%s'",
 			m->junk->len), full_name);
 
-		for (i = 0; i < m->junk->len; i ++) {
+		for (i = 0; i < m->junk->len; i++) {
 			CamelMimeMessage *msg = camel_folder_get_message (m->folder, m->junk->pdata[i], NULL);
 			gint pc = 100 * i / m->junk->len;
 
@@ -147,7 +147,7 @@ filter_filter (CamelSession *session, CamelSessionThreadMsg *tmsg)
 			"Learning new ham message in '%s'",
 			"Learning new ham messages in '%s'",
 			m->notjunk->len), full_name);
-		for (i = 0; i < m->notjunk->len; i ++) {
+		for (i = 0; i < m->notjunk->len; i++) {
 			CamelMimeMessage *msg = camel_folder_get_message (m->folder, m->notjunk->pdata[i], NULL);
 			gint pc = 100 * i / m->notjunk->len;
 

@@ -2420,7 +2420,7 @@ gw_update_all_items (CamelFolder *folder, GList *item_list, GError **error)
 		} else {
 			item_list = g_list_delete_link (item_list, temp);
 		}
-		index ++;
+		index++;
 	}
 
 	groupwise_sync_summary (folder, error);
@@ -2597,7 +2597,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 	changes = camel_folder_change_info_new ();
 	while (index < uids->len) {
 		item_ids = g_list_append (item_ids, g_ptr_array_index (uids, index));
-		index ++;
+		index++;
 	}
 
 	if (transferred_uids)
@@ -2741,7 +2741,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 				if (status == E_GW_CONNECTION_STATUS_OK) {
 						if (delete_originals) {
 								if (!(gw_info->info.flags & CAMEL_MESSAGE_SEEN))
-										source->summary->unread_count --;
+										source->summary->unread_count--;
 
 								camel_folder_summary_remove_uid (source->summary, uids->pdata[index]);
 								camel_folder_change_info_remove_uid (changes, uids->pdata[index]);
@@ -2752,7 +2752,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 				}
 
 		}
-		index ++;
+		index++;
 	}
 
 	camel_folder_changed (source, changes);

@@ -1350,7 +1350,7 @@ EContactField
 e_contact_field_id (const gchar *field_name)
 {
 	gint i;
-	for (i = E_CONTACT_FIELD_FIRST; i < E_CONTACT_FIELD_LAST; i ++) {
+	for (i = E_CONTACT_FIELD_FIRST; i < E_CONTACT_FIELD_LAST; i++) {
 		if (!g_ascii_strcasecmp (field_info[i].field_name, field_name))
 			return field_info[i].field_id;
 	}
@@ -1374,7 +1374,7 @@ e_contact_field_id_from_vcard (const gchar *vcard_field)
 {
 	gint i;
 
-	for (i = E_CONTACT_FIELD_FIRST; i < E_CONTACT_FIELD_LAST; i ++) {
+	for (i = E_CONTACT_FIELD_FIRST; i < E_CONTACT_FIELD_LAST; i++) {
 		if (field_info[i].vcard_field_name == NULL)
 			continue;
 		if (field_info[i].t & E_CONTACT_FIELD_TYPE_SYNTHETIC)

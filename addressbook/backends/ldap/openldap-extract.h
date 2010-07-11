@@ -785,8 +785,8 @@ static gsize ldap_utf8_strcspn( const gchar *str, const gchar *set )
 	const gchar *cstr;
 	const gchar *cset;
 
-	for ( cstr = str; *cstr != '\0'; LDAP_UTF8_INCR(cstr) ) {
-		for ( cset = set; *cset != '\0'; LDAP_UTF8_INCR(cset) ) {
+	for (cstr = str; *cstr != '\0'; LDAP_UTF8_INCR(cstr)) {
+		for (cset = set; *cset != '\0'; LDAP_UTF8_INCR(cset)) {
 			if (ldap_x_utf8_to_ucs4( cstr ) == ldap_x_utf8_to_ucs4( cset )) {
 				return cstr - str;
 			}
@@ -801,8 +801,8 @@ static gsize ldap_utf8_strspn( const gchar *str, const gchar *set )
 	const gchar *cstr;
 	const gchar *cset;
 
-	for ( cstr = str; *cstr != '\0'; LDAP_UTF8_INCR(cstr) ) {
-		for ( cset = set; ; LDAP_UTF8_INCR(cset) ) {
+	for (cstr = str; *cstr != '\0'; LDAP_UTF8_INCR(cstr)) {
+		for (cset = set; ; LDAP_UTF8_INCR(cset)) {
 			if (*cset == '\0') {
 				return cstr - str;
 			}
@@ -1024,7 +1024,7 @@ ldap_pvt_hex_unescape( gchar *s )
 	 */
 	gchar	*p;
 
-	for ( p = s; *s != '\0'; ++s ) {
+	for (p = s; *s != '\0'; ++s) {
 		if (*s == '%') {
 			if (*++s == '\0') {
 				break;
@@ -1057,7 +1057,7 @@ ldap_str2charray( const gchar *str_in, const gchar *brkstr )
 	}
 
 	i = 1;
-	for ( s = str; *s; s++ ) {
+	for (s = str; *s; s++) {
 		if (ldap_utf8_strchr( brkstr, s ) != NULL) {
 			i++;
 		}
@@ -1072,14 +1072,14 @@ ldap_str2charray( const gchar *str_in, const gchar *brkstr )
 
 	i = 0;
 
-	for ( s = ldap_utf8_strtok( str, brkstr, &lasts );
+	for (s = ldap_utf8_strtok( str, brkstr, &lasts);
 		s != NULL;
 		s = ldap_utf8_strtok( NULL, brkstr, &lasts ) )
 	{
 		res[i] = LDAP_STRDUP( s );
 
 		if (res[i] == NULL) {
-			for ( --i; i >= 0; i-- ) {
+			for (--i; i >= 0; i--) {
 				LDAP_FREE( res[i] );
 			}
 			LDAP_FREE( res );
@@ -1398,7 +1398,7 @@ ldap_url_parse_ext( LDAP_CONST gchar *url_in, LDAPURLDesc **ludpp )
 		return LDAP_URL_ERR_BADEXTS;
 	}
 
-	for ( i=0; ludp->lud_exts[i] != NULL; i++ ) {
+	for (i=0; ludp->lud_exts[i] != NULL; i++) {
 		ldap_pvt_hex_unescape( ludp->lud_exts[i] );
 
 		if (*ludp->lud_exts[i] == '!') {

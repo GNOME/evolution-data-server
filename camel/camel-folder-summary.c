@@ -2155,7 +2155,7 @@ save_to_db_cb (gpointer key, gpointer value, gpointer data)
 				camel_db_start_in_memory_transactions (cdb, error);
 				args->progress = 0;
 			} else {
-				args->progress ++;
+				args->progress++;
 			}
 	}
 
