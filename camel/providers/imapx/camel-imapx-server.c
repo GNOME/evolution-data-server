@@ -293,6 +293,7 @@ struct _CamelIMAPXJob {
 	} u;
 };
 
+static CamelIMAPXJob *imapx_match_active_job (CamelIMAPXServer *is, guint32 type, const gchar *uid);
 static void imapx_job_done (CamelIMAPXServer *is, CamelIMAPXJob *job);
 static gboolean imapx_run_job (CamelIMAPXServer *is, CamelIMAPXJob *job, GError **error);
 static void imapx_job_fetch_new_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job);
@@ -842,6 +843,21 @@ imapx_command_start (CamelIMAPXServer *imap, CamelIMAPXCommand *ic)
 	return TRUE;
 }
 
+static gboolean duplicate_fetch_or_refresh(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+{
+	if (!ic->job)
+		return FALSE;
+
+	if (!(ic->job->type & (IMAPX_JOB_FETCH_NEW_MESSAGES|IMAPX_JOB_REFRESH_INFO)))
+		return FALSE;
+
+	if (imapx_match_active_job (is, IMAPX_JOB_FETCH_NEW_MESSAGES|IMAPX_JOB_REFRESH_INFO, NULL)) {
+		c(printf("Not yet sending duplicate fetch/refresh %s command\n", ic->name));
+		return TRUE;
+	}
+
+	return FALSE;
+}
 /* See if we can start another task yet.
 
 	If we're waiting for a literal, we cannot proceed.
@@ -943,7 +959,8 @@ imapx_command_start_next(CamelIMAPXServer *is, GError **error)
 		nc = ic->next;
 		while (nc && is->literal == NULL && count < MAX_COMMANDS && ic->pri >= pri) {
 			c(printf("-- %3d '%s'?\n", (gint)ic->pri, ic->name));
-			if (!ic->select || (ic->select == is->select_folder)) {
+			if (!ic->select || ((ic->select == is->select_folder) &&
+					    !duplicate_fetch_or_refresh(is, ic))) {
 				c(printf("--> starting '%s'\n", ic->name));
 				pri = ic->pri;
 				camel_dlist_remove((CamelDListNode *)ic);
@@ -976,7 +993,8 @@ imapx_command_start_next(CamelIMAPXServer *is, GError **error)
 		nc = ic->next;
 		count = 0;
 		while (nc && is->literal == NULL && count < MAX_COMMANDS && ic->pri >= pri) {
-			if (!ic->select || ic->select == is->select_folder) {
+			if (!ic->select || (ic->select == is->select_folder &&
+					    !duplicate_fetch_or_refresh(is, ic))) {
 				c(printf("* queueing job %3d '%s'\n", (gint)ic->pri, ic->name));
 				pri = ic->pri;
 				camel_dlist_remove((CamelDListNode *)ic);
