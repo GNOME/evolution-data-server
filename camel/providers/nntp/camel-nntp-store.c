@@ -1498,7 +1498,7 @@ camel_nntp_command (CamelNNTPStore *store, GError **error, CamelNNTPFolder *fold
 			if (ret == 211) {
 				g_free(store->current_folder);
 				store->current_folder = g_strdup (full_name);
-				if (!camel_nntp_folder_selected(folder, *line, &local_error)) {
+				if (camel_nntp_folder_selected(folder, *line, &local_error) < 0) {
 					ret = -1;
 					goto error;
 				}

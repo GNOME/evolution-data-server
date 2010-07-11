@@ -160,8 +160,7 @@ nntp_folder_sync (CamelFolder *folder, GError **error)
 		g_ptr_array_free (changed, TRUE);
 		camel_folder_summary_touch (folder->summary);
 	}
-	success = camel_folder_summary_save_to_db (folder->summary, NULL);
-
+	success = !camel_folder_summary_save_to_db (folder->summary, error);
 	camel_service_unlock (CAMEL_SERVICE (parent_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return success;
