@@ -869,11 +869,11 @@ imapx_parse_body_fields(CamelIMAPXStream *is, GError **error)
 	cinfo = g_malloc0(sizeof(*cinfo));
 
 	/* this should be string not astring */
-	if (!camel_imapx_stream_astring(is, &token, error))
+	if (camel_imapx_stream_astring(is, &token, error))
 		goto error;
 	type = alloca(strlen( (gchar *) token)+1);
 	strcpy(type, (gchar *) token);
-	if (!camel_imapx_stream_astring(is, &token, error))
+	if (camel_imapx_stream_astring(is, &token, error))
 		goto error;
 	cinfo->type = camel_content_type_new(type, (gchar *) token);
 	if (!imapx_parse_param_list(is, &cinfo->type->params, error))
@@ -891,7 +891,7 @@ imapx_parse_body_fields(CamelIMAPXStream *is, GError **error)
 
 	/* body_fld_enc    ::= (<"> ("7BIT" / "8BIT" / "BINARY" / "BASE64"/
 	   "QUOTED-PRINTABLE") <">) / string */
-	if (!camel_imapx_stream_astring(is, &token, error))
+	if (camel_imapx_stream_astring(is, &token, error))
 		goto error;
 	cinfo->encoding = g_strdup((gchar *) token);
 
@@ -1548,7 +1548,7 @@ imapx_parse_status_info (struct _CamelIMAPXStream *is, GError **error)
 	sinfo = g_malloc0 (sizeof(*sinfo));
 
 	/* skip the folder name */
-	if (!camel_imapx_stream_astring (is, &token, error)) {
+	if (camel_imapx_stream_astring (is, &token, error)) {
 		g_free (sinfo);
 		return NULL;
 	}
