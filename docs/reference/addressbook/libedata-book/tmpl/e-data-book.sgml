@@ -56,6 +56,45 @@ EDataBook
 
 
 
+<!-- ##### FUNCTION e_data_book_create_error ##### -->
+<para>
+
+</para>
+
+@status: 
+@custom_msg: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_book_create_error_fmt ##### -->
+<para>
+
+</para>
+
+@status: 
+@custom_msg_fmt: 
+@Varargs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_book_status_to_string ##### -->
+<para>
+
+</para>
+
+@status: 
+@Returns: 
+
+
+<!-- ##### MACRO e_return_data_book_error_if_fail ##### -->
+<para>
+
+</para>
+
+@expr: 
+@_code: 
+
+
 <!-- ##### FUNCTION e_data_book_new ##### -->
 <para>
 

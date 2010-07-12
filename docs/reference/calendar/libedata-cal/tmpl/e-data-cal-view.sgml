@@ -111,6 +111,15 @@ Implementation of the calendar CORBA search interface.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_data_cal_view_is_stopped ##### -->
+<para>
+
+</para>
+
+@query: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_data_cal_view_notify_objects_added ##### -->
 <para>
 

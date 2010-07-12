@@ -69,6 +69,13 @@ Evolution:BookListener interface.
 @E_BOOK_ERROR_NO_SPACE: 
 @E_BOOK_ERROR_NOT_SUPPORTED: 
 
+<!-- ##### MACRO E_BOOK_ERROR_CORBA_EXCEPTION ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### ENUM EBookViewStatus ##### -->
 <para>
 

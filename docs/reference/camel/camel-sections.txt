@@ -405,6 +405,8 @@ camel_filter_driver_get_type
 <FILE>camel-folder</FILE>
 <TITLE>CamelFolder</TITLE>
 CamelFolder
+CAMEL_FOLDER_ERROR
+CamelFolderError
 CamelFolderChangeInfo
 CamelFolderQuotaInfo
 CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY
@@ -500,6 +502,7 @@ CamelFolderClass
 CamelFolderPrivate
 CamelFolderChangeInfoPrivate
 camel_folder_get_type
+camel_folder_error_quark
 </SECTION>
 
 <SECTION>
@@ -1444,6 +1447,8 @@ camel_nntp_address_get_type
 <FILE>camel-object</FILE>
 <TITLE>CamelObject</TITLE>
 CamelObject
+CAMEL_ERROR
+CamelError
 CamelParamFlags
 camel_object_state_read
 camel_object_state_write
@@ -1472,6 +1477,7 @@ CamelObjectClass
 <SUBSECTION Private>
 CamelObjectPrivate
 camel_object_get_type
+camel_error_quark
 </SECTION>
 
 <SECTION>
@@ -1874,6 +1880,8 @@ camel_seekable_substream_get_type
 <FILE>camel-service</FILE>
 <TITLE>CamelService</TITLE>
 CamelService
+CAMEL_SERVICE_ERROR
+CamelServiceError
 CamelServiceConnectionStatus
 CamelServiceAuthType
 camel_service_construct
@@ -1900,6 +1908,7 @@ CamelServiceClass
 <SUBSECTION Private>
 CamelServicePrivate
 camel_service_get_type
+camel_service_error_quark
 </SECTION>
 
 <SECTION>
@@ -2031,6 +2040,8 @@ camel_store_summary_get_type
 <FILE>camel-store</FILE>
 <TITLE>CamelStore</TITLE>
 CamelStore
+CAMEL_STORE_ERROR
+CamelStoreError
 CamelFolderInfo
 CAMEL_FOLDER_NOSELECT
 CAMEL_FOLDER_NOINFERIORS
@@ -2113,6 +2124,7 @@ CamelStoreClass
 CamelStorePrivate
 camel_isubscribe_get_type
 camel_store_get_type
+camel_store_error_quark
 </SECTION>
 
 <SECTION>
@@ -2557,6 +2569,7 @@ camel_debug_init
 camel_debug
 camel_debug_start
 camel_debug_end
+CAMEL_CHECK_GERROR
 </SECTION>
 
 <SECTION>

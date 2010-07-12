@@ -296,6 +296,7 @@ E_CALENDAR_ERROR
 e_calendar_error_quark
 ECalChangeType
 ECalendarStatus
+E_CALENDAR_STATUS_CORBA_EXCEPTION
 </SECTION>
 
 <SECTION>
@@ -366,6 +367,7 @@ e_cal_util_get_system_timezone
 ECalView
 e_cal_view_get_client
 e_cal_view_start
+e_cal_view_stop
 <SUBSECTION Standard>
 E_TYPE_CAL_VIEW
 E_CAL_VIEW

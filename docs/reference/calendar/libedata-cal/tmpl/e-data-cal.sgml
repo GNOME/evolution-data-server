@@ -64,6 +64,45 @@ Implementation of the calendar CORBA client interface.
 @edatacal: the object which received the signal.
 @arg1: 
 
+<!-- ##### FUNCTION e_data_cal_create_error ##### -->
+<para>
+
+</para>
+
+@status: 
+@custom_msg: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_create_error_fmt ##### -->
+<para>
+
+</para>
+
+@status: 
+@custom_msg_fmt: 
+@Varargs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_status_to_string ##### -->
+<para>
+
+</para>
+
+@status: 
+@Returns: 
+
+
+<!-- ##### MACRO e_return_data_cal_error_if_fail ##### -->
+<para>
+
+</para>
+
+@expr: 
+@_code: 
+
+
 <!-- ##### FUNCTION e_data_cal_new ##### -->
 <para>
 

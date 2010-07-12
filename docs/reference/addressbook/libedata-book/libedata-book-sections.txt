@@ -1,7 +1,6 @@
 <SECTION>
 <FILE>e-book-backend-sync</FILE>
 <TITLE>EBookBackendSync</TITLE>
-EBookBackendSyncStatus
 EBookBackendSync
 e_book_backend_sync_construct
 e_book_backend_sync_remove
@@ -188,6 +187,10 @@ e_book_backend_cache_get_type
 <TITLE>EDataBook</TITLE>
 EDataBook
 E_DATA_BOOK_ERROR
+e_data_book_create_error
+e_data_book_create_error_fmt
+e_data_book_status_to_string
+e_return_data_book_error_if_fail
 e_data_book_new
 e_data_book_get_backend
 e_data_book_get_source

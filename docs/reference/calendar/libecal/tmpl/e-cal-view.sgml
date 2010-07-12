@@ -109,3 +109,11 @@ ECalView is a view of the ECal.
 @view: 
 
 
+<!-- ##### FUNCTION e_cal_view_stop ##### -->
+<para>
+
+</para>
+
+@view: 
+
+

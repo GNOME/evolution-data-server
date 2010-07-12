@@ -81,7 +81,6 @@ e_cal_backend_sexp_get_type
 <FILE>e-cal-backend-sync</FILE>
 <TITLE>ECalBackendSync</TITLE>
 ECalBackendSync
-ECalBackendSyncStatus
 ECalBackendSyncFactoryFn
 e_cal_backend_sync_set_lock
 e_cal_backend_sync_is_read_only
@@ -270,6 +269,10 @@ e_cal_backend_file_store_get_type
 <TITLE>EDataCal</TITLE>
 E_DATA_CAL_ERROR
 EDataCal
+e_data_cal_create_error
+e_data_cal_create_error_fmt
+e_data_cal_status_to_string
+e_return_data_cal_error_if_fail
 e_data_cal_new
 e_data_cal_get_backend
 e_data_cal_get_source
@@ -327,7 +330,6 @@ e_data_cal_view_listener_set_mode_status_get_type
 <FILE>e-cal-backend-util</FILE>
 e_cal_backend_mail_account_get_default
 e_cal_backend_mail_account_is_valid
-e_cal_backend_status_to_string
 e_cal_backend_user_declined
 </SECTION>
 
@@ -375,7 +377,7 @@ e_data_cal_view_object_matches
 e_data_cal_view_get_matched_objects
 e_data_cal_view_is_started
 e_data_cal_view_is_done
-e_data_cal_view_get_done_status
+e_data_cal_view_is_stopped
 e_data_cal_view_notify_objects_added
 e_data_cal_view_notify_objects_added_1
 e_data_cal_view_notify_objects_modified

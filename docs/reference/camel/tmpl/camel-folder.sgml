@@ -69,6 +69,27 @@ CamelFolder
 
 </para>
 
+<!-- ##### MACRO CAMEL_FOLDER_ERROR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### ENUM CamelFolderError ##### -->
+<para>
+
+</para>
+
+@CAMEL_FOLDER_ERROR_INVALID: 
+@CAMEL_FOLDER_ERROR_INVALID_STATE: 
+@CAMEL_FOLDER_ERROR_NON_EMPTY: 
+@CAMEL_FOLDER_ERROR_NON_UID: 
+@CAMEL_FOLDER_ERROR_INSUFFICIENT_PERMISSION: 
+@CAMEL_FOLDER_ERROR_INVALID_PATH: 
+@CAMEL_FOLDER_ERROR_INVALID_UID: 
+@CAMEL_FOLDER_ERROR_SUMMARY_INVALID: 
+
 <!-- ##### STRUCT CamelFolderChangeInfo ##### -->
 <para>
 

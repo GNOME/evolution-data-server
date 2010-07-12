@@ -40,9 +40,12 @@ gboolean camel_debug(const gchar *mode);
 gboolean camel_debug_start(const gchar *mode);
 void camel_debug_end(void);
 
-/* This sanity checks return values and GErrors.  If returning
- * failure, make sure the GError is set.  If returning success,
- * make sure the GError is NOT set.
+/**
+ * CAMEL_CHECK_GERROR:
+ *
+ * This sanity checks return values and #GErrors.  If returning
+ * failure, make sure the #GError is set.  If returning success,
+ * make sure the #GError is NOT set.
  *
  * Example:
  *

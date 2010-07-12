@@ -68,3 +68,14 @@ camel-debug
 @void: 
 
 
+<!-- ##### MACRO CAMEL_CHECK_GERROR ##### -->
+<para>
+
+</para>
+
+@object: 
+@method: 
+@expr: 
+@error: 
+
+

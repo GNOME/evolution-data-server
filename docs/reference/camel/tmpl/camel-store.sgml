@@ -75,6 +75,21 @@ CamelStore
 @camelstore: the object which received the signal.
 @Param2: 
 
+<!-- ##### MACRO CAMEL_STORE_ERROR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### ENUM CamelStoreError ##### -->
+<para>
+
+</para>
+
+@CAMEL_STORE_ERROR_INVALID: 
+@CAMEL_STORE_ERROR_NO_FOLDER: 
+
 <!-- ##### STRUCT CamelFolderInfo ##### -->
 <para>
 

@@ -31,6 +31,20 @@ CamelObject
 
 </para>
 
+<!-- ##### MACRO CAMEL_ERROR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### ENUM CamelError ##### -->
+<para>
+
+</para>
+
+@CAMEL_ERROR_GENERIC: 
+
 <!-- ##### ENUM CamelParamFlags ##### -->
 <para>
 
