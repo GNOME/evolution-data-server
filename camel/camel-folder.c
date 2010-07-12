@@ -205,7 +205,7 @@ filter_filter (CamelSession *session, CamelSessionThreadMsg *tmsg)
 		}
 
 		camel_filter_driver_flush (m->driver, &local_error);
-		if (m->error == NULL)
+		if (local_error != NULL)
 			g_propagate_error (&m->error, local_error);
 
 		g_free (source_url);
