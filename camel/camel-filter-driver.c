@@ -1179,7 +1179,8 @@ camel_filter_driver_flush (CamelFilterDriver *driver,
 
 	g_hash_table_foreach_remove (p->only_once, (GHRFunc) run_only_once, &data);
 
-	g_propagate_error (error, data.error);
+	if (data.error != NULL)
+		g_propagate_error (error, data.error);
 }
 
 static gint
