@@ -62,6 +62,13 @@ imapx_stream_fill (CamelIMAPXStream *is,
 			return is->end - is->ptr;
 		} else {
 			io(printf("camel_imapx_read: -1\n"));
+			/* If returning zero, camel_stream_read() doesn't consider
+			   that to be an error. But we do -- we should only be here
+			   if we *know* there are data to receive. So set the error
+			   accordingly */
+			if (!left)
+				g_set_error(error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+					    _("Source stream returned no data"));
 			return -1;
 		}
 	}
