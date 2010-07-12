@@ -262,13 +262,6 @@ free_icalcomponent (ECalComponent *comp, gboolean free)
 	if (!priv->icalcomp)
 		return;
 
-	/* Free the icalcomponent */
-
-	if (free && icalcomponent_get_parent (priv->icalcomp) == NULL) {
-		icalcomponent_free (priv->icalcomp);
-		priv->icalcomp = NULL;
-	}
-
 	/* Free the mappings */
 
 	priv->uid = NULL;
@@ -342,6 +335,13 @@ free_icalcomponent (ECalComponent *comp, gboolean free)
 	/* Free the subcomponents */
 
 	g_hash_table_foreach_remove (priv->alarm_uid_hash, free_alarm_cb, NULL);
+
+	/* Free the icalcomponent */
+
+	if (free && icalcomponent_get_parent (priv->icalcomp) == NULL) {
+		icalcomponent_free (priv->icalcomp);
+		priv->icalcomp = NULL;
+	}
 
 	/* Clean up */
 
