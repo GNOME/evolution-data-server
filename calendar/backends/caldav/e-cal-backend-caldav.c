@@ -889,11 +889,14 @@ send_and_handle_redirection (SoupSession *soup_session, SoupMessage *msg, gchar 
 {
 	gchar *old_uri = NULL;
 
+	g_return_if_fail (msg != NULL);
+
 	if (new_location)
 		old_uri = soup_uri_to_string (soup_message_get_uri (msg), FALSE);
 
 	soup_message_set_flags (msg, SOUP_MESSAGE_NO_REDIRECT);
 	soup_message_add_header_handler (msg, "got_body", "Location", G_CALLBACK (redirect_handler), soup_session);
+	soup_message_headers_append (msg->request_headers, "Connection", "close");
 	soup_session_send_message (soup_session, msg);
 
 	if (new_location) {

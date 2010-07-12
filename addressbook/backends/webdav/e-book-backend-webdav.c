@@ -137,8 +137,8 @@ download_contact(EBookBackendWebdav *webdav, const gchar *uri)
 	guint        status;
 
 	message = soup_message_new(SOUP_METHOD_GET, uri);
-	soup_message_headers_append(message->request_headers,
-				    "User-Agent", USERAGENT);
+	soup_message_headers_append (message->request_headers, "User-Agent", USERAGENT);
+	soup_message_headers_append (message->request_headers, "Connection", "close");
 
 	status = soup_session_send_message(webdav->priv->session, message);
 	if (status != 200) {
@@ -198,8 +198,8 @@ upload_contact(EBookBackendWebdav *webdav, EContact *contact)
 	}
 
 	message = soup_message_new(SOUP_METHOD_PUT, uri);
-	soup_message_headers_append(message->request_headers,
-				    "User-Agent", USERAGENT);
+	soup_message_headers_append (message->request_headers, "User-Agent", USERAGENT);
+	soup_message_headers_append (message->request_headers, "Connection", "close");
 
 	property = e_source_get_property(source, "avoid_ifmatch");
 	if (property != NULL && strcmp(property, "1") == 0) {
@@ -362,8 +362,8 @@ delete_contact(EBookBackendWebdav *webdav, const gchar *uri)
 	guint        status;
 
 	message = soup_message_new(SOUP_METHOD_DELETE, uri);
-	soup_message_headers_append(message->request_headers,
-				    "User-Agent", USERAGENT);
+	soup_message_headers_append (message->request_headers, "User-Agent", USERAGENT);
+	soup_message_headers_append (message->request_headers, "Connection", "close");
 
 	status = soup_session_send_message(webdav->priv->session, message);
 	g_object_unref(message);
@@ -656,8 +656,8 @@ send_propfind(EBookBackendWebdav *webdav)
 		"<propfind xmlns=\"DAV:\"><prop><getetag/></prop></propfind>";
 
 	message = soup_message_new(SOUP_METHOD_PROPFIND, priv->uri);
-	soup_message_headers_append(message->request_headers,
-				    "User-Agent", USERAGENT);
+	soup_message_headers_append (message->request_headers, "User-Agent", USERAGENT);
+	soup_message_headers_append (message->request_headers, "Connection", "close");
 	soup_message_headers_append(message->request_headers, "Depth", "1");
 	soup_message_set_request(message, "text/xml", SOUP_MEMORY_TEMPORARY,
 			(gchar *) request, strlen(request));
