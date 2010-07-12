@@ -148,6 +148,7 @@ stream_buffer_read (CamelStream *stream,
 	gssize bytes_read = 1;
 	gssize bytes_left;
 	gchar *bptr = buffer;
+	GError *local_error = NULL;
 
 	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
 
@@ -167,7 +168,7 @@ stream_buffer_read (CamelStream *stream,
 			/* if we are reading a lot, then read directly to the destination buffer */
 			if (n >= priv->size/3) {
 				bytes_read = camel_stream_read (
-					priv->stream, bptr, n, error);
+					priv->stream, bptr, n, &local_error);
 				if (bytes_read>0) {
 					n -= bytes_read;
 					bptr += bytes_read;
@@ -175,7 +176,7 @@ stream_buffer_read (CamelStream *stream,
 			} else {
 				bytes_read = camel_stream_read (
 					priv->stream, (gchar *)
-					priv->buf, priv->size, error);
+					priv->buf, priv->size, &local_error);
 				if (bytes_read>0) {
 					gsize bytes_used = bytes_read > n ? n : bytes_read;
 					priv->ptr = priv->buf;
@@ -191,6 +192,18 @@ stream_buffer_read (CamelStream *stream,
 			priv->ptr += n;
 			bptr += n;
 			n = 0;
+		}
+	}
+
+	/* If camel_stream_read() failed but we managed to read some data
+	 * before the failure, discard the error and return the number of
+	 * bytes read.  If we didn't read any data, propagate the error. */
+	if (local_error != NULL) {
+		if (bptr > buffer)
+			g_clear_error (&local_error);
+		else {
+			g_propagate_error (error, local_error);
+			return -1;
 		}
 	}
 
