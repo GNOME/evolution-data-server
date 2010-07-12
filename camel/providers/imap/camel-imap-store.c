@@ -51,8 +51,8 @@
 #define d(x)
 
 /* Specified in RFC 2060 */
-#define IMAP_PORT "143"
-#define IMAPS_PORT "993"
+#define IMAP_PORT  143
+#define IMAPS_PORT 993
 
 #ifdef G_OS_WIN32
 /* The strtok() in Microsoft's C library is MT-safe (but still uses
@@ -420,7 +420,8 @@ enum {
 #endif
 
 static gboolean
-connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, GError **error)
+connect_to_server (CamelService *service,
+		   const char *host, const char *serv, gint fallback_port, gint ssl_mode, GError **error)
 {
 	CamelImapStore *store = (CamelImapStore *) service;
 	CamelSession *session;
@@ -460,7 +461,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, GE
 		g_free (socks_host);
 	}
 
-	if (camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, ai, error) == -1) {
+	if (camel_tcp_stream_connect ((CamelTcpStream *) tcp_stream, host, serv, fallback_port, error) == -1) {
 		g_prefix_error (
 			error, _("Could not connect to %s: "),
 			service->url->host);
@@ -810,7 +811,7 @@ connect_to_server_process (CamelService *service, const gchar *cmd, GError **err
 static struct {
 	const gchar *value;
 	const gchar *serv;
-	const gchar *port;
+	gint fallback_port;
 	gint mode;
 } ssl_options[] = {
 	{ "",              "imaps", IMAPS_PORT, MODE_SSL   },  /* really old (1.x) */
@@ -824,10 +825,9 @@ static gboolean
 connect_to_server_wrapper (CamelService *service, GError **error)
 {
 	const gchar *ssl_mode;
-	struct addrinfo hints, *ai;
-	gint mode, ret, i;
+	gint mode, i;
 	const gchar *serv;
-	const gchar *port;
+	gint fallback_port;
 	GError *local_error = NULL;
 
 #ifndef G_OS_WIN32
@@ -844,38 +844,20 @@ connect_to_server_wrapper (CamelService *service, GError **error)
 				break;
 		mode = ssl_options[i].mode;
 		serv = (gchar *) ssl_options[i].serv;
-		port = ssl_options[i].port;
+		fallback_port = ssl_options[i].fallback_port;
 	} else {
 		mode = MODE_CLEAR;
 		serv = (gchar *) "imap";
-		port = IMAP_PORT;
+		fallback_port = IMAP_PORT;
 	}
 
 	if (service->url->port) {
 		serv = g_alloca (16);
 		sprintf ((gchar *)serv, "%d", service->url->port);
-		port = NULL;
+		fallback_port = 0;
 	}
 
-	memset (&hints, 0, sizeof (hints));
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_family = PF_UNSPEC;
-	ai = camel_getaddrinfo(service->url->host, serv, &hints, &local_error);
-	if (ai == NULL && port != NULL && g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
-		g_clear_error (&local_error);
-		ai = camel_getaddrinfo(service->url->host, port, &hints, &local_error);
-	}
-
-	if (local_error != NULL) {
-		g_propagate_error (error, local_error);
-		return FALSE;
-	}
-
-	ret = connect_to_server (service, ai, mode, error);
-
-	camel_freeaddrinfo (ai);
-
-	return ret;
+	return connect_to_server (service, service->url->host, serv, fallback_port, mode, error);
 }
 
 extern CamelServiceAuthType camel_imap_password_authtype;
