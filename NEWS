@@ -1,3 +1,42 @@
+Evolution-Data-Server 2.31.5 2010-07-12
+---------------------------------------
+
+Bug Fixes:
+	Bug 618938 - Crash when reading calendar acknowledgement message
+	             (Milan Crha)
+	Bug 623936 - 75 second delay when creating new DAV entries in Zimbra
+	             (Milan Crha)
+	Bug 624018 - Fix error handling in groupwise_get_folder()
+	             (Matthew Barnes)
+	Bug 623204 - Be able to report detailed errors from backends
+	             (Milan Crha)
+	Bug 623919 - Error while opening any newly received message
+	             (Matthew Barnes)
+	Bug 623795 - URI at the end of text isn't clickable (Milan Crha)
+	Bug 621609 - Can pass unknown UID to e_source_combo_box_set_active_uid
+	             (Milan Crha)
+	Bug 623431 - Use gweather-3.0 when building with gtk3
+	             (Maciej Piechotka)
+	Bug 623430 - libedataserverui.pc.in hardcodes 1.2 API version
+	             (Matthew Barnes)
+
+Other Changes:
+	* Lots of IMAPX improvements (David Woodhouse and Chenthill Palanisamy)
+	* Make NSS database initialisation more robust, handle errors better
+	  (David Woodhouse)
+	* Use text/vcard content type on WebDAV PUT request (Milan Crha)
+	* Migrate from CamelException to GError. (Matthew Barnes)
+	* Work around sudden disappearance of GdkRegion in GTK+ 2.90.5.
+	  (Matthew Barnes)
+	* Add functions to get Evo/EDS base directories. (Matthew Barnes)
+	* Improve error handling in CamelStreamBuffer::read(). (Matthew Barnes)
+
+Translations:
+	Mario Blättermann (de)
+	Jorge González (es)
+	Fran Diéguez (gl)
+	Kjartan Maraas (nb)
+
 Evolution-Data-Server 2.31.4 2010-06-29
 ---------------------------------------
 
