@@ -2683,8 +2683,7 @@ imapx_connect_to_server (CamelIMAPXServer *is, GError **error)
 	guchar *token;
 	gint tok;
 	const gchar *serv;
-	const gchar *port = NULL;
-	struct addrinfo *ai, hints = { 0 };
+	gint fallback_port;
 	CamelIMAPXCommand *ic;
 	GError *local_error = NULL;
 
@@ -2702,9 +2701,10 @@ imapx_connect_to_server (CamelIMAPXServer *is, GError **error)
 	if (is->url->port) {
 		serv = g_alloca(16);
 		sprintf((gchar *) serv, "%d", is->url->port);
+		fallback_port = 0;
 	} else {
 		serv = "imap";
-		port = "143";
+		fallback_port = 143;
 	}
 #ifdef HAVE_SSL
 	mode = camel_url_get_param(is->url, "use_ssl");
@@ -2715,7 +2715,7 @@ imapx_connect_to_server (CamelIMAPXServer *is, GError **error)
 		} else {
 			if (is->url->port == 0) {
 				serv = "imaps";
-				port = "993";
+				fallback_port = 993;
 			}
 			tcp_stream = camel_tcp_stream_ssl_new(is->session, is->url->host, SSL_PORT_FLAGS);
 		}
@@ -2736,21 +2736,7 @@ imapx_connect_to_server (CamelIMAPXServer *is, GError **error)
 		g_free (socks_host);
 	}
 
-	hints.ai_socktype = SOCK_STREAM;
-	ai = camel_getaddrinfo(is->url->host, serv, &hints, &local_error);
-	if (!g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED) && port != NULL) {
-		g_clear_error (&local_error);
-		ai = camel_getaddrinfo(is->url->host, port, &hints, &local_error);
-	}
-
-	if (local_error != NULL) {
-		g_propagate_error (error, local_error);
-		g_object_unref (tcp_stream);
-		return FALSE;
-	}
-
-	ret = camel_tcp_stream_connect(CAMEL_TCP_STREAM(tcp_stream), ai, error);
-	camel_freeaddrinfo(ai);
+	ret = camel_tcp_stream_connect(CAMEL_TCP_STREAM(tcp_stream), is->url->host, serv, fallback_port, error);
 	if (ret == -1) {
 		g_prefix_error (
 			error, _("Could not connect to %s (port %s): "),
