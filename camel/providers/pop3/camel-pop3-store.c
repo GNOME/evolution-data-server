@@ -678,6 +678,21 @@ pop3_store_query_auth_types (CamelService *service,
 	return types;
 }
 
+static gchar *
+pop3_store_get_name (CamelService *service,
+                     gboolean brief)
+{
+	if (brief)
+		return g_strdup_printf (
+			_("POP3 server %s"),
+			service->url->host);
+	else
+		return g_strdup_printf (
+			_("POP3 server for %s on %s"),
+			service->url->user,
+			service->url->host);
+}
+
 static CamelFolder *
 pop3_store_get_folder (CamelStore *store,
                        const gchar *folder_name,
@@ -700,6 +715,20 @@ pop3_store_get_trash (CamelStore *store,
                       GError **error)
 {
 	/* no-op */
+	return NULL;
+}
+
+static CamelFolderInfo *
+pop3_store_get_folder_info (CamelStore *store,
+                            const gchar *top,
+                            guint32 flags,
+                            GError **error)
+{
+	g_set_error (
+		error, CAMEL_STORE_ERROR,
+		CAMEL_STORE_ERROR_NO_FOLDER,
+		_("POP3 stores have no folder hierarchy"));
+
 	return NULL;
 }
 
@@ -726,10 +755,12 @@ camel_pop3_store_class_init (CamelPOP3StoreClass *class)
 	service_class->connect = pop3_store_connect;
 	service_class->disconnect = pop3_store_disconnect;
 	service_class->query_auth_types = pop3_store_query_auth_types;
+	service_class->get_name = pop3_store_get_name;
 
 	store_class = CAMEL_STORE_CLASS (class);
 	store_class->get_folder = pop3_store_get_folder;
 	store_class->get_trash = pop3_store_get_trash;
+	store_class->get_folder_info = pop3_store_get_folder_info;
 	store_class->can_refresh_folder = pop3_store_can_refresh_folder;
 }
 
