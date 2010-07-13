@@ -167,6 +167,7 @@ imapx_refresh_info (CamelFolder *folder, GError **error)
 	server = camel_imapx_store_get_server(istore, camel_folder_get_full_name (folder), error);
 	if (server != NULL) {
 		success = camel_imapx_server_refresh_info(server, folder, error);
+		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
 		g_object_unref(server);
 	}
 
@@ -189,6 +190,7 @@ imapx_expunge (CamelFolder *folder, GError **error)
 	server = camel_imapx_store_get_server(istore, camel_folder_get_full_name (folder), error);
 	if (server) {
 		camel_imapx_server_expunge(server, folder, error);
+		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
 		g_object_unref(server);
 		return TRUE;
 	}
@@ -219,6 +221,7 @@ imapx_sync (CamelFolder *folder, gboolean expunge, GError **error)
 	if (server && expunge)
 		camel_imapx_server_expunge(server, folder, NULL);
 	if (server) {
+		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
 		g_object_unref(server);
 	}
 
@@ -263,6 +266,7 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, GError **error)
 		server = camel_imapx_store_get_server(istore, camel_folder_get_full_name (folder), error);
 		if (server) {
 			stream = camel_imapx_server_get_message(server, folder, uid, error);
+			camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
 			g_object_unref(server);
 		} else
 			return NULL;
@@ -302,6 +306,7 @@ imapx_sync_message (CamelFolder *folder, const gchar *uid, GError **error)
 		return FALSE;
 
 	success = camel_imapx_server_sync_message (server, folder, uid, error);
+	camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
 	g_object_unref(server);
 
 	return success;
@@ -326,6 +331,7 @@ imapx_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (source), error);
 	if (server) {
 		success = camel_imapx_server_copy_message (server, source, dest, uids, delete_originals, error);
+		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (source));
 		g_object_unref(server);
 	}
 

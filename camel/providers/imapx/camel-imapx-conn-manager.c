@@ -160,7 +160,7 @@ imapx_conn_update_select (CamelIMAPXServer *conn, const gchar *selected_folder, 
 			jinfo = camel_imapx_server_get_job_queue_info (cinfo->conn);
 			if (!g_hash_table_lookup (jinfo->folders, cinfo->selected_folder)) {
 				g_hash_table_remove (cinfo->folders, cinfo->selected_folder);
-				c(printf ("Removed folder %s from connection folder list \n", cinfo->selected_folder));
+				c(printf ("Removed folder %s from connection folder list - select changed \n", cinfo->selected_folder));
 			}
 			camel_imapx_destroy_job_queue_info (jinfo);
 			g_free (cinfo->selected_folder);
@@ -326,6 +326,41 @@ camel_imapx_conn_manager_get_connections (CamelIMAPXConnManager *con_man)
 	CON_UNLOCK(con_man);
 
 	return conns;
+}
+
+/* Used for handling operations that fails to execute and that needs to removed from folder list */
+void
+camel_imapx_conn_manager_update_con_info (CamelIMAPXConnManager *con_man, CamelIMAPXServer *conn,
+					  const gchar *folder_name)
+{
+	GSList *l;
+	ConnectionInfo *cinfo;
+	gboolean found = FALSE;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man));
+	
+	CON_LOCK(con_man);
+
+	for (l = con_man->priv->connections; l != NULL; l = g_slist_next (l)) {
+		cinfo = (ConnectionInfo *) l->data;
+		if (cinfo->conn == conn) {
+			found = TRUE;	
+			break;
+		}
+	}
+
+	if (found) {
+		IMAPXJobQueueInfo *jinfo;
+
+		jinfo = camel_imapx_server_get_job_queue_info (cinfo->conn);
+		if (!g_hash_table_lookup (jinfo->folders, folder_name)) {
+			g_hash_table_remove (cinfo->folders, folder_name);
+			c(printf ("Removed folder %s from connection folder list - op done \n", folder_name));
+		}
+		camel_imapx_destroy_job_queue_info (jinfo);
+	}
+	
+	CON_UNLOCK(con_man);
 }
 
 void			

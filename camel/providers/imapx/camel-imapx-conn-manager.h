@@ -65,5 +65,8 @@ CamelIMAPXServer *	camel_imapx_conn_manager_get_connection		(CamelIMAPXConnManag
 									GError **error);
 void			camel_imapx_conn_manager_close_connections 	(CamelIMAPXConnManager *con_man);
 GSList *		camel_imapx_conn_manager_get_connections 	(CamelIMAPXConnManager *con_man);
+void			camel_imapx_conn_manager_update_con_info 	(CamelIMAPXConnManager *con_man, 
+									CamelIMAPXServer *server,
+								       	const gchar *folder_name);
 
 #endif /* ! _CAMEL_IMAPX_SERVER_H */

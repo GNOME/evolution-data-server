@@ -242,6 +242,7 @@ camel_imapx_store_op_done (CamelIMAPXStore *istore, CamelIMAPXServer *server, co
 {
 	g_return_if_fail (server != NULL);
 
+	camel_imapx_conn_manager_update_con_info (istore->con_man, server, folder_name);
 }
 
 static gboolean
