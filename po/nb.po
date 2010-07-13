@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.31.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-11 17:31+0200\n"
-"PO-Revision-Date: 2010-07-11 17:44+0200\n"
+"POT-Creation-Date: 2010-07-13 14:25+0200\n"
+"PO-Revision-Date: 2010-07-13 14:25+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -27,13 +27,13 @@ msgstr "Laster…"
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2261
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2283
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2328
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4492
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4491
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "Søker…"
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2698
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4651
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4650
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Laster ned kontakter (%d)…"
@@ -81,11 +81,11 @@ msgstr "Endrer kontakt fra LDAP-tjener…"
 msgid "Receiving LDAP search results..."
 msgstr "Mottar søkeresultater fra LDAP-tjener…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4514
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4513
 msgid "Error performing search"
 msgstr "Feil ved utføring av søk"
 
-#: ../addressbook/libebook/e-book.c:2986
+#: ../addressbook/libebook/e-book.c:3001
 #, c-format
 msgid "%s: there was no source for UID '%s' stored in GConf."
 msgstr "%s: ingen kilde lagret i GConf for uid «%s»."
@@ -1582,8 +1582,8 @@ msgstr "Du må arbeide tilknyttet for å fullføre denne operasjonen"
 #: ../camel/camel-file-utils.c:691 ../camel/camel-gpg-context.c:887
 #: ../camel/camel-gpg-context.c:1175 ../camel/camel-net-utils.c:512
 #: ../camel/camel-net-utils.c:689 ../camel/camel-net-utils.c:838
-#: ../camel/providers/imapx/camel-imapx-server.c:4675
-#: ../camel/providers/imapx/camel-imapx-server.c:4692
+#: ../camel/providers/imapx/camel-imapx-server.c:4674
+#: ../camel/providers/imapx/camel-imapx-server.c:4691
 #: ../camel/providers/nntp/camel-nntp-summary.c:396
 #: ../camel/providers/pop3/camel-pop3-folder.c:269
 #: ../camel/providers/pop3/camel-pop3-folder.c:625
@@ -1614,50 +1614,50 @@ msgstr "Ugyldig meldingsstrøm mottatt fra %s: %s"
 msgid "Syncing folders"
 msgstr "Synkroniserer mapper"
 
-#: ../camel/camel-filter-driver.c:1134 ../camel/camel-filter-driver.c:1568
+#: ../camel/camel-filter-driver.c:1134 ../camel/camel-filter-driver.c:1569
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Feil under lesing av filter: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1145 ../camel/camel-filter-driver.c:1579
+#: ../camel/camel-filter-driver.c:1145 ../camel/camel-filter-driver.c:1580
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Feil under kjøring av filter: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1239
+#: ../camel/camel-filter-driver.c:1240
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Kunne ikke åpne spool-mappen"
 
-#: ../camel/camel-filter-driver.c:1250
+#: ../camel/camel-filter-driver.c:1251
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Kan ikke prosessere spool-mappen"
 
-#: ../camel/camel-filter-driver.c:1268
+#: ../camel/camel-filter-driver.c:1269
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Henter melding %d (%d%%)"
 
-#: ../camel/camel-filter-driver.c:1274 ../camel/camel-filter-driver.c:1296
+#: ../camel/camel-filter-driver.c:1275 ../camel/camel-filter-driver.c:1297
 #, c-format
 msgid "Failed on message %d"
 msgstr "Feilet på melding %d"
 
-#: ../camel/camel-filter-driver.c:1311 ../camel/camel-filter-driver.c:1410
+#: ../camel/camel-filter-driver.c:1312 ../camel/camel-filter-driver.c:1411
 msgid "Syncing folder"
 msgstr "Synkroniserer mappe"
 
-#: ../camel/camel-filter-driver.c:1315 ../camel/camel-filter-driver.c:1415
+#: ../camel/camel-filter-driver.c:1316 ../camel/camel-filter-driver.c:1416
 msgid "Complete"
 msgstr "Fullført"
 
-#: ../camel/camel-filter-driver.c:1376
+#: ../camel/camel-filter-driver.c:1377
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Henter melding %d av %d"
 
-#: ../camel/camel-filter-driver.c:1394
+#: ../camel/camel-filter-driver.c:1395
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Feilet på melding %d av %d"
@@ -2702,8 +2702,8 @@ msgstr "Ser etter slettede meldinger %s"
 #: ../camel/providers/groupwise/camel-groupwise-store.c:779
 #: ../camel/providers/imap/camel-imap-folder.c:3806
 #: ../camel/providers/imap/camel-imap-folder.c:3884
-#: ../camel/providers/imapx/camel-imapx-server.c:3718
-#: ../camel/providers/imapx/camel-imapx-server.c:3842
+#: ../camel/providers/imapx/camel-imapx-server.c:3717
+#: ../camel/providers/imapx/camel-imapx-server.c:3841
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Henter sammendragsinformasjon for nye meldinger i %s"
@@ -2807,7 +2807,7 @@ msgstr "Vert eller bruker ikke tilgjengelig i URL"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:207
 #: ../camel/providers/imap/camel-imap-store.c:1207
-#: ../camel/providers/imapx/camel-imapx-server.c:2972
+#: ../camel/providers/imapx/camel-imapx-server.c:2971
 #, c-format
 msgid "You did not enter a password."
 msgstr "Du skrev ikke inn et passord."
@@ -2958,7 +2958,7 @@ msgid "Could not create directory %s: %s"
 msgstr "Kan ikke opprette katalog %s: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:960
-#: ../camel/providers/imapx/camel-imapx-server.c:3757
+#: ../camel/providers/imapx/camel-imapx-server.c:3756
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Søker etter endrede meldinger i %s"
@@ -2968,13 +2968,13 @@ msgid "Unable to retrieve message: "
 msgstr "Kan ikke hente melding: "
 
 #: ../camel/providers/imap/camel-imap-folder.c:3266
-#: ../camel/providers/imapx/camel-imapx-server.c:4955
+#: ../camel/providers/imapx/camel-imapx-server.c:4953
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Kan ikke hente melding med meldings-ID %s: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3267
-#: ../camel/providers/imapx/camel-imapx-server.c:4956
+#: ../camel/providers/imapx/camel-imapx-server.c:4954
 msgid "No such message available."
 msgstr "Ingen slik melding tilgjengelig."
 
@@ -3132,20 +3132,20 @@ msgstr "Kunne ikke koble til %s: "
 #: ../camel/providers/imap/camel-imap-store.c:591
 #: ../camel/providers/imap/camel-imap-store.c:598
 #: ../camel/providers/imap/camel-imap-store.c:625
-#: ../camel/providers/imapx/camel-imapx-server.c:2825
-#: ../camel/providers/imapx/camel-imapx-server.c:2861
+#: ../camel/providers/imapx/camel-imapx-server.c:2824
+#: ../camel/providers/imapx/camel-imapx-server.c:2860
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Kunne ikke koble til IMAP-tjener %s i sikker modus: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:572
-#: ../camel/providers/imapx/camel-imapx-server.c:2826
+#: ../camel/providers/imapx/camel-imapx-server.c:2825
 #: ../camel/providers/smtp/camel-smtp-transport.c:295
 msgid "STARTTLS not supported"
 msgstr "STARTTLS er ikke støttet"
 
 #: ../camel/providers/imap/camel-imap-store.c:592
-#: ../camel/providers/imapx/camel-imapx-server.c:2862
+#: ../camel/providers/imapx/camel-imapx-server.c:2861
 msgid "SSL negotiations failed"
 msgstr "SSL-forhandling feilet"
 
@@ -3155,13 +3155,13 @@ msgid "SSL is not available in this build"
 msgstr "SSL er ikke støttet i denne versjonen"
 
 #: ../camel/providers/imap/camel-imap-store.c:747
-#: ../camel/providers/imapx/camel-imapx-server.c:2645
+#: ../camel/providers/imapx/camel-imapx-server.c:2644
 #, c-format
 msgid "Connection cancelled"
 msgstr "Tilkobling avbrutt"
 
 #: ../camel/providers/imap/camel-imap-store.c:752
-#: ../camel/providers/imapx/camel-imapx-server.c:2650
+#: ../camel/providers/imapx/camel-imapx-server.c:2649
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "Kunne ikke koble til med kommando «%s»: %s"
@@ -3181,20 +3181,20 @@ msgid "Inbox"
 msgstr "Innboks"
 
 #: ../camel/providers/imap/camel-imap-store.c:1148
-#: ../camel/providers/imapx/camel-imapx-server.c:2928
+#: ../camel/providers/imapx/camel-imapx-server.c:2927
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "IMAP-tjener %s støtter ikke etterspurt autentiseringstype %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:1160
-#: ../camel/providers/imapx/camel-imapx-server.c:2940
+#: ../camel/providers/imapx/camel-imapx-server.c:2939
 #: ../camel/providers/smtp/camel-smtp-transport.c:483
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "Ingen støtte for autentiseringstype %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:1239
-#: ../camel/providers/imapx/camel-imapx-server.c:3010
+#: ../camel/providers/imapx/camel-imapx-server.c:3009
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3279,21 +3279,21 @@ msgstr "Feil under skriving til mellomlagerstrøm: "
 msgid "Not authenticated"
 msgstr "Ikke autentisert"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2753
+#: ../camel/providers/imapx/camel-imapx-server.c:2752
 #, c-format
 msgid "Could not connect to %s (port %s): "
 msgstr "Kunne ikke koble til %s (port %s): "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3182
+#: ../camel/providers/imapx/camel-imapx-server.c:3181
 msgid "Closing tmp stream failed: "
 msgstr "Feil ved lukking av midlertidig strøm: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5079
+#: ../camel/providers/imapx/camel-imapx-server.c:5077
 #, c-format
 msgid "Cannot create spool file: %s"
 msgstr "Kan ikke spool-fil: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5094
+#: ../camel/providers/imapx/camel-imapx-server.c:5092
 msgid "Cannot create spool file: "
 msgstr "Kan ikke spool-fil: "
 
@@ -3303,7 +3303,12 @@ msgstr "Kan ikke spool-fil: "
 msgid "No such folder: %s"
 msgstr "Ingen slik mappe: %s"
 
-#: ../camel/providers/imapx/camel-imapx-stream.c:73
+#: ../camel/providers/imapx/camel-imapx-stream.c:71
+#, c-format
+msgid "Source stream returned no data"
+msgstr "Kildestrøm returnerte ingen data"
+
+#: ../camel/providers/imapx/camel-imapx-stream.c:80
 #, c-format
 msgid "Source stream unavailable"
 msgstr "Kildestrøm er ikke tilgjengelig"
