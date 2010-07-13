@@ -2611,30 +2611,43 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 }
 
 static void
-copy_or_cut_clipboard (ENameSelectorEntry *name_selector_entry, gboolean is_cut)
+copy_or_cut_clipboard (ENameSelectorEntry *name_selector_entry,
+                       gboolean is_cut)
 {
-	gint i, start = 0, end = 0;
-	const gchar *text;
+	GtkClipboard *clipboard;
+	GtkEditable *editable;
+	const gchar *text, *cp;
 	GHashTable *hash;
 	GHashTableIter iter;
 	gpointer key, value;
 	GString *addresses;
+	gint ii, start, end;
+	gunichar uc;
 
-	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
+	editable = GTK_EDITABLE (name_selector_entry);
+	text = gtk_entry_get_text (GTK_ENTRY (editable));
 
-	if (!gtk_editable_get_selection_bounds (GTK_EDITABLE (name_selector_entry), &start, &end)) {
-		start = gtk_editable_get_position (GTK_EDITABLE (name_selector_entry));
-		end = start;
-	}
-
-	/* do nothing when there is nothing selected */
-	if (start == end)
+	if (!gtk_editable_get_selection_bounds (editable, &start, &end))
 		return;
 
-	hash = g_hash_table_new (g_direct_hash, g_direct_equal);
-	for (i = start; i <= end; i++) {
-		gint index = get_index_at_position (text, i);
+	g_return_if_fail (end > start);
 
+	hash = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+	ii = end;
+	cp = g_utf8_offset_to_pointer (text, end);
+	uc = g_utf8_get_char (cp);
+
+	/* Exclude trailing whitespace and commas. */
+	while (ii >= start && (uc == ',' || g_unichar_isspace (uc))) {
+		cp = g_utf8_prev_char (cp);
+		uc = g_utf8_get_char (cp);
+		ii--;
+	}
+
+	/* Determine the index of each remaining character. */
+	while (ii >= start) {
+		gint index = get_index_at_position (text, ii--);
 		g_hash_table_insert (hash, GINT_TO_POINTER (index), NULL);
 	}
 
@@ -2676,11 +2689,13 @@ copy_or_cut_clipboard (ENameSelectorEntry *name_selector_entry, gboolean is_cut)
 	}
 
 	if (is_cut)
-		gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), start, end);
+		gtk_editable_delete_text (editable, start, end);
 
 	g_hash_table_unref (hash);
 
-	gtk_clipboard_set_text (gtk_widget_get_clipboard (GTK_WIDGET (name_selector_entry), GDK_SELECTION_CLIPBOARD), addresses->str, -1);
+	clipboard = gtk_widget_get_clipboard (
+		GTK_WIDGET (name_selector_entry), GDK_SELECTION_CLIPBOARD);
+	gtk_clipboard_set_text (clipboard, addresses->str, -1);
 
 	g_string_free (addresses, TRUE);
 }
