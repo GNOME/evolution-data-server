@@ -18,7 +18,7 @@ static gchar testbuf[10240];
 void
 test_stream_seekable_writepart(CamelSeekableStream *s)
 {
-	off_t end;
+	goffset end;
 	gint i;
 
 	push("seekable stream test, writing ");
@@ -53,7 +53,7 @@ test_stream_seekable_writepart(CamelSeekableStream *s)
 void
 test_stream_seekable_readpart(CamelSeekableStream *s)
 {
-	off_t off, new, end;
+	goffset off, new, end;
 	gint i, j;
 
 	push("seekable stream test, re-reading");

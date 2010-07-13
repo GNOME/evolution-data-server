@@ -150,12 +150,12 @@ void camel_mime_parser_filter_remove (CamelMimeParser *m, gint id);
 /* these should be used with caution, because the state will not
    track the seeked position */
 /* FIXME: something to bootstrap the state? */
-off_t camel_mime_parser_tell (CamelMimeParser *parser);
-off_t camel_mime_parser_seek (CamelMimeParser *parser, off_t offset, gint whence);
+goffset camel_mime_parser_tell (CamelMimeParser *parser);
+goffset camel_mime_parser_seek (CamelMimeParser *parser, goffset offset, gint whence);
 
-off_t camel_mime_parser_tell_start_headers (CamelMimeParser *parser);
-off_t camel_mime_parser_tell_start_from (CamelMimeParser *parser);
-off_t camel_mime_parser_tell_start_boundary(CamelMimeParser *parser);
+goffset camel_mime_parser_tell_start_headers (CamelMimeParser *parser);
+goffset camel_mime_parser_tell_start_from (CamelMimeParser *parser);
+goffset camel_mime_parser_tell_start_boundary(CamelMimeParser *parser);
 
 G_END_DECLS
 

@@ -148,14 +148,14 @@ stream_mem_eos (CamelStream *stream)
 	return priv->buffer->len <= seekable_stream->position;
 }
 
-static off_t
+static goffset
 stream_mem_seek (CamelSeekableStream *stream,
-                 off_t offset,
+                 goffset offset,
                  CamelStreamSeekPolicy policy,
                  GError **error)
 {
 	CamelStreamMemPrivate *priv;
-	off_t position;
+	goffset position;
 
 	priv = CAMEL_STREAM_MEM_GET_PRIVATE (stream);
 

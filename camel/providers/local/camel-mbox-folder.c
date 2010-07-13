@@ -305,7 +305,7 @@ mbox_get_filename (CamelFolder *folder, const gchar *uid, GError **error)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelMboxMessageInfo *info;
-	off_t frompos;
+	goffset frompos;
 	gchar *filename = NULL;
 
 	d(printf("Getting message %s\n", uid));
@@ -356,7 +356,7 @@ mbox_get_message(CamelFolder *folder, const gchar * uid, GError **error)
 	CamelMimeParser *parser = NULL;
 	gint fd, retval;
 	gint retried = FALSE;
-	off_t frompos;
+	goffset frompos;
 
 	d(printf("Getting message %s\n", uid));
 

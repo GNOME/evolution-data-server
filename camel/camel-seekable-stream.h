@@ -68,34 +68,34 @@ typedef enum {
 struct _CamelSeekableStream {
 	CamelStream parent;
 
-	off_t position;		/* current postion in the stream */
-	off_t bound_start;	/* first valid position */
-	off_t bound_end;	/* first invalid position */
+	goffset position;		/* current postion in the stream */
+	goffset bound_start;	/* first valid position */
+	goffset bound_end;	/* first invalid position */
 };
 
 struct _CamelSeekableStreamClass {
 	CamelStreamClass parent_class;
 
-	off_t		(*seek)			(CamelSeekableStream *stream,
-						 off_t offset,
+	goffset		(*seek)			(CamelSeekableStream *stream,
+						 goffset offset,
 						 CamelStreamSeekPolicy policy,
 						 GError **error);
-	off_t		(*tell)			(CamelSeekableStream *stream);
+	goffset		(*tell)			(CamelSeekableStream *stream);
 	gint		(*set_bounds)		(CamelSeekableStream *stream,
-						 off_t start,
-						 off_t end,
+						 goffset start,
+						 goffset end,
 						 GError **error);
 };
 
 GType		camel_seekable_stream_get_type	(void);
-off_t		camel_seekable_stream_seek	(CamelSeekableStream *stream,
-						 off_t offset,
+goffset		camel_seekable_stream_seek	(CamelSeekableStream *stream,
+						 goffset offset,
 						 CamelStreamSeekPolicy policy,
 						 GError **error);
-off_t		camel_seekable_stream_tell	(CamelSeekableStream *stream);
+goffset		camel_seekable_stream_tell	(CamelSeekableStream *stream);
 gint		camel_seekable_stream_set_bounds(CamelSeekableStream *stream,
-						 off_t start,
-						 off_t end,
+						 goffset start,
+						 goffset end,
 						 GError **error);
 
 G_END_DECLS

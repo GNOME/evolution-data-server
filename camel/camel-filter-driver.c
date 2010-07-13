@@ -1230,7 +1230,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 	gint i = 0;
 	struct stat st;
 	gint status;
-	off_t last = 0;
+	goffset last = 0;
 	gint ret = -1;
 
 	fd = g_open (mbox, O_RDONLY|O_BINARY, 0);

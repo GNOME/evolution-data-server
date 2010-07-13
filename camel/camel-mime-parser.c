@@ -87,7 +87,7 @@ struct _header_scan_state {
 
 	gint atleast;
 
-	off_t seek;		/* current offset to start of buffer */
+	goffset seek;		/* current offset to start of buffer */
 	gint unstep;		/* how many states to 'unstep' (repeat the current state) */
 
 	guint midline:1;		/* are we mid-line interrupted? */
@@ -95,11 +95,11 @@ struct _header_scan_state {
 	guint scan_pre_from:1;	/* do we return pre-from data? */
 	guint eof:1;		/* reached eof? */
 
-	off_t start_of_from;	/* where from started */
-	off_t start_of_boundary; /* where the last boundary started */
-	off_t start_of_headers;	/* where headers started from the last scan */
+	goffset start_of_from;	/* where from started */
+	goffset start_of_boundary; /* where the last boundary started */
+	goffset start_of_headers;	/* where headers started from the last scan */
 
-	off_t header_start;	/* start of last header, or -1 */
+	goffset header_start;	/* start of last header, or -1 */
 
 	/* filters to apply to all content before output */
 	gint filterid;		/* id of next filter */
@@ -150,8 +150,8 @@ static void folder_scan_close(struct _header_scan_state *s);
 static struct _header_scan_stack *folder_scan_content(struct _header_scan_state *s, gint *lastone, gchar **data, gsize *length);
 static struct _header_scan_stack *folder_scan_header(struct _header_scan_state *s, gint *lastone);
 static gint folder_scan_skip_line(struct _header_scan_state *s, GByteArray *save);
-static off_t folder_seek(struct _header_scan_state *s, off_t offset, gint whence);
-static off_t folder_tell(struct _header_scan_state *s);
+static goffset folder_seek(struct _header_scan_state *s, goffset offset, gint whence);
+static goffset folder_tell(struct _header_scan_state *s);
 static gint folder_read(struct _header_scan_state *s);
 static void folder_push_part(struct _header_scan_state *s, struct _header_scan_stack *h);
 
@@ -705,7 +705,7 @@ camel_mime_parser_read (CamelMimeParser *parser,
  *
  * Since: 2.22
  **/
-off_t
+goffset
 camel_mime_parser_tell (CamelMimeParser *parser)
 {
 	struct _header_scan_state *s = _PRIVATE (parser);
@@ -726,7 +726,7 @@ camel_mime_parser_tell (CamelMimeParser *parser)
  *
  * Since: 2.22
  **/
-off_t
+goffset
 camel_mime_parser_tell_start_headers (CamelMimeParser *parser)
 {
 	struct _header_scan_state *s = _PRIVATE (parser);
@@ -746,7 +746,7 @@ camel_mime_parser_tell_start_headers (CamelMimeParser *parser)
  *
  * Since: 2.22
  **/
-off_t
+goffset
 camel_mime_parser_tell_start_from (CamelMimeParser *parser)
 {
 	struct _header_scan_state *s = _PRIVATE (parser);
@@ -766,7 +766,7 @@ camel_mime_parser_tell_start_from (CamelMimeParser *parser)
  *
  * Since: 2.22
  **/
-off_t
+goffset
 camel_mime_parser_tell_start_boundary(CamelMimeParser *parser)
 {
 	struct _header_scan_state *s = _PRIVATE (parser);
@@ -793,8 +793,8 @@ camel_mime_parser_tell_start_boundary(CamelMimeParser *parser)
  *
  * Since: 2.22
  **/
-off_t
-camel_mime_parser_seek(CamelMimeParser *parser, off_t offset, gint whence)
+goffset
+camel_mime_parser_seek(CamelMimeParser *parser, goffset offset, gint whence)
 {
 	struct _header_scan_state *s = _PRIVATE (parser);
 
@@ -945,7 +945,7 @@ folder_read(struct _header_scan_state *s)
 }
 
 /* return the current absolute position of the data pointer */
-static off_t
+static goffset
 folder_tell(struct _header_scan_state *s)
 {
 	return s->seek + (s->inptr - s->inbuf);
@@ -955,10 +955,10 @@ folder_tell(struct _header_scan_state *s)
   need some way to prime the parser state, so this actually works for
   other than top-level messages
 */
-static off_t
-folder_seek(struct _header_scan_state *s, off_t offset, gint whence)
+static goffset
+folder_seek(struct _header_scan_state *s, goffset offset, gint whence)
 {
-	off_t newoffset;
+	goffset newoffset;
 
 	if (s->stream) {
 		if (CAMEL_IS_SEEKABLE_STREAM(s->stream)) {

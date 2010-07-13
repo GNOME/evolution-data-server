@@ -1006,7 +1006,7 @@ CamelKeyFile *
 camel_key_file_new(const gchar *path, gint flags, const gchar version[8])
 {
 	CamelKeyFile *kf;
-	off_t last;
+	goffset last;
 	gint err;
 
 	d(printf("New key file '%s'\n", path));

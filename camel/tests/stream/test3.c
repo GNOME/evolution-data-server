@@ -9,7 +9,7 @@
 #include <unistd.h>
 
 struct {
-	off_t lower, upper;
+	goffset lower, upper;
 } ranges[] = {
 	{ 3, 10241 },
 	{ 0, 1024 },

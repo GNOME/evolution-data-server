@@ -443,7 +443,7 @@ message_info_to_db(CamelFolderSummary *s, CamelMessageInfo *info)
 
 /* like summary_rebuild, but also do changeinfo stuff (if supplied) */
 static gint
-summary_update(CamelLocalSummary *cls, off_t offset, CamelFolderChangeInfo *changeinfo, GError **error)
+summary_update(CamelLocalSummary *cls, goffset offset, CamelFolderChangeInfo *changeinfo, GError **error)
 {
 	gint i, count;
 	CamelFolderSummary *s = (CamelFolderSummary *)cls;
@@ -455,7 +455,7 @@ summary_update(CamelLocalSummary *cls, off_t offset, CamelFolderChangeInfo *chan
 	gint fd;
 	gint ok = 0;
 	struct stat st;
-	off_t size = 0;
+	goffset size = 0;
 	GSList *del = NULL;
 
 	d(printf("Calling summary update, from pos %d\n", (gint)offset));
@@ -513,7 +513,7 @@ summary_update(CamelLocalSummary *cls, off_t offset, CamelFolderChangeInfo *chan
 
 	while (camel_mime_parser_step(mp, NULL, NULL) == CAMEL_MIME_PARSER_STATE_FROM) {
 		CamelMessageInfo *info;
-		off_t pc = camel_mime_parser_tell_start_from (mp) + 1;
+		goffset pc = camel_mime_parser_tell_start_from (mp) + 1;
 
 		camel_operation_progress (NULL, (gint) (((gfloat) pc / size) * 100));
 
@@ -791,7 +791,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 	gchar *xevnew, *xevtmp;
 	const gchar *xev;
 	gint len;
-	off_t lastpos;
+	goffset lastpos;
 	GPtrArray *summary = NULL;
 
 	d(printf("Performing quick summary sync\n"));

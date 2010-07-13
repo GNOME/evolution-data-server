@@ -43,7 +43,7 @@ seekable_stream_reset (CamelStream *stream,
 		CAMEL_STREAM_SET, error);
 }
 
-static off_t
+static goffset
 seekable_stream_tell (CamelSeekableStream *stream)
 {
 	return stream->position;
@@ -51,8 +51,8 @@ seekable_stream_tell (CamelSeekableStream *stream)
 
 static gint
 seekable_stream_set_bounds (CamelSeekableStream *stream,
-                            off_t start,
-                            off_t end,
+                            goffset start,
+                            goffset end,
                             GError **error)
 {
 	/* store the bounds */
@@ -108,14 +108,14 @@ camel_seekable_stream_init (CamelSeekableStream *stream)
  *
  * Returns: new position, %-1 if operation failed.
  **/
-off_t
+goffset
 camel_seekable_stream_seek (CamelSeekableStream *stream,
-                            off_t offset,
+                            goffset offset,
                             CamelStreamSeekPolicy policy,
                             GError **error)
 {
 	CamelSeekableStreamClass *class;
-	off_t new_offset;
+	goffset new_offset;
 
 	g_return_val_if_fail (CAMEL_IS_SEEKABLE_STREAM (stream), -1);
 
@@ -136,7 +136,7 @@ camel_seekable_stream_seek (CamelSeekableStream *stream,
  *
  * Returns: the current position of the stream.
  **/
-off_t
+goffset
 camel_seekable_stream_tell (CamelSeekableStream *stream)
 {
 	CamelSeekableStreamClass *class;
@@ -164,8 +164,8 @@ camel_seekable_stream_tell (CamelSeekableStream *stream)
  **/
 gint
 camel_seekable_stream_set_bounds (CamelSeekableStream *stream,
-                                  off_t start,
-                                  off_t end,
+                                  goffset start,
+                                  goffset end,
                                   GError **error)
 {
 	CamelSeekableStreamClass *class;

@@ -120,7 +120,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 	gint fd = -1, fdout = -1;
 	gchar tmpname[64] = { '\0' };
 	gchar *buffer, *p;
-	off_t spoollen, outlen;
+	goffset spoollen, outlen;
 	gint size, sizeout;
 	struct stat st;
 	guint32 flags = (expunge?1:0);

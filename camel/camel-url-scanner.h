@@ -35,8 +35,8 @@ G_BEGIN_DECLS
 typedef struct {
 	const gchar *pattern;
 	const gchar *prefix;
-	off_t um_so;
-	off_t um_eo;
+	goffset um_so;
+	goffset um_eo;
 } urlmatch_t;
 
 typedef gboolean (*CamelUrlScanFunc) (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match);

@@ -176,7 +176,7 @@ struct _CamelKeyFile {
 	FILE *fp;
 	gchar *path;
 	gint flags;
-	off_t last;
+	goffset last;
 };
 
 struct _CamelKeyFileClass {

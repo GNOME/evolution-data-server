@@ -39,7 +39,7 @@ seekable_substream_parent_reset (CamelSeekableSubstream *seekable_substream,
 		return TRUE;
 
 	return camel_seekable_stream_seek (
-		parent, (off_t) seekable_stream->position,
+		parent, seekable_stream->position,
 		CAMEL_STREAM_SET, NULL) == seekable_stream->position;
 }
 
@@ -181,15 +181,15 @@ seekable_substream_eos (CamelStream *stream)
 	return eos;
 }
 
-static off_t
+static goffset
 seekable_substream_seek (CamelSeekableStream *seekable_stream,
-                         off_t offset,
+                         goffset offset,
                          CamelStreamSeekPolicy policy,
                          GError **error)
 {
 	CamelStream *stream;
 	CamelSeekableSubstream *seekable_substream;
-	off_t real_offset = 0;
+	goffset real_offset = 0;
 
 	stream = CAMEL_STREAM (seekable_stream);
 	seekable_substream = CAMEL_SEEKABLE_SUBSTREAM (seekable_stream);
@@ -276,7 +276,7 @@ camel_seekable_substream_init (CamelSeekableSubstream *seekable_substream)
  * Returns: the substream
  **/
 CamelStream *
-camel_seekable_substream_new(CamelSeekableStream *parent_stream, off_t start, off_t end)
+camel_seekable_substream_new(CamelSeekableStream *parent_stream, goffset start, goffset end)
 {
 	CamelSeekableSubstream *seekable_substream;
 

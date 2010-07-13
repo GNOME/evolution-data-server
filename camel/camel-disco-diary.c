@@ -285,7 +285,7 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
                           GError **error)
 {
 	guint32 action;
-	off_t size;
+	goffset size;
 	gdouble pc;
 	GError *local_error = NULL;
 

@@ -56,7 +56,7 @@ static void movemail_external (const gchar *source, const gchar *dest,
 #endif
 
 #ifdef HAVE_BROKEN_SPOOL
-static gint camel_movemail_copy_filter(gint fromfd, gint tofd, off_t start, gsize bytes, CamelMimeFilter *filter);
+static gint camel_movemail_copy_filter(gint fromfd, gint tofd, goffset start, gsize bytes, CamelMimeFilter *filter);
 static gint camel_movemail_solaris (gint oldsfd, gint dfd, GError **error);
 #else
 /* these could probably be exposed as a utility? (but only mbox needs it) */
@@ -64,7 +64,7 @@ static gint camel_movemail_copy_file(gint sfd, gint dfd, GError **error);
 #endif
 
 #if 0
-static gint camel_movemail_copy(gint fromfd, gint tofd, off_t start, gsize bytes);
+static gint camel_movemail_copy(gint fromfd, gint tofd, goffset start, gsize bytes);
 #endif
 
 /**
@@ -298,7 +298,7 @@ camel_movemail_copy_file (gint sfd,
 
 #if 0
 static gint
-camel_movemail_copy(gint fromfd, gint tofd, off_t start, gsize bytes)
+camel_movemail_copy(gint fromfd, gint tofd, goffset start, gsize bytes)
 {
         gchar buffer[4096];
         gint written = 0;
@@ -350,7 +350,7 @@ camel_movemail_copy(gint fromfd, gint tofd, off_t start, gsize bytes)
 
 #ifdef HAVE_BROKEN_SPOOL
 static gint
-camel_movemail_copy_filter(gint fromfd, gint tofd, off_t start, gsize bytes, CamelMimeFilter *filter)
+camel_movemail_copy_filter(gint fromfd, gint tofd, goffset start, gsize bytes, CamelMimeFilter *filter)
 {
         gchar buffer[4096+PRE_SIZE];
         gint written = 0;
@@ -498,7 +498,7 @@ camel_movemail_solaris (gint oldsfd,
 			const gchar *cl;
 			gint length;
 			gint start, body;
-			off_t newpos;
+			goffset newpos;
 
 			ret = 0;
 

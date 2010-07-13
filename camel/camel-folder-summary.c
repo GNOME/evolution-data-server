@@ -2653,7 +2653,7 @@ camel_folder_summary_info_new_from_parser(CamelFolderSummary *s, CamelMimeParser
 	gchar *buffer;
 	gsize len;
 	struct _CamelFolderSummaryPrivate *p = CAMEL_FOLDER_SUMMARY_GET_PRIVATE(s);
-	off_t start;
+	goffset start;
 	CamelIndexName *name = NULL;
 
 	/* should this check the parser is in the right state, or assume it is?? */

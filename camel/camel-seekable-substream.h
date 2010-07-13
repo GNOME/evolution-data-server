@@ -71,7 +71,7 @@ GType camel_seekable_substream_get_type (void);
 /* public methods */
 
 /* obtain a new seekable substream */
-CamelStream *camel_seekable_substream_new(CamelSeekableStream *parent_stream, off_t start, off_t end);
+CamelStream *camel_seekable_substream_new(CamelSeekableStream *parent_stream, goffset start, goffset end);
 
 G_END_DECLS
 

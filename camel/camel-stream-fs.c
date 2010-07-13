@@ -149,14 +149,14 @@ stream_fs_close (CamelStream *stream,
 	return 0;
 }
 
-static off_t
+static goffset
 stream_fs_seek (CamelSeekableStream *stream,
-                off_t offset,
+                goffset offset,
                 CamelStreamSeekPolicy policy,
                 GError **error)
 {
 	CamelStreamFsPrivate *priv;
-	off_t real = 0;
+	goffset real = 0;
 
 	priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 
@@ -252,7 +252,7 @@ camel_stream_fs_new_with_fd (gint fd)
 {
 	CamelStreamFsPrivate *priv;
 	CamelStream *stream;
-	off_t offset;
+	goffset offset;
 
 	if (fd == -1)
 		return NULL;
@@ -282,8 +282,8 @@ camel_stream_fs_new_with_fd (gint fd)
  **/
 CamelStream *
 camel_stream_fs_new_with_fd_and_bounds (gint fd,
-                                        off_t start,
-                                        off_t end,
+                                        goffset start,
+                                        goffset end,
                                         GError **error)
 {
 	CamelStream *stream;
@@ -344,8 +344,8 @@ CamelStream *
 camel_stream_fs_new_with_name_and_bounds (const gchar *name,
                                           gint flags,
                                           mode_t mode,
-                                          off_t start,
-                                          off_t end,
+                                          goffset start,
+                                          goffset end,
                                           GError **error)
 {
 	CamelStream *stream;
