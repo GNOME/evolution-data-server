@@ -52,64 +52,6 @@
 /* defines the length of the server error message we can display in the error dialog */
 #define POP3_ERROR_SIZE_LIMIT 60
 
-static gboolean pop3_connect (CamelService *service, GError **error);
-static gboolean pop3_disconnect (CamelService *service, gboolean clean, GError **error);
-static GList *query_auth_types (CamelService *service, GError **error);
-
-static CamelFolder *get_folder (CamelStore *store, const gchar *folder_name,
-				guint32 flags, GError **error);
-
-static CamelFolder *get_trash  (CamelStore *store, GError **error);
-
-static gboolean pop3_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, GError **error);
-
-G_DEFINE_TYPE (CamelPOP3Store, camel_pop3_store, CAMEL_TYPE_STORE)
-
-static void
-pop3_store_finalize (GObject *object)
-{
-	CamelPOP3Store *pop3_store = CAMEL_POP3_STORE (object);
-
-	/* force disconnect so we dont have it run later, after we've cleaned up some stuff */
-	/* SIGH */
-
-	camel_service_disconnect((CamelService *)pop3_store, TRUE, NULL);
-
-	if (pop3_store->engine)
-		g_object_unref (pop3_store->engine);
-	if (pop3_store->cache)
-		g_object_unref (pop3_store->cache);
-
-	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (camel_pop3_store_parent_class)->finalize (object);
-}
-
-static void
-camel_pop3_store_class_init (CamelPOP3StoreClass *class)
-{
-	GObjectClass *object_class;
-	CamelServiceClass *service_class;
-	CamelStoreClass *store_class;
-
-	object_class = G_OBJECT_CLASS (class);
-	object_class->finalize = pop3_store_finalize;
-
-	service_class = CAMEL_SERVICE_CLASS (class);
-	service_class->query_auth_types = query_auth_types;
-	service_class->connect = pop3_connect;
-	service_class->disconnect = pop3_disconnect;
-
-	store_class = CAMEL_STORE_CLASS (class);
-	store_class->get_folder = get_folder;
-	store_class->get_trash = get_trash;
-	store_class->can_refresh_folder = pop3_can_refresh_folder;
-}
-
-static void
-camel_pop3_store_init (CamelPOP3Store *pop3_store)
-{
-}
-
 enum {
 	MODE_CLEAR,
 	MODE_SSL,
@@ -120,6 +62,24 @@ enum {
 #define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
 #define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
 #endif
+
+static struct {
+	const gchar *value;
+	const gchar *serv;
+	const gchar *port;
+	gint mode;
+} ssl_options[] = {
+	{ "",              "pop3s", POP3S_PORT, MODE_SSL   },  /* really old (1.x) */
+	{ "always",        "pop3s", POP3S_PORT, MODE_SSL   },
+	{ "when-possible", "pop3",  POP3_PORT,  MODE_TLS   },
+	{ "never",         "pop3",  POP3_PORT,  MODE_CLEAR },
+	{ NULL,            "pop3",  POP3_PORT,  MODE_CLEAR },
+};
+
+extern CamelServiceAuthType camel_pop3_password_authtype;
+extern CamelServiceAuthType camel_pop3_apop_authtype;
+
+G_DEFINE_TYPE (CamelPOP3Store, camel_pop3_store, CAMEL_TYPE_STORE)
 
 /* returns error message with ': ' as prefix */
 static gchar *
@@ -290,19 +250,6 @@ connect_to_server (CamelService *service,
 	return FALSE;
 }
 
-static struct {
-	const gchar *value;
-	const gchar *serv;
-	const gchar *port;
-	gint mode;
-} ssl_options[] = {
-	{ "",              "pop3s", POP3S_PORT, MODE_SSL   },  /* really old (1.x) */
-	{ "always",        "pop3s", POP3S_PORT, MODE_SSL   },
-	{ "when-possible", "pop3",  POP3_PORT,  MODE_TLS   },
-	{ "never",         "pop3",  POP3_PORT,  MODE_CLEAR },
-	{ NULL,            "pop3",  POP3_PORT,  MODE_CLEAR },
-};
-
 static gboolean
 connect_to_server_wrapper (CamelService *service,
                            GError **error)
@@ -353,63 +300,6 @@ connect_to_server_wrapper (CamelService *service,
 	camel_freeaddrinfo (ai);
 
 	return ret;
-}
-
-extern CamelServiceAuthType camel_pop3_password_authtype;
-extern CamelServiceAuthType camel_pop3_apop_authtype;
-
-static GList *
-query_auth_types (CamelService *service,
-                  GError **error)
-{
-	CamelServiceClass *service_class;
-	CamelPOP3Store *store = CAMEL_POP3_STORE (service);
-	GList *types = NULL;
-	GError *local_error = NULL;
-
-	/* Chain up to parent's query_auth_types() method. */
-	service_class = CAMEL_SERVICE_CLASS (camel_pop3_store_parent_class);
-	types = service_class->query_auth_types (service, &local_error);
-
-	if (local_error != NULL) {
-		g_propagate_error (error, local_error);
-		return NULL;
-	}
-
-	if (connect_to_server_wrapper (service, NULL)) {
-		types = g_list_concat(types, g_list_copy(store->engine->auth));
-		pop3_disconnect (service, TRUE, NULL);
-	} else {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("Could not connect to POP server %s"),
-			service->url->host);
-	}
-
-	return types;
-}
-
-/**
- * camel_pop3_store_expunge:
- * @store: the store
- * @error: return location for a #GError, or %NULL
- *
- * Expunge messages from the store. This will result in the connection
- * being closed, which may cause later commands to fail if they can't
- * reconnect.
- **/
-void
-camel_pop3_store_expunge (CamelPOP3Store *store, GError **error)
-{
-	CamelPOP3Command *pc;
-
-	pc = camel_pop3_engine_command_new(store->engine, 0, NULL, NULL, "QUIT\r\n");
-	while (camel_pop3_engine_iterate(store->engine, NULL) > 0)
-		;
-	camel_pop3_engine_command_free(store->engine, pc);
-
-	camel_service_disconnect (CAMEL_SERVICE (store), FALSE, error);
 }
 
 static gint
@@ -640,9 +530,28 @@ pop3_try_authenticate (CamelService *service,
 	return status;
 }
 
+static void
+pop3_store_finalize (GObject *object)
+{
+	CamelPOP3Store *pop3_store = CAMEL_POP3_STORE (object);
+
+	/* force disconnect so we dont have it run later, after we've cleaned up some stuff */
+	/* SIGH */
+
+	camel_service_disconnect((CamelService *)pop3_store, TRUE, NULL);
+
+	if (pop3_store->engine)
+		g_object_unref (pop3_store->engine);
+	if (pop3_store->cache)
+		g_object_unref (pop3_store->cache);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_pop3_store_parent_class)->finalize (object);
+}
+
 static gboolean
-pop3_connect (CamelService *service,
-              GError **error)
+pop3_store_connect (CamelService *service,
+                    GError **error)
 {
 	CamelPOP3Store *store = (CamelPOP3Store *)service;
 	gboolean reprompt = FALSE;
@@ -710,9 +619,9 @@ pop3_connect (CamelService *service,
 }
 
 static gboolean
-pop3_disconnect (CamelService *service,
-                 gboolean clean,
-                 GError **error)
+pop3_store_disconnect (CamelService *service,
+                       gboolean clean,
+                       GError **error)
 {
 	CamelServiceClass *service_class;
 	CamelPOP3Store *store = CAMEL_POP3_STORE (service);
@@ -737,11 +646,43 @@ pop3_disconnect (CamelService *service,
 	return TRUE;
 }
 
+static GList *
+pop3_store_query_auth_types (CamelService *service,
+                             GError **error)
+{
+	CamelServiceClass *service_class;
+	CamelPOP3Store *store = CAMEL_POP3_STORE (service);
+	GList *types = NULL;
+	GError *local_error = NULL;
+
+	/* Chain up to parent's query_auth_types() method. */
+	service_class = CAMEL_SERVICE_CLASS (camel_pop3_store_parent_class);
+	types = service_class->query_auth_types (service, &local_error);
+
+	if (local_error != NULL) {
+		g_propagate_error (error, local_error);
+		return NULL;
+	}
+
+	if (connect_to_server_wrapper (service, NULL)) {
+		types = g_list_concat(types, g_list_copy(store->engine->auth));
+		pop3_store_disconnect (service, TRUE, NULL);
+	} else {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("Could not connect to POP server %s"),
+			service->url->host);
+	}
+
+	return types;
+}
+
 static CamelFolder *
-get_folder (CamelStore *store,
-            const gchar *folder_name,
-            guint32 flags,
-            GError **error)
+pop3_store_get_folder (CamelStore *store,
+                       const gchar *folder_name,
+                       guint32 flags,
+                       GError **error)
 {
 	if (g_ascii_strcasecmp (folder_name, "inbox") != 0) {
 		g_set_error (
@@ -755,15 +696,71 @@ get_folder (CamelStore *store,
 }
 
 static CamelFolder *
-get_trash (CamelStore *store, GError **error)
+pop3_store_get_trash (CamelStore *store,
+                      GError **error)
 {
 	/* no-op */
 	return NULL;
 }
 
 static gboolean
-pop3_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, GError **error)
+pop3_store_can_refresh_folder (CamelStore *store,
+                               CamelFolderInfo *info,
+                               GError **error)
 {
 	/* any pop3 folder can be refreshed */
 	return TRUE;
 }
+
+static void
+camel_pop3_store_class_init (CamelPOP3StoreClass *class)
+{
+	GObjectClass *object_class;
+	CamelServiceClass *service_class;
+	CamelStoreClass *store_class;
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = pop3_store_finalize;
+
+	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->connect = pop3_store_connect;
+	service_class->disconnect = pop3_store_disconnect;
+	service_class->query_auth_types = pop3_store_query_auth_types;
+
+	store_class = CAMEL_STORE_CLASS (class);
+	store_class->get_folder = pop3_store_get_folder;
+	store_class->get_trash = pop3_store_get_trash;
+	store_class->can_refresh_folder = pop3_store_can_refresh_folder;
+}
+
+static void
+camel_pop3_store_init (CamelPOP3Store *pop3_store)
+{
+}
+
+/**
+ * camel_pop3_store_expunge:
+ * @store: the store
+ * @error: return location for a #GError, or %NULL
+ *
+ * Expunge messages from the store. This will result in the connection
+ * being closed, which may cause later commands to fail if they can't
+ * reconnect.
+ **/
+void
+camel_pop3_store_expunge (CamelPOP3Store *store,
+                          GError **error)
+{
+	CamelPOP3Command *pc;
+
+	pc = camel_pop3_engine_command_new (
+		store->engine, 0, NULL, NULL, "QUIT\r\n");
+
+	while (camel_pop3_engine_iterate(store->engine, NULL) > 0)
+		;
+
+	camel_pop3_engine_command_free(store->engine, pc);
+
+	camel_service_disconnect (CAMEL_SERVICE (store), FALSE, error);
+}
+
