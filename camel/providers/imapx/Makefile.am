@@ -18,7 +18,8 @@ libcamelimapx_la_SOURCES =			\
 	camel-imapx-summary.c			\
 	camel-imapx-store.c			\
 	camel-imapx-folder.c			\
-	camel-imapx-server.c			
+	camel-imapx-server.c			\
+	camel-imapx-conn-manager.c
 
 noinst_HEADERS =				\
 	camel-imapx-stream.h			\
@@ -27,6 +28,7 @@ noinst_HEADERS =				\
 	camel-imapx-folder.h			\
 	camel-imapx-store.h			\
 	camel-imapx-server.h			\
+	camel-imapx-conn-manager.h		\
 	camel-imapx-utils.h
 
 camel-imapx-tokenise.h: camel-imapx-tokens.txt

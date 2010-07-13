@@ -2341,6 +2341,8 @@ imapx_idle_supported (CamelIMAPXServer *is)
 static void
 imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
+	const gchar *selected_folder = NULL;
+
 	if (ic->error != NULL || ic->status->result != IMAPX_OK) {
 		CamelDList failed;
 		CamelIMAPXCommand *cw, *cn;
@@ -2412,6 +2414,7 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			//ifolder->uidnext_on_server = is->uidnext;
 		}
 		ifolder->uidvalidity_on_server = is->uidvalidity;
+		selected_folder = camel_folder_get_full_name (is->select_folder);
 #if 0
 		/* This must trigger a complete index rebuild! */
 		if (is->uidvalidity && is->uidvalidity != ((CamelIMAPXSummary *)is->select_folder->summary)->uidvalidity)
@@ -2428,7 +2431,7 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	is->select_pending = NULL;
 	camel_imapx_command_free (ic);
 
-	g_signal_emit (is, signals[SELECT_CHANGED], 0);
+	g_signal_emit (is, signals[SELECT_CHANGED], 0, selected_folder);
 }
 
 /* Should have a queue lock. TODO Change the way select is written */
@@ -4790,8 +4793,8 @@ camel_imapx_server_class_init(CamelIMAPXServerClass *class)
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (CamelIMAPXServerClass, select_changed),
 		NULL, NULL,
-		g_cclosure_marshal_VOID__VOID,
-		G_TYPE_NONE, 0);
+		g_cclosure_marshal_VOID__STRING,
+		G_TYPE_NONE, 1, G_TYPE_STRING);
 
 	/**
 	 * CamelIMAPXServer::shutdown
@@ -5563,7 +5566,7 @@ camel_imapx_server_get_job_queue_info (CamelIMAPXServer *is)
 	QUEUE_LOCK(is);
 
 	jinfo->queue_len = camel_dlist_length (&is->jobs);
-	jinfo->folders = g_hash_table_new_full (g_int_hash, g_int_equal, (GDestroyNotify) g_free, NULL);
+	jinfo->folders = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
 
 	for (node = is->jobs.head;node->next;node = job->msg.ln.next) {
 		job = (CamelIMAPXJob *) node;
@@ -5573,6 +5576,9 @@ camel_imapx_server_get_job_queue_info (CamelIMAPXServer *is)
 			g_hash_table_insert (jinfo->folders, g_strdup (full_name), GINT_TO_POINTER (1));
 		}
 	}
+
+	if (is->select_folder)
+		g_hash_table_insert (jinfo->folders, g_strdup (camel_folder_get_full_name (is->select_folder)), GINT_TO_POINTER (1));
 
 	QUEUE_UNLOCK(is);
 

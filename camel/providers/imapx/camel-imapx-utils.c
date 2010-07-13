@@ -6,6 +6,7 @@
 #include "camel-imapx-folder.h"
 #include "camel-imapx-stream.h"
 #include "camel-imapx-summary.h"
+#include "camel-imapx-store.h"
 #include "camel-imapx-store-summary.h"
 #include "camel-imapx-utils.h"
 
@@ -35,6 +36,7 @@ static void camel_imapx_set_debug_flags(void)
 	debug_set_flag(io);
 	debug_set_flag(token);
 	debug_set_flag(parse);
+	debug_set_flag(conman);
 }
 
 #include "camel-imapx-tokenise.h"
@@ -2115,7 +2117,7 @@ imapx_get_temp_uid (void)
 }
 
 void
-camel_imapx_server_destroy_job_queue_info (IMAPXJobQueueInfo *jinfo)
+camel_imapx_destroy_job_queue_info (IMAPXJobQueueInfo *jinfo)
 {
 	g_hash_table_destroy (jinfo->folders);
 	g_free (jinfo);

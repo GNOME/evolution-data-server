@@ -28,6 +28,7 @@
 
 #include "camel-imapx-server.h"
 #include "camel-imapx-store-summary.h"
+#include "camel-imapx-conn-manager.h"
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_IMAPX_STORE \
@@ -66,7 +67,7 @@ typedef struct _CamelIMAPXStoreClass CamelIMAPXStoreClass;
 struct _CamelIMAPXStore {
 	CamelOfflineStore parent;
 
-	CamelIMAPXServer *server;
+	CamelIMAPXConnManager *con_man;
 
 	CamelIMAPXStoreSummary *summary; /* in-memory list of folders */
 	gchar *namespace, dir_sep, *base_url, *storage_path;
@@ -91,8 +92,13 @@ struct _CamelIMAPXStoreClass {
 	CamelOfflineStoreClass parent_class;
 };
 
-GType		camel_imapx_store_get_type (void);
-CamelIMAPXServer *camel_imapx_store_get_server(CamelIMAPXStore *store, GError **error);
+GType			camel_imapx_store_get_type	(void);
+CamelIMAPXServer *	camel_imapx_store_get_server	(CamelIMAPXStore *store,
+							const gchar *folder_name,
+							GError **error);
+void			camel_imapx_store_op_done	(CamelIMAPXStore *istore, 
+							CamelIMAPXServer *server, 
+							const gchar *folder_name);
 
 G_END_DECLS
 

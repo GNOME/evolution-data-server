@@ -3,12 +3,12 @@
 #define CAMEL_IMAPX_UTILS_H
 
 #include <camel/camel.h>
-
-#include "camel-imapx-store.h"
+#include <glib.h>
 
 struct _CamelIMAPXStream;
 struct _CamelFlag;
 struct _CamelIMAPXNamespaceList;
+struct _CamelIMAPXStore;
 
 /* list of strings we know about that can be *quickly* tokenised */
 typedef enum _camel_imapx_id_t {
@@ -66,7 +66,7 @@ enum {
 
 /* ********************************************************************** */
 
-GPtrArray *imapx_parse_uids (CamelIMAPXStream *is, GError **error);
+GPtrArray *imapx_parse_uids (struct _CamelIMAPXStream *is, GError **error);
 void imapx_parse_flags(struct _CamelIMAPXStream *stream, guint32 *flagsp, struct _CamelFlag **user_flagsp, GError **error);
 void imapx_write_flags(CamelStream *stream, guint32 flags, struct _CamelFlag *user_flags, GError **error);
 gboolean imapx_update_message_info_flags (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags, CamelFolder *folder, gboolean unsolicited);
@@ -217,7 +217,7 @@ typedef struct _IMAPXJobQueueInfo {
 	GHashTable *folders;
 } IMAPXJobQueueInfo;
 
-void camel_imapx_server_destroy_job_queue_info (IMAPXJobQueueInfo *jinfo);
+void camel_imapx_destroy_job_queue_info (IMAPXJobQueueInfo *jinfo);
 
 /* ********************************************************************** */
 
@@ -247,9 +247,10 @@ extern gint camel_imapx_debug_flags;
 #define CAMEL_IMAPX_DEBUG_io		(1<<3)
 #define CAMEL_IMAPX_DEBUG_token		(1<<4)
 #define CAMEL_IMAPX_DEBUG_parse		(1<<5)
+#define CAMEL_IMAPX_DEBUG_conman	(1<<6)
 
 /* Set this to zero to remove all debug output at build time */
-#define CAMEL_IMAPX_DEBUG_ALL		((1<<6)-1)
+#define CAMEL_IMAPX_DEBUG_ALL		((1<<7)-1)
 
 #define camel_imapx_debug(type, ...) do { if (camel_imapx_debug_flags & CAMEL_IMAPX_DEBUG_ALL & CAMEL_IMAPX_DEBUG_ ## type) { __VA_ARGS__ ; } } while (0)
 
@@ -259,7 +260,7 @@ void imapx_utils_init(void);
 
 /* chen adds from old imap provider - place it in right place */
 gchar *imapx_path_to_physical (const gchar *prefix, const gchar *vpath);
-gchar *imapx_concat (CamelIMAPXStore *imapx_store, const gchar *prefix, const gchar *suffix);
+gchar *imapx_concat (struct _CamelIMAPXStore *imapx_store, const gchar *prefix, const gchar *suffix);
 gchar * imapx_get_temp_uid (void);
 
 void camel_imapx_namespace_list_clear (struct _CamelIMAPXNamespaceList *nsl);
