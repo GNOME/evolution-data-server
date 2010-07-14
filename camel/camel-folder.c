@@ -695,7 +695,7 @@ folder_transfer_messages_to (CamelFolder *source,
 			camel_folder_freeze (source);
 	}
 
-	for (i = 0; i < uids->len && local_error != NULL; i++) {
+	for (i = 0; i < uids->len && local_error == NULL; i++) {
 		if (transferred_uids)
 			ret_uid = (gchar **)&((*transferred_uids)->pdata[i]);
 		folder_transfer_message_to (
