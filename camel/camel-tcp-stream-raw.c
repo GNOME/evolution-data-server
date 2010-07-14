@@ -37,6 +37,13 @@
 #include "camel-operation.h"
 #include "camel-tcp-stream-raw.h"
 
+typedef struct _CamelTcpStreamRawPrivate {
+	gint sockfd;
+#ifdef G_OS_WIN32
+	gint is_nonblocking;
+#endif
+} CamelTcpStreamRawPrivate;
+
 #ifndef G_OS_WIN32
 #define SOCKET_ERROR_CODE() errno
 #define SOCKET_CLOSE(fd) close (fd)
@@ -329,9 +336,10 @@ static void
 tcp_stream_raw_finalize (GObject *object)
 {
 	CamelTcpStreamRaw *stream = CAMEL_TCP_STREAM_RAW (object);
+	CamelTcpStreamRawPrivate *priv = stream->priv;
 
-	if (stream->sockfd != -1)
-		SOCKET_CLOSE (stream->sockfd);
+	if (priv->sockfd != -1)
+		SOCKET_CLOSE (priv->sockfd);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_tcp_stream_raw_parent_class)->finalize (object);
@@ -344,8 +352,9 @@ tcp_stream_raw_read (CamelStream *stream,
                      GError **error)
 {
 	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
+	CamelTcpStreamRawPrivate *priv = raw->priv;
 
-	return camel_read_socket (raw->sockfd, buffer, n, error);
+	return camel_read_socket (priv->sockfd, buffer, n, error);
 }
 
 static gssize
@@ -355,8 +364,9 @@ tcp_stream_raw_write (CamelStream *stream,
                       GError **error)
 {
 	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
+	CamelTcpStreamRawPrivate *priv = raw->priv;
 
-	return camel_write_socket (raw->sockfd, buffer, n, error);
+	return camel_write_socket (priv->sockfd, buffer, n, error);
 }
 
 static gint
@@ -370,7 +380,10 @@ static gint
 tcp_stream_raw_close (CamelStream *stream,
                       GError **error)
 {
-	if (SOCKET_CLOSE (((CamelTcpStreamRaw *)stream)->sockfd) == -1) {
+	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
+	CamelTcpStreamRawPrivate *priv = raw->priv;
+
+	if (SOCKET_CLOSE (priv->sockfd) == -1) {
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
@@ -378,7 +391,7 @@ tcp_stream_raw_close (CamelStream *stream,
 		return -1;
 	}
 
-	((CamelTcpStreamRaw *)stream)->sockfd = -1;
+	priv->sockfd = -1;
 	return 0;
 }
 
@@ -470,6 +483,7 @@ tcp_stream_raw_connect (CamelTcpStream *stream,
                         GError **error)
 {
 	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
+	CamelTcpStreamRawPrivate *priv = raw->priv;
 	struct addrinfo *addr, *ai;
 	struct addrinfo hints;
 	GError *my_error;
@@ -502,11 +516,11 @@ tcp_stream_raw_connect (CamelTcpStream *stream,
 
 	while (ai) {
 		if (proxy_host)
-			raw->sockfd = connect_to_socks4_proxy (proxy_host, proxy_port, ai);
+			priv->sockfd = connect_to_socks4_proxy (proxy_host, proxy_port, ai);
 		else
-			raw->sockfd = socket_connect (ai);
+			priv->sockfd = socket_connect (ai);
 
-		if (raw->sockfd != -1) {
+		if (priv->sockfd != -1) {
 			retval = 0;
 			goto out;
 		}
@@ -527,6 +541,8 @@ static gint
 tcp_stream_raw_getsockopt (CamelTcpStream *stream,
                            CamelSockOptData *data)
 {
+	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
+	CamelTcpStreamRawPrivate *priv = raw->priv;
 	gint optname, optlen;
 
 	if ((optname = get_sockopt_optname (data)) == -1)
@@ -536,18 +552,18 @@ tcp_stream_raw_getsockopt (CamelTcpStream *stream,
 #ifndef G_OS_WIN32
 		gint flags;
 
-		flags = fcntl (((CamelTcpStreamRaw *)stream)->sockfd, F_GETFL);
+		flags = fcntl (priv->sockfd, F_GETFL);
 		if (flags == -1)
 			return -1;
 
 		data->value.non_blocking = flags & O_NONBLOCK ? TRUE : FALSE;
 #else
-		data->value.non_blocking = ((CamelTcpStreamRaw *)stream)->is_nonblocking;
+		data->value.non_blocking = priv->is_nonblocking;
 #endif
 		return 0;
 	}
 
-	return getsockopt (((CamelTcpStreamRaw *)stream)->sockfd,
+	return getsockopt (priv->sockfd,
 			   get_sockopt_level (data),
 			   optname,
 			   (gpointer) &data->value,
@@ -558,6 +574,8 @@ static gint
 tcp_stream_raw_setsockopt (CamelTcpStream *stream,
                            const CamelSockOptData *data)
 {
+	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
+	CamelTcpStreamRawPrivate *priv = raw->priv;
 	gint optname;
 
 	if ((optname = get_sockopt_optname (data)) == -1)
@@ -567,25 +585,25 @@ tcp_stream_raw_setsockopt (CamelTcpStream *stream,
 #ifndef G_OS_WIN32
 		gint flags, set;
 
-		flags = fcntl (((CamelTcpStreamRaw *)stream)->sockfd, F_GETFL);
+		flags = fcntl (priv->sockfd, F_GETFL);
 		if (flags == -1)
 			return -1;
 
 		set = data->value.non_blocking ? O_NONBLOCK : 0;
 		flags = (flags & ~O_NONBLOCK) | set;
 
-		if (fcntl (((CamelTcpStreamRaw *)stream)->sockfd, F_SETFL, flags) == -1)
+		if (fcntl (priv->sockfd, F_SETFL, flags) == -1)
 			return -1;
 #else
 		u_long fionbio = data->value.non_blocking ? 1 : 0;
-		if (ioctlsocket (((CamelTcpStreamRaw *)stream)->sockfd, FIONBIO, &fionbio) == SOCKET_ERROR)
+		if (ioctlsocket (priv->sockfd, FIONBIO, &fionbio) == SOCKET_ERROR)
 			return -1;
-		((CamelTcpStreamRaw *)stream)->is_nonblocking = data->value.non_blocking ? 1 : 0;
+		priv->is_nonblocking = data->value.non_blocking ? 1 : 0;
 #endif
 		return 0;
 	}
 
-	return setsockopt (((CamelTcpStreamRaw *)stream)->sockfd,
+	return setsockopt (priv->sockfd,
 			   get_sockopt_level (data),
 			   optname,
 			   (gpointer) &data->value,
@@ -596,6 +614,8 @@ static struct sockaddr *
 tcp_stream_raw_get_local_address (CamelTcpStream *stream,
                                   socklen_t *len)
 {
+	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
+	CamelTcpStreamRawPrivate *priv = raw->priv;
 #ifdef ENABLE_IPv6
 	struct sockaddr_in6 sin;
 #else
@@ -604,7 +624,7 @@ tcp_stream_raw_get_local_address (CamelTcpStream *stream,
 	struct sockaddr *saddr = (struct sockaddr *)&sin;
 
 	*len = sizeof(sin);
-	if (getsockname (CAMEL_TCP_STREAM_RAW (stream)->sockfd, saddr, len) == -1)
+	if (getsockname (priv->sockfd, saddr, len) == -1)
 		return NULL;
 
 	saddr = g_malloc(*len);
@@ -617,6 +637,8 @@ static struct sockaddr *
 tcp_stream_raw_get_remote_address (CamelTcpStream *stream,
                                    socklen_t *len)
 {
+	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
+	CamelTcpStreamRawPrivate *priv = raw->priv;
 #ifdef ENABLE_IPv6
 	struct sockaddr_in6 sin;
 #else
@@ -625,7 +647,7 @@ tcp_stream_raw_get_remote_address (CamelTcpStream *stream,
 	struct sockaddr *saddr = (struct sockaddr *)&sin;
 
 	*len = sizeof(sin);
-	if (getpeername (CAMEL_TCP_STREAM_RAW (stream)->sockfd, saddr, len) == -1)
+	if (getpeername (priv->sockfd, saddr, len) == -1)
 		return NULL;
 
 	saddr = g_malloc(*len);
@@ -634,12 +656,18 @@ tcp_stream_raw_get_remote_address (CamelTcpStream *stream,
 	return saddr;
 }
 
+#define CAMEL_TCP_STREAM_RAW_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_TCP_STREAM_RAW, CamelTcpStreamRawPrivate))
+
 static void
 camel_tcp_stream_raw_class_init (CamelTcpStreamRawClass *class)
 {
 	GObjectClass *object_class;
 	CamelStreamClass *stream_class;
 	CamelTcpStreamClass *tcp_stream_class;
+
+	g_type_class_add_private (class, sizeof (CamelTcpStreamRawPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = tcp_stream_raw_finalize;
@@ -661,7 +689,12 @@ camel_tcp_stream_raw_class_init (CamelTcpStreamRawClass *class)
 static void
 camel_tcp_stream_raw_init (CamelTcpStreamRaw *stream)
 {
-	stream->sockfd = -1;
+	CamelTcpStreamRawPrivate *priv;
+
+	stream->priv = CAMEL_TCP_STREAM_RAW_GET_PRIVATE (stream);
+	priv = stream->priv;
+
+	priv->sockfd = -1;
 }
 
 /**
@@ -675,4 +708,12 @@ CamelStream *
 camel_tcp_stream_raw_new (void)
 {
 	return g_object_new (CAMEL_TYPE_TCP_STREAM_RAW, NULL);
+}
+
+gint
+camel_tcp_stream_raw_get_fd (CamelTcpStreamRaw *raw)
+{
+	CamelTcpStreamRawPrivate *priv = raw->priv;
+
+	return priv->sockfd;
 }

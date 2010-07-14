@@ -4641,7 +4641,7 @@ imapx_parser_thread (gpointer d)
 			GPollFD fds[2] = { {0, 0, 0}, {0, 0, 0} };
 			gint res;
 
-			fds[0].fd = ((CamelTcpStreamRaw *)is->stream->source)->sockfd;
+			fds[0].fd = camel_tcp_stream_raw_get_fd ((CamelTcpStreamRaw *)->stream->source);
 			fds[0].events = G_IO_IN;
 			fds[1].fd = camel_operation_cancel_fd (op);
 			fds[1].events = G_IO_IN;
