@@ -473,7 +473,6 @@ get_deltas (gpointer handle)
 		item = E_GW_ITEM(item_list->data);
 		modified_comp = e_gw_item_to_cal_component (item, cbgw);
 		if (!modified_comp) {
-			g_message ("Invalid component returned in update");
 			continue;
 		}
 		if ((r_key = e_gw_item_get_recurrence_key (item)) != 0)
@@ -1659,8 +1658,6 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 
 	PRIV_LOCK (priv);
 
-	g_message (G_STRLOC ": Getting object list (%s)", sexp);
-
 	if (!strcmp (sexp, "#t"))
 		search_needed = FALSE;
 
@@ -1685,9 +1682,6 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 		}
         }
 
-	g_message (G_STRLOC ": object list length %d from %d objects",
-		   g_list_length (*objects), g_slist_length (components));
-
 	g_object_unref (cbsexp);
 	g_slist_foreach (components, (GFunc) g_object_unref, NULL);
 	g_slist_free (components);
@@ -1706,8 +1700,6 @@ e_cal_backend_groupwise_start_query (ECalBackend *backend, EDataCalView *query)
 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
-
-	g_message (G_STRLOC ": Starting query (%s)", e_data_cal_view_get_text (query));
 
         e_cal_backend_groupwise_get_object_list (E_CAL_BACKEND_SYNC (backend), NULL,
 							  e_data_cal_view_get_text (query), &objects, &err);
@@ -2126,7 +2118,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 		/* when online, send the item to the server */
 		cache_comp = e_cal_backend_store_get_component (priv->store, uid, rid);
 		if (!cache_comp) {
-			g_message ("CRITICAL : Could not find the object in cache");
+			g_critical ("Could not find the object in cache");
 			g_free (rid);
 			g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 			return;
@@ -2408,8 +2400,6 @@ fetch_attachments (ECalBackendGroupwise *cbgw, ECalComponent *comp)
 
 		mapped_file = g_mapped_file_new (sfname, FALSE, &error);
 		if (!mapped_file) {
-			g_message ("DEBUG: could not map %s: %s\n",
-				   sfname, error->message);
 			g_error_free (error);
 			continue;
 		}
@@ -2421,12 +2411,9 @@ fetch_attachments (ECalBackendGroupwise *cbgw, ECalComponent *comp)
 		fd = g_open (dest_file, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0600);
 		if (fd == -1) {
 			/* TODO handle error conditions */
-			g_message ("DEBUG: could not open %s for writing\n",
-				   dest_file);
 		} else if (write (fd, g_mapped_file_get_contents (mapped_file),
 				  g_mapped_file_get_length (mapped_file)) == -1) {
 			/* TODO handle error condition */
-			g_message ("DEBUG: attachment write failed.\n");
 		}
 
 #if GLIB_CHECK_VERSION(2,21,3)
