@@ -4598,7 +4598,7 @@ imapx_parser_thread (gpointer d)
 			PRPollDesc pollfds[2] = { };
 			gint res;
 
-			pollfds[0].fd = camel_tcp_stream_ssl_sockfd ((CamelTcpStreamSSL *)is->stream->source);
+			pollfds[0].fd = camel_tcp_stream_get_file_desc (CAMEL_TCP_STREAM (is->stream->source));
 			pollfds[0].in_flags = PR_POLL_READ;
 			pollfds[1].fd = camel_operation_cancel_prfd (op);
 			pollfds[1].in_flags = PR_POLL_READ;
