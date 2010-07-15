@@ -68,8 +68,6 @@ GType camel_tcp_stream_raw_get_type (void);
 /* public methods */
 CamelStream *camel_tcp_stream_raw_new (void);
 
-gint camel_tcp_stream_raw_get_fd (CamelTcpStreamRaw *raw);
-
 G_END_DECLS
 
 #endif /* CAMEL_TCP_STREAM_RAW_H */
