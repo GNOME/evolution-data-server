@@ -188,8 +188,6 @@ camel_operation_ref (CamelOperation *cc)
 void
 camel_operation_unref (CamelOperation *cc)
 {
-	GSList *n;
-
 	g_assert(cc->refcount > 0);
 
 	LOCK();
@@ -203,13 +201,21 @@ camel_operation_unref (CamelOperation *cc)
 
 		camel_msgport_destroy(cc->cancel_port);
 
-		n = cc->status_stack;
-		while (n) {
-			g_warning("Camel operation status stack non empty: %s", (gchar *)n->data);
-			g_free(n->data);
-			n = n->next;
+		if (cc->status_stack != NULL)
+			g_warning ("CamelOperation status stack non-empty");
+
+		while (cc->status_stack != NULL) {
+			struct _status_stack *status;
+
+			status = cc->status_stack->data;
+			if (status->msg != NULL)
+				g_warning ("Status was \"%s\"", status->msg);
+			g_free (status->msg);
+			g_free (status);
+
+			cc->status_stack = g_slist_delete_link (
+				cc->status_stack, cc->status_stack);
 		}
-		g_slist_free(cc->status_stack);
 
 		g_free(cc);
 	} else {
