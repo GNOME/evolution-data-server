@@ -68,6 +68,8 @@ GType camel_tcp_stream_raw_get_type (void);
 /* public methods */
 CamelStream *camel_tcp_stream_raw_new (void);
 
+void _set_errno_from_pr_error (gint pr_code);
+
 G_END_DECLS
 
 #endif /* CAMEL_TCP_STREAM_RAW_H */
