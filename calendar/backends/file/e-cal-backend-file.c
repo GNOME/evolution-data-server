@@ -675,51 +675,61 @@ uri_to_path (ECalBackend *backend)
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	ESource *source;
-	const gchar *master_uri;
-	gchar *full_uri, *str_uri;
-	GFile *file = NULL;
+	gchar *filename;
 
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
 	source = e_cal_backend_get_source (backend);
 	if (source && e_source_get_property (source, "custom-file")) {
-		/* customr-uri is with a filename already */
-		master_uri = e_source_get_property (source, "custom-file");
-		file = g_file_new_for_path (master_uri);
-		if (!file)
-			return NULL;
+		const gchar *property;
+
+		/* custom-uri is with a filename already */
+		property = e_source_get_property (source, "custom-file");
+		filename = g_strdup (property);
 	}
 
-	if (!file) {
-		master_uri = e_cal_backend_get_uri (backend);
+	if (filename != NULL) {
+		icalcomponent_kind kind;
+		const gchar *user_data_dir;
+		const gchar *source_type_dir;
+		const gchar *relative_uri;
+		gchar *mangled_uri;
 
-		/* FIXME Check the error conditions a little more elegantly here */
-		if (g_strrstr ("tasks.ics", master_uri) || g_strrstr ("calendar.ics", master_uri)) {
-			g_warning (G_STRLOC ": Existing file name %s", master_uri);
+		user_data_dir = e_get_user_data_dir ();
+		kind = e_cal_backend_get_kind (backend);
+		relative_uri = e_source_peek_relative_uri (source);
 
-			return NULL;
+		switch (kind) {
+			case ICAL_VEVENT_COMPONENT:
+				source_type_dir = "calendar";
+				break;
+			case ICAL_VTODO_COMPONENT:
+				source_type_dir = "tasks";
+				break;
+			case ICAL_VJOURNAL_COMPONENT:
+				source_type_dir = "memos";
+				break;
+			default:
+				g_return_val_if_reached (NULL);
 		}
 
-		full_uri = g_strdup_printf ("%s/%s", master_uri, priv->file_name);
-		file = g_file_new_for_uri (full_uri);
-		g_free (full_uri);
+		/* Mangle the URI to not contain invalid characters. */
+		mangled_uri = g_strdelimit (g_strdup (relative_uri), ":/", '_');
+
+		filename = g_build_filename (
+			user_data_dir, source_type_dir, "local",
+			mangled_uri, priv->file_name, NULL);
+
+		g_free (mangled_uri);
 	}
 
-	if (!file)
-		return NULL;
-
-	str_uri = g_file_get_path (file);
-
-	g_object_unref (file);
-
-	if (!str_uri || !*str_uri) {
-		g_free (str_uri);
-
-		return NULL;
+	if (filename != NULL && *filename == '\0') {
+		g_free (filename);
+		filename = NULL;
 	}
 
-	return str_uri;
+	return filename;
 }
 
 static gpointer

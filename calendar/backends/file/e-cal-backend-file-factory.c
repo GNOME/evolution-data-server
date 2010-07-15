@@ -34,7 +34,7 @@ e_cal_backend_file_factory_instance_init (ECalBackendFileFactory *factory)
 static const gchar *
 _get_protocol (ECalBackendFactory *factory)
 {
-	return "file";
+	return "local";
 }
 
 static ECalBackend*

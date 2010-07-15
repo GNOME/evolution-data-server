@@ -31,25 +31,72 @@
 #include "libedata-book/e-book-backend-factory.h"
 #include "e-book-backend-file.h"
 
-E_BOOK_BACKEND_FACTORY_SIMPLE (file, File, e_book_backend_file_new)
+typedef struct _EBookBackendFileFactory EBookBackendFileFactory;
+typedef struct _EBookBackendFileFactoryClass EBookBackendFileFactoryClass;
 
-static GType  file_type;
+struct _EBookBackendFileFactory {
+	EBookBackendFactory parent;
+};
 
-void
-eds_module_initialize (GTypeModule *module)
+struct _EBookBackendFileFactoryClass {
+	EBookBackendFactoryClass parent_class;
+};
+
+GType e_book_backend_file_factory_get_type (void);
+
+G_DEFINE_DYNAMIC_TYPE (
+	EBookBackendFileFactory,
+	e_book_backend_file_factory,
+	E_TYPE_BOOK_BACKEND_FACTORY)
+
+static const gchar *
+book_backend_file_factory_get_protocol (EBookBackendFactory *factory)
 {
-	file_type = _file_factory_get_type (module);
+	return "local";
+}
+
+static EBookBackend *
+book_backend_file_factory_new_backend (EBookBackendFactory *factory)
+{
+	return e_book_backend_file_new ();
+}
+
+static void
+e_book_backend_file_factory_class_init (EBookBackendFileFactoryClass *class)
+{
+	EBookBackendFactoryClass *factory_class;
+
+	factory_class = E_BOOK_BACKEND_FACTORY_CLASS (class);
+	factory_class->get_protocol = book_backend_file_factory_get_protocol;
+	factory_class->new_backend = book_backend_file_factory_new_backend;
+}
+
+static void
+e_book_backend_file_factory_class_finalize (EBookBackendFileFactoryClass *class)
+{
+}
+
+static void
+e_book_backend_file_factory_init (EBookBackendFileFactory *factory)
+{
 }
 
 void
-eds_module_shutdown   (void)
+eds_module_initialize (GTypeModule *type_module)
+{
+	e_book_backend_file_factory_register_type (type_module);
+}
+
+void
+eds_module_shutdown (void)
 {
 }
 
 void
-eds_module_list_types (const GType **types, gint *num_types)
+eds_module_list_types (const GType **types,
+                       gint *num_types)
 {
-	*types = & file_type;
+	*types = &e_book_backend_file_factory_type_id;
 	*num_types = 1;
 }
 

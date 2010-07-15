@@ -874,11 +874,25 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 }
 
 static gchar *
-e_book_backend_file_extract_path_from_uri (const gchar *uri)
+e_book_backend_file_extract_path_from_source (ESource *source)
 {
-	g_assert (g_ascii_strncasecmp (uri, "file://", 7) == 0);
+	const gchar *user_data_dir;
+	const gchar *relative_uri;
+	gchar *mangled_uri;
+	gchar *filename;
 
-	return g_filename_from_uri (uri, NULL, NULL);
+	user_data_dir = e_get_user_data_dir ();
+	relative_uri = e_source_peek_relative_uri (source);
+
+	/* Mangle the URI to not contain invalid characters. */
+	mangled_uri = g_strdelimit (g_strdup (relative_uri), ":/", '_');
+
+	filename = g_build_filename (
+		user_data_dir, "addressbook", "local", mangled_uri, NULL);
+
+	g_free (mangled_uri);
+
+	return filename;
 }
 
 static void
@@ -1091,13 +1105,9 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 	DB_ENV *env;
 	time_t db_mtime;
 	struct stat sb;
-	gchar *uri;
 
-	uri = e_source_get_uri (source);
-
-	dirname = e_book_backend_file_extract_path_from_uri (uri);
+	dirname = e_book_backend_file_extract_path_from_source (source);
 	filename = g_build_filename (dirname, "addressbook.db", NULL);
-	g_free (uri);
 
 	db_error = e_db3_utils_maybe_recover (filename);
 	if (db_error != 0) {
