@@ -294,7 +294,16 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 	new->priv->uid = g_strdup (GC uid);
 
 	e_source_group_set_name (new, GC name);
-	e_source_group_set_base_uri (new, GC base_uri);
+
+	/* XXX The "On This Computer" group used to specify an
+	 *     absolute "file:" URI pointing to its local storage
+	 *     directory, but that caused all kinds of portability
+	 *     issues so now we just use "local:" and leave the
+	 *     absolute file system path implicit. */
+	if (g_str_has_prefix (GC base_uri, "file:"))
+		e_source_group_set_base_uri (new, "local:");
+	else
+		e_source_group_set_base_uri (new, GC base_uri);
 
 	for (p = root->children; p != NULL; p = p->next) {
 		ESource *new_source;
@@ -389,7 +398,16 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 	}
 	xmlFree (name);
 
-	if (strcmp (group->priv->base_uri, GC base_uri) != 0) {
+	/* XXX The "On This Computer" group used to specify an
+	 *     absolute "file:" URI pointing to its local storage
+	 *     directory, but that caused all kinds of portability
+	 *     issues so now we just use "local:" and leave the
+	 *     absolute file system path implicit. */
+	if (g_str_has_prefix (GC base_uri, "file:")) {
+		g_free (group->priv->base_uri);
+		group->priv->base_uri = g_strdup ("local:");
+		changed = TRUE;
+	} else if (strcmp (group->priv->base_uri, GC base_uri) != 0) {
 		g_free (group->priv->base_uri);
 		group->priv->base_uri = g_strdup (GC base_uri);
 		changed = TRUE;
