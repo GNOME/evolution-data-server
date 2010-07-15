@@ -29,8 +29,7 @@
 
 #ifdef HAVE_SSL
 
-#include <camel/camel-tcp-stream.h>
-#include <prio.h>
+#include <camel/camel-tcp-stream-raw.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_TCP_STREAM_SSL \
@@ -64,12 +63,12 @@ typedef struct _CamelTcpStreamSSLClass CamelTcpStreamSSLClass;
 typedef struct _CamelTcpStreamSSLPrivate CamelTcpStreamSSLPrivate;
 
 struct _CamelTcpStreamSSL {
-	CamelTcpStream parent;
+	CamelTcpStreamRaw parent_object;
 	CamelTcpStreamSSLPrivate *priv;
 };
 
 struct _CamelTcpStreamSSLClass {
-	CamelTcpStreamClass parent_class;
+	CamelTcpStreamRawClass parent_class;
 };
 
 GType camel_tcp_stream_ssl_get_type (void);
