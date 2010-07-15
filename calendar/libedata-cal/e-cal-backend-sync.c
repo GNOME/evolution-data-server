@@ -446,7 +446,6 @@ e_cal_backend_sync_get_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 				g_propagate_error (error, e_data_cal_create_error (InvalidObject, NULL));
 			} else {
 				*object = icalcomponent_as_ical_string_r (icalcomp);
-				g_propagate_error (error, e_data_cal_create_error (Success, NULL));
 			}
 		}
 	}
