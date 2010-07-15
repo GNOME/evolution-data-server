@@ -117,7 +117,7 @@ e_data_book_factory_register_backend (EDataBookFactory *book_factory,
 	}
 
 	g_hash_table_insert (
-		book_factory->priv->backends,
+		book_factory->priv->factories,
 		g_strdup (proto), backend_factory);
 }
 
@@ -169,12 +169,12 @@ e_data_book_factory_set_backend_mode (EDataBookFactory *factory,
 	g_return_if_fail (E_IS_DATA_BOOK_FACTORY (factory));
 
 	factory->priv->mode = mode;
-	g_mutex_lock (factory->priv->connections_lock);
+	g_mutex_lock (factory->priv->backends_lock);
 	g_hash_table_foreach (
-		factory->priv->connections,
+		factory->priv->backends,
 		set_backend_online_status,
 		GINT_TO_POINTER (factory->priv->mode));
-	g_mutex_unlock (factory->priv->connections_lock);
+	g_mutex_unlock (factory->priv->backends_lock);
 }
 
 static void
