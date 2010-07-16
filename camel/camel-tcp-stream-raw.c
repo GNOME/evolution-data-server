@@ -154,131 +154,6 @@ flaky_tcp_read (gint fd, gchar *buffer, gsize buflen)
 
 #endif /* SIMULATE_FLAKY_NETWORK */
 
-/* this is a 'cancellable' connect, cancellable from camel_operation_cancel etc */
-/* returns -1 & errno == EINTR if the connection was cancelled */
-static gint
-socket_connect(struct addrinfo *h)
-{
-	struct timeval tv;
-	socklen_t len;
-	gint cancel_fd;
-	gint errnosav;
-	gint ret, fd;
-
-	/* see if we're cancelled yet */
-	if (camel_operation_cancel_check (NULL)) {
-		errno = EINTR;
-		return -1;
-	}
-
-	if (h->ai_socktype != SOCK_STREAM) {
-		errno = EINVAL;
-		return -1;
-	}
-
-	if ((fd = socket (h->ai_family, SOCK_STREAM, 0)) == -1)
-		return -1;
-
-	cancel_fd = camel_operation_cancel_fd (NULL);
-	if (cancel_fd == -1) {
-		if (connect (fd, h->ai_addr, h->ai_addrlen) == -1) {
-			/* Yeah, errno is meaningless on Win32 after a
-			 * Winsock call fails, but I doubt the callers
-			 * check errno anyway.
-			 */
-			errnosav = errno;
-			SOCKET_CLOSE (fd);
-			errno = errnosav;
-			return -1;
-		}
-
-		return fd;
-	} else {
-#ifndef G_OS_WIN32
-		gint flags;
-#endif
-		gint fdmax, status;
-		fd_set rdset, wrset;
-
-#ifndef G_OS_WIN32
-		flags = fcntl (fd, F_GETFL);
-		fcntl (fd, F_SETFL, flags | O_NONBLOCK);
-#else
-		{
-			u_long yes = 1;
-			ioctlsocket (fd, FIONBIO, &yes);
-		}
-#endif
-		if (connect (fd, h->ai_addr, h->ai_addrlen) == 0) {
-#ifndef G_OS_WIN32
-			fcntl (fd, F_SETFL, flags);
-#else
-			{
-				u_long no = 0;
-				ioctlsocket (fd, FIONBIO, &no);
-			}
-#endif
-			return fd;
-		}
-
-		if (!SOCKET_ERROR_IS_EINPROGRESS ()) {
-			errnosav = errno;
-			SOCKET_CLOSE (fd);
-			errno = errnosav;
-			return -1;
-		}
-
-		do {
-			FD_ZERO (&rdset);
-			FD_ZERO (&wrset);
-			FD_SET (fd, &wrset);
-			FD_SET (cancel_fd, &rdset);
-			fdmax = MAX (fd, cancel_fd) + 1;
-			tv.tv_sec = 60 * 4;
-			tv.tv_usec = 0;
-
-			status = select (fdmax, &rdset, &wrset, NULL, &tv);
-		} while (status == -1 && SOCKET_ERROR_IS_EINTR ());
-
-		if (status <= 0) {
-			SOCKET_CLOSE (fd);
-			errno = ETIMEDOUT;
-			return -1;
-		}
-
-		if (cancel_fd != -1 && FD_ISSET (cancel_fd, &rdset)) {
-			SOCKET_CLOSE (fd);
-			errno = EINTR;
-			return -1;
-		} else {
-			len = sizeof (gint);
-
-			if (getsockopt (fd, SOL_SOCKET, SO_ERROR, (gchar *) &ret, &len) == -1) {
-				errnosav = errno;
-				SOCKET_CLOSE (fd);
-				errno = errnosav;
-				return -1;
-			}
-
-			if (ret != 0) {
-				SOCKET_CLOSE (fd);
-				errno = ret;
-				return -1;
-			}
-		}
-#ifndef G_OS_WIN32
-		fcntl (fd, F_SETFL, flags);
-#else
-		{
-			u_long no = 0;
-			ioctlsocket (fd, FIONBIO, &no);
-		}
-#endif
-	}
-
-	return fd;
-}
-
 static void
 tcp_stream_raw_finalize (GObject *object)
 {
@@ -737,24 +612,20 @@ out:
 	return fd;
 }
 
-/* Returns the FD of a socket, already connected to and validated by the SOCKS4
- * proxy that is configured in the stream.  Otherwise returns NULL.  Assumes that
- * a proxy *is* configured with camel_tcp_stream_set_socks_proxy().
+/* Just opens a TCP socket to a (presumed) SOCKS proxy.  Does not actually
+ * negotiate anything with the proxy; this is just to create the socket and connect.
  */
 static PRFileDesc *
-connect_to_socks4_proxy (const gchar *proxy_host, gint proxy_port, struct addrinfo *connect_addr, GError **error)
+connect_to_proxy (CamelTcpStreamRaw *raw, const gchar *proxy_host, gint proxy_port, GError **error)
 {
 	struct addrinfo *ai, hints;
 	gchar serv[16];
 	PRFileDesc *fd;
-	gchar request[9];
-	struct sockaddr_in *sin;
-	gchar reply[8];
 	gint save_errno;
 
 	g_assert (proxy_host != NULL);
 
-	d (g_print ("TcpStreamRaw %p: connecting to SOCKS4 proxy %s:%d {\n  resolving proxy host\n", ssl, proxy_host, proxy_port));
+	d (g_print ("TcpStreamRaw %p: connecting to proxy %s:%d {\n  resolving proxy host\n", raw, proxy_host, proxy_port));
 
 	sprintf (serv, "%d", proxy_port);
 
@@ -774,8 +645,28 @@ connect_to_socks4_proxy (const gchar *proxy_host, gint proxy_port, struct addrin
 
 	if (!fd) {
 		errno = save_errno;
-		goto error;
+		d (g_print ("  could not connect: errno %d\n", errno));
 	}
+
+	return fd;
+}
+
+/* Returns the FD of a socket, already connected to and validated by the SOCKS4
+ * proxy that is configured in the stream.  Otherwise returns NULL.  Assumes that
+ * a proxy *is* configured with camel_tcp_stream_set_socks_proxy().
+ */
+static PRFileDesc *
+connect_to_socks4_proxy (CamelTcpStreamRaw *raw, const gchar *proxy_host, gint proxy_port, struct addrinfo *connect_addr, GError **error)
+{
+	PRFileDesc *fd;
+	gchar request[9];
+	struct sockaddr_in *sin;
+	gchar reply[8];
+	gint save_errno;
+
+	fd = connect_to_proxy (raw, proxy_host, proxy_port, error);
+	if (!fd)
+		goto error;
 
 	g_assert (connect_addr->ai_addr->sa_family == AF_INET); /* FMQ: check for AF_INET in the caller */
 	sin = (struct sockaddr_in *) connect_addr->ai_addr;
@@ -870,9 +761,9 @@ tcp_stream_raw_connect (CamelTcpStream *stream,
 
 	while (ai) {
 		if (proxy_host)
-			priv->sockfd = connect_to_socks4_proxy (proxy_host, proxy_port, ai);
+			priv->sockfd = connect_to_socks4_proxy (raw, proxy_host, proxy_port, ai, error);
 		else
-			priv->sockfd = socket_connect (ai);
+			priv->sockfd = socket_connect (ai, error);
 
 		if (priv->sockfd) {
 			retval = 0;
