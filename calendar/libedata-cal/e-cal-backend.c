@@ -250,7 +250,6 @@ e_cal_backend_class_init (ECalBackendClass *class)
 	class->send_objects = NULL;
 	class->get_timezone = NULL;
 	class->add_timezone = NULL;
-	class->set_default_timezone = NULL;
 
 	g_type_class_add_private (class, sizeof (ECalBackendPrivate));
 }
@@ -1036,30 +1035,6 @@ e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, EServerMeth
 	g_return_if_fail (tzobj != NULL);
 
 	(* CLASS (backend)->set_default_zone) (backend, cal, context, tzobj);
-}
-
-/**
- * @deprecated This virual function should not be used in the backends, use
- * e_cal_backend_set_zone instead. This function restricts the default timezone
- * to be libical builtin timezone.
- *
- * e_cal_backend_set_default_timezone:
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
- * @tzid: The TZID identifying the timezone.
- *
- * Sets the default timezone for the calendar, which is used to resolve
- * DATE and floating DATE-TIME values.
- *
- */
-void
-e_cal_backend_set_default_timezone (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *tzid)
-{
-	g_return_if_fail (backend != NULL);
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (tzid != NULL);
-
-	(* CLASS (backend)->set_default_timezone) (backend, cal, context, tzid);
 }
 
 /**

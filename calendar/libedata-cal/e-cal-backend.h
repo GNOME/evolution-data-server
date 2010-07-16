@@ -93,7 +93,6 @@ struct _ECalBackendClass {
 	void (* get_timezone) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *tzid);
 	void (* add_timezone) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *object);
 	void (* set_default_zone) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *tzobj);
-	void (* set_default_timezone) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *tzid);
 
 	void (* start_query) (ECalBackend *backend, EDataCalView *query);
 
@@ -155,7 +154,6 @@ void e_cal_backend_set_mode (ECalBackend *backend, CalMode mode);
 
 void e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *tzid);
 void e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *object);
-void e_cal_backend_set_default_timezone (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *tzid);
 void e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *tzobj);
 
 void e_cal_backend_get_changes (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *change_id);

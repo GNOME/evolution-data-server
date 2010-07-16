@@ -475,51 +475,14 @@ e_cal_backend_sync_add_timezone (ECalBackendSync *backend, EDataCal *cal, const 
  * @tz: Timezone object as string.
  * @error: Out parameter for a #GError.
  *
- * Calls the set_default_timezone method on the given backend.
+ * Calls the set_default_zone method on the given backend.
  */
 void
 e_cal_backend_sync_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const gchar *tz, GError **error)
 {
 	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 
-	/* Old backends might be using the set_default_timezone */
-	if (!E_CAL_BACKEND_SYNC_GET_CLASS (backend)->set_default_zone_sync) {
-		icalcomponent *icalcomp = icalparser_parse_string (tz);
-		const gchar *tzid = NULL;
-		icaltimezone *zone = icaltimezone_new ();
-
-		if (icalcomp) {
-			icaltimezone_set_component (zone, icalcomp);
-			tzid = icaltimezone_get_tzid (zone);
-		}
-
-		LOCK_WRAPPER (set_default_timezone_sync, (backend, cal, tzid, error));
-
-		icaltimezone_free (zone, 1);
-	} else {
-		LOCK_WRAPPER (set_default_zone_sync, (backend, cal, tz, error));
-	}
-}
-
-/**
- * @deprecated This virual function should not be used in the backends, use
- * e_cal_backend_sync_set_zone instead. This function restricts the default timezone
- * to be libical builtin timezone.
- *
- * e_cal_backend_sync_set_default_timezone:
- * @backend: An ECalBackendSync object.
- * @cal: An EDataCal object.
- * @tzid: ID of the timezone to be set as default.
- * @error: Out parameter for a #GError.
- *
- * Calls the set_default_timezone method on the given backend.
- */
-void
-e_cal_backend_sync_set_default_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid, GError **error)
-{
-	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
-
-	LOCK_WRAPPER (set_default_timezone_sync, (backend, cal, tzid, error));
+	LOCK_WRAPPER (set_default_zone_sync, (backend, cal, tz, error));
 }
 
 /**
@@ -933,16 +896,6 @@ _e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, EServerMet
 }
 
 static void
-_e_cal_backend_set_default_timezone (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *tzid)
-{
-	GError *error = NULL;
-
-	e_cal_backend_sync_set_default_timezone (E_CAL_BACKEND_SYNC (backend), cal, tzid, &error);
-
-	e_data_cal_notify_default_timezone_set (cal, context, error);
-}
-
-static void
 _e_cal_backend_get_changes (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *change_id)
 {
 	GError *error = NULL;
@@ -1039,7 +992,6 @@ e_cal_backend_sync_class_init (ECalBackendSyncClass *klass)
 	backend_class->get_attachment_list = _e_cal_backend_get_attachment_list;
 	backend_class->get_timezone = _e_cal_backend_get_timezone;
 	backend_class->add_timezone = _e_cal_backend_add_timezone;
-	backend_class->set_default_timezone = _e_cal_backend_set_default_timezone;
 	backend_class->set_default_zone = _e_cal_backend_set_default_zone;
 	backend_class->get_changes = _e_cal_backend_get_changes;
 	backend_class->get_free_busy = _e_cal_backend_get_free_busy;

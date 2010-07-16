@@ -58,7 +58,6 @@ struct _ECalBackendSyncClass {
 
 	void (*get_timezone_sync) (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid, gchar **object, GError **perror);
 	void (*add_timezone_sync) (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj, GError **perror);
-	void (*set_default_timezone_sync) (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid, GError **perror);
 	void (*set_default_zone_sync) (ECalBackendSync *backend, EDataCal *cal, const gchar *tz, GError **perror);
 
 	void (*get_changes_sync) (ECalBackendSync *backend, EDataCal *cal, const gchar *change_id, GList **adds, GList **modifies, GList **deletes, GError **perror);
@@ -182,10 +181,6 @@ void	e_cal_backend_sync_get_timezone		(ECalBackendSync *backend,
 void	e_cal_backend_sync_add_timezone		(ECalBackendSync *backend,
 						 EDataCal *cal,
 						 const gchar *tzobj,
-						 GError **error);
-void	e_cal_backend_sync_set_default_timezone	(ECalBackendSync *backend,
-						 EDataCal *cal,
-						 const gchar *tzid,
 						 GError **error);
 void	e_cal_backend_sync_set_default_zone	(ECalBackendSync *backend,
 						 EDataCal *cal,
