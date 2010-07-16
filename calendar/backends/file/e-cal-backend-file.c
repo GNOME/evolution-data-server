@@ -675,7 +675,7 @@ uri_to_path (ECalBackend *backend)
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	ESource *source;
-	gchar *filename;
+	gchar *filename = NULL;
 
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
@@ -689,7 +689,7 @@ uri_to_path (ECalBackend *backend)
 		filename = g_strdup (property);
 	}
 
-	if (filename != NULL) {
+	if (filename == NULL) {
 		icalcomponent_kind kind;
 		const gchar *user_data_dir;
 		const gchar *source_type_dir;
