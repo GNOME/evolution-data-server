@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.31.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-19 14:16+0200\n"
-"PO-Revision-Date: 2010-07-19 14:17+0200\n"
+"POT-Creation-Date: 2010-07-19 21:40+0200\n"
+"PO-Revision-Date: 2010-07-19 21:41+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -84,6 +84,11 @@ msgstr "Mottar søkeresultater fra LDAP-tjener…"
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4513
 msgid "Error performing search"
 msgstr "Feil ved utføring av søk"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:329
+#, c-format
+msgid "Create resource '%s' failed with http status: %d"
+msgstr "Oppretting av ressurs «%s» feilet med http status: %d"
 
 #: ../addressbook/libebook/e-book.c:3001
 #, c-format
@@ -836,6 +841,15 @@ msgstr "Ugyldig spørring: %s"
 #, c-format
 msgid "Cannot get changes: %s"
 msgstr "Kan ikke hente endringer: %s"
+
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:501
+#, c-format
+msgid "Unexpected HTTP status code %d returned"
+msgstr "Uventet HTTP-statuskode %d mottatt"
+
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4114
+msgid "Calendar doesn't support Free/Busy"
+msgstr "Kalender støtter ikke ledig/opptatt"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:719
 #: ../libedataserver/e-categories.c:44
