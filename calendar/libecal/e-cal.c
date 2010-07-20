@@ -765,69 +765,23 @@ backend_error_cb (DBusGProxy *proxy, const gchar *message, ECal *ecal)
 	g_idle_add (backend_error_idle_cb, error_data);
 }
 
-/* TODO - For now, the policy of where each backend serializes its
- * attachment data is hardcoded below. Should this end up as a
- * gconf key set during the account creation  and fetched
- * from eds???
- */
 static void
 set_local_attachment_store (ECal *ecal)
 {
-	ECalPrivate *priv;
-	const gchar *user_cache_dir;
-	gchar *mangled_uri;
+	gchar *cache_dir = NULL;
+	GError *error = NULL;
 
-	user_cache_dir = e_get_user_cache_dir ();
+	LOCK_CONN ();
+	org_gnome_evolution_dataserver_calendar_Cal_get_cache_dir (
+		ecal->priv->proxy, &cache_dir, &error);
+	UNLOCK_CONN ();
 
-	priv = ecal->priv;
-
-	/* Mangle the URI to not contain invalid characters. */
-	mangled_uri = g_strdelimit (g_strdup (priv->uri), ":/", '_');
-
-	/* The file backend uses its uri as the attachment store. */
-	if (g_str_has_prefix (priv->uri, "file://")) {
-		priv->local_attachment_store = g_strdup (priv->uri);
-	} else if (g_str_has_prefix (priv->uri, "groupwise://")) {
-		gchar *filename = g_build_filename (
-			user_cache_dir, "calendar", mangled_uri, NULL);
-		priv->local_attachment_store =
-			g_filename_to_uri (filename, NULL, NULL);
-		g_free (filename);
-	} else if (g_str_has_prefix (priv->uri, "exchange://")) {
-		gchar *filename = g_build_filename (g_get_home_dir (),
-						    ".evolution/exchange",
-						    mangled_uri,
-						    NULL);
-		priv->local_attachment_store =
-			g_filename_to_uri (filename, NULL, NULL);
-		g_free (filename);
-	} else if (g_str_has_prefix (priv->uri, "scalix://")) {
-		gchar *filename = g_build_filename (
-			user_cache_dir, "scalix", mangled_uri, "attach", NULL);
-                priv->local_attachment_store =
-			g_filename_to_uri (filename, NULL, NULL);
-		g_free (filename);
-        } else if (g_str_has_prefix (priv->uri, "google://")) {
-		gchar *filename = g_build_filename (
-			user_cache_dir, "calendar", mangled_uri, NULL);
-		priv->local_attachment_store =
-			g_filename_to_uri (filename, NULL, NULL);
-		g_free (filename);
-	} else if (g_str_has_prefix (priv->uri, "mapi://")) {
-		gchar *filename = g_build_filename (
-			user_cache_dir, "calendar", mangled_uri, NULL);
-		priv->local_attachment_store =
-			g_filename_to_uri (filename, NULL, NULL);
-		g_free (filename);
-	} else if (g_str_has_prefix (priv->uri, "caldav://")) {
-		gchar *filename = g_build_filename (
-			user_cache_dir, "calendar", mangled_uri, NULL);
-		priv->local_attachment_store =
-			g_filename_to_uri (filename, NULL, NULL);
-		g_free (filename);
+	if (error == NULL)
+		ecal->priv->local_attachment_store = cache_dir;
+	else {
+		g_warning ("%s", error->message);
+		g_error_free (error);
 	}
-
-	g_free (mangled_uri);
 }
 
 /**

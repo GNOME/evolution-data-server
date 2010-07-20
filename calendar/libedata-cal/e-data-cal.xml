@@ -23,7 +23,13 @@
 			<annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
 			<arg name="str_uri_copy" type="s" direction="out"/>
 		</method>
-		
+
+		<method name="getCacheDir">
+			<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_Cal_getCacheDir"/>
+			<annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+			<arg name="dirname" type="s" direction="out"/>
+		</method>
+
 		<method name="open">
 			<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_Cal_open"/>
 			<annotation name="org.freedesktop.DBus.GLib.Async" value=""/>

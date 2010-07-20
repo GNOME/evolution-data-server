@@ -41,6 +41,7 @@ DBusGConnection *connection;
 
 /* DBus glue */
 static void impl_Cal_get_uri (EDataCal *cal, DBusGMethodInvocation *context);
+static void impl_Cal_getCacheDir (EDataCal *cal, DBusGMethodInvocation *context);
 static void impl_Cal_open (EDataCal *cal, gboolean only_if_exists, gchar *username, gchar *password, DBusGMethodInvocation *context);
 static gboolean impl_Cal_close (EDataCal *cal, GError **error);
 static void impl_Cal_refresh (EDataCal *cal, DBusGMethodInvocation *context);
@@ -278,6 +279,16 @@ static void
 impl_Cal_get_uri (EDataCal *cal, DBusGMethodInvocation *context)
 {
 	dbus_g_method_return (context, g_strdup (e_cal_backend_get_uri (cal->priv->backend)));
+}
+
+/* EDataCal::getCacheDir method */
+static void
+impl_Cal_getCacheDir (EDataCal *cal, DBusGMethodInvocation *context)
+{
+	const gchar *cache_dir;
+
+	cache_dir = e_cal_backend_get_cache_dir (cal->priv->backend);
+	dbus_g_method_return (context, g_strdup (cache_dir));
 }
 
 /* EDataCal::open method */
