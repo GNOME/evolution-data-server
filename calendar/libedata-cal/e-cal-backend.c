@@ -26,14 +26,19 @@
 #include <libxml/parserInternals.h>
 #include <libxml/xmlmemory.h>
 
+#include <libedataserver/e-data-server-util.h>
+
 #include "e-cal-backend.h"
 #include "e-cal-backend-cache.h"
 
-
+#define E_CAL_BACKEND_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CAL_BACKEND, ECalBackendPrivate))
+
+/* For convenience */
+#define CLASS(backend) (E_CAL_BACKEND_GET_CLASS(backend))
 
 #define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
-
-G_DEFINE_TYPE (ECalBackend, e_cal_backend, G_TYPE_OBJECT);
 
 /* Private part of the CalBackend structure */
 struct _ECalBackendPrivate {
@@ -64,17 +69,12 @@ struct _ECalBackendPrivate {
 	gint last_percent_notified;
 };
 
-#define E_CAL_BACKEND_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_CAL_BACKEND, ECalBackendPrivate))
-
-/* For convenience */
-#define CLASS(backend) (E_CAL_BACKEND_GET_CLASS(backend))
-
 /* Property IDs */
-enum props {
+enum {
 	PROP_0,
+	PROP_KIND,
 	PROP_SOURCE,
-	PROP_URI,
-	PROP_KIND
+	PROP_URI
 };
 
 /* Signal IDs */
@@ -82,12 +82,12 @@ enum {
 	LAST_CLIENT_GONE,
 	LAST_SIGNAL
 };
-static guint e_cal_backend_signals[LAST_SIGNAL];
 
-static void e_cal_backend_finalize (GObject *object);
+static guint signals[LAST_SIGNAL];
+
 static void e_cal_backend_remove_client_private (ECalBackend *backend, EDataCal *cal, gboolean weak_unref);
 
-
+G_DEFINE_TYPE (ECalBackend, e_cal_backend, G_TYPE_OBJECT);
 
 static void
 source_changed_cb (ESource *source, ECalBackend *backend)
@@ -113,171 +113,111 @@ source_changed_cb (ESource *source, ECalBackend *backend)
 }
 
 static void
-e_cal_backend_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
+cal_backend_set_source (ECalBackend *backend,
+                        ESource *source)
 {
-	ECalBackend *backend;
-	ECalBackendPrivate *priv;
-
-	backend = E_CAL_BACKEND (object);
-	priv = backend->priv;
-
-	switch (property_id) {
-	case PROP_SOURCE:
-		{
-			ESource *new_source;
-
-			if (priv->source_changed_id && priv->source) {
-				g_signal_handler_disconnect (priv->source, priv->source_changed_id);
-				priv->source_changed_id = 0;
-			}
-
-			new_source = g_value_get_object (value);
-			if (new_source) {
-				g_object_ref (new_source);
-				priv->source_changed_id = g_signal_connect (new_source, "changed", G_CALLBACK (source_changed_cb), backend);
-			}
-
-			if (priv->source)
-				g_object_unref (priv->source);
-
-			priv->source = new_source;
-
-			/* Cache the URI */
-			if (new_source) {
-				g_free (priv->uri);
-				priv->uri = e_source_get_uri (priv->source);
-			}
+	if (backend->priv->source != NULL) {
+		if (backend->priv->source_changed_id > 0) {
+			g_signal_handler_disconnect (
+				backend->priv->source,
+				backend->priv->source_changed_id);
+			backend->priv->source_changed_id = 0;
 		}
-		break;
-	case PROP_URI:
-		if (!priv->source) {
-			g_free (priv->uri);
-			priv->uri = g_value_dup_string (value);
-		}
-		break;
-	case PROP_KIND:
-		priv->kind = g_value_get_ulong (value);
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-		break;
+		g_object_unref (backend->priv->source);
+	}
+
+	if (source != NULL)
+		backend->priv->source_changed_id = g_signal_connect (
+			g_object_ref (source), "changed",
+			G_CALLBACK (source_changed_cb), backend);
+
+	backend->priv->source = source;
+
+	/* Cache the URI */
+	if (source != NULL) {
+		g_free (backend->priv->uri);
+		backend->priv->uri = e_source_get_uri (source);
 	}
 }
 
 static void
-e_cal_backend_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
+cal_backend_set_uri (ECalBackend *backend,
+                     const gchar *uri)
 {
-	ECalBackend *backend;
-	ECalBackendPrivate *priv;
-
-	backend = E_CAL_BACKEND (object);
-	priv = backend->priv;
-
-	switch (property_id) {
-	case PROP_SOURCE:
-		g_value_set_object (value, e_cal_backend_get_source (backend));
-		break;
-	case PROP_URI:
-		g_value_set_string (value, e_cal_backend_get_uri (backend));
-		break;
-	case PROP_KIND:
-		g_value_set_ulong (value, e_cal_backend_get_kind (backend));
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-		break;
+	/* ESource's URI gets priority. */
+	if (backend->priv->source == NULL) {
+		g_free (backend->priv->uri);
+		backend->priv->uri = g_strdup (uri);
 	}
 }
 
-/* Class initialization function for the calendar backend */
 static void
-e_cal_backend_class_init (ECalBackendClass *class)
+cal_backend_set_kind (ECalBackend *backend,
+                      icalcomponent_kind kind)
 {
-	GObjectClass *object_class;
-
-	object_class = (GObjectClass *) class;
-
-	object_class->set_property = e_cal_backend_set_property;
-	object_class->get_property = e_cal_backend_get_property;
-	object_class->finalize = e_cal_backend_finalize;
-
-	g_object_class_install_property (object_class, PROP_SOURCE,
-					 g_param_spec_object ("source", NULL, NULL, E_TYPE_SOURCE,
-							      G_PARAM_READABLE | G_PARAM_WRITABLE
-							      | G_PARAM_CONSTRUCT_ONLY));
-
-	g_object_class_install_property (object_class, PROP_URI,
-					 g_param_spec_string ("uri", NULL, NULL, "",
-							      G_PARAM_READABLE | G_PARAM_WRITABLE
-							      | G_PARAM_CONSTRUCT_ONLY));
-
-	g_object_class_install_property (object_class, PROP_KIND,
-					 g_param_spec_ulong ("kind", NULL, NULL,
-							     ICAL_NO_COMPONENT, ICAL_XLICMIMEPART_COMPONENT,
-							     ICAL_NO_COMPONENT,
-							     G_PARAM_READABLE | G_PARAM_WRITABLE
-							     | G_PARAM_CONSTRUCT_ONLY));
-	e_cal_backend_signals[LAST_CLIENT_GONE] =
-		g_signal_new ("last_client_gone",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalBackendClass, last_client_gone),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE, 0);
-
-	class->last_client_gone = NULL;
-
-	class->get_cal_address = NULL;
-	class->get_alarm_email_address = NULL;
-	class->get_static_capabilities = NULL;
-	class->open = NULL;
-	class->is_loaded = NULL;
-	class->is_read_only = NULL;
-	class->start_query = NULL;
-	class->get_mode = NULL;
-	class->set_mode = NULL;
-	class->get_object = NULL;
-	class->get_default_object = NULL;
-	class->get_object_list = NULL;
-	class->get_free_busy = NULL;
-	class->get_changes = NULL;
-	class->discard_alarm = NULL;
-	class->create_object = NULL;
-	class->modify_object = NULL;
-	class->remove_object = NULL;
-	class->receive_objects = NULL;
-	class->send_objects = NULL;
-	class->get_timezone = NULL;
-	class->add_timezone = NULL;
-
-	g_type_class_add_private (class, sizeof (ECalBackendPrivate));
-}
-
-/* Object initialization func for the calendar backend */
-static void
-e_cal_backend_init (ECalBackend *backend)
-{
-	ECalBackendPrivate *priv;
-
-	priv = E_CAL_BACKEND_GET_PRIVATE (backend);
-	backend->priv = priv;
-
-	priv->clients = NULL;
-	priv->clients_mutex = g_mutex_new ();
-	priv->last_percent_notified = 0;
-
-	priv->queries = e_list_new((EListCopyFunc) g_object_ref, (EListFreeFunc) g_object_unref, NULL);
-	priv->queries_mutex = g_mutex_new ();
+	backend->priv->kind = kind;
 }
 
 static void
-e_cal_backend_finalize (GObject *object)
+cal_backend_set_property (GObject *object,
+                          guint property_id,
+                          const GValue *value,
+                          GParamSpec *pspec)
 {
-	ECalBackend *backend = (ECalBackend *)object;
+	switch (property_id) {
+		case PROP_KIND:
+			cal_backend_set_kind (
+				E_CAL_BACKEND (object),
+				g_value_get_ulong (value));
+			return;
+		case PROP_SOURCE:
+			cal_backend_set_source (
+				E_CAL_BACKEND (object),
+				g_value_get_object (value));
+			return;
+		case PROP_URI:
+			cal_backend_set_uri (
+				E_CAL_BACKEND (object),
+				g_value_get_string (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+cal_backend_get_property (GObject *object,
+                          guint property_id,
+                          GValue *value,
+                          GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_KIND:
+			g_value_set_ulong (
+				value, e_cal_backend_get_kind (
+				E_CAL_BACKEND (object)));
+			return;
+		case PROP_SOURCE:
+			g_value_set_object (
+				value, e_cal_backend_get_source (
+				E_CAL_BACKEND (object)));
+			return;
+		case PROP_URI:
+			g_value_set_string (
+				value, e_cal_backend_get_uri (
+				E_CAL_BACKEND (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+cal_backend_finalize (GObject *object)
+{
 	ECalBackendPrivate *priv;
 
-	priv = backend->priv;
+	priv = E_CAL_BACKEND_GET_PRIVATE (object);
 
 	g_assert (priv->clients == NULL);
 
@@ -293,14 +233,101 @@ e_cal_backend_finalize (GObject *object)
 	}
 	g_object_unref (priv->source);
 
+	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_parent_class)->finalize (object);
 }
 
-
+static void
+e_cal_backend_class_init (ECalBackendClass *class)
+{
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (ECalBackendPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = cal_backend_set_property;
+	object_class->get_property = cal_backend_get_property;
+	object_class->finalize = cal_backend_finalize;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_KIND,
+		g_param_spec_ulong (
+			"kind",
+			NULL,
+			NULL,
+			ICAL_NO_COMPONENT,
+			ICAL_XLICMIMEPART_COMPONENT,
+			ICAL_NO_COMPONENT,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_SOURCE,
+		g_param_spec_object (
+			"source",
+			NULL,
+			NULL,
+			E_TYPE_SOURCE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_URI,
+		g_param_spec_string (
+			"uri",
+			NULL,
+			NULL,
+			"",
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY));
+
+	signals[LAST_CLIENT_GONE] = g_signal_new (
+		"last_client_gone",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ECalBackendClass, last_client_gone),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__VOID,
+		G_TYPE_NONE, 0);
+}
+
+static void
+e_cal_backend_init (ECalBackend *backend)
+{
+	backend->priv = E_CAL_BACKEND_GET_PRIVATE (backend);
+
+	backend->priv->clients = NULL;
+	backend->priv->clients_mutex = g_mutex_new ();
+
+	backend->priv->queries = e_list_new (
+		(EListCopyFunc) g_object_ref,
+		(EListFreeFunc) g_object_unref, NULL);
+	backend->priv->queries_mutex = g_mutex_new ();
+}
+
+/**
+ * e_cal_backend_get_kind:
+ * @backend: an #ECalBackend
+ *
+ * Gets the kind of components the given backend stores.
+ *
+ * Returns: The kind of components for this backend.
+ */
+icalcomponent_kind
+e_cal_backend_get_kind (ECalBackend *backend)
+{
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), ICAL_NO_COMPONENT);
+
+	return backend->priv->kind;
+}
+
 
 /**
  * e_cal_backend_get_source:
- * @backend: An #ECalBackend object.
+ * @backend: an #ECalBackend
  *
  * Gets the #ESource associated with the given backend.
  *
@@ -309,19 +336,14 @@ e_cal_backend_finalize (GObject *object)
 ESource *
 e_cal_backend_get_source (ECalBackend *backend)
 {
-	ECalBackendPrivate *priv;
-
-	g_return_val_if_fail (backend != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
 
-	priv = backend->priv;
-
-	return priv->source;
+	return backend->priv->source;
 }
 
 /**
  * e_cal_backend_get_uri:
- * @backend: A calendar backend.
+ * @backend: an #ECalBackend
  *
  * Queries the URI of a calendar backend, which must already have an open
  * calendar.
@@ -331,35 +353,9 @@ e_cal_backend_get_source (ECalBackend *backend)
 const gchar *
 e_cal_backend_get_uri (ECalBackend *backend)
 {
-	ECalBackendPrivate *priv;
-
-	g_return_val_if_fail (backend != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
 
-	priv = backend->priv;
-
-	return priv->uri;
-}
-
-/**
- * e_cal_backend_get_kind:
- * @backend: An #ECalBackend object.
- *
- * Gets the kind of components the given backend stores.
- *
- * Returns: The kind of components for this backend.
- */
-icalcomponent_kind
-e_cal_backend_get_kind (ECalBackend *backend)
-{
-	ECalBackendPrivate *priv;
-
-	g_return_val_if_fail (backend != NULL, ICAL_NO_COMPONENT);
-	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), ICAL_NO_COMPONENT);
-
-	priv = backend->priv;
-
-	return priv->kind;
+	return backend->priv->uri;
 }
 
 static void
@@ -371,8 +367,8 @@ cal_destroy_cb (gpointer data, GObject *where_cal_was)
 
 /**
  * e_cal_backend_add_client:
- * @backend: An ECalBackend object.
- * @cal: An EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  *
  * Adds a new client to the given backend. For any event, the backend will
  * notify all clients added via this function.
@@ -423,13 +419,13 @@ e_cal_backend_remove_client_private (ECalBackend *backend, EDataCal *cal, gboole
 	 * it may decide whether to kill the backend or not.
 	 */
 	if (!priv->clients)
-		g_signal_emit (backend, e_cal_backend_signals[LAST_CLIENT_GONE], 0);
+		g_signal_emit (backend, signals[LAST_CLIENT_GONE], 0);
 }
 
 /**
  * e_cal_backend_remove_client:
- * @backend: An #ECalBackend object.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  *
  * Removes a client from the list of connected clients to the given backend.
  */
@@ -441,7 +437,7 @@ e_cal_backend_remove_client (ECalBackend *backend, EDataCal *cal)
 
 /**
  * e_cal_backend_add_query:
- * @backend: An #ECalBackend object.
+ * @backend: an #ECalBackend
  * @query: An #EDataCalView object.
  *
  * Adds a query to the list of live queries being run by the given backend.
@@ -463,7 +459,7 @@ e_cal_backend_add_query (ECalBackend *backend, EDataCalView *query)
 
 /**
  * e_cal_backend_get_queries:
- * @backend: An #ECalBackend object.
+ * @backend: an #ECalBackend
  *
  * Gets the list of live queries being run on the given backend.
  *
@@ -480,7 +476,7 @@ e_cal_backend_get_queries (ECalBackend *backend)
 
 /**
  * e_cal_backend_remove_query
- * @backend: An #ECalBackend object.
+ * @backend: an #ECalBackend
  * @query: An #EDataCalView object, previously added with @ref e_cal_backend_add_query.
  *
  * Removes query from the list of live queries for the backend.
@@ -502,7 +498,7 @@ e_cal_backend_remove_query (ECalBackend *backend, EDataCalView *query)
 
 /**
  * e_cal_backend_get_cal_address:
- * @backend: A calendar backend.
+ * @backend: an #ECalBackend
  *
  * Queries the cal address associated with a calendar backend, which
  * must already have an open calendar.
@@ -547,8 +543,8 @@ e_cal_backend_notify_cal_address (ECalBackend *backend, EServerMethodContext con
 
 /**
  * e_cal_backend_get_alarm_email_address:
- * @backend: An #ECalBackend object.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  *
  * Calls the get_alarm_email_address method on the given backend.
  */
@@ -564,8 +560,8 @@ e_cal_backend_get_alarm_email_address (ECalBackend *backend, EDataCal *cal, ESer
 
 /**
  *e_cal_backend_get_alarm_email_address:
- * @backend: An #ECalBackend object.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  *
  * Calls the get_ldap_attribute method of the given backend.
  */
@@ -581,8 +577,8 @@ e_cal_backend_get_ldap_attribute (ECalBackend *backend, EDataCal *cal, EServerMe
 
 /**
  * e_cal_backend_get_alarm_email_address:
- * @backend: An #ECalBackend object.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  *
  * Calls the get_static_capabilities method on the given backend.
  */
@@ -598,8 +594,8 @@ e_cal_backend_get_static_capabilities (ECalBackend *backend, EDataCal *cal, ESer
 
 /**
  * e_cal_backend_open:
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  * @only_if_exists: Whether the calendar should be opened only if it already
  * exists.  If FALSE, a new calendar will be created when the specified @uri
  * does not exist.
@@ -622,8 +618,8 @@ e_cal_backend_open (ECalBackend *backend, EDataCal *cal, EServerMethodContext co
 
 /**
  * e_cal_backend_refresh:
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  *
  * Refreshes the calendar being accessed by the given backend.
  *
@@ -641,8 +637,8 @@ e_cal_backend_refresh (ECalBackend *backend, EDataCal *cal, EServerMethodContext
 
 /**
  * e_cal_backend_remove:
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  *
  * Removes the calendar being accessed by the given backend.
  */
@@ -658,7 +654,7 @@ e_cal_backend_remove (ECalBackend *backend, EDataCal *cal, EServerMethodContext 
 
 /**
  * e_cal_backend_is_loaded:
- * @backend: A calendar backend.
+ * @backend: an #ECalBackend
  *
  * Queries whether a calendar backend has been loaded yet.
  *
@@ -681,8 +677,8 @@ e_cal_backend_is_loaded (ECalBackend *backend)
 
 /**
  * e_cal_backend_is_read_only
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  *
  * Queries whether a calendar backend is read only or not.
  *
@@ -699,7 +695,7 @@ e_cal_backend_is_read_only (ECalBackend *backend, EDataCal *cal)
 
 /**
  * e_cal_backend_start_query:
- * @backend: A calendar backend.
+ * @backend: an #ECalBackend
  * @query: The query to be started.
  *
  * Starts a new live query on the given backend.
@@ -716,7 +712,7 @@ e_cal_backend_start_query (ECalBackend *backend, EDataCalView *query)
 
 /**
  * e_cal_backend_get_mode:
- * @backend: A calendar backend.
+ * @backend: an #ECalBackend
  *
  * Queries whether a calendar backend is connected remotely.
  *
@@ -755,8 +751,8 @@ e_cal_backend_set_mode (ECalBackend *backend, CalMode mode)
 
 /**
  * e_cal_backend_get_default_object:
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  *
  * Calls the get_default_object method on the given backend.
  */
@@ -772,8 +768,8 @@ e_cal_backend_get_default_object (ECalBackend *backend, EDataCal *cal, EServerMe
 
 /**
  * e_cal_backend_get_object:
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  * @uid: Unique identifier for a calendar object.
  * @rid: ID for the object's recurrence to get.
  *
@@ -793,8 +789,8 @@ e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, EServerMethodCont
 
 /**
  * e_cal_backend_get_object_list:
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  * @sexp: Expression to search for.
  *
  * Calls the get_object_list method on the given backend.
@@ -811,8 +807,8 @@ e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, EServerMetho
 
 /**
  * e_cal_backend_get_attachment_list:
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  * @uid: Unique identifier for a calendar object.
  * @rid: ID for the object's recurrence to get.
  *
@@ -832,8 +828,8 @@ e_cal_backend_get_attachment_list (ECalBackend *backend, EDataCal *cal, EServerM
 
 /**
  * e_cal_backend_get_free_busy:
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  * @users: List of users to get free/busy information for.
  * @start: Start time for query.
  * @end: End time for query.
@@ -854,8 +850,8 @@ e_cal_backend_get_free_busy (ECalBackend *backend, EDataCal *cal, EServerMethodC
 
 /**
  * e_cal_backend_get_changes:
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  * @change_id: A unique uid for the callers change list
  *
  * Builds a sequence of objects and the type of change that occurred on them since
@@ -874,8 +870,8 @@ e_cal_backend_get_changes (ECalBackend *backend, EDataCal *cal, EServerMethodCon
 
 /**
  * e_cal_backend_discard_alarm
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  * @uid: UID of the component to discard the alarm from.
  * @auid: Alarm ID.
  *
@@ -896,8 +892,8 @@ e_cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, EServerMethodC
 
 /**
  * e_cal_backend_create_object:
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  * @calobj: The object to create.
  *
  * Calls the create_object method on the given backend.
@@ -917,8 +913,8 @@ e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, EServerMethodC
 
 /**
  * e_cal_backend_modify_object:
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  * @calobj: Object to be modified.
  * @mod: Type of modification.
  *
@@ -939,8 +935,8 @@ e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, EServerMethodC
 
 /**
  * e_cal_backend_remove_object:
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  * @uid: Unique identifier of the object to remove.
  * @rid: A recurrence ID.
  * @mod: Type of removal.
@@ -961,8 +957,8 @@ e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, EServerMethodC
 
 /**
  * e_cal_backend_receive_objects:
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  * @calobj: iCalendar object.
  *
  * Calls the receive_objects method on the given backend.
@@ -980,8 +976,8 @@ e_cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, EServerMetho
 
 /**
  * e_cal_backend_send_objects:
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  * @calobj: iCalendar object to be sent.
  *
  * Calls the send_objects method on the given backend.
@@ -999,8 +995,8 @@ e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, EServerMethodCo
 
 /**
  * e_cal_backend_get_timezone:
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  * @tzid: Unique identifier of a VTIMEZONE object. Note that this must not be
  * NULL.
  *
@@ -1020,8 +1016,8 @@ e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, EServerMethodCo
 
 /**
  * e_cal_backend_set_default_zone:
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  * @tzobj: The timezone object, in a string.
  *
  * Sets the default timezone for the calendar, which is used to resolve
@@ -1039,8 +1035,8 @@ e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, EServerMeth
 
 /**
  * e_cal_backend_add_timezone
- * @backend: A calendar backend.
- * @cal: An #EDataCal object.
+ * @backend: an #ECalBackend
+ * @cal: an #EDataCal
  * @tzobj: The timezone object, in a string.
  *
  * Add a timezone object to the given backend.
@@ -1057,7 +1053,7 @@ e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, EServerMethodCo
 
 /**
  * e_cal_backend_internal_get_default_timezone:
- * @backend: A calendar backend.
+ * @backend: an #ECalBackend
  *
  * Calls the internal_get_default_timezone method on the given backend.
  */
@@ -1072,7 +1068,7 @@ e_cal_backend_internal_get_default_timezone (ECalBackend *backend)
 
 /**
  * e_cal_backend_internal_get_timezone:
- * @backend: A calendar backend.
+ * @backend: an #ECalBackend
  * @tzid: ID of the timezone to get.
  *
  * Calls the internal_get_timezone method on the given backend.
@@ -1089,7 +1085,7 @@ e_cal_backend_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
 
 /**
  * e_cal_backend_set_notification_proxy:
- * @backend: A calendar backend.
+ * @backend: an #ECalBackend
  * @proxy: The calendar backend to act as notification proxy.
  *
  * Sets the backend that will act as notification proxy for the given backend.
@@ -1108,7 +1104,7 @@ e_cal_backend_set_notification_proxy (ECalBackend *backend, ECalBackend *proxy)
 
 /**
  * e_cal_backend_notify_object_created:
- * @backend: A calendar backend.
+ * @backend: an #ECalBackend
  * @calobj: iCalendar representation of new object
  *
  * Notifies each of the backend's listeners about a new object.
@@ -1178,7 +1174,7 @@ match_query_and_notify (EDataCalView *query, const gchar *old_object, const gcha
 
 /**
  * e_cal_backend_notify_view_progress_start
- * @backend: A calendar backend.
+ * @backend: an #ECalBackend
  *
  * This methods has to be used before e_cal_backend_notify_view_progress.
  * Sets last notified percent value to 0.
@@ -1197,7 +1193,7 @@ e_cal_backend_notify_view_progress_start (ECalBackend *backend)
 
 /**
  * e_cal_backend_notify_view_progress:
- * @backend: A calendar backend.
+ * @backend: an #ECalBackend
  * @message: the UID of the removed object
  * @percent: percentage of the objects loaded in the view
  *
@@ -1242,7 +1238,7 @@ e_cal_backend_notify_view_progress (ECalBackend *backend, const gchar *message, 
 
 /**
  * e_cal_backend_notify_view_done:
- * @backend: A calendar backend.
+ * @backend: an #ECalBackend
  * @error: returns the error, if any, once the view is fully populated.
  *
  * Notifies each of the backend's listeners about the view_done in downloading the items.
@@ -1281,7 +1277,7 @@ e_cal_backend_notify_view_done (ECalBackend *backend, const GError *error)
 
 /**
  * e_cal_backend_notify_object_modified:
- * @backend: A calendar backend.
+ * @backend: an #ECalBackend
  * @old_object: iCalendar representation of the original form of the object
  * @object: iCalendar representation of the new form of the object
  *
@@ -1324,7 +1320,7 @@ e_cal_backend_notify_object_modified (ECalBackend *backend,
 
 /**
  * e_cal_backend_notify_object_removed:
- * @backend: A calendar backend.
+ * @backend: an #ECalBackend
  * @id: the Id of the removed object
  * @old_object: iCalendar representation of the removed object
  * @new_object: iCalendar representation of the object after the removal. This
@@ -1411,7 +1407,7 @@ e_cal_backend_notify_objects_modified (ECalBackend *backend, EDataCalView *query
 
 /**
  * e_cal_backend_notify_mode:
- * @backend: A calendar backend.
+ * @backend: an #ECalBackend
  * @status: Status of the mode set
  * @mode: the current mode
  *
@@ -1437,7 +1433,7 @@ e_cal_backend_notify_mode (ECalBackend *backend,
 
 /**
  * e_cal_backend_notify_auth_required:
- * @backend: A calendar backend.
+ * @backend: an #ECalBackend
  *
  * Notifies each of the backend's listeners that authentication is required to
  * open the calendar.
@@ -1454,7 +1450,7 @@ e_cal_backend_notify_auth_required (ECalBackend *backend)
 
 /**
  * e_cal_backend_notify_error:
- * @backend: A calendar backend.
+ * @backend: an #ECalBackend
  * @message: Error message
  *
  * Notifies each of the backend's listeners about an error
@@ -1476,7 +1472,7 @@ e_cal_backend_notify_error (ECalBackend *backend, const gchar *message)
 
 /**
  * e_cal_backend_empty_cache:
- * @backend: A calendar backend.
+ * @backend: an #ECalBackend
  * @cache: Backend's cache to empty.
  *
  * Empties backend's cache with all notifications and so on, thus all listening
