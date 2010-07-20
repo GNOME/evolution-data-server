@@ -23,10 +23,9 @@
 
 #include <libedataserver/e-data-server-util.h>
 
-G_DEFINE_TYPE (ECalBackendStore, e_cal_backend_store, G_TYPE_OBJECT)
-
-#define GET_PRIVATE(o) \
-  (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_CAL_BACKEND_STORE, ECalBackendStorePrivate))
+#define E_CAL_BACKEND_STORE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CAL_BACKEND_STORE, ECalBackendStorePrivate))
 
 struct _ECalBackendStorePrivate {
 	ECalSourceType source_type;
@@ -41,6 +40,8 @@ enum {
 	PROP_SOURCE_TYPE,
 	PROP_URI
 };
+
+G_DEFINE_TYPE (ECalBackendStore, e_cal_backend_store, G_TYPE_OBJECT)
 
 static const gchar *
 get_component (ECalSourceType source_type)
@@ -64,7 +65,7 @@ set_store_path (ECalBackendStore *store)
 {
 	ECalBackendStorePrivate *priv;
 
-	priv = GET_PRIVATE(store);
+	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
 
 	if (priv->uri) {
 		const gchar *component;
@@ -88,7 +89,7 @@ set_uri (ECalBackendStore *store, gchar *uri)
 {
 	ECalBackendStorePrivate *priv;
 
-	priv = GET_PRIVATE(store);
+	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
 
 	if (priv->uri)
 		g_free (priv->uri);
@@ -97,13 +98,16 @@ set_uri (ECalBackendStore *store, gchar *uri)
 }
 
 static void
-e_cal_backend_store_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *spec)
+cal_backend_store_set_property (GObject *object,
+                                guint property_id,
+                                const GValue *value,
+                                GParamSpec *pspec)
 {
 	ECalBackendStore *store;
 	ECalBackendStorePrivate *priv;
 
 	store = E_CAL_BACKEND_STORE (object);
-	priv = GET_PRIVATE(store);
+	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
 
 	switch (property_id) {
 	case PROP_SOURCE_TYPE:
@@ -114,18 +118,21 @@ e_cal_backend_store_set_property (GObject *object, guint property_id, const GVal
 		set_store_path (store);
 		break;
 	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, spec);
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 	}
 }
 
 static void
-e_cal_backend_store_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *spec)
+cal_backend_store_get_property (GObject *object,
+                                guint property_id,
+                                GValue *value,
+                                GParamSpec *pspec)
 {
 	ECalBackendStore *store;
 	ECalBackendStorePrivate *priv;
 
 	store = E_CAL_BACKEND_STORE (object);
-	priv = GET_PRIVATE(store);
+	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
 
 	switch (property_id)
 	{
@@ -136,63 +143,35 @@ e_cal_backend_store_get_property (GObject *object, guint property_id, GValue *va
 		g_value_set_string (value, priv->uri);
 		break;
 	default :
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, spec);
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 	}
 }
 
 static void
-e_cal_backend_store_dispose (GObject *object)
+cal_backend_store_finalize (GObject *object)
 {
-	G_OBJECT_CLASS (e_cal_backend_store_parent_class)->dispose (object);
-}
-
-static void
-e_cal_backend_store_finalize (GObject *object)
-{
-	ECalBackendStore *store = (ECalBackendStore *) object;
 	ECalBackendStorePrivate *priv;
 
-	priv = GET_PRIVATE(store);
+	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (object);
 
-	if (priv->uri) {
-		g_free (priv->uri);
-		priv->uri = NULL;
-	}
+	g_free (priv->uri);
+	g_free (priv->path);
 
-	if (priv->path) {
-		g_free (priv->path);
-		priv->uri = NULL;
-	}
-
+	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_store_parent_class)->finalize (object);
 }
 
 static void
-e_cal_backend_store_class_init (ECalBackendStoreClass *klass)
+e_cal_backend_store_class_init (ECalBackendStoreClass *class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass *object_class;
 
-	g_type_class_add_private (klass, sizeof (ECalBackendStorePrivate));
+	g_type_class_add_private (class, sizeof (ECalBackendStorePrivate));
 
-	object_class->dispose = e_cal_backend_store_dispose;
-	object_class->finalize = e_cal_backend_store_finalize;
-	object_class->set_property = e_cal_backend_store_set_property;
-	object_class->get_property = e_cal_backend_store_get_property;
-
-	klass->load = NULL;
-	klass->remove = NULL;
-	klass->clean = NULL;
-	klass->get_component = NULL;
-	klass->put_component = NULL;
-	klass->remove_component = NULL;
-	klass->get_timezone = NULL;
-	klass->put_timezone = NULL;
-	klass->remove_timezone = NULL;
-	klass->get_default_timezone = NULL;
-	klass->set_default_timezone = NULL;
-	klass->get_components_by_uid = NULL;
-	klass->get_key_value = NULL;
-	klass->put_key_value = NULL;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = cal_backend_store_set_property;
+	object_class->get_property = cal_backend_store_get_property;
+	object_class->finalize = cal_backend_store_finalize;
 
 	g_object_class_install_property (object_class, PROP_SOURCE_TYPE,
 				g_param_spec_enum ("source_type", NULL, NULL,
@@ -210,7 +189,7 @@ e_cal_backend_store_init (ECalBackendStore *store)
 {
 	ECalBackendStorePrivate *priv;
 
-	priv = GET_PRIVATE(store);
+	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
 
 	store->priv = priv;
 	priv->uri = NULL;
@@ -227,14 +206,9 @@ e_cal_backend_store_init (ECalBackendStore *store)
 const gchar *
 e_cal_backend_store_get_path (ECalBackendStore *store)
 {
-	ECalBackendStorePrivate *priv;
-
-	g_return_val_if_fail (store != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 
-	priv = GET_PRIVATE(store);
-
-	return priv->path;
+	return store->priv->path;
 }
 
 /**
@@ -247,15 +221,14 @@ e_cal_backend_store_load (ECalBackendStore *store)
 {
 	ECalBackendStorePrivate *priv;
 
-	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 
-	priv = GET_PRIVATE(store);
+	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
 
 	if (priv->loaded)
 		return TRUE;
 
-        priv->loaded = (E_CAL_BACKEND_STORE_GET_CLASS (store))->load (store);
+	priv->loaded = (E_CAL_BACKEND_STORE_GET_CLASS (store))->load (store);
 
 	return priv->loaded;
 }
@@ -268,7 +241,6 @@ e_cal_backend_store_load (ECalBackendStore *store)
 gboolean
 e_cal_backend_store_remove (ECalBackendStore *store)
 {
-	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->remove (store);
@@ -282,7 +254,6 @@ e_cal_backend_store_remove (ECalBackendStore *store)
 gboolean
 e_cal_backend_store_clean (ECalBackendStore *store)
 {
-	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->clean (store);
@@ -296,7 +267,6 @@ e_cal_backend_store_clean (ECalBackendStore *store)
 ECalComponent *
 e_cal_backend_store_get_component (ECalBackendStore *store, const gchar *uid, const gchar *rid)
 {
-	g_return_val_if_fail (store != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
 
@@ -311,7 +281,6 @@ e_cal_backend_store_get_component (ECalBackendStore *store, const gchar *uid, co
 gboolean
 e_cal_backend_store_has_component (ECalBackendStore *store, const gchar *uid, const gchar *rid)
 {
-	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
@@ -326,10 +295,8 @@ e_cal_backend_store_has_component (ECalBackendStore *store, const gchar *uid, co
 gboolean
 e_cal_backend_store_put_component (ECalBackendStore *store, ECalComponent *comp)
 {
-	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
-	g_return_val_if_fail (comp != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp) != FALSE, FALSE);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->put_component (store, comp);
 }
@@ -342,7 +309,6 @@ e_cal_backend_store_put_component (ECalBackendStore *store, ECalComponent *comp)
 gboolean
 e_cal_backend_store_remove_component (ECalBackendStore *store, const gchar *uid, const gchar *rid)
 {
-	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
@@ -357,7 +323,6 @@ e_cal_backend_store_remove_component (ECalBackendStore *store, const gchar *uid,
 const icaltimezone *
 e_cal_backend_store_get_timezone (ECalBackendStore *store, const gchar *tzid)
 {
-	g_return_val_if_fail (store != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 	g_return_val_if_fail (tzid != NULL, NULL);
 
@@ -372,7 +337,6 @@ e_cal_backend_store_get_timezone (ECalBackendStore *store, const gchar *tzid)
 gboolean
 e_cal_backend_store_put_timezone (ECalBackendStore *store, const icaltimezone *zone)
 {
-	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (zone != NULL, FALSE);
 
@@ -387,7 +351,6 @@ e_cal_backend_store_put_timezone (ECalBackendStore *store, const icaltimezone *z
 gboolean
 e_cal_backend_store_remove_timezone (ECalBackendStore *store, const gchar *tzid)
 {
-	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (tzid != NULL, FALSE);
 
@@ -402,7 +365,6 @@ e_cal_backend_store_remove_timezone (ECalBackendStore *store, const gchar *tzid)
 const icaltimezone *
 e_cal_backend_store_get_default_timezone (ECalBackendStore *store)
 {
-	g_return_val_if_fail (store != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_default_timezone (store);
@@ -416,7 +378,6 @@ e_cal_backend_store_get_default_timezone (ECalBackendStore *store)
 gboolean
 e_cal_backend_store_set_default_timezone (ECalBackendStore *store, const icaltimezone *zone)
 {
-	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (zone != NULL, FALSE);
 
@@ -431,7 +392,6 @@ e_cal_backend_store_set_default_timezone (ECalBackendStore *store, const icaltim
 GSList *
 e_cal_backend_store_get_components_by_uid (ECalBackendStore *store, const gchar *uid)
 {
-	g_return_val_if_fail (store != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
 
@@ -446,7 +406,6 @@ e_cal_backend_store_get_components_by_uid (ECalBackendStore *store, const gchar 
 GSList *
 e_cal_backend_store_get_components (ECalBackendStore *store)
 {
-	g_return_val_if_fail (store != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_components (store);
@@ -460,7 +419,6 @@ e_cal_backend_store_get_components (ECalBackendStore *store)
 GSList *
 e_cal_backend_store_get_component_ids (ECalBackendStore *store)
 {
-	g_return_val_if_fail (store != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_component_ids (store);
@@ -474,7 +432,6 @@ e_cal_backend_store_get_component_ids (ECalBackendStore *store)
 const gchar *
 e_cal_backend_store_get_key_value (ECalBackendStore *store, const gchar *key)
 {
-	g_return_val_if_fail (store != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 	g_return_val_if_fail (key != NULL, NULL);
 
@@ -489,7 +446,6 @@ e_cal_backend_store_get_key_value (ECalBackendStore *store, const gchar *key)
 gboolean
 e_cal_backend_store_put_key_value (ECalBackendStore *store, const gchar *key, const gchar *value)
 {
-	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
 
@@ -504,7 +460,6 @@ e_cal_backend_store_put_key_value (ECalBackendStore *store, const gchar *key, co
 void
 e_cal_backend_store_thaw_changes (ECalBackendStore *store)
 {
-	g_return_if_fail (store != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND_STORE (store));
 
 	(E_CAL_BACKEND_STORE_GET_CLASS (store))->thaw_changes (store);
@@ -518,7 +473,6 @@ e_cal_backend_store_thaw_changes (ECalBackendStore *store)
 void
 e_cal_backend_store_freeze_changes (ECalBackendStore *store)
 {
-	g_return_if_fail (store != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND_STORE (store));
 
 	(E_CAL_BACKEND_STORE_GET_CLASS (store))->freeze_changes (store);

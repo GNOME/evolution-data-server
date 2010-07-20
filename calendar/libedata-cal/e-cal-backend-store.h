@@ -26,6 +26,7 @@
 #include <libecal/e-cal-component.h>
 #include <libecal/e-cal.h>
 
+/* Standard GObject macros */
 #define E_TYPE_CAL_BACKEND_STORE \
 	(e_cal_backend_store_get_type ())
 #define E_CAL_BACKEND_STORE(obj) \
@@ -131,7 +132,8 @@ gboolean	e_cal_backend_store_put_timezone(ECalBackendStore *store,
 gboolean	e_cal_backend_store_remove_timezone
 						(ECalBackendStore *store,
 						 const gchar *tzid);
-const icaltimezone *	e_cal_backend_store_get_default_timezone
+const icaltimezone *
+		e_cal_backend_store_get_default_timezone
 						(ECalBackendStore *store);
 gboolean	e_cal_backend_store_set_default_timezone
 						(ECalBackendStore *store,
