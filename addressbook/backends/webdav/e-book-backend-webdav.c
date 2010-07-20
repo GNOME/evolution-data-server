@@ -1337,18 +1337,7 @@ e_book_backend_webdav_cancel_operation (EBookBackend *backend, EDataBook *book, 
 EBookBackend *
 e_book_backend_webdav_new(void)
 {
-	EBookBackendWebdav *backend
-		= g_object_new(E_TYPE_BOOK_BACKEND_WEBDAV, NULL);
-
-	g_assert(backend != NULL);
-	g_assert(E_IS_BOOK_BACKEND_WEBDAV(backend));
-
-	if (!e_book_backend_construct(E_BOOK_BACKEND(backend))) {
-		g_object_unref(backend);
-		return NULL;
-	}
-
-	return E_BOOK_BACKEND(backend);
+	return g_object_new (E_TYPE_BOOK_BACKEND_WEBDAV, NULL);
 }
 
 static void

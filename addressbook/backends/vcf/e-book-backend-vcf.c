@@ -687,35 +687,13 @@ e_book_backend_vcf_set_mode (EBookBackend *backend,
 	}
 }
 
-static gboolean
-e_book_backend_vcf_construct (EBookBackendVCF *backend)
-{
-	g_assert (backend != NULL);
-	g_assert (E_IS_BOOK_BACKEND_VCF (backend));
-
-	if (!e_book_backend_construct (E_BOOK_BACKEND (backend)))
-		return FALSE;
-
-	return TRUE;
-}
-
 /**
  * e_book_backend_vcf_new:
  */
 EBookBackend *
 e_book_backend_vcf_new (void)
 {
-	EBookBackendVCF *backend;
-
-	backend = g_object_new (E_TYPE_BOOK_BACKEND_VCF, NULL);
-
-	if (!e_book_backend_vcf_construct (backend)) {
-		g_object_unref (backend);
-
-		return NULL;
-	}
-
-	return E_BOOK_BACKEND (backend);
+	return g_object_new (E_TYPE_BOOK_BACKEND_VCF, NULL);
 }
 
 static void
