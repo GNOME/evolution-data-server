@@ -19,31 +19,35 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef _E_CAL_BACKEND_FILE_STORE
-#define _E_CAL_BACKEND_FILE_STORE
+#ifndef E_CAL_BACKEND_FILE_STORE_H
+#define E_CAL_BACKEND_FILE_STORE_H
 
 #include <glib-object.h>
 #include "e-cal-backend-store.h"
 
+/* Standard GObject macros */
+#define E_TYPE_CAL_BACKEND_FILE_STORE \
+	(e_cal_backend_file_store_get_type ())
+#define E_CAL_BACKEND_FILE_STORE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_CAL_BACKEND_FILE_STORE, ECalBackendFileStore))
+#define E_CAL_BACKEND_FILE_STORE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_CAL_BACKEND_FILE_STORE, ECalBackendFileStoreClass))
+#define E_IS_CAL_BACKEND_FILE_STORE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_CAL_BACKEND_FILE_STORE))
+#define E_IS_CAL_BACKEND_FILE_STORE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_CAL_BACKEND_FILE_STORE))
+#define E_CAL_BACKEND_FILE_STORE_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_CAL_BACKEND_FILE_STORE, ECalBackendFileStoreClass))
+
 G_BEGIN_DECLS
 
-#define E_TYPE_CAL_BACKEND_FILE_STORE e_cal_backend_file_store_get_type()
-
-#define E_CAL_BACKEND_FILE_STORE(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_CAL_BACKEND_FILE_STORE, ECalBackendFileStore))
-
-#define E_CAL_BACKEND_FILE_STORE_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_CAL_BACKEND_FILE_STORE, ECalBackendFileStoreClass))
-
-#define E_IS_CAL_BACKEND_FILE_STORE(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_CAL_BACKEND_FILE_STORE))
-
-#define E_IS_CAL_BACKEND_FILE_STORE_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_CAL_BACKEND_FILE_STORE))
-
-#define E_CAL_BACKEND_FILE_STORE_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_CAL_BACKEND_FILE_STORE, ECalBackendFileStoreClass))
-
+typedef struct _ECalBackendFileStore ECalBackendFileStore;
+typedef struct _ECalBackendFileStoreClass ECalBackendFileStoreClass;
 typedef struct _ECalBackendFileStorePrivate ECalBackendFileStorePrivate;
 
 /**
@@ -51,19 +55,20 @@ typedef struct _ECalBackendFileStorePrivate ECalBackendFileStorePrivate;
  *
  * Since: 2.28
  **/
-typedef struct {
+struct _ECalBackendFileStore {
 	ECalBackendStore parent;
 	ECalBackendFileStorePrivate *priv;
-} ECalBackendFileStore;
+};
 
-typedef struct {
+struct _ECalBackendFileStoreClass {
 	ECalBackendStoreClass parent_class;
-} ECalBackendFileStoreClass;
+};
 
-GType e_cal_backend_file_store_get_type (void);
-
-ECalBackendFileStore* e_cal_backend_file_store_new (const gchar *uri, ECalSourceType source_type);
+GType		e_cal_backend_file_store_get_type	(void);
+ECalBackendFileStore *
+		e_cal_backend_file_store_new		(const gchar *uri,
+						 	 ECalSourceType source_type);
 
 G_END_DECLS
 
-#endif /* _E_CAL_BACKEND_FILE_STORE */
+#endif /* E_CAL_BACKEND_FILE_STORE_H */
