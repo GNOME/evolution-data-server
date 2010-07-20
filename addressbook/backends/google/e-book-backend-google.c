@@ -90,7 +90,7 @@ static gboolean _gdata_entry_update_from_e_contact (GDataEntry *entry, EContact 
 static EContact *_e_contact_new_from_gdata_entry (GDataEntry *entry);
 static void _e_contact_add_gdata_entry_xml (EContact *contact, GDataEntry *entry);
 static void _e_contact_remove_gdata_entry_xml (EContact *contact);
-static const gchar *_e_contact_get_gdata_entry_xml (EContact *contact, const gchar **edit_link);
+static const gchar *_e_contact_get_gdata_entry_xml (EContact *contact, const gchar **edit_uri);
 
 static void
 cache_init (EBookBackend *backend, gboolean on_disk)
@@ -192,15 +192,15 @@ cache_get_contact (EBookBackend *backend, const gchar *uid, GDataEntry **entry)
 		contact = e_book_backend_cache_get_contact (priv->cache.on_disk, uid);
 		if (contact) {
 			if (entry) {
-				const gchar *entry_xml, *edit_link;
+				const gchar *entry_xml, *edit_uri = NULL;
 
-				entry_xml = _e_contact_get_gdata_entry_xml (contact, &edit_link);
+				entry_xml = _e_contact_get_gdata_entry_xml (contact, &edit_uri);
 				*entry = GDATA_ENTRY (gdata_parsable_new_from_xml (GDATA_TYPE_CONTACTS_CONTACT, entry_xml, -1, NULL));
 
 				if (*entry) {
-					GDataLink *link = gdata_link_new (edit_link, GDATA_LINK_EDIT);
-					gdata_entry_add_link (*entry, link);
-					g_object_unref (link);
+					GDataLink *edit_link = gdata_link_new (edit_uri, GDATA_LINK_EDIT);
+					gdata_entry_add_link (*entry, edit_link);
+					g_object_unref (edit_link);
 				}
 			}
 
@@ -636,11 +636,11 @@ cache_destroy (EBookBackend *backend)
 }
 
 static void
-e_book_backend_google_create_contact (EBookBackendSync *backend, EDataBook *book, guint32 opid, const gchar *vcard_str, EContact **out_contact, GError **perror)
+e_book_backend_google_create_contact (EBookBackendSync *backend, EDataBook *book, guint32 opid, const gchar *vcard_str, EContact **out_contact, GError **error)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	EContact *contact;
-	GError *error = NULL;
+	GError *our_error = NULL;
 	GDataEntry *entry, *new_entry;
 	gchar *xml;
 
@@ -650,7 +650,7 @@ e_book_backend_google_create_contact (EBookBackendSync *backend, EDataBook *book
 	*out_contact = NULL;
 
 	if (priv->mode != E_DATA_BOOK_MODE_REMOTE) {
-		g_propagate_error (perror, EDB_ERROR (OFFLINE_UNAVAILABLE));
+		g_propagate_error (error, EDB_ERROR (OFFLINE_UNAVAILABLE));
 		return;
 	}
 
@@ -671,13 +671,13 @@ e_book_backend_google_create_contact (EBookBackendSync *backend, EDataBook *book
 		gdata_contacts_service_insert_contact (
 			GDATA_CONTACTS_SERVICE (priv->service),
 			GDATA_CONTACTS_CONTACT (entry),
-			NULL, &error));
+			NULL, &our_error));
 	g_object_unref (entry);
 
 	if (!new_entry) {
-		data_book_error_from_gdata_error (perror, error);
-		__debug__ ("Creating contact failed: %s", error->message);
-		g_error_free (error);
+		data_book_error_from_gdata_error (error, our_error);
+		__debug__ ("Creating contact failed: %s", our_error->message);
+		g_error_free (our_error);
 
 		return;
 	}
@@ -688,7 +688,7 @@ e_book_backend_google_create_contact (EBookBackendSync *backend, EDataBook *book
 }
 
 static void
-e_book_backend_google_remove_contacts (EBookBackendSync *backend, EDataBook *book, guint32 opid, GList *id_list, GList **ids, GError **perror)
+e_book_backend_google_remove_contacts (EBookBackendSync *backend, EDataBook *book, guint32 opid, GList *id_list, GList **ids, GError **error)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	GList *id_iter;
@@ -698,14 +698,14 @@ e_book_backend_google_remove_contacts (EBookBackendSync *backend, EDataBook *boo
 	*ids = NULL;
 
 	if (priv->mode != E_DATA_BOOK_MODE_REMOTE) {
-		g_propagate_error (perror, EDB_ERROR (OFFLINE_UNAVAILABLE));
+		g_propagate_error (error, EDB_ERROR (OFFLINE_UNAVAILABLE));
 		return;
 	}
 
 	g_return_if_fail (priv->service);
 
 	for (id_iter = id_list; id_iter; id_iter = id_iter->next) {
-		GError *error = NULL;
+		GError *our_error = NULL;
 		const gchar *uid;
 		GDataEntry *entry = NULL;
 		EContact *cached_contact;
@@ -716,9 +716,9 @@ e_book_backend_google_remove_contacts (EBookBackendSync *backend, EDataBook *boo
 
 		if (!cached_contact) {
 			/* Only the last error will be reported */
-			g_clear_error (perror);
-			if (perror)
-				*perror = EDB_ERROR (CONTACT_NOT_FOUND);
+			g_clear_error (error);
+			if (error)
+				*error = EDB_ERROR (CONTACT_NOT_FOUND);
 			__debug__ ("Deleting contact %s failed: Contact not found in cache.", uid);
 
 			continue;
@@ -730,11 +730,11 @@ e_book_backend_google_remove_contacts (EBookBackendSync *backend, EDataBook *boo
 		cache_remove_contact (E_BOOK_BACKEND (backend), uid);
 
 		/* Delete the contact from the server */
-		if (!gdata_service_delete_entry (GDATA_SERVICE (priv->service), entry, NULL, &error)) {
+		if (!gdata_service_delete_entry (GDATA_SERVICE (priv->service), entry, NULL, &our_error)) {
 			/* Only last error will be reported */
-			data_book_error_from_gdata_error (perror, error);
-			__debug__ ("Deleting contact %s failed: %s", uid, error->message);
-			g_error_free (error);
+			data_book_error_from_gdata_error (error, our_error);
+			__debug__ ("Deleting contact %s failed: %s", uid, our_error->message);
+			g_error_free (our_error);
 		} else {
 			/* Success! */
 			*ids = g_list_append (*ids, g_strdup (uid));
@@ -744,18 +744,16 @@ e_book_backend_google_remove_contacts (EBookBackendSync *backend, EDataBook *boo
 	}
 
 	/* On error, return the last one */
-	if (!*ids) {
-		if (perror && !*perror)
-			*perror = EDB_ERROR (OTHER_ERROR);
-	}
+	if (!*ids && error && !*error)
+		*error = EDB_ERROR (OTHER_ERROR);
 }
 
 static void
-e_book_backend_google_modify_contact (EBookBackendSync *backend, EDataBook *book, guint32 opid, const gchar *vcard_str, EContact **out_contact, GError **perror)
+e_book_backend_google_modify_contact (EBookBackendSync *backend, EDataBook *book, guint32 opid, const gchar *vcard_str, EContact **out_contact, GError **error)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	EContact *contact, *cached_contact;
-	GError *error = NULL;
+	GError *our_error = NULL;
 	GDataEntry *entry = NULL, *new_entry;
 	gchar *xml;
 	const gchar *uid;
@@ -766,7 +764,7 @@ e_book_backend_google_modify_contact (EBookBackendSync *backend, EDataBook *book
 	*out_contact = NULL;
 
 	if (priv->mode != E_DATA_BOOK_MODE_REMOTE) {
-		g_propagate_error (perror, EDB_ERROR (OFFLINE_UNAVAILABLE));
+		g_propagate_error (error, EDB_ERROR (OFFLINE_UNAVAILABLE));
 		return;
 	}
 
@@ -783,7 +781,7 @@ e_book_backend_google_modify_contact (EBookBackendSync *backend, EDataBook *book
 		__debug__ ("Modifying contact failed: Contact with uid %s not found in cache.", uid);
 		g_object_unref (contact);
 
-		g_propagate_error (perror, EDB_ERROR (CONTACT_NOT_FOUND));
+		g_propagate_error (error, EDB_ERROR (CONTACT_NOT_FOUND));
 		return;
 	}
 
@@ -803,20 +801,20 @@ e_book_backend_google_modify_contact (EBookBackendSync *backend, EDataBook *book
 	new_entry = gdata_service_update_entry (
 			GDATA_SERVICE (priv->service),
 			entry,
-			NULL, &error);
+			NULL, &our_error);
 	#else
 	new_entry = GDATA_ENTRY (
 		gdata_contacts_service_update_contact (
 			GDATA_CONTACTS_SERVICE (priv->service),
 			GDATA_CONTACTS_CONTACT (entry),
-			NULL, &error));
+			NULL, &our_error));
 	#endif
 	g_object_unref (entry);
 
 	if (!new_entry) {
-		data_book_error_from_gdata_error (perror, error);
-		__debug__ ("Modifying contact failed: %s", error->message);
-		g_error_free (error);
+		data_book_error_from_gdata_error (error, our_error);
+		__debug__ ("Modifying contact failed: %s", our_error->message);
+		g_error_free (our_error);
 
 		return;
 	}
@@ -834,20 +832,20 @@ e_book_backend_google_modify_contact (EBookBackendSync *backend, EDataBook *book
 }
 
 static void
-e_book_backend_google_get_contact (EBookBackendSync *backend, EDataBook *book, guint32 opid, const gchar *uid, gchar **vcard_str, GError **perror)
+e_book_backend_google_get_contact (EBookBackendSync *backend, EDataBook *book, guint32 opid, const gchar *uid, gchar **vcard_str, GError **error)
 {
 	EContact *contact;
-	GError *error = NULL;
+	GError *our_error = NULL;
 
 	__debug__ (G_STRFUNC);
 
 	/* Refresh the cache */
-	cache_refresh_if_needed (E_BOOK_BACKEND (backend), &error);
+	cache_refresh_if_needed (E_BOOK_BACKEND (backend), &our_error);
 
-	if (error) {
-		data_book_error_from_gdata_error (perror, error);
-		__debug__ ("Getting contact with uid %s failed: %s", uid, error->message);
-		g_error_free (error);
+	if (our_error) {
+		data_book_error_from_gdata_error (error, our_error);
+		__debug__ ("Getting contact with uid %s failed: %s", uid, our_error->message);
+		g_error_free (our_error);
 
 		return;
 	}
@@ -858,7 +856,7 @@ e_book_backend_google_get_contact (EBookBackendSync *backend, EDataBook *book, g
 	if (!contact) {
 		__debug__ ("Getting contact with uid %s failed: Contact not found in cache.", uid);
 
-		g_propagate_error (perror, EDB_ERROR (CONTACT_NOT_FOUND));
+		g_propagate_error (error, EDB_ERROR (CONTACT_NOT_FOUND));
 		return;
 	}
 
@@ -868,10 +866,10 @@ e_book_backend_google_get_contact (EBookBackendSync *backend, EDataBook *book, g
 }
 
 static void
-e_book_backend_google_get_contact_list (EBookBackendSync *backend, EDataBook *book, guint32 opid, const gchar *query, GList **contacts, GError **perror)
+e_book_backend_google_get_contact_list (EBookBackendSync *backend, EDataBook *book, guint32 opid, const gchar *query, GList **contacts, GError **error)
 {
 	EBookBackendSExp *sexp;
-	GError *error = NULL;
+	GError *our_error = NULL;
 	GList *all_contacts;
 
 	__debug__ (G_STRFUNC);
@@ -879,12 +877,12 @@ e_book_backend_google_get_contact_list (EBookBackendSync *backend, EDataBook *bo
 	*contacts = NULL;
 
 	/* Refresh the cache */
-	cache_refresh_if_needed (E_BOOK_BACKEND (backend), &error);
+	cache_refresh_if_needed (E_BOOK_BACKEND (backend), &our_error);
 
-	if (error) {
-		data_book_error_from_gdata_error (perror, error);
-		__debug__ ("Getting all contacts failed: %s", error->message);
-		g_clear_error (&error);
+	if (our_error) {
+		data_book_error_from_gdata_error (error, our_error);
+		__debug__ ("Getting all contacts failed: %s", our_error->message);
+		g_error_free (our_error);
 
 		return;
 	}
@@ -984,13 +982,13 @@ static void
 e_book_backend_google_stop_book_view (EBookBackend *backend, EDataBookView *bookview)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
-	GList *link;
+	GList *view;
 
 	__debug__ (G_STRFUNC);
 
 	/* Remove the view from the list of active views */
-	if ((link = g_list_find (priv->bookviews, bookview)) != NULL) {
-		priv->bookviews = g_list_delete_link (priv->bookviews, link);
+	if ((view = g_list_find (priv->bookviews, bookview)) != NULL) {
+		priv->bookviews = g_list_delete_link (priv->bookviews, view);
 		e_data_book_view_unref (bookview);
 	}
 
@@ -1022,10 +1020,10 @@ proxy_settings_changed (EProxy *proxy, EBookBackend *backend)
 
 static void
 e_book_backend_google_authenticate_user (EBookBackendSync *backend, EDataBook *book, guint32 opid,
-                                         const gchar *username, const gchar *password, const gchar *auth_method, GError **perror)
+                                         const gchar *username, const gchar *password, const gchar *auth_method, GError **error)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
-	GError *error = NULL;
+	GError *our_error = NULL;
 	gboolean match;
 
 	__debug__ (G_STRFUNC);
@@ -1040,14 +1038,14 @@ e_book_backend_google_authenticate_user (EBookBackendSync *backend, EDataBook *b
 	}
 
 	if (!username || username[0] == 0 || !password || password[0] == 0) {
-		g_propagate_error (perror, EDB_ERROR (AUTHENTICATION_FAILED));
+		g_propagate_error (error, EDB_ERROR (AUTHENTICATION_FAILED));
 		return;
 	}
 
 	match = (strcmp (username, priv->username) == 0);
 	if (!match) {
 		g_warning ("Username given when loading source and on authentication did not match!");
-		g_propagate_error (perror, EDB_ERROR (AUTHENTICATION_REQUIRED));
+		g_propagate_error (error, EDB_ERROR (AUTHENTICATION_REQUIRED));
 		return;
 	}
 
@@ -1061,26 +1059,26 @@ e_book_backend_google_authenticate_user (EBookBackendSync *backend, EDataBook *b
 	g_signal_connect (priv->proxy, "changed", G_CALLBACK (proxy_settings_changed), backend);
 
 	/* Authenticate with the server */
-	if (!gdata_service_authenticate (priv->service, priv->username, password, NULL, &error)) {
+	if (!gdata_service_authenticate (priv->service, priv->username, password, NULL, &our_error)) {
 		g_object_unref (priv->service);
 		priv->service = NULL;
 		g_object_unref (priv->proxy);
 		priv->proxy = NULL;
 
-		data_book_error_from_gdata_error (perror, error);
-		__debug__ ("Authentication failed: %s", error->message);
-		g_error_free (error);
+		data_book_error_from_gdata_error (error, our_error);
+		__debug__ ("Authentication failed: %s", our_error->message);
+		g_error_free (our_error);
 
 		return;
 	}
 
 	/* Update the cache if neccessary */
-	cache_refresh_if_needed (E_BOOK_BACKEND (backend), &error);
+	cache_refresh_if_needed (E_BOOK_BACKEND (backend), &our_error);
 
-	if (error) {
-		data_book_error_from_gdata_error (perror, error);
-		__debug__ ("Authentication failed: %s", error->message);
-		g_error_free (error);
+	if (our_error) {
+		data_book_error_from_gdata_error (error, our_error);
+		__debug__ ("Authentication failed: %s", our_error->message);
+		g_error_free (our_error);
 
 		return;
 	}
@@ -1089,7 +1087,7 @@ e_book_backend_google_authenticate_user (EBookBackendSync *backend, EDataBook *b
 }
 
 static void
-e_book_backend_google_get_supported_auth_methods (EBookBackendSync *backend, EDataBook *book, guint32 opid, GList **methods, GError **perror)
+e_book_backend_google_get_supported_auth_methods (EBookBackendSync *backend, EDataBook *book, guint32 opid, GList **methods, GError **error)
 {
 	__debug__ (G_STRFUNC);
 
@@ -1097,7 +1095,7 @@ e_book_backend_google_get_supported_auth_methods (EBookBackendSync *backend, EDa
 }
 
 static void
-e_book_backend_google_get_required_fields (EBookBackendSync *backend, EDataBook *book, guint32 opid, GList **fields_out, GError **perror)
+e_book_backend_google_get_required_fields (EBookBackendSync *backend, EDataBook *book, guint32 opid, GList **fields_out, GError **error)
 {
 	__debug__ (G_STRFUNC);
 
@@ -1105,7 +1103,7 @@ e_book_backend_google_get_required_fields (EBookBackendSync *backend, EDataBook 
 }
 
 static void
-e_book_backend_google_get_supported_fields (EBookBackendSync *backend, EDataBook *book, guint32 opid, GList **fields_out, GError **perror)
+e_book_backend_google_get_supported_fields (EBookBackendSync *backend, EDataBook *book, guint32 opid, GList **fields_out, GError **error)
 {
 	GList *fields = NULL;
 	guint i;
@@ -1228,14 +1226,14 @@ e_book_backend_google_get_supported_fields (EBookBackendSync *backend, EDataBook
 }
 
 static void
-e_book_backend_google_get_changes (EBookBackendSync *backend, EDataBook *book, guint32 opid, const gchar *change_id, GList **changes_out, GError **perror)
+e_book_backend_google_get_changes (EBookBackendSync *backend, EDataBook *book, guint32 opid, const gchar *change_id, GList **changes_out, GError **error)
 {
 	__debug__ (G_STRFUNC);
-	g_propagate_error (perror, EDB_ERROR (OTHER_ERROR));
+	g_propagate_error (error, EDB_ERROR (OTHER_ERROR));
 }
 
 static void
-e_book_backend_google_remove (EBookBackendSync *backend, EDataBook *book, guint32 opid, GError **perror)
+e_book_backend_google_remove (EBookBackendSync *backend, EDataBook *book, guint32 opid, GError **error)
 {
 	__debug__ (G_STRFUNC);
 }
@@ -1266,7 +1264,7 @@ set_offline_mode (EBookBackend *backend, gboolean offline)
 }
 
 static void
-e_book_backend_google_load_source (EBookBackend *backend, ESource *source, gboolean only_if_exists, GError **perror)
+e_book_backend_google_load_source (EBookBackend *backend, ESource *source, gboolean only_if_exists, GError **error)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	const gchar *refresh_interval_str, *use_ssl_str, *use_cache_str;
@@ -1277,7 +1275,7 @@ e_book_backend_google_load_source (EBookBackend *backend, ESource *source, gbool
 	__debug__ (G_STRFUNC);
 
 	if (priv->username) {
-		g_propagate_error (perror, EDB_ERROR_EX (OTHER_ERROR, "Source already loaded!"));
+		g_propagate_error (error, EDB_ERROR_EX (OTHER_ERROR, "Source already loaded!"));
 		return;
 	}
 
@@ -1285,7 +1283,7 @@ e_book_backend_google_load_source (EBookBackend *backend, ESource *source, gbool
 	username = e_source_get_property (source, "username");
 
 	if (!username || username[0] == '\0') {
-		g_propagate_error (perror, EDB_ERROR_EX (OTHER_ERROR, "No or empty username!"));
+		g_propagate_error (error, EDB_ERROR_EX (OTHER_ERROR, "No or empty username!"));
 		return;
 	}
 
@@ -1335,10 +1333,10 @@ e_book_backend_google_get_static_capabilities (EBookBackend *backend)
 }
 
 static void
-e_book_backend_google_cancel_operation (EBookBackend *backend, EDataBook *book, GError **perror)
+e_book_backend_google_cancel_operation (EBookBackend *backend, EDataBook *book, GError **error)
 {
 	__debug__ (G_STRFUNC);
-	g_propagate_error (perror, EDB_ERROR (COULD_NOT_CANCEL));
+	g_propagate_error (error, EDB_ERROR (COULD_NOT_CANCEL));
 }
 
 static void
@@ -2046,7 +2044,7 @@ _e_contact_add_gdata_entry_xml (EContact *contact, GDataEntry *entry)
 {
 	EVCardAttribute *attr;
 	gchar *entry_xml;
-	GDataLink *link;
+	GDataLink *edit_link;
 
 	/* Cache the XML representing the entry */
 	entry_xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
@@ -2056,10 +2054,10 @@ _e_contact_add_gdata_entry_xml (EContact *contact, GDataEntry *entry)
 	g_free (entry_xml);
 
 	/* Also add the update URI for the entry, since that's not serialised by gdata_parsable_get_xml */
-	link = gdata_entry_look_up_link (entry, GDATA_LINK_EDIT);
-	if (link != NULL) {
+	edit_link = gdata_entry_look_up_link (entry, GDATA_LINK_EDIT);
+	if (edit_link != NULL) {
 		attr = e_vcard_attribute_new ("", GDATA_ENTRY_LINK_ATTR);
-		e_vcard_attribute_add_value (attr, gdata_link_get_uri (link));
+		e_vcard_attribute_add_value (attr, gdata_link_get_uri (edit_link));
 		e_vcard_add_attribute (E_VCARD (contact), attr);
 	}
 }
@@ -2072,18 +2070,18 @@ _e_contact_remove_gdata_entry_xml (EContact *contact)
 }
 
 static const gchar *
-_e_contact_get_gdata_entry_xml (EContact *contact, const gchar **edit_link)
+_e_contact_get_gdata_entry_xml (EContact *contact, const gchar **edit_uri)
 {
 	EVCardAttribute *attr;
 	GList *values = NULL;
 
-	/* Return the edit link if asked */
-	if (edit_link != NULL) {
+	/* Return the edit URI if asked */
+	if (edit_uri != NULL) {
 		attr = e_vcard_get_attribute (E_VCARD (contact), GDATA_ENTRY_LINK_ATTR);
 		if (attr != NULL)
 			values = e_vcard_attribute_get_values (attr);
 		if (values != NULL)
-			*edit_link = values->data;
+			*edit_uri = values->data;
 	}
 
 	/* Return the entry's XML */
