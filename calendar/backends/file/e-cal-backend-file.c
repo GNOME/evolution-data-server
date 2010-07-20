@@ -675,10 +675,13 @@ uri_to_path (ECalBackend *backend)
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	ESource *source;
+	const gchar *cache_dir;
 	gchar *filename = NULL;
 
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
+
+	cache_dir = e_cal_backend_get_cache_dir (backend);
 
 	source = e_cal_backend_get_source (backend);
 	if (source && e_source_get_property (source, "custom-file")) {
@@ -689,40 +692,8 @@ uri_to_path (ECalBackend *backend)
 		filename = g_strdup (property);
 	}
 
-	if (filename == NULL) {
-		icalcomponent_kind kind;
-		const gchar *user_data_dir;
-		const gchar *source_type_dir;
-		const gchar *relative_uri;
-		gchar *mangled_uri;
-
-		user_data_dir = e_get_user_data_dir ();
-		kind = e_cal_backend_get_kind (backend);
-		relative_uri = e_source_peek_relative_uri (source);
-
-		switch (kind) {
-			case ICAL_VEVENT_COMPONENT:
-				source_type_dir = "calendar";
-				break;
-			case ICAL_VTODO_COMPONENT:
-				source_type_dir = "tasks";
-				break;
-			case ICAL_VJOURNAL_COMPONENT:
-				source_type_dir = "memos";
-				break;
-			default:
-				g_return_val_if_reached (NULL);
-		}
-
-		/* Mangle the URI to not contain invalid characters. */
-		mangled_uri = g_strdelimit (g_strdup (relative_uri), ":/", '_');
-
-		filename = g_build_filename (
-			user_data_dir, source_type_dir, "local",
-			mangled_uri, priv->file_name, NULL);
-
-		g_free (mangled_uri);
-	}
+	if (filename == NULL)
+		filename = g_build_filename (cache_dir, priv->file_name, NULL);
 
 	if (filename != NULL && *filename == '\0') {
 		g_free (filename);
@@ -3089,6 +3060,59 @@ e_cal_backend_file_init (ECalBackendFile *cbfile)
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbfile), FALSE);
 }
 
+static void
+cal_backend_file_constructed (GObject *object)
+{
+	ECalBackend *backend;
+	ESource *source;
+	icalcomponent_kind kind;
+	const gchar *relative_uri;
+	const gchar *user_data_dir;
+	const gchar *component_type;
+	gchar *mangled_uri;
+	gchar *filename;
+
+	user_data_dir = e_get_user_data_dir ();
+
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (e_cal_backend_file_parent_class)->constructed (object);
+
+	/* Override the cache directory that the parent class just set. */
+
+	backend = E_CAL_BACKEND (object);
+	kind = e_cal_backend_get_kind (backend);
+	source = e_cal_backend_get_source (backend);
+
+	relative_uri = e_source_peek_relative_uri (source);
+
+	switch (kind) {
+		case ICAL_VEVENT_COMPONENT:
+			component_type = "calendar";
+			break;
+		case ICAL_VTODO_COMPONENT:
+			component_type = "tasks";
+			break;
+		case ICAL_VJOURNAL_COMPONENT:
+			component_type = "memos";
+			break;
+		default:
+			g_warn_if_reached ();
+			component_type = "calendar";
+			break;
+	}
+
+	/* Mangle the URI to not contain invalid characters. */
+	mangled_uri = g_strdelimit (g_strdup (relative_uri), ":/", '_');
+
+	filename = g_build_filename (
+		user_data_dir, component_type, "local", mangled_uri, NULL);
+
+	e_cal_backend_set_cache_dir (backend, filename);
+
+	g_free (filename);
+	g_free (mangled_uri);
+}
+
 /* Class initialization function for the file backend */
 static void
 e_cal_backend_file_class_init (ECalBackendFileClass *class)
@@ -3105,6 +3129,7 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 
 	object_class->dispose = e_cal_backend_file_dispose;
 	object_class->finalize = e_cal_backend_file_finalize;
+	object_class->constructed = cal_backend_file_constructed;
 
 	sync_class->is_read_only_sync = e_cal_backend_file_is_read_only;
 	sync_class->get_cal_address_sync = e_cal_backend_file_get_cal_address;
