@@ -127,6 +127,8 @@ ECalBackend
 e_cal_backend_get_source
 e_cal_backend_get_uri
 e_cal_backend_get_kind
+e_cal_backend_get_cache_dir
+e_cal_backend_set_cache_dir
 e_cal_backend_add_client
 e_cal_backend_remove_client
 e_cal_backend_add_query

@@ -114,6 +114,9 @@ ESource *e_cal_backend_get_source (ECalBackend *backend);
 const gchar *e_cal_backend_get_uri (ECalBackend *backend);
 icalcomponent_kind e_cal_backend_get_kind (ECalBackend *backend);
 
+const gchar *e_cal_backend_get_cache_dir (ECalBackend *backend);
+void e_cal_backend_set_cache_dir (ECalBackend *backend, const gchar *cache_dir);
+
 void e_cal_backend_add_client (ECalBackend *backend, EDataCal *cal);
 void e_cal_backend_remove_client (ECalBackend *backend, EDataCal *cal);
 

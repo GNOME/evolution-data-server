@@ -33,6 +33,11 @@ Base class for calendar/tasks backend implementations.
 
 @ecalbackend: the object which received the signal.
 
+<!-- ##### ARG ECalBackend:cache-dir ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG ECalBackend:kind ##### -->
 <para>
 
@@ -73,6 +78,24 @@ Base class for calendar/tasks backend implementations.
 
 @backend: 
 @Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_get_cache_dir ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_set_cache_dir ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cache_dir: 
 
 
 <!-- ##### FUNCTION e_cal_backend_add_client ##### -->
@@ -373,17 +396,6 @@ Base class for calendar/tasks backend implementations.
 @cal: 
 @context: 
 @object: 
-
-
-<!-- ##### FUNCTION e_cal_backend_set_default_timezone ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@context: 
-@tzid: 
 
 
 <!-- ##### FUNCTION e_cal_backend_set_default_zone ##### -->

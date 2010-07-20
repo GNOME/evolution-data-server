@@ -50,6 +50,8 @@ struct _ECalBackendPrivate {
 	/* URI, from source. This is cached, since we return const. */
 	gchar *uri;
 
+	gchar *cache_dir;
+
 	/* The kind of components for this backend */
 	icalcomponent_kind kind;
 
@@ -72,6 +74,7 @@ struct _ECalBackendPrivate {
 /* Property IDs */
 enum {
 	PROP_0,
+	PROP_CACHE_DIR,
 	PROP_KIND,
 	PROP_SOURCE,
 	PROP_URI
@@ -110,6 +113,47 @@ source_changed_cb (ESource *source, ECalBackend *backend)
 	} else {
 		g_free (suri);
 	}
+}
+
+static void
+cal_backend_set_default_cache_dir (ECalBackend *backend)
+{
+	ESource *source;
+	icalcomponent_kind kind;
+	const gchar *component_type;
+	const gchar *user_cache_dir;
+	gchar *mangled_uri;
+	gchar *filename;
+
+	user_cache_dir = e_get_user_cache_dir ();
+
+	kind = e_cal_backend_get_kind (backend);
+	source = e_cal_backend_get_source (backend);
+	g_return_if_fail (source != NULL);
+
+	switch (kind) {
+		case ICAL_VEVENT_COMPONENT:
+			component_type = "calendar";
+			break;
+		case ICAL_VTODO_COMPONENT:
+			component_type = "tasks";
+			break;
+		case ICAL_VJOURNAL_COMPONENT:
+			component_type = "memos";
+			break;
+		default:
+			g_return_if_reached ();
+	}
+
+	/* Mangle the URI to not contain invalid characters. */
+	mangled_uri = g_strdelimit (e_source_get_uri (source), ":/", '_');
+
+	filename = g_build_filename (
+		user_cache_dir, component_type, mangled_uri, NULL);
+	e_cal_backend_set_cache_dir (backend, filename);
+	g_free (filename);
+
+	g_free (mangled_uri);
 }
 
 static void
@@ -165,6 +209,11 @@ cal_backend_set_property (GObject *object,
                           GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_CACHE_DIR:
+			e_cal_backend_set_cache_dir (
+				E_CAL_BACKEND (object),
+				g_value_get_string (value));
+			return;
 		case PROP_KIND:
 			cal_backend_set_kind (
 				E_CAL_BACKEND (object),
@@ -192,6 +241,11 @@ cal_backend_get_property (GObject *object,
                           GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_CACHE_DIR:
+			g_value_set_string (
+				value, e_cal_backend_get_cache_dir (
+				E_CAL_BACKEND (object)));
+			return;
 		case PROP_KIND:
 			g_value_set_ulong (
 				value, e_cal_backend_get_kind (
@@ -227,6 +281,8 @@ cal_backend_finalize (GObject *object)
 	g_mutex_free (priv->queries_mutex);
 
 	g_free (priv->uri);
+	g_free (priv->cache_dir);
+
 	if (priv->source_changed_id && priv->source) {
 		g_signal_handler_disconnect (priv->source, priv->source_changed_id);
 		priv->source_changed_id = 0;
@@ -235,6 +291,12 @@ cal_backend_finalize (GObject *object)
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_parent_class)->finalize (object);
+}
+
+static void
+cal_backend_constructed (GObject *object)
+{
+	cal_backend_set_default_cache_dir (E_CAL_BACKEND (object));
 }
 
 static void
@@ -248,6 +310,17 @@ e_cal_backend_class_init (ECalBackendClass *class)
 	object_class->set_property = cal_backend_set_property;
 	object_class->get_property = cal_backend_get_property;
 	object_class->finalize = cal_backend_finalize;
+	object_class->constructed = cal_backend_constructed;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_CACHE_DIR,
+		g_param_spec_string (
+			"cache-dir",
+			NULL,
+			NULL,
+			NULL,
+			G_PARAM_READWRITE));
 
 	g_object_class_install_property (
 		object_class,
@@ -306,6 +379,46 @@ e_cal_backend_init (ECalBackend *backend)
 		(EListCopyFunc) g_object_ref,
 		(EListFreeFunc) g_object_unref, NULL);
 	backend->priv->queries_mutex = g_mutex_new ();
+}
+
+/**
+ * e_cal_backend_get_cache_dir:
+ * @backend: an #ECalBackend
+ *
+ * Returns the cache directory for the given backend.
+ *
+ * Returns: the cache directory for the backend
+ **/
+const gchar *
+e_cal_backend_get_cache_dir (ECalBackend *backend)
+{
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
+
+	return backend->priv->cache_dir;
+}
+
+/**
+ * e_cal_backend_set_cache_dir:
+ * @backend: an #ECalBackend
+ * @cache_dir: a local cache directory
+ *
+ * Sets the cache directory for the given backend.
+ *
+ * Note that #ECalBackend is initialized with a usable default based on
+ * #ECalBackend:source and #ECalBackend:kind properties.  Backends should
+ * not override the default without good reason.
+ **/
+void
+e_cal_backend_set_cache_dir (ECalBackend *backend,
+                             const gchar *cache_dir)
+{
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+	g_return_if_fail (cache_dir != NULL);
+
+	g_free (backend->priv->cache_dir);
+	backend->priv->cache_dir = g_strdup (cache_dir);
+
+	g_object_notify (G_OBJECT (backend), "cache-dir");
 }
 
 /**
