@@ -32,6 +32,8 @@ e_book_backend_sync_get_type
 <TITLE>EBookBackend</TITLE>
 EBookBackend
 e_book_backend_construct
+e_book_backend_get_cache_dir
+e_book_backend_set_cache_dir
 e_book_backend_load_source
 e_book_backend_get_source
 e_book_backend_add_client
@@ -176,6 +178,7 @@ E_IS_BOOK_BACKEND_CACHE
 E_TYPE_BOOK_BACKEND_CACHE
 E_BOOK_BACKEND_CACHE_CLASS
 E_IS_BOOK_BACKEND_CACHE_CLASS
+E_BOOK_BACKEND_CACHE_GET_CLASS
 EBookBackendCacheClass
 <SUBSECTION Private>
 EBookBackendCachePrivate

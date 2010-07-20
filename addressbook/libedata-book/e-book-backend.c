@@ -8,6 +8,8 @@
 
 #include <config.h>
 
+#include <libedataserver/e-data-server-util.h>
+
 #include "e-data-book-view.h"
 #include "e-data-book.h"
 #include "e-book-backend.h"
@@ -27,6 +29,14 @@ struct _EBookBackendPrivate {
 
 	GMutex *views_mutex;
 	EList *views;
+
+	gchar *cache_dir;
+};
+
+/* Property IDs */
+enum {
+	PROP_0,
+	PROP_CACHE_DIR
 };
 
 /* Signal IDs */
@@ -38,6 +48,64 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 G_DEFINE_TYPE (EBookBackend, e_book_backend, G_TYPE_OBJECT)
+
+static void
+book_backend_set_default_cache_dir (EBookBackend *backend)
+{
+	ESource *source;
+	const gchar *user_cache_dir;
+	gchar *mangled_uri;
+	gchar *filename;
+
+	user_cache_dir = e_get_user_cache_dir ();
+
+	source = e_book_backend_get_source (backend);
+	g_return_if_fail (source != NULL);
+
+	/* Mangle the URI to not contain invalid characters. */
+	mangled_uri = g_strdelimit (e_source_get_uri (source), ":/", '_');
+
+	filename = g_build_filename (
+		user_cache_dir, "addressbook", mangled_uri, NULL);
+	e_book_backend_set_cache_dir (backend, filename);
+	g_free (filename);
+
+	g_free (mangled_uri);
+}
+
+static void
+book_backend_set_property (GObject *object,
+                           guint property_id,
+                           const GValue *value,
+                           GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_CACHE_DIR:
+			e_book_backend_set_cache_dir (
+				E_BOOK_BACKEND (object),
+				g_value_get_string (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+book_backend_get_property (GObject *object,
+                           guint property_id,
+                           GValue *value,
+                           GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_CACHE_DIR:
+			g_value_set_string (
+				value, e_book_backend_get_cache_dir (
+				E_BOOK_BACKEND (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
 
 static void
 book_backend_dispose (GObject *object)
@@ -73,6 +141,8 @@ book_backend_finalize (GObject *object)
 	g_mutex_free (priv->clients_mutex);
 	g_mutex_free (priv->views_mutex);
 
+	g_free (priv->cache_dir);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_backend_parent_class)->finalize (object);
 }
@@ -85,8 +155,20 @@ e_book_backend_class_init (EBookBackendClass *class)
 	g_type_class_add_private (class, sizeof (EBookBackendPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = book_backend_set_property;
+	object_class->get_property = book_backend_get_property;
 	object_class->dispose = book_backend_dispose;
 	object_class->finalize = book_backend_finalize;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_CACHE_DIR,
+		g_param_spec_string (
+			"cache-dir",
+			NULL,
+			NULL,
+			NULL,
+			G_PARAM_READWRITE));
 
 	signals[LAST_CLIENT_GONE] = g_signal_new (
 		"last-client-gone",
@@ -126,6 +208,46 @@ e_book_backend_construct (EBookBackend *backend)
 }
 
 /**
+ * e_book_backend_get_cache_dir:
+ * @backend: en #EBookBackend
+ *
+ * Returns the cache directory for the given backend.
+ *
+ * Returns: the cache directory for the backend
+ **/
+const gchar *
+e_book_backend_get_cache_dir (EBookBackend *backend)
+{
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
+
+	return backend->priv->cache_dir;
+}
+
+/**
+ * e_book_backend_set_cache_dir:
+ * @backend: an #EBookBackend
+ * @cache_dir: a local cache directory
+ *
+ * Sets the cache directory for the given backend.
+ *
+ * Note that #EBookBackend is initialized with a usable default based on
+ * the #ESource given to e_book_backend_load_source().  Backends should
+ * not override the default without good reason.
+ **/
+void
+e_book_backend_set_cache_dir (EBookBackend *backend,
+                              const gchar *cache_dir)
+{
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (cache_dir != NULL);
+
+	g_free (backend->priv->cache_dir);
+	backend->priv->cache_dir = g_strdup (cache_dir);
+
+	g_object_notify (G_OBJECT (backend), "cache-dir");
+}
+
+/**
  * e_book_backend_load_source:
  * @backend: an #EBookBackend
  * @source: an #ESource to load
@@ -140,25 +262,27 @@ e_book_backend_load_source (EBookBackend           *backend,
 			    gboolean                only_if_exists,
 			    GError		  **error)
 {
-	GError *err = NULL;
+	GError *local_error = NULL;
 
 	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
 	e_return_data_book_error_if_fail (source, E_DATA_BOOK_STATUS_INVALID_ARG);
 	e_return_data_book_error_if_fail (backend->priv->loaded == FALSE, E_DATA_BOOK_STATUS_INVALID_ARG);
 
+	/* Subclasses may need to call e_book_backend_get_cache_dir() in
+	 * their load_source() methods, so get the "cache-dir" property
+	 * initialized before we call the method. */
+	backend->priv->source = g_object_ref (source);
+	book_backend_set_default_cache_dir (backend);
+
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->load_source);
 
-	(* E_BOOK_BACKEND_GET_CLASS (backend)->load_source) (backend, source, only_if_exists, &err);
+	(* E_BOOK_BACKEND_GET_CLASS (backend)->load_source) (backend, source, only_if_exists, &local_error);
 
-	if (err == NULL || g_error_matches (err, E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_INVALID_SERVER_VERSION)) {
-		g_object_ref (source);
-		backend->priv->source = source;
-
-		if (err)
-			g_error_free (err);
-	} else {
-		g_propagate_error (error, err);
-	}
+	if (g_error_matches (local_error, E_DATA_BOOK_ERROR,
+		E_DATA_BOOK_STATUS_INVALID_SERVER_VERSION))
+		g_error_free (local_error);
+	else if (local_error != NULL)
+		g_propagate_error (error, local_error);
 }
 
 /**

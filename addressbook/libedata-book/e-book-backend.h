@@ -82,6 +82,9 @@ struct _EBookBackendClass {
 };
 
 gboolean    e_book_backend_construct                (EBookBackend             *backend);
+const gchar *e_book_backend_get_cache_dir           (EBookBackend             *backend);
+void        e_book_backend_set_cache_dir            (EBookBackend             *backend,
+                                                     const gchar              *cache_dir);
 
 void        e_book_backend_load_source              (EBookBackend             *backend,
 						     ESource                  *source,
