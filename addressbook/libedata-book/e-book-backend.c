@@ -12,7 +12,9 @@
 #include "e-data-book.h"
 #include "e-book-backend.h"
 
-G_DEFINE_TYPE (EBookBackend, e_book_backend, G_TYPE_OBJECT)
+#define E_BOOK_BACKEND_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_BOOK_BACKEND, EBookBackendPrivate))
 
 struct _EBookBackendPrivate {
 	GMutex *open_mutex;
@@ -33,9 +35,81 @@ enum {
 	LAST_SIGNAL
 };
 
-static guint e_book_backend_signals[LAST_SIGNAL];
+static guint signals[LAST_SIGNAL];
 
-static GObjectClass *parent_class;
+G_DEFINE_TYPE (EBookBackend, e_book_backend, G_TYPE_OBJECT)
+
+static void
+book_backend_dispose (GObject *object)
+{
+	EBookBackendPrivate *priv;
+
+	priv = E_BOOK_BACKEND_GET_PRIVATE (object);
+
+	if (priv->views != NULL) {
+		g_object_unref (priv->views);
+		priv->views = NULL;
+	}
+
+	if (priv->source != NULL) {
+		g_object_unref (priv->source);
+		priv->source = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_book_backend_parent_class)->dispose (object);
+}
+
+static void
+book_backend_finalize (GObject *object)
+{
+	EBookBackendPrivate *priv;
+
+	priv = E_BOOK_BACKEND_GET_PRIVATE (object);
+
+	g_list_free (priv->clients);
+
+	g_mutex_free (priv->open_mutex);
+	g_mutex_free (priv->clients_mutex);
+	g_mutex_free (priv->views_mutex);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_book_backend_parent_class)->finalize (object);
+}
+
+static void
+e_book_backend_class_init (EBookBackendClass *class)
+{
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (EBookBackendPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = book_backend_dispose;
+	object_class->finalize = book_backend_finalize;
+
+	signals[LAST_CLIENT_GONE] = g_signal_new (
+		"last-client-gone",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (EBookBackendClass, last_client_gone),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__VOID,
+		G_TYPE_NONE, 0);
+}
+
+static void
+e_book_backend_init (EBookBackend *backend)
+{
+	backend->priv = E_BOOK_BACKEND_GET_PRIVATE (backend);
+
+	backend->priv->views = e_list_new (
+		(EListCopyFunc) NULL, (EListFreeFunc) NULL, NULL);
+
+	backend->priv->open_mutex = g_mutex_new ();
+	backend->priv->clients_mutex = g_mutex_new ();
+	backend->priv->views_mutex = g_mutex_new ();
+}
 
 /**
  * e_book_backend_construct:
@@ -478,7 +552,7 @@ e_book_backend_cancel_operation (EBookBackend *backend,
 static void
 last_client_gone (EBookBackend *backend)
 {
-	g_signal_emit (backend, e_book_backend_signals[LAST_CLIENT_GONE], 0);
+	g_signal_emit (backend, signals[LAST_CLIENT_GONE], 0);
 }
 
 /**
@@ -988,70 +1062,3 @@ e_book_backend_notify_auth_required (EBookBackend *backend)
 	g_mutex_unlock (priv->clients_mutex);
 }
 
-static void
-e_book_backend_init (EBookBackend *backend)
-{
-	EBookBackendPrivate *priv;
-
-	priv          = g_new0 (EBookBackendPrivate, 1);
-	priv->clients = NULL;
-	priv->source = NULL;
-	priv->views   = e_list_new((EListCopyFunc) NULL, (EListFreeFunc) NULL, NULL);
-	priv->open_mutex = g_mutex_new ();
-	priv->clients_mutex = g_mutex_new ();
-	priv->views_mutex = g_mutex_new ();
-
-	backend->priv = priv;
-}
-
-static void
-e_book_backend_dispose (GObject *object)
-{
-	EBookBackend *backend;
-
-	backend = E_BOOK_BACKEND (object);
-
-	if (backend->priv) {
-		g_list_free (backend->priv->clients);
-
-		if (backend->priv->views) {
-			g_object_unref (backend->priv->views);
-			backend->priv->views = NULL;
-		}
-
-		if (backend->priv->source) {
-			g_object_unref (backend->priv->source);
-			backend->priv->source = NULL;
-		}
-
-		g_mutex_free (backend->priv->open_mutex);
-		g_mutex_free (backend->priv->clients_mutex);
-		g_mutex_free (backend->priv->views_mutex);
-
-		g_free (backend->priv);
-		backend->priv = NULL;
-	}
-
-	G_OBJECT_CLASS (parent_class)->dispose (object);
-}
-
-static void
-e_book_backend_class_init (EBookBackendClass *klass)
-{
-	GObjectClass *object_class;
-
-	parent_class = g_type_class_peek_parent (klass);
-
-	object_class = (GObjectClass *) klass;
-
-	object_class->dispose = e_book_backend_dispose;
-
-	e_book_backend_signals[LAST_CLIENT_GONE] =
-		g_signal_new ("last-client-gone",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (EBookBackendClass, last_client_gone),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE, 0);
-}
