@@ -95,7 +95,6 @@ struct _ECalBackendGroupwisePrivate {
 
 	/* fields for storing info while offline */
 	gchar *user_email;
-	gchar *local_attachments_store;
 
 	/* A mutex to control access to the private structure for the following */
 	GStaticRecMutex rec_mutex;
@@ -970,7 +969,6 @@ connect_to_server (ECalBackendGroupwise *cbgw, GError **perror)
 	gchar *real_uri;
 	ECalBackendGroupwisePrivate *priv;
 	ESource *source;
-	ECalSourceType source_type;
 	const gchar *use_ssl;
 	gchar *http_uri;
 	gint permissions;
@@ -1063,23 +1061,9 @@ connect_to_server (ECalBackendGroupwise *cbgw, GError **perror)
 	}
 	priv->mode_changed = FALSE;
 
-	switch (kind) {
-	case ICAL_VEVENT_COMPONENT:
-		source_type = E_CAL_SOURCE_TYPE_EVENT;
-		break;
-	case ICAL_VTODO_COMPONENT:
-		source_type = E_CAL_SOURCE_TYPE_TODO;
-		break;
-	case ICAL_VJOURNAL_COMPONENT:
-		source_type = E_CAL_SOURCE_TYPE_JOURNAL;
-		break;
-	default:
-		source_type = E_CAL_SOURCE_TYPE_EVENT;
-
-	}
-
 	if (E_IS_GW_CONNECTION (priv->cnc)) {
-		const gchar *uri = e_cal_backend_get_uri (E_CAL_BACKEND (cbgw));
+		ECalBackend *backend;
+		const gchar *cache_dir;
 
 		/* get the ID for the container */
 		if (priv->container_id)
@@ -1089,8 +1073,11 @@ connect_to_server (ECalBackendGroupwise *cbgw, GError **perror)
 			return;
 		}
 
-		e_cal_backend_cache_remove (uri, source_type);
-		priv->store = (ECalBackendStore *) e_cal_backend_file_store_new (uri, source_type);
+		backend = E_CAL_BACKEND (cbgw);
+		cache_dir = e_cal_backend_get_cache_dir (backend);
+
+		e_cal_backend_cache_remove (cache_dir, "cache.xml");
+		priv->store = e_cal_backend_file_store_new (cache_dir);
 		if (!priv->store) {
 			g_propagate_error (perror, EDC_ERROR_EX (OtherError, _("Could not create cache file")));
 			return;
@@ -1199,11 +1186,6 @@ e_cal_backend_groupwise_finalize (GObject *object)
 	if (priv->user_email) {
 		g_free (priv->user_email);
 		priv->user_email = NULL;
-	}
-
-	if (priv->local_attachments_store) {
-		g_free (priv->local_attachments_store);
-		priv->local_attachments_store = NULL;
 	}
 
 	if (priv->sendoptions_sync_timeout) {
@@ -1327,35 +1309,16 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 {
 	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
-	ECalSourceType source_type;
-	const gchar *source = NULL;
-	const gchar *user_cache_dir;
-	gchar *filename;
-	gchar *mangled_uri;
+	const gchar *cache_dir;
 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
 
+	cache_dir = e_cal_backend_get_cache_dir (E_CAL_BACKEND (backend));
+
 	PRIV_LOCK (priv);
 
 	cbgw->priv->read_only = FALSE;
-
-	switch (e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
-	case ICAL_VEVENT_COMPONENT:
-		source_type = E_CAL_SOURCE_TYPE_EVENT;
-		source = "calendar";
-		break;
-	case ICAL_VTODO_COMPONENT:
-		source_type = E_CAL_SOURCE_TYPE_TODO;
-		source = "tasks";
-		break;
-	case ICAL_VJOURNAL_COMPONENT:
-		source_type = E_CAL_SOURCE_TYPE_JOURNAL;
-		source = "journal";
-		break;
-	default:
-		source_type = E_CAL_SOURCE_TYPE_EVENT;
-	}
 
 	if (priv->mode == CAL_MODE_LOCAL) {
 		ESource *esource;
@@ -1372,11 +1335,9 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 		}
 
 		if (!priv->store) {
-			const gchar *uri = e_cal_backend_get_uri (E_CAL_BACKEND (cbgw));
-
 			/* remove the old cache while migrating to ECalBackendStore */
-			e_cal_backend_cache_remove (uri, source_type);
-			priv->store = (ECalBackendStore *) e_cal_backend_file_store_new (uri, source_type);
+			e_cal_backend_cache_remove (cache_dir, "cache.xml");
+			priv->store = e_cal_backend_file_store_new (cache_dir);
 			if (!priv->store) {
 				PRIV_UNLOCK (priv);
 				g_propagate_error (perror, EDC_ERROR_EX (OtherError, _("Could not create cache file")));
@@ -1392,22 +1353,6 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 
 	priv->username = g_strdup (username);
 	priv->password = g_strdup (password);
-
-	/* Set the local attachment store. */
-	mangled_uri = g_strdup (e_cal_backend_get_uri (E_CAL_BACKEND (cbgw)));
-
-	/* Mangle the URI to not contain invalid characters. */
-	g_strdelimit (mangled_uri, ":/", '_');
-
-	user_cache_dir = e_get_user_cache_dir ();
-	filename = g_build_filename (user_cache_dir, source, mangled_uri, NULL);
-
-	g_free (priv->local_attachments_store);
-	priv->local_attachments_store =
-		g_filename_to_uri (filename, NULL, NULL);
-
-	g_free (mangled_uri);
-	g_free (filename);
 
 	/* FIXME: no need to set it online here when we implement the online/offline stuff correctly */
 	connect_to_server (cbgw, perror);
@@ -2382,15 +2327,15 @@ fetch_attachments (ECalBackendGroupwise *cbgw, ECalComponent *comp)
 {
 	GSList *attach_list = NULL, *new_attach_list = NULL;
 	GSList *l;
-	gchar  *attach_store;
 	gchar *dest_url, *dest_file;
 	gint fd;
+	const gchar *cache_dir;
 	const gchar *uid;
 
 	e_cal_component_get_attachment_list (comp, &attach_list);
 	e_cal_component_get_uid (comp, &uid);
 	/*FIXME  get the uri rather than computing the path */
-	attach_store = g_strdup (e_cal_backend_groupwise_get_local_attachments_store (cbgw));
+	cache_dir = e_cal_backend_get_cache_dir (E_CAL_BACKEND (cbgw));
 
 	for (l = attach_list; l; l = l->next) {
 		gchar *sfname = (gchar *)l->data;
@@ -2406,7 +2351,7 @@ fetch_attachments (ECalBackendGroupwise *cbgw, ECalComponent *comp)
 		filename = g_path_get_basename (sfname);
 		new_filename = g_strconcat (uid, "-", filename, NULL);
 		g_free (filename);
-		dest_file = g_build_filename (attach_store, new_filename, NULL);
+		dest_file = g_build_filename (cache_dir, new_filename, NULL);
 		g_free (new_filename);
 		fd = g_open (dest_file, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0600);
 		if (fd == -1) {
@@ -2427,7 +2372,6 @@ fetch_attachments (ECalBackendGroupwise *cbgw, ECalComponent *comp)
 		g_free (dest_file);
 		new_attach_list = g_slist_append (new_attach_list, dest_url);
 	}
-	g_free (attach_store);
 	e_cal_component_set_attachment_list (comp, new_attach_list);
 
 	for (l = new_attach_list; l != NULL; l = l->next)
@@ -2868,11 +2812,4 @@ e_cal_backend_groupwise_notify_error_code (ECalBackendGroupwise *cbgw, EGwConnec
 	msg = e_gw_connection_get_error_message (status);
 	if (msg)
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), msg);
-}
-
-const gchar *
-e_cal_backend_groupwise_get_local_attachments_store (ECalBackendGroupwise *cbgw)
-{
-	g_return_val_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw), NULL);
-	return cbgw->priv->local_attachments_store;
 }

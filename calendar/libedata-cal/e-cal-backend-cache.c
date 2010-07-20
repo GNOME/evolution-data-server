@@ -30,195 +30,38 @@
 #include <libedataserver/e-data-server-util.h>
 #include "e-cal-backend-cache.h"
 
-G_DEFINE_TYPE (ECalBackendCache, e_cal_backend_cache, E_TYPE_FILE_CACHE)
+#define E_CAL_BACKEND_CACHE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CAL_BACKEND_CACHE, ECalBackendCachePrivate))
 
 struct _ECalBackendCachePrivate {
-	gchar *uri;
-	ECalSourceType source_type;
 	GHashTable *timezones;
 };
 
-/* Property IDs */
-enum {
-	PROP_0,
-	PROP_SOURCE_TYPE,
-	PROP_URI
-};
-
-static GObjectClass *parent_class = NULL;
-
-static gchar *
-get_filename_from_uri (const gchar *uri, ECalSourceType source_type)
-{
-	gchar *mangled_uri, *filename;
-	const gchar *source = NULL;
-	const gchar *user_cache_dir;
-
-	switch (source_type) {
-		case E_CAL_SOURCE_TYPE_EVENT :
-			source = "calendar";
-			break;
-		case E_CAL_SOURCE_TYPE_TODO :
-			source = "tasks";
-			break;
-		case E_CAL_SOURCE_TYPE_JOURNAL :
-			source = "memos";
-			break;
-		case E_CAL_SOURCE_TYPE_LAST :
-		default :
-			break;
-	}
-
-	user_cache_dir = e_get_user_cache_dir ();
-
-	/* Mangle the URI to not contain invalid characters. */
-	mangled_uri = g_strdelimit (g_strdup (uri), ":/", '_');
-
-	filename = g_build_filename (
-		user_cache_dir, source, mangled_uri, "cache.xml", NULL);
-
-	g_free (mangled_uri);
-
-	return filename;
-}
-
-static void
-e_cal_backend_cache_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
-{
-	ECalBackendCache *cache;
-	ECalBackendCachePrivate *priv;
-	gchar *cache_file;
-	ECalSourceType source_type;
-
-	cache = E_CAL_BACKEND_CACHE (object);
-	priv = cache->priv;
-
-	switch (property_id) {
-	case PROP_SOURCE_TYPE :
-		source_type = g_value_get_enum (value);
-		priv->source_type = source_type;
-		break;
-	case PROP_URI :
-		/* Ensure both properties are set and then create the
-		 * cache_file property */
-		cache_file = get_filename_from_uri (g_value_get_string (value), priv->source_type);
-		if (!cache_file)
-			break;
-
-		g_object_set (G_OBJECT (cache), "filename", cache_file, NULL);
-		g_free (cache_file);
-
-		if (priv->uri)
-			g_free (priv->uri);
-		priv->uri = g_value_dup_string (value);
-		break;
-	default :
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-	}
-}
-
-static void
-e_cal_backend_cache_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
-{
-	ECalBackendCache *cache;
-	ECalBackendCachePrivate *priv;
-
-	cache = E_CAL_BACKEND_CACHE (object);
-	priv = cache->priv;
-
-	switch (property_id) {
-	case PROP_SOURCE_TYPE:
-		g_value_set_enum (value, priv->source_type);
-	case PROP_URI :
-		g_value_set_string (value, priv->uri);
-		break;
-	default :
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-	}
-}
+G_DEFINE_TYPE (ECalBackendCache, e_cal_backend_cache, E_TYPE_FILE_CACHE)
 
 static void
 e_cal_backend_cache_finalize (GObject *object)
 {
-	ECalBackendCache *cache;
 	ECalBackendCachePrivate *priv;
 
-	cache = E_CAL_BACKEND_CACHE (object);
-	priv = cache->priv;
+	priv = E_CAL_BACKEND_CACHE_GET_PRIVATE (object);
 
-	if (priv) {
-		if (priv->uri) {
-			g_free (priv->uri);
-			priv->uri = NULL;
-		}
+	g_hash_table_destroy (priv->timezones);
 
-		g_hash_table_destroy (priv->timezones);
-		priv->timezones = NULL;
-
-		g_free (priv);
-		cache->priv = NULL;
-	}
-
-	parent_class->finalize (object);
-}
-
-static GObject *
-e_cal_backend_cache_constructor (GType type,
-                                 guint n_construct_properties,
-                                 GObjectConstructParam *construct_properties)
-{
-	GObject *obj;
-	const gchar *uri;
-	ECalSourceType source_type = E_CAL_SOURCE_TYPE_EVENT;
-	ECalBackendCacheClass *klass;
-	GObjectClass *parent_class;
-
-	/* Invoke parent constructor. */
-	klass = E_CAL_BACKEND_CACHE_CLASS (g_type_class_peek (E_TYPE_CAL_BACKEND_CACHE));
-	parent_class = G_OBJECT_CLASS (g_type_class_peek_parent (klass));
-	obj = parent_class->constructor (type,
-					 n_construct_properties,
-					 construct_properties);
-
-	if (!g_ascii_strcasecmp ( g_param_spec_get_name (construct_properties->pspec), "source_type"))
-		source_type = g_value_get_enum (construct_properties->value);
-	/* extract uid */
-	if (!g_ascii_strcasecmp ( g_param_spec_get_name (construct_properties->pspec), "uri")) {
-		gchar *cache_file;
-
-		uri = g_value_get_string (construct_properties->value);
-		cache_file = get_filename_from_uri (uri, source_type);
-		g_object_set (obj, "filename", cache_file, NULL);
-		g_free (cache_file);
-	}
-
-	return obj;
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_cal_backend_cache_parent_class)->finalize (object);
 }
 
 static void
-e_cal_backend_cache_class_init (ECalBackendCacheClass *klass)
+e_cal_backend_cache_class_init (ECalBackendCacheClass *class)
 {
 	GObjectClass *object_class;
 
-	parent_class = g_type_class_peek_parent (klass);
+	g_type_class_add_private (class, sizeof (ECalBackendCachePrivate));
 
-	object_class = G_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = e_cal_backend_cache_finalize;
-	object_class->set_property = e_cal_backend_cache_set_property;
-	object_class->get_property = e_cal_backend_cache_get_property;
-
-        object_class->constructor = e_cal_backend_cache_constructor;
-	g_object_class_install_property (object_class, PROP_SOURCE_TYPE,
-					 g_param_spec_enum ("source_type", NULL, NULL,
-					 e_cal_source_type_enum_get_type (),
-					 E_CAL_SOURCE_TYPE_EVENT,
-					 G_PARAM_READABLE | G_PARAM_WRITABLE
-							      | G_PARAM_CONSTRUCT_ONLY));
-
-	g_object_class_install_property (object_class, PROP_URI,
-					 g_param_spec_string ("uri", NULL, NULL, "",
-							      G_PARAM_READABLE | G_PARAM_WRITABLE
-							      | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
@@ -230,35 +73,30 @@ timezones_value_destroy (icaltimezone *zone)
 static void
 e_cal_backend_cache_init (ECalBackendCache *cache)
 {
-	ECalBackendCachePrivate *priv;
+	cache->priv = E_CAL_BACKEND_CACHE_GET_PRIVATE (cache);
 
-	priv = g_new0 (ECalBackendCachePrivate, 1);
-	priv->timezones = g_hash_table_new_full (
+	cache->priv->timezones = g_hash_table_new_full (
 		g_str_hash, g_str_equal,
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) timezones_value_destroy);
-
-	cache->priv = priv;
-
 }
 
 /**
  * e_cal_backend_cache_new
- * @uri: URI of the backend to be cached.
+ * @filename: filename for cache data
  *
  * Creates a new #ECalBackendCache object, which implements a cache of
  * calendar/tasks objects, very useful for remote backends.
  *
- * Returns: The newly created object.
+ * Returns: a new #ECalBackendCache
  */
 ECalBackendCache *
-e_cal_backend_cache_new (const gchar *uri, ECalSourceType source_type)
+e_cal_backend_cache_new (const gchar *filename)
 {
-	ECalBackendCache *cache;
+	g_return_val_if_fail (filename != NULL, NULL);
 
-	cache = g_object_new (E_TYPE_CAL_BACKEND_CACHE, "source_type", source_type, "uri", uri,  NULL);
-
-        return cache;
+	return g_object_new (
+		E_TYPE_CAL_BACKEND_CACHE, "filename", filename, NULL);
 }
 
 static gchar *
@@ -857,27 +695,29 @@ e_cal_backend_cache_get_key_value (ECalBackendCache *cache, const gchar *key)
  * Since: 2.28
  **/
 gboolean
-e_cal_backend_cache_remove (const gchar *uri, ECalSourceType source_type)
+e_cal_backend_cache_remove (const gchar *dirname,
+                            const gchar *basename)
 {
 	gchar *filename;
 
-	filename = get_filename_from_uri (uri, source_type);
+	g_return_val_if_fail (dirname != NULL, FALSE);
+	g_return_val_if_fail (basename != NULL, FALSE);
+
+	filename = g_build_filename (dirname, basename, NULL);
 
 	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
-		gchar *dirname, *full_path;
+		gchar *full_path;
 		const gchar *fname;
 		GDir *dir;
 		gboolean success;
 
 		/* remove all files in the directory */
-		dirname = g_path_get_dirname (filename);
 		dir = g_dir_open (dirname, 0, NULL);
 		if (dir) {
 			while ((fname = g_dir_read_name (dir))) {
 				full_path = g_build_filename (dirname, fname, NULL);
 				if (g_unlink (full_path) != 0) {
 					g_free (full_path);
-					g_free (dirname);
 					g_dir_close (dir);
 
 					return FALSE;
@@ -893,11 +733,11 @@ e_cal_backend_cache_remove (const gchar *uri, ECalSourceType source_type)
 		success = g_rmdir (dirname) == 0;
 
 		/* free all memory */
-		g_free (dirname);
 		g_free (filename);
 		return success;
 	}
 
 	g_free (filename);
+
 	return FALSE;
 }

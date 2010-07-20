@@ -466,19 +466,22 @@ e_cal_backend_weather_open (ECalBackendSync *backend, EDataCal *cal, gboolean on
 {
 	ECalBackendWeather *cbw;
 	ECalBackendWeatherPrivate *priv;
+	const gchar *cache_dir;
 	const gchar *uri;
 
 	cbw = E_CAL_BACKEND_WEATHER (backend);
 	priv = cbw->priv;
 
 	uri = e_cal_backend_get_uri (E_CAL_BACKEND (backend));
+	cache_dir = e_cal_backend_get_cache_dir (E_CAL_BACKEND (backend));
+
 	if (priv->city)
 		g_free (priv->city);
 	priv->city = g_strdup (strrchr (uri, '/') + 1);
 
 	if (!priv->store) {
-		e_cal_backend_cache_remove (uri, E_CAL_SOURCE_TYPE_EVENT);
-		priv->store = (ECalBackendStore *) e_cal_backend_file_store_new (uri, E_CAL_SOURCE_TYPE_EVENT);
+		e_cal_backend_cache_remove (cache_dir, "cache.xml");
+		priv->store = e_cal_backend_file_store_new (cache_dir);
 
 		if (!priv->store) {
 			g_propagate_error (perror, EDC_ERROR_EX (OtherError, _("Could not create cache file")));

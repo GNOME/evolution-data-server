@@ -26,23 +26,12 @@ Cache for calendar backends.
 </para>
 
 
-<!-- ##### ARG ECalBackendCache:source-type ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG ECalBackendCache:uri ##### -->
-<para>
-
-</para>
-
 <!-- ##### FUNCTION e_cal_backend_cache_new ##### -->
 <para>
 
 </para>
 
-@uri: 
-@source_type: 
+@filename: 
 @Returns: 
 
 
@@ -217,8 +206,8 @@ Cache for calendar backends.
 
 </para>
 
-@uri: 
-@source_type: 
+@dirname: 
+@basename: 
 @Returns: 
 
 

@@ -33,8 +33,7 @@ ECalBackendFileStore
 
 </para>
 
-@uri: 
-@source_type: 
+@path: 
 @Returns: 
 
 

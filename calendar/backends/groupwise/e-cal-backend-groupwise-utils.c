@@ -889,12 +889,15 @@ set_attachments_to_cal_component (EGwItem *item, ECalComponent *comp, ECalBacken
 {
 	GSList *fetch_list = NULL, *l;
 	GSList *comp_attachment_list = NULL;
+	const gchar *cache_dir;
 	const gchar *uid;
 	gchar *attach_file_url;
 
 	fetch_list = e_gw_item_get_attach_id_list (item);
 	if (fetch_list == NULL)
 		return; /* No attachments exist */
+
+	cache_dir = e_cal_backend_get_cache_dir (E_CAL_BACKEND (cbgw));
 
 	e_cal_component_get_uid (comp, &uid);
 	for (l = fetch_list; l; l = l->next) {
@@ -905,8 +908,8 @@ set_attachments_to_cal_component (EGwItem *item, ECalComponent *comp, ECalBacken
 		gchar *filename;
 
 		attach_item = (EGwItemAttachment *) l->data;
-		attach_file_url = g_strconcat (e_cal_backend_groupwise_get_local_attachments_store (cbgw),
-			 "/", uid, "-", attach_item->name, NULL);
+		attach_file_url = g_strconcat (
+			cache_dir, "/", uid, "-", attach_item->name, NULL);
 
 		filename = g_filename_from_uri (attach_file_url, NULL, NULL);
 		if (g_stat (filename, &st) == -1) {

@@ -28,73 +28,25 @@
 	((obj), E_TYPE_CAL_BACKEND_STORE, ECalBackendStorePrivate))
 
 struct _ECalBackendStorePrivate {
-	ECalSourceType source_type;
-	gchar *uri;
 	gchar *path;
 	gboolean loaded;
 };
 
-/* Property IDs */
 enum {
 	PROP_0,
-	PROP_SOURCE_TYPE,
-	PROP_URI
+	PROP_PATH
 };
 
 G_DEFINE_TYPE (ECalBackendStore, e_cal_backend_store, G_TYPE_OBJECT)
 
-static const gchar *
-get_component (ECalSourceType source_type)
-{
-	switch (source_type) {
-		case E_CAL_SOURCE_TYPE_EVENT :
-			return "calendar";
-		case E_CAL_SOURCE_TYPE_TODO :
-			return "tasks";
-		case E_CAL_SOURCE_TYPE_JOURNAL :
-			return "journal";
-		case E_CAL_SOURCE_TYPE_LAST :
-		default :
-			return "invalid";
-	}
-
-}
-
 static void
-set_store_path (ECalBackendStore *store)
+cal_backend_store_set_path (ECalBackendStore *store,
+                            const gchar *path)
 {
-	ECalBackendStorePrivate *priv;
+	g_return_if_fail (store->priv->path == NULL);
+	g_return_if_fail (path != NULL);
 
-	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
-
-	if (priv->uri) {
-		const gchar *component;
-		const gchar *user_cache_dir;
-		gchar *mangled_uri = NULL;
-
-		user_cache_dir = e_get_user_cache_dir ();
-		component = get_component (priv->source_type);
-		mangled_uri = g_strdelimit (g_strdup (priv->uri), ":/", '_');
-
-		g_free (priv->path);
-		priv->path = g_build_filename (
-			user_cache_dir, component, mangled_uri, NULL);
-
-		g_free (mangled_uri);
-	}
-}
-
-static void
-set_uri (ECalBackendStore *store, gchar *uri)
-{
-	ECalBackendStorePrivate *priv;
-
-	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
-
-	if (priv->uri)
-		g_free (priv->uri);
-
-	priv->uri = uri;
+	store->priv->path = g_strdup (path);
 }
 
 static void
@@ -103,23 +55,15 @@ cal_backend_store_set_property (GObject *object,
                                 const GValue *value,
                                 GParamSpec *pspec)
 {
-	ECalBackendStore *store;
-	ECalBackendStorePrivate *priv;
-
-	store = E_CAL_BACKEND_STORE (object);
-	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
-
 	switch (property_id) {
-	case PROP_SOURCE_TYPE:
-		priv->source_type = g_value_get_enum (value);
-		break;
-	case PROP_URI:
-		set_uri (store, g_value_dup_string (value));
-		set_store_path (store);
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+		case PROP_PATH:
+			cal_backend_store_set_path (
+				E_CAL_BACKEND_STORE (object),
+				g_value_get_string (value));
+			return;
 	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static void
@@ -128,23 +72,15 @@ cal_backend_store_get_property (GObject *object,
                                 GValue *value,
                                 GParamSpec *pspec)
 {
-	ECalBackendStore *store;
-	ECalBackendStorePrivate *priv;
-
-	store = E_CAL_BACKEND_STORE (object);
-	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
-
-	switch (property_id)
-	{
-	case PROP_SOURCE_TYPE:
-		g_value_set_enum (value, priv->source_type);
-		break;
-	case PROP_URI :
-		g_value_set_string (value, priv->uri);
-		break;
-	default :
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+	switch (property_id) {
+		case PROP_PATH:
+			g_value_set_string (
+				value, e_cal_backend_store_get_path (
+				E_CAL_BACKEND_STORE (object)));
+			return;
 	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static void
@@ -154,7 +90,6 @@ cal_backend_store_finalize (GObject *object)
 
 	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (object);
 
-	g_free (priv->uri);
 	g_free (priv->path);
 
 	/* Chain up to parent's finalize() method. */
@@ -173,29 +108,22 @@ e_cal_backend_store_class_init (ECalBackendStoreClass *class)
 	object_class->get_property = cal_backend_store_get_property;
 	object_class->finalize = cal_backend_store_finalize;
 
-	g_object_class_install_property (object_class, PROP_SOURCE_TYPE,
-				g_param_spec_enum ("source_type", NULL, NULL,
-				e_cal_source_type_enum_get_type (),
-				E_CAL_SOURCE_TYPE_EVENT,
-				G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
-	g_object_class_install_property (object_class, PROP_URI,
-					g_param_spec_string ("uri", NULL, NULL, "",
-					G_PARAM_READABLE | G_PARAM_WRITABLE
-					| G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property (
+		object_class,
+		PROP_PATH,
+		g_param_spec_string (
+			"path",
+			NULL,
+			NULL,
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
 e_cal_backend_store_init (ECalBackendStore *store)
 {
-	ECalBackendStorePrivate *priv;
-
-	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
-
-	store->priv = priv;
-	priv->uri = NULL;
-	priv->path = NULL;
-	priv->source_type = E_CAL_SOURCE_TYPE_EVENT;
-	priv->loaded = FALSE;
+	store->priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
 }
 
 /**

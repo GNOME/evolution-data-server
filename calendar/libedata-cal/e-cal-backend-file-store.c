@@ -942,8 +942,10 @@ e_cal_backend_file_store_init (ECalBackendFileStore *store)
  *
  * Since: 2.28
  **/
-ECalBackendFileStore*
-e_cal_backend_file_store_new (const gchar *uri, ECalSourceType source_type)
+ECalBackendStore*
+e_cal_backend_file_store_new (const gchar *path)
 {
-	return g_object_new (E_TYPE_CAL_BACKEND_FILE_STORE, "source_type", source_type, "uri", uri, NULL);
+	return g_object_new (
+		E_TYPE_CAL_BACKEND_FILE_STORE,
+		"path", path, NULL);
 }

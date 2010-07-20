@@ -62,8 +62,7 @@ struct _ECalBackendCacheClass {
 
 GType		e_cal_backend_cache_get_type	(void);
 ECalBackendCache *
-		e_cal_backend_cache_new		(const gchar *uri,
-						 ECalSourceType source_type);
+		e_cal_backend_cache_new		(const gchar *filename);
 ECalComponent *	e_cal_backend_cache_get_component
 						(ECalBackendCache *cache,
 						 const gchar *uid,
@@ -108,8 +107,8 @@ gboolean	e_cal_backend_cache_put_key_value
 const gchar *	e_cal_backend_cache_get_key_value
 						(ECalBackendCache *cache,
 						 const gchar *key);
-gboolean	e_cal_backend_cache_remove	(const gchar *uri,
-						 ECalSourceType source_type);
+gboolean	e_cal_backend_cache_remove	(const gchar *dirname,
+						 const gchar *basename);
 
 G_END_DECLS
 

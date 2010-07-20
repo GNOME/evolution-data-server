@@ -79,9 +79,6 @@ struct _ECalBackendCalDAVPrivate {
 	/* The local disk cache */
 	ECalBackendStore *store;
 
-	/* local attachments store */
-	gchar *local_attachments_store;
-
 	/* should we sync for offline mode? */
 	gboolean do_offline;
 
@@ -2123,20 +2120,19 @@ static gboolean
 initialize_backend (ECalBackendCalDAV *cbdav, GError **perror)
 {
 	ECalBackendCalDAVPrivate *priv;
-	ECalSourceType            source_type;
+	ECalBackend              *backend;
 	ESource                  *source;
 	const gchar		 *os_val;
 	const gchar               *uri;
 	gsize                     len;
 	const gchar              *refresh;
-	const gchar              *stype;
-	const gchar              *user_cache_dir;
-	gchar                    *filename;
-	gchar                    *mangled_uri;
+	const gchar              *cache_dir;
 
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	source = e_cal_backend_get_source (E_CAL_BACKEND (cbdav));
+	backend = E_CAL_BACKEND (cbdav);
+	source = e_cal_backend_get_source (backend);
+	cache_dir = e_cal_backend_get_cache_dir (backend);
 
 	if (!g_signal_handler_find (G_OBJECT (source), G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, 0, 0, NULL, caldav_source_changed_cb, cbdav))
 		g_signal_connect (G_OBJECT (source), "changed", G_CALLBACK (caldav_source_changed_cb), cbdav);
@@ -2151,7 +2147,7 @@ initialize_backend (ECalBackendCalDAV *cbdav, GError **perror)
 	priv->need_auth = os_val != NULL;
 
 	os_val = e_source_get_property(source, "ssl");
-	uri = e_cal_backend_get_uri (E_CAL_BACKEND (cbdav));
+	uri = e_cal_backend_get_uri (backend);
 
 	g_free (priv->uri);
 	priv->uri = NULL;
@@ -2220,26 +2216,10 @@ initialize_backend (ECalBackendCalDAV *cbdav, GError **perror)
 		g_free (tmp);
 	}
 
-	switch (e_cal_backend_get_kind (E_CAL_BACKEND (cbdav))) {
-		default:
-		case ICAL_VEVENT_COMPONENT:
-			source_type = E_CAL_SOURCE_TYPE_EVENT;
-			stype = "calendar";
-			break;
-		case ICAL_VTODO_COMPONENT:
-			source_type = E_CAL_SOURCE_TYPE_TODO;
-			stype = "tasks";
-			break;
-		case ICAL_VJOURNAL_COMPONENT:
-			source_type = E_CAL_SOURCE_TYPE_JOURNAL;
-			stype = "journal";
-			break;
-	}
-
 	if (priv->store == NULL) {
 		/* remove the old cache while migrating to ECalBackendStore */
-		e_cal_backend_cache_remove (priv->uri, source_type);
-		priv->store = (ECalBackendStore *) e_cal_backend_file_store_new (priv->uri, source_type);
+		e_cal_backend_cache_remove (cache_dir, "cache.xml");
+		priv->store = e_cal_backend_file_store_new (cache_dir);
 
 		if (priv->store == NULL) {
 			g_propagate_error (perror, EDC_ERROR_EX (OtherError, "Cannot create local store"));
@@ -2250,14 +2230,7 @@ initialize_backend (ECalBackendCalDAV *cbdav, GError **perror)
 	}
 
 	/* Set the local attachment store */
-	user_cache_dir = e_get_user_cache_dir ();
-	mangled_uri = g_strdelimit (g_strdup (uri), ":/", '_');
-	filename = g_build_filename (user_cache_dir, stype, mangled_uri, NULL);
-	g_free (mangled_uri);
-	if (priv->local_attachments_store)
-		g_free (priv->local_attachments_store);
-	priv->local_attachments_store = filename;
-	if (g_mkdir_with_parents (filename, 0700) < 0) {
+	if (g_mkdir_with_parents (cache_dir, 0700) < 0) {
 		g_propagate_error (perror, EDC_ERROR_EX (OtherError, "mkdir failed"));
 		return FALSE;
 	}
@@ -2772,12 +2745,17 @@ static void
 convert_to_url_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 {
 	ECalBackendCalDAVPrivate *priv;
+	ECalBackend *backend;
 	GSList *to_remove = NULL;
+	const gchar *cache_dir;
 	icalcomponent *cclone;
 	icalproperty *p;
 
 	g_return_if_fail (cbdav != NULL);
 	g_return_if_fail (icalcomp != NULL);
+
+	backend = E_CAL_BACKEND (cbdav);
+	cache_dir = e_cal_backend_get_cache_dir (backend);
 
 	cclone = icalcomponent_new_clone (icalcomp);
 
@@ -2806,9 +2784,8 @@ convert_to_url_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 		if (icalattach_get_is_url (attach))
 			continue;
 
-		dir = g_build_filename (priv->local_attachments_store,
-				icalcomponent_get_uid (icalcomp),
-				NULL);
+		dir = g_build_filename (
+			cache_dir, icalcomponent_get_uid (icalcomp), NULL);
 		if (g_mkdir_with_parents (dir, 0700) >= 0) {
 			GError *error = NULL;
 			gchar *basename;
@@ -2880,6 +2857,8 @@ static void
 remove_cached_attachment (ECalBackendCalDAV *cbdav, const gchar *uid)
 {
 	ECalBackendCalDAVPrivate *priv;
+	ECalBackend *backend;
+	const gchar *cache_dir;
 	GSList *l;
 	guint len;
 	gchar *dir;
@@ -2895,8 +2874,9 @@ remove_cached_attachment (ECalBackendCalDAV *cbdav, const gchar *uid)
 	if (len > 0)
 		return;
 
-	dir = g_build_filename (priv->local_attachments_store,
-			uid, NULL);
+	backend = E_CAL_BACKEND (cbdav);
+	cache_dir = e_cal_backend_get_cache_dir (backend);
+	dir = g_build_filename (cache_dir, uid, NULL);
 	remove_dir (dir);
 	g_free (dir);
 }
@@ -4457,11 +4437,6 @@ e_cal_backend_caldav_dispose (GObject *object)
 	g_free (priv->password);
 	g_free (priv->uri);
 	g_free (priv->schedule_outbox_url);
-
-	if (priv->local_attachments_store) {
-		g_free (priv->local_attachments_store);
-		priv->local_attachments_store = NULL;
-	}
 
 	if (priv->store != NULL) {
 		g_object_unref (priv->store);

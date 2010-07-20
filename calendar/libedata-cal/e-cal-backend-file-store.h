@@ -65,9 +65,8 @@ struct _ECalBackendFileStoreClass {
 };
 
 GType		e_cal_backend_file_store_get_type	(void);
-ECalBackendFileStore *
-		e_cal_backend_file_store_new		(const gchar *uri,
-						 	 ECalSourceType source_type);
+ECalBackendStore *
+		e_cal_backend_file_store_new		(const gchar *path);
 
 G_END_DECLS
 

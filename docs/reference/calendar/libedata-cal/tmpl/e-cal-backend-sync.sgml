@@ -281,17 +281,6 @@ Base class for synchronous backends.
 @error: 
 
 
-<!-- ##### FUNCTION e_cal_backend_sync_set_default_timezone ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@tzid: 
-@error: 
-
-
 <!-- ##### FUNCTION e_cal_backend_sync_set_default_zone ##### -->
 <para>
 

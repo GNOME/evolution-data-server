@@ -646,25 +646,13 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	}
 
 	if (!priv->store) {
-		ECalSourceType source_type;
-		const gchar *uri = e_cal_backend_get_uri (E_CAL_BACKEND (backend));
+		const gchar *cache_dir;
 
-		switch (e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
-			default:
-			case ICAL_VEVENT_COMPONENT:
-				source_type = E_CAL_SOURCE_TYPE_EVENT;
-				break;
-			case ICAL_VTODO_COMPONENT:
-				source_type = E_CAL_SOURCE_TYPE_TODO;
-				break;
-			case ICAL_VJOURNAL_COMPONENT:
-				source_type = E_CAL_SOURCE_TYPE_JOURNAL;
-				break;
-		}
+		cache_dir = e_cal_backend_get_cache_dir (E_CAL_BACKEND (backend));
 
 		/* remove the old cache while migrating to ECalBackendStore */
-		e_cal_backend_cache_remove (uri, source_type);
-		priv->store = (ECalBackendStore *) e_cal_backend_file_store_new (uri, source_type);
+		e_cal_backend_cache_remove (cache_dir, "cache.xml");
+		priv->store = e_cal_backend_file_store_new (cache_dir);
 		e_cal_backend_store_load (priv->store);
 
 		if (!priv->store) {
