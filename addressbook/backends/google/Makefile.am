@@ -12,8 +12,6 @@ libebookbackendgoogle_la_CPPFLAGS = \
 	$(GDATA_CFLAGS)
 
 libebookbackendgoogle_la_SOURCES = \
-	util.h				\
-	util.c				\
 	e-book-backend-google-factory.c	\
 	e-book-backend-google.h		\
 	e-book-backend-google.c
