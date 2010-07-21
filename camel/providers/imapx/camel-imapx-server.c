@@ -1528,9 +1528,10 @@ imapx_untagged(CamelIMAPXServer *imap, GError **error)
 							g_hash_table_remove (ifolder->ignore_recent, mi->uid);
 						}
 
-						if (job->op)
-							camel_operation_progress (job->op, (camel_folder_summary_count (job->folder->summary)
-											    * 100)/ifolder->exists_on_server?:1);
+						if (job->op) {
+							int cnt = (camel_folder_summary_count (job->folder->summary) * 100 )/ifolder->exists_on_server;
+							camel_operation_progress (job->op, cnt?cnt:1);
+						}
 					}
 				}
 			}
@@ -2382,7 +2383,7 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 						&cw->error, CAMEL_IMAPX_ERROR, 1,
 						"SELECT %s failed: %s",
 						camel_folder_get_full_name(cw->select),
-						ic->status->text?:"<unknown reason>");
+						ic->status->text? ic->status->text:"<unknown reason>");
 				cw->complete(is, cw);
 				cw = cn;
 				cn = cn->next;
