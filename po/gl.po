@@ -21,8 +21,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server-master-po-gl-71644\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-18 19:10+0200\n"
-"PO-Revision-Date: 2010-07-18 19:11+0200\n"
+"POT-Creation-Date: 2010-07-21 16:40+0200\n"
+"PO-Revision-Date: 2010-07-21 16:42+0200\n"
 "Last-Translator: Fran Diéguez <frandieguez@ubuntu.com>\n"
 "Language-Team: Galician <gnome-gl-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -99,6 +99,11 @@ msgstr "Recibindo os resultados da busca no LDAP..."
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4513
 msgid "Error performing search"
 msgstr "Produciuse un erro ao realizar a busca"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:329
+#, c-format
+msgid "Create resource '%s' failed with http status: %d"
+msgstr "Produciuse un fallo ao crear o recurso «%s» co estado http: %d"
 
 #: ../addressbook/libebook/e-book.c:3001
 #, c-format
@@ -852,6 +857,15 @@ msgstr "A consulta non é correcta: %s"
 msgid "Cannot get changes: %s"
 msgstr "Non é posíbel obter os cambios: %s"
 
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:501
+#, c-format
+msgid "Unexpected HTTP status code %d returned"
+msgstr "Devolveuse un código de estado HTTP %d non esperado"
+
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4114
+msgid "Calendar doesn't support Free/Busy"
+msgstr "O calendario non admite Libre/Ocupado"
+
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:719
 #: ../libedataserver/e-categories.c:44
 msgid "Birthday"
@@ -1602,8 +1616,8 @@ msgstr "Debe estar traballando con conexión para completar esta operación"
 #: ../camel/camel-file-utils.c:691 ../camel/camel-gpg-context.c:887
 #: ../camel/camel-gpg-context.c:1175 ../camel/camel-net-utils.c:512
 #: ../camel/camel-net-utils.c:689 ../camel/camel-net-utils.c:838
-#: ../camel/providers/imapx/camel-imapx-server.c:4677
-#: ../camel/providers/imapx/camel-imapx-server.c:4694
+#: ../camel/providers/imapx/camel-imapx-server.c:4678
+#: ../camel/providers/imapx/camel-imapx-server.c:4695
 #: ../camel/providers/nntp/camel-nntp-summary.c:396
 #: ../camel/providers/pop3/camel-pop3-folder.c:269
 #: ../camel/providers/pop3/camel-pop3-folder.c:625
@@ -2737,8 +2751,8 @@ msgstr "Comprobando as mensaxes borradas %s"
 #: ../camel/providers/groupwise/camel-groupwise-store.c:779
 #: ../camel/providers/imap/camel-imap-folder.c:3806
 #: ../camel/providers/imap/camel-imap-folder.c:3884
-#: ../camel/providers/imapx/camel-imapx-server.c:3720
-#: ../camel/providers/imapx/camel-imapx-server.c:3844
+#: ../camel/providers/imapx/camel-imapx-server.c:3721
+#: ../camel/providers/imapx/camel-imapx-server.c:3845
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Recollendo a información de resumo para as mensaxes novas en %s"
@@ -2846,7 +2860,7 @@ msgstr "O servidor ou usuario non está dispoñíbel no URL"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:207
 #: ../camel/providers/imap/camel-imap-store.c:1207
-#: ../camel/providers/imapx/camel-imapx-server.c:2974
+#: ../camel/providers/imapx/camel-imapx-server.c:2975
 #, c-format
 msgid "You did not enter a password."
 msgstr "Non introduciu un contrasinal."
@@ -2999,7 +3013,7 @@ msgid "Could not create directory %s: %s"
 msgstr "Non foi posíbel crear o directorio %s: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:960
-#: ../camel/providers/imapx/camel-imapx-server.c:3759
+#: ../camel/providers/imapx/camel-imapx-server.c:3760
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Examinando mensaxes cambiadas en %s"
@@ -3009,13 +3023,13 @@ msgid "Unable to retrieve message: "
 msgstr "Non foi posíbel obter a mensaxe."
 
 #: ../camel/providers/imap/camel-imap-folder.c:3266
-#: ../camel/providers/imapx/camel-imapx-server.c:4956
+#: ../camel/providers/imapx/camel-imapx-server.c:4957
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Non é posíbel obter a mensaxe co ID de mensaxe %s: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3267
-#: ../camel/providers/imapx/camel-imapx-server.c:4957
+#: ../camel/providers/imapx/camel-imapx-server.c:4958
 msgid "No such message available."
 msgstr "A mensaxe non está dispoñíbel."
 
@@ -3176,21 +3190,21 @@ msgstr "Non foi posíbel realizar a conexión con %s: "
 #: ../camel/providers/imap/camel-imap-store.c:591
 #: ../camel/providers/imap/camel-imap-store.c:598
 #: ../camel/providers/imap/camel-imap-store.c:625
-#: ../camel/providers/imapx/camel-imapx-server.c:2827
-#: ../camel/providers/imapx/camel-imapx-server.c:2863
+#: ../camel/providers/imapx/camel-imapx-server.c:2828
+#: ../camel/providers/imapx/camel-imapx-server.c:2864
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr ""
 "Non foi posíbel realizar a conexión ao servidor IMAP %s en modo seguro: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:572
-#: ../camel/providers/imapx/camel-imapx-server.c:2828
+#: ../camel/providers/imapx/camel-imapx-server.c:2829
 #: ../camel/providers/smtp/camel-smtp-transport.c:295
 msgid "STARTTLS not supported"
 msgstr "O STARTTLS non é compatíbel"
 
 #: ../camel/providers/imap/camel-imap-store.c:592
-#: ../camel/providers/imapx/camel-imapx-server.c:2864
+#: ../camel/providers/imapx/camel-imapx-server.c:2865
 msgid "SSL negotiations failed"
 msgstr "As negociacións SSL fallaron"
 
@@ -3200,13 +3214,13 @@ msgid "SSL is not available in this build"
 msgstr "O SSL non está dispoñíbel nesta compilación"
 
 #: ../camel/providers/imap/camel-imap-store.c:747
-#: ../camel/providers/imapx/camel-imapx-server.c:2647
+#: ../camel/providers/imapx/camel-imapx-server.c:2648
 #, c-format
 msgid "Connection cancelled"
 msgstr "Conexión cancelada"
 
 #: ../camel/providers/imap/camel-imap-store.c:752
-#: ../camel/providers/imapx/camel-imapx-server.c:2652
+#: ../camel/providers/imapx/camel-imapx-server.c:2653
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "Non foi posíbel conectar coa orde «%s»: %s"
@@ -3226,20 +3240,20 @@ msgid "Inbox"
 msgstr "Caixa de entrada"
 
 #: ../camel/providers/imap/camel-imap-store.c:1148
-#: ../camel/providers/imapx/camel-imapx-server.c:2930
+#: ../camel/providers/imapx/camel-imapx-server.c:2931
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "O servidor IMAP %s non permite o tipo de autenticación solicitado %s "
 
 #: ../camel/providers/imap/camel-imap-store.c:1160
-#: ../camel/providers/imapx/camel-imapx-server.c:2942
+#: ../camel/providers/imapx/camel-imapx-server.c:2943
 #: ../camel/providers/smtp/camel-smtp-transport.c:483
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "Non é compatíbel co tipo de autenticación %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:1239
-#: ../camel/providers/imapx/camel-imapx-server.c:3012
+#: ../camel/providers/imapx/camel-imapx-server.c:3013
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3319,26 +3333,26 @@ msgstr "IMAP+"
 msgid "Error writing to cache stream: "
 msgstr "Produciuse un erro ao escribir de caché do fluxo: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2007
+#: ../camel/providers/imapx/camel-imapx-server.c:2008
 #, c-format
 msgid "Not authenticated"
 msgstr "Non autenticado"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2755
+#: ../camel/providers/imapx/camel-imapx-server.c:2756
 #, c-format
 msgid "Could not connect to %s (port %s): "
 msgstr "Non foi posíbel conectar a %s (porto %s): "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3184
+#: ../camel/providers/imapx/camel-imapx-server.c:3185
 msgid "Closing tmp stream failed: "
 msgstr "Produciuse un fallo no peche do fluxo temporal:"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5080
+#: ../camel/providers/imapx/camel-imapx-server.c:5081
 #, c-format
 msgid "Cannot create spool file: %s"
 msgstr "Non é posíbel crear o ficheiro de cola de correo: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5095
+#: ../camel/providers/imapx/camel-imapx-server.c:5096
 msgid "Cannot create spool file: "
 msgstr "Non é posíbel crear o ficheiro de cola de correo: "
 
@@ -4219,14 +4233,14 @@ msgid "Could not connect to POP server %s"
 msgstr "Non foi posíbel estabelecer a conexión co servidor POP %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:687
-#, fuzzy, c-format
+#, c-format
 msgid "POP3 server %s"
-msgstr "Servidor de IMAP %s"
+msgstr "Servidor de POP3 %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:691
-#, fuzzy, c-format
+#, c-format
 msgid "POP3 server for %s on %s"
-msgstr "Servizo IMAP para %s en %s"
+msgstr "Servidor POP3 para %s en %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:706
 #, c-format
@@ -4236,7 +4250,7 @@ msgstr "Non existe o cartafol «%s»."
 #: ../camel/providers/pop3/camel-pop3-store.c:730
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
-msgstr ""
+msgstr "O almacenamento en POP3 non ten xerarquía de cartafoles."
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:36
 msgid "Sendmail"
