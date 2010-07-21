@@ -37,6 +37,8 @@
 #include <prerror.h>
 #include <prerr.h>
 
+#include <glib/gi18n-lib.h>
+
 #include "camel-file-utils.h"
 #include "camel-net-utils.h"
 #include "camel-operation.h"
@@ -720,6 +722,252 @@ error:
 out:
 
 	return fd;
+}
+
+/* Resolves a port number using getaddrinfo().  Returns 0 if the port can't be resolved or if the operation is cancelled */
+static gint
+resolve_port (const char *service, gint fallback_port, GError **error)
+{
+	struct addrinfo *ai;
+	GError *my_error;
+	gint port;
+
+	port = 0;
+
+	my_error = NULL;
+	ai = camel_getaddrinfo (NULL, service, NULL, &my_error);
+	if (ai == NULL && fallback_port != 0 && !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+		port = fallback_port;
+	else if (ai == NULL) {
+		g_propagate_error (error, my_error);
+	} else if (ai) {
+		if (ai->ai_family == AF_INET) {
+			port = ((struct sockaddr_in *) ai->ai_addr)->sin_port;
+		}
+#ifdef ENABLE_IPv6
+		else if (ai->ai_family == AF_INET6) {
+			port = ((struct sockaddr_in6 *) ai->ai_addr)->sin6_port;
+		}
+#endif
+		else {
+			g_assert_not_reached ();
+		}
+
+		camel_freeaddrinfo (ai);
+	}
+
+	return port;
+}
+
+static gboolean
+socks5_initiate_and_request_authentication (CamelTcpStreamRaw *raw, PRFileDesc *fd, GError **error)
+{
+	gchar request[3];
+	gchar reply[2];
+
+	request[0] = 0x05;	/* SOCKS5 */
+	request[1] = 1;		/* Number of authentication methods.  We just support "unauthenticated" for now. */
+	request[2] = 0;		/* no authentication, please - extending this is left as an exercise for the reader */
+
+	d (g_print ("  writing SOCKS5 request for authentication\n"));
+	if (write_to_prfd (fd, request, sizeof (request), error) != sizeof (request)) {
+		d (g_print ("  failed: %d\n", errno));
+		return FALSE;
+	}
+
+	d (g_print ("  reading SOCKS5 reply\n"));
+	if (read_from_prfd (fd, reply, sizeof (reply), error) != sizeof (reply)) {
+		d (g_print ("  failed: %d\n", errno));
+		return FALSE;
+	}
+
+	if (!(reply[0] == 5		/* server supports SOCKS5 */
+	      && reply[1] == 0)) {	/* and it grants us no authentication (see request[2]) */
+		errno = ECONNREFUSED;
+		d (g_print ("  proxy replied with code %d %d\n", reply[0], reply[1]));
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static const char *
+socks5_reply_error_to_string (gchar error_code)
+{
+	switch (error_code) {
+	case 0x01: return _("General SOCKS server failure");
+	case 0x02: return _("SOCKS server's rules do not allow connection");
+	case 0x03: return _("Network is unreachable from SOCKS server");
+	case 0x04: return _("Host is unreachable from SOCKS server");
+	case 0x05: return _("Connection refused");
+	case 0x06: return _("Time-to-live expired");
+	case 0x07: return _("Command not supported by SOCKS server");
+	case 0x08: return _("Address type not supported by SOCKS server");
+	default: return _("Unknown error from SOCKS server");
+	}
+}
+
+static gboolean
+socks5_consume_reply_address (CamelTcpStreamRaw *raw, PRFileDesc *fd, GError **error)
+{
+	gchar address_type;
+	gint bytes_to_consume;
+	gchar *address_and_port;
+
+	address_and_port = NULL;
+
+	if (read_from_prfd (fd, &address_type, sizeof (address_type), error) != sizeof (address_type))
+		goto incomplete_reply;
+
+	if (address_type == 0x01)
+		bytes_to_consume = 4; /* IPv4 address */
+	else if (address_type == 0x04)
+		bytes_to_consume = 16; /* IPv6 address */
+	else if (address_type == 0x03) {
+		guchar address_len;
+
+		/* we'll get an octet with the address length, and then the address itself */
+
+		if (read_from_prfd (fd, (gchar *) &address_len, sizeof (address_len), error) != sizeof (address_len))
+			goto incomplete_reply;
+
+		bytes_to_consume = address_len;
+	} else {
+		g_set_error (error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_NOT_CONNECTED, _("Got unknown address type from SOCKS server"));
+		return FALSE;
+	}
+
+	bytes_to_consume += 2; /* 2 octets for port number */
+	address_and_port = g_new (gchar, bytes_to_consume);
+
+	if (read_from_prfd (fd, address_and_port, bytes_to_consume, error) != bytes_to_consume)
+		goto incomplete_reply;
+
+	g_free (address_and_port); /* Currently we don't do anything to these; maybe some authenticated method will need them later */
+
+	return TRUE;
+
+incomplete_reply:
+	g_free (address_and_port);
+
+	g_set_error (error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_NOT_CONNECTED, _("Incomplete reply from SOCKS server"));
+	return FALSE;
+}
+
+static gboolean
+socks5_request_connect (CamelTcpStreamRaw *raw, PRFileDesc *fd, const char *host, gint port, GError **error)
+{
+	gchar *request;
+	gchar reply[3];
+	gint host_len;
+	gint request_len;
+	gint num_written;
+
+	host_len = strlen (host);
+	if (host_len > 255) {
+		g_set_error (error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, _("Hostname is too long (maximum is 255 characters)"));
+		return FALSE;
+	}
+
+	request_len = 4 + 1 + host_len + 2; /* Request header + octect for host_len + host + 2 octets for port */
+	request = g_new (gchar, request_len);
+
+	request[0] = 0x05;	/* Version - SOCKS5 */
+	request[1] = 0x01;	/* Command - CONNECT */
+	request[2] = 0x00;	/* Reserved */
+	request[3] = 0x03;	/* ATYP - address type - DOMAINNAME */
+	request[4] = host_len;
+	memcpy (request + 5, host, host_len);
+	request[5 + host_len] = (port & 0xff00) >> 8; /* high byte of port */
+	request[5 + host_len + 1] = port & 0xff;      /* low byte of port */
+
+	d (g_print ("  writing SOCKS5 request for connection\n"));
+	num_written = write_to_prfd (fd, request, request_len, error);
+	g_free (request);
+
+	if (num_written != request_len) {
+		d (g_print ("  failed: %d\n", errno));
+		return FALSE;
+	}
+
+	d (g_print ("  reading SOCKS5 reply\n"));
+	if (read_from_prfd (fd, reply, sizeof (reply), error) != sizeof (reply)) {
+		d (g_print ("  failed: %d\n", errno));
+		return FALSE;
+	}
+
+	if (reply[0] != 0x05) {	/* SOCKS5 */
+		g_set_error (error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_NOT_CONNECTED, _("Invalid reply from proxy server"));
+		return FALSE;
+	}
+
+	if (reply[1] != 0x00) {	/* error code */
+		g_set_error (error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_NOT_CONNECTED, socks5_reply_error_to_string (reply[1]));
+		return FALSE;
+	}
+
+	if (reply[2] != 0x00) { /* reserved - must be 0 */
+		g_set_error (error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_NOT_CONNECTED, _("Invalid reply from proxy server"));
+		return FALSE;
+	}
+
+	/* The rest of the reply is the address that the SOCKS server uses to
+	 * identify to the final host.  This is of variable length, so we must
+	 * consume it by hand.
+	 */
+	if (!socks5_consume_reply_address (raw, fd, error))
+		return FALSE;
+	
+	return TRUE;
+}
+
+/* RFC 1928 - SOCKS protocol version 5 */
+static PRFileDesc *
+connect_to_socks5_proxy (CamelTcpStreamRaw *raw,
+			 const char *proxy_host, gint proxy_port,
+			 const char *host, const char *service, gint fallback_port,
+			 GError *error)
+{
+	PRFileDesc *fd;
+	gint port;
+
+	fd = connect_to_proxy (raw, proxy_host, proxy_port, error);
+	if (!fd)
+		goto error;
+
+	port = resolve_port (service, fallback_port, error);
+	if (port == 0)
+		goto error;
+
+	if (!socks5_initiate_and_request_authentication (raw, fd, error))
+		goto error;
+
+	if (!socks5_request_connect (raw, fd, host, port, error))
+		goto error;
+
+	d (g_print ("  success\n"));
+
+	goto out;
+
+error:
+	if (fd) {
+		gint save_errno;
+
+		save_errno = errno;
+		PR_Shutdown (fd, PR_SHUTDOWN_BOTH);
+		PR_Close (fd);
+		errno = save_errno;
+		fd = NULL;
+	}
+
+	d (g_print ("  returning errno %d\n", errno));
+
+out:
+
+	d (g_print ("}\n"));
+
+	return fd;
+	
 }
 
 static gint
