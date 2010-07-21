@@ -81,7 +81,6 @@ struct _EBookBackendClass {
 	void (*_pas_reserved4) (void);
 };
 
-gboolean    e_book_backend_construct                (EBookBackend             *backend);
 const gchar *e_book_backend_get_cache_dir           (EBookBackend             *backend);
 void        e_book_backend_set_cache_dir            (EBookBackend             *backend,
                                                      const gchar              *cache_dir);

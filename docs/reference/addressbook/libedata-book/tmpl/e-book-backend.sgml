@@ -38,15 +38,6 @@ EBookBackend
 
 </para>
 
-<!-- ##### FUNCTION e_book_backend_construct ##### -->
-<para>
-
-</para>
-
-@backend: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_book_backend_get_cache_dir ##### -->
 <para>
 

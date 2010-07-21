@@ -1193,13 +1193,17 @@ e_book_backend_webdav_load_source(EBookBackend *backend,
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV(backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
 	gchar                     *uri;
+	const gchar               *cache_dir;
 	const gchar               *offline;
 	const gchar               *use_ssl;
+	gchar                     *filename;
 	SoupSession               *session;
 	SoupURI                   *suri;
 
 	/* will try fetch ctag for the first time, if it fails then sets this to FALSE */
 	priv->supports_getctag = TRUE;
+
+	cache_dir = e_book_backend_get_cache_dir (backend);
 
 	uri = e_source_get_uri(source);
 	if (uri == NULL) {
@@ -1270,7 +1274,9 @@ e_book_backend_webdav_load_source(EBookBackend *backend,
 		return;
 	}
 
-	priv->cache = e_book_backend_cache_new(priv->uri);
+	filename = g_build_filename (cache_dir, "cache.xml", NULL);
+	priv->cache = e_book_backend_cache_new (filename);
+	g_free (filename);
 
 	session = soup_session_sync_new();
 	g_signal_connect(session, "authenticate", G_CALLBACK(soup_authenticate),

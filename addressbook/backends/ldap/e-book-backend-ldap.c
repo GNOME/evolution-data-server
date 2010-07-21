@@ -5021,8 +5021,10 @@ e_book_backend_ldap_load_source (EBookBackend             *backend,
 	gint limit = 100;
 	gint timeout = 60; /* 1 minute */
 	gchar *uri;
+	const gchar *cache_dir;
 	const gchar *str;
 	const gchar *offline;
+	gchar *filename;
 	GError *err;
 	gboolean auth_required;
 
@@ -5032,6 +5034,7 @@ e_book_backend_ldap_load_source (EBookBackend             *backend,
 		printf ("e_book_backend_ldap_load_source ... \n");
 
 	uri = e_source_get_uri (source);
+	cache_dir = e_book_backend_get_cache_dir (backend);
 
 	offline = e_source_get_property (source, "offline_sync");
 	if (offline  &&   g_str_equal (offline, "1"))
@@ -5086,7 +5089,10 @@ e_book_backend_ldap_load_source (EBookBackend             *backend,
 		bl->priv->cache = NULL;
 	}
 
-	bl->priv->cache = e_book_backend_cache_new (uri);
+	filename = g_build_filename (cache_dir, "cache.xml", NULL);
+	bl->priv->cache = e_book_backend_cache_new (filename);
+	g_free (filename);
+
 	g_free (uri);
 
 	if (bl->priv->mode == E_DATA_BOOK_MODE_LOCAL) {

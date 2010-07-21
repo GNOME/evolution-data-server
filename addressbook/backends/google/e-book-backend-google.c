@@ -89,10 +89,17 @@ static void
 cache_init (EBookBackend *backend, gboolean on_disk)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	const gchar *cache_dir;
+
+	cache_dir = e_book_backend_get_cache_dir (backend);
 
 	if (on_disk) {
+		gchar *filename;
+
+		filename = g_build_filename (cache_dir, "cache.xml", NULL);
 		priv->cache_type = ON_DISK_CACHE;
-		priv->cache.on_disk = e_book_backend_cache_new (priv->username);
+		priv->cache.on_disk = e_book_backend_cache_new (filename);
+		g_free (filename);
 	} else {
 		priv->cache_type = IN_MEMORY_CACHE;
 		priv->cache.in_memory.contacts = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);

@@ -194,22 +194,8 @@ e_book_backend_init (EBookBackend *backend)
 }
 
 /**
- * e_book_backend_construct:
- * @backend: an #EBookBackend
- *
- * Does nothing.
- *
- * Returns: %TRUE.
- **/
-gboolean
-e_book_backend_construct (EBookBackend *backend)
-{
-	return TRUE;
-}
-
-/**
  * e_book_backend_get_cache_dir:
- * @backend: en #EBookBackend
+ * @backend: an #EBookBackend
  *
  * Returns the cache directory for the given backend.
  *

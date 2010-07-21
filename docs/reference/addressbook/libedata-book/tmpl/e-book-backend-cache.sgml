@@ -26,17 +26,12 @@ EBookBackendCache
 </para>
 
 
-<!-- ##### ARG EBookBackendCache:uri ##### -->
-<para>
-
-</para>
-
 <!-- ##### FUNCTION e_book_backend_cache_new ##### -->
 <para>
 
 </para>
 
-@uri: 
+@filename: 
 @Returns: 
 
 
@@ -87,15 +82,6 @@ EBookBackendCache
 
 @cache: 
 @query: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_book_backend_cache_exists ##### -->
-<para>
-
-</para>
-
-@uri: 
 @Returns: 
 
 

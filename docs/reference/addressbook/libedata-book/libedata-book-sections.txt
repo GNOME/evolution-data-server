@@ -31,7 +31,6 @@ e_book_backend_sync_get_type
 <FILE>e-book-backend</FILE>
 <TITLE>EBookBackend</TITLE>
 EBookBackend
-e_book_backend_construct
 e_book_backend_get_cache_dir
 e_book_backend_set_cache_dir
 e_book_backend_load_source
@@ -166,7 +165,6 @@ e_book_backend_cache_add_contact
 e_book_backend_cache_remove_contact
 e_book_backend_cache_check_contact
 e_book_backend_cache_get_contacts
-e_book_backend_cache_exists
 e_book_backend_cache_set_populated
 e_book_backend_cache_is_populated
 e_book_backend_cache_set_time

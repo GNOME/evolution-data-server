@@ -46,6 +46,12 @@ e-data-book-marshal
 e-data-book-types
 
 
+<!-- ##### ARG EBookBackendCache:uri ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### STRUCT EBookBackendCachePrivate ##### -->
 <para>
 
@@ -163,6 +169,22 @@ e-data-book-types
 
 </para>
 
+
+<!-- ##### FUNCTION e_book_backend_cache_exists ##### -->
+<para>
+
+</para>
+
+@uri: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_backend_construct ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
 
 <!-- ##### FUNCTION e_data_book_factory_activate ##### -->
 <para>

@@ -3451,14 +3451,16 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
         gchar *book_name;
         gchar *uri;
 	gchar **tokens;
+	const gchar *cache_dir;
 	const gchar *port;
 	gint db_error;
 	DB *db;
 	DB_ENV *env;
 	EUri *parsed_uri;
-	gint i;
 	const gchar *use_ssl;
 	const gchar *offline;
+
+	cache_dir = e_book_backend_get_cache_dir (backend);
 
 	if (enable_debug)
 		printf("\ne_book_backend_groupwise_load_source.. \n");
@@ -3499,24 +3501,12 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 
 	priv->book_name = book_name;
 
-	for (i = 0; i < strlen (uri); i++) {
-		switch (uri[i]) {
-		case ':' :
-		case '/' :
-			uri[i] = '_';
-		}
-	}
-
 	g_free (priv->summary_file_name);
-	tmp = g_build_filename (
-		e_get_user_data_dir (), "addressbook",
-		uri, priv->book_name, NULL);
+	tmp = g_build_filename (cache_dir, priv->book_name, NULL);
 	priv->summary_file_name = g_strconcat (tmp, ".summary", NULL);
 	g_free (tmp);
 
-	dirname = g_build_filename (
-		g_get_user_cache_dir (), "addressbook",
-		uri, priv->book_name, NULL);
+	dirname = g_build_filename (cache_dir, priv->book_name, NULL);
 	filename = g_build_filename (dirname, "cache.db", NULL);
 
 	db_error = e_db3_utils_maybe_recover (filename);
@@ -3643,7 +3633,7 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	}
 
 	if (priv->mode == E_DATA_BOOK_MODE_LOCAL)
-		if (!e_book_backend_db_cache_exists (priv->original_uri)) {
+		if (!g_file_test (filename, G_FILE_TEST_IS_REGULAR)) {
 			g_free (uri);
 			e_uri_free (parsed_uri);
 			g_propagate_error (perror, EDB_ERROR (OFFLINE_UNAVAILABLE));

@@ -62,7 +62,7 @@ struct _EBookBackendCacheClass {
 
 GType		e_book_backend_cache_get_type	(void);
 EBookBackendCache *
-		e_book_backend_cache_new	(const gchar *uri);
+		e_book_backend_cache_new	(const gchar *filename);
 EContact *	e_book_backend_cache_get_contact(EBookBackendCache *cache,
 						 const gchar *uid);
 gboolean	e_book_backend_cache_add_contact(EBookBackendCache *cache,
@@ -76,7 +76,6 @@ gboolean	e_book_backend_cache_check_contact
 GList *		e_book_backend_cache_get_contacts
 						(EBookBackendCache *cache,
 						 const gchar *query);
-gboolean	e_book_backend_cache_exists	(const gchar *uri);
 void		e_book_backend_cache_set_populated
 						(EBookBackendCache *cache);
 gboolean	e_book_backend_cache_is_populated
