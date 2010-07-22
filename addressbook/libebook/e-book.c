@@ -3260,7 +3260,7 @@ e_book_new_system_addressbook (GError **error)
 	EBook *book;
 	struct check_system_data csd;
 
-	csd.uri = "system:local";
+	csd.uri = "local:system";
 	csd.uri_source = NULL;
 
 	system_source = search_known_sources (check_system, &csd, &err);
