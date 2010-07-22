@@ -958,22 +958,7 @@ e_cal_new_from_uri (const gchar *uri, ECalSourceType type)
 ECal *
 e_cal_new_system_calendar (void)
 {
-	ECal *ecal;
-	const gchar *user_data_dir;
-	gchar *filename;
-	gchar *uri;
-
-	user_data_dir = e_get_user_data_dir ();
-	filename = g_build_filename (
-		user_data_dir, "calendar", "local", "system", NULL);
-
-	uri = g_filename_to_uri (filename, NULL, NULL);
-	ecal = e_cal_new_from_uri (uri, E_CAL_SOURCE_TYPE_EVENT);
-
-	g_free (filename);
-	g_free (uri);
-
-	return ecal;
+	return e_cal_new_from_uri ("local:system", E_CAL_SOURCE_TYPE_EVENT);
 }
 
 /**
@@ -989,22 +974,7 @@ e_cal_new_system_calendar (void)
 ECal *
 e_cal_new_system_tasks (void)
 {
-	ECal *ecal;
-	const gchar *user_data_dir;
-	gchar *filename;
-	gchar *uri;
-
-	user_data_dir = e_get_user_data_dir ();
-	filename = g_build_filename (
-		user_data_dir, "tasks", "local", "system", NULL);
-
-	uri = g_filename_to_uri (filename, NULL, NULL);
-	ecal = e_cal_new_from_uri (uri, E_CAL_SOURCE_TYPE_TODO);
-
-	g_free (filename);
-	g_free (uri);
-
-	return ecal;
+	return e_cal_new_from_uri ("local:system", E_CAL_SOURCE_TYPE_TODO);
 }
 
 /**
@@ -1020,22 +990,7 @@ e_cal_new_system_tasks (void)
 ECal *
 e_cal_new_system_memos (void)
 {
-	ECal *ecal;
-	const gchar *user_data_dir;
-	gchar *filename;
-	gchar *uri;
-
-	user_data_dir = e_get_user_data_dir ();
-	filename = g_build_filename (
-		user_data_dir, "memos", "local", "system", NULL);
-
-	uri = g_filename_to_uri (filename, NULL, NULL);
-	ecal = e_cal_new_from_uri (uri, E_CAL_SOURCE_TYPE_JOURNAL);
-
-	g_free (filename);
-	g_free (uri);
-
-	return ecal;
+	return e_cal_new_from_uri ("local:system", E_CAL_SOURCE_TYPE_JOURNAL);
 }
 
 /**

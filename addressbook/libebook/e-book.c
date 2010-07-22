@@ -3258,24 +3258,14 @@ e_book_new_system_addressbook (GError **error)
 	GError *err = NULL;
 	ESource *system_source = NULL;
 	EBook *book;
-	gchar *uri, *filename;
-	const gchar *user_data_dir;
 	struct check_system_data csd;
 
-	user_data_dir = e_get_user_data_dir ();
-	filename = g_build_filename (
-		user_data_dir, "addressbook", "local", "system", NULL);
-	uri = g_filename_to_uri (filename, NULL, NULL);
-	g_free (filename);
-
-	csd.uri = uri;
+	csd.uri = "system:local";
 	csd.uri_source = NULL;
 
 	system_source = search_known_sources (check_system, &csd, &err);
 	if (err) {
 		g_propagate_error (error, err);
-		g_free (uri);
-
 		return NULL;
 	}
 
@@ -3288,13 +3278,11 @@ e_book_new_system_addressbook (GError **error)
 		book = e_book_new (system_source, &err);
 		g_object_unref (system_source);
 	} else {
-		book = e_book_new_from_uri (uri, &err);
+		book = e_book_new_from_uri (csd.uri, &err);
 	}
 
 	if (csd.uri_source)
 		g_object_unref (csd.uri_source);
-
-	g_free (uri);
 
 	if (err)
 		g_propagate_error (error, err);
