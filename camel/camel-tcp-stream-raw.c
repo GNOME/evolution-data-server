@@ -620,7 +620,7 @@ out:
 static PRFileDesc *
 connect_to_proxy (CamelTcpStreamRaw *raw, const gchar *proxy_host, gint proxy_port, GError **error)
 {
-	struct addrinfo *ai, hints;
+	struct addrinfo *addr, *ai, hints;
 	gchar serv[16];
 	PRFileDesc *fd;
 	gint save_errno;
@@ -634,16 +634,25 @@ connect_to_proxy (CamelTcpStreamRaw *raw, const gchar *proxy_host, gint proxy_po
 	memset (&hints, 0, sizeof (hints));
 	hints.ai_socktype = SOCK_STREAM;
 
-	ai = camel_getaddrinfo (proxy_host, serv, &hints, error);
-	if (!ai)
+	addr = camel_getaddrinfo (proxy_host, serv, &hints, error);
+	if (!addr)
 		return NULL;
 
 	d (g_print ("  creating socket and connecting\n"));
 
-	fd = socket_connect (ai, error);
+	ai = addr;
+	while (ai) {
+		fd = socket_connect (ai, error);
+		if (fd)
+			goto out;
+
+		ai = ai->ai_next;
+	}
+
+out:
 	save_errno = errno;
 
-	camel_freeaddrinfo (ai);
+	camel_freeaddrinfo (addr);
 
 	if (!fd) {
 		errno = save_errno;
