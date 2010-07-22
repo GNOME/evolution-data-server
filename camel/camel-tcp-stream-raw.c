@@ -781,10 +781,16 @@ socks5_initiate_and_request_authentication (CamelTcpStreamRaw *raw, PRFileDesc *
 		return FALSE;
 	}
 
-	if (!(reply[0] == 5		/* server supports SOCKS5 */
-	      && reply[1] == 0)) {	/* and it grants us no authentication (see request[2]) */
-		errno = ECONNREFUSED;
-		d (g_print ("  proxy replied with code %d %d\n", reply[0], reply[1]));
+	if (reply[0] != 5) {		/* server supports SOCKS5 */
+		g_set_error (error, CAMEL_PROXY_ERROR, CAMEL_PROXY_ERROR_PROXY_NOT_SUPPORTED,
+			     _("The proxy host does not support SOCKS5"));
+		return FALSE;
+	}
+
+	if (reply[1] != 0) {		/* and it grants us no authentication (see request[2]) */
+		g_set_error (error, CAMEL_PROXY_ERROR, CAMEL_PROXY_ERROR_CANT_AUTHENTICATE
+			     _("Could not find a suitable authentication type: code 0x%x"),
+			     reply[1]);
 		return FALSE;
 	}
 
@@ -1184,6 +1190,19 @@ camel_tcp_stream_raw_init (CamelTcpStreamRaw *stream)
 	priv = stream->priv;
 
 	priv->sockfd = NULL;
+}
+
+GQuark
+camel_proxy_error_quark (void)
+{
+	static GQuark quark = 0;
+
+	if (G_UNLIKELY (quark == 0)) {
+		const gchar *string = "camel-proxy-error-quark";
+		quark = g_quark_from_static_string (string);
+	}
+
+	return quark;
 }
 
 /**
