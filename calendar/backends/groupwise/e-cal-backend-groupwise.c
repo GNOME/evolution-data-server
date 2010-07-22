@@ -2251,8 +2251,6 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 			GSList *l, *comp_list = e_cal_backend_store_get_components_by_uid (priv->store, uid);
 
 			if (e_cal_component_has_attendees (E_CAL_COMPONENT (comp_list->data))) {
-				EGwConnectionStatus status;
-
 				/* get recurrence key and send it to
 				 * e_gw_connection_remove_recurrence_item */
 

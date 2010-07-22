@@ -1609,7 +1609,7 @@ vee_folder_rebuild_folder (CamelVeeFolder *vee_folder,
                            CamelFolder *source,
                            GError **error)
 {
-	GPtrArray *match, *all;
+	GPtrArray *match = NULL, *all;
 	GHashTable *allhash, *matchhash, *fullhash;
 	GSList *del_list = NULL;
 	CamelFolder *folder = (CamelFolder *)vee_folder;
