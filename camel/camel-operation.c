@@ -492,6 +492,8 @@ camel_operation_start (CamelOperation *cc, const gchar *what, ...)
 	va_list ap;
 	gchar *msg;
 	struct _status_stack *s;
+	CamelOperationStatusFunc status_func;
+	gpointer status_data;
 
 	if (cc == NULL)
 		cc = co_getcc();
@@ -516,9 +518,13 @@ camel_operation_start (CamelOperation *cc, const gchar *what, ...)
 	cc->lastreport = s;
 	cc->status_stack = g_slist_prepend(cc->status_stack, s);
 
+	/* This avoids a race with camel_operation_mute() after we unlock. */
+	status_func = cc->status;
+	status_data = cc->status_data;
+
 	UNLOCK();
 
-	cc->status(cc, msg, CAMEL_OPERATION_START, cc->status_data);
+	status_func (cc, msg, CAMEL_OPERATION_START, status_data);
 
 	d(printf("start '%s'\n", msg, pc));
 }
@@ -543,10 +549,15 @@ camel_operation_start_transient (CamelOperation *cc, const gchar *what, ...)
 	if (cc == NULL)
 		cc = co_getcc();
 
-	if (cc == NULL || cc->status == NULL)
+	if (cc == NULL)
 		return;
 
 	LOCK();
+
+	if (cc->status == NULL) {
+		UNLOCK();
+		return;
+	}
 
 	va_start(ap, what);
 	msg = g_strdup_vprintf(what, ap);
@@ -560,9 +571,6 @@ camel_operation_start_transient (CamelOperation *cc, const gchar *what, ...)
 	d(printf("start '%s'\n", msg, pc));
 
 	UNLOCK();
-
-	/* we dont report it yet */
-	/*cc->status(cc, msg, CAMEL_OPERATION_START, cc->status_data);*/
 }
 
 static guint stamp(void)
@@ -592,6 +600,8 @@ camel_operation_progress (CamelOperation *cc, gint pc)
 	guint now;
 	struct _status_stack *s;
 	gchar *msg = NULL;
+	CamelOperationStatusFunc status_func;
+	gpointer status_data;
 
 	if (cc == NULL)
 		cc = co_getcc();
@@ -613,10 +623,12 @@ camel_operation_progress (CamelOperation *cc, gint pc)
 	   they started, then they update every second */
 	now = stamp();
 	if (cc->status_update == now) {
-		cc = NULL;
+		UNLOCK();
+		return;
 	} else if (s->flags & CAMEL_OPERATION_TRANSIENT) {
 		if (s->stamp + CAMEL_OPERATION_TRANSIENT_DELAY > now) {
-			cc = NULL;
+			UNLOCK();
+			return;
 		} else {
 			cc->status_update = now;
 			cc->lastreport = s;
@@ -628,12 +640,15 @@ camel_operation_progress (CamelOperation *cc, gint pc)
 		msg = g_strdup(s->msg);
 	}
 
+	/* This avoids a race with camel_operation_mute() after we unlock. */
+	status_func = cc->status;
+	status_data = cc->status_data;
+
 	UNLOCK();
 
-	if (cc) {
-		cc->status(cc, msg, pc, cc->status_data);
-		g_free(msg);
-	}
+	status_func (cc, msg, pc, status_data);
+
+	g_free(msg);
 }
 
 /**
@@ -662,6 +677,8 @@ camel_operation_end (CamelOperation *cc)
 	guint now;
 	gchar *msg = NULL;
 	gint pc = 0;
+	CamelOperationStatusFunc status_func;
+	gpointer status_data;
 
 	if (cc == NULL)
 		cc = co_getcc();
@@ -712,10 +729,14 @@ camel_operation_end (CamelOperation *cc)
 	g_free(s);
 	cc->status_stack = g_slist_delete_link(cc->status_stack, cc->status_stack);
 
+	/* This avoids a race with camel_operation_mute() after we unlock. */
+	status_func = cc->status;
+	status_data = cc->status_data;
+
 	UNLOCK();
 
 	if (msg) {
-		cc->status(cc, msg, pc, cc->status_data);
-		g_free(msg);
+		status_func (cc, msg, pc, status_data);
+		g_free (msg);
 	}
 }
