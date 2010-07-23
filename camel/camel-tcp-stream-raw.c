@@ -746,7 +746,11 @@ resolve_port (const char *service, gint fallback_port, GError **error)
 	port = 0;
 
 	my_error = NULL;
-	ai = camel_getaddrinfo (NULL, service, NULL, &my_error);
+	/* FIXME: camel_getaddrinfo() does not take NULL hostnames.  This is different
+	 * from the standard getaddrinfo(), which lets you pass a NULL hostname
+	 * if you just want to resolve a port number.
+	 */
+	ai = camel_getaddrinfo ("localhost", service, NULL, &my_error);
 	if (ai == NULL && fallback_port != 0 && !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
 		port = fallback_port;
 	else if (ai == NULL) {
