@@ -33,6 +33,8 @@
 
 #include <gconf/gconf-client.h>
 
+#include <libedataserver/e-data-server-util.h>
+
 #define d(x)
 
 enum {
@@ -410,6 +412,93 @@ xml_set_service (xmlNodePtr node, EAccountService *service)
 	return changed;
 }
 
+static void
+fix_mbox_folder_uri (gchar **folder_uri)
+{
+	const gchar *user_data_dir;
+	gchar *folder_name;
+	gchar *filename;
+	gchar *path;
+	gchar *uri;
+	gchar *cp;
+
+	/* XXX Local mbox URLs use absolute paths, so we may need to
+	 *     adjust them for the move to XDG base directories.  All
+	 *     this XML crap should be going away soon, so this is
+	 *     hopefully a short-lived hack, */
+
+	user_data_dir = e_get_user_data_dir ();
+
+	if (folder_uri == NULL || *folder_uri == NULL)
+		return;
+
+	/* We're only interested in mbox URIs. */
+	if (!g_str_has_prefix (*folder_uri, "mbox:"))
+		return;
+
+	/* Check for evidence of the legacy data directory. */
+	if (g_strstr_len (*folder_uri, -1, ".evolution") == NULL)
+		return;
+
+	/* Take ownership of the URI string we were given.  If we fail
+	 * at some point, the EAccount setting will be left NULL, but
+	 * we've already determined the URI is obsolete anyway. */
+	uri = *folder_uri;
+	*folder_uri = NULL;
+
+	/* Change the mbox: scheme to file: so we can convert it to a
+	 * filename.  Both are 4 letters so we can do this in-place. */
+	uri[0] = 'f';
+	uri[1] = 'i';
+	uri[2] = 'l';
+	uri[3] = 'e';
+
+	/* The folder name is denoted with a pound sign at the end of
+	 * the URI: mbox:/home/user/.evolution/mail/local#folder_name
+	 * Copy it for later, and then change the pound sign to NUL.
+	 * The remaining URI -should- be a valid local path. */
+	cp = strrchr (uri, '#');
+	folder_name = g_strdup (cp);
+	if (cp != NULL)
+		*cp = '\0';
+
+	/* Try the URI-to-filename conversion.  Bail if we fail. */
+	filename = g_filename_from_uri (uri, NULL, NULL);
+	if (filename == NULL)
+		goto exit;
+
+	/* Preserve the path segment after the ".evolution" part.
+	 * This should not fail, but if it does emit a warning so
+	 * we know there's a bug here. */
+	cp = g_strstr_len (filename, -1, ".evolution");
+	g_return_if_fail (cp != NULL);
+	path = g_strdup (cp + 10);
+
+	g_free (filename);
+	g_free (uri);
+
+	/* Now build a new URI from the pieces.  Again, emit a
+	 * warning if we fail so we know there's a bug here. */
+	filename = g_build_filename (user_data_dir, path, NULL);
+	uri = g_filename_to_uri (filename, NULL, NULL);
+	g_return_if_fail (uri != NULL);
+
+	/* Change the URI scheme as we did before. */
+	uri[0] = 'm';
+	uri[1] = 'b';
+	uri[2] = 'o';
+	uri[3] = 'x';
+
+	/* And finally, append the folder name. */
+	*folder_uri = g_strconcat (uri, folder_name, NULL);
+
+	g_free (filename);
+
+exit:
+	g_free (folder_name);
+	g_free (uri);
+}
+
 /**
  * e_account_set_from_xml:
  * @account: an #EAccount
@@ -505,6 +594,9 @@ e_account_set_from_xml (EAccount *account, const gchar *xml)
 	}
 
 	xmlFreeDoc (doc);
+
+	fix_mbox_folder_uri (&account->drafts_folder_uri);
+	fix_mbox_folder_uri (&account->sent_folder_uri);
 
 	g_signal_emit(account, signals[CHANGED], 0, -1);
 
