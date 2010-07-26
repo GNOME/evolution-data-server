@@ -3129,21 +3129,21 @@ e_book_new (ESource *source, GError **error)
    source have been found. Function returns NULL or the source on which was returned
    TRUE by the check_func. Non-NULL pointer should be unreffed by g_object_unref. */
 static ESource *
-search_known_sources (gboolean (*check_func)(ESource *source, gpointer user_data), gpointer user_data, GError **error)
+search_known_sources (gboolean (*check_func)(ESource *source, gpointer user_data), gpointer user_data, ESourceList **sources, GError **error)
 {
-	ESourceList *sources;
 	ESource *res = NULL;
 	GSList *g;
 	GError *err = NULL;
 
 	g_return_val_if_fail (check_func != NULL, NULL);
+	g_return_val_if_fail (sources != NULL, NULL);
 
-	if (!e_book_get_addressbooks (&sources, &err)) {
+	if (!e_book_get_addressbooks (sources, &err)) {
 		g_propagate_error (error, err);
 		return NULL;
 	}
 
-	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
+	for (g = e_source_list_peek_groups (*sources); g; g = g->next) {
 		ESourceGroup *group = E_SOURCE_GROUP (g->data);
 		GSList *s;
 
@@ -3159,8 +3159,6 @@ search_known_sources (gboolean (*check_func)(ESource *source, gpointer user_data
 		if (res)
 			break;
 	}
-
-	g_object_unref (sources);
 
 	return res;
 }
@@ -3191,15 +3189,18 @@ check_uri (ESource *source, gpointer uri)
 EBook*
 e_book_new_from_uri (const gchar *uri, GError **error)
 {
+	ESourceList *sources = NULL;
 	ESource *source;
 	EBook *book;
 	GError *err = NULL;
 
 	e_return_error_if_fail (uri, E_BOOK_ERROR_INVALID_ARG);
 
-	source = search_known_sources (check_uri, (gpointer) uri, &err);
+	source = search_known_sources (check_uri, (gpointer) uri, &sources, &err);
 	if (err) {
 		g_propagate_error (error, err);
+		if (sources)
+			g_object_unref (sources);
 		return NULL;
 	}
 
@@ -3211,6 +3212,8 @@ e_book_new_from_uri (const gchar *uri, GError **error)
 		g_propagate_error (error, err);
 
 	g_object_unref (source);
+	if (sources)
+		g_object_unref (sources);
 
 	return book;
 }
@@ -3256,6 +3259,7 @@ EBook*
 e_book_new_system_addressbook (GError **error)
 {
 	GError *err = NULL;
+	ESourceList *sources = NULL;
 	ESource *system_source = NULL;
 	EBook *book;
 	struct check_system_data csd;
@@ -3263,9 +3267,11 @@ e_book_new_system_addressbook (GError **error)
 	csd.uri = "local:system";
 	csd.uri_source = NULL;
 
-	system_source = search_known_sources (check_system, &csd, &err);
+	system_source = search_known_sources (check_system, &csd, &sources, &err);
 	if (err) {
 		g_propagate_error (error, err);
+		if (sources)
+			g_object_unref (sources);
 		return NULL;
 	}
 
@@ -3283,6 +3289,8 @@ e_book_new_system_addressbook (GError **error)
 
 	if (csd.uri_source)
 		g_object_unref (csd.uri_source);
+	if (sources)
+		g_object_unref (sources);
 
 	if (err)
 		g_propagate_error (error, err);
@@ -3312,12 +3320,15 @@ EBook*
 e_book_new_default_addressbook   (GError **error)
 {
 	GError *err = NULL;
+	ESourceList *sources = NULL;
 	ESource *default_source = NULL;
 	EBook *book;
 
-	default_source = search_known_sources (check_default, NULL, &err);
+	default_source = search_known_sources (check_default, NULL, &sources, &err);
 	if (err) {
 		g_propagate_error (error, err);
+		if (sources)
+			g_object_unref (sources);
 		return NULL;
 	}
 
@@ -3328,6 +3339,8 @@ e_book_new_default_addressbook   (GError **error)
 		book = e_book_new_system_addressbook (&err);
 	}
 
+	if (sources)
+		g_object_unref (sources);
 	if (err)
 		g_propagate_error (error, err);
 
