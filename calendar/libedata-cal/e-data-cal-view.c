@@ -28,23 +28,17 @@
 #include <string.h>
 #include <glib.h>
 
-#include <dbus/dbus.h>
-#include <dbus/dbus-glib.h>
 #include <glib-object.h>
 
 #include "e-cal-backend-sexp.h"
 #include "e-data-cal-view.h"
-#include "e-data-cal-marshal.h"
-
-extern DBusGConnection *connection;
-
-static gboolean impl_EDataCalView_start (EDataCalView *query, GError **error);
-static gboolean impl_EDataCalView_stop (EDataCalView *query, GError **error);
-#include "e-data-cal-view-glue.h"
+#include "e-gdbus-egdbuscalview.h"
 
 #define THRESHOLD 32
 
 struct _EDataCalViewPrivate {
+	EGdbusCalView *gdbus_object;
+
 	/* The backend we are monitoring */
 	ECalBackend *backend;
 
@@ -60,8 +54,6 @@ struct _EDataCalViewPrivate {
 	GArray *removes;
 
 	GHashTable *ids;
-
-	gchar *path;
 };
 
 G_DEFINE_TYPE (EDataCalView, e_data_cal_view, G_TYPE_OBJECT);
@@ -79,23 +71,10 @@ enum props {
 	PROP_SEXP
 };
 
-/* Signals */
-enum {
-  OBJECTS_ADDED,
-  OBJECTS_MODIFIED,
-  OBJECTS_REMOVED,
-  PROGRESS,
-  DONE,
-  LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL] = { 0 };
-
 /* Class init */
 static void
 e_data_cal_view_class_init (EDataCalViewClass *klass)
 {
-	GParamSpec *param;
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (EDataCalViewPrivate));
@@ -105,54 +84,15 @@ e_data_cal_view_class_init (EDataCalViewClass *klass)
 	object_class->dispose = e_data_cal_view_dispose;
 	object_class->finalize = e_data_cal_view_finalize;
 
-	param =  g_param_spec_object ("backend", NULL, NULL, E_TYPE_CAL_BACKEND,
-				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
-	g_object_class_install_property (object_class, PROP_BACKEND, param);
-	param =  g_param_spec_object ("sexp", NULL, NULL, E_TYPE_CAL_BACKEND_SEXP,
-				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
-	g_object_class_install_property (object_class, PROP_SEXP, param);
+	g_object_class_install_property (object_class, PROP_BACKEND,
+		g_param_spec_object (
+			"backend", NULL, NULL, E_TYPE_CAL_BACKEND,
+			G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
 
-        signals[OBJECTS_ADDED] =
-          g_signal_new ("objects-added",
-                        G_OBJECT_CLASS_TYPE (klass),
-                        G_SIGNAL_RUN_LAST,
-                        0, NULL, NULL,
-                        g_cclosure_marshal_VOID__BOXED,
-                        G_TYPE_NONE, 1, G_TYPE_STRV);
-
-        signals[OBJECTS_MODIFIED] =
-          g_signal_new ("objects-modified",
-                        G_OBJECT_CLASS_TYPE (klass),
-                        G_SIGNAL_RUN_LAST,
-                        0, NULL, NULL,
-                        g_cclosure_marshal_VOID__BOXED,
-                        G_TYPE_NONE, 1, G_TYPE_STRV);
-
-        signals[OBJECTS_REMOVED] =
-          g_signal_new ("objects-removed",
-                        G_OBJECT_CLASS_TYPE (klass),
-                        G_SIGNAL_RUN_LAST,
-                        0, NULL, NULL,
-                        g_cclosure_marshal_VOID__BOXED,
-                        G_TYPE_NONE, 1, G_TYPE_STRV);
-
-        signals[PROGRESS] =
-          g_signal_new ("progress",
-                        G_OBJECT_CLASS_TYPE (klass),
-                        G_SIGNAL_RUN_LAST,
-                        0, NULL, NULL,
-                        e_data_cal_marshal_VOID__STRING_UINT,
-                        G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_UINT);
-
-        signals[DONE] =
-          g_signal_new ("done",
-                        G_OBJECT_CLASS_TYPE (klass),
-                        G_SIGNAL_RUN_LAST,
-                        0, NULL, NULL,
-                        e_data_cal_marshal_NONE__UINT_STRING,
-                        G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
-
-	dbus_g_object_type_install_info (G_TYPE_FROM_CLASS (klass), &dbus_glib_e_data_cal_view_object_info);
+	g_object_class_install_property (object_class, PROP_SEXP,
+		g_param_spec_object (
+			"sexp", NULL, NULL, E_TYPE_CAL_BACKEND_SEXP,
+			G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static guint
@@ -169,57 +109,25 @@ id_equal (gconstpointer a, gconstpointer b)
 	return g_strcmp0 (id_a->uid, id_b->uid) == 0 && g_strcmp0 (id_a->rid, id_b->rid) == 0;
 }
 
-/* Instance init */
-static void
-e_data_cal_view_init (EDataCalView *view)
-{
-	EDataCalViewPrivate *priv = E_DATA_CAL_VIEW_GET_PRIVATE (view);
-
-	view->priv = priv;
-
-	priv->backend = NULL;
-	priv->started = FALSE;
-	priv->stopped = FALSE;
-	priv->done = FALSE;
-	priv->sexp = NULL;
-
-	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
-	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
-	priv->removes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
-
-	priv->ids = g_hash_table_new_full (id_hash, id_equal, (GDestroyNotify)e_cal_component_free_id, NULL);
-}
-
 EDataCalView *
-e_data_cal_view_new (ECalBackend *backend,
-		     const gchar *path, ECalBackendSExp *sexp)
+e_data_cal_view_new (ECalBackend *backend, ECalBackendSExp *sexp)
 {
 	EDataCalView *query;
 
 	query = g_object_new (E_DATA_CAL_VIEW_TYPE, "backend", backend, "sexp", sexp, NULL);
-	query->priv->path = g_strdup (path);
-
-	dbus_g_connection_register_g_object (connection, path, G_OBJECT (query));
 
 	return query;
 }
 
-/**
- * e_data_cal_view_get_dbus_path:
- * @view: an #EDataCalView
- *
- * Returns the D-Bus path for @view.
- *
- * Returns: the D-Bus path for @view
- *
- * Since: 2.30
- **/
-const gchar *
-e_data_cal_view_get_dbus_path (EDataCalView *view)
+guint
+e_data_cal_view_register_gdbus_object (EDataCalView *query, GDBusConnection *connection, const gchar *object_path, GError **error)
 {
-	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), NULL);
+	g_return_val_if_fail (query != NULL, 0);
+	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (query), 0);
+	g_return_val_if_fail (connection != NULL, 0);
+	g_return_val_if_fail (object_path != NULL, 0);
 
-	return view->priv->path;
+	return e_gdbus_cal_view_register_object (query->priv->gdbus_object, connection, object_path, error);
 }
 
 static void
@@ -246,7 +154,7 @@ send_pending_adds (EDataCalView *view)
 	if (priv->adds->len == 0)
 		return;
 
-	g_signal_emit (view, signals[OBJECTS_ADDED], 0, priv->adds->data);
+	e_gdbus_cal_view_emit_objects_added (view->priv->gdbus_object, (const gchar * const *) priv->adds->data);
 	reset_array (priv->adds);
 }
 
@@ -258,7 +166,7 @@ send_pending_changes (EDataCalView *view)
 	if (priv->changes->len == 0)
 		return;
 
-	g_signal_emit (view, signals[OBJECTS_MODIFIED], 0, priv->changes->data);
+	e_gdbus_cal_view_emit_objects_modified (view->priv->gdbus_object, (const gchar * const *) priv->changes->data);
 	reset_array (priv->changes);
 }
 
@@ -271,7 +179,7 @@ send_pending_removes (EDataCalView *view)
 		return;
 
 	/* TODO: send ECalComponentIds as a list of pairs */
-	g_signal_emit (view, signals[OBJECTS_REMOVED], 0, priv->removes->data);
+	e_gdbus_cal_view_emit_objects_removed (view->priv->gdbus_object, (const gchar * const *) priv->removes->data);
 	reset_array (priv->removes);
 }
 
@@ -330,11 +238,11 @@ notify_done (EDataCalView *view, const GError *error)
 	send_pending_changes (view);
 	send_pending_removes (view);
 
-	g_signal_emit (view, signals[DONE], 0, error ? error->code : 0, error ? error->message : NULL);
+	e_gdbus_cal_view_emit_done (view->priv->gdbus_object, error ? error->code : 0, error ? error->message : "");
 }
 
 static gboolean
-impl_EDataCalView_start (EDataCalView *query, GError **error)
+impl_DataCalView_start (EGdbusCalView *object, GDBusMethodInvocation *invocation, EDataCalView *query)
 {
 	EDataCalViewPrivate *priv;
 
@@ -345,17 +253,21 @@ impl_EDataCalView_start (EDataCalView *query, GError **error)
 		e_cal_backend_start_query (priv->backend, query);
 	}
 
+	e_gdbus_cal_view_complete_start (object, invocation);
+
 	return TRUE;
 }
 
 static gboolean
-impl_EDataCalView_stop (EDataCalView *query, GError **error)
+impl_DataCalView_stop (EGdbusCalView *object, GDBusMethodInvocation *invocation, EDataCalView *query)
 {
 	EDataCalViewPrivate *priv;
 
 	priv = query->priv;
 
 	priv->stopped = TRUE;
+
+	e_gdbus_cal_view_complete_stop (object, invocation);
 
 	return TRUE;
 }
@@ -404,6 +316,31 @@ e_data_cal_view_get_property (GObject *object, guint property_id, GValue *value,
 	}
 }
 
+/* Instance init */
+static void
+e_data_cal_view_init (EDataCalView *query)
+{
+	EDataCalViewPrivate *priv = E_DATA_CAL_VIEW_GET_PRIVATE (query);
+
+	query->priv = priv;
+
+	priv->gdbus_object = e_gdbus_cal_view_stub_new ();
+	g_signal_connect (priv->gdbus_object, "handle-start", G_CALLBACK (impl_DataCalView_start), query);
+	g_signal_connect (priv->gdbus_object, "handle-stop", G_CALLBACK (impl_DataCalView_stop), query);
+
+	priv->backend = NULL;
+	priv->started = FALSE;
+	priv->stopped = FALSE;
+	priv->done = FALSE;
+	priv->sexp = NULL;
+
+	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
+	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
+	priv->removes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
+
+	priv->ids = g_hash_table_new_full (id_hash, id_equal, (GDestroyNotify)e_cal_component_free_id, NULL);
+}
+
 static void
 e_data_cal_view_dispose (GObject *object)
 {
@@ -442,8 +379,6 @@ e_data_cal_view_finalize (GObject *object)
 	priv = query->priv;
 
 	g_hash_table_destroy (priv->ids);
-
-	g_free (priv->path);
 
 	(* G_OBJECT_CLASS (e_data_cal_view_parent_class)->finalize) (object);
 }
@@ -734,7 +669,7 @@ e_data_cal_view_notify_progress (EDataCalView *view, const gchar *message, gint 
 	if (!priv->started || priv->stopped)
 		return;
 
-	g_signal_emit (view, signals[PROGRESS], 0, message, percent);
+	e_gdbus_cal_view_emit_progress (view->priv->gdbus_object, message ? message : "", percent);
 }
 
 /**

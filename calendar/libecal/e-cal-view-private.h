@@ -24,11 +24,11 @@
 #include <libecal/e-cal-types.h>
 #include <libecal/e-cal-view.h>
 
-#include <dbus/dbus-glib.h>
-
 G_BEGIN_DECLS
 
-ECalView *_e_cal_view_new (struct _ECal *client, DBusGProxy *view_proxy, GStaticRecMutex *connection_lock);
+struct _EGdbusCalView;
+
+ECalView *_e_cal_view_new (struct _ECal *client,  struct _EGdbusCalView *gdbus_calview);
 
 G_END_DECLS
 

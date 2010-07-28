@@ -10,8 +10,9 @@ libebook_1_2_la_CPPFLAGS = \
 	-DLOCALEDIR=\""$(localedir)"\"			\
 	-DG_LOG_DOMAIN=\"libebook\"			\
 	-I$(top_srcdir)					\
-	-I$(top_builddir)				\
 	-I$(top_srcdir)/addressbook			\
+	-I$(top_srcdir)/addressbook/libegdbus		\
+	-I$(top_builddir)				\
 	-I$(top_builddir)/addressbook			\
 	-I$(top_builddir)/addressbook/libebook		\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)			\
@@ -19,7 +20,6 @@ libebook_1_2_la_CPPFLAGS = \
 
 libebook_1_2_la_SOURCES =				\
 	$(MARSHAL_GENERATED)				\
-	$(DBUS_GENERATED_H)				\
 	e-address-western.c				\
 	e-book-query.c					\
 	e-book-view-private.h				\
@@ -33,6 +33,7 @@ libebook_1_2_la_SOURCES =				\
 	e-error.h
 
 libebook_1_2_la_LIBADD =					\
+	$(top_builddir)/addressbook/libegdbus/libegdbus-book.la	\
 	$(top_builddir)/camel/libcamel-1.2.la			\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
@@ -63,11 +64,7 @@ e-name-western-tables.h: e-name-western-tables.h.in
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libebook-$(API_VERSION).pc
 
-DBUS_GENERATED_H = e-data-book-factory-bindings.h e-data-book-bindings.h e-data-book-view-bindings.h
-%-bindings.h: $(top_srcdir)/addressbook/libedata-book/%.xml
-	@DBUS_BINDING_TOOL@ --mode=glib-client --output=$@ --prefix=$(subst -,_,$*) $^
-
-BUILT_SOURCES = $(DBUS_GENERATED_H) $(MARSHAL_GENERATED)
+BUILT_SOURCES = $(MARSHAL_GENERATED)
 CLEANFILES    = $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 

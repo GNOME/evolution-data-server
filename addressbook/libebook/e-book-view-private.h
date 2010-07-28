@@ -25,7 +25,9 @@
 #include "e-book.h"
 #include "e-book-view.h"
 
-EBookView *_e_book_view_new (EBook *book, DBusGProxy *view_proxy, GStaticRecMutex *connection_lock);
+struct _EGdbusBookView;
+
+EBookView *_e_book_view_new (EBook *book, struct _EGdbusBookView *gdbus_bookview);
 
 G_END_DECLS
 

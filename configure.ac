@@ -32,7 +32,7 @@ dnl Automake 1.11 - Silent Build Rules
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 dnl Required Package Versions
-m4_define([glib_minimum_version], [2.16.1])
+m4_define([glib_minimum_version], [2.25.11])
 m4_define([gconf_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libxml_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libsoup_minimum_version], [2.3.0])
@@ -40,7 +40,6 @@ m4_define([libgdata_minimum_version], [0.6.3])
 m4_define([gnome_keyring_minimum_version], [2.20.1])
 m4_define([sqlite_minimum_version], [3.5])
 m4_define([libical_minimum_version], [0.43])
-m4_define([dbus_glib_minimum_version], [0.6])
 
 dnl **********************************
 dnl Gtk-3 compatibility
@@ -1128,9 +1127,6 @@ else
 	msg_ldap="yes"
 fi
 
-DBUS_GLIB_REQUIRED=dbus_glib_minimum_version
-AC_SUBST(DBUS_GLIB_REQUIRED)
-
 dnl ******************************
 dnl GObject marshalling
 dnl ******************************
@@ -1145,18 +1141,6 @@ dnl Posix thread support
 dnl ******************************
 
 AC_DEFINE(ENABLE_THREADS,1,[Required])
-
-dnl ******************************
-dnl DBus stuff
-dnl ******************************
-PKG_CHECK_MODULES(DBUS_GLIB, dbus-glib-1 >= dbus_glib_minimum_version)
-AC_SUBST(DBUS_GLIB_CFLAGS)
-AC_SUBST(DBUS_GLIB_LIBS)
-
-AC_PATH_PROG(DBUS_BINDING_TOOL, dbus-binding-tool, [no])
-if test "x$DBUS_BINDING_TOOL" = "xno"; then
-  AC_MSG_ERROR([You need dbus-binding-tools to build evolution-data-server])
-fi
 
 dnl ***********************
 dnl Gnome keyring support
@@ -1216,7 +1200,7 @@ AC_SUBST(E_BACKEND_LIBS)
 dnl ******************************
 dnl evolution-addressbook flags
 dnl ******************************
-EVOLUTION_ADDRESSBOOK_DEPS="libxml-2.0 dbus-glib-1 gobject-2.0 gthread-2.0 gconf-2.0"
+EVOLUTION_ADDRESSBOOK_DEPS="libxml-2.0 gobject-2.0 gthread-2.0 gconf-2.0"
 
 EVO_SET_COMPILE_FLAGS(EVOLUTION_ADDRESSBOOK, $EVOLUTION_ADDRESSBOOK_DEPS)
 AC_SUBST(EVOLUTION_ADDRESSBOOK_CFLAGS)
@@ -1226,7 +1210,7 @@ dnl ******************************
 dnl evolution-calendar flags
 dnl ******************************
 if test "x${enable_calendar}" = "xyes"; then
-	EVOLUTION_CALENDAR_DEPS="libical >= libical_minimum_version libxml-2.0 dbus-glib-1 gio-2.0 gobject-2.0 gthread-2.0 gconf-2.0"
+	EVOLUTION_CALENDAR_DEPS="libical >= libical_minimum_version libxml-2.0 gio-2.0 gobject-2.0 gthread-2.0 gconf-2.0"
 
 dnl *****
 dnl libical.pc from libical-0.43 has a bug in it's CFlags.
@@ -1421,6 +1405,7 @@ addressbook/libebook/Makefile
 addressbook/libebook/libebook.pc
 addressbook/libedata-book/Makefile
 addressbook/libedata-book/libedata-book.pc
+addressbook/libegdbus/Makefile
 addressbook/backends/Makefile
 addressbook/backends/file/Makefile
 addressbook/backends/vcf/Makefile
@@ -1437,6 +1422,7 @@ calendar/libecal/Makefile
 calendar/libecal/libecal.pc
 calendar/libedata-cal/Makefile
 calendar/libedata-cal/libedata-cal.pc
+calendar/libegdbus/Makefile
 calendar/backends/Makefile
 calendar/backends/caldav/Makefile
 calendar/backends/file/Makefile

@@ -1,11 +1,3 @@
-# The marshallers
-MARSHAL_GENERATED = e-data-book-marshal.c e-data-book-marshal.h
-@EVO_MARSHAL_RULE@
-
-DBUS_GENERATED_H = e-data-book-glue.h e-data-book-factory-glue.h e-data-book-view-glue.h
-%-glue.h: %.xml
-	@DBUS_BINDING_TOOL@ --mode=glib-server --output=$@ --prefix=$(subst -,_,$*) $^
-
 include $(top_srcdir)/glib-gen.mak
 glib_enum_headers=e-data-book-types.h
 glib_enum_define=E_DATA_BOOK
@@ -21,15 +13,14 @@ libedata_book_1_2_la_CPPFLAGS =				\
 	-DG_LOG_DOMAIN=\"libedata-book\"		\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
 	-I$(top_srcdir)					\
-	-I$(top_builddir)				\
 	-I$(top_srcdir)/addressbook			\
+	-I$(top_srcdir)/addressbook/libegdbus		\
+	-I$(top_builddir)				\
 	-I$(top_builddir)/addressbook			\
 	$(DB_CFLAGS)					\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 libedata_book_1_2_la_SOURCES =				\
-	$(MARSHAL_GENERATED)				\
-	$(DBUS_GENERATED_H)				\
 	e-book-backend-factory.c			\
 	e-book-backend-sexp.c				\
 	e-book-backend-summary.c			\
@@ -44,6 +35,7 @@ libedata_book_1_2_la_SOURCES =				\
 	$(ENUM_GENERATED)
 
 libedata_book_1_2_la_LIBADD =					\
+	$(top_builddir)/addressbook/libegdbus/libegdbus-book.la	\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(top_builddir)/libebackend/libebackend-1.2.la	\
@@ -78,8 +70,9 @@ e_addressbook_factory_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"libedata-book\"	\
 	-DE_PRGNAME=\"e-addressbook-factory\"	\
 	-I$(top_srcdir)				\
-	-I$(top_builddir)			\
 	-I$(top_srcdir)/addressbook		\
+	-I$(top_srcdir)/addressbook/libegdbus	\
+	-I$(top_builddir)			\
 	-I$(top_builddir)/addressbook
 
 e_addressbook_factory_SOURCES = \
@@ -103,12 +96,11 @@ servicedir = $(datadir)/dbus-1/services
 service_DATA = $(service_in_files:.service.in=.service)
 @EVO_SUBST_SERVICE_RULE@
 
-BUILT_SOURCES = $(DBUS_GENERATED_H) $(MARSHAL_GENERATED) $(ENUM_GENERATED)
+BUILT_SOURCES = $(ENUM_GENERATED)
 CLEANFILES = $(BUILT_SOURCES) $(service_DATA)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = 						\
-	e-data-book-marshal.list			\
 	e-data-book-factory.xml				\
 	e-data-book-view.xml				\
 	e-data-book.xml					\

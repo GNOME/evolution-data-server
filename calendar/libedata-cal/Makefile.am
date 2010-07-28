@@ -1,10 +1,3 @@
-MARSHAL_GENERATED = e-data-cal-marshal.c e-data-cal-marshal.h
-@EVO_MARSHAL_RULE@
-
-DBUS_GENERATED_H = e-data-cal-glue.h e-data-cal-factory-glue.h e-data-cal-view-glue.h
-%-glue.h: %.xml
-	@DBUS_BINDING_TOOL@ --mode=glib-server --output=$@ --prefix=$(subst -,_,$*) $^
-
 include $(top_srcdir)/glib-gen.mak
 glib_enum_headers=e-data-cal-types.h
 glib_enum_define=E_DATA_CAL
@@ -15,21 +8,20 @@ ENUM_GENERATED = e-data-cal-enumtypes.h e-data-cal-enumtypes.c
 # The libraray
 lib_LTLIBRARIES = libedata-cal-1.2.la
 
-libedata_cal_1_2_la_CPPFLAGS = \
-	$(AM_CPPFLAGS)					\
-	-DG_LOG_DOMAIN=\"libedata-cal\"			\
-	-DBASE_VERSION=\""$(BASE_VERSION)"\"		\
-	-I$(top_srcdir)					\
-	-I$(top_builddir)				\
-	-I$(top_srcdir)/calendar			\
-	-I$(top_builddir)/calendar			\
-	$(LIBICAL_CFLAGS)				\
+libedata_cal_1_2_la_CPPFLAGS = 			\
+	$(AM_CPPFLAGS)				\
+	-DG_LOG_DOMAIN=\"libedata-cal\"		\
+	-DBASE_VERSION=\""$(BASE_VERSION)"\"	\
+	-I$(top_srcdir)				\
+	-I$(top_srcdir)/calendar		\
+	-I$(top_srcdir)/calendar/libegdbus	\
+	-I$(top_builddir)			\
+	-I$(top_builddir)/calendar		\
+	$(LIBICAL_CFLAGS)			\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
 libedata_cal_1_2_la_SOURCES =		\
-	$(MARSHAL_GENERATED)		\
 	$(ENUM_GENERATED)		\
-	$(DBUS_GENERATED_H)		\
 	e-cal-backend.c			\
 	e-cal-backend-cache.c		\
 	e-cal-backend-factory.c		\
@@ -42,6 +34,7 @@ libedata_cal_1_2_la_SOURCES =		\
 	e-data-cal-view.c
 
 libedata_cal_1_2_la_LIBADD =					\
+	$(top_builddir)/calendar/libegdbus/libegdbus-cal.la	\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la		\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la 	\
 	$(top_builddir)/libebackend/libebackend-1.2.la 		\
@@ -79,12 +72,11 @@ servicedir = $(datadir)/dbus-1/services
 service_DATA = $(service_in_files:.service.in=.service)
 @EVO_SUBST_SERVICE_RULE@
 
-BUILT_SOURCES = $(DBUS_GENERATED_H) $(MARSHAL_GENERATED) $(ENUM_GENERATED)
+BUILT_SOURCES = $(ENUM_GENERATED)
 CLEANFILES = $(BUILT_SOURCES) $(service_DATA)
 DISTCLEANFILES = $(pkgconfig_DATA) $(service_DATA)
 
 EXTRA_DIST = 						\
-	e-data-cal-marshal.list				\
 	e-data-cal-factory.xml				\
 	e-data-cal-view.xml				\
 	e-data-cal.xml					\
@@ -95,11 +87,11 @@ EXTRA_DIST = 						\
 factorydir = $(libexecdir)
 factory_PROGRAMS = e-calendar-factory
 
-e_calendar_factory_SOURCES = \
-	e-data-cal-factory.c \
-	e-data-cal-factory.h \
-	e-data-cal-migrate.c \
-	e-cal-backend-loader-factory.c \
+e_calendar_factory_SOURCES =		\
+	e-data-cal-factory.c		\
+	e-data-cal-factory.h		\
+	e-data-cal-migrate.c		\
+	e-cal-backend-loader-factory.c	\
 	e-cal-backend-loader-factory.h
 
 e_calendar_factory_CPPFLAGS = \
@@ -108,15 +100,17 @@ e_calendar_factory_CPPFLAGS = \
 	-DE_PRGNAME=\"e-calendar-factory\"		\
 	-DLOCALEDIR=\"$(localedir)\"			\
 	-I$(top_srcdir)					\
-	-I$(top_builddir)				\
 	-I$(top_srcdir)/calendar			\
+	-I$(top_srcdir)/calendar/libegdbus		\
+	-I$(top_builddir)				\
 	-I$(top_builddir)/calendar			\
 	$(LIBICAL_CFLAGS)				\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
-e_calendar_factory_LDADD =					\
-	$(builddir)/libedata-cal-1.2.la				\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la 	\
+e_calendar_factory_LDADD =						\
+	$(top_builddir)/calendar/libegdbus/libegdbus-cal.la		\
+	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la	\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la 		\
 	$(top_builddir)/libebackend/libebackend-1.2.la
 
 -include $(top_srcdir)/git.mk

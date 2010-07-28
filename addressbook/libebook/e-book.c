@@ -35,24 +35,24 @@
 #include <string.h>
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
 #include <libedataserver/e-data-server-util.h>
 #include "e-book.h"
 #include "e-error.h"
 #include "e-contact.h"
 #include "e-name-western.h"
 #include "e-book-view-private.h"
-#include "e-data-book-factory-bindings.h"
-#include "e-data-book-bindings.h"
-#include "libedata-book/e-data-book-types.h"
 #include "e-book-marshal.h"
+
+#include "e-gdbus-egdbusbookfactory.h"
+#include "e-gdbus-egdbusbook.h"
+#include "e-gdbus-egdbusbookview.h"
 
 #define E_DATA_BOOK_FACTORY_SERVICE_NAME "org.gnome.evolution.dataserver.AddressBook"
 
 static gchar ** flatten_stringlist(GList *list);
 static GList *array_to_stringlist (gchar **list);
-static gboolean unwrap_gerror(GError *error, GError **client_error);
+static EList *array_to_elist (gchar **list);
+static gboolean unwrap_gerror (GError *error, GError **client_error);
 
 G_DEFINE_TYPE(EBook, e_book, G_TYPE_OBJECT)
 #define E_BOOK_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_BOOK, EBookPrivate))
@@ -68,9 +68,10 @@ enum {
 static guint e_book_signals [LAST_SIGNAL];
 
 struct _EBookPrivate {
+	EGdbusBook *gdbus_book;
+
 	ESource *source;
 	gchar *uri;
-	DBusGProxy *proxy;
 	gboolean loaded;
 	gboolean writable;
 	gboolean connected;
@@ -78,13 +79,10 @@ struct _EBookPrivate {
 	gboolean cap_queried;
 };
 
-static DBusGConnection *connection = NULL;
-static DBusGProxy *factory_proxy = NULL;
-
-/* guards both connection and factory_proxy */
-static GStaticRecMutex connection_lock = G_STATIC_REC_MUTEX_INIT;
-#define LOCK_CONN()   g_static_rec_mutex_lock (&connection_lock)
-#define UNLOCK_CONN() g_static_rec_mutex_unlock (&connection_lock)
+static EGdbusBookFactory *book_factory_proxy = NULL;
+static GStaticRecMutex book_factory_proxy_lock = G_STATIC_REC_MUTEX_INIT;
+#define LOCK_FACTORY()   g_static_rec_mutex_lock (&book_factory_proxy_lock)
+#define UNLOCK_FACTORY() g_static_rec_mutex_unlock (&book_factory_proxy_lock)
 
 typedef struct {
 	EBook *book;
@@ -110,19 +108,29 @@ e_book_error_quark (void)
  * Called when the addressbook server dies.
  */
 static void
-proxy_destroyed (gpointer data, GObject *object)
+gdbus_book_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished, GError *error, EBook *book)
 {
-	EBook *book = data;
+	GError *err = NULL;
 
 	g_assert (E_IS_BOOK (book));
 
-	g_warning (G_STRLOC ": e-d-s proxy died");
+	if (error)
+		unwrap_gerror (g_error_copy (error), &err);
+
+	if (err) {
+		g_debug (G_STRLOC ": EBook GDBus connection is closed%s: %s", remote_peer_vanished ? ", remote peer vanished" : "", err->message);
+		g_error_free (err);
+	}
 
 	/* Ensure that everything relevant is NULL */
-	LOCK_CONN ();
-	factory_proxy = NULL;
-	book->priv->proxy = NULL;
-	UNLOCK_CONN ();
+	LOCK_FACTORY ();
+
+	if (book->priv->gdbus_book) {
+		g_object_unref (book->priv->gdbus_book);
+		book->priv->gdbus_book = NULL;
+	}
+
+	UNLOCK_FACTORY ();
 
 	g_signal_emit (G_OBJECT (book), e_book_signals [BACKEND_DIED], 0);
 }
@@ -134,14 +142,13 @@ e_book_dispose (GObject *object)
 
 	book->priv->loaded = FALSE;
 
-	if (book->priv->proxy) {
-		g_object_weak_unref (G_OBJECT (book->priv->proxy), proxy_destroyed, book);
-		LOCK_CONN ();
-		org_gnome_evolution_dataserver_addressbook_Book_close (book->priv->proxy, NULL);
-		g_object_unref (book->priv->proxy);
-		book->priv->proxy = NULL;
-		UNLOCK_CONN ();
+	if (book->priv->gdbus_book) {
+		g_signal_handlers_disconnect_by_func (g_dbus_proxy_get_connection (G_DBUS_PROXY (book->priv->gdbus_book)), gdbus_book_closed_cb, book);
+		e_gdbus_book_call_close_sync (book->priv->gdbus_book, NULL, NULL);
+		g_object_unref (book->priv->gdbus_book);
+		book->priv->gdbus_book = NULL;
 	}
+
 	if (book->priv->source) {
 		g_object_unref (book->priv->source);
 		book->priv->source = NULL;
@@ -219,9 +226,10 @@ static void
 e_book_init (EBook *book)
 {
 	EBookPrivate *priv = E_BOOK_GET_PRIVATE (book);
+
+	priv->gdbus_book = NULL;
 	priv->source = NULL;
 	priv->uri = NULL;
-	priv->proxy = NULL;
 	priv->loaded = FALSE;
 	priv->writable = FALSE;
 	priv->connected = FALSE;
@@ -230,83 +238,60 @@ e_book_init (EBook *book)
 	book->priv = priv;
 }
 
-static DBusHandlerResult
-filter_dbus_msgs_cb (DBusConnection *pconnection, DBusMessage *message, gpointer user_data)
+static void
+book_factory_proxy_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished, GError *error, gpointer user_data)
 {
-	if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")) {
-		DBusGConnection *conn = connection;
+	GError *err = NULL;
 
-		LOCK_CONN ();
-		factory_proxy = NULL;
-		connection = NULL;
-		UNLOCK_CONN ();
-		dbus_g_connection_unref (conn);
-		return DBUS_HANDLER_RESULT_HANDLED;
+	LOCK_FACTORY ();
+	if (book_factory_proxy) {
+		g_object_unref (book_factory_proxy);
+		book_factory_proxy = NULL;
 	}
 
-	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-}
+	if (error)
+		unwrap_gerror (g_error_copy (error), &err);
 
-static void
-factory_proxy_destroy_cb (DBusGProxy *proxy, gpointer user_data)
-{
-	LOCK_CONN ();
-	factory_proxy = NULL;
-	UNLOCK_CONN ();
+	if (err) {
+		g_debug ("GDBus connection is closed%s: %s", remote_peer_vanished ? ", remote peer vanished" : "", err->message);
+		g_error_free (err);
+	}
+
+	UNLOCK_FACTORY ();
 }
 
 static gboolean
-e_book_activate(GError **error)
+e_book_activate (GError **error)
 {
-	DBusError derror;
+	LOCK_FACTORY ();
 
-	LOCK_CONN ();
-
-	if (G_LIKELY (factory_proxy)) {
-		UNLOCK_CONN ();
+	if (G_LIKELY (book_factory_proxy)) {
+		UNLOCK_FACTORY ();
 		return TRUE;
 	}
 
-	if (!connection) {
-		connection = dbus_g_bus_get (DBUS_BUS_SESSION, error);
-		if (!connection) {
-			UNLOCK_CONN ();
-			return FALSE;
-		}
+	book_factory_proxy = e_gdbus_book_factory_proxy_new_for_bus_sync (
+		G_BUS_TYPE_SESSION,
+		G_DBUS_PROXY_FLAGS_NONE,
+		E_DATA_BOOK_FACTORY_SERVICE_NAME,
+		"/org/gnome/evolution/dataserver/addressbook/BookFactory",
+		NULL,
+		error);
 
-		dbus_connection_add_filter (dbus_g_connection_get_connection (connection), filter_dbus_msgs_cb, NULL, NULL);
-	}
-
-	dbus_error_init (&derror);
-	if (!dbus_bus_start_service_by_name (dbus_g_connection_get_connection (connection),
-					     E_DATA_BOOK_FACTORY_SERVICE_NAME,
-					     0, NULL, &derror)) {
-		dbus_set_g_error (error, &derror);
-		dbus_error_free (&derror);
-		UNLOCK_CONN ();
+	if (!book_factory_proxy) {
+		UNLOCK_FACTORY ();
 		return FALSE;
 	}
 
-	if (!factory_proxy) {
-		factory_proxy = dbus_g_proxy_new_for_name_owner (connection,
-								 E_DATA_BOOK_FACTORY_SERVICE_NAME,
-								 "/org/gnome/evolution/dataserver/addressbook/BookFactory",
-								 "org.gnome.evolution.dataserver.addressbook.BookFactory",
-								 error);
-		if (!factory_proxy) {
-			UNLOCK_CONN ();
-			return FALSE;
-		}
+	g_signal_connect (g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory_proxy)), "closed", G_CALLBACK (book_factory_proxy_closed_cb), NULL);
 
-		g_signal_connect (factory_proxy, "destroy", G_CALLBACK (factory_proxy_destroy_cb), NULL);
-	}
+	UNLOCK_FACTORY ();
 
-	UNLOCK_CONN ();
 	return TRUE;
 }
 
 static void
-writable_cb (DBusGProxy *proxy, gboolean writable, EBook *book)
+writable_cb (EGdbusBook *object, gboolean writable, EBook *book)
 {
 	g_return_if_fail (E_IS_BOOK (book));
 
@@ -316,7 +301,7 @@ writable_cb (DBusGProxy *proxy, gboolean writable, EBook *book)
 }
 
 static void
-connection_cb (DBusGProxy *proxy, gboolean connected, EBook *book)
+connection_cb (EGdbusBook *object, gboolean connected, EBook *book)
 {
 	g_return_if_fail (E_IS_BOOK (book));
 
@@ -326,7 +311,7 @@ connection_cb (DBusGProxy *proxy, gboolean connected, EBook *book)
 }
 
 static void
-auth_required_cb (DBusGProxy *proxy, EBook *book)
+auth_required_cb (EGdbusBook *object, EBook *book)
 {
 	g_return_if_fail (E_IS_BOOK (book));
 
@@ -352,30 +337,32 @@ e_book_add_contact (EBook           *book,
 	gchar *vcard, *uid = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_add_contact (book->priv->proxy, vcard, &uid, &err);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_add_contact_sync (book->priv->gdbus_book, vcard, &uid, NULL, &err);
 	g_free (vcard);
 	if (uid) {
 		e_contact_set (contact, E_CONTACT_UID, uid);
 		g_free (uid);
 	}
+
 	return unwrap_gerror (err, error);
 }
 
 static void
-add_contact_reply (DBusGProxy *proxy, gchar *uid, GError *error, gpointer user_data)
+add_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 {
-	GError *err = NULL;
+	GError *err = NULL, *error = NULL;
+	gchar *uid = NULL;
 	AsyncData *data = user_data;
 	EBookIdExCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookIdCallback cb = data->callback;
 	#endif
+
+	e_gdbus_book_call_add_contact_finish (E_GDBUS_BOOK (gdbus_book), &uid, res, &error);
 
 	unwrap_gerror (error, &err);
 
@@ -425,7 +412,7 @@ e_book_async_add_contact (EBook                 *book,
 	AsyncData *data;
 
 	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_async_error_val_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
@@ -435,10 +422,10 @@ e_book_async_add_contact (EBook                 *book,
 	data->callback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_add_contact_async (book->priv->proxy, vcard, add_contact_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_add_contact (book->priv->gdbus_book, vcard, NULL, add_contact_reply, data);
+
 	g_free (vcard);
+
 	return 0;
 }
 #endif
@@ -466,7 +453,7 @@ e_book_async_add_contact_ex (EBook              *book,
 	AsyncData *data;
 
 	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_ex_async_error_val_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
@@ -476,9 +463,8 @@ e_book_async_add_contact_ex (EBook              *book,
 	data->excallback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_add_contact_async (book->priv->proxy, vcard, add_contact_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_add_contact (book->priv->gdbus_book, vcard, NULL, add_contact_reply, data);
+
 	g_free (vcard);
 
 	return TRUE;
@@ -504,26 +490,27 @@ e_book_commit_contact (EBook           *book,
 	gchar *vcard;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_modify_contact (book->priv->proxy, vcard, &err);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_modify_contact_sync (book->priv->gdbus_book, vcard, NULL, &err);
 	g_free (vcard);
+
 	return unwrap_gerror (err, error);
 }
 
 static void
-modify_contact_reply (DBusGProxy *proxy, GError *error, gpointer user_data)
+modify_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 {
-	GError *err = NULL;
+	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookExCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
 	#endif
+
+	e_gdbus_book_call_modify_contact_finish (E_GDBUS_BOOK (gdbus_book), res, &error);
 
 	unwrap_gerror (error, &err);
 
@@ -537,6 +524,7 @@ modify_contact_reply (DBusGProxy *proxy, GError *error, gpointer user_data)
 
 	if (err)
 		g_error_free (err);
+
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
 }
@@ -566,7 +554,7 @@ e_book_async_commit_contact (EBook                 *book,
 	AsyncData *data;
 
 	e_return_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_async_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
@@ -576,10 +564,10 @@ e_book_async_commit_contact (EBook                 *book,
 	data->callback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_modify_contact_async (book->priv->proxy, vcard, modify_contact_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_modify_contact (book->priv->gdbus_book, vcard, NULL, modify_contact_reply, data);
+
 	g_free (vcard);
+
 	return 0;
 }
 #endif
@@ -608,7 +596,7 @@ e_book_async_commit_contact_ex (EBook                 *book,
 	AsyncData *data;
 
 	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_ex_async_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
@@ -618,9 +606,8 @@ e_book_async_commit_contact_ex (EBook                 *book,
 	data->excallback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_modify_contact_async (book->priv->proxy, vcard, modify_contact_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_modify_contact (book->priv->gdbus_book, vcard, NULL, modify_contact_reply, data);
+
 	g_free (vcard);
 
 	return TRUE;
@@ -648,13 +635,13 @@ e_book_get_required_fields  (EBook            *book,
 	gchar **list = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_required_fields (book->priv->proxy, &list, &err);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_required_fields_sync (book->priv->gdbus_book, &list, NULL, &err);
+
 	if (list) {
 		*fields = array_to_stringlist (list);
+		g_strfreev (list);
 		return TRUE;
 	} else {
 		return unwrap_gerror (err, error);
@@ -662,22 +649,20 @@ e_book_get_required_fields  (EBook            *book,
 }
 
 static void
-get_required_fields_reply(DBusGProxy *proxy, gchar **fields, GError *error, gpointer user_data)
+get_required_fields_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 {
-	GError *err = NULL;
+	gchar **fields = NULL;
+	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookEListExCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookEListCallback cb = data->callback;
 	#endif
-	gchar **i = fields;
-	EList *efields = e_list_new (NULL,
-				     (EListFreeFunc) g_free,
-				     NULL);
+	EList *efields = NULL;
 
-	while (*i != NULL) {
-		e_list_append (efields, (*i++));
-	}
+	e_gdbus_book_call_get_required_fields_finish (E_GDBUS_BOOK (gdbus_book), &fields, res, &error);
+
+	efields = array_to_elist (fields);
 
 	unwrap_gerror (error, &err);
 
@@ -692,7 +677,7 @@ get_required_fields_reply(DBusGProxy *proxy, gchar **fields, GError *error, gpoi
 		g_error_free (err);
 
 	g_object_unref (efields);
-	g_free (fields);
+	g_strfreev (fields);
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
 }
@@ -719,16 +704,15 @@ e_book_async_get_required_fields (EBook              *book,
 	AsyncData *data;
 
 	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
 	data->callback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_required_fields_async (book->priv->proxy, get_required_fields_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_required_fields (book->priv->gdbus_book, NULL, get_required_fields_reply, data);
+
 	return 0;
 }
 #endif
@@ -754,16 +738,14 @@ e_book_async_get_required_fields_ex (EBook               *book,
 	AsyncData *data;
 
 	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
 	data->excallback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_required_fields_async (book->priv->proxy, get_required_fields_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_required_fields (book->priv->gdbus_book, NULL, get_required_fields_reply, data);
 
 	return TRUE;
 }
@@ -790,13 +772,13 @@ e_book_get_supported_fields  (EBook            *book,
 	gchar **list = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_supported_fields (book->priv->proxy, &list, &err);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_supported_fields_sync (book->priv->gdbus_book, &list, NULL, &err);
+
 	if (list) {
 		*fields = array_to_stringlist (list);
+		g_strfreev (list);
 		return TRUE;
 	} else {
 		return unwrap_gerror (err, error);
@@ -804,20 +786,20 @@ e_book_get_supported_fields  (EBook            *book,
 }
 
 static void
-get_supported_fields_reply(DBusGProxy *proxy, gchar **fields, GError *error, gpointer user_data)
+get_supported_fields_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 {
-	GError *err = NULL;
+	gchar **fields = NULL;
+	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookEListExCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookEListCallback cb = data->callback;
 	#endif
-	gchar **i = fields;
-	EList *efields = e_list_new (NULL,  (EListFreeFunc) g_free, NULL);
+	EList *efields;
 
-	while (*i != NULL) {
-		e_list_append (efields, (*i++));
-	}
+	e_gdbus_book_call_get_supported_fields_finish (E_GDBUS_BOOK (gdbus_book), &fields, res, &error);
+
+	efields = array_to_elist (fields);
 
 	unwrap_gerror (error, &err);
 
@@ -832,8 +814,7 @@ get_supported_fields_reply(DBusGProxy *proxy, gchar **fields, GError *error, gpo
 		g_error_free (err);
 
 	g_object_unref (efields);
-	g_free (fields);
-
+	g_strfreev (fields);
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
 }
@@ -861,16 +842,14 @@ e_book_async_get_supported_fields (EBook              *book,
 	AsyncData *data;
 
 	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
 	data->callback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_supported_fields_async (book->priv->proxy, get_supported_fields_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_supported_fields (book->priv->gdbus_book, NULL, get_supported_fields_reply, data);
 
 	return 0;
 }
@@ -898,16 +877,14 @@ e_book_async_get_supported_fields_ex (EBook               *book,
 	AsyncData *data;
 
 	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
 	data->excallback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_supported_fields_async (book->priv->proxy, get_supported_fields_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_supported_fields (book->priv->gdbus_book, NULL, get_supported_fields_reply, data);
 
 	return TRUE;
 }
@@ -933,13 +910,13 @@ e_book_get_supported_auth_methods (EBook            *book,
 	gchar **list = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_supported_auth_methods (book->priv->proxy, &list, &err);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_supported_auth_methods_sync (book->priv->gdbus_book, &list, NULL, &err);
+
 	if (list) {
 		*auth_methods = array_to_stringlist (list);
+		g_strfreev (list);
 		return TRUE;
 	} else {
 		return unwrap_gerror (err, error);
@@ -947,22 +924,20 @@ e_book_get_supported_auth_methods (EBook            *book,
 }
 
 static void
-get_supported_auth_methods_reply(DBusGProxy *proxy, gchar **methods, GError *error, gpointer user_data)
+get_supported_auth_methods_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 {
-	GError *err = NULL;
+	gchar **methods = NULL;
+	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookEListExCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookEListCallback cb = data->callback;
 	#endif
-	gchar **i = methods;
-	EList *emethods = e_list_new (NULL,
-				      (EListFreeFunc) g_free,
-				      NULL);
+	EList *emethods;
 
-	while (*i != NULL) {
-		e_list_append (emethods, (*i++));
-	}
+	e_gdbus_book_call_get_supported_auth_methods_finish (E_GDBUS_BOOK (gdbus_book), &methods, res, &error);
+
+	emethods = array_to_elist (methods);
 
 	unwrap_gerror (error, &err);
 
@@ -977,8 +952,7 @@ get_supported_auth_methods_reply(DBusGProxy *proxy, gchar **methods, GError *err
 		g_error_free (err);
 
 	g_object_unref (emethods);
-	g_free (methods);
-
+	g_strfreev (methods);
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
 }
@@ -1005,16 +979,14 @@ e_book_async_get_supported_auth_methods (EBook              *book,
 	AsyncData *data;
 
 	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
 	data->callback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_supported_auth_methods_async (book->priv->proxy, get_supported_auth_methods_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_supported_auth_methods (book->priv->gdbus_book, NULL, get_supported_auth_methods_reply, data);
 
 	return 0;
 }
@@ -1041,16 +1013,14 @@ e_book_async_get_supported_auth_methods_ex (EBook               *book,
 	AsyncData *data;
 
 	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
 	data->excallback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_supported_auth_methods_async (book->priv->proxy, get_supported_auth_methods_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_supported_auth_methods (book->priv->gdbus_book, NULL, get_supported_auth_methods_reply, data);
 
 	return TRUE;
 }
@@ -1079,24 +1049,24 @@ e_book_authenticate_user (EBook         *book,
 	GError *err = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_authenticate_user (book->priv->proxy, user, passwd, auth_method, &err);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_authenticate_user_sync (book->priv->gdbus_book, user, passwd, auth_method, NULL, &err);
 
 	return unwrap_gerror (err, error);
 }
 
 static void
-authenticate_user_reply(DBusGProxy *proxy, GError *error, gpointer user_data)
+authenticate_user_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 {
-	GError *err = NULL;
+	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookExCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
 	#endif
+
+	e_gdbus_book_call_authenticate_user_finish (E_GDBUS_BOOK (gdbus_book), res, &error);
 
 	unwrap_gerror (error, &err);
 
@@ -1144,7 +1114,7 @@ e_book_async_authenticate_user (EBook                 *book,
 	AsyncData *data;
 
 	e_return_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_async_error_if_fail (user, E_BOOK_ERROR_INVALID_ARG);
 	e_return_async_error_if_fail (passwd, E_BOOK_ERROR_INVALID_ARG);
 	e_return_async_error_if_fail (auth_method, E_BOOK_ERROR_INVALID_ARG);
@@ -1154,9 +1124,7 @@ e_book_async_authenticate_user (EBook                 *book,
 	data->callback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_authenticate_user_async (book->priv->proxy, user, passwd, auth_method, authenticate_user_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_authenticate_user (book->priv->gdbus_book, user, passwd, auth_method, NULL, authenticate_user_reply, data);
 
 	return 0;
 }
@@ -1191,7 +1159,7 @@ e_book_async_authenticate_user_ex (EBook                 *book,
 	AsyncData *data;
 
 	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_ex_async_error_if_fail (user, E_BOOK_ERROR_INVALID_ARG);
 	e_return_ex_async_error_if_fail (passwd, E_BOOK_ERROR_INVALID_ARG);
 	e_return_ex_async_error_if_fail (auth_method, E_BOOK_ERROR_INVALID_ARG);
@@ -1201,9 +1169,7 @@ e_book_async_authenticate_user_ex (EBook                 *book,
 	data->excallback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_authenticate_user_async (book->priv->proxy, user, passwd, auth_method, authenticate_user_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_authenticate_user (book->priv->gdbus_book, user, passwd, auth_method, NULL, authenticate_user_reply, data);
 
 	return TRUE;
 }
@@ -1230,28 +1196,30 @@ e_book_get_contact (EBook       *book,
 	gchar *vcard = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_contact (book->priv->proxy, id, &vcard, &err);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_contact_sync (book->priv->gdbus_book, id, &vcard, NULL, &err);
 
 	if (vcard) {
 		*contact = e_contact_new_from_vcard (vcard);
 		g_free (vcard);
 	}
+
 	return unwrap_gerror (err, error);
 }
 
 static void
-get_contact_reply(DBusGProxy *proxy, gchar *vcard, GError *error, gpointer user_data)
+get_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 {
-	GError *err = NULL;
+	gchar *vcard = NULL;
+	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookContactExCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookContactCallback cb = data->callback;
 	#endif
+
+	e_gdbus_book_call_get_contact_finish (E_GDBUS_BOOK (gdbus_book), &vcard, res, &error);
 
 	unwrap_gerror (error, &err);
 
@@ -1268,6 +1236,7 @@ get_contact_reply(DBusGProxy *proxy, gchar *vcard, GError *error, gpointer user_
 
 	if (err)
 		g_error_free (err);
+
 	g_free (vcard);
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
@@ -1296,7 +1265,7 @@ e_book_async_get_contact (EBook                 *book,
 	AsyncData *data;
 
 	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_async_error_val_if_fail (id, E_BOOK_ERROR_INVALID_ARG);
 
 	data = g_slice_new0 (AsyncData);
@@ -1304,9 +1273,7 @@ e_book_async_get_contact (EBook                 *book,
 	data->callback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_contact_async (book->priv->proxy, id, get_contact_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_contact (book->priv->gdbus_book, id, NULL, get_contact_reply, data);
 
 	return 0;
 }
@@ -1334,7 +1301,7 @@ e_book_async_get_contact_ex (EBook                 *book,
 	AsyncData *data;
 
 	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_ex_async_error_val_if_fail (id, E_BOOK_ERROR_INVALID_ARG);
 
 	data = g_slice_new0 (AsyncData);
@@ -1342,9 +1309,7 @@ e_book_async_get_contact_ex (EBook                 *book,
 	data->excallback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_contact_async (book->priv->proxy, id, get_contact_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_contact (book->priv->gdbus_book, id, NULL, get_contact_reply, data);
 
 	return TRUE;
 }
@@ -1368,28 +1333,28 @@ e_book_remove_contact (EBook       *book,
 	const gchar *l[2];
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_error_if_fail (id, E_BOOK_ERROR_INVALID_ARG);
 
 	l[0] = id;
 	l[1] = NULL;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_remove_contacts (book->priv->proxy, l, &err);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_remove_contacts_sync (book->priv->gdbus_book, (const gchar * const *) l, NULL, &err);
 
 	return unwrap_gerror (err, error);
 }
 
 static void
-remove_contact_reply (DBusGProxy *proxy, GError *error, gpointer user_data)
+remove_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 {
-	GError *err = NULL;
+	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookExCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
 	#endif
+
+	e_gdbus_book_call_remove_contacts_finish (E_GDBUS_BOOK (gdbus_book), res, &error);
 
 	unwrap_gerror (error, &err);
 
@@ -1429,14 +1394,12 @@ e_book_remove_contacts (EBook    *book,
 	gchar **l;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_error_if_fail (ids, E_BOOK_ERROR_INVALID_ARG);
 
 	l = flatten_stringlist (ids);
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_remove_contacts (book->priv->proxy, (const gchar **) l, &err);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_remove_contacts_sync (book->priv->gdbus_book, (const gchar * const *) l, NULL, &err);
 
 	g_free (l);
 
@@ -1467,7 +1430,7 @@ e_book_async_remove_contact (EBook                 *book,
 	const gchar *l[2];
 
 	e_return_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_async_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
 
 	l[0] = e_contact_get_const (contact, E_CONTACT_UID);
@@ -1478,9 +1441,7 @@ e_book_async_remove_contact (EBook                 *book,
 	data->callback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_remove_contacts_async (book->priv->proxy, l, remove_contact_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_remove_contacts (book->priv->gdbus_book, (const gchar * const *) l, NULL, remove_contact_reply, data);
 
 	return 0;
 }
@@ -1509,7 +1470,7 @@ e_book_async_remove_contact_ex (EBook                 *book,
 	const gchar *l[2];
 
 	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_ex_async_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
 
 	l[0] = e_contact_get_const (contact, E_CONTACT_UID);
@@ -1520,22 +1481,22 @@ e_book_async_remove_contact_ex (EBook                 *book,
 	data->excallback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_remove_contacts_async (book->priv->proxy, l, remove_contact_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_remove_contacts (book->priv->gdbus_book, (const gchar * const *) l, NULL, remove_contact_reply, data);
 
 	return TRUE;
 }
 
 static void
-remove_contact_by_id_reply (DBusGProxy *proxy, GError *error, gpointer user_data)
+remove_contact_by_id_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 {
-	GError *err = NULL;
+	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookExCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
 	#endif
+
+	e_gdbus_book_call_remove_contacts_finish (E_GDBUS_BOOK (gdbus_book), res, &error);
 
 	unwrap_gerror (error, &err);
 
@@ -1577,7 +1538,7 @@ e_book_async_remove_contact_by_id (EBook                 *book,
 	const gchar *l[2];
 
 	e_return_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_async_error_if_fail (id, E_BOOK_ERROR_INVALID_ARG);
 
 	l[0] = id;
@@ -1588,9 +1549,7 @@ e_book_async_remove_contact_by_id (EBook                 *book,
 	data->callback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_remove_contacts_async (book->priv->proxy, l, remove_contact_by_id_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_remove_contacts (book->priv->gdbus_book, (const gchar * const *) l, NULL, remove_contact_by_id_reply, data);
 
 	return 0;
 }
@@ -1619,7 +1578,7 @@ e_book_async_remove_contact_by_id_ex (EBook                 *book,
 	const gchar *l[2];
 
 	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_ex_async_error_if_fail (id, E_BOOK_ERROR_INVALID_ARG);
 
 	l[0] = id;
@@ -1630,22 +1589,22 @@ e_book_async_remove_contact_by_id_ex (EBook                 *book,
 	data->excallback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_remove_contacts_async (book->priv->proxy, l, remove_contact_by_id_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_remove_contacts (book->priv->gdbus_book, (const gchar * const *) l, NULL, remove_contact_by_id_reply, data);
 
 	return TRUE;
 }
 
 static void
-remove_contacts_reply (DBusGProxy *proxy, GError *error, gpointer user_data)
+remove_contacts_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 {
-	GError *err = NULL;
+	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookExCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
 	#endif
+
+	e_gdbus_book_call_remove_contacts_finish (E_GDBUS_BOOK (gdbus_book), res, &error);
 
 	unwrap_gerror (error, &err);
 
@@ -1690,7 +1649,7 @@ e_book_async_remove_contacts (EBook                 *book,
 	gchar **l;
 
 	e_return_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	if (ids == NULL) {
 		if (cb)
@@ -1705,9 +1664,7 @@ e_book_async_remove_contacts (EBook                 *book,
 	data->callback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_remove_contacts_async (book->priv->proxy, (const gchar **) l, remove_contacts_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_remove_contacts (book->priv->gdbus_book, (const gchar * const *) l, NULL, remove_contacts_reply, data);
 
 	g_free (l);
 
@@ -1741,7 +1698,7 @@ e_book_async_remove_contacts_ex (EBook                 *book,
 	gchar **l;
 
 	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	if (ids == NULL) {
 		if (cb)
@@ -1756,9 +1713,7 @@ e_book_async_remove_contacts_ex (EBook                 *book,
 	data->excallback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_remove_contacts_async (book->priv->proxy, (const gchar **) l, remove_contacts_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_remove_contacts (book->priv->gdbus_book, (const gchar *const *) l, NULL, remove_contacts_reply, data);
 
 	g_free (l);
 
@@ -1789,29 +1744,31 @@ e_book_get_book_view (EBook       *book,
 		      GError     **error)
 {
 	GError *err = NULL;
-	DBusGProxy *view_proxy;
+	EGdbusBookView *gdbus_bookview;
 	gchar *sexp, *view_path;
 	gboolean ret = TRUE;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	sexp = e_book_query_to_string (query);
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_addressbook_Book_get_book_view (book->priv->proxy, sexp, max_results, &view_path, &err)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_book_call_get_book_view_sync (book->priv->gdbus_book, sexp, max_results, &view_path, NULL, &err)) {
 		*book_view = NULL;
 		g_free (sexp);
+
 		return unwrap_gerror (err, error);
 	}
-	view_proxy = dbus_g_proxy_new_for_name_owner (connection,
-						      E_DATA_BOOK_FACTORY_SERVICE_NAME, view_path,
-						      "org.gnome.evolution.dataserver.addressbook.BookView", error);
-	UNLOCK_CONN ();
 
-	if (view_proxy) {
-		*book_view = _e_book_view_new (book, view_proxy, &connection_lock);
+	gdbus_bookview = e_gdbus_book_view_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory_proxy)),
+							G_DBUS_PROXY_FLAGS_NONE,
+							E_DATA_BOOK_FACTORY_SERVICE_NAME,
+							view_path,
+							NULL,
+							error);
+
+	if (gdbus_bookview) {
+		*book_view = _e_book_view_new (book, gdbus_bookview);
 	} else {
 		*book_view = NULL;
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_DBUS_EXCEPTION,
@@ -1826,33 +1783,33 @@ e_book_get_book_view (EBook       *book,
 }
 
 static void
-get_book_view_reply (DBusGProxy *proxy, gchar *view_path, GError *error, gpointer user_data)
+get_book_view_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 {
+	gchar *view_path = NULL;
+	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
-	GError *err = NULL;
 	EBookView *view = NULL;
 	EBookBookViewExCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookBookViewCallback cb = data->callback;
 	#endif
-	DBusGProxy *view_proxy;
+	EGdbusBookView *gdbus_bookview;
+
+	e_gdbus_book_call_get_book_view_finish (E_GDBUS_BOOK (gdbus_book), &view_path, res, &error);
 
 	if (view_path) {
-		GError *dbus_error = NULL;
-
-		LOCK_CONN ();
-		view_proxy = dbus_g_proxy_new_for_name_owner (connection, E_DATA_BOOK_FACTORY_SERVICE_NAME, view_path,
-							      "org.gnome.evolution.dataserver.addressbook.BookView", &dbus_error);
-		UNLOCK_CONN ();
-		if (view_proxy) {
-			view = _e_book_view_new (data->book, view_proxy, &connection_lock);
-		} else {
-			unwrap_gerror (dbus_error, &err);
-			g_error_free (dbus_error);
+		gdbus_bookview = e_gdbus_book_view_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory_proxy)),
+							G_DBUS_PROXY_FLAGS_NONE,
+							E_DATA_BOOK_FACTORY_SERVICE_NAME,
+							view_path,
+							NULL,
+							&error);
+		if (gdbus_bookview) {
+			view = _e_book_view_new (data->book, gdbus_bookview);
 		}
-	} else {
-		unwrap_gerror (error, &err);
 	}
+
+	unwrap_gerror (error, &err);
 
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
@@ -1863,6 +1820,7 @@ get_book_view_reply (DBusGProxy *proxy, gchar *view_path, GError *error, gpointe
 
 	if (err)
 		g_error_free (err);
+
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
 }
@@ -1896,7 +1854,7 @@ e_book_async_get_book_view (EBook                 *book,
 	gchar *sexp;
 
 	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_async_error_val_if_fail (query, E_BOOK_ERROR_INVALID_ARG);
 
 	data = g_slice_new0 (AsyncData);
@@ -1906,9 +1864,7 @@ e_book_async_get_book_view (EBook                 *book,
 
 	sexp = e_book_query_to_string (query);
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_book_view_async (book->priv->proxy, sexp, max_results, get_book_view_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_book_view (book->priv->gdbus_book, sexp, max_results, NULL, get_book_view_reply, data);
 
 	g_free (sexp);
 	return 0;
@@ -1943,7 +1899,7 @@ e_book_async_get_book_view_ex (EBook                  *book,
 	gchar *sexp;
 
 	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_ex_async_error_val_if_fail (query, E_BOOK_ERROR_INVALID_ARG);
 
 	data = g_slice_new0 (AsyncData);
@@ -1953,11 +1909,10 @@ e_book_async_get_book_view_ex (EBook                  *book,
 
 	sexp = e_book_query_to_string (query);
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_book_view_async (book->priv->proxy, sexp, max_results, get_book_view_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_book_view (book->priv->gdbus_book, sexp, max_results, NULL, get_book_view_reply, data);
 
 	g_free (sexp);
+
 	return TRUE;
 }
 
@@ -1984,13 +1939,14 @@ e_book_get_contacts (EBook       *book,
 	gchar *sexp;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	sexp = e_book_query_to_string (query);
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_contact_list (book->priv->proxy, sexp, &list, &err);
-	UNLOCK_CONN ();
+
+	e_gdbus_book_call_get_contact_list_sync (book->priv->gdbus_book, sexp, &list, NULL, &err);
+
 	g_free (sexp);
+
 	if (!err) {
 		GList *l = NULL;
 		gchar **i = list;
@@ -2006,15 +1962,18 @@ e_book_get_contacts (EBook       *book,
 }
 
 static void
-get_contacts_reply(DBusGProxy *proxy, gchar **vcards, GError *error, gpointer user_data)
+get_contacts_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 {
-	GError *err = NULL;
+	gchar **vcards = NULL;
+	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	GList *list = NULL;
 	EBookListExCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookListCallback cb = data->callback;
 	#endif
+
+	e_gdbus_book_call_get_contact_list_finish (E_GDBUS_BOOK (gdbus_book), &vcards, res, &error);
 
 	unwrap_gerror (error, &err);
 
@@ -2069,7 +2028,7 @@ e_book_async_get_contacts (EBook             *book,
 	gchar *sexp;
 
 	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_async_error_val_if_fail (query, E_BOOK_ERROR_INVALID_ARG);
 
 	sexp = e_book_query_to_string (query);
@@ -2079,10 +2038,10 @@ e_book_async_get_contacts (EBook             *book,
 	data->callback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_contact_list_async (book->priv->proxy, sexp, get_contacts_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_contact_list (book->priv->gdbus_book, sexp, NULL, get_contacts_reply, data);
+
 	g_free (sexp);
+
 	return 0;
 }
 #endif
@@ -2110,7 +2069,7 @@ e_book_async_get_contacts_ex (EBook              *book,
 	gchar *sexp;
 
 	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_ex_async_error_val_if_fail (query, E_BOOK_ERROR_INVALID_ARG);
 
 	sexp = e_book_query_to_string (query);
@@ -2120,39 +2079,40 @@ e_book_async_get_contacts_ex (EBook              *book,
 	data->excallback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_contact_list_async (book->priv->proxy, sexp, get_contacts_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_contact_list (book->priv->gdbus_book, sexp, NULL, get_contacts_reply, data);
+
 	g_free (sexp);
 
 	return TRUE;
 }
 
 static GList *
-parse_changes_array (GPtrArray *array)
+parse_changes_array (GVariant *var_changes)
 {
 	GList *l = NULL;
-	gint i;
+	GVariantIter iter;
+	guint32 val_uint;
+	gchar *val_str;
 
-	if (array == NULL)
+	if (var_changes == NULL)
 		return NULL;
 
-	for (i = 0; i < array->len; i++) {
+	g_variant_iter_init (&iter, var_changes);
+	while (g_variant_iter_next (&iter, "(us)", &val_uint, &val_str)) {
 		EBookChange *change;
-		GValueArray *vals;
 
-		vals = g_ptr_array_index (array, i);
+		if (val_uint ==  (guint32) -1 || !val_str || !*val_str) {
+			/* skip empty values */
+		} else {
+			change = g_slice_new (EBookChange);
+			change->change_type = val_uint;
+			change->contact = e_contact_new_from_vcard (val_str);
 
-		change = g_slice_new (EBookChange);
-		change->change_type = g_value_get_uint (g_value_array_get_nth (vals, 0));
-		change->contact = e_contact_new_from_vcard
-			(g_value_get_string (g_value_array_get_nth (vals, 1)));
+			l = g_list_prepend (l, change);
+		}
 
-		l = g_list_prepend (l, change);
+		g_free (val_str);
 	}
-
-	g_ptr_array_foreach (array, (GFunc)g_value_array_free, NULL);
-	g_ptr_array_free (array, TRUE);
 
 	return g_list_reverse (l);
 }
@@ -2176,16 +2136,18 @@ e_book_get_changes (EBook       *book,
 		    GError     **error)
 {
 	GError *err = NULL;
-	GPtrArray *array = NULL;
+	GVariant *var_changes = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_changes (book->priv->proxy, changeid, &array, &err);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_changes_sync (book->priv->gdbus_book, changeid, &var_changes, NULL, &err);
+
 	if (!err) {
-		*changes = parse_changes_array (array);
+		*changes = parse_changes_array (var_changes);
+
+		g_variant_unref (var_changes);
+
 		return TRUE;
 	} else {
 		return unwrap_gerror (err, error);
@@ -2193,9 +2155,10 @@ e_book_get_changes (EBook       *book,
 }
 
 static void
-get_changes_reply (DBusGProxy *proxy, GPtrArray *changes, GError *error, gpointer user_data)
+get_changes_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 {
-	GError *err = NULL;
+	GVariant *var_changes = NULL;
+	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookListExCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
@@ -2203,10 +2166,14 @@ get_changes_reply (DBusGProxy *proxy, GPtrArray *changes, GError *error, gpointe
 	#endif
 	GList *list = NULL;
 
+	e_gdbus_book_call_get_changes_finish (E_GDBUS_BOOK (gdbus_book), &var_changes, res, &error);
+
 	unwrap_gerror (error, &err);
 
-	if (changes)
-		list = parse_changes_array (changes);
+	if (var_changes) {
+		list = parse_changes_array (var_changes);
+		g_variant_unref (var_changes);
+	}
 
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
@@ -2247,16 +2214,14 @@ e_book_async_get_changes (EBook             *book,
 	AsyncData *data;
 
 	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
 	data->callback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_changes_async (book->priv->proxy, changeid, get_changes_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_changes (book->priv->gdbus_book, changeid, NULL, get_changes_reply, data);
 
 	return 0;
 }
@@ -2285,16 +2250,14 @@ e_book_async_get_changes_ex (EBook              *book,
 	AsyncData *data;
 
 	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_val_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
 	data->excallback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_get_changes_async (book->priv->proxy, changeid, get_changes_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_get_changes (book->priv->gdbus_book, changeid, NULL, get_changes_reply, data);
 
 	return TRUE;
 }
@@ -2340,16 +2303,10 @@ gboolean
 e_book_cancel (EBook   *book,
 	       GError **error)
 {
-	gboolean res;
-
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
-	LOCK_CONN ();
-	res = org_gnome_evolution_dataserver_addressbook_Book_cancel_operation (book->priv->proxy, error);
-	UNLOCK_CONN ();
-
-	return res;
+	return e_gdbus_book_call_cancel_operation_sync (book->priv->gdbus_book, NULL, error);
 }
 
 /**
@@ -2363,16 +2320,10 @@ e_book_cancel (EBook   *book,
 gboolean
 e_book_cancel_async_op (EBook *book, GError **error)
 {
-	gboolean res;
-
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
-	LOCK_CONN ();
-	res = org_gnome_evolution_dataserver_addressbook_Book_cancel_operation (book->priv->proxy, error);
-	UNLOCK_CONN ();
-
-	return res;
+	return e_gdbus_book_call_cancel_operation_sync (book->priv->gdbus_book, NULL, error);
 }
 
 /**
@@ -2393,17 +2344,14 @@ e_book_open (EBook     *book,
 	GError *err = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_addressbook_Book_open (book->priv->proxy, only_if_exists, &err)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_book_call_open_sync (book->priv->gdbus_book, only_if_exists, NULL, &err)) {
 
 		unwrap_gerror (err, error);
 
 		return FALSE;
 	}
-	UNLOCK_CONN ();
 
 	if (!err)
 		book->priv->loaded = TRUE;
@@ -2412,14 +2360,16 @@ e_book_open (EBook     *book,
 }
 
 static void
-open_reply(DBusGProxy *proxy, GError *error, gpointer user_data)
+open_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 {
-	GError *err = NULL;
+	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookExCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
 	#endif
+
+	e_gdbus_book_call_open_finish (E_GDBUS_BOOK (gdbus_book), res, &error);
 
 	unwrap_gerror (error, &err);
 
@@ -2463,16 +2413,14 @@ e_book_async_open (EBook                 *book,
 	AsyncData *data;
 
 	e_return_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
 	data->callback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_open_async (book->priv->proxy, only_if_exists, open_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_open (book->priv->gdbus_book, only_if_exists, NULL, open_reply, data);
 
 	return 0;
 }
@@ -2501,16 +2449,14 @@ e_book_async_open_ex (EBook                 *book,
 	AsyncData *data;
 
 	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
 	data->excallback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_open_async (book->priv->proxy, only_if_exists, open_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_open (book->priv->gdbus_book, only_if_exists, NULL, open_reply, data);
 
 	return TRUE;
 }
@@ -2532,24 +2478,24 @@ e_book_remove (EBook   *book,
 	GError *err = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_remove (book->priv->proxy, &err);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_remove_sync (book->priv->gdbus_book, NULL, &err);
 
 	return unwrap_gerror (err, error);
 }
 
 static void
-remove_reply(DBusGProxy *proxy, GError *error, gpointer user_data)
+remove_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 {
-	GError *err = NULL;
+	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookExCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
 	#endif
+
+	e_gdbus_book_call_remove_finish (E_GDBUS_BOOK (gdbus_book), res, &error);
 
 	unwrap_gerror (error, &err);
 
@@ -2589,16 +2535,14 @@ e_book_async_remove (EBook   *book,
 	AsyncData *data;
 
 	e_return_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
 	data->callback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_remove_async (book->priv->proxy, remove_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_remove (book->priv->gdbus_book, NULL, remove_reply, data);
 
 	return 0;
 }
@@ -2625,16 +2569,14 @@ e_book_async_remove_ex (EBook   *book,
 	AsyncData *data;
 
 	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_ex_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
 	data->excallback = cb;
 	data->closure = closure;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_addressbook_Book_remove_async (book->priv->proxy, remove_reply, data);
-	UNLOCK_CONN ();
+	e_gdbus_book_call_remove (book->priv->gdbus_book, NULL, remove_reply, data);
 
 	return TRUE;
 }
@@ -2686,17 +2628,14 @@ e_book_get_static_capabilities (EBook   *book,
 				GError **error)
 {
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	if (!book->priv->cap_queried) {
 		gchar *cap = NULL;
 
-		LOCK_CONN ();
-		if (!org_gnome_evolution_dataserver_addressbook_Book_get_static_capabilities (book->priv->proxy, &cap, error)) {
-			UNLOCK_CONN ();
+		if (!e_gdbus_book_call_get_static_capabilities_sync (book->priv->gdbus_book, &cap, NULL, error)) {
 			return NULL;
 		}
-		UNLOCK_CONN ();
 
 		book->priv->cap = cap;
 		book->priv->cap_queried = TRUE;
@@ -3075,8 +3014,10 @@ e_book_new (ESource *source, GError **error)
 	e_return_error_if_fail (E_IS_SOURCE (source), E_BOOK_ERROR_INVALID_ARG);
 
 	if (!e_book_activate (&err)) {
-		g_warning (G_STRLOC ": cannot activate book: %s\n", err->message);
+		unwrap_gerror (err, &err);
+		g_warning (G_STRLOC ": cannot activate book: %s", err->message);
 		g_propagate_error (error, err);
+
 		return NULL;
 	}
 
@@ -3087,40 +3028,41 @@ e_book_new (ESource *source, GError **error)
 
 	xml = e_source_to_standalone_xml (source);
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_addressbook_BookFactory_get_book (factory_proxy, xml, &path, &err)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_book_factory_call_get_book_sync (book_factory_proxy, xml, &path, NULL, &err)) {
+		unwrap_gerror (err, &err);
 		g_free (xml);
 		g_warning (G_STRLOC ": cannot get book from factory: %s", err ? err->message : "[no error]");
-		g_propagate_error (error, err);
+		if (err)
+			g_propagate_error (error, err);
 		g_object_unref (book);
+
 		return NULL;
 	}
 	g_free (xml);
 
-	book->priv->proxy = dbus_g_proxy_new_for_name_owner (connection,
-							     E_DATA_BOOK_FACTORY_SERVICE_NAME, path,
-							     "org.gnome.evolution.dataserver.addressbook.Book",
-							     &err);
-	UNLOCK_CONN ();
+	book->priv->gdbus_book = e_gdbus_book_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory_proxy)),
+						      G_DBUS_PROXY_FLAGS_NONE,
+						      E_DATA_BOOK_FACTORY_SERVICE_NAME,
+						      path,
+						      NULL,
+						      &err);
 
-	if (!book->priv->proxy) {
-		g_warning (G_STRLOC ": cannot get proxy for book %s: %s", path, err->message);
-		g_propagate_error (error, err);
+	if (!book->priv->gdbus_book) {
 		g_free (path);
+		unwrap_gerror (err, &err);
+		g_warning ("Cannot create cal proxy: %s", err ? err->message : "Unknown error");
+		if (err)
+			g_error_free (err);
 		g_object_unref (book);
 		return NULL;
 	}
+
 	g_free (path);
 
-	g_object_weak_ref (G_OBJECT (book->priv->proxy), proxy_destroyed, book);
-
-	dbus_g_proxy_add_signal (book->priv->proxy, "writable", G_TYPE_BOOLEAN, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal (book->priv->proxy, "writable", G_CALLBACK (writable_cb), book, NULL);
-	dbus_g_proxy_add_signal (book->priv->proxy, "connection", G_TYPE_BOOLEAN, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal (book->priv->proxy, "connection", G_CALLBACK (connection_cb), book, NULL);
-	dbus_g_proxy_add_signal (book->priv->proxy, "auth_required", G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal (book->priv->proxy, "auth_required", G_CALLBACK (auth_required_cb), book, NULL);
+	g_signal_connect (g_dbus_proxy_get_connection (G_DBUS_PROXY (book->priv->gdbus_book)), "closed", G_CALLBACK (gdbus_book_closed_cb), book);
+	g_signal_connect (book->priv->gdbus_book, "writable", G_CALLBACK (writable_cb), book);
+	g_signal_connect (book->priv->gdbus_book, "connection", G_CALLBACK (connection_cb), book);
+	g_signal_connect (book->priv->gdbus_book, "auth-required", G_CALLBACK (auth_required_cb), book);
 
 	return book;
 }
@@ -3347,27 +3289,6 @@ e_book_new_default_addressbook   (GError **error)
 	return book;
 }
 
-static gboolean
-strcaseequal_no_underscore (const gchar *str1, const gchar *str2)
-{
-	gint i, j;
-
-	if (!str1 || !str2)
-		return FALSE;
-
-	for (i = 0, j = 0; str1[i] && str2[j]; i++, j++) {
-		while (str1[i] == '_' && str1[i + 1])
-			i++;
-		while (str2[j] == '_' && str2[j + 1])
-			j++;
-
-		if (g_ascii_tolower (str1[i]) != g_ascii_tolower (str2[j]))
-			return FALSE;
-	}
-
-	return !str1[i] && !str2[j];
-}
-
 /**
  * If the GError is a remote error, extract the EBookStatus embedded inside.
  * Otherwise return DBUS_EXCEPTION (I know this is DBus...).
@@ -3380,49 +3301,54 @@ get_status_from_error (GError *error)
 		const gchar *name;
 		EBookStatus err_code;
 	} errors[] = {
-		{ err ("E_DATA_BOOK_STATUS_SUCCESS",				E_BOOK_ERROR_OK) },
-		{ err ("E_DATA_BOOK_STATUS_REPOSITORY_OFFLINE",			E_BOOK_ERROR_REPOSITORY_OFFLINE) },
-		{ err ("E_DATA_BOOK_STATUS_PERMISSION_DENIED",			E_BOOK_ERROR_PERMISSION_DENIED) },
-		{ err ("E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND",			E_BOOK_ERROR_CONTACT_NOT_FOUND) },
-		{ err ("E_DATA_BOOK_STATUS_CONTACTID_ALREADY_EXISTS",		E_BOOK_ERROR_CONTACT_ID_ALREADY_EXISTS) },
-		{ err ("E_DATA_BOOK_STATUS_AUTHENTICATION_FAILED",		E_BOOK_ERROR_AUTHENTICATION_FAILED) },
-		{ err ("E_DATA_BOOK_STATUS_AUTHENTICATION_REQUIRED",		E_BOOK_ERROR_AUTHENTICATION_REQUIRED) },
-		{ err ("E_DATA_BOOK_STATUS_UNSUPPORTED_FIELD",			E_BOOK_ERROR_OTHER_ERROR) },
-		{ err ("E_DATA_BOOK_STATUS_UNSUPPORTED_AUTHENTICATION_METHOD",	E_BOOK_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD) },
-		{ err ("E_DATA_BOOK_STATUS_TLS_NOT_AVAILABLE",			E_BOOK_ERROR_TLS_NOT_AVAILABLE) },
-		{ err ("E_DATA_BOOK_STATUS_NO_SUCH_BOOK",			E_BOOK_ERROR_NO_SUCH_BOOK) },
-		{ err ("E_DATA_BOOK_STATUS_BOOK_REMOVED",			E_BOOK_ERROR_NO_SUCH_SOURCE) },
-		{ err ("E_DATA_BOOK_STATUS_OFFLINE_UNAVAILABLE",		E_BOOK_ERROR_OFFLINE_UNAVAILABLE) },
-		{ err ("E_DATA_BOOK_STATUS_SEARCH_SIZE_LIMIT_EXCEEDED",		E_BOOK_ERROR_OTHER_ERROR) },
-		{ err ("E_DATA_BOOK_STATUS_SEARCH_TIME_LIMIT_EXCEEDED",		E_BOOK_ERROR_OTHER_ERROR) },
-		{ err ("E_DATA_BOOK_STATUS_INVALID_QUERY",			E_BOOK_ERROR_OTHER_ERROR) },
-		{ err ("E_DATA_BOOK_STATUS_QUERY_REFUSED",			E_BOOK_ERROR_OTHER_ERROR) },
-		{ err ("E_DATA_BOOK_STATUS_COULD_NOT_CANCEL",			E_BOOK_ERROR_COULD_NOT_CANCEL) },
-		{ err ("E_DATA_BOOK_STATUS_OTHER_ERROR",			E_BOOK_ERROR_OTHER_ERROR) },
-		{ err ("E_DATA_BOOK_STATUS_INVALID_SERVER_VERSION",		E_BOOK_ERROR_INVALID_SERVER_VERSION) },
-		{ err ("E_DATA_BOOK_STATUS_NO_SPACE",				E_BOOK_ERROR_NO_SPACE) },
-		{ err ("E_DATA_BOOK_STATUS_INVALID_ARG",			E_BOOK_ERROR_INVALID_ARG) },
-		{ err ("E_DATA_BOOK_STATUS_NOT_SUPPORTED",			E_BOOK_ERROR_NOT_SUPPORTED) }
+		{ err ("Success",				E_BOOK_ERROR_OK) },
+		{ err ("RepositoryOffline",			E_BOOK_ERROR_REPOSITORY_OFFLINE) },
+		{ err ("PermissionDenied",			E_BOOK_ERROR_PERMISSION_DENIED) },
+		{ err ("ContactNotFound",			E_BOOK_ERROR_CONTACT_NOT_FOUND) },
+		{ err ("ContactIDAlreadyExists",		E_BOOK_ERROR_CONTACT_ID_ALREADY_EXISTS) },
+		{ err ("AuthenticationFailed",			E_BOOK_ERROR_AUTHENTICATION_FAILED) },
+		{ err ("AuthenticationRequired",		E_BOOK_ERROR_AUTHENTICATION_REQUIRED) },
+		{ err ("UnsupportedField",			E_BOOK_ERROR_OTHER_ERROR) },
+		{ err ("UnsupportedAuthenticationMethod",	E_BOOK_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD) },
+		{ err ("TLSNotAvailable",			E_BOOK_ERROR_TLS_NOT_AVAILABLE) },
+		{ err ("NoSuchBook",				E_BOOK_ERROR_NO_SUCH_BOOK) },
+		{ err ("BookRemoved",				E_BOOK_ERROR_NO_SUCH_SOURCE) },
+		{ err ("OfflineUnavailable",			E_BOOK_ERROR_OFFLINE_UNAVAILABLE) },
+		{ err ("SearchSizeLimitExceeded",		E_BOOK_ERROR_OTHER_ERROR) },
+		{ err ("SearchTimeLimitExceeded",		E_BOOK_ERROR_OTHER_ERROR) },
+		{ err ("InvalidQuery",				E_BOOK_ERROR_OTHER_ERROR) },
+		{ err ("QueryRefused",				E_BOOK_ERROR_OTHER_ERROR) },
+		{ err ("CouldNotCancel",			E_BOOK_ERROR_COULD_NOT_CANCEL) },
+		{ err ("OtherError",				E_BOOK_ERROR_OTHER_ERROR) },
+		{ err ("InvalidServerVersion",			E_BOOK_ERROR_INVALID_SERVER_VERSION) },
+		{ err ("NoSpace",				E_BOOK_ERROR_NO_SPACE) },
+		{ err ("InvalidArg",				E_BOOK_ERROR_INVALID_ARG) },
+		{ err ("NotSupported",				E_BOOK_ERROR_NOT_SUPPORTED) }
 	};
 	#undef err
 
 	if G_LIKELY (error == NULL)
 			    return E_BOOK_ERROR_OK;
 
-	if (error->domain == DBUS_GERROR && error->code == DBUS_GERROR_REMOTE_EXCEPTION) {
-		const gchar *name;
+	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR)) {
+		gchar *name;
 		gint i;
 
-		name = dbus_g_error_get_name (error);
+		name = g_dbus_error_get_remote_error (error);
 
 		for (i = 0; i < G_N_ELEMENTS (errors); i++) {
-			if (g_ascii_strcasecmp (errors[i].name, name) == 0 ||
-			    strcaseequal_no_underscore (errors[i].name, name))
+			if (g_ascii_strcasecmp (errors[i].name, name) == 0) {
+				g_free (name);
 				return errors[i].err_code;
+			}
 		}
 
 		g_warning (G_STRLOC ": unmatched error name %s", name);
+		g_free (name);
+
 		return E_BOOK_ERROR_OTHER_ERROR;
+	} else if (error->domain == E_BOOK_ERROR) {
+		return error->code;
 	} else {
 		/* In this case the error was caused by DBus. Dump the message to the
 		   console as otherwise we have no idea what the problem is. */
@@ -3442,19 +3368,22 @@ unwrap_gerror (GError *error, GError **client_error)
 	if (error == NULL)
 		return TRUE;
 
-	if (error->domain == DBUS_GERROR && error->code == DBUS_GERROR_REMOTE_EXCEPTION) {
-		GError *new;
-		gint code;
+	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR)) {
 		if (client_error) {
+			gint code;
+
 			code = get_status_from_error (error);
-			new = g_error_new_literal (E_BOOK_ERROR, code, error->message);
-			*client_error = new;
+			g_dbus_error_strip_remote_error (error);
+
+			*client_error = g_error_new_literal (E_BOOK_ERROR, code, error->message);
 		}
+
 		g_error_free (error);
 	} else {
 		if (client_error)
 			*client_error = error;
 	}
+
 	return FALSE;
 }
 
@@ -3483,8 +3412,25 @@ array_to_stringlist (gchar **list)
 	GList *l = NULL;
 	gchar **i = list;
 	while (*i != NULL) {
-		l = g_list_prepend (l, (*i++));
+		l = g_list_prepend (l, g_strdup (*i++));
 	}
 	g_free (list);
 	return g_list_reverse(l);
+}
+
+static EList *
+array_to_elist (gchar **list)
+{
+	EList *elst = NULL;
+	gchar **i = list;
+
+	elst = e_list_new (NULL, (EListFreeFunc) g_free, NULL);
+	if (!list)
+		return elst;
+
+	while (*i != NULL) {
+		e_list_append (elst, g_strdup (*i++));
+	}
+
+	return elst;
 }

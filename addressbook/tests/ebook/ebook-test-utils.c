@@ -643,7 +643,6 @@ EBook*
 ebook_test_utils_book_new_temp (gchar **uri)
 {
         EBook *book;
-	GError *error = NULL;
 	gchar *file_template;
         gchar *uri_result;
 
@@ -651,10 +650,9 @@ ebook_test_utils_book_new_temp (gchar **uri)
                         "ebook-test-XXXXXX/", NULL);
 	g_mkstemp (file_template);
 
-	uri_result = g_filename_to_uri (file_template, NULL, &error);
+	uri_result = g_strconcat ("local:", file_template, NULL);
 	if (!uri_result) {
-                g_warning ("failed to convert %s to an URI: %s", file_template,
-                                error->message);
+                g_warning ("failed to convert %s to a 'local:' URI", file_template);
 		exit (1);
 	}
 	g_free (file_template);

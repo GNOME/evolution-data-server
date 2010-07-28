@@ -62,9 +62,7 @@ extern gss_OID gss_nt_service_name;
 #endif
 
 #include <glib/gi18n-lib.h>
-
-#include <dbus/dbus.h>
-#include <dbus/dbus-glib-lowlevel.h>
+#include <gio/gio.h>
 
 #include "camel-net-utils.h"
 #include "camel-sasl-gssapi.h"
@@ -190,54 +188,52 @@ sasl_gssapi_finalize (GObject *object)
 static gboolean
 send_dbus_message (gchar *name)
 {
-	DBusMessage *message, *reply;
-	DBusError dbus_error;
 	gint success = FALSE;
-	DBusConnection *bus = NULL;
+	GError *error = NULL;
+	GDBusConnection *connection;
+	GDBusMessage *message, *reply;
 
-	dbus_error_init (&dbus_error);
-	if (!(bus = dbus_bus_get (DBUS_BUS_SESSION, &dbus_error))) {
-		g_warning ("could not get system bus: %s\n", dbus_error.message);
-		dbus_error_free (&dbus_error);
+	connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
+	if (error) {
+		g_warning ("could not get system bus: %s\n", error->message);
+		g_error_free (error);
+
 		return FALSE;
 	}
 
-	dbus_error_free (&dbus_error);
-
-	dbus_connection_setup_with_g_main (bus, NULL);
-	dbus_connection_set_exit_on_disconnect (bus, FALSE);
+	g_dbus_connection_set_exit_on_close (connection, FALSE);
 
 	/* Create a new message on the DBUS_INTERFACE */
-	if (!(message = dbus_message_new_method_call (DBUS_INTERFACE, DBUS_PATH, DBUS_INTERFACE, "acquireTgt"))) {
-		g_object_unref (bus);
+	message = g_dbus_message_new_method_call (DBUS_INTERFACE, DBUS_PATH, DBUS_INTERFACE, "acquireTgt");
+	if (!message) {
+		g_object_unref (connection);
 		return FALSE;
 	}
+
 	/* Appends the data as an argument to the message */
-	if (strchr(name, '\\'))
-		name = strchr(name, '\\');
-	dbus_message_append_args (message,
-				  DBUS_TYPE_STRING, &name,
-				  DBUS_TYPE_INVALID);
-	dbus_error_init(&dbus_error);
+	if (strchr (name, '\\'))
+		name = strchr (name, '\\');
+	g_dbus_message_set_body (message, g_variant_new ("(s)", name));
 
 	/* Sends the message: Have a 300 sec wait timeout  */
-	reply = dbus_connection_send_with_reply_and_block (bus, message, 300 * 1000, &dbus_error);
+	reply = g_dbus_connection_send_message_with_reply_sync (connection, message, 300 * 1000, NULL, NULL, &error);
 
-	if (dbus_error_is_set(&dbus_error))
-		g_warning ("%s: %s\n", dbus_error.name, dbus_error.message);
-	dbus_error_free(&dbus_error);
+	if (error) {
+		g_warning ("%s: %s\n", G_STRFUNC, error->message);
+		g_error_free (error);
+	}
 
-        if (reply)
-        {
-                dbus_error_init(&dbus_error);
-                dbus_message_get_args(reply, &dbus_error, DBUS_TYPE_BOOLEAN, &success, DBUS_TYPE_INVALID);
-                dbus_error_free(&dbus_error);
-                dbus_message_unref(reply);
+        if (reply) {
+		GVariant *body = g_dbus_message_get_body (reply);
+
+		success = body && g_variant_get_boolean (body);
+
+                g_object_unref (reply);
         }
 
 	/* Free the message */
-	dbus_message_unref (message);
-	dbus_connection_unref (bus);
+	g_object_unref (message);
+	g_object_unref (connection);
 
 	return success;
 }

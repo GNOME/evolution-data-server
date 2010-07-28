@@ -69,7 +69,6 @@ ecal_test_utils_cal_new_temp (gchar           **uri,
                               ECalSourceType   type)
 {
         ECal *cal;
-        GError *error = NULL;
         gchar *file_template;
         gchar *uri_result;
 
@@ -77,10 +76,9 @@ ecal_test_utils_cal_new_temp (gchar           **uri,
                         "ecal-test-XXXXXX/", NULL);
         g_mkstemp (file_template);
 
-        uri_result = g_filename_to_uri (file_template, NULL, &error);
+        uri_result = g_strconcat ("local:", file_template, NULL);
         if (!uri_result) {
-                g_error ("failed to convert %s to an URI: %s", file_template,
-                                error->message);
+                g_error ("failed to convert %s to a 'local:' URI", file_template);
         }
         g_free (file_template);
 

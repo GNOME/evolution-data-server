@@ -24,7 +24,7 @@
 #define __E_DATA_BOOK_H__
 
 #include <glib-object.h>
-#include <dbus/dbus-glib.h>
+#include <gio/gio.h>
 #include <libedataserver/e-source.h>
 #include "e-book-backend.h"
 #include "e-data-book-types.h"
@@ -38,10 +38,12 @@ G_BEGIN_DECLS
 #define E_IS_DATA_BOOK_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_DATA_BOOK))
 #define E_DATA_BOOK_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), E_TYPE_DATA_BOOK, EDataBookClass))
 
+typedef struct _EDataBookPrivate EDataBookPrivate;
+
 struct _EDataBook {
 	GObject parent;
-	EBookBackend *backend;
-	ESource *source;
+
+	EDataBookPrivate *priv;
 };
 
 struct _EDataBookClass {
@@ -95,6 +97,9 @@ const gchar *e_data_book_status_to_string (EDataBookStatus status);
 	} G_STMT_END
 
 EDataBook		*e_data_book_new                    (EBookBackend *backend, ESource *source);
+
+guint			e_data_book_register_gdbus_object (EDataBook *cal, GDBusConnection *connection, const gchar *object_path, GError **error);
+
 EBookBackend		*e_data_book_get_backend            (EDataBook *book);
 ESource			*e_data_book_get_source             (EDataBook *book);
 

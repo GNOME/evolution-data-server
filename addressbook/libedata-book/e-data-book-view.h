@@ -26,6 +26,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <gio/gio.h>
 #include <libebook/e-contact.h>
 #include <libedata-book/e-data-book-types.h>
 #include <libedata-book/e-book-backend.h>
@@ -52,10 +53,11 @@ struct _EDataBookViewClass {
 };
 
 EDataBookView *e_data_book_view_new                  (EDataBook        *book,
-						      const gchar       *path,
-						      const gchar       *card_query,
+						      const gchar      *card_query,
 						      EBookBackendSExp *card_sexp,
-						      gint               max_results);
+						      gint              max_results);
+
+guint e_data_book_view_register_gdbus_object (EDataBookView *query, GDBusConnection *connection, const gchar *object_path, GError **error);
 
 void              e_data_book_view_set_thresholds    (EDataBookView *book_view,
 						      gint minimum_grouping_threshold,

@@ -24,7 +24,7 @@
 #define E_DATA_CAL_H
 
 #include <glib-object.h>
-#include <dbus/dbus-glib.h>
+#include <gio/gio.h>
 #include <libedata-cal/e-data-cal-common.h>
 #include <libedata-cal/e-data-cal-view.h>
 #include <libedata-cal/e-data-cal-types.h>
@@ -99,6 +99,8 @@ struct _EDataCalClass {
 GType e_data_cal_get_type (void);
 
 EDataCal *e_data_cal_new (ECalBackend *backend, ESource *source);
+
+guint e_data_cal_register_gdbus_object (EDataCal *cal, GDBusConnection *connection, const gchar *object_path, GError **error);
 
 ECalBackend *e_data_cal_get_backend (EDataCal *cal);
 ESource* e_data_cal_get_source (EDataCal *cal);

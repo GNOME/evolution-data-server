@@ -23,7 +23,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <dbus/dbus-glib.h>
+#include <gio/gio.h>
 #include <libedata-cal/e-data-cal-common.h>
 #include <libedata-cal/e-cal-backend-sexp.h>
 #include <libedata-cal/e-data-cal-types.h>
@@ -52,9 +52,9 @@ struct _EDataCalViewClass {
 };
 
 GType                 e_data_cal_view_get_type (void);
-EDataCalView         *e_data_cal_view_new (ECalBackend *backend, const gchar *path, ECalBackendSExp *sexp);
+EDataCalView         *e_data_cal_view_new (ECalBackend *backend, ECalBackendSExp *sexp);
 
-const gchar * e_data_cal_view_get_dbus_path (EDataCalView *view);
+guint e_data_cal_view_register_gdbus_object (EDataCalView *query, GDBusConnection *connection, const gchar *object_path, GError **error);
 
 const gchar           *e_data_cal_view_get_text (EDataCalView *query);
 ECalBackendSExp      *e_data_cal_view_get_object_sexp (EDataCalView *query);

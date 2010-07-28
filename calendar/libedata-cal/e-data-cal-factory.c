@@ -30,9 +30,6 @@
 #include <unistd.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
-#include <dbus/dbus-glib-bindings.h>
 
 #include "libedataserver/e-url.h"
 #include "libedataserver/e-source.h"
@@ -46,14 +43,11 @@
 #include "e-data-cal-factory.h"
 #include "e-cal-backend-loader-factory.h"
 
+#include "e-gdbus-egdbuscalfactory.h"
+
 #define d(x)
 
-static void impl_CalFactory_getCal (EDataCalFactory *factory, const gchar *IN_uri, EDataCalObjType type, DBusGMethodInvocation *context);
-#include "e-data-cal-factory-glue.h"
-
 static GMainLoop *loop;
-static EDataCalFactory *factory;
-extern DBusGConnection *connection;
 
 /* Convenience macro to test and set a GError/return on failure */
 #define g_set_error_val_if_fail(test, returnval, error, domain, code) G_STMT_START{ \
@@ -69,6 +63,8 @@ G_DEFINE_TYPE(EDataCalFactory, e_data_cal_factory, G_TYPE_OBJECT);
 #define E_DATA_CAL_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_DATA_CAL_FACTORY, EDataCalFactoryPrivate))
 
 struct _EDataCalFactoryPrivate {
+	EGdbusCalFactory *gdbus_object;
+
 	/* Hash table from URI method strings to GType * for backend class types */
 	GHashTable *methods;
 
@@ -237,16 +233,22 @@ construct_cal_factory_path (void)
 		getpid (), g_atomic_int_exchange_and_add (&counter, 1));
 }
 
+static gboolean
+remove_dead_calendar_cb (gpointer path, gpointer calendar, gpointer dead_calendar)
+{
+	return calendar == dead_calendar;
+}
+
 static void
-my_remove (gchar *key, GObject *dead)
+calendar_freed_cb (EDataCalFactory *factory, GObject *dead)
 {
 	EDataCalFactoryPrivate *priv = factory->priv;
 	GHashTableIter iter;
 	gpointer hkey, hvalue;
 
-	d (g_debug ("%s (%p) is dead", key, dead));
+	d (g_debug ("in factory %p (%p) is dead", factory, dead));
 
-	g_hash_table_remove (priv->calendars, key);
+	g_hash_table_foreach_remove (priv->calendars, remove_dead_calendar_cb, dead);
 
 	g_hash_table_iter_init (&iter, priv->connections);
 	while (g_hash_table_iter_next (&iter, &hkey, &hvalue)) {
@@ -264,8 +266,6 @@ my_remove (gchar *key, GObject *dead)
 			break;
 		}
 	}
-
-	g_free (key);
 
 	/* If there are no open calendars, start a timer to quit. */
 	if (priv->exit_timeout == 0 && g_hash_table_size (priv->calendars) == 0)
@@ -304,11 +304,8 @@ find_backend_cb (gpointer key, gpointer value, gpointer data)
 	}
 }
 
-static void
-impl_CalFactory_getCal (EDataCalFactory *factory,
-                        const gchar *source_xml,
-                        EDataCalObjType type,
-                        DBusGMethodInvocation *context)
+static gboolean
+impl_CalFactory_getCal (EGdbusCalFactory *object, GDBusMethodInvocation *invocation, const gchar *source_xml, guint type, EDataCalFactory *factory)
 {
 	EDataCal *calendar;
 	EDataCalFactoryPrivate *priv = factory->priv;
@@ -318,7 +315,8 @@ impl_CalFactory_getCal (EDataCalFactory *factory,
 	gchar *str_uri;
 	EUri *uri;
 	gchar *uid_type_string;
-	gchar *path = NULL, *sender;
+	gchar *path = NULL;
+	const gchar *sender;
 	GList *list;
 	GError *error = NULL;
 
@@ -330,11 +328,11 @@ impl_CalFactory_getCal (EDataCalFactory *factory,
 
 	source = e_source_new_from_standalone_xml (source_xml);
 	if (!source) {
-		dbus_g_method_return_error (
-			context, g_error_new (
-			E_DATA_CAL_ERROR, NoSuchCal,
-			_("Invalid source")));
-		return;
+		error = g_error_new (E_DATA_CAL_ERROR, NoSuchCal, _("Invalid source"));
+		g_dbus_method_invocation_return_gerror (invocation, error);
+		g_error_free (error);
+
+		return TRUE;
 	}
 
 	/* Get the URI so we can extract the protocol */
@@ -342,21 +340,21 @@ impl_CalFactory_getCal (EDataCalFactory *factory,
 	if (!str_uri) {
 		g_object_unref (source);
 
-		dbus_g_method_return_error (
-			context, g_error_new (
-			E_DATA_CAL_ERROR, NoSuchCal,
-			_("Invalid source")));
-		return;
+		error = g_error_new (E_DATA_CAL_ERROR, NoSuchCal, _("Invalid source"));
+		g_dbus_method_invocation_return_gerror (invocation, error);
+		g_error_free (error);
+
+		return TRUE;
 	}
 
 	/* Parse the uri */
 	uri = e_uri_new (str_uri);
 	if (!uri) {
-		dbus_g_method_return_error (
-			context, g_error_new (
-			E_DATA_CAL_ERROR, NoSuchCal,
-			_("Invalid URI")));
-		return;
+		error = g_error_new (E_DATA_CAL_ERROR, NoSuchCal, _("Invalid URI"));
+		g_dbus_method_invocation_return_gerror (invocation, error);
+		g_error_free (error);
+
+		return TRUE;
 	}
 
 	uid_type_string = g_strdup_printf (
@@ -454,17 +452,16 @@ impl_CalFactory_getCal (EDataCalFactory *factory,
 	e_cal_backend_add_client (backend, calendar);
 
 	path = construct_cal_factory_path ();
-	dbus_g_connection_register_g_object (
-		connection, path, G_OBJECT (calendar));
+	e_data_cal_register_gdbus_object (calendar, g_dbus_method_invocation_get_connection (invocation), path, &error);
 	g_object_weak_ref (
-		G_OBJECT (calendar), (GWeakNotify) my_remove, path);
+		G_OBJECT (calendar), (GWeakNotify) calendar_freed_cb, factory);
 
 	g_hash_table_insert (priv->calendars, g_strdup (path), calendar);
 
-	sender = dbus_g_method_get_sender (context);
+	sender = g_dbus_method_invocation_get_sender (invocation);
 	list = g_hash_table_lookup (priv->connections, sender);
 	list = g_list_prepend (list, calendar);
-	g_hash_table_insert (priv->connections, sender, list);
+	g_hash_table_insert (priv->connections, g_strdup (sender), list);
 
 cleanup:
 	/* The reason why the lock is held for such a long time is that there is
@@ -479,10 +476,15 @@ cleanup2:
 	g_free (uid_type_string);
 	g_object_unref (source);
 
-	if (error)
-		dbus_g_method_return_error (context, error);
-	else
-		dbus_g_method_return (context, path);
+	if (error) {
+		g_dbus_method_invocation_return_gerror (invocation, error);
+		g_error_free (error);
+	} else
+		e_gdbus_cal_factory_complete_get_cal (object, invocation, path);
+
+	g_free (path);
+
+	return TRUE;
 }
 
 static void
@@ -501,53 +503,14 @@ remove_data_cal_cb (gpointer data_cl,
 	g_object_unref (data_cal);
 }
 
-static void
-name_owner_changed (DBusGProxy *proxy,
-                    const gchar *name,
-                    const gchar *prev_owner,
-                    const gchar *new_owner,
-                    EDataCalFactory *factory)
-{
-	GList *list = NULL;
-	gchar *key;
-
-	if (strcmp (new_owner, "") != 0)
-		return;
-
-	if (strcmp (name, prev_owner) != 0)
-		return;
-
-	while (g_hash_table_lookup_extended (
-		factory->priv->connections, prev_owner,
-		(gpointer) &key, (gpointer) &list)) {
-
-		GList *copy = g_list_copy (list);
-
-		/* this should trigger the book's weak ref notify
-		 * function, which will remove it from the list before
-		 * it's freed, and will remove the connection from
-		 * priv->connections once they're all gone */
-		g_list_foreach (copy, remove_data_cal_cb, NULL);
-		g_list_free (copy);
-	}
-}
-
-/* Class initialization function for the calendar factory */
-static void
-e_data_cal_factory_class_init (EDataCalFactoryClass *class)
-{
-	g_type_class_add_private (class, sizeof (EDataCalFactoryPrivate));
-
-	dbus_g_object_type_install_info (
-		G_TYPE_FROM_CLASS (class),
-		&dbus_glib_e_data_cal_factory_object_info);
-}
-
 /* Instance init */
 static void
 e_data_cal_factory_init (EDataCalFactory *factory)
 {
 	factory->priv = E_DATA_CAL_FACTORY_GET_PRIVATE (factory);
+
+	factory->priv->gdbus_object = e_gdbus_cal_factory_stub_new ();
+	g_signal_connect (factory->priv->gdbus_object, "handle-get-cal", G_CALLBACK (impl_CalFactory_getCal), factory);
 
 	factory->priv->methods = g_hash_table_new_full (
 		g_str_hash, g_str_equal,
@@ -573,6 +536,49 @@ e_data_cal_factory_init (EDataCalFactory *factory)
 
 	e_data_server_module_init ();
 	e_data_cal_factory_register_backends (factory);
+}
+
+static void
+e_data_cal_factory_finalize (GObject *object)
+{
+	EDataCalFactory *factory = E_DATA_CAL_FACTORY (object);
+
+	g_return_if_fail (factory != NULL);
+
+	g_object_unref (factory->priv->gdbus_object);
+
+	g_hash_table_destroy (factory->priv->methods);
+	g_hash_table_destroy (factory->priv->backends);
+	g_hash_table_destroy (factory->priv->calendars);
+	g_hash_table_destroy (factory->priv->connections);
+
+	g_mutex_free (factory->priv->backends_mutex);
+
+	if (G_OBJECT_CLASS (e_data_cal_factory_parent_class)->finalize)
+		G_OBJECT_CLASS (e_data_cal_factory_parent_class)->finalize (object);
+}
+
+/* Class initialization function for the calendar factory */
+static void
+e_data_cal_factory_class_init (EDataCalFactoryClass *klass)
+{
+	GObjectClass *object_class;
+
+	g_type_class_add_private (klass, sizeof (EDataCalFactoryPrivate));
+
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->finalize = e_data_cal_factory_finalize;
+}
+
+static guint
+e_data_cal_factory_register_gdbus_object (EDataCalFactory *factory, GDBusConnection *connection, const gchar *object_path, GError **error)
+{
+	g_return_val_if_fail (factory != NULL, 0);
+	g_return_val_if_fail (E_IS_DATA_CAL_FACTORY (factory), 0);
+	g_return_val_if_fail (connection != NULL, 0);
+	g_return_val_if_fail (object_path != NULL, 0);
+
+	return e_gdbus_cal_factory_register_object (factory->priv->gdbus_object, connection, object_path, error);
 }
 
 static void
@@ -789,13 +795,64 @@ offline_state_changed_cb (EOfflineListener *eol,
 #define E_DATA_CAL_FACTORY_SERVICE_NAME \
 	"org.gnome.evolution.dataserver.Calendar"
 
+static void
+on_bus_acquired (GDBusConnection *connection,
+                 const gchar     *name,
+                 gpointer         user_data)
+{
+	EDataCalFactory *factory = user_data;
+	guint registration_id;
+	GError *error = NULL;
+
+	registration_id = e_data_cal_factory_register_gdbus_object (
+		factory,
+		connection,
+		"/org/gnome/evolution/dataserver/calendar/CalFactory",
+		&error);
+
+	if (error)
+		die ("Failed to register a CalFactory object", error);
+
+	g_assert (registration_id > 0);
+}
+
+static void
+on_name_acquired (GDBusConnection *connection,
+                  const gchar     *name,
+                  gpointer         user_data)
+{
+}
+
+static void
+on_name_lost (GDBusConnection *connection,
+              const gchar     *name,
+              gpointer         user_data)
+{
+	GList *list = NULL;
+	gchar *key;
+	EDataCalFactory *factory = user_data;
+
+	while (g_hash_table_lookup_extended (
+		factory->priv->connections, name,
+		(gpointer) &key, (gpointer) &list)) {
+
+		GList *copy = g_list_copy (list);
+
+		/* this should trigger the book's weak ref notify
+		 * function, which will remove it from the list before
+		 * it's freed, and will remove the connection from
+		 * priv->connections once they're all gone */
+		g_list_foreach (copy, remove_data_cal_cb, NULL);
+		g_list_free (copy);
+	}
+}
+
 gint
 main (gint argc, gchar **argv)
 {
-	GError *error = NULL;
-	DBusGProxy *bus_proxy;
-	guint32 request_name_ret;
 	EOfflineListener *eol;
+	EDataCalFactory *factory;
+	guint owner_id;
 
 	setlocale (LC_ALL, "");
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
@@ -804,42 +861,10 @@ main (gint argc, gchar **argv)
 	g_type_init ();
 	g_set_prgname (E_PRGNAME);
 	if (!g_thread_supported ()) g_thread_init (NULL);
-	dbus_g_thread_init ();
-
-	loop = g_main_loop_new (NULL, FALSE);
-
-	/* Obtain a connection to the session bus */
-	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
-	if (connection == NULL)
-		die ("Failed to open connection to bus", error);
-
-	bus_proxy = dbus_g_proxy_new_for_name (connection,
-					       DBUS_SERVICE_DBUS,
-					       DBUS_PATH_DBUS,
-					       DBUS_INTERFACE_DBUS);
 
 	factory = g_object_new (E_TYPE_DATA_CAL_FACTORY, NULL);
-	dbus_g_connection_register_g_object (
-		connection,
-		"/org/gnome/evolution/dataserver/calendar/CalFactory",
-		G_OBJECT (factory));
 
-	dbus_g_proxy_add_signal (
-		bus_proxy, "NameOwnerChanged",
-		G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal (
-		bus_proxy, "NameOwnerChanged",
-		G_CALLBACK (name_owner_changed), factory, NULL);
-
-	if (!org_freedesktop_DBus_request_name (
-		bus_proxy, E_DATA_CAL_FACTORY_SERVICE_NAME,
-		0, &request_name_ret, &error))
-		die ("Failed to get name", error);
-
-	if (request_name_ret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
-		g_error ("Got result code %u from requesting name", request_name_ret);
-		exit (1);
-	}
+	loop = g_main_loop_new (NULL, FALSE);
 
 	eol = e_offline_listener_new ();
 	offline_state_changed_cb (eol, factory);
@@ -847,16 +872,25 @@ main (gint argc, gchar **argv)
 		eol, "changed",
 		G_CALLBACK (offline_state_changed_cb), factory);
 
-	printf ("Server is up and running...\n");
+	owner_id = g_bus_own_name (G_BUS_TYPE_SESSION,
+		E_DATA_CAL_FACTORY_SERVICE_NAME,
+		G_BUS_NAME_OWNER_FLAGS_NONE,
+		on_bus_acquired,
+		on_name_acquired,
+		on_name_lost,
+		factory,
+		NULL);
 
 	/* Migrate user data from ~/.evolution to XDG base directories. */
 	e_data_cal_migrate ();
 
+	printf ("Server is up and running...\n");
+
 	g_main_loop_run (loop);
 
-	dbus_g_connection_unref (connection);
-
+	g_bus_unown_name (owner_id);
 	g_object_unref (eol);
+	g_object_unref (factory);
 
 	printf ("Bye.\n");
 

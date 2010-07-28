@@ -25,18 +25,10 @@
 #endif
 
 #include <string.h>
-#include <dbus/dbus.h>
 #include <libebook/e-contact.h>
 #include "e-data-book-view.h"
-#include "e-data-book-marshal.h"
 
-extern DBusGConnection *connection;
-
-static gboolean impl_BookView_start (EDataBookView *view, GError **error);
-static gboolean impl_BookView_stop (EDataBookView *view, GError **error);
-static gboolean impl_BookView_dispose (EDataBookView *view, GError **eror);
-
-#include "e-data-book-view-glue.h"
+#include "e-gdbus-egdbusbookview.h"
 
 static void reset_array (GArray *array);
 
@@ -46,6 +38,8 @@ G_DEFINE_TYPE (EDataBookView, e_data_book_view, G_TYPE_OBJECT);
 #define THRESHOLD 32
 
 struct _EDataBookViewPrivate {
+	EGdbusBookView *gdbus_object;
+
 	EDataBook *book;
 	EBookBackend *backend;
 
@@ -64,17 +58,6 @@ struct _EDataBookViewPrivate {
 	guint idle_id;
 };
 
-enum {
-	CONTACTS_ADDED,
-	CONTACTS_CHANGED,
-	CONTACTS_REMOVED,
-	STATUS_MESSAGE,
-	COMPLETE,
-	LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL] = { 0 };
-
 static void e_data_book_view_dispose (GObject *object);
 static void e_data_book_view_finalize (GObject *object);
 
@@ -83,69 +66,21 @@ e_data_book_view_class_init (EDataBookViewClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	object_class->dispose = e_data_book_view_dispose;
-	object_class->finalize = e_data_book_view_finalize;
-
-	signals[CONTACTS_ADDED] =
-		g_signal_new ("contacts-added",
-			      G_OBJECT_CLASS_TYPE (klass),
-			      G_SIGNAL_RUN_LAST,
-			      0, NULL, NULL,
-			      g_cclosure_marshal_VOID__BOXED,
-			      G_TYPE_NONE, 1, G_TYPE_STRV);
-
-	signals[CONTACTS_CHANGED] =
-		g_signal_new ("contacts-changed",
-			      G_OBJECT_CLASS_TYPE (klass),
-			      G_SIGNAL_RUN_LAST,
-			      0, NULL, NULL,
-			      g_cclosure_marshal_VOID__BOXED,
-			      G_TYPE_NONE, 1, G_TYPE_STRV);
-
-	signals[CONTACTS_REMOVED] =
-		g_signal_new ("contacts-removed",
-			      G_OBJECT_CLASS_TYPE (klass),
-			      G_SIGNAL_RUN_LAST,
-			      0, NULL, NULL,
-			      g_cclosure_marshal_VOID__BOXED,
-			      G_TYPE_NONE, 1, G_TYPE_STRV);
-
-	signals[STATUS_MESSAGE] =
-		g_signal_new ("status-message",
-			      G_OBJECT_CLASS_TYPE (klass),
-			      G_SIGNAL_RUN_LAST,
-			      0, NULL, NULL,
-			      g_cclosure_marshal_VOID__STRING,
-			      G_TYPE_NONE, 1, G_TYPE_STRING);
-
-	signals[COMPLETE] =
-		g_signal_new ("complete",
-			      G_OBJECT_CLASS_TYPE (klass),
-			      G_SIGNAL_RUN_LAST,
-			      0, NULL, NULL,
-			      e_data_book_marshal_NONE__UINT_STRING,
-			      G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
-
 	g_type_class_add_private (klass, sizeof (EDataBookViewPrivate));
 
-	dbus_g_object_type_install_info (G_TYPE_FROM_CLASS (klass), &dbus_glib_e_data_book_view_object_info);
+	object_class->dispose = e_data_book_view_dispose;
+	object_class->finalize = e_data_book_view_finalize;
 }
 
-static void
-e_data_book_view_init (EDataBookView *book_view)
+guint
+e_data_book_view_register_gdbus_object (EDataBookView *query, GDBusConnection *connection, const gchar *object_path, GError **error)
 {
-	EDataBookViewPrivate *priv = E_DATA_BOOK_VIEW_GET_PRIVATE (book_view);
-	book_view->priv = priv;
+	g_return_val_if_fail (query != NULL, 0);
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (query), 0);
+	g_return_val_if_fail (connection != NULL, 0);
+	g_return_val_if_fail (object_path != NULL, 0);
 
-	priv->running = FALSE;
-	priv->pending_mutex = g_mutex_new ();
-
-	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
-	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
-	priv->removes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
-
-	priv->ids = g_hash_table_new_full (g_str_hash, g_str_equal,
-					   g_free, NULL);
+	return e_gdbus_book_view_register_object (query->priv->gdbus_object, connection, object_path, error);
 }
 
 static void
@@ -173,7 +108,7 @@ send_pending_adds (EDataBookView *view)
 	if (priv->adds->len == 0)
 		return;
 
-	g_signal_emit (view, signals[CONTACTS_ADDED], 0, priv->adds->data);
+	e_gdbus_book_view_emit_contacts_added (view->priv->gdbus_object, (const gchar * const *) priv->adds->data);
 	reset_array (priv->adds);
 }
 
@@ -185,7 +120,7 @@ send_pending_changes (EDataBookView *view)
 	if (priv->changes->len == 0)
 		return;
 
-	g_signal_emit (view, signals[CONTACTS_CHANGED], 0, priv->changes->data);
+	e_gdbus_book_view_emit_contacts_changed (view->priv->gdbus_object, (const gchar * const *) priv->changes->data);
 	reset_array (priv->changes);
 }
 
@@ -197,7 +132,7 @@ send_pending_removes (EDataBookView *view)
 	if (priv->removes->len == 0)
 		return;
 
-	g_signal_emit (view, signals[CONTACTS_REMOVED], 0, priv->removes->data);
+	e_gdbus_book_view_emit_contacts_removed (view->priv->gdbus_object, (const gchar * const *) priv->removes->data);
 	reset_array (priv->removes);
 }
 
@@ -460,7 +395,7 @@ e_data_book_view_notify_complete (EDataBookView *book_view, const GError *error)
 	/* We're done now, so tell the backend to stop?  TODO: this is a bit different to
 	   how the CORBA backend works... */
 
-	g_signal_emit (book_view, signals[COMPLETE], 0, error ? error->code : 0, error ? error->message : NULL);
+	e_gdbus_book_view_emit_complete (priv->gdbus_object, error ? error->code : 0, error ? error->message : "");
 }
 
 /**
@@ -480,13 +415,12 @@ e_data_book_view_notify_status_message (EDataBookView *book_view, const gchar *m
 	if (!priv->running)
 		return;
 
-	g_signal_emit (book_view, signals[STATUS_MESSAGE], 0, message);
+	e_gdbus_book_view_emit_status_message (priv->gdbus_object, message ? message : "");
 }
 
 /**
  * e_data_book_view_new:
  * @book: The #EDataBook to search
- * @path: The object path that this book view should have
  * @card_query: The query as a string
  * @card_sexp: The query as an #EBookBackendSExp
  * @max_results: The maximum number of results to return
@@ -495,7 +429,7 @@ e_data_book_view_notify_status_message (EDataBookView *book_view, const gchar *m
  * and place it on DBus at the object path #path.
  */
 EDataBookView *
-e_data_book_view_new (EDataBook *book, const gchar *path, const gchar *card_query, EBookBackendSExp *card_sexp, gint max_results)
+e_data_book_view_new (EDataBook *book, const gchar *card_query, EBookBackendSExp *card_sexp, gint max_results)
 {
 	EDataBookView *view;
 	EDataBookViewPrivate *priv;
@@ -511,9 +445,88 @@ e_data_book_view_new (EDataBook *book, const gchar *path, const gchar *card_quer
 	priv->card_sexp = card_sexp;
 	priv->max_results = max_results;
 
-	dbus_g_connection_register_g_object (connection, path, G_OBJECT (view));
-
 	return view;
+}
+
+static gboolean
+bookview_idle_start (gpointer data)
+{
+	EDataBookView *book_view = data;
+
+	book_view->priv->running = TRUE;
+	book_view->priv->idle_id = 0;
+
+	e_book_backend_start_book_view (book_view->priv->backend, book_view);
+
+	return FALSE;
+}
+
+static gboolean
+impl_DataBookView_start (EGdbusBookView *object, GDBusMethodInvocation *invocation, EDataBookView *book_view)
+{
+	book_view->priv->idle_id = g_idle_add (bookview_idle_start, book_view);
+
+	e_gdbus_book_view_complete_start (object, invocation);
+
+	return TRUE;
+}
+
+static gboolean
+bookview_idle_stop (gpointer data)
+{
+	EDataBookView *book_view = data;
+
+	e_book_backend_stop_book_view (book_view->priv->backend, book_view);
+
+	book_view->priv->running = FALSE;
+	book_view->priv->idle_id = 0;
+
+	return FALSE;
+}
+
+static gboolean
+impl_DataBookView_stop (EGdbusBookView *object, GDBusMethodInvocation *invocation, EDataBookView *book_view)
+{
+	if (book_view->priv->idle_id)
+		g_source_remove (book_view->priv->idle_id);
+
+	book_view->priv->idle_id = g_idle_add (bookview_idle_stop, book_view);
+
+	e_gdbus_book_view_complete_stop (object, invocation);
+
+	return TRUE;
+}
+
+static gboolean
+impl_DataBookView_dispose (EGdbusBookView *object, GDBusMethodInvocation *invocation, EDataBookView *book_view)
+{
+	e_gdbus_book_view_complete_dispose (object, invocation);
+
+	g_object_unref (book_view);
+
+	return TRUE;
+}
+
+static void
+e_data_book_view_init (EDataBookView *book_view)
+{
+	EDataBookViewPrivate *priv = E_DATA_BOOK_VIEW_GET_PRIVATE (book_view);
+	book_view->priv = priv;
+
+	priv->gdbus_object = e_gdbus_book_view_stub_new ();
+	g_signal_connect (priv->gdbus_object, "handle-start", G_CALLBACK (impl_DataBookView_start), book_view);
+	g_signal_connect (priv->gdbus_object, "handle-stop", G_CALLBACK (impl_DataBookView_stop), book_view);
+	g_signal_connect (priv->gdbus_object, "handle-dispose", G_CALLBACK (impl_DataBookView_dispose), book_view);
+
+	priv->running = FALSE;
+	priv->pending_mutex = g_mutex_new ();
+
+	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
+	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
+	priv->removes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
+
+	priv->ids = g_hash_table_new_full (g_str_hash, g_str_equal,
+					   g_free, NULL);
 }
 
 static void
@@ -567,56 +580,6 @@ e_data_book_view_finalize (GObject *object)
 	g_hash_table_destroy (priv->ids);
 
 	G_OBJECT_CLASS (e_data_book_view_parent_class)->finalize (object);
-}
-
-static gboolean
-bookview_idle_start (gpointer data)
-{
-	EDataBookView *book_view = data;
-
-	book_view->priv->running = TRUE;
-	book_view->priv->idle_id = 0;
-
-	e_book_backend_start_book_view (book_view->priv->backend, book_view);
-	return FALSE;
-}
-
-static gboolean
-impl_BookView_start (EDataBookView *book_view, GError **error)
-{
-	book_view->priv->idle_id = g_idle_add (bookview_idle_start, book_view);
-	return TRUE;
-}
-
-static gboolean
-bookview_idle_stop (gpointer data)
-{
-	EDataBookView *book_view = data;
-
-	e_book_backend_stop_book_view (book_view->priv->backend, book_view);
-
-	book_view->priv->running = FALSE;
-	book_view->priv->idle_id = 0;
-
-	return FALSE;
-}
-
-static gboolean
-impl_BookView_stop (EDataBookView *book_view, GError **error)
-{
-	if (book_view->priv->idle_id)
-		g_source_remove (book_view->priv->idle_id);
-
-	book_view->priv->idle_id = g_idle_add (bookview_idle_stop, book_view);
-	return TRUE;
-}
-
-static gboolean
-impl_BookView_dispose (EDataBookView *book_view, GError **eror)
-{
-	g_object_unref (book_view);
-
-	return TRUE;
 }
 
 void

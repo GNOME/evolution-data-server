@@ -42,27 +42,24 @@
 #include <libedataserver/e-url.h>
 #include <libedataserver/e-data-server-util.h>
 
-#include <dbus/dbus-glib-lowlevel.h>
-#include <dbus/dbus.h>
-#include <dbus/dbus-glib.h>
 #include <glib-object.h>
+
+#include "libedata-cal/e-data-cal-types.h"
 
 #include "e-cal-check-timezones.h"
 #include "e-cal-marshal.h"
 #include "e-cal-time-util.h"
 #include "e-cal-view-private.h"
 #include "e-cal.h"
-#include "e-data-cal-factory-bindings.h"
-#include "e-data-cal-bindings.h"
-#include <libedata-cal/e-data-cal-types.h>
 
-static DBusGConnection *connection = NULL;
-static DBusGProxy *factory_proxy = NULL;
+#include "e-gdbus-egdbuscalfactory.h"
+#include "e-gdbus-egdbuscal.h"
+#include "e-gdbus-egdbuscalview.h"
 
-/* guards both connection and factory_proxy */
-static GStaticRecMutex connection_lock = G_STATIC_REC_MUTEX_INIT;
-#define LOCK_CONN()   g_static_rec_mutex_lock (&connection_lock)
-#define UNLOCK_CONN() g_static_rec_mutex_unlock (&connection_lock)
+static EGdbusCalFactory *cal_factory_proxy = NULL;
+static GStaticRecMutex cal_factory_proxy_lock = G_STATIC_REC_MUTEX_INIT;
+#define LOCK_FACTORY()   g_static_rec_mutex_lock   (&cal_factory_proxy_lock)
+#define UNLOCK_FACTORY() g_static_rec_mutex_unlock (&cal_factory_proxy_lock)
 
 G_DEFINE_TYPE(ECal, e_cal, G_TYPE_OBJECT)
 #define E_CAL_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_CAL, ECalPrivate))
@@ -99,7 +96,7 @@ struct _ECalPrivate {
 
 	gboolean read_only;
 
-	DBusGProxy *proxy;
+	EGdbusCal *gdbus_cal;
 
 	/* The authentication function */
 	ECalAuthFunc auth_func;
@@ -204,7 +201,7 @@ e_calendar_error_quark (void)
  * Otherwise return CORBA_EXCEPTION (I know this is DBus...).
  */
 static ECalendarStatus
-get_status_from_error (GError *error)
+get_status_from_error (const GError *error)
 {
 	#define err(a,b) "org.gnome.evolution.dataserver.calendar.Cal." a, b
 	static struct {
@@ -242,17 +239,22 @@ get_status_from_error (GError *error)
 	if G_LIKELY (error == NULL)
 		return Success;
 
-	if (error->domain == DBUS_GERROR && error->code == DBUS_GERROR_REMOTE_EXCEPTION) {
-		const gchar *name;
+	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR)) {
+		gchar *name;
 		gint i;
 
-		name = dbus_g_error_get_name (error);
+		name = g_dbus_error_get_remote_error (error);
+
 		for (i = 0; i < G_N_ELEMENTS (errors); i++) {
-			if (g_ascii_strcasecmp (errors[i].name, name) == 0)
+			if (g_ascii_strcasecmp (errors[i].name, name) == 0) {
+				g_free (name);
 				return errors[i].err_code;
+			}
 		}
 
 		g_warning ("Unmatched error name %s", name);
+		g_free (name);
+
 		return E_CALENDAR_STATUS_OTHER_ERROR;
 	} else if (error->domain == E_CALENDAR_ERROR) {
 		return error->code;
@@ -268,18 +270,24 @@ get_status_from_error (GError *error)
  * alone.
  */
 static gboolean
-unwrap_gerror(GError **error)
+unwrap_gerror (GError **error)
 {
 	if (*error == NULL)
 		return TRUE;
-	if ((*error)->domain == DBUS_GERROR && (*error)->code == DBUS_GERROR_REMOTE_EXCEPTION) {
+
+	if (g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR)) {
 		GError *new_error = NULL;
 		gint code;
+
 		code = get_status_from_error (*error);
+		g_dbus_error_strip_remote_error (*error);
+
 		new_error = g_error_new_literal (E_CALENDAR_ERROR, code, (*error)->message);
+
 		g_error_free (*error);
 		*error = new_error;
 	}
+
 	return FALSE;
 }
 
@@ -400,7 +408,7 @@ e_cal_init (ECal *ecal)
 	priv->alarm_email_address = NULL;
 	priv->ldap_attribute = NULL;
 	priv->capabilities = NULL;
-	priv->proxy = NULL;
+	priv->gdbus_cal = NULL;
 	priv->timezones = g_hash_table_new (g_str_hash, g_str_equal);
 	priv->default_zone = icaltimezone_get_utc_timezone ();
 }
@@ -409,7 +417,7 @@ e_cal_init (ECal *ecal)
  * Called when the calendar server dies.
  */
 static void
-proxy_destroyed (gpointer data, GObject *object)
+gdbus_cal_destroyed_cb (gpointer data, GObject *object)
 {
         ECal *ecal = data;
 	ECalPrivate *priv;
@@ -421,11 +429,11 @@ proxy_destroyed (gpointer data, GObject *object)
         g_warning (G_STRLOC ": e-d-s proxy died");
 
         /* Ensure that everything relevant is reset */
-        LOCK_CONN ();
-        factory_proxy = NULL;
-        priv->proxy = NULL;
+        LOCK_FACTORY ();
+        cal_factory_proxy = NULL;
+        priv->gdbus_cal = NULL;
 	priv->load_state = E_CAL_LOAD_NOT_LOADED;
-        UNLOCK_CONN ();
+        UNLOCK_FACTORY ();
 
         g_signal_emit (G_OBJECT (ecal), e_cal_signals [BACKEND_DIED], 0);
 }
@@ -440,17 +448,18 @@ e_cal_dispose (GObject *object)
 	ecal = E_CAL (object);
 	priv = ecal->priv;
 
-	if (priv->proxy) {
+	if (priv->gdbus_cal) {
 		GError *error = NULL;
 
-                g_object_weak_unref (G_OBJECT (priv->proxy), proxy_destroyed, ecal);
-		LOCK_CONN ();
-		org_gnome_evolution_dataserver_calendar_Cal_close (priv->proxy, &error);
-		g_object_unref (priv->proxy);
-		priv->proxy = NULL;
-		UNLOCK_CONN ();
+                g_object_weak_unref (G_OBJECT (priv->gdbus_cal), gdbus_cal_destroyed_cb, ecal);
+
+		e_gdbus_cal_call_close_sync (priv->gdbus_cal, NULL, &error);
+		g_object_unref (priv->gdbus_cal);
+		priv->gdbus_cal = NULL;
 
 		if (error) {
+			unwrap_gerror (&error);
+
 			g_warning ("%s: Failed to close calendar, %s\n", G_STRFUNC, error->message);
 			g_error_free (error);
 		}
@@ -591,79 +600,40 @@ e_cal_class_init (ECalClass *klass)
 	g_type_class_add_private (klass, sizeof (ECalPrivate));
 }
 
-static DBusHandlerResult
-filter_dbus_msgs_cb (DBusConnection *pconnection, DBusMessage *message, gpointer user_data)
-{
-	if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")) {
-		DBusGConnection *conn = connection;
-
-		LOCK_CONN ();
-		factory_proxy = NULL;
-		connection = NULL;
-		UNLOCK_CONN ();
-		dbus_g_connection_unref (conn);
-		return DBUS_HANDLER_RESULT_HANDLED;
-	}
-
-	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-}
-
 static void
-factory_proxy_destroy_cb (DBusGProxy *proxy, gpointer user_data)
+cal_factory_proxy_destroyed_cb (gpointer user_data, GObject *what)
 {
-	LOCK_CONN ();
-	factory_proxy = NULL;
-	UNLOCK_CONN ();
+	LOCK_FACTORY ();
+	cal_factory_proxy = NULL;
+	UNLOCK_FACTORY ();
 }
 
 /* one-time start up for libecal */
 static gboolean
-e_cal_activate(GError **error)
+e_cal_activate (GError **error)
 {
-	DBusError derror;
-
-	LOCK_CONN ();
-	if (G_LIKELY (factory_proxy)) {
-		UNLOCK_CONN ();
+	LOCK_FACTORY ();
+	if (G_LIKELY (cal_factory_proxy)) {
+		UNLOCK_FACTORY ();
 		return TRUE;
 	}
 
-	if (!connection) {
-		connection = dbus_g_bus_get (DBUS_BUS_SESSION, error);
-		if (!connection) {
-			UNLOCK_CONN ();
-			return FALSE;
-		}
+	cal_factory_proxy = e_gdbus_cal_factory_proxy_new_for_bus_sync (
+		G_BUS_TYPE_SESSION,
+		G_DBUS_PROXY_FLAGS_NONE,
+		"org.gnome.evolution.dataserver.Calendar",
+		"/org/gnome/evolution/dataserver/calendar/CalFactory",
+		NULL,
+		error);
 
-		dbus_connection_add_filter (dbus_g_connection_get_connection (connection), filter_dbus_msgs_cb, NULL, NULL);
-	}
-
-	dbus_error_init (&derror);
-	if (!dbus_bus_start_service_by_name (dbus_g_connection_get_connection (connection),
-													"org.gnome.evolution.dataserver.Calendar",
-													0, NULL, &derror))
-	{
-		dbus_set_g_error (error, &derror);
-		dbus_error_free (&derror);
-		UNLOCK_CONN ();
+	if (!cal_factory_proxy) {
+		UNLOCK_FACTORY ();
 		return FALSE;
 	}
 
-	if (!factory_proxy) {
-		factory_proxy = dbus_g_proxy_new_for_name_owner (connection,
-							"org.gnome.evolution.dataserver.Calendar",
-							"/org/gnome/evolution/dataserver/calendar/CalFactory",
-							"org.gnome.evolution.dataserver.calendar.CalFactory",
-							error);
-		if (!factory_proxy) {
-			UNLOCK_CONN ();
-			return FALSE;
-		}
+	g_object_weak_ref (G_OBJECT (cal_factory_proxy), cal_factory_proxy_destroyed_cb, NULL);
 
-		g_signal_connect (factory_proxy, "destroy", G_CALLBACK (factory_proxy_destroy_cb), NULL);
-	}
-
-	UNLOCK_CONN ();
+	UNLOCK_FACTORY ();
 
 	return TRUE;
 }
@@ -689,45 +659,12 @@ reopen_with_auth (gpointer data)
 }
 
 static void
-auth_required_cb (DBusGProxy *proxy, ECal *cal)
+auth_required_cb (EGdbusCal *gdbus_cal, ECal *cal)
 {
 	g_return_if_fail (E_IS_CAL (cal));
 
-	g_idle_add (reopen_with_auth, (gpointer)cal);
+	g_idle_add (reopen_with_auth, (gpointer) cal);
 }
-
-static void
-mode_cb (DBusGProxy *proxy, EDataCalMode mode, ECal *cal)
-{
-	g_return_if_fail (E_IS_CAL (cal));
-	g_return_if_fail (mode & AnyMode);
-
-	g_signal_emit (G_OBJECT (cal), e_cal_signals[CAL_SET_MODE],
-		       0, E_CALENDAR_STATUS_OK, mode);
-}
-
-static void
-readonly_cb (DBusGProxy *proxy, gboolean read_only, ECal *cal)
-{
-	ECalPrivate *priv;
-
-	g_return_if_fail (cal && E_IS_CAL (cal));
-
-	priv = cal->priv;
-	priv->read_only = read_only;
-}
-
-/*
-static void
-backend_died_cb (EComponentListener *cl, gpointer user_data)
-{
-	ECalPrivate *priv;
-	ECal *ecal = (ECal *) user_data;
-
-	priv = ecal->priv;
-	priv->load_state = E_CAL_LOAD_NOT_LOADED;
-	g_signal_emit (G_OBJECT (ecal), e_cal_signals[BACKEND_DIED], 0);
-}*/
 
 typedef struct
 {
@@ -751,7 +688,7 @@ backend_error_idle_cb (gpointer data)
 
 /* Handle the error_occurred signal from the listener */
 static void
-backend_error_cb (DBusGProxy *proxy, const gchar *message, ECal *ecal)
+backend_error_cb (EGdbusCal *gdbus_cal, const gchar *message, ECal *ecal)
 {
 	ECalErrorData *error_data;
 
@@ -766,19 +703,51 @@ backend_error_cb (DBusGProxy *proxy, const gchar *message, ECal *ecal)
 }
 
 static void
+readonly_cb (EGdbusCal *gdbus_cal, gboolean read_only, ECal *cal)
+{
+	ECalPrivate *priv;
+
+	g_return_if_fail (cal && E_IS_CAL (cal));
+
+	priv = cal->priv;
+	priv->read_only = read_only;
+}
+
+static void
+mode_cb (EGdbusCal *gdbus_cal, EDataCalMode mode, ECal *cal)
+{
+	g_return_if_fail (E_IS_CAL (cal));
+	g_return_if_fail (mode & AnyMode);
+
+	g_signal_emit (G_OBJECT (cal), e_cal_signals[CAL_SET_MODE],
+		       0, E_CALENDAR_STATUS_OK, mode);
+}
+
+/*
+static void
+backend_died_cb (EComponentListener *cl, gpointer user_data)
+{
+	ECalPrivate *priv;
+	ECal *ecal = (ECal *) user_data;
+
+	priv = ecal->priv;
+	priv->load_state = E_CAL_LOAD_NOT_LOADED;
+	g_signal_emit (G_OBJECT (ecal), e_cal_signals[BACKEND_DIED], 0);
+}*/
+
+static void
 set_local_attachment_store (ECal *ecal)
 {
 	gchar *cache_dir = NULL;
 	GError *error = NULL;
 
-	LOCK_CONN ();
-	org_gnome_evolution_dataserver_calendar_Cal_get_cache_dir (
-		ecal->priv->proxy, &cache_dir, &error);
-	UNLOCK_CONN ();
+	e_gdbus_cal_call_get_cache_dir_sync (
+		ecal->priv->gdbus_cal, &cache_dir, NULL, &error);
 
 	if (error == NULL)
 		ecal->priv->local_attachment_store = cache_dir;
 	else {
+		unwrap_gerror (&error);
 		g_warning ("%s", error->message);
 		g_error_free (error);
 	}
@@ -807,8 +776,10 @@ e_cal_new (ESource *source, ECalSourceType type)
 	g_return_val_if_fail (type < E_CAL_SOURCE_TYPE_LAST, NULL);
 
 	if (!e_cal_activate (&error)) {
+		unwrap_gerror (&error);
 		g_warning("Cannot activate ECal: %s\n", error ? error->message : "Unknown error");
-		g_error_free (error);
+		if (error)
+			g_error_free (error);
 		return NULL;
 	}
 
@@ -820,40 +791,44 @@ e_cal_new (ESource *source, ECalSourceType type)
 	priv->type = type;
 
 	xml = e_source_to_standalone_xml (priv->source);
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_CalFactory_get_cal (factory_proxy, xml, convert_type (priv->type), &path, &error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_factory_call_get_cal_sync (cal_factory_proxy, xml, convert_type (priv->type), &path, NULL, &error)) {
 		g_free (xml);
+		unwrap_gerror (&error);
 		g_warning ("Cannot get cal from factory: %s", error ? error->message : "Unknown error");
-		g_error_free (error);
+		if (error)
+			g_error_free (error);
 		g_object_unref (ecal);
 		return NULL;
 	}
 	g_free (xml);
 
-	priv->proxy = dbus_g_proxy_new_for_name_owner (connection,
-									"org.gnome.evolution.dataserver.Calendar", path,
-									"org.gnome.evolution.dataserver.calendar.Cal",
-									&error);
+	priv->gdbus_cal = e_gdbus_cal_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy)),
+						      G_DBUS_PROXY_FLAGS_NONE,
+						      "org.gnome.evolution.dataserver.Calendar",
+						      path,
+						      NULL,
+						      &error);
 
-	UNLOCK_CONN ();
-
-	if (!priv->proxy)
+	if (!priv->gdbus_cal) {
+		g_free (path);
+		unwrap_gerror (&error);
+		g_warning ("Cannot create cal proxy: %s", error ? error->message : "Unknown error");
+		if (error)
+			g_error_free (error);
+		g_object_unref (ecal);
 		return NULL;
+	}
 
-	g_object_weak_ref (G_OBJECT (priv->proxy), proxy_destroyed, ecal);
-
-	dbus_g_proxy_add_signal (priv->proxy, "auth_required", G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal (priv->proxy, "auth_required", G_CALLBACK (auth_required_cb), ecal, NULL);
-	dbus_g_proxy_add_signal (priv->proxy, "backend_error", G_TYPE_STRING, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal (priv->proxy, "backend_error", G_CALLBACK (backend_error_cb), ecal, NULL);
-	dbus_g_proxy_add_signal (priv->proxy, "readonly", G_TYPE_BOOLEAN, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal (priv->proxy, "readonly", G_CALLBACK (readonly_cb), ecal, NULL);
-	dbus_g_proxy_add_signal (priv->proxy, "mode", G_TYPE_INT, G_TYPE_INVALID);
-	dbus_g_proxy_connect_signal (priv->proxy, "mode", G_CALLBACK (mode_cb), ecal, NULL);
+	g_object_weak_ref (G_OBJECT (priv->gdbus_cal), gdbus_cal_destroyed_cb, ecal);
+	g_signal_connect (priv->gdbus_cal, "auth-required", G_CALLBACK (auth_required_cb), ecal);
+	g_signal_connect (priv->gdbus_cal, "backend-error", G_CALLBACK (backend_error_cb), ecal);
+	g_signal_connect (priv->gdbus_cal, "readonly", G_CALLBACK (readonly_cb), ecal);
+	g_signal_connect (priv->gdbus_cal, "mode", G_CALLBACK (mode_cb), ecal);
 
 	/* Set the local attachment store path for the calendar */
 	set_local_attachment_store (ecal);
+
+	g_free (path);
 
 	return ecal;
 }
@@ -1065,33 +1040,44 @@ build_pass_key (ECal *ecal)
 }
 
 static void
-async_signal_idle_cb (DBusGProxy *proxy, GError *error, gpointer user_data)
+async_open_report_result (ECal *ecal, const GError *error)
 {
-	ECal *ecal;
 	#ifndef E_CAL_DISABLE_DEPRECATED
 	ECalendarStatus status;
 	#endif
-
-	ecal = E_CAL (user_data);
 
 	g_return_if_fail (ecal && E_IS_CAL (ecal));
 
 	if (error) {
 	#ifndef E_CAL_DISABLE_DEPRECATED
 		status = get_status_from_error (error);
-
 	} else {
 		status = E_CALENDAR_STATUS_OK;
+	#else
+	} else {
 	#endif
-		LOCK_CONN ();
-		org_gnome_evolution_dataserver_calendar_Cal_is_read_only (ecal->priv->proxy, NULL);
-		UNLOCK_CONN ();
+		e_gdbus_cal_call_is_read_only_sync (ecal->priv->gdbus_cal, NULL, NULL);
 	}
 
 	#ifndef E_CAL_DISABLE_DEPRECATED
 	g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED], 0, status);
 	#endif
 	g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED_EX], 0, error);
+}
+
+static void
+async_open_ready_cb (EGdbusCal *gdbus_cal, GAsyncResult *res, ECal *ecal)
+{
+	GError *error = NULL;
+
+	g_return_if_fail (ecal && E_IS_CAL (ecal));
+
+	e_gdbus_cal_call_open_finish (gdbus_cal, res, &error);
+
+	async_open_report_result (ecal, error);
+
+	if (error)
+		g_error_free (error);
 }
 
 static gboolean
@@ -1109,7 +1095,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error,
 	e_return_error_if_fail (ecal != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	if (!needs_auth && priv->load_state == E_CAL_LOAD_LOADED) {
 		return TRUE;
@@ -1188,21 +1174,13 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error,
 	*status = E_CALENDAR_STATUS_OK;
 	#endif
 	if (!async) {
-		LOCK_CONN ();
-		if (!org_gnome_evolution_dataserver_calendar_Cal_open (priv->proxy, only_if_exists, username ? username : "", password ? password : "", error)) {
+		if (!e_gdbus_cal_call_open_sync (priv->gdbus_cal, only_if_exists, username ? username : "", password ? password : "", NULL, error)) {
 			#ifndef E_CAL_DISABLE_DEPRECATED
 			*status = E_CALENDAR_STATUS_DBUS_EXCEPTION;
 			#endif
 		}
-		UNLOCK_CONN ();
 	} else {
-		LOCK_CONN ();
-		if (!org_gnome_evolution_dataserver_calendar_Cal_open_async (priv->proxy, only_if_exists, username ? username : "", password ? password : "", async_signal_idle_cb, ecal)) {
-			#ifndef E_CAL_DISABLE_DEPRECATED
-			*status = E_CALENDAR_STATUS_DBUS_EXCEPTION;
-			#endif
-		}
-		UNLOCK_CONN ();
+		e_gdbus_cal_call_open (priv->gdbus_cal, only_if_exists, username ? username : "", password ? password : "", NULL, (GAsyncReadyCallback) async_open_ready_cb, ecal);
 	}
 
 	g_free (password);
@@ -1214,9 +1192,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error,
 		if (!async) {
 			GError *err = NULL;
 
-			LOCK_CONN ();
-			org_gnome_evolution_dataserver_calendar_Cal_is_read_only (priv->proxy, &err);
-			UNLOCK_CONN ();
+			e_gdbus_cal_call_is_read_only_sync (ecal->priv->gdbus_cal, NULL, &err);
 
 			if (err)
 				g_error_free (err);
@@ -1285,7 +1261,7 @@ idle_async_error_reply_cb (gpointer user_data)
 	g_return_val_if_fail (data->ecal != NULL, FALSE);
 	g_return_val_if_fail (data->error != NULL, FALSE);
 
-	async_signal_idle_cb (NULL, data->error, data->ecal);
+	async_open_report_result (data->ecal, data->error);
 
 	g_object_unref (data->ecal);
 	g_error_free (data->error);
@@ -1381,14 +1357,11 @@ e_cal_refresh (ECal *ecal, GError **error)
 
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_refresh (priv->proxy, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_refresh_sync (priv->gdbus_cal, NULL, error)) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	return TRUE;
 }
@@ -1409,14 +1382,11 @@ e_cal_remove (ECal *ecal, GError **error)
 
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_remove (priv->proxy, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_remove_sync (priv->gdbus_cal, NULL, error)) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	return TRUE;
 }
@@ -1643,21 +1613,18 @@ e_cal_get_cal_address (ECal *ecal, gchar **cal_address, GError **error)
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (cal_address != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 	*cal_address = NULL;
 
 	if (priv->cal_address == NULL) {
-		e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+		e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 		if (priv->load_state != E_CAL_LOAD_LOADED) {
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 		}
 
-		LOCK_CONN ();
-		if (!org_gnome_evolution_dataserver_calendar_Cal_get_cal_address (priv->proxy, cal_address, error)) {
-			UNLOCK_CONN ();
+		if (!e_gdbus_cal_call_get_cal_address_sync (priv->gdbus_cal, cal_address, NULL, error)) {
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 		}
-		UNLOCK_CONN ();
 	} else {
 		*cal_address = g_strdup (priv->cal_address);
 	}
@@ -1684,19 +1651,16 @@ e_cal_get_alarm_email_address (ECal *ecal, gchar **alarm_address, GError **error
 	e_return_error_if_fail (alarm_address != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 	*alarm_address = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_get_alarm_email_address (priv->proxy, alarm_address, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_get_alarm_email_address_sync (priv->gdbus_cal, alarm_address, NULL, error)) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	return TRUE;
 }
@@ -1720,19 +1684,16 @@ e_cal_get_ldap_attribute (ECal *ecal, gchar **ldap_attribute, GError **error)
 	e_return_error_if_fail (ldap_attribute != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 	*ldap_attribute = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_get_ldap_attribute (priv->proxy, ldap_attribute, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_get_ldap_attribute_sync (priv->gdbus_cal, ldap_attribute, NULL, error)) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	return TRUE;
 }
@@ -1743,7 +1704,7 @@ load_static_capabilities (ECal *ecal, GError **error)
 	ECalPrivate *priv;
 
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	if (priv->capabilities)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
@@ -1752,12 +1713,9 @@ load_static_capabilities (ECal *ecal, GError **error)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_get_scheduling_information (priv->proxy, &priv->capabilities, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_get_scheduling_information_sync (priv->gdbus_cal, &priv->capabilities, NULL, error)) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	return TRUE;
 }
@@ -1923,17 +1881,16 @@ e_cal_set_mode (ECal *ecal, CalMode mode)
 	g_return_val_if_fail (mode & CAL_MODE_ANY, FALSE);
 
 	priv = ecal->priv;
-	g_return_val_if_fail (priv->proxy, FALSE);
+	g_return_val_if_fail (priv->gdbus_cal, FALSE);
 	g_return_val_if_fail (priv->load_state == E_CAL_LOAD_LOADED, FALSE);
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_set_mode (priv->proxy, mode, &error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_set_mode_sync (priv->gdbus_cal, mode, NULL, &error)) {
+		unwrap_gerror (&error);
 		g_printerr ("%s: %s\n", G_STRFUNC, error ? error->message : "Unknown error");
-		g_error_free (error);
+		if (error)
+			g_error_free (error);
 		return FALSE;
 	}
-	UNLOCK_CONN ();
 
 	return TRUE;
 }
@@ -1970,19 +1927,16 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
 	e_return_error_if_fail (icalcomp != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 	*icalcomp = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_get_default_object (priv->proxy, &object, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_get_default_object_sync (priv->gdbus_cal, &object, NULL, error)) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	if (object) {
 		*icalcomp = icalparser_parse_string (object);
@@ -2024,19 +1978,16 @@ e_cal_get_attachments_for_comp (ECal *ecal, const gchar *uid, const gchar *rid, 
 	e_return_error_if_fail (list != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 	*list = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_get_attachment_list (priv->proxy, uid, rid ? rid: "", &list_array, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_get_attachment_list_sync (priv->gdbus_cal, uid, rid ? rid: "", &list_array, NULL, error)) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	if (list_array) {
 		gchar **string;
@@ -2077,19 +2028,16 @@ e_cal_get_object (ECal *ecal, const gchar *uid, const gchar *rid, icalcomponent 
 	e_return_error_if_fail (icalcomp != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 	*icalcomp = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_get_object (priv->proxy, uid, rid ? rid : "", &object, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_get_object_sync (priv->gdbus_cal, uid, rid ? rid : "", &object, NULL, error)) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	status = E_CALENDAR_STATUS_OK;
 	tmp_icalcomp = icalparser_parse_string (object);
@@ -2157,19 +2105,16 @@ e_cal_get_objects_for_uid (ECal *ecal, const gchar *uid, GList **objects, GError
 	e_return_error_if_fail (objects != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 	*objects = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_get_object (priv->proxy, uid, "", &object, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_get_object_sync (priv->gdbus_cal, uid, "", &object, NULL, error)) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	status = E_CALENDAR_STATUS_OK;
 	{
@@ -2269,25 +2214,22 @@ gboolean
 e_cal_get_changes (ECal *ecal, const gchar *change_id, GList **changes, GError **error)
 {
 	ECalPrivate *priv;
-	gchar **additions, **modifications, **removals;
+	gchar **additions = NULL, **modifications = NULL, **removals = NULL;
 
 	e_return_error_if_fail (changes != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (change_id != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 	*changes = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_get_changes (priv->proxy, change_id, &additions, &modifications, &removals, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_get_changes_sync (priv->gdbus_cal, change_id, &additions, &modifications, &removals, NULL, error)) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	/* TODO: Be more elegant and split this into a function */
 	/* Mostly copied from the old e-cal-listener.c */
@@ -2329,9 +2271,17 @@ e_cal_get_changes (ECal *ecal, const gchar *change_id, GList **changes, GError *
 				*changes = g_list_append (*changes, change);
 			}
 		}
-	}
-	else
+
+		g_strfreev (additions);
+		g_strfreev (modifications);
+		g_strfreev (removals);
+	} else {
+		g_strfreev (additions);
+		g_strfreev (modifications);
+		g_strfreev (removals);
+
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OTHER_ERROR, error);
+	}
 
 	E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
 }
@@ -2385,19 +2335,16 @@ e_cal_get_object_list (ECal *ecal, const gchar *query, GList **objects, GError *
 	e_return_error_if_fail (query, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 	*objects = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_get_object_list (priv->proxy, query, &object_array, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_get_object_list_sync (priv->gdbus_cal, query, &object_array, NULL, error)) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	if (object_array) {
 		icalcomponent *comp;
@@ -2407,6 +2354,9 @@ e_cal_get_object_list (ECal *ecal, const gchar *query, GList **objects, GError *
 			if (!comp) continue;
 			*objects = g_list_prepend (*objects, comp);
 		}
+
+		g_strfreev (object_array);
+
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
 	}
 	else
@@ -2532,7 +2482,7 @@ e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end,
 	e_return_error_if_fail (freebusy != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 	*freebusy = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
@@ -2543,17 +2493,14 @@ e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end,
 	for (l = users, i = 0; l; l = l->next, i++)
 		users_list[i] = g_strdup (l->data);
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_get_free_busy (priv->proxy, (const gchar **)users_list, start, end, &freebusy_array, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_get_free_busy_sync (priv->gdbus_cal, (const gchar * const *) users_list, start, end, &freebusy_array, NULL, error)) {
 		g_strfreev (users_list);
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 	g_strfreev (users_list);
 
 	if (freebusy_array) {
-		*freebusy = build_free_busy_list ((const gchar **)freebusy_array);
+		*freebusy = build_free_busy_list ((const gchar **) freebusy_array);
 		g_strfreev (freebusy_array);
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
 	} else
@@ -2779,6 +2726,7 @@ try_again:
 				goto try_again;
 			}
 
+			unwrap_gerror (&error);
 			g_message ("Failed to get recurrence objects for uid %s \n", error ? error->message : "Unknown error");
 			g_clear_error (&error);
 			return;
@@ -3265,13 +3213,13 @@ e_cal_discard_alarm (ECal *ecal, ECalComponent *comp, const gchar *auid, GError 
 	ECalPrivate *priv;
 	const gchar *uid;
 
-	g_return_val_if_fail (ecal != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
-	g_return_val_if_fail (comp != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
-	g_return_val_if_fail (auid != NULL, FALSE);
+	e_return_error_if_fail (ecal != NULL, E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (comp != NULL, E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (E_IS_CAL_COMPONENT (comp), E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (auid != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -3279,12 +3227,9 @@ e_cal_discard_alarm (ECal *ecal, ECalComponent *comp, const gchar *auid, GError 
 
 	e_cal_component_get_uid (comp, &uid);
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_discard_alarm (priv->proxy, uid, auid, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_discard_alarm_sync (priv->gdbus_cal, uid ? uid : "", auid, NULL, error)) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
 }
@@ -3478,20 +3423,17 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, gchar **uid, GError **
 	e_return_error_if_fail (icalcomp != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomponent_is_valid (icalcomp), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
 	obj = icalcomponent_as_ical_string_r (icalcomp);
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_create_object (priv->proxy, obj, &muid, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_create_object_sync (priv->gdbus_cal, obj, &muid, NULL, error)) {
 		g_free (obj);
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	g_free (obj);
 
@@ -3537,20 +3479,17 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
 	e_return_error_if_fail (icalcomponent_is_valid (icalcomp), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (mod & CALOBJ_MOD_ALL, E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
 	obj = icalcomponent_as_ical_string_r (icalcomp);
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_modify_object (priv->proxy, obj, mod, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_modify_object_sync (priv->gdbus_cal, obj, mod, NULL, error)) {
 		g_free (obj);
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	g_free (obj);
 	E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
@@ -3585,18 +3524,15 @@ e_cal_remove_object_with_mod (ECal *ecal, const gchar *uid,
 	e_return_error_if_fail (uid, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (mod & CALOBJ_MOD_ALL, E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_remove_object (priv->proxy, uid, rid ? rid : "", mod, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_remove_object_sync (priv->gdbus_cal, uid, rid ? rid : "", mod, NULL, error)) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
 }
@@ -3643,18 +3579,15 @@ e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
 	e_return_error_if_fail (icalcomp, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomponent_is_valid (icalcomp), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_receive_objects (priv->proxy, icalcomponent_as_ical_string (icalcomp), error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_receive_objects_sync (priv->gdbus_cal, icalcomponent_as_ical_string (icalcomp), NULL, error)) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
 }
@@ -3687,7 +3620,7 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 	e_return_error_if_fail (icalcomponent_is_valid (icalcomp), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 	*users = NULL;
 	*modified_icalcomp = NULL;
 
@@ -3695,12 +3628,9 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_send_objects (priv->proxy, icalcomponent_as_ical_string (icalcomp), &users_array, &object, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_send_objects_sync (priv->gdbus_cal, icalcomponent_as_ical_string (icalcomp), &users_array, &object, NULL, error)) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	status = E_CALENDAR_STATUS_OK;
 	if (users_array) {
@@ -3741,7 +3671,7 @@ e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError *
 	e_return_error_if_fail (zone, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 	*zone = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
@@ -3776,12 +3706,9 @@ e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError *
 	systzid = e_cal_match_tzid (tzid);
 	if (!systzid) {
 		/* call the backend */
-		LOCK_CONN ();
-		if (!org_gnome_evolution_dataserver_calendar_Cal_get_timezone (priv->proxy, tzid, &object, error)) {
-			UNLOCK_CONN ();
+		if (!e_gdbus_cal_call_get_timezone_sync (priv->gdbus_cal, tzid, &object, NULL, error)) {
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 		}
-		UNLOCK_CONN ();
 
 		icalcomp = icalparser_parse_string (object);
 		if (!icalcomp)
@@ -3853,7 +3780,7 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (izone, E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -3874,13 +3801,10 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
 	tzobj = icalcomponent_as_ical_string_r (icalcomp);
 
 	/* call the backend */
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_add_timezone (priv->proxy, tzobj, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_add_timezone_sync (priv->gdbus_cal, tzobj, NULL, error)) {
 		g_free (tzobj);
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	g_free (tzobj);
 	E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
@@ -3904,42 +3828,39 @@ e_cal_get_query (ECal *ecal, const gchar *sexp, ECalView **query, GError **error
 	ECalPrivate *priv;
 	ECalendarStatus status;
 	gchar *query_path;
-	DBusGProxy *query_proxy;
+	EGdbusCalView *gdbus_calview;
 
 	e_return_error_if_fail (sexp, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (query, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 	*query = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_get_query (priv->proxy, sexp, &query_path, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_get_query_sync (priv->gdbus_cal, sexp, &query_path, NULL, error)) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	status = E_CALENDAR_STATUS_OK;
 
-	LOCK_CONN ();
-	query_proxy = dbus_g_proxy_new_for_name_owner (connection,
-                                                "org.gnome.evolution.dataserver.Calendar", query_path,
-                                                "org.gnome.evolution.dataserver.calendar.CalView", error);
-	UNLOCK_CONN ();
+	gdbus_calview = e_gdbus_cal_view_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy)),
+							G_DBUS_PROXY_FLAGS_NONE,
+							"org.gnome.evolution.dataserver.Calendar",
+							query_path,
+							NULL,
+							error);
 
-	if (!query_proxy) {
+	if (!gdbus_calview) {
 		*query = NULL;
 		status = E_CALENDAR_STATUS_OTHER_ERROR;
 	} else {
-		*query = _e_cal_view_new (ecal, query_proxy, &connection_lock);
+		*query = _e_cal_view_new (ecal, gdbus_calview);
+		g_object_unref (gdbus_calview);
 	}
-
-	g_object_unref (query_proxy);
 
 	E_CALENDAR_CHECK_STATUS (status, error);
 }
@@ -3965,7 +3886,7 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (zone, E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
-	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	/* If the same timezone is already set, we don't have to do anything. */
 	if (priv->default_zone == zone)
@@ -3981,13 +3902,10 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 	tzobj = icalcomponent_as_ical_string_r (icalcomp);
 
 	/* call the backend */
-	LOCK_CONN ();
-	if (!org_gnome_evolution_dataserver_calendar_Cal_set_default_timezone (priv->proxy, tzobj, error)) {
-		UNLOCK_CONN ();
+	if (!e_gdbus_cal_call_set_default_timezone_sync (priv->gdbus_cal, tzobj, NULL, error)) {
 		g_free (tzobj);
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
-	UNLOCK_CONN ();
 
 	g_free (tzobj);
 	priv->default_zone = zone;
