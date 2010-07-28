@@ -520,6 +520,7 @@ static gboolean
 local_sync(CamelFolder *folder, gboolean expunge, GError **error)
 {
 	CamelLocalFolder *lf = CAMEL_LOCAL_FOLDER(folder);
+	gboolean success;
 
 	d(printf("local sync '%s' , expunge=%s\n", folder->full_name, expunge?"true":"false"));
 
@@ -529,7 +530,9 @@ local_sync(CamelFolder *folder, gboolean expunge, GError **error)
 	camel_object_state_write (CAMEL_OBJECT (lf));
 
 	/* if sync fails, we'll pass it up on exit through ex */
-	camel_local_summary_sync((CamelLocalSummary *)folder->summary, expunge, lf->changes, error);
+	success = (camel_local_summary_sync (
+		(CamelLocalSummary *)folder->summary,
+		expunge, lf->changes, error) == 0);
 	camel_local_folder_unlock(lf);
 
 	if (camel_folder_change_info_changed(lf->changes)) {
@@ -537,7 +540,7 @@ local_sync(CamelFolder *folder, gboolean expunge, GError **error)
 		camel_folder_change_info_clear(lf->changes);
 	}
 
-	return TRUE;
+	return success;
 }
 
 static gboolean
