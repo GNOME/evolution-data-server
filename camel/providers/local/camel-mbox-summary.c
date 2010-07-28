@@ -519,10 +519,20 @@ summary_update(CamelLocalSummary *cls, goffset offset, CamelFolderChangeInfo *ch
 
 		info = camel_folder_summary_add_from_parser(s, mp);
 		if (info == NULL) {
+			gchar *pos_str;
+
+			/* XXX Gettext does not understand G_GINT64_FORMAT
+			 *     when used directly in a translatable string,
+			 *     so we have to pre-format the position value
+			 *     for use in the error message. */
+			pos_str = g_strdup_printf (
+				"%" G_GINT64_FORMAT, (gint64)
+				camel_mime_parser_tell (mp));
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				_("Fatal mail parser error near position %" G_GINT64_FORMAT " in folder %s"),
-				(gint64) camel_mime_parser_tell(mp), cls->folder_path);
+				_("Fatal mail parser error near position %s "
+				  "in folder %s"), pos_str, cls->folder_path);
+			g_free (pos_str);
 			ok = -1;
 			break;
 		}
