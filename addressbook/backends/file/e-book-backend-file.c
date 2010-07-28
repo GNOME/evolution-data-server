@@ -877,20 +877,23 @@ static gchar *
 e_book_backend_file_extract_path_from_source (ESource *source)
 {
 	const gchar *user_data_dir;
-	const gchar *relative_uri;
-	gchar *mangled_uri;
+	const gchar *source_dir;
+	gchar *mangled_source_dir;
 	gchar *filename;
 
 	user_data_dir = e_get_user_data_dir ();
-	relative_uri = e_source_peek_relative_uri (source);
+	source_dir = e_source_peek_relative_uri (source);
+
+	if (!source_dir || !g_str_equal (source_dir, "system"))
+		source_dir = e_source_peek_uid (source);
 
 	/* Mangle the URI to not contain invalid characters. */
-	mangled_uri = g_strdelimit (g_strdup (relative_uri), ":/", '_');
+	mangled_source_dir = g_strdelimit (g_strdup (source_dir), ":/", '_');
 
 	filename = g_build_filename (
-		user_data_dir, "addressbook", "local", mangled_uri, NULL);
+		user_data_dir, "addressbook", mangled_source_dir, NULL);
 
-	g_free (mangled_uri);
+	g_free (mangled_source_dir);
 
 	return filename;
 }

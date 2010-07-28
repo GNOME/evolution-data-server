@@ -3067,10 +3067,10 @@ cal_backend_file_constructed (GObject *object)
 	ECalBackend *backend;
 	ESource *source;
 	icalcomponent_kind kind;
-	const gchar *relative_uri;
+	const gchar *source_dir;
 	const gchar *user_data_dir;
 	const gchar *component_type;
-	gchar *mangled_uri;
+	gchar *mangled_source_dir;
 	gchar *filename;
 
 	user_data_dir = e_get_user_data_dir ();
@@ -3083,8 +3083,6 @@ cal_backend_file_constructed (GObject *object)
 	backend = E_CAL_BACKEND (object);
 	kind = e_cal_backend_get_kind (backend);
 	source = e_cal_backend_get_source (backend);
-
-	relative_uri = e_source_peek_relative_uri (source);
 
 	switch (kind) {
 		case ICAL_VEVENT_COMPONENT:
@@ -3102,16 +3100,20 @@ cal_backend_file_constructed (GObject *object)
 			break;
 	}
 
+	source_dir = e_source_peek_relative_uri (source);
+	if (!source_dir || !g_str_equal (source_dir, "system"))
+		source_dir = e_source_peek_uid (source);
+
 	/* Mangle the URI to not contain invalid characters. */
-	mangled_uri = g_strdelimit (g_strdup (relative_uri), ":/", '_');
+	mangled_source_dir = g_strdelimit (g_strdup (source_dir), ":/", '_');
 
 	filename = g_build_filename (
-		user_data_dir, component_type, "local", mangled_uri, NULL);
+		user_data_dir, component_type, mangled_source_dir, NULL);
 
 	e_cal_backend_set_cache_dir (backend, filename);
 
 	g_free (filename);
-	g_free (mangled_uri);
+	g_free (mangled_source_dir);
 }
 
 /* Class initialization function for the file backend */
