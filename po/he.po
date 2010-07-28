@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-24 13:43+0300\n"
-"PO-Revision-Date: 2010-07-24 13:53+0200\n"
+"POT-Creation-Date: 2010-07-28 12:32+0300\n"
+"PO-Revision-Date: 2010-07-28 13:25+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -549,7 +549,7 @@ msgstr "תאריך לידה"
 
 #: ../addressbook/libebook/e-contact.c:262
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:717
-#: ../libedataserver/e-categories.c:43
+#: ../libedataserver/e-categories.c:44
 msgid "Anniversary"
 msgstr "יום שנה"
 
@@ -632,15 +632,15 @@ msgstr "כתובת SIP"
 msgid "Unnamed List"
 msgstr "רשימה ללא שם"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:322
+#: ../addressbook/libedata-book/e-data-book-factory.c:325
 #, c-format
 msgid "Empty URI"
 msgstr "כתובת ריקה"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:340
-#: ../addressbook/libedata-book/e-data-book-factory.c:377
-#: ../calendar/libedata-cal/e-data-cal-factory.c:333
-#: ../calendar/libedata-cal/e-data-cal-factory.c:345
+#: ../addressbook/libedata-book/e-data-book-factory.c:343
+#: ../addressbook/libedata-book/e-data-book-factory.c:380
+#: ../calendar/libedata-cal/e-data-cal-factory.c:336
+#: ../calendar/libedata-cal/e-data-cal-factory.c:348
 #, c-format
 msgid "Invalid source"
 msgstr "מקור לא תקין"
@@ -857,7 +857,7 @@ msgid "Calendar doesn't support Free/Busy"
 msgstr "לוח השנה אינו תומך במצב עיסוק"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:719
-#: ../libedataserver/e-categories.c:44
+#: ../libedataserver/e-categories.c:45
 msgid "Birthday"
 msgstr "יום הולדת"
 
@@ -1460,17 +1460,17 @@ msgstr "לא ניתן לקבל שינויים ללוח השנה: %s"
 msgid "Cannot retrieve calendar free/busy list: %s"
 msgstr "לא ניתן לקבל את רשימת העיסוק/פנאי של לוח השנה: %s"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:355
+#: ../calendar/libedata-cal/e-data-cal-factory.c:358
 #, c-format
 msgid "Invalid URI"
 msgstr "כתובת שגויה"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:370
+#: ../calendar/libedata-cal/e-data-cal-factory.c:373
 #, c-format
 msgid "No backend factory for '%s' of '%s'"
 msgstr "אין מפעל מנגנון עבור '%s' מתוך '%s'"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:420
+#: ../calendar/libedata-cal/e-data-cal-factory.c:423
 #, c-format
 msgid "Could not instantiate backend"
 msgstr "לא ניתן להפעיל את המנגנון"
@@ -2061,7 +2061,7 @@ msgstr "אנונימי"
 
 #: ../camel/camel-sasl-anonymous.c:37
 msgid "This option will connect to the server using an anonymous login."
-msgstr ""
+msgstr "אפשרות זו תתחבר לשרת באמצעות כניסה אלמונית."
 
 #: ../camel/camel-sasl-anonymous.c:69
 #, c-format
@@ -2366,7 +2366,7 @@ msgstr "חתימה טובה"
 
 #: ../camel/camel-smime-context.c:510
 msgid "Bad signature"
-msgstr ""
+msgstr "חתימה פגומה"
 
 #: ../camel/camel-smime-context.c:512
 msgid "Content tampered with or altered in transit"
@@ -2398,7 +2398,7 @@ msgstr "שגיאת עיבוד"
 
 #: ../camel/camel-smime-context.c:566
 msgid "No signed data in signature"
-msgstr ""
+msgstr "אין נתונים חתומים בחתימה"
 
 #: ../camel/camel-smime-context.c:571
 msgid "Digests missing from enveloped data"
@@ -2743,7 +2743,7 @@ msgstr "אפשרויות"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:55
 msgid "_Apply filters to new messages in Inbox on this server"
-msgstr ""
+msgstr "ה_חלת המסננים להודעות חדשות בתיבת הדואר הנכנס בשרת זה"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:57
 msgid "Check new messages for J_unk contents"
@@ -2791,7 +2791,7 @@ msgstr "אפשרות זאת תתחבר לשרת ה-GroupWise בעזרת סיסמ
 #: ../camel/providers/groupwise/camel-groupwise-store.c:107
 #, c-format
 msgid "Host or user not available in url"
-msgstr ""
+msgstr "המארח או המשתמש אינם זמינים בכתובת"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:207
 #: ../camel/providers/imap/camel-imap-store.c:1207
@@ -2845,7 +2845,7 @@ msgstr "שרת GroupWise ‏%s"
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1350
 #, c-format
 msgid "GroupWise service for %s on %s"
-msgstr ""
+msgstr "שירות GroupWise עבור %s ב־%s"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:58
 #, c-format
@@ -2859,7 +2859,7 @@ msgstr "שולח הודעה"
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:105
 #, c-format
 msgid "Cannot get folder: Invalid operation on this store"
-msgstr ""
+msgstr "לא ניתן לקבל את התיקייה: פעולה שגויה באחסון זה"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:152
 #, c-format
@@ -2868,6 +2868,9 @@ msgid ""
 "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
 "of your mail.\n"
 msgstr ""
+"חרגת ממכסת האחסון לחשבון זה. ההודעות שלך ימתינו בתור בתיבת הדואר היוצר שלך. "
+"ניתן לשלוח מחדש על ידיעה לחיצה על קבלה/שליחה לאחר מחיקה/שמירה בארכיון של חלק "
+"מהודעות הדואר שלך.\n"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:157
 #, c-format
@@ -2878,13 +2881,13 @@ msgstr "לא ניתן לשלוח הודעה: %s"
 #: ../camel/providers/imap/camel-imap-command.c:288
 #, c-format
 msgid "No output stream"
-msgstr ""
+msgstr "אין תזרים פלט"
 
 #: ../camel/providers/imap/camel-imap-command.c:198
 #: ../camel/providers/imap/camel-imap-command.c:296
 #, c-format
 msgid "No input stream"
-msgstr ""
+msgstr "אין תזרים קלט"
 
 #: ../camel/providers/imap/camel-imap-command.c:245
 #, c-format
@@ -2904,6 +2907,8 @@ msgid ""
 "Alert from IMAP server %s@%s:\n"
 "%s"
 msgstr ""
+"התראה משרת ה־IMAP‏ %s@%s:‏\n"
+"%s"
 
 #: ../camel/providers/imap/camel-imap-command.c:444
 #, c-format
@@ -2918,12 +2923,12 @@ msgstr "פקודת IMAP נכשלה: %s"
 #: ../camel/providers/imap/camel-imap-command.c:532
 #, c-format
 msgid "Server response ended too soon."
-msgstr ""
+msgstr "תגובת השרת הסתיימה בטרם עת."
 
 #: ../camel/providers/imap/camel-imap-command.c:740
 #, c-format
 msgid "IMAP server response did not contain %s information"
-msgstr ""
+msgstr "תגובת שרת ה־IMAP לא הכיל נתוני %s"
 
 #: ../camel/providers/imap/camel-imap-command.c:778
 #, c-format
@@ -2971,17 +2976,17 @@ msgstr "הודעה זאת אינה זמינה ברגע זה"
 #: ../camel/providers/imap/camel-imap-folder.c:4013
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
-msgstr ""
+msgstr "תגובת שרת חלקית: לא סופק מידע עבור הודעה מס׳ %d"
 
 #: ../camel/providers/imap/camel-imap-folder.c:4023
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
-msgstr ""
+msgstr "תגובת שרת חלקית: לא סופק מזהה משתמש עבור הודעה מס׳ %d"
 
 #: ../camel/providers/imap/camel-imap-folder.c:4243
 #, c-format
 msgid "Could not find message body in FETCH response."
-msgstr ""
+msgstr "לא ניתן לאתר את גוף ההודעה בתגובת FETCH."
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:193
 #: ../camel/providers/imap/camel-imap-message-cache.c:253
@@ -2992,7 +2997,7 @@ msgstr "לא ניתן לפתוח ספריית מטמון: %s"
 #: ../camel/providers/imap/camel-imap-message-cache.c:326
 #, c-format
 msgid "Failed to cache message %s: %s"
-msgstr ""
+msgstr "ארע כשל בשמירת ההודעה %s במטמון: %s"
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:388
 #, fuzzy, c-format
@@ -3037,7 +3042,7 @@ msgstr "תיקיות"
 #: ../camel/providers/imap/camel-imap-provider.c:58
 #: ../camel/providers/imapx/camel-imapx-provider.c:65
 msgid "_Show only subscribed folders"
-msgstr ""
+msgstr "ה_צגת תיקיות המינוי בלבד"
 
 #: ../camel/providers/imap/camel-imap-provider.c:60
 #: ../camel/providers/imapx/camel-imapx-provider.c:68
@@ -3401,7 +3406,7 @@ msgstr "לא ניתן לקבל תיקייה: %s: ‏%s"
 #: ../camel/providers/local/camel-local-store.c:193
 #, c-format
 msgid "Local stores do not have an inbox"
-msgstr ""
+msgstr "לאחסונים המקומיים אין תיבת דואר נכנס"
 
 #: ../camel/providers/local/camel-local-store.c:250
 #, c-format
@@ -3433,7 +3438,7 @@ msgstr "לא ניתן למחוק את קובץ העל של התיקייה '%s':�
 #: ../camel/providers/local/camel-local-summary.c:537
 #, c-format
 msgid "Unable to add message to summary: unknown reason"
-msgstr ""
+msgstr "לא ניתן להוסיף את ההודעה לתקציר: הסיבה אינה ידועה"
 
 #: ../camel/providers/local/camel-maildir-folder.c:195
 #, fuzzy, c-format
@@ -3505,7 +3510,7 @@ msgstr "לא ניתן לסרוק את התיקייה '%s': ‏%s"
 #: ../camel/providers/local/camel-maildir-summary.c:558
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
-msgstr ""
+msgstr "לא ניתן לפתוח את נתיב תיקיית ה־maildir:‏ %s:‏ %s"
 
 #: ../camel/providers/local/camel-maildir-summary.c:549
 msgid "Checking folder consistency"
@@ -3527,7 +3532,7 @@ msgstr "תיקיית אחסון"
 #: ../camel/providers/local/camel-spool-folder.c:125
 #, c-format
 msgid "Cannot create folder lock on %s: %s"
-msgstr ""
+msgstr "לא ניתן ליצור נעילת תיקייה על %s:‏ %s"
 
 #: ../camel/providers/local/camel-mbox-folder.c:194
 #, fuzzy, c-format
@@ -3657,7 +3662,7 @@ msgstr "לא ניתן לשנות שם תיקייה: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:1061
 #, c-format
 msgid "Could not store folder: %s"
-msgstr ""
+msgstr "לא ניתן לאחסן את התיקייה: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:860
 #: ../camel/providers/local/camel-mbox-summary.c:869
@@ -3846,7 +3851,7 @@ msgstr "חדשות USENET"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
 msgid "This is a provider for reading from and posting to USENET newsgroups."
-msgstr ""
+msgstr "ספק זה מאפשר קריאה ופרסום של הודעות מול רשת USENET."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
 msgid ""
@@ -3959,11 +3964,11 @@ msgstr "לא ניתן לקבל סיכום POP: ‏%s"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:324
 msgid "Expunging old messages"
-msgstr ""
+msgstr "ההודעות הישנות נמחקות לצמיתות"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:332
 msgid "Expunging deleted messages"
-msgstr ""
+msgstr "ההודעות שנמחקו נמחקות לצמיתות"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:566
 #: ../camel/providers/pop3/camel-pop3-folder.c:596
@@ -4012,6 +4017,8 @@ msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
 msgstr ""
+"אפשרות זו תתחבר לשרת ה־POP באמצעות ססמה פשוטה לחלוטין. זוהי האפשרות היחידה "
+"הזמינה בשרתי POP רבים."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:82
 msgid ""
@@ -4019,6 +4026,9 @@ msgid ""
 "the APOP protocol. This may not work for all users even on servers that "
 "claim to support it."
 msgstr ""
+"אפשרות זו תתחבר לשרת ה־POP באמצעות ססמה מאובטחת באמצעות פרוטוקול ה־APOP. "
+"יתכן שאפשרות זו לא תעבוד עבור כל המשתמשים אפילו עבור שרתים הטוענים כי הם "
+"תומכים בזה."
 
 #. Translators: This is the separator between an error and an explanation
 #: ../camel/providers/pop3/camel-pop3-store.c:98
@@ -4072,7 +4082,7 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-store.c:361
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
-msgstr ""
+msgstr "לא ניתן להתחבר לשרת ה־POP‏ %s: שגיאת פרוטוקול SASL"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:378
 #, fuzzy, c-format
@@ -4154,7 +4164,7 @@ msgstr ""
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:98
 #, c-format
 msgid "Could not parse recipient list"
-msgstr ""
+msgstr "לא ניתן לפענח את רשימת הנמענים"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:131
 #, c-format
@@ -4216,11 +4226,11 @@ msgstr "הפקודה לא ממומשת"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:122
 msgid "Command parameter not implemented"
-msgstr ""
+msgstr "פרמטר הפקודה לא הוטמע"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:124
 msgid "System status, or system help reply"
-msgstr ""
+msgstr "מצב המערכת או תגובת עזרה מהמערכת"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:126
 msgid "Help message"
@@ -4437,85 +4447,85 @@ msgstr "RSET command failed: %s"
 msgid "QUIT command failed: "
 msgstr "QUIT command failed: %s"
 
-#: ../libedataserver/e-categories.c:45
+#: ../libedataserver/e-categories.c:46
 msgid "Business"
 msgstr "עסקים"
 
-#: ../libedataserver/e-categories.c:46
+#: ../libedataserver/e-categories.c:47
 msgid "Competition"
 msgstr "תחרות"
 
-#: ../libedataserver/e-categories.c:47
+#: ../libedataserver/e-categories.c:48
 msgid "Favorites"
 msgstr "מועדפים"
 
-#: ../libedataserver/e-categories.c:48
+#: ../libedataserver/e-categories.c:49
 msgid "Gifts"
 msgstr "מתנות"
 
-#: ../libedataserver/e-categories.c:49
+#: ../libedataserver/e-categories.c:50
 msgid "Goals/Objectives"
 msgstr "מטרות/יעדים"
 
-#: ../libedataserver/e-categories.c:50
+#: ../libedataserver/e-categories.c:51
 msgid "Holiday"
 msgstr "חג"
 
-#: ../libedataserver/e-categories.c:51
+#: ../libedataserver/e-categories.c:52
 msgid "Holiday Cards"
 msgstr "כרטיסי ברכה"
 
 #. important people (e.g. new business partners)
-#: ../libedataserver/e-categories.c:53
+#: ../libedataserver/e-categories.c:54
 msgid "Hot Contacts"
 msgstr "אנשי קשר חשובים"
 
-#: ../libedataserver/e-categories.c:54
+#: ../libedataserver/e-categories.c:55
 msgid "Ideas"
 msgstr "רעיונות"
 
-#: ../libedataserver/e-categories.c:55
+#: ../libedataserver/e-categories.c:56
 msgid "International"
 msgstr "בין-לאומי"
 
-#: ../libedataserver/e-categories.c:56
+#: ../libedataserver/e-categories.c:57
 msgid "Key Customer"
 msgstr "לקוח חשוב"
 
-#: ../libedataserver/e-categories.c:57
+#: ../libedataserver/e-categories.c:58
 msgid "Miscellaneous"
 msgstr "כללי"
 
-#: ../libedataserver/e-categories.c:58
+#: ../libedataserver/e-categories.c:59
 msgid "Personal"
 msgstr "אישי"
 
-#: ../libedataserver/e-categories.c:59
+#: ../libedataserver/e-categories.c:60
 msgid "Phone Calls"
 msgstr "שיחות טלפון"
 
 #. Translators: "Status" is a category name; it can mean anything user wants to
-#: ../libedataserver/e-categories.c:61
+#: ../libedataserver/e-categories.c:62
 msgid "Status"
 msgstr "מצב"
 
-#: ../libedataserver/e-categories.c:62
+#: ../libedataserver/e-categories.c:63
 msgid "Strategies"
 msgstr "אסטרטגיות"
 
-#: ../libedataserver/e-categories.c:63
+#: ../libedataserver/e-categories.c:64
 msgid "Suppliers"
 msgstr "ספקים"
 
-#: ../libedataserver/e-categories.c:64
+#: ../libedataserver/e-categories.c:65
 msgid "Time & Expenses"
 msgstr "זמן והוצאות"
 
-#: ../libedataserver/e-categories.c:65
+#: ../libedataserver/e-categories.c:66
 msgid "VIP"
 msgstr "אח\"מים"
 
-#: ../libedataserver/e-categories.c:66
+#: ../libedataserver/e-categories.c:67
 msgid "Waiting"
 msgstr "ממתין"
 
