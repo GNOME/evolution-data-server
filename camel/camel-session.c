@@ -243,30 +243,28 @@ session_get_storage_path (CamelSession *session,
                           CamelService *service,
                           GError **error)
 {
-	gchar *path, *p;
+	gchar *service_path;
+	gchar *storage_path;
 
-	p = camel_service_get_path (service);
-	path = g_strdup_printf ("%s/%s", session->storage_path, p);
-	g_free (p);
+	service_path = camel_service_get_path (service);
+	storage_path = g_build_filename (
+		session->storage_path, service_path, NULL);
+	g_free (service_path);
 
-#ifdef G_OS_WIN32
-	if (g_access (path, F_OK) == 0)
-#else
-	if (access (path, F_OK) == 0)
-#endif
-		return path;
+	if (g_access (storage_path, F_OK) == 0)
+		return storage_path;
 
-	if (g_mkdir_with_parents (path, S_IRWXU) == -1) {
+	if (g_mkdir_with_parents (storage_path, S_IRWXU) == -1) {
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
 			_("Could not create directory %s:\n%s"),
-			path, g_strerror (errno));
-		g_free (path);
-		return NULL;
+			storage_path, g_strerror (errno));
+		g_free (storage_path);
+		storage_path = NULL;
 	}
 
-	return path;
+	return storage_path;
 }
 
 static gpointer
