@@ -16,8 +16,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=Misc.\n"
-"POT-Creation-Date: 2010-07-28 11:50+0000\n"
-"PO-Revision-Date: 2010-07-28 17:09+0200\n"
+"POT-Creation-Date: 2010-07-28 19:35+0000\n"
+"PO-Revision-Date: 2010-07-29 09:33+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -855,7 +855,6 @@ msgstr "No se pueden obtener los cambios: %s"
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:722
 #, c-format
-#| msgid "Operation failed: %s"
 msgid "Cancel operation failed: %s"
 msgstr "Falló al cancelar la operación: %s"
 
@@ -3589,8 +3588,8 @@ msgstr "Comprobando si hay mensajes nuevos"
 
 #: ../camel/providers/local/camel-maildir-summary.c:732
 #: ../camel/providers/local/camel-mbox-summary.c:465
-#: ../camel/providers/local/camel-mbox-summary.c:669
-#: ../camel/providers/local/camel-mbox-summary.c:799
+#: ../camel/providers/local/camel-mbox-summary.c:679
+#: ../camel/providers/local/camel-mbox-summary.c:809
 #: ../camel/providers/local/camel-spool-summary.c:130
 msgid "Storing folder"
 msgstr "Almacenando carpeta"
@@ -3687,71 +3686,74 @@ msgstr "No se pudo renombrar «%s» a %s: %s"
 msgid "Could not open folder: %s: %s"
 msgstr "No se pudo abrir la carpeta: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:524
-msgid "Fatal mail parser error near position %"
-msgstr "Análisis erróneo del correo cerca de la posición %"
+#: ../camel/providers/local/camel-mbox-summary.c:533
+#, c-format
+#| msgid "Fatal mail parser error near position %"
+msgid "Fatal mail parser error near position %s in folder %s"
+msgstr ""
+"Error fatal del analizador de correo cerca de la posición %s en la carpeta %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:605
+#: ../camel/providers/local/camel-mbox-summary.c:615
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "No se pudo comprobar la carpeta: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:676
-#: ../camel/providers/local/camel-mbox-summary.c:806
+#: ../camel/providers/local/camel-mbox-summary.c:686
+#: ../camel/providers/local/camel-mbox-summary.c:816
 #: ../camel/providers/local/camel-spool-summary.c:137
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "No se pudo abrir el archivo %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:690
+#: ../camel/providers/local/camel-mbox-summary.c:700
 #: ../camel/providers/local/camel-spool-summary.c:152
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "No se pudo abrir el archivo de correo temporal: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:705
-#: ../camel/providers/local/camel-mbox-summary.c:923
+#: ../camel/providers/local/camel-mbox-summary.c:715
+#: ../camel/providers/local/camel-mbox-summary.c:933
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "No se pudo cerrar la carpeta origen %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:716
+#: ../camel/providers/local/camel-mbox-summary.c:726
 #, c-format
 msgid "Could not close temporary folder: %s"
 msgstr "No se pudo cerrar la carpeta temporal: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:733
+#: ../camel/providers/local/camel-mbox-summary.c:743
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "No se pudo cambiar el nombre a la carpeta: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:819
-#: ../camel/providers/local/camel-mbox-summary.c:1061
+#: ../camel/providers/local/camel-mbox-summary.c:829
+#: ../camel/providers/local/camel-mbox-summary.c:1071
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "No se pudo almacenar carpeta:: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:860
-#: ../camel/providers/local/camel-mbox-summary.c:869
-#: ../camel/providers/local/camel-mbox-summary.c:1094
-#: ../camel/providers/local/camel-mbox-summary.c:1103
+#: ../camel/providers/local/camel-mbox-summary.c:870
+#: ../camel/providers/local/camel-mbox-summary.c:879
+#: ../camel/providers/local/camel-mbox-summary.c:1104
+#: ../camel/providers/local/camel-mbox-summary.c:1113
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "El resumen y la carpeta no coinciden, incluso después de sincronizar"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1020
+#: ../camel/providers/local/camel-mbox-summary.c:1030
 #: ../camel/providers/local/camel-spool-summary.c:337
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Error desconocido: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1173
-#: ../camel/providers/local/camel-mbox-summary.c:1203
+#: ../camel/providers/local/camel-mbox-summary.c:1183
+#: ../camel/providers/local/camel-mbox-summary.c:1213
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "Error la escribir al buzón temporal: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1192
+#: ../camel/providers/local/camel-mbox-summary.c:1202
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Error la escribir al buzón temporal: %s: %s"
