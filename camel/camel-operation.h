@@ -55,7 +55,7 @@ void camel_operation_unregister (CamelOperation *cc);
 /* called internally by camel, for the current thread */
 gint camel_operation_cancel_check(CamelOperation *cc);
 gint camel_operation_cancel_fd(CamelOperation *cc);
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 struct PRFileDesc *camel_operation_cancel_prfd(CamelOperation *cc);
 #endif
 /* return the registered operation for this thread, if there is one */

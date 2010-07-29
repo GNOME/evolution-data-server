@@ -414,7 +414,7 @@ enum {
 	MODE_TLS
 };
 
-#ifdef HAVE_SSL
+#ifdef CAMEL_HAVE_SSL
 #define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
 #define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
 #endif
@@ -434,7 +434,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, GE
 	gchar *buf;
 
 	if (ssl_mode != MODE_CLEAR) {
-#ifdef HAVE_SSL
+#ifdef CAMEL_HAVE_SSL
 		if (ssl_mode == MODE_TLS)
 			tcp_stream = camel_tcp_stream_ssl_new_raw (service->session, service->url->host, STARTTLS_FLAGS);
 		else
@@ -448,7 +448,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, GE
 
 		return FALSE;
 
-#endif /* HAVE_SSL */
+#endif /* CAMEL_HAVE_SSL */
 	} else
 		tcp_stream = camel_tcp_stream_raw_new ();
 
@@ -561,7 +561,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, GE
 		return TRUE;
 	}
 
-#ifdef HAVE_SSL
+#ifdef CAMEL_HAVE_SSL
 	/* as soon as we send a STARTTLS command, all hope is lost of a clean QUIT if problems arise */
 	clean_quit = FALSE;
 
@@ -598,7 +598,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, GE
 		_("Failed to connect to IMAP server %s in secure mode: %s"),
 		service->url->host, _("SSL is not available in this build"));
 	goto exception;
-#endif /* HAVE_SSL */
+#endif /* CAMEL_HAVE_SSL */
 
 	/* rfc2595, section 4 states that after a successful STLS
            command, the client MUST discard prior CAPA responses */

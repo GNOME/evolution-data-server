@@ -27,7 +27,7 @@
 #ifndef CAMEL_TCP_STREAM_SSL_H
 #define CAMEL_TCP_STREAM_SSL_H
 
-#ifdef HAVE_SSL
+#ifdef CAMEL_HAVE_SSL
 
 #include <camel/camel-tcp-stream.h>
 #include <prio.h>
@@ -85,6 +85,6 @@ PRFileDesc * camel_tcp_stream_ssl_sockfd (CamelTcpStreamSSL *stream);
 
 G_END_DECLS
 
-#endif /* HAVE_SSL */
+#endif /* CAMEL_HAVE_SSL */
 
 #endif /* CAMEL_TCP_STREAM_SSL_H */

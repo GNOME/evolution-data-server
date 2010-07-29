@@ -13,7 +13,7 @@
 // fixme, use own type funcs
 #include <ctype.h>
 
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 #include <nspr.h>
 #include <prio.h>
 #include <prerror.h>
@@ -2676,7 +2676,7 @@ imapx_connect_to_server (CamelIMAPXServer *is, GError **error)
 	CamelSockOptData sockopt;
 	gint ret, ssl_mode = 0;
 
-#ifdef HAVE_SSL
+#ifdef CAMEL_HAVE_SSL
 	const gchar *mode;
 #endif
 	guint len;
@@ -2706,7 +2706,7 @@ imapx_connect_to_server (CamelIMAPXServer *is, GError **error)
 		serv = "imap";
 		port = "143";
 	}
-#ifdef HAVE_SSL
+#ifdef CAMEL_HAVE_SSL
 	mode = camel_url_get_param(is->url, "use_ssl");
 	if (mode && strcmp(mode, "never") != 0) {
 		if (!strcmp(mode, "when-possible")) {
@@ -2727,7 +2727,7 @@ imapx_connect_to_server (CamelIMAPXServer *is, GError **error)
 #else
 	tcp_stream = camel_tcp_stream_raw_new ();
 	is->is_ssl_stream = FALSE;
-#endif /* HAVE_SSL */
+#endif /* CAMEL_HAVE_SSL */
 
 	camel_session_get_socks_proxy (is->session, &socks_host, &socks_port);
 
@@ -2817,7 +2817,7 @@ imapx_connect_to_server (CamelIMAPXServer *is, GError **error)
 		camel_imapx_command_free(ic);
 	}
 
-#ifdef HAVE_SSL
+#ifdef CAMEL_HAVE_SSL
 	if (ssl_mode == 2)
 	{
 
@@ -4607,7 +4607,7 @@ imapx_parser_thread (gpointer d)
 
 	while (local_error == NULL && is->stream) {
 		camel_operation_uncancel (op);
-#ifdef HAVE_SSL
+#ifdef CAMEL_HAVE_SSL
 		if (is->is_ssl_stream)	{
 			PRPollDesc pollfds[2] = { };
 			gint res;

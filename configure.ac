@@ -585,8 +585,8 @@ dnl check if pkg-config files exist (which are only shipped by distributions, no
 				AC_DEFINE(ENABLE_SMIME,1,[Define if SMIME should be enabled])
 				msg_smime="yes"
 			fi
-			AC_DEFINE(HAVE_NSS,1,[Define if you have NSS])
-			AC_DEFINE(HAVE_SSL,1,[Define if you have a supported SSL library])
+			AC_DEFINE(CAMEL_HAVE_NSS,1,[Define if you have NSS])
+			AC_DEFINE(CAMEL_HAVE_SSL,1,[Define if you have a supported SSL library])
 			MANUAL_NSPR_CFLAGS=""
 			MANUAL_NSPR_LIBS=""
 			MANUAL_NSS_CFLAGS=""
@@ -687,8 +687,8 @@ dnl check if pkg-config files exist (which are only shipped by distributions, no
 			LIBS="$LIBS_save"
 
 			if test "x${moz_nss_libs}" = "xyes"; then
-				AC_DEFINE(HAVE_NSS)
-				AC_DEFINE(HAVE_SSL)
+				AC_DEFINE(CAMEL_HAVE_NSS)
+				AC_DEFINE(CAMEL_HAVE_SSL)
 				msg_ssl="yes"
 				if test "x${enable_smime}" = "xyes"; then
 					AC_DEFINE(ENABLE_SMIME,1,[Define if SMIME should be enabled])
@@ -709,12 +709,20 @@ dnl check if pkg-config files exist (which are only shipped by distributions, no
 	fi
 fi
 
+dnl These flags are used in camel.pc.in.
+if test "x${msg_ssl}" = "xyes"; then
+	CAMEL_SSL_DEFINES="-DCAMEL_HAVE_NSS -DCAMEL_HAVE_SSL"
+else
+	CAMEL_SSL_DEFINES=""
+fi
+
 AM_CONDITIONAL(ENABLE_SMIME, test "x$msg_smime" != "xno")
 
 dnl For pkgconfig files.
 AC_SUBST(mozilla_nss)
 AC_SUBST(mozilla_nspr)
 
+AC_SUBST(CAMEL_SSL_DEFINES)
 AC_SUBST(MANUAL_NSPR_CFLAGS)
 AC_SUBST(MANUAL_NSPR_LIBS)
 AC_SUBST(MANUAL_NSS_CFLAGS)

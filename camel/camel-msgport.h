@@ -60,7 +60,7 @@ CamelMsg *	camel_msgport_try_pop		(CamelMsgPort *msgport);
 CamelMsg *	camel_msgport_timed_pop		(CamelMsgPort *msgport, GTimeVal *end_time);
 void		camel_msgport_reply		(CamelMsg *msg);
 
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 struct PRFileDesc * camel_msgport_prfd		(CamelMsgPort *msgport);
 #endif
 

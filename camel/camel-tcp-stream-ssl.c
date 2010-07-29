@@ -28,7 +28,7 @@
 #include <config.h>
 #endif
 
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 
 #include <errno.h>
 #include <fcntl.h>
@@ -1525,4 +1525,4 @@ camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl)
 	return 0;
 }
 
-#endif /* HAVE_NSS */
+#endif /* CAMEL_HAVE_NSS */

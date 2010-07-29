@@ -38,7 +38,7 @@
 #include "camel-stream-buffer.h"
 #include "camel-tcp-stream-raw.h"
 
-#ifdef HAVE_SSL
+#ifdef CAMEL_HAVE_SSL
 #include "camel-tcp-stream-ssl.h"
 #endif
 
@@ -67,7 +67,7 @@ http_connect (CamelHttpStream *http,
 	d(printf("connecting to http stream @ '%s'\n", url->host));
 
 	if (!g_ascii_strcasecmp (url->protocol, "https")) {
-#ifdef HAVE_SSL
+#ifdef CAMEL_HAVE_SSL
 		stream = camel_tcp_stream_ssl_new (http->session, url->host, SSL_FLAGS);
 #endif
 	} else {

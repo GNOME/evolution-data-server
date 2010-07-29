@@ -58,7 +58,7 @@ enum {
 	MODE_TLS
 };
 
-#ifdef HAVE_SSL
+#ifdef CAMEL_HAVE_SSL
 #define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
 #define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
 #endif
@@ -119,7 +119,7 @@ connect_to_server (CamelService *service,
 	const gchar *delete_days;
 
 	if (ssl_mode != MODE_CLEAR) {
-#ifdef HAVE_SSL
+#ifdef CAMEL_HAVE_SSL
 		if (ssl_mode == MODE_TLS) {
 			tcp_stream = camel_tcp_stream_ssl_new_raw (service->session, service->url->host, STARTTLS_FLAGS);
 		} else {
@@ -133,7 +133,7 @@ connect_to_server (CamelService *service,
 			service->url->host, _("SSL unavailable"));
 
 		return FALSE;
-#endif /* HAVE_SSL */
+#endif /* CAMEL_HAVE_SSL */
 	} else
 		tcp_stream = camel_tcp_stream_raw_new ();
 
@@ -176,7 +176,7 @@ connect_to_server (CamelService *service,
 		return TRUE;
 	}
 
-#ifdef HAVE_SSL
+#ifdef CAMEL_HAVE_SSL
 	/* as soon as we send a STLS command, all hope is lost of a clean QUIT if problems arise */
 	clean_quit = FALSE;
 
@@ -224,7 +224,7 @@ connect_to_server (CamelService *service,
 		_("Failed to connect to POP server %s in secure mode: %s"),
 		service->url->host, _("TLS is not available in this build"));
 	goto stls_exception;
-#endif /* HAVE_SSL */
+#endif /* CAMEL_HAVE_SSL */
 
 	g_object_unref (tcp_stream);
 

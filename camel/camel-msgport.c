@@ -25,7 +25,7 @@
 #include <errno.h>
 #include <unistd.h>
 
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 #include <nspr.h>
 #endif
 
@@ -59,7 +59,7 @@ enum {
 struct _CamelMsgPort {
 	GAsyncQueue *queue;
 	gint pipe[2];  /* on Win32, actually a pair of SOCKETs */
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 	PRFileDesc *prpipe[2];
 #endif
 };
@@ -194,7 +194,7 @@ out0:
 #endif
 }
 
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 static gint
 msgport_prpipe (PRFileDesc **fds)
 {
@@ -229,7 +229,7 @@ msgport_sync_with_pipe (gint fd)
 	}
 }
 
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 static void
 msgport_sync_with_prpipe (PRFileDesc *prfd)
 {
@@ -263,7 +263,7 @@ camel_msgport_new (void)
 	msgport->queue = g_async_queue_new ();
 	msgport->pipe[0] = -1;
 	msgport->pipe[1] = -1;
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 	msgport->prpipe[0] = NULL;
 	msgport->prpipe[1] = NULL;
 #endif
@@ -285,7 +285,7 @@ camel_msgport_destroy (CamelMsgPort *msgport)
 		MP_CLOSE (msgport->pipe[0]);
 		MP_CLOSE (msgport->pipe[1]);
 	}
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 	if (msgport->prpipe[0] != NULL) {
 		PR_Close (msgport->prpipe[0]);
 		PR_Close (msgport->prpipe[1]);
@@ -317,7 +317,7 @@ camel_msgport_fd (CamelMsgPort *msgport)
 	return fd;
 }
 
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 /**
  * camel_msgport_prfd:
  *
@@ -349,7 +349,7 @@ void
 camel_msgport_push (CamelMsgPort *msgport, CamelMsg *msg)
 {
 	gint fd;
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 	PRFileDesc *prfd;
 #endif
 
@@ -372,7 +372,7 @@ camel_msgport_push (CamelMsgPort *msgport, CamelMsg *msg)
 		}
 	}
 
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 	prfd = msgport->prpipe[1];
 	while (prfd != NULL) {
 		if (PR_Write (prfd, "E", 1) > 0) {
@@ -412,7 +412,7 @@ camel_msgport_pop (CamelMsgPort *msgport)
 
 	if (msg->flags & MSG_FLAG_SYNC_WITH_PIPE)
 		msgport_sync_with_pipe (msgport->pipe[0]);
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 	if (msg->flags & MSG_FLAG_SYNC_WITH_PR_PIPE)
 		msgport_sync_with_prpipe (msgport->prpipe[0]);
 #endif
@@ -440,7 +440,7 @@ camel_msgport_try_pop (CamelMsgPort *msgport)
 
 	if (msg != NULL && msg->flags & MSG_FLAG_SYNC_WITH_PIPE)
 		msgport_sync_with_pipe (msgport->pipe[0]);
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 	if (msg != NULL && msg->flags & MSG_FLAG_SYNC_WITH_PR_PIPE)
 		msgport_sync_with_prpipe (msgport->prpipe[0]);
 #endif
@@ -470,7 +470,7 @@ camel_msgport_timed_pop (CamelMsgPort *msgport, GTimeVal *end_time)
 
 	if (msg != NULL && msg->flags & MSG_FLAG_SYNC_WITH_PIPE)
 		msgport_sync_with_pipe (msgport->pipe[0]);
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 	if (msg != NULL && msg->flags & MSG_FLAG_SYNC_WITH_PR_PIPE)
 		msgport_sync_with_prpipe (msgport->prpipe[0]);
 #endif

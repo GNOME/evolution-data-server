@@ -28,7 +28,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 #include <nspr.h>
 #endif
 
@@ -66,7 +66,7 @@ struct _CamelOperation {
 
 	CamelMsgPort *cancel_port;
 	gint cancel_fd;
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 	PRFileDesc *cancel_prfd;
 #endif
 };
@@ -398,7 +398,7 @@ camel_operation_cancel_fd (CamelOperation *cc)
 	return cc->cancel_fd;
 }
 
-#ifdef HAVE_NSS
+#ifdef CAMEL_HAVE_NSS
 /**
  * camel_operation_cancel_prfd:
  * @cc: operation context
@@ -427,7 +427,7 @@ camel_operation_cancel_prfd (CamelOperation *cc)
 
 	return cc->cancel_prfd;
 }
-#endif /* HAVE_NSS */
+#endif /* CAMEL_HAVE_NSS */
 
 /**
  * camel_operation_start:

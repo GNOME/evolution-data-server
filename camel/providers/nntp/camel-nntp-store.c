@@ -199,7 +199,7 @@ enum {
 	MODE_TLS
 };
 
-#ifdef HAVE_SSL
+#ifdef CAMEL_HAVE_SSL
 #define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
 #define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
 #endif
@@ -221,7 +221,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, GE
 	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (ssl_mode != MODE_CLEAR) {
-#ifdef HAVE_SSL
+#ifdef CAMEL_HAVE_SSL
 		if (ssl_mode == MODE_TLS) {
 			tcp_stream = camel_tcp_stream_ssl_new_raw (service->session, service->url->host, STARTTLS_FLAGS);
 		} else {
@@ -234,7 +234,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, GE
 			_("Could not connect to %s: %s"),
 			service->url->host, _("SSL unavailable"));
 		goto fail;
-#endif /* HAVE_SSL */
+#endif /* CAMEL_HAVE_SSL */
 	} else {
 		tcp_stream = camel_tcp_stream_raw_new ();
 	}
