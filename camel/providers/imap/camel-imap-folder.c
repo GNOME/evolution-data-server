@@ -3291,10 +3291,14 @@ imap_get_message (CamelFolder *folder,
 	  return NULL;
 
 	/* If its cached in full, just get it as is, this is only a shortcut,
-	   since we get stuff from the cache anyway.  It affects a busted connection though. */
-	if ( (stream = camel_imap_folder_fetch_data(imap_folder, uid, "", TRUE, NULL))
-	     && (msg = get_message_simple(imap_folder, uid, stream, error)))
-		goto done;
+	 * since we get stuff from the cache anyway.  It affects a busted
+	 * connection though. */
+	stream = camel_imap_folder_fetch_data (imap_folder, uid, "", TRUE, NULL);
+	if (stream != NULL) {
+		msg = get_message_simple (imap_folder, uid, stream, NULL);
+		if (msg != NULL)
+			goto done;
+	}
 
 	/* All this mess is so we silently retry a fetch if we fail with
 	   service_unavailable, without an (equivalent) mess of gotos */
@@ -3436,6 +3440,10 @@ done:
 				camel_folder_summary_touch (mi->info.summary);
 		}
 	}
+
+	if (local_error != NULL)
+		g_propagate_error (error, local_error);
+
 fail:
 	camel_message_info_free(&mi->info);
 
