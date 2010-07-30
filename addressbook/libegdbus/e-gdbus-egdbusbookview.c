@@ -1516,7 +1516,7 @@ e_gdbus_book_view_register_object (EGdbusBookView *object,
   g_signal_connect (object, "notify", G_CALLBACK (on_notify), NULL);
   return g_dbus_connection_register_object (connection,
           object_path,
-          &_e_gdbus_book_view_interface_info,
+          (GDBusInterfaceInfo *) &_e_gdbus_book_view_interface_info,
           &e_gdbus_book_view_interface_vtable,
           object,
           (GDestroyNotify) on_object_unregistered,
