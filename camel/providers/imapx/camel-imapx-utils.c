@@ -98,7 +98,7 @@ imapx_parse_flags(CamelIMAPXStream *stream, guint32 *flagsp, CamelFlag **user_fl
 	if (tok == '(') {
 		do {
 			tok = camel_imapx_stream_token(stream, &token, &len, ex);
-			if (tok == IMAPX_TOK_TOKEN) {
+			if (tok == IMAPX_TOK_TOKEN || tok == IMAPX_TOK_INT) {
 				p = token;
 				// FIXME: ascii_toupper
 				while ((c=*p))
