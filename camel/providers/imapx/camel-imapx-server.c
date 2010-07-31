@@ -265,6 +265,7 @@ struct _CamelIMAPXJob {
 			gint index;
 			gint last_index;
 			gboolean update_unseen;
+			gboolean dummy_exception;
 			struct _uidset_state uidset;
 			/* changes during refresh */
 			CamelFolderChangeInfo *changes;
@@ -2105,6 +2106,10 @@ imapx_server_fetch_new_messages (CamelIMAPXServer *is, CamelFolder *folder, gboo
 	job->start = imapx_job_fetch_new_messages_start;
 	job->folder = folder;
 	job->noreply = async;
+	if (!ex) {
+		job->u.refresh_info.dummy_exception = TRUE;
+		ex = camel_exception_new ();
+	}
 	job->ex = ex;
 	job->u.refresh_info.changes = camel_folder_change_info_new();
 	job->u.refresh_info.update_unseen = update_unseen;
@@ -3458,6 +3463,8 @@ cleanup:
 	g_array_free(job->u.refresh_info.infos, TRUE);
 
 	imapx_job_done (is, job);
+	if (job->u.refresh_info.dummy_exception)
+		camel_exception_free (job->ex);
 	camel_imapx_command_free (ic);
 }
 
@@ -3706,6 +3713,8 @@ exception:
 		camel_operation_unref (ic->job->op);
 
 	imapx_job_done (is, ic->job);
+	if (ic->job->u.refresh_info.dummy_exception)
+		camel_exception_free (ic->job->ex);
 	camel_imapx_command_free (ic);
 }
 
