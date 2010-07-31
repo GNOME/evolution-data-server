@@ -4618,7 +4618,7 @@ imapx_server_finalise(CamelIMAPXServer *is, CamelIMAPXServerClass *isclass)
 	if (is->parser_thread)
 		g_thread_join (is->parser_thread);
 
-	if (imapx_idle_supported (is))
+	if (is->cinfo && imapx_idle_supported (is))
 		imapx_exit_idle (is);
 
 	imapx_disconnect (is);
