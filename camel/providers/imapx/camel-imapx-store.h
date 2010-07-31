@@ -79,6 +79,7 @@ typedef struct {
 
 /* Standard Camel function */
 CamelType camel_imapx_store_get_type (void);
+struct _CamelIMAPXServer *camel_imapx_store_get_server(CamelIMAPXStore *store, CamelException *ex);
 
 #ifdef __cplusplus
 }

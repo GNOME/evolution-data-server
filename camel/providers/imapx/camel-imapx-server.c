@@ -170,6 +170,7 @@ static gboolean imapx_is_command_queue_empty (CamelIMAPXServer *is);
 /* states for the connection? */
 enum {
 	IMAPX_DISCONNECTED,
+	IMAPX_SHUTDOWN,
 	IMAPX_CONNECTED,
 	IMAPX_AUTHENTICATED,
 	IMAPX_INITIALISED,
@@ -1013,6 +1014,15 @@ imapx_command_queue(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 	QUEUE_LOCK(is);
 
+	if (is->state == IMAPX_SHUTDOWN) {
+		c(printf("refuse to queue job on disconnected server\n"));
+		camel_exception_set(ic->ex, 1, "Server disconnected");
+		QUEUE_UNLOCK(is);
+		if (ic->complete)
+			ic->complete(is, ic);
+		return;
+	}
+
 	scan = (CamelIMAPXCommand *)is->queue.head;
 	if (scan->next == NULL)
 		camel_dlist_addtail(&is->queue, (CamelDListNode *)ic);
@@ -1530,7 +1540,8 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 			c(printf("BYE: %s\n", token));
 			camel_exception_setv(ex, 1, "IMAP server said BYE: %s", token);
 		}
-		break;
+		imap->state = IMAPX_SHUTDOWN;
+		return -1;
 	}
 	case IMAPX_PREAUTH:
 		c(printf("preauthenticated\n"));
@@ -4301,7 +4312,7 @@ imapx_parser_thread (gpointer d)
 				errno = EINTR;
 		}
 
-		if (camel_application_is_exiting || is->parser_quit) {
+		if (is->parser_quit) {
 			camel_exception_setv (&ex, CAMEL_EXCEPTION_USER_CANCEL, "Operation Cancelled: %s", g_strerror(errno));
 			break;
 		}
@@ -4320,11 +4331,11 @@ imapx_parser_thread (gpointer d)
 		}
 	}
 
-	imapx_disconnect (is);
-	cancel_all_jobs (is, &ex);
+	QUEUE_LOCK(is);
+	is->state = IMAPX_SHUTDOWN;
+	QUEUE_UNLOCK(is);
 
-	if (imapx_idle_supported (is))
-		imapx_exit_idle (is);
+	cancel_all_jobs (is, &ex);
 
 	camel_exception_clear (&ex);
 
@@ -4378,11 +4389,29 @@ imapx_server_init(CamelIMAPXServer *is, CamelIMAPXServerClass *isclass)
 static void
 imapx_server_finalise(CamelIMAPXServer *is, CamelIMAPXServerClass *isclass)
 {
+	e(printf("imapx_server_finalise\n"));
+
+	QUEUE_LOCK(is);
+	is->state = IMAPX_SHUTDOWN;
+	QUEUE_UNLOCK(is);
+
+	is->parser_quit = TRUE;
+	camel_operation_cancel (is->op);
+
+	if (is->parser_thread)
+		g_thread_join (is->parser_thread);
+
+	if (imapx_idle_supported (is))
+		imapx_exit_idle (is);
+
+	imapx_disconnect (is);
+
 	g_static_rec_mutex_free(&is->queue_lock);
 	g_static_rec_mutex_free (&is->ostream_lock);
 	g_hash_table_destroy (is->uid_eflags);
 
 	camel_folder_change_info_free (is->changes);
+
 }
 
 CamelType
@@ -4463,39 +4492,23 @@ imapx_disconnect (CamelIMAPXServer *is)
 
 /* Client commands */
 gboolean
-camel_imapx_server_connect (CamelIMAPXServer *is, gboolean connect, CamelException *ex)
+camel_imapx_server_connect (CamelIMAPXServer *is, CamelException *ex)
 {
-	gboolean ret = FALSE;
+	if (is->state == IMAPX_SHUTDOWN)
+		return FALSE;
 
-	CAMEL_SERVICE_REC_LOCK (is->store, connect_lock);
-	if (connect) {
-		if (is->state >= IMAPX_INITIALISED) {
-			ret = TRUE;
-			goto exit;
-		}
+	if (is->state >= IMAPX_INITIALISED)
+		return TRUE;
 
-		g_static_rec_mutex_lock (&is->ostream_lock);
-		imapx_reconnect (is, ex);
-		g_static_rec_mutex_unlock (&is->ostream_lock);
+	g_static_rec_mutex_lock (&is->ostream_lock);
+	imapx_reconnect (is, ex);
+	g_static_rec_mutex_unlock (&is->ostream_lock);
 
-		if (camel_exception_is_set (ex)) {
-			ret = FALSE;
-			goto exit;
-		}
+	if (camel_exception_is_set (ex))
+		return FALSE;
 
-		is->parser_thread = g_thread_create((GThreadFunc) imapx_parser_thread, is, TRUE, NULL);
-		ret = TRUE;
-	} else {
-		is->parser_quit = TRUE;
-		camel_operation_cancel (is->op);
-		if (is->parser_thread)
-			g_thread_join (is->parser_thread);
-		ret = TRUE;
-	}
-
-exit:
-	CAMEL_SERVICE_REC_UNLOCK (is->store, connect_lock);
-	return ret;
+	is->parser_thread = g_thread_create((GThreadFunc) imapx_parser_thread, is, TRUE, NULL);
+	return TRUE;
 }
 
 static CamelStream *
