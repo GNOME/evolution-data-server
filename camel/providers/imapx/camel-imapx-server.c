@@ -1969,6 +1969,10 @@ imapx_job_done (CamelIMAPXServer *is, CamelIMAPXJob *job)
 
 	if (job->noreply) {
 		camel_exception_clear(job->ex);
+		if (job->type == IMAPX_JOB_FETCH_NEW_MESSAGES &&
+		    job->u.refresh_info.dummy_exception)
+			camel_exception_free (job->ex);
+
 		g_free(job);
 	} else
 		camel_msgport_reply((CamelMsg *) job);
@@ -3463,8 +3467,6 @@ cleanup:
 	g_array_free(job->u.refresh_info.infos, TRUE);
 
 	imapx_job_done (is, job);
-	if (job->u.refresh_info.dummy_exception)
-		camel_exception_free (job->ex);
 	camel_imapx_command_free (ic);
 }
 
@@ -3713,8 +3715,6 @@ exception:
 		camel_operation_unref (ic->job->op);
 
 	imapx_job_done (is, ic->job);
-	if (ic->job->u.refresh_info.dummy_exception)
-		camel_exception_free (ic->job->ex);
 	camel_imapx_command_free (ic);
 }
 
