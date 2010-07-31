@@ -4762,7 +4762,7 @@ imapx_server_dispose (GObject *object)
 	if (server->parser_thread)
 		g_thread_join (server->parser_thread);
 
-	if (imapx_idle_supported (server))
+	if (server->cinfo && imapx_idle_supported (server))
 		imapx_exit_idle (server);
 
 	imapx_disconnect (server);
