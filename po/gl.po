@@ -16,14 +16,15 @@
 # Mancomún - Centro de Referencia e Servizos de Software Libre <g11n@mancomun.org>, 2009.
 # Antón Méixome <meixome@mancomun.org>, 2009.
 # Fran Diéguez <frandieguez@ubuntu.com>, 2009, 2010.
+# Fran Dieguez <frandieguez@mabishu.com>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server-master-po-gl-71644\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-21 16:40+0200\n"
-"PO-Revision-Date: 2010-07-21 16:42+0200\n"
-"Last-Translator: Fran Diéguez <frandieguez@ubuntu.com>\n"
+"POT-Creation-Date: 2010-08-01 23:38+0200\n"
+"PO-Revision-Date: 2010-08-01 23:40+0200\n"
+"Last-Translator: Fran Dieguez <frandieguez@mabishu.com>\n"
 "Language-Team: Galician <gnome-gl-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -105,7 +106,7 @@ msgstr "Produciuse un erro ao realizar a busca"
 msgid "Create resource '%s' failed with http status: %d"
 msgstr "Produciuse un fallo ao crear o recurso «%s» co estado http: %d"
 
-#: ../addressbook/libebook/e-book.c:3001
+#: ../addressbook/libebook/e-book.c:2940
 #, c-format
 msgid "%s: there was no source for UID '%s' stored in GConf."
 msgstr "%s: non existía unha orixe para o UID «%s» almacenada no Gconf."
@@ -562,7 +563,7 @@ msgstr "Data de nacemento"
 
 #: ../addressbook/libebook/e-contact.c:262
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:717
-#: ../libedataserver/e-categories.c:43
+#: ../libedataserver/e-categories.c:44
 msgid "Anniversary"
 msgstr "Aniversario"
 
@@ -645,229 +646,236 @@ msgstr "Enderezo SIP"
 msgid "Unnamed List"
 msgstr "Lista sen nome"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:322
+#: ../addressbook/libedata-book/e-data-book-factory.c:287
 #, c-format
 msgid "Empty URI"
 msgstr "URI baleiro"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:340
-#: ../addressbook/libedata-book/e-data-book-factory.c:377
-#: ../calendar/libedata-cal/e-data-cal-factory.c:333
-#: ../calendar/libedata-cal/e-data-cal-factory.c:345
+#: ../addressbook/libedata-book/e-data-book-factory.c:306
+#: ../addressbook/libedata-book/e-data-book-factory.c:344
+#: ../calendar/libedata-cal/e-data-cal-factory.c:331
+#: ../calendar/libedata-cal/e-data-cal-factory.c:343
 #, c-format
 msgid "Invalid source"
 msgstr "Orixe incorrecta"
 
-#: ../addressbook/libedata-book/e-data-book.c:185
-#: ../calendar/libedata-cal/e-data-cal.c:113
+#: ../addressbook/libedata-book/e-data-book.c:166
+#: ../calendar/libedata-cal/e-data-cal.c:104
 msgid "Success"
 msgstr "Éxito"
 
-#: ../addressbook/libedata-book/e-data-book.c:186
-#: ../calendar/libedata-cal/e-data-cal.c:114
+#: ../addressbook/libedata-book/e-data-book.c:167
+#: ../calendar/libedata-cal/e-data-cal.c:105
 msgid "Repository offline"
 msgstr "O repositorio está desconectado"
 
-#: ../addressbook/libedata-book/e-data-book.c:187
-#: ../calendar/libecal/e-cal.c:4118 ../calendar/libedata-cal/e-data-cal.c:115
+#: ../addressbook/libedata-book/e-data-book.c:168
+#: ../calendar/libecal/e-cal.c:3945 ../calendar/libedata-cal/e-data-cal.c:106
 msgid "Permission denied"
 msgstr "Permiso denegado"
 
-#: ../addressbook/libedata-book/e-data-book.c:188
+#: ../addressbook/libedata-book/e-data-book.c:169
 msgid "Contact not found"
 msgstr "O contacto non se encontrou"
 
-#: ../addressbook/libedata-book/e-data-book.c:189
+#: ../addressbook/libedata-book/e-data-book.c:170
 msgid "Contact ID already exists"
 msgstr "O ID do contacto xa existe"
 
-#: ../addressbook/libedata-book/e-data-book.c:190
-#: ../calendar/libedata-cal/e-data-cal.c:120
+#: ../addressbook/libedata-book/e-data-book.c:171
+#: ../calendar/libedata-cal/e-data-cal.c:111
 msgid "Authentication Failed"
 msgstr "A autenticación fallou"
 
-#: ../addressbook/libedata-book/e-data-book.c:191
-#: ../calendar/libedata-cal/e-data-cal.c:121
+#: ../addressbook/libedata-book/e-data-book.c:172
+#: ../calendar/libedata-cal/e-data-cal.c:112
 msgid "Authentication Required"
 msgstr "Autenticación requirida"
 
-#: ../addressbook/libedata-book/e-data-book.c:192
-#: ../calendar/libedata-cal/e-data-cal.c:122
+#: ../addressbook/libedata-book/e-data-book.c:173
+#: ../calendar/libedata-cal/e-data-cal.c:113
 msgid "Unsupported field"
 msgstr "O campo non é compatíbel"
 
-#: ../addressbook/libedata-book/e-data-book.c:193
-#: ../calendar/libedata-cal/e-data-cal.c:124
+#: ../addressbook/libedata-book/e-data-book.c:174
+#: ../calendar/libedata-cal/e-data-cal.c:115
 msgid "Unsupported authentication method"
 msgstr "O método de autenticación non é compatíbel"
 
-#: ../addressbook/libedata-book/e-data-book.c:194
-#: ../calendar/libedata-cal/e-data-cal.c:125
+#: ../addressbook/libedata-book/e-data-book.c:175
+#: ../calendar/libedata-cal/e-data-cal.c:116
 msgid "TLS not available"
 msgstr "O TLS non está dispoñíbel"
 
-#: ../addressbook/libedata-book/e-data-book.c:195
+#: ../addressbook/libedata-book/e-data-book.c:176
 msgid "Address Book does not exist"
 msgstr "Non existe a axenda de enderezos"
 
-#: ../addressbook/libedata-book/e-data-book.c:196
+#: ../addressbook/libedata-book/e-data-book.c:177
 msgid "Book removed"
 msgstr "Eliminouse o libro"
 
-#: ../addressbook/libedata-book/e-data-book.c:197
-#: ../calendar/libedata-cal/e-data-cal.c:128
+#: ../addressbook/libedata-book/e-data-book.c:178
+#: ../calendar/libedata-cal/e-data-cal.c:119
 msgid "Not available in offline mode"
 msgstr "Non está dispoñíbel en modo sen conexión."
 
-#: ../addressbook/libedata-book/e-data-book.c:198
-#: ../calendar/libedata-cal/e-data-cal.c:129
+#: ../addressbook/libedata-book/e-data-book.c:179
+#: ../calendar/libedata-cal/e-data-cal.c:120
 msgid "Search size limit exceeded"
 msgstr "Excedeuse o límite do tamaño de busca"
 
-#: ../addressbook/libedata-book/e-data-book.c:199
-#: ../calendar/libedata-cal/e-data-cal.c:130
+#: ../addressbook/libedata-book/e-data-book.c:180
+#: ../calendar/libedata-cal/e-data-cal.c:121
 msgid "Search time limit exceeded"
 msgstr "Excedeuse o tempo límite de busca"
 
-#: ../addressbook/libedata-book/e-data-book.c:200
-#: ../calendar/libedata-cal/e-data-cal.c:131
+#: ../addressbook/libedata-book/e-data-book.c:181
+#: ../calendar/libedata-cal/e-data-cal.c:122
 msgid "Invalid query"
 msgstr "A consulta non é correcta"
 
-#: ../addressbook/libedata-book/e-data-book.c:201
-#: ../calendar/libedata-cal/e-data-cal.c:132
+#: ../addressbook/libedata-book/e-data-book.c:182
+#: ../calendar/libedata-cal/e-data-cal.c:123
 msgid "Query refused"
 msgstr "Rexeitouse a consulta"
 
-#: ../addressbook/libedata-book/e-data-book.c:202
-#: ../calendar/libedata-cal/e-data-cal.c:133
+#: ../addressbook/libedata-book/e-data-book.c:183
+#: ../calendar/libedata-cal/e-data-cal.c:124
 msgid "Could not cancel"
 msgstr "Non foi posíbel cancelar"
 
 #. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
 #. { OtherError,			N_("Other error") },
-#: ../addressbook/libedata-book/e-data-book.c:204
-#: ../calendar/libedata-cal/e-data-cal.c:135
+#: ../addressbook/libedata-book/e-data-book.c:185
+#: ../calendar/libedata-cal/e-data-cal.c:126
 msgid "Invalid server version"
 msgstr "A versión do servidor non é correcta"
 
-#: ../addressbook/libedata-book/e-data-book.c:205
+#: ../addressbook/libedata-book/e-data-book.c:186
 msgid "No space"
 msgstr "Sen espazos"
 
-#: ../addressbook/libedata-book/e-data-book.c:206
-#: ../calendar/libecal/e-cal.c:4102 ../calendar/libedata-cal/e-data-cal.c:136
+#: ../addressbook/libedata-book/e-data-book.c:187
+#: ../calendar/libecal/e-cal.c:3929 ../calendar/libedata-cal/e-data-cal.c:127
 msgid "Invalid argument"
 msgstr "O argumento non é correcto"
 
-#: ../addressbook/libedata-book/e-data-book.c:207
-#: ../calendar/libecal/e-cal.c:4140 ../calendar/libedata-cal/e-data-cal.c:137
+#: ../addressbook/libedata-book/e-data-book.c:188
+#: ../calendar/libecal/e-cal.c:3967 ../calendar/libedata-cal/e-data-cal.c:128
 msgid "Not supported"
 msgstr "Non é compatíbel"
 
-#: ../addressbook/libedata-book/e-data-book.c:216
-#: ../calendar/libedata-cal/e-data-cal.c:145
+#: ../addressbook/libedata-book/e-data-book.c:196
+#: ../calendar/libedata-cal/e-data-cal.c:136
 msgid "Other error"
 msgstr "Outro erro"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:374
+#: ../addressbook/libedata-book/e-data-book.c:307
 #, c-format
 msgid "Cannot open book: %s"
 msgstr "Non é posíbel abrir o libro: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:394
+#: ../addressbook/libedata-book/e-data-book.c:329
 #, c-format
 msgid "Cannot remove book: %s"
 msgstr "Non é posíbel eliminar o libro: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:411
-#: ../addressbook/libedata-book/e-data-book.c:428
+#: ../addressbook/libedata-book/e-data-book.c:346
+#: ../addressbook/libedata-book/e-data-book.c:365
 #, c-format
 msgid "Cannot get contact: %s"
 msgstr "Non é posíbel obter o contacto: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:443
+#: ../addressbook/libedata-book/e-data-book.c:380
 #, c-format
 msgid "Empty query: %s"
 msgstr "Consulta baleira: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:457
+#: ../addressbook/libedata-book/e-data-book.c:396
 #, c-format
 msgid "Cannot get contact list: %s"
 msgstr "Non é posíbel obter a lista de contactos: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:492
+#: ../addressbook/libedata-book/e-data-book.c:433
 #, c-format
 msgid "Cannot authenticate user: %s"
 msgstr "Non é posíbel autenticar o usuario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:507
-#: ../addressbook/libedata-book/e-data-book.c:524
+#: ../addressbook/libedata-book/e-data-book.c:448
+#: ../addressbook/libedata-book/e-data-book.c:467
 #, c-format
 msgid "Cannot add contact: %s"
 msgstr "Non é posíbel engadir o contacto: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:542
-#: ../addressbook/libedata-book/e-data-book.c:559
+#: ../addressbook/libedata-book/e-data-book.c:485
+#: ../addressbook/libedata-book/e-data-book.c:504
 #, c-format
 msgid "Cannot modify contact: %s"
 msgstr "Non é posíbel modificar o contacto: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:596
+#: ../addressbook/libedata-book/e-data-book.c:543
 #, c-format
 msgid "Cannot remove contacts: %s"
 msgstr "Non é posíbel eliminar os contactos: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:626
+#: ../addressbook/libedata-book/e-data-book.c:580
 #, c-format
 msgid "Cannot get supported fields: %s"
 msgstr "Non é posíbel obter os campos admitidos: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:639
+#: ../addressbook/libedata-book/e-data-book.c:595
 #, c-format
 msgid "Cannot get required fields: %s"
 msgstr "Non é posíbel obter os campos requiridos: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:652
+#: ../addressbook/libedata-book/e-data-book.c:610
 #, c-format
 msgid "Cannot get supported auth methods: %s"
 msgstr "Non é posíbel obter os métodos de autenticación compatíbeis: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:677
+#: ../addressbook/libedata-book/e-data-book.c:636
+#: ../addressbook/libedata-book/e-data-book.c:647
 #, c-format
 msgid "Invalid query: %s"
 msgstr "A consulta non é correcta: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:708
+#: ../addressbook/libedata-book/e-data-book.c:683
 #, c-format
 msgid "Cannot get changes: %s"
 msgstr "Non é posíbel obter os cambios: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:501
+#. Translators: The '%s' is replaced with a detailed error message
+#: ../addressbook/libedata-book/e-data-book.c:722
+#, c-format
+msgid "Cancel operation failed: %s"
+msgstr "Produciuse ao cancelar a operación: %s"
+
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:498
 #, c-format
 msgid "Unexpected HTTP status code %d returned"
 msgstr "Devolveuse un código de estado HTTP %d non esperado"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4114
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4094
 msgid "Calendar doesn't support Free/Busy"
 msgstr "O calendario non admite Libre/Ocupado"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:719
-#: ../libedataserver/e-categories.c:44
+#: ../libedataserver/e-categories.c:45
 msgid "Birthday"
 msgstr "Aniversario"
 
@@ -890,37 +898,37 @@ msgstr "Non foi posíbel gardar os datos do calendario: o URI está mal formado.
 msgid "Cannot save calendar data"
 msgstr "Non é posíbel gardar os datos do calendario"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1118
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1121
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2224
 msgid "Reply Requested: by "
 msgstr "Resposta requirida: por "
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1123
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1126
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2229
 msgid "Reply Requested: When convenient"
 msgstr "Resposta requirida: cando sexa oportuno"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:296
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:295
 #, c-format
 msgid "Loading %s items"
 msgstr "Cargando %s os elementos"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:927
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:926
 msgid "Calendar"
 msgstr "Calendario"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:991
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:989
 msgid "Invalid server URI"
 msgstr "O URI do servidor non é correcto"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1095
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1382
-#: ../calendar/backends/http/e-cal-backend-http.c:671
-#: ../calendar/backends/weather/e-cal-backend-weather.c:484
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1082
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1343
+#: ../calendar/backends/http/e-cal-backend-http.c:659
+#: ../calendar/backends/weather/e-cal-backend-weather.c:487
 msgid "Could not create cache file"
 msgstr "Non foi posíbel crear o ficheiro da caché"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1108
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1095
 msgid "Could not create thread for populating cache"
 msgstr "Non foi posíbel crear o fío de execución para encher a caché"
 
@@ -1125,7 +1133,7 @@ msgstr "Baixa"
 msgid "Undefined"
 msgstr "Indefinida"
 
-#: ../calendar/libecal/e-cal.c:1233 ../libedataserverui/e-book-auth-util.c:206
+#: ../calendar/libecal/e-cal.c:1128 ../libedataserverui/e-book-auth-util.c:206
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Introduza o contrasinal para %s (usuario %s)"
@@ -1134,62 +1142,62 @@ msgstr "Introduza o contrasinal para %s (usuario %s)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:1247
+#: ../calendar/libecal/e-cal.c:1142
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Introduza o contrasinal de %s para activar o proxy para o usuario %s"
 
-#: ../calendar/libecal/e-cal.c:4104
+#: ../calendar/libecal/e-cal.c:3931
 msgid "Backend is busy"
 msgstr "O motor da infraestrutura está ocupado"
 
-#: ../calendar/libecal/e-cal.c:4106
+#: ../calendar/libecal/e-cal.c:3933
 msgid "Repository is offline"
 msgstr "O repositorio está desconectado"
 
-#: ../calendar/libecal/e-cal.c:4108
+#: ../calendar/libecal/e-cal.c:3935
 msgid "No such calendar"
 msgstr "Non existe dito calendario"
 
-#: ../calendar/libecal/e-cal.c:4110 ../calendar/libedata-cal/e-data-cal.c:117
+#: ../calendar/libecal/e-cal.c:3937 ../calendar/libedata-cal/e-data-cal.c:108
 #: ../servers/groupwise/e-gw-connection.c:235
 msgid "Object not found"
 msgstr "O obxecto non se encontrou"
 
-#: ../calendar/libecal/e-cal.c:4112 ../calendar/libedata-cal/e-data-cal.c:118
+#: ../calendar/libecal/e-cal.c:3939 ../calendar/libedata-cal/e-data-cal.c:109
 #: ../servers/groupwise/e-gw-connection.c:229
 msgid "Invalid object"
 msgstr "O obxecto non é correcto"
 
-#: ../calendar/libecal/e-cal.c:4114
+#: ../calendar/libecal/e-cal.c:3941
 msgid "URI not loaded"
 msgstr "O URI non se cargou"
 
-#: ../calendar/libecal/e-cal.c:4116
+#: ../calendar/libecal/e-cal.c:3943
 msgid "URI already loaded"
 msgstr "O URI xa se cargou"
 
-#: ../calendar/libecal/e-cal.c:4120 ../servers/groupwise/e-gw-connection.c:237
+#: ../calendar/libecal/e-cal.c:3947 ../servers/groupwise/e-gw-connection.c:237
 msgid "Unknown User"
 msgstr "Usuario descoñecido"
 
-#: ../calendar/libecal/e-cal.c:4122 ../calendar/libedata-cal/e-data-cal.c:119
+#: ../calendar/libecal/e-cal.c:3949 ../calendar/libedata-cal/e-data-cal.c:110
 msgid "Object ID already exists"
 msgstr "O ID do obxecto xa existe"
 
-#: ../calendar/libecal/e-cal.c:4124
+#: ../calendar/libecal/e-cal.c:3951
 msgid "Protocol not supported"
 msgstr "O protocolo non é compatíbel"
 
-#: ../calendar/libecal/e-cal.c:4126
+#: ../calendar/libecal/e-cal.c:3953
 msgid "Operation has been canceled"
 msgstr "A operación cancelouse"
 
-#: ../calendar/libecal/e-cal.c:4128
+#: ../calendar/libecal/e-cal.c:3955
 msgid "Could not cancel operation"
 msgstr "Non foi posíbel cancelar a operación"
 
-#: ../calendar/libecal/e-cal.c:4130
+#: ../calendar/libecal/e-cal.c:3957
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1434
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1452
 #: ../camel/providers/groupwise/camel-groupwise-store.c:618
@@ -1200,16 +1208,16 @@ msgstr "Non foi posíbel cancelar a operación"
 msgid "Authentication failed"
 msgstr "A autenticación fallou"
 
-#: ../calendar/libecal/e-cal.c:4132
+#: ../calendar/libecal/e-cal.c:3959
 #: ../camel/providers/smtp/camel-smtp-transport.c:166
 msgid "Authentication required"
 msgstr "Autenticación requirida"
 
-#: ../calendar/libecal/e-cal.c:4134
+#: ../calendar/libecal/e-cal.c:3961
 msgid "A DBUS exception has occurred"
 msgstr "Produciuse unha excepción DBUS"
 
-#: ../calendar/libecal/e-cal.c:4136
+#: ../calendar/libecal/e-cal.c:3963
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:158
 #: ../camel/providers/imap/camel-imap-command.c:457
 #: ../camel/providers/imap/camel-imap-store.c:626
@@ -1218,7 +1226,7 @@ msgstr "Produciuse unha excepción DBUS"
 msgid "Unknown error"
 msgstr "Erro descoñecido"
 
-#: ../calendar/libecal/e-cal.c:4138
+#: ../calendar/libecal/e-cal.c:3965
 msgid "No error"
 msgstr "Sen erros"
 
@@ -1318,30 +1326,30 @@ msgstr ""
 "«%s» espera que todos os argumentos sexan cadeas ou que un, e só un "
 "argumento, sexa un falso booleano (#f)"
 
-#: ../calendar/libedata-cal/e-data-cal.c:116
+#: ../calendar/libedata-cal/e-data-cal.c:107
 msgid "Invalid range"
 msgstr "O intervalo non é correcto"
 
-#: ../calendar/libedata-cal/e-data-cal.c:123
+#: ../calendar/libedata-cal/e-data-cal.c:114
 msgid "Unsupported method"
 msgstr "O método non é compatíbel"
 
-#: ../calendar/libedata-cal/e-data-cal.c:126
+#: ../calendar/libedata-cal/e-data-cal.c:117
 msgid "Calendar does not exist"
 msgstr "O calendario non existe"
 
-#: ../calendar/libedata-cal/e-data-cal.c:127
+#: ../calendar/libedata-cal/e-data-cal.c:118
 msgid "UnknownUser"
 msgstr "Usuario descoñecido"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:595
+#: ../calendar/libedata-cal/e-data-cal.c:589
 #, c-format
 msgid "Cannot retrieve calendar address: %s"
 msgstr "Non é posíbel obter o enderezo do calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:615
+#: ../calendar/libedata-cal/e-data-cal.c:609
 #, c-format
 msgid "Cannot retrieve calendar alarm e-mail address: %s"
 msgstr ""
@@ -1349,142 +1357,142 @@ msgstr ""
 "calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:635
+#: ../calendar/libedata-cal/e-data-cal.c:629
 #, c-format
 msgid "Cannot retrieve calendar's ldap attribute: %s"
 msgstr "Non é posíbel obter o atributo de ldap do calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:655
+#: ../calendar/libedata-cal/e-data-cal.c:649
 #, c-format
 msgid "Cannot retrieve calendar scheduling information: %s"
 msgstr "Non é posíbel recuperar a información da axenda do calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:674
+#: ../calendar/libedata-cal/e-data-cal.c:668
 #, c-format
 msgid "Cannot open calendar: %s"
 msgstr "Non é posíbel abrir o calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:695
+#: ../calendar/libedata-cal/e-data-cal.c:689
 #, c-format
 msgid "Cannot refresh calendar: %s"
 msgstr "Non é posíbel actualizar o calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:714
+#: ../calendar/libedata-cal/e-data-cal.c:708
 #, c-format
 msgid "Cannot remove calendar: %s"
 msgstr "Non é posíbel eliminar o calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:735
+#: ../calendar/libedata-cal/e-data-cal.c:729
 #, c-format
 msgid "Cannot create calendar object: %s"
 msgstr "Non é posíbel crear o obxecto de calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:759
+#: ../calendar/libedata-cal/e-data-cal.c:753
 #, c-format
 msgid "Cannot modify calendar object: %s"
 msgstr "Non é posíbel modificar o obxecto do calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:785
+#: ../calendar/libedata-cal/e-data-cal.c:779
 #, c-format
 msgid "Cannot remove calendar object: %s"
 msgstr "Non é posíbel eliminar o obxecto do calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:806
+#: ../calendar/libedata-cal/e-data-cal.c:800
 #, c-format
 msgid "Cannot receive calendar objects: %s"
 msgstr "Non é posíbel recibir os obxectos do calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:825
+#: ../calendar/libedata-cal/e-data-cal.c:819
 #, c-format
 msgid "Cannot discard calendar alarm: %s"
 msgstr "Non é posíbel rexeitar a alarma do calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:846
+#: ../calendar/libedata-cal/e-data-cal.c:840
 #, c-format
 msgid "Cannot send calendar objects: %s"
 msgstr "Non é posíbel enviar os obxectos do calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:883
+#: ../calendar/libedata-cal/e-data-cal.c:865
 #, c-format
 msgid "Cannot retrieve default calendar object path: %s"
 msgstr "Non é posíbel obter o camiño ao obxecto do calendario predefinido: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:903
+#: ../calendar/libedata-cal/e-data-cal.c:885
 #, c-format
 msgid "Cannot retrieve calendar object path: %s"
 msgstr "Non é posíbel obter o camiño do obxecto do calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:923
+#: ../calendar/libedata-cal/e-data-cal.c:905
 #, c-format
 msgid "Cannot retrieve calendar object list: %s"
 msgstr "Non é posíbel obter a lista de obxectos de calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:963
+#: ../calendar/libedata-cal/e-data-cal.c:933
 #, c-format
 msgid "Could not retrieve attachment list: %s"
 msgstr "Non é posíbel obter a lista de anexos: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:987
+#: ../calendar/libedata-cal/e-data-cal.c:959
 #, c-format
 msgid "Could not complete calendar query: %s"
 msgstr "Non é posíbel completar a consulta de calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1007
+#: ../calendar/libedata-cal/e-data-cal.c:979
 #, c-format
 msgid "Could not retrieve calendar time zone: %s"
 msgstr "Non é posíbel obter a zona horaria do calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1027
+#: ../calendar/libedata-cal/e-data-cal.c:999
 #, c-format
 msgid "Could not add calendar time zone: %s"
 msgstr "Non é posíbel engadir a zona horaria do calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1046
+#: ../calendar/libedata-cal/e-data-cal.c:1018
 #, c-format
 msgid "Could not set default calendar time zone: %s"
 msgstr "Non é posíbel estabelecer a zona horaria do calendario predefinido: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1069
+#: ../calendar/libedata-cal/e-data-cal.c:1041
 #, c-format
 msgid "Cannot retrieve calendar changes: %s"
 msgstr "Non é posíbel obter os cambios do calendario: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1121
+#: ../calendar/libedata-cal/e-data-cal.c:1072
 #, c-format
 msgid "Cannot retrieve calendar free/busy list: %s"
 msgstr "Non é posíbel obter a lista de días libres/ocupados do calendario: %s"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:355
+#: ../calendar/libedata-cal/e-data-cal-factory.c:353
 #, c-format
 msgid "Invalid URI"
 msgstr "O URI non é correcto"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:370
+#: ../calendar/libedata-cal/e-data-cal-factory.c:371
 #, c-format
 msgid "No backend factory for '%s' of '%s'"
 msgstr "Non hai ningún motor de factoría de backend para «%s» de «%s»"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:420
+#: ../calendar/libedata-cal/e-data-cal-factory.c:421
 #, c-format
 msgid "Could not instantiate backend"
 msgstr "Non é posíbel instanciar o motor de infraestrutura"
@@ -2184,15 +2192,15 @@ msgstr "A resposta do servidor contiña datos incompletos de autorización"
 msgid "Server response does not match"
 msgstr "A resposta do servidor non coincide"
 
-#: ../camel/camel-sasl-gssapi.c:82
+#: ../camel/camel-sasl-gssapi.c:80
 msgid "GSSAPI"
 msgstr "GSSAPI"
 
-#: ../camel/camel-sasl-gssapi.c:84
+#: ../camel/camel-sasl-gssapi.c:82
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr "Esta opción conectará ao servidor usando a autenticación Kerberos 5."
 
-#: ../camel/camel-sasl-gssapi.c:121
+#: ../camel/camel-sasl-gssapi.c:119
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
@@ -2200,11 +2208,11 @@ msgstr ""
 "O mecanismo especificado non é compatíbel coa credencial proporcionada ou "
 "non é recoñecido pola implementación."
 
-#: ../camel/camel-sasl-gssapi.c:126
+#: ../camel/camel-sasl-gssapi.c:124
 msgid "The provided target_name parameter was ill-formed."
 msgstr "O parámetro do target_name indicado é incorrecto."
 
-#: ../camel/camel-sasl-gssapi.c:129
+#: ../camel/camel-sasl-gssapi.c:127
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
@@ -2213,7 +2221,7 @@ msgstr ""
 "non compatíbel."
 
 # (pofilter) accelerators: accelerator _ occurs 3 time(s) in original and 2 time(s) in translation
-#: ../camel/camel-sasl-gssapi.c:133
+#: ../camel/camel-sasl-gssapi.c:131
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
@@ -2222,7 +2230,7 @@ msgstr ""
 "parámetro input_chan_bindings."
 
 # (pofilter) accelerators: accelerator _ is missing from translation
-#: ../camel/camel-sasl-gssapi.c:138
+#: ../camel/camel-sasl-gssapi.c:136
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
@@ -2230,7 +2238,7 @@ msgstr ""
 "O input_token contén unha sinatura incorrecta ou unha sinatura que non pode "
 "ser verificada."
 
-#: ../camel/camel-sasl-gssapi.c:142
+#: ../camel/camel-sasl-gssapi.c:140
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
@@ -2238,34 +2246,34 @@ msgstr ""
 "As credenciais dispoñíbeis non son correctas para a inicialización do "
 "contexto ou o manipulador de credenciais non indicou ningunha credencial."
 
-#: ../camel/camel-sasl-gssapi.c:147
+#: ../camel/camel-sasl-gssapi.c:145
 msgid "The supplied context handle did not refer to a valid context."
 msgstr "O manipulador de contexto dispoñíbel non refire un contexto correcto."
 
-#: ../camel/camel-sasl-gssapi.c:150
+#: ../camel/camel-sasl-gssapi.c:148
 msgid "The consistency checks performed on the input_token failed."
 msgstr ""
 "Produciuse un fallo nas verificacións de coherencia efectuadas sobre "
 "input_token."
 
-#: ../camel/camel-sasl-gssapi.c:153
+#: ../camel/camel-sasl-gssapi.c:151
 msgid "The consistency checks performed on the credential failed."
 msgstr ""
 "Produciuse un fallo nas verificacións de coherencia efectuadas sobre a "
 "credencial."
 
-#: ../camel/camel-sasl-gssapi.c:156
+#: ../camel/camel-sasl-gssapi.c:154
 msgid "The referenced credentials have expired."
 msgstr "As credenciais indicadas caducaron."
 
-#: ../camel/camel-sasl-gssapi.c:162 ../camel/camel-sasl-gssapi.c:300
-#: ../camel/camel-sasl-gssapi.c:344 ../camel/camel-sasl-gssapi.c:361
+#: ../camel/camel-sasl-gssapi.c:160 ../camel/camel-sasl-gssapi.c:296
+#: ../camel/camel-sasl-gssapi.c:340 ../camel/camel-sasl-gssapi.c:357
 #: ../camel/providers/smtp/camel-smtp-transport.c:1192
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "A resposta de autenticación desde o servidor non é válida."
 
-#: ../camel/camel-sasl-gssapi.c:373
+#: ../camel/camel-sasl-gssapi.c:369
 #, c-format
 msgid "Unsupported security layer."
 msgstr "A capa de seguranza non é compatíbel."
@@ -2341,7 +2349,7 @@ msgstr "O URL «%s» necesita un compoñente de servidor"
 msgid "URL '%s' needs a path component"
 msgstr "O URL «%s» necesita un compoñente do camiño"
 
-#: ../camel/camel-session.c:263
+#: ../camel/camel-session.c:261
 #, c-format
 msgid ""
 "Could not create directory %s:\n"
@@ -2350,7 +2358,7 @@ msgstr ""
 "Non foi posíbel crear o cartafol %s:\n"
 "%s"
 
-#: ../camel/camel-session.c:760
+#: ../camel/camel-session.c:758
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
 msgstr "Introduza o contrasinal %s para %s no servidor %s."
@@ -2749,8 +2757,8 @@ msgstr "Comprobando as mensaxes borradas %s"
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1637
 #: ../camel/providers/groupwise/camel-groupwise-store.c:654
 #: ../camel/providers/groupwise/camel-groupwise-store.c:779
-#: ../camel/providers/imap/camel-imap-folder.c:3806
-#: ../camel/providers/imap/camel-imap-folder.c:3884
+#: ../camel/providers/imap/camel-imap-folder.c:3814
+#: ../camel/providers/imap/camel-imap-folder.c:3892
 #: ../camel/providers/imapx/camel-imapx-server.c:3721
 #: ../camel/providers/imapx/camel-imapx-server.c:3845
 #, c-format
@@ -3033,26 +3041,26 @@ msgstr "Non é posíbel obter a mensaxe co ID de mensaxe %s: %s"
 msgid "No such message available."
 msgstr "A mensaxe non está dispoñíbel."
 
-#: ../camel/providers/imap/camel-imap-folder.c:3337
-#: ../camel/providers/imap/camel-imap-folder.c:4203
+#: ../camel/providers/imap/camel-imap-folder.c:3341
+#: ../camel/providers/imap/camel-imap-folder.c:4211
 #: ../camel/providers/nntp/camel-nntp-folder.c:326
 #, c-format
 msgid "This message is not currently available"
 msgstr "Esta mensaxe non está dispoñíbel actualmente"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4013
+#: ../camel/providers/imap/camel-imap-folder.c:4021
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr ""
 "Resposta do servidor incompleta: non se forneceu información para a mensaxe %"
 "d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4023
+#: ../camel/providers/imap/camel-imap-folder.c:4031
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Resposta do servidor incompleta: non se forneceu UID para a mensaxe %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4243
+#: ../camel/providers/imap/camel-imap-folder.c:4251
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "Non foi posíbel encontrar o corpo da mensaxe na resposta FETCH."
@@ -3392,7 +3400,7 @@ msgstr "%s (%s)"
 msgid "Index message body data"
 msgstr "Datos do índice do corpo da mensaxe"
 
-#: ../camel/providers/local/camel-local-folder.c:683
+#: ../camel/providers/local/camel-local-folder.c:686
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -3598,8 +3606,8 @@ msgstr "Comprobando mensaxes novas"
 
 #: ../camel/providers/local/camel-maildir-summary.c:732
 #: ../camel/providers/local/camel-mbox-summary.c:465
-#: ../camel/providers/local/camel-mbox-summary.c:669
-#: ../camel/providers/local/camel-mbox-summary.c:799
+#: ../camel/providers/local/camel-mbox-summary.c:679
+#: ../camel/providers/local/camel-mbox-summary.c:809
 #: ../camel/providers/local/camel-spool-summary.c:130
 msgid "Storing folder"
 msgstr "Almacenando o cartafol"
@@ -3696,71 +3704,74 @@ msgstr "Non foi posíbel renomear o cartafol «%s» a %s: %s"
 msgid "Could not open folder: %s: %s"
 msgstr "Non é posíbel abrir o cartafol: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:524
-msgid "Fatal mail parser error near position %"
-msgstr "Produciuse un erro moi grave ao analizar o correo cerca da posición %l"
+#: ../camel/providers/local/camel-mbox-summary.c:533
+#, c-format
+msgid "Fatal mail parser error near position %s in folder %s"
+msgstr ""
+"Produciuse un erro moi grave ao analizar o correo cerca da posición %s no "
+"cartafol %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:605
+#: ../camel/providers/local/camel-mbox-summary.c:615
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "Non é posíbel verificar o cartafol: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:676
-#: ../camel/providers/local/camel-mbox-summary.c:806
+#: ../camel/providers/local/camel-mbox-summary.c:686
+#: ../camel/providers/local/camel-mbox-summary.c:816
 #: ../camel/providers/local/camel-spool-summary.c:137
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "Non foi posíbel abrir o ficheiro: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:690
+#: ../camel/providers/local/camel-mbox-summary.c:700
 #: ../camel/providers/local/camel-spool-summary.c:152
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "Non é posíbel abrir a caixa de correo temporal: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:705
-#: ../camel/providers/local/camel-mbox-summary.c:923
+#: ../camel/providers/local/camel-mbox-summary.c:715
+#: ../camel/providers/local/camel-mbox-summary.c:933
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Non foi posíbel pechar o cartafol orixe %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:716
+#: ../camel/providers/local/camel-mbox-summary.c:726
 #, c-format
 msgid "Could not close temporary folder: %s"
 msgstr "Non foi posíbel pechar o cartafol temporal: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:733
+#: ../camel/providers/local/camel-mbox-summary.c:743
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "Non foi posíbel renomear o cartafol: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:819
-#: ../camel/providers/local/camel-mbox-summary.c:1061
+#: ../camel/providers/local/camel-mbox-summary.c:829
+#: ../camel/providers/local/camel-mbox-summary.c:1071
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "Non foi posíbel almacenar o cartafol: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:860
-#: ../camel/providers/local/camel-mbox-summary.c:869
-#: ../camel/providers/local/camel-mbox-summary.c:1094
-#: ../camel/providers/local/camel-mbox-summary.c:1103
+#: ../camel/providers/local/camel-mbox-summary.c:870
+#: ../camel/providers/local/camel-mbox-summary.c:879
+#: ../camel/providers/local/camel-mbox-summary.c:1104
+#: ../camel/providers/local/camel-mbox-summary.c:1113
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "O resumo e o cartafol non coinciden, incluso despois da sincronización"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1020
+#: ../camel/providers/local/camel-mbox-summary.c:1030
 #: ../camel/providers/local/camel-spool-summary.c:337
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Erro descoñecido: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1173
-#: ../camel/providers/local/camel-mbox-summary.c:1203
+#: ../camel/providers/local/camel-mbox-summary.c:1183
+#: ../camel/providers/local/camel-mbox-summary.c:1213
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "Produciuse un erro ao escribir na caixa de correo temporal: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1192
+#: ../camel/providers/local/camel-mbox-summary.c:1202
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Produciuse un erro ao escribir na caixa de correo temporal: %s: %s"
@@ -4553,85 +4564,85 @@ msgstr "Produciuse un fallo na orde RSET: "
 msgid "QUIT command failed: "
 msgstr "Produciuse un fallo na orde QUIT: "
 
-#: ../libedataserver/e-categories.c:45
+#: ../libedataserver/e-categories.c:46
 msgid "Business"
 msgstr "Negocios"
 
-#: ../libedataserver/e-categories.c:46
+#: ../libedataserver/e-categories.c:47
 msgid "Competition"
 msgstr "Concurso"
 
-#: ../libedataserver/e-categories.c:47
+#: ../libedataserver/e-categories.c:48
 msgid "Favorites"
 msgstr "Preferidos"
 
-#: ../libedataserver/e-categories.c:48
+#: ../libedataserver/e-categories.c:49
 msgid "Gifts"
 msgstr "Agasallos"
 
-#: ../libedataserver/e-categories.c:49
+#: ../libedataserver/e-categories.c:50
 msgid "Goals/Objectives"
 msgstr "Metas/Obxectivos"
 
-#: ../libedataserver/e-categories.c:50
+#: ../libedataserver/e-categories.c:51
 msgid "Holiday"
 msgstr "Vacacións"
 
-#: ../libedataserver/e-categories.c:51
+#: ../libedataserver/e-categories.c:52
 msgid "Holiday Cards"
 msgstr "Postais de vacacións"
 
 #. important people (e.g. new business partners)
-#: ../libedataserver/e-categories.c:53
+#: ../libedataserver/e-categories.c:54
 msgid "Hot Contacts"
 msgstr "Contactos frecuentes"
 
-#: ../libedataserver/e-categories.c:54
+#: ../libedataserver/e-categories.c:55
 msgid "Ideas"
 msgstr "Ideas"
 
-#: ../libedataserver/e-categories.c:55
+#: ../libedataserver/e-categories.c:56
 msgid "International"
 msgstr "Internacional"
 
-#: ../libedataserver/e-categories.c:56
+#: ../libedataserver/e-categories.c:57
 msgid "Key Customer"
 msgstr "Cliente chave"
 
-#: ../libedataserver/e-categories.c:57
+#: ../libedataserver/e-categories.c:58
 msgid "Miscellaneous"
 msgstr "Varios"
 
-#: ../libedataserver/e-categories.c:58
+#: ../libedataserver/e-categories.c:59
 msgid "Personal"
 msgstr "Persoal"
 
-#: ../libedataserver/e-categories.c:59
+#: ../libedataserver/e-categories.c:60
 msgid "Phone Calls"
 msgstr "Chamadas telefónicas"
 
 #. Translators: "Status" is a category name; it can mean anything user wants to
-#: ../libedataserver/e-categories.c:61
+#: ../libedataserver/e-categories.c:62
 msgid "Status"
 msgstr "Estado"
 
-#: ../libedataserver/e-categories.c:62
+#: ../libedataserver/e-categories.c:63
 msgid "Strategies"
 msgstr "Estratexias"
 
-#: ../libedataserver/e-categories.c:63
+#: ../libedataserver/e-categories.c:64
 msgid "Suppliers"
 msgstr "Fornecedores"
 
-#: ../libedataserver/e-categories.c:64
+#: ../libedataserver/e-categories.c:65
 msgid "Time & Expenses"
 msgstr "Tempo e gastos"
 
-#: ../libedataserver/e-categories.c:65
+#: ../libedataserver/e-categories.c:66
 msgid "VIP"
 msgstr "VIP"
 
-#: ../libedataserver/e-categories.c:66
+#: ../libedataserver/e-categories.c:67
 msgid "Waiting"
 msgstr "En espera"
 
