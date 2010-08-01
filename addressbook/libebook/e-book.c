@@ -3414,7 +3414,6 @@ array_to_stringlist (gchar **list)
 	while (*i != NULL) {
 		l = g_list_prepend (l, g_strdup (*i++));
 	}
-	g_free (list);
 	return g_list_reverse(l);
 }
 
