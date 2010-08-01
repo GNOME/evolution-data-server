@@ -50,7 +50,7 @@ print_all_emails (EBook *book)
 
 	query = e_book_query_field_exists (E_CONTACT_FULL_NAME);
 
-	e_book_async_get_contacts_ex (book, query, print_all_emails_cb, NULL);
+	e_book_get_contacts_async (book, query, print_all_emails_cb, NULL);
 
 	e_book_query_unref (query);
 }
@@ -70,7 +70,7 @@ print_email_cb (EBook *book, const GError *error, EContact *contact, gpointer cl
 static void
 print_one_email (EBook *book)
 {
-	e_book_async_get_contact_ex (book, "pas-id-0002023", print_email_cb, NULL);
+	e_book_get_contact_async (book, "pas-id-0002023", print_email_cb, NULL);
 }
 
 static void
@@ -100,7 +100,7 @@ main (gint argc, gchar **argv)
 	book = e_book_new_system_addressbook (NULL);
 
 	printf ("loading addressbook\n");
-	e_book_async_open_ex (book, FALSE, book_loaded_cb, book);
+	e_book_open_async (book, FALSE, book_loaded_cb, book);
 
 	g_main_loop_run (loop);
 

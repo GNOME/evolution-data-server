@@ -24,10 +24,10 @@
  * SECTION:e-book
  *
  * The old asynchronous API was deprecated since 3.0 and is replaced with
- * their equivalents with an _ex suffix, which has a detailed #GError
+ * their an equivalent version which has a detailed #GError
  * structure in the asynchronous callback, instead of a status code only.
  *
- * As an example, e_book_async_open() is replaced by e_book_async_open_ex().
+ * As an example, e_book_async_open() is replaced by e_book_open_async().
  */
 
 #include <config.h>
@@ -357,7 +357,7 @@ add_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	GError *err = NULL, *error = NULL;
 	gchar *uid = NULL;
 	AsyncData *data = user_data;
-	EBookIdExCallback excb = data->excallback;
+	EBookIdAsyncCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookIdCallback cb = data->callback;
 	#endif
@@ -400,7 +400,7 @@ add_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  *
  * Returns: %TRUE if the operation was started, %FALSE otherwise.
  *
- * Deprecated: 3.0: Use e_book_async_add_contact_ex() instead.
+ * Deprecated: 3.0: Use e_book_add_contact_async() instead.
  **/
 gboolean
 e_book_async_add_contact (EBook                 *book,
@@ -431,7 +431,7 @@ e_book_async_add_contact (EBook                 *book,
 #endif
 
 /**
- * e_book_async_add_contact_ex:
+ * e_book_add_contact_async:
  * @book: an #EBook
  * @contact: an #EContact
  * @cb: function to call when the operation finishes
@@ -444,10 +444,10 @@ e_book_async_add_contact (EBook                 *book,
  * Since: 3.0
  **/
 gboolean
-e_book_async_add_contact_ex (EBook              *book,
-			     EContact           *contact,
-			     EBookIdExCallback   cb,
-			     gpointer            closure)
+e_book_add_contact_async (EBook                *book,
+			  EContact             *contact,
+			  EBookIdAsyncCallback  cb,
+			  gpointer              closure)
 {
 	gchar *vcard;
 	AsyncData *data;
@@ -505,7 +505,7 @@ modify_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data
 {
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
-	EBookExCallback excb = data->excallback;
+	EBookAsyncCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
 	#endif
@@ -542,7 +542,7 @@ modify_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data
  *
  * Returns: %TRUE if the operation was started, %FALSE otherwise.
  *
- * Deprecated: 3.0: Use e_book_async_commit_contact_ex() instead.
+ * Deprecated: 3.0: Use e_book_commit_contact_async() instead.
  **/
 guint
 e_book_async_commit_contact (EBook                 *book,
@@ -573,7 +573,7 @@ e_book_async_commit_contact (EBook                 *book,
 #endif
 
 /**
- * e_book_async_commit_contact_ex:
+ * e_book_commit_contact_async:
  * @book: an #EBook
  * @contact: an #EContact
  * @cb: function to call when the operation finishes
@@ -587,10 +587,10 @@ e_book_async_commit_contact (EBook                 *book,
  * Since: 3.0
  **/
 gboolean
-e_book_async_commit_contact_ex (EBook                 *book,
-                                EContact              *contact,
-                                EBookExCallback        cb,
-                                gpointer               closure)
+e_book_commit_contact_async (EBook              *book,
+			     EContact           *contact,
+			     EBookAsyncCallback  cb,
+			     gpointer            closure)
 {
 	gchar *vcard;
 	AsyncData *data;
@@ -654,7 +654,7 @@ get_required_fields_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user
 	gchar **fields = NULL;
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
-	EBookEListExCallback excb = data->excallback;
+	EBookEListAsyncCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookEListCallback cb = data->callback;
 	#endif
@@ -694,12 +694,12 @@ get_required_fields_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user
  *
  * Returns: %TRUE if the operation was started, %FALSE otherwise.
  *
- * Deprecated: 3.0: Use e_book_async_get_required_fields_ex() instead.
+ * Deprecated: 3.0: Use e_book_get_required_fields_async() instead.
  **/
 guint
 e_book_async_get_required_fields (EBook              *book,
-				   EBookEListCallback  cb,
-				   gpointer            closure)
+				  EBookEListCallback  cb,
+				  gpointer            closure)
 {
 	AsyncData *data;
 
@@ -718,7 +718,7 @@ e_book_async_get_required_fields (EBook              *book,
 #endif
 
 /**
- * e_book_async_get_required_fields_ex:
+ * e_book_get_required_fields_async:
  * @book: an #EBook
  * @cb: function to call when the operation finishes
  * @closure: data to pass to callback function
@@ -731,9 +731,9 @@ e_book_async_get_required_fields (EBook              *book,
  * Since: 3.0
  **/
 gboolean
-e_book_async_get_required_fields_ex (EBook               *book,
-				     EBookEListExCallback cb,
-				     gpointer             closure)
+e_book_get_required_fields_async (EBook                   *book,
+				  EBookEListAsyncCallback  cb,
+				  gpointer                 closure)
 {
 	AsyncData *data;
 
@@ -791,7 +791,7 @@ get_supported_fields_reply (GObject *gdbus_book, GAsyncResult *res, gpointer use
 	gchar **fields = NULL;
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
-	EBookEListExCallback excb = data->excallback;
+	EBookEListAsyncCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookEListCallback cb = data->callback;
 	#endif
@@ -832,7 +832,7 @@ get_supported_fields_reply (GObject *gdbus_book, GAsyncResult *res, gpointer use
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
- * Deprecated: 3.0: Use e_book_async_get_supported_fields_ex() instead.
+ * Deprecated: 3.0: Use e_book_get_supported_fields_async() instead.
  **/
 guint
 e_book_async_get_supported_fields (EBook              *book,
@@ -856,7 +856,7 @@ e_book_async_get_supported_fields (EBook              *book,
 #endif
 
 /**
- * e_book_async_get_supported_fields_ex:
+ * e_book_get_supported_fields_async:
  * @book: an #EBook
  * @cb: function to call when the operation finishes
  * @closure: data to pass to callback function
@@ -870,9 +870,9 @@ e_book_async_get_supported_fields (EBook              *book,
  * Since: 3.0
  **/
 gboolean
-e_book_async_get_supported_fields_ex (EBook               *book,
-				      EBookEListExCallback cb,
-				      gpointer             closure)
+e_book_get_supported_fields_async (EBook                   *book,
+				   EBookEListAsyncCallback  cb,
+				   gpointer                 closure)
 {
 	AsyncData *data;
 
@@ -929,7 +929,7 @@ get_supported_auth_methods_reply (GObject *gdbus_book, GAsyncResult *res, gpoint
 	gchar **methods = NULL;
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
-	EBookEListExCallback excb = data->excallback;
+	EBookEListAsyncCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookEListCallback cb = data->callback;
 	#endif
@@ -969,7 +969,7 @@ get_supported_auth_methods_reply (GObject *gdbus_book, GAsyncResult *res, gpoint
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
- * Deprecated: 3.0: Use e_book_async_get_supported_auth_methods_ex() instead.
+ * Deprecated: 3.0: Use e_book_get_supported_auth_methods_async() instead.
  **/
 guint
 e_book_async_get_supported_auth_methods (EBook              *book,
@@ -993,7 +993,7 @@ e_book_async_get_supported_auth_methods (EBook              *book,
 #endif
 
 /**
- * e_book_async_get_supported_auth_methods_ex:
+ * e_book_get_supported_auth_methods_async:
  * @book: an #EBook
  * @cb: function to call when the operation finishes
  * @closure: data to pass to callback function
@@ -1006,9 +1006,9 @@ e_book_async_get_supported_auth_methods (EBook              *book,
  * Since: 3.0
  **/
 gboolean
-e_book_async_get_supported_auth_methods_ex (EBook               *book,
-					    EBookEListExCallback cb,
-					    gpointer             closure)
+e_book_get_supported_auth_methods_async (EBook                   *book,
+					 EBookEListAsyncCallback  cb,
+					 gpointer                 closure)
 {
 	AsyncData *data;
 
@@ -1061,7 +1061,7 @@ authenticate_user_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_d
 {
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
-	EBookExCallback excb = data->excallback;
+	EBookAsyncCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
 	#endif
@@ -1101,7 +1101,7 @@ authenticate_user_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_d
  *
  * Returns: %FALSE if successful, %TRUE otherwise.
  *
- * Deprecated: 3.0: Use e_book_async_authenticate_user_ex() instead.
+ * Deprecated: 3.0: Use e_book_authenticate_user_async() instead.
  **/
 guint
 e_book_async_authenticate_user (EBook                 *book,
@@ -1131,7 +1131,7 @@ e_book_async_authenticate_user (EBook                 *book,
 #endif
 
 /**
- * e_book_async_authenticate_user_ex:
+ * e_book_authenticate_user_async:
  * @book: an #EBook
  * @user: user name
  * @passwd: password
@@ -1149,12 +1149,12 @@ e_book_async_authenticate_user (EBook                 *book,
  * Since: 3.0
  **/
 gboolean
-e_book_async_authenticate_user_ex (EBook                 *book,
-				   const gchar           *user,
-				   const gchar           *passwd,
-				   const gchar           *auth_method,
-				   EBookExCallback        cb,
-				   gpointer               closure)
+e_book_authenticate_user_async (EBook              *book,
+				const gchar        *user,
+				const gchar        *passwd,
+				const gchar        *auth_method,
+				EBookAsyncCallback  cb,
+				gpointer            closure)
 {
 	AsyncData *data;
 
@@ -1214,7 +1214,7 @@ get_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	gchar *vcard = NULL;
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
-	EBookContactExCallback excb = data->excallback;
+	EBookContactAsyncCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookContactCallback cb = data->callback;
 	#endif
@@ -1254,7 +1254,7 @@ get_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  *
  * Returns: %FALSE if successful, %TRUE otherwise
  *
- * Deprecated: 3.0: Use e_book_async_get_contact_ex() instead.
+ * Deprecated: 3.0: Use e_book_get_contact_async() instead.
  **/
 guint
 e_book_async_get_contact (EBook                 *book,
@@ -1280,7 +1280,7 @@ e_book_async_get_contact (EBook                 *book,
 #endif
 
 /**
- * e_book_async_get_contact_ex:
+ * e_book_get_contact_async:
  * @book: an #EBook
  * @id: a unique string ID specifying the contact
  * @cb: function to call when operation finishes
@@ -1293,10 +1293,10 @@ e_book_async_get_contact (EBook                 *book,
  * Since: 3.0
  **/
 gboolean
-e_book_async_get_contact_ex (EBook                 *book,
-			     const gchar           *id,
-			     EBookContactExCallback cb,
-			     gpointer               closure)
+e_book_get_contact_async (EBook                     *book,
+			  const gchar               *id,
+			  EBookContactAsyncCallback  cb,
+			  gpointer                   closure)
 {
 	AsyncData *data;
 
@@ -1349,7 +1349,7 @@ remove_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data
 {
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
-	EBookExCallback excb = data->excallback;
+	EBookAsyncCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
 	#endif
@@ -1418,7 +1418,7 @@ e_book_remove_contacts (EBook    *book,
  *
  * Returns: %TRUE if successful, %FALSE otherwise
  *
- * Deprecated: 3.0: Use e_book_async_remove_contact_ex() instead.
+ * Deprecated: 3.0: Use e_book_remove_contact_async() instead.
  **/
 guint
 e_book_async_remove_contact (EBook                 *book,
@@ -1448,7 +1448,7 @@ e_book_async_remove_contact (EBook                 *book,
 #endif
 
 /**
- * e_book_async_remove_contact_ex:
+ * e_book_remove_contact_async:
  * @book: an #EBook
  * @contact: an #EContact
  * @cb: a function to call when the operation finishes
@@ -1461,10 +1461,10 @@ e_book_async_remove_contact (EBook                 *book,
  * Since: 3.0
  **/
 gboolean
-e_book_async_remove_contact_ex (EBook                 *book,
-                                EContact              *contact,
-                                EBookExCallback        cb,
-                                gpointer               closure)
+e_book_remove_contact_async (EBook              *book,
+			     EContact           *contact,
+			     EBookAsyncCallback  cb,
+			     gpointer            closure)
 {
 	AsyncData *data;
 	const gchar *l[2];
@@ -1491,7 +1491,7 @@ remove_contact_by_id_reply (GObject *gdbus_book, GAsyncResult *res, gpointer use
 {
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
-	EBookExCallback excb = data->excallback;
+	EBookAsyncCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
 	#endif
@@ -1526,7 +1526,7 @@ remove_contact_by_id_reply (GObject *gdbus_book, GAsyncResult *res, gpointer use
  *
  * Returns: %TRUE if successful, %FALSE otherwise
  *
- * Deprecated: 3.0: Use e_book_async_remove_contact_by_id_ex() instead.
+ * Deprecated: 3.0: Use e_book_remove_contact_by_id_async() instead.
  **/
 guint
 e_book_async_remove_contact_by_id (EBook                 *book,
@@ -1556,7 +1556,7 @@ e_book_async_remove_contact_by_id (EBook                 *book,
 #endif
 
 /**
- * e_book_async_remove_contact_by_id_ex:
+ * e_book_remove_contact_by_id_async:
  * @book: an #EBook
  * @id: a unique ID string specifying the contact
  * @cb: a function to call when the operation finishes
@@ -1569,10 +1569,10 @@ e_book_async_remove_contact_by_id (EBook                 *book,
  * Since: 3.0
  **/
 gboolean
-e_book_async_remove_contact_by_id_ex (EBook                 *book,
-				      const gchar           *id,
-				      EBookExCallback        cb,
-				      gpointer               closure)
+e_book_remove_contact_by_id_async (EBook              *book,
+				   const gchar        *id,
+				   EBookAsyncCallback  cb,
+				   gpointer            closure)
 {
 	AsyncData *data;
 	const gchar *l[2];
@@ -1599,7 +1599,7 @@ remove_contacts_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_dat
 {
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
-	EBookExCallback excb = data->excallback;
+	EBookAsyncCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
 	#endif
@@ -1637,7 +1637,7 @@ remove_contacts_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_dat
  *
  * Returns: %TRUE if successful, %FALSE otherwise
  *
- * Deprecated: 3.0: Use e_book_async_remove_contacts_ex() instead.
+ * Deprecated: 3.0: Use e_book_remove_contacts_async() instead.
  **/
 guint
 e_book_async_remove_contacts (EBook                 *book,
@@ -1673,7 +1673,7 @@ e_book_async_remove_contacts (EBook                 *book,
 #endif
 
 /**
- * e_book_async_remove_contacts_ex:
+ * e_book_remove_contacts_async:
  * @book: an #EBook
  * @ids: a #GList of const gchar *id's
  * @cb: a function to call when the operation finishes
@@ -1689,10 +1689,10 @@ e_book_async_remove_contacts (EBook                 *book,
  * Since: 3.0
  **/
 gboolean
-e_book_async_remove_contacts_ex (EBook                 *book,
-                                 GList                 *ids,
-                                 EBookExCallback        cb,
-                                 gpointer               closure)
+e_book_remove_contacts_async (EBook              *book,
+			      GList              *ids,
+			      EBookAsyncCallback  cb,
+			      gpointer            closure)
 {
 	AsyncData *data;
 	gchar **l;
@@ -1789,7 +1789,7 @@ get_book_view_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookView *view = NULL;
-	EBookBookViewExCallback excb = data->excallback;
+	EBookBookViewAsyncCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookBookViewCallback cb = data->callback;
 	#endif
@@ -1840,7 +1840,7 @@ get_book_view_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  *
  * Returns: %FALSE if successful, %TRUE otherwise
  *
- * Deprecated: 3.0: Use e_book_async_get_book_view_ex() instead.
+ * Deprecated: 3.0: Use e_book_get_book_view_async() instead.
  **/
 guint
 e_book_async_get_book_view (EBook                 *book,
@@ -1872,7 +1872,7 @@ e_book_async_get_book_view (EBook                 *book,
 #endif
 
 /**
- * e_book_async_get_book_view_ex:
+ * e_book_get_book_view_async:
  * @book: an #EBook
  * @query: an #EBookQuery
  * @requested_fields: a #GList containing the names of fields to return, or NULL for all
@@ -1888,12 +1888,12 @@ e_book_async_get_book_view (EBook                 *book,
  * Since: 3.0
  **/
 gboolean
-e_book_async_get_book_view_ex (EBook                  *book,
-			       EBookQuery             *query,
-			       GList                  *requested_fields,
-			       gint                    max_results,
-			       EBookBookViewExCallback cb,
-			       gpointer                closure)
+e_book_get_book_view_async (EBook                      *book,
+			    EBookQuery                 *query,
+			    GList                      *requested_fields,
+			    gint                        max_results,
+			    EBookBookViewAsyncCallback  cb,
+			    gpointer                    closure)
 {
 	AsyncData *data;
 	gchar *sexp;
@@ -1968,7 +1968,7 @@ get_contacts_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	GList *list = NULL;
-	EBookListExCallback excb = data->excallback;
+	EBookListAsyncCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookListCallback cb = data->callback;
 	#endif
@@ -2016,7 +2016,7 @@ get_contacts_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  *
  * Returns: %FALSE on success, %TRUE otherwise
  *
- * Deprecated: 3.0: Use e_book_async_get_contacts_ex() instead.
+ * Deprecated: 3.0: Use e_book_get_contacts_async() instead.
  **/
 guint
 e_book_async_get_contacts (EBook             *book,
@@ -2047,7 +2047,7 @@ e_book_async_get_contacts (EBook             *book,
 #endif
 
 /**
- * e_book_async_get_contacts_ex:
+ * e_book_get_contacts_async:
  * @book: an #EBook
  * @query: an #EBookQuery
  * @cb: a function to call when the operation finishes
@@ -2060,10 +2060,10 @@ e_book_async_get_contacts (EBook             *book,
  * Since: 3.0
  **/
 gboolean
-e_book_async_get_contacts_ex (EBook              *book,
-			      EBookQuery         *query,
-			      EBookListExCallback cb,
-			      gpointer            closure)
+e_book_get_contacts_async (EBook                  *book,
+			   EBookQuery             *query,
+			   EBookListAsyncCallback  cb,
+			   gpointer                closure)
 {
 	AsyncData *data;
 	gchar *sexp;
@@ -2160,7 +2160,7 @@ get_changes_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	GVariant *var_changes = NULL;
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
-	EBookListExCallback excb = data->excallback;
+	EBookListAsyncCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookListCallback cb = data->callback;
 	#endif
@@ -2203,7 +2203,7 @@ get_changes_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  *
  * Returns: TRUE on success, FALSE otherwise
  *
- * Deprecated: 3.0: Use e_book_async_get_changes_ex() instead.
+ * Deprecated: 3.0: Use e_book_get_changes_async() instead.
  */
 guint
 e_book_async_get_changes (EBook             *book,
@@ -2228,7 +2228,7 @@ e_book_async_get_changes (EBook             *book,
 #endif
 
 /**
- * e_book_async_get_changes_ex:
+ * e_book_get_changes_async:
  * @book: an #EBook
  * @changeid:  the change ID
  * @cb: function to call when operation finishes
@@ -2242,10 +2242,10 @@ e_book_async_get_changes (EBook             *book,
  * Since: 3.0
  */
 gboolean
-e_book_async_get_changes_ex (EBook              *book,
-			     const gchar        *changeid,
-			     EBookListExCallback cb,
-			     gpointer            closure)
+e_book_get_changes_async (EBook                  *book,
+			  const gchar            *changeid,
+			  EBookListAsyncCallback  cb,
+			  gpointer                closure)
 {
 	AsyncData *data;
 
@@ -2364,7 +2364,7 @@ open_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 {
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
-	EBookExCallback excb = data->excallback;
+	EBookAsyncCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
 	#endif
@@ -2402,7 +2402,7 @@ open_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  *
  * Returns: %FALSE if successful, %TRUE otherwise.
  *
- * Deprecated: 3.0: Use e_book_async_open_ex() instead.
+ * Deprecated: 3.0: Use e_book_open_async() instead.
  **/
 guint
 e_book_async_open (EBook                 *book,
@@ -2427,7 +2427,7 @@ e_book_async_open (EBook                 *book,
 #endif
 
 /**
- * e_book_async_open_ex:
+ * e_book_open_async:
  * @book: an #EBook
  * @only_if_exists: if %TRUE, fail if this book doesn't already exist, otherwise create it first
  * @open_response: a function to call when the operation finishes
@@ -2441,10 +2441,10 @@ e_book_async_open (EBook                 *book,
  * Since: 3.0
  **/
 gboolean
-e_book_async_open_ex (EBook                 *book,
-		      gboolean               only_if_exists,
-		      EBookExCallback        cb,
-		      gpointer               closure)
+e_book_open_async (EBook              *book,
+		   gboolean            only_if_exists,
+		   EBookAsyncCallback  cb,
+		   gpointer            closure)
 {
 	AsyncData *data;
 
@@ -2490,7 +2490,7 @@ remove_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 {
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
-	EBookExCallback excb = data->excallback;
+	EBookAsyncCallback excb = data->excallback;
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
 	#endif
@@ -2525,7 +2525,7 @@ remove_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  *
  * Returns: %FALSE if successful, %TRUE otherwise.
  *
- * Deprecated: 3.0: Use e_book_async_remove_ex() instead.
+ * Deprecated: 3.0: Use e_book_remove_async() instead.
  **/
 guint
 e_book_async_remove (EBook   *book,
@@ -2549,7 +2549,7 @@ e_book_async_remove (EBook   *book,
 #endif
 
 /**
- * e_book_async_remove_ex:
+ * e_book_remove_async:
  * @book: an #EBook
  * @cb: a function to call when the operation finishes
  * @closure: data to pass to callback function
@@ -2562,9 +2562,9 @@ e_book_async_remove (EBook   *book,
  * Since: 3.0
  **/
 gboolean
-e_book_async_remove_ex (EBook   *book,
-                        EBookExCallback cb,
-                        gpointer closure)
+e_book_remove_async (EBook              *book,
+		     EBookAsyncCallback  cb,
+		     gpointer            closure)
 {
 	AsyncData *data;
 

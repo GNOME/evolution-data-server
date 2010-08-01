@@ -33,7 +33,7 @@
 #include "e-book-auth-util.h"
 
 static void addressbook_authenticate (EBook *book, gboolean previous_failure,
-				      ESource *source, EBookExCallback cb, gpointer closure);
+				      ESource *source, EBookAsyncCallback cb, gpointer closure);
 static void auth_required_cb (EBook *book, gpointer data);
 typedef struct {
 	ESource       *source;
@@ -42,7 +42,7 @@ typedef struct {
 	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback  open_func;
 	#endif
-	EBookExCallback  open_func_ex;
+	EBookAsyncCallback  open_func_ex;
 	gpointer       open_func_data;
 } LoadSourceData;
 
@@ -156,7 +156,7 @@ set_remember_password (ESource *source, gboolean value)
 
 static void
 addressbook_authenticate (EBook *book, gboolean previous_failure, ESource *source,
-			  EBookExCallback cb, gpointer closure)
+			  EBookAsyncCallback cb, gpointer closure)
 {
 	const gchar *auth;
 	const gchar *user;
@@ -220,7 +220,7 @@ addressbook_authenticate (EBook *book, gboolean previous_failure, ESource *sourc
 	}
 
 	if (password) {
-		e_book_async_authenticate_user_ex (book, user, password,
+		e_book_authenticate_user_async (book, user, password,
 						e_source_get_property (source, "auth"),
 						cb, closure);
 		g_free (password);
@@ -295,7 +295,7 @@ load_source_cb (EBook *book, const GError *error, gpointer closure)
  *
  * Returns: A new #EBook that is being opened.
  *
- * Deprecated: 3.0: Use e_load_book_source_ex() instead.
+ * Deprecated: 3.0: Use e_load_book_source_async() instead.
  **/
 EBook *
 e_load_book_source (ESource *source, EBookCallback open_func, gpointer user_data)
@@ -313,13 +313,13 @@ e_load_book_source (ESource *source, EBookCallback open_func, gpointer user_data
 
 	load_source_data->book = book;
 	g_object_ref (book);
-	e_book_async_open_ex (book, FALSE, load_source_cb, load_source_data);
+	e_book_open_async (book, FALSE, load_source_cb, load_source_data);
 	return book;
 }
 #endif
 
 /**
- * e_load_book_source_ex:
+ * e_load_book_source_async:
  * @source: an #ESource
  * @open_func_ex: a function to call when the operation finishes, or %NULL
  * @user_data: data to pass to callback function
@@ -337,7 +337,7 @@ e_load_book_source (ESource *source, EBookCallback open_func, gpointer user_data
  * Since: 3.0
  **/
 EBook *
-e_load_book_source_ex (ESource *source, EBookExCallback open_func_ex, gpointer user_data)
+e_load_book_source_async (ESource *source, EBookAsyncCallback open_func_ex, gpointer user_data)
 {
 	EBook          *book;
 	LoadSourceData *load_source_data = g_new0 (LoadSourceData, 1);
@@ -352,7 +352,7 @@ e_load_book_source_ex (ESource *source, EBookExCallback open_func_ex, gpointer u
 
 	load_source_data->book = book;
 	g_object_ref (book);
-	e_book_async_open_ex (book, FALSE, load_source_cb, load_source_data);
+	e_book_open_async (book, FALSE, load_source_cb, load_source_data);
 
 	return book;
 }

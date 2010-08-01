@@ -101,7 +101,7 @@ load_books_thread (gpointer user_data)
 			if (!completion || g_ascii_strcasecmp (completion, "true"))
 				continue;
 
-			source_book.book = e_load_book_source_ex (source, NULL, NULL);
+			source_book.book = e_load_book_source_async (source, NULL, NULL);
 			if (!source_book.book)
 				continue;
 

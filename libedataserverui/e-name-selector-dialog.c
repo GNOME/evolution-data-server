@@ -820,7 +820,7 @@ source_changed (ENameSelectorDialog *name_selector_dialog,
 	remove_books (name_selector_dialog);
 
 	/* Start loading selected book */
-	name_selector_dialog->priv->pending_book = e_load_book_source_ex (
+	name_selector_dialog->priv->pending_book = e_load_book_source_async (
 		source, book_opened, name_selector_dialog);
 }
 

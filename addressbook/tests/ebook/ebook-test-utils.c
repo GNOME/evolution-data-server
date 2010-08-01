@@ -160,8 +160,8 @@ ebook_test_utils_book_async_add_contact (EBook       *book,
         closure = g_new0 (EBookTestClosure, 1);
         closure->cb = callback;
         closure->user_data = user_data;
-        if (!e_book_async_add_contact_ex (book, contact,
-                                (EBookIdExCallback) add_contact_cb, closure)) {
+        if (!e_book_add_contact_async (book, contact,
+                                (EBookIdAsyncCallback) add_contact_cb, closure)) {
                 g_warning ("failed to set up contact add");
                 exit(1);
         }
@@ -215,8 +215,8 @@ ebook_test_utils_book_async_commit_contact (EBook       *book,
         closure = g_new0 (EBookTestClosure, 1);
         closure->cb = callback;
         closure->user_data = user_data;
-        if (!e_book_async_commit_contact_ex (book, contact,
-                                (EBookExCallback) commit_contact_cb, closure)) {
+        if (!e_book_commit_contact_async (book, contact,
+                                (EBookAsyncCallback) commit_contact_cb, closure)) {
                 g_warning ("failed to set up contact commit");
                 exit(1);
         }
@@ -276,8 +276,8 @@ ebook_test_utils_book_async_get_contact (EBook       *book,
         closure = g_new0 (EBookTestClosure, 1);
         closure->cb = callback;
         closure->user_data = user_data;
-        if (!e_book_async_get_contact_ex (book, uid,
-                                (EBookContactExCallback) get_contact_cb,
+        if (!e_book_get_contact_async (book, uid,
+                                (EBookContactAsyncCallback) get_contact_cb,
                                 closure)) {
                 g_warning ("failed to set up async getContact");
                 exit(1);
@@ -334,8 +334,8 @@ ebook_test_utils_book_async_get_required_fields (EBook       *book,
         closure = g_new0 (EBookTestClosure, 1);
         closure->cb = callback;
         closure->user_data = user_data;
-        if (!e_book_async_get_required_fields_ex (book,
-                                (EBookEListExCallback) get_required_fields_cb,
+        if (!e_book_get_required_fields_async (book,
+                                (EBookEListAsyncCallback) get_required_fields_cb,
                                 closure)) {
                 g_warning ("failed to set up async getRequiredFields");
                 exit(1);
@@ -411,8 +411,8 @@ ebook_test_utils_book_async_get_supported_auth_methods (EBook       *book,
         closure = g_new0 (EBookTestClosure, 1);
         closure->cb = callback;
         closure->user_data = user_data;
-        if (!e_book_async_get_supported_auth_methods_ex (book,
-                                (EBookEListExCallback) get_supported_auth_methods_cb,
+        if (!e_book_get_supported_auth_methods_async (book,
+                                (EBookEListAsyncCallback) get_supported_auth_methods_cb,
                                 closure)) {
                 g_warning ("failed to set up async getSupportedAuthMethods");
                 exit(1);
@@ -469,8 +469,8 @@ ebook_test_utils_book_async_get_supported_fields (EBook       *book,
         closure = g_new0 (EBookTestClosure, 1);
         closure->cb = callback;
         closure->user_data = user_data;
-        if (!e_book_async_get_supported_fields_ex (book,
-                                (EBookEListExCallback) get_supported_fields_cb,
+        if (!e_book_get_supported_fields_async (book,
+                                (EBookEListAsyncCallback) get_supported_fields_cb,
                                 closure)) {
                 g_warning ("failed to set up async getSupportedFields");
                 exit(1);
@@ -523,8 +523,8 @@ ebook_test_utils_book_async_remove_contact (EBook       *book,
         closure = g_new0 (EBookTestClosure, 1);
         closure->cb = callback;
         closure->user_data = user_data;
-        if (!e_book_async_remove_contact_ex (book, contact,
-                                (EBookExCallback) remove_contact_cb,
+        if (!e_book_remove_contact_async (book, contact,
+                                (EBookAsyncCallback) remove_contact_cb,
                                 closure)) {
                 g_warning ("failed to set up async removeContacts (for a single contact)");
                 exit(1);
@@ -561,8 +561,8 @@ ebook_test_utils_book_async_remove_contact_by_id (EBook       *book,
         closure = g_new0 (EBookTestClosure, 1);
         closure->cb = callback;
         closure->user_data = user_data;
-        if (!e_book_async_remove_contact_by_id_ex (book, uid,
-                                (EBookExCallback) remove_contact_by_id_cb,
+        if (!e_book_remove_contact_by_id_async (book, uid,
+                                (EBookAsyncCallback) remove_contact_by_id_cb,
                                 closure)) {
                 g_warning ("failed to set up async removeContacts (by id)");
                 exit(1);
@@ -615,8 +615,8 @@ ebook_test_utils_book_async_remove_contacts (EBook       *book,
         closure = g_new0 (EBookTestClosure, 1);
         closure->cb = callback;
         closure->user_data = user_data;
-        if (!e_book_async_remove_contacts_ex (book, uids,
-                                (EBookExCallback) remove_contacts_cb,
+        if (!e_book_remove_contacts_async (book, uids,
+                                (EBookAsyncCallback) remove_contacts_cb,
                                 closure)) {
                 g_warning ("failed to set up async removeContacts");
                 exit(1);
@@ -723,7 +723,7 @@ ebook_test_utils_book_async_remove (EBook       *book,
         closure = g_new0 (EBookTestClosure, 1);
         closure->cb = callback;
         closure->user_data = user_data;
-        if (!e_book_async_remove_ex (book, (EBookExCallback) remove_cb, closure)) {
+        if (!e_book_remove_async (book, (EBookAsyncCallback) remove_cb, closure)) {
                 g_warning ("failed to set up book removal");
                 exit(1);
         }
@@ -777,7 +777,7 @@ ebook_test_utils_book_async_get_book_view (EBook       *book,
         closure = g_new0 (EBookTestClosure, 1);
         closure->cb = callback;
         closure->user_data = user_data;
-        if (!e_book_async_get_book_view_ex (book, query, NULL, -1, (EBookBookViewExCallback) get_book_view_cb, closure)) {
+        if (!e_book_get_book_view_async (book, query, NULL, -1, (EBookBookViewAsyncCallback) get_book_view_cb, closure)) {
                 g_warning ("failed to set up book view retrieval");
                 exit(1);
         }
