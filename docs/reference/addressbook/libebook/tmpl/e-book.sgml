@@ -438,7 +438,7 @@ The writable status for this book is being reported.
 @error: 
 
 
-<!-- ##### USER_FUNCTION EBookExCallback ##### -->
+<!-- ##### USER_FUNCTION EBookAsyncCallback ##### -->
 <para>
 
 </para>
@@ -448,7 +448,7 @@ The writable status for this book is being reported.
 @closure: 
 
 
-<!-- ##### USER_FUNCTION EBookIdExCallback ##### -->
+<!-- ##### USER_FUNCTION EBookIdAsyncCallback ##### -->
 <para>
 
 </para>
@@ -459,7 +459,7 @@ The writable status for this book is being reported.
 @closure: 
 
 
-<!-- ##### USER_FUNCTION EBookContactExCallback ##### -->
+<!-- ##### USER_FUNCTION EBookContactAsyncCallback ##### -->
 <para>
 
 </para>
@@ -470,7 +470,7 @@ The writable status for this book is being reported.
 @closure: 
 
 
-<!-- ##### USER_FUNCTION EBookListExCallback ##### -->
+<!-- ##### USER_FUNCTION EBookListAsyncCallback ##### -->
 <para>
 
 </para>
@@ -481,7 +481,7 @@ The writable status for this book is being reported.
 @closure: 
 
 
-<!-- ##### USER_FUNCTION EBookBookViewExCallback ##### -->
+<!-- ##### USER_FUNCTION EBookBookViewAsyncCallback ##### -->
 <para>
 
 </para>
@@ -492,7 +492,7 @@ The writable status for this book is being reported.
 @closure: 
 
 
-<!-- ##### USER_FUNCTION EBookEListExCallback ##### -->
+<!-- ##### USER_FUNCTION EBookEListAsyncCallback ##### -->
 <para>
 
 </para>
@@ -579,7 +579,7 @@ The writable status for this book is being reported.
 @closure: 
 
 
-<!-- ##### FUNCTION e_book_async_open ##### -->
+<!-- ##### FUNCTION e_book_open_async ##### -->
 <para>
 
 </para>
@@ -591,7 +591,175 @@ The writable status for this book is being reported.
 @Returns: 
 
 
-<!-- ##### FUNCTION e_book_async_open_ex ##### -->
+<!-- ##### FUNCTION e_book_remove_async ##### -->
+<para>
+
+</para>
+
+@book: 
+@cb: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_get_supported_fields_async ##### -->
+<para>
+
+</para>
+
+@book: 
+@cb: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_get_supported_auth_methods_async ##### -->
+<para>
+
+</para>
+
+@book: 
+@cb: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_authenticate_user_async ##### -->
+<para>
+
+</para>
+
+@book: 
+@user: 
+@passwd: 
+@auth_method: 
+@cb: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_get_contact_async ##### -->
+<para>
+
+</para>
+
+@book: 
+@id: 
+@cb: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_get_contacts_async ##### -->
+<para>
+
+</para>
+
+@book: 
+@query: 
+@cb: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_remove_contact_async ##### -->
+<para>
+
+</para>
+
+@book: 
+@contact: 
+@cb: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_remove_contact_by_id_async ##### -->
+<para>
+
+</para>
+
+@book: 
+@id: 
+@cb: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_remove_contacts_async ##### -->
+<para>
+
+</para>
+
+@book: 
+@ids: 
+@cb: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_add_contact_async ##### -->
+<para>
+
+</para>
+
+@book: 
+@contact: 
+@cb: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_commit_contact_async ##### -->
+<para>
+
+</para>
+
+@book: 
+@contact: 
+@cb: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_get_book_view_async ##### -->
+<para>
+
+</para>
+
+@book: 
+@query: 
+@requested_fields: 
+@max_results: 
+@cb: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_get_changes_async ##### -->
+<para>
+
+</para>
+
+@book: 
+@changeid: 
+@cb: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_get_required_fields_async ##### -->
+<para>
+
+</para>
+
+@book: 
+@cb: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_async_open ##### -->
 <para>
 
 </para>
@@ -614,29 +782,7 @@ The writable status for this book is being reported.
 @Returns: 
 
 
-<!-- ##### FUNCTION e_book_async_remove_ex ##### -->
-<para>
-
-</para>
-
-@book: 
-@cb: 
-@closure: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_book_async_get_supported_fields ##### -->
-<para>
-
-</para>
-
-@book: 
-@cb: 
-@closure: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_book_async_get_supported_fields_ex ##### -->
 <para>
 
 </para>
@@ -658,32 +804,7 @@ The writable status for this book is being reported.
 @Returns: 
 
 
-<!-- ##### FUNCTION e_book_async_get_supported_auth_methods_ex ##### -->
-<para>
-
-</para>
-
-@book: 
-@cb: 
-@closure: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_book_async_authenticate_user ##### -->
-<para>
-
-</para>
-
-@book: 
-@user: 
-@passwd: 
-@auth_method: 
-@cb: 
-@closure: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_book_async_authenticate_user_ex ##### -->
 <para>
 
 </para>
@@ -709,31 +830,7 @@ The writable status for this book is being reported.
 @Returns: 
 
 
-<!-- ##### FUNCTION e_book_async_get_contact_ex ##### -->
-<para>
-
-</para>
-
-@book: 
-@id: 
-@cb: 
-@closure: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_book_async_get_contacts ##### -->
-<para>
-
-</para>
-
-@book: 
-@query: 
-@cb: 
-@closure: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_book_async_get_contacts_ex ##### -->
 <para>
 
 </para>
@@ -757,31 +854,7 @@ The writable status for this book is being reported.
 @Returns: 
 
 
-<!-- ##### FUNCTION e_book_async_remove_contact_ex ##### -->
-<para>
-
-</para>
-
-@book: 
-@contact: 
-@cb: 
-@closure: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_book_async_remove_contact_by_id ##### -->
-<para>
-
-</para>
-
-@book: 
-@id: 
-@cb: 
-@closure: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_book_async_remove_contact_by_id_ex ##### -->
 <para>
 
 </para>
@@ -805,18 +878,6 @@ The writable status for this book is being reported.
 @Returns: 
 
 
-<!-- ##### FUNCTION e_book_async_remove_contacts_ex ##### -->
-<para>
-
-</para>
-
-@book: 
-@ids: 
-@cb: 
-@closure: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_book_async_add_contact ##### -->
 <para>
 
@@ -829,31 +890,7 @@ The writable status for this book is being reported.
 @Returns: 
 
 
-<!-- ##### FUNCTION e_book_async_add_contact_ex ##### -->
-<para>
-
-</para>
-
-@book: 
-@contact: 
-@cb: 
-@closure: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_book_async_commit_contact ##### -->
-<para>
-
-</para>
-
-@book: 
-@contact: 
-@cb: 
-@closure: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_book_async_commit_contact_ex ##### -->
 <para>
 
 </para>
@@ -879,20 +916,6 @@ The writable status for this book is being reported.
 @Returns: 
 
 
-<!-- ##### FUNCTION e_book_async_get_book_view_ex ##### -->
-<para>
-
-</para>
-
-@book: 
-@query: 
-@requested_fields: 
-@max_results: 
-@cb: 
-@closure: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_book_async_get_changes ##### -->
 <para>
 
@@ -905,30 +928,7 @@ The writable status for this book is being reported.
 @Returns: 
 
 
-<!-- ##### FUNCTION e_book_async_get_changes_ex ##### -->
-<para>
-
-</para>
-
-@book: 
-@changeid: 
-@cb: 
-@closure: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_book_async_get_required_fields ##### -->
-<para>
-
-</para>
-
-@book: 
-@cb: 
-@closure: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_book_async_get_required_fields_ex ##### -->
 <para>
 
 </para>

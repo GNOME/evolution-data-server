@@ -375,6 +375,12 @@ ECalViewListener
 </para>
 
 
+<!-- ##### ARG ECalView:view-lock ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### STRUCT ECalViewListener ##### -->
 <para>
 

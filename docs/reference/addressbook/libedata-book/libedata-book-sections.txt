@@ -193,6 +193,7 @@ e_data_book_create_error_fmt
 e_data_book_status_to_string
 e_return_data_book_error_if_fail
 e_data_book_new
+e_data_book_register_gdbus_object
 e_data_book_get_backend
 e_data_book_get_source
 e_data_book_respond_open
@@ -256,6 +257,7 @@ e_data_book_factory_error_quark
 <TITLE>EDataBookView</TITLE>
 EDataBookView
 e_data_book_view_new
+e_data_book_view_register_gdbus_object
 e_data_book_view_set_thresholds
 e_data_book_view_get_card_query
 e_data_book_view_get_card_sexp

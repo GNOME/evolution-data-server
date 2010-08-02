@@ -42,17 +42,19 @@ Implementation of the calendar CORBA search interface.
 </para>
 
 @backend: 
-@path: 
 @sexp: 
 @Returns: 
 
 
-<!-- ##### FUNCTION e_data_cal_view_get_dbus_path ##### -->
+<!-- ##### FUNCTION e_data_cal_view_register_gdbus_object ##### -->
 <para>
 
 </para>
 
-@view: 
+@query: 
+@connection: 
+@object_path: 
+@error: 
 @Returns: 
 
 

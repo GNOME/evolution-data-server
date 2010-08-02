@@ -136,6 +136,16 @@ ESourceOptionMenu
 </para>
 
 
+<!-- ##### FUNCTION e_load_book_source_ex ##### -->
+<para>
+
+</para>
+
+@source: 
+@open_func: 
+@user_data: 
+@Returns: 
+
 <!-- ##### FUNCTION e_source_option_menu_new ##### -->
 <para>
 

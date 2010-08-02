@@ -131,6 +131,29 @@ e-data-book-types
 </para>
 
 
+<!-- ##### SIGNAL EDataBook::auth-required ##### -->
+<para>
+
+</para>
+
+@edatabook: the object which received the signal.
+
+<!-- ##### SIGNAL EDataBook::connection ##### -->
+<para>
+
+</para>
+
+@edatabook: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EDataBook::writable ##### -->
+<para>
+
+</para>
+
+@edatabook: the object which received the signal.
+@arg1: 
+
 <!-- ##### STRUCT EDataBookClass ##### -->
 <para>
 
@@ -155,6 +178,47 @@ e-data-book-types
 
 </para>
 
+
+<!-- ##### SIGNAL EDataBookView::complete ##### -->
+<para>
+
+</para>
+
+@edatabookview: the object which received the signal.
+@arg1: 
+@Param3: 
+
+<!-- ##### SIGNAL EDataBookView::contacts-added ##### -->
+<para>
+
+</para>
+
+@edatabookview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EDataBookView::contacts-changed ##### -->
+<para>
+
+</para>
+
+@edatabookview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EDataBookView::contacts-removed ##### -->
+<para>
+
+</para>
+
+@edatabookview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EDataBookView::status-message ##### -->
+<para>
+
+</para>
+
+@edatabookview: the object which received the signal.
+@arg1: 
 
 <!-- ##### STRUCT EDataBookViewClass ##### -->
 <para>

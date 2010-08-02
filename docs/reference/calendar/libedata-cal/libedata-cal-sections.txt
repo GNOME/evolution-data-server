@@ -27,6 +27,7 @@ E_IS_CAL_BACKEND_CACHE
 E_TYPE_CAL_BACKEND_CACHE
 E_CAL_BACKEND_CACHE_CLASS
 E_IS_CAL_BACKEND_CACHE_CLASS
+E_CAL_BACKEND_CACHE_GET_CLASS
 ECalBackendCacheClass
 <SUBSECTION Private>
 ECalBackendCachePrivate
@@ -103,7 +104,6 @@ e_cal_backend_sync_get_object
 e_cal_backend_sync_get_object_list
 e_cal_backend_sync_get_timezone
 e_cal_backend_sync_add_timezone
-e_cal_backend_sync_set_default_timezone
 e_cal_backend_sync_set_default_zone
 e_cal_backend_sync_get_changes
 e_cal_backend_sync_get_free_busy
@@ -158,7 +158,6 @@ e_cal_backend_get_mode
 e_cal_backend_set_mode
 e_cal_backend_get_timezone
 e_cal_backend_add_timezone
-e_cal_backend_set_default_timezone
 e_cal_backend_set_default_zone
 e_cal_backend_get_changes
 e_cal_backend_get_free_busy
@@ -276,6 +275,7 @@ e_data_cal_create_error_fmt
 e_data_cal_status_to_string
 e_return_data_cal_error_if_fail
 e_data_cal_new
+e_data_cal_register_gdbus_object
 e_data_cal_get_backend
 e_data_cal_get_source
 e_data_cal_notify_read_only
@@ -372,7 +372,7 @@ e_data_cal_factory_error_quark
 QUERY
 IS_QUERY
 e_data_cal_view_new
-e_data_cal_view_get_dbus_path
+e_data_cal_view_register_gdbus_object
 e_data_cal_view_get_text
 e_data_cal_view_get_object_sexp
 e_data_cal_view_object_matches

@@ -1,7 +1,7 @@
 <SECTION>
 <FILE>e-book-auth-util</FILE>
 e_load_book_source
-e_load_book_source_ex
+e_load_book_source_async
 </SECTION>
 
 <SECTION>

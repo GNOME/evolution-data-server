@@ -81,6 +81,26 @@ e-name-western-tables
 @auth_methods: 
 @closure: 
 
+<!-- ##### USER_FUNCTION EBookBookViewExCallback ##### -->
+<para>
+
+</para>
+
+@book: 
+@error: 
+@book_view: 
+@closure: 
+
+<!-- ##### USER_FUNCTION EBookContactExCallback ##### -->
+<para>
+
+</para>
+
+@book: 
+@error: 
+@contact: 
+@closure: 
+
 <!-- ##### USER_FUNCTION EBookContactsCallback ##### -->
 <para>
 
@@ -91,6 +111,25 @@ e-name-western-tables
 @contacts: 
 @closure: 
 
+<!-- ##### USER_FUNCTION EBookEListExCallback ##### -->
+<para>
+
+</para>
+
+@book: 
+@error: 
+@list: 
+@closure: 
+
+<!-- ##### USER_FUNCTION EBookExCallback ##### -->
+<para>
+
+</para>
+
+@book: 
+@error: 
+@closure: 
+
 <!-- ##### USER_FUNCTION EBookFieldsCallback ##### -->
 <para>
 
@@ -99,6 +138,26 @@ e-name-western-tables
 @book: 
 @status: 
 @fields: 
+@closure: 
+
+<!-- ##### USER_FUNCTION EBookIdExCallback ##### -->
+<para>
+
+</para>
+
+@book: 
+@error: 
+@id: 
+@closure: 
+
+<!-- ##### USER_FUNCTION EBookListExCallback ##### -->
+<para>
+
+</para>
+
+@book: 
+@error: 
+@list: 
 @closure: 
 
 <!-- ##### STRUCT EBookListener ##### -->
@@ -234,6 +293,87 @@ Data sent back to the e-book object.
 </para>
 
 
+<!-- ##### FUNCTION e_book_async_add_contact_ex ##### -->
+<para>
+
+</para>
+
+@book: 
+@contact: 
+@cb: 
+@closure: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_async_authenticate_user_ex ##### -->
+<para>
+
+</para>
+
+@book: 
+@user: 
+@passwd: 
+@auth_method: 
+@cb: 
+@closure: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_async_commit_contact_ex ##### -->
+<para>
+
+</para>
+
+@book: 
+@contact: 
+@cb: 
+@closure: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_async_get_book_view_ex ##### -->
+<para>
+
+</para>
+
+@book: 
+@query: 
+@requested_fields: 
+@max_results: 
+@cb: 
+@closure: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_async_get_changes_ex ##### -->
+<para>
+
+</para>
+
+@book: 
+@changeid: 
+@cb: 
+@closure: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_async_get_contact_ex ##### -->
+<para>
+
+</para>
+
+@book: 
+@id: 
+@cb: 
+@closure: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_async_get_contacts_ex ##### -->
+<para>
+
+</para>
+
+@book: 
+@query: 
+@cb: 
+@closure: 
+@Returns: 
+
 <!-- ##### FUNCTION e_book_async_get_default_addressbook ##### -->
 <para>
 
@@ -241,6 +381,36 @@ Data sent back to the e-book object.
 
 @open_response: 
 @closure: 
+
+<!-- ##### FUNCTION e_book_async_get_required_fields_ex ##### -->
+<para>
+
+</para>
+
+@book: 
+@cb: 
+@closure: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_async_get_supported_auth_methods_ex ##### -->
+<para>
+
+</para>
+
+@book: 
+@cb: 
+@closure: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_async_get_supported_fields_ex ##### -->
+<para>
+
+</para>
+
+@book: 
+@cb: 
+@closure: 
+@Returns: 
 
 <!-- ##### FUNCTION e_book_async_load_source ##### -->
 <para>
@@ -261,6 +431,60 @@ Data sent back to the e-book object.
 @uri: 
 @open_response: 
 @closure: 
+
+<!-- ##### FUNCTION e_book_async_open_ex ##### -->
+<para>
+
+</para>
+
+@book: 
+@only_if_exists: 
+@open_response: 
+@closure: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_async_remove_contact_by_id_ex ##### -->
+<para>
+
+</para>
+
+@book: 
+@id: 
+@cb: 
+@closure: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_async_remove_contact_ex ##### -->
+<para>
+
+</para>
+
+@book: 
+@contact: 
+@cb: 
+@closure: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_async_remove_contacts_ex ##### -->
+<para>
+
+</para>
+
+@book: 
+@ids: 
+@cb: 
+@closure: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_async_remove_ex ##### -->
+<para>
+
+</para>
+
+@book: 
+@cb: 
+@closure: 
+@Returns: 
 
 <!-- ##### FUNCTION e_book_async_unload_uri ##### -->
 <para>

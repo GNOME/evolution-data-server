@@ -26,57 +26,27 @@ EDataBookView
 </para>
 
 
-<!-- ##### SIGNAL EDataBookView::complete ##### -->
-<para>
-
-</para>
-
-@edatabookview: the object which received the signal.
-@arg1: 
-@Param3: 
-
-<!-- ##### SIGNAL EDataBookView::contacts-added ##### -->
-<para>
-
-</para>
-
-@edatabookview: the object which received the signal.
-@arg1: 
-
-<!-- ##### SIGNAL EDataBookView::contacts-changed ##### -->
-<para>
-
-</para>
-
-@edatabookview: the object which received the signal.
-@arg1: 
-
-<!-- ##### SIGNAL EDataBookView::contacts-removed ##### -->
-<para>
-
-</para>
-
-@edatabookview: the object which received the signal.
-@arg1: 
-
-<!-- ##### SIGNAL EDataBookView::status-message ##### -->
-<para>
-
-</para>
-
-@edatabookview: the object which received the signal.
-@arg1: 
-
 <!-- ##### FUNCTION e_data_book_view_new ##### -->
 <para>
 
 </para>
 
 @book: 
-@path: 
 @card_query: 
 @card_sexp: 
 @max_results: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_book_view_register_gdbus_object ##### -->
+<para>
+
+</para>
+
+@query: 
+@connection: 
+@object_path: 
+@error: 
 @Returns: 
 
 

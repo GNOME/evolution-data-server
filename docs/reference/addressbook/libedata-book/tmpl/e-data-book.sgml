@@ -26,29 +26,6 @@ EDataBook
 </para>
 
 
-<!-- ##### SIGNAL EDataBook::auth-required ##### -->
-<para>
-
-</para>
-
-@edatabook: the object which received the signal.
-
-<!-- ##### SIGNAL EDataBook::connection ##### -->
-<para>
-
-</para>
-
-@edatabook: the object which received the signal.
-@arg1: 
-
-<!-- ##### SIGNAL EDataBook::writable ##### -->
-<para>
-
-</para>
-
-@edatabook: the object which received the signal.
-@arg1: 
-
 <!-- ##### MACRO E_DATA_BOOK_ERROR ##### -->
 <para>
 
@@ -102,6 +79,18 @@ EDataBook
 
 @backend: 
 @source: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_book_register_gdbus_object ##### -->
+<para>
+
+</para>
+
+@cal: 
+@connection: 
+@object_path: 
+@error: 
 @Returns: 
 
 

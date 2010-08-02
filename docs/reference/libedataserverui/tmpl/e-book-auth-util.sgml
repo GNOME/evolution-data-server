@@ -31,7 +31,7 @@ e-book-auth-util
 @Returns: 
 
 
-<!-- ##### FUNCTION e_load_book_source_ex ##### -->
+<!-- ##### FUNCTION e_load_book_source_async ##### -->
 <para>
 
 </para>

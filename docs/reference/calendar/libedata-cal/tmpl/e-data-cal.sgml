@@ -33,37 +33,6 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 
-<!-- ##### SIGNAL EDataCal::auth-required ##### -->
-<para>
-
-</para>
-
-@edatacal: the object which received the signal.
-
-<!-- ##### SIGNAL EDataCal::backend-error ##### -->
-<para>
-
-</para>
-
-@edatacal: the object which received the signal.
-@arg1: 
-
-<!-- ##### SIGNAL EDataCal::mode ##### -->
-<para>
-
-</para>
-
-@edatacal: the object which received the signal.
-@arg1: 
-
-<!-- ##### SIGNAL EDataCal::readonly ##### -->
-<para>
-
-</para>
-
-@edatacal: the object which received the signal.
-@arg1: 
-
 <!-- ##### FUNCTION e_data_cal_create_error ##### -->
 <para>
 
@@ -110,6 +79,18 @@ Implementation of the calendar CORBA client interface.
 
 @backend: 
 @source: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_register_gdbus_object ##### -->
+<para>
+
+</para>
+
+@cal: 
+@connection: 
+@object_path: 
+@error: 
 @Returns: 
 
 
