@@ -10,6 +10,6 @@ privincludedir=@privincludedir@
 Name: libedata-cal
 Description: Backend library for evolution calendars
 Version: @VERSION@
-Requires: dbus-glib-1 libical >= @LIBICAL_REQUIRED@ libedataserver-1.2 libecal-1.2
+Requires: libical >= @LIBICAL_REQUIRED@ libedataserver-1.2 libecal-1.2 gio-2.0
 Libs: -L${libdir} -ledata-cal-1.2 -lecal-1.2
 Cflags: -I${privincludedir}
