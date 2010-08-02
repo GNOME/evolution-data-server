@@ -2368,7 +2368,7 @@ camel_vee_folder_sync_headers (CamelFolder *vf,
  * camel_vee_folder_get_unread_vfolder:
  * @folder: a #CamelVeeFolder
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gint
 camel_vee_folder_get_unread_vfolder (CamelVeeFolder *folder)
@@ -2384,7 +2384,7 @@ camel_vee_folder_get_unread_vfolder (CamelVeeFolder *folder)
  * @folder: a #CamelVeeFolder
  * @unread_vfolder: %TRUE if %folder is for unread messages
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_vee_folder_set_unread_vfolder (CamelVeeFolder *folder,
@@ -2403,7 +2403,7 @@ camel_vee_folder_set_unread_vfolder (CamelVeeFolder *folder,
  *
  * Locks #folder's #lock. Unlock it with camel_vee_folder_unlock().
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_vee_folder_lock (CamelVeeFolder *folder,
@@ -2433,7 +2433,7 @@ camel_vee_folder_lock (CamelVeeFolder *folder,
  *
  * Unlocks #folder's #lock, previously locked with camel_vee_folder_lock().
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_vee_folder_unlock (CamelVeeFolder *folder,

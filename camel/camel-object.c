@@ -477,7 +477,7 @@ camel_object_state_write (CamelObject *object)
  *
  * Returns: the name of the persistent property file
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 const gchar *
 camel_object_get_state_filename (CamelObject *object)
@@ -496,7 +496,7 @@ camel_object_get_state_filename (CamelObject *object)
  * @object are stored.  The file is used by camel_object_state_write()
  * and camel_object_state_read() to save and restore object state.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_object_set_state_filename (CamelObject *object,

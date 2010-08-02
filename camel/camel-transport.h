@@ -62,7 +62,7 @@ typedef struct _CamelTransportPrivate CamelTransportPrivate;
 /**
  * CamelTransportLock:
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 typedef enum {
 	CAMEL_TRANSPORT_SEND_LOCK

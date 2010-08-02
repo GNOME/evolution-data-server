@@ -415,7 +415,7 @@ e_cal_view_start (ECalView *view)
  *
  * Stops a live query to the calendar/tasks backend.
  *
- * Since: 3.0
+ * Since: 2.32
  */
 void
 e_cal_view_stop (ECalView *view)

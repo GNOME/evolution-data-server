@@ -459,7 +459,7 @@ camel_data_wrapper_is_offline (CamelDataWrapper *data_wrapper)
  *
  * Locks #data_wrapper's #lock. Unlock it with camel_data_wrapper_unlock().
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_data_wrapper_lock (CamelDataWrapper *data_wrapper,
@@ -484,7 +484,7 @@ camel_data_wrapper_lock (CamelDataWrapper *data_wrapper,
  * Unlocks #data_wrapper's #lock, previously locked with
  * camel_data_wrapper_lock().
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_data_wrapper_unlock (CamelDataWrapper *data_wrapper,

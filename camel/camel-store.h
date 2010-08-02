@@ -59,7 +59,7 @@
 /**
  * CAMEL_STORE_ERROR:
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 #define CAMEL_STORE_ERROR \
 	(camel_store_error_quark ())
@@ -69,7 +69,7 @@ G_BEGIN_DECLS
 /**
  * CamelStoreError:
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 typedef enum {
 	CAMEL_STORE_ERROR_INVALID,
@@ -79,7 +79,7 @@ typedef enum {
 /**
  * CamelStoreLock:
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 typedef enum {
 	CAMEL_STORE_FOLDER_LOCK
@@ -163,7 +163,7 @@ typedef struct _CamelFolderInfo {
 /**
  * CAMEL_STORE_REAL_JUNK_FOLDER:
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 #define CAMEL_STORE_REAL_JUNK_FOLDER	(1 << 7)
 

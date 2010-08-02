@@ -462,7 +462,7 @@ camel_disco_folder_init (CamelDiscoFolder *disco_folder)
  * camel_disco_folder_get_offline_sync:
  * @disco_folder: a #CamelDiscoFolder
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gboolean
 camel_disco_folder_get_offline_sync (CamelDiscoFolder *disco_folder)
@@ -477,7 +477,7 @@ camel_disco_folder_get_offline_sync (CamelDiscoFolder *disco_folder)
  * @disco_folder: a #CamelDiscoFolder
  * @offline_sync: whether to synchronize for offline use
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_disco_folder_set_offline_sync (CamelDiscoFolder *disco_folder,

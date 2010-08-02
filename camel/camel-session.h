@@ -78,7 +78,7 @@ enum {
 /**
  * CamelSessionLock:
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 typedef enum {
 	CAMEL_SESSION_SESSION_LOCK,

@@ -241,7 +241,7 @@ camel_offline_folder_init (CamelOfflineFolder *folder)
  * camel_offline_folder_get_offline_sync:
  * @offline_folder: a #CamelOfflineFolder
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gboolean
 camel_offline_folder_get_offline_sync (CamelOfflineFolder *offline_folder)
@@ -256,7 +256,7 @@ camel_offline_folder_get_offline_sync (CamelOfflineFolder *offline_folder)
  * @offline_folder: a #CamelOfflineFolder
  * @offline_sync: whether to synchronize for offline use
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_offline_folder_set_offline_sync (CamelOfflineFolder *offline_folder,

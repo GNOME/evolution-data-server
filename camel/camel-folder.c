@@ -1185,7 +1185,7 @@ camel_folder_get_name (CamelFolder *folder)
  *
  * Sets the short name of the folder.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_folder_set_name (CamelFolder *folder,
@@ -1222,7 +1222,7 @@ camel_folder_get_full_name (CamelFolder *folder)
  *
  * Sets the fully qualified name of the folder.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_folder_set_full_name (CamelFolder *folder,
@@ -1244,7 +1244,7 @@ camel_folder_set_full_name (CamelFolder *folder,
  *
  * Returns: a description of the folder
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 const gchar *
 camel_folder_get_description (CamelFolder *folder)
@@ -1265,7 +1265,7 @@ camel_folder_get_description (CamelFolder *folder)
  *
  * Sets a description of the folder suitable for displaying to the user.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_folder_set_description (CamelFolder *folder,
@@ -2342,7 +2342,7 @@ camel_folder_is_frozen (CamelFolder *folder)
  * camel_folder_get_frozen_count:
  * @folder: a #CamelFolder
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gint
 camel_folder_get_frozen_count (CamelFolder *folder)
@@ -2956,7 +2956,7 @@ camel_folder_change_info_free (CamelFolderChangeInfo *info)
  *
  * Locks #folder's #lock. Unlock it with camel_folder_unlock().
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_folder_lock (CamelFolder *folder,
@@ -2984,7 +2984,7 @@ camel_folder_lock (CamelFolder *folder,
  *
  * Unlocks #folder's #lock, previously locked with camel_folder_lock().
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_folder_unlock (CamelFolder *folder,

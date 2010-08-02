@@ -777,7 +777,7 @@ camel_store_rename_folder (CamelStore *store,
  *
  * This function is only intended for Camel providers.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_store_folder_created (CamelStore *store,
@@ -798,7 +798,7 @@ camel_store_folder_created (CamelStore *store,
  *
  * This function is only intended for Camel providers.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_store_folder_deleted (CamelStore *store,
@@ -820,7 +820,7 @@ camel_store_folder_deleted (CamelStore *store,
  *
  * This function is only intended for Camel providers.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_store_folder_renamed (CamelStore *store,
@@ -843,7 +843,7 @@ camel_store_folder_renamed (CamelStore *store,
  *
  * This function is only intended for Camel providers.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_store_folder_subscribed (CamelStore *store,
@@ -864,7 +864,7 @@ camel_store_folder_subscribed (CamelStore *store,
  *
  * This function is only intended for Camel providers.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_store_folder_unsubscribed (CamelStore *store,
@@ -1656,7 +1656,7 @@ camel_store_can_refresh_folder (CamelStore *store,
  *
  * Locks #store's #lock. Unlock it with camel_store_unlock().
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_store_lock (CamelStore *store,
@@ -1680,7 +1680,7 @@ camel_store_lock (CamelStore *store,
  *
  * Unlocks #store's #lock, previously locked with camel_store_lock().
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_store_unlock (CamelStore *store,

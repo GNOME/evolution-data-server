@@ -105,7 +105,7 @@ typedef enum _CamelStoreSummaryFlags {
 /**
  * CamelStoreSummaryLock:
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 typedef enum {
 	CAMEL_STORE_SUMMARY_SUMMARY_LOCK,

@@ -125,7 +125,7 @@ camel_index_rename (CamelIndex *idx, const gchar *path)
  * @func: normalization function
  * @data: user data for @func
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_index_set_normalize (CamelIndex *idx, CamelIndexNorm func, gpointer data)

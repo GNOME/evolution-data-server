@@ -35,7 +35,7 @@ G_BEGIN_DECLS
 /**
  * CamelMemPool:
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 typedef struct _CamelMemPool CamelMemPool;
 
@@ -50,7 +50,7 @@ typedef struct _CamelMemPool CamelMemPool;
  * @CAMEL_MEMPOOL_ALIGN_MASK:
  *	Which bits determine the alignment information
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 typedef enum {
 	CAMEL_MEMPOOL_ALIGN_STRUCT,

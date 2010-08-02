@@ -568,7 +568,7 @@ camel_service_query_auth_types (CamelService *service,
  *
  * Locks #service's #lock. Unlock it with camel_service_unlock().
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_service_lock (CamelService *service,
@@ -595,7 +595,7 @@ camel_service_lock (CamelService *service,
  *
  * Unlocks #service's #lock, previously locked with camel_service_lock().
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_service_unlock (CamelService *service,

@@ -193,7 +193,7 @@ camel_data_cache_new (const gchar *path,
  *
  * Returns: the path to the data cache
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 const gchar *
 camel_data_cache_get_path (CamelDataCache *cdc)
@@ -210,7 +210,7 @@ camel_data_cache_get_path (CamelDataCache *cdc)
  *
  * Sets the path to the data cache.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_data_cache_set_path (CamelDataCache *cdc,

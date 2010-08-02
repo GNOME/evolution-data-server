@@ -334,7 +334,7 @@ e_load_book_source (ESource *source, EBookCallback open_func, gpointer user_data
  *
  * Returns: A new #EBook that is being opened.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 EBook *
 e_load_book_source_async (ESource *source, EBookAsyncCallback open_func_ex, gpointer user_data)

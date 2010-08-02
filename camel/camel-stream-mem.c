@@ -310,7 +310,7 @@ camel_stream_mem_set_secure(CamelStreamMem *mem)
  * camel_stream_mem_get_byte_array:
  * @mem: a #CamelStreamMem
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 GByteArray *
 camel_stream_mem_get_byte_array (CamelStreamMem *mem)

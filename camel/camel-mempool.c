@@ -64,7 +64,7 @@ struct _CamelMemPool {
  *
  * Returns:
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 CamelMemPool *
 camel_mempool_new (gint blocksize,
@@ -104,7 +104,7 @@ camel_mempool_new (gint blocksize,
  * be rounded up to the mempool's alignment restrictions
  * before being used.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gpointer
 camel_mempool_alloc (CamelMemPool *pool,
@@ -143,7 +143,7 @@ camel_mempool_alloc (CamelMemPool *pool,
  * @pool: a #CamelMemPool
  * @str:
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gchar *
 camel_mempool_strdup (CamelMemPool *pool,
@@ -168,7 +168,7 @@ camel_mempool_strdup (CamelMemPool *pool,
  * as well.  Otherwise only blocks above the threshold are
  * actually freed, and the others are simply marked as empty.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_mempool_flush (CamelMemPool *pool,
@@ -208,7 +208,7 @@ camel_mempool_flush (CamelMemPool *pool,
  *
  * Free all memory associated with a mempool.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_mempool_destroy (CamelMemPool *pool)

@@ -89,7 +89,7 @@ typedef struct {
 /**
  * CamelCertDBLock:
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 typedef enum {
 	CAMEL_CERTDB_DB_LOCK,

@@ -441,7 +441,7 @@ e_book_async_add_contact (EBook                 *book,
  *
  * Returns: %TRUE if the operation was started, %FALSE otherwise.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gboolean
 e_book_add_contact_async (EBook                *book,
@@ -584,7 +584,7 @@ e_book_async_commit_contact (EBook                 *book,
  *
  * Returns: %TRUE if the operation was started, %FALSE otherwise.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gboolean
 e_book_commit_contact_async (EBook              *book,
@@ -728,7 +728,7 @@ e_book_async_get_required_fields (EBook              *book,
  *
  * Returns: %TRUE if the operation was started, %FALSE otherwise.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gboolean
 e_book_get_required_fields_async (EBook                   *book,
@@ -867,7 +867,7 @@ e_book_async_get_supported_fields (EBook              *book,
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gboolean
 e_book_get_supported_fields_async (EBook                   *book,
@@ -1003,7 +1003,7 @@ e_book_async_get_supported_auth_methods (EBook              *book,
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gboolean
 e_book_get_supported_auth_methods_async (EBook                   *book,
@@ -1146,7 +1146,7 @@ e_book_async_authenticate_user (EBook                 *book,
  *
  * Returns: %FALSE if successful, %TRUE otherwise.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gboolean
 e_book_authenticate_user_async (EBook              *book,
@@ -1290,7 +1290,7 @@ e_book_async_get_contact (EBook                 *book,
  *
  * Returns: %FALSE if successful, %TRUE otherwise
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gboolean
 e_book_get_contact_async (EBook                     *book,
@@ -1458,7 +1458,7 @@ e_book_async_remove_contact (EBook                 *book,
  *
  * Returns: %TRUE if successful, %FALSE otherwise
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gboolean
 e_book_remove_contact_async (EBook              *book,
@@ -1566,7 +1566,7 @@ e_book_async_remove_contact_by_id (EBook                 *book,
  *
  * Returns: %TRUE if successful, %FALSE otherwise
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gboolean
 e_book_remove_contact_by_id_async (EBook              *book,
@@ -1686,7 +1686,7 @@ e_book_async_remove_contacts (EBook                 *book,
  *
  * Returns: %TRUE if successful, %FALSE otherwise
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gboolean
 e_book_remove_contacts_async (EBook              *book,
@@ -1885,7 +1885,7 @@ e_book_async_get_book_view (EBook                 *book,
  *
  * Returns: %FALSE if successful, %TRUE otherwise
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gboolean
 e_book_get_book_view_async (EBook                      *book,
@@ -2057,7 +2057,7 @@ e_book_async_get_contacts (EBook             *book,
  *
  * Returns: %FALSE on success, %TRUE otherwise
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gboolean
 e_book_get_contacts_async (EBook                  *book,
@@ -2239,7 +2239,7 @@ e_book_async_get_changes (EBook             *book,
  *
  * Returns: TRUE on success, FALSE otherwise
  *
- * Since: 3.0
+ * Since: 2.32
  */
 gboolean
 e_book_get_changes_async (EBook                  *book,
@@ -2438,7 +2438,7 @@ e_book_async_open (EBook                 *book,
  *
  * Returns: %FALSE if successful, %TRUE otherwise.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gboolean
 e_book_open_async (EBook              *book,
@@ -2559,7 +2559,7 @@ e_book_async_remove (EBook   *book,
  *
  * Returns: %FALSE if successful, %TRUE otherwise.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gboolean
 e_book_remove_async (EBook              *book,

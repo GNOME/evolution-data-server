@@ -72,7 +72,7 @@ typedef struct _CamelObjectPrivate CamelObjectPrivate;
  * These flags extend #GParamFlags.  Most of the time you will use them
  * in conjunction with g_object_class_install_property().
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 typedef enum {
 	CAMEL_PARAM_PERSISTENT = 1 << (G_PARAM_USER_SHIFT + 0)

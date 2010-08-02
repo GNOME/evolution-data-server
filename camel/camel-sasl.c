@@ -403,7 +403,7 @@ camel_sasl_get_authenticated (CamelSasl *sasl)
  * @sasl: a #CamelSasl
  * @authenticated: whether we have successfully authenticated
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_sasl_set_authenticated (CamelSasl *sasl,
@@ -420,7 +420,7 @@ camel_sasl_set_authenticated (CamelSasl *sasl,
  * camel_sasl_get_mechanism:
  * @sasl: a #CamelSasl
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 const gchar *
 camel_sasl_get_mechanism (CamelSasl *sasl)
@@ -434,7 +434,7 @@ camel_sasl_get_mechanism (CamelSasl *sasl)
  * camel_sasl_get_service:
  * @sasl: a #CamelSasl
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 CamelService *
 camel_sasl_get_service (CamelSasl *sasl)
@@ -448,7 +448,7 @@ camel_sasl_get_service (CamelSasl *sasl)
  * camel_sasl_get_service_name:
  * @sasl: a #CamelSasl
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 const gchar *
 camel_sasl_get_service_name (CamelSasl *sasl)

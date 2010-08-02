@@ -2238,7 +2238,7 @@ camel_gpg_context_new (CamelSession *session)
  * camel_gpg_context_get_always_trust:
  * @context: a #CamelGpgContext
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gboolean
 camel_gpg_context_get_always_trust (CamelGpgContext *context)

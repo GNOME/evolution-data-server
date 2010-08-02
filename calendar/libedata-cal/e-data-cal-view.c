@@ -479,7 +479,7 @@ e_data_cal_view_is_started (EDataCalView *view)
  *
  * Returns: TRUE if the query has been stopped, FALSE otherwise.
  *
- * Since: 3.0
+ * Since: 2.32
  */
 gboolean
 e_data_cal_view_is_stopped (EDataCalView *view)

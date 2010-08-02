@@ -123,7 +123,7 @@ camel_transport_send_to (CamelTransport *transport,
  *
  * Locks #transport's #lock. Unlock it with camel_transport_unlock().
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_transport_lock (CamelTransport *transport,
@@ -147,7 +147,7 @@ camel_transport_lock (CamelTransport *transport,
  *
  * Unlocks #transport's #lock, previously locked with camel_transport_lock().
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_transport_unlock (CamelTransport *transport,

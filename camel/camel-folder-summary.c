@@ -1771,7 +1771,7 @@ camel_folder_summary_add_preview (CamelFolderSummary *s, CamelMessageInfo *info)
  * before any mass operation or when all message infos will be needed,
  * for better performance.
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_folder_summary_prepare_fetch_all (CamelFolderSummary *s,
@@ -4845,7 +4845,7 @@ camel_folder_summary_guess_content_info (CamelMessageInfo *mi, CamelContentType 
  *
  * Locks #summary's #lock. Unlock it with camel_folder_summary_unlock().
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_folder_summary_lock (CamelFolderSummary *summary,
@@ -4881,7 +4881,7 @@ camel_folder_summary_lock (CamelFolderSummary *summary,
  *
  * Unlocks #summary's #lock, previously locked with camel_folder_summary_lock().
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_folder_summary_unlock (CamelFolderSummary *summary,

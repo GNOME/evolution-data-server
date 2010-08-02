@@ -968,7 +968,7 @@ camel_session_set_check_junk (CamelSession *session,
  * camel_session_get_network_available:
  * @session: a #CamelSession
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gboolean
 camel_session_get_network_available (CamelSession *session)
@@ -983,7 +983,7 @@ camel_session_get_network_available (CamelSession *session)
  * @session: a #CamelSession
  * @network_available: whether a network is available
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_session_set_network_available (CamelSession *session,
@@ -1078,7 +1078,7 @@ camel_session_forward_to (CamelSession *session,
  *
  * Locks #session's #lock. Unlock it with camel_session_unlock().
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_session_lock (CamelSession *session,
@@ -1105,7 +1105,7 @@ camel_session_lock (CamelSession *session,
  *
  * Unlocks #session's #lock, previously locked with camel_session_lock().
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 void
 camel_session_unlock (CamelSession *session,
@@ -1134,7 +1134,7 @@ camel_session_unlock (CamelSession *session,
  * Sets a SOCKS proxy that will be used throughout the @session for
  * TCP connections.
  *
- * Since: 3.0
+ * Since: 2.32
  */
 void
 camel_session_set_socks_proxy (CamelSession *session, const gchar *socks_host, gint socks_port)
@@ -1162,7 +1162,7 @@ camel_session_set_socks_proxy (CamelSession *session, const gchar *socks_host, g
  * Queries the SOCKS proxy that is configured for a @session.  This will
  * put #NULL in @hosts_ret if there is no proxy configured.
  *
- * Since: 3.0
+ * Since: 2.32
  */
 void
 camel_session_get_socks_proxy (CamelSession *session, gchar **host_ret, gint *port_ret)

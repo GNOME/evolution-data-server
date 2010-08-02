@@ -56,7 +56,7 @@
 /**
  * CAMEL_SERVICE_ERROR:
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 #define CAMEL_SERVICE_ERROR \
 	(camel_service_error_quark ())
@@ -72,7 +72,7 @@ typedef struct _CamelServicePrivate CamelServicePrivate;
 /**
  * CamelServiceError:
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 typedef enum {
 	CAMEL_SERVICE_ERROR_INVALID,
@@ -92,7 +92,7 @@ typedef enum {
 /**
  * CamelServiceLock:
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 typedef enum {
 	CAMEL_SERVICE_REC_CONNECT_LOCK,

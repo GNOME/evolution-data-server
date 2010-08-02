@@ -53,7 +53,7 @@
 /**
  * CAMEL_FOLDER_ERROR:
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 #define CAMEL_FOLDER_ERROR \
 	(camel_folder_error_quark ())
@@ -72,7 +72,7 @@ typedef struct _CamelFolderPrivate CamelFolderPrivate;
 /**
  * CamelFolderError:
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 typedef enum {
 	CAMEL_FOLDER_ERROR_INVALID,
@@ -88,7 +88,7 @@ typedef enum {
 /**
  * CamelFolderLock:
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 typedef enum {
 	CAMEL_FOLDER_CHANGE_LOCK,

@@ -783,7 +783,7 @@ camel_cipher_context_new (CamelSession *session)
  * camel_cipher_context_get_session:
  * @context: a #CamelCipherContext
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 CamelSession *
 camel_cipher_context_get_session (CamelCipherContext *context)

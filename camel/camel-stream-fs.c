@@ -371,7 +371,7 @@ camel_stream_fs_new_with_name_and_bounds (const gchar *name,
  * camel_stream_fs_get_fd:
  * @stream: a #CamelStream
  *
- * Since: 3.0
+ * Since: 2.32
  **/
 gint
 camel_stream_fs_get_fd (CamelStreamFs *stream)
