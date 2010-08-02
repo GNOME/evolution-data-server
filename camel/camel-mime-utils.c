@@ -113,7 +113,7 @@ camel_uuencode_close (guchar *in, gsize len, guchar *out, guchar *uubuf, gint *s
 
 	if (i > 0) {
 		while (i < 3) {
-			saved <<= 8 | 0;
+			saved <<= 8;
 			uufill++;
 			i++;
 		}
@@ -122,8 +122,8 @@ camel_uuencode_close (guchar *in, gsize len, guchar *out, guchar *uubuf, gint *s
 			/* convert 3 normal bytes into 4 uuencoded bytes */
 			guchar b0, b1, b2;
 
-			b0 = saved >> 16;
-			b1 = saved >> 8 & 0xff;
+			b0 = (saved >> 16) & 0xff;
+			b1 = (saved >> 8) & 0xff;
 			b2 = saved & 0xff;
 
 			*bufptr++ = CAMEL_UUENCODE_CHAR ((b0 >> 2) & 0x3f);
@@ -176,54 +176,90 @@ gsize
 camel_uuencode_step (guchar *in, gsize len, guchar *out, guchar *uubuf, gint *state, guint32 *save)
 {
 	register guchar *inptr, *outptr, *bufptr;
-	guchar *inend;
+	guchar b0, b1, b2, *inend;
 	register guint32 saved;
 	gint uulen, i;
+
+	if (inlen == 0)
+		return 0;
+
+	inend = in + len;
+	outptr = out;
+	inptr = in;
 
 	saved = *save;
 	i = *state & 0xff;
 	uulen = (*state >> 8) & 0xff;
 
-	inptr = in;
-	inend = in + len;
+	if ((inlen + uulen) < 45) {
+		/* not enough input to write a full uuencoded line */
+		bufptr = uubuf + ((uulen / 3) * 4);
+	} else {
+		bufptr = outptr + 1;
+		
+		if (uulen > 0) {
+			/* copy the previous call's tmpbuf to outbuf */
+			memcpy (bufptr, uubuf, ((uulen / 3) * 4));
+			bufptr += ((uulen / 3) * 4);
+		}
+	}
 
-	outptr = out;
-
-	bufptr = uubuf + ((uulen / 3) * 4);
+	if (i == 2) {
+		b0 = (saved >> 8) & 0xff;
+		b1 = saved & 0xff;
+		saved = 0;
+		i = 0;
+		
+		goto skip2;
+	} else if (i == 1) {
+		if ((inptr + 2) < inend) {
+			b0 = saved & 0xff;
+			saved = 0;
+			i = 0;
+			
+			goto skip1;
+		}
+		
+		while (inptr < inend) {
+			saved = (saved << 8) | *inptr++;
+			i++;
+		}
+	}
 
 	while (inptr < inend) {
-		while (uulen < 45 && inptr < inend) {
-			while (i < 3 && inptr < inend) {
-				saved = (saved << 8) | *inptr++;
-				i++;
-			}
-
-			if (i == 3) {
-				/* convert 3 normal bytes into 4 uuencoded bytes */
-				guchar b0, b1, b2;
-
-				b0 = saved >> 16;
-				b1 = saved >> 8 & 0xff;
-				b2 = saved & 0xff;
-
-				*bufptr++ = CAMEL_UUENCODE_CHAR ((b0 >> 2) & 0x3f);
-				*bufptr++ = CAMEL_UUENCODE_CHAR (((b0 << 4) | ((b1 >> 4) & 0xf)) & 0x3f);
-				*bufptr++ = CAMEL_UUENCODE_CHAR (((b1 << 2) | ((b2 >> 6) & 0x3)) & 0x3f);
-				*bufptr++ = CAMEL_UUENCODE_CHAR (b2 & 0x3f);
-
-				i = 0;
-				saved = 0;
-				uulen += 3;
-			}
+		while (uulen < 45 && (inptr + 3) <= inend) {
+			b0 = *inptr++;
+		skip1:
+			b1 = *inptr++;
+		skip2:
+			b2 = *inptr++;
+			
+			/* convert 3 normal bytes into 4 uuencoded bytes */
+			*bufptr++ = CAMEL_UUENCODE_CHAR ((b0 >> 2) & 0x3f);
+			*bufptr++ = CAMEL_UUENCODE_CHAR (((b0 << 4) | ((b1 >> 4) & 0xf)) & 0x3f);
+			*bufptr++ = CAMEL_UUENCODE_CHAR (((b1 << 2) | ((b2 >> 6) & 0x3)) & 0x3f);
+			*bufptr++ = CAMEL_UUENCODE_CHAR (b2 & 0x3f);
+			
+			uulen += 3;
 		}
 
 		if (uulen >= 45) {
 			*outptr++ = CAMEL_UUENCODE_CHAR (uulen & 0xff);
-			memcpy (outptr, uubuf, ((uulen / 3) * 4));
-			outptr += ((uulen / 3) * 4);
+			outptr += ((45 / 3) * 4) + 1;
+			
 			*outptr++ = '\n';
 			uulen = 0;
-			bufptr = uubuf;
+			
+			if ((inptr + 45) <= inend) {
+				/* we have enough input to output another full line */
+				bufptr = outptr + 1;
+			} else {
+				bufptr = uubuf;
+			}
+		} else {
+			/* not enough input to continue... */
+			for (i = 0, saved = 0; inptr < inend; i++)
+				saved = (saved << 8) | *inptr++;
 		}
 	}
 
