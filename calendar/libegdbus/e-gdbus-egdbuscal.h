@@ -175,14 +175,12 @@ GType e_gdbus_cal_stub_get_type (void) G_GNUC_CONST;
 
 EGdbusCal *e_gdbus_cal_stub_new (void);
 
-
 guint e_gdbus_cal_register_object (EGdbusCal *object,
                     GDBusConnection *connection,
                     const gchar *object_path,
                     GError **error);
 
 void e_gdbus_cal_drain_notify (EGdbusCal *object);
-
 
 const GDBusInterfaceInfo *e_gdbus_cal_interface_info (void) G_GNUC_CONST;
 
@@ -263,7 +261,7 @@ struct _EGdbusCalIface
   gboolean (*handle_get_free_busy) (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *in_user_list,
+        const gchar * const *in_user_list,
         guint in_start,
         guint in_end);
   gboolean (*handle_discard_alarm) (
@@ -319,7 +317,6 @@ struct _EGdbusCalIface
 
 /* C Bindings for properties */
 
-
 /* D-Bus Methods */
 void e_gdbus_cal_call_get_uri (
         EGdbusCal *proxy,
@@ -339,7 +336,6 @@ gboolean e_gdbus_cal_call_get_uri_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_cal_call_get_cache_dir (
         EGdbusCal *proxy,
         GCancellable *cancellable,
@@ -357,7 +353,6 @@ gboolean e_gdbus_cal_call_get_cache_dir_sync (
         gchar **out_dirname,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_cal_call_open (
         EGdbusCal *proxy,
@@ -381,7 +376,6 @@ gboolean e_gdbus_cal_call_open_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_cal_call_refresh (
         EGdbusCal *proxy,
         GCancellable *cancellable,
@@ -397,7 +391,6 @@ gboolean e_gdbus_cal_call_refresh_sync (
         EGdbusCal *proxy,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_cal_call_close (
         EGdbusCal *proxy,
@@ -415,7 +408,6 @@ gboolean e_gdbus_cal_call_close_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_cal_call_remove (
         EGdbusCal *proxy,
         GCancellable *cancellable,
@@ -432,7 +424,6 @@ gboolean e_gdbus_cal_call_remove_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_cal_call_is_read_only (
         EGdbusCal *proxy,
         GCancellable *cancellable,
@@ -448,7 +439,6 @@ gboolean e_gdbus_cal_call_is_read_only_sync (
         EGdbusCal *proxy,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_cal_call_get_cal_address (
         EGdbusCal *proxy,
@@ -468,7 +458,6 @@ gboolean e_gdbus_cal_call_get_cal_address_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_cal_call_get_alarm_email_address (
         EGdbusCal *proxy,
         GCancellable *cancellable,
@@ -486,7 +475,6 @@ gboolean e_gdbus_cal_call_get_alarm_email_address_sync (
         gchar **out_address,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_cal_call_get_ldap_attribute (
         EGdbusCal *proxy,
@@ -506,7 +494,6 @@ gboolean e_gdbus_cal_call_get_ldap_attribute_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_cal_call_get_scheduling_information (
         EGdbusCal *proxy,
         GCancellable *cancellable,
@@ -524,7 +511,6 @@ gboolean e_gdbus_cal_call_get_scheduling_information_sync (
         gchar **out_capabilities,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_cal_call_set_mode (
         EGdbusCal *proxy,
@@ -544,7 +530,6 @@ gboolean e_gdbus_cal_call_set_mode_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_cal_call_get_default_object (
         EGdbusCal *proxy,
         GCancellable *cancellable,
@@ -562,7 +547,6 @@ gboolean e_gdbus_cal_call_get_default_object_sync (
         gchar **out_object,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_cal_call_get_object (
         EGdbusCal *proxy,
@@ -586,7 +570,6 @@ gboolean e_gdbus_cal_call_get_object_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_cal_call_get_object_list (
         EGdbusCal *proxy,
         const gchar *in_sexp,
@@ -606,7 +589,6 @@ gboolean e_gdbus_cal_call_get_object_list_sync (
         gchar ***out_objects,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_cal_call_get_changes (
         EGdbusCal *proxy,
@@ -632,10 +614,9 @@ gboolean e_gdbus_cal_call_get_changes_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_cal_call_get_free_busy (
         EGdbusCal *proxy,
-        const gchar* const *in_user_list,
+        const gchar * const *in_user_list,
         guint in_start,
         guint in_end,
         GCancellable *cancellable,
@@ -650,13 +631,12 @@ gboolean e_gdbus_cal_call_get_free_busy_finish (
 
 gboolean e_gdbus_cal_call_get_free_busy_sync (
         EGdbusCal *proxy,
-        const gchar* const *in_user_list,
+        const gchar * const *in_user_list,
         guint in_start,
         guint in_end,
         gchar ***out_freebusy,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_cal_call_discard_alarm (
         EGdbusCal *proxy,
@@ -678,7 +658,6 @@ gboolean e_gdbus_cal_call_discard_alarm_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_cal_call_create_object (
         EGdbusCal *proxy,
         const gchar *in_calobj,
@@ -699,7 +678,6 @@ gboolean e_gdbus_cal_call_create_object_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_cal_call_modify_object (
         EGdbusCal *proxy,
         const gchar *in_calobj,
@@ -719,7 +697,6 @@ gboolean e_gdbus_cal_call_modify_object_sync (
         guint in_mod,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_cal_call_remove_object (
         EGdbusCal *proxy,
@@ -743,7 +720,6 @@ gboolean e_gdbus_cal_call_remove_object_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_cal_call_receive_objects (
         EGdbusCal *proxy,
         const gchar *in_calobj,
@@ -761,7 +737,6 @@ gboolean e_gdbus_cal_call_receive_objects_sync (
         const gchar *in_calobj,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_cal_call_send_objects (
         EGdbusCal *proxy,
@@ -785,7 +760,6 @@ gboolean e_gdbus_cal_call_send_objects_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_cal_call_get_attachment_list (
         EGdbusCal *proxy,
         const gchar *in_uid,
@@ -808,7 +782,6 @@ gboolean e_gdbus_cal_call_get_attachment_list_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_cal_call_get_query (
         EGdbusCal *proxy,
         const gchar *in_sexp,
@@ -828,7 +801,6 @@ gboolean e_gdbus_cal_call_get_query_sync (
         gchar **out_query,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_cal_call_get_timezone (
         EGdbusCal *proxy,
@@ -850,7 +822,6 @@ gboolean e_gdbus_cal_call_get_timezone_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_cal_call_add_timezone (
         EGdbusCal *proxy,
         const gchar *in_tz,
@@ -868,7 +839,6 @@ gboolean e_gdbus_cal_call_add_timezone_sync (
         const gchar *in_tz,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_cal_call_set_default_timezone (
         EGdbusCal *proxy,
@@ -888,189 +858,153 @@ gboolean e_gdbus_cal_call_set_default_timezone_sync (
         GCancellable *cancellable,
         GError **error);
 
-
-
 /* D-Bus Methods Completion Helpers */
 void e_gdbus_cal_complete_get_uri (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
         const gchar *out_str_uri_copy);
 
-
 void e_gdbus_cal_complete_get_cache_dir (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
         const gchar *out_dirname);
 
-
 void e_gdbus_cal_complete_open (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation);
-
 
 void e_gdbus_cal_complete_refresh (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation);
 
-
 void e_gdbus_cal_complete_close (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation);
-
 
 void e_gdbus_cal_complete_remove (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation);
 
-
 void e_gdbus_cal_complete_is_read_only (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation);
-
 
 void e_gdbus_cal_complete_get_cal_address (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
         const gchar *out_address);
 
-
 void e_gdbus_cal_complete_get_alarm_email_address (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
         const gchar *out_address);
-
 
 void e_gdbus_cal_complete_get_ldap_attribute (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
         const gchar *out_address);
 
-
 void e_gdbus_cal_complete_get_scheduling_information (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
         const gchar *out_capabilities);
 
-
 void e_gdbus_cal_complete_set_mode (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation);
-
 
 void e_gdbus_cal_complete_get_default_object (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
         const gchar *out_object);
 
-
 void e_gdbus_cal_complete_get_object (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
         const gchar *out_object);
 
-
 void e_gdbus_cal_complete_get_object_list (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *out_objects);
-
+        const gchar * const *out_objects);
 
 void e_gdbus_cal_complete_get_changes (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *out_additions,
-        const gchar* const *out_modifications,
-        const gchar* const *out_removals);
-
+        const gchar * const *out_additions,
+        const gchar * const *out_modifications,
+        const gchar * const *out_removals);
 
 void e_gdbus_cal_complete_get_free_busy (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *out_freebusy);
-
+        const gchar * const *out_freebusy);
 
 void e_gdbus_cal_complete_discard_alarm (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation);
-
 
 void e_gdbus_cal_complete_create_object (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
         const gchar *out_uid);
 
-
 void e_gdbus_cal_complete_modify_object (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation);
-
 
 void e_gdbus_cal_complete_remove_object (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation);
 
-
 void e_gdbus_cal_complete_receive_objects (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation);
 
-
 void e_gdbus_cal_complete_send_objects (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *out_users,
+        const gchar * const *out_users,
         const gchar *out_calobj);
-
 
 void e_gdbus_cal_complete_get_attachment_list (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *out_attachments);
-
+        const gchar * const *out_attachments);
 
 void e_gdbus_cal_complete_get_query (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
         const gchar *out_query);
 
-
 void e_gdbus_cal_complete_get_timezone (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
         const gchar *out_object);
 
-
 void e_gdbus_cal_complete_add_timezone (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation);
-
 
 void e_gdbus_cal_complete_set_default_timezone (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation);
 
-
-
 /* D-Bus Signal Emission Helpers */
 void e_gdbus_cal_emit_auth_required (
         EGdbusCal *object);
-
 
 void e_gdbus_cal_emit_backend_error (
         EGdbusCal *object,
         const gchar *arg_error);
 
-
 void e_gdbus_cal_emit_readonly (
         EGdbusCal *object,
         gboolean arg_is_readonly);
 
-
 void e_gdbus_cal_emit_mode (
         EGdbusCal *object,
         gint arg_mode);
-
-
 
 G_END_DECLS
 

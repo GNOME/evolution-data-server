@@ -264,14 +264,9 @@ stream_filter_close (CamelStream *stream,
 
 	priv = CAMEL_STREAM_FILTER_GET_PRIVATE (stream);
 
-	if (!priv->last_was_read) {
-		GError *err = NULL;
-
-		stream_filter_flush (stream, &err);
-
-		if (err)
-			g_error_free (err);
-	}
+	/* Ignore errors while flushing. */
+	if (!priv->last_was_read)
+		stream_filter_flush (stream, NULL);
 
 	return camel_stream_close (priv->source, error);
 }

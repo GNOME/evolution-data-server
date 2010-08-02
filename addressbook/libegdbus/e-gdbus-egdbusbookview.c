@@ -46,7 +46,7 @@
  * emitting the corresponding GType signals. For better type-safety, you can use,
  * the provided e_gdbus_book_view_emit_*() helpers.
  *
- * For property changes, #GObject::notify signal emissions on exported objects 
+ * For property changes, #GObject::notify signal emissions on exported objects
  * will be intercepted and queued. In an idle handler, the queued notifications
  * are processed and a single <literal>PropertiesChanged</literal> signal (on the
  * <literal>org.freedesktop.DBus.Properties</literal> interface) will be emitted
@@ -60,7 +60,6 @@
 
 typedef EGdbusBookViewIface EGdbusBookViewInterface;
 G_DEFINE_INTERFACE (EGdbusBookView, e_gdbus_book_view, G_TYPE_OBJECT);
-
 
 enum
 {
@@ -78,7 +77,6 @@ enum
 
 static guint signals[__LAST_SIGNAL] = {0};
 
-
 enum
 {
   PROP_0,
@@ -93,7 +91,6 @@ static GHashTable *_signal_name_to_id = NULL;
 static GHashTable *_property_name_to_id = NULL;
 static GHashTable *_property_gname_to_name = NULL;
 static GHashTable *_property_name_to_gname = NULL;
-
 
 static guint
 lookup_method_id_from_method_name (const gchar *method_name)
@@ -506,7 +503,6 @@ e_gdbus_book_view_default_init (EGdbusBookViewIface *iface)
                               (gpointer) "Complete",
                               NULL);
 
-
   /* GObject signals definitions for D-Bus methods: */
   /**
    * EGdbusBookView::handle-start:
@@ -583,7 +579,6 @@ e_gdbus_book_view_default_init (EGdbusBookViewIface *iface)
 
   /* GObject property definitions for D-Bus properties: */
 }
-
 
 /* C Bindings for properties */
 
@@ -687,7 +682,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_book_view_call_stop:
  * @proxy: A #EGdbusBookView.
@@ -787,7 +781,6 @@ gboolean e_gdbus_book_view_call_stop_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_book_view_call_dispose:
@@ -889,7 +882,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_book_view_complete_start:
  * @object: A #EGdbusBookView.
@@ -909,7 +901,6 @@ void e_gdbus_book_view_complete_start (
 {
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
-
 
 /**
  * e_gdbus_book_view_complete_stop:
@@ -931,7 +922,6 @@ void e_gdbus_book_view_complete_stop (
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
-
 /**
  * e_gdbus_book_view_complete_dispose:
  * @object: A #EGdbusBookView.
@@ -952,7 +942,6 @@ void e_gdbus_book_view_complete_dispose (
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
-
 /**
  * e_gdbus_book_view_emit_contacts_added:
  * @object: A #EGdbusBookView.
@@ -963,11 +952,10 @@ void e_gdbus_book_view_complete_dispose (
  */
 void e_gdbus_book_view_emit_contacts_added (
         EGdbusBookView *object,
-        const gchar* const *arg_vcards)
+        const gchar * const *arg_vcards)
 {
   g_signal_emit (object, signals[__CONTACTS_ADDED_SIGNAL], 0, arg_vcards);
 }
-
 
 /**
  * e_gdbus_book_view_emit_contacts_changed:
@@ -979,11 +967,10 @@ void e_gdbus_book_view_emit_contacts_added (
  */
 void e_gdbus_book_view_emit_contacts_changed (
         EGdbusBookView *object,
-        const gchar* const *arg_vcards)
+        const gchar * const *arg_vcards)
 {
   g_signal_emit (object, signals[__CONTACTS_CHANGED_SIGNAL], 0, arg_vcards);
 }
-
 
 /**
  * e_gdbus_book_view_emit_contacts_removed:
@@ -995,11 +982,10 @@ void e_gdbus_book_view_emit_contacts_changed (
  */
 void e_gdbus_book_view_emit_contacts_removed (
         EGdbusBookView *object,
-        const gchar* const *arg_ids)
+        const gchar * const *arg_ids)
 {
   g_signal_emit (object, signals[__CONTACTS_REMOVED_SIGNAL], 0, arg_ids);
 }
-
 
 /**
  * e_gdbus_book_view_emit_status_message:
@@ -1015,7 +1001,6 @@ void e_gdbus_book_view_emit_status_message (
 {
   g_signal_emit (object, signals[__STATUS_MESSAGE_SIGNAL], 0, arg_message);
 }
-
 
 /**
  * e_gdbus_book_view_emit_complete:
@@ -1033,7 +1018,6 @@ void e_gdbus_book_view_emit_complete (
 {
   g_signal_emit (object, signals[__COMPLETE_SIGNAL], 0, arg_status, arg_message);
 }
-
 
 static const GDBusArgInfo e_gdbus_book_view_signal_ContactsAdded_vcards =
 {
@@ -1536,7 +1520,6 @@ e_gdbus_book_view_interface_info (void)
   return &_e_gdbus_book_view_interface_info;
 }
 
-
 /* ---------------------------------------------------------------------- */
 
 static void proxy_iface_init (EGdbusBookViewIface *iface);
@@ -1563,7 +1546,7 @@ g_signal (GDBusProxy  *proxy,
     {
     case __CONTACTS_ADDED_SIGNAL:
       {
-        const gchar* const *arg_vcards;
+        const gchar * const *arg_vcards;
         g_variant_get (parameters,
                        "(^a&s)",
                        &arg_vcards);
@@ -1576,7 +1559,7 @@ g_signal (GDBusProxy  *proxy,
 
     case __CONTACTS_CHANGED_SIGNAL:
       {
-        const gchar* const *arg_vcards;
+        const gchar * const *arg_vcards;
         g_variant_get (parameters,
                        "(^a&s)",
                        &arg_vcards);
@@ -1589,7 +1572,7 @@ g_signal (GDBusProxy  *proxy,
 
     case __CONTACTS_REMOVED_SIGNAL:
       {
-        const gchar* const *arg_ids;
+        const gchar * const *arg_ids;
         g_variant_get (parameters,
                        "(^a&s)",
                        &arg_ids);
@@ -1707,7 +1690,7 @@ e_gdbus_book_view_proxy_set_property (GObject      *object,
 static void
 g_properties_changed (GDBusProxy         *proxy,
                       GVariant           *changed_properties,
-                      const gchar* const *invalidated_properties)
+                      const gchar * const *invalidated_properties)
 {
   guint n;
   const gchar *key;
@@ -1751,7 +1734,6 @@ static void
 proxy_iface_init (EGdbusBookViewIface *iface)
 {
 }
-
 
 /**
  * e_gdbus_book_view_proxy_new:
@@ -1852,7 +1834,6 @@ EGdbusBookView *e_gdbus_book_view_proxy_new_sync (GDBusConnection     *connectio
     return NULL;
 }
 
-
 /**
  * e_gdbus_book_view_proxy_new_for_bus:
  * @bus_type: A #GBusType.
@@ -1951,7 +1932,6 @@ EGdbusBookView *e_gdbus_book_view_proxy_new_for_bus_sync (GBusType             b
   else
     return NULL;
 }
-
 
 /* ---------------------------------------------------------------------- */
 

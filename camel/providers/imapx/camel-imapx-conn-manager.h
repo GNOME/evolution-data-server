@@ -1,5 +1,5 @@
 /*-*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* camel-imap-conn-manager.h 
+/* camel-imap-conn-manager.h
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
@@ -42,7 +42,6 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_IMAPX_CONN_MANAGER, CamelIMAPXConnManagerClass))
 
-
 typedef struct _CamelIMAPXConnManager CamelIMAPXConnManager;
 typedef struct _CamelIMAPXConnManagerClass CamelIMAPXConnManagerClass;
 typedef struct _CamelIMAPXConnManagerPrivate CamelIMAPXConnManagerPrivate;
@@ -58,15 +57,15 @@ struct _CamelIMAPXConnManagerClass {
 
 GType			camel_imapx_conn_manager_get_type		(void);
 CamelIMAPXConnManager *	camel_imapx_conn_manager_new			(CamelStore *store);
-void			camel_imapx_conn_manager_set_n_connections 	(CamelIMAPXConnManager *con_man, 
+void			camel_imapx_conn_manager_set_n_connections	(CamelIMAPXConnManager *con_man,
 									guint n_connections);
 CamelIMAPXServer *	camel_imapx_conn_manager_get_connection		(CamelIMAPXConnManager *con_man,
 									const gchar *folder_name,
 									GError **error);
-void			camel_imapx_conn_manager_close_connections 	(CamelIMAPXConnManager *con_man);
-GSList *		camel_imapx_conn_manager_get_connections 	(CamelIMAPXConnManager *con_man);
-void			camel_imapx_conn_manager_update_con_info 	(CamelIMAPXConnManager *con_man, 
+void			camel_imapx_conn_manager_close_connections	(CamelIMAPXConnManager *con_man);
+GSList *		camel_imapx_conn_manager_get_connections	(CamelIMAPXConnManager *con_man);
+void			camel_imapx_conn_manager_update_con_info	(CamelIMAPXConnManager *con_man,
 									CamelIMAPXServer *server,
-								       	const gchar *folder_name);
+									const gchar *folder_name);
 
-#endif /* ! _CAMEL_IMAPX_SERVER_H */
+#endif /* _CAMEL_IMAPX_SERVER_H */

@@ -46,7 +46,7 @@
  * emitting the corresponding GType signals. For better type-safety, you can use,
  * the provided e_gdbus_cal_emit_*() helpers.
  *
- * For property changes, #GObject::notify signal emissions on exported objects 
+ * For property changes, #GObject::notify signal emissions on exported objects
  * will be intercepted and queued. In an idle handler, the queued notifications
  * are processed and a single <literal>PropertiesChanged</literal> signal (on the
  * <literal>org.freedesktop.DBus.Properties</literal> interface) will be emitted
@@ -60,7 +60,6 @@
 
 typedef EGdbusCalIface EGdbusCalInterface;
 G_DEFINE_INTERFACE (EGdbusCal, e_gdbus_cal, G_TYPE_OBJECT);
-
 
 enum
 {
@@ -102,7 +101,6 @@ enum
 
 static guint signals[__LAST_SIGNAL] = {0};
 
-
 enum
 {
   PROP_0,
@@ -117,7 +115,6 @@ static GHashTable *_signal_name_to_id = NULL;
 static GHashTable *_property_name_to_id = NULL;
 static GHashTable *_property_gname_to_name = NULL;
 static GHashTable *_property_name_to_gname = NULL;
-
 
 static guint
 lookup_method_id_from_method_name (const gchar *method_name)
@@ -466,7 +463,6 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
                               signal_emission_hook_cb_mode,
                               (gpointer) "mode",
                               NULL);
-
 
   /* GObject signals definitions for D-Bus methods: */
   /**
@@ -1199,7 +1195,6 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
   /* GObject property definitions for D-Bus properties: */
 }
 
-
 /* C Bindings for properties */
 
 /**
@@ -1316,7 +1311,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_cal_call_get_cache_dir:
  * @proxy: A #EGdbusCal.
@@ -1430,7 +1424,6 @@ gboolean e_gdbus_cal_call_get_cache_dir_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_cal_call_open:
@@ -1550,7 +1543,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_cal_call_refresh:
  * @proxy: A #EGdbusCal.
@@ -1650,7 +1642,6 @@ gboolean e_gdbus_cal_call_refresh_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_cal_call_close:
@@ -1752,7 +1743,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_cal_call_remove:
  * @proxy: A #EGdbusCal.
@@ -1853,7 +1843,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_cal_call_is_read_only:
  * @proxy: A #EGdbusCal.
@@ -1953,7 +1942,6 @@ gboolean e_gdbus_cal_call_is_read_only_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_cal_call_get_cal_address:
@@ -2069,7 +2057,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_cal_call_get_alarm_email_address:
  * @proxy: A #EGdbusCal.
@@ -2183,7 +2170,6 @@ gboolean e_gdbus_cal_call_get_alarm_email_address_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_cal_call_get_ldap_attribute:
@@ -2299,7 +2285,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_cal_call_get_scheduling_information:
  * @proxy: A #EGdbusCal.
@@ -2414,7 +2399,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_cal_call_set_mode:
  * @proxy: A #EGdbusCal.
@@ -2520,7 +2504,6 @@ gboolean e_gdbus_cal_call_set_mode_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_cal_call_get_default_object:
@@ -2635,7 +2618,6 @@ gboolean e_gdbus_cal_call_get_default_object_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_cal_call_get_object:
@@ -2763,7 +2745,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_cal_call_get_object_list:
  * @proxy: A #EGdbusCal.
@@ -2883,7 +2864,6 @@ gboolean e_gdbus_cal_call_get_object_list_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_cal_call_get_changes:
@@ -3017,7 +2997,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_cal_call_get_free_busy:
  * @proxy: A #EGdbusCal.
@@ -3040,7 +3019,7 @@ _out:
  */
 void e_gdbus_cal_call_get_free_busy (
         EGdbusCal *proxy,
-        const gchar* const *in_user_list,
+        const gchar * const *in_user_list,
         guint in_start,
         guint in_end,
         GCancellable *cancellable,
@@ -3116,7 +3095,7 @@ _out:
  */
 gboolean e_gdbus_cal_call_get_free_busy_sync (
         EGdbusCal *proxy,
-        const gchar* const *in_user_list,
+        const gchar * const *in_user_list,
         guint in_start,
         guint in_end,
         gchar ***out_freebusy,
@@ -3149,7 +3128,6 @@ gboolean e_gdbus_cal_call_get_free_busy_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_cal_call_discard_alarm:
@@ -3262,7 +3240,6 @@ gboolean e_gdbus_cal_call_discard_alarm_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_cal_call_create_object:
@@ -3384,7 +3361,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_cal_call_modify_object:
  * @proxy: A #EGdbusCal.
@@ -3496,7 +3472,6 @@ gboolean e_gdbus_cal_call_modify_object_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_cal_call_remove_object:
@@ -3616,7 +3591,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_cal_call_receive_objects:
  * @proxy: A #EGdbusCal.
@@ -3722,7 +3696,6 @@ gboolean e_gdbus_cal_call_receive_objects_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_cal_call_send_objects:
@@ -3850,7 +3823,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_cal_call_get_attachment_list:
  * @proxy: A #EGdbusCal.
@@ -3977,7 +3949,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_cal_call_get_query:
  * @proxy: A #EGdbusCal.
@@ -4097,7 +4068,6 @@ gboolean e_gdbus_cal_call_get_query_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_cal_call_get_timezone:
@@ -4219,7 +4189,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_cal_call_add_timezone:
  * @proxy: A #EGdbusCal.
@@ -4325,7 +4294,6 @@ gboolean e_gdbus_cal_call_add_timezone_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_cal_call_set_default_timezone:
@@ -4433,7 +4401,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_cal_complete_get_uri:
  * @object: A #EGdbusCal.
@@ -4458,7 +4425,6 @@ void e_gdbus_cal_complete_get_uri (
                            out_str_uri_copy);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
-
 
 /**
  * e_gdbus_cal_complete_get_cache_dir:
@@ -4485,7 +4451,6 @@ void e_gdbus_cal_complete_get_cache_dir (
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
-
 /**
  * e_gdbus_cal_complete_open:
  * @object: A #EGdbusCal.
@@ -4505,7 +4470,6 @@ void e_gdbus_cal_complete_open (
 {
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
-
 
 /**
  * e_gdbus_cal_complete_refresh:
@@ -4527,7 +4491,6 @@ void e_gdbus_cal_complete_refresh (
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
-
 /**
  * e_gdbus_cal_complete_close:
  * @object: A #EGdbusCal.
@@ -4547,7 +4510,6 @@ void e_gdbus_cal_complete_close (
 {
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
-
 
 /**
  * e_gdbus_cal_complete_remove:
@@ -4569,7 +4531,6 @@ void e_gdbus_cal_complete_remove (
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
-
 /**
  * e_gdbus_cal_complete_is_read_only:
  * @object: A #EGdbusCal.
@@ -4589,7 +4550,6 @@ void e_gdbus_cal_complete_is_read_only (
 {
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
-
 
 /**
  * e_gdbus_cal_complete_get_cal_address:
@@ -4616,7 +4576,6 @@ void e_gdbus_cal_complete_get_cal_address (
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
-
 /**
  * e_gdbus_cal_complete_get_alarm_email_address:
  * @object: A #EGdbusCal.
@@ -4641,7 +4600,6 @@ void e_gdbus_cal_complete_get_alarm_email_address (
                            out_address);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
-
 
 /**
  * e_gdbus_cal_complete_get_ldap_attribute:
@@ -4668,7 +4626,6 @@ void e_gdbus_cal_complete_get_ldap_attribute (
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
-
 /**
  * e_gdbus_cal_complete_get_scheduling_information:
  * @object: A #EGdbusCal.
@@ -4694,7 +4651,6 @@ void e_gdbus_cal_complete_get_scheduling_information (
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
-
 /**
  * e_gdbus_cal_complete_set_mode:
  * @object: A #EGdbusCal.
@@ -4714,7 +4670,6 @@ void e_gdbus_cal_complete_set_mode (
 {
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
-
 
 /**
  * e_gdbus_cal_complete_get_default_object:
@@ -4741,7 +4696,6 @@ void e_gdbus_cal_complete_get_default_object (
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
-
 /**
  * e_gdbus_cal_complete_get_object:
  * @object: A #EGdbusCal.
@@ -4767,7 +4721,6 @@ void e_gdbus_cal_complete_get_object (
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
-
 /**
  * e_gdbus_cal_complete_get_object_list:
  * @object: A #EGdbusCal.
@@ -4785,14 +4738,13 @@ void e_gdbus_cal_complete_get_object (
 void e_gdbus_cal_complete_get_object_list (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *out_objects)
+        const gchar * const *out_objects)
 {
   GVariant *_params;
   _params = g_variant_new ("(^as)",
                            out_objects);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
-
 
 /**
  * e_gdbus_cal_complete_get_changes:
@@ -4813,9 +4765,9 @@ void e_gdbus_cal_complete_get_object_list (
 void e_gdbus_cal_complete_get_changes (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *out_additions,
-        const gchar* const *out_modifications,
-        const gchar* const *out_removals)
+        const gchar * const *out_additions,
+        const gchar * const *out_modifications,
+        const gchar * const *out_removals)
 {
   GVariant *_params;
   _params = g_variant_new ("(^as^as^as)",
@@ -4824,7 +4776,6 @@ void e_gdbus_cal_complete_get_changes (
                            out_removals);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
-
 
 /**
  * e_gdbus_cal_complete_get_free_busy:
@@ -4843,14 +4794,13 @@ void e_gdbus_cal_complete_get_changes (
 void e_gdbus_cal_complete_get_free_busy (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *out_freebusy)
+        const gchar * const *out_freebusy)
 {
   GVariant *_params;
   _params = g_variant_new ("(^as)",
                            out_freebusy);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
-
 
 /**
  * e_gdbus_cal_complete_discard_alarm:
@@ -4871,7 +4821,6 @@ void e_gdbus_cal_complete_discard_alarm (
 {
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
-
 
 /**
  * e_gdbus_cal_complete_create_object:
@@ -4898,7 +4847,6 @@ void e_gdbus_cal_complete_create_object (
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
-
 /**
  * e_gdbus_cal_complete_modify_object:
  * @object: A #EGdbusCal.
@@ -4918,7 +4866,6 @@ void e_gdbus_cal_complete_modify_object (
 {
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
-
 
 /**
  * e_gdbus_cal_complete_remove_object:
@@ -4940,7 +4887,6 @@ void e_gdbus_cal_complete_remove_object (
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
-
 /**
  * e_gdbus_cal_complete_receive_objects:
  * @object: A #EGdbusCal.
@@ -4961,7 +4907,6 @@ void e_gdbus_cal_complete_receive_objects (
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
-
 /**
  * e_gdbus_cal_complete_send_objects:
  * @object: A #EGdbusCal.
@@ -4980,7 +4925,7 @@ void e_gdbus_cal_complete_receive_objects (
 void e_gdbus_cal_complete_send_objects (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *out_users,
+        const gchar * const *out_users,
         const gchar *out_calobj)
 {
   GVariant *_params;
@@ -4989,7 +4934,6 @@ void e_gdbus_cal_complete_send_objects (
                            out_calobj);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
-
 
 /**
  * e_gdbus_cal_complete_get_attachment_list:
@@ -5008,14 +4952,13 @@ void e_gdbus_cal_complete_send_objects (
 void e_gdbus_cal_complete_get_attachment_list (
         EGdbusCal *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *out_attachments)
+        const gchar * const *out_attachments)
 {
   GVariant *_params;
   _params = g_variant_new ("(^as)",
                            out_attachments);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
-
 
 /**
  * e_gdbus_cal_complete_get_query:
@@ -5042,7 +4985,6 @@ void e_gdbus_cal_complete_get_query (
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
-
 /**
  * e_gdbus_cal_complete_get_timezone:
  * @object: A #EGdbusCal.
@@ -5068,7 +5010,6 @@ void e_gdbus_cal_complete_get_timezone (
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
-
 /**
  * e_gdbus_cal_complete_add_timezone:
  * @object: A #EGdbusCal.
@@ -5088,7 +5029,6 @@ void e_gdbus_cal_complete_add_timezone (
 {
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
-
 
 /**
  * e_gdbus_cal_complete_set_default_timezone:
@@ -5110,7 +5050,6 @@ void e_gdbus_cal_complete_set_default_timezone (
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
-
 /**
  * e_gdbus_cal_emit_auth_required:
  * @object: A #EGdbusCal.
@@ -5123,7 +5062,6 @@ void e_gdbus_cal_emit_auth_required (
 {
   g_signal_emit (object, signals[__AUTH_REQUIRED_SIGNAL], 0);
 }
-
 
 /**
  * e_gdbus_cal_emit_backend_error:
@@ -5140,7 +5078,6 @@ void e_gdbus_cal_emit_backend_error (
   g_signal_emit (object, signals[__BACKEND_ERROR_SIGNAL], 0, arg_error);
 }
 
-
 /**
  * e_gdbus_cal_emit_readonly:
  * @object: A #EGdbusCal.
@@ -5156,7 +5093,6 @@ void e_gdbus_cal_emit_readonly (
   g_signal_emit (object, signals[__READONLY_SIGNAL], 0, arg_is_readonly);
 }
 
-
 /**
  * e_gdbus_cal_emit_mode:
  * @object: A #EGdbusCal.
@@ -5171,7 +5107,6 @@ void e_gdbus_cal_emit_mode (
 {
   g_signal_emit (object, signals[__MODE_SIGNAL], 0, arg_mode);
 }
-
 
 static const GDBusSignalInfo e_gdbus_cal_signal_auth_required =
 {
@@ -6316,7 +6251,7 @@ handle_method_call (GDBusConnection       *connection,
       {
         EGdbusCal *object = E_GDBUS_CAL (user_data);
         gboolean handled;
-        const gchar* const *arg_user_list;
+        const gchar * const *arg_user_list;
         guint arg_start;
         guint arg_end;
         g_variant_get (parameters,
@@ -6803,7 +6738,6 @@ e_gdbus_cal_interface_info (void)
   return &_e_gdbus_cal_interface_info;
 }
 
-
 /* ---------------------------------------------------------------------- */
 
 static void proxy_iface_init (EGdbusCalIface *iface);
@@ -6953,7 +6887,7 @@ e_gdbus_cal_proxy_set_property (GObject      *object,
 static void
 g_properties_changed (GDBusProxy         *proxy,
                       GVariant           *changed_properties,
-                      const gchar* const *invalidated_properties)
+                      const gchar * const *invalidated_properties)
 {
   guint n;
   const gchar *key;
@@ -6997,7 +6931,6 @@ static void
 proxy_iface_init (EGdbusCalIface *iface)
 {
 }
-
 
 /**
  * e_gdbus_cal_proxy_new:
@@ -7098,7 +7031,6 @@ EGdbusCal *e_gdbus_cal_proxy_new_sync (GDBusConnection     *connection,
     return NULL;
 }
 
-
 /**
  * e_gdbus_cal_proxy_new_for_bus:
  * @bus_type: A #GBusType.
@@ -7197,7 +7129,6 @@ EGdbusCal *e_gdbus_cal_proxy_new_for_bus_sync (GBusType             bus_type,
   else
     return NULL;
 }
-
 
 /* ---------------------------------------------------------------------- */
 

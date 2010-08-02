@@ -437,7 +437,6 @@ e_cal_backend_get_kind (ECalBackend *backend)
 	return backend->priv->kind;
 }
 
-
 /**
  * e_cal_backend_get_source:
  * @backend: an #ECalBackend

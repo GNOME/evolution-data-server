@@ -162,14 +162,12 @@ GType e_gdbus_book_stub_get_type (void) G_GNUC_CONST;
 
 EGdbusBook *e_gdbus_book_stub_new (void);
 
-
 guint e_gdbus_book_register_object (EGdbusBook *object,
                     GDBusConnection *connection,
                     const gchar *object_path,
                     GError **error);
 
 void e_gdbus_book_drain_notify (EGdbusBook *object);
-
 
 const GDBusInterfaceInfo *e_gdbus_book_interface_info (void) G_GNUC_CONST;
 
@@ -216,7 +214,7 @@ struct _EGdbusBookIface
   gboolean (*handle_remove_contacts) (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *in_list);
+        const gchar * const *in_list);
   gboolean (*handle_modify_contact) (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation,
@@ -252,7 +250,6 @@ struct _EGdbusBookIface
 
 /* C Bindings for properties */
 
-
 /* D-Bus Methods */
 void e_gdbus_book_call_open (
         EGdbusBook *proxy,
@@ -272,7 +269,6 @@ gboolean e_gdbus_book_call_open_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_book_call_remove (
         EGdbusBook *proxy,
         GCancellable *cancellable,
@@ -288,7 +284,6 @@ gboolean e_gdbus_book_call_remove_sync (
         EGdbusBook *proxy,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_book_call_get_contact (
         EGdbusBook *proxy,
@@ -310,7 +305,6 @@ gboolean e_gdbus_book_call_get_contact_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_book_call_get_contact_list (
         EGdbusBook *proxy,
         const gchar *in_query,
@@ -330,7 +324,6 @@ gboolean e_gdbus_book_call_get_contact_list_sync (
         gchar ***out_vcards,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_book_call_authenticate_user (
         EGdbusBook *proxy,
@@ -354,7 +347,6 @@ gboolean e_gdbus_book_call_authenticate_user_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_book_call_add_contact (
         EGdbusBook *proxy,
         const gchar *in_vcard,
@@ -375,10 +367,9 @@ gboolean e_gdbus_book_call_add_contact_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_book_call_remove_contacts (
         EGdbusBook *proxy,
-        const gchar* const *in_list,
+        const gchar * const *in_list,
         GCancellable *cancellable,
         GAsyncReadyCallback callback,
         gpointer user_data);
@@ -390,10 +381,9 @@ gboolean e_gdbus_book_call_remove_contacts_finish (
 
 gboolean e_gdbus_book_call_remove_contacts_sync (
         EGdbusBook *proxy,
-        const gchar* const *in_list,
+        const gchar * const *in_list,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_book_call_modify_contact (
         EGdbusBook *proxy,
@@ -413,7 +403,6 @@ gboolean e_gdbus_book_call_modify_contact_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_book_call_get_static_capabilities (
         EGdbusBook *proxy,
         GCancellable *cancellable,
@@ -431,7 +420,6 @@ gboolean e_gdbus_book_call_get_static_capabilities_sync (
         gchar **out_capabilities,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_book_call_get_required_fields (
         EGdbusBook *proxy,
@@ -451,7 +439,6 @@ gboolean e_gdbus_book_call_get_required_fields_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_book_call_get_supported_fields (
         EGdbusBook *proxy,
         GCancellable *cancellable,
@@ -470,7 +457,6 @@ gboolean e_gdbus_book_call_get_supported_fields_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_book_call_get_supported_auth_methods (
         EGdbusBook *proxy,
         GCancellable *cancellable,
@@ -488,7 +474,6 @@ gboolean e_gdbus_book_call_get_supported_auth_methods_sync (
         gchar ***out_auth_methods,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_book_call_get_book_view (
         EGdbusBook *proxy,
@@ -512,7 +497,6 @@ gboolean e_gdbus_book_call_get_book_view_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_book_call_get_changes (
         EGdbusBook *proxy,
         const gchar *in_change_id,
@@ -533,7 +517,6 @@ gboolean e_gdbus_book_call_get_changes_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_book_call_cancel_operation (
         EGdbusBook *proxy,
         GCancellable *cancellable,
@@ -549,7 +532,6 @@ gboolean e_gdbus_book_call_cancel_operation_sync (
         EGdbusBook *proxy,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_book_call_close (
         EGdbusBook *proxy,
@@ -567,114 +549,91 @@ gboolean e_gdbus_book_call_close_sync (
         GCancellable *cancellable,
         GError **error);
 
-
-
 /* D-Bus Methods Completion Helpers */
 void e_gdbus_book_complete_open (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation);
 
-
 void e_gdbus_book_complete_remove (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation);
-
 
 void e_gdbus_book_complete_get_contact (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation,
         const gchar *out_vcard);
 
-
 void e_gdbus_book_complete_get_contact_list (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *out_vcards);
-
+        const gchar * const *out_vcards);
 
 void e_gdbus_book_complete_authenticate_user (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation);
-
 
 void e_gdbus_book_complete_add_contact (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation,
         const gchar *out_uid);
 
-
 void e_gdbus_book_complete_remove_contacts (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation);
 
-
 void e_gdbus_book_complete_modify_contact (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation);
-
 
 void e_gdbus_book_complete_get_static_capabilities (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation,
         const gchar *out_capabilities);
 
-
 void e_gdbus_book_complete_get_required_fields (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *out_fields);
-
+        const gchar * const *out_fields);
 
 void e_gdbus_book_complete_get_supported_fields (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *out_fields);
-
+        const gchar * const *out_fields);
 
 void e_gdbus_book_complete_get_supported_auth_methods (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *out_auth_methods);
-
+        const gchar * const *out_auth_methods);
 
 void e_gdbus_book_complete_get_book_view (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation,
         const gchar *out_view);
 
-
 void e_gdbus_book_complete_get_changes (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation,
         GVariant *out_changes);
 
-
 void e_gdbus_book_complete_cancel_operation (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation);
 
-
 void e_gdbus_book_complete_close (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation);
-
-
 
 /* D-Bus Signal Emission Helpers */
 void e_gdbus_book_emit_writable (
         EGdbusBook *object,
         gboolean arg_value);
 
-
 void e_gdbus_book_emit_connection (
         EGdbusBook *object,
         gboolean arg_connected);
 
-
 void e_gdbus_book_emit_auth_required (
         EGdbusBook *object);
-
-
 
 G_END_DECLS
 

@@ -46,7 +46,7 @@
  * emitting the corresponding GType signals. For better type-safety, you can use,
  * the provided e_gdbus_book_emit_*() helpers.
  *
- * For property changes, #GObject::notify signal emissions on exported objects 
+ * For property changes, #GObject::notify signal emissions on exported objects
  * will be intercepted and queued. In an idle handler, the queued notifications
  * are processed and a single <literal>PropertiesChanged</literal> signal (on the
  * <literal>org.freedesktop.DBus.Properties</literal> interface) will be emitted
@@ -60,7 +60,6 @@
 
 typedef EGdbusBookIface EGdbusBookInterface;
 G_DEFINE_INTERFACE (EGdbusBook, e_gdbus_book, G_TYPE_OBJECT);
-
 
 enum
 {
@@ -89,7 +88,6 @@ enum
 
 static guint signals[__LAST_SIGNAL] = {0};
 
-
 enum
 {
   PROP_0,
@@ -104,7 +102,6 @@ static GHashTable *_signal_name_to_id = NULL;
 static GHashTable *_property_name_to_id = NULL;
 static GHashTable *_property_gname_to_name = NULL;
 static GHashTable *_property_name_to_gname = NULL;
-
 
 static guint
 lookup_method_id_from_method_name (const gchar *method_name)
@@ -369,7 +366,6 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
                               signal_emission_hook_cb_auth_required,
                               (gpointer) "auth_required",
                               NULL);
-
 
   /* GObject signals definitions for D-Bus methods: */
   /**
@@ -784,7 +780,6 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
   /* GObject property definitions for D-Bus properties: */
 }
 
-
 /* C Bindings for properties */
 
 /**
@@ -893,7 +888,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_book_call_remove:
  * @proxy: A #EGdbusBook.
@@ -993,7 +987,6 @@ gboolean e_gdbus_book_call_remove_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_book_call_get_contact:
@@ -1115,7 +1108,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_book_call_get_contact_list:
  * @proxy: A #EGdbusBook.
@@ -1236,7 +1228,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_book_call_authenticate_user:
  * @proxy: A #EGdbusBook.
@@ -1354,7 +1345,6 @@ gboolean e_gdbus_book_call_authenticate_user_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_book_call_add_contact:
@@ -1476,7 +1466,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_book_call_remove_contacts:
  * @proxy: A #EGdbusBook.
@@ -1497,7 +1486,7 @@ _out:
  */
 void e_gdbus_book_call_remove_contacts (
         EGdbusBook *proxy,
-        const gchar* const *in_list,
+        const gchar * const *in_list,
         GCancellable *cancellable,
         GAsyncReadyCallback callback,
         gpointer user_data)
@@ -1559,7 +1548,7 @@ _out:
  */
 gboolean e_gdbus_book_call_remove_contacts_sync (
         EGdbusBook *proxy,
-        const gchar* const *in_list,
+        const gchar * const *in_list,
         GCancellable *cancellable,
         GError **error)
 {
@@ -1582,7 +1571,6 @@ gboolean e_gdbus_book_call_remove_contacts_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_book_call_modify_contact:
@@ -1689,7 +1677,6 @@ gboolean e_gdbus_book_call_modify_contact_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_book_call_get_static_capabilities:
@@ -1805,7 +1792,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_book_call_get_required_fields:
  * @proxy: A #EGdbusBook.
@@ -1919,7 +1905,6 @@ gboolean e_gdbus_book_call_get_required_fields_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_book_call_get_supported_fields:
@@ -2035,7 +2020,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_book_call_get_supported_auth_methods:
  * @proxy: A #EGdbusBook.
@@ -2149,7 +2133,6 @@ gboolean e_gdbus_book_call_get_supported_auth_methods_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_book_call_get_book_view:
@@ -2277,7 +2260,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_book_call_get_changes:
  * @proxy: A #EGdbusBook.
@@ -2398,7 +2380,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_book_call_cancel_operation:
  * @proxy: A #EGdbusBook.
@@ -2498,7 +2479,6 @@ gboolean e_gdbus_book_call_cancel_operation_sync (
 _out:
   return _ret;
 }
-
 
 /**
  * e_gdbus_book_call_close:
@@ -2600,7 +2580,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_book_complete_open:
  * @object: A #EGdbusBook.
@@ -2621,7 +2600,6 @@ void e_gdbus_book_complete_open (
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
-
 /**
  * e_gdbus_book_complete_remove:
  * @object: A #EGdbusBook.
@@ -2641,7 +2619,6 @@ void e_gdbus_book_complete_remove (
 {
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
-
 
 /**
  * e_gdbus_book_complete_get_contact:
@@ -2668,7 +2645,6 @@ void e_gdbus_book_complete_get_contact (
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
-
 /**
  * e_gdbus_book_complete_get_contact_list:
  * @object: A #EGdbusBook.
@@ -2686,14 +2662,13 @@ void e_gdbus_book_complete_get_contact (
 void e_gdbus_book_complete_get_contact_list (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *out_vcards)
+        const gchar * const *out_vcards)
 {
   GVariant *_params;
   _params = g_variant_new ("(^as)",
                            out_vcards);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
-
 
 /**
  * e_gdbus_book_complete_authenticate_user:
@@ -2714,7 +2689,6 @@ void e_gdbus_book_complete_authenticate_user (
 {
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
-
 
 /**
  * e_gdbus_book_complete_add_contact:
@@ -2741,7 +2715,6 @@ void e_gdbus_book_complete_add_contact (
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
-
 /**
  * e_gdbus_book_complete_remove_contacts:
  * @object: A #EGdbusBook.
@@ -2762,7 +2735,6 @@ void e_gdbus_book_complete_remove_contacts (
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
-
 /**
  * e_gdbus_book_complete_modify_contact:
  * @object: A #EGdbusBook.
@@ -2782,7 +2754,6 @@ void e_gdbus_book_complete_modify_contact (
 {
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
-
 
 /**
  * e_gdbus_book_complete_get_static_capabilities:
@@ -2809,7 +2780,6 @@ void e_gdbus_book_complete_get_static_capabilities (
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
-
 /**
  * e_gdbus_book_complete_get_required_fields:
  * @object: A #EGdbusBook.
@@ -2827,14 +2797,13 @@ void e_gdbus_book_complete_get_static_capabilities (
 void e_gdbus_book_complete_get_required_fields (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *out_fields)
+        const gchar * const *out_fields)
 {
   GVariant *_params;
   _params = g_variant_new ("(^as)",
                            out_fields);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
-
 
 /**
  * e_gdbus_book_complete_get_supported_fields:
@@ -2853,14 +2822,13 @@ void e_gdbus_book_complete_get_required_fields (
 void e_gdbus_book_complete_get_supported_fields (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *out_fields)
+        const gchar * const *out_fields)
 {
   GVariant *_params;
   _params = g_variant_new ("(^as)",
                            out_fields);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
-
 
 /**
  * e_gdbus_book_complete_get_supported_auth_methods:
@@ -2879,14 +2847,13 @@ void e_gdbus_book_complete_get_supported_fields (
 void e_gdbus_book_complete_get_supported_auth_methods (
         EGdbusBook *object,
         GDBusMethodInvocation *invocation,
-        const gchar* const *out_auth_methods)
+        const gchar * const *out_auth_methods)
 {
   GVariant *_params;
   _params = g_variant_new ("(^as)",
                            out_auth_methods);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
-
 
 /**
  * e_gdbus_book_complete_get_book_view:
@@ -2913,7 +2880,6 @@ void e_gdbus_book_complete_get_book_view (
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
-
 /**
  * e_gdbus_book_complete_get_changes:
  * @object: A #EGdbusBook.
@@ -2939,7 +2905,6 @@ void e_gdbus_book_complete_get_changes (
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
-
 /**
  * e_gdbus_book_complete_cancel_operation:
  * @object: A #EGdbusBook.
@@ -2959,7 +2924,6 @@ void e_gdbus_book_complete_cancel_operation (
 {
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
-
 
 /**
  * e_gdbus_book_complete_close:
@@ -2981,7 +2945,6 @@ void e_gdbus_book_complete_close (
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
-
 /**
  * e_gdbus_book_emit_writable:
  * @object: A #EGdbusBook.
@@ -2996,7 +2959,6 @@ void e_gdbus_book_emit_writable (
 {
   g_signal_emit (object, signals[__WRITABLE_SIGNAL], 0, arg_value);
 }
-
 
 /**
  * e_gdbus_book_emit_connection:
@@ -3013,7 +2975,6 @@ void e_gdbus_book_emit_connection (
   g_signal_emit (object, signals[__CONNECTION_SIGNAL], 0, arg_connected);
 }
 
-
 /**
  * e_gdbus_book_emit_auth_required:
  * @object: A #EGdbusBook.
@@ -3026,7 +2987,6 @@ void e_gdbus_book_emit_auth_required (
 {
   g_signal_emit (object, signals[__AUTH_REQUIRED_SIGNAL], 0);
 }
-
 
 static const GDBusArgInfo e_gdbus_book_signal_writable_value =
 {
@@ -3632,7 +3592,7 @@ handle_method_call (GDBusConnection       *connection,
       {
         EGdbusBook *object = E_GDBUS_BOOK (user_data);
         gboolean handled;
-        const gchar* const *arg_list;
+        const gchar * const *arg_list;
         g_variant_get (parameters,
                        "(^a&s)",
                        &arg_list);
@@ -4051,7 +4011,6 @@ e_gdbus_book_interface_info (void)
   return &_e_gdbus_book_interface_info;
 }
 
-
 /* ---------------------------------------------------------------------- */
 
 static void proxy_iface_init (EGdbusBookIface *iface);
@@ -4189,7 +4148,7 @@ e_gdbus_book_proxy_set_property (GObject      *object,
 static void
 g_properties_changed (GDBusProxy         *proxy,
                       GVariant           *changed_properties,
-                      const gchar* const *invalidated_properties)
+                      const gchar * const *invalidated_properties)
 {
   guint n;
   const gchar *key;
@@ -4233,7 +4192,6 @@ static void
 proxy_iface_init (EGdbusBookIface *iface)
 {
 }
-
 
 /**
  * e_gdbus_book_proxy_new:
@@ -4334,7 +4292,6 @@ EGdbusBook *e_gdbus_book_proxy_new_sync (GDBusConnection     *connection,
     return NULL;
 }
 
-
 /**
  * e_gdbus_book_proxy_new_for_bus:
  * @bus_type: A #GBusType.
@@ -4433,7 +4390,6 @@ EGdbusBook *e_gdbus_book_proxy_new_for_bus_sync (GBusType             bus_type,
   else
     return NULL;
 }
-
 
 /* ---------------------------------------------------------------------- */
 

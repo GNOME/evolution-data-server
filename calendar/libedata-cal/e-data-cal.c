@@ -57,7 +57,7 @@ e_data_cal_error_quark (void)
 	#define ERR_PREFIX "org.gnome.evolution.dataserver.calendar.Cal."
 
 	static const GDBusErrorEntry entries[] = {
-		{ Success, 				ERR_PREFIX "Success" },
+		{ Success,				ERR_PREFIX "Success" },
 		{ RepositoryOffline,			ERR_PREFIX "RepositoryOffline" },
 		{ PermissionDenied,			ERR_PREFIX "PermissionDenied" },
 		{ InvalidRange,				ERR_PREFIX "InvalidRange" },

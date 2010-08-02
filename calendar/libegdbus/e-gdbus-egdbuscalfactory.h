@@ -144,14 +144,12 @@ GType e_gdbus_cal_factory_stub_get_type (void) G_GNUC_CONST;
 
 EGdbusCalFactory *e_gdbus_cal_factory_stub_new (void);
 
-
 guint e_gdbus_cal_factory_register_object (EGdbusCalFactory *object,
                     GDBusConnection *connection,
                     const gchar *object_path,
                     GError **error);
 
 void e_gdbus_cal_factory_drain_notify (EGdbusCalFactory *object);
-
 
 const GDBusInterfaceInfo *e_gdbus_cal_factory_interface_info (void) G_GNUC_CONST;
 
@@ -170,7 +168,6 @@ struct _EGdbusCalFactoryIface
 };
 
 /* C Bindings for properties */
-
 
 /* D-Bus Methods */
 void e_gdbus_cal_factory_call_get_cal (
@@ -195,15 +192,11 @@ gboolean e_gdbus_cal_factory_call_get_cal_sync (
         GCancellable *cancellable,
         GError **error);
 
-
-
 /* D-Bus Methods Completion Helpers */
 void e_gdbus_cal_factory_complete_get_cal (
         EGdbusCalFactory *object,
         GDBusMethodInvocation *invocation,
         const gchar *out_path);
-
-
 
 /* D-Bus Signal Emission Helpers */
 

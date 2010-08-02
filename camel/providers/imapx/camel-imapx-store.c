@@ -229,7 +229,7 @@ camel_imapx_store_get_server (CamelIMAPXStore *istore, const gchar *folder_name,
 	CamelIMAPXServer *server = NULL;
 
 	camel_service_lock (CAMEL_SERVICE (istore), CAMEL_SERVICE_REC_CONNECT_LOCK);
-	
+
 	server = camel_imapx_conn_manager_get_connection (istore->con_man, folder_name, error);
 
 	camel_service_unlock (CAMEL_SERVICE (istore), CAMEL_SERVICE_REC_CONNECT_LOCK);
@@ -341,8 +341,8 @@ imapx_noop (CamelStore *store, GError **error)
 
 	for (l = servers; l != NULL; l = g_slist_next (l)) {
 		CamelIMAPXServer *server = CAMEL_IMAPX_SERVER (l->data);
-	
-		/* we just return last noops value, technically not correct though */	
+
+		/* we just return last noops value, technically not correct though */
 		success = camel_imapx_server_noop (server, NULL, error);
 		g_object_unref(server);
 	}

@@ -2,7 +2,6 @@
 
 #include	<glib-object.h>
 
-
 #ifdef G_ENABLE_DEBUG
 #define g_marshal_value_peek_boolean(v)  g_value_get_boolean (v)
 #define g_marshal_value_peek_char(v)     g_value_get_char (v)
@@ -47,8 +46,7 @@
 #define g_marshal_value_peek_pointer(v)  (v)->data[0].v_pointer
 #define g_marshal_value_peek_object(v)   (v)->data[0].v_pointer
 #define g_marshal_value_peek_variant(v)  (v)->data[0].v_pointer
-#endif /* !G_ENABLE_DEBUG */
-
+#endif /* G_ENABLE_DEBUG */
 
 /* BOOLEAN:OBJECT,STRING (e-gdbus-marshallers.list:1) */
 void

@@ -150,14 +150,12 @@ GType e_gdbus_cal_view_stub_get_type (void) G_GNUC_CONST;
 
 EGdbusCalView *e_gdbus_cal_view_stub_new (void);
 
-
 guint e_gdbus_cal_view_register_object (EGdbusCalView *object,
                     GDBusConnection *connection,
                     const gchar *object_path,
                     GError **error);
 
 void e_gdbus_cal_view_drain_notify (EGdbusCalView *object);
-
 
 const GDBusInterfaceInfo *e_gdbus_cal_view_interface_info (void) G_GNUC_CONST;
 
@@ -168,13 +166,13 @@ struct _EGdbusCalViewIface
   /* Signal handlers for receiving D-Bus signals: */
   void (*objects_added) (
         EGdbusCalView *object,
-        const gchar* const *arg_objects);
+        const gchar * const *arg_objects);
   void (*objects_modified) (
         EGdbusCalView *object,
-        const gchar* const *arg_objects);
+        const gchar * const *arg_objects);
   void (*objects_removed) (
         EGdbusCalView *object,
-        const gchar* const *arg_ids);
+        const gchar * const *arg_ids);
   void (*progress) (
         EGdbusCalView *object,
         const gchar *arg_message,
@@ -195,7 +193,6 @@ struct _EGdbusCalViewIface
 
 /* C Bindings for properties */
 
-
 /* D-Bus Methods */
 void e_gdbus_cal_view_call_start (
         EGdbusCalView *proxy,
@@ -213,7 +210,6 @@ gboolean e_gdbus_cal_view_call_start_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_cal_view_call_stop (
         EGdbusCalView *proxy,
         GCancellable *cancellable,
@@ -230,48 +226,37 @@ gboolean e_gdbus_cal_view_call_stop_sync (
         GCancellable *cancellable,
         GError **error);
 
-
-
 /* D-Bus Methods Completion Helpers */
 void e_gdbus_cal_view_complete_start (
         EGdbusCalView *object,
         GDBusMethodInvocation *invocation);
 
-
 void e_gdbus_cal_view_complete_stop (
         EGdbusCalView *object,
         GDBusMethodInvocation *invocation);
 
-
-
 /* D-Bus Signal Emission Helpers */
 void e_gdbus_cal_view_emit_objects_added (
         EGdbusCalView *object,
-        const gchar* const *arg_objects);
-
+        const gchar * const *arg_objects);
 
 void e_gdbus_cal_view_emit_objects_modified (
         EGdbusCalView *object,
-        const gchar* const *arg_objects);
-
+        const gchar * const *arg_objects);
 
 void e_gdbus_cal_view_emit_objects_removed (
         EGdbusCalView *object,
-        const gchar* const *arg_ids);
-
+        const gchar * const *arg_ids);
 
 void e_gdbus_cal_view_emit_progress (
         EGdbusCalView *object,
         const gchar *arg_message,
         guint arg_progress);
 
-
 void e_gdbus_cal_view_emit_done (
         EGdbusCalView *object,
         guint arg_status,
         const gchar *arg_message);
-
-
 
 G_END_DECLS
 

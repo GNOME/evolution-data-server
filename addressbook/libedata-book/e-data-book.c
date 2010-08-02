@@ -45,7 +45,7 @@ struct _EDataBookPrivate
 	ESource *source;
 };
 
-static void return_error_and_list (EGdbusBook *gdbus_object, void (* complete_func) (EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar* const *out_array), guint32 opid, GError *error, const gchar *error_fmt, GList *list, gboolean free_data);
+static void return_error_and_list (EGdbusBook *gdbus_object, void (* complete_func) (EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar * const *out_array), guint32 opid, GError *error, const gchar *error_fmt, GList *list, gboolean free_data);
 static void data_book_return_error (GDBusMethodInvocation *invocation, const GError *error, const gchar *error_fmt);
 
 static GThreadPool *op_pool = NULL;
@@ -764,7 +764,7 @@ e_data_book_report_auth_required (EDataBook *book)
 }
 
 static void
-return_error_and_list (EGdbusBook *gdbus_object, void (* complete_func) (EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar* const *out_array), guint32 opid, GError *error, const gchar *error_fmt, GList *list, gboolean free_data)
+return_error_and_list (EGdbusBook *gdbus_object, void (* complete_func) (EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar * const *out_array), guint32 opid, GError *error, const gchar *error_fmt, GList *list, gboolean free_data)
 {
 	GDBusMethodInvocation *invocation = opid_fetch (opid);
 

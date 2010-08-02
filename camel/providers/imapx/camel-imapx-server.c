@@ -1529,7 +1529,7 @@ imapx_untagged(CamelIMAPXServer *imap, GError **error)
 						}
 
 						if (job->op) {
-							int cnt = (camel_folder_summary_count (job->folder->summary) * 100 )/ifolder->exists_on_server;
+							gint cnt = (camel_folder_summary_count (job->folder->summary) * 100 )/ifolder->exists_on_server;
 							camel_operation_progress (job->op, cnt?cnt:1);
 						}
 					}

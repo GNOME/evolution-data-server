@@ -151,14 +151,12 @@ GType e_gdbus_book_view_stub_get_type (void) G_GNUC_CONST;
 
 EGdbusBookView *e_gdbus_book_view_stub_new (void);
 
-
 guint e_gdbus_book_view_register_object (EGdbusBookView *object,
                     GDBusConnection *connection,
                     const gchar *object_path,
                     GError **error);
 
 void e_gdbus_book_view_drain_notify (EGdbusBookView *object);
-
 
 const GDBusInterfaceInfo *e_gdbus_book_view_interface_info (void) G_GNUC_CONST;
 
@@ -169,13 +167,13 @@ struct _EGdbusBookViewIface
   /* Signal handlers for receiving D-Bus signals: */
   void (*contacts_added) (
         EGdbusBookView *object,
-        const gchar* const *arg_vcards);
+        const gchar * const *arg_vcards);
   void (*contacts_changed) (
         EGdbusBookView *object,
-        const gchar* const *arg_vcards);
+        const gchar * const *arg_vcards);
   void (*contacts_removed) (
         EGdbusBookView *object,
-        const gchar* const *arg_ids);
+        const gchar * const *arg_ids);
   void (*status_message) (
         EGdbusBookView *object,
         const gchar *arg_message);
@@ -198,7 +196,6 @@ struct _EGdbusBookViewIface
 
 /* C Bindings for properties */
 
-
 /* D-Bus Methods */
 void e_gdbus_book_view_call_start (
         EGdbusBookView *proxy,
@@ -216,7 +213,6 @@ gboolean e_gdbus_book_view_call_start_sync (
         GCancellable *cancellable,
         GError **error);
 
-
 void e_gdbus_book_view_call_stop (
         EGdbusBookView *proxy,
         GCancellable *cancellable,
@@ -232,7 +228,6 @@ gboolean e_gdbus_book_view_call_stop_sync (
         EGdbusBookView *proxy,
         GCancellable *cancellable,
         GError **error);
-
 
 void e_gdbus_book_view_call_dispose (
         EGdbusBookView *proxy,
@@ -250,52 +245,40 @@ gboolean e_gdbus_book_view_call_dispose_sync (
         GCancellable *cancellable,
         GError **error);
 
-
-
 /* D-Bus Methods Completion Helpers */
 void e_gdbus_book_view_complete_start (
         EGdbusBookView *object,
         GDBusMethodInvocation *invocation);
 
-
 void e_gdbus_book_view_complete_stop (
         EGdbusBookView *object,
         GDBusMethodInvocation *invocation);
-
 
 void e_gdbus_book_view_complete_dispose (
         EGdbusBookView *object,
         GDBusMethodInvocation *invocation);
 
-
-
 /* D-Bus Signal Emission Helpers */
 void e_gdbus_book_view_emit_contacts_added (
         EGdbusBookView *object,
-        const gchar* const *arg_vcards);
-
+        const gchar * const *arg_vcards);
 
 void e_gdbus_book_view_emit_contacts_changed (
         EGdbusBookView *object,
-        const gchar* const *arg_vcards);
-
+        const gchar * const *arg_vcards);
 
 void e_gdbus_book_view_emit_contacts_removed (
         EGdbusBookView *object,
-        const gchar* const *arg_ids);
-
+        const gchar * const *arg_ids);
 
 void e_gdbus_book_view_emit_status_message (
         EGdbusBookView *object,
         const gchar *arg_message);
 
-
 void e_gdbus_book_view_emit_complete (
         EGdbusBookView *object,
         guint arg_status,
         const gchar *arg_message);
-
-
 
 G_END_DECLS
 

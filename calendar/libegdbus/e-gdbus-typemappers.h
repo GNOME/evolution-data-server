@@ -8,5 +8,4 @@
 
 #include <gio/gio.h>
 
-
 #endif /* __E_GDBUS_TYPE_MAPPERS_H__ */

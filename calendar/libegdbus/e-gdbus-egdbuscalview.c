@@ -46,7 +46,7 @@
  * emitting the corresponding GType signals. For better type-safety, you can use,
  * the provided e_gdbus_cal_view_emit_*() helpers.
  *
- * For property changes, #GObject::notify signal emissions on exported objects 
+ * For property changes, #GObject::notify signal emissions on exported objects
  * will be intercepted and queued. In an idle handler, the queued notifications
  * are processed and a single <literal>PropertiesChanged</literal> signal (on the
  * <literal>org.freedesktop.DBus.Properties</literal> interface) will be emitted
@@ -60,7 +60,6 @@
 
 typedef EGdbusCalViewIface EGdbusCalViewInterface;
 G_DEFINE_INTERFACE (EGdbusCalView, e_gdbus_cal_view, G_TYPE_OBJECT);
-
 
 enum
 {
@@ -77,7 +76,6 @@ enum
 
 static guint signals[__LAST_SIGNAL] = {0};
 
-
 enum
 {
   PROP_0,
@@ -92,7 +90,6 @@ static GHashTable *_signal_name_to_id = NULL;
 static GHashTable *_property_name_to_id = NULL;
 static GHashTable *_property_gname_to_name = NULL;
 static GHashTable *_property_name_to_gname = NULL;
-
 
 static guint
 lookup_method_id_from_method_name (const gchar *method_name)
@@ -509,7 +506,6 @@ e_gdbus_cal_view_default_init (EGdbusCalViewIface *iface)
                               (gpointer) "Done",
                               NULL);
 
-
   /* GObject signals definitions for D-Bus methods: */
   /**
    * EGdbusCalView::handle-start:
@@ -562,7 +558,6 @@ e_gdbus_cal_view_default_init (EGdbusCalViewIface *iface)
 
   /* GObject property definitions for D-Bus properties: */
 }
-
 
 /* C Bindings for properties */
 
@@ -666,7 +661,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_cal_view_call_stop:
  * @proxy: A #EGdbusCalView.
@@ -767,7 +761,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_cal_view_complete_start:
  * @object: A #EGdbusCalView.
@@ -787,7 +780,6 @@ void e_gdbus_cal_view_complete_start (
 {
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
-
 
 /**
  * e_gdbus_cal_view_complete_stop:
@@ -809,7 +801,6 @@ void e_gdbus_cal_view_complete_stop (
   g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
-
 /**
  * e_gdbus_cal_view_emit_objects_added:
  * @object: A #EGdbusCalView.
@@ -820,11 +811,10 @@ void e_gdbus_cal_view_complete_stop (
  */
 void e_gdbus_cal_view_emit_objects_added (
         EGdbusCalView *object,
-        const gchar* const *arg_objects)
+        const gchar * const *arg_objects)
 {
   g_signal_emit (object, signals[__OBJECTS_ADDED_SIGNAL], 0, arg_objects);
 }
-
 
 /**
  * e_gdbus_cal_view_emit_objects_modified:
@@ -836,11 +826,10 @@ void e_gdbus_cal_view_emit_objects_added (
  */
 void e_gdbus_cal_view_emit_objects_modified (
         EGdbusCalView *object,
-        const gchar* const *arg_objects)
+        const gchar * const *arg_objects)
 {
   g_signal_emit (object, signals[__OBJECTS_MODIFIED_SIGNAL], 0, arg_objects);
 }
-
 
 /**
  * e_gdbus_cal_view_emit_objects_removed:
@@ -852,11 +841,10 @@ void e_gdbus_cal_view_emit_objects_modified (
  */
 void e_gdbus_cal_view_emit_objects_removed (
         EGdbusCalView *object,
-        const gchar* const *arg_ids)
+        const gchar * const *arg_ids)
 {
   g_signal_emit (object, signals[__OBJECTS_REMOVED_SIGNAL], 0, arg_ids);
 }
-
 
 /**
  * e_gdbus_cal_view_emit_progress:
@@ -875,7 +863,6 @@ void e_gdbus_cal_view_emit_progress (
   g_signal_emit (object, signals[__PROGRESS_SIGNAL], 0, arg_message, arg_progress);
 }
 
-
 /**
  * e_gdbus_cal_view_emit_done:
  * @object: A #EGdbusCalView.
@@ -892,7 +879,6 @@ void e_gdbus_cal_view_emit_done (
 {
   g_signal_emit (object, signals[__DONE_SIGNAL], 0, arg_status, arg_message);
 }
-
 
 static const GDBusArgInfo e_gdbus_cal_view_signal_ObjectsAdded_objects =
 {
@@ -1381,7 +1367,6 @@ e_gdbus_cal_view_interface_info (void)
   return &_e_gdbus_cal_view_interface_info;
 }
 
-
 /* ---------------------------------------------------------------------- */
 
 static void proxy_iface_init (EGdbusCalViewIface *iface);
@@ -1408,7 +1393,7 @@ g_signal (GDBusProxy  *proxy,
     {
     case __OBJECTS_ADDED_SIGNAL:
       {
-        const gchar* const *arg_objects;
+        const gchar * const *arg_objects;
         g_variant_get (parameters,
                        "(^a&s)",
                        &arg_objects);
@@ -1421,7 +1406,7 @@ g_signal (GDBusProxy  *proxy,
 
     case __OBJECTS_MODIFIED_SIGNAL:
       {
-        const gchar* const *arg_objects;
+        const gchar * const *arg_objects;
         g_variant_get (parameters,
                        "(^a&s)",
                        &arg_objects);
@@ -1434,7 +1419,7 @@ g_signal (GDBusProxy  *proxy,
 
     case __OBJECTS_REMOVED_SIGNAL:
       {
-        const gchar* const *arg_ids;
+        const gchar * const *arg_ids;
         g_variant_get (parameters,
                        "(^a&s)",
                        &arg_ids);
@@ -1554,7 +1539,7 @@ e_gdbus_cal_view_proxy_set_property (GObject      *object,
 static void
 g_properties_changed (GDBusProxy         *proxy,
                       GVariant           *changed_properties,
-                      const gchar* const *invalidated_properties)
+                      const gchar * const *invalidated_properties)
 {
   guint n;
   const gchar *key;
@@ -1598,7 +1583,6 @@ static void
 proxy_iface_init (EGdbusCalViewIface *iface)
 {
 }
-
 
 /**
  * e_gdbus_cal_view_proxy_new:
@@ -1699,7 +1683,6 @@ EGdbusCalView *e_gdbus_cal_view_proxy_new_sync (GDBusConnection     *connection,
     return NULL;
 }
 
-
 /**
  * e_gdbus_cal_view_proxy_new_for_bus:
  * @bus_type: A #GBusType.
@@ -1798,7 +1781,6 @@ EGdbusCalView *e_gdbus_cal_view_proxy_new_for_bus_sync (GBusType             bus
   else
     return NULL;
 }
-
 
 /* ---------------------------------------------------------------------- */
 

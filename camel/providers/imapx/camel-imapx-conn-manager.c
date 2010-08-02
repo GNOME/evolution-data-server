@@ -1,5 +1,5 @@
 /*-*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* camel-imap-conn-manager.h 
+/* camel-imap-conn-manager.h
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
@@ -35,7 +35,7 @@
 G_DEFINE_TYPE (CamelIMAPXConnManager, camel_imapx_conn_manager, CAMEL_TYPE_OBJECT)
 
 struct _CamelIMAPXConnManagerPrivate {
-	GSList *connections;	
+	GSList *connections;
 	guint n_connections;
 	CamelStore *store;
 	GStaticRecMutex con_man_lock;
@@ -47,7 +47,6 @@ typedef struct {
 	gchar *selected_folder;
 } ConnectionInfo;
 
-
 static void
 free_connection (gpointer data, gpointer user_data)
 {
@@ -55,7 +54,7 @@ free_connection (gpointer data, gpointer user_data)
 	CamelIMAPXServer *conn = cinfo->conn;
 
 	camel_imapx_server_connect (conn, 0);
-	
+
 	g_object_unref (conn);
 	g_hash_table_destroy (cinfo->folders);
 
@@ -66,10 +65,10 @@ static void
 imapx_prune_connections (CamelIMAPXConnManager *con_man)
 {
 	CON_LOCK(con_man);
-	
+
 	g_slist_foreach (con_man->priv->connections, (GFunc) free_connection, NULL);
 	con_man->priv->connections = NULL;
-	
+
 	CON_UNLOCK(con_man);
 }
 
@@ -77,7 +76,7 @@ static void
 imapx_conn_manager_finalize (GObject *object)
 {
 	CamelIMAPXConnManager *con_man = CAMEL_IMAPX_CONN_MANAGER(object);
-	
+
 	imapx_prune_connections (con_man);
 	g_static_rec_mutex_free (&con_man->priv->con_man_lock);
 	g_object_unref (con_man->priv->store);
@@ -101,12 +100,11 @@ camel_imapx_conn_manager_init (CamelIMAPXConnManager *con_man)
 
 	priv = g_new0 (CamelIMAPXConnManagerPrivate, 1);
 	con_man->priv = priv;
-	
+
 	/* default is 1 connection */
 	con_man->priv->n_connections = 1;
 	g_static_rec_mutex_init (&con_man->priv->con_man_lock);
 }
-
 
 /* Static functions go here */
 
@@ -117,13 +115,13 @@ imapx_conn_shutdown (CamelIMAPXServer *conn, CamelIMAPXConnManager *con_man)
 	GSList *l;
 	ConnectionInfo *cinfo;
 	gboolean found = FALSE;
-	
+
 	CON_LOCK(con_man);
 
 	for (l = con_man->priv->connections; l != NULL; l = g_slist_next (l)) {
 		cinfo = (ConnectionInfo *) l->data;
 		if (cinfo->conn == conn) {
-			found = TRUE;	
+			found = TRUE;
 			break;
 		}
 	}
@@ -142,13 +140,13 @@ imapx_conn_update_select (CamelIMAPXServer *conn, const gchar *selected_folder, 
 	GSList *l;
 	ConnectionInfo *cinfo;
 	gboolean found = FALSE;
-	
+
 	CON_LOCK(con_man);
 
 	for (l = con_man->priv->connections; l != NULL; l = g_slist_next (l)) {
 		cinfo = (ConnectionInfo *) l->data;
 		if (cinfo->conn == conn) {
-			found = TRUE;	
+			found = TRUE;
 			break;
 		}
 	}
@@ -166,7 +164,7 @@ imapx_conn_update_select (CamelIMAPXServer *conn, const gchar *selected_folder, 
 			g_free (cinfo->selected_folder);
 		}
 
-		cinfo->selected_folder = g_strdup (selected_folder); 
+		cinfo->selected_folder = g_strdup (selected_folder);
 	}
 
 	CON_UNLOCK(con_man);
@@ -180,7 +178,7 @@ imapx_find_connection (CamelIMAPXConnManager *con_man, const gchar *folder_name)
 	GSList *l;
 	CamelIMAPXServer *conn = NULL;
 	ConnectionInfo *cinfo = NULL;
-	
+
 	CON_LOCK(con_man);
 
 	/* Have a dedicated connection for INBOX ? */
@@ -243,7 +241,7 @@ imapx_create_new_connection (CamelIMAPXConnManager *con_man, const gchar *folder
 		g_object_ref (conn);
 	} else {
 		g_object_unref (conn);
-		
+
 		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		CON_UNLOCK (con_man);
 
@@ -258,12 +256,12 @@ imapx_create_new_connection (CamelIMAPXConnManager *con_man, const gchar *folder
 	cinfo = g_new0 (ConnectionInfo, 1);
 	cinfo->conn = conn;
 	cinfo->folders = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
-	
+
 	if (folder_name)
 		g_hash_table_insert (cinfo->folders, g_strdup (folder_name), GINT_TO_POINTER (1));
 
 	con_man->priv->connections = g_slist_prepend (con_man->priv->connections, cinfo);
-	
+
 	c(printf ("Created new connection for %s and total connections %d \n", folder_name, g_slist_length (con_man->priv->connections)));
 
 	CON_UNLOCK(con_man);
@@ -284,7 +282,7 @@ camel_imapx_conn_manager_new (CamelStore *store)
 	return con_man;
 }
 
-void			
+void
 camel_imapx_conn_manager_set_n_connections (CamelIMAPXConnManager *con_man, guint n_connections)
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man));
@@ -292,13 +290,13 @@ camel_imapx_conn_manager_set_n_connections (CamelIMAPXConnManager *con_man, guin
 	con_man->priv->n_connections = n_connections;
 }
 
-CamelIMAPXServer *	
+CamelIMAPXServer *
 camel_imapx_conn_manager_get_connection (CamelIMAPXConnManager *con_man, const gchar *folder_name, GError **error)
 {
 	CamelIMAPXServer *conn = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man), NULL);
-	
+
 	CON_LOCK(con_man);
 
 	conn = imapx_find_connection (con_man, folder_name);
@@ -314,9 +312,9 @@ GSList *
 camel_imapx_conn_manager_get_connections (CamelIMAPXConnManager *con_man)
 {
 	GSList *l, *conns = NULL;
-	
+
 	CON_LOCK(con_man);
-	
+
 	for (l = con_man->priv->connections; l != NULL; l = g_slist_next (l)) {
 		ConnectionInfo *cinfo = (ConnectionInfo *) l->data;
 
@@ -338,13 +336,13 @@ camel_imapx_conn_manager_update_con_info (CamelIMAPXConnManager *con_man, CamelI
 	gboolean found = FALSE;
 
 	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man));
-	
+
 	CON_LOCK(con_man);
 
 	for (l = con_man->priv->connections; l != NULL; l = g_slist_next (l)) {
 		cinfo = (ConnectionInfo *) l->data;
 		if (cinfo->conn == conn) {
-			found = TRUE;	
+			found = TRUE;
 			break;
 		}
 	}
@@ -359,11 +357,11 @@ camel_imapx_conn_manager_update_con_info (CamelIMAPXConnManager *con_man, CamelI
 		}
 		camel_imapx_destroy_job_queue_info (jinfo);
 	}
-	
+
 	CON_UNLOCK(con_man);
 }
 
-void			
+void
 camel_imapx_conn_manager_close_connections (CamelIMAPXConnManager *con_man)
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man));

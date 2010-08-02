@@ -46,7 +46,7 @@
  * emitting the corresponding GType signals. For better type-safety, you can use,
  * the provided e_gdbus_book_factory_emit_*() helpers.
  *
- * For property changes, #GObject::notify signal emissions on exported objects 
+ * For property changes, #GObject::notify signal emissions on exported objects
  * will be intercepted and queued. In an idle handler, the queued notifications
  * are processed and a single <literal>PropertiesChanged</literal> signal (on the
  * <literal>org.freedesktop.DBus.Properties</literal> interface) will be emitted
@@ -61,7 +61,6 @@
 typedef EGdbusBookFactoryIface EGdbusBookFactoryInterface;
 G_DEFINE_INTERFACE (EGdbusBookFactory, e_gdbus_book_factory, G_TYPE_OBJECT);
 
-
 enum
 {
   _0_SIGNAL,
@@ -70,7 +69,6 @@ enum
 };
 
 static guint signals[__LAST_SIGNAL] = {0};
-
 
 enum
 {
@@ -86,7 +84,6 @@ static GHashTable *_signal_name_to_id = NULL;
 static GHashTable *_property_name_to_id = NULL;
 static GHashTable *_property_gname_to_name = NULL;
 static GHashTable *_property_name_to_gname = NULL;
-
 
 static guint
 lookup_method_id_from_method_name (const gchar *method_name)
@@ -163,7 +160,6 @@ e_gdbus_book_factory_default_init (EGdbusBookFactoryIface *iface)
 
   /* GObject property definitions for D-Bus properties: */
 }
-
 
 /* C Bindings for properties */
 
@@ -287,7 +283,6 @@ _out:
   return _ret;
 }
 
-
 /**
  * e_gdbus_book_factory_complete_get_book:
  * @object: A #EGdbusBookFactory.
@@ -312,7 +307,6 @@ void e_gdbus_book_factory_complete_get_book (
                            out_path);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
-
 
 static const GDBusArgInfo e_gdbus_book_factory_method_in_getBook_source =
 {
@@ -678,7 +672,6 @@ e_gdbus_book_factory_interface_info (void)
   return &_e_gdbus_book_factory_interface_info;
 }
 
-
 /* ---------------------------------------------------------------------- */
 
 static void proxy_iface_init (EGdbusBookFactoryIface *iface);
@@ -784,7 +777,7 @@ e_gdbus_book_factory_proxy_set_property (GObject      *object,
 static void
 g_properties_changed (GDBusProxy         *proxy,
                       GVariant           *changed_properties,
-                      const gchar* const *invalidated_properties)
+                      const gchar * const *invalidated_properties)
 {
   guint n;
   const gchar *key;
@@ -828,7 +821,6 @@ static void
 proxy_iface_init (EGdbusBookFactoryIface *iface)
 {
 }
-
 
 /**
  * e_gdbus_book_factory_proxy_new:
@@ -929,7 +921,6 @@ EGdbusBookFactory *e_gdbus_book_factory_proxy_new_sync (GDBusConnection     *con
     return NULL;
 }
 
-
 /**
  * e_gdbus_book_factory_proxy_new_for_bus:
  * @bus_type: A #GBusType.
@@ -1028,7 +1019,6 @@ EGdbusBookFactory *e_gdbus_book_factory_proxy_new_for_bus_sync (GBusType        
   else
     return NULL;
 }
-
 
 /* ---------------------------------------------------------------------- */
 

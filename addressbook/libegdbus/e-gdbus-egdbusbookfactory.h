@@ -144,14 +144,12 @@ GType e_gdbus_book_factory_stub_get_type (void) G_GNUC_CONST;
 
 EGdbusBookFactory *e_gdbus_book_factory_stub_new (void);
 
-
 guint e_gdbus_book_factory_register_object (EGdbusBookFactory *object,
                     GDBusConnection *connection,
                     const gchar *object_path,
                     GError **error);
 
 void e_gdbus_book_factory_drain_notify (EGdbusBookFactory *object);
-
 
 const GDBusInterfaceInfo *e_gdbus_book_factory_interface_info (void) G_GNUC_CONST;
 
@@ -169,7 +167,6 @@ struct _EGdbusBookFactoryIface
 };
 
 /* C Bindings for properties */
-
 
 /* D-Bus Methods */
 void e_gdbus_book_factory_call_get_book (
@@ -192,15 +189,11 @@ gboolean e_gdbus_book_factory_call_get_book_sync (
         GCancellable *cancellable,
         GError **error);
 
-
-
 /* D-Bus Methods Completion Helpers */
 void e_gdbus_book_factory_complete_get_book (
         EGdbusBookFactory *object,
         GDBusMethodInvocation *invocation,
         const gchar *out_path);
-
-
 
 /* D-Bus Signal Emission Helpers */
 
