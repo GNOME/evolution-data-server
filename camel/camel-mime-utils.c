@@ -269,21 +269,23 @@ camel_uudecode_step (guchar *in, gsize len, guchar *out, gint *state, guint32 *s
 
 	inend = in + len;
 	outptr = out;
-
 	inptr = in;
-	while (inptr < inend) {
-		if (*inptr == '\n' || last_was_eoln) {
-			if (last_was_eoln && *inptr != '\n') {
-				uulen = CAMEL_UUDECODE_CHAR (*inptr);
-				last_was_eoln = FALSE;
-				if (uulen == 0) {
-					*state |= CAMEL_UUDECODE_STATE_END;
-					break;
-				}
-			} else {
-				last_was_eoln = TRUE;
-			}
 
+	while (inptr < inend) {
+		if (*inptr == '\n') {
+			last_was_eoln = TRUE;
+			
+			inptr++;
+			continue;
+		} else if (!uulen || last_was_eoln) {
+			/* first octet on a line is the uulen octet */
+			uulen = CAMEL_UUDECODE_CHAR (*inptr);
+			last_was_eoln = FALSE;
+			if (uulen == 0) {
+				*state |= CAMEL_UUDECODE_STATE_END;
+				break;
+			}
+			
 			inptr++;
 			continue;
 		}
@@ -307,18 +309,21 @@ camel_uudecode_step (guchar *in, gsize len, guchar *out, gint *state, guint32 *s
 					*outptr++ = CAMEL_UUDECODE_CHAR (b0) << 2 | CAMEL_UUDECODE_CHAR (b1) >> 4;
 					*outptr++ = CAMEL_UUDECODE_CHAR (b1) << 4 | CAMEL_UUDECODE_CHAR (b2) >> 2;
 					*outptr++ = CAMEL_UUDECODE_CHAR (b2) << 6 | CAMEL_UUDECODE_CHAR (b3);
+					uulen -= 3;
 				} else {
 					if (uulen >= 1) {
 						*outptr++ = CAMEL_UUDECODE_CHAR (b0) << 2 | CAMEL_UUDECODE_CHAR (b1) >> 4;
+						uulen--;
 					}
+					
 					if (uulen >= 2) {
 						*outptr++ = CAMEL_UUDECODE_CHAR (b1) << 4 | CAMEL_UUDECODE_CHAR (b2) >> 2;
+						uulen--;
 					}
 				}
 
 				i = 0;
 				saved = 0;
-				uulen -= 3;
 			}
 		} else {
 			break;
