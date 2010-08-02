@@ -191,7 +191,7 @@ camel_uuencode_step (guchar *in, gsize len, guchar *out, guchar *uubuf, gint *st
 	i = *state & 0xff;
 	uulen = (*state >> 8) & 0xff;
 
-	if ((inlen + uulen) < 45) {
+	if ((len + uulen) < 45) {
 		/* not enough input to write a full uuencoded line */
 		bufptr = uubuf + ((uulen / 3) * 4);
 	} else {
