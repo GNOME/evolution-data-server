@@ -180,7 +180,7 @@ camel_uuencode_step (guchar *in, gsize len, guchar *out, guchar *uubuf, gint *st
 	register guint32 saved;
 	gint uulen, i;
 
-	if (inlen == 0)
+	if (len == 0)
 		return 0;
 
 	inend = in + len;
