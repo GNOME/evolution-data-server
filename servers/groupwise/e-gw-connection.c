@@ -840,9 +840,11 @@ e_gw_connection_get_container (EGwConnection *cnc, const gchar * uid)
 
 				subparam = soup_soap_response_get_first_parameter_by_name (response, "folder");
 				container = e_gw_container_new_from_soap_parameter (subparam);
+				g_object_unref (response);
 
 				return container;
 		}
+		g_object_unref (response);
 
 		return NULL;
 }
