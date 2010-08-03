@@ -1,3 +1,85 @@
+Evolution-Data-Server 2.31.6 2010-08-02
+---------------------------------------
+
+Evolution-Data-Server now complies with the XDG Base Directory
+Specification [1], which means user-specific data is no longer
+stored under ~/.evolution.  Instead, data is partitioned into
+three base directories controlled by environment variables:
+
+   $XDG_DATA_HOME/evolution    (default: $HOME/.local/share/evolution)
+   $XDG_CACHE_HOME/evolution   (default: $HOME/.cache/evolution)
+   $XDG_CONFIG_HOME/evolution  (default: $HOME/.config/evolution)
+
+Data which is managed by the various address book and calendar
+backends will be migrated from $HOME/.evolution upon starting the
+corresponding D-Bus factory service.
+
+[1] http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
+
+Bug Fixes:
+	Bug 602287 - Avoid racing with camel_operation_mute() (Matthew Barnes)
+	Bug 608299 - Cut/copy error when selection has trailing comma
+	             (Matthew Barnes)
+	Bug 612082 - Do not expose off_t in public API, use goffset instead
+	             (Milan Crha)
+	Bug 622884 - Migrate from dbus-glib to glib's GDBus (Milan Crha)
+	Bug 624029 - Copying messages across stores is broken (Matthew Barnes)
+	Bug 624316 - Disable debug messages in GroupWise calendar backend
+	             (Matthew Barnes)
+	Bug 624325 - CamelPOP3Store missing some methods (Matthew Barnes)
+	Bug 624417 - Fix error handling in e_cal_backend_sync_get_timezone()
+	             (Matthew Barnes)
+	Bug 624891 - Various compiler warnings in git/master (Milan Crha)
+	Bug 625039 - Commonly named macros in Camel header files
+	             (Matthew Barnes)
+	Bug 625083 - Gettext can't parse GLib's printf format constants
+	             (Matthew Barnes)
+	Bug 625282 - Quick add contact claims on console (Milan Crha)
+	Bug 625351 - Sending through sendmail reports error (Milan Crha)
+	Bug 625482 - Personal addressbook is vanished (Milan Crha)
+	Bug 625606 - git/master build dies with glib-2.25.12 (Milan Crha)
+
+Other Changes:
+	* libebook.pc.in missing camel-1.2 requirement. (Matthew Barnes)
+	* Add connection manager to imapx (Chenthill Palanisamy)
+	* Removed folders from connection when operations gets done -
+	  handles when jobs return back without executing
+	  (Chenthill Palanisamy)
+	* CamelOperation debugging improvement (Matthew Barnes)
+	* Avoid absolute paths in "On This Computer" source groups.
+	  (Matthew Barnes)
+	* Remove deprecated ECalBackend::set_default_timezone (Milan Crha)
+	* Fix bug #624909 (Jeff Cai)
+	* EDataCal: Add a getCacheDir() D-Bus method. (Matthew Barnes)
+	* Comply with XDG Base Directory Specification. (Matthew Barnes)
+	* Reset BASE_VERSION to 2.32. (Matthew Barnes)
+	* Fix error handling in CamelLocalFolder::sync() (Matthew Barnes)
+	* Fix error handling in CamelImapFolder::get_message() (Matthew Barnes)
+	* Avoid overwriting files while migrating. (Matthew Barnes)
+	* Build path portably in session_get_storage_path(). (Matthew Barnes)
+	* imapx: server flags can be integers (David Woodhouse)
+	* imapx: ->cinfo *can* be NULL in imapx_server_dispose() for a
+	  failed connection (David Woodhouse)
+	* ebook: Remove duplicate free from array_to_stringlist helper
+	  (#625750) (Rob Bradford)
+	* ebook & edataserverui: Use _async suffix rather than _ex suffix
+	  (Rob Bradford)
+	* Replace dbus-glib-1 with gio-2.0 in pkgconfig files. (Matthew Barnes)
+	* Prefer gio-2.0 when requiring GLib libraries. (Matthew Barnes)
+	* Replace "Since: 3.0" with "Since: 2.32". (Matthew Barnes)
+	* Fixed uudecode logic (Jeffrey Stedfast)
+	* Optimized camel_uuencode_step (Jeffrey Stedfast)
+
+Translations:
+	Christian Kirbach (de)
+	Jorge González (es)
+	Fran Diéguez (gl)
+	Yaron Shahrabani (he)
+	Kjartan Maraas (nb)
+	Lucian Adrian Grijincu (ro)
+	Aron Xu (zh_CN)
+	Chao-Hsiung Liao (zh_HK)
+
 Evolution-Data-Server 2.31.5 2010-07-12
 ---------------------------------------
 
