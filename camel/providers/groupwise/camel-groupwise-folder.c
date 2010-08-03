@@ -1138,7 +1138,7 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 			goto end1;
 		}
 
-		if (!item_list  || g_list_length (item_list) == 0)
+		if (!item_list)
 			done = TRUE;
 		else {
 
@@ -2418,6 +2418,7 @@ gw_update_all_items (CamelFolder *folder, GList *item_list, GError **error)
 			camel_folder_change_info_remove_uid (changes, uid);
 			CAMEL_GROUPWISE_FOLDER_REC_UNLOCK (folder, cache_lock);
 		} else {
+			g_free (temp->data);
 			item_list = g_list_delete_link (item_list, temp);
 		}
 		index++;
