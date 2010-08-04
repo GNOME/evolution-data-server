@@ -20,6 +20,8 @@
  *
  */
 
+#ifndef CAMEL_DISABLE_DEPRECATED
+
 #if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
 #error "Only <camel/camel.h> can be included directly."
 #endif
@@ -116,3 +118,5 @@ CamelContentType *
 G_END_DECLS
 
 #endif /* CAMEL_HTTP_STREAM_H */
+
+#endif /* CAMEL_DISABLE_DEPRECATED */
