@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.31.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-19 21:40+0200\n"
-"PO-Revision-Date: 2010-07-19 21:41+0200\n"
+"POT-Creation-Date: 2010-08-04 14:18+0200\n"
+"PO-Revision-Date: 2010-08-04 14:19+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -90,7 +90,7 @@ msgstr "Feil ved utføring av søk"
 msgid "Create resource '%s' failed with http status: %d"
 msgstr "Oppretting av ressurs «%s» feilet med http status: %d"
 
-#: ../addressbook/libebook/e-book.c:3001
+#: ../addressbook/libebook/e-book.c:2940
 #, c-format
 msgid "%s: there was no source for UID '%s' stored in GConf."
 msgstr "%s: ingen kilde lagret i GConf for uid «%s»."
@@ -547,7 +547,7 @@ msgstr "Fødselsdato"
 
 #: ../addressbook/libebook/e-contact.c:262
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:717
-#: ../libedataserver/e-categories.c:43
+#: ../libedataserver/e-categories.c:44
 msgid "Anniversary"
 msgstr "Jubileum"
 
@@ -630,229 +630,236 @@ msgstr "SIP-adresse"
 msgid "Unnamed List"
 msgstr "Liste uten navn"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:322
+#: ../addressbook/libedata-book/e-data-book-factory.c:287
 #, c-format
 msgid "Empty URI"
 msgstr "Tom URI"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:340
-#: ../addressbook/libedata-book/e-data-book-factory.c:377
-#: ../calendar/libedata-cal/e-data-cal-factory.c:333
-#: ../calendar/libedata-cal/e-data-cal-factory.c:345
+#: ../addressbook/libedata-book/e-data-book-factory.c:306
+#: ../addressbook/libedata-book/e-data-book-factory.c:344
+#: ../calendar/libedata-cal/e-data-cal-factory.c:331
+#: ../calendar/libedata-cal/e-data-cal-factory.c:343
 #, c-format
 msgid "Invalid source"
 msgstr "Ugyldig kilde"
 
-#: ../addressbook/libedata-book/e-data-book.c:185
-#: ../calendar/libedata-cal/e-data-cal.c:113
+#: ../addressbook/libedata-book/e-data-book.c:166
+#: ../calendar/libedata-cal/e-data-cal.c:104
 msgid "Success"
 msgstr "Suksess"
 
-#: ../addressbook/libedata-book/e-data-book.c:186
-#: ../calendar/libedata-cal/e-data-cal.c:114
+#: ../addressbook/libedata-book/e-data-book.c:167
+#: ../calendar/libedata-cal/e-data-cal.c:105
 msgid "Repository offline"
 msgstr "Lageret er frakoblet"
 
-#: ../addressbook/libedata-book/e-data-book.c:187
-#: ../calendar/libecal/e-cal.c:4118 ../calendar/libedata-cal/e-data-cal.c:115
+#: ../addressbook/libedata-book/e-data-book.c:168
+#: ../calendar/libecal/e-cal.c:3945 ../calendar/libedata-cal/e-data-cal.c:106
 msgid "Permission denied"
 msgstr "Tilgang nektet"
 
-#: ../addressbook/libedata-book/e-data-book.c:188
+#: ../addressbook/libedata-book/e-data-book.c:169
 msgid "Contact not found"
 msgstr "Kontakten ble ikke funnet"
 
-#: ../addressbook/libedata-book/e-data-book.c:189
+#: ../addressbook/libedata-book/e-data-book.c:170
 msgid "Contact ID already exists"
 msgstr "Kontakt-ID eksisterer allerede"
 
-#: ../addressbook/libedata-book/e-data-book.c:190
-#: ../calendar/libedata-cal/e-data-cal.c:120
+#: ../addressbook/libedata-book/e-data-book.c:171
+#: ../calendar/libedata-cal/e-data-cal.c:111
 msgid "Authentication Failed"
 msgstr "Autentisering feilet"
 
-#: ../addressbook/libedata-book/e-data-book.c:191
-#: ../calendar/libedata-cal/e-data-cal.c:121
+#: ../addressbook/libedata-book/e-data-book.c:172
+#: ../calendar/libedata-cal/e-data-cal.c:112
 msgid "Authentication Required"
 msgstr "Autentisering kreves"
 
-#: ../addressbook/libedata-book/e-data-book.c:192
-#: ../calendar/libedata-cal/e-data-cal.c:122
+#: ../addressbook/libedata-book/e-data-book.c:173
+#: ../calendar/libedata-cal/e-data-cal.c:113
 msgid "Unsupported field"
 msgstr "Ikke støttet felt"
 
-#: ../addressbook/libedata-book/e-data-book.c:193
-#: ../calendar/libedata-cal/e-data-cal.c:124
+#: ../addressbook/libedata-book/e-data-book.c:174
+#: ../calendar/libedata-cal/e-data-cal.c:115
 msgid "Unsupported authentication method"
 msgstr "Ikke støttet autentiseringsmetode"
 
-#: ../addressbook/libedata-book/e-data-book.c:194
-#: ../calendar/libedata-cal/e-data-cal.c:125
+#: ../addressbook/libedata-book/e-data-book.c:175
+#: ../calendar/libedata-cal/e-data-cal.c:116
 msgid "TLS not available"
 msgstr "TLS er ikke tilgjengelig"
 
-#: ../addressbook/libedata-book/e-data-book.c:195
+#: ../addressbook/libedata-book/e-data-book.c:176
 msgid "Address Book does not exist"
 msgstr "Adresseboken eksisterer ikke"
 
-#: ../addressbook/libedata-book/e-data-book.c:196
+#: ../addressbook/libedata-book/e-data-book.c:177
 msgid "Book removed"
 msgstr "Bok fjernet"
 
-#: ../addressbook/libedata-book/e-data-book.c:197
-#: ../calendar/libedata-cal/e-data-cal.c:128
+#: ../addressbook/libedata-book/e-data-book.c:178
+#: ../calendar/libedata-cal/e-data-cal.c:119
 msgid "Not available in offline mode"
 msgstr "Ikke tilgjengelig i frakoblet modus"
 
-#: ../addressbook/libedata-book/e-data-book.c:198
-#: ../calendar/libedata-cal/e-data-cal.c:129
+#: ../addressbook/libedata-book/e-data-book.c:179
+#: ../calendar/libedata-cal/e-data-cal.c:120
 msgid "Search size limit exceeded"
 msgstr "Søkets størrelsesgrense oversteget"
 
-#: ../addressbook/libedata-book/e-data-book.c:199
-#: ../calendar/libedata-cal/e-data-cal.c:130
+#: ../addressbook/libedata-book/e-data-book.c:180
+#: ../calendar/libedata-cal/e-data-cal.c:121
 msgid "Search time limit exceeded"
 msgstr "Tidsbegrensning for søk oversteget"
 
-#: ../addressbook/libedata-book/e-data-book.c:200
-#: ../calendar/libedata-cal/e-data-cal.c:131
+#: ../addressbook/libedata-book/e-data-book.c:181
+#: ../calendar/libedata-cal/e-data-cal.c:122
 msgid "Invalid query"
 msgstr "Ugyldig spørring"
 
-#: ../addressbook/libedata-book/e-data-book.c:201
-#: ../calendar/libedata-cal/e-data-cal.c:132
+#: ../addressbook/libedata-book/e-data-book.c:182
+#: ../calendar/libedata-cal/e-data-cal.c:123
 msgid "Query refused"
 msgstr "Spørring nektet"
 
-#: ../addressbook/libedata-book/e-data-book.c:202
-#: ../calendar/libedata-cal/e-data-cal.c:133
+#: ../addressbook/libedata-book/e-data-book.c:183
+#: ../calendar/libedata-cal/e-data-cal.c:124
 msgid "Could not cancel"
 msgstr "Kunne ikke avbryte"
 
 #. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
 #. { OtherError,			N_("Other error") },
-#: ../addressbook/libedata-book/e-data-book.c:204
-#: ../calendar/libedata-cal/e-data-cal.c:135
+#: ../addressbook/libedata-book/e-data-book.c:185
+#: ../calendar/libedata-cal/e-data-cal.c:126
 msgid "Invalid server version"
 msgstr "Ugyldig versjon for tjener"
 
-#: ../addressbook/libedata-book/e-data-book.c:205
+#: ../addressbook/libedata-book/e-data-book.c:186
 msgid "No space"
 msgstr "Ingen plass"
 
-#: ../addressbook/libedata-book/e-data-book.c:206
-#: ../calendar/libecal/e-cal.c:4102 ../calendar/libedata-cal/e-data-cal.c:136
+#: ../addressbook/libedata-book/e-data-book.c:187
+#: ../calendar/libecal/e-cal.c:3929 ../calendar/libedata-cal/e-data-cal.c:127
 msgid "Invalid argument"
 msgstr "Ugyldig argument"
 
-#: ../addressbook/libedata-book/e-data-book.c:207
-#: ../calendar/libecal/e-cal.c:4140 ../calendar/libedata-cal/e-data-cal.c:137
+#: ../addressbook/libedata-book/e-data-book.c:188
+#: ../calendar/libecal/e-cal.c:3967 ../calendar/libedata-cal/e-data-cal.c:128
 msgid "Not supported"
 msgstr "Ikke støttet"
 
-#: ../addressbook/libedata-book/e-data-book.c:216
-#: ../calendar/libedata-cal/e-data-cal.c:145
+#: ../addressbook/libedata-book/e-data-book.c:196
+#: ../calendar/libedata-cal/e-data-cal.c:136
 msgid "Other error"
 msgstr "Annen feil"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:374
+#: ../addressbook/libedata-book/e-data-book.c:307
 #, c-format
 msgid "Cannot open book: %s"
 msgstr "Kan ikke åpne bok: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:394
+#: ../addressbook/libedata-book/e-data-book.c:329
 #, c-format
 msgid "Cannot remove book: %s"
 msgstr "Kan ikke fjerne bok: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:411
-#: ../addressbook/libedata-book/e-data-book.c:428
+#: ../addressbook/libedata-book/e-data-book.c:346
+#: ../addressbook/libedata-book/e-data-book.c:365
 #, c-format
 msgid "Cannot get contact: %s"
 msgstr "Kan ikke hente kontakt: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:443
+#: ../addressbook/libedata-book/e-data-book.c:380
 #, c-format
 msgid "Empty query: %s"
 msgstr "Tom spørring: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:457
+#: ../addressbook/libedata-book/e-data-book.c:396
 #, c-format
 msgid "Cannot get contact list: %s"
 msgstr "Kan ikke hente kontaktliste: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:492
+#: ../addressbook/libedata-book/e-data-book.c:433
 #, c-format
 msgid "Cannot authenticate user: %s"
 msgstr "Kan ikke autentisere bruker: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:507
-#: ../addressbook/libedata-book/e-data-book.c:524
+#: ../addressbook/libedata-book/e-data-book.c:448
+#: ../addressbook/libedata-book/e-data-book.c:467
 #, c-format
 msgid "Cannot add contact: %s"
 msgstr "Kan ikke legge til kontakt: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:542
-#: ../addressbook/libedata-book/e-data-book.c:559
+#: ../addressbook/libedata-book/e-data-book.c:485
+#: ../addressbook/libedata-book/e-data-book.c:504
 #, c-format
 msgid "Cannot modify contact: %s"
 msgstr "Kan ikke endre kontakt: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:596
+#: ../addressbook/libedata-book/e-data-book.c:543
 #, c-format
 msgid "Cannot remove contacts: %s"
 msgstr "Kan ikke fjerne kontakter: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:626
+#: ../addressbook/libedata-book/e-data-book.c:580
 #, c-format
 msgid "Cannot get supported fields: %s"
 msgstr "Kan ikke hente støttede felt: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:639
+#: ../addressbook/libedata-book/e-data-book.c:595
 #, c-format
 msgid "Cannot get required fields: %s"
 msgstr "Kan ikke hente obligatoriske felt: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:652
+#: ../addressbook/libedata-book/e-data-book.c:610
 #, c-format
 msgid "Cannot get supported auth methods: %s"
 msgstr "Kan ikke hente støttede autentiseringsmetoder: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:677
+#: ../addressbook/libedata-book/e-data-book.c:636
+#: ../addressbook/libedata-book/e-data-book.c:647
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Ugyldig spørring: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:708
+#: ../addressbook/libedata-book/e-data-book.c:683
 #, c-format
 msgid "Cannot get changes: %s"
 msgstr "Kan ikke hente endringer: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:501
+#. Translators: The '%s' is replaced with a detailed error message
+#: ../addressbook/libedata-book/e-data-book.c:722
+#, c-format
+msgid "Cancel operation failed: %s"
+msgstr "Avbruddsoperasjonen feilet: %s"
+
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:498
 #, c-format
 msgid "Unexpected HTTP status code %d returned"
 msgstr "Uventet HTTP-statuskode %d mottatt"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4114
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4094
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Kalender støtter ikke ledig/opptatt"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:719
-#: ../libedataserver/e-categories.c:44
+#: ../libedataserver/e-categories.c:45
 msgid "Birthday"
 msgstr "Fødselsdag"
 
@@ -875,37 +882,37 @@ msgstr "Kan ikke lagre kalenderdata: Feil i URI."
 msgid "Cannot save calendar data"
 msgstr "Kan ikke lagre kalenderdata"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1118
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1121
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2224
 msgid "Reply Requested: by "
 msgstr "Svar etterspurt: innen "
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1123
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1126
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2229
 msgid "Reply Requested: When convenient"
 msgstr "Svar etterspurt: Når det passer"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:296
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:295
 #, c-format
 msgid "Loading %s items"
 msgstr "Laster %s elementer"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:927
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:926
 msgid "Calendar"
 msgstr "Kalender"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:991
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:989
 msgid "Invalid server URI"
 msgstr "Ugyldig URI for tjener"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1095
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1382
-#: ../calendar/backends/http/e-cal-backend-http.c:671
-#: ../calendar/backends/weather/e-cal-backend-weather.c:484
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1082
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1343
+#: ../calendar/backends/http/e-cal-backend-http.c:659
+#: ../calendar/backends/weather/e-cal-backend-weather.c:487
 msgid "Could not create cache file"
 msgstr "Kunne ikke opprette bufferfil"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1108
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1095
 msgid "Could not create thread for populating cache"
 msgstr "Kunne ikke opprette tråd for å populere buffer"
 
@@ -1110,7 +1117,7 @@ msgstr "Lav"
 msgid "Undefined"
 msgstr "Udefinert"
 
-#: ../calendar/libecal/e-cal.c:1233 ../libedataserverui/e-book-auth-util.c:206
+#: ../calendar/libecal/e-cal.c:1128 ../libedataserverui/e-book-auth-util.c:206
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Oppgi passord for %s (bruker %s)"
@@ -1119,62 +1126,62 @@ msgstr "Oppgi passord for %s (bruker %s)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:1247
+#: ../calendar/libecal/e-cal.c:1142
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Oppgi passord for %s for å aktivere proxy for bruker %s"
 
-#: ../calendar/libecal/e-cal.c:4104
+#: ../calendar/libecal/e-cal.c:3931
 msgid "Backend is busy"
 msgstr "Motoren er opptatt"
 
-#: ../calendar/libecal/e-cal.c:4106
+#: ../calendar/libecal/e-cal.c:3933
 msgid "Repository is offline"
 msgstr "Lageret er frakoblet"
 
-#: ../calendar/libecal/e-cal.c:4108
+#: ../calendar/libecal/e-cal.c:3935
 msgid "No such calendar"
 msgstr "Ingen slik kalender"
 
-#: ../calendar/libecal/e-cal.c:4110 ../calendar/libedata-cal/e-data-cal.c:117
+#: ../calendar/libecal/e-cal.c:3937 ../calendar/libedata-cal/e-data-cal.c:108
 #: ../servers/groupwise/e-gw-connection.c:235
 msgid "Object not found"
 msgstr "Objektet ble ikke funnet"
 
-#: ../calendar/libecal/e-cal.c:4112 ../calendar/libedata-cal/e-data-cal.c:118
+#: ../calendar/libecal/e-cal.c:3939 ../calendar/libedata-cal/e-data-cal.c:109
 #: ../servers/groupwise/e-gw-connection.c:229
 msgid "Invalid object"
 msgstr "Ugyldig objekt"
 
-#: ../calendar/libecal/e-cal.c:4114
+#: ../calendar/libecal/e-cal.c:3941
 msgid "URI not loaded"
 msgstr "URI ble ikke lastet"
 
-#: ../calendar/libecal/e-cal.c:4116
+#: ../calendar/libecal/e-cal.c:3943
 msgid "URI already loaded"
 msgstr "URI allerede lastet"
 
-#: ../calendar/libecal/e-cal.c:4120 ../servers/groupwise/e-gw-connection.c:237
+#: ../calendar/libecal/e-cal.c:3947 ../servers/groupwise/e-gw-connection.c:237
 msgid "Unknown User"
 msgstr "Ukjent bruker"
 
-#: ../calendar/libecal/e-cal.c:4122 ../calendar/libedata-cal/e-data-cal.c:119
+#: ../calendar/libecal/e-cal.c:3949 ../calendar/libedata-cal/e-data-cal.c:110
 msgid "Object ID already exists"
 msgstr "Objekt-ID eksisterer allerede"
 
-#: ../calendar/libecal/e-cal.c:4124
+#: ../calendar/libecal/e-cal.c:3951
 msgid "Protocol not supported"
 msgstr "Protokollen er ikke støttet"
 
-#: ../calendar/libecal/e-cal.c:4126
+#: ../calendar/libecal/e-cal.c:3953
 msgid "Operation has been canceled"
 msgstr "Operasjonen ble avbrutt"
 
-#: ../calendar/libecal/e-cal.c:4128
+#: ../calendar/libecal/e-cal.c:3955
 msgid "Could not cancel operation"
 msgstr "Kunne ikke avbryte operasjon"
 
-#: ../calendar/libecal/e-cal.c:4130
+#: ../calendar/libecal/e-cal.c:3957
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1434
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1452
 #: ../camel/providers/groupwise/camel-groupwise-store.c:618
@@ -1185,16 +1192,16 @@ msgstr "Kunne ikke avbryte operasjon"
 msgid "Authentication failed"
 msgstr "Autentisering feilet"
 
-#: ../calendar/libecal/e-cal.c:4132
+#: ../calendar/libecal/e-cal.c:3959
 #: ../camel/providers/smtp/camel-smtp-transport.c:166
 msgid "Authentication required"
 msgstr "Autentisering kreves"
 
-#: ../calendar/libecal/e-cal.c:4134
+#: ../calendar/libecal/e-cal.c:3961
 msgid "A DBUS exception has occurred"
 msgstr "Et DBUS-unntak har oppstått"
 
-#: ../calendar/libecal/e-cal.c:4136
+#: ../calendar/libecal/e-cal.c:3963
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:158
 #: ../camel/providers/imap/camel-imap-command.c:457
 #: ../camel/providers/imap/camel-imap-store.c:626
@@ -1203,7 +1210,7 @@ msgstr "Et DBUS-unntak har oppstått"
 msgid "Unknown error"
 msgstr "Ukjent feil"
 
-#: ../calendar/libecal/e-cal.c:4138
+#: ../calendar/libecal/e-cal.c:3965
 msgid "No error"
 msgstr "Ingen feil"
 
@@ -1302,171 +1309,171 @@ msgstr ""
 "«%s» forventer at alle argumenter er strenger eller ett, og kun ett, "
 "argument er den bolske verdien falsk (#f)"
 
-#: ../calendar/libedata-cal/e-data-cal.c:116
+#: ../calendar/libedata-cal/e-data-cal.c:107
 msgid "Invalid range"
 msgstr "Ugyldig område"
 
-#: ../calendar/libedata-cal/e-data-cal.c:123
+#: ../calendar/libedata-cal/e-data-cal.c:114
 msgid "Unsupported method"
 msgstr "Ikke støttet metode"
 
-#: ../calendar/libedata-cal/e-data-cal.c:126
+#: ../calendar/libedata-cal/e-data-cal.c:117
 msgid "Calendar does not exist"
 msgstr "Kalender eksisterer ikke."
 
-#: ../calendar/libedata-cal/e-data-cal.c:127
+#: ../calendar/libedata-cal/e-data-cal.c:118
 msgid "UnknownUser"
 msgstr "Ukjent bruker"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:595
+#: ../calendar/libedata-cal/e-data-cal.c:589
 #, c-format
 msgid "Cannot retrieve calendar address: %s"
 msgstr "Kan ikke hente kalenderadresse: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:615
+#: ../calendar/libedata-cal/e-data-cal.c:609
 #, c-format
 msgid "Cannot retrieve calendar alarm e-mail address: %s"
 msgstr "Kan ikke hente e-postadresse for kalenderalarm: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:635
+#: ../calendar/libedata-cal/e-data-cal.c:629
 #, c-format
 msgid "Cannot retrieve calendar's ldap attribute: %s"
 msgstr "Kan ikke hente LDAP-attributt for kalender: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:655
+#: ../calendar/libedata-cal/e-data-cal.c:649
 #, c-format
 msgid "Cannot retrieve calendar scheduling information: %s"
 msgstr "Kan ikke hente informasjon om møtetidspunkter: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:674
+#: ../calendar/libedata-cal/e-data-cal.c:668
 #, c-format
 msgid "Cannot open calendar: %s"
 msgstr "Kan ikke åpne kalender: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:695
+#: ../calendar/libedata-cal/e-data-cal.c:689
 #, c-format
 msgid "Cannot refresh calendar: %s"
 msgstr "Kan ikke oppdatere kalender: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:714
+#: ../calendar/libedata-cal/e-data-cal.c:708
 #, c-format
 msgid "Cannot remove calendar: %s"
 msgstr "Kan ikke fjerne kalender: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:735
+#: ../calendar/libedata-cal/e-data-cal.c:729
 #, c-format
 msgid "Cannot create calendar object: %s"
 msgstr "Kan ikke lage kalenderobjekt: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:759
+#: ../calendar/libedata-cal/e-data-cal.c:753
 #, c-format
 msgid "Cannot modify calendar object: %s"
 msgstr "Kan ikke endre kalenderobjekt: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:785
+#: ../calendar/libedata-cal/e-data-cal.c:779
 #, c-format
 msgid "Cannot remove calendar object: %s"
 msgstr "Kan ikke fjerne kalenderobjekt: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:806
+#: ../calendar/libedata-cal/e-data-cal.c:800
 #, c-format
 msgid "Cannot receive calendar objects: %s"
 msgstr "Kan ikke hente kalenderobjekter: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:825
+#: ../calendar/libedata-cal/e-data-cal.c:819
 #, c-format
 msgid "Cannot discard calendar alarm: %s"
 msgstr "Kan ikke forkaste kalenderalarm: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:846
+#: ../calendar/libedata-cal/e-data-cal.c:840
 #, c-format
 msgid "Cannot send calendar objects: %s"
 msgstr "Kan ikke sende kalenderobjekter: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:883
+#: ../calendar/libedata-cal/e-data-cal.c:865
 #, c-format
 msgid "Cannot retrieve default calendar object path: %s"
 msgstr "Kan ikke hente objektsti til forvalgt kalender: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:903
+#: ../calendar/libedata-cal/e-data-cal.c:885
 #, c-format
 msgid "Cannot retrieve calendar object path: %s"
 msgstr "Kan ikke hente objektsti for kalender: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:923
+#: ../calendar/libedata-cal/e-data-cal.c:905
 #, c-format
 msgid "Cannot retrieve calendar object list: %s"
 msgstr "Kan ikke hente objektliste for kalender: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:963
+#: ../calendar/libedata-cal/e-data-cal.c:933
 #, c-format
 msgid "Could not retrieve attachment list: %s"
 msgstr "Kunne ikke hente vedleggsliste: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:987
+#: ../calendar/libedata-cal/e-data-cal.c:959
 #, c-format
 msgid "Could not complete calendar query: %s"
 msgstr "Kunne ikke fullføre kalenderspørring: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1007
+#: ../calendar/libedata-cal/e-data-cal.c:979
 #, c-format
 msgid "Could not retrieve calendar time zone: %s"
 msgstr "Kunne ikke hente tidssone for kalender: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1027
+#: ../calendar/libedata-cal/e-data-cal.c:999
 #, c-format
 msgid "Could not add calendar time zone: %s"
 msgstr "Kunne ikke legge til tidssone for kalender: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1046
+#: ../calendar/libedata-cal/e-data-cal.c:1018
 #, c-format
 msgid "Could not set default calendar time zone: %s"
 msgstr "Kunne ikke sette forvalgt tidssone for kalender: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1069
+#: ../calendar/libedata-cal/e-data-cal.c:1041
 #, c-format
 msgid "Cannot retrieve calendar changes: %s"
 msgstr "Kan ikke hente endringer i kalender: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1121
+#: ../calendar/libedata-cal/e-data-cal.c:1072
 #, c-format
 msgid "Cannot retrieve calendar free/busy list: %s"
 msgstr "Kan ikke ledig/opptatliste for kalender: %s"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:355
+#: ../calendar/libedata-cal/e-data-cal-factory.c:353
 #, c-format
 msgid "Invalid URI"
 msgstr "Ugyldig URI"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:370
+#: ../calendar/libedata-cal/e-data-cal-factory.c:371
 #, c-format
 msgid "No backend factory for '%s' of '%s'"
 msgstr "Ingen fabrikk for motor for «%s» for «%s»"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:420
+#: ../calendar/libedata-cal/e-data-cal-factory.c:421
 #, c-format
 msgid "Could not instantiate backend"
 msgstr "Kunne ikke starte motor"
@@ -1596,8 +1603,8 @@ msgstr "Du må arbeide tilknyttet for å fullføre denne operasjonen"
 #: ../camel/camel-file-utils.c:691 ../camel/camel-gpg-context.c:887
 #: ../camel/camel-gpg-context.c:1175 ../camel/camel-net-utils.c:512
 #: ../camel/camel-net-utils.c:689 ../camel/camel-net-utils.c:838
-#: ../camel/providers/imapx/camel-imapx-server.c:4677
-#: ../camel/providers/imapx/camel-imapx-server.c:4694
+#: ../camel/providers/imapx/camel-imapx-server.c:4678
+#: ../camel/providers/imapx/camel-imapx-server.c:4695
 #: ../camel/providers/nntp/camel-nntp-summary.c:396
 #: ../camel/providers/pop3/camel-pop3-folder.c:269
 #: ../camel/providers/pop3/camel-pop3-folder.c:625
@@ -2152,16 +2159,16 @@ msgstr "Svar fra tjener inneholdt ufullstendige godkjenningsdata"
 msgid "Server response does not match"
 msgstr "Svar fra tjener er ikke likt"
 
-#: ../camel/camel-sasl-gssapi.c:82
+#: ../camel/camel-sasl-gssapi.c:80
 msgid "GSSAPI"
 msgstr "GSSAPI"
 
-#: ../camel/camel-sasl-gssapi.c:84
+#: ../camel/camel-sasl-gssapi.c:82
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr ""
 "Dette alternativet kobler til tjeneren med bruk av Kerberos 5-autentisering."
 
-#: ../camel/camel-sasl-gssapi.c:121
+#: ../camel/camel-sasl-gssapi.c:119
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
@@ -2169,11 +2176,11 @@ msgstr ""
 "Spesifisert mekanisme er ikke støttet av oppgitte akkreditiver, eller "
 "gjenkjennes ikke av implementasjonen."
 
-#: ../camel/camel-sasl-gssapi.c:126
+#: ../camel/camel-sasl-gssapi.c:124
 msgid "The provided target_name parameter was ill-formed."
 msgstr "Oppgitt parameter for target_name var ikke korrekt utformet."
 
-#: ../camel/camel-sasl-gssapi.c:129
+#: ../camel/camel-sasl-gssapi.c:127
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
@@ -2181,7 +2188,7 @@ msgstr ""
 "Oppgitt parameter for target_name inneholdt et navn som var ugyldig eller av "
 "en ikke støttet type."
 
-#: ../camel/camel-sasl-gssapi.c:133
+#: ../camel/camel-sasl-gssapi.c:131
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
@@ -2189,7 +2196,7 @@ msgstr ""
 "input_token inneholder andre bindinger til kanaler enn det som er oppgitt "
 "via parameteren input_chan_bindings."
 
-#: ../camel/camel-sasl-gssapi.c:138
+#: ../camel/camel-sasl-gssapi.c:136
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
@@ -2197,7 +2204,7 @@ msgstr ""
 "input_token inneholder en ugyldig signatur eller en signatur som ikke kunne "
 "verifiseres."
 
-#: ../camel/camel-sasl-gssapi.c:142
+#: ../camel/camel-sasl-gssapi.c:140
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
@@ -2205,30 +2212,30 @@ msgstr ""
 "Enten var ikke oppgitte akkreditiver gyldige for initiering av kontekst, "
 "eller så pekte ikke håndtaket til noen akkreditiver."
 
-#: ../camel/camel-sasl-gssapi.c:147
+#: ../camel/camel-sasl-gssapi.c:145
 msgid "The supplied context handle did not refer to a valid context."
 msgstr "Oppgitt konteksthåndtak refererte ikke til et gyldig kontekst."
 
-#: ../camel/camel-sasl-gssapi.c:150
+#: ../camel/camel-sasl-gssapi.c:148
 msgid "The consistency checks performed on the input_token failed."
 msgstr "Konsistenssjekk utført på input_token feilet."
 
-#: ../camel/camel-sasl-gssapi.c:153
+#: ../camel/camel-sasl-gssapi.c:151
 msgid "The consistency checks performed on the credential failed."
 msgstr "Konsistenssjekk utført på akkreditivene feilet."
 
-#: ../camel/camel-sasl-gssapi.c:156
+#: ../camel/camel-sasl-gssapi.c:154
 msgid "The referenced credentials have expired."
 msgstr "Refererte akkreditiver har utløpt."
 
-#: ../camel/camel-sasl-gssapi.c:162 ../camel/camel-sasl-gssapi.c:300
-#: ../camel/camel-sasl-gssapi.c:344 ../camel/camel-sasl-gssapi.c:361
+#: ../camel/camel-sasl-gssapi.c:160 ../camel/camel-sasl-gssapi.c:296
+#: ../camel/camel-sasl-gssapi.c:340 ../camel/camel-sasl-gssapi.c:357
 #: ../camel/providers/smtp/camel-smtp-transport.c:1192
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Ugyldig svar på autentisering fra tjener."
 
-#: ../camel/camel-sasl-gssapi.c:373
+#: ../camel/camel-sasl-gssapi.c:369
 #, c-format
 msgid "Unsupported security layer."
 msgstr "Ustøttet sikkerhetslag."
@@ -2305,7 +2312,7 @@ msgstr "URL «%s» må inneholde et vertsnavn"
 msgid "URL '%s' needs a path component"
 msgstr "URL «%s» må inneholde en sti"
 
-#: ../camel/camel-session.c:263
+#: ../camel/camel-session.c:261
 #, c-format
 msgid ""
 "Could not create directory %s:\n"
@@ -2314,7 +2321,7 @@ msgstr ""
 "Kan ikke opprette katalog %s:\n"
 "%s"
 
-#: ../camel/camel-session.c:760
+#: ../camel/camel-session.c:758
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
 msgstr "Vennligst oppgi %s-passord for %s på vert %s"
@@ -2687,7 +2694,7 @@ msgstr "Kan ikke hente melding %s: "
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:176
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:186
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2644
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2645
 #, c-format
 msgid "This message is not available in offline mode."
 msgstr "Denne meldingen er ikke tilgjengelig i frakoblet modus."
@@ -2714,21 +2721,21 @@ msgstr "Ser etter slettede meldinger %s"
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1637
 #: ../camel/providers/groupwise/camel-groupwise-store.c:654
 #: ../camel/providers/groupwise/camel-groupwise-store.c:779
-#: ../camel/providers/imap/camel-imap-folder.c:3806
-#: ../camel/providers/imap/camel-imap-folder.c:3884
-#: ../camel/providers/imapx/camel-imapx-server.c:3720
-#: ../camel/providers/imapx/camel-imapx-server.c:3844
+#: ../camel/providers/imap/camel-imap-folder.c:3814
+#: ../camel/providers/imap/camel-imap-folder.c:3892
+#: ../camel/providers/imapx/camel-imapx-server.c:3721
+#: ../camel/providers/imapx/camel-imapx-server.c:3845
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Henter sammendragsinformasjon for nye meldinger i %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2474
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2524
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2475
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2525
 #, c-format
 msgid "Cannot append message to folder '%s': %s"
 msgstr "Kan ikke legge til melding i mappe «%s»: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2510
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2511
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Kan ikke opprette melding: %s"
@@ -2821,7 +2828,7 @@ msgstr "Vert eller bruker ikke tilgjengelig i URL"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:207
 #: ../camel/providers/imap/camel-imap-store.c:1207
-#: ../camel/providers/imapx/camel-imapx-server.c:2974
+#: ../camel/providers/imapx/camel-imapx-server.c:2975
 #, c-format
 msgid "You did not enter a password."
 msgstr "Du skrev ikke inn et passord."
@@ -2972,7 +2979,7 @@ msgid "Could not create directory %s: %s"
 msgstr "Kan ikke opprette katalog %s: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:960
-#: ../camel/providers/imapx/camel-imapx-server.c:3759
+#: ../camel/providers/imapx/camel-imapx-server.c:3760
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Søker etter endrede meldinger i %s"
@@ -2982,34 +2989,34 @@ msgid "Unable to retrieve message: "
 msgstr "Kan ikke hente melding: "
 
 #: ../camel/providers/imap/camel-imap-folder.c:3266
-#: ../camel/providers/imapx/camel-imapx-server.c:4956
+#: ../camel/providers/imapx/camel-imapx-server.c:4957
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Kan ikke hente melding med meldings-ID %s: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3267
-#: ../camel/providers/imapx/camel-imapx-server.c:4957
+#: ../camel/providers/imapx/camel-imapx-server.c:4958
 msgid "No such message available."
 msgstr "Ingen slik melding tilgjengelig."
 
-#: ../camel/providers/imap/camel-imap-folder.c:3337
-#: ../camel/providers/imap/camel-imap-folder.c:4203
+#: ../camel/providers/imap/camel-imap-folder.c:3341
+#: ../camel/providers/imap/camel-imap-folder.c:4211
 #: ../camel/providers/nntp/camel-nntp-folder.c:326
 #, c-format
 msgid "This message is not currently available"
 msgstr "Denne meldingen er ikke tilgjengelig"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4013
+#: ../camel/providers/imap/camel-imap-folder.c:4021
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "Uferdig svar fra tjener: ingen informasjon gitt for melding %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4023
+#: ../camel/providers/imap/camel-imap-folder.c:4031
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Uferdig svar fra tjener: ingen UID oppgitt for melding %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4243
+#: ../camel/providers/imap/camel-imap-folder.c:4251
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "Kunne ikke finne meldingskropp i FETCH-svar."
@@ -3146,20 +3153,20 @@ msgstr "Kunne ikke koble til %s: "
 #: ../camel/providers/imap/camel-imap-store.c:591
 #: ../camel/providers/imap/camel-imap-store.c:598
 #: ../camel/providers/imap/camel-imap-store.c:625
-#: ../camel/providers/imapx/camel-imapx-server.c:2827
-#: ../camel/providers/imapx/camel-imapx-server.c:2863
+#: ../camel/providers/imapx/camel-imapx-server.c:2828
+#: ../camel/providers/imapx/camel-imapx-server.c:2864
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Kunne ikke koble til IMAP-tjener %s i sikker modus: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:572
-#: ../camel/providers/imapx/camel-imapx-server.c:2828
+#: ../camel/providers/imapx/camel-imapx-server.c:2829
 #: ../camel/providers/smtp/camel-smtp-transport.c:295
 msgid "STARTTLS not supported"
 msgstr "STARTTLS er ikke støttet"
 
 #: ../camel/providers/imap/camel-imap-store.c:592
-#: ../camel/providers/imapx/camel-imapx-server.c:2864
+#: ../camel/providers/imapx/camel-imapx-server.c:2865
 msgid "SSL negotiations failed"
 msgstr "SSL-forhandling feilet"
 
@@ -3169,13 +3176,13 @@ msgid "SSL is not available in this build"
 msgstr "SSL er ikke støttet i denne versjonen"
 
 #: ../camel/providers/imap/camel-imap-store.c:747
-#: ../camel/providers/imapx/camel-imapx-server.c:2647
+#: ../camel/providers/imapx/camel-imapx-server.c:2648
 #, c-format
 msgid "Connection cancelled"
 msgstr "Tilkobling avbrutt"
 
 #: ../camel/providers/imap/camel-imap-store.c:752
-#: ../camel/providers/imapx/camel-imapx-server.c:2652
+#: ../camel/providers/imapx/camel-imapx-server.c:2653
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "Kunne ikke koble til med kommando «%s»: %s"
@@ -3195,20 +3202,20 @@ msgid "Inbox"
 msgstr "Innboks"
 
 #: ../camel/providers/imap/camel-imap-store.c:1148
-#: ../camel/providers/imapx/camel-imapx-server.c:2930
+#: ../camel/providers/imapx/camel-imapx-server.c:2931
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "IMAP-tjener %s støtter ikke etterspurt autentiseringstype %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:1160
-#: ../camel/providers/imapx/camel-imapx-server.c:2942
+#: ../camel/providers/imapx/camel-imapx-server.c:2943
 #: ../camel/providers/smtp/camel-smtp-transport.c:483
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "Ingen støtte for autentiseringstype %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:1239
-#: ../camel/providers/imapx/camel-imapx-server.c:3012
+#: ../camel/providers/imapx/camel-imapx-server.c:3013
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3288,26 +3295,26 @@ msgstr "IMAP+"
 msgid "Error writing to cache stream: "
 msgstr "Feil under skriving til mellomlagerstrøm: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2007
+#: ../camel/providers/imapx/camel-imapx-server.c:2008
 #, c-format
 msgid "Not authenticated"
 msgstr "Ikke autentisert"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2755
+#: ../camel/providers/imapx/camel-imapx-server.c:2756
 #, c-format
 msgid "Could not connect to %s (port %s): "
 msgstr "Kunne ikke koble til %s (port %s): "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3184
+#: ../camel/providers/imapx/camel-imapx-server.c:3185
 msgid "Closing tmp stream failed: "
 msgstr "Feil ved lukking av midlertidig strøm: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5080
+#: ../camel/providers/imapx/camel-imapx-server.c:5081
 #, c-format
 msgid "Cannot create spool file: %s"
 msgstr "Kan ikke spool-fil: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5095
+#: ../camel/providers/imapx/camel-imapx-server.c:5096
 msgid "Cannot create spool file: "
 msgstr "Kan ikke spool-fil: "
 
@@ -3347,7 +3354,7 @@ msgstr "%s (%s)"
 msgid "Index message body data"
 msgstr "Indekser data i meldingskropp"
 
-#: ../camel/providers/local/camel-local-folder.c:683
+#: ../camel/providers/local/camel-local-folder.c:686
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -3551,8 +3558,8 @@ msgstr "Ser etter nye meldinger"
 
 #: ../camel/providers/local/camel-maildir-summary.c:732
 #: ../camel/providers/local/camel-mbox-summary.c:465
-#: ../camel/providers/local/camel-mbox-summary.c:669
-#: ../camel/providers/local/camel-mbox-summary.c:799
+#: ../camel/providers/local/camel-mbox-summary.c:679
+#: ../camel/providers/local/camel-mbox-summary.c:809
 #: ../camel/providers/local/camel-spool-summary.c:130
 msgid "Storing folder"
 msgstr "Lagrer mappe"
@@ -3649,71 +3656,72 @@ msgstr "Kunne ikke endre navn på «%s» til %s: %s"
 msgid "Could not open folder: %s: %s"
 msgstr "Kunne ikke åpne mappe %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:524
-msgid "Fatal mail parser error near position %"
-msgstr "Fatal feil i lesing av postboksen nær posisjon %"
+#: ../camel/providers/local/camel-mbox-summary.c:533
+#, c-format
+msgid "Fatal mail parser error near position %s in folder %s"
+msgstr "Fatal feil i lesing av e-post nær posisjon %s i mappe %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:605
+#: ../camel/providers/local/camel-mbox-summary.c:615
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "Kan ikke sjekke mappe: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:676
-#: ../camel/providers/local/camel-mbox-summary.c:806
+#: ../camel/providers/local/camel-mbox-summary.c:686
+#: ../camel/providers/local/camel-mbox-summary.c:816
 #: ../camel/providers/local/camel-spool-summary.c:137
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "Kunne ikke åpne fil %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:690
+#: ../camel/providers/local/camel-mbox-summary.c:700
 #: ../camel/providers/local/camel-spool-summary.c:152
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "Kan ikke åpne midlertidig postboks: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:705
-#: ../camel/providers/local/camel-mbox-summary.c:923
+#: ../camel/providers/local/camel-mbox-summary.c:715
+#: ../camel/providers/local/camel-mbox-summary.c:933
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Kunne ikke lukke kildemappe %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:716
+#: ../camel/providers/local/camel-mbox-summary.c:726
 #, c-format
 msgid "Could not close temporary folder: %s"
 msgstr "Kunne ikke lukke midlertidig mappe: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:733
+#: ../camel/providers/local/camel-mbox-summary.c:743
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "Kunne ikke endre navn på mappe: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:819
-#: ../camel/providers/local/camel-mbox-summary.c:1061
+#: ../camel/providers/local/camel-mbox-summary.c:829
+#: ../camel/providers/local/camel-mbox-summary.c:1071
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "Kunne ikke lagre mappe: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:860
-#: ../camel/providers/local/camel-mbox-summary.c:869
-#: ../camel/providers/local/camel-mbox-summary.c:1094
-#: ../camel/providers/local/camel-mbox-summary.c:1103
+#: ../camel/providers/local/camel-mbox-summary.c:870
+#: ../camel/providers/local/camel-mbox-summary.c:879
+#: ../camel/providers/local/camel-mbox-summary.c:1104
+#: ../camel/providers/local/camel-mbox-summary.c:1113
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "Sammendrag og mappe stemmer ikke overens selv etter synkronisering"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1020
+#: ../camel/providers/local/camel-mbox-summary.c:1030
 #: ../camel/providers/local/camel-spool-summary.c:337
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Ukjent feil: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1173
-#: ../camel/providers/local/camel-mbox-summary.c:1203
+#: ../camel/providers/local/camel-mbox-summary.c:1183
+#: ../camel/providers/local/camel-mbox-summary.c:1213
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "Skriving til midlertidig postboks feilet: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1192
+#: ../camel/providers/local/camel-mbox-summary.c:1202
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Skriving til midlertidig postboks feilet: %s: %s"
@@ -4490,85 +4498,85 @@ msgstr "RSET-kommando feilet: "
 msgid "QUIT command failed: "
 msgstr "QUIT-kommando feilet: "
 
-#: ../libedataserver/e-categories.c:45
+#: ../libedataserver/e-categories.c:46
 msgid "Business"
 msgstr "Arbeid"
 
-#: ../libedataserver/e-categories.c:46
+#: ../libedataserver/e-categories.c:47
 msgid "Competition"
 msgstr "Konkurranse"
 
-#: ../libedataserver/e-categories.c:47
+#: ../libedataserver/e-categories.c:48
 msgid "Favorites"
 msgstr "Favoritter"
 
-#: ../libedataserver/e-categories.c:48
+#: ../libedataserver/e-categories.c:49
 msgid "Gifts"
 msgstr "Gaver"
 
-#: ../libedataserver/e-categories.c:49
+#: ../libedataserver/e-categories.c:50
 msgid "Goals/Objectives"
 msgstr "Mål"
 
-#: ../libedataserver/e-categories.c:50
+#: ../libedataserver/e-categories.c:51
 msgid "Holiday"
 msgstr "Ferie"
 
-#: ../libedataserver/e-categories.c:51
+#: ../libedataserver/e-categories.c:52
 msgid "Holiday Cards"
 msgstr "Postkort"
 
 #. important people (e.g. new business partners)
-#: ../libedataserver/e-categories.c:53
+#: ../libedataserver/e-categories.c:54
 msgid "Hot Contacts"
 msgstr "Viktige kontakter"
 
-#: ../libedataserver/e-categories.c:54
+#: ../libedataserver/e-categories.c:55
 msgid "Ideas"
 msgstr "Idéer"
 
-#: ../libedataserver/e-categories.c:55
+#: ../libedataserver/e-categories.c:56
 msgid "International"
 msgstr "Internasjonalt"
 
-#: ../libedataserver/e-categories.c:56
+#: ../libedataserver/e-categories.c:57
 msgid "Key Customer"
 msgstr "Nøkkelkunde"
 
-#: ../libedataserver/e-categories.c:57
+#: ../libedataserver/e-categories.c:58
 msgid "Miscellaneous"
 msgstr "Forskjellig"
 
-#: ../libedataserver/e-categories.c:58
+#: ../libedataserver/e-categories.c:59
 msgid "Personal"
 msgstr "Personlig"
 
-#: ../libedataserver/e-categories.c:59
+#: ../libedataserver/e-categories.c:60
 msgid "Phone Calls"
 msgstr "Telefonsamtaler"
 
 #. Translators: "Status" is a category name; it can mean anything user wants to
-#: ../libedataserver/e-categories.c:61
+#: ../libedataserver/e-categories.c:62
 msgid "Status"
 msgstr "Status"
 
-#: ../libedataserver/e-categories.c:62
+#: ../libedataserver/e-categories.c:63
 msgid "Strategies"
 msgstr "Strategier"
 
-#: ../libedataserver/e-categories.c:63
+#: ../libedataserver/e-categories.c:64
 msgid "Suppliers"
 msgstr "Leverandører"
 
-#: ../libedataserver/e-categories.c:64
+#: ../libedataserver/e-categories.c:65
 msgid "Time & Expenses"
 msgstr "Tid og utgifter"
 
-#: ../libedataserver/e-categories.c:65
+#: ../libedataserver/e-categories.c:66
 msgid "VIP"
 msgstr "VIP"
 
-#: ../libedataserver/e-categories.c:66
+#: ../libedataserver/e-categories.c:67
 msgid "Waiting"
 msgstr "Venter"
 
