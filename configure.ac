@@ -1282,9 +1282,9 @@ dnl ******************************
 AC_ARG_ENABLE([largefile],
 	AS_HELP_STRING([--enable-largefile],
 	[enable support for large files [[default=no]]]),
-	[],[enable_largefile="no"])
+	[],[enable_largefile="yes"])
 
-if test "x$enable_largefile" != "xno"; then
+if test "x$enable_largefile" != "xyes"; then
 	AC_SYS_LARGEFILE
 	AC_CACHE_CHECK([for _LARGEFILE64_SOURCE value needed for large files], [ac_cv_largefile64_source],
 	[AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
