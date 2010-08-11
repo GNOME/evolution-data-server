@@ -1,3 +1,21 @@
+Evolution-Data-Server 2.30.3 2010-08-11
+---------------------------------------
+
+Bug Fixes:
+	Bug 602287 - Avoid racing with camel_operation_mute() (Matthew Barnes)
+	Bug 622008 - Don't trust is->select_folder in
+	             imapx_job_scan_changes_done() (David Woodhouse)
+	Bug 623795 - URI at the end of text isn't clickable (Milan Crha)
+	Bug 623936 - 75 second delay when creating new DAV entries in Zimbra
+	             (Milan Crha)
+
+Other Changes:
+	* Tons of IMAPX improvements backported from 2.31 (David Woodhouse)
+	* Use text/vcard content type on WebDAV PUT request (Milan Crha)
+
+Translations:
+	Christian Kirbach (de)
+
 Evolution-Data-Server 2.30.2 2010-06-20
 ---------------------------------------
 
