@@ -805,7 +805,7 @@ socks5_initiate_and_request_authentication (CamelTcpStreamRaw *raw, PRFileDesc *
 	}
 
 	if (reply[1] != 0) {		/* and it grants us no authentication (see request[2]) */
-		g_set_error (error, CAMEL_PROXY_ERROR, CAMEL_PROXY_ERROR_CANT_AUTHENTICATE
+		g_set_error (error, CAMEL_PROXY_ERROR, CAMEL_PROXY_ERROR_CANT_AUTHENTICATE,
 			     _("Could not find a suitable authentication type: code 0x%x"),
 			     reply[1]);
 		return FALSE;
