@@ -234,8 +234,8 @@ _set_errno_from_pr_error (gint pr_code)
 	}
 }
 
-static void
-set_g_error_from_errno (GError **error, gboolean eintr_means_cancelled)
+void
+_set_g_error_from_errno (GError **error, gboolean eintr_means_cancelled)
 {
 	/* This is stolen from camel_read() / camel_write() */
 	if (eintr_means_cancelled && errno == EINTR)
@@ -258,7 +258,7 @@ read_from_prfd (PRFileDesc *fd, gchar *buffer, gsize n, GError **error)
 
 	if (camel_operation_cancel_check (NULL)) {
 		errno = EINTR;
-		set_g_error_from_errno (error, TRUE);
+		_set_g_error_from_errno (error, TRUE);
 		return -1;
 	}
 
@@ -331,7 +331,7 @@ read_from_prfd (PRFileDesc *fd, gchar *buffer, gsize n, GError **error)
 	}
 
 	if (nread == -1)
-		set_g_error_from_errno (error, TRUE);
+		_set_g_error_from_errno (error, TRUE);
 
 	return nread;
 }
@@ -356,7 +356,7 @@ write_to_prfd (PRFileDesc *fd, const gchar *buffer, gsize n, GError **error)
 
 	if (camel_operation_cancel_check (NULL)) {
 		errno = EINTR;
-		set_g_error_from_errno (error, TRUE);
+		_set_g_error_from_errno (error, TRUE);
 		return -1;
 	}
 
@@ -438,7 +438,7 @@ write_to_prfd (PRFileDesc *fd, const gchar *buffer, gsize n, GError **error)
 	}
 
 	if (w == -1)
-		set_g_error_from_errno (error, TRUE);
+		_set_g_error_from_errno (error, TRUE);
 
 	return written;
 }
@@ -491,7 +491,7 @@ tcp_stream_raw_close (CamelStream *stream,
 			return 0;
 	}
 
-	set_g_error_from_errno (error, FALSE);
+	_set_g_error_from_errno (error, FALSE);
 	return -1;
 }
 
@@ -543,14 +543,14 @@ socket_connect (struct addrinfo *host, GError **error)
 
 	if (sockaddr_to_praddr(host->ai_addr, host->ai_addrlen, &netaddr) != 0) {
 		errno = EINVAL;
-		set_g_error_from_errno (error, FALSE);
+		_set_g_error_from_errno (error, FALSE);
 		return NULL;
 	}
 
 	fd = PR_OpenTCPSocket(netaddr.raw.family);
 	if (fd == NULL) {
 		_set_errno_from_pr_error (PR_GetError ());
-		set_g_error_from_errno (error, FALSE);
+		_set_g_error_from_errno (error, FALSE);
 		return NULL;
 	}
 
@@ -610,7 +610,7 @@ socket_connect (struct addrinfo *host, GError **error)
 out:
 
 	if (!fd)
-		set_g_error_from_errno (error, TRUE);
+		_set_g_error_from_errno (error, TRUE);
 
 	return fd;
 }
@@ -710,7 +710,7 @@ connect_to_socks4_proxy (CamelTcpStreamRaw *raw, const gchar *proxy_host, gint p
 #else
 		errno = ECONNREFUSED;
 #endif
-		set_g_error_from_errno (error, FALSE);
+		_set_g_error_from_errno (error, FALSE);
 		goto error;
 	}
 

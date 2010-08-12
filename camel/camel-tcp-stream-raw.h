@@ -85,6 +85,7 @@ CamelStream *camel_tcp_stream_raw_new (void);
 void _camel_tcp_stream_raw_replace_file_desc (CamelTcpStreamRaw *raw, PRFileDesc *new_file_desc);
 
 void _set_errno_from_pr_error (gint pr_code);
+void _set_g_error_from_errno (GError **error, gboolean eintr_means_cancelled);
 
 G_END_DECLS
 
