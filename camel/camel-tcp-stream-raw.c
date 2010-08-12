@@ -751,7 +751,7 @@ resolve_port (const char *service, gint fallback_port, GError **error)
 	 * if you just want to resolve a port number.
 	 */
 	ai = camel_getaddrinfo ("localhost", service, NULL, &my_error);
-	if (ai == NULL && fallback_port != 0 && !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+	if (ai == NULL && fallback_port != 0 && !g_error_matches (my_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
 		port = fallback_port;
 	else if (ai == NULL) {
 		g_propagate_error (error, my_error);
@@ -1031,7 +1031,7 @@ tcp_stream_raw_connect (CamelTcpStream *stream,
 
 	my_error = NULL;
 	addr = camel_getaddrinfo (host, service, &hints, &my_error);
-	if (addr == NULL && fallback_port != 0 && !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+	if (addr == NULL && fallback_port != 0 && !g_error_matches (my_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
 		char str_port[16];
 
 		g_clear_error (&my_error);
