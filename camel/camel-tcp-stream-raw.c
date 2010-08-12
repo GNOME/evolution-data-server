@@ -1214,7 +1214,7 @@ camel_tcp_stream_raw_class_init (CamelTcpStreamRawClass *class)
 	tcp_stream_class->setsockopt = tcp_stream_raw_setsockopt;
 	tcp_stream_class->get_local_address = tcp_stream_raw_get_local_address;
 	tcp_stream_class->get_remote_address = tcp_stream_raw_get_remote_address;
-	tcp_stream_class->tcp_stream_raw_get_file_desc = tcp_stream_raw_get_file_desc;
+	tcp_stream_class->get_file_desc = tcp_stream_raw_get_file_desc;
 }
 
 static void
