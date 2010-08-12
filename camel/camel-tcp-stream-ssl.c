@@ -666,7 +666,7 @@ enable_ssl (CamelTcpStreamSSL *ssl, PRFileDesc *fd)
 }
 
 static PRFileDesc *
-enable_ssl_or_close_fd (CamelTcpStreamSSL *ssl, PRFileDesc *fd)
+enable_ssl_or_close_fd (CamelTcpStreamSSL *ssl, PRFileDesc *fd, GError **error)
 {
 	PRFileDesc *ssl_fd;
 
@@ -679,6 +679,7 @@ enable_ssl_or_close_fd (CamelTcpStreamSSL *ssl, PRFileDesc *fd)
 		PR_Shutdown (fd, PR_SHUTDOWN_BOTH);
 		PR_Close (fd);
 		errno = errnosave;
+		_set_g_error_from_errno (error, FALSE);
 
 		return NULL;
 	}
@@ -687,15 +688,17 @@ enable_ssl_or_close_fd (CamelTcpStreamSSL *ssl, PRFileDesc *fd)
 }
 
 static gboolean
-rehandshake_ssl (PRFileDesc *fd)
+rehandshake_ssl (PRFileDesc *fd, GError **error)
 {
 	if (SSL_ResetHandshake (fd, FALSE) == SECFailure) {
 		_set_errno_from_pr_error (PR_GetError ());
+		_set_g_error_from_errno (error, FALSE);
 		return FALSE;
 	}
 
 	if (SSL_ForceHandshake (fd) == SECFailure) {
 		_set_errno_from_pr_error (PR_GetError ());
+		_set_g_error_from_errno (error, FALSE);
 		return FALSE;
 	}
 
@@ -703,12 +706,12 @@ rehandshake_ssl (PRFileDesc *fd)
 }
 
 static gint
-tcp_stream_ssl_connect (CamelTcpStream *stream, const char *host, const char *service, gint fallback_port, CamelException *ex)
+tcp_stream_ssl_connect (CamelTcpStream *stream, const char *host, const char *service, gint fallback_port, GError **error)
 {
 	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
 	gint retval;
 
-	retval = CAMEL_TCP_STREAM_CLASS (parent_class)->connect (stream, host, service, fallback_port, ex);
+	retval = CAMEL_TCP_STREAM_CLASS (camel_tcp_stream_ssl_parent_class)->connect (stream, host, service, fallback_port, error);
 	if (retval != 0)
 		return retval;
 
@@ -719,15 +722,15 @@ tcp_stream_ssl_connect (CamelTcpStream *stream, const char *host, const char *se
 		d (g_print ("  enabling SSL\n"));
 
 		fd = camel_tcp_stream_get_file_desc (stream);
-		ssl_fd = enable_ssl_or_close_fd (ssl, fd);
+		ssl_fd = enable_ssl_or_close_fd (ssl, fd, error);
 		_camel_tcp_stream_raw_replace_file_desc (CAMEL_TCP_STREAM_RAW (stream), ssl_fd);
 
 		if (!ssl_fd) {
 			d (g_print ("  could not enable SSL\n"));
 		} else {
 			d (g_print ("  re-handshaking SSL\n"));
-			
-			if (!rehandshake_ssl (ssl_fd)) {
+
+			if (!rehandshake_ssl (ssl_fd, error)) {
 				d (g_print ("  failed\n"));
 				return -1;
 			}
@@ -866,7 +869,7 @@ camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl)
 		_camel_tcp_stream_raw_replace_file_desc (CAMEL_TCP_STREAM_RAW (ssl), ssl_fd);
 		ssl->priv->ssl_mode = TRUE;
 
-		if (!rehandshake_ssl (ssl_fd))
+		if (!rehandshake_ssl (ssl_fd, NULL)) /* NULL-GError */
 			return -1;
 	}
 
