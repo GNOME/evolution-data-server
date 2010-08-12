@@ -42,6 +42,7 @@
 #include "camel-file-utils.h"
 #include "camel-net-utils.h"
 #include "camel-operation.h"
+#include "camel-service.h"
 #include "camel-tcp-stream-raw.h"
 
 #define d(x)
