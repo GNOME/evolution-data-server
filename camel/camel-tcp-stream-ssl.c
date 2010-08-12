@@ -740,23 +740,6 @@ tcp_stream_ssl_connect (CamelTcpStream *stream, const char *host, const char *se
 	return 0;
 }
 
-static gint
-tcp_stream_ssl_getsockopt (CamelTcpStream *stream,
-                           CamelSockOptData *data)
-{
-	PRSocketOptionData sodata;
-
-	memset ((gpointer) &sodata, 0, sizeof (sodata));
-	memcpy ((gpointer) &sodata, (gpointer) data, sizeof (CamelSockOptData));
-
-	if (PR_GetSocketOption (((CamelTcpStreamSSL *)stream)->priv->sockfd, &sodata) == PR_FAILURE)
-		return -1;
-
-	memcpy ((gpointer) data, (gpointer) &sodata, sizeof (CamelSockOptData));
-
-	return 0;
-}
-
 static void
 camel_tcp_stream_ssl_class_init (CamelTcpStreamSSLClass *class)
 {
