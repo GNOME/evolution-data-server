@@ -828,7 +828,6 @@ connect_to_server_wrapper (CamelService *service, GError **error)
 	gint mode, i;
 	const gchar *serv;
 	gint fallback_port;
-	GError *local_error = NULL;
 
 #ifndef G_OS_WIN32
 	const gchar *command;

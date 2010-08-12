@@ -258,7 +258,6 @@ connect_to_server_wrapper (CamelService *service,
 	gint mode, i;
 	gchar *serv;
 	gint fallback_port;
-	GError *local_error = NULL;
 
 	if ((ssl_mode = camel_url_get_param (service->url, "use_ssl"))) {
 		for (i = 0; ssl_options[i].value; i++)
