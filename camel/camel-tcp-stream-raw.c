@@ -234,7 +234,7 @@ _set_errno_from_pr_error (gint pr_code)
 }
 
 static void
-set_g_error_from_errno (GError *error, gboolean eintr_means_cancelled)
+set_g_error_from_errno (GError **error, gboolean eintr_means_cancelled)
 {
 	/* This is stolen from camel_read() / camel_write() */
 	if (eintr_means_cancelled && errno == EINTR)
@@ -535,7 +535,7 @@ sockaddr_to_praddr (struct sockaddr *s, gint len, PRNetAddr *addr)
 }
 
 static PRFileDesc *
-socket_connect (struct addrinfo *host, GError *error)
+socket_connect (struct addrinfo *host, GError **error)
 {
 	PRNetAddr netaddr;
 	PRFileDesc *fd, *cancel_fd;
@@ -949,7 +949,7 @@ static PRFileDesc *
 connect_to_socks5_proxy (CamelTcpStreamRaw *raw,
 			 const char *proxy_host, gint proxy_port,
 			 const char *host, const char *service, gint fallback_port,
-			 GError *error)
+			 GError **error)
 {
 	PRFileDesc *fd;
 	gint port;
