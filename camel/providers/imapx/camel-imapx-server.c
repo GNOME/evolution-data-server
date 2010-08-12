@@ -2683,8 +2683,7 @@ imapx_connect_to_server (CamelIMAPXServer *is, GError **error)
 	guchar *token;
 	gint tok;
 	const gchar *serv;
-	const gchar *port = NULL;
-	struct addrinfo *ai, hints = { 0 };
+	gint fallback_port;
 	CamelIMAPXCommand *ic;
 	GError *local_error = NULL;
 
@@ -2702,9 +2701,10 @@ imapx_connect_to_server (CamelIMAPXServer *is, GError **error)
 	if (is->url->port) {
 		serv = g_alloca(16);
 		sprintf((gchar *) serv, "%d", is->url->port);
+		fallback_port = 0;
 	} else {
 		serv = "imap";
-		port = "143";
+		fallback_port = 143;
 	}
 #ifdef CAMEL_HAVE_SSL
 	mode = camel_url_get_param(is->url, "use_ssl");
@@ -2715,18 +2715,15 @@ imapx_connect_to_server (CamelIMAPXServer *is, GError **error)
 		} else {
 			if (is->url->port == 0) {
 				serv = "imaps";
-				port = "993";
+				fallback_port = 993;
 			}
 			tcp_stream = camel_tcp_stream_ssl_new(is->session, is->url->host, SSL_PORT_FLAGS);
 		}
-		is->is_ssl_stream = TRUE;
 	} else {
 		tcp_stream = camel_tcp_stream_raw_new ();
-		is->is_ssl_stream = FALSE;
 	}
 #else
 	tcp_stream = camel_tcp_stream_raw_new ();
-	is->is_ssl_stream = FALSE;
 #endif /* CAMEL_HAVE_SSL */
 
 	camel_session_get_socks_proxy (is->session, &socks_host, &socks_port);
@@ -2736,21 +2733,7 @@ imapx_connect_to_server (CamelIMAPXServer *is, GError **error)
 		g_free (socks_host);
 	}
 
-	hints.ai_socktype = SOCK_STREAM;
-	ai = camel_getaddrinfo(is->url->host, serv, &hints, &local_error);
-	if (!g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED) && port != NULL) {
-		g_clear_error (&local_error);
-		ai = camel_getaddrinfo(is->url->host, port, &hints, &local_error);
-	}
-
-	if (local_error != NULL) {
-		g_propagate_error (error, local_error);
-		g_object_unref (tcp_stream);
-		return FALSE;
-	}
-
-	ret = camel_tcp_stream_connect(CAMEL_TCP_STREAM(tcp_stream), ai, error);
-	camel_freeaddrinfo(ai);
+	ret = camel_tcp_stream_connect(CAMEL_TCP_STREAM(tcp_stream), is->url->host, serv, fallback_port, error);
 	if (ret == -1) {
 		g_prefix_error (
 			error, _("Could not connect to %s (port %s): "),
@@ -4607,29 +4590,6 @@ imapx_parser_thread (gpointer d)
 
 	while (local_error == NULL && is->stream) {
 		camel_operation_uncancel (op);
-#ifdef CAMEL_HAVE_SSL
-		if (is->is_ssl_stream)	{
-			PRPollDesc pollfds[2] = { };
-			gint res;
-
-			pollfds[0].fd = camel_tcp_stream_ssl_sockfd ((CamelTcpStreamSSL *)is->stream->source);
-			pollfds[0].in_flags = PR_POLL_READ;
-			pollfds[1].fd = camel_operation_cancel_prfd (op);
-			pollfds[1].in_flags = PR_POLL_READ;
-
-#include <prio.h>
-
-			res = PR_Poll(pollfds, 2, PR_MillisecondsToInterval (30 * 1000));
-			if (res == -1)
-				g_usleep(1) /* ?? */ ;
-			else if (res == 0) {
-				/* timed out */
-			} else if ((pollfds[0].out_flags & PR_POLL_READ)) {
-				parse_contents (is, &local_error);
-			} else if (pollfds[1].out_flags & PR_POLL_READ)
-				errno = EINTR;
-		}
-#endif
 #ifndef G_OS_WIN32
 		if (is->is_process_stream)	{
 			GPollFD fds[2] = { {0, 0, 0}, {0, 0, 0} };
@@ -4648,26 +4608,27 @@ imapx_parser_thread (gpointer d)
 				parse_contents (is, &local_error);
 			} else if (fds[1].revents & G_IO_IN)
 				errno = EINTR;
-		}
+		} else
 #endif
-
-		if (!is->is_ssl_stream && !is->is_process_stream) {
-			GPollFD fds[2] = { {0, 0, 0}, {0, 0, 0} };
+		{
+			PRPollDesc pollfds[2] = { };
 			gint res;
 
-			fds[0].fd = ((CamelTcpStreamRaw *)is->stream->source)->sockfd;
-			fds[0].events = G_IO_IN;
-			fds[1].fd = camel_operation_cancel_fd (op);
-			fds[1].events = G_IO_IN;
+			pollfds[0].fd = camel_tcp_stream_get_file_desc (CAMEL_TCP_STREAM (is->stream->source));
+			pollfds[0].in_flags = PR_POLL_READ;
+			pollfds[1].fd = camel_operation_cancel_prfd (op);
+			pollfds[1].in_flags = PR_POLL_READ;
 
-			res = g_poll(fds, 2, 1000*30);
+#include <prio.h>
+
+			res = PR_Poll(pollfds, 2, PR_MillisecondsToInterval (30 * 1000));
 			if (res == -1)
 				g_usleep(1) /* ?? */ ;
-			else if (res == 0)
-				/* timed out */;
-			else if (fds[0].revents & G_IO_IN) {
+			else if (res == 0) {
+				/* timed out */
+			} else if ((pollfds[0].out_flags & PR_POLL_READ)) {
 				parse_contents (is, &local_error);
-			} else if (fds[1].revents & G_IO_IN)
+			} else if (pollfds[1].out_flags & PR_POLL_READ)
 				errno = EINTR;
 		}
 

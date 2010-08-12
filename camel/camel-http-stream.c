@@ -60,7 +60,6 @@ http_connect (CamelHttpStream *http,
 {
 	CamelTcpStream *tcp_stream;
 	CamelStream *stream = NULL;
-	struct addrinfo *ai, hints = { 0 };
 	gint errsave;
 	gchar *serv;
 
@@ -89,25 +88,15 @@ http_connect (CamelHttpStream *http,
 	} else {
 		serv = url->protocol;
 	}
-	hints.ai_socktype = SOCK_STREAM;
-
-	ai = camel_getaddrinfo(url->host, serv, &hints, error);
-	if (ai == NULL) {
-		g_object_unref (stream);
-		return NULL;
-	}
 
 	tcp_stream = CAMEL_TCP_STREAM (stream);
 
-	if (camel_tcp_stream_connect (tcp_stream, ai, error) == -1) {
+	if (camel_tcp_stream_connect (tcp_stream, url->host, serv, 0, error) == -1) {
 		errsave = errno;
 		g_object_unref (stream);
-		camel_freeaddrinfo(ai);
 		errno = errsave;
 		return NULL;
 	}
-
-	camel_freeaddrinfo(ai);
 
 	http->raw = stream;
 	http->read = camel_stream_buffer_new (stream, CAMEL_STREAM_BUFFER_READ);

@@ -82,8 +82,9 @@ camel_tcp_stream_init (CamelTcpStream *tcp_stream)
 /**
  * camel_tcp_stream_connect:
  * @stream: a #CamelTcpStream object
- * @host: a linked list of addrinfo structures to try to connect, in
- * the order of most likely to least likely to work.
+ * @host: Hostname for connection
+ * @service: Service name or port number in string form
+ * @fallback_port: Port number to retry if @service is not present in the system's services database, or 0 to avoid retrying.
  * @error: return location for a #GError, or %NULL
  *
  * Create a socket and connect based upon the data provided.
@@ -92,18 +93,21 @@ camel_tcp_stream_init (CamelTcpStream *tcp_stream)
  **/
 gint
 camel_tcp_stream_connect (CamelTcpStream *stream,
-                          struct addrinfo *host,
+			  const char *host, const char *service, gint fallback_port,
                           GError **error)
 {
 	CamelTcpStreamClass *class;
 	gint retval;
 
 	g_return_val_if_fail (CAMEL_IS_TCP_STREAM (stream), -1);
+	g_return_val_if_fail (host != NULL, -1);
+	g_return_val_if_fail (service != NULL, -1);
+	g_return_val_if_fail (error == NULL || *error == NULL, -1);
 
 	class = CAMEL_TCP_STREAM_GET_CLASS (stream);
 	g_return_val_if_fail (class->connect != NULL, -1);
 
-	retval = class->connect (stream, host, error);
+	retval = class->connect (stream, host, service, fallback_port, error);
 	CAMEL_CHECK_GERROR (stream, connect, retval == 0, error);
 
 	return retval;
@@ -207,6 +211,19 @@ camel_tcp_stream_get_remote_address (CamelTcpStream *stream,
 	g_return_val_if_fail (class->get_remote_address != NULL, NULL);
 
 	return class->get_remote_address (stream, len);
+}
+
+PRFileDesc *
+camel_tcp_stream_get_file_desc (CamelTcpStream *stream)
+{
+	CamelTcpStreamClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_TCP_STREAM (stream), NULL);
+
+	class = CAMEL_TCP_STREAM_GET_CLASS (stream);
+	g_return_val_if_fail (class->get_file_desc != NULL, NULL);
+
+	return class->get_file_desc (stream);
 }
 
 /**

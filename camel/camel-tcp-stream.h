@@ -44,6 +44,8 @@ struct addrinfo;
 #endif
 #include <unistd.h>
 
+#include <prio.h>
+
 #include <camel/camel-stream.h>
 
 /* Standard GObject macros */
@@ -123,7 +125,7 @@ struct _CamelTcpStreamClass {
 	CamelStreamClass parent_class;
 
 	gint		(*connect)		(CamelTcpStream *stream,
-						 struct addrinfo *host,
+						 const char *host, const char *service, gint fallback_port,
 						 GError **error);
 	gint		(*getsockopt)		(CamelTcpStream *stream,
 						 CamelSockOptData *data);
@@ -135,16 +137,19 @@ struct _CamelTcpStreamClass {
 	struct sockaddr *
 			(*get_remote_address)	(CamelTcpStream *stream,
 						 socklen_t *len);
+
+	PRFileDesc *    (*get_file_desc)        (CamelTcpStream *stream);
 };
 
 GType		camel_tcp_stream_get_type	(void);
 gint		camel_tcp_stream_connect	(CamelTcpStream *stream,
-						 struct addrinfo *host,
+						 const char *host, const char *service, gint fallback_port,
 						 GError **error);
 gint		camel_tcp_stream_getsockopt	(CamelTcpStream *stream,
 						 CamelSockOptData *data);
 gint		camel_tcp_stream_setsockopt	(CamelTcpStream *stream,
 						 const CamelSockOptData *data);
+PRFileDesc  *   camel_tcp_stream_get_file_desc  (CamelTcpStream *stream);
 
 /* Note about SOCKS proxies:
  *

@@ -50,26 +50,42 @@
 
 G_BEGIN_DECLS
 
+#define CAMEL_PROXY_ERROR (camel_proxy_error_quark ())
+
 typedef struct _CamelTcpStreamRaw CamelTcpStreamRaw;
 typedef struct _CamelTcpStreamRawClass CamelTcpStreamRawClass;
 
 struct _CamelTcpStreamRaw {
 	CamelTcpStream parent;
 
-	gint sockfd;
-#ifdef _WIN32
-	gint is_nonblocking;
-#endif
+	struct _CamelTcpStreamRawPrivate *priv;
 };
 
 struct _CamelTcpStreamRawClass {
 	CamelTcpStreamClass parent_class;
 };
 
+/**
+ * CamelProxyError:
+ *
+ * Since: 3.0
+ */
+typedef enum {
+	CAMEL_PROXY_ERROR_PROXY_NOT_SUPPORTED,
+	CAMEL_PROXY_ERROR_CANT_AUTHENTICATE
+} CamelProxyError;
+
+GQuark camel_proxy_error_quark (void) G_GNUC_CONST;
+
 GType camel_tcp_stream_raw_get_type (void);
 
 /* public methods */
 CamelStream *camel_tcp_stream_raw_new (void);
+
+void _camel_tcp_stream_raw_replace_file_desc (CamelTcpStreamRaw *raw, PRFileDesc *new_file_desc);
+
+void _set_errno_from_pr_error (gint pr_code);
+void _set_g_error_from_errno (GError **error, gboolean eintr_means_cancelled);
 
 G_END_DECLS
 
