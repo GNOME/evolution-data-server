@@ -926,7 +926,7 @@ socks5_request_connect (CamelTcpStreamRaw *raw, PRFileDesc *fd, const char *host
 	}
 
 	if (reply[1] != 0x00) {	/* error code */
-		g_set_error (error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_NOT_CONNECTED, socks5_reply_error_to_string (reply[1]));
+		g_set_error (error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_NOT_CONNECTED, "%s", socks5_reply_error_to_string (reply[1]));
 		return FALSE;
 	}
 
