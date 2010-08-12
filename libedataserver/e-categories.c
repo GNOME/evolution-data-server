@@ -190,7 +190,7 @@ hash_to_xml_string (gpointer key, gpointer value, gpointer user_data)
 	GString *string = user_data;
 	gchar *category;
 
-	g_string_append_len (string, "  <category", 10);
+	g_string_append_len (string, "  <category", 11);
 
 	if (cat_info->is_default)
 		category = escape_string (cat_info->clocale_name);
