@@ -93,7 +93,7 @@ camel_tcp_stream_init (CamelTcpStream *tcp_stream)
  **/
 gint
 camel_tcp_stream_connect (CamelTcpStream *stream,
-			  const char *host, const char *service, gint fallback_port,
+			  const gchar *host, const gchar *service, gint fallback_port,
                           GError **error)
 {
 	CamelTcpStreamClass *class;

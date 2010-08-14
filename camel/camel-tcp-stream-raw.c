@@ -743,7 +743,7 @@ out:
 
 /* Resolves a port number using getaddrinfo().  Returns 0 if the port can't be resolved or if the operation is cancelled */
 static gint
-resolve_port (const char *service, gint fallback_port, GError **error)
+resolve_port (const gchar *service, gint fallback_port, GError **error)
 {
 	struct addrinfo *ai;
 	GError *my_error;
@@ -820,7 +820,7 @@ socks5_initiate_and_request_authentication (CamelTcpStreamRaw *raw, PRFileDesc *
 	return TRUE;
 }
 
-static const char *
+static const gchar *
 socks5_reply_error_to_string (gchar error_code)
 {
 	switch (error_code) {
@@ -884,7 +884,7 @@ incomplete_reply:
 }
 
 static gboolean
-socks5_request_connect (CamelTcpStreamRaw *raw, PRFileDesc *fd, const char *host, gint port, GError **error)
+socks5_request_connect (CamelTcpStreamRaw *raw, PRFileDesc *fd, const gchar *host, gint port, GError **error)
 {
 	gchar *request;
 	gchar reply[3];
@@ -946,15 +946,15 @@ socks5_request_connect (CamelTcpStreamRaw *raw, PRFileDesc *fd, const char *host
 	 */
 	if (!socks5_consume_reply_address (raw, fd, error))
 		return FALSE;
-	
+
 	return TRUE;
 }
 
 /* RFC 1928 - SOCKS protocol version 5 */
 static PRFileDesc *
 connect_to_socks5_proxy (CamelTcpStreamRaw *raw,
-			 const char *proxy_host, gint proxy_port,
-			 const char *host, const char *service, gint fallback_port,
+			 const gchar *proxy_host, gint proxy_port,
+			 const gchar *host, const gchar *service, gint fallback_port,
 			 GError **error)
 {
 	PRFileDesc *fd;
@@ -996,12 +996,12 @@ out:
 	d (g_print ("}\n"));
 
 	return fd;
-	
+
 }
 
 static gint
 tcp_stream_raw_connect (CamelTcpStream *stream,
-			const char *host, const char *service, gint fallback_port,
+			const gchar *host, const gchar *service, gint fallback_port,
                         GError **error)
 {
 	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
@@ -1038,7 +1038,7 @@ tcp_stream_raw_connect (CamelTcpStream *stream,
 	my_error = NULL;
 	addr = camel_getaddrinfo (host, service, &hints, &my_error);
 	if (addr == NULL && fallback_port != 0 && !g_error_matches (my_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
-		char str_port[16];
+		gchar str_port[16];
 
 		g_clear_error (&my_error);
 		sprintf (str_port, "%d", fallback_port);

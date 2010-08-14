@@ -205,7 +205,7 @@ enum {
 #endif
 
 static gboolean
-connect_to_server (CamelService *service, const char *host, const char *serv, gint fallback_port, gint ssl_mode, GError **error)
+connect_to_server (CamelService *service, const gchar *host, const gchar *serv, gint fallback_port, gint ssl_mode, GError **error)
 {
 	CamelNNTPStore *store = (CamelNNTPStore *) service;
 	CamelDiscoStore *disco_store = (CamelDiscoStore*) service;

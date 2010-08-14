@@ -196,7 +196,7 @@ camel_uuencode_step (guchar *in, gsize len, guchar *out, guchar *uubuf, gint *st
 		bufptr = uubuf + ((uulen / 3) * 4);
 	} else {
 		bufptr = outptr + 1;
-		
+
 		if (uulen > 0) {
 			/* copy the previous call's tmpbuf to outbuf */
 			memcpy (bufptr, uubuf, ((uulen / 3) * 4));
@@ -209,17 +209,17 @@ camel_uuencode_step (guchar *in, gsize len, guchar *out, guchar *uubuf, gint *st
 		b1 = saved & 0xff;
 		saved = 0;
 		i = 0;
-		
+
 		goto skip2;
 	} else if (i == 1) {
 		if ((inptr + 2) < inend) {
 			b0 = saved & 0xff;
 			saved = 0;
 			i = 0;
-			
+
 			goto skip1;
 		}
-		
+
 		while (inptr < inend) {
 			saved = (saved << 8) | *inptr++;
 			i++;
@@ -233,23 +233,23 @@ camel_uuencode_step (guchar *in, gsize len, guchar *out, guchar *uubuf, gint *st
 			b1 = *inptr++;
 		skip2:
 			b2 = *inptr++;
-			
+
 			/* convert 3 normal bytes into 4 uuencoded bytes */
 			*bufptr++ = CAMEL_UUENCODE_CHAR ((b0 >> 2) & 0x3f);
 			*bufptr++ = CAMEL_UUENCODE_CHAR (((b0 << 4) | ((b1 >> 4) & 0xf)) & 0x3f);
 			*bufptr++ = CAMEL_UUENCODE_CHAR (((b1 << 2) | ((b2 >> 6) & 0x3)) & 0x3f);
 			*bufptr++ = CAMEL_UUENCODE_CHAR (b2 & 0x3f);
-			
+
 			uulen += 3;
 		}
 
 		if (uulen >= 45) {
 			*outptr++ = CAMEL_UUENCODE_CHAR (uulen & 0xff);
 			outptr += ((45 / 3) * 4) + 1;
-			
+
 			*outptr++ = '\n';
 			uulen = 0;
-			
+
 			if ((inptr + 45) <= inend) {
 				/* we have enough input to output another full line */
 				bufptr = outptr + 1;
@@ -310,7 +310,7 @@ camel_uudecode_step (guchar *in, gsize len, guchar *out, gint *state, guint32 *s
 	while (inptr < inend) {
 		if (*inptr == '\n') {
 			last_was_eoln = TRUE;
-			
+
 			inptr++;
 			continue;
 		} else if (!uulen || last_was_eoln) {
@@ -321,7 +321,7 @@ camel_uudecode_step (guchar *in, gsize len, guchar *out, gint *state, guint32 *s
 				*state |= CAMEL_UUDECODE_STATE_END;
 				break;
 			}
-			
+
 			inptr++;
 			continue;
 		}
@@ -351,7 +351,7 @@ camel_uudecode_step (guchar *in, gsize len, guchar *out, gint *state, guint32 *s
 						*outptr++ = CAMEL_UUDECODE_CHAR (b0) << 2 | CAMEL_UUDECODE_CHAR (b1) >> 4;
 						uulen--;
 					}
-					
+
 					if (uulen >= 2) {
 						*outptr++ = CAMEL_UUDECODE_CHAR (b1) << 4 | CAMEL_UUDECODE_CHAR (b2) >> 2;
 						uulen--;

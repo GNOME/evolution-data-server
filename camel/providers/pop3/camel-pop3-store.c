@@ -103,7 +103,7 @@ get_valid_utf8_error (const gchar *text)
 
 static gboolean
 connect_to_server (CamelService *service,
-		   const char *host, const char *serv, gint fallback_port,
+		   const gchar *host, const gchar *serv, gint fallback_port,
                    gint ssl_mode,
                    GError **error)
 {

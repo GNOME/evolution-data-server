@@ -7760,6 +7760,14 @@ streams
 @handle: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_tcp_stream_ssl_sockfd ##### -->
+<para>
+
+</para>
+
+@stream: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_test_end ##### -->
 <para>
 

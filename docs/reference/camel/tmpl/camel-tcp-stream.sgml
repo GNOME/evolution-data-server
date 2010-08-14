@@ -69,6 +69,8 @@ CamelTcpStream
 
 @stream: 
 @host: 
+@service: 
+@fallback_port: 
 @error: 
 @Returns: 
 

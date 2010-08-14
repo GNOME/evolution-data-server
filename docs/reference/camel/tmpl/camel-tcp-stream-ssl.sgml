@@ -25,7 +25,7 @@ CamelTcpStreamSSL
 
 </para>
 
-@parent: 
+@parent_object: 
 @priv: 
 
 <!-- ##### MACRO CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 ##### -->
@@ -77,15 +77,6 @@ CamelTcpStreamSSL
 </para>
 
 @ssl: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_tcp_stream_ssl_sockfd ##### -->
-<para>
-
-</para>
-
-@stream: 
 @Returns: 
 
 

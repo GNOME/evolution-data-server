@@ -421,7 +421,7 @@ enum {
 
 static gboolean
 connect_to_server (CamelService *service,
-		   const char *host, const char *serv, gint fallback_port, gint ssl_mode, GError **error)
+		   const gchar *host, const gchar *serv, gint fallback_port, gint ssl_mode, GError **error)
 {
 	CamelImapStore *store = (CamelImapStore *) service;
 	CamelSession *session;

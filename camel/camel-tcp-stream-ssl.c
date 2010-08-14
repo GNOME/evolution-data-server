@@ -706,7 +706,7 @@ rehandshake_ssl (PRFileDesc *fd, GError **error)
 }
 
 static gint
-tcp_stream_ssl_connect (CamelTcpStream *stream, const char *host, const char *service, gint fallback_port, GError **error)
+tcp_stream_ssl_connect (CamelTcpStream *stream, const gchar *host, const gchar *service, gint fallback_port, GError **error)
 {
 	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
 	gint retval;
