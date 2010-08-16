@@ -186,14 +186,15 @@ e_name_selector_init (ENameSelector *name_selector)
 	sections = g_array_new (FALSE, FALSE, sizeof (Section));
 	source_books = g_array_new (FALSE, FALSE, sizeof (SourceBook));
 
-	load_book_thread = g_thread_create (
-		load_books_thread, name_selector, TRUE, NULL);
-
 	name_selector->priv = E_NAME_SELECTOR_GET_PRIVATE (name_selector);
 	name_selector->priv->sections = sections;
 	name_selector->priv->model = e_name_selector_model_new ();
 	name_selector->priv->source_books = source_books;
 	name_selector->priv->load_book_thread = load_book_thread;
+
+	load_book_thread = g_thread_create (
+		load_books_thread, name_selector, TRUE, NULL);
+
 }
 
 /**
