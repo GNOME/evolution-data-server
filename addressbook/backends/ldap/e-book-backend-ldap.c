@@ -814,10 +814,13 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 	if (bl->priv->use_tls != E_BOOK_BACKEND_LDAP_TLS_NO) {
 		const gchar *user_data_dir = e_get_user_data_dir ();
 		ldap_flag = ldapssl_client_init (user_data_dir, NULL);
+		blpriv->ldap = ldapssl_init (blpriv->ldap_host, blpriv->ldap_port, 1);
 	}
-#endif
-
+	else
+		blpriv->ldap = ldap_init (blpriv->ldap_host, blpriv->ldap_port);
+#else
 	blpriv->ldap = ldap_init (blpriv->ldap_host, blpriv->ldap_port);
+#endif
 
 	if (NULL != blpriv->ldap) {
 		gint ldap_error;
@@ -848,13 +851,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 
 			if (bl->priv->ldap_port == LDAPS_PORT && bl->priv->use_tls == E_BOOK_BACKEND_LDAP_TLS_ALWAYS) {
 #ifdef SUNLDAP
-				if (ldap_flag >= 0) {
-					ldap_error = ldapssl_install_routines (blpriv->ldap);
-				} else
-					ldap_error = LDAP_NOT_SUPPORTED;
-
 				if (LDAP_SUCCESS == ldap_error) {
-					ldap_error = ldap_set_option (blpriv->ldap, LDAP_OPT_SSL, LDAP_OPT_ON );
 					ldap_set_option(blpriv->ldap, LDAP_OPT_RECONNECT, LDAP_OPT_ON );
 				}
 #else
@@ -870,13 +867,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 			}
 			else if (bl->priv->use_tls) {
 #ifdef SUNLDAP
-				if (ldap_flag >= 0) {
-					ldap_error = ldapssl_install_routines (blpriv->ldap);
-				} else
-					ldap_error = LDAP_NOT_SUPPORTED;
-
 				if (LDAP_SUCCESS == ldap_error) {
-					ldap_error = ldap_set_option (blpriv->ldap, LDAP_OPT_SSL, LDAP_OPT_ON );
 					ldap_set_option(blpriv->ldap, LDAP_OPT_RECONNECT, LDAP_OPT_ON );
 				}
 #else
