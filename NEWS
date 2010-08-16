@@ -1,3 +1,25 @@
+Evolution-Data-Server 2.31.90 2010-08-16
+----------------------------------------
+
+Bug Fixes:
+	Fix for bug #624789, use ldapssl_init to initialize SSL connection for sunldap. (Jeff Cai)
+	Bug 626505 - ECategoriesDialog doesn't show new categories (Matthew Barnes)
+	Bug 626090 - Only set -fno-strict-aliasing for GCC (Matthew Barnes)
+
+Miscellaneous Fixes:
+	Merge branch camel-socks-proxy-master for SOCKS5 / IPv6 support (Federico Mena Quintero)
+	use cairo as gc is deprecated (Chenthill Palanisamy)
+	Enable largefile support by default. (Matthew Barnes)
+	ENameSelectorEntry: Avoid IM confusion when inserting text (Matthew Barnes)
+	Deprecate CamelHttpStream. (Matthew Barnes)
+	cleanup, and fix for substantial GWise / soap mail leak, bgo#622366 (Michael Meeks)
+
+Translations:
+	drtv (ta)
+	Matej Urban¿i¿ (sl)
+	Daniel Nylander (sv)
+	Kjartan Maraas (nn)
+
 Evolution-Data-Server 2.31.6 2010-08-02
 ---------------------------------------
 
