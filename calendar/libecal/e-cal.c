@@ -3973,14 +3973,6 @@ e_cal_get_error_message (ECalendarStatus status)
 	return NULL;
 }
 
-static gboolean
-check_default (ESource *source, gpointer data)
-{
-	g_return_val_if_fail (source != NULL, FALSE);
-
-	return e_source_get_property (source, "default") != NULL;
-}
-
 /**
  * e_cal_open_default:
  * @ecal: A calendar client.
@@ -3994,63 +3986,42 @@ check_default (ESource *source, gpointer data)
  * Returns: TRUE if it opened correctly, FALSE otherwise.
  */
 gboolean
-e_cal_open_default (ECal **ecal, ECalSourceType type, ECalAuthFunc func, gpointer data, GError **error)
+e_cal_open_default (ECal **ecal,
+                    ECalSourceType type,
+                    ECalAuthFunc func,
+                    gpointer data,
+                    GError **error)
 {
-	ESourceList *sources = NULL;
-	GError *err = NULL;
-	ESource *default_source;
-	gboolean res = TRUE;
+	ESourceList *source_list;
+	ESource *source;
+	ECal *client;
 
-	e_return_error_if_fail (ecal != NULL, E_CALENDAR_STATUS_INVALID_ARG);
+	g_return_val_if_fail (ecal != NULL, FALSE);
+
+	/* In case something goes wrong... */
 	*ecal = NULL;
 
-	default_source = search_known_sources (type, check_default, NULL, &sources, &err);
+	if (!e_cal_get_sources (&source_list, type, error))
+		return FALSE;
 
-	if (err) {
-		if (sources)
-			g_object_unref (sources);
-		g_propagate_error (error, err);
+	source = e_source_list_peek_default_source (source_list);
+	g_return_val_if_fail (source != NULL, FALSE);
+
+	/* XXX This can fail but doesn't take a GError!? */
+	client = e_cal_new (source, type);
+	g_return_val_if_fail (client != NULL, FALSE);
+
+	e_cal_set_auth_func (client, func, data);
+	if (!e_cal_open (client, TRUE, error)) {
+		g_object_unref (client);
 		return FALSE;
 	}
 
-	if (default_source) {
-		*ecal = e_cal_new (default_source, type);
-	} else {
-		switch (type) {
-		case E_CAL_SOURCE_TYPE_EVENT:
-			*ecal = e_cal_new_system_calendar ();
-			break;
-		case E_CAL_SOURCE_TYPE_TODO:
-			*ecal = e_cal_new_system_tasks ();
-			break;
-		case E_CAL_SOURCE_TYPE_JOURNAL:
-			*ecal = e_cal_new_system_memos ();
-			break;
-		default:
-			break;
-		}
-	}
+	*ecal = client;
 
-	if (!*ecal) {
-		g_propagate_error (error, err);
-		res = FALSE;
-	} else {
-		e_cal_set_auth_func (*ecal, func, data);
-		if (!e_cal_open (*ecal, TRUE, &err)) {
-			g_propagate_error (error, err);
-			res = FALSE;
-		}
-	}
+	g_object_unref (source_list);
 
-	if (!res && *ecal) {
-		g_object_unref (*ecal);
-		*ecal = NULL;
-	}
-
-	if (sources)
-		g_object_unref (sources);
-
-	return res;
+	return TRUE;
 }
 
 /**

@@ -73,6 +73,7 @@ ESourceGroup *e_source_list_peek_group_by_properties (ESourceList *list, const g
 ESource      *e_source_list_peek_source_by_uid  (ESourceList *list,
 						 const gchar  *uid);
 ESource      *e_source_list_peek_source_any     (ESourceList *list);
+ESource      *e_source_list_peek_default_source (ESourceList *list);
 
 gboolean  e_source_list_add_group             (ESourceList  *list,
 					       ESourceGroup *group,

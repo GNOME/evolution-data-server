@@ -562,6 +562,57 @@ e_source_list_peek_source_any (ESourceList *list)
 	return NULL;
 }
 
+/**
+ * e_source_list_peek_default_source:
+ * @source_list: an #ESourceList
+ *
+ * Attempts to find a default #ESource in @source_list by looking for
+ * a source with a property named "default", or else a source with a
+ * property named "system".  If no such #ESource exists, the function
+ * returns %NULL.
+ *
+ * Returns: the default #ESource in @source_list, or %NULL
+ *
+ * Since: 2.32
+ **/
+ESource *
+e_source_list_peek_default_source (ESourceList *source_list)
+{
+	ESource *system_source = NULL;
+	GSList *groups;
+	GSList *iter1;
+
+	g_return_val_if_fail (E_IS_SOURCE_LIST (source_list), NULL);
+
+	groups = e_source_list_peek_groups (source_list);
+
+	for (iter1 = groups; iter1 != NULL; iter1 = iter1->next) {
+		ESourceGroup *source_group;
+		GSList *sources;
+		GSList *iter2;
+
+		source_group = E_SOURCE_GROUP (iter1->data);
+		sources = e_source_group_peek_sources (source_group);
+
+		for (iter2 = sources; iter2 != NULL; iter2 = iter2->next) {
+			ESource *source;
+
+			source = E_SOURCE (iter2->data);
+
+			/* If we find the default source, we're done. */
+			if (e_source_get_property (source, "default"))
+				return source;
+
+			/* Make a note of the system source.  If we fail
+			 * to find a default source we fall back to this. */
+			if (e_source_get_property (source, "system"))
+				system_source = source;
+		}
+	}
+
+	return system_source;
+}
+
 gboolean
 e_source_list_add_group (ESourceList *list,
 			 ESourceGroup *group,

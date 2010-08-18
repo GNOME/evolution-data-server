@@ -3240,51 +3240,32 @@ e_book_new_system_addressbook (GError **error)
 	return book;
 }
 
-static gboolean
-check_default (ESource *source, gpointer data)
-{
-	g_return_val_if_fail (source != NULL, FALSE);
-
-	return e_source_get_property (source, "default") != NULL;
-}
-
 /**
  * e_book_new_default_addressbook:
- * @error: A #GError pointer
+ * @error: return location for a #GError, or %NULL
  *
  * Creates a new #EBook corresponding to the user's default
- * addressbook.  See the documentation for e_book_new for further
- * information.
+ * address book.  See the documentation for e_book_new() for
+ * further information.
  *
- * Returns: a new but unopened #EBook.
+ * Returns: a new but unopened #EBook
  */
-EBook*
-e_book_new_default_addressbook   (GError **error)
+EBook *
+e_book_new_default_addressbook (GError **error)
 {
-	GError *err = NULL;
-	ESourceList *sources = NULL;
-	ESource *default_source = NULL;
+	ESourceList *source_list;
+	ESource *source;
 	EBook *book;
 
-	default_source = search_known_sources (check_default, NULL, &sources, &err);
-	if (err) {
-		g_propagate_error (error, err);
-		if (sources)
-			g_object_unref (sources);
+	if (!e_book_get_addressbooks (&source_list, error))
 		return NULL;
-	}
 
-	if (default_source) {
-		book = e_book_new (default_source, &err);
-		g_object_unref (default_source);
-	} else {
-		book = e_book_new_system_addressbook (&err);
-	}
+	source = e_source_list_peek_default_source (source_list);
+	g_return_val_if_fail (source != NULL, NULL);
 
-	if (sources)
-		g_object_unref (sources);
-	if (err)
-		g_propagate_error (error, err);
+	book = e_book_new (source, error);
+
+	g_object_unref (source_list);
 
 	return book;
 }

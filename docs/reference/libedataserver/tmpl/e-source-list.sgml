@@ -136,6 +136,15 @@ ESourceList
 @Returns: 
 
 
+<!-- ##### FUNCTION e_source_list_peek_default_source ##### -->
+<para>
+
+</para>
+
+@list: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_source_list_add_group ##### -->
 <para>
 
