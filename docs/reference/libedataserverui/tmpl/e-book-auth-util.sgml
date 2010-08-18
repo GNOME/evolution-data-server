@@ -37,8 +37,20 @@ e-book-auth-util
 </para>
 
 @source: 
-@open_func: 
+@parent: 
+@cancellable: 
+@callback: 
 @user_data: 
+
+
+<!-- ##### FUNCTION e_load_book_source_finish ##### -->
+<para>
+
+</para>
+
+@source: 
+@result: 
+@error: 
 @Returns: 
 
 

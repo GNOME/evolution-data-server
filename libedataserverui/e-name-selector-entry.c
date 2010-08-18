@@ -1948,6 +1948,40 @@ setup_contact_store (ENameSelectorEntry *name_selector_entry)
 }
 
 static void
+book_loaded_cb (ESource *source,
+                GAsyncResult *result,
+                ENameSelectorEntry *name_selector_entry)
+{
+	EBook *book;
+	EContactStore *store;
+	GError *error = NULL;
+
+	book = e_load_book_source_finish (source, result, &error);
+
+	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+		g_warn_if_fail (book == NULL);
+		g_error_free (error);
+		goto exit;
+	}
+
+	if (error != NULL) {
+		g_warning ("%s", error->message);
+		g_warn_if_fail (book == NULL);
+		g_error_free (error);
+		goto exit;
+	}
+
+	g_return_if_fail (E_IS_BOOK (book));
+
+	store = name_selector_entry->priv->contact_store;
+	e_contact_store_add_book (store, book);
+	g_object_unref (book);
+
+exit:
+	g_object_unref (name_selector_entry);
+}
+
+static void
 setup_default_contact_store (ENameSelectorEntry *name_selector_entry)
 {
 	GSList *groups;
@@ -1966,8 +2000,7 @@ setup_default_contact_store (ENameSelectorEntry *name_selector_entry)
 		GSList       *m;
 
 		for (m = sources; m; m = g_slist_next (m)) {
-			ESource     *source = m->data;
-			EBook       *book;
+			ESource *source = m->data;
 			const gchar *completion;
 
 			/* Skip non-completion sources */
@@ -1975,12 +2008,10 @@ setup_default_contact_store (ENameSelectorEntry *name_selector_entry)
 			if (!completion || g_ascii_strcasecmp (completion, "true"))
 				continue;
 
-			book = e_load_book_source_async (source, NULL, NULL);
-			if (!book)
-				continue;
-
-			e_contact_store_add_book (name_selector_entry->priv->contact_store, book);
-			g_object_unref (book);
+			e_load_book_source_async (
+				source, NULL, NULL,
+				(GAsyncReadyCallback) book_loaded_cb,
+				g_object_ref (name_selector_entry));
 		}
 	}
 

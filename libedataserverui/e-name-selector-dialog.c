@@ -58,9 +58,9 @@ typedef struct {
 
 struct _ENameSelectorDialogPrivate {
 
-	EBook *pending_book;
 	ENameSelectorModel *name_selector_model;
 	GtkTreeModelSort *contact_sort;
+	GCancellable *cancellable;
 
 	GtkBuilder *gui;
 	GtkTreeView *contact_view;
@@ -460,10 +460,10 @@ remove_books (ENameSelectorDialog *name_selector_dialog)
 	g_list_free (books);
 
 	/* See if we have a book pending; stop loading it if so */
-	if (name_selector_dialog->priv->pending_book) {
-		e_book_cancel (name_selector_dialog->priv->pending_book, NULL);
-		g_object_unref (name_selector_dialog->priv->pending_book);
-		name_selector_dialog->priv->pending_book = NULL;
+	if (name_selector_dialog->priv->cancellable != NULL) {
+		g_cancellable_cancel (name_selector_dialog->priv->cancellable);
+		g_object_unref (name_selector_dialog->priv->cancellable);
+		name_selector_dialog->priv->cancellable = NULL;
 	}
 }
 
@@ -777,51 +777,83 @@ view_complete(EBookView *view, EBookViewStatus status, const gchar *error_msg, E
 }
 
 static void
-book_opened (EBook *book, const GError *error, gpointer data)
+book_loaded_cb (ESource *source,
+                GAsyncResult *result,
+                ENameSelectorDialog *name_selector_dialog)
 {
-	ENameSelectorDialog *name_selector_dialog = E_NAME_SELECTOR_DIALOG (data);
-	EContactStore       *contact_store;
-	EBookView           *view;
+	EBook *book;
+	EBookView *view;
+	EContactStore *store;
+	ENameSelectorModel *model;
+	GError *error = NULL;
 
-	if (error) {
-		gchar *msg;
+	book = e_load_book_source_finish (source, result, &error);
 
-		msg = g_strdup_printf ("Error loading addressbook, code:%d (%s)", error->code, error->message);
-
-		gtk_label_set_text(
-			name_selector_dialog->priv->status_label,
-			msg);
-
-		g_warning ("ENameSelectorDialog failed to open book! (%d - %s)", error->code, error->message);
-
-		return;
+	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+		g_warn_if_fail (book == NULL);
+		g_error_free (error);
+		goto exit;
 	}
 
-	contact_store = e_name_selector_model_peek_contact_store (
-		name_selector_dialog->priv->name_selector_model);
-	e_contact_store_add_book (contact_store, book);
-	view = find_contact_source_by_book_return_view(contact_store, book);
-	g_signal_connect(view, "status_message", G_CALLBACK(status_message), name_selector_dialog);
-	g_signal_connect(view, "view_complete", G_CALLBACK(view_complete), name_selector_dialog);
+	if (error != NULL) {
+		gchar *message;
+
+		/* FIXME This shold be translated, no? */
+		message = g_strdup_printf (
+			"Error loading address book: %s", error->message);
+		gtk_label_set_text (
+			name_selector_dialog->priv->status_label, message);
+		g_free (message);
+
+		g_warn_if_fail (book == NULL);
+		g_error_free (error);
+		goto exit;
+	}
+
+	model = name_selector_dialog->priv->name_selector_model;
+	store = e_name_selector_model_peek_contact_store (model);
+	e_contact_store_add_book (store, book);
+
+	view = find_contact_source_by_book_return_view (store, book);
+
+	g_signal_connect (
+		view, "status-message",
+		G_CALLBACK (status_message), name_selector_dialog);
+
+	g_signal_connect (
+		view, "view-complete",
+		G_CALLBACK (view_complete), name_selector_dialog);
 
 	g_object_unref (book);
-	name_selector_dialog->priv->pending_book = NULL;
+
+exit:
+	g_object_unref (name_selector_dialog);
 }
 
 static void
 source_changed (ENameSelectorDialog *name_selector_dialog,
                 ESourceComboBox *source_combo_box)
 {
+	GCancellable *cancellable;
 	ESource *source;
+	gpointer parent;
 
 	source = e_source_combo_box_get_active (source_combo_box);
+
+	parent = gtk_widget_get_toplevel (GTK_WIDGET (name_selector_dialog));
+	parent = gtk_widget_is_toplevel (parent) ? parent : NULL;
 
 	/* Remove any previous books being shown or loaded */
 	remove_books (name_selector_dialog);
 
+	cancellable = g_cancellable_new ();
+	name_selector_dialog->priv->cancellable = cancellable;
+
 	/* Start loading selected book */
-	name_selector_dialog->priv->pending_book = e_load_book_source_async (
-		source, book_opened, name_selector_dialog);
+	e_load_book_source_async (
+		source, parent, cancellable,
+		(GAsyncReadyCallback) book_loaded_cb,
+		g_object_ref (name_selector_dialog));
 }
 
 /* --------------- *

@@ -54,84 +54,142 @@ struct _ENameSelectorPrivate {
 	ENameSelectorDialog *dialog;
 
 	GArray *sections;
+	ESourceList *source_list;
 
-	GThread *load_book_thread;
 	gboolean load_cancelled;
 	GArray *source_books;
 };
 
 G_DEFINE_TYPE (ENameSelector, e_name_selector, G_TYPE_OBJECT)
 
-static gpointer
-load_books_thread (gpointer user_data)
+static void
+name_selector_book_loaded_cb (ESource *source,
+                              GAsyncResult *result,
+                              ENameSelector *name_selector)
 {
-	ENameSelector *name_selector = user_data;
-	ENameSelectorPrivate *priv;
+	EBook *book;
+	GArray *sections;
+	SourceBook source_book;
+	guint ii;
+	GError *error = NULL;
+
+	book = e_load_book_source_finish (source, result, &error);
+
+	if (error != NULL) {
+		g_warning (
+			"ENameSelector: Could not load \"%s\": %s",
+			e_source_peek_name (source), error->message);
+		g_error_free (error);
+		goto exit;
+	}
+
+	g_return_if_fail (E_IS_BOOK (book));
+
+	source_book.book = book;
+	source_book.is_completion_book = TRUE;
+
+	g_array_append_val (name_selector->priv->source_books, source_book);
+
+	sections = name_selector->priv->sections;
+
+	for (ii = 0; ii < sections->len; ii++) {
+		EContactStore *store;
+		Section *section;
+
+		section = &g_array_index (sections, Section, ii);
+		if (section->entry == NULL)
+			continue;
+
+		store = e_name_selector_entry_peek_contact_store (
+			section->entry);
+		if (store != NULL)
+			e_contact_store_add_book (store, book);
+	}
+
+exit:
+	g_object_unref (name_selector);
+}
+
+static void
+name_selector_load_books (ENameSelector *name_selector)
+{
 	ESourceList *source_list;
-	GSList      *groups;
-	GSList      *l;
-
-	/* XXX This thread is necessary because the e_book_new can block.
-	   See gnome's bug #540779 for more information. */
-
-	g_return_val_if_fail (name_selector != NULL, NULL);
-
-	priv = E_NAME_SELECTOR_GET_PRIVATE (name_selector);
+	GSList *groups;
+	GSList *iter1;
 
 	if (!e_book_get_addressbooks (&source_list, NULL)) {
 		g_warning ("ENameSelector can't find any addressbooks!");
-		return NULL;
+		return;
 	}
+
+	/* This keeps the source groups alive while the async operation
+	 * is running, without which e_book_new() can't obtain an absolute
+	 * URI for the ESource.   We drop the reference in dispose(). */
+	name_selector->priv->source_list = source_list;
 
 	groups = e_source_list_peek_groups (source_list);
 
-	for (l = groups; l && !priv->load_cancelled; l = g_slist_next (l)) {
-		ESourceGroup *group   = l->data;
-		GSList       *sources = e_source_group_peek_sources (group);
-		GSList       *m;
+	for (iter1 = groups; iter1 != NULL; iter1 = iter1->next) {
+		ESourceGroup *source_group;
+		GSList *sources;
+		GSList *iter2;
 
-		for (m = sources; m && !priv->load_cancelled; m = g_slist_next (m)) {
-			ESource      *source = m->data;
-			const gchar  *completion;
-			SourceBook    source_book;
+		source_group = E_SOURCE_GROUP (iter1->data);
+		sources = e_source_group_peek_sources (source_group);
 
-			/* We're only loading completion books for now, as we don't want
-			 * unnecessary auth prompts */
-			completion = e_source_get_property (source, "completion");
-			if (!completion || g_ascii_strcasecmp (completion, "true"))
+		for (iter2 = sources; iter2 != NULL; iter2 = iter2->next) {
+			ESource *source;
+			const gchar *property;
+
+			source = E_SOURCE (iter2->data);
+
+			/* We're only loading completion books for now,
+			 * as we don't want unnecessary authentication
+			 * prompts. */
+			property = e_source_get_property (source, "completion");
+
+			if (property == NULL)
 				continue;
 
-			source_book.book = e_load_book_source_async (source, NULL, NULL);
-			if (!source_book.book)
+			if (g_ascii_strcasecmp (property, "true") != 0)
 				continue;
 
-			source_book.is_completion_book = TRUE;
-
-			g_array_append_val (priv->source_books, source_book);
-
-			if (!priv->load_cancelled) {
-				EContactStore *store;
-
-				if (name_selector->priv->sections) {
-					gint j;
-
-					for (j = 0; j < name_selector->priv->sections->len && !priv->load_cancelled; j++) {
-						Section *section = &g_array_index (name_selector->priv->sections, Section, j);
-
-						if (section->entry) {
-							store = e_name_selector_entry_peek_contact_store (section->entry);
-							if (store)
-								e_contact_store_add_book (store, source_book.book);
-						}
-					}
-				}
-			}
+			/* XXX Should we allow for cancellation? */
+			e_load_book_source_async (
+				source, NULL, NULL,
+				(GAsyncReadyCallback)
+				name_selector_book_loaded_cb,
+				g_object_ref (name_selector));
 		}
 	}
+}
 
-	g_object_unref (source_list);
+static void
+name_selector_dispose (GObject *object)
+{
+	ENameSelectorPrivate *priv;
+	guint ii;
 
-	return NULL;
+	priv = E_NAME_SELECTOR_GET_PRIVATE (object);
+
+	if (priv->source_list != NULL) {
+		g_object_unref (priv->source_list);
+		priv->source_list = NULL;
+	}
+
+	for (ii = 0; ii < priv->source_books->len; ii++) {
+		SourceBook *source_book;
+
+		source_book = &g_array_index (
+			priv->source_books, SourceBook, ii);
+		if (source_book->book != NULL)
+			g_object_unref (source_book->book);
+	}
+
+	g_array_set_size (priv->source_books, 0);
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_name_selector_parent_class)->dispose (object);
 }
 
 static void
@@ -141,27 +199,9 @@ name_selector_finalize (GObject *object)
 
 	priv = E_NAME_SELECTOR_GET_PRIVATE (object);
 
-	if (priv->load_book_thread) {
-		priv->load_cancelled = TRUE;
-		g_thread_join (priv->load_book_thread);
-		priv->load_book_thread = NULL;
-	}
+	g_array_free (priv->source_books, TRUE);
 
-	if (priv->source_books) {
-		gint i;
-
-		for (i = 0; i < priv->source_books->len; i++) {
-			SourceBook *source_book = &g_array_index (priv->source_books, SourceBook, i);
-
-			if (source_book->book)
-				g_object_unref (source_book->book);
-		}
-
-		g_array_free (priv->source_books, TRUE);
-		priv->source_books = NULL;
-	}
-
-	/* Chain up to parent's finalize() methods. */
+	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_name_selector_parent_class)->finalize (object);
 }
 
@@ -173,6 +213,7 @@ e_name_selector_class_init (ENameSelectorClass *class)
 	g_type_class_add_private (class, sizeof (ENameSelectorPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = name_selector_dispose;
 	object_class->finalize = name_selector_finalize;
 }
 
@@ -181,7 +222,6 @@ e_name_selector_init (ENameSelector *name_selector)
 {
 	GArray *sections;
 	GArray *source_books;
-	GThread *load_book_thread;
 
 	sections = g_array_new (FALSE, FALSE, sizeof (Section));
 	source_books = g_array_new (FALSE, FALSE, sizeof (SourceBook));
@@ -190,11 +230,8 @@ e_name_selector_init (ENameSelector *name_selector)
 	name_selector->priv->sections = sections;
 	name_selector->priv->model = e_name_selector_model_new ();
 	name_selector->priv->source_books = source_books;
-	name_selector->priv->load_book_thread = load_book_thread;
 
-	load_book_thread = g_thread_create (
-		load_books_thread, name_selector, TRUE, NULL);
-
+	name_selector_load_books (name_selector);
 }
 
 /**

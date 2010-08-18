@@ -2,6 +2,7 @@
 <FILE>e-book-auth-util</FILE>
 e_load_book_source
 e_load_book_source_async
+e_load_book_source_finish
 </SECTION>
 
 <SECTION>

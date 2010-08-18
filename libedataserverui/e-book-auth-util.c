@@ -318,41 +318,358 @@ e_load_book_source (ESource *source, EBookCallback open_func, gpointer user_data
 }
 #endif
 
+typedef struct {
+	EBook *book;
+	GtkWindow *parent;
+	GCancellable *cancellable;
+
+	gboolean anonymous_alert;
+
+	/* Authentication Details */
+	gchar *auth_uri;
+	gchar *auth_method;
+	gchar *auth_username;
+	gchar *auth_component;
+	gboolean auth_remember;
+} LoadContext;
+
+static void
+load_book_source_context_free (LoadContext *context)
+{
+	if (context->book != NULL)
+		g_object_unref (context->book);
+
+	if (context->parent != NULL)
+		g_object_unref (context->parent);
+
+	if (context->cancellable != NULL)
+		g_object_unref (context->cancellable);
+
+	g_free (context->auth_uri);
+	g_free (context->auth_method);
+	g_free (context->auth_username);
+	g_free (context->auth_component);
+
+	g_slice_free (LoadContext, context);
+}
+
+static void
+load_book_source_get_auth_details (ESource *source,
+                                   LoadContext *context)
+{
+	const gchar *property;
+	gchar *uri;
+
+	/* auth_method */
+
+	property = e_source_get_property (source, "auth");
+
+	if (property == NULL || strcmp (property, "none") == 0)
+		return;
+
+	context->auth_method = g_strdup (property);
+
+	/* auth_uri */
+
+	uri = e_source_get_uri (source);
+	context->auth_uri = remove_parameters_from_uri (uri);
+	g_free (uri);
+
+	/* auth_username */
+
+	if (g_strcmp0 (context->auth_method, "ldap/simple-binddn") == 0) {
+		property = e_source_get_property (source, "binddn");
+
+	} else if (g_strcmp0 (context->auth_method, "plain/password") == 0) {
+		property = e_source_get_property (source, "user");
+		if (property == NULL)
+			property = e_source_get_property (source, "username");
+
+	} else
+		property = e_source_get_property (source, "email_addr");
+
+	if (property == NULL)
+		property = "";
+
+	context->auth_username = g_strdup (property);
+
+	/* auth_component */
+
+	property = e_source_get_property (source, "auth-domain");
+
+	if (property == NULL)
+		property = "Addressbook";
+
+	context->auth_component = g_strdup (property);
+
+	/* auth_remember */
+
+	property = e_source_get_property (source, "remember_password");
+
+	context->auth_remember = (g_strcmp0 (property, "true") == 0);
+}
+
+static gchar *
+load_book_source_password_prompt (EBook *book,
+                                  LoadContext *context,
+                                  gboolean reprompt)
+{
+	ESource *source;
+	GString *string;
+	const gchar *title;
+	gchar *password;
+	guint32 flags;
+
+	source = e_book_get_source (book);
+	string = g_string_sized_new (256);
+
+	flags = E_PASSWORDS_REMEMBER_FOREVER |
+		E_PASSWORDS_SECRET | E_PASSWORDS_ONLINE;
+
+	if (reprompt) {
+		g_string_assign (string, _("Failed to authenticate.\n"));
+		flags |= E_PASSWORDS_REPROMPT;
+	}
+
+	g_string_append_printf (
+		string, _("Enter password for %s (user %s)"),
+		e_source_peek_name (source), context->auth_username);
+
+	/* XXX Dialog windows should not have titles. */
+	title = "";
+
+	password = e_passwords_ask_password (
+		title, context->auth_component,
+		context->auth_uri, string->str, flags,
+		&context->auth_remember, context->parent);
+
+	g_string_free (string, TRUE);
+
+	return password;
+}
+
+static void
+load_book_source_thread (GSimpleAsyncResult *simple,
+                         ESource *source,
+                         GCancellable *cancellable)
+{
+	EBook *book;
+	LoadContext *context;
+	gchar *password;
+	gboolean reprompt = FALSE;
+	GError *error = NULL;
+
+	context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	book = e_book_new (source, &error);
+	if (book == NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+		return;
+	}
+
+	if (g_cancellable_set_error_if_cancelled (cancellable, &error)) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_object_unref (book);
+		g_error_free (error);
+		return;
+	}
+
+	if (!e_book_open (book, FALSE, &error)) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_object_unref (book);
+		g_error_free (error);
+		return;
+	}
+
+	if (g_cancellable_set_error_if_cancelled (cancellable, &error)) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_object_unref (book);
+		g_error_free (error);
+		return;
+	}
+
+	/* Do we need to authenticate? */
+	if (context->auth_method == NULL)
+		goto exit;
+
+	password = e_passwords_get_password (
+		context->auth_component, context->auth_uri);
+
+prompt:
+	if (g_cancellable_set_error_if_cancelled (cancellable, &error)) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_object_unref (book);
+		g_error_free (error);
+		g_free (password);
+		return;
+	}
+
+	if (password == NULL) {
+		password = load_book_source_password_prompt (
+			book, context, reprompt);
+		reprompt = TRUE;
+	}
+
+	/* If we have a password, attempt to authenticate with it. */
+	if (password != NULL) {
+		e_book_authenticate_user (
+			book, context->auth_username, password,
+			context->auth_method, &error);
+
+		g_free (password);
+		password = NULL;
+
+	/* The user did not wish to provide a password.  If the address
+	 * book can be accessed anonymously, do that but warn about it. */
+	} else if (e_book_check_static_capability (book, "anon-access")) {
+		context->anonymous_alert = TRUE;
+		goto exit;
+
+	/* Final fallback is to fail. */
+	} else {
+		g_cancellable_cancel (cancellable);
+		goto prompt;
+	}
+
+	/* If authentication failed, forget the password and reprompt. */
+	if (g_error_matches (
+		error, E_BOOK_ERROR, E_BOOK_ERROR_AUTHENTICATION_FAILED)) {
+		e_passwords_forget_password (
+			context->auth_component, context->auth_uri);
+		g_clear_error (&error);
+		goto prompt;
+
+	} else if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_object_unref (book);
+		g_error_free (error);
+		return;
+	}
+
+exit:
+	context->book = book;
+}
+
 /**
  * e_load_book_source_async:
  * @source: an #ESource
- * @open_func_ex: a function to call when the operation finishes, or %NULL
- * @user_data: data to pass to callback function
+ * @parent: parent window for password dialogs, or %NULL
+ * @cancellable: optional #GCancellable object, %NULL to ignore
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: the data to pass to @callback
  *
- * Creates a new #EBook specified by @source, and starts a non-blocking
- * open operation on it. If the book requires authorization, presents
- * a window asking the user for such.
+ * Creates a new #EBook specified by @source and opens it, prompting the
+ * user for authentication if necessary.
  *
- * When the operation finishes, calls the callback function indicating
- * if it succeeded or not. If you don't care, you can pass %NULL for
- * @open_func_ex, and no action will be taken on completion.
+ * When the operation is finished, @callback will be called.  You can
+ * then call e_load_book_source_finish() to obtain the resulting #EBook.
  *
- * Returns: A new #EBook that is being opened.
+ * Since: 2.32
+ **/
+void
+e_load_book_source_async (ESource *source,
+                          GtkWindow *parent,
+                          GCancellable *cancellable,
+                          GAsyncReadyCallback callback,
+                          gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	LoadContext *context;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	/* Source must have a group so we can obtain its URI. */
+	g_return_if_fail (e_source_peek_group (source) != NULL);
+
+	if (parent != NULL) {
+		g_return_if_fail (GTK_IS_WINDOW (parent));
+		g_object_ref (parent);
+	}
+
+	if (cancellable != NULL) {
+		g_return_if_fail (G_IS_CANCELLABLE (cancellable));
+		g_object_ref (cancellable);
+	}
+
+	context = g_slice_new0 (LoadContext);
+	context->parent = parent;
+	context->cancellable = cancellable;
+
+	/* Extract authentication details from the ESource before
+	 * spawning the thread, since ESource is not thread-safe. */
+	load_book_source_get_auth_details (source, context);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (source), callback,
+		user_data, e_load_book_source_async);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, context, (GDestroyNotify)
+		load_book_source_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, (GSimpleAsyncThreadFunc) load_book_source_thread,
+		G_PRIORITY_DEFAULT, context->cancellable);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_load_book_source_finish:
+ * @source: an #ESource
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes an asynchronous #EBook open operation started with
+ * e_load_book_source_async().  If an error occurred, or the user
+ * declined to authenticate, the function will return %NULL and
+ * set @error.
+ *
+ * Returns: a ready-to-use #EBook, or %NULL or error
  *
  * Since: 2.32
  **/
 EBook *
-e_load_book_source_async (ESource *source, EBookAsyncCallback open_func_ex, gpointer user_data)
+e_load_book_source_finish (ESource *source,
+                           GAsyncResult *result,
+                           GError **error)
 {
-	EBook          *book;
-	LoadSourceData *load_source_data = g_new0 (LoadSourceData, 1);
+	GSimpleAsyncResult *simple;
+	LoadContext *context;
 
-	load_source_data->source = g_object_ref (source);
-	load_source_data->open_func_ex = open_func_ex;
-	load_source_data->open_func_data = user_data;
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
 
-	book = e_book_new (source, NULL);
-	if (!book)
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+			result, G_OBJECT (source),
+			e_load_book_source_async), NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	if (g_simple_async_result_propagate_error (simple, error))
 		return NULL;
 
-	load_source_data->book = book;
-	g_object_ref (book);
-	e_book_open_async (book, FALSE, load_source_cb, load_source_data);
+	context = g_simple_async_result_get_op_res_gpointer (simple);
+	g_return_val_if_fail (context != NULL, NULL);
 
-	return book;
+	/* Alert the user that an address book is being accessed anonymously.
+	 * FIXME Do not mention "LDAP", as this may apply to other backends. */
+	if (context->anonymous_alert) {
+		GtkWidget *dialog;
+
+		dialog = gtk_message_dialog_new (
+			context->parent, 0,
+			GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+			_("Accessing LDAP Server anonymously"));
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+	}
+
+	e_source_set_property (
+		source, "remember_password",
+		context->auth_remember ? "true" : "false");
+
+	return g_object_ref (context->book);
 }
