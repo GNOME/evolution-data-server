@@ -39,6 +39,11 @@
 
 #include <glib/gi18n-lib.h>
 
+#ifdef G_OS_WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#endif
+
 #include "camel-file-utils.h"
 #include "camel-net-utils.h"
 #include "camel-operation.h"
