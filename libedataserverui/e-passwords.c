@@ -1103,12 +1103,16 @@ pass_response (GtkDialog *dialog, gint response, gpointer data)
 }
 
 static gboolean
-update_capslock_state (gpointer widget, gpointer event, GtkWidget *label)
+update_capslock_state (GtkDialog *dialog,
+                       GdkEvent *event,
+                       GtkWidget *label)
 {
 	GdkModifierType mask = 0;
+	GdkWindow *window;
 	gchar *markup = NULL;
 
-	gdk_window_get_pointer (NULL, NULL, NULL, &mask);
+	window = gtk_widget_get_window (GTK_WIDGET (dialog));
+	gdk_window_get_pointer (window, NULL, NULL, &mask);
 
 	/* The space acts as a vertical placeholder. */
 	markup = g_markup_printf_escaped (
@@ -1215,7 +1219,6 @@ ep_ask_password (EPassMsg *msg)
 
 	/* Caps Lock Label */
 	widget = gtk_label_new (NULL);
-	update_capslock_state (NULL, NULL, widget);
 	gtk_widget_show (widget);
 
 	gtk_table_attach (
@@ -1260,12 +1263,14 @@ ep_ask_password (EPassMsg *msg)
 
 	msg->noreply = noreply;
 
-	g_signal_connect (password_dialog, "response", G_CALLBACK (pass_response), msg);
+	g_signal_connect (
+		password_dialog, "response",
+		G_CALLBACK (pass_response), msg);
 
 	if (msg->parent)
 		gtk_dialog_run (GTK_DIALOG (password_dialog));
 	else
-		gtk_widget_show ((GtkWidget *)password_dialog);
+		gtk_widget_show (GTK_WIDGET (password_dialog));
 }
 
 /**
@@ -1317,7 +1322,7 @@ e_passwords_cancel (void)
 	G_UNLOCK (passwords);
 
 	if (password_dialog)
-		gtk_dialog_response (password_dialog,GTK_RESPONSE_CANCEL);
+		gtk_dialog_response (password_dialog, GTK_RESPONSE_CANCEL);
 }
 
 /**
