@@ -967,12 +967,15 @@ static void
 e_book_backend_google_stop_book_view (EBookBackend *backend, EDataBookView *bookview)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	GList *link;
 
 	__debug__ (G_STRFUNC);
 
 	/* Remove the view from the list of active views */
-	priv->bookviews = g_list_remove (priv->bookviews, bookview);
-	e_data_book_view_unref (bookview);
+	if ((link = g_list_find (priv->bookviews, bookview)) != NULL) {
+		priv->bookviews = g_list_delete_link (priv->bookviews, link);
+		e_data_book_view_unref (bookview);
+	}
 
 	/* If there are no book views left, we can stop doing certain things, like refreshes */
 	if (!priv->bookviews)
