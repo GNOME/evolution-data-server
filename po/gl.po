@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server-master-po-gl-71644\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-16 18:06+0200\n"
-"PO-Revision-Date: 2010-08-16 18:10+0200\n"
+"POT-Creation-Date: 2010-08-23 02:15+0200\n"
+"PO-Revision-Date: 2010-08-23 02:15+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@ubuntu.com>\n"
 "Language-Team: Galician <gnome-gl-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1134,6 +1134,7 @@ msgid "Undefined"
 msgstr "Indefinida"
 
 #: ../calendar/libecal/e-cal.c:1128 ../libedataserverui/e-book-auth-util.c:206
+#: ../libedataserverui/e-book-auth-util.c:435
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Introduza o contrasinal para %s (usuario %s)"
@@ -1624,7 +1625,7 @@ msgstr "Debe estar traballando con conexión para completar esta operación"
 #: ../camel/camel-file-utils.c:691 ../camel/camel-gpg-context.c:887
 #: ../camel/camel-gpg-context.c:1175 ../camel/camel-net-utils.c:512
 #: ../camel/camel-net-utils.c:689 ../camel/camel-net-utils.c:838
-#: ../camel/camel-tcp-stream-raw.c:245
+#: ../camel/camel-tcp-stream-raw.c:250
 #: ../camel/providers/imapx/camel-imapx-server.c:4639
 #: ../camel/providers/imapx/camel-imapx-server.c:4656
 #: ../camel/providers/nntp/camel-nntp-summary.c:396
@@ -2586,71 +2587,71 @@ msgstr "Lixo"
 msgid "Junk"
 msgstr "Correo lixo"
 
-#: ../camel/camel-tcp-stream-raw.c:804
+#: ../camel/camel-tcp-stream-raw.c:809
 #, c-format
 msgid "The proxy host does not support SOCKS5"
 msgstr "O equipo proxy non admite SOCKS5"
 
-#: ../camel/camel-tcp-stream-raw.c:810
+#: ../camel/camel-tcp-stream-raw.c:815
 #, c-format
 msgid "Could not find a suitable authentication type: code 0x%x"
 msgstr ""
 "Non foi posíbel encontrar un tipo de autenticación axeitada: código 0x%x"
 
-#: ../camel/camel-tcp-stream-raw.c:822
+#: ../camel/camel-tcp-stream-raw.c:827
 msgid "General SOCKS server failure"
 msgstr "Produciuse un fallo xeral no servidor SOCKS"
 
-#: ../camel/camel-tcp-stream-raw.c:823
+#: ../camel/camel-tcp-stream-raw.c:828
 msgid "SOCKS server's rules do not allow connection"
 msgstr "As regras do servidor SOCKS non permiten a conexi'on"
 
-#: ../camel/camel-tcp-stream-raw.c:824
+#: ../camel/camel-tcp-stream-raw.c:829
 msgid "Network is unreachable from SOCKS server"
 msgstr "A rede non é atinxíbel desde o servidor SOCKS"
 
-#: ../camel/camel-tcp-stream-raw.c:825
+#: ../camel/camel-tcp-stream-raw.c:830
 msgid "Host is unreachable from SOCKS server"
 msgstr "O equipo non é atinxíbel desde o servidor SOCKS"
 
-#: ../camel/camel-tcp-stream-raw.c:826
+#: ../camel/camel-tcp-stream-raw.c:831
 msgid "Connection refused"
 msgstr "Conexión rexeitada"
 
-#: ../camel/camel-tcp-stream-raw.c:827
+#: ../camel/camel-tcp-stream-raw.c:832
 msgid "Time-to-live expired"
-msgstr ""
+msgstr "Caducou o tempo de vida"
 
-#: ../camel/camel-tcp-stream-raw.c:828
+#: ../camel/camel-tcp-stream-raw.c:833
 msgid "Command not supported by SOCKS server"
 msgstr "A orde non é compatíbel co servidor SOCKS"
 
-#: ../camel/camel-tcp-stream-raw.c:829
+#: ../camel/camel-tcp-stream-raw.c:834
 msgid "Address type not supported by SOCKS server"
 msgstr "O tipo de enderezo non é compatíbel polo servidor SOCKS"
 
-#: ../camel/camel-tcp-stream-raw.c:830
+#: ../camel/camel-tcp-stream-raw.c:835
 msgid "Unknown error from SOCKS server"
 msgstr "Erro descoñecido no servidor SOCKS"
 
-#: ../camel/camel-tcp-stream-raw.c:860
+#: ../camel/camel-tcp-stream-raw.c:865
 #, c-format
 msgid "Got unknown address type from SOCKS server"
 msgstr "Obtívose un tipo de enderezo descoñecido desde o servidor SOCKS"
 
-#: ../camel/camel-tcp-stream-raw.c:877
+#: ../camel/camel-tcp-stream-raw.c:882
 #, c-format
 msgid "Incomplete reply from SOCKS server"
 msgstr "Recibiuse unha resposta incompleta desde o servidor SOCKS"
 
-#: ../camel/camel-tcp-stream-raw.c:892
+#: ../camel/camel-tcp-stream-raw.c:897
 #, c-format
 msgid "Hostname is too long (maximum is 255 characters)"
 msgstr "O nome do equipo é demasiado longo (máximo de 255 caracteres)"
 
 #. SOCKS5
 #. reserved - must be 0
-#: ../camel/camel-tcp-stream-raw.c:924 ../camel/camel-tcp-stream-raw.c:934
+#: ../camel/camel-tcp-stream-raw.c:929 ../camel/camel-tcp-stream-raw.c:939
 #, c-format
 msgid "Invalid reply from proxy server"
 msgstr "Recibiuse unha resposta non válida desde o servidor proxy"
@@ -4846,10 +4847,12 @@ msgid "%I %p"
 msgstr "%I %p"
 
 #: ../libedataserverui/e-book-auth-util.c:93
+#: ../libedataserverui/e-book-auth-util.c:665
 msgid "Accessing LDAP Server anonymously"
 msgstr "Accedendo anonimamente ao servidor LDAP"
 
 #: ../libedataserverui/e-book-auth-util.c:199
+#: ../libedataserverui/e-book-auth-util.c:430
 msgid "Failed to authenticate.\n"
 msgstr "Produciuse un fallo ao autenticarse.\n"
 
@@ -4921,7 +4924,7 @@ msgstr "_Engadir"
 msgid "_Remove"
 msgstr "E_liminar"
 
-#: ../libedataserverui/e-name-selector-dialog.c:858
+#: ../libedataserverui/e-name-selector-dialog.c:890
 #: ../libedataserverui/e-name-selector-dialog.ui.h:6
 msgid "Any Category"
 msgstr "Calquera categoría"
@@ -4963,25 +4966,25 @@ msgid "_Search:"
 msgstr "_Buscar:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2586
+#: ../libedataserverui/e-name-selector-entry.c:2617
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "E_xpandir %s en liña"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2601
+#: ../libedataserverui/e-name-selector-entry.c:2632
 #, c-format
 msgid "Cop_y %s"
 msgstr "Cop_iar %s"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2611
+#: ../libedataserverui/e-name-selector-entry.c:2642
 #, c-format
 msgid "C_ut %s"
 msgstr "Co_rtar %s"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2628
+#: ../libedataserverui/e-name-selector-entry.c:2659
 #, c-format
 msgid "_Edit %s"
 msgstr "_Editar %s"
@@ -4998,23 +5001,23 @@ msgstr ""
 "A chave do anel de chaves non é utilizábel: non existe o usuario ou nome do "
 "host"
 
-#: ../libedataserverui/e-passwords.c:1116
+#: ../libedataserverui/e-passwords.c:1120
 msgid "You have the Caps Lock key on."
 msgstr "A tecla Bloq Maiús está activada."
 
-#: ../libedataserverui/e-passwords.c:1238
+#: ../libedataserverui/e-passwords.c:1241
 msgid "_Remember this passphrase"
 msgstr "_Lembrar esta frase de paso"
 
-#: ../libedataserverui/e-passwords.c:1239
+#: ../libedataserverui/e-passwords.c:1242
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "_Lembrar esta frase de paso durante a sesión"
 
-#: ../libedataserverui/e-passwords.c:1244
+#: ../libedataserverui/e-passwords.c:1247
 msgid "_Remember this password"
 msgstr "_Lembrar este contrasinal"
 
-#: ../libedataserverui/e-passwords.c:1245
+#: ../libedataserverui/e-passwords.c:1248
 msgid "_Remember this password for the remainder of this session"
 msgstr "_Lembrar este contrasinal durante a sesión"
 
