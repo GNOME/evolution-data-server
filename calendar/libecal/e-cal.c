@@ -74,6 +74,9 @@ static void e_cal_finalize (GObject *object);
 
 /* Private part of the ECal structure */
 struct _ECalPrivate {
+	EGdbusCal *gdbus_cal;
+	guint gone_signal_id;
+
 	/* Load state to avoid multiple loads */
 	ECalLoadState load_state;
 
@@ -95,8 +98,6 @@ struct _ECalPrivate {
 	gint mode;
 
 	gboolean read_only;
-
-	EGdbusCal *gdbus_cal;
 
 	/* The authentication function */
 	ECalAuthFunc auth_func;
@@ -417,25 +418,43 @@ e_cal_init (ECal *ecal)
  * Called when the calendar server dies.
  */
 static void
-gdbus_cal_destroyed_cb (gpointer data, GObject *object)
+gdbus_cal_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished, GError *error, ECal *ecal)
 {
-        ECal *ecal = data;
-	ECalPrivate *priv;
+	GError *err = NULL;
 
-        g_assert (E_IS_CAL (ecal));
+	g_assert (E_IS_CAL (ecal));
 
-	priv = ecal->priv;
+	if (error) {
+		err = g_error_copy (error);
+		unwrap_gerror (&err);
+	}
 
-        g_warning (G_STRLOC ": e-d-s proxy died");
+	if (err) {
+		g_debug (G_STRLOC ": ECal GDBus connection is closed%s: %s", remote_peer_vanished ? ", remote peer vanished" : "", err->message);
+		g_error_free (err);
+	} else {
+		g_debug (G_STRLOC ": ECal GDBus connection is closed%s", remote_peer_vanished ? ", remote peer vanished" : "");
+	}
 
-        /* Ensure that everything relevant is reset */
-        LOCK_FACTORY ();
-        cal_factory_proxy = NULL;
-        priv->gdbus_cal = NULL;
-	priv->load_state = E_CAL_LOAD_NOT_LOADED;
-        UNLOCK_FACTORY ();
+	/* Ensure that everything relevant is NULL */
+	LOCK_FACTORY ();
+
+	if (ecal->priv->gdbus_cal) {
+		g_object_unref (ecal->priv->gdbus_cal);
+		ecal->priv->gdbus_cal = NULL;
+	}
+
+	UNLOCK_FACTORY ();
 
         g_signal_emit (G_OBJECT (ecal), e_cal_signals [BACKEND_DIED], 0);
+}
+
+static void
+gdbus_cal_connection_gone_cb (GDBusConnection *connection, const gchar *sender_name, const gchar *object_path, const gchar *interface_name, const gchar *signal_name, GVariant *parameters, gpointer user_data)
+{
+	/* signal subscription takes care of correct parameters,
+	   thus just do what is to be done here */
+	gdbus_cal_closed_cb (connection, TRUE, NULL, user_data);
 }
 
 /* Dispose handler for the calendar ecal */
@@ -450,8 +469,11 @@ e_cal_dispose (GObject *object)
 
 	if (priv->gdbus_cal) {
 		GError *error = NULL;
+		GDBusConnection *connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (priv->gdbus_cal));
 
-                g_object_weak_unref (G_OBJECT (priv->gdbus_cal), gdbus_cal_destroyed_cb, ecal);
+		g_signal_handlers_disconnect_by_func (connection, gdbus_cal_closed_cb, ecal);
+		g_dbus_connection_signal_unsubscribe (connection, priv->gone_signal_id);
+		priv->gone_signal_id = 0;
 
 		e_gdbus_cal_call_close_sync (priv->gdbus_cal, NULL, &error);
 		g_object_unref (priv->gdbus_cal);
@@ -601,17 +623,45 @@ e_cal_class_init (ECalClass *klass)
 }
 
 static void
-cal_factory_proxy_destroyed_cb (gpointer user_data, GObject *what)
+cal_factory_proxy_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished, GError *error, gpointer user_data)
 {
+	GError *err = NULL;
+
 	LOCK_FACTORY ();
-	cal_factory_proxy = NULL;
+	if (cal_factory_proxy) {
+		g_object_unref (cal_factory_proxy);
+		cal_factory_proxy = NULL;
+	}
+
+	if (error) {
+		err = g_error_copy (error);
+		unwrap_gerror (&err);
+	}
+
+	if (err) {
+		g_debug ("GDBus connection is closed%s: %s", remote_peer_vanished ? ", remote peer vanished" : "", err->message);
+		g_error_free (err);
+	} else {
+		g_debug ("GDBus connection is closed%s", remote_peer_vanished ? ", remote peer vanished" : "");
+	}
+
 	UNLOCK_FACTORY ();
+}
+
+static void
+cal_factory_connection_gone_cb (GDBusConnection *connection, const gchar *sender_name, const gchar *object_path, const gchar *interface_name, const gchar *signal_name, GVariant *parameters, gpointer user_data)
+{
+	/* signal subscription takes care of correct parameters,
+	   thus just do what is to be done here */
+	cal_factory_proxy_closed_cb (connection, TRUE, NULL, user_data);
 }
 
 /* one-time start up for libecal */
 static gboolean
 e_cal_activate (GError **error)
 {
+	GDBusConnection *connection;
+
 	LOCK_FACTORY ();
 	if (G_LIKELY (cal_factory_proxy)) {
 		UNLOCK_FACTORY ();
@@ -631,7 +681,18 @@ e_cal_activate (GError **error)
 		return FALSE;
 	}
 
-	g_object_weak_ref (G_OBJECT (cal_factory_proxy), cal_factory_proxy_destroyed_cb, NULL);
+	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy));
+	g_dbus_connection_set_exit_on_close (connection, FALSE);
+	g_dbus_connection_signal_subscribe (connection,
+		NULL,						/* sender */
+		"org.freedesktop.DBus",				/* interface */
+		"NameOwnerChanged",				/* member */
+		"/org/freedesktop/DBus",			/* object_path */
+		"org.gnome.evolution.dataserver.Calendar",	/* arg0 */
+		G_DBUS_SIGNAL_FLAGS_NONE,
+		cal_factory_connection_gone_cb, NULL, NULL);
+
+	g_signal_connect (connection, "closed", G_CALLBACK (cal_factory_proxy_closed_cb), NULL);
 
 	UNLOCK_FACTORY ();
 
@@ -771,6 +832,7 @@ e_cal_new (ESource *source, ECalSourceType type)
 	ECalPrivate *priv;
 	gchar *path, *xml;
 	GError *error = NULL;
+	GDBusConnection *connection;
 
 	g_return_val_if_fail (source && E_IS_SOURCE (source), NULL);
 	g_return_val_if_fail (type < E_CAL_SOURCE_TYPE_LAST, NULL);
@@ -819,7 +881,17 @@ e_cal_new (ESource *source, ECalSourceType type)
 		return NULL;
 	}
 
-	g_object_weak_ref (G_OBJECT (priv->gdbus_cal), gdbus_cal_destroyed_cb, ecal);
+	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (priv->gdbus_cal));
+	priv->gone_signal_id = g_dbus_connection_signal_subscribe (connection,
+		"org.freedesktop.DBus",				/* sender */
+		"org.freedesktop.DBus",				/* interface */
+		"NameOwnerChanged",				/* member */
+		"/org/freedesktop/DBus",			/* object_path */
+		"org.gnome.evolution.dataserver.Calendar",	/* arg0 */
+		G_DBUS_SIGNAL_FLAGS_NONE,
+		gdbus_cal_connection_gone_cb, ecal, NULL);
+	g_signal_connect (connection, "closed", G_CALLBACK (gdbus_cal_closed_cb), ecal);
+
 	g_signal_connect (priv->gdbus_cal, "auth-required", G_CALLBACK (auth_required_cb), ecal);
 	g_signal_connect (priv->gdbus_cal, "backend-error", G_CALLBACK (backend_error_cb), ecal);
 	g_signal_connect (priv->gdbus_cal, "readonly", G_CALLBACK (readonly_cb), ecal);

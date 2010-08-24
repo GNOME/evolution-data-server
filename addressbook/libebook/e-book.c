@@ -69,6 +69,7 @@ static guint e_book_signals [LAST_SIGNAL];
 
 struct _EBookPrivate {
 	EGdbusBook *gdbus_book;
+	guint gone_signal_id;
 
 	ESource *source;
 	gchar *uri;
@@ -120,6 +121,8 @@ gdbus_book_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished
 	if (err) {
 		g_debug (G_STRLOC ": EBook GDBus connection is closed%s: %s", remote_peer_vanished ? ", remote peer vanished" : "", err->message);
 		g_error_free (err);
+	} else {
+		g_debug (G_STRLOC ": EBook GDBus connection is closed%s", remote_peer_vanished ? ", remote peer vanished" : "");
 	}
 
 	/* Ensure that everything relevant is NULL */
@@ -136,6 +139,14 @@ gdbus_book_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished
 }
 
 static void
+gdbus_book_connection_gone_cb (GDBusConnection *connection, const gchar *sender_name, const gchar *object_path, const gchar *interface_name, const gchar *signal_name, GVariant *parameters, gpointer user_data)
+{
+	/* signal subscription takes care of correct parameters,
+	   thus just do what is to be done here */
+	gdbus_book_closed_cb (connection, TRUE, NULL, user_data);
+}
+
+static void
 e_book_dispose (GObject *object)
 {
 	EBook *book = E_BOOK (object);
@@ -143,7 +154,12 @@ e_book_dispose (GObject *object)
 	book->priv->loaded = FALSE;
 
 	if (book->priv->gdbus_book) {
-		g_signal_handlers_disconnect_by_func (g_dbus_proxy_get_connection (G_DBUS_PROXY (book->priv->gdbus_book)), gdbus_book_closed_cb, book);
+		GDBusConnection *connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (book->priv->gdbus_book));
+
+		g_signal_handlers_disconnect_by_func (connection, gdbus_book_closed_cb, book);
+		g_dbus_connection_signal_unsubscribe (connection, book->priv->gone_signal_id);
+		book->priv->gone_signal_id = 0;
+
 		e_gdbus_book_call_close_sync (book->priv->gdbus_book, NULL, NULL);
 		g_object_unref (book->priv->gdbus_book);
 		book->priv->gdbus_book = NULL;
@@ -255,14 +271,26 @@ book_factory_proxy_closed_cb (GDBusConnection *connection, gboolean remote_peer_
 	if (err) {
 		g_debug ("GDBus connection is closed%s: %s", remote_peer_vanished ? ", remote peer vanished" : "", err->message);
 		g_error_free (err);
+	} else {
+		g_debug ("GDBus connection is closed%s", remote_peer_vanished ? ", remote peer vanished" : "");
 	}
 
 	UNLOCK_FACTORY ();
 }
 
+static void
+book_factory_connection_gone_cb (GDBusConnection *connection, const gchar *sender_name, const gchar *object_path, const gchar *interface_name, const gchar *signal_name, GVariant *parameters, gpointer user_data)
+{
+	/* signal subscription takes care of correct parameters,
+	   thus just do what is to be done here */
+	book_factory_proxy_closed_cb (connection, TRUE, NULL, user_data);
+}
+
 static gboolean
 e_book_activate (GError **error)
 {
+	GDBusConnection *connection;
+
 	LOCK_FACTORY ();
 
 	if (G_LIKELY (book_factory_proxy)) {
@@ -283,7 +311,18 @@ e_book_activate (GError **error)
 		return FALSE;
 	}
 
-	g_signal_connect (g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory_proxy)), "closed", G_CALLBACK (book_factory_proxy_closed_cb), NULL);
+	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory_proxy));
+	g_dbus_connection_set_exit_on_close (connection, FALSE);
+	g_dbus_connection_signal_subscribe (connection,
+		NULL,						/* sender */
+		"org.freedesktop.DBus",				/* interface */
+		"NameOwnerChanged",				/* member */
+		"/org/freedesktop/DBus",			/* object_path */
+		"org.gnome.evolution.dataserver.AddressBook",	/* arg0 */
+		G_DBUS_SIGNAL_FLAGS_NONE,
+		book_factory_connection_gone_cb, NULL, NULL);
+
+	g_signal_connect (connection, "closed", G_CALLBACK (book_factory_proxy_closed_cb), NULL);
 
 	UNLOCK_FACTORY ();
 
@@ -3010,6 +3049,7 @@ e_book_new (ESource *source, GError **error)
 	GError *err = NULL;
 	EBook *book;
 	gchar *path, *xml;
+	GDBusConnection *connection;
 
 	e_return_error_if_fail (E_IS_SOURCE (source), E_BOOK_ERROR_INVALID_ARG);
 
@@ -3059,7 +3099,17 @@ e_book_new (ESource *source, GError **error)
 
 	g_free (path);
 
-	g_signal_connect (g_dbus_proxy_get_connection (G_DBUS_PROXY (book->priv->gdbus_book)), "closed", G_CALLBACK (gdbus_book_closed_cb), book);
+	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (book->priv->gdbus_book));
+	book->priv->gone_signal_id = g_dbus_connection_signal_subscribe (connection,
+		"org.freedesktop.DBus",				/* sender */
+		"org.freedesktop.DBus",				/* interface */
+		"NameOwnerChanged",				/* member */
+		"/org/freedesktop/DBus",			/* object_path */
+		"org.gnome.evolution.dataserver.AddressBook",	/* arg0 */
+		G_DBUS_SIGNAL_FLAGS_NONE,
+		gdbus_book_connection_gone_cb, book, NULL);
+	g_signal_connect (connection, "closed", G_CALLBACK (gdbus_book_closed_cb), book);
+
 	g_signal_connect (book->priv->gdbus_book, "writable", G_CALLBACK (writable_cb), book);
 	g_signal_connect (book->priv->gdbus_book, "connection", G_CALLBACK (connection_cb), book);
 	g_signal_connect (book->priv->gdbus_book, "auth-required", G_CALLBACK (auth_required_cb), book);
