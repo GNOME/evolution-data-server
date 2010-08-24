@@ -2494,14 +2494,14 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, GError
 		CamelIMAPXSummary *isum = (CamelIMAPXSummary *)folder->summary;
 		CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)folder;
 		gint total = camel_folder_summary_count(folder->summary);
-		const gchar *uid = "1";
+		gchar *uid = NULL;
 
 		if (total)
-		    uid = camel_folder_summary_uid_from_index (folder->summary, 0);
+			uid = camel_folder_summary_uid_from_index (folder->summary, 0);
 
 		if (isum->modseq && ifolder->uidvalidity_on_server) {
 			c(printf("SELECT QRESYNC %" G_GUINT64_FORMAT " %" G_GUINT64_FORMAT "\n", ifolder->uidvalidity_on_server, isum->modseq));
-			camel_imapx_command_add(ic, " (QRESYNC (%" G_GUINT64_FORMAT " %" G_GUINT64_FORMAT " %s:*", ifolder->uidvalidity_on_server, isum->modseq, uid);
+			camel_imapx_command_add(ic, " (QRESYNC (%" G_GUINT64_FORMAT " %" G_GUINT64_FORMAT " %s:*", ifolder->uidvalidity_on_server, isum->modseq, uid?uid:"1");
 
 			if (total > 10) {
 				gint i;
@@ -2547,6 +2547,7 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, GError
 			}
 			camel_imapx_command_add(ic, "))");
 		}
+		g_free(uid);
 	}
 
 	ic->complete = imapx_command_select_done;
