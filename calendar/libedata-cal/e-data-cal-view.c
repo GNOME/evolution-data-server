@@ -34,7 +34,10 @@
 #include "e-data-cal-view.h"
 #include "e-gdbus-egdbuscalview.h"
 
-#define THRESHOLD 32
+static void ensure_pending_flush_timeout (EDataCalView *view);
+
+#define THRESHOLD_ITEMS   32	/* how many items can be hold in a cache, before propagated to UI */
+#define THRESHOLD_SECONDS  2	/* how long to wait until notifications are propagated to UI; in seconds */
 
 struct _EDataCalViewPrivate {
 	EGdbusCalView *gdbus_object;
@@ -54,6 +57,9 @@ struct _EDataCalViewPrivate {
 	GArray *removes;
 
 	GHashTable *ids;
+
+	GMutex *pending_mutex;
+	guint flush_id;
 };
 
 G_DEFINE_TYPE (EDataCalView, e_data_cal_view, G_TYPE_OBJECT);
@@ -183,6 +189,36 @@ send_pending_removes (EDataCalView *view)
 	reset_array (priv->removes);
 }
 
+static gboolean
+pending_flush_timeout_cb (gpointer data)
+{
+	EDataCalView *view = data;
+	EDataCalViewPrivate *priv = view->priv;
+
+	g_mutex_lock (priv->pending_mutex);
+
+	priv->flush_id = 0;
+
+	send_pending_adds (view);
+	send_pending_changes (view);
+	send_pending_removes (view);
+
+	g_mutex_unlock (priv->pending_mutex);
+
+	return FALSE;
+}
+
+static void
+ensure_pending_flush_timeout (EDataCalView *view)
+{
+	EDataCalViewPrivate *priv = view->priv;
+
+	if (priv->flush_id)
+		return;
+
+	priv->flush_id = g_timeout_add_seconds (THRESHOLD_SECONDS, pending_flush_timeout_cb, view);
+}
+
 static void
 notify_add (EDataCalView *view, gchar *obj)
 {
@@ -192,7 +228,7 @@ notify_add (EDataCalView *view, gchar *obj)
 	send_pending_changes (view);
 	send_pending_removes (view);
 
-	if (priv->adds->len == THRESHOLD) {
+	if (priv->adds->len == THRESHOLD_ITEMS) {
 		send_pending_adds (view);
 	}
 	g_array_append_val (priv->adds, obj);
@@ -202,6 +238,8 @@ notify_add (EDataCalView *view, gchar *obj)
 			     e_cal_component_get_id (comp),
 			     GUINT_TO_POINTER (1));
 	g_object_unref (comp);
+
+	ensure_pending_flush_timeout (view);
 }
 
 static void
@@ -212,7 +250,13 @@ notify_change (EDataCalView *view, gchar *obj)
 	send_pending_adds (view);
 	send_pending_removes (view);
 
+	if (priv->changes->len == THRESHOLD_ITEMS) {
+		send_pending_changes (view);
+	}
+
 	g_array_append_val (priv->changes, obj);
+
+	ensure_pending_flush_timeout (view);
 }
 
 static void
@@ -224,11 +268,17 @@ notify_remove (EDataCalView *view, ECalComponentId *id)
 	send_pending_adds (view);
 	send_pending_changes (view);
 
+	if (priv->removes->len == THRESHOLD_ITEMS) {
+		send_pending_removes (view);
+	}
+
 	/* TODO: store ECalComponentId instead of just uid*/
 	uid = g_strdup (id->uid);
 	g_array_append_val (priv->removes, uid);
 
 	g_hash_table_remove (priv->ids, id);
+
+	ensure_pending_flush_timeout (view);
 }
 
 static void
@@ -334,11 +384,14 @@ e_data_cal_view_init (EDataCalView *query)
 	priv->done = FALSE;
 	priv->sexp = NULL;
 
-	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
-	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
-	priv->removes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
+	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
+	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
+	priv->removes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
 
 	priv->ids = g_hash_table_new_full (id_hash, id_equal, (GDestroyNotify)e_cal_component_free_id, NULL);
+
+	priv->pending_mutex = g_mutex_new ();
+	priv->flush_id = 0;
 }
 
 static void
@@ -363,6 +416,15 @@ e_data_cal_view_dispose (GObject *object)
 		priv->sexp = NULL;
 	}
 
+	g_mutex_lock (priv->pending_mutex);
+
+	if (priv->flush_id) {
+		g_source_remove (priv->flush_id);
+		priv->flush_id = 0;
+	}
+
+	g_mutex_unlock (priv->pending_mutex);
+
 	(* G_OBJECT_CLASS (e_data_cal_view_parent_class)->dispose) (object);
 }
 
@@ -379,6 +441,8 @@ e_data_cal_view_finalize (GObject *object)
 	priv = query->priv;
 
 	g_hash_table_destroy (priv->ids);
+
+	g_mutex_free (priv->pending_mutex);
 
 	(* G_OBJECT_CLASS (e_data_cal_view_parent_class)->finalize) (object);
 }
@@ -531,11 +595,13 @@ e_data_cal_view_notify_objects_added (EDataCalView *view, const GList *objects)
 	if (objects == NULL)
 		return;
 
+	g_mutex_lock (priv->pending_mutex);
+
 	for (l = objects; l; l = l->next) {
 		notify_add (view, g_strdup (l->data));
 	}
 
-	send_pending_adds (view);
+	g_mutex_unlock (priv->pending_mutex);
 }
 
 /**
@@ -576,12 +642,14 @@ e_data_cal_view_notify_objects_modified (EDataCalView *view, const GList *object
 	if (objects == NULL)
 		return;
 
+	g_mutex_lock (priv->pending_mutex);
+
 	for (l = objects; l; l = l->next) {
 		/* TODO: send add/remove/change as relevant, based on ->ids */
 		notify_change (view, g_strdup (l->data));
 	}
 
-	send_pending_changes (view);
+	g_mutex_unlock (priv->pending_mutex);
 }
 
 /**
@@ -622,13 +690,15 @@ e_data_cal_view_notify_objects_removed (EDataCalView *view, const GList *ids)
 	if (ids == NULL)
 		return;
 
+	g_mutex_lock (priv->pending_mutex);
+
 	for (l = ids; l; l = l->next) {
 		ECalComponentId *id = l->data;
 		if (g_hash_table_lookup (priv->ids, id))
 		    notify_remove (view, id);
 	}
 
-	send_pending_removes (view);
+	g_mutex_unlock (priv->pending_mutex);
 }
 
 /**
@@ -691,7 +761,11 @@ e_data_cal_view_notify_done (EDataCalView *view, const GError *error)
 	if (!priv->started || priv->stopped)
 		return;
 
+	g_mutex_lock (priv->pending_mutex);
+
 	priv->done = TRUE;
 
 	notify_done (view, error);
+
+	g_mutex_unlock (priv->pending_mutex);
 }

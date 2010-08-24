@@ -31,11 +31,13 @@
 #include "e-gdbus-egdbusbookview.h"
 
 static void reset_array (GArray *array);
+static void ensure_pending_flush_timeout (EDataBookView *view);
 
 G_DEFINE_TYPE (EDataBookView, e_data_book_view, G_TYPE_OBJECT);
 #define E_DATA_BOOK_VIEW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_DATA_BOOK_VIEW, EDataBookViewPrivate))
 
-#define THRESHOLD 32
+#define THRESHOLD_ITEMS   32	/* how many items can be hold in a cache, before propagated to UI */
+#define THRESHOLD_SECONDS  2	/* how long to wait until notifications are propagated to UI; in seconds */
 
 struct _EDataBookViewPrivate {
 	EGdbusBookView *gdbus_object;
@@ -56,6 +58,8 @@ struct _EDataBookViewPrivate {
 
 	GHashTable *ids;
 	guint idle_id;
+
+	guint flush_id;
 };
 
 static void e_data_book_view_dispose (GObject *object);
@@ -136,6 +140,36 @@ send_pending_removes (EDataBookView *view)
 	reset_array (priv->removes);
 }
 
+static gboolean
+pending_flush_timeout_cb (gpointer data)
+{
+	EDataBookView *view = data;
+	EDataBookViewPrivate *priv = view->priv;
+
+	g_mutex_lock (priv->pending_mutex);
+
+	priv->flush_id = 0;
+
+	send_pending_adds (view);
+	send_pending_changes (view);
+	send_pending_removes (view);
+
+	g_mutex_unlock (priv->pending_mutex);
+
+	return FALSE;
+}
+
+static void
+ensure_pending_flush_timeout (EDataBookView *view)
+{
+	EDataBookViewPrivate *priv = view->priv;
+
+	if (priv->flush_id)
+		return;
+
+	priv->flush_id = g_timeout_add_seconds (THRESHOLD_SECONDS, pending_flush_timeout_cb, view);
+}
+
 /*
  * Queue @vcard to be sent as a change notification. This takes ownership of
  * @vcard.
@@ -147,7 +181,13 @@ notify_change (EDataBookView *view, gchar *vcard)
 	send_pending_adds (view);
 	send_pending_removes (view);
 
+	if (priv->changes->len == THRESHOLD_ITEMS) {
+		send_pending_changes (view);
+	}
+
 	g_array_append_val (priv->changes, vcard);
+
+	ensure_pending_flush_timeout (view);
 }
 
 /*
@@ -161,8 +201,14 @@ notify_remove (EDataBookView *view, gchar *id)
 	send_pending_adds (view);
 	send_pending_changes (view);
 
+	if (priv->removes->len == THRESHOLD_ITEMS) {
+		send_pending_removes (view);
+	}
+
 	g_array_append_val (priv->removes, id);
 	g_hash_table_remove (priv->ids, id);
+
+	ensure_pending_flush_timeout (view);
 }
 
 /*
@@ -176,12 +222,15 @@ notify_add (EDataBookView *view, const gchar *id, gchar *vcard)
 	send_pending_changes (view);
 	send_pending_removes (view);
 
-	if (priv->adds->len == THRESHOLD) {
+	if (priv->adds->len == THRESHOLD_ITEMS) {
 		send_pending_adds (view);
 	}
+
 	g_array_append_val (priv->adds, vcard);
 	g_hash_table_insert (priv->ids, g_strdup (id),
 			     GUINT_TO_POINTER (1));
+
+	ensure_pending_flush_timeout (view);
 }
 
 static void
@@ -191,11 +240,10 @@ reset_array (GArray *array)
 	gchar *tmp = NULL;
 
 	/* Free stored strings */
-	for (i = 0; i < array->len; i++)
-		{
-			tmp = g_array_index (array, gchar *, i);
-			g_free (tmp);
-		}
+	for (i = 0; i < array->len; i++) {
+		tmp = g_array_index (array, gchar *, i);
+		g_free (tmp);
+	}
 
 	/* Force the array size to 0 */
 	g_array_set_size (array, 0);
@@ -521,12 +569,13 @@ e_data_book_view_init (EDataBookView *book_view)
 	priv->running = FALSE;
 	priv->pending_mutex = g_mutex_new ();
 
-	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
-	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
-	priv->removes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
+	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
+	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
+	priv->removes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
 
-	priv->ids = g_hash_table_new_full (g_str_hash, g_str_equal,
-					   g_free, NULL);
+	priv->ids = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+	priv->flush_id = 0;
 }
 
 static void
@@ -556,6 +605,15 @@ e_data_book_view_dispose (GObject *object)
 		g_source_remove (priv->idle_id);
 		priv->idle_id = 0;
 	}
+
+	g_mutex_lock (priv->pending_mutex);
+
+	if (priv->flush_id) {
+		g_source_remove (priv->flush_id);
+		priv->flush_id = 0;
+	}
+
+	g_mutex_unlock (priv->pending_mutex);
 
 	G_OBJECT_CLASS (e_data_book_view_parent_class)->dispose (object);
 }
