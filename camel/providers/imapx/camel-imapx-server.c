@@ -1544,7 +1544,12 @@ imapx_untagged(CamelIMAPXServer *imap, GError **error)
 		lsub = TRUE;
 	case IMAPX_LIST: {
 		struct _list_info *linfo = imapx_parse_list(imap->stream, error);
-		CamelIMAPXJob *job = imapx_match_active_job(imap, IMAPX_JOB_LIST, linfo->name);
+		CamelIMAPXJob *job;
+
+		if (!linfo)
+			break;
+
+		job = imapx_match_active_job(imap, IMAPX_JOB_LIST, linfo->name);
 
 		// TODO: we want to make sure the names match?
 
