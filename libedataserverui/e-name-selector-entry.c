@@ -1397,6 +1397,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 			/* If we are at the beginning or removing junk space, let us ignore it */
 			del_space = TRUE;
 		}
+		g_free(c);
 	} else	if (end_pos == start_pos +1 &&  index_end == index_start+1) {
 		/* We could be just deleting the empty text */
 		gchar *c;
@@ -1408,6 +1409,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 			/* If we are at the beginning or removing junk space, let us ignore it */
 			del_comma = TRUE;
 		}
+		g_free(c);
 	}
 
 	if (del_comma) {
@@ -1598,6 +1600,7 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 			range_end = range_end+2;
 
 		}
+		g_free(str_context);
 	}
 
 	gtk_editable_set_position (GTK_EDITABLE (name_selector_entry), range_end);
