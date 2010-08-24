@@ -2043,6 +2043,7 @@ imapx_namespace_clear (CamelIMAPXStoreNamespace **ns)
 	node = *ns;
 	while (node != NULL) {
 		next = node->next;
+		g_free (node->full_name);
 		g_free (node->path);
 		g_free (node);
 		node = next;
