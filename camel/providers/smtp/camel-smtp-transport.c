@@ -1175,6 +1175,8 @@ smtp_auth (CamelSmtpTransport *transport,
 	g_object_unref (sasl);
 	camel_operation_end (NULL);
 
+	g_free (respbuf);
+
 	return TRUE;
 
  break_and_lose:
