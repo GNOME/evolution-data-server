@@ -731,10 +731,11 @@ impl_Book_cancelOperation (EGdbusBook *object, GDBusMethodInvocation *invocation
 static gboolean
 impl_Book_close (EGdbusBook *object, GDBusMethodInvocation *invocation, EDataBook *book)
 {
+	e_book_backend_cancel_operation (e_data_book_get_backend (book), book, NULL);
 	e_book_backend_remove_client (e_data_book_get_backend (book), book);
-	g_object_unref (book);
 
 	e_gdbus_book_complete_close (object, invocation);
+	g_object_unref (book);
 
 	return TRUE;
 }
