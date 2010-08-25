@@ -2522,7 +2522,7 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, GError
 				i = 3;
 				do {
 					gchar buf[10];
-
+					gchar *uid;
 					i *= 3;
 					if (i > total)
 						i = total;
@@ -2537,7 +2537,9 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, GError
 					   the summary starts from zero. */
 					sprintf(buf, "%d", total - i + 1);
 					g_string_prepend(seqs, buf);
-					g_string_prepend(uids, camel_folder_summary_uid_from_index(folder->summary, total - i));
+					uid = camel_folder_summary_uid_from_index(folder->summary, total - i);
+					g_string_prepend(uids, uid);
+					g_free(uid);
 				} while (i < total);
 
 				g_string_prepend(seqs, " (");
