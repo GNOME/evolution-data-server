@@ -1273,9 +1273,10 @@ user_insert_text (ENameSelectorEntry *name_selector_entry, gchar *new_text,
 		gtk_editable_insert_text (
 			GTK_EDITABLE (name_selector_entry),
 			new_text, new_text_length, position);
-		post_insert_update (name_selector_entry, *position);
 
 		chars_inserted = *position - old_position;
+		if (chars_inserted > 0)
+			post_insert_update (name_selector_entry, *position);
 
 	/* Otherwise, apply some rules as to where spaces and commas
 	 * can be inserted, and insert a trailing space after comma. */
