@@ -864,10 +864,9 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 		camel_mime_parser_seek(mp, info->frompos, SEEK_SET);
 
 		if (camel_mime_parser_step(mp, NULL, NULL) != CAMEL_MIME_PARSER_STATE_FROM) {
-			g_warning("Expected a From line here, didn't get it");
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				_("Summary and folder mismatch, even after a sync"));
+				_("MBOX file is corrupted, please fix it. (Expected a From line, but didn't get it.)"));
 			goto error;
 		}
 
@@ -1098,10 +1097,9 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 			camel_mime_parser_seek(mp, info->frompos, SEEK_SET);
 
 		if (camel_mime_parser_step(mp, &buffer, &len) != CAMEL_MIME_PARSER_STATE_FROM) {
-			g_warning("Expected a From line here, didn't get it %d", (gint)camel_mime_parser_tell(mp));
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				_("Summary and folder mismatch, even after a sync"));
+				_("MBOX file is corrupted, please fix it. (Expected a From line, but didn't get it.)"));
 			goto error;
 		}
 
