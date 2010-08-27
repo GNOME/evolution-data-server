@@ -962,7 +962,7 @@ msgstr "Puudub tausta factory '%s' jaoks '%s'-st"
 
 #, c-format
 msgid "Could not instantiate backend"
-msgstr "Ei suudetud taustaprogrammi algväärtustada"
+msgstr "Ei suudetud taustaprogrammi lähtestada"
 
 msgid "Signing is not supported by this cipher"
 msgstr "See šiffer ei toeta allkirjastamist"
