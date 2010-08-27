@@ -106,6 +106,11 @@ name_selector_entry_dispose (GObject *object)
 
 	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (object);
 
+	if (priv->attr_list != NULL) {
+		pango_attr_list_unref (priv->attr_list);
+		priv->attr_list = NULL;
+	}
+
 	if (priv->entry_completion) {
 		g_object_unref (priv->entry_completion);
 		priv->entry_completion = NULL;
