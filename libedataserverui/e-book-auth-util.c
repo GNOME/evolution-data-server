@@ -590,6 +590,9 @@ e_load_book_source_async (ESource *source,
 	if (cancellable != NULL) {
 		g_return_if_fail (G_IS_CANCELLABLE (cancellable));
 		g_object_ref (cancellable);
+	} else {
+		/* always provide cancellable, because the code depends on it */
+		cancellable = g_cancellable_new ();
 	}
 
 	context = g_slice_new0 (LoadContext);
