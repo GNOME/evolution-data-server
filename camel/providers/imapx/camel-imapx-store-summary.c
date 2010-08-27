@@ -53,9 +53,26 @@ static void store_info_set_string(CamelStoreSummary *, CamelStoreInfo *, int, co
 G_DEFINE_TYPE (CamelIMAPXStoreSummary, camel_imapx_store_summary, CAMEL_TYPE_STORE_SUMMARY)
 
 static void
+imapx_store_summary_finalize (GObject *object)
+{
+	CamelIMAPXStoreSummary *summary;
+
+	summary = CAMEL_IMAPX_STORE_SUMMARY (object);
+
+	camel_imapx_namespace_list_clear (summary->namespaces);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_imapx_store_summary_parent_class)->finalize (object);
+}
+
+static void
 camel_imapx_store_summary_class_init (CamelIMAPXStoreSummaryClass *class)
 {
+	GObjectClass *object_class;
 	CamelStoreSummaryClass *store_summary_class;
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = imapx_store_summary_finalize;
 
 	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (class);
 	store_summary_class->summary_header_load = summary_header_load;
