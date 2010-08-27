@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-28 12:32+0300\n"
-"PO-Revision-Date: 2010-07-28 13:25+0200\n"
+"POT-Creation-Date: 2010-08-27 16:24+0300\n"
+"PO-Revision-Date: 2010-08-27 16:27+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -28,13 +28,13 @@ msgstr "טוען..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2261
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2283
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2328
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4491
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4482
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "מחפש..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2698
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4650
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4641
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "מוריד אנשי קשר (%d)..."
@@ -58,32 +58,31 @@ msgstr "נעשה שימוש בשם ייחודי (DN)"
 msgid "Using Email Address"
 msgstr "משתמש בכתובת דוא\"ל"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1031
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1022
 msgid "Reconnecting to LDAP server..."
 msgstr "מתחבר מחדש לשרת LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1156
-#, fuzzy
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1147
 msgid "Invalid DN syntax"
-msgstr "ארגומנט שגוי"
+msgstr ""
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1672
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1663
 msgid "Adding contact to LDAP server..."
 msgstr "מוסיף איש קשר לשרת LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1804
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1795
 msgid "Removing contact from LDAP server..."
 msgstr "מסיר איש קשר משרת LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2238
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2229
 msgid "Modifying contact from LDAP server..."
 msgstr "משנה איש קשר משרת LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4341
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4332
 msgid "Receiving LDAP search results..."
 msgstr "מקבל תוצאות חיפוש מ-LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4513
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4504
 msgid "Error performing search"
 msgstr "שגיאה בביצוע החיפוש"
 
@@ -92,7 +91,7 @@ msgstr "שגיאה בביצוע החיפוש"
 msgid "Create resource '%s' failed with http status: %d"
 msgstr "יצירת המשאב '%s' נכשלה עם מצב ה־http:‏ %d"
 
-#: ../addressbook/libebook/e-book.c:3001
+#: ../addressbook/libebook/e-book.c:2979
 #, c-format
 msgid "%s: there was no source for UID '%s' stored in GConf."
 msgstr "%s: אין מקור עבור מזהה המשתמש '%s' שמאוחסן ב־GConf."
@@ -283,7 +282,7 @@ msgstr "כתובת בלוג"
 
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:178
-#: ../libedataserverui/e-categories-dialog.c:671
+#: ../libedataserverui/e-categories-dialog.c:667
 msgid "Categories"
 msgstr "קטגוריות"
 
@@ -632,217 +631,224 @@ msgstr "כתובת SIP"
 msgid "Unnamed List"
 msgstr "רשימה ללא שם"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:325
+#: ../addressbook/libedata-book/e-data-book-factory.c:287
 #, c-format
 msgid "Empty URI"
 msgstr "כתובת ריקה"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:343
-#: ../addressbook/libedata-book/e-data-book-factory.c:380
-#: ../calendar/libedata-cal/e-data-cal-factory.c:336
-#: ../calendar/libedata-cal/e-data-cal-factory.c:348
+#: ../addressbook/libedata-book/e-data-book-factory.c:306
+#: ../addressbook/libedata-book/e-data-book-factory.c:344
+#: ../calendar/libedata-cal/e-data-cal-factory.c:331
+#: ../calendar/libedata-cal/e-data-cal-factory.c:343
 #, c-format
 msgid "Invalid source"
 msgstr "מקור לא תקין"
 
-#: ../addressbook/libedata-book/e-data-book.c:185
-#: ../calendar/libedata-cal/e-data-cal.c:114
+#: ../addressbook/libedata-book/e-data-book.c:166
+#: ../calendar/libedata-cal/e-data-cal.c:104
 msgid "Success"
 msgstr "הצלחה"
 
-#: ../addressbook/libedata-book/e-data-book.c:186
-#: ../calendar/libedata-cal/e-data-cal.c:115
+#: ../addressbook/libedata-book/e-data-book.c:167
+#: ../calendar/libedata-cal/e-data-cal.c:105
 msgid "Repository offline"
 msgstr "המאגר אינו מקוון"
 
-#: ../addressbook/libedata-book/e-data-book.c:187
-#: ../calendar/libecal/e-cal.c:4027 ../calendar/libedata-cal/e-data-cal.c:116
+#: ../addressbook/libedata-book/e-data-book.c:168
+#: ../calendar/libecal/e-cal.c:4017 ../calendar/libedata-cal/e-data-cal.c:106
 msgid "Permission denied"
 msgstr "אין הרשאות"
 
-#: ../addressbook/libedata-book/e-data-book.c:188
+#: ../addressbook/libedata-book/e-data-book.c:169
 msgid "Contact not found"
 msgstr "איש הקשר לא נמצא"
 
-#: ../addressbook/libedata-book/e-data-book.c:189
+#: ../addressbook/libedata-book/e-data-book.c:170
 msgid "Contact ID already exists"
 msgstr "מזהה איש הקשר כבר קיים"
 
-#: ../addressbook/libedata-book/e-data-book.c:190
-#: ../calendar/libedata-cal/e-data-cal.c:121
+#: ../addressbook/libedata-book/e-data-book.c:171
+#: ../calendar/libedata-cal/e-data-cal.c:111
 msgid "Authentication Failed"
 msgstr "האימות נכשל"
 
-#: ../addressbook/libedata-book/e-data-book.c:191
-#: ../calendar/libedata-cal/e-data-cal.c:122
+#: ../addressbook/libedata-book/e-data-book.c:172
+#: ../calendar/libedata-cal/e-data-cal.c:112
 msgid "Authentication Required"
 msgstr "הזדהות נדרשת"
 
-#: ../addressbook/libedata-book/e-data-book.c:192
-#: ../calendar/libedata-cal/e-data-cal.c:123
+#: ../addressbook/libedata-book/e-data-book.c:173
+#: ../calendar/libedata-cal/e-data-cal.c:113
 msgid "Unsupported field"
 msgstr "שדה לא נתמך"
 
-#: ../addressbook/libedata-book/e-data-book.c:193
-#: ../calendar/libedata-cal/e-data-cal.c:125
+#: ../addressbook/libedata-book/e-data-book.c:174
+#: ../calendar/libedata-cal/e-data-cal.c:115
 msgid "Unsupported authentication method"
 msgstr "שיטת אימות לא נתמכת"
 
-#: ../addressbook/libedata-book/e-data-book.c:194
-#: ../calendar/libedata-cal/e-data-cal.c:126
+#: ../addressbook/libedata-book/e-data-book.c:175
+#: ../calendar/libedata-cal/e-data-cal.c:116
 msgid "TLS not available"
 msgstr "‏TLS לא זמין"
 
-#: ../addressbook/libedata-book/e-data-book.c:195
+#: ../addressbook/libedata-book/e-data-book.c:176
 msgid "Address Book does not exist"
 msgstr "ספר הכתובות לא קיים"
 
-#: ../addressbook/libedata-book/e-data-book.c:196
+#: ../addressbook/libedata-book/e-data-book.c:177
 msgid "Book removed"
 msgstr "הוסר הספר"
 
-#: ../addressbook/libedata-book/e-data-book.c:197
-#: ../calendar/libedata-cal/e-data-cal.c:129
+#: ../addressbook/libedata-book/e-data-book.c:178
+#: ../calendar/libedata-cal/e-data-cal.c:119
 msgid "Not available in offline mode"
 msgstr "לא זמין במצב בלתי מקוון"
 
-#: ../addressbook/libedata-book/e-data-book.c:198
-#: ../calendar/libedata-cal/e-data-cal.c:130
+#: ../addressbook/libedata-book/e-data-book.c:179
+#: ../calendar/libedata-cal/e-data-cal.c:120
 msgid "Search size limit exceeded"
 msgstr "גודל החיפוש חרג מגבולו"
 
-#: ../addressbook/libedata-book/e-data-book.c:199
-#: ../calendar/libedata-cal/e-data-cal.c:131
+#: ../addressbook/libedata-book/e-data-book.c:180
+#: ../calendar/libedata-cal/e-data-cal.c:121
 msgid "Search time limit exceeded"
 msgstr "זמן החיפוש חרג מגבולו"
 
-#: ../addressbook/libedata-book/e-data-book.c:200
-#: ../calendar/libedata-cal/e-data-cal.c:132
+#: ../addressbook/libedata-book/e-data-book.c:181
+#: ../calendar/libedata-cal/e-data-cal.c:122
 msgid "Invalid query"
 msgstr "שאילתה שגויה"
 
-#: ../addressbook/libedata-book/e-data-book.c:201
-#: ../calendar/libedata-cal/e-data-cal.c:133
+#: ../addressbook/libedata-book/e-data-book.c:182
+#: ../calendar/libedata-cal/e-data-cal.c:123
 msgid "Query refused"
 msgstr "שאילתה נדחתה"
 
-#: ../addressbook/libedata-book/e-data-book.c:202
-#: ../calendar/libedata-cal/e-data-cal.c:134
+#: ../addressbook/libedata-book/e-data-book.c:183
+#: ../calendar/libedata-cal/e-data-cal.c:124
 msgid "Could not cancel"
 msgstr "לא ניתן לבטל"
 
 #. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
 #. { OtherError,			N_("Other error") },
-#: ../addressbook/libedata-book/e-data-book.c:204
-#: ../calendar/libedata-cal/e-data-cal.c:136
+#: ../addressbook/libedata-book/e-data-book.c:185
+#: ../calendar/libedata-cal/e-data-cal.c:126
 msgid "Invalid server version"
 msgstr "גירסת שרת שגויה"
 
-#: ../addressbook/libedata-book/e-data-book.c:205
+#: ../addressbook/libedata-book/e-data-book.c:186
 msgid "No space"
 msgstr "ללא רווח"
 
-#: ../addressbook/libedata-book/e-data-book.c:206
-#: ../calendar/libecal/e-cal.c:4011 ../calendar/libedata-cal/e-data-cal.c:137
+#: ../addressbook/libedata-book/e-data-book.c:187
+#: ../calendar/libecal/e-cal.c:4001 ../calendar/libedata-cal/e-data-cal.c:127
 msgid "Invalid argument"
 msgstr "ארגומנט שגוי"
 
-#: ../addressbook/libedata-book/e-data-book.c:207
-#: ../calendar/libecal/e-cal.c:4049 ../calendar/libedata-cal/e-data-cal.c:138
+#: ../addressbook/libedata-book/e-data-book.c:188
+#: ../calendar/libecal/e-cal.c:4039 ../calendar/libedata-cal/e-data-cal.c:128
 msgid "Not supported"
 msgstr "לא נתמך"
 
-#: ../addressbook/libedata-book/e-data-book.c:216
-#: ../calendar/libedata-cal/e-data-cal.c:146
+#: ../addressbook/libedata-book/e-data-book.c:196
+#: ../calendar/libedata-cal/e-data-cal.c:136
 msgid "Other error"
 msgstr "שגיאה אחרת"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:374
+#: ../addressbook/libedata-book/e-data-book.c:307
 #, c-format
 msgid "Cannot open book: %s"
 msgstr "לא ניתן לפתוח את הספר: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:394
+#: ../addressbook/libedata-book/e-data-book.c:329
 #, c-format
 msgid "Cannot remove book: %s"
 msgstr "לא ניתן להסיר את הספר: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:411
-#: ../addressbook/libedata-book/e-data-book.c:428
+#: ../addressbook/libedata-book/e-data-book.c:346
+#: ../addressbook/libedata-book/e-data-book.c:365
 #, c-format
 msgid "Cannot get contact: %s"
 msgstr "לא ניתן לקבל איש קשר: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:443
+#: ../addressbook/libedata-book/e-data-book.c:380
 #, c-format
 msgid "Empty query: %s"
 msgstr "שאילתה ריקה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:457
+#: ../addressbook/libedata-book/e-data-book.c:396
 #, c-format
 msgid "Cannot get contact list: %s"
 msgstr "לא ניתן לקבל איש קשר: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:492
+#: ../addressbook/libedata-book/e-data-book.c:433
 #, c-format
 msgid "Cannot authenticate user: %s"
 msgstr "לא ניתן לאמת את המשתמש: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:507
-#: ../addressbook/libedata-book/e-data-book.c:524
+#: ../addressbook/libedata-book/e-data-book.c:448
+#: ../addressbook/libedata-book/e-data-book.c:467
 #, c-format
 msgid "Cannot add contact: %s"
 msgstr "לא ניתן להוסיף איש קשר: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:542
-#: ../addressbook/libedata-book/e-data-book.c:559
+#: ../addressbook/libedata-book/e-data-book.c:485
+#: ../addressbook/libedata-book/e-data-book.c:504
 #, c-format
 msgid "Cannot modify contact: %s"
 msgstr "לא ניתן לשנות איש קשר: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:596
+#: ../addressbook/libedata-book/e-data-book.c:543
 #, c-format
 msgid "Cannot remove contacts: %s"
 msgstr "לא ניתן להסיר אנשי קשר: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:626
+#: ../addressbook/libedata-book/e-data-book.c:580
 #, c-format
 msgid "Cannot get supported fields: %s"
 msgstr "לא ניתן לקבל את השדות הנתמכים: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:639
+#: ../addressbook/libedata-book/e-data-book.c:595
 #, c-format
 msgid "Cannot get required fields: %s"
 msgstr "לא ניתן לקבל את השדות הנדרשים: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:652
+#: ../addressbook/libedata-book/e-data-book.c:610
 #, c-format
 msgid "Cannot get supported auth methods: %s"
 msgstr "לא ניתן לקבל את שיטות האימות הנתמכות: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:677
+#: ../addressbook/libedata-book/e-data-book.c:636
+#: ../addressbook/libedata-book/e-data-book.c:647
 #, c-format
 msgid "Invalid query: %s"
 msgstr "שאילתה שגויה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:708
+#: ../addressbook/libedata-book/e-data-book.c:683
 #, c-format
 msgid "Cannot get changes: %s"
 msgstr "לא ניתן לקבל את השינויים: %s"
+
+#. Translators: The '%s' is replaced with a detailed error message
+#: ../addressbook/libedata-book/e-data-book.c:722
+#, c-format
+msgid "Cancel operation failed: %s"
+msgstr "פעולת הביטול נכשלה: %s"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:498
 #, fuzzy, c-format
@@ -1115,7 +1121,8 @@ msgstr "נמוך"
 msgid "Undefined"
 msgstr "לא מוגדר"
 
-#: ../calendar/libecal/e-cal.c:1142 ../libedataserverui/e-book-auth-util.c:206
+#: ../calendar/libecal/e-cal.c:1200 ../libedataserverui/e-book-auth-util.c:206
+#: ../libedataserverui/e-book-auth-util.c:435
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "הכנס סיסמה ל-%s (משתמש %s)"
@@ -1124,62 +1131,62 @@ msgstr "הכנס סיסמה ל-%s (משתמש %s)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:1156
+#: ../calendar/libecal/e-cal.c:1214
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "הכנס סיסמה עבור %s על מנת לאפשר מתווך עבור המשתמש %s"
 
-#: ../calendar/libecal/e-cal.c:4013
+#: ../calendar/libecal/e-cal.c:4003
 msgid "Backend is busy"
 msgstr "המנוע עסוק"
 
-#: ../calendar/libecal/e-cal.c:4015
+#: ../calendar/libecal/e-cal.c:4005
 msgid "Repository is offline"
 msgstr "המאגר אינו מקוון"
 
-#: ../calendar/libecal/e-cal.c:4017
+#: ../calendar/libecal/e-cal.c:4007
 msgid "No such calendar"
 msgstr "לא קיים יומן"
 
-#: ../calendar/libecal/e-cal.c:4019 ../calendar/libedata-cal/e-data-cal.c:118
+#: ../calendar/libecal/e-cal.c:4009 ../calendar/libedata-cal/e-data-cal.c:108
 #: ../servers/groupwise/e-gw-connection.c:235
 msgid "Object not found"
 msgstr "אובייקט לא נמצא"
 
-#: ../calendar/libecal/e-cal.c:4021 ../calendar/libedata-cal/e-data-cal.c:119
+#: ../calendar/libecal/e-cal.c:4011 ../calendar/libedata-cal/e-data-cal.c:109
 #: ../servers/groupwise/e-gw-connection.c:229
 msgid "Invalid object"
 msgstr "אובייקט לא תקין"
 
-#: ../calendar/libecal/e-cal.c:4023
+#: ../calendar/libecal/e-cal.c:4013
 msgid "URI not loaded"
 msgstr "כתובת לא נטענה"
 
-#: ../calendar/libecal/e-cal.c:4025
+#: ../calendar/libecal/e-cal.c:4015
 msgid "URI already loaded"
 msgstr "כתובת כבר טעונה"
 
-#: ../calendar/libecal/e-cal.c:4029 ../servers/groupwise/e-gw-connection.c:237
+#: ../calendar/libecal/e-cal.c:4019 ../servers/groupwise/e-gw-connection.c:237
 msgid "Unknown User"
 msgstr "משתמש לא ידוע"
 
-#: ../calendar/libecal/e-cal.c:4031 ../calendar/libedata-cal/e-data-cal.c:120
+#: ../calendar/libecal/e-cal.c:4021 ../calendar/libedata-cal/e-data-cal.c:110
 msgid "Object ID already exists"
 msgstr "מזהה אובייקט כבר קיים"
 
-#: ../calendar/libecal/e-cal.c:4033
+#: ../calendar/libecal/e-cal.c:4023
 msgid "Protocol not supported"
 msgstr "פרוטוקול לא נתמך"
 
-#: ../calendar/libecal/e-cal.c:4035
+#: ../calendar/libecal/e-cal.c:4025
 msgid "Operation has been canceled"
 msgstr "הפעולה בוטלה"
 
-#: ../calendar/libecal/e-cal.c:4037
+#: ../calendar/libecal/e-cal.c:4027
 msgid "Could not cancel operation"
 msgstr "לא ניתן לבטל את הפעולה"
 
-#: ../calendar/libecal/e-cal.c:4039
+#: ../calendar/libecal/e-cal.c:4029
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1434
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1452
 #: ../camel/providers/groupwise/camel-groupwise-store.c:618
@@ -1190,25 +1197,25 @@ msgstr "לא ניתן לבטל את הפעולה"
 msgid "Authentication failed"
 msgstr "ההזדהות נכשלה"
 
-#: ../calendar/libecal/e-cal.c:4041
+#: ../calendar/libecal/e-cal.c:4031
 #: ../camel/providers/smtp/camel-smtp-transport.c:166
 msgid "Authentication required"
 msgstr "נדרשת הזדהות"
 
-#: ../calendar/libecal/e-cal.c:4043
+#: ../calendar/libecal/e-cal.c:4033
 msgid "A DBUS exception has occurred"
 msgstr "התרחשה חריגת DBUS"
 
-#: ../calendar/libecal/e-cal.c:4045
+#: ../calendar/libecal/e-cal.c:4035
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:158
 #: ../camel/providers/imap/camel-imap-command.c:457
-#: ../camel/providers/imap/camel-imap-store.c:626
-#: ../camel/providers/pop3/camel-pop3-store.c:495
+#: ../camel/providers/imap/camel-imap-store.c:627
+#: ../camel/providers/pop3/camel-pop3-store.c:474
 #: ../servers/groupwise/e-gw-connection.c:243
 msgid "Unknown error"
 msgstr "שגיאה לא ידועה"
 
-#: ../calendar/libecal/e-cal.c:4047
+#: ../calendar/libecal/e-cal.c:4037
 msgid "No error"
 msgstr "אין שגיאה"
 
@@ -1306,171 +1313,171 @@ msgstr ""
 "\"%s\" בציפייה שכל הארגומנטים יהיו מחרוזות או שארגומנט יחיד יהיה שקר "
 "בבוליאני (#f)"
 
-#: ../calendar/libedata-cal/e-data-cal.c:117
+#: ../calendar/libedata-cal/e-data-cal.c:107
 msgid "Invalid range"
 msgstr "טווח שגוי"
 
-#: ../calendar/libedata-cal/e-data-cal.c:124
+#: ../calendar/libedata-cal/e-data-cal.c:114
 msgid "Unsupported method"
 msgstr "שיטה לא נתמכת"
 
-#: ../calendar/libedata-cal/e-data-cal.c:127
+#: ../calendar/libedata-cal/e-data-cal.c:117
 msgid "Calendar does not exist"
 msgstr "לוח השנה לא קיים"
 
-#: ../calendar/libedata-cal/e-data-cal.c:128
+#: ../calendar/libedata-cal/e-data-cal.c:118
 msgid "UnknownUser"
 msgstr "משתמש לא ידוע"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:606
+#: ../calendar/libedata-cal/e-data-cal.c:589
 #, c-format
 msgid "Cannot retrieve calendar address: %s"
 msgstr "לא ניתן לקבל את כתובת היומן: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:626
+#: ../calendar/libedata-cal/e-data-cal.c:609
 #, c-format
 msgid "Cannot retrieve calendar alarm e-mail address: %s"
 msgstr "לא ניתן לקבל את כתובת הדוא״ל להתראות מלוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:646
+#: ../calendar/libedata-cal/e-data-cal.c:629
 #, c-format
 msgid "Cannot retrieve calendar's ldap attribute: %s"
 msgstr "לא ניתן לקבל את מאפיין ה־ldap של לוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:666
+#: ../calendar/libedata-cal/e-data-cal.c:649
 #, c-format
 msgid "Cannot retrieve calendar scheduling information: %s"
 msgstr "לא ניתן לקבל את נתוני התזמון של לוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:685
+#: ../calendar/libedata-cal/e-data-cal.c:668
 #, c-format
 msgid "Cannot open calendar: %s"
 msgstr "לא ניתן לפתוח את לוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:706
+#: ../calendar/libedata-cal/e-data-cal.c:689
 #, c-format
 msgid "Cannot refresh calendar: %s"
 msgstr "לא ניתן לרענן את לוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:725
+#: ../calendar/libedata-cal/e-data-cal.c:708
 #, c-format
 msgid "Cannot remove calendar: %s"
 msgstr "לא ניתן להסיר את לוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:746
+#: ../calendar/libedata-cal/e-data-cal.c:729
 #, c-format
 msgid "Cannot create calendar object: %s"
 msgstr "לא ניתן ליצור פריט בלוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:770
+#: ../calendar/libedata-cal/e-data-cal.c:753
 #, c-format
 msgid "Cannot modify calendar object: %s"
 msgstr "לא ניתן לשנות את הפריט בלוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:796
+#: ../calendar/libedata-cal/e-data-cal.c:779
 #, c-format
 msgid "Cannot remove calendar object: %s"
 msgstr "לא ניתן להסיר פריט בלוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:817
+#: ../calendar/libedata-cal/e-data-cal.c:800
 #, c-format
 msgid "Cannot receive calendar objects: %s"
 msgstr "לא ניתן לקבל את פריטי לוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:836
+#: ../calendar/libedata-cal/e-data-cal.c:819
 #, c-format
 msgid "Cannot discard calendar alarm: %s"
 msgstr "לא ניתן להתעלם מההתרעה בלוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:857
+#: ../calendar/libedata-cal/e-data-cal.c:840
 #, c-format
 msgid "Cannot send calendar objects: %s"
 msgstr "לא ניתן לשלוח פריטים מלוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:894
+#: ../calendar/libedata-cal/e-data-cal.c:865
 #, c-format
 msgid "Cannot retrieve default calendar object path: %s"
 msgstr "לא ניתן לקבל את נתיב הפריט כברירת המחדל של לוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:914
+#: ../calendar/libedata-cal/e-data-cal.c:885
 #, c-format
 msgid "Cannot retrieve calendar object path: %s"
 msgstr "לא ניתן לקבל את נתיב פריט לוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:934
+#: ../calendar/libedata-cal/e-data-cal.c:905
 #, c-format
 msgid "Cannot retrieve calendar object list: %s"
 msgstr "לא ניתן לקבל את רשימת פריטי לוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:974
+#: ../calendar/libedata-cal/e-data-cal.c:933
 #, c-format
 msgid "Could not retrieve attachment list: %s"
 msgstr "לא ניתן לקבל את רשימת הקבצים המצורפים: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:998
+#: ../calendar/libedata-cal/e-data-cal.c:959
 #, c-format
 msgid "Could not complete calendar query: %s"
 msgstr "לא ניתן להשלים את השאילתה בלוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1018
+#: ../calendar/libedata-cal/e-data-cal.c:979
 #, c-format
 msgid "Could not retrieve calendar time zone: %s"
 msgstr "לא ניתן לקבל את אזור הזמן של לוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1038
+#: ../calendar/libedata-cal/e-data-cal.c:999
 #, c-format
 msgid "Could not add calendar time zone: %s"
 msgstr "לא ניתן להוסיף אזור זמן ללוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1057
+#: ../calendar/libedata-cal/e-data-cal.c:1018
 #, c-format
 msgid "Could not set default calendar time zone: %s"
 msgstr "לא ניתן להגדיר את אזור הזמן כברירת המחדל של לוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1080
+#: ../calendar/libedata-cal/e-data-cal.c:1041
 #, c-format
 msgid "Cannot retrieve calendar changes: %s"
 msgstr "לא ניתן לקבל שינויים ללוח השנה: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1132
+#: ../calendar/libedata-cal/e-data-cal.c:1072
 #, c-format
 msgid "Cannot retrieve calendar free/busy list: %s"
 msgstr "לא ניתן לקבל את רשימת העיסוק/פנאי של לוח השנה: %s"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:358
+#: ../calendar/libedata-cal/e-data-cal-factory.c:353
 #, c-format
 msgid "Invalid URI"
 msgstr "כתובת שגויה"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:373
+#: ../calendar/libedata-cal/e-data-cal-factory.c:371
 #, c-format
 msgid "No backend factory for '%s' of '%s'"
 msgstr "אין מפעל מנגנון עבור '%s' מתוך '%s'"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:423
+#: ../calendar/libedata-cal/e-data-cal-factory.c:421
 #, c-format
 msgid "Could not instantiate backend"
 msgstr "לא ניתן להפעיל את המנגנון"
@@ -1532,9 +1539,9 @@ msgid "Could not remove cache entry: %s: %s"
 msgstr "לא ניתן להסיר כניסת מטמון: %s‏: %s"
 
 #: ../camel/camel-data-wrapper.c:89
-#, fuzzy, c-format
+#, c-format
 msgid "No stream available"
-msgstr "הודעה כזאת אינה זמינה."
+msgstr "אין תזרים זמין"
 
 #: ../camel/camel-db.c:464
 #, c-format
@@ -1577,10 +1584,10 @@ msgstr "העתק תוכן תיקייה באופן מקומי עבור פעולה
 
 #: ../camel/camel-disco-store.c:395
 #: ../camel/providers/groupwise/camel-groupwise-store.c:230
-#: ../camel/providers/imap/camel-imap-store.c:895
-#: ../camel/providers/imap/camel-imap-store.c:1739
-#: ../camel/providers/imap/camel-imap-store.c:2197
-#: ../camel/providers/imap/camel-imap-store.c:3041
+#: ../camel/providers/imap/camel-imap-store.c:876
+#: ../camel/providers/imap/camel-imap-store.c:1720
+#: ../camel/providers/imap/camel-imap-store.c:2178
+#: ../camel/providers/imap/camel-imap-store.c:3022
 #: ../camel/providers/imapx/camel-imapx-store.c:185
 #: ../camel/providers/imapx/camel-imapx-store.c:709
 #: ../camel/providers/imapx/camel-imapx-store.c:772
@@ -1594,17 +1601,18 @@ msgstr "עליך להיות במצב מקוון על מנת להשלים את פ
 #: ../camel/camel-file-utils.c:691 ../camel/camel-gpg-context.c:887
 #: ../camel/camel-gpg-context.c:1175 ../camel/camel-net-utils.c:512
 #: ../camel/camel-net-utils.c:689 ../camel/camel-net-utils.c:838
-#: ../camel/providers/imapx/camel-imapx-server.c:4678
-#: ../camel/providers/imapx/camel-imapx-server.c:4695
+#: ../camel/camel-tcp-stream-raw.c:250
+#: ../camel/providers/imapx/camel-imapx-server.c:4645
+#: ../camel/providers/imapx/camel-imapx-server.c:4662
 #: ../camel/providers/nntp/camel-nntp-summary.c:396
 #: ../camel/providers/pop3/camel-pop3-folder.c:269
 #: ../camel/providers/pop3/camel-pop3-folder.c:625
 #: ../camel/providers/pop3/camel-pop3-folder.c:690
-#: ../camel/providers/pop3/camel-pop3-store.c:487
+#: ../camel/providers/pop3/camel-pop3-store.c:466
 #: ../libedataserverui/e-book-auth-util.c:229
-#, fuzzy, c-format
+#, c-format
 msgid "Cancelled"
-msgstr "Canceled"
+msgstr "בוטלה"
 
 #: ../camel/camel-file-utils.c:643 ../camel/camel-file-utils.c:734
 #: ../camel/camel-file-utils.c:791
@@ -2139,15 +2147,15 @@ msgstr "Server response contained incomplete authorization data"
 msgid "Server response does not match"
 msgstr "Server response does not match"
 
-#: ../camel/camel-sasl-gssapi.c:82
+#: ../camel/camel-sasl-gssapi.c:80
 msgid "GSSAPI"
 msgstr "‏GSSAPI"
 
-#: ../camel/camel-sasl-gssapi.c:84
+#: ../camel/camel-sasl-gssapi.c:82
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr ""
 
-#: ../camel/camel-sasl-gssapi.c:121
+#: ../camel/camel-sasl-gssapi.c:119
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
@@ -2155,11 +2163,11 @@ msgstr ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
 
-#: ../camel/camel-sasl-gssapi.c:126
+#: ../camel/camel-sasl-gssapi.c:124
 msgid "The provided target_name parameter was ill-formed."
 msgstr "The provided target_name parameter was ill-formed."
 
-#: ../camel/camel-sasl-gssapi.c:129
+#: ../camel/camel-sasl-gssapi.c:127
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
@@ -2167,7 +2175,7 @@ msgstr ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
 
-#: ../camel/camel-sasl-gssapi.c:133
+#: ../camel/camel-sasl-gssapi.c:131
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
@@ -2175,7 +2183,7 @@ msgstr ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
 
-#: ../camel/camel-sasl-gssapi.c:138
+#: ../camel/camel-sasl-gssapi.c:136
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
@@ -2183,7 +2191,7 @@ msgstr ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
 
-#: ../camel/camel-sasl-gssapi.c:142
+#: ../camel/camel-sasl-gssapi.c:140
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
@@ -2191,30 +2199,30 @@ msgstr ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
 
-#: ../camel/camel-sasl-gssapi.c:147
+#: ../camel/camel-sasl-gssapi.c:145
 msgid "The supplied context handle did not refer to a valid context."
 msgstr "The supplied context handle did not refer to a valid context."
 
-#: ../camel/camel-sasl-gssapi.c:150
+#: ../camel/camel-sasl-gssapi.c:148
 msgid "The consistency checks performed on the input_token failed."
 msgstr "The consistency checks performed on the input_token failed."
 
-#: ../camel/camel-sasl-gssapi.c:153
+#: ../camel/camel-sasl-gssapi.c:151
 msgid "The consistency checks performed on the credential failed."
 msgstr "The consistency checks performed on the credential failed."
 
-#: ../camel/camel-sasl-gssapi.c:156
+#: ../camel/camel-sasl-gssapi.c:154
 msgid "The referenced credentials have expired."
 msgstr "The referenced credentials have expired."
 
-#: ../camel/camel-sasl-gssapi.c:162 ../camel/camel-sasl-gssapi.c:300
-#: ../camel/camel-sasl-gssapi.c:344 ../camel/camel-sasl-gssapi.c:361
-#: ../camel/providers/smtp/camel-smtp-transport.c:1192
+#: ../camel/camel-sasl-gssapi.c:160 ../camel/camel-sasl-gssapi.c:296
+#: ../camel/camel-sasl-gssapi.c:340 ../camel/camel-sasl-gssapi.c:357
+#: ../camel/providers/smtp/camel-smtp-transport.c:1171
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Bad authentication response from server."
 
-#: ../camel/camel-sasl-gssapi.c:373
+#: ../camel/camel-sasl-gssapi.c:369
 #, c-format
 msgid "Unsupported security layer."
 msgstr "Unsupported security layer."
@@ -2288,7 +2296,7 @@ msgstr "URL '%s' needs a host component"
 msgid "URL '%s' needs a path component"
 msgstr "URL '%s' needs a path component"
 
-#: ../camel/camel-session.c:263
+#: ../camel/camel-session.c:261
 #, c-format
 msgid ""
 "Could not create directory %s:\n"
@@ -2297,7 +2305,7 @@ msgstr ""
 "לא ניתן ליצור את הספרייה %s:\n"
 "‏%s"
 
-#: ../camel/camel-session.c:760
+#: ../camel/camel-session.c:758
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
 msgstr "נא להזין את ססמת ה־%s עבור %s במארח %s."
@@ -2523,7 +2531,79 @@ msgstr "אשפה"
 msgid "Junk"
 msgstr "דואר זבל"
 
-#: ../camel/camel-tcp-stream-ssl.c:786
+#: ../camel/camel-tcp-stream-raw.c:809
+#, c-format
+msgid "The proxy host does not support SOCKS5"
+msgstr ""
+
+#: ../camel/camel-tcp-stream-raw.c:815
+#, fuzzy, c-format
+msgid "Could not find a suitable authentication type: code 0x%x"
+msgstr "אין תמיכה בסוג האימות %s"
+
+#: ../camel/camel-tcp-stream-raw.c:827
+msgid "General SOCKS server failure"
+msgstr ""
+
+#: ../camel/camel-tcp-stream-raw.c:828
+msgid "SOCKS server's rules do not allow connection"
+msgstr ""
+
+#: ../camel/camel-tcp-stream-raw.c:829
+msgid "Network is unreachable from SOCKS server"
+msgstr ""
+
+#: ../camel/camel-tcp-stream-raw.c:830
+msgid "Host is unreachable from SOCKS server"
+msgstr ""
+
+#: ../camel/camel-tcp-stream-raw.c:831
+#, fuzzy
+msgid "Connection refused"
+msgstr "החיבור בוטל"
+
+#: ../camel/camel-tcp-stream-raw.c:832
+msgid "Time-to-live expired"
+msgstr ""
+
+#: ../camel/camel-tcp-stream-raw.c:833
+#, fuzzy
+msgid "Command not supported by SOCKS server"
+msgstr "‏STLS לא נתמך על ידי השרת"
+
+#: ../camel/camel-tcp-stream-raw.c:834
+#, fuzzy
+msgid "Address type not supported by SOCKS server"
+msgstr "‏STLS לא נתמך על ידי השרת"
+
+#: ../camel/camel-tcp-stream-raw.c:835
+#, fuzzy
+msgid "Unknown error from SOCKS server"
+msgstr "שגיאה לא ידועה: %s"
+
+#: ../camel/camel-tcp-stream-raw.c:865
+#, c-format
+msgid "Got unknown address type from SOCKS server"
+msgstr ""
+
+#: ../camel/camel-tcp-stream-raw.c:882
+#, fuzzy, c-format
+msgid "Incomplete reply from SOCKS server"
+msgstr "תגובה בלתי צפוייה מהשרת"
+
+#: ../camel/camel-tcp-stream-raw.c:897
+#, c-format
+msgid "Hostname is too long (maximum is 255 characters)"
+msgstr ""
+
+#. SOCKS5
+#. reserved - must be 0
+#: ../camel/camel-tcp-stream-raw.c:929 ../camel/camel-tcp-stream-raw.c:939
+#, fuzzy, c-format
+msgid "Invalid reply from proxy server"
+msgstr "תגובה בלתי צפוייה מהשרת"
+
+#: ../camel/camel-tcp-stream-ssl.c:457
 #, c-format
 msgid ""
 "Issuer:            %s\n"
@@ -2536,16 +2616,16 @@ msgstr ""
 "טביעת אצבע:       %s\n"
 "חתימה:            %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:792
+#: ../camel/camel-tcp-stream-ssl.c:463
 msgid "GOOD"
 msgstr "טוב"
 
-#: ../camel/camel-tcp-stream-ssl.c:792
+#: ../camel/camel-tcp-stream-ssl.c:463
 msgid "BAD"
 msgstr "לא טוב"
 
 #. construct our user prompt
-#: ../camel/camel-tcp-stream-ssl.c:796
+#: ../camel/camel-tcp-stream-ssl.c:467
 #, c-format
 msgid ""
 "SSL Certificate check for %s:\n"
@@ -2560,7 +2640,7 @@ msgstr ""
 "\n"
 "לקבל?"
 
-#: ../camel/camel-tcp-stream-ssl.c:840
+#: ../camel/camel-tcp-stream-ssl.c:511
 #, c-format
 msgid ""
 "Certificate problem: %s\n"
@@ -2569,14 +2649,14 @@ msgstr ""
 "בעייה בתעודה: %s\n"
 "מנפיק: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:892
+#: ../camel/camel-tcp-stream-ssl.c:563
 #, c-format
 msgid ""
 "Bad certificate domain: %s\n"
 "Issuer: %s"
 msgstr ""
 
-#: ../camel/camel-tcp-stream-ssl.c:910
+#: ../camel/camel-tcp-stream-ssl.c:581
 #, c-format
 msgid ""
 "Certificate expired: %s\n"
@@ -2585,7 +2665,7 @@ msgstr ""
 "פג תוקף התעודה: %s\n"
 "מנפיק: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:927
+#: ../camel/camel-tcp-stream-ssl.c:598
 #, c-format
 msgid ""
 "Certificate revocation list expired: %s\n"
@@ -2662,7 +2742,7 @@ msgstr "לא ניתן לקבל את ההודעה %s:"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:176
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:186
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2644
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2645
 #, c-format
 msgid "This message is not available in offline mode."
 msgstr "הודעה זו אינה זמינה במצב לא מקוון."
@@ -2689,21 +2769,21 @@ msgstr "מתבצעת בדיקה אחר הודעות שנמחקו %s"
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1637
 #: ../camel/providers/groupwise/camel-groupwise-store.c:654
 #: ../camel/providers/groupwise/camel-groupwise-store.c:779
-#: ../camel/providers/imap/camel-imap-folder.c:3806
-#: ../camel/providers/imap/camel-imap-folder.c:3884
-#: ../camel/providers/imapx/camel-imapx-server.c:3721
-#: ../camel/providers/imapx/camel-imapx-server.c:3845
+#: ../camel/providers/imap/camel-imap-folder.c:3814
+#: ../camel/providers/imap/camel-imap-folder.c:3892
+#: ../camel/providers/imapx/camel-imapx-server.c:3710
+#: ../camel/providers/imapx/camel-imapx-server.c:3834
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr ""
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2474
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2524
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2475
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2525
 #, c-format
 msgid "Cannot append message to folder '%s': %s"
 msgstr "לא ניתן להוסיף הודעה לתיקייה '%s':‏ %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2510
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2511
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "לא ניתן ליצור הודעה: %s"
@@ -2794,8 +2874,8 @@ msgid "Host or user not available in url"
 msgstr "המארח או המשתמש אינם זמינים בכתובת"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:207
-#: ../camel/providers/imap/camel-imap-store.c:1207
-#: ../camel/providers/imapx/camel-imapx-server.c:2975
+#: ../camel/providers/imap/camel-imap-store.c:1188
+#: ../camel/providers/imapx/camel-imapx-server.c:2964
 #, c-format
 msgid "You did not enter a password."
 msgstr "לא הכנסת סיסמה."
@@ -2805,8 +2885,8 @@ msgid "Some features may not work correctly with your current server version"
 msgstr ""
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:550
-#: ../camel/providers/imap/camel-imap-store.c:1776
-#: ../camel/providers/imap/camel-imap-store.c:1971
+#: ../camel/providers/imap/camel-imap-store.c:1757
+#: ../camel/providers/imap/camel-imap-store.c:1952
 #: ../camel/providers/imapx/camel-imapx-store.c:410
 #, c-format
 msgid "No such folder %s"
@@ -2823,8 +2903,8 @@ msgid "Cannot create a special system folder"
 msgstr "לא ניתן ליצור תיקיית מערכת מיוחדת"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1206
-#: ../camel/providers/imap/camel-imap-store.c:1854
-#: ../camel/providers/imap/camel-imap-store.c:2276
+#: ../camel/providers/imap/camel-imap-store.c:1835
+#: ../camel/providers/imap/camel-imap-store.c:2257
 #: ../camel/providers/imapx/camel-imapx-store.c:873
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
@@ -2945,7 +3025,7 @@ msgid "Could not create directory %s: %s"
 msgstr "לא ניתן ליצור את הספרייה %s: ‏%s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:960
-#: ../camel/providers/imapx/camel-imapx-server.c:3760
+#: ../camel/providers/imapx/camel-imapx-server.c:3749
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "סורק עבור הודעות שהשתנו ב-%s"
@@ -2956,34 +3036,34 @@ msgid "Unable to retrieve message: "
 msgstr "לא ניתן לקבל הודעה: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3266
-#: ../camel/providers/imapx/camel-imapx-server.c:4957
+#: ../camel/providers/imapx/camel-imapx-server.c:4924
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "לא ניתן לקבל הודעה עם מזהה הודעה %s:‏ %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3267
-#: ../camel/providers/imapx/camel-imapx-server.c:4958
+#: ../camel/providers/imapx/camel-imapx-server.c:4925
 msgid "No such message available."
 msgstr "הודעה כזאת אינה זמינה."
 
-#: ../camel/providers/imap/camel-imap-folder.c:3337
-#: ../camel/providers/imap/camel-imap-folder.c:4203
+#: ../camel/providers/imap/camel-imap-folder.c:3341
+#: ../camel/providers/imap/camel-imap-folder.c:4211
 #: ../camel/providers/nntp/camel-nntp-folder.c:326
 #, c-format
 msgid "This message is not currently available"
 msgstr "הודעה זאת אינה זמינה ברגע זה"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4013
+#: ../camel/providers/imap/camel-imap-folder.c:4021
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "תגובת שרת חלקית: לא סופק מידע עבור הודעה מס׳ %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4023
+#: ../camel/providers/imap/camel-imap-folder.c:4031
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "תגובת שרת חלקית: לא סופק מזהה משתמש עבור הודעה מס׳ %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4243
+#: ../camel/providers/imap/camel-imap-folder.c:4251
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "לא ניתן לאתר את גוף ההודעה בתגובת FETCH."
@@ -3094,7 +3174,7 @@ msgstr "שרת IMAP %s"
 msgid "IMAP service for %s on %s"
 msgstr "שרת IMAP עבור %s ב־%s"
 
-#: ../camel/providers/imap/camel-imap-store.c:446
+#: ../camel/providers/imap/camel-imap-store.c:447
 #: ../camel/providers/nntp/camel-nntp-store.c:234
 #: ../camel/providers/pop3/camel-pop3-store.c:132
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
@@ -3102,60 +3182,60 @@ msgstr "שרת IMAP עבור %s ב־%s"
 msgid "Could not connect to %s: %s"
 msgstr "לא ניתן להתחבר ל־%s: ‏%s"
 
-#: ../camel/providers/imap/camel-imap-store.c:447
+#: ../camel/providers/imap/camel-imap-store.c:448
 #: ../camel/providers/nntp/camel-nntp-store.c:235
 #: ../camel/providers/pop3/camel-pop3-store.c:133
 #: ../camel/providers/smtp/camel-smtp-transport.c:216
 msgid "SSL unavailable"
 msgstr "‏SSL לא זמין"
 
-#: ../camel/providers/imap/camel-imap-store.c:465
+#: ../camel/providers/imap/camel-imap-store.c:466
 #: ../camel/providers/nntp/camel-nntp-store.c:252
 #, fuzzy, c-format
 msgid "Could not connect to %s: "
 msgstr "לא ניתן להתחבר ל-%s: ‏%s"
 
-#: ../camel/providers/imap/camel-imap-store.c:571
-#: ../camel/providers/imap/camel-imap-store.c:591
-#: ../camel/providers/imap/camel-imap-store.c:598
-#: ../camel/providers/imap/camel-imap-store.c:625
-#: ../camel/providers/imapx/camel-imapx-server.c:2828
-#: ../camel/providers/imapx/camel-imapx-server.c:2864
+#: ../camel/providers/imap/camel-imap-store.c:572
+#: ../camel/providers/imap/camel-imap-store.c:592
+#: ../camel/providers/imap/camel-imap-store.c:599
+#: ../camel/providers/imap/camel-imap-store.c:626
+#: ../camel/providers/imapx/camel-imapx-server.c:2817
+#: ../camel/providers/imapx/camel-imapx-server.c:2853
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr ""
 
-#: ../camel/providers/imap/camel-imap-store.c:572
-#: ../camel/providers/imapx/camel-imapx-server.c:2829
+#: ../camel/providers/imap/camel-imap-store.c:573
+#: ../camel/providers/imapx/camel-imapx-server.c:2818
 #: ../camel/providers/smtp/camel-smtp-transport.c:295
 msgid "STARTTLS not supported"
 msgstr "‏STARTTLS לא נתמך"
 
-#: ../camel/providers/imap/camel-imap-store.c:592
-#: ../camel/providers/imapx/camel-imapx-server.c:2865
+#: ../camel/providers/imap/camel-imap-store.c:593
+#: ../camel/providers/imapx/camel-imapx-server.c:2854
 msgid "SSL negotiations failed"
 msgstr ""
 
-#: ../camel/providers/imap/camel-imap-store.c:599
+#: ../camel/providers/imap/camel-imap-store.c:600
 #: ../camel/providers/smtp/camel-smtp-transport.c:339
 msgid "SSL is not available in this build"
 msgstr "‏SSL אינו זמין בבנייה זאת"
 
-#: ../camel/providers/imap/camel-imap-store.c:747
-#: ../camel/providers/imapx/camel-imapx-server.c:2648
+#: ../camel/providers/imap/camel-imap-store.c:748
+#: ../camel/providers/imapx/camel-imapx-server.c:2654
 #, c-format
 msgid "Connection cancelled"
 msgstr "החיבור בוטל"
 
-#: ../camel/providers/imap/camel-imap-store.c:752
-#: ../camel/providers/imapx/camel-imapx-server.c:2653
+#: ../camel/providers/imap/camel-imap-store.c:753
+#: ../camel/providers/imapx/camel-imapx-server.c:2659
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "לא ניתן להתחבר עם הפקודה \"%s\": ‏%s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/providers/imap/camel-imap-store.c:945
-#: ../camel/providers/imap/camel-imap-store.c:2369
+#: ../camel/providers/imap/camel-imap-store.c:926
+#: ../camel/providers/imap/camel-imap-store.c:2350
 #: ../camel/providers/imapx/camel-imapx-store.c:457
 #: ../camel/providers/imapx/camel-imapx-store.c:1054
 #: ../camel/providers/local/camel-maildir-folder.c:90
@@ -3167,21 +3247,21 @@ msgstr "לא ניתן להתחבר עם הפקודה \"%s\": ‏%s"
 msgid "Inbox"
 msgstr "דואר נכנס"
 
-#: ../camel/providers/imap/camel-imap-store.c:1148
-#: ../camel/providers/imapx/camel-imapx-server.c:2931
+#: ../camel/providers/imap/camel-imap-store.c:1129
+#: ../camel/providers/imapx/camel-imapx-server.c:2920
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr ""
 
-#: ../camel/providers/imap/camel-imap-store.c:1160
-#: ../camel/providers/imapx/camel-imapx-server.c:2943
-#: ../camel/providers/smtp/camel-smtp-transport.c:483
+#: ../camel/providers/imap/camel-imap-store.c:1141
+#: ../camel/providers/imapx/camel-imapx-server.c:2932
+#: ../camel/providers/smtp/camel-smtp-transport.c:462
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "אין תמיכה בסוג האימות %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1239
-#: ../camel/providers/imapx/camel-imapx-server.c:3013
+#: ../camel/providers/imap/camel-imap-store.c:1220
+#: ../camel/providers/imapx/camel-imapx-server.c:3002
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3189,15 +3269,15 @@ msgid ""
 "\n"
 msgstr ""
 
-#: ../camel/providers/imap/camel-imap-store.c:1790
-#: ../camel/providers/imap/camel-imap-store.c:2212
+#: ../camel/providers/imap/camel-imap-store.c:1771
+#: ../camel/providers/imap/camel-imap-store.c:2193
 #: ../camel/providers/imapx/camel-imapx-store.c:852
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "שם התיקייה \"%s\" שגוי מכיוון שהוא מכיל את התו \"%c\""
 
-#: ../camel/providers/imap/camel-imap-store.c:1906
+#: ../camel/providers/imap/camel-imap-store.c:1887
 #: ../camel/providers/local/camel-maildir-store.c:189
 #: ../camel/providers/local/camel-mbox-store.c:193
 #: ../camel/providers/local/camel-mh-store.c:255
@@ -3205,18 +3285,18 @@ msgstr "שם התיקייה \"%s\" שגוי מכיוון שהוא מכיל את 
 msgid "Cannot create folder '%s': folder exists."
 msgstr "לא ניתן ליצור את התיקייה '%s': ‏התיקייה קיימת."
 
-#: ../camel/providers/imap/camel-imap-store.c:2225
+#: ../camel/providers/imap/camel-imap-store.c:2206
 #: ../camel/providers/imapx/camel-imapx-store.c:863
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "תיקיית הורה לא ידועה: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:3081
+#: ../camel/providers/imap/camel-imap-store.c:3062
 #, c-format
 msgid "Server unexpectedly disconnected"
 msgstr "השרת התנתק באופן פתאומי"
 
-#: ../camel/providers/imap/camel-imap-store.c:3084
+#: ../camel/providers/imap/camel-imap-store.c:3065
 #, fuzzy
 msgid "Server unexpectedly disconnected: "
 msgstr "השרת התנתק בפתאומיות: %s"
@@ -3260,32 +3340,32 @@ msgstr "‏IMAP+‎"
 msgid "Error writing to cache stream: "
 msgstr "Error writing mail temp file: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2008
+#: ../camel/providers/imapx/camel-imapx-server.c:2013
 #, c-format
 msgid "Not authenticated"
 msgstr "לא מאומת"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2756
+#: ../camel/providers/imapx/camel-imapx-server.c:2745
 #, fuzzy, c-format
 msgid "Could not connect to %s (port %s): "
 msgstr "לא ניתן להתחבר ל-%s: ‏%s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3185
+#: ../camel/providers/imapx/camel-imapx-server.c:3174
 msgid "Closing tmp stream failed: "
 msgstr ""
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5081
+#: ../camel/providers/imapx/camel-imapx-server.c:5048
 #, fuzzy, c-format
 msgid "Cannot create spool file: %s"
 msgstr "לא ניתן ליצור הודעה: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5096
+#: ../camel/providers/imapx/camel-imapx-server.c:5063
 #, fuzzy
 msgid "Cannot create spool file: "
 msgstr "לא ניתן ליצור הודעה: %s"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:426
-#: ../camel/providers/nntp/camel-nntp-store.c:1529
+#: ../camel/providers/nntp/camel-nntp-store.c:1510
 #, c-format
 msgid "No such folder: %s"
 msgstr "תיקייה לא קיימת: %s"
@@ -3320,7 +3400,7 @@ msgstr "‏%s ‏(%s)"
 msgid "Index message body data"
 msgstr ""
 
-#: ../camel/providers/local/camel-local-folder.c:683
+#: ../camel/providers/local/camel-local-folder.c:686
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -3522,8 +3602,8 @@ msgstr "בודק עבור הודעות חדשות"
 
 #: ../camel/providers/local/camel-maildir-summary.c:732
 #: ../camel/providers/local/camel-mbox-summary.c:465
-#: ../camel/providers/local/camel-mbox-summary.c:669
-#: ../camel/providers/local/camel-mbox-summary.c:799
+#: ../camel/providers/local/camel-mbox-summary.c:679
+#: ../camel/providers/local/camel-mbox-summary.c:809
 #: ../camel/providers/local/camel-spool-summary.c:130
 msgid "Storing folder"
 msgstr "תיקיית אחסון"
@@ -3620,71 +3700,78 @@ msgstr "לא ניתן לשנות את '%s' ל-'%s': ‏%s"
 msgid "Could not open folder: %s: %s"
 msgstr "לא ניתן לפתוח תיקייה: %s: ‏%s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:524
-msgid "Fatal mail parser error near position %"
+#: ../camel/providers/local/camel-mbox-summary.c:533
+#, c-format
+msgid "Fatal mail parser error near position %s in folder %s"
 msgstr ""
 
-#: ../camel/providers/local/camel-mbox-summary.c:605
+#: ../camel/providers/local/camel-mbox-summary.c:615
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "לא ניתן לבדוק תיקייה: %s: ‏%s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:676
-#: ../camel/providers/local/camel-mbox-summary.c:806
+#: ../camel/providers/local/camel-mbox-summary.c:686
+#: ../camel/providers/local/camel-mbox-summary.c:816
 #: ../camel/providers/local/camel-spool-summary.c:137
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "לא ניתן לפתוח קובץ: %s: ‏%s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:690
+#: ../camel/providers/local/camel-mbox-summary.c:700
 #: ../camel/providers/local/camel-spool-summary.c:152
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr ""
 
-#: ../camel/providers/local/camel-mbox-summary.c:705
-#: ../camel/providers/local/camel-mbox-summary.c:923
+#: ../camel/providers/local/camel-mbox-summary.c:715
+#: ../camel/providers/local/camel-mbox-summary.c:932
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "לא ניתן לסגור את תיקיית המקור %s: ‏%s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:716
+#: ../camel/providers/local/camel-mbox-summary.c:726
 #, c-format
 msgid "Could not close temporary folder: %s"
 msgstr "לא ניתן לסגור את התיקייה הזמנית: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:733
+#: ../camel/providers/local/camel-mbox-summary.c:743
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "לא ניתן לשנות שם תיקייה: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:819
-#: ../camel/providers/local/camel-mbox-summary.c:1061
+#: ../camel/providers/local/camel-mbox-summary.c:829
+#: ../camel/providers/local/camel-mbox-summary.c:1070
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "לא ניתן לאחסן את התיקייה: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:860
 #: ../camel/providers/local/camel-mbox-summary.c:869
-#: ../camel/providers/local/camel-mbox-summary.c:1094
-#: ../camel/providers/local/camel-mbox-summary.c:1103
+#: ../camel/providers/local/camel-mbox-summary.c:1102
+#, c-format
+msgid ""
+"MBOX file is corrupted, please fix it. (Expected a From line, but didn't get "
+"it.)"
+msgstr ""
+
+#: ../camel/providers/local/camel-mbox-summary.c:878
+#: ../camel/providers/local/camel-mbox-summary.c:1111
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr ""
 
-#: ../camel/providers/local/camel-mbox-summary.c:1020
+#: ../camel/providers/local/camel-mbox-summary.c:1029
 #: ../camel/providers/local/camel-spool-summary.c:337
 #, c-format
 msgid "Unknown error: %s"
 msgstr "שגיאה לא ידועה: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1173
-#: ../camel/providers/local/camel-mbox-summary.c:1203
+#: ../camel/providers/local/camel-mbox-summary.c:1181
+#: ../camel/providers/local/camel-mbox-summary.c:1211
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr ""
 
-#: ../camel/providers/local/camel-mbox-summary.c:1192
+#: ../camel/providers/local/camel-mbox-summary.c:1200
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr ""
@@ -3869,12 +3956,12 @@ msgstr "לא ניתן ליצור את הספרייה %s: ‏%s"
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "שרת ה-NNTP %s החזיר את מספר השגיאה %d: ‏%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:453
+#: ../camel/providers/nntp/camel-nntp-store.c:434
 #, c-format
 msgid "USENET News via %s"
 msgstr "חדשות USENET דרך %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:946
+#: ../camel/providers/nntp/camel-nntp-store.c:927
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -3882,7 +3969,7 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1043
+#: ../camel/providers/nntp/camel-nntp-store.c:1024
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -3890,7 +3977,7 @@ msgid ""
 "No such newsgroup. The selected item is a probably a parent folder."
 msgstr ""
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1083
+#: ../camel/providers/nntp/camel-nntp-store.c:1064
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -3898,36 +3985,36 @@ msgid ""
 "newsgroup does not exist!"
 msgstr ""
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1113
+#: ../camel/providers/nntp/camel-nntp-store.c:1094
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1125
+#: ../camel/providers/nntp/camel-nntp-store.c:1106
 #, c-format
 msgid "You cannot rename a folder in a News store."
 msgstr ""
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1138
+#: ../camel/providers/nntp/camel-nntp-store.c:1119
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1276
+#: ../camel/providers/nntp/camel-nntp-store.c:1257
 #, c-format
 msgid "Authentication requested but no username provided"
 msgstr "הזדהות נדרש אבל לא סופק שם משתמש"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1288
+#: ../camel/providers/nntp/camel-nntp-store.c:1269
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr ""
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1414
+#: ../camel/providers/nntp/camel-nntp-store.c:1395
 msgid "NNTP Command failed: "
 msgstr "פקודת ה־NNTP נכשלה:"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1472
+#: ../camel/providers/nntp/camel-nntp-store.c:1453
 #, c-format
 msgid "Not connected."
 msgstr "לא מחובר."
@@ -4065,8 +4152,8 @@ msgstr "המשא ומתן ל־TLS נכשל"
 msgid "TLS is not available in this build"
 msgstr "‏TLS לא זמין בבניה זאת"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:321
-#: ../camel/providers/pop3/camel-pop3-store.c:473
+#: ../camel/providers/pop3/camel-pop3-store.c:300
+#: ../camel/providers/pop3/camel-pop3-store.c:452
 #, c-format
 msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
@@ -4074,32 +4161,29 @@ msgid ""
 msgstr "לא ניתן להתחבר לשרת ה־POP‏ %s: אין תמיכה במנגנון האימות המבוקש."
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
-#: ../camel/providers/pop3/camel-pop3-store.c:344
+#: ../camel/providers/pop3/camel-pop3-store.c:323
 #, c-format
 msgid "SASL '%s' Login failed for POP server %s%s"
 msgstr ""
 
-#: ../camel/providers/pop3/camel-pop3-store.c:361
+#: ../camel/providers/pop3/camel-pop3-store.c:340
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "לא ניתן להתחבר לשרת ה־POP‏ %s: שגיאת פרוטוקול SASL"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:378
-#, fuzzy, c-format
+#: ../camel/providers/pop3/camel-pop3-store.c:357
+#, c-format
 msgid "Failed to authenticate on POP server %s: "
-msgstr ""
-"לא ניתן להתאמת מול שרת ה־SMTP.\n"
-"%s\n"
-"\n"
+msgstr "ארע כשל באימות מול שרת ה־POP ‏%s:"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:442
+#: ../camel/providers/pop3/camel-pop3-store.c:421
 #, c-format
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
 "attack suspected. Please contact your admin."
 msgstr ""
 
-#: ../camel/providers/pop3/camel-pop3-store.c:492
+#: ../camel/providers/pop3/camel-pop3-store.c:471
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4107,7 +4191,7 @@ msgid ""
 msgstr ""
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
-#: ../camel/providers/pop3/camel-pop3-store.c:505
+#: ../camel/providers/pop3/camel-pop3-store.c:484
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4117,7 +4201,7 @@ msgstr ""
 "שגיאה בשליחת שם המשתמש%s"
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
-#: ../camel/providers/pop3/camel-pop3-store.c:518
+#: ../camel/providers/pop3/camel-pop3-store.c:497
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4126,27 +4210,27 @@ msgstr ""
 "לא ניתן להתחבר לשרת ה־POP‏ %s.\n"
 "שגיאה בשליחת הססמה%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:674
+#: ../camel/providers/pop3/camel-pop3-store.c:653
 #, c-format
 msgid "Could not connect to POP server %s"
 msgstr "לא ניתן להתחבר לשרת ה-POP‏ %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:687
+#: ../camel/providers/pop3/camel-pop3-store.c:666
 #, c-format
 msgid "POP3 server %s"
 msgstr "שרת POP3‏ %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:691
-#, fuzzy, c-format
+#: ../camel/providers/pop3/camel-pop3-store.c:670
+#, c-format
 msgid "POP3 server for %s on %s"
-msgstr "שרת IMAP עבור %s ב-%s"
+msgstr "שרת POP3 עבור %s ב־%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:706
+#: ../camel/providers/pop3/camel-pop3-store.c:685
 #, c-format
 msgid "No such folder '%s'."
 msgstr "התיקייה '%s' לא קיימת."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:730
+#: ../camel/providers/pop3/camel-pop3-store.c:709
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr ""
@@ -4177,9 +4261,8 @@ msgid "Could not fork sendmail: %s: mail not sent"
 msgstr ""
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:194
-#, fuzzy
 msgid "Could not send message: "
-msgstr "לא ניתן לשלוח הודעה: %s"
+msgstr "לא ניתן לשלוח הודעה:"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:222
 #, c-format
@@ -4323,16 +4406,15 @@ msgstr "נכשל בהתחברות לשרת ה-SMTP ‏%s במצב בטוח: %s"
 #: ../camel/providers/smtp/camel-smtp-transport.c:302
 #: ../camel/providers/smtp/camel-smtp-transport.c:314
 #: ../camel/providers/smtp/camel-smtp-transport.c:320
-#, fuzzy
 msgid "STARTTLS command failed: "
-msgstr "פקודת STARTTLS נכשלה: %s"
+msgstr "פקודת STARTTLS נכשלה:"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:471
+#: ../camel/providers/smtp/camel-smtp-transport.c:450
 #, c-format
 msgid "SMTP server %s does not support requested authentication type %s."
 msgstr "שרת ה־SMTP‏ %s אינו תומך בסוג ההצפנה המבוקש %s."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:547
+#: ../camel/providers/smtp/camel-smtp-transport.c:526
 #, c-format
 msgid ""
 "Unable to authenticate to SMTP server.\n"
@@ -4343,106 +4425,105 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:685
+#: ../camel/providers/smtp/camel-smtp-transport.c:664
 #, c-format
 msgid "SMTP server %s"
 msgstr "שרת SMTP %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:687
+#: ../camel/providers/smtp/camel-smtp-transport.c:666
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "שליחת דוא\"ל SMTP דרך %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:707
+#: ../camel/providers/smtp/camel-smtp-transport.c:686
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "לא ניתן לשלוח הודעה: השירות אינו מחובר."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:714
+#: ../camel/providers/smtp/camel-smtp-transport.c:693
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "לא ניתן לשלוח את ההודעה: כתובת השולח אינה תקנית."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:718
+#: ../camel/providers/smtp/camel-smtp-transport.c:697
 msgid "Sending message"
 msgstr "שולח הודעה"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:734
+#: ../camel/providers/smtp/camel-smtp-transport.c:713
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "לא ניתן לשלוח את ההודעה: לא הוגדרו נמענים."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:746
+#: ../camel/providers/smtp/camel-smtp-transport.c:725
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "לא ניתן לשלוח הודעה: נמען אחד או יותר שגוי"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:982
+#: ../camel/providers/smtp/camel-smtp-transport.c:961
 msgid "SMTP Greeting"
 msgstr "SMTP Greeting"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1006
-#: ../camel/providers/smtp/camel-smtp-transport.c:1021
-#: ../camel/providers/smtp/camel-smtp-transport.c:1028
-#, fuzzy
+#: ../camel/providers/smtp/camel-smtp-transport.c:985
+#: ../camel/providers/smtp/camel-smtp-transport.c:1000
+#: ../camel/providers/smtp/camel-smtp-transport.c:1007
 msgid "HELO command failed: "
-msgstr "פקודת HELO נכשלה: %s"
+msgstr "פקודת HELO נכשלה:"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1095
+#: ../camel/providers/smtp/camel-smtp-transport.c:1074
 msgid "SMTP Authentication"
 msgstr "SMTP Authentication"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1102
+#: ../camel/providers/smtp/camel-smtp-transport.c:1081
 #, c-format
 msgid "Error creating SASL authentication object."
 msgstr "Error creating SASL authentication object."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1118
-#: ../camel/providers/smtp/camel-smtp-transport.c:1128
-#: ../camel/providers/smtp/camel-smtp-transport.c:1136
+#: ../camel/providers/smtp/camel-smtp-transport.c:1097
+#: ../camel/providers/smtp/camel-smtp-transport.c:1107
+#: ../camel/providers/smtp/camel-smtp-transport.c:1115
 #, fuzzy
 msgid "AUTH command failed: "
 msgstr "AUTH command failed: %s"
 
+#: ../camel/providers/smtp/camel-smtp-transport.c:1214
+#: ../camel/providers/smtp/camel-smtp-transport.c:1226
 #: ../camel/providers/smtp/camel-smtp-transport.c:1233
-#: ../camel/providers/smtp/camel-smtp-transport.c:1245
-#: ../camel/providers/smtp/camel-smtp-transport.c:1252
 #, fuzzy
 msgid "MAIL FROM command failed: "
 msgstr "MAIL FROM command failed"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1275
+#: ../camel/providers/smtp/camel-smtp-transport.c:1256
 #, fuzzy
 msgid "RCPT TO command failed: "
 msgstr "RSET command failed: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1289
-#: ../camel/providers/smtp/camel-smtp-transport.c:1297
+#: ../camel/providers/smtp/camel-smtp-transport.c:1270
+#: ../camel/providers/smtp/camel-smtp-transport.c:1278
 #, fuzzy, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> failed"
 
+#: ../camel/providers/smtp/camel-smtp-transport.c:1316
+#: ../camel/providers/smtp/camel-smtp-transport.c:1325
 #: ../camel/providers/smtp/camel-smtp-transport.c:1335
-#: ../camel/providers/smtp/camel-smtp-transport.c:1344
-#: ../camel/providers/smtp/camel-smtp-transport.c:1354
-#: ../camel/providers/smtp/camel-smtp-transport.c:1411
-#: ../camel/providers/smtp/camel-smtp-transport.c:1427
-#: ../camel/providers/smtp/camel-smtp-transport.c:1438
-#: ../camel/providers/smtp/camel-smtp-transport.c:1445
+#: ../camel/providers/smtp/camel-smtp-transport.c:1392
+#: ../camel/providers/smtp/camel-smtp-transport.c:1408
+#: ../camel/providers/smtp/camel-smtp-transport.c:1419
+#: ../camel/providers/smtp/camel-smtp-transport.c:1426
 #, fuzzy
 msgid "DATA command failed: "
 msgstr "DATA command failed"
 
+#: ../camel/providers/smtp/camel-smtp-transport.c:1448
+#: ../camel/providers/smtp/camel-smtp-transport.c:1460
 #: ../camel/providers/smtp/camel-smtp-transport.c:1467
-#: ../camel/providers/smtp/camel-smtp-transport.c:1479
-#: ../camel/providers/smtp/camel-smtp-transport.c:1486
 #, fuzzy
 msgid "RSET command failed: "
 msgstr "RSET command failed: %s"
 
+#: ../camel/providers/smtp/camel-smtp-transport.c:1489
+#: ../camel/providers/smtp/camel-smtp-transport.c:1502
 #: ../camel/providers/smtp/camel-smtp-transport.c:1508
-#: ../camel/providers/smtp/camel-smtp-transport.c:1521
-#: ../camel/providers/smtp/camel-smtp-transport.c:1527
 #, fuzzy
 msgid "QUIT command failed: "
 msgstr "QUIT command failed: %s"
@@ -4658,10 +4739,12 @@ msgid "%I %p"
 msgstr "%I %p"
 
 #: ../libedataserverui/e-book-auth-util.c:93
+#: ../libedataserverui/e-book-auth-util.c:668
 msgid "Accessing LDAP Server anonymously"
 msgstr "מתבצעת גישה אנונימית לשרת LDAP"
 
 #: ../libedataserverui/e-book-auth-util.c:199
+#: ../libedataserverui/e-book-auth-util.c:430
 msgid "Failed to authenticate.\n"
 msgstr "ניסיון ההזדהות נכשל.\n"
 
@@ -4673,18 +4756,18 @@ msgstr "איקון קטגוריה"
 msgid "_No Image"
 msgstr "_ללא תמונה"
 
-#: ../libedataserverui/e-categories-dialog.c:372
+#: ../libedataserverui/e-categories-dialog.c:368
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
 msgstr "כבר יש קטגוריה בשם '%s' בתצורה. נא להשתמש בשם אחר"
 
-#: ../libedataserverui/e-categories-dialog.c:680
+#: ../libedataserverui/e-categories-dialog.c:676
 msgid "Icon"
 msgstr "איקון"
 
-#: ../libedataserverui/e-categories-dialog.c:685
+#: ../libedataserverui/e-categories-dialog.c:681
 msgid "Category"
 msgstr "קטגוריה"
 
@@ -4733,7 +4816,7 @@ msgstr "_הוסף"
 msgid "_Remove"
 msgstr "ה_סר"
 
-#: ../libedataserverui/e-name-selector-dialog.c:858
+#: ../libedataserverui/e-name-selector-dialog.c:890
 #: ../libedataserverui/e-name-selector-dialog.ui.h:6
 msgid "Any Category"
 msgstr "כל קטגוריה"
@@ -4775,25 +4858,25 @@ msgid "_Search:"
 msgstr "_חיפוש:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2559
+#: ../libedataserverui/e-name-selector-entry.c:2621
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "הר_חבת %s כאן"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2574
+#: ../libedataserverui/e-name-selector-entry.c:2636
 #, c-format
 msgid "Cop_y %s"
 msgstr "ה_עתק %s"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2584
+#: ../libedataserverui/e-name-selector-entry.c:2646
 #, c-format
 msgid "C_ut %s"
 msgstr "_גזור %s"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2601
+#: ../libedataserverui/e-name-selector-entry.c:2663
 #, c-format
 msgid "_Edit %s"
 msgstr "_ערוך %s"
@@ -4808,23 +4891,23 @@ msgstr "_מחק %s"
 msgid "Keyring key is unusable: no user or host name"
 msgstr "המפתח מקבוצת המפתחות אינו שמיש: אין משתמש או שם מארח"
 
-#: ../libedataserverui/e-passwords.c:1116
+#: ../libedataserverui/e-passwords.c:1120
 msgid "You have the Caps Lock key on."
 msgstr "מקש ה-Caps Lock דולק."
 
-#: ../libedataserverui/e-passwords.c:1238
+#: ../libedataserverui/e-passwords.c:1241
 msgid "_Remember this passphrase"
 msgstr "_שמירת מילת צופן זו"
 
-#: ../libedataserverui/e-passwords.c:1239
+#: ../libedataserverui/e-passwords.c:1242
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "ש_שמירת מילת צופן זו למשך ההפעלה הנוכחית"
 
-#: ../libedataserverui/e-passwords.c:1244
+#: ../libedataserverui/e-passwords.c:1247
 msgid "_Remember this password"
 msgstr "_זכור את הסיסמה"
 
-#: ../libedataserverui/e-passwords.c:1245
+#: ../libedataserverui/e-passwords.c:1248
 msgid "_Remember this password for the remainder of this session"
 msgstr "ז_כור את הסיסמה עד סוף הפעלה זו"
 
@@ -4888,9 +4971,6 @@ msgstr "פרמטר שגוי"
 
 #~ msgid "User cancelled the operation"
 #~ msgstr "המשתמש ביטל את הפעולה"
-
-#~ msgid "Connection canceled"
-#~ msgstr "החיבור בוטל"
 
 #~ msgid "STARTTLS command failed"
 #~ msgstr "פקודת STARTTLS נכשלה"
