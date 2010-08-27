@@ -4690,6 +4690,8 @@ imapx_server_finalize (GObject *object)
 {
 	CamelIMAPXServer *is = CAMEL_IMAPX_SERVER (object);
 
+	camel_url_free (is->url);
+
 	g_static_rec_mutex_free(&is->queue_lock);
 	g_static_rec_mutex_free (&is->ostream_lock);
 	g_hash_table_destroy (is->uid_eflags);

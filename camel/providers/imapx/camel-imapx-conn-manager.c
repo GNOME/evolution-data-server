@@ -57,6 +57,7 @@ free_connection (gpointer data, gpointer user_data)
 
 	g_object_unref (conn);
 	g_hash_table_destroy (cinfo->folders);
+	g_free (cinfo->selected_folder);
 
 	g_free (cinfo);
 }
