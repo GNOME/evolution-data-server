@@ -115,7 +115,7 @@ e_data_cal_status_to_string (EDataCalCallStatus status)
 		{ UnsupportedAuthenticationMethod,	N_("Unsupported authentication method") },
 		{ TLSNotAvailable,			N_("TLS not available") },
 		{ NoSuchCal,				N_("Calendar does not exist") },
-		{ UnknownUser,				N_("UnknownUser") },
+		{ UnknownUser,				N_("Unknown user") },
 		{ OfflineUnavailable,			N_("Not available in offline mode") },
 		{ SearchSizeLimitExceeded,		N_("Search size limit exceeded") },
 		{ SearchTimeLimitExceeded,		N_("Search time limit exceeded") },
@@ -626,7 +626,7 @@ e_data_cal_notify_ldap_attribute (EDataCal *cal, EServerMethodContext context, G
 	GDBusMethodInvocation *invocation = context;
 	if (error) {
 		/* Translators: The '%s' is replaced with a detailed error message */
-		data_cal_return_error (invocation, error, _("Cannot retrieve calendar's ldap attribute: %s"));
+		data_cal_return_error (invocation, error, _("Cannot retrieve calendar's LDAP attribute: %s"));
 		g_error_free (error);
 	} else
 		e_gdbus_cal_complete_get_ldap_attribute (cal->priv->gdbus_object, invocation, attribute ? attribute : "");

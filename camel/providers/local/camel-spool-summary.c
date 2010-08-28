@@ -159,11 +159,11 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 
 	/* sync out content */
 	if (fsync(fdout) == -1) {
-		g_warning("Cannot sync temporary folder: %s", g_strerror (errno));
+		g_warning("Cannot synchronize temporary folder: %s", g_strerror (errno));
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not sync temporary folder %s: %s"),
+			_("Could not synchronize temporary folder %s: %s"),
 			((CamelLocalSummary *)cls)->folder_path,
 			g_strerror (errno));
 		goto error;
@@ -171,11 +171,11 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 
 	/* see if we can write this much to the spool file */
 	if (fstat(fd, &st) == -1) {
-		g_warning("Cannot sync temporary folder: %s", g_strerror (errno));
+		g_warning("Cannot synchronize temporary folder: %s", g_strerror (errno));
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not sync temporary folder %s: %s"),
+			_("Could not synchronize temporary folder %s: %s"),
 			((CamelLocalSummary *)cls)->folder_path,
 			g_strerror (errno));
 		goto error;
@@ -183,11 +183,11 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 	spoollen = st.st_size;
 
 	if (fstat(fdout, &st) == -1) {
-		g_warning("Cannot sync temporary folder: %s", g_strerror (errno));
+		g_warning("Cannot synchronize temporary folder: %s", g_strerror (errno));
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not sync temporary folder %s: %s"),
+			_("Could not synchronize temporary folder %s: %s"),
 			((CamelLocalSummary *)cls)->folder_path,
 			g_strerror (errno));
 		goto error;
@@ -201,11 +201,11 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 		|| fsync(fd) == -1
 		|| lseek(fd, 0, SEEK_SET) == -1
 		|| lseek(fdout, 0, SEEK_SET) == -1)) {
-		g_warning("Cannot sync spool folder: %s", g_strerror (errno));
+		g_warning("Cannot synchronize spool folder: %s", g_strerror (errno));
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not sync spool folder %s: %s"),
+			_("Could not synchronize spool folder %s: %s"),
 			((CamelLocalSummary *)cls)->folder_path,
 			g_strerror (errno));
 		/* incase we ran out of room, remove any trailing space first */
@@ -237,7 +237,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 			g_set_error (
 				error, G_IO_ERROR,
 				g_io_error_from_errno (errno),
-				_("Could not sync spool folder %s: %s\n"
+				_("Could not synchronize spool folder %s: %s\n"
 				  "Folder may be corrupt, copy saved in '%s'"),
 				((CamelLocalSummary *)cls)->folder_path,
 				g_strerror (errno), tmpname);
@@ -256,7 +256,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not sync spool folder %s: %s\n"
+			_("Could not synchronize spool folder %s: %s\n"
 			  "Folder may be corrupt, copy saved in '%s'"),
 			((CamelLocalSummary *)cls)->folder_path,
 			g_strerror (errno), tmpname);
@@ -269,7 +269,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not sync spool folder %s: %s\n"
+			_("Could not synchronize spool folder %s: %s\n"
 			  "Folder may be corrupt, copy saved in '%s'"),
 			((CamelLocalSummary *)cls)->folder_path,
 			g_strerror (errno), tmpname);

@@ -86,7 +86,7 @@ sasl_popb4smtp_challenge (CamelSasl *sasl,
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-			_("POP Before SMTP auth using an unknown transport"));
+			_("POP Before SMTP authentication using an unknown transport"));
 		return NULL;
 	}
 
@@ -94,7 +94,7 @@ sasl_popb4smtp_challenge (CamelSasl *sasl,
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-			_("POP Before SMTP auth using a non-pop source"));
+			_("POP Before SMTP authentication using a non-POP source"));
 		return NULL;
 	}
 

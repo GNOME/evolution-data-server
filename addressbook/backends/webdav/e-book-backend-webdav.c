@@ -326,7 +326,7 @@ e_book_backend_webdav_create_contact(EBookBackend *backend,
 		} else {
 			e_data_book_respond_create (book, opid,
 					e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-						_("Create resource '%s' failed with http status: %d"), uid, status),
+						_("Create resource '%s' failed with HTTP status: %d"), uid, status),
 					NULL);
 		}
 		g_free(uid);
@@ -400,7 +400,7 @@ e_book_backend_webdav_remove_contacts(EBookBackend *backend,
 				e_data_book_respond_remove_contacts (book, opid, webdav_handle_auth_request (webdav),
 								    deleted_ids);
 			} else {
-				g_warning("DELETE failed with http status %d", status);
+				g_warning("DELETE failed with HTTP status %d", status);
 			}
 			continue;
 		}
@@ -450,7 +450,7 @@ e_book_backend_webdav_modify_contact(EBookBackend *backend,
 
 		e_data_book_respond_modify (book, opid,
 				e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-					"Modify contact failed with http status: %d", status),
+					"Modify contact failed with HTTP status: %d", status),
 				NULL);
 		return;
 	}
@@ -863,7 +863,7 @@ download_contacts(EBookBackendWebdav *webdav, EFlag *running,
 		g_free (new_ctag);
 		if (book_view)
 			e_data_book_view_unref(book_view);
-		return e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "PROPFIND on webdav failed with http status %d", status);
+		return e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "PROPFIND on webdav failed with HTTP status %d", status);
 	}
 	if (message->response_body == NULL) {
 		g_warning("No response body in webdav PROPFIND result");

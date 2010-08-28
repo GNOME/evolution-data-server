@@ -173,7 +173,7 @@ e_data_book_status_to_string (EDataBookStatus status)
 		{ E_DATA_BOOK_STATUS_UNSUPPORTED_FIELD,			N_("Unsupported field") },
 		{ E_DATA_BOOK_STATUS_UNSUPPORTED_AUTHENTICATION_METHOD,	N_("Unsupported authentication method") },
 		{ E_DATA_BOOK_STATUS_TLS_NOT_AVAILABLE,			N_("TLS not available") },
-		{ E_DATA_BOOK_STATUS_NO_SUCH_BOOK,			N_("Address Book does not exist") },
+		{ E_DATA_BOOK_STATUS_NO_SUCH_BOOK,			N_("Address book does not exist") },
 		{ E_DATA_BOOK_STATUS_BOOK_REMOVED,			N_("Book removed") },
 		{ E_DATA_BOOK_STATUS_OFFLINE_UNAVAILABLE,		N_("Not available in offline mode") },
 		{ E_DATA_BOOK_STATUS_SEARCH_SIZE_LIMIT_EXCEEDED,	N_("Search size limit exceeded") },
@@ -607,7 +607,7 @@ void
 e_data_book_respond_get_supported_auth_methods (EDataBook *book, guint32 opid, GError *error, GList *auth_methods)
 {
 	/* Translators: The '%s' is replaced with a detailed error message */
-	return_error_and_list (book->priv->gdbus_object, e_gdbus_book_complete_get_supported_auth_methods, opid, error, _("Cannot get supported auth methods: %s"), auth_methods, FALSE);
+	return_error_and_list (book->priv->gdbus_object, e_gdbus_book_complete_get_supported_auth_methods, opid, error, _("Cannot get supported authentication methods: %s"), auth_methods, FALSE);
 }
 
 static gchar *
