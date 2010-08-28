@@ -257,7 +257,7 @@ enum {
 	CAMEL_MIME_IS_ATTRCHAR  = 1<<9	/* attribute-char safe (rfc2184) */
 };
 
-extern unsigned short camel_mime_special_table[256];
+extern gushort camel_mime_special_table[256];
 
 #define camel_mime_is_ctrl(x) ((camel_mime_special_table[(guchar)(x)] & CAMEL_MIME_IS_CTRL) != 0)
 #define camel_mime_is_lwsp(x) ((camel_mime_special_table[(guchar)(x)] & CAMEL_MIME_IS_LWSP) != 0)

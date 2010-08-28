@@ -2002,13 +2002,13 @@ e_gw_connection_get_freebusy_info (ECalBackendGroupwise *cbgw, GList *users, tim
 #define SET_DELTA(fieldname) G_STMT_START{                                                                \
 	fieldname = e_gw_item_get_##fieldname (item);                                                       \
 	cache_##fieldname = e_gw_item_get_##fieldname (cache_item);                                           \
-	if ( cache_##fieldname ) {                                                                            \
+	if (cache_##fieldname) {                                                                            \
 		if (!fieldname )                                                                               \
 			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_DELETE, #fieldname, (gpointer) cache_##fieldname );\
 		else if (strcmp ( fieldname, cache_##fieldname ))                                               \
 			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, #fieldname, (gpointer) fieldname );\
 	}                                                                                                 \
-	else if ( fieldname )                                                                               \
+	else if (fieldname)                                                                               \
 		e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_ADD, #fieldname, (gpointer) fieldname );           \
 	}G_STMT_END
 

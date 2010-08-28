@@ -28,7 +28,7 @@
 static const gchar *days_of_week[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 const gchar *
-e_gw_recur_get_day_of_week (short day)
+e_gw_recur_get_day_of_week (gshort day)
 {
 
 	if (day < 1 || day > 7)

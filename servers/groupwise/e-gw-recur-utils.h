@@ -57,15 +57,15 @@ typedef struct {
 	gchar *until;
 	gint count;
 	gint interval;
-	short by_day[E_GW_ITEM_BY_DAY_SIZE];
-	short by_month_day[E_GW_ITEM_BY_MONTHDAY_SIZE];
-	short by_year_day[E_GW_ITEM_BY_YEARDAY_SIZE];
-	short by_month[E_GW_ITEM_BY_MONTH_SIZE];
-	short by_setpos [E_GW_ITEM_BY_SETPOS_SIZE];
+	gshort by_day[E_GW_ITEM_BY_DAY_SIZE];
+	gshort by_month_day[E_GW_ITEM_BY_MONTHDAY_SIZE];
+	gshort by_year_day[E_GW_ITEM_BY_YEARDAY_SIZE];
+	gshort by_month[E_GW_ITEM_BY_MONTH_SIZE];
+	gshort by_setpos [E_GW_ITEM_BY_SETPOS_SIZE];
 } EGwItemRecurrenceRule;
 
 #define E_GW_ITEM_RECUR_END_MARKER  0x7f7f
 
-const gchar *e_gw_recur_get_day_of_week (short day);
+const gchar *e_gw_recur_get_day_of_week (gshort day);
 
 #endif

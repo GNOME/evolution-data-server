@@ -41,7 +41,7 @@ typedef void (*EBookCallback) (EBook *book, EBookStatus status, gpointer closure
 typedef void (*EBookAsyncCallback) (EBook *book, const GError *error, gpointer closure);
 typedef void (*EBookOpenProgressCallback)     (EBook          *book,
 					       const gchar     *status_message,
-					       short           percent,
+					       gshort           percent,
 					       gpointer        closure);
 #ifndef E_BOOK_DISABLE_DEPRECATED
 typedef void (*EBookIdCallback)       (EBook *book, EBookStatus status, const gchar *id, gpointer closure);

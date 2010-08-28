@@ -36,8 +36,8 @@
 typedef struct linger CamelLinger;
 #else
 typedef struct {
-	unsigned short l_onoff;
-	unsigned short l_linger;
+	gushort l_onoff;
+	gushort l_linger;
 } CamelLinger;
 #define socklen_t int
 struct addrinfo;

@@ -895,7 +895,7 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
  * struct icalrecurrencetype.
  */
 static GList *
-array_to_list (short *array, gint max_elements)
+array_to_list (gshort *array, gint max_elements)
 {
 	GList *l;
 	gint i;

@@ -668,7 +668,7 @@ quoted_decode(const guchar *in, gsize len, guchar *out)
 /* safemask is the mask to apply to the camel_mime_special_table to determine what
    characters can safely be included without encoding */
 static gsize
-quoted_encode (const guchar *in, gsize len, guchar *out, unsigned short safemask)
+quoted_encode (const guchar *in, gsize len, guchar *out, gushort safemask)
 {
 	register const guchar *inptr, *inend;
 	guchar *outptr;
@@ -1282,7 +1282,7 @@ camel_header_format_ctext (const gchar *in, const gchar *default_charset)
 
 /* FIXME: needs a way to cache iconv opens for different charsets? */
 static void
-rfc2047_encode_word(GString *outstring, const gchar *in, gsize len, const gchar *type, unsigned short safemask)
+rfc2047_encode_word(GString *outstring, const gchar *in, gsize len, const gchar *type, gushort safemask)
 {
 	iconv_t ic = (iconv_t) -1;
 	gchar *buffer, *out, *ascii;

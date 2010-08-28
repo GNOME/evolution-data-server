@@ -223,7 +223,7 @@ struct _CamelIMAPXJob {
 	gint noreply:1;		/* dont wait for reply */
 	guint32 type;		/* operation type */
 	gint pri;		/* the command priority */
-	short commands;		/* counts how many commands are outstanding */
+	gshort commands;		/* counts how many commands are outstanding */
 
 	CamelFolder *folder;
 	CamelOperation *op;
