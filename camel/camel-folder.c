@@ -2265,6 +2265,8 @@ camel_folder_rename (CamelFolder *folder,
  * @changes: change information for @folder
  *
  * Emits the #CamelFolder::changed signal.
+ *
+ * Since: 2.32
  **/
 void
 camel_folder_changed (CamelFolder *folder,

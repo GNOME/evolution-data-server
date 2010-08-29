@@ -200,6 +200,8 @@ e_book_backend_init (EBookBackend *backend)
  * Returns the cache directory for the given backend.
  *
  * Returns: the cache directory for the backend
+ *
+ * Since: 2.32
  **/
 const gchar *
 e_book_backend_get_cache_dir (EBookBackend *backend)
@@ -219,6 +221,8 @@ e_book_backend_get_cache_dir (EBookBackend *backend)
  * Note that #EBookBackend is initialized with a usable default based on
  * the #ESource given to e_book_backend_load_source().  Backends should
  * not override the default without good reason.
+ *
+ * Since: 2.32
  **/
 void
 e_book_backend_set_cache_dir (EBookBackend *backend,

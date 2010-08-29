@@ -388,6 +388,8 @@ e_cal_backend_init (ECalBackend *backend)
  * Returns the cache directory for the given backend.
  *
  * Returns: the cache directory for the backend
+ *
+ * Since: 2.32
  **/
 const gchar *
 e_cal_backend_get_cache_dir (ECalBackend *backend)
@@ -407,6 +409,8 @@ e_cal_backend_get_cache_dir (ECalBackend *backend)
  * Note that #ECalBackend is initialized with a usable default based on
  * #ECalBackend:source and #ECalBackend:kind properties.  Backends should
  * not override the default without good reason.
+ *
+ * Since: 2.32
  **/
 void
 e_cal_backend_set_cache_dir (ECalBackend *backend,

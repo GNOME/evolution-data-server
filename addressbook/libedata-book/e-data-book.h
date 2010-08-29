@@ -81,6 +81,11 @@ GError *e_data_book_create_error_fmt (EDataBookStatus status, const gchar *custo
 
 const gchar *e_data_book_status_to_string (EDataBookStatus status);
 
+/**
+ * e_return_data_book_error_if_fail:
+ *
+ * Since: 2.32
+ **/
 #define e_return_data_book_error_if_fail(expr, _code)				\
 	G_STMT_START {								\
 		if (G_LIKELY(expr)) {						\

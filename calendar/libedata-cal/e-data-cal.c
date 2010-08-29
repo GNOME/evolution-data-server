@@ -93,6 +93,11 @@ e_data_cal_error_quark (void)
 	return (GQuark) quark_volatile;
 }
 
+/**
+ * e_data_cal_status_to_string:
+ *
+ * Since: 2.32
+ **/
 const gchar *
 e_data_cal_status_to_string (EDataCalCallStatus status)
 {
@@ -136,6 +141,11 @@ e_data_cal_status_to_string (EDataCalCallStatus status)
 	return _("Other error");
 }
 
+/**
+ * e_data_cal_create_error:
+ *
+ * Since: 2.32
+ **/
 GError *
 e_data_cal_create_error (EDataCalCallStatus status, const gchar *custom_msg)
 {
@@ -145,6 +155,11 @@ e_data_cal_create_error (EDataCalCallStatus status, const gchar *custom_msg)
 	return g_error_new_literal (E_DATA_CAL_ERROR, status, custom_msg ? custom_msg : e_data_cal_status_to_string (status));
 }
 
+/**
+ * e_data_cal_create_error_fmt:
+ *
+ * Since: 2.32
+ **/
 GError *
 e_data_cal_create_error_fmt (EDataCalCallStatus status, const gchar *custom_msg_fmt, ...)
 {
@@ -1212,6 +1227,8 @@ e_data_cal_new (ECalBackend *backend, ESource *source)
  * e_data_cal_register_gdbus_object:
  *
  * Registers GDBus object of this EDataCal.
+ *
+ * Since: 2.32
  **/
 guint
 e_data_cal_register_gdbus_object (EDataCal *cal, GDBusConnection *connection, const gchar *object_path, GError **error)

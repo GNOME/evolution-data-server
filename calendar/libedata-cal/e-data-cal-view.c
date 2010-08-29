@@ -125,6 +125,11 @@ e_data_cal_view_new (ECalBackend *backend, ECalBackendSExp *sexp)
 	return query;
 }
 
+/**
+ * e_data_cal_view_register_gdbus_object:
+ *
+ * Since: 2.32
+ **/
 guint
 e_data_cal_view_register_gdbus_object (EDataCalView *query, GDBusConnection *connection, const gchar *object_path, GError **error)
 {

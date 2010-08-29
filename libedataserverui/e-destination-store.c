@@ -716,6 +716,12 @@ e_destination_store_get_value (GtkTreeModel *tree_model,
 	}
 }
 
+/**
+ * e_destination_store_get_stamp:
+ * @destination_store: an #EDestinationStore
+ *
+ * Since: 2.32
+ **/
 gint
 e_destination_store_get_stamp (EDestinationStore *destination_store)
 {

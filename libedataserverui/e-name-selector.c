@@ -345,6 +345,8 @@ e_name_selector_peek_dialog (ENameSelector *name_selector)
  *
  * Shows the associated dialog, and sets the transient parent to the
  * GtkWindow top-level of "for_transient_widget if set (it should be)
+ *
+ * Since: 2.32
  **/
 void
 e_name_selector_show_dialog (ENameSelector *name_selector,

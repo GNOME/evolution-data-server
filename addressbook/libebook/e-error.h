@@ -24,6 +24,11 @@
 	 return FALSE;							\
        };				}G_STMT_END
 
+/**
+ * e_return_async_error_if_fail:
+ *
+ * Since: 2.32
+ **/
 #define e_return_async_error_if_fail(expr, error) G_STMT_START { \
     if G_LIKELY (expr) {} else {                                 \
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_CRITICAL,                 \
@@ -59,6 +64,11 @@
     }								\
   } G_STMT_END
 
+/**
+ * e_return_ex_async_error_val_if_fail:
+ *
+ * Since: 2.32
+ **/
 #define e_return_ex_async_error_val_if_fail(expr, error) G_STMT_START {	\
     if G_LIKELY (expr) {} else {					\
       GError *err;							\

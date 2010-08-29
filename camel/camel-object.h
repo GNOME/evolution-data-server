@@ -53,6 +53,11 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_OBJECT, CamelObjectClass))
 
+/**
+ * CAMEL_ERROR:
+ *
+ * Since: 2.32
+ **/
 #define CAMEL_ERROR \
 	(camel_error_quark ())
 
@@ -78,6 +83,11 @@ typedef enum {
 	CAMEL_PARAM_PERSISTENT = 1 << (G_PARAM_USER_SHIFT + 0)
 } CamelParamFlags;
 
+/**
+ * CamelError:
+ *
+ * Since: 2.32
+ **/
 typedef enum {
 	CAMEL_ERROR_GENERIC		/* lazy fallback error */
 } CamelError;

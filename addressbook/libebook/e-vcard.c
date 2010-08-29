@@ -1141,6 +1141,8 @@ e_vcard_remove_attribute (EVCard *evc, EVCardAttribute *attr)
  * @attr: an #EVCardAttribute to append
  *
  * Appends @attr to @evc to the end of a list of attributes.
+ *
+ * Since: 2.32
  **/
 void
 e_vcard_append_attribute (EVCard *evc, EVCardAttribute *attr)
@@ -1159,6 +1161,8 @@ e_vcard_append_attribute (EVCard *evc, EVCardAttribute *attr)
  *
  * Appends @attr to @evcard, setting it to @value.
  * For attribute addition is used e_vcard_append_attribute().
+ *
+ * Since: 2.32
  **/
 void
 e_vcard_append_attribute_with_value (EVCard *evcard,
@@ -1180,6 +1184,8 @@ e_vcard_append_attribute_with_value (EVCard *evcard,
  *
  * Appends @attr to @evcard, assigning the list of values to it.
  * For attribute addition is used e_vcard_append_attribute().
+ *
+ * Since: 2.32
  **/
 void
 e_vcard_append_attribute_with_values (EVCard *evcard, EVCardAttribute *attr, ...)

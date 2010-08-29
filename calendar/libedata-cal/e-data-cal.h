@@ -70,6 +70,11 @@ GError *e_data_cal_create_error_fmt (EDataCalCallStatus status, const gchar *cus
 
 const gchar *e_data_cal_status_to_string (EDataCalCallStatus status);
 
+/**
+ * e_return_data_cal_error_if_fail:
+ *
+ * Since: 2.32
+ **/
 #define e_return_data_cal_error_if_fail(expr, _code)				\
 	G_STMT_START {								\
 		if (G_LIKELY(expr)) {						\

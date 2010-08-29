@@ -68,7 +68,19 @@ extern gchar *camel_provider_type_name[CAMEL_NUM_PROVIDER_TYPES];
 #define CAMEL_PROVIDER_SUPPORTS_SSL	(1 << 5)
 #define CAMEL_PROVIDER_HAS_LICENSE      (1 << 6)
 #define CAMEL_PROVIDER_DISABLE_SENT_FOLDER (1 << 7)
+
+/**
+ * CAMEL_PROVIDER_ALLOW_REAL_TRASH_FOLDER:
+ *
+ * Since: 2.32
+ **/
 #define CAMEL_PROVIDER_ALLOW_REAL_TRASH_FOLDER (1 << 8)
+
+/**
+ * CAMEL_PROVIDER_ALLOW_REAL_JUNK_FOLDER:
+ *
+ * Since: 2.32
+ **/
 #define CAMEL_PROVIDER_ALLOW_REAL_JUNK_FOLDER  (1 << 9)
 
 /* Flags for url_flags. "ALLOW" means the config dialog will let the

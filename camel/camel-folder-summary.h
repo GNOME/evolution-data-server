@@ -219,6 +219,11 @@ typedef enum _CamelFolderSummaryFlags {
 	CAMEL_SUMMARY_DIRTY = 1<<0
 } CamelFolderSummaryFlags;
 
+/**
+ * CamelFolderSummaryLock:
+ *
+ * Since: 2.32
+ **/
 typedef enum _CamelFolderSummaryLock {
 	CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK,
 	CAMEL_FOLDER_SUMMARY_IO_LOCK,

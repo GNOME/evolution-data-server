@@ -52,6 +52,8 @@ void camel_debug_end(void);
  *     success = class->foo (object, some_data, error);
  *     CAMEL_CHECK_GERROR (object, foo, success, error);
  *     return success;
+ *
+ * Since: 2.32
  */
 #define CAMEL_CHECK_GERROR(object, method, expr, error) \
 	G_STMT_START { \

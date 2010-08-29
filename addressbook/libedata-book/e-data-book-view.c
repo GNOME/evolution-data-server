@@ -76,6 +76,11 @@ e_data_book_view_class_init (EDataBookViewClass *klass)
 	object_class->finalize = e_data_book_view_finalize;
 }
 
+/**
+ * e_data_book_view_register_gdbus_object:
+ *
+ * Since: 2.32
+ **/
 guint
 e_data_book_view_register_gdbus_object (EDataBookView *query, GDBusConnection *connection, const gchar *object_path, GError **error)
 {

@@ -44,6 +44,8 @@
  * modified or freed.
  *
  * Returns: base directory for user-specific, non-essential data
+ *
+ * Since: 2.32
  **/
 const gchar *
 e_get_user_cache_dir (void)
@@ -69,6 +71,8 @@ e_get_user_cache_dir (void)
  * modified or freed.
  *
  * Returns: base directory for user-specific configuration information
+ *
+ * Since: 2.32
  **/
 const gchar *
 e_get_user_config_dir (void)
@@ -94,6 +98,8 @@ e_get_user_config_dir (void)
  * modified or freed.
  *
  * Returns: base directory for user-specific data
+ *
+ * Since: 2.32
  **/
 const gchar *
 e_get_user_data_dir (void)
@@ -543,6 +549,8 @@ e_utf8_strftime (gchar *string,
  * reused after a thread has terminated, though.
  *
  * Returns: A 64-bit integer.
+ *
+ * Since: 2.32
  */
 guint64
 e_util_gthread_id (GThread *thread)

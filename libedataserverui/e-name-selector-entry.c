@@ -2963,6 +2963,11 @@ e_name_selector_entry_set_destination_store  (ENameSelectorEntry *name_selector_
 	setup_destination_store (name_selector_entry);
 }
 
+/**
+ * e_name_selector_entry_get_popup_destination:
+ *
+ * Since: 2.32
+ **/
 EDestination *
 e_name_selector_entry_get_popup_destination (ENameSelectorEntry *name_selector_entry)
 {

@@ -38,6 +38,12 @@ typedef struct _EBookPrivate EBookPrivate;
 #ifndef E_BOOK_DISABLE_DEPRECATED
 typedef void (*EBookCallback) (EBook *book, EBookStatus status, gpointer closure);
 #endif
+
+/**
+ * EBookAsyncCallback:
+ *
+ * Since: 2.32
+ **/
 typedef void (*EBookAsyncCallback) (EBook *book, const GError *error, gpointer closure);
 typedef void (*EBookOpenProgressCallback)     (EBook          *book,
 					       const gchar     *status_message,
@@ -50,10 +56,40 @@ typedef void (*EBookListCallback)     (EBook *book, EBookStatus status, GList *l
 typedef void (*EBookBookViewCallback) (EBook *book, EBookStatus status, EBookView *book_view, gpointer closure);
 typedef void (*EBookEListCallback)   (EBook *book, EBookStatus status, EList *list, gpointer closure);
 #endif
+
+/**
+ * EBookIdAsyncCallback:
+ *
+ * Since: 2.32
+ **/
 typedef void (*EBookIdAsyncCallback)       (EBook *book, const GError *error, const gchar *id, gpointer closure);
+
+/**
+ * EBookContactAsyncCallback:
+ *
+ * Since: 2.32
+ **/
 typedef void (*EBookContactAsyncCallback)  (EBook *book, const GError *error, EContact *contact, gpointer closure);
+
+/**
+ * EBookListAsyncCallback:
+ *
+ * Since: 2.32
+ **/
 typedef void (*EBookListAsyncCallback)     (EBook *book, const GError *error, GList *list, gpointer closure);
+
+/**
+ * EBookBookViewAsyncCallback:
+ *
+ * Since: 2.32
+ **/
 typedef void (*EBookBookViewAsyncCallback) (EBook *book, const GError *error, EBookView *book_view, gpointer closure);
+
+/**
+ * EBookEListAsyncCallback:
+ *
+ * Since: 2.32
+ **/
 typedef void (*EBookEListAsyncCallback)   (EBook *book, const GError *error, EList *list, gpointer closure);
 
 struct _EBook {

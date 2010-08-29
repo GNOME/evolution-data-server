@@ -155,6 +155,11 @@ op_new (OperationID op, EDataBook *book, GDBusMethodInvocation *invocation)
 	return data;
 }
 
+/**
+ * e_data_book_status_to_string:
+ *
+ * Since: 2.32
+ **/
 const gchar *
 e_data_book_status_to_string (EDataBookStatus status)
 {
@@ -237,6 +242,11 @@ e_data_book_error_quark (void)
 	return (GQuark) quark_volatile;
 }
 
+/**
+ * e_data_book_create_error:
+ *
+ * Since: 2.32
+ **/
 GError *
 e_data_book_create_error (EDataBookStatus status, const gchar *custom_msg)
 {
@@ -246,6 +256,11 @@ e_data_book_create_error (EDataBookStatus status, const gchar *custom_msg)
 	return g_error_new_literal (E_DATA_BOOK_ERROR, status, custom_msg ? custom_msg : e_data_book_status_to_string (status));
 }
 
+/**
+ * e_data_book_create_error_fmt:
+ *
+ * Since: 2.32
+ **/
 GError *
 e_data_book_create_error_fmt (EDataBookStatus status, const gchar *custom_msg_fmt, ...)
 {
@@ -799,6 +814,8 @@ return_error_and_list (EGdbusBook *gdbus_object, void (* complete_func) (EGdbusB
  * e_data_book_register_gdbus_object:
  *
  * Registers GDBus object of this EDataBook.
+ *
+ * Since: 2.32
  **/
 guint
 e_data_book_register_gdbus_object (EDataBook *book, GDBusConnection *connection, const gchar *object_path, GError **error)
