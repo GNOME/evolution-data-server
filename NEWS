@@ -1,3 +1,52 @@
+Evolution-Data-Server 2.31.91 2010-08-29
+----------------------------------------
+
+Bug Fixes:
+	Bug 623703 - Reference counting error in Google backend
+	             (Matthew Barnes)
+	Bug 625115 - Changes notified from backends aren't propagated to UI
+	             (Milan Crha)
+	Bug 625514 - Client doesn't recognize server close/crash on GDBus
+	             (Milan Crha)
+	Bug 625579 - Corruption of mbox file should be properly reported
+	             (Milan Crha)
+	Bug 627333 - Cannot cancel password dialog for an addressbook
+	             (Milan Crha)
+	Bug 627597 - Memory leak in user_delete_text() (David Woodhouse)
+	Bug 627599 - Memory leak in imapx qresync (David Woodhouse)
+	Bug 627610 - imapx store summary memory leak (David Woodhouse)
+	Bug 627616 - CamelIMAPXStoreSummary never frees its namespace list
+	             (Matthew Barnes)
+	Bug 627854 - imapx conn-manager memory leak (Matthew Barnes)
+	Bug 627855 - smtp_auth() memory leak (David Woodhouse)
+	Bug 627876 - PangoAttrList leak in ENameSelectorEntry (Matthew Barnes)
+	Bug 627937 - Crash on email Add to a contact list (Milan Crha)
+	Bug 628196 - Miscellaneous string fixes (Philip Withnall)
+
+Miscellaneous Fixes:
+	* Rewrite e_load_book_source_async(). (Matthew Barnes)
+	* Add e_source_list_peek_default_source(). (Matthew Barnes)
+	* Remove -DGDK_DISABLE_DEPRECATED (Matthew Barnes)
+	* Fix SEGV when imapx_parse_list() fails (David Woodhouse)
+	* Do not unref EDataBook before done with it (part of bug #627332)
+	  (Milan Crha)
+	* Fix another memory leak in imapx qresync (David Woodhouse)
+
+Translations:
+	Ask H. Larsen (da)
+	Giannis Katsampirhs (el)
+	Philip Withnall (en_GB)
+	Jorge González (es)
+	Ivar Smolin (et)
+	Bruno Brouard (fr)
+	Claude Paroz (fr)
+	Fran Diéguez (gl)
+	Yaron Shahrabani (he)
+	Kjartan Maraas (nb)
+	A S Alam (pa)
+	Daniel Nylander (sv)
+	Chao-Hsiung Liao (zh_HK)
+
 Evolution-Data-Server 2.31.90 2010-08-16
 ----------------------------------------
 
