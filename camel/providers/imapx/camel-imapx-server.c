@@ -1448,6 +1448,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 					guint32 server_flags;
 					CamelFlag *server_user_flags;
 					CamelMessageInfoBase *binfo;
+					gboolean free_user_flags = FALSE;
 
 					mi->uid = camel_pstring_strdup (finfo->uid);
 
@@ -1486,6 +1487,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 						server_user_flags = finfo->user_flags;
 						/* free user_flags ? */
 						finfo->user_flags = NULL;
+						free_user_flags = TRUE;
 					}
 
 					/* If the message is a really new one -- equal or higher than what
@@ -1525,6 +1527,10 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 							camel_operation_progress (job->op, cnt?cnt:1);
 						}
 					}
+
+					if (free_user_flags && server_user_flags)
+						camel_flag_list_free (&server_user_flags);
+
 				}
 			}
 		}
@@ -3462,6 +3468,7 @@ cleanup:
 	for (i=0;i<infos->len;i++) {
 		struct _refresh_info *r = &g_array_index(infos, struct _refresh_info, i);
 
+		camel_flag_list_free (&r->server_user_flags);
 		g_free(r->uid);
 	}
 	g_array_free(job->u.refresh_info.infos, TRUE);
@@ -3639,6 +3646,7 @@ imapx_job_scan_changes_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	for (i=0;i<infos->len;i++) {
 		struct _refresh_info *r = &g_array_index(infos, struct _refresh_info, i);
 
+		camel_flag_list_free (&r->server_user_flags);
 		g_free(r->uid);
 	}
 
