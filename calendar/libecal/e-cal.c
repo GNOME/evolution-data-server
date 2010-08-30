@@ -61,6 +61,9 @@ static GStaticRecMutex cal_factory_proxy_lock = G_STATIC_REC_MUTEX_INIT;
 #define LOCK_FACTORY()   g_static_rec_mutex_lock   (&cal_factory_proxy_lock)
 #define UNLOCK_FACTORY() g_static_rec_mutex_unlock (&cal_factory_proxy_lock)
 
+#define LOCK_CACHE()   g_static_rec_mutex_lock   (&priv->cache_lock)
+#define UNLOCK_CACHE() g_static_rec_mutex_unlock (&priv->cache_lock)
+
 G_DEFINE_TYPE(ECal, e_cal, G_TYPE_OBJECT)
 #define E_CAL_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_CAL, ECalPrivate))
 
@@ -112,6 +115,10 @@ struct _ECalPrivate {
 	icaltimezone *default_zone;
 
 	gchar *local_attachment_store;
+	
+	/* For locking the operation while localling cache values like 
+	   static capabilities, cal address etc. */
+	GStaticRecMutex cache_lock;
 };
 
 
@@ -412,6 +419,7 @@ e_cal_init (ECal *ecal)
 	priv->gdbus_cal = NULL;
 	priv->timezones = g_hash_table_new (g_str_hash, g_str_equal);
 	priv->default_zone = icaltimezone_get_utc_timezone ();
+	g_static_rec_mutex_init (&priv->cache_lock);
 }
 
 /*
@@ -548,6 +556,7 @@ e_cal_finalize (GObject *object)
 	g_hash_table_foreach (priv->timezones, free_timezone, NULL);
 	g_hash_table_destroy (priv->timezones);
 	priv->timezones = NULL;
+	g_static_rec_mutex_free (&priv->cache_lock);
 
 	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
@@ -1688,18 +1697,22 @@ e_cal_get_cal_address (ECal *ecal, gchar **cal_address, GError **error)
 	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 	*cal_address = NULL;
 
+	LOCK_CACHE();
 	if (priv->cal_address == NULL) {
 		e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 		if (priv->load_state != E_CAL_LOAD_LOADED) {
+			UNLOCK_CACHE();
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 		}
 
-		if (!e_gdbus_cal_call_get_cal_address_sync (priv->gdbus_cal, cal_address, NULL, error)) {
+		if (!e_gdbus_cal_call_get_cal_address_sync (priv->gdbus_cal, &priv->cal_address, NULL, error)) {
+			UNLOCK_CACHE();
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 		}
-	} else {
-		*cal_address = g_strdup (priv->cal_address);
 	}
+
+	*cal_address = g_strdup (priv->cal_address);
+	UNLOCK_CACHE();
 
 	return TRUE;
 }
@@ -1778,16 +1791,24 @@ load_static_capabilities (ECal *ecal, GError **error)
 	priv = ecal->priv;
 	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
-	if (priv->capabilities)
-		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
+	LOCK_CACHE();
+	
+	if (priv->capabilities) {
+		UNLOCK_CACHE();
+		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
+	}
+
 	if (!e_gdbus_cal_call_get_scheduling_information_sync (priv->gdbus_cal, &priv->capabilities, NULL, error)) {
+		UNLOCK_CACHE();
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
+
+	UNLOCK_CACHE();
 
 	return TRUE;
 }
@@ -3756,6 +3777,7 @@ e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError *
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
 	}
 
+	LOCK_CACHE ();
 	/* If it is UTC, we return the special UTC timezone. */
 	if (!strcmp (tzid, "UTC")) {
 		*zone = icaltimezone_get_utc_timezone ();
@@ -3765,6 +3787,7 @@ e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError *
 	}
 
 	if (*zone) {
+		UNLOCK_CACHE ();
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
 	}
 
@@ -3779,6 +3802,7 @@ e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError *
 	if (!systzid) {
 		/* call the backend */
 		if (!e_gdbus_cal_call_get_timezone_sync (priv->gdbus_cal, tzid, &object, NULL, error)) {
+			UNLOCK_CACHE ();
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 		}
 
@@ -3817,18 +3841,21 @@ e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError *
 	}
 
 	if (!icalcomp) {
+		UNLOCK_CACHE ();
 		E_CALENDAR_CHECK_STATUS (status, error);
 	}
 
 	*zone = icaltimezone_new ();
 	if (!icaltimezone_set_component (*zone, icalcomp)) {
 		icaltimezone_free (*zone, 1);
+		UNLOCK_CACHE ();
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OBJECT_NOT_FOUND, error);
 	}
 
 	/* Now add it to the cache, to avoid the server call in future. */
 	g_hash_table_insert (priv->timezones, (gpointer) icaltimezone_get_tzid (*zone), *zone);
 
+	UNLOCK_CACHE ();
 	E_CALENDAR_CHECK_STATUS (status, error);
 }
 
@@ -3925,6 +3952,8 @@ e_cal_get_query (ECal *ecal, const gchar *sexp, ECalView **query, GError **error
 							query_path,
 							NULL,
 							error);
+
+	g_free (query_path);
 
 	if (!gdbus_calview) {
 		*query = NULL;
