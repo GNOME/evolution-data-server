@@ -2122,7 +2122,6 @@ CAMEL_STORE_GET_CLASS
 CamelStoreClass
 <SUBSECTION Private>
 CamelStorePrivate
-camel_isubscribe_get_type
 camel_store_get_type
 camel_store_error_quark
 </SECTION>
@@ -2327,7 +2326,6 @@ CAMEL_TCP_STREAM_SSL_ENABLE_TLS
 camel_tcp_stream_ssl_new
 camel_tcp_stream_ssl_new_raw
 camel_tcp_stream_ssl_enable_ssl
-camel_tcp_stream_ssl_sockfd
 <SUBSECTION Standard>
 CAMEL_TCP_STREAM_SSL
 CAMEL_IS_TCP_STREAM_SSL
@@ -2961,7 +2959,5 @@ NI_DGRAM
 camel_getaddrinfo
 camel_freeaddrinfo
 camel_getnameinfo
-<SUBSECTION Private>
-WIN32_LEAN_AND_MEAN
 </SECTION>
 
