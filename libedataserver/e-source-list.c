@@ -311,7 +311,7 @@ e_source_list_class_init (ESourceListClass *class)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1,
-			      G_TYPE_POINTER);
+			      E_TYPE_SOURCE_GROUP);
 
 	signals[GROUP_ADDED] =
 		g_signal_new ("group_added",
@@ -321,7 +321,7 @@ e_source_list_class_init (ESourceListClass *class)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1,
-			      G_TYPE_POINTER);
+			      E_TYPE_SOURCE_GROUP);
 }
 
 static void
