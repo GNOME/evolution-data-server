@@ -212,9 +212,11 @@ name_selector_dispose (GObject *object)
 		section = &g_array_index (priv->sections, Section, ii);
 		if (section->entry)
 			g_object_weak_unref (G_OBJECT (section->entry), reset_pointer_cb, object);
+		g_free (section->name);
 	}
 
 	g_array_set_size (priv->source_books, 0);
+	g_array_set_size (priv->sections, 0);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_name_selector_parent_class)->dispose (object);

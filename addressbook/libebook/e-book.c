@@ -80,6 +80,7 @@ struct _EBookPrivate {
 	gboolean cap_queried;
 };
 
+static guint active_books = 0, book_connection_closed_id = 0;
 static EGdbusBookFactory *book_factory_proxy = NULL;
 static GStaticRecMutex book_factory_proxy_lock = G_STATIC_REC_MUTEX_INIT;
 #define LOCK_FACTORY()   g_static_rec_mutex_lock (&book_factory_proxy_lock)
@@ -187,6 +188,10 @@ e_book_finalize (GObject *object)
 
 	if (G_OBJECT_CLASS (e_book_parent_class)->finalize)
 		G_OBJECT_CLASS (e_book_parent_class)->finalize (object);
+
+	LOCK_FACTORY ();
+	active_books--;
+	UNLOCK_FACTORY ();
 }
 
 static void
@@ -243,6 +248,10 @@ e_book_init (EBook *book)
 {
 	EBookPrivate *priv = E_BOOK_GET_PRIVATE (book);
 
+	LOCK_FACTORY ();
+	active_books++;
+	UNLOCK_FACTORY ();
+
 	priv->gdbus_book = NULL;
 	priv->source = NULL;
 	priv->uri = NULL;
@@ -260,6 +269,13 @@ book_factory_proxy_closed_cb (GDBusConnection *connection, gboolean remote_peer_
 	GError *err = NULL;
 
 	LOCK_FACTORY ();
+
+	if (book_connection_closed_id) {
+		g_dbus_connection_signal_unsubscribe (connection, book_connection_closed_id);
+		book_connection_closed_id = 0;
+		g_signal_handlers_disconnect_by_func (connection, book_factory_proxy_closed_cb, NULL);
+	}
+
 	if (book_factory_proxy) {
 		g_object_unref (book_factory_proxy);
 		book_factory_proxy = NULL;
@@ -271,7 +287,7 @@ book_factory_proxy_closed_cb (GDBusConnection *connection, gboolean remote_peer_
 	if (err) {
 		g_debug ("GDBus connection is closed%s: %s", remote_peer_vanished ? ", remote peer vanished" : "", err->message);
 		g_error_free (err);
-	} else {
+	} else if (active_books) {
 		g_debug ("GDBus connection is closed%s", remote_peer_vanished ? ", remote peer vanished" : "");
 	}
 
@@ -313,7 +329,7 @@ e_book_activate (GError **error)
 
 	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory_proxy));
 	g_dbus_connection_set_exit_on_close (connection, FALSE);
-	g_dbus_connection_signal_subscribe (connection,
+	book_connection_closed_id = g_dbus_connection_signal_subscribe (connection,
 		NULL,						/* sender */
 		"org.freedesktop.DBus",				/* interface */
 		"NameOwnerChanged",				/* member */

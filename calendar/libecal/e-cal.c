@@ -56,6 +56,7 @@
 #include "e-gdbus-egdbuscal.h"
 #include "e-gdbus-egdbuscalview.h"
 
+static guint active_cals = 0, cal_connection_closed_id = 0;
 static EGdbusCalFactory *cal_factory_proxy = NULL;
 static GStaticRecMutex cal_factory_proxy_lock = G_STATIC_REC_MUTEX_INIT;
 #define LOCK_FACTORY()   g_static_rec_mutex_lock   (&cal_factory_proxy_lock)
@@ -406,6 +407,10 @@ e_cal_init (ECal *ecal)
 {
 	ECalPrivate *priv;
 
+	LOCK_FACTORY ();
+	active_cals++;
+	UNLOCK_FACTORY ();
+
 	ecal->priv = priv = E_CAL_GET_PRIVATE (ecal);
 
 	priv->load_state = E_CAL_LOAD_NOT_LOADED;
@@ -559,6 +564,10 @@ e_cal_finalize (GObject *object)
 	g_static_rec_mutex_free (&priv->cache_lock);
 
 	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
+
+	LOCK_FACTORY ();
+	active_cals--;
+	UNLOCK_FACTORY ();
 }
 
 /* Class initialization function for the calendar ecal */
@@ -637,6 +646,13 @@ cal_factory_proxy_closed_cb (GDBusConnection *connection, gboolean remote_peer_v
 	GError *err = NULL;
 
 	LOCK_FACTORY ();
+
+	if (cal_connection_closed_id) {
+		g_dbus_connection_signal_unsubscribe (connection, cal_connection_closed_id);
+		cal_connection_closed_id = 0;
+		g_signal_handlers_disconnect_by_func (connection, cal_factory_proxy_closed_cb, NULL);
+	}
+
 	if (cal_factory_proxy) {
 		g_object_unref (cal_factory_proxy);
 		cal_factory_proxy = NULL;
@@ -650,7 +666,7 @@ cal_factory_proxy_closed_cb (GDBusConnection *connection, gboolean remote_peer_v
 	if (err) {
 		g_debug ("GDBus connection is closed%s: %s", remote_peer_vanished ? ", remote peer vanished" : "", err->message);
 		g_error_free (err);
-	} else {
+	} else if (active_cals) {
 		g_debug ("GDBus connection is closed%s", remote_peer_vanished ? ", remote peer vanished" : "");
 	}
 
@@ -692,7 +708,7 @@ e_cal_activate (GError **error)
 
 	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy));
 	g_dbus_connection_set_exit_on_close (connection, FALSE);
-	g_dbus_connection_signal_subscribe (connection,
+	cal_connection_closed_id = g_dbus_connection_signal_subscribe (connection,
 		NULL,						/* sender */
 		"org.freedesktop.DBus",				/* interface */
 		"NameOwnerChanged",				/* member */
@@ -1155,6 +1171,8 @@ async_open_ready_cb (EGdbusCal *gdbus_cal, GAsyncResult *res, ECal *ecal)
 
 	e_gdbus_cal_call_open_finish (gdbus_cal, res, &error);
 
+	unwrap_gerror (&error);
+
 	async_open_report_result (ecal, error);
 
 	if (error)
@@ -1279,6 +1297,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error,
 				g_error_free (err);
 		}
 	} else {
+		unwrap_gerror (error);
 		priv->load_state = E_CAL_LOAD_NOT_LOADED;
 	}
 

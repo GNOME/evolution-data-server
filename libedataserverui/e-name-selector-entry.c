@@ -121,6 +121,16 @@ name_selector_entry_dispose (GObject *object)
 		priv->destination_store = NULL;
 	}
 
+	if (priv->email_generator) {
+		g_object_unref (priv->email_generator);
+		priv->email_generator = NULL;
+	}
+
+	if (priv->contact_store) {
+		g_object_unref (priv->contact_store);
+		priv->contact_store = NULL;
+	}
+
 	g_slist_foreach (priv->user_query_fields, (GFunc)g_free, NULL);
 	g_slist_free (priv->user_query_fields);
 	priv->user_query_fields = NULL;

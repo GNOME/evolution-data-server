@@ -47,7 +47,6 @@ struct _ENameSelectorListPrivate {
 	GtkWindow *popup;
 	GtkWidget *tree_view;
 	GtkWidget *menu;
-	EDestinationStore *store;
 	gint rows;
 };
 
@@ -631,7 +630,6 @@ e_name_selector_list_init (ENameSelectorList *list)
 
 	list->priv = E_NAME_SELECTOR_LIST_GET_PRIVATE (list);
 
-	list->priv->store = e_destination_store_new ();
 	list->priv->menu = NULL;
 
 	entry = E_NAME_SELECTOR_ENTRY (list);
