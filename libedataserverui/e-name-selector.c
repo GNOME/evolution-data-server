@@ -63,6 +63,26 @@ struct _ENameSelectorPrivate {
 G_DEFINE_TYPE (ENameSelector, e_name_selector, G_TYPE_OBJECT)
 
 static void
+reset_pointer_cb (gpointer data, GObject *where_was)
+{
+	ENameSelector *name_selector = data;
+	ENameSelectorPrivate *priv;
+	guint ii;
+
+	g_return_if_fail (E_IS_NAME_SELECTOR (name_selector));
+
+	priv = E_NAME_SELECTOR_GET_PRIVATE (name_selector);
+
+	for (ii = 0; ii < priv->sections->len; ii++) {
+		Section *section;
+
+		section = &g_array_index (priv->sections, Section, ii);
+		if (section->entry == (ENameSelectorEntry *) where_was)
+			section->entry = NULL;
+	}
+}
+
+static void
 name_selector_book_loaded_cb (ESource *source,
                               GAsyncResult *result,
                               ENameSelector *name_selector)
@@ -186,6 +206,14 @@ name_selector_dispose (GObject *object)
 			g_object_unref (source_book->book);
 	}
 
+	for (ii = 0; ii < priv->sections->len; ii++) {
+		Section *section;
+
+		section = &g_array_index (priv->sections, Section, ii);
+		if (section->entry)
+			g_object_weak_unref (G_OBJECT (section->entry), reset_pointer_cb, object);
+	}
+
 	g_array_set_size (priv->source_books, 0);
 
 	/* Chain up to parent's dispose() method. */
@@ -200,6 +228,7 @@ name_selector_finalize (GObject *object)
 	priv = E_NAME_SELECTOR_GET_PRIVATE (object);
 
 	g_array_free (priv->source_books, TRUE);
+	g_array_free (priv->sections, TRUE);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_name_selector_parent_class)->finalize (object);
@@ -407,6 +436,7 @@ e_name_selector_peek_section_entry (ENameSelector *name_selector, const gchar *n
 		gint           i;
 
 		section->entry = e_name_selector_entry_new ();
+		g_object_weak_ref (G_OBJECT (section->entry), reset_pointer_cb, name_selector);
 		if (pango_parse_markup (name, -1, '_', NULL,
 					&text, NULL, NULL))  {
 			atk_object_set_name (gtk_widget_get_accessible (GTK_WIDGET (section->entry)), text);
@@ -474,6 +504,7 @@ e_name_selector_peek_section_list (ENameSelector *name_selector, const gchar *na
 		gint           i;
 
 		section->entry = (ENameSelectorEntry *) e_name_selector_list_new ();
+		g_object_weak_ref (G_OBJECT (section->entry), reset_pointer_cb, name_selector);
 		if (pango_parse_markup (name, -1, '_', NULL,
 					&text, NULL, NULL))  {
 			atk_object_set_name (gtk_widget_get_accessible (GTK_WIDGET (section->entry)), text);
