@@ -4819,8 +4819,8 @@ msgid "Category _Name"
 msgstr "类别名称(_N)"
 
 #: ../libedataserverui/e-categories-dialog.ui.h:5
-msgid "Item(s) belong to these _categories:"
-msgstr "项目属于这些类别(_C)："
+msgid "Item(s) _belong to these categories:"
+msgstr "项目属于这些类别(_B)："
 
 #: ../libedataserverui/e-categories-dialog.ui.h:6
 msgid "_Available Categories:"
