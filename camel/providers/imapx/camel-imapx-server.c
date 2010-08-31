@@ -4265,20 +4265,19 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		gint i;
 
 		for (i=0;i<job->u.sync_changes.changed_uids->len;i++) {
-			CamelIMAPXMessageInfo *info = (CamelIMAPXMessageInfo *) camel_folder_summary_uid (job->folder->summary,
+			CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) camel_folder_summary_uid (job->folder->summary,
 					job->u.sync_changes.changed_uids->pdata[i]);
 
-			if (!info)
+			if (!xinfo)
 				continue;
 
-			info->server_flags = ((CamelMessageInfoBase *)info)->flags & CAMEL_IMAPX_SERVER_FLAGS;
-			info->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
-			info->info.dirty = TRUE;
+			xinfo->server_flags = ((CamelMessageInfoBase *)xinfo)->flags & CAMEL_IMAPX_SERVER_FLAGS;
+			xinfo->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
+			xinfo->info.dirty = TRUE;
+			camel_flag_list_copy (&xinfo->server_user_flags, &xinfo->info.user_flags);
 
 			camel_folder_summary_touch (job->folder->summary);
-			camel_message_info_free (info);
-
-			/* FIXME: move over user flags too */
+			camel_message_info_free (xinfo);
 		}
 		/* Apply the changes to server-side unread count; it won't tell
 		   us of these changes, of course. */

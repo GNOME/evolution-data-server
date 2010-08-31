@@ -89,7 +89,7 @@ imapx_parse_flags(CamelIMAPXStream *stream, guint32 *flagsp, CamelFlag **user_fl
 {
 	gint tok, i;
 	guint len;
-	guchar *token, *p, c;
+	guchar *token;
 	guint32 flags = 0;
 
 	*flagsp = flags;
@@ -99,12 +99,10 @@ imapx_parse_flags(CamelIMAPXStream *stream, guint32 *flagsp, CamelFlag **user_fl
 		do {
 			tok = camel_imapx_stream_token(stream, &token, &len, ex);
 			if (tok == IMAPX_TOK_TOKEN || tok == IMAPX_TOK_INT) {
-				p = token;
-				// FIXME: ascii_toupper
-				while ((c=*p))
-					*p++ = toupper(c);
+				gchar *upper = g_ascii_strup ((gchar *) token, len);
+
 				for (i = 0; i < G_N_ELEMENTS (flag_table); i++)
-					if (!strcmp((gchar *)token, flag_table[i].name)) {
+					if (!strcmp(upper, flag_table[i].name)) {
 						flags |= flag_table[i].flag;
 						goto found;
 					}
@@ -116,6 +114,7 @@ imapx_parse_flags(CamelIMAPXStream *stream, guint32 *flagsp, CamelFlag **user_fl
 				}
 			found:
 				tok = tok; /* fixes stupid warning */
+				g_free (upper);
 			} else if (tok != ')') {
 				camel_exception_set (ex, 1, "expecting flag");
 				return;
@@ -221,12 +220,14 @@ imapx_update_user_flags (CamelMessageInfo *info, CamelFlag *server_user_flags)
 {
 	gboolean changed = FALSE;
 	CamelMessageInfoBase *binfo = (CamelMessageInfoBase *) info;
+	CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) info;
 	gboolean set_cal = FALSE;
 
 	if (camel_flag_get (&binfo->user_flags, "$has_cal"))
 		set_cal = TRUE;
 
 	changed = camel_flag_list_copy(&binfo->user_flags, &server_user_flags);
+	camel_flag_list_copy (&xinfo->server_user_flags, &server_user_flags);
 
 	/* reset the calendar flag if it was set in messageinfo before */
 	if (set_cal)
