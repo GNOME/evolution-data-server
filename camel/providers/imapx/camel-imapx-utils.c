@@ -16,6 +16,7 @@
 #define d(x) camel_imapx_debug(debug, x)
 
 gint camel_imapx_debug_flags;
+extern gint camel_verbose_debug;
 
 #define debug_set_flag(flag) do { \
 	if ((CAMEL_IMAPX_DEBUG_ALL & CAMEL_IMAPX_DEBUG_ ## flag) &&	\
@@ -25,7 +26,7 @@ gint camel_imapx_debug_flags;
 
 static void camel_imapx_set_debug_flags(void)
 {
-	if (camel_debug("imapx")) {
+	if (camel_verbose_debug || camel_debug("imapx")) {
 		camel_imapx_debug_flags = CAMEL_IMAPX_DEBUG_ALL;
 		return;
 	}
