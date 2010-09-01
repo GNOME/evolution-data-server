@@ -3055,11 +3055,14 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 					if (enable_debug)
 						printf ("Contact List modified fetching the members of the contact list\n");
 
+					item = NULL;
 					status = e_gw_connection_get_item (ebgw->priv->cnc, ebgw->priv->container_id, e_contact_get (contact, E_CONTACT_UID), "name email default members", &item);
-					g_object_unref (contact);
-					contact = e_contact_new ();
-					fill_contact_from_gw_item (contact, item, ebgw->priv->categories_by_id);
-					g_object_unref (item);
+					if (status == E_GW_CONNECTION_STATUS_OK && item) {
+						g_object_unref (contact);
+						contact = e_contact_new ();
+						fill_contact_from_gw_item (contact, item, ebgw->priv->categories_by_id);
+						g_object_unref (item);
+					}
 				}
 
 				if (enable_debug)
