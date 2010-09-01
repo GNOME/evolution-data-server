@@ -1084,7 +1084,6 @@ connect_to_server (ECalBackendGroupwise *cbgw, GError **perror)
 		}
 
 		e_cal_backend_store_load (priv->store);
-		e_cal_backend_store_set_default_timezone (priv->store, priv->default_zone);
 
 		/* spawn a new thread for opening the calendar */
 		thread = g_thread_create ((GThreadFunc) cache_init, cbgw, FALSE, &error);
@@ -1344,8 +1343,6 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 				return;
 			}
 		}
-
-		e_cal_backend_store_set_default_timezone (priv->store, priv->default_zone);
 
 		PRIV_UNLOCK (priv);
 		return;
