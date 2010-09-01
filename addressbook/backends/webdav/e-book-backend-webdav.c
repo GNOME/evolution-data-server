@@ -854,23 +854,17 @@ download_contacts(EBookBackendWebdav *webdav, EFlag *running,
 	if (status == 401 || status == 407) {
 		g_object_unref(message);
 		g_free (new_ctag);
-		if (book_view)
-			e_data_book_view_unref(book_view);
 		return webdav_handle_auth_request (webdav);
 	}
 	if (status != 207) {
 		g_object_unref(message);
 		g_free (new_ctag);
-		if (book_view)
-			e_data_book_view_unref(book_view);
 		return e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "PROPFIND on webdav failed with HTTP status %d", status);
 	}
 	if (message->response_body == NULL) {
 		g_warning("No response body in webdav PROPFIND result");
 		g_object_unref(message);
 		g_free (new_ctag);
-		if (book_view)
-			e_data_book_view_unref(book_view);
 		return e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "No response body in webdav PROPFIND result");
 	}
 
@@ -979,10 +973,9 @@ book_view_thread(gpointer data)
 
 	error = download_contacts (webdav, closure->running, book_view);
 
-	e_data_book_view_unref(book_view);
-
 	/* report back status if query wasn't aborted */
 	e_data_book_view_notify_complete (book_view, error);
+	e_data_book_view_unref (book_view);
 
 	if (error)
 		g_error_free (error);

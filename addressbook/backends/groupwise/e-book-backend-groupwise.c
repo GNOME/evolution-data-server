@@ -2393,6 +2393,7 @@ book_view_thread (gpointer data)
 	default :
 		break;
 	}
+	e_data_book_view_unref (book_view);
 	return NULL;
 }
 
