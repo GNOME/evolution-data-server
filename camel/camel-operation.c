@@ -95,6 +95,28 @@ co_getcc(void)
 	return (CamelOperation *)g_static_private_get (&operation_key);
 }
 
+static void
+clear_status_stack (CamelOperation *cc, gboolean claim_not_empty)
+{
+	g_return_if_fail (cc != NULL);
+
+	if (claim_not_empty && cc->status_stack != NULL)
+		g_debug ("%p CamelOperation status stack non-empty", cc);
+
+	while (cc->status_stack != NULL) {
+		struct _status_stack *status;
+
+		status = cc->status_stack->data;
+		if (claim_not_empty && status->msg != NULL)
+			g_debug ("%p    Status was \"%s\"", cc, status->msg);
+		g_free (status->msg);
+		g_free (status);
+
+		cc->status_stack = g_slist_delete_link (
+			cc->status_stack, cc->status_stack);
+	}
+}
+
 /**
  * camel_operation_new:
  * @status: Callback for receiving status messages.  This will always
@@ -144,6 +166,7 @@ camel_operation_mute(CamelOperation *cc)
 	LOCK();
 	cc->status = NULL;
 	cc->status_data = NULL;
+	clear_status_stack (cc, FALSE);
 	UNLOCK();
 }
 
@@ -201,22 +224,7 @@ camel_operation_unref (CamelOperation *cc)
 
 		camel_msgport_destroy(cc->cancel_port);
 
-		if (cc->status_stack != NULL)
-			g_warning ("CamelOperation status stack non-empty");
-
-		while (cc->status_stack != NULL) {
-			struct _status_stack *status;
-
-			status = cc->status_stack->data;
-			if (status->msg != NULL)
-				g_warning ("Status was \"%s\"", status->msg);
-			g_free (status->msg);
-			g_free (status);
-
-			cc->status_stack = g_slist_delete_link (
-				cc->status_stack, cc->status_stack);
-		}
-
+		clear_status_stack (cc, TRUE);
 		g_free(cc);
 	} else {
 		cc->refcount--;
@@ -494,10 +502,6 @@ camel_operation_start (CamelOperation *cc, const gchar *what, ...)
 void
 camel_operation_start_transient (CamelOperation *cc, const gchar *what, ...)
 {
-	va_list ap;
-	gchar *msg;
-	struct _status_stack *s;
-
 	if (cc == NULL)
 		cc = co_getcc();
 
@@ -511,15 +515,21 @@ camel_operation_start_transient (CamelOperation *cc, const gchar *what, ...)
 		return;
 	}
 
-	va_start(ap, what);
-	msg = g_strdup_vprintf(what, ap);
-	va_end(ap);
 	cc->status_update = 0;
-	s = g_malloc0(sizeof(*s));
-	s->msg = msg;
-	s->flags = CAMEL_OPERATION_TRANSIENT;
-	s->stamp = stamp();
-	cc->status_stack = g_slist_prepend(cc->status_stack, s);
+	if (cc->status) {
+		va_list ap;
+		gchar *msg;
+		struct _status_stack *s;
+
+		va_start(ap, what);
+		msg = g_strdup_vprintf(what, ap);
+		va_end(ap);
+		s = g_malloc0(sizeof(*s));
+		s->msg = msg;
+		s->flags = CAMEL_OPERATION_TRANSIENT;
+		s->stamp = stamp();
+		cc->status_stack = g_slist_prepend(cc->status_stack, s);
+	}
 	d(printf("start '%s'\n", msg, pc));
 
 	UNLOCK();
