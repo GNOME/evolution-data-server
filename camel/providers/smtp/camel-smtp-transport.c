@@ -641,6 +641,11 @@ query_auth_types (CamelService *service, GError **error)
 	if (!connect_to_server_wrapper (service, error))
 		return NULL;
 
+	if (!transport->authtypes) {
+		smtp_disconnect (service, TRUE, NULL);
+		return NULL;
+	}
+
 	types = g_list_copy (service->provider->authtypes);
 	for (t = types; t; t = next) {
 		authtype = t->data;
