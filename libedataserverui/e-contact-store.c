@@ -112,8 +112,9 @@ contact_store_dispose (GObject *object)
 	for (ii = 0; ii < priv->contact_sources->len; ii++) {
 		ContactSource *source;
 
+		/* clear from back, because clear_contact_source can later access freed memory */
 		source = &g_array_index (
-			priv->contact_sources, ContactSource, ii);
+			priv->contact_sources, ContactSource, priv->contact_sources->len - ii - 1);
 
 		clear_contact_source (E_CONTACT_STORE (object), source);
 		free_contact_ptrarray (source->contacts);
