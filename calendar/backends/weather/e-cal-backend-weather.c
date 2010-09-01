@@ -573,7 +573,10 @@ e_cal_backend_weather_get_object (ECalBackendSync *backend, EDataCal *cal, const
 	e_return_data_cal_error_if_fail (priv->store != NULL, InvalidArg);
 
 	comp = e_cal_backend_store_get_component (priv->store, uid, rid);
-	e_return_data_cal_error_if_fail (comp != NULL, ObjectNotFound);
+	if (!comp) {
+		g_propagate_error (error, EDC_ERROR (ObjectNotFound));
+		return;
+	}
 
 	*object = e_cal_component_get_as_string (comp);
 	g_object_unref (comp);
