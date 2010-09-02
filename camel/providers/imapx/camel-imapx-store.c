@@ -885,7 +885,7 @@ imapx_create_folder (CamelStore *store, const gchar *parent_name, const gchar *f
 	success = camel_imapx_server_create_folder (server, full_name, error);
 	g_object_unref(server);
 
-	if (!success) {
+	if (success) {
 		CamelIMAPXStoreInfo *si;
 
 		si = camel_imapx_store_summary_add_from_full(istore->summary, full_name, dir_sep);

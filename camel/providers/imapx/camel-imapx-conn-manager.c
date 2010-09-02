@@ -53,7 +53,7 @@ free_connection (gpointer data, gpointer user_data)
 	ConnectionInfo *cinfo = (ConnectionInfo *) data;
 	CamelIMAPXServer *conn = cinfo->conn;
 
-	camel_imapx_server_connect (conn, 0);
+	camel_imapx_server_connect (conn, NULL);
 
 	g_object_unref (conn);
 	g_hash_table_destroy (cinfo->folders);

@@ -4871,8 +4871,10 @@ camel_imapx_server_connect (CamelIMAPXServer *is, GError **error)
 {
 	gboolean success;
 
-	if (is->state == IMAPX_SHUTDOWN)
+	if (is->state == IMAPX_SHUTDOWN) {
+		g_set_error (error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_UNAVAILABLE, "Shutting down");
 		return FALSE;
+	}
 
 	if (is->state >= IMAPX_INITIALISED)
 		return TRUE;
