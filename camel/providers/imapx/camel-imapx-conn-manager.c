@@ -39,6 +39,7 @@ struct _CamelIMAPXConnManagerPrivate {
 	guint n_connections;
 	CamelStore *store;
 	GStaticRecMutex con_man_lock;
+	gboolean clearing_connections;
 };
 
 typedef struct {
@@ -67,8 +68,10 @@ imapx_prune_connections (CamelIMAPXConnManager *con_man)
 {
 	CON_LOCK(con_man);
 
+	con_man->priv->clearing_connections = TRUE;
 	g_slist_foreach (con_man->priv->connections, (GFunc) free_connection, NULL);
 	con_man->priv->connections = NULL;
+	con_man->priv->clearing_connections = FALSE;
 
 	CON_UNLOCK(con_man);
 }
@@ -105,6 +108,8 @@ camel_imapx_conn_manager_init (CamelIMAPXConnManager *con_man)
 	/* default is 1 connection */
 	con_man->priv->n_connections = 1;
 	g_static_rec_mutex_init (&con_man->priv->con_man_lock);
+
+	con_man->priv->clearing_connections = FALSE;
 }
 
 /* Static functions go here */
@@ -116,6 +121,15 @@ imapx_conn_shutdown (CamelIMAPXServer *conn, CamelIMAPXConnManager *con_man)
 	GSList *l;
 	ConnectionInfo *cinfo;
 	gboolean found = FALSE;
+
+	/* when clearing connections then other thread than a parser thread,
+	   in which this function is called, holds the CON_LOCK, thus skip
+	   this all, because otherwise a deadlock will happen.
+	   The connection will be freed later anyway. */
+	if (con_man->priv->clearing_connections) {
+		c(printf ("%s: called on %p when clearing connections, skipping it...\n", G_STRFUNC, conn));
+		return;
+	}
 
 	CON_LOCK(con_man);
 
