@@ -128,6 +128,10 @@ imapx_store_finalize (GObject *object)
 	/* SIGH */
 
 	camel_service_disconnect((CamelService *)imapx_store, TRUE, NULL);
+	if (imapx_store->con_man) {
+		g_object_unref (imapx_store->con_man);
+		imapx_store->con_man = NULL;
+	}
 	g_mutex_free (imapx_store->get_finfo_lock);
 
 	g_free (imapx_store->base_url);
@@ -274,8 +278,6 @@ imapx_disconnect (CamelService *service, gboolean clean, GError **error)
 
 	if (istore->con_man) {
 		camel_imapx_conn_manager_close_connections (istore->con_man);
-		g_object_unref (istore->con_man);
-		istore->con_man = NULL;
 	}
 
 	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);

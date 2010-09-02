@@ -158,8 +158,13 @@ imapx_refresh_info (CamelFolder *folder, GError **error)
 	parent_store = camel_folder_get_parent_store (folder);
 	istore = CAMEL_IMAPX_STORE (parent_store);
 
-	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
-		return TRUE;
+	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
 
 	if (!camel_service_connect((CamelService *)istore, error))
 		return FALSE;
@@ -184,8 +189,13 @@ imapx_expunge (CamelFolder *folder, GError **error)
 	parent_store = camel_folder_get_parent_store (folder);
 	istore = CAMEL_IMAPX_STORE (parent_store);
 
-	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
-		return TRUE;
+	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
 
 	server = camel_imapx_store_get_server(istore, camel_folder_get_full_name (folder), error);
 	if (server) {
@@ -208,8 +218,13 @@ imapx_sync (CamelFolder *folder, gboolean expunge, GError **error)
 	parent_store = camel_folder_get_parent_store (folder);
 	istore = CAMEL_IMAPX_STORE (parent_store);
 
-	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
-		return TRUE;
+	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
 
 	server = camel_imapx_store_get_server(istore, camel_folder_get_full_name (folder), NULL);
 	if (server)
@@ -260,8 +275,13 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, GError **error)
 			return NULL;
 		}
 
-		if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
+		if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_UNAVAILABLE,
+				_("You must be working online to complete this operation"));
 			return NULL;
+		}
 
 		server = camel_imapx_store_get_server(istore, camel_folder_get_full_name (folder), error);
 		if (server) {
@@ -298,8 +318,13 @@ imapx_sync_message (CamelFolder *folder, const gchar *uid, GError **error)
 	parent_store = camel_folder_get_parent_store (folder);
 	istore = CAMEL_IMAPX_STORE (parent_store);
 
-	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
-		return TRUE;
+	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
 
 	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), error);
 	if (server == NULL)
@@ -325,8 +350,13 @@ imapx_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 	parent_store = camel_folder_get_parent_store (source);
 	istore = CAMEL_IMAPX_STORE (parent_store);
 
-	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
-		return TRUE;
+	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
 
 	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (source), error);
 	if (server) {
@@ -351,8 +381,13 @@ imapx_append_message(CamelFolder *folder, CamelMimeMessage *message, const Camel
 	parent_store = camel_folder_get_parent_store (folder);
 	istore = CAMEL_IMAPX_STORE (parent_store);
 
-	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
-		return TRUE;
+	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
 
 	if (appended_uid)
 		*appended_uid = NULL;
