@@ -590,9 +590,13 @@ e_source_list_peek_default_source (ESourceList *source_list)
 		ESourceGroup *source_group;
 		GSList *sources;
 		GSList *iter2;
+		gboolean is_local_group;
 
 		source_group = E_SOURCE_GROUP (iter1->data);
 		sources = e_source_group_peek_sources (source_group);
+
+		is_local_group = e_source_group_peek_base_uri (source_group)
+				 && g_str_equal (e_source_group_peek_base_uri (source_group), "local:");
 
 		for (iter2 = sources; iter2 != NULL; iter2 = iter2->next) {
 			ESource *source;
@@ -605,7 +609,9 @@ e_source_list_peek_default_source (ESourceList *source_list)
 
 			/* Make a note of the system source.  If we fail
 			 * to find a default source we fall back to this. */
-			if (e_source_get_property (source, "system"))
+			if (e_source_get_property (source, "system") ||
+			    (is_local_group && !system_source && e_source_peek_relative_uri (source)
+			     && g_str_equal (e_source_peek_relative_uri (source), "system")))
 				system_source = source;
 		}
 	}
