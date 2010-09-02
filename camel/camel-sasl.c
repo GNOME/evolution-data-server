@@ -282,7 +282,8 @@ camel_sasl_challenge (CamelSasl *sasl,
 	g_return_val_if_fail (class->challenge != NULL, NULL);
 
 	response = class->challenge (sasl, token, error);
-	CAMEL_CHECK_GERROR (sasl, challenge, response != NULL, error);
+	if (token)
+		CAMEL_CHECK_GERROR (sasl, challenge, response != NULL, error);
 
 	return response;
 }
