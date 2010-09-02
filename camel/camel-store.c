@@ -1120,7 +1120,8 @@ camel_store_get_folder_info (CamelStore *store,
 	g_return_val_if_fail (class->get_folder_info != NULL, NULL);
 
 	info = class->get_folder_info (store, top, flags, error);
-	CAMEL_CHECK_GERROR (store, get_folder_info, info != NULL, error);
+	if (!(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED))
+		CAMEL_CHECK_GERROR (store, get_folder_info, info != NULL, error);
 
 	if (info && (top == NULL || *top == '\0') && (flags & CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL) == 0) {
 		if (info->uri && (store->flags & CAMEL_STORE_VTRASH))

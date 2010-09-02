@@ -202,7 +202,8 @@ disco_store_get_folder_info (CamelStore *store,
 	switch (camel_disco_store_status (disco_store)) {
 	case CAMEL_DISCO_STORE_ONLINE:
 		info = class->get_folder_info_online (store, top, flags, error);
-		CAMEL_CHECK_GERROR (store, get_folder_info_online, info != NULL, error);
+		if (!(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED))
+			CAMEL_CHECK_GERROR (store, get_folder_info_online, info != NULL, error);
 		return info;
 
 	case CAMEL_DISCO_STORE_OFFLINE:
@@ -214,12 +215,14 @@ disco_store_get_folder_info (CamelStore *store,
 		}
 
 		info = class->get_folder_info_offline (store, top, flags, error);
-		CAMEL_CHECK_GERROR (store, get_folder_info_offline, info != NULL, error);
+		if (!(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED))
+			CAMEL_CHECK_GERROR (store, get_folder_info_offline, info != NULL, error);
 		return info;
 
 	case CAMEL_DISCO_STORE_RESYNCING:
 		info = class->get_folder_info_resyncing (store, top, flags, error);
-		CAMEL_CHECK_GERROR (store, get_folder_info_resyncing, info != NULL, error);
+		if (!(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED))
+			CAMEL_CHECK_GERROR (store, get_folder_info_resyncing, info != NULL, error);
 		return info;
 	}
 
