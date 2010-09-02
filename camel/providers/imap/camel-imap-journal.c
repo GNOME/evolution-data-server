@@ -328,8 +328,12 @@ imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, GError **e
 		CamelMessageInfo *info;
 
 		message = camel_folder_get_message (journal->folder, imap_entry->append_uid, error);
-		if (!message)
-			return -1;
+		if (!message) {
+			/* it seems message gone, just ignore the error and continue;
+			   otherwise the entry would not be removed from the list */
+			g_clear_error (error);
+			return 0;
+		}
 
 		info = camel_folder_get_message_info (journal->folder, imap_entry->append_uid);
 		camel_imap_append_resyncing (
