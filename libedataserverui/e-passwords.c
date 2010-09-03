@@ -1267,10 +1267,13 @@ ep_ask_password (EPassMsg *msg)
 		password_dialog, "response",
 		G_CALLBACK (pass_response), msg);
 
-	if (msg->parent)
+	if (msg->parent) {
 		gtk_dialog_run (GTK_DIALOG (password_dialog));
-	else
-		gtk_widget_show (GTK_WIDGET (password_dialog));
+	} else {
+		gtk_window_present (GTK_WINDOW (password_dialog));
+		/* workaround GTK+ bug (see Gnome's bugzilla bug #624229) */
+		gtk_grab_add (GTK_WIDGET (password_dialog));
+	}
 }
 
 /**
