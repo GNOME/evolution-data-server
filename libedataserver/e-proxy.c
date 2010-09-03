@@ -622,23 +622,33 @@ ep_set_proxy (GConfClient *client,
 	}
 
 	if (gconf_client_get_bool (client, RIGHT_KEY (HTTP_USE_AUTH), NULL)) {
-		gchar *proxy_user, *proxy_pw, *tmp = NULL;
+		gchar *proxy_user, *proxy_pw, *tmp = NULL, *tmps = NULL;
 
 		proxy_user = gconf_client_get_string (client, RIGHT_KEY (HTTP_AUTH_USER), NULL);
 		proxy_pw = gconf_client_get_string (client, RIGHT_KEY (HTTP_AUTH_PWD), NULL);
 
-		if (proxy_user && *proxy_user && proxy_pw && *proxy_pw) {
+		if (uri_http && proxy_user && *proxy_user && proxy_pw && *proxy_pw) {
 			tmp = uri_http;
 			uri_http = g_strdup_printf ("http://%s:%s@%s", proxy_user, proxy_pw, tmp + strlen ("http://"));
-		} else if (proxy_user && *proxy_user) {
+		} else if (uri_http && proxy_user && *proxy_user) {
 			/* proxy without password, just try it */
 			tmp = uri_http;
 			uri_http = g_strdup_printf ("http://%s@%s", proxy_user, tmp + strlen ("http://"));
 		}
 
+		if (uri_https && proxy_user && *proxy_user && proxy_pw && *proxy_pw) {
+			tmps = uri_https;
+			uri_https = g_strdup_printf ("https://%s:%s@%s", proxy_user, proxy_pw, tmps + strlen ("https://"));
+		} else if (uri_https && proxy_user && *proxy_user) {
+			/* proxy without password, just try it */
+			tmps = uri_https;
+			uri_https = g_strdup_printf ("https://%s@%s", proxy_user, tmps + strlen ("https://"));
+		}
+
 		g_free (proxy_user);
 		g_free (proxy_pw);
 		g_free (tmp);
+		g_free (tmps);
 	}
 
 	changed = ep_change_uri (&priv->uri_http, uri_http) || changed;
