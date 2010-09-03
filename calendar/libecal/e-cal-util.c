@@ -45,11 +45,11 @@ cal_obj_instance_list_free (GList *list)
 	for (l = list; l; l = l->next) {
 		i = l->data;
 
-		g_assert (i != NULL);
-		g_assert (i->uid != NULL);
-
-		g_free (i->uid);
-		g_free (i);
+		if (i != NULL && i->uid != NULL) {
+			g_free (i->uid);
+			g_free (i);
+		} else
+			g_warn_if_reached ();
 	}
 
 	g_list_free (list);
@@ -64,17 +64,7 @@ cal_obj_instance_list_free (GList *list)
 void
 cal_obj_uid_list_free (GList *list)
 {
-	GList *l;
-
-	for (l = list; l; l = l->next) {
-		gchar *uid;
-
-		uid = l->data;
-
-		g_assert (uid != NULL);
-		g_free (uid);
-	}
-
+	g_list_foreach (list, (GFunc) g_free, NULL);
 	g_list_free (list);
 }
 
@@ -277,7 +267,7 @@ compute_alarm_range (ECalComponent *comp, GList *alarm_uids, time_t start, time_
 
 		auid = l->data;
 		alarm = e_cal_component_get_alarm (comp, auid);
-		g_assert (alarm != NULL);
+		g_return_if_fail (alarm != NULL);
 
 		e_cal_component_alarm_get_trigger (alarm, &trigger);
 		e_cal_component_alarm_get_repeat (alarm, &repeat);
@@ -312,13 +302,12 @@ compute_alarm_range (ECalComponent *comp, GList *alarm_uids, time_t start, time_
 			break;
 
 		default:
-			g_assert_not_reached ();
+			g_return_if_reached ();
 		}
 	}
 
 	*alarm_start -= repeat_time;
-
-	g_assert (*alarm_start <= *alarm_end);
+	g_warn_if_fail (*alarm_start <= *alarm_end);
 }
 
 /* Closure data to generate alarm occurrences */
@@ -374,7 +363,7 @@ add_alarm_occurrences_cb (ECalComponent *comp, time_t start, time_t end, gpointe
 
 		auid = l->data;
 		alarm = e_cal_component_get_alarm (comp, auid);
-		g_assert (alarm != NULL);
+		g_return_val_if_fail (alarm != NULL, FALSE);
 
 		e_cal_component_alarm_get_action (alarm, &action);
 		e_cal_component_alarm_get_trigger (alarm, &trigger);
@@ -461,7 +450,7 @@ generate_absolute_triggers (ECalComponent *comp, struct alarm_occurrence_data *a
 
 		auid = l->data;
 		alarm = e_cal_component_get_alarm (comp, auid);
-		g_assert (alarm != NULL);
+		g_return_if_fail (alarm != NULL);
 
 		e_cal_component_alarm_get_action (alarm, &action);
 		e_cal_component_alarm_get_trigger (alarm, &trigger);

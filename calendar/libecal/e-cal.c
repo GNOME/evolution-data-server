@@ -435,7 +435,7 @@ gdbus_cal_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished,
 {
 	GError *err = NULL;
 
-	g_assert (E_IS_CAL (ecal));
+	g_return_if_fail (E_IS_CAL (ecal));
 
 	if (error) {
 		err = g_error_copy (error);
@@ -2413,11 +2413,11 @@ e_cal_free_change_list (GList *list)
 	for (l = list; l; l = l->next) {
 		c = l->data;
 
-		g_assert (c != NULL);
-		g_assert (c->comp != NULL);
-
-		g_object_unref (G_OBJECT (c->comp));
-		g_free (c);
+		if (c != NULL && c->comp != NULL) {
+			g_object_unref (G_OBJECT (c->comp));
+			g_free (c);
+		} else
+			g_warn_if_reached ();
 	}
 
 	g_list_free (list);
@@ -3241,9 +3241,10 @@ e_cal_free_alarms (GSList *comp_alarms)
 		ECalComponentAlarms *alarms;
 
 		alarms = l->data;
-		g_assert (alarms != NULL);
-
-		e_cal_component_alarms_free (alarms);
+		if (alarms != NULL)
+			e_cal_component_alarms_free (alarms);
+		else
+			g_warn_if_reached ();
 	}
 
 	g_slist_free (comp_alarms);

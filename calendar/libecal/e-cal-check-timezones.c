@@ -456,7 +456,7 @@ e_cal_check_timezones (icalcomponent *comp,
  * @custom: must be a valid ECal pointer
  *
  * An implementation of the tzlookup callback which clients
- * can use. Calls #e_cal_get_timezone.
+ * can use. Calls e_cal_get_timezone().
  *
  * Since: 2.24
  */
@@ -465,24 +465,25 @@ e_cal_tzlookup_ecal (const gchar *tzid,
                      gconstpointer custom,
                      GError **error)
 {
-    ECal *ecal = (ECal *)custom;
-    icaltimezone *zone = NULL;
+	ECal *ecal = (ECal *)custom;
+	icaltimezone *zone = NULL;
+	GError *local_error = NULL;
 
-    if (e_cal_get_timezone(ecal, tzid, &zone, error)) {
-        g_assert(*error == NULL);
-        return zone;
-    } else {
-        g_assert(*error);
-        if ((*error)->domain == E_CALENDAR_ERROR &&
-            (*error)->code == E_CALENDAR_STATUS_OBJECT_NOT_FOUND) {
-            /*
-             * we had to trigger this error to check for the timezone existance,
-             * clear it and return NULL
-             */
-            g_clear_error(error);
-        }
-        return NULL;
-    }
+	if (e_cal_get_timezone (ecal, tzid, &zone, &local_error)) {
+		g_warn_if_fail (local_error == NULL);
+		return zone;
+	}
+
+	if (g_error_matches (local_error, E_CALENDAR_ERROR,
+		E_CALENDAR_STATUS_OBJECT_NOT_FOUND)) {
+		/* We had to trigger this error to check for the
+		 * timezone existance, clear it and return NULL. */
+		g_clear_error (&local_error);
+	}
+
+	g_propagate_error (error, local_error);
+
+	return NULL;
 }
 
 /**

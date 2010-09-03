@@ -771,10 +771,10 @@ alarm_uid_from_prop (icalproperty *prop)
 {
 	const gchar *xstr;
 
-	g_assert (icalproperty_isa (prop) == ICAL_X_PROPERTY);
+	g_return_val_if_fail (icalproperty_isa (prop) == ICAL_X_PROPERTY, NULL);
 
 	xstr = icalproperty_get_x (prop);
-	g_assert (xstr != NULL);
+	g_return_val_if_fail (xstr != NULL, NULL);
 
 	return xstr;
 }
@@ -814,7 +814,7 @@ remove_alarm_uid (icalcomponent *alarm)
 		const gchar *xname;
 
 		xname = icalproperty_get_x_name (prop);
-		g_assert (xname != NULL);
+		g_return_if_fail (xname != NULL);
 
 		if (strcmp (xname, EVOLUTION_ALARM_UID_PROPERTY) == 0)
 			list = g_slist_prepend (list, prop);
@@ -882,7 +882,7 @@ scan_alarm (ECalComponent *comp, icalcomponent *alarm)
 		const gchar *xname;
 
 		xname = icalproperty_get_x_name (prop);
-		g_assert (xname != NULL);
+		g_return_if_fail (xname != NULL);
 
 		if (strcmp (xname, EVOLUTION_ALARM_UID_PROPERTY) == 0) {
 			auid = alarm_uid_from_prop (prop);
@@ -913,7 +913,7 @@ scan_icalcomponent (ECalComponent *comp)
 
 	priv = comp->priv;
 
-	g_assert (priv->icalcomp != NULL);
+	g_return_if_fail (priv->icalcomp != NULL);
 
 	/* Scan properties */
 
@@ -943,7 +943,7 @@ ensure_mandatory_properties (ECalComponent *comp)
 	ECalComponentPrivate *priv;
 
 	priv = comp->priv;
-	g_assert (priv->icalcomp != NULL);
+	g_return_if_fail (priv->icalcomp != NULL);
 
 	if (!priv->uid) {
 		gchar *uid;
@@ -1015,7 +1015,7 @@ e_cal_component_set_new_vtype (ECalComponent *comp, ECalComponentVType type)
 		break;
 
 	default:
-		g_assert_not_reached ();
+		g_warn_if_reached ();
 		kind = ICAL_NO_COMPONENT;
 	}
 
@@ -1196,7 +1196,7 @@ e_cal_component_get_vtype (ECalComponent *comp)
 
 	default:
 		/* We should have been loaded with a supported type! */
-		g_assert_not_reached ();
+		g_warn_if_reached ();
 		return E_CAL_COMPONENT_NO_TYPE;
 	}
 }
@@ -1429,7 +1429,7 @@ e_cal_component_get_uid (ECalComponent *comp, const gchar **uid)
 	g_return_if_fail (priv->icalcomp != NULL);
 
 	/* This MUST exist, since we ensured that it did */
-	g_assert (priv->uid != NULL);
+	g_return_if_fail (priv->uid != NULL);
 
 	*uid = icalproperty_get_uid (priv->uid);
 }
@@ -1454,7 +1454,7 @@ e_cal_component_set_uid (ECalComponent *comp, const gchar *uid)
 	g_return_if_fail (priv->icalcomp != NULL);
 
 	/* This MUST exist, since we ensured that it did */
-	g_assert (priv->uid != NULL);
+	g_return_if_fail (priv->uid != NULL);
 
 	icalproperty_set_uid (priv->uid, (gchar *) uid);
 }
@@ -1477,7 +1477,7 @@ get_attachment_list (GSList *attachment_list, GSList **al)
 		gchar *buf = NULL;
 
 		attachment = l->data;
-		g_assert (attachment->attach != NULL);
+		g_return_if_fail (attachment->attach != NULL);
 
 		if (icalattach_get_is_url (attachment->attach)) {
 			/* FIXME : this ref count is screwed up
@@ -1511,8 +1511,8 @@ set_attachment_list (icalcomponent *icalcomp,
 			struct attachment *attachment;
 
 			attachment = l->data;
-			g_assert (attachment->prop != NULL);
-			g_assert (attachment->attach != NULL);
+			g_return_if_fail (attachment->prop != NULL);
+			g_return_if_fail (attachment->attach != NULL);
 
 			icalcomponent_remove_property (icalcomp, attachment->prop);
 			icalproperty_free (attachment->prop);
@@ -1731,7 +1731,7 @@ e_cal_component_get_categories_list (ECalComponent *comp, GSList **categ_list)
 	}
 
 	categories = icalproperty_get_categories (priv->categories);
-	g_assert (categories != NULL);
+	g_return_if_fail (categories != NULL);
 
 	cat_start = categories;
 	*categ_list = NULL;
@@ -1902,7 +1902,7 @@ e_cal_component_set_classification (ECalComponent *comp, ECalComponentClassifica
 		break;
 
 	default:
-		g_assert_not_reached ();
+		g_warn_if_reached ();
 		class = ICAL_CLASS_NONE;
 	}
 
@@ -1932,7 +1932,7 @@ get_text_list (GSList *text_list,
 		ECalComponentText *t;
 
 		text = l->data;
-		g_assert (text->prop != NULL);
+		g_return_if_fail (text->prop != NULL);
 
 		t = g_new (ECalComponentText, 1);
 		t->value = (* get_prop_func) (text->prop);
@@ -1966,7 +1966,7 @@ set_text_list (ECalComponent *comp,
 		struct text *text;
 
 		text = l->data;
-		g_assert (text->prop != NULL);
+		g_return_if_fail (text->prop != NULL);
 
 		icalcomponent_remove_property (priv->icalcomp, text->prop);
 		icalproperty_free (text->prop);
@@ -2356,7 +2356,7 @@ set_datetime (ECalComponent *comp, struct datetime *datetime,
 
 	/* If the TZID is set to "UTC", we don't want to save the TZID. */
 	if (dt->tzid && strcmp (dt->tzid, "UTC")) {
-		g_assert (datetime->prop != NULL);
+		g_return_if_fail (datetime->prop != NULL);
 
 		if (datetime->tzid_param) {
 			icalparameter_set_tzid (datetime->tzid_param, (gchar *) dt->tzid);
@@ -2501,7 +2501,7 @@ e_cal_component_get_dtstamp (ECalComponent *comp, struct icaltimetype *t)
 	g_return_if_fail (priv->icalcomp != NULL);
 
 	/* This MUST exist, since we ensured that it did */
-	g_assert (priv->dtstamp != NULL);
+	g_return_if_fail (priv->dtstamp != NULL);
 
 	*t = icalproperty_get_dtstamp (priv->dtstamp);
 }
@@ -2528,7 +2528,7 @@ e_cal_component_set_dtstamp (ECalComponent *comp, struct icaltimetype *t)
 	g_return_if_fail (priv->icalcomp != NULL);
 
 	/* This MUST exist, since we ensured that it did */
-	g_assert (priv->dtstamp != NULL);
+	g_return_if_fail (priv->dtstamp != NULL);
 
 	icalproperty_set_dtstamp (priv->dtstamp, *t);
 }
@@ -2672,7 +2672,7 @@ get_period_list (GSList *period_list,
 		struct icaldatetimeperiodtype ip;
 
 		period = l->data;
-		g_assert (period->prop != NULL);
+		g_return_if_fail (period->prop != NULL);
 
 		p = g_new (ECalComponentPeriod, 1);
 
@@ -2706,7 +2706,7 @@ get_period_list (GSList *period_list,
 		else if (p->type == E_CAL_COMPONENT_PERIOD_DURATION)
 			p->u.duration = ip.period.duration;
 		else
-			g_assert_not_reached ();
+			g_return_if_reached ();
 
 		/* Put in list */
 
@@ -2734,7 +2734,7 @@ set_period_list (ECalComponent *comp,
 		struct period *period;
 
 		period = l->data;
-		g_assert (period->prop != NULL);
+		g_return_if_fail (period->prop != NULL);
 
 		icalcomponent_remove_property (priv->icalcomp, period->prop);
 		icalproperty_free (period->prop);
@@ -2752,7 +2752,7 @@ set_period_list (ECalComponent *comp,
 		struct icaldatetimeperiodtype ip = {};
 		icalparameter_value value_type;
 
-		g_assert (l->data != NULL);
+		g_return_if_fail (l->data != NULL);
 		p = l->data;
 
 		/* Create libical value */
@@ -2766,8 +2766,7 @@ set_period_list (ECalComponent *comp,
 			value_type = ICAL_VALUE_DURATION;
 			ip.period.duration = p->u.duration;
 		} else {
-			g_assert_not_reached ();
-			return;
+			g_return_if_reached ();
 		}
 
 		/* Create property */
@@ -2874,10 +2873,10 @@ e_cal_component_set_exdate_list (ECalComponent *comp, GSList *exdate_list)
 		ECalComponentDateTime *cdt;
 		struct datetime *dt;
 
-		g_assert (l->data != NULL);
+		g_return_if_fail (l->data != NULL);
 		cdt = l->data;
 
-		g_assert (cdt->value != NULL);
+		g_return_if_fail (cdt->value != NULL);
 
 		dt = g_new (struct datetime, 1);
 		dt->prop = icalproperty_new_exdate (*cdt->value);
@@ -2976,7 +2975,7 @@ set_recur_list (ECalComponent *comp,
 		icalproperty *prop;
 		struct icalrecurrencetype *recur;
 
-		g_assert (l->data != NULL);
+		g_return_if_fail (l->data != NULL);
 		recur = l->data;
 
 		prop = (* new_prop_func) (*recur);
@@ -3290,7 +3289,7 @@ e_cal_component_set_organizer (ECalComponent *comp, ECalComponentOrganizer *orga
 	}
 
 	if (organizer->sentby) {
-		g_assert (priv->organizer.prop != NULL);
+		g_return_if_fail (priv->organizer.prop != NULL);
 
 		if (priv->organizer.sentby_param)
 			icalparameter_set_sentby (priv->organizer.sentby_param,
@@ -3307,7 +3306,7 @@ e_cal_component_set_organizer (ECalComponent *comp, ECalComponentOrganizer *orga
 	}
 
 	if (organizer->cn) {
-		g_assert (priv->organizer.prop != NULL);
+		g_return_if_fail (priv->organizer.prop != NULL);
 
 		if (priv->organizer.cn_param)
 			icalparameter_set_cn (priv->organizer.cn_param,
@@ -3324,7 +3323,7 @@ e_cal_component_set_organizer (ECalComponent *comp, ECalComponentOrganizer *orga
 	}
 
 	if (organizer->language) {
-		g_assert (priv->organizer.prop != NULL);
+		g_return_if_fail (priv->organizer.prop != NULL);
 
 		if (priv->organizer.language_param)
 			icalparameter_set_language (priv->organizer.language_param,
@@ -4269,7 +4268,7 @@ e_cal_component_set_summary (ECalComponent *comp, ECalComponentText *summary)
 	}
 
 	if (summary->altrep) {
-		g_assert (priv->summary.prop != NULL);
+		g_return_if_fail (priv->summary.prop != NULL);
 
 		if (priv->summary.altrep_param)
 			icalparameter_set_altrep (priv->summary.altrep_param,
@@ -4375,7 +4374,7 @@ e_cal_component_set_transparency (ECalComponent *comp, ECalComponentTransparency
 		break;
 
 	default:
-		g_assert_not_reached ();
+		g_warn_if_reached ();
 		ical_transp = ICAL_TRANSP_NONE;
 	}
 
@@ -4464,7 +4463,7 @@ get_attendee_list (GSList *attendee_list, GSList **al)
 		ECalComponentAttendee *a;
 
 		attendee = l->data;
-		g_assert (attendee->prop != NULL);
+		g_return_if_fail (attendee->prop != NULL);
 
 		a = g_new0 (ECalComponentAttendee, 1);
 		a->value = icalproperty_get_attendee (attendee->prop);
@@ -4518,7 +4517,7 @@ set_attendee_list (icalcomponent *icalcomp,
 		struct attendee *attendee;
 
 		attendee = l->data;
-		g_assert (attendee->prop != NULL);
+		g_return_if_fail (attendee->prop != NULL);
 
 		icalcomponent_remove_property (icalcomp, attendee->prop);
 		icalproperty_free (attendee->prop);
@@ -4785,10 +4784,10 @@ e_cal_component_free_exdate_list (GSList *exdate_list)
 	for (l = exdate_list; l; l = l->next) {
 		ECalComponentDateTime *cdt;
 
-		g_assert (l->data != NULL);
+		g_return_if_fail (l->data != NULL);
 		cdt = l->data;
 
-		g_assert (cdt->value != NULL);
+		g_return_if_fail (cdt->value != NULL);
 		g_free (cdt->value);
 		g_free ((gchar *)cdt->tzid);
 
@@ -4867,17 +4866,7 @@ e_cal_component_free_priority (gint *priority)
 void
 e_cal_component_free_period_list (GSList *period_list)
 {
-	GSList *l;
-
-	for (l = period_list; l; l = l->next) {
-		ECalComponentPeriod *period;
-
-		g_assert (l->data != NULL);
-
-		period = l->data;
-		g_free (period);
-	}
-
+	g_slist_foreach (period_list, (GFunc) g_free, NULL);
 	g_slist_free (period_list);
 }
 
@@ -4890,17 +4879,7 @@ e_cal_component_free_period_list (GSList *period_list)
 void
 e_cal_component_free_recur_list (GSList *recur_list)
 {
-	GSList *l;
-
-	for (l = recur_list; l; l = l->next) {
-		struct icalrecurrencetype *r;
-
-		g_assert (l->data != NULL);
-		r = l->data;
-
-		g_free (r);
-	}
-
+	g_slist_foreach (recur_list, (GFunc) g_free, NULL);
 	g_slist_free (recur_list);
 }
 
@@ -4953,18 +4932,7 @@ e_cal_component_free_id (ECalComponentId *id)
 void
 e_cal_component_free_text_list (GSList *text_list)
 {
-	GSList *l;
-
-	for (l = text_list; l; l = l->next) {
-		ECalComponentText *text;
-
-		g_assert (l->data != NULL);
-
-		text = l->data;
-		g_return_if_fail (text != NULL);
-		g_free (text);
-	}
-
+	g_slist_foreach (text_list, (GFunc) g_free, NULL);
 	g_slist_free (text_list);
 }
 
@@ -4978,18 +4946,7 @@ e_cal_component_free_text_list (GSList *text_list)
 void
 e_cal_component_free_attendee_list (GSList *attendee_list)
 {
-	GSList *l;
-
-	for (l = attendee_list; l; l = l->next) {
-		ECalComponentAttendee *attendee;
-
-		g_assert (l->data != NULL);
-
-		attendee = l->data;
-		g_return_if_fail (attendee != NULL);
-		g_free (attendee);
-	}
-
+	g_slist_foreach (attendee_list, (GFunc) g_free, NULL);
 	g_slist_free (attendee_list);
 }
 
@@ -5157,7 +5114,7 @@ scan_alarm_property (ECalComponentAlarm *alarm, icalproperty *prop)
 
 	case ICAL_X_PROPERTY:
 		xname = icalproperty_get_x_name (prop);
-		g_assert (xname != NULL);
+		g_return_if_fail (xname != NULL);
 
 		if (strcmp (xname, EVOLUTION_ALARM_UID_PROPERTY) == 0)
 			alarm->uid = prop;
@@ -5195,7 +5152,7 @@ make_alarm (icalcomponent *subcomp)
 	     prop = icalcomponent_get_next_property (subcomp, ICAL_ANY_PROPERTY))
 		scan_alarm_property (alarm, prop);
 
-	g_assert (alarm->uid != NULL);
+	g_return_val_if_fail (alarm->uid != NULL, NULL);
 
 	return alarm;
 }
@@ -5237,7 +5194,7 @@ e_cal_component_get_alarm_uids (ECalComponent *comp)
 			const gchar *xname;
 
 			xname = icalproperty_get_x_name (prop);
-			g_assert (xname != NULL);
+			g_return_val_if_fail (xname != NULL, NULL);
 
 			if (strcmp (xname, EVOLUTION_ALARM_UID_PROPERTY) == 0) {
 				const gchar *auid;
@@ -5297,16 +5254,17 @@ e_cal_component_alarms_free (ECalComponentAlarms *alarms)
 
 	g_return_if_fail (alarms != NULL);
 
-	g_assert (alarms->comp != NULL);
-	g_object_unref (G_OBJECT (alarms->comp));
+	if (alarms->comp != NULL)
+		g_object_unref (alarms->comp);
 
 	for (l = alarms->alarms; l; l = l->next) {
-		ECalComponentAlarmInstance *instance;
+		ECalComponentAlarmInstance *instance = l->data;
 
-		instance = l->data;
-		g_assert (instance != NULL);
-		g_free (instance->auid);
-		g_free (instance);
+		if (instance != NULL) {
+			g_free (instance->auid);
+			g_free (instance);
+		} else
+			g_warn_if_reached ();
 	}
 
 	g_slist_free (alarms->alarms);
@@ -5380,8 +5338,7 @@ e_cal_component_alarm_free (ECalComponentAlarm *alarm)
 	GSList *l;
 
 	g_return_if_fail (alarm != NULL);
-
-	g_assert (alarm->icalcomp != NULL);
+	g_return_if_fail (alarm->icalcomp != NULL);
 
 	if (icalcomponent_get_parent (alarm->icalcomp) == NULL)
 		icalcomponent_free (alarm->icalcomp);
@@ -5434,8 +5391,7 @@ e_cal_component_alarm_get_action (ECalComponentAlarm *alarm, ECalComponentAlarmA
 
 	g_return_if_fail (alarm != NULL);
 	g_return_if_fail (action != NULL);
-
-	g_assert (alarm->icalcomp != NULL);
+	g_return_if_fail (alarm->icalcomp != NULL);
 
 	if (!alarm->action) {
 		*action = E_CAL_COMPONENT_ALARM_NONE;
@@ -5485,8 +5441,7 @@ e_cal_component_alarm_set_action (ECalComponentAlarm *alarm, ECalComponentAlarmA
 	g_return_if_fail (alarm != NULL);
 	g_return_if_fail (action != E_CAL_COMPONENT_ALARM_NONE);
 	g_return_if_fail (action != E_CAL_COMPONENT_ALARM_UNKNOWN);
-
-	g_assert (alarm->icalcomp != NULL);
+	g_return_if_fail (alarm->icalcomp != NULL);
 
 	switch (action) {
 	case E_CAL_COMPONENT_ALARM_AUDIO:
@@ -5506,7 +5461,7 @@ e_cal_component_alarm_set_action (ECalComponentAlarm *alarm, ECalComponentAlarmA
 		break;
 
 	default:
-		g_assert_not_reached ();
+		g_warn_if_reached ();
 		ipa = ICAL_ACTION_NONE;
 	}
 
@@ -5530,8 +5485,7 @@ e_cal_component_alarm_get_attach (ECalComponentAlarm *alarm, icalattach **attach
 {
 	g_return_if_fail (alarm != NULL);
 	g_return_if_fail (attach != NULL);
-
-	g_assert (alarm->icalcomp != NULL);
+	g_return_if_fail (alarm->icalcomp != NULL);
 
 	if (alarm->attach) {
 		*attach = icalproperty_get_attach (alarm->attach);
@@ -5551,8 +5505,7 @@ void
 e_cal_component_alarm_set_attach (ECalComponentAlarm *alarm, icalattach *attach)
 {
 	g_return_if_fail (alarm != NULL);
-
-	g_assert (alarm->icalcomp != NULL);
+	g_return_if_fail (alarm->icalcomp != NULL);
 
 	if (alarm->attach) {
 		icalcomponent_remove_property (alarm->icalcomp, alarm->attach);
@@ -5578,8 +5531,7 @@ e_cal_component_alarm_get_description (ECalComponentAlarm *alarm, ECalComponentT
 {
 	g_return_if_fail (alarm != NULL);
 	g_return_if_fail (description != NULL);
-
-	g_assert (alarm->icalcomp != NULL);
+	g_return_if_fail (alarm->icalcomp != NULL);
 
 	if (alarm->description.prop)
 		description->value = icalproperty_get_description (alarm->description.prop);
@@ -5603,8 +5555,7 @@ void
 e_cal_component_alarm_set_description (ECalComponentAlarm *alarm, ECalComponentText *description)
 {
 	g_return_if_fail (alarm != NULL);
-
-	g_assert (alarm->icalcomp != NULL);
+	g_return_if_fail (alarm->icalcomp != NULL);
 
 	if (alarm->description.prop) {
 		icalcomponent_remove_property (alarm->icalcomp, alarm->description.prop);
@@ -5642,8 +5593,7 @@ e_cal_component_alarm_get_repeat (ECalComponentAlarm *alarm, ECalComponentAlarmR
 {
 	g_return_if_fail (alarm != NULL);
 	g_return_if_fail (repeat != NULL);
-
-	g_assert (alarm->icalcomp != NULL);
+	g_return_if_fail (alarm->icalcomp != NULL);
 
 	if (!(alarm->repeat && alarm->duration)) {
 		repeat->repetitions = 0;
@@ -5668,8 +5618,7 @@ e_cal_component_alarm_set_repeat (ECalComponentAlarm *alarm, ECalComponentAlarmR
 {
 	g_return_if_fail (alarm != NULL);
 	g_return_if_fail (repeat.repetitions >= 0);
-
-	g_assert (alarm->icalcomp != NULL);
+	g_return_if_fail (alarm->icalcomp != NULL);
 
 	/* Delete old properties */
 
@@ -5713,8 +5662,7 @@ e_cal_component_alarm_get_trigger (ECalComponentAlarm *alarm, ECalComponentAlarm
 
 	g_return_if_fail (alarm != NULL);
 	g_return_if_fail (trigger != NULL);
-
-	g_assert (alarm->icalcomp != NULL);
+	g_return_if_fail (alarm->icalcomp != NULL);
 
 	if (!alarm->trigger) {
 		trigger->type = E_CAL_COMPONENT_ALARM_TRIGGER_NONE;
@@ -5771,7 +5719,7 @@ e_cal_component_alarm_get_trigger (ECalComponentAlarm *alarm, ECalComponentAlarm
 				break;
 
 			default:
-				g_assert_not_reached ();
+				g_return_if_reached ();
 			}
 		} else
 			trigger->type = E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START;
@@ -5798,8 +5746,7 @@ e_cal_component_alarm_set_trigger (ECalComponentAlarm *alarm, ECalComponentAlarm
 
 	g_return_if_fail (alarm != NULL);
 	g_return_if_fail (trigger.type != E_CAL_COMPONENT_ALARM_TRIGGER_NONE);
-
-	g_assert (alarm->icalcomp != NULL);
+	g_return_if_fail (alarm->icalcomp != NULL);
 
 	/* Delete old trigger */
 
@@ -5834,8 +5781,7 @@ e_cal_component_alarm_set_trigger (ECalComponentAlarm *alarm, ECalComponentAlarm
 		break;
 
 	default:
-		g_assert_not_reached ();
-		return;
+		g_return_if_reached ();
 	}
 
 	alarm->trigger = icalproperty_new_trigger (t);
