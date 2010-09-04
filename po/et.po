@@ -15,9 +15,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Evolution-data-server MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=evolution-data-server&component=general\n"
-"POT-Creation-Date: 2010-05-26 13:53+0000\n"
-"PO-Revision-Date: 2010-05-27 09:48+0300\n"
+"product=evolution-data-server&component=Misc.\n"
+"POT-Creation-Date: 2010-09-01 08:23+0000\n"
+"PO-Revision-Date: 2010-09-03 22:32+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -39,6 +39,9 @@ msgstr "Kontaktide allalaadimine (%d)... "
 msgid "Updating contacts cache (%d)... "
 msgstr "Kontaktide puhvri uuendamine (%d)... "
 
+msgid "Not connected"
+msgstr "Ühendamata"
+
 msgid "Using Distinguished Name (DN)"
 msgstr "Eraldusnime (DN) kasutamine"
 
@@ -46,22 +49,29 @@ msgid "Using Email Address"
 msgstr "E-posti aadressi kasutamine"
 
 msgid "Reconnecting to LDAP server..."
-msgstr "Taasühendumine LDAP serveriga..."
+msgstr "Taasühendumine LDAP-serveriga..."
+
+msgid "Invalid DN syntax"
+msgstr "Vigane DN-süntaks"
 
 msgid "Adding contact to LDAP server..."
-msgstr "Kontakti lisamine LDAP serverisse..."
+msgstr "Kontakti lisamine LDAP-serverisse..."
 
 msgid "Removing contact from LDAP server..."
-msgstr "Kontakti eemaldamine LDAP serverist..."
+msgstr "Kontakti eemaldamine LDAP-serverist..."
 
 msgid "Modifying contact from LDAP server..."
-msgstr "Kontakti muutmine LDAP serveris..."
+msgstr "Kontakti muutmine LDAP-serveris..."
 
 msgid "Receiving LDAP search results..."
-msgstr "LDAP otsingutulemuste vastuvõtmine..."
+msgstr "LDAP-otsingu tulemuste vastuvõtmine..."
 
 msgid "Error performing search"
 msgstr "Viga otsingu teostamisel"
+
+#, c-format
+msgid "Create resource '%s' failed with HTTP status: %d"
+msgstr ""
 
 #, c-format
 msgid "%s: there was no source for UID '%s' stored in GConf."
@@ -479,38 +489,159 @@ msgstr "Tühi URI"
 msgid "Invalid source"
 msgstr "Vigane allikas"
 
-msgid "Cannot open book"
-msgstr "Raamatut pole võimalik avada"
+msgid "Success"
+msgstr ""
 
-msgid "Cannot remove book"
-msgstr "Raamatut võimalik eemaldada"
+msgid "Repository offline"
+msgstr "Hoidla ei ole võrku ühendatud"
 
-msgid "Cannot get contact"
-msgstr "Kontakti pole võimalik hankida"
+msgid "Permission denied"
+msgstr "Juurdepääs keelatud"
 
-msgid "Empty query"
-msgstr "Tühi päring"
+msgid "Contact not found"
+msgstr "Kontakti ei leitud"
 
-msgid "Cannot authenticate user"
-msgstr "Kasutajat pole võimalik autentida"
+msgid "Contact ID already exists"
+msgstr "Kontakti ID on juba olemas"
 
-msgid "Cannot add contact"
-msgstr "Kontakti pole võimalik lisada"
+msgid "Authentication Failed"
+msgstr "Tõrge autentimisel"
 
-msgid "Cannot modify contact"
-msgstr "Kontakti pole võimalik muuta"
+msgid "Authentication Required"
+msgstr "Autentimine on vajalik"
 
-msgid "Cannot remove contacts"
-msgstr "Kontakte pole võimalik eemaldada"
+msgid "Unsupported field"
+msgstr "Toetamata väli"
+
+msgid "Unsupported authentication method"
+msgstr "Toetamata autentimismeetod"
+
+msgid "TLS not available"
+msgstr "TLS ei ole saadaval"
+
+msgid "Address book does not exist"
+msgstr "Aadressiraamatut pole olemas."
+
+msgid "Book removed"
+msgstr ""
+
+msgid "Not available in offline mode"
+msgstr "Pole võrguvabas režiimis saadaval"
+
+msgid "Search size limit exceeded"
+msgstr "Otsingu suuruspiirang on ületatud"
+
+msgid "Search time limit exceeded"
+msgstr "Otsingu ajapiirang on ületatud"
 
 msgid "Invalid query"
 msgstr "Vigane päring"
 
-msgid "Cannot get changes"
-msgstr "Muudatusi pole võimalik hankida"
+msgid "Query refused"
+msgstr "Päringust keelduti"
 
-msgid "Cannot complete operation"
-msgstr "Toimingut pole võimalik lõpule viia"
+msgid "Could not cancel"
+msgstr "Pole võimalik katkestada"
+
+#. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
+#. { OtherError,			N_("Other error") },
+msgid "Invalid server version"
+msgstr "Vigane serveri versioon"
+
+msgid "No space"
+msgstr ""
+
+msgid "Invalid argument"
+msgstr "Vigane parameeter"
+
+msgid "Not supported"
+msgstr "Pole toetatud"
+
+msgid "Other error"
+msgstr "Muu viga"
+
+#. Translators: The '%s' is replaced with a detailed error message
+#, c-format
+msgid "Cannot open book: %s"
+msgstr "Raamatut pole võimalik avada: %s"
+
+#. Translators: The '%s' is replaced with a detailed error message
+#, c-format
+msgid "Cannot remove book: %s"
+msgstr "Raamatut võimalik eemaldada: %s"
+
+#. Translators: The '%s' is replaced with a detailed error message
+#, c-format
+msgid "Cannot get contact: %s"
+msgstr "Kontakti pole võimalik hankida: %s"
+
+#. Translators: The '%s' is replaced with a detailed error message
+#, c-format
+msgid "Empty query: %s"
+msgstr "Tühi päring: %s"
+
+#. Translators: The '%s' is replaced with a detailed error message
+#, c-format
+msgid "Cannot get contact list: %s"
+msgstr "Kontaktide nimekirja pole võimalik hankida: %s"
+
+#. Translators: The '%s' is replaced with a detailed error message
+#, c-format
+msgid "Cannot authenticate user: %s"
+msgstr "Kasutajat pole võimalik autentida: %s"
+
+#. Translators: The '%s' is replaced with a detailed error message
+#, c-format
+msgid "Cannot add contact: %s"
+msgstr "Kontakti pole võimalik lisada: %s"
+
+#. Translators: The '%s' is replaced with a detailed error message
+#, c-format
+msgid "Cannot modify contact: %s"
+msgstr "Kontakti pole võimalik muuta: %s"
+
+#. Translators: The '%s' is replaced with a detailed error message
+#, c-format
+msgid "Cannot remove contacts: %s"
+msgstr "Kontakte pole võimalik eemaldada: %s"
+
+#. Translators: The '%s' is replaced with a detailed error message
+#, c-format
+msgid "Cannot get supported fields: %s"
+msgstr "Toetatud välju võimalik hankida: %s"
+
+#. Translators: The '%s' is replaced with a detailed error message
+#, c-format
+msgid "Cannot get required fields: %s"
+msgstr "Nõutud välju pole võimalik hankida: %s"
+
+#. Translators: The '%s' is replaced with a detailed error message
+#, c-format
+msgid "Cannot get supported authentication methods: %s"
+msgstr "Toetatud autentimismeetodeid pole võimalik hankida: %s"
+
+#. Translators: The '%s' is replaced with a detailed error message
+#, c-format
+msgid "Invalid query: %s"
+msgstr "Vigane päring: %s"
+
+#. Translators: The '%s' is replaced with a detailed error message
+#, c-format
+msgid "Cannot get changes: %s"
+msgstr "Muudatusi pole võimalik hankida: %s"
+
+#. Translators: The '%s' is replaced with a detailed error message
+#, fuzzy, c-format
+#| msgid "Operation failed: %s"
+msgid "Cancel operation failed: %s"
+msgstr "Tõrge toimingu läbiviimisel: %s"
+
+#, c-format
+msgid "Unexpected HTTP status code %d returned"
+msgstr "Tagastati ootamatu HTTP-olekukood %d"
+
+msgid "Calendar doesn't support Free/Busy"
+msgstr ""
 
 msgid "Birthday"
 msgstr "Sünnipäev"
@@ -544,9 +675,6 @@ msgstr "Kalender"
 
 msgid "Invalid server URI"
 msgstr "Vigane serveri URI"
-
-msgid "Authentication failed"
-msgstr "Tõrge autentimisel"
 
 msgid "Could not create cache file"
 msgstr "Puhverfaili pole võimalik luua"
@@ -717,9 +845,6 @@ msgstr "Sisesta %s parool (kasutaja %s)"
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Sisesta %s parool, et lubada proksi kasutajale %s"
 
-msgid "Invalid argument"
-msgstr "Vigane parameeter"
-
 msgid "Backend is busy"
 msgstr "Taustaprogramm on hõivatud"
 
@@ -741,9 +866,6 @@ msgstr "URI ei ole laaditud"
 msgid "URI already loaded"
 msgstr "URI on juba laaditud"
 
-msgid "Permission denied"
-msgstr "Juurdepääs keelatud"
-
 msgid "Unknown User"
 msgstr "Tundmatu kasutaja"
 
@@ -759,11 +881,15 @@ msgstr "Tegevus on tühistatud"
 msgid "Could not cancel operation"
 msgstr "Toimingut pole võimalik katkestada"
 
+#, c-format
+msgid "Authentication failed"
+msgstr "Tõrge autentimisel"
+
 msgid "Authentication required"
 msgstr "Autentimine on vajalik"
 
-msgid "A CORBA exception has occurred"
-msgstr "Tekkis CORBA viga"
+msgid "A D-Bus exception has occurred"
+msgstr ""
 
 msgid "Unknown error"
 msgstr "Tundmatu viga"
@@ -833,124 +959,129 @@ msgstr ""
 msgid "Invalid range"
 msgstr "Vigane vahemik"
 
-msgid "Unsupported field"
-msgstr "Toetamata väli"
-
 msgid "Unsupported method"
 msgstr "Toetamata meetod"
 
-msgid "Unsupported authentication method"
-msgstr "Toetamata autentimismeetod"
+msgid "Calendar does not exist"
+msgstr "Kalendrit pole olemas"
 
-msgid "TLS not available"
-msgstr "TLS ei ole saadaval"
+msgid "Unknown user"
+msgstr "Tundmatu kasutaja"
 
-msgid "Offline mode unavailable"
-msgstr "Võrguvaba režiim pole saadaval"
-
-msgid "Search size limit exceeded"
-msgstr "Otsingu suuruspiirang on ületatud"
-
-msgid "Search time limit exceeded"
-msgstr "Otsingu ajapiirang on ületatud"
-
-msgid "Query refused"
-msgstr "Päringust keelduti"
-
-msgid "Invalid server version"
-msgstr "Vigane serveri versioon"
-
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Cannot retrieve calendar address"
-msgstr "Kalendri aadressi pole võimalik vastu võtta"
+msgid "Cannot retrieve calendar address: %s"
+msgstr "Kalendri aadressi pole võimalik vastu võtta: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Cannot retrieve calendar alarm e-mail address"
-msgstr "Kalendrialarmi e-posti aadressi pole võimalik vastu võtta"
+msgid "Cannot retrieve calendar alarm e-mail address: %s"
+msgstr "Kalendrialarmi e-posti aadressi pole võimalik vastu võtta: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Cannot retrieve calendar's ldap attribute"
-msgstr "Kalendri LDAP-rekvisiiti pole võimalik vastu võtta"
+msgid "Cannot retrieve calendar's LDAP attribute: %s"
+msgstr "Kalendri LDAP-rekvisiiti pole võimalik vastu võtta: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Cannot retrieve calendar scheduling information"
-msgstr "Kalendri ajastamisandmeid pole võimalik vastu võtta"
+msgid "Cannot retrieve calendar scheduling information: %s"
+msgstr "Kalendri ajastamisandmeid pole võimalik vastu võtta: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Cannot open calendar"
-msgstr "Kalendrit pole võimalik avada"
+msgid "Cannot open calendar: %s"
+msgstr "Kalendrit pole võimalik avada: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Cannot refresh calendar"
-msgstr "Kalendrit pole võimalik värskendada"
+msgid "Cannot refresh calendar: %s"
+msgstr "Kalendrit pole võimalik värskendada: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Cannot remove calendar"
-msgstr "Kalendrit pole võimalik eemaldada"
+msgid "Cannot remove calendar: %s"
+msgstr "Kalendrit pole võimalik eemaldada: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Cannot create calendar object"
-msgstr "Kalendriobjekti pole võimalik luua"
+msgid "Cannot create calendar object: %s"
+msgstr "Kalendriobjekti pole võimalik luua: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Cannot modify calendar object"
-msgstr "Kalendriobjekti pole võimalik muuta"
+msgid "Cannot modify calendar object: %s"
+msgstr "Kalendriobjekti pole võimalik muuta: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Cannot remove calendar object"
-msgstr "Kalendriobjekti pole võimalik eemaldada"
+msgid "Cannot remove calendar object: %s"
+msgstr "Kalendriobjekti pole võimalik eemaldada: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Cannot receive calendar objects"
-msgstr "Kalendriobjekte pole võimalik vastu võtta"
+msgid "Cannot receive calendar objects: %s"
+msgstr "Kalendriobjekte pole võimalik vastu võtta: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Cannot discard calendar alarm"
-msgstr "Kalendrialarmi pole võimalik hüljata"
+msgid "Cannot discard calendar alarm: %s"
+msgstr "Kalendrialarmi pole võimalik hüljata: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Cannot send calendar objects"
-msgstr "Kalendriobjekte pole võimalik saata"
+msgid "Cannot send calendar objects: %s"
+msgstr "Kalendriobjekte pole võimalik saata: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Cannot retrieve default calendar object path"
-msgstr "Vaikimisi kalendriobjekti rada pole võimalik vastu võtta"
+msgid "Cannot retrieve default calendar object path: %s"
+msgstr "Vaikimisi kalendriobjekti rada pole võimalik vastu võtta: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Cannot retrieve calendar object path"
-msgstr "Kalendriobjekti rada pole võimalik vastu võtta"
+msgid "Cannot retrieve calendar object path: %s"
+msgstr "Kalendriobjekti rada pole võimalik vastu võtta: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Cannot retrieve calendar object list"
-msgstr "Kalendriobjektide nimekirja pole võimalik vastu võtta"
+msgid "Cannot retrieve calendar object list: %s"
+msgstr "Kalendriobjektide nimekirja pole võimalik vastu võtta: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Could not retrieve attachment list"
-msgstr "Manuste nimekirja pole võimalik vastu võtta"
+msgid "Could not retrieve attachment list: %s"
+msgstr "Manuste nimekirja pole võimalik vastu võtta: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Could not complete calendar query"
-msgstr "Kalendripäringut pole võimalik lõpule viia"
+msgid "Could not complete calendar query: %s"
+msgstr "Kalendripäringut pole võimalik lõpule viia: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Could not retrieve calendar time zone"
-msgstr "Kalendri ajavööndit pole võimalik vastu võtta"
+msgid "Could not retrieve calendar time zone: %s"
+msgstr "Kalendri ajavööndit pole võimalik vastu võtta: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Could not add calendar time zone"
-msgstr "Kalendri ajavööndit pole võimalik lisada"
+msgid "Could not add calendar time zone: %s"
+msgstr "Kalendri ajavööndit pole võimalik lisada: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Could not set default calendar time zone"
-msgstr "Vaikimisi kalendri ajavööndit pole võimalik määrata"
+msgid "Could not set default calendar time zone: %s"
+msgstr "Vaikimisi kalendri ajavööndit pole võimalik määrata: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Cannot retrieve calendar changes"
-msgstr "Kalendri muutuseid pole võimalik vastu võtta"
+msgid "Cannot retrieve calendar changes: %s"
+msgstr "Kalendri muutuseid pole võimalik vastu võtta: %s"
 
+#. Translators: The '%s' is replaced with a detailed error message
 #, c-format
-msgid "Cannot retrieve calendar free/busy list"
-msgstr "Kalendri vaba/hõivatud nimekirja pole võimalik vastu võtta"
+msgid "Cannot retrieve calendar free/busy list: %s"
+msgstr "Kalendri vaba/hõivatud nimekirja pole võimalik vastu võtta: %s"
 
 #, c-format
 msgid "Invalid URI"
@@ -964,36 +1095,43 @@ msgstr "Puudub tausta factory '%s' jaoks '%s'-st"
 msgid "Could not instantiate backend"
 msgstr "Ei suudetud taustaprogrammi lähtestada"
 
+#, c-format
 msgid "Signing is not supported by this cipher"
 msgstr "See šiffer ei toeta allkirjastamist"
 
 msgid "Signing message"
 msgstr "Sõnumi allkirjastamine"
 
+#, c-format
 msgid "Verifying is not supported by this cipher"
 msgstr "See šiffer ei toeta kontrolli"
 
 msgid "Verifying message"
 msgstr "Sõnumi verifitseerimine"
 
+#, c-format
 msgid "Encryption is not supported by this cipher"
 msgstr "See šiffer ei toeta krüptimist"
 
 msgid "Encrypting message"
 msgstr "Sõnumi krüptimine"
 
+#, c-format
 msgid "Decryption is not supported by this cipher"
 msgstr "See šiffer ei toeta dekrüptimist"
 
 msgid "Decrypting message"
 msgstr "Sõnumi dekrüptimine"
 
+#, c-format
 msgid "You may not import keys with this cipher"
 msgstr "Sa ei tohi importida selle šifriga võtmeid"
 
+#, c-format
 msgid "You may not export keys with this cipher"
 msgstr "Sa ei tohi eksportida selle šifriga võtmeid"
 
+#, c-format
 msgid "Unable to create cache path"
 msgstr "Puhvri rada pole võimalik luua"
 
@@ -1001,6 +1139,12 @@ msgstr "Puhvri rada pole võimalik luua"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Puhverkirjet pole võimalik eemaldada: %s: %s"
 
+#, fuzzy, c-format
+#| msgid "No such message available."
+msgid "No stream available"
+msgstr "See sõnum pole saadaval."
+
+#, c-format
 msgid "Insufficient memory"
 msgstr "Pole piisavalt mälu"
 
@@ -1037,11 +1181,17 @@ msgstr "Kausta '%s' ettevalmistamine võrguvaba režiimi jaoks"
 msgid "Copy folder content locally for offline operation"
 msgstr "Kaust kopeeritakse võrguvabaks kasutamiseks kohapeale"
 
+#, c-format
 msgid "You must be working online to complete this operation"
 msgstr "Selle toimingu tegemiseks pead olema võrku ühendatud"
 
-msgid "No description available"
-msgstr "Kirjeldust pole saadaval"
+#, c-format
+msgid "Cancelled"
+msgstr "Tühistatud"
+
+#, c-format
+msgid "Canceled"
+msgstr "Tühistatud"
 
 #, c-format
 msgid "Failed to create child process '%s': %s"
@@ -1062,18 +1212,17 @@ msgstr "Viga filtri analüüsil: %s: %s"
 msgid "Error executing filter: %s: %s"
 msgstr "Viga filtri täitmisel: %s: %s"
 
+#, c-format
 msgid "Unable to open spool folder"
 msgstr "Puhverkausta pole võimalik avada"
 
+#, c-format
 msgid "Unable to process spool folder"
 msgstr "Puhverkausta pole võimalik töödelda"
 
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Võetakse vastu teadet %d (%d%%)"
-
-msgid "Cannot open message"
-msgstr "Sõnumit pole võimalik avada"
 
 #, c-format
 msgid "Failed on message %d"
@@ -1167,6 +1316,13 @@ msgid "Copying messages"
 msgstr "Sõnumite kopeerimine"
 
 #, c-format
+msgid "Failed to execute gpg: %s"
+msgstr "Tõrge gpg käivitamisel: %s"
+
+msgid "Unknown"
+msgstr "Tundmatu"
+
+#, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
 "\n"
@@ -1176,9 +1332,11 @@ msgstr ""
 "\n"
 "%s"
 
+#, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "Tõrge gpg kasutajavihje analüüsimisel."
 
+#, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Tõrge gpg paroolipäringu analüüsimisel."
 
@@ -1202,9 +1360,7 @@ msgstr ""
 msgid "Unexpected request from GnuPG for '%s'"
 msgstr "Ootamatu GnuPG päring '%s' jaoks"
 
-msgid "Canceled."
-msgstr "Tühistatud."
-
+#, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "Salajase võtme avamine nurjus: vale parooli sisestati 3 korda."
 
@@ -1212,50 +1368,41 @@ msgstr "Salajase võtme avamine nurjus: vale parooli sisestati 3 korda."
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Ootamatu vastus GnuPG'lt: %s"
 
+#, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Tõrge krüptimisel: Korrektsed saajate aadressid on määramata."
 
-#, c-format
-msgid "Failed to execute gpg: %s"
-msgstr "Tõrge gpg käivitamisel: %s"
-
-#, c-format
-msgid "Could not generate signing data: %s"
-msgstr "Signeerimisandmeid pole võimalik genereerida: %s"
+msgid "Could not generate signing data: "
+msgstr "Signeerimisandmeid pole võimalik genereerida: "
 
 msgid "Failed to execute gpg."
 msgstr "Tõrge gpg käivitamisel."
 
+#, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Sõnumi signatuuri pole võimalik kontrollida: sõnumivorming on vigane"
 
-#, c-format
-msgid "Cannot verify message signature: could not create temp file: %s"
-msgstr ""
-"Sõnumi signatuuri pole võimalik kontrollida: ajutist faili pole võimalik "
-"luua: %s"
+msgid "Cannot verify message signature: "
+msgstr "Sõnumi signatuuri pole võimalik kontrollida: "
 
-#, c-format
-msgid "Could not generate encrypting data: %s"
+#, fuzzy
+#| msgid "Could not generate encrypting data: %s"
+msgid "Could not generate encrypting data: "
 msgstr "Krüptimisandmeid pole võimalik luua: %s"
 
 msgid "This is a digitally encrypted message part"
 msgstr "See on sõnumi digitaalselt krüptitud osa"
 
+#, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Sõnumit pole võimalik lahti krüptida: sõnumi vorming on vigane"
 
+#, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Tõrge MIME osa dekrüptimisel: protokolli viga"
 
 msgid "Encrypted content"
 msgstr "Krüptitud sisu"
-
-msgid "Unable to parse message content"
-msgstr "Sõnumi sisu pole võimalik analüüsida"
-
-msgid "Unknown"
-msgstr "Tundmatu"
 
 #, c-format
 msgid "Cannot build locking helper pipe: %s"
@@ -1278,8 +1425,9 @@ msgstr "'%s' pole võimalik lukustada"
 msgid "Could not create lock file for %s: %s"
 msgstr "%s jaoks pole võimalik lukufaili luua: %s"
 
-#, c-format
-msgid "Timed out trying to get lock file on %s. Try again later."
+#, fuzzy, c-format
+#| msgid "Timed out trying to get lock file on %s. Try again later."
+msgid "Timed out trying to get lock file on %s.  Try again later."
 msgstr "%s - Lukufaili saamise päring ületas ajapiirangu. Ürita hiljem uuesti."
 
 #, c-format
@@ -1333,14 +1481,19 @@ msgstr "Viga ajutise sõnumifaili kirjutamisel: %s"
 msgid "Error copying mail temp file: %s"
 msgstr "Viga ajutise sõnumifaili kopeerimisel: %s"
 
+#, fuzzy, c-format
+#| msgid "No description available"
+msgid "No content available"
+msgstr "Kirjeldust pole saadaval"
+
+#, fuzzy, c-format
+#| msgid "No description available"
+msgid "No signature available"
+msgstr "Kirjeldust pole saadaval"
+
+#, c-format
 msgid "parse error"
 msgstr "analüüsimisviga"
-
-msgid "Canceled"
-msgstr "Tühistatud"
-
-msgid "cannot create thread"
-msgstr "lõime pole võimalik luua"
 
 #, c-format
 msgid "Resolving: %s"
@@ -1401,6 +1554,7 @@ msgstr "Anonüümne"
 msgid "This option will connect to the server using an anonymous login."
 msgstr "See valik ühendub serveriga kasutades anonüümset sisselogimist."
 
+#, c-format
 msgid "Authentication failed."
 msgstr "Tõrge autentimisel."
 
@@ -1448,21 +1602,27 @@ msgstr ""
 "See seadistus aitab juhul, kui server seda toetab, ühenduda serverisse "
 "kasutades turvalist DIGEST-MD5 parooli."
 
+#, c-format
 msgid "Server challenge too long (>2048 octets)"
 msgstr "Serveri kutsung liiga pikk (>2048 oktetti)"
 
+#, c-format
 msgid "Server challenge invalid\n"
 msgstr "Vigane serveri kutsung\n"
 
+#, c-format
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr "Serveri kutsung sisaldas vigast \"Quality of Protection\" lipikut"
 
+#, c-format
 msgid "Server response did not contain authorization data"
 msgstr "Serveri vastus ei sisaldanud volitusandmeid"
 
+#, c-format
 msgid "Server response contained incomplete authorization data"
 msgstr "Serveri vastus sisaldas puudulikke volitusandmeid"
 
+#, c-format
 msgid "Server response does not match"
 msgstr "Serveri vastus ei klapi"
 
@@ -1520,9 +1680,11 @@ msgstr "Tõrge tõendite terviklikkuse kontrollil."
 msgid "The referenced credentials have expired."
 msgstr "Viidatud tõendid on aegunud."
 
+#, c-format
 msgid "Bad authentication response from server."
 msgstr "Serverilt saadi vigane autentimise vastus."
 
+#, c-format
 msgid "Unsupported security layer."
 msgstr "Toetamata turvakiht."
 
@@ -1532,8 +1694,9 @@ msgstr "Kasutajanimi"
 msgid "This option will connect to the server using a simple password."
 msgstr "See valik ühendub serveriga kasutades lihtsat parooli."
 
+#, c-format
 msgid "Unknown authentication state."
-msgstr "Teadmata autentimisseisund"
+msgstr "Teadmata autentimisseisund."
 
 msgid "NTLM / SPA"
 msgstr "NTLM / SPA"
@@ -1552,15 +1715,19 @@ msgid "POP before SMTP"
 msgstr "POP enne SMTP-d"
 
 msgid "This option will authorise a POP connection before attempting SMTP"
-msgstr "See valik lubab POP ühenduse enne SMTP ühenduse üritamist"
+msgstr "See valik lubab POP-ühenduse enne SMTP ühenduse üritamist"
 
 msgid "POP Source URI"
-msgstr "POP allika URI"
+msgstr "POP-allika URI"
 
-msgid "POP Before SMTP auth using an unknown transport"
+#, fuzzy, c-format
+#| msgid "POP Before SMTP auth using an unknown transport"
+msgid "POP Before SMTP authentication using an unknown transport"
 msgstr "POP enne SMTP-d autentimine kasutab tundmatut transporti"
 
-msgid "POP Before SMTP auth using a non-pop source"
+#, fuzzy, c-format
+#| msgid "POP Before SMTP auth using a non-pop source"
+msgid "POP Before SMTP authentication using a non-POP source"
 msgstr "POP enne SMTP-d kasutab mitte-pop allikat"
 
 #, c-format
@@ -1589,7 +1756,7 @@ msgstr ""
 
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
-msgstr "Palun sisesta %s parool %s jaoks hostil %s"
+msgstr "Palun sisesta %s parool %s jaoks hostil %s."
 
 #, c-format
 msgid "Cannot find certificate for '%s'"
@@ -1700,7 +1867,7 @@ msgid "Failed to add data to CMS encoder"
 msgstr "Tõrge andmete lisamisel CMS kodeerijale"
 
 msgid "Failed to encode data"
-msgstr "Andmete kodeerimine nurjus."
+msgstr "Andmete kodeerimine nurjus"
 
 msgid "Decoder failed"
 msgstr "Dekoodri tõrge"
@@ -1758,6 +1925,60 @@ msgstr "Prügikast"
 #. the name of the Junk folder, used for spam messages
 msgid "Junk"
 msgstr "Rämps"
+
+#, c-format
+msgid "The proxy host does not support SOCKS5"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "No support for authentication type %s"
+msgid "Could not find a suitable authentication type: code 0x%x"
+msgstr "Autentimistüübi %s tugi puudub"
+
+msgid "General SOCKS server failure"
+msgstr ""
+
+msgid "SOCKS server's rules do not allow connection"
+msgstr ""
+
+msgid "Network is unreachable from SOCKS server"
+msgstr ""
+
+msgid "Host is unreachable from SOCKS server"
+msgstr ""
+
+msgid "Connection refused"
+msgstr "Ühendus tühistatud"
+
+msgid "Time-to-live expired"
+msgstr ""
+
+msgid "Command not supported by SOCKS server"
+msgstr "Käsk pole SOCKS-serveri poolt toetatud"
+
+msgid "Address type not supported by SOCKS server"
+msgstr "Aadressi liik pole SOCKS-serveri poolt toetatud"
+
+msgid "Unknown error from SOCKS server"
+msgstr "Tundmatu viga SOCKS-serverilt"
+
+#, c-format
+msgid "Got unknown address type from SOCKS server"
+msgstr ""
+
+#, c-format
+msgid "Incomplete reply from SOCKS server"
+msgstr "Mittetäielik vastus SOCKS-serverilt"
+
+#, c-format
+msgid "Hostname is too long (maximum is 255 characters)"
+msgstr "Hosti nimi on liiga pikk (suurim pikkus on 255 märki)"
+
+#. SOCKS5
+#. reserved - must be 0
+#, c-format
+msgid "Invalid reply from proxy server"
+msgstr "Vigane vastus proksi-serverilt"
 
 #, c-format
 msgid ""
@@ -1828,14 +2049,16 @@ msgstr ""
 msgid "Could not parse URL '%s'"
 msgstr "URL-i '%s' pole võimalik töödelda"
 
-#, c-format
-msgid "Error storing '%s': %s"
+#, fuzzy, c-format
+#| msgid "Error storing '%s': %s"
+msgid "Error storing '%s': "
 msgstr "Viga '%s' salvestamisel: %s"
 
 #, c-format
 msgid "No such message %s in %s"
 msgstr "Sõnumit %s ei ole %s seas"
 
+#, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Sõnumeid pole võimalik virtuaalkausta kopeerida või ümber tõsta"
 
@@ -1867,16 +2090,16 @@ msgstr ""
 msgid "No such message"
 msgstr "Sõnumit ei leitud"
 
-msgid "User canceled"
-msgstr "Kasutaja tühistas"
-
-#, c-format
-msgid "Cannot get message %s: %s"
+#, fuzzy, c-format
+#| msgid "Cannot get message %s: %s"
+msgid "Cannot get message %s: "
 msgstr "Sõnumit %s pole võimalik hankida: %s"
 
+#, c-format
 msgid "This message is not available in offline mode."
 msgstr "See sõnum pole võrguvabas režiimis kättesaadav."
 
+#, c-format
 msgid "Could not get message"
 msgstr "Sõnumit pole võimalik hankida"
 
@@ -1887,9 +2110,6 @@ msgstr "%s kokkuvõtet pole võimalik laadida"
 #, c-format
 msgid "Checking for deleted messages %s"
 msgstr "Kustutatud sõnumite kontroll: %s"
-
-msgid "Trash Folder Full. Please Empty."
-msgstr "Prügikaust on täis, palun tühjenda."
 
 #, c-format
 msgid "Fetching summary information for new messages in %s"
@@ -1907,12 +2127,14 @@ msgstr "Sõnumit pole võimalik luua: %s"
 msgid "Cannot get folder container %s"
 msgstr "Kausta konteinerit %s pole võimalik hankida"
 
+#, c-format
 msgid "Cannot append message in offline mode: cache unavailable"
 msgstr ""
 "Sõnumit pole võrguvabas režiimis võimalik lisada: puhvrit pole saadaval"
 
-#, c-format
-msgid "Cannot append message in offline mode: %s"
+#, fuzzy
+#| msgid "Cannot append message in offline mode: %s"
+msgid "Cannot append message in offline mode: "
 msgstr "Sõnumit pole võimalik võrguvabas režiimis lisada: %s"
 
 msgid "Checking for new mail"
@@ -1958,9 +2180,11 @@ msgid ""
 msgstr ""
 "See valik loob ühenduse GroupWise serveriga kasutades lihttekstilist parooli."
 
+#, c-format
 msgid "Host or user not available in url"
 msgstr "URL-is pole kasutajat või hostinime"
 
+#, c-format
 msgid "You did not enter a password."
 msgstr "Sa ei sisestanud parooli."
 
@@ -1972,9 +2196,16 @@ msgstr ""
 msgid "No such folder %s"
 msgstr "Kausta %s ei leitud"
 
+#, c-format
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "GroupWise kaustu pole võrguvabas režiimis võimalik luua."
 
+#, fuzzy, c-format
+#| msgid "Cannot delete folder '%s': Special folder"
+msgid "Cannot create a special system folder"
+msgstr "Kausta '%s' pole võimalik kustutada: see on erikaust"
+
+#, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "Emakausta alla pole lubatud alamkaustu luua"
 
@@ -1997,9 +2228,11 @@ msgstr "GroupWise posti saatmine %s kaudu"
 msgid "Sending Message"
 msgstr "Sõnumi saatmine"
 
+#, c-format
 msgid "Cannot get folder: Invalid operation on this store"
 msgstr "Kausta pole võimalik hankida: Selles hoidlas pole see toiming lubatud"
 
+#, c-format
 msgid ""
 "You have exceeded this account's storage limit. Your messages are queued in "
 "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
@@ -2013,12 +2246,15 @@ msgstr ""
 msgid "Could not send message: %s"
 msgstr "Sõnumit pole võimalik saata: %s"
 
+#, c-format
 msgid "No output stream"
 msgstr "Väljundvoogu pole"
 
+#, c-format
 msgid "No input stream"
 msgstr "Sisendvoogu pole"
 
+#, c-format
 msgid "Operation cancelled"
 msgstr "Toiming katkestatud"
 
@@ -2044,6 +2280,7 @@ msgstr "Ootamatu vastus IMAP serverilt: %s"
 msgid "IMAP command failed: %s"
 msgstr "IMAPi käsk nurjus: %s"
 
+#, c-format
 msgid "Server response ended too soon."
 msgstr "Serveri vastus lõppes liiga vara."
 
@@ -2066,18 +2303,9 @@ msgstr "Kataloogi %s pole võimalik luua: %s"
 msgid "Scanning for changed messages in %s"
 msgstr "Kausta %s läbivaatamine muudetud sõnumite leidmiseks"
 
-#, c-format
-msgid "Unexpected response status '%s' after APPEND command"
-msgstr "Vastuse ootamatu olek '%s' pärast käsku APPEND"
-
-msgid "No response on continuation after APPEND command"
-msgstr "Pärast käsku APPEND jäi jätkamise vastus saamata"
-
-msgid "Unknown error occurred during APPEND command!"
-msgstr "Tundmatu viga APPEND käsu täitmisel!"
-
-#, c-format
-msgid "Unable to retrieve message: %s"
+#, fuzzy
+#| msgid "Unable to retrieve message: %s"
+msgid "Unable to retrieve message: "
 msgstr "Sõnumit pole võimalik vastu võtta: %s"
 
 #, c-format
@@ -2087,6 +2315,7 @@ msgstr "Sõnumit ID-ga %s pole võimalik hankida: %s"
 msgid "No such message available."
 msgstr "See sõnum pole saadaval."
 
+#, c-format
 msgid "This message is not currently available"
 msgstr "See sõnum ei ole hetkel kättesaadav"
 
@@ -2098,19 +2327,27 @@ msgstr "Mittetäielik serveri vastus: sõnumi %d kohta ei tagastatud andmeid"
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Mittetäielik serveri vastus: sõnumile %d on UID määramata"
 
+#, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "Ei leia sõnumi sisu FETCH vastuses."
 
-#, c-format
-msgid "Could not open cache directory: %s"
+#, fuzzy
+#| msgid "Could not open cache directory: %s"
+msgid "Could not open cache directory: "
 msgstr "Puhvermälu kausta pole võimalik avada: %s "
 
 #, c-format
 msgid "Failed to cache message %s: %s"
 msgstr "Tõrge sõnumi %s puhverdamisel: %s"
 
-#, c-format
-msgid "Failed to cache %s: %s"
+#, fuzzy, c-format
+#| msgid "Failed to cache message %s: %s"
+msgid "Failed to cache message %s: "
+msgstr "Tõrge sõnumi %s puhverdamisel: %s"
+
+#, fuzzy, c-format
+#| msgid "Failed to cache %s: %s"
+msgid "Failed to cache %s: "
 msgstr "Tõrge %s puhverdamisel: %s"
 
 msgid "Checking for New Mail"
@@ -2174,21 +2411,27 @@ msgstr "Hostiga %s pole võimalik ühenduda: %s"
 msgid "SSL unavailable"
 msgstr "SSL ei ole saadaval"
 
-msgid "Connection cancelled"
-msgstr "Ühendus katkestatud"
+#, fuzzy, c-format
+#| msgid "Could not connect to %s: %s"
+msgid "Could not connect to %s: "
+msgstr "Hostiga %s pole võimalik ühenduda: %s"
 
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Tõrge turvatud ühendumisel IMAP serveriga %s: %s"
 
 msgid "STARTTLS not supported"
-msgstr "STARTTLS ei ole toetatud."
+msgstr "STARTTLS ei ole toetatud"
 
 msgid "SSL negotiations failed"
 msgstr "Tõrge SSL-läbirääkimistel"
 
 msgid "SSL is not available in this build"
 msgstr "SSL ei ole toetatud"
+
+#, c-format
+msgid "Connection cancelled"
+msgstr "Ühendus katkestatud"
 
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
@@ -2223,22 +2466,34 @@ msgstr "Kaustanimi \"%s\" on vigane, kuna see sisaldab märki \"%c\""
 
 #, c-format
 msgid "Cannot create folder '%s': folder exists."
-msgstr "Kausta '%s' pole võimalik luua: kaust on juba olemas"
+msgstr "Kausta '%s' pole võimalik luua: kaust on juba olemas."
 
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Tundmatu ülemkaust: %s"
 
+#, c-format
 msgid "Server unexpectedly disconnected"
 msgstr "Server katkestas ootamatult"
+
+#, fuzzy
+#| msgid "Server unexpectedly disconnected: %s"
+msgid "Server unexpectedly disconnected: "
+msgstr "Server katkestas ootamatult: %s"
 
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Kausta %s kokkuvõtet pole võimalik luua"
 
-#, c-format
-msgid "Could not create cache for %s"
+#, fuzzy, c-format
+#| msgid "Could not create cache for %s"
+msgid "Could not create cache for %s: "
 msgstr "%s puhverfaili pole võimalik luua"
+
+#, fuzzy
+#| msgid "Use I_dle if the server supports it"
+msgid "Use _Quick Resync if the server supports it"
+msgstr "Kui server toetab, kasutatakse _jõudeolekut"
 
 msgid "Use I_dle if the server supports it"
 msgstr "Kui server toetab, kasutatakse _jõudeolekut"
@@ -2255,9 +2510,45 @@ msgstr "Nimeruum:"
 msgid "IMAP+"
 msgstr "IMAP+"
 
-#, c-format
-msgid "Could not connect to %s (port %s): %s"
+#, fuzzy
+#| msgid "Error writing mail temp file: %s"
+msgid "Error writing to cache stream: "
+msgstr "Viga ajutise sõnumifaili kirjutamisel: %s"
+
+#, fuzzy, c-format
+#| msgid "Cannot authenticate user"
+msgid "Not authenticated"
+msgstr "Kasutajat pole võimalik autentida"
+
+#, fuzzy, c-format
+#| msgid "Could not connect to %s (port %s): %s"
+msgid "Could not connect to %s (port %s): "
 msgstr "Hostiga %s pole võimalik ühendust luua (port %s): %s"
+
+#, fuzzy
+#| msgid "Posting failed: %s"
+msgid "Closing tmp stream failed: "
+msgstr "Postitamine nurjus: %s"
+
+#, c-format
+msgid "Cannot create spool file: %s"
+msgstr ""
+
+msgid "Cannot create spool file: "
+msgstr ""
+
+#, c-format
+msgid "No such folder: %s"
+msgstr "Kausta ei leitud: %s"
+
+#, c-format
+msgid "Source stream returned no data"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "service unavailable"
+msgid "Source stream unavailable"
+msgstr "teenus pole saadaval"
 
 #, c-format
 msgid "~%s (%s)"
@@ -2265,7 +2556,7 @@ msgstr "~%s (%s)"
 
 #, c-format
 msgid "mailbox: %s (%s)"
-msgstr "postkast: %s (%s)"
+msgstr "kirjakast: %s (%s)"
 
 #, c-format
 msgid "%s (%s)"
@@ -2274,9 +2565,6 @@ msgstr "%s (%s)"
 msgid "Index message body data"
 msgstr "Sõnumite sisu indekseeritakse"
 
-#. Translators: The first %s is replaced with a message ID,
-#. the second %s is replaced with the folder path,
-#. the third %s is replaced with a detailed error string
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -2342,8 +2630,9 @@ msgstr "Hoidla juurikas '%s' ei ole tavaline kataloog"
 msgid "Cannot get folder: %s: %s"
 msgstr "Kausta pole võimalik hankida: %s: %s"
 
+#, c-format
 msgid "Local stores do not have an inbox"
-msgstr "Kohalik hoidla ei oma sisendkasti"
+msgstr "Kohalikud hoidlad ei oma sisendkasti"
 
 #, c-format
 msgid "Local mail file %s"
@@ -2365,21 +2654,21 @@ msgstr "Kausta indeksfaili '%s' pole võimalik kustutada: %s"
 msgid "Could not delete folder meta file '%s': %s"
 msgstr "Kausta üldistusfaili '%s' pole võimalik kustutada: %s"
 
+#, c-format
 msgid "Unable to add message to summary: unknown reason"
 msgstr "Sõnumit pole võimalik lisada kokkuvõttesse: tundmatu põhjus"
 
-msgid "Maildir append message canceled"
-msgstr "Sõnumi lisamine maildir kausta tühistatud"
+#, c-format
+msgid "Cannot append message to maildir folder: %s: "
+msgstr "Sõnumit pole võimalik maildir kausta lisada: %s"
 
 #, c-format
-msgid "Cannot append message to maildir folder: %s: %s"
-msgstr "Sõnumit pole võimalik maildir kausta lisada: %s: %s"
+msgid "Cannot get message %s from folder %s: "
+msgstr "Sõnumit %s pole võimalik kaustast %s hankida: "
 
-msgid "Invalid message contents"
-msgstr "Vigane sõnumi sisu"
-
-msgid "Cannot transfer message to destination folder"
-msgstr "Sõnumit pole võimalik sihtkausta üle viia"
+#, c-format
+msgid "Cannot transfer message to destination folder: %s"
+msgstr "Sõnumit pole võimalik sihtkausta üle viia: %s"
 
 #, c-format
 msgid "Cannot create folder '%s': %s"
@@ -2426,22 +2715,17 @@ msgid "Cannot create folder lock on %s: %s"
 msgstr "%s lukustamine nurjus: %s"
 
 #, c-format
-msgid "Cannot open mailbox: %s: %s\n"
-msgstr "Kirjakasti pole võimalik avada: %s: %s\n"
-
-msgid "Mail append canceled"
-msgstr "Sõnumi lisamine tühistatud"
+msgid "Cannot open mailbox: %s: "
+msgstr "Kirjakasti pole võimalik avada: %s"
 
 #, c-format
-msgid "Cannot append message to mbox file: %s: %s"
-msgstr "Sõnumit pole võimalik mbox faili lisada: %s: %s"
+msgid "Cannot append message to mbox file: %s: "
+msgstr "Sõnumit pole võimalik mbox faili lisada: %s"
 
 msgid "The folder appears to be irrecoverably corrupted."
 msgstr "Kaust tundub olevat pöördumatult rikutud."
 
-msgid "Message construction failed."
-msgstr "Tõrge sõnumi kokkupanekul."
-
+#, c-format
 msgid "Cannot create a folder by this name."
 msgstr "Sellise nimega kausta pole võimalik luua."
 
@@ -2471,7 +2755,7 @@ msgstr "Kausta kokkuvõttefaili '%s' pole võimalik kustutada: %s"
 
 #, c-format
 msgid "Cannot create directory '%s': %s."
-msgstr "Kataloogi '%s' pole võimalik luua: %s"
+msgstr "Kataloogi '%s' pole võimalik luua: %s."
 
 #, c-format
 msgid "Cannot create folder: %s: %s"
@@ -2480,6 +2764,7 @@ msgstr "Kausta %s pole võimalik luua: %s"
 msgid "Folder already exists"
 msgstr "Kaust on juba olemas"
 
+#, c-format
 msgid "The new folder name is illegal."
 msgstr "Uus kaustanimi on lubamatu."
 
@@ -2495,8 +2780,9 @@ msgstr "'%s' pole võimalik %s-ks ümber nimetada: %s"
 msgid "Could not open folder: %s: %s"
 msgstr "Kausta %s pole võimalik avada: %s"
 
-#, c-format
-msgid "Fatal mail parser error near position %ld in folder %s"
+#, fuzzy, c-format
+#| msgid "Fatal mail parser error near position %ld in folder %s"
+msgid "Fatal mail parser error near position %s in folder %s"
 msgstr "Sõnumiparsija saatuslik viga asukoha %ld ligidal kaustas %s"
 
 #, c-format
@@ -2527,6 +2813,13 @@ msgstr "Kataloogi pole võimalik ümber nimetada : %s"
 msgid "Could not store folder: %s"
 msgstr "Kausta pole võimalik salvestada: %s"
 
+#, c-format
+msgid ""
+"MBOX file is corrupted, please fix it. (Expected a From line, but didn't get "
+"it.)"
+msgstr ""
+
+#, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "Kokkuvõtte ja kausta ebavõrdlus, isegi pärast sünkroniseerimist"
 
@@ -2542,12 +2835,9 @@ msgstr "Tõrge ajutisse kirjakasti kirjutamisel: %s"
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Tõrge ajutisse kirjakasti kirjutamisel: %s: %s"
 
-msgid "MH append message canceled"
-msgstr "Sõnumi lisamine MH vormingus kausta tühistatud"
-
 #, c-format
-msgid "Cannot append message to mh folder: %s: %s"
-msgstr "Sõnumi lisamine MH vormingus kausta nurjus: %s: %s"
+msgid "Cannot append message to mh folder: %s: "
+msgstr "Sõnumi lisamine MH vormingus kausta nurjus: %s"
 
 #, c-format
 msgid "Could not create folder '%s': %s"
@@ -2597,6 +2887,7 @@ msgstr ""
 msgid "'%s' is not a mailbox file."
 msgstr "'%s' ei ole kirjakasti fail."
 
+#, c-format
 msgid "Store does not support an INBOX"
 msgstr "Hoidla ei toeta Sisendkasti"
 
@@ -2608,23 +2899,28 @@ msgstr "Sõnumi puhverfail %s"
 msgid "Spool folder tree %s"
 msgstr "Puhverkausta puu %s"
 
+#, c-format
 msgid "Spool folders cannot be renamed"
 msgstr "Puhverkaustu pole võimalik ümber nimetada"
 
+#, c-format
 msgid "Spool folders cannot be deleted"
 msgstr "Puhverkaustu pole võimalik kustutada"
 
 #, c-format
-msgid "Could not sync temporary folder %s: %s"
+msgid "Could not synchronize temporary folder %s: %s"
 msgstr "Ajutist kausta %s pole võimalik sünkroniseerida: %s"
 
 #, c-format
-msgid "Could not sync spool folder %s: %s"
+msgid "Could not synchronize spool folder %s: %s"
 msgstr "Puhverkausta %s pole võimalik sünkroniseerida: %s"
 
-#, c-format
+#, fuzzy, c-format
+#| msgid ""
+#| "Could not sync spool folder %s: %s\n"
+#| "Folder may be corrupt, copy saved in '%s'"
 msgid ""
-"Could not sync spool folder %s: %s\n"
+"Could not synchronize spool folder %s: %s\n"
 "Folder may be corrupt, copy saved in '%s'"
 msgstr ""
 "Puhverkausta %s pole võimalik sünkroniseerida: %s\n"
@@ -2634,16 +2930,24 @@ msgstr ""
 msgid "Internal error: UID in invalid format: %s"
 msgstr "Sisemine viga: UID on vigases vormingus: %s"
 
-msgid "User cancelled the operation"
-msgstr "Kasutaja tühistas toimingu"
+#, c-format
+msgid "Cannot get message %s: %s"
+msgstr "Sõnumit %s pole võimalik hankida: %s"
 
 #, c-format
 msgid "Posting failed: %s"
 msgstr "Postitamine nurjus: %s"
 
+#, fuzzy
+#| msgid "Posting failed: %s"
+msgid "Posting failed: "
+msgstr "Postitamine nurjus: %s"
+
+#, c-format
 msgid "You cannot post NNTP messages while working offline!"
 msgstr "Võrguvabas režiimis töötades pole võimalik NNTP sõnumeid postitada!"
 
+#, c-format
 msgid "You cannot copy messages from a NNTP folder!"
 msgstr "Sõnumeid pole võimalik NNTP kaustast kopeerida!"
 
@@ -2669,11 +2973,9 @@ msgid ""
 msgstr ""
 "See valik loob ühenduse NNTP serveriga kasutades lihttekstilist parooli."
 
-msgid "Connection canceled"
-msgstr "Ühendus tühistatud"
-
-#, c-format
-msgid "Could not read greeting from %s: %s"
+#, fuzzy, c-format
+#| msgid "Could not read greeting from %s: %s"
+msgid "Could not read greeting from %s: "
 msgstr "Tervitust pole võimalik %s'st lugeda: %s"
 
 #, c-format
@@ -2694,6 +2996,7 @@ msgstr ""
 "\n"
 "%s"
 
+#, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
@@ -2703,6 +3006,7 @@ msgstr ""
 "\n"
 "Sellist uudistegruppi pole olemas. Valitud kirje on arvatavasti vanemkirje."
 
+#, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
@@ -2712,19 +3016,23 @@ msgstr ""
 "\n"
 "Uudistegruppi pole olemas!"
 
+#, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
 "Sul pole uudistehoidlasse võimalik kausta luua, selle asemel telli omale "
 "kaust."
 
+#, c-format
 msgid "You cannot rename a folder in a News store."
 msgstr "Sul pole võimalik uudistegruppe ümber nimetada."
 
+#, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "Sul pole uudistehoidlast võimalik kausta kustutada, selle asemel loobu "
 "kausta tellimusest."
 
+#, c-format
 msgid "Authentication requested but no username provided"
 msgstr "Nõutakse autentimist, kuid kasutajanime pole määratud"
 
@@ -2732,16 +3040,12 @@ msgstr "Nõutakse autentimist, kuid kasutajanime pole määratud"
 msgid "Cannot authenticate to server: %s"
 msgstr "Serverisse pole võimalik autentida: %s"
 
-#, c-format
-msgid "NNTP Command failed: %s"
-msgstr "Tõrge NNTP käsu täitmisel: %s"
+msgid "NNTP Command failed: "
+msgstr "Tõrge NNTP käsu täitmisel: "
 
+#, c-format
 msgid "Not connected."
 msgstr "Ühendamata."
-
-#, c-format
-msgid "No such folder: %s"
-msgstr "Kausta ei leitud: %s"
 
 #, c-format
 msgid "%s: Scanning new messages"
@@ -2760,11 +3064,11 @@ msgid "Operation failed: %s"
 msgstr "Tõrge toimingu läbiviimisel: %s"
 
 msgid "Retrieving POP summary"
-msgstr "POP kokkuvõtte vastuvõtmine"
+msgstr "POP-kokkuvõtte vastuvõtmine"
 
 #, c-format
 msgid "Cannot get POP summary: %s"
-msgstr "POP kokkuvõtet pole võimalik hankida: %s"
+msgstr "POP-kokkuvõtet pole võimalik hankida: %s"
 
 msgid "Expunging old messages"
 msgstr "Vanade sõnumite hävitamine"
@@ -2780,7 +3084,7 @@ msgstr "Sõnumit UID-ga %s ei ole"
 #. returns the proper exception code.  Sigh.
 #, c-format
 msgid "Retrieving POP message %d"
-msgstr "POP sõnumi %d vastuvõtmine"
+msgstr "POP-sõnumi %d vastuvõtmine"
 
 msgid "Unknown reason"
 msgstr "Tundmatu põhjus"
@@ -2796,27 +3100,27 @@ msgid "_Delete after %s day(s)"
 msgstr "_Kustutatakse %s päeva möödumisel"
 
 msgid "Disable _support for all POP3 extensions"
-msgstr "Kõigi POP3 _laienduste toetus on keelatud"
+msgstr "Kõigi POP3-_laienduste toetus on keelatud"
 
 msgid "POP"
 msgstr "POP"
 
 msgid "For connecting to and downloading mail from POP servers."
-msgstr "E-posti laaditakse alla POP serverist"
+msgstr "E-posti laaditakse alla POP-serverist."
 
 msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
 msgstr ""
-"See valik loob ühenduse POP serveriga kasutades lihttekstilist parooli. See "
-"on ainus valik, mida toetavad paljud POP serverid."
+"See valik loob ühenduse POP-serveriga kasutades lihttekstilist parooli. See "
+"on ainus valik, mida toetavad paljud POP-serverid."
 
 msgid ""
 "This option will connect to the POP server using an encrypted password via "
 "the APOP protocol. This may not work for all users even on servers that "
 "claim to support it."
 msgstr ""
-"See valik loob ühenduse POP serveriga kasutades krüptitud parooli üle APOP "
+"See valik loob ühenduse POP-serveriga kasutades krüptitud parooli üle APOP-"
 "protokolli. See ei pruugi paljude kasutajate puhul töötada isegi "
 "serveritega, mis väidavad ennast seda protokolli toetavat."
 
@@ -2826,11 +3130,11 @@ msgstr ": "
 
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
-msgstr "Tõrge korrektse tervituse lugemisel POP serverilt %s"
+msgstr "Tõrge korrektse tervituse lugemisel POP-serverilt %s"
 
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
-msgstr "Tõrge turvatud ühendumisel POP serveriga %s: %s"
+msgstr "Tõrge turvatud ühendumisel POP-serveriga %s: %s"
 
 msgid "STLS not supported by server"
 msgstr "STLS pole serveri poolt toetatud"
@@ -2838,7 +3142,7 @@ msgstr "STLS pole serveri poolt toetatud"
 #. Translators: Last %s is an optional explanation beginning with ": " separator
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode%s"
-msgstr "Tõrge turvatud ühendumisel POP serveriga %s turvarežiimis%s"
+msgstr "Tõrge turvatud ühendumisel POP-serveriga %s turvarežiimis%s"
 
 msgid "TLS negotiations failed"
 msgstr "Tõrge TLS-läbirääkimistel"
@@ -2847,36 +3151,33 @@ msgid "TLS is not available in this build"
 msgstr "TLS ei ole selles variandis toetatud"
 
 #, c-format
-msgid "Could not connect to POP server %s"
-msgstr "POP serveriga %s pole võimalik ühenduda"
-
-#, c-format
 msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
 "mechanism."
 msgstr ""
-"POP serveriga %s pole võimalik ühenduda: Puudub nõutud autentimismehhanismi "
+"POP-serveriga %s pole võimalik ühenduda: Puudub nõutud autentimismehhanismi "
 "tugi."
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
 #, c-format
 msgid "SASL '%s' Login failed for POP server %s%s"
-msgstr "SASL '%s' tõrge sisselogimisel POP serverisse %s%s"
+msgstr "SASL '%s' tõrge sisselogimisel POP-serverisse %s%s"
 
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
-msgstr "POP serverisse %s pole võimalik sisse logida: SASL protokolli viga"
+msgstr "POP-serverisse %s pole võimalik sisse logida: SASL protokolli viga"
 
-#, c-format
-msgid "Failed to authenticate on POP server %s: %s"
-msgstr "Autentimine POP serverisse %s nurjus: %s"
+#, fuzzy, c-format
+#| msgid "Failed to authenticate on POP server %s: %s"
+msgid "Failed to authenticate on POP server %s: "
+msgstr "Autentimine POP-serverisse %s nurjus: %s"
 
 #, c-format
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
 "attack suspected. Please contact your admin."
 msgstr ""
-"POP serveriga %s pole võimalik ühenduda:\tVõeti vastu vigane APOP ID. On "
+"POP-serveriga %s pole võimalik ühenduda:\tVõeti vastu vigane APOP ID. On "
 "alust kahtlustada umbisikulist rünnet. Palun võta ühendust oma "
 "süsteemiülemaga."
 
@@ -2885,7 +3186,7 @@ msgid ""
 "Unable to connect to POP server %s.\n"
 "Error sending password: %s"
 msgstr ""
-"POP serveriga %s pole võimalik ühenduda.\n"
+"POP-serveriga %s pole võimalik ühenduda.\n"
 "Viga parooli saatmisel: %s"
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
@@ -2894,7 +3195,7 @@ msgid ""
 "Unable to connect to POP server %s.\n"
 "Error sending username%s"
 msgstr ""
-"POP serveriga %s pole võimalik ühenduda.\n"
+"POP-serveriga %s pole võimalik ühenduda.\n"
 "Tõrge kasutajanime saatmisel%s"
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
@@ -2903,12 +3204,28 @@ msgid ""
 "Unable to connect to POP server %s.\n"
 "Error sending password%s"
 msgstr ""
-"POP serveriga %s pole võimalik ühenduda.\n"
+"POP-serveriga %s pole võimalik ühenduda.\n"
 "Tõrge parooli saatmisel%s"
+
+#, c-format
+msgid "Could not connect to POP server %s"
+msgstr "POP-serveriga %s pole võimalik ühenduda"
+
+#, c-format
+msgid "POP3 server %s"
+msgstr "POP3-server %s"
+
+#, c-format
+msgid "POP3 server for %s on %s"
+msgstr "POP3-server kasutajale %s hostil %s"
 
 #, c-format
 msgid "No such folder '%s'."
 msgstr "Kausta '%s' pole olemas."
+
+#, c-format
+msgid "POP3 stores have no folder hierarchy"
+msgstr "POP3-hoidlatel puudub kaustade hierarhia"
 
 msgid "Sendmail"
 msgstr "Sendmail"
@@ -2918,6 +3235,7 @@ msgid ""
 "system."
 msgstr "E-posti saatmiseks kohaliku süsteemi programmi \"sendmail\" abil."
 
+#, c-format
 msgid "Could not parse recipient list"
 msgstr "Vastuvõtjate nimekirja pole võimalik analüüsida"
 
@@ -2929,6 +3247,11 @@ msgstr "Sendmaili toru pole võimalik luua: %s: sõnumit ei saadetud"
 msgid "Could not fork sendmail: %s: mail not sent"
 msgstr ""
 "Sendmail'i haruprotsessi pole võimalik tekitada: %s: e-kiri jäi saatmata"
+
+#, fuzzy
+#| msgid "Could not send message: %s"
+msgid "Could not send message: "
+msgstr "Sõnumit pole võimalik saata: %s"
 
 #, c-format
 msgid "sendmail exited with signal %s: mail not sent."
@@ -3026,19 +3349,17 @@ msgstr "Nõutud autentimismehhanismi jaoks on krüptimine vajalik"
 msgid "Temporary authentication failure"
 msgstr "Ajutine autentimise tõrge"
 
-msgid "Welcome response error"
+#, fuzzy
+#| msgid "Welcome response error"
+msgid "Welcome response error: "
 msgstr "Tervitusvastuse viga"
 
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
 msgstr "Tõrge turvatud ühendumisel SMTP serveriga %s: %s"
 
-#, c-format
-msgid "STARTTLS command failed: %s"
-msgstr "Tõrge STARTTLS käsu täitmisel: %s"
-
-msgid "STARTTLS command failed"
-msgstr "Tõrge STARTTLS käsu täitmisel"
+msgid "STARTTLS command failed: "
+msgstr "Tõrge STARTTLS käsu täitmisel: "
 
 #, c-format
 msgid "SMTP server %s does not support requested authentication type %s."
@@ -3062,82 +3383,64 @@ msgstr "SMTP server %s"
 msgid "SMTP mail delivery via %s"
 msgstr "SMTP posti saatmine %s kaudu"
 
+#, c-format
 msgid "Cannot send message: service not connected."
 msgstr "Sõnumit pole võimalik saata: teenus pole ühendatud."
 
+#, c-format
 msgid "Cannot send message: sender address not valid."
-msgstr "Sõnumit pole võimalik saata: saatja aadress on vigane"
+msgstr "Sõnumit pole võimalik saata: saatja aadress on vigane."
 
 msgid "Sending message"
 msgstr "Sõnumi saatmine"
 
+#, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "Sõnumit pole võimalik saata: saajate aadressid on määramata."
 
+#, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "Sõnumit pole võimalik saata: üks või enam adressaate on vigased"
 
 msgid "SMTP Greeting"
 msgstr "SMTP Tervitus"
 
-#, c-format
-msgid "HELO command failed: %s"
-msgstr "Tõrge HELO käsu täitmisel: %s"
-
-msgid "HELO command failed"
-msgstr "Tõrge HELO käsu täitmisel"
+msgid "HELO command failed: "
+msgstr "Tõrge HELO käsu täitmisel: "
 
 msgid "SMTP Authentication"
 msgstr "SMTP autentimine"
 
+#, c-format
 msgid "Error creating SASL authentication object."
 msgstr "Viga SASL autentimisobjekti loomisel."
 
-#, c-format
-msgid "AUTH command failed: %s"
-msgstr "Tõrge AUTH käsu täitmisel: %s"
+msgid "AUTH command failed: "
+msgstr "Tõrge AUTH käsu täitmisel: "
 
-msgid "AUTH command failed"
-msgstr "Tõrge AUTH käsu täitmisel"
-
-msgid "Bad authentication response from server.\n"
-msgstr "Halb autentimisvastus serverilt.\n"
-
-#, c-format
-msgid "MAIL FROM command failed: %s: mail not sent"
-msgstr "Tõrge MAIL FROM käsu täitmisel: %s: e-kiri jäi saatmata"
-
-msgid "MAIL FROM command failed"
+#, fuzzy
+#| msgid "MAIL FROM command failed"
+msgid "MAIL FROM command failed: "
 msgstr "Tõrge MAIL FROM käsu täitmisel"
 
-#, c-format
-msgid "RCPT TO command failed: %s: mail not sent"
-msgstr "Tõrge RCPT TO käsu täitmisel: %s: e-kiri jäi saatmata"
+msgid "RCPT TO command failed: "
+msgstr "Tõrge RSET TO käsu täitmisel: "
 
-#, c-format
-msgid "RCPT TO <%s> failed"
+#, fuzzy, c-format
+#| msgid "RCPT TO <%s> failed"
+msgid "RCPT TO <%s> failed: "
 msgstr "Tõrge RCPT TO <%s> käsu täitmisel"
 
-#, c-format
-msgid "DATA command failed: %s: mail not sent"
-msgstr "Tõrge DATA käsu täitmisel: %s: e-kiri jäi saatmata"
-
-msgid "DATA command failed"
+#, fuzzy
+#| msgid "DATA command failed"
+msgid "DATA command failed: "
 msgstr "Tõrge DATA käsu täitmisel"
 
-#, c-format
-msgid "RSET command failed: %s"
-msgstr "Tõrge RSET käsu täitmisel: %s"
+msgid "RSET command failed: "
+msgstr "Tõrge RSET käsu täitmisel: "
 
-msgid "RSET command failed"
-msgstr "Tõrge RSET käsu täitmisel"
-
-#, c-format
-msgid "QUIT command failed: %s"
-msgstr "Tõrge QUIT käsu täitmisel: %s"
-
-msgid "QUIT command failed"
-msgstr "Tõrge QUIT käsu täitmisel"
+msgid "QUIT command failed: "
+msgstr "Tõrge QUIT käsu täitmisel: "
 
 msgid "Business"
 msgstr "Äri"
@@ -3309,7 +3612,7 @@ msgid "%I %p"
 msgstr "%l %p"
 
 msgid "Accessing LDAP Server anonymously"
-msgstr "Anonüümne ligipääs LDAP serverile"
+msgstr "Anonüümne ligipääs LDAP-serverile"
 
 msgid "Failed to authenticate.\n"
 msgstr "Tõrge autentimisel.\n"
@@ -3459,6 +3762,89 @@ msgstr "Serverilt ei saabunud vastust"
 msgid "Bad parameter"
 msgstr "Vigane parameeter"
 
+#~ msgid "Cannot complete operation"
+#~ msgstr "Toimingut pole võimalik lõpule viia"
+
+#~ msgid "Offline mode unavailable"
+#~ msgstr "Võrguvaba režiim pole saadaval"
+
+#~ msgid "Cannot open message"
+#~ msgstr "Sõnumit pole võimalik avada"
+
+#~ msgid "Canceled."
+#~ msgstr "Tühistatud."
+
+#~ msgid "Cannot verify message signature: could not create temp file: %s"
+#~ msgstr ""
+#~ "Sõnumi signatuuri pole võimalik kontrollida: ajutist faili pole võimalik "
+#~ "luua: %s"
+
+#~ msgid "Unable to parse message content"
+#~ msgstr "Sõnumi sisu pole võimalik analüüsida"
+
+#~ msgid "cannot create thread"
+#~ msgstr "lõime pole võimalik luua"
+
+#~ msgid "User canceled"
+#~ msgstr "Kasutaja tühistas"
+
+#~ msgid "Trash Folder Full. Please Empty."
+#~ msgstr "Prügikaust on täis, palun tühjenda."
+
+#~ msgid "Unexpected response status '%s' after APPEND command"
+#~ msgstr "Vastuse ootamatu olek '%s' pärast käsku APPEND"
+
+#~ msgid "No response on continuation after APPEND command"
+#~ msgstr "Pärast käsku APPEND jäi jätkamise vastus saamata"
+
+#~ msgid "Unknown error occurred during APPEND command!"
+#~ msgstr "Tundmatu viga APPEND käsu täitmisel!"
+
+#~ msgid "Maildir append message canceled"
+#~ msgstr "Sõnumi lisamine maildir kausta tühistatud"
+
+#~ msgid "Invalid message contents"
+#~ msgstr "Vigane sõnumi sisu"
+
+#~ msgid "Mail append canceled"
+#~ msgstr "Sõnumi lisamine tühistatud"
+
+#~ msgid "Message construction failed."
+#~ msgstr "Tõrge sõnumi kokkupanekul."
+
+#~ msgid "MH append message canceled"
+#~ msgstr "Sõnumi lisamine MH vormingus kausta tühistatud"
+
+#~ msgid "User cancelled the operation"
+#~ msgstr "Kasutaja tühistas toimingu"
+
+#~ msgid "STARTTLS command failed"
+#~ msgstr "Tõrge STARTTLS käsu täitmisel"
+
+#~ msgid "HELO command failed"
+#~ msgstr "Tõrge HELO käsu täitmisel"
+
+#~ msgid "AUTH command failed"
+#~ msgstr "Tõrge AUTH käsu täitmisel"
+
+#~ msgid "Bad authentication response from server.\n"
+#~ msgstr "Halb autentimisvastus serverilt.\n"
+
+#~ msgid "MAIL FROM command failed: %s: mail not sent"
+#~ msgstr "Tõrge MAIL FROM käsu täitmisel: %s: e-kiri jäi saatmata"
+
+#~ msgid "RCPT TO command failed: %s: mail not sent"
+#~ msgstr "Tõrge RCPT TO käsu täitmisel: %s: e-kiri jäi saatmata"
+
+#~ msgid "DATA command failed: %s: mail not sent"
+#~ msgstr "Tõrge DATA käsu täitmisel: %s: e-kiri jäi saatmata"
+
+#~ msgid "RSET command failed"
+#~ msgstr "Tõrge RSET käsu täitmisel"
+
+#~ msgid "QUIT command failed"
+#~ msgstr "Tõrge QUIT käsu täitmisel"
+
 #~ msgid "Could not create thread for getting deltas"
 #~ msgstr "Deltade hankimise lõime pole võimalik luua"
 
@@ -3479,9 +3865,6 @@ msgstr "Vigane parameeter"
 
 #~ msgid "Cannot create folder: Invalid operation on this store"
 #~ msgstr "Kausta pole võimalik luua: selles hoidlas pole see toiming lubatud"
-
-#~ msgid "Namespace"
-#~ msgstr "Nimeruum"
 
 #~ msgid "Hula"
 #~ msgstr "Hula"
@@ -3511,9 +3894,6 @@ msgstr "Vigane parameeter"
 
 #~ msgid "Failed to send command to IMAP server %s: %s"
 #~ msgstr "Tõrge käsu saatmisel IMAP serverisse %s: %s"
-
-#~ msgid "service unavailable"
-#~ msgstr "teenus pole saadaval"
 
 #~ msgid "IMAP4 server %s unexpectedly disconnected: %s"
 #~ msgstr "Ühendus IMAP4 serverisse %s suleti ootamatult: %s"
@@ -3634,9 +4014,6 @@ msgstr "Vigane parameeter"
 
 #~ msgid "Cannot create folder '%s': Bad command"
 #~ msgstr "Kausta '%s' pole võimalik luua: puudulik käsk"
-
-#~ msgid "Cannot delete folder '%s': Special folder"
-#~ msgstr "Kausta '%s' pole võimalik kustutada: see on erikaust"
 
 #~ msgid "Cannot delete IMAP folders in offline mode."
 #~ msgstr "Võrguvabas režiimis pole võimalik IMAP kaustu kustutada."
