@@ -128,6 +128,7 @@ compare_intervals (time_t x_start, time_t x_end, time_t y_start, time_t y_end)
  * @x: Node, where will be applied the operation
  * 
  * Carry out left rotation on the node @x in tree @tree.
+ * Caller should hold the lock
  **/
 static void 
 left_rotate (EIntervalTree *tree, EIntervalNode *x)
@@ -170,6 +171,7 @@ left_rotate (EIntervalTree *tree, EIntervalNode *x)
  * @y: Node, where will be applied the operation
  * 
  * Carry out right rotation on the node @y in tree @tree.
+ * Caller should hold the lock
  **/
 static void
 right_rotate (EIntervalTree *tree, EIntervalNode *y)
@@ -217,6 +219,7 @@ fixup_min_max_fields (EIntervalTree *tree, EIntervalNode *node)
 	}
 }
 
+/* Caller should hold the lock */
 static void
 binary_tree_insert (EIntervalTree *tree, EIntervalNode *z)
 {
@@ -275,7 +278,8 @@ e_intervaltree_insert (EIntervalTree *tree, time_t start, time_t end, ECalCompon
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 
 	g_static_rec_mutex_lock (&priv->mutex);
-        x = g_new (EIntervalNode, 1); 
+        
+	x = g_new (EIntervalNode, 1); 
 	x->min = x->start = start;
 	x->max = x->end = end;
 	x->comp = g_object_ref (comp);
@@ -413,6 +417,7 @@ void e_intervaltree_destroy (EIntervalTree *tree)
 	g_object_unref (tree);
 }
 
+/* Caller should hold the lock */
 static void
 e_intervaltree_fixup_deletion (EIntervalTree *tree, EIntervalNode *x)
 {
@@ -585,7 +590,7 @@ e_intervaltree_dump (EIntervalTree *tree)
 
 
 /**
-  * FIXME
+  * Caller should hold the lock.	
  **/
 static EIntervalNode*
 e_intervaltree_search_component (EIntervalTree *tree,
@@ -628,6 +633,7 @@ e_intervaltree_remove (EIntervalTree *tree,
 	if (!z || z == nil)
 	{
 		g_message (G_STRLOC ": Cannot remove node - could not find node in tree\n");
+		g_static_rec_mutex_unlock (&priv->mutex);	
 		return FALSE;
 	}
 
@@ -697,21 +703,25 @@ static void
 e_intervaltree_finalize (GObject *object)
 {
 	EIntervalTreePrivate *priv = E_INTERVALTREE_GET_PRIVATE (object);
+	
 	if (priv->root) {
 		g_free (priv->root);
 		priv->root = NULL;
 	}
+	
 	if (priv->nil) {
 		g_free (priv->nil);
 		priv->nil = NULL;
 	}
+	
 	if (priv->id_node_hash) {
 		g_hash_table_destroy (priv->id_node_hash);
 		priv->id_node_hash = NULL;
 	}
+
 	g_static_rec_mutex_free (&priv->mutex);
+
 	G_OBJECT_CLASS (e_intervaltree_parent_class)->finalize (object);	
-	
 }
 
 static void
