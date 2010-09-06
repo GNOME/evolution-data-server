@@ -3556,6 +3556,7 @@ cleanup:
 		g_free(r->uid);
 	}
 	g_array_free(job->u.refresh_info.infos, TRUE);
+	camel_folder_change_info_free (job->u.refresh_info.changes);
 
 	imapx_job_done (is, job);
 	camel_imapx_command_free (ic);
@@ -3809,8 +3810,7 @@ imapx_command_fetch_new_messages_done (CamelIMAPXServer *is, CamelIMAPXCommand *
 	isum->uidnext = ifolder->uidnext_on_server;
 
 exception:
-	if (ic->job->noreply)
-		camel_folder_change_info_free(ic->job->u.refresh_info.changes);
+	camel_folder_change_info_free (ic->job->u.refresh_info.changes);
 
 	if (ic->job->op)
 		camel_operation_unref (ic->job->op);
