@@ -5045,6 +5045,7 @@ camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, Cam
 	CamelIMAPXJob *job;
 	CamelMessageInfo *info;
 	gint res;
+	gboolean success;
 
 	/* Append just assumes we have no/a dodgy connection.  We dump stuff into the 'new'
 	   directory, and let the summary know it's there.  Then we fire off a no-reply
@@ -5060,6 +5061,7 @@ camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, Cam
 			g_io_error_from_errno (errno),
 			_("Cannot create spool file: %s"),
 			g_strerror (errno));
+		g_free (uid);
 		return FALSE;
 	}
 
@@ -5075,14 +5077,15 @@ camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, Cam
 	if (res == -1) {
 		g_prefix_error (error, _("Cannot create spool file: "));
 		camel_data_cache_remove (ifolder->cache, "new", uid, NULL);
+		g_free (uid);
 		return FALSE;
 	}
 
 	tmp = camel_data_cache_get_filename (ifolder->cache, "new", uid, NULL);
 	info = camel_folder_summary_info_new_from_message((CamelFolderSummary *)folder->summary, message, NULL);
-	info->uid = uid;
+	info->uid = camel_pstring_strdup (uid);
 	((CamelMessageInfoBase *) info)->flags = ((CamelMessageInfoBase *) mi)->flags;
-	uid = NULL;
+	g_free (uid);
 
 	/* So, we actually just want to let the server loop that
 	   messages need appending, i think.  This is so the same
@@ -5094,10 +5097,15 @@ camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, Cam
 	job->type = IMAPX_JOB_APPEND_MESSAGE;
 	job->start = imapx_job_append_message_start;
 	job->folder = g_object_ref (folder);
+	job->noreply = FALSE;
 	job->u.append_message.info = info;
 	job->u.append_message.path = tmp;
 
-	return imapx_submit_job (is, job, error);
+	success = imapx_submit_job (is, job, error);
+
+	g_free (job);
+
+	return success;
 }
 
 gboolean
