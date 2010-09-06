@@ -907,6 +907,65 @@ array_to_list (gshort *array, gint max_elements)
 	return g_list_reverse (l);
 }
 
+/** 
+ * e_cal_recur_get_enddate
+ * 
+ * @ir: RRULE or EXRULE recurrence 
+ * @prop: An RRULE or EXRULE #icalproperty. 
+ * @zone: The DTSTART timezone, used for converting the UNTIL property if it
+ * is given as a DATE value.
+ * @convert_end_date: TRUE if the saved end date needs to be converted to the
+ * given @zone timezone. This is needed if the DTSTART is a DATE or floating
+ * time.
+ * 
+ * @return End timepoint of giben event
+ *
+ * Finds out end time of (reccurent) event.
+ */
+time_t
+e_cal_recur_obtain_enddate (struct icalrecurrencetype *ir, icalproperty *prop,
+          icaltimezone *zone, gboolean convert_end_date)
+{
+	time_t enddate = -1;
+
+	g_return_val_if_fail (prop != NULL, 0);
+	g_return_val_if_fail (ir != NULL, 0);
+
+	if (ir->count != 0) {
+		/* If COUNT is set, we use the pre-calculated enddate.
+		Note that this can be 0 if the RULE doesn't actually
+		generate COUNT instances. */
+		enddate = e_cal_recur_get_rule_end_date (prop, convert_end_date ? zone : NULL);
+	} else {
+		if (icaltime_is_null_time (ir->until)) {
+			/* If neither COUNT or UNTIL is set, the event
+			recurs forever. */
+		} else if (ir->until.is_date) {
+			/* If UNTIL is a DATE, we stop at the end of
+			the day, in local time (with the DTSTART timezone).
+			Note that UNTIL is inclusive so we stop before
+			midnight. */
+			ir->until.hour = 23;
+			ir->until.minute = 59;
+			ir->until.second = 59;
+			ir->until.is_date = FALSE;
+
+			enddate = icaltime_as_timet_with_zone (ir->until, zone);
+#if 0
+	g_print ("  until: %li - %s", r->enddate, ctime (&r->enddate));
+#endif
+
+		} else {
+		/* If UNTIL is a DATE-TIME, it must be in UTC. */
+		icaltimezone *utc_zone;
+		utc_zone = icaltimezone_get_utc_timezone ();
+		enddate = icaltime_as_timet_with_zone (ir->until, utc_zone);
+		}
+	}
+
+	return enddate;
+}
+
 /**
  * e_cal_recur_from_icalproperty:
  * @prop: An RRULE or EXRULE #icalproperty.
@@ -943,40 +1002,7 @@ e_cal_recur_from_icalproperty (icalproperty *prop, gboolean exception,
 	r->freq = ir.freq;
 	r->interval = ir.interval;
 
-	if (ir.count != 0) {
-		/* If COUNT is set, we use the pre-calculated enddate.
-		   Note that this can be 0 if the RULE doesn't actually
-		   generate COUNT instances. */
-		r->enddate = e_cal_recur_get_rule_end_date (prop, convert_end_date ? zone : NULL);
-	} else {
-		if (icaltime_is_null_time (ir.until)) {
-			/* If neither COUNT or UNTIL is set, the event
-			   recurs forever. */
-			r->enddate = 0;
-		} else if (ir.until.is_date) {
-			/* If UNTIL is a DATE, we stop at the end of
-			   the day, in local time (with the DTSTART timezone).
-			   Note that UNTIL is inclusive so we stop before
-			   midnight. */
-			ir.until.hour = 23;
-			ir.until.minute = 59;
-			ir.until.second = 59;
-			ir.until.is_date = FALSE;
-
-			r->enddate = icaltime_as_timet_with_zone (ir.until,
-								  zone);
-#if 0
-			g_print ("  until: %li - %s", r->enddate, ctime (&r->enddate));
-#endif
-
-		} else {
-			/* If UNTIL is a DATE-TIME, it must be in UTC. */
-			icaltimezone *utc_zone;
-			utc_zone = icaltimezone_get_utc_timezone ();
-			r->enddate = icaltime_as_timet_with_zone (ir.until,
-								  utc_zone);
-		}
-	}
+  r->enddate = e_cal_recur_obtain_enddate (&ir, prop, zone, convert_end_date);
 
 	r->week_start_day = e_cal_recur_ical_weekday_to_weekday (ir.week_start);
 

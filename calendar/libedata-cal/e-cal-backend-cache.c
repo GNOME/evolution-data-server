@@ -29,6 +29,7 @@
 #include <libecal/e-cal-util.h>
 #include <libedataserver/e-data-server-util.h>
 #include "e-cal-backend-cache.h"
+#include "e-cal-backend-intervaltree.h"
 
 #define E_CAL_BACKEND_CACHE_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -36,6 +37,7 @@
 
 struct _ECalBackendCachePrivate {
 	GHashTable *timezones;
+	EIntervalTree *intervaltree;
 };
 
 G_DEFINE_TYPE (ECalBackendCache, e_cal_backend_cache, E_TYPE_FILE_CACHE)
@@ -46,7 +48,10 @@ e_cal_backend_cache_finalize (GObject *object)
 	ECalBackendCachePrivate *priv;
 
 	priv = E_CAL_BACKEND_CACHE_GET_PRIVATE (object);
-
+	if (priv->intervaltree) {
+		e_intervaltree_destroy (priv->intervaltree);
+		priv->intervaltree = NULL;
+	}
 	g_hash_table_destroy (priv->timezones);
 
 	/* Chain up to parent's finalize() method. */
@@ -79,6 +84,8 @@ e_cal_backend_cache_init (ECalBackendCache *cache)
 		g_str_hash, g_str_equal,
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) timezones_value_destroy);
+
+	cache->priv->intervaltree = e_intervaltree_new ();
 }
 
 /**
@@ -174,12 +181,14 @@ e_cal_backend_cache_get_component (ECalBackendCache *cache, const gchar *uid, co
  */
 gboolean
 e_cal_backend_cache_put_component (ECalBackendCache *cache,
-				   ECalComponent *comp)
+				   ECalComponent *comp,
+				   time_t occurence_start,
+				   time_t occurence_end)
 {
 	gchar *real_key, *uid, *comp_str;
 	gchar *rid;
 	gboolean retval;
-
+	ECalBackendCachePrivate *priv = cache->priv;
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 
@@ -196,6 +205,8 @@ e_cal_backend_cache_put_component (ECalBackendCache *cache,
 		retval = e_file_cache_replace_object (E_FILE_CACHE (cache), real_key, comp_str);
 	else
 		retval = e_file_cache_add_object (E_FILE_CACHE (cache), real_key, comp_str);
+
+	e_intervaltree_insert (priv->intervaltree, occurence_start, occurence_end, comp);
 
 	g_free (real_key);
 	g_free (comp_str);
@@ -237,6 +248,9 @@ e_cal_backend_cache_remove_component (ECalBackendCache *cache,
 
 	retval = e_file_cache_remove_object (E_FILE_CACHE (cache), real_key);
 	g_free (real_key);
+
+	if (retval)
+		retval = e_intervaltree_remove (priv->intervaltree, uid, rid);
 
 	return retval;
 }
@@ -289,6 +303,47 @@ e_cal_backend_cache_get_components (ECalBackendCache *cache)
 
         return list;
 }
+
+/**
+ * e_cal_backend_cache_get_components_occuring_in_range:
+ * @cache: An #ECalBackendCache object.
+ * @start:
+ * @end:
+ *
+ * Retrieves a list of components stored in the cache, that are occuring
+ * in time range [start, end].
+ *
+ * Return value: A list of the components. Each item in the list is
+ * an #ECalComponent, which should be freed when no longer needed.
+ */
+GList *
+e_cal_backend_cache_get_components_occuring_in_range (ECalBackendCache *cache, time_t start, time_t end)
+{
+        GList *l;
+        GList *list = NULL;
+	icalcomponent *icalcomp;
+	ECalBackendCachePrivate *priv;
+	/* return null if cache is not a valid Backend Cache.  */
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
+	priv = cache->priv;
+	if (!(l = e_intervaltree_search (priv->intervaltree, start, end)))
+		return NULL;
+
+	for ( ; l != NULL; l = g_list_next (l)) {
+		ECalComponent *comp = l->data;
+		icalcomp = e_cal_component_get_icalcomponent (comp);
+		if (icalcomp) {
+			icalcomponent_kind kind;
+			kind = icalcomponent_isa (icalcomp);
+			if (kind == ICAL_VEVENT_COMPONENT || kind == ICAL_VTODO_COMPONENT || kind == ICAL_VJOURNAL_COMPONENT) {
+				list = g_list_prepend (list, comp);
+			}
+		}
+	}
+        return list;
+}
+
+
 
 /**
  * e_cal_backend_cache_get_components_by_uid:

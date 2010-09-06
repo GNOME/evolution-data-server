@@ -20,7 +20,7 @@
  */
 
 #include "e-cal-backend-store.h"
-
+#include "e-cal-backend-intervaltree.h"
 #include <libedataserver/e-data-server-util.h>
 
 #define E_CAL_BACKEND_STORE_GET_PRIVATE(obj) \
@@ -29,6 +29,7 @@
 
 struct _ECalBackendStorePrivate {
 	gchar *path;
+	EIntervalTree *intervaltree;
 	gboolean loaded;
 };
 
@@ -91,6 +92,10 @@ cal_backend_store_finalize (GObject *object)
 	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (object);
 
 	g_free (priv->path);
+	if (priv->intervaltree) {
+		e_intervaltree_destroy (priv->intervaltree);
+		priv->intervaltree = NULL;
+	}
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_store_parent_class)->finalize (object);
@@ -123,7 +128,10 @@ e_cal_backend_store_class_init (ECalBackendStoreClass *class)
 static void
 e_cal_backend_store_init (ECalBackendStore *store)
 {
-	store->priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
+	ECalBackendStorePrivate *priv;
+	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
+	store->priv = priv;
+	priv->intervaltree = e_intervaltree_new ();
 }
 
 /**
@@ -169,7 +177,13 @@ e_cal_backend_store_load (ECalBackendStore *store)
 gboolean
 e_cal_backend_store_remove (ECalBackendStore *store)
 {
+	ECalBackendStorePrivate *priv;
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
+
+	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
+	/* remove interval tree */
+	e_intervaltree_destroy (priv->intervaltree);
+	priv->intervaltree = NULL;
 
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->remove (store);
 }
@@ -182,7 +196,15 @@ e_cal_backend_store_remove (ECalBackendStore *store)
 gboolean
 e_cal_backend_store_clean (ECalBackendStore *store)
 {
+	ECalBackendStorePrivate *priv;
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
+
+	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
+
+	if (priv->intervaltree) {
+		e_intervaltree_destroy (priv->intervaltree);
+		priv->intervaltree = e_intervaltree_new ();
+	}	
 
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->clean (store);
 }
@@ -221,13 +243,20 @@ e_cal_backend_store_has_component (ECalBackendStore *store, const gchar *uid, co
  * Since: 2.28
  **/
 gboolean
-e_cal_backend_store_put_component (ECalBackendStore *store, ECalComponent *comp)
+e_cal_backend_store_put_component (ECalBackendStore *store, ECalComponent *comp, time_t occurence_start, time_t occurence_end)
 {
+	ECalBackendStorePrivate *priv;
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->put_component (store, comp);
-}
+	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
+
+	if ((E_CAL_BACKEND_STORE_GET_CLASS (store))->put_component (store, comp)) {
+		e_intervaltree_insert (priv->intervaltree, occurence_start, occurence_end, comp);
+		return TRUE;
+	}
+	return FALSE;
+}	
 
 /**
  * e_cal_backend_store_remove_component:
@@ -237,10 +266,17 @@ e_cal_backend_store_put_component (ECalBackendStore *store, ECalComponent *comp)
 gboolean
 e_cal_backend_store_remove_component (ECalBackendStore *store, const gchar *uid, const gchar *rid)
 {
+	ECalBackendStorePrivate *priv;
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
+	
+	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->remove_component (store, uid, rid);
+	if ((E_CAL_BACKEND_STORE_GET_CLASS (store))->remove_component (store, uid, rid)) {
+		e_intervaltree_remove (priv->intervaltree, uid, rid);
+		return TRUE;
+	}
+	return FALSE;
 }
 
 /**
@@ -335,9 +371,53 @@ GSList *
 e_cal_backend_store_get_components (ECalBackendStore *store)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
-
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_components (store);
 }
+
+/**
+ * e_cal_backend_store_get_components_occuring_in_range:
+ * @store: An #ECalBackendStore object.
+ * @start:
+ * @end:
+ *
+ * Retrieves a list of components stored in the store, that are occuring
+ * in time range [start, end].
+ *
+ * Return value: A list of the components. Each item in the list is
+ * an #ECalComponent, which should be freed when no longer needed.
+ */
+GSList *
+e_cal_backend_store_get_components_occuring_in_range (ECalBackendStore *store, time_t start, time_t end)
+{
+	ECalBackendStorePrivate *priv;
+	GList *l;
+	GSList *list = NULL;
+	icalcomponent *icalcomp;
+
+	g_return_val_if_fail (store != NULL, NULL);
+	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
+	
+	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
+
+	if (!(l = e_intervaltree_search (priv->intervaltree, start, end)))
+                return NULL;
+
+	for ( ; l != NULL; l = g_list_next (l)) {
+		ECalComponent *comp = l->data;
+		icalcomp = e_cal_component_get_icalcomponent (comp);
+		if (icalcomp) {
+			icalcomponent_kind kind;
+
+			kind = icalcomponent_isa (icalcomp);
+			if (kind == ICAL_VEVENT_COMPONENT || kind == ICAL_VTODO_COMPONENT || kind == ICAL_VJOURNAL_COMPONENT) {
+				list = g_slist_prepend (list, comp);
+			}
+		}
+	}
+
+	return list;
+}
+
 
 /**
  * e_cal_backend_store_get_component_ids:

@@ -31,7 +31,7 @@
 #include <unistd.h>
 
 #include <glib-object.h>
-
+#include <libedataserver/e-debug-log.h>
 #include "e-data-cal.h"
 #include "e-data-cal-enumtypes.h"
 #include "e-gdbus-egdbuscal.h"
@@ -479,11 +479,15 @@ impl_Cal_getQuery (EGdbusCal *object, GDBusMethodInvocation *invocation, const g
 	}
 
 	query = e_data_cal_view_new (cal->priv->backend, obj_sexp);
+	e_debug_log (FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES, "%p;%p;NEW;%s;%s", cal, query, sexp, G_OBJECT_TYPE_NAME (cal->priv->backend));
 	if (!query) {
 		g_object_unref (obj_sexp);
 		e_data_cal_notify_query (cal, invocation, EDC_ERROR (OtherError), NULL);
 		return TRUE;
 	}
+
+	/* log query to evaluate cache performance */
+	e_debug_log (FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES, "%p;%p;REUSED;%s;%s", cal, query, sexp, G_OBJECT_TYPE_NAME (cal->priv->backend));
 
 	path = construct_calview_path ();
 	e_data_cal_view_register_gdbus_object (query, g_dbus_method_invocation_get_connection (invocation), path, &error);

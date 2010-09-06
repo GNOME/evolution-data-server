@@ -139,6 +139,30 @@ maybe_start_reload_timeout (ECalBackendWeather *cbw)
 
 }
 
+static icaltimezone *
+resolve_tzid (const char *tzid, gpointer user_data)
+{
+	return (!strcmp (tzid, "UTC"))
+		? icaltimezone_get_utc_timezone ()
+		: icaltimezone_get_builtin_timezone_from_tzid (tzid);
+}
+
+static void
+put_component_to_store (ECalBackendWeather *cb,
+			ECalComponent *comp)
+{
+	time_t time_start, time_end;
+	ECalBackendWeatherPrivate *priv;
+
+	priv = cb->priv;
+
+	get_component_occur_times (comp, &time_start, &time_end,
+				   resolve_tzid, NULL, priv->default_zone,
+				   e_cal_backend_get_kind (E_CAL_BACKEND (cb)));
+
+	e_cal_backend_store_put_component (priv->store, comp, time_start, time_end);
+}
+
 static void
 finished_retrieval_cb (WeatherInfo *info, ECalBackendWeather *cbw)
 {
@@ -157,6 +181,7 @@ finished_retrieval_cb (WeatherInfo *info, ECalBackendWeather *cbw)
 
 	/* update cache */
 	l = e_cal_backend_store_get_components (priv->store);
+
 	for (; l != NULL; l = g_slist_next (l)) {
 		ECalComponentId *id;
 		gchar *obj;
@@ -181,7 +206,7 @@ finished_retrieval_cb (WeatherInfo *info, ECalBackendWeather *cbw)
 	if (comp) {
 		GSList *forecasts;
 
-		e_cal_backend_store_put_component (priv->store, comp);
+		put_component_to_store (cbw, comp);
 		icomp = e_cal_component_get_icalcomponent (comp);
 		obj = icalcomponent_as_ical_string_r (icomp);
 		e_cal_backend_notify_object_created (E_CAL_BACKEND (cbw), obj);
@@ -199,7 +224,7 @@ finished_retrieval_cb (WeatherInfo *info, ECalBackendWeather *cbw)
 				if (nfo) {
 					comp = create_weather (cbw, nfo, TRUE);
 					if (comp) {
-						e_cal_backend_store_put_component (priv->store, comp);
+						put_component_to_store (cbw, comp);
 						icomp = e_cal_component_get_icalcomponent (comp);
 						obj = icalcomponent_as_ical_string_r (icomp);
 						e_cal_backend_notify_object_created (E_CAL_BACKEND (cbw), obj);
@@ -487,6 +512,7 @@ e_cal_backend_weather_open (ECalBackendSync *backend, EDataCal *cal, gboolean on
 			g_propagate_error (perror, EDC_ERROR_EX (OtherError, _("Could not create cache file")));
 			return;
 		}
+	/* do we require to load this new store*/	
 		e_cal_backend_store_load (priv->store);
 
 		if (priv->default_zone) {
@@ -589,6 +615,8 @@ e_cal_backend_weather_get_object_list (ECalBackendSync *backend, EDataCal *cal, 
 	ECalBackendWeatherPrivate *priv = cbw->priv;
 	ECalBackendSExp *sexp = e_cal_backend_sexp_new (sexp_string);
 	GSList *components, *l;
+	time_t occur_start = -1, occur_end = -1;
+	gboolean prunning_by_time;
 
 	if (!sexp) {
 		g_propagate_error (perror, EDC_ERROR (InvalidQuery));
@@ -597,6 +625,14 @@ e_cal_backend_weather_get_object_list (ECalBackendSync *backend, EDataCal *cal, 
 
 	*objects = NULL;
 	components = e_cal_backend_store_get_components (priv->store);
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times(sexp,
+									    &occur_start,
+									    &occur_end);
+
+	components = prunning_by_time ?
+		e_cal_backend_store_get_components_occuring_in_range (priv->store, occur_start, occur_end)
+		: e_cal_backend_store_get_components (priv->store);
+
 	for (l = components; l != NULL; l = g_slist_next (l)) {
 		if (e_cal_backend_sexp_match_comp (sexp, E_CAL_COMPONENT (l->data), E_CAL_BACKEND (backend)))
 			*objects = g_list_append (*objects, e_cal_component_get_as_string (l->data));
@@ -717,6 +753,8 @@ static void e_cal_backend_weather_start_query (ECalBackend *backend, EDataCalVie
 	GSList *components, *l;
 	GList *objects;
 	GError *error;
+	time_t occur_start = -1, occur_end = -1;
+	gboolean prunning_by_time;
 
 	cbw = E_CAL_BACKEND_WEATHER (backend);
 	priv = cbw->priv;
@@ -737,9 +775,13 @@ static void e_cal_backend_weather_start_query (ECalBackend *backend, EDataCalVie
 	}
 
 	objects = NULL;
-	components = e_cal_backend_store_get_components (priv->store);
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times(sexp, &occur_start, &occur_end);
+	components = prunning_by_time ?
+		e_cal_backend_store_get_components_occuring_in_range (priv->store, occur_start, occur_end)
+		: e_cal_backend_store_get_components (priv->store);
+
 	for (l = components; l != NULL; l = g_slist_next (l)) {
-		if (e_cal_backend_sexp_match_comp (sexp, E_CAL_COMPONENT (l->data), backend))
+	 	if (e_cal_backend_sexp_match_comp (sexp, E_CAL_COMPONENT (l->data), backend))
 			objects = g_list_append (objects, e_cal_component_get_as_string (l->data));
 	}
 

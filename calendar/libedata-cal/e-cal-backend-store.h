@@ -82,6 +82,7 @@ struct _ECalBackendStoreClass {
 	GSList *	(*get_components_by_uid)(ECalBackendStore *store,
 						 const gchar *uid);
 	GSList *	(*get_components)	(ECalBackendStore *store);
+
 	GSList *	(*get_component_ids)	(ECalBackendStore *store);
 	const icaltimezone *
 			(*get_timezone)		(ECalBackendStore *store,
@@ -115,7 +116,9 @@ ECalComponent *	e_cal_backend_store_get_component
 						 const gchar *rid);
 gboolean	e_cal_backend_store_put_component
 						(ECalBackendStore *store,
-						 ECalComponent *comp);
+						 ECalComponent *comp,
+						 time_t occurence_start,
+						 time_t occurence_end);
 gboolean	e_cal_backend_store_remove_component
 						(ECalBackendStore *store,
 						 const gchar *uid,
@@ -143,6 +146,10 @@ GSList *	e_cal_backend_store_get_components_by_uid
 						 const gchar *uid);
 GSList *	e_cal_backend_store_get_components
 						(ECalBackendStore *store);
+GSList *	e_cal_backend_store_get_components_occuring_in_range 
+						(ECalBackendStore *store, 
+						 time_t start, 
+						 time_t end);
 GSList *	e_cal_backend_store_get_component_ids
 						(ECalBackendStore *store);
 const gchar *	e_cal_backend_store_get_key_value

@@ -27,6 +27,7 @@ libedataserver_1_2_la_SOURCES =		\
 	e-source-group.c		\
 	e-source-list.c			\
 	e-source.c			\
+	e-debug-log.c			\
 	e-time-utils.c			\
 	e-uid.c				\
 	e-url.c				\
@@ -61,6 +62,7 @@ libedataserverinclude_HEADERS =		\
 	e-source-group.h		\
 	e-source-list.h			\
 	e-source.h			\
+	e-debug-log.h			\
 	e-time-utils.h			\
 	e-uid.h				\
 	e-url.h				\

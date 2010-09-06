@@ -28,7 +28,8 @@
 #include "e-cal-util.h"
 #include "e-cal-system-timezone.h"
 
-
+#define _TIME_MIN	((time_t) 0)		/* Min valid time_t	*/
+#define _TIME_MAX	((time_t) INT_MAX)
 
 /**
  * cal_obj_instance_list_free:
@@ -423,6 +424,7 @@ add_alarm_occurrences_cb (ECalComponent *comp, time_t start, time_t end, gpointe
 
 	return TRUE;
 }
+
 
 /* Generates the absolute triggers for a component */
 static void
@@ -1166,3 +1168,162 @@ e_cal_util_get_system_timezone (void)
 
 	return zone;
 }
+
+static time_t
+componenttime_to_utc_timet (const ECalComponentDateTime* dt_time,
+			    ECalRecurResolveTimezoneFn tz_cb,
+			    gpointer tz_cb_data,
+			    const icaltimezone *default_zone)
+{
+	time_t timet = -1;
+	icaltimezone *zone = NULL;
+
+	g_return_val_if_fail (dt_time != NULL, -1);
+
+	if (dt_time->value) {
+		if (dt_time->tzid)
+			zone = tz_cb(dt_time->tzid, tz_cb_data);
+
+		// zone = icaltimezone_get_utc_timezone ();
+		timet = icaltime_as_timet_with_zone (*dt_time->value, zone ? zone : default_zone);
+	}
+
+
+	return timet;
+}
+
+/**
+ * Find out, when the component starts and stops. Be careful about recurrences.
+ */
+void
+get_component_occur_times (ECalComponent *comp,
+			   time_t* start,
+			   time_t* end,
+			   ECalRecurResolveTimezoneFn tz_cb,
+			   gpointer tz_cb_data,
+			   const icaltimezone *default_timezone,
+			   icalcomponent_kind kind)
+{
+	struct icalrecurrencetype ir;
+	ECalComponentDateTime dt_start, dt_end;
+	GSList *rrules = NULL, *exrules = NULL, *elem, *rdates = NULL;
+
+	g_return_if_fail (comp != NULL);
+	g_return_if_fail (start != NULL);
+	g_return_if_fail (end != NULL);
+
+	/* Get dtstart of the component and convert it to UTC */
+	e_cal_component_get_dtstart (comp, &dt_start);
+
+	if ( (*start = componenttime_to_utc_timet (&dt_start, tz_cb, tz_cb_data, default_timezone)) == -1)
+		*start = _TIME_MIN;
+
+	e_cal_component_free_datetime (&dt_start);
+
+	/* find out end date of component */
+	*end = _TIME_MAX;
+
+	if (kind == ICAL_VTODO_COMPONENT) {
+		/* max from COMPLETED and DUE properties */
+		struct icaltimetype *tt = NULL;
+		time_t completed_time = -1, due_time = -1, max_time;
+		ECalComponentDateTime dt_due;
+
+		e_cal_component_get_completed (comp, &tt);
+		if (tt) {
+			/* COMPLETED must be in UTC. */
+			completed_time = icaltime_as_timet_with_zone (*tt,
+								      icaltimezone_get_utc_timezone());
+			e_cal_component_free_icaltimetype (tt);
+		}
+
+		e_cal_component_get_due (comp, &dt_due);
+		if(dt_due.value != NULL)
+			due_time = componenttime_to_utc_timet (&dt_due, tz_cb, tz_cb_data,
+							       default_timezone);
+
+		e_cal_component_free_datetime (&dt_due);
+
+		max_time = MAX(completed_time, due_time);
+
+		if (max_time != -1)
+			*end = max_time;
+
+	} else {
+		/* ALARMS, EVENTS: DTEND and reccurences */
+
+		if (e_cal_component_has_recurrences (comp)) {
+			/* Do the RRULEs, EXRULEs and RDATEs*/
+			e_cal_component_get_rrule_property_list (comp, &rrules);
+			e_cal_component_get_exrule_property_list (comp, &exrules);
+			e_cal_component_get_rdate_list (comp, &rdates);
+
+			for (elem = rrules; elem; elem = elem->next) {
+				time_t rule_end;
+				icaltimezone *utc_zone;
+				icalproperty *prop = elem->data;
+				ir = icalproperty_get_rrule (prop);
+
+				utc_zone = icaltimezone_get_utc_timezone ();
+				rule_end = e_cal_recur_obtain_enddate (&ir, prop, utc_zone, TRUE);
+
+				if (rule_end == -1) /* repeats forever */
+					*end = -1;
+				else if (rule_end > *end) /* new maximum */
+					*end = rule_end;
+			}
+
+			/* Do the EXRULEs. */
+			for (elem = exrules; elem; elem = elem->next) {
+				icalproperty *prop = elem->data;
+				time_t rule_end;
+				icaltimezone *utc_zone;
+				ir = icalproperty_get_exrule (prop);
+
+				utc_zone = icaltimezone_get_utc_timezone ();
+				rule_end =
+					e_cal_recur_obtain_enddate (&ir, prop, utc_zone, TRUE);
+
+				if (rule_end == -1) /* repeats forever */
+					*end = _TIME_MAX;
+				else if (rule_end > *end)
+					*end = rule_end;
+			}
+
+			/* Do the RDATEs */
+			for (elem = rdates; elem; elem = elem->next) {
+				ECalComponentPeriod *p = elem->data;
+				time_t rdate_end = _TIME_MAX;
+
+				/* FIXME: We currently assume RDATEs are in the same timezone
+				   as DTSTART. We should get the RDATE timezone and convert
+				   to the DTSTART timezone first. */
+
+				/* Check if the end date or duration is set, libical seems to set
+				   second to -1 to denote an unset time */
+				if (p->type != E_CAL_COMPONENT_PERIOD_DATETIME || p->u.end.second != -1)
+					rdate_end = icaltime_as_timet (icaltime_add(p->start, p->u.duration));
+				else
+					rdate_end = icaltime_as_timet (p->u.end);
+
+				if (rdate_end == -1) /* repeats forever */
+					*end = _TIME_MAX;
+				else if (rdate_end > *end)
+					*end = rdate_end;
+			}
+		}
+
+		/* Get dtend of the component and convert it to UTC */
+		e_cal_component_get_dtend (comp, &dt_end);
+
+		if (dt_end.value) {
+			time_t dtend_time = componenttime_to_utc_timet (&dt_end, tz_cb, tz_cb_data, default_timezone);
+
+			if (dtend_time == -1 || (dtend_time > *end))
+				*end = dtend_time;
+		}
+
+		e_cal_component_free_datetime (&dt_end);
+	}
+}
+

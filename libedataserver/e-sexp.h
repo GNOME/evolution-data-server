@@ -57,6 +57,9 @@ struct _ESExpResult {
 		gint boolean;
 		time_t time;
 	} value;
+	gboolean time_generator;
+	time_t occuring_start;
+	time_t occuring_end;
 };
 
 typedef struct _ESExpResult *(ESExpFunc)(struct _ESExp *sexp, gint argc,
@@ -173,6 +176,7 @@ const gchar     *e_sexp_error		(struct _ESExp *f);
 
 ESExpTerm * e_sexp_parse_value(ESExp *f);
 
+gboolean	e_sexp_evaluate_occur_times	(ESExp *f, time_t *start, time_t *end);
 G_END_DECLS
 
 #endif /* _E_SEXP_H */

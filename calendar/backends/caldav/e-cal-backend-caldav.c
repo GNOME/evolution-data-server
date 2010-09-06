@@ -266,6 +266,31 @@ caldav_debug_setup (SoupSession *session)
 	g_object_unref (logger);
 }
 
+static icaltimezone *
+resolve_tzid (const char *tzid, gpointer user_data)
+{
+	return (!strcmp (tzid, "UTC"))
+		? icaltimezone_get_utc_timezone ()
+		: icaltimezone_get_builtin_timezone_from_tzid (tzid);
+}
+
+static gboolean 
+put_component_to_store (ECalBackendCalDAV *cbdav,
+			ECalComponent *comp)
+{
+	time_t time_start, time_end;
+	ECalBackendCalDAVPrivate *priv;
+
+	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+
+	get_component_occur_times (comp, &time_start, &time_end,
+				   resolve_tzid, NULL,  icaltimezone_get_utc_timezone (),
+				   e_cal_backend_get_kind (E_CAL_BACKEND (cbdav)));
+
+	return e_cal_backend_store_put_component (priv->store, comp, time_start, time_end);
+}
+
+
 static ECalBackendSyncClass *parent_class = NULL;
 
 static icaltimezone *caldav_internal_get_default_timezone (ECalBackend *backend);
@@ -1873,7 +1898,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
 										g_free (nc_rid);
 									}
 
-									e_cal_backend_store_put_component (priv->store, new_comp);
+									put_component_to_store (cbdav, new_comp);
 
 									if (old_comp == NULL) {
 										gchar *new_str = e_cal_component_get_as_string (new_comp);
@@ -2594,7 +2619,7 @@ put_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp, const gcha
 				if (etag)
 					ecalcomp_set_etag (comp, etag);
 
-				if (e_cal_backend_store_put_component (priv->store, comp))
+				if (put_component_to_store (cbdav, comp))
 					res = TRUE;
 			}
 		}
@@ -2607,7 +2632,7 @@ put_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp, const gcha
 			if (etag)
 				ecalcomp_set_etag (comp, etag);
 
-			res = e_cal_backend_store_put_component (priv->store, comp);
+			res = put_component_to_store (cbdav, comp);
 		}
 	}
 
@@ -3974,6 +3999,8 @@ caldav_get_object_list (ECalBackendSync  *backend,
 	ECalBackend *bkend;
 	gboolean                  do_search;
 	GSList			 *list, *iter;
+	time_t occur_start = -1, occur_end = -1;
+	gboolean prunning_by_time;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
@@ -3993,7 +4020,15 @@ caldav_get_object_list (ECalBackendSync  *backend,
 
 	*objects = NULL;
 
-	list = e_cal_backend_store_get_components (priv->store);
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times(sexp,
+									    &occur_start,
+									    &occur_end);
+
+	bkend = E_CAL_BACKEND (backend);
+
+	list = prunning_by_time ?
+		e_cal_backend_store_get_components_occuring_in_range (priv->store, occur_start, occur_end)
+		: e_cal_backend_store_get_components (priv->store);
 
 	bkend = E_CAL_BACKEND (backend);
 
@@ -4023,7 +4058,8 @@ caldav_start_query (ECalBackend  *backend,
 	gboolean                  do_search;
 	GSList			 *list, *iter;
 	const gchar               *sexp_string;
-
+	time_t occur_start = -1, occur_end = -1;
+	gboolean prunning_by_time;
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
@@ -4037,10 +4073,16 @@ caldav_start_query (ECalBackend  *backend,
 	} else {
 		do_search = TRUE;
 	}
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times(sexp,
+									    &occur_start,
+									    &occur_end);
 
-	list = e_cal_backend_store_get_components (priv->store);
 
 	bkend = E_CAL_BACKEND (backend);
+
+	list = prunning_by_time ?
+		e_cal_backend_store_get_components_occuring_in_range (priv->store, occur_start, occur_end)
+		: e_cal_backend_store_get_components (priv->store);
 
 	for (iter = list; iter; iter = g_slist_next (iter)) {
 		ECalComponent *comp = E_CAL_COMPONENT (iter->data);

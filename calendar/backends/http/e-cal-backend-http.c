@@ -274,6 +274,36 @@ empty_cache (ECalBackendHttp *cbhttp)
 	e_cal_backend_store_clean (priv->store);
 }
 
+static icaltimezone *
+resolve_tzid (const char *tzid, gpointer user_data)
+{
+        icalcomponent *vcalendar_comp = user_data;
+
+        if (!tzid || !tzid[0])
+                return NULL;
+        else if (!strcmp (tzid, "UTC"))
+                return icaltimezone_get_utc_timezone ();
+
+        return icalcomponent_get_timezone (vcalendar_comp, tzid);
+}
+
+static void
+put_component_to_store (ECalBackendHttp *cb,
+			ECalComponent *comp)
+{
+	time_t time_start, time_end;
+	ECalBackendHttpPrivate *priv;
+
+	priv = cb->priv;
+
+	get_component_occur_times (comp, &time_start, &time_end,
+				   resolve_tzid, NULL, priv->default_zone,
+				   e_cal_backend_get_kind (E_CAL_BACKEND (cb)));
+
+	e_cal_backend_store_put_component (priv->store, comp, time_start, time_end);
+}
+
+
 static void
 retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 {
@@ -397,8 +427,7 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 				const gchar *uid, *orig_key, *orig_value;
 				gchar *obj;
 
-				e_cal_backend_store_put_component (priv->store, comp);
-
+				put_component_to_store (cbhttp, comp);
 				e_cal_component_get_uid (comp, &uid);
 				/* middle (gpointer) cast only because of 'dereferencing type-punned pointer will break strict-aliasing rules' */
 				if (g_hash_table_lookup_extended (old_cache, uid, (gpointer *)(gpointer)&orig_key, (gpointer *)(gpointer)&orig_value)) {
@@ -907,6 +936,8 @@ e_cal_backend_http_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 	ECalBackendHttpPrivate *priv;
 	GSList *components, *l;
 	ECalBackendSExp *cbsexp;
+	time_t occur_start = -1, occur_end = -1;
+	gboolean prunning_by_time;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
@@ -920,7 +951,14 @@ e_cal_backend_http_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 	cbsexp = e_cal_backend_sexp_new (sexp);
 
 	*objects = NULL;
-	components = e_cal_backend_store_get_components (priv->store);
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times(cbsexp,
+									    &occur_start,
+									    &occur_end);
+
+	components = prunning_by_time ?
+		e_cal_backend_store_get_components_occuring_in_range (priv->store, occur_start, occur_end)
+		: e_cal_backend_store_get_components (priv->store);
+
 	for (l = components; l != NULL; l = g_slist_next (l)) {
 		if (e_cal_backend_sexp_match_comp (cbsexp, E_CAL_COMPONENT (l->data), E_CAL_BACKEND (backend))) {
 			*objects = g_list_append (*objects, e_cal_component_get_as_string (l->data));
@@ -941,6 +979,8 @@ e_cal_backend_http_start_query (ECalBackend *backend, EDataCalView *query)
 	GSList *components, *l;
 	GList *objects = NULL;
 	ECalBackendSExp *cbsexp;
+	time_t occur_start = -1, occur_end = -1;
+	gboolean prunning_by_time; 
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
@@ -958,7 +998,14 @@ e_cal_backend_http_start_query (ECalBackend *backend, EDataCalView *query)
 	cbsexp = e_cal_backend_sexp_new (e_data_cal_view_get_text (query));
 
 	objects = NULL;
-	components = e_cal_backend_store_get_components (priv->store);
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times(cbsexp,
+									    &occur_start,
+									    &occur_end);
+
+	components = prunning_by_time ?
+		e_cal_backend_store_get_components_occuring_in_range (priv->store, occur_start, occur_end)
+		: e_cal_backend_store_get_components (priv->store);
+
 	for (l = components; l != NULL; l = g_slist_next (l)) {
 		if (e_cal_backend_sexp_match_comp (cbsexp, E_CAL_COMPONENT (l->data), E_CAL_BACKEND (backend))) {
 			objects = g_list_append (objects, e_cal_component_get_as_string (l->data));
@@ -976,7 +1023,7 @@ e_cal_backend_http_start_query (ECalBackend *backend, EDataCalView *query)
 	e_data_cal_view_notify_done (query, NULL /* Success */);
 }
 
-static icaltimezone *
+/***** static icaltimezone *
 resolve_tzid (const gchar *tzid, gpointer user_data)
 {
         icalcomponent *vcalendar_comp = user_data;
@@ -987,7 +1034,7 @@ resolve_tzid (const gchar *tzid, gpointer user_data)
                 return icaltimezone_get_utc_timezone ();
 
         return icalcomponent_get_timezone (vcalendar_comp, tzid);
-}
+} *****/
 
 static gboolean
 free_busy_instance (ECalComponent *comp,

@@ -7,6 +7,7 @@ ENUM_GENERATED = e-data-cal-enumtypes.h e-data-cal-enumtypes.c
 
 # The libraray
 lib_LTLIBRARIES = libedata-cal-1.2.la
+noinst_PROGRAMS = test-e-sexp test-intervaltree test-intervaltree-coverage
 
 libedata_cal_1_2_la_CPPFLAGS = 			\
 	$(AM_CPPFLAGS)				\
@@ -25,6 +26,7 @@ libedata_cal_1_2_la_SOURCES =		\
 	e-cal-backend.c			\
 	e-cal-backend-cache.c		\
 	e-cal-backend-factory.c		\
+	e-cal-backend-intervaltree.c	\
 	e-cal-backend-sexp.c		\
 	e-cal-backend-sync.c		\
 	e-cal-backend-util.c		\
@@ -41,7 +43,7 @@ libedata_cal_1_2_la_LIBADD =					\
 	$(LIBICAL_LIBS)						\
 	$(EVOLUTION_CALENDAR_LIBS)
 
-libedata_cal_1_2_la_LDFLAGS = 								\
+libedata_cal_1_2_la_LDFLAGS =								\
 	-version-info $(LIBEDATACAL_CURRENT):$(LIBEDATACAL_REVISION):$(LIBEDATACAL_AGE) $(NO_UNDEFINED)
 
 libedata_calincludedir = $(privincludedir)/libedata-cal
@@ -51,6 +53,7 @@ libedata_calinclude_HEADERS = 		\
 	e-cal-backend.h			\
 	e-cal-backend-cache.h		\
 	e-cal-backend-factory.h		\
+	e-cal-backend-intervaltree.h	\
 	e-cal-backend-sync.h		\
 	e-cal-backend-util.h		\
 	e-cal-backend-sexp.h		\
@@ -63,6 +66,56 @@ libedata_calinclude_HEADERS = 		\
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@
+
+test_e_sexp_SOURCES = e-cal-backend-sexp.c e-cal-backend-sexp.h
+test_e_sexp_CPPFLAGS = \
+	$(AM_CPPFLAGS)				\
+	-I$(top_srcdir)/calendar		\
+	-I$(top_builddir)/calendar		\
+	$(EVOLUTION_CALENDAR_CFLAGS)		\
+	-DTESTER=1
+
+test_e_sexp_LDADD = libedata-cal-1.2.la $(E_DATA_SERVER_LIBS)
+
+test_intervaltree_SOURCES = test-intervaltree.c e-cal-backend-intervaltree.c
+
+test_intervaltree_CPPFLAGS = \
+	$(AM_CPPFLAGS)				\
+	-I$(top_srcdir)/calendar		\
+	-I$(top_builddir)/calendar		\
+	$(EVOLUTION_CALENDAR_CFLAGS)
+
+test_intervaltree_LDADD = \
+	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
+	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la		\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la			\
+	$(EVOLUTION_CALENDAR_LIBS)
+
+test_intervaltree_coverage_SOURCES = test-intervaltree.c e-cal-backend-intervaltree.c
+
+test_intervaltree_coverage_CPPFLAGS = \
+	$(AM_CPPFLAGS)				\
+	-I$(top_srcdir)/calendar		\
+	-I$(top_builddir)/calendar		\
+	$(EVOLUTION_CALENDAR_CFLAGS)
+
+test_intervaltree_coverage_LDADD = \
+	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
+	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la		\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la			\
+	$(EVOLUTION_CALENDAR_LIBS)						\
+	-lgcov
+
+.PHONY: coverage
+coverage: 
+	mkdir -p ./coverage
+	lcov --directory . --zerocounters
+	./test-intervaltree-coverage
+	lcov --directory . --capture --output-file ./coverage/*.info
+	genhtml -o ./coverage --legend --num-spaces 2 ./coverage/*.info
+
+clean-local:
+	rm -f *.gcda *.gcno
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libedata-cal-$(API_VERSION).pc

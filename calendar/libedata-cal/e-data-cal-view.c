@@ -29,7 +29,7 @@
 #include <glib.h>
 
 #include <glib-object.h>
-
+#include <libedataserver/e-debug-log.h>
 #include "e-cal-backend-sexp.h"
 #include "e-data-cal-view.h"
 #include "e-gdbus-egdbuscalview.h"
@@ -305,6 +305,7 @@ impl_DataCalView_start (EGdbusCalView *object, GDBusMethodInvocation *invocation
 
 	if (!priv->started) {
 		priv->started = TRUE;
+		e_debug_log(FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES, "---;%p;QUERY-START;%s;%s", query, e_data_cal_view_get_text (query), G_OBJECT_TYPE_NAME(priv->backend));
 		e_cal_backend_start_query (priv->backend, query);
 	}
 

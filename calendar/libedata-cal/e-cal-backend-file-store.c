@@ -23,6 +23,7 @@
 #include "e-cal-backend-file-store.h"
 #include "libebackend/e-file-cache.h"
 #include <glib/gstdio.h>
+#include "libecal/e-cal-util.c" 
 
 #define CACHE_FILE_NAME "calendar.ics"
 #define KEY_FILE_NAME "keys.xml"
@@ -117,11 +118,9 @@ put_component (ECalBackendFileStore *fstore, ECalComponent *comp)
 		g_warning ("The component does not have a valid uid \n");
 		return FALSE;
 	}
-
+	
 	g_static_rw_lock_writer_lock (&priv->lock);
-
 	obj = g_hash_table_lookup (priv->comp_uid_hash, uid);
-
 	if (obj == NULL) {
 		obj = create_new_full_object ();
 		g_hash_table_insert (priv->comp_uid_hash, g_strdup (uid), obj);
@@ -132,14 +131,13 @@ put_component (ECalBackendFileStore *fstore, ECalComponent *comp)
 			g_object_unref (obj->comp);
 
 		obj->comp = comp;
-		g_object_ref (comp);
 	} else {
 		gchar *rid = e_cal_component_get_recurid_as_string (comp);
 
-		g_object_ref (comp);
 		g_hash_table_insert (obj->recurrences, rid, comp);
 	}
 
+	g_object_ref (comp);
 	g_static_rw_lock_writer_unlock (&priv->lock);
 
 	return TRUE;
@@ -156,7 +154,7 @@ remove_component (ECalBackendFileStore *fstore, const gchar *uid, const gchar *r
 	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
 
 	g_static_rw_lock_writer_lock (&priv->lock);
-
+	
 	obj = g_hash_table_lookup (priv->comp_uid_hash, uid);
 	if (obj == NULL) {
 		ret_val = FALSE;
@@ -173,10 +171,12 @@ remove_component (ECalBackendFileStore *fstore, const gchar *uid, const gchar *r
 
 	if (remove_completely)
 		g_hash_table_remove (priv->comp_uid_hash, uid);
-
+	
 end:
 	g_static_rw_lock_writer_unlock (&priv->lock);
+	
 	return ret_val;
+		
 }
 
 static ECalComponent *
@@ -608,11 +608,36 @@ add_timezone (ECalBackendFileStore *fstore, icalcomponent *vtzcomp)
 	g_static_rw_lock_writer_unlock (&priv->lock);
 }
 
-static void
-scan_vcalendar (ECalBackendFileStore *fstore, icalcomponent *top_icalcomp)
+static icaltimezone *
+resolve_tzid (const char *tzid, gpointer user_data)
 {
+	return (!strcmp (tzid, "UTC"))
+		? icaltimezone_get_utc_timezone ()
+		: icaltimezone_get_builtin_timezone_from_tzid (tzid);
+}
+
+/*static icaltimezone * 
+get_zone (icalcomponent *icalcomp)
+{
+	icalproperty *prop;
+	icaltimezone *zone;
+	const gchar *tzid;
+	prop = icalcomponent_get_first_property (icalcomp, ICAL_TZID_PROPERTY);
+	if (!prop)
+		return NULL;
+	tzid = icalproperty_get_tzid (prop);
+	zone = icalcomponent_get_timezone (icalcomp, tzid);
+	return zone;
+} */
+
+
+static void
+scan_vcalendar (ECalBackendStore *store, icalcomponent *top_icalcomp)
+{
+	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
 	icalcompiter iter;
+	time_t time_start, time_end;
 
 	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
 
@@ -622,7 +647,6 @@ scan_vcalendar (ECalBackendFileStore *fstore, icalcomponent *top_icalcomp)
 		icalcomponent *icalcomp;
 		icalcomponent_kind kind;
 		ECalComponent *comp;
-
 		icalcomp = icalcompiter_deref (&iter);
 
 		kind = icalcomponent_isa (icalcomp);
@@ -644,8 +668,10 @@ scan_vcalendar (ECalBackendFileStore *fstore, icalcomponent *top_icalcomp)
 			g_object_unref (comp);
 			continue;
 		}
+		get_component_occur_times (comp, &time_start, &time_end,
+						resolve_tzid, NULL, NULL, kind);
 
-		put_component (fstore, comp);
+		e_cal_backend_store_put_component (store, comp, time_start, time_end);
 
 		g_object_unref (comp);
 	}
@@ -664,7 +690,7 @@ e_cal_backend_file_store_load (ECalBackendStore *store)
 		return FALSE;
 
 	/* Parse keys */
-	priv->keys_cache = e_file_cache_new (priv->key_file_name);
+	//priv->keys_cache = e_file_cache_new (priv->key_file_name);
 
 	/* Parse components */
 	icalcomp = e_cal_util_parse_ics_file (priv->cache_file_name);
@@ -676,8 +702,7 @@ e_cal_backend_file_store_load (ECalBackendStore *store)
 
 		return FALSE;
 	}
-
-	scan_vcalendar (fstore, icalcomp);
+	scan_vcalendar (store, icalcomp);
 	icalcomponent_free (icalcomp);
 
 	return TRUE;
@@ -881,6 +906,7 @@ cal_backend_file_store_constructed (GObject *object)
 	path = e_cal_backend_store_get_path (E_CAL_BACKEND_STORE (object));
 	priv->cache_file_name = g_build_filename (path, CACHE_FILE_NAME, NULL);
 	priv->key_file_name = g_build_filename (path, KEY_FILE_NAME, NULL);
+	priv->keys_cache = e_file_cache_new (priv->key_file_name);
 }
 
 static void

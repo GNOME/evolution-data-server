@@ -191,6 +191,30 @@ get_element_type (icalcomponent_kind kind)
 
 }
 
+static icaltimezone *
+resolve_tzid (const char *tzid, gpointer user_data)
+{
+	return (!strcmp (tzid, "UTC"))
+		? icaltimezone_get_utc_timezone ()
+		: icaltimezone_get_builtin_timezone_from_tzid (tzid);
+}
+
+static void
+put_component_to_store (ECalBackendGroupwise *cbgw,
+			ECalComponent *comp)
+{
+	time_t time_start, time_end;
+	ECalBackendGroupwisePrivate *priv;
+
+	priv = cbgw->priv;
+
+	get_component_occur_times (comp, &time_start, &time_end,
+				   resolve_tzid, NULL, priv->default_zone,
+				   e_cal_backend_get_kind (E_CAL_BACKEND (cbgw)));
+
+	e_cal_backend_store_put_component (priv->store, comp, time_start, time_end);
+}
+
 /* Initialy populate the cache from the server */
 static EGwConnectionStatus
 populate_cache (ECalBackendGroupwise *cbgw)
@@ -302,7 +326,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 					comp_str = e_cal_component_get_as_string (comp);
 					e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), (const gchar *) comp_str);
 					g_free (comp_str);
-					e_cal_backend_store_put_component (priv->store, comp);
+					put_component_to_store (cbgw, comp);
 					g_object_unref (comp);
 				}
 				g_free (progress_string);
@@ -503,7 +527,7 @@ get_deltas (gpointer handle)
 			g_free (modif_comp_str);
 			g_free (cache_comp_str);
 			cache_comp_str = NULL;
-			e_cal_backend_store_put_component (store, modified_comp);
+			put_component_to_store (cbgw, modified_comp);
 		}
 
 		e_cal_component_free_icaltimetype (tt);
@@ -653,8 +677,7 @@ get_deltas (gpointer handle)
 			comp = e_gw_item_to_cal_component (item, cbgw);
 			if (comp) {
 				e_cal_component_commit_sequence (comp);
-				e_cal_backend_store_put_component (store, comp);
-
+				put_component_to_store (cbgw, comp);
 				if (kind == icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
 					tmp = e_cal_component_get_as_string (comp);
 					e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), tmp);
@@ -1344,6 +1367,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 			}
 		}
 
+		e_cal_backend_store_load (priv->store);
 		PRIV_UNLOCK (priv);
 		return;
 	}
@@ -1594,6 +1618,8 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
         GSList *components, *l;
 	ECalBackendSExp *cbsexp;
 	gboolean search_needed = TRUE;
+	time_t occur_start = -1, occur_end = -1;
+	gboolean prunning_by_time;
 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
@@ -1611,8 +1637,15 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 	}
 
 	*objects = NULL;
-	components = e_cal_backend_store_get_components (priv->store);
-        for (l = components; l != NULL; l = l->next) {
+		
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times(cbsexp,
+									    &occur_start,
+									    &occur_end);
+	components = prunning_by_time ?
+		e_cal_backend_store_get_components_occuring_in_range (priv->store, occur_start, occur_end)
+		: e_cal_backend_store_get_components (priv->store);
+
+	for (l = components; l != NULL; l = l->next) {
                 ECalComponent *comp = E_CAL_COMPONENT (l->data);
 
 		if (e_cal_backend_get_kind (E_CAL_BACKEND (backend)) ==
@@ -1873,7 +1906,7 @@ update_from_server (ECalBackendGroupwise *cbgw, GSList *uid_list, gchar **calobj
 		item = (EGwItem *) tmp->data;
 		e_cal_comp = e_gw_item_to_cal_component (item, cbgw);
 		e_cal_component_commit_sequence (e_cal_comp);
-		e_cal_backend_store_put_component (priv->store, e_cal_comp);
+		put_component_to_store (cbgw, e_cal_comp);
 
 		if (i == 0) {
 			*calobj = e_cal_component_get_as_string (e_cal_comp);
@@ -2089,7 +2122,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 				return;
 			}
 
-			e_cal_backend_store_put_component (priv->store, comp);
+			put_component_to_store (cbgw, comp);
 			*new_object = e_cal_component_get_as_string (comp);
 			break;
 		}
@@ -2121,7 +2154,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 					g_propagate_error (error, EDC_ERROR_FAILED_STATUS (OtherError, status));
 					return;
 				}
-				e_cal_backend_store_put_component (priv->store, comp);
+				put_component_to_store (cbgw, comp);
 				break;
 			}
 		}
@@ -2145,7 +2178,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 
 	case CAL_MODE_LOCAL :
 		/* in offline mode, we just update the cache */
-		e_cal_backend_store_put_component (priv->store, comp);
+		put_component_to_store (cbgw, comp);
 		break;
 	default :
 		break;
@@ -2521,8 +2554,7 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 				change_status (component, pstatus, e_gw_connection_get_user_email (priv->cnc));
 				e_cal_component_get_transparency (comp, &transp);
 				e_cal_component_set_transparency (component, transp);
-
-				e_cal_backend_store_put_component (priv->store, component);
+				put_component_to_store (cbgw, comp);
 				comp_str = e_cal_component_get_as_string (component);
 
 				if (found)
