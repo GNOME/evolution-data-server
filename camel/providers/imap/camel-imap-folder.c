@@ -753,7 +753,7 @@ imap_refresh_info (CamelFolder *folder,
 	 * should do it.  */
 	camel_service_lock (CAMEL_SERVICE (imap_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
-	if (camel_application_is_exiting  || !camel_imap_store_connected(imap_store, error))
+	if (camel_application_is_exiting  || !camel_imap_store_connected(imap_store, &local_error))
 		goto done;
 
 	/* try to store local changes first, as the summary contains new local messages */

@@ -242,8 +242,13 @@ _set_errno_from_pr_error (gint pr_code)
 void
 _set_g_error_from_errno (GError **error, gboolean eintr_means_cancelled)
 {
+	gint errn = errno;
+
+	if (error)
+		g_clear_error (error);
+
 	/* This is stolen from camel_read() / camel_write() */
-	if (eintr_means_cancelled && errno == EINTR)
+	if (eintr_means_cancelled && errn == EINTR)
 		g_set_error (
 			error, G_IO_ERROR,
 			G_IO_ERROR_CANCELLED,
@@ -251,8 +256,8 @@ _set_g_error_from_errno (GError **error, gboolean eintr_means_cancelled)
 	else
 		g_set_error (
 			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			"%s", g_strerror (errno));
+			g_io_error_from_errno (errn),
+			"%s", g_strerror (errn));
 }
 
 static gssize
