@@ -224,6 +224,8 @@ folder_summary_finalize (GObject *object)
 	g_hash_table_foreach(summary->priv->filter_charset, free_o_name, NULL);
 	g_hash_table_destroy(summary->priv->filter_charset);
 
+	g_hash_table_destroy (summary->priv->preview_updates);
+
 	g_free(summary->summary_path);
 
 	/* Freeing memory occupied by meta-summary-header */

@@ -718,6 +718,7 @@ e_data_book_respond_get_changes (EDataBook *book, guint32 opid, GError *error, G
 		g_variant_builder_add (builder, "(us)", -1, "");
 
 		variant = g_variant_builder_end (builder);
+		g_variant_builder_unref (builder);
 
 		e_gdbus_book_complete_get_changes (book->priv->gdbus_object, invocation, variant);
 
