@@ -75,7 +75,7 @@ EIntervalTree* e_intervaltree_new(void);
 
 gboolean e_intervaltree_insert (EIntervalTree *tree, time_t start, time_t end, ECalComponent *comp);
 
-gboolean e_intervaltree_remove (EIntervalTree *tree, const char *uid, const char *rid);
+gboolean e_intervaltree_remove (EIntervalTree *tree, const gchar *uid, const gchar *rid);
 
 gpointer e_intervaltree_lookup (EIntervalTree *tree, time_t start, time_t end);
 

@@ -77,7 +77,7 @@ struct _EIntervalTreePrivate
 	GStaticRecMutex mutex;	
 };
 
-static inline int
+static inline gint
 get_direction (EIntervalNode *x, time_t z_start, time_t z_end)
 {
 	if (x->start == z_start)
@@ -104,7 +104,7 @@ component_key(const gchar *uid, const gchar *rid)
  * the second starts, 1 otherwise.
  *
  **/
-static inline int
+static inline gint
 compare_intervals (time_t x_start, time_t x_end, time_t y_start, time_t y_end)
 {
 	/* assumption: x_start <= x_end */
@@ -594,8 +594,8 @@ e_intervaltree_dump (EIntervalTree *tree)
  **/
 static EIntervalNode*
 e_intervaltree_search_component (EIntervalTree *tree,
-				 const char *searched_uid,
-				 const char *searched_rid)
+				 const gchar *searched_uid,
+				 const gchar *searched_rid)
 {
 	EIntervalTreePrivate *priv = tree->priv;
 	g_return_val_if_fail (tree != NULL, NULL);
@@ -614,8 +614,8 @@ e_intervaltree_search_component (EIntervalTree *tree,
 
 gboolean
 e_intervaltree_remove (EIntervalTree *tree,
-		       const char *uid,
-		       const char *rid)
+		       const gchar *uid,
+		       const gchar *rid)
 {
 	EIntervalTreePrivate *priv = tree->priv;
 	EIntervalNode *y;

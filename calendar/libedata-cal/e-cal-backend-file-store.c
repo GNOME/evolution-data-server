@@ -690,7 +690,7 @@ e_cal_backend_file_store_load (ECalBackendStore *store)
 		return FALSE;
 
 	/* Parse keys */
-	//priv->keys_cache = e_file_cache_new (priv->key_file_name);
+	priv->keys_cache = e_file_cache_new (priv->key_file_name);
 
 	/* Parse components */
 	icalcomp = e_cal_util_parse_ics_file (priv->cache_file_name);
@@ -906,7 +906,6 @@ cal_backend_file_store_constructed (GObject *object)
 	path = e_cal_backend_store_get_path (E_CAL_BACKEND_STORE (object));
 	priv->cache_file_name = g_build_filename (path, CACHE_FILE_NAME, NULL);
 	priv->key_file_name = g_build_filename (path, KEY_FILE_NAME, NULL);
-	priv->keys_cache = e_file_cache_new (priv->key_file_name);
 }
 
 static void
