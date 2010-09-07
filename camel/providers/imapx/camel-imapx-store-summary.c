@@ -279,6 +279,8 @@ camel_imapx_store_summary_add_from_full(CamelIMAPXStoreSummary *s, const gchar *
 		d(printf("  failed\n"));
 	}
 
+	g_free (pathu8);
+
 	return info;
 }
 

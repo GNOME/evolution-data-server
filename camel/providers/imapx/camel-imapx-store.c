@@ -136,6 +136,9 @@ imapx_store_finalize (GObject *object)
 
 	g_free (imapx_store->base_url);
 
+	if (imapx_store->summary)
+		g_object_unref (imapx_store->summary);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_store_parent_class)->finalize (object);
 }
@@ -167,6 +170,8 @@ imapx_construct(CamelService *service, CamelSession *session, CamelProvider *pro
 	/* FIXME: need to remove params, passwords, etc */
 	camel_store_summary_set_uri_base((CamelStoreSummary *)store->summary, service->url);
 	camel_store_summary_load((CamelStoreSummary *)store->summary);
+
+	g_free (summary);
 
 	return TRUE;
 }
