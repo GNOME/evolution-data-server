@@ -165,6 +165,11 @@ gboolean	e_cal_backend_store_put_key_value
 void		e_cal_backend_store_thaw_changes(ECalBackendStore *store);
 void		e_cal_backend_store_freeze_changes
 						(ECalBackendStore *store);
+void		e_cal_backend_store_interval_tree_add_comp
+						(ECalBackendStore *store, 
+						 ECalComponent *comp,
+						 time_t start,
+						 time_t end);
 
 G_END_DECLS
 

@@ -503,3 +503,20 @@ e_cal_backend_store_freeze_changes (ECalBackendStore *store)
 
 	(E_CAL_BACKEND_STORE_GET_CLASS (store))->freeze_changes (store);
 }
+
+/**
+ * e_cal_backend_store_interval_tree_add_comp:
+ *
+ * Since: 2.28
+ **/
+void
+e_cal_backend_store_interval_tree_add_comp (ECalBackendStore *store, ECalComponent *comp, time_t occurence_start, time_t occurence_end)
+{
+	ECalBackendStorePrivate *priv;
+	g_return_if_fail (E_IS_CAL_BACKEND_STORE (store));
+	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
+
+	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
+
+	e_intervaltree_insert (priv->intervaltree, occurence_start, occurence_end, comp);
+}
