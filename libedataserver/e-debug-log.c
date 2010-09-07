@@ -38,10 +38,10 @@
 static GStaticMutex log_mutex = G_STATIC_MUTEX_INIT;
 
 static GHashTable *domains_hash;
-static char **ring_buffer;
-static int ring_buffer_next_index;
-static int ring_buffer_num_lines;
-static int ring_buffer_max_lines = DEFAULT_RING_BUFFER_NUM_LINES;
+static gchar **ring_buffer;
+static gint ring_buffer_next_index;
+static gint ring_buffer_num_lines;
+static gint ring_buffer_max_lines = DEFAULT_RING_BUFFER_NUM_LINES;
 
 static GSList *milestones_head;
 static GSList *milestones_tail;
@@ -59,7 +59,7 @@ unlock (void)
 }
 
 void
-e_debug_log (gboolean is_milestone, const char *domain, const char *format, ...)
+e_debug_log (gboolean is_milestone, const gchar *domain, const gchar *format, ...)
 {
 	va_list args;
 
@@ -69,7 +69,7 @@ e_debug_log (gboolean is_milestone, const char *domain, const char *format, ...)
 }
 
 static gboolean
-is_domain_enabled (const char *domain)
+is_domain_enabled (const gchar *domain)
 {
 	/* User actions are always logged */
 	if (strcmp (domain, E_DEBUG_LOG_DOMAIN_USER) == 0)
@@ -87,20 +87,20 @@ ensure_ring (void)
 	if (ring_buffer)
 		return;
 
-	ring_buffer = g_new0 (char *, ring_buffer_max_lines);
+	ring_buffer = g_new0 (gchar *, ring_buffer_max_lines);
 	ring_buffer_next_index = 0;
 	ring_buffer_num_lines = 0;
 }
 
 static void
-add_to_ring (char *str)
+add_to_ring (gchar *str)
 {
 	ensure_ring ();
 
 	g_assert (str != NULL);
 
 	if (ring_buffer_num_lines == ring_buffer_max_lines) {
-		/* We have an overlap, and the ring_buffer_next_index points to
+		/* We have an overlap, and the ring_buffer_next_index pogints to
 		 * the "first" item.  Free it to make room for the new item.
 		 */
 
@@ -121,9 +121,9 @@ add_to_ring (char *str)
 }
 
 static void
-add_to_milestones (const char *str)
+add_to_milestones (const gchar *str)
 {
-	char *str_copy;
+	gchar *str_copy;
 
 	str_copy = g_strdup (str);
 
@@ -138,10 +138,10 @@ add_to_milestones (const char *str)
 }
 
 void
-e_debug_logv (gboolean is_milestone, const char *domain, const char *format, va_list args)
+e_debug_logv (gboolean is_milestone, const gchar *domain, const gchar *format, va_list args)
 {
-	char *str;
-	char *debug_str;
+	gchar *str;
+	gchar *debug_str;
 	struct timeval tv;
 	struct tm tm;
 
@@ -163,7 +163,7 @@ e_debug_logv (gboolean is_milestone, const char *domain, const char *format, va_
 				     tm.tm_hour,
 				     tm.tm_min,
 				     tm.tm_sec,
-				     (int) (tv.tv_usec / 100),
+				     (gint) (tv.tv_usec / 100),
 				     domain,
 				     str);
 	g_free (str);
@@ -177,12 +177,12 @@ e_debug_logv (gboolean is_milestone, const char *domain, const char *format, va_
 }
 
 gboolean
-e_debug_log_load_configuration (const char *filename, GError **error)
+e_debug_log_load_configuration (const gchar *filename, GError **error)
 {
 	GKeyFile *key_file;
-	char **strings;
+	gchar **strings;
 	gsize num_strings;
-	int num;
+	gint num;
 	GError *my_error;
 
 	g_assert (filename != NULL);
@@ -202,12 +202,12 @@ e_debug_log_load_configuration (const char *filename, GError **error)
 	if (my_error)
 		g_error_free (my_error);
 	else {
-		int i;
+		gint i;
 
 		for (i = 0; i < num_strings; i++)
 			strings[i] = g_strstrip (strings[i]);
 
-		e_debug_log_enable_domains ((const char **) strings, num_strings);
+		e_debug_log_enable_domains ((const gchar **) strings, num_strings);
 		g_strfreev (strings);
 	}
 
@@ -225,9 +225,9 @@ e_debug_log_load_configuration (const char *filename, GError **error)
 }
 
 void
-e_debug_log_enable_domains (const char **domains, int n_domains)
+e_debug_log_enable_domains (const gchar **domains, gint n_domains)
 {
-	int i;
+	gint i;
 
 	g_assert (domains != NULL);
 	g_assert (n_domains >= 0);
@@ -244,7 +244,7 @@ e_debug_log_enable_domains (const char **domains, int n_domains)
 			continue; /* user actions are always enabled */
 
 		if (g_hash_table_lookup (domains_hash, domains[i]) == NULL) {
-			char *domain;
+			gchar *domain;
 
 			domain = g_strdup (domains[i]);
 			g_hash_table_insert (domains_hash, domain, domain);
@@ -255,9 +255,9 @@ e_debug_log_enable_domains (const char **domains, int n_domains)
 }
 
 void
-e_debug_log_disable_domains (const char **domains, int n_domains)
+e_debug_log_disable_domains (const gchar **domains, gint n_domains)
 {
-	int i;
+	gint i;
 
 	g_assert (domains != NULL);
 	g_assert (n_domains >= 0);
@@ -266,7 +266,7 @@ e_debug_log_disable_domains (const char **domains, int n_domains)
 
 	if (domains_hash) {
 		for (i = 0; i < n_domains; i++) {
-			char *domain;
+			gchar *domain;
 
 			g_assert (domains[i] != NULL);
 
@@ -285,7 +285,7 @@ e_debug_log_disable_domains (const char **domains, int n_domains)
 }
 
 gboolean
-e_debug_log_is_domain_enabled (const char *domain)
+e_debug_log_is_domain_enabled (const gchar *domain)
 {
 	gboolean retval;
 
@@ -299,15 +299,15 @@ e_debug_log_is_domain_enabled (const char *domain)
 }
 
 struct domains_dump_closure {
-	char **domains;
-	int num_domains;
+	gchar **domains;
+	gint num_domains;
 };
 
 static void
 domains_foreach_dump_cb (gpointer key, gpointer value, gpointer data)
 {
 	struct domains_dump_closure *closure;
-	char *domain;
+	gchar *domain;
 
 	closure = data;
 	domain = key;
@@ -321,7 +321,7 @@ make_key_file_from_configuration (void)
 {
 	GKeyFile *key_file;
 	struct domains_dump_closure closure;
-	int num_domains;
+	gint num_domains;
 
 	key_file = g_key_file_new ();
 
@@ -330,7 +330,7 @@ make_key_file_from_configuration (void)
 	if (domains_hash) {
 		num_domains = g_hash_table_size (domains_hash);
 		if (num_domains != 0) {
-			closure.domains = g_new (char *, num_domains);
+			closure.domains = g_new (gchar *, num_domains);
 			closure.num_domains = 0;
 
 			g_hash_table_foreach (domains_hash, domains_foreach_dump_cb, &closure);
@@ -350,10 +350,10 @@ make_key_file_from_configuration (void)
 }
 
 static gboolean
-write_string (const char *filename, FILE *file, const char *str, GError **error)
+write_string (const gchar *filename, FILE *file, const gchar *str, GError **error)
 {
 	if (fputs (str, file) == EOF) {
-		int saved_errno;
+		gint saved_errno;
 
 		saved_errno = errno;
 		g_set_error (error,
@@ -368,10 +368,10 @@ write_string (const char *filename, FILE *file, const char *str, GError **error)
 }
 
 static gboolean
-dump_configuration (const char *filename, FILE *file, GError **error)
+dump_configuration (const gchar *filename, FILE *file, GError **error)
 {
 	GKeyFile *key_file;
-	char *data;
+	gchar *data;
 	gsize length;
 	gboolean success;
 
@@ -403,7 +403,7 @@ dump_configuration (const char *filename, FILE *file, GError **error)
 }
 
 static gboolean
-dump_milestones (const char *filename, FILE *file, GError **error)
+dump_milestones (const gchar *filename, FILE *file, GError **error)
 {
 	GSList *l;
 
@@ -411,7 +411,7 @@ dump_milestones (const char *filename, FILE *file, GError **error)
 		return FALSE;
 
 	for (l = milestones_head; l; l = l->next) {
-		const char *str;
+		const gchar *str;
 
 		str = l->data;
 		if (!(write_string (filename, file, str, error)
@@ -426,10 +426,10 @@ dump_milestones (const char *filename, FILE *file, GError **error)
 }
 
 static gboolean
-dump_ring_buffer (const char *filename, FILE *file, GError **error)
+dump_ring_buffer (const gchar *filename, FILE *file, GError **error)
 {
-	int start_index;
-	int i;
+	gint start_index;
+	gint i;
 
 	if (!write_string (filename, file, "===== BEGIN RING BUFFER =====\n", error))
 		return FALSE;
@@ -440,7 +440,7 @@ dump_ring_buffer (const char *filename, FILE *file, GError **error)
 		start_index = 0;
 
 	for (i = 0; i < ring_buffer_num_lines; i++) {
-		int idx;
+		gint idx;
 
 		idx = (start_index + i) % ring_buffer_max_lines;
 
@@ -457,7 +457,7 @@ dump_ring_buffer (const char *filename, FILE *file, GError **error)
 }
 
 gboolean
-e_debug_log_dump (const char *filename, GError **error)
+e_debug_log_dump (const gchar *filename, GError **error)
 {
 	FILE *file;
 	gboolean success;
@@ -470,7 +470,7 @@ e_debug_log_dump (const char *filename, GError **error)
 
 	file = fopen (filename, "w");
 	if (!file) {
-		int saved_errno;
+		gint saved_errno;
 
 		saved_errno = errno;
 		g_set_error (error,
@@ -491,7 +491,7 @@ e_debug_log_dump (const char *filename, GError **error)
  do_close:
 
 	if (fclose (file) != 0) {
-		int saved_errno;
+		gint saved_errno;
 
 		saved_errno = errno;
 
@@ -518,8 +518,8 @@ e_debug_log_dump_to_dated_file (GError **error)
 {
 	time_t t;
 	struct tm tm;
-	char *basename;
-	char *filename;
+	gchar *basename;
+	gchar *filename;
 	gboolean retval;
 
 	g_assert (error == NULL || *error == NULL);
@@ -545,10 +545,10 @@ e_debug_log_dump_to_dated_file (GError **error)
 }
 
 void
-e_debug_log_set_max_lines (int num_lines)
+e_debug_log_set_max_lines (gint num_lines)
 {
-	char **new_buffer;
-	int lines_to_copy;
+	gchar **new_buffer;
+	gint lines_to_copy;
 
 	g_assert (num_lines > 0);
 
@@ -557,13 +557,13 @@ e_debug_log_set_max_lines (int num_lines)
 	if (num_lines == ring_buffer_max_lines)
 		goto out;
 
-	new_buffer = g_new0 (char *, num_lines);
+	new_buffer = g_new0 (gchar *, num_lines);
 
 	lines_to_copy = MIN (num_lines, ring_buffer_num_lines);
 
 	if (ring_buffer) {
-		int start_index;
-		int i;
+		gint start_index;
+		gint i;
 
 		if (ring_buffer_num_lines == ring_buffer_max_lines)
 			start_index = (ring_buffer_next_index + ring_buffer_max_lines - lines_to_copy) % ring_buffer_max_lines;
@@ -573,7 +573,7 @@ e_debug_log_set_max_lines (int num_lines)
 		g_assert (start_index >= 0 && start_index < ring_buffer_max_lines);
 
 		for (i = 0; i < lines_to_copy; i++) {
-			int idx;
+			gint idx;
 
 			idx = (start_index + i) % ring_buffer_max_lines;
 
@@ -597,10 +597,10 @@ e_debug_log_set_max_lines (int num_lines)
 	unlock ();
 }
 
-int
+gint
 e_debug_log_get_max_lines (void)
 {
-	int retval;
+	gint retval;
 
 	lock ();
 	retval = ring_buffer_max_lines;
@@ -612,7 +612,7 @@ e_debug_log_get_max_lines (void)
 void
 e_debug_log_clear (void)
 {
-	int i;
+	gint i;
 
 	lock ();
 

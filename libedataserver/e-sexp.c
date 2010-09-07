@@ -113,8 +113,9 @@ static void parse_dump_term(struct _ESExpTerm *t, gint depth);
 static GObjectClass *parent_class;
 #endif
 
-typedef gboolean (ESGeneratorFunc)(int argc, struct _ESExpResult **argv, struct _ESExpResult *r);
-typedef gboolean (ESOperatorFunc)(int argc, struct _ESExpResult **argv, struct _ESExpResult *r);
+typedef gboolean (ESGeneratorFunc) (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r);
+typedef gboolean (ESOperatorFunc) (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r);
+
 /* FIXME: constant _TIME_MAX used in different files, move it somewhere */
 #define _TIME_MAX	((time_t) INT_MAX)	/* Max valid time_t	*/
 
@@ -829,7 +830,7 @@ parse_dump_term(struct _ESExpTerm *t, gint depth)
 }
 #endif
 
-const char *time_functions[] = {
+const gchar *time_functions[] = {
 	"time-now",
 	"make-time",
 	"time-add-day",
@@ -838,7 +839,7 @@ const char *time_functions[] = {
 };
 
 static gboolean
-binary_generator (int argc, struct _ESExpResult **argv, struct _ESExpResult *r)
+binary_generator (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r)
 {
 	g_return_val_if_fail (r != NULL, FALSE);
 	g_return_val_if_fail (argc == 2, FALSE);
@@ -853,7 +854,7 @@ binary_generator (int argc, struct _ESExpResult **argv, struct _ESExpResult *r)
 }
 
 static gboolean
-unary_generator(int argc, struct _ESExpResult **argv, struct _ESExpResult *r)
+unary_generator(gint argc, struct _ESExpResult **argv, struct _ESExpResult *r)
 {
 	/* unary generator with end time */
 	g_return_val_if_fail (r != NULL, FALSE);
@@ -869,7 +870,7 @@ unary_generator(int argc, struct _ESExpResult **argv, struct _ESExpResult *r)
 }
 
 static const struct {
-	char *name;
+	const gchar *name;
 	ESGeneratorFunc *func;
 } generators[] = {
 	{"occur-in-time-range?", binary_generator},
@@ -878,10 +879,10 @@ static const struct {
 	{"completed-before?", unary_generator},
 };
 
-const int generators_count = sizeof(generators) / sizeof(generators[0]);
+const gint generators_count = sizeof(generators) / sizeof(generators[0]);
 
 static gboolean
-or_operator(int argc, struct _ESExpResult **argv, struct _ESExpResult *r)
+or_operator(gint argc, struct _ESExpResult **argv, struct _ESExpResult *r)
 {
 	/*
 	   A          B           A or B
@@ -904,7 +905,7 @@ or_operator(int argc, struct _ESExpResult **argv, struct _ESExpResult *r)
 }
 
 static gboolean
-and_operator(int argc, struct _ESExpResult **argv, struct _ESExpResult *r)
+and_operator(gint argc, struct _ESExpResult **argv, struct _ESExpResult *r)
 {
 	/*
 	   A           B          A and B
@@ -928,20 +929,20 @@ and_operator(int argc, struct _ESExpResult **argv, struct _ESExpResult *r)
 }
 
 static const struct {
-	char *name;
+	const gchar *name;
 	ESOperatorFunc *func;
 } operators[] = {
 	{"or", or_operator},
 	{"and", and_operator}
 };
 
-const int operators_count = sizeof(operators) / sizeof(operators[0]);
+const gint operators_count = sizeof(operators) / sizeof(operators[0]);
 
 
 static ESOperatorFunc*
-get_operator_function(const char *fname)
+get_operator_function(const gchar *fname)
 {
-	int i;
+	gint i;
 
 	g_return_val_if_fail (fname != NULL, NULL);
 
@@ -953,9 +954,9 @@ get_operator_function(const char *fname)
 }
 
 static inline gboolean
-is_time_function(const char *fname)
+is_time_function(const gchar *fname)
 {
-	int i;
+	gint i;
 
 	g_return_val_if_fail (fname != NULL, FALSE);
 
@@ -967,9 +968,9 @@ is_time_function(const char *fname)
 }
 
 static ESGeneratorFunc*
-get_generator_function(const char *fname)
+get_generator_function(const gchar *fname)
 {
-	int i;
+	gint i;
 
 	g_return_val_if_fail (fname != NULL, NULL);
 
@@ -985,7 +986,7 @@ static struct _ESExpResult *
 e_sexp_term_evaluate_occur_times(struct _ESExp *f, struct _ESExpTerm *t, time_t *start, time_t *end)
 {
 	struct _ESExpResult *r = NULL;
-	int i, argc;
+	gint i, argc;
 	struct _ESExpResult **argv;
 	gboolean ok = TRUE;
 
@@ -1006,6 +1007,10 @@ e_sexp_term_evaluate_occur_times(struct _ESExp *f, struct _ESExpTerm *t, time_t 
 		break;
 	case ESEXP_TERM_IFUNC:
 	case ESEXP_TERM_FUNC:
+	{
+		ESGeneratorFunc *generator = NULL;
+		ESOperatorFunc *operator = NULL;
+			
 		r(printf(" (function \"%s\"\n", t->value.func.sym->name));
 
 		r = e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
@@ -1016,9 +1021,6 @@ e_sexp_term_evaluate_occur_times(struct _ESExp *f, struct _ESExpTerm *t, time_t 
 			argv[i] = e_sexp_term_evaluate_occur_times (f, t->value.func.terms[i],
 								    start, end);
 		}
-
-		ESGeneratorFunc *generator = NULL;
-		ESOperatorFunc *operator = NULL;
 
 		if (is_time_function(t->value.func.sym->name)) {
 			/* evaluate time */
@@ -1039,7 +1041,7 @@ e_sexp_term_evaluate_occur_times(struct _ESExp *f, struct _ESExpTerm *t, time_t 
 
 		e_sexp_resultv_free(f, t->value.func.termcount, argv);
 		break;
-
+	}
 	case ESEXP_TERM_INT:
 	case ESEXP_TERM_BOOL:
 	case ESEXP_TERM_TIME:

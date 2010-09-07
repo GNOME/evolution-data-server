@@ -31,23 +31,23 @@
 #define E_DEBUG_LOG_DOMAIN_GLOG		"GLog"		/* used for GLog messages; don't use it yourself */
 #define E_DEBUG_LOG_DOMAIN_CAL_QUERIES  "CalQueries"    /* used for calendar queries analysis */
 
-void e_debug_log (gboolean is_milestone, const char *domain, const char *format, ...);
+void e_debug_log (gboolean is_milestone, const gchar *domain, const gchar *format, ...);
 
-void e_debug_logv (gboolean is_milestone, const char *domain, const char *format, va_list args);
+void e_debug_logv (gboolean is_milestone, const gchar *domain, const gchar *format, va_list args);
 
-gboolean e_debug_log_load_configuration (const char *filename, GError **error);
+gboolean e_debug_log_load_configuration (const gchar *filename, GError **error);
 
-void e_debug_log_enable_domains (const char **domains, int n_domains);
-void e_debug_log_disable_domains (const char **domains, int n_domains);
+void e_debug_log_enable_domains (const gchar **domains, gint n_domains);
+void e_debug_log_disable_domains (const gchar **domains, gint n_domains);
 
-gboolean e_debug_log_is_domain_enabled (const char *domain);
+gboolean e_debug_log_is_domain_enabled (const gchar *domain);
 
-gboolean e_debug_log_dump (const char *filename, GError **error);
+gboolean e_debug_log_dump (const gchar *filename, GError **error);
 
 gboolean e_debug_log_dump_to_dated_file (GError **error);
 
-void e_debug_log_set_max_lines (int num_lines);
-int e_debug_log_get_max_lines (void);
+void e_debug_log_set_max_lines (gint num_lines);
+gint e_debug_log_get_max_lines (void);
 
 /* For testing only */
 void e_debug_log_clear (void);

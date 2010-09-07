@@ -39,8 +39,8 @@ const double pbality_delete = 0.3;
 
 struct _EInterval
 {
-	int start;
-	int end;
+	gint start;
+	gint end;
 	ECalComponent* comp;
 };
 
@@ -48,7 +48,7 @@ typedef struct _EInterval EInterval;
 
 GList *list = NULL;
 
-static inline int
+static inline gint
 compare_intervals (time_t x_start, time_t x_end, time_t y_start, time_t y_end)
 {
 	/* assumption: x_start <= x_end */
@@ -225,11 +225,11 @@ random_test()
 	 * 5. do various searches, compare results of both structures
 	 * 6. free memory
 	 */
-	int i, start, end;
+	gint i, start, end;
 	EInterval *interval = NULL;
 	EIntervalTree *tree;
 	GList *l1, *l2, *next;
-	int num_deleted = 0;
+	gint num_deleted = 0;
 
 	tree = e_intervaltree_new ();
 
@@ -420,8 +420,8 @@ random_test()
 	g_list_free (list);
 }
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	g_type_init ();
 
