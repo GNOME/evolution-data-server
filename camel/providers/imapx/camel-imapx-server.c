@@ -1194,6 +1194,7 @@ imapx_expunge_uid_from_summary(CamelIMAPXServer *imap, gchar *uid, gboolean unso
 		camel_folder_changed (imap->select_folder, imap->changes);
 
 		g_slist_foreach (imap->expunged, (GFunc) g_free, NULL);
+		g_slist_free (imap->expunged);
 		imap->expunged = NULL;
 		camel_folder_change_info_clear (imap->changes);
 	}
@@ -1871,6 +1872,7 @@ imapx_completion(CamelIMAPXServer *imap, guchar *token, gint len, GError **error
 
 		if (imap->expunged) {
 			g_slist_foreach (imap->expunged, (GFunc) g_free, NULL);
+			g_slist_free (imap->expunged);
 			imap->expunged = NULL;
 		}
 
