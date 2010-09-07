@@ -5184,7 +5184,8 @@ imapx_sync_free_user(GArray *user_set)
 		return;
 
 	for (i=0;i<user_set->len;i++) {
-		GPtrArray *infos = g_array_index (user_set, struct _imapx_flag_change, i).infos;
+		struct _imapx_flag_change *flag_change = &g_array_index (user_set, struct _imapx_flag_change, i);
+		GPtrArray *infos = flag_change->infos;
 		gint j;
 
 		for (j = 0; j < infos->len; j++) {
@@ -5193,6 +5194,7 @@ imapx_sync_free_user(GArray *user_set)
 		}
 
 		g_ptr_array_free(infos, TRUE);
+		g_free (flag_change->name);
 	}
 	g_array_free(user_set, TRUE);
 }
@@ -5221,7 +5223,7 @@ imapx_server_sync_changes(CamelIMAPXServer *is, CamelFolder *folder, gint pri, G
 	uids = camel_folder_summary_get_changed (folder->summary);
 
 	if (uids->len == 0) {
-		g_ptr_array_free (uids, TRUE);
+		camel_folder_free_uids (folder, uids);
 		return TRUE;
 	}
 
@@ -5272,7 +5274,7 @@ imapx_server_sync_changes(CamelIMAPXServer *is, CamelFolder *folder, gint pri, G
 			} else {
 				GArray *user_set;
 				CamelFlag *user_flag;
-				struct _imapx_flag_change *change = NULL, add;
+				struct _imapx_flag_change *change = NULL, add = { 0 };
 
 				if (res < 0) {
 					if (on_user == NULL)
@@ -5306,8 +5308,10 @@ imapx_server_sync_changes(CamelIMAPXServer *is, CamelFolder *folder, gint pri, G
 		camel_message_info_free (info);
 	}
 
-	if ((on_orset|off_orset) == 0 && on_user == NULL && off_user == NULL)
-		return TRUE;
+	if ((on_orset|off_orset) == 0 && on_user == NULL && off_user == NULL) {
+		success = TRUE;
+		goto done;
+	}
 
 	/* TODO above code should go into changes_start */
 
