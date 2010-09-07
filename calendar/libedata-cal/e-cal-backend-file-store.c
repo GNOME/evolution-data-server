@@ -668,10 +668,11 @@ scan_vcalendar (ECalBackendStore *store, icalcomponent *top_icalcomp)
 			g_object_unref (comp);
 			continue;
 		}
+		
 		get_component_occur_times (comp, &time_start, &time_end,
 						resolve_tzid, NULL, NULL, kind);
 
-		e_cal_backend_store_put_component (store, comp, time_start, time_end);
+		e_cal_backend_store_put_component_with_time_range (store, comp, time_start, time_end);
 
 		g_object_unref (comp);
 	}

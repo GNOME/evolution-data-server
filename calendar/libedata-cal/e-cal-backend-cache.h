@@ -69,9 +69,7 @@ ECalComponent *	e_cal_backend_cache_get_component
 						 const gchar *rid);
 gboolean	e_cal_backend_cache_put_component
 						(ECalBackendCache *cache,
-						ECalComponent *compi,
-						time_t occurence_start,
-						time_t occurence_end);
+						 ECalComponent *comp);
 gboolean	e_cal_backend_cache_remove_component
 						(ECalBackendCache *cache,
 						 const gchar *uid,
@@ -81,7 +79,6 @@ GList *		e_cal_backend_cache_get_components
 GSList *	e_cal_backend_cache_get_components_by_uid
 						(ECalBackendCache *cache,
 						 const gchar *uid);
-GList		   *e_cal_backend_cache_get_components_occuring_in_range (ECalBackendCache *cache, time_t start, time_t end);
 const icaltimezone *
 		e_cal_backend_cache_get_timezone(ECalBackendCache *cache,
 						 const gchar *tzid);

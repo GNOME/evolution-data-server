@@ -300,7 +300,7 @@ put_component_to_store (ECalBackendHttp *cb,
 				   resolve_tzid, NULL, priv->default_zone,
 				   e_cal_backend_get_kind (E_CAL_BACKEND (cb)));
 
-	e_cal_backend_store_put_component (priv->store, comp, time_start, time_end);
+	e_cal_backend_store_put_component_with_time_range (priv->store, comp, time_start, time_end);
 }
 
 

@@ -238,12 +238,12 @@ e_cal_backend_store_has_component (ECalBackendStore *store, const gchar *uid, co
 }
 
 /**
- * e_cal_backend_store_put_component:
+ * e_cal_backend_store_put_component_with_time_range:
  *
- * Since: 2.28
+ * Since: 2.32
  **/
 gboolean
-e_cal_backend_store_put_component (ECalBackendStore *store, ECalComponent *comp, time_t occurence_start, time_t occurence_end)
+e_cal_backend_store_put_component_with_time_range (ECalBackendStore *store, ECalComponent *comp, time_t occurence_start, time_t occurence_end)
 {
 	ECalBackendStorePrivate *priv;
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
@@ -256,7 +256,25 @@ e_cal_backend_store_put_component (ECalBackendStore *store, ECalComponent *comp,
 		return TRUE;
 	}
 	return FALSE;
-}	
+
+}
+
+/**
+ * e_cal_backend_store_put_component:
+ *
+ * Since: 2.28
+ **/
+gboolean
+e_cal_backend_store_put_component (ECalBackendStore *store, ECalComponent *comp)
+{
+	ECalBackendStorePrivate *priv;
+	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
+
+	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
+
+	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->put_component (store, comp);
+}
 
 /**
  * e_cal_backend_store_remove_component:

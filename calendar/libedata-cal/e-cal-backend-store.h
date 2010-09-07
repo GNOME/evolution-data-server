@@ -114,11 +114,14 @@ ECalComponent *	e_cal_backend_store_get_component
 						(ECalBackendStore *store,
 						 const gchar *uid,
 						 const gchar *rid);
-gboolean	e_cal_backend_store_put_component
+gboolean	e_cal_backend_store_put_component_with_time_range
 						(ECalBackendStore *store,
 						 ECalComponent *comp,
 						 time_t occurence_start,
 						 time_t occurence_end);
+gboolean	e_cal_backend_store_put_component
+						(ECalBackendStore *store,
+						 ECalComponent *comp);
 gboolean	e_cal_backend_store_remove_component
 						(ECalBackendStore *store,
 						 const gchar *uid,

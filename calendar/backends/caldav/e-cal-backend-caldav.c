@@ -287,7 +287,7 @@ put_component_to_store (ECalBackendCalDAV *cbdav,
 				   resolve_tzid, NULL,  icaltimezone_get_utc_timezone (),
 				   e_cal_backend_get_kind (E_CAL_BACKEND (cbdav)));
 
-	return e_cal_backend_store_put_component (priv->store, comp, time_start, time_end);
+	return e_cal_backend_store_put_component_with_time_range (priv->store, comp, time_start, time_end);
 }
 
 
