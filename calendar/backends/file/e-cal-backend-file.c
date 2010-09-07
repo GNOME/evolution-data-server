@@ -118,7 +118,7 @@ struct _ECalBackendFilePrivate {
 
 
 
-#define d(x) x
+#define d(x)
 
 static void e_cal_backend_file_dispose (GObject *object);
 static void e_cal_backend_file_finalize (GObject *object);
