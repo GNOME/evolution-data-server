@@ -185,6 +185,7 @@ unref_comp (gpointer data, gpointer user_data)
 	g_free(data);
 }
 
+/* Not used at the moment. Use it later 
 static void
 print_nodes_list (GList *l1)
 {
@@ -210,6 +211,7 @@ print_list (GList *l2)
 		l2 = l2->next;
 	}
 }
+*/
 
 static void
 random_test()
@@ -395,7 +397,7 @@ random_test()
 		/*
 		   g_print ("Results from tree:\n");
 		   print_nodes_list (l1);
-		   */
+		 */
 
 		l2 = search_in_list (list, start, end);
 
