@@ -1621,7 +1621,10 @@ imapx_parse_uids (CamelIMAPXStream *is, GError **error)
 	guint len, str_len;
 	gint tok, i;
 
-	tok = camel_imapx_stream_token (is, &token, &len, NULL);
+	tok = camel_imapx_stream_token (is, &token, &len, error);
+	if (tok < 0)
+		return NULL;
+
 	splits = g_strsplit ((gchar *) token, ",", -1);
 	str_len = g_strv_length (splits);
 
