@@ -37,8 +37,8 @@
 #define t(x) camel_imapx_debug(token, x)
 #define io(x) camel_imapx_debug(io, x)
 
-#define CAMEL_IMAPX_STREAM_SIZE (4096)
-#define CAMEL_IMAPX_STREAM_TOKEN (4096) /* maximum token size */
+#define CAMEL_IMAPX_STREAM_SIZE (8192)
+#define CAMEL_IMAPX_STREAM_TOKEN (8192) /* maximum token size */
 
 G_DEFINE_TYPE (CamelIMAPXStream, camel_imapx_stream, CAMEL_TYPE_STREAM)
 
