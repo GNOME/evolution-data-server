@@ -611,9 +611,16 @@ add_timezone (ECalBackendFileStore *fstore, icalcomponent *vtzcomp)
 static icaltimezone *
 resolve_tzid (const char *tzid, gpointer user_data)
 {
-	return (!strcmp (tzid, "UTC"))
+	icaltimezone *zone;
+		
+	zone = (!strcmp (tzid, "UTC"))
 		? icaltimezone_get_utc_timezone ()
 		: icaltimezone_get_builtin_timezone_from_tzid (tzid);
+	
+	if (!zone)
+		e_cal_backend_store_get_timezone (E_CAL_BACKEND_STORE (user_data), tzid);
+
+	return zone;
 }
 
 /*static icaltimezone * 
@@ -644,6 +651,7 @@ scan_vcalendar (ECalBackendStore *store, icalcomponent *top_icalcomp)
 	for (iter = icalcomponent_begin_component (top_icalcomp, ICAL_ANY_COMPONENT);
 	     icalcompiter_deref (&iter) != NULL;
 	     icalcompiter_next (&iter)) {
+		const icaltimezone *dzone = NULL;
 		icalcomponent *icalcomp;
 		icalcomponent_kind kind;
 		ECalComponent *comp;
@@ -669,8 +677,9 @@ scan_vcalendar (ECalBackendStore *store, icalcomponent *top_icalcomp)
 			continue;
 		}
 		
-		get_component_occur_times (comp, &time_start, &time_end,
-						resolve_tzid, NULL, NULL, kind);
+		dzone = e_cal_backend_store_get_default_timezone (store);
+		e_cal_util_get_component_occur_times (comp, &time_start, &time_end,
+						resolve_tzid, store, dzone, kind);
 
 		e_cal_backend_store_put_component_with_time_range (store, comp, time_start, time_end);
 

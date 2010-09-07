@@ -1196,7 +1196,7 @@ componenttime_to_utc_timet (const ECalComponentDateTime* dt_time,
  * Find out, when the component starts and stops. Be careful about recurrences.
  */
 void
-get_component_occur_times (ECalComponent *comp,
+e_cal_util_get_component_occur_times (ECalComponent *comp,
 			   time_t* start,
 			   time_t* end,
 			   ECalRecurResolveTimezoneFn tz_cb,

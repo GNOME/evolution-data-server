@@ -459,10 +459,10 @@ resolve_tzid (const gchar *tzid, gpointer user_data)
         else if (!strcmp (tzid, "UTC"))
                 return icaltimezone_get_utc_timezone ();
 
-	zone = icalcomponent_get_timezone (vcalendar_comp, tzid);
+	zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
 
 	if (!zone)
-		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+		zone = icalcomponent_get_timezone (vcalendar_comp, tzid);
 
 	return zone;
 }
@@ -531,7 +531,7 @@ add_component_to_intervaltree (ECalBackendFile *cbfile, ECalComponent *comp)
 
 	priv = cbfile->priv;
 
-	get_component_occur_times (comp, &time_start, &time_end,
+	e_cal_util_get_component_occur_times (comp, &time_start, &time_end,
 				   resolve_tzid, priv->icalcomp, priv->default_zone,
 				   e_cal_backend_get_kind (E_CAL_BACKEND (cbfile)));
 
@@ -556,7 +556,7 @@ remove_component_from_intervaltree (ECalBackendFile *cbfile, ECalComponent *comp
 
 	priv = cbfile->priv;
 
-	get_component_occur_times (comp, &time_start, &time_end,
+	e_cal_util_get_component_occur_times (comp, &time_start, &time_end,
 				   resolve_tzid, priv->icalcomp, priv->default_zone,
 				   e_cal_backend_get_kind (E_CAL_BACKEND (cbfile)));
 
@@ -3497,7 +3497,7 @@ get_difference_of_lists (ECalBackendFile* cbfile, GList* smaller, GList* bigger)
 			time_t time_start, time_end;
 			printf ("%s IS MISSING\n", uid);
 
-			get_component_occur_times (comp, &time_start, &time_end,
+			e_cal_util_get_component_occur_times (comp, &time_start, &time_end,
 						   resolve_tzid, cbfile->priv->icalcomp,
 						   cbfile->priv->default_zone,
 						   e_cal_backend_get_kind (E_CAL_BACKEND (cbfile)));

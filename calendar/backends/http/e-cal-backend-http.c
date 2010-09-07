@@ -274,17 +274,20 @@ empty_cache (ECalBackendHttp *cbhttp)
 	e_cal_backend_store_clean (priv->store);
 }
 
+/* TODO Do not replicate this in every backend */
 static icaltimezone *
 resolve_tzid (const char *tzid, gpointer user_data)
 {
-        icalcomponent *vcalendar_comp = user_data;
+	icaltimezone *zone;
+		
+	zone = (!strcmp (tzid, "UTC"))
+		? icaltimezone_get_utc_timezone ()
+		: icaltimezone_get_builtin_timezone_from_tzid (tzid);
+	
+	if (!zone)
+		e_cal_backend_internal_get_timezone (E_CAL_BACKEND (user_data), tzid);
 
-        if (!tzid || !tzid[0])
-                return NULL;
-        else if (!strcmp (tzid, "UTC"))
-                return icaltimezone_get_utc_timezone ();
-
-        return icalcomponent_get_timezone (vcalendar_comp, tzid);
+	return zone;
 }
 
 static void
@@ -296,8 +299,8 @@ put_component_to_store (ECalBackendHttp *cb,
 
 	priv = cb->priv;
 
-	get_component_occur_times (comp, &time_start, &time_end,
-				   resolve_tzid, NULL, priv->default_zone,
+	e_cal_util_get_component_occur_times (comp, &time_start, &time_end,
+				   resolve_tzid, cb, priv->default_zone,
 				   e_cal_backend_get_kind (E_CAL_BACKEND (cb)));
 
 	e_cal_backend_store_put_component_with_time_range (priv->store, comp, time_start, time_end);

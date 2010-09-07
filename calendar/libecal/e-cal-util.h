@@ -151,7 +151,7 @@ void           e_cal_util_remove_instances (icalcomponent *icalcomp,
 
 gchar *e_cal_util_get_system_timezone_location (void);
 icaltimezone *e_cal_util_get_system_timezone (void);
-void get_component_occur_times (ECalComponent *comp,
+void e_cal_util_get_component_occur_times (ECalComponent *comp,
 				   time_t* start,
 				   time_t* end,
 				   ECalRecurResolveTimezoneFn tz_cb,
