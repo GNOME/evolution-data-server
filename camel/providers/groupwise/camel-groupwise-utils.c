@@ -374,6 +374,34 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStream *content, Cam
 	*attach_list = g_slist_append (*attach_list, attachment);
 }
 
+static GSList *
+populate_recipients (CamelMimeMessage *message, EGwItem *item, gboolean redirect)
+{
+	GSList *recipient_list = NULL;
+	CamelAddress *recipients;
+
+	if (redirect)
+		recipients = CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_RESENT_TO));
+	else
+		recipients = CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_TO));
+	recipient_list=add_recipients(recipient_list,recipients,E_GW_ITEM_RECIPIENT_TO);
+
+	if (redirect)
+		recipients = CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_RESENT_CC));
+	else
+		recipients = CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_CC));
+	recipient_list=add_recipients(recipient_list,recipients,E_GW_ITEM_RECIPIENT_CC);
+
+	if (redirect)
+		recipients = CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_RESENT_BCC));
+	else
+		recipients = CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_BCC));
+	recipient_list=add_recipients(recipient_list,recipients,E_GW_ITEM_RECIPIENT_BC);
+	recipient_list = g_slist_reverse (recipient_list);
+
+	return recipient_list;
+}
+
 EGwItem *
 camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *message, CamelAddress *from)
 {
@@ -383,21 +411,14 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 	gchar *send_options = NULL;
 	CamelMultipart *mp;
 	GSList *recipient_list = NULL, *attach_list = NULL;
-	CamelAddress *recipients;
 
 	/*Egroupwise item*/
 	item = e_gw_item_new_empty ();
 
 	/*populate recipient list*/
-	recipients = CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_TO));
-	recipient_list=add_recipients(recipient_list,recipients,E_GW_ITEM_RECIPIENT_TO);
-
-	recipients = CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_CC));
-	recipient_list=add_recipients(recipient_list,recipients,E_GW_ITEM_RECIPIENT_CC);
-
-	recipients = CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_BCC));
-	recipient_list=add_recipients(recipient_list,recipients,E_GW_ITEM_RECIPIENT_BC);
-	recipient_list = g_slist_reverse (recipient_list);
+	recipient_list = populate_recipients (message, item, TRUE);
+	if (recipient_list == NULL)
+		recipient_list = populate_recipients (message, item, FALSE);
 
 	/** Get the mime parts from CamelMimemessge **/
 	mp = (CamelMultipart *)camel_medium_get_content (CAMEL_MEDIUM (message));
