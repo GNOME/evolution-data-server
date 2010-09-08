@@ -477,11 +477,6 @@ static void cal_object_time_from_time		(CalObjTime *cotime,
 						 icaltimezone *zone);
 static gint cal_obj_date_only_compare_func	(gconstpointer arg1,
 						 gconstpointer arg2);
-
-static gboolean e_cal_recur_ensure_end_dates	(ECalComponent	*comp,
-						 gboolean	 refresh,
-						 ECalRecurResolveTimezoneFn tz_cb,
-						 gpointer	 tz_cb_data);
 static gboolean e_cal_recur_ensure_rule_end_date	(ECalComponent	*comp,
 						 icalproperty	*prop,
 						 gboolean	 exception,
@@ -3784,7 +3779,7 @@ cal_obj_time_to_string		(CalObjTime	*cotime)
    was changed, i.e. if the component should be saved at some point.
    We store the enddate in the "X-EVOLUTION-ENDDATE" parameter of the RRULE
    or EXRULE. */
-static gboolean
+gboolean
 e_cal_recur_ensure_end_dates (ECalComponent	*comp,
 			    gboolean		 refresh,
 			    ECalRecurResolveTimezoneFn  tz_cb,

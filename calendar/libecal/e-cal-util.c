@@ -1212,6 +1212,8 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 	g_return_if_fail (start != NULL);
 	g_return_if_fail (end != NULL);
 
+	e_cal_recur_ensure_end_dates (comp, FALSE, tz_cb, tz_cb_data);
+	
 	/* Get dtstart of the component and convert it to UTC */
 	e_cal_component_get_dtstart (comp, &dt_start);
 

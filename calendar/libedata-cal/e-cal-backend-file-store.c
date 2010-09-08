@@ -618,7 +618,7 @@ resolve_tzid (const char *tzid, gpointer user_data)
 		: icaltimezone_get_builtin_timezone_from_tzid (tzid);
 	
 	if (!zone)
-		zone = e_cal_backend_store_get_timezone (E_CAL_BACKEND_STORE (user_data), tzid);
+		zone = (icaltimezone *) e_cal_backend_store_get_timezone (E_CAL_BACKEND_STORE (user_data), tzid);
 
 	return zone;
 }

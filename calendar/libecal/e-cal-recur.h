@@ -51,6 +51,12 @@ e_cal_recur_obtain_enddate (struct icalrecurrencetype *ir,
                             icaltimezone *zone,
                             gboolean convert_end_date);
 
+gboolean
+e_cal_recur_ensure_end_dates (ECalComponent	*comp,
+			    gboolean		 refresh,
+			    ECalRecurResolveTimezoneFn  tz_cb,
+			    gpointer		 tz_cb_data);
+		
 /* Localized nth-day-of-month strings. (Use with _() ) */
 #ifdef G_OS_WIN32
 extern const gchar **e_cal_get_recur_nth (void);
