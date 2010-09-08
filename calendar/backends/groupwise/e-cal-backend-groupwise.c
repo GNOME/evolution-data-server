@@ -1999,7 +1999,6 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 
 		/* If delay deliver has been set, server will not send the uid */
 		if (!uid_list || ((e_cal_component_get_vtype (comp) == E_CAL_COMPONENT_JOURNAL) && e_cal_component_has_organizer (comp))) {
-			*calobj = NULL;
 			g_object_unref (comp);
 			return;
 		}
