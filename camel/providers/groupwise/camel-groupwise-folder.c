@@ -1596,7 +1596,8 @@ gw_update_cache (CamelFolder *folder, GList *list, GError **error, gboolean uid_
 	guint32 item_status, status_flags = 0;
 	CamelFolderChangeInfo *changes = NULL;
 	gboolean exists = FALSE;
-	GString *str = g_string_new (NULL);
+	GString *str_to = g_string_new (NULL);
+	GString *str_cc = g_string_new (NULL);
 	const gchar *priority = NULL;
 	gchar *container_id = NULL;
 	gboolean is_junk = FALSE;
@@ -1743,24 +1744,33 @@ gw_update_cache (CamelFolder *folder, GList *list, GError **error, gboolean uid_
 		org = e_gw_item_get_organizer (item);
 		mi->info.from = get_from_from_org (org);
 
-		g_string_truncate (str, 0);
+		g_string_truncate (str_to, 0);
+		g_string_truncate (str_cc, 0);
 		recp_list = e_gw_item_get_recipient_list (item);
 		if (recp_list) {
 			GSList *rl;
-			gint i = 0;
+			gint i_to = 0, i_cc = 0;
 			for (rl = recp_list; rl != NULL; rl = rl->next) {
 				EGwItemRecipient *recp = (EGwItemRecipient *) rl->data;
 				if (recp->type == E_GW_ITEM_RECIPIENT_TO) {
-					if (i)
-						str = g_string_append (str, ", ");
-					g_string_append_printf (str,"%s <%s>", recp->display_name, recp->email);
-					i++;
+					if (i_to)
+						str_to = g_string_append (str_to, ", ");
+					g_string_append_printf (str_to,"%s <%s>", recp->display_name, recp->email);
+					i_to++;
+				} else if (recp->type == E_GW_ITEM_RECIPIENT_CC) {
+					if (i_cc)
+						str_cc = g_string_append (str_cc, ", ");
+					g_string_append_printf (str_cc,"%s <%s>", recp->display_name, recp->email);
+					i_cc++;
 				}
 			}
 			if (exists)
 				camel_pstring_free(mi->info.to);
-			mi->info.to = camel_pstring_strdup (str->str);
-			g_string_truncate (str, 0);
+			mi->info.to = camel_pstring_strdup (str_to->str);
+			mi->info.cc = camel_pstring_strdup (str_cc->str);
+			
+			g_string_truncate (str_to, 0);
+			g_string_truncate (str_cc, 0);
 		}
 
 		if (type == E_GW_ITEM_TYPE_APPOINTMENT
@@ -1836,7 +1846,8 @@ gw_update_cache (CamelFolder *folder, GList *list, GError **error, gboolean uid_
 	}
 	camel_operation_end (NULL);
 	g_free (container_id);
-	g_string_free (str, TRUE);
+	g_string_free (str_to, TRUE);
+	g_string_free (str_cc, TRUE);
 	groupwise_sync_summary (folder, error);
 
 	camel_folder_changed (folder, changes);
@@ -1884,7 +1895,8 @@ gw_update_summary (CamelFolder *folder, GList *list,GError **error)
 	CamelFolderChangeInfo *changes = NULL;
 	CamelStore *parent_store;
 	gboolean exists = FALSE;
-	GString *str = g_string_new (NULL);
+	GString *str_to = g_string_new (NULL);
+	GString *str_cc = g_string_new (NULL);
 	const gchar *priority = NULL;
 	gchar *container_id = NULL;
 	gboolean is_junk = FALSE;
@@ -1983,22 +1995,31 @@ gw_update_summary (CamelFolder *folder, GList *list,GError **error)
 		org = e_gw_item_get_organizer (item);
 		mi->info.from = get_from_from_org (org);
 
-		g_string_truncate (str, 0);
+		g_string_truncate (str_to, 0);
+		g_string_truncate (str_cc, 0);
 		recp_list = e_gw_item_get_recipient_list (item);
 		if (recp_list) {
 			GSList *rl;
-			gint i = 0;
+			gint i_to = 0, i_cc = 0;
 			for (rl = recp_list; rl != NULL; rl = rl->next) {
 				EGwItemRecipient *recp = (EGwItemRecipient *) rl->data;
 				if (recp->type == E_GW_ITEM_RECIPIENT_TO) {
-					if (i)
-						str = g_string_append (str, ", ");
-					g_string_append_printf (str,"%s <%s>", recp->display_name, recp->email);
-					i++;
+					if (i_to)
+						str_to = g_string_append (str_to, ", ");
+					g_string_append_printf (str_to,"%s <%s>", recp->display_name, recp->email);
+					i_to++;
+				} else if (recp->type == E_GW_ITEM_RECIPIENT_CC) {
+					if (i_cc)
+						str_cc = g_string_append (str_cc, ", ");
+					g_string_append_printf (str_cc,"%s <%s>", recp->display_name, recp->email);
+					i_cc++;
 				}
 			}
-			mi->info.to = camel_pstring_strdup (str->str);
-			g_string_truncate (str, 0);
+			mi->info.to = camel_pstring_strdup (str_to->str);
+			mi->info.cc = camel_pstring_strdup (str_cc->str);
+
+			g_string_truncate (str_to, 0);
+			g_string_truncate (str_cc, 0);
 		}
 
 		if (type == E_GW_ITEM_TYPE_APPOINTMENT ||
@@ -2043,7 +2064,8 @@ gw_update_summary (CamelFolder *folder, GList *list,GError **error)
 		exists = FALSE;
 	}
 	g_free (container_id);
-	g_string_free (str, TRUE);
+	g_string_free (str_to, TRUE);
+	g_string_free (str_cc, TRUE);
 
 	camel_folder_changed (folder, changes);
 	camel_folder_change_info_free (changes);
