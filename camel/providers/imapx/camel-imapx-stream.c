@@ -208,7 +208,7 @@ camel_imapx_stream_init (CamelIMAPXStream *is)
 {
 	/* +1 is room for appending a 0 if we need to for a token */
 	is->ptr = is->end = is->buf = g_malloc(CAMEL_IMAPX_STREAM_SIZE+1);
-	is->tokenptr = is->tokenbuf = g_malloc(CAMEL_IMAPX_STREAM_SIZE+1);
+	is->tokenbuf = g_malloc(CAMEL_IMAPX_STREAM_SIZE+1);
 }
 
 /**
@@ -323,7 +323,7 @@ camel_imapx_stream_astring(CamelIMAPXStream *is, guchar **data, GError **error)
 			io(printf("astring too long\n"));
 			return IMAPX_TOK_PROTOCOL;
 		}
-		p = is->tokenptr;
+		p = is->tokenbuf;
 		camel_imapx_stream_set_literal(is, len);
 		do {
 			ret = camel_imapx_stream_getl(is, &start, &inlen);
@@ -333,7 +333,7 @@ camel_imapx_stream_astring(CamelIMAPXStream *is, guchar **data, GError **error)
 			p += inlen;
 		} while (ret > 0);
 		*p = 0;
-		*data = is->tokenptr;
+		*data = is->tokenbuf;
 		return 0;
 	case IMAPX_TOK_ERROR:
 		/* wont get unless no exception hanlder*/
@@ -362,7 +362,7 @@ camel_imapx_stream_nstring(CamelIMAPXStream *is, guchar **data, GError **error)
 			g_set_error (error, CAMEL_IMAPX_ERROR, 1, "nstring: literal too long");
 			return IMAPX_TOK_PROTOCOL;
 		}
-		p = is->tokenptr;
+		p = is->tokenbuf;
 		camel_imapx_stream_set_literal(is, len);
 		do {
 			ret = camel_imapx_stream_getl(is, &start, &inlen);
@@ -372,7 +372,7 @@ camel_imapx_stream_nstring(CamelIMAPXStream *is, guchar **data, GError **error)
 			p += inlen;
 		} while (ret > 0);
 		*p = 0;
-		*data = is->tokenptr;
+		*data = is->tokenbuf;
 		return 0;
 	case IMAPX_TOK_TOKEN:
 		p = *data;
@@ -569,8 +569,8 @@ camel_imapx_stream_token(CamelIMAPXStream *is, guchar **data, guint *len, GError
 			e = is->end;
 		}
 	} else if (c == '"') {
-		o = is->tokenptr;
-		oe = is->tokenptr + CAMEL_IMAPX_STREAM_TOKEN - 1;
+		o = is->tokenbuf;
+		oe = is->tokenbuf + CAMEL_IMAPX_STREAM_TOKEN - 1;
 		while (1) {
 			while (p < e) {
 				c = *p++;
@@ -612,8 +612,8 @@ camel_imapx_stream_token(CamelIMAPXStream *is, guchar **data, guint *len, GError
 			e = is->end;
 		}
 	} else {
-		o = is->tokenptr;
-		oe = is->tokenptr + CAMEL_IMAPX_STREAM_TOKEN - 1;
+		o = is->tokenbuf;
+		oe = is->tokenbuf + CAMEL_IMAPX_STREAM_TOKEN - 1;
 		digits = isdigit(c);
 		*o++ = c;
 		while (1) {

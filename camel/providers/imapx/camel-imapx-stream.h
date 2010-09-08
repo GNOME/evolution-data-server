@@ -73,7 +73,7 @@ struct _CamelIMAPXStream {
 	guchar *unget_token;
 	guint unget_len;
 
-	guchar *tokenbuf, *tokenptr;
+	guchar *tokenbuf;
 };
 
 struct _CamelIMAPXStreamClass {
