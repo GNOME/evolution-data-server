@@ -1,9 +1,11 @@
 /* Evolution calendar - iCalendar file backend
  *
+ * Copyright (C) 1993 Free Software Foundation, Inc.
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
  * Authors: Federico Mena-Quintero <federico@ximian.com>
  *          Rodrigo Moya <rodrigo@ximian.com>
+ *          Jan Brittenson <bson@gnu.ai.mit.edu>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU Lesser General Public
@@ -3579,6 +3581,64 @@ static GOptionEntry entries[] =
   { NULL }
 };
 
+/* Always add at least this many bytes when extending the buffer.  */
+#define MIN_CHUNK 64
+
+static int
+private_getline (char **lineptr, size_t *n, FILE *stream)
+{
+	int nchars_avail;
+	char *read_pos;
+
+	if (!lineptr || !n || !stream)
+		return -1;
+
+	if (!*lineptr) {
+		*n = MIN_CHUNK;
+		*lineptr = (char *)malloc (*n);
+		if (!*lineptr)
+			return -1;
+	}
+
+	nchars_avail = (int) *n;
+	read_pos = *lineptr;
+
+	for (;;) {
+		int c = getc (stream);
+
+		if (nchars_avail < 2) {
+			if (*n > MIN_CHUNK)
+				*n *= 2;
+			else
+				*n += MIN_CHUNK;
+
+			nchars_avail = (int)(*n + *lineptr - read_pos);
+			*lineptr = (char *)realloc (*lineptr, *n);
+			if (!*lineptr)
+				return -1;
+			read_pos = *n - nchars_avail + *lineptr;
+		}
+
+		if (ferror (stream) || c == EOF) {
+			if (read_pos == *lineptr)
+				return -1;
+			else
+				break;
+		}
+
+		*read_pos++ = c;
+		nchars_avail--;
+
+		if (c == '\n')
+			/* Return the line.  */
+			break;
+	}
+
+	*read_pos = '\0';
+
+	return (int)(read_pos - (*lineptr));
+}
+
 int
 main(int argc, char **argv)
 {
@@ -3634,7 +3694,7 @@ main(int argc, char **argv)
 		fin = stdin;
 	}
 
-	while ((read = getline(&line, &len, fin)) != -1) {
+	while ((read = private_getline(&line, &len, fin)) != -1) {
 		g_print ("Query %d: %s", num++, line);
 
 		if (only_execute)

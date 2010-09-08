@@ -40,7 +40,6 @@ test_interval_searches_LDADD = \
 	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la		\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la			\
-	libecalbackendfile.la		\
 	$(EVOLUTION_CALENDAR_LIBS)
 
 test_interval_searches_CPPFLAGS = \
