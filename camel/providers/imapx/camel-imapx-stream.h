@@ -74,6 +74,7 @@ struct _CamelIMAPXStream {
 	guint unget_len;
 
 	guchar *tokenbuf;
+	guint bufsize;
 };
 
 struct _CamelIMAPXStreamClass {
