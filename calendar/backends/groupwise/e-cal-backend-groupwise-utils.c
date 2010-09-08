@@ -917,6 +917,7 @@ set_attachments_to_cal_component (EGwItem *item, ECalComponent *comp, ECalBacken
 		if (!attach_file_url) {
 			g_message ("Could not get attach_file_url %s \n", error->message);
 			g_clear_error (&error);
+			g_free (filename);
 			return;
 		}
 
