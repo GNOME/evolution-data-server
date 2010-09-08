@@ -3550,7 +3550,7 @@ imapx_command_step_fetch_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	}
 	isum->uidnext = ifolder->uidnext_on_server;
 
-cleanup:
+ cleanup:
 	for (i=0;i<infos->len;i++) {
 		struct _refresh_info *r = &g_array_index(infos, struct _refresh_info, i);
 
@@ -3558,7 +3558,8 @@ cleanup:
 		g_free(r->uid);
 	}
 	g_array_free(job->u.refresh_info.infos, TRUE);
-	camel_folder_change_info_free (job->u.refresh_info.changes);
+	if (job->type == IMAPX_JOB_FETCH_NEW_MESSAGES)
+		camel_folder_change_info_free (job->u.refresh_info.changes);
 
 	imapx_job_done (is, job);
 	camel_imapx_command_free (ic);
