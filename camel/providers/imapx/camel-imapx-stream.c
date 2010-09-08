@@ -209,7 +209,6 @@ camel_imapx_stream_init (CamelIMAPXStream *is)
 	/* +1 is room for appending a 0 if we need to for a token */
 	is->ptr = is->end = is->buf = g_malloc(CAMEL_IMAPX_STREAM_SIZE+1);
 	is->tokenptr = is->tokenbuf = g_malloc(CAMEL_IMAPX_STREAM_SIZE+1);
-	is->tokenend = is->tokenbuf + CAMEL_IMAPX_STREAM_SIZE;
 }
 
 /**
