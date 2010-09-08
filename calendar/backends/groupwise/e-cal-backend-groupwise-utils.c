@@ -909,13 +909,13 @@ set_attachments_to_cal_component (EGwItem *item, ECalComponent *comp, ECalBacken
 		gchar *filename;
 
 		attach_item = (EGwItemAttachment *) l->data;
-		attach_file_url = g_strconcat (
-			"file://", cache_dir, "/", uid, "-", attach_item->name, NULL);
+		filename = g_strconcat (
+			cache_dir, G_DIR_SEPARATOR_S, uid, "-", attach_item->name, NULL);
 
-		filename = g_filename_from_uri (attach_file_url, NULL, &error);
-		
-		if (!filename) {
-			g_message ("Could not get filename %s \n", error->message);
+		attach_file_url = g_filename_to_uri (filename, NULL, &error);
+
+		if (!attach_file_url) {
+			g_message ("Could not get attach_file_url %s \n", error->message);
 			g_clear_error (&error);
 			return;
 		}
