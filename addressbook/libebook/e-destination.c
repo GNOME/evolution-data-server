@@ -853,60 +853,51 @@ const gchar *
 e_destination_get_address (const EDestination *dest)
 {
 	struct _EDestinationPrivate *priv;
+	CamelInternetAddress *addr = camel_internet_address_new ();
 
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
 
 	priv = (struct _EDestinationPrivate *)dest->priv; /* cast out const */
 
-	if (priv->addr == NULL) {
-		CamelInternetAddress *addr = camel_internet_address_new ();
+	if (e_destination_is_evolution_list (dest)) {
+		GList *iter = dest->priv->list_dests;
 
-		if (e_destination_is_evolution_list (dest)) {
-			GList *iter = dest->priv->list_dests;
+		while (iter) {
+			EDestination *list_dest = E_DESTINATION (iter->data);
+		
+			if (!e_destination_empty (list_dest) && !list_dest->priv->ignored) {
+				const char *name, *email;
+				name = e_destination_get_name (list_dest);
+				email = e_destination_get_email (list_dest);
 
-			while (iter) {
-				EDestination *list_dest = E_DESTINATION (iter->data);
-
-				if (!e_destination_empty (list_dest) && !list_dest->priv->ignored) {
-					const gchar *name, *email;
-					name = e_destination_get_name (list_dest);
-					email = e_destination_get_email (list_dest);
-
-					if (nonempty (name) && nonempty (email))
-						camel_internet_address_add (addr, name, email);
-					else if (nonempty (email))
-						camel_address_decode (CAMEL_ADDRESS (addr), email);
-					else /* this case loses i suppose, but there's
-						nothing we can do here */
-						camel_address_decode (CAMEL_ADDRESS (addr), name);
-				}
-				iter = g_list_next (iter);
+				if (nonempty (name) && nonempty (email))
+					camel_internet_address_add (addr, name, email);
+				else if (nonempty (email))
+					camel_address_decode (CAMEL_ADDRESS (addr), email);
+				else /* this case loses i suppose, but there's
+					nothing we can do here */
+					camel_address_decode (CAMEL_ADDRESS (addr), name);
 			}
+			iter = g_list_next (iter);
+		}		
+		priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
+	} else if (priv->raw) {
+ 		if (camel_address_unformat (CAMEL_ADDRESS (addr), priv->raw))
+ 			priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
+	} else {
+		const char *name, *email;
+		name = e_destination_get_name (dest);
+		email = e_destination_get_email (dest);
 
-			priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
-		} else if (priv->raw) {
-
-			if (camel_address_unformat (CAMEL_ADDRESS (addr), priv->raw)) {
-				priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
-			}
-		} else {
-			const gchar *name, *email;
-			name = e_destination_get_name (dest);
-			email = e_destination_get_email (dest);
-
-			if (nonempty (name) && nonempty (email))
-				camel_internet_address_add (addr, name, email);
-			else if (nonempty (email))
-				camel_address_decode (CAMEL_ADDRESS (addr), email);
-			else /* this case loses i suppose, but there's
-				nothing we can do here */
-				camel_address_decode (CAMEL_ADDRESS (addr), name);
-
-			priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
-		}
-
-		g_object_unref (addr);
+		if (nonempty (name) && nonempty (email))
+			camel_internet_address_add (addr, name, email);
+		else if (nonempty (email))
+			camel_address_decode (CAMEL_ADDRESS (addr), email);
+		else /* this case loses i suppose, but there's
+			nothing we can do here */
+			camel_address_decode (CAMEL_ADDRESS (addr), name);
 	}
+	g_object_unref (addr);
 
 	return priv->addr;
 }
