@@ -92,7 +92,10 @@ get_direction (EIntervalNode *x, time_t z_start, time_t z_end)
 static inline gchar *
 component_key(const gchar *uid, const gchar *rid)
 {
-	return g_strdup_printf("%s_%s", uid, rid);
+	if (rid)
+		return	g_strdup_printf("%s_%s", uid, rid);
+	else
+		return g_strdup_printf("%s", uid);
 }
 
 /**
@@ -633,7 +636,7 @@ e_intervaltree_remove (EIntervalTree *tree,
 	if (!z || z == nil)
 	{
 		g_message (G_STRLOC ": Cannot remove node - could not find node in tree\n");
-		g_static_rec_mutex_unlock (&priv->mutex);	
+		g_static_rec_mutex_unlock (&priv->mutex);
 		return FALSE;
 	}
 

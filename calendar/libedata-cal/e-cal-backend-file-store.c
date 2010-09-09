@@ -685,6 +685,7 @@ scan_vcalendar (ECalBackendStore *store, icalcomponent *top_icalcomp)
 		e_cal_util_get_component_occur_times (comp, &time_start, &time_end,
 						resolve_tzid, store, dzone, kind);
 
+		put_component (fstore, comp);
 		e_cal_backend_store_interval_tree_add_comp (store, comp, time_start, time_end);
 
 		g_object_unref (comp);

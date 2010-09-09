@@ -252,8 +252,8 @@ e_cal_backend_store_put_component_with_time_range (ECalBackendStore *store, ECal
 	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
 
 	if ((E_CAL_BACKEND_STORE_GET_CLASS (store))->put_component (store, comp)) {
-		e_intervaltree_insert (priv->intervaltree, occurence_start, occurence_end, comp);
-		return TRUE;
+		if (e_intervaltree_insert (priv->intervaltree, occurence_start, occurence_end, comp))
+			return TRUE;
 	}
 	return FALSE;
 
@@ -291,8 +291,8 @@ e_cal_backend_store_remove_component (ECalBackendStore *store, const gchar *uid,
 	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
 
 	if ((E_CAL_BACKEND_STORE_GET_CLASS (store))->remove_component (store, uid, rid)) {
-		e_intervaltree_remove (priv->intervaltree, uid, rid);
-		return TRUE;
+		if (e_intervaltree_remove (priv->intervaltree, uid, rid))
+			return TRUE;
 	}
 	return FALSE;
 }
