@@ -17,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=Misc.\n"
 "POT-Creation-Date: 2010-09-04 10:08+0000\n"
-"PO-Revision-Date: 2010-09-07 22:08+0300\n"
+"PO-Revision-Date: 2010-09-09 08:04+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -520,10 +520,10 @@ msgid "TLS not available"
 msgstr "TLS ei ole saadaval"
 
 msgid "Address book does not exist"
-msgstr "Aadressiraamatut pole olemas."
+msgstr "Aadressiraamatut pole olemas"
 
 msgid "Book removed"
-msgstr ""
+msgstr "Raamat on eemaldatud"
 
 msgid "Not available in offline mode"
 msgstr "Pole võrguvabas režiimis saadaval"
@@ -549,7 +549,7 @@ msgid "Invalid server version"
 msgstr "Vigane serveri versioon"
 
 msgid "No space"
-msgstr ""
+msgstr "Puudub ruum"
 
 msgid "Invalid argument"
 msgstr "Vigane parameeter"
@@ -888,7 +888,7 @@ msgid "Authentication required"
 msgstr "Autentimine on vajalik"
 
 msgid "A D-Bus exception has occurred"
-msgstr ""
+msgstr "Leidis aset D-Bus'i viga"
 
 msgid "Unknown error"
 msgstr "Tundmatu viga"
@@ -1941,7 +1941,7 @@ msgid "Connection refused"
 msgstr "Ühendus tühistatud"
 
 msgid "Time-to-live expired"
-msgstr ""
+msgstr "Eluiga ületatud"
 
 msgid "Command not supported by SOCKS server"
 msgstr "Käsk pole SOCKS-serveri poolt toetatud"
@@ -2887,7 +2887,7 @@ msgid ""
 "Folder may be corrupt, copy saved in '%s'"
 msgstr ""
 "Puhverkausta %s pole võimalik sünkroniseerida: %s\n"
-"Kaust võib olla rikutud. Koopia salvestati '%s' alla."
+"Kaust võib olla rikutud. Koopia salvestati '%s' alla"
 
 #, c-format
 msgid "Internal error: UID in invalid format: %s"
