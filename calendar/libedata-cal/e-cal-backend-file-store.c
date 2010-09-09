@@ -381,10 +381,14 @@ e_cal_backend_file_store_put_key_value (ECalBackendStore *store, const gchar *ke
 
 	g_static_rw_lock_writer_lock (&priv->lock);
 
-	if (e_file_cache_get_object (priv->keys_cache, key))
-		ret_val = e_file_cache_replace_object (priv->keys_cache, key, value);
-	else
-		ret_val = e_file_cache_add_object (priv->keys_cache, key, value);
+	if (!value)
+		ret_val = e_file_cache_remove_object (priv->keys_cache, key);
+	else {
+		if (e_file_cache_get_object (priv->keys_cache, key))
+			ret_val = e_file_cache_replace_object (priv->keys_cache, key, value);
+		else
+			ret_val = e_file_cache_add_object (priv->keys_cache, key, value);
+	}
 
 	g_static_rw_lock_writer_unlock (&priv->lock);
 
