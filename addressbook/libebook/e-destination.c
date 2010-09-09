@@ -879,7 +879,7 @@ e_destination_get_address (const EDestination *dest)
 					camel_address_decode (CAMEL_ADDRESS (addr), name);
 			}
 			iter = g_list_next (iter);
-		}		
+		}
 		priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
 	} else if (priv->raw) {
  		if (camel_address_unformat (CAMEL_ADDRESS (addr), priv->raw))
@@ -896,6 +896,8 @@ e_destination_get_address (const EDestination *dest)
 		else /* this case loses i suppose, but there's
 			nothing we can do here */
 			camel_address_decode (CAMEL_ADDRESS (addr), name);
+
+		priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
 	}
 	g_object_unref (addr);
 
