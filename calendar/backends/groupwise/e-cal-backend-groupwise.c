@@ -59,6 +59,7 @@
 #endif
 
 #define SERVER_UTC_TIME "server_utc_time"
+#define LOCAL_UTC_TIME "local_utc_time"
 #define CACHE_MARKER "populated"
 
 #define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
@@ -95,6 +96,8 @@ struct _ECalBackendGroupwisePrivate {
 
 	/* fields for storing info while offline */
 	gchar *user_email;
+
+	gboolean first_delta_fetch;
 
 	/* A mutex to control access to the private structure for the following */
 	GStaticRecMutex rec_mutex;
@@ -402,15 +405,11 @@ get_deltas (gpointer handle)
 	GList *item_list = NULL, *total_list = NULL, *l;
 	GSList *cache_ids = NULL, *ls;
 	GPtrArray *uid_array = NULL;
-	gchar *time_string = NULL;
 	gchar t_str [26];
+	const gchar *local_utc_time = NULL, *time_string = NULL, *serv_time, *position;
 	gchar *attempts;
-	const gchar *serv_time;
-	const gchar *position;
-
+	icaltimetype current;
 	EGwFilter *filter;
-	gint time_interval;
-	icaltimetype temp;
 	gboolean done = FALSE;
 	gint cursor = 0;
 	struct tm tm;
@@ -435,26 +434,11 @@ get_deltas (gpointer handle)
 
 	serv_time = e_cal_backend_store_get_key_value (store, SERVER_UTC_TIME);
 	if (serv_time) {
-		icaltimetype tmp;
-		g_strlcpy (t_str, e_cal_backend_store_get_key_value (store, SERVER_UTC_TIME), 26);
-		if (!*t_str || !strcmp (t_str, "")) {
-			/* FIXME: When time-stamp is crashed, getting changes from current time */
-			g_warning ("\n\a Could not get the correct time stamp. \n\a");
-			tmp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-			current_time = icaltime_as_timet_with_zone (tmp, icaltimezone_get_utc_timezone ());
-			gmtime_r (&current_time, &tm);
-			strftime (t_str, 26, "%Y-%m-%dT%H:%M:%SZ", &tm);
-		}
-	} else {
-		icaltimetype tmp;
-		/* FIXME: When time-stamp is crashed, getting changes from current time */
-		g_warning ("\n\a Could not get the correct time stamp. \n\a");
-		tmp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-		current_time = icaltime_as_timet_with_zone (tmp, icaltimezone_get_utc_timezone ());
-		gmtime_r (&current_time, &tm);
-		strftime (t_str, 26, "%Y-%m-%dT%H:%M:%SZ", &tm);
-	}
-	time_string = g_strdup (t_str);
+		time_string = e_cal_backend_store_get_key_value (store, SERVER_UTC_TIME);
+		if (!time_string || !*time_string)
+			time_string = e_gw_connection_get_server_time (priv->cnc);
+	} else
+		time_string = e_gw_connection_get_server_time (priv->cnc);
 
 	filter = e_gw_filter_new ();
 	/* Items modified after the time-stamp */
@@ -550,26 +534,44 @@ get_deltas (gpointer handle)
 	}
 	e_cal_backend_store_thaw_changes (store);
 
-	temp = icaltime_from_string (time_string);
-	current_time = icaltime_as_timet_with_zone (temp, icaltimezone_get_utc_timezone ());
-	gmtime_r (&current_time, &tm);
+	/* Server utc time is the time when we lasted updated changes from server. local_utc_time is the system utc time. As
+	   there is no way to get the server time on demand, we use the store system utc time to calculate server's time */
+	local_utc_time = e_cal_backend_store_get_key_value (store, LOCAL_UTC_TIME);
+	current = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
 
-	time_interval = get_cache_refresh_interval (cbgw) / 60000;
+	if (priv->first_delta_fetch || !local_utc_time || !*local_utc_time) {
+		e_cal_backend_store_put_key_value (store, SERVER_UTC_TIME, e_gw_connection_get_server_time (cnc));
+	} else {
+		icaltimetype old_local, server_utc;
+		struct icaldurationtype dur;
+
+		old_local = icaltime_from_string (local_utc_time);
+
+		dur = icaltime_subtract (current, old_local);
+		server_utc = icaltime_from_string (time_string);
+		icaltime_adjust (&server_utc, dur.days, dur.hours, dur.minutes, dur.seconds);
+	
+		current_time = icaltime_as_timet_with_zone (server_utc, icaltimezone_get_utc_timezone ());
+		gmtime_r (&current_time, &tm);
+
+		strftime (t_str, 26, "%Y-%m-%dT%H:%M:%SZ", &tm);
+		time_string = t_str;
+
+		e_cal_backend_store_put_key_value (store, SERVER_UTC_TIME, time_string);
+	}
+
+	priv->first_delta_fetch = FALSE;
+	
+	current_time = icaltime_as_timet_with_zone (current, icaltimezone_get_utc_timezone ());
+	gmtime_r (&current_time, &tm);
+	strftime (t_str, 26, "%Y-%m-%dT%H:%M:%SZ", &tm);
+	time_string = t_str;
+	e_cal_backend_store_put_key_value (store, LOCAL_UTC_TIME, time_string);
 
 	if (attempts) {
-		tm.tm_min += (time_interval * g_ascii_strtod (attempts, NULL));
 		e_cal_backend_store_put_key_value (store, ATTEMPTS_KEY, NULL);
-	} else {
-		tm.tm_min += time_interval;
+		g_free (attempts);
 	}
-	g_free (attempts);
-	strftime (t_str, 26, "%Y-%m-%dT%H:%M:%SZ", &tm);
-	time_string = g_strdup (t_str);
-
-	e_cal_backend_store_put_key_value (store, SERVER_UTC_TIME, time_string);
-
-	g_free (time_string);
-	time_string = NULL;
 
 	if (item_list) {
 		g_list_free (item_list);
@@ -1640,14 +1642,11 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
 
-	PRIV_LOCK (priv);
-
 	if (!strcmp (sexp, "#t"))
 		search_needed = FALSE;
 
 	cbsexp = e_cal_backend_sexp_new (sexp);
 	if (!cbsexp) {
-		PRIV_UNLOCK (priv);
 		g_propagate_error (perror, EDC_ERROR (InvalidQuery));
 		return;
 	}
@@ -1676,8 +1675,6 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 	g_object_unref (cbsexp);
 	g_slist_foreach (components, (GFunc) g_object_unref, NULL);
 	g_slist_free (components);
-
-	PRIV_UNLOCK (priv);
 }
 
 /* get_query handler for the groupwise backend */
@@ -2788,6 +2785,7 @@ e_cal_backend_groupwise_init (ECalBackendGroupwise *cbgw)
 
 	priv->cnc = NULL;
 	priv->sendoptions_sync_timeout = 0;
+	priv->first_delta_fetch = TRUE;
 
 	/* create the mutex for thread safety */
 	g_static_rec_mutex_init (&priv->rec_mutex);
