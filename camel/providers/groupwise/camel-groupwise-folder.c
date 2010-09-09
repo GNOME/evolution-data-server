@@ -242,6 +242,52 @@ groupwise_folder_get_message( CamelFolder *folder, const gchar *uid, GError **er
 
 /* create a mime message out of an gwitem */
 static void
+groupwise_set_mail_message_dates (CamelMimeMessage *msg, EGwItem *item)
+{
+	gchar *dtstring = NULL;
+
+	dtstring = e_gw_item_get_creation_date (item);
+	if (dtstring) {
+		gint offset = 0;
+		time_t actual_time = e_gw_connection_get_date_from_string (dtstring);
+		camel_mime_message_set_date (msg, actual_time, offset);
+	} else {
+		time_t actual_time;
+		gint offset = 0;
+		dtstring = e_gw_item_get_delivered_date (item);
+		if (dtstring) {
+			actual_time = e_gw_connection_get_date_from_string (dtstring);
+		} else
+			actual_time = (time_t) 0;
+		camel_mime_message_set_date (msg, actual_time, offset);
+	}
+}
+
+static void
+groupwise_set_mail_mi_dates (CamelGroupwiseMessageInfo *mi, EGwItem *item)
+{
+	gchar *sent_date = NULL, *received_date = NULL;
+	time_t actual_time = (time_t) 0;
+
+	sent_date = e_gw_item_get_creation_date(item);
+	received_date = e_gw_item_get_delivered_date (item);
+
+	if (sent_date) {
+		actual_time = e_gw_connection_get_date_from_string (sent_date);
+		mi->info.date_sent = actual_time;
+	} 
+	
+	if (received_date) {
+		actual_time = e_gw_connection_get_date_from_string (received_date);
+		mi->info.date_received = actual_time;
+	} else
+		mi->info.date_received = actual_time;
+	
+	if (!sent_date)
+		mi->info.date_sent = actual_time;
+}
+
+static void
 groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item)
 {
 	EGwItemType type;
@@ -262,21 +308,7 @@ groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item)
 		return;
 	}
 
-	dtstring = e_gw_item_get_delivered_date (item);
-	if (dtstring) {
-		gint offset = 0;
-		time_t actual_time = e_gw_connection_get_date_from_string (dtstring);
-		camel_mime_message_set_date (msg, actual_time, offset);
-	} else {
-		time_t actual_time;
-		gint offset = 0;
-		dtstring = e_gw_item_get_creation_date (item);
-		if (dtstring) {
-				actual_time = e_gw_connection_get_date_from_string (dtstring);
-		} else
-				actual_time = (time_t) 0;
-		camel_mime_message_set_date (msg, actual_time, offset);
-	}
+	groupwise_set_mail_message_dates (msg, item);
 }
 
 /* convert an item to a msg body. set content type etc. */
@@ -1781,22 +1813,8 @@ gw_update_cache (CamelFolder *folder, GList *list, GError **error, gboolean uid_
 				time_t actual_time = e_gw_connection_get_date_from_string (temp_date);
 				mi->info.date_sent = mi->info.date_received = actual_time;
 			}
-		} else {
-			temp_date = e_gw_item_get_delivered_date(item);
-			if (temp_date) {
-				time_t actual_time = e_gw_connection_get_date_from_string (temp_date);
-				mi->info.date_sent = mi->info.date_received = actual_time;
-			} else {
-				time_t actual_time;
-				temp_date = e_gw_item_get_creation_date (item);
-				if (temp_date) {
-						/* Creation date can be returned as null for auto-generated meetings */
-						actual_time = e_gw_connection_get_date_from_string (temp_date);
-				} else
-					actual_time = (time_t) 0;
-				mi->info.date_sent = mi->info.date_received = actual_time;
-			}
-		}
+		} else 
+			groupwise_set_mail_mi_dates (mi, item);
 
 		mi->info.dirty = TRUE;
 		if (exists) {
@@ -2030,21 +2048,8 @@ gw_update_summary (CamelFolder *folder, GList *list,GError **error)
 				time_t actual_time = e_gw_connection_get_date_from_string (temp_date);
 				mi->info.date_sent = mi->info.date_received = actual_time;
 			}
-		} else {
-			temp_date = e_gw_item_get_delivered_date(item);
-			if (temp_date) {
-				time_t actual_time = e_gw_connection_get_date_from_string (temp_date);
-				mi->info.date_sent = mi->info.date_received = actual_time;
-			} else {
-				time_t actual_time;
-				temp_date = e_gw_item_get_creation_date (item);
-				if (temp_date) {
-						actual_time = e_gw_connection_get_date_from_string (temp_date);
-				} else
-						actual_time = (time_t) 0;
-				mi->info.date_sent = mi->info.date_received = actual_time;
-			}
-		}
+		} else 
+			groupwise_set_mail_mi_dates (mi, item);
 
 		mi->info.uid = camel_pstring_strdup(e_gw_item_get_id(item));
 		if (!exists)
