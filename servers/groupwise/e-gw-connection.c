@@ -534,6 +534,7 @@ e_gw_connection_new_with_error_handler (const gchar *uri, const gchar *username,
 	response = e_gw_connection_send_message (cnc, msg);
 
 	if (!response) {
+		errors->status = E_GW_CONNECTION_STATUS_UNKNOWN;
 		g_object_unref (cnc);
 		g_static_mutex_unlock (&connecting);
 		g_object_unref (msg);

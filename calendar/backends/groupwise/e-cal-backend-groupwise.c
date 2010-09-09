@@ -1021,6 +1021,9 @@ connect_to_server (ECalBackendGroupwise *cbgw, GError **perror)
 		return;
 	}
 
+	errors.status = E_GW_CONNECTION_STATUS_OK;
+	errors.description = NULL;
+
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
 
 	parent_user = (gchar *) e_source_get_property (source, "parent_id_name");
@@ -1085,9 +1088,14 @@ connect_to_server (ECalBackendGroupwise *cbgw, GError **perror)
 		if (errors.status == E_GW_CONNECTION_STATUS_INVALID_PASSWORD) {
 			g_propagate_error (perror, EDC_ERROR (AuthenticationFailed));
 			return;
+		} else if (errors.status == E_GW_CONNECTION_STATUS_UNKNOWN) {
+			g_propagate_error (perror,EDC_ERROR (OtherError));
+			return;
 		}
 
 		g_propagate_error (perror, EDC_ERROR_EX (OtherError, _(errors.description)));
+		if (errors.description)
+			g_free (errors.description);
 		return;
 	}
 	priv->mode_changed = FALSE;
