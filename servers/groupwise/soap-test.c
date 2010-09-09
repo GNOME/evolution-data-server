@@ -51,8 +51,9 @@ main (gint argc, gchar *argv[])
 	g_type_init ();
 	g_thread_init (NULL);
 
+	/* Hostname Eg: http(s)://domain_name:/port_number/soap */
 	if (argc != 3 && argc != 4) {
-		g_print ("Usage: %s hostname username [password]\n", argv[0]);
+		g_print ("Usage: %s hosturl username [password]\n", argv[0]);
 		return -1;
 	}
 
