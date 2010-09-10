@@ -17,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=Misc.\n"
 "POT-Creation-Date: 2010-09-04 10:08+0000\n"
-"PO-Revision-Date: 2010-09-09 08:04+0300\n"
+"PO-Revision-Date: 2010-09-10 10:23+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -608,7 +608,7 @@ msgstr "Kontakte pole võimalik eemaldada: %s"
 #. Translators: The '%s' is replaced with a detailed error message
 #, c-format
 msgid "Cannot get supported fields: %s"
-msgstr "Toetatud välju võimalik hankida: %s"
+msgstr "Toetatud välju pole võimalik hankida: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #, c-format
@@ -1938,7 +1938,7 @@ msgid "Host is unreachable from SOCKS server"
 msgstr "Host pole SOCKS-serveri poolt leitav"
 
 msgid "Connection refused"
-msgstr "Ühendus tühistatud"
+msgstr "Ühendusest keelduti"
 
 msgid "Time-to-live expired"
 msgstr "Eluiga ületatud"
@@ -2404,7 +2404,7 @@ msgid "SSL negotiations failed"
 msgstr "Tõrge SSL-läbirääkimistel"
 
 msgid "SSL is not available in this build"
-msgstr "SSL ei ole toetatud"
+msgstr "SSL ei ole selles versioonis saadaval"
 
 #, c-format
 msgid "Connection cancelled"
