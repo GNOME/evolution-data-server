@@ -99,7 +99,9 @@ e_source_selector_dialog_init (ESourceSelectorDialog *dialog)
 	/* prepare the dialog */
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Select destination"));
 	gtk_window_set_default_size (GTK_WINDOW (dialog), 320, 240);
+#if !GTK_CHECK_VERSION(2,21,8)
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+#endif
 	gtk_widget_ensure_style (GTK_WIDGET (dialog));
 	gtk_container_set_border_width (GTK_CONTAINER (content_area), 0);
 	gtk_container_set_border_width (GTK_CONTAINER (action_area), 12);
