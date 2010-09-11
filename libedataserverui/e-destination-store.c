@@ -47,16 +47,16 @@ struct _EDestinationStorePrivate {
 	gint stamp;
 };
 
-static GType column_types [E_DESTINATION_STORE_NUM_COLUMNS];
+static GType column_types[E_DESTINATION_STORE_NUM_COLUMNS];
 
 static void e_destination_store_tree_model_init (GtkTreeModelIface *iface);
 
 G_DEFINE_TYPE_EXTENDED (
 	EDestinationStore, e_destination_store, G_TYPE_OBJECT, 0,
 	G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL, e_destination_store_tree_model_init);
-	column_types [E_DESTINATION_STORE_COLUMN_NAME]    = G_TYPE_STRING;
-	column_types [E_DESTINATION_STORE_COLUMN_EMAIL]   = G_TYPE_STRING;
-	column_types [E_DESTINATION_STORE_COLUMN_ADDRESS] = G_TYPE_STRING;
+	column_types[E_DESTINATION_STORE_COLUMN_NAME]    = G_TYPE_STRING;
+	column_types[E_DESTINATION_STORE_COLUMN_EMAIL]   = G_TYPE_STRING;
+	column_types[E_DESTINATION_STORE_COLUMN_ADDRESS] = G_TYPE_STRING;
 )
 
 static GtkTreeModelFlags e_destination_store_get_flags       (GtkTreeModel       *tree_model);
@@ -508,7 +508,7 @@ e_destination_store_get_column_type (GtkTreeModel *tree_model,
 	g_return_val_if_fail (E_IS_DESTINATION_STORE (tree_model), G_TYPE_INVALID);
 	g_return_val_if_fail (index >= 0 && index < E_DESTINATION_STORE_NUM_COLUMNS, G_TYPE_INVALID);
 
-	return column_types [index];
+	return column_types[index];
 }
 
 static gboolean
@@ -666,7 +666,7 @@ e_destination_store_get_value (GtkTreeModel *tree_model,
 	g_return_if_fail (column < E_DESTINATION_STORE_NUM_COLUMNS);
 	g_return_if_fail (ITER_IS_VALID (destination_store, iter));
 
-	g_value_init (value, column_types [column]);
+	g_value_init (value, column_types[column]);
 
 	array = destination_store->priv->destinations;
 

@@ -452,7 +452,7 @@ get_node_by_child_path (ETreeModelGenerator *tree_model_generator, GtkTreePath *
 			break;
 		}
 
-		index = gtk_tree_path_get_indices (path) [depth];
+		index = gtk_tree_path_get_indices (path)[depth];
 		node = &g_array_index (group, Node, index);
 
 		if (depth + 1 < gtk_tree_path_get_depth (path))
@@ -487,7 +487,7 @@ create_node_at_child_path (ETreeModelGenerator *tree_model_generator, GtkTreePat
 			node->child_nodes = g_array_new (FALSE, FALSE, sizeof (Node));
 
 		group = node->child_nodes;
-		parent_index = gtk_tree_path_get_indices (parent_path) [gtk_tree_path_get_depth (parent_path) - 1];
+		parent_index = gtk_tree_path_get_indices (parent_path)[gtk_tree_path_get_depth (parent_path) - 1];
 	} else {
 		if (!tree_model_generator->priv->root_nodes)
 			tree_model_generator->priv->root_nodes = g_array_new (FALSE, FALSE, sizeof (Node));
@@ -498,7 +498,7 @@ create_node_at_child_path (ETreeModelGenerator *tree_model_generator, GtkTreePat
 
 	gtk_tree_path_free (parent_path);
 
-	index = gtk_tree_path_get_indices (path) [gtk_tree_path_get_depth (path) - 1];
+	index = gtk_tree_path_get_indices (path)[gtk_tree_path_get_depth (path) - 1];
 	ETMG_DEBUG (g_print ("Inserting index %d into group of length %d\n", index, group->len));
 	index = MIN (index, group->len);
 
@@ -583,7 +583,7 @@ delete_node_at_child_path (ETreeModelGenerator *tree_model_generator, GtkTreePat
 	if (!group)
 		return;
 
-	index = gtk_tree_path_get_indices (path) [gtk_tree_path_get_depth (path) - 1];
+	index = gtk_tree_path_get_indices (path)[gtk_tree_path_get_depth (path) - 1];
 	if (index >= group->len)
 		return;
 
@@ -824,7 +824,7 @@ e_tree_model_generator_convert_child_path_to_path (ETreeModelGenerator *tree_mod
 			break;
 		}
 
-		index = gtk_tree_path_get_indices (child_path) [depth];
+		index = gtk_tree_path_get_indices (child_path)[depth];
 		generated_index = child_offset_to_generated_offset (group, index);
 		node = &g_array_index (group, Node, index);
 		group = node->child_nodes;
@@ -865,7 +865,7 @@ e_tree_model_generator_convert_child_iter_to_iter (ETreeModelGenerator *tree_mod
 	for (depth = 0; depth < gtk_tree_path_get_depth (path); depth++) {
 		Node *node;
 
-		index = gtk_tree_path_get_indices (path) [depth];
+		index = gtk_tree_path_get_indices (path)[depth];
 		node = &g_array_index (group, Node, index);
 
 		if (depth + 1 < gtk_tree_path_get_depth (path))
@@ -916,7 +916,7 @@ e_tree_model_generator_convert_path_to_child_path (ETreeModelGenerator *tree_mod
 			break;
 		}
 
-		index = gtk_tree_path_get_indices (generator_path) [depth];
+		index = gtk_tree_path_get_indices (generator_path)[depth];
 		child_index = generated_offset_to_child_offset (group, index, NULL);
 		node = &g_array_index (group, Node, child_index);
 		group = node->child_nodes;
@@ -1034,7 +1034,7 @@ e_tree_model_generator_get_iter (GtkTreeModel *tree_model, GtkTreeIter *iter, Gt
 		Node *node;
 		gint  child_index;
 
-		index = gtk_tree_path_get_indices (path) [depth];
+		index = gtk_tree_path_get_indices (path)[depth];
 		child_index = generated_offset_to_child_offset (group, index, NULL);
 		if (child_index < 0)
 			return FALSE;

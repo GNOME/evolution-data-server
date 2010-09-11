@@ -1468,7 +1468,7 @@ e_cal_backend_sexp_init (ECalBackendSExp *sexp)
 }
 #ifdef TESTER
 static void
-test_query (const char* query)
+test_query (const gchar * query)
 {
 	ECalBackendSExp *sexp = e_cal_backend_sexp_new (query);
 	time_t start, end;
@@ -1482,7 +1482,7 @@ test_query (const char* query)
 	}
 }
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 	g_type_init();
 

@@ -133,7 +133,7 @@ e_cal_backend_file_add_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 static void free_refresh_data (ECalBackendFile *cbfile);
 
 static icaltimezone *
-e_cal_backend_file_internal_get_timezone (ECalBackend *backend, const char *tzid);
+e_cal_backend_file_internal_get_timezone (ECalBackend *backend, const gchar *tzid);
 
 static icaltimezone *
 e_cal_backend_file_internal_get_default_timezone (ECalBackend *backend);
@@ -519,7 +519,6 @@ get_rid_icaltime (ECalComponent *comp)
         return tt;
 }
 
-
 /* Adds component to the interval tree
  */
 static gboolean
@@ -545,11 +544,11 @@ add_component_to_intervaltree (ECalBackendFile *cbfile, ECalComponent *comp)
 	return FALSE;
 }
 
-static gboolean 
+static gboolean
 remove_component_from_intervaltree (ECalBackendFile *cbfile, ECalComponent *comp)
 {
 	time_t time_start = -1, time_end = -1;
-	const char *uid = NULL;
+	const gchar *uid = NULL;
 	gchar *rid;
 	ECalBackendFilePrivate *priv;
 
@@ -561,7 +560,6 @@ remove_component_from_intervaltree (ECalBackendFile *cbfile, ECalComponent *comp
 	e_cal_util_get_component_occur_times (comp, &time_start, &time_end,
 				   resolve_tzid, priv->icalcomp, priv->default_zone,
 				   e_cal_backend_get_kind (E_CAL_BACKEND (cbfile)));
-
 
 	if (time_end != -1 && time_start > time_end) {
 		g_error ("Bogus component %s\n", e_cal_component_get_as_string (comp));
@@ -1770,7 +1768,6 @@ match_object_sexp (gpointer key, gpointer value, gpointer data)
 			      match_data);
 }
 
-
 /* Get_objects_in_range handler for the file backend */
 static void
 e_cal_backend_file_get_object_list (ECalBackendSync *backend, EDataCal *cal, const gchar *sexp, GList **objects, GError **perror)
@@ -1811,13 +1808,13 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 
 	if (!prunning_by_time) {
 		g_hash_table_foreach (priv->comp_uid_hash, (GHFunc) match_object_sexp,
-				      &match_data); 
+				      &match_data);
 	} else {
 		objs_occuring_in_tw = e_intervaltree_search (priv->interval_tree,
 							    occur_start, occur_end);
 
 		g_list_foreach(objs_occuring_in_tw, (GFunc) match_object_sexp_to_component,
-			       &match_data); 
+			       &match_data);
 	}
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
@@ -1883,7 +1880,7 @@ e_cal_backend_file_start_query (ECalBackend *backend, EDataCalView *query)
 	if (!prunning_by_time) {
 		/* full scan */
 		g_hash_table_foreach (priv->comp_uid_hash, (GHFunc) match_object_sexp,
-				      &match_data); 
+				      &match_data);
 
 		e_debug_log(FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES,  "---;%p;QUERY-ITEMS;%s;%s;%d", query,
 			    e_data_cal_view_get_text (query), G_OBJECT_TYPE_NAME (backend),
@@ -1894,7 +1891,7 @@ e_cal_backend_file_start_query (ECalBackend *backend, EDataCalView *query)
 		objs_occuring_in_tw = e_intervaltree_search (priv->interval_tree, occur_start, occur_end);
 
 		g_list_foreach(objs_occuring_in_tw, (GFunc) match_object_sexp_to_component,
-			       &match_data); 
+			       &match_data);
 
 		e_debug_log(FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES,  "---;%p;QUERY-ITEMS;%s;%s;%d", query,
 			    e_data_cal_view_get_text (query), G_OBJECT_TYPE_NAME (backend),
@@ -3417,7 +3414,7 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile, GError **perror)
 #include <glib.h>
 
 static void
-test_query_by_scanning_all_objects (ECalBackendFile* cbfile, const char *sexp, GList **objects)
+test_query_by_scanning_all_objects (ECalBackendFile* cbfile, const gchar *sexp, GList **objects)
 {
 	MatchObjectData match_data;
 	ECalBackendFilePrivate *priv;
@@ -3446,7 +3443,7 @@ test_query_by_scanning_all_objects (ECalBackendFile* cbfile, const char *sexp, G
 	}
 
 	g_hash_table_foreach (priv->comp_uid_hash, (GHFunc) match_object_sexp,
-			&match_data); 
+			&match_data);
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 
@@ -3462,9 +3459,9 @@ write_list (GList* list)
 
 	for (l = list; l; l = l->next)
 	{
-		const char *str = l->data;
+		const gchar *str = l->data;
 		ECalComponent *comp = e_cal_component_new_from_string (str);
-		const char *uid;
+		const gchar *uid;
 		e_cal_component_get_uid (comp, &uid);
 		g_print ("%s\n", uid);
 	}
@@ -3475,17 +3472,17 @@ get_difference_of_lists (ECalBackendFile* cbfile, GList* smaller, GList* bigger)
 {
 	GList *l, *lsmaller;
 
-	for (l = bigger ; l; l = l->next) {
-		char *str = l->data;
-		const char *uid;
+	for (l = bigger; l; l = l->next) {
+		gchar *str = l->data;
+		const gchar *uid;
 		ECalComponent *comp = e_cal_component_new_from_string (str);
 		gboolean found = FALSE;
 		e_cal_component_get_uid (comp, &uid);
 
 		for (lsmaller = smaller; lsmaller && !found; lsmaller = lsmaller->next)
 		{
-			char *strsmaller = lsmaller->data;
-			const char *uidsmaller;
+			gchar *strsmaller = lsmaller->data;
+			const gchar *uidsmaller;
 			ECalComponent *compsmaller = e_cal_component_new_from_string (strsmaller);
 			e_cal_component_get_uid (compsmaller, &uidsmaller);
 
@@ -3513,7 +3510,7 @@ get_difference_of_lists (ECalBackendFile* cbfile, GList* smaller, GList* bigger)
 }
 
 static void
-test_query (ECalBackendFile* cbfile, const char* query)
+test_query (ECalBackendFile* cbfile, const gchar * query)
 {
 	GList *objects = NULL, *all_objects = NULL;
 
@@ -3543,7 +3540,6 @@ test_query (ECalBackendFile* cbfile, const char* query)
 		exit (-1);
 	}
 
-
 	g_list_foreach(objects, (GFunc) g_free, NULL);
 	g_list_free (objects);
 	g_list_foreach(all_objects, (GFunc) g_free, NULL);
@@ -3551,7 +3547,7 @@ test_query (ECalBackendFile* cbfile, const char* query)
 }
 
 static void
-execute_query (ECalBackendFile* cbfile, const char* query)
+execute_query (ECalBackendFile* cbfile, const gchar * query)
 {
 	GList *objects = NULL;
 
@@ -3559,7 +3555,7 @@ execute_query (ECalBackendFile* cbfile, const char* query)
 
 	d (g_print ("Query %s\n", query));
 	e_cal_backend_file_get_object_list (E_CAL_BACKEND_SYNC (cbfile), NULL, query, &objects, NULL);
-	if(objects == NULL)
+	if (objects == NULL)
 	{
 		g_message (G_STRLOC " failed to get objects\n");
 		exit(0);
@@ -3573,7 +3569,7 @@ static gchar *fname = NULL;
 static gboolean only_execute = FALSE;
 static gchar *calendar_fname = NULL;
 
-static GOptionEntry entries[] = 
+static GOptionEntry entries[] =
 {
   { "test-file", 't', 0, G_OPTION_ARG_STRING, &fname, "File with prepared queries", NULL },
   { "only-execute", 'e', 0, G_OPTION_ARG_NONE, &only_execute, "Only execute, do not test query", NULL },
@@ -3584,11 +3580,11 @@ static GOptionEntry entries[] =
 /* Always add at least this many bytes when extending the buffer.  */
 #define MIN_CHUNK 64
 
-static int
-private_getline (char **lineptr, size_t *n, FILE *stream)
+static gint
+private_getline (gchar **lineptr, gsize *n, FILE *stream)
 {
-	int nchars_avail;
-	char *read_pos;
+	gint nchars_avail;
+	gchar *read_pos;
 
 	if (!lineptr || !n || !stream)
 		return -1;
@@ -3600,11 +3596,11 @@ private_getline (char **lineptr, size_t *n, FILE *stream)
 			return -1;
 	}
 
-	nchars_avail = (int) *n;
+	nchars_avail = (gint) *n;
 	read_pos = *lineptr;
 
 	for (;;) {
-		int c = getc (stream);
+		gint c = getc (stream);
 
 		if (nchars_avail < 2) {
 			if (*n > MIN_CHUNK)
@@ -3612,7 +3608,7 @@ private_getline (char **lineptr, size_t *n, FILE *stream)
 			else
 				*n += MIN_CHUNK;
 
-			nchars_avail = (int)(*n + *lineptr - read_pos);
+			nchars_avail = (gint)(*n + *lineptr - read_pos);
 			*lineptr = (char *)realloc (*lineptr, *n);
 			if (!*lineptr)
 				return -1;
@@ -3636,17 +3632,17 @@ private_getline (char **lineptr, size_t *n, FILE *stream)
 
 	*read_pos = '\0';
 
-	return (int)(read_pos - (*lineptr));
+	return (gint)(read_pos - (*lineptr));
 }
 
-int
-main(int argc, char **argv)
+gint
+main(gint argc, gchar **argv)
 {
-	char * line = NULL;
-	size_t len = 0;
-	ssize_t read;
+	gchar * line = NULL;
+	gsize len = 0;
+	gssize read;
 	ECalBackendFile* cbfile;
-	int num = 0;
+	gint num = 0;
 	GError *error = NULL;
 	GOptionContext *context;
 	FILE* fin = NULL;

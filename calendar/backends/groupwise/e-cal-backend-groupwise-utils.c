@@ -1126,7 +1126,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 
 			t = e_gw_connection_get_date_from_string (reply_within);
 			temp = ctime (&t);
-			temp [strlen (temp)-1] = '\0';
+			temp[strlen (temp)-1] = '\0';
 			value = g_strconcat (N_("Reply Requested: by "), temp, "\n\n", mess ? mess : "", NULL);
 			e_gw_item_set_message (item, (const gchar *) value);
 			g_free (value);

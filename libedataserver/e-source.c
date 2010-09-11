@@ -326,7 +326,7 @@ e_source_update_from_xml_node (ESource *source,
 			   g_str_has_suffix (source->priv->absolute_uri, source->priv->relative_uri)) {
 			gchar *tmp = source->priv->absolute_uri;
 
-			tmp [strlen (tmp) - strlen (source->priv->relative_uri)] = 0;
+			tmp[strlen (tmp) - strlen (source->priv->relative_uri)] = 0;
 			source->priv->absolute_uri = g_strconcat (tmp, (gchar *)relative_uri, NULL);
 
 			g_free (tmp);
@@ -751,7 +751,7 @@ e_source_to_standalone_xml (ESource *source)
 
 	returned_buffer = g_malloc (xml_buffer_size + 1);
 	memcpy (returned_buffer, xml_buffer, xml_buffer_size);
-	returned_buffer [xml_buffer_size] = '\0';
+	returned_buffer[xml_buffer_size] = '\0';
 	xmlFree (xml_buffer);
 
 	return returned_buffer;

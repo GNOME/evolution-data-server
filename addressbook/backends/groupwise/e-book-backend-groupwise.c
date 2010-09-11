@@ -135,7 +135,7 @@ static const struct field_element_mapping {
 	void (*set_value_in_gw_item) (EGwItem *item, gpointer data);
 	void (*set_changes) (EGwItem *new_item, EGwItem *old_item);
 
-} mappings [] = {
+} mappings[] = {
 
 	{ E_CONTACT_UID, ELEMENT_TYPE_SIMPLE, "id"},
 	{ E_CONTACT_FILE_AS, ELEMENT_TYPE_SIMPLE, "name" },

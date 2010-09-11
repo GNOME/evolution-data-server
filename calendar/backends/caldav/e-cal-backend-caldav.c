@@ -268,21 +268,21 @@ caldav_debug_setup (SoupSession *session)
 
 /* TODO Do not replicate this in every backend */
 static icaltimezone *
-resolve_tzid (const char *tzid, gpointer user_data)
+resolve_tzid (const gchar *tzid, gpointer user_data)
 {
 	icaltimezone *zone;
-		
+
 	zone = (!strcmp (tzid, "UTC"))
 		? icaltimezone_get_utc_timezone ()
 		: icaltimezone_get_builtin_timezone_from_tzid (tzid);
-	
+
 	if (!zone)
 		zone = e_cal_backend_internal_get_timezone (E_CAL_BACKEND (user_data), tzid);
 
 	return zone;
 }
 
-static gboolean 
+static gboolean
 put_component_to_store (ECalBackendCalDAV *cbdav,
 			ECalComponent *comp)
 {
@@ -297,7 +297,6 @@ put_component_to_store (ECalBackendCalDAV *cbdav,
 
 	return e_cal_backend_store_put_component_with_time_range (priv->store, comp, time_start, time_end);
 }
-
 
 static ECalBackendSyncClass *parent_class = NULL;
 
@@ -4084,7 +4083,6 @@ caldav_start_query (ECalBackend  *backend,
 	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times(sexp,
 									    &occur_start,
 									    &occur_end);
-
 
 	bkend = E_CAL_BACKEND (backend);
 

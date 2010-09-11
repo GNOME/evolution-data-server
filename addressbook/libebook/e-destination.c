@@ -88,7 +88,7 @@ enum {
 	LAST_SIGNAL
 };
 
-static guint signals [LAST_SIGNAL] = { 0 };
+static guint signals[LAST_SIGNAL] = { 0 };
 
 static GObjectClass *parent_class;
 
@@ -138,7 +138,7 @@ e_destination_class_init (EDestinationClass *klass)
 
 	parent_class = g_type_class_ref (G_TYPE_OBJECT);
 
-	signals [CHANGED] =
+	signals[CHANGED] =
 		g_signal_new ("changed",
 			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_LAST,
@@ -426,7 +426,7 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 			/* is there anything to do here? */
 		}
 
-		g_signal_emit (dest, signals [CHANGED], 0);
+		g_signal_emit (dest, signals[CHANGED], 0);
 	} else if (dest->priv->email_num != email_num) {
 		/* Splitting here would help the contact lists not rebuiding, so that it remembers ignored values */
 		g_object_ref (contact);
@@ -439,7 +439,7 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 
 		dest->priv->email_num = email_num;
 
-		g_signal_emit (dest, signals [CHANGED], 0);
+		g_signal_emit (dest, signals[CHANGED], 0);
 	}
 
 }
@@ -466,7 +466,7 @@ e_destination_set_book (EDestination *dest, EBook *book)
 		e_destination_clear (dest);
 		dest->priv->source_uid = g_strdup (e_source_peek_uid (source));
 
-		g_signal_emit (dest, signals [CHANGED], 0);
+		g_signal_emit (dest, signals[CHANGED], 0);
 	}
 }
 
@@ -501,7 +501,7 @@ e_destination_set_contact_uid (EDestination *dest, const gchar *uid, gint email_
 			dest->priv->contact = NULL;
 		}
 
-		g_signal_emit (dest, signals [CHANGED], 0);
+		g_signal_emit (dest, signals[CHANGED], 0);
 	}
 }
 
@@ -517,7 +517,7 @@ e_destination_set_source_uid (EDestination *dest, const gchar *uid)
 		g_free (dest->priv->source_uid);
 		dest->priv->source_uid = g_strdup (uid);
 
-		g_signal_emit (dest, signals [CHANGED], 0);
+		g_signal_emit (dest, signals[CHANGED], 0);
 	}
 }
 
@@ -553,7 +553,7 @@ e_destination_set_name (EDestination *dest, const gchar *name)
 		g_free (dest->priv->textrep);
 		dest->priv->textrep = NULL;
 
-		g_signal_emit (dest, signals [CHANGED], 0);
+		g_signal_emit (dest, signals[CHANGED], 0);
 	}
 }
 
@@ -589,7 +589,7 @@ e_destination_set_email (EDestination *dest, const gchar *email)
 		g_free (dest->priv->textrep);
 		dest->priv->textrep = NULL;
 
-		g_signal_emit (dest, signals [CHANGED], 0);
+		g_signal_emit (dest, signals[CHANGED], 0);
 	}
 }
 
@@ -634,7 +634,7 @@ e_destination_set_auto_recipient (EDestination *dest, gboolean value)
 
 	dest->priv->auto_recipient = value;
 
-	g_signal_emit (dest, signals [CHANGED], 0);
+	g_signal_emit (dest, signals[CHANGED], 0);
 }
 
 /**
@@ -864,9 +864,9 @@ e_destination_get_address (const EDestination *dest)
 
 		while (iter) {
 			EDestination *list_dest = E_DESTINATION (iter->data);
-		
+
 			if (!e_destination_empty (list_dest) && !list_dest->priv->ignored) {
-				const char *name, *email;
+				const gchar *name, *email;
 				name = e_destination_get_name (list_dest);
 				email = e_destination_get_email (list_dest);
 
@@ -882,10 +882,10 @@ e_destination_get_address (const EDestination *dest)
 		}
 		priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
 	} else if (priv->raw) {
- 		if (camel_address_unformat (CAMEL_ADDRESS (addr), priv->raw))
- 			priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
+		if (camel_address_unformat (CAMEL_ADDRESS (addr), priv->raw))
+			priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
 	} else {
-		const char *name, *email;
+		const gchar *name, *email;
 		name = e_destination_get_name (dest);
 		email = e_destination_get_email (dest);
 
@@ -923,7 +923,7 @@ e_destination_set_raw (EDestination *dest, const gchar *raw)
 		e_destination_clear (dest);
 		dest->priv->raw = g_strdup (raw);
 
-		g_signal_emit (dest, signals [CHANGED], 0);
+		g_signal_emit (dest, signals[CHANGED], 0);
 	}
 }
 
@@ -1063,7 +1063,7 @@ e_destination_set_html_mail_pref (EDestination *dest, gboolean flag)
 	if (dest->priv->wants_html_mail != flag) {
 		dest->priv->wants_html_mail = flag;
 
-		g_signal_emit (dest, signals [CHANGED], 0);
+		g_signal_emit (dest, signals[CHANGED], 0);
 	}
 }
 

@@ -483,7 +483,7 @@ rename_label_flag (const gchar *flag, gint len, gboolean server_to_evo)
 
 	for (i = 0 + (server_to_evo ? 0 : 1); labels[i]; i = i + 2) {
 		if (!g_ascii_strncasecmp (flag, labels[i], len))
-			return labels [i + (server_to_evo ? 1 : -1)];
+			return labels[i + (server_to_evo ? 1 : -1)];
 	}
 
 	return "";

@@ -2774,10 +2774,10 @@ member_populate (EContact *contact, gchar **values)
 		member_info = g_strsplit (values [i], ";", -1);
 
 		attr = e_vcard_attribute_new (NULL, EVC_EMAIL);
-		e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_X_DEST_CONTACT_UID), member_info [1]);
+		e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_X_DEST_CONTACT_UID), member_info[1]);
 
-		if (member_info [2]) {
-			gint len = strlen (member_info [2]);
+		if (member_info[2]) {
+			gint len = strlen (member_info[2]);
 			gchar *value;
 
 			if (member_info [2][0] == '\"' && member_info [2][len - 1] == '\"')
@@ -2788,7 +2788,7 @@ member_populate (EContact *contact, gchar **values)
 			e_vcard_attribute_add_value (attr, value);
 			g_free (value);
 		} else {
-			e_vcard_attribute_add_value (attr, member_info [0]);
+			e_vcard_attribute_add_value (attr, member_info[0]);
 		}
 
 		e_vcard_add_attribute (E_VCARD (contact), attr);
@@ -4190,7 +4190,7 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 											printf ("cn = %s \n", cn_values[0]);
 											*(member_info + j) =
 												g_strconcat (*(member_info + j),
-													     cn_values [0], NULL);
+													     cn_values[0], NULL);
 											ldap_value_free (cn_values);
 										}
 									}

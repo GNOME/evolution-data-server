@@ -173,7 +173,7 @@ e_name_western_get_one_prefix_at_str (gchar *str)
 	if (g_utf8_strlen (word, -1) > 2 &&
 	    g_unichar_isalpha (g_utf8_get_char (word)) &&
 	    g_unichar_isalpha (g_utf8_get_char (g_utf8_next_char (word))) &&
-	    word [strlen (word) - 1] == '.')
+	    word[strlen (word) - 1] == '.')
 		return word;
 
 	g_free (word);
@@ -365,7 +365,7 @@ e_name_western_extract_middle (ENameWestern *name, ENameWesternIdxs *idxs)
 	/*
 	 * Make sure we didn't just grab a cute nickname.
 	 */
-	if (word [0] == '\"') {
+	if (word[0] == '\"') {
 		g_free (word);
 		return;
 	}

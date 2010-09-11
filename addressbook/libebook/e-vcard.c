@@ -859,12 +859,12 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 
 						g_string_append_c (attr_str, '"');
 
-						for (i = 0; value [i]; i++) {
+						for (i = 0; value[i]; i++) {
 							/* skip quotes in quoted string; it is not allowed */
-							if (value [i] == '\"')
+							if (value[i] == '\"')
 								continue;
 
-							g_string_append_c (attr_str, value [i]);
+							g_string_append_c (attr_str, value[i]);
 						}
 
 						g_string_append_c (attr_str, '"');

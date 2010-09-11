@@ -788,8 +788,8 @@ _e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, EServerMethodC
 		/* fallback if tzid contains only the location of timezone */
 		gint i, slashes = 0;
 
-		for (i = 0; tzid [i]; i++) {
-			if (tzid [i] == '/')
+		for (i = 0; tzid[i]; i++) {
+			if (tzid[i] == '/')
 				slashes++;
 		}
 

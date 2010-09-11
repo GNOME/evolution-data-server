@@ -15,7 +15,7 @@ enum {
 	LAST_SIGNAL
 };
 
-static guint e_iterator_signals [LAST_SIGNAL] = { 0, };
+static guint e_iterator_signals[LAST_SIGNAL] = { 0, };
 
 G_DEFINE_TYPE (EIterator, e_iterator, G_TYPE_OBJECT)
 
@@ -26,7 +26,7 @@ e_iterator_class_init (EIteratorClass *klass)
 
 	object_class = G_OBJECT_CLASS(klass);
 
-	e_iterator_signals [INVALIDATE] =
+	e_iterator_signals[INVALIDATE] =
 		g_signal_new ("invalidate",
 			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_LAST,
@@ -140,5 +140,5 @@ e_iterator_invalidate (EIterator *iterator)
 	g_return_if_fail (iterator != NULL);
 	g_return_if_fail (E_IS_ITERATOR (iterator));
 
-	g_signal_emit (iterator, e_iterator_signals [INVALIDATE], 0);
+	g_signal_emit (iterator, e_iterator_signals[INVALIDATE], 0);
 }

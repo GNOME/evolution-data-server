@@ -240,7 +240,7 @@ e_book_backend_summary_init (EBookBackendSummary *summary)
 static gboolean
 e_book_backend_summary_check_magic (EBookBackendSummary *summary, FILE *fp)
 {
-	gchar buf [PAS_SUMMARY_MAGIC_LEN + 1];
+	gchar buf[PAS_SUMMARY_MAGIC_LEN + 1];
 	gint rv;
 
 	memset (buf, 0, sizeof (buf));

@@ -119,7 +119,6 @@ typedef gboolean (ESOperatorFunc) (gint argc, struct _ESExpResult **argv, struct
 /* FIXME: constant _TIME_MAX used in different files, move it somewhere */
 #define _TIME_MAX	((time_t) INT_MAX)	/* Max valid time_t	*/
 
-
 static const GScannerConfig scanner_config =
 {
 	( (gchar *) " \t\r\n")		/* cset_skip_characters */,
@@ -910,10 +909,10 @@ and_operator(gint argc, struct _ESExpResult **argv, struct _ESExpResult *r)
 	/*
 	   A           B          A and B
 	   ----        ----       ------- -
-	   norm(0)     norm(0)    norm(0)    
-	   gen(1)      norm(0)    gen(1)    
-	   norm(0)     gen(1)     gen(1)     
-	   gen(1)      gen(1)     gen(1)     
+	   norm(0)     norm(0)    norm(0)
+	   gen(1)      norm(0)    gen(1)
+	   norm(0)     gen(1)     gen(1)
+	   gen(1)      gen(1)     gen(1)
 	   */
 
 	g_return_val_if_fail (r != NULL, FALSE);
@@ -937,7 +936,6 @@ static const struct {
 };
 
 const gint operators_count = sizeof(operators) / sizeof(operators[0]);
-
 
 static ESOperatorFunc*
 get_operator_function(const gchar *fname)
@@ -1010,7 +1008,7 @@ e_sexp_term_evaluate_occur_times(struct _ESExp *f, struct _ESExpTerm *t, time_t 
 	{
 		ESGeneratorFunc *generator = NULL;
 		ESOperatorFunc *operator = NULL;
-			
+
 		r(printf(" (function \"%s\"\n", t->value.func.sym->name));
 
 		r = e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
@@ -1059,7 +1057,6 @@ e_sexp_term_evaluate_occur_times(struct _ESExp *f, struct _ESExpTerm *t, time_t 
 
 	return r;
 }
-
 
 /*
   PARSER

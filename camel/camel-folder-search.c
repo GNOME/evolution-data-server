@@ -559,8 +559,8 @@ do_search_in_memory (const gchar *expr)
 	if (!expr)
 		return FALSE;
 
-	for (i = 0; in_memory_tokens [i]; i++) {
-		if (strstr (expr, in_memory_tokens [i]))
+	for (i = 0; in_memory_tokens[i]; i++) {
+		if (strstr (expr, in_memory_tokens[i]))
 			return TRUE;
 	}
 
@@ -1811,7 +1811,7 @@ read_uid_callback (gpointer  ref, gint ncol, gchar ** cols, gchar **name)
 
 	matches = (GPtrArray *) ref;
 
-	g_ptr_array_add (matches, (gpointer) camel_pstring_strdup (cols [0]));
+	g_ptr_array_add (matches, (gpointer) camel_pstring_strdup (cols[0]));
 	return 0;
 }
 

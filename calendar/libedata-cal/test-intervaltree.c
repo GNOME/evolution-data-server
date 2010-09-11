@@ -117,7 +117,6 @@ compare_interval_lists (GList *list1, GList *list2)
 		i1 = (EInterval*) list1->data;
 		c1 = i1->comp;
 
-
 		while (!found && l2 != NULL)
 		{
 			c2 = (ECalComponent*) l2->data;
@@ -292,7 +291,6 @@ random_test()
 
 		l1 = e_intervaltree_search (tree, start, end);
 
-
 		l2 = search_in_list (list, start, end);
 
 		if (!compare_interval_lists (l2, l1))
@@ -320,7 +318,6 @@ random_test()
 		   */
 
 		l1 = e_intervaltree_search (tree, start, end);
-
 
 		l2 = search_in_list (list, start, end);
 
@@ -369,7 +366,6 @@ random_test()
 					 interval->end);
 				exit(-1);
 			}
-
 
 			g_free (rid);
 			g_object_unref (interval->comp);

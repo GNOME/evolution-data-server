@@ -355,7 +355,7 @@ namespace_find (CamelImapStoreNamespace *ns, const gchar *full_name, gchar dir_s
 
 		if ((g_ascii_strcasecmp (ns->full_name, full_name) == 0 ||
 		    (g_ascii_strncasecmp (ns->full_name, full_name, len) == 0
-		    && len + 1 == strlen (full_name) && full_name [len] == ns->sep))&& (!dir_sep || ns->sep == dir_sep)) {
+		    && len + 1 == strlen (full_name) && full_name[len] == ns->sep))&& (!dir_sep || ns->sep == dir_sep)) {
 			break;
 		}
 		ns = ns->next;

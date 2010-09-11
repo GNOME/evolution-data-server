@@ -295,7 +295,7 @@ get_utf8_string_context (const gchar *string, gint position, gunichar *unichars,
 		gint char_pos = position - gap + i;
 
 		if (char_pos < 0 || char_pos >= len) {
-			unichars [i] = '\0';
+			unichars[i] = '\0';
 			continue;
 		}
 
@@ -304,7 +304,7 @@ get_utf8_string_context (const gchar *string, gint position, gunichar *unichars,
 		else
 			p = g_utf8_offset_to_pointer (string, char_pos);
 
-		unichars [i] = g_utf8_get_char (p);
+		unichars[i] = g_utf8_get_char (p);
 	}
 }
 
@@ -496,7 +496,7 @@ name_style_query (const gchar *field, const gchar *value)
 
 	strv = g_strsplit (spaced_str, " ", 0);
 
-	if (strv [0] && strv [1]) {
+	if (strv[0] && strv[1]) {
 		g_string_append (out, "(or ");
 		comma_str = g_strjoinv (", ", strv);
 	} else {
@@ -710,7 +710,7 @@ static gboolean
 contact_match_cue (EContact *contact, const gchar *cue_str,
 		   EContactField *matched_field, gint *matched_field_rank)
 {
-	EContactField  fields [] = { E_CONTACT_FULL_NAME, E_CONTACT_NICKNAME, E_CONTACT_FILE_AS,
+	EContactField  fields[] = { E_CONTACT_FULL_NAME, E_CONTACT_NICKNAME, E_CONTACT_FILE_AS,
 				     E_CONTACT_EMAIL_1, E_CONTACT_EMAIL_2, E_CONTACT_EMAIL_3,
 				     E_CONTACT_EMAIL_4 };
 	gchar         *email;
@@ -740,11 +740,11 @@ contact_match_cue (EContact *contact, const gchar *cue_str,
 
 		/* Don't match e-mail addresses in contact lists */
 		if (e_contact_get (contact, E_CONTACT_IS_LIST) &&
-		    fields [i] >= E_CONTACT_FIRST_EMAIL_ID &&
-		    fields [i] <= E_CONTACT_LAST_EMAIL_ID)
+		    fields[i] >= E_CONTACT_FIRST_EMAIL_ID &&
+		    fields[i] <= E_CONTACT_LAST_EMAIL_ID)
 			continue;
 
-		value = e_contact_get (contact, fields [i]);
+		value = e_contact_get (contact, fields[i]);
 		if (!value)
 			continue;
 
@@ -934,8 +934,8 @@ type_ahead_complete (ENameSelectorEntry *name_selector_entry)
 		gint i;
 
 		/* keep character's case as user types */
-		for (i = 0; textrep [i] && cue_str [i]; i++)
-			textrep [i] = cue_str [i];
+		for (i = 0; textrep[i] && cue_str[i]; i++)
+			textrep[i] = cue_str[i];
 
 		gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), range_start, range_end);
 		gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), textrep, -1, &pos);
@@ -1189,8 +1189,8 @@ static gint
 insert_unichar (ENameSelectorEntry *name_selector_entry, gint *pos, gunichar c)
 {
 	const gchar *text;
-	gunichar     str_context [4];
-	gchar        buf [7];
+	gunichar     str_context[4];
+	gchar        buf[7];
 	gint         len;
 
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
@@ -1200,7 +1200,7 @@ insert_unichar (ENameSelectorEntry *name_selector_entry, gint *pos, gunichar c)
 	 * - Before or after another space.
 	 * - At start of string. */
 
-	if (c == ' ' && (str_context [1] == ' ' || str_context [1] == '\0' || str_context [2] == ' '))
+	if (c == ' ' && (str_context[1] == ' ' || str_context[1] == '\0' || str_context[2] == ' '))
 		return 0;
 
 	/* Comma is not allowed:
@@ -1213,7 +1213,7 @@ insert_unichar (ENameSelectorEntry *name_selector_entry, gint *pos, gunichar c)
 		gboolean     at_start = FALSE;
 		gboolean     at_end   = FALSE;
 
-		if (str_context [1] == ',' || str_context [1] == '\0')
+		if (str_context[1] == ',' || str_context[1] == '\0')
 			return 0;
 
 		/* We do this so we can avoid disturbing destinations with completed contacts
@@ -1256,7 +1256,7 @@ insert_unichar (ENameSelectorEntry *name_selector_entry, gint *pos, gunichar c)
 	/* Generic case. Allowed spaces also end up here. */
 
 	len = g_unichar_to_utf8 (c, buf);
-	buf [len] = '\0';
+	buf[len] = '\0';
 
 	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), buf, -1, pos);
 
@@ -1324,7 +1324,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	const gchar *text;
 	gint         index_start, index_end;
 	gint	     selection_start, selection_end;
-	gunichar     str_context [2], str_b_context [2];
+	gunichar     str_context[2], str_b_context[2];
 	gint         len;
 	gint         i;
 	gboolean     del_space = FALSE, del_comma = FALSE;
@@ -1478,7 +1478,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	 addresses.
 	*/
 
-	if (str_b_context [1] == '"') {
+	if (str_b_context[1] == '"') {
 		const gchar *p;
 		gint j;
 		p = text + end_pos;
@@ -1546,7 +1546,7 @@ completion_match_selected (ENameSelectorEntry *name_selector_entry, GtkTreeModel
 	g_signal_handlers_block_by_func (name_selector_entry, user_insert_text, name_selector_entry);
 	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), ", ", -1, &cursor_pos);
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_insert_text, name_selector_entry);
-	
+
 	/* Place cursor at end of address */
 
 	gtk_editable_set_position (GTK_EDITABLE (name_selector_entry), cursor_pos);
@@ -2049,7 +2049,7 @@ destination_row_changed (ENameSelectorEntry *name_selector_entry, GtkTreePath *p
 	gint          range_start, range_end;
 	gint          n;
 
-	n = gtk_tree_path_get_indices (path) [0];
+	n = gtk_tree_path_get_indices (path)[0];
 	destination = e_destination_store_get_destination (name_selector_entry->priv->destination_store, iter);
 
 	if (!destination)
@@ -2091,7 +2091,7 @@ destination_row_inserted (ENameSelectorEntry *name_selector_entry, GtkTreePath *
 	gint          insert_pos;
 	gint          n;
 
-	n = gtk_tree_path_get_indices (path) [0];
+	n = gtk_tree_path_get_indices (path)[0];
 	destination = e_destination_store_get_destination (name_selector_entry->priv->destination_store, iter);
 
 	g_assert (n >= 0);
@@ -2142,7 +2142,7 @@ destination_row_deleted (ENameSelectorEntry *name_selector_entry, GtkTreePath *p
 	gchar       *p0;
 	gint         n;
 
-	n = gtk_tree_path_get_indices (path) [0];
+	n = gtk_tree_path_get_indices (path)[0];
 	g_assert (n >= 0);
 
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));

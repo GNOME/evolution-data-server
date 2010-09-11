@@ -45,7 +45,7 @@ G_DEFINE_TYPE (EIntervalTree, e_intervaltree, G_TYPE_OBJECT)
 
 typedef struct _EIntervalNode EIntervalNode;
 
-static EIntervalNode* 
+static EIntervalNode*
 intervaltree_node_next (EIntervalTree *tree, EIntervalNode *x);
 
 struct _EIntervalNode
@@ -70,13 +70,12 @@ struct _EIntervalNode
 	EIntervalNode* parent;
 };
 
-
 struct _EIntervalTreePrivate
 {
 	EIntervalNode *root;
 	EIntervalNode *nil;
 	GHashTable *id_node_hash;
-	GStaticRecMutex mutex;	
+	GStaticRecMutex mutex;
 };
 
 static inline gint
@@ -120,7 +119,7 @@ compare_intervals (time_t x_start, time_t x_end, time_t y_start, time_t y_end)
 		return -1;
 
 	/* x is right of y */
-	if (y_end < x_start) 
+	if (y_end < x_start)
 		return 1;
 
 	/* x and y overlap */
@@ -135,7 +134,7 @@ compare_intervals (time_t x_start, time_t x_end, time_t y_start, time_t y_end)
  * Carry out left rotation on the node @x in tree @tree.
  * Caller should hold the lock
  **/
-static void 
+static void
 left_rotate (EIntervalTree *tree, EIntervalNode *x)
 {
 	EIntervalTreePrivate *priv = tree->priv;
@@ -151,7 +150,7 @@ left_rotate (EIntervalTree *tree, EIntervalNode *x)
 	if (y->left != nil)
 		y->left->parent = x;
 
-	y->parent = x->parent;   
+	y->parent = x->parent;
 
 	/* instead of checking if x->parent is the root as in the book, we */
 	/* count on the root sentinel to implicitly take care of this case */
@@ -240,7 +239,7 @@ binary_tree_insert (EIntervalTree *tree, EIntervalNode *z)
 	y = priv->root;
 	x = priv->root->left;
 
-	while( x != nil)
+	while ( x != nil)
 	{
 		y = x;
 
@@ -278,14 +277,14 @@ e_intervaltree_insert (EIntervalTree *tree, time_t start, time_t end, ECalCompon
 	EIntervalNode *x;
 	EIntervalNode *newNode;
 	const gchar *uid;
-	gchar *rid;	
+	gchar *rid;
 	g_return_val_if_fail (tree != NULL, FALSE);
 	g_return_val_if_fail (comp != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 
 	g_static_rec_mutex_lock (&priv->mutex);
-        
-	x = g_new (EIntervalNode, 1); 
+
+	x = g_new (EIntervalNode, 1);
 	x->min = x->start = start;
 	x->max = x->end = end;
 	x->comp = g_object_ref (comp);
@@ -319,9 +318,9 @@ e_intervaltree_insert (EIntervalTree *tree, time_t start, time_t end, ECalCompon
 				x->parent->red = FALSE;
 				x->parent->parent->red = TRUE;
 				right_rotate (tree, x->parent->parent);
-			} 
+			}
 		}
-	       	else
+		else
 		{ /* case for x->parent == x->parent->parent->right */
 			y = x->parent->parent->left;
 
@@ -343,7 +342,7 @@ e_intervaltree_insert (EIntervalTree *tree, time_t start, time_t end, ECalCompon
 				x->parent->red = FALSE;
 				x->parent->parent->red = TRUE;
 				left_rotate (tree, x->parent->parent);
-			} 
+			}
 		}
 	}
 
@@ -358,10 +357,10 @@ e_intervaltree_insert (EIntervalTree *tree, time_t start, time_t end, ECalCompon
 	return TRUE;
 }
 
-static EIntervalNode* 
+static EIntervalNode*
 intervaltree_node_next (EIntervalTree *tree, EIntervalNode *x)
 {
-	EIntervalTreePrivate *priv = tree->priv; 
+	EIntervalTreePrivate *priv = tree->priv;
 	EIntervalNode *y;
 	EIntervalNode *nil = priv->nil;
 	EIntervalNode *root = priv->root;
@@ -371,7 +370,7 @@ intervaltree_node_next (EIntervalTree *tree, EIntervalNode *x)
 	g_return_val_if_fail (x != priv->nil, NULL);
 
 	if (nil != (y = x->right))
-	{ 
+	{
 		/* find out minimum of right subtree of x (assignment to y is ok) */
 		while (y->left != nil)
 			y = y->left;
@@ -403,7 +402,7 @@ void
 e_intervaltree_destroy (EIntervalTree *tree)
 {
 	EIntervalTreePrivate *priv = tree->priv;
-	EIntervalNode *node; 
+	EIntervalNode *node;
 	GList *stack_start = NULL, *pos;
 
 	g_return_if_fail (tree != NULL);
@@ -452,13 +451,13 @@ e_intervaltree_fixup_deletion (EIntervalTree *tree, EIntervalNode *x)
 				w = x->parent->right;
 			}
 
-			if ( (!w->right->red) && (!w->left->red) )
-			{ 
+			if ((!w->right->red) && (!w->left->red))
+			{
 				w->red = TRUE;
 				x = x->parent;
 			}
 			else
-		       	{
+			{
 				if (!w->right->red)
 				{
 					w->left->red = FALSE;
@@ -484,8 +483,8 @@ e_intervaltree_fixup_deletion (EIntervalTree *tree, EIntervalNode *x)
 				w = x->parent->left;
 			}
 
-			if ( (!w->right->red) && (!w->left->red) )
-			{ 
+			if ((!w->right->red) && (!w->left->red))
+			{
 				w->red = TRUE;
 				x = x->parent;
 			}
@@ -524,15 +523,15 @@ e_intervaltree_fixup_deletion (EIntervalTree *tree, EIntervalNode *x)
 GList*
 e_intervaltree_search (EIntervalTree *tree, time_t start, time_t end)
 {
-	EIntervalTreePrivate *priv = tree->priv;	
-	EIntervalNode *node; 
+	EIntervalTreePrivate *priv = tree->priv;
+	EIntervalNode *node;
 	GList *list = NULL;
 	GList *stack_start = NULL, *pos;
 
 	g_return_val_if_fail (tree != NULL, NULL);
 
 	g_static_rec_mutex_lock (&priv->mutex);
-	
+
 	stack_start = pos = g_list_insert (stack_start, priv->root->left, -1);
 
 	while (pos != NULL)
@@ -569,7 +568,7 @@ static void
 e_intervaltree_node_dump (EIntervalTree *tree, EIntervalNode *node, gint indent)
 {
 	/*
-	char start_time[32] = {0}, end_time[32] = {0};
+	gchar start_time[32] = {0}, end_time[32] = {0};
 	struct tm tm_start_time, tm_end_time;
 
 	localtime_r (&node->start, &tm_start_time);
@@ -592,7 +591,6 @@ e_intervaltree_node_dump (EIntervalTree *tree, EIntervalNode *node, gint indent)
 	e_intervaltree_node_dump (tree, node->right, indent + 2);
 }
 
-
 void
 e_intervaltree_dump (EIntervalTree *tree)
 {
@@ -601,7 +599,6 @@ e_intervaltree_dump (EIntervalTree *tree)
 		  e_intervaltree_node_dump (tree, priv->root, 0);
 }
 #endif
-
 
 /**
   * Caller should hold the lock.	
@@ -645,8 +642,8 @@ e_intervaltree_remove (EIntervalTree *tree,
 	EIntervalNode *root = priv->root;
 
 	g_return_val_if_fail (tree != NULL, FALSE);
-	
-	g_static_rec_mutex_lock (&priv->mutex);	
+
+	g_static_rec_mutex_lock (&priv->mutex);
 
 	z = e_intervaltree_search_component (tree, uid, rid);
 
@@ -686,7 +683,7 @@ e_intervaltree_remove (EIntervalTree *tree,
 		z->left->parent = z->right->parent = y;
 
 		if (z == z->parent->left)
-			z->parent->left = y; 
+			z->parent->left = y;
 		else
 			z->parent->right = y;
 
@@ -698,10 +695,10 @@ e_intervaltree_remove (EIntervalTree *tree,
 			e_intervaltree_fixup_deletion (tree, x);
 		}
 		else
-			y->red = z->red; 
+			y->red = z->red;
 	}
 	else
-       	{
+	{
 		/* z is the node to be spliced out */
 
 		fixup_min_max_fields (tree, x->parent);
@@ -723,17 +720,17 @@ static void
 e_intervaltree_finalize (GObject *object)
 {
 	EIntervalTreePrivate *priv = E_INTERVALTREE_GET_PRIVATE (object);
-	
+
 	if (priv->root) {
 		g_free (priv->root);
 		priv->root = NULL;
 	}
-	
+
 	if (priv->nil) {
 		g_free (priv->nil);
 		priv->nil = NULL;
 	}
-	
+
 	if (priv->id_node_hash) {
 		g_hash_table_destroy (priv->id_node_hash);
 		priv->id_node_hash = NULL;
@@ -741,7 +738,7 @@ e_intervaltree_finalize (GObject *object)
 
 	g_static_rec_mutex_free (&priv->mutex);
 
-	G_OBJECT_CLASS (e_intervaltree_parent_class)->finalize (object);	
+	G_OBJECT_CLASS (e_intervaltree_parent_class)->finalize (object);
 }
 
 static void
@@ -751,7 +748,6 @@ e_intervaltree_class_init (EIntervalTreeClass *klass)
 	g_type_class_add_private (klass, sizeof (EIntervalTreePrivate));
 	object_class->finalize = e_intervaltree_finalize;
 }
-
 
 static void
 e_intervaltree_init (EIntervalTree *tree)
@@ -792,6 +788,6 @@ EIntervalTree*
 e_intervaltree_new (void)
 {
 	EIntervalTree *tree;
-	tree = g_object_new (E_TYPE_INTERVALTREE, NULL); 
+	tree = g_object_new (E_TYPE_INTERVALTREE, NULL);
         return tree;
 }

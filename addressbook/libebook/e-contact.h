@@ -143,7 +143,7 @@ typedef enum {
 	E_CONTACT_IM_ICQ_WORK_3,       /* Synthetic string field */
 
 	/* Convenience field for getting a name from the contact.
-	   Returns the first one of [File-As, Full Name, Org, Email1]
+	   Returns the first one of[File-As, Full Name, Org, Email1]
 	   to be set */
 	E_CONTACT_REV,     /* string field to hold  time of last update to this vcard*/
 	E_CONTACT_NAME_OR_ORG,

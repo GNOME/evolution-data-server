@@ -204,7 +204,7 @@ e_cal_backend_store_clean (ECalBackendStore *store)
 	if (priv->intervaltree) {
 		e_intervaltree_destroy (priv->intervaltree);
 		priv->intervaltree = e_intervaltree_new ();
-	}	
+	}
 
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->clean (store);
 }
@@ -287,7 +287,7 @@ e_cal_backend_store_remove_component (ECalBackendStore *store, const gchar *uid,
 	ECalBackendStorePrivate *priv;
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
-	
+
 	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
 
 	if ((E_CAL_BACKEND_STORE_GET_CLASS (store))->remove_component (store, uid, rid)) {
@@ -416,13 +416,13 @@ e_cal_backend_store_get_components_occuring_in_range (ECalBackendStore *store, t
 
 	g_return_val_if_fail (store != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
-	
+
 	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
 
 	if (!(l = e_intervaltree_search (priv->intervaltree, start, end)))
                 return NULL;
 
-	for ( ; l != NULL; l = g_list_next (l)) {
+	for (; l != NULL; l = g_list_next (l)) {
 		ECalComponent *comp = l->data;
 		icalcomp = e_cal_component_get_icalcomponent (comp);
 		if (icalcomp) {
@@ -437,7 +437,6 @@ e_cal_backend_store_get_components_occuring_in_range (ECalBackendStore *store, t
 
 	return list;
 }
-
 
 /**
  * e_cal_backend_store_get_component_ids:

@@ -4,7 +4,7 @@
 #include <camel/camel.h>
 
 gint
-main (gint argc, gchar *argv [])
+main (gint argc, gchar *argv[])
 {
 	CamelSession *session;
 	gchar *uri = NULL;
@@ -16,7 +16,7 @@ main (gint argc, gchar *argv [])
 		return -1;
 	}
 
-	uri = argv [1];
+	uri = argv[1];
 	g_thread_init (NULL);
 	system ("rm -rf /tmp/test-camel-imapx");
 	camel_init ("/tmp/test-camel-imapx", TRUE);

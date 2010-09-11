@@ -619,9 +619,9 @@ do_label (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDr
 
 		label = argv[0]->value.string;
 
-		for (i = 0; new_labels [i]; i++) {
-			if (label && strcmp (new_labels [i] + 6, label) == 0) {
-				label = new_labels [i];
+		for (i = 0; new_labels[i]; i++) {
+			if (label && strcmp (new_labels[i] + 6, label) == 0) {
+				label = new_labels[i];
 				break;
 			}
 		}

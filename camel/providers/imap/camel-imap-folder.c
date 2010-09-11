@@ -876,8 +876,8 @@ merge_custom_flags (CamelMessageInfo *mi, const gchar *custom_flags)
 	server = g_hash_table_new (g_str_hash, g_str_equal);
 
 	cflags = g_strsplit (custom_flags, " ", -1);
-	for (i = 0; cflags [i]; i++) {
-		gchar *name = cflags [i];
+	for (i = 0; cflags[i]; i++) {
+		gchar *name = cflags[i];
 
 		if (name && *name) {
 			g_hash_table_insert (server, name, name);

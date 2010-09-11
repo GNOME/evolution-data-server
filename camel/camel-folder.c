@@ -823,19 +823,19 @@ folder_changed (CamelFolder *folder,
 		guint32 flags;
 
 		for (i = 0; i < info->uid_changed->len; i++) {
-			flags = camel_folder_get_message_flags (folder, info->uid_changed->pdata [i]);
+			flags = camel_folder_get_message_flags (folder, info->uid_changed->pdata[i]);
 			if (flags & CAMEL_MESSAGE_JUNK_LEARN) {
 				if (flags & CAMEL_MESSAGE_JUNK) {
 					if (!junk)
 						junk = g_ptr_array_new ();
-					g_ptr_array_add (junk, g_strdup (info->uid_changed->pdata [i]));
+					g_ptr_array_add (junk, g_strdup (info->uid_changed->pdata[i]));
 				} else {
 					if (!notjunk)
 						notjunk = g_ptr_array_new ();
-					g_ptr_array_add (notjunk, g_strdup (info->uid_changed->pdata [i]));
+					g_ptr_array_add (notjunk, g_strdup (info->uid_changed->pdata[i]));
 				}
 				/* reset junk learn flag so that we don't process it again*/
-				camel_folder_set_message_flags (folder, info->uid_changed->pdata [i], CAMEL_MESSAGE_JUNK_LEARN, 0);
+				camel_folder_set_message_flags (folder, info->uid_changed->pdata[i], CAMEL_MESSAGE_JUNK_LEARN, 0);
 			}
 		}
 	}

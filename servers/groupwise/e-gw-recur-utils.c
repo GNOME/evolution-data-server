@@ -33,6 +33,6 @@ e_gw_recur_get_day_of_week (gshort day)
 
 	if (day < 1 || day > 7)
 		return "";
-	return days_of_week [day-1];
+	return days_of_week[day-1];
 }
 

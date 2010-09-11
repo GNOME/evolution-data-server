@@ -3283,7 +3283,7 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is, CamelIMAPXCommand *
 		gint j;
 
 		for (j = job->u.copy_messages.last_index; j < i; j++)
-			camel_folder_delete_message (job->folder, uids->pdata [j]);
+			camel_folder_delete_message (job->folder, uids->pdata[j]);
 	}
 
 	/* TODO copy the summary and cached messages to the new folder. We might need a sorted insert to avoid refreshing the dest folder */
@@ -4050,7 +4050,7 @@ imapx_command_expunge_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 			changes = camel_folder_change_info_new ();
 			for (i = 0; i < uids->len; i++) {
-				gchar *uid = uids->pdata [i];
+				gchar *uid = uids->pdata[i];
 				CamelMessageInfo *mi = camel_folder_summary_uid (folder->summary, uid);
 
 				if (mi) {

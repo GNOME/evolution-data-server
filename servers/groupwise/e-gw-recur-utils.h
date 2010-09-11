@@ -61,7 +61,7 @@ typedef struct {
 	gshort by_month_day[E_GW_ITEM_BY_MONTHDAY_SIZE];
 	gshort by_year_day[E_GW_ITEM_BY_YEARDAY_SIZE];
 	gshort by_month[E_GW_ITEM_BY_MONTH_SIZE];
-	gshort by_setpos [E_GW_ITEM_BY_SETPOS_SIZE];
+	gshort by_setpos[E_GW_ITEM_BY_SETPOS_SIZE];
 } EGwItemRecurrenceRule;
 
 #define E_GW_ITEM_RECUR_END_MARKER  0x7f7f

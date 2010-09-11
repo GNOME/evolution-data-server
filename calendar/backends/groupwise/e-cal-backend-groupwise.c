@@ -196,14 +196,14 @@ get_element_type (icalcomponent_kind kind)
 
 /* TODO Do not replicate this in every backend */
 static icaltimezone *
-resolve_tzid (const char *tzid, gpointer user_data)
+resolve_tzid (const gchar *tzid, gpointer user_data)
 {
 	icaltimezone *zone;
-		
+
 	zone = (!strcmp (tzid, "UTC"))
 		? icaltimezone_get_utc_timezone ()
 		: icaltimezone_get_builtin_timezone_from_tzid (tzid);
-	
+
 	if (!zone)
 		zone = e_cal_backend_internal_get_timezone (E_CAL_BACKEND (user_data), tzid);
 
@@ -405,7 +405,7 @@ get_deltas (gpointer handle)
 	GList *item_list = NULL, *total_list = NULL, *l;
 	GSList *cache_ids = NULL, *ls;
 	GPtrArray *uid_array = NULL;
-	gchar t_str [26];
+	gchar t_str[26];
 	const gchar *local_utc_time = NULL, *time_string = NULL, *serv_time, *position;
 	gchar *attempts;
 	icaltimetype current;
@@ -550,7 +550,7 @@ get_deltas (gpointer handle)
 		dur = icaltime_subtract (current, old_local);
 		server_utc = icaltime_from_string (time_string);
 		icaltime_adjust (&server_utc, dur.days, dur.hours, dur.minutes, dur.seconds);
-	
+
 		current_time = icaltime_as_timet_with_zone (server_utc, icaltimezone_get_utc_timezone ());
 		gmtime_r (&current_time, &tm);
 
@@ -561,7 +561,7 @@ get_deltas (gpointer handle)
 	}
 
 	priv->first_delta_fetch = FALSE;
-	
+
 	current_time = icaltime_as_timet_with_zone (current, icaltimezone_get_utc_timezone ());
 	gmtime_r (&current_time, &tm);
 	strftime (t_str, 26, "%Y-%m-%dT%H:%M:%SZ", &tm);
@@ -1652,7 +1652,7 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 	}
 
 	*objects = NULL;
-		
+
 	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times(cbsexp,
 									    &occur_start,
 									    &occur_end);

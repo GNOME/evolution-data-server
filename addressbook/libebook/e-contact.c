@@ -44,7 +44,7 @@
 G_DEFINE_TYPE (EContact, e_contact, E_TYPE_VCARD)
 
 struct _EContactPrivate {
-	gchar *cached_strings [E_CONTACT_FIELD_LAST];
+	gchar *cached_strings[E_CONTACT_FIELD_LAST];
 };
 
 #define E_CONTACT_FIELD_TYPE_STRING       0x00000001   /* used for simple single valued attributes */
@@ -652,7 +652,7 @@ date_getter (EContact *contact, EVCardAttribute *attr)
 		GList *p = e_vcard_attribute_get_values (attr);
 		EContactDate *date;
 
-		if (p && p->data && ((gchar *) p->data) [0])
+		if (p && p->data && ((gchar *) p->data)[0])
 			date = e_contact_date_from_string ((gchar *) p->data);
 		else
 			date = NULL;
@@ -1229,7 +1229,7 @@ e_contact_new_from_vcard  (const gchar *vcard)
 		EContactName *name;
 		const gchar *org;
 		gchar *file_as_new = NULL;
-		gchar *strings [4];
+		gchar *strings[4];
 		gchar **strings_p = strings;
 
 		name = e_contact_get (contact, E_CONTACT_NAME);
@@ -1589,7 +1589,7 @@ e_contact_get_const (EContact *contact, EContactField field_id)
 	gpointer value = NULL;
 
 	g_return_val_if_fail (E_IS_CONTACT (contact), NULL);
-	g_return_val_if_fail (field_info [field_id].t & E_CONTACT_FIELD_TYPE_STRING, NULL);
+	g_return_val_if_fail (field_info[field_id].t & E_CONTACT_FIELD_TYPE_STRING, NULL);
 
 	value = contact->priv->cached_strings[field_id];
 

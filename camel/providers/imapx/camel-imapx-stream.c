@@ -37,7 +37,6 @@
 #define t(x) camel_imapx_debug(token, x)
 #define io(x) camel_imapx_debug(io, x)
 
-
 G_DEFINE_TYPE (CamelIMAPXStream, camel_imapx_stream, CAMEL_TYPE_STREAM)
 
 static gint

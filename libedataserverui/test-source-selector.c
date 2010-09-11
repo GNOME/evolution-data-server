@@ -116,7 +116,7 @@ main (gint argc, gchar **argv)
 	if (argc < 2)
 		gconf_path = "/apps/evolution/calendar/sources";
 	else
-		gconf_path = argv [1];
+		gconf_path = argv[1];
 
 	g_idle_add ((GSourceFunc) on_idle_create_widget, (gpointer) gconf_path);
 

@@ -152,7 +152,7 @@ rename_label_flag (const gchar *flag, gint len, gboolean server_to_evo)
 
 	for (i = 0 + (server_to_evo ? 0 : 1); labels[i]; i = i + 2) {
 		if (!g_ascii_strncasecmp (flag, labels[i], len))
-			return labels [i + (server_to_evo ? 1 : -1)];
+			return labels[i + (server_to_evo ? 1 : -1)];
 	}
 
 	return flag;
@@ -400,7 +400,7 @@ imapx_update_store_summary (CamelFolder *folder)
 
 /*
 capability_data ::= "CAPABILITY" SPACE [1#capability SPACE] "IMAP4rev1"
-                    [SPACE 1#capability]
+                   [SPACE 1#capability]
                     ;; IMAP4rev1 servers which offer RFC 1730
                     ;; compatibility MUST list "IMAP4" as the first
                     ;; capability.
@@ -532,7 +532,7 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream, GError **error)
 						node->sep = *token;
 					} else {
 						if (*token)
-							node->sep = node->path [strlen (node->path) - 1];
+							node->sep = node->path[strlen (node->path) - 1];
 						else
 							node->sep = '\0';
 					}
@@ -549,11 +549,11 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream, GError **error)
 				tail->next = node;
 				tail = node;
 
-				if (*node->path && node->path [strlen (node->path) -1] == node->sep)
-					node->path [strlen (node->path) - 1] = '\0';
+				if (*node->path && node->path[strlen (node->path) -1] == node->sep)
+					node->path[strlen (node->path) - 1] = '\0';
 
 				if (!g_ascii_strncasecmp (node->path, "INBOX", 5) &&
-						(node->path [6] == '\0' || node->path [6] == node->sep ))
+						(node->path[6] == '\0' || node->path[6] == node->sep ))
 					memcpy (node->path, "INBOX", 5);
 
 				/* TODO remove full_name later. not required */
@@ -574,7 +574,7 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream, GError **error)
 			}
 
 		} else if (tok == IMAPX_TOK_TOKEN && !strcmp ((gchar *) token, "NIL")) {
-			namespaces [n] = NULL;
+			namespaces[n] = NULL;
 		} else {
 			g_set_error (error, CAMEL_IMAPX_ERROR, 1, "namespace: expected either a '(' or NIL");
 			goto exception;
@@ -584,15 +584,15 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream, GError **error)
 		n++;
 	} while (n < 3);
 
-	nsl->personal = namespaces [0];
-	nsl->shared = namespaces [1];
-	nsl->other = namespaces [2];
+	nsl->personal = namespaces[0];
+	nsl->shared = namespaces[1];
+	nsl->other = namespaces[2];
 
 	return nsl;
 exception:
 	g_free (nsl);
 	for (i=0; i < 3; i++)
-		imapx_namespace_clear (&namespaces [i]);
+		imapx_namespace_clear (&namespaces[i]);
 
 	return NULL;
 }
@@ -608,15 +608,15 @@ body_extension  ::= nstring / number / "(" 1#body_extension ")"
                     ;; future standard or standards-track
                     ;; revisions of this specification.
 
-body_ext_1part  ::= body_fld_md5 [SPACE body_fld_dsp
-                    [SPACE body_fld_lang
-                    [SPACE 1#body_extension]]]
+body_ext_1part  ::= body_fld_md5[SPACE body_fld_dsp
+                   [SPACE body_fld_lang
+                   [SPACE 1#body_extension]]]
                     ;; MUST NOT be returned on non-extensible
                     ;; "BODY" fetch
 
 body_ext_mpart  ::= body_fld_param
-                    [SPACE body_fld_dsp SPACE body_fld_lang
-                    [SPACE 1#body_extension]]
+                   [SPACE body_fld_dsp SPACE body_fld_lang
+                   [SPACE 1#body_extension]]
                     ;; MUST NOT be returned on non-extensible
                     ;; "BODY" fetch
 
@@ -644,13 +644,13 @@ body_fld_octets ::= number
 body_fld_param  ::= "(" 1#(string SPACE string) ")" / nil
 
 body_type_1part ::= (body_type_basic / body_type_msg / body_type_text)
-                    [SPACE body_ext_1part]
+                   [SPACE body_ext_1part]
 
 body_type_basic ::= media_basic SPACE body_fields
                     ;; MESSAGE subtype MUST NOT be "RFC822"
 
 body_type_mpart ::= 1*body SPACE media_subtype
-                    [SPACE body_ext_mpart]
+                   [SPACE body_ext_mpart]
 
 body_type_msg   ::= media_message SPACE body_fields SPACE envelope
                     SPACE body SPACE body_fld_lines
@@ -685,19 +685,19 @@ env_to          ::= "(" 1*address ")" / nil
 media_basic     ::= (<"> ("APPLICATION" / "AUDIO" / "IMAGE" /
                     "MESSAGE" / "VIDEO") <">) / string)
                     SPACE media_subtype
-                    ;; Defined in [MIME-IMT]
+                    ;; Defined in[MIME-IMT]
 
 media_message   ::= <"> "MESSAGE" <"> SPACE <"> "RFC822" <">
-                    ;; Defined in [MIME-IMT]
+                    ;; Defined in[MIME-IMT]
 
 media_subtype   ::= string
-                    ;; Defined in [MIME-IMT]
+                    ;; Defined in[MIME-IMT]
 
 media_text      ::= <"> "TEXT" <"> SPACE media_subtype
-                    ;; Defined in [MIME-IMT]
+                    ;; Defined in[MIME-IMT]
 
  ( "type" "subtype"  body_fields [envelope body body_fld_lines]
-                                 [body_fld_lines]
+                                [body_fld_lines]
 
  (("TEXT" "PLAIN" ("CHARSET"
                      "US-ASCII") NIL NIL "7BIT" 1152 23)("TEXT" "PLAIN"
@@ -778,14 +778,14 @@ imapx_parse_ext_optional(CamelIMAPXStream *is, GError **error)
 	/* although the grammars are different, they can be parsed the same way */
 
 	/* body_ext_1part  ::= body_fld_md5 [SPACE body_fld_dsp
-	   [SPACE body_fld_lang
-	   [SPACE 1#body_extension]]]
+	  [SPACE body_fld_lang
+	  [SPACE 1#body_extension]]]
 	   ;; MUST NOT be returned on non-extensible
 	   ;; "BODY" fetch */
 
 	/* body_ext_mpart  ::= body_fld_param
-	   [SPACE body_fld_dsp SPACE body_fld_lang
-	   [SPACE 1#body_extension]]
+	  [SPACE body_fld_dsp SPACE body_fld_lang
+	  [SPACE 1#body_extension]]
 	   ;; MUST NOT be returned on non-extensible
 	   ;; "BODY" fetch */
 
@@ -1138,7 +1138,7 @@ imapx_parse_body(CamelIMAPXStream *is, GError **error)
 	camel_imapx_stream_ungettoken(is, tok, token, len);
 	if (tok == '(') {
 		/* body_type_mpart ::= 1*body SPACE media_subtype
-		   [SPACE body_ext_mpart] */
+		  [SPACE body_ext_mpart] */
 
 		cinfo = g_malloc0(sizeof(*cinfo));
 		last = (struct _CamelMessageContentInfo *)&cinfo->childs;
@@ -1157,8 +1157,8 @@ imapx_parse_body(CamelIMAPXStream *is, GError **error)
 		cinfo->type = camel_content_type_new("multipart", (gchar *) token);
 
 		/* body_ext_mpart  ::= body_fld_param
-		   [SPACE body_fld_dsp SPACE body_fld_lang
-		   [SPACE 1#body_extension]]
+		  [SPACE body_fld_dsp SPACE body_fld_lang
+		  [SPACE 1#body_extension]]
 		   ;; MUST NOT be returned on non-extensible
 		   ;; "BODY" fetch */
 
@@ -1182,7 +1182,7 @@ imapx_parse_body(CamelIMAPXStream *is, GError **error)
 		}
 	} else {
 		/* body_type_1part ::= (body_type_basic / body_type_msg / body_type_text)
-		   [SPACE body_ext_1part]
+		  [SPACE body_ext_1part]
 
 		   body_type_basic ::= media_basic SPACE body_fields
 		   body_type_text  ::= media_text SPACE body_fields SPACE body_fld_lines
@@ -1219,8 +1219,8 @@ imapx_parse_body(CamelIMAPXStream *is, GError **error)
 		camel_imapx_stream_ungettoken(is, tok, token, len);
 
 		/* body_ext_1part  ::= body_fld_md5 [SPACE body_fld_dsp
-		   [SPACE body_fld_lang
-		   [SPACE 1#body_extension]]]
+		  [SPACE body_fld_lang
+		  [SPACE 1#body_extension]]]
 		   ;; MUST NOT be returned on non-extensible
 		   ;; "BODY" fetch */
 
@@ -1631,8 +1631,8 @@ imapx_parse_uids (CamelIMAPXStream *is, GError **error)
 	for (i = 0; i < str_len; i++)	{
 		if (g_strstr_len (splits [i], -1, ":")) {
 			gchar **seq = g_strsplit (splits [i], ":", -1);
-			guint32 uid1 = strtoul ((gchar *) seq [0], NULL, 10);
-			guint32 uid2 = strtoul ((gchar *) seq [1], NULL, 10);
+			guint32 uid1 = strtoul ((gchar *) seq[0], NULL, 10);
+			guint32 uid2 = strtoul ((gchar *) seq[1], NULL, 10);
 
 			generate_uids_from_sequence (uids, uid1, uid2);
 			g_strfreev (seq);

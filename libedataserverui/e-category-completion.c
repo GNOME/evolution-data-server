@@ -306,7 +306,7 @@ category_completion_sanitize_suffix (GtkEntry *entry, GdkEventFocus *event, GtkE
 	if (text) {
 		gint len = strlen (text), old_len = len;
 
-		while (len > 0 && (text [len -1] == ' ' || text [len - 1] == ','))
+		while (len > 0 && (text[len -1] == ' ' || text[len - 1] == ','))
 			len--;
 
 		if (old_len != len) {

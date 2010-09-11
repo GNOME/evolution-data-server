@@ -392,10 +392,10 @@ e_cal_component_gen_uid (void)
 
 	if (!hostname) {
 #ifndef G_OS_WIN32
-		static gchar buffer [512];
+		static gchar buffer[512];
 
 		if ((gethostname (buffer, sizeof (buffer) - 1) == 0) &&
-		    (buffer [0] != 0))
+		    (buffer[0] != 0))
 			hostname = buffer;
 		else
 			hostname = "localhost";

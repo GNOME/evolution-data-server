@@ -116,7 +116,7 @@ struct _ECalPrivate {
 	icaltimezone *default_zone;
 
 	gchar *local_attachment_store;
-	
+
 	/* For locking the operation while localling cache values like 
 	   static capabilities, cal address etc. */
 	GStaticRecMutex cache_lock;
@@ -314,7 +314,7 @@ e_cal_source_type_enum_get_type (void)
 
 	if (g_once_init_enter (&enum_type__volatile)) {
 		GType enum_type;
-		static GEnumValue values [] = {
+		static GEnumValue values[] = {
 			{ E_CAL_SOURCE_TYPE_EVENT, "Event", NULL},
 			{ E_CAL_SOURCE_TYPE_TODO, "ToDo", NULL},
 			{ E_CAL_SOURCE_TYPE_JOURNAL, "Journal", NULL},
@@ -343,7 +343,7 @@ e_cal_set_mode_status_enum_get_type (void)
 
 	if (g_once_init_enter (&enum_type__volatile)) {
 		GType enum_type;
-		static GEnumValue values [] = {
+		static GEnumValue values[] = {
 			{ E_CAL_SET_MODE_SUCCESS,          "ECalSetModeSuccess",         "success"     },
 			{ E_CAL_SET_MODE_ERROR,            "ECalSetModeError",           "error"       },
 			{ E_CAL_SET_MODE_NOT_SUPPORTED,    "ECalSetModeNotSupported",    "unsupported" },
@@ -371,7 +371,7 @@ cal_mode_enum_get_type (void)
 
 	if (g_once_init_enter (&enum_type__volatile)) {
 		GType enum_type;
-		static GEnumValue values [] = {
+		static GEnumValue values[] = {
 			{ CAL_MODE_INVALID,                     "CalModeInvalid",                  "invalid" },
 			{ CAL_MODE_LOCAL,                       "CalModeLocal",                    "local"   },
 			{ CAL_MODE_REMOTE,                      "CalModeRemote",                   "remote"  },
@@ -459,7 +459,7 @@ gdbus_cal_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished,
 
 	UNLOCK_FACTORY ();
 
-        g_signal_emit (G_OBJECT (ecal), e_cal_signals [BACKEND_DIED], 0);
+        g_signal_emit (G_OBJECT (ecal), e_cal_signals[BACKEND_DIED], 0);
 }
 
 static void
@@ -1810,13 +1810,12 @@ load_static_capabilities (ECal *ecal, GError **error)
 	priv = ecal->priv;
 	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
-
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
 	LOCK_CACHE();
-	
+
 	if (priv->capabilities) {
 		UNLOCK_CACHE();
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);

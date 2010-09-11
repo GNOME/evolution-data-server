@@ -1759,7 +1759,7 @@ e_time_parse_date_ex (const gchar *value, struct tm *result, gboolean *two_digit
 	format [0] = ("%x");
 
 	/* according to the current locale with forced 4-digit year*/
-	format [1] = e_time_get_d_fmt_with_4digit_year ();
+	format[1] = e_time_get_d_fmt_with_4digit_year ();
 
 	/* strptime format of a weekday and a date. */
 	format [2] = _("%a %m/%d/%Y");
@@ -1771,9 +1771,9 @@ e_time_parse_date_ex (const gchar *value, struct tm *result, gboolean *two_digit
 		/* when we need to know about two digit year, then always first try
 		   full year, because for example nl_NL have format %d-%m-%y and it
 		   changes from two year itself, which isn't what we want */
-		const gchar *tmp = format [1];
-		format [1] = format [0];
-		format [0] = tmp;
+		const gchar *tmp = format[1];
+		format[1] = format[0];
+		format[0] = tmp;
 		*two_digit_year = FALSE;
 	}
 
@@ -1787,9 +1787,9 @@ e_time_parse_date_ex (const gchar *value, struct tm *result, gboolean *two_digit
 	}
 
 	if (two_digit_year)
-		g_free ((gchar *)format [0]);
+		g_free ((gchar *)format[0]);
 	else
-		g_free ((gchar *)format [1]);
+		g_free ((gchar *)format[1]);
 
 	return status;
 }

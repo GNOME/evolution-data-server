@@ -1102,9 +1102,9 @@ read_uids_flags_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 	gint i;
 	for (i = 0; i < ncol; ++i) {
 		if (!strcmp (name [i], "uid"))
-			g_ptr_array_add (data->uids, (gchar *) (camel_pstring_strdup(cols [i])));
+			g_ptr_array_add (data->uids, (gchar *) (camel_pstring_strdup(cols[i])));
 		else if (!strcmp (name [i], "flags"))
-			g_ptr_array_add (data->flags, GUINT_TO_POINTER(strtoul (cols [i], NULL, 10)));
+			g_ptr_array_add (data->flags, GUINT_TO_POINTER(strtoul (cols[i], NULL, 10)));
 	}
 
 	 return 0;
@@ -1156,10 +1156,10 @@ read_uids_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 	gint i;
 	for (i = 0; i < ncol; ++i) {
 		if (!strcmp (name [i], "uid"))
-			g_ptr_array_add (array, (gchar *) (camel_pstring_strdup(cols [i])));
+			g_ptr_array_add (array, (gchar *) (camel_pstring_strdup(cols[i])));
 	}
 	#else
-			g_ptr_array_add (array, (gchar *) (camel_pstring_strdup(cols [0])));
+			g_ptr_array_add (array, (gchar *) (camel_pstring_strdup(cols[0])));
 	#endif
 
 	 return 0;
@@ -1253,7 +1253,7 @@ read_preview_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 
 	for (i = 0; i < ncol; ++i) {
 		if (!strcmp (name [i], "uid"))
-			uid = camel_pstring_strdup(cols [i]);
+			uid = camel_pstring_strdup(cols[i]);
 		else if (!strcmp (name [i], "preview"))
 			msg = g_strdup(cols[i]);
 	}
@@ -1323,10 +1323,10 @@ read_vuids_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 
 	 for (i = 0; i < ncol; ++i) {
 		  if (!strcmp (name [i], "vuid"))
-			   g_ptr_array_add (array, (gchar *) (camel_pstring_strdup(cols [i]+8)));
+			   g_ptr_array_add (array, (gchar *) (camel_pstring_strdup(cols[i]+8)));
 	 }
 	 #else
-			   g_ptr_array_add (array, (gchar *) (camel_pstring_strdup(cols [0]+8)));
+			   g_ptr_array_add (array, (gchar *) (camel_pstring_strdup(cols[0]+8)));
 	 #endif
 
 	 return 0;
@@ -1807,45 +1807,45 @@ read_fir_callback (gpointer  ref, gint ncol, gchar ** cols, gchar ** name)
 
 	d(g_print ("\nread_fir_callback called \n"));
 #if 0
-	record->folder_name = cols [0];
-	record->version = cols [1];
+	record->folder_name = cols[0];
+	record->version = cols[1];
 	/* Just a sequential mapping of struct members to columns is enough I guess.
 	Needs some checking */
 #else
 
 	for (i = 0; i < ncol; ++i) {
 		if (!strcmp (name [i], "folder_name"))
-			record->folder_name = g_strdup(cols [i]);
+			record->folder_name = g_strdup(cols[i]);
 
 		else if (!strcmp (name [i], "version"))
-			record->version = cols [i] ? strtoul (cols [i], NULL, 10) : 0;
+			record->version = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
 
 		else if (!strcmp (name [i], "flags"))
-			record->flags = cols [i] ? strtoul (cols [i], NULL, 10) : 0;
+			record->flags = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
 
 		else if (!strcmp (name [i], "nextuid"))
-			record->nextuid = cols [i] ? strtoul (cols [i], NULL, 10) : 0;
+			record->nextuid = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
 
 		else if (!strcmp (name [i], "time"))
-			record->time = cols [i] ? strtoul (cols [i], NULL, 10) : 0;
+			record->time = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
 
 		else if (!strcmp (name [i], "saved_count"))
-			record->saved_count = cols [i] ? strtoul (cols [i], NULL, 10) : 0;
+			record->saved_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
 
 		else if (!strcmp (name [i], "unread_count"))
-			record->unread_count = cols [i] ? strtoul (cols [i], NULL, 10) : 0;
+			record->unread_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
 
 		else if (!strcmp (name [i], "deleted_count"))
-			record->deleted_count = cols [i] ? strtoul (cols [i], NULL, 10) : 0;
+			record->deleted_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
 
 		else if (!strcmp (name [i], "junk_count"))
-			record->junk_count = cols [i] ? strtoul (cols [i], NULL, 10) : 0;
+			record->junk_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
 		else if (!strcmp (name [i], "visible_count"))
-			record->visible_count = cols [i] ? strtoul (cols [i], NULL, 10) : 0;
+			record->visible_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
 		else if (!strcmp (name [i], "jnd_count"))
-			record->jnd_count = cols [i] ? strtoul (cols [i], NULL, 10) : 0;
+			record->jnd_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
 		else if (!strcmp (name [i], "bdata"))
-			record->bdata = g_strdup (cols [i]);
+			record->bdata = g_strdup (cols[i]);
 
 	}
 #endif

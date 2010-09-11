@@ -2352,7 +2352,7 @@ header_decode_addrspec(const gchar **in)
    word *('.' word) @ domain |
    *(word) '<' [ *('@' domain ) ':' ] word *( '.' word) @ domain |
 
-   1*word ':' [ word ... etc (mailbox, as above) ] ';'
+   1*word ':'[ word ... etc (mailbox, as above) ] ';'
  */
 
 /* mailbox:
@@ -3589,7 +3589,7 @@ static guchar camel_datetok_table[256] = {
 static struct {
 	const gchar *name;
 	gint offset;
-} tz_offsets [] = {
+} tz_offsets[] = {
 	{ "UT", 0 },
 	{ "GMT", 0 },
 	{ "EST", -500 },	/* these are all US timezones.  bloody yanks */
@@ -3607,12 +3607,12 @@ static struct {
 	{ "Y", 1200 },
 };
 
-static const gchar tm_months [][4] = {
+static const gchar tm_months[][4] = {
 	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
 
-static const gchar tm_days [][4] = {
+static const gchar tm_days[][4] = {
 	"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 };
 

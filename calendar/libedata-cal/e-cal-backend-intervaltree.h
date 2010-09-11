@@ -58,7 +58,7 @@ typedef struct _EIntervalTreePrivate EIntervalTreePrivate;
 struct _EIntervalTree
 {
 	GObject parent;
-	EIntervalTreePrivate *priv;              
+	EIntervalTreePrivate *priv;
 };
 
 struct _EIntervalTreeClass

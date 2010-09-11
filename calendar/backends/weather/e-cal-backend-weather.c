@@ -141,14 +141,14 @@ maybe_start_reload_timeout (ECalBackendWeather *cbw)
 
 /* TODO Do not replicate this in every backend */
 static icaltimezone *
-resolve_tzid (const char *tzid, gpointer user_data)
+resolve_tzid (const gchar *tzid, gpointer user_data)
 {
 	icaltimezone *zone;
-		
+
 	zone = (!strcmp (tzid, "UTC"))
 		? icaltimezone_get_utc_timezone ()
 		: icaltimezone_get_builtin_timezone_from_tzid (tzid);
-	
+
 	if (!zone)
 		zone = e_cal_backend_internal_get_timezone (E_CAL_BACKEND (user_data), tzid);
 
@@ -301,10 +301,10 @@ getCategory (WeatherInfo *report)
 	if (!icon_name)
 		return NULL;
 
-	for (i = 0; categories [i].description; i++) {
-		if (!g_ascii_strncasecmp (categories [i].icon_name,
+	for (i = 0; categories[i].description; i++) {
+		if (!g_ascii_strncasecmp (categories[i].icon_name,
 					      icon_name, strlen(icon_name)))
-			return _(categories [i].description);
+			return _(categories[i].description);
 	}
 
 	return NULL;
@@ -789,7 +789,7 @@ static void e_cal_backend_weather_start_query (ECalBackend *backend, EDataCalVie
 		: e_cal_backend_store_get_components (priv->store);
 
 	for (l = components; l != NULL; l = g_slist_next (l)) {
-	 	if (e_cal_backend_sexp_match_comp (sexp, E_CAL_COMPONENT (l->data), backend))
+		if (e_cal_backend_sexp_match_comp (sexp, E_CAL_COMPONENT (l->data), backend))
 			objects = g_list_append (objects, e_cal_component_get_as_string (l->data));
 	}
 

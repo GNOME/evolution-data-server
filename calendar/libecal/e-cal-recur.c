@@ -148,7 +148,7 @@ typedef struct {
 
 	/* For BYDAY modifier. A list of GINT_TO_POINTERs, in pairs.
 	   The first of each pair is the weekday, 0 = Monday to 6 = Sunday.
-	   The second of each pair is the week number [+-]0-53. */
+	   The second of each pair is the week number[+-]0-53. */
 	GList	      *byday;
 
 	/* For BYHOUR modifier. A list of GINT_TO_POINTERs, 0-23. */

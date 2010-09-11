@@ -125,7 +125,7 @@ main (gint argc, gchar **argv)
 	if (argc < 2)
 		gconf_path = "/apps/evolution/addressbook/sources";
 	else
-		gconf_path = argv [1];
+		gconf_path = argv[1];
 
 	g_idle_add ((GSourceFunc) start_test, (gpointer) gconf_path);
 

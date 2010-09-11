@@ -276,14 +276,14 @@ empty_cache (ECalBackendHttp *cbhttp)
 
 /* TODO Do not replicate this in every backend */
 static icaltimezone *
-resolve_tzid (const char *tzid, gpointer user_data)
+resolve_tzid (const gchar *tzid, gpointer user_data)
 {
 	icaltimezone *zone;
-		
+
 	zone = (!strcmp (tzid, "UTC"))
 		? icaltimezone_get_utc_timezone ()
 		: icaltimezone_get_builtin_timezone_from_tzid (tzid);
-	
+
 	if (!zone)
 		zone = e_cal_backend_internal_get_timezone (E_CAL_BACKEND (user_data), tzid);
 
@@ -305,7 +305,6 @@ put_component_to_store (ECalBackendHttp *cb,
 
 	e_cal_backend_store_put_component_with_time_range (priv->store, comp, time_start, time_end);
 }
-
 
 static void
 retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
@@ -983,7 +982,7 @@ e_cal_backend_http_start_query (ECalBackend *backend, EDataCalView *query)
 	GList *objects = NULL;
 	ECalBackendSExp *cbsexp;
 	time_t occur_start = -1, occur_end = -1;
-	gboolean prunning_by_time; 
+	gboolean prunning_by_time;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;

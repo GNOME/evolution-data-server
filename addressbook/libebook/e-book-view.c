@@ -51,7 +51,7 @@ enum {
 	LAST_SIGNAL
 };
 
-static guint signals [LAST_SIGNAL];
+static guint signals[LAST_SIGNAL];
 
 static void
 contacts_added_cb (EGdbusBookView *object, const gchar * const *vcards, EBookView *book_view)

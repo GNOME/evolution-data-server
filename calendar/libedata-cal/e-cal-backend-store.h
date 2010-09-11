@@ -149,9 +149,9 @@ GSList *	e_cal_backend_store_get_components_by_uid
 						 const gchar *uid);
 GSList *	e_cal_backend_store_get_components
 						(ECalBackendStore *store);
-GSList *	e_cal_backend_store_get_components_occuring_in_range 
-						(ECalBackendStore *store, 
-						 time_t start, 
+GSList *	e_cal_backend_store_get_components_occuring_in_range
+						(ECalBackendStore *store,
+						 time_t start,
 						 time_t end);
 GSList *	e_cal_backend_store_get_component_ids
 						(ECalBackendStore *store);
@@ -166,7 +166,7 @@ void		e_cal_backend_store_thaw_changes(ECalBackendStore *store);
 void		e_cal_backend_store_freeze_changes
 						(ECalBackendStore *store);
 void		e_cal_backend_store_interval_tree_add_comp
-						(ECalBackendStore *store, 
+						(ECalBackendStore *store,
 						 ECalComponent *comp,
 						 time_t start,
 						 time_t end);

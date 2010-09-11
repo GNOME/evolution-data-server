@@ -93,15 +93,15 @@ find_location (const gchar *code_name, gboolean is_old)
 
 	ids = g_strsplit (code_name, "/", 2);
 
-	if (!ids || !ids [0] || !ids [1])
+	if (!ids || !ids[0] || !ids[1])
 		goto done;
 
 	model = gweather_xml_load_locations ();
 	if (!model)
 		goto done;
 
-	search.code = ids [0];
-	search.name = ids [1];
+	search.code = ids[0];
+	search.name = ids[1];
 	search.is_old = is_old;
 	search.location = NULL;
 

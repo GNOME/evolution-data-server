@@ -598,7 +598,7 @@ view_contacts_changed (EContactStore *contact_store, const GList *contacts, EBoo
 		/* Update cached contact */
 		if (cached_contact != contact) {
 			g_object_unref (cached_contact);
-			cached_contacts->pdata [n] = g_object_ref (contact);
+			cached_contacts->pdata[n] = g_object_ref (contact);
 		}
 
 		/* Emit changes for current view only */

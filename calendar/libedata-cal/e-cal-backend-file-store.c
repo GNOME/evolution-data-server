@@ -118,7 +118,7 @@ put_component (ECalBackendFileStore *fstore, ECalComponent *comp)
 		g_warning ("The component does not have a valid uid \n");
 		return FALSE;
 	}
-	
+
 	g_static_rw_lock_writer_lock (&priv->lock);
 	obj = g_hash_table_lookup (priv->comp_uid_hash, uid);
 	if (obj == NULL) {
@@ -154,7 +154,7 @@ remove_component (ECalBackendFileStore *fstore, const gchar *uid, const gchar *r
 	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
 
 	g_static_rw_lock_writer_lock (&priv->lock);
-	
+
 	obj = g_hash_table_lookup (priv->comp_uid_hash, uid);
 	if (obj == NULL) {
 		ret_val = FALSE;
@@ -171,12 +171,12 @@ remove_component (ECalBackendFileStore *fstore, const gchar *uid, const gchar *r
 
 	if (remove_completely)
 		g_hash_table_remove (priv->comp_uid_hash, uid);
-	
+
 end:
 	g_static_rw_lock_writer_unlock (&priv->lock);
-	
+
 	return ret_val;
-		
+
 }
 
 static ECalComponent *
@@ -613,14 +613,14 @@ add_timezone (ECalBackendFileStore *fstore, icalcomponent *vtzcomp)
 }
 
 static icaltimezone *
-resolve_tzid (const char *tzid, gpointer user_data)
+resolve_tzid (const gchar *tzid, gpointer user_data)
 {
 	icaltimezone *zone;
-		
+
 	zone = (!strcmp (tzid, "UTC"))
 		? icaltimezone_get_utc_timezone ()
 		: icaltimezone_get_builtin_timezone_from_tzid (tzid);
-	
+
 	if (!zone)
 		zone = (icaltimezone *) e_cal_backend_store_get_timezone (E_CAL_BACKEND_STORE (user_data), tzid);
 
@@ -640,7 +640,6 @@ get_zone (icalcomponent *icalcomp)
 	zone = icalcomponent_get_timezone (icalcomp, tzid);
 	return zone;
 } */
-
 
 static void
 scan_vcalendar (ECalBackendStore *store, icalcomponent *top_icalcomp)
@@ -680,7 +679,7 @@ scan_vcalendar (ECalBackendStore *store, icalcomponent *top_icalcomp)
 			g_object_unref (comp);
 			continue;
 		}
-		
+
 		dzone = e_cal_backend_store_get_default_timezone (store);
 		e_cal_util_get_component_occur_times (comp, &time_start, &time_end,
 						resolve_tzid, store, dzone, kind);

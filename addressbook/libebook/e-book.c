@@ -65,7 +65,7 @@ enum {
 	LAST_SIGNAL
 };
 
-static guint e_book_signals [LAST_SIGNAL];
+static guint e_book_signals[LAST_SIGNAL];
 
 struct _EBookPrivate {
 	EGdbusBook *gdbus_book;
@@ -136,7 +136,7 @@ gdbus_book_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished
 
 	UNLOCK_FACTORY ();
 
-	g_signal_emit (G_OBJECT (book), e_book_signals [BACKEND_DIED], 0);
+	g_signal_emit (G_OBJECT (book), e_book_signals[BACKEND_DIED], 0);
 }
 
 static void
@@ -199,7 +199,7 @@ e_book_class_init (EBookClass *e_book_class)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (e_book_class);
 
-	e_book_signals [WRITABLE_STATUS] =
+	e_book_signals[WRITABLE_STATUS] =
 		g_signal_new ("writable_status",
 			      G_OBJECT_CLASS_TYPE (gobject_class),
 			      G_SIGNAL_RUN_LAST,
@@ -209,7 +209,7 @@ e_book_class_init (EBookClass *e_book_class)
 			      G_TYPE_NONE, 1,
 			      G_TYPE_BOOLEAN);
 
-	e_book_signals [CONNECTION_STATUS] =
+	e_book_signals[CONNECTION_STATUS] =
 		g_signal_new ("connection_status",
 			      G_OBJECT_CLASS_TYPE (gobject_class),
 			      G_SIGNAL_RUN_LAST,
@@ -219,7 +219,7 @@ e_book_class_init (EBookClass *e_book_class)
 			      G_TYPE_NONE, 1,
 			      G_TYPE_BOOLEAN);
 
-	e_book_signals [AUTH_REQUIRED] =
+	e_book_signals[AUTH_REQUIRED] =
 		g_signal_new ("auth_required",
 			      G_OBJECT_CLASS_TYPE (gobject_class),
 			      G_SIGNAL_RUN_LAST,
@@ -228,7 +228,7 @@ e_book_class_init (EBookClass *e_book_class)
 			      e_book_marshal_NONE__NONE,
 			      G_TYPE_NONE, 0);
 
-	e_book_signals [BACKEND_DIED] =
+	e_book_signals[BACKEND_DIED] =
 		g_signal_new ("backend_died",
 			      G_OBJECT_CLASS_TYPE (gobject_class),
 			      G_SIGNAL_RUN_LAST,
@@ -352,7 +352,7 @@ writable_cb (EGdbusBook *object, gboolean writable, EBook *book)
 
 	book->priv->writable = writable;
 
-	g_signal_emit (G_OBJECT (book), e_book_signals [WRITABLE_STATUS], 0, writable);
+	g_signal_emit (G_OBJECT (book), e_book_signals[WRITABLE_STATUS], 0, writable);
 }
 
 static void
@@ -362,7 +362,7 @@ connection_cb (EGdbusBook *object, gboolean connected, EBook *book)
 
 	book->priv->connected = connected;
 
-	g_signal_emit (G_OBJECT (book), e_book_signals [CONNECTION_STATUS], 0, connected);
+	g_signal_emit (G_OBJECT (book), e_book_signals[CONNECTION_STATUS], 0, connected);
 }
 
 static void
@@ -370,7 +370,7 @@ auth_required_cb (EGdbusBook *object, EBook *book)
 {
 	g_return_if_fail (E_IS_BOOK (book));
 
-	g_signal_emit (G_OBJECT (book), e_book_signals [AUTH_REQUIRED], 0);
+	g_signal_emit (G_OBJECT (book), e_book_signals[AUTH_REQUIRED], 0);
 }
 
 /**

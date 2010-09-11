@@ -425,7 +425,6 @@ add_alarm_occurrences_cb (ECalComponent *comp, time_t start, time_t end, gpointe
 	return TRUE;
 }
 
-
 /* Generates the absolute triggers for a component */
 static void
 generate_absolute_triggers (ECalComponent *comp, struct alarm_occurrence_data *aod,
@@ -1188,7 +1187,6 @@ componenttime_to_utc_timet (const ECalComponentDateTime* dt_time,
 		timet = icaltime_as_timet_with_zone (*dt_time->value, zone ? zone : default_zone);
 	}
 
-
 	return timet;
 }
 
@@ -1218,7 +1216,7 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 	g_return_if_fail (end != NULL);
 
 	e_cal_recur_ensure_end_dates (comp, FALSE, tz_cb, tz_cb_data);
-	
+
 	/* Get dtstart of the component and convert it to UTC */
 	e_cal_component_get_dtstart (comp, &dt_start);
 
@@ -1245,7 +1243,7 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 		}
 
 		e_cal_component_get_due (comp, &dt_due);
-		if(dt_due.value != NULL)
+		if (dt_due.value != NULL)
 			due_time = componenttime_to_utc_timet (&dt_due, tz_cb, tz_cb_data,
 							       default_timezone);
 

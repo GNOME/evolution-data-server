@@ -67,7 +67,7 @@ enum {
 	LAST_SIGNAL
 };
 
-static guint signals [LAST_SIGNAL] = { 0 };
+static guint signals[LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (ENameSelectorModel, e_name_selector_model, G_TYPE_OBJECT)
 
@@ -479,7 +479,7 @@ e_name_selector_model_add_section (ENameSelectorModel *name_selector_model,
 	g_array_append_val (name_selector_model->priv->sections, section);
 
 	destinations_changed (name_selector_model);
-	g_signal_emit (name_selector_model, signals [SECTION_ADDED], 0, name);
+	g_signal_emit (name_selector_model, signals[SECTION_ADDED], 0, name);
 }
 
 /**
@@ -507,7 +507,7 @@ e_name_selector_model_remove_section (ENameSelectorModel *name_selector_model, c
 	g_array_remove_index_fast (name_selector_model->priv->sections, n);  /* Order doesn't matter */
 
 	destinations_changed (name_selector_model);
-	g_signal_emit (name_selector_model, signals [SECTION_REMOVED], 0, name);
+	g_signal_emit (name_selector_model, signals[SECTION_REMOVED], 0, name);
 }
 
 /**

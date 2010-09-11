@@ -800,7 +800,7 @@ e_source_group_to_xml (ESourceGroup *group)
 
 	returned_buffer = g_malloc (xml_buffer_size + 1);
 	memcpy (returned_buffer, xml_buffer, xml_buffer_size);
-	returned_buffer [xml_buffer_size] = '\0';
+	returned_buffer[xml_buffer_size] = '\0';
 	xmlFree (xml_buffer);
 
 	return returned_buffer;

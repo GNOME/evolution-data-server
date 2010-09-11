@@ -275,14 +275,14 @@ groupwise_set_mail_mi_dates (CamelGroupwiseMessageInfo *mi, EGwItem *item)
 	if (sent_date) {
 		actual_time = e_gw_connection_get_date_from_string (sent_date);
 		mi->info.date_sent = actual_time;
-	} 
-	
+	}
+
 	if (received_date) {
 		actual_time = e_gw_connection_get_date_from_string (received_date);
 		mi->info.date_received = actual_time;
 	} else
 		mi->info.date_received = actual_time;
-	
+
 	if (!sent_date)
 		mi->info.date_sent = actual_time;
 }
@@ -618,7 +618,7 @@ update_junk_list (CamelStore *store, CamelMessageInfo *info, gint flag)
 
 	email = g_strsplit_set (from, "<>", -1);
 
-	if (from [0] == '<') {
+	if (from[0] == '<') {
 		/* g_strsplit_set will add a dummy empty string as the first string if the first character in the
 		original string is one of the delimiters that you want to suppress.
 		Refer to g_strsplit_set documentation */
@@ -1604,7 +1604,7 @@ groupwise_folder_set_threading_data (CamelGroupwiseMessageInfo *mi, EGwItem *ite
 
 	while (scan) {
 		digest = get_md5_digest ((const guchar *) scan->id);
-		memcpy(mi->info.references->references [count].id.hash, digest, sizeof(mi->info.message_id.id.hash));
+		memcpy(mi->info.references->references[count].id.hash, digest, sizeof(mi->info.message_id.id.hash));
 
 		count++;
 		scan = scan->next;
@@ -1800,7 +1800,7 @@ gw_update_cache (CamelFolder *folder, GList *list, GError **error, gboolean uid_
 				camel_pstring_free(mi->info.to);
 			mi->info.to = camel_pstring_strdup (str_to->str);
 			mi->info.cc = camel_pstring_strdup (str_cc->str);
-			
+
 			g_string_truncate (str_to, 0);
 			g_string_truncate (str_cc, 0);
 		}
@@ -1813,7 +1813,7 @@ gw_update_cache (CamelFolder *folder, GList *list, GError **error, gboolean uid_
 				time_t actual_time = e_gw_connection_get_date_from_string (temp_date);
 				mi->info.date_sent = mi->info.date_received = actual_time;
 			}
-		} else 
+		} else
 			groupwise_set_mail_mi_dates (mi, item);
 
 		mi->info.dirty = TRUE;
@@ -1885,7 +1885,7 @@ get_from_from_org (EGwItemOrganizer *org)
 			org->display_name = g_strdelimit (org->display_name, "<>", ' ');
 			str = g_string_append (str, org->display_name);
 			str = g_string_append (str, " ");
-		} else if (org->email && org->email [0]) {
+		} else if (org->email && org->email[0]) {
 			str = g_string_append (str, org->email);
 			str = g_string_append (str, " ");
 		}
@@ -2048,7 +2048,7 @@ gw_update_summary (CamelFolder *folder, GList *list,GError **error)
 				time_t actual_time = e_gw_connection_get_date_from_string (temp_date);
 				mi->info.date_sent = mi->info.date_received = actual_time;
 			}
-		} else 
+		} else
 			groupwise_set_mail_mi_dates (mi, item);
 
 		mi->info.uid = camel_pstring_strdup(e_gw_item_get_id(item));
@@ -2247,7 +2247,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 
 			t = e_gw_connection_get_date_from_string (reply_within);
 			temp = ctime (&t);
-			temp [strlen (temp)-1] = '\0';
+			temp[strlen (temp)-1] = '\0';
 			value = g_strconcat (N_("Reply Requested: by "), temp, "\n\n", mess ? mess : "", NULL);
 			e_gw_item_set_message (item, (const gchar *) value);
 			g_free (value);

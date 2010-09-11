@@ -735,7 +735,7 @@ e_categories_dialog_get_categories (ECategoriesDialog *dialog)
 	if (text) {
 		gint len = strlen (text), old_len = len;
 
-		while (len > 0 && (text [len -1] == ' ' || text [len - 1] == ','))
+		while (len > 0 && (text[len -1] == ' ' || text[len - 1] == ','))
 			len--;
 
 		if (old_len != len) {
