@@ -314,8 +314,8 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	gtk_window_set_modal            (GTK_WINDOW (name_selector_dialog), TRUE);
 	gtk_window_set_default_size     (GTK_WINDOW (name_selector_dialog), 700, -1);
 	gtk_window_set_resizable        (GTK_WINDOW (name_selector_dialog), TRUE);
-#if !GTK_CHECK_VERSION(2,21,8)
-	gtk_dialog_set_has_separator    (GTK_DIALOG (name_selector_dialog), FALSE);
+#if !GTK_CHECK_VERSION(2,90,7)
+	g_object_set (name_selector_dialog, "has-separator", FALSE, NULL);
 #endif
 	gtk_container_set_border_width  (GTK_CONTAINER (name_selector_dialog), 4);
 	gtk_window_set_title            (GTK_WINDOW (name_selector_dialog), _("Select Contacts from Address Book"));
