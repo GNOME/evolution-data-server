@@ -70,7 +70,7 @@ GType		camel_stream_mem_get_type	(void);
 CamelStream *	camel_stream_mem_new		(void);
 CamelStream *	camel_stream_mem_new_with_byte_array
 						(GByteArray *buffer);
-CamelStream *	camel_stream_mem_new_with_buffer(const gchar *buffer,
+CamelStream *	camel_stream_mem_new_with_buffer (const gchar *buffer,
 						 gsize len);
 void		camel_stream_mem_set_secure	(CamelStreamMem *mem);
 GByteArray *	camel_stream_mem_get_byte_array	(CamelStreamMem *mem);

@@ -81,7 +81,7 @@ camel_stream_null_init (CamelStreamNull *stream_null)
  * Returns: a new #CamelStreamNull
  **/
 CamelStream *
-camel_stream_null_new(void)
+camel_stream_null_new (void)
 {
 	return g_object_new (CAMEL_TYPE_STREAM_NULL, NULL);
 }

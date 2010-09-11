@@ -85,11 +85,11 @@ mime_filter_bestenc_filter (CamelMimeFilter *mime_filter,
 		if ((priv->flags & CAMEL_BESTENC_NO_FROM) && !priv->hadfrom
 		    && (priv->fromcount > 0 || priv->startofline)) {
 			if (priv->fromcount + len >=5) {
-				memcpy(&priv->fromsave[priv->fromcount], in, 5-priv->fromcount);
+				memcpy (&priv->fromsave[priv->fromcount], in, 5-priv->fromcount);
 				priv->hadfrom = strncmp(priv->fromsave, "From ", 5) == 0;
 				priv->fromcount = 0;
 			} else {
-				memcpy(&priv->fromsave[priv->fromcount], in, len);
+				memcpy (&priv->fromsave[priv->fromcount], in, len);
 				priv->fromcount += len;
 			}
 		}
@@ -130,7 +130,7 @@ mime_filter_bestenc_filter (CamelMimeFilter *mime_filter,
 							priv->startofline = TRUE;
 						} else {
 							priv->fromcount = pend-p;
-							memcpy(priv->fromsave, p, pend-p);
+							memcpy (priv->fromsave, p, pend-p);
 						}
 					}
 				} else {
@@ -150,7 +150,7 @@ mime_filter_bestenc_filter (CamelMimeFilter *mime_filter,
 	priv->total += len;
 
 	if (priv->flags & CAMEL_BESTENC_GET_CHARSET)
-		camel_charset_step(&priv->charset, in, len);
+		camel_charset_step (&priv->charset, in, len);
 
 donothing:
 	*out = (gchar *) in;
@@ -196,7 +196,7 @@ mime_filter_bestenc_reset (CamelMimeFilter *mime_filter)
 	priv->hadfrom = FALSE;
 	priv->startofline = TRUE;
 
-	camel_charset_init(&priv->charset);
+	camel_charset_init (&priv->charset);
 }
 
 static void

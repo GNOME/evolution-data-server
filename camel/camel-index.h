@@ -114,12 +114,12 @@ struct _CamelIndexCursorClass {
 	void         (*reset) (CamelIndexCursor *idc);
 };
 
-GType           camel_index_cursor_get_type(void);
+GType           camel_index_cursor_get_type (void);
 
-CamelIndexCursor  *camel_index_cursor_new(CamelIndex *index, const gchar *name);
+CamelIndexCursor  *camel_index_cursor_new (CamelIndex *index, const gchar *name);
 
-const gchar        *camel_index_cursor_next(CamelIndexCursor *idc);
-void               camel_index_cursor_reset(CamelIndexCursor *idc);
+const gchar        *camel_index_cursor_next (CamelIndexCursor *idc);
+void               camel_index_cursor_reset (CamelIndexCursor *idc);
 
 /* ********************************************************************** */
 
@@ -145,10 +145,10 @@ struct _CamelIndexNameClass {
 
 GType           camel_index_name_get_type	(void);
 
-CamelIndexName    *camel_index_name_new(CamelIndex *index, const gchar *name);
+CamelIndexName    *camel_index_name_new (CamelIndex *index, const gchar *name);
 
-void               camel_index_name_add_word(CamelIndexName *name, const gchar *word);
-gsize             camel_index_name_add_buffer(CamelIndexName *name, const gchar *buffer, gsize len);
+void               camel_index_name_add_word (CamelIndexName *name, const gchar *word);
+gsize             camel_index_name_add_buffer (CamelIndexName *name, const gchar *buffer, gsize len);
 
 /* ********************************************************************** */
 

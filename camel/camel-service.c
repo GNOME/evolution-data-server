@@ -98,7 +98,7 @@ service_construct (CamelService *service,
 	}
 
 	service->provider = provider;
-	service->url = camel_url_copy(url);
+	service->url = camel_url_copy (url);
 	service->session = g_object_ref (session);
 
 	service->status = CAMEL_SERVICE_DISCONNECTED;
@@ -106,12 +106,12 @@ service_construct (CamelService *service,
 	return TRUE;
 
 fail:
-	url_string = camel_url_to_string(url, CAMEL_URL_HIDE_PASSWORD);
+	url_string = camel_url_to_string (url, CAMEL_URL_HIDE_PASSWORD);
 	g_set_error (
 		error, CAMEL_SERVICE_ERROR,
 		CAMEL_SERVICE_ERROR_URL_INVALID,
 		err, url_string);
-	g_free(url_string);
+	g_free (url_string);
 
 	return FALSE;
 }

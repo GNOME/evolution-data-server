@@ -188,7 +188,7 @@ g_node_dump (GList *l)
 gchar *
 escape_values (gchar *str)
 {
-	gchar *sql = camel_db_sqlize_string (g_strstrip(str));
+	gchar *sql = camel_db_sqlize_string (g_strstrip (str));
 	 gchar *ret = g_strdup (sql);
 
 	 camel_db_free_sqlized_string (sql);
@@ -224,7 +224,7 @@ camel_sexp_to_sql (const gchar *txt)
 	if (!txt || !*txt)
 		return NULL;
 
-	g_scanner_input_text (scanner, txt, strlen(txt));
+	g_scanner_input_text (scanner, txt, strlen (txt));
 	while (!g_scanner_eof (scanner)) {
 		Node *mnode;
 		gint new_level = -1;
@@ -253,7 +253,7 @@ camel_sexp_to_sql (const gchar *txt)
 				gint i;
 				Node *node;
 
-				for (i=0; i < G_N_ELEMENTS(elements); i++) {
+				for (i=0; i < G_N_ELEMENTS (elements); i++) {
 					if (g_ascii_strcasecmp (elements[i].token, token) == 0) {
 
 						if (!*elements[i].exact_token) /* Skip match-all */ {
@@ -311,7 +311,7 @@ camel_sexp_to_sql (const gchar *txt)
 				}
 
 				/* These should be normal tokens */
-				if (i >= G_N_ELEMENTS(elements)) {
+				if (i >= G_N_ELEMENTS (elements)) {
 					Node *pnode = operands->data;
 
 					node = g_new0 (Node, 1);
@@ -368,7 +368,7 @@ camel_sexp_to_sql (const gchar *txt)
 				/* should be the date fns*/
 			/* Colloct all after '+' and append them to one token. Go till you find ')' */
 				token = g_scanner_get_next_token (scanner);
-				while (!g_scanner_eof(scanner) && lvl >=0 ) {
+				while (!g_scanner_eof (scanner) && lvl >=0 ) {
 					if (token == G_TOKEN_RIGHT_PAREN) {
 						d(printf(")\n"));
 						lvl--;
@@ -385,7 +385,7 @@ camel_sexp_to_sql (const gchar *txt)
 					} else {
 						d(printf("str %s\n", scanner->value.v_string));
 						if (g_ascii_strcasecmp (scanner->value.v_string, "get-current-date") == 0) {
-							lval = time(NULL); /* Make this 12:00 am */
+							lval = time (NULL); /* Make this 12:00 am */
 						} else
 							lval = atol (scanner->value.v_string);
 						d(printf("str %d\n", lval));
@@ -399,7 +399,7 @@ camel_sexp_to_sql (const gchar *txt)
 
 			node = g_new0 (Node, 1);
 			node->token = bstr;
-			node->exact_token = g_strdup(bstr);
+			node->exact_token = g_strdup (bstr);
 			node->nodes = pnode->nodes > 0 ? pnode->nodes - 1:0;
 			node->prefix = 0;
 			node->rval = ' ';
@@ -417,7 +417,7 @@ camel_sexp_to_sql (const gchar *txt)
 
 			/* Colloct all after '+' and append them to one token. Go till you find ')' */
 			token = g_scanner_get_next_token (scanner);
-			while (!g_scanner_eof(scanner) && lvl >=0 ) {
+			while (!g_scanner_eof (scanner) && lvl >=0 ) {
 				if (token == G_TOKEN_RIGHT_PAREN) {
 					lvl--;
 					token = g_scanner_get_next_token (scanner);
@@ -432,7 +432,7 @@ camel_sexp_to_sql (const gchar *txt)
 				} else {
 					d(printf("str %s\n", scanner->value.v_string));
 					if (g_ascii_strcasecmp (scanner->value.v_string, "get-current-date") == 0) {
-						lval = time(NULL); /* Make this 12:00 am */
+						lval = time (NULL); /* Make this 12:00 am */
 					} else
 						lval = atol (scanner->value.v_string);
 					d(printf("str %d\n", lval));
@@ -504,18 +504,18 @@ camel_sexp_to_sql (const gchar *txt)
 				n1=NULL; n2=NULL; n3=NULL;
 				tmp = operands;
 				n1 = operands->data;
-				operands = g_list_delete_link(operands, operands);
+				operands = g_list_delete_link (operands, operands);
 				all = g_list_delete_link (all, all);
 				tmp = operands;
 				n2 = operands->data;
-				operands = g_list_delete_link(operands, operands);
+				operands = g_list_delete_link (operands, operands);
 				all = g_list_delete_link (all, all);
 
 				/* If it is a sysnode, then it is double operand */
 				if (!n2->sys_node) {
 					/* This has to be a sysnode if not panic */
 					n3 = operands->data;
-					operands = g_list_delete_link(operands, operands);
+					operands = g_list_delete_link (operands, operands);
 					/* this is a triple operand */
 					len = 3;
 					all = g_list_delete_link (all, all);
@@ -541,8 +541,8 @@ camel_sexp_to_sql (const gchar *txt)
 
 					if (n3->prefix && g_ascii_strcasecmp (opnode->token, "=") == 0) {
 						/* see if '=' was a last operator. if so take care of it */
-						free_node(opnode);
-						free_node(opnode);
+						free_node (opnode);
+						free_node (opnode);
 						all = g_list_delete_link (all, all);
 						operators = g_list_delete_link (operators, operators);
 						opnode = operators->data;
@@ -563,7 +563,7 @@ camel_sexp_to_sql (const gchar *txt)
 							prefix="";
 						} else {
 							/* user tags like important */
-							g_free(n2->exact_token);
+							g_free (n2->exact_token);
 							n2->exact_token = n3->exact_token;
 							n3->exact_token = g_strdup("");
 							temp_op = "LIKE";
@@ -574,8 +574,8 @@ camel_sexp_to_sql (const gchar *txt)
 					}
 					if (n3->prefix && ((g_ascii_strcasecmp (opnode->token, ">") == 0) || (g_ascii_strcasecmp (opnode->token, ">") == 0) )) {
 						/* see if '=' was a last operator. if so take care of it */
-						free_node(opnode);
-						free_node(opnode);
+						free_node (opnode);
+						free_node (opnode);
 						all = g_list_delete_link (all, all);
 						operators = g_list_delete_link (operators, operators);
 						opnode = operators->data;
@@ -596,7 +596,7 @@ camel_sexp_to_sql (const gchar *txt)
 							prefix="";
 						} else {
 							/* user tags like important */
-							g_free(n2->exact_token);
+							g_free (n2->exact_token);
 							n2->exact_token = n3->exact_token;
 							n3->exact_token = g_strdup("");
 							temp_op = "LIKE";
@@ -609,15 +609,15 @@ camel_sexp_to_sql (const gchar *txt)
 					if (n3->prefix && g_ascii_strcasecmp (opnode->token, "not") == 0) {
 						if (!prefix)
 							prefix = "NOT ";
-						free_node(opnode);
-						free_node(opnode);
+						free_node (opnode);
+						free_node (opnode);
 						operators = g_list_delete_link (operators, operators);
 						all = g_list_delete_link (all, all);
 					}
 
 					/* n2 needs to be db specific */
 					sqstr = g_strdup_printf("%c%s%c", n3->pre_token, n1->exact_token, n3->post_token);
-					escstr = escape_values(sqstr);
+					escstr = escape_values (sqstr);
 					str = g_strdup_printf("(%s %s%s %s %s)", n3->ignore_lhs ? "":n2->exact_token, prefix ? prefix : " ", temp_op, n3->exact_token, escstr);
 					/* printf("str %s\n", str); */
 
@@ -630,8 +630,8 @@ camel_sexp_to_sql (const gchar *txt)
 					n3->nodes = (pnode ? pnode->nodes : 0 ) > 0 ? pnode->nodes -1 : 0;
 					n3->level = dyn_lvl;
 					operands = g_list_prepend (operands, n3);
-					free_node (n2); free_node(n1);
-					free_node (n2); free_node(n1);
+					free_node (n2); free_node (n1);
+					free_node (n2); free_node (n1);
 					d(printf("Pushed %s\n", n3->exact_token));
 					all = g_list_prepend (all, n3);
 				} else {
@@ -643,7 +643,7 @@ camel_sexp_to_sql (const gchar *txt)
 					if (n2->prefix && opnode && g_ascii_strcasecmp (opnode->token, "not") == 0) {
 						prefix = '!';
 						dyn_lvl = opnode->level;
-						free_node(opnode); free_node(opnode);
+						free_node (opnode); free_node (opnode);
 						operators = g_list_delete_link (operators, operators);
 						all = g_list_delete_link (all, all);
 						/* g_node_dump (operators); */
@@ -666,8 +666,8 @@ camel_sexp_to_sql (const gchar *txt)
 						str = g_strdup_printf("(%s %c%s %s)", n2->exact_token, prefix ? prefix : ' ', opnode->exact_token, n1->exact_token);
 
 						if (opnode) {
-							free_node(opnode);
-							free_node(opnode);
+							free_node (opnode);
+							free_node (opnode);
 						}
 						if (operators)
 							operators = g_list_delete_link (operators, operators);
@@ -682,10 +682,10 @@ camel_sexp_to_sql (const gchar *txt)
 							str = g_strdup_printf("(%s %c%s %c)", n1->exact_token, prefix ? prefix : ' ', n2->exact_token, n2->rval);
 						} else {
 							str = g_strdup_printf("%c%c%s%c", prefix ? prefix : ' ', n2->pre_token, n1->exact_token, n2->post_token);
-							estr = escape_values(str);
-							g_free(str);
+							estr = escape_values (str);
+							g_free (str);
 							str = g_strdup_printf("(%s %s %c)", n2->exact_token, estr, n2->rval ? n2->rval : ' ');
-							g_free(estr);
+							g_free (estr);
 						}
 					}
 					g_free (n2->exact_token);
@@ -696,8 +696,8 @@ camel_sexp_to_sql (const gchar *txt)
 					n2->level = dyn_lvl;
 					operands = g_list_prepend (operands, n2);
 					d(printf("Pushed %s\n", n2->exact_token));
-					free_node(n1);
-					free_node(n1);
+					free_node (n1);
+					free_node (n1);
 
 					all = g_list_prepend (all, n2);
 				}
@@ -708,24 +708,24 @@ camel_sexp_to_sql (const gchar *txt)
 	}
 
 	tmp = operands;
-	d(g_node_dump (operands));
+	d (g_node_dump (operands));
 	while (tmp) {
-		 free_node(tmp->data);
+		 free_node (tmp->data);
 		 tmp = tmp->next;
 	}
-	d(g_node_dump (operands));
+	d (g_node_dump (operands));
 
 	g_list_free (operands);
 	d(printf("\n\n\n"));
-	d(g_node_dump (operators));
+	d (g_node_dump (operators));
 	tmp = operators;
 	while (tmp) {
-		 free_node(tmp->data);
+		 free_node (tmp->data);
 		 tmp = tmp->next;
 	}
 	g_list_free (operators);
 	d(printf("\n\n\n"));
-	d(g_node_dump (all));
+	d (g_node_dump (all));
 	d(printf("\n\n\n"));
 
 	res=NULL;
@@ -738,9 +738,9 @@ camel_sexp_to_sql (const gchar *txt)
 		n1 = all->data;
 
 		sql = g_strdup (n1->exact_token);
-		free_node(n1);
+		free_node (n1);
 		g_list_free (all);
-		g_scanner_destroy(scanner);
+		g_scanner_destroy (scanner);
 		return sql;
 	}
 
@@ -824,13 +824,13 @@ camel_sexp_to_sql (const gchar *txt)
 				  res = g_list_prepend (res, n1); /* same or less level */
 			  else {
 				if (!preserve)
-					preserve = g_list_reverse(res);
+					preserve = g_list_reverse (res);
 				else {
 					GList *foo;
 					foo = preserve;
 					while (foo->next)
 						foo = foo->next;
-					foo->next = g_list_reverse(res);
+					foo->next = g_list_reverse (res);
 
 				}
 
@@ -868,7 +868,7 @@ camel_sexp_to_sql (const gchar *txt)
 	}
 	g_list_free (all);
 
-	g_scanner_destroy(scanner);
+	g_scanner_destroy (scanner);
 
 	return sql;
 }
@@ -979,7 +979,7 @@ gint main ()
 
 	};
 
-	for (i=0; i < G_N_ELEMENTS(txt); i++) {
+	for (i=0; i < G_N_ELEMENTS (txt); i++) {
 		gchar *sql;
 		printf("Q: %s\n\n", txt[i]);
 		sql = camel_sexp_to_sql (txt[i]);

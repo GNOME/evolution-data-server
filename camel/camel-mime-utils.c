@@ -387,19 +387,19 @@ camel_uudecode_step (guchar *in, gsize len, guchar *out, gint *state, guint32 *s
  * Returns: the number of bytes encoded
  **/
 gsize
-camel_quoted_encode_close(guchar *in, gsize len, guchar *out, gint *state, gint *save)
+camel_quoted_encode_close (guchar *in, gsize len, guchar *out, gint *state, gint *save)
 {
 	register guchar *outptr = out;
 	gint last;
 
 	if (len>0)
-		outptr += camel_quoted_encode_step(in, len, outptr, state, save);
+		outptr += camel_quoted_encode_step (in, len, outptr, state, save);
 
 	last = *state;
 	if (last != -1) {
 		/* space/tab must be encoded if it's the last character on
 		   the line */
-		if (camel_mime_is_qpsafe(last) && last!=' ' && last!=9) {
+		if (camel_mime_is_qpsafe (last) && last!=' ' && last!=9) {
 			*outptr++ = last;
 		} else {
 			*outptr++ = '=';
@@ -466,7 +466,7 @@ camel_quoted_encode_step (guchar *in, gsize len, guchar *out, gint *statep, gint
 			last = -1;
 		} else {
 			if (last != -1) {
-				if (camel_mime_is_qpsafe(last)) {
+				if (camel_mime_is_qpsafe (last)) {
 					*outptr++ = last;
 					sofar++;
 				} else {
@@ -474,7 +474,7 @@ camel_quoted_encode_step (guchar *in, gsize len, guchar *out, gint *statep, gint
 				}
 			}
 
-			if (camel_mime_is_qpsafe(c)) {
+			if (camel_mime_is_qpsafe (c)) {
 				if (sofar > 74) {
 					*outptr++ = '=';
 					*outptr++ = '\n';
@@ -533,7 +533,7 @@ camel_quoted_encode_step (guchar *in, gsize len, guchar *out, gint *statep, gint
  * Returns: the number of bytes decoded
  **/
 gsize
-camel_quoted_decode_step(guchar *in, gsize len, guchar *out, gint *savestate, gint *saveme)
+camel_quoted_decode_step (guchar *in, gsize len, guchar *out, gint *savestate, gint *saveme)
 {
 	register guchar *inptr, *outptr;
 	guchar *inend, c;
@@ -581,9 +581,9 @@ camel_quoted_decode_step(guchar *in, gsize len, guchar *out, gint *savestate, gi
 			break;
 		case 2:
 			c = *inptr++;
-			if (isxdigit(c) && isxdigit(save)) {
-				c = toupper(c);
-				save = toupper(save);
+			if (isxdigit (c) && isxdigit (save)) {
+				c = toupper (c);
+				save = toupper (save);
 				*outptr++ = (((save>='A'?save-'A'+10:save-'0')&0x0f) << 4)
 					| ((c>='A'?c-'A'+10:c-'0')&0x0f);
 			} else if (c=='\n' && save == '\r') {
@@ -625,7 +625,7 @@ camel_quoted_decode_step(guchar *in, gsize len, guchar *out, gint *savestate, gi
   which is slightly different than plain quoted-printable (mainly by allowing 0x20 <> _)
 */
 static gsize
-quoted_decode(const guchar *in, gsize len, guchar *out)
+quoted_decode (const guchar *in, gsize len, guchar *out)
 {
 	register const guchar *inptr;
 	register guchar *outptr;
@@ -644,8 +644,8 @@ quoted_decode(const guchar *in, gsize len, guchar *out)
 		if (c=='=') {
 			/* silently ignore truncated data? */
 			if (inend-in>=2) {
-				c = toupper(*inptr++);
-				c1 = toupper(*inptr++);
+				c = toupper (*inptr++);
+				c1 = toupper (*inptr++);
 				*outptr++ = (((c>='A'?c-'A'+10:c-'0')&0x0f) << 4)
 					| ((c1>='A'?c1-'A'+10:c1-'0')&0x0f);
 			} else {
@@ -696,15 +696,15 @@ quoted_encode (const guchar *in, gsize len, guchar *out, gushort safemask)
 }
 
 static void
-header_decode_lwsp(const gchar **in)
+header_decode_lwsp (const gchar **in)
 {
 	const gchar *inptr = *in;
 	gchar c;
 
 	d2(printf("is ws: '%s'\n", *in));
 
-	while ((camel_mime_is_lwsp(*inptr) || *inptr =='(') && *inptr != '\0') {
-		while (camel_mime_is_lwsp(*inptr) && *inptr != '\0') {
+	while ((camel_mime_is_lwsp (*inptr) || *inptr =='(') && *inptr != '\0') {
+		while (camel_mime_is_lwsp (*inptr) && *inptr != '\0') {
 			d2(printf("(%c)", *inptr));
 			inptr++;
 		}
@@ -1084,11 +1084,11 @@ append_8bit (GString *out, const gchar *inbuf, gsize inlen, const gchar *charset
 		return FALSE;
 
 	outlen = inlen * 6 + 16;
-	outbuf = outbase = g_malloc(outlen);
+	outbuf = outbase = g_malloc (outlen);
 
 	if (camel_iconv (ic, &inbuf, &inlen, &outbuf, &outlen) == (gsize) -1) {
 		w(g_warning("Conversion to '%s' failed: %s", charset, g_strerror (errno)));
-		g_free(outbase);
+		g_free (outbase);
 		camel_iconv_close (ic);
 		return FALSE;
 	}
@@ -1096,8 +1096,8 @@ append_8bit (GString *out, const gchar *inbuf, gsize inlen, const gchar *charset
 	camel_iconv (ic, NULL, NULL, &outbuf, &outlen);
 
 	*outbuf = 0;
-	g_string_append(out, outbase);
-	g_free(outbase);
+	g_string_append (out, outbase);
+	g_free (outbase);
 	camel_iconv_close (ic);
 
 	return TRUE;
@@ -1282,7 +1282,7 @@ camel_header_format_ctext (const gchar *in, const gchar *default_charset)
 
 /* FIXME: needs a way to cache iconv opens for different charsets? */
 static void
-rfc2047_encode_word(GString *outstring, const gchar *in, gsize len, const gchar *type, gushort safemask)
+rfc2047_encode_word (GString *outstring, const gchar *in, gsize len, const gchar *type, gushort safemask)
 {
 	iconv_t ic = (iconv_t) -1;
 	gchar *buffer, *out, *ascii;
@@ -1345,14 +1345,14 @@ rfc2047_encode_word(GString *outstring, const gchar *in, gsize len, const gchar 
 				proclen = inlen;
 			}
 
-			memcpy(out, inptr, proclen);
+			memcpy (out, inptr, proclen);
 			inptr += proclen;
 			inlen -= proclen;
 			out += proclen;
 		} else {
 			/* well we could do similar, but we can't (without undue effort), we'll just break it up into
 			   hopefully-small-enough chunks, and leave it at that */
-			convlen = MIN(inlen, CAMEL_FOLD_PREENCODED);
+			convlen = MIN (inlen, CAMEL_FOLD_PREENCODED);
 			p = inptr;
 			if (camel_iconv (ic, &inptr, (gsize *) &convlen, &out, &outlen) == (gsize) -1 && errno != EINVAL) {
 				w(g_warning("Conversion problem: conversion truncated: %s", g_strerror (errno)));
@@ -1529,21 +1529,21 @@ camel_header_encode_string (const guchar *in)
 
 /* apply quoted-string rules to a string */
 static void
-quote_word(GString *out, gboolean do_quotes, const gchar *start, gsize len)
+quote_word (GString *out, gboolean do_quotes, const gchar *start, gsize len)
 {
 	gint i, c;
 
 	/* TODO: What about folding on long lines? */
 	if (do_quotes)
-		g_string_append_c(out, '"');
+		g_string_append_c (out, '"');
 	for (i=0;i<len;i++) {
 		c = *start++;
 		if (c == '\"' || c=='\\' || c=='\r')
-			g_string_append_c(out, '\\');
-		g_string_append_c(out, c);
+			g_string_append_c (out, '\\');
+		g_string_append_c (out, c);
 	}
 	if (do_quotes)
-		g_string_append_c(out, '"');
+		g_string_append_c (out, '"');
 }
 
 /* incrementing possibility for the word type */
@@ -1669,8 +1669,8 @@ header_encode_phrase_merge_words (GList **wordsp)
 			if (word_types_compatable (word->type, next->type)) {
 				if (MERGED_WORD_LT_FOLDLEN (next->end - word->start, MAX (word->type, next->type))) {
 					/* the resulting word type is the MAX of the 2 types */
-					word->type = MAX(word->type, next->type);
-					word->encoding = MAX(word->encoding, next->encoding);
+					word->type = MAX (word->type, next->type);
+					word->encoding = MAX (word->encoding, next->encoding);
 					word->end = next->end;
 					words = g_list_remove_link (words, nextl);
 					g_list_free_1 (nextl);
@@ -1820,26 +1820,26 @@ decode_token (const gchar **in)
  * Returns: a new string containing the first token in @in
  **/
 gchar *
-camel_header_token_decode(const gchar *in)
+camel_header_token_decode (const gchar *in)
 {
 	if (in == NULL)
 		return NULL;
 
-	return decode_token(&in);
+	return decode_token (&in);
 }
 
 /*
    <"> * ( <any gchar except <"> \, cr  /  \ <any char> ) <">
 */
 static gchar *
-header_decode_quoted_string(const gchar **in)
+header_decode_quoted_string (const gchar **in)
 {
 	const gchar *inptr = *in;
 	gchar *out = NULL, *outptr;
 	gsize outlen;
 	gint c;
 
-	header_decode_lwsp(&inptr);
+	header_decode_lwsp (&inptr);
 	if (*inptr == '"') {
 		const gchar *intmp;
 		gint skip = 0;
@@ -1854,7 +1854,7 @@ header_decode_quoted_string(const gchar **in)
 			}
 		}
 		outlen = intmp-inptr-skip;
-		out = outptr = g_malloc(outlen+1);
+		out = outptr = g_malloc (outlen+1);
 		while ( (c = *inptr) && c!= '"') {
 			inptr++;
 			if (c=='\\' && *inptr) {
@@ -1871,17 +1871,17 @@ header_decode_quoted_string(const gchar **in)
 }
 
 static gchar *
-header_decode_atom(const gchar **in)
+header_decode_atom (const gchar **in)
 {
 	const gchar *inptr = *in, *start;
 
-	header_decode_lwsp(&inptr);
+	header_decode_lwsp (&inptr);
 	start = inptr;
-	while (camel_mime_is_atom(*inptr))
+	while (camel_mime_is_atom (*inptr))
 		inptr++;
 	*in = inptr;
 	if (inptr > start)
-		return g_strndup(start, inptr-start);
+		return g_strndup (start, inptr-start);
 	else
 		return NULL;
 }
@@ -1902,18 +1902,18 @@ header_decode_word (const gchar **in)
 }
 
 static gchar *
-header_decode_value(const gchar **in)
+header_decode_value (const gchar **in)
 {
 	const gchar *inptr = *in;
 
-	header_decode_lwsp(&inptr);
+	header_decode_lwsp (&inptr);
 	if (*inptr == '"') {
 		d(printf("decoding quoted string\n"));
-		return header_decode_quoted_string(in);
-	} else if (camel_mime_is_ttoken(*inptr)) {
+		return header_decode_quoted_string (in);
+	} else if (camel_mime_is_ttoken (*inptr)) {
 		d(printf("decoding token\n"));
 		/* this may not have the right specials for all params? */
-		return decode_token(in);
+		return decode_token (in);
 	}
 	return NULL;
 }
@@ -1930,14 +1930,14 @@ header_decode_value(const gchar **in)
  * Returns: the gint value
  **/
 gint
-camel_header_decode_int(const gchar **in)
+camel_header_decode_int (const gchar **in)
 {
 	const gchar *inptr = *in;
 	gint c, v=0;
 
-	header_decode_lwsp(&inptr);
+	header_decode_lwsp (&inptr);
 	while ( (c=*inptr++ & 0xff)
-		&& isdigit(c) ) {
+		&& isdigit (c) ) {
 		v = v*10+(c-'0');
 	}
 	*in = inptr-1;
@@ -1975,27 +1975,27 @@ hex_decode (const gchar *in, gsize len)
 
 /* Tries to convert @in @from charset @to charset.  Any failure, we get no data out rather than partial conversion */
 static gchar *
-header_convert(const gchar *to, const gchar *from, const gchar *in, gsize inlen)
+header_convert (const gchar *to, const gchar *from, const gchar *in, gsize inlen)
 {
 	iconv_t ic;
 	gsize outlen, ret;
 	gchar *outbuf, *outbase, *result = NULL;
 
-	ic = camel_iconv_open(to, from);
+	ic = camel_iconv_open (to, from);
 	if (ic == (iconv_t) -1)
 		return NULL;
 
 	outlen = inlen * 6 + 16;
-	outbuf = outbase = g_malloc(outlen);
+	outbuf = outbase = g_malloc (outlen);
 
-	ret = camel_iconv(ic, &in, &inlen, &outbuf, &outlen);
+	ret = camel_iconv (ic, &in, &inlen, &outbuf, &outlen);
 	if (ret != (gsize) -1) {
-		camel_iconv(ic, NULL, NULL, &outbuf, &outlen);
+		camel_iconv (ic, NULL, NULL, &outbuf, &outlen);
 		*outbuf = '\0';
-		result = g_strdup(outbase);
+		result = g_strdup (outbase);
 	}
-	camel_iconv_close(ic);
-	g_free(outbase);
+	camel_iconv_close (ic);
+	g_free (outbase);
 
 	return result;
 }
@@ -2016,8 +2016,8 @@ rfc2184_decode (const gchar *in, gsize len)
 	if (!inptr)
 		return NULL;
 
-	encoding = g_alloca(inptr-in+1);
-	memcpy(encoding, in, inptr-in);
+	encoding = g_alloca (inptr-in+1);
+	memcpy (encoding, in, inptr-in);
 	encoding[inptr-in] = 0;
 	charset = camel_iconv_charset_name (encoding);
 
@@ -2030,7 +2030,7 @@ rfc2184_decode (const gchar *in, gsize len)
 
 	decword = hex_decode (inptr, inend - inptr);
 	decoded = header_convert("UTF-8", charset, decword, strlen(decword));
-	g_free(decword);
+	g_free (decword);
 
 	return decoded;
 }
@@ -2146,7 +2146,7 @@ camel_content_type_set_param (CamelContentType *t, const gchar *name, const gcha
  * %FALSE otherwise
  **/
 gint
-camel_content_type_is(CamelContentType *ct, const gchar *type, const gchar *subtype)
+camel_content_type_is (CamelContentType *ct, const gchar *type, const gchar *subtype)
 {
 	/* no type == text/plain or text/"*" */
 	if (ct==NULL || (ct->type == NULL && ct->subtype == NULL)) {
@@ -2156,9 +2156,9 @@ camel_content_type_is(CamelContentType *ct, const gchar *type, const gchar *subt
 	}
 
 	return (ct->type != NULL
-		&& (!g_ascii_strcasecmp(ct->type, type)
+		&& (!g_ascii_strcasecmp (ct->type, type)
 		    && ((ct->subtype != NULL
-			 && !g_ascii_strcasecmp(ct->subtype, subtype))
+			 && !g_ascii_strcasecmp (ct->subtype, subtype))
 			|| !strcmp("*", subtype))));
 }
 
@@ -2169,15 +2169,15 @@ camel_content_type_is(CamelContentType *ct, const gchar *type, const gchar *subt
  * Free the list of params.
  **/
 void
-camel_header_param_list_free(struct _camel_header_param *p)
+camel_header_param_list_free (struct _camel_header_param *p)
 {
 	struct _camel_header_param *n;
 
 	while (p) {
 		n = p->next;
-		g_free(p->name);
-		g_free(p->value);
-		g_free(p);
+		g_free (p->name);
+		g_free (p->value);
+		g_free (p);
 		p = n;
 	}
 }
@@ -2192,13 +2192,13 @@ camel_header_param_list_free(struct _camel_header_param *p)
  * Returns: the new #CamelContentType
  **/
 CamelContentType *
-camel_content_type_new(const gchar *type, const gchar *subtype)
+camel_content_type_new (const gchar *type, const gchar *subtype)
 {
 	CamelContentType *t;
 
 	t = g_slice_new (CamelContentType);
-	t->type = g_strdup(type);
-	t->subtype = g_strdup(subtype);
+	t->type = g_strdup (type);
+	t->subtype = g_strdup (subtype);
 	t->params = NULL;
 	t->refcount = 1;
 
@@ -2212,7 +2212,7 @@ camel_content_type_new(const gchar *type, const gchar *subtype)
  * Refs the content type.
  **/
 void
-camel_content_type_ref(CamelContentType *ct)
+camel_content_type_ref (CamelContentType *ct)
 {
 	if (ct)
 		ct->refcount++;
@@ -2225,13 +2225,13 @@ camel_content_type_ref(CamelContentType *ct)
  * Unrefs, and potentially frees, the content type.
  **/
 void
-camel_content_type_unref(CamelContentType *ct)
+camel_content_type_unref (CamelContentType *ct)
 {
 	if (ct) {
 		if (ct->refcount <= 1) {
-			camel_header_param_list_free(ct->params);
-			g_free(ct->type);
-			g_free(ct->subtype);
+			camel_header_param_list_free (ct->params);
+			g_free (ct->type);
+			g_free (ct->subtype);
 			g_slice_free (CamelContentType, ct);
 			ct = NULL;
 		} else {
@@ -2242,7 +2242,7 @@ camel_content_type_unref(CamelContentType *ct)
 
 /* for decoding email addresses, canonically */
 static gchar *
-header_decode_domain(const gchar **in)
+header_decode_domain (const gchar **in)
 {
 	const gchar *inptr = *in;
 	gint go = TRUE;
@@ -2250,37 +2250,37 @@ header_decode_domain(const gchar **in)
 	GString *domain = g_string_new("");
 
 	/* domain ref | domain literal */
-	header_decode_lwsp(&inptr);
+	header_decode_lwsp (&inptr);
 	while (go) {
 		if (*inptr == '[') { /* domain literal */
-			domain = g_string_append_c(domain, '[');
+			domain = g_string_append_c (domain, '[');
 			inptr++;
-			header_decode_lwsp(&inptr);
+			header_decode_lwsp (&inptr);
 			while (*inptr && camel_mime_is_dtext (*inptr)) {
-				domain = g_string_append_c(domain, *inptr);
+				domain = g_string_append_c (domain, *inptr);
 				inptr++;
 			}
 			if (*inptr == ']') {
-				domain = g_string_append_c(domain, ']');
+				domain = g_string_append_c (domain, ']');
 				inptr++;
 			} else {
 				w(g_warning("closing ']' not found in domain: %s", *in));
 			}
 		} else {
-			gchar *a = header_decode_atom(&inptr);
+			gchar *a = header_decode_atom (&inptr);
 			if (a) {
-				domain = g_string_append(domain, a);
-				g_free(a);
+				domain = g_string_append (domain, a);
+				g_free (a);
 			} else {
 				w(g_warning("missing atom from domain-ref"));
 				break;
 			}
 		}
-		header_decode_lwsp(&inptr);
+		header_decode_lwsp (&inptr);
 		if (*inptr == '.') { /* next sub-domain? */
-			domain = g_string_append_c(domain, '.');
+			domain = g_string_append_c (domain, '.');
 			inptr++;
-			header_decode_lwsp(&inptr);
+			header_decode_lwsp (&inptr);
 		} else
 			go = FALSE;
 	}
@@ -2288,44 +2288,44 @@ header_decode_domain(const gchar **in)
 	*in = inptr;
 
 	ret = domain->str;
-	g_string_free(domain, FALSE);
+	g_string_free (domain, FALSE);
 	return ret;
 }
 
 static gchar *
-header_decode_addrspec(const gchar **in)
+header_decode_addrspec (const gchar **in)
 {
 	const gchar *inptr = *in;
 	gchar *word;
 	GString *addr = g_string_new("");
 
-	header_decode_lwsp(&inptr);
+	header_decode_lwsp (&inptr);
 
 	/* addr-spec */
 	word = header_decode_word (&inptr);
 	if (word) {
-		addr = g_string_append(addr, word);
-		header_decode_lwsp(&inptr);
-		g_free(word);
+		addr = g_string_append (addr, word);
+		header_decode_lwsp (&inptr);
+		g_free (word);
 		while (*inptr == '.' && word) {
 			inptr++;
-			addr = g_string_append_c(addr, '.');
+			addr = g_string_append_c (addr, '.');
 			word = header_decode_word (&inptr);
 			if (word) {
-				addr = g_string_append(addr, word);
-				header_decode_lwsp(&inptr);
-				g_free(word);
+				addr = g_string_append (addr, word);
+				header_decode_lwsp (&inptr);
+				g_free (word);
 			} else {
 				w(g_warning("Invalid address spec: %s", *in));
 			}
 		}
 		if (*inptr == '@') {
 			inptr++;
-			addr = g_string_append_c(addr, '@');
-			word = header_decode_domain(&inptr);
+			addr = g_string_append_c (addr, '@');
+			word = header_decode_domain (&inptr);
 			if (word) {
-				addr = g_string_append(addr, word);
-				g_free(word);
+				addr = g_string_append (addr, word);
+				g_free (word);
 			} else {
 				w(g_warning("Invalid address, missing domain: %s", *in));
 			}
@@ -2334,7 +2334,7 @@ header_decode_addrspec(const gchar **in)
 		}
 	} else {
 		w(g_warning("invalid addr-spec, no local part"));
-		g_string_free(addr, TRUE);
+		g_string_free (addr, TRUE);
 
 		return NULL;
 	}
@@ -2343,7 +2343,7 @@ header_decode_addrspec(const gchar **in)
 
 	*in = inptr;
 	word = addr->str;
-	g_string_free(addr, FALSE);
+	g_string_free (addr, FALSE);
 	return word;
 }
 
@@ -2361,7 +2361,7 @@ header_decode_addrspec(const gchar **in)
    */
 
 static struct _camel_header_address *
-header_decode_mailbox(const gchar **in, const gchar *charset)
+header_decode_mailbox (const gchar **in, const gchar *charset)
 {
 	const gchar *inptr = *in;
 	gchar *pre;
@@ -2375,7 +2375,7 @@ header_decode_mailbox(const gchar **in, const gchar *charset)
 
 	/* for each address */
 	pre = header_decode_word (&inptr);
-	header_decode_lwsp(&inptr);
+	header_decode_lwsp (&inptr);
 	if (!(*inptr == '.' || *inptr == '@' || *inptr==',' || *inptr=='\0')) {
 		/* ',' and '\0' required incase it is a simple address, no @ domain part (buggy writer) */
 		name = g_string_new ("");
@@ -2386,7 +2386,7 @@ header_decode_mailbox(const gchar **in, const gchar *charset)
 			text = camel_header_decode_string (pre, charset);
 			g_string_append (name, text);
 			last = pre;
-			g_free(text);
+			g_free (text);
 
 			pre = header_decode_word (&inptr);
 			if (pre) {
@@ -2398,33 +2398,33 @@ header_decode_mailbox(const gchar **in, const gchar *charset)
 				    && (p>6 && pre[0] == '=' && pre[1] == '?')) {
 					/* dont append ' ' */
 				} else {
-					name = g_string_append_c(name, ' ');
+					name = g_string_append_c (name, ' ');
 				}
 			} else {
 				/* Fix for stupidly-broken-mailers that like to put '.''s in names unquoted */
 				/* see bug #8147 */
 				while (!pre && *inptr && *inptr != '<') {
 					w(g_warning("Working around stupid mailer bug #5: unescaped characters in names"));
-					name = g_string_append_c(name, *inptr++);
+					name = g_string_append_c (name, *inptr++);
 					pre = header_decode_word (&inptr);
 				}
 			}
-			g_free(last);
+			g_free (last);
 		}
-		header_decode_lwsp(&inptr);
+		header_decode_lwsp (&inptr);
 		if (*inptr == '<') {
 			closeme = TRUE;
 		try_address_again:
 			inptr++;
-			header_decode_lwsp(&inptr);
+			header_decode_lwsp (&inptr);
 			if (*inptr == '@') {
 				while (*inptr == '@') {
 					inptr++;
-					header_decode_domain(&inptr);
-					header_decode_lwsp(&inptr);
+					header_decode_domain (&inptr);
+					header_decode_lwsp (&inptr);
 					if (*inptr == ',') {
 						inptr++;
-						header_decode_lwsp(&inptr);
+						header_decode_lwsp (&inptr);
 					}
 				}
 				if (*inptr == ':') {
@@ -2441,7 +2441,7 @@ header_decode_mailbox(const gchar **in, const gchar *charset)
 	}
 
 	if (pre) {
-		addr = g_string_append(addr, pre);
+		addr = g_string_append (addr, pre);
 	} else {
 		w(g_warning("No local-part for email address: %s", *in));
 	}
@@ -2449,26 +2449,26 @@ header_decode_mailbox(const gchar **in, const gchar *charset)
 	/* should be at word '.' localpart */
 	while (*inptr == '.' && pre) {
 		inptr++;
-		g_free(pre);
+		g_free (pre);
 		pre = header_decode_word (&inptr);
-		addr = g_string_append_c(addr, '.');
+		addr = g_string_append_c (addr, '.');
 		if (pre)
-			addr = g_string_append(addr, pre);
+			addr = g_string_append (addr, pre);
 		comment = inptr;
-		header_decode_lwsp(&inptr);
+		header_decode_lwsp (&inptr);
 	}
-	g_free(pre);
+	g_free (pre);
 
 	/* now at '@' domain part */
 	if (*inptr == '@') {
 		gchar *dom;
 
 		inptr++;
-		addr = g_string_append_c(addr, '@');
+		addr = g_string_append_c (addr, '@');
 		comment = inptr;
-		dom = header_decode_domain(&inptr);
-		addr = g_string_append(addr, dom);
-		g_free(dom);
+		dom = header_decode_domain (&inptr);
+		addr = g_string_append (addr, dom);
+		g_free (dom);
 	} else if (*inptr != '>' || !closeme) {
 		/* If we get a <, the address was probably a name part, lets try again shall we? */
 		/* Another fix for seriously-broken-mailers */
@@ -2482,28 +2482,28 @@ header_decode_mailbox(const gchar **in, const gchar *charset)
 			if (*inptr == '<')
 				closeme = TRUE;
 			else
-				g_string_append_c(addr, *inptr);
+				g_string_append_c (addr, *inptr);
 
 			/* check for address is encoded word ... */
-			text = camel_header_decode_string(addr->str, charset);
+			text = camel_header_decode_string (addr->str, charset);
 			if (name == NULL) {
 				name = addr;
 				addr = g_string_new("");
 				if (text) {
-					g_string_truncate(name, 0);
-					g_string_append(name, text);
+					g_string_truncate (name, 0);
+					g_string_append (name, text);
 				}
 			}/* else {
-				g_string_append(name, text?text:addr->str);
-				g_string_truncate(addr, 0);
+				g_string_append (name, text?text:addr->str);
+				g_string_truncate (addr, 0);
 			}*/
-			g_free(text);
+			g_free (text);
 
 			/* or maybe that we've added up a bunch of broken bits to make an encoded word */
 			if ((text = rfc2047_decode_word (name->str, name->len, charset))) {
-				g_string_truncate(name, 0);
-				g_string_append(name, text);
-				g_free(text);
+				g_string_truncate (name, 0);
+				g_string_append (name, text);
+				g_free (text);
 			}
 
 			goto try_address_again;
@@ -2512,7 +2512,7 @@ header_decode_mailbox(const gchar **in, const gchar *charset)
 	}
 
 	if (closeme) {
-		header_decode_lwsp(&inptr);
+		header_decode_lwsp (&inptr);
 		if (*inptr == '>') {
 			inptr++;
 		} else {
@@ -2529,10 +2529,10 @@ header_decode_mailbox(const gchar **in, const gchar *charset)
 
 		d(printf("checking for comment from '%s'\n", comment));
 
-		comstart = strchr(comment, '(');
+		comstart = strchr (comment, '(');
 		if (comstart) {
 			comstart++;
-			header_decode_lwsp(&inptr);
+			header_decode_lwsp (&inptr);
 			comend = inptr-1;
 			while (comend > comstart && comend[0] != ')')
 				comend--;
@@ -2573,15 +2573,15 @@ header_decode_mailbox(const gchar **in, const gchar *charset)
 
 	d(printf("got mailbox: %s\n", addr->str));
 
-	g_string_free(addr, TRUE);
+	g_string_free (addr, TRUE);
 	if (name)
-		g_string_free(name, TRUE);
+		g_string_free (name, TRUE);
 
 	return address;
 }
 
 static struct _camel_header_address *
-header_decode_address(const gchar **in, const gchar *charset)
+header_decode_address (const gchar **in, const gchar *charset)
 {
 	const gchar *inptr = *in;
 	gchar *pre;
@@ -2589,27 +2589,27 @@ header_decode_address(const gchar **in, const gchar *charset)
 	struct _camel_header_address *addr = NULL, *member;
 
 	/* pre-scan, trying to work out format, discard results */
-	header_decode_lwsp(&inptr);
+	header_decode_lwsp (&inptr);
 	while ((pre = header_decode_word (&inptr))) {
-		group = g_string_append(group, pre);
+		group = g_string_append (group, pre);
 		group = g_string_append(group, " ");
-		g_free(pre);
+		g_free (pre);
 	}
-	header_decode_lwsp(&inptr);
+	header_decode_lwsp (&inptr);
 	if (*inptr == ':') {
 		d(printf("group detected: %s\n", group->str));
-		addr = camel_header_address_new_group(group->str);
+		addr = camel_header_address_new_group (group->str);
 		/* that was a group spec, scan mailbox's */
 		inptr++;
 		/* FIXME: check rfc 2047 encodings of words, here or above in the loop */
-		header_decode_lwsp(&inptr);
+		header_decode_lwsp (&inptr);
 		if (*inptr != ';') {
 			gint go = TRUE;
 			do {
-				member = header_decode_mailbox(&inptr, charset);
+				member = header_decode_mailbox (&inptr, charset);
 				if (member)
-					camel_header_address_add_member(addr, member);
-				header_decode_lwsp(&inptr);
+					camel_header_address_add_member (addr, member);
+				header_decode_lwsp (&inptr);
 				if (*inptr == ',')
 					inptr++;
 				else
@@ -2625,29 +2625,29 @@ header_decode_address(const gchar **in, const gchar *charset)
 		}
 		*in = inptr;
 	} else {
-		addr = header_decode_mailbox(in, charset);
+		addr = header_decode_mailbox (in, charset);
 	}
 
-	g_string_free(group, TRUE);
+	g_string_free (group, TRUE);
 
 	return addr;
 }
 
 static gchar *
-header_msgid_decode_internal(const gchar **in)
+header_msgid_decode_internal (const gchar **in)
 {
 	const gchar *inptr = *in;
 	gchar *msgid = NULL;
 
 	d(printf("decoding Message-ID: '%s'\n", *in));
 
-	header_decode_lwsp(&inptr);
+	header_decode_lwsp (&inptr);
 	if (*inptr == '<') {
 		inptr++;
-		header_decode_lwsp(&inptr);
-		msgid = header_decode_addrspec(&inptr);
+		header_decode_lwsp (&inptr);
+		msgid = header_decode_addrspec (&inptr);
 		if (msgid) {
-			header_decode_lwsp(&inptr);
+			header_decode_lwsp (&inptr);
 			if (*inptr == '>') {
 				inptr++;
 			} else {
@@ -2673,12 +2673,12 @@ header_msgid_decode_internal(const gchar **in)
  * Returns: the msg-id
  **/
 gchar *
-camel_header_msgid_decode(const gchar *in)
+camel_header_msgid_decode (const gchar *in)
 {
 	if (in == NULL)
 		return NULL;
 
-	return header_msgid_decode_internal(&in);
+	return header_msgid_decode_internal (&in);
 }
 
 /**
@@ -2757,19 +2757,19 @@ camel_header_contentid_decode (const gchar *in)
 }
 
 void
-camel_header_references_list_append_asis(struct _camel_header_references **list, gchar *ref)
+camel_header_references_list_append_asis (struct _camel_header_references **list, gchar *ref)
 {
 	struct _camel_header_references *w = (struct _camel_header_references *)list, *n;
 	while (w->next)
 		w = w->next;
-	n = g_malloc(sizeof(*n));
+	n = g_malloc (sizeof (*n));
 	n->id = ref;
 	n->next = NULL;
 	w->next = n;
 }
 
 gint
-camel_header_references_list_size(struct _camel_header_references **list)
+camel_header_references_list_size (struct _camel_header_references **list)
 {
 	gint count = 0;
 	struct _camel_header_references *w = *list;
@@ -2781,13 +2781,13 @@ camel_header_references_list_size(struct _camel_header_references **list)
 }
 
 void
-camel_header_references_list_clear(struct _camel_header_references **list)
+camel_header_references_list_clear (struct _camel_header_references **list)
 {
 	struct _camel_header_references *w = *list, *n;
 	while (w) {
 		n = w->next;
-		g_free(w->id);
-		g_free(w);
+		g_free (w->id);
+		g_free (w);
 		w = n;
 	}
 	*list = NULL;
@@ -2853,14 +2853,14 @@ camel_header_references_decode (const gchar *in)
 }
 
 struct _camel_header_references *
-camel_header_references_dup(const struct _camel_header_references *list)
+camel_header_references_dup (const struct _camel_header_references *list)
 {
 	struct _camel_header_references *new = NULL, *tmp;
 
 	while (list) {
-		tmp = g_new(struct _camel_header_references, 1);
+		tmp = g_new (struct _camel_header_references, 1);
 		tmp->next = new;
-		tmp->id = g_strdup(list->id);
+		tmp->id = g_strdup (list->id);
 		new = tmp;
 		list = list->next;
 	}
@@ -2868,16 +2868,16 @@ camel_header_references_dup(const struct _camel_header_references *list)
 }
 
 struct _camel_header_address *
-camel_header_mailbox_decode(const gchar *in, const gchar *charset)
+camel_header_mailbox_decode (const gchar *in, const gchar *charset)
 {
 	if (in == NULL)
 		return NULL;
 
-	return header_decode_mailbox(&in, charset);
+	return header_decode_mailbox (&in, charset);
 }
 
 struct _camel_header_address *
-camel_header_address_decode(const gchar *in, const gchar *charset)
+camel_header_address_decode (const gchar *in, const gchar *charset)
 {
 	const gchar *inptr = in, *last;
 	struct _camel_header_address *list = NULL, *addr;
@@ -2887,16 +2887,16 @@ camel_header_address_decode(const gchar *in, const gchar *charset)
 	if (in == NULL)
 		return NULL;
 
-	header_decode_lwsp(&inptr);
+	header_decode_lwsp (&inptr);
 	if (*inptr == 0)
 		return NULL;
 
 	do {
 		last = inptr;
-		addr = header_decode_address(&inptr, charset);
+		addr = header_decode_address (&inptr, charset);
 		if (addr)
-			camel_header_address_list_append(&list, addr);
-		header_decode_lwsp(&inptr);
+			camel_header_address_list_append (&list, addr);
+		header_decode_lwsp (&inptr);
 		if (*inptr == ',')
 			inptr++;
 		else
@@ -2915,7 +2915,7 @@ camel_header_address_decode(const gchar *in, const gchar *charset)
 }
 
 struct _camel_header_newsgroup *
-camel_header_newsgroups_decode(const gchar *in)
+camel_header_newsgroups_decode (const gchar *in)
 {
 	const gchar *inptr = in;
 	register gchar c;
@@ -2926,13 +2926,13 @@ camel_header_newsgroups_decode(const gchar *in)
 	last = (struct _camel_header_newsgroup *)&head;
 
 	do {
-		header_decode_lwsp(&inptr);
+		header_decode_lwsp (&inptr);
 		start = inptr;
-		while ((c = *inptr++) && !camel_mime_is_lwsp(c) && c != ',')
+		while ((c = *inptr++) && !camel_mime_is_lwsp (c) && c != ',')
 			;
 		if (start != inptr-1) {
-			ng = g_malloc(sizeof(*ng));
-			ng->newsgroup = g_strndup(start, inptr-start-1);
+			ng = g_malloc (sizeof (*ng));
+			ng->newsgroup = g_strndup (start, inptr-start-1);
 			ng->next = NULL;
 			last->next = ng;
 			last = ng;
@@ -2943,13 +2943,13 @@ camel_header_newsgroups_decode(const gchar *in)
 }
 
 void
-camel_header_newsgroups_free(struct _camel_header_newsgroup *ng)
+camel_header_newsgroups_free (struct _camel_header_newsgroup *ng)
 {
 	while (ng) {
 		struct _camel_header_newsgroup *nng = ng->next;
 
-		g_free(ng->newsgroup);
-		g_free(ng);
+		g_free (ng->newsgroup);
+		g_free (ng);
 		ng = nng;
 	}
 }
@@ -2989,7 +2989,7 @@ camel_transfer_encoding_from_string (const gchar *string)
 }
 
 void
-camel_header_mime_decode(const gchar *in, gint *maj, gint *min)
+camel_header_mime_decode (const gchar *in, gint *maj, gint *min)
 {
 	const gchar *inptr = in;
 	gint major=-1, minor=-1;
@@ -2997,15 +2997,15 @@ camel_header_mime_decode(const gchar *in, gint *maj, gint *min)
 	d(printf("decoding MIME-Version: '%s'\n", in));
 
 	if (in != NULL) {
-		header_decode_lwsp(&inptr);
-		if (isdigit(*inptr)) {
-			major = camel_header_decode_int(&inptr);
-			header_decode_lwsp(&inptr);
+		header_decode_lwsp (&inptr);
+		if (isdigit (*inptr)) {
+			major = camel_header_decode_int (&inptr);
+			header_decode_lwsp (&inptr);
 			if (*inptr == '.') {
 				inptr++;
-				header_decode_lwsp(&inptr);
-				if (isdigit(*inptr))
-					minor = camel_header_decode_int(&inptr);
+				header_decode_lwsp (&inptr);
+				if (isdigit (*inptr))
+					minor = camel_header_decode_int (&inptr);
 			}
 		}
 	}
@@ -3024,13 +3024,13 @@ struct _rfc2184_param {
 };
 
 static gint
-rfc2184_param_cmp(gconstpointer ap, gconstpointer bp)
+rfc2184_param_cmp (gconstpointer ap, gconstpointer bp)
 {
 	const struct _rfc2184_param *a = *(gpointer *)ap;
 	const struct _rfc2184_param *b = *(gpointer *)bp;
 	gint res;
 
-	res = strcmp(a->param.name, b->param.name);
+	res = strcmp (a->param.name, b->param.name);
 	if (res == 0) {
 		if (a->index > b->index)
 			res = 1;
@@ -3043,7 +3043,7 @@ rfc2184_param_cmp(gconstpointer ap, gconstpointer bp)
 
 /* NB: Steals name and value */
 static struct _camel_header_param *
-header_append_param(struct _camel_header_param *last, gchar *name, gchar *value)
+header_append_param (struct _camel_header_param *last, gchar *name, gchar *value)
 {
 	struct _camel_header_param *node;
 
@@ -3051,22 +3051,22 @@ header_append_param(struct _camel_header_param *last, gchar *name, gchar *value)
 	    8 bit data in parameters, illegal, tries to convert using locale, or just safens it up.
 	    rfc2047 ecoded parameters, illegal, decodes them anyway.  Some Outlook & Mozilla do this?
 	*/
-	node = g_malloc(sizeof(*node));
+	node = g_malloc (sizeof (*node));
 	last->next = node;
 	node->next = NULL;
 	node->name = name;
 	if (strncmp(value, "=?", 2) == 0
-	    && (node->value = header_decode_text(value, FALSE, NULL))) {
-		g_free(value);
+	    && (node->value = header_decode_text (value, FALSE, NULL))) {
+		g_free (value);
 	} else if (g_ascii_strcasecmp (name, "boundary") != 0 && !g_utf8_validate(value, -1, NULL)) {
-		const gchar *charset = camel_iconv_locale_charset();
+		const gchar *charset = camel_iconv_locale_charset ();
 
 		if ((node->value = header_convert("UTF-8", charset?charset:"ISO-8859-1", value, strlen(value)))) {
-			g_free(value);
+			g_free (value);
 		} else {
 			node->value = value;
 			for (;*value;value++)
-				if (!isascii((guchar)*value))
+				if (!isascii ((guchar)*value))
 					*value = '_';
 		}
 	} else
@@ -3085,52 +3085,52 @@ header_decode_param_list (const gchar **in)
 	gchar *tmp;
 
 	/* Dump parameters into the output list, in the order found.  RFC 2184 split parameters are kept in an array */
-	header_decode_lwsp(&inptr);
+	header_decode_lwsp (&inptr);
 	while (*inptr == ';') {
 		gchar *name;
 		gchar *value = NULL;
 
 		inptr++;
-		name = decode_token(&inptr);
-		header_decode_lwsp(&inptr);
+		name = decode_token (&inptr);
+		header_decode_lwsp (&inptr);
 		if (*inptr == '=') {
 			inptr++;
-			value = header_decode_value(&inptr);
+			value = header_decode_value (&inptr);
 		}
 
 		if (name && value) {
-			gchar *index = strchr(name, '*');
+			gchar *index = strchr (name, '*');
 
 			if (index) {
 				if (index[1] == 0) {
 					/* VAL*="foo", decode immediately and append */
 					*index = 0;
-					tmp = rfc2184_decode(value, strlen(value));
+					tmp = rfc2184_decode (value, strlen (value));
 					if (tmp) {
-						g_free(value);
+						g_free (value);
 						value = tmp;
 					}
-					last = header_append_param(last, name, value);
+					last = header_append_param (last, name, value);
 				} else {
 					/* VAL*1="foo", save for later */
 					*index++ = 0;
-					work = g_malloc(sizeof(*work));
+					work = g_malloc (sizeof (*work));
 					work->param.name = name;
 					work->param.value = value;
-					work->index = atoi(index);
+					work->index = atoi (index);
 					if (split == NULL)
-						split = g_ptr_array_new();
-					g_ptr_array_add(split, work);
+						split = g_ptr_array_new ();
+					g_ptr_array_add (split, work);
 				}
 			} else {
-				last = header_append_param(last, name, value);
+				last = header_append_param (last, name, value);
 			}
 		} else {
-			g_free(name);
-			g_free(value);
+			g_free (name);
+			g_free (value);
 		}
 
-		header_decode_lwsp(&inptr);
+		header_decode_lwsp (&inptr);
 	}
 
 	/* Rejoin any RFC 2184 split parameters in the proper order */
@@ -3140,32 +3140,32 @@ header_decode_param_list (const gchar **in)
 		struct _rfc2184_param *first;
 		gint i;
 
-		qsort(split->pdata, split->len, sizeof(split->pdata[0]), rfc2184_param_cmp);
+		qsort (split->pdata, split->len, sizeof (split->pdata[0]), rfc2184_param_cmp);
 		first = split->pdata[0];
 		for (i=0;i<split->len;i++) {
 			work = split->pdata[i];
 			if (split->len-1 == i)
-				g_string_append(value, work->param.value);
-			if (split->len-1 == i || strcmp(work->param.name, first->param.name) != 0) {
-				tmp = rfc2184_decode(value->str, value->len);
+				g_string_append (value, work->param.value);
+			if (split->len-1 == i || strcmp (work->param.name, first->param.name) != 0) {
+				tmp = rfc2184_decode (value->str, value->len);
 				if (tmp == NULL)
-					tmp = g_strdup(value->str);
+					tmp = g_strdup (value->str);
 
-				last = header_append_param(last, g_strdup(first->param.name), tmp);
-				g_string_truncate(value, 0);
+				last = header_append_param (last, g_strdup (first->param.name), tmp);
+				g_string_truncate (value, 0);
 				first = work;
 			}
 			if (split->len-1 != i)
-				g_string_append(value, work->param.value);
+				g_string_append (value, work->param.value);
 		}
-		g_string_free(value, TRUE);
+		g_string_free (value, TRUE);
 		for (i=0;i<split->len;i++) {
 			work = split->pdata[i];
-			g_free(work->param.name);
-			g_free(work->param.value);
-			g_free(work);
+			g_free (work->param.name);
+			g_free (work->param.value);
+			g_free (work);
 		}
-		g_ptr_array_free(split, TRUE);
+		g_ptr_array_free (split, TRUE);
 	}
 
 	*in = inptr;
@@ -3174,12 +3174,12 @@ header_decode_param_list (const gchar **in)
 }
 
 struct _camel_header_param *
-camel_header_param_list_decode(const gchar *in)
+camel_header_param_list_decode (const gchar *in)
 {
 	if (in == NULL)
 		return NULL;
 
-	return header_decode_param_list(&in);
+	return header_decode_param_list (&in);
 }
 
 static gchar *
@@ -3220,16 +3220,16 @@ header_encode_param (const guchar *in, gboolean *encoded, gboolean is_filename)
 
 	/* if we have really broken utf8 passed in, we just treat it as binary data */
 
-	charset = camel_charset_best((gchar *) in, strlen((gchar *) in));
+	charset = camel_charset_best ((gchar *) in, strlen ((gchar *) in));
 	if (charset == NULL) {
-		return g_strdup((gchar *) in);
+		return g_strdup ((gchar *) in);
 	}
 
 	if (g_ascii_strcasecmp(charset, "UTF-8") != 0) {
 		if ((outbuf = (guchar *) header_convert(charset, "UTF-8", (const gchar *) in, strlen((gchar *) in))))
 			inptr = outbuf;
 		else
-			return g_strdup((gchar *) in);
+			return g_strdup ((gchar *) in);
 	}
 
 	/* FIXME: set the 'language' as well, assuming we can get that info...? */
@@ -3237,7 +3237,7 @@ header_encode_param (const guchar *in, gboolean *encoded, gboolean is_filename)
 	g_string_append(out, "''");
 
 	while ((c = *inptr++)) {
-		if (camel_mime_is_attrchar(c))
+		if (camel_mime_is_attrchar (c))
 			g_string_append_c (out, c);
 		else
 			g_string_append_printf (out, "%%%c%c", tohex[(c >> 4) & 0xf], tohex[c & 0xf]);
@@ -3366,19 +3366,19 @@ camel_header_param_list_format_append (GString *out, struct _camel_header_param 
 }
 
 gchar *
-camel_header_param_list_format(struct _camel_header_param *p)
+camel_header_param_list_format (struct _camel_header_param *p)
 {
 	GString *out = g_string_new("");
 	gchar *ret;
 
-	camel_header_param_list_format_append(out, p);
+	camel_header_param_list_format_append (out, p);
 	ret = out->str;
-	g_string_free(out, FALSE);
+	g_string_free (out, FALSE);
 	return ret;
 }
 
 CamelContentType *
-camel_content_type_decode(const gchar *in)
+camel_content_type_decode (const gchar *in)
 {
 	const gchar *inptr = in;
 	gchar *type, *subtype = NULL;
@@ -3387,12 +3387,12 @@ camel_content_type_decode(const gchar *in)
 	if (in==NULL)
 		return NULL;
 
-	type = decode_token(&inptr);
-	header_decode_lwsp(&inptr);
+	type = decode_token (&inptr);
+	header_decode_lwsp (&inptr);
 	if (type) {
 		if  (*inptr == '/') {
 			inptr++;
-			subtype = decode_token(&inptr);
+			subtype = decode_token (&inptr);
 		}
 		if (subtype == NULL && (!g_ascii_strcasecmp(type, "text"))) {
 			w(g_warning("text type with no subtype, resorting to text/plain: %s", in));
@@ -3402,19 +3402,19 @@ camel_content_type_decode(const gchar *in)
 			w(g_warning("MIME type with no subtype: %s", in));
 		}
 
-		t = camel_content_type_new(type, subtype);
-		t->params = header_decode_param_list(&inptr);
-		g_free(type);
-		g_free(subtype);
+		t = camel_content_type_new (type, subtype);
+		t->params = header_decode_param_list (&inptr);
+		g_free (type);
+		g_free (subtype);
 	} else {
-		g_free(type);
+		g_free (type);
 		d(printf("cannot find MIME type in header (2) '%s'", in));
 	}
 	return t;
 }
 
 void
-camel_content_type_dump(CamelContentType *ct)
+camel_content_type_dump (CamelContentType *ct)
 {
 	struct _camel_header_param *p;
 
@@ -3490,7 +3490,7 @@ camel_content_transfer_encoding_decode (const gchar *in)
 }
 
 CamelContentDisposition *
-camel_content_disposition_decode(const gchar *in)
+camel_content_disposition_decode (const gchar *in)
 {
 	CamelContentDisposition *d = NULL;
 	const gchar *inptr = in;
@@ -3498,31 +3498,31 @@ camel_content_disposition_decode(const gchar *in)
 	if (in == NULL)
 		return NULL;
 
-	d = g_malloc(sizeof(*d));
+	d = g_malloc (sizeof (*d));
 	d->refcount = 1;
-	d->disposition = decode_token(&inptr);
+	d->disposition = decode_token (&inptr);
 	if (d->disposition == NULL) {
 		w(g_warning("Empty disposition type"));
 	}
-	d->params = header_decode_param_list(&inptr);
+	d->params = header_decode_param_list (&inptr);
 	return d;
 }
 
 void
-camel_content_disposition_ref(CamelContentDisposition *d)
+camel_content_disposition_ref (CamelContentDisposition *d)
 {
 	if (d)
 		d->refcount++;
 }
 
 void
-camel_content_disposition_unref(CamelContentDisposition *d)
+camel_content_disposition_unref (CamelContentDisposition *d)
 {
 	if (d) {
 		if (d->refcount<=1) {
-			camel_header_param_list_free(d->params);
-			g_free(d->disposition);
-			g_free(d);
+			camel_header_param_list_free (d->params);
+			g_free (d->disposition);
+			g_free (d);
 		} else {
 			d->refcount--;
 		}
@@ -3530,7 +3530,7 @@ camel_content_disposition_unref(CamelContentDisposition *d)
 }
 
 gchar *
-camel_content_disposition_format(CamelContentDisposition *d)
+camel_content_disposition_format (CamelContentDisposition *d)
 {
 	GString *out;
 	gchar *ret;
@@ -3540,13 +3540,13 @@ camel_content_disposition_format(CamelContentDisposition *d)
 
 	out = g_string_new("");
 	if (d->disposition)
-		out = g_string_append(out, d->disposition);
+		out = g_string_append (out, d->disposition);
 	else
 		out = g_string_append(out, "attachment");
-	camel_header_param_list_format_append(out, d->params);
+	camel_header_param_list_format_append (out, d->params);
 
 	ret = out->str;
-	g_string_free(out, FALSE);
+	g_string_free (out, FALSE);
 	return ret;
 }
 
@@ -4127,7 +4127,7 @@ camel_header_decode_date (const gchar *str, gint *tz_offset)
 }
 
 gchar *
-camel_header_location_decode(const gchar *in)
+camel_header_location_decode (const gchar *in)
 {
 	gint quote = 0;
 	GString *out = g_string_new("");
@@ -4150,7 +4150,7 @@ camel_header_location_decode(const gchar *in)
 	 * characters, even when included in quotes.
 	 */
 
-	header_decode_lwsp(&in);
+	header_decode_lwsp (&in);
 	if (*in == '"') {
 		in++;
 		quote = 1;
@@ -4159,12 +4159,12 @@ camel_header_location_decode(const gchar *in)
 	while ((c = *in++)) {
 		if (quote && c=='"')
 			break;
-		if (!camel_mime_is_lwsp(c))
-			g_string_append_c(out, c);
+		if (!camel_mime_is_lwsp (c))
+			g_string_append_c (out, c);
 	}
 
-	res = g_strdup(out->str);
-	g_string_free(out, TRUE);
+	res = g_strdup (out->str);
+	g_string_free (out, TRUE);
 
 	return res;
 }
@@ -4180,7 +4180,7 @@ check_header (struct _camel_header_raw *header)
 
 	cp = (guchar *) header->value;
 	while (cp && *cp) {
-		if (!isascii(*cp)) {
+		if (!isascii (*cp)) {
 			w(g_warning("Appending header violates rfc: %s: %s", header->name, header->value));
 			return;
 		}
@@ -4190,43 +4190,43 @@ check_header (struct _camel_header_raw *header)
 #endif
 
 void
-camel_header_raw_append_parse(struct _camel_header_raw **list, const gchar *header, gint offset)
+camel_header_raw_append_parse (struct _camel_header_raw **list, const gchar *header, gint offset)
 {
 	register const gchar *in;
 	gsize fieldlen;
 	gchar *name;
 
 	in = header;
-	while (camel_mime_is_fieldname(*in) || *in==':')
+	while (camel_mime_is_fieldname (*in) || *in==':')
 		in++;
 	fieldlen = in-header-1;
-	while (camel_mime_is_lwsp(*in))
+	while (camel_mime_is_lwsp (*in))
 		in++;
 	if (fieldlen == 0 || header[fieldlen] != ':') {
 		printf("Invalid header line: '%s'\n", header);
 		return;
 	}
 	name = g_alloca (fieldlen + 1);
-	memcpy(name, header, fieldlen);
+	memcpy (name, header, fieldlen);
 	name[fieldlen] = 0;
 
-	camel_header_raw_append(list, name, in, offset);
+	camel_header_raw_append (list, name, in, offset);
 }
 
 void
-camel_header_raw_append(struct _camel_header_raw **list, const gchar *name, const gchar *value, gint offset)
+camel_header_raw_append (struct _camel_header_raw **list, const gchar *name, const gchar *value, gint offset)
 {
 	struct _camel_header_raw *l, *n;
 
 	d(printf("Header: %s: %s\n", name, value));
 
-	n = g_malloc(sizeof(*n));
+	n = g_malloc (sizeof (*n));
 	n->next = NULL;
-	n->name = g_strdup(name);
-	n->value = g_strdup(value);
+	n->name = g_strdup (name);
+	n->value = g_strdup (value);
 	n->offset = offset;
 #ifdef CHECKS
-	check_header(n);
+	check_header (n);
 #endif
 	l = (struct _camel_header_raw *)list;
 	while (l->next) {
@@ -4238,25 +4238,25 @@ camel_header_raw_append(struct _camel_header_raw **list, const gchar *name, cons
 #if 0
 	if (!g_ascii_strcasecmp(name, "To")) {
 		printf("- Decoding To\n");
-		camel_header_to_decode(value);
+		camel_header_to_decode (value);
 	} else if (!g_ascii_strcasecmp(name, "Content-type")) {
 		printf("- Decoding content-type\n");
-		camel_content_type_dump(camel_content_type_decode(value));
+		camel_content_type_dump (camel_content_type_decode (value));
 	} else if (!g_ascii_strcasecmp(name, "MIME-Version")) {
 		printf("- Decoding mime version\n");
-		camel_header_mime_decode(value);
+		camel_header_mime_decode (value);
 	}
 #endif
 }
 
 static struct _camel_header_raw *
-header_raw_find_node(struct _camel_header_raw **list, const gchar *name)
+header_raw_find_node (struct _camel_header_raw **list, const gchar *name)
 {
 	struct _camel_header_raw *l;
 
 	l = *list;
 	while (l) {
-		if (!g_ascii_strcasecmp(l->name, name))
+		if (!g_ascii_strcasecmp (l->name, name))
 			break;
 		l = l->next;
 	}
@@ -4264,11 +4264,11 @@ header_raw_find_node(struct _camel_header_raw **list, const gchar *name)
 }
 
 const gchar *
-camel_header_raw_find(struct _camel_header_raw **list, const gchar *name, gint *offset)
+camel_header_raw_find (struct _camel_header_raw **list, const gchar *name, gint *offset)
 {
 	struct _camel_header_raw *l;
 
-	l = header_raw_find_node(list, name);
+	l = header_raw_find_node (list, name);
 	if (l) {
 		if (offset)
 			*offset = l->offset;
@@ -4278,7 +4278,7 @@ camel_header_raw_find(struct _camel_header_raw **list, const gchar *name, gint *
 }
 
 const gchar *
-camel_header_raw_find_next(struct _camel_header_raw **list, const gchar *name, gint *offset, const gchar *last)
+camel_header_raw_find_next (struct _camel_header_raw **list, const gchar *name, gint *offset, const gchar *last)
 {
 	struct _camel_header_raw *l;
 
@@ -4288,19 +4288,19 @@ camel_header_raw_find_next(struct _camel_header_raw **list, const gchar *name, g
 	l = *list;
 	while (l && l->value != last)
 		l = l->next;
-	return camel_header_raw_find(&l, name, offset);
+	return camel_header_raw_find (&l, name, offset);
 }
 
 static void
-header_raw_free(struct _camel_header_raw *l)
+header_raw_free (struct _camel_header_raw *l)
 {
-	g_free(l->name);
-	g_free(l->value);
-	g_free(l);
+	g_free (l->name);
+	g_free (l->value);
+	g_free (l);
 }
 
 void
-camel_header_raw_remove(struct _camel_header_raw **list, const gchar *name)
+camel_header_raw_remove (struct _camel_header_raw **list, const gchar *name)
 {
 	struct _camel_header_raw *l, *p;
 
@@ -4308,9 +4308,9 @@ camel_header_raw_remove(struct _camel_header_raw **list, const gchar *name)
 	p = (struct _camel_header_raw *)list;
 	l = *list;
 	while (l) {
-		if (!g_ascii_strcasecmp(l->name, name)) {
+		if (!g_ascii_strcasecmp (l->name, name)) {
 			p->next = l->next;
-			header_raw_free(l);
+			header_raw_free (l);
 			l = p->next;
 		} else {
 			p = l;
@@ -4320,20 +4320,20 @@ camel_header_raw_remove(struct _camel_header_raw **list, const gchar *name)
 }
 
 void
-camel_header_raw_replace(struct _camel_header_raw **list, const gchar *name, const gchar *value, gint offset)
+camel_header_raw_replace (struct _camel_header_raw **list, const gchar *name, const gchar *value, gint offset)
 {
-	camel_header_raw_remove(list, name);
-	camel_header_raw_append(list, name, value, offset);
+	camel_header_raw_remove (list, name);
+	camel_header_raw_append (list, name, value, offset);
 }
 
 void
-camel_header_raw_clear(struct _camel_header_raw **list)
+camel_header_raw_clear (struct _camel_header_raw **list)
 {
 	struct _camel_header_raw *l, *n;
 	l = *list;
 	while (l) {
 		n = l->next;
-		header_raw_free(l);
+		header_raw_free (l);
 		l = n;
 	}
 	*list = NULL;
@@ -4357,7 +4357,7 @@ camel_header_msgid_generate (void)
 		retval = gethostname (host, sizeof (host));
 		if (retval == 0 && *host) {
 			hints.ai_flags = AI_CANONNAME;
-			ai = camel_getaddrinfo(host, NULL, &hints, NULL);
+			ai = camel_getaddrinfo (host, NULL, &hints, NULL);
 			if (ai && ai->ai_canonname)
 				name = ai->ai_canonname;
 			else
@@ -4373,7 +4373,7 @@ camel_header_msgid_generate (void)
 	COUNT_UNLOCK ();
 
 	if (ai)
-		camel_freeaddrinfo(ai);
+		camel_freeaddrinfo (ai);
 
 	return msgid;
 }
@@ -4433,28 +4433,28 @@ mailing_list_init (gpointer param)
 
 	/* precompile regex's for speed at runtime */
 	for (i = 0; i < G_N_ELEMENTS (mail_list_magic); i++) {
-		errcode = regcomp(&mail_list_magic[i].regex, mail_list_magic[i].pattern, REG_EXTENDED|REG_ICASE);
+		errcode = regcomp (&mail_list_magic[i].regex, mail_list_magic[i].pattern, REG_EXTENDED|REG_ICASE);
 		if (errcode != 0) {
 			gchar *errstr;
 			gsize len;
 
-			len = regerror(errcode, &mail_list_magic[i].regex, NULL, 0);
-			errstr = g_malloc0(len + 1);
-			regerror(errcode, &mail_list_magic[i].regex, errstr, len);
+			len = regerror (errcode, &mail_list_magic[i].regex, NULL, 0);
+			errstr = g_malloc0 (len + 1);
+			regerror (errcode, &mail_list_magic[i].regex, errstr, len);
 
 			g_warning("Internal error, compiling regex failed: %s: %s", mail_list_magic[i].pattern, errstr);
-			g_free(errstr);
+			g_free (errstr);
 			failed++;
 		}
 	}
 
-	g_assert(failed == 0);
+	g_assert (failed == 0);
 
 	return NULL;
 }
 
 gchar *
-camel_header_raw_check_mailing_list(struct _camel_header_raw **list)
+camel_header_raw_check_mailing_list (struct _camel_header_raw **list)
 {
 	static GOnce once = G_ONCE_INIT;
 	const gchar *v;
@@ -4498,20 +4498,20 @@ struct _camel_header_address *
 camel_header_address_new (void)
 {
 	struct _camel_header_address *h;
-	h = g_malloc0(sizeof(*h));
+	h = g_malloc0 (sizeof (*h));
 	h->type = CAMEL_HEADER_ADDRESS_NONE;
 	h->refcount = 1;
 	return h;
 }
 
 struct _camel_header_address *
-camel_header_address_new_name(const gchar *name, const gchar *addr)
+camel_header_address_new_name (const gchar *name, const gchar *addr)
 {
 	struct _camel_header_address *h;
-	h = camel_header_address_new();
+	h = camel_header_address_new ();
 	h->type = CAMEL_HEADER_ADDRESS_NAME;
-	h->name = g_strdup(name);
-	h->v.addr = g_strdup(addr);
+	h->name = g_strdup (name);
+	h->v.addr = g_strdup (addr);
 	return h;
 }
 
@@ -4520,31 +4520,31 @@ camel_header_address_new_group (const gchar *name)
 {
 	struct _camel_header_address *h;
 
-	h = camel_header_address_new();
+	h = camel_header_address_new ();
 	h->type = CAMEL_HEADER_ADDRESS_GROUP;
-	h->name = g_strdup(name);
+	h->name = g_strdup (name);
 	return h;
 }
 
 void
-camel_header_address_ref(struct _camel_header_address *h)
+camel_header_address_ref (struct _camel_header_address *h)
 {
 	if (h)
 		h->refcount++;
 }
 
 void
-camel_header_address_unref(struct _camel_header_address *h)
+camel_header_address_unref (struct _camel_header_address *h)
 {
 	if (h) {
 		if (h->refcount <= 1) {
 			if (h->type == CAMEL_HEADER_ADDRESS_GROUP) {
-				camel_header_address_list_clear(&h->v.members);
+				camel_header_address_list_clear (&h->v.members);
 			} else if (h->type == CAMEL_HEADER_ADDRESS_NAME) {
-				g_free(h->v.addr);
+				g_free (h->v.addr);
 			}
-			g_free(h->name);
-			g_free(h);
+			g_free (h->name);
+			g_free (h);
 		} else {
 			h->refcount--;
 		}
@@ -4552,23 +4552,23 @@ camel_header_address_unref(struct _camel_header_address *h)
 }
 
 void
-camel_header_address_set_name(struct _camel_header_address *h, const gchar *name)
+camel_header_address_set_name (struct _camel_header_address *h, const gchar *name)
 {
 	if (h) {
-		g_free(h->name);
-		h->name = g_strdup(name);
+		g_free (h->name);
+		h->name = g_strdup (name);
 	}
 }
 
 void
-camel_header_address_set_addr(struct _camel_header_address *h, const gchar *addr)
+camel_header_address_set_addr (struct _camel_header_address *h, const gchar *addr)
 {
 	if (h) {
 		if (h->type == CAMEL_HEADER_ADDRESS_NAME
 		    || h->type == CAMEL_HEADER_ADDRESS_NONE) {
 			h->type = CAMEL_HEADER_ADDRESS_NAME;
-			g_free(h->v.addr);
-			h->v.addr = g_strdup(addr);
+			g_free (h->v.addr);
+			h->v.addr = g_strdup (addr);
 		} else {
 			g_warning("Trying to set the address on a group");
 		}
@@ -4576,13 +4576,13 @@ camel_header_address_set_addr(struct _camel_header_address *h, const gchar *addr
 }
 
 void
-camel_header_address_set_members(struct _camel_header_address *h, struct _camel_header_address *group)
+camel_header_address_set_members (struct _camel_header_address *h, struct _camel_header_address *group)
 {
 	if (h) {
 		if (h->type == CAMEL_HEADER_ADDRESS_GROUP
 		    || h->type == CAMEL_HEADER_ADDRESS_NONE) {
 			h->type = CAMEL_HEADER_ADDRESS_GROUP;
-			camel_header_address_list_clear(&h->v.members);
+			camel_header_address_list_clear (&h->v.members);
 			/* should this ref them? */
 			h->v.members = group;
 		} else {
@@ -4592,19 +4592,19 @@ camel_header_address_set_members(struct _camel_header_address *h, struct _camel_
 }
 
 void
-camel_header_address_add_member(struct _camel_header_address *h, struct _camel_header_address *member)
+camel_header_address_add_member (struct _camel_header_address *h, struct _camel_header_address *member)
 {
 	if (h) {
 		if (h->type == CAMEL_HEADER_ADDRESS_GROUP
 		    || h->type == CAMEL_HEADER_ADDRESS_NONE) {
 			h->type = CAMEL_HEADER_ADDRESS_GROUP;
-			camel_header_address_list_append(&h->v.members, member);
+			camel_header_address_list_append (&h->v.members, member);
 		}
 	}
 }
 
 void
-camel_header_address_list_append_list(struct _camel_header_address **l, struct _camel_header_address **h)
+camel_header_address_list_append_list (struct _camel_header_address **l, struct _camel_header_address **h)
 {
 	if (l) {
 		struct _camel_header_address *n = (struct _camel_header_address *)l;
@@ -4616,22 +4616,22 @@ camel_header_address_list_append_list(struct _camel_header_address **l, struct _
 }
 
 void
-camel_header_address_list_append(struct _camel_header_address **l, struct _camel_header_address *h)
+camel_header_address_list_append (struct _camel_header_address **l, struct _camel_header_address *h)
 {
 	if (h) {
-		camel_header_address_list_append_list(l, &h);
+		camel_header_address_list_append_list (l, &h);
 		h->next = NULL;
 	}
 }
 
 void
-camel_header_address_list_clear(struct _camel_header_address **l)
+camel_header_address_list_clear (struct _camel_header_address **l)
 {
 	struct _camel_header_address *a, *n;
 	a = *l;
 	while (a) {
 		n = a->next;
-		camel_header_address_unref(a);
+		camel_header_address_unref (a);
 		a = n;
 	}
 	*l = NULL;
@@ -4791,7 +4791,7 @@ camel_header_address_fold (const gchar *in, gsize headerlen)
 /* simple header folding */
 /* will work even if the header is already folded */
 gchar *
-camel_header_fold(const gchar *in, gsize headerlen)
+camel_header_fold (const gchar *in, gsize headerlen)
 {
 	gsize len, outlen, tmplen;
 	const gchar *inptr = in, *space, *p, *n;
@@ -4807,7 +4807,7 @@ camel_header_fold(const gchar *in, gsize headerlen)
 	len = headerlen + 2;
 	p = in;
 	while (*p) {
-		n = strchr(p, '\n');
+		n = strchr (p, '\n');
 		if (n == NULL) {
 			len += strlen (p);
 			break;
@@ -4822,11 +4822,11 @@ camel_header_fold(const gchar *in, gsize headerlen)
 		p = n + 1;
 	}
 	if (len < CAMEL_FOLD_SIZE)
-		return g_strdup(in);
+		return g_strdup (in);
 
 	/* we need to fold, so first unfold (if we need to), then process */
 	if (needunfold)
-		inptr = in = camel_header_unfold(in);
+		inptr = in = camel_header_unfold (in);
 
 	out = g_string_new("");
 	outlen = headerlen+2;
@@ -4871,16 +4871,16 @@ camel_header_fold(const gchar *in, gsize headerlen)
 		inptr += len;
 	}
 	ret = out->str;
-	g_string_free(out, FALSE);
+	g_string_free (out, FALSE);
 
 	if (needunfold)
-		g_free((gchar *)in);
+		g_free ((gchar *)in);
 
 	return ret;
 }
 
 gchar *
-camel_header_unfold(const gchar *in)
+camel_header_unfold (const gchar *in)
 {
 	const gchar *inptr = in;
 	gchar c, *o, *out;
@@ -4888,15 +4888,15 @@ camel_header_unfold(const gchar *in)
 	if (in == NULL)
 		return NULL;
 
-	out = g_malloc(strlen(in)+1);
+	out = g_malloc (strlen (in)+1);
 
 	o = out;
 	while ((c = *inptr++)) {
 		if (c == '\n') {
-			if (camel_mime_is_lwsp(*inptr)) {
+			if (camel_mime_is_lwsp (*inptr)) {
 				do {
 					inptr++;
-				} while (camel_mime_is_lwsp(*inptr));
+				} while (camel_mime_is_lwsp (*inptr));
 				*o++ = ' ';
 			} else {
 				*o++ = c;

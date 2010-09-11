@@ -132,7 +132,7 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw,
 		else
 			content = (CamelDataWrapper *) camel_multipart_new ();
 
-		camel_multipart_construct_from_parser((CamelMultipart *)content, mp);
+		camel_multipart_construct_from_parser ((CamelMultipart *)content, mp);
 		d(printf("Created multi-part\n"));
 		break;
 	default:
@@ -171,11 +171,11 @@ camel_mime_message_build_preview (CamelMimePart *msg,
 		gint i, nparts;
 		CamelMultipart *mp = (CamelMultipart *)camel_medium_get_content ((CamelMedium *)msg);
 
-		if (!CAMEL_IS_MULTIPART(mp))
+		if (!CAMEL_IS_MULTIPART (mp))
 			g_assert (0);
-		nparts = camel_multipart_get_number(mp);
+		nparts = camel_multipart_get_number (mp);
 		for (i = 0; i < nparts && !got_plain; i++) {
-			CamelMimePart *part = camel_multipart_get_part(mp, i);
+			CamelMimePart *part = camel_multipart_get_part (mp, i);
 			got_plain = camel_mime_message_build_preview (part, info);
 		}
 
@@ -183,7 +183,7 @@ camel_mime_message_build_preview (CamelMimePart *msg,
 		/*    !camel_content_type_is (dw->mime_type, "text", "html") && */
 		    !camel_content_type_is (dw->mime_type, "text", "calendar")) {
 		CamelStream *mstream, *bstream;
-		mstream = camel_stream_mem_new();
+		mstream = camel_stream_mem_new ();
 		if (camel_data_wrapper_decode_to_stream (dw, mstream, NULL) > 0) {
 			gchar *line = NULL;
 			GString *str = g_string_new (NULL);
@@ -192,38 +192,38 @@ camel_mime_message_build_preview (CamelMimePart *msg,
 			bstream = camel_stream_buffer_new (mstream, CAMEL_STREAM_BUFFER_READ|CAMEL_STREAM_BUFFER_BUFFER);
 
 			/* We should fetch just 200 unquoted lines. */
-			while ((line = camel_stream_buffer_read_line((CamelStreamBuffer *)bstream, NULL)) && str->len < 200) {
+			while ((line = camel_stream_buffer_read_line ((CamelStreamBuffer *)bstream, NULL)) && str->len < 200) {
 				gchar *tmp = line;
 				if (!line)
 					continue;
 
 				if (*line == '>' || strstr(line, "wrote:")) {
-					g_free(tmp);
+					g_free (tmp);
 					continue;
 				}
 				if (g_str_has_prefix (line, "--")) {
-					g_free(tmp);
+					g_free (tmp);
 					line = NULL;
 					break;
 				}
 				while (*line && ((*line == ' ') || *line == '\t'))
 					line++;
 				if (*line == '\0' || *line == '\n') {
-					g_free(tmp);
+					g_free (tmp);
 					continue;
 				}
 
 				g_string_append (str, " ");
 				g_string_append (str, line);
-				g_free(tmp);
+				g_free (tmp);
 				line = NULL;
 			}
 			if (str->len > 100) {
 				g_string_insert (str, 100, "\n");
 			}
 			/* We don't mark dirty, as we don't store these */
-			((CamelMessageInfoBase *) info)->preview = camel_utf8_make_valid(str->str);
-			g_string_free(str, TRUE);
+			((CamelMessageInfoBase *) info)->preview = camel_utf8_make_valid (str->str);
+			g_string_free (str, TRUE);
 
 			g_object_unref (bstream);
 		}

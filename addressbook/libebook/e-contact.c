@@ -323,7 +323,7 @@ e_contact_class_init (EContactClass *klass)
 	GObjectClass *object_class;
 	gint i;
 
-	object_class = G_OBJECT_CLASS(klass);
+	object_class = G_OBJECT_CLASS (klass);
 
 	parent_class = g_type_class_ref (E_TYPE_VCARD);
 
@@ -355,7 +355,7 @@ e_contact_class_init (EContactClass *klass)
 			pspec = g_param_spec_boxed (field_info[i].field_name,
 						    _(field_info[i].pretty_name),
 						    field_info[i].pretty_name,
-						    field_info[i].boxed_type_getter(),
+						    field_info[i].boxed_type_getter (),
 						     (field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE)
 						     | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB);
 		else
@@ -1494,7 +1494,7 @@ e_contact_get (EContact *contact, EContactField field_id)
 			rv = info->struct_getter (contact, attr);
 
 		if (info->t & E_CONTACT_FIELD_TYPE_STRUCT)
-			return (gpointer)info->boxed_type_getter();
+			return (gpointer)info->boxed_type_getter ();
 		else if (!rv)
 			return NULL;
 		else
@@ -1661,7 +1661,7 @@ e_contact_get_attributes (EContact *contact, EContactField field_id)
 		}
 	}
 
-	return g_list_reverse(l);
+	return g_list_reverse (l);
 }
 
 /**
@@ -1713,7 +1713,7 @@ e_contact_name_new (void)
  * Returns: The string representation of @name.
  **/
 gchar *
-e_contact_name_to_string(const EContactName *name)
+e_contact_name_to_string (const EContactName *name)
 {
 	gchar *strings[6], **stringptr = strings;
 
@@ -1744,7 +1744,7 @@ e_contact_name_to_string(const EContactName *name)
 EContactName*
 e_contact_name_from_string (const gchar *name_str)
 {
-	EContactName *name = e_contact_name_new();
+	EContactName *name = e_contact_name_new ();
 	ENameWestern *western;
 
 	g_return_val_if_fail (name_str != NULL, NULL);
@@ -1757,7 +1757,7 @@ e_contact_name_from_string (const gchar *name_str)
 	name->family     = g_strdup (western->last  );
 	name->suffixes   = g_strdup (western->suffix);
 
-	e_name_western_free(western);
+	e_name_western_free (western);
 
 	return name;
 }
@@ -1777,7 +1777,7 @@ e_contact_name_copy (EContactName *n)
 
 	g_return_val_if_fail (n != NULL, NULL);
 
-	name = e_contact_name_new();
+	name = e_contact_name_new ();
 
 	name->prefixes   = g_strdup (n->prefixes);
 	name->given      = g_strdup (n->given);
@@ -1847,12 +1847,12 @@ e_contact_date_from_string (const gchar *str)
 
 	g_return_val_if_fail (str != NULL, NULL);
 
-	date = e_contact_date_new();
+	date = e_contact_date_new ();
 	/* ignore time part */
 	if ((t = strchr (str, 'T')) != NULL)
 		length = t - str;
 	else
-		length = strlen(str);
+		length = strlen (str);
 
 	if (length == 10 ) {
 		date->year = str[0] * 1000 + str[1] * 100 + str[2] * 10 + str[3] - '0' * 1111;
@@ -1881,9 +1881,9 @@ e_contact_date_to_string (EContactDate *dt)
 {
 	if (dt)
 		return g_strdup_printf ("%04d-%02d-%02d",
-					CLAMP(dt->year, 1000, 9999),
-					CLAMP(dt->month, 1, 12),
-					CLAMP(dt->day, 1, 31));
+					CLAMP (dt->year, 1000, 9999),
+					CLAMP (dt->month, 1, 12),
+					CLAMP (dt->day, 1, 31));
 	else
 		return NULL;
 }

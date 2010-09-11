@@ -342,7 +342,7 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 				uri_parsed = soup_uri_new (priv->uri);
 				soup_uri_set_path (uri_parsed, newuri);
 				soup_uri_set_query (uri_parsed, NULL);
-				// g_free(newuri);
+				// g_free (newuri);
 
 				newuri = soup_uri_to_string (uri_parsed, FALSE);
 				g_message ("Translated URI: %s\n", newuri);
@@ -953,7 +953,7 @@ e_cal_backend_http_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 	cbsexp = e_cal_backend_sexp_new (sexp);
 
 	*objects = NULL;
-	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times(cbsexp,
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (cbsexp,
 									    &occur_start,
 									    &occur_end);
 
@@ -1000,7 +1000,7 @@ e_cal_backend_http_start_query (ECalBackend *backend, EDataCalView *query)
 	cbsexp = e_cal_backend_sexp_new (e_data_cal_view_get_text (query));
 
 	objects = NULL;
-	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times(cbsexp,
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (cbsexp,
 									    &occur_start,
 									    &occur_end);
 
@@ -1116,7 +1116,7 @@ create_user_free_busy (ECalBackendHttp *cbhttp, const gchar *address, const gcha
         if (!obj_sexp)
                 return vfb;
 
-        slist = e_cal_backend_store_get_components(store);
+        slist = e_cal_backend_store_get_components (store);
 
         for (l = slist; l; l = g_slist_next (l)) {
                 ECalComponent *comp = l->data;

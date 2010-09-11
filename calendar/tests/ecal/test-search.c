@@ -20,12 +20,12 @@ main (gint argc, gchar **argv)
 
 	if (!e_cal_open (ecal, TRUE, NULL)) {
 		printf ("failed to open calendar\n");
-		exit(0);
+		exit (0);
 	}
 
 	if (!e_cal_get_object_list_as_comp (ecal, argv[2], &objects, NULL)) {
 		printf ("failed to get objects\n");
-		exit(0);
+		exit (0);
 	}
 
 	printf ("Received %d objects\n", g_list_length (objects));

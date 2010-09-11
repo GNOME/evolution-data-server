@@ -71,7 +71,7 @@ struct _CamelMimeFilterBasicClass {
 	CamelMimeFilterClass parent_class;
 };
 
-GType		camel_mime_filter_basic_get_type(void);
+GType		camel_mime_filter_basic_get_type (void);
 CamelMimeFilter *
 		camel_mime_filter_basic_new	(CamelMimeFilterBasicType type);
 

@@ -106,7 +106,7 @@ struct {
 	{ "iso8859-1",      "iso-8859-1" },
 	/* the above mostly serves as an example for iso-style charsets,
 	   but we have code that will populate the iso-*'s if/when they
-	   show up in camel_iconv_charset_name() so I'm
+	   show up in camel_iconv_charset_name () so I'm
 	   not going to bother putting them all in here... */
 	{ "windows-cp1251", "cp1251"     },
 	{ "windows-1251",   "cp1251"     },
@@ -114,7 +114,7 @@ struct {
 	/* the above mostly serves as an example for windows-style
 	   charsets, but we have code that will parse and convert them
 	   to their cp#### equivalents if/when they show up in
-	   camel_iconv_charset_name() so I'm not going to bother
+	   camel_iconv_charset_name () so I'm not going to bother
 	   putting them all in here either... */
 #endif
 	/* charset name (lowercase!), iconv-friendly name (sometimes case sensitive) */
@@ -158,14 +158,14 @@ struct {
 /* Another copy of this trivial list implementation
    Why?  This stuff gets called a lot (potentially), should run fast,
    and g_list's are f@@#$ed up to make this a hassle */
-static void camel_dlist_init(CamelDList *v)
+static void camel_dlist_init (CamelDList *v)
 {
         v->head = (CamelDListNode *)&v->tail;
         v->tail = NULL;
         v->tailpred = (CamelDListNode *)&v->head;
 }
 
-static CamelDListNode *camel_dlist_addhead(CamelDList *l, CamelDListNode *n)
+static CamelDListNode *camel_dlist_addhead (CamelDList *l, CamelDListNode *n)
 {
         n->next = l->head;
         n->prev = (CamelDListNode *)&l->head;
@@ -174,7 +174,7 @@ static CamelDListNode *camel_dlist_addhead(CamelDList *l, CamelDListNode *n)
         return n;
 }
 
-static CamelDListNode *camel_dlist_addtail(CamelDList *l, CamelDListNode *n)
+static CamelDListNode *camel_dlist_addtail (CamelDList *l, CamelDListNode *n)
 {
         n->next = (CamelDListNode *)&l->tail;
         n->prev = l->tailpred;
@@ -183,7 +183,7 @@ static CamelDListNode *camel_dlist_addtail(CamelDList *l, CamelDListNode *n)
         return n;
 }
 
-static CamelDListNode *camel_dlist_remove(CamelDListNode *n)
+static CamelDListNode *camel_dlist_remove (CamelDListNode *n)
 {
         n->next->prev = n->prev;
         n->prev->next = n->next;
@@ -258,31 +258,31 @@ locale_parse_lang (const gchar *locale)
 
 /* NOTE: Owns the lock on return if keep is TRUE !*/
 static void
-iconv_init(gint keep)
+iconv_init (gint keep)
 {
 	gchar *from, *to, *locale;
 	gint i;
 
-	LOCK();
+	LOCK ();
 
 	if (iconv_charsets != NULL) {
 		if (!keep)
-			UNLOCK();
+			UNLOCK ();
 		return;
 	}
 
-	iconv_charsets = g_hash_table_new(g_str_hash, g_str_equal);
+	iconv_charsets = g_hash_table_new (g_str_hash, g_str_equal);
 
 	for (i = 0; known_iconv_charsets[i].charset != NULL; i++) {
-		from = g_strdup(known_iconv_charsets[i].charset);
-		to = g_strdup(known_iconv_charsets[i].iconv_name);
+		from = g_strdup (known_iconv_charsets[i].charset);
+		to = g_strdup (known_iconv_charsets[i].iconv_name);
 		e_strdown (from);
-		g_hash_table_insert(iconv_charsets, from, to);
+		g_hash_table_insert (iconv_charsets, from, to);
 	}
 
-	camel_dlist_init(&iconv_cache_list);
-	iconv_cache = g_hash_table_new(g_str_hash, g_str_equal);
-	iconv_cache_open = g_hash_table_new(NULL, NULL);
+	camel_dlist_init (&iconv_cache_list);
+	iconv_cache = g_hash_table_new (g_str_hash, g_str_equal);
+	iconv_cache_open = g_hash_table_new (NULL, NULL);
 
 #ifndef G_OS_WIN32
 	locale = setlocale (LC_ALL, NULL);
@@ -340,7 +340,7 @@ iconv_init(gint keep)
 	g_free (locale);
 #endif
 	if (!keep)
-		UNLOCK();
+		UNLOCK ();
 }
 
 const gchar *
@@ -355,10 +355,10 @@ camel_iconv_charset_name (const gchar *charset)
 	strcpy (name, charset);
 	e_strdown (name);
 
-	iconv_init(TRUE);
-	ret = g_hash_table_lookup(iconv_charsets, name);
+	iconv_init (TRUE);
+	ret = g_hash_table_lookup (iconv_charsets, name);
 	if (ret != NULL) {
-		UNLOCK();
+		UNLOCK ();
 		return ret;
 	}
 
@@ -411,17 +411,17 @@ camel_iconv_charset_name (const gchar *charset)
 		ret = g_strdup_printf("CP%s", tmp);
 	} else {
 		/* Just assume its ok enough as is, case and all */
-		ret = g_strdup(charset);
+		ret = g_strdup (charset);
 	}
 
-	g_hash_table_insert(iconv_charsets, g_strdup(name), ret);
-	UNLOCK();
+	g_hash_table_insert (iconv_charsets, g_strdup (name), ret);
+	UNLOCK ();
 
 	return ret;
 }
 
 static void
-flush_entry(struct _iconv_cache *ic)
+flush_entry (struct _iconv_cache *ic)
 {
 	struct _iconv_cache_node *in, *nn;
 
@@ -429,15 +429,15 @@ flush_entry(struct _iconv_cache *ic)
 	nn = in->next;
 	while (nn) {
 		if (in->ip != (iconv_t)-1) {
-			g_hash_table_remove(iconv_cache_open, in->ip);
-			iconv_close(in->ip);
+			g_hash_table_remove (iconv_cache_open, in->ip);
+			iconv_close (in->ip);
 		}
-		g_free(in);
+		g_free (in);
 		in = nn;
 		nn = in->next;
 	}
-	g_free(ic->conv);
-	g_free(ic);
+	g_free (ic->conv);
+	g_free (ic);
 }
 
 /* This should run pretty quick, its called a lot */
@@ -461,11 +461,11 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 	tofrom = g_alloca (strlen (to) + strlen (from) + 2);
 	sprintf(tofrom, "%s%%%s", to, from);
 
-	LOCK();
+	LOCK ();
 
-	ic = g_hash_table_lookup(iconv_cache, tofrom);
+	ic = g_hash_table_lookup (iconv_cache, tofrom);
 	if (ic) {
-		camel_dlist_remove((CamelDListNode *)ic);
+		camel_dlist_remove ((CamelDListNode *)ic);
 	} else {
 		struct _iconv_cache *last = (struct _iconv_cache *)iconv_cache_list.tailpred;
 		struct _iconv_cache *prev;
@@ -475,9 +475,9 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 			in = (struct _iconv_cache_node *)last->open.head;
 			if (in->next && !in->busy) {
 				cd(printf("Flushing iconv converter '%s'\n", last->conv));
-				camel_dlist_remove((CamelDListNode *)last);
-				g_hash_table_remove(iconv_cache, last->conv);
-				flush_entry(last);
+				camel_dlist_remove ((CamelDListNode *)last);
+				g_hash_table_remove (iconv_cache, last->conv);
+				flush_entry (last);
 				iconv_cache_size--;
 			}
 			last = prev;
@@ -486,14 +486,14 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 
 		iconv_cache_size++;
 
-		ic = g_malloc(sizeof(*ic));
-		camel_dlist_init(&ic->open);
-		ic->conv = g_strdup(tofrom);
-		g_hash_table_insert(iconv_cache, ic->conv, ic);
+		ic = g_malloc (sizeof (*ic));
+		camel_dlist_init (&ic->open);
+		ic->conv = g_strdup (tofrom);
+		g_hash_table_insert (iconv_cache, ic->conv, ic);
 
 		cd(printf("Creating iconv converter '%s'\n", ic->conv));
 	}
-	camel_dlist_addhead(&iconv_cache_list, (CamelDListNode *)ic);
+	camel_dlist_addhead (&iconv_cache_list, (CamelDListNode *)ic);
 
 	/* If we have a free iconv, use it */
 	in = (struct _iconv_cache_node *)ic->open.tailpred;
@@ -508,20 +508,20 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 			gchar *buggy_iconv_buf = NULL;
 
 			/* resets the converter */
-			iconv(ip, &buggy_iconv_buf, &buggy_iconv_len, &buggy_iconv_buf, &buggy_iconv_len);
+			iconv (ip, &buggy_iconv_buf, &buggy_iconv_len, &buggy_iconv_buf, &buggy_iconv_len);
 			in->busy = TRUE;
-			camel_dlist_remove((CamelDListNode *)in);
-			camel_dlist_addhead(&ic->open, (CamelDListNode *)in);
+			camel_dlist_remove ((CamelDListNode *)in);
+			camel_dlist_addhead (&ic->open, (CamelDListNode *)in);
 		}
 	} else {
 		cd(printf("creating new iconv converter '%s'\n", ic->conv));
-		ip = iconv_open(to, from);
-		in = g_malloc(sizeof(*in));
+		ip = iconv_open (to, from);
+		in = g_malloc (sizeof (*in));
 		in->ip = ip;
 		in->parent = ic;
-		camel_dlist_addhead(&ic->open, (CamelDListNode *)in);
+		camel_dlist_addhead (&ic->open, (CamelDListNode *)in);
 		if (ip != (iconv_t)-1) {
-			g_hash_table_insert(iconv_cache_open, ip, in);
+			g_hash_table_insert (iconv_cache_open, ip, in);
 			in->busy = TRUE;
 		} else {
 			errnosav = errno;
@@ -531,7 +531,7 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 		}
 	}
 
-	UNLOCK();
+	UNLOCK ();
 
 	return ip;
 }
@@ -540,7 +540,7 @@ gsize
 camel_iconv (iconv_t cd, const gchar **inbuf, gsize *inbytesleft,
              gchar ** outbuf, gsize *outbytesleft)
 {
-	return iconv(cd, (gchar **) inbuf, inbytesleft, outbuf, outbytesleft);
+	return iconv (cd, (gchar **) inbuf, inbytesleft, outbuf, outbytesleft);
 }
 
 void
@@ -551,25 +551,25 @@ camel_iconv_close (iconv_t ip)
 	if (ip == (iconv_t)-1)
 		return;
 
-	LOCK();
-	in = g_hash_table_lookup(iconv_cache_open, ip);
+	LOCK ();
+	in = g_hash_table_lookup (iconv_cache_open, ip);
 	if (in) {
 		cd(printf("closing iconv converter '%s'\n", in->parent->conv));
-		camel_dlist_remove((CamelDListNode *)in);
+		camel_dlist_remove ((CamelDListNode *)in);
 		in->busy = FALSE;
-		camel_dlist_addtail(&in->parent->open, (CamelDListNode *)in);
+		camel_dlist_addtail (&in->parent->open, (CamelDListNode *)in);
 	} else {
 		g_warning("trying to close iconv i dont know about: %p", ip);
-		iconv_close(ip);
+		iconv_close (ip);
 	}
-	UNLOCK();
+	UNLOCK ();
 
 }
 
 const gchar *
 camel_iconv_locale_charset (void)
 {
-	iconv_init(FALSE);
+	iconv_init (FALSE);
 
 	return locale_charset;
 }

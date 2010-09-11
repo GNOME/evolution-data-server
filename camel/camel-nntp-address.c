@@ -41,12 +41,12 @@ nntp_address_decode (CamelAddress *address,
 	struct _camel_header_newsgroup *ha, *n;
 	gint count = address->addresses->len;
 
-	ha = camel_header_newsgroups_decode(raw);
+	ha = camel_header_newsgroups_decode (raw);
 	if (ha) {
 		for (n = ha;n;n=n->next)
 			camel_nntp_address_add (
 				CAMEL_NNTP_ADDRESS (address), n->newsgroup);
-		camel_header_newsgroups_free(ha);
+		camel_header_newsgroups_free (ha);
 	}
 
 	return address->addresses->len - count;
@@ -69,11 +69,11 @@ nntp_address_encode (CamelAddress *address)
 		if (i != 0)
 			g_string_append(out, ", ");
 
-		g_string_append(out, g_ptr_array_index(address->addresses, i));
+		g_string_append (out, g_ptr_array_index (address->addresses, i));
 	}
 
 	ret = out->str;
-	g_string_free(out, FALSE);
+	g_string_free (out, FALSE);
 
 	return ret;
 }
@@ -84,7 +84,7 @@ nntp_address_cat (CamelAddress *dest,
 {
 	gint ii;
 
-	g_assert(CAMEL_IS_NNTP_ADDRESS(source));
+	g_assert (CAMEL_IS_NNTP_ADDRESS (source));
 
 	for (ii = 0; ii < source->addresses->len; ii++)
 		camel_nntp_address_add (
@@ -151,14 +151,14 @@ camel_nntp_address_add (CamelNNTPAddress *a, const gchar *name)
 {
 	gint index, i;
 
-	g_assert(CAMEL_IS_NNTP_ADDRESS(a));
+	g_assert (CAMEL_IS_NNTP_ADDRESS (a));
 
 	index = ((CamelAddress *)a)->addresses->len;
 	for (i=0;i<index;i++)
-		if (!strcmp(g_ptr_array_index(((CamelAddress *)a)->addresses, i), name))
+		if (!strcmp (g_ptr_array_index (((CamelAddress *)a)->addresses, i), name))
 			return i;
 
-	g_ptr_array_add(((CamelAddress *)a)->addresses, g_strdup(name));
+	g_ptr_array_add (((CamelAddress *)a)->addresses, g_strdup (name));
 
 	return index;
 }
@@ -176,7 +176,7 @@ camel_nntp_address_add (CamelNNTPAddress *a, const gchar *name)
 gboolean
 camel_nntp_address_get (CamelNNTPAddress *a, gint index, const gchar **namep)
 {
-	g_assert(CAMEL_IS_NNTP_ADDRESS(a));
+	g_assert (CAMEL_IS_NNTP_ADDRESS (a));
 
 	if (index < 0 || index >= ((CamelAddress *)a)->addresses->len)
 		return FALSE;

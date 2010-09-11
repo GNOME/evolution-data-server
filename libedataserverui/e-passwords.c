@@ -869,7 +869,7 @@ ep_get_password_keyring (EPassMsg *msg)
 		while (iter != NULL) {
 			GnomeKeyringFound *found = iter->data;
 
-			if (default_keyring && strcmp(default_keyring, found->keyring) != 0) {
+			if (default_keyring && strcmp (default_keyring, found->keyring) != 0) {
 				g_message ("Received a password from keyring '%s'. But looking for the password from '%s' keyring\n", found->keyring, default_keyring);
 				iter = g_list_next (iter);
 				continue;
@@ -904,7 +904,7 @@ ep_get_password_keyring (EPassMsg *msg)
 		while (iter != NULL) {
 			GnomeKeyringFound *found = iter->data;
 
-			if (default_keyring && strcmp(default_keyring, found->keyring) != 0) {
+			if (default_keyring && strcmp (default_keyring, found->keyring) != 0) {
 				g_message ("Received a password from keyring '%s'. But looking for the password from '%s' keyring\n", found->keyring, default_keyring);
 				iter = g_list_next (iter);
 				continue;

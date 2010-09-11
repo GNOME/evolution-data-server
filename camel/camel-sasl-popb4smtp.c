@@ -99,26 +99,26 @@ sasl_popb4smtp_challenge (CamelSasl *sasl,
 	}
 
 	/* check if we've done it before recently in this session */
-	now = time(NULL);
+	now = time (NULL);
 
 	/* need to lock around the whole thing until finished with timep */
 
-	POPB4SMTP_LOCK(lock);
-	timep = g_hash_table_lookup(poplast, popuri);
+	POPB4SMTP_LOCK (lock);
+	timep = g_hash_table_lookup (poplast, popuri);
 	if (timep) {
 		if ((*timep + POPB4SMTP_TIMEOUT) > now) {
 			camel_sasl_set_authenticated (sasl, TRUE);
-			POPB4SMTP_UNLOCK(lock);
-			g_free(popuri);
+			POPB4SMTP_UNLOCK (lock);
+			g_free (popuri);
 			return NULL;
 		}
 	} else {
-		timep = g_malloc0(sizeof(*timep));
-		g_hash_table_insert(poplast, g_strdup(popuri), timep);
+		timep = g_malloc0 (sizeof (*timep));
+		g_hash_table_insert (poplast, g_strdup (popuri), timep);
 	}
 
 	/* connect to pop session */
-	store = camel_session_get_store(session, popuri, error);
+	store = camel_session_get_store (session, popuri, error);
 	if (store) {
 		camel_sasl_set_authenticated (sasl, TRUE);
 		g_object_unref (store);
@@ -128,9 +128,9 @@ sasl_popb4smtp_challenge (CamelSasl *sasl,
 		*timep = 0;
 	}
 
-	POPB4SMTP_UNLOCK(lock);
+	POPB4SMTP_UNLOCK (lock);
 
-	g_free(popuri);
+	g_free (popuri);
 
 	return NULL;
 }

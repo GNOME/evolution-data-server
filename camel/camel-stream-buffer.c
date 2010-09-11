@@ -160,7 +160,7 @@ stream_buffer_read (CamelStream *stream,
 		bytes_left = priv->end - priv->ptr;
 		if (bytes_left < n) {
 			if (bytes_left > 0) {
-				memcpy(bptr, priv->ptr, bytes_left);
+				memcpy (bptr, priv->ptr, bytes_left);
 				n -= bytes_left;
 				bptr += bytes_left;
 				priv->ptr += bytes_left;
@@ -181,14 +181,14 @@ stream_buffer_read (CamelStream *stream,
 					gsize bytes_used = bytes_read > n ? n : bytes_read;
 					priv->ptr = priv->buf;
 					priv->end = priv->buf+bytes_read;
-					memcpy(bptr, priv->ptr, bytes_used);
+					memcpy (bptr, priv->ptr, bytes_used);
 					priv->ptr += bytes_used;
 					bptr += bytes_used;
 					n -= bytes_used;
 				}
 			}
 		} else {
-			memcpy(bptr, priv->ptr, n);
+			memcpy (bptr, priv->ptr, n);
 			priv->ptr += n;
 			bptr += n;
 			n = 0;
@@ -228,9 +228,9 @@ stream_buffer_write (CamelStream *stream,
 
 	/* first, copy as much as we can */
 	left = priv->size - (priv->ptr - priv->buf);
-	todo = MIN(left, n);
+	todo = MIN (left, n);
 
-	memcpy(priv->ptr, buffer, todo);
+	memcpy (priv->ptr, buffer, todo);
 	n -= todo;
 	buffer += todo;
 	priv->ptr += todo;
@@ -252,7 +252,7 @@ stream_buffer_write (CamelStream *stream,
 				priv->stream, buffer, n, error) == -1)
 				return -1;
 		} else {
-			memcpy(priv->ptr, buffer, n);
+			memcpy (priv->ptr, buffer, n);
 			priv->ptr += n;
 		}
 	}
@@ -304,7 +304,7 @@ stream_buffer_eos (CamelStream *stream)
 
 	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
 
-	return camel_stream_eos(priv->stream) && priv->ptr == priv->end;
+	return camel_stream_eos (priv->stream) && priv->ptr == priv->end;
 }
 
 static void
@@ -364,7 +364,7 @@ camel_stream_buffer_init (CamelStreamBuffer *stream)
 
 	stream->priv->flags = 0;
 	stream->priv->size = BUF_SIZE;
-	stream->priv->buf = g_malloc(BUF_SIZE);
+	stream->priv->buf = g_malloc (BUF_SIZE);
 	stream->priv->ptr = stream->priv->buf;
 	stream->priv->end = stream->priv->buf;
 	stream->priv->mode =

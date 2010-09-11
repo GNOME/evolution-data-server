@@ -50,7 +50,7 @@ e_dbhash_new (const gchar *filename)
 }
 
 static void
-string_to_dbt(const gchar *str, DBT *dbt)
+string_to_dbt (const gchar *str, DBT *dbt)
 {
 	memset (dbt, 0, sizeof (DBT));
 	dbt->data = (gpointer)str;
@@ -58,7 +58,7 @@ string_to_dbt(const gchar *str, DBT *dbt)
 }
 
 static void
-md5_to_dbt(const guint8 str[16], DBT *dbt)
+md5_to_dbt (const guint8 str[16], DBT *dbt)
 {
 	memset (dbt, 0, sizeof (DBT));
 	dbt->data = (gpointer)str;
@@ -142,14 +142,14 @@ e_dbhash_foreach_key (EDbHash *edbh, EDbHashFunc func, gpointer user_data)
 		return;
 	}
 
-	memset(&dkey, 0, sizeof(DBT));
-	memset(&ddata, 0, sizeof(DBT));
-	db_error = dbc->c_get(dbc, &dkey, &ddata, DB_FIRST);
+	memset (&dkey, 0, sizeof (DBT));
+	memset (&ddata, 0, sizeof (DBT));
+	db_error = dbc->c_get (dbc, &dkey, &ddata, DB_FIRST);
 
 	while (db_error == 0) {
 		(*func) ((const gchar *)dkey.data, user_data);
 
-		db_error = dbc->c_get(dbc, &dkey, &ddata, DB_NEXT);
+		db_error = dbc->c_get (dbc, &dkey, &ddata, DB_NEXT);
 	}
 	dbc->c_close (dbc);
 }

@@ -207,7 +207,7 @@ do_exec_command (gint fd, const gchar *command, gchar **env)
 	/* Set up child's environment. We _add_ to it, don't use execle,
 	   because otherwise we'd destroy stuff like SSH_AUTH_SOCK etc. */
 	for (; env && *env; env++)
-		putenv(*env);
+		putenv (*env);
 
 	execl ("/bin/sh", "/bin/sh", "-c", command, NULL);
 

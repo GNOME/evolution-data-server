@@ -818,7 +818,7 @@ compare_source_lists (GSList *a, GSList *b)
 	gboolean retval = TRUE;
 	GSList *l;
 
-	if (g_slist_length(a) != g_slist_length(b))
+	if (g_slist_length (a) != g_slist_length (b))
 		return FALSE;
 
 	for (l = a; l != NULL && retval; l = l->next) {

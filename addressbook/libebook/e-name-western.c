@@ -54,17 +54,17 @@ e_name_western_cleanup_string (gchar **str)
 
 	/* skip any spaces and commas at the start of the string */
 	p = *str;
-	while (g_unichar_isspace (g_utf8_get_char(p)) || *p == ',')
+	while (g_unichar_isspace (g_utf8_get_char (p)) || *p == ',')
 		p = g_utf8_next_char (p);
 
 	/* make the copy we're going to return */
 	newstr = g_strdup (p);
 
-	if ( strlen(newstr) > 0) {
+	if ( strlen (newstr) > 0) {
 		/* now search from the back, skipping over any spaces and commas */
 		p = newstr + strlen (newstr);
 		p = g_utf8_prev_char (p);
-		while (g_unichar_isspace (g_utf8_get_char(p)) || *p == ',')
+		while (g_unichar_isspace (g_utf8_get_char (p)) || *p == ',')
 			p = g_utf8_prev_char (p);
 		/* advance p to after the character that caused us to exit the
 		   previous loop, and end the string. */

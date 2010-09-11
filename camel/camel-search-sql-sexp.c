@@ -69,7 +69,7 @@ get_db_safe_string (const gchar *str)
 	gchar *tmp = camel_db_sqlize_string (str);
 	gchar *ret;
 
-	ret = g_strdup(tmp);
+	ret = g_strdup (tmp);
 	camel_db_free_sqlized_string (tmp);
 
 	return ret;
@@ -78,7 +78,7 @@ get_db_safe_string (const gchar *str)
 /* Configuration of your sexp expression */
 
 static ESExpResult *
-func_and(ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
+func_and (ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	ESExpResult *r, *r1;
 	GString *string;
@@ -88,7 +88,7 @@ func_and(ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 
 	string = g_string_new("( ");
 	for (i = 0; i < argc; i++) {
-		r1 = e_sexp_term_eval(f, argv[i]);
+		r1 = e_sexp_term_eval (f, argv[i]);
 
 		if (r1->type != ESEXP_RES_STRING) {
 			e_sexp_result_free (f, r1);
@@ -99,19 +99,19 @@ func_and(ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 		e_sexp_result_free (f, r1);
 	}
 	g_string_append(string, " )");
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
+	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 
-	if (strlen(string->str) == 4)
+	if (strlen (string->str) == 4)
 		r->value.string = g_strdup("");
 	else
 		r->value.string = string->str;
-	g_string_free(string, FALSE);
+	g_string_free (string, FALSE);
 
 	return r;
 }
 
 static ESExpResult *
-func_or(ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
+func_or (ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	ESExpResult *r, *r1;
 	GString *string;
@@ -121,7 +121,7 @@ func_or(ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 
 	string = g_string_new("( ");
 	for (i = 0; i < argc; i++) {
-		r1 = e_sexp_term_eval(f, argv[i]);
+		r1 = e_sexp_term_eval (f, argv[i]);
 
 		if (r1->type != ESEXP_RES_STRING) {
 			e_sexp_result_free (f, r1);
@@ -132,22 +132,22 @@ func_or(ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 	}
 	g_string_append(string, " )");
 
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
+	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 	r->value.string = string->str;
-	g_string_free(string, FALSE);
+	g_string_free (string, FALSE);
 	return r;
 }
 
 static ESExpResult *
-func_not(ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
+func_not (ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	ESExpResult *r=NULL, *r1;
 
 	d(printf("executing not: %d", argc));
-	r1 = e_sexp_term_eval(f, argv[0]);
+	r1 = e_sexp_term_eval (f, argv[0]);
 
 	if (r1->type == ESEXP_RES_STRING) {
-		r = e_sexp_result_new(f, ESEXP_RES_STRING);
+		r = e_sexp_result_new (f, ESEXP_RES_STRING);
 		/* HACK: Fix and handle completed-on better. */
 		if (g_strcmp0 (r1->value.string, "( (usertags LIKE '%completed-on 0%' AND usertags LIKE '%completed-on%') )") == 0)
 			r->value.string = g_strdup ("( (not (usertags LIKE '%completed-on 0%')) AND usertags LIKE '%completed-on%' )");
@@ -162,16 +162,16 @@ func_not(ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 
 /* this should support all arguments ...? */
 static ESExpResult *
-eval_eq(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
+eval_eq (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	struct _ESExpResult *r, *r1, *r2;
 
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
+	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 
 	if (argc == 2) {
 		GString *str = g_string_new("( ");
-		r1 = e_sexp_term_eval(f, argv[0]);
-		r2 = e_sexp_term_eval(f, argv[1]);
+		r1 = e_sexp_term_eval (f, argv[0]);
+		r2 = e_sexp_term_eval (f, argv[1]);
 
 		if (r1->type == ESEXP_RES_INT)
 			g_string_append_printf(str, "%d", r1->value.number);
@@ -197,17 +197,17 @@ eval_eq(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 				g_string_append_printf(str, "%ld", r2->value.time);
 			else if (r2->type == ESEXP_RES_STRING) {
 				gchar *tmp = g_strdup_printf("%c%s%c", ut ? '%':' ', r2->value.string, ut?'%':' ');
-				gchar *safe = get_db_safe_string(tmp);
+				gchar *safe = get_db_safe_string (tmp);
 				g_string_append_printf(str, "%s", safe);
-				g_free(safe);
-				g_free(tmp);
+				g_free (safe);
+				g_free (tmp);
 			}
 		}
-		e_sexp_result_free(f, r1);
-		e_sexp_result_free(f, r2);
+		e_sexp_result_free (f, r1);
+		e_sexp_result_free (f, r2);
 		g_string_append (str, " )");
 		r->value.string = str->str;
-		g_string_free(str, FALSE);
+		g_string_free (str, FALSE);
 	} else {
 		r->value.string = g_strdup ("(0)");
 	}
@@ -215,16 +215,16 @@ eval_eq(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 }
 
 static ESExpResult *
-eval_lt(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
+eval_lt (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	struct _ESExpResult *r, *r1, *r2;
 
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
+	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 
 	if (argc == 2) {
 		GString *str = g_string_new("( ");
-		r1 = e_sexp_term_eval(f, argv[0]);
-		r2 = e_sexp_term_eval(f, argv[1]);
+		r1 = e_sexp_term_eval (f, argv[0]);
+		r2 = e_sexp_term_eval (f, argv[1]);
 
 		if (r1->type == ESEXP_RES_INT)
 			g_string_append_printf(str, "%d", r1->value.number);
@@ -242,28 +242,28 @@ eval_lt(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 			g_string_append_printf(str, "%ld", r2->value.time);
 		else if (r2->type == ESEXP_RES_STRING)
 			g_string_append_printf(str, "%s", r2->value.string);
-		e_sexp_result_free(f, r1);
-		e_sexp_result_free(f, r2);
+		e_sexp_result_free (f, r1);
+		e_sexp_result_free (f, r2);
 		g_string_append (str, " )");
 
 		r->value.string = str->str;
-		g_string_free(str, FALSE);
+		g_string_free (str, FALSE);
 	}
 	return r;
 }
 
 /* this should support all arguments ...? */
 static ESExpResult *
-eval_gt(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
+eval_gt (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	struct _ESExpResult *r, *r1, *r2;
 
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
+	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 
 	if (argc == 2) {
 		GString *str = g_string_new("( ");
-		r1 = e_sexp_term_eval(f, argv[0]);
-		r2 = e_sexp_term_eval(f, argv[1]);
+		r1 = e_sexp_term_eval (f, argv[0]);
+		r2 = e_sexp_term_eval (f, argv[1]);
 
 		if (r1->type == ESEXP_RES_INT)
 			g_string_append_printf(str, "%d", r1->value.number);
@@ -281,18 +281,18 @@ eval_gt(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 			g_string_append_printf(str, "%ld", r2->value.time);
 		else if (r2->type == ESEXP_RES_STRING)
 			g_string_append_printf(str, "%s", r2->value.string);
-		e_sexp_result_free(f, r1);
-		e_sexp_result_free(f, r2);
+		e_sexp_result_free (f, r1);
+		e_sexp_result_free (f, r2);
 		g_string_append (str, " )");
 
 		r->value.string = str->str;
-		g_string_free(str, FALSE);
+		g_string_free (str, FALSE);
 	}
 	return r;
 }
 
 static ESExpResult *
-match_all(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
+match_all (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	ESExpResult *r;
 
@@ -301,9 +301,9 @@ match_all(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 		r = e_sexp_result_new (f, ESEXP_RES_STRING);
 		r->value.string = g_strdup ("1");
 	} else if (argv[0]->type != ESEXP_TERM_BOOL)
-		r = e_sexp_term_eval(f, argv[0]);
+		r = e_sexp_term_eval (f, argv[0]);
 	else {
-		r = e_sexp_result_new(f, ESEXP_RES_STRING);
+		r = e_sexp_result_new (f, ESEXP_RES_STRING);
 		r->value.string = g_strdup(argv[0]->value.boolean ? "1" : "0");
 	}
 
@@ -312,7 +312,7 @@ match_all(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 }
 
 static ESExpResult *
-match_threads(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
+match_threads (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	ESExpResult *r;
 	gint i;
@@ -321,15 +321,15 @@ match_threads(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer da
 	d(printf("executing match-threads: %d", argc));
 
 	for (i=1;i<argc;i++) {
-		r = e_sexp_term_eval(f, argv[i]);
+		r = e_sexp_term_eval (f, argv[i]);
 		g_string_append_printf(str, "%s%s", r->value.string, ((argc>1) && (i != argc-1)) ?  " AND ":"");
-		e_sexp_result_free(f, r);
+		e_sexp_result_free (f, r);
 	}
 
 	g_string_append (str, " )");
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
+	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 	r->value.string = str->str;
-	g_string_free(str, FALSE);
+	g_string_free (str, FALSE);
 
 	return r;
 }
@@ -374,33 +374,33 @@ check_header (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer 
 					g_free (tstr);
 				}
 				str = g_strdup_printf("(%s IS NOT NULL AND %s LIKE %s)", headername, headername, value);
-				g_free(value);
+				g_free (value);
 			}
 		}
 		g_free (headername);
 	}
 	/* TODO: else, find all matches */
 
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
+	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 	r->value.string = str;
 
 	return r;
 }
 
 static ESExpResult *
-header_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+header_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	d(printf("executing header-contains: %d", argc));
 
-	return check_header(f, argc, argv, data, CAMEL_SEARCH_MATCH_CONTAINS);
+	return check_header (f, argc, argv, data, CAMEL_SEARCH_MATCH_CONTAINS);
 }
 
 static ESExpResult *
-header_matches(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+header_matches (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	d(printf("executing header-matches: %d", argc));
 
-	return check_header(f, argc, argv, data, CAMEL_SEARCH_MATCH_EXACT);
+	return check_header (f, argc, argv, data, CAMEL_SEARCH_MATCH_EXACT);
 }
 
 static ESExpResult *
@@ -408,7 +408,7 @@ header_starts_with (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpo
 {
 	d(printf("executing header-starts-with: %d", argc));
 
-	return check_header(f, argc, argv, data, CAMEL_SEARCH_MATCH_STARTS);
+	return check_header (f, argc, argv, data, CAMEL_SEARCH_MATCH_STARTS);
 }
 
 static ESExpResult *
@@ -416,7 +416,7 @@ header_ends_with (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpoin
 {
 	d(printf("executing header-ends-with: %d", argc));
 
-	return check_header(f, argc, argv, data, CAMEL_SEARCH_MATCH_ENDS);
+	return check_header (f, argc, argv, data, CAMEL_SEARCH_MATCH_ENDS);
 }
 
 static ESExpResult *
@@ -428,20 +428,20 @@ header_exists (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer
 	d(printf("executing header-exists: %d", argc));
 
 	headername = camel_db_get_column_name (argv[0]->value.string);
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
+	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 	r->value.string = g_strdup_printf ("(%s NOTNULL)", headername);
 	g_free (headername);
 	return r;
 }
 
 static ESExpResult *
-user_tag(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+user_tag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
 
 	d(printf("executing user-tag: %d", argc));
 
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
+	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 	/* Hacks no otherway to fix these really :( */
 	if (g_strcmp0 (argv[0]->value.string, "completed-on") == 0)
 		r->value.string = g_strdup_printf("(usertags LIKE '%ccompleted-on 0%c' AND usertags LIKE '%ccompleted-on%c')", '%', '%', '%', '%');
@@ -454,23 +454,23 @@ user_tag(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 }
 
 static ESExpResult *
-user_flag(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+user_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
 	gchar *tstr, *qstr;
 
 	d(printf("executing user-flag: %d", argc));
 
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
+	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 
 	if (argc != 1) {
 		r->value.string = g_strdup ("(0)");
 	} else {
 		tstr = g_strdup_printf("%s", argv[0]->value.string);
-		qstr = get_db_safe_string(tstr);
-		g_free(tstr);
+		qstr = get_db_safe_string (tstr);
+		g_free (tstr);
 		r->value.string = g_strdup_printf("(labels MATCH %s)", qstr);
-		g_free(qstr);
+		g_free (qstr);
 	}
 
 	return r;
@@ -484,53 +484,53 @@ system_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer d
 
 	d(printf("executing system-flag: %d", argc));
 
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
+	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 
 	if (argc != 1) {
 		r->value.string = g_strdup ("(0)");
 	} else {
-		tstr = camel_db_get_column_name(argv[0]->value.string);
+		tstr = camel_db_get_column_name (argv[0]->value.string);
 		r->value.string = g_strdup_printf("(%s = 1)", tstr);
-		g_free(tstr);
+		g_free (tstr);
 	}
 
 	return r;
 }
 
 static ESExpResult *
-get_sent_date(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+get_sent_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
 
 	d(printf("executing get-sent-date\n"));
 
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
+	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 	r->value.string = g_strdup("dsent");
 
 	return r;
 }
 
 static ESExpResult *
-get_received_date(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+get_received_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
 
 	d(printf("executing get-received-date\n"));
 
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
+	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 	r->value.string = g_strdup("dreceived");
 
 	return r;
 }
 
 static ESExpResult *
-get_current_date(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+get_current_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
 
 	d(printf("executing get-current-date\n"));
 
-	r = e_sexp_result_new(f, ESEXP_RES_INT);
+	r = e_sexp_result_new (f, ESEXP_RES_INT);
 	r->value.number = time (NULL);
 	return r;
 }
@@ -542,7 +542,7 @@ get_size (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data
 
 	d(printf("executing get-size\n"));
 
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
+	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 	r->value.string = g_strdup("size");
 
 	return r;
@@ -557,7 +557,7 @@ sql_exp (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 
 	d(printf("executing sql-exp\n"));
 
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
+	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 	for (i=0;i<argc;i++) {
 		if (argv[i]->type == ESEXP_RES_STRING && argv[i]->value.string)
 			g_string_append (str, argv[i]->value.string);
@@ -614,14 +614,14 @@ camel_sexp_to_sql_sexp (const gchar *sql)
 	gint i;
 	gchar *res;
 
-	sexp = e_sexp_new();
+	sexp = e_sexp_new ();
 
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].immediate)
-			e_sexp_add_ifunction(sexp, 0, symbols[i].name,
+			e_sexp_add_ifunction (sexp, 0, symbols[i].name,
 					     (ESExpIFunc *) symbols[i].func, NULL);
 		else
-			e_sexp_add_function(sexp, 0, symbols[i].name,
+			e_sexp_add_function (sexp, 0, symbols[i].name,
 					    symbols[i].func, NULL);
 	}
 
@@ -634,9 +634,9 @@ camel_sexp_to_sql_sexp (const gchar *sql)
 	if (r->type == ESEXP_RES_STRING) {
 		res = g_strdup (r->value.string);
 	} else
-		g_assert(0);
+		g_assert (0);
 
-	e_sexp_result_free(sexp, r);
+	e_sexp_result_free (sexp, r);
 	e_sexp_unref (sexp);
 	return res;
 }
@@ -756,7 +756,7 @@ gint main ()
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or  (match-all list-post.*zypp-devel)  ) ))"
 	};
 
-	for (i=0; i < G_N_ELEMENTS(txt); i++) {
+	for (i=0; i < G_N_ELEMENTS (txt); i++) {
 		gchar *sql = NULL;
 		printf("Q: %s\n\"%c\"\n", txt[i], 40);
 		sql = camel_sexp_to_sql_sexp (txt[i]);

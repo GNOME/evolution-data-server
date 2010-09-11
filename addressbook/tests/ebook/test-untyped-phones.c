@@ -16,7 +16,7 @@ TEL;FAX:321-321-4321\r\n\
 END:vCard"
 
 static void
-check(gboolean test, const gchar *msg)
+check (gboolean test, const gchar *msg)
 {
 	printf ("%s - %s\n", test ? "passed" : "failed", msg);
 }

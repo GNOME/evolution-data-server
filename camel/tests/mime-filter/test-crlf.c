@@ -33,7 +33,7 @@ main (gint argc, gchar **argv)
 	gint comp_i;
 	gchar comp_correct[CHUNK_SIZE], comp_filter[CHUNK_SIZE];
 
-	camel_test_init(argc, argv);
+	camel_test_init (argc, argv);
 
 	for (i = 0; i < NUM_CASES; i++) {
 		gint j;

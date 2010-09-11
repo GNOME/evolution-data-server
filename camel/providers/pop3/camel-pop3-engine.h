@@ -142,7 +142,7 @@ CamelPOP3Engine  *camel_pop3_engine_new		(CamelStream *source, guint32 flags);
 
 void              camel_pop3_engine_reget_capabilities (CamelPOP3Engine *engine);
 
-void              camel_pop3_engine_command_free(CamelPOP3Engine *pe, CamelPOP3Command *pc);
+void              camel_pop3_engine_command_free (CamelPOP3Engine *pe, CamelPOP3Command *pc);
 
 gint		  camel_pop3_engine_iterate	(CamelPOP3Engine *pe, CamelPOP3Command *pc);
 

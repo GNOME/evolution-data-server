@@ -104,7 +104,7 @@ CamelServiceAuthType camel_imap_password_authtype = {
 };
 
 void
-camel_provider_module_init(void)
+camel_provider_module_init (void)
 {
 	imap_provider.object_types[CAMEL_PROVIDER_STORE] = camel_imap_store_get_type ();
 	imap_provider.url_hash = imap_url_hash;
@@ -113,7 +113,7 @@ camel_provider_module_init(void)
 	imap_provider.authtypes = g_list_prepend (imap_provider.authtypes, &camel_imap_password_authtype);
 	imap_provider.translation_domain = GETTEXT_PACKAGE;
 
-	camel_provider_register(&imap_provider);
+	camel_provider_register (&imap_provider);
 }
 
 static void

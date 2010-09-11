@@ -18,13 +18,13 @@ static const gchar *stores[] = {
 	"maildir:///tmp/camel-test/maildir"
 };
 
-gint main(gint argc, gchar **argv)
+gint main (gint argc, gchar **argv)
 {
 	CamelSession *session;
 	gint i;
 
-	camel_test_init(argc, argv);
-	camel_test_provider_init(1, local_drivers);
+	camel_test_init (argc, argv);
+	camel_test_provider_init (1, local_drivers);
 
 	/* clear out any camel-test data */
 	system("/bin/rm -rf /tmp/camel-test");
@@ -42,7 +42,7 @@ gint main(gint argc, gchar **argv)
 	creat("/tmp/camel-test/testbox", 0600);
 	test_folder_message_ops(session, "spool:///tmp/camel-test/testbox", TRUE, "INBOX");
 
-	check_unref(session, 1);
+	check_unref (session, 1);
 
 	return 0;
 }

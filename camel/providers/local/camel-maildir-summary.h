@@ -76,8 +76,8 @@ GType	 camel_maildir_summary_get_type	(void);
 CamelMaildirSummary	*camel_maildir_summary_new	(struct _CamelFolder *folder, const gchar *filename, const gchar *maildirdir, CamelIndex *index);
 
 /* convert some info->flags to/from the messageinfo */
-gchar *camel_maildir_summary_info_to_name(const CamelMaildirMessageInfo *info);
-gint camel_maildir_summary_name_to_info(CamelMaildirMessageInfo *info, const gchar *name);
+gchar *camel_maildir_summary_info_to_name (const CamelMaildirMessageInfo *info);
+gint camel_maildir_summary_name_to_info (CamelMaildirMessageInfo *info, const gchar *name);
 
 /* TODO: could proably use get_string stuff */
 #define camel_maildir_info_filename(x) (((CamelMaildirMessageInfo *)x)->filename)

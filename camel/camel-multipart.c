@@ -257,8 +257,8 @@ multipart_set_boundary (CamelMultipart *multipart,
 
 		/* Generate a fairly random boundary string. */
 		bgen = g_strdup_printf ("%p:%lu:%lu", (gpointer) multipart,
-					(gulong) getpid(),
-					(gulong) time(NULL));
+					(gulong) getpid (),
+					(gulong) time (NULL));
 
 		checksum = g_checksum_new (G_CHECKSUM_MD5);
 		g_checksum_update (checksum, (guchar *) bgen, -1);
@@ -298,28 +298,28 @@ multipart_construct_from_parser (CamelMultipart *multipart,
 	gchar *buf;
 	gsize len;
 
-	g_assert(camel_mime_parser_state(mp) == CAMEL_MIME_PARSER_STATE_MULTIPART);
+	g_assert (camel_mime_parser_state (mp) == CAMEL_MIME_PARSER_STATE_MULTIPART);
 
 	/* FIXME: we should use a came-mime-mutlipart, not jsut a camel-multipart, but who cares */
 	d(printf("Creating multi-part\n"));
 
-	content_type = camel_mime_parser_content_type(mp);
-	camel_multipart_set_boundary(multipart,
+	content_type = camel_mime_parser_content_type (mp);
+	camel_multipart_set_boundary (multipart,
 				     camel_content_type_param(content_type, "boundary"));
 
-	while (camel_mime_parser_step(mp, &buf, &len) != CAMEL_MIME_PARSER_STATE_MULTIPART_END) {
-		camel_mime_parser_unstep(mp);
-		bodypart = camel_mime_part_new();
+	while (camel_mime_parser_step (mp, &buf, &len) != CAMEL_MIME_PARSER_STATE_MULTIPART_END) {
+		camel_mime_parser_unstep (mp);
+		bodypart = camel_mime_part_new ();
 		camel_mime_part_construct_from_parser (bodypart, mp, NULL);
-		camel_multipart_add_part(multipart, bodypart);
+		camel_multipart_add_part (multipart, bodypart);
 		g_object_unref (bodypart);
 	}
 
 	/* these are only return valid data in the MULTIPART_END state */
-	camel_multipart_set_preface(multipart, camel_mime_parser_preface (mp));
-	camel_multipart_set_postface(multipart, camel_mime_parser_postface (mp));
+	camel_multipart_set_preface (multipart, camel_mime_parser_preface (mp));
+	camel_multipart_set_postface (multipart, camel_mime_parser_postface (mp));
 
-	err = camel_mime_parser_errno(mp);
+	err = camel_mime_parser_errno (mp);
 	if (err != 0) {
 		errno = err;
 		return -1;
@@ -620,7 +620,7 @@ camel_multipart_construct_from_parser (CamelMultipart *multipart,
 {
 	CamelMultipartClass *class;
 
-	g_return_val_if_fail (CAMEL_IS_MULTIPART(multipart), -1);
+	g_return_val_if_fail (CAMEL_IS_MULTIPART (multipart), -1);
 	g_return_val_if_fail (CAMEL_IS_MIME_PARSER (mp), -1);
 
 	class = CAMEL_MULTIPART_GET_CLASS (multipart);

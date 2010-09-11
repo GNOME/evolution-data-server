@@ -77,7 +77,7 @@ struct _CamelGroupwiseStoreClass {
 };
 
 GType camel_groupwise_store_get_type (void);
-gchar * groupwise_get_name(CamelService *service, gboolean brief);
+gchar * groupwise_get_name (CamelService *service, gboolean brief);
 
 /*IMplemented*/
 const gchar *camel_groupwise_store_container_id_lookup (CamelGroupwiseStore *gw_store, const gchar *folder_name);

@@ -326,12 +326,12 @@ camel_charset_step (CamelCharset *cc, const gchar *in, gint len)
 	level = cc->level;
 
 	/* check what charset a given string will fit in */
-	while ((c = camel_utf8_getc_limit(&inptr, inend)) != 0xffff) {
+	while ((c = camel_utf8_getc_limit (&inptr, inend)) != 0xffff) {
 		if (c < 0xffff) {
-			mask &= charset_mask(c);
+			mask &= charset_mask (c);
 
 			if (c>=128 && c<256)
-				level = MAX(level, 1);
+				level = MAX (level, 1);
 			else if (c>=256)
 				level = 2;
 		} else {
@@ -347,7 +347,7 @@ camel_charset_step (CamelCharset *cc, const gchar *in, gint len)
 
 /* gets the best charset from the mask of chars in it */
 static const gchar *
-camel_charset_best_mask(guint mask)
+camel_charset_best_mask (guint mask)
 {
 	const gchar *locale_lang, *lang;
 	gint i;

@@ -79,21 +79,21 @@
 
 #  ifdef UNICODE
 #    define ldap_compare_ext(ld,dn,a,v,sc,cc,msg) \
-        ldap_compare_extW(ld,dn,a,0,v,sc,cc,msg)
+        ldap_compare_extW (ld,dn,a,0,v,sc,cc,msg)
 #    define ldap_search_ext(ld,base,scope,f,a,o,sc,cc,(t),s,msg) \
-        ldap_search_extW(ld,base,scope,f,a,o,sc,cc,((PLDAP_TIMEVAL)t)?((PLDAP_TIMEVAL)t)->tv_sec:0,s,msg)
+        ldap_search_extW (ld,base,scope,f,a,o,sc,cc,((PLDAP_TIMEVAL)t)?((PLDAP_TIMEVAL)t)->tv_sec:0,s,msg)
 # if defined (__MINGW64_VERSION_MAJOR) || defined (_MSC_VER)
 #    define ldap_start_tls_s(ld,sc,cc) \
-        ldap_start_tls_sW(ld,0,0,sc,cc)
+        ldap_start_tls_sW (ld,0,0,sc,cc)
 # endif
 #  else /* !UNICODE */
 #    define ldap_compare_ext(ld,dn,a,v,sc,cc,msg) \
-        ldap_compare_extA(ld,dn,a,0,v,sc,cc,msg)
+        ldap_compare_extA (ld,dn,a,0,v,sc,cc,msg)
 #    define ldap_search_ext(ld,base,scope,f,a,o,sc,cc,t,s,msg) \
-        ldap_search_extA(ld,base,scope,f,a,o,sc,cc,((PLDAP_TIMEVAL)t)?((PLDAP_TIMEVAL)t)->tv_sec:0,s,msg)
+        ldap_search_extA (ld,base,scope,f,a,o,sc,cc,((PLDAP_TIMEVAL)t)?((PLDAP_TIMEVAL)t)->tv_sec:0,s,msg)
 # if defined (__MINGW64_VERSION_MAJOR) || defined (_MSC_VER)
 #    define ldap_start_tls_s(ld,sc,cc) \
-        ldap_start_tls_sA(ld,0,0,sc,cc)
+        ldap_start_tls_sA (ld,0,0,sc,cc)
 # endif
 #  endif /* UNICODE */
 
@@ -162,7 +162,7 @@ typedef enum {
 
 static gboolean enable_debug = FALSE;
 
-static const gchar *query_prop_to_ldap(gchar *query_prop);
+static const gchar *query_prop_to_ldap (gchar *query_prop);
 static gchar *e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const gchar *query);
 
 typedef struct LDAPOp LDAPOp;
@@ -281,31 +281,31 @@ static void category_populate (EContact *contact, gchar **values);
 static struct berval** category_ber (EContact *contact);
 static gboolean category_compare (EContact *contact1, EContact *contact2);
 
-static void home_address_populate(EContact * card, gchar **values);
-static struct berval **home_address_ber(EContact * card);
-static gboolean home_address_compare(EContact * ecard1, EContact * ecard2);
+static void home_address_populate (EContact * card, gchar **values);
+static struct berval **home_address_ber (EContact * card);
+static gboolean home_address_compare (EContact * ecard1, EContact * ecard2);
 
-static void work_address_populate(EContact * card, gchar **values);
-static struct berval **work_address_ber(EContact * card);
-static gboolean work_address_compare(EContact * ecard1, EContact * ecard2);
+static void work_address_populate (EContact * card, gchar **values);
+static struct berval **work_address_ber (EContact * card);
+static gboolean work_address_compare (EContact * ecard1, EContact * ecard2);
 
-static void other_address_populate(EContact * card, gchar **values);
-static struct berval **other_address_ber(EContact * card);
-static gboolean other_address_compare(EContact * ecard1, EContact * ecard2);
+static void other_address_populate (EContact * card, gchar **values);
+static struct berval **other_address_ber (EContact * card);
+static gboolean other_address_compare (EContact * ecard1, EContact * ecard2);
 
-static void work_city_populate(EContact * card, gchar **values);
-static void work_state_populate(EContact * card, gchar **values);
-static void work_po_populate(EContact * card, gchar **values);
-static void work_zip_populate(EContact * card, gchar **values);
-static void work_country_populate(EContact * card, gchar **values);
-static void home_city_populate(EContact * card, gchar **values);
-static void home_state_populate(EContact * card, gchar **values);
-static void home_zip_populate(EContact * card, gchar **values);
-static void home_country_populate(EContact * card, gchar **values);
+static void work_city_populate (EContact * card, gchar **values);
+static void work_state_populate (EContact * card, gchar **values);
+static void work_po_populate (EContact * card, gchar **values);
+static void work_zip_populate (EContact * card, gchar **values);
+static void work_country_populate (EContact * card, gchar **values);
+static void home_city_populate (EContact * card, gchar **values);
+static void home_state_populate (EContact * card, gchar **values);
+static void home_zip_populate (EContact * card, gchar **values);
+static void home_country_populate (EContact * card, gchar **values);
 
 static void photo_populate (EContact *contact, struct berval **ber_values);
 static struct berval **photo_ber (EContact * contact);
-static gboolean photo_compare(EContact * ecard1, EContact * ecard2);
+static gboolean photo_compare (EContact * ecard1, EContact * ecard2);
 
 static void cert_populate (EContact *contact, struct berval **ber_values);
 
@@ -452,7 +452,7 @@ find_book_view (EBookBackendLDAP *bl)
 
 	if (e_iterator_is_valid (iter)) {
 		/* just always use the first book view */
-		EDataBookView *v = (EDataBookView*)e_iterator_get(iter);
+		EDataBookView *v = (EDataBookView*)e_iterator_get (iter);
 		if (v)
 			rv = v;
 	}
@@ -514,7 +514,7 @@ add_to_supported_fields (EBookBackendLDAP *bl, gchar **attrs, GHashTable *attr_h
 				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup (e_contact_field_name (E_CONTACT_PHONE_BUSINESS_2)));
 			}
 			else if (!strcmp (query_prop, e_contact_field_name (E_CONTACT_PHONE_HOME))) {
-				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup (e_contact_field_name(E_CONTACT_PHONE_HOME_2)));
+				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup (e_contact_field_name (E_CONTACT_PHONE_HOME_2)));
 			}
 			else if (!strcmp (query_prop, e_contact_field_name (E_CONTACT_CATEGORY_LIST) )) {
 				bl->priv->supported_fields = g_list_append (bl->priv->supported_fields, g_strdup (e_contact_field_name (E_CONTACT_CATEGORIES)));
@@ -852,7 +852,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 			if (bl->priv->ldap_port == LDAPS_PORT && bl->priv->use_tls == E_BOOK_BACKEND_LDAP_TLS_ALWAYS) {
 #ifdef SUNLDAP
 				if (LDAP_SUCCESS == ldap_error) {
-					ldap_set_option(blpriv->ldap, LDAP_OPT_RECONNECT, LDAP_OPT_ON );
+					ldap_set_option (blpriv->ldap, LDAP_OPT_RECONNECT, LDAP_OPT_ON );
 				}
 #else
 #if defined (LDAP_OPT_X_TLS_HARD) && defined (LDAP_OPT_X_TLS)
@@ -868,7 +868,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 			else if (bl->priv->use_tls) {
 #ifdef SUNLDAP
 				if (LDAP_SUCCESS == ldap_error) {
-					ldap_set_option(blpriv->ldap, LDAP_OPT_RECONNECT, LDAP_OPT_ON );
+					ldap_set_option (blpriv->ldap, LDAP_OPT_RECONNECT, LDAP_OPT_ON );
 				}
 #else
 #ifdef _WIN32
@@ -881,7 +881,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 				if (!pldap_start_tls_s)
 					ldap_error = LDAP_NOT_SUPPORTED;
 				else
-					ldap_error = pldap_start_tls_s(blpriv->ldap, NULL, NULL);
+					ldap_error = pldap_start_tls_s (blpriv->ldap, NULL, NULL);
 #else /* !defined(_WIN32) */
 				ldap_error = ldap_start_tls_s (blpriv->ldap, NULL, NULL);
 #endif /* _WIN32 */
@@ -941,7 +941,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 		else
 			ldap_error = query_ldap_root_dse (bl);
 		/* query_ldap_root_dse will cause the actual
-		   connect(), so any tcpip problems will show up
+		   connect (), so any tcpip problems will show up
 		   here */
 
 		/* we can't just check for LDAP_SUCCESS here since in
@@ -1033,7 +1033,7 @@ e_book_backend_ldap_reconnect (EBookBackendLDAP *bl, EDataBookView *book_view, g
 
 		if (bl->priv->auth_dn) {
 			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
-			ldap_error = ldap_simple_bind_s(bl->priv->ldap,
+			ldap_error = ldap_simple_bind_s (bl->priv->ldap,
 							bl->priv->auth_dn,
 							bl->priv->auth_passwd);
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
@@ -1249,7 +1249,7 @@ static GPtrArray*
 build_mods_from_contacts (EBookBackendLDAP *bl, EContact *current, EContact *new, gboolean *new_dn_needed, gchar *ldap_uid)
 {
 	gboolean adding = (current == NULL), is_list = FALSE;
-	GPtrArray *result = g_ptr_array_new();
+	GPtrArray *result = g_ptr_array_new ();
 	gint i;
 
 	if (new_dn_needed)
@@ -1418,7 +1418,7 @@ add_objectclass_mod (EBookBackendLDAP *bl, GPtrArray *mod_array, GList *existing
 		 g_ptr_array_add (objectclasses, g_strdup ((oc)))
 
 	LDAPMod *objectclass_mod;
-	GPtrArray *objectclasses = g_ptr_array_new();
+	GPtrArray *objectclasses = g_ptr_array_new ();
 
 	if (existing_objectclasses) {
 		objectclass_mod = g_new (LDAPMod, 1);
@@ -1461,18 +1461,18 @@ add_objectclass_mod (EBookBackendLDAP *bl, GPtrArray *mod_array, GList *existing
 		objectclass_mod->mod_type = g_strdup ("objectClass");
 
 		if (!is_rename)
-			INSERT(TOP);
+			INSERT (TOP);
 		if (is_list) {
-			INSERT(GROUPOFNAMES);
+			INSERT (GROUPOFNAMES);
 		}
 		else {
-			INSERT(PERSON);
-			INSERT(ORGANIZATIONALPERSON);
-			INSERT(INETORGPERSON);
+			INSERT (PERSON);
+			INSERT (ORGANIZATIONALPERSON);
+			INSERT (INETORGPERSON);
 			if (bl->priv->calEntrySupported)
-				INSERT(CALENTRY);
+				INSERT (CALENTRY);
 			if (bl->priv->evolutionPersonSupported)
-				INSERT(EVOLUTIONPERSON);
+				INSERT (EVOLUTIONPERSON);
 		}
 		g_ptr_array_add (objectclasses, NULL);
 		objectclass_mod->mod_values = (gchar **)objectclasses->pdata;
@@ -1627,8 +1627,8 @@ e_book_backend_ldap_create_contact (EBookBackend *backend,
 			printf ("Sending the following to the server as ADD\n");
 			printf ("Adding DN: %s\n", create_op->dn);
 
-			for (i = 0; g_ptr_array_index(mod_array, i); i++) {
-				LDAPMod *mod = g_ptr_array_index(mod_array, i);
+			for (i = 0; g_ptr_array_index (mod_array, i); i++) {
+				LDAPMod *mod = g_ptr_array_index (mod_array, i);
 				if (mod->mod_op & LDAP_MOD_DELETE)
 					printf ("del ");
 				else if (mod->mod_op & LDAP_MOD_REPLACE)
@@ -2119,8 +2119,8 @@ modify_contact_rename_handler (LDAPOp *op, LDAPMessage *res)
 			gint i;
 			printf ("Sending the following to the server as MOD\n");
 
-			for (i = 0; g_ptr_array_index(modify_op->mod_array, i); i++) {
-				LDAPMod *mod = g_ptr_array_index(modify_op->mod_array, i);
+			for (i = 0; g_ptr_array_index (modify_op->mod_array, i); i++) {
+				LDAPMod *mod = g_ptr_array_index (modify_op->mod_array, i);
 				if (mod->mod_op & LDAP_MOD_DELETE)
 					printf ("del ");
 				else if (mod->mod_op & LDAP_MOD_REPLACE)
@@ -2691,7 +2691,7 @@ static EContactField email_ids[4] = {
 
 /* List property functions */
 static void
-email_populate(EContact *contact, gchar **values)
+email_populate (EContact *contact, gchar **values)
 {
 	gint i;
 	for (i = 0; values[i] && i < 4; i++)
@@ -2699,7 +2699,7 @@ email_populate(EContact *contact, gchar **values)
 }
 
 static struct berval**
-email_ber(EContact *contact)
+email_ber (EContact *contact)
 {
 	struct berval** result;
 	const gchar *emails[4];
@@ -2916,7 +2916,7 @@ member_compare (EContact *contact_new, EContact *contact_current)
 }
 
 static void
-homephone_populate(EContact *contact, gchar **values)
+homephone_populate (EContact *contact, gchar **values)
 {
 	if (values[0]) {
 		e_contact_set (contact, E_CONTACT_PHONE_HOME, values[0]);
@@ -2926,7 +2926,7 @@ homephone_populate(EContact *contact, gchar **values)
 }
 
 static struct berval**
-homephone_ber(EContact *contact)
+homephone_ber (EContact *contact)
 {
 	struct berval** result;
 	const gchar *homephones[3];
@@ -2984,7 +2984,7 @@ homephone_compare (EContact *contact1, EContact *contact2)
 }
 
 static void
-business_populate(EContact *contact, gchar **values)
+business_populate (EContact *contact, gchar **values)
 {
 	if (values[0]) {
 		e_contact_set (contact, E_CONTACT_PHONE_BUSINESS, values[0]);
@@ -2994,7 +2994,7 @@ business_populate(EContact *contact, gchar **values)
 }
 
 static struct berval**
-business_ber(EContact *contact)
+business_ber (EContact *contact)
 {
 	struct berval** result;
 	const gchar *business_phones[3];
@@ -3223,143 +3223,143 @@ category_compare (EContact *contact1, EContact *contact2)
 	return equal;
 }
 
-static EContactAddress * getormakeEContactAddress(EContact * card, EContactField field)
+static EContactAddress * getormakeEContactAddress (EContact * card, EContactField field)
 {
-    EContactAddress *contact_addr = e_contact_get(card, field);
+    EContactAddress *contact_addr = e_contact_get (card, field);
     if (!contact_addr)
-        contact_addr = g_new0(EContactAddress, 1);
+        contact_addr = g_new0 (EContactAddress, 1);
     return contact_addr;
 }
 
 static void
-address_populate(EContact * card, gchar **values, EContactField field, EContactField other_field)
+address_populate (EContact * card, gchar **values, EContactField field, EContactField other_field)
 {
 	if (values[0]) {
 		EContactAddress *contact_addr;
-		gchar *temp = g_strdup(values[0]);
+		gchar *temp = g_strdup (values[0]);
 		gchar *i;
 		for (i = temp; *i != '\0'; i++) {
 			if (*i == '$') {
 				*i = '\n';
 			}
 		}
-		e_contact_set(card, field, temp);
+		e_contact_set (card, field, temp);
 
-		contact_addr = getormakeEContactAddress(card, other_field);
+		contact_addr = getormakeEContactAddress (card, other_field);
 		contact_addr->street = g_strdup (temp);
 		e_contact_set (card, other_field, contact_addr);
 		e_contact_address_free (contact_addr);
 
-		g_free(temp);
+		g_free (temp);
 	}
 }
 
 static void
-work_city_populate(EContact * card, gchar **values)
+work_city_populate (EContact * card, gchar **values)
 {
-	EContactAddress *contact_addr = getormakeEContactAddress(card, E_CONTACT_ADDRESS_WORK);
+	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
         contact_addr->locality = g_strdup (values[0]);
         e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
         e_contact_address_free (contact_addr);
 }
 
 static void
-work_state_populate(EContact * card, gchar **values)
+work_state_populate (EContact * card, gchar **values)
 {
-	EContactAddress *contact_addr = getormakeEContactAddress(card, E_CONTACT_ADDRESS_WORK);
+	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
         contact_addr->region = g_strdup (values[0]);
         e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
         e_contact_address_free (contact_addr);
 }
 
 static void
-work_po_populate(EContact * card, gchar **values)
+work_po_populate (EContact * card, gchar **values)
 {
-	EContactAddress *contact_addr = getormakeEContactAddress(card, E_CONTACT_ADDRESS_WORK);
+	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
         contact_addr->po = g_strdup (values[0]);
         e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
         e_contact_address_free (contact_addr);
 }
 
 static void
-work_zip_populate(EContact * card, gchar **values)
+work_zip_populate (EContact * card, gchar **values)
 {
-	EContactAddress *contact_addr = getormakeEContactAddress(card, E_CONTACT_ADDRESS_WORK);
+	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
         contact_addr->code = g_strdup (values[0]);
         e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
         e_contact_address_free (contact_addr);
 }
 
 static void
-work_country_populate(EContact * card, gchar **values)
+work_country_populate (EContact * card, gchar **values)
 {
-	EContactAddress *contact_addr = getormakeEContactAddress(card, E_CONTACT_ADDRESS_WORK);
+	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
         contact_addr->country = g_strdup (values[0]);
         e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
         e_contact_address_free (contact_addr);
 }
 
 static void
-home_city_populate(EContact * card, gchar **values)
+home_city_populate (EContact * card, gchar **values)
 {
-	EContactAddress *contact_addr = getormakeEContactAddress(card, E_CONTACT_ADDRESS_HOME);
+	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_HOME);
         contact_addr->locality = g_strdup (values[0]);
         e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
         e_contact_address_free (contact_addr);
 }
 
 static void
-home_state_populate(EContact * card, gchar **values)
+home_state_populate (EContact * card, gchar **values)
 {
-	EContactAddress *contact_addr = getormakeEContactAddress(card, E_CONTACT_ADDRESS_HOME);
+	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_HOME);
         contact_addr->region = g_strdup (values[0]);
         e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
         e_contact_address_free (contact_addr);
 }
 
 static void
-home_zip_populate(EContact * card, gchar **values)
+home_zip_populate (EContact * card, gchar **values)
 {
-	EContactAddress *contact_addr = getormakeEContactAddress(card, E_CONTACT_ADDRESS_HOME);
+	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_HOME);
         contact_addr->code = g_strdup (values[0]);
         e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
         e_contact_address_free (contact_addr);
 }
 
 static void
-home_country_populate(EContact * card, gchar **values)
+home_country_populate (EContact * card, gchar **values)
 {
-	EContactAddress *contact_addr = getormakeEContactAddress(card, E_CONTACT_ADDRESS_HOME);
+	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_HOME);
         contact_addr->country = g_strdup (values[0]);
         e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
         e_contact_address_free (contact_addr);
 }
 
 static void
-home_address_populate(EContact * card, gchar **values)
+home_address_populate (EContact * card, gchar **values)
 {
-	address_populate(card, values, E_CONTACT_ADDRESS_LABEL_HOME, E_CONTACT_ADDRESS_HOME);
+	address_populate (card, values, E_CONTACT_ADDRESS_LABEL_HOME, E_CONTACT_ADDRESS_HOME);
 }
 
 static void
-work_address_populate(EContact * card, gchar **values)
+work_address_populate (EContact * card, gchar **values)
 {
-	address_populate(card, values, E_CONTACT_ADDRESS_LABEL_WORK, E_CONTACT_ADDRESS_WORK);
+	address_populate (card, values, E_CONTACT_ADDRESS_LABEL_WORK, E_CONTACT_ADDRESS_WORK);
 }
 
 static void
-other_address_populate(EContact * card, gchar **values)
+other_address_populate (EContact * card, gchar **values)
 {
-	address_populate(card, values, E_CONTACT_ADDRESS_LABEL_OTHER, E_CONTACT_ADDRESS_OTHER);
+	address_populate (card, values, E_CONTACT_ADDRESS_LABEL_OTHER, E_CONTACT_ADDRESS_OTHER);
 }
 
 static struct berval **
-address_ber(EContact * card, EContactField field)
+address_ber (EContact * card, EContactField field)
 {
 	struct berval **result = NULL;
 	gchar *address, *i;
 
-	address = e_contact_get(card, field);
+	address = e_contact_get (card, field);
 	if (address) {
 		for (i = address; *i != '\0'; i++) {
 			if (*i == '\n') {
@@ -3367,10 +3367,10 @@ address_ber(EContact * card, EContactField field)
 			}
 		}
 
-		result = g_new(struct berval *, 2);
-		result[0] = g_new(struct berval, 1);
+		result = g_new (struct berval *, 2);
+		result[0] = g_new (struct berval, 1);
 		result[0]->bv_val = address;
-		result[0]->bv_len = strlen(address);
+		result[0]->bv_len = strlen (address);
 
 		result[1] = NULL;
 	}
@@ -3378,34 +3378,34 @@ address_ber(EContact * card, EContactField field)
 }
 
 static struct berval **
-home_address_ber(EContact * card)
+home_address_ber (EContact * card)
 {
-	return address_ber(card, E_CONTACT_ADDRESS_LABEL_HOME);
+	return address_ber (card, E_CONTACT_ADDRESS_LABEL_HOME);
 }
 
 static struct berval **
-work_address_ber(EContact * card)
+work_address_ber (EContact * card)
 {
-	return address_ber(card, E_CONTACT_ADDRESS_LABEL_WORK);
+	return address_ber (card, E_CONTACT_ADDRESS_LABEL_WORK);
 }
 
 static struct berval **
-other_address_ber(EContact * card)
+other_address_ber (EContact * card)
 {
-	return address_ber(card, E_CONTACT_ADDRESS_LABEL_OTHER);
+	return address_ber (card, E_CONTACT_ADDRESS_LABEL_OTHER);
 }
 
 static gboolean
-address_compare(EContact * ecard1, EContact * ecard2, EContactField field)
+address_compare (EContact * ecard1, EContact * ecard2, EContactField field)
 {
 	const gchar *address1, *address2;
 
 	gboolean equal;
-	address1 = e_contact_get_const(ecard1, field);
-	address2 = e_contact_get_const(ecard2, field);
+	address1 = e_contact_get_const (ecard1, field);
+	address2 = e_contact_get_const (ecard2, field);
 
 	if (address1 && address2)
-		equal = !strcmp(address1, address2);
+		equal = !strcmp (address1, address2);
 	else
 		equal = (!!address1 == !!address2);
 
@@ -3413,21 +3413,21 @@ address_compare(EContact * ecard1, EContact * ecard2, EContactField field)
 }
 
 static gboolean
-home_address_compare(EContact * ecard1, EContact * ecard2)
+home_address_compare (EContact * ecard1, EContact * ecard2)
 {
-	return address_compare(ecard1, ecard2, E_CONTACT_ADDRESS_LABEL_HOME);
+	return address_compare (ecard1, ecard2, E_CONTACT_ADDRESS_LABEL_HOME);
 }
 
 static gboolean
-work_address_compare(EContact * ecard1, EContact * ecard2)
+work_address_compare (EContact * ecard1, EContact * ecard2)
 {
-	return address_compare(ecard1, ecard2, E_CONTACT_ADDRESS_LABEL_WORK);
+	return address_compare (ecard1, ecard2, E_CONTACT_ADDRESS_LABEL_WORK);
 }
 
 static gboolean
-other_address_compare(EContact * ecard1, EContact * ecard2)
+other_address_compare (EContact * ecard1, EContact * ecard2)
 {
-	return address_compare(ecard1, ecard2, E_CONTACT_ADDRESS_LABEL_OTHER);
+	return address_compare (ecard1, ecard2, E_CONTACT_ADDRESS_LABEL_OTHER);
 }
 
 static void
@@ -3450,11 +3450,11 @@ photo_ber (EContact *contact)
 	struct berval **result = NULL;
 	EContactPhoto *photo;
 
-	photo = e_contact_get(contact, E_CONTACT_PHOTO);
+	photo = e_contact_get (contact, E_CONTACT_PHOTO);
 	if (photo && photo->type == E_CONTACT_PHOTO_TYPE_INLINED) {
 
-		result = g_new(struct berval *, 2);
-		result[0] = g_new(struct berval, 1);
+		result = g_new (struct berval *, 2);
+		result[0] = g_new (struct berval, 1);
 		result[0]->bv_len = photo->data.inlined.length;
 		result[0]->bv_val = g_malloc (photo->data.inlined.length);
 		memcpy (result[0]->bv_val, photo->data.inlined.data, photo->data.inlined.length);
@@ -3467,13 +3467,13 @@ photo_ber (EContact *contact)
 }
 
 static gboolean
-photo_compare(EContact * ecard1, EContact * ecard2)
+photo_compare (EContact * ecard1, EContact * ecard2)
 {
 	EContactPhoto *photo1, *photo2;
 	gboolean equal;
 
-	photo1 = e_contact_get(ecard1, E_CONTACT_PHOTO);
-	photo2 = e_contact_get(ecard2, E_CONTACT_PHOTO);
+	photo1 = e_contact_get (ecard1, E_CONTACT_PHOTO);
+	photo2 = e_contact_get (ecard2, E_CONTACT_PHOTO);
 
 	if (photo1 && photo2) {
 		if (photo1->type == photo2->type && photo1->type == E_CONTACT_PHOTO_TYPE_INLINED) {
@@ -3518,14 +3518,14 @@ typedef struct {
 
 #define IS_RFC2254_CHAR(c) ((c) == '*' || (c) =='\\' || (c) == '(' || (c) == ')' || (c) == '\0')
 static gchar *
-rfc2254_escape(gchar *str)
+rfc2254_escape (gchar *str)
 {
 	gint i;
-	gint len = strlen(str);
+	gint len = strlen (str);
 	gint newlen = 0;
 
 	for (i = 0; i < len; i++) {
-		if (IS_RFC2254_CHAR(str[i]))
+		if (IS_RFC2254_CHAR (str[i]))
 			newlen += 3;
 		else
 			newlen++;
@@ -3538,7 +3538,7 @@ rfc2254_escape(gchar *str)
 		gchar *newstr = g_malloc0 (newlen + 1);
 		gint j = 0;
 		for (i = 0; i < len; i++) {
-			if (IS_RFC2254_CHAR(str[i])) {
+			if (IS_RFC2254_CHAR (str[i])) {
 				sprintf (newstr + j, "\\%02x", str[i]);
 				j+= 3;
 			}
@@ -3587,7 +3587,7 @@ extend_query_value (gchar *str)
 }
 
 static ESExpResult *
-func_and(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_and (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	EBookBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
@@ -3596,7 +3596,7 @@ func_and(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 	if (argc > 0) {
 		gint i, empty;
 
-		strings = g_new0(gchar *, argc+3);
+		strings = g_new0 (gchar *, argc+3);
 		strings[0] = g_strdup ("(&");
 		strings[argc+3 - 2] = g_strdup (")");
 
@@ -3608,8 +3608,8 @@ func_and(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 			if (strlen (list_head->data) == 0)
 				empty++;
 			strings[argc - i] = list_head->data;
-			ldap_data->list = g_list_remove_link(list_head, list_head);
-			g_list_free_1(list_head);
+			ldap_data->list = g_list_remove_link (list_head, list_head);
+			g_list_free_1 (list_head);
 		}
 
 		if (empty == argc)
@@ -3623,14 +3623,14 @@ func_and(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 		g_free (strings);
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = FALSE;
 
 	return r;
 }
 
 static ESExpResult *
-func_or(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_or (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	EBookBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
@@ -3639,7 +3639,7 @@ func_or(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 	if (argc > 0) {
 		gint i, empty;
 
-		strings = g_new0(gchar *, argc+3);
+		strings = g_new0 (gchar *, argc+3);
 		strings[0] = g_strdup ("(|");
 		strings[argc+3 - 2] = g_strdup (")");
 
@@ -3651,8 +3651,8 @@ func_or(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 			if (strlen (list_head->data) == 0)
 				empty++;
 			strings[argc - i] = list_head->data;
-			ldap_data->list = g_list_remove_link(list_head, list_head);
-			g_list_free_1(list_head);
+			ldap_data->list = g_list_remove_link (list_head, list_head);
+			g_list_free_1 (list_head);
 		}
 
 		if (empty == argc)
@@ -3666,14 +3666,14 @@ func_or(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 		g_free (strings);
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = FALSE;
 
 	return r;
 }
 
 static ESExpResult *
-func_not(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_not (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	EBookBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
@@ -3685,14 +3685,14 @@ func_not(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 		g_free (term);
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = FALSE;
 
 	return r;
 }
 
 static ESExpResult *
-func_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	EBookBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
@@ -3701,10 +3701,10 @@ func_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer 
 	    && argv[0]->type == ESEXP_RES_STRING
 	    && argv[1]->type == ESEXP_RES_STRING) {
 		gchar *propname = argv[0]->value.string;
-		gchar *str = extend_query_value( rfc2254_escape (argv[1]->value.string));
+		gchar *str = extend_query_value ( rfc2254_escape (argv[1]->value.string));
 		gboolean one_star = FALSE;
 
-		if (strlen(str) == 0)
+		if (strlen (str) == 0)
 			one_star = TRUE;
 
 		if (!strcmp (propname, "x-evolution-any-field")) {
@@ -3729,7 +3729,7 @@ func_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer 
 				query_length += 1 /* strlen ("(") */ + strlen(prop_info[i].ldap_attr) + strlen (match_str);
 			}
 
-			big_query = g_malloc0(query_length + 1);
+			big_query = g_malloc0 (query_length + 1);
 			strcat (big_query, "(|");
 			for (i = 0; i < G_N_ELEMENTS (prop_info); i++) {
 				strcat (big_query, "(");
@@ -3738,15 +3738,15 @@ func_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer 
 			}
 			strcat (big_query, ")");
 
-			ldap_data->list = g_list_prepend(ldap_data->list, big_query);
+			ldap_data->list = g_list_prepend (ldap_data->list, big_query);
 
 			g_free (match_str);
 		}
 		else {
-			const gchar *ldap_attr = query_prop_to_ldap(propname);
+			const gchar *ldap_attr = query_prop_to_ldap (propname);
 
 			if (ldap_attr)
-				ldap_data->list = g_list_prepend(ldap_data->list,
+				ldap_data->list = g_list_prepend (ldap_data->list,
 								 g_strdup_printf("(%s=*%s%s)",
 										 ldap_attr,
 										 str,
@@ -3756,14 +3756,14 @@ func_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer 
 		g_free (str);
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = FALSE;
 
 	return r;
 }
 
 static ESExpResult *
-func_is(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_is (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	EBookBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
@@ -3772,31 +3772,31 @@ func_is(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 	    && argv[0]->type == ESEXP_RES_STRING
 	    && argv[1]->type == ESEXP_RES_STRING) {
 		gchar *propname = argv[0]->value.string;
-		gchar *str = rfc2254_escape(argv[1]->value.string);
-		const gchar *ldap_attr = query_prop_to_ldap(propname);
+		gchar *str = rfc2254_escape (argv[1]->value.string);
+		const gchar *ldap_attr = query_prop_to_ldap (propname);
 
 		if (ldap_attr)
-			ldap_data->list = g_list_prepend(ldap_data->list,
+			ldap_data->list = g_list_prepend (ldap_data->list,
 							 g_strdup_printf("(%s=%s)",
 									 ldap_attr, str));
 		else {
 			g_warning ("unknown query property\n");
 			/* we want something that'll always be false */
-			ldap_data->list = g_list_prepend(ldap_data->list,
+			ldap_data->list = g_list_prepend (ldap_data->list,
 							 g_strdup("objectClass=MyBarnIsBiggerThanYourBarn"));
 		}
 
 		g_free (str);
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = FALSE;
 
 	return r;
 }
 
 static ESExpResult *
-func_beginswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_beginswith (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	EBookBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
@@ -3805,8 +3805,8 @@ func_beginswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointe
 	    && argv[0]->type == ESEXP_RES_STRING
 	    && argv[1]->type == ESEXP_RES_STRING) {
 		gchar *propname = argv[0]->value.string;
-		gchar *str = rfc2254_escape(argv[1]->value.string);
-		const gchar *ldap_attr = query_prop_to_ldap(propname);
+		gchar *str = rfc2254_escape (argv[1]->value.string);
+		const gchar *ldap_attr = query_prop_to_ldap (propname);
 
 		if (strlen (str) == 0) {
 			g_free (str);
@@ -3823,22 +3823,22 @@ func_beginswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointe
 		   and for entries that have no fileAs attribute. */
 		if (ldap_attr) {
 			if (!strcmp (propname, "full_name")) {
-				ldap_data->list = g_list_prepend(ldap_data->list,
-							       g_strdup_printf(
+				ldap_data->list = g_list_prepend (ldap_data->list,
+							       g_strdup_printf (
 								       "(|(cn=%s*)(sn=%s*))",
 								       str, str));
 			}
 			else if (!strcmp (ldap_attr, "fileAs")) {
 				if (ldap_data->bl->priv->evolutionPersonSupported)
-					ldap_data->list = g_list_prepend(ldap_data->list,
+					ldap_data->list = g_list_prepend (ldap_data->list,
 								 g_strdup_printf("(|(fileAs=%s*)(&(!(fileAs=*))(sn=%s*)))",
 										 str, str));
 				else
-					ldap_data->list = g_list_prepend(ldap_data->list,
+					ldap_data->list = g_list_prepend (ldap_data->list,
 									 g_strdup_printf("(sn=%s*)", str));
 			}
 			else {
-				ldap_data->list = g_list_prepend(ldap_data->list,
+				ldap_data->list = g_list_prepend (ldap_data->list,
 								 g_strdup_printf("(%s=%s*)",
 										 ldap_attr,
 										 str));
@@ -3848,14 +3848,14 @@ func_beginswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointe
 		g_free (str);
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = FALSE;
 
 	return r;
 }
 
 static ESExpResult *
-func_endswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_endswith (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	EBookBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
@@ -3864,25 +3864,25 @@ func_endswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer 
 	    && argv[0]->type == ESEXP_RES_STRING
 	    && argv[1]->type == ESEXP_RES_STRING) {
 		gchar *propname = argv[0]->value.string;
-		gchar *str = rfc2254_escape(argv[1]->value.string);
-		const gchar *ldap_attr = query_prop_to_ldap(propname);
+		gchar *str = rfc2254_escape (argv[1]->value.string);
+		const gchar *ldap_attr = query_prop_to_ldap (propname);
 
 		if (ldap_attr)
-			ldap_data->list = g_list_prepend(ldap_data->list,
+			ldap_data->list = g_list_prepend (ldap_data->list,
 							 g_strdup_printf("(%s=*%s)",
 									 ldap_attr,
 									 str));
 		g_free (str);
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = FALSE;
 
 	return r;
 }
 
 static ESExpResult *
-func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_exists (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	EBookBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
@@ -3905,7 +3905,7 @@ func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer da
 				query_length += 1 /* strlen ("(") */ + strlen(prop_info[i].ldap_attr) + strlen (match_str);
 			}
 
-			big_query = g_malloc0(query_length + 1);
+			big_query = g_malloc0 (query_length + 1);
 			strcat (big_query, "(|");
 			for (i = 0; i < G_N_ELEMENTS (prop_info); i++) {
 				strcat (big_query, "(");
@@ -3914,20 +3914,20 @@ func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer da
 			}
 			strcat (big_query, ")");
 
-			ldap_data->list = g_list_prepend(ldap_data->list, big_query);
+			ldap_data->list = g_list_prepend (ldap_data->list, big_query);
 
 			g_free (match_str);
 		}
 		else {
-			const gchar *ldap_attr = query_prop_to_ldap(propname);
+			const gchar *ldap_attr = query_prop_to_ldap (propname);
 
 			if (ldap_attr)
-				ldap_data->list = g_list_prepend(ldap_data->list,
+				ldap_data->list = g_list_prepend (ldap_data->list,
 								 g_strdup_printf("(%s=*)", ldap_attr));
 		}
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = FALSE;
 
 	return r;
@@ -3963,24 +3963,24 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const gchar *query)
 	data.list = NULL;
 	data.bl = bl;
 
-	sexp = e_sexp_new();
+	sexp = e_sexp_new ();
 
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1) {
-			e_sexp_add_ifunction(sexp, 0, symbols[i].name,
+			e_sexp_add_ifunction (sexp, 0, symbols[i].name,
 					     (ESExpIFunc *)symbols[i].func, &data);
 		} else {
-			e_sexp_add_function(sexp, 0, symbols[i].name,
+			e_sexp_add_function (sexp, 0, symbols[i].name,
 					    symbols[i].func, &data);
 		}
 	}
 
-	e_sexp_input_text(sexp, query, strlen(query));
-	e_sexp_parse(sexp);
+	e_sexp_input_text (sexp, query, strlen (query));
+	e_sexp_parse (sexp);
 
-	r = e_sexp_eval(sexp);
+	r = e_sexp_eval (sexp);
 
-	e_sexp_result_free(sexp, r);
+	e_sexp_result_free (sexp, r);
 	e_sexp_unref (sexp);
 
 	if (data.list) {
@@ -3992,7 +3992,7 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const gchar *query)
 		else {
 			if (bl->priv->ldap_search_filter && *bl->priv->ldap_search_filter
 				&& g_ascii_strncasecmp(bl->priv->ldap_search_filter,"(objectClass=*)",sizeof(bl->priv->ldap_search_filter))) {
-				strings = g_new0(gchar *, 5);
+				strings = g_new0 (gchar *, 5);
 				strings[0] = g_strdup ("(&");
 				strings[1] = g_strdup_printf ("%s", bl->priv->ldap_search_filter);
 				strings[2] = data.list->data;
@@ -4134,7 +4134,7 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 						else if (info->prop_type & PROP_TYPE_COMPLEX) {
 							/* if it's a list call the contact-populate function,
 							   which calls g_object_set to set the property */
-							info->populate_contact_func(contact,
+							info->populate_contact_func (contact,
 										    values);
 						}
 						else if (info->prop_type & PROP_TYPE_GROUP) {
@@ -4200,7 +4200,7 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 
 								if (ldap_error != LDAP_SUCCESS) {
 									book_view_notify_status (bl, book_view,
-												 ldap_err2string(ldap_error));
+												 ldap_err2string (ldap_error));
 									continue;
 								}
 							}
@@ -4292,7 +4292,7 @@ poll_ldap (EBookBackendLDAP *bl)
 			   protected by the lock? */
 			g_static_rec_mutex_unlock (&bl->priv->op_hash_mutex);
 
-			ldap_msgfree(res);
+			ldap_msgfree (res);
 		}
 	}
 
@@ -4312,7 +4312,7 @@ ldap_search_handler (LDAPOp *op, LDAPMessage *res)
 
 	d(printf ("ldap_search_handler (%p)\n", view));
 	if (enable_debug)
-		g_get_current_time(&start);
+		g_get_current_time (&start);
 
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!bl->priv->ldap) {
@@ -4345,7 +4345,7 @@ ldap_search_handler (LDAPOp *op, LDAPMessage *res)
 			g_object_unref (contact);
 
 			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
-			e = ldap_next_entry(bl->priv->ldap, e);
+			e = ldap_next_entry (bl->priv->ldap, e);
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		}
 	}
@@ -4496,7 +4496,7 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 			g_free (ldap_query);
 
 			if (ldap_err != LDAP_SUCCESS) {
-				book_view_notify_status (bl, view, ldap_err2string(ldap_err));
+				book_view_notify_status (bl, view, ldap_err2string (ldap_err));
 				return;
 			}
 			else if (search_msgid == -1) {
@@ -4513,7 +4513,7 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 				op->aborted = FALSE;
 				e_data_book_view_ref (view);
 
-				ldap_op_add ((LDAPOp*)op, E_BOOK_BACKEND(bl), book, view,
+				ldap_op_add ((LDAPOp*)op, E_BOOK_BACKEND (bl), book, view,
 					     0, search_msgid,
 					     ldap_search_handler, ldap_search_dtor);
 
@@ -4803,7 +4803,7 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 				entry_dn = ldap_get_dn (bl->priv->ldap, e);
 				bl->priv->connected = FALSE; /* to reconnect with credentials */
 				g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-				dn = g_strdup(entry_dn);
+				dn = g_strdup (entry_dn);
 
 				ldap_memfree (entry_dn);
 				ldap_msgfree (res);
@@ -4840,7 +4840,7 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 			}
 		}
 
-		ldap_error = ldap_simple_bind_s(bl->priv->ldap,
+		ldap_error = ldap_simple_bind_s (bl->priv->ldap,
 						bl->priv->auth_dn,
 						bl->priv->auth_passwd);
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
@@ -4978,7 +4978,7 @@ e_book_backend_ldap_get_supported_auth_methods (EBookBackend *backend,
 }
 
 static void
-ldap_cancel_op(gpointer key, gpointer value, gpointer data)
+ldap_cancel_op (gpointer key, gpointer value, gpointer data)
 {
 	EBookBackendLDAP *bl = data;
 	LDAPOp *op = value;
@@ -5053,12 +5053,12 @@ e_book_backend_ldap_load_source (EBookBackend             *backend,
 	ldap_error = ldap_url_parse ((gchar *) uri, &lud);
 
 	if (ldap_error == LDAP_SUCCESS) {
-		bl->priv->ldap_host = g_strdup(lud->lud_host);
+		bl->priv->ldap_host = g_strdup (lud->lud_host);
 		bl->priv->ldap_port = lud->lud_port;
 		/* if a port wasn't specified, default to LDAP_PORT */
 		if (bl->priv->ldap_port == 0)
 			bl->priv->ldap_port = LDAP_PORT;
-		bl->priv->ldap_rootdn = g_strdup(lud->lud_dn);
+		bl->priv->ldap_rootdn = g_strdup (lud->lud_dn);
 		/* in case of migration, filter will be set to NULL and hence the search will fail */
 		if (lud->lud_filter)
 			bl->priv->ldap_search_filter = g_strdup (lud->lud_filter);
@@ -5066,7 +5066,7 @@ e_book_backend_ldap_load_source (EBookBackend             *backend,
 		bl->priv->ldap_timeout = timeout;
 		bl->priv->ldap_scope = lud->lud_scope;
 
-		ldap_free_urldesc(lud);
+		ldap_free_urldesc (lud);
 	} else {
 		if (enable_debug)
 			printf ("e_book_backend_ldap_load_source ... failed to parse the ldap URI %s\n", uri);

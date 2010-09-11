@@ -199,7 +199,7 @@ session_get_service (CamelSession *session,
 
 	/* We need to look up the provider so we can then lookup
 	   the service in the provider's cache */
-	provider = camel_provider_get(url->protocol, error);
+	provider = camel_provider_get (url->protocol, error);
 	if (provider && !provider->object_types[type]) {
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
@@ -221,15 +221,15 @@ session_get_service (CamelSession *session,
 		camel_url_set_path (url, NULL);
 
 	/* Now look up the service in the provider's cache */
-	service = camel_object_bag_reserve(provider->service_cache[type], url);
+	service = camel_object_bag_reserve (provider->service_cache[type], url);
 	if (service == NULL) {
 		service = g_object_new (provider->object_types[type], NULL);
 		if (!camel_service_construct (service, session, provider, url, error)) {
 			g_object_unref (service);
 			service = NULL;
-			camel_object_bag_abort(provider->service_cache[type], url);
+			camel_object_bag_abort (provider->service_cache[type], url);
 		} else {
-			camel_object_bag_add(provider->service_cache[type], url, service);
+			camel_object_bag_add (provider->service_cache[type], url, service);
 		}
 	}
 
@@ -274,13 +274,13 @@ session_thread_msg_new (CamelSession *session,
 {
 	CamelSessionThreadMsg *m;
 
-	m = g_malloc0(size);
+	m = g_malloc0 (size);
 	m->ops = ops;
 	m->session = g_object_ref (session);
-	m->op = camel_operation_new(cs_thread_status, m);
+	m->op = camel_operation_new (cs_thread_status, m);
 	camel_session_lock (session, CAMEL_SESSION_THREAD_LOCK);
 	m->id = session->priv->thread_id++;
-	g_hash_table_insert(session->priv->thread_active, GINT_TO_POINTER(m->id), m);
+	g_hash_table_insert (session->priv->thread_active, GINT_TO_POINTER (m->id), m);
 	camel_session_unlock (session, CAMEL_SESSION_THREAD_LOCK);
 
 	return m;
@@ -296,18 +296,18 @@ session_thread_msg_free (CamelSession *session,
 	d(printf("free message %p session %p\n", msg, session));
 
 	camel_session_lock (session, CAMEL_SESSION_THREAD_LOCK);
-	g_hash_table_remove(session->priv->thread_active, GINT_TO_POINTER(msg->id));
+	g_hash_table_remove (session->priv->thread_active, GINT_TO_POINTER (msg->id));
 	camel_session_unlock (session, CAMEL_SESSION_THREAD_LOCK);
 
 	d(printf("free msg, ops->free = %p\n", msg->ops->free));
 
 	if (msg->ops->free)
-		msg->ops->free(session, msg);
+		msg->ops->free (session, msg);
 	if (msg->op)
-		camel_operation_unref(msg->op);
+		camel_operation_unref (msg->op);
 	g_clear_error (&msg->error);
 	g_object_unref (msg->session);
-	g_free(msg);
+	g_free (msg);
 }
 
 static void
@@ -317,12 +317,12 @@ session_thread_proxy (CamelSessionThreadMsg *msg,
 	if (msg->ops->receive) {
 		CamelOperation *oldop;
 
-		oldop = camel_operation_register(msg->op);
-		msg->ops->receive(session, msg);
-		camel_operation_register(oldop);
+		oldop = camel_operation_register (msg->op);
+		msg->ops->receive (session, msg);
+		camel_operation_register (oldop);
 	}
 
-	camel_session_thread_msg_free(session, msg);
+	camel_session_thread_msg_free (session, msg);
 }
 
 static gint
@@ -344,7 +344,7 @@ session_thread_queue (CamelSession *session,
 	camel_session_unlock (session, CAMEL_SESSION_THREAD_LOCK);
 
 	id = msg->id;
-	g_thread_pool_push(thread_pool, msg, NULL);
+	g_thread_pool_push (thread_pool, msg, NULL);
 
 	return id;
 }
@@ -358,10 +358,10 @@ session_thread_wait (CamelSession *session,
 	/* we just busy wait, only other alternative is to setup a reply port? */
 	do {
 		camel_session_lock (session, CAMEL_SESSION_THREAD_LOCK);
-		wait = g_hash_table_lookup(session->priv->thread_active, GINT_TO_POINTER(id)) != NULL;
+		wait = g_hash_table_lookup (session->priv->thread_active, GINT_TO_POINTER (id)) != NULL;
 		camel_session_unlock (session, CAMEL_SESSION_THREAD_LOCK);
 		if (wait) {
-			g_usleep(20000);
+			g_usleep (20000);
 		}
 	} while (wait);
 }
@@ -433,10 +433,10 @@ camel_session_init (CamelSession *session)
 {
 	session->priv = CAMEL_SESSION_GET_PRIVATE (session);
 
-	session->priv->lock = g_mutex_new();
-	session->priv->thread_lock = g_mutex_new();
+	session->priv->lock = g_mutex_new ();
+	session->priv->thread_lock = g_mutex_new ();
 	session->priv->thread_id = 1;
-	session->priv->thread_active = g_hash_table_new(NULL, NULL);
+	session->priv->thread_active = g_hash_table_new (NULL, NULL);
 	session->priv->thread_pool = NULL;
 	session->priv->junk_headers = NULL;
 }
@@ -1019,7 +1019,7 @@ camel_session_set_junk_headers (CamelSession *session,
 	session->priv->junk_headers = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
 	for (i=0; i<len; i++) {
-		g_hash_table_insert (session->priv->junk_headers, g_strdup (headers[i]), g_strdup(values[i]));
+		g_hash_table_insert (session->priv->junk_headers, g_strdup (headers[i]), g_strdup (values[i]));
 	}
 }
 

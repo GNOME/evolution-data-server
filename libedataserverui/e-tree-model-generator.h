@@ -68,7 +68,7 @@ struct _ETreeModelGeneratorClass {
 GType		e_tree_model_generator_get_type	(void);
 ETreeModelGenerator *
 		e_tree_model_generator_new	(GtkTreeModel *child_model);
-GtkTreeModel *	e_tree_model_generator_get_model(ETreeModelGenerator *tree_model_generator);
+GtkTreeModel *	e_tree_model_generator_get_model (ETreeModelGenerator *tree_model_generator);
 void		e_tree_model_generator_set_generate_func
 						(ETreeModelGenerator *tree_model_generator,
 						 ETreeModelGeneratorGenerateFunc func,

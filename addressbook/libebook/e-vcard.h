@@ -169,7 +169,7 @@ void             e_vcard_remove_attributes           (EVCard *evc, const gchar *
 void             e_vcard_remove_attribute            (EVCard *evc, EVCardAttribute *attr);
 void             e_vcard_append_attribute            (EVCard *evc, EVCardAttribute *attr);
 void             e_vcard_append_attribute_with_value (EVCard *evcard, EVCardAttribute *attr, const gchar *value);
-void             e_vcard_append_attribute_with_values(EVCard *evcard, EVCardAttribute *attr, ...);
+void             e_vcard_append_attribute_with_values (EVCard *evcard, EVCardAttribute *attr, ...);
 void             e_vcard_add_attribute               (EVCard *evc, EVCardAttribute *attr);
 void             e_vcard_add_attribute_with_value    (EVCard *evcard, EVCardAttribute *attr, const gchar *value);
 void             e_vcard_add_attribute_with_values   (EVCard *evcard, EVCardAttribute *attr, ...);

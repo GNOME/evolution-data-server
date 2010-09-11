@@ -256,16 +256,16 @@ xml_set_prop (xmlNodePtr node, const gchar *name, gchar **val)
 	if (buf == NULL) {
 		res = (*val != NULL);
 		if (res) {
-			g_free(*val);
+			g_free (*val);
 			*val = NULL;
 		}
 	} else {
-		res = *val == NULL || strcmp(*val, (gchar *)buf) != 0;
+		res = *val == NULL || strcmp (*val, (gchar *)buf) != 0;
 		if (res) {
-			g_free(*val);
+			g_free (*val);
 			*val = g_strdup((gchar *)buf);
 		}
-		xmlFree(buf);
+		xmlFree (buf);
 	}
 
 	return res;
@@ -327,20 +327,20 @@ xml_set_content (xmlNodePtr node, gchar **val)
 	xmlChar *buf;
 	gint res;
 
-	buf = xmlNodeGetContent(node);
+	buf = xmlNodeGetContent (node);
 	if (buf == NULL) {
 		res = (*val != NULL);
 		if (res) {
-			g_free(*val);
+			g_free (*val);
 			*val = NULL;
 		}
 	} else {
-		res = *val == NULL || strcmp(*val, (gchar *)buf) != 0;
+		res = *val == NULL || strcmp (*val, (gchar *)buf) != 0;
 		if (res) {
-			g_free(*val);
+			g_free (*val);
 			*val = g_strdup((gchar *)buf);
 		}
-		xmlFree(buf);
+		xmlFree (buf);
 	}
 
 	return res;
@@ -598,7 +598,7 @@ e_account_set_from_xml (EAccount *account, const gchar *xml)
 	fix_mbox_folder_uri (&account->drafts_folder_uri);
 	fix_mbox_folder_uri (&account->sent_folder_uri);
 
-	g_signal_emit(account, signals[CHANGED], 0, -1);
+	g_signal_emit (account, signals[CHANGED], 0, -1);
 
 	return changed;
 }
@@ -675,7 +675,7 @@ e_account_import (EAccount *dest, EAccount *src)
 	g_free (dest->smime_encrypt_key);
 	dest->smime_encrypt_key = g_strdup (src->smime_encrypt_key);
 
-	g_signal_emit(dest, signals[CHANGED], 0, -1);
+	g_signal_emit (dest, signals[CHANGED], 0, -1);
 }
 
 /**
@@ -859,49 +859,49 @@ static struct _account_info {
 	guint offset;
 	guint struct_offset;
 } account_info[E_ACCOUNT_ITEM_LAST] = {
-	{ /* E_ACCOUNT_NAME */ 0, TYPE_STRING, G_STRUCT_OFFSET(EAccount, name) },
+	{ /* E_ACCOUNT_NAME */ 0, TYPE_STRING, G_STRUCT_OFFSET (EAccount, name) },
 
-	{ /* E_ACCOUNT_ID_NAME, */ 0, TYPE_STRING|TYPE_STRUCT, G_STRUCT_OFFSET(EAccount, id), G_STRUCT_OFFSET(EAccountIdentity, name) },
-	{ /* E_ACCOUNT_ID_ADDRESS, */ 0, TYPE_STRING|TYPE_STRUCT, G_STRUCT_OFFSET(EAccount, id), G_STRUCT_OFFSET(EAccountIdentity, address) },
-	{ /* E_ACCOUNT_ID_REPLY_TO, */ 0, TYPE_STRING|TYPE_STRUCT, G_STRUCT_OFFSET(EAccount, id), G_STRUCT_OFFSET(EAccountIdentity, reply_to) },
-	{ /* E_ACCOUNT_ID_ORGANIZATION */ 0, TYPE_STRING|TYPE_STRUCT, G_STRUCT_OFFSET(EAccount, id), G_STRUCT_OFFSET(EAccountIdentity, organization) },
-	{ /* E_ACCOUNT_ID_SIGNATURE */ 1<<EAP_LOCK_SIGNATURE, TYPE_STRING|TYPE_STRUCT, G_STRUCT_OFFSET(EAccount, id), G_STRUCT_OFFSET(EAccountIdentity, sig_uid) },
+	{ /* E_ACCOUNT_ID_NAME, */ 0, TYPE_STRING|TYPE_STRUCT, G_STRUCT_OFFSET (EAccount, id), G_STRUCT_OFFSET (EAccountIdentity, name) },
+	{ /* E_ACCOUNT_ID_ADDRESS, */ 0, TYPE_STRING|TYPE_STRUCT, G_STRUCT_OFFSET (EAccount, id), G_STRUCT_OFFSET (EAccountIdentity, address) },
+	{ /* E_ACCOUNT_ID_REPLY_TO, */ 0, TYPE_STRING|TYPE_STRUCT, G_STRUCT_OFFSET (EAccount, id), G_STRUCT_OFFSET (EAccountIdentity, reply_to) },
+	{ /* E_ACCOUNT_ID_ORGANIZATION */ 0, TYPE_STRING|TYPE_STRUCT, G_STRUCT_OFFSET (EAccount, id), G_STRUCT_OFFSET (EAccountIdentity, organization) },
+	{ /* E_ACCOUNT_ID_SIGNATURE */ 1<<EAP_LOCK_SIGNATURE, TYPE_STRING|TYPE_STRUCT, G_STRUCT_OFFSET (EAccount, id), G_STRUCT_OFFSET (EAccountIdentity, sig_uid) },
 
-	{ /* E_ACCOUNT_SOURCE_URL */ 1<<EAP_LOCK_SOURCE, TYPE_STRING|TYPE_STRUCT, G_STRUCT_OFFSET(EAccount, source), G_STRUCT_OFFSET(EAccountService, url) },
-	{ /* E_ACCOUNT_SOURCE_KEEP_ON_SERVER */ 0, TYPE_BOOL|TYPE_STRUCT, G_STRUCT_OFFSET(EAccount, source), G_STRUCT_OFFSET(EAccountService, keep_on_server) },
-	{ /* E_ACCOUNT_SOURCE_AUTO_CHECK */ 1<<EAP_LOCK_AUTOCHECK, TYPE_BOOL|TYPE_STRUCT, G_STRUCT_OFFSET(EAccount, source), G_STRUCT_OFFSET(EAccountService, auto_check) },
-	{ /* E_ACCOUNT_SOURCE_AUTO_CHECK_TIME */ 1<<EAP_LOCK_AUTOCHECK, TYPE_INT|TYPE_STRUCT, G_STRUCT_OFFSET(EAccount, source), G_STRUCT_OFFSET(EAccountService, auto_check_time) },
-	{ /* E_ACCOUNT_SOURCE_SAVE_PASSWD */ 1<<EAP_LOCK_SAVE_PASSWD, TYPE_BOOL|TYPE_STRUCT, G_STRUCT_OFFSET(EAccount, source), G_STRUCT_OFFSET(EAccountService, save_passwd) },
+	{ /* E_ACCOUNT_SOURCE_URL */ 1<<EAP_LOCK_SOURCE, TYPE_STRING|TYPE_STRUCT, G_STRUCT_OFFSET (EAccount, source), G_STRUCT_OFFSET (EAccountService, url) },
+	{ /* E_ACCOUNT_SOURCE_KEEP_ON_SERVER */ 0, TYPE_BOOL|TYPE_STRUCT, G_STRUCT_OFFSET (EAccount, source), G_STRUCT_OFFSET (EAccountService, keep_on_server) },
+	{ /* E_ACCOUNT_SOURCE_AUTO_CHECK */ 1<<EAP_LOCK_AUTOCHECK, TYPE_BOOL|TYPE_STRUCT, G_STRUCT_OFFSET (EAccount, source), G_STRUCT_OFFSET (EAccountService, auto_check) },
+	{ /* E_ACCOUNT_SOURCE_AUTO_CHECK_TIME */ 1<<EAP_LOCK_AUTOCHECK, TYPE_INT|TYPE_STRUCT, G_STRUCT_OFFSET (EAccount, source), G_STRUCT_OFFSET (EAccountService, auto_check_time) },
+	{ /* E_ACCOUNT_SOURCE_SAVE_PASSWD */ 1<<EAP_LOCK_SAVE_PASSWD, TYPE_BOOL|TYPE_STRUCT, G_STRUCT_OFFSET (EAccount, source), G_STRUCT_OFFSET (EAccountService, save_passwd) },
 
-	{ /* E_ACCOUNT_TRANSPORT_URL */ 1<<EAP_LOCK_TRANSPORT, TYPE_STRING|TYPE_STRUCT, G_STRUCT_OFFSET(EAccount, transport), G_STRUCT_OFFSET(EAccountService, url) },
-	{ /* E_ACCOUNT_TRANSPORT_SAVE_PASSWD */ 1<<EAP_LOCK_SAVE_PASSWD, TYPE_BOOL|TYPE_STRUCT, G_STRUCT_OFFSET(EAccount, transport), G_STRUCT_OFFSET(EAccountService, save_passwd) },
+	{ /* E_ACCOUNT_TRANSPORT_URL */ 1<<EAP_LOCK_TRANSPORT, TYPE_STRING|TYPE_STRUCT, G_STRUCT_OFFSET (EAccount, transport), G_STRUCT_OFFSET (EAccountService, url) },
+	{ /* E_ACCOUNT_TRANSPORT_SAVE_PASSWD */ 1<<EAP_LOCK_SAVE_PASSWD, TYPE_BOOL|TYPE_STRUCT, G_STRUCT_OFFSET (EAccount, transport), G_STRUCT_OFFSET (EAccountService, save_passwd) },
 
-	{ /* E_ACCOUNT_DRAFTS_FOLDER_URI */ 1<<EAP_LOCK_DEFAULT_FOLDERS, TYPE_STRING, G_STRUCT_OFFSET(EAccount, drafts_folder_uri) },
-	{ /* E_ACCOUNT_SENT_FOLDER_URI */ 1<<EAP_LOCK_DEFAULT_FOLDERS, TYPE_STRING, G_STRUCT_OFFSET(EAccount, sent_folder_uri) },
+	{ /* E_ACCOUNT_DRAFTS_FOLDER_URI */ 1<<EAP_LOCK_DEFAULT_FOLDERS, TYPE_STRING, G_STRUCT_OFFSET (EAccount, drafts_folder_uri) },
+	{ /* E_ACCOUNT_SENT_FOLDER_URI */ 1<<EAP_LOCK_DEFAULT_FOLDERS, TYPE_STRING, G_STRUCT_OFFSET (EAccount, sent_folder_uri) },
 
-	{ /* E_ACCOUNT_CC_ALWAYS */ 0, TYPE_BOOL, G_STRUCT_OFFSET(EAccount, always_cc) },
-	{ /* E_ACCOUNT_CC_ADDRS */ 0, TYPE_STRING, G_STRUCT_OFFSET(EAccount, cc_addrs) },
+	{ /* E_ACCOUNT_CC_ALWAYS */ 0, TYPE_BOOL, G_STRUCT_OFFSET (EAccount, always_cc) },
+	{ /* E_ACCOUNT_CC_ADDRS */ 0, TYPE_STRING, G_STRUCT_OFFSET (EAccount, cc_addrs) },
 
-	{ /* E_ACCOUNT_BCC_ALWAYS */ 0, TYPE_BOOL, G_STRUCT_OFFSET(EAccount, always_bcc) },
-	{ /* E_ACCOUNT_BCC_ADDRS */ 0, TYPE_STRING, G_STRUCT_OFFSET(EAccount, bcc_addrs) },
+	{ /* E_ACCOUNT_BCC_ALWAYS */ 0, TYPE_BOOL, G_STRUCT_OFFSET (EAccount, always_bcc) },
+	{ /* E_ACCOUNT_BCC_ADDRS */ 0, TYPE_STRING, G_STRUCT_OFFSET (EAccount, bcc_addrs) },
 
-	{ /* E_ACCOUNT_RECEIPT_POLICY */ 0, TYPE_INT, G_STRUCT_OFFSET(EAccount, receipt_policy) },
+	{ /* E_ACCOUNT_RECEIPT_POLICY */ 0, TYPE_INT, G_STRUCT_OFFSET (EAccount, receipt_policy) },
 
-	{ /* E_ACCOUNT_PGP_KEY */ 0, TYPE_STRING, G_STRUCT_OFFSET(EAccount, pgp_key) },
-	{ /* E_ACCOUNT_PGP_HASH_ALGORITHM */ 0, TYPE_STRING, G_STRUCT_OFFSET(EAccount, pgp_hash_algorithm) },
-	{ /* E_ACCOUNT_PGP_ENCRYPT_TO_SELF */ 0, TYPE_BOOL, G_STRUCT_OFFSET(EAccount, pgp_encrypt_to_self) },
-	{ /* E_ACCOUNT_PGP_ALWAYS_SIGN */ 0, TYPE_BOOL, G_STRUCT_OFFSET(EAccount, pgp_always_sign) },
-	{ /* E_ACCOUNT_PGP_NO_IMIP_SIGN */ 0, TYPE_BOOL, G_STRUCT_OFFSET(EAccount, pgp_no_imip_sign) },
-	{ /* E_ACCOUNT_PGP_ALWAYS_TRUST */ 0, TYPE_BOOL, G_STRUCT_OFFSET(EAccount, pgp_always_trust) },
+	{ /* E_ACCOUNT_PGP_KEY */ 0, TYPE_STRING, G_STRUCT_OFFSET (EAccount, pgp_key) },
+	{ /* E_ACCOUNT_PGP_HASH_ALGORITHM */ 0, TYPE_STRING, G_STRUCT_OFFSET (EAccount, pgp_hash_algorithm) },
+	{ /* E_ACCOUNT_PGP_ENCRYPT_TO_SELF */ 0, TYPE_BOOL, G_STRUCT_OFFSET (EAccount, pgp_encrypt_to_self) },
+	{ /* E_ACCOUNT_PGP_ALWAYS_SIGN */ 0, TYPE_BOOL, G_STRUCT_OFFSET (EAccount, pgp_always_sign) },
+	{ /* E_ACCOUNT_PGP_NO_IMIP_SIGN */ 0, TYPE_BOOL, G_STRUCT_OFFSET (EAccount, pgp_no_imip_sign) },
+	{ /* E_ACCOUNT_PGP_ALWAYS_TRUST */ 0, TYPE_BOOL, G_STRUCT_OFFSET (EAccount, pgp_always_trust) },
 
-	{ /* E_ACCOUNT_SMIME_SIGN_KEY */ 0, TYPE_STRING, G_STRUCT_OFFSET(EAccount, smime_sign_key) },
-	{ /* E_ACCOUNT_SMIME_ENCRYPT_KEY */ 0, TYPE_STRING, G_STRUCT_OFFSET(EAccount, smime_encrypt_key) },
-	{ /* E_ACCOUNT_SMIME_HASH_ALGORITHM */ 0, TYPE_STRING, G_STRUCT_OFFSET(EAccount, smime_hash_algorithm) },
-	{ /* E_ACCOUNT_SMIME_SIGN_DEFAULT */ 0, TYPE_BOOL, G_STRUCT_OFFSET(EAccount, smime_sign_default) },
-	{ /* E_ACCOUNT_SMIME_ENCRYPT_TO_SELF */ 0, TYPE_BOOL, G_STRUCT_OFFSET(EAccount, smime_encrypt_to_self) },
-	{ /* E_ACCOUNT_SMIME_ENCRYPT_DEFAULT */ 0, TYPE_BOOL, G_STRUCT_OFFSET(EAccount, smime_encrypt_default) },
+	{ /* E_ACCOUNT_SMIME_SIGN_KEY */ 0, TYPE_STRING, G_STRUCT_OFFSET (EAccount, smime_sign_key) },
+	{ /* E_ACCOUNT_SMIME_ENCRYPT_KEY */ 0, TYPE_STRING, G_STRUCT_OFFSET (EAccount, smime_encrypt_key) },
+	{ /* E_ACCOUNT_SMIME_HASH_ALGORITHM */ 0, TYPE_STRING, G_STRUCT_OFFSET (EAccount, smime_hash_algorithm) },
+	{ /* E_ACCOUNT_SMIME_SIGN_DEFAULT */ 0, TYPE_BOOL, G_STRUCT_OFFSET (EAccount, smime_sign_default) },
+	{ /* E_ACCOUNT_SMIME_ENCRYPT_TO_SELF */ 0, TYPE_BOOL, G_STRUCT_OFFSET (EAccount, smime_encrypt_to_self) },
+	{ /* E_ACCOUNT_SMIME_ENCRYPT_DEFAULT */ 0, TYPE_BOOL, G_STRUCT_OFFSET (EAccount, smime_encrypt_default) },
 
-	{ /* E_ACCOUNT_PROXY_PARENT_UID, */ 0, TYPE_STRING, G_STRUCT_OFFSET(EAccount, parent_uid) },
+	{ /* E_ACCOUNT_PROXY_PARENT_UID, */ 0, TYPE_STRING, G_STRUCT_OFFSET (EAccount, parent_uid) },
 };
 
 static GHashTable *ea_option_table;
@@ -935,12 +935,12 @@ ea_setting_notify (GConfClient *gconf, guint cnxn_id, GConfEntry *entry, gpointe
 	if (!(value = gconf_entry_get_value (entry)))
 		return;
 
-	tkey = strrchr(entry->key, '/');
+	tkey = strrchr (entry->key, '/');
 	g_return_if_fail (tkey != NULL);
 
-	info = g_hash_table_lookup(ea_system_table, tkey+1);
+	info = g_hash_table_lookup (ea_system_table, tkey+1);
 	if (info) {
-		if (gconf_value_get_bool(value))
+		if (gconf_value_get_bool (value))
 			ea_perms |= info->perm;
 		else
 			ea_perms &= ~info->perm;
@@ -950,7 +950,7 @@ ea_setting_notify (GConfClient *gconf, guint cnxn_id, GConfEntry *entry, gpointe
 static void
 ea_setting_setup (void)
 {
-	GConfClient *gconf = gconf_client_get_default();
+	GConfClient *gconf = gconf_client_get_default ();
 	GConfEntry *entry;
 	GError *err = NULL;
 	gint i;
@@ -959,30 +959,30 @@ ea_setting_setup (void)
 	if (ea_option_table != NULL)
 		return;
 
-	ea_option_table = g_hash_table_new(g_str_hash, g_str_equal);
+	ea_option_table = g_hash_table_new (g_str_hash, g_str_equal);
 	for (i = 0; i < G_N_ELEMENTS (ea_option_list); i++)
-		g_hash_table_insert(ea_option_table, (gpointer) ea_option_list[i].key, &ea_option_list[i]);
+		g_hash_table_insert (ea_option_table, (gpointer) ea_option_list[i].key, &ea_option_list[i]);
 
-	gconf_client_add_dir(gconf, LOCK_BASE, GCONF_CLIENT_PRELOAD_NONE, NULL);
+	gconf_client_add_dir (gconf, LOCK_BASE, GCONF_CLIENT_PRELOAD_NONE, NULL);
 
-	ea_system_table = g_hash_table_new(g_str_hash, g_str_equal);
+	ea_system_table = g_hash_table_new (g_str_hash, g_str_equal);
 	for (i = 0; i < G_N_ELEMENTS (system_perms); i++) {
-		g_hash_table_insert(ea_system_table, (gchar *)system_perms[i].key, &system_perms[i]);
+		g_hash_table_insert (ea_system_table, (gchar *)system_perms[i].key, &system_perms[i]);
 		sprintf(key, LOCK_BASE "/%s", system_perms[i].key);
-		entry = gconf_client_get_entry(gconf, key, NULL, TRUE, &err);
+		entry = gconf_client_get_entry (gconf, key, NULL, TRUE, &err);
 		if (entry) {
-			ea_setting_notify(gconf, 0, entry, NULL);
-			gconf_entry_free(entry);
+			ea_setting_notify (gconf, 0, entry, NULL);
+			gconf_entry_free (entry);
 		}
 	}
 
 	if (err) {
 		g_warning("Could not load account lock settings: %s", err->message);
-		g_error_free(err);
+		g_error_free (err);
 	}
 
-	gconf_client_notify_add(gconf, LOCK_BASE, (GConfClientNotifyFunc)ea_setting_notify, NULL, NULL, NULL);
-	g_object_unref(gconf);
+	gconf_client_notify_add (gconf, LOCK_BASE, (GConfClientNotifyFunc)ea_setting_notify, NULL, NULL, NULL);
+	g_object_unref (gconf);
 }
 
 /* look up the item in the structure or the substructure using our table of reflection data */
@@ -995,21 +995,21 @@ const gchar *
 e_account_get_string (EAccount *ea, e_account_item_t type)
 {
 	g_return_val_if_fail (ea != NULL, NULL);
-	return *((const gchar **)addr(ea, type));
+	return *((const gchar **)addr (ea, type));
 }
 
 gint
 e_account_get_int (EAccount *ea, e_account_item_t type)
 {
 	g_return_val_if_fail (ea != NULL, 0);
-	return *((gint *)addr(ea, type));
+	return *((gint *)addr (ea, type));
 }
 
 gboolean
 e_account_get_bool (EAccount *ea, e_account_item_t type)
 {
 	g_return_val_if_fail (ea != NULL, FALSE);
-	return *((gboolean *)addr(ea, type));
+	return *((gboolean *)addr (ea, type));
 }
 
 #if d(!)0
@@ -1019,9 +1019,9 @@ dump_account (EAccount *ea)
 	gchar *xml;
 
 	printf("Account changed\n");
-	xml = e_account_to_xml(ea);
+	xml = e_account_to_xml (ea);
 	printf(" ->\n%s\n", xml);
-	g_free(xml);
+	g_free (xml);
 }
 #endif
 
@@ -1033,17 +1033,17 @@ e_account_set_string (EAccount *ea, e_account_item_t type, const gchar *val)
 
 	g_return_if_fail (ea != NULL);
 
-	if (!e_account_writable(ea, type)) {
+	if (!e_account_writable (ea, type)) {
 		g_warning("Trying to set non-writable option account value");
 	} else {
-		p = (gchar **)addr(ea, type);
+		p = (gchar **)addr (ea, type);
 		d(printf("Setting string %d: old '%s' new '%s'\n", type, *p, val));
 		if (*p != val
-		    && (*p == NULL || val == NULL || strcmp(*p, val) != 0)) {
-			g_free(*p);
+		    && (*p == NULL || val == NULL || strcmp (*p, val) != 0)) {
+			g_free (*p);
 			*p = g_strdup(val);
-			d(dump_account(ea));
-			g_signal_emit(ea, signals[CHANGED], 0, type);
+			d (dump_account (ea));
+			g_signal_emit (ea, signals[CHANGED], 0, type);
 		}
 	}
 }
@@ -1053,15 +1053,15 @@ e_account_set_int (EAccount *ea, e_account_item_t type, gint val)
 {
 	g_return_if_fail (ea != NULL);
 
-	if (!e_account_writable(ea, type)) {
+	if (!e_account_writable (ea, type)) {
 		g_warning("Trying to set non-writable option account value");
 	} else {
-		gint *p = (gint *)addr(ea, type);
+		gint *p = (gint *)addr (ea, type);
 
 		if (*p != val) {
 			*p = val;
-			d(dump_account(ea));
-			g_signal_emit(ea, signals[CHANGED], 0, type);
+			d (dump_account (ea));
+			g_signal_emit (ea, signals[CHANGED], 0, type);
 		}
 	}
 }
@@ -1071,15 +1071,15 @@ e_account_set_bool (EAccount *ea, e_account_item_t type, gboolean val)
 {
 	g_return_if_fail (ea != NULL);
 
-	if (!e_account_writable(ea, type)) {
+	if (!e_account_writable (ea, type)) {
 		g_warning("Trying to set non-writable option account value");
 	} else {
-		gboolean *p = (gboolean *)addr(ea, type);
+		gboolean *p = (gboolean *)addr (ea, type);
 
 		if (*p != val) {
 			*p = val;
-			d(dump_account(ea));
-			g_signal_emit(ea, signals[CHANGED], 0, type);
+			d (dump_account (ea));
+			g_signal_emit (ea, signals[CHANGED], 0, type);
 		}
 	}
 }
@@ -1090,15 +1090,15 @@ e_account_writable_option (EAccount *ea, const gchar *protocol, const gchar *opt
 	gchar *key;
 	struct _option_info *info;
 
-	ea_setting_setup();
+	ea_setting_setup ();
 
-	key = alloca(strlen(protocol)+strlen(option)+2);
+	key = alloca (strlen (protocol)+strlen (option)+2);
 	sprintf(key, "%s_%s", protocol, option);
 
-	info = g_hash_table_lookup(ea_option_table, key);
+	info = g_hash_table_lookup (ea_option_table, key);
 	if (info == NULL) {
 		sprintf(key, "*_%s", option);
-		info = g_hash_table_lookup(ea_option_table, key);
+		info = g_hash_table_lookup (ea_option_table, key);
 	}
 
 	d(printf("checking writable option '%s' perms=%08x\n", option, info?info->perms:0));
@@ -1110,7 +1110,7 @@ e_account_writable_option (EAccount *ea, const gchar *protocol, const gchar *opt
 gboolean
 e_account_writable (EAccount *ea, e_account_item_t type)
 {
-	ea_setting_setup();
+	ea_setting_setup ();
 
 	return (account_info[type].perms & ea_perms) == 0;
 }

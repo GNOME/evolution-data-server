@@ -136,7 +136,7 @@ void		camel_disco_folder_set_offline_sync
 gboolean	camel_disco_folder_expunge_uids	(CamelFolder *folder,
 						 GPtrArray *uids,
 						 GError **error);
-gboolean	camel_disco_folder_cache_message(CamelDiscoFolder *disco_folder,
+gboolean	camel_disco_folder_cache_message (CamelDiscoFolder *disco_folder,
 						 const gchar *uid,
 						 GError **error);
 gboolean	camel_disco_folder_prepare_for_offline

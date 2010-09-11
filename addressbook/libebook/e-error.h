@@ -6,7 +6,7 @@
  * Since: 2.30
  **/
 #define e_return_error_if_fail(expr,error_code)	G_STMT_START{		\
-     if G_LIKELY(expr) { } else						\
+     if G_LIKELY (expr) { } else						\
        {								\
 	 g_log (G_LOG_DOMAIN,						\
 		G_LOG_LEVEL_CRITICAL,					\

@@ -84,10 +84,10 @@ GType		camel_mbox_summary_get_type	(void);
 CamelMboxSummary      *camel_mbox_summary_new	(struct _CamelFolder *, const gchar *filename, const gchar *mbox_name, CamelIndex *index);
 
 /* do we honour/use xstatus headers, etc */
-void camel_mbox_summary_xstatus(CamelMboxSummary *mbs, gint state);
+void camel_mbox_summary_xstatus (CamelMboxSummary *mbs, gint state);
 
 /* build a new mbox from an existing mbox storing summary information */
-gint camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderChangeInfo *changeinfo, gint fd, gint fdout, GError **error);
+gint camel_mbox_summary_sync_mbox (CamelMboxSummary *cls, guint32 flags, CamelFolderChangeInfo *changeinfo, gint fd, gint fdout, GError **error);
 
 G_END_DECLS
 

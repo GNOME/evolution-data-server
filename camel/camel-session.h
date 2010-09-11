@@ -256,7 +256,7 @@ void		camel_session_set_junk_headers	(CamelSession *session,
 						 const gchar **headers,
 						 const gchar **values,
 						 gint len);
-gboolean	camel_session_lookup_addressbook(CamelSession *session,
+gboolean	camel_session_lookup_addressbook (CamelSession *session,
 						 const gchar *name);
 gboolean	camel_session_forward_to	(CamelSession *session,
 						 CamelFolder *folder,

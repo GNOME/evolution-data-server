@@ -222,8 +222,8 @@ struct _camel_header_references *camel_header_references_dup (const struct _came
 gchar *camel_header_location_decode (const gchar *in);
 
 /* nntp stuff */
-struct _camel_header_newsgroup *camel_header_newsgroups_decode(const gchar *in);
-void camel_header_newsgroups_free(struct _camel_header_newsgroup *ng);
+struct _camel_header_newsgroup *camel_header_newsgroups_decode (const gchar *in);
+void camel_header_newsgroups_free (struct _camel_header_newsgroup *ng);
 
 const gchar *camel_transfer_encoding_to_string (CamelTransferEncoding encoding);
 CamelTransferEncoding camel_transfer_encoding_from_string (const gchar *string);

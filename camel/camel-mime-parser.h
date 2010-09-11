@@ -122,7 +122,7 @@ camel_mime_parser_state_t camel_mime_parser_step (CamelMimeParser *parser, gchar
 void camel_mime_parser_unstep (CamelMimeParser *parser);
 void camel_mime_parser_drop_step (CamelMimeParser *parser);
 camel_mime_parser_state_t camel_mime_parser_state (CamelMimeParser *parser);
-void camel_mime_parser_push_state(CamelMimeParser *mp, camel_mime_parser_state_t newstate, const gchar *boundary);
+void camel_mime_parser_push_state (CamelMimeParser *mp, camel_mime_parser_state_t newstate, const gchar *boundary);
 
 /* read through the parser */
 gint camel_mime_parser_read (CamelMimeParser *parser, const gchar **databuffer, gint len, GError **error);
@@ -155,7 +155,7 @@ goffset camel_mime_parser_seek (CamelMimeParser *parser, goffset offset, gint wh
 
 goffset camel_mime_parser_tell_start_headers (CamelMimeParser *parser);
 goffset camel_mime_parser_tell_start_from (CamelMimeParser *parser);
-goffset camel_mime_parser_tell_start_boundary(CamelMimeParser *parser);
+goffset camel_mime_parser_tell_start_boundary (CamelMimeParser *parser);
 
 G_END_DECLS
 

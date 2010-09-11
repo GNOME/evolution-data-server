@@ -171,7 +171,7 @@ struct _CamelCipherContextClass {
 GType		camel_cipher_context_get_type	(void);
 CamelCipherContext *
 		camel_cipher_context_new	(CamelSession *session);
-CamelSession *	camel_cipher_context_get_session(CamelCipherContext *context);
+CamelSession *	camel_cipher_context_get_session (CamelCipherContext *context);
 
 /* cipher context util routines */
 CamelCipherHash	     camel_cipher_id_to_hash (CamelCipherContext *context, const gchar *id);
@@ -206,8 +206,8 @@ void                 camel_cipher_validity_set_valid (CamelCipherValidity *valid
 gchar                *camel_cipher_validity_get_description (CamelCipherValidity *validity);
 void                 camel_cipher_validity_set_description (CamelCipherValidity *validity, const gchar *description);
 void                 camel_cipher_validity_clear (CamelCipherValidity *validity);
-CamelCipherValidity *camel_cipher_validity_clone(CamelCipherValidity *vin);
-void		     camel_cipher_validity_add_certinfo(CamelCipherValidity *vin, camel_cipher_validity_mode_t mode, const gchar *name, const gchar *email);
+CamelCipherValidity *camel_cipher_validity_clone (CamelCipherValidity *vin);
+void		     camel_cipher_validity_add_certinfo (CamelCipherValidity *vin, camel_cipher_validity_mode_t mode, const gchar *name, const gchar *email);
 void		     camel_cipher_validity_add_certinfo_ex (
 					CamelCipherValidity *vin,
 					camel_cipher_validity_mode_t mode,
@@ -216,11 +216,11 @@ void		     camel_cipher_validity_add_certinfo_ex (
 					gpointer cert_data,
 					void (*cert_data_free) (gpointer cert_data),
 					gpointer (*cert_data_clone) (gpointer cert_data));
-void		     camel_cipher_validity_envelope(CamelCipherValidity *parent, CamelCipherValidity *valid);
+void		     camel_cipher_validity_envelope (CamelCipherValidity *parent, CamelCipherValidity *valid);
 void                 camel_cipher_validity_free (CamelCipherValidity *validity);
 
 /* utility functions */
-gint		     camel_cipher_canonical_to_stream(CamelMimePart *part, guint32 flags, CamelStream *ostream, GError **error);
+gint		     camel_cipher_canonical_to_stream (CamelMimePart *part, guint32 flags, CamelStream *ostream, GError **error);
 
 G_END_DECLS
 

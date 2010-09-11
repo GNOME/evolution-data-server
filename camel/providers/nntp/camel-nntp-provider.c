@@ -79,7 +79,7 @@ CamelServiceAuthType camel_nntp_password_authtype = {
 };
 
 void
-camel_provider_module_init(void)
+camel_provider_module_init (void)
 {
 	news_provider.object_types[CAMEL_PROVIDER_STORE] = camel_nntp_store_get_type ();
 
@@ -88,7 +88,7 @@ camel_provider_module_init(void)
 	news_provider.authtypes = g_list_append (NULL, &camel_nntp_password_authtype);
 	news_provider.translation_domain = GETTEXT_PACKAGE;
 
-	camel_provider_register(&news_provider);
+	camel_provider_register (&news_provider);
 }
 
 static void
@@ -132,7 +132,7 @@ nntp_url_equal (gconstpointer a, gconstpointer b)
 {
 	const CamelURL *u1 = a, *u2 = b;
 
-	return check_equal(u1->protocol, u2->protocol)
+	return check_equal (u1->protocol, u2->protocol)
 		&& check_equal (u1->user, u2->user)
 		&& check_equal (u1->host, u2->host)
 		&& u1->port == u2->port;

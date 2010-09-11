@@ -19,7 +19,7 @@ main (gint argc, gchar **argv)
 
 	if (!e_cal_open (ecal, TRUE, NULL)) {
 		printf ("failed to open calendar\n");
-		exit(0);
+		exit (0);
 	}
 
 	g_object_unref (ecal);

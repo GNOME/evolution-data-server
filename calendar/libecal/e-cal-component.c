@@ -176,7 +176,7 @@ struct _ECalComponentAlarm {
 	/* Properties */
 
 	icalproperty *action;
-	icalproperty *attach; /* FIXME: see scan_alarm_property() below */
+	icalproperty *attach; /* FIXME: see scan_alarm_property () below */
 
 	struct {
 		icalproperty *prop;
@@ -1268,7 +1268,7 @@ ensure_alarm_properties_cb (gpointer key, gpointer value, gpointer data)
 				while (xprop) {
 					str = icalproperty_get_x_name (xprop);
 					if (!strcmp (str, "X-EVOLUTION-NEEDS-DESCRIPTION")) {
-						icalproperty_set_description (prop, icalproperty_get_summary(priv->summary.prop));
+						icalproperty_set_description (prop, icalproperty_get_summary (priv->summary.prop));
 
 						icalcomponent_remove_property (alarm, xprop);
 						icalproperty_free (xprop);

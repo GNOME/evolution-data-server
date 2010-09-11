@@ -131,9 +131,9 @@ gboolean	e_cal_backend_store_has_component
 						 const gchar *uid,
 						 const gchar *rid);
 const icaltimezone *
-		e_cal_backend_store_get_timezone(ECalBackendStore *store,
+		e_cal_backend_store_get_timezone (ECalBackendStore *store,
 						 const gchar *tzid);
-gboolean	e_cal_backend_store_put_timezone(ECalBackendStore *store,
+gboolean	e_cal_backend_store_put_timezone (ECalBackendStore *store,
 						 const icaltimezone *zone);
 gboolean	e_cal_backend_store_remove_timezone
 						(ECalBackendStore *store,
@@ -162,7 +162,7 @@ gboolean	e_cal_backend_store_put_key_value
 						(ECalBackendStore *store,
 						 const gchar *key,
 						 const gchar *value);
-void		e_cal_backend_store_thaw_changes(ECalBackendStore *store);
+void		e_cal_backend_store_thaw_changes (ECalBackendStore *store);
 void		e_cal_backend_store_freeze_changes
 						(ECalBackendStore *store);
 void		e_cal_backend_store_interval_tree_add_comp

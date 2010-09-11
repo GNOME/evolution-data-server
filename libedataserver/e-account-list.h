@@ -70,8 +70,8 @@ void            e_account_list_add       (EAccountList *, EAccount *);
 void            e_account_list_change    (EAccountList *, EAccount *);
 void            e_account_list_remove    (EAccountList *, EAccount *);
 
-const EAccount *e_account_list_get_default(EAccountList *);
-void            e_account_list_set_default(EAccountList *, EAccount *);
+const EAccount *e_account_list_get_default (EAccountList *);
+void            e_account_list_set_default (EAccountList *, EAccount *);
 const EAccount *e_account_list_find       (EAccountList *, e_account_find_t type, const gchar *key);
 
 void e_account_list_prune_proxies (EAccountList *);

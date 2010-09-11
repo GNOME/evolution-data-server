@@ -77,7 +77,7 @@ const gchar *e_data_cal_status_to_string (EDataCalCallStatus status);
  **/
 #define e_return_data_cal_error_if_fail(expr, _code)				\
 	G_STMT_START {								\
-		if (G_LIKELY(expr)) {						\
+		if (G_LIKELY (expr)) {						\
 		} else {							\
 			g_log (G_LOG_DOMAIN,					\
 				G_LOG_LEVEL_CRITICAL,				\
@@ -122,7 +122,7 @@ void e_data_cal_notify_static_capabilities (EDataCal *cal, EServerMethodContext 
 					    const gchar *capabilities);
 
 void e_data_cal_notify_open   (EDataCal *cal, EServerMethodContext context, GError *error);
-void e_data_cal_notify_refresh(EDataCal *cal, EServerMethodContext context, GError *error);
+void e_data_cal_notify_refresh (EDataCal *cal, EServerMethodContext context, GError *error);
 void e_data_cal_notify_remove (EDataCal *cal, EServerMethodContext context, GError *error);
 
 void e_data_cal_notify_object_created  (EDataCal *cal, EServerMethodContext context, GError *error,

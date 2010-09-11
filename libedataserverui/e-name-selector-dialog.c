@@ -255,7 +255,7 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	name_selector_dialog->priv->sections =
 		g_array_new (FALSE, FALSE, sizeof (Section));
 
-	gconf_client = gconf_client_get_default();
+	gconf_client = gconf_client_get_default ();
 	uid = gconf_client_get_string (gconf_client, "/apps/evolution/addressbook/display/primary_addressbook",
 			NULL);
 	/* read user_query_fields here, because we are using it in call of setup_name_selector_model */
@@ -619,8 +619,8 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	section.name = g_strdup (name);
 	section.section_box = GTK_BOX (gtk_hbox_new (FALSE, 12));
 	section.label = GTK_LABEL (gtk_label_new_with_mnemonic (pretty_name));
-	section.transfer_button  = GTK_BUTTON (gtk_button_new());
-	section.remove_button  = GTK_BUTTON (gtk_button_new());
+	section.transfer_button  = GTK_BUTTON (gtk_button_new ());
+	section.remove_button  = GTK_BUTTON (gtk_button_new ());
 	section.destination_view = make_tree_view_for_section (name_selector_dialog, destination_store);
 
 	gtk_label_set_mnemonic_widget (GTK_LABEL (section.label), GTK_WIDGET (section.destination_view));
@@ -637,7 +637,7 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 				  G_CALLBACK (transfer_button_clicked), name_selector_dialog);
 
 	/*data for the remove callback*/
-	data = g_malloc0(sizeof(SelData));
+	data = g_malloc0 (sizeof (SelData));
 	data->view = section.destination_view;
 	data->dlg_ptr = name_selector_dialog;
 
@@ -687,11 +687,11 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	gtk_container_add (GTK_CONTAINER (scrollwin), GTK_WIDGET (section.destination_view));
 
 	/*data for 'changed' callback*/
-	data = g_malloc0(sizeof(SelData));
+	data = g_malloc0 (sizeof (SelData));
 	data->view = section.destination_view;
 	data->button = section.remove_button;
 	g_object_set_data_full ((GObject *)section.destination_view, "sel-change-data", data, g_free);
-	selection = gtk_tree_view_get_selection(section.destination_view);
+	selection = gtk_tree_view_get_selection (section.destination_view);
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_MULTIPLE);
 
 	g_signal_connect(selection, "changed",
@@ -764,7 +764,7 @@ model_section_removed (ENameSelectorDialog *name_selector_dialog, const gchar *n
  * -------------------- */
 
 static void
-status_message(EBookView *view, const gchar *message, ENameSelectorDialog *dialog)
+status_message (EBookView *view, const gchar *message, ENameSelectorDialog *dialog)
 {
 	if (message == NULL)
 		gtk_label_set_text (dialog->priv->status_label, "");
@@ -773,9 +773,9 @@ status_message(EBookView *view, const gchar *message, ENameSelectorDialog *dialo
 }
 
 static void
-view_complete(EBookView *view, EBookViewStatus status, const gchar *error_msg, ENameSelectorDialog *dialog)
+view_complete (EBookView *view, EBookViewStatus status, const gchar *error_msg, ENameSelectorDialog *dialog)
 {
-	status_message(view, NULL, dialog);
+	status_message (view, NULL, dialog);
 }
 
 static void
@@ -1067,7 +1067,7 @@ remove_selection (ENameSelectorDialog *name_selector_dialog, GtkTreeView *tree_v
 	rows = gtk_tree_selection_get_selected_rows (selection, NULL);
 	rows = g_list_reverse (rows);
 
-	for (l = rows; l; l = g_list_next(l)) {
+	for (l = rows; l; l = g_list_next (l)) {
 		GtkTreeIter iter;
 		GtkTreePath *path = l->data;
 
@@ -1156,7 +1156,7 @@ transfer_button_clicked (ENameSelectorDialog *name_selector_dialog, GtkButton *t
 	rows = gtk_tree_selection_get_selected_rows (selection, NULL);
 	rows = g_list_reverse (rows);
 
-	for (l = rows; l; l = g_list_next(l)) {
+	for (l = rows; l; l = g_list_next (l)) {
 		GtkTreeIter iter;
 		GtkTreePath *path = l->data;
 

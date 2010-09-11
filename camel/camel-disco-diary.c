@@ -453,7 +453,7 @@ camel_disco_diary_new (CamelDiscoStore *store,
 		return NULL;
 	}
 
-	fseek(diary->file, 0, SEEK_END);
+	fseek (diary->file, 0, SEEK_END);
 
 	d(printf(" is at %ld\n", ftell(diary->file)));
 

@@ -38,8 +38,8 @@ G_BEGIN_DECLS
 void e_passwords_init (void);
 
 void        e_passwords_shutdown          (void);
-void	    e_passwords_cancel(void);
-void        e_passwords_set_online(gint state);
+void	    e_passwords_cancel (void);
+void        e_passwords_set_online (gint state);
 void        e_passwords_remember_password (const gchar *component, const gchar *key);
 void        e_passwords_add_password      (const gchar *key, const gchar *passwd);
 gchar       *e_passwords_get_password      (const gchar *component, const gchar *key);

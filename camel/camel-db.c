@@ -368,13 +368,13 @@ cdb_sql_exec (sqlite3 *db,
 
 	d(g_print("Camel SQL Exec:\n%s\n", stmt));
 
-	ret = sqlite3_exec(db, stmt, 0, 0, &errmsg);
+	ret = sqlite3_exec (db, stmt, 0, 0, &errmsg);
 	while (ret == SQLITE_BUSY || ret == SQLITE_LOCKED || ret == -1) {
 		if (errmsg) {
 			sqlite3_free (errmsg);
 			errmsg = NULL;
 		}
-		ret = sqlite3_exec(db, stmt, 0, 0, &errmsg);
+		ret = sqlite3_exec (db, stmt, 0, 0, &errmsg);
 	}
 
 	if (ret != SQLITE_OK) {
@@ -423,7 +423,7 @@ cdb_match_func (sqlite3_context *ctx, gint nArgs, sqlite3_value **values)
 			if (c == ' ') {
 				word = TRUE;
 				j = 0;
-			} else if (word && tolower (c) == tolower(what[j])) {
+			} else if (word && tolower (c) == tolower (what[j])) {
 				j++;
 				if (what[j] == 0 && (where[i + 1] == 0 || isspace (where[i + 1])))
 					matches = TRUE;
@@ -454,7 +454,7 @@ camel_db_open (const gchar *path,
 
 	CAMEL_DB_USE_SHARED_CACHE;
 
-	ret = sqlite3_open(path, &db);
+	ret = sqlite3_open (path, &db);
 	if (ret) {
 
 		if (!db) {
@@ -469,7 +469,7 @@ camel_db_open (const gchar *path,
 			g_set_error (
 				error, CAMEL_ERROR,
 				CAMEL_ERROR_GENERIC, "%s", errmsg);
-			sqlite3_close(db);
+			sqlite3_close (db);
 		}
 		return NULL;
 	}
@@ -477,8 +477,8 @@ camel_db_open (const gchar *path,
 	cdb = g_new (CamelDB, 1);
 	cdb->db = db;
 	cdb->lock = g_mutex_new ();
-	cdb->priv = g_new(CamelDBPrivate, 1);
-	cdb->priv->file_name = g_strdup(path);
+	cdb->priv = g_new (CamelDBPrivate, 1);
+	cdb->priv->file_name = g_strdup (path);
 	cdb->priv->timer = NULL;
 	d(g_print ("\nDatabase succesfully opened  \n"));
 
@@ -550,7 +550,7 @@ camel_db_set_collate (CamelDB *cdb, const gchar *col, const gchar *collate, Came
 		g_mutex_lock (cdb->lock);
 		d(g_print("Creating Collation %s on %s with %p\n", collate, col, (gpointer) func));
 		if (collate && func)
-			ret = sqlite3_create_collation(cdb->db, collate, SQLITE_UTF8,  NULL, func);
+			ret = sqlite3_create_collation (cdb->db, collate, SQLITE_UTF8,  NULL, func);
 		g_mutex_unlock (cdb->lock);
 
 		return ret;
@@ -572,7 +572,7 @@ camel_db_command (CamelDB *cdb,
 		return TRUE;
 	g_mutex_lock (cdb->lock);
 
-	START(stmt);
+	START (stmt);
 	ret = cdb_sql_exec (cdb->db, stmt, error);
 	END;
 	g_mutex_unlock (cdb->lock);
@@ -727,8 +727,8 @@ camel_db_count_message_info (CamelDB *cdb,
 
 	g_mutex_lock (cdb->lock);
 
-	START(query);
-	ret = sqlite3_exec(cdb->db, query, count_cb, count, &errmsg);
+	START (query);
+	ret = sqlite3_exec (cdb->db, query, count_cb, count, &errmsg);
 	while (ret == SQLITE_BUSY || ret == SQLITE_LOCKED) {
 		if (errmsg) {
 			sqlite3_free (errmsg);
@@ -959,8 +959,8 @@ camel_db_select (CamelDB *cdb,
 	d(g_print ("\n%s:\n%s \n", G_STRFUNC, stmt));
 	g_mutex_lock (cdb->lock);
 
-	START(stmt);
-	ret = sqlite3_exec(cdb->db, stmt, callback, data, &errmsg);
+	START (stmt);
+	ret = sqlite3_exec (cdb->db, stmt, callback, data, &errmsg);
 	while (ret == SQLITE_BUSY || ret == SQLITE_LOCKED) {
 		if (errmsg) {
 			sqlite3_free (errmsg);
@@ -1102,9 +1102,9 @@ read_uids_flags_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 	gint i;
 	for (i = 0; i < ncol; ++i) {
 		if (!strcmp (name [i], "uid"))
-			g_ptr_array_add (data->uids, (gchar *) (camel_pstring_strdup(cols[i])));
+			g_ptr_array_add (data->uids, (gchar *) (camel_pstring_strdup (cols[i])));
 		else if (!strcmp (name [i], "flags"))
-			g_ptr_array_add (data->flags, GUINT_TO_POINTER(strtoul (cols[i], NULL, 10)));
+			g_ptr_array_add (data->flags, GUINT_TO_POINTER (strtoul (cols[i], NULL, 10)));
 	}
 
 	 return 0;
@@ -1156,10 +1156,10 @@ read_uids_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 	gint i;
 	for (i = 0; i < ncol; ++i) {
 		if (!strcmp (name [i], "uid"))
-			g_ptr_array_add (array, (gchar *) (camel_pstring_strdup(cols[i])));
+			g_ptr_array_add (array, (gchar *) (camel_pstring_strdup (cols[i])));
 	}
 	#else
-			g_ptr_array_add (array, (gchar *) (camel_pstring_strdup(cols[0])));
+			g_ptr_array_add (array, (gchar *) (camel_pstring_strdup (cols[0])));
 	#endif
 
 	 return 0;
@@ -1201,7 +1201,7 @@ camel_db_get_folder_junk_uids (CamelDB *db,
 {
 	 gchar *sel_query;
 	 gint ret;
-	 GPtrArray *array = g_ptr_array_new();
+	 GPtrArray *array = g_ptr_array_new ();
 
 	 sel_query = sqlite3_mprintf("SELECT uid FROM %Q where junk=1", folder_name);
 
@@ -1228,7 +1228,7 @@ camel_db_get_folder_deleted_uids (CamelDB *db,
 {
 	 gchar *sel_query;
 	 gint ret;
-	 GPtrArray *array = g_ptr_array_new();
+	 GPtrArray *array = g_ptr_array_new ();
 
 	 sel_query = sqlite3_mprintf("SELECT uid FROM %Q where deleted=1", folder_name);
 
@@ -1253,12 +1253,12 @@ read_preview_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 
 	for (i = 0; i < ncol; ++i) {
 		if (!strcmp (name [i], "uid"))
-			uid = camel_pstring_strdup(cols[i]);
+			uid = camel_pstring_strdup (cols[i]);
 		else if (!strcmp (name [i], "preview"))
-			msg = g_strdup(cols[i]);
+			msg = g_strdup (cols[i]);
 	}
 
-	g_hash_table_insert(hash, (gchar *)uid, msg);
+	g_hash_table_insert (hash, (gchar *)uid, msg);
 
 	return 0;
 }
@@ -1323,10 +1323,10 @@ read_vuids_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 
 	 for (i = 0; i < ncol; ++i) {
 		  if (!strcmp (name [i], "vuid"))
-			   g_ptr_array_add (array, (gchar *) (camel_pstring_strdup(cols[i]+8)));
+			   g_ptr_array_add (array, (gchar *) (camel_pstring_strdup (cols[i]+8)));
 	 }
 	 #else
-			   g_ptr_array_add (array, (gchar *) (camel_pstring_strdup(cols[0]+8)));
+			   g_ptr_array_add (array, (gchar *) (camel_pstring_strdup (cols[0]+8)));
 	 #endif
 
 	 return 0;
@@ -1349,7 +1349,7 @@ camel_db_get_vuids_from_vfolder (CamelDB *db,
 	 gchar *tmp = g_strdup_printf("%s%%", filter ? filter:"");
 	 if (filter)
 		  cond = sqlite3_mprintf(" WHERE vuid LIKE %Q", tmp);
-	 g_free(tmp);
+	 g_free (tmp);
 	 sel_query = sqlite3_mprintf("SELECT vuid FROM %Q%s", folder_name, filter ? cond : "");
 
 	 if (cond)
@@ -1815,7 +1815,7 @@ read_fir_callback (gpointer  ref, gint ncol, gchar ** cols, gchar ** name)
 
 	for (i = 0; i < ncol; ++i) {
 		if (!strcmp (name [i], "folder_name"))
-			record->folder_name = g_strdup(cols[i]);
+			record->folder_name = g_strdup (cols[i]);
 
 		else if (!strcmp (name [i], "version"))
 			record->version = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
@@ -2025,7 +2025,7 @@ cdb_delete_ids (CamelDB *cdb,
 	while (iterator) {
 		gchar *foo = g_strdup_printf("%s%s", uid_prefix, (gchar *) iterator->data);
 		tmp = sqlite3_mprintf ("%Q", foo);
-		g_free(foo);
+		g_free (foo);
 		iterator = iterator->next;
 
 		if (first == TRUE) {

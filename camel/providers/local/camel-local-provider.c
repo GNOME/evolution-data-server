@@ -132,7 +132,7 @@ static CamelProvider spool_directory_provider = {
 
 /* build a canonical 'path' */
 static gchar *
-make_can_path(gchar *p, gchar *o)
+make_can_path (gchar *p, gchar *o)
 {
 	gchar c, last, *start = o;
 
@@ -171,7 +171,7 @@ local_url_hash (gconstpointer v)
 	ADD_HASH (u->authmech);
 	ADD_HASH (u->host);
 	if (u->path)
-		hash ^= g_str_hash(get_can_path(u->path));
+		hash ^= g_str_hash (get_can_path (u->path));
 	ADD_HASH (u->path);
 	ADD_HASH (u->query);
 	hash ^= u->port;
@@ -196,19 +196,19 @@ check_equal (gchar *s1, gchar *s2)
 }
 
 static gint
-local_url_equal(gconstpointer v, gconstpointer v2)
+local_url_equal (gconstpointer v, gconstpointer v2)
 {
 	const CamelURL *u1 = v, *u2 = v2;
 	gchar *p1, *p2;
 
-	p1 = get_can_path(u1->path);
-	p2 = get_can_path(u2->path);
-	return check_equal(p1, p2)
-		&& check_equal(u1->protocol, u2->protocol);
+	p1 = get_can_path (u1->path);
+	p2 = get_can_path (u2->path);
+	return check_equal (p1, p2)
+		&& check_equal (u1->protocol, u2->protocol);
 }
 
 void
-camel_provider_module_init(void)
+camel_provider_module_init (void)
 {
 #ifndef G_OS_WIN32
 	gchar *path;
@@ -216,7 +216,7 @@ camel_provider_module_init(void)
 	static gint init = 0;
 
 	if (init)
-		abort();
+		abort ();
 	init = 1;
 
 #ifndef G_OS_WIN32
@@ -225,7 +225,7 @@ camel_provider_module_init(void)
 	mh_provider.url_hash = local_url_hash;
 	mh_provider.url_equal = local_url_equal;
 	mh_provider.translation_domain = GETTEXT_PACKAGE;
-	camel_provider_register(&mh_provider);
+	camel_provider_register (&mh_provider);
 #endif
 
 #ifndef G_OS_WIN32
@@ -239,7 +239,7 @@ camel_provider_module_init(void)
 	mbox_provider.url_hash = local_url_hash;
 	mbox_provider.url_equal = local_url_equal;
 	mbox_provider.translation_domain = GETTEXT_PACKAGE;
-	camel_provider_register(&mbox_provider);
+	camel_provider_register (&mbox_provider);
 
 #ifndef G_OS_WIN32
 	spool_conf_entries[0].value = path;  /* default path - same as mbox; it's for both file and directory */
@@ -247,13 +247,13 @@ camel_provider_module_init(void)
 	spool_file_provider.url_hash = local_url_hash;
 	spool_file_provider.url_equal = local_url_equal;
 	spool_file_provider.translation_domain = GETTEXT_PACKAGE;
-	camel_provider_register(&spool_file_provider);
+	camel_provider_register (&spool_file_provider);
 
 	spool_directory_provider.object_types[CAMEL_PROVIDER_STORE] = camel_spool_store_get_type ();
 	spool_directory_provider.url_hash = local_url_hash;
 	spool_directory_provider.url_equal = local_url_equal;
 	spool_directory_provider.translation_domain = GETTEXT_PACKAGE;
-	camel_provider_register(&spool_directory_provider);
+	camel_provider_register (&spool_directory_provider);
 
 	path = getenv("MAILDIR");
 	maildir_conf_entries[0].value = path ? path : "";  /* default path */
@@ -261,6 +261,6 @@ camel_provider_module_init(void)
 	maildir_provider.url_hash = local_url_hash;
 	maildir_provider.url_equal = local_url_equal;
 	maildir_provider.translation_domain = GETTEXT_PACKAGE;
-	camel_provider_register(&maildir_provider);
+	camel_provider_register (&maildir_provider);
 #endif
 }

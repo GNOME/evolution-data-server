@@ -112,7 +112,7 @@ db_error_to_gerror (const gint db_error, GError **perror)
 }
 
 static void
-string_to_dbt(const gchar *str, DBT *dbt)
+string_to_dbt (const gchar *str, DBT *dbt)
 {
 	memset (dbt, 0, sizeof (*dbt));
 	dbt->data = (gpointer)str;
@@ -147,19 +147,19 @@ build_summary (EBookBackendFilePrivate *bfpriv)
 
 	memset (&vcard_dbt, 0, sizeof (vcard_dbt));
 	memset (&id_dbt, 0, sizeof (id_dbt));
-	db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_FIRST);
+	db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_FIRST);
 
 	while (db_error == 0) {
 
 		/* don't include the version in the list of cards */
-		if (id_dbt.size != strlen(E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
+		if (id_dbt.size != strlen (E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
 		    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
 			EContact *contact = create_contact (id_dbt.data, vcard_dbt.data);
 			e_book_backend_summary_add_contact (bfpriv->summary, contact);
 			g_object_unref (contact);
 		}
 
-		db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_NEXT);
+		db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_NEXT);
 
 	}
 
@@ -185,7 +185,7 @@ set_revision (EContact *contact)
 	const struct tm *tm = NULL;
 	time_t t;
 
-	t = time(NULL);
+	t = time (NULL);
 	tm = gmtime (&t);
 	if (tm)
 		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
@@ -194,7 +194,7 @@ set_revision (EContact *contact)
 }
 
 static gboolean
-do_create(EBookBackendFile  *bf,
+do_create (EBookBackendFile  *bf,
 	  const gchar      *vcard_req,
 	  EContact **contact,
 	  GError **perror)
@@ -466,12 +466,12 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 		memset (&vcard_dbt, 0, sizeof (vcard_dbt));
 		vcard_dbt.flags = DB_DBT_MALLOC;
 		memset (&id_dbt, 0, sizeof (id_dbt));
-		db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_FIRST);
+		db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_FIRST);
 
 		while (db_error == 0) {
 
 			/* don't include the version in the list of cards */
-			if (id_dbt.size != strlen(E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
+			if (id_dbt.size != strlen (E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
 			    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
 
 				if ((!search_needed) || (card_sexp != NULL && e_book_backend_sexp_match_vcard  (card_sexp, vcard_dbt.data))) {
@@ -479,7 +479,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 				}
 			}
 
-			db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_NEXT);
+			db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_NEXT);
 
 		}
 		g_object_unref (card_sexp);
@@ -491,7 +491,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 			db_error_to_gerror (db_error, perror);
 		}
 
-		db_error = dbc->c_close(dbc);
+		db_error = dbc->c_close (dbc);
 		if (db_error != 0) {
 			g_warning (G_STRLOC ": dbc->c_close failed with %s", db_strerror (db_error));
 		}
@@ -618,7 +618,7 @@ book_view_thread (gpointer data)
 		db_error = db->cursor (db, NULL, &dbc, 0);
 		if (db_error == 0) {
 
-			db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_FIRST);
+			db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_FIRST);
 			while (db_error == 0) {
 
 				if (!e_flag_is_set (closure->running))
@@ -634,7 +634,7 @@ book_view_thread (gpointer data)
 					g_free (vcard_dbt.data);
 				}
 
-				db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_NEXT);
+				db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_NEXT);
 			}
 
 			dbc->c_close (dbc);
@@ -777,12 +777,12 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 	if (db_error != 0) {
 		g_warning (G_STRLOC ": db->cursor failed with %s", db_strerror (db_error));
 	} else {
-		db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_FIRST);
+		db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_FIRST);
 
 		while (db_error == 0) {
 
 			/* don't include the version in the list of cards */
-			if (id_dbt.size != strlen(E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
+			if (id_dbt.size != strlen (E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
 			    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
 				EContact *contact;
 				gchar *id = id_dbt.data;
@@ -803,20 +803,20 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 				/* check what type of change has occurred, if any */
 				switch (e_dbhash_compare (ehash, id, vcard_string)) {
 				case E_DBHASH_STATUS_SAME:
-					g_free(vcard_string);
+					g_free (vcard_string);
 					break;
 				case E_DBHASH_STATUS_NOT_FOUND:
 					ctx.add_cards = g_list_append (ctx.add_cards, vcard_string);
-					ctx.add_ids = g_list_append (ctx.add_ids, g_strdup(id));
+					ctx.add_ids = g_list_append (ctx.add_ids, g_strdup (id));
 					break;
 				case E_DBHASH_STATUS_DIFFERENT:
 					ctx.mod_cards = g_list_append (ctx.mod_cards, vcard_string);
-					ctx.mod_ids = g_list_append (ctx.mod_ids, g_strdup(id));
+					ctx.mod_ids = g_list_append (ctx.mod_ids, g_strdup (id));
 					break;
 				}
 			}
 
-			db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_NEXT);
+			db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_NEXT);
 		}
 		dbc->c_close (dbc);
 	}
@@ -919,7 +919,7 @@ e_book_backend_file_get_required_fields (EBookBackendSync *backend,
 {
 	GList *fields = NULL;
 
-	fields = g_list_append (fields , g_strdup(e_contact_field_name (E_CONTACT_FILE_AS)));
+	fields = g_list_append (fields , g_strdup (e_contact_field_name (E_CONTACT_FILE_AS)));
 	*fields_out = fields;
 }
 
@@ -993,10 +993,10 @@ e_book_backend_file_upgrade_db (EBookBackendFile *bf, gchar *old_version)
 		memset (&id_dbt, 0, sizeof (id_dbt));
 		memset (&vcard_dbt, 0, sizeof (vcard_dbt));
 
-		db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_FIRST);
+		db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_FIRST);
 
 		while (db_error == 0) {
-			if (id_dbt.size != strlen(E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
+			if (id_dbt.size != strlen (E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
 			    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
 				EContact *contact;
 
@@ -1028,7 +1028,7 @@ e_book_backend_file_upgrade_db (EBookBackendFile *bf, gchar *old_version)
 				g_object_unref (contact);
 			}
 
-			db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_NEXT);
+			db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_NEXT);
 		}
 
 		dbc->c_close (dbc);
@@ -1145,7 +1145,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 
 		db_error = (*env->open) (env, NULL, DB_CREATE | DB_INIT_MPOOL | DB_PRIVATE | DB_THREAD, 0);
 		if (db_error != 0) {
-			env->close(env, 0);
+			env->close (env, 0);
 			g_warning ("db_env_open failed with %s", db_strerror (db_error));
 			G_UNLOCK (global_env);
 			g_free (dirname);

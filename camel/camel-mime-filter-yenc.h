@@ -90,7 +90,7 @@ struct _CamelMimeFilterYencClass {
 GType		camel_mime_filter_yenc_get_type	(void);
 CamelMimeFilter *
 		camel_mime_filter_yenc_new	(CamelMimeFilterYencDirection direction);
-void		camel_mime_filter_yenc_set_state(CamelMimeFilterYenc *yenc,
+void		camel_mime_filter_yenc_set_state (CamelMimeFilterYenc *yenc,
 						 gint state);
 void		camel_mime_filter_yenc_set_crc	(CamelMimeFilterYenc *yenc,
 						 guint32 crc);

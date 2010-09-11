@@ -39,12 +39,12 @@ void camel_string_list_free (GList *string_list);
 gchar *camel_strstrcase (const gchar *haystack, const gchar *needle);
 
 const gchar *camel_strdown (gchar *str);
-gchar camel_tolower(gchar c);
-gchar camel_toupper(gchar c);
+gchar camel_tolower (gchar c);
+gchar camel_toupper (gchar c);
 
 const gchar *camel_pstring_add (gchar *str, gboolean own);
-const gchar *camel_pstring_strdup(const gchar *s);
-void camel_pstring_free(const gchar *s);
+const gchar *camel_pstring_strdup (const gchar *s);
+void camel_pstring_free (const gchar *s);
 const gchar * camel_pstring_peek (const gchar *str);
 
 G_END_DECLS

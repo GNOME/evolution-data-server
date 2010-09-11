@@ -152,12 +152,12 @@ check_header (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMes
 			matched = argv[i]->type == ESEXP_RES_STRING && argv[i]->value.string[0] == 0;
 
 		if (g_ascii_strcasecmp(name, "x-camel-mlist") == 0) {
-			const gchar *list = camel_message_info_mlist(fms->info);
+			const gchar *list = camel_message_info_mlist (fms->info);
 
 			if (list) {
 				for (i=1; i<argc && !matched; i++) {
 					if (argv[i]->type == ESEXP_RES_STRING)
-						matched = camel_search_header_match(list, argv[i]->value.string, how, CAMEL_SEARCH_TYPE_MLIST, NULL);
+						matched = camel_search_header_match (list, argv[i]->value.string, how, CAMEL_SEARCH_TYPE_MLIST, NULL);
 				}
 			}
 		} else {
@@ -183,10 +183,10 @@ check_header (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMes
 			}
 
 			for (header = mime_part->headers; header && !matched; header = header->next) {
-				if (!g_ascii_strcasecmp(header->name, name)) {
+				if (!g_ascii_strcasecmp (header->name, name)) {
 					for (i=1; i<argc && !matched; i++) {
 						if (argv[i]->type == ESEXP_RES_STRING)
-							matched = camel_search_header_match(header->value, argv[i]->value.string, how, type, charset);
+							matched = camel_search_header_match (header->value, argv[i]->value.string, how, type, charset);
 					}
 				}
 			}
@@ -262,7 +262,7 @@ header_regex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMes
 
 	if (argc > 1 && argv[0]->type == ESEXP_RES_STRING
 	    && (contents = camel_medium_get_header (CAMEL_MEDIUM (message), argv[0]->value.string))
-	    && camel_search_build_match_regex(&pattern, CAMEL_SEARCH_MATCH_REGEX|CAMEL_SEARCH_MATCH_ICASE, argc-1, argv+1, fms->error) == 0) {
+	    && camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_REGEX|CAMEL_SEARCH_MATCH_ICASE, argc-1, argv+1, fms->error) == 0) {
 		r->value.boolean = regexec (&pattern, contents, 0, NULL, 0) == 0;
 		regfree (&pattern);
 	} else
@@ -289,7 +289,7 @@ get_full_header (CamelMimeMessage *message)
 			else
 				g_string_append (str, ": ");
 			g_string_append (str, h->value);
-			g_string_append_c(str, '\n');
+			g_string_append_c (str, '\n');
 		}
 	}
 
@@ -307,7 +307,7 @@ header_full_regex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Filt
 	regex_t pattern;
 	gchar *contents;
 
-	if (camel_search_build_match_regex(&pattern, CAMEL_SEARCH_MATCH_REGEX|CAMEL_SEARCH_MATCH_ICASE|CAMEL_SEARCH_MATCH_NEWLINE,
+	if (camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_REGEX|CAMEL_SEARCH_MATCH_ICASE|CAMEL_SEARCH_MATCH_NEWLINE,
 					   argc, argv, fms->error) == 0) {
 		message = camel_filter_search_get_message (fms, f);
 		contents = get_full_header (message);
@@ -355,11 +355,11 @@ body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMe
 static ESExpResult *
 body_regex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessageSearch *fms)
 {
-	ESExpResult *r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	ESExpResult *r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	CamelMimeMessage *message;
 	regex_t pattern;
 
-	if (camel_search_build_match_regex(&pattern, CAMEL_SEARCH_MATCH_ICASE|CAMEL_SEARCH_MATCH_REGEX|CAMEL_SEARCH_MATCH_NEWLINE,
+	if (camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_ICASE|CAMEL_SEARCH_MATCH_REGEX|CAMEL_SEARCH_MATCH_NEWLINE,
 					   argc, argv, fms->error) == 0) {
 		message = camel_filter_search_get_message (fms, f);
 		r->value.boolean = camel_search_message_body_contains ((CamelDataWrapper *) message, &pattern);
@@ -380,7 +380,7 @@ user_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessag
 	/* performs an OR of all words */
 	for (i = 0; i < argc && !truth; i++) {
 		if (argv[i]->type == ESEXP_RES_STRING
-		    && camel_message_info_user_flag(fms->info, argv[i]->value.string)) {
+		    && camel_message_info_user_flag (fms->info, argv[i]->value.string)) {
 			truth = TRUE;
 			break;
 		}
@@ -401,7 +401,7 @@ system_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMess
 		e_sexp_fatal_error(f, _("Invalid arguments to (system-flag)"));
 
 	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.boolean = camel_system_flag_get (camel_message_info_flags(fms->info), argv[0]->value.string);
+	r->value.boolean = camel_system_flag_get (camel_message_info_flags (fms->info), argv[0]->value.string);
 
 	return r;
 }
@@ -415,7 +415,7 @@ user_tag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessage
 	if (argc != 1 || argv[0]->type != ESEXP_RES_STRING)
 		e_sexp_fatal_error(f, _("Invalid arguments to (user-tag)"));
 
-	tag = camel_message_info_user_tag(fms->info, argv[0]->value.string);
+	tag = camel_message_info_user_tag (fms->info, argv[0]->value.string);
 
 	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 	r->value.string = g_strdup (tag ? tag : "");
@@ -473,27 +473,27 @@ header_source (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMe
 	if (fms->source) {
 		src = fms->source;
 	} else {
-		message = camel_filter_search_get_message(fms, f);
-		src = camel_mime_message_get_source(message);
+		message = camel_filter_search_get_message (fms, f);
+		src = camel_mime_message_get_source (message);
 	}
 
 	if (src
-	    && (provider = camel_provider_get(src, NULL))
+	    && (provider = camel_provider_get (src, NULL))
 	    && provider->url_equal) {
-		uria = camel_url_new(src, NULL);
+		uria = camel_url_new (src, NULL);
 		if (uria) {
 			for (i=0;i<argc && !truth;i++) {
 				if (argv[i]->type == ESEXP_RES_STRING
-				    && (urib = camel_url_new(argv[i]->value.string, NULL))) {
-					truth = provider->url_equal(uria, urib);
-					camel_url_free(urib);
+				    && (urib = camel_url_new (argv[i]->value.string, NULL))) {
+					truth = provider->url_equal (uria, urib);
+					camel_url_free (urib);
 				}
 			}
-			camel_url_free(uria);
+			camel_url_free (uria);
 		}
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = truth;
 
 	return r;
@@ -505,8 +505,8 @@ get_size (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessage
 {
 	ESExpResult *r;
 
-	r = e_sexp_result_new(f, ESEXP_RES_INT);
-	r->value.number = camel_message_info_size(fms->info) / 1024;
+	r = e_sexp_result_new (f, ESEXP_RES_INT);
+	r->value.number = camel_message_info_size (fms->info) / 1024;
 
 	return r;
 }
@@ -657,7 +657,7 @@ junk_test (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessag
 				gchar *value = (gchar *) g_hash_table_lookup ((GHashTable *) ht, node->name);
 				d(printf("JunkCheckMatch: %s %s %s\n", node->name, node->value, value));
 				if (value)
-					retval = camel_strstrcase(node->value, value) != NULL;
+					retval = camel_strstrcase (node->value, value) != NULL;
 
 			}
 			node = node->next;

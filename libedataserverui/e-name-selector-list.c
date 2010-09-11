@@ -122,8 +122,8 @@ enl_popup_grab (ENameSelectorList *list)
 		GTK_TREE_MODEL (store));
 
 	/* If any selection of text is present, unselect it */
-	len = strlen(gtk_entry_get_text(GTK_ENTRY(list)));
-	gtk_editable_select_region (GTK_EDITABLE(list), len, -1);
+	len = strlen (gtk_entry_get_text (GTK_ENTRY (list)));
+	gtk_editable_select_region (GTK_EDITABLE (list), len, -1);
 }
 
 static void
@@ -143,8 +143,8 @@ enl_entry_focus_in (ENameSelectorList *list, GdkEventFocus *event, gpointer dumm
 	gint len;
 
 	/* FIXME: Dont select every thing by default- Code is there but still it does */
-	len = strlen(gtk_entry_get_text(GTK_ENTRY(list)));
-	gtk_editable_select_region (GTK_EDITABLE(list), len, -1);
+	len = strlen (gtk_entry_get_text (GTK_ENTRY (list)));
+	gtk_editable_select_region (GTK_EDITABLE (list), len, -1);
 
 	return TRUE;
 }
@@ -187,7 +187,7 @@ enl_popup_focus_out (GtkWidget *w,
 		     ENameSelectorList *list)
 {
 	/* Just ungrab. We lose focus on button press event */
-	enl_popup_ungrab(list);
+	enl_popup_ungrab (list);
 	return TRUE;
 }
 
@@ -365,10 +365,10 @@ typedef struct {
 }PopupDeleteRowInfo;
 
 static void
-popup_delete_row(GtkWidget *w, PopupDeleteRowInfo *row_info)
+popup_delete_row (GtkWidget *w, PopupDeleteRowInfo *row_info)
 {
-	delete_row(row_info->path, row_info->list);
-	g_free(row_info);
+	delete_row (row_info->path, row_info->list);
+	g_free (row_info);
 }
 
 static void
@@ -436,7 +436,7 @@ enl_tree_button_press_event (GtkWidget *widget,
 	menu = gtk_menu_new ();
 	g_signal_connect (menu, "deactivate", G_CALLBACK(menu_deactivate), list);
 	list->priv->menu = menu;
-	gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL, event->button, gtk_get_current_event_time());
+	gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL, event->button, gtk_get_current_event_time ());
 
 	email_num = e_destination_get_email_num (destination);
 
@@ -466,7 +466,7 @@ enl_tree_button_press_event (GtkWidget *widget,
 			show_menu = TRUE;
 
 			if (length > 1) {
-				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), !e_destination_is_ignored(dest));
+				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), !e_destination_is_ignored (dest));
 				g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (popup_activate_list),
 							  dest);
 			}
@@ -564,7 +564,7 @@ enl_tree_key_press_event (GtkWidget *w,
 }
 
 void
-e_name_selector_list_expand_clicked(ENameSelectorList *list)
+e_name_selector_list_expand_clicked (ENameSelectorList *list)
 {
 	ENameSelectorEntry *entry;
 	EDestinationStore *store;
@@ -583,7 +583,7 @@ e_name_selector_list_expand_clicked(ENameSelectorList *list)
 	else {
 		enl_popup_ungrab (list);
 		if (list->priv->menu)
-			gtk_menu_popdown(GTK_MENU (list->priv->menu));
+			gtk_menu_popdown (GTK_MENU (list->priv->menu));
 		gtk_widget_hide (GTK_WIDGET (list->priv->popup));
 	}
 }
@@ -644,7 +644,7 @@ e_name_selector_list_init (ENameSelectorList *list)
 	gtk_tree_selection_unselect_all (selection);
 	gtk_tree_view_set_enable_search (GTK_TREE_VIEW (list->priv->tree_view), FALSE);
 
-	completion = gtk_entry_get_completion (GTK_ENTRY(list));
+	completion = gtk_entry_get_completion (GTK_ENTRY (list));
 	gtk_entry_completion_set_inline_completion (completion, TRUE);
 	gtk_entry_completion_set_popup_completion (completion, TRUE);
 

@@ -456,7 +456,7 @@ camel_object_state_write (CamelObject *object)
 				g_rename (savename, state_filename);
 			}
 		} else {
-			fclose(fp);
+			fclose (fp);
 		}
 	} else {
 		g_warning("Could not save object state file to '%s': %s", savename, g_strerror(errno));

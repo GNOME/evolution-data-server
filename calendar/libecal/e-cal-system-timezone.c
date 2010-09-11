@@ -441,7 +441,7 @@ struct timezone_map_entry
 };
 
 static gchar *
-windows_timezone_string_to_olson(const gchar * windows_tz)
+windows_timezone_string_to_olson (const gchar * windows_tz)
 {
 	/* source: http://www.chronos-st.org/Windows-to-Olson.txt */
 	static const struct timezone_map_entry timezone_map[] = {
@@ -611,11 +611,11 @@ windows_timezone_string_to_olson(const gchar * windows_tz)
 	gint i;
 
 	for (i=0; timezone_map[i].windows_string && windows_tz; i++) {
-		gint res = strcmp( timezone_map[i].windows_string, windows_tz);
+		gint res = strcmp ( timezone_map[i].windows_string, windows_tz);
 		if (res > 0)
 			return NULL;
 		if (res == 0) {
-			return g_strdup(timezone_map[i].olson_string);
+			return g_strdup (timezone_map[i].olson_string);
 		}
 	}
 
@@ -669,7 +669,7 @@ system_timezone_win32_query_registry (void)
 	RegCloseKey (reg_key);
 
 	/* Windows NT and its family */
-	res = RegOpenKeyExA(HKEY_LOCAL_MACHINE,
+	res = RegOpenKeyExA (HKEY_LOCAL_MACHINE,
 		"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Time Zones",
 		0, KEY_READ, &reg_key);
 	if (res != ERROR_SUCCESS) {

@@ -46,7 +46,7 @@ camel_address_class_init (CamelAddressClass *class)
 static void
 camel_address_init (CamelAddress *address)
 {
-	address->addresses = g_ptr_array_new();
+	address->addresses = g_ptr_array_new ();
 }
 
 /**
@@ -149,7 +149,7 @@ camel_address_encode (CamelAddress *addr)
  * Returns: the number of addresses parsed or %-1 on fail
  **/
 gint
-camel_address_unformat(CamelAddress *addr, const gchar *raw)
+camel_address_unformat (CamelAddress *addr, const gchar *raw)
 {
 	CamelAddressClass *class;
 
@@ -221,8 +221,8 @@ camel_address_copy (CamelAddress *dest, CamelAddress *source)
 	g_return_val_if_fail (CAMEL_IS_ADDRESS (dest), -1);
 	g_return_val_if_fail (CAMEL_IS_ADDRESS (source), -1);
 
-	camel_address_remove(dest, -1);
-	return camel_address_cat(dest, source);
+	camel_address_remove (dest, -1);
+	return camel_address_cat (dest, source);
 }
 
 /**

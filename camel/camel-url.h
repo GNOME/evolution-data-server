@@ -79,8 +79,8 @@ const gchar *camel_url_get_param (CamelURL *url, const gchar *name);
 
 /* for putting url's into hash tables */
 guint camel_url_hash (gconstpointer v);
-gint camel_url_equal(gconstpointer v, gconstpointer v2);
-CamelURL *camel_url_copy(const CamelURL *in);
+gint camel_url_equal (gconstpointer v, gconstpointer v2);
+CamelURL *camel_url_copy (const CamelURL *in);
 
 G_END_DECLS
 

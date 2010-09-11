@@ -63,9 +63,9 @@ struct _EBookBackendCacheClass {
 GType		e_book_backend_cache_get_type	(void);
 EBookBackendCache *
 		e_book_backend_cache_new	(const gchar *filename);
-EContact *	e_book_backend_cache_get_contact(EBookBackendCache *cache,
+EContact *	e_book_backend_cache_get_contact (EBookBackendCache *cache,
 						 const gchar *uid);
-gboolean	e_book_backend_cache_add_contact(EBookBackendCache *cache,
+gboolean	e_book_backend_cache_add_contact (EBookBackendCache *cache,
 						 EContact *contact);
 gboolean	e_book_backend_cache_remove_contact
 						(EBookBackendCache *cache,

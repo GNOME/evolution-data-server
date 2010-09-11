@@ -301,7 +301,7 @@ ep_need_proxy_http (EProxy* proxy, const gchar * host)
 		so_addr = soup_address_get_sockaddr (addr, &addr_len);
 
 		/* This will never happen, since we have already called
-		   soup_address_resolve_sync().
+		   soup_address_resolve_sync ().
 		*/
 		if (!so_addr)
 			return TRUE;
@@ -406,7 +406,7 @@ ep_manipulate_ipv4 (ProxyHostAddr *host_addr,
 }
 
 static void
-ipv6_network_addr(const struct in6_addr *addr, const struct in6_addr *mask,
+ipv6_network_addr (const struct in6_addr *addr, const struct in6_addr *mask,
                   struct in6_addr *res)
 {
 	gint i;
@@ -438,7 +438,7 @@ ep_manipulate_ipv6 (ProxyHostAddr *host_addr,
         }
         if (netmask) {
 		gchar *endptr;
-		gint width = strtol(netmask, &endptr, 10);
+		gint width = strtol (netmask, &endptr, 10);
 
 		if (*endptr != '\0' || width < 0 || width > 128) {
 			has_error = TRUE;
@@ -450,7 +450,7 @@ ep_manipulate_ipv6 (ProxyHostAddr *host_addr,
 			mask->s6_addr[i] = 0xff;
 		}
 		mask->s6_addr[i] = (0xff << (8 - width % 8)) & 0xff;
-		ipv6_network_addr(addr, mask, addr);
+		ipv6_network_addr (addr, mask, addr);
         } else {
 		for (i = 0; i < 16; ++i) {
 			mask->s6_addr[i] = 0xff;
@@ -498,7 +498,7 @@ ep_parse_ignore_host (gpointer data, gpointer user_data)
 		so_addr = soup_address_get_sockaddr (addr, &addr_len);
 
 		/* This will never happen, since we have already called
-		   soup_address_resolve_sync().
+		   soup_address_resolve_sync ().
 		*/
 		if (!so_addr)
 			goto error;

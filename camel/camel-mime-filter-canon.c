@@ -71,7 +71,7 @@ mime_filter_canon_run (CamelMimeFilter *mime_filter,
 	   "From \n" -> "=46rom \r\n"
 	   We add 1 extra incase we're called from complete, when we didn't end in \n */
 
-	camel_mime_filter_set_size(mime_filter, len+lf*3+4, FALSE);
+	camel_mime_filter_set_size (mime_filter, len+lf*3+4, FALSE);
 
 	o = mime_filter->outbuf;
 	inptr = (guchar *)in;
@@ -205,7 +205,7 @@ camel_mime_filter_canon_init (CamelMimeFilterCanon *filter)
  * Returns: a new #CamelMimeFilterCanon
  **/
 CamelMimeFilter *
-camel_mime_filter_canon_new(guint32 flags)
+camel_mime_filter_canon_new (guint32 flags)
 {
 	CamelMimeFilter *filter;
 

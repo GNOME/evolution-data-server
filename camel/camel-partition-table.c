@@ -397,7 +397,7 @@ camel_partition_table_add (CamelPartitionTable *cpi,
 	g_return_val_if_fail (CAMEL_IS_PARTITION_TABLE (cpi), -1);
 	g_return_val_if_fail (key != NULL, -1);
 
-	hashid = hash_key(key);
+	hashid = hash_key (key);
 
 	CAMEL_PARTITION_TABLE_LOCK (cpi, lock);
 	ptblock = find_partition (cpi, hashid, &index);
@@ -471,7 +471,7 @@ camel_partition_table_add (CamelPartitionTable *cpi,
 			/* See if we have room in the partition table for this block or need to split that too */
 			if (ptb->used >= G_N_ELEMENTS (ptb->partition)) {
 				/* TODO: Could check next block to see if it'll fit there first */
-				ptnblock = camel_block_file_new_block(cpi->blocks);
+				ptnblock = camel_block_file_new_block (cpi->blocks);
 				if (ptnblock == NULL) {
 					if (nblock)
 						camel_block_file_unref_block (cpi->blocks, nblock);
@@ -892,7 +892,7 @@ camel_key_table_lookup (CamelKeyTable *ki,
 	blockid =  keyid & (~(CAMEL_BLOCK_SIZE-1));
 	index = keyid & (CAMEL_BLOCK_SIZE-1);
 
-	bl = camel_block_file_get_block(ki->blocks, blockid);
+	bl = camel_block_file_get_block (ki->blocks, blockid);
 	if (bl == NULL)
 		return 0;
 
@@ -929,7 +929,7 @@ camel_key_table_lookup (CamelKeyTable *ki,
 
 /* iterate through all keys */
 camel_key_t
-camel_key_table_next(CamelKeyTable *ki, camel_key_t next, gchar **keyp, guint *flagsp, camel_block_t *datap)
+camel_key_table_next (CamelKeyTable *ki, camel_key_t next, gchar **keyp, guint *flagsp, camel_block_t *datap)
 {
 	CamelBlock *bl;
 	CamelKeyBlock *kb;

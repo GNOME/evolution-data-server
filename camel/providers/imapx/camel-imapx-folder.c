@@ -42,7 +42,7 @@
 G_DEFINE_TYPE (CamelIMAPXFolder, camel_imapx_folder, CAMEL_TYPE_OFFLINE_FOLDER)
 
 CamelFolder *
-camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *folder_name, GError **error)
+camel_imapx_folder_new (CamelStore *store, const gchar *folder_dir, const gchar *folder_name, GError **error)
 {
 	CamelFolder *folder;
 	CamelIMAPXFolder *ifolder;
@@ -65,10 +65,10 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 		"parent-store", store, NULL);
 	ifolder = (CamelIMAPXFolder *) folder;
 
-	((CamelIMAPXFolder *)folder)->raw_name = g_strdup(folder_name);
+	((CamelIMAPXFolder *)folder)->raw_name = g_strdup (folder_name);
 
 	summary_file = g_strdup_printf ("%s/summary", folder_dir);
-	folder->summary = camel_imapx_summary_new(folder, summary_file);
+	folder->summary = camel_imapx_summary_new (folder, summary_file);
 	if (!folder->summary) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
@@ -87,7 +87,7 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 
 	state_file = g_strdup_printf ("%s/cmeta", folder_dir);
 	camel_object_set_state_filename (CAMEL_OBJECT (folder), state_file);
-	g_free(state_file);
+	g_free (state_file);
 	camel_object_state_read (CAMEL_OBJECT (folder));
 
 	ifolder->search = camel_folder_search_new ();
@@ -166,14 +166,14 @@ imapx_refresh_info (CamelFolder *folder, GError **error)
 		return FALSE;
 	}
 
-	if (!camel_service_connect((CamelService *)istore, error))
+	if (!camel_service_connect ((CamelService *)istore, error))
 		return FALSE;
 
-	server = camel_imapx_store_get_server(istore, camel_folder_get_full_name (folder), error);
+	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), error);
 	if (server != NULL) {
-		success = camel_imapx_server_refresh_info(server, folder, error);
+		success = camel_imapx_server_refresh_info (server, folder, error);
 		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
-		g_object_unref(server);
+		g_object_unref (server);
 	}
 
 	return success;
@@ -197,11 +197,11 @@ imapx_expunge (CamelFolder *folder, GError **error)
 		return FALSE;
 	}
 
-	server = camel_imapx_store_get_server(istore, camel_folder_get_full_name (folder), error);
+	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), error);
 	if (server) {
-		camel_imapx_server_expunge(server, folder, error);
+		camel_imapx_server_expunge (server, folder, error);
 		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
-		g_object_unref(server);
+		g_object_unref (server);
 		return TRUE;
 	}
 
@@ -226,7 +226,7 @@ imapx_sync (CamelFolder *folder, gboolean expunge, GError **error)
 		return FALSE;
 	}
 
-	server = camel_imapx_store_get_server(istore, camel_folder_get_full_name (folder), NULL);
+	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), NULL);
 	if (server)
 		camel_imapx_server_sync_changes (server, folder, NULL);
 
@@ -234,10 +234,10 @@ imapx_sync (CamelFolder *folder, gboolean expunge, GError **error)
 	   then sync again incase expunge changed anything */
 
 	if (server && expunge)
-		camel_imapx_server_expunge(server, folder, NULL);
+		camel_imapx_server_expunge (server, folder, NULL);
 	if (server) {
 		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
-		g_object_unref(server);
+		g_object_unref (server);
 	}
 
 	return TRUE;
@@ -283,20 +283,20 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, GError **error)
 			return NULL;
 		}
 
-		server = camel_imapx_store_get_server(istore, camel_folder_get_full_name (folder), error);
+		server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), error);
 		if (server) {
-			stream = camel_imapx_server_get_message(server, folder, uid, error);
+			stream = camel_imapx_server_get_message (server, folder, uid, error);
 			camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
-			g_object_unref(server);
+			g_object_unref (server);
 		} else
 			return NULL;
 	}
 
 	if (stream != NULL) {
-		msg = camel_mime_message_new();
+		msg = camel_mime_message_new ();
 
 		g_mutex_lock (ifolder->stream_lock);
-		if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)msg, stream, error) == -1) {
+		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *)msg, stream, error) == -1) {
 			g_object_unref (msg);
 			msg = NULL;
 		}
@@ -332,7 +332,7 @@ imapx_sync_message (CamelFolder *folder, const gchar *uid, GError **error)
 
 	success = camel_imapx_server_sync_message (server, folder, uid, error);
 	camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
-	g_object_unref(server);
+	g_object_unref (server);
 
 	return success;
 }
@@ -362,7 +362,7 @@ imapx_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 	if (server) {
 		success = camel_imapx_server_copy_message (server, source, dest, uids, delete_originals, error);
 		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (source));
-		g_object_unref(server);
+		g_object_unref (server);
 	}
 
 	imapx_refresh_info (dest, NULL);
@@ -371,7 +371,7 @@ imapx_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 }
 
 static gboolean
-imapx_append_message(CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *info, gchar **appended_uid, GError **error)
+imapx_append_message (CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *info, gchar **appended_uid, GError **error)
 {
 	CamelStore *parent_store;
 	CamelIMAPXStore *istore;
@@ -395,7 +395,7 @@ imapx_append_message(CamelFolder *folder, CamelMimeMessage *message, const Camel
 	server = camel_imapx_store_get_server (istore, NULL, error);
 	if (server) {
 		success = camel_imapx_server_append_message (server, folder, message, info, error);
-		g_object_unref(server);
+		g_object_unref (server);
 	}
 
 	return success;
@@ -454,7 +454,7 @@ imapx_get_filename (CamelFolder *folder, const gchar *uid, GError **error)
       info.flags = flags
     }
     if got.header {
-      info.init(header)
+      info.init (header)
       info.empty = false
     }
 
@@ -468,7 +468,7 @@ info.state - 2 bit field in flags
 static void
 imapx_search_free (CamelFolder *folder, GPtrArray *uids)
 {
-	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER(folder);
+	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER (folder);
 
 	g_return_if_fail (ifolder->search);
 
@@ -482,16 +482,16 @@ imapx_search_free (CamelFolder *folder, GPtrArray *uids)
 static GPtrArray *
 imapx_search_by_uids (CamelFolder *folder, const gchar *expression, GPtrArray *uids, GError **error)
 {
-	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER(folder);
+	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER (folder);
 	GPtrArray *matches;
 
 	if (uids->len == 0)
-		return g_ptr_array_new();
+		return g_ptr_array_new ();
 
 	g_mutex_lock (ifolder->search_lock);
 
-	camel_folder_search_set_folder(ifolder->search, folder);
-	matches = camel_folder_search_search(ifolder->search, expression, uids, error);
+	camel_folder_search_set_folder (ifolder->search, folder);
+	matches = camel_folder_search_search (ifolder->search, expression, uids, error);
 
 	g_mutex_unlock (ifolder->search_lock);
 
@@ -501,7 +501,7 @@ imapx_search_by_uids (CamelFolder *folder, const gchar *expression, GPtrArray *u
 static guint32
 imapx_count_by_expression (CamelFolder *folder, const gchar *expression, GError **error)
 {
-	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER(folder);
+	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER (folder);
 	guint32 matches;
 
 	g_mutex_lock (ifolder->search_lock);
@@ -523,7 +523,7 @@ imapx_search_by_expression (CamelFolder *folder, const gchar *expression, GError
 	g_mutex_lock (ifolder->search_lock);
 
 	camel_folder_search_set_folder (ifolder->search, folder);
-	matches = camel_folder_search_search(ifolder->search, expression, NULL, error);
+	matches = camel_folder_search_search (ifolder->search, expression, NULL, error);
 
 	g_mutex_unlock (ifolder->search_lock);
 

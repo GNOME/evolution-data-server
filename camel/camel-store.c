@@ -88,14 +88,14 @@ store_get_special (CamelStore *store,
 	GPtrArray *folders;
 	gint i;
 
-	folder = camel_vtrash_folder_new(store, type);
-	folders = camel_object_bag_list(store->folders);
+	folder = camel_vtrash_folder_new (store, type);
+	folders = camel_object_bag_list (store->folders);
 	for (i=0;i<folders->len;i++) {
-		if (!CAMEL_IS_VTRASH_FOLDER(folders->pdata[i]))
-			camel_vee_folder_add_folder((CamelVeeFolder *)folder, (CamelFolder *)folders->pdata[i]);
+		if (!CAMEL_IS_VTRASH_FOLDER (folders->pdata[i]))
+			camel_vee_folder_add_folder ((CamelVeeFolder *)folder, (CamelFolder *)folders->pdata[i]);
 		g_object_unref (folders->pdata[i]);
 	}
-	g_ptr_array_free(folders, TRUE);
+	g_ptr_array_free (folders, TRUE);
 
 	return folder;
 }
@@ -150,7 +150,7 @@ store_construct (CamelService *service,
                  GError **error)
 {
 	CamelServiceClass *service_class;
-	CamelStore *store = CAMEL_STORE(service);
+	CamelStore *store = CAMEL_STORE (service);
 	gchar *store_db_path, *store_path = NULL;
 
 	/* Chain up to parent's construct() method. */
@@ -192,7 +192,7 @@ store_construct (CamelService *service,
 		store->cdb_r = camel_db_open (store_db_path, NULL);
 		if (store->cdb_r == NULL) {
 			g_print("Retry with %s failed\n", store_db_path);
-			g_free(store_db_path);
+			g_free (store_db_path);
 			return FALSE;
 		}
 	}
@@ -258,15 +258,15 @@ store_sync (CamelStore *store,
 	/* We don't sync any vFolders, that is used to update certain
 	 * vfolder queries mainly, and we're really only interested in
 	 * storing/expunging the physical mails. */
-	folders = camel_object_bag_list(store->folders);
+	folders = camel_object_bag_list (store->folders);
 	for (i=0;i<folders->len;i++) {
 		folder = folders->pdata[i];
-		if (!CAMEL_IS_VEE_FOLDER(folder)
+		if (!CAMEL_IS_VEE_FOLDER (folder)
 		    && local_error == NULL) {
-			camel_folder_sync(folder, expunge, &local_error);
+			camel_folder_sync (folder, expunge, &local_error);
 			ignore_no_such_table_exception (&local_error);
-		} else if (CAMEL_IS_VEE_FOLDER(folder))
-			camel_vee_folder_sync_headers(folder, NULL); /* Literally don't care of vfolder exceptions */
+		} else if (CAMEL_IS_VEE_FOLDER (folder))
+			camel_vee_folder_sync_headers (folder, NULL); /* Literally don't care of vfolder exceptions */
 		g_object_unref (folder);
 	}
 
@@ -437,7 +437,7 @@ camel_store_get_folder (CamelStore *store,
 
 	if (store->folders) {
 		/* Try cache first. */
-		folder = camel_object_bag_reserve(store->folders, folder_name);
+		folder = camel_object_bag_reserve (store->folders, folder_name);
 		if (folder && (flags & CAMEL_STORE_FOLDER_EXCL)) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
@@ -452,41 +452,41 @@ camel_store_get_folder (CamelStore *store,
 	if (!folder) {
 
 		if (flags & CAMEL_STORE_IS_MIGRATING) {
-				if ((store->flags & CAMEL_STORE_VTRASH) && strcmp(folder_name, CAMEL_VTRASH_NAME) == 0) {
+				if ((store->flags & CAMEL_STORE_VTRASH) && strcmp (folder_name, CAMEL_VTRASH_NAME) == 0) {
 						if (store->folders)
-								camel_object_bag_abort(store->folders, folder_name);
+								camel_object_bag_abort (store->folders, folder_name);
 						return NULL;
 				}
 
-				if ((store->flags & CAMEL_STORE_VJUNK) && strcmp(folder_name, CAMEL_VJUNK_NAME) == 0) {
+				if ((store->flags & CAMEL_STORE_VJUNK) && strcmp (folder_name, CAMEL_VJUNK_NAME) == 0) {
 						if (store->folders)
-								camel_object_bag_abort(store->folders, folder_name);
+								camel_object_bag_abort (store->folders, folder_name);
 						return NULL;
 				}
 		}
 
-		if ((store->flags & CAMEL_STORE_VTRASH) && strcmp(folder_name, CAMEL_VTRASH_NAME) == 0) {
-			folder = class->get_trash(store, error);
+		if ((store->flags & CAMEL_STORE_VTRASH) && strcmp (folder_name, CAMEL_VTRASH_NAME) == 0) {
+			folder = class->get_trash (store, error);
 			CAMEL_CHECK_GERROR (store, get_trash, folder != NULL, error);
-		} else if ((store->flags & CAMEL_STORE_VJUNK) && strcmp(folder_name, CAMEL_VJUNK_NAME) == 0) {
-			folder = class->get_junk(store, error);
+		} else if ((store->flags & CAMEL_STORE_VJUNK) && strcmp (folder_name, CAMEL_VJUNK_NAME) == 0) {
+			folder = class->get_junk (store, error);
 			CAMEL_CHECK_GERROR (store, get_junk, folder != NULL, error);
 		} else {
-			folder = class->get_folder(store, folder_name, flags, error);
+			folder = class->get_folder (store, folder_name, flags, error);
 			CAMEL_CHECK_GERROR (store, get_folder, folder != NULL, error);
 
 			if (folder) {
 				CamelVeeFolder *vfolder;
 
 				if ((store->flags & CAMEL_STORE_VTRASH)
-				    && (vfolder = camel_object_bag_get(store->folders, CAMEL_VTRASH_NAME))) {
-					camel_vee_folder_add_folder(vfolder, folder);
+				    && (vfolder = camel_object_bag_get (store->folders, CAMEL_VTRASH_NAME))) {
+					camel_vee_folder_add_folder (vfolder, folder);
 					g_object_unref (vfolder);
 				}
 
 				if ((store->flags & CAMEL_STORE_VJUNK)
-				    && (vfolder = camel_object_bag_get(store->folders, CAMEL_VJUNK_NAME))) {
-					camel_vee_folder_add_folder(vfolder, folder);
+				    && (vfolder = camel_object_bag_get (store->folders, CAMEL_VJUNK_NAME))) {
+					camel_vee_folder_add_folder (vfolder, folder);
 					g_object_unref (vfolder);
 				}
 			}
@@ -494,9 +494,9 @@ camel_store_get_folder (CamelStore *store,
 
 		if (store->folders) {
 			if (folder)
-				camel_object_bag_add(store->folders, folder_name, folder);
+				camel_object_bag_add (store->folders, folder_name, folder);
 			else
-				camel_object_bag_abort(store->folders, folder_name);
+				camel_object_bag_abort (store->folders, folder_name);
 		}
 
 		if (folder)
@@ -535,8 +535,8 @@ camel_store_create_folder (CamelStore *store,
 	g_return_val_if_fail (class->create_folder != NULL, NULL);
 
 	if ((parent_name == NULL || parent_name[0] == 0)
-	    && (((store->flags & CAMEL_STORE_VTRASH) && strcmp(folder_name, CAMEL_VTRASH_NAME) == 0)
-		|| ((store->flags & CAMEL_STORE_VJUNK) && strcmp(folder_name, CAMEL_VJUNK_NAME) == 0))) {
+	    && (((store->flags & CAMEL_STORE_VTRASH) && strcmp (folder_name, CAMEL_VTRASH_NAME) == 0)
+		|| ((store->flags & CAMEL_STORE_VJUNK) && strcmp (folder_name, CAMEL_VJUNK_NAME) == 0))) {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_INVALID,
@@ -555,29 +555,29 @@ camel_store_create_folder (CamelStore *store,
 
 /* deletes folder/removes it from the folder cache, if it's there */
 static void
-cs_delete_cached_folder(CamelStore *store, const gchar *folder_name)
+cs_delete_cached_folder (CamelStore *store, const gchar *folder_name)
 {
 	CamelFolder *folder;
 
 	if (store->folders
-	    && (folder = camel_object_bag_get(store->folders, folder_name))) {
+	    && (folder = camel_object_bag_get (store->folders, folder_name))) {
 		CamelVeeFolder *vfolder;
 
 		if ((store->flags & CAMEL_STORE_VTRASH)
-		    && (vfolder = camel_object_bag_get(store->folders, CAMEL_VTRASH_NAME))) {
-			camel_vee_folder_remove_folder(vfolder, folder);
+		    && (vfolder = camel_object_bag_get (store->folders, CAMEL_VTRASH_NAME))) {
+			camel_vee_folder_remove_folder (vfolder, folder);
 			g_object_unref (vfolder);
 		}
 
 		if ((store->flags & CAMEL_STORE_VJUNK)
-		    && (vfolder = camel_object_bag_get(store->folders, CAMEL_VJUNK_NAME))) {
-			camel_vee_folder_remove_folder(vfolder, folder);
+		    && (vfolder = camel_object_bag_get (store->folders, CAMEL_VJUNK_NAME))) {
+			camel_vee_folder_remove_folder (vfolder, folder);
 			g_object_unref (vfolder);
 		}
 
-		camel_folder_delete(folder);
+		camel_folder_delete (folder);
 
-		camel_object_bag_remove(store->folders, folder);
+		camel_object_bag_remove (store->folders, folder);
 		g_object_unref (folder);
 	}
 }
@@ -608,8 +608,8 @@ camel_store_delete_folder (CamelStore *store,
 	g_return_val_if_fail (class->delete_folder != NULL, FALSE);
 
 	/* TODO: should probably be a parameter/bit on the storeinfo */
-	if (((store->flags & CAMEL_STORE_VTRASH) && strcmp(folder_name, CAMEL_VTRASH_NAME) == 0)
-	    || ((store->flags & CAMEL_STORE_VJUNK) && strcmp(folder_name, CAMEL_VJUNK_NAME) == 0)) {
+	if (((store->flags & CAMEL_STORE_VTRASH) && strcmp (folder_name, CAMEL_VTRASH_NAME) == 0)
+	    || ((store->flags & CAMEL_STORE_VJUNK) && strcmp (folder_name, CAMEL_VJUNK_NAME) == 0)) {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_NO_FOLDER,
@@ -629,7 +629,7 @@ camel_store_delete_folder (CamelStore *store,
 		g_clear_error (&local_error);
 
 	if (local_error == NULL)
-		cs_delete_cached_folder(store, folder_name);
+		cs_delete_cached_folder (store, folder_name);
 	else
 		g_propagate_error (error, local_error);
 
@@ -669,11 +669,11 @@ camel_store_rename_folder (CamelStore *store,
 	class = CAMEL_STORE_GET_CLASS (store);
 	g_return_val_if_fail (class->rename_folder != NULL, FALSE);
 
-	if (strcmp(old_namein, new_name) == 0)
+	if (strcmp (old_namein, new_name) == 0)
 		return TRUE;
 
-	if (((store->flags & CAMEL_STORE_VTRASH) && strcmp(old_namein, CAMEL_VTRASH_NAME) == 0)
-	    || ((store->flags & CAMEL_STORE_VJUNK) && strcmp(old_namein, CAMEL_VJUNK_NAME) == 0)) {
+	if (((store->flags & CAMEL_STORE_VTRASH) && strcmp (old_namein, CAMEL_VTRASH_NAME) == 0)
+	    || ((store->flags & CAMEL_STORE_VJUNK) && strcmp (old_namein, CAMEL_VJUNK_NAME) == 0)) {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_NO_FOLDER,
@@ -683,15 +683,15 @@ camel_store_rename_folder (CamelStore *store,
 	}
 
 	/* need to save this, since old_namein might be folder->full_name, which could go away */
-	old_name = g_strdup(old_namein);
-	oldlen = strlen(old_name);
+	old_name = g_strdup (old_namein);
+	oldlen = strlen (old_name);
 
 	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
 
 	/* If the folder is open (or any subfolders of the open folder)
 	   We need to rename them atomically with renaming the actual folder path */
 	if (store->folders) {
-		folders = camel_object_bag_list(store->folders);
+		folders = camel_object_bag_list (store->folders);
 		for (i=0;i<folders->len;i++) {
 			const gchar *full_name;
 
@@ -706,7 +706,7 @@ camel_store_rename_folder (CamelStore *store,
 				&& full_name[oldlen] == '/')) {
 				camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
 			} else {
-				g_ptr_array_remove_index_fast(folders, i);
+				g_ptr_array_remove_index_fast (folders, i);
 				i--;
 				g_object_unref (folder);
 			}
@@ -731,9 +731,9 @@ camel_store_rename_folder (CamelStore *store,
 				full_name = camel_folder_get_full_name (folder);
 
 				new = g_strdup_printf("%s%s", new_name, full_name + strlen(old_name));
-				camel_object_bag_rekey(store->folders, folder, new);
-				camel_folder_rename(folder, new);
-				g_free(new);
+				camel_object_bag_rekey (store->folders, folder, new);
+				camel_folder_rename (folder, new);
+				g_free (new);
 
 				camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
 				g_object_unref (folder);
@@ -743,7 +743,7 @@ camel_store_rename_folder (CamelStore *store,
 			if (store->flags & CAMEL_STORE_SUBSCRIPTIONS)
 				flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIBED;
 
-			folder_info = class->get_folder_info(store, new_name, flags, error);
+			folder_info = class->get_folder_info (store, new_name, flags, error);
 			CAMEL_CHECK_GERROR (store, get_folder_info, folder_info != NULL, error);
 
 			if (folder_info != NULL) {
@@ -762,8 +762,8 @@ camel_store_rename_folder (CamelStore *store,
 
 	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
 
-	g_ptr_array_free(folders, TRUE);
-	g_free(old_name);
+	g_ptr_array_free (folders, TRUE);
+	g_free (old_name);
 
 	return success;
 }
@@ -1040,7 +1040,7 @@ add_special_info (CamelStore *store,
 		/* There wasn't a Trash/Junk folder so create a new folder entry */
 		vinfo = camel_folder_info_new ();
 
-		g_assert(parent != NULL);
+		g_assert (parent != NULL);
 
 		vinfo->flags |= CAMEL_FOLDER_NOINFERIORS | CAMEL_FOLDER_SUBSCRIBED;
 
@@ -1063,15 +1063,15 @@ dump_fi (CamelFolderInfo *fi, gint depth)
 {
 	gchar *s;
 
-	s = g_alloca(depth+1);
-	memset(s, ' ', depth);
+	s = g_alloca (depth+1);
+	memset (s, ' ', depth);
 	s[depth] = 0;
 
 	while (fi) {
 		printf("%suri: %s\n", s, fi->uri);
 		printf("%sfull_name: %s\n", s, fi->full_name);
 		printf("%sflags: %08x\n", s, fi->flags);
-		dump_fi(fi->child, depth+2);
+		dump_fi (fi->child, depth+2);
 		fi = fi->next;
 	}
 }
@@ -1133,11 +1133,11 @@ camel_store_get_folder_info (CamelStore *store,
 	}
 
 	if (camel_debug_start("store:folder_info")) {
-		gchar *url = camel_url_to_string(((CamelService *)store)->url, CAMEL_URL_HIDE_ALL);
+		gchar *url = camel_url_to_string (((CamelService *)store)->url, CAMEL_URL_HIDE_ALL);
 		printf("Get folder info(%p:%s, '%s') =\n", (gpointer) store, url, top?top:"<null>");
-		g_free(url);
-		dump_fi(info, 2);
-		camel_debug_end();
+		g_free (url);
+		dump_fi (info, 2);
+		camel_debug_end ();
 	}
 
 	return info;
@@ -1288,9 +1288,9 @@ camel_folder_info_build (GPtrArray *folders,
 	for (i = 0; i < folders->len; i++) {
 		fi = folders->pdata[i];
 		if (!strncmp (namespace, fi->full_name, nlen)
-		    && (p = strrchr(fi->full_name+nlen, separator))) {
-			pname = g_strndup(fi->full_name, p - fi->full_name);
-			pfi = g_hash_table_lookup(hash, pname);
+		    && (p = strrchr (fi->full_name+nlen, separator))) {
+			pname = g_strndup (fi->full_name, p - fi->full_name);
+			pfi = g_hash_table_lookup (hash, pname);
 			if (pfi) {
 				g_free (pname);
 			} else {
@@ -1373,19 +1373,19 @@ folder_info_clone_rec (CamelFolderInfo *fi,
 
 	info = camel_folder_info_new ();
 	info->parent = parent;
-	info->uri = g_strdup(fi->uri);
-	info->name = g_strdup(fi->name);
-	info->full_name = g_strdup(fi->full_name);
+	info->uri = g_strdup (fi->uri);
+	info->name = g_strdup (fi->name);
+	info->full_name = g_strdup (fi->full_name);
 	info->unread = fi->unread;
 	info->flags = fi->flags;
 
 	if (fi->next)
-		info->next = folder_info_clone_rec(fi->next, parent);
+		info->next = folder_info_clone_rec (fi->next, parent);
 	else
 		info->next = NULL;
 
 	if (fi->child)
-		info->child = folder_info_clone_rec(fi->child, info);
+		info->child = folder_info_clone_rec (fi->child, info);
 	else
 		info->child = NULL;
 
@@ -1406,7 +1406,7 @@ camel_folder_info_clone (CamelFolderInfo *fi)
 	if (fi == NULL)
 		return NULL;
 
-	return folder_info_clone_rec(fi, NULL);
+	return folder_info_clone_rec (fi, NULL);
 }
 
 /**

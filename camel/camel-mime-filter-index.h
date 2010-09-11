@@ -68,7 +68,7 @@ CamelMimeFilter *
 		camel_mime_filter_index_new	(CamelIndex *index);
 
 /* Set the match name for any indexed words */
-void		camel_mime_filter_index_set_name(CamelMimeFilterIndex *filter,
+void		camel_mime_filter_index_set_name (CamelMimeFilterIndex *filter,
 						 CamelIndexName *name);
 void		camel_mime_filter_index_set_index
 						(CamelMimeFilterIndex *filter,

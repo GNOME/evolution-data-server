@@ -91,7 +91,7 @@ get_direction (EIntervalNode *x, time_t z_start, time_t z_end)
 }
 
 static inline gchar *
-component_key(const gchar *uid, const gchar *rid)
+component_key (const gchar *uid, const gchar *rid)
 {
 	if (rid)
 		return	g_strdup_printf("%s_%s", uid, rid);
@@ -349,7 +349,7 @@ e_intervaltree_insert (EIntervalTree *tree, time_t start, time_t end, ECalCompon
 	priv->root->left->red = FALSE;
 	e_cal_component_get_uid (comp, &uid);
 	rid = e_cal_component_get_recurid_as_string (comp);
-	g_hash_table_insert (priv->id_node_hash, component_key(uid, rid), newNode);
+	g_hash_table_insert (priv->id_node_hash, component_key (uid, rid), newNode);
 	g_free (rid);
 
 	g_static_rec_mutex_unlock (&priv->mutex);
@@ -620,7 +620,7 @@ e_intervaltree_search_component (EIntervalTree *tree,
 		return NULL;
 	}
 
-	return g_hash_table_lookup (priv->id_node_hash, component_key(searched_uid, searched_rid));
+	return g_hash_table_lookup (priv->id_node_hash, component_key (searched_uid, searched_rid));
 }
 
 /**
@@ -707,7 +707,7 @@ e_intervaltree_remove (EIntervalTree *tree,
 			e_intervaltree_fixup_deletion (tree, x);
 	}
 
-	g_hash_table_remove (priv->id_node_hash, component_key(uid, rid));
+	g_hash_table_remove (priv->id_node_hash, component_key (uid, rid));
 
 	g_object_unref (z->comp);
 	g_free (z);

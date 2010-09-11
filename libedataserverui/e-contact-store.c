@@ -267,7 +267,7 @@ find_contact_source_by_book (EContactStore *contact_store, EBook *book)
 }
 
 EBookView *
-find_contact_source_by_book_return_view(EContactStore *contact_store, EBook *book)
+find_contact_source_by_book_return_view (EContactStore *contact_store, EBook *book)
 {
 	ContactSource *source = NULL;
 	GArray *array;

@@ -1181,7 +1181,7 @@ componenttime_to_utc_timet (const ECalComponentDateTime* dt_time,
 
 	if (dt_time->value) {
 		if (dt_time->tzid)
-			zone = tz_cb(dt_time->tzid, tz_cb_data);
+			zone = tz_cb (dt_time->tzid, tz_cb_data);
 
 		// zone = icaltimezone_get_utc_timezone ();
 		timet = icaltime_as_timet_with_zone (*dt_time->value, zone ? zone : default_zone);
@@ -1238,7 +1238,7 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 		if (tt) {
 			/* COMPLETED must be in UTC. */
 			completed_time = icaltime_as_timet_with_zone (*tt,
-								      icaltimezone_get_utc_timezone());
+								      icaltimezone_get_utc_timezone ());
 			e_cal_component_free_icaltimetype (tt);
 		}
 
@@ -1249,7 +1249,7 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 
 		e_cal_component_free_datetime (&dt_due);
 
-		max_time = MAX(completed_time, due_time);
+		max_time = MAX (completed_time, due_time);
 
 		if (max_time != -1)
 			*end = max_time;
@@ -1307,7 +1307,7 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 				/* Check if the end date or duration is set, libical seems to set
 				   second to -1 to denote an unset time */
 				if (p->type != E_CAL_COMPONENT_PERIOD_DATETIME || p->u.end.second != -1)
-					rdate_end = icaltime_as_timet (icaltime_add(p->start, p->u.duration));
+					rdate_end = icaltime_as_timet (icaltime_add (p->start, p->u.duration));
 				else
 					rdate_end = icaltime_as_timet (p->u.end);
 

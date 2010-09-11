@@ -11,35 +11,35 @@
 
 #include "address-data.h"
 
-static gchar *convert(const gchar *in, const gchar *from, const gchar *to)
+static gchar *convert (const gchar *in, const gchar *from, const gchar *to)
 {
-	iconv_t ic = iconv_open(to, from);
+	iconv_t ic = iconv_open (to, from);
 	gchar *out, *outp;
 	const gchar *inp;
 	gsize inlen, outlen;
 
 	if (ic == (iconv_t)-1)
-		return g_strdup(in);
+		return g_strdup (in);
 
-	inlen = strlen(in);
+	inlen = strlen (in);
 	outlen = inlen*5 + 16;
 
-	outp = out = g_malloc(outlen);
+	outp = out = g_malloc (outlen);
 	inp = in;
 
-	if (iconv(ic, &inp, &inlen, &outp, &outlen) == -1) {
-		test_free(out);
-		iconv_close(ic);
-		return g_strdup(in);
+	if (iconv (ic, &inp, &inlen, &outp, &outlen) == -1) {
+		test_free (out);
+		iconv_close (ic);
+		return g_strdup (in);
 	}
 
-	if (iconv(ic, NULL, 0, &outp, &outlen) == -1) {
-		test_free(out);
-		iconv_close(ic);
-		return g_strdup(in);
+	if (iconv (ic, NULL, 0, &outp, &outlen) == -1) {
+		test_free (out);
+		iconv_close (ic);
+		return g_strdup (in);
 	}
 
-	iconv_close(ic);
+	iconv_close (ic);
 
 	*outp = 0;
 
@@ -47,26 +47,26 @@ static gchar *convert(const gchar *in, const gchar *from, const gchar *to)
 	/* lets see if we can convert back again? */
 	{
 		gchar *nout, *noutp;
-		iconv_t ic = iconv_open(from, to);
+		iconv_t ic = iconv_open (from, to);
 
 		if (ic == (iconv_t)-1)
 			goto fail;
 
 		inp = out;
-		inlen = strlen(out);
+		inlen = strlen (out);
 		outlen = inlen*5 + 16;
-		noutp = nout = g_malloc(outlen);
-		if (iconv(ic, &inp, &inlen, &noutp, &outlen) == -1
-		    || iconv(ic, NULL, 0, &noutp, &outlen) == -1) {
+		noutp = nout = g_malloc (outlen);
+		if (iconv (ic, &inp, &inlen, &noutp, &outlen) == -1
+		    || iconv (ic, NULL, 0, &noutp, &outlen) == -1) {
 			g_warning("Cannot convert '%s' \n from %s to %s: %s\n", in, to, from, g_strerror(errno));
 		}
-		iconv_close(ic);
+		iconv_close (ic);
 	}
 
 	/* and lets see what camel thinks out optimal charset is */
 	{
 		printf("Camel thinks the best encoding of '%s' is %s, although we converted from %s\n",
-		       in, camel_charset_best(out, strlen(out)), from);
+		       in, camel_charset_best (out, strlen (out)), from);
 	}
 fail:
 #endif
@@ -77,7 +77,7 @@ fail:
 #define to_utf8(in, type) convert(in, type, "utf-8")
 #define from_utf8(in, type) convert(in, "utf-8", type)
 
-gint main(gint argc, gchar **argv)
+gint main (gint argc, gchar **argv)
 {
 	gint i;
 	CamelInternetAddress *addr, *addr2;
@@ -86,52 +86,52 @@ gint main(gint argc, gchar **argv)
 	const gchar *real, *where;
 	gchar *enc, *enc2, *format, *format2;
 
-	camel_test_init(argc, argv);
+	camel_test_init (argc, argv);
 
 	camel_test_start("CamelInternetAddress, basics");
 
-	addr = camel_internet_address_new();
+	addr = camel_internet_address_new ();
 
 	push("Test blank address");
-	check(camel_address_length(CAMEL_ADDRESS(addr)) == 0);
-	check(camel_internet_address_get(addr, 0, &real, &where) == FALSE);
-	pull();
+	check (camel_address_length (CAMEL_ADDRESS (addr)) == 0);
+	check (camel_internet_address_get (addr, 0, &real, &where) == FALSE);
+	pull ();
 
 	push("Test blank clone");
-	addr2 = CAMEL_INTERNET_ADDRESS(camel_address_new_clone(CAMEL_ADDRESS(addr)));
-	test_address_compare(addr, addr2);
-	check_unref(addr2, 1);
-	pull();
+	addr2 = CAMEL_INTERNET_ADDRESS (camel_address_new_clone (CAMEL_ADDRESS (addr)));
+	test_address_compare (addr, addr2);
+	check_unref (addr2, 1);
+	pull ();
 
 	push("Test add 1");
 	camel_internet_address_add(addr, "Zed", "nowhere@here.com.au");
-	check(camel_address_length(CAMEL_ADDRESS(addr)) == 1);
-	check(camel_internet_address_get(addr, 0, &real, &where) == TRUE);
+	check (camel_address_length (CAMEL_ADDRESS (addr)) == 1);
+	check (camel_internet_address_get (addr, 0, &real, &where) == TRUE);
 	check_msg(string_equal("Zed", real), "real = '%s'", real);
 	check(strcmp(where, "nowhere@here.com.au") == 0);
-	pull();
+	pull ();
 
 	push("Test clone 1");
-	addr2 = CAMEL_INTERNET_ADDRESS(camel_address_new_clone(CAMEL_ADDRESS(addr)));
-	test_address_compare(addr, addr2);
-	check_unref(addr2, 1);
-	pull();
+	addr2 = CAMEL_INTERNET_ADDRESS (camel_address_new_clone (CAMEL_ADDRESS (addr)));
+	test_address_compare (addr, addr2);
+	check_unref (addr2, 1);
+	pull ();
 
 	push("Test add many");
 	for (i=1;i<10;i++) {
 		gchar name[16], a[32];
 		sprintf(name, "Zed %d", i);
 		sprintf(a, "nowhere@here-%d.com.au", i);
-		camel_internet_address_add(addr, name, a);
-		check(camel_address_length(CAMEL_ADDRESS(addr)) == i+1);
-		check(camel_internet_address_get(addr, i, &real, &where) == TRUE);
+		camel_internet_address_add (addr, name, a);
+		check (camel_address_length (CAMEL_ADDRESS (addr)) == i+1);
+		check (camel_internet_address_get (addr, i, &real, &where) == TRUE);
 		check_msg(string_equal(name, real), "name = '%s' real = '%s'", name, real);
-		check(strcmp(where, a) == 0);
+		check (strcmp (where, a) == 0);
 	}
-	pull();
+	pull ();
 
 	/* put a few of these in to make it look like its doing something impressive ... :) */
-	camel_test_end();
+	camel_test_end ();
 	camel_test_start("CamelInternetAddress, search");
 
 	push("Test search");
@@ -154,168 +154,168 @@ gint main(gint argc, gchar **argv)
 	check(camel_internet_address_find_address(addr, "nowhere@here-20.com.au ", &where) == -1);
 	check(camel_internet_address_find_address(addr, "", &where) == -1);
 	/*check(camel_internet_address_find_address(addr, NULL, &where) == -1);*/
-	camel_test_fatal();
-	pull();
+	camel_test_fatal ();
+	pull ();
 
-	camel_test_end();
+	camel_test_end ();
 	camel_test_start("CamelInternetAddress, copy/cat/clone");
 
 	push("Test clone many");
-	addr2 = CAMEL_INTERNET_ADDRESS(camel_address_new_clone(CAMEL_ADDRESS(addr)));
-	test_address_compare(addr, addr2);
-	pull();
+	addr2 = CAMEL_INTERNET_ADDRESS (camel_address_new_clone (CAMEL_ADDRESS (addr)));
+	test_address_compare (addr, addr2);
+	pull ();
 
 	push("Test remove items");
-	camel_address_remove(CAMEL_ADDRESS(addr2), 0);
-	check(camel_address_length(CAMEL_ADDRESS(addr2)) == 9);
-	camel_address_remove(CAMEL_ADDRESS(addr2), 0);
-	check(camel_address_length(CAMEL_ADDRESS(addr2)) == 8);
-	camel_address_remove(CAMEL_ADDRESS(addr2), 5);
-	check(camel_address_length(CAMEL_ADDRESS(addr2)) == 7);
-	camel_address_remove(CAMEL_ADDRESS(addr2), 10);
-	check(camel_address_length(CAMEL_ADDRESS(addr2)) == 7);
-	camel_address_remove(CAMEL_ADDRESS(addr2), -1);
-	check(camel_address_length(CAMEL_ADDRESS(addr2)) == 0);
-	check_unref(addr2, 1);
-	pull();
+	camel_address_remove (CAMEL_ADDRESS (addr2), 0);
+	check (camel_address_length (CAMEL_ADDRESS (addr2)) == 9);
+	camel_address_remove (CAMEL_ADDRESS (addr2), 0);
+	check (camel_address_length (CAMEL_ADDRESS (addr2)) == 8);
+	camel_address_remove (CAMEL_ADDRESS (addr2), 5);
+	check (camel_address_length (CAMEL_ADDRESS (addr2)) == 7);
+	camel_address_remove (CAMEL_ADDRESS (addr2), 10);
+	check (camel_address_length (CAMEL_ADDRESS (addr2)) == 7);
+	camel_address_remove (CAMEL_ADDRESS (addr2), -1);
+	check (camel_address_length (CAMEL_ADDRESS (addr2)) == 0);
+	check_unref (addr2, 1);
+	pull ();
 
 	push("Testing copy/cat");
 	push("clone + cat");
-	addr2 = CAMEL_INTERNET_ADDRESS(camel_address_new_clone(CAMEL_ADDRESS(addr)));
-	camel_address_cat(CAMEL_ADDRESS(addr2), CAMEL_ADDRESS(addr));
-	check(camel_address_length(CAMEL_ADDRESS(addr)) == 10);
-	check(camel_address_length(CAMEL_ADDRESS(addr2)) == 20);
-	check_unref(addr2, 1);
-	pull();
+	addr2 = CAMEL_INTERNET_ADDRESS (camel_address_new_clone (CAMEL_ADDRESS (addr)));
+	camel_address_cat (CAMEL_ADDRESS (addr2), CAMEL_ADDRESS (addr));
+	check (camel_address_length (CAMEL_ADDRESS (addr)) == 10);
+	check (camel_address_length (CAMEL_ADDRESS (addr2)) == 20);
+	check_unref (addr2, 1);
+	pull ();
 
 	push("cat + cat + copy");
-	addr2 = camel_internet_address_new();
-	camel_address_cat(CAMEL_ADDRESS(addr2), CAMEL_ADDRESS(addr));
-	test_address_compare(addr, addr2);
-	camel_address_cat(CAMEL_ADDRESS(addr2), CAMEL_ADDRESS(addr));
-	check(camel_address_length(CAMEL_ADDRESS(addr)) == 10);
-	check(camel_address_length(CAMEL_ADDRESS(addr2)) == 20);
-	camel_address_copy(CAMEL_ADDRESS(addr2), CAMEL_ADDRESS(addr));
-	test_address_compare(addr, addr2);
-	check_unref(addr2, 1);
-	pull();
+	addr2 = camel_internet_address_new ();
+	camel_address_cat (CAMEL_ADDRESS (addr2), CAMEL_ADDRESS (addr));
+	test_address_compare (addr, addr2);
+	camel_address_cat (CAMEL_ADDRESS (addr2), CAMEL_ADDRESS (addr));
+	check (camel_address_length (CAMEL_ADDRESS (addr)) == 10);
+	check (camel_address_length (CAMEL_ADDRESS (addr2)) == 20);
+	camel_address_copy (CAMEL_ADDRESS (addr2), CAMEL_ADDRESS (addr));
+	test_address_compare (addr, addr2);
+	check_unref (addr2, 1);
+	pull ();
 
 	push("copy");
-	addr2 = camel_internet_address_new();
-	camel_address_copy(CAMEL_ADDRESS(addr2), CAMEL_ADDRESS(addr));
-	test_address_compare(addr, addr2);
-	check_unref(addr2, 1);
-	pull();
+	addr2 = camel_internet_address_new ();
+	camel_address_copy (CAMEL_ADDRESS (addr2), CAMEL_ADDRESS (addr));
+	test_address_compare (addr, addr2);
+	check_unref (addr2, 1);
+	pull ();
 
-	pull();
+	pull ();
 
-	check_unref(addr, 1);
+	check_unref (addr, 1);
 
-	camel_test_end();
+	camel_test_end ();
 
 	camel_test_start("CamelInternetAddress, I18N");
 
 	for (i = 0;i < G_N_ELEMENTS (test_lines); i++) {
 		push("Testing text line %d (%s) '%s'", i, test_lines[i].type, test_lines[i].line);
 
-		addr = camel_internet_address_new();
+		addr = camel_internet_address_new ();
 
 		/* first, convert to api format (utf-8) */
 		charset = test_lines[i].type;
-		name = to_utf8(test_lines[i].line, charset);
+		name = to_utf8 (test_lines[i].line, charset);
 
 		push("Address setup");
 		camel_internet_address_add(addr, name, "nobody@nowhere.com");
-		check(camel_internet_address_get(addr, 0, &real, &where) == TRUE);
+		check (camel_internet_address_get (addr, 0, &real, &where) == TRUE);
 		check_msg(string_equal(name, real), "name = '%s' real = '%s'", name, real);
 		check(strcmp(where, "nobody@nowhere.com") == 0);
-		test_free(name);
+		test_free (name);
 
-		check(camel_internet_address_get(addr, 1, &real, &where) == FALSE);
-		check(camel_address_length(CAMEL_ADDRESS(addr)) == 1);
-		pull();
+		check (camel_internet_address_get (addr, 1, &real, &where) == FALSE);
+		check (camel_address_length (CAMEL_ADDRESS (addr)) == 1);
+		pull ();
 
 		push("Address encode/decode");
-		enc = camel_address_encode(CAMEL_ADDRESS(addr));
+		enc = camel_address_encode (CAMEL_ADDRESS (addr));
 
-		addr2 = camel_internet_address_new();
-		check(camel_address_decode(CAMEL_ADDRESS(addr2), enc) == 1);
-		check(camel_address_length(CAMEL_ADDRESS(addr2)) == 1);
+		addr2 = camel_internet_address_new ();
+		check (camel_address_decode (CAMEL_ADDRESS (addr2), enc) == 1);
+		check (camel_address_length (CAMEL_ADDRESS (addr2)) == 1);
 
-		enc2 = camel_address_encode(CAMEL_ADDRESS(addr2));
+		enc2 = camel_address_encode (CAMEL_ADDRESS (addr2));
 		check_msg(string_equal(enc, enc2), "enc = '%s' enc2 = '%s'", enc, enc2);
-		test_free(enc2);
+		test_free (enc2);
 
 		push("Compare addresses");
-		test_address_compare(addr, addr2);
-		pull();
-		check_unref(addr2, 1);
-		test_free(enc);
-		pull();
+		test_address_compare (addr, addr2);
+		pull ();
+		check_unref (addr2, 1);
+		test_free (enc);
+		pull ();
 
 		/* FIXME: format/unformat arne't guaranteed to be reversible, at least at the moment */
 		camel_test_nonfatal("format/unformat not (yet) reversible for all cases");
 
 		push("Address format/unformat");
-		format = camel_address_format(CAMEL_ADDRESS(addr));
+		format = camel_address_format (CAMEL_ADDRESS (addr));
 
-		addr2 = camel_internet_address_new();
-		check(camel_address_unformat(CAMEL_ADDRESS(addr2), format) == 1);
-		check(camel_address_length(CAMEL_ADDRESS(addr2)) == 1);
+		addr2 = camel_internet_address_new ();
+		check (camel_address_unformat (CAMEL_ADDRESS (addr2), format) == 1);
+		check (camel_address_length (CAMEL_ADDRESS (addr2)) == 1);
 
-		format2 = camel_address_format(CAMEL_ADDRESS(addr2));
+		format2 = camel_address_format (CAMEL_ADDRESS (addr2));
 		check_msg(string_equal(format, format2), "format = '%s\n\tformat2 = '%s'", format, format2);
-		test_free(format2);
+		test_free (format2);
 
 		/* currently format/unformat doesn't handle ,'s and other special chars at all */
-		if (camel_address_length(CAMEL_ADDRESS(addr2)) == 1) {
+		if (camel_address_length (CAMEL_ADDRESS (addr2)) == 1) {
 			push("Compare addresses");
-			test_address_compare(addr, addr2);
-			pull();
+			test_address_compare (addr, addr2);
+			pull ();
 		}
 
-		test_free(format);
-		pull();
+		test_free (format);
+		pull ();
 
-		camel_test_fatal();
+		camel_test_fatal ();
 
-		check_unref(addr2, 1);
+		check_unref (addr2, 1);
 
-		check_unref(addr, 1);
-		pull();
+		check_unref (addr, 1);
+		pull ();
 
 	}
 
-	camel_test_end();
+	camel_test_end ();
 
 	camel_test_start("CamelInternetAddress, I18N decode");
 
 	for (i = 0; i < G_N_ELEMENTS (test_address); i++) {
 		push("Testing address line %d '%s'", i, test_address[i].addr);
 
-		addr = camel_internet_address_new();
+		addr = camel_internet_address_new ();
 		push("checking decoded");
-		check(camel_address_decode(CAMEL_ADDRESS(addr), test_address[i].addr) == test_address[i].count);
-		format = camel_address_format(CAMEL_ADDRESS(addr));
-		check(strcmp(format, test_address[i].utf8) == 0);
-		test_free(format);
-		pull();
+		check (camel_address_decode (CAMEL_ADDRESS (addr), test_address[i].addr) == test_address[i].count);
+		format = camel_address_format (CAMEL_ADDRESS (addr));
+		check (strcmp (format, test_address[i].utf8) == 0);
+		test_free (format);
+		pull ();
 
 		push("Comparing re-encoded output");
-		addr2 = CAMEL_INTERNET_ADDRESS(camel_internet_address_new());
-		enc = camel_address_encode(CAMEL_ADDRESS(addr));
+		addr2 = CAMEL_INTERNET_ADDRESS (camel_internet_address_new ());
+		enc = camel_address_encode (CAMEL_ADDRESS (addr));
 		check_msg(camel_address_decode(CAMEL_ADDRESS(addr2), enc) == test_address[i].count, "enc = '%s'", enc);
-		test_free(enc);
-		test_address_compare(addr, addr2);
-		check_unref(addr2, 1);
-		pull();
+		test_free (enc);
+		test_address_compare (addr, addr2);
+		check_unref (addr2, 1);
+		pull ();
 
-		check_unref(addr, 1);
+		check_unref (addr, 1);
 
-		pull();
+		pull ();
 	}
 
-	camel_test_end();
+	camel_test_end ();
 
 	/* FIXME: Add test of decoding of broken addresses */
 

@@ -96,8 +96,8 @@ static GObjectClass *parent_class;
 static gint
 utf8_casefold_collate_len (const gchar *str1, const gchar *str2, gint len)
 {
-	gchar *s1 = g_utf8_casefold(str1, len);
-	gchar *s2 = g_utf8_casefold(str2, len);
+	gchar *s1 = g_utf8_casefold (str1, len);
+	gchar *s2 = g_utf8_casefold (str2, len);
 	gint rv;
 
 	rv = g_utf8_collate (s1, s2);
@@ -211,7 +211,7 @@ e_destination_copy (const EDestination *dest)
 	}
 
 	/* XXX other settings? */
-        new_dest->priv->raw = g_strdup(dest->priv->raw);
+        new_dest->priv->raw = g_strdup (dest->priv->raw);
 
 	return new_dest;
 }

@@ -440,9 +440,9 @@ func_due_in_time_range (ESExp *esexp, gint argc, ESExpResult **argv, gpointer da
 		zone = resolve_tzid (dt.tzid, ctx);
 		result = e_sexp_result_new (esexp, ESEXP_RES_INT);
 		if (zone)
-			due_t = icaltime_as_timet_with_zone(*dt.value,zone);
+			due_t = icaltime_as_timet_with_zone (*dt.value,zone);
 		else
-			due_t = icaltime_as_timet(*dt.value);
+			due_t = icaltime_as_timet (*dt.value);
 	}
 
 	if (dt.value != NULL && (due_t <= end && due_t >= start))
@@ -569,7 +569,7 @@ matches_classification (ECalComponent *comp, const gchar *str)
 	else
 		classification1 = E_CAL_COMPONENT_CLASS_UNKNOWN;
 
-	e_cal_component_get_classification(comp, &classification);
+	e_cal_component_get_classification (comp, &classification);
 
 	return (classification == classification1 ? TRUE : FALSE);
 }
@@ -1171,7 +1171,7 @@ static struct prop_info {
 };
 
 static ESExpResult *
-entry_compare(SearchContext *ctx, struct _ESExp *f,
+entry_compare (SearchContext *ctx, struct _ESExp *f,
 	      gint argc, struct _ESExpResult **argv,
 	      gchar *(*compare)(const gchar *, const gchar *))
 {
@@ -1201,7 +1201,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 
 					prop = e_card_simple_get (ctx->card, info->field_id);
 
-					if (prop && compare(prop, argv[1]->value.string)) {
+					if (prop && compare (prop, argv[1]->value.string)) {
 						truth = TRUE;
 					}
 					if ((!prop) && compare("", argv[1]->value.string)) {
@@ -1218,7 +1218,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 
 					prop = e_card_get_id (ctx->card->card);
 
-					if (prop && compare(prop, argv[1]->value.string)) {
+					if (prop && compare (prop, argv[1]->value.string)) {
 						truth = TRUE;
 					}
 					if ((!prop) && compare("", argv[1]->value.string)) {
@@ -1236,7 +1236,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 		}
 
 	}
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = truth;
 
 	return r;
@@ -1283,7 +1283,7 @@ static struct {
  * Since: 2.32
  */
 gboolean
-e_cal_backend_sexp_evaluate_occur_times(ECalBackendSExp *sexp, time_t *start, time_t *end)
+e_cal_backend_sexp_evaluate_occur_times (ECalBackendSExp *sexp, time_t *start, time_t *end)
 {
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (start != NULL, FALSE);
@@ -1320,14 +1320,14 @@ e_cal_backend_sexp_match_comp (ECalBackendSExp *sexp, ECalComponent *comp, ECalB
 		g_object_unref (sexp->priv->search_context->backend);
 		return FALSE;
 	}
-	r = e_sexp_eval(sexp->priv->search_sexp);
+	r = e_sexp_eval (sexp->priv->search_sexp);
 
 	retval = (r && r->type == ESEXP_RES_BOOL && r->value.boolean);
 
 	g_object_unref (sexp->priv->search_context->comp);
 	g_object_unref (sexp->priv->search_context->backend);
 
-	e_sexp_result_free(sexp->priv->search_sexp, r);
+	e_sexp_result_free (sexp->priv->search_sexp, r);
 
 	return retval;
 }
@@ -1380,21 +1380,21 @@ e_cal_backend_sexp_new (const gchar *text)
 	gint esexp_error;
 	gint i;
 
-	sexp->priv->search_sexp = e_sexp_new();
+	sexp->priv->search_sexp = e_sexp_new ();
 	sexp->priv->text = g_strdup (text);
 
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1) {
-			e_sexp_add_ifunction(sexp->priv->search_sexp, 0, symbols[i].name,
+			e_sexp_add_ifunction (sexp->priv->search_sexp, 0, symbols[i].name,
 					     (ESExpIFunc *)symbols[i].func, sexp->priv->search_context);
 		} else {
-			e_sexp_add_function(sexp->priv->search_sexp, 0, symbols[i].name,
+			e_sexp_add_function (sexp->priv->search_sexp, 0, symbols[i].name,
 					    symbols[i].func, sexp->priv->search_context);
 		}
 	}
 
-	e_sexp_input_text(sexp->priv->search_sexp, text, strlen(text));
-	esexp_error = e_sexp_parse(sexp->priv->search_sexp);
+	e_sexp_input_text (sexp->priv->search_sexp, text, strlen (text));
+	esexp_error = e_sexp_parse (sexp->priv->search_sexp);
 
 	if (esexp_error == -1) {
 		g_object_unref (sexp);
@@ -1431,7 +1431,7 @@ e_cal_backend_sexp_dispose (GObject *object)
 	ECalBackendSExp *sexp = E_CAL_BACKEND_SEXP (object);
 
 	if (sexp->priv) {
-		e_sexp_unref(sexp->priv->search_sexp);
+		e_sexp_unref (sexp->priv->search_sexp);
 
 		g_free (sexp->priv->text);
 
@@ -1473,7 +1473,7 @@ test_query (const gchar * query)
 	ECalBackendSExp *sexp = e_cal_backend_sexp_new (query);
 	time_t start, end;
 
-	gboolean generator = e_cal_backend_sexp_evaluate_occur_times(sexp, &start, &end);
+	gboolean generator = e_cal_backend_sexp_evaluate_occur_times (sexp, &start, &end);
 
 	if (generator) {
 		printf ("%s: %ld - %ld\n", query, start, end);
@@ -1482,9 +1482,9 @@ test_query (const gchar * query)
 	}
 }
 
-gint main(gint argc, gchar **argv)
+gint main (gint argc, gchar **argv)
 {
-	g_type_init();
+	g_type_init ();
 
 	/* e_sexp_add_variable(f, 0, "test", NULL); */
 
@@ -1508,7 +1508,7 @@ gint main(gint argc, gchar **argv)
 			    " (or (contains? \"substring\") (has-categories? \"blah\"))) (has-alarms?))");
 	}
 	else
-		test_query(argv[1]);
+		test_query (argv[1]);
 
 	return 0;
 }

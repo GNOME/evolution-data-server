@@ -32,8 +32,8 @@
 
 G_BEGIN_DECLS
 
-gint camel_lock_helper_lock(const gchar *path , GError **error);
-gint camel_lock_helper_unlock(gint lockid);
+gint camel_lock_helper_lock (const gchar *path , GError **error);
+gint camel_lock_helper_unlock (gint lockid);
 
 G_END_DECLS
 

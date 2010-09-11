@@ -134,20 +134,20 @@ gint main (gint argc, gchar **argv)
 	camel_stream_write (stream1, "Hello, I am a test stream.\n", 27, NULL);
 	camel_stream_reset (stream1, NULL);
 
-	conpart = camel_mime_part_new();
-	dw = camel_data_wrapper_new();
-	camel_data_wrapper_construct_from_stream(dw, stream1, NULL);
+	conpart = camel_mime_part_new ();
+	dw = camel_data_wrapper_new ();
+	camel_data_wrapper_construct_from_stream (dw, stream1, NULL);
 	camel_medium_set_content ((CamelMedium *)conpart, dw);
 	g_object_unref (stream1);
 	g_object_unref (dw);
 
-	sigpart = camel_mime_part_new();
+	sigpart = camel_mime_part_new ();
 
 	camel_test_push ("PGP signing");
 	camel_cipher_sign (ctx, "no.user@no.domain", CAMEL_CIPHER_HASH_SHA1, conpart, sigpart, &error);
 	if (error != NULL) {
 		printf("PGP signing failed assuming non-functional environment\n%s", error->message);
-		camel_test_pull();
+		camel_test_pull ();
 		return 77;
 	}
 	camel_test_pull ();
@@ -168,15 +168,15 @@ gint main (gint argc, gchar **argv)
 	camel_stream_write (stream1, "Hello, I am a test of encryption/decryption.", 44, NULL);
 	camel_stream_reset (stream1, NULL);
 
-	conpart = camel_mime_part_new();
-	dw = camel_data_wrapper_new();
-	camel_stream_reset(stream1, NULL);
-	camel_data_wrapper_construct_from_stream(dw, stream1, NULL);
+	conpart = camel_mime_part_new ();
+	dw = camel_data_wrapper_new ();
+	camel_stream_reset (stream1, NULL);
+	camel_data_wrapper_construct_from_stream (dw, stream1, NULL);
 	camel_medium_set_content ((CamelMedium *)conpart, dw);
 	g_object_unref (stream1);
 	g_object_unref (dw);
 
-	encpart = camel_mime_part_new();
+	encpart = camel_mime_part_new ();
 
 	g_clear_error (&error);
 
@@ -191,7 +191,7 @@ gint main (gint argc, gchar **argv)
 	g_clear_error (&error);
 
 	camel_test_push ("PGP decrypt");
-	outpart = camel_mime_part_new();
+	outpart = camel_mime_part_new ();
 	valid = camel_cipher_decrypt (ctx, encpart, outpart, &error);
 	check_msg (error == NULL, "%s", error->message);
 	check_msg (valid->encrypt.status == CAMEL_CIPHER_VALIDITY_ENCRYPT_ENCRYPTED, "%s", valid->encrypt.description);
@@ -201,8 +201,8 @@ gint main (gint argc, gchar **argv)
 	buffer2 = g_byte_array_new ();
 	stream2 = camel_stream_mem_new_with_byte_array (buffer2);
 
-	camel_data_wrapper_write_to_stream((CamelDataWrapper *)conpart, stream1, NULL);
-	camel_data_wrapper_write_to_stream((CamelDataWrapper *)outpart, stream2, NULL);
+	camel_data_wrapper_write_to_stream ((CamelDataWrapper *)conpart, stream1, NULL);
+	camel_data_wrapper_write_to_stream ((CamelDataWrapper *)outpart, stream2, NULL);
 
 	before = g_strndup ((gchar *) buffer1->data, buffer1->len);
 	after = g_strndup ((gchar *) buffer2->data, buffer2->len);

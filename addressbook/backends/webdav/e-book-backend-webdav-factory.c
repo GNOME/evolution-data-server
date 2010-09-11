@@ -28,16 +28,16 @@ E_BOOK_BACKEND_FACTORY_SIMPLE (webdav, Webdav, e_book_backend_webdav_new)
 
 static GType webdav_type;
 
-void eds_module_initialize(GTypeModule *module)
+void eds_module_initialize (GTypeModule *module)
 {
-	webdav_type = _webdav_factory_get_type(module);
+	webdav_type = _webdav_factory_get_type (module);
 }
 
-void eds_module_shutdown(void)
+void eds_module_shutdown (void)
 {
 }
 
-void eds_module_list_types(const GType **types, gint *num_types)
+void eds_module_list_types (const GType **types, gint *num_types)
 {
 	*types     = &webdav_type;
 	*num_types = 1;

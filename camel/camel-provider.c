@@ -72,13 +72,13 @@ static GOnce setup_once = G_ONCE_INIT;
 static gpointer
 provider_setup (gpointer param)
 {
-	module_table = g_hash_table_new(camel_strcase_hash, camel_strcase_equal);
-	provider_table = g_hash_table_new(camel_strcase_hash, camel_strcase_equal);
+	module_table = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
+	provider_table = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
 
 	vee_provider.object_types[CAMEL_PROVIDER_STORE] = camel_vee_store_get_type ();
 	vee_provider.url_hash = camel_url_hash;
 	vee_provider.url_equal = camel_url_equal;
-	camel_provider_register(&vee_provider);
+	camel_provider_register (&vee_provider);
 
 	return NULL;
 }
@@ -139,7 +139,7 @@ camel_provider_init (void)
 		p = strrchr (name, '.');
 		strcpy (p, "." G_MODULE_SUFFIX);
 
-		m = g_malloc0(sizeof(*m));
+		m = g_malloc0 (sizeof (*m));
 		m->path = name;
 
 		while ((fgets (buf, sizeof (buf), fp))) {
@@ -149,10 +149,10 @@ camel_provider_init (void)
 				*p = '\0';
 
 			if (*buf) {
-				gchar *protocol = g_strdup(buf);
+				gchar *protocol = g_strdup (buf);
 
-				m->types = g_slist_prepend(m->types, protocol);
-				g_hash_table_insert(module_table, protocol, m);
+				m->types = g_slist_prepend (m->types, protocol);
+				g_hash_table_insert (module_table, protocol, m);
 			}
 		}
 
@@ -221,7 +221,7 @@ camel_provider_load (const gchar *path,
  * Registers a provider.
  **/
 void
-camel_provider_register(CamelProvider *provider)
+camel_provider_register (CamelProvider *provider)
 {
 	gint i;
 	CamelProviderConfEntry *conf;
@@ -229,13 +229,13 @@ camel_provider_register(CamelProvider *provider)
 
 	g_return_if_fail (provider != NULL);
 
-	g_assert(provider_table);
+	g_assert (provider_table);
 
-	LOCK();
+	LOCK ();
 
-	if (g_hash_table_lookup(provider_table, provider->protocol) != NULL) {
+	if (g_hash_table_lookup (provider_table, provider->protocol) != NULL) {
 		g_warning("Trying to re-register camel provider for protocol '%s'", provider->protocol);
-		UNLOCK();
+		UNLOCK ();
 		return;
 	}
 
@@ -271,7 +271,7 @@ camel_provider_register(CamelProvider *provider)
 		provider_table,
 		(gpointer) provider->protocol, provider);
 
-	UNLOCK();
+	UNLOCK ();
 }
 
 static gint
@@ -303,7 +303,7 @@ add_to_list (gpointer key, gpointer value, gpointer user_data)
  * Returns: a GList of providers, which the caller must free.
  **/
 GList *
-camel_provider_list(gboolean load)
+camel_provider_list (gboolean load)
 {
 	GList *list = NULL;
 
@@ -313,29 +313,29 @@ camel_provider_list(gboolean load)
 
 	g_return_val_if_fail (provider_table != NULL, NULL);
 
-	LOCK();
+	LOCK ();
 
 	if (load) {
 		GList *w;
 
-		g_hash_table_foreach(module_table, add_to_list, &list);
+		g_hash_table_foreach (module_table, add_to_list, &list);
 		for (w = list;w;w = w->next) {
 			CamelProviderModule *m = w->data;
 
 			if (!m->loaded) {
-				camel_provider_load(m->path, NULL);
+				camel_provider_load (m->path, NULL);
 				m->loaded = 1;
 			}
 		}
-		g_list_free(list);
+		g_list_free (list);
 		list = NULL;
 	}
 
-	g_hash_table_foreach(provider_table, add_to_list, &list);
+	g_hash_table_foreach (provider_table, add_to_list, &list);
 
-	UNLOCK();
+	UNLOCK ();
 
-	list = g_list_sort(list, provider_compare);
+	list = g_list_sort (list, provider_compare);
 
 	return list;
 }
@@ -362,23 +362,23 @@ camel_provider_get (const gchar *url_string,
 	g_return_val_if_fail (provider_table != NULL, NULL);
 
 	len = strcspn(url_string, ":");
-	protocol = g_alloca(len+1);
-	memcpy(protocol, url_string, len);
+	protocol = g_alloca (len+1);
+	memcpy (protocol, url_string, len);
 	protocol[len] = 0;
 
-	LOCK();
+	LOCK ();
 
-	provider = g_hash_table_lookup(provider_table, protocol);
+	provider = g_hash_table_lookup (provider_table, protocol);
 	if (!provider) {
 		CamelProviderModule *m;
 
-		m = g_hash_table_lookup(module_table, protocol);
+		m = g_hash_table_lookup (module_table, protocol);
 		if (m && !m->loaded) {
 			m->loaded = 1;
 			if (!camel_provider_load (m->path, error))
 				goto fail;
 		}
-		provider = g_hash_table_lookup(provider_table, protocol);
+		provider = g_hash_table_lookup (provider_table, protocol);
 	}
 
 	if (provider == NULL)
@@ -388,7 +388,7 @@ camel_provider_get (const gchar *url_string,
 			_("No provider available for protocol '%s'"),
 			protocol);
 fail:
-	UNLOCK();
+	UNLOCK ();
 
 	return provider;
 }

@@ -82,7 +82,7 @@ static GStaticMutex operation_lock = G_STATIC_MUTEX_INIT;
 #define UNLOCK() g_static_mutex_unlock(&operation_lock)
 
 static guint stamp (void);
-static CamelDList operation_list = CAMEL_DLIST_INITIALISER(operation_list);
+static CamelDList operation_list = CAMEL_DLIST_INITIALISER (operation_list);
 static GStaticPrivate operation_key = G_STATIC_PRIVATE_INIT;
 
 typedef struct _CamelOperationMsg {
@@ -90,7 +90,7 @@ typedef struct _CamelOperationMsg {
 } CamelOperationMsg;
 
 static CamelOperation *
-co_getcc(void)
+co_getcc (void)
 {
 	return (CamelOperation *)g_static_private_get (&operation_key);
 }
@@ -136,19 +136,19 @@ camel_operation_new (CamelOperationStatusFunc status, gpointer status_data)
 {
 	CamelOperation *cc;
 
-	cc = g_malloc0(sizeof(*cc));
+	cc = g_malloc0 (sizeof (*cc));
 
 	cc->flags = 0;
 	cc->blocked = 0;
 	cc->refcount = 1;
 	cc->status = status;
 	cc->status_data = status_data;
-	cc->cancel_port = camel_msgport_new();
+	cc->cancel_port = camel_msgport_new ();
 	cc->cancel_fd = -1;
 
-	LOCK();
-	camel_dlist_addtail(&operation_list, (CamelDListNode *)cc);
-	UNLOCK();
+	LOCK ();
+	camel_dlist_addtail (&operation_list, (CamelDListNode *)cc);
+	UNLOCK ();
 
 	return cc;
 }
@@ -161,13 +161,13 @@ camel_operation_new (CamelOperationStatusFunc status, gpointer status_data)
  * receive operation updates, even if more are sent.
  **/
 void
-camel_operation_mute(CamelOperation *cc)
+camel_operation_mute (CamelOperation *cc)
 {
-	LOCK();
+	LOCK ();
 	cc->status = NULL;
 	cc->status_data = NULL;
 	clear_status_stack (cc, FALSE);
-	UNLOCK();
+	UNLOCK ();
 }
 
 /**
@@ -178,10 +178,10 @@ camel_operation_mute(CamelOperation *cc)
 CamelOperation *
 camel_operation_registered (void)
 {
-	CamelOperation *cc = co_getcc();
+	CamelOperation *cc = co_getcc ();
 
 	if (cc)
-		camel_operation_ref(cc);
+		camel_operation_ref (cc);
 
 	return cc;
 }
@@ -195,11 +195,11 @@ camel_operation_registered (void)
 void
 camel_operation_ref (CamelOperation *cc)
 {
-	g_assert(cc->refcount > 0);
+	g_assert (cc->refcount > 0);
 
-	LOCK();
+	LOCK ();
 	cc->refcount++;
-	UNLOCK();
+	UNLOCK ();
 }
 
 /**
@@ -211,25 +211,25 @@ camel_operation_ref (CamelOperation *cc)
 void
 camel_operation_unref (CamelOperation *cc)
 {
-	g_assert(cc->refcount > 0);
+	g_assert (cc->refcount > 0);
 
-	LOCK();
+	LOCK ();
 	if (cc->refcount == 1) {
 		CamelOperationMsg *msg;
 
-		camel_dlist_remove((CamelDListNode *)cc);
+		camel_dlist_remove ((CamelDListNode *)cc);
 
-		while ((msg = (CamelOperationMsg *)camel_msgport_try_pop(cc->cancel_port)))
-			g_free(msg);
+		while ((msg = (CamelOperationMsg *)camel_msgport_try_pop (cc->cancel_port)))
+			g_free (msg);
 
-		camel_msgport_destroy(cc->cancel_port);
+		camel_msgport_destroy (cc->cancel_port);
 
 		clear_status_stack (cc, TRUE);
-		g_free(cc);
+		g_free (cc);
 	} else {
 		cc->refcount--;
 	}
-	UNLOCK();
+	UNLOCK ();
 }
 
 /**
@@ -244,7 +244,7 @@ camel_operation_cancel (CamelOperation *cc)
 {
 	CamelOperationMsg *msg;
 
-	LOCK();
+	LOCK ();
 
 	if (cc == NULL) {
 		CamelOperation *cn;
@@ -253,8 +253,8 @@ camel_operation_cancel (CamelOperation *cc)
 		cn = cc->next;
 		while (cn) {
 			cc->flags |= CAMEL_OPERATION_CANCELLED;
-			msg = g_malloc0(sizeof(*msg));
-			camel_msgport_push(cc->cancel_port, (CamelMsg *)msg);
+			msg = g_malloc0 (sizeof (*msg));
+			camel_msgport_push (cc->cancel_port, (CamelMsg *)msg);
 			cc = cn;
 			cn = cn->next;
 		}
@@ -262,11 +262,11 @@ camel_operation_cancel (CamelOperation *cc)
 		d(printf("cancelling thread %d\n", cc->id));
 
 		cc->flags |= CAMEL_OPERATION_CANCELLED;
-		msg = g_malloc0(sizeof(*msg));
-		camel_msgport_push(cc->cancel_port, (CamelMsg *)msg);
+		msg = g_malloc0 (sizeof (*msg));
+		camel_msgport_push (cc->cancel_port, (CamelMsg *)msg);
 	}
 
-	UNLOCK();
+	UNLOCK ();
 }
 
 /**
@@ -281,20 +281,20 @@ camel_operation_cancel (CamelOperation *cc)
  * processing.
  **/
 void
-camel_operation_uncancel(CamelOperation *cc)
+camel_operation_uncancel (CamelOperation *cc)
 {
 	if (cc == NULL)
-		cc = co_getcc();
+		cc = co_getcc ();
 
 	if (cc) {
 		CamelOperationMsg *msg;
 
-		LOCK();
-		while ((msg = (CamelOperationMsg *)camel_msgport_try_pop(cc->cancel_port)))
-			g_free(msg);
+		LOCK ();
+		while ((msg = (CamelOperationMsg *)camel_msgport_try_pop (cc->cancel_port)))
+			g_free (msg);
 
 		cc->flags &= ~CAMEL_OPERATION_CANCELLED;
-		UNLOCK();
+		UNLOCK ();
 	}
 }
 
@@ -315,7 +315,7 @@ camel_operation_uncancel(CamelOperation *cc)
 CamelOperation *
 camel_operation_register (CamelOperation *cc)
 {
-	CamelOperation *oldcc = co_getcc();
+	CamelOperation *oldcc = co_getcc ();
 
 	g_static_private_set (&operation_key, cc, NULL);
 
@@ -352,9 +352,9 @@ camel_operation_cancel_check (CamelOperation *cc)
 	d(printf("checking for cancel in thread %p\n", g_thread_self()));
 
 	if (cc == NULL)
-		cc = co_getcc();
+		cc = co_getcc ();
 
-	LOCK();
+	LOCK ();
 
 	if (cc == NULL || cc->blocked > 0) {
 		d(printf("ahah!  cancellation is blocked\n"));
@@ -362,17 +362,17 @@ camel_operation_cancel_check (CamelOperation *cc)
 	} else if (cc->flags & CAMEL_OPERATION_CANCELLED) {
 		d(printf("previously cancelled\n"));
 		cancelled = TRUE;
-	} else if ((msg = (CamelOperationMsg *)camel_msgport_try_pop(cc->cancel_port))) {
+	} else if ((msg = (CamelOperationMsg *)camel_msgport_try_pop (cc->cancel_port))) {
 		d(printf("Got cancellation message\n"));
 		do {
-			g_free(msg);
-		} while ((msg = (CamelOperationMsg *)camel_msgport_try_pop(cc->cancel_port)));
+			g_free (msg);
+		} while ((msg = (CamelOperationMsg *)camel_msgport_try_pop (cc->cancel_port)));
 		cc->flags |= CAMEL_OPERATION_CANCELLED;
 		cancelled = TRUE;
 	} else
 		cancelled = FALSE;
 
-	UNLOCK();
+	UNLOCK ();
 
 	return cancelled;
 }
@@ -391,17 +391,17 @@ gint
 camel_operation_cancel_fd (CamelOperation *cc)
 {
 	if (cc == NULL)
-		cc = co_getcc();
+		cc = co_getcc ();
 
 	if (cc == NULL || cc->blocked)
 		return -1;
 
-	LOCK();
+	LOCK ();
 
 	if (cc->cancel_fd == -1)
-		cc->cancel_fd = camel_msgport_fd(cc->cancel_port);
+		cc->cancel_fd = camel_msgport_fd (cc->cancel_port);
 
-	UNLOCK();
+	UNLOCK ();
 
 	return cc->cancel_fd;
 }
@@ -421,17 +421,17 @@ PRFileDesc *
 camel_operation_cancel_prfd (CamelOperation *cc)
 {
 	if (cc == NULL)
-		cc = co_getcc();
+		cc = co_getcc ();
 
 	if (cc == NULL || cc->blocked)
 		return NULL;
 
-	LOCK();
+	LOCK ();
 
 	if (cc->cancel_prfd == NULL)
-		cc->cancel_prfd = camel_msgport_prfd(cc->cancel_port);
+		cc->cancel_prfd = camel_msgport_prfd (cc->cancel_port);
 
-	UNLOCK();
+	UNLOCK ();
 
 	return cc->cancel_prfd;
 }
@@ -456,33 +456,33 @@ camel_operation_start (CamelOperation *cc, const gchar *what, ...)
 	gpointer status_data;
 
 	if (cc == NULL)
-		cc = co_getcc();
+		cc = co_getcc ();
 
 	if (cc == NULL)
 		return;
 
-	LOCK();
+	LOCK ();
 
 	if (cc->status == NULL) {
-		UNLOCK();
+		UNLOCK ();
 		return;
 	}
 
-	va_start(ap, what);
-	msg = g_strdup_vprintf(what, ap);
-	va_end(ap);
+	va_start (ap, what);
+	msg = g_strdup_vprintf (what, ap);
+	va_end (ap);
 	cc->status_update = 0;
-	s = g_malloc0(sizeof(*s));
+	s = g_malloc0 (sizeof (*s));
 	s->msg = msg;
 	s->flags = 0;
 	cc->lastreport = s;
-	cc->status_stack = g_slist_prepend(cc->status_stack, s);
+	cc->status_stack = g_slist_prepend (cc->status_stack, s);
 
 	/* This avoids a race with camel_operation_mute() after we unlock. */
 	status_func = cc->status;
 	status_data = cc->status_data;
 
-	UNLOCK();
+	UNLOCK ();
 
 	status_func (cc, msg, CAMEL_OPERATION_START, status_data);
 
@@ -503,15 +503,15 @@ void
 camel_operation_start_transient (CamelOperation *cc, const gchar *what, ...)
 {
 	if (cc == NULL)
-		cc = co_getcc();
+		cc = co_getcc ();
 
 	if (cc == NULL)
 		return;
 
-	LOCK();
+	LOCK ();
 
 	if (cc->status == NULL) {
-		UNLOCK();
+		UNLOCK ();
 		return;
 	}
 
@@ -521,25 +521,25 @@ camel_operation_start_transient (CamelOperation *cc, const gchar *what, ...)
 		gchar *msg;
 		struct _status_stack *s;
 
-		va_start(ap, what);
-		msg = g_strdup_vprintf(what, ap);
-		va_end(ap);
-		s = g_malloc0(sizeof(*s));
+		va_start (ap, what);
+		msg = g_strdup_vprintf (what, ap);
+		va_end (ap);
+		s = g_malloc0 (sizeof (*s));
 		s->msg = msg;
 		s->flags = CAMEL_OPERATION_TRANSIENT;
-		s->stamp = stamp();
-		cc->status_stack = g_slist_prepend(cc->status_stack, s);
+		s->stamp = stamp ();
+		cc->status_stack = g_slist_prepend (cc->status_stack, s);
 	}
 	d(printf("start '%s'\n", msg, pc));
 
-	UNLOCK();
+	UNLOCK ();
 }
 
-static guint stamp(void)
+static guint stamp (void)
 {
 	GTimeVal tv;
 
-	g_get_current_time(&tv);
+	g_get_current_time (&tv);
 	/* update 4 times/second */
 	return (tv.tv_sec * 4) + tv.tv_usec / (1000000/4);
 }
@@ -566,15 +566,15 @@ camel_operation_progress (CamelOperation *cc, gint pc)
 	gpointer status_data;
 
 	if (cc == NULL)
-		cc = co_getcc();
+		cc = co_getcc ();
 
 	if (cc == NULL)
 		return;
 
-	LOCK();
+	LOCK ();
 
 	if (cc->status == NULL || cc->status_stack == NULL) {
-		UNLOCK();
+		UNLOCK ();
 		return;
 	}
 
@@ -583,34 +583,34 @@ camel_operation_progress (CamelOperation *cc, gint pc)
 
 	/* Transient messages dont start updating till 4 seconds after
 	   they started, then they update every second */
-	now = stamp();
+	now = stamp ();
 	if (cc->status_update == now) {
-		UNLOCK();
+		UNLOCK ();
 		return;
 	} else if (s->flags & CAMEL_OPERATION_TRANSIENT) {
 		if (s->stamp + CAMEL_OPERATION_TRANSIENT_DELAY > now) {
-			UNLOCK();
+			UNLOCK ();
 			return;
 		} else {
 			cc->status_update = now;
 			cc->lastreport = s;
-			msg = g_strdup(s->msg);
+			msg = g_strdup (s->msg);
 		}
 	} else {
 		s->stamp = cc->status_update = now;
 		cc->lastreport = s;
-		msg = g_strdup(s->msg);
+		msg = g_strdup (s->msg);
 	}
 
 	/* This avoids a race with camel_operation_mute() after we unlock. */
 	status_func = cc->status;
 	status_data = cc->status_data;
 
-	UNLOCK();
+	UNLOCK ();
 
 	status_func (cc, msg, pc, status_data);
 
-	g_free(msg);
+	g_free (msg);
 }
 
 /**
@@ -631,15 +631,15 @@ camel_operation_end (CamelOperation *cc)
 	gpointer status_data;
 
 	if (cc == NULL)
-		cc = co_getcc();
+		cc = co_getcc ();
 
 	if (cc == NULL)
 		return;
 
-	LOCK();
+	LOCK ();
 
 	if (cc->status == NULL || cc->status_stack == NULL) {
-		UNLOCK();
+		UNLOCK ();
 		return;
 	}
 
@@ -647,7 +647,7 @@ camel_operation_end (CamelOperation *cc)
 	 * ended was transient, see if we have any other transient
 	 * messages that haven't been updated yet above us, otherwise,
 	 * re-update as a non-transient at the last reported pc */
-	now = stamp();
+	now = stamp ();
 	s = cc->status_stack->data;
 	if (s->flags & CAMEL_OPERATION_TRANSIENT) {
 		if (cc->lastreport == s) {
@@ -656,13 +656,13 @@ camel_operation_end (CamelOperation *cc)
 				p = l->data;
 				if (p->flags & CAMEL_OPERATION_TRANSIENT) {
 					if (p->stamp + CAMEL_OPERATION_TRANSIENT_DELAY < now) {
-						msg = g_strdup(p->msg);
+						msg = g_strdup (p->msg);
 						pc = p->pc;
 						cc->lastreport = p;
 						break;
 					}
 				} else {
-					msg = g_strdup(p->msg);
+					msg = g_strdup (p->msg);
 					pc = p->pc;
 					cc->lastreport = p;
 					break;
@@ -670,20 +670,20 @@ camel_operation_end (CamelOperation *cc)
 				l = l->next;
 			}
 		}
-		g_free(s->msg);
+		g_free (s->msg);
 	} else {
 		msg = s->msg;
 		pc = CAMEL_OPERATION_END;
 		cc->lastreport = s;
 	}
-	g_free(s);
-	cc->status_stack = g_slist_delete_link(cc->status_stack, cc->status_stack);
+	g_free (s);
+	cc->status_stack = g_slist_delete_link (cc->status_stack, cc->status_stack);
 
 	/* This avoids a race with camel_operation_mute() after we unlock. */
 	status_func = cc->status;
 	status_data = cc->status_data;
 
-	UNLOCK();
+	UNLOCK ();
 
 	if (msg) {
 		status_func (cc, msg, pc, status_data);

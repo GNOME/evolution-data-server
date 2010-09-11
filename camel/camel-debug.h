@@ -34,11 +34,11 @@
 
 G_BEGIN_DECLS
 
-void camel_debug_init(void);
-gboolean camel_debug(const gchar *mode);
+void camel_debug_init (void);
+gboolean camel_debug (const gchar *mode);
 
-gboolean camel_debug_start(const gchar *mode);
-void camel_debug_end(void);
+gboolean camel_debug_start (const gchar *mode);
+void camel_debug_end (void);
 
 /**
  * CAMEL_CHECK_GERROR:

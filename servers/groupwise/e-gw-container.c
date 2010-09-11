@@ -53,12 +53,12 @@ static GObjectClass *parent_class = NULL;
 
 static void e_gw_container_set_sequence (EGwContainer *container, gint sequence);
 static void e_gw_container_set_modified (EGwContainer *container, const gchar *modified);
-static void e_gw_container_set_owner(EGwContainer *container, const gchar *owner);
+static void e_gw_container_set_owner (EGwContainer *container, const gchar *owner);
 static void e_gw_container_set_is_shared_by_me (EGwContainer *container, gboolean is_shared_by_me);
 static void e_gw_container_set_is_shared_to_me (EGwContainer *container, gboolean is_shared_to_me);
 
 static void
-free_node(EShUsers *user)
+free_node (EShUsers *user)
 {
 	if (user) {
 		g_free (user->email);
@@ -259,7 +259,7 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 		if (subparam) {
 			value = soup_soap_parameter_get_string_value (subparam);
 			if (value)
-				container->priv->unread = atoi(value);
+				container->priv->unread = atoi (value);
 			else
 				container->priv->unread = 0; /*XXX:should it be 0?*/
 
@@ -271,13 +271,13 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 	if (subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if (value)
-			container->priv->total = atoi(value);
+			container->priv->total = atoi (value);
 		g_free (value);
 	}
 	/* Is shared by me*/
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "isSharedByMe");
 	if (!subparam) {
-		e_gw_container_set_is_shared_by_me(container, FALSE);
+		e_gw_container_set_is_shared_by_me (container, FALSE);
 
 	} else {
 		value = soup_soap_parameter_get_string_value (subparam);
@@ -320,7 +320,7 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 					entry_subparam != NULL;
 					entry_subparam = soup_soap_parameter_get_next_child_by_name (entry_subparam, "entry")) {
 
-				EShUsers *user = g_new0(EShUsers , 1);
+				EShUsers *user = g_new0 (EShUsers , 1);
 				email_rt_subparam = soup_soap_parameter_get_first_child_by_name (entry_subparam, "email");
 
 				if (!email_rt_subparam) {
@@ -438,11 +438,11 @@ e_gw_container_set_modified (EGwContainer *container, const gchar *modified)
 }
 
 static void
-e_gw_container_set_owner(EGwContainer *container, const gchar *owner)
+e_gw_container_set_owner (EGwContainer *container, const gchar *owner)
 {
 	EGwContainerPrivate *priv;
 
-	g_return_if_fail (E_IS_GW_CONTAINER(container));
+	g_return_if_fail (E_IS_GW_CONTAINER (container));
 	g_return_if_fail (owner!=NULL);
 
 	priv = container->priv;

@@ -83,7 +83,7 @@ http_connect (CamelHttpStream *http,
 	}
 
 	if (url->port) {
-		serv = g_alloca(16);
+		serv = g_alloca (16);
 		sprintf(serv, "%d", url->port);
 	} else {
 		serv = url->protocol;
@@ -165,7 +165,7 @@ http_method_invoke (CamelHttpStream *http,
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
 			"%s", g_strerror (errno));
-		http_disconnect(http);
+		http_disconnect (http);
 		g_free (url);
 		return -1;
 	}
@@ -182,7 +182,7 @@ http_method_invoke (CamelHttpStream *http,
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
 			"%s", g_strerror (errno));
-		http_disconnect(http);
+		http_disconnect (http);
 		return -1;
 	}
 
@@ -197,14 +197,14 @@ http_method_invoke (CamelHttpStream *http,
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
 			"%s", g_strerror (errno));
-		http_disconnect(http);
+		http_disconnect (http);
 		return -1;
 	}
 
 	/* end the headers */
 	if (camel_stream_write (http->raw, "\r\n", 2, error) == -1 ||
 		camel_stream_flush (http->raw, error) == -1) {
-		http_disconnect(http);
+		http_disconnect (http);
 		return -1;
 	}
 
@@ -280,7 +280,7 @@ http_get_headers (CamelHttpStream *http,
 	return 0;
 
  exception:
-	http_disconnect(http);
+	http_disconnect (http);
 
 	return -1;
 }
@@ -320,7 +320,7 @@ http_get_statuscode (CamelHttpStream *http,
 		return http->statuscode;
 	}
 
-	http_disconnect(http);
+	http_disconnect (http);
 
 	return -1;
 }
@@ -408,17 +408,17 @@ http_stream_read (CamelStream *stream,
 			return -1;
 
 		if (http_method_invoke (http, error) == -1) {
-			http_disconnect(http);
+			http_disconnect (http);
 			return -1;
 		}
 
 		if (http_get_statuscode (http, error) == -1) {
-			http_disconnect(http);
+			http_disconnect (http);
 			return -1;
 		}
 
 		if (http_get_headers (http, error) == -1) {
-			http_disconnect(http);
+			http_disconnect (http);
 			return -1;
 		}
 
@@ -434,23 +434,23 @@ http_stream_read (CamelStream *stream,
 
 			camel_content_type_unref (http->content_type);
 			http->content_type = NULL;
-			http_disconnect(http);
+			http_disconnect (http);
 
 			loc = g_strdup(camel_header_raw_find(&http->headers, "Location", NULL));
 			if (loc == NULL) {
-				camel_header_raw_clear(&http->headers);
+				camel_header_raw_clear (&http->headers);
 				return -1;
 			}
 
 			/* redirect... */
-			g_strstrip(loc);
+			g_strstrip (loc);
 			d(printf("HTTP redirect, location = %s\n", loc));
-			url = camel_url_new_with_base(http->url, loc);
+			url = camel_url_new_with_base (http->url, loc);
 			camel_url_free (http->url);
 			http->url = url;
 			if (url == NULL)
-				http->url = camel_url_new(loc, NULL);
-			g_free(loc);
+				http->url = camel_url_new (loc, NULL);
+			g_free (loc);
 			if (http->url == NULL) {
 				camel_header_raw_clear (&http->headers);
 				return -1;
@@ -464,7 +464,7 @@ http_stream_read (CamelStream *stream,
 			/* failed proxy authentication? */
 		default:
 			/* unknown error */
-			http_disconnect(http);
+			http_disconnect (http);
 			return -1;
 		}
 	}
@@ -513,7 +513,7 @@ http_stream_close (CamelStream *stream,
 		if (camel_stream_close (http->raw, error) == -1)
 			return -1;
 
-		http_disconnect(http);
+		http_disconnect (http);
 	}
 
 	return 0;
@@ -526,7 +526,7 @@ http_stream_reset (CamelStream *stream,
 	CamelHttpStream *http = CAMEL_HTTP_STREAM (stream);
 
 	if (http->raw)
-		http_disconnect(http);
+		http_disconnect (http);
 
 	return 0;
 }
@@ -568,8 +568,8 @@ camel_http_stream_new (CamelHttpMethod method, struct _CamelSession *session, Ca
 	CamelHttpStream *stream;
 	gchar *str;
 
-	g_return_val_if_fail(CAMEL_IS_SESSION(session), NULL);
-	g_return_val_if_fail(url != NULL, NULL);
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
+	g_return_val_if_fail (url != NULL, NULL);
 
 	stream = g_object_new (CAMEL_TYPE_HTTP_STREAM, NULL);
 
@@ -628,14 +628,14 @@ camel_http_stream_set_proxy (CamelHttpStream *http_stream, const gchar *proxy_ur
 
 		basic = g_strdup_printf("%s:%s", http_stream->proxy->user?http_stream->proxy->user:"",
 					http_stream->proxy->passwd?http_stream->proxy->passwd:"");
-		basic64 = g_base64_encode((const guchar *) basic, strlen(basic));
-		memset(basic, 0, strlen(basic));
-		g_free(basic);
-		camel_http_stream_set_proxy_authpass(http_stream, basic64);
-		memset(basic64, 0, strlen(basic64));
-		g_free(basic64);
+		basic64 = g_base64_encode ((const guchar *) basic, strlen (basic));
+		memset (basic, 0, strlen (basic));
+		g_free (basic);
+		camel_http_stream_set_proxy_authpass (http_stream, basic64);
+		memset (basic64, 0, strlen (basic64));
+		g_free (basic64);
 	} else {
-		camel_http_stream_set_proxy_authpass(http_stream, NULL);
+		camel_http_stream_set_proxy_authpass (http_stream, NULL);
 	}
 }
 

@@ -42,29 +42,29 @@ typedef enum _camel_operation_status_t {
 } camel_operation_status_t;
 
 /* main thread functions */
-CamelOperation *camel_operation_new(CamelOperationStatusFunc status, gpointer status_data);
-void camel_operation_mute(CamelOperation *cc);
-void camel_operation_ref(CamelOperation *cc);
-void camel_operation_unref(CamelOperation *cc);
-void camel_operation_cancel(CamelOperation *cc);
-void camel_operation_uncancel(CamelOperation *cc);
+CamelOperation *camel_operation_new (CamelOperationStatusFunc status, gpointer status_data);
+void camel_operation_mute (CamelOperation *cc);
+void camel_operation_ref (CamelOperation *cc);
+void camel_operation_unref (CamelOperation *cc);
+void camel_operation_cancel (CamelOperation *cc);
+void camel_operation_uncancel (CamelOperation *cc);
 /* subthread functions */
-CamelOperation *camel_operation_register(CamelOperation *cc);
+CamelOperation *camel_operation_register (CamelOperation *cc);
 void camel_operation_unregister (CamelOperation *cc);
 
 /* called internally by camel, for the current thread */
-gint camel_operation_cancel_check(CamelOperation *cc);
-gint camel_operation_cancel_fd(CamelOperation *cc);
+gint camel_operation_cancel_check (CamelOperation *cc);
+gint camel_operation_cancel_fd (CamelOperation *cc);
 #ifdef CAMEL_HAVE_NSS
-struct PRFileDesc *camel_operation_cancel_prfd(CamelOperation *cc);
+struct PRFileDesc *camel_operation_cancel_prfd (CamelOperation *cc);
 #endif
 /* return the registered operation for this thread, if there is one */
-CamelOperation *camel_operation_registered(void);
+CamelOperation *camel_operation_registered (void);
 
-void camel_operation_start(CamelOperation *cc, const gchar *what, ...);
-void camel_operation_start_transient(CamelOperation *cc, const gchar *what, ...);
-void camel_operation_progress(CamelOperation *cc, gint pc);
-void camel_operation_end(CamelOperation *cc);
+void camel_operation_start (CamelOperation *cc, const gchar *what, ...);
+void camel_operation_start_transient (CamelOperation *cc, const gchar *what, ...);
+void camel_operation_progress (CamelOperation *cc, gint pc);
+void camel_operation_end (CamelOperation *cc);
 
 G_END_DECLS
 

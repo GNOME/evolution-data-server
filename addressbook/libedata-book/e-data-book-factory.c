@@ -49,7 +49,7 @@ static GMainLoop *loop;
 		}							\
 	}G_STMT_END
 
-G_DEFINE_TYPE(EDataBookFactory, e_data_book_factory, G_TYPE_OBJECT);
+G_DEFINE_TYPE (EDataBookFactory, e_data_book_factory, G_TYPE_OBJECT);
 
 #define E_DATA_BOOK_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_DATA_BOOK_FACTORY, EDataBookFactoryPrivate))
 
@@ -476,7 +476,7 @@ die (const gchar *prefix, GError *error)
 {
 	g_error("%s: %s", prefix, error->message);
 	g_error_free (error);
-	exit(1);
+	exit (1);
 }
 
 static void

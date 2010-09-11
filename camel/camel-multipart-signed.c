@@ -55,34 +55,34 @@ multipart_signed_skip_content (CamelMimeParser *cmp)
 	gsize len;
 	gint state;
 
-	switch (camel_mime_parser_state(cmp)) {
+	switch (camel_mime_parser_state (cmp)) {
 	case CAMEL_MIME_PARSER_STATE_HEADER:
 		/* body part */
-		while (camel_mime_parser_step(cmp, &buf, &len) != CAMEL_MIME_PARSER_STATE_BODY_END)
+		while (camel_mime_parser_step (cmp, &buf, &len) != CAMEL_MIME_PARSER_STATE_BODY_END)
 			/* NOOP */ ;
 		break;
 	case CAMEL_MIME_PARSER_STATE_MESSAGE:
 		/* message body part */
-		(void)camel_mime_parser_step(cmp, &buf, &len);
+		(void)camel_mime_parser_step (cmp, &buf, &len);
 		multipart_signed_skip_content (cmp);
 
 		/* clean up followon state if any, see camel-mime-message.c */
-		state = camel_mime_parser_step(cmp, &buf, &len);
+		state = camel_mime_parser_step (cmp, &buf, &len);
 		switch (state) {
 		case CAMEL_MIME_PARSER_STATE_EOF:
 		case CAMEL_MIME_PARSER_STATE_FROM_END: /* these doesn't belong to us */
-			camel_mime_parser_unstep(cmp);
+			camel_mime_parser_unstep (cmp);
 		case CAMEL_MIME_PARSER_STATE_MESSAGE_END:
 			break;
 		default:
 			g_error ("Bad parser state: Expecting MESSAGE_END or EOF or EOM, got: %u", camel_mime_parser_state (cmp));
-			camel_mime_parser_unstep(cmp);
+			camel_mime_parser_unstep (cmp);
 			return -1;
 		}
 		break;
 	case CAMEL_MIME_PARSER_STATE_MULTIPART:
 		/* embedded multipart */
-		while ((state = camel_mime_parser_step(cmp, &buf, &len)) != CAMEL_MIME_PARSER_STATE_MULTIPART_END)
+		while ((state = camel_mime_parser_step (cmp, &buf, &len)) != CAMEL_MIME_PARSER_STATE_MULTIPART_END)
 			multipart_signed_skip_content (cmp);
 		break;
 	default:
@@ -116,23 +116,23 @@ multipart_signed_parse_content (CamelMultipartSigned *mps)
 	camel_stream_reset (stream, NULL);
 	cmp = camel_mime_parser_new ();
 	camel_mime_parser_init_with_stream (cmp, stream, NULL);
-	camel_mime_parser_push_state(cmp, CAMEL_MIME_PARSER_STATE_MULTIPART, boundary);
+	camel_mime_parser_push_state (cmp, CAMEL_MIME_PARSER_STATE_MULTIPART, boundary);
 
 	mps->start1 = -1;
 	mps->end1 = -1;
 	mps->start2 = -1;
 	mps->end2 = -1;
 
-	while ((state = camel_mime_parser_step(cmp, &buf, &len)) != CAMEL_MIME_PARSER_STATE_MULTIPART_END) {
+	while ((state = camel_mime_parser_step (cmp, &buf, &len)) != CAMEL_MIME_PARSER_STATE_MULTIPART_END) {
 		if (mps->start1 == -1) {
-			mps->start1 = camel_mime_parser_tell_start_headers(cmp);
+			mps->start1 = camel_mime_parser_tell_start_headers (cmp);
 		} else if (mps->start2 == -1) {
 			GByteArray *buffer;
 
 			buffer = camel_stream_mem_get_byte_array (
 				CAMEL_STREAM_MEM (stream));
-			mps->start2 = camel_mime_parser_tell_start_headers(cmp);
-			mps->end1 = camel_mime_parser_tell_start_boundary(cmp);
+			mps->start2 = camel_mime_parser_tell_start_headers (cmp);
+			mps->end1 = camel_mime_parser_tell_start_boundary (cmp);
 			if (mps->end1 > mps->start1 && buffer->data[mps->end1-1] == '\n')
 				mps->end1--;
 			if (mps->end1 > mps->start1 && buffer->data[mps->end1-1] == '\r')
@@ -147,10 +147,10 @@ multipart_signed_parse_content (CamelMultipartSigned *mps)
 	}
 
 	if (state == CAMEL_MIME_PARSER_STATE_MULTIPART_END) {
-		mps->end2 = camel_mime_parser_tell_start_boundary(cmp);
+		mps->end2 = camel_mime_parser_tell_start_boundary (cmp);
 
-		camel_multipart_set_preface(mp, camel_mime_parser_preface(cmp));
-		camel_multipart_set_postface(mp, camel_mime_parser_postface(cmp));
+		camel_multipart_set_preface (mp, camel_mime_parser_preface (cmp));
+		camel_multipart_set_postface (mp, camel_mime_parser_postface (cmp));
 	}
 
 	g_object_unref (cmp);
@@ -238,18 +238,18 @@ multipart_signed_set_mime_type_field (CamelDataWrapper *data_wrapper,
 
 	/* Chain up to parent's set_mime_type_field() method. */
 	data_wrapper_class = CAMEL_DATA_WRAPPER_CLASS (camel_multipart_signed_parent_class);
-	data_wrapper_class->set_mime_type_field(data_wrapper, mime_type);
+	data_wrapper_class->set_mime_type_field (data_wrapper, mime_type);
 
 	if (mime_type) {
 		const gchar *micalg, *protocol;
 
 		protocol = camel_content_type_param(mime_type, "protocol");
-		g_free(mps->protocol);
-		mps->protocol = g_strdup(protocol);
+		g_free (mps->protocol);
+		mps->protocol = g_strdup (protocol);
 
 		micalg = camel_content_type_param(mime_type, "micalg");
-		g_free(mps->micalg);
-		mps->micalg = g_strdup(micalg);
+		g_free (mps->micalg);
+		mps->micalg = g_strdup (micalg);
 	}
 }
 
@@ -295,7 +295,7 @@ multipart_signed_write_to_stream (CamelDataWrapper *data_wrapper,
 	}
 
 	/* 2 */
-	boundary = camel_multipart_get_boundary(mp);
+	boundary = camel_multipart_get_boundary (mp);
 	if (mp->preface) {
 		count = camel_stream_write_string (stream, mp->preface, error);
 		if (count == -1)
@@ -360,7 +360,7 @@ multipart_signed_construct_from_stream (CamelDataWrapper *data_wrapper,
                                         GError **error)
 {
 	CamelMultipartSigned *mps = (CamelMultipartSigned *)data_wrapper;
-	CamelStream *mem = camel_stream_mem_new();
+	CamelStream *mem = camel_stream_mem_new ();
 
 	if (camel_stream_write_to_stream (stream, mem, error) == -1)
 		return -1;
@@ -416,7 +416,7 @@ multipart_signed_get_part (CamelMultipart *multipart,
 		if (mps->contentraw) {
 			stream = g_object_ref (mps->contentraw);
 		} else if (mps->start1 == -1
-			   && multipart_signed_parse_content(mps) == -1
+			   && multipart_signed_parse_content (mps) == -1
 			   && (stream = ((CamelDataWrapper *)mps)->stream) == NULL) {
 			g_warning("Trying to get content on an invalid multipart/signed");
 			return NULL;
@@ -425,10 +425,10 @@ multipart_signed_get_part (CamelMultipart *multipart,
 		} else if (mps->start1 == -1) {
 			stream = g_object_ref (dw->stream);
 		} else {
-			stream = camel_seekable_substream_new((CamelSeekableStream *)dw->stream, mps->start1, mps->end1);
+			stream = camel_seekable_substream_new ((CamelSeekableStream *)dw->stream, mps->start1, mps->end1);
 		}
 		camel_stream_reset (stream, NULL);
-		mps->content = camel_mime_part_new();
+		mps->content = camel_mime_part_new ();
 		camel_data_wrapper_construct_from_stream (
 			CAMEL_DATA_WRAPPER (mps->content), stream, NULL);
 		g_object_unref (stream);
@@ -437,15 +437,15 @@ multipart_signed_get_part (CamelMultipart *multipart,
 		if (mps->signature)
 			return mps->signature;
 		if (mps->start1 == -1
-		    && multipart_signed_parse_content(mps) == -1) {
+		    && multipart_signed_parse_content (mps) == -1) {
 			g_warning("Trying to get signature on invalid multipart/signed");
 			return NULL;
 		} else if (dw->stream == NULL) {
 			return NULL;
 		}
-		stream = camel_seekable_substream_new((CamelSeekableStream *)dw->stream, mps->start2, mps->end2);
+		stream = camel_seekable_substream_new ((CamelSeekableStream *)dw->stream, mps->start2, mps->end2);
 		camel_stream_reset (stream, NULL);
-		mps->signature = camel_mime_part_new();
+		mps->signature = camel_mime_part_new ();
 		camel_data_wrapper_construct_from_stream (
 			CAMEL_DATA_WRAPPER (mps->signature), stream, NULL);
 		g_object_unref (stream);
@@ -468,7 +468,7 @@ multipart_signed_get_number (CamelMultipart *multipart)
 	if ((mps->content || mps->contentraw) && mps->signature)
 		return 2;
 
-	if (mps->start1 == -1 && multipart_signed_parse_content(mps) == -1) {
+	if (mps->start1 == -1 && multipart_signed_parse_content (mps) == -1) {
 		if (dw->stream == NULL)
 			return 0;
 		else
@@ -491,19 +491,19 @@ multipart_signed_construct_from_parser (CamelMultipart *multipart,
 
 	/* we *must not* be in multipart state, otherwise the mime parser will
 	   parse the headers which is a no no @#$@# stupid multipart/signed spec */
-	g_assert(camel_mime_parser_state(mp) == CAMEL_MIME_PARSER_STATE_HEADER);
+	g_assert (camel_mime_parser_state (mp) == CAMEL_MIME_PARSER_STATE_HEADER);
 
 	/* All we do is copy it to a memstream */
-	content_type = camel_mime_parser_content_type(mp);
+	content_type = camel_mime_parser_content_type (mp);
 	camel_multipart_set_boundary(multipart, camel_content_type_param(content_type, "boundary"));
 
-	stream = camel_stream_mem_new();
-	while (camel_mime_parser_step(mp, &buf, &len) != CAMEL_MIME_PARSER_STATE_BODY_END)
-		camel_stream_write(stream, buf, len, NULL);
+	stream = camel_stream_mem_new ();
+	while (camel_mime_parser_step (mp, &buf, &len) != CAMEL_MIME_PARSER_STATE_BODY_END)
+		camel_stream_write (stream, buf, len, NULL);
 
 	multipart_signed_set_stream (mps, stream);
 
-	err = camel_mime_parser_errno(mp);
+	err = camel_mime_parser_errno (mp);
 	if (err != 0) {
 		errno = err;
 		return -1;
@@ -605,7 +605,7 @@ camel_multipart_signed_get_content_stream (CamelMultipartSigned *mps,
 		CamelStream *sub;
 		CamelMimeFilter *canon_filter;
 
-		if (mps->start1 == -1 && multipart_signed_parse_content(mps) == -1) {
+		if (mps->start1 == -1 && multipart_signed_parse_content (mps) == -1) {
 			g_set_error (
 				error, CAMEL_ERROR,
 				CAMEL_ERROR_GENERIC,
@@ -614,13 +614,13 @@ camel_multipart_signed_get_content_stream (CamelMultipartSigned *mps,
 		}
 
 		/* first, prepare our parts */
-		sub = camel_seekable_substream_new((CamelSeekableStream *)((CamelDataWrapper *)mps)->stream, mps->start1, mps->end1);
+		sub = camel_seekable_substream_new ((CamelSeekableStream *)((CamelDataWrapper *)mps)->stream, mps->start1, mps->end1);
 		constream = camel_stream_filter_new (sub);
 		g_object_unref (sub);
 
 		/* Note: see rfc2015 or rfc3156, section 5 */
 		canon_filter = camel_mime_filter_canon_new (CAMEL_MIME_FILTER_CANON_CRLF);
-		camel_stream_filter_add((CamelStreamFilter *)constream, (CamelMimeFilter *)canon_filter);
+		camel_stream_filter_add ((CamelStreamFilter *)constream, (CamelMimeFilter *)canon_filter);
 		g_object_unref (canon_filter);
 	}
 

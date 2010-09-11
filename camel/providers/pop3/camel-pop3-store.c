@@ -160,7 +160,7 @@ connect_to_server (CamelService *service,
 		flags |= CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS;
 
 	if ((delete_days = (gchar *) camel_url_get_param(service->url,"delete_after")))
-		store->delete_after =  atoi(delete_days);
+		store->delete_after =  atoi (delete_days);
 
 	if (!(store->engine = camel_pop3_engine_new (tcp_stream, flags))) {
 		g_set_error (
@@ -307,7 +307,7 @@ try_sasl (CamelPOP3Store *store,
 		goto ioerror;
 
 	while (1) {
-		if (camel_pop3_stream_line(stream, &line, &len) == -1)
+		if (camel_pop3_stream_line (stream, &line, &len) == -1)
 			goto ioerror;
 		if (strncmp((gchar *) line, "+OK", 3) == 0)
 			break;
@@ -330,10 +330,10 @@ try_sasl (CamelPOP3Store *store,
 		/* If we dont get continuation, or the sasl object's run out of work, or we dont get a challenge,
 		   its a protocol error, so fail, and try reset the server */
 		if (strncmp((gchar *) line, "+ ", 2) != 0
-		    || camel_sasl_get_authenticated(sasl)
-		    || (resp = (guchar *) camel_sasl_challenge_base64(sasl, (const gchar *) line+2, error)) == NULL) {
+		    || camel_sasl_get_authenticated (sasl)
+		    || (resp = (guchar *) camel_sasl_challenge_base64 (sasl, (const gchar *) line+2, error)) == NULL) {
 			camel_stream_printf((CamelStream *)stream, "*\r\n");
-			camel_pop3_stream_line(stream, &line, &len);
+			camel_pop3_stream_line (stream, &line, &len);
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
@@ -344,7 +344,7 @@ try_sasl (CamelPOP3Store *store,
 		}
 
 		ret = camel_stream_printf((CamelStream *)stream, "%s\r\n", resp);
-		g_free(resp);
+		g_free (resp);
 		if (ret == -1)
 			goto ioerror;
 
@@ -412,7 +412,7 @@ pop3_try_authenticate (CamelService *service,
 		d = store->engine->apop;
 
 		while (*d != '\0') {
-			if (!isascii((gint)*d)) {
+			if (!isascii ((gint)*d)) {
 
 				/* README for Translators: The string APOP should not be translated */
 				g_set_error (
@@ -428,7 +428,7 @@ pop3_try_authenticate (CamelService *service,
 			d++;
 		}
 
-		secret = g_alloca(strlen(store->engine->apop)+strlen(service->url->passwd)+1);
+		secret = g_alloca (strlen (store->engine->apop)+strlen (service->url->passwd)+1);
 		sprintf(secret, "%s%s",  store->engine->apop, service->url->passwd);
 		md5asc = g_compute_checksum_for_string (G_CHECKSUM_MD5, secret, -1);
 		pcp = camel_pop3_engine_command_new(store->engine, 0, NULL, NULL, "APOP %s %s\r\n",
@@ -441,7 +441,7 @@ pop3_try_authenticate (CamelService *service,
 		l = store->engine->auth;
 		while (l) {
 			auth = l->data;
-			if (strcmp(auth->authproto, service->url->authmech) == 0)
+			if (strcmp (auth->authproto, service->url->authmech) == 0)
 				return try_sasl (store, service->url->authmech, error);
 			l = l->next;
 		}
@@ -455,7 +455,7 @@ pop3_try_authenticate (CamelService *service,
 		return 0;
 	}
 
-	while ((status = camel_pop3_engine_iterate(store->engine, pcp)) > 0)
+	while ((status = camel_pop3_engine_iterate (store->engine, pcp)) > 0)
 		;
 
 	if (status == -1) {
@@ -504,7 +504,7 @@ pop3_try_authenticate (CamelService *service,
 	camel_pop3_engine_command_free (store->engine, pcp);
 
 	if (pcu)
-		camel_pop3_engine_command_free(store->engine, pcu);
+		camel_pop3_engine_command_free (store->engine, pcu);
 
 	return status;
 }
@@ -517,7 +517,7 @@ pop3_store_finalize (GObject *object)
 	/* force disconnect so we dont have it run later, after we've cleaned up some stuff */
 	/* SIGH */
 
-	camel_service_disconnect((CamelService *)pop3_store, TRUE, NULL);
+	camel_service_disconnect ((CamelService *)pop3_store, TRUE, NULL);
 
 	if (pop3_store->engine)
 		g_object_unref (pop3_store->engine);
@@ -547,11 +547,11 @@ pop3_store_connect (CamelService *service,
 		root = camel_session_get_storage_path (session, service, error);
 		if (root) {
 			store->cache = camel_data_cache_new (root, error);
-			g_free(root);
+			g_free (root);
 			if (store->cache) {
 				/* Default cache expiry - 1 week or not visited in a day */
-				camel_data_cache_set_expire_age(store->cache, 60*60*24*7);
-				camel_data_cache_set_expire_access(store->cache, 60*60*24);
+				camel_data_cache_set_expire_age (store->cache, 60*60*24*7);
+				camel_data_cache_set_expire_access (store->cache, 60*60*24);
 			}
 		}
 	}
@@ -585,7 +585,7 @@ pop3_store_connect (CamelService *service,
 
 	if (local_error != NULL) {
 		g_propagate_error (error, local_error);
-		camel_service_disconnect(service, TRUE, NULL);
+		camel_service_disconnect (service, TRUE, NULL);
 		return FALSE;
 	}
 
@@ -609,9 +609,9 @@ pop3_store_disconnect (CamelService *service,
 		CamelPOP3Command *pc;
 
 		pc = camel_pop3_engine_command_new(store->engine, 0, NULL, NULL, "QUIT\r\n");
-		while (camel_pop3_engine_iterate(store->engine, NULL) > 0)
+		while (camel_pop3_engine_iterate (store->engine, NULL) > 0)
 			;
-		camel_pop3_engine_command_free(store->engine, pc);
+		camel_pop3_engine_command_free (store->engine, pc);
 	}
 
 	/* Chain up to parent's disconnect() method. */
@@ -644,7 +644,7 @@ pop3_store_query_auth_types (CamelService *service,
 	}
 
 	if (connect_to_server_wrapper (service, NULL)) {
-		types = g_list_concat(types, g_list_copy(store->engine->auth));
+		types = g_list_concat (types, g_list_copy (store->engine->auth));
 		pop3_store_disconnect (service, TRUE, NULL);
 	} else {
 		g_set_error (
@@ -766,10 +766,10 @@ camel_pop3_store_expunge (CamelPOP3Store *store,
 	pc = camel_pop3_engine_command_new (
 		store->engine, 0, NULL, NULL, "QUIT\r\n");
 
-	while (camel_pop3_engine_iterate(store->engine, NULL) > 0)
+	while (camel_pop3_engine_iterate (store->engine, NULL) > 0)
 		;
 
-	camel_pop3_engine_command_free(store->engine, pc);
+	camel_pop3_engine_command_free (store->engine, pc);
 
 	camel_service_disconnect (CAMEL_SERVICE (store), FALSE, error);
 }

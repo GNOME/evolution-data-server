@@ -140,7 +140,7 @@ static ESExpResult *do_stop (struct _ESExp *f, gint argc, struct _ESExpResult **
 static ESExpResult *do_label (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_color (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_score (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
-static ESExpResult *do_adjust_score(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
+static ESExpResult *do_adjust_score (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *set_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *unset_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_shell (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
@@ -372,16 +372,16 @@ camel_filter_driver_set_default_folder (CamelFilterDriver *d, CamelFolder *def)
 }
 
 void
-camel_filter_driver_add_rule(CamelFilterDriver *d, const gchar *name, const gchar *match, const gchar *action)
+camel_filter_driver_add_rule (CamelFilterDriver *d, const gchar *name, const gchar *match, const gchar *action)
 {
 	struct _CamelFilterDriverPrivate *p = CAMEL_FILTER_DRIVER_GET_PRIVATE (d);
 	struct _filter_rule *node;
 
-	node = g_malloc(sizeof(*node));
-	node->match = g_strdup(match);
-	node->action = g_strdup(action);
-	node->name = g_strdup(name);
-	camel_dlist_addtail(&p->rules, (CamelDListNode *)node);
+	node = g_malloc (sizeof (*node));
+	node->match = g_strdup (match);
+	node->action = g_strdup (action);
+	node->name = g_strdup (name);
+	camel_dlist_addtail (&p->rules, (CamelDListNode *)node);
 }
 
 gint
@@ -572,9 +572,9 @@ do_move (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDri
 
 				if (p->error == NULL && last) {
 					if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
-						camel_folder_set_message_flags(p->source, p->uid, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN, ~0);
+						camel_folder_set_message_flags (p->source, p->uid, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN, ~0);
 					else
-						camel_message_info_set_flags(p->info, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN|CAMEL_MESSAGE_FOLDER_FLAGGED, ~0);
+						camel_message_info_set_flags (p->info, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN|CAMEL_MESSAGE_FOLDER_FLAGGED, ~0);
 				}
 			}
 
@@ -672,9 +672,9 @@ do_score (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDr
 }
 
 static ESExpResult *
-do_adjust_score(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+do_adjust_score (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
 {
-	struct _CamelFilterDriverPrivate *p = CAMEL_FILTER_DRIVER_GET_PRIVATE(driver);
+	struct _CamelFilterDriverPrivate *p = CAMEL_FILTER_DRIVER_GET_PRIVATE (driver);
 
 	d(fprintf (stderr, "adjusting score tag\n"));
 	if (argc > 0 && argv[0]->type == ESEXP_RES_INT) {
@@ -682,7 +682,7 @@ do_adjust_score(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFi
 		gint old;
 
 		value = (gchar *)camel_message_info_user_tag(p->info, "score");
-		old = value?atoi(value):0;
+		old = value?atoi (value):0;
 		value = g_strdup_printf ("%d", old+argv[0]->value.number);
 		camel_message_info_set_user_tag(p->info, "score", value);
 		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Adjust score (%d) to %s", argv[0]->value.number, value);
@@ -704,7 +704,7 @@ set_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDr
 		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
 			camel_folder_set_message_flags (p->source, p->uid, flags, ~0);
 		else
-			camel_message_info_set_flags(p->info, flags | CAMEL_MESSAGE_FOLDER_FLAGGED, ~0);
+			camel_message_info_set_flags (p->info, flags | CAMEL_MESSAGE_FOLDER_FLAGGED, ~0);
 		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Set %s flag", argv[0]->value.string);
 	}
 
@@ -723,7 +723,7 @@ unset_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilter
 		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
 			camel_folder_set_message_flags (p->source, p->uid, flags, 0);
 		else
-			camel_message_info_set_flags(p->info, flags | CAMEL_MESSAGE_FOLDER_FLAGGED, 0);
+			camel_message_info_set_flags (p->info, flags | CAMEL_MESSAGE_FOLDER_FLAGGED, 0);
 		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Unset %s flag", argv[0]->value.string);
 	}
 
@@ -1184,19 +1184,19 @@ camel_filter_driver_flush (CamelFilterDriver *driver,
 }
 
 static gint
-decode_flags_from_xev(const gchar *xev, CamelMessageInfoBase *mi)
+decode_flags_from_xev (const gchar *xev, CamelMessageInfoBase *mi)
 {
 	guint32 uid, flags = 0;
 	gchar *header;
 
 	/* check for uid/flags */
-	header = camel_header_token_decode(xev);
+	header = camel_header_token_decode (xev);
 	if (!(header && strlen(header) == strlen("00000000-0000")
 	    && sscanf(header, "%08x-%04x", &uid, &flags) == 2)) {
-		g_free(header);
+		g_free (header);
 		return 0;
 	}
-	g_free(header);
+	g_free (header);
 
 	mi->flags = flags;
 	return 0;
@@ -1277,15 +1277,15 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 			goto fail;
 		}
 
-		info = camel_message_info_new_from_header(NULL, mime_part->headers);
+		info = camel_message_info_new_from_header (NULL, mime_part->headers);
 		/* Try and see if it has X-Evolution headers */
 		xev = camel_header_raw_find(&mime_part->headers, "X-Evolution", NULL);
 		if (xev)
 			decode_flags_from_xev (xev, (CamelMessageInfoBase *)info);
 
-		((CamelMessageInfoBase *)info)->size = camel_mime_parser_tell(mp) - last;
+		((CamelMessageInfoBase *)info)->size = camel_mime_parser_tell (mp) - last;
 
-		last = camel_mime_parser_tell(mp);
+		last = camel_mime_parser_tell (mp);
 		status = camel_filter_driver_filter_message (
 			driver, message, info, NULL, NULL, source_url,
 			original_source_url ? original_source_url : source_url,
@@ -1310,7 +1310,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 
 	if (p->defaultfolder) {
 		report_status(driver, CAMEL_FILTER_STATUS_PROGRESS, 100, _("Syncing folder"));
-		camel_folder_sync(p->defaultfolder, FALSE, NULL);
+		camel_folder_sync (p->defaultfolder, FALSE, NULL);
 	}
 
 	report_status (driver, CAMEL_FILTER_STATUS_END, 100, _("Complete"));
@@ -1514,7 +1514,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 		info = camel_message_info_new_from_header (NULL, h);
 		freeinfo = TRUE;
 	} else {
-		if (camel_message_info_flags(info) & CAMEL_MESSAGE_DELETED)
+		if (camel_message_info_flags (info) & CAMEL_MESSAGE_DELETED)
 			return 0;
 
 		uid = camel_message_info_uid (info);
@@ -1592,9 +1592,9 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 	/* *Now* we can set the DELETED flag... */
 	if (p->deleted) {
 		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
-			camel_folder_set_message_flags(p->source, p->uid, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN, ~0);
+			camel_folder_set_message_flags (p->source, p->uid, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN, ~0);
 		else
-			camel_message_info_set_flags(info, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN|CAMEL_MESSAGE_FOLDER_FLAGGED, ~0);
+			camel_message_info_set_flags (info, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN|CAMEL_MESSAGE_FOLDER_FLAGGED, ~0);
 	}
 
 	/* Logic: if !Moved and there exists a default folder... */

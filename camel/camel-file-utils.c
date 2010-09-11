@@ -146,12 +146,12 @@ camel_file_util_decode_fixed_int32 (FILE *in, gint32 *dest)
 
 #define CFU_ENCODE_T(type)						\
 gint									\
-camel_file_util_encode_##type(FILE *out, type value)			\
+camel_file_util_encode_##type (FILE *out, type value)			\
 {									\
 	gint i;								\
 									\
 	for (i = sizeof (type) - 1; i >= 0; i--) {			\
-		if (fputc((value >> (i * 8)) & 0xff, out) == -1)	\
+		if (fputc ((value >> (i * 8)) & 0xff, out) == -1)	\
 			return -1;					\
 	}								\
 	return 0;							\
@@ -159,10 +159,10 @@ camel_file_util_encode_##type(FILE *out, type value)			\
 
 #define CFU_DECODE_T(type)				\
 gint							\
-camel_file_util_decode_##type(FILE *in, type *dest)	\
+camel_file_util_decode_##type (FILE *in, type *dest)	\
 {							\
 	type save = 0;					\
-	gint i = sizeof(type) - 1;			\
+	gint i = sizeof (type) - 1;			\
 	gint v = EOF;					\
 							\
         while (i >= 0 && (v = fgetc (in)) != EOF) {	\
@@ -184,7 +184,7 @@ camel_file_util_decode_##type(FILE *in, type *dest)	\
  *
  * Returns: %0 on success, %-1 on error.
  **/
-CFU_ENCODE_T(time_t)
+CFU_ENCODE_T (time_t)
 
 /**
  * camel_file_util_decode_time_t:
@@ -195,7 +195,7 @@ CFU_ENCODE_T(time_t)
  *
  * Returns: %0 on success, %-1 on error.
  **/
-CFU_DECODE_T(time_t)
+CFU_DECODE_T (time_t)
 
 /**
  * camel_file_util_encode_off_t:
@@ -206,7 +206,7 @@ CFU_DECODE_T(time_t)
  *
  * Returns: %0 on success, %-1 on error.
  **/
-CFU_ENCODE_T(off_t)
+CFU_ENCODE_T (off_t)
 
 /**
  * camel_file_util_decode_off_t:
@@ -217,7 +217,7 @@ CFU_ENCODE_T(off_t)
  *
  * Returns: %0 on success, %-1 on failure.
  **/
-CFU_DECODE_T(off_t)
+CFU_DECODE_T (off_t)
 
 /**
  * camel_file_util_encode_gsize:
@@ -228,7 +228,7 @@ CFU_DECODE_T(off_t)
  *
  * Returns: %0 on success, %-1 on error.
  **/
-CFU_ENCODE_T(gsize)
+CFU_ENCODE_T (gsize)
 
 /**
  * camel_file_util_decode_gsize:
@@ -239,7 +239,7 @@ CFU_ENCODE_T(gsize)
  *
  * Returns: %0 on success, %-1 on failure.
  **/
-CFU_DECODE_T(gsize)
+CFU_DECODE_T (gsize)
 
 /**
  * camel_file_util_encode_string:
@@ -331,8 +331,8 @@ camel_file_util_encode_fixed_string (FILE *out, const gchar *str, gsize len)
 	if (len > 65536)
 		len = 65536;
 
-	memset(buf, 0x00, len);
-	g_strlcpy(buf, str, len);
+	memset (buf, 0x00, len);
+	g_strlcpy (buf, str, len);
 
 	if (fwrite (buf, len, 1, out) == len)
 		return 0;
@@ -393,7 +393,7 @@ camel_file_util_safe_filename (const gchar *name)
 	if (name == NULL)
 		return NULL;
 
-	return camel_url_encode(name, unsafe_chars);
+	return camel_url_encode (name, unsafe_chars);
 }
 
 /* FIXME: poll() might be more efficient and more portable? */
@@ -460,7 +460,7 @@ camel_read (gint fd,
 			tv.tv_usec = 0;
 			nread = -1;
 
-			res = select(fdmax, &rdset, 0, 0, &tv);
+			res = select (fdmax, &rdset, 0, 0, &tv);
 			if (res == -1)
 				;
 			else if (res == 0)
@@ -667,7 +667,7 @@ camel_read_socket (gint fd,
 			tv.tv_usec = 0;
 			nread = -1;
 
-			res = select(fdmax, &rdset, 0, 0, &tv);
+			res = select (fdmax, &rdset, 0, 0, &tv);
 			if (res == -1)
 				;
 			else if (res == 0)
@@ -812,16 +812,16 @@ camel_write_socket (gint fd,
  * Returns: The new pathname.  It must be free'd with g_free().
  **/
 gchar *
-camel_file_util_savename(const gchar *filename)
+camel_file_util_savename (const gchar *filename)
 {
 	gchar *dirname, *retval;
 
-	dirname = g_path_get_dirname(filename);
+	dirname = g_path_get_dirname (filename);
 
 	if (strcmp (dirname, ".") == 0) {
 		retval = g_strconcat (".#", filename, NULL);
 	} else {
-		gchar *basename = g_path_get_basename(filename);
+		gchar *basename = g_path_get_basename (filename);
 		gchar *newbasename = g_strconcat (".#", basename, NULL);
 
 		retval = g_build_filename (dirname, newbasename, NULL);

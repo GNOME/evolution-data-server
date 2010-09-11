@@ -285,7 +285,7 @@ localtime_r (t, tp)
 #else
 # define get_alt_number(from, to, n) \
   /* We don't have the alternate representation.  */			      \
-  get_number(from, to, n)
+  get_number (from, to, n)
 #endif
 #define recursive(new_fmt) \
   (*(new_fmt) != '\0'							      \
@@ -1087,7 +1087,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 	    case 'y':
 	      if (*decided != raw)
 		{
-		  get_number(0, 9999, 4);
+		  get_number (0, 9999, 4);
 		  tm->tm_year = val;
 		  want_era = 1;
 		  want_xday = 1;
@@ -1365,14 +1365,14 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 	{
 	  /* We don't have tm_mon and/or tm_mday, compute them.  */
 	  gint t_mon = 0;
-	  while (__mon_yday[__isleap(1900 + tm->tm_year)][t_mon] <= tm->tm_yday)
+	  while (__mon_yday[__isleap (1900 + tm->tm_year)][t_mon] <= tm->tm_yday)
 	      t_mon++;
 	  if (!have_mon)
 	      tm->tm_mon = t_mon - 1;
 	  if (!have_mday)
 	      tm->tm_mday =
 		(tm->tm_yday
-		 - __mon_yday[__isleap(1900 + tm->tm_year)][t_mon - 1] + 1);
+		 - __mon_yday[__isleap (1900 + tm->tm_year)][t_mon - 1] + 1);
 	}
       day_of_the_week (tm);
     }
@@ -1403,7 +1403,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
       if (!have_mday || !have_mon)
 	{
 	  gint t_mon = 0;
-	  while (__mon_yday[__isleap(1900 + tm->tm_year)][t_mon]
+	  while (__mon_yday[__isleap (1900 + tm->tm_year)][t_mon]
 		 <= tm->tm_yday)
 	    t_mon++;
 	  if (!have_mon)
@@ -1411,7 +1411,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 	  if (!have_mday)
 	      tm->tm_mday =
 		(tm->tm_yday
-		 - __mon_yday[__isleap(1900 + tm->tm_year)][t_mon - 1] + 1);
+		 - __mon_yday[__isleap (1900 + tm->tm_year)][t_mon - 1] + 1);
 	}
 
       tm->tm_wday = save_wday;
@@ -1618,7 +1618,7 @@ e_time_parse_date_and_time_ex		(const gchar	*value,
 	   longest first. Note that we only use the '%p' specifier if the
 	   locale actually has 'am' and 'pm' strings defined, otherwise we
 	   will get incorrect results. Note also that we try to use exactly
-	   the same strings as in e_time_format_date_and_time(), to try to
+	   the same strings as in e_time_format_date_and_time (), to try to
 	   avoid i18n problems. We also use cut-down versions, so users don't
 	   have to type in the weekday or the seconds, for example.
 	   Note that all these formats include the full date, and the time
@@ -2014,13 +2014,13 @@ e_localtime_with_offset (time_t tt, struct tm *tm, gint *offset)
 }
 
 #ifdef G_OS_WIN32
-static gint _e_string_replace(gchar **str, const gchar *old, const gchar *new)
+static gint _e_string_replace (gchar **str, const gchar *old, const gchar *new)
 {
-	GRegex *my_regex = g_regex_new(old, 0, 0, NULL);
+	GRegex *my_regex = g_regex_new (old, 0, 0, NULL);
 	gchar *buf = *str;
 	*str = g_regex_replace(my_regex, buf, -1, 0, new, 0, NULL);
-	g_free(buf);
-	g_regex_unref(my_regex);
+	g_free (buf);
+	g_regex_unref (my_regex);
     return 0;
 }
 #endif
@@ -2039,14 +2039,14 @@ e_time_get_d_fmt_with_4digit_year (void)
 	res = g_strdup (nl_langinfo (D_FMT) );
 #elif defined(G_OS_WIN32)
   #define GET_LOCALE_INFO(str, len) GetLocaleInfoA(LOCALE_USER_DEFAULT, LOCALE_SLONGDATE, str, len)
-	gint format_string_length = GET_LOCALE_INFO(NULL, 0);
+	gint format_string_length = GET_LOCALE_INFO (NULL, 0);
 	if (format_string_length > 0)
 	{
 		gsize format_bytes_read, format_bytes_written;
-		gchar *format_string = g_strnfill(format_string_length + 1, '\0');
-		GET_LOCALE_INFO(format_string, format_string_length);
-		res = g_locale_to_utf8(format_string, format_string_length, &format_bytes_read, &format_bytes_written, NULL);
-		g_free(format_string);
+		gchar *format_string = g_strnfill (format_string_length + 1, '\0');
+		GET_LOCALE_INFO (format_string, format_string_length);
+		res = g_locale_to_utf8 (format_string, format_string_length, &format_bytes_read, &format_bytes_written, NULL);
+		g_free (format_string);
 		/* now, convert the res to format of nl_langinfo */
 		_e_string_replace(&res, "\\bd\\b", "%#d");	/* d -> %#d */
 		_e_string_replace(&res, "\\bdd\\b", "%d");	/* dd -> %d */

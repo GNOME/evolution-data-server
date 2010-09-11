@@ -57,7 +57,7 @@ typedef enum _camel_imapx_id_t {
 } camel_imapx_id_t;
 
 /* str MUST be in upper case, tokenised using gperf function */
-camel_imapx_id_t imapx_tokenise(register const gchar *str, register guint len);
+camel_imapx_id_t imapx_tokenise (register const gchar *str, register guint len);
 
 /* this flag should be part of imapfoldersummary */
 enum {
@@ -67,8 +67,8 @@ enum {
 /* ********************************************************************** */
 
 GPtrArray *imapx_parse_uids (struct _CamelIMAPXStream *is, GError **error);
-void imapx_parse_flags(struct _CamelIMAPXStream *stream, guint32 *flagsp, struct _CamelFlag **user_flagsp, GError **error);
-void imapx_write_flags(CamelStream *stream, guint32 flags, struct _CamelFlag *user_flags, GError **error);
+void imapx_parse_flags (struct _CamelIMAPXStream *stream, guint32 *flagsp, struct _CamelFlag **user_flagsp, GError **error);
+void imapx_write_flags (CamelStream *stream, guint32 flags, struct _CamelFlag *user_flags, GError **error);
 gboolean imapx_update_message_info_flags (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags, CamelFolder *folder, gboolean unsolicited);
 void imapx_set_message_info_flags_for_new_message (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags,
 							CamelFolder *folder);
@@ -96,17 +96,17 @@ struct _capability_info {
 	GHashTable *auth_types;
 };
 
-struct _capability_info *imapx_parse_capability(struct _CamelIMAPXStream *stream, GError **error);
-void imapx_free_capability(struct _capability_info *);
+struct _capability_info *imapx_parse_capability (struct _CamelIMAPXStream *stream, GError **error);
+void imapx_free_capability (struct _capability_info *);
 
-gboolean imapx_parse_param_list(struct _CamelIMAPXStream *is, struct _camel_header_param **plist, GError **error) /* IO,PARSE */;
-struct _CamelContentDisposition *imapx_parse_ext_optional(struct _CamelIMAPXStream *is, GError **error) /* IO,PARSE */;
-struct _CamelMessageContentInfo *imapx_parse_body_fields(struct _CamelIMAPXStream *is, GError **error) /* IO,PARSE */;
-struct _camel_header_address *imapx_parse_address_list(struct _CamelIMAPXStream *is, GError **error) /* IO,PARSE */;
-struct _CamelMessageInfo *imapx_parse_envelope(struct _CamelIMAPXStream *is, GError **error) /* IO, PARSE */;
-struct _CamelMessageContentInfo *imapx_parse_body(struct _CamelIMAPXStream *is, GError **error) /* IO,PARSE */;
-gchar *imapx_parse_section(struct _CamelIMAPXStream *is, GError **error) /* IO,PARSE */;
-void imapx_free_body(struct _CamelMessageContentInfo *cinfo);
+gboolean imapx_parse_param_list (struct _CamelIMAPXStream *is, struct _camel_header_param **plist, GError **error) /* IO,PARSE */;
+struct _CamelContentDisposition *imapx_parse_ext_optional (struct _CamelIMAPXStream *is, GError **error) /* IO,PARSE */;
+struct _CamelMessageContentInfo *imapx_parse_body_fields (struct _CamelIMAPXStream *is, GError **error) /* IO,PARSE */;
+struct _camel_header_address *imapx_parse_address_list (struct _CamelIMAPXStream *is, GError **error) /* IO,PARSE */;
+struct _CamelMessageInfo *imapx_parse_envelope (struct _CamelIMAPXStream *is, GError **error) /* IO, PARSE */;
+struct _CamelMessageContentInfo *imapx_parse_body (struct _CamelIMAPXStream *is, GError **error) /* IO,PARSE */;
+gchar *imapx_parse_section (struct _CamelIMAPXStream *is, GError **error) /* IO,PARSE */;
+void imapx_free_body (struct _CamelMessageContentInfo *cinfo);
 
 /* ********************************************************************** */
 /* all the possible stuff we might get from a fetch request */
@@ -141,9 +141,9 @@ struct _fetch_info {
 #define FETCH_UID (1<<10)
 #define FETCH_MODSEQ (1<<11)
 
-struct _fetch_info *imapx_parse_fetch(struct _CamelIMAPXStream *is, GError **error);
-void imapx_free_fetch(struct _fetch_info *finfo);
-void imapx_dump_fetch(struct _fetch_info *finfo);
+struct _fetch_info *imapx_parse_fetch (struct _CamelIMAPXStream *is, GError **error);
+void imapx_free_fetch (struct _fetch_info *finfo);
+void imapx_dump_fetch (struct _fetch_info *finfo);
 
 /* ********************************************************************** */
 
@@ -176,9 +176,9 @@ struct _status_info {
 	gchar *text;
 };
 
-struct _status_info *imapx_parse_status(struct _CamelIMAPXStream *is, GError **error);
-struct _status_info *imapx_copy_status(struct _status_info *sinfo);
-void imapx_free_status(struct _status_info *sinfo);
+struct _status_info *imapx_parse_status (struct _CamelIMAPXStream *is, GError **error);
+struct _status_info *imapx_copy_status (struct _status_info *sinfo);
+void imapx_free_status (struct _status_info *sinfo);
 
 /* ********************************************************************** */
 /* parses the response from the status command */
@@ -205,9 +205,9 @@ struct _list_info {
 	gchar *name;
 };
 
-struct _list_info *imapx_parse_list(struct _CamelIMAPXStream *is, GError **error);
-gchar *imapx_list_get_path(struct _list_info *li);
-void imapx_free_list(struct _list_info *linfo);
+struct _list_info *imapx_parse_list (struct _CamelIMAPXStream *is, GError **error);
+gchar *imapx_list_get_path (struct _list_info *li);
+void imapx_free_list (struct _list_info *linfo);
 
 /* ********************************************************************** */
 typedef struct _IMAPXJobQueueInfo {
@@ -230,7 +230,7 @@ extern guchar imapx_specials[256];
 #define IMAPX_TYPE_TOKEN_CHAR (1<<4)
 #define IMAPX_TYPE_NOTID_CHAR (1<<5)
 
-guchar imapx_is_mask(const gchar *p);
+guchar imapx_is_mask (const gchar *p);
 
 #define imapx_is_text_char(c) ((imapx_specials[((unsigned char)(c))&0xff] & IMAPX_TYPE_TEXT_CHAR) != 0)
 #define imapx_is_quoted_char(c) ((imapx_specials[((unsigned char)(c))&0xff] & IMAPX_TYPE_QUOTED_CHAR) != 0)
@@ -256,7 +256,7 @@ extern gint camel_imapx_debug_flags;
 
 /* ********************************************************************** */
 
-void imapx_utils_init(void);
+void imapx_utils_init (void);
 
 /* chen adds from old imap provider - place it in right place */
 gchar *imapx_path_to_physical (const gchar *prefix, const gchar *vpath);

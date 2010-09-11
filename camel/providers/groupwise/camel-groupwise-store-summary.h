@@ -85,16 +85,16 @@ struct _CamelGroupwiseStoreSummaryClass {
 
 GType                        camel_groupwise_store_summary_get_type      (void);
 CamelGroupwiseStoreSummary      *camel_groupwise_store_summary_new        (void);
-CamelGroupwiseStoreInfo *camel_groupwise_store_summary_full_name(CamelGroupwiseStoreSummary *s, const gchar *full_name);
-CamelGroupwiseStoreInfo *camel_groupwise_store_summary_add_from_full(CamelGroupwiseStoreSummary *s, const gchar *full, gchar dir_sep);
+CamelGroupwiseStoreInfo *camel_groupwise_store_summary_full_name (CamelGroupwiseStoreSummary *s, const gchar *full_name);
+CamelGroupwiseStoreInfo *camel_groupwise_store_summary_add_from_full (CamelGroupwiseStoreSummary *s, const gchar *full, gchar dir_sep);
 
-gchar *camel_groupwise_store_summary_full_to_path(CamelGroupwiseStoreSummary *s, const gchar *full_name, gchar dir_sep);
-gchar *camel_groupwise_store_summary_path_to_full(CamelGroupwiseStoreSummary *s, const gchar *path, gchar dir_sep);
-gchar *camel_groupwise_store_summary_full_from_path(CamelGroupwiseStoreSummary *s, const gchar *path);
+gchar *camel_groupwise_store_summary_full_to_path (CamelGroupwiseStoreSummary *s, const gchar *full_name, gchar dir_sep);
+gchar *camel_groupwise_store_summary_path_to_full (CamelGroupwiseStoreSummary *s, const gchar *path, gchar dir_sep);
+gchar *camel_groupwise_store_summary_full_from_path (CamelGroupwiseStoreSummary *s, const gchar *path);
 
-CamelGroupwiseStoreNamespace *camel_groupwise_store_summary_namespace_new(CamelGroupwiseStoreSummary *s, const gchar *full_name, gchar dir_sep);
-CamelGroupwiseStoreNamespace *camel_groupwise_store_summary_namespace_find_path(CamelGroupwiseStoreSummary *s, const gchar *path);
-void camel_groupwise_store_summary_namespace_set(CamelGroupwiseStoreSummary *s, CamelGroupwiseStoreNamespace *ns);
+CamelGroupwiseStoreNamespace *camel_groupwise_store_summary_namespace_new (CamelGroupwiseStoreSummary *s, const gchar *full_name, gchar dir_sep);
+CamelGroupwiseStoreNamespace *camel_groupwise_store_summary_namespace_find_path (CamelGroupwiseStoreSummary *s, const gchar *path);
+void camel_groupwise_store_summary_namespace_set (CamelGroupwiseStoreSummary *s, CamelGroupwiseStoreNamespace *ns);
 
 #define camel_groupwise_store_info_full_name(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_STORE_INFO_LAST))
 

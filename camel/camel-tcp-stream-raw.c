@@ -307,9 +307,9 @@ read_from_prfd (PRFileDesc *fd, gchar *buffer, gsize n, GError **error)
 			pollfds[1].out_flags = 0;
 			nread = -1;
 
-			res = PR_Poll(pollfds, 2, IO_TIMEOUT);
+			res = PR_Poll (pollfds, 2, IO_TIMEOUT);
 			if (res == -1)
-				_set_errno_from_pr_error (PR_GetError());
+				_set_errno_from_pr_error (PR_GetError ());
 			else if (res == 0) {
 #ifdef ETIMEDOUT
 				errno = ETIMEDOUT;
@@ -412,7 +412,7 @@ write_to_prfd (PRFileDesc *fd, const gchar *buffer, gsize n, GError **error)
 
 			res = PR_Poll (pollfds, 2, IO_TIMEOUT);
 			if (res == -1) {
-				_set_errno_from_pr_error (PR_GetError());
+				_set_errno_from_pr_error (PR_GetError ());
 				if (PR_GetError () == PR_PENDING_INTERRUPT_ERROR)
 					w = 0;
 			} else if (res == 0) {
@@ -496,7 +496,7 @@ tcp_stream_raw_close (CamelStream *stream,
 		priv->sockfd = NULL;
 
 		if (err)
-			_set_errno_from_pr_error (PR_GetError());
+			_set_errno_from_pr_error (PR_GetError ());
 		else
 			return 0;
 	}
@@ -511,17 +511,17 @@ sockaddr_to_praddr (struct sockaddr *s, gint len, PRNetAddr *addr)
 	/* We assume the ip addresses are the same size - they have to be anyway.
 	   We could probably just use memcpy *shrug* */
 
-	memset(addr, 0, sizeof(*addr));
+	memset (addr, 0, sizeof (*addr));
 
 	if (s->sa_family == AF_INET) {
 		struct sockaddr_in *sin = (struct sockaddr_in *)s;
 
-		if (len < sizeof(*sin))
+		if (len < sizeof (*sin))
 			return -1;
 
 		addr->inet.family = PR_AF_INET;
 		addr->inet.port = sin->sin_port;
-		memcpy(&addr->inet.ip, &sin->sin_addr, sizeof(addr->inet.ip));
+		memcpy (&addr->inet.ip, &sin->sin_addr, sizeof (addr->inet.ip));
 
 		return 0;
 	}
@@ -529,13 +529,13 @@ sockaddr_to_praddr (struct sockaddr *s, gint len, PRNetAddr *addr)
 	else if (s->sa_family == PR_AF_INET6) {
 		struct sockaddr_in6 *sin = (struct sockaddr_in6 *)s;
 
-		if (len < sizeof(*sin))
+		if (len < sizeof (*sin))
 			return -1;
 
 		addr->ipv6.family = PR_AF_INET6;
 		addr->ipv6.port = sin->sin6_port;
 		addr->ipv6.flowinfo = sin->sin6_flowinfo;
-		memcpy(&addr->ipv6.ip, &sin->sin6_addr, sizeof(addr->ipv6.ip));
+		memcpy (&addr->ipv6.ip, &sin->sin6_addr, sizeof (addr->ipv6.ip));
 		addr->ipv6.scope_id = sin->sin6_scope_id;
 
 		return 0;
@@ -551,20 +551,20 @@ socket_connect (struct addrinfo *host, GError **error)
 	PRNetAddr netaddr;
 	PRFileDesc *fd, *cancel_fd;
 
-	if (sockaddr_to_praddr(host->ai_addr, host->ai_addrlen, &netaddr) != 0) {
+	if (sockaddr_to_praddr (host->ai_addr, host->ai_addrlen, &netaddr) != 0) {
 		errno = EINVAL;
 		_set_g_error_from_errno (error, FALSE);
 		return NULL;
 	}
 
-	fd = PR_OpenTCPSocket(netaddr.raw.family);
+	fd = PR_OpenTCPSocket (netaddr.raw.family);
 	if (fd == NULL) {
 		_set_errno_from_pr_error (PR_GetError ());
 		_set_g_error_from_errno (error, FALSE);
 		return NULL;
 	}
 
-	cancel_fd = camel_operation_cancel_prfd(NULL);
+	cancel_fd = camel_operation_cancel_prfd (NULL);
 
 	if (PR_Connect (fd, &netaddr, cancel_fd?0:CONNECT_TIMEOUT) == PR_FAILURE) {
 		gint errnosave;
@@ -595,7 +595,7 @@ socket_connect (struct addrinfo *host, GError **error)
 					goto exception;
 				}
 
-				if (PR_ConnectContinue(fd, poll[0].out_flags) == PR_FAILURE) {
+				if (PR_ConnectContinue (fd, poll[0].out_flags) == PR_FAILURE) {
 					_set_errno_from_pr_error (PR_GetError ());
 					if (PR_GetError () != PR_IN_PROGRESS_ERROR)
 						goto exception;
@@ -1119,28 +1119,28 @@ tcp_stream_raw_setsockopt (CamelTcpStream *stream,
 }
 
 static struct sockaddr *
-sockaddr_from_praddr(PRNetAddr *addr, socklen_t *len)
+sockaddr_from_praddr (PRNetAddr *addr, socklen_t *len)
 {
 	/* We assume the ip addresses are the same size - they have to be anyway */
 
 	if (addr->raw.family == PR_AF_INET) {
-		struct sockaddr_in *sin = g_malloc0(sizeof(*sin));
+		struct sockaddr_in *sin = g_malloc0 (sizeof (*sin));
 
 		sin->sin_family = AF_INET;
 		sin->sin_port = addr->inet.port;
-		memcpy(&sin->sin_addr, &addr->inet.ip, sizeof(sin->sin_addr));
+		memcpy (&sin->sin_addr, &addr->inet.ip, sizeof (sin->sin_addr));
 		*len = sizeof(*sin);
 
 		return (struct sockaddr *)sin;
 	}
 #ifdef ENABLE_IPv6
 	else if (addr->raw.family == PR_AF_INET6) {
-		struct sockaddr_in6 *sin = g_malloc0(sizeof(*sin));
+		struct sockaddr_in6 *sin = g_malloc0 (sizeof (*sin));
 
 		sin->sin6_family = AF_INET6;
 		sin->sin6_port = addr->ipv6.port;
 		sin->sin6_flowinfo = addr->ipv6.flowinfo;
-		memcpy(&sin->sin6_addr, &addr->ipv6.ip, sizeof(sin->sin6_addr));
+		memcpy (&sin->sin6_addr, &addr->ipv6.ip, sizeof (sin->sin6_addr));
 		sin->sin6_scope_id = addr->ipv6.scope_id;
 		*len = sizeof(*sin);
 
@@ -1159,10 +1159,10 @@ tcp_stream_raw_get_local_address (CamelTcpStream *stream,
 	CamelTcpStreamRawPrivate *priv = raw->priv;
 	PRNetAddr addr;
 
-	if (PR_GetSockName(priv->sockfd, &addr) != PR_SUCCESS)
+	if (PR_GetSockName (priv->sockfd, &addr) != PR_SUCCESS)
 		return NULL;
 
-	return sockaddr_from_praddr(&addr, len);
+	return sockaddr_from_praddr (&addr, len);
 }
 
 static struct sockaddr *
@@ -1173,10 +1173,10 @@ tcp_stream_raw_get_remote_address (CamelTcpStream *stream,
 	CamelTcpStreamRawPrivate *priv = raw->priv;
 	PRNetAddr addr;
 
-	if (PR_GetPeerName(priv->sockfd, &addr) != PR_SUCCESS)
+	if (PR_GetPeerName (priv->sockfd, &addr) != PR_SUCCESS)
 		return NULL;
 
-	return sockaddr_from_praddr(&addr, len);
+	return sockaddr_from_praddr (&addr, len);
 }
 
 static PRFileDesc *

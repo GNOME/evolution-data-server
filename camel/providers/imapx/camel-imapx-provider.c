@@ -111,30 +111,30 @@ CamelServiceAuthType camel_imapx_password_authtype = {
 	TRUE
 };
 
-void camel_imapx_module_init(void);
+void camel_imapx_module_init (void);
 
-extern void imapx_utils_init(void);
+extern void imapx_utils_init (void);
 
 void
-camel_imapx_module_init(void)
+camel_imapx_module_init (void)
 {
-	imapx_provider.object_types[CAMEL_PROVIDER_STORE] = camel_imapx_store_get_type();
+	imapx_provider.object_types[CAMEL_PROVIDER_STORE] = camel_imapx_store_get_type ();
 	imapx_provider.url_hash = imapx_url_hash;
 	imapx_provider.url_equal = imapx_url_equal;
-	imapx_provider.authtypes = camel_sasl_authtype_list(FALSE);
-	imapx_provider.authtypes = g_list_prepend(imapx_provider.authtypes, &camel_imapx_password_authtype);
+	imapx_provider.authtypes = camel_sasl_authtype_list (FALSE);
+	imapx_provider.authtypes = g_list_prepend (imapx_provider.authtypes, &camel_imapx_password_authtype);
 	imapx_provider.translation_domain = GETTEXT_PACKAGE;
 
 	/* TEMPORARY */
-	imapx_utils_init();
+	imapx_utils_init ();
 
-	camel_provider_register(&imapx_provider);
+	camel_provider_register (&imapx_provider);
 }
 
 void
-camel_provider_module_init(void)
+camel_provider_module_init (void)
 {
-	camel_imapx_module_init();
+	camel_imapx_module_init ();
 }
 
 static void

@@ -372,8 +372,8 @@ camel_imap_command_response (CamelImapStore *store, gchar **response,
 			/* we might get a ']' from a BAD response since we +12, but who cares? */
 			msg = g_strdup_printf(_("Alert from IMAP server %s@%s:\n%s"),
 					      ((CamelService *)store)->url->user, ((CamelService *)store)->url->host, respbuf+12);
-			camel_session_alert_user(((CamelService *)store)->session, CAMEL_SESSION_ALERT_WARNING, msg, FALSE);
-			g_free(msg);
+			camel_session_alert_user (((CamelService *)store)->session, CAMEL_SESSION_ALERT_WARNING, msg, FALSE);
+			g_free (msg);
 		}
 
 		break;
@@ -538,7 +538,7 @@ imap_read_untagged (CamelImapStore *store, gchar *line, GError **error)
 
 		if (camel_debug("imap")) {
 			printf("Literal: -->");
-			fwrite(str->str+1, 1, length, stdout);
+			fwrite (str->str+1, 1, length, stdout);
 			printf("<--\n");
 		}
 
@@ -820,15 +820,15 @@ imap_command_strdup_vprintf (CamelImapStore *store, const gchar *fmt,
 			string = va_arg (ap, gchar *);
 			/* NB: string is freed during output for %F and %G */
 			if (*p == 'F') {
-				gchar *s = camel_imap_store_summary_full_from_path(store->summary, string);
+				gchar *s = camel_imap_store_summary_full_from_path (store->summary, string);
 				if (s) {
-					string = camel_utf8_utf7(s);
-					g_free(s);
+					string = camel_utf8_utf7 (s);
+					g_free (s);
 				} else {
-					string = camel_utf8_utf7(string);
+					string = camel_utf8_utf7 (string);
 				}
 			} else if (*p == 'G') {
-				string = camel_utf8_utf7(string);
+				string = camel_utf8_utf7 (string);
 			}
 
 			arglen = strlen (string);

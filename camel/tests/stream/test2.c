@@ -9,13 +9,13 @@
 #include <unistd.h>
 
 gint
-main(gint argc, gchar **argv)
+main (gint argc, gchar **argv)
 {
 	CamelSeekableStream *ss = NULL;
 	GByteArray *ba;
 	gint i;
 
-	camel_test_init(argc, argv);
+	camel_test_init (argc, argv);
 
 	camel_test_start("CamelStream mem, create, seek, read, write, eos");
 	for (i=0;i<3;i++) {
@@ -23,26 +23,26 @@ main(gint argc, gchar **argv)
 		push("Creating stream using method %d", i);
 		switch (i) {
 		case 0:
-			ss = (CamelSeekableStream *)camel_stream_mem_new();
+			ss = (CamelSeekableStream *)camel_stream_mem_new ();
 			break;
 		case 1:
-			ba = g_byte_array_new();
-			ss = (CamelSeekableStream *)camel_stream_mem_new_with_byte_array(ba);
+			ba = g_byte_array_new ();
+			ss = (CamelSeekableStream *)camel_stream_mem_new_with_byte_array (ba);
 			break;
 		case 2:
 			ss = (CamelSeekableStream *)camel_stream_mem_new_with_buffer("", 0);
 			break;
 		}
-		check(ss != NULL);
+		check (ss != NULL);
 
-		test_stream_seekable_writepart(ss);
-		test_stream_seekable_readpart(ss);
+		test_stream_seekable_writepart (ss);
+		test_stream_seekable_readpart (ss);
 
-		check_unref(ss, 1);
-		pull();
+		check_unref (ss, 1);
+		pull ();
 	}
 
-	camel_test_end();
+	camel_test_end ();
 
 	return 0;
 }

@@ -43,10 +43,10 @@ struct _CamelImapMsg {
 	void (*free)(CamelImapStore *store, struct _CamelImapMsg *m);
 };
 
-CamelImapMsg *camel_imap_msg_new(void (*receive)(CamelImapStore *store, struct _CamelImapMsg *m),
+CamelImapMsg *camel_imap_msg_new (void (*receive)(CamelImapStore *store, struct _CamelImapMsg *m),
 				 void (*free)(CamelImapStore *store, struct _CamelImapMsg *m),
 				 gsize size);
-void camel_imap_msg_queue(CamelImapStore *store, CamelImapMsg *msg);
+void camel_imap_msg_queue (CamelImapStore *store, CamelImapMsg *msg);
 
 #endif
 

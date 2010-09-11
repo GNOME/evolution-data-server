@@ -49,12 +49,12 @@
 
 #define E_DATA_BOOK_FACTORY_SERVICE_NAME "org.gnome.evolution.dataserver.AddressBook"
 
-static gchar ** flatten_stringlist(GList *list);
+static gchar ** flatten_stringlist (GList *list);
 static GList *array_to_stringlist (gchar **list);
 static EList *array_to_elist (gchar **list);
 static gboolean unwrap_gerror (GError *error, GError **client_error);
 
-G_DEFINE_TYPE(EBook, e_book, G_TYPE_OBJECT)
+G_DEFINE_TYPE (EBook, e_book, G_TYPE_OBJECT)
 #define E_BOOK_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_BOOK, EBookPrivate))
 
 enum {
@@ -2849,7 +2849,7 @@ e_book_get_self (EContact **contact, EBook **book, GError **error)
 		return FALSE;
 	}
 
-	gconf = gconf_client_get_default();
+	gconf = gconf_client_get_default ();
 	uid = gconf_client_get_string (gconf, SELF_UID_KEY, NULL);
 	g_object_unref (gconf);
 
@@ -2899,7 +2899,7 @@ e_book_set_self (EBook *book, EContact *contact, GError **error)
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
 
-	gconf = gconf_client_get_default();
+	gconf = gconf_client_get_default ();
 	gconf_client_set_string (gconf, SELF_UID_KEY, e_contact_get_const (contact, E_CONTACT_UID), NULL);
 	g_object_unref (gconf);
 
@@ -2925,7 +2925,7 @@ e_book_is_self (EContact *contact)
 	   need a GError** arg for that */
 	g_return_val_if_fail (contact && E_IS_CONTACT (contact), FALSE);
 
-	gconf = gconf_client_get_default();
+	gconf = gconf_client_get_default ();
 	uid = gconf_client_get_string (gconf, SELF_UID_KEY, NULL);
 	g_object_unref (gconf);
 
@@ -3041,7 +3041,7 @@ e_book_get_addressbooks (ESourceList **addressbook_sources, GError **error)
 
 	e_return_error_if_fail (addressbook_sources, E_BOOK_ERROR_INVALID_ARG);
 
-	gconf = gconf_client_get_default();
+	gconf = gconf_client_get_default ();
 	*addressbook_sources = e_source_list_new_for_gconf (gconf, "/apps/evolution/addressbook/sources");
 	g_object_unref (gconf);
 
@@ -3461,7 +3461,7 @@ array_to_stringlist (gchar **list)
 	while (*i != NULL) {
 		l = g_list_prepend (l, g_strdup (*i++));
 	}
-	return g_list_reverse(l);
+	return g_list_reverse (l);
 }
 
 static EList *

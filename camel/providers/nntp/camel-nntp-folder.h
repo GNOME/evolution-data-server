@@ -70,7 +70,7 @@ GType camel_nntp_folder_get_type (void);
 
 CamelFolder *camel_nntp_folder_new (CamelStore *parent, const gchar *folder_name, GError **error);
 
-gboolean camel_nntp_folder_selected(CamelNNTPFolder *folder, gchar *line, GError **error);
+gboolean camel_nntp_folder_selected (CamelNNTPFolder *folder, gchar *line, GError **error);
 
 G_END_DECLS
 

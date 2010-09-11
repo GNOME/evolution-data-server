@@ -66,7 +66,7 @@ main (gint argc, gchar **argv)
 {
 	gint i, j;
 
-	camel_test_init(argc, argv);
+	camel_test_init (argc, argv);
 
 	camel_test_start("Param list decoding");
 
@@ -74,21 +74,21 @@ main (gint argc, gchar **argv)
 		struct _camel_header_param *head, *node;
 
 		camel_test_push("param decoding[%d] '%s'", i, test1[i].list);
-		head = camel_header_param_list_decode(test1[i].list);
-		check(head != NULL);
+		head = camel_header_param_list_decode (test1[i].list);
+		check (head != NULL);
 		node = head;
 		for (j=0;j<test1[i].count;j++) {
 			check_msg(node != NULL, "didn't find all params");
-			check(strcmp(node->name, test1[i].params[j*2]) == 0);
-			check(strcmp(node->value, test1[i].params[j*2+1]) == 0);
+			check (strcmp (node->name, test1[i].params[j*2]) == 0);
+			check (strcmp (node->value, test1[i].params[j*2+1]) == 0);
 			node = node->next;
 		}
 		check_msg(node == NULL, "found more params than should have");
-		camel_header_param_list_free(head);
-		camel_test_pull();
+		camel_header_param_list_free (head);
+		camel_test_pull ();
 	}
 
-	camel_test_end();
+	camel_test_end ();
 
 	camel_test_start("Param list encoding");
 
@@ -99,20 +99,20 @@ main (gint argc, gchar **argv)
 		camel_test_push("param encoding[%d]", i);
 
 		for (j=0;j<test2[i].count;j++)
-			camel_header_set_param(&head, test2[i].params[j*2], test2[i].params[j*2+1]);
+			camel_header_set_param (&head, test2[i].params[j*2], test2[i].params[j*2+1]);
 		scan = head;
 		for (j=0;scan;j++)
 			scan = scan->next;
-		check(j == test2[i].count);
+		check (j == test2[i].count);
 
-		text = camel_header_param_list_format(head);
-		check(strcmp(text, test2[i].list) == 0);
-		camel_header_param_list_free(head);
+		text = camel_header_param_list_format (head);
+		check (strcmp (text, test2[i].list) == 0);
+		camel_header_param_list_free (head);
 
-		camel_test_pull();
+		camel_test_pull ();
 	}
 
-	camel_test_end();
+	camel_test_end ();
 
 	return 0;
 }

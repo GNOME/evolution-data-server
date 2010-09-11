@@ -28,7 +28,7 @@
 #include "libedata-book/e-data-book-types.h"
 #include "e-gdbus-egdbusbookview.h"
 
-G_DEFINE_TYPE(EBookView, e_book_view, G_TYPE_OBJECT);
+G_DEFINE_TYPE (EBookView, e_book_view, G_TYPE_OBJECT);
 
 #define E_BOOK_VIEW_GET_PRIVATE(o)					\
 	(G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_BOOK_VIEW, EBookViewPrivate))

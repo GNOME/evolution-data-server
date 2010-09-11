@@ -43,7 +43,7 @@ e_gw_proxy_construct_proxy_access_list (SoupSoapParameter *param, GList **proxy_
 			subparam = soup_soap_parameter_get_next_child_by_name (subparam, "entry")) {
 
 		proxyHandler *aclInstance;
-		aclInstance = (proxyHandler *) g_malloc0 (sizeof(proxyHandler));
+		aclInstance = (proxyHandler *) g_malloc0 (sizeof (proxyHandler));
 		aclInstance->permissions = 0;
 		aclInstance->flags = 0;
 		type_param = soup_soap_parameter_get_first_child_by_name (subparam, "email");
@@ -187,7 +187,7 @@ e_gw_proxy_form_soap_request_from_proxyHandler (SoupSoapMessage *msg, proxyHandl
 		e_gw_message_write_int_parameter (msg, "write", NULL, 1);
 	}
 	if (added == TRUE)
-		soup_soap_message_end_element(msg);
+		soup_soap_message_end_element (msg);
 
 	added = FALSE;
 	if (new_proxy->permissions & E_GW_PROXY_APPOINTMENT_READ) {
@@ -221,7 +221,7 @@ e_gw_proxy_form_soap_request_from_proxyHandler (SoupSoapMessage *msg, proxyHandl
 		e_gw_message_write_int_parameter (msg, "write", NULL, 1);
 	}
 	if (added == TRUE)
-		soup_soap_message_end_element(msg);
+		soup_soap_message_end_element (msg);
 
 	added = FALSE;
 	if (new_proxy->permissions & E_GW_PROXY_NOTES_READ) {
@@ -238,7 +238,7 @@ e_gw_proxy_form_soap_request_from_proxyHandler (SoupSoapMessage *msg, proxyHandl
 		e_gw_message_write_int_parameter (msg, "write", NULL, 1);
 	}
 	if (added == TRUE)
-		soup_soap_message_end_element(msg);
+		soup_soap_message_end_element (msg);
 
 	added = FALSE;
 	if (new_proxy->permissions & E_GW_PROXY_GET_ALARMS) {
@@ -272,7 +272,7 @@ e_gw_proxy_form_soap_request_from_proxyHandler (SoupSoapMessage *msg, proxyHandl
 		e_gw_message_write_int_parameter (msg, "readHidden", NULL, 1);
 	}
 	if (added==TRUE)
-		soup_soap_message_end_element(msg);
+		soup_soap_message_end_element (msg);
 
 }
 

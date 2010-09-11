@@ -9,12 +9,12 @@ gint main (gint argc, gchar **argv)
 	book = e_book_new_system_addressbook (NULL);
 	if (!book) {
 		printf ("failed to create local addressbook\n");
-		exit(0);
+		exit (0);
 	}
 
 	if (!e_book_open (book, FALSE, NULL)) {
 		printf ("failed to open local addressbook\n");
-		exit(0);
+		exit (0);
 	}
 
 	printf ("removing nonexistant contact\n");

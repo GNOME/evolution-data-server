@@ -71,10 +71,10 @@ transfer_messages (CamelFolder *folder,
 		md->folder, md->uids, md->dest, NULL, md->delete, error);
 
 	for (i=0;i<md->uids->len;i++)
-		g_free(md->uids->pdata[i]);
-	g_ptr_array_free(md->uids, TRUE);
+		g_free (md->uids->pdata[i]);
+	g_ptr_array_free (md->uids, TRUE);
 	g_object_unref (md->folder);
-	g_free(md);
+	g_free (md);
 }
 
 static gboolean
@@ -125,7 +125,7 @@ vtrash_folder_transfer_messages_to (CamelFolder *source,
 
 		/* Move to trash is the same as setting the message flag */
 		for (i = 0; i < uids->len; i++)
-			camel_folder_set_message_flags(source, uids->pdata[i], ((CamelVTrashFolder *)dest)->bit, ~0);
+			camel_folder_set_message_flags (source, uids->pdata[i], ((CamelVTrashFolder *)dest)->bit, ~0);
 		return TRUE;
 	}
 
@@ -147,27 +147,27 @@ vtrash_folder_transfer_messages_to (CamelFolder *source,
 			camel_folder_set_message_flags (source, uids->pdata[i], sbit, 0);
 		} else {
 			if (batch == NULL)
-				batch = g_hash_table_new(NULL, NULL);
-			md = g_hash_table_lookup(batch, mi->summary->folder);
+				batch = g_hash_table_new (NULL, NULL);
+			md = g_hash_table_lookup (batch, mi->summary->folder);
 			if (md == NULL) {
-				md = g_malloc0(sizeof(*md));
+				md = g_malloc0 (sizeof (*md));
 				md->folder = g_object_ref (mi->summary->folder);
-				md->uids = g_ptr_array_new();
+				md->uids = g_ptr_array_new ();
 				md->dest = dest;
-				g_hash_table_insert(batch, mi->summary->folder, md);
+				g_hash_table_insert (batch, mi->summary->folder, md);
 			}
 
 			tuid = uids->pdata[i];
-			if (strlen(tuid)>8)
+			if (strlen (tuid)>8)
 				tuid += 8;
-			g_ptr_array_add(md->uids, g_strdup(tuid));
+			g_ptr_array_add (md->uids, g_strdup (tuid));
 		}
 		camel_folder_free_message_info (source, (CamelMessageInfo *)mi);
 	}
 
 	if (batch) {
-		g_hash_table_foreach(batch, (GHFunc)transfer_messages, error);
-		g_hash_table_destroy(batch);
+		g_hash_table_foreach (batch, (GHFunc)transfer_messages, error);
+		g_hash_table_destroy (batch);
 	}
 
 	return TRUE;
@@ -203,7 +203,7 @@ camel_vtrash_folder_new (CamelStore *parent_store, camel_vtrash_folder_t type)
 {
 	CamelVTrashFolder *vtrash;
 
-	g_assert(type < CAMEL_VTRASH_FOLDER_LAST);
+	g_assert (type < CAMEL_VTRASH_FOLDER_LAST);
 
 	vtrash = g_object_new (
 		CAMEL_TYPE_VTRASH_FOLDER,
@@ -219,7 +219,7 @@ camel_vtrash_folder_new (CamelStore *parent_store, camel_vtrash_folder_t type)
 		CAMEL_STORE_VEE_FOLDER_SPECIAL);
 
 	((CamelFolder *)vtrash)->folder_flags |= vdata[type].flags;
-	camel_vee_folder_set_expression((CamelVeeFolder *)vtrash, vdata[type].expr);
+	camel_vee_folder_set_expression ((CamelVeeFolder *)vtrash, vdata[type].expr);
 	vtrash->bit = vdata[type].bit;
 	vtrash->type = type;
 

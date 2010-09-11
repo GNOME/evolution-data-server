@@ -88,7 +88,7 @@ const gchar *e_data_book_status_to_string (EDataBookStatus status);
  **/
 #define e_return_data_book_error_if_fail(expr, _code)				\
 	G_STMT_START {								\
-		if (G_LIKELY(expr)) {						\
+		if (G_LIKELY (expr)) {						\
 		} else {							\
 			g_log (G_LOG_DOMAIN,					\
 				G_LOG_LEVEL_CRITICAL,				\

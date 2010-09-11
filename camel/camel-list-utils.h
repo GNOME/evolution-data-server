@@ -78,14 +78,14 @@ struct _CamelDList {
 
 #define CAMEL_DLIST_INITIALISER(l) { (CamelDListNode *)&l.tail, NULL, (CamelDListNode *)&l.head }
 
-void camel_dlist_init(CamelDList *v);
-CamelDListNode *camel_dlist_addhead(CamelDList *l, CamelDListNode *n);
-CamelDListNode *camel_dlist_addtail(CamelDList *l, CamelDListNode *n);
-CamelDListNode *camel_dlist_remove(CamelDListNode *n);
-CamelDListNode *camel_dlist_remhead(CamelDList *l);
-CamelDListNode *camel_dlist_remtail(CamelDList *l);
-gint camel_dlist_empty(CamelDList *l);
-gint camel_dlist_length(CamelDList *l);
+void camel_dlist_init (CamelDList *v);
+CamelDListNode *camel_dlist_addhead (CamelDList *l, CamelDListNode *n);
+CamelDListNode *camel_dlist_addtail (CamelDList *l, CamelDListNode *n);
+CamelDListNode *camel_dlist_remove (CamelDListNode *n);
+CamelDListNode *camel_dlist_remhead (CamelDList *l);
+CamelDListNode *camel_dlist_remtail (CamelDList *l);
+gint camel_dlist_empty (CamelDList *l);
+gint camel_dlist_length (CamelDList *l);
 
 /* This is provided mostly for orthogonality with the dlist structure.
  * By making the nodes contain all of the data themselves it
@@ -122,14 +122,14 @@ struct _CamelSList {
 
 #define CAMEL_SLIST_INITIALISER(l) { 0 }
 
-void camel_slist_init(CamelSList *l);
-CamelSListNode *camel_slist_addhead(CamelSList *l, CamelSListNode *n);
-CamelSListNode *camel_slist_addtail(CamelSList *l, CamelSListNode *n);
-CamelSListNode *camel_slist_remove(CamelSList *l, CamelSListNode *n);
-CamelSListNode *camel_slist_remhead(CamelSList *l);
-CamelSListNode *camel_slist_remtail(CamelSList *l);
-gint camel_slist_empty(CamelSList *l);
-gint camel_slist_length(CamelSList *l);
+void camel_slist_init (CamelSList *l);
+CamelSListNode *camel_slist_addhead (CamelSList *l, CamelSListNode *n);
+CamelSListNode *camel_slist_addtail (CamelSList *l, CamelSListNode *n);
+CamelSListNode *camel_slist_remove (CamelSList *l, CamelSListNode *n);
+CamelSListNode *camel_slist_remhead (CamelSList *l);
+CamelSListNode *camel_slist_remtail (CamelSList *l);
+gint camel_slist_empty (CamelSList *l);
+gint camel_slist_length (CamelSList *l);
 
 G_END_DECLS
 

@@ -253,7 +253,7 @@ struct _ECalRecurVTable {
 };
 
 /* This is used to specify which parts of the CalObjTime to compare in
-   cal_obj_time_compare(). */
+   cal_obj_time_compare (). */
 typedef enum {
 	CALOBJ_YEAR,
 	CALOBJ_MONTH,
@@ -685,7 +685,7 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
 	g_return_if_fail (end >= -1);
 
 	/* Get dtstart, dtend, recurrences, and exceptions. Note that
-	   cal_component_get_dtend() will convert a DURATION property to a
+	   cal_component_get_dtend () will convert a DURATION property to a
 	   DTEND so we don't need to worry about that. */
 
 	e_cal_component_get_dtstart (comp, &dtstart);
@@ -1209,7 +1209,7 @@ generate_instances_for_chunk (ECalComponent	*comp,
 
 		p = elem->data;
 
-		tt = icaltime_convert_to_zone(p->start, zone);
+		tt = icaltime_convert_to_zone (p->start, zone);
 		cotime.year     = tt.year;
 		cotime.month    = tt.month - 1;
 		cotime.day      = tt.day;
@@ -1434,7 +1434,7 @@ cal_object_get_rdate_end	(CalObjTime	*occ,
 	p = rdate->period;
 	if (p->type == E_CAL_COMPONENT_PERIOD_DATETIME) {
 		struct icaltimetype tt =
-			icaltime_convert_to_zone(p->u.end, zone);
+			icaltime_convert_to_zone (p->u.end, zone);
 		occ->year     = tt.year;
 		occ->month    = tt.month - 1;
 		occ->day      = tt.day;
@@ -3561,7 +3561,7 @@ cal_obj_time_compare		(CalObjTime *cotime1,
 }
 
 /* This is the same as the above function, but without the comparison type.
-   It is used for qsort(). */
+   It is used for qsort (). */
 static gint
 cal_obj_time_compare_func (gconstpointer arg1,
 			   gconstpointer arg2)
@@ -3851,7 +3851,7 @@ e_cal_recur_ensure_rule_end_date (ECalComponent			*comp,
 	/* Calculate the end date. Note that we initialize end_date to 0, so
 	   if the RULE doesn't generate COUNT instances we save a time_t of 0.
 	   Also note that we use the UTC timezone as the default timezone.
-	   In get_end_date() if the DTSTART is a DATE or floating time, we will
+	   In get_end_date () if the DTSTART is a DATE or floating time, we will
 	   convert the ENDDATE to the current timezone. */
 	cb_data.count = rule.count;
 	cb_data.instances = 0;

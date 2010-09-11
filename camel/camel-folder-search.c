@@ -68,31 +68,31 @@ struct _CamelFolderSearchPrivate {
 	GHashTable *threads_hash;
 };
 
-static ESExpResult *search_not(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
+static ESExpResult *search_not (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
 
-static ESExpResult *search_header_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
-static ESExpResult *search_header_matches(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
-static ESExpResult *search_header_starts_with(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
-static ESExpResult *search_header_ends_with(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
-static ESExpResult *search_header_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
-static ESExpResult *search_header_soundex(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
-static ESExpResult *search_header_regex(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
-static ESExpResult *search_header_full_regex(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
-static ESExpResult *search_match_all(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFolderSearch *search);
-static ESExpResult *search_match_threads(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFolderSearch *s);
-static ESExpResult *search_body_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
-static ESExpResult *search_body_regex(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
-static ESExpResult *search_user_flag(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
-static ESExpResult *search_user_tag(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
-static ESExpResult *search_system_flag(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
-static ESExpResult *search_get_sent_date(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
-static ESExpResult *search_get_received_date(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
-static ESExpResult *search_get_current_date(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
-static ESExpResult *search_get_size(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
-static ESExpResult *search_uid(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
-static ESExpResult *search_message_location(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+static ESExpResult *search_header_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
+static ESExpResult *search_header_matches (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
+static ESExpResult *search_header_starts_with (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
+static ESExpResult *search_header_ends_with (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
+static ESExpResult *search_header_exists (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
+static ESExpResult *search_header_soundex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
+static ESExpResult *search_header_regex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
+static ESExpResult *search_header_full_regex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
+static ESExpResult *search_match_all (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFolderSearch *search);
+static ESExpResult *search_match_threads (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFolderSearch *s);
+static ESExpResult *search_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
+static ESExpResult *search_body_regex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
+static ESExpResult *search_user_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+static ESExpResult *search_user_tag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+static ESExpResult *search_system_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+static ESExpResult *search_get_sent_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+static ESExpResult *search_get_received_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+static ESExpResult *search_get_current_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+static ESExpResult *search_get_size (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+static ESExpResult *search_uid (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+static ESExpResult *search_message_location (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
 
-static ESExpResult *search_dummy(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
+static ESExpResult *search_dummy (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
 
 static gint read_uid_callback (gpointer  ref, gint ncol, gchar ** cols, gchar **name);
 
@@ -162,7 +162,7 @@ static void
 camel_folder_search_init (CamelFolderSearch *search)
 {
 	search->priv = CAMEL_FOLDER_SEARCH_GET_PRIVATE (search);
-	search->sexp = e_sexp_new();
+	search->sexp = e_sexp_new ();
 }
 
 static struct {
@@ -222,9 +222,9 @@ camel_folder_search_construct (CamelFolderSearch *search)
 		}
 		if (func != NULL) {
 			if (builtins[i].flags&2) {
-				e_sexp_add_ifunction(search->sexp, 0, builtins[i].name, (ESExpIFunc *)func, search);
+				e_sexp_add_ifunction (search->sexp, 0, builtins[i].name, (ESExpIFunc *)func, search);
 			} else {
-				e_sexp_add_function(search->sexp, 0, builtins[i].name, (ESExpFunc *)func, search);
+				e_sexp_add_function (search->sexp, 0, builtins[i].name, (ESExpFunc *)func, search);
 			}
 		}
 	}
@@ -248,7 +248,7 @@ camel_folder_search_new (void)
 	CamelFolderSearch *new;
 
 	new = g_object_new (CAMEL_TYPE_FOLDER_SEARCH, NULL);
-	camel_folder_search_construct(new);
+	camel_folder_search_construct (new);
 
 	return new;
 }
@@ -263,7 +263,7 @@ camel_folder_search_new (void)
  * available.  Or for use by subclasses.
  **/
 void
-camel_folder_search_set_folder(CamelFolderSearch *search, CamelFolder *folder)
+camel_folder_search_set_folder (CamelFolderSearch *search, CamelFolder *folder)
 {
 	search->folder = folder;
 }
@@ -279,7 +279,7 @@ camel_folder_search_set_folder(CamelFolderSearch *search, CamelFolder *folder)
  * for searching headers and for the match-all operator.
  **/
 void
-camel_folder_search_set_summary(CamelFolderSearch *search, GPtrArray *summary)
+camel_folder_search_set_summary (CamelFolderSearch *search, GPtrArray *summary)
 {
 	search->summary = summary;
 }
@@ -295,7 +295,7 @@ camel_folder_search_set_summary(CamelFolderSearch *search, GPtrArray *summary)
  * body-contains function.
  **/
 void
-camel_folder_search_set_body_index(CamelFolderSearch *search, CamelIndex *index)
+camel_folder_search_set_body_index (CamelFolderSearch *search, CamelIndex *index)
 {
 	if (search->body_index)
 		g_object_unref (search->body_index);
@@ -337,63 +337,63 @@ camel_folder_search_execute_expression (CamelFolderSearch *search,
 
 	/* only re-parse if the search has changed */
 	if (search->last_search == NULL
-	    || strcmp(search->last_search, expr)) {
-		e_sexp_input_text(search->sexp, expr, strlen(expr));
-		if (e_sexp_parse(search->sexp) == -1) {
+	    || strcmp (search->last_search, expr)) {
+		e_sexp_input_text (search->sexp, expr, strlen (expr));
+		if (e_sexp_parse (search->sexp) == -1) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Cannot parse search expression: %s:\n%s"),
-				e_sexp_error(search->sexp), expr);
+				e_sexp_error (search->sexp), expr);
 			return NULL;
 		}
 
-		g_free(search->last_search);
-		search->last_search = g_strdup(expr);
+		g_free (search->last_search);
+		search->last_search = g_strdup (expr);
 	}
-	r = e_sexp_eval(search->sexp);
+	r = e_sexp_eval (search->sexp);
 	if (r == NULL) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Error executing search expression: %s:\n%s"),
-			e_sexp_error(search->sexp), expr);
+			e_sexp_error (search->sexp), expr);
 		return NULL;
 	}
 
-	matches = g_ptr_array_new();
+	matches = g_ptr_array_new ();
 
 	/* now create a folder summary to return?? */
 	if (r->type == ESEXP_RES_ARRAY_PTR) {
 		d(printf("got result ...\n"));
 		if (search->summary) {
 			/* reorder result in summary order */
-			results = g_hash_table_new(g_str_hash, g_str_equal);
+			results = g_hash_table_new (g_str_hash, g_str_equal);
 			for (i=0;i<r->value.ptrarray->len;i++) {
 				d(printf("adding match: %s\n", (gchar *)g_ptr_array_index(r->value.ptrarray, i)));
-				g_hash_table_insert(results, g_ptr_array_index(r->value.ptrarray, i), GINT_TO_POINTER (1));
+				g_hash_table_insert (results, g_ptr_array_index (r->value.ptrarray, i), GINT_TO_POINTER (1));
 			}
 			for (i=0;i<search->summary->len;i++) {
-				gchar *uid = g_ptr_array_index(search->summary, i);
-				if (g_hash_table_lookup(results, uid)) {
-					g_ptr_array_add(matches, (gpointer) camel_pstring_strdup(uid));
+				gchar *uid = g_ptr_array_index (search->summary, i);
+				if (g_hash_table_lookup (results, uid)) {
+					g_ptr_array_add (matches, (gpointer) camel_pstring_strdup (uid));
 				}
 			}
-			g_hash_table_destroy(results);
+			g_hash_table_destroy (results);
 		} else {
 			for (i=0;i<r->value.ptrarray->len;i++) {
 				d(printf("adding match: %s\n", (gchar *)g_ptr_array_index(r->value.ptrarray, i)));
-				g_ptr_array_add(matches, (gpointer) camel_pstring_strdup(g_ptr_array_index(r->value.ptrarray, i)));
+				g_ptr_array_add (matches, (gpointer) camel_pstring_strdup (g_ptr_array_index (r->value.ptrarray, i)));
 			}
 		}
 	} else {
 		g_warning("Search returned an invalid result type");
 	}
 
-	e_sexp_result_free(search->sexp, r);
+	e_sexp_result_free (search->sexp, r);
 
 	if (p->threads)
-		camel_folder_thread_messages_unref(p->threads);
+		camel_folder_thread_messages_unref (p->threads);
 	if (p->threads_hash)
-		g_hash_table_destroy(p->threads_hash);
+		g_hash_table_destroy (p->threads_hash);
 
 	p->threads = NULL;
 	p->threads_hash = NULL;
@@ -435,38 +435,38 @@ camel_folder_search_count (CamelFolderSearch *search,
 
 	CamelFolderSearchPrivate *p = search->priv;
 
-	g_assert(search->folder);
+	g_assert (search->folder);
 
 	p->error = error;
 
 	/* We route body-contains search and thread based search through memory and not via db. */
 	if (strstr((const gchar *) expr, "body-contains") || strstr((const gchar *) expr, "match-threads")) {
 		/* setup our search list only contains those we're interested in */
-		search->summary = camel_folder_get_summary(search->folder);
+		search->summary = camel_folder_get_summary (search->folder);
 
 		summary_set = search->summary;
 
 		/* only re-parse if the search has changed */
 		if (search->last_search == NULL
-		    || strcmp(search->last_search, expr)) {
-			e_sexp_input_text(search->sexp, expr, strlen(expr));
-			if (e_sexp_parse(search->sexp) == -1) {
+		    || strcmp (search->last_search, expr)) {
+			e_sexp_input_text (search->sexp, expr, strlen (expr));
+			if (e_sexp_parse (search->sexp) == -1) {
 				g_set_error (
 					error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 					_("Cannot parse search expression: %s:\n%s"),
-					e_sexp_error(search->sexp), expr);
+					e_sexp_error (search->sexp), expr);
 				goto fail;
 			}
 
-			g_free(search->last_search);
-			search->last_search = g_strdup(expr);
+			g_free (search->last_search);
+			search->last_search = g_strdup (expr);
 		}
-		r = e_sexp_eval(search->sexp);
+		r = e_sexp_eval (search->sexp);
 		if (r == NULL) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Error executing search expression: %s:\n%s"),
-				e_sexp_error(search->sexp), expr);
+				e_sexp_error (search->sexp), expr);
 			goto fail;
 		}
 
@@ -475,21 +475,21 @@ camel_folder_search_count (CamelFolderSearch *search,
 			d(printf("got result\n"));
 
 			/* reorder result in summary order */
-			results = g_hash_table_new(g_str_hash, g_str_equal);
+			results = g_hash_table_new (g_str_hash, g_str_equal);
 			for (i=0;i<r->value.ptrarray->len;i++) {
 				d(printf("adding match: %s\n", (gchar *)g_ptr_array_index(r->value.ptrarray, i)));
-				g_hash_table_insert(results, g_ptr_array_index(r->value.ptrarray, i), GINT_TO_POINTER (1));
+				g_hash_table_insert (results, g_ptr_array_index (r->value.ptrarray, i), GINT_TO_POINTER (1));
 			}
 
 			for (i=0;i<summary_set->len;i++) {
-				gchar *uid = g_ptr_array_index(summary_set, i);
-				if (g_hash_table_lookup(results, uid))
+				gchar *uid = g_ptr_array_index (summary_set, i);
+				if (g_hash_table_lookup (results, uid))
 					count++;
 			}
-			g_hash_table_destroy(results);
+			g_hash_table_destroy (results);
 		}
 
-		e_sexp_result_free(search->sexp, r);
+		e_sexp_result_free (search->sexp, r);
 
 	} else {
 		CamelStore *parent_store;
@@ -530,13 +530,13 @@ camel_folder_search_count (CamelFolderSearch *search,
 fail:
 	/* these might be allocated by match-threads */
 	if (p->threads)
-		camel_folder_thread_messages_unref(p->threads);
+		camel_folder_thread_messages_unref (p->threads);
 	if (p->threads_hash)
-		g_hash_table_destroy(p->threads_hash);
+		g_hash_table_destroy (p->threads_hash);
 	if (search->summary_set)
-		g_ptr_array_free(search->summary_set, TRUE);
+		g_ptr_array_free (search->summary_set, TRUE);
 	if (search->summary)
-		camel_folder_free_summary(search->folder, search->summary);
+		camel_folder_free_summary (search->folder, search->summary);
 
 	p->threads = NULL;
 	p->threads_hash = NULL;
@@ -594,75 +594,75 @@ camel_folder_search_search (CamelFolderSearch *search,
 
 	CamelFolderSearchPrivate *p = search->priv;
 
-	g_assert(search->folder);
+	g_assert (search->folder);
 
 	p->error = error;
 
 	/* We route body-contains / thread based search and uid search through memory and not via db. */
 	if (uids || do_search_in_memory (expr)) {
 		/* setup our search list only contains those we're interested in */
-		search->summary = camel_folder_get_summary(search->folder);
+		search->summary = camel_folder_get_summary (search->folder);
 
 		if (uids) {
-			GHashTable *uids_hash = g_hash_table_new(g_str_hash, g_str_equal);
+			GHashTable *uids_hash = g_hash_table_new (g_str_hash, g_str_equal);
 
-			summary_set = search->summary_set = g_ptr_array_new();
+			summary_set = search->summary_set = g_ptr_array_new ();
 			for (i=0;i<uids->len;i++)
-				g_hash_table_insert(uids_hash, uids->pdata[i], uids->pdata[i]);
+				g_hash_table_insert (uids_hash, uids->pdata[i], uids->pdata[i]);
 			for (i=0;i<search->summary->len;i++)
-				if (g_hash_table_lookup(uids_hash, search->summary->pdata[i]))
-					g_ptr_array_add(search->summary_set, search->summary->pdata[i]);
-			g_hash_table_destroy(uids_hash);
+				if (g_hash_table_lookup (uids_hash, search->summary->pdata[i]))
+					g_ptr_array_add (search->summary_set, search->summary->pdata[i]);
+			g_hash_table_destroy (uids_hash);
 		} else {
 			summary_set = search->summary;
 		}
 
 		/* only re-parse if the search has changed */
 		if (search->last_search == NULL
-		    || strcmp(search->last_search, expr)) {
-			e_sexp_input_text(search->sexp, expr, strlen(expr));
-			if (e_sexp_parse(search->sexp) == -1) {
+		    || strcmp (search->last_search, expr)) {
+			e_sexp_input_text (search->sexp, expr, strlen (expr));
+			if (e_sexp_parse (search->sexp) == -1) {
 				g_set_error (
 					error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 					_("Cannot parse search expression: %s:\n%s"),
-					e_sexp_error(search->sexp), expr);
+					e_sexp_error (search->sexp), expr);
 				goto fail;
 			}
 
-			g_free(search->last_search);
-			search->last_search = g_strdup(expr);
+			g_free (search->last_search);
+			search->last_search = g_strdup (expr);
 		}
-		r = e_sexp_eval(search->sexp);
+		r = e_sexp_eval (search->sexp);
 		if (r == NULL) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Error executing search expression: %s:\n%s"),
-				e_sexp_error(search->sexp), expr);
+				e_sexp_error (search->sexp), expr);
 			goto fail;
 		}
 
-		matches = g_ptr_array_new();
+		matches = g_ptr_array_new ();
 
 		/* now create a folder summary to return?? */
 		if (r->type == ESEXP_RES_ARRAY_PTR) {
 			d(printf("got result\n"));
 
 			/* reorder result in summary order */
-			results = g_hash_table_new(g_str_hash, g_str_equal);
+			results = g_hash_table_new (g_str_hash, g_str_equal);
 			for (i=0;i<r->value.ptrarray->len;i++) {
 				d(printf("adding match: %s\n", (gchar *)g_ptr_array_index(r->value.ptrarray, i)));
-				g_hash_table_insert(results, g_ptr_array_index(r->value.ptrarray, i), GINT_TO_POINTER (1));
+				g_hash_table_insert (results, g_ptr_array_index (r->value.ptrarray, i), GINT_TO_POINTER (1));
 			}
 
 			for (i=0;i<summary_set->len;i++) {
-				gchar *uid = g_ptr_array_index(summary_set, i);
-				if (g_hash_table_lookup(results, uid))
-					g_ptr_array_add(matches, (gpointer) camel_pstring_strdup(uid));
+				gchar *uid = g_ptr_array_index (summary_set, i);
+				if (g_hash_table_lookup (results, uid))
+					g_ptr_array_add (matches, (gpointer) camel_pstring_strdup (uid));
 			}
-			g_hash_table_destroy(results);
+			g_hash_table_destroy (results);
 		}
 
-		e_sexp_result_free(search->sexp, r);
+		e_sexp_result_free (search->sexp, r);
 
 	} else {
 		CamelStore *parent_store;
@@ -686,7 +686,7 @@ camel_folder_search_search (CamelFolderSearch *search,
 		g_free (sql_query);
 		dd(printf("Equivalent sql %s\n", tmp));
 
-		matches = g_ptr_array_new();
+		matches = g_ptr_array_new ();
 		cdb = (CamelDB *) (parent_store->cdb_r);
 		camel_db_select (
 			cdb, tmp, (CamelDBSelectCB)
@@ -707,13 +707,13 @@ camel_folder_search_search (CamelFolderSearch *search,
 fail:
 	/* these might be allocated by match-threads */
 	if (p->threads)
-		camel_folder_thread_messages_unref(p->threads);
+		camel_folder_thread_messages_unref (p->threads);
 	if (p->threads_hash)
-		g_hash_table_destroy(p->threads_hash);
+		g_hash_table_destroy (p->threads_hash);
 	if (search->summary_set)
-		g_ptr_array_free(search->summary_set, TRUE);
+		g_ptr_array_free (search->summary_set, TRUE);
 	if (search->summary)
-		camel_folder_free_summary(search->folder, search->summary);
+		camel_folder_free_summary (search->folder, search->summary);
 
 	p->threads = NULL;
 	p->threads_hash = NULL;
@@ -726,24 +726,24 @@ fail:
 	return matches;
 }
 
-void camel_folder_search_free_result(CamelFolderSearch *search, GPtrArray *result)
+void camel_folder_search_free_result (CamelFolderSearch *search, GPtrArray *result)
 {
 	g_ptr_array_foreach (result, (GFunc) camel_pstring_free, NULL);
-	g_ptr_array_free(result, TRUE);
+	g_ptr_array_free (result, TRUE);
 }
 
 /* dummy function, returns false always, or an empty match array */
 static ESExpResult *
-search_dummy(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
+search_dummy (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
 {
 	ESExpResult *r;
 
 	if (search->current == NULL) {
-		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 		r->value.boolean = FALSE;
 	} else {
-		r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
-		r->value.ptrarray = g_ptr_array_new();
+		r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
+		r->value.ptrarray = g_ptr_array_new ();
 	}
 
 	return r;
@@ -751,7 +751,7 @@ search_dummy(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolde
 
 /* impelemnt an 'array not', i.e. everything in the summary, not in the supplied array */
 static ESExpResult *
-search_not(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
+search_not (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
 {
 	ESExpResult *r;
 	gint i;
@@ -761,42 +761,42 @@ search_not(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderS
 			GPtrArray *v = argv[0]->value.ptrarray;
 			const gchar *uid;
 
-			r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
-			r->value.ptrarray = g_ptr_array_new();
+			r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
+			r->value.ptrarray = g_ptr_array_new ();
 
 			/* not against a single message?*/
 			if (search->current) {
 				gint found = FALSE;
 
-				uid = camel_message_info_uid(search->current);
+				uid = camel_message_info_uid (search->current);
 				for (i=0;!found && i<v->len;i++) {
-					if (strcmp(uid, v->pdata[i]) == 0)
+					if (strcmp (uid, v->pdata[i]) == 0)
 						found = TRUE;
 				}
 
 				if (!found)
-					g_ptr_array_add(r->value.ptrarray, (gchar *)uid);
+					g_ptr_array_add (r->value.ptrarray, (gchar *)uid);
 			} else if (search->summary == NULL) {
 				g_warning("No summary set, 'not' against an array requires a summary");
 			} else {
 				/* 'not' against the whole summary */
-				GHashTable *have = g_hash_table_new(g_str_hash, g_str_equal);
+				GHashTable *have = g_hash_table_new (g_str_hash, g_str_equal);
 				gchar **s;
 				gchar **m;
 
 				s = (gchar **)v->pdata;
 				for (i=0;i<v->len;i++)
-					g_hash_table_insert(have, s[i], s[i]);
+					g_hash_table_insert (have, s[i], s[i]);
 
 				v = search->summary_set?search->summary_set:search->summary;
 				m = (gchar **)v->pdata;
 				for (i=0;i<v->len;i++) {
 					gchar *uid = m[i];
 
-					if (g_hash_table_lookup(have, uid) == NULL)
-						g_ptr_array_add(r->value.ptrarray, uid);
+					if (g_hash_table_lookup (have, uid) == NULL)
+						g_ptr_array_add (r->value.ptrarray, uid);
 				}
-				g_hash_table_destroy(have);
+				g_hash_table_destroy (have);
 			}
 		} else {
 			gint res = TRUE;
@@ -804,11 +804,11 @@ search_not(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderS
 			if (argv[0]->type == ESEXP_RES_BOOL)
 				res = !argv[0]->value.boolean;
 
-			r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+			r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 			r->value.boolean = res;
 		}
 	} else {
-		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 		r->value.boolean = TRUE;
 	}
 
@@ -816,7 +816,7 @@ search_not(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderS
 }
 
 static ESExpResult *
-search_match_all(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFolderSearch *search)
+search_match_all (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFolderSearch *search)
 {
 	gint i;
 	ESExpResult *r, *r1;
@@ -831,33 +831,33 @@ search_match_all(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFol
 	if (search->current) {
 		d(printf("matching against 1 message: %s\n", camel_message_info_subject(search->current)));
 
-		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 		r->value.boolean = FALSE;
 
 		if (argc>0) {
-			r1 = e_sexp_term_eval(f, argv[0]);
+			r1 = e_sexp_term_eval (f, argv[0]);
 			if (r1->type == ESEXP_RES_BOOL) {
 				r->value.boolean = r1->value.boolean;
 			} else {
 				g_warning("invalid syntax, matches require a single bool result");
 				error_msg = g_strdup_printf(_("(%s) requires a single bool result"), "match-all");
-				e_sexp_fatal_error(f, error_msg);
-				g_free(error_msg);
+				e_sexp_fatal_error (f, error_msg);
+				g_free (error_msg);
 			}
-			e_sexp_result_free(f, r1);
+			e_sexp_result_free (f, r1);
 		} else {
 			r->value.boolean = TRUE;
 		}
 		return r;
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
-	r->value.ptrarray = g_ptr_array_new();
+	r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
+	r->value.ptrarray = g_ptr_array_new ();
 
 	if (search->summary == NULL) {
 		/* TODO: make it work - e.g. use the folder and so forth for a slower search */
 		g_warning("No summary supplied, match-all doesn't work with no summary");
-		g_assert(0);
+		g_assert (0);
 		return r;
 	}
 
@@ -873,22 +873,22 @@ search_match_all(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFol
 		search->current = camel_folder_summary_uid (search->folder->summary, v->pdata[i]);
 		if (!search->current)
 			continue;
-		uid = camel_message_info_uid(search->current);
+		uid = camel_message_info_uid (search->current);
 
 		if (argc>0) {
-			r1 = e_sexp_term_eval(f, argv[0]);
+			r1 = e_sexp_term_eval (f, argv[0]);
 			if (r1->type == ESEXP_RES_BOOL) {
 				if (r1->value.boolean)
-					g_ptr_array_add(r->value.ptrarray, (gchar *)uid);
+					g_ptr_array_add (r->value.ptrarray, (gchar *)uid);
 			} else {
 				g_warning("invalid syntax, matches require a single bool result");
 				error_msg = g_strdup_printf(_("(%s) requires a single bool result"), "match-all");
-				e_sexp_fatal_error(f, error_msg);
-				g_free(error_msg);
+				e_sexp_fatal_error (f, error_msg);
+				g_free (error_msg);
 			}
-			e_sexp_result_free(f, r1);
+			e_sexp_result_free (f, r1);
 		} else {
-			g_ptr_array_add(r->value.ptrarray, (gchar *)uid);
+			g_ptr_array_add (r->value.ptrarray, (gchar *)uid);
 		}
 		camel_message_info_free (search->current);
 	}
@@ -897,35 +897,35 @@ search_match_all(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFol
 }
 
 static void
-fill_thread_table(struct _CamelFolderThreadNode *root, GHashTable *id_hash)
+fill_thread_table (struct _CamelFolderThreadNode *root, GHashTable *id_hash)
 {
 	while (root) {
-		g_hash_table_insert(id_hash, (gchar *)camel_message_info_uid(root->message), root);
+		g_hash_table_insert (id_hash, (gchar *)camel_message_info_uid (root->message), root);
 		if (root->child)
-			fill_thread_table(root->child, id_hash);
+			fill_thread_table (root->child, id_hash);
 		root = root->next;
 	}
 }
 
 static void
-add_thread_results(struct _CamelFolderThreadNode *root, GHashTable *result_hash)
+add_thread_results (struct _CamelFolderThreadNode *root, GHashTable *result_hash)
 {
 	while (root) {
-		g_hash_table_insert(result_hash, (gchar *)camel_message_info_uid(root->message), GINT_TO_POINTER (1));
+		g_hash_table_insert (result_hash, (gchar *)camel_message_info_uid (root->message), GINT_TO_POINTER (1));
 		if (root->child)
-			add_thread_results(root->child, result_hash);
+			add_thread_results (root->child, result_hash);
 		root = root->next;
 	}
 }
 
 static void
-add_results(gchar *uid, gpointer dummy, GPtrArray *result)
+add_results (gchar *uid, gpointer dummy, GPtrArray *result)
 {
-	g_ptr_array_add(result, uid);
+	g_ptr_array_add (result, uid);
 }
 
 static ESExpResult *
-search_match_threads(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFolderSearch *search)
+search_match_threads (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFolderSearch *search)
 {
 	ESExpResult *r;
 	CamelFolderSearchPrivate *p = search->priv;
@@ -936,21 +936,21 @@ search_match_threads(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, Came
 	/* not supported in match-all */
 	if (search->current) {
 		error_msg = g_strdup_printf(_("(%s) not allowed inside %s"), "match-threads", "match-all");
-		e_sexp_fatal_error(f, error_msg);
-		g_free(error_msg);
+		e_sexp_fatal_error (f, error_msg);
+		g_free (error_msg);
 	}
 
 	if (argc == 0) {
 		error_msg = g_strdup_printf(_("(%s) requires a match type string"), "match-threads");
-		e_sexp_fatal_error(f, error_msg);
-		g_free(error_msg);
+		e_sexp_fatal_error (f, error_msg);
+		g_free (error_msg);
 	}
 
-	r = e_sexp_term_eval(f, argv[0]);
+	r = e_sexp_term_eval (f, argv[0]);
 	if (r->type != ESEXP_RES_STRING) {
 		error_msg = g_strdup_printf(_("(%s) requires a match type string"), "match-threads");
-		e_sexp_fatal_error(f, error_msg);
-		g_free(error_msg);
+		e_sexp_fatal_error (f, error_msg);
+		g_free (error_msg);
 	}
 
 	type = 0;
@@ -964,20 +964,20 @@ search_match_threads(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, Came
 		type = 3;
 	else if (!strcmp(r->value.string, "single"))
 		type = 4;
-	e_sexp_result_free(f, r);
+	e_sexp_result_free (f, r);
 
 	/* behave as (begin does */
 	r = NULL;
 	for (i=1;i<argc;i++) {
 		if (r)
-			e_sexp_result_free(f, r);
-		r = e_sexp_term_eval(f, argv[i]);
+			e_sexp_result_free (f, r);
+		r = e_sexp_term_eval (f, argv[i]);
 	}
 
 	if (r == NULL || r->type != ESEXP_RES_ARRAY_PTR) {
 		error_msg = g_strdup_printf(_("(%s) expects an array result"), "match-threads");
-		e_sexp_fatal_error(f, error_msg);
-		g_free(error_msg);
+		e_sexp_fatal_error (f, error_msg);
+		g_free (error_msg);
 	}
 
 	if (type == 0)
@@ -985,56 +985,56 @@ search_match_threads(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, Came
 
 	if (search->folder == NULL) {
 		error_msg = g_strdup_printf(_("(%s) requires the folder set"), "match-threads");
-		e_sexp_fatal_error(f, error_msg);
-		g_free(error_msg);
+		e_sexp_fatal_error (f, error_msg);
+		g_free (error_msg);
 	}
 
 	/* cache this, so we only have to re-calculate once per search at most */
 	if (p->threads == NULL) {
-		p->threads = camel_folder_thread_messages_new(search->folder, NULL, TRUE);
-		p->threads_hash = g_hash_table_new(g_str_hash, g_str_equal);
+		p->threads = camel_folder_thread_messages_new (search->folder, NULL, TRUE);
+		p->threads_hash = g_hash_table_new (g_str_hash, g_str_equal);
 
-		fill_thread_table(p->threads->tree, p->threads_hash);
+		fill_thread_table (p->threads->tree, p->threads_hash);
 	}
 
-	results = g_hash_table_new(g_str_hash, g_str_equal);
+	results = g_hash_table_new (g_str_hash, g_str_equal);
 	for (i=0;i<r->value.ptrarray->len;i++) {
 		struct _CamelFolderThreadNode *node, *scan;
 
 		if (type != 4)
-			g_hash_table_insert(results, g_ptr_array_index(r->value.ptrarray, i), GINT_TO_POINTER(1));
+			g_hash_table_insert (results, g_ptr_array_index (r->value.ptrarray, i), GINT_TO_POINTER (1));
 
-		node = g_hash_table_lookup(p->threads_hash, (gchar *)g_ptr_array_index(r->value.ptrarray, i));
+		node = g_hash_table_lookup (p->threads_hash, (gchar *)g_ptr_array_index (r->value.ptrarray, i));
 		if (node == NULL) /* this shouldn't happen but why cry over spilt milk */
 			continue;
 
 		/* select messages in thread according to search criteria */
 		if (type == 4) {
 			if (node->child == NULL && node->parent == NULL)
-				g_hash_table_insert(results, (gchar *)camel_message_info_uid(node->message), GINT_TO_POINTER(1));
+				g_hash_table_insert (results, (gchar *)camel_message_info_uid (node->message), GINT_TO_POINTER (1));
 		} else {
 			if (type == 3) {
 				scan = node;
 				while (scan && scan->parent) {
 					scan = scan->parent;
-					g_hash_table_insert(results, (gchar *)camel_message_info_uid(scan->message), GINT_TO_POINTER(1));
+					g_hash_table_insert (results, (gchar *)camel_message_info_uid (scan->message), GINT_TO_POINTER (1));
 				}
 			} else if (type == 1) {
 				while (node && node->parent)
 					node = node->parent;
 			}
-			g_hash_table_insert(results, (gchar *)camel_message_info_uid(node->message), GINT_TO_POINTER(1));
+			g_hash_table_insert (results, (gchar *)camel_message_info_uid (node->message), GINT_TO_POINTER (1));
 			if (node->child)
-				add_thread_results(node->child, results);
+				add_thread_results (node->child, results);
 		}
 	}
-	e_sexp_result_free(f, r);
+	e_sexp_result_free (f, r);
 
-	r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
-	r->value.ptrarray = g_ptr_array_new();
+	r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
+	r->value.ptrarray = g_ptr_array_new ();
 
-	g_hash_table_foreach(results, (GHFunc)add_results, r->value.ptrarray);
-	g_hash_table_destroy(results);
+	g_hash_table_foreach (results, (GHFunc)add_results, r->value.ptrarray);
+	g_hash_table_destroy (results);
 
 	return r;
 }
@@ -1072,22 +1072,22 @@ check_header (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFold
 		/* only a subset of headers are supported .. */
 		headername = argv[0]->value.string;
 		if (!g_ascii_strcasecmp(headername, "subject")) {
-			header = camel_message_info_subject(search->current);
+			header = camel_message_info_subject (search->current);
 		} else if (!g_ascii_strcasecmp(headername, "date")) {
 			/* FIXME: not a very useful form of the date */
 			sprintf(strbuf, "%d", (gint)camel_message_info_date_sent(search->current));
 			header = strbuf;
 		} else if (!g_ascii_strcasecmp(headername, "from")) {
-			header = camel_message_info_from(search->current);
+			header = camel_message_info_from (search->current);
 			type = CAMEL_SEARCH_TYPE_ADDRESS;
 		} else if (!g_ascii_strcasecmp(headername, "to")) {
-			header = camel_message_info_to(search->current);
+			header = camel_message_info_to (search->current);
 			type = CAMEL_SEARCH_TYPE_ADDRESS;
 		} else if (!g_ascii_strcasecmp(headername, "cc")) {
-			header = camel_message_info_cc(search->current);
+			header = camel_message_info_cc (search->current);
 			type = CAMEL_SEARCH_TYPE_ADDRESS;
 		} else if (!g_ascii_strcasecmp(headername, "x-camel-mlist")) {
-			header = camel_message_info_mlist(search->current);
+			header = camel_message_info_mlist (search->current);
 			type = CAMEL_SEARCH_TYPE_MLIST;
 		} else {
 			message = get_current_message (search);
@@ -1111,7 +1111,7 @@ check_header (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFold
 					truth = TRUE;
 				} else if (how == CAMEL_SEARCH_MATCH_CONTAINS) {
 					/* doesn't make sense to split words on anything but contains i.e. we can't have an ending match different words */
-					words = camel_search_words_split((const guchar *) argv[i]->value.string);
+					words = camel_search_words_split ((const guchar *) argv[i]->value.string);
 					truth = TRUE;
 					for (j=0;j<words->len && truth;j++) {
 						if (message) {
@@ -1124,18 +1124,18 @@ check_header (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFold
 
 							truth = raw_header != NULL;
 						} else
-							truth = camel_search_header_match(header, words->words[j]->word, how, type, charset);
+							truth = camel_search_header_match (header, words->words[j]->word, how, type, charset);
 					}
-					camel_search_words_free(words);
+					camel_search_words_free (words);
 				} else {
 					if (message) {
 						for (raw_header = ((CamelMimePart *)message)->headers; raw_header && !truth; raw_header = raw_header->next) {
 							if (!g_ascii_strcasecmp (raw_header->name, headername)) {
-								truth = camel_search_header_match(raw_header->value, argv[i]->value.string, how, type, charset);
+								truth = camel_search_header_match (raw_header->value, argv[i]->value.string, how, type, charset);
 							}
 						}
 					} else
-						truth = camel_search_header_match(header, argv[i]->value.string, how, type, charset);
+						truth = camel_search_header_match (header, argv[i]->value.string, how, type, charset);
 				}
 			}
 		}
@@ -1145,7 +1145,7 @@ check_header (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFold
 	}
 	/* TODO: else, find all matches */
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = truth;
 
 	return r;
@@ -1153,34 +1153,34 @@ check_header (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFold
 
 /*
 static void
-l_printf(gchar *node)
+l_printf (gchar *node)
 {
 printf("%s\t", node);
 }
 */
 
 static ESExpResult *
-search_header_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
+search_header_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
 {
-	return check_header(f, argc, argv, search, CAMEL_SEARCH_MATCH_CONTAINS);
+	return check_header (f, argc, argv, search, CAMEL_SEARCH_MATCH_CONTAINS);
 }
 
 static ESExpResult *
-search_header_matches(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
+search_header_matches (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
 {
-	return check_header(f, argc, argv, search, CAMEL_SEARCH_MATCH_EXACT);
+	return check_header (f, argc, argv, search, CAMEL_SEARCH_MATCH_EXACT);
 }
 
 static ESExpResult *
 search_header_starts_with (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
 {
-	return check_header(f, argc, argv, search, CAMEL_SEARCH_MATCH_STARTS);
+	return check_header (f, argc, argv, search, CAMEL_SEARCH_MATCH_STARTS);
 }
 
 static ESExpResult *
 search_header_ends_with (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
 {
-	return check_header(f, argc, argv, search, CAMEL_SEARCH_MATCH_ENDS);
+	return check_header (f, argc, argv, search, CAMEL_SEARCH_MATCH_ENDS);
 }
 
 static ESExpResult *
@@ -1191,13 +1191,13 @@ search_header_exists (struct _ESExp *f, gint argc, struct _ESExpResult **argv, C
 	r(printf ("executing header-exists\n"));
 
 	if (search->current) {
-		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 		if (argc == 1 && argv[0]->type == ESEXP_RES_STRING)
-			r->value.boolean = camel_medium_get_header(CAMEL_MEDIUM(search->current), argv[0]->value.string) != NULL;
+			r->value.boolean = camel_medium_get_header (CAMEL_MEDIUM (search->current), argv[0]->value.string) != NULL;
 
 	} else {
-		r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
-		r->value.ptrarray = g_ptr_array_new();
+		r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
+		r->value.ptrarray = g_ptr_array_new ();
 	}
 
 	return r;
@@ -1234,7 +1234,7 @@ search_header_regex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Ca
 		g_object_unref (msg);
 	} else {
 		r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
-		r->value.ptrarray = g_ptr_array_new();
+		r->value.ptrarray = g_ptr_array_new ();
 	}
 
 	return r;
@@ -1289,7 +1289,7 @@ search_header_full_regex (struct _ESExp *f, gint argc, struct _ESExpResult **arg
 		g_object_unref (msg);
 	} else {
 		r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
-		r->value.ptrarray = g_ptr_array_new();
+		r->value.ptrarray = g_ptr_array_new ();
 	}
 
 	return r;
@@ -1303,17 +1303,17 @@ struct IterData {
 
 /* or, store all unique values */
 static void
-htor(gchar *key, gint value, struct IterData *iter_data)
+htor (gchar *key, gint value, struct IterData *iter_data)
 {
-	g_ptr_array_add(iter_data->uids, key);
+	g_ptr_array_add (iter_data->uids, key);
 }
 
 /* and, only store duplicates */
 static void
-htand(gchar *key, gint value, struct IterData *iter_data)
+htand (gchar *key, gint value, struct IterData *iter_data)
 {
 	if (value == iter_data->count)
-		g_ptr_array_add(iter_data->uids, key);
+		g_ptr_array_add (iter_data->uids, key);
 }
 
 static gint
@@ -1326,15 +1326,15 @@ match_message_index (CamelIndex *idx,
 	const gchar *word, *name;
 	gint truth = FALSE;
 
-	wc = camel_index_words(idx);
+	wc = camel_index_words (idx);
 	if (wc) {
-		while (!truth && (word = camel_index_cursor_next(wc))) {
-			if (camel_ustrstrcase(word,match) != NULL) {
+		while (!truth && (word = camel_index_cursor_next (wc))) {
+			if (camel_ustrstrcase (word,match) != NULL) {
 				/* perf: could have the wc cursor return the name cursor */
-				nc = camel_index_find(idx, word);
+				nc = camel_index_find (idx, word);
 				if (nc) {
-					while (!truth && (name = camel_index_cursor_next(nc)))
-						truth = strcmp(name, uid) == 0;
+					while (!truth && (name = camel_index_cursor_next (nc)))
+						truth = strcmp (name, uid) == 0;
 					g_object_unref (nc);
 				}
 			}
@@ -1361,8 +1361,8 @@ match_words_index (CamelFolderSearch *search,
                    struct _camel_search_words *words,
                    GError **error)
 {
-	GPtrArray *result = g_ptr_array_new();
-	GHashTable *ht = g_hash_table_new(g_str_hash, g_str_equal);
+	GPtrArray *result = g_ptr_array_new ();
+	GHashTable *ht = g_hash_table_new (g_str_hash, g_str_equal);
 	struct IterData lambdafoo;
 	CamelIndexCursor *wc, *nc;
 	const gchar *word, *name;
@@ -1370,19 +1370,19 @@ match_words_index (CamelFolderSearch *search,
 
 	/* we can have a maximum of 32 words, as we use it as the AND mask */
 
-	wc = camel_index_words(search->body_index);
+	wc = camel_index_words (search->body_index);
 	if (wc) {
-		while ((word = camel_index_cursor_next(wc))) {
+		while ((word = camel_index_cursor_next (wc))) {
 			for (i=0;i<words->len;i++) {
-				if (camel_ustrstrcase(word, words->words[i]->word) != NULL) {
+				if (camel_ustrstrcase (word, words->words[i]->word) != NULL) {
 					/* perf: could have the wc cursor return the name cursor */
-					nc = camel_index_find(search->body_index, word);
+					nc = camel_index_find (search->body_index, word);
 					if (nc) {
-						while ((name = camel_index_cursor_next(nc))) {
+						while ((name = camel_index_cursor_next (nc))) {
 								gint mask;
 
-								mask = (GPOINTER_TO_INT(g_hash_table_lookup(ht, name))) | (1<<i);
-								g_hash_table_insert(ht, (gchar *) camel_pstring_peek(name), GINT_TO_POINTER(mask));
+								mask = (GPOINTER_TO_INT (g_hash_table_lookup (ht, name))) | (1<<i);
+								g_hash_table_insert (ht, (gchar *) camel_pstring_peek (name), GINT_TO_POINTER (mask));
 						}
 						g_object_unref (nc);
 					}
@@ -1393,8 +1393,8 @@ match_words_index (CamelFolderSearch *search,
 
 		lambdafoo.uids = result;
 		lambdafoo.count = (1<<words->len) - 1;
-		g_hash_table_foreach(ht, (GHFunc)htand, &lambdafoo);
-		g_hash_table_destroy(ht);
+		g_hash_table_foreach (ht, (GHFunc)htand, &lambdafoo);
+		g_hash_table_destroy (ht);
 	}
 
 	return result;
@@ -1418,11 +1418,11 @@ match_words_1message (CamelDataWrapper *object, struct _camel_search_words *word
 		for (i = 0; i < parts && truth == FALSE; i++) {
 			CamelDataWrapper *part = (CamelDataWrapper *)camel_multipart_get_part (CAMEL_MULTIPART (containee), i);
 			if (part)
-				truth = match_words_1message(part, words, mask);
+				truth = match_words_1message (part, words, mask);
 		}
 	} else if (CAMEL_IS_MIME_MESSAGE (containee)) {
 		/* for messages we only look at its contents */
-		truth = match_words_1message((CamelDataWrapper *)containee, words, mask);
+		truth = match_words_1message ((CamelDataWrapper *)containee, words, mask);
 	} else if (camel_content_type_is(CAMEL_DATA_WRAPPER (containee)->mime_type, "text", "*")) {
 		/* for all other text parts, we look inside, otherwise we dont care */
 		CamelStream *stream;
@@ -1436,7 +1436,7 @@ match_words_1message (CamelDataWrapper *object, struct _camel_search_words *word
 		camel_stream_write (stream, "", 1, NULL);
 		for (i=0;i<words->len;i++) {
 			/* FIXME: This is horridly slow, and should use a real search algorithm */
-			if (camel_ustrstrcase((const gchar *) byte_array->data, words->words[i]->word) != NULL) {
+			if (camel_ustrstrcase ((const gchar *) byte_array->data, words->words[i]->word) != NULL) {
 				*mask |= (1<<i);
 				/* shortcut a match */
 				if (*mask == (1<<(words->len))-1)
@@ -1460,10 +1460,10 @@ match_words_message (CamelFolder *folder,
 	CamelMimeMessage *msg;
 	gint truth = FALSE;
 
-	msg = camel_folder_get_message(folder, uid, NULL);
+	msg = camel_folder_get_message (folder, uid, NULL);
 	if (msg) {
 		mask = 0;
-		truth = match_words_1message((CamelDataWrapper *)msg, words, &mask);
+		truth = match_words_1message ((CamelDataWrapper *)msg, words, &mask);
 		g_object_unref (msg);
 	}
 
@@ -1476,32 +1476,32 @@ match_words_messages (CamelFolderSearch *search,
                       GError **error)
 {
 	gint i;
-	GPtrArray *matches = g_ptr_array_new();
+	GPtrArray *matches = g_ptr_array_new ();
 
 	if (search->body_index) {
 		GPtrArray *indexed;
 		struct _camel_search_words *simple;
 
-		simple = camel_search_words_simple(words);
-		indexed = match_words_index(search, simple, error);
-		camel_search_words_free(simple);
+		simple = camel_search_words_simple (words);
+		indexed = match_words_index (search, simple, error);
+		camel_search_words_free (simple);
 
 		for (i=0;i<indexed->len;i++) {
-			const gchar *uid = g_ptr_array_index(indexed, i);
+			const gchar *uid = g_ptr_array_index (indexed, i);
 
-			if (match_words_message(search->folder, uid, words, error))
-				g_ptr_array_add(matches, (gchar *)uid);
+			if (match_words_message (search->folder, uid, words, error))
+				g_ptr_array_add (matches, (gchar *)uid);
 		}
 
-		g_ptr_array_free(indexed, TRUE);
+		g_ptr_array_free (indexed, TRUE);
 	} else {
 		GPtrArray *v = search->summary_set?search->summary_set:search->summary;
 
 		for (i=0;i<v->len;i++) {
-			gchar *uid  = g_ptr_array_index(v, i);
+			gchar *uid  = g_ptr_array_index (v, i);
 
-			if (match_words_message(search->folder, uid, words, error))
-				g_ptr_array_add(matches, (gchar *)uid);
+			if (match_words_message (search->folder, uid, words, error))
+				g_ptr_array_add (matches, (gchar *)uid);
 		}
 	}
 
@@ -1509,7 +1509,7 @@ match_words_messages (CamelFolderSearch *search,
 }
 
 static ESExpResult *
-search_body_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
+search_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
 {
 	gint i, j;
 	GError **error = search->priv->error;
@@ -1525,55 +1525,55 @@ search_body_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, Ca
 		} else {
 			for (i=0;i<argc && !truth;i++) {
 				if (argv[i]->type == ESEXP_RES_STRING) {
-					words = camel_search_words_split((const guchar *) argv[i]->value.string);
+					words = camel_search_words_split ((const guchar *) argv[i]->value.string);
 					truth = TRUE;
 					if ((words->type & CAMEL_SEARCH_WORD_COMPLEX) == 0 && search->body_index) {
 						for (j=0;j<words->len && truth;j++)
-							truth = match_message_index(search->body_index, camel_message_info_uid(search->current), words->words[j]->word, error);
+							truth = match_message_index (search->body_index, camel_message_info_uid (search->current), words->words[j]->word, error);
 					} else {
 						/* TODO: cache current message incase of multiple body search terms */
-						truth = match_words_message(search->folder, camel_message_info_uid(search->current), words, error);
+						truth = match_words_message (search->folder, camel_message_info_uid (search->current), words, error);
 					}
-					camel_search_words_free(words);
+					camel_search_words_free (words);
 				}
 			}
 		}
-		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 		r->value.boolean = truth;
 	} else {
-		r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
-		r->value.ptrarray = g_ptr_array_new();
+		r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
+		r->value.ptrarray = g_ptr_array_new ();
 
 		if (argc == 1 && argv[0]->value.string[0] == 0) {
 			GPtrArray *v = search->summary_set?search->summary_set:search->summary;
 
 			for (i=0;i<v->len;i++) {
-				gchar *uid = g_ptr_array_index(v, i);
+				gchar *uid = g_ptr_array_index (v, i);
 
-				g_ptr_array_add(r->value.ptrarray, uid);
+				g_ptr_array_add (r->value.ptrarray, uid);
 			}
 		} else {
-			GHashTable *ht = g_hash_table_new(g_str_hash, g_str_equal);
+			GHashTable *ht = g_hash_table_new (g_str_hash, g_str_equal);
 			GPtrArray *matches;
 
 			for (i=0;i<argc;i++) {
 				if (argv[i]->type == ESEXP_RES_STRING) {
-					words = camel_search_words_split((const guchar *) argv[i]->value.string);
+					words = camel_search_words_split ((const guchar *) argv[i]->value.string);
 					if ((words->type & CAMEL_SEARCH_WORD_COMPLEX) == 0 && search->body_index) {
-						matches = match_words_index(search, words, error);
+						matches = match_words_index (search, words, error);
 					} else {
-						matches = match_words_messages(search, words, error);
+						matches = match_words_messages (search, words, error);
 					}
 					for (j=0;j<matches->len;j++) {
-						g_hash_table_insert(ht, matches->pdata[j], matches->pdata[j]);
+						g_hash_table_insert (ht, matches->pdata[j], matches->pdata[j]);
 					}
-					g_ptr_array_free(matches, TRUE);
-					camel_search_words_free(words);
+					g_ptr_array_free (matches, TRUE);
+					camel_search_words_free (words);
 				}
 			}
 			lambdafoo.uids = r->value.ptrarray;
-			g_hash_table_foreach(ht, (GHFunc)htor, &lambdafoo);
-			g_hash_table_destroy(ht);
+			g_hash_table_foreach (ht, (GHFunc)htor, &lambdafoo);
+			g_hash_table_destroy (ht);
 		}
 	}
 
@@ -1601,7 +1601,7 @@ search_body_regex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Came
 	} else {
 		regex_t pattern;
 
-		r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
+		r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
 		r->value.ptrarray = g_ptr_array_new ();
 
 		if (camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_ICASE|CAMEL_SEARCH_MATCH_REGEX|CAMEL_SEARCH_MATCH_NEWLINE, argc, argv, search->priv->error) == 0) {
@@ -1610,7 +1610,7 @@ search_body_regex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Came
 			CamelMimeMessage *message;
 
 			for (i = 0; i < v->len; i++) {
-				gchar *uid = g_ptr_array_index(v, i);
+				gchar *uid = g_ptr_array_index (v, i);
 
 				message = camel_folder_get_message (search->folder, uid, NULL);
 				if (message) {
@@ -1630,7 +1630,7 @@ search_body_regex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Came
 }
 
 static ESExpResult *
-search_user_flag(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
+search_user_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
 {
 	ESExpResult *r;
 	gint i;
@@ -1643,16 +1643,16 @@ search_user_flag(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelF
 		/* performs an OR of all words */
 		for (i=0;i<argc && !truth;i++) {
 			if (argv[i]->type == ESEXP_RES_STRING
-			    && camel_message_info_user_flag(search->current, argv[i]->value.string)) {
+			    && camel_message_info_user_flag (search->current, argv[i]->value.string)) {
 				truth = TRUE;
 				break;
 			}
 		}
-		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 		r->value.boolean = truth;
 	} else {
-		r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
-		r->value.ptrarray = g_ptr_array_new();
+		r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
+		r->value.ptrarray = g_ptr_array_new ();
 	}
 
 	return r;
@@ -1669,12 +1669,12 @@ search_system_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Cam
 		gboolean truth = FALSE;
 
 		if (argc == 1)
-			truth = camel_system_flag_get (camel_message_info_flags(search->current), argv[0]->value.string);
+			truth = camel_system_flag_get (camel_message_info_flags (search->current), argv[0]->value.string);
 
-		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 		r->value.boolean = truth;
 	} else {
-		r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
+		r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
 		r->value.ptrarray = g_ptr_array_new ();
 	}
 
@@ -1682,7 +1682,7 @@ search_system_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Cam
 }
 
 static ESExpResult *
-search_user_tag(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
+search_user_tag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
 {
 	const gchar *value = NULL;
 	ESExpResult *r;
@@ -1690,16 +1690,16 @@ search_user_tag(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFo
 	r(printf("executing user-tag\n"));
 
 	if (search->current && argc == 1)
-		value = camel_message_info_user_tag(search->current, argv[0]->value.string);
+		value = camel_message_info_user_tag (search->current, argv[0]->value.string);
 
-	r = e_sexp_result_new(f, ESEXP_RES_STRING);
+	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 	r->value.string = g_strdup (value ? value : "");
 
 	return r;
 }
 
 static ESExpResult *
-search_get_sent_date(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s)
+search_get_sent_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s)
 {
 	ESExpResult *r;
 
@@ -1707,11 +1707,11 @@ search_get_sent_date(struct _ESExp *f, gint argc, struct _ESExpResult **argv, Ca
 
 	/* are we inside a match-all? */
 	if (s->current) {
-		r = e_sexp_result_new(f, ESEXP_RES_INT);
+		r = e_sexp_result_new (f, ESEXP_RES_INT);
 
-		r->value.number = camel_message_info_date_sent(s->current);
+		r->value.number = camel_message_info_date_sent (s->current);
 	} else {
-		r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
+		r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
 		r->value.ptrarray = g_ptr_array_new ();
 	}
 
@@ -1719,7 +1719,7 @@ search_get_sent_date(struct _ESExp *f, gint argc, struct _ESExpResult **argv, Ca
 }
 
 static ESExpResult *
-search_get_received_date(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s)
+search_get_received_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s)
 {
 	ESExpResult *r;
 
@@ -1727,11 +1727,11 @@ search_get_received_date(struct _ESExp *f, gint argc, struct _ESExpResult **argv
 
 	/* are we inside a match-all? */
 	if (s->current) {
-		r = e_sexp_result_new(f, ESEXP_RES_INT);
+		r = e_sexp_result_new (f, ESEXP_RES_INT);
 
-		r->value.number = camel_message_info_date_received(s->current);
+		r->value.number = camel_message_info_date_received (s->current);
 	} else {
-		r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
+		r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
 		r->value.ptrarray = g_ptr_array_new ();
 	}
 
@@ -1739,13 +1739,13 @@ search_get_received_date(struct _ESExp *f, gint argc, struct _ESExpResult **argv
 }
 
 static ESExpResult *
-search_get_current_date(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s)
+search_get_current_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s)
 {
 	ESExpResult *r;
 
 	r(printf("executing get-current-date\n"));
 
-	r = e_sexp_result_new(f, ESEXP_RES_INT);
+	r = e_sexp_result_new (f, ESEXP_RES_INT);
 	r->value.number = time (NULL);
 	return r;
 }
@@ -1760,7 +1760,7 @@ search_get_size (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelF
 	/* are we inside a match-all? */
 	if (s->current) {
 		r = e_sexp_result_new (f, ESEXP_RES_INT);
-		r->value.number = camel_message_info_size(s->current) / 1024;
+		r->value.number = camel_message_info_size (s->current) / 1024;
 	} else {
 		r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
 		r->value.ptrarray = g_ptr_array_new ();
@@ -1770,7 +1770,7 @@ search_get_size (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelF
 }
 
 static ESExpResult *
-search_uid(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
+search_uid (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
 {
 	ESExpResult *r;
 	gint i;
@@ -1780,24 +1780,24 @@ search_uid(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderS
 	/* are we inside a match-all? */
 	if (search->current) {
 		gint truth = FALSE;
-		const gchar *uid = camel_message_info_uid(search->current);
+		const gchar *uid = camel_message_info_uid (search->current);
 
 		/* performs an OR of all words */
 		for (i=0;i<argc && !truth;i++) {
 			if (argv[i]->type == ESEXP_RES_STRING
-			    && !strcmp(uid, argv[i]->value.string)) {
+			    && !strcmp (uid, argv[i]->value.string)) {
 				truth = TRUE;
 				break;
 			}
 		}
-		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 		r->value.boolean = truth;
 	} else {
-		r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
-		r->value.ptrarray = g_ptr_array_new();
+		r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
+		r->value.ptrarray = g_ptr_array_new ();
 		for (i=0;i<argc;i++) {
 			if (argv[i]->type == ESEXP_RES_STRING)
-				g_ptr_array_add(r->value.ptrarray, argv[i]->value.string);
+				g_ptr_array_add (r->value.ptrarray, argv[i]->value.string);
 		}
 	}
 

@@ -58,7 +58,7 @@ static GMainLoop *loop;
 		}							\
 	} G_STMT_END
 
-G_DEFINE_TYPE(EDataCalFactory, e_data_cal_factory, G_TYPE_OBJECT);
+G_DEFINE_TYPE (EDataCalFactory, e_data_cal_factory, G_TYPE_OBJECT);
 
 #define E_DATA_CAL_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_DATA_CAL_FACTORY, EDataCalFactoryPrivate))
 
@@ -465,9 +465,9 @@ impl_CalFactory_getCal (EGdbusCalFactory *object, GDBusMethodInvocation *invocat
 
 cleanup:
 	/* The reason why the lock is held for such a long time is that there is
-	   a subtle race where e_cal_backend_add_client() can be called just
-	   before e_cal_backend_finalize() is called from the
-	   backend_last_client_gone_cb(), for details see bug 506457. */
+	   a subtle race where e_cal_backend_add_client () can be called just
+	   before e_cal_backend_finalize () is called from the
+	   backend_last_client_gone_cb (), for details see bug 506457. */
 	g_mutex_unlock (priv->backends_mutex);
 
 cleanup2:
@@ -777,7 +777,7 @@ die (const gchar *prefix,
 {
 	g_error ("%s: %s", prefix, error->message);
 	g_error_free (error);
-	exit(1);
+	exit (1);
 }
 
 static void

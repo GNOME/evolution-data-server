@@ -331,7 +331,7 @@ void		camel_store_free_folder_info	(CamelStore *store,
 void		camel_store_free_folder_info_full
 						(CamelStore *store,
 						 CamelFolderInfo *fi);
-void		camel_store_free_folder_info_nop(CamelStore *store,
+void		camel_store_free_folder_info_nop (CamelStore *store,
 						 CamelFolderInfo *fi);
 CamelFolderInfo *
 		camel_folder_info_new		(void);
@@ -347,7 +347,7 @@ CamelFolderInfo *
 		camel_folder_info_clone		(CamelFolderInfo *fi);
 gboolean	camel_store_supports_subscriptions
 						(CamelStore *store);
-gboolean	camel_store_folder_is_subscribed(CamelStore *store,
+gboolean	camel_store_folder_is_subscribed (CamelStore *store,
 						 const gchar *folder_name);
 gboolean	camel_store_subscribe_folder	(CamelStore *store,
 						 const gchar *folder_name,

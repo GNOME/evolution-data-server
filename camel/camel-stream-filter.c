@@ -102,7 +102,7 @@ stream_filter_read (CamelStream *stream,
 
 	priv->last_was_read = TRUE;
 
-	g_check(priv->realbuffer);
+	g_check (priv->realbuffer);
 
 	if (priv->filteredlen<=0) {
 		gsize presize = READ_PAD;
@@ -111,7 +111,7 @@ stream_filter_read (CamelStream *stream,
 			priv->source, priv->buffer, READ_SIZE, error);
 		if (size <= 0) {
 			/* this is somewhat untested */
-			if (camel_stream_eos(priv->source)) {
+			if (camel_stream_eos (priv->source)) {
 				f = priv->filters;
 				priv->filtered = priv->buffer;
 				priv->filteredlen = 0;
@@ -119,7 +119,7 @@ stream_filter_read (CamelStream *stream,
 					camel_mime_filter_complete (
 						f->filter, priv->filtered, priv->filteredlen,
 						presize, &priv->filtered, &priv->filteredlen, &presize);
-					g_check(priv->realbuffer);
+					g_check (priv->realbuffer);
 					f = f->next;
 				}
 				size = priv->filteredlen;
@@ -133,17 +133,17 @@ stream_filter_read (CamelStream *stream,
 			priv->filteredlen = size;
 
 			d(printf ("\n\nOriginal content (%s): '", ((CamelObject *)priv->source)->class->name));
-			d(fwrite(priv->filtered, sizeof(gchar), priv->filteredlen, stdout));
+			d (fwrite (priv->filtered, sizeof (gchar), priv->filteredlen, stdout));
 			d(printf("'\n"));
 
 			while (f) {
 				camel_mime_filter_filter (
 					f->filter, priv->filtered, priv->filteredlen, presize,
 					&priv->filtered, &priv->filteredlen, &presize);
-				g_check(priv->realbuffer);
+				g_check (priv->realbuffer);
 
 				d(printf ("Filtered content (%s): '", ((CamelObject *)f->filter)->class->name));
-				d(fwrite(priv->filtered, sizeof(gchar), priv->filteredlen, stdout));
+				d (fwrite (priv->filtered, sizeof (gchar), priv->filteredlen, stdout));
 				d(printf("'\n"));
 
 				f = f->next;
@@ -151,12 +151,12 @@ stream_filter_read (CamelStream *stream,
 		}
 	}
 
-	size = MIN(n, priv->filteredlen);
-	memcpy(buffer, priv->filtered, size);
+	size = MIN (n, priv->filteredlen);
+	memcpy (buffer, priv->filtered, size);
 	priv->filteredlen -= size;
 	priv->filtered += size;
 
-	g_check(priv->realbuffer);
+	g_check (priv->realbuffer);
 
 	return size;
 }
@@ -180,28 +180,28 @@ stream_filter_write (CamelStream *stream,
 	priv->last_was_read = FALSE;
 
 	d(printf ("\n\nWriting: Original content (%s): '", ((CamelObject *)priv->source)->class->name));
-	d(fwrite(buf, sizeof(gchar), n, stdout));
+	d (fwrite (buf, sizeof (gchar), n, stdout));
 	d(printf("'\n"));
 
-	g_check(priv->realbuffer);
+	g_check (priv->realbuffer);
 
 	while (left) {
 		/* Sigh, since filters expect non const args, copy the input first, we do this in handy sized chunks */
-		len = MIN(READ_SIZE, left);
+		len = MIN (READ_SIZE, left);
 		buffer = realbuffer + READ_PAD;
-		memcpy(buffer, buf, len);
+		memcpy (buffer, buf, len);
 		buf += len;
 		left -= len;
 
 		f = priv->filters;
 		presize = READ_PAD;
 		while (f) {
-			camel_mime_filter_filter(f->filter, buffer, len, presize, &buffer, &len, &presize);
+			camel_mime_filter_filter (f->filter, buffer, len, presize, &buffer, &len, &presize);
 
-			g_check(priv->realbuffer);
+			g_check (priv->realbuffer);
 
 			d(printf ("Filtered content (%s): '", ((CamelObject *)f->filter)->class->name));
-			d(fwrite(buffer, sizeof(gchar), len, stdout));
+			d (fwrite (buffer, sizeof (gchar), len, stdout));
 			d(printf("'\n"));
 
 			f = f->next;
@@ -211,7 +211,7 @@ stream_filter_write (CamelStream *stream,
 			return -1;
 	}
 
-	g_check(priv->realbuffer);
+	g_check (priv->realbuffer);
 
 	return n;
 }
@@ -237,14 +237,14 @@ stream_filter_flush (CamelStream *stream,
 	f = priv->filters;
 
 	d(printf ("\n\nFlushing: Original content (%s): '", ((CamelObject *)priv->source)->class->name));
-	d(fwrite(buffer, sizeof(gchar), len, stdout));
+	d (fwrite (buffer, sizeof (gchar), len, stdout));
 	d(printf("'\n"));
 
 	while (f) {
-		camel_mime_filter_complete(f->filter, buffer, len, presize, &buffer, &len, &presize);
+		camel_mime_filter_complete (f->filter, buffer, len, presize, &buffer, &len, &presize);
 
 		d(printf ("Filtered content (%s): '", ((CamelObject *)f->filter)->class->name));
-		d(fwrite(buffer, sizeof(gchar), len, stdout));
+		d (fwrite (buffer, sizeof (gchar), len, stdout));
 		d(printf("'\n"));
 
 		f = f->next;
@@ -334,7 +334,7 @@ camel_stream_filter_init (CamelStreamFilter *stream)
 {
 	stream->priv = CAMEL_STREAM_FILTER_GET_PRIVATE (stream);
 
-	stream->priv->realbuffer = g_malloc(READ_SIZE + READ_PAD);
+	stream->priv->realbuffer = g_malloc (READ_SIZE + READ_PAD);
 	stream->priv->buffer = stream->priv->realbuffer + READ_PAD;
 	stream->priv->last_was_read = TRUE;
 	stream->priv->flushed = FALSE;
@@ -404,7 +404,7 @@ camel_stream_filter_add (CamelStreamFilter *stream,
 
 	priv = CAMEL_STREAM_FILTER_GET_PRIVATE (stream);
 
-	fn = g_malloc(sizeof(*fn));
+	fn = g_malloc (sizeof (*fn));
 	fn->id = priv->filterid++;
 	fn->filter = g_object_ref (filter);
 
@@ -441,7 +441,7 @@ camel_stream_filter_remove (CamelStreamFilter *stream,
 		if (fn->id == id) {
 			f->next = fn->next;
 			g_object_unref (fn->filter);
-			g_free(fn);
+			g_free (fn);
 		}
 		f = f->next;
 	}

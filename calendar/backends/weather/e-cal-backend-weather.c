@@ -303,7 +303,7 @@ getCategory (WeatherInfo *report)
 
 	for (i = 0; categories[i].description; i++) {
 		if (!g_ascii_strncasecmp (categories[i].icon_name,
-					      icon_name, strlen(icon_name)))
+					      icon_name, strlen (icon_name)))
 			return _(categories[i].description);
 	}
 
@@ -633,7 +633,7 @@ e_cal_backend_weather_get_object_list (ECalBackendSync *backend, EDataCal *cal, 
 
 	*objects = NULL;
 	components = e_cal_backend_store_get_components (priv->store);
-	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times(sexp,
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (sexp,
 									    &occur_start,
 									    &occur_end);
 
@@ -783,7 +783,7 @@ static void e_cal_backend_weather_start_query (ECalBackend *backend, EDataCalVie
 	}
 
 	objects = NULL;
-	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times(sexp, &occur_start, &occur_end);
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (sexp, &occur_start, &occur_end);
 	components = prunning_by_time ?
 		e_cal_backend_store_get_components_occuring_in_range (priv->store, occur_start, occur_end)
 		: e_cal_backend_store_get_components (priv->store);

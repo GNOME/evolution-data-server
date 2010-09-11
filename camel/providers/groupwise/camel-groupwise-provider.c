@@ -117,7 +117,7 @@ groupwise_auto_detect_cb (CamelURL *url, GHashTable **auto_detected,
 }
 
 void
-camel_provider_module_init(void)
+camel_provider_module_init (void)
 {
 	CamelProvider *imap_provider = NULL;
 	gboolean use_imap = g_getenv ("USE_IMAP") != NULL;

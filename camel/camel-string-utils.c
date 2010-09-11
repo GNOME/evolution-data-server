@@ -113,7 +113,7 @@ camel_strdown (gchar *str)
  *
  * Returns:
  **/
-gchar camel_tolower(gchar c)
+gchar camel_tolower (gchar c)
 {
 	if (c >= 'A' && c <= 'Z')
 		c |= 0x20;
@@ -129,7 +129,7 @@ gchar camel_tolower(gchar c)
  *
  * Returns:
  **/
-gchar camel_toupper(gchar c)
+gchar camel_toupper (gchar c)
 {
 	if (c >= 'a' && c <= 'z')
 		c &= ~0x20;
@@ -256,7 +256,7 @@ camel_pstring_strdup (const gchar *s)
  * NULL and the empty string are special cased.
  **/
 void
-camel_pstring_free(const gchar *s)
+camel_pstring_free (const gchar *s)
 {
 	gchar *p;
 	gpointer pcount;
@@ -268,17 +268,17 @@ camel_pstring_free(const gchar *s)
 		return;
 
 	g_static_mutex_lock (&pstring_lock);
-	if (g_hash_table_lookup_extended(pstring_table, s, (gpointer *)&p, &pcount)) {
-		count = GPOINTER_TO_INT(pcount)-1;
+	if (g_hash_table_lookup_extended (pstring_table, s, (gpointer *)&p, &pcount)) {
+		count = GPOINTER_TO_INT (pcount)-1;
 		if (count == 0) {
-			g_hash_table_remove(pstring_table, p);
-			g_free(p);
+			g_hash_table_remove (pstring_table, p);
+			g_free (p);
 			if (g_getenv("CDS_DEBUG")) {
 				if (p != s) /* Only for debugging purposes */
-					g_assert(0);
+					g_assert (0);
 			}
 		} else {
-			g_hash_table_insert(pstring_table, p, GINT_TO_POINTER(count));
+			g_hash_table_insert (pstring_table, p, GINT_TO_POINTER (count));
 		}
 	} else {
 		if (g_getenv("CDS_DEBUG")) {

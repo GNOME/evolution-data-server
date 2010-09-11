@@ -41,10 +41,10 @@
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 
-static CamelLocalSummary *maildir_create_summary(CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index);
+static CamelLocalSummary *maildir_create_summary (CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index);
 
-static gboolean maildir_append_message(CamelFolder * folder, CamelMimeMessage * message, const CamelMessageInfo *info, gchar **appended_uid, GError **error);
-static CamelMimeMessage *maildir_get_message(CamelFolder * folder, const gchar * uid, GError **error);
+static gboolean maildir_append_message (CamelFolder * folder, CamelMimeMessage * message, const CamelMessageInfo *info, gchar **appended_uid, GError **error);
+static CamelMimeMessage *maildir_get_message (CamelFolder * folder, const gchar * uid, GError **error);
 static gchar * maildir_get_filename (CamelFolder *folder, const gchar *uid, GError **error);
 static gint maildir_cmp_uids (CamelFolder *folder, const gchar *uid1, const gchar *uid2);
 static void maildir_sort_uids (CamelFolder *folder, GPtrArray *uids);
@@ -227,7 +227,7 @@ maildir_get_filename (CamelFolder *folder,
 	gchar *res;
 
 	/* get the message summary info */
-	if ((info = camel_folder_summary_uid(folder->summary, uid)) == NULL) {
+	if ((info = camel_folder_summary_uid (folder->summary, uid)) == NULL) {
 		set_cannot_get_message_ex (
 			error, CAMEL_FOLDER_ERROR_INVALID_UID,
 			uid, lf->folder_path, _("No such message"));
@@ -262,7 +262,7 @@ maildir_get_message (CamelFolder *folder,
 		return NULL;
 
 	/* get the message summary info */
-	if ((info = camel_folder_summary_uid(folder->summary, uid)) == NULL) {
+	if ((info = camel_folder_summary_uid (folder->summary, uid)) == NULL) {
 		set_cannot_get_message_ex (
 			error, CAMEL_FOLDER_ERROR_INVALID_UID,
 			uid, lf->folder_path, _("No such message"));
@@ -274,7 +274,7 @@ maildir_get_message (CamelFolder *folder,
 	/* what do we do if the message flags (and :info data) changes?  filename mismatch - need to recheck I guess */
 	name = g_strdup_printf("%s/cur/%s", lf->folder_path, camel_maildir_info_filename(mdi));
 
-	camel_message_info_free(info);
+	camel_message_info_free (info);
 
 	message_stream = camel_stream_fs_new_with_name (
 		name, O_RDONLY, 0, error);
@@ -285,8 +285,8 @@ maildir_get_message (CamelFolder *folder,
 		goto fail;
 	}
 
-	message = camel_mime_message_new();
-	if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)message, message_stream, error) == -1) {
+	message = camel_mime_message_new ();
+	if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *)message, message_stream, error) == -1) {
 		g_prefix_error (
 			error, _("Cannot get message %s from folder %s: "),
 			uid, lf->folder_path);

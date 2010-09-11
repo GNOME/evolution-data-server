@@ -43,7 +43,7 @@ extern CamelServiceAuthType camel_pop3_apop_authtype;
 extern gint camel_verbose_debug;
 #define dd(x) (camel_verbose_debug?(x):0)
 
-static void get_capabilities(CamelPOP3Engine *pe);
+static void get_capabilities (CamelPOP3Engine *pe);
 
 G_DEFINE_TYPE (CamelPOP3Engine, camel_pop3_engine, CAMEL_TYPE_OBJECT)
 
@@ -129,13 +129,13 @@ read_greeting (CamelPOP3Engine *pe)
  * Returns: the stream
  **/
 CamelPOP3Engine *
-camel_pop3_engine_new(CamelStream *source, guint32 flags)
+camel_pop3_engine_new (CamelStream *source, guint32 flags)
 {
 	CamelPOP3Engine *pe;
 
 	pe = g_object_new (CAMEL_TYPE_POP3_ENGINE, NULL);
 
-	pe->stream = (CamelPOP3Stream *)camel_pop3_stream_new(source);
+	pe->stream = (CamelPOP3Stream *)camel_pop3_stream_new (source);
 	pe->state = CAMEL_POP3_ENGINE_AUTH;
 	pe->flags = flags;
 
@@ -177,7 +177,7 @@ static struct {
 };
 
 static void
-cmd_capa(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
+cmd_capa (CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 {
 	guchar *line, *tok, *next;
 	guint len;
@@ -188,19 +188,19 @@ cmd_capa(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 	dd(printf("cmd_capa\n"));
 
 	do {
-		ret = camel_pop3_stream_line(stream, &line, &len);
+		ret = camel_pop3_stream_line (stream, &line, &len);
 		if (ret >= 0) {
 			if (strncmp((gchar *) line, "SASL ", 5) == 0) {
 				tok = line+5;
 				dd(printf("scanning tokens '%s'\n", tok));
 				while (tok) {
-					next = (guchar *) strchr((gchar *) tok, ' ');
+					next = (guchar *) strchr ((gchar *) tok, ' ');
 					if (next)
 						*next++ = 0;
-					auth = camel_sasl_authtype((const gchar *) tok);
+					auth = camel_sasl_authtype ((const gchar *) tok);
 					if (auth) {
 						dd(printf("got auth type '%s'\n", tok));
-						pe->auth = g_list_prepend(pe->auth, auth);
+						pe->auth = g_list_prepend (pe->auth, auth);
 					} else {
 						dd(printf("unsupported auth type '%s'\n", tok));
 					}
@@ -208,7 +208,7 @@ cmd_capa(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 				}
 			} else {
 				for (i = 0; i < G_N_ELEMENTS (capa); i++) {
-					if (strcmp((gchar *) capa[i].cap, (gchar *) line) == 0)
+					if (strcmp ((gchar *) capa[i].cap, (gchar *) line) == 0)
 						pe->capa |= capa[i].flag;
 				}
 			}
@@ -217,15 +217,15 @@ cmd_capa(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 }
 
 static void
-get_capabilities(CamelPOP3Engine *pe)
+get_capabilities (CamelPOP3Engine *pe)
 {
 	CamelPOP3Command *pc;
 
 	if (!(pe->flags & CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS)) {
 		pc = camel_pop3_engine_command_new(pe, CAMEL_POP3_COMMAND_MULTI, cmd_capa, NULL, "CAPA\r\n");
-		while (camel_pop3_engine_iterate(pe, pc) > 0)
+		while (camel_pop3_engine_iterate (pe, pc) > 0)
 			;
-		camel_pop3_engine_command_free(pe, pc);
+		camel_pop3_engine_command_free (pe, pc);
 
 		if (pe->state == CAMEL_POP3_ENGINE_TRANSACTION && !(pe->capa & CAMEL_POP3_CAP_UIDL)) {
 			/* check for UIDL support manually */
@@ -243,35 +243,35 @@ get_capabilities(CamelPOP3Engine *pe)
 
 /* returns true if the command was sent, false if it was just queued */
 static gint
-engine_command_queue(CamelPOP3Engine *pe, CamelPOP3Command *pc)
+engine_command_queue (CamelPOP3Engine *pe, CamelPOP3Command *pc)
 {
-	if (((pe->capa & CAMEL_POP3_CAP_PIPE) == 0 || (pe->sentlen + strlen(pc->data)) > CAMEL_POP3_SEND_LIMIT)
+	if (((pe->capa & CAMEL_POP3_CAP_PIPE) == 0 || (pe->sentlen + strlen (pc->data)) > CAMEL_POP3_SEND_LIMIT)
 	    && pe->current != NULL) {
-		camel_dlist_addtail(&pe->queue, (CamelDListNode *)pc);
+		camel_dlist_addtail (&pe->queue, (CamelDListNode *)pc);
 		return FALSE;
 	}
 
 	/* ??? */
-	if (camel_stream_write((CamelStream *)pe->stream, pc->data, strlen(pc->data), NULL) == -1) {
-		camel_dlist_addtail(&pe->queue, (CamelDListNode *)pc);
+	if (camel_stream_write ((CamelStream *)pe->stream, pc->data, strlen (pc->data), NULL) == -1) {
+		camel_dlist_addtail (&pe->queue, (CamelDListNode *)pc);
 		return FALSE;
 	}
 
-	pe->sentlen += strlen(pc->data);
+	pe->sentlen += strlen (pc->data);
 
 	pc->state = CAMEL_POP3_COMMAND_DISPATCHED;
 
 	if (pe->current == NULL)
 		pe->current = pc;
 	else
-		camel_dlist_addtail(&pe->active, (CamelDListNode *)pc);
+		camel_dlist_addtail (&pe->active, (CamelDListNode *)pc);
 
 	return TRUE;
 }
 
 /* returns -1 on error (sets errno), 0 when no work to do, or >0 if work remaining */
 gint
-camel_pop3_engine_iterate(CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
+camel_pop3_engine_iterate (CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 {
 	guchar *p;
 	guint len;
@@ -286,7 +286,7 @@ camel_pop3_engine_iterate(CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 
 	/* LOCK */
 
-	if (camel_pop3_stream_line(pe->stream, &pe->line, &pe->linelen) == -1)
+	if (camel_pop3_stream_line (pe->stream, &pe->line, &pe->linelen) == -1)
 		goto ioerror;
 
 	p = pe->line;
@@ -295,15 +295,15 @@ camel_pop3_engine_iterate(CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 		dd(printf("Got + response\n"));
 		if (pc->flags & CAMEL_POP3_COMMAND_MULTI) {
 			pc->state = CAMEL_POP3_COMMAND_DATA;
-			camel_pop3_stream_set_mode(pe->stream, CAMEL_POP3_STREAM_DATA);
+			camel_pop3_stream_set_mode (pe->stream, CAMEL_POP3_STREAM_DATA);
 
 			if (pc->func)
-				pc->func(pe, pe->stream, pc->func_data);
+				pc->func (pe, pe->stream, pc->func_data);
 
 			/* Make sure we get all data before going back to command mode */
-			while (camel_pop3_stream_getd(pe->stream, &p, &len) > 0)
+			while (camel_pop3_stream_getd (pe->stream, &p, &len) > 0)
 				;
-			camel_pop3_stream_set_mode(pe->stream, CAMEL_POP3_STREAM_LINE);
+			camel_pop3_stream_set_mode (pe->stream, CAMEL_POP3_STREAM_LINE);
 		} else {
 			pc->state = CAMEL_POP3_COMMAND_OK;
 		}
@@ -318,33 +318,33 @@ camel_pop3_engine_iterate(CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 		break;
 	}
 
-	camel_dlist_addtail(&pe->done, (CamelDListNode *)pc);
-	pe->sentlen -= strlen(pc->data);
+	camel_dlist_addtail (&pe->done, (CamelDListNode *)pc);
+	pe->sentlen -= strlen (pc->data);
 
 	/* Set next command */
-	pe->current = (CamelPOP3Command *)camel_dlist_remhead(&pe->active);
+	pe->current = (CamelPOP3Command *)camel_dlist_remhead (&pe->active);
 
 	/* check the queue for sending any we can now send also */
 	pw = (CamelPOP3Command *)pe->queue.head;
 	pn = pw->next;
 
 	while (pn) {
-		if (((pe->capa & CAMEL_POP3_CAP_PIPE) == 0 || (pe->sentlen + strlen(pw->data)) > CAMEL_POP3_SEND_LIMIT)
+		if (((pe->capa & CAMEL_POP3_CAP_PIPE) == 0 || (pe->sentlen + strlen (pw->data)) > CAMEL_POP3_SEND_LIMIT)
 		    && pe->current != NULL)
 			break;
 
-		if (camel_stream_write((CamelStream *)pe->stream, pw->data, strlen(pw->data), NULL) == -1)
+		if (camel_stream_write ((CamelStream *)pe->stream, pw->data, strlen (pw->data), NULL) == -1)
 			goto ioerror;
 
-		camel_dlist_remove((CamelDListNode *)pw);
+		camel_dlist_remove ((CamelDListNode *)pw);
 
-		pe->sentlen += strlen(pw->data);
+		pe->sentlen += strlen (pw->data);
 		pw->state = CAMEL_POP3_COMMAND_DISPATCHED;
 
 		if (pe->current == NULL)
 			pe->current = pw;
 		else
-			camel_dlist_addtail(&pe->active, (CamelDListNode *)pw);
+			camel_dlist_addtail (&pe->active, (CamelDListNode *)pw);
 
 		pw = pn;
 		pn = pn->next;
@@ -358,19 +358,19 @@ camel_pop3_engine_iterate(CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 	return pe->current==NULL?0:1;
 ioerror:
 	/* we assume all outstanding commands are gunna fail now */
-	while ((pw = (CamelPOP3Command*)camel_dlist_remhead(&pe->active))) {
+	while ((pw = (CamelPOP3Command*)camel_dlist_remhead (&pe->active))) {
 		pw->state = CAMEL_POP3_COMMAND_ERR;
-		camel_dlist_addtail(&pe->done, (CamelDListNode *)pw);
+		camel_dlist_addtail (&pe->done, (CamelDListNode *)pw);
 	}
 
-	while ((pw = (CamelPOP3Command*)camel_dlist_remhead(&pe->queue))) {
+	while ((pw = (CamelPOP3Command*)camel_dlist_remhead (&pe->queue))) {
 		pw->state = CAMEL_POP3_COMMAND_ERR;
-		camel_dlist_addtail(&pe->done, (CamelDListNode *)pw);
+		camel_dlist_addtail (&pe->done, (CamelDListNode *)pw);
 	}
 
 	if (pe->current) {
 		pe->current->state = CAMEL_POP3_COMMAND_ERR;
-		camel_dlist_addtail(&pe->done, (CamelDListNode *)pe->current);
+		camel_dlist_addtail (&pe->done, (CamelDListNode *)pe->current);
 		pe->current = NULL;
 	}
 
@@ -378,31 +378,31 @@ ioerror:
 }
 
 CamelPOP3Command *
-camel_pop3_engine_command_new(CamelPOP3Engine *pe, guint32 flags, CamelPOP3CommandFunc func, gpointer data, const gchar *fmt, ...)
+camel_pop3_engine_command_new (CamelPOP3Engine *pe, guint32 flags, CamelPOP3CommandFunc func, gpointer data, const gchar *fmt, ...)
 {
 	CamelPOP3Command *pc;
 	va_list ap;
 
-	pc = g_malloc0(sizeof(*pc));
+	pc = g_malloc0 (sizeof (*pc));
 	pc->func = func;
 	pc->func_data = data;
 	pc->flags = flags;
 
-	va_start(ap, fmt);
-	pc->data = g_strdup_vprintf(fmt, ap);
+	va_start (ap, fmt);
+	pc->data = g_strdup_vprintf (fmt, ap);
 	pc->state = CAMEL_POP3_COMMAND_IDLE;
 
 	/* TODO: what about write errors? */
-	engine_command_queue(pe, pc);
+	engine_command_queue (pe, pc);
 
 	return pc;
 }
 
 void
-camel_pop3_engine_command_free(CamelPOP3Engine *pe, CamelPOP3Command *pc)
+camel_pop3_engine_command_free (CamelPOP3Engine *pe, CamelPOP3Command *pc)
 {
 	if (pe->current != pc)
-		camel_dlist_remove((CamelDListNode *)pc);
-	g_free(pc->data);
-	g_free(pc);
+		camel_dlist_remove ((CamelDListNode *)pc);
+	g_free (pc->data);
+	g_free (pc);
 }

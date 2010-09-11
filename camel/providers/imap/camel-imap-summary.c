@@ -56,16 +56,16 @@ static CamelMessageContentInfo * content_info_from_db (CamelFolderSummary *s, Ca
 G_DEFINE_TYPE (CamelImapSummary, camel_imap_summary, CAMEL_TYPE_FOLDER_SUMMARY)
 
 static CamelMessageInfo *
-imap_message_info_clone(CamelFolderSummary *s, const CamelMessageInfo *mi)
+imap_message_info_clone (CamelFolderSummary *s, const CamelMessageInfo *mi)
 {
 	CamelImapMessageInfo *to;
 	const CamelImapMessageInfo *from = (const CamelImapMessageInfo *)mi;
 
-	to = (CamelImapMessageInfo *) CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->message_info_clone(s, mi);
+	to = (CamelImapMessageInfo *) CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->message_info_clone (s, mi);
 	to->server_flags = from->server_flags;
 
 	/* FIXME: parent clone should do this */
-	to->info.content = camel_folder_summary_content_info_new(s);
+	to->info.content = camel_folder_summary_content_info_new (s);
 
 	return (CamelMessageInfo *)to;
 }
@@ -219,10 +219,10 @@ summary_header_load (CamelFolderSummary *s, FILE *in)
 
 	/* Legacy version */
 	if (s->version == 0x30c)
-		return camel_file_util_decode_uint32(in, &ims->validity);
+		return camel_file_util_decode_uint32 (in, &ims->validity);
 
 	/* Version 1 */
-	if (camel_file_util_decode_fixed_int32(in, (gint32 *) &ims->version) == -1)
+	if (camel_file_util_decode_fixed_int32 (in, (gint32 *) &ims->version) == -1)
 		return -1;
 
 	if (ims->version == 2) {
@@ -233,7 +233,7 @@ summary_header_load (CamelFolderSummary *s, FILE *in)
 			return -1;
 	}
 
-	if (camel_file_util_decode_fixed_int32(in, (gint32 *) &ims->validity) == -1)
+	if (camel_file_util_decode_fixed_int32 (in, (gint32 *) &ims->validity) == -1)
 		return -1;
 
 	if (ims->version > CAMEL_IMAP_SUMMARY_VERSION) {
@@ -248,7 +248,7 @@ summary_header_load (CamelFolderSummary *s, FILE *in)
 static CamelFIRecord *
 summary_header_to_db (CamelFolderSummary *s, GError **error)
 {
-	CamelImapSummary *ims = CAMEL_IMAP_SUMMARY(s);
+	CamelImapSummary *ims = CAMEL_IMAP_SUMMARY (s);
 	struct _CamelFIRecord *fir;
 
 	fir = CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->summary_header_to_db (s, error);
@@ -262,14 +262,14 @@ summary_header_to_db (CamelFolderSummary *s, GError **error)
 static gint
 summary_header_save (CamelFolderSummary *s, FILE *out)
 {
-	CamelImapSummary *ims = CAMEL_IMAP_SUMMARY(s);
+	CamelImapSummary *ims = CAMEL_IMAP_SUMMARY (s);
 
 	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->summary_header_save (s, out) == -1)
 		return -1;
 
-	camel_file_util_encode_fixed_int32(out, CAMEL_IMAP_SUMMARY_VERSION);
+	camel_file_util_encode_fixed_int32 (out, CAMEL_IMAP_SUMMARY_VERSION);
 
-	return camel_file_util_encode_fixed_int32(out, ims->validity);
+	return camel_file_util_encode_fixed_int32 (out, ims->validity);
 }
 
 static CamelMessageInfo *
@@ -306,7 +306,7 @@ message_info_migrate (CamelFolderSummary *s, FILE *in)
 
 	return info;
 error:
-	camel_message_info_free(info);
+	camel_message_info_free (info);
 	return NULL;
 }
 
@@ -373,12 +373,12 @@ content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelM
 	if (info->type) {
 		oldr = mir->cinfo;
 		mir->cinfo = oldr ? g_strdup_printf("%s 1", oldr) : g_strdup ("1");
-		g_free(oldr);
+		g_free (oldr);
 		return CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->content_info_to_db (s, info, mir);
 	} else {
 		oldr = mir->cinfo;
 		mir->cinfo = oldr ? g_strdup_printf("%s 0", oldr) : g_strdup ("0");
-		g_free(oldr);
+		g_free (oldr);
 		return 0;
 	}
 }
@@ -396,20 +396,20 @@ camel_imap_summary_add_offline (CamelFolderSummary *summary, const gchar *uid,
 	mi = (CamelImapMessageInfo *)camel_folder_summary_info_new_from_message (summary, message, NULL);
 
 	/* Copy flags 'n' tags */
-	mi->info.flags = camel_message_info_flags(info);
+	mi->info.flags = camel_message_info_flags (info);
 
-	flag = camel_message_info_user_flags(info);
+	flag = camel_message_info_user_flags (info);
 	while (flag) {
-		camel_message_info_set_user_flag((CamelMessageInfo *)mi, flag->name, TRUE);
+		camel_message_info_set_user_flag ((CamelMessageInfo *)mi, flag->name, TRUE);
 		flag = flag->next;
 	}
-	tag = camel_message_info_user_tags(info);
+	tag = camel_message_info_user_tags (info);
 	while (tag) {
-		camel_message_info_set_user_tag((CamelMessageInfo *)mi, tag->name, tag->value);
+		camel_message_info_set_user_tag ((CamelMessageInfo *)mi, tag->name, tag->value);
 		tag = tag->next;
 	}
 
-	mi->info.size = camel_message_info_size(info);
+	mi->info.size = camel_message_info_size (info);
 	mi->info.uid = camel_pstring_strdup (uid);
 
 	camel_folder_summary_add (summary, (CamelMessageInfo *)mi);
@@ -421,8 +421,8 @@ camel_imap_summary_add_offline_uncached (CamelFolderSummary *summary, const gcha
 {
 	CamelImapMessageInfo *mi;
 
-	mi = camel_message_info_clone(info);
-	mi->info.uid = camel_pstring_strdup(uid);
+	mi = camel_message_info_clone (info);
+	mi->info.uid = camel_pstring_strdup (uid);
 
 	camel_folder_summary_add (summary, (CamelMessageInfo *)mi);
 }

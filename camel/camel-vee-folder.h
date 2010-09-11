@@ -109,12 +109,12 @@ GType	      camel_vee_folder_get_type		(void);
 CamelFolder  *camel_vee_folder_new		(CamelStore *parent_store, const gchar *full, guint32 flags);
 void         camel_vee_folder_construct		(CamelVeeFolder *vf, guint32 flags);
 
-CamelFolder *camel_vee_folder_get_location(CamelVeeFolder *vf, const struct _CamelVeeMessageInfo *vinfo, gchar **realuid);
+CamelFolder *camel_vee_folder_get_location (CamelVeeFolder *vf, const struct _CamelVeeMessageInfo *vinfo, gchar **realuid);
 
 void         camel_vee_folder_add_folder        (CamelVeeFolder *vf, CamelFolder *sub);
 void         camel_vee_folder_remove_folder     (CamelVeeFolder *vf, CamelFolder *sub);
 void	     camel_vee_folder_set_folders	(CamelVeeFolder *vf, GList *folders);
-gint          camel_vee_folder_rebuild_folder(CamelVeeFolder *vf, CamelFolder *sub, GError **error);
+gint          camel_vee_folder_rebuild_folder (CamelVeeFolder *vf, CamelFolder *sub, GError **error);
 void	     camel_vee_folder_set_expression	(CamelVeeFolder *vf, const gchar *expr);
 
 void	     camel_vee_folder_mask_event_folder_changed (CamelVeeFolder *vf, CamelFolder *sub);

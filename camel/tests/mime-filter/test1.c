@@ -55,7 +55,7 @@ main (gint argc, gchar **argv)
 	CamelMimeFilter *sh;
 	gint i;
 
-	camel_test_init(argc, argv);
+	camel_test_init (argc, argv);
 
 	camel_test_start("canonicalisation filter tests");
 
@@ -75,31 +75,31 @@ main (gint argc, gchar **argv)
 			byte_array = g_byte_array_new ();
 			out = camel_stream_mem_new_with_byte_array (byte_array);
 			filter = camel_stream_filter_new (out);
-			sh = camel_mime_filter_canon_new(tests[i].flags);
-			check(camel_stream_filter_add(filter, sh) != -1);
-			check_unref(sh, 2);
+			sh = camel_mime_filter_canon_new (tests[i].flags);
+			check (camel_stream_filter_add (filter, sh) != -1);
+			check_unref (sh, 2);
 
 			p = tests[i].in;
 			while (*p) {
-				gint w = MIN(strlen(p), step);
+				gint w = MIN (strlen (p), step);
 
-				check(camel_stream_write((CamelStream *)filter, p, w, NULL) == w);
+				check (camel_stream_write ((CamelStream *)filter, p, w, NULL) == w);
 				p += w;
 			}
-			camel_stream_flush((CamelStream *)filter, NULL);
+			camel_stream_flush ((CamelStream *)filter, NULL);
 
 			check_msg(byte_array->len == strlen(tests[i].out), "Buffer length mismatch: expected %d got %d\n or '%s' got '%.*s'", strlen(tests[i].out), byte_array->len, tests[i].out, byte_array->len, byte_array->data);
 			check_msg(0 == memcmp(byte_array->data, tests[i].out, byte_array->len), "Buffer mismatch: expected '%s' got '%.*s'", tests[i].out, byte_array->len, byte_array->data);
-			check_unref(filter, 1);
-			check_unref(out, 1);
+			check_unref (filter, 1);
+			check_unref (out, 1);
 
-			camel_test_pull();
+			camel_test_pull ();
 		}
 
-		camel_test_pull();
+		camel_test_pull ();
 	}
 
-	camel_test_end();
+	camel_test_end ();
 
 	return 0;
 }

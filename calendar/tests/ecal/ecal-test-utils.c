@@ -105,7 +105,7 @@ ecal_test_utils_cal_open (ECal     *cal,
 
                 g_warning ("failed to open calendar: `%s': %s", uri,
                                 error->message);
-                exit(1);
+                exit (1);
         }
 }
 
@@ -158,7 +158,7 @@ ecal_test_utils_cal_remove (ECal *cal)
 
         if (!e_cal_remove (cal, &error)) {
                 g_warning ("failed to remove calendar; %s\n", error->message);
-                exit(1);
+                exit (1);
         }
         test_print ("successfully removed the temporary calendar\n");
 
@@ -173,7 +173,7 @@ ecal_test_utils_cal_get_alarm_email_address (ECal *cal)
 
         if (!e_cal_get_alarm_email_address (cal, &address, &error)) {
                 g_warning ("failed to get alarm email address; %s\n", error->message);
-                exit(1);
+                exit (1);
         }
         test_print ("successfully got the alarm email address\n");
 
@@ -188,7 +188,7 @@ ecal_test_utils_cal_get_cal_address (ECal *cal)
 
         if (!e_cal_get_cal_address (cal, &address, &error)) {
                 g_warning ("failed to get calendar address; %s\n", error->message);
-                exit(1);
+                exit (1);
         }
         test_print ("successfully got the calendar address\n");
 
@@ -203,7 +203,7 @@ ecal_test_utils_cal_get_ldap_attribute (ECal *cal)
 
         if (!e_cal_get_ldap_attribute (cal, &attr, &error)) {
                 g_warning ("failed to get ldap attribute; %s\n", error->message);
-                exit(1);
+                exit (1);
         }
         test_print ("successfully got the ldap attribute\n");
 
@@ -349,11 +349,11 @@ ecal_test_utils_cal_get_object (ECal       *cal,
 
         if (!e_cal_get_object (cal, uid, NULL, &component, &error)) {
                 g_warning ("failed to get icalcomponent object '%s'; %s\n", uid, error->message);
-                exit(1);
+                exit (1);
         }
         if (!icalcomponent_is_valid (component)) {
                 g_warning ("retrieved icalcomponent is invalid\n");
-                exit(1);
+                exit (1);
         }
         test_print ("successfully got the icalcomponent object '%s'\n", uid);
 
@@ -369,11 +369,11 @@ ecal_test_utils_cal_modify_object (ECal          *cal,
 
         if (!icalcomponent_is_valid (component)) {
                 g_warning (G_STRLOC ": icalcomponent argument is invalid\n");
-                exit(1);
+                exit (1);
         }
         if (!e_cal_modify_object (cal, component, mod_type, &error)) {
                 g_warning ("failed to modify icalcomponent object; %s\n", error->message);
-                exit(1);
+                exit (1);
         }
         test_print ("successfully modified the icalcomponent object\n");
 }
@@ -386,7 +386,7 @@ ecal_test_utils_cal_remove_object (ECal       *cal,
 
         if (!e_cal_remove_object (cal, uid, &error)) {
                 g_warning ("failed to remove icalcomponent object '%s'; %s\n", uid, error->message);
-                exit(1);
+                exit (1);
         }
         test_print ("successfully remoed the icalcomponent object '%s'\n", uid);
 }
@@ -399,11 +399,11 @@ ecal_test_utils_cal_get_default_object (ECal *cal)
 
         if (!e_cal_get_default_object (cal, &component, &error)) {
                 g_warning ("failed to get default icalcomponent object; %s\n", error->message);
-                exit(1);
+                exit (1);
         }
         if (!icalcomponent_is_valid (component)) {
                 g_warning ("default icalcomponent is invalid\n");
-                exit(1);
+                exit (1);
         }
         test_print ("successfully got the default icalcomponent object\n");
 
@@ -419,7 +419,7 @@ ecal_test_utils_cal_get_object_list (ECal       *cal,
 
         if (!e_cal_get_object_list (cal, query, &objects, &error)) {
                 g_warning ("failed to get list of icalcomponent objects for query '%s'; %s\n", query, error->message);
-                exit(1);
+                exit (1);
         }
         test_print ("successfully got list of icalcomponent objects for the query '%s'\n", query);
 
@@ -435,7 +435,7 @@ ecal_test_utils_cal_get_objects_for_uid (ECal       *cal,
 
         if (!e_cal_get_objects_for_uid (cal, uid, &objects, &error)) {
                 g_warning ("failed to get icalcomponent objects for UID '%s'; %s\n", uid, error->message);
-                exit(1);
+                exit (1);
         }
         test_print ("successfully got objects for the icalcomponent with UID '%s'\n", uid);
 
@@ -452,12 +452,12 @@ ecal_test_utils_cal_create_object (ECal          *cal,
 
         if (!icalcomponent_is_valid (component)) {
                 g_warning ("supplied icalcomponent is invalid\n");
-                exit(1);
+                exit (1);
         }
 
         if (!e_cal_create_object (cal, component, &uid, &error)) {
                 g_warning ("failed to get create an icalcomponent object; %s\n", error->message);
-                exit(1);
+                exit (1);
         }
 
 	ical_string = icalcomponent_as_ical_string (component);
@@ -571,7 +571,7 @@ ecal_test_utils_cal_get_timezone (ECal       *cal,
 
         if (!e_cal_get_timezone (cal, tzid, &zone, &error)) {
                 g_warning ("failed to get icaltimezone* for ID '%s'; %s\n", tzid, error->message);
-                exit(1);
+                exit (1);
         }
         test_print ("successfully got icaltimezone* for ID '%s'\n", tzid);
 
@@ -589,7 +589,7 @@ ecal_test_utils_cal_add_timezone (ECal         *cal,
 
         if (!e_cal_add_timezone (cal, zone, &error)) {
                 g_warning ("failed to add icaltimezone '%s'; %s\n", name, error->message);
-                exit(1);
+                exit (1);
         }
         test_print ("successfully added icaltimezone '%s'\n", name);
 }
@@ -605,7 +605,7 @@ ecal_test_utils_cal_set_default_timezone (ECal         *cal,
 
         if (!e_cal_set_default_timezone (cal, zone, &error)) {
                 g_warning ("failed to set default icaltimezone '%s'; %s\n", name, error->message);
-                exit(1);
+                exit (1);
         }
         test_print ("successfully set default icaltimezone '%s'\n", name);
 }

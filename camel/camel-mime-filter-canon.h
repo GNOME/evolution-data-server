@@ -69,7 +69,7 @@ struct _CamelMimeFilterCanonClass {
 	CamelMimeFilterClass parent_class;
 };
 
-GType		camel_mime_filter_canon_get_type(void);
+GType		camel_mime_filter_canon_get_type (void);
 CamelMimeFilter *
 		camel_mime_filter_canon_new	(guint32 flags);
 

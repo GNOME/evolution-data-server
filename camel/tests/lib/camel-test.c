@@ -55,42 +55,42 @@ dump_action (GThread *thread, struct _state *s, gpointer d)
 	printf("\tTest: %s\n", s->test);
 }
 
-static void die(gint sig)
+static void die (gint sig)
 {
 	static gint indie = 0;
 
 	if (!indie) {
 		indie = 1;
 		printf("\n\nReceived fatal signal %d\n", sig);
-		g_hash_table_foreach(info_table, (GHFunc)dump_action, 0);
+		g_hash_table_foreach (info_table, (GHFunc)dump_action, 0);
 
 		if (camel_test_verbose > 2) {
 			printf("Attach debugger to pid %d to debug\n", getpid());
-			sleep(1000);
+			sleep (1000);
 		}
 	}
 
-	_exit(1);
+	_exit (1);
 }
 
 static struct _state *
-current_state(void)
+current_state (void)
 {
 	struct _state *info;
 
 	if (info_table == NULL)
-		info_table = g_hash_table_new(0, 0);
+		info_table = g_hash_table_new (0, 0);
 
-	info = g_hash_table_lookup(info_table, CAMEL_TEST_ID);
+	info = g_hash_table_lookup (info_table, CAMEL_TEST_ID);
 	if (info == NULL) {
-		info = g_malloc0(sizeof(*info));
-		g_hash_table_insert(info_table, CAMEL_TEST_ID, info);
+		info = g_malloc0 (sizeof (*info));
+		g_hash_table_insert (info_table, CAMEL_TEST_ID, info);
 	}
 	return info;
 }
 
 void
-camel_test_init(gint argc, gchar **argv)
+camel_test_init (gint argc, gchar **argv)
 {
 	struct stat st;
 	gchar *path;
@@ -114,10 +114,10 @@ camel_test_init(gint argc, gchar **argv)
 	camel_init (path, FALSE);
 	g_free (path);
 
-	info_table = g_hash_table_new(0, 0);
+	info_table = g_hash_table_new (0, 0);
 
-	signal(SIGSEGV, die);
-	signal(SIGABRT, die);
+	signal (SIGSEGV, die);
+	signal (SIGABRT, die);
 
 	/* default, just say what, how well we did, unless fail, then abort */
 	camel_test_verbose = 1;
@@ -126,7 +126,7 @@ camel_test_init(gint argc, gchar **argv)
 		if (argv[i][0] == '-') {
 			switch (argv[i][1]) {
 			case 'v':
-				camel_test_verbose = strlen(argv[i]);
+				camel_test_verbose = strlen (argv[i]);
 				break;
 			case 'q':
 				camel_test_verbose = 0;
@@ -136,30 +136,30 @@ camel_test_init(gint argc, gchar **argv)
 	}
 }
 
-void camel_test_start(const gchar *what)
+void camel_test_start (const gchar *what)
 {
 	struct _state *s;
 
 	CAMEL_TEST_LOCK;
 
-	s = current_state();
+	s = current_state ();
 
 	if (!setup)
-		camel_test_init(0, 0);
+		camel_test_init (0, 0);
 
 	ok = 1;
 
-	s->test = g_strdup(what);
+	s->test = g_strdup (what);
 
 	if (camel_test_verbose > 0) {
 		printf("Test: %s ... ", what);
-		fflush(stdout);
+		fflush (stdout);
 	}
 
 	CAMEL_TEST_UNLOCK;
 }
 
-void camel_test_push(const gchar *what, ...)
+void camel_test_push (const gchar *what, ...)
 {
 	struct _stack *node;
 	va_list ap;
@@ -168,16 +168,16 @@ void camel_test_push(const gchar *what, ...)
 
 	CAMEL_TEST_LOCK;
 
-	s = current_state();
+	s = current_state ();
 
-	va_start(ap, what);
-	text = g_strdup_vprintf(what, ap);
-	va_end(ap);
+	va_start (ap, what);
+	text = g_strdup_vprintf (what, ap);
+	va_end (ap);
 
 	if (camel_test_verbose > 3)
 		printf("Start step: %s\n", text);
 
-	node = g_malloc(sizeof(*node));
+	node = g_malloc (sizeof (*node));
 	node->what = text;
 	node->next = s->state;
 	node->fatal = 1;
@@ -186,16 +186,16 @@ void camel_test_push(const gchar *what, ...)
 	CAMEL_TEST_UNLOCK;
 }
 
-void camel_test_pull(void)
+void camel_test_pull (void)
 {
 	struct _stack *node;
 	struct _state *s;
 
 	CAMEL_TEST_LOCK;
 
-	s = current_state();
+	s = current_state ();
 
-	g_assert(s->state);
+	g_assert (s->state);
 
 	if (camel_test_verbose > 3)
 		printf("Finish step: %s\n", s->state->what);
@@ -204,66 +204,66 @@ void camel_test_pull(void)
 	s->state = node->next;
 	if (!node->fatal)
 		s->nonfatal--;
-	g_free(node->what);
-	g_free(node);
+	g_free (node->what);
+	g_free (node);
 
 	CAMEL_TEST_UNLOCK;
 }
 
 /* where to set breakpoints */
-void camel_test_break(void);
+void camel_test_break (void);
 
-void camel_test_break(void)
+void camel_test_break (void)
 {
 }
 
-void camel_test_fail(const gchar *why, ...)
+void camel_test_fail (const gchar *why, ...)
 {
 	va_list ap;
 
-	va_start(ap, why);
-	camel_test_failv(why, ap);
-	va_end(ap);
+	va_start (ap, why);
+	camel_test_failv (why, ap);
+	va_end (ap);
 }
 
-void camel_test_failv(const gchar *why, va_list ap)
+void camel_test_failv (const gchar *why, va_list ap)
 {
 	gchar *text;
 	struct _state *s;
 
 	CAMEL_TEST_LOCK;
 
-	s = current_state();
+	s = current_state ();
 
-	text = g_strdup_vprintf(why, ap);
+	text = g_strdup_vprintf (why, ap);
 
 	if ((s->nonfatal == 0 && camel_test_verbose > 0)
 	    || (s->nonfatal && camel_test_verbose > 1)) {
 		printf("Failed.\n%s\n", text);
-		camel_test_break();
+		camel_test_break ();
 	}
 
-	g_free(text);
+	g_free (text);
 
 	if ((s->nonfatal == 0 && camel_test_verbose > 0)
 	    || (s->nonfatal && camel_test_verbose > 2)) {
-		g_hash_table_foreach(info_table, (GHFunc)dump_action, 0);
+		g_hash_table_foreach (info_table, (GHFunc)dump_action, 0);
 	}
 
 	if (s->nonfatal == 0) {
-		exit(1);
+		exit (1);
 	} else {
 		ok=0;
 		if (camel_test_verbose > 1) {
 			printf("Known problem (ignored):\n");
-			dump_action(CAMEL_TEST_ID, s, 0);
+			dump_action (CAMEL_TEST_ID, s, 0);
 		}
 	}
 
 	CAMEL_TEST_UNLOCK;
 }
 
-void camel_test_nonfatal(const gchar *what, ...)
+void camel_test_nonfatal (const gchar *what, ...)
 {
 	struct _stack *node;
 	va_list ap;
@@ -272,16 +272,16 @@ void camel_test_nonfatal(const gchar *what, ...)
 
 	CAMEL_TEST_LOCK;
 
-	s = current_state();
+	s = current_state ();
 
-	va_start(ap, what);
-	text = g_strdup_vprintf(what, ap);
-	va_end(ap);
+	va_start (ap, what);
+	text = g_strdup_vprintf (what, ap);
+	va_end (ap);
 
 	if (camel_test_verbose > 3)
 		printf("Start nonfatal: %s\n", text);
 
-	node = g_malloc(sizeof(*node));
+	node = g_malloc (sizeof (*node));
 	node->what = text;
 	node->next = s->state;
 	node->fatal = 0;
@@ -291,12 +291,12 @@ void camel_test_nonfatal(const gchar *what, ...)
 	CAMEL_TEST_UNLOCK;
 }
 
-void camel_test_fatal(void)
+void camel_test_fatal (void)
 {
-	camel_test_pull();
+	camel_test_pull ();
 }
 
-void camel_test_end(void)
+void camel_test_end (void)
 {
 	if (camel_test_verbose > 0) {
 		if (ok)
@@ -305,11 +305,11 @@ void camel_test_end(void)
 			printf("Partial success\n");
 	}
 
-	fflush(stdout);
+	fflush (stdout);
 }
 
 /* compare strings, ignore whitespace though */
-gint string_equal(const gchar *a, const gchar *b)
+gint string_equal (const gchar *a, const gchar *b)
 {
 	const gchar *ap, *bp;
 
@@ -332,7 +332,7 @@ gint string_equal(const gchar *a, const gchar *b)
 
 		if (ap - a != bp - a
 		    && ap - 1 > 0
-		    && memcmp(a, b, ap-a) != 0) {
+		    && memcmp (a, b, ap-a) != 0) {
 			return 0;
 		}
 	}

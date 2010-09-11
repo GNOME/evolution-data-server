@@ -28,7 +28,7 @@ main (gint argc, gchar **argv)
 	gint i, test = 0;
 	DIR *dir;
 
-	camel_test_init(argc, argv);
+	camel_test_init (argc, argv);
 
 	dir = opendir (SOURCEDIR);
 	if (!dir)

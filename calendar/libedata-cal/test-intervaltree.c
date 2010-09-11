@@ -181,7 +181,7 @@ unref_comp (gpointer data, gpointer user_data)
 {
 	EInterval *interval = (EInterval*) data;
 	g_object_unref (interval->comp);
-	g_free(data);
+	g_free (data);
 }
 
 /* Not used at the moment. Use it later 
@@ -213,7 +213,7 @@ print_list (GList *l2)
 */
 
 static void
-random_test()
+random_test ()
 {
 	/*
 	 * outline:
@@ -297,12 +297,12 @@ random_test()
 		{
 			e_intervaltree_dump (tree);
 			g_message (G_STRLOC "Error");
-			exit(-1);
+			exit (-1);
 		}
 
 		/* g_print ("OK\n"); */
-		g_list_foreach(l1, (GFunc)g_object_unref, NULL);
-		g_list_foreach(l2, (GFunc)unref_comp, NULL);
+		g_list_foreach (l1, (GFunc)g_object_unref, NULL);
+		g_list_foreach (l2, (GFunc)unref_comp, NULL);
 		g_list_free (l1);
 		g_list_free (l2);
 	}
@@ -325,12 +325,12 @@ random_test()
 		{
 			e_intervaltree_dump (tree);
 			g_message (G_STRLOC "Error");
-			exit(-1);
+			exit (-1);
 		}
 
 		/* g_print ("OK\n"); */
-		g_list_foreach(l1, (GFunc)g_object_unref, NULL);
-		g_list_foreach(l2, (GFunc)unref_comp, NULL);
+		g_list_foreach (l1, (GFunc)g_object_unref, NULL);
+		g_list_foreach (l2, (GFunc)unref_comp, NULL);
 		g_list_free (l1);
 		g_list_free (l2);
 	}
@@ -342,7 +342,7 @@ random_test()
 		/* perhaps we will delete l1 */
 		next = l1->next;
 
-		if (g_rand_double(myrand) < pbality_delete)
+		if (g_rand_double (myrand) < pbality_delete)
 		{
 			ECalComponent *comp;
 			const gchar *uid = NULL;
@@ -364,7 +364,7 @@ random_test()
 				e_intervaltree_dump (tree);
 				g_print ("Deleting interval %d - %d ERROR\n", interval->start,
 					 interval->end);
-				exit(-1);
+				exit (-1);
 			}
 
 			g_free (rid);
@@ -403,8 +403,8 @@ random_test()
 			return;
 		}
 
-		g_list_foreach(l1, (GFunc)g_object_unref, NULL);
-		g_list_foreach(l2, (GFunc)unref_comp, NULL);
+		g_list_foreach (l1, (GFunc)g_object_unref, NULL);
+		g_list_foreach (l2, (GFunc)unref_comp, NULL);
 		g_list_free (l1);
 		g_list_free (l2);
 
@@ -412,7 +412,7 @@ random_test()
 	}
 
 	e_intervaltree_destroy (tree);
-	g_list_foreach(list, (GFunc)unref_comp, NULL);
+	g_list_foreach (list, (GFunc)unref_comp, NULL);
 	g_list_free (list);
 }
 
@@ -422,7 +422,7 @@ main (gint argc, gchar **argv)
 	g_type_init ();
 
 	myrand = g_rand_new ();
-	random_test();
+	random_test ();
 	g_print ("Everything OK\n");
 
 	return 0;

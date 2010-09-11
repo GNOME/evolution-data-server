@@ -50,14 +50,14 @@ camel_debug_init (void)
 	if (d) {
 		gchar *p;
 
-		debug_table = g_hash_table_new(g_str_hash, g_str_equal);
+		debug_table = g_hash_table_new (g_str_hash, g_str_equal);
 		p = d;
 		while (*p) {
 			while (*p && *p != ',')
 				p++;
 			if (*p)
 				*p++ = 0;
-			g_hash_table_insert(debug_table, d, d);
+			g_hash_table_insert (debug_table, d, d);
 			d = p;
 		}
 
@@ -77,7 +77,7 @@ camel_debug_init (void)
  *
  * Returns:
  **/
-gboolean camel_debug(const gchar *mode)
+gboolean camel_debug (const gchar *mode)
 {
 	if (camel_verbose_debug)
 		return TRUE;
@@ -86,22 +86,22 @@ gboolean camel_debug(const gchar *mode)
 		gchar *colon;
 		gchar *fallback;
 
-		if (g_hash_table_lookup(debug_table, mode))
+		if (g_hash_table_lookup (debug_table, mode))
 			return TRUE;
 
 		/* Check for fully qualified debug */
-		colon = strchr(mode, ':');
+		colon = strchr (mode, ':');
 		if (colon) {
-			fallback = g_alloca(strlen(mode)+1);
-			strcpy(fallback, mode);
+			fallback = g_alloca (strlen (mode)+1);
+			strcpy (fallback, mode);
 			colon = (colon-mode) + fallback;
 			/* Now check 'module[:*]' */
 			*colon = 0;
-			if (g_hash_table_lookup(debug_table, fallback))
+			if (g_hash_table_lookup (debug_table, fallback))
 				return TRUE;
 			/* Now check ':subsystem' */
 			*colon = ':';
-			if (g_hash_table_lookup(debug_table, colon))
+			if (g_hash_table_lookup (debug_table, colon))
 				return TRUE;
 		}
 	}
@@ -121,9 +121,9 @@ static GStaticMutex debug_lock = G_STATIC_MUTEX_INIT;
  * call debug_end when finished any screen output.
  **/
 gboolean
-camel_debug_start(const gchar *mode)
+camel_debug_start (const gchar *mode)
 {
-	if (camel_debug(mode)) {
+	if (camel_debug (mode)) {
 		g_static_mutex_lock (&debug_lock);
 		printf ("Thread %p >\n", g_thread_self());
 		return TRUE;
@@ -139,7 +139,7 @@ camel_debug_start(const gchar *mode)
  * you called camel_debug_start, and if it returns TRUE.
  **/
 void
-camel_debug_end(void)
+camel_debug_end (void)
 {
 	printf ("< %p >\n", g_thread_self());
 	g_static_mutex_unlock (&debug_lock);
@@ -212,14 +212,14 @@ Invalid hw breakpoint length %d in i386_length_and_rw_bits.\n", len);
 
 /* fine idea, but it doesn't work, crashes in get_dr :-/ */
 void
-camel_debug_hwatch(gint wp, gpointer addr)
+camel_debug_hwatch (gint wp, gpointer addr)
 {
      guint32 control, rw;
 
-     g_assert(wp <= DR_LASTADDR);
-     g_assert(sizeof(addr) == 4);
+     g_assert (wp <= DR_LASTADDR);
+     g_assert (sizeof (addr) == 4);
 
-     get_dr(7, control);
+     get_dr (7, control);
      /* set watch mode + size */
      rw = DR_RW_WRITE | DR_LEN_4;
      control &= ~(((1<<DR_CONTROL_SIZE)-1) << (DR_CONTROL_SHIFT+DR_CONTROL_SIZE * wp));
@@ -231,19 +231,19 @@ camel_debug_hwatch(gint wp, gpointer addr)
 
      switch (wp) {
      case 0:
-	     set_dr(0, addr);
+	     set_dr (0, addr);
 	     break;
      case 1:
-	     set_dr(1, addr);
+	     set_dr (1, addr);
 	     break;
      case 2:
-	     set_dr(2, addr);
+	     set_dr (2, addr);
 	     break;
      case 3:
-	     set_dr(3, addr);
+	     set_dr (3, addr);
 	     break;
      }
-     set_dr(7, control);
+     set_dr (7, control);
 }
 
 #endif

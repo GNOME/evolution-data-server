@@ -112,27 +112,27 @@ camel_mime_filter_new (void)
 
 #ifdef MALLOC_CHECK
 static void
-checkmem(gpointer p)
+checkmem (gpointer p)
 {
 	if (p) {
-		gint status = mprobe(p);
+		gint status = mprobe (p);
 
 		switch (status) {
 		case MCHECK_HEAD:
 			printf("Memory underrun at %p\n", p);
-			abort();
+			abort ();
 		case MCHECK_TAIL:
 			printf("Memory overrun at %p\n", p);
-			abort();
+			abort ();
 		case MCHECK_FREE:
 			printf("Double free %p\n", p);
-			abort();
+			abort ();
 		}
 	}
 }
 #endif
 
-static void filter_run(CamelMimeFilter *f,
+static void filter_run (CamelMimeFilter *f,
 		       const gchar *in, gsize len, gsize prespace,
 		       gchar **out, gsize *outlen, gsize *outprespace,
 		       void (*filterfunc)(CamelMimeFilter *f,
@@ -142,8 +142,8 @@ static void filter_run(CamelMimeFilter *f,
 	struct _CamelMimeFilterPrivate *p;
 
 #ifdef MALLOC_CHECK
-	checkmem(f->outreal);
-	checkmem(f->backbuf);
+	checkmem (f->outreal);
+	checkmem (f->backbuf);
 #endif
 	/*
 	  here we take a performance hit, if the input buffer doesn't
@@ -151,38 +151,38 @@ static void filter_run(CamelMimeFilter *f,
 	*/
 	if (prespace < f->backlen) {
 		gint newlen = len+prespace+f->backlen;
-		p = CAMEL_MIME_FILTER_GET_PRIVATE(f);
+		p = CAMEL_MIME_FILTER_GET_PRIVATE (f);
 		if (p->inlen < newlen) {
 			/* NOTE: g_realloc copies data, we dont need that (slower) */
-			g_free(p->inbuf);
-			p->inbuf = g_malloc(newlen+PRE_HEAD);
+			g_free (p->inbuf);
+			p->inbuf = g_malloc (newlen+PRE_HEAD);
 			p->inlen = newlen+PRE_HEAD;
 		}
 		/* copy to end of structure */
-		memcpy(p->inbuf+p->inlen - len, in, len);
+		memcpy (p->inbuf+p->inlen - len, in, len);
 		in = p->inbuf+p->inlen - len;
 		prespace = p->inlen - len;
 	}
 
 #ifdef MALLOC_CHECK
-	checkmem(f->outreal);
-	checkmem(f->backbuf);
+	checkmem (f->outreal);
+	checkmem (f->backbuf);
 #endif
 
 	/* preload any backed up data */
 	if (f->backlen > 0) {
-		memcpy((gchar *) in-f->backlen, f->backbuf, f->backlen);
+		memcpy ((gchar *) in-f->backlen, f->backbuf, f->backlen);
 		in -= f->backlen;
 		len += f->backlen;
 		prespace -= f->backlen;
 		f->backlen = 0;
 	}
 
-	filterfunc(f, in, len, prespace, out, outlen, outprespace);
+	filterfunc (f, in, len, prespace, out, outlen, outprespace);
 
 #ifdef MALLOC_CHECK
-	checkmem(f->outreal);
-	checkmem(f->backbuf);
+	checkmem (f->outreal);
+	checkmem (f->backbuf);
 #endif
 
 }
@@ -294,16 +294,16 @@ camel_mime_filter_reset (CamelMimeFilter *filter)
  * Note: New calls replace old data.
  **/
 void
-camel_mime_filter_backup(CamelMimeFilter *filter, const gchar *data, gsize length)
+camel_mime_filter_backup (CamelMimeFilter *filter, const gchar *data, gsize length)
 {
 	if (filter->backsize < length) {
 		/* g_realloc copies data, unnecessary overhead */
-		g_free(filter->backbuf);
-		filter->backbuf = g_malloc(length+BACK_HEAD);
+		g_free (filter->backbuf);
+		filter->backbuf = g_malloc (length+BACK_HEAD);
 		filter->backsize = length+BACK_HEAD;
 	}
 	filter->backlen = length;
-	memcpy(filter->backbuf, data, length);
+	memcpy (filter->backbuf, data, length);
 }
 
 /**
@@ -316,15 +316,15 @@ camel_mime_filter_backup(CamelMimeFilter *filter, const gchar *data, gsize lengt
  * for filter output.
  **/
 void
-camel_mime_filter_set_size(CamelMimeFilter *filter, gsize size, gint keep)
+camel_mime_filter_set_size (CamelMimeFilter *filter, gsize size, gint keep)
 {
 	if (filter->outsize < size) {
 		gint offset = filter->outptr - filter->outreal;
 		if (keep) {
-			filter->outreal = g_realloc(filter->outreal, size + PRE_HEAD*4);
+			filter->outreal = g_realloc (filter->outreal, size + PRE_HEAD*4);
 		} else {
-			g_free(filter->outreal);
-			filter->outreal = g_malloc(size + PRE_HEAD*4);
+			g_free (filter->outreal);
+			filter->outreal = g_malloc (size + PRE_HEAD*4);
 		}
 		filter->outptr = filter->outreal + offset;
 		filter->outbuf = filter->outreal + PRE_HEAD*4;

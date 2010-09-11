@@ -38,16 +38,16 @@
 
 #define CAMEL_IMAP_STORE_SUMMARY_VERSION (0)
 
-static gint summary_header_load(CamelStoreSummary *, FILE *);
-static gint summary_header_save(CamelStoreSummary *, FILE *);
+static gint summary_header_load (CamelStoreSummary *, FILE *);
+static gint summary_header_save (CamelStoreSummary *, FILE *);
 
 /*static CamelStoreInfo * store_info_new(CamelStoreSummary *, const gchar *);*/
-static CamelStoreInfo * store_info_load(CamelStoreSummary *, FILE *);
-static gint		 store_info_save(CamelStoreSummary *, FILE *, CamelStoreInfo *);
-static void		 store_info_free(CamelStoreSummary *, CamelStoreInfo *);
+static CamelStoreInfo * store_info_load (CamelStoreSummary *, FILE *);
+static gint		 store_info_save (CamelStoreSummary *, FILE *, CamelStoreInfo *);
+static void		 store_info_free (CamelStoreSummary *, CamelStoreInfo *);
 
-static const gchar *store_info_string(CamelStoreSummary *, const CamelStoreInfo *, gint);
-static void store_info_set_string(CamelStoreSummary *, CamelStoreInfo *, int, const gchar *);
+static const gchar *store_info_string (CamelStoreSummary *, const CamelStoreInfo *, gint);
+static void store_info_set_string (CamelStoreSummary *, CamelStoreInfo *, int, const gchar *);
 
 G_DEFINE_TYPE (CamelImapStoreSummary, camel_imap_store_summary, CAMEL_TYPE_STORE_SUMMARY)
 
@@ -105,18 +105,18 @@ camel_imap_store_summary_new (void)
  * It must be freed using camel_store_summary_info_free().
  **/
 CamelImapStoreInfo *
-camel_imap_store_summary_full_name(CamelImapStoreSummary *s, const gchar *full_name)
+camel_imap_store_summary_full_name (CamelImapStoreSummary *s, const gchar *full_name)
 {
 	gint count, i;
 	CamelImapStoreInfo *info;
 
-	count = camel_store_summary_count((CamelStoreSummary *)s);
+	count = camel_store_summary_count ((CamelStoreSummary *)s);
 	for (i=0;i<count;i++) {
-		info = (CamelImapStoreInfo *)camel_store_summary_index((CamelStoreSummary *)s, i);
+		info = (CamelImapStoreInfo *)camel_store_summary_index ((CamelStoreSummary *)s, i);
 		if (info) {
-			if (strcmp(info->full_name, full_name) == 0)
+			if (strcmp (info->full_name, full_name) == 0)
 				return info;
-			camel_store_summary_info_free((CamelStoreSummary *)s, (CamelStoreInfo *)info);
+			camel_store_summary_info_free ((CamelStoreSummary *)s, (CamelStoreInfo *)info);
 		}
 	}
 
@@ -124,14 +124,14 @@ camel_imap_store_summary_full_name(CamelImapStoreSummary *s, const gchar *full_n
 }
 
 gchar *
-camel_imap_store_summary_full_to_path(CamelImapStoreSummary *s, const gchar *full_name, gchar dir_sep)
+camel_imap_store_summary_full_to_path (CamelImapStoreSummary *s, const gchar *full_name, gchar dir_sep)
 {
 	gchar *path, *p;
 	gint c;
 	const gchar *f;
 
 	if (dir_sep != '/') {
-		p = path = alloca(strlen(full_name)*3+1);
+		p = path = alloca (strlen (full_name)*3+1);
 		f = full_name;
 		while ((c = *f++ & 0xff)) {
 			if (c == dir_sep)
@@ -145,10 +145,10 @@ camel_imap_store_summary_full_to_path(CamelImapStoreSummary *s, const gchar *ful
 	} else
 		path = (gchar *)full_name;
 
-	return g_strdup(path);
+	return g_strdup (path);
 }
 
-static guint32 hexnib(guint32 c)
+static guint32 hexnib (guint32 c)
 {
 	if (c >= '0' && c <= '9')
 		return c-'0';
@@ -159,7 +159,7 @@ static guint32 hexnib(guint32 c)
 }
 
 gchar *
-camel_imap_store_summary_path_to_full(CamelImapStoreSummary *s, const gchar *path, gchar dir_sep)
+camel_imap_store_summary_path_to_full (CamelImapStoreSummary *s, const gchar *path, gchar dir_sep)
 {
 	gchar *full, *f;
 	guint32 c, v = 0;
@@ -170,35 +170,35 @@ camel_imap_store_summary_path_to_full(CamelImapStoreSummary *s, const gchar *pat
 	CamelImapStoreNamespace *ns;
 
 	/* check to see if we have a subpath of path already defined */
-	subpath = alloca(strlen(path)+1);
-	strcpy(subpath, path);
+	subpath = alloca (strlen (path)+1);
+	strcpy (subpath, path);
 	do {
-		si = camel_store_summary_path((CamelStoreSummary *)s, subpath);
+		si = camel_store_summary_path ((CamelStoreSummary *)s, subpath);
 		if (si == NULL) {
-			last = strrchr(subpath, '/');
+			last = strrchr (subpath, '/');
 			if (last)
 				*last = 0;
 		}
 	} while (si == NULL && last);
 
 	/* path is already present, use the raw version we have */
-	if (si && strlen(subpath) == strlen(path)) {
-		f = g_strdup(camel_imap_store_info_full_name(s, si));
-		camel_store_summary_info_free((CamelStoreSummary *)s, si);
+	if (si && strlen (subpath) == strlen (path)) {
+		f = g_strdup (camel_imap_store_info_full_name (s, si));
+		camel_store_summary_info_free ((CamelStoreSummary *)s, si);
 		return f;
 	}
 
-	ns = camel_imap_store_summary_namespace_find_path(s, path);
+	ns = camel_imap_store_summary_namespace_find_path (s, path);
 
-	f = full = alloca(strlen(path)*2+1);
+	f = full = alloca (strlen (path)*2+1);
 	if (si)
-		p = path + strlen(subpath);
+		p = path + strlen (subpath);
 	else if (ns)
-		p = path + strlen(ns->path);
+		p = path + strlen (ns->path);
 	else
 		p = path;
 
-	while ((c = camel_utf8_getc((const guchar **)&p))) {
+	while ((c = camel_utf8_getc ((const guchar **)&p))) {
 		switch (state) {
 		case 0:
 			if (c == '%')
@@ -206,32 +206,32 @@ camel_imap_store_summary_path_to_full(CamelImapStoreSummary *s, const gchar *pat
 			else {
 				if (c == '/')
 					c = dir_sep;
-				camel_utf8_putc((guchar **) &f, c);
+				camel_utf8_putc ((guchar **) &f, c);
 			}
 			break;
 		case 1:
 			state = 2;
-			v = hexnib(c)<<4;
+			v = hexnib (c)<<4;
 			break;
 		case 2:
 			state = 0;
-			v |= hexnib(c);
-			camel_utf8_putc((guchar **) &f, v);
+			v |= hexnib (c);
+			camel_utf8_putc ((guchar **) &f, v);
 			break;
 		}
 	}
-	camel_utf8_putc((guchar **) &f, c);
+	camel_utf8_putc ((guchar **) &f, c);
 
 	/* merge old path part if required */
-	f = g_strdup(full);
+	f = g_strdup (full);
 	if (si) {
 		full = g_strdup_printf("%s%s", camel_imap_store_info_full_name(s, si), f);
-		g_free(f);
-		camel_store_summary_info_free((CamelStoreSummary *)s, si);
+		g_free (f);
+		camel_store_summary_info_free ((CamelStoreSummary *)s, si);
 		f = full;
 	} else if (ns) {
 		full = g_strdup_printf("%s%s", ns->full_name, f);
-		g_free(f);
+		g_free (f);
 		f = full;
 	}
 
@@ -239,7 +239,7 @@ camel_imap_store_summary_path_to_full(CamelImapStoreSummary *s, const gchar *pat
 }
 
 CamelImapStoreInfo *
-camel_imap_store_summary_add_from_full(CamelImapStoreSummary *s, const gchar *full, gchar dir_sep)
+camel_imap_store_summary_add_from_full (CamelImapStoreSummary *s, const gchar *full, gchar dir_sep)
 {
 	CamelImapStoreInfo *info;
 	gchar *pathu8, *prefix;
@@ -249,30 +249,30 @@ camel_imap_store_summary_add_from_full(CamelImapStoreSummary *s, const gchar *fu
 
 	d(printf("adding full name '%s' '%c'\n", full, dir_sep));
 
-	len = strlen(full);
-	full_name = alloca(len+1);
-	strcpy(full_name, full);
+	len = strlen (full);
+	full_name = alloca (len+1);
+	strcpy (full_name, full);
 	if (full_name[len-1] == dir_sep)
 		full_name[len-1] = 0;
 
-	info = camel_imap_store_summary_full_name(s, full_name);
+	info = camel_imap_store_summary_full_name (s, full_name);
 	if (info) {
-		camel_store_summary_info_free((CamelStoreSummary *)s, (CamelStoreInfo *)info);
+		camel_store_summary_info_free ((CamelStoreSummary *)s, (CamelStoreInfo *)info);
 		d(printf("  already there\n"));
 		return info;
 	}
 
-	ns = camel_imap_store_summary_namespace_find_full(s, full_name);
+	ns = camel_imap_store_summary_namespace_find_full (s, full_name);
 	if (ns) {
 		d(printf("(found namespace for '%s' ns '%s') ", full_name, ns->path));
-		len = strlen(ns->full_name);
-		if (len >= strlen(full_name)) {
-			pathu8 = g_strdup(ns->path);
+		len = strlen (ns->full_name);
+		if (len >= strlen (full_name)) {
+			pathu8 = g_strdup (ns->path);
 		} else {
 			if (full_name[len] == ns->sep)
 				len++;
 
-			prefix = camel_imap_store_summary_full_to_path(s, full_name+len, ns->sep);
+			prefix = camel_imap_store_summary_full_to_path (s, full_name+len, ns->sep);
 			if (*ns->path) {
 				pathu8 = g_strdup_printf ("%s/%s", ns->path, prefix);
 				g_free (prefix);
@@ -283,13 +283,13 @@ camel_imap_store_summary_add_from_full(CamelImapStoreSummary *s, const gchar *fu
 		d(printf(" (pathu8 = '%s')", pathu8));
 	} else {
 		d(printf("(Cannot find namespace for '%s')\n", full_name));
-		pathu8 = camel_imap_store_summary_full_to_path(s, full_name, dir_sep);
+		pathu8 = camel_imap_store_summary_full_to_path (s, full_name, dir_sep);
 	}
 
-	info = (CamelImapStoreInfo *)camel_store_summary_add_from_path((CamelStoreSummary *)s, pathu8);
+	info = (CamelImapStoreInfo *)camel_store_summary_add_from_path ((CamelStoreSummary *)s, pathu8);
 	if (info) {
 		d(printf("  '%s' -> '%s'\n", pathu8, full_name));
-		camel_store_info_set_string((CamelStoreSummary *)s, (CamelStoreInfo *)info, CAMEL_IMAP_STORE_INFO_FULL_NAME, full_name);
+		camel_store_info_set_string ((CamelStoreSummary *)s, (CamelStoreInfo *)info, CAMEL_IMAP_STORE_INFO_FULL_NAME, full_name);
 
 		if (!g_ascii_strcasecmp(full_name, "inbox"))
 			info->info.flags |= CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_TYPE_INBOX;
@@ -303,14 +303,14 @@ camel_imap_store_summary_add_from_full(CamelImapStoreSummary *s, const gchar *fu
 /* should this be const? */
 /* TODO: deprecate/merge this function with path_to_full */
 gchar *
-camel_imap_store_summary_full_from_path(CamelImapStoreSummary *s, const gchar *path)
+camel_imap_store_summary_full_from_path (CamelImapStoreSummary *s, const gchar *path)
 {
 	CamelImapStoreNamespace *ns;
 	gchar *name = NULL;
 
-	ns = camel_imap_store_summary_namespace_find_path(s, path);
+	ns = camel_imap_store_summary_namespace_find_path (s, path);
 	if (ns)
-		name = camel_imap_store_summary_path_to_full(s, path, ns->sep);
+		name = camel_imap_store_summary_path_to_full (s, path, ns->sep);
 
 	d(printf("looking up path %s -> %s\n", path, name?name:"not found"));
 
@@ -324,14 +324,14 @@ namespace_new (CamelImapStoreSummary *s, const gchar *full_name, gchar dir_sep)
 	gchar *p, *o, c;
 	gint len;
 
-	ns = g_malloc0(sizeof(*ns));
-	ns->full_name = g_strdup(full_name);
-	len = strlen(ns->full_name)-1;
+	ns = g_malloc0 (sizeof (*ns));
+	ns->full_name = g_strdup (full_name);
+	len = strlen (ns->full_name)-1;
 	if (len >= 0 && ns->full_name[len] == dir_sep)
 		ns->full_name[len] = 0;
 	ns->sep = dir_sep;
 
-	o = p = ns->path = camel_imap_store_summary_full_to_path(s, ns->full_name, dir_sep);
+	o = p = ns->path = camel_imap_store_summary_full_to_path (s, ns->full_name, dir_sep);
 	while ((c = *p++)) {
 		if (c != '#') {
 			if (c == '/')
@@ -437,16 +437,16 @@ camel_imap_store_summary_get_main_namespace (CamelImapStoreSummary *s)
 }
 
 CamelImapStoreNamespace *
-camel_imap_store_summary_namespace_find_path(CamelImapStoreSummary *s, const gchar *path)
+camel_imap_store_summary_namespace_find_path (CamelImapStoreSummary *s, const gchar *path)
 {
 	gint len;
 	CamelImapStoreNamespace *ns;
 
 	ns = s->namespace;
 	while (ns) {
-		len = strlen(ns->path);
+		len = strlen (ns->path);
 		if (len == 0
-		    || (strncmp(ns->path, path, len) == 0
+		    || (strncmp (ns->path, path, len) == 0
 			&& (path[len] == '/' || path[len] == 0)))
 			break;
 		ns = ns->next;
@@ -457,17 +457,17 @@ camel_imap_store_summary_namespace_find_path(CamelImapStoreSummary *s, const gch
 }
 
 CamelImapStoreNamespace *
-camel_imap_store_summary_namespace_find_full(CamelImapStoreSummary *s, const gchar *full)
+camel_imap_store_summary_namespace_find_full (CamelImapStoreSummary *s, const gchar *full)
 {
 	gint len;
 	CamelImapStoreNamespace *ns;
 
 	ns = s->namespace;
 	while (ns) {
-		len = strlen(ns->full_name);
+		len = strlen (ns->full_name);
 		d(printf("find_full: comparing namespace '%s' to name '%s'\n", ns->full_name, full));
 		if (len == 0
-		    || (strncmp(ns->full_name, full, len) == 0
+		    || (strncmp (ns->full_name, full, len) == 0
 			&& (full[len] == ns->sep || full[len] == 0)))
 			break;
 		ns = ns->next;
@@ -480,9 +480,9 @@ camel_imap_store_summary_namespace_find_full(CamelImapStoreSummary *s, const gch
 static void
 namespace_free (CamelImapStoreSummary *is, CamelImapStoreNamespace *ns)
 {
-	g_free(ns->path);
-	g_free(ns->full_name);
-	g_free(ns);
+	g_free (ns->path);
+	g_free (ns->full_name);
+	g_free (ns);
 }
 
 static void
@@ -507,7 +507,7 @@ namespaces_load (CamelImapStoreSummary *s, FILE *in, guint count)
 	tail = &s->namespace;
 
 	while (count > 0) {
-		ns = g_malloc0 (sizeof(*ns));
+		ns = g_malloc0 (sizeof (*ns));
 		if (camel_file_util_decode_string (in, &ns->path) == -1
 		    || camel_file_util_decode_string (in, &ns->full_name) == -1
 		    || camel_file_util_decode_uint32 (in, &sep) == -1) {
@@ -530,9 +530,9 @@ static gboolean
 namespaces_save (CamelImapStoreSummary *s, FILE *in, CamelImapStoreNamespace *ns)
 {
 	while (ns) {
-		if (camel_file_util_encode_string(in, ns->path) == -1
-		    || camel_file_util_encode_string(in, ns->full_name) == -1
-		    || camel_file_util_encode_uint32(in, (guint32)ns->sep) == -1)
+		if (camel_file_util_encode_string (in, ns->path) == -1
+		    || camel_file_util_encode_string (in, ns->full_name) == -1
+		    || camel_file_util_encode_uint32 (in, (guint32)ns->sep) == -1)
 			return FALSE;
 
 		ns = ns->next;
@@ -542,15 +542,15 @@ namespaces_save (CamelImapStoreSummary *s, FILE *in, CamelImapStoreNamespace *ns
 }
 
 static gint
-summary_header_load(CamelStoreSummary *s, FILE *in)
+summary_header_load (CamelStoreSummary *s, FILE *in)
 {
 	CamelImapStoreSummary *is = (CamelImapStoreSummary *)s;
 	gint32 version, capabilities, count;
 
 	namespace_clear (is);
 
-	if (CAMEL_STORE_SUMMARY_CLASS (camel_imap_store_summary_parent_class)->summary_header_load((CamelStoreSummary *)s, in) == -1
-	    || camel_file_util_decode_fixed_int32(in, &version) == -1)
+	if (CAMEL_STORE_SUMMARY_CLASS (camel_imap_store_summary_parent_class)->summary_header_load ((CamelStoreSummary *)s, in) == -1
+	    || camel_file_util_decode_fixed_int32 (in, &version) == -1)
 		return -1;
 
 	is->version = version;
@@ -560,8 +560,8 @@ summary_header_load(CamelStoreSummary *s, FILE *in)
 		return -1;
 	}
 
-	if (camel_file_util_decode_fixed_int32(in, &capabilities) == -1
-	    || camel_file_util_decode_fixed_int32(in, &count) == -1)
+	if (camel_file_util_decode_fixed_int32 (in, &capabilities) == -1
+	    || camel_file_util_decode_fixed_int32 (in, &count) == -1)
 		return -1;
 
 	is->capabilities = capabilities;
@@ -574,7 +574,7 @@ summary_header_load(CamelStoreSummary *s, FILE *in)
 }
 
 static gint
-summary_header_save(CamelStoreSummary *s, FILE *out)
+summary_header_save (CamelStoreSummary *s, FILE *out)
 {
 	CamelImapStoreSummary *is = (CamelImapStoreSummary *)s;
 	guint32 count = 0;
@@ -585,10 +585,10 @@ summary_header_save(CamelStoreSummary *s, FILE *out)
 	}
 
 	/* always write as latest version */
-	if (CAMEL_STORE_SUMMARY_CLASS (camel_imap_store_summary_parent_class)->summary_header_save((CamelStoreSummary *)s, out) == -1
-	    || camel_file_util_encode_fixed_int32(out, CAMEL_IMAP_STORE_SUMMARY_VERSION) == -1
-	    || camel_file_util_encode_fixed_int32(out, is->capabilities) == -1
-	    || camel_file_util_encode_fixed_int32(out, count) == -1)
+	if (CAMEL_STORE_SUMMARY_CLASS (camel_imap_store_summary_parent_class)->summary_header_save ((CamelStoreSummary *)s, out) == -1
+	    || camel_file_util_encode_fixed_int32 (out, CAMEL_IMAP_STORE_SUMMARY_VERSION) == -1
+	    || camel_file_util_encode_fixed_int32 (out, is->capabilities) == -1
+	    || camel_file_util_encode_fixed_int32 (out, count) == -1)
 		return -1;
 
 	if (!namespaces_save (is, out, is->namespace))
@@ -598,14 +598,14 @@ summary_header_save(CamelStoreSummary *s, FILE *out)
 }
 
 static CamelStoreInfo *
-store_info_load(CamelStoreSummary *s, FILE *in)
+store_info_load (CamelStoreSummary *s, FILE *in)
 {
 	CamelImapStoreInfo *mi;
 
-	mi = (CamelImapStoreInfo *) CAMEL_STORE_SUMMARY_CLASS (camel_imap_store_summary_parent_class)->store_info_load(s, in);
+	mi = (CamelImapStoreInfo *) CAMEL_STORE_SUMMARY_CLASS (camel_imap_store_summary_parent_class)->store_info_load (s, in);
 	if (mi) {
-		if (camel_file_util_decode_string(in, &mi->full_name) == -1) {
-			camel_store_summary_info_free(s, (CamelStoreInfo *)mi);
+		if (camel_file_util_decode_string (in, &mi->full_name) == -1) {
+			camel_store_summary_info_free (s, (CamelStoreInfo *)mi);
 			mi = NULL;
 		} else {
 			/* NB: this is done again for compatability */
@@ -618,28 +618,28 @@ store_info_load(CamelStoreSummary *s, FILE *in)
 }
 
 static gint
-store_info_save(CamelStoreSummary *s, FILE *out, CamelStoreInfo *mi)
+store_info_save (CamelStoreSummary *s, FILE *out, CamelStoreInfo *mi)
 {
 	CamelImapStoreInfo *isi = (CamelImapStoreInfo *)mi;
 
-	if (CAMEL_STORE_SUMMARY_CLASS (camel_imap_store_summary_parent_class)->store_info_save(s, out, mi) == -1
-	    || camel_file_util_encode_string(out, isi->full_name) == -1)
+	if (CAMEL_STORE_SUMMARY_CLASS (camel_imap_store_summary_parent_class)->store_info_save (s, out, mi) == -1
+	    || camel_file_util_encode_string (out, isi->full_name) == -1)
 		return -1;
 
 	return 0;
 }
 
 static void
-store_info_free(CamelStoreSummary *s, CamelStoreInfo *mi)
+store_info_free (CamelStoreSummary *s, CamelStoreInfo *mi)
 {
 	CamelImapStoreInfo *isi = (CamelImapStoreInfo *)mi;
 
-	g_free(isi->full_name);
-	CAMEL_STORE_SUMMARY_CLASS (camel_imap_store_summary_parent_class)->store_info_free(s, mi);
+	g_free (isi->full_name);
+	CAMEL_STORE_SUMMARY_CLASS (camel_imap_store_summary_parent_class)->store_info_free (s, mi);
 }
 
 static const gchar *
-store_info_string(CamelStoreSummary *s, const CamelStoreInfo *mi, gint type)
+store_info_string (CamelStoreSummary *s, const CamelStoreInfo *mi, gint type)
 {
 	CamelImapStoreInfo *isi = (CamelImapStoreInfo *)mi;
 
@@ -651,27 +651,27 @@ store_info_string(CamelStoreSummary *s, const CamelStoreInfo *mi, gint type)
 	case CAMEL_IMAP_STORE_INFO_FULL_NAME:
 		return isi->full_name;
 	default:
-		return CAMEL_STORE_SUMMARY_CLASS (camel_imap_store_summary_parent_class)->store_info_string(s, mi, type);
+		return CAMEL_STORE_SUMMARY_CLASS (camel_imap_store_summary_parent_class)->store_info_string (s, mi, type);
 	}
 }
 
 static void
-store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, gint type, const gchar *str)
+store_info_set_string (CamelStoreSummary *s, CamelStoreInfo *mi, gint type, const gchar *str)
 {
 	CamelImapStoreInfo *isi = (CamelImapStoreInfo *)mi;
 
-	g_assert(mi != NULL);
+	g_assert (mi != NULL);
 
 	switch (type) {
 	case CAMEL_IMAP_STORE_INFO_FULL_NAME:
 		d(printf("Set full name %s -> %s\n", isi->full_name, str));
 		camel_store_summary_lock (s, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-		g_free(isi->full_name);
-		isi->full_name = g_strdup(str);
+		g_free (isi->full_name);
+		isi->full_name = g_strdup (str);
 		camel_store_summary_unlock (s, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 		break;
 	default:
-		CAMEL_STORE_SUMMARY_CLASS (camel_imap_store_summary_parent_class)->store_info_set_string(s, mi, type, str);
+		CAMEL_STORE_SUMMARY_CLASS (camel_imap_store_summary_parent_class)->store_info_set_string (s, mi, type, str);
 		break;
 	}
 }

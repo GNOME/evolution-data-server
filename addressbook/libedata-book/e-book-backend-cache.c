@@ -121,7 +121,7 @@ e_book_backend_cache_add_contact (EBookBackendCache *cache,
 	priv = cache->priv;
 
 	uid = e_contact_get_const (contact, E_CONTACT_UID);
-	vcard_str = e_vcard_to_string (E_VCARD(contact), EVC_FORMAT_VCARD_30);
+	vcard_str = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 
 	if (e_file_cache_get_object (E_FILE_CACHE (cache), uid))
 		retval = e_file_cache_replace_object (E_FILE_CACHE (cache), uid, vcard_str);
@@ -226,7 +226,7 @@ e_book_backend_cache_get_contacts (EBookBackendCache *cache, const gchar *query)
                 if (vcard_str && !strncmp (vcard_str, "BEGIN:VCARD", 11)) {
                         contact = e_contact_new_from_vcard (vcard_str);
 			uid = e_contact_get_const (contact, E_CONTACT_UID);
-                        if (contact && uid && *uid &&(query && e_book_backend_sexp_match_contact(sexp, contact)))
+                        if (contact && uid && *uid &&(query && e_book_backend_sexp_match_contact (sexp, contact)))
 				list = g_list_prepend (list, contact);
 			else
 				g_object_unref (contact);

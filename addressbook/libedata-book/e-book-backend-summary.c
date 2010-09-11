@@ -219,7 +219,7 @@ e_book_backend_summary_init (EBookBackendSummary *summary)
 {
 	EBookBackendSummaryPrivate *priv;
 
-	priv             = g_new(EBookBackendSummaryPrivate, 1);
+	priv             = g_new (EBookBackendSummaryPrivate, 1);
 
 	summary->priv = priv;
 
@@ -227,7 +227,7 @@ e_book_backend_summary_init (EBookBackendSummary *summary)
 	priv->fp = NULL;
 	priv->dirty = FALSE;
 	priv->upgraded = FALSE;
-	priv->items = g_ptr_array_new();
+	priv->items = g_ptr_array_new ();
 	priv->id_to_item = g_hash_table_new (g_str_hash, g_str_equal);
 	priv->flush_timeout_millis = 0;
 	priv->flush_timeout = 0;
@@ -617,7 +617,7 @@ e_book_backend_summary_save_item (EBookBackendSummary *summary, FILE *fp, EBookB
 	disk_item.list = item->list;
 	disk_item.list_show_addresses = item->list_show_addresses;
 
-	rv = fwrite (&disk_item, sizeof(disk_item), 1, fp);
+	rv = fwrite (&disk_item, sizeof (disk_item), 1, fp);
 	if (rv != 1)
 		return FALSE;
 
@@ -904,7 +904,7 @@ e_book_backend_summary_is_up_to_date (EBookBackendSummary *summary, time_t t)
 /* we only want to do summary queries if the query is over the set fields in the summary */
 
 static ESExpResult *
-func_check(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_check (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
 	gint truth = FALSE;
@@ -922,7 +922,7 @@ func_check(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer dat
 		}
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = truth;
 
 	return r;
@@ -963,30 +963,30 @@ e_book_backend_summary_is_summary_query (EBookBackendSummary *summary, const gch
 
 	g_return_val_if_fail (summary != NULL, FALSE);
 
-	sexp = e_sexp_new();
+	sexp = e_sexp_new ();
 
 	for (i = 0; i < G_N_ELEMENTS (check_symbols); i++) {
 		if (check_symbols[i].type == 1) {
-			e_sexp_add_ifunction(sexp, 0, check_symbols[i].name,
+			e_sexp_add_ifunction (sexp, 0, check_symbols[i].name,
 					     (ESExpIFunc *)check_symbols[i].func, summary);
 		} else {
-			e_sexp_add_function(sexp, 0, check_symbols[i].name,
+			e_sexp_add_function (sexp, 0, check_symbols[i].name,
 					    check_symbols[i].func, summary);
 		}
 	}
 
-	e_sexp_input_text(sexp, query, strlen(query));
-	esexp_error = e_sexp_parse(sexp);
+	e_sexp_input_text (sexp, query, strlen (query));
+	esexp_error = e_sexp_parse (sexp);
 
 	if (esexp_error == -1) {
 		return FALSE;
 	}
 
-	r = e_sexp_eval(sexp);
+	r = e_sexp_eval (sexp);
 
 	retval = (r && r->type == ESEXP_RES_BOOL && r->value.boolean);
 
-	e_sexp_result_free(sexp, r);
+	e_sexp_result_free (sexp, r);
 
 	e_sexp_unref (sexp);
 
@@ -1045,7 +1045,7 @@ do_compare (EBookBackendSummary *summary, struct _ESExp *f, gint argc,
 		}
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
+	r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
 	r->value.ptrarray = result;
 
 	return r;
@@ -1067,7 +1067,7 @@ contains_helper (const gchar *ps1, const gchar *ps2)
 }
 
 static ESExpResult *
-func_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	EBookBackendSummary *summary = data;
 
@@ -1093,7 +1093,7 @@ is_helper (const gchar *ps1, const gchar *ps2)
 }
 
 static ESExpResult *
-func_is(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_is (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	EBookBackendSummary *summary = data;
 
@@ -1121,7 +1121,7 @@ endswith_helper (const gchar *ps1, const gchar *ps2)
 }
 
 static ESExpResult *
-func_endswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_endswith (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	EBookBackendSummary *summary = data;
 
@@ -1135,7 +1135,7 @@ beginswith_helper (const gchar *ps1, const gchar *ps2)
 	gchar *s1 = e_util_utf8_remove_accents (ps1);
 	gchar *s2 = e_util_utf8_remove_accents (ps2);
 
-	if ((p = (gchar *) e_util_utf8_strstrcase(s1, s2))
+	if ((p = (gchar *) e_util_utf8_strstrcase (s1, s2))
 	    && (p == s1))
 		res = (gchar *)ps1;
 	else
@@ -1148,7 +1148,7 @@ beginswith_helper (const gchar *ps1, const gchar *ps2)
 }
 
 static ESExpResult *
-func_beginswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_beginswith (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	EBookBackendSummary *summary = data;
 
@@ -1188,27 +1188,27 @@ e_book_backend_summary_search (EBookBackendSummary *summary, const gchar *query)
 
 	g_return_val_if_fail (summary != NULL, NULL);
 
-	sexp = e_sexp_new();
+	sexp = e_sexp_new ();
 
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1) {
-			e_sexp_add_ifunction(sexp, 0, symbols[i].name,
+			e_sexp_add_ifunction (sexp, 0, symbols[i].name,
 					     (ESExpIFunc *)symbols[i].func, summary);
 		} else {
-			e_sexp_add_function(sexp, 0, symbols[i].name,
+			e_sexp_add_function (sexp, 0, symbols[i].name,
 					    symbols[i].func, summary);
 		}
 	}
 
-	e_sexp_input_text(sexp, query, strlen(query));
-	esexp_error = e_sexp_parse(sexp);
+	e_sexp_input_text (sexp, query, strlen (query));
+	esexp_error = e_sexp_parse (sexp);
 
 	if (esexp_error == -1) {
 		return NULL;
 	}
 
 	retval = g_ptr_array_new ();
-	r = e_sexp_eval(sexp);
+	r = e_sexp_eval (sexp);
 
 	if (r && r->type == ESEXP_RES_ARRAY_PTR && r->value.ptrarray) {
 		GPtrArray *ptrarray = r->value.ptrarray;
@@ -1218,7 +1218,7 @@ e_book_backend_summary_search (EBookBackendSummary *summary, const gchar *query)
 			g_ptr_array_add (retval, g_ptr_array_index (ptrarray, i));
 	}
 
-	e_sexp_result_free(sexp, r);
+	e_sexp_result_free (sexp, r);
 
 	e_sexp_unref (sexp);
 
@@ -1236,7 +1236,7 @@ e_book_backend_summary_search (EBookBackendSummary *summary, const gchar *query)
  * Returns: A new VCard, or %NULL if the contact summary didn't exist.
  **/
 gchar *
-e_book_backend_summary_get_summary_vcard(EBookBackendSummary *summary, const gchar *id)
+e_book_backend_summary_get_summary_vcard (EBookBackendSummary *summary, const gchar *id)
 {
 	EBookBackendSummaryItem *item;
 

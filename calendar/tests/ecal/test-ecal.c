@@ -275,7 +275,7 @@ test_object_removal (ECal *client)
 	if (!e_cal_create_object (client, icalcomp, &uid, &error)) {
 		cl_printf (client, "Test object removal - Object creation:  %s\n", error->message);
 		g_object_unref (comp);
-		g_object_unref(icalcomp);
+		g_object_unref (icalcomp);
 		return "Test Object Removal failed\n";
 	}
 
@@ -444,7 +444,7 @@ test_e_cal_remove (ECal *ecal, const gchar *uri)
 #endif
 
 static const gchar *
-test_new_system_calendar(void)
+test_new_system_calendar (void)
 {
 	ECal *cal;
 	const gchar *user_data_dir;
@@ -465,7 +465,7 @@ test_new_system_calendar(void)
 }
 
 static const gchar *
-test_new_system_tasks(void)
+test_new_system_tasks (void)
 {
 	ECal *cal;
 	const gchar *user_data_dir;
@@ -486,7 +486,7 @@ test_new_system_tasks(void)
 }
 
 static const gchar *
-test_new_system_memos(void)
+test_new_system_memos (void)
 {
 	ECal *cal;
 	const gchar *user_data_dir;
@@ -630,7 +630,7 @@ test_timezones (ECal *client)
 }
 
 static const gchar *
-all_tests(ECal *client, const gchar *uri)
+all_tests (ECal *client, const gchar *uri)
 {
 	gchar *uid;
 

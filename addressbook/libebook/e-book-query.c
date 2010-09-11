@@ -349,7 +349,7 @@ e_book_query_ref (EBookQuery *q)
 }
 
 static ESExpResult *
-func_and(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_and (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -358,7 +358,7 @@ func_and(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 	if (argc > 0) {
 		gint i;
 
-		qs = g_new0(EBookQuery*, argc);
+		qs = g_new0 (EBookQuery*, argc);
 
 		for (i = 0; i < argc; i++) {
 			GList *list_head = *list;
@@ -374,14 +374,14 @@ func_and(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 		g_free (qs);
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = FALSE;
 
 	return r;
 }
 
 static ESExpResult *
-func_or(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_or (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -390,7 +390,7 @@ func_or(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 	if (argc > 0) {
 		gint i;
 
-		qs = g_new0(EBookQuery*, argc);
+		qs = g_new0 (EBookQuery*, argc);
 
 		for (i = 0; i < argc; i++) {
 			GList *list_head = *list;
@@ -406,14 +406,14 @@ func_or(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 		g_free (qs);
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = FALSE;
 
 	return r;
 }
 
 static ESExpResult *
-func_not(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_not (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -424,14 +424,14 @@ func_not(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 		(*list)->data = e_book_query_not (term, TRUE);
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = FALSE;
 
 	return r;
 }
 
 static ESExpResult *
-func_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -459,14 +459,14 @@ func_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer 
 		}
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = FALSE;
 
 	return r;
 }
 
 static ESExpResult *
-func_is(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_is (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -488,14 +488,14 @@ func_is(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 										str));
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = FALSE;
 
 	return r;
 }
 
 static ESExpResult *
-func_beginswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_beginswith (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -517,14 +517,14 @@ func_beginswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointe
 										str));
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = FALSE;
 
 	return r;
 }
 
 static ESExpResult *
-func_endswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_endswith (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -546,14 +546,14 @@ func_endswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer 
 										str));
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = FALSE;
 
 	return r;
 }
 
 static ESExpResult *
-func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_exists (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -569,7 +569,7 @@ func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer da
 			*list = g_list_prepend (*list, e_book_query_vcard_field_exists (propname));
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = FALSE;
 
 	return r;
@@ -609,24 +609,24 @@ e_book_query_from_string  (const gchar *query_string)
 	GList *list = NULL;
 	gint i;
 
-	sexp = e_sexp_new();
+	sexp = e_sexp_new ();
 
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1) {
-			e_sexp_add_ifunction(sexp, 0, symbols[i].name,
+			e_sexp_add_ifunction (sexp, 0, symbols[i].name,
 					     (ESExpIFunc *)symbols[i].func, &list);
 		} else {
-			e_sexp_add_function(sexp, 0, symbols[i].name,
+			e_sexp_add_function (sexp, 0, symbols[i].name,
 					    symbols[i].func, &list);
 		}
 	}
 
-	e_sexp_input_text(sexp, query_string, strlen(query_string));
-	e_sexp_parse(sexp);
+	e_sexp_input_text (sexp, query_string, strlen (query_string));
+	e_sexp_parse (sexp);
 
-	r = e_sexp_eval(sexp);
+	r = e_sexp_eval (sexp);
 
-	e_sexp_result_free(sexp, r);
+	e_sexp_result_free (sexp, r);
 	e_sexp_unref (sexp);
 
 	if (list) {
@@ -704,7 +704,7 @@ e_book_query_to_string    (EBookQuery *q)
 		case E_BOOK_QUERY_BEGINS_WITH: cs = "beginswith"; break;
 		case E_BOOK_QUERY_ENDS_WITH: cs = "endswith"; break;
 		default:
-			g_assert_not_reached();
+			g_assert_not_reached ();
 			break;
 		}
 

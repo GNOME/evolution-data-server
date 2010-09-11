@@ -51,13 +51,13 @@ static gint lock_sequence;
 static gint lock_helper_pid = -1;
 static gint lock_stdin_pipe[2], lock_stdout_pipe[2];
 
-static gint read_n(gint fd, gpointer buffer, gint inlen)
+static gint read_n (gint fd, gpointer buffer, gint inlen)
 {
 	gchar *p = buffer;
 	gint len, left = inlen;
 
 	do {
-		len = read(fd, p, left);
+		len = read (fd, p, left);
 		if (len == -1) {
 			if (errno != EINTR)
 				return -1;
@@ -70,13 +70,13 @@ static gint read_n(gint fd, gpointer buffer, gint inlen)
 	return inlen - left;
 }
 
-static gint write_n(gint fd, gpointer buffer, gint inlen)
+static gint write_n (gint fd, gpointer buffer, gint inlen)
 {
 	gchar *p = buffer;
 	gint len, left = inlen;
 
 	do {
-		len = write(fd, p, left);
+		len = write (fd, p, left);
 		if (len == -1) {
 			if (errno != EINTR)
 				return -1;
@@ -98,32 +98,32 @@ lock_helper_init (GError **error)
 	lock_stdin_pipe[1] = -1;
 	lock_stdout_pipe[0] = -1;
 	lock_stdout_pipe[1] = -1;
-	if (pipe(lock_stdin_pipe) == -1
-	    || pipe(lock_stdout_pipe) == -1) {
+	if (pipe (lock_stdin_pipe) == -1
+	    || pipe (lock_stdout_pipe) == -1) {
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
 			_("Cannot build locking helper pipe: %s"),
 			g_strerror (errno));
 		if (lock_stdin_pipe[0] != -1)
-			close(lock_stdin_pipe[0]);
+			close (lock_stdin_pipe[0]);
 		if (lock_stdin_pipe[1] != -1)
-			close(lock_stdin_pipe[1]);
+			close (lock_stdin_pipe[1]);
 		if (lock_stdout_pipe[0] != -1)
-			close(lock_stdout_pipe[0]);
+			close (lock_stdout_pipe[0]);
 		if (lock_stdout_pipe[1] != -1)
-			close(lock_stdout_pipe[1]);
+			close (lock_stdout_pipe[1]);
 
 		return -1;
 	}
 
-	lock_helper_pid = fork();
+	lock_helper_pid = fork ();
 	switch (lock_helper_pid) {
 	case -1:
-		close(lock_stdin_pipe[0]);
-		close(lock_stdin_pipe[1]);
-		close(lock_stdout_pipe[0]);
-		close(lock_stdout_pipe[1]);
+		close (lock_stdin_pipe[0]);
+		close (lock_stdin_pipe[1]);
+		close (lock_stdout_pipe[0]);
+		close (lock_stdout_pipe[1]);
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
@@ -131,26 +131,26 @@ lock_helper_init (GError **error)
 			g_strerror (errno));
 		return -1;
 	case 0:
-		close(STDIN_FILENO);
-		dup(lock_stdin_pipe[0]);
-		close(STDOUT_FILENO);
-		dup(lock_stdout_pipe[1]);
-		close(lock_stdin_pipe[0]);
-		close(lock_stdin_pipe[1]);
-		close(lock_stdout_pipe[0]);
-		close(lock_stdout_pipe[1]);
+		close (STDIN_FILENO);
+		dup (lock_stdin_pipe[0]);
+		close (STDOUT_FILENO);
+		dup (lock_stdout_pipe[1]);
+		close (lock_stdin_pipe[0]);
+		close (lock_stdin_pipe[1]);
+		close (lock_stdout_pipe[0]);
+		close (lock_stdout_pipe[1]);
 		for (i=3;i<255;i++)
-			     close(i);
+			     close (i);
 		execl(CAMEL_LIBEXECDIR "/camel-lock-helper-" API_VERSION, "camel-lock-helper", NULL);
 		/* it'll pick this up when it tries to use us */
-		exit(255);
+		exit (255);
 	default:
-		close(lock_stdin_pipe[0]);
-		close(lock_stdout_pipe[1]);
+		close (lock_stdin_pipe[0]);
+		close (lock_stdout_pipe[1]);
 
 		/* so the child knows when we vanish */
-		fcntl(lock_stdin_pipe[1], F_SETFD, FD_CLOEXEC);
-		fcntl(lock_stdout_pipe[0], F_SETFD, FD_CLOEXEC);
+		fcntl (lock_stdin_pipe[1], F_SETFD, FD_CLOEXEC);
+		fcntl (lock_stdout_pipe[0], F_SETFD, FD_CLOEXEC);
 	}
 
 	return 0;
@@ -161,40 +161,40 @@ camel_lock_helper_lock (const gchar *path,
                         GError **error)
 {
 	struct _CamelLockHelperMsg *msg;
-	gint len = strlen(path);
+	gint len = strlen (path);
 	gint res = -1;
 	gint retry = 3;
 
-	LOCK();
+	LOCK ();
 
 	if (lock_helper_pid == -1) {
-		if (lock_helper_init(error) == -1) {
-			UNLOCK();
+		if (lock_helper_init (error) == -1) {
+			UNLOCK ();
 			return -1;
 		}
 	}
 
-	msg = alloca(len + sizeof(*msg));
+	msg = alloca (len + sizeof (*msg));
 again:
 	msg->magic = CAMEL_LOCK_HELPER_MAGIC;
 	msg->seq = lock_sequence;
 	msg->id = CAMEL_LOCK_HELPER_LOCK;
 	msg->data = len;
-	memcpy(msg+1, path, len);
+	memcpy (msg+1, path, len);
 
-	write_n(lock_stdin_pipe[1], msg, len+sizeof(*msg));
+	write_n (lock_stdin_pipe[1], msg, len+sizeof (*msg));
 
 	do {
 		/* should also have a timeout here?  cancellation? */
-		len = read_n(lock_stdout_pipe[0], msg, sizeof(*msg));
+		len = read_n (lock_stdout_pipe[0], msg, sizeof (*msg));
 		if (len == 0) {
 			/* child quit, do we try ressurect it? */
 			res = CAMEL_LOCK_HELPER_STATUS_PROTOCOL;
 			/* if the child exited, this should get it, waidpid returns 0 if the child hasn't */
-			if (waitpid(lock_helper_pid, NULL, WNOHANG) > 0) {
+			if (waitpid (lock_helper_pid, NULL, WNOHANG) > 0) {
 				lock_helper_pid = -1;
-				close(lock_stdout_pipe[0]);
-				close(lock_stdin_pipe[1]);
+				close (lock_stdout_pipe[0]);
+				close (lock_stdin_pipe[1]);
 				lock_stdout_pipe[0] = -1;
 				lock_stdin_pipe[1] = -1;
 			}
@@ -243,12 +243,12 @@ again:
 fail:
 	lock_sequence++;
 
-	UNLOCK();
+	UNLOCK ();
 
 	return res;
 }
 
-gint camel_lock_helper_unlock(gint lockid)
+gint camel_lock_helper_unlock (gint lockid)
 {
 	struct _CamelLockHelperMsg *msg;
 	gint res = -1;
@@ -257,33 +257,33 @@ gint camel_lock_helper_unlock(gint lockid)
 
 	d(printf("unlocking lock id %d\n", lockid));
 
-	LOCK();
+	LOCK ();
 
 	/* impossible to unlock if we haven't locked yet */
 	if (lock_helper_pid == -1) {
-		UNLOCK();
+		UNLOCK ();
 		return -1;
 	}
 
-	msg = alloca(sizeof(*msg));
+	msg = alloca (sizeof (*msg));
 again:
 	msg->magic = CAMEL_LOCK_HELPER_MAGIC;
 	msg->seq = lock_sequence;
 	msg->id = CAMEL_LOCK_HELPER_UNLOCK;
 	msg->data = lockid;
 
-	write_n(lock_stdin_pipe[1], msg, sizeof(*msg));
+	write_n (lock_stdin_pipe[1], msg, sizeof (*msg));
 
 	do {
 		/* should also have a timeout here?  cancellation? */
-		len = read_n(lock_stdout_pipe[0], msg, sizeof(*msg));
+		len = read_n (lock_stdout_pipe[0], msg, sizeof (*msg));
 		if (len == 0) {
 			/* child quit, do we try ressurect it? */
 			res = CAMEL_LOCK_HELPER_STATUS_PROTOCOL;
-			if (waitpid(lock_helper_pid, NULL, WNOHANG) > 0) {
+			if (waitpid (lock_helper_pid, NULL, WNOHANG) > 0) {
 				lock_helper_pid = -1;
-				close(lock_stdout_pipe[0]);
-				close(lock_stdin_pipe[1]);
+				close (lock_stdout_pipe[0]);
+				close (lock_stdin_pipe[1]);
 				lock_stdout_pipe[0] = -1;
 				lock_stdin_pipe[1] = -1;
 			}
@@ -316,32 +316,32 @@ again:
 fail:
 	lock_sequence++;
 
-	UNLOCK();
+	UNLOCK ();
 
 	return res;
 }
 
 #if 0
-gint main(gint argc, gchar **argv)
+gint main (gint argc, gchar **argv)
 {
 	gint id1, id2;
 
 	d(printf("locking started\n"));
-	lock_helper_init();
+	lock_helper_init ();
 
 	id1 = camel_lock_helper_lock("1 path 1");
 	if (id1 != -1) {
 		d(printf("lock ok, unlock\n"));
-		camel_lock_helper_unlock(id1);
+		camel_lock_helper_unlock (id1);
 	}
 
 	id1 = camel_lock_helper_lock("2 path 1");
 	id2 = camel_lock_helper_lock("2 path 2");
-	camel_lock_helper_unlock(id2);
-	camel_lock_helper_unlock(id1);
+	camel_lock_helper_unlock (id2);
+	camel_lock_helper_unlock (id1);
 
 	id1 = camel_lock_helper_lock("3 path 1");
 	id2 = camel_lock_helper_lock("3 path 2");
-	camel_lock_helper_unlock(id1);
+	camel_lock_helper_unlock (id1);
 }
 #endif

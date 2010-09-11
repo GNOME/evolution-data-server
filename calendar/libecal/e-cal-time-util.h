@@ -92,7 +92,7 @@ time_t	time_year_begin_with_zone (time_t time, icaltimezone *zone);
 time_t	time_month_begin_with_zone (time_t time, icaltimezone *zone);
 
 /* Returns the start of the week containing the given time_t, using the given
-   timezone. week_start_day should use the same values as mktime(),
+   timezone. week_start_day should use the same values as mktime (),
    i.e. 0 (Sun) to 6 (Sat). */
 time_t	time_week_begin_with_zone (time_t time, gint week_start_day,
 				   icaltimezone *zone);

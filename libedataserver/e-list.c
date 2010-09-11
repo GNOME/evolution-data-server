@@ -20,7 +20,7 @@ e_list_class_init (EListClass *klass)
 {
 	GObjectClass *object_class;
 
-	object_class = G_OBJECT_CLASS(klass);
+	object_class = G_OBJECT_CLASS (klass);
 
 	object_class->dispose = e_list_dispose;
 }
@@ -59,7 +59,7 @@ e_list_duplicate (EList *old)
 	list->copy    = old->copy;
 	list->free    = old->free;
 	list->closure = old->closure;
-	list->list    = g_list_copy(old->list);
+	list->list    = g_list_copy (old->list);
 	if (list->copy) {
 		GList *listlist;
 		for (listlist = list->list; listlist; listlist = listlist->next) {
@@ -74,26 +74,26 @@ e_list_get_iterator (EList *list)
 {
 	EIterator *iterator = NULL;
 	g_return_val_if_fail (list != NULL, NULL);
-	iterator = e_list_iterator_new(list);
+	iterator = e_list_iterator_new (list);
 	if (iterator)
-		list->iterators = g_list_append(list->iterators, iterator);
+		list->iterators = g_list_append (list->iterators, iterator);
 	return iterator;
 }
 
 gint
 e_list_length (EList *list)
 {
-	return g_list_length(list->list);
+	return g_list_length (list->list);
 }
 
 void
 e_list_append (EList *list, gconstpointer data)
 {
-	e_list_invalidate_iterators(list, NULL);
+	e_list_invalidate_iterators (list, NULL);
 	if (list->copy)
-		list->list = g_list_append(list->list, list->copy(data, list->closure));
+		list->list = g_list_append (list->list, list->copy (data, list->closure));
 	else
-		list->list = g_list_append(list->list, (gpointer) data);
+		list->list = g_list_append (list->list, (gpointer) data);
 }
 
 void
@@ -102,7 +102,7 @@ e_list_remove (EList *list, gconstpointer data)
 	GList *link;
 	link = g_list_find (list->list, data);
 	if (link)
-		e_list_remove_link(list, link);
+		e_list_remove_link (list, link);
 }
 
 void
@@ -111,7 +111,7 @@ e_list_invalidate_iterators (EList *list, EIterator *skip)
 	GList *iterators = list->iterators;
 	for (; iterators; iterators = iterators->next) {
 		if (iterators->data != skip) {
-			e_iterator_invalidate(E_ITERATOR(iterators->data));
+			e_iterator_invalidate (E_ITERATOR (iterators->data));
 		}
 	}
 }
@@ -125,19 +125,19 @@ e_list_remove_link (EList *list, GList *link)
 	GList *iterators = list->iterators;
 	for (; iterators; iterators = iterators->next) {
 		if (((EListIterator *)iterators->data)->iterator == link) {
-			e_iterator_prev(iterators->data);
+			e_iterator_prev (iterators->data);
 		}
 	}
 	if (list->free)
-		list->free(link->data, list->closure);
-	list->list = g_list_remove_link(list->list, link);
-	g_list_free_1(link);
+		list->free (link->data, list->closure);
+	list->list = g_list_remove_link (list->list, link);
+	g_list_free_1 (link);
 }
 
 void
 e_list_remove_iterator (EList *list, EIterator *iterator)
 {
-	list->iterators = g_list_remove(list->iterators, iterator);
+	list->iterators = g_list_remove (list->iterators, iterator);
 }
 
 /*
@@ -146,10 +146,10 @@ e_list_remove_iterator (EList *list, EIterator *iterator)
 static void
 e_list_dispose (GObject *object)
 {
-	EList *list = E_LIST(object);
+	EList *list = E_LIST (object);
 	if (list->free)
-		g_list_foreach(list->list, (GFunc) list->free, list->closure);
-	g_list_free(list->list);
+		g_list_foreach (list->list, (GFunc) list->free, list->closure);
+	g_list_free (list->list);
 
 	(* G_OBJECT_CLASS (e_list_parent_class)->dispose) (object);
 }

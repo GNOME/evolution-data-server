@@ -185,13 +185,13 @@ gboolean	camel_imapx_server_manage_subscription
 						 const gchar *folder_name,
 						 gboolean subscribe,
 						 GError **error);
-gboolean	camel_imapx_server_create_folder(CamelIMAPXServer *is,
+gboolean	camel_imapx_server_create_folder (CamelIMAPXServer *is,
 						 const gchar *folder_name,
 						 GError **error);
-gboolean	camel_imapx_server_delete_folder(CamelIMAPXServer *is,
+gboolean	camel_imapx_server_delete_folder (CamelIMAPXServer *is,
 						 const gchar *folder_name,
 						 GError **error);
-gboolean	camel_imapx_server_rename_folder(CamelIMAPXServer *is,
+gboolean	camel_imapx_server_rename_folder (CamelIMAPXServer *is,
 						 const gchar *old_name,
 						 const gchar *new_name,
 						 GError **error);

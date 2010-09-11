@@ -1800,7 +1800,7 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 
 	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 
-	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times(match_data.obj_sexp,
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (match_data.obj_sexp,
 									    &occur_start,
 									    &occur_end);
 
@@ -1813,7 +1813,7 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 		objs_occuring_in_tw = e_intervaltree_search (priv->interval_tree,
 							    occur_start, occur_end);
 
-		g_list_foreach(objs_occuring_in_tw, (GFunc) match_object_sexp_to_component,
+		g_list_foreach (objs_occuring_in_tw, (GFunc) match_object_sexp_to_component,
 			       &match_data);
 	}
 
@@ -1822,7 +1822,7 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 	*objects = match_data.obj_list;
 
 	if (objs_occuring_in_tw) {
-		g_list_foreach(objs_occuring_in_tw, (GFunc)g_object_unref, NULL);
+		g_list_foreach (objs_occuring_in_tw, (GFunc)g_object_unref, NULL);
 		g_list_free (objs_occuring_in_tw);
 	}
 
@@ -1869,7 +1869,7 @@ e_cal_backend_file_start_query (ECalBackend *backend, EDataCalView *query)
 		g_error_free (error);
 		return;
 	}
-	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times(match_data.obj_sexp,
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (match_data.obj_sexp,
 									    &occur_start,
 									    &occur_end);
 
@@ -1884,13 +1884,13 @@ e_cal_backend_file_start_query (ECalBackend *backend, EDataCalView *query)
 
 		e_debug_log(FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES,  "---;%p;QUERY-ITEMS;%s;%s;%d", query,
 			    e_data_cal_view_get_text (query), G_OBJECT_TYPE_NAME (backend),
-			    g_hash_table_size(priv->comp_uid_hash));
+			    g_hash_table_size (priv->comp_uid_hash));
 	} else {
 		/* matches objects in new "interval tree" way */
 		/* events occuring in time window */
 		objs_occuring_in_tw = e_intervaltree_search (priv->interval_tree, occur_start, occur_end);
 
-		g_list_foreach(objs_occuring_in_tw, (GFunc) match_object_sexp_to_component,
+		g_list_foreach (objs_occuring_in_tw, (GFunc) match_object_sexp_to_component,
 			       &match_data);
 
 		e_debug_log(FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES,  "---;%p;QUERY-ITEMS;%s;%s;%d", query,
@@ -1910,7 +1910,7 @@ e_cal_backend_file_start_query (ECalBackend *backend, EDataCalView *query)
 	}
 
 	if (objs_occuring_in_tw) {
-		g_list_foreach(objs_occuring_in_tw, (GFunc)g_object_unref, NULL);
+		g_list_foreach (objs_occuring_in_tw, (GFunc)g_object_unref, NULL);
 		g_list_free (objs_occuring_in_tw);
 	}
 	g_object_unref (match_data.obj_sexp);
@@ -3164,7 +3164,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 
         /* check and patch timezones */
         if (!err) {
-            if (!e_cal_check_timezones(toplevel_comp,
+            if (!e_cal_check_timezones (toplevel_comp,
                                        NULL,
                                        e_cal_tzlookup_icomp,
                                        priv->icalcomp,
@@ -3523,7 +3523,7 @@ test_query (ECalBackendFile* cbfile, const gchar * query)
 	if (objects == NULL)
 	{
 		g_message (G_STRLOC " failed to get objects\n");
-		exit(0);
+		exit (0);
 	}
 
 	if (g_list_length (objects) < g_list_length (all_objects) )
@@ -3540,9 +3540,9 @@ test_query (ECalBackendFile* cbfile, const gchar * query)
 		exit (-1);
 	}
 
-	g_list_foreach(objects, (GFunc) g_free, NULL);
+	g_list_foreach (objects, (GFunc) g_free, NULL);
 	g_list_free (objects);
-	g_list_foreach(all_objects, (GFunc) g_free, NULL);
+	g_list_foreach (all_objects, (GFunc) g_free, NULL);
 	g_list_free (all_objects);
 }
 
@@ -3558,10 +3558,10 @@ execute_query (ECalBackendFile* cbfile, const gchar * query)
 	if (objects == NULL)
 	{
 		g_message (G_STRLOC " failed to get objects\n");
-		exit(0);
+		exit (0);
 	}
 
-	g_list_foreach(objects, (GFunc) g_free, NULL);
+	g_list_foreach (objects, (GFunc) g_free, NULL);
 	g_list_free (objects);
 }
 
@@ -3636,7 +3636,7 @@ private_getline (gchar **lineptr, gsize *n, FILE *stream)
 }
 
 gint
-main(gint argc, gchar **argv)
+main (gint argc, gchar **argv)
 {
 	gchar * line = NULL;
 	gsize len = 0;
@@ -3690,17 +3690,17 @@ main(gint argc, gchar **argv)
 		fin = stdin;
 	}
 
-	while ((read = private_getline(&line, &len, fin)) != -1) {
+	while ((read = private_getline (&line, &len, fin)) != -1) {
 		g_print ("Query %d: %s", num++, line);
 
 		if (only_execute)
-			execute_query(cbfile, line);
+			execute_query (cbfile, line);
 		else
-			test_query(cbfile, line);
+			test_query (cbfile, line);
 	}
 
 	if (line)
-		free(line);
+		free (line);
 
 	if (fname)
 		fclose (fin);

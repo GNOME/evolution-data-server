@@ -63,7 +63,7 @@ clear_mem (gpointer p, gsize len)
 		len -= 4;
 	}
 
-	memset(s, 0xbf, len);
+	memset (s, 0xbf, len);
 }
 
 static void
@@ -98,7 +98,7 @@ stream_mem_read (CamelStream *stream,
 	priv = CAMEL_STREAM_MEM_GET_PRIVATE (stream);
 
 	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
-		n = MIN(seekable->bound_end - seekable->position, n);
+		n = MIN (seekable->bound_end - seekable->position, n);
 
 	nread = MIN (n, priv->buffer->len - seekable->position);
 	if (nread > 0) {
@@ -123,7 +123,7 @@ stream_mem_write (CamelStream *stream,
 	priv = CAMEL_STREAM_MEM_GET_PRIVATE (stream);
 
 	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
-		nwrite = MIN(seekable->bound_end - seekable->position, n);
+		nwrite = MIN (seekable->bound_end - seekable->position, n);
 
 	/* FIXME: we shouldn't use g_byte_arrays or g_malloc perhaps? */
 	if (seekable->position == priv->buffer->len) {
@@ -297,7 +297,7 @@ camel_stream_mem_new_with_byte_array (GByteArray *buffer)
  * This only applies to buffers owned by the stream.
  **/
 void
-camel_stream_mem_set_secure(CamelStreamMem *mem)
+camel_stream_mem_set_secure (CamelStreamMem *mem)
 {
 	g_return_if_fail (CAMEL_IS_STREAM_MEM (mem));
 
@@ -370,7 +370,7 @@ camel_stream_mem_set_buffer (CamelStreamMem *mem,
 	g_return_if_fail (buffer != NULL);
 
 	ba = g_byte_array_new ();
-	g_byte_array_append(ba, (const guint8 *)buffer, len);
-	camel_stream_mem_set_byte_array(mem, ba);
+	g_byte_array_append (ba, (const guint8 *)buffer, len);
+	camel_stream_mem_set_byte_array (mem, ba);
 	mem->priv->owner = TRUE;
 }

@@ -354,7 +354,7 @@ e_destination_store_list_destinations (EDestinationStore *destination_store)
 		destination_list = g_list_prepend (destination_list, destination);
 	}
 
-	destination_list = g_list_reverse(destination_list);
+	destination_list = g_list_reverse (destination_list);
 
 	return destination_list;
 }
@@ -689,14 +689,14 @@ e_destination_store_get_value (GtkTreeModel *tree_model,
 			break;
 
 		case E_DESTINATION_STORE_COLUMN_ADDRESS:
-			contact = e_destination_get_contact(destination);
+			contact = e_destination_get_contact (destination);
 			if (contact && E_IS_CONTACT (contact)) {
 				if (e_contact_get (contact, E_CONTACT_IS_LIST)) {
 					string = e_destination_get_name (destination);
-					string_new = g_string_new(string);
+					string_new = g_string_new (string);
 					string_new = g_string_append(string_new, " mailing list");
 					g_value_set_string (value, string_new->str);
-					g_string_free(string_new, TRUE);
+					g_string_free (string_new, TRUE);
 				}
 				else {
 					string = e_destination_get_address (destination);

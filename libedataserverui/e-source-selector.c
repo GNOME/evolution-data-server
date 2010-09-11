@@ -745,7 +745,7 @@ group_search_function (GtkTreeModel *model,
 	}
 
 	if (name)
-		status = g_ascii_strncasecmp (name, key, strlen(key)) != 0;
+		status = g_ascii_strncasecmp (name, key, strlen (key)) != 0;
 
 	g_object_unref (data);
 
@@ -1152,9 +1152,9 @@ ess_bool_accumulator (GSignalInvocationHint *ihint,
                       const GValue *in,
                       gpointer data)
 {
-	gboolean val = g_value_get_boolean(in);
+	gboolean val = g_value_get_boolean (in);
 
-	g_value_set_boolean(out, val);
+	g_value_set_boolean (out, val);
 
 	return !val;
 }

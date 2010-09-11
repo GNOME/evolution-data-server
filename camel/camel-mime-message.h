@@ -141,7 +141,7 @@ gchar                       *camel_mime_message_build_mbox_from    (CamelMimeMes
 
 gboolean		    camel_mime_message_has_attachment     (CamelMimeMessage           *message);
 
-void camel_mime_message_dump(CamelMimeMessage *msg, gint body);
+void camel_mime_message_dump (CamelMimeMessage *msg, gint body);
 
 G_END_DECLS
 

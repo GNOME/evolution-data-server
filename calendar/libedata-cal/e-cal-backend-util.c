@@ -52,7 +52,7 @@ e_cal_backend_mail_account_get_default (gchar **address, gchar **name)
 		g_object_unref (gconf);
 	}
 
-	account = e_account_list_get_default(accounts);
+	account = e_account_list_get_default (accounts);
 	if (account) {
 		*address = g_strdup(account->id->address);
 		*name = g_strdup(account->id->name);
@@ -83,7 +83,7 @@ e_cal_backend_mail_account_is_valid (gchar *user, gchar **name)
 		g_object_unref (gconf);
 	}
 
-	account = e_account_list_find(accounts, E_ACCOUNT_FIND_ID_ADDRESS, user);
+	account = e_account_list_find (accounts, E_ACCOUNT_FIND_ID_ADDRESS, user);
 	if (account)
 		*name = g_strdup(account->id->name);
 

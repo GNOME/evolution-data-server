@@ -94,15 +94,15 @@ static ESExpResult *imap_body_contains (struct _ESExp *f, gint argc, struct _ESE
 G_DEFINE_TYPE (CamelImapSearch, camel_imap_search, CAMEL_TYPE_FOLDER_SEARCH)
 
 static void
-free_match(CamelImapSearch *is, struct _match_record *mr)
+free_match (CamelImapSearch *is, struct _match_record *mr)
 {
 	gint i;
 
 	for (i=0;i<mr->termcount;i++)
-		g_free(mr->terms[i]);
-	g_free(mr->terms);
-	g_array_free(mr->matches, TRUE);
-	g_free(mr);
+		g_free (mr->terms[i]);
+	g_free (mr->terms);
+	g_array_free (mr->matches, TRUE);
+	g_free (mr);
 }
 
 static void
@@ -129,7 +129,7 @@ imap_search_finalize (GObject *object)
 
 	search = CAMEL_IMAP_SEARCH (object);
 
-	while ((mr = (struct _match_record *)camel_dlist_remtail(&search->matches)))
+	while ((mr = (struct _match_record *)camel_dlist_remtail (&search->matches)))
 		free_match (search, mr);
 
 	g_hash_table_destroy (search->matches_hash);
@@ -155,8 +155,8 @@ camel_imap_search_class_init (CamelImapSearchClass *class)
 static void
 camel_imap_search_init (CamelImapSearch *is)
 {
-	camel_dlist_init(&is->matches);
-	is->matches_hash = g_hash_table_new(g_str_hash, g_str_equal);
+	camel_dlist_init (&is->matches);
+	is->matches_hash = g_hash_table_new (g_str_hash, g_str_equal);
 	is->matches_count = 0;
 	is->lastuid = 0;
 }
@@ -174,17 +174,17 @@ camel_imap_search_new (const gchar *cachedir)
 
 	camel_folder_search_construct (new);
 
-	is->cache = camel_data_cache_new(cachedir, NULL);
+	is->cache = camel_data_cache_new (cachedir, NULL);
 	if (is->cache) {
 		/* Expire entries after 14 days of inactivity */
-		camel_data_cache_set_expire_access(is->cache, 60*60*24*14);
+		camel_data_cache_set_expire_access (is->cache, 60*60*24*14);
 	}
 
 	return new;
 }
 
 static void
-hash_match(gchar hash[17], gint argc, struct _ESExpResult **argv)
+hash_match (gchar hash[17], gint argc, struct _ESExpResult **argv)
 {
 	GChecksum *checksum;
 	guint8 *digest;
@@ -218,7 +218,7 @@ hash_match(gchar hash[17], gint argc, struct _ESExpResult **argv)
 }
 
 static gint
-save_match(CamelImapSearch *is, struct _match_record *mr)
+save_match (CamelImapSearch *is, struct _match_record *mr)
 {
 	guint32 mark = MATCH_MARK;
 	gint ret = 0;
@@ -243,10 +243,10 @@ save_match(CamelImapSearch *is, struct _match_record *mr)
 	header.lastuid = mr->lastuid;
 	header.validity = mr->validity;
 
-	if (camel_stream_write(stream, (gchar *)&header, sizeof(header), NULL) != sizeof(header)
-	    || camel_stream_write(stream, mr->matches->data, mr->matches->len*sizeof(guint32), NULL) != mr->matches->len*sizeof(guint32)
-	    || camel_seekable_stream_seek((CamelSeekableStream *)stream, 0, CAMEL_STREAM_SET, NULL) == -1
-	    || camel_stream_write(stream, (gchar *)&mark, sizeof(mark), NULL) != sizeof(mark)) {
+	if (camel_stream_write (stream, (gchar *)&header, sizeof (header), NULL) != sizeof (header)
+	    || camel_stream_write (stream, mr->matches->data, mr->matches->len*sizeof (guint32), NULL) != mr->matches->len*sizeof (guint32)
+	    || camel_seekable_stream_seek ((CamelSeekableStream *)stream, 0, CAMEL_STREAM_SET, NULL) == -1
+	    || camel_stream_write (stream, (gchar *)&mark, sizeof (mark), NULL) != sizeof (mark)) {
 		d(printf(" saving failed, removing cache entry\n"));
 		camel_data_cache_remove(is->cache, "search/body-contains", mr->hash, NULL);
 		ret = -1;
@@ -257,28 +257,28 @@ save_match(CamelImapSearch *is, struct _match_record *mr)
 }
 
 static struct _match_record *
-load_match(CamelImapSearch *is, gchar hash[17], gint argc, struct _ESExpResult **argv)
+load_match (CamelImapSearch *is, gchar hash[17], gint argc, struct _ESExpResult **argv)
 {
 	struct _match_record *mr;
 	CamelStream *stream = NULL;
 	struct _match_header header;
 	gint i;
 
-	mr = g_malloc0(sizeof(*mr));
-	mr->matches = g_array_new(0, 0, sizeof(guint32));
-	g_assert(strlen(hash) == 16);
-	strcpy(mr->hash, hash);
-	mr->terms = g_malloc0(sizeof(mr->terms[0]) * argc);
+	mr = g_malloc0 (sizeof (*mr));
+	mr->matches = g_array_new (0, 0, sizeof (guint32));
+	g_assert (strlen (hash) == 16);
+	strcpy (mr->hash, hash);
+	mr->terms = g_malloc0 (sizeof (mr->terms[0]) * argc);
 	for (i=0;i<argc;i++) {
 		if (argv[i]->type == ESEXP_RES_STRING) {
 			mr->termcount++;
-			mr->terms[i] = g_strdup(argv[i]->value.string);
+			mr->terms[i] = g_strdup (argv[i]->value.string);
 		}
 	}
 
 	d(printf("Loading search cache entry to '%s': %s\n", mr->hash, mr->terms[0]));
 
-	memset(&header, 0, sizeof(header));
+	memset (&header, 0, sizeof (header));
 	if (is->cache)
 		stream = camel_data_cache_get(is->cache, "search/body-contains", mr->hash, NULL);
 	if (stream != NULL) {
@@ -287,16 +287,16 @@ load_match(CamelImapSearch *is, gchar hash[17], gint argc, struct _ESExpResult *
 		   should be sufficient to key it */
 		/* This check should also handle endianness changes, we just throw away
 		   the data (its only a cache) */
-		if (camel_stream_read(stream, (gchar *)&header, sizeof(header), NULL) == sizeof(header)
+		if (camel_stream_read (stream, (gchar *)&header, sizeof (header), NULL) == sizeof (header)
 		    && header.validity == is->validity
 		    && header.mark == MATCH_MARK
 		    && header.termcount == 0) {
 			d(printf(" found %d matches\n", header.matchcount));
-			g_array_set_size(mr->matches, header.matchcount);
-			camel_stream_read(stream, mr->matches->data, sizeof(guint32)*header.matchcount, NULL);
+			g_array_set_size (mr->matches, header.matchcount);
+			camel_stream_read (stream, mr->matches->data, sizeof (guint32)*header.matchcount, NULL);
 		} else {
 			d(printf(" file format invalid/validity changed\n"));
-			memset(&header, 0, sizeof(header));
+			memset (&header, 0, sizeof (header));
 		}
 		g_object_unref (stream);
 	} else {
@@ -313,7 +313,7 @@ load_match(CamelImapSearch *is, gchar hash[17], gint argc, struct _ESExpResult *
 }
 
 static gint
-sync_match(CamelImapSearch *is, struct _match_record *mr)
+sync_match (CamelImapSearch *is, struct _match_record *mr)
 {
 	gchar *p, *result, *lasts = NULL;
 	CamelImapResponse *response = NULL;
@@ -363,7 +363,7 @@ sync_match(CamelImapSearch *is, struct _match_record *mr)
 	if (response == NULL)
 		response = camel_imap_command (store, folder, NULL,
 					       "UID SEARCH %s", search->str);
-	g_string_free(search, TRUE);
+	g_string_free (search, TRUE);
 
 	if (!response)
 		return -1;
@@ -373,51 +373,51 @@ sync_match(CamelImapSearch *is, struct _match_record *mr)
 
 	p = result + sizeof ("* SEARCH");
 	for (p = strtok_r (p, " ", &lasts); p; p = strtok_r (NULL, " ", &lasts)) {
-		uid = strtoul(p, NULL, 10);
-		g_array_append_vals(mr->matches, &uid, 1);
+		uid = strtoul (p, NULL, 10);
+		g_array_append_vals (mr->matches, &uid, 1);
 	}
-	g_free(result);
+	g_free (result);
 
 	mr->validity = is->validity;
 	mr->lastuid = is->lastuid;
-	save_match(is, mr);
+	save_match (is, mr);
 
 	return 0;
 }
 
 static struct _match_record *
-get_match(CamelImapSearch *is, gint argc, struct _ESExpResult **argv)
+get_match (CamelImapSearch *is, gint argc, struct _ESExpResult **argv)
 {
 	gchar hash[17];
 	struct _match_record *mr;
 
-	hash_match(hash, argc, argv);
+	hash_match (hash, argc, argv);
 
-	mr = g_hash_table_lookup(is->matches_hash, hash);
+	mr = g_hash_table_lookup (is->matches_hash, hash);
 	if (mr == NULL) {
 		while (is->matches_count >= MATCH_CACHE_SIZE) {
-			mr = (struct _match_record *)camel_dlist_remtail(&is->matches);
+			mr = (struct _match_record *)camel_dlist_remtail (&is->matches);
 			if (mr) {
 				printf("expiring match '%s' (%s)\n", mr->hash, mr->terms[0]);
-				g_hash_table_remove(is->matches_hash, mr->hash);
-				free_match(is, mr);
+				g_hash_table_remove (is->matches_hash, mr->hash);
+				free_match (is, mr);
 				is->matches_count--;
 			} else {
 				is->matches_count = 0;
 			}
 		}
-		mr = load_match(is, hash, argc, argv);
-		g_hash_table_insert(is->matches_hash, mr->hash, mr);
+		mr = load_match (is, hash, argc, argv);
+		g_hash_table_insert (is->matches_hash, mr->hash, mr);
 		is->matches_count++;
 	} else {
-		camel_dlist_remove((CamelDListNode *)mr);
+		camel_dlist_remove ((CamelDListNode *)mr);
 	}
 
-	camel_dlist_addhead(&is->matches, (CamelDListNode *)mr);
+	camel_dlist_addhead (&is->matches, (CamelDListNode *)mr);
 
 	/* what about offline mode? */
 	/* We could cache those results too, or should we cache them elsewhere? */
-	sync_match(is, mr);
+	sync_match (is, mr);
 
 	return mr;
 }
@@ -445,68 +445,68 @@ imap_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Cam
 
 	/* If offline, search using the parent class, which can handle this manually */
 	if (CAMEL_OFFLINE_STORE (store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
-		return CAMEL_FOLDER_SEARCH_CLASS (camel_imap_search_parent_class)->body_contains(f, argc, argv, s);
+		return CAMEL_FOLDER_SEARCH_CLASS (camel_imap_search_parent_class)->body_contains (f, argc, argv, s);
 
 	/* optimise the match "" case - match everything */
 	if (argc == 1 && argv[0]->value.string[0] == '\0') {
 		if (s->current) {
-			r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+			r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 			r->value.boolean = TRUE;
 		} else {
-			r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
+			r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
 			r->value.ptrarray = g_ptr_array_new ();
 			for (i = 0; i < s->summary->len; i++) {
-				g_ptr_array_add(r->value.ptrarray, (gchar *)g_ptr_array_index(s->summary, i));
+				g_ptr_array_add (r->value.ptrarray, (gchar *)g_ptr_array_index (s->summary, i));
 			}
 		}
 	} else if (argc == 0 || s->summary->len == 0) {
 		/* nothing to match case, do nothing (should be handled higher up?) */
 		if (s->current) {
-			r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+			r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 			r->value.boolean = FALSE;
 		} else {
-			r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
+			r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
 			r->value.ptrarray = g_ptr_array_new ();
 		}
 	} else {
 		gint truth = FALSE;
 
 		/* setup lastuid/validity for synchronising */
-		is->lastuid = strtoul((gchar *)g_ptr_array_index(s->summary, s->summary->len-1), NULL, 10);
+		is->lastuid = strtoul ((gchar *)g_ptr_array_index (s->summary, s->summary->len-1), NULL, 10);
 		is->validity = ((CamelImapSummary *)(s->folder->summary))->validity;
 
-		mr = get_match(is, argc, argv);
+		mr = get_match (is, argc, argv);
 
 		if (s->current) {
-			uidn = strtoul(camel_message_info_uid(s->current), NULL, 10);
+			uidn = strtoul (camel_message_info_uid (s->current), NULL, 10);
 			uidp = (guint32 *)mr->matches->data;
 			j = mr->matches->len;
 			for (i=0;i<j && !truth;i++)
 				truth = *uidp++ == uidn;
-			r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+			r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 			r->value.boolean = truth;
 		} else {
-			r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
-			array = r->value.ptrarray = g_ptr_array_new();
+			r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
+			array = r->value.ptrarray = g_ptr_array_new ();
 
 			/* We use a hash to map the uid numbers to uid strings as required by the search api */
 			/* We use the summary's strings so we dont need to alloc more */
-			uid_hash = g_hash_table_new(NULL, NULL);
+			uid_hash = g_hash_table_new (NULL, NULL);
 			for (i = 0; i < s->summary->len; i++) {
 				uid = (gchar *)s->summary->pdata[i];
-				uidn = strtoul(uid, NULL, 10);
-				g_hash_table_insert(uid_hash, GUINT_TO_POINTER(uidn), uid);
+				uidn = strtoul (uid, NULL, 10);
+				g_hash_table_insert (uid_hash, GUINT_TO_POINTER (uidn), uid);
 			}
 
 			uidp = (guint32 *)mr->matches->data;
 			j = mr->matches->len;
 			for (i=0;i<j && !truth;i++) {
-				uid = g_hash_table_lookup(uid_hash, GUINT_TO_POINTER(*uidp++));
+				uid = g_hash_table_lookup (uid_hash, GUINT_TO_POINTER (*uidp++));
 				if (uid)
-					g_ptr_array_add(array, uid);
+					g_ptr_array_add (array, uid);
 			}
 
-			g_hash_table_destroy(uid_hash);
+			g_hash_table_destroy (uid_hash);
 		}
 	}
 

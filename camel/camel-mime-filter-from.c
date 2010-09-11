@@ -82,7 +82,7 @@ mime_filter_from_filter (CamelMimeFilter *mime_filter,
 				priv->midline = TRUE;
 				if (left < 5) {
 					if (inptr[0] == 'F') {
-						camel_mime_filter_backup(mime_filter, inptr, left);
+						camel_mime_filter_backup (mime_filter, inptr, left);
 						priv->midline = FALSE;
 						inend = inptr;
 						break;
@@ -92,7 +92,7 @@ mime_filter_from_filter (CamelMimeFilter *mime_filter,
 						fromcount++;
 						/* yes, we do alloc them on the stack ... at most we're going to get
 						   len / 7 of them anyway */
-						node = alloca(sizeof(*node));
+						node = alloca (sizeof (*node));
 						node->pointer = inptr;
 						node->next = NULL;
 						tail->next = node;
@@ -108,18 +108,18 @@ mime_filter_from_filter (CamelMimeFilter *mime_filter,
 	}
 
 	if (fromcount > 0) {
-		camel_mime_filter_set_size(mime_filter, len + fromcount, FALSE);
+		camel_mime_filter_set_size (mime_filter, len + fromcount, FALSE);
 		node = head;
 		inptr = in;
 		outptr = mime_filter->outbuf;
 		while (node) {
-			memcpy(outptr, inptr, node->pointer - inptr);
+			memcpy (outptr, inptr, node->pointer - inptr);
 			outptr += node->pointer - inptr;
 			*outptr++ = '>';
 			inptr = node->pointer;
 			node = node->next;
 		}
-		memcpy(outptr, inptr, inend - inptr);
+		memcpy (outptr, inptr, inend - inptr);
 		outptr += inend - inptr;
 		*out = mime_filter->outbuf;
 		*outlen = outptr - mime_filter->outbuf;
@@ -184,27 +184,27 @@ camel_mime_filter_from_new (void)
 
 #include <stdio.h>
 
-gint main(gint argc, gchar **argv)
+gint main (gint argc, gchar **argv)
 {
 	CamelMimeFilterFrom *f;
 	gchar *buffer;
 	gint len, prespace;
 
-	g_tk_init(&argc, &argv);
+	g_tk_init (&argc, &argv);
 
-	f = camel_mime_filter_from_new();
+	f = camel_mime_filter_from_new ();
 
 	buffer = "This is a test\nFrom Someone\nTo someone. From Someone else, From\n From blah\nFromblah\nBye! \nFrom ";
-	len = strlen(buffer);
+	len = strlen (buffer);
 	prespace = 0;
 
 	printf("input = '%.*s'\n", len, buffer);
-	camel_mime_filter_filter(f, buffer, len, prespace, &buffer, &len, &prespace);
+	camel_mime_filter_filter (f, buffer, len, prespace, &buffer, &len, &prespace);
 	printf("output = '%.*s'\n", len, buffer);
 	buffer = "";
 	len = 0;
 	prespace = 0;
-	camel_mime_filter_complete(f, buffer, len, prespace, &buffer, &len, &prespace);
+	camel_mime_filter_complete (f, buffer, len, prespace, &buffer, &len, &prespace);
 	printf("complete = '%.*s'\n", len, buffer);
 
 	return 0;

@@ -273,7 +273,7 @@ void		camel_folder_set_description	(CamelFolder *folder,
 						 const gchar *description);
 
 /* various properties accessors */
-guint32		camel_folder_get_permanent_flags(CamelFolder *folder);
+guint32		camel_folder_get_permanent_flags (CamelFolder *folder);
 
 #ifndef CAMEL_DISABLE_DEPRECATED
 guint32		camel_folder_get_message_flags	(CamelFolder *folder,
@@ -371,7 +371,7 @@ GPtrArray *	camel_folder_search_by_uids	(CamelFolder *folder,
 						 GError **error);
 void		camel_folder_search_free	(CamelFolder *folder,
 						 GPtrArray *result);
-guint32		camel_folder_count_by_expression(CamelFolder *folder,
+guint32		camel_folder_count_by_expression (CamelFolder *folder,
 						 const gchar *expression,
 						 GError **error);
 
@@ -434,7 +434,7 @@ CamelFolderChangeInfo *
 		camel_folder_change_info_new	(void);
 void		camel_folder_change_info_clear	(CamelFolderChangeInfo *info);
 void		camel_folder_change_info_free	(CamelFolderChangeInfo *info);
-gboolean	camel_folder_change_info_changed(CamelFolderChangeInfo *info);
+gboolean	camel_folder_change_info_changed (CamelFolderChangeInfo *info);
 
 /* for building diff's automatically */
 void		camel_folder_change_info_add_source
@@ -455,7 +455,7 @@ void		camel_folder_change_info_build_diff
 /* for manipulating diff's directly */
 void		camel_folder_change_info_cat	(CamelFolderChangeInfo *info,
 						 CamelFolderChangeInfo *src);
-void		camel_folder_change_info_add_uid(CamelFolderChangeInfo *info,
+void		camel_folder_change_info_add_uid (CamelFolderChangeInfo *info,
 						 const gchar *uid);
 void		camel_folder_change_info_remove_uid
 						(CamelFolderChangeInfo *info,

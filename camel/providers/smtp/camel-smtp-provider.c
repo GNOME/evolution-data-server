@@ -55,7 +55,7 @@ static CamelProvider smtp_provider = {
 };
 
 void
-camel_provider_module_init(void)
+camel_provider_module_init (void)
 {
 	smtp_provider.object_types[CAMEL_PROVIDER_TRANSPORT] = camel_smtp_transport_get_type ();
 	smtp_provider.authtypes = g_list_append (camel_sasl_authtype_list (TRUE), camel_sasl_authtype ("LOGIN"));
@@ -64,7 +64,7 @@ camel_provider_module_init(void)
 	smtp_provider.url_equal = smtp_url_equal;
 	smtp_provider.translation_domain = GETTEXT_PACKAGE;
 
-	camel_provider_register(&smtp_provider);
+	camel_provider_register (&smtp_provider);
 }
 
 static void

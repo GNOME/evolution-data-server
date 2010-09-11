@@ -839,7 +839,7 @@ sasl_digest_md5_challenge (CamelSasl *sasl,
 			return NULL;
 		}
 
-		memset(&hints, 0, sizeof(hints));
+		memset (&hints, 0, sizeof (hints));
 		hints.ai_flags = AI_CANONNAME;
 		ai = camel_getaddrinfo(service->url->host?service->url->host:"localhost", NULL, &hints, NULL);
 		if (ai && ai->ai_canonname)
@@ -851,7 +851,7 @@ sasl_digest_md5_challenge (CamelSasl *sasl,
 						    service->url->user,
 						    service->url->passwd);
 		if (ai)
-			camel_freeaddrinfo(ai);
+			camel_freeaddrinfo (ai);
 		ret = digest_response (priv->response);
 
 		break;

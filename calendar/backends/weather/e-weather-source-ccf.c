@@ -165,17 +165,17 @@ static void
 date2tm (gchar *date, struct tm *times)
 {
 	gchar tmp[3];
-	time_t curtime = time(NULL);
+	time_t curtime = time (NULL);
 	tmp[2] = '\0';
 
 	localtime_r (&curtime, times);
 
 	tmp[0] = date[0]; tmp[1] = date[1];
-	times->tm_mday = atoi(tmp);
+	times->tm_mday = atoi (tmp);
 	tmp[0] = date[2]; tmp[1] = date[3];
-	times->tm_hour = atoi(tmp);
+	times->tm_hour = atoi (tmp);
 	tmp[0] = date[4]; tmp[1] = date[5];
-	times->tm_min = atoi(tmp);
+	times->tm_min = atoi (tmp);
 }
 
 static WeatherConditions
@@ -249,7 +249,7 @@ decodeSnowfall (gchar *data, gfloat *low, gfloat *high)
 static float
 ftoc (gchar *data)
 {
-	gint fahrenheit = atoi(data);
+	gint fahrenheit = atoi (data);
 	if (fahrenheit >= 900)
 		fahrenheit = (fahrenheit - 900) * -1;
 	return ((gfloat)(fahrenheit-32)) * 5.0f / 9.0f;
@@ -283,7 +283,7 @@ e_weather_source_ccf_do_parse (EWeatherSourceCCF *source, gchar *buffer)
 
 	/* fast-forward to the particular station we're interested in */
 	current = g_slist_nth (tokens, 5);
-	while (strcmp(current->data, source->substation))
+	while (strcmp (current->data, source->substation))
 		current = g_slist_next (current);
 	current = g_slist_next (current);
 	/* pick up the first two conditions reports */
@@ -337,7 +337,7 @@ e_weather_source_ccf_do_parse (EWeatherSourceCCF *source, gchar *buffer)
 
 	if (current == NULL || strlen (current->data) == 3) {
 		/* We've got a pre-IFPS station. Realloc and return */
-		WeatherForecast *f = g_new0(WeatherForecast, 2);
+		WeatherForecast *f = g_new0 (WeatherForecast, 2);
 		memcpy (f, forecasts, sizeof (WeatherForecast) * 2);
 		fc = g_list_append (fc, &f[0]);
 		fc = g_list_append (fc, &f[1]);

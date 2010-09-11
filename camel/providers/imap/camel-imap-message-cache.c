@@ -211,7 +211,7 @@ camel_imap_message_cache_new (const gchar *path,
 		else
 			uid = g_strdup (dname);
 
-		if (g_hash_table_lookup(shash, uid))
+		if (g_hash_table_lookup (shash, uid))
 			cache_put (cache, uid, dname, NULL);
 		else
 			g_ptr_array_add (deletes, g_strdup_printf ("%s/%s", cache->path, dname));
@@ -292,8 +292,8 @@ camel_imap_message_cache_max_uid (CamelImapMessageCache *cache)
 void
 camel_imap_message_cache_set_path (CamelImapMessageCache *cache, const gchar *path)
 {
-	g_free(cache->path);
-	cache->path = g_strdup(path);
+	g_free (cache->path);
+	cache->path = g_strdup (path);
 }
 
 static CamelStream *
@@ -632,10 +632,10 @@ camel_imap_message_cache_copy (CamelImapMessageCache *source,
 }
 
 static void
-_match_part(gpointer part_name, gpointer user_data)
+_match_part (gpointer part_name, gpointer user_data)
 {
 	struct _part_find *part_find = (struct _part_find *) user_data;
-	if (g_str_equal(part_name, part_find->disk_part_name))
+	if (g_str_equal (part_name, part_find->disk_part_name))
 		part_find->found = 1;
 }
 
@@ -661,15 +661,15 @@ _match_part(gpointer part_name, gpointer user_data)
  * needed.
  */
 GPtrArray *
-camel_imap_message_cache_filter_cached(CamelImapMessageCache *cache, GPtrArray *uids, GError **error)
+camel_imap_message_cache_filter_cached (CamelImapMessageCache *cache, GPtrArray *uids, GError **error)
 {
 	GPtrArray *result, *parts_list;
 	gint i;
 	struct _part_find part_find;
 	/* Look for a part "" for each uid. */
-	result = g_ptr_array_sized_new(uids->len);
+	result = g_ptr_array_sized_new (uids->len);
 	for (i = 0; i < uids->len; i++) {
-		if ((parts_list = g_hash_table_lookup(cache->parts, uids->pdata[i]))) {
+		if ((parts_list = g_hash_table_lookup (cache->parts, uids->pdata[i]))) {
 			/* At least one part locally present; look for "" (the
 			 * HEADERS part can be present without anything else,
 			 * and that part is not useful for users wanting to
@@ -678,8 +678,8 @@ camel_imap_message_cache_filter_cached(CamelImapMessageCache *cache, GPtrArray *
 			part_find.found = 0;
 			part_find.disk_part_name = g_strdup_printf("%s" BASE_PART_SUFFIX,
 								   (gchar *)uids->pdata[i]);
-			g_ptr_array_foreach(parts_list, _match_part, &part_find);
-			g_free(part_find.disk_part_name);
+			g_ptr_array_foreach (parts_list, _match_part, &part_find);
+			g_free (part_find.disk_part_name);
 			if (part_find.found)
 				/* The message is cached locally, do not
 				 * include it in the result.
@@ -689,7 +689,7 @@ camel_imap_message_cache_filter_cached(CamelImapMessageCache *cache, GPtrArray *
 		/* No message parts, or message part "" not found: include the
 		 * uid in the result.
 		 */
-		g_ptr_array_add(result, (gchar *)camel_pstring_strdup(uids->pdata[i]));
+		g_ptr_array_add (result, (gchar *)camel_pstring_strdup (uids->pdata[i]));
 	}
 	return result;
 }

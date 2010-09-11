@@ -101,7 +101,7 @@ GType		camel_http_stream_get_type	(void);
 CamelStream *	camel_http_stream_new		(CamelHttpMethod method,
 						 struct _CamelSession *session,
 						 CamelURL *url);
-void		camel_http_stream_set_user_agent(CamelHttpStream *http_stream,
+void		camel_http_stream_set_user_agent (CamelHttpStream *http_stream,
 						 const gchar *user_agent);
 void		camel_http_stream_set_proxy	(CamelHttpStream *http_stream,
 						 const gchar *proxy_url);

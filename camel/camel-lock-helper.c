@@ -62,13 +62,13 @@ static uid_t lock_real_uid = -1;
 
 /* utility functions */
 
-static gint read_n(gint fd, gpointer buffer, gint inlen)
+static gint read_n (gint fd, gpointer buffer, gint inlen)
 {
 	gchar *p = buffer;
 	gint len, left = inlen;
 
 	do {
-		len = read(fd, p, left);
+		len = read (fd, p, left);
 		if (len == -1) {
 			if (errno != EINTR)
 				return -1;
@@ -81,13 +81,13 @@ static gint read_n(gint fd, gpointer buffer, gint inlen)
 	return inlen - left;
 }
 
-static gint write_n(gint fd, gpointer buffer, gint inlen)
+static gint write_n (gint fd, gpointer buffer, gint inlen)
 {
 	gchar *p = buffer;
 	gint len, left = inlen;
 
 	do {
-		len = write(fd, p, left);
+		len = write (fd, p, left);
 		if (len == -1) {
 			if (errno != EINTR)
 				return -1;
@@ -108,7 +108,7 @@ gettext (const gchar *msgid)
 	return NULL;
 }
 
-static gint lock_path(const gchar *path, guint32 *lockid)
+static gint lock_path (const gchar *path, guint32 *lockid)
 {
 	struct _lock_info *info = NULL;
 	gint res = CAMEL_LOCK_HELPER_STATUS_OK;
@@ -120,7 +120,7 @@ static gint lock_path(const gchar *path, guint32 *lockid)
 	/* we could also error i suppose, but why bother */
 	info = lock_info_list;
 	while (info) {
-		if (!strcmp(info->path, path)) {
+		if (!strcmp (info->path, path)) {
 			info->depth++;
 			return CAMEL_LOCK_HELPER_STATUS_OK;
 		}
@@ -128,30 +128,30 @@ static gint lock_path(const gchar *path, guint32 *lockid)
 	}
 
 	/* check we are allowed to lock it, we must own it, be able to write to it, and it has to exist */
-	if (g_stat(path, &st) == -1
-	    || st.st_uid != getuid()
-	    || !S_ISREG(st.st_mode)
+	if (g_stat (path, &st) == -1
+	    || st.st_uid != getuid ()
+	    || !S_ISREG (st.st_mode)
 	    || (st.st_mode & 0400) == 0) {
 		return CAMEL_LOCK_HELPER_STATUS_INVALID;
 	}
 
-	info = malloc(sizeof(*info) + strlen(path));
+	info = malloc (sizeof (*info) + strlen (path));
 	if (info == NULL) {
 		res = CAMEL_LOCK_HELPER_STATUS_NOMEM;
 		goto fail;
 	}
 
 	/* we try the real uid first, and if that fails, try the 'root id' */
-	if (camel_lock_dot(path, NULL) == -1) {
+	if (camel_lock_dot (path, NULL) == -1) {
 #ifdef SETEUID_SAVES
 		if (lock_real_uid != lock_root_uid) {
-			if (seteuid(lock_root_uid) != -1) {
-				if (camel_lock_dot(path, NULL) == -1) {
-					seteuid(lock_real_uid);
+			if (seteuid (lock_root_uid) != -1) {
+				if (camel_lock_dot (path, NULL) == -1) {
+					seteuid (lock_real_uid);
 					res = CAMEL_LOCK_HELPER_STATUS_SYSTEM;
 					goto fail;
 				}
-				seteuid(lock_real_uid);
+				seteuid (lock_real_uid);
 			} else {
 				res = CAMEL_LOCK_HELPER_STATUS_SYSTEM;
 				goto fail;
@@ -168,7 +168,7 @@ static gint lock_path(const gchar *path, guint32 *lockid)
 		info->uid = lock_real_uid;
 	}
 
-	strcpy(info->path, path);
+	strcpy (info->path, path);
 	info->id = lock_id;
 	info->depth = 1;
 	info->next = lock_info_list;
@@ -187,12 +187,12 @@ fail:
 	d(fprintf(stderr, "lock failed\n"));
 
 	if (info)
-		free(info);
+		free (info);
 
 	return res;
 }
 
-static gint unlock_id(guint32 lockid)
+static gint unlock_id (guint32 lockid)
 {
 	struct _lock_info *info, *p;
 
@@ -207,15 +207,15 @@ static gint unlock_id(guint32 lockid)
 			if (info->depth <= 0) {
 #ifdef SETEUID_SAVES
 				if (info->uid != lock_real_uid) {
-					seteuid(lock_root_uid);
-					camel_unlock_dot(info->path);
-					seteuid(lock_real_uid);
+					seteuid (lock_root_uid);
+					camel_unlock_dot (info->path);
+					seteuid (lock_real_uid);
 				} else
 #endif
-					camel_unlock_dot(info->path);
+					camel_unlock_dot (info->path);
 
 				p->next = info->next;
-				free(info);
+				free (info);
 			}
 
 			return CAMEL_LOCK_HELPER_STATUS_OK;
@@ -228,20 +228,20 @@ static gint unlock_id(guint32 lockid)
 	return CAMEL_LOCK_HELPER_STATUS_PROTOCOL;
 }
 
-static void lock_touch(const gchar *path)
+static void lock_touch (const gchar *path)
 {
 	gchar *name;
 
 	/* we could also check that we haven't had our lock stolen from us here */
 
-	name = alloca(strlen(path) + 10);
+	name = alloca (strlen (path) + 10);
 	sprintf(name, "%s.lock", path);
 
 	d(fprintf(stderr, "Updating lock %s\n", name));
-	utime(name, NULL);
+	utime (name, NULL);
 }
 
-static void setup_process(void)
+static void setup_process (void)
 {
 	struct sigaction sa;
 	sigset_t sigset;
@@ -251,10 +251,10 @@ static void setup_process(void)
 	sigemptyset (&sa.sa_mask);
 	sa.sa_flags = 0;
 
-	sigemptyset(&sigset);
-	sigaddset(&sigset, SIGIO);
-	sigaddset(&sigset, SIGINT);
-	sigprocmask(SIG_UNBLOCK, &sigset, NULL);
+	sigemptyset (&sigset);
+	sigaddset (&sigset, SIGIO);
+	sigaddset (&sigset, SIGINT);
+	sigprocmask (SIG_UNBLOCK, &sigset, NULL);
 
 	sigaction (SIGIO, &sa, NULL);
 	sigaction (SIGINT, &sa, NULL);
@@ -264,14 +264,14 @@ static void setup_process(void)
 #ifdef SETEUID_SAVES
 	/* here we change to the real user id, this is probably not particularly
 	   portable so may need configure checks */
-	lock_real_uid = getuid();
-	lock_root_uid = geteuid();
+	lock_real_uid = getuid ();
+	lock_root_uid = geteuid ();
 	if (lock_real_uid != lock_root_uid)
-		seteuid(lock_real_uid);
+		seteuid (lock_real_uid);
 #endif
 }
 
-gint main(gint argc, gchar **argv)
+gint main (gint argc, gchar **argv)
 {
 	struct _CamelLockHelperMsg msg;
 	gint len;
@@ -281,12 +281,12 @@ gint main(gint argc, gchar **argv)
 	struct timeval tv;
 	struct _lock_info *info;
 
-	setup_process();
+	setup_process ();
 
 	do {
 		/* do a poll/etc, so we can refresh the .locks as required ... */
-		FD_ZERO(&rset);
-		FD_SET(STDIN_FILENO, &rset);
+		FD_ZERO (&rset);
+		FD_SET (STDIN_FILENO, &rset);
 
 		/* check the minimum timeout we need to refresh the next oldest lock */
 		if (lock_info_list) {
@@ -297,8 +297,8 @@ gint main(gint argc, gchar **argv)
 			info = lock_info_list;
 			while (info) {
 				left = CAMEL_DOT_LOCK_REFRESH - (now - info->stamp);
-				left = MAX(left, 0);
-				delay = MIN(left, delay);
+				left = MAX (left, 0);
+				delay = MIN (left, delay);
 				info = info->next;
 			}
 
@@ -307,7 +307,7 @@ gint main(gint argc, gchar **argv)
 		}
 
 		d(fprintf(stderr, "lock helper waiting for input\n"));
-		if (select(STDIN_FILENO+1, &rset, NULL, NULL, lock_info_list?&tv:NULL) == -1) {
+		if (select (STDIN_FILENO+1, &rset, NULL, NULL, lock_info_list?&tv:NULL) == -1) {
 			if (errno == EINTR)
 				break;
 
@@ -315,7 +315,7 @@ gint main(gint argc, gchar **argv)
 		}
 
 		/* did we get a timeout?  scan for any locks that need updating */
-		if (!FD_ISSET(STDIN_FILENO, &rset)) {
+		if (!FD_ISSET (STDIN_FILENO, &rset)) {
 			time_t now = time (NULL);
 			time_t left;
 
@@ -325,7 +325,7 @@ gint main(gint argc, gchar **argv)
 			while (info) {
 				left = (now - info->stamp);
 				if (left >= CAMEL_DOT_LOCK_REFRESH) {
-					lock_touch(info->path);
+					lock_touch (info->path);
 					info->stamp = now;
 				}
 				info = info->next;
@@ -334,41 +334,41 @@ gint main(gint argc, gchar **argv)
 			continue;
 		}
 
-		len = read_n(STDIN_FILENO, &msg, sizeof(msg));
+		len = read_n (STDIN_FILENO, &msg, sizeof (msg));
 		if (len == 0)
 			break;
 
 		res = CAMEL_LOCK_HELPER_STATUS_PROTOCOL;
-		if (len == sizeof(msg) && msg.magic == CAMEL_LOCK_HELPER_MAGIC) {
+		if (len == sizeof (msg) && msg.magic == CAMEL_LOCK_HELPER_MAGIC) {
 			switch (msg.id) {
 			case CAMEL_LOCK_HELPER_LOCK:
 				res = CAMEL_LOCK_HELPER_STATUS_NOMEM;
 				if (msg.data > 0xffff) {
 					res = CAMEL_LOCK_HELPER_STATUS_PROTOCOL;
-				} else if ((path = malloc(msg.data+1)) != NULL) {
+				} else if ((path = malloc (msg.data+1)) != NULL) {
 					res = CAMEL_LOCK_HELPER_STATUS_PROTOCOL;
-					len = read_n(STDIN_FILENO, path, msg.data);
+					len = read_n (STDIN_FILENO, path, msg.data);
 					if (len == msg.data) {
 						path[len] = 0;
-						res = lock_path(path, &msg.data);
+						res = lock_path (path, &msg.data);
 					}
-					free(path);
+					free (path);
 				}
 				break;
 			case CAMEL_LOCK_HELPER_UNLOCK:
-				res = unlock_id(msg.data);
+				res = unlock_id (msg.data);
 				break;
 			}
 		}
 		d(fprintf(stderr, "returning result %d\n", res));
 		msg.id = res;
 		msg.magic = CAMEL_LOCK_HELPER_RETURN_MAGIC;
-		write_n(STDOUT_FILENO, &msg, sizeof(msg));
+		write_n (STDOUT_FILENO, &msg, sizeof (msg));
 	} while (1);
 
 	d(fprintf(stderr, "parent exited, clsoing down remaining id's\n"));
 	while (lock_info_list)
-		unlock_id(lock_info_list->id);
+		unlock_id (lock_info_list->id);
 
 	return 0;
 }

@@ -2746,8 +2746,8 @@ convert_to_inline_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 			 */
 			encoded = g_base64_encode ((guchar *) content, len);
 			attach = icalattach_new_from_data ((guchar *) encoded, NULL, NULL);
-			g_free(content);
-			g_free(encoded);
+			g_free (content);
+			g_free (encoded);
 
 			prop = icalproperty_new_attach (attach);
 			icalattach_unref (attach);
@@ -3397,7 +3397,7 @@ do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType m
 				/* this is only a master object, thus make is a VCALENDAR component */
 				icalcomponent *icomp;
 
-				icomp = e_cal_util_new_top_level();
+				icomp = e_cal_util_new_top_level ();
 				icalcomponent_add_component (icomp, cache_comp);
 
 				/* no need to free the cache_comp, as it is inside icomp */
@@ -4027,7 +4027,7 @@ caldav_get_object_list (ECalBackendSync  *backend,
 
 	*objects = NULL;
 
-	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times(sexp,
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (sexp,
 									    &occur_start,
 									    &occur_end);
 
@@ -4080,7 +4080,7 @@ caldav_start_query (ECalBackend  *backend,
 	} else {
 		do_search = TRUE;
 	}
-	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times(sexp,
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (sexp,
 									    &occur_start,
 									    &occur_end);
 

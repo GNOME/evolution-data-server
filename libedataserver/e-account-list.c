@@ -345,12 +345,12 @@ e_account_list_account_has_proxies (EAccountList *accounts, EAccount *account)
  * event.
  **/
 void
-e_account_list_add(EAccountList *accounts, EAccount *account)
+e_account_list_add (EAccountList *accounts, EAccount *account)
 {
 	/* FIXME: should we check for duplicate accounts? */
 
 	e_list_append ((EList *)accounts, account);
-	g_signal_emit(accounts, signals[ACCOUNT_ADDED], 0, account);
+	g_signal_emit (accounts, signals[ACCOUNT_ADDED], 0, account);
 }
 
 /**
@@ -361,10 +361,10 @@ e_account_list_add(EAccountList *accounts, EAccount *account)
  * Signal that the details of an account have changed.
  **/
 void
-e_account_list_change(EAccountList *accounts, EAccount *account)
+e_account_list_change (EAccountList *accounts, EAccount *account)
 {
 	/* maybe the account should do this itself ... */
-	g_signal_emit(accounts, signals[ACCOUNT_CHANGED], 0, account);
+	g_signal_emit (accounts, signals[ACCOUNT_CHANGED], 0, account);
 }
 
 /**
@@ -377,15 +377,15 @@ e_account_list_change(EAccountList *accounts, EAccount *account)
  * then reset the default to the first account.
  **/
 void
-e_account_list_remove(EAccountList *accounts, EAccount *account)
+e_account_list_remove (EAccountList *accounts, EAccount *account)
 {
-	if (account == e_account_list_get_default(accounts))
+	if (account == e_account_list_get_default (accounts))
 		gconf_client_unset (accounts->priv->gconf, "/apps/evolution/mail/default_account", NULL);
 
 	/* not sure if need to ref but no harm */
 	g_object_ref (account);
 	e_list_remove ((EList *) accounts, account);
-	g_signal_emit(accounts, signals[ACCOUNT_REMOVED], 0, account);
+	g_signal_emit (accounts, signals[ACCOUNT_REMOVED], 0, account);
 	g_object_unref (account);
 }
 
@@ -399,7 +399,7 @@ e_account_list_remove(EAccountList *accounts, EAccount *account)
  * Returns: The account or NULL if no accounts are defined.
  **/
 const EAccount *
-e_account_list_get_default(EAccountList *accounts)
+e_account_list_get_default (EAccountList *accounts)
 {
 	gchar *uid;
 	EIterator *it;
@@ -412,21 +412,21 @@ e_account_list_get_default(EAccountList *accounts)
 		for (;e_iterator_is_valid (it);e_iterator_next (it)) {
 			account = (const EAccount *)e_iterator_get (it);
 
-			if (!strcmp(uid, account->uid))
+			if (!strcmp (uid, account->uid))
 				break;
 			account = NULL;
 		}
-		e_iterator_reset(it);
+		e_iterator_reset (it);
 	}
 
 	/* no uid or uid not found, @it will be at the first account */
-	if (account == NULL && e_iterator_is_valid(it)) {
+	if (account == NULL && e_iterator_is_valid (it)) {
 		account = (const EAccount *) e_iterator_get (it);
 		gconf_client_set_string (accounts->priv->gconf, "/apps/evolution/mail/default_account", account->uid, NULL);
 	}
 
-	g_object_unref(it);
-	g_free(uid);
+	g_object_unref (it);
+	g_free (uid);
 
 	return account;
 }
@@ -439,7 +439,7 @@ e_account_list_get_default(EAccountList *accounts)
  * Set the account @account to be the default account.
  **/
 void
-e_account_list_set_default(EAccountList *accounts, EAccount *account)
+e_account_list_set_default (EAccountList *accounts, EAccount *account)
 {
 	gconf_client_set_string (accounts->priv->gconf, "/apps/evolution/mail/default_account", account->uid, NULL);
 }
@@ -460,7 +460,7 @@ e_account_list_set_default(EAccountList *accounts, EAccount *account)
  * Returns: The account or NULL if it doesn't exist.
  **/
 const EAccount *
-e_account_list_find(EAccountList *accounts, e_account_find_t type, const gchar *key)
+e_account_list_find (EAccountList *accounts, e_account_find_t type, const gchar *key)
 {
 	gchar *val;
 	EIterator *it;
@@ -482,22 +482,22 @@ e_account_list_find(EAccountList *accounts, e_account_find_t type, const gchar *
 		val = NULL;
 		switch (type) {
 		case E_ACCOUNT_FIND_NAME:
-			found = strcmp(account->name, key) == 0;
+			found = strcmp (account->name, key) == 0;
 			break;
 		case E_ACCOUNT_FIND_UID:
-			found = strcmp(account->uid, key) == 0;
+			found = strcmp (account->uid, key) == 0;
 			break;
 		case E_ACCOUNT_FIND_ID_NAME:
 			if (account->id)
-				found = strcmp(account->id->name, key) == 0;
+				found = strcmp (account->id->name, key) == 0;
 			break;
 		case E_ACCOUNT_FIND_ID_ADDRESS:
 			if (account->id)
-				found = g_ascii_strcasecmp(account->id->address, key) == 0;
+				found = g_ascii_strcasecmp (account->id->address, key) == 0;
 			break;
 		case E_ACCOUNT_FIND_PARENT_UID:
 			if (account->parent_uid)
-				found = strcmp(account->parent_uid, key) == 0;
+				found = strcmp (account->parent_uid, key) == 0;
 			break;
 		}
 
@@ -506,7 +506,7 @@ e_account_list_find(EAccountList *accounts, e_account_find_t type, const gchar *
 
 		account = NULL;
 	}
-	g_object_unref(it);
+	g_object_unref (it);
 
 	return account;
 }

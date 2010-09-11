@@ -169,7 +169,7 @@ stream_fs_seek (CamelSeekableStream *stream,
 		break;
 	case CAMEL_STREAM_END:
 		if (stream->bound_end == CAMEL_STREAM_UNBOUND) {
-			real = lseek(priv->fd, offset, SEEK_END);
+			real = lseek (priv->fd, offset, SEEK_END);
 			if (real != -1) {
 				if (real<stream->bound_start)
 					real = stream->bound_start;
@@ -189,7 +189,7 @@ stream_fs_seek (CamelSeekableStream *stream,
 		real = MIN (real, stream->bound_end);
 	real = MAX (real, stream->bound_start);
 
-	real = lseek(priv->fd, real, SEEK_SET);
+	real = lseek (priv->fd, real, SEEK_SET);
 	if (real == -1) {
 		g_set_error (
 			error, G_IO_ERROR,

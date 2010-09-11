@@ -183,14 +183,14 @@ struct _CamelKeyFileClass {
 	CamelObjectClass parent;
 };
 
-GType      camel_key_file_get_type(void);
+GType      camel_key_file_get_type (void);
 
-CamelKeyFile * camel_key_file_new(const gchar *path, gint flags, const gchar version[8]);
-gint	       camel_key_file_rename(CamelKeyFile *kf, const gchar *path);
-gint	       camel_key_file_delete(CamelKeyFile *kf);
+CamelKeyFile * camel_key_file_new (const gchar *path, gint flags, const gchar version[8]);
+gint	       camel_key_file_rename (CamelKeyFile *kf, const gchar *path);
+gint	       camel_key_file_delete (CamelKeyFile *kf);
 
-gint            camel_key_file_write(CamelKeyFile *kf, camel_block_t *parent, gsize len, camel_key_t *records);
-gint            camel_key_file_read(CamelKeyFile *kf, camel_block_t *start, gsize *len, camel_key_t **records);
+gint            camel_key_file_write (CamelKeyFile *kf, camel_block_t *parent, gsize len, camel_key_t *records);
+gint            camel_key_file_read (CamelKeyFile *kf, camel_block_t *start, gsize *len, camel_key_t **records);
 
 G_END_DECLS
 

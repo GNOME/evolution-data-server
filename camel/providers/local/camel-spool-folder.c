@@ -40,10 +40,10 @@
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 
-static CamelLocalSummary *spool_create_summary(CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index);
+static CamelLocalSummary *spool_create_summary (CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index);
 
-static gint spool_lock(CamelLocalFolder *lf, CamelLockType type, GError **error);
-static void spool_unlock(CamelLocalFolder *lf);
+static gint spool_lock (CamelLocalFolder *lf, CamelLockType type, GError **error);
+static void spool_unlock (CamelLocalFolder *lf);
 
 G_DEFINE_TYPE (CamelSpoolFolder, camel_spool_folder, CAMEL_TYPE_MBOX_FOLDER)
 
@@ -89,7 +89,7 @@ camel_spool_folder_new (CamelStore *parent_store,
 		(CamelLocalFolder *)folder, flags, error);
 	if (folder) {
 		if (camel_url_get_param(((CamelService *)parent_store)->url, "xstatus"))
-			camel_mbox_summary_xstatus((CamelMboxSummary *)folder->summary, TRUE);
+			camel_mbox_summary_xstatus ((CamelMboxSummary *)folder->summary, TRUE);
 	}
 
 	g_free (basename);
@@ -117,7 +117,7 @@ spool_lock (CamelLocalFolder *lf,
 	CamelSpoolFolder *sf = (CamelSpoolFolder *)lf;
 	GError *local_error = NULL;
 
-	mf->lockfd = open(lf->folder_path, O_RDWR|O_LARGEFILE, 0);
+	mf->lockfd = open (lf->folder_path, O_RDWR|O_LARGEFILE, 0);
 	if (mf->lockfd == -1) {
 		g_set_error (
 			error, G_IO_ERROR,
@@ -129,17 +129,17 @@ spool_lock (CamelLocalFolder *lf,
 
 	while (retry < CAMEL_LOCK_RETRY) {
 		if (retry > 0)
-			sleep(CAMEL_LOCK_DELAY);
+			sleep (CAMEL_LOCK_DELAY);
 
 		g_clear_error (&local_error);
 
-		if (camel_lock_fcntl(mf->lockfd, type, &local_error) == 0) {
-			if (camel_lock_flock(mf->lockfd, type, &local_error) == 0) {
-				if ((sf->lockid = camel_lock_helper_lock(lf->folder_path, &local_error)) != -1)
+		if (camel_lock_fcntl (mf->lockfd, type, &local_error) == 0) {
+			if (camel_lock_flock (mf->lockfd, type, &local_error) == 0) {
+				if ((sf->lockid = camel_lock_helper_lock (lf->folder_path, &local_error)) != -1)
 					return 0;
-				camel_unlock_flock(mf->lockfd);
+				camel_unlock_flock (mf->lockfd);
 			}
-			camel_unlock_fcntl(mf->lockfd);
+			camel_unlock_fcntl (mf->lockfd);
 		}
 		retry++;
 	}
@@ -159,11 +159,11 @@ spool_unlock (CamelLocalFolder *lf)
 	CamelMboxFolder *mf = (CamelMboxFolder *)lf;
 	CamelSpoolFolder *sf = (CamelSpoolFolder *)lf;
 
-	camel_lock_helper_unlock(sf->lockid);
+	camel_lock_helper_unlock (sf->lockid);
 	sf->lockid = -1;
-	camel_unlock_flock(mf->lockfd);
-	camel_unlock_fcntl(mf->lockfd);
+	camel_unlock_flock (mf->lockfd);
+	camel_unlock_fcntl (mf->lockfd);
 
-	close(mf->lockfd);
+	close (mf->lockfd);
 	mf->lockfd = -1;
 }

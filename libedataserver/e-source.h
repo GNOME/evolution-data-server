@@ -57,7 +57,7 @@ GType    e_source_get_type (void);
 
 ESource *e_source_new                (const gchar   *name,
 				      const gchar   *relative_uri);
-ESource *e_source_new_with_absolute_uri(const gchar   *name,
+ESource *e_source_new_with_absolute_uri (const gchar   *name,
 					const gchar   *absolute_uri);
 ESource *e_source_new_from_xml_node  (xmlNodePtr    node);
 ESource *e_source_new_from_standalone_xml (const gchar *xml);

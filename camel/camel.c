@@ -45,11 +45,11 @@
 
 #ifdef CAMEL_HAVE_NSS
 /* To protect NSS initialization and shutdown. This prevents
-   concurrent calls to shutdown() and init() by different threads */
+   concurrent calls to shutdown () and init () by different threads */
 PRLock *nss_initlock = NULL;
 
 /* Whether or not Camel has initialized the NSS library. We cannot
-   unconditionally call NSS_Shutdown() if NSS was initialized by other
+   unconditionally call NSS_Shutdown () if NSS was initialized by other
    library before. This boolean ensures that we only perform a cleanup
    if and only if Camel is the one that previously initialized NSS */
 volatile gboolean nss_initialized = FALSE;
@@ -62,7 +62,7 @@ gint camel_application_is_exiting = FALSE;
 #define NSS_SYSTEM_DB "/etc/pki/nssdb"
 
 static gint
-nss_has_system_db(void)
+nss_has_system_db (void)
 {
 	gint found = FALSE;
 #ifndef G_OS_WIN32
@@ -74,11 +74,11 @@ nss_has_system_db(void)
 		return FALSE;
 
 	/* Check whether the system NSS db is actually enabled */
-	while (fgets(buf, 80, f) && !found) {
+	while (fgets (buf, 80, f) && !found) {
 		if (!strcmp(buf, "library=libnsssysinit.so\n"))
 			found = TRUE;
 	}
-	fclose(f);
+	fclose (f);
 #endif
 	return found;
 }
@@ -95,7 +95,7 @@ camel_init (const gchar *configdir, gboolean nss_init)
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 
-	camel_debug_init();
+	camel_debug_init ();
 
 #ifdef CAMEL_HAVE_NSS
 	if (nss_init) {
@@ -105,8 +105,8 @@ camel_init (const gchar *configdir, gboolean nss_init)
 		PRUint16 indx;
 
 		if (nss_initlock == NULL) {
-			PR_Init(PR_SYSTEM_THREAD, PR_PRIORITY_NORMAL, 10);
-			nss_initlock = PR_NewLock();
+			PR_Init (PR_SYSTEM_THREAD, PR_PRIORITY_NORMAL, 10);
+			nss_initlock = PR_NewLock ();
 		}
 		PR_Lock (nss_initlock);
 
@@ -137,10 +137,10 @@ camel_init (const gchar *configdir, gboolean nss_init)
 								 ".pki/nssdb", NULL );
 			if (g_mkdir_with_parents (user_nss_dir, 0700))
 				g_warning("Failed to create SQL database directory %s: %s\n",
-					  user_nss_dir, strerror(errno));
+					  user_nss_dir, strerror (errno));
 
 			nss_sql_configdir = g_strconcat ("sql:", user_nss_dir, NULL);
-			g_free(user_nss_dir);
+			g_free (user_nss_dir);
 #endif
 		}
 
@@ -160,7 +160,7 @@ camel_init (const gchar *configdir, gboolean nss_init)
 
 		if (status == SECFailure) {
 			g_warning ("Failed to initialize NSS SQL database in %s: NSS error %d",
-				   nss_sql_configdir, PORT_GetError());
+				   nss_sql_configdir, PORT_GetError ());
 			/* Fall back to opening the old DBM database */
 		}
 #endif
@@ -184,11 +184,11 @@ skip_nss_init:
 
 		NSS_SetDomesticPolicy ();
 
-		PR_Unlock(nss_initlock);
+		PR_Unlock (nss_initlock);
 
 		/* we must enable all ciphersuites */
 		for (indx = 0; indx < SSL_NumImplementedCiphers; indx++) {
-			if (!SSL_IS_SSL2_CIPHER(SSL_ImplementedCiphers[indx]))
+			if (!SSL_IS_SSL2_CIPHER (SSL_ImplementedCiphers[indx]))
 				SSL_CipherPrefSetDefault (SSL_ImplementedCiphers[indx], PR_TRUE);
 		}
 
@@ -243,10 +243,10 @@ camel_shutdown (void)
 
 #if defined (CAMEL_HAVE_NSS)
 	if (nss_initlock != NULL) {
-		PR_Lock(nss_initlock);
+		PR_Lock (nss_initlock);
 		if (nss_initialized)
 			NSS_Shutdown ();
-		PR_Unlock(nss_initlock);
+		PR_Unlock (nss_initlock);
 	}
 #endif /* CAMEL_HAVE_NSS */
 

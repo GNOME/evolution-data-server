@@ -98,7 +98,7 @@ camel_url_new_with_base (CamelURL *base, const gchar *url_string)
 
 #ifdef G_OS_WIN32
 	if (url->protocol && !strcmp(url->protocol, "file")) {
-		url->path = g_filename_from_uri(start, &url->host, NULL);
+		url->path = g_filename_from_uri (start, &url->host, NULL);
 		return url;
 	}
 #endif
@@ -120,7 +120,7 @@ camel_url_new_with_base (CamelURL *base, const gchar *url_string)
 				colon = at;
 			}
 
-			semi = strchr(url_string, ';');
+			semi = strchr (url_string, ';');
 			if (semi && semi < colon &&
 			    !g_ascii_strncasecmp (semi, ";auth=", 6)) {
 				url->authmech = g_strndup (semi + 6,
@@ -340,7 +340,7 @@ camel_url_to_string (CamelURL *url, guint32 flags)
 
 #ifdef G_OS_WIN32
 	if (url->protocol && !strcmp(url->protocol, "file"))
-		return g_filename_to_uri(url->path, url->host, NULL);
+		return g_filename_to_uri (url->path, url->host, NULL);
 #endif /* G_OS_WIN32 */
 
 	str = g_string_sized_new (20);
@@ -412,11 +412,11 @@ camel_url_free (CamelURL *url)
 {
 	if (url) {
 		if (url->passwd)
-			memset(url->passwd, 0, strlen(url->passwd));
+			memset (url->passwd, 0, strlen (url->passwd));
 		if (url->user)
-			memset(url->user, 0, strlen(url->user));
+			memset (url->user, 0, strlen (url->user));
 		if (url->host)
-			memset(url->host, 0, strlen(url->host));
+			memset (url->host, 0, strlen (url->host));
 		g_free (url->protocol);
 		g_free (url->user);
 		g_free (url->authmech);
@@ -542,9 +542,9 @@ camel_url_set_param (CamelURL *url, const gchar *name, const gchar *value)
 	g_return_if_fail (url != NULL);
 
 	if (value)
-		g_datalist_set_data_full (&url->params, name, g_strdup(value), g_free);
+		g_datalist_set_data_full (&url->params, name, g_strdup (value), g_free);
 	else
-		g_datalist_remove_data(&url->params, name);
+		g_datalist_remove_data (&url->params, name);
 }
 
 /**
@@ -644,7 +644,7 @@ camel_url_decode (gchar *part)
 
 	s = d = (guchar *)part;
 	do {
-		if (*s == '%' && isxdigit(s[1]) && isxdigit(s[2])) {
+		if (*s == '%' && isxdigit (s[1]) && isxdigit (s[2])) {
 			*d++ = (XDIGIT (s[1]) << 4) + XDIGIT (s[2]);
 			s += 2;
 		} else
@@ -688,16 +688,16 @@ check_equal (gchar *s1, gchar *s2)
 }
 
 gint
-camel_url_equal(gconstpointer v, gconstpointer v2)
+camel_url_equal (gconstpointer v, gconstpointer v2)
 {
 	const CamelURL *u1 = v, *u2 = v2;
 
-	return check_equal(u1->protocol, u2->protocol)
-		&& check_equal(u1->user, u2->user)
-		&& check_equal(u1->authmech, u2->authmech)
-		&& check_equal(u1->host, u2->host)
-		&& check_equal(u1->path, u2->path)
-		&& check_equal(u1->query, u2->query)
+	return check_equal (u1->protocol, u2->protocol)
+		&& check_equal (u1->user, u2->user)
+		&& check_equal (u1->authmech, u2->authmech)
+		&& check_equal (u1->host, u2->host)
+		&& check_equal (u1->path, u2->path)
+		&& check_equal (u1->query, u2->query)
 		&& u1->port == u2->port;
 }
 
@@ -710,25 +710,25 @@ camel_url_equal(gconstpointer v, gconstpointer v2)
  * Returns: a duplicate copy of @in
  **/
 CamelURL *
-camel_url_copy(const CamelURL *in)
+camel_url_copy (const CamelURL *in)
 {
 	CamelURL *out;
 
 	g_return_val_if_fail (in != NULL, NULL);
 
-	out = g_malloc0(sizeof(*out));
-	out->protocol = g_strdup(in->protocol);
-	out->user = g_strdup(in->user);
-	out->authmech = g_strdup(in->authmech);
-	out->passwd = g_strdup(in->passwd);
-	out->host = g_strdup(in->host);
+	out = g_malloc0 (sizeof (*out));
+	out->protocol = g_strdup (in->protocol);
+	out->user = g_strdup (in->user);
+	out->authmech = g_strdup (in->authmech);
+	out->passwd = g_strdup (in->passwd);
+	out->host = g_strdup (in->host);
 	out->port = in->port;
-	out->path = g_strdup(in->path);
+	out->path = g_strdup (in->path);
 	out->params = NULL;
 	if (in->params)
-		g_datalist_foreach(&((CamelURL *)in)->params, copy_param, &out->params);
-	out->query = g_strdup(in->query);
-	out->fragment = g_strdup(in->fragment);
+		g_datalist_foreach (&((CamelURL *)in)->params, copy_param, &out->params);
+	out->query = g_strdup (in->query);
+	out->fragment = g_strdup (in->fragment);
 
 	return out;
 }

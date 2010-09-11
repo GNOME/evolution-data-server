@@ -174,7 +174,7 @@ void		e_sexp_fatal_error	(struct _ESExp *f, const gchar *why, ...) G_GNUC_NORETU
 /* return the error string */
 const gchar     *e_sexp_error		(struct _ESExp *f);
 
-ESExpTerm * e_sexp_parse_value(ESExp *f);
+ESExpTerm * e_sexp_parse_value (ESExp *f);
 
 gboolean	e_sexp_evaluate_occur_times	(ESExp *f, time_t *start, time_t *end);
 G_END_DECLS

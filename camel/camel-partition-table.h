@@ -91,7 +91,7 @@ struct _CamelPartitionKey {
 
 struct _CamelPartitionKeyBlock {
 	guint32 used;
-	struct _CamelPartitionKey keys[(CAMEL_BLOCK_SIZE-4)/sizeof(struct _CamelPartitionKey)];
+	struct _CamelPartitionKey keys[(CAMEL_BLOCK_SIZE-4)/sizeof (struct _CamelPartitionKey)];
 };
 
 struct _CamelPartitionMap {
@@ -102,7 +102,7 @@ struct _CamelPartitionMap {
 struct _CamelPartitionMapBlock {
 	camel_block_t next;
 	guint32 used;
-	struct _CamelPartitionMap partition[(CAMEL_BLOCK_SIZE-8)/sizeof(struct _CamelPartitionMap)];
+	struct _CamelPartitionMap partition[(CAMEL_BLOCK_SIZE-8)/sizeof (struct _CamelPartitionMap)];
 };
 
 struct _CamelPartitionTable {
@@ -163,7 +163,7 @@ struct _CamelKeyBlock {
 	camel_block_t next;
 	guint32 used;
 	union {
-		struct _CamelKeyKey keys[(CAMEL_BLOCK_SIZE-8)/sizeof(struct _CamelKeyKey)];
+		struct _CamelKeyKey keys[(CAMEL_BLOCK_SIZE-8)/sizeof (struct _CamelKeyKey)];
 		gchar keydata[CAMEL_BLOCK_SIZE-8];
 	} u;
 };

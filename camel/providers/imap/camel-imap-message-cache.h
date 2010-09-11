@@ -116,7 +116,7 @@ void         camel_imap_message_cache_copy   (CamelImapMessageCache *source,
 					      const gchar *dest_uid);
 gboolean     camel_imap_message_cache_delete (const gchar *path,
 					      GError **error);
-GPtrArray *  camel_imap_message_cache_filter_cached(CamelImapMessageCache *,
+GPtrArray *  camel_imap_message_cache_filter_cached (CamelImapMessageCache *,
                                               GPtrArray *uids,
                                               GError **error);
 

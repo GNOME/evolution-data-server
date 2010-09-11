@@ -163,11 +163,11 @@ free_postal_address (gpointer  postal_address)
 	if (address) {
 		g_free (address->street_address);
 		g_free (address->location);
-		g_free(address->city);
-		g_free(address->country);
-		g_free(address->state);
-		g_free(address->postal_code);
-		g_free(address);
+		g_free (address->city);
+		g_free (address->country);
+		g_free (address->state);
+		g_free (address->postal_code);
+		g_free (address);
 	}
 }
 
@@ -209,7 +209,7 @@ free_attach (gpointer s, gpointer data)
 		if (attach->data)
 			g_free (attach->data), attach->data = NULL;
 
-		g_free(attach);
+		g_free (attach);
 	}
 
 }
@@ -571,9 +571,9 @@ e_gw_item_init (EGwItem *item)
 	priv->delay_until = NULL;
 	priv->attach_list = NULL;
 	priv->simple_fields = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, g_free);
-	priv->full_name = g_new0(FullName, 1);
+	priv->full_name = g_new0 (FullName, 1);
 	priv->addresses = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, free_postal_address);
-	priv->additions = g_hash_table_new(g_str_hash, g_str_equal);
+	priv->additions = g_hash_table_new (g_str_hash, g_str_equal);
 	priv->updates =   g_hash_table_new (g_str_hash, g_str_equal);
 	priv->deletions = g_hash_table_new (g_str_hash, g_str_equal);
 	priv->self_status = 0;
@@ -830,7 +830,7 @@ e_gw_item_get_field_value (EGwItem *item, const gchar *field_name)
 	gpointer value;
 
 	g_return_val_if_fail (field_name != NULL, NULL);
-	g_return_val_if_fail (E_IS_GW_ITEM(item), NULL);
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
 
 	if (item->priv->simple_fields == NULL)
 		return NULL;
@@ -847,7 +847,7 @@ e_gw_item_set_field_value (EGwItem *item, const gchar *field_name, gchar * field
 {
 	g_return_if_fail (field_name != NULL);
 	g_return_if_fail (field_name != NULL);
-	g_return_if_fail (E_IS_GW_ITEM(item));
+	g_return_if_fail (E_IS_GW_ITEM (item));
 
 	if (item->priv->simple_fields != NULL)
 		g_hash_table_insert (item->priv->simple_fields, (gpointer) field_name, g_strdup (field_value));
@@ -1040,7 +1040,7 @@ set_common_addressbook_item_fields_from_soap_parameter (EGwItem *item, SoupSoapP
 				g_free (value);
 				value = components[0];
 				priv->category_list = g_list_append (priv->category_list, g_strdup (value));
-				g_strfreev(components);
+				g_strfreev (components);
 
 			}
 
@@ -1180,7 +1180,7 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 	if (subparam) {
 		for ( temp = soup_soap_parameter_get_first_child (subparam); temp != NULL; temp = soup_soap_parameter_get_next_child (temp))
 			{
-				IMAddress *im_address = g_new0(IMAddress, 1);
+				IMAddress *im_address = g_new0 (IMAddress, 1);
 				im_address->address = im_address->service = NULL;
 				second_level_child = soup_soap_parameter_get_first_child_by_name (temp, "service");
 				if (second_level_child) {
@@ -1461,7 +1461,7 @@ append_postal_address_to_soap_message (SoupSoapMessage *msg, PostalAddress *addr
 		e_gw_message_write_string_parameter (msg, "postalCode", NULL, address->postal_code);
 	if (address->country)
 		e_gw_message_write_string_parameter (msg, "country", NULL, address->country);
-	soup_soap_message_end_element(msg);
+	soup_soap_message_end_element (msg);
 
 }
 
@@ -1684,7 +1684,7 @@ append_group_fields_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		e_gw_message_write_string_parameter (msg, "id", NULL, member->id);
 		e_gw_message_write_string_parameter (msg, "distType", NULL, "TO");
 		e_gw_message_write_string_parameter (msg, "itemType", NULL, "Contact");
-		soup_soap_message_end_element(msg);
+		soup_soap_message_end_element (msg);
 
 	}
 	soup_soap_message_end_element (msg);
@@ -1958,7 +1958,7 @@ e_gw_item_new_from_soap_parameter (const gchar *email, const gchar *container, S
 					g_free (value);
 					value = components[0];
 					item->priv->category_list = g_list_append (item->priv->category_list, g_strdup (value));
-					g_strfreev(components);
+					g_strfreev (components);
 				}
 			}
 
@@ -2642,7 +2642,7 @@ e_gw_item_set_to (EGwItem *item, const gchar *to)
 const gchar *
 e_gw_item_get_to (EGwItem *item)
 {
-	g_return_val_if_fail (E_IS_GW_ITEM(item), NULL);
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
 	return item->priv->to;
 }
 
@@ -3036,7 +3036,7 @@ e_gw_item_add_distribution_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 }
 
 static void
-add_attachment_to_soap_message(EGwItemAttachment *attachment, SoupSoapMessage *msg)
+add_attachment_to_soap_message (EGwItemAttachment *attachment, SoupSoapMessage *msg)
 {
 	gchar *size = NULL;
 
@@ -3282,7 +3282,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		if (priv->subject)
 			e_gw_message_write_string_parameter (msg, "subject", NULL, priv->subject);
 		/*distribution*/
-		e_gw_item_add_distribution_to_soap_message(item, msg);
+		e_gw_item_add_distribution_to_soap_message (item, msg);
 
 		if (priv->set_sendoptions) {
 			/* item options */
@@ -3393,22 +3393,22 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	case E_GW_ITEM_TYPE_CONTACT :
 		soup_soap_message_add_attribute (msg, "type", "Contact", "xsi", NULL);
 		append_contact_fields_to_soap_message (item, msg);
-		soup_soap_message_end_element(msg);
+		soup_soap_message_end_element (msg);
 		return TRUE;
 	case E_GW_ITEM_TYPE_GROUP :
 		soup_soap_message_add_attribute (msg, "type", "Group", "xsi", NULL);
 		append_group_fields_to_soap_message (item, msg);
-		soup_soap_message_end_element(msg);
+		soup_soap_message_end_element (msg);
 		return TRUE;
 	case E_GW_ITEM_TYPE_ORGANISATION :
 		soup_soap_message_add_attribute (msg, "type", "Organization", "xsi", NULL);
 		append_contact_fields_to_soap_message (item, msg);
-		soup_soap_message_end_element(msg);
+		soup_soap_message_end_element (msg);
 		return TRUE;
 	case E_GW_ITEM_TYPE_CATEGORY :
 		soup_soap_message_add_attribute (msg, "type", "Category", "xsi", NULL);
 		e_gw_message_write_string_parameter (msg, "name", NULL, item->priv->category_name);
-		soup_soap_message_end_element(msg);
+		soup_soap_message_end_element (msg);
 		return TRUE;
 	default :
 		g_warning (G_STRLOC ": Unknown type for item");
@@ -3597,7 +3597,7 @@ e_gw_item_append_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		append_contact_changes_to_soap_message (item, msg, E_GW_ITEM_CHANGE_TYPE_ADD);
 		append_contact_changes_to_soap_message (item, msg, E_GW_ITEM_CHANGE_TYPE_UPDATE);
 		append_contact_changes_to_soap_message (item, msg, E_GW_ITEM_CHANGE_TYPE_DELETE);
-		soup_soap_message_end_element(msg);
+		soup_soap_message_end_element (msg);
 		return TRUE;
 	case E_GW_ITEM_TYPE_GROUP :
 		soup_soap_message_start_element (msg, "update", NULL, NULL);
@@ -3605,7 +3605,7 @@ e_gw_item_append_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		if (value)
 			e_gw_message_write_string_parameter (msg, "name", NULL, value);
 		soup_soap_message_end_element (msg);
-		soup_soap_message_end_element(msg);
+		soup_soap_message_end_element (msg);
 		return TRUE;
 	case E_GW_ITEM_TYPE_APPOINTMENT:
 	case E_GW_ITEM_TYPE_TASK :
@@ -3613,7 +3613,7 @@ e_gw_item_append_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		append_event_changes_to_soap_message (item, msg, E_GW_ITEM_CHANGE_TYPE_ADD);
 		append_event_changes_to_soap_message (item, msg, E_GW_ITEM_CHANGE_TYPE_UPDATE);
 		append_event_changes_to_soap_message (item, msg, E_GW_ITEM_CHANGE_TYPE_DELETE);
-		soup_soap_message_end_element(msg);
+		soup_soap_message_end_element (msg);
 		return TRUE;
 	default :
 		g_warning (G_STRLOC ": Unknown type for item");

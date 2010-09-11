@@ -60,7 +60,7 @@ G_DEFINE_TYPE (CamelDiscoFolder, camel_disco_folder, CAMEL_TYPE_FOLDER)
 static gboolean disco_expunge (CamelFolder *folder, GError **error);
 
 static void
-cdf_sync_offline(CamelSession *session, CamelSessionThreadMsg *mm)
+cdf_sync_offline (CamelSession *session, CamelSessionThreadMsg *mm)
 {
 	struct _cdf_sync_msg *m = (struct _cdf_sync_msg *)mm;
 	gint i;
@@ -71,27 +71,27 @@ cdf_sync_offline(CamelSession *session, CamelSessionThreadMsg *mm)
 		for (i=0;i<m->changes->uid_added->len;i++) {
 			gint pc = i * 100 / m->changes->uid_added->len;
 
-			camel_operation_progress(NULL, pc);
-			camel_disco_folder_cache_message((CamelDiscoFolder *)m->folder,
+			camel_operation_progress (NULL, pc);
+			camel_disco_folder_cache_message ((CamelDiscoFolder *)m->folder,
 							 m->changes->uid_added->pdata[i],
 							 &mm->error);
 		}
 	} else {
-		camel_disco_folder_prepare_for_offline((CamelDiscoFolder *)m->folder,
+		camel_disco_folder_prepare_for_offline ((CamelDiscoFolder *)m->folder,
 						       "(match-all)",
 						       &mm->error);
 	}
 
-	camel_operation_end(NULL);
+	camel_operation_end (NULL);
 }
 
 static void
-cdf_sync_free(CamelSession *session, CamelSessionThreadMsg *mm)
+cdf_sync_free (CamelSession *session, CamelSessionThreadMsg *mm)
 {
 	struct _cdf_sync_msg *m = (struct _cdf_sync_msg *)mm;
 
 	if (m->changes)
-		camel_folder_change_info_free(m->changes);
+		camel_folder_change_info_free (m->changes);
 	g_object_unref (m->folder);
 }
 
@@ -117,11 +117,11 @@ cdf_folder_changed (CamelFolder *folder,
 		CamelSession *session = CAMEL_SERVICE (parent_store)->session;
 		struct _cdf_sync_msg *m;
 
-		m = camel_session_thread_msg_new(session, &cdf_sync_ops, sizeof(*m));
-		m->changes = camel_folder_change_info_new();
-		camel_folder_change_info_cat(m->changes, changes);
+		m = camel_session_thread_msg_new (session, &cdf_sync_ops, sizeof (*m));
+		m->changes = camel_folder_change_info_new ();
+		camel_folder_change_info_cat (m->changes, changes);
 		m->folder = g_object_ref (folder);
-		camel_session_thread_queue(session, &m->msg, 0);
+		camel_session_thread_queue (session, &m->msg, 0);
 	}
 }
 
@@ -273,9 +273,9 @@ disco_expunge (CamelFolder *folder,
 	count = camel_folder_summary_count (folder->summary);
 	for (i = 0; i < count; i++) {
 		info = camel_folder_summary_index (folder->summary, i);
-		if (camel_message_info_flags(info) & CAMEL_MESSAGE_DELETED)
+		if (camel_message_info_flags (info) & CAMEL_MESSAGE_DELETED)
 			g_ptr_array_add (uids, g_strdup (camel_message_info_uid (info)));
-		camel_message_info_free(info);
+		camel_message_info_free (info);
 	}
 
 	success = disco_expunge_uids (folder, uids, error);
@@ -385,14 +385,14 @@ disco_prepare_for_offline (CamelDiscoFolder *disco_folder,
 		uids = camel_folder_get_uids (folder);
 
 	if (!uids) {
-		camel_operation_end(NULL);
+		camel_operation_end (NULL);
 		return FALSE;
 	}
 
 	for (i = 0; i < uids->len && success; i++) {
 		gint pc = i * 100 / uids->len;
 
-		camel_operation_progress(NULL, pc);
+		camel_operation_progress (NULL, pc);
 		success = camel_disco_folder_cache_message (
 			disco_folder, uids->pdata[i], error);
 	}
@@ -402,7 +402,7 @@ disco_prepare_for_offline (CamelDiscoFolder *disco_folder,
 	else
 		camel_folder_free_uids (folder, uids);
 
-	camel_operation_end(NULL);
+	camel_operation_end (NULL);
 
 	return success;
 }

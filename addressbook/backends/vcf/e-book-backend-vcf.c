@@ -222,7 +222,7 @@ set_revision (EContact *contact)
 	const struct tm *tm = NULL;
 	time_t t;
 
-	t = time(NULL);
+	t = time (NULL);
 	tm = gmtime (&t);
 	if (tm)
 		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
@@ -230,7 +230,7 @@ set_revision (EContact *contact)
 }
 
 static EContact *
-do_create(EBookBackendVCF  *bvcf,
+do_create (EBookBackendVCF  *bvcf,
 	  const gchar     *vcard_req,
 	  gboolean        dirty_the_file)
 {
@@ -246,7 +246,7 @@ do_create(EBookBackendVCF  *bvcf,
 	id = e_book_backend_vcf_create_unique_id ();
 
 	contact = e_contact_new_from_vcard (vcard_req);
-	e_contact_set(contact, E_CONTACT_UID, id);
+	e_contact_set (contact, E_CONTACT_UID, id);
 	g_free (id);
 
 	rev = e_contact_get_const (contact,  E_CONTACT_REV);
@@ -560,7 +560,7 @@ e_book_backend_vcf_get_required_fields (EBookBackendSync *backend,
 {
 	GList *fields = NULL;
 
-	fields = g_list_append (fields , g_strdup(e_contact_field_name (E_CONTACT_FILE_AS)));
+	fields = g_list_append (fields , g_strdup (e_contact_field_name (E_CONTACT_FILE_AS)));
 	*fields_out = fields;
 }
 
@@ -637,7 +637,7 @@ e_book_backend_vcf_load_source (EBookBackend             *backend,
 #ifdef CREATE_DEFAULT_VCARD
 				EContact *contact;
 
-				contact = do_create(bvcf, XIMIAN_VCARD, FALSE);
+				contact = do_create (bvcf, XIMIAN_VCARD, FALSE);
 				save_file (bvcf);
 
 				/* XXX check errors here */
@@ -767,7 +767,7 @@ e_book_backend_vcf_init (EBookBackendVCF *backend)
 	EBookBackendVCFPrivate *priv;
 
 	priv                 = g_new0 (EBookBackendVCFPrivate, 1);
-	priv->mutex = g_mutex_new();
+	priv->mutex = g_mutex_new ();
 
 	backend->priv = priv;
 }

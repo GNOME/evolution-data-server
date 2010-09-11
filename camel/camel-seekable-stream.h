@@ -93,7 +93,7 @@ goffset		camel_seekable_stream_seek	(CamelSeekableStream *stream,
 						 CamelStreamSeekPolicy policy,
 						 GError **error);
 goffset		camel_seekable_stream_tell	(CamelSeekableStream *stream);
-gint		camel_seekable_stream_set_bounds(CamelSeekableStream *stream,
+gint		camel_seekable_stream_set_bounds (CamelSeekableStream *stream,
 						 goffset start,
 						 goffset end,
 						 GError **error);

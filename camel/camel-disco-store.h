@@ -127,7 +127,7 @@ gboolean              camel_disco_store_can_work_offline (CamelDiscoStore *store
 
 /* Convenience functions */
 gboolean camel_disco_store_check_online (CamelDiscoStore *store, GError **error);
-void camel_disco_store_prepare_for_offline(CamelDiscoStore *store, GError **error);
+void camel_disco_store_prepare_for_offline (CamelDiscoStore *store, GError **error);
 
 G_END_DECLS
 

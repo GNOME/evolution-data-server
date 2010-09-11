@@ -95,7 +95,7 @@ disco_store_connect (CamelService *service,
 		   disconnect could be called, which will remove store->diary and unref it */
 		store->status = CAMEL_DISCO_STORE_RESYNCING;
 		diary = g_object_ref (store->diary);
-		camel_disco_diary_replay(diary, &local_error);
+		camel_disco_diary_replay (diary, &local_error);
 		g_object_unref (diary);
 		store->status = CAMEL_DISCO_STORE_ONLINE;
 		if (local_error != NULL) {
@@ -256,20 +256,20 @@ disco_store_set_status (CamelDiscoStore *disco_store,
 
 				sync =  camel_url_get_param(((CamelService *)disco_store)->url, "offline_sync") != NULL;
 
-				folders = camel_object_bag_list(((CamelStore *)disco_store)->folders);
+				folders = camel_object_bag_list (((CamelStore *)disco_store)->folders);
 				for (i=0;i<folders->len;i++) {
 					folder = folders->pdata[i];
-					if (G_TYPE_CHECK_INSTANCE_TYPE(folder, CAMEL_TYPE_DISCO_FOLDER)
+					if (G_TYPE_CHECK_INSTANCE_TYPE (folder, CAMEL_TYPE_DISCO_FOLDER)
 					    && (sync || camel_disco_folder_get_offline_sync (CAMEL_DISCO_FOLDER (folder)))) {
 						camel_disco_folder_prepare_for_offline((CamelDiscoFolder *)folder, "", NULL);
 					}
 					g_object_unref (folder);
 				}
-				g_ptr_array_free(folders, TRUE);
+				g_ptr_array_free (folders, TRUE);
 			}
 		}
 
-		camel_store_sync(CAMEL_STORE (disco_store), FALSE, NULL);
+		camel_store_sync (CAMEL_STORE (disco_store), FALSE, NULL);
 	}
 
 	if (!camel_service_disconnect (CAMEL_SERVICE (disco_store), network_available, error))
@@ -421,19 +421,19 @@ camel_disco_store_prepare_for_offline (CamelDiscoStore *disco_store,
 
 				sync =  camel_url_get_param(((CamelService *)disco_store)->url, "offline_sync") != NULL;
 
-				folders = camel_object_bag_list(((CamelStore *)disco_store)->folders);
+				folders = camel_object_bag_list (((CamelStore *)disco_store)->folders);
 				for (i=0;i<folders->len;i++) {
 					folder = folders->pdata[i];
-					if (G_TYPE_CHECK_INSTANCE_TYPE(folder, CAMEL_TYPE_DISCO_FOLDER)
+					if (G_TYPE_CHECK_INSTANCE_TYPE (folder, CAMEL_TYPE_DISCO_FOLDER)
 					    && (sync || camel_disco_folder_get_offline_sync (CAMEL_DISCO_FOLDER (folder)))) {
 						camel_disco_folder_prepare_for_offline((CamelDiscoFolder *)folder, "(match-all)", NULL);
 					}
 					g_object_unref (folder);
 				}
-				g_ptr_array_free(folders, TRUE);
+				g_ptr_array_free (folders, TRUE);
 			}
 		}
 
-		camel_store_sync(CAMEL_STORE (disco_store), FALSE, NULL);
+		camel_store_sync (CAMEL_STORE (disco_store), FALSE, NULL);
 	}
 }

@@ -89,7 +89,7 @@ e_vcard_class_init (EVCardClass *klass)
 {
 	GObjectClass *object_class;
 
-	object_class = G_OBJECT_CLASS(klass);
+	object_class = G_OBJECT_CLASS (klass);
 
 	parent_class = g_type_class_ref (G_TYPE_OBJECT);
 
@@ -205,15 +205,15 @@ read_attribute_value (EVCardAttribute *attr, gchar **p, gboolean quoted_printabl
 
 	/* read in the value */
 	str = g_string_new ("");
-	for (lp =  skip_newline( *p, quoted_printable);
+	for (lp =  skip_newline ( *p, quoted_printable);
 	     *lp != '\n' && *lp != '\r' && *lp != '\0';
-	     lp = skip_newline( lp, quoted_printable ) ) {
+	     lp = skip_newline ( lp, quoted_printable ) ) {
 
 		if (*lp == '=' && quoted_printable) {
 			gchar a, b;
 			if ((a = *(++lp)) == '\0') break;
 			if ((b = *(++lp)) == '\0') break;
-			if (isxdigit(a) && isxdigit (b)) {
+			if (isxdigit (a) && isxdigit (b)) {
 				gchar c;
 
 				a = tolower (a);
@@ -235,7 +235,7 @@ read_attribute_value (EVCardAttribute *attr, gchar **p, gboolean quoted_printabl
 		} else if (*lp == '\\') {
 			/* convert back to the non-escaped version of
 			   the characters */
-			lp = g_utf8_next_char(lp);
+			lp = g_utf8_next_char (lp);
 			if (*lp == '\0') {
 				g_string_append_c (str, '\\');
 				break;
@@ -257,10 +257,10 @@ read_attribute_value (EVCardAttribute *attr, gchar **p, gboolean quoted_printabl
 			default:
 				g_warning ("invalid escape, passing it through");
 				g_string_append_c (str, '\\');
-				g_string_append_unichar (str, g_utf8_get_char(lp));
+				g_string_append_unichar (str, g_utf8_get_char (lp));
 				break;
 			}
-			lp = g_utf8_next_char(lp);
+			lp = g_utf8_next_char (lp);
 		}
 		else if ((*lp == ';') ||
 			 (*lp == ',' && !g_ascii_strcasecmp (attr->name, "CATEGORIES"))) {
@@ -276,11 +276,11 @@ read_attribute_value (EVCardAttribute *attr, gchar **p, gboolean quoted_printabl
 
 			e_vcard_attribute_add_value (attr, str->str);
 			g_string_assign (str, "");
-			lp = g_utf8_next_char(lp);
+			lp = g_utf8_next_char (lp);
 		}
 		else {
 			g_string_append_unichar (str, g_utf8_get_char (lp));
-			lp = g_utf8_next_char(lp);
+			lp = g_utf8_next_char (lp);
 		}
 	}
 	if (str) {
@@ -298,7 +298,7 @@ read_attribute_value (EVCardAttribute *attr, gchar **p, gboolean quoted_printabl
 		g_string_free (str, TRUE);
 	}
 
-	skip_to_next_line( &lp );
+	skip_to_next_line ( &lp );
 
 	*p = lp;
 }
@@ -312,9 +312,9 @@ read_attribute_params (EVCardAttribute *attr, gchar **p, gboolean *quoted_printa
 	gboolean in_quote = FALSE;
 
 	str = g_string_new ("");
-	for (lp =  skip_newline( *p, *quoted_printable);
+	for (lp =  skip_newline ( *p, *quoted_printable);
 	     *lp != '\n' && *lp != '\r' && *lp != '\0';
-	     lp = skip_newline( lp, *quoted_printable ) ) {
+	     lp = skip_newline ( lp, *quoted_printable ) ) {
 
 		if (*lp == '"') {
 			in_quote = !in_quote;
@@ -345,7 +345,7 @@ read_attribute_params (EVCardAttribute *attr, gchar **p, gboolean *quoted_printa
 					/* do nothing */
 
 				} else {
-					skip_to_next_line( &lp );
+					skip_to_next_line ( &lp );
 					break;
 				}
 			}
@@ -449,7 +449,7 @@ read_attribute_params (EVCardAttribute *attr, gchar **p, gboolean *quoted_printa
 			g_string_assign (str, "");
 			/*			skip_until (&lp, ":;"); */
 
-			skip_to_next_line( &lp );
+			skip_to_next_line ( &lp );
 		}
 	}
 
@@ -474,9 +474,9 @@ read_attribute (gchar **p)
 
 	/* first read in the group/name */
 	str = g_string_new ("");
-	for (lp =  skip_newline( *p, is_qp);
+	for (lp =  skip_newline ( *p, is_qp);
 	     *lp != '\n' && *lp != '\r' && *lp != '\0';
-	     lp = skip_newline( lp, is_qp ) ) {
+	     lp = skip_newline ( lp, is_qp ) ) {
 
 		if (*lp == ':' || *lp == ';') {
 			if (str->len != 0) {
@@ -494,7 +494,7 @@ read_attribute (gchar **p)
 				 */
 				g_string_free (str, TRUE);
 				*p = lp;
-				skip_to_next_line(p);
+				skip_to_next_line (p);
 				goto lose;
 			}
 		}
@@ -517,11 +517,11 @@ read_attribute (gchar **p)
 			g_warning ("invalid character found in attribute group/name");
 			g_string_free (str, TRUE);
 			*p = lp;
-			skip_to_next_line(p);
+			skip_to_next_line (p);
 			goto lose;
 		}
 
-		lp = g_utf8_next_char(lp);
+		lp = g_utf8_next_char (lp);
 	}
 
 	if (!attr_name) {
@@ -535,14 +535,14 @@ read_attribute (gchar **p)
 
 	if (*lp == ';') {
 		/* skip past the ';' */
-		lp = g_utf8_next_char(lp);
+		lp = g_utf8_next_char (lp);
 		read_attribute_params (attr, &lp, &is_qp, &charset);
 		if (is_qp)
 			attr->encoding = EVC_ENCODING_RAW;
 	}
 	if (*lp == ':') {
 		/* skip past the ':' */
-		lp = g_utf8_next_char(lp);
+		lp = g_utf8_next_char (lp);
 		read_attribute_value (attr, &lp, is_qp, charset);
 	}
 
@@ -612,9 +612,9 @@ parse (EVCard *evc, const gchar *str)
 	buf = make_valid_utf8 (str);
 
 	d(printf ("BEFORE FOLDING:\n"));
-	d(printf (str));
+	d (printf (str));
 	d(printf ("\n\nAFTER FOLDING:\n"));
-	d(printf (buf));
+	d (printf (buf));
 
 	p = buf;
 
@@ -733,7 +733,7 @@ e_vcard_unescape_string (const gchar *s)
 			default:
 				g_warning ("invalid escape, passing it through");
 				g_string_append_c (str, '\\');
-				g_string_append_unichar (str, g_utf8_get_char(p));
+				g_string_append_unichar (str, g_utf8_get_char (p));
 				break;
 			}
 		}
@@ -1423,7 +1423,7 @@ e_vcard_attribute_remove_param (EVCardAttribute *attr, const gchar *param_name)
 		if (g_ascii_strcasecmp (e_vcard_attribute_param_get_name (param),
 					param_name) == 0) {
 			attr->params = g_list_delete_link (attr->params, l);
-			e_vcard_attribute_param_free(param);
+			e_vcard_attribute_param_free (param);
 			break;
 		}
 	}

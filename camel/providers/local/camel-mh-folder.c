@@ -40,10 +40,10 @@
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 
-static CamelLocalSummary *mh_create_summary(CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index);
+static CamelLocalSummary *mh_create_summary (CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index);
 
-static gboolean mh_append_message(CamelFolder *folder, CamelMimeMessage * message, const CamelMessageInfo *info, gchar **appended_uid, GError **error);
-static CamelMimeMessage *mh_get_message(CamelFolder *folder, const gchar *uid, GError **error);
+static gboolean mh_append_message (CamelFolder *folder, CamelMimeMessage * message, const CamelMessageInfo *info, gchar **appended_uid, GError **error);
+static CamelMimeMessage *mh_get_message (CamelFolder *folder, const gchar *uid, GError **error);
 static gchar * mh_get_filename (CamelFolder *folder, const gchar *uid, GError **error);
 
 G_DEFINE_TYPE (CamelMhFolder, camel_mh_folder, CAMEL_TYPE_LOCAL_FOLDER)
@@ -124,7 +124,7 @@ mh_append_message (CamelFolder *folder,
 		return FALSE;
 
 	/* add it to the summary/assign the uid, etc */
-	mi = camel_local_summary_add((CamelLocalSummary *)folder->summary, message, info, lf->changes, error);
+	mi = camel_local_summary_add ((CamelLocalSummary *)folder->summary, message, info, lf->changes, error);
 	if (mi == NULL)
 		goto check_changed;
 
@@ -148,7 +148,7 @@ mh_append_message (CamelFolder *folder,
 	/* close this? */
 	g_object_unref (CAMEL_OBJECT (output_stream));
 
-	g_free(name);
+	g_free (name);
 
 	if (appended_uid)
 		*appended_uid = g_strdup(camel_message_info_uid(mi));
@@ -209,7 +209,7 @@ mh_get_message (CamelFolder *folder,
 		return NULL;
 
 	/* get the message summary info */
-	if ((info = camel_folder_summary_uid(folder->summary, uid)) == NULL) {
+	if ((info = camel_folder_summary_uid (folder->summary, uid)) == NULL) {
 		set_cannot_get_message_ex (
 			error, CAMEL_FOLDER_ERROR_INVALID_UID,
 			uid, lf->folder_path, _("No such message"));
@@ -217,7 +217,7 @@ mh_get_message (CamelFolder *folder,
 	}
 
 	/* we only need it to check the message exists */
-	camel_message_info_free(info);
+	camel_message_info_free (info);
 
 	name = g_strdup_printf("%s/%s", lf->folder_path, uid);
 	message_stream = camel_stream_fs_new_with_name (
@@ -229,8 +229,8 @@ mh_get_message (CamelFolder *folder,
 		goto fail;
 	}
 
-	message = camel_mime_message_new();
-	if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)message, message_stream, error) == -1) {
+	message = camel_mime_message_new ();
+	if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *)message, message_stream, error) == -1) {
 		g_prefix_error (
 			error, _("Cannot get message %s from folder %s: "),
 			name, lf->folder_path);

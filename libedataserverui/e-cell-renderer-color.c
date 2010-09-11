@@ -132,7 +132,7 @@ cell_renderer_color_render (GtkCellRenderer *cell,
 		return;
 
 	gdk_colormap_alloc_color (
-		gdk_colormap_get_system(), priv->color, FALSE, TRUE);
+		gdk_colormap_get_system (), priv->color, FALSE, TRUE);
 
 	cr = gdk_cairo_create (window);
 	gdk_cairo_set_source_color (cr, priv->color);

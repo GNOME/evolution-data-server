@@ -34,7 +34,7 @@ struct _text {
 struct _text texts[MAX_TEXTS];
 
 static void
-setup(void)
+setup (void)
 {
 	gint i, j;
 	gchar *p;
@@ -49,39 +49,39 @@ setup(void)
 	texts[3].text = "A";
 	texts[3].len = 1;
 	texts[4].text = "This is a test.\n.";
-	texts[4].len = strlen(texts[4].text);
+	texts[4].len = strlen (texts[4].text);
 	texts[5].text = "This is a test.\n\n.\n";
-	texts[5].len = strlen(texts[5].text);
-	texts[6].text = g_malloc0(1024);
+	texts[5].len = strlen (texts[5].text);
+	texts[6].text = g_malloc0 (1024);
 	texts[6].len = 1024;
-	texts[7].text = g_malloc0(102400);
+	texts[7].text = g_malloc0 (102400);
 	texts[7].len = 102400;
-	texts[8].text = g_malloc(1024);
-	memset(texts[8].text, '\n', 1024);
+	texts[8].text = g_malloc (1024);
+	memset (texts[8].text, '\n', 1024);
 	texts[8].len = 1024;
-	texts[9].text = g_malloc(102400);
-	memset(texts[9].text, '\n', 102400);
+	texts[9].text = g_malloc (102400);
+	memset (texts[9].text, '\n', 102400);
 	texts[9].len = 102400;
-	texts[10].text = g_malloc(1024);
-	memset(texts[10].text, ' ', 1024);
+	texts[10].text = g_malloc (1024);
+	memset (texts[10].text, ' ', 1024);
 	texts[10].len = 1024;
-	texts[11].text = g_malloc(102400);
-	memset(texts[11].text, ' ', 102400);
+	texts[11].text = g_malloc (102400);
+	memset (texts[11].text, ' ', 102400);
 	texts[11].len = 102400;
 
-	srand(42);
-	p = texts[12].text = g_malloc(1024);
+	srand (42);
+	p = texts[12].text = g_malloc (1024);
 	for (i=0;i<1024;i++) {
-		j = rand();
+		j = rand ();
 		if (j<RAND_MAX/120)
 			*p++ = '\n';
 		else
 			*p++ = (j % 95) + 32;
 	}
 	texts[12].len = 1024;
-	p = texts[13].text = g_malloc(102400);
+	p = texts[13].text = g_malloc (102400);
 	for (i=0;i<102400;i++) {
-		j = rand();
+		j = rand ();
 		if (j<RAND_MAX/120)
 			*p++ = '\n';
 		else
@@ -90,25 +90,25 @@ setup(void)
 	texts[13].len = 102400;
 }
 
-static void cleanup(void)
+static void cleanup (void)
 {
 	gint i;
 
 	for (i=6;i<14;i++) {
-		g_free(texts[i].text);
+		g_free (texts[i].text);
 	}
 }
 
-gint main(gint argc, gchar **argv)
+gint main (gint argc, gchar **argv)
 {
 	CamelMimeMessage *msg, *msg2;
 	gint i, j;
 	gchar *text;
 	gint len;
 
-	camel_test_init(argc, argv);
+	camel_test_init (argc, argv);
 
-	setup();
+	setup ();
 
 	camel_test_start("Simple memory-based content creation");
 
@@ -119,38 +119,38 @@ gint main(gint argc, gchar **argv)
 		len = texts[j].len;
 		for (i=0;i<SET_CONTENT_WAYS;i++) {
 			push("create simple message %d", i);
-			msg = test_message_create_simple();
+			msg = test_message_create_simple ();
 
 			push("set simple content");
 			test_message_set_content_simple((CamelMimePart *)msg, i, "text/plain", text, len);
-			pull();
+			pull ();
 
 			push("compare original content");
-			test_message_compare_content(camel_medium_get_content ((CamelMedium *)msg), text, len);
-			pull();
+			test_message_compare_content (camel_medium_get_content ((CamelMedium *)msg), text, len);
+			pull ();
 
 			push("save message to test1.msg");
 			unlink("test1.msg");
 			test_message_write_file(msg, "test1.msg");
-			check_unref(msg, 1);
-			pull();
+			check_unref (msg, 1);
+			pull ();
 
 			push("read from test1.msg");
 			msg2 = test_message_read_file("test1.msg");
-			pull();
+			pull ();
 
 			push("compare read with original content");
-			test_message_compare_content(camel_medium_get_content ((CamelMedium *)msg2), text, len);
-			check_unref(msg2, 1);
-			pull();
+			test_message_compare_content (camel_medium_get_content ((CamelMedium *)msg2), text, len);
+			check_unref (msg2, 1);
+			pull ();
 
 			unlink("test1.msg");
-			pull();
+			pull ();
 		}
-		pull();
+		pull ();
 	}
 
-	camel_test_end();
+	camel_test_end ();
 
 	camel_test_start("Different encodings");
 	for (j=0;j<MAX_TEXTS;j++) {
@@ -160,37 +160,37 @@ gint main(gint argc, gchar **argv)
 		for (i=0;i<CAMEL_TRANSFER_NUM_ENCODINGS;i++) {
 
 			push("test simple message, encoding %s", camel_transfer_encoding_to_string(i));
-			msg = test_message_create_simple();
+			msg = test_message_create_simple ();
 
 			push("set simple content");
 			test_message_set_content_simple((CamelMimePart *)msg, 0, "text/plain", text, len);
-			pull();
+			pull ();
 
-			camel_mime_part_set_encoding((CamelMimePart *)msg, i);
+			camel_mime_part_set_encoding ((CamelMimePart *)msg, i);
 
 			push("save message to test1.msg");
 			unlink("test1.msg");
 			test_message_write_file(msg, "test1.msg");
-			check_unref(msg, 1);
-			pull();
+			check_unref (msg, 1);
+			pull ();
 
 			push("read from test1.msg");
 			msg2 = test_message_read_file("test1.msg");
-			pull();
+			pull ();
 
 			push("compare read with original content");
-			test_message_compare_content(camel_medium_get_content ((CamelMedium *)msg2), text, len);
-			check_unref(msg2, 1);
-			pull();
+			test_message_compare_content (camel_medium_get_content ((CamelMedium *)msg2), text, len);
+			check_unref (msg2, 1);
+			pull ();
 
 			unlink("test1.msg");
-			pull();
+			pull ();
 		}
-		pull();
+		pull ();
 	}
-	camel_test_end();
+	camel_test_end ();
 
-	cleanup();
+	cleanup ();
 
 	return 0;
 }

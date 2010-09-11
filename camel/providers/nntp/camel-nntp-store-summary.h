@@ -93,16 +93,16 @@ CamelNNTPStoreSummary      *camel_nntp_store_summary_new	(void);
 #define camel_nntp_store_info_full_name(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_NNTP_STORE_INFO_FULL_NAME))
 
 /* converts to/from utf8 canonical nasmes */
-gchar *camel_nntp_store_summary_full_to_path(CamelNNTPStoreSummary *s, const gchar *full_name, gchar dir_sep);
+gchar *camel_nntp_store_summary_full_to_path (CamelNNTPStoreSummary *s, const gchar *full_name, gchar dir_sep);
 
-gchar *camel_nntp_store_summary_path_to_full(CamelNNTPStoreSummary *s, const gchar *path, gchar dir_sep);
-gchar *camel_nntp_store_summary_dotted_to_full(CamelNNTPStoreSummary *s, const gchar *dotted, gchar dir_sep);
+gchar *camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s, const gchar *path, gchar dir_sep);
+gchar *camel_nntp_store_summary_dotted_to_full (CamelNNTPStoreSummary *s, const gchar *dotted, gchar dir_sep);
 
-CamelNNTPStoreInfo *camel_nntp_store_summary_full_name(CamelNNTPStoreSummary *s, const gchar *full_name);
-CamelNNTPStoreInfo *camel_nntp_store_summary_add_from_full(CamelNNTPStoreSummary *s, const gchar *full_name, gchar dir_sep);
+CamelNNTPStoreInfo *camel_nntp_store_summary_full_name (CamelNNTPStoreSummary *s, const gchar *full_name);
+CamelNNTPStoreInfo *camel_nntp_store_summary_add_from_full (CamelNNTPStoreSummary *s, const gchar *full_name, gchar dir_sep);
 
 /* a convenience lookup function. always use this if path known */
-gchar *camel_nntp_store_summary_full_from_path(CamelNNTPStoreSummary *s, const gchar *path);
+gchar *camel_nntp_store_summary_full_from_path (CamelNNTPStoreSummary *s, const gchar *path);
 
 G_END_DECLS
 

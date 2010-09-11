@@ -653,8 +653,8 @@ get_entry_substring (ENameSelectorEntry *name_selector_entry, gint range_start, 
 static gint
 utf8_casefold_collate_len (const gchar *str1, const gchar *str2, gint len)
 {
-	gchar *s1 = g_utf8_casefold(str1, len);
-	gchar *s2 = g_utf8_casefold(str2, len);
+	gchar *s1 = g_utf8_casefold (str1, len);
+	gchar *s2 = g_utf8_casefold (str2, len);
 	gint rv;
 
 	rv = g_utf8_collate (s1, s2);
@@ -1413,7 +1413,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 			/* If we are at the beginning or removing junk space, let us ignore it */
 			del_space = TRUE;
 		}
-		g_free(c);
+		g_free (c);
 	} else	if (end_pos == start_pos +1 &&  index_end == index_start+1) {
 		/* We could be just deleting the empty text */
 		gchar *c;
@@ -1425,7 +1425,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 			/* If we are at the beginning or removing junk space, let us ignore it */
 			del_comma = TRUE;
 		}
-		g_free(c);
+		g_free (c);
 	}
 
 	if (del_comma) {
@@ -1493,7 +1493,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 
 	/* Let model know about changes */
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
-	if (!*text || strlen(text) <= 0) {
+	if (!*text || strlen (text) <= 0) {
 		/* If the entry was completely cleared, remove the initial destination too */
 		remove_destination_by_index (name_selector_entry, 0);
 		generate_attribute_list (name_selector_entry);
@@ -1619,7 +1619,7 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 			range_end = range_end+2;
 
 		}
-		g_free(str_context);
+		g_free (str_context);
 	}
 
 	gtk_editable_set_position (GTK_EDITABLE (name_selector_entry), range_end);
@@ -2323,8 +2323,8 @@ editor_closed_cb (GtkObject *editor, gpointer data)
 	if (!book)
 		return;
 
-	result = e_book_get_contact(book, contact_uid, &contact, NULL);
-	email_num = e_destination_get_email_num(destination);
+	result = e_book_get_contact (book, contact_uid, &contact, NULL);
+	email_num = e_destination_get_email_num (destination);
 	e_destination_set_contact (destination, contact, email_num);
 
 	g_free (contact_uid);
@@ -2343,7 +2343,7 @@ popup_activate_inline_expand (ENameSelectorEntry *name_selector_entry, GtkWidget
 
 	position = GPOINTER_TO_INT(g_object_get_data ((GObject *)name_selector_entry, "index"));
 
-	email_list = e_destination_get_address(destination);
+	email_list = e_destination_get_address (destination);
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
 	get_range_at_position (text, position, &start, &end);
 
@@ -2454,7 +2454,7 @@ popup_activate_cut (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_ite
 	GtkClipboard *clipboard;
 
 	destination = name_selector_entry->priv->popup_destination;
-	contact_email =e_destination_get_address(destination);
+	contact_email =e_destination_get_address (destination);
 
 	g_signal_handlers_block_by_func (name_selector_entry, user_insert_text, name_selector_entry);
 	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
@@ -2483,7 +2483,7 @@ popup_activate_copy (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_it
 	GtkClipboard *clipboard;
 
 	destination = name_selector_entry->priv->popup_destination;
-	contact_email = e_destination_get_address(destination);
+	contact_email = e_destination_get_address (destination);
 
 	g_signal_handlers_block_by_func (name_selector_entry, user_insert_text, name_selector_entry);
 	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
@@ -2588,7 +2588,7 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 			show_menu = TRUE;
 
 			if (length > 1) {
-				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), !e_destination_is_ignored(dest));
+				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), !e_destination_is_ignored (dest));
 				g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (popup_activate_list),
 							  dest);
 			}
@@ -2811,7 +2811,7 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 	}
 
 	/* read minimum_query_length from gconf*/
-	gconf = gconf_client_get_default();
+	gconf = gconf_client_get_default ();
 	if (COMPLETION_CUE_MIN_LEN == 0) {
 	  if ((COMPLETION_CUE_MIN_LEN = gconf_client_get_int (gconf, MINIMUM_QUERY_LENGTH, NULL)))
 		;

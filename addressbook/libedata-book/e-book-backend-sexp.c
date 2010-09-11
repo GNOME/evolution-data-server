@@ -128,7 +128,7 @@ compare_email (EContact *contact, const gchar *str,
 	for (i = E_CONTACT_EMAIL_1; i <= E_CONTACT_EMAIL_4; i++) {
 		const gchar *email = e_contact_get_const (contact, i);
 
-		if (email && compare(email, str))
+		if (email && compare (email, str))
 			return TRUE;
 	}
 
@@ -145,7 +145,7 @@ compare_phone (EContact *contact, const gchar *str,
 	for (i = E_CONTACT_FIRST_PHONE_ID; i <= E_CONTACT_LAST_PHONE_ID; i++) {
 		gchar *phone = e_contact_get (contact, i);
 
-		rv = phone && compare(phone, str);
+		rv = phone && compare (phone, str);
 		g_free (phone);
 
 		if (rv)
@@ -191,13 +191,13 @@ compare_address (EContact *contact, const gchar *str,
 	for (i = E_CONTACT_FIRST_ADDRESS_ID; i <= E_CONTACT_LAST_ADDRESS_ID; i++) {
 		EContactAddress *address = e_contact_get (contact, i);
 		if (address) {
-			rv =  (address->po && compare(address->po, str)) ||
-				(address->street && compare(address->street, str)) ||
-				(address->ext && compare(address->ext, str)) ||
-				(address->locality && compare(address->locality, str)) ||
-				(address->region && compare(address->region, str)) ||
-				(address->code && compare(address->code, str)) ||
-				(address->country && compare(address->country, str));
+			rv =  (address->po && compare (address->po, str)) ||
+				(address->street && compare (address->street, str)) ||
+				(address->ext && compare (address->ext, str)) ||
+				(address->locality && compare (address->locality, str)) ||
+				(address->region && compare (address->region, str)) ||
+				(address->code && compare (address->code, str)) ||
+				(address->country && compare (address->country, str));
 
 			e_contact_address_free (address);
 
@@ -223,7 +223,7 @@ compare_category (EContact *contact, const gchar *str,
 	for (iterator = categories; iterator; iterator = iterator->next) {
 		const gchar *category = iterator->data;
 
-		if (compare(category, str)) {
+		if (compare (category, str)) {
 			ret_val = TRUE;
 			break;
 		}
@@ -290,7 +290,7 @@ static struct prop_info {
 };
 
 static ESExpResult *
-entry_compare(SearchContext *ctx, struct _ESExp *f,
+entry_compare (SearchContext *ctx, struct _ESExp *f,
 	      gint argc, struct _ESExpResult **argv,
 	      gchar *(*compare)(const gchar *, const gchar *))
 {
@@ -328,7 +328,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 
 					prop = e_contact_get_const (ctx->contact, info->field_id);
 
-					if (prop && compare(prop, argv[1]->value.string)) {
+					if (prop && compare (prop, argv[1]->value.string)) {
 						truth = TRUE;
 					}
 					if ((!prop) && compare("", argv[1]->value.string)) {
@@ -383,7 +383,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 			}
 		}
 	}
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = truth;
 
 	return r;
@@ -574,7 +574,7 @@ contains_helper (const gchar *s1, const gchar *s2)
 }
 
 static ESExpResult *
-func_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	SearchContext *ctx = data;
 
@@ -601,7 +601,7 @@ is_helper (const gchar *ps1, const gchar *ps2)
 }
 
 static ESExpResult *
-func_is(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_is (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	SearchContext *ctx = data;
 
@@ -629,7 +629,7 @@ endswith_helper (const gchar *ps1, const gchar *ps2)
 }
 
 static ESExpResult *
-func_endswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_endswith (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	SearchContext *ctx = data;
 
@@ -643,7 +643,7 @@ beginswith_helper (const gchar *ps1, const gchar *ps2)
 	gchar *s1 = e_util_utf8_remove_accents (ps1);
 	gchar *s2 = e_util_utf8_remove_accents (ps2);
 
-	if ((p = (gchar *) e_util_utf8_strstrcase(s1, s2))
+	if ((p = (gchar *) e_util_utf8_strstrcase (s1, s2))
 	    && (p == s1))
 		res = (gchar *)ps1;
 	else
@@ -656,7 +656,7 @@ beginswith_helper (const gchar *ps1, const gchar *ps2)
 }
 
 static ESExpResult *
-func_beginswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_beginswith (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	SearchContext *ctx = data;
 
@@ -679,7 +679,7 @@ exists_helper (const gchar *ps1, const gchar *ps2)
 }
 
 static ESExpResult *
-func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_exists (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	SearchContext *ctx = data;
 	ESExpResult *r;
@@ -743,14 +743,14 @@ func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer da
 			}
 		}
 	}
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = truth;
 
 	return r;
 }
 
 static ESExpResult *
-func_exists_vcard(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_exists_vcard (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	SearchContext *ctx = data;
 	ESExpResult *r;
@@ -775,7 +775,7 @@ func_exists_vcard(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpoin
 		}
 	}
 
-	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
+	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = truth;
 
 	return r;
@@ -818,13 +818,13 @@ e_book_backend_sexp_match_contact (EBookBackendSExp *sexp, EContact *contact)
 
 	sexp->priv->search_context->contact = g_object_ref (contact);
 
-	r = e_sexp_eval(sexp->priv->search_sexp);
+	r = e_sexp_eval (sexp->priv->search_sexp);
 
 	retval = (r && r->type == ESEXP_RES_BOOL && r->value.boolean);
 
-	g_object_unref(sexp->priv->search_context->contact);
+	g_object_unref (sexp->priv->search_context->contact);
 
-	e_sexp_result_free(sexp->priv->search_sexp, r);
+	e_sexp_result_free (sexp->priv->search_sexp, r);
 
 	return retval;
 }
@@ -848,7 +848,7 @@ e_book_backend_sexp_match_vcard (EBookBackendSExp *sexp, const gchar *vcard)
 
 	retval = e_book_backend_sexp_match_contact (sexp, contact);
 
-	g_object_unref(contact);
+	g_object_unref (contact);
 
 	return retval;
 }
@@ -870,21 +870,21 @@ e_book_backend_sexp_new (const gchar *text)
 	gint esexp_error;
 	gint i;
 
-	sexp->priv->search_sexp = e_sexp_new();
+	sexp->priv->search_sexp = e_sexp_new ();
 
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1) {
-			e_sexp_add_ifunction(sexp->priv->search_sexp, 0, symbols[i].name,
+			e_sexp_add_ifunction (sexp->priv->search_sexp, 0, symbols[i].name,
 					     (ESExpIFunc *)symbols[i].func, sexp->priv->search_context);
 		}
 		else {
-			e_sexp_add_function(sexp->priv->search_sexp, 0, symbols[i].name,
+			e_sexp_add_function (sexp->priv->search_sexp, 0, symbols[i].name,
 					    symbols[i].func, sexp->priv->search_context);
 		}
 	}
 
-	e_sexp_input_text(sexp->priv->search_sexp, text, strlen(text));
-	esexp_error = e_sexp_parse(sexp->priv->search_sexp);
+	e_sexp_input_text (sexp->priv->search_sexp, text, strlen (text));
+	esexp_error = e_sexp_parse (sexp->priv->search_sexp);
 
 	if (esexp_error == -1) {
 		g_object_unref (sexp);
@@ -900,7 +900,7 @@ e_book_backend_sexp_dispose (GObject *object)
 	EBookBackendSExp *sexp = E_BOOK_BACKEND_SEXP (object);
 
 	if (sexp->priv) {
-		e_sexp_unref(sexp->priv->search_sexp);
+		e_sexp_unref (sexp->priv->search_sexp);
 
 		g_free (sexp->priv->search_context);
 		g_free (sexp->priv);

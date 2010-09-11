@@ -29,7 +29,7 @@ main (gint argc, gchar **argv)
 {
 	gint i, j;
 
-	camel_test_init(argc, argv);
+	camel_test_init (argc, argv);
 
 	camel_test_start("references decoding");
 
@@ -37,19 +37,19 @@ main (gint argc, gchar **argv)
 		struct _camel_header_references *head, *node;
 
 		camel_test_push("references decoding[%d] '%s'", i, test1[i].header);
-		head = camel_header_references_decode(test1[i].header);
+		head = camel_header_references_decode (test1[i].header);
 		node = head;
 		for (j=0;test1[i].values[j];j++) {
 			check_msg(node != NULL, "didn't find all references");
-			check(strcmp(test1[i].values[j], node->id) == 0);
+			check (strcmp (test1[i].values[j], node->id) == 0);
 			node = node->next;
 		}
 		check_msg(node == NULL, "found more references than should have");
-		camel_header_references_list_clear(&head);
-		camel_test_pull();
+		camel_header_references_list_clear (&head);
+		camel_test_pull ();
 	}
 
-	camel_test_end();
+	camel_test_end ();
 
 	return 0;
 }

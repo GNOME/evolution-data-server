@@ -901,7 +901,7 @@ e_gw_connection_get_items_delta_info (EGwConnection *cnc, const gchar *container
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "firstSequence");
 
 	if (subparam) {
-		tmp = soup_soap_parameter_get_string_value(subparam);
+		tmp = soup_soap_parameter_get_string_value (subparam);
 		*first_sequence = strtod (tmp, NULL);
 		g_free (tmp);
 	} else
@@ -910,7 +910,7 @@ e_gw_connection_get_items_delta_info (EGwConnection *cnc, const gchar *container
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "lastSequence");
 
 	if (subparam) {
-		tmp = soup_soap_parameter_get_string_value(subparam);
+		tmp = soup_soap_parameter_get_string_value (subparam);
 		*last_sequence = strtod (tmp, NULL);
 		g_free (tmp);
 	}
@@ -920,7 +920,7 @@ e_gw_connection_get_items_delta_info (EGwConnection *cnc, const gchar *container
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "lastTimePORebuild");
 
 	if (subparam) {
-		tmp = soup_soap_parameter_get_string_value(subparam);
+		tmp = soup_soap_parameter_get_string_value (subparam);
 		*last_po_rebuild_time = strtod (tmp, NULL);
 		g_free (tmp);
 	} else
@@ -956,7 +956,7 @@ e_gw_connection_get_items_delta (EGwConnection *cnc, const gchar *container, con
 	soup_soap_message_start_element (msg, "deltaInfo", NULL, NULL);
 	e_gw_message_write_string_parameter (msg, "firstSequence", NULL, start_sequence);
 	e_gw_message_write_string_parameter (msg, "count", NULL, count);
-	soup_soap_message_end_element(msg);
+	soup_soap_message_end_element (msg);
 
         /* send message to server */
 
@@ -2256,10 +2256,10 @@ e_gw_connection_add_members (EGwConnection *cnc, const gchar *group_id, GList *m
 	for (; member_ids != NULL; member_ids = g_list_next (member_ids)) {
 		soup_soap_message_start_element (msg, "member", NULL, NULL);
 		e_gw_message_write_string_parameter (msg, "id", NULL, member_ids->data);
-		soup_soap_message_end_element(msg);
+		soup_soap_message_end_element (msg);
 	}
 
-	soup_soap_message_end_element(msg);
+	soup_soap_message_end_element (msg);
 	e_gw_message_write_footer (msg);
 	response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
@@ -2299,10 +2299,10 @@ e_gw_connection_remove_members (EGwConnection *cnc, const gchar *group_id, GList
 	for (; member_ids != NULL; member_ids = g_list_next (member_ids)) {
 		soup_soap_message_start_element (msg, "member", NULL, NULL);
 		e_gw_message_write_string_parameter (msg, "id", NULL, member_ids->data);
-		soup_soap_message_end_element(msg);
+		soup_soap_message_end_element (msg);
 	}
 
-	soup_soap_message_end_element(msg);
+	soup_soap_message_end_element (msg);
 	e_gw_message_write_footer (msg);
 	response = e_gw_connection_send_message (cnc, msg);
         if (!response) {
@@ -2335,7 +2335,7 @@ e_gw_connection_create_cursor (EGwConnection *cnc, const gchar *container, const
 	e_gw_message_write_string_parameter (msg, "container", NULL, container);
 	if (view)
 		e_gw_message_write_string_parameter (msg, "view", NULL, view);
-	if (E_IS_GW_FILTER(filter))
+	if (E_IS_GW_FILTER (filter))
 		e_gw_filter_append_to_soap_message (filter, msg);
 
 	e_gw_message_write_footer (msg);
@@ -2360,7 +2360,7 @@ e_gw_connection_create_cursor (EGwConnection *cnc, const gchar *container, const
                 g_object_unref (msg);
                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
         }
-	value = soup_soap_parameter_get_string_value(param);
+	value = soup_soap_parameter_get_string_value (param);
 
 	if (!value) {
 		 g_object_unref (response);
@@ -2619,7 +2619,7 @@ EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, cons
 }
 
 EGwConnectionStatus
-e_gw_connection_create_folder(EGwConnection *cnc, const gchar *parent_name,const gchar *folder_name, gchar **container_id)
+e_gw_connection_create_folder (EGwConnection *cnc, const gchar *parent_name,const gchar *folder_name, gchar **container_id)
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
@@ -2922,7 +2922,7 @@ e_gw_connection_rename_folder (EGwConnection *cnc, const gchar *id ,const gchar 
 }
 
 EGwConnectionStatus
-e_gw_connection_share_folder(EGwConnection *cnc, gchar *id, GList *new_list, const gchar *sub, const gchar *mesg ,int flag)
+e_gw_connection_share_folder (EGwConnection *cnc, gchar *id, GList *new_list, const gchar *sub, const gchar *mesg ,int flag)
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
@@ -3080,7 +3080,7 @@ e_gw_connection_purge_selected_items (EGwConnection *cnc, GList *item_ids)
 }
 
 EGwConnectionStatus
-e_gw_connection_mark_read(EGwConnection *cnc, GList *item_ids)
+e_gw_connection_mark_read (EGwConnection *cnc, GList *item_ids)
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
@@ -3115,7 +3115,7 @@ e_gw_connection_mark_read(EGwConnection *cnc, GList *item_ids)
 }
 
 EGwConnectionStatus
-e_gw_connection_mark_unread(EGwConnection *cnc, GList *item_ids)
+e_gw_connection_mark_unread (EGwConnection *cnc, GList *item_ids)
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
@@ -3483,7 +3483,7 @@ e_gw_junkentry_new_from_soap_parameter (SoupSoapParameter *param)
 
 	g_return_val_if_fail (param != NULL, NULL);
 
-	junk_entry = g_new0(EGwJunkEntry, 1);
+	junk_entry = g_new0 (EGwJunkEntry, 1);
 
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "id");
 	if (!subparam) {
@@ -4074,7 +4074,7 @@ e_gw_connection_get_proxy_connection (EGwConnection *parent_cnc, gchar *username
 
 	for (i=0; proxy[i]!='\0' && proxy[i]!='@'; i++);
 	if (proxy[i]=='@')
-		name = g_strndup(proxy, i);
+		name = g_strndup (proxy, i);
 	else
 		name = g_strdup (proxy);
 	/* search the connection in our hash table */
@@ -4176,7 +4176,7 @@ e_gw_connection_get_proxy_connection (EGwConnection *parent_cnc, gchar *username
 
 	g_hash_table_insert (loaded_connections_permissions, hash_key, cnc);
 	permissions_key = g_strdup_printf ("%s:permissions", hash_key);
-	g_hash_table_insert (loaded_connections_permissions, permissions_key, GINT_TO_POINTER(*permissions));
+	g_hash_table_insert (loaded_connections_permissions, permissions_key, GINT_TO_POINTER (*permissions));
 
 	/* free memory */
 	g_object_unref (response);

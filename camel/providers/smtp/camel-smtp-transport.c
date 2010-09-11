@@ -587,7 +587,7 @@ smtp_disconnect (CamelService *service,
 		transport->ostream = NULL;
 	}
 
-	g_free(transport->localaddr);
+	g_free (transport->localaddr);
 	transport->localaddr = NULL;
 
 	transport->connected = FALSE;
@@ -733,13 +733,13 @@ smtp_send_to (CamelTransport *transport, CamelMimeMessage *message,
 			return FALSE;
 		}
 
-		enc = camel_internet_address_encode_address(NULL, NULL, addr);
+		enc = camel_internet_address_encode_address (NULL, NULL, addr);
 		if (!smtp_rcpt (smtp_transport, enc, error)) {
-			g_free(enc);
+			g_free (enc);
 			camel_operation_end (NULL);
 			return FALSE;
 		}
-		g_free(enc);
+		g_free (enc);
 	}
 
 	if (!smtp_data (smtp_transport, message, error)) {

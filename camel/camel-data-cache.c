@@ -241,7 +241,7 @@ camel_data_cache_set_path (CamelDataCache *cdc,
  * age acts as a hard limit on cache entries.
  **/
 void
-camel_data_cache_set_expire_age(CamelDataCache *cdc, time_t when)
+camel_data_cache_set_expire_age (CamelDataCache *cdc, time_t when)
 {
 	cdc->priv->expire_age = when;
 }
@@ -262,13 +262,13 @@ camel_data_cache_set_expire_age(CamelDataCache *cdc, time_t when)
  * age acts as a hard limit on cache entries.
  **/
 void
-camel_data_cache_set_expire_access(CamelDataCache *cdc, time_t when)
+camel_data_cache_set_expire_access (CamelDataCache *cdc, time_t when)
 {
 	cdc->priv->expire_access = when;
 }
 
 static void
-data_cache_expire(CamelDataCache *cdc, const gchar *path, const gchar *keep, time_t now)
+data_cache_expire (CamelDataCache *cdc, const gchar *path, const gchar *keep, time_t now)
 {
 	GDir *dir;
 	const gchar *dname;
@@ -276,30 +276,30 @@ data_cache_expire(CamelDataCache *cdc, const gchar *path, const gchar *keep, tim
 	struct stat st;
 	CamelStream *stream;
 
-	dir = g_dir_open(path, 0, NULL);
+	dir = g_dir_open (path, 0, NULL);
 	if (dir == NULL)
 		return;
 
 	s = g_string_new("");
-	while ((dname = g_dir_read_name(dir))) {
-		if (strcmp(dname, keep) == 0)
+	while ((dname = g_dir_read_name (dir))) {
+		if (strcmp (dname, keep) == 0)
 			continue;
 
 		g_string_printf (s, "%s/%s", path, dname);
-		if (g_stat(s->str, &st) == 0
-		    && S_ISREG(st.st_mode)
+		if (g_stat (s->str, &st) == 0
+		    && S_ISREG (st.st_mode)
 		    && ((cdc->priv->expire_age != -1 && st.st_mtime + cdc->priv->expire_age < now)
 			|| (cdc->priv->expire_access != -1 && st.st_atime + cdc->priv->expire_access < now))) {
-			g_unlink(s->str);
-			stream = camel_object_bag_get(cdc->priv->busy_bag, s->str);
+			g_unlink (s->str);
+			stream = camel_object_bag_get (cdc->priv->busy_bag, s->str);
 			if (stream) {
-				camel_object_bag_remove(cdc->priv->busy_bag, stream);
+				camel_object_bag_remove (cdc->priv->busy_bag, stream);
 				g_object_unref (stream);
 			}
 		}
 	}
-	g_string_free(s, TRUE);
-	g_dir_close(dir);
+	g_string_free (s, TRUE);
+	g_dir_close (dir);
 }
 
 /* Since we have to stat the directory anyway, we use this opportunity to
@@ -307,18 +307,18 @@ data_cache_expire(CamelDataCache *cdc, const gchar *path, const gchar *keep, tim
    If it is this directories 'turn', and we haven't done it for CYCLE_TIME seconds,
    then we perform an expiry run */
 static gchar *
-data_cache_path(CamelDataCache *cdc, gint create, const gchar *path, const gchar *key)
+data_cache_path (CamelDataCache *cdc, gint create, const gchar *path, const gchar *key)
 {
 	gchar *dir, *real, *tmp;
 	guint32 hash;
 
-	hash = g_str_hash(key);
+	hash = g_str_hash (key);
 	hash = (hash>>5)&CAMEL_DATA_CACHE_MASK;
-	dir = alloca(strlen(cdc->priv->path) + strlen(path) + 8);
+	dir = alloca (strlen (cdc->priv->path) + strlen (path) + 8);
 	sprintf(dir, "%s/%s/%02x", cdc->priv->path, path, hash);
 
 #ifdef G_OS_WIN32
-	if (g_access(dir, F_OK) == -1) {
+	if (g_access (dir, F_OK) == -1) {
 #else
 	if (access (dir, F_OK) == -1) {
 #endif
@@ -328,16 +328,16 @@ data_cache_path(CamelDataCache *cdc, gint create, const gchar *path, const gchar
 		time_t now;
 
 		/* This has a race, but at worst we re-run an expire cycle which is safe */
-		now = time(NULL);
+		now = time (NULL);
 		if (cdc->priv->expire_last[hash] + CAMEL_DATA_CACHE_CYCLE_TIME < now) {
 			cdc->priv->expire_last[hash] = now;
-			data_cache_expire(cdc, dir, key, now);
+			data_cache_expire (cdc, dir, key, now);
 		}
 	}
 
-	tmp = camel_file_util_safe_filename(key);
+	tmp = camel_file_util_safe_filename (key);
 	real = g_strdup_printf("%s/%s", dir, tmp);
-	g_free(tmp);
+	g_free (tmp);
 
 	return real;
 }
@@ -369,15 +369,15 @@ camel_data_cache_add (CamelDataCache *cdc,
 	gchar *real;
 	CamelStream *stream;
 
-	real = data_cache_path(cdc, TRUE, path, key);
+	real = data_cache_path (cdc, TRUE, path, key);
 	/* need to loop 'cause otherwise we can call bag_add/bag_abort
 	 * after bag_reserve returned a pointer, which is an invalid
 	 * sequence. */
 	do {
-		stream = camel_object_bag_reserve(cdc->priv->busy_bag, real);
+		stream = camel_object_bag_reserve (cdc->priv->busy_bag, real);
 		if (stream) {
-			g_unlink(real);
-			camel_object_bag_remove(cdc->priv->busy_bag, stream);
+			g_unlink (real);
+			camel_object_bag_remove (cdc->priv->busy_bag, stream);
 			g_object_unref (stream);
 		}
 	} while (stream != NULL);
@@ -385,11 +385,11 @@ camel_data_cache_add (CamelDataCache *cdc,
 	stream = camel_stream_fs_new_with_name (
 		real, O_RDWR|O_CREAT|O_TRUNC, 0600, error);
 	if (stream)
-		camel_object_bag_add(cdc->priv->busy_bag, real, stream);
+		camel_object_bag_add (cdc->priv->busy_bag, real, stream);
 	else
-		camel_object_bag_abort(cdc->priv->busy_bag, real);
+		camel_object_bag_abort (cdc->priv->busy_bag, real);
 
-	g_free(real);
+	g_free (real);
 
 	return stream;
 }
@@ -417,17 +417,17 @@ camel_data_cache_get (CamelDataCache *cdc,
 	gchar *real;
 	CamelStream *stream;
 
-	real = data_cache_path(cdc, FALSE, path, key);
-	stream = camel_object_bag_reserve(cdc->priv->busy_bag, real);
+	real = data_cache_path (cdc, FALSE, path, key);
+	stream = camel_object_bag_reserve (cdc->priv->busy_bag, real);
 	if (!stream) {
 		stream = camel_stream_fs_new_with_name (
 			real, O_RDWR, 0600, error);
 		if (stream)
-			camel_object_bag_add(cdc->priv->busy_bag, real, stream);
+			camel_object_bag_add (cdc->priv->busy_bag, real, stream);
 		else
-			camel_object_bag_abort(cdc->priv->busy_bag, real);
+			camel_object_bag_abort (cdc->priv->busy_bag, real);
 	}
-	g_free(real);
+	g_free (real);
 
 	return stream;
 }
@@ -453,7 +453,7 @@ camel_data_cache_get_filename (CamelDataCache *cdc,
 {
 	gchar *real;
 
-	real = data_cache_path(cdc, FALSE, path, key);
+	real = data_cache_path (cdc, FALSE, path, key);
 
 	return real;
 }
@@ -479,10 +479,10 @@ camel_data_cache_remove (CamelDataCache *cdc,
 	gchar *real;
 	gint ret;
 
-	real = data_cache_path(cdc, FALSE, path, key);
-	stream = camel_object_bag_get(cdc->priv->busy_bag, real);
+	real = data_cache_path (cdc, FALSE, path, key);
+	stream = camel_object_bag_get (cdc->priv->busy_bag, real);
 	if (stream) {
-		camel_object_bag_remove(cdc->priv->busy_bag, stream);
+		camel_object_bag_remove (cdc->priv->busy_bag, stream);
 		g_object_unref (stream);
 	}
 
@@ -498,7 +498,7 @@ camel_data_cache_remove (CamelDataCache *cdc,
 		ret = 0;
 	}
 
-	g_free(real);
+	g_free (real);
 
 	return ret;
 }

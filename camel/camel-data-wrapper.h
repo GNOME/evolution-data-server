@@ -113,9 +113,9 @@ gssize		camel_data_wrapper_decode_to_stream
 						(CamelDataWrapper *data_wrapper,
 						 CamelStream *stream,
 						 GError **error);
-void		camel_data_wrapper_set_mime_type(CamelDataWrapper *data_wrapper,
+void		camel_data_wrapper_set_mime_type (CamelDataWrapper *data_wrapper,
 						 const gchar *mime_type);
-gchar *		camel_data_wrapper_get_mime_type(CamelDataWrapper *data_wrapper);
+gchar *		camel_data_wrapper_get_mime_type (CamelDataWrapper *data_wrapper);
 CamelContentType *
 		camel_data_wrapper_get_mime_type_field
 						(CamelDataWrapper *data_wrapper);

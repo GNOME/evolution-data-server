@@ -27,19 +27,19 @@ main (gint argc, gchar **argv)
 	book = e_book_new_system_addressbook (NULL);
 	if (!book) {
 		printf ("failed to create ebook\n");
-		exit(0);
+		exit (0);
 	}
 
 	status = e_book_open (book, TRUE, NULL);
 	if (status == FALSE) {
 		printf ("failed to open addressbook\n");
-		exit(0);
+		exit (0);
 	}
 
 	status = e_book_get_contacts (book, query, &contacts, NULL);
 	if (status == FALSE) {
 		printf ("failed to get contacts\n");
-		exit(0);
+		exit (0);
 	}
 
 	for (c = contacts; c; c = c->next) {

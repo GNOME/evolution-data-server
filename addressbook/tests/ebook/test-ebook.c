@@ -40,7 +40,7 @@ print_all_emails (EBook *book)
 
 	if (status == FALSE) {
 		printf ("error %d getting card list\n", status);
-		exit(0);
+		exit (0);
 	}
 
 	for (c = cards; c; c = c->next) {
@@ -85,7 +85,7 @@ main (gint argc, gchar **argv)
 	book = e_book_new_system_addressbook (NULL);
 	if (!book) {
 		printf ("failed to create local addressbook\n");
-		exit(0);
+		exit (0);
 	}
 
         ebook_test_utils_book_open (book, FALSE);

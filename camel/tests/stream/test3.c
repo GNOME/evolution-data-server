@@ -30,40 +30,40 @@ struct {
 };
 
 gint
-main(gint argc, gchar **argv)
+main (gint argc, gchar **argv)
 {
 	CamelSeekableStream *ss = NULL;
 	gint i, j;
 	CamelSeekableSubstream *sus, *sus2;
 
-	camel_test_init(argc, argv);
+	camel_test_init (argc, argv);
 
 	camel_test_start("CamelSeekableSubstream, mem backing");
 	for (j=0;j<SEEKABLE_SUBSTREAM_WAYS;j++) {
 		push("testing writing method %d", j);
-		ss = (CamelSeekableStream *)camel_stream_mem_new();
-		check(ss != NULL);
+		ss = (CamelSeekableStream *)camel_stream_mem_new ();
+		check (ss != NULL);
 		for (i = 0; i < G_N_ELEMENTS (ranges); i++) {
 			push("stream subrange %d-%d", ranges[i].lower, ranges[i].upper);
-			sus = (CamelSeekableSubstream *)camel_seekable_substream_new(ss, ranges[i].lower, ranges[i].upper);
-			check(sus != NULL);
+			sus = (CamelSeekableSubstream *)camel_seekable_substream_new (ss, ranges[i].lower, ranges[i].upper);
+			check (sus != NULL);
 
-			test_seekable_substream_writepart((CamelStream *)sus, j);
-			test_seekable_substream_readpart((CamelStream *)sus);
+			test_seekable_substream_writepart ((CamelStream *)sus, j);
+			test_seekable_substream_readpart ((CamelStream *)sus);
 
-			sus2 = (CamelSeekableSubstream *)camel_seekable_substream_new(ss, ranges[i].lower, ranges[i].upper);
-			check(sus2 != NULL);
-			test_seekable_substream_readpart((CamelStream *)sus2);
+			sus2 = (CamelSeekableSubstream *)camel_seekable_substream_new (ss, ranges[i].lower, ranges[i].upper);
+			check (sus2 != NULL);
+			test_seekable_substream_readpart ((CamelStream *)sus2);
 
-			check_unref(sus, 1);
-			check_unref(sus2, 1);
-			pull();
+			check_unref (sus, 1);
+			check_unref (sus2, 1);
+			pull ();
 		}
-		check_unref(ss, 1);
-		pull();
+		check_unref (ss, 1);
+		pull ();
 	}
 
-	camel_test_end();
+	camel_test_end ();
 
 	(void)unlink("stream.txt");
 
@@ -71,29 +71,29 @@ main(gint argc, gchar **argv)
 	for (j=0;j<SEEKABLE_SUBSTREAM_WAYS;j++) {
 		push("testing writing method %d", j);
 		ss = (CamelSeekableStream *)camel_stream_fs_new_with_name("stream.txt", O_RDWR|O_CREAT|O_TRUNC, 0600, NULL);
-		check(ss != NULL);
+		check (ss != NULL);
 		for (i = 0; i < G_N_ELEMENTS (ranges); i++) {
 			push("stream subrange %d-%d", ranges[i].lower, ranges[i].upper);
-			sus = (CamelSeekableSubstream *)camel_seekable_substream_new(ss, ranges[i].lower, ranges[i].upper);
-			check(sus != NULL);
+			sus = (CamelSeekableSubstream *)camel_seekable_substream_new (ss, ranges[i].lower, ranges[i].upper);
+			check (sus != NULL);
 
-			test_seekable_substream_writepart((CamelStream *)sus, j);
-			test_seekable_substream_readpart((CamelStream *)sus);
+			test_seekable_substream_writepart ((CamelStream *)sus, j);
+			test_seekable_substream_readpart ((CamelStream *)sus);
 
-			sus2 = (CamelSeekableSubstream *)camel_seekable_substream_new(ss, ranges[i].lower, ranges[i].upper);
-			check(sus2 != NULL);
-			test_seekable_substream_readpart((CamelStream *)sus2);
+			sus2 = (CamelSeekableSubstream *)camel_seekable_substream_new (ss, ranges[i].lower, ranges[i].upper);
+			check (sus2 != NULL);
+			test_seekable_substream_readpart ((CamelStream *)sus2);
 
-			check_unref(sus, 1);
-			check_unref(sus2, 1);
-			pull();
+			check_unref (sus, 1);
+			check_unref (sus2, 1);
+			pull ();
 		}
-		check_unref(ss, 1);
+		check_unref (ss, 1);
 		(void)unlink("stream.txt");
-		pull();
+		pull ();
 	}
 
-	camel_test_end();
+	camel_test_end ();
 
 	return 0;
 }

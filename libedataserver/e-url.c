@@ -64,9 +64,9 @@ e_url_shroud (const gchar *url)
 	}
 
 	if (first_colon && last_at && first_colon < last_at) {
-		shrouded = g_malloc(first_colon - url + strlen(last_at)+1);
-		memcpy(shrouded, url, first_colon-url);
-		strcpy(shrouded + (first_colon-url), last_at);
+		shrouded = g_malloc (first_colon - url + strlen (last_at)+1);
+		memcpy (shrouded, url, first_colon-url);
+		strcpy (shrouded + (first_colon-url), last_at);
 	} else {
 		shrouded = g_strdup (url);
 	}
@@ -394,7 +394,7 @@ e_uri_to_string (EUri *uri, gboolean show_password)
 			uri->query ? "?" : "",
 			uri->query ? uri->query : "");
 	else
-		str_uri = g_strdup_printf(
+		str_uri = g_strdup_printf (
                         "%s://%s%s%s%s%s%s%s%s%s%s",
                         uri->protocol,
                         uri->user ? uri->user : "",

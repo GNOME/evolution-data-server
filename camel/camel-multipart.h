@@ -106,7 +106,7 @@ const gchar *        camel_multipart_get_boundary   (CamelMultipart *multipart);
 void		    camel_multipart_set_preface	   (CamelMultipart *multipart, const gchar *preface);
 void		    camel_multipart_set_postface   (CamelMultipart *multipart, const gchar *postface);
 
-gint		    camel_multipart_construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *parser);
+gint		    camel_multipart_construct_from_parser (CamelMultipart *multipart, struct _CamelMimeParser *parser);
 
 G_END_DECLS
 

@@ -65,7 +65,7 @@ static GStaticRecMutex cal_factory_proxy_lock = G_STATIC_REC_MUTEX_INIT;
 #define LOCK_CACHE()   g_static_rec_mutex_lock   (&priv->cache_lock)
 #define UNLOCK_CACHE() g_static_rec_mutex_unlock (&priv->cache_lock)
 
-G_DEFINE_TYPE(ECal, e_cal, G_TYPE_OBJECT)
+G_DEFINE_TYPE (ECal, e_cal, G_TYPE_OBJECT)
 #define E_CAL_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_CAL, ECalPrivate))
 
 static gboolean open_calendar (ECal *ecal, gboolean only_if_exists, GError **error,
@@ -108,7 +108,7 @@ struct _ECalPrivate {
 	gpointer auth_user_data;
 
 	/* A cache of timezones retrieved from the server, to avoid getting
-	   them repeatedly for each get_object() call. */
+	   them repeatedly for each get_object () call. */
 	GHashTable *timezones;
 
 	/* The default timezone to use to resolve DATE and floating DATE-TIME
@@ -142,7 +142,7 @@ static GObjectClass *parent_class;
 
 #ifdef __PRETTY_FUNCTION__
 #define e_return_error_if_fail(expr,error_code)	G_STMT_START{		\
-     if G_LIKELY(expr) { } else						\
+     if G_LIKELY (expr) { } else						\
        {								\
 	 g_log (G_LOG_DOMAIN,						\
 		G_LOG_LEVEL_CRITICAL,					\
@@ -161,7 +161,7 @@ static GObjectClass *parent_class;
        };				}G_STMT_END
 #else
 #define e_return_error_if_fail(expr,error_code)	G_STMT_START{		\
-     if G_LIKELY(expr) { } else						\
+     if G_LIKELY (expr) { } else						\
        {								\
 	 g_log (G_LOG_DOMAIN,						\
 		G_LOG_LEVEL_CRITICAL,					\
@@ -1112,7 +1112,7 @@ build_proxy_pass_key (ECal *ecal, const gchar * parent_user)
 
 	euri = e_uri_new (uri);
 	g_free (euri->user);
-	euri->user = g_strdup(parent_user);
+	euri->user = g_strdup (parent_user);
 
 	euri_str = e_uri_to_string (euri, FALSE);
 
@@ -1716,22 +1716,22 @@ e_cal_get_cal_address (ECal *ecal, gchar **cal_address, GError **error)
 	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 	*cal_address = NULL;
 
-	LOCK_CACHE();
+	LOCK_CACHE ();
 	if (priv->cal_address == NULL) {
 		e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 		if (priv->load_state != E_CAL_LOAD_LOADED) {
-			UNLOCK_CACHE();
+			UNLOCK_CACHE ();
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 		}
 
 		if (!e_gdbus_cal_call_get_cal_address_sync (priv->gdbus_cal, &priv->cal_address, NULL, error)) {
-			UNLOCK_CACHE();
+			UNLOCK_CACHE ();
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 		}
 	}
 
 	*cal_address = g_strdup (priv->cal_address);
-	UNLOCK_CACHE();
+	UNLOCK_CACHE ();
 
 	return TRUE;
 }
@@ -1814,19 +1814,19 @@ load_static_capabilities (ECal *ecal, GError **error)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	LOCK_CACHE();
+	LOCK_CACHE ();
 
 	if (priv->capabilities) {
-		UNLOCK_CACHE();
+		UNLOCK_CACHE ();
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
 	}
 
 	if (!e_gdbus_cal_call_get_scheduling_information_sync (priv->gdbus_cal, &priv->capabilities, NULL, error)) {
-		UNLOCK_CACHE();
+		UNLOCK_CACHE ();
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
 
-	UNLOCK_CACHE();
+	UNLOCK_CACHE ();
 
 	return TRUE;
 }
@@ -3844,14 +3844,14 @@ e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError *
 			icalproperty *prop;
 
 			icalcomp = icalcomponent_new_clone (icaltimezone_get_component (syszone));
-			prop = icalcomponent_get_first_property(icalcomp,
+			prop = icalcomponent_get_first_property (icalcomp,
 								ICAL_ANY_PROPERTY);
 			while (!found && prop) {
-				if (icalproperty_isa(prop) == ICAL_TZID_PROPERTY) {
+				if (icalproperty_isa (prop) == ICAL_TZID_PROPERTY) {
 					icalproperty_set_value_from_string(prop, tzid, "NO");
 					found = TRUE;
 				}
-				prop = icalcomponent_get_next_property(icalcomp,
+				prop = icalcomponent_get_next_property (icalcomp,
 								       ICAL_ANY_PROPERTY);
 			}
 		} else {
@@ -4235,7 +4235,7 @@ e_cal_set_default_source (ESource *source, ECalSourceType type, GError **error)
 static gboolean
 get_sources (ESourceList **sources, const gchar *key, GError **error)
 {
-	GConfClient *gconf = gconf_client_get_default();
+	GConfClient *gconf = gconf_client_get_default ();
 
 	*sources = e_source_list_new_for_gconf (gconf, key);
 	g_object_unref (gconf);

@@ -4,7 +4,7 @@
 #include <libebook/e-vcard.h>
 
 gint
-main(gint argc, gchar **argv)
+main (gint argc, gchar **argv)
 {
 	FILE *fp;
 	EVCard *vcard;
@@ -20,7 +20,7 @@ main(gint argc, gchar **argv)
 
 	while (!feof (fp)) {
 		gchar buf[1024];
-		if (fgets (buf, sizeof(buf), fp))
+		if (fgets (buf, sizeof (buf), fp))
 			str = g_string_append (str, buf);
 	}
 	fclose (fp);

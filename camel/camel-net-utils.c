@@ -432,14 +432,14 @@ struct _addrinfo_msg {
 };
 
 static void
-cs_freeinfo(struct _addrinfo_msg *msg)
+cs_freeinfo (struct _addrinfo_msg *msg)
 {
-	g_free(msg->host);
-	g_free(msg->serv);
+	g_free (msg->host);
+	g_free (msg->serv);
 #ifdef NEED_ADDRINFO
-	g_free(msg->hostbufmem);
+	g_free (msg->hostbufmem);
 #endif
-	g_free(msg);
+	g_free (msg);
 }
 
 /* returns -1 if we didn't wait for reply from thread */
@@ -453,14 +453,14 @@ cs_waitinfo (gpointer (worker)(gpointer),
 	GThread *thread;
 	gint cancel_fd, cancel = 0, fd;
 
-	cancel_fd = camel_operation_cancel_fd(NULL);
+	cancel_fd = camel_operation_cancel_fd (NULL);
 	if (cancel_fd == -1) {
-		worker(msg);
+		worker (msg);
 		return 0;
 	}
 
-	reply_port = msg->msg.reply_port = camel_msgport_new();
-	fd = camel_msgport_fd(msg->msg.reply_port);
+	reply_port = msg->msg.reply_port = camel_msgport_new ();
+	fd = camel_msgport_fd (msg->msg.reply_port);
 	if ((thread = g_thread_create (worker, msg, TRUE, error)) != NULL) {
 		gint status;
 #ifndef G_OS_WIN32
@@ -475,16 +475,16 @@ cs_waitinfo (gpointer (worker)(gpointer),
 		do {
 			polls[0].revents = 0;
 			polls[1].revents = 0;
-			status = g_poll(polls, 2, -1);
+			status = g_poll (polls, 2, -1);
 		} while (status == -1 && errno == EINTR);
 #else
 		fd_set read_set;
 
-		FD_ZERO(&read_set);
-		FD_SET(fd, &read_set);
-		FD_SET(cancel_fd, &read_set);
+		FD_ZERO (&read_set);
+		FD_SET (fd, &read_set);
+		FD_SET (cancel_fd, &read_set);
 
-		status = select(MAX(fd, cancel_fd) + 1, &read_set, NULL, NULL, NULL);
+		status = select (MAX (fd, cancel_fd) + 1, &read_set, NULL, NULL, NULL);
 #endif
 
 		if (status == -1 ||
@@ -524,19 +524,19 @@ cs_waitinfo (gpointer (worker)(gpointer),
 			g_thread_join (thread);
 			d(printf("child done\n"));
 
-			reply = (struct _addrinfo_msg *)camel_msgport_try_pop(reply_port);
+			reply = (struct _addrinfo_msg *)camel_msgport_try_pop (reply_port);
 			if (reply != msg)
 				g_warning ("%s: Received msg reply %p doesn't match msg %p", G_STRFUNC, reply, msg);
 		}
 	}
-	camel_msgport_destroy(reply_port);
+	camel_msgport_destroy (reply_port);
 
 	return cancel;
 }
 
 #ifdef NEED_ADDRINFO
 static gpointer
-cs_getaddrinfo(gpointer data)
+cs_getaddrinfo (gpointer data)
 {
 	struct _addrinfo_msg *msg = data;
 	gint herr;
@@ -548,11 +548,11 @@ cs_getaddrinfo(gpointer data)
 
 	/* This is a pretty simplistic emulation of getaddrinfo */
 
-	while ((msg->result = camel_gethostbyname_r(msg->name, &h, msg->hostbufmem, msg->hostbuflen, &herr)) == ERANGE) {
+	while ((msg->result = camel_gethostbyname_r (msg->name, &h, msg->hostbufmem, msg->hostbuflen, &herr)) == ERANGE) {
 		if (msg->cancelled)
 			break;
                 msg->hostbuflen *= 2;
-                msg->hostbufmem = g_realloc(msg->hostbufmem, msg->hostbuflen);
+                msg->hostbufmem = g_realloc (msg->hostbufmem, msg->hostbuflen);
 	}
 
 	/* If we got cancelled, dont reply, just free it */
@@ -596,23 +596,23 @@ cs_getaddrinfo(gpointer data)
 					socktype = "udp";
 			}
 
-			serv = getservbyname(msg->service, socktype);
+			serv = getservbyname (msg->service, socktype);
 			if (serv == NULL) {
 				msg->result = EAI_NONAME;
 				goto reply;
 			}
 			port = serv->s_port;
 		} else {
-			port = htons(strtoul(msg->service, NULL, 10));
+			port = htons (strtoul (msg->service, NULL, 10));
 		}
 	}
 
 	for (i = 0; h.h_addr_list[i] && !msg->cancelled; i++) {
-		res = g_malloc0(sizeof(*res));
+		res = g_malloc0 (sizeof (*res));
 		if (msg->hints) {
 			res->ai_flags = msg->hints->ai_flags;
 			if (msg->hints->ai_flags & AI_CANONNAME)
-				res->ai_canonname = g_strdup(h.h_name);
+				res->ai_canonname = g_strdup (h.h_name);
 			res->ai_socktype = msg->hints->ai_socktype;
 			res->ai_protocol = msg->hints->ai_protocol;
 		} else {
@@ -621,12 +621,12 @@ cs_getaddrinfo(gpointer data)
 			res->ai_protocol = 0;	/* fudge */
 		}
 		res->ai_family = AF_INET;
-		res->ai_addrlen = sizeof(*sin);
-		res->ai_addr = g_malloc(sizeof(*sin));
+		res->ai_addrlen = sizeof (*sin);
+		res->ai_addr = g_malloc (sizeof (*sin));
 		sin = (struct sockaddr_in *)res->ai_addr;
 		sin->sin_family = AF_INET;
 		sin->sin_port = port;
-		memcpy(&sin->sin_addr, h.h_addr_list[i], sizeof(sin->sin_addr));
+		memcpy (&sin->sin_addr, h.h_addr_list[i], sizeof (sin->sin_addr));
 
 		if (last == NULL) {
 			*msg->res = last = res;
@@ -636,17 +636,17 @@ cs_getaddrinfo(gpointer data)
 		}
 	}
 reply:
-	camel_msgport_reply((CamelMsg *)msg);
+	camel_msgport_reply ((CamelMsg *)msg);
 cancel:
 	return NULL;
 }
 #else
 static gpointer
-cs_getaddrinfo(gpointer data)
+cs_getaddrinfo (gpointer data)
 {
 	struct _addrinfo_msg *info = data;
 
-	info->result = getaddrinfo(info->name, info->service, info->hints, info->res);
+	info->result = getaddrinfo (info->name, info->service, info->hints, info->res);
 
 	/* On Solaris, the service name 'http' or 'https' is not defined.
 	   Use the port as the service name directly. */
@@ -658,7 +658,7 @@ cs_getaddrinfo(gpointer data)
 	}
 
 	if (!info->cancelled)
-		camel_msgport_reply((CamelMsg *)info);
+		camel_msgport_reply ((CamelMsg *)info);
 
 	return NULL;
 }
@@ -680,9 +680,9 @@ camel_getaddrinfo (const gchar *name,
 #ifndef ENABLE_IPv6
 	struct addrinfo myhints;
 #endif
-	g_return_val_if_fail(name != NULL, NULL);
+	g_return_val_if_fail (name != NULL, NULL);
 
-	if (camel_operation_cancel_check(NULL)) {
+	if (camel_operation_cancel_check (NULL)) {
 		g_set_error (
 			error, G_IO_ERROR,
 			G_IO_ERROR_CANCELLED,
@@ -695,7 +695,7 @@ camel_getaddrinfo (const gchar *name,
 	/* force ipv4 addresses only */
 #ifndef ENABLE_IPv6
 	if (hints == NULL)
-		memset(&myhints, 0, sizeof(myhints));
+		memset (&myhints, 0, sizeof (myhints));
 	else
 		memcpy (&myhints, hints, sizeof (myhints));
 
@@ -703,14 +703,14 @@ camel_getaddrinfo (const gchar *name,
 	hints = &myhints;
 #endif
 
-	msg = g_malloc0(sizeof(*msg));
+	msg = g_malloc0 (sizeof (*msg));
 	msg->name = name;
 	msg->service = service;
 	msg->hints = hints;
 	msg->res = &res;
 #ifdef NEED_ADDRINFO
 	msg->hostbuflen = 1024;
-	msg->hostbufmem = g_malloc(msg->hostbuflen);
+	msg->hostbufmem = g_malloc (msg->hostbuflen);
 #endif
 	if (cs_waitinfo(cs_getaddrinfo, msg, _("Host lookup failed"), error) == 0) {
 		if (msg->result != 0) {
@@ -723,7 +723,7 @@ camel_getaddrinfo (const gchar *name,
 		res = NULL;
 
 	cs_freeinfo (msg);
-	camel_operation_end(NULL);
+	camel_operation_end (NULL);
 
 	return res;
 }
@@ -734,25 +734,25 @@ camel_getaddrinfo (const gchar *name,
  * Since: 2.22
  **/
 void
-camel_freeaddrinfo(struct addrinfo *host)
+camel_freeaddrinfo (struct addrinfo *host)
 {
 #ifdef NEED_ADDRINFO
 	while (host) {
 		struct addrinfo *next = host->ai_next;
 
-		g_free(host->ai_canonname);
-		g_free(host->ai_addr);
-		g_free(host);
+		g_free (host->ai_canonname);
+		g_free (host->ai_addr);
+		g_free (host);
 		host = next;
 	}
 #else
-	freeaddrinfo(host);
+	freeaddrinfo (host);
 #endif
 }
 
 #ifdef NEED_ADDRINFO
 static gpointer
-cs_getnameinfo(gpointer data)
+cs_getnameinfo (gpointer data)
 {
 	struct _addrinfo_msg *msg = data;
 	gint herr;
@@ -767,21 +767,21 @@ cs_getnameinfo(gpointer data)
 
 	/* FIXME: honour getnameinfo flags: do we care, not really */
 
-	while ((msg->result = camel_gethostbyaddr_r((const gchar *)&sin->sin_addr, sizeof(sin->sin_addr), AF_INET, &h,
+	while ((msg->result = camel_gethostbyaddr_r ((const gchar *)&sin->sin_addr, sizeof (sin->sin_addr), AF_INET, &h,
 						    msg->hostbufmem, msg->hostbuflen, &herr)) == ERANGE) {
 		if (msg->cancelled)
 			break;
                 msg->hostbuflen *= 2;
-                msg->hostbufmem = g_realloc(msg->hostbufmem, msg->hostbuflen);
+                msg->hostbufmem = g_realloc (msg->hostbufmem, msg->hostbuflen);
 	}
 
 	if (msg->cancelled)
 		goto cancel;
 
 	if (msg->host) {
-		g_free(msg->host);
+		g_free (msg->host);
 		if (msg->result == 0 && h.h_name && h.h_name[0]) {
-			msg->host = g_strdup(h.h_name);
+			msg->host = g_strdup (h.h_name);
 		} else {
 			guchar *in = (guchar *)&sin->sin_addr;
 
@@ -801,15 +801,15 @@ cancel:
 }
 #else
 static gpointer
-cs_getnameinfo(gpointer data)
+cs_getnameinfo (gpointer data)
 {
 	struct _addrinfo_msg *msg = data;
 
 	/* there doens't appear to be a return code which says host or serv buffers are too short, lengthen them */
-	msg->result = getnameinfo(msg->addr, msg->addrlen, msg->host, msg->hostlen, msg->serv, msg->servlen, msg->flags);
+	msg->result = getnameinfo (msg->addr, msg->addrlen, msg->host, msg->hostlen, msg->serv, msg->servlen, msg->flags);
 
 	if (!msg->cancelled)
-		camel_msgport_reply((CamelMsg *)msg);
+		camel_msgport_reply ((CamelMsg *)msg);
 
 	return NULL;
 }
@@ -841,23 +841,23 @@ camel_getnameinfo (const struct sockaddr *sa,
 
 	camel_operation_start_transient(NULL, _("Resolving address"));
 
-	msg = g_malloc0(sizeof(*msg));
+	msg = g_malloc0 (sizeof (*msg));
 	msg->addr = sa;
 	msg->addrlen = salen;
 	if (host) {
 		msg->hostlen = NI_MAXHOST;
-		msg->host = g_malloc(msg->hostlen);
+		msg->host = g_malloc (msg->hostlen);
 		msg->host[0] = 0;
 	}
 	if (serv) {
 		msg->servlen = NI_MAXSERV;
-		msg->serv = g_malloc(msg->servlen);
+		msg->serv = g_malloc (msg->servlen);
 		msg->serv[0] = 0;
 	}
 	msg->flags = flags;
 #ifdef NEED_ADDRINFO
 	msg->hostbuflen = 1024;
-	msg->hostbufmem = g_malloc(msg->hostbuflen);
+	msg->hostbufmem = g_malloc (msg->hostbuflen);
 #endif
 	cs_waitinfo(cs_getnameinfo, msg, _("Name lookup failed"), error);
 
@@ -873,7 +873,7 @@ camel_getnameinfo (const struct sockaddr *sa,
 	}
 
 	cs_freeinfo (msg);
-	camel_operation_end(NULL);
+	camel_operation_end (NULL);
 
 	return result;
 }

@@ -56,15 +56,15 @@ static void movemail_external (const gchar *source, const gchar *dest,
 #endif
 
 #ifdef HAVE_BROKEN_SPOOL
-static gint camel_movemail_copy_filter(gint fromfd, gint tofd, goffset start, gsize bytes, CamelMimeFilter *filter);
+static gint camel_movemail_copy_filter (gint fromfd, gint tofd, goffset start, gsize bytes, CamelMimeFilter *filter);
 static gint camel_movemail_solaris (gint oldsfd, gint dfd, GError **error);
 #else
 /* these could probably be exposed as a utility? (but only mbox needs it) */
-static gint camel_movemail_copy_file(gint sfd, gint dfd, GError **error);
+static gint camel_movemail_copy_file (gint sfd, gint dfd, GError **error);
 #endif
 
 #if 0
-static gint camel_movemail_copy(gint fromfd, gint tofd, goffset start, gsize bytes);
+static gint camel_movemail_copy (gint fromfd, gint tofd, goffset start, gsize bytes);
 #endif
 
 /**
@@ -133,17 +133,17 @@ camel_movemail (const gchar *source,
 	}
 
 	/* lock our source mailbox */
-	lockid = camel_lock_helper_lock(source, error);
+	lockid = camel_lock_helper_lock (source, error);
 	if (lockid == -1) {
-		close(sfd);
-		close(dfd);
+		close (sfd);
+		close (dfd);
 		return -1;
 	}
 
 #ifdef HAVE_BROKEN_SPOOL
-	res = camel_movemail_solaris(sfd, dfd, ex);
+	res = camel_movemail_solaris (sfd, dfd, ex);
 #else
-	res = camel_movemail_copy_file(sfd, dfd, error);
+	res = camel_movemail_copy_file (sfd, dfd, error);
 #endif
 
 	/* If no errors occurred copying the data, and we successfully
@@ -164,7 +164,7 @@ camel_movemail (const gchar *source,
 		close (dfd);
 	close (sfd);
 
-	camel_lock_helper_unlock(lockid);
+	camel_lock_helper_unlock (lockid);
 
 	return res;
 }
@@ -298,14 +298,14 @@ camel_movemail_copy_file (gint sfd,
 
 #if 0
 static gint
-camel_movemail_copy(gint fromfd, gint tofd, goffset start, gsize bytes)
+camel_movemail_copy (gint fromfd, gint tofd, goffset start, gsize bytes)
 {
         gchar buffer[4096];
         gint written = 0;
 
 	d(printf("writing %d bytes ... ", bytes));
 
-	if (lseek(fromfd, start, SEEK_SET) != start)
+	if (lseek (fromfd, start, SEEK_SET) != start)
 		return -1;
 
         while (bytes>0) {
@@ -317,7 +317,7 @@ camel_movemail_copy(gint fromfd, gint tofd, goffset start, gsize bytes)
                 else
                         toread = bytes;
 		do {
-			towrite = read(fromfd, buffer, toread);
+			towrite = read (fromfd, buffer, toread);
 		} while (towrite == -1 && errno == EINTR);
 
 		if (towrite == -1)
@@ -330,7 +330,7 @@ camel_movemail_copy(gint fromfd, gint tofd, goffset start, gsize bytes)
 		}
 
 		do {
-			toread = write(tofd, buffer, towrite);
+			toread = write (tofd, buffer, towrite);
 		} while (toread == -1 && errno == EINTR);
 
 		if (toread == -1)
@@ -350,7 +350,7 @@ camel_movemail_copy(gint fromfd, gint tofd, goffset start, gsize bytes)
 
 #ifdef HAVE_BROKEN_SPOOL
 static gint
-camel_movemail_copy_filter(gint fromfd, gint tofd, goffset start, gsize bytes, CamelMimeFilter *filter)
+camel_movemail_copy_filter (gint fromfd, gint tofd, goffset start, gsize bytes, CamelMimeFilter *filter)
 {
         gchar buffer[4096+PRE_SIZE];
         gint written = 0;
@@ -359,9 +359,9 @@ camel_movemail_copy_filter(gint fromfd, gint tofd, goffset start, gsize bytes, C
 
 	d(printf("writing %d bytes ... ", bytes));
 
-	camel_mime_filter_reset(filter);
+	camel_mime_filter_reset (filter);
 
-	if (lseek(fromfd, start, SEEK_SET) != start)
+	if (lseek (fromfd, start, SEEK_SET) != start)
 		return -1;
 
         while (bytes>0) {
@@ -373,7 +373,7 @@ camel_movemail_copy_filter(gint fromfd, gint tofd, goffset start, gsize bytes, C
                 else
                         toread = bytes;
 		do {
-			towrite = read(fromfd, buffer+PRE_SIZE, toread);
+			towrite = read (fromfd, buffer+PRE_SIZE, toread);
 		} while (towrite == -1 && errno == EINTR);
 
 		if (towrite == -1)
@@ -384,13 +384,13 @@ camel_movemail_copy_filter(gint fromfd, gint tofd, goffset start, gsize bytes, C
                 /* check for 'end of file' */
                 if (towrite == 0) {
 			d(printf("end of file?\n"));
-			camel_mime_filter_complete(filter, buffer+PRE_SIZE, towrite, PRE_SIZE,
+			camel_mime_filter_complete (filter, buffer+PRE_SIZE, towrite, PRE_SIZE,
 						   &filterbuffer, &filterlen, &filterpre);
 			towrite = filterlen;
 			if (towrite == 0)
 				break;
 		} else {
-			camel_mime_filter_filter(filter, buffer+PRE_SIZE, towrite, PRE_SIZE,
+			camel_mime_filter_filter (filter, buffer+PRE_SIZE, towrite, PRE_SIZE,
 						 &filterbuffer, &filterlen, &filterpre);
 			towrite = filterlen;
 		}
@@ -398,7 +398,7 @@ camel_movemail_copy_filter(gint fromfd, gint tofd, goffset start, gsize bytes, C
 		d(printf("writing %d filtered bytes\n", towrite));
 
 		do {
-			toread = write(tofd, filterbuffer, towrite);
+			toread = write (tofd, filterbuffer, towrite);
 		} while (toread == -1 && errno == EINTR);
 
 		if (toread == -1)
@@ -416,7 +416,7 @@ camel_movemail_copy_filter(gint fromfd, gint tofd, goffset start, gsize bytes, C
 /* write the headers back out again, but not he Content-Length header, because we dont
    want	to maintain it! */
 static gint
-solaris_header_write(gint fd, struct _camel_header_raw *header)
+solaris_header_write (gint fd, struct _camel_header_raw *header)
 {
         struct iovec iv[4];
         gint outlen = 0, len;
@@ -429,12 +429,12 @@ solaris_header_write(gint fd, struct _camel_header_raw *header)
         while (header) {
 		if (g_ascii_strcasecmp(header->name, "Content-Length")) {
 			iv[0].iov_base = header->name;
-			iv[0].iov_len = strlen(header->name);
+			iv[0].iov_len = strlen (header->name);
 			iv[2].iov_base = header->value;
-			iv[2].iov_len = strlen(header->value);
+			iv[2].iov_len = strlen (header->value);
 
 			do {
-				len = writev(fd, iv, 4);
+				len = writev (fd, iv, 4);
 			} while (len == -1 && errno == EINTR);
 
 			if (len == -1)
@@ -475,7 +475,7 @@ camel_movemail_solaris (gint oldsfd,
 	gchar *from = NULL;
 
 	/* need to dup as the mime parser will close on finish */
-	sfd = dup(oldsfd);
+	sfd = dup (oldsfd);
 	if (sfd == -1) {
 		g_set_error (
 			error, G_IO_ERROR,
@@ -485,16 +485,16 @@ camel_movemail_solaris (gint oldsfd,
 		return -1;
 	}
 
-	mp = camel_mime_parser_new();
-	camel_mime_parser_scan_from(mp, TRUE);
-	camel_mime_parser_init_with_fd(mp, sfd);
+	mp = camel_mime_parser_new ();
+	camel_mime_parser_scan_from (mp, TRUE);
+	camel_mime_parser_init_with_fd (mp, sfd);
 
-	ffrom = camel_mime_filter_from_new();
+	ffrom = camel_mime_filter_from_new ();
 
-	while (camel_mime_parser_step(mp, &buffer, &len) == CAMEL_MIME_PARSER_STATE_FROM) {
-		g_assert(camel_mime_parser_from_line(mp));
-		from = g_strdup(camel_mime_parser_from_line(mp));
-		if (camel_mime_parser_step(mp, &buffer, &len) != CAMEL_MIME_PARSER_STATE_FROM_END) {
+	while (camel_mime_parser_step (mp, &buffer, &len) == CAMEL_MIME_PARSER_STATE_FROM) {
+		g_assert (camel_mime_parser_from_line (mp));
+		from = g_strdup (camel_mime_parser_from_line (mp));
+		if (camel_mime_parser_step (mp, &buffer, &len) != CAMEL_MIME_PARSER_STATE_FROM_END) {
 			const gchar *cl;
 			gint length;
 			gint start, body;
@@ -502,40 +502,40 @@ camel_movemail_solaris (gint oldsfd,
 
 			ret = 0;
 
-			start = camel_mime_parser_tell_start_from(mp);
-			body = camel_mime_parser_tell(mp);
+			start = camel_mime_parser_tell_start_from (mp);
+			body = camel_mime_parser_tell (mp);
 
-			if (write(dfd, from, strlen(from)) != strlen(from))
+			if (write (dfd, from, strlen (from)) != strlen (from))
 				goto fail;
 
 			/* write out headers, but NOT content-length header */
-			if (solaris_header_write(dfd, camel_mime_parser_headers_raw(mp)) == -1)
+			if (solaris_header_write (dfd, camel_mime_parser_headers_raw (mp)) == -1)
 				goto fail;
 
 			cl = camel_mime_parser_header(mp, "content-length", NULL);
 			if (cl == NULL) {
 				g_warning("Required Content-Length header is missing from solaris mail box @ %d", (gint)camel_mime_parser_tell(mp));
-				camel_mime_parser_drop_step(mp);
-				camel_mime_parser_drop_step(mp);
-				camel_mime_parser_step(mp, &buffer, &len);
-				camel_mime_parser_unstep(mp);
-				length = camel_mime_parser_tell_start_from(mp) - body;
+				camel_mime_parser_drop_step (mp);
+				camel_mime_parser_drop_step (mp);
+				camel_mime_parser_step (mp, &buffer, &len);
+				camel_mime_parser_unstep (mp);
+				length = camel_mime_parser_tell_start_from (mp) - body;
 				newpos = -1;
 			} else {
-				length = atoi(cl);
-				camel_mime_parser_drop_step(mp);
-				camel_mime_parser_drop_step(mp);
+				length = atoi (cl);
+				camel_mime_parser_drop_step (mp);
+				camel_mime_parser_drop_step (mp);
 				newpos = length+body;
 			}
 			/* copy body->length converting From lines */
-			if (camel_movemail_copy_filter(sfd, dfd, body, length, ffrom) == -1)
+			if (camel_movemail_copy_filter (sfd, dfd, body, length, ffrom) == -1)
 				goto fail;
 			if (newpos != -1)
-				camel_mime_parser_seek(mp, newpos, SEEK_SET);
+				camel_mime_parser_seek (mp, newpos, SEEK_SET);
 		} else {
 			g_error("Inalid parser state: %d", camel_mime_parser_state(mp));
 		}
-		g_free(from);
+		g_free (from);
 	}
 
 	g_object_unref (mp);
@@ -544,7 +544,7 @@ camel_movemail_solaris (gint oldsfd,
 	return ret;
 
 fail:
-	g_free(from);
+	g_free (from);
 
 	g_set_error (
 		error, G_IO_ERROR,

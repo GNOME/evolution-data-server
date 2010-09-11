@@ -50,7 +50,7 @@ static gint gw_summary_header_save (CamelFolderSummary *, FILE *);
 static CamelMessageInfo *gw_message_info_migrate (CamelFolderSummary *s, FILE *in);
 
 static CamelMessageContentInfo * gw_content_info_migrate (CamelFolderSummary *s, FILE *in);
-static gboolean gw_info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set);
+static gboolean gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set);
 
 static gint summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
 static CamelFIRecord * summary_header_to_db (CamelFolderSummary *s, GError **error);
@@ -64,16 +64,16 @@ static CamelMessageContentInfo * content_info_from_db (CamelFolderSummary *s, Ca
 G_DEFINE_TYPE (CamelGroupwiseSummary, camel_groupwise_summary, CAMEL_TYPE_FOLDER_SUMMARY)
 
 static CamelMessageInfo *
-gw_message_info_clone(CamelFolderSummary *s, const CamelMessageInfo *mi)
+gw_message_info_clone (CamelFolderSummary *s, const CamelMessageInfo *mi)
 {
 	CamelGroupwiseMessageInfo *to;
 	const CamelGroupwiseMessageInfo *from = (const CamelGroupwiseMessageInfo *)mi;
 
-	to = (CamelGroupwiseMessageInfo *)CAMEL_FOLDER_SUMMARY_CLASS (camel_groupwise_summary_parent_class)->message_info_clone(s, mi);
+	to = (CamelGroupwiseMessageInfo *)CAMEL_FOLDER_SUMMARY_CLASS (camel_groupwise_summary_parent_class)->message_info_clone (s, mi);
 	to->server_flags = from->server_flags;
 
 	/* FIXME: parent clone should do this */
-	to->info.content = camel_folder_summary_content_info_new(s);
+	to->info.content = camel_folder_summary_content_info_new (s);
 
 	return (CamelMessageInfo *)to;
 }
@@ -145,7 +145,7 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 	part = mir->bdata;
 
 	if (part)
-		EXTRACT_FIRST_DIGIT(gms->version);
+		EXTRACT_FIRST_DIGIT (gms->version);
 
 	if (part)
 		EXTRACT_DIGIT (gms->validity);
@@ -165,8 +165,8 @@ gw_summary_header_load (CamelFolderSummary *s, FILE *in)
 	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_groupwise_summary_parent_class)->summary_header_load (s, in) == -1)
 		return -1;
 
-	if (camel_file_util_decode_fixed_int32(in, &gms->version) == -1
-			|| camel_file_util_decode_fixed_int32(in, &gms->validity) == -1)
+	if (camel_file_util_decode_fixed_int32 (in, &gms->version) == -1
+			|| camel_file_util_decode_fixed_int32 (in, &gms->validity) == -1)
 		return -1;
 
 	if (camel_file_util_decode_string (in, &gms->time_string) == -1)
@@ -177,7 +177,7 @@ gw_summary_header_load (CamelFolderSummary *s, FILE *in)
 static CamelFIRecord *
 summary_header_to_db (CamelFolderSummary *s, GError **error)
 {
-	CamelGroupwiseSummary *ims = CAMEL_GROUPWISE_SUMMARY(s);
+	CamelGroupwiseSummary *ims = CAMEL_GROUPWISE_SUMMARY (s);
 	struct _CamelFIRecord *fir;
 
 	fir = CAMEL_FOLDER_SUMMARY_CLASS (camel_groupwise_summary_parent_class)->summary_header_to_db (s, error);
@@ -193,13 +193,13 @@ summary_header_to_db (CamelFolderSummary *s, GError **error)
 static gint
 gw_summary_header_save (CamelFolderSummary *s, FILE *out)
 {
-	CamelGroupwiseSummary *gms = CAMEL_GROUPWISE_SUMMARY(s);
+	CamelGroupwiseSummary *gms = CAMEL_GROUPWISE_SUMMARY (s);
 
 	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_groupwise_summary_parent_class)->summary_header_save (s, out) == -1)
 		return -1;
 
-	camel_file_util_encode_fixed_int32(out, CAMEL_GW_SUMMARY_VERSION);
-	camel_file_util_encode_fixed_int32(out, gms->validity);
+	camel_file_util_encode_fixed_int32 (out, CAMEL_GW_SUMMARY_VERSION);
+	camel_file_util_encode_fixed_int32 (out, gms->validity);
 	return camel_file_util_encode_string (out, gms->time_string);
 }
 
@@ -322,7 +322,7 @@ gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
 				if (mi->summary) {
 						mi->summary->deleted_count += deleted;
 						mi->summary->unread_count -= read;
-						camel_folder_summary_touch(mi->summary);
+						camel_folder_summary_touch (mi->summary);
 				}
 		}
 
@@ -345,12 +345,12 @@ gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
 		}
 
 		if (mi->summary && mi->summary->folder && mi->uid) {
-				CamelFolderChangeInfo *changes = camel_folder_change_info_new();
+				CamelFolderChangeInfo *changes = camel_folder_change_info_new ();
 
-				camel_folder_change_info_change_uid(changes, camel_message_info_uid(info));
+				camel_folder_change_info_change_uid (changes, camel_message_info_uid (info));
 				camel_folder_changed (mi->summary->folder, changes);
-				camel_folder_change_info_free(changes);
-				camel_folder_summary_touch(mi->summary);
+				camel_folder_change_info_free (changes);
+				camel_folder_summary_touch (mi->summary);
 		}
 
 		return TRUE;
@@ -367,20 +367,20 @@ camel_gw_summary_add_offline (CamelFolderSummary *summary, const gchar *uid, Cam
 	mi = (CamelGroupwiseMessageInfo *)camel_folder_summary_info_new_from_message (summary, message, NULL);
 
 	/* Copy flags 'n' tags */
-	mi->info.flags = camel_message_info_flags(info);
+	mi->info.flags = camel_message_info_flags (info);
 
-	flag = camel_message_info_user_flags(info);
+	flag = camel_message_info_user_flags (info);
 	while (flag) {
-		camel_message_info_set_user_flag((CamelMessageInfo *)mi, flag->name, TRUE);
+		camel_message_info_set_user_flag ((CamelMessageInfo *)mi, flag->name, TRUE);
 		flag = flag->next;
 	}
-	tag = camel_message_info_user_tags(info);
+	tag = camel_message_info_user_tags (info);
 	while (tag) {
-		camel_message_info_set_user_tag((CamelMessageInfo *)mi, tag->name, tag->value);
+		camel_message_info_set_user_tag ((CamelMessageInfo *)mi, tag->name, tag->value);
 		tag = tag->next;
 	}
 
-	mi->info.size = camel_message_info_size(info);
+	mi->info.size = camel_message_info_size (info);
 	mi->info.uid = camel_pstring_strdup (uid);
 
 	camel_folder_summary_add (summary, (CamelMessageInfo *)mi);
@@ -392,8 +392,8 @@ camel_gw_summary_add_offline_uncached (CamelFolderSummary *summary, const gchar 
 {
 	CamelGroupwiseMessageInfo *mi;
 
-	mi = camel_message_info_clone(info);
-	mi->info.uid = camel_pstring_strdup(uid);
+	mi = camel_message_info_clone (info);
+	mi->info.uid = camel_pstring_strdup (uid);
 	camel_folder_summary_add (summary, (CamelMessageInfo *)mi);
 }
 
@@ -414,7 +414,7 @@ groupwise_summary_clear (CamelFolderSummary *summary, gboolean uncache)
 		uid = camel_message_info_uid (info);
 		camel_folder_change_info_remove_uid (changes, uid);
 		camel_folder_summary_remove_uid (summary, uid);
-		camel_message_info_free(info);
+		camel_message_info_free (info);
 	}
 
 	camel_folder_summary_clear_db (summary);

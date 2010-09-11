@@ -278,7 +278,7 @@ imap_parse_namespace_response (const gchar *response)
 	if (!imap_namespace_decode (&inptr, &namespaces->shared))
 		goto exception;
 
-	d(namespaces_dump (namespaces));
+	d (namespaces_dump (namespaces));
 
 	return namespaces;
 
@@ -515,7 +515,7 @@ imap_create_flag_list (guint32 flags, CamelMessageInfo *info, guint32 permanent_
 		const gchar *name;
 
 		/* FIXME: All the custom flags are sent to the server. Not just the changed ones */
-		flag = camel_message_info_user_flags(info);
+		flag = camel_message_info_user_flags (info);
 		while (flag) {
 			if (flag->name && *flag->name) {
 				name = rename_label_flag (flag->name, strlen (flag->name), FALSE);
@@ -671,13 +671,13 @@ static guchar imap_atom_specials[256] = {
 #define imap_is_atom_char(c) ((imap_atom_specials[(c)&0xff] & 0x01) != 0)
 
 gboolean
-imap_is_atom(const gchar *in)
+imap_is_atom (const gchar *in)
 {
 	register guchar c;
 	register const gchar *p = in;
 
 	while ((c = (guchar)*p)) {
-		if (!imap_is_atom_char(c))
+		if (!imap_is_atom_char (c))
 			return FALSE;
 		p++;
 	}
@@ -1382,11 +1382,11 @@ imap_mailbox_decode (const guchar *in, gsize inlen)
 gchar *
 imap_path_to_physical (const gchar *prefix, const gchar *vpath)
 {
-	GString *out = g_string_new(prefix);
+	GString *out = g_string_new (prefix);
 	const gchar *p = vpath;
 	gchar c, *res;
 
-	g_string_append_c(out, '/');
+	g_string_append_c (out, '/');
 	p = vpath;
 	while ((c = *p++)) {
 		if (c == '/') {
@@ -1394,11 +1394,11 @@ imap_path_to_physical (const gchar *prefix, const gchar *vpath)
 			while (*p == '/')
 				p++;
 		} else
-			g_string_append_c(out, c);
+			g_string_append_c (out, c);
 	}
 
 	res = out->str;
-	g_string_free(out, FALSE);
+	g_string_free (out, FALSE);
 
 	return res;
 }

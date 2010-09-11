@@ -109,9 +109,9 @@ nntp_folder_refresh_info_online (CamelFolder *folder,
 	success = !camel_nntp_command (
 		nntp_store, error, nntp_folder, &line, NULL);
 
-	if (camel_folder_change_info_changed(nntp_folder->changes)) {
+	if (camel_folder_change_info_changed (nntp_folder->changes)) {
 		changes = nntp_folder->changes;
-		nntp_folder->changes = camel_folder_change_info_new();
+		nntp_folder->changes = camel_folder_change_info_new ();
 	}
 
 	camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
@@ -188,8 +188,8 @@ nntp_get_filename (CamelFolder *folder, const gchar *uid, GError **error)
 	parent_store = camel_folder_get_parent_store (folder);
 	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
-	article = alloca(strlen(uid)+1);
-	strcpy(article, uid);
+	article = alloca (strlen (uid)+1);
+	strcpy (article, uid);
 	msgid = strchr (article, ',');
 	if (msgid == NULL) {
 		g_set_error (
@@ -262,9 +262,9 @@ nntp_folder_cache_message (CamelDiscoFolder *disco_folder,
 	parent_store = camel_folder_get_parent_store (folder);
 	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
-	article = alloca(strlen(uid)+1);
-	strcpy(article, uid);
-	msgid = strchr(article, ',');
+	article = alloca (strlen (uid)+1);
+	strcpy (article, uid);
+	msgid = strchr (article, ',');
 	if (!msgid) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
@@ -303,8 +303,8 @@ nntp_folder_get_message (CamelFolder *folder, const gchar *uid, GError **error)
 	nntp_folder = CAMEL_NNTP_FOLDER (folder);
 	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
-	article = alloca(strlen(uid)+1);
-	strcpy(article, uid);
+	article = alloca (strlen (uid)+1);
+	strcpy (article, uid);
 	msgid = strchr (article, ',');
 	if (msgid == NULL) {
 		g_set_error (
@@ -364,15 +364,15 @@ nntp_folder_search_by_expression (CamelFolder *folder, const gchar *expression, 
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
 	GPtrArray *matches;
 
-	CAMEL_NNTP_FOLDER_LOCK(nntp_folder, search_lock);
+	CAMEL_NNTP_FOLDER_LOCK (nntp_folder, search_lock);
 
 	if (nntp_folder->search == NULL)
 		nntp_folder->search = camel_folder_search_new ();
 
 	camel_folder_search_set_folder (nntp_folder->search, folder);
-	matches = camel_folder_search_search(nntp_folder->search, expression, NULL, error);
+	matches = camel_folder_search_search (nntp_folder->search, expression, NULL, error);
 
-	CAMEL_NNTP_FOLDER_UNLOCK(nntp_folder, search_lock);
+	CAMEL_NNTP_FOLDER_UNLOCK (nntp_folder, search_lock);
 
 	return matches;
 }
@@ -383,15 +383,15 @@ nntp_folder_count_by_expression (CamelFolder *folder, const gchar *expression, G
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
 	guint32 count;
 
-	CAMEL_NNTP_FOLDER_LOCK(nntp_folder, search_lock);
+	CAMEL_NNTP_FOLDER_LOCK (nntp_folder, search_lock);
 
 	if (nntp_folder->search == NULL)
 		nntp_folder->search = camel_folder_search_new ();
 
 	camel_folder_search_set_folder (nntp_folder->search, folder);
-	count = camel_folder_search_count(nntp_folder->search, expression, error);
+	count = camel_folder_search_count (nntp_folder->search, expression, error);
 
-	CAMEL_NNTP_FOLDER_UNLOCK(nntp_folder, search_lock);
+	CAMEL_NNTP_FOLDER_UNLOCK (nntp_folder, search_lock);
 
 	return count;
 }
@@ -403,17 +403,17 @@ nntp_folder_search_by_uids (CamelFolder *folder, const gchar *expression, GPtrAr
 	GPtrArray *matches;
 
 	if (uids->len == 0)
-		return g_ptr_array_new();
+		return g_ptr_array_new ();
 
-	CAMEL_NNTP_FOLDER_LOCK(folder, search_lock);
+	CAMEL_NNTP_FOLDER_LOCK (folder, search_lock);
 
 	if (nntp_folder->search == NULL)
 		nntp_folder->search = camel_folder_search_new ();
 
 	camel_folder_search_set_folder (nntp_folder->search, folder);
-	matches = camel_folder_search_search(nntp_folder->search, expression, uids, error);
+	matches = camel_folder_search_search (nntp_folder->search, expression, uids, error);
 
-	CAMEL_NNTP_FOLDER_UNLOCK(folder, search_lock);
+	CAMEL_NNTP_FOLDER_UNLOCK (folder, search_lock);
 
 	return matches;
 }
@@ -423,9 +423,9 @@ nntp_folder_search_free (CamelFolder *folder, GPtrArray *result)
 {
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
 
-	CAMEL_NNTP_FOLDER_LOCK(nntp_folder, search_lock);
+	CAMEL_NNTP_FOLDER_LOCK (nntp_folder, search_lock);
 	camel_folder_search_free_result (nntp_folder->search, result);
-	CAMEL_NNTP_FOLDER_UNLOCK(nntp_folder, search_lock);
+	CAMEL_NNTP_FOLDER_UNLOCK (nntp_folder, search_lock);
 }
 
 static gboolean
@@ -505,14 +505,14 @@ nntp_folder_append_message_online (CamelFolder *folder,
 	}
 
 	/* write the message */
-	if (camel_stream_write(stream, group, strlen(group), error) == -1
+	if (camel_stream_write (stream, group, strlen (group), error) == -1
 	    || camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (mime_message), filtered_stream, error) == -1
 	    || camel_stream_flush (filtered_stream, error) == -1
 	    || camel_stream_write (stream, "\r\n.\r\n", 5, error) == -1
 	    || (ret = camel_nntp_stream_line (nntp_store->stream, (guchar **)&line, &u, error)) == -1) {
 		g_prefix_error (error, _("Posting failed: "));
 		success = FALSE;
-	} else if (atoi(line) != 240) {
+	} else if (atoi (line) != 240) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Posting failed: %s"), line);
@@ -520,7 +520,7 @@ nntp_folder_append_message_online (CamelFolder *folder,
 	}
 
 	g_object_unref (filtered_stream);
-	g_free(group);
+	g_free (group);
 	header->next = savedhdrs;
 
 	camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
@@ -642,11 +642,11 @@ camel_nntp_folder_new (CamelStore *parent,
 	root = g_strdup_printf ("%s.cmeta", nntp_folder->storage_path);
 	camel_object_set_state_filename (CAMEL_OBJECT (nntp_folder), root);
 	camel_object_state_read (CAMEL_OBJECT (nntp_folder));
-	g_free(root);
+	g_free (root);
 
 	root = g_strdup_printf("%s.ev-summary", nntp_folder->storage_path);
 	folder->summary = (CamelFolderSummary *) camel_nntp_summary_new (folder, root);
-	g_free(root);
+	g_free (root);
 
 	camel_folder_summary_load_from_db (folder->summary, NULL);
 

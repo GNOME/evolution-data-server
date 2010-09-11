@@ -118,14 +118,14 @@ set_categories_for_gw_item (EGwItem *item, GSList *category_names, ECalBackendGr
 	g_return_if_fail (categories_by_id != NULL || categories_by_name != NULL || cnc != NULL);
 
 	for (; category_names != NULL; category_names = g_slist_next (category_names)) {
-                     if (!category_names->data || strlen(category_names->data) == 0 )
+                     if (!category_names->data || strlen (category_names->data) == 0 )
                              continue;
                      id = g_hash_table_lookup (categories_by_name, category_names->data);
                      if (id)
                             category_ids = g_list_append (category_ids, g_strdup (id));
                      else {
                              EGwItem *category_item;
-                            category_item = e_gw_item_new_empty();
+                            category_item = e_gw_item_new_empty ();
                              e_gw_item_set_item_type (category_item,  E_GW_ITEM_TYPE_CATEGORY);
                              e_gw_item_set_category_name (category_item, category_names->data);
                              status = e_gw_connection_create_item (cnc, category_item, &id);
@@ -133,11 +133,11 @@ set_categories_for_gw_item (EGwItem *item, GSList *category_names, ECalBackendGr
                                      gchar **components = g_strsplit (id, "@", -1);
                                      gchar *temp_id = components[0];
 
-                                     g_hash_table_insert (categories_by_name, g_strdup (category_names->data), g_strdup(temp_id));
-                                     g_hash_table_insert (categories_by_id, g_strdup(temp_id), g_strdup (category_names->data));
-                                     category_ids = g_list_append (category_ids, g_strdup(temp_id));
+                                     g_hash_table_insert (categories_by_name, g_strdup (category_names->data), g_strdup (temp_id));
+                                     g_hash_table_insert (categories_by_id, g_strdup (temp_id), g_strdup (category_names->data));
+                                     category_ids = g_list_append (category_ids, g_strdup (temp_id));
                                      g_free (id);
-                                     g_strfreev(components);
+                                     g_strfreev (components);
                              }
                              g_object_unref (category_item);
                      }
@@ -342,7 +342,7 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 		 * Should be fixed in e-gw-item*/
 		attach_item->contentType = get_mime_type ((gchar *)l->data);
 
-		attach_item->name = g_strdup (filename + strlen(uid) + 1);
+		attach_item->name = g_strdup (filename + strlen (uid) + 1);
 		/* do a base64 encoding so it can be embedded in a soap
 		 * message */
 		encoded_data = g_base64_encode ((guchar *) file_contents, file_len);
@@ -460,7 +460,7 @@ set_attendees_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default
 			recipient_list = g_slist_append (recipient_list, recipient);
 		}
 
-		e_cal_component_free_attendee_list(attendee_list);
+		e_cal_component_free_attendee_list (attendee_list);
 
 		/* recipient_list shouldn't be freed. Look into the function below. */
 		e_gw_item_set_recipient_list (item, recipient_list);
@@ -1206,7 +1206,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 
 		if (!is_allday && (item_type != E_GW_ITEM_TYPE_NOTE)) {
 			if (!icaltime_get_timezone (itt_utc))
-				icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
+				icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone ());
 			if (default_zone) {
 				itt = icaltime_convert_to_zone (itt_utc, default_zone);
 				icaltime_set_timezone (&itt, default_zone);
@@ -1356,7 +1356,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 
 			if (!is_allday) {
 				if (!icaltime_get_timezone (itt_utc))
-					icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
+					icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone ());
 				if (default_zone) {
 					itt = icaltime_convert_to_zone (itt_utc, default_zone);
 					icaltime_set_timezone (&itt, default_zone);
@@ -1400,7 +1400,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		if (t) {
 			itt_utc = icaltime_from_string (t);
 			if (!icaltime_get_timezone (itt_utc))
-				icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
+				icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone ());
 			if (default_zone) {
 				itt = icaltime_convert_to_zone (itt_utc, default_zone);
 				icaltime_set_timezone (&itt, default_zone);
@@ -1434,7 +1434,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			if (t) {
 				itt_utc = icaltime_from_string (t);
 				if (!icaltime_get_timezone (itt_utc))
-					icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
+					icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone ());
 				if (default_zone) {
 					itt = icaltime_convert_to_zone (itt_utc, default_zone);
 					icaltime_set_timezone (&itt, default_zone);
@@ -1939,7 +1939,7 @@ e_gw_connection_get_freebusy_info (ECalBackendGroupwise *cbgw, GList *users, tim
 			ipt.end = eitt;
 			icalprop = icalproperty_new_freebusy (ipt);
 			icalproperty_set_parameter_from_string (icalprop, "FBTYPE", "FREE");
-			icalcomponent_add_property(icalcomp, icalprop);
+			icalcomponent_add_property (icalcomp, icalprop);
 		}
 
 		for (;
@@ -1987,7 +1987,7 @@ e_gw_connection_get_freebusy_info (ECalBackendGroupwise *cbgw, GList *users, tim
 					icalproperty_set_parameter_from_string (icalprop, "FBTYPE", "FREE");
 				g_free (accept_level);
 			}
-			icalcomponent_add_property(icalcomp, icalprop);
+			icalcomponent_add_property (icalcomp, icalprop);
 		}
 
 		e_cal_component_commit_sequence (comp);
@@ -2079,19 +2079,19 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 
 	/* TODO assert the types of the items are the same */
 
-	SET_DELTA(subject);
-	SET_DELTA(message);
-	SET_DELTA(classification);
+	SET_DELTA (subject);
+	SET_DELTA (message);
+	SET_DELTA (classification);
 
-	SET_DELTA(start_date);
+	SET_DELTA (start_date);
 	set_categories_changes (item, cache_item);
 	/*FIXME  recipient_list modifications need go here after server starts
 	 * supporting retraction */
 	if (e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT) {
 
-		SET_DELTA(end_date);
-		SET_DELTA(accept_level);
-		SET_DELTA(place);
+		SET_DELTA (end_date);
+		SET_DELTA (accept_level);
+		SET_DELTA (place);
 		trigger = e_gw_item_get_trigger (item);
 		cache_trigger = e_gw_item_get_trigger (cache_item);
 		if (cache_trigger) {
@@ -2109,8 +2109,8 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 			e_gw_item_set_change (item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "allDayEvent", &is_allday);
 	}
 	else if ( e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_TASK) {
-		SET_DELTA(due_date);
-		SET_DELTA(task_priority);
+		SET_DELTA (due_date);
+		SET_DELTA (task_priority);
 	}
 }
 

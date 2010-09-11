@@ -253,7 +253,7 @@ e_path_rmdir (const gchar *prefix, const gchar *vpath)
 }
 
 static GSList *
-add_recipients(GSList *recipient_list, CamelAddress *recipients, gint recipient_type)
+add_recipients (GSList *recipient_list, CamelAddress *recipients, gint recipient_type)
 {
 	gint total_add,i;
 	EGwItemRecipient *recipient;
@@ -303,7 +303,7 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStream *content, Cam
 			g_free (temp_str);
 			temp_str = NULL;
 		} else {
-			attachment->data = g_base64_encode(byte_array->data, byte_array->len);
+			attachment->data = g_base64_encode (byte_array->data, byte_array->len);
 			attachment->size = strlen (attachment->data);
 		}
 	} else if (byte_array->data) {
@@ -384,19 +384,19 @@ populate_recipients (CamelMimeMessage *message, EGwItem *item, gboolean redirect
 		recipients = CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_RESENT_TO));
 	else
 		recipients = CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_TO));
-	recipient_list=add_recipients(recipient_list,recipients,E_GW_ITEM_RECIPIENT_TO);
+	recipient_list=add_recipients (recipient_list,recipients,E_GW_ITEM_RECIPIENT_TO);
 
 	if (redirect)
 		recipients = CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_RESENT_CC));
 	else
 		recipients = CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_CC));
-	recipient_list=add_recipients(recipient_list,recipients,E_GW_ITEM_RECIPIENT_CC);
+	recipient_list=add_recipients (recipient_list,recipients,E_GW_ITEM_RECIPIENT_CC);
 
 	if (redirect)
 		recipients = CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_RESENT_BCC));
 	else
 		recipients = CAMEL_ADDRESS (camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_BCC));
-	recipient_list=add_recipients(recipient_list,recipients,E_GW_ITEM_RECIPIENT_BC);
+	recipient_list=add_recipients (recipient_list,recipients,E_GW_ITEM_RECIPIENT_BC);
 	recipient_list = g_slist_reverse (recipient_list);
 
 	return recipient_list;
@@ -442,7 +442,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 		content = camel_stream_mem_new_with_byte_array (byte_array);
 
 		dw = camel_medium_get_content (CAMEL_MEDIUM (message));
-		type = camel_mime_part_get_content_type((CamelMimePart *)message);
+		type = camel_mime_part_get_content_type ((CamelMimePart *)message);
 
 		if (camel_content_type_is (type, "text", "plain")) {
 			CamelStream *filtered_stream;
@@ -489,35 +489,35 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 	/*Item type is mail*/
 	e_gw_item_set_item_type (item, E_GW_ITEM_TYPE_MAIL);
 	/*subject*/
-	e_gw_item_set_subject (item, camel_mime_message_get_subject(message));
+	e_gw_item_set_subject (item, camel_mime_message_get_subject (message));
 	/*attachmets*/
 	e_gw_item_set_attach_id_list (item, attach_list);
 
 	/*send options*/
 	e_gw_item_set_sendoptions (item, TRUE);
 
-	if ((gchar *)camel_medium_get_header (CAMEL_MEDIUM(message), X_REPLY_CONVENIENT))
+	if ((gchar *)camel_medium_get_header (CAMEL_MEDIUM (message), X_REPLY_CONVENIENT))
 		e_gw_item_set_reply_request (item, TRUE);
 
-	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM(message), X_REPLY_WITHIN);
+	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM (message), X_REPLY_WITHIN);
 	if (send_options) {
 		e_gw_item_set_reply_request (item, TRUE);
 		e_gw_item_set_reply_within (item, send_options);
 	}
-	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM(message),X_EXPIRE_AFTER);
+	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM (message),X_EXPIRE_AFTER);
 	if (send_options)
 		e_gw_item_set_expires (item, send_options);
 
-	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM(message), X_DELAY_UNTIL);
+	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM (message), X_DELAY_UNTIL);
 	if (send_options)
 		e_gw_item_set_delay_until (item, send_options);
 
-	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM(message), X_TRACK_WHEN);
+	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM (message), X_TRACK_WHEN);
 
 	/*we check if user has modified the status tracking options, if no then we anyway
 	 * set status tracking all*/
 	if (send_options) {
-		switch (atoi(send_options)) {
+		switch (atoi (send_options)) {
 			case 1: e_gw_item_set_track_info (item, E_GW_ITEM_DELIVERED);
 				break;
 			case 2: e_gw_item_set_track_info (item, E_GW_ITEM_DELIVERED_OPENED);
@@ -530,12 +530,12 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 	} else
 		e_gw_item_set_track_info (item, E_GW_ITEM_ALL);
 
-	if ((gchar *)camel_medium_get_header (CAMEL_MEDIUM(message), X_AUTODELETE))
+	if ((gchar *)camel_medium_get_header (CAMEL_MEDIUM (message), X_AUTODELETE))
 		e_gw_item_set_autodelete (item, TRUE);
 
 	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM (message), X_RETURN_NOTIFY_OPEN);
 	if (send_options) {
-		switch (atoi(send_options)) {
+		switch (atoi (send_options)) {
 			case 0: e_gw_item_set_notify_opened (item, E_GW_ITEM_NOTIFY_NONE);
 				break;
 			case 1: e_gw_item_set_notify_opened (item, E_GW_ITEM_NOTIFY_MAIL);
@@ -543,7 +543,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 	}
 	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM (message), X_RETURN_NOTIFY_DELETE);
 	if (send_options) {
-		switch (atoi(send_options)) {
+		switch (atoi (send_options)) {
 			case 0: e_gw_item_set_notify_deleted (item, E_GW_ITEM_NOTIFY_NONE);
 				break;
 			case 1: e_gw_item_set_notify_deleted (item, E_GW_ITEM_NOTIFY_MAIL);
@@ -552,7 +552,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 
 	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM (message), X_SEND_OPT_PRIORITY);
 	if (send_options) {
-		switch (atoi(send_options)) {
+		switch (atoi (send_options)) {
 			case E_GW_PRIORITY_HIGH: e_gw_item_set_priority(item, "High");
 						 break;
 			case E_GW_PRIORITY_LOW:  e_gw_item_set_priority(item, "Low");
@@ -564,7 +564,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 
 	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM (message), X_SEND_OPT_SECURITY);
 	if (send_options) {
-		switch (atoi(send_options)) {
+		switch (atoi (send_options)) {
 			case E_GW_SECURITY_NORMAL : e_gw_item_set_security(item, "Normal");
 						    break;
 			case E_GW_SECURITY_PROPRIETARY : e_gw_item_set_security(item, "Proprietary");
@@ -646,7 +646,7 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 		if (!part)
 			continue;
 
-		type = camel_mime_part_get_content_type(part);
+		type = camel_mime_part_get_content_type (part);
 		dw = camel_medium_get_content (CAMEL_MEDIUM (part));
 
 		if (CAMEL_IS_MULTIPART (dw)) {
@@ -669,7 +669,7 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 			if (temp_part) {
 				is_alternative = TRUE;
 				temp_dw = camel_medium_get_content (CAMEL_MEDIUM (temp_part));
-				camel_data_wrapper_write_to_stream(temp_dw, temp_content, NULL);
+				camel_data_wrapper_write_to_stream (temp_dw, temp_content, NULL);
 				filename = camel_mime_part_get_filename (temp_part);
 				disposition = camel_mime_part_get_disposition (temp_part);
 				cid = camel_mime_part_get_content_id (temp_part);

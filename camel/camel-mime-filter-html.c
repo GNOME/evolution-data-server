@@ -95,12 +95,12 @@ mime_filter_html_run (CamelMimeFilter *mime_filter,
 		const gchar *data;
 		gint len;
 
-		state = camel_html_parser_step(priv->ctxt, &data, &len);
+		state = camel_html_parser_step (priv->ctxt, &data, &len);
 
 		switch (state) {
 		case CAMEL_HTML_PARSER_DATA:
 		case CAMEL_HTML_PARSER_ENT:
-			memcpy(outp, data, len);
+			memcpy (outp, data, len);
 			outp += len;
 			break;
 		case CAMEL_HTML_PARSER_ELEMENT:

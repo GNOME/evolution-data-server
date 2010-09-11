@@ -121,7 +121,7 @@ message_info_new_from_header (CamelFolderSummary *s,
 	if (cns->priv->uid == NULL)
 		return NULL;
 
-	mi = (CamelMessageInfoBase *)CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->message_info_new_from_header(s, h);
+	mi = (CamelMessageInfoBase *)CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->message_info_new_from_header (s, h);
 	if (mi) {
 		camel_pstring_free (mi->uid);
 		mi->uid = camel_pstring_strdup (cns->priv->uid);
@@ -399,7 +399,7 @@ error:
 				error, G_IO_ERROR,
 				g_io_error_from_errno (errno),
 				_("Operation failed: %s"),
-				g_strerror(errno));
+				g_strerror (errno));
 	}
 
 ioerror:
@@ -437,9 +437,9 @@ camel_nntp_summary_check (CamelNNTPSummary *cns, CamelNNTPStore *store, gchar *l
 	parent_store = camel_folder_get_parent_store (s->folder);
 
 	line +=3;
-	n = strtoul(line, &line, 10);
-	f = strtoul(line, &line, 10);
-	l = strtoul(line, &line, 10);
+	n = strtoul (line, &line, 10);
+	f = strtoul (line, &line, 10);
+	l = strtoul (line, &line, 10);
 	if (line[0] == ' ') {
 		gchar *tmp;
 

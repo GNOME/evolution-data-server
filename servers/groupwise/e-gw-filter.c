@@ -238,7 +238,7 @@ e_gw_filter_init (EGwFilter *filter)
 {
 	EGwFilterPrivate *priv;
 
-	priv = g_new0(EGwFilterPrivate, 1);
+	priv = g_new0 (EGwFilterPrivate, 1);
 	priv->filter_group_type = E_GW_FILTER_OP_AND; /*by default all condtions are to be met*/
 	priv->component_list = NULL;
 	filter->priv = priv;

@@ -265,14 +265,14 @@ sasl_gssapi_challenge (CamelSasl *sasl,
 
 	switch (priv->state) {
 	case GSSAPI_STATE_INIT:
-		memset(&hints, 0, sizeof(hints));
+		memset (&hints, 0, sizeof (hints));
 		hints.ai_flags = AI_CANONNAME;
 		ai = camel_getaddrinfo(service->url->host?service->url->host:"localhost", NULL, &hints, error);
 		if (ai == NULL)
 			return NULL;
 
 		str = g_strdup_printf("%s@%s", service_name, ai->ai_canonname);
-		camel_freeaddrinfo(ai);
+		camel_freeaddrinfo (ai);
 
 		inbuf.value = str;
 		inbuf.length = strlen (str);

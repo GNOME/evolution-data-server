@@ -157,49 +157,49 @@ struct _CamelStoreSummaryClass {
 GType			 camel_store_summary_get_type	(void);
 CamelStoreSummary      *camel_store_summary_new	(void);
 
-void camel_store_summary_set_filename(CamelStoreSummary *summary, const gchar *filename);
-void camel_store_summary_set_uri_base(CamelStoreSummary *summary, CamelURL *base);
+void camel_store_summary_set_filename (CamelStoreSummary *summary, const gchar *filename);
+void camel_store_summary_set_uri_base (CamelStoreSummary *summary, CamelURL *base);
 
 /* load/save the summary in its entirety */
-gint camel_store_summary_load(CamelStoreSummary *summary);
-gint camel_store_summary_save(CamelStoreSummary *summary);
+gint camel_store_summary_load (CamelStoreSummary *summary);
+gint camel_store_summary_save (CamelStoreSummary *summary);
 
 /* only load the header */
-gint camel_store_summary_header_load(CamelStoreSummary *summary);
+gint camel_store_summary_header_load (CamelStoreSummary *summary);
 
 /* set the dirty bit on the summary */
-void camel_store_summary_touch(CamelStoreSummary *summary);
+void camel_store_summary_touch (CamelStoreSummary *summary);
 
 /* add a new raw summary item */
-void camel_store_summary_add(CamelStoreSummary *summary, CamelStoreInfo *info);
+void camel_store_summary_add (CamelStoreSummary *summary, CamelStoreInfo *info);
 
 /* build/add raw summary items */
-CamelStoreInfo *camel_store_summary_add_from_path(CamelStoreSummary *summary, const gchar *path);
+CamelStoreInfo *camel_store_summary_add_from_path (CamelStoreSummary *summary, const gchar *path);
 
 /* Just build raw summary items */
-CamelStoreInfo *camel_store_summary_info_new(CamelStoreSummary *summary);
-CamelStoreInfo *camel_store_summary_info_new_from_path(CamelStoreSummary *summary, const gchar *path);
+CamelStoreInfo *camel_store_summary_info_new (CamelStoreSummary *summary);
+CamelStoreInfo *camel_store_summary_info_new_from_path (CamelStoreSummary *summary, const gchar *path);
 
-void camel_store_summary_info_ref(CamelStoreSummary *summary, CamelStoreInfo *info);
-void camel_store_summary_info_free(CamelStoreSummary *summary, CamelStoreInfo *info);
+void camel_store_summary_info_ref (CamelStoreSummary *summary, CamelStoreInfo *info);
+void camel_store_summary_info_free (CamelStoreSummary *summary, CamelStoreInfo *info);
 
 /* removes a summary item */
-void camel_store_summary_remove(CamelStoreSummary *summary, CamelStoreInfo *info);
-void camel_store_summary_remove_path(CamelStoreSummary *summary, const gchar *path);
-void camel_store_summary_remove_index(CamelStoreSummary *summary, gint index);
+void camel_store_summary_remove (CamelStoreSummary *summary, CamelStoreInfo *info);
+void camel_store_summary_remove_path (CamelStoreSummary *summary, const gchar *path);
+void camel_store_summary_remove_index (CamelStoreSummary *summary, gint index);
 
 /* remove all items */
-void camel_store_summary_clear(CamelStoreSummary *summary);
+void camel_store_summary_clear (CamelStoreSummary *summary);
 
 /* lookup functions */
-gint camel_store_summary_count(CamelStoreSummary *summary);
-CamelStoreInfo *camel_store_summary_index(CamelStoreSummary *summary, gint index);
-CamelStoreInfo *camel_store_summary_path(CamelStoreSummary *summary, const gchar *path);
-GPtrArray *camel_store_summary_array(CamelStoreSummary *summary);
-void camel_store_summary_array_free(CamelStoreSummary *summary, GPtrArray *array);
+gint camel_store_summary_count (CamelStoreSummary *summary);
+CamelStoreInfo *camel_store_summary_index (CamelStoreSummary *summary, gint index);
+CamelStoreInfo *camel_store_summary_path (CamelStoreSummary *summary, const gchar *path);
+GPtrArray *camel_store_summary_array (CamelStoreSummary *summary);
+void camel_store_summary_array_free (CamelStoreSummary *summary, GPtrArray *array);
 
-const gchar *camel_store_info_string(CamelStoreSummary *summary, const CamelStoreInfo *info, gint type);
-void camel_store_info_set_string(CamelStoreSummary *summary, CamelStoreInfo *info, gint type, const gchar *value);
+const gchar *camel_store_info_string (CamelStoreSummary *summary, const CamelStoreInfo *info, gint type);
+void camel_store_info_set_string (CamelStoreSummary *summary, CamelStoreInfo *info, gint type, const gchar *value);
 
 /* helper macro's */
 #define camel_store_info_path(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_STORE_INFO_PATH))

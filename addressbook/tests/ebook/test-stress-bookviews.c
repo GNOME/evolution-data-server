@@ -68,13 +68,13 @@ main (gint argc, gchar **argv)
 	book = e_book_new_system_addressbook (NULL);
 	if (!book) {
 		printf ("failed to create ebook\n");
-		exit(0);
+		exit (0);
 	}
 
 	status = e_book_open (book, FALSE, NULL);
 	if (status == FALSE) {
 		printf ("failed to open local addressbook\n");
-		exit(0);
+		exit (0);
 	}
 
 	query = e_book_query_any_field_contains ("");

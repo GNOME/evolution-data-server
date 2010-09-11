@@ -32,18 +32,18 @@
 
 struct timeval timeit_start;
 
-static time_start(const gchar *desc)
+static time_start (const gchar *desc)
 {
-	gettimeofday(&timeit_start, NULL);
+	gettimeofday (&timeit_start, NULL);
 	printf("starting: %s\n", desc);
 }
 
-static time_end(const gchar *desc)
+static time_end (const gchar *desc)
 {
 	gulong diff;
 	struct timeval end;
 
-	gettimeofday(&end, NULL);
+	gettimeofday (&end, NULL);
 	diff = end.tv_sec * 1000 + end.tv_usec/1000;
 	diff -= timeit_start.tv_sec * 1000 + timeit_start.tv_usec/1000;
 	printf("%s took %ld.%03ld seconds\n",
@@ -79,13 +79,13 @@ typedef struct _EMemChunk {
  *
  * Returns: The new header.
  **/
-MemChunk *e_memchunk_new(gint atomcount, gint atomsize)
+MemChunk *e_memchunk_new (gint atomcount, gint atomsize)
 {
-	MemChunk *m = g_malloc(sizeof(*m));
+	MemChunk *m = g_malloc (sizeof (*m));
 
 	m->blocksize = atomcount;
-	m->atomsize = MAX(atomsize, sizeof(MemChunkFreeNode));
-	m->blocks = g_ptr_array_new();
+	m->atomsize = MAX (atomsize, sizeof (MemChunkFreeNode));
+	m->blocks = g_ptr_array_new ();
 	m->free = NULL;
 
 	return m;
@@ -97,7 +97,7 @@ MemChunk *e_memchunk_new(gint atomcount, gint atomsize)
  *
  * Allocate a new atom size block of memory from a memchunk.
  **/
-gpointer e_memchunk_alloc(MemChunk *m)
+gpointer e_memchunk_alloc (MemChunk *m)
 {
 	gchar *b;
 	MemChunkFreeNode *f;
@@ -114,8 +114,8 @@ gpointer e_memchunk_alloc(MemChunk *m)
 		}
 		return mem;
 	} else {
-		b = g_malloc(m->blocksize * m->atomsize);
-		g_ptr_array_add(m->blocks, b);
+		b = g_malloc (m->blocksize * m->atomsize);
+		g_ptr_array_add (m->blocks, b);
 		f = (MemChunkFreeNode *)&b[m->atomsize];
 		f->atoms = m->blocksize-1;
 		f->next = NULL;
@@ -124,12 +124,12 @@ gpointer e_memchunk_alloc(MemChunk *m)
 	}
 }
 
-gpointer e_memchunk_alloc0(EMemChunk *m)
+gpointer e_memchunk_alloc0 (EMemChunk *m)
 {
 	gpointer mem;
 
-	mem = e_memchunk_alloc(m);
-	memset(mem, 0, m->atomsize);
+	mem = e_memchunk_alloc (m);
+	memset (mem, 0, m->atomsize);
 
 	return mem;
 }
@@ -143,7 +143,7 @@ gpointer e_memchunk_alloc0(EMemChunk *m)
  * memchunk.
  **/
 void
-e_memchunk_free(MemChunk *m, gpointer mem)
+e_memchunk_free (MemChunk *m, gpointer mem)
 {
 	MemChunkFreeNode *f;
 
@@ -169,7 +169,7 @@ e_memchunk_free(MemChunk *m, gpointer mem)
  * is to be used repeatedly.
  **/
 void
-e_memchunk_empty(MemChunk *m)
+e_memchunk_empty (MemChunk *m)
 {
 	gint i;
 	MemChunkFreeNode *f, *h = NULL;
@@ -190,7 +190,7 @@ struct _cleaninfo {
 	gint size;		/* just so tree_search has it, sigh */
 };
 
-static gint tree_compare(struct _cleaninfo *a, struct _cleaninfo *b)
+static gint tree_compare (struct _cleaninfo *a, struct _cleaninfo *b)
 {
 	if (a->base < b->base)
 		return -1;
@@ -199,7 +199,7 @@ static gint tree_compare(struct _cleaninfo *a, struct _cleaninfo *b)
 	return 0;
 }
 
-static gint tree_search(struct _cleaninfo *a, gchar *mem)
+static gint tree_search (struct _cleaninfo *a, gchar *mem)
 {
 	if (a->base <= mem) {
 		if (mem < &a->base[a->size])
@@ -221,7 +221,7 @@ static gint tree_search(struct _cleaninfo *a, gchar *mem)
  * greater than atomcount).
  **/
 void
-e_memchunk_clean(MemChunk *m)
+e_memchunk_clean (MemChunk *m)
 {
 	GTree *tree;
 	gint i;
@@ -233,20 +233,20 @@ e_memchunk_clean(MemChunk *m)
 		return;
 
 	/* first, setup the tree/list so we can map free block addresses to block addresses */
-	tree = g_tree_new((GCompareFunc)tree_compare);
+	tree = g_tree_new ((GCompareFunc)tree_compare);
 	for (i=0;i<m->blocks->len;i++) {
-		ci = alloca(sizeof(*ci));
+		ci = alloca (sizeof (*ci));
 		ci->count = 0;
 		ci->base = m->blocks->pdata[i];
 		ci->size = m->blocksize * m->atomsize;
-		g_tree_insert(tree, ci, ci);
+		g_tree_insert (tree, ci, ci);
 		ci->next = hi;
 		hi = ci;
 	}
 
 	/* now, scan all free nodes, and count them in their tree node */
 	while (f) {
-		ci = g_tree_search(tree, (GCompareFunc) tree_search, f);
+		ci = g_tree_search (tree, (GCompareFunc) tree_search, f);
 		if (ci) {
 			ci->count += f->atoms;
 		} else {
@@ -276,13 +276,13 @@ e_memchunk_clean(MemChunk *m)
 				f = f->next;
 			}
 
-			g_ptr_array_remove_fast(m->blocks, ci->base);
-			g_free(ci->base);
+			g_ptr_array_remove_fast (m->blocks, ci->base);
+			g_free (ci->base);
 		}
 		ci = ci->next;
 	}
 
-	g_tree_destroy(tree);
+	g_tree_destroy (tree);
 }
 
 /**
@@ -292,7 +292,7 @@ e_memchunk_clean(MemChunk *m)
  * Free the memchunk header, and all associated memory.
  **/
 void
-e_memchunk_destroy(MemChunk *m)
+e_memchunk_destroy (MemChunk *m)
 {
 	gint i;
 
@@ -300,9 +300,9 @@ e_memchunk_destroy(MemChunk *m)
 		return;
 
 	for (i=0;i<m->blocks->len;i++)
-		g_free(m->blocks->pdata[i]);
-	g_ptr_array_free(m->blocks, TRUE);
-	g_free(m);
+		g_free (m->blocks->pdata[i]);
+	g_ptr_array_free (m->blocks, TRUE);
+	g_free (m);
 }
 
 #if 0
@@ -312,7 +312,7 @@ e_memchunk_destroy(MemChunk *m)
 
 #define s(x)
 
-main()
+main ()
 {
 	gint i;
 	MemChunk *mc;
@@ -320,7 +320,7 @@ main()
 	GMemChunk *gmc;
 	struct _EStrv *s;
 
-	s = strv_new(8);
+	s = strv_new (8);
 	s = strv_set(s, 1, "Testing 1");
 	s = strv_set(s, 2, "Testing 2");
 	s = strv_set(s, 3, "Testing 3");
@@ -332,10 +332,10 @@ main()
 		printf("s[%d] = %s\n", i, strv_get(s, i));
 	}
 
-	s(sleep(5));
+	s (sleep (5));
 
 	printf("packing ...\n");
-	s = strv_pack(s);
+	s = strv_pack (s);
 
 	for (i=0;i<8;i++) {
 		printf("s[%d] = %s\n", i, strv_get(s, i));
@@ -350,58 +350,58 @@ main()
 	}
 
 	printf("packing ...\n");
-	s = strv_pack(s);
+	s = strv_pack (s);
 
 	for (i=0;i<8;i++) {
 		printf("s[%d] = %s\n", i, strv_get(s, i));
 	}
 
-	strv_free(s);
+	strv_free (s);
 
 #if 0
 	time_start("Using memchunks");
-	mc = memchunk_new(CHUNK_COUNT, CHUNK_SIZE);
+	mc = memchunk_new (CHUNK_COUNT, CHUNK_SIZE);
 	for (i=0;i<1000000;i++) {
-		mem = memchunk_alloc(mc);
+		mem = memchunk_alloc (mc);
 		if ((i & 1) == 0)
-			memchunk_free(mc, mem);
+			memchunk_free (mc, mem);
 	}
-	s(sleep(10));
-	memchunk_destroy(mc);
+	s (sleep (10));
+	memchunk_destroy (mc);
 	time_end("allocating 1000000 memchunks, freeing 500k");
 
 	time_start("Using gmemchunks");
 	gmc = g_mem_chunk_new("memchunk", CHUNK_SIZE, CHUNK_SIZE*CHUNK_COUNT, G_ALLOC_AND_FREE);
 	for (i=0;i<1000000;i++) {
-		mem = g_mem_chunk_alloc(gmc);
+		mem = g_mem_chunk_alloc (gmc);
 		if ((i & 1) == 0)
-			g_mem_chunk_free(gmc, mem);
+			g_mem_chunk_free (gmc, mem);
 	}
-	s(sleep(10));
-	g_mem_chunk_destroy(gmc);
+	s (sleep (10));
+	g_mem_chunk_destroy (gmc);
 	time_end("allocating 1000000 gmemchunks, freeing 500k");
 
 	time_start("Using memchunks");
-	mc = memchunk_new(CHUNK_COUNT, CHUNK_SIZE);
+	mc = memchunk_new (CHUNK_COUNT, CHUNK_SIZE);
 	for (i=0;i<1000000;i++) {
-		mem = memchunk_alloc(mc);
+		mem = memchunk_alloc (mc);
 	}
-	s(sleep(10));
-	memchunk_destroy(mc);
+	s (sleep (10));
+	memchunk_destroy (mc);
 	time_end("allocating 1000000 memchunks");
 
 	time_start("Using gmemchunks");
 	gmc = g_mem_chunk_new("memchunk", CHUNK_SIZE, CHUNK_COUNT*CHUNK_SIZE, G_ALLOC_ONLY);
 	for (i=0;i<1000000;i++) {
-		mem = g_mem_chunk_alloc(gmc);
+		mem = g_mem_chunk_alloc (gmc);
 	}
-	s(sleep(10));
-	g_mem_chunk_destroy(gmc);
+	s (sleep (10));
+	g_mem_chunk_destroy (gmc);
 	time_end("allocating 1000000 gmemchunks");
 
 	time_start("Using malloc");
 	for (i=0;i<1000000;i++) {
-		malloc(CHUNK_SIZE);
+		malloc (CHUNK_SIZE);
 	}
 	time_end("allocating 1000000 malloc");
 #endif

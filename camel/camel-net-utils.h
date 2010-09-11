@@ -88,10 +88,10 @@ struct addrinfo {
 #endif
 #endif
 
-struct addrinfo *camel_getaddrinfo(const gchar *name, const gchar *service,
+struct addrinfo *camel_getaddrinfo (const gchar *name, const gchar *service,
 				   const struct addrinfo *hints, GError **error);
-void camel_freeaddrinfo(struct addrinfo *host);
-gint camel_getnameinfo(const struct sockaddr *sa, socklen_t salen, gchar **host, gchar **serv,
+void camel_freeaddrinfo (struct addrinfo *host);
+gint camel_getnameinfo (const struct sockaddr *sa, socklen_t salen, gchar **host, gchar **serv,
 		      gint flags, GError **error);
 
 G_END_DECLS

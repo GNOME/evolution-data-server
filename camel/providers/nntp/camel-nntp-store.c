@@ -115,7 +115,7 @@ nntp_store_finalize (GObject *object)
 	xover = nntp_store->xover;
 	while (xover) {
 		xn = xover->next;
-		g_free(xover);
+		g_free (xover);
 		xover = xn;
 	}
 
@@ -124,7 +124,7 @@ nntp_store_finalize (GObject *object)
 }
 
 static gboolean
-nntp_can_work_offline(CamelDiscoStore *store)
+nntp_can_work_offline (CamelDiscoStore *store)
 {
 	return TRUE;
 }
@@ -142,7 +142,7 @@ static struct {
 };
 
 static gint
-xover_setup(CamelNNTPStore *store, GError **error)
+xover_setup (CamelNNTPStore *store, GError **error)
 {
 	gint ret, i;
 	gchar *line;
@@ -164,19 +164,19 @@ xover_setup(CamelNNTPStore *store, GError **error)
 	last = (struct _xover_header *)&store->xover;
 
 	/* supported command */
-	while ((ret = camel_nntp_stream_line(store->stream, (guchar **)&line, &len, error)) > 0) {
+	while ((ret = camel_nntp_stream_line (store->stream, (guchar **)&line, &len, error)) > 0) {
 		p = (guchar *) line;
-		xover = g_malloc0(sizeof(*xover));
+		xover = g_malloc0 (sizeof (*xover));
 		last->next = xover;
 		last = xover;
 		while ((c = *p++)) {
 			if (c == ':') {
 				p[-1] = 0;
 				for (i = 0; i < G_N_ELEMENTS (headers); i++) {
-					if (strcmp(line, headers[i].name) == 0) {
+					if (strcmp (line, headers[i].name) == 0) {
 						xover->name = headers[i].name;
 						if (strncmp((gchar *) p, "full", 4) == 0)
-							xover->skip = strlen(xover->name)+1;
+							xover->skip = strlen (xover->name)+1;
 						else
 							xover->skip = 0;
 						xover->type = headers[i].type;
@@ -185,7 +185,7 @@ xover_setup(CamelNNTPStore *store, GError **error)
 				}
 				break;
 			} else {
-				p[-1] = camel_tolower(c);
+				p[-1] = camel_tolower (c);
 			}
 		}
 	}
@@ -287,7 +287,7 @@ connect_to_server (CamelService *service, const gchar *host, const gchar *serv, 
 	/* if we have username, try it here */
 	if (service->url->user != NULL
 	    && service->url->user[0]
-	    && camel_nntp_try_authenticate(store, error) != NNTP_AUTH_ACCEPTED)
+	    && camel_nntp_try_authenticate (store, error) != NNTP_AUTH_ACCEPTED)
 		goto fail;
 
 	/* set 'reader' mode & ignore return code, also ping the server, inn goes offline very quickly otherwise */
@@ -295,7 +295,7 @@ connect_to_server (CamelService *service, const gchar *host, const gchar *serv, 
 	    || camel_nntp_raw_command_auth (store, error, (gchar **) &buf, "date") == -1)
 		goto fail;
 
-	if (xover_setup(store, error) == -1)
+	if (xover_setup (store, error) == -1)
 		goto fail;
 
 	if (!disco_store->diary) {
@@ -306,7 +306,7 @@ connect_to_server (CamelService *service, const gchar *host, const gchar *serv, 
 
 	retval = TRUE;
 
-	g_free(store->current_folder);
+	g_free (store->current_folder);
 	store->current_folder = NULL;
 
  fail:
@@ -360,7 +360,7 @@ nntp_connect_online (CamelService *service, GError **error)
 static gboolean
 nntp_connect_offline (CamelService *service, GError **error)
 {
-	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE(service);
+	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (service);
 	CamelDiscoStore *disco_store = (CamelDiscoStore *) nntp_store;
 	gchar *path;
 
@@ -404,7 +404,7 @@ nntp_disconnect_online (CamelService *service, gboolean clean, GError **error)
 
 	g_object_unref (store->stream);
 	store->stream = NULL;
-	g_free(store->current_folder);
+	g_free (store->current_folder);
 	store->current_folder = NULL;
 
 	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
@@ -415,7 +415,7 @@ nntp_disconnect_online (CamelService *service, gboolean clean, GError **error)
 static gboolean
 nntp_disconnect_offline (CamelService *service, gboolean clean, GError **error)
 {
-	CamelDiscoStore *disco = CAMEL_DISCO_STORE(service);
+	CamelDiscoStore *disco = CAMEL_DISCO_STORE (service);
 
 	if (disco->diary) {
 		g_object_unref (disco->diary);
@@ -444,14 +444,14 @@ nntp_store_query_auth_types (CamelService *service, GError **error)
 }
 
 static CamelFolder *
-nntp_get_folder(CamelStore *store, const gchar *folder_name, guint32 flags, GError **error)
+nntp_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, GError **error)
 {
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (store);
 	CamelFolder *folder;
 
 	camel_service_lock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
-	folder = camel_nntp_folder_new(store, folder_name, error);
+	folder = camel_nntp_folder_new (store, folder_name, error);
 
 	camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
@@ -511,7 +511,7 @@ nntp_folder_info_from_store_info (CamelNNTPStore *store, gboolean short_notation
 	fi->unread = si->unread;
 	fi->total = si->total;
 	fi->flags = si->flags;
-	path = alloca(strlen(fi->full_name)+2);
+	path = alloca (strlen (fi->full_name)+2);
 	sprintf(path, "/%s", fi->full_name);
 	url = camel_url_new_with_base (base_url, path);
 	fi->uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
@@ -538,7 +538,7 @@ nntp_folder_info_from_name (CamelNNTPStore *store, gboolean short_notation, cons
 
 	fi->unread = -1;
 
-	path = alloca(strlen(fi->full_name)+2);
+	path = alloca (strlen (fi->full_name)+2);
 	sprintf(path, "/%s", fi->full_name);
 	url = camel_url_new_with_base (base_url, path);
 	fi->uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
@@ -549,7 +549,7 @@ nntp_folder_info_from_name (CamelNNTPStore *store, gboolean short_notation, cons
 
 /* handle list/newgroups response */
 static CamelNNTPStoreInfo *
-nntp_store_info_update(CamelNNTPStore *store, gchar *line)
+nntp_store_info_update (CamelNNTPStore *store, gchar *line)
 {
 	CamelStoreSummary *summ = (CamelStoreSummary *)store->summary;
 	CamelURL *base_url = ((CamelService *)store)->url;
@@ -558,15 +558,15 @@ nntp_store_info_update(CamelNNTPStore *store, gchar *line)
 	gchar *relpath, *tmp;
 	guint32 last = 0, first = 0, new = 0;
 
-	tmp = strchr(line, ' ');
+	tmp = strchr (line, ' ');
 	if (tmp)
 		*tmp++ = 0;
 
-	fsi = si = (CamelNNTPStoreInfo *)camel_store_summary_path((CamelStoreSummary *)store->summary, line);
+	fsi = si = (CamelNNTPStoreInfo *)camel_store_summary_path ((CamelStoreSummary *)store->summary, line);
 	if (si == NULL) {
-		si = (CamelNNTPStoreInfo*)camel_store_summary_info_new(summ);
+		si = (CamelNNTPStoreInfo*)camel_store_summary_info_new (summ);
 
-		relpath = g_alloca(strlen(line)+2);
+		relpath = g_alloca (strlen (line)+2);
 		sprintf(relpath, "/%s", line);
 		url = camel_url_new_with_base (base_url, relpath);
 		si->info.uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
@@ -574,16 +574,16 @@ nntp_store_info_update(CamelNNTPStore *store, gchar *line)
 
 		si->info.path = g_strdup (line);
 		si->full_name = g_strdup (line); /* why do we keep this? */
-		camel_store_summary_add((CamelStoreSummary *)store->summary, &si->info);
+		camel_store_summary_add ((CamelStoreSummary *)store->summary, &si->info);
 	} else {
 		first = si->first;
 		last = si->last;
 	}
 
 	if (tmp && *tmp >= '0' && *tmp <= '9') {
-		last = strtoul(tmp, &tmp, 10);
+		last = strtoul (tmp, &tmp, 10);
 		if (*tmp == ' ' && tmp[1] >= '0' && tmp[1] <= '9') {
-			first = strtoul(tmp+1, &tmp, 10);
+			first = strtoul (tmp+1, &tmp, 10);
 			if (*tmp == ' ' && tmp[1] != 'y')
 				si->info.flags |= CAMEL_STORE_INFO_FOLDER_READONLY;
 		}
@@ -605,7 +605,7 @@ nntp_store_info_update(CamelNNTPStore *store, gchar *line)
 	si->first = first;
 
 	if (fsi)
-		camel_store_summary_info_free((CamelStoreSummary *)store->summary, &fsi->info);
+		camel_store_summary_info_free ((CamelStoreSummary *)store->summary, &fsi->info);
 	else			/* TODO see if we really did touch it */
 		camel_store_summary_touch ((CamelStoreSummary *)store->summary);
 
@@ -634,20 +634,20 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *store, const gchar *top, 
 				CamelNNTPFolder *folder;
 				gchar *line;
 
-				folder = (CamelNNTPFolder *)camel_store_get_folder((CamelStore *)store, si->path, 0, NULL);
+				folder = (CamelNNTPFolder *)camel_store_get_folder ((CamelStore *)store, si->path, 0, NULL);
 				if (folder) {
 					CamelFolderChangeInfo *changes = NULL;
 
 					camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-					camel_nntp_command(store, NULL, folder, &line, NULL);
-					if (camel_folder_change_info_changed(folder->changes)) {
+					camel_nntp_command (store, NULL, folder, &line, NULL);
+					if (camel_folder_change_info_changed (folder->changes)) {
 						changes = folder->changes;
-						folder->changes = camel_folder_change_info_new();
+						folder->changes = camel_folder_change_info_new ();
 					}
 					camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 					if (changes) {
 						camel_folder_changed (CAMEL_FOLDER (folder), changes);
-						camel_folder_change_info_free(changes);
+						camel_folder_change_info_free (changes);
 					}
 					g_object_unref (folder);
 				}
@@ -667,7 +667,7 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *store, const gchar *top, 
 }
 
 static CamelFolderInfo *
-tree_insert(CamelFolderInfo *root, CamelFolderInfo *last, CamelFolderInfo *fi)
+tree_insert (CamelFolderInfo *root, CamelFolderInfo *last, CamelFolderInfo *fi)
 {
 	CamelFolderInfo *kfi;
 
@@ -728,7 +728,7 @@ nntp_push_to_hierarchy (CamelURL *base_url, CamelFolderInfo *root, CamelFolderIn
 			camel_url_free (url);
 
 			g_hash_table_insert (known, fi->full_name, fi);
-			root = tree_insert(root, last, fi);
+			root = tree_insert (root, last, fi);
 			last = fi;
 		} else {
 			last = kfi;
@@ -741,7 +741,7 @@ nntp_push_to_hierarchy (CamelURL *base_url, CamelFolderInfo *root, CamelFolderIn
 	g_free (pfi->name);
 	pfi->name = g_strdup (name);
 
-	return tree_insert(root, last, pfi);
+	return tree_insert (root, last, pfi);
 }
 
 /*
@@ -760,7 +760,7 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store, const gchar *orig_top,
 	GHashTable *known; /* folder name to folder info */
 	gchar *tmpname;
 	gchar *top = g_strconcat(orig_top?orig_top:"", ".", NULL);
-	gint toplen = strlen(top);
+	gint toplen = strlen (top);
 
 	known = g_hash_table_new (g_str_hash, g_str_equal);
 
@@ -769,7 +769,7 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store, const gchar *orig_top,
 		    && (root_or_flag || strncmp (si->path, top, toplen) == 0)) {
 			if (recursive_flag || is_folder_list || strchr (si->path + toplen, '.') == NULL) {
 				/* add the item */
-				fi = nntp_folder_info_from_store_info(store, FALSE, si);
+				fi = nntp_folder_info_from_store_info (store, FALSE, si);
 				if (!fi)
 					continue;
 				if (store->folder_hierarchy_relative) {
@@ -781,20 +781,20 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store, const gchar *orig_top,
 				   the item we added last, we need to add a portion of this item to
 				   the list as a placeholder */
 				if (!last ||
-				    strncmp(si->path, last->full_name, strlen(last->full_name)) != 0 ||
-				    si->path[strlen(last->full_name)] != '.') {
-					tmpname = g_strdup(si->path);
+				    strncmp (si->path, last->full_name, strlen (last->full_name)) != 0 ||
+				    si->path[strlen (last->full_name)] != '.') {
+					tmpname = g_strdup (si->path);
 					*(strchr(tmpname + toplen, '.')) = '\0';
-					fi = nntp_folder_info_from_name(store, FALSE, tmpname);
+					fi = nntp_folder_info_from_name (store, FALSE, tmpname);
 					if (!fi)
 						continue;
 
 					fi->flags |= CAMEL_FOLDER_NOSELECT;
 					if (store->folder_hierarchy_relative) {
-						g_free(fi->name);
-						fi->name = g_strdup(tmpname + ((toplen==1) ? 0 : toplen));
+						g_free (fi->name);
+						fi->name = g_strdup (tmpname + ((toplen==1) ? 0 : toplen));
 					}
-					g_free(tmpname);
+					g_free (tmpname);
 				} else {
 					continue;
 				}
@@ -820,20 +820,20 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store, const gchar *orig_top,
 			}
 		} else if (subscribed_or_flag && first) {
 			/* we have already added subitems, but this item is no longer a subitem */
-			camel_store_summary_info_free((CamelStoreSummary *)store->summary, si);
+			camel_store_summary_info_free ((CamelStoreSummary *)store->summary, si);
 			break;
 		}
-		camel_store_summary_info_free((CamelStoreSummary *)store->summary, si);
+		camel_store_summary_info_free ((CamelStoreSummary *)store->summary, si);
 	}
 
 	g_hash_table_destroy (known);
-	g_free(top);
+	g_free (top);
 	return first;
 }
 
 /* retrieves the date from the NNTP server */
 static gboolean
-nntp_get_date(CamelNNTPStore *nntp_store, GError **error)
+nntp_get_date (CamelNNTPStore *nntp_store, GError **error)
 {
 	guchar *line;
 	gint ret = camel_nntp_command(nntp_store, error, NULL, (gchar **)&line, "date");
@@ -855,12 +855,12 @@ nntp_get_date(CamelNNTPStore *nntp_store, GError **error)
 }
 
 static void
-store_info_remove(gpointer key, gpointer value, gpointer data)
+store_info_remove (gpointer key, gpointer value, gpointer data)
 {
 	CamelStoreSummary *summary = data;
 	CamelStoreInfo *si = value;
 
-	camel_store_summary_remove(summary, si);
+	camel_store_summary_remove (summary, si);
 }
 
 static gint
@@ -870,7 +870,7 @@ store_info_sort (gconstpointer a, gconstpointer b)
 }
 
 static CamelFolderInfo *
-nntp_store_get_folder_info_all(CamelNNTPStore *nntp_store, const gchar *top, guint32 flags, gboolean online, GError **error)
+nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store, const gchar *top, guint32 flags, gboolean online, GError **error)
 {
 	CamelNNTPStoreSummary *summary = nntp_store->summary;
 	CamelNNTPStoreInfo *si;
@@ -888,9 +888,9 @@ nntp_store_get_folder_info_all(CamelNNTPStore *nntp_store, const gchar *top, gui
 		/* we may need to update */
 		if (summary->last_newslist[0] != 0) {
 			gchar date[14];
-			memcpy(date, summary->last_newslist + 2, 6); /* YYMMDDD */
+			memcpy (date, summary->last_newslist + 2, 6); /* YYMMDDD */
 			date[6] = ' ';
-			memcpy(date + 7, summary->last_newslist + 8, 6); /* HHMMSS */
+			memcpy (date + 7, summary->last_newslist + 8, 6); /* HHMMSS */
 			date[13] = '\0';
 
 			/* Some servers don't support date (!), so fallback if they dont */
@@ -907,7 +907,7 @@ nntp_store_get_folder_info_all(CamelNNTPStore *nntp_store, const gchar *top, gui
 			}
 
 			while ((ret = camel_nntp_stream_line (nntp_store->stream, &line, &len, error)) > 0)
-				nntp_store_info_update(nntp_store, (gchar *) line);
+				nntp_store_info_update (nntp_store, (gchar *) line);
 		} else {
 			GHashTable *all;
 			gint i;
@@ -928,17 +928,17 @@ nntp_store_get_folder_info_all(CamelNNTPStore *nntp_store, const gchar *top, gui
 				goto error;
 			}
 
-			all = g_hash_table_new(g_str_hash, g_str_equal);
+			all = g_hash_table_new (g_str_hash, g_str_equal);
 			for (i = 0; (si = (CamelNNTPStoreInfo *)camel_store_summary_index ((CamelStoreSummary *)nntp_store->summary, i)); i++)
-				g_hash_table_insert(all, si->info.path, si);
+				g_hash_table_insert (all, si->info.path, si);
 
-			while ((ret = camel_nntp_stream_line(nntp_store->stream, &line, &len, error)) > 0) {
-				si = nntp_store_info_update(nntp_store, (gchar *) line);
-				g_hash_table_remove(all, si->info.path);
+			while ((ret = camel_nntp_stream_line (nntp_store->stream, &line, &len, error)) > 0) {
+				si = nntp_store_info_update (nntp_store, (gchar *) line);
+				g_hash_table_remove (all, si->info.path);
 			}
 
-			g_hash_table_foreach(all, store_info_remove, nntp_store->summary);
-			g_hash_table_destroy(all);
+			g_hash_table_foreach (all, store_info_remove, nntp_store->summary);
+			g_hash_table_destroy (all);
 		}
 
 		/* sort the list */
@@ -959,7 +959,7 @@ nntp_store_get_folder_info_all(CamelNNTPStore *nntp_store, const gchar *top, gui
 static CamelFolderInfo *
 nntp_get_folder_info (CamelStore *store, const gchar *top, guint32 flags, gboolean online, GError **error)
 {
-	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE(store);
+	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (store);
 	CamelFolderInfo *first = NULL;
 
 	dd(printf("g_f_i: fast %d subscr %d recursive %d online %d top \"%s\"\n",
@@ -984,7 +984,7 @@ nntp_get_folder_info_online (CamelStore *store, const gchar *top, guint32 flags,
 }
 
 static CamelFolderInfo *
-nntp_get_folder_info_offline(CamelStore *store, const gchar *top, guint32 flags, GError **error)
+nntp_get_folder_info_offline (CamelStore *store, const gchar *top, guint32 flags, GError **error)
 {
 	return nntp_get_folder_info (store, top, flags, FALSE, error);
 }
@@ -1009,14 +1009,14 @@ static gboolean
 nntp_store_subscribe_folder (CamelStore *store, const gchar *folder_name,
 			     GError **error)
 {
-	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE(store);
+	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (store);
 	CamelStoreInfo *si;
 	CamelFolderInfo *fi;
 	gboolean success = TRUE;
 
 	camel_service_lock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
-	si = camel_store_summary_path(CAMEL_STORE_SUMMARY(nntp_store->summary), folder_name);
+	si = camel_store_summary_path (CAMEL_STORE_SUMMARY (nntp_store->summary), folder_name);
 	if (!si) {
 		g_set_error (
 			error, CAMEL_FOLDER_ERROR,
@@ -1028,7 +1028,7 @@ nntp_store_subscribe_folder (CamelStore *store, const gchar *folder_name,
 	} else {
 		if (!(si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)) {
 			si->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-			fi = nntp_folder_info_from_store_info(nntp_store, nntp_store->do_short_folder_notation, si);
+			fi = nntp_folder_info_from_store_info (nntp_store, nntp_store->do_short_folder_notation, si);
 			fi->flags |= CAMEL_FOLDER_NOINFERIORS | CAMEL_FOLDER_NOCHILDREN;
 			camel_store_summary_touch ((CamelStoreSummary *) nntp_store->summary);
 			camel_store_summary_save ((CamelStoreSummary *) nntp_store->summary);
@@ -1048,14 +1048,14 @@ static gboolean
 nntp_store_unsubscribe_folder (CamelStore *store, const gchar *folder_name,
 			       GError **error)
 {
-	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE(store);
+	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (store);
 	CamelFolderInfo *fi;
 	CamelStoreInfo *fitem;
 	gboolean success = TRUE;
 
 	camel_service_lock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
-	fitem = camel_store_summary_path(CAMEL_STORE_SUMMARY(nntp_store->summary), folder_name);
+	fitem = camel_store_summary_path (CAMEL_STORE_SUMMARY (nntp_store->summary), folder_name);
 
 	if (!fitem) {
 		g_set_error (
@@ -1136,7 +1136,7 @@ nntp_construct (CamelService *service, CamelSession *session,
 		GError **error)
 {
 	CamelServiceClass *service_class;
-	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE(service);
+	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (service);
 	CamelURL *summary_url;
 	gchar *tmp;
 
@@ -1176,13 +1176,13 @@ nntp_construct (CamelService *service, CamelSession *session,
 		nntp_store->folder_hierarchy_relative = FALSE;
 
 	/* setup store-wide cache */
-	nntp_store->cache = camel_data_cache_new(nntp_store->storage_path, error);
+	nntp_store->cache = camel_data_cache_new (nntp_store->storage_path, error);
 	if (nntp_store->cache == NULL)
 		return FALSE;
 
 	/* Default cache expiry - 2 weeks old, or not visited in 5 days */
-	camel_data_cache_set_expire_age(nntp_store->cache, 60*60*24*14);
-	camel_data_cache_set_expire_access(nntp_store->cache, 60*60*24*5);
+	camel_data_cache_set_expire_age (nntp_store->cache, 60*60*24*14);
+	camel_data_cache_set_expire_access (nntp_store->cache, 60*60*24*5);
 
 	return TRUE;
 }
@@ -1237,7 +1237,7 @@ camel_nntp_store_init (CamelNNTPStore *nntp_store)
 
 	store->flags = CAMEL_STORE_SUBSCRIPTIONS;
 
-	nntp_store->mem = (CamelStreamMem *)camel_stream_mem_new();
+	nntp_store->mem = (CamelStreamMem *)camel_stream_mem_new ();
 
 	nntp_store->priv = CAMEL_NNTP_STORE_GET_PRIVATE (nntp_store);
 }
@@ -1269,7 +1269,7 @@ camel_nntp_try_authenticate (CamelNNTPStore *store, GError **error)
 				_("Cannot authenticate to server: %s"), line);
 
 			prompt = g_strdup_printf("%s\n\n%s", top, base);
-			g_free(top);
+			g_free (top);
 		} else {
 			prompt = base;
 			base = NULL;
@@ -1278,8 +1278,8 @@ camel_nntp_try_authenticate (CamelNNTPStore *store, GError **error)
 		service->url->passwd =
 			camel_session_get_password (session, service, NULL,
 						    prompt, "password", CAMEL_SESSION_PASSWORD_SECRET | (store->password_reprompt ? CAMEL_SESSION_PASSWORD_REPROMPT : 0), error);
-		g_free(prompt);
-		g_free(base);
+		g_free (prompt);
+		g_free (base);
 
 		if (!service->url->passwd)
 			return -1;
@@ -1323,9 +1323,9 @@ camel_nntp_raw_commandv (CamelNNTPStore *store, GError **error, gchar **line, co
 	gint d;
 	guint u, u2;
 
-	g_assert(store->stream->mode != CAMEL_NNTP_STREAM_DATA);
+	g_assert (store->stream->mode != CAMEL_NNTP_STREAM_DATA);
 
-	camel_nntp_stream_set_mode(store->stream, CAMEL_NNTP_STREAM_LINE);
+	camel_nntp_stream_set_mode (store->stream, CAMEL_NNTP_STREAM_LINE);
 
 	p = (const guchar *) fmt;
 	ps = (const guchar *) p;
@@ -1338,24 +1338,24 @@ camel_nntp_raw_commandv (CamelNNTPStore *store, GError **error, gchar **line, co
 			ps = p;
 			switch (c) {
 			case 's':
-				s = va_arg(ap, gchar *);
-				camel_stream_write((CamelStream *)store->mem, s, strlen(s), NULL);
+				s = va_arg (ap, gchar *);
+				camel_stream_write ((CamelStream *)store->mem, s, strlen (s), NULL);
 				break;
 			case 'd':
-				d = va_arg(ap, gint);
+				d = va_arg (ap, gint);
 				camel_stream_printf((CamelStream *)store->mem, "%d", d);
 				break;
 			case 'u':
-				u = va_arg(ap, guint);
+				u = va_arg (ap, guint);
 				camel_stream_printf((CamelStream *)store->mem, "%u", u);
 				break;
 			case 'm':
-				s = va_arg(ap, gchar *);
+				s = va_arg (ap, gchar *);
 				camel_stream_printf((CamelStream *)store->mem, "<%s>", s);
 				break;
 			case 'r':
-				u = va_arg(ap, guint);
-				u2 = va_arg(ap, guint);
+				u = va_arg (ap, guint);
+				u2 = va_arg (ap, guint);
 				if (u == u2)
 					camel_stream_printf((CamelStream *)store->mem, "%u", u);
 				else
@@ -1363,7 +1363,7 @@ camel_nntp_raw_commandv (CamelNNTPStore *store, GError **error, gchar **line, co
 				break;
 			default:
 				g_warning("Passing unknown format to nntp_command: %c\n", c);
-				g_assert(0);
+				g_assert (0);
 			}
 		}
 	}
@@ -1373,7 +1373,7 @@ camel_nntp_raw_commandv (CamelNNTPStore *store, GError **error, gchar **line, co
 
 	byte_array = camel_stream_mem_get_byte_array (store->mem);
 
-	if (camel_stream_write((CamelStream *) store->stream, (const gchar *) byte_array->data, byte_array->len, error) == -1)
+	if (camel_stream_write ((CamelStream *) store->stream, (const gchar *) byte_array->data, byte_array->len, error) == -1)
 		goto ioerror;
 
 	/* FIXME: hack */
@@ -1387,7 +1387,7 @@ camel_nntp_raw_commandv (CamelNNTPStore *store, GError **error, gchar **line, co
 
 	/* Handle all switching to data mode here, to make callers job easier */
 	if (u == 215 || (u >= 220 && u <=224) || (u >= 230 && u <= 231))
-		camel_nntp_stream_set_mode(store->stream, CAMEL_NNTP_STREAM_DATA);
+		camel_nntp_stream_set_mode (store->stream, CAMEL_NNTP_STREAM_DATA);
 
 	return u;
 
@@ -1397,21 +1397,21 @@ ioerror:
 }
 
 gint
-camel_nntp_raw_command(CamelNNTPStore *store, GError **error, gchar **line, const gchar *fmt, ...)
+camel_nntp_raw_command (CamelNNTPStore *store, GError **error, gchar **line, const gchar *fmt, ...)
 {
 	gint ret;
 	va_list ap;
 
-	va_start(ap, fmt);
-	ret = camel_nntp_raw_commandv(store, error, line, fmt, ap);
-	va_end(ap);
+	va_start (ap, fmt);
+	ret = camel_nntp_raw_commandv (store, error, line, fmt, ap);
+	va_end (ap);
 
 	return ret;
 }
 
 /* use this where you also need auth to be handled, i.e. most cases where you'd try raw command */
 gint
-camel_nntp_raw_command_auth(CamelNNTPStore *store, GError **error, gchar **line, const gchar *fmt, ...)
+camel_nntp_raw_command_auth (CamelNNTPStore *store, GError **error, gchar **line, const gchar *fmt, ...)
 {
 	gint ret, retry, go;
 	va_list ap;
@@ -1422,12 +1422,12 @@ camel_nntp_raw_command_auth(CamelNNTPStore *store, GError **error, gchar **line,
 		go = FALSE;
 		retry++;
 
-		va_start(ap, fmt);
-		ret = camel_nntp_raw_commandv(store, error, line, fmt, ap);
-		va_end(ap);
+		va_start (ap, fmt);
+		ret = camel_nntp_raw_commandv (store, error, line, fmt, ap);
+		va_end (ap);
 
 		if (ret == NNTP_AUTH_REQUIRED) {
-			if (camel_nntp_try_authenticate(store, error) != NNTP_AUTH_ACCEPTED)
+			if (camel_nntp_try_authenticate (store, error) != NNTP_AUTH_ACCEPTED)
 				return -1;
 			go = TRUE;
 		}
@@ -1468,18 +1468,18 @@ camel_nntp_command (CamelNNTPStore *store, GError **error, CamelNNTPFolder *fold
 		/* Check for unprocessed data, !*/
 		if (store->stream->mode == CAMEL_NNTP_STREAM_DATA) {
 			g_warning("Unprocessed data left in stream, flushing");
-			while (camel_nntp_stream_getd(store->stream, (guchar **)&p, &u) > 0)
+			while (camel_nntp_stream_getd (store->stream, (guchar **)&p, &u) > 0)
 				;
 		}
-		camel_nntp_stream_set_mode(store->stream, CAMEL_NNTP_STREAM_LINE);
+		camel_nntp_stream_set_mode (store->stream, CAMEL_NNTP_STREAM_LINE);
 
 		if (folder != NULL
-		    && (store->current_folder == NULL || strcmp(store->current_folder, full_name) != 0)) {
+		    && (store->current_folder == NULL || strcmp (store->current_folder, full_name) != 0)) {
 			ret = camel_nntp_raw_command_auth(store, &local_error, line, "group %s", full_name);
 			if (ret == 211) {
-				g_free(store->current_folder);
+				g_free (store->current_folder);
 				store->current_folder = g_strdup (full_name);
-				if (camel_nntp_folder_selected(folder, *line, &local_error) < 0) {
+				if (camel_nntp_folder_selected (folder, *line, &local_error) < 0) {
 					ret = -1;
 					goto error;
 				}
@@ -1492,13 +1492,13 @@ camel_nntp_command (CamelNNTPStore *store, GError **error, CamelNNTPFolder *fold
 		if (fmt == NULL)
 			return 0;
 
-		va_start(ap, fmt);
-		ret = camel_nntp_raw_commandv(store, &local_error, line, fmt, ap);
-		va_end(ap);
+		va_start (ap, fmt);
+		ret = camel_nntp_raw_commandv (store, &local_error, line, fmt, ap);
+		va_end (ap);
 	error:
 		switch (ret) {
 		case NNTP_AUTH_REQUIRED:
-			if (camel_nntp_try_authenticate(store, error) != NNTP_AUTH_ACCEPTED)
+			if (camel_nntp_try_authenticate (store, error) != NNTP_AUTH_ACCEPTED)
 				return -1;
 			retry--;
 			ret = -1;

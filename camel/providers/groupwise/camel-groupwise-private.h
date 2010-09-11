@@ -31,13 +31,13 @@
 
 #ifdef ENABLE_THREADS
 #define CAMEL_GROUPWISE_FOLDER_LOCK(f, l) \
-	(g_static_mutex_lock(&((CamelGroupwiseFolder *)f)->priv->l))
+	(g_static_mutex_lock (&((CamelGroupwiseFolder *)f)->priv->l))
 #define CAMEL_GROUPWISE_FOLDER_UNLOCK(f, l) \
-	(g_static_mutex_unlock(&((CamelGroupwiseFolder *)f)->priv->l))
+	(g_static_mutex_unlock (&((CamelGroupwiseFolder *)f)->priv->l))
 #define CAMEL_GROUPWISE_FOLDER_REC_LOCK(f, l) \
-	(g_static_rec_mutex_lock(&((CamelGroupwiseFolder *)f)->priv->l))
+	(g_static_rec_mutex_lock (&((CamelGroupwiseFolder *)f)->priv->l))
 #define CAMEL_GROUPWISE_FOLDER_REC_UNLOCK(f, l) \
-	(g_static_rec_mutex_unlock(&((CamelGroupwiseFolder *)f)->priv->l))
+	(g_static_rec_mutex_unlock (&((CamelGroupwiseFolder *)f)->priv->l))
 #else
 #define GROUPWISE_FOLDER_LOCK(f, l)
 #define GROUPWISE_FOLDER_UNLOCK(f, l)

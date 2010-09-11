@@ -23,7 +23,7 @@ select_stmt (const gchar * stmt) {
 	gint   ret;
 	gint   nrecs = 0;
 
-	ret = sqlite3_exec(db, stmt, callback, &nrecs, &errmsg);
+	ret = sqlite3_exec (db, stmt, callback, &nrecs, &errmsg);
 
 	if (ret!=SQLITE_OK) {
 		printf("Error in select statement %s [%s].\n", stmt, errmsg);
@@ -35,11 +35,11 @@ select_stmt (const gchar * stmt) {
 }
 
 static gint
-sql_stmt(const gchar * stmt) {
+sql_stmt (const gchar * stmt) {
 	gchar *errmsg;
 	gint   ret;
 
-	ret = sqlite3_exec(db, stmt, 0, 0, &errmsg);
+	ret = sqlite3_exec (db, stmt, 0, 0, &errmsg);
 
 	if (ret != SQLITE_OK) {
 		printf("Error in statement: %s [%s].\n", stmt, errmsg);
@@ -54,8 +54,8 @@ sql_stmt(const gchar * stmt) {
 static gint
 create_table (const gchar *tablename)
 {
-	gchar *cmd = malloc (sizeof(CREATE_STMT)+20);
-	sprintf(cmd, CREATE_STMT, tablename);
+	gchar *cmd = malloc (sizeof (CREATE_STMT)+20);
+	sprintf (cmd, CREATE_STMT, tablename);
 	sql_stmt (cmd);
 }
 
@@ -75,7 +75,7 @@ gint sort_cmp (gpointer foo, gint len, gpointer  data1, gint len2, gpointer data
 	return a1 == a2 ? 0 : a1 < a2 ? -1 : 1;
 }
 
-gint main(gint argc, gchar **argv) {
+gint main (gint argc, gchar **argv) {
 	gchar *zErrMsg = 0;
 	gint rc;
 
@@ -84,8 +84,8 @@ gint main(gint argc, gchar **argv) {
 
 	if (rc) {
 		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-		sqlite3_close(db);
-		exit(1);
+		sqlite3_close (db);
+		exit (1);
 	}
 
 	sqlite3_create_collation(db, "uidcmp", SQLITE_UTF8,  NULL, sort_cmp);
@@ -109,7 +109,7 @@ gint main(gint argc, gchar **argv) {
 
 	printf("------\n");
 	select_stmt ("select count(isize) from table1");
-	sqlite3_close(db);
+	sqlite3_close (db);
 
 	return 0;
 }

@@ -102,7 +102,7 @@ process_header (CamelMedium *medium,
 	header_type = (CamelHeaderType) g_hash_table_lookup (header_name_table, name);
 	switch (header_type) {
 	case HEADER_FROM:
-		addr = camel_internet_address_new();
+		addr = camel_internet_address_new ();
 		unfolded = camel_header_unfold (value);
 		if (camel_address_decode ((CamelAddress *) addr, unfolded) <= 0) {
 			g_object_unref (addr);
@@ -114,7 +114,7 @@ process_header (CamelMedium *medium,
 		g_free (unfolded);
 		break;
 	case HEADER_REPLY_TO:
-		addr = camel_internet_address_new();
+		addr = camel_internet_address_new ();
 		unfolded = camel_header_unfold (value);
 		if (camel_address_decode ((CamelAddress *) addr, unfolded) <= 0) {
 			g_object_unref (addr);
@@ -324,7 +324,7 @@ mime_message_construct_from_parser (CamelMimePart *dw,
 	}
 
 	d(printf("mime_message::construct_from_parser() leaving\n"));
-	err = camel_mime_parser_errno(mp);
+	err = camel_mime_parser_errno (mp);
 	if (err != 0) {
 		errno = err;
 		g_set_error (
@@ -423,14 +423,14 @@ camel_mime_message_set_date (CamelMimeMessage *message,  time_t date, gint offse
 {
 	gchar *datestr;
 
-	g_assert(message);
+	g_assert (message);
 
 	if (date == CAMEL_MESSAGE_DATE_CURRENT) {
 		struct tm local;
 		gint tz;
 
-		date = time(NULL);
-		e_localtime_with_offset(date, &local, &tz);
+		date = time (NULL);
+		e_localtime_with_offset (date, &local, &tz);
 		offset = (((tz/60/60) * 100) + (tz/60 % 60));
 	}
 	message->date = date;
@@ -547,7 +547,7 @@ camel_mime_message_set_reply_to (CamelMimeMessage *msg, CamelInternetAddress *re
 {
 	gchar *addr;
 
-	g_assert(msg);
+	g_assert (msg);
 
 	if (msg->reply_to) {
 		g_object_unref (msg->reply_to);
@@ -597,7 +597,7 @@ camel_mime_message_set_subject (CamelMimeMessage *message, const gchar *subject)
 {
 	gchar *text;
 
-	g_assert(message);
+	g_assert (message);
 
 	g_free (message->subject);
 
@@ -624,7 +624,7 @@ camel_mime_message_set_subject (CamelMimeMessage *message, const gchar *subject)
 const gchar *
 camel_mime_message_get_subject (CamelMimeMessage *mime_message)
 {
-	g_assert(mime_message);
+	g_assert (mime_message);
 
 	return mime_message->subject;
 }
@@ -647,22 +647,22 @@ camel_mime_message_set_from (CamelMimeMessage *msg, CamelInternetAddress *from)
 {
 	gchar *addr;
 
-	g_assert(msg);
+	g_assert (msg);
 
 	if (msg->from) {
 		g_object_unref (msg->from);
 		msg->from = NULL;
 	}
 
-	if (from == NULL || camel_address_length((CamelAddress *)from) == 0) {
+	if (from == NULL || camel_address_length ((CamelAddress *)from) == 0) {
 		CAMEL_MEDIUM_CLASS(camel_mime_message_parent_class)->remove_header(CAMEL_MEDIUM(msg), "From");
 		return;
 	}
 
-	msg->from = (CamelInternetAddress *)camel_address_new_clone((CamelAddress *)from);
-	addr = camel_address_encode((CamelAddress *)msg->from);
+	msg->from = (CamelInternetAddress *)camel_address_new_clone ((CamelAddress *)from);
+	addr = camel_address_encode ((CamelAddress *)msg->from);
 	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header(CAMEL_MEDIUM(msg), "From", addr);
-	g_free(addr);
+	g_free (addr);
 }
 
 /**
@@ -694,12 +694,12 @@ camel_mime_message_get_from (CamelMimeMessage *mime_message)
  * Set the recipients of a message.
  **/
 void
-camel_mime_message_set_recipients(CamelMimeMessage *mime_message, const gchar *type, CamelInternetAddress *r)
+camel_mime_message_set_recipients (CamelMimeMessage *mime_message, const gchar *type, CamelInternetAddress *r)
 {
 	gchar *text;
 	CamelInternetAddress *addr;
 
-	g_assert(mime_message);
+	g_assert (mime_message);
 
 	addr = g_hash_table_lookup (mime_message->recipients, type);
 	if (addr == NULL) {
@@ -719,7 +719,7 @@ camel_mime_message_set_recipients(CamelMimeMessage *mime_message, const gchar *t
 	/* and sync our headers */
 	text = camel_address_encode (CAMEL_ADDRESS (addr));
 	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header (CAMEL_MEDIUM (mime_message), type, text);
-	g_free(text);
+	g_free (text);
 }
 
 /**
@@ -734,7 +734,7 @@ camel_mime_message_set_recipients(CamelMimeMessage *mime_message, const gchar *t
 CamelInternetAddress *
 camel_mime_message_get_recipients (CamelMimeMessage *mime_message, const gchar *type)
 {
-	g_assert(mime_message);
+	g_assert (mime_message);
 
 	return g_hash_table_lookup (mime_message->recipients, type);
 }
@@ -761,7 +761,7 @@ camel_mime_message_get_source (CamelMimeMessage *mime_message)
 {
 	const gchar *src;
 
-	g_assert(mime_message);
+	g_assert (mime_message);
 
 	src = camel_medium_get_header (CAMEL_MEDIUM (mime_message), "X-Evolution-Source");
 	if (src) {
@@ -1160,7 +1160,7 @@ camel_mime_message_build_mbox_from (CamelMimeMessage *message)
 	/* try use the received header to get the date */
 	tmp = camel_header_raw_find (&header, "Received", NULL);
 	if (tmp) {
-		tmp = strrchr(tmp, ';');
+		tmp = strrchr (tmp, ';');
 		if (tmp)
 			tmp++;
 	}
@@ -1228,15 +1228,15 @@ camel_mime_message_has_attachment (CamelMimeMessage *message)
 }
 
 static void
-cmm_dump_rec(CamelMimeMessage *msg, CamelMimePart *part, gint body, gint depth)
+cmm_dump_rec (CamelMimeMessage *msg, CamelMimePart *part, gint body, gint depth)
 {
 	CamelDataWrapper *containee;
 	gint parts, i;
 	gint go = TRUE;
 	gchar *s;
 
-	s = alloca(depth+1);
-	memset(s, ' ', depth);
+	s = alloca (depth+1);
+	memset (s, ' ', depth);
 	s[depth] = 0;
 	/* yes this leaks, so what its only debug stuff */
 	printf("%sclass: %s\n", s, G_OBJECT_TYPE_NAME (part));
@@ -1251,15 +1251,15 @@ cmm_dump_rec(CamelMimeMessage *msg, CamelMimePart *part, gint body, gint depth)
 	printf("%scontent mime-type: %s\n", s, camel_content_type_format(((CamelDataWrapper *)containee)->mime_type));
 
 	/* using the object types is more accurate than using the mime/types */
-	if (CAMEL_IS_MULTIPART(containee)) {
-		parts = camel_multipart_get_number((CamelMultipart *)containee);
+	if (CAMEL_IS_MULTIPART (containee)) {
+		parts = camel_multipart_get_number ((CamelMultipart *)containee);
 		for (i = 0; go && i < parts; i++) {
-			CamelMimePart *mpart = camel_multipart_get_part((CamelMultipart *)containee, i);
+			CamelMimePart *mpart = camel_multipart_get_part ((CamelMultipart *)containee, i);
 
-			cmm_dump_rec(msg, mpart, body, depth+2);
+			cmm_dump_rec (msg, mpart, body, depth+2);
 		}
-	} else if (CAMEL_IS_MIME_MESSAGE(containee)) {
-		cmm_dump_rec(msg, (CamelMimePart *)containee, body, depth+2);
+	} else if (CAMEL_IS_MIME_MESSAGE (containee)) {
+		cmm_dump_rec (msg, (CamelMimePart *)containee, body, depth+2);
 	}
 }
 
@@ -1273,7 +1273,7 @@ cmm_dump_rec(CamelMimeMessage *msg, CamelMimePart *part, gint body, gint depth)
  * If body is TRUE, then dump body content of the message as well (currently unimplemented).
  **/
 void
-camel_mime_message_dump(CamelMimeMessage *msg, gint body)
+camel_mime_message_dump (CamelMimeMessage *msg, gint body)
 {
-	cmm_dump_rec(msg, (CamelMimePart *)msg, body, 0);
+	cmm_dump_rec (msg, (CamelMimePart *)msg, body, 0);
 }

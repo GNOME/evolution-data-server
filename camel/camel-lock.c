@@ -91,10 +91,10 @@ camel_lock_dot (const gchar *path,
 		d(printf("trying to lock '%s', attempt %d\n", lock, retry));
 
 		if (retry > 0)
-			sleep(CAMEL_LOCK_DOT_DELAY);
+			sleep (CAMEL_LOCK_DOT_DELAY);
 
 		sprintf(locktmp, "%sXXXXXX", path);
-		fdtmp = g_mkstemp(locktmp);
+		fdtmp = g_mkstemp (locktmp);
 		if (fdtmp == -1) {
 			g_set_error (
 				error, G_IO_ERROR,
@@ -103,22 +103,22 @@ camel_lock_dot (const gchar *path,
 				path, g_strerror (errno));
 			return -1;
 		}
-		close(fdtmp);
+		close (fdtmp);
 
 		/* apparently return code from link can be unreliable for nfs (see link(2)), so we ignore it */
-		link(locktmp, lock);
+		link (locktmp, lock);
 
 		/* but we check stat instead (again, see link(2)) */
-		if (g_stat(locktmp, &st) == -1) {
+		if (g_stat (locktmp, &st) == -1) {
 			d(printf("Our lock file %s vanished!?\n", locktmp));
 
 			/* well that was unexpected, try cleanup/retry */
-			unlink(locktmp);
-			unlink(lock);
+			unlink (locktmp);
+			unlink (lock);
 		} else {
 			d(printf("tmp lock created, link count is %d\n", st.st_nlink));
 
-			unlink(locktmp);
+			unlink (locktmp);
 
 			/* if we had 2 links, we have created the .lock, return ok, otherwise we need to keep trying */
 			if (st.st_nlink == 2)
@@ -126,12 +126,12 @@ camel_lock_dot (const gchar *path,
 		}
 
 		/* check for stale lock, kill it */
-		if (g_stat(lock, &st) == 0) {
+		if (g_stat (lock, &st) == 0) {
 			time_t now = time (NULL);
 			(printf("There is an existing lock %ld seconds old\n", now-st.st_ctime));
 			if (st.st_ctime < now - CAMEL_LOCK_DOT_STALE) {
 				d(printf("Removing it now\n"));
-				unlink(lock);
+				unlink (lock);
 			}
 		}
 
@@ -157,7 +157,7 @@ camel_lock_dot (const gchar *path,
  * Attempt to unlock a .lock lock.
  **/
 void
-camel_unlock_dot(const gchar *path)
+camel_unlock_dot (const gchar *path)
 {
 #ifdef USE_DOT
 	gchar *lock;
@@ -165,7 +165,7 @@ camel_unlock_dot(const gchar *path)
 	lock = alloca(strlen(path) + strlen(".lock") + 1);
 	sprintf(lock, "%s.lock", path);
 	d(printf("unlocking %s\n", lock));
-	(void)unlink(lock);
+	(void)unlink (lock);
 #endif
 }
 
@@ -192,11 +192,11 @@ camel_lock_fcntl (gint fd,
 
 	d(printf("fcntl locking %d\n", fd));
 
-	memset(&lock, 0, sizeof(lock));
+	memset (&lock, 0, sizeof (lock));
 	lock.l_type = type==CAMEL_LOCK_READ?F_RDLCK:F_WRLCK;
-	if (fcntl(fd, F_SETLK, &lock) == -1) {
+	if (fcntl (fd, F_SETLK, &lock) == -1) {
 		/* If we get a 'locking not vailable' type error,
-		   we assume the filesystem doesn't support fcntl() locking */
+		   we assume the filesystem doesn't support fcntl () locking */
 		/* this is somewhat system-dependent */
 		if (errno != EINVAL && errno != ENOLCK) {
 			g_set_error (
@@ -224,16 +224,16 @@ camel_lock_fcntl (gint fd,
  * Unlock an fcntl lock.
  **/
 void
-camel_unlock_fcntl(gint fd)
+camel_unlock_fcntl (gint fd)
 {
 #ifdef USE_FCNTL
 	struct flock lock;
 
 	d(printf("fcntl unlocking %d\n", fd));
 
-	memset(&lock, 0, sizeof(lock));
+	memset (&lock, 0, sizeof (lock));
 	lock.l_type = F_UNLCK;
-	fcntl(fd, F_SETLK, &lock);
+	fcntl (fd, F_SETLK, &lock);
 #endif
 }
 
@@ -265,7 +265,7 @@ camel_lock_flock (gint fd,
 	else
 		op = LOCK_EX|LOCK_NB;
 
-	if (flock(fd, op) == -1) {
+	if (flock (fd, op) == -1) {
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
@@ -284,12 +284,12 @@ camel_lock_flock (gint fd,
  * Unlock an flock lock.
  **/
 void
-camel_unlock_flock(gint fd)
+camel_unlock_flock (gint fd)
 {
 #ifdef USE_FLOCK
 	d(printf("flock unlocking %d\n", fd));
 
-	(void)flock(fd, LOCK_UN);
+	(void)flock (fd, LOCK_UN);
 #endif
 }
 
@@ -315,15 +315,15 @@ camel_lock_folder (const gchar *path,
 
 	while (retry < CAMEL_LOCK_RETRY) {
 		if (retry > 0)
-			g_usleep(CAMEL_LOCK_DELAY*1000000);
+			g_usleep (CAMEL_LOCK_DELAY*1000000);
 
-		if (camel_lock_fcntl(fd, type, error) == 0) {
-			if (camel_lock_flock(fd, type, error) == 0) {
-				if (camel_lock_dot(path, error) == 0)
+		if (camel_lock_fcntl (fd, type, error) == 0) {
+			if (camel_lock_flock (fd, type, error) == 0) {
+				if (camel_lock_dot (path, error) == 0)
 					return 0;
-				camel_unlock_flock(fd);
+				camel_unlock_flock (fd);
 			}
-			camel_unlock_fcntl(fd);
+			camel_unlock_fcntl (fd);
 		}
 		retry++;
 	}
@@ -339,15 +339,15 @@ camel_lock_folder (const gchar *path,
  * Free a lock on a folder.
  **/
 void
-camel_unlock_folder(const gchar *path, gint fd)
+camel_unlock_folder (const gchar *path, gint fd)
 {
-	camel_unlock_dot(path);
-	camel_unlock_flock(fd);
-	camel_unlock_fcntl(fd);
+	camel_unlock_dot (path);
+	camel_unlock_flock (fd);
+	camel_unlock_fcntl (fd);
 }
 
 #if 0
-gint main(gint argc, gchar **argv)
+gint main (gint argc, gchar **argv)
 {
 	GError *error = NULL;
 	gint fd1, fd2;
@@ -380,10 +380,10 @@ gint main(gint argc, gchar **argv)
 		return 1;
 	}
 
-	if (camel_lock_fcntl(fd1, CAMEL_LOCK_WRITE, &error) == 0) {
+	if (camel_lock_fcntl (fd1, CAMEL_LOCK_WRITE, &error) == 0) {
 		printf("got fcntl write lock once\n");
-		g_usleep(5000000);
-		if (camel_lock_fcntl(fd2, CAMEL_LOCK_WRITE, &error) == 0) {
+		g_usleep (5000000);
+		if (camel_lock_fcntl (fd2, CAMEL_LOCK_WRITE, &error) == 0) {
 			printf("got fcntl write lock twice!\n");
 		} else {
 			printf("failed to get write lock: %s\n", error->message);
@@ -392,24 +392,24 @@ gint main(gint argc, gchar **argv)
 		if (error != NULL)
 			g_clear_error (&error);
 
-		if (camel_lock_fcntl(fd2, CAMEL_LOCK_READ, &error) == 0) {
+		if (camel_lock_fcntl (fd2, CAMEL_LOCK_READ, &error) == 0) {
 			printf("got fcntl read lock as well?\n");
-			camel_unlock_fcntl(fd2);
+			camel_unlock_fcntl (fd2);
 		} else {
 			printf("failed to get read lock: %s\n", error->message);
 		}
 
 		if (error != NULL)
 			g_clear_error (&error);
-		camel_unlock_fcntl(fd1);
+		camel_unlock_fcntl (fd1);
 	} else {
 		printf("failed to get write lock at all: %s\n", error->message);
 	}
 
-	if (camel_lock_fcntl(fd1, CAMEL_LOCK_READ, &error) == 0) {
+	if (camel_lock_fcntl (fd1, CAMEL_LOCK_READ, &error) == 0) {
 		printf("got fcntl read lock once\n");
-		g_usleep(5000000);
-		if (camel_lock_fcntl(fd2, CAMEL_LOCK_WRITE, &error) == 0) {
+		g_usleep (5000000);
+		if (camel_lock_fcntl (fd2, CAMEL_LOCK_WRITE, &error) == 0) {
 			printf("got fcntl write lock too?!\n");
 		} else {
 			printf("failed to get write lock: %s\n", error->message);
@@ -418,20 +418,20 @@ gint main(gint argc, gchar **argv)
 		if (error != NULL)
 			g_clear_error (&error);
 
-		if (camel_lock_fcntl(fd2, CAMEL_LOCK_READ, &error) == 0) {
+		if (camel_lock_fcntl (fd2, CAMEL_LOCK_READ, &error) == 0) {
 			printf("got fcntl read lock twice\n");
-			camel_unlock_fcntl(fd2);
+			camel_unlock_fcntl (fd2);
 		} else {
 			printf("failed to get read lock: %s\n", error->message);
 		}
 
 		if (error != NULL)
 			g_clear_error (&error);
-		camel_unlock_fcntl(fd1);
+		camel_unlock_fcntl (fd1);
 	}
 
-	close(fd1);
-	close(fd2);
+	close (fd1);
+	close (fd2);
 
 	return 0;
 }

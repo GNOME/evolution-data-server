@@ -56,7 +56,7 @@ struct _CamelMaildirStoreClass {
 	CamelLocalStoreClass parent_class;
 };
 
-GType camel_maildir_store_get_type(void);
+GType camel_maildir_store_get_type (void);
 
 G_END_DECLS
 

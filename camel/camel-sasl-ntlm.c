@@ -262,56 +262,56 @@ md4sum (const guchar *in, gint nbytes, guchar digest[16])
 		CC = C;
 		DD = D;
 
-		A = ROT (A + F(B, C, D) + X[0], 3);
-		D = ROT (D + F(A, B, C) + X[1], 7);
-		C = ROT (C + F(D, A, B) + X[2], 11);
-		B = ROT (B + F(C, D, A) + X[3], 19);
-		A = ROT (A + F(B, C, D) + X[4], 3);
-		D = ROT (D + F(A, B, C) + X[5], 7);
-		C = ROT (C + F(D, A, B) + X[6], 11);
-		B = ROT (B + F(C, D, A) + X[7], 19);
-		A = ROT (A + F(B, C, D) + X[8], 3);
-		D = ROT (D + F(A, B, C) + X[9], 7);
-		C = ROT (C + F(D, A, B) + X[10], 11);
-		B = ROT (B + F(C, D, A) + X[11], 19);
-		A = ROT (A + F(B, C, D) + X[12], 3);
-		D = ROT (D + F(A, B, C) + X[13], 7);
-		C = ROT (C + F(D, A, B) + X[14], 11);
-		B = ROT (B + F(C, D, A) + X[15], 19);
+		A = ROT (A + F (B, C, D) + X[0], 3);
+		D = ROT (D + F (A, B, C) + X[1], 7);
+		C = ROT (C + F (D, A, B) + X[2], 11);
+		B = ROT (B + F (C, D, A) + X[3], 19);
+		A = ROT (A + F (B, C, D) + X[4], 3);
+		D = ROT (D + F (A, B, C) + X[5], 7);
+		C = ROT (C + F (D, A, B) + X[6], 11);
+		B = ROT (B + F (C, D, A) + X[7], 19);
+		A = ROT (A + F (B, C, D) + X[8], 3);
+		D = ROT (D + F (A, B, C) + X[9], 7);
+		C = ROT (C + F (D, A, B) + X[10], 11);
+		B = ROT (B + F (C, D, A) + X[11], 19);
+		A = ROT (A + F (B, C, D) + X[12], 3);
+		D = ROT (D + F (A, B, C) + X[13], 7);
+		C = ROT (C + F (D, A, B) + X[14], 11);
+		B = ROT (B + F (C, D, A) + X[15], 19);
 
-		A = ROT (A + G(B, C, D) + X[0] + 0x5A827999, 3);
-		D = ROT (D + G(A, B, C) + X[4] + 0x5A827999, 5);
-		C = ROT (C + G(D, A, B) + X[8] + 0x5A827999, 9);
-		B = ROT (B + G(C, D, A) + X[12] + 0x5A827999, 13);
-		A = ROT (A + G(B, C, D) + X[1] + 0x5A827999, 3);
-		D = ROT (D + G(A, B, C) + X[5] + 0x5A827999, 5);
-		C = ROT (C + G(D, A, B) + X[9] + 0x5A827999, 9);
-		B = ROT (B + G(C, D, A) + X[13] + 0x5A827999, 13);
-		A = ROT (A + G(B, C, D) + X[2] + 0x5A827999, 3);
-		D = ROT (D + G(A, B, C) + X[6] + 0x5A827999, 5);
-		C = ROT (C + G(D, A, B) + X[10] + 0x5A827999, 9);
-		B = ROT (B + G(C, D, A) + X[14] + 0x5A827999, 13);
-		A = ROT (A + G(B, C, D) + X[3] + 0x5A827999, 3);
-		D = ROT (D + G(A, B, C) + X[7] + 0x5A827999, 5);
-		C = ROT (C + G(D, A, B) + X[11] + 0x5A827999, 9);
-		B = ROT (B + G(C, D, A) + X[15] + 0x5A827999, 13);
+		A = ROT (A + G (B, C, D) + X[0] + 0x5A827999, 3);
+		D = ROT (D + G (A, B, C) + X[4] + 0x5A827999, 5);
+		C = ROT (C + G (D, A, B) + X[8] + 0x5A827999, 9);
+		B = ROT (B + G (C, D, A) + X[12] + 0x5A827999, 13);
+		A = ROT (A + G (B, C, D) + X[1] + 0x5A827999, 3);
+		D = ROT (D + G (A, B, C) + X[5] + 0x5A827999, 5);
+		C = ROT (C + G (D, A, B) + X[9] + 0x5A827999, 9);
+		B = ROT (B + G (C, D, A) + X[13] + 0x5A827999, 13);
+		A = ROT (A + G (B, C, D) + X[2] + 0x5A827999, 3);
+		D = ROT (D + G (A, B, C) + X[6] + 0x5A827999, 5);
+		C = ROT (C + G (D, A, B) + X[10] + 0x5A827999, 9);
+		B = ROT (B + G (C, D, A) + X[14] + 0x5A827999, 13);
+		A = ROT (A + G (B, C, D) + X[3] + 0x5A827999, 3);
+		D = ROT (D + G (A, B, C) + X[7] + 0x5A827999, 5);
+		C = ROT (C + G (D, A, B) + X[11] + 0x5A827999, 9);
+		B = ROT (B + G (C, D, A) + X[15] + 0x5A827999, 13);
 
-		A = ROT (A + H(B, C, D) + X[0] + 0x6ED9EBA1, 3);
-		D = ROT (D + H(A, B, C) + X[8] + 0x6ED9EBA1, 9);
-		C = ROT (C + H(D, A, B) + X[4] + 0x6ED9EBA1, 11);
-		B = ROT (B + H(C, D, A) + X[12] + 0x6ED9EBA1, 15);
-		A = ROT (A + H(B, C, D) + X[2] + 0x6ED9EBA1, 3);
-		D = ROT (D + H(A, B, C) + X[10] + 0x6ED9EBA1, 9);
-		C = ROT (C + H(D, A, B) + X[6] + 0x6ED9EBA1, 11);
-		B = ROT (B + H(C, D, A) + X[14] + 0x6ED9EBA1, 15);
-		A = ROT (A + H(B, C, D) + X[1] + 0x6ED9EBA1, 3);
-		D = ROT (D + H(A, B, C) + X[9] + 0x6ED9EBA1, 9);
-		C = ROT (C + H(D, A, B) + X[5] + 0x6ED9EBA1, 11);
-		B = ROT (B + H(C, D, A) + X[13] + 0x6ED9EBA1, 15);
-		A = ROT (A + H(B, C, D) + X[3] + 0x6ED9EBA1, 3);
-		D = ROT (D + H(A, B, C) + X[11] + 0x6ED9EBA1, 9);
-		C = ROT (C + H(D, A, B) + X[7] + 0x6ED9EBA1, 11);
-		B = ROT (B + H(C, D, A) + X[15] + 0x6ED9EBA1, 15);
+		A = ROT (A + H (B, C, D) + X[0] + 0x6ED9EBA1, 3);
+		D = ROT (D + H (A, B, C) + X[8] + 0x6ED9EBA1, 9);
+		C = ROT (C + H (D, A, B) + X[4] + 0x6ED9EBA1, 11);
+		B = ROT (B + H (C, D, A) + X[12] + 0x6ED9EBA1, 15);
+		A = ROT (A + H (B, C, D) + X[2] + 0x6ED9EBA1, 3);
+		D = ROT (D + H (A, B, C) + X[10] + 0x6ED9EBA1, 9);
+		C = ROT (C + H (D, A, B) + X[6] + 0x6ED9EBA1, 11);
+		B = ROT (B + H (C, D, A) + X[14] + 0x6ED9EBA1, 15);
+		A = ROT (A + H (B, C, D) + X[1] + 0x6ED9EBA1, 3);
+		D = ROT (D + H (A, B, C) + X[9] + 0x6ED9EBA1, 9);
+		C = ROT (C + H (D, A, B) + X[5] + 0x6ED9EBA1, 11);
+		B = ROT (B + H (C, D, A) + X[13] + 0x6ED9EBA1, 15);
+		A = ROT (A + H (B, C, D) + X[3] + 0x6ED9EBA1, 3);
+		D = ROT (D + H (A, B, C) + X[11] + 0x6ED9EBA1, 9);
+		C = ROT (C + H (D, A, B) + X[7] + 0x6ED9EBA1, 11);
+		B = ROT (B + H (C, D, A) + X[15] + 0x6ED9EBA1, 15);
 
 		A += AA;
 		B += BB;
@@ -528,22 +528,22 @@ des (guint32 ks[16][2], guchar block[8])
 	left = (left << 1) | (left >> 31);
 
 	/* Now do the 16 rounds */
-	F(left,right,ks[0]);
-	F(right,left,ks[1]);
-	F(left,right,ks[2]);
-	F(right,left,ks[3]);
-	F(left,right,ks[4]);
-	F(right,left,ks[5]);
-	F(left,right,ks[6]);
-	F(right,left,ks[7]);
-	F(left,right,ks[8]);
-	F(right,left,ks[9]);
-	F(left,right,ks[10]);
-	F(right,left,ks[11]);
-	F(left,right,ks[12]);
-	F(right,left,ks[13]);
-	F(left,right,ks[14]);
-	F(right,left,ks[15]);
+	F (left,right,ks[0]);
+	F (right,left,ks[1]);
+	F (left,right,ks[2]);
+	F (right,left,ks[3]);
+	F (left,right,ks[4]);
+	F (right,left,ks[5]);
+	F (left,right,ks[6]);
+	F (right,left,ks[7]);
+	F (left,right,ks[8]);
+	F (right,left,ks[9]);
+	F (left,right,ks[10]);
+	F (right,left,ks[11]);
+	F (left,right,ks[12]);
+	F (right,left,ks[13]);
+	F (left,right,ks[14]);
+	F (right,left,ks[15]);
 
 	/* Inverse permutation, also from Hoey via Outerbridge and Schneier */
 	right = (right << 31) | (right >> 1);
@@ -634,7 +634,7 @@ deskey (DES_KS k, guchar *key, gint decrypt)
 			? 1 : 0;	/* and store 1-bit result */
 	}
 	for (i=0; i<16; i++) {		/* key chunk for each iteration */
-		memset(ks,0,sizeof(ks));	/* Clear key schedule */
+		memset (ks,0,sizeof (ks));	/* Clear key schedule */
 		for (j=0; j<56; j++)	/* rotate pc1 the right amount */
 			pcr[j] = pc1m[(l=j+totrot[decrypt? 15-i : i])<(j<28? 28 : 56) ? l: l-28];
 			/* rotate left and right halves independently */

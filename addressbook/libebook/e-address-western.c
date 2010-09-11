@@ -31,7 +31,7 @@ e_address_western_is_line_blank (gchar *line)
 
 	/* A blank line consists of whitespace only, or a NULL line. */
 	for (cntr = 0; line[cntr] != '\0'; cntr++ ) {
-		if (!isspace(line[cntr])) {
+		if (!isspace (line[cntr])) {
 			blank = FALSE;
 			break;
 		}
@@ -96,8 +96,8 @@ e_address_western_is_po_box (gchar *line)
 	state = FIRSTCHAR;
 	for (cntr = 0; line[cntr] != '\0'; cntr++) {
 		if (state == FIRSTCHAR)	{
-			if (isalnum(line[cntr])) {
-				if (tolower(line[cntr]) == 'p')
+			if (isalnum (line[cntr])) {
+				if (tolower (line[cntr]) == 'p')
 					state = SECONDCHAR;
 				else {
 					retval = FALSE;
@@ -107,7 +107,7 @@ e_address_western_is_po_box (gchar *line)
 		}
 		else if (state == SECONDCHAR) {
 			if (isalnum (line[cntr])) {
-				if (tolower(line[cntr]) == 'o')
+				if (tolower (line[cntr]) == 'o')
 					state = WHITESPACE;
 				else {
 					retval = FALSE;
@@ -148,20 +148,20 @@ e_address_western_is_postal (gchar *line)
 		 a letter. */
 		index = strcspn (line, ",");
 		index++;
-		while (isspace(line[index]))
+		while (isspace (line[index]))
 			index++;
 
 		if (!isalpha (line[index]))
 			return FALSE;   /* FIXME: ugly control flow. */
 
-		cntr = strlen(line) - 1;
+		cntr = strlen (line) - 1;
 
 		/* Go to the character immediately following the last
 		  whitespace character. */
-		while (cntr >= 0 && isspace(line[cntr]))
+		while (cntr >= 0 && isspace (line[cntr]))
 			cntr--;
 
-		while (cntr >= 0 && !isspace(line[cntr]))
+		while (cntr >= 0 && !isspace (line[cntr]))
 			cntr--;
 
 		if (cntr == 0)
@@ -186,10 +186,10 @@ e_address_western_extract_po_box (gchar *line)
 	gint index;
 
 	index = 0;
-	while (!isdigit(line[index]))
+	while (!isdigit (line[index]))
 		index++;
 
-	while (isgraph(line[index]))
+	while (isgraph (line[index]))
 		index++;
 
 	return g_strndup (line, index);
@@ -219,10 +219,10 @@ e_address_western_extract_region (gchar *line)
 
 	start = strcspn (line, ",");
 	start++;
-	while (isspace(line[start]))
+	while (isspace (line[start]))
 		start++;
 
-	end = strlen(line) - 1;
+	end = strlen (line) - 1;
 	while (isspace (line[end]))
 		end--;
 
@@ -250,13 +250,13 @@ e_address_western_extract_postal_code (gchar *line)
 	gint start, end;
 
 	end = strlen (line) - 1;
-	while (isspace(line[end]))
+	while (isspace (line[end]))
 		end--;
 
 	start = end;
 	end++;
 
-	while (!isspace(line[start]))
+	while (!isspace (line[start]))
 		start--;
 	start++;
 
@@ -310,7 +310,7 @@ e_address_western_parse (const gchar *in_address)
 	if (in_address == NULL)
 		return NULL;
 
-	eaw = (EAddressWestern *)g_malloc (sizeof(EAddressWestern));
+	eaw = (EAddressWestern *)g_malloc (sizeof (EAddressWestern));
 	eaw->po_box = NULL;
 	eaw->extended = NULL;
 	eaw->street = NULL;
@@ -335,7 +335,7 @@ e_address_western_parse (const gchar *in_address)
 	}
 
 	/* ... tally them. */
-	lines = (gchar **)g_malloc (sizeof(gchar *) * (linecntr+3));
+	lines = (gchar **)g_malloc (sizeof (gchar *) * (linecntr+3));
 	lineindex = 0;
 	lines[0] = &address[0];
 	linecntr = 1;
@@ -424,19 +424,19 @@ e_address_western_free (EAddressWestern *eaw)
 		return;
 
 	if (eaw->po_box != NULL)
-		g_free(eaw->po_box);
+		g_free (eaw->po_box);
 	if (eaw->extended != NULL)
-		g_free(eaw->extended);
+		g_free (eaw->extended);
 	if (eaw->street != NULL)
-		g_free(eaw->street);
+		g_free (eaw->street);
 	if (eaw->locality != NULL)
-		g_free(eaw->locality);
+		g_free (eaw->locality);
 	if (eaw->region != NULL)
-		g_free(eaw->region);
+		g_free (eaw->region);
 	if (eaw->postal_code != NULL)
-		g_free(eaw->postal_code);
+		g_free (eaw->postal_code);
 	if (eaw->country != NULL)
-		g_free(eaw->country);
+		g_free (eaw->country);
 
 	g_free (eaw);
 }

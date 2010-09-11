@@ -196,7 +196,7 @@ PRFileDesc  *   camel_tcp_stream_get_file_desc  (CamelTcpStream *stream);
  * support SOCKS4a/SOCKS5 proxies should be well-contained within Camel,
  * with no extra changes required in Evolution.
  */
-void		camel_tcp_stream_set_socks_proxy(CamelTcpStream *stream,
+void		camel_tcp_stream_set_socks_proxy (CamelTcpStream *stream,
 						 const gchar *socks_host,
 						 gint socks_port);
 void		camel_tcp_stream_peek_socks_proxy

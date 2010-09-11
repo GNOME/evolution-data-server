@@ -81,7 +81,7 @@ CamelFolder *camel_pop3_folder_new (CamelStore *parent, GError **error);
 
 GType camel_pop3_folder_get_type (void);
 
-gint camel_pop3_delete_old(CamelFolder *folder, gint days_to_delete, GError **error);
+gint camel_pop3_delete_old (CamelFolder *folder, gint days_to_delete, GError **error);
 
 G_END_DECLS
 

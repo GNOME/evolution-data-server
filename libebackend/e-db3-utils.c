@@ -134,8 +134,8 @@ e_db3_utils_maybe_recover (const gchar *filename)
 	copy_filename = get_copy_filename (filename);
 	check_filename = get_check_filename (filename);
 
-	if (g_file_test(check_filename, G_FILE_TEST_EXISTS)) {
-		ret_val = resume_upgrade(filename, copy_filename, check_filename);
+	if (g_file_test (check_filename, G_FILE_TEST_EXISTS)) {
+		ret_val = resume_upgrade (filename, copy_filename, check_filename);
 	} else if (g_file_test (copy_filename, G_FILE_TEST_EXISTS)) {
 		g_unlink (copy_filename);
 	}

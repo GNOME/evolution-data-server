@@ -106,8 +106,8 @@ seekable_substream_write (CamelStream *stream,
                           GError **error)
 {
 	CamelSeekableStream *parent;
-	CamelSeekableStream *seekable_stream = CAMEL_SEEKABLE_STREAM(stream);
-	CamelSeekableSubstream *seekable_substream = CAMEL_SEEKABLE_SUBSTREAM(stream);
+	CamelSeekableStream *seekable_stream = CAMEL_SEEKABLE_STREAM (stream);
+	CamelSeekableSubstream *seekable_substream = CAMEL_SEEKABLE_SUBSTREAM (stream);
 	gssize v;
 
 	if (n == 0)
@@ -160,8 +160,8 @@ seekable_substream_close (CamelStream *stream,
 static gboolean
 seekable_substream_eos (CamelStream *stream)
 {
-	CamelSeekableSubstream *seekable_substream = CAMEL_SEEKABLE_SUBSTREAM(stream);
-	CamelSeekableStream *seekable_stream = CAMEL_SEEKABLE_STREAM(stream);
+	CamelSeekableSubstream *seekable_substream = CAMEL_SEEKABLE_SUBSTREAM (stream);
+	CamelSeekableStream *seekable_stream = CAMEL_SEEKABLE_STREAM (stream);
 	CamelSeekableStream *parent;
 	gboolean eos;
 
@@ -276,7 +276,7 @@ camel_seekable_substream_init (CamelSeekableSubstream *seekable_substream)
  * Returns: the substream
  **/
 CamelStream *
-camel_seekable_substream_new(CamelSeekableStream *parent_stream, goffset start, goffset end)
+camel_seekable_substream_new (CamelSeekableStream *parent_stream, goffset start, goffset end)
 {
 	CamelSeekableSubstream *seekable_substream;
 

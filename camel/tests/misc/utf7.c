@@ -48,7 +48,7 @@ main (gint argc, gchar **argv)
 	gchar utf8enc[256];
 	GString *out;
 
-	camel_test_init(argc, argv);
+	camel_test_init (argc, argv);
 
 	out = g_string_new("");
 
@@ -60,43 +60,43 @@ main (gint argc, gchar **argv)
 		p = tests[i].utf8;
 		j = 0;
 		do {
-			u = camel_utf8_getc((const guchar **)&p);
-			check(u == tests[i].unicode[j]);
+			u = camel_utf8_getc ((const guchar **)&p);
+			check (u == tests[i].unicode[j]);
 			j++;
 		} while (u);
-		camel_test_pull();
+		camel_test_pull ();
 
 		camel_test_push("%2d: %s utf7->utf8", i, tests[i].utf7);
-		utf8 = camel_utf7_utf8(tests[i].utf7);
+		utf8 = camel_utf7_utf8 (tests[i].utf7);
 		check_msg(strcmp(utf8, tests[i].utf8) == 0, "utf8 = '%s'", utf8);
-		camel_test_pull();
+		camel_test_pull ();
 
 		camel_test_push("%2d: %s utf7->utf8->utf7", i, tests[i].utf7);
-		utf7 = camel_utf8_utf7(utf8);
+		utf7 = camel_utf8_utf7 (utf8);
 		check_msg(strcmp(utf7, tests[i].utf7) == 0, "utf7 = '%s'", utf7);
-		camel_test_pull();
+		camel_test_pull ();
 
-		g_free(utf7);
-		g_free(utf8);
+		g_free (utf7);
+		g_free (utf8);
 
 		camel_test_push("%2d: %s utf8 encode", i, tests[i].utf7);
 
-		g_string_truncate(out, 0);
+		g_string_truncate (out, 0);
 		p = utf8enc;
 		j = 0;
 		do {
 			u = tests[i].unicode[j++];
-			camel_utf8_putc((guchar **)&p, u);
-			g_string_append_u(out, u);
+			camel_utf8_putc ((guchar **)&p, u);
+			g_string_append_u (out, u);
 		} while (u);
 
-		check(strcmp(utf8enc, out->str) == 0);
-		check(strcmp(utf8enc, tests[i].utf8) == 0);
+		check (strcmp (utf8enc, out->str) == 0);
+		check (strcmp (utf8enc, tests[i].utf8) == 0);
 
-		camel_test_pull();
+		camel_test_pull ();
 	}
 
-	camel_test_end();
+	camel_test_end ();
 
 	return 0;
 }
