@@ -1193,8 +1193,13 @@ componenttime_to_utc_timet (const ECalComponentDateTime* dt_time,
 }
 
 /**
- * Find out, when the component starts and stops. Be careful about recurrences.
- */
+ * e_cal_util_get_component_occur_times:
+ *
+ * Find out when the component starts and stops, being careful about
+ * recurrences.
+ *
+ * Since: 2.32
+ **/
 void
 e_cal_util_get_component_occur_times (ECalComponent *comp,
 			   time_t* start,

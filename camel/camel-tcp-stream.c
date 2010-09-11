@@ -213,6 +213,12 @@ camel_tcp_stream_get_remote_address (CamelTcpStream *stream,
 	return class->get_remote_address (stream, len);
 }
 
+/**
+ * camel_tcp_stream_get_file_desc:
+ * @stream: a #CamelTcpStream
+ *
+ * Since: 2.32
+ **/
 PRFileDesc *
 camel_tcp_stream_get_file_desc (CamelTcpStream *stream)
 {

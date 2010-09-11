@@ -1556,6 +1556,7 @@ e_sexp_eval(ESExp *f)
  *
  * Determines biggest time window given by expressions "occur-in-range" in sexp.
  *
+ * Since: 2.32
  */
 gboolean
 e_sexp_evaluate_occur_times(ESExp *f, time_t *start, time_t *end)

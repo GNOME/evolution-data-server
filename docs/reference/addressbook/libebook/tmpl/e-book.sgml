@@ -448,6 +448,17 @@ The writable status for this book is being reported.
 @closure: 
 
 
+<!-- ##### USER_FUNCTION EBookOpenProgressCallback ##### -->
+<para>
+
+</para>
+
+@book: 
+@status_message: 
+@percent: 
+@closure: 
+
+
 <!-- ##### USER_FUNCTION EBookIdAsyncCallback ##### -->
 <para>
 
@@ -520,7 +531,7 @@ The writable status for this book is being reported.
 
 @book: 
 @status_message: 
-@Param3: 
+@percent: 
 @closure: 
 
 

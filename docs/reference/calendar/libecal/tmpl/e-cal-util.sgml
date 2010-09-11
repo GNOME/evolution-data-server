@@ -460,3 +460,17 @@ Various utility functions.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_cal_util_get_component_occur_times ##### -->
+<para>
+
+</para>
+
+@comp: 
+@start: 
+@end: 
+@tz_cb: 
+@tz_cb_data: 
+@default_timezone: 
+@kind: 
+
+

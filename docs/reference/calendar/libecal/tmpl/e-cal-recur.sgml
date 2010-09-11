@@ -57,6 +57,30 @@ Functions to expand recurrences for recurrent appointments.
 @default_timezone: 
 
 
+<!-- ##### FUNCTION e_cal_recur_obtain_enddate ##### -->
+<para>
+
+</para>
+
+@ir: 
+@prop: 
+@zone: 
+@convert_end_date: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_recur_ensure_end_dates ##### -->
+<para>
+
+</para>
+
+@comp: 
+@refresh: 
+@tz_cb: 
+@tz_cb_data: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_cal_get_recur_nth ##### -->
 <para>
 

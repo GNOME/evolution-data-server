@@ -27,8 +27,25 @@
 
 #include <glib.h>
 
+/**
+ * E_DEBUG_LOG_DOMAIN_USER:
+ *
+ * Since: 2.32
+ **/
 #define E_DEBUG_LOG_DOMAIN_USER		"USER"		/* always enabled */
+
+/**
+ * E_DEBUG_LOG_DOMAIN_GLOG:
+ *
+ * Since: 2.32
+ **/
 #define E_DEBUG_LOG_DOMAIN_GLOG		"GLog"		/* used for GLog messages; don't use it yourself */
+
+/**
+ * E_DEBUG_LOG_DOMAIN_CAL_QUERIES:
+ *
+ * Since: 2.32
+ **/
 #define E_DEBUG_LOG_DOMAIN_CAL_QUERIES  "CalQueries"    /* used for calendar queries analysis */
 
 void e_debug_log (gboolean is_milestone, const gchar *domain, const gchar *format, ...);

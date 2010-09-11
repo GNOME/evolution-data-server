@@ -62,6 +62,25 @@ e_account_list_get_type
 </SECTION>
 
 <SECTION>
+<FILE>e-debug-log</FILE>
+<TITLE>e-debug-log</TITLE>
+E_DEBUG_LOG_DOMAIN_USER
+E_DEBUG_LOG_DOMAIN_GLOG
+E_DEBUG_LOG_DOMAIN_CAL_QUERIES
+e_debug_log
+e_debug_logv
+e_debug_log_load_configuration
+e_debug_log_enable_domains
+e_debug_log_disable_domains
+e_debug_log_is_domain_enabled
+e_debug_log_dump
+e_debug_log_dump_to_dated_file
+e_debug_log_set_max_lines
+e_debug_log_get_max_lines
+e_debug_log_clear
+</SECTION>
+
+<SECTION>
 <FILE>e-flag</FILE>
 <TITLE>EFlag</TITLE>
 EFlag
@@ -341,6 +360,7 @@ e_sexp_encode_string
 e_sexp_fatal_error
 e_sexp_error
 e_sexp_parse_value
+e_sexp_evaluate_occur_times
 <SUBSECTION Standard>
 E_TYPE_SEXP
 E_SEXP

@@ -403,6 +403,8 @@ e_cal_backend_store_get_components (ECalBackendStore *store)
  *
  * Return value: A list of the components. Each item in the list is
  * an #ECalComponent, which should be freed when no longer needed.
+ *
+ * Since: 2.32
  */
 GSList *
 e_cal_backend_store_get_components_occuring_in_range (ECalBackendStore *store, time_t start, time_t end)
@@ -507,7 +509,7 @@ e_cal_backend_store_freeze_changes (ECalBackendStore *store)
 /**
  * e_cal_backend_store_interval_tree_add_comp:
  *
- * Since: 2.28
+ * Since: 2.32
  **/
 void
 e_cal_backend_store_interval_tree_add_comp (ECalBackendStore *store, ECalComponent *comp, time_t occurence_start, time_t occurence_end)

@@ -55,6 +55,30 @@ e_cal_backend_factory_get_type
 </SECTION>
 
 <SECTION>
+<FILE>e-intervaltree</FILE>
+<TITLE>EIntervalTree</TITLE>
+EIntervalTree
+e_intervaltree_new
+e_intervaltree_insert
+e_intervaltree_remove
+e_intervaltree_destroy
+e_intervaltree_search
+<SUBSECTION Standard>
+E_INTERVALTREE
+E_IS_INTERVALTREE
+E_TYPE_INTERVALTREE
+E_INTERVALTREE_CLASS
+E_IS_INTERVALTREE_CLASS
+E_INTERVALTREE_GET_CLASS
+EIntervalTreeClass
+<SUBSECTION Private>
+E_INTERVALTREE_DEBUG
+EIntervalTreePrivate
+e_intervaltree_get_type
+e_intervaltree_dump
+</SECTION>
+
+<SECTION>
 <FILE>e-cal-backend-sexp</FILE>
 <TITLE>ECalBackendSExp</TITLE>
 e_cal_backend_sexp_new
@@ -66,6 +90,7 @@ e_cal_backend_sexp_func_make_time
 e_cal_backend_sexp_func_time_add_day
 e_cal_backend_sexp_func_time_day_begin
 e_cal_backend_sexp_func_time_day_end
+e_cal_backend_sexp_evaluate_occur_times
 <SUBSECTION Standard>
 E_CAL_BACKEND_SEXP
 E_IS_CAL_BACKEND_SEXP
@@ -219,6 +244,7 @@ e_cal_backend_store_is_loaded
 e_cal_backend_store_remove
 e_cal_backend_store_clean
 e_cal_backend_store_get_component
+e_cal_backend_store_put_component_with_time_range
 e_cal_backend_store_put_component
 e_cal_backend_store_remove_component
 e_cal_backend_store_has_component
@@ -229,11 +255,13 @@ e_cal_backend_store_get_default_timezone
 e_cal_backend_store_set_default_timezone
 e_cal_backend_store_get_components_by_uid
 e_cal_backend_store_get_components
+e_cal_backend_store_get_components_occuring_in_range
 e_cal_backend_store_get_component_ids
 e_cal_backend_store_get_key_value
 e_cal_backend_store_put_key_value
 e_cal_backend_store_thaw_changes
 e_cal_backend_store_freeze_changes
+e_cal_backend_store_interval_tree_add_comp
 <SUBSECTION Standard>
 E_CAL_BACKEND_STORE
 E_IS_CAL_BACKEND_STORE

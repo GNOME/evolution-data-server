@@ -1280,6 +1280,7 @@ static struct {
  *
  * Determines biggest time window given by expressions "occur-in-range" in sexp.
  *
+ * Since: 2.32
  */
 gboolean
 e_cal_backend_sexp_evaluate_occur_times(ECalBackendSExp *sexp, time_t *start, time_t *end)

@@ -2300,6 +2300,8 @@ camel_stream_vfs_get_type
 <FILE>camel-tcp-stream-raw</FILE>
 <TITLE>CamelTcpStreamRaw</TITLE>
 CamelTcpStreamRaw
+CAMEL_PROXY_ERROR
+CamelProxyError
 camel_tcp_stream_raw_new
 <SUBSECTION Standard>
 CAMEL_TCP_STREAM_RAW
@@ -2314,6 +2316,7 @@ addrinfo
 sockaddr
 socklen_t
 camel_tcp_stream_raw_get_type
+camel_proxy_error_quark
 </SECTION>
 
 <SECTION>
@@ -2349,6 +2352,7 @@ CamelSockOptData
 camel_tcp_stream_connect
 camel_tcp_stream_getsockopt
 camel_tcp_stream_setsockopt
+camel_tcp_stream_get_file_desc
 camel_tcp_stream_set_socks_proxy
 camel_tcp_stream_peek_socks_proxy
 camel_tcp_stream_get_local_address

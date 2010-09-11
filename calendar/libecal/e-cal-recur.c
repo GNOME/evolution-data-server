@@ -904,7 +904,6 @@ array_to_list (gshort *array, gint max_elements)
 
 /** 
  * e_cal_recur_get_enddate
- * 
  * @ir: RRULE or EXRULE recurrence 
  * @prop: An RRULE or EXRULE #icalproperty. 
  * @zone: The DTSTART timezone, used for converting the UNTIL property if it
@@ -913,9 +912,11 @@ array_to_list (gshort *array, gint max_elements)
  * given @zone timezone. This is needed if the DTSTART is a DATE or floating
  * time.
  * 
- * @return End timepoint of giben event
- *
  * Finds out end time of (reccurent) event.
+ *
+ * Returns: End timepoint of given event
+ *
+ * Since: 2.32
  */
 time_t
 e_cal_recur_obtain_enddate (struct icalrecurrencetype *ir, icalproperty *prop,
@@ -3772,13 +3773,19 @@ cal_obj_time_to_string		(CalObjTime	*cotime)
 }
 #endif
 
-/* This recalculates the end dates for recurrence & exception rules which use
-   the COUNT property. If refresh is TRUE it will recalculate all enddates
-   for rules which use COUNT. If refresh is FALSE, it will only calculate
-   the enddate if it hasn't already been set. It returns TRUE if the component
-   was changed, i.e. if the component should be saved at some point.
-   We store the enddate in the "X-EVOLUTION-ENDDATE" parameter of the RRULE
-   or EXRULE. */
+/**
+ * e_cal_recur_ensure_end_dates:
+ *
+ * This recalculates the end dates for recurrence & exception rules which use
+ * the COUNT property. If @refresh is %TRUE it will recalculate all enddates
+ * for rules which use COUNT. If @refresh is %FALSE, it will only calculate
+ * the enddate if it hasn't already been set. It returns %TRUE if the component
+ * was changed, i.e. if the component should be saved at some point.
+ * We store the enddate in the "X-EVOLUTION-ENDDATE" parameter of the RRULE
+ * or EXRULE.
+ *
+ * Since: 2.32
+ **/
 gboolean
 e_cal_recur_ensure_end_dates (ECalComponent	*comp,
 			    gboolean		 refresh,

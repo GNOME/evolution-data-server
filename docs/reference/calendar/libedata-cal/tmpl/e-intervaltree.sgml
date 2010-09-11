@@ -1,0 +1,81 @@
+<!-- ##### SECTION Title ##### -->
+EIntervalTree
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### STRUCT EIntervalTree ##### -->
+<para>
+
+</para>
+
+@parent: 
+@priv: 
+
+<!-- ##### FUNCTION e_intervaltree_new ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_intervaltree_insert ##### -->
+<para>
+
+</para>
+
+@tree: 
+@start: 
+@end: 
+@comp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_intervaltree_remove ##### -->
+<para>
+
+</para>
+
+@tree: 
+@uid: 
+@rid: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_intervaltree_destroy ##### -->
+<para>
+
+</para>
+
+@tree: 
+
+
+<!-- ##### FUNCTION e_intervaltree_search ##### -->
+<para>
+
+</para>
+
+@tree: 
+@start: 
+@end: 
+@Returns: 
+
+

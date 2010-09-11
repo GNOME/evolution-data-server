@@ -26,6 +26,21 @@ CamelTcpStreamRaw
 </para>
 
 
+<!-- ##### MACRO CAMEL_PROXY_ERROR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### ENUM CamelProxyError ##### -->
+<para>
+
+</para>
+
+@CAMEL_PROXY_ERROR_PROXY_NOT_SUPPORTED: 
+@CAMEL_PROXY_ERROR_CANT_AUTHENTICATE: 
+
 <!-- ##### FUNCTION camel_tcp_stream_raw_new ##### -->
 <para>
 

@@ -259,6 +259,8 @@ e_cal_get_type
 ECalRecurInstanceFn
 ECalRecurResolveTimezoneFn
 e_cal_recur_generate_instances
+e_cal_recur_obtain_enddate
+e_cal_recur_ensure_end_dates
 e_cal_get_recur_nth
 e_cal_recur_nth
 </SECTION>
@@ -359,6 +361,7 @@ e_cal_util_construct_instance
 e_cal_util_remove_instances
 e_cal_util_get_system_timezone_location
 e_cal_util_get_system_timezone
+e_cal_util_get_component_occur_times
 </SECTION>
 
 <SECTION>

@@ -58,6 +58,11 @@ unlock (void)
 	g_static_mutex_unlock (&log_mutex);
 }
 
+/**
+ * e_debug_log:
+ *
+ * Since: 2.32
+ **/
 void
 e_debug_log (gboolean is_milestone, const gchar *domain, const gchar *format, ...)
 {
@@ -137,6 +142,11 @@ add_to_milestones (const gchar *str)
 	g_assert (milestones_head != NULL && milestones_tail != NULL);
 }
 
+/**
+ * e_debug_logv:
+ *
+ * Since: 2.32
+ **/
 void
 e_debug_logv (gboolean is_milestone, const gchar *domain, const gchar *format, va_list args)
 {
@@ -176,6 +186,11 @@ e_debug_logv (gboolean is_milestone, const gchar *domain, const gchar *format, v
 	unlock ();
 }
 
+/**
+ * e_debug_log_load_configuration:
+ *
+ * Since: 2.32
+ **/
 gboolean
 e_debug_log_load_configuration (const gchar *filename, GError **error)
 {
@@ -224,6 +239,11 @@ e_debug_log_load_configuration (const gchar *filename, GError **error)
 	return TRUE;
 }
 
+/**
+ * e_debug_log_enable_domains:
+ *
+ * Since: 2.32
+ **/
 void
 e_debug_log_enable_domains (const gchar **domains, gint n_domains)
 {
@@ -254,6 +274,11 @@ e_debug_log_enable_domains (const gchar **domains, gint n_domains)
 	unlock ();
 }
 
+/**
+ * e_debug_log_disable_domains:
+ *
+ * Since: 2.32
+ **/
 void
 e_debug_log_disable_domains (const gchar **domains, gint n_domains)
 {
@@ -284,6 +309,11 @@ e_debug_log_disable_domains (const gchar **domains, gint n_domains)
 	unlock ();
 }
 
+/**
+ * e_debug_log_is_domain_enabled:
+ *
+ * Since: 2.32
+ **/
 gboolean
 e_debug_log_is_domain_enabled (const gchar *domain)
 {
@@ -456,6 +486,11 @@ dump_ring_buffer (const gchar *filename, FILE *file, GError **error)
 	return TRUE;
 }
 
+/**
+ * e_debug_log_dump:
+ *
+ * Since: 2.32
+ **/
 gboolean
 e_debug_log_dump (const gchar *filename, GError **error)
 {
@@ -513,6 +548,11 @@ e_debug_log_dump (const gchar *filename, GError **error)
 	return success;
 }
 
+/**
+ * e_debug_log_dump_to_dated_file:
+ *
+ * Since: 2.32
+ **/
 gboolean
 e_debug_log_dump_to_dated_file (GError **error)
 {
@@ -544,6 +584,11 @@ e_debug_log_dump_to_dated_file (GError **error)
 	return retval;
 }
 
+/**
+ * e_debug_log_set_max_lines:
+ *
+ * Since: 2.32
+ **/
 void
 e_debug_log_set_max_lines (gint num_lines)
 {
@@ -597,6 +642,11 @@ e_debug_log_set_max_lines (gint num_lines)
 	unlock ();
 }
 
+/**
+ * e_debug_log_get_max_lines:
+ *
+ * Since: 2.32
+ **/
 gint
 e_debug_log_get_max_lines (void)
 {
@@ -609,6 +659,11 @@ e_debug_log_get_max_lines (void)
 	return retval;
 }
 
+/**
+ * e_debug_log_clear:
+ *
+ * Since: 2.32
+ **/
 void
 e_debug_log_clear (void)
 {

@@ -95,6 +95,15 @@ CamelTcpStream
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_tcp_stream_get_file_desc ##### -->
+<para>
+
+</para>
+
+@stream: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_tcp_stream_set_socks_proxy ##### -->
 <para>
 

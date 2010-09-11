@@ -43,8 +43,10 @@ G_DEFINE_TYPE (EIntervalTree, e_intervaltree, G_TYPE_OBJECT)
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_INTERVALTREE, EIntervalTreePrivate))
 
-EIntervalNode* 
-e_intervaltree_node_next (EIntervalTree *tree, EIntervalNode *x);
+typedef struct _EIntervalNode EIntervalNode;
+
+static EIntervalNode* 
+intervaltree_node_next (EIntervalTree *tree, EIntervalNode *x);
 
 struct _EIntervalNode
 {
@@ -266,6 +268,7 @@ binary_tree_insert (EIntervalTree *tree, EIntervalNode *z)
  * @key: the key to insert.
  * @comp: Component
  * 
+ * Since: 2.32
  **/
 gboolean
 e_intervaltree_insert (EIntervalTree *tree, time_t start, time_t end, ECalComponent *comp)
@@ -355,8 +358,8 @@ e_intervaltree_insert (EIntervalTree *tree, time_t start, time_t end, ECalCompon
 	return TRUE;
 }
 
-EIntervalNode* 
-e_intervaltree_node_next (EIntervalTree *tree, EIntervalNode *x)
+static EIntervalNode* 
+intervaltree_node_next (EIntervalTree *tree, EIntervalNode *x)
 {
 	EIntervalTreePrivate *priv = tree->priv; 
 	EIntervalNode *y;
@@ -390,7 +393,14 @@ e_intervaltree_node_next (EIntervalTree *tree, EIntervalNode *x)
 	return y;
 }
 
-void e_intervaltree_destroy (EIntervalTree *tree)
+/**
+ * e_intervaltree_destroy:
+ * @tree: an #EIntervalTree
+ *
+ * Since: 2.32
+ **/
+void
+e_intervaltree_destroy (EIntervalTree *tree)
 {
 	EIntervalTreePrivate *priv = tree->priv;
 	EIntervalNode *node; 
@@ -507,8 +517,9 @@ e_intervaltree_fixup_deletion (EIntervalTree *tree, EIntervalNode *x)
  * @start: start of the interval
  * @end: end of the interval
  * 
- * Returns list of nodes that overlaps given interval
- * or NULL.
+ * Returns list of nodes that overlaps given interval or %NULL.
+ *
+ * Since: 2.32
  **/
 GList*
 e_intervaltree_search (EIntervalTree *tree, time_t start, time_t end)
@@ -615,6 +626,12 @@ e_intervaltree_search_component (EIntervalTree *tree,
 	return g_hash_table_lookup (priv->id_node_hash, component_key(searched_uid, searched_rid));
 }
 
+/**
+ * e_intervaltree_remove:
+ * @tree: an #EIntervalTree
+ *
+ * Since: 2.32
+ **/
 gboolean
 e_intervaltree_remove (EIntervalTree *tree,
 		       const gchar *uid,
@@ -640,7 +657,7 @@ e_intervaltree_remove (EIntervalTree *tree,
 		return FALSE;
 	}
 
-	y = ((z->left == nil) || (z->right == nil)) ? z : e_intervaltree_node_next (tree, z);
+	y = ((z->left == nil) || (z->right == nil)) ? z : intervaltree_node_next (tree, z);
 	x = (y->left == nil) ? y->right : y->left;
 	/* y is to be spliced out. x is it's only child */
 
@@ -768,6 +785,8 @@ e_intervaltree_init (EIntervalTree *tree)
  * Creates a new #EIntervalTree.
  *
  * Returns: The newly-created #EIntervalTree.
+ *
+ * Since: 2.32
  **/
 EIntervalTree*
 e_intervaltree_new (void)

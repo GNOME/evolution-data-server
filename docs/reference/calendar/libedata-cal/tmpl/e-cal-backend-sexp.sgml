@@ -120,3 +120,14 @@ Regular expressions for calendar searches.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_cal_backend_sexp_evaluate_occur_times ##### -->
+<para>
+
+</para>
+
+@sexp: 
+@start: 
+@end: 
+@Returns: 
+
+

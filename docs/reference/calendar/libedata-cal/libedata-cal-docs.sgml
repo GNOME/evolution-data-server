@@ -22,6 +22,7 @@
     <xi:include href="xml/e-data-cal.xml"/>
     <xi:include href="xml/e-data-cal-factory.xml"/>
     <xi:include href="xml/e-data-cal-view.xml"/>
+    <xi:include href="xml/e-intervaltree.xml"/>
   </chapter>
 
   <index id="api-index-full">

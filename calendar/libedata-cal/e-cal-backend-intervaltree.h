@@ -20,19 +20,9 @@
  *
  */
 
-#ifndef __E_INTERVALTREE_H__
-#define __E_INTERVALTREE_H__
+#ifndef E_INTERVALTREE_H
+#define E_INTERVALTREE_H
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
-#include <glib.h>
-//#include <glib/glist.h>
-// EDS opt
-#include <glib-object.h>
-#include <gio/gio.h>
 #include <libecal/e-cal-component.h>
 #include <libecal/e-cal-recur.h>
 
@@ -44,6 +34,9 @@ extern "C" {
 #define E_IS_INTERVALTREE(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_INTERVALTREE))
 #define E_IS_INTERVALTREE_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_INTERVALTREE))
 #define E_INTERVALTREE_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), E_TYPE_INTERVALTREE, EIntervalTreeClass))
+
+G_BEGIN_DECLS
+
 /* #undef E_INTERVALTREE_DEBUG */
 /*
  * Implementation of the interval node as described in Introduction to Algorithms
@@ -56,8 +49,12 @@ extern "C" {
 typedef struct _EIntervalTree EIntervalTree;
 typedef struct _EIntervalTreeClass EIntervalTreeClass;
 typedef struct _EIntervalTreePrivate EIntervalTreePrivate;
-typedef struct _EIntervalNode EIntervalNode;
 
+/**
+ * EIntervalTree:
+ *
+ * Since: 2.32
+ **/
 struct _EIntervalTree
 {
 	GObject parent;
@@ -77,8 +74,6 @@ gboolean e_intervaltree_insert (EIntervalTree *tree, time_t start, time_t end, E
 
 gboolean e_intervaltree_remove (EIntervalTree *tree, const gchar *uid, const gchar *rid);
 
-gpointer e_intervaltree_lookup (EIntervalTree *tree, time_t start, time_t end);
-
 void e_intervaltree_destroy (EIntervalTree *tree);
 
 GList*
@@ -87,9 +82,6 @@ e_intervaltree_search (EIntervalTree *tree, time_t start, time_t end);
 void e_intervaltree_dump (EIntervalTree *tree);
 #endif
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
-
-#endif /* __E_INTERVALTREE_H__ */
+#endif /* E_INTERVALTREE_H */

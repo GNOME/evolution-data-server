@@ -84,6 +84,18 @@ ECalBackendStore
 @Returns: 
 
 
+<!-- ##### FUNCTION e_cal_backend_store_put_component_with_time_range ##### -->
+<para>
+
+</para>
+
+@store: 
+@comp: 
+@occurence_start: 
+@occurence_end: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_cal_backend_store_put_component ##### -->
 <para>
 
@@ -184,6 +196,17 @@ ECalBackendStore
 @Returns: 
 
 
+<!-- ##### FUNCTION e_cal_backend_store_get_components_occuring_in_range ##### -->
+<para>
+
+</para>
+
+@store: 
+@start: 
+@end: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_cal_backend_store_get_component_ids ##### -->
 <para>
 
@@ -228,5 +251,16 @@ ECalBackendStore
 </para>
 
 @store: 
+
+
+<!-- ##### FUNCTION e_cal_backend_store_interval_tree_add_comp ##### -->
+<para>
+
+</para>
+
+@store: 
+@comp: 
+@start: 
+@end: 
 
 

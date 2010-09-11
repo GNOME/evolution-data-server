@@ -38,6 +38,9 @@ ESExp
 </para>
 
 @type: 
+@time_generator: 
+@occuring_start: 
+@occuring_end: 
 
 <!-- ##### ENUM ESExpTermType ##### -->
 <para>
@@ -283,6 +286,17 @@ ESExp
 </para>
 
 @f: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_sexp_evaluate_occur_times ##### -->
+<para>
+
+</para>
+
+@f: 
+@start: 
+@end: 
 @Returns: 
 
 

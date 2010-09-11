@@ -50,6 +50,11 @@
 
 G_BEGIN_DECLS
 
+/**
+ * CAMEL_PROXY_ERROR:
+ *
+ * Since: 2.32
+ **/
 #define CAMEL_PROXY_ERROR (camel_proxy_error_quark ())
 
 typedef struct _CamelTcpStreamRaw CamelTcpStreamRaw;
@@ -68,7 +73,7 @@ struct _CamelTcpStreamRawClass {
 /**
  * CamelProxyError:
  *
- * Since: 3.0
+ * Since: 2.32
  */
 typedef enum {
 	CAMEL_PROXY_ERROR_PROXY_NOT_SUPPORTED,
