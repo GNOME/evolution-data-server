@@ -126,7 +126,11 @@ test_e_sexp_CPPFLAGS = \
 	$(EVOLUTION_CALENDAR_CFLAGS)		\
 	-DTESTER=1
 
-test_e_sexp_LDADD = libedata-cal-1.2.la $(E_DATA_SERVER_LIBS)
+test_e_sexp_LDADD = \
+	libedata-cal-1.2.la 							\
+	$(top_builddir)/calendar/libecal/libecal-1.2.la 			\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la			\
+	$(E_DATA_SERVER_LIBS)
 
 test_intervaltree_SOURCES = test-intervaltree.c e-cal-backend-intervaltree.c
 
