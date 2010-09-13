@@ -971,6 +971,9 @@ fi
 
 AM_CONDITIONAL(ENABLE_IPv6, [test "x$enable_ipv6" = "xyes"])
 
+AC_CHECK_HEADER([wspiapi.h],
+	[AC_DEFINE([HAVE_WSPIAPI_H], 1, [Have <wspiapi.h>])],,)
+
 dnl ******************************
 dnl Calendar support
 dnl ******************************
