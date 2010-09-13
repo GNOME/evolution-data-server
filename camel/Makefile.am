@@ -2,8 +2,7 @@ SUBDIRS = . providers tests
 
 if OS_WIN32
 LIBCAMEL_PLATFORM_DEP_SOURCES = \
-	camel-win32.c \
-	camel-net-utils-win32.h
+	camel-win32.c
 LIBCAMEL_PROVIDER_PLATFORM_DEP_SOURCES =
 LOCK_HELPER =
 else
