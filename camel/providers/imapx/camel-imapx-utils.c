@@ -1760,7 +1760,7 @@ imapx_parse_status(CamelIMAPXStream *is, GError **error)
 		/* ignore anything we dont know about */
 		do {
 			tok = camel_imapx_stream_token(is, &token, &len, NULL);
-			if (tok == '\n') {
+			if (tok == '\n' || tok < 0) {
 				g_set_error (error, CAMEL_IMAPX_ERROR, 1, "server response truncated");
 				imapx_free_status(sinfo);
 				return NULL;
