@@ -1731,7 +1731,7 @@ imapx_parse_status(CamelIMAPXStream *is, CamelException *ex)
 		/* ignore anything we dont know about */
 		do {
 			tok = camel_imapx_stream_token(is, &token, &len, ex);
-			if (tok == '\n') {
+			if (tok == '\n' || tok < 0) {
 				camel_exception_set (ex, 1, "server response truncated");
 				imapx_free_status(sinfo);
 				return NULL;
