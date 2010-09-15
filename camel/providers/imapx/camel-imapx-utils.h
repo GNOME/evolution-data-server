@@ -252,7 +252,11 @@ extern gint camel_imapx_debug_flags;
 /* Set this to zero to remove all debug output at build time */
 #define CAMEL_IMAPX_DEBUG_ALL		((1<<7)-1)
 
-#define camel_imapx_debug(type, ...) do { if (camel_imapx_debug_flags & CAMEL_IMAPX_DEBUG_ALL & CAMEL_IMAPX_DEBUG_ ## type) { __VA_ARGS__ ; } } while (0)
+#define camel_debug_flag(type) (camel_imapx_debug_flags & CAMEL_IMAPX_DEBUG_ALL & CAMEL_IMAPX_DEBUG_ ## type)
+#define camel_imapx_debug(type, fmt, ...) do {				\
+		if (camel_debug_flag(type))				\
+			printf(fmt , ##__VA_ARGS__);			\
+	} while (0)
 
 /* ********************************************************************** */
 

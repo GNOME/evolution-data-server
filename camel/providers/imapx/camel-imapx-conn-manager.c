@@ -23,7 +23,7 @@
 #include "camel-imapx-conn-manager.h"
 #include "camel-imapx-utils.h"
 
-#define c(x) camel_imapx_debug(conman, x)
+#define c(...) camel_imapx_debug(conman, __VA_ARGS__)
 
 #define CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -127,7 +127,7 @@ imapx_conn_shutdown (CamelIMAPXServer *conn, CamelIMAPXConnManager *con_man)
 	   this all, because otherwise a deadlock will happen.
 	   The connection will be freed later anyway. */
 	if (con_man->priv->clearing_connections) {
-		c(printf ("%s: called on %p when clearing connections, skipping it...\n", G_STRFUNC, conn));
+		c("%s: called on %p when clearing connections, skipping it...\n", G_STRFUNC, conn);
 		return;
 	}
 
@@ -173,7 +173,7 @@ imapx_conn_update_select (CamelIMAPXServer *conn, const gchar *selected_folder, 
 			jinfo = camel_imapx_server_get_job_queue_info (cinfo->conn);
 			if (!g_hash_table_lookup (jinfo->folders, cinfo->selected_folder)) {
 				g_hash_table_remove (cinfo->folders, cinfo->selected_folder);
-				c(printf ("Removed folder %s from connection folder list - select changed \n", cinfo->selected_folder));
+				c("Removed folder %s from connection folder list - select changed \n", cinfo->selected_folder);
 			}
 			camel_imapx_destroy_job_queue_info (jinfo);
 			g_free (cinfo->selected_folder);
@@ -218,7 +218,7 @@ imapx_find_connection (CamelIMAPXConnManager *con_man, const gchar *folder_name)
 
 			if (folder_name)
 				g_hash_table_insert (cinfo->folders, g_strdup (folder_name), GINT_TO_POINTER (1));
-			c(printf ("Found connection for %s and connection number %d \n", folder_name, i+1));
+			c("Found connection for %s and connection number %d \n", folder_name, i+1);
 			break;
 		}
 	}
@@ -229,11 +229,12 @@ imapx_find_connection (CamelIMAPXConnManager *con_man, const gchar *folder_name)
 
 		if (folder_name) {
 			g_hash_table_insert (cinfo->folders, g_strdup (folder_name), GINT_TO_POINTER (1));
-			c(printf ("Adding folder %s to connection number %d \n", folder_name, n+1));
+			c("Adding folder %s to connection number %d \n", folder_name, n+1);
 		}
 	}
 
-	c (g_assert (!(con_man->priv->n_connections == g_slist_length (con_man->priv->connections) && !conn)));
+	if (camel_debug_flag(conman))
+		g_assert (!(con_man->priv->n_connections == g_slist_length (con_man->priv->connections) && !conn));
 
 	CON_UNLOCK (con_man);
 
@@ -277,7 +278,7 @@ imapx_create_new_connection (CamelIMAPXConnManager *con_man, const gchar *folder
 
 	con_man->priv->connections = g_slist_prepend (con_man->priv->connections, cinfo);
 
-	c(printf ("Created new connection for %s and total connections %d \n", folder_name, g_slist_length (con_man->priv->connections)));
+	c("Created new connection for %s and total connections %d \n", folder_name, g_slist_length (con_man->priv->connections));
 
 	CON_UNLOCK (con_man);
 
@@ -368,7 +369,7 @@ camel_imapx_conn_manager_update_con_info (CamelIMAPXConnManager *con_man, CamelI
 		jinfo = camel_imapx_server_get_job_queue_info (cinfo->conn);
 		if (!g_hash_table_lookup (jinfo->folders, folder_name)) {
 			g_hash_table_remove (cinfo->folders, folder_name);
-			c(printf ("Removed folder %s from connection folder list - op done \n", folder_name));
+			c("Removed folder %s from connection folder list - op done \n", folder_name);
 		}
 		camel_imapx_destroy_job_queue_info (jinfo);
 	}

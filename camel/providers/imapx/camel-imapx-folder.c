@@ -37,7 +37,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define d(x) camel_imapx_debug(debug, x)
+#define d(...) camel_imapx_debug(debug, __VA_ARGS__)
 
 G_DEFINE_TYPE (CamelIMAPXFolder, camel_imapx_folder, CAMEL_TYPE_OFFLINE_FOLDER)
 
@@ -50,7 +50,7 @@ camel_imapx_folder_new (CamelStore *store, const gchar *folder_dir, const gchar 
 	gchar *summary_file, *state_file;
 	CamelIMAPXStore *istore;
 
-	d(printf("opening imap folder '%s'\n", folder_dir));
+	d("opening imap folder '%s'\n", folder_dir);
 
 	short_name = strrchr (folder_name, '/');
 	if (short_name)

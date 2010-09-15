@@ -32,9 +32,6 @@
 /* NB, this is only for the messy iterator_get interface, which could be better hidden */
 #include "libdb/dist/db.h"
 
-#define d(x) camel_imapx_debug(debug, x)
-#define io(x) camel_imapx_debug(io, x)
-
 #define CVSD_CLASS(x) ((CamelViewSummaryDiskClass *)((CamelObject *)x)->klass)
 #define CVS_CLASS(x) ((CamelViewSummaryClass *)((CamelObject *)x)->klass)
 
