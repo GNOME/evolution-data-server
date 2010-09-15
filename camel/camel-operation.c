@@ -120,6 +120,11 @@ operation_idle_cb (CamelOperation *operation)
 	gchar *msg;
 	gint pc;
 
+	/* Keep the operation alive until we emit the signal,
+	 * otherwise it might be finalized between unlocking
+	 * the mutex and emitting the signal. */
+	g_object_ref (operation);
+
 	LOCK ();
 
 	msg = operation->priv->status_msg;
@@ -135,6 +140,8 @@ operation_idle_cb (CamelOperation *operation)
 		g_signal_emit (operation, signals[STATUS], 0, msg, pc);
 		g_free (msg);
 	}
+
+	g_object_unref (operation);
 
 	return FALSE;
 }
