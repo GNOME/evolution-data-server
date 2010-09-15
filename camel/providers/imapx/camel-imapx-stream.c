@@ -204,7 +204,7 @@ static void
 camel_imapx_stream_init (CamelIMAPXStream *is)
 {
 	/* +1 is room for appending a 0 if we need to for a token */
-	is->bufsize = 4;
+	is->bufsize = 4096;
 	is->ptr = is->end = is->buf = g_malloc (is->bufsize + 1);
 	is->tokenbuf = g_malloc (is->bufsize + 1);
 }
