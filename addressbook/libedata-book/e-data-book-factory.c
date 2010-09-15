@@ -36,6 +36,17 @@
 
 #include "e-gdbus-egdbusbookfactory.h"
 
+#ifdef G_OS_WIN32
+#include <windows.h>
+#include <conio.h>
+#ifndef PROCESS_DEP_ENABLE
+#define PROCESS_DEP_ENABLE 0x00000001
+#endif
+#ifndef PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION
+#define PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION 0x00000002
+#endif
+#endif
+
 #define d(x)
 
 static GMainLoop *loop;
@@ -554,6 +565,28 @@ main (gint argc, gchar **argv)
 	EOfflineListener *eol;
 	EDataBookFactory *factory;
 	guint owner_id;
+
+#ifdef G_OS_WIN32
+	/* Reduce risks */
+	{
+		typedef BOOL (WINAPI *t_SetDllDirectoryA) (LPCSTR lpPathName);
+		t_SetDllDirectoryA p_SetDllDirectoryA;
+
+		p_SetDllDirectoryA = GetProcAddress (GetModuleHandle ("kernel32.dll"), "SetDllDirectoryA");
+		if (p_SetDllDirectoryA)
+			(*p_SetDllDirectoryA) ("");
+	}
+#ifndef _WIN64
+	{
+		typedef BOOL (WINAPI *t_SetProcessDEPPolicy) (DWORD dwFlags);
+		t_SetProcessDEPPolicy p_SetProcessDEPPolicy;
+
+		p_SetProcessDEPPolicy = GetProcAddress (GetModuleHandle ("kernel32.dll"), "SetProcessDEPPolicy");
+		if (p_SetProcessDEPPolicy)
+			(*p_SetProcessDEPPolicy) (PROCESS_DEP_ENABLE|PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION);
+	}
+#endif
+#endif
 
 	g_type_init ();
 	g_set_prgname (E_PRGNAME);
