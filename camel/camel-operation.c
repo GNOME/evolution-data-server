@@ -1,28 +1,23 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *  Authors: Michael Zucchi <NotZed@ximian.com>
+ * camel-operation.c
  *
- *  Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU Lesser General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
+ * USA.
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <stdio.h>
 #include <unistd.h>
@@ -32,96 +27,218 @@
 #include <nspr.h>
 #endif
 
-#include "camel-list-utils.h"
-#include "camel-operation.h"
+#include "camel-marshal.h"
 #include "camel-msgport.h"
+#include "camel-operation.h"
 
-#define d(x)
+#define CAMEL_OPERATION_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_OPERATION, CamelOperationPrivate))
 
-/* ********************************************************************** */
+typedef struct _StatusNode StatusNode;
 
-struct _status_stack {
-	guint32 flags;
+struct _StatusNode {
+	gboolean transient;
 	gchar *msg;
-	gint pc;				/* last pc reported */
-	guint stamp;		/* last stamp reported */
+	gint pc;		/* last percentage reported */
+	guint stamp;		/* last time stamp reported */
 };
 
-struct _CamelOperation {
-	struct _CamelOperation *next;
-	struct _CamelOperation *prev;
+struct _CamelOperationPrivate {
+	guint status_idle_id;
 
-	GThread *thread;	/* running thread */
-	guint32 flags;		/* cancelled ? */
-	gint blocked;		/* cancellation blocked depth */
-	gint refcount;
+	/* For the next 'status' signal. */
+	gchar *status_msg;
+	gint status_pc;
 
-	CamelOperationStatusFunc status;
-	gpointer status_data;
 	guint status_update;
 
-	/* stack of status messages (struct _status_stack *) */
-	GSList *status_stack;
-	struct _status_stack *lastreport;
+	GQueue status_stack;
 
 	CamelMsgPort *cancel_port;
-	gint cancel_fd;
 #ifdef CAMEL_HAVE_NSS
 	PRFileDesc *cancel_prfd;
 #endif
 };
 
-#define CAMEL_OPERATION_CANCELLED (1<<0)
-#define CAMEL_OPERATION_TRANSIENT (1<<1)
+enum {
+	STATUS,
+	LAST_SIGNAL
+};
 
 /* Delay before a transient operation has any effect on the status */
 #define CAMEL_OPERATION_TRANSIENT_DELAY (5)
 
-static GStaticMutex operation_lock = G_STATIC_MUTEX_INIT;
-#define LOCK() g_static_mutex_lock(&operation_lock)
-#define UNLOCK() g_static_mutex_unlock(&operation_lock)
+static GStaticRecMutex operation_lock = G_STATIC_REC_MUTEX_INIT;
+#define LOCK() g_static_rec_mutex_lock (&operation_lock)
+#define UNLOCK() g_static_rec_mutex_unlock (&operation_lock)
 
-static guint stamp (void);
-static CamelDList operation_list = CAMEL_DLIST_INITIALISER (operation_list);
+static GQueue operation_list = G_QUEUE_INIT;
 static GStaticPrivate operation_key = G_STATIC_PRIVATE_INIT;
 
-typedef struct _CamelOperationMsg {
-	CamelMsg msg;
-} CamelOperationMsg;
+static guint signals[LAST_SIGNAL];
+
+G_DEFINE_TYPE (CamelOperation, camel_operation, G_TYPE_CANCELLABLE)
+
+static StatusNode *
+status_node_new (CamelOperation *operation)
+{
+	StatusNode *node;
+
+	node = g_slice_new0 (StatusNode);
+	g_queue_push_head (&operation->priv->status_stack, node);
+
+	return node;
+}
+
+static void
+status_node_free (StatusNode *node)
+{
+	g_free (node->msg);
+	g_slice_free (StatusNode, node);
+}
 
 static CamelOperation *
 co_getcc (void)
 {
-	return (CamelOperation *)g_static_private_get (&operation_key);
+	return (CamelOperation *) g_static_private_get (&operation_key);
+}
+
+static guint
+stamp (void)
+{
+	GTimeVal tv;
+
+	g_get_current_time (&tv);
+	/* update 4 times/second */
+	return (tv.tv_sec * 4) + tv.tv_usec / (1000000/4);
+}
+
+static gboolean
+operation_idle_cb (CamelOperation *operation)
+{
+	gchar *msg;
+	gint pc;
+
+	LOCK ();
+
+	msg = operation->priv->status_msg;
+	operation->priv->status_msg = NULL;
+
+	pc = operation->priv->status_pc;
+
+	operation->priv->status_idle_id = 0;
+
+	UNLOCK ();
+
+	if (msg != NULL) {
+		g_signal_emit (operation, signals[STATUS], 0, msg, pc);
+		g_free (msg);
+	}
+
+	return FALSE;
 }
 
 static void
-clear_status_stack (CamelOperation *cc, gboolean claim_not_empty)
+operation_queue_status_update (CamelOperation *operation,
+                               StatusNode *node)
 {
-	g_return_if_fail (cc != NULL);
+	LOCK ();
 
-	if (claim_not_empty && cc->status_stack != NULL)
-		g_debug ("%p CamelOperation status stack non-empty", cc);
+	if (operation->priv->status_idle_id == 0)
+		operation->priv->status_idle_id = g_idle_add (
+			(GSourceFunc) operation_idle_cb, operation);
 
-	while (cc->status_stack != NULL) {
-		struct _status_stack *status;
+	g_free (operation->priv->status_msg);
+	operation->priv->status_msg = g_strdup (node->msg);
 
-		status = cc->status_stack->data;
-		if (claim_not_empty && status->msg != NULL)
-			g_debug ("%p    Status was \"%s\"", cc, status->msg);
-		g_free (status->msg);
-		g_free (status);
+	operation->priv->status_pc = node->pc;
 
-		cc->status_stack = g_slist_delete_link (
-			cc->status_stack, cc->status_stack);
+	UNLOCK ();
+}
+
+static void
+operation_flush_msgport (CamelOperation *operation)
+{
+	CamelOperationPrivate *priv = operation->priv;
+	CamelMsg *msg;
+
+	LOCK ();
+
+	while ((msg = camel_msgport_try_pop (priv->cancel_port)) != NULL)
+		g_free (msg);
+
+	UNLOCK ();
+}
+
+static void
+operation_finalize (GObject *object)
+{
+	CamelOperationPrivate *priv;
+	StatusNode *node;
+
+	priv = CAMEL_OPERATION_GET_PRIVATE (object);
+
+	LOCK ();
+
+	g_queue_remove (&operation_list, object);
+
+	if (priv->status_idle_id > 0)
+		g_source_remove (priv->status_idle_id);
+
+	operation_flush_msgport (CAMEL_OPERATION (object));
+	camel_msgport_destroy (priv->cancel_port);
+
+	while ((node = g_queue_pop_head (&priv->status_stack)) != NULL) {
+		g_warning (
+			"CamelOperation status stack non-empty: %s",
+			node->msg);
+		status_node_free (node);
 	}
+
+	UNLOCK ();
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_operation_parent_class)->finalize (object);
+}
+
+static void
+camel_operation_class_init (CamelOperationClass *class)
+{
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (CamelOperationPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = operation_finalize;
+
+	signals[STATUS] = g_signal_new (
+		"status",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (CamelOperationClass, status),
+		NULL, NULL,
+		camel_marshal_VOID__STRING_INT,
+		G_TYPE_NONE, 2,
+		G_TYPE_STRING,
+		G_TYPE_INT);
+}
+
+static void
+camel_operation_init (CamelOperation *operation)
+{
+	operation->priv = CAMEL_OPERATION_GET_PRIVATE (operation);
+
+	g_queue_init (&operation->priv->status_stack);
+	operation->priv->cancel_port = camel_msgport_new ();
+
+	LOCK ();
+	g_queue_push_tail (&operation_list, operation);
+	UNLOCK ();
 }
 
 /**
  * camel_operation_new:
- * @status: Callback for receiving status messages.  This will always
- * be called with an internal lock held.
- * @status_data: User data.
  *
  * Create a new camel operation handle.  Camel operation handles can
  * be used in a multithreaded application (or a single operation
@@ -132,42 +249,9 @@ clear_status_stack (CamelOperation *cc, gboolean claim_not_empty)
  * Returns: A new operation handle.
  **/
 CamelOperation *
-camel_operation_new (CamelOperationStatusFunc status, gpointer status_data)
+camel_operation_new (void)
 {
-	CamelOperation *cc;
-
-	cc = g_malloc0 (sizeof (*cc));
-
-	cc->flags = 0;
-	cc->blocked = 0;
-	cc->refcount = 1;
-	cc->status = status;
-	cc->status_data = status_data;
-	cc->cancel_port = camel_msgport_new ();
-	cc->cancel_fd = -1;
-
-	LOCK ();
-	camel_dlist_addtail (&operation_list, (CamelDListNode *)cc);
-	UNLOCK ();
-
-	return cc;
-}
-
-/**
- * camel_operation_mute:
- * @cc:
- *
- * mutes a camel operation permanently.  from this point on you will never
- * receive operation updates, even if more are sent.
- **/
-void
-camel_operation_mute (CamelOperation *cc)
-{
-	LOCK ();
-	cc->status = NULL;
-	cc->status_data = NULL;
-	clear_status_stack (cc, FALSE);
-	UNLOCK ();
+	return g_object_new (CAMEL_TYPE_OPERATION, NULL);
 }
 
 /**
@@ -178,102 +262,63 @@ camel_operation_mute (CamelOperation *cc)
 CamelOperation *
 camel_operation_registered (void)
 {
-	CamelOperation *cc = co_getcc ();
+	CamelOperation *operation = co_getcc ();
 
-	if (cc)
-		camel_operation_ref (cc);
+	if (operation != NULL)
+		g_object_ref (operation);
 
-	return cc;
-}
-
-/**
- * camel_operation_ref:
- * @cc: operation context
- *
- * Add a reference to the CamelOperation @cc.
- **/
-void
-camel_operation_ref (CamelOperation *cc)
-{
-	g_assert (cc->refcount > 0);
-
-	LOCK ();
-	cc->refcount++;
-	UNLOCK ();
-}
-
-/**
- * camel_operation_unref:
- * @cc: operation context
- *
- * Unref and potentially free @cc.
- **/
-void
-camel_operation_unref (CamelOperation *cc)
-{
-	g_assert (cc->refcount > 0);
-
-	LOCK ();
-	if (cc->refcount == 1) {
-		CamelOperationMsg *msg;
-
-		camel_dlist_remove ((CamelDListNode *)cc);
-
-		while ((msg = (CamelOperationMsg *)camel_msgport_try_pop (cc->cancel_port)))
-			g_free (msg);
-
-		camel_msgport_destroy (cc->cancel_port);
-
-		clear_status_stack (cc, TRUE);
-		g_free (cc);
-	} else {
-		cc->refcount--;
-	}
-	UNLOCK ();
+	return operation;
 }
 
 /**
  * camel_operation_cancel:
- * @cc: operation context
+ * @operation: a #CamelOperation
  *
- * Cancel a given operation.  If @cc is NULL then all outstanding
+ * Cancel a given operation.  If @operation is %NULL then all outstanding
  * operations are cancelled.
  **/
 void
-camel_operation_cancel (CamelOperation *cc)
+camel_operation_cancel (CamelOperation *operation)
 {
-	CamelOperationMsg *msg;
+	if (operation != NULL) {
+		CamelMsg *msg;
 
-	LOCK ();
+		g_return_if_fail (CAMEL_IS_OPERATION (operation));
 
-	if (cc == NULL) {
-		CamelOperation *cn;
+		LOCK ();
 
-		cc = (CamelOperation *)operation_list.head;
-		cn = cc->next;
-		while (cn) {
-			cc->flags |= CAMEL_OPERATION_CANCELLED;
-			msg = g_malloc0 (sizeof (*msg));
-			camel_msgport_push (cc->cancel_port, (CamelMsg *)msg);
-			cc = cn;
-			cn = cn->next;
+		msg = g_malloc0 (sizeof (CamelMsg));
+		camel_msgport_push (operation->priv->cancel_port, msg);
+
+		UNLOCK ();
+
+		g_cancellable_cancel (G_CANCELLABLE (operation));
+
+	} else {
+		GList *link;
+
+		LOCK ();
+
+		link = g_queue_peek_head_link (&operation_list);
+
+		while (link != NULL) {
+			operation = link->data;
+
+			if (operation != NULL)
+				camel_operation_cancel (operation);
+
+			link = g_list_next (link);
 		}
-	} else if ((cc->flags & CAMEL_OPERATION_CANCELLED) == 0) {
-		d(printf("cancelling thread %d\n", cc->id));
 
-		cc->flags |= CAMEL_OPERATION_CANCELLED;
-		msg = g_malloc0 (sizeof (*msg));
-		camel_msgport_push (cc->cancel_port, (CamelMsg *)msg);
+		UNLOCK ();
 	}
-
-	UNLOCK ();
 }
 
 /**
  * camel_operation_uncancel:
- * @cc: operation context
+ * @operation: a #CamelOperation
  *
- * Uncancel a cancelled operation.  If @cc is NULL then the current
+ * Uncancel a cancelled operation.  If @operation is %NULL then the current
  * operation is uncancelled.
  *
  * This is useful, if e.g. you need to do some cleaning up where a
@@ -281,96 +326,78 @@ camel_operation_cancel (CamelOperation *cc)
  * processing.
  **/
 void
-camel_operation_uncancel (CamelOperation *cc)
+camel_operation_uncancel (CamelOperation *operation)
 {
-	if (cc == NULL)
-		cc = co_getcc ();
+	if (operation == NULL)
+		operation = co_getcc ();
 
-	if (cc) {
-		CamelOperationMsg *msg;
-
-		LOCK ();
-		while ((msg = (CamelOperationMsg *)camel_msgport_try_pop (cc->cancel_port)))
-			g_free (msg);
-
-		cc->flags &= ~CAMEL_OPERATION_CANCELLED;
-		UNLOCK ();
+	if (operation != NULL) {
+		g_return_if_fail (CAMEL_IS_OPERATION (operation));
+		operation_flush_msgport (operation);
+		g_cancellable_reset (G_CANCELLABLE (operation));
 	}
 }
 
 /**
  * camel_operation_register:
- * @cc: operation context
+ * @operation: a #CamelOperation
  *
- * Register a thread or the main thread for cancellation through @cc.
- * If @cc is NULL, then a new cancellation is created for this thread.
+ * Register a thread or the main thread for cancellation through @operation.
+ * If @operation is NULL, then a new cancellation is created for this thread.
  *
- * All calls to operation_register() should save their value and call
- * operation_register again with that, to automatically stack
- * registrations.
+ * All calls to camel_operation_register() should save their value and
+ * call * camel_operation_register() again with that, to automatically
+ * stack * registrations.
  *
  * Returns: the previously registered operatoin.
- *
  **/
 CamelOperation *
-camel_operation_register (CamelOperation *cc)
+camel_operation_register (CamelOperation *operation)
 {
-	CamelOperation *oldcc = co_getcc ();
+	CamelOperation *old_operation = co_getcc ();
 
-	g_static_private_set (&operation_key, cc, NULL);
+	g_static_private_set (&operation_key, operation, NULL);
 
-	return oldcc;
+	return old_operation;
 }
 
 /**
  * camel_operation_unregister:
- * @cc: operation context
  *
  * Unregister the current thread for all cancellations.
  **/
 void
-camel_operation_unregister (CamelOperation *cc)
+camel_operation_unregister (void)
 {
 	g_static_private_set (&operation_key, NULL, NULL);
 }
 
 /**
  * camel_operation_cancel_check:
- * @cc: operation context
+ * @operation: a #CamelOperation
  *
- * Check if cancellation has been applied to @cc.  If @cc is NULL,
- * then the CamelOperation registered for the current thread is used.
+ * Check if cancellation has been applied to @operation.  If @operation is
+ * %NULL, then the #CamelOperation registered for the current thread is used.
  *
- * Returns: TRUE if the operation has been cancelled.
+ * Returns: %TRUE if the operation has been cancelled
  **/
 gboolean
-camel_operation_cancel_check (CamelOperation *cc)
+camel_operation_cancel_check (CamelOperation *operation)
 {
-	CamelOperationMsg *msg;
-	gint cancelled;
+	gboolean cancelled;
 
-	d(printf("checking for cancel in thread %p\n", g_thread_self()));
+	if (operation == NULL)
+		operation = co_getcc ();
 
-	if (cc == NULL)
-		cc = co_getcc ();
+	if (operation == NULL)
+		return FALSE;
 
 	LOCK ();
 
-	if (cc == NULL || cc->blocked > 0) {
-		d(printf("ahah!  cancellation is blocked\n"));
-		cancelled = FALSE;
-	} else if (cc->flags & CAMEL_OPERATION_CANCELLED) {
-		d(printf("previously cancelled\n"));
-		cancelled = TRUE;
-	} else if ((msg = (CamelOperationMsg *)camel_msgport_try_pop (cc->cancel_port))) {
-		d(printf("Got cancellation message\n"));
-		do {
-			g_free (msg);
-		} while ((msg = (CamelOperationMsg *)camel_msgport_try_pop (cc->cancel_port)));
-		cc->flags |= CAMEL_OPERATION_CANCELLED;
-		cancelled = TRUE;
-	} else
-		cancelled = FALSE;
+	cancelled = g_cancellable_is_cancelled (G_CANCELLABLE (operation));
+
+	if (cancelled)
+		operation_flush_msgport (operation);
 
 	UNLOCK ();
 
@@ -379,67 +406,64 @@ camel_operation_cancel_check (CamelOperation *cc)
 
 /**
  * camel_operation_cancel_fd:
- * @cc: operation context
+ * @operation: a #CamelOperation
  *
  * Retrieve a file descriptor that can be waited on (select, or poll)
  * for read, to asynchronously detect cancellation.
  *
- * Returns: The fd, or -1 if cancellation is not available
- * (blocked, or has not been registered for this thread).
+ * Returns: The fd, or -1 if cancellation has not been registered
+ * for this thread.
  **/
 gint
-camel_operation_cancel_fd (CamelOperation *cc)
+camel_operation_cancel_fd (CamelOperation *operation)
 {
-	if (cc == NULL)
-		cc = co_getcc ();
+	if (operation == NULL)
+		operation = co_getcc ();
 
-	if (cc == NULL || cc->blocked)
+	if (operation == NULL)
 		return -1;
 
-	LOCK ();
-
-	if (cc->cancel_fd == -1)
-		cc->cancel_fd = camel_msgport_fd (cc->cancel_port);
-
-	UNLOCK ();
-
-	return cc->cancel_fd;
+	return g_cancellable_get_fd (G_CANCELLABLE (operation));
 }
 
 #ifdef CAMEL_HAVE_NSS
 /**
  * camel_operation_cancel_prfd:
- * @cc: operation context
+ * @operation: a #CamelOperation
  *
  * Retrieve a file descriptor that can be waited on (select, or poll)
  * for read, to asynchronously detect cancellation.
  *
- * Returns: The fd, or NULL if cancellation is not available
- * (blocked, or has not been registered for this thread).
+ * Returns: The fd, or %NULL if cancellation has not been registered
+ * for this thread.
  **/
 PRFileDesc *
-camel_operation_cancel_prfd (CamelOperation *cc)
+camel_operation_cancel_prfd (CamelOperation *operation)
 {
-	if (cc == NULL)
-		cc = co_getcc ();
+	CamelOperationPrivate *priv;
 
-	if (cc == NULL || cc->blocked)
+	if (operation == NULL)
+		operation = co_getcc ();
+
+	if (operation == NULL)
 		return NULL;
 
 	LOCK ();
 
-	if (cc->cancel_prfd == NULL)
-		cc->cancel_prfd = camel_msgport_prfd (cc->cancel_port);
+	priv = operation->priv;
+
+	if (priv->cancel_prfd == NULL)
+		priv->cancel_prfd = camel_msgport_prfd (priv->cancel_port);
 
 	UNLOCK ();
 
-	return cc->cancel_prfd;
+	return priv->cancel_prfd;
 }
 #endif /* CAMEL_HAVE_NSS */
 
 /**
  * camel_operation_start:
- * @cc: operation context
+ * @operation: a #CamelOperation
  * @what: action being performed (printf-style format string)
  * @Varargs: varargs
  *
@@ -447,51 +471,41 @@ camel_operation_cancel_prfd (CamelOperation *cc)
  * similar end operations.
  **/
 void
-camel_operation_start (CamelOperation *cc, const gchar *what, ...)
+camel_operation_start (CamelOperation *operation,
+                       const gchar *what, ...)
 {
+	const guint signal_id = signals[STATUS];
+	StatusNode *node;
 	va_list ap;
-	gchar *msg;
-	struct _status_stack *s;
-	CamelOperationStatusFunc status_func;
-	gpointer status_data;
 
-	if (cc == NULL)
-		cc = co_getcc ();
+	if (operation == NULL)
+		operation = co_getcc ();
 
-	if (cc == NULL)
+	if (operation == NULL)
+		return;
+
+	if (!g_signal_has_handler_pending (operation, signal_id, 0, TRUE))
 		return;
 
 	LOCK ();
 
-	if (cc->status == NULL) {
-		UNLOCK ();
-		return;
-	}
+	operation->priv->status_update = 0;
 
 	va_start (ap, what);
-	msg = g_strdup_vprintf (what, ap);
-	va_end (ap);
-	cc->status_update = 0;
-	s = g_malloc0 (sizeof (*s));
-	s->msg = msg;
-	s->flags = 0;
-	cc->lastreport = s;
-	cc->status_stack = g_slist_prepend (cc->status_stack, s);
 
-	/* This avoids a race with camel_operation_mute() after we unlock. */
-	status_func = cc->status;
-	status_data = cc->status_data;
+	node = status_node_new (operation);
+	node->msg = g_strdup_vprintf (what, ap);
+
+	va_end (ap);
+
+	operation_queue_status_update (operation, node);
 
 	UNLOCK ();
-
-	status_func (cc, msg, CAMEL_OPERATION_START, status_data);
-
-	d(printf("start '%s'\n", msg, pc));
 }
 
 /**
  * camel_operation_start_transient:
- * @cc: operation context
+ * @operation: a #CamelOperation
  * @what: printf-style format string describing the action being performed
  * @Varargs: varargs
  *
@@ -500,193 +514,129 @@ camel_operation_start (CamelOperation *cc, const gchar *what, ...)
  * previous state when finished.
  **/
 void
-camel_operation_start_transient (CamelOperation *cc, const gchar *what, ...)
+camel_operation_start_transient (CamelOperation *operation,
+                                 const gchar *what, ...)
 {
-	if (cc == NULL)
-		cc = co_getcc ();
+	StatusNode *node;
+	va_list ap;
 
-	if (cc == NULL)
+	if (operation == NULL)
+		operation = co_getcc ();
+
+	if (operation == NULL)
 		return;
 
 	LOCK ();
 
-	if (cc->status == NULL) {
-		UNLOCK ();
-		return;
-	}
+	operation->priv->status_update = 0;
 
-	cc->status_update = 0;
-	if (cc->status) {
-		va_list ap;
-		gchar *msg;
-		struct _status_stack *s;
+	va_start (ap, what);
 
-		va_start (ap, what);
-		msg = g_strdup_vprintf (what, ap);
-		va_end (ap);
-		s = g_malloc0 (sizeof (*s));
-		s->msg = msg;
-		s->flags = CAMEL_OPERATION_TRANSIENT;
-		s->stamp = stamp ();
-		cc->status_stack = g_slist_prepend (cc->status_stack, s);
-	}
-	d(printf("start '%s'\n", msg, pc));
+	node = status_node_new (operation);
+	node->msg = g_strdup_vprintf (what, ap);
+	node->stamp = stamp ();
+	node->transient = TRUE;
+
+	va_end (ap);
 
 	UNLOCK ();
 }
 
-static guint stamp (void)
-{
-	GTimeVal tv;
-
-	g_get_current_time (&tv);
-	/* update 4 times/second */
-	return (tv.tv_sec * 4) + tv.tv_usec / (1000000/4);
-}
-
 /**
  * camel_operation_progress:
- * @cc: Operation to report to.
+ * @operation: a #CamelOperation
  * @pc: Percent complete, 0 to 100.
  *
- * Report progress on the current operation.  If @cc is NULL, then the
- * currently registered operation is used.  @pc reports the current
+ * Report progress on the current operation.  If @operation is %NULL, then
+ * the currently registered operation is used.  @pc reports the current
  * percentage of completion, which should be in the range of 0 to 100.
  *
  * If the total percentage is not know, then use
  * camel_operation_progress_count().
  **/
 void
-camel_operation_progress (CamelOperation *cc, gint pc)
+camel_operation_progress (CamelOperation *operation,
+                          gint pc)
 {
+	const guint signal_id = signals[STATUS];
+	CamelOperationPrivate *priv;
 	guint now;
-	struct _status_stack *s;
-	gchar *msg = NULL;
-	CamelOperationStatusFunc status_func;
-	gpointer status_data;
+	StatusNode *node;
 
-	if (cc == NULL)
-		cc = co_getcc ();
+	if (operation == NULL)
+		operation = co_getcc ();
 
-	if (cc == NULL)
+	if (operation == NULL)
+		return;
+
+	if (!g_signal_has_handler_pending (operation, signal_id, 0, TRUE))
 		return;
 
 	LOCK ();
 
-	if (cc->status == NULL || cc->status_stack == NULL) {
+	priv = operation->priv;
+
+	if (g_queue_is_empty (&priv->status_stack)) {
 		UNLOCK ();
 		return;
 	}
 
-	s = cc->status_stack->data;
-	s->pc = pc;
+	node = g_queue_peek_head (&priv->status_stack);
+	node->pc = pc;
 
 	/* Transient messages dont start updating till 4 seconds after
 	   they started, then they update every second */
 	now = stamp ();
-	if (cc->status_update == now) {
-		UNLOCK ();
-		return;
-	} else if (s->flags & CAMEL_OPERATION_TRANSIENT) {
-		if (s->stamp + CAMEL_OPERATION_TRANSIENT_DELAY > now) {
-			UNLOCK ();
-			return;
+	if (priv->status_update == now) {
+		operation = NULL;
+	} else if (node->transient) {
+		if (node->stamp + CAMEL_OPERATION_TRANSIENT_DELAY > now) {
+			operation = NULL;
 		} else {
-			cc->status_update = now;
-			cc->lastreport = s;
-			msg = g_strdup (s->msg);
+			priv->status_update = now;
 		}
 	} else {
-		s->stamp = cc->status_update = now;
-		cc->lastreport = s;
-		msg = g_strdup (s->msg);
+		node->stamp = priv->status_update = now;
 	}
 
-	/* This avoids a race with camel_operation_mute() after we unlock. */
-	status_func = cc->status;
-	status_data = cc->status_data;
+	if (operation != NULL)
+		operation_queue_status_update (operation, node);
 
 	UNLOCK ();
-
-	status_func (cc, msg, pc, status_data);
-
-	g_free (msg);
 }
 
 /**
  * camel_operation_end:
- * @cc: operation context
+ * @operation: a #CamelOperation
  *
- * Report the end of an operation.  If @cc is NULL, then the currently
- * registered operation is notified.
+ * Report the end of an operation.  If @operation is %NULL, then the
+ * currently registered operation is notified.
  **/
 void
-camel_operation_end (CamelOperation *cc)
+camel_operation_end (CamelOperation *operation)
 {
-	struct _status_stack *s, *p;
-	guint now;
-	gchar *msg = NULL;
-	gint pc = 0;
-	CamelOperationStatusFunc status_func;
-	gpointer status_data;
+	const guint signal_id = signals[STATUS];
+	GQueue *status_stack;
+	StatusNode *node;
 
-	if (cc == NULL)
-		cc = co_getcc ();
+	if (operation == NULL)
+		operation = co_getcc ();
 
-	if (cc == NULL)
+	if (operation == NULL)
+		return;
+
+	if (!g_signal_has_handler_pending (operation, signal_id, 0, TRUE))
 		return;
 
 	LOCK ();
 
-	if (cc->status == NULL || cc->status_stack == NULL) {
-		UNLOCK ();
-		return;
-	}
+	status_stack = &operation->priv->status_stack;
 
-	/* so what we do here is this.  If the operation that just
-	 * ended was transient, see if we have any other transient
-	 * messages that haven't been updated yet above us, otherwise,
-	 * re-update as a non-transient at the last reported pc */
-	now = stamp ();
-	s = cc->status_stack->data;
-	if (s->flags & CAMEL_OPERATION_TRANSIENT) {
-		if (cc->lastreport == s) {
-			GSList *l = cc->status_stack->next;
-			while (l) {
-				p = l->data;
-				if (p->flags & CAMEL_OPERATION_TRANSIENT) {
-					if (p->stamp + CAMEL_OPERATION_TRANSIENT_DELAY < now) {
-						msg = g_strdup (p->msg);
-						pc = p->pc;
-						cc->lastreport = p;
-						break;
-					}
-				} else {
-					msg = g_strdup (p->msg);
-					pc = p->pc;
-					cc->lastreport = p;
-					break;
-				}
-				l = l->next;
-			}
-		}
-		g_free (s->msg);
-	} else {
-		msg = s->msg;
-		pc = CAMEL_OPERATION_END;
-		cc->lastreport = s;
+	if ((node = g_queue_pop_head (status_stack)) != NULL) {
+		node->pc = 100;
+		operation_queue_status_update (operation, node);
+		status_node_free (node);
 	}
-	g_free (s);
-	cc->status_stack = g_slist_delete_link (cc->status_stack, cc->status_stack);
-
-	/* This avoids a race with camel_operation_mute() after we unlock. */
-	status_func = cc->status;
-	status_data = cc->status_data;
 
 	UNLOCK ();
-
-	if (msg) {
-		status_func (cc, msg, pc, status_data);
-		g_free (msg);
-	}
 }

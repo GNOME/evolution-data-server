@@ -25,58 +25,16 @@ camel-operation
 
 </para>
 
-
-<!-- ##### USER_FUNCTION CamelOperationStatusFunc ##### -->
-<para>
-
-</para>
-
-@op: 
-@what: 
-@pc: 
-@data: 
-
-
-<!-- ##### ENUM camel_operation_status_t ##### -->
-<para>
-
-</para>
-
-@CAMEL_OPERATION_START: 
-@CAMEL_OPERATION_END: 
+@parent: 
+@priv: 
 
 <!-- ##### FUNCTION camel_operation_new ##### -->
 <para>
 
 </para>
 
-@status: 
-@status_data: 
+@void: 
 @Returns: 
-
-
-<!-- ##### FUNCTION camel_operation_mute ##### -->
-<para>
-
-</para>
-
-@cc: 
-
-
-<!-- ##### FUNCTION camel_operation_ref ##### -->
-<para>
-
-</para>
-
-@cc: 
-
-
-<!-- ##### FUNCTION camel_operation_unref ##### -->
-<para>
-
-</para>
-
-@cc: 
 
 
 <!-- ##### FUNCTION camel_operation_cancel ##### -->
@@ -84,7 +42,7 @@ camel-operation
 
 </para>
 
-@cc: 
+@operation: 
 
 
 <!-- ##### FUNCTION camel_operation_uncancel ##### -->
@@ -92,7 +50,7 @@ camel-operation
 
 </para>
 
-@cc: 
+@operation: 
 
 
 <!-- ##### FUNCTION camel_operation_register ##### -->
@@ -100,7 +58,7 @@ camel-operation
 
 </para>
 
-@cc: 
+@operation: 
 @Returns: 
 
 
@@ -109,7 +67,7 @@ camel-operation
 
 </para>
 
-@cc: 
+@void: 
 
 
 <!-- ##### FUNCTION camel_operation_cancel_check ##### -->
@@ -117,7 +75,7 @@ camel-operation
 
 </para>
 
-@cc: 
+@operation: 
 @Returns: 
 
 
@@ -126,7 +84,7 @@ camel-operation
 
 </para>
 
-@cc: 
+@operation: 
 @Returns: 
 
 
@@ -135,7 +93,7 @@ camel-operation
 
 </para>
 
-@cc: 
+@operation: 
 @Returns: 
 
 
@@ -173,7 +131,7 @@ camel-operation
 
 </para>
 
-@cc: 
+@operation: 
 @pc: 
 
 
@@ -182,6 +140,6 @@ camel-operation
 
 </para>
 
-@cc: 
+@operation: 
 
 

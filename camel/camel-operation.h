@@ -1,8 +1,5 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
- *
- * Authors: Michael Zucchi <NotZed@Ximian.com>
- *
- * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
+/*
+ * camel-operation.h
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU Lesser General Public
@@ -26,45 +23,78 @@
 #ifndef CAMEL_OPERATION_H
 #define CAMEL_OPERATION_H
 
-#include <glib.h>
+#include <gio/gio.h>
+
+/* Standard GObject macros */
+#define CAMEL_TYPE_OPERATION \
+	(camel_operation_get_type ())
+#define CAMEL_OPERATION(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_OPERATION, CamelOperation))
+#define CAMEL_OPERATION_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), CAMEL_TYPE_OPERATION, CamelOperationClass))
+#define CAMEL_IS_OPERATION(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_OPERATION))
+#define CAMEL_IS_OPERATION_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), CAMEL_TYPE_OPERATION))
+#define CAMEL_OPERATION_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), CAMEL_TYPE_OPERATION, CamelOperationClass))
 
 G_BEGIN_DECLS
 
-/* cancellation helper stuff, not yet finalized */
-
 typedef struct _CamelOperation CamelOperation;
+typedef struct _CamelOperationClass CamelOperationClass;
+typedef struct _CamelOperationPrivate CamelOperationPrivate;
 
-typedef void (*CamelOperationStatusFunc)(struct _CamelOperation *op, const gchar *what, gint pc, gpointer data);
+struct _CamelOperation {
+	GCancellable parent;
+	CamelOperationPrivate *priv;
+};
 
-typedef enum _camel_operation_status_t {
-	CAMEL_OPERATION_START = -1,
-	CAMEL_OPERATION_END = -2
-} camel_operation_status_t;
+struct _CamelOperationClass {
+	GCancellableClass parent_class;
+
+	/* Signals */
+	void		(*status)		(CamelOperation *operation,
+						 const gchar *what,
+						 gint pc);
+};
+
+GType		camel_operation_get_type	(void);
 
 /* main thread functions */
-CamelOperation *camel_operation_new (CamelOperationStatusFunc status, gpointer status_data);
-void camel_operation_mute (CamelOperation *cc);
-void camel_operation_ref (CamelOperation *cc);
-void camel_operation_unref (CamelOperation *cc);
-void camel_operation_cancel (CamelOperation *cc);
-void camel_operation_uncancel (CamelOperation *cc);
+CamelOperation *camel_operation_new		(void);
+void		camel_operation_cancel		(CamelOperation *operation);
+void		camel_operation_uncancel	(CamelOperation *operation);
+
 /* subthread functions */
-CamelOperation *camel_operation_register (CamelOperation *cc);
-void camel_operation_unregister (CamelOperation *cc);
+CamelOperation *camel_operation_register	(CamelOperation *operation);
+void		camel_operation_unregister	(void);
 
 /* called internally by camel, for the current thread */
-gint camel_operation_cancel_check (CamelOperation *cc);
-gint camel_operation_cancel_fd (CamelOperation *cc);
+gboolean	camel_operation_cancel_check	(CamelOperation *operation);
+gint		camel_operation_cancel_fd	(CamelOperation *operation);
 #ifdef CAMEL_HAVE_NSS
-struct PRFileDesc *camel_operation_cancel_prfd (CamelOperation *cc);
+struct PRFileDesc *
+		camel_operation_cancel_prfd	(CamelOperation *operation);
 #endif
-/* return the registered operation for this thread, if there is one */
-CamelOperation *camel_operation_registered (void);
 
-void camel_operation_start (CamelOperation *cc, const gchar *what, ...);
-void camel_operation_start_transient (CamelOperation *cc, const gchar *what, ...);
-void camel_operation_progress (CamelOperation *cc, gint pc);
-void camel_operation_end (CamelOperation *cc);
+/* return the registered operation for this thread, if there is one */
+CamelOperation *camel_operation_registered	(void);
+
+void		camel_operation_start		(CamelOperation *cc,
+						 const gchar *what,
+						 ...) G_GNUC_PRINTF (2, 3);
+void		camel_operation_start_transient	(CamelOperation *cc,
+						 const gchar *what,
+						 ...) G_GNUC_PRINTF (2, 3);
+void		camel_operation_progress	(CamelOperation *operation,
+						 gint pc);
+void		camel_operation_end		(CamelOperation *operation);
 
 G_END_DECLS
 

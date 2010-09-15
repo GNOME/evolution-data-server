@@ -3728,6 +3728,16 @@ streams
 @CAMEL_IMAP_JOURNAL_ENTRY_APPEND: 
 @CAMEL_IMAP_JOURNAL_ENTRY_TRANSFER: 
 
+<!-- ##### USER_FUNCTION CamelOperationStatusFunc ##### -->
+<para>
+
+</para>
+
+@op: 
+@what: 
+@pc: 
+@data: 
+
 <!-- ##### STRUCT CamelPOP3Command ##### -->
 <para>
 
@@ -7286,6 +7296,13 @@ streams
 
 @cc: 
 
+<!-- ##### FUNCTION camel_operation_mute ##### -->
+<para>
+
+</para>
+
+@cc: 
+
 <!-- ##### FUNCTION camel_operation_progress_count ##### -->
 <para>
 
@@ -7293,6 +7310,28 @@ streams
 
 @cc: 
 @sofar: 
+
+<!-- ##### FUNCTION camel_operation_ref ##### -->
+<para>
+
+</para>
+
+@cc: 
+
+<!-- ##### ENUM camel_operation_status_t ##### -->
+<para>
+
+</para>
+
+@CAMEL_OPERATION_START: 
+@CAMEL_OPERATION_END: 
+
+<!-- ##### FUNCTION camel_operation_unref ##### -->
+<para>
+
+</para>
+
+@cc: 
 
 <!-- ##### FUNCTION camel_partition_table_get_type ##### -->
 <para>

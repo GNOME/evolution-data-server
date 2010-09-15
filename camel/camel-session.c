@@ -86,9 +86,8 @@ static void
 cs_thread_status (CamelOperation *op,
                   const gchar *what,
                   gint pc,
-                  gpointer data)
+                  CamelSessionThreadMsg *msg)
 {
-	CamelSessionThreadMsg *msg = data;
 	CamelSessionClass *class;
 
 	class = CAMEL_SESSION_GET_CLASS (msg->session);
@@ -277,7 +276,10 @@ session_thread_msg_new (CamelSession *session,
 	m = g_malloc0 (size);
 	m->ops = ops;
 	m->session = g_object_ref (session);
-	m->op = camel_operation_new (cs_thread_status, m);
+	m->op = camel_operation_new ();
+	g_signal_connect (
+		m->op, "status",
+		G_CALLBACK (cs_thread_status), m);
 	camel_session_lock (session, CAMEL_SESSION_THREAD_LOCK);
 	m->id = session->priv->thread_id++;
 	g_hash_table_insert (session->priv->thread_active, GINT_TO_POINTER (m->id), m);
@@ -304,7 +306,7 @@ session_thread_msg_free (CamelSession *session,
 	if (msg->ops->free)
 		msg->ops->free (session, msg);
 	if (msg->op)
-		camel_operation_unref (msg->op);
+		g_object_unref (msg->op);
 	g_clear_error (&msg->error);
 	g_object_unref (msg->session);
 	g_free (msg);

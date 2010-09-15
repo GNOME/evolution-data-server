@@ -315,7 +315,7 @@ camel_service_connect (CamelService *service,
 	camel_service_lock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
 	service->connect_op = camel_operation_registered ();
 	if (!service->connect_op) {
-		service->connect_op = camel_operation_new (NULL, NULL);
+		service->connect_op = camel_operation_new ();
 		camel_operation_register (service->connect_op);
 		unreg = TRUE;
 	}
@@ -330,9 +330,9 @@ camel_service_connect (CamelService *service,
 	camel_service_lock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
 	if (connect_op) {
 		if (unreg && service->connect_op)
-			camel_operation_unregister (connect_op);
+			camel_operation_unregister ();
 
-		camel_operation_unref (connect_op);
+		g_object_unref (connect_op);
 		service->connect_op = NULL;
 	}
 	camel_service_unlock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
@@ -374,7 +374,7 @@ camel_service_disconnect (CamelService *service,
 		camel_service_lock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
 		service->connect_op = camel_operation_registered ();
 		if (!service->connect_op) {
-			service->connect_op = camel_operation_new (NULL, NULL);
+			service->connect_op = camel_operation_new ();
 			camel_operation_register (service->connect_op);
 			unreg = TRUE;
 		}
@@ -387,9 +387,9 @@ camel_service_disconnect (CamelService *service,
 
 		camel_service_lock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
 		if (unreg)
-			camel_operation_unregister (service->connect_op);
+			camel_operation_unregister ();
 
-		camel_operation_unref (service->connect_op);
+		g_object_unref (service->connect_op);
 		service->connect_op = NULL;
 		camel_service_unlock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
 	}

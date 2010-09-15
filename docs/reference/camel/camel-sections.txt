@@ -2826,12 +2826,7 @@ camel_movemail
 <SECTION>
 <FILE>camel-operation</FILE>
 CamelOperation
-CamelOperationStatusFunc
-camel_operation_status_t
 camel_operation_new
-camel_operation_mute
-camel_operation_ref
-camel_operation_unref
 camel_operation_cancel
 camel_operation_uncancel
 camel_operation_register

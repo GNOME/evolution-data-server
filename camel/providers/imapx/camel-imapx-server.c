@@ -3816,7 +3816,7 @@ exception:
 	camel_folder_change_info_free (ic->job->u.refresh_info.changes);
 
 	if (ic->job->op)
-		camel_operation_unref (ic->job->op);
+		g_object_unref (ic->job->op);
 
 	imapx_job_done (is, ic->job);
 	camel_imapx_command_free (ic);
@@ -4602,7 +4602,7 @@ imapx_parser_thread (gpointer d)
 	CamelOperation *op;
 	GError *local_error = NULL;
 
-	op = camel_operation_new (NULL, NULL);
+	op = camel_operation_new ();
 	op = camel_operation_register (op);
 	is->op = op;
 
@@ -4684,8 +4684,8 @@ imapx_parser_thread (gpointer d)
 	g_clear_error (&local_error);
 
 	if (op) {
-		camel_operation_unregister (op);
-		camel_operation_unref (op);
+		camel_operation_unregister ();
+		g_object_unref (op);
 	}
 	is->op = NULL;
 
@@ -4990,7 +4990,7 @@ camel_imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, const
 
 	stream = imapx_server_get_message (is, folder, op, uid, IMAPX_PRIORITY_GET_MESSAGE, error);
 	if (op)
-		camel_operation_unref (op);
+		g_object_unref (op);
 
 	return stream;
 }
@@ -5170,7 +5170,7 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is, CamelFolder *folder, GErr
 	camel_folder_change_info_free (job->u.refresh_info.changes);
 
 	if (job->op)
-		camel_operation_unref (job->op);
+		g_object_unref (job->op);
 	g_free (job);
 
 	return success;
