@@ -20,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=Misc.\n"
 "POT-Creation-Date: 2010-09-06 08:47+0000\n"
-"PO-Revision-Date: 2010-09-06 21:08+0800\n"
+"PO-Revision-Date: 2010-09-16 15:37+0000\n"
 "Last-Translator: YunQiang Su <wzssyqa@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -2282,12 +2282,12 @@ msgid "POP Source URI"
 msgstr "POP 源 URI"
 
 #: ../camel/camel-sasl-popb4smtp.c:89
-#, fuzzy, c-format
+#, c-format
 msgid "POP Before SMTP authentication using an unknown transport"
 msgstr "以未知的传输进行 SMTP 授权之前的 POP"
 
 #: ../camel/camel-sasl-popb4smtp.c:97
-#, fuzzy, c-format
+#, c-format
 msgid "POP Before SMTP authentication using a non-POP source"
 msgstr "以非 POP 源进行 SMTP 授权之前的 POP"
 
