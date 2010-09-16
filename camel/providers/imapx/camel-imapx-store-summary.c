@@ -32,7 +32,7 @@
 #include "camel-imapx-utils.h"
 #include "camel-imapx-store-summary.h"
 
-#define d(...) camel_imapx_debug(debug, __VA_ARGS__)
+#define d(...) camel_imapx_debug(debug, '?', __VA_ARGS__)
 
 #define CAMEL_IMAPX_STORE_SUMMARY_VERSION_0 (0)
 

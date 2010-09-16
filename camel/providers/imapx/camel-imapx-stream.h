@@ -63,6 +63,7 @@ struct _CamelIMAPXStream {
 	CamelStream parent;
 
 	CamelStream *source;
+	char tagprefix; /* For debugging output */
 
 	/*int state;*/
 	guchar *buf, *ptr, *end;
