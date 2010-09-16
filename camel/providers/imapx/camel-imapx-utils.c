@@ -460,7 +460,7 @@ imapx_parse_capability (CamelIMAPXStream *stream, GError **error)
 					break;
 				}
 			case IMAPX_TOK_INT:
-				d('?', " cap: '%s'\n", token);
+				d(stream->tagprefix, " cap: '%s'\n", token);
 				for (i = 0; i < G_N_ELEMENTS (capa_table); i++)
 					if (!strcmp ((gchar *) token, capa_table[i].name))
 						cinfo->capa |= capa_table[i].flag;
