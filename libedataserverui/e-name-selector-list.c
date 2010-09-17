@@ -37,6 +37,9 @@
 #include <libedataserverui/e-name-selector-entry.h>
 #include "e-name-selector-list.h"
 
+/* backward-compatibility cruft */
+#include "gtk-compat.h"
+
 #define E_NAME_SELECTOR_LIST_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_NAME_SELECTOR_LIST, ENameSelectorListPrivate))
@@ -245,7 +248,7 @@ enl_entry_key_press_event (ENameSelectorList *list,
 	entry = E_NAME_SELECTOR_ENTRY (list);
 	store = e_name_selector_entry_peek_destination_store (entry);
 
-	if ( (event->state & GDK_CONTROL_MASK)  && (event->keyval == GDK_Down)) {
+	if ( (event->state & GDK_CONTROL_MASK)  && (event->keyval == GDK_KEY_Down)) {
 		enl_popup_position (list);
 		gtk_widget_show_all (GTK_WIDGET (list->priv->popup));
 		enl_popup_grab (list);
@@ -535,11 +538,11 @@ enl_tree_key_press_event (GtkWidget *w,
 			   GdkEventKey *event,
 			   ENameSelectorList *list)
 {
-	if (event->keyval == GDK_Escape) {
+	if (event->keyval == GDK_KEY_Escape) {
 		enl_popup_ungrab (list);
 		gtk_widget_hide ( GTK_WIDGET (list->priv->popup));
 		return TRUE;
-	} else if (event->keyval == GDK_Delete) {
+	} else if (event->keyval == GDK_KEY_Delete) {
 		GtkTreeSelection *selection;
 		GtkTreeView *tree_view;
 		GList *paths;
@@ -550,10 +553,9 @@ enl_tree_key_press_event (GtkWidget *w,
 		paths = g_list_reverse (paths);
 		g_list_foreach (paths, (GFunc) delete_row, list);
 		g_list_free (paths);
-	} else if (event->keyval != GDK_Up && event->keyval != GDK_Down
-		   && event->keyval != GDK_Shift_R && event->keyval != GDK_Shift_L
-		   && event->keyval != GDK_Control_R && event->keyval != GDK_Control_L) {
-
+	} else if (event->keyval != GDK_KEY_Up && event->keyval != GDK_KEY_Down
+		   && event->keyval != GDK_KEY_Shift_R && event->keyval != GDK_KEY_Shift_L
+		   && event->keyval != GDK_KEY_Control_R && event->keyval != GDK_KEY_Control_L) {
 		enl_popup_ungrab (list);
 		gtk_widget_hide ( GTK_WIDGET (list->priv->popup));
 		gtk_widget_event (GTK_WIDGET (list), (GdkEvent *)event);

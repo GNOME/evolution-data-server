@@ -35,6 +35,9 @@
 #include "e-name-selector-dialog.h"
 #include "e-name-selector-entry.h"
 
+/* backward-compatibility cruft */
+#include "gtk-compat.h"
+
 #define E_NAME_SELECTOR_DIALOG_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_NAME_SELECTOR_DIALOG, ENameSelectorDialogPrivate))
@@ -1106,7 +1109,7 @@ destination_key_press (ENameSelectorDialog *name_selector_dialog,
 {
 
 	/* we only care about DEL key */
-	if (event->keyval != GDK_Delete)
+	if (event->keyval != GDK_KEY_Delete)
 		return FALSE;
 	return remove_selection (name_selector_dialog, tree_view);
 

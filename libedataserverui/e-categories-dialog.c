@@ -30,6 +30,9 @@
 #include "e-categories-dialog.h"
 #include "e-category-completion.h"
 
+/* backward-compatibility cruft */
+#include "gtk-compat.h"
+
 #define E_CATEGORIES_DIALOG_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_CATEGORIES_DIALOG, ECategoriesDialogPrivate))
@@ -533,7 +536,7 @@ categories_dialog_key_press_event (ECategoriesDialog *dialog,
 
 	button = GTK_BUTTON (dialog->priv->delete_button);
 
-	if (event->keyval == GDK_Delete) {
+	if (event->keyval == GDK_KEY_Delete) {
 		gtk_button_clicked (button);
 		return TRUE;
 	}

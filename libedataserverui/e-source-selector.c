@@ -29,6 +29,8 @@
 
 #include "e-data-server-ui-marshal.h"
 #include "e-source-selector.h"
+
+/* backward-compatibility cruft */
 #include "gtk-compat.h"
 
 #define E_SOURCE_SELECTOR_GET_PRIVATE(obj) \

@@ -34,6 +34,7 @@
 
 #include "e-name-selector-entry.h"
 
+/* backward-compatibility cruft */
 #include "gtk-compat.h"
 
 #define E_NAME_SELECTOR_ENTRY_GET_PRIVATE(obj) \
