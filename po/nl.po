@@ -1284,7 +1284,7 @@ msgstr "Bericht wordt ondertekend"
 
 #: ../camel/camel-cipher-context.c:145
 msgid "Verifying is not supported by this cipher"
-msgstr "Het gespecificeerde type word niet ondersteund door deze sleutel"
+msgstr "Verificatie wordt niet ondersteund door dit cijfer."
 
 #: ../camel/camel-cipher-context.c:171
 msgid "Verifying message"
@@ -1292,7 +1292,7 @@ msgstr "Bericht wordt geverifieerd"
 
 #: ../camel/camel-cipher-context.c:189
 msgid "Encryption is not supported by this cipher"
-msgstr "Het gespecificeerde type word niet ondersteund door deze sleutel"
+msgstr "Versleuteling wordt niet ondersteund door dit cijfer."
 
 #: ../camel/camel-cipher-context.c:215
 msgid "Encrypting message"
@@ -1300,7 +1300,7 @@ msgstr "Bericht wordt versleuteld"
 
 #: ../camel/camel-cipher-context.c:232
 msgid "Decryption is not supported by this cipher"
-msgstr "Het gespecificeerde type word niet ondersteund door deze sleutel"
+msgstr "Ontcijfering wordt niet ondersteund door dit cijfer."
 
 #: ../camel/camel-cipher-context.c:254
 msgid "Decrypting message"
