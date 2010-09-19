@@ -1368,7 +1368,7 @@ msgstr "Ootamatu vastus GnuPG'lt: %s"
 
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
-msgstr "Tõrge krüptimisel: Korrektsed saajate aadressid on määramata."
+msgstr "Tõrge krüptimisel: korrektsed saajate aadressid on määramata."
 
 msgid "Could not generate signing data: "
 msgstr "Signeerimisandmeid pole võimalik genereerida: "
