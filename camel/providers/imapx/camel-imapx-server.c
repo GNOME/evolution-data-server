@@ -4647,7 +4647,8 @@ imapx_server_finalise(CamelIMAPXServer *is, CamelIMAPXServerClass *isclass)
 	QUEUE_UNLOCK(is);
 
 	is->parser_quit = TRUE;
-	camel_operation_cancel (is->op);
+	if (is->op)
+		camel_operation_cancel (is->op);
 
 	if (is->parser_thread)
 		g_thread_join (is->parser_thread);
