@@ -236,6 +236,11 @@ camel_imapx_store_get_server (CamelIMAPXStore *istore, const gchar *folder_name,
 {
 	CamelIMAPXServer *server = NULL;
 
+	if (camel_operation_cancel_check(NULL)) {
+		g_set_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED,
+			     _("Cancelled"));
+		return NULL;
+	}
 	camel_service_lock (CAMEL_SERVICE (istore), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	server = camel_imapx_conn_manager_get_connection (istore->con_man, folder_name, error);
