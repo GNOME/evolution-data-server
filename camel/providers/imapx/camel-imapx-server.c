@@ -4621,7 +4621,7 @@ imapx_parser_thread (gpointer d)
 	GError *local_error = NULL;
 
 	op = camel_operation_new (NULL, NULL);
-	op = camel_operation_register (op);
+	camel_operation_register (op);
 	is->op = op;
 
 	while (local_error == NULL && is->stream) {
