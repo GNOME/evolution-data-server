@@ -4494,7 +4494,7 @@ imapx_parser_thread (gpointer d)
 	CamelOperation *op;
 
 	op = camel_operation_new (NULL, NULL);
-	op = camel_operation_register (op);
+	camel_operation_register (op);
 	is->op = op;
 
 	while (!camel_exception_is_set (&ex) && is->stream) {
