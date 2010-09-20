@@ -1088,7 +1088,7 @@ tcp_stream_raw_connect (CamelTcpStream *stream,
 			goto out;
 		}
 
-		if (ai->next != NULL)
+		if (ai->ai_next != NULL)
 			g_clear_error (error); /* Only preserve the error from the last try, in case no tries are successful */
 
 		ai = ai->ai_next;
