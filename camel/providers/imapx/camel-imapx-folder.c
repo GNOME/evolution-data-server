@@ -225,19 +225,20 @@ imapx_sync (CamelFolder *folder, gboolean expunge, GError **error)
 		return FALSE;
 	}
 
-	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), NULL);
-	if (server)
-		camel_imapx_server_sync_changes (server, folder, NULL);
+	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), error);
+	if (!server)
+		return FALSE;
+
+	camel_imapx_server_sync_changes (server, folder, NULL);
 
 	/* Sync twice - make sure deleted flags are written out,
 	   then sync again incase expunge changed anything */
 
-	if (server && expunge)
+	if (expunge)
 		camel_imapx_server_expunge (server, folder, NULL);
-	if (server) {
-		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
-		g_object_unref (server);
-	}
+
+	camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
+	g_object_unref (server);
 
 	return TRUE;
 }
