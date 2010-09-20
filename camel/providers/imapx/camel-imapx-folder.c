@@ -172,19 +172,20 @@ imapx_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 		ex = &eex;
 
 	server = camel_imapx_store_get_server(is, ex);
-	if (server)
-		camel_imapx_server_sync_changes (server, folder, ex);
+	if (!server)
+		return;
+
+	camel_imapx_server_sync_changes (server, folder, ex);
 
 	/* Sync twice - make sure deleted flags are written out,
 	   then sync again incase expunge changed anything */
 	camel_exception_clear(ex);
 
-	if (server && expunge) {
+	if (expunge) {
 		camel_imapx_server_expunge(server, folder, ex);
 		camel_exception_clear(ex);
 	}
-	if (server)
-		camel_object_unref(server);
+	camel_object_unref(server);
 }
 
 static CamelMimeMessage *
