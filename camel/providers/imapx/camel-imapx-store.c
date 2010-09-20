@@ -211,6 +211,11 @@ camel_imapx_store_get_server(CamelIMAPXStore *store, CamelException *ex)
 {
 	CamelIMAPXServer *server = NULL;
 
+	if (camel_operation_cancel_check(NULL)) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
+				     _("Cancelled"));
+		return NULL;
+	}
 	CAMEL_SERVICE_REC_LOCK (store, connect_lock);
 
 	if (store->server && camel_imapx_server_connect(store->server, ex)) {
