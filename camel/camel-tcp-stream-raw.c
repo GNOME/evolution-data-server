@@ -674,10 +674,10 @@ connect_to_socks4_proxy (CamelTcpStreamRaw *raw, const gchar *proxy_host, gint p
 	PRFileDesc *fd;
 	gchar request[9];
 	struct sockaddr_in *sin;
-	gchar reply[8];
+	gchar reply[8]; /* note that replies are 8 bytes, even if only the first 2 are used */
 	gint save_errno;
 
-	g_assert (connect_addr->ai_addr->sa_family == AF_INET); /* FMQ: check for AF_INET in the caller */
+	g_assert (connect_addr->ai_addr->sa_family == AF_INET);
 
 	fd = connect_to_proxy (raw, proxy_host, proxy_port, error);
 	if (!fd)
@@ -700,17 +700,31 @@ connect_to_socks4_proxy (CamelTcpStreamRaw *raw, const gchar *proxy_host, gint p
 	d (g_print ("  reading SOCKS4 reply\n"));
 	if (read_from_prfd (fd, reply, sizeof (reply), error) != sizeof (reply)) {
 		d (g_print ("  failed: %d\n", errno));
+		g_set_error (error, CAMEL_PROXY_ERROR, CAMEL_PROXY_ERROR_PROXY_NOT_SUPPORTED,
+			     _("The proxy host does not support SOCKS4"));
 		goto error;
 	}
 
-	if (!(reply[0] == 0		/* first byte of reply is 0 */
-	      && reply[1] == 90)) {	/* 90 means "request granted" */
+	if (reply[0] != 0) { /* version of reply code is 0 */
 #ifdef G_OS_WIN32
 		errno = WSAECONNREFUSED;
 #else
 		errno = ECONNREFUSED;
 #endif
-		_set_g_error_from_errno (error, FALSE);
+		g_set_error (error, CAMEL_PROXY_ERROR, CAMEL_PROXY_ERROR_PROXY_NOT_SUPPORTED,
+			     _("The proxy host does not support SOCKS4"));
+		goto error;
+	}
+
+	if (reply[1] != 90)) {	/* 90 means "request granted" */
+#ifdef G_OS_WIN32
+		errno = WSAECONNREFUSED;
+#else
+		errno = ECONNREFUSED;
+#endif
+		g_set_error (error, CAMEL_PROXY_ERROR, CAMEL_PROXY_ERROR_CANT_AUTHENTICATE,
+			     _("The proxy host denied our request: code %d"),
+			     reply[1]);
 		goto error;
 	}
 
@@ -796,6 +810,7 @@ socks5_initiate_and_request_authentication (CamelTcpStreamRaw *raw, PRFileDesc *
 	d (g_print ("  reading SOCKS5 reply\n"));
 	if (read_from_prfd (fd, reply, sizeof (reply), error) != sizeof (reply)) {
 		d (g_print ("  failed: %d\n", errno));
+		g_clear_error (error);
 		g_set_error (error, CAMEL_PROXY_ERROR, CAMEL_PROXY_ERROR_PROXY_NOT_SUPPORTED,
 			     _("The proxy host does not support SOCKS5"));
 		return FALSE;
@@ -876,6 +891,7 @@ socks5_consume_reply_address (CamelTcpStreamRaw *raw, PRFileDesc *fd, GError **e
 incomplete_reply:
 	g_free (address_and_port);
 
+	g_clear_error (error);
 	g_set_error (error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_NOT_CONNECTED, _("Incomplete reply from SOCKS server"));
 	return FALSE;
 }
@@ -1061,6 +1077,9 @@ tcp_stream_raw_connect (CamelTcpStream *stream,
 			retval = 0;
 			goto out;
 		}
+
+		if (ai->next != NULL)
+			g_clear_error (error); /* Only preserve the error from the last try, in case no tries are successful */
 
 		ai = ai->ai_next;
 	}
