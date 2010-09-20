@@ -937,7 +937,9 @@ imapx_command_start_next(CamelIMAPXServer *is, GError **error)
 		if (imapx_in_idle (is) && !camel_dlist_empty (&is->queue)) {
 			/* if imapx_stop_idle() returns FALSE, it was only
 			   pending and we can go ahead and send a new command
-			   immediately. If it returns TRUE, we must wait. */
+			   immediately. If it returns TRUE, either it sent the
+			   DONE to exit IDLE mode, or there was an error.
+			   Either way, we do nothing more right now. */
 			if (imapx_stop_idle (is, error)) {
 				c(printf ("waiting for idle to stop \n"));
 				return;
@@ -1739,7 +1741,10 @@ imapx_continuation(CamelIMAPXServer *imap, gboolean litplus, GError **error)
 			/* IDLE got cancelled after we sent the command, while
 			   we were waiting for this continuation. Send DONE
 			   immediately. */
-			imapx_command_idle_stop(imap, error);
+			if (!imapx_command_idle_stop (imap, error)) {
+				IDLE_UNLOCK(imap->idle);
+				return -1;
+			}
 			imap->idle->state = IMAPX_IDLE_OFF;
 		} else {
 			c(printf("idle starts in wrong state %d\n",
@@ -2098,6 +2103,11 @@ imapx_command_idle_stop (CamelIMAPXServer *is, GError **error)
 		g_set_error (
 			error, CAMEL_IMAPX_ERROR, 1,
 			"Unable to issue DONE");
+		c(printf("Failed to issue DONE to terminate IDLE\n"));
+		is->state = IMAPX_SHUTDOWN;
+		if (is->op)
+			camel_operation_cancel(is->op);
+		is->parser_quit = TRUE;
 		return FALSE;
 	}
 
@@ -2271,9 +2281,13 @@ imapx_stop_idle (CamelIMAPXServer *is, GError **error)
 		break;
 
 	case IMAPX_IDLE_STARTED:
-		imapx_command_idle_stop (is, error);
-		idle->state = IMAPX_IDLE_OFF;
+		/* We set 'stopped' even if sending DONE fails, to ensure that
+		   our caller doesn't try to submit its own command. */
 		stopped = TRUE;
+		if (!imapx_command_idle_stop (is, error))
+			break;
+
+		idle->state = IMAPX_IDLE_OFF;
 		c(printf("Stopping idle after %ld seconds\n",
 			 (long)(now - idle->started)));
 	case IMAPX_IDLE_PENDING:
