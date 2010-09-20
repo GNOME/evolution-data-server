@@ -4756,7 +4756,8 @@ imapx_server_dispose (GObject *object)
 	QUEUE_UNLOCK(server);
 
 	server->parser_quit = TRUE;
-	camel_operation_cancel (server->op);
+	if (server->op)
+		camel_operation_cancel (server->op);
 
 	if (server->parser_thread)
 		g_thread_join (server->parser_thread);
