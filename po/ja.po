@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=Misc.\n"
-"POT-Creation-Date: 2010-09-12 10:34+0000\n"
+"POT-Creation-Date: 2010-09-19 18:15+0000\n"
 "PO-Revision-Date: 2010-09-12 22:08+0900\n"
 "Last-Translator: Kiyotaka NISHIBORI <nl.nishibori.kiyotaka@gmail.com>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -635,15 +635,15 @@ msgstr "SIP アドレス"
 msgid "Unnamed List"
 msgstr "名前なしの一覧"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:287
+#: ../addressbook/libedata-book/e-data-book-factory.c:298
 #, c-format
 msgid "Empty URI"
 msgstr "空の URI"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:306
-#: ../addressbook/libedata-book/e-data-book-factory.c:344
-#: ../calendar/libedata-cal/e-data-cal-factory.c:331
-#: ../calendar/libedata-cal/e-data-cal-factory.c:343
+#: ../addressbook/libedata-book/e-data-book-factory.c:317
+#: ../addressbook/libedata-book/e-data-book-factory.c:355
+#: ../calendar/libedata-cal/e-data-cal-factory.c:342
+#: ../calendar/libedata-cal/e-data-cal-factory.c:354
 #, c-format
 msgid "Invalid source"
 msgstr "ソースが無効です"
@@ -1470,17 +1470,17 @@ msgstr "カレンダの変更を回復できませんでした: %s"
 msgid "Cannot retrieve calendar free/busy list: %s"
 msgstr "カレンダの予定の有無の一覧を回復できません: %s"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:353
+#: ../calendar/libedata-cal/e-data-cal-factory.c:364
 #, c-format
 msgid "Invalid URI"
 msgstr "無効な URI です"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:371
+#: ../calendar/libedata-cal/e-data-cal-factory.c:382
 #, c-format
 msgid "No backend factory for '%s' of '%s'"
 msgstr "'%2$s' の '%1$s' のバックエンドがありません"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:421
+#: ../calendar/libedata-cal/e-data-cal-factory.c:432
 #, c-format
 msgid "Could not instantiate backend"
 msgstr "バックエンドのインスタンスを生成できませんでした"
@@ -1529,7 +1529,7 @@ msgstr "この暗号で鍵をインポートできません"
 #: ../camel/camel-cipher-context.c:341
 #, c-format
 msgid "You may not export keys with this cipher"
-msgstr "この暗号で鍵をエキスポートできません"
+msgstr "この暗号で鍵をエクスポートできません"
 
 #: ../camel/camel-data-cache.c:181
 #, c-format
@@ -1597,17 +1597,17 @@ msgstr "フォルダの内容をローカルへコピーする (オフライン�
 #: ../camel/providers/imap/camel-imap-store.c:1720
 #: ../camel/providers/imap/camel-imap-store.c:2178
 #: ../camel/providers/imap/camel-imap-store.c:3022
-#: ../camel/providers/imapx/camel-imapx-folder.c:165
-#: ../camel/providers/imapx/camel-imapx-folder.c:196
-#: ../camel/providers/imapx/camel-imapx-folder.c:225
-#: ../camel/providers/imapx/camel-imapx-folder.c:282
-#: ../camel/providers/imapx/camel-imapx-folder.c:325
-#: ../camel/providers/imapx/camel-imapx-folder.c:357
-#: ../camel/providers/imapx/camel-imapx-folder.c:388
-#: ../camel/providers/imapx/camel-imapx-store.c:194
-#: ../camel/providers/imapx/camel-imapx-store.c:716
-#: ../camel/providers/imapx/camel-imapx-store.c:779
-#: ../camel/providers/imapx/camel-imapx-store.c:838
+#: ../camel/providers/imapx/camel-imapx-folder.c:164
+#: ../camel/providers/imapx/camel-imapx-folder.c:195
+#: ../camel/providers/imapx/camel-imapx-folder.c:224
+#: ../camel/providers/imapx/camel-imapx-folder.c:281
+#: ../camel/providers/imapx/camel-imapx-folder.c:324
+#: ../camel/providers/imapx/camel-imapx-folder.c:356
+#: ../camel/providers/imapx/camel-imapx-folder.c:387
+#: ../camel/providers/imapx/camel-imapx-store.c:193
+#: ../camel/providers/imapx/camel-imapx-store.c:715
+#: ../camel/providers/imapx/camel-imapx-store.c:778
+#: ../camel/providers/imapx/camel-imapx-store.c:837
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "この動作を完了するためにオンラインで作業してください"
@@ -1615,11 +1615,11 @@ msgstr "この動作を完了するためにオンラインで作業してくだ
 #: ../camel/camel-file-utils.c:430 ../camel/camel-file-utils.c:489
 #: ../camel/camel-file-utils.c:529 ../camel/camel-file-utils.c:599
 #: ../camel/camel-file-utils.c:691 ../camel/camel-gpg-context.c:887
-#: ../camel/camel-gpg-context.c:1175 ../camel/camel-net-utils.c:512
-#: ../camel/camel-net-utils.c:689 ../camel/camel-net-utils.c:838
+#: ../camel/camel-gpg-context.c:1175 ../camel/camel-net-utils.c:514
+#: ../camel/camel-net-utils.c:691 ../camel/camel-net-utils.c:840
 #: ../camel/camel-tcp-stream-raw.c:255
-#: ../camel/providers/imapx/camel-imapx-server.c:4657
-#: ../camel/providers/imapx/camel-imapx-server.c:4674
+#: ../camel/providers/imapx/camel-imapx-server.c:4675
+#: ../camel/providers/imapx/camel-imapx-server.c:4692
 #: ../camel/providers/nntp/camel-nntp-summary.c:396
 #: ../camel/providers/pop3/camel-pop3-folder.c:269
 #: ../camel/providers/pop3/camel-pop3-folder.c:625
@@ -2015,29 +2015,29 @@ msgstr "利用できる署名がありません"
 msgid "parse error"
 msgstr "解析エラー"
 
-#: ../camel/camel-net-utils.c:693
+#: ../camel/camel-net-utils.c:695
 #, c-format
 msgid "Resolving: %s"
 msgstr "解決中: %s"
 
-#: ../camel/camel-net-utils.c:715
+#: ../camel/camel-net-utils.c:717
 msgid "Host lookup failed"
 msgstr "ホストの検索に失敗しました"
 
-#: ../camel/camel-net-utils.c:719
+#: ../camel/camel-net-utils.c:721
 #, c-format
 msgid "Host lookup failed: %s: %s"
 msgstr "ホストの検索に失敗しました: %s: %s"
 
-#: ../camel/camel-net-utils.c:842
+#: ../camel/camel-net-utils.c:844
 msgid "Resolving address"
 msgstr "アドレスの解決中"
 
-#: ../camel/camel-net-utils.c:862
+#: ../camel/camel-net-utils.c:864
 msgid "Name lookup failed"
 msgstr "名前の検索に失敗しました"
 
-#: ../camel/camel-net-utils.c:867
+#: ../camel/camel-net-utils.c:869
 #, c-format
 msgid "Name lookup failed: %s"
 msgstr "名前の検索に失敗しました: %s"
@@ -2134,11 +2134,11 @@ msgstr ""
 "サーバがサポートしている場合、このオプションはセキュリティ保護された CRAM-"
 "MD5 認証を使ってサーバへ接続します。"
 
-#: ../camel/camel-sasl-digest-md5.c:56
+#: ../camel/camel-sasl-digest-md5.c:58
 msgid "DIGEST-MD5"
 msgstr "DIGEST-MD5"
 
-#: ../camel/camel-sasl-digest-md5.c:58
+#: ../camel/camel-sasl-digest-md5.c:60
 msgid ""
 "This option will connect to the server using a secure DIGEST-MD5 password, "
 "if the server supports it."
@@ -2146,34 +2146,34 @@ msgstr ""
 "サーバがサポートしている場合、このオプションはセキュリティ保護された DIGEST-"
 "MD5 を使ってサーバへ接続します。"
 
-#: ../camel/camel-sasl-digest-md5.c:818
+#: ../camel/camel-sasl-digest-md5.c:820
 #, c-format
 msgid "Server challenge too long (>2048 octets)"
 msgstr "サーバ要求が長すぎます (2048 octet 以上です)"
 
-#: ../camel/camel-sasl-digest-md5.c:829
+#: ../camel/camel-sasl-digest-md5.c:831
 #, c-format
 msgid "Server challenge invalid\n"
 msgstr "無効です\n"
 
-#: ../camel/camel-sasl-digest-md5.c:837
+#: ../camel/camel-sasl-digest-md5.c:839
 #, c-format
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr ""
 "サーバ要求におかしな \"保護品質 (QOP: Quality of Protection)\" のトークンが含"
 "まれています"
 
-#: ../camel/camel-sasl-digest-md5.c:869
+#: ../camel/camel-sasl-digest-md5.c:871
 #, c-format
 msgid "Server response did not contain authorization data"
 msgstr "サーバの応答に認証データがありません"
 
-#: ../camel/camel-sasl-digest-md5.c:890
+#: ../camel/camel-sasl-digest-md5.c:892
 #, c-format
 msgid "Server response contained incomplete authorization data"
 msgstr "サーバの応答に不完全な認証データがあります"
 
-#: ../camel/camel-sasl-digest-md5.c:903
+#: ../camel/camel-sasl-digest-md5.c:905
 #, c-format
 msgid "Server response does not match"
 msgstr "サーバの応答が一致しません"
@@ -2806,8 +2806,8 @@ msgstr "削除されたメッセージ %s のチェック中"
 #: ../camel/providers/groupwise/camel-groupwise-store.c:779
 #: ../camel/providers/imap/camel-imap-folder.c:3814
 #: ../camel/providers/imap/camel-imap-folder.c:3892
-#: ../camel/providers/imapx/camel-imapx-server.c:3723
-#: ../camel/providers/imapx/camel-imapx-server.c:3847
+#: ../camel/providers/imapx/camel-imapx-server.c:3741
+#: ../camel/providers/imapx/camel-imapx-server.c:3865
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "%s にある新着メッセージのサマリ情報の同期中"
@@ -2844,13 +2844,13 @@ msgstr "新着メールのチェック"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:50
 #: ../camel/providers/imap/camel-imap-provider.c:42
-#: ../camel/providers/imapx/camel-imapx-provider.c:47
+#: ../camel/providers/imapx/camel-imapx-provider.c:46
 msgid "C_heck for new messages in all folders"
 msgstr "すべてのフォルダの新着メールをチェックする(_H)"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:53
 #: ../camel/providers/imap/camel-imap-provider.c:64
-#: ../camel/providers/imapx/camel-imapx-provider.c:73
+#: ../camel/providers/imapx/camel-imapx-provider.c:72
 #: ../camel/providers/local/camel-local-provider.c:42
 #: ../camel/providers/local/camel-local-provider.c:82
 #: ../camel/providers/local/camel-local-provider.c:102
@@ -2867,7 +2867,7 @@ msgstr "新着メールがスパムかどうかチェックする(_U)"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:59
 #: ../camel/providers/imap/camel-imap-provider.c:70
-#: ../camel/providers/imapx/camel-imapx-provider.c:79
+#: ../camel/providers/imapx/camel-imapx-provider.c:78
 msgid "Only check for Junk messages in the IN_BOX folder"
 msgstr "受信箱にあるメールだけスパムかどうかチェックする(_B)"
 
@@ -2893,7 +2893,7 @@ msgstr "Novell GroupWise サーバへのアクセス用です"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:98
 #: ../camel/providers/imap/camel-imap-provider.c:97
-#: ../camel/providers/imapx/camel-imapx-provider.c:105
+#: ../camel/providers/imapx/camel-imapx-provider.c:104
 #: ../camel/providers/nntp/camel-nntp-provider.c:72
 #: ../camel/providers/pop3/camel-pop3-provider.c:70
 msgid "Password"
@@ -2913,7 +2913,7 @@ msgstr "ホスト名またはユーザ名は URI で指定できません"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:207
 #: ../camel/providers/imap/camel-imap-store.c:1188
-#: ../camel/providers/imapx/camel-imapx-server.c:2974
+#: ../camel/providers/imapx/camel-imapx-server.c:2992
 #, c-format
 msgid "You did not enter a password."
 msgstr "パスワードを入力しませんでした"
@@ -2927,7 +2927,7 @@ msgstr ""
 #: ../camel/providers/groupwise/camel-groupwise-store.c:550
 #: ../camel/providers/imap/camel-imap-store.c:1757
 #: ../camel/providers/imap/camel-imap-store.c:1952
-#: ../camel/providers/imapx/camel-imapx-store.c:417
+#: ../camel/providers/imapx/camel-imapx-store.c:416
 #, c-format
 msgid "No such folder %s"
 msgstr "そのようなフォルダ %s はありません"
@@ -2945,7 +2945,7 @@ msgstr "特別なシステムフォルダを作成することはできません
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1206
 #: ../camel/providers/imap/camel-imap-store.c:1835
 #: ../camel/providers/imap/camel-imap-store.c:2257
-#: ../camel/providers/imapx/camel-imapx-store.c:880
+#: ../camel/providers/imapx/camel-imapx-store.c:879
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "親フォルダには複数のサブフォルダを含めることはできません"
@@ -3065,7 +3065,7 @@ msgid "Could not create directory %s: %s"
 msgstr "フォルダ %s を作成できませんでした: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:960
-#: ../camel/providers/imapx/camel-imapx-server.c:3763
+#: ../camel/providers/imapx/camel-imapx-server.c:3781
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "%s にあるメッセージの解析中"
@@ -3075,13 +3075,13 @@ msgid "Unable to retrieve message: "
 msgstr "メッセージを回復できません: "
 
 #: ../camel/providers/imap/camel-imap-folder.c:3266
-#: ../camel/providers/imapx/camel-imapx-server.c:4940
+#: ../camel/providers/imapx/camel-imapx-server.c:4958
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "%s という ID のメッセージを取得できません: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3267
-#: ../camel/providers/imapx/camel-imapx-server.c:4941
+#: ../camel/providers/imapx/camel-imapx-server.c:4959
 msgid "No such message available."
 msgstr "そのようなメッセージは利用できません"
 
@@ -3128,22 +3128,22 @@ msgid "Failed to cache %s: "
 msgstr "%s のキャッシュに失敗しました: "
 
 #: ../camel/providers/imap/camel-imap-provider.c:40
-#: ../camel/providers/imapx/camel-imapx-provider.c:41
+#: ../camel/providers/imapx/camel-imapx-provider.c:40
 msgid "Checking for New Mail"
 msgstr "新着メールのチェック"
 
 #: ../camel/providers/imap/camel-imap-provider.c:44
-#: ../camel/providers/imapx/camel-imapx-provider.c:49
+#: ../camel/providers/imapx/camel-imapx-provider.c:48
 msgid "Ch_eck for new messages in subscribed folders"
 msgstr "購読しているフォルダの新着メールをチェックする(_E)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:48
-#: ../camel/providers/imapx/camel-imapx-provider.c:53
+#: ../camel/providers/imapx/camel-imapx-provider.c:52
 msgid "Connection to Server"
 msgstr "サーバへ接続"
 
 #: ../camel/providers/imap/camel-imap-provider.c:50
-#: ../camel/providers/imapx/camel-imapx-provider.c:55
+#: ../camel/providers/imapx/camel-imapx-provider.c:54
 msgid "_Use custom command to connect to server"
 msgstr "サーバへ接続する際にカスタム・コマンドを使用する(_U)"
 
@@ -3152,18 +3152,18 @@ msgid "Co_mmand:"
 msgstr "コマンド(_M):"
 
 #: ../camel/providers/imap/camel-imap-provider.c:56
-#: ../camel/providers/imapx/camel-imapx-provider.c:63
+#: ../camel/providers/imapx/camel-imapx-provider.c:62
 #: ../camel/providers/nntp/camel-nntp-provider.c:42
 msgid "Folders"
 msgstr "フォルダ"
 
 #: ../camel/providers/imap/camel-imap-provider.c:58
-#: ../camel/providers/imapx/camel-imapx-provider.c:65
+#: ../camel/providers/imapx/camel-imapx-provider.c:64
 msgid "_Show only subscribed folders"
 msgstr "購読しているフォルダだけ表示する(_S)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:60
-#: ../camel/providers/imapx/camel-imapx-provider.c:68
+#: ../camel/providers/imapx/camel-imapx-provider.c:67
 msgid "O_verride server-supplied folder namespace"
 msgstr "サーバが提供するフォルダのネームスペースを上書きする(_V)"
 
@@ -3172,17 +3172,17 @@ msgid "Names_pace:"
 msgstr "ネームスペース(_P):"
 
 #: ../camel/providers/imap/camel-imap-provider.c:66
-#: ../camel/providers/imapx/camel-imapx-provider.c:75
+#: ../camel/providers/imapx/camel-imapx-provider.c:74
 msgid "_Apply filters to new messages in INBOX on this server"
 msgstr "このサーバの受信箱にある新着メールにフィルタを適用する(_A)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:68
-#: ../camel/providers/imapx/camel-imapx-provider.c:77
+#: ../camel/providers/imapx/camel-imapx-provider.c:76
 msgid "Check new messages for Jun_k contents"
 msgstr "新着メールがスパムかどうかチェックする(_K)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:72
-#: ../camel/providers/imapx/camel-imapx-provider.c:81
+#: ../camel/providers/imapx/camel-imapx-provider.c:80
 msgid "Automatically synchroni_ze remote mail locally"
 msgstr "リモートとローカルのメールを自動的に同期する(_Z)"
 
@@ -3191,25 +3191,25 @@ msgid "IMAP"
 msgstr "IMAP"
 
 #: ../camel/providers/imap/camel-imap-provider.c:81
-#: ../camel/providers/imapx/camel-imapx-provider.c:91
+#: ../camel/providers/imapx/camel-imapx-provider.c:90
 msgid "For reading and storing mail on IMAP servers."
 msgstr "IMAP サーバのメールを読んだり大切なメールを保存します"
 
 #: ../camel/providers/imap/camel-imap-provider.c:99
-#: ../camel/providers/imapx/camel-imapx-provider.c:107
+#: ../camel/providers/imapx/camel-imapx-provider.c:106
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "このオプションはプレイン・テキストのパスワードを使って IMAP サーバに接続しま"
 "す"
 
 #: ../camel/providers/imap/camel-imap-store.c:310
-#: ../camel/providers/imapx/camel-imapx-store.c:229
+#: ../camel/providers/imapx/camel-imapx-store.c:228
 #, c-format
 msgid "IMAP server %s"
 msgstr "IMAP サーバ %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:312
-#: ../camel/providers/imapx/camel-imapx-store.c:231
+#: ../camel/providers/imapx/camel-imapx-store.c:230
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "%s の %s にある IMAP サービス"
@@ -3239,21 +3239,21 @@ msgstr "%s へ接続できませんでした: "
 #: ../camel/providers/imap/camel-imap-store.c:592
 #: ../camel/providers/imap/camel-imap-store.c:599
 #: ../camel/providers/imap/camel-imap-store.c:626
-#: ../camel/providers/imapx/camel-imapx-server.c:2827
-#: ../camel/providers/imapx/camel-imapx-server.c:2863
+#: ../camel/providers/imapx/camel-imapx-server.c:2845
+#: ../camel/providers/imapx/camel-imapx-server.c:2881
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr ""
 "セキュリティ保護されたモードで IMAP サーバ %s への接続に失敗しました: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:573
-#: ../camel/providers/imapx/camel-imapx-server.c:2828
+#: ../camel/providers/imapx/camel-imapx-server.c:2846
 #: ../camel/providers/smtp/camel-smtp-transport.c:295
 msgid "STARTTLS not supported"
 msgstr "STARTTLS 拡張はサポートしていません。"
 
 #: ../camel/providers/imap/camel-imap-store.c:593
-#: ../camel/providers/imapx/camel-imapx-server.c:2864
+#: ../camel/providers/imapx/camel-imapx-server.c:2882
 msgid "SSL negotiations failed"
 msgstr "SSL 接続に失敗しました"
 
@@ -3263,13 +3263,13 @@ msgid "SSL is not available in this build"
 msgstr "このパッケージでは SSL を利用できません"
 
 #: ../camel/providers/imap/camel-imap-store.c:748
-#: ../camel/providers/imapx/camel-imapx-server.c:2664
+#: ../camel/providers/imapx/camel-imapx-server.c:2682
 #, c-format
 msgid "Connection cancelled"
 msgstr "接続をキャンセルしました"
 
 #: ../camel/providers/imap/camel-imap-store.c:753
-#: ../camel/providers/imapx/camel-imapx-server.c:2669
+#: ../camel/providers/imapx/camel-imapx-server.c:2687
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "コマンド \"%s\" で接続できませんでした: %s"
@@ -3277,8 +3277,8 @@ msgstr "コマンド \"%s\" で接続できませんでした: %s"
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../camel/providers/imap/camel-imap-store.c:926
 #: ../camel/providers/imap/camel-imap-store.c:2350
-#: ../camel/providers/imapx/camel-imapx-store.c:464
-#: ../camel/providers/imapx/camel-imapx-store.c:1061
+#: ../camel/providers/imapx/camel-imapx-store.c:463
+#: ../camel/providers/imapx/camel-imapx-store.c:1060
 #: ../camel/providers/local/camel-maildir-folder.c:90
 #: ../camel/providers/local/camel-maildir-store.c:225
 #: ../camel/providers/local/camel-maildir-store.c:315
@@ -3289,20 +3289,20 @@ msgid "Inbox"
 msgstr "受信箱"
 
 #: ../camel/providers/imap/camel-imap-store.c:1129
-#: ../camel/providers/imapx/camel-imapx-server.c:2930
+#: ../camel/providers/imapx/camel-imapx-server.c:2948
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "IMAP サーバの %s では %s という認証タイプをサポートしていません"
 
 #: ../camel/providers/imap/camel-imap-store.c:1141
-#: ../camel/providers/imapx/camel-imapx-server.c:2942
+#: ../camel/providers/imapx/camel-imapx-server.c:2960
 #: ../camel/providers/smtp/camel-smtp-transport.c:462
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "%s という認証タイプはサポートしていません"
 
 #: ../camel/providers/imap/camel-imap-store.c:1220
-#: ../camel/providers/imapx/camel-imapx-server.c:3012
+#: ../camel/providers/imapx/camel-imapx-server.c:3030
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3315,7 +3315,7 @@ msgstr ""
 
 #: ../camel/providers/imap/camel-imap-store.c:1771
 #: ../camel/providers/imap/camel-imap-store.c:2193
-#: ../camel/providers/imapx/camel-imapx-store.c:859
+#: ../camel/providers/imapx/camel-imapx-store.c:858
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
@@ -3330,7 +3330,7 @@ msgid "Cannot create folder '%s': folder exists."
 msgstr "'%s' というフォルダを作成できません: 既に存在しています"
 
 #: ../camel/providers/imap/camel-imap-store.c:2206
-#: ../camel/providers/imapx/camel-imapx-store.c:870
+#: ../camel/providers/imapx/camel-imapx-store.c:869
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "親フォルダを特定できません: %s"
@@ -3344,68 +3344,68 @@ msgstr "突然サーバが接続を切りました"
 msgid "Server unexpectedly disconnected: "
 msgstr "突然サーバから切断されました: "
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:75
+#: ../camel/providers/imapx/camel-imapx-folder.c:74
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "%s のフォルダサマリを作成できませんでした"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:83
+#: ../camel/providers/imapx/camel-imapx-folder.c:82
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "%s のキャッシュを生成できませんでした: "
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:43
+#: ../camel/providers/imapx/camel-imapx-provider.c:42
 msgid "Use _Quick Resync if the server supports it"
 msgstr "サーバがサポートするときは Quick Rysync を使用する(_Q)"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:45
+#: ../camel/providers/imapx/camel-imapx-provider.c:44
 msgid "Use I_dle if the server supports it"
 msgstr "サーバがサポートするときは Idle を使用する(_D)"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:57
+#: ../camel/providers/imapx/camel-imapx-provider.c:56
 msgid "Command:"
 msgstr "コマンド:"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:59
+#: ../camel/providers/imapx/camel-imapx-provider.c:58
 msgid "Numbe_r of cached connections to use"
 msgstr "キャッシュ接続の数(_R)"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:70
+#: ../camel/providers/imapx/camel-imapx-provider.c:69
 msgid "Namespace:"
 msgstr "ネームスペース:"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:89
+#: ../camel/providers/imapx/camel-imapx-provider.c:88
 msgid "IMAP+"
 msgstr "IMAP+"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1366
+#: ../camel/providers/imapx/camel-imapx-server.c:1384
 msgid "Error writing to cache stream: "
 msgstr "キャッシュストリームに書き込み中にエラー: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2021
+#: ../camel/providers/imapx/camel-imapx-server.c:2039
 #, c-format
 msgid "Not authenticated"
 msgstr "認証されていません"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2755
+#: ../camel/providers/imapx/camel-imapx-server.c:2773
 #, c-format
 msgid "Could not connect to %s (port %s): "
 msgstr "%s (ポート %s) へ接続できませんでした: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3184
+#: ../camel/providers/imapx/camel-imapx-server.c:3202
 msgid "Closing tmp stream failed: "
 msgstr "作業用ストリームのクローズに失敗しました: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5065
+#: ../camel/providers/imapx/camel-imapx-server.c:5083
 #, c-format
 msgid "Cannot create spool file: %s"
 msgstr "スプールファイルを作成できません: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5081
+#: ../camel/providers/imapx/camel-imapx-server.c:5099
 msgid "Cannot create spool file: "
 msgstr "スプールファイルを作成できません: "
 
-#: ../camel/providers/imapx/camel-imapx-store.c:433
+#: ../camel/providers/imapx/camel-imapx-store.c:432
 #: ../camel/providers/nntp/camel-nntp-store.c:1510
 #, c-format
 msgid "No such folder: %s"
@@ -5092,7 +5092,7 @@ msgstr "パラメータが無効です"
 #~ msgstr "鍵のインポート: 未だ実装されていません"
 
 #~ msgid "export keys: unimplemented"
-#~ msgstr "鍵のエキスポート: 未だ実装されていません"
+#~ msgstr "鍵のエクスポート: 未だ実装されていません"
 
 #~ msgid "Cannot create folder: Invalid operation on this store"
 #~ msgstr "フォルダを作成できません: ここでは無効な操作です"
@@ -5433,8 +5433,8 @@ msgstr "パラメータが無効です"
 #~ " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
 #~ msgstr ""
 #~ "IMAP 4(.1) クライアント (開発版)\n"
-#~ "これは未テスト/未サポートのコードなので、代わりに標準 IMAP を使用して下さ"
-#~ "い。\n"
+#~ "これは未テスト/未サポートのコードなので、代わりに標準 IMAP を使用してくだ"
+#~ "さい。\n"
 #~ "\n"
 #~ " !!! 重要なメールには利用しないでください  !!!\n"
 
