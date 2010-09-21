@@ -726,7 +726,7 @@ connect_to_socks4_proxy (CamelTcpStreamRaw *raw, const gchar *proxy_host, gint p
 		goto error;
 	}
 
-	if (reply[1] != 90)) {	/* 90 means "request granted" */
+	if (reply[1] != 90) {	/* 90 means "request granted" */
 #ifdef G_OS_WIN32
 		errno = WSAECONNREFUSED;
 #else
