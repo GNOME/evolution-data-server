@@ -136,7 +136,7 @@ CamelCipherContext
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_cipher_sign ##### -->
+<!-- ##### FUNCTION camel_cipher_sign_sync ##### -->
 <para>
 
 </para>
@@ -151,7 +151,7 @@ CamelCipherContext
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_cipher_verify ##### -->
+<!-- ##### FUNCTION camel_cipher_verify_sync ##### -->
 <para>
 
 </para>
@@ -163,7 +163,7 @@ CamelCipherContext
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_cipher_encrypt ##### -->
+<!-- ##### FUNCTION camel_cipher_encrypt_sync ##### -->
 <para>
 
 </para>
@@ -178,7 +178,7 @@ CamelCipherContext
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_cipher_decrypt ##### -->
+<!-- ##### FUNCTION camel_cipher_decrypt_sync ##### -->
 <para>
 
 </para>
@@ -191,7 +191,7 @@ CamelCipherContext
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_cipher_import_keys ##### -->
+<!-- ##### FUNCTION camel_cipher_import_keys_sync ##### -->
 <para>
 
 </para>
@@ -203,7 +203,7 @@ CamelCipherContext
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_cipher_export_keys ##### -->
+<!-- ##### FUNCTION camel_cipher_export_keys_sync ##### -->
 <para>
 
 </para>
@@ -307,6 +307,34 @@ CamelCipherContext
 @name: 
 @email: 
 @cert_data: 
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
 @gpointer cert_data: 
 @gpointer cert_data:
 @gpointer cert_data: 

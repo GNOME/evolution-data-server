@@ -447,7 +447,8 @@ camel_imap_message_cache_insert_wrapper (CamelImapMessageCache *cache,
 	if (!stream)
 		return;
 
-	if (camel_data_wrapper_write_to_stream (wrapper, stream, NULL, NULL) == -1) {
+	if (camel_data_wrapper_write_to_stream_sync (
+		wrapper, stream, NULL, NULL) == -1) {
 		insert_abort (path, stream);
 	} else {
 		insert_finish (cache, uid, path, key, stream);

@@ -530,7 +530,9 @@ local_summary_add (CamelLocalSummary *cls,
 		if (mi->info.size == 0) {
 			CamelStreamNull *sn = (CamelStreamNull *)camel_stream_null_new ();
 
-			camel_data_wrapper_write_to_stream ((CamelDataWrapper *)msg, (CamelStream *)sn, NULL, NULL);
+			camel_data_wrapper_write_to_stream_sync (
+				(CamelDataWrapper *)msg,
+				(CamelStream *)sn, NULL, NULL);
 			mi->info.size = sn->written;
 			g_object_unref (sn);
 		}

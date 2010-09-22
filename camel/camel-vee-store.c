@@ -154,11 +154,11 @@ vee_store_get_name (CamelService *service,
 }
 
 static CamelFolder *
-vee_store_get_folder (CamelStore *store,
-                      const gchar *folder_name,
-                      guint32 flags,
-                      GCancellable *cancellable,
-                      GError **error)
+vee_store_get_folder_sync (CamelStore *store,
+                           const gchar *folder_name,
+                           guint32 flags,
+                           GCancellable *cancellable,
+                           GError **error)
 {
 	CamelVeeFolder *vf;
 	CamelFolder *folder;
@@ -196,113 +196,12 @@ vee_store_get_folder (CamelStore *store,
 	return (CamelFolder *)vf;
 }
 
-static gboolean
-vee_store_rename_folder (CamelStore *store,
-                         const gchar *old,
-                         const gchar *new,
-                         GCancellable *cancellable,
-                         GError **error)
-{
-	CamelFolder *folder, *oldfolder;
-	gchar *p, *name;
-
-	d (printf ("vee rename folder '%s' '%s'\n", old, new));
-
-	if (strcmp (old, CAMEL_UNMATCHED_NAME) == 0) {
-		g_set_error (
-			error, CAMEL_STORE_ERROR,
-			CAMEL_STORE_ERROR_NO_FOLDER,
-			_("Cannot rename folder: %s: Invalid operation"), old);
-		return FALSE;
-	}
-
-	/* See if it exists, for vfolders, all folders are in the folders hash */
-	oldfolder = camel_object_bag_get (store->folders, old);
-	if (oldfolder == NULL) {
-		g_set_error (
-			error, CAMEL_STORE_ERROR,
-			CAMEL_STORE_ERROR_NO_FOLDER,
-			_("Cannot rename folder: %s: No such folder"), old);
-		return FALSE;
-	}
-
-	/* Check that new parents exist, if not, create dummy ones */
-	name = alloca (strlen (new)+1);
-	strcpy (name, new);
-	p = name;
-	while ( (p = strchr (p, '/'))) {
-		*p = 0;
-
-		folder = camel_object_bag_reserve (store->folders, name);
-		if (folder == NULL) {
-			/* create a dummy vFolder for this, makes get_folder_info simpler */
-			folder = camel_vee_folder_new (store, name, ((CamelVeeFolder *)oldfolder)->flags);
-			camel_object_bag_add (store->folders, name, folder);
-			change_folder (store, name, CHANGE_ADD|CHANGE_NOSELECT, 0);
-			/* FIXME: this sort of leaks folder, nobody owns a ref to it but us */
-		} else {
-			g_object_unref (folder);
-		}
-		*p++='/';
-	}
-
-	g_object_unref (oldfolder);
-
-	return TRUE;
-}
-
-static gboolean
-vee_store_delete_folder (CamelStore *store,
-                         const gchar *folder_name,
-                         GCancellable *cancellable,
-                         GError **error)
-{
-	CamelFolder *folder;
-
-	if (strcmp (folder_name, CAMEL_UNMATCHED_NAME) == 0) {
-		g_set_error (
-			error, CAMEL_STORE_ERROR,
-			CAMEL_STORE_ERROR_NO_FOLDER,
-			_("Cannot delete folder: %s: Invalid operation"),
-			folder_name);
-		return FALSE;
-	}
-
-	folder = camel_object_bag_get (store->folders, folder_name);
-	if (folder) {
-		CamelObject *object = CAMEL_OBJECT (folder);
-		const gchar *state_filename;
-
-		state_filename = camel_object_get_state_filename (object);
-		if (state_filename != NULL) {
-			g_unlink (state_filename);
-			camel_object_set_state_filename (object, NULL);
-		}
-
-		if ((((CamelVeeFolder *)folder)->flags & CAMEL_STORE_FOLDER_PRIVATE) == 0) {
-			/* what about now-empty parents?  ignore? */
-			change_folder (store, folder_name, CHANGE_DELETE, -1);
-		}
-
-		g_object_unref (folder);
-	} else {
-		g_set_error (
-			error, CAMEL_STORE_ERROR,
-			CAMEL_STORE_ERROR_NO_FOLDER,
-			_("Cannot delete folder: %s: No such folder"),
-			folder_name);
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
 static CamelFolderInfo *
-vee_store_get_folder_info (CamelStore *store,
-                           const gchar *top,
-                           guint32 flags,
-                           GCancellable *cancellable,
-                           GError **error)
+vee_store_get_folder_info_sync (CamelStore *store,
+                                const gchar *top,
+                                guint32 flags,
+                                GCancellable *cancellable,
+                                GError **error)
 {
 	CamelFolderInfo *info, *res = NULL, *tail;
 	GPtrArray *folders;
@@ -350,7 +249,7 @@ vee_store_get_folder_info (CamelStore *store,
 
 			/* ensures unread is correct */
 			if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
-				camel_folder_refresh_info (
+				camel_folder_refresh_info_sync (
 					(CamelFolder *)folder,
 					cancellable, NULL);
 
@@ -438,19 +337,120 @@ vee_store_get_folder_info (CamelStore *store,
 }
 
 static CamelFolder *
-vee_store_get_trash (CamelStore *store,
-                     GCancellable *cancellable,
-                     GError **error)
+vee_store_get_junk_folder_sync (CamelStore *store,
+                                GCancellable *cancellable,
+                                GError **error)
 {
 	return NULL;
 }
 
 static CamelFolder *
-vee_store_get_junk (CamelStore *store,
-                    GCancellable *cancellable,
-                    GError **error)
+vee_store_get_trash_folder_sync (CamelStore *store,
+                                 GCancellable *cancellable,
+                                 GError **error)
 {
 	return NULL;
+}
+
+static gboolean
+vee_store_delete_folder_sync (CamelStore *store,
+                              const gchar *folder_name,
+                              GCancellable *cancellable,
+                              GError **error)
+{
+	CamelFolder *folder;
+
+	if (strcmp (folder_name, CAMEL_UNMATCHED_NAME) == 0) {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
+			_("Cannot delete folder: %s: Invalid operation"),
+			folder_name);
+		return FALSE;
+	}
+
+	folder = camel_object_bag_get (store->folders, folder_name);
+	if (folder) {
+		CamelObject *object = CAMEL_OBJECT (folder);
+		const gchar *state_filename;
+
+		state_filename = camel_object_get_state_filename (object);
+		if (state_filename != NULL) {
+			g_unlink (state_filename);
+			camel_object_set_state_filename (object, NULL);
+		}
+
+		if ((((CamelVeeFolder *)folder)->flags & CAMEL_STORE_FOLDER_PRIVATE) == 0) {
+			/* what about now-empty parents?  ignore? */
+			change_folder (store, folder_name, CHANGE_DELETE, -1);
+		}
+
+		g_object_unref (folder);
+	} else {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
+			_("Cannot delete folder: %s: No such folder"),
+			folder_name);
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+vee_store_rename_folder_sync (CamelStore *store,
+                              const gchar *old,
+                              const gchar *new,
+                              GCancellable *cancellable,
+                              GError **error)
+{
+	CamelFolder *folder, *oldfolder;
+	gchar *p, *name;
+
+	d (printf ("vee rename folder '%s' '%s'\n", old, new));
+
+	if (strcmp (old, CAMEL_UNMATCHED_NAME) == 0) {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
+			_("Cannot rename folder: %s: Invalid operation"), old);
+		return FALSE;
+	}
+
+	/* See if it exists, for vfolders, all folders are in the folders hash */
+	oldfolder = camel_object_bag_get (store->folders, old);
+	if (oldfolder == NULL) {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
+			_("Cannot rename folder: %s: No such folder"), old);
+		return FALSE;
+	}
+
+	/* Check that new parents exist, if not, create dummy ones */
+	name = alloca (strlen (new)+1);
+	strcpy (name, new);
+	p = name;
+	while ( (p = strchr (p, '/'))) {
+		*p = 0;
+
+		folder = camel_object_bag_reserve (store->folders, name);
+		if (folder == NULL) {
+			/* create a dummy vFolder for this, makes get_folder_info simpler */
+			folder = camel_vee_folder_new (store, name, ((CamelVeeFolder *)oldfolder)->flags);
+			camel_object_bag_add (store->folders, name, folder);
+			change_folder (store, name, CHANGE_ADD|CHANGE_NOSELECT, 0);
+			/* FIXME: this sort of leaks folder, nobody owns a ref to it but us */
+		} else {
+			g_object_unref (folder);
+		}
+		*p++='/';
+	}
+
+	g_object_unref (oldfolder);
+
+	return TRUE;
 }
 
 static void
@@ -468,13 +468,13 @@ camel_vee_store_class_init (CamelVeeStoreClass *class)
 	service_class->get_name = vee_store_get_name;
 
 	store_class = CAMEL_STORE_CLASS (class);
-	store_class->get_folder = vee_store_get_folder;
-	store_class->rename_folder = vee_store_rename_folder;
-	store_class->delete_folder = vee_store_delete_folder;
-	store_class->get_folder_info = vee_store_get_folder_info;
 	store_class->free_folder_info = camel_store_free_folder_info_full;
-	store_class->get_trash = vee_store_get_trash;
-	store_class->get_junk = vee_store_get_junk;
+	store_class->get_folder_sync = vee_store_get_folder_sync;
+	store_class->get_folder_info_sync = vee_store_get_folder_info_sync;
+	store_class->get_junk_folder_sync = vee_store_get_junk_folder_sync;
+	store_class->get_trash_folder_sync = vee_store_get_trash_folder_sync;
+	store_class->delete_folder_sync = vee_store_delete_folder_sync;
+	store_class->rename_folder_sync = vee_store_rename_folder_sync;
 }
 
 static void

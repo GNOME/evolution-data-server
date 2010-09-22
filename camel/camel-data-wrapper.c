@@ -76,11 +76,49 @@ data_wrapper_finalize (GObject *object)
 	G_OBJECT_CLASS (camel_data_wrapper_parent_class)->finalize (object);
 }
 
+static void
+data_wrapper_set_mime_type (CamelDataWrapper *data_wrapper,
+                            const gchar *mime_type)
+{
+	if (data_wrapper->mime_type)
+		camel_content_type_unref (data_wrapper->mime_type);
+	data_wrapper->mime_type = camel_content_type_decode (mime_type);
+}
+
+static gchar *
+data_wrapper_get_mime_type (CamelDataWrapper *data_wrapper)
+{
+	return camel_content_type_simple (data_wrapper->mime_type);
+}
+
+static CamelContentType *
+data_wrapper_get_mime_type_field (CamelDataWrapper *data_wrapper)
+{
+	return data_wrapper->mime_type;
+}
+
+static void
+data_wrapper_set_mime_type_field (CamelDataWrapper *data_wrapper,
+                                  CamelContentType *mime_type)
+{
+	if (mime_type)
+		camel_content_type_ref (mime_type);
+	if (data_wrapper->mime_type)
+		camel_content_type_unref (data_wrapper->mime_type);
+	data_wrapper->mime_type = mime_type;
+}
+
+static gboolean
+data_wrapper_is_offline (CamelDataWrapper *data_wrapper)
+{
+	return data_wrapper->offline;
+}
+
 static gssize
-data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
-                              CamelStream *stream,
-                              GCancellable *cancellable,
-                              GError **error)
+data_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
+                                   CamelStream *stream,
+                                   GCancellable *cancellable,
+                                   GError **error)
 {
 	gssize ret;
 
@@ -106,10 +144,10 @@ data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 }
 
 static gssize
-data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
-                               CamelStream *stream,
-                               GCancellable *cancellable,
-                               GError **error)
+data_wrapper_decode_to_stream_sync (CamelDataWrapper *data_wrapper,
+                                    CamelStream *stream,
+                                    GCancellable *cancellable,
+                                    GError **error)
 {
 	CamelMimeFilter *filter;
 	CamelStream *fstream;
@@ -144,7 +182,7 @@ data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
 		g_object_unref (filter);
 	}
 
-	ret = camel_data_wrapper_write_to_stream (
+	ret = camel_data_wrapper_write_to_stream_sync (
 		data_wrapper, fstream, cancellable, error);
 
 	camel_stream_flush (fstream, NULL, NULL);
@@ -153,43 +191,11 @@ data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
 	return ret;
 }
 
-static void
-data_wrapper_set_mime_type (CamelDataWrapper *data_wrapper,
-                            const gchar *mime_type)
-{
-	if (data_wrapper->mime_type)
-		camel_content_type_unref (data_wrapper->mime_type);
-	data_wrapper->mime_type = camel_content_type_decode (mime_type);
-}
-
-static gchar *
-data_wrapper_get_mime_type (CamelDataWrapper *data_wrapper)
-{
-	return camel_content_type_simple (data_wrapper->mime_type);
-}
-
-static CamelContentType *
-data_wrapper_get_mime_type_field (CamelDataWrapper *data_wrapper)
-{
-	return data_wrapper->mime_type;
-}
-
-static void
-data_wrapper_set_mime_type_field (CamelDataWrapper *data_wrapper,
-                                  CamelContentType *mime_type)
-{
-	if (mime_type)
-		camel_content_type_ref (mime_type);
-	if (data_wrapper->mime_type)
-		camel_content_type_unref (data_wrapper->mime_type);
-	data_wrapper->mime_type = mime_type;
-}
-
 static gint
-data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
-                                    CamelStream *stream,
-                                    GCancellable *cancellable,
-                                    GError **error)
+data_wrapper_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
+                                         CamelStream *stream,
+                                         GCancellable *cancellable,
+                                         GError **error)
 {
 	if (data_wrapper->stream)
 		g_object_unref (data_wrapper->stream);
@@ -197,12 +203,6 @@ data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
 	data_wrapper->stream = g_object_ref (stream);
 
 	return 0;
-}
-
-static gboolean
-data_wrapper_is_offline (CamelDataWrapper *data_wrapper)
-{
-	return data_wrapper->offline;
 }
 
 static void
@@ -216,14 +216,14 @@ camel_data_wrapper_class_init (CamelDataWrapperClass *class)
 	object_class->dispose = data_wrapper_dispose;
 	object_class->finalize = data_wrapper_finalize;
 
-	class->write_to_stream = data_wrapper_write_to_stream;
-	class->decode_to_stream = data_wrapper_decode_to_stream;
 	class->set_mime_type = data_wrapper_set_mime_type;
 	class->get_mime_type = data_wrapper_get_mime_type;
 	class->get_mime_type_field = data_wrapper_get_mime_type_field;
 	class->set_mime_type_field = data_wrapper_set_mime_type_field;
-	class->construct_from_stream = data_wrapper_construct_from_stream;
 	class->is_offline = data_wrapper_is_offline;
+	class->write_to_stream_sync = data_wrapper_write_to_stream_sync;
+	class->decode_to_stream_sync = data_wrapper_decode_to_stream_sync;
+	class->construct_from_stream_sync = data_wrapper_construct_from_stream_sync;
 }
 
 static void
@@ -250,111 +250,6 @@ CamelDataWrapper *
 camel_data_wrapper_new (void)
 {
 	return g_object_new (CAMEL_TYPE_DATA_WRAPPER, NULL);
-}
-
-/**
- * camel_data_wrapper_write_to_stream:
- * @data_wrapper: a #CamelDataWrapper object
- * @stream: a #CamelStream for output
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Writes the content of @data_wrapper to @stream in a machine-independent
- * format appropriate for the data. It should be possible to construct an
- * equivalent data wrapper object later by passing this stream to
- * #camel_data_wrapper_construct_from_stream.
- *
- * Returns: the number of bytes written, or %-1 on fail
- **/
-gssize
-camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
-                                    CamelStream *stream,
-                                    GCancellable *cancellable,
-                                    GError **error)
-{
-	CamelDataWrapperClass *class;
-	gssize n_bytes;
-
-	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
-	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
-
-	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
-	g_return_val_if_fail (class->write_to_stream != NULL, -1);
-
-	n_bytes = class->write_to_stream (
-		data_wrapper, stream, cancellable, error);
-	CAMEL_CHECK_GERROR (
-		data_wrapper, write_to_stream, n_bytes >= 0, error);
-
-	return n_bytes;
-}
-
-/**
- * camel_data_wrapper_decode_to_stream:
- * @data_wrapper: a #CamelDataWrapper object
- * @stream: a #CamelStream for decoded data to be written to
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Writes the decoded data content to @stream.
- *
- * Returns: the number of bytes written, or %-1 on fail
- **/
-gssize
-camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
-                                     CamelStream *stream,
-                                     GCancellable *cancellable,
-                                     GError **error)
-{
-	CamelDataWrapperClass *class;
-	gssize n_bytes;
-
-	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
-	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
-
-	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
-	g_return_val_if_fail (class->decode_to_stream != NULL, -1);
-
-	n_bytes = class->decode_to_stream (
-		data_wrapper, stream, cancellable, error);
-	CAMEL_CHECK_GERROR (
-		data_wrapper, decode_to_stream, n_bytes >= 0, error);
-
-	return n_bytes;
-}
-
-/**
- * camel_data_wrapper_construct_from_stream:
- * @data_wrapper: a #CamelDataWrapper object
- * @stream: an input #CamelStream
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Constructs the content of @data_wrapper from the supplied @stream.
- *
- * Returns: %0 on success or %-1 on fail
- **/
-gint
-camel_data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
-                                          CamelStream *stream,
-                                          GCancellable *cancellable,
-                                          GError **error)
-{
-	CamelDataWrapperClass *class;
-	gint retval;
-
-	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
-	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
-
-	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
-	g_return_val_if_fail (class->construct_from_stream != NULL, -1);
-
-	retval = class->construct_from_stream (
-		data_wrapper, stream, cancellable, error);
-	CAMEL_CHECK_GERROR (
-		data_wrapper, construct_from_stream, retval == 0, error);
-
-	return retval;
 }
 
 /**
@@ -465,6 +360,111 @@ camel_data_wrapper_is_offline (CamelDataWrapper *data_wrapper)
 	g_return_val_if_fail (class->is_offline != NULL, TRUE);
 
 	return class->is_offline (data_wrapper);
+}
+
+/**
+ * camel_data_wrapper_write_to_stream_sync:
+ * @data_wrapper: a #CamelDataWrapper object
+ * @stream: a #CamelStream for output
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Writes the content of @data_wrapper to @stream in a machine-independent
+ * format appropriate for the data. It should be possible to construct an
+ * equivalent data wrapper object later by passing this stream to
+ * #camel_data_wrapper_construct_from_stream.
+ *
+ * Returns: the number of bytes written, or %-1 on fail
+ **/
+gssize
+camel_data_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
+                                         CamelStream *stream,
+                                         GCancellable *cancellable,
+                                         GError **error)
+{
+	CamelDataWrapperClass *class;
+	gssize n_bytes;
+
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
+	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
+
+	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class->write_to_stream_sync != NULL, -1);
+
+	n_bytes = class->write_to_stream_sync (
+		data_wrapper, stream, cancellable, error);
+	CAMEL_CHECK_GERROR (
+		data_wrapper, write_to_stream_sync, n_bytes >= 0, error);
+
+	return n_bytes;
+}
+
+/**
+ * camel_data_wrapper_decode_to_stream_sync:
+ * @data_wrapper: a #CamelDataWrapper object
+ * @stream: a #CamelStream for decoded data to be written to
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Writes the decoded data content to @stream.
+ *
+ * Returns: the number of bytes written, or %-1 on fail
+ **/
+gssize
+camel_data_wrapper_decode_to_stream_sync (CamelDataWrapper *data_wrapper,
+                                          CamelStream *stream,
+                                          GCancellable *cancellable,
+                                          GError **error)
+{
+	CamelDataWrapperClass *class;
+	gssize n_bytes;
+
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
+	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
+
+	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class->decode_to_stream_sync != NULL, -1);
+
+	n_bytes = class->decode_to_stream_sync (
+		data_wrapper, stream, cancellable, error);
+	CAMEL_CHECK_GERROR (
+		data_wrapper, decode_to_stream_sync, n_bytes >= 0, error);
+
+	return n_bytes;
+}
+
+/**
+ * camel_data_wrapper_construct_from_stream_sync:
+ * @data_wrapper: a #CamelDataWrapper object
+ * @stream: an input #CamelStream
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Constructs the content of @data_wrapper from the supplied @stream.
+ *
+ * Returns: %0 on success or %-1 on fail
+ **/
+gint
+camel_data_wrapper_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
+                                               CamelStream *stream,
+                                               GCancellable *cancellable,
+                                               GError **error)
+{
+	CamelDataWrapperClass *class;
+	gint retval;
+
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
+	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
+
+	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class->construct_from_stream_sync != NULL, -1);
+
+	retval = class->construct_from_stream_sync (
+		data_wrapper, stream, cancellable, error);
+	CAMEL_CHECK_GERROR (
+		data_wrapper, construct_from_stream_sync, retval == 0, error);
+
+	return retval;
 }
 
 /**

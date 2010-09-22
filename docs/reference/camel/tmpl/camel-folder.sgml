@@ -160,29 +160,6 @@ CamelFolder
 
 
 
-<!-- ##### FUNCTION camel_folder_refresh_info ##### -->
-<para>
-
-</para>
-
-@folder: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_folder_sync ##### -->
-<para>
-
-</para>
-
-@folder: 
-@expunge: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_folder_set_lock_async ##### -->
 <para>
 
@@ -198,17 +175,6 @@ CamelFolder
 </para>
 
 @folder: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_folder_expunge ##### -->
-<para>
-
-</para>
-
-@folder: 
-@cancellable: 
-@error: 
 @Returns: 
 
 
@@ -341,20 +307,6 @@ CamelFolder
 @value: 
 
 
-<!-- ##### FUNCTION camel_folder_append_message ##### -->
-<para>
-
-</para>
-
-@folder: 
-@message: 
-@info: 
-@appended_uid: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_folder_has_summary_capability ##### -->
 <para>
 
@@ -407,30 +359,6 @@ CamelFolder
 
 @folder: 
 @array: 
-
-
-<!-- ##### FUNCTION camel_folder_get_message ##### -->
-<para>
-
-</para>
-
-@folder: 
-@uid: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_folder_sync_message ##### -->
-<para>
-
-</para>
-
-@folder: 
-@uid: 
-@cancellable: 
-@error: 
-@Returns: 
 
 
 <!-- ##### MACRO camel_folder_delete_message ##### -->
@@ -571,21 +499,6 @@ CamelFolder
 @info: 
 
 
-<!-- ##### FUNCTION camel_folder_transfer_messages_to ##### -->
-<para>
-
-</para>
-
-@source: 
-@uids: 
-@dest: 
-@transferred_uids: 
-@delete_originals: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_folder_delete ##### -->
 <para>
 
@@ -717,6 +630,93 @@ CamelFolder
 
 @folder: 
 @uid: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_append_message_sync ##### -->
+<para>
+
+</para>
+
+@folder: 
+@message: 
+@info: 
+@appended_uid: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_expunge_sync ##### -->
+<para>
+
+</para>
+
+@folder: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_get_message_sync ##### -->
+<para>
+
+</para>
+
+@folder: 
+@uid: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_refresh_info_sync ##### -->
+<para>
+
+</para>
+
+@folder: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_synchronize_sync ##### -->
+<para>
+
+</para>
+
+@folder: 
+@expunge: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_synchronize_message_sync ##### -->
+<para>
+
+</para>
+
+@folder: 
+@uid: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_transfer_messages_to_sync ##### -->
+<para>
+
+</para>
+
+@source: 
+@uids: 
+@dest: 
+@transferred_uids: 
+@delete_originals: 
+@cancellable: 
 @error: 
 @Returns: 
 

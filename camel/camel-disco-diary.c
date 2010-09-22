@@ -250,7 +250,7 @@ diary_decode_folder (CamelDiscoDiary *diary,
 		GError *error = NULL;
 		gchar *msg;
 
-		folder = camel_store_get_folder (
+		folder = camel_store_get_folder_sync (
 			CAMEL_STORE (diary->store),
 			name, 0, cancellable, &error);
 		if (folder)
@@ -280,7 +280,7 @@ close_folder (gchar *name,
               GCancellable *cancellable)
 {
 	g_free (name);
-	camel_folder_sync (folder, FALSE, cancellable, NULL);
+	camel_folder_synchronize_sync (folder, FALSE, cancellable, NULL);
 	g_object_unref (folder);
 }
 
@@ -346,7 +346,7 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 				continue;
 			}
 
-			message = camel_folder_get_message (
+			message = camel_folder_get_message_sync (
 				folder, uid, cancellable, NULL);
 			if (!message) {
 				/* The message was appended and then deleted. */
@@ -355,7 +355,7 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 			}
 			info = camel_folder_get_message_info (folder, uid);
 
-			camel_folder_append_message (
+			camel_folder_append_message_sync (
 				folder, message, info, &ret_uid,
 				cancellable, &local_error);
 			camel_folder_free_message_info (folder, info);
@@ -389,7 +389,7 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 				continue;
 			}
 
-			camel_folder_transfer_messages_to (
+			camel_folder_transfer_messages_to_sync (
 				source, uids, destination, &ret_uids,
 				delete_originals, cancellable, &local_error);
 

@@ -52,37 +52,25 @@ G_BEGIN_DECLS
 
 typedef struct _CamelOfflineStore CamelOfflineStore;
 typedef struct _CamelOfflineStoreClass CamelOfflineStoreClass;
-
-enum {
-	CAMEL_OFFLINE_STORE_NETWORK_AVAIL,
-	CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL
-};
+typedef struct _CamelOfflineStorePrivate CamelOfflineStorePrivate;
 
 struct _CamelOfflineStore {
 	CamelStore parent;
-
-	gint state;
+	CamelOfflineStorePrivate *priv;
 };
 
 struct _CamelOfflineStoreClass {
 	CamelStoreClass parent_class;
-
-	gboolean	(*set_network_state)	(CamelOfflineStore *store,
-						 gint state,
-						 GCancellable *cancellable,
-						 GError **error);
 };
 
 GType		camel_offline_store_get_type (void);
-gboolean	camel_offline_store_set_network_state
+gboolean	camel_offline_store_get_online	(CamelOfflineStore *store);
+gboolean	camel_offline_store_set_online_sync
 						(CamelOfflineStore *store,
-						 gint state,
+						 gboolean online,
 						 GCancellable *cancellable,
 						 GError **error);
-gint		camel_offline_store_get_network_state
-						(CamelOfflineStore *store,
-						 GError **error);
-gboolean	camel_offline_store_prepare_for_offline
+gboolean	camel_offline_store_prepare_for_offline_sync
 						(CamelOfflineStore *store,
 						 GCancellable *cancellable,
 						 GError **error);

@@ -38,14 +38,6 @@
 
 G_DEFINE_TYPE (CamelGroupwiseTransport, camel_groupwise_transport, CAMEL_TYPE_TRANSPORT)
 
-static gboolean
-groupwise_transport_connect (CamelService *service,
-                             GCancellable *cancellable,
-                             GError **error)
-{
-	return TRUE;
-}
-
 static gchar *
 groupwise_transport_get_name (CamelService *service,
                               gboolean brief)
@@ -61,12 +53,20 @@ groupwise_transport_get_name (CamelService *service,
 }
 
 static gboolean
-groupwise_send_to (CamelTransport *transport,
-                   CamelMimeMessage *message,
-                   CamelAddress *from,
-                   CamelAddress *recipients,
-                   GCancellable *cancellable,
-                   GError **error)
+groupwise_transport_connect_sync (CamelService *service,
+                                  GCancellable *cancellable,
+                                  GError **error)
+{
+	return TRUE;
+}
+
+static gboolean
+groupwise_send_to_sync (CamelTransport *transport,
+                        CamelMimeMessage *message,
+                        CamelAddress *from,
+                        CamelAddress *recipients,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	CamelService *service;
 	CamelStore *store =  NULL;
@@ -181,11 +181,11 @@ camel_groupwise_transport_class_init (CamelGroupwiseTransportClass *class)
 	CamelTransportClass *transport_class;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
-	service_class->connect = groupwise_transport_connect;
 	service_class->get_name = groupwise_transport_get_name;
+	service_class->connect_sync = groupwise_transport_connect_sync;
 
 	transport_class = CAMEL_TRANSPORT_CLASS (class);
-	transport_class->send_to = groupwise_send_to;
+	transport_class->send_to_sync = groupwise_send_to_sync;
 }
 
 static void

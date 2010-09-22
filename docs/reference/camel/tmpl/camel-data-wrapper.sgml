@@ -35,30 +35,6 @@ CamelDataWrapper
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_data_wrapper_write_to_stream ##### -->
-<para>
-
-</para>
-
-@data_wrapper: 
-@stream: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_data_wrapper_decode_to_stream ##### -->
-<para>
-
-</para>
-
-@data_wrapper: 
-@stream: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_data_wrapper_set_mime_type ##### -->
 <para>
 
@@ -95,7 +71,16 @@ CamelDataWrapper
 @mime_type: 
 
 
-<!-- ##### FUNCTION camel_data_wrapper_construct_from_stream ##### -->
+<!-- ##### FUNCTION camel_data_wrapper_is_offline ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_data_wrapper_write_to_stream_sync ##### -->
 <para>
 
 </para>
@@ -107,12 +92,27 @@ CamelDataWrapper
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_data_wrapper_is_offline ##### -->
+<!-- ##### FUNCTION camel_data_wrapper_decode_to_stream_sync ##### -->
 <para>
 
 </para>
 
 @data_wrapper: 
+@stream: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_data_wrapper_construct_from_stream_sync ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@stream: 
+@cancellable: 
+@error: 
 @Returns: 
 
 

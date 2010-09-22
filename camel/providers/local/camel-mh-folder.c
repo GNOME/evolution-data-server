@@ -42,13 +42,23 @@
 
 G_DEFINE_TYPE (CamelMhFolder, camel_mh_folder, CAMEL_TYPE_LOCAL_FOLDER)
 
+static gchar *
+mh_folder_get_filename (CamelFolder *folder,
+                        const gchar *uid,
+                        GError **error)
+{
+	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
+
+	return g_strdup_printf("%s/%s", lf->folder_path, uid);
+}
+
 static gboolean
-mh_folder_append_message (CamelFolder *folder,
-                          CamelMimeMessage *message,
-                          const CamelMessageInfo *info,
-                          gchar **appended_uid,
-                          GCancellable *cancellable,
-                          GError **error)
+mh_folder_append_message_sync (CamelFolder *folder,
+                               CamelMimeMessage *message,
+                               const CamelMessageInfo *info,
+                               gchar **appended_uid,
+                               GCancellable *cancellable,
+                               GError **error)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelStream *output_stream;
@@ -80,7 +90,7 @@ mh_folder_append_message (CamelFolder *folder,
 	if (output_stream == NULL)
 		goto fail_write;
 
-	if (camel_data_wrapper_write_to_stream (
+	if (camel_data_wrapper_write_to_stream_sync (
 		(CamelDataWrapper *)message, output_stream, cancellable, error) == -1
 	    || camel_stream_close (output_stream, cancellable, error) == -1)
 		goto fail_write;
@@ -123,10 +133,10 @@ mh_folder_append_message (CamelFolder *folder,
 }
 
 static CamelMimeMessage *
-mh_folder_get_message (CamelFolder *folder,
-                       const gchar *uid,
-                       GCancellable *cancellable,
-                       GError **error)
+mh_folder_get_message_sync (CamelFolder *folder,
+                            const gchar *uid,
+                            GCancellable *cancellable,
+                            GError **error)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelStream *message_stream = NULL;
@@ -161,7 +171,9 @@ mh_folder_get_message (CamelFolder *folder,
 	}
 
 	message = camel_mime_message_new ();
-	if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *)message, message_stream, cancellable, error) == -1) {
+	if (camel_data_wrapper_construct_from_stream_sync (
+		(CamelDataWrapper *)message,
+		message_stream, cancellable, error) == -1) {
 		g_prefix_error (
 			error, _("Cannot get message %s from folder %s: "),
 			name, lf->folder_path);
@@ -184,16 +196,6 @@ mh_folder_get_message (CamelFolder *folder,
 	return message;
 }
 
-static gchar *
-mh_folder_get_filename (CamelFolder *folder,
-                        const gchar *uid,
-                        GError **error)
-{
-	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
-
-	return g_strdup_printf("%s/%s", lf->folder_path, uid);
-}
-
 static CamelLocalSummary *
 mh_folder_create_summary (CamelLocalFolder *lf,
                           const gchar *path,
@@ -211,9 +213,9 @@ camel_mh_folder_class_init (CamelMhFolderClass *class)
 	CamelLocalFolderClass *local_folder_class;
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
-	folder_class->append_message = mh_folder_append_message;
-	folder_class->get_message = mh_folder_get_message;
 	folder_class->get_filename = mh_folder_get_filename;
+	folder_class->append_message_sync = mh_folder_append_message_sync;
+	folder_class->get_message_sync = mh_folder_get_message_sync;
 
 	local_folder_class = CAMEL_LOCAL_FOLDER_CLASS (class);
 	local_folder_class->create_summary = mh_folder_create_summary;

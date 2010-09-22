@@ -760,13 +760,13 @@ get_hash_from_oid (SECOidTag oidTag)
 }
 
 static gint
-smime_context_sign (CamelCipherContext *context,
-                    const gchar *userid,
-                    CamelCipherHash hash,
-                    CamelMimePart *ipart,
-                    CamelMimePart *opart,
-                    GCancellable *cancellable,
-                    GError **error)
+smime_context_sign_sync (CamelCipherContext *context,
+                         const gchar *userid,
+                         CamelCipherHash hash,
+                         CamelMimePart *ipart,
+                         CamelMimePart *opart,
+                         GCancellable *cancellable,
+                         GError **error)
 {
 	CamelCipherContextClass *class;
 	gint res = -1;
@@ -850,7 +850,8 @@ smime_context_sign (CamelCipherContext *context,
 
 	dw = camel_data_wrapper_new ();
 	camel_stream_reset (ostream, NULL);
-	camel_data_wrapper_construct_from_stream (dw, ostream, cancellable, NULL);
+	camel_data_wrapper_construct_from_stream_sync (
+		dw, ostream, cancellable, NULL);
 	dw->encoding = CAMEL_TRANSFER_ENCODING_BINARY;
 
 	if (((CamelSMIMEContext *)context)->priv->sign_mode == CAMEL_SMIME_SIGN_CLEARSIGN) {
@@ -907,10 +908,10 @@ fail:
 }
 
 static CamelCipherValidity *
-smime_context_verify (CamelCipherContext *context,
-                      CamelMimePart *ipart,
-                      GCancellable *cancellable,
-                      GError **error)
+smime_context_verify_sync (CamelCipherContext *context,
+                           CamelMimePart *ipart,
+                           GCancellable *cancellable,
+                           GError **error)
 {
 	CamelCipherContextClass *class;
 	NSSCMSDecoderContext *dec;
@@ -976,7 +977,7 @@ smime_context_verify (CamelCipherContext *context,
 				   NULL, NULL,	/* password callback    */
 				   NULL, NULL); /* decrypt key callback */
 
-	camel_data_wrapper_decode_to_stream (
+	camel_data_wrapper_decode_to_stream_sync (
 		camel_medium_get_content (
 			CAMEL_MEDIUM (sigpart)), mem, cancellable, NULL);
 	(void)NSS_CMSDecoder_Update (dec, (gchar *) buffer->data, buffer->len);
@@ -998,13 +999,13 @@ fail:
 }
 
 static gint
-smime_context_encrypt (CamelCipherContext *context,
-                       const gchar *userid,
-                       GPtrArray *recipients,
-                       CamelMimePart *ipart,
-                       CamelMimePart *opart,
-                       GCancellable *cancellable,
-                       GError **error)
+smime_context_encrypt_sync (CamelCipherContext *context,
+                            const gchar *userid,
+                            GPtrArray *recipients,
+                            CamelMimePart *ipart,
+                            CamelMimePart *opart,
+                            GCancellable *cancellable,
+                            GError **error)
 {
 	CamelSMIMEContextPrivate *p = ((CamelSMIMEContext *)context)->priv;
 	/*NSSCMSRecipientInfo **recipient_infos;*/
@@ -1144,7 +1145,8 @@ smime_context_encrypt (CamelCipherContext *context,
 	PORT_FreeArena (poolp, PR_FALSE);
 
 	dw = camel_data_wrapper_new ();
-	camel_data_wrapper_construct_from_stream (dw, ostream, NULL, NULL);
+	camel_data_wrapper_construct_from_stream_sync (
+		dw, ostream, NULL, NULL);
 	g_object_unref (ostream);
 	dw->encoding = CAMEL_TRANSFER_ENCODING_BINARY;
 
@@ -1183,11 +1185,11 @@ fail:
 }
 
 static CamelCipherValidity *
-smime_context_decrypt (CamelCipherContext *context,
-                       CamelMimePart *ipart,
-                       CamelMimePart *opart,
-                       GCancellable *cancellable,
-                       GError **error)
+smime_context_decrypt_sync (CamelCipherContext *context,
+                            CamelMimePart *ipart,
+                            CamelMimePart *opart,
+                            GCancellable *cancellable,
+                            GError **error)
 {
 	NSSCMSDecoderContext *dec;
 	NSSCMSMessage *cmsg;
@@ -1205,7 +1207,7 @@ smime_context_decrypt (CamelCipherContext *context,
 	/* FIXME: stream this to the decoder incrementally */
 	buffer = g_byte_array_new ();
 	istream = camel_stream_mem_new_with_byte_array (buffer);
-	camel_data_wrapper_decode_to_stream (
+	camel_data_wrapper_decode_to_stream_sync (
 		camel_medium_get_content (CAMEL_MEDIUM (ipart)),
 		istream, NULL, NULL);
 	camel_stream_reset (istream, NULL);
@@ -1238,7 +1240,7 @@ smime_context_decrypt (CamelCipherContext *context,
 #endif
 
 	camel_stream_reset (ostream, NULL);
-	camel_data_wrapper_construct_from_stream (
+	camel_data_wrapper_construct_from_stream_sync (
 		CAMEL_DATA_WRAPPER (opart), ostream, NULL, NULL);
 
 	if (NSS_CMSMessage_IsSigned (cmsg)) {
@@ -1270,10 +1272,10 @@ camel_smime_context_class_init (CamelSMIMEContextClass *class)
 	cipher_context_class->key_protocol = "application/x-pkcs7-signature";
 	cipher_context_class->hash_to_id = smime_context_hash_to_id;
 	cipher_context_class->id_to_hash = smime_context_id_to_hash;
-	cipher_context_class->sign = smime_context_sign;
-	cipher_context_class->verify = smime_context_verify;
-	cipher_context_class->encrypt = smime_context_encrypt;
-	cipher_context_class->decrypt = smime_context_decrypt;
+	cipher_context_class->sign_sync = smime_context_sign_sync;
+	cipher_context_class->verify_sync = smime_context_verify_sync;
+	cipher_context_class->encrypt_sync = smime_context_encrypt_sync;
+	cipher_context_class->decrypt_sync = smime_context_decrypt_sync;
 }
 
 static void
@@ -1350,7 +1352,7 @@ camel_smime_context_describe_part (CamelSMIMEContext *context, CamelMimePart *pa
 		/* FIXME: stream this to the decoder incrementally */
 		buffer = g_byte_array_new ();
 		istream = camel_stream_mem_new_with_byte_array (buffer);
-		camel_data_wrapper_decode_to_stream (
+		camel_data_wrapper_decode_to_stream_sync (
 			camel_medium_get_content ((CamelMedium *)part),
 			istream, NULL, NULL);
 		camel_stream_reset (istream, NULL);

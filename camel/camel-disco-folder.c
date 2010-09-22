@@ -56,11 +56,6 @@ enum {
 
 G_DEFINE_TYPE (CamelDiscoFolder, camel_disco_folder, CAMEL_TYPE_FOLDER)
 
-/* Forward Declarations */
-static gboolean		disco_expunge		(CamelFolder *folder,
-						 GCancellable *cancellable,
-						 GError **error);
-
 static void
 cdf_sync_offline (CamelSession *session, CamelSessionThreadMsg *mm)
 {
@@ -164,67 +159,6 @@ disco_folder_get_property (GObject *object,
 }
 
 static gboolean
-disco_refresh_info (CamelFolder *folder,
-                    GCancellable *cancellable,
-                    GError **error)
-{
-	CamelDiscoFolderClass *disco_folder_class;
-	CamelStore *parent_store;
-	gboolean success;
-
-	parent_store = camel_folder_get_parent_store (folder);
-
-	if (camel_disco_store_status (CAMEL_DISCO_STORE (parent_store)) != CAMEL_DISCO_STORE_ONLINE)
-		return TRUE;
-
-	disco_folder_class = CAMEL_DISCO_FOLDER_GET_CLASS (folder);
-
-	success = disco_folder_class->refresh_info_online (
-		folder, cancellable, error);
-	CAMEL_CHECK_GERROR (folder, refresh_info_online, success, error);
-
-	return success;
-}
-
-static gboolean
-disco_sync (CamelFolder *folder,
-            gboolean expunge,
-            GCancellable *cancellable,
-            GError **error)
-{
-	CamelDiscoFolderClass *disco_folder_class;
-	CamelStore *parent_store;
-	gboolean success;
-
-	if (expunge && !disco_expunge (folder, cancellable, error))
-		return FALSE;
-
-	camel_object_state_write (CAMEL_OBJECT (folder));
-
-	parent_store = camel_folder_get_parent_store (folder);
-	disco_folder_class = CAMEL_DISCO_FOLDER_GET_CLASS (folder);
-
-	switch (camel_disco_store_status (CAMEL_DISCO_STORE (parent_store))) {
-	case CAMEL_DISCO_STORE_ONLINE:
-		success = disco_folder_class->sync_online (folder, error);
-		CAMEL_CHECK_GERROR (folder, sync_online, success, error);
-		return success;
-
-	case CAMEL_DISCO_STORE_OFFLINE:
-		success = disco_folder_class->sync_offline (folder, error);
-		CAMEL_CHECK_GERROR (folder, sync_offline, success, error);
-		return success;
-
-	case CAMEL_DISCO_STORE_RESYNCING:
-		success = disco_folder_class->sync_resyncing (folder, error);
-		CAMEL_CHECK_GERROR (folder, sync_resyncing, success, error);
-		return success;
-	}
-
-	g_return_val_if_reached (FALSE);
-}
-
-static gboolean
 disco_expunge_uids (CamelFolder *folder,
                     GPtrArray *uids,
                     GCancellable *cancellable,
@@ -267,42 +201,12 @@ disco_expunge_uids (CamelFolder *folder,
 }
 
 static gboolean
-disco_expunge (CamelFolder *folder,
-               GCancellable *cancellable,
-               GError **error)
-{
-	GPtrArray *uids;
-	gint i;
-	guint count;
-	CamelMessageInfo *info;
-	gboolean success;
-
-	uids = g_ptr_array_new ();
-	camel_folder_summary_prepare_fetch_all (folder->summary, NULL);
-	count = camel_folder_summary_count (folder->summary);
-	for (i = 0; i < count; i++) {
-		info = camel_folder_summary_index (folder->summary, i);
-		if (camel_message_info_flags (info) & CAMEL_MESSAGE_DELETED)
-			g_ptr_array_add (uids, g_strdup (camel_message_info_uid (info)));
-		camel_message_info_free (info);
-	}
-
-	success = disco_expunge_uids (folder, uids, cancellable, error);
-
-	for (i = 0; i < uids->len; i++)
-		g_free (uids->pdata[i]);
-	g_ptr_array_free (uids, TRUE);
-
-	return success;
-}
-
-static gboolean
-disco_append_message (CamelFolder *folder,
-                      CamelMimeMessage *message,
-                      const CamelMessageInfo *info,
-                      gchar **appended_uid,
-                      GCancellable *cancellable,
-                      GError **error)
+disco_append_message_sync (CamelFolder *folder,
+                           CamelMimeMessage *message,
+                           const CamelMessageInfo *info,
+                           gchar **appended_uid,
+                           GCancellable *cancellable,
+                           GError **error)
 {
 	CamelDiscoFolderClass *disco_folder_class;
 	CamelStore *parent_store;
@@ -338,13 +242,104 @@ disco_append_message (CamelFolder *folder,
 }
 
 static gboolean
-disco_transfer_messages_to (CamelFolder *source,
-                            GPtrArray *uids,
-                            CamelFolder *dest,
-                            GPtrArray **transferred_uids,
-                            gboolean delete_originals,
-                            GCancellable *cancellable,
-                            GError **error)
+disco_expunge_sync (CamelFolder *folder,
+                    GCancellable *cancellable,
+                    GError **error)
+{
+	GPtrArray *uids;
+	gint i;
+	guint count;
+	CamelMessageInfo *info;
+	gboolean success;
+
+	uids = g_ptr_array_new ();
+	camel_folder_summary_prepare_fetch_all (folder->summary, NULL);
+	count = camel_folder_summary_count (folder->summary);
+	for (i = 0; i < count; i++) {
+		info = camel_folder_summary_index (folder->summary, i);
+		if (camel_message_info_flags (info) & CAMEL_MESSAGE_DELETED)
+			g_ptr_array_add (uids, g_strdup (camel_message_info_uid (info)));
+		camel_message_info_free (info);
+	}
+
+	success = disco_expunge_uids (folder, uids, cancellable, error);
+
+	for (i = 0; i < uids->len; i++)
+		g_free (uids->pdata[i]);
+	g_ptr_array_free (uids, TRUE);
+
+	return success;
+}
+
+static gboolean
+disco_refresh_info_sync (CamelFolder *folder,
+                         GCancellable *cancellable,
+                         GError **error)
+{
+	CamelDiscoFolderClass *disco_folder_class;
+	CamelStore *parent_store;
+	gboolean success;
+
+	parent_store = camel_folder_get_parent_store (folder);
+
+	if (camel_disco_store_status (CAMEL_DISCO_STORE (parent_store)) != CAMEL_DISCO_STORE_ONLINE)
+		return TRUE;
+
+	disco_folder_class = CAMEL_DISCO_FOLDER_GET_CLASS (folder);
+
+	success = disco_folder_class->refresh_info_online (
+		folder, cancellable, error);
+	CAMEL_CHECK_GERROR (folder, refresh_info_online, success, error);
+
+	return success;
+}
+
+static gboolean
+disco_synchronize_sync (CamelFolder *folder,
+                        gboolean expunge,
+                        GCancellable *cancellable,
+                        GError **error)
+{
+	CamelDiscoFolderClass *disco_folder_class;
+	CamelStore *parent_store;
+	gboolean success;
+
+	if (expunge && !disco_expunge_sync (folder, cancellable, error))
+		return FALSE;
+
+	camel_object_state_write (CAMEL_OBJECT (folder));
+
+	parent_store = camel_folder_get_parent_store (folder);
+	disco_folder_class = CAMEL_DISCO_FOLDER_GET_CLASS (folder);
+
+	switch (camel_disco_store_status (CAMEL_DISCO_STORE (parent_store))) {
+	case CAMEL_DISCO_STORE_ONLINE:
+		success = disco_folder_class->sync_online (folder, error);
+		CAMEL_CHECK_GERROR (folder, sync_online, success, error);
+		return success;
+
+	case CAMEL_DISCO_STORE_OFFLINE:
+		success = disco_folder_class->sync_offline (folder, error);
+		CAMEL_CHECK_GERROR (folder, sync_offline, success, error);
+		return success;
+
+	case CAMEL_DISCO_STORE_RESYNCING:
+		success = disco_folder_class->sync_resyncing (folder, error);
+		CAMEL_CHECK_GERROR (folder, sync_resyncing, success, error);
+		return success;
+	}
+
+	g_return_val_if_reached (FALSE);
+}
+
+static gboolean
+disco_transfer_messages_to_sync (CamelFolder *source,
+                                 GPtrArray *uids,
+                                 CamelFolder *dest,
+                                 GPtrArray **transferred_uids,
+                                 gboolean delete_originals,
+                                 GCancellable *cancellable,
+                                 GError **error)
 {
 	CamelDiscoFolderClass *disco_folder_class;
 	CamelStore *parent_store;
@@ -442,11 +437,11 @@ camel_disco_folder_class_init (CamelDiscoFolderClass *class)
 	object_class->get_property = disco_folder_get_property;
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
-	folder_class->refresh_info = disco_refresh_info;
-	folder_class->sync = disco_sync;
-	folder_class->expunge = disco_expunge;
-	folder_class->append_message = disco_append_message;
-	folder_class->transfer_messages_to = disco_transfer_messages_to;
+	folder_class->append_message_sync = disco_append_message_sync;
+	folder_class->expunge_sync = disco_expunge_sync;
+	folder_class->refresh_info_sync = disco_refresh_info_sync;
+	folder_class->synchronize_sync = disco_synchronize_sync;
+	folder_class->transfer_messages_to_sync = disco_transfer_messages_to_sync;
 
 	class->prepare_for_offline = disco_prepare_for_offline;
 	class->refresh_info_online = disco_refresh_info_online;

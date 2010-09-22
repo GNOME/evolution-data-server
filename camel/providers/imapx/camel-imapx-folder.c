@@ -146,284 +146,6 @@ imapx_folder_finalize (GObject *object)
 	G_OBJECT_CLASS (camel_imapx_folder_parent_class)->finalize (object);
 }
 
-static gboolean
-imapx_refresh_info (CamelFolder *folder,
-                    GCancellable *cancellable,
-                    GError **error)
-{
-	CamelStore *parent_store;
-	CamelIMAPXStore *istore;
-	CamelIMAPXServer *server;
-	gboolean success = FALSE;
-
-	parent_store = camel_folder_get_parent_store (folder);
-	istore = CAMEL_IMAPX_STORE (parent_store);
-
-	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("You must be working online to complete this operation"));
-		return FALSE;
-	}
-
-	if (!camel_service_connect ((CamelService *)istore, error))
-		return FALSE;
-
-	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);
-	if (server != NULL) {
-		success = camel_imapx_server_refresh_info (server, folder, cancellable, error);
-		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
-		g_object_unref (server);
-	}
-
-	return success;
-}
-
-static gboolean
-imapx_expunge (CamelFolder *folder,
-               GCancellable *cancellable,
-               GError **error)
-{
-	CamelStore *parent_store;
-	CamelIMAPXStore *istore;
-	CamelIMAPXServer *server;
-
-	parent_store = camel_folder_get_parent_store (folder);
-	istore = CAMEL_IMAPX_STORE (parent_store);
-
-	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("You must be working online to complete this operation"));
-		return FALSE;
-	}
-
-	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);
-	if (server) {
-		camel_imapx_server_expunge (server, folder, cancellable, error);
-		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
-		g_object_unref (server);
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-static gboolean
-imapx_sync (CamelFolder *folder,
-            gboolean expunge,
-            GCancellable *cancellable,
-            GError **error)
-{
-	CamelStore *parent_store;
-	CamelIMAPXStore *istore;
-	CamelIMAPXServer *server;
-
-	parent_store = camel_folder_get_parent_store (folder);
-	istore = CAMEL_IMAPX_STORE (parent_store);
-
-	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("You must be working online to complete this operation"));
-		return FALSE;
-	}
-
-	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);
-	if (!server)
-		return FALSE;
-
-	camel_imapx_server_sync_changes (server, folder, cancellable NULL);
-
-	/* Sync twice - make sure deleted flags are written out,
-	   then sync again incase expunge changed anything */
-
-	if (expunge)
-		camel_imapx_server_expunge (server, folder, cancellable, NULL);
-
-	camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
-	g_object_unref (server);
-
-	return TRUE;
-}
-
-static CamelMimeMessage *
-imapx_get_message (CamelFolder *folder,
-                   const gchar *uid,
-                   GCancellable *cancellable,
-                   GError **error)
-{
-	CamelMimeMessage *msg = NULL;
-	CamelStream *stream = NULL;
-	CamelStore *parent_store;
-	CamelIMAPXStore *istore;
-	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
-	CamelIMAPXServer *server;
-	const gchar *path = NULL;
-	gboolean offline_message = FALSE;
-
-	parent_store = camel_folder_get_parent_store (folder);
-	istore = CAMEL_IMAPX_STORE (parent_store);
-
-	if (!strchr (uid, '-'))
-		path = "cur";
-	else {
-		path = "new";
-		offline_message = TRUE;
-	}
-
-	stream = camel_data_cache_get (ifolder->cache, path, uid, NULL);
-	if (!stream) {
-		if (offline_message) {
-			g_set_error (
-				error, CAMEL_FOLDER_ERROR,
-				CAMEL_FOLDER_ERROR_INVALID_UID,
-				"Offline message vanished from disk: %s", uid);
-			return NULL;
-		}
-
-		if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
-			g_set_error (
-				error, CAMEL_SERVICE_ERROR,
-				CAMEL_SERVICE_ERROR_UNAVAILABLE,
-				_("You must be working online to complete this operation"));
-			return NULL;
-		}
-
-		server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);
-		if (server) {
-			stream = camel_imapx_server_get_message (server, folder, uid, cancellable, error);
-			camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
-			g_object_unref (server);
-		} else
-			return NULL;
-	}
-
-	if (stream != NULL) {
-		msg = camel_mime_message_new ();
-
-		g_mutex_lock (ifolder->stream_lock);
-		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *)msg, stream, cancellable, error) == -1) {
-			g_object_unref (msg);
-			msg = NULL;
-		}
-		g_mutex_unlock (ifolder->stream_lock);
-		g_object_unref (stream);
-	}
-
-	return msg;
-}
-
-static gboolean
-imapx_sync_message (CamelFolder *folder,
-                    const gchar *uid,
-                    GCancellable *cancellable,
-                    GError **error)
-{
-	CamelStore *parent_store;
-	CamelIMAPXStore *istore;
-	CamelIMAPXServer *server;
-	gboolean success;
-
-	parent_store = camel_folder_get_parent_store (folder);
-	istore = CAMEL_IMAPX_STORE (parent_store);
-
-	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("You must be working online to complete this operation"));
-		return FALSE;
-	}
-
-	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);
-	if (server == NULL)
-		return FALSE;
-
-	success = camel_imapx_server_sync_message (server, folder, uid, cancellable, error);
-	camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
-	g_object_unref (server);
-
-	return success;
-}
-
-static gboolean
-imapx_transfer_messages_to (CamelFolder *source,
-                            GPtrArray *uids,
-                            CamelFolder *dest,
-                            GPtrArray **transferred_uids,
-                            gboolean delete_originals,
-                            GCancellable *cancellable,
-                            GError **error)
-{
-	CamelStore *parent_store;
-	CamelIMAPXStore *istore;
-	CamelIMAPXServer *server;
-	gboolean success = FALSE;
-
-	parent_store = camel_folder_get_parent_store (source);
-	istore = CAMEL_IMAPX_STORE (parent_store);
-
-	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("You must be working online to complete this operation"));
-		return FALSE;
-	}
-
-	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (source), cancellable, error);
-	if (server) {
-		success = camel_imapx_server_copy_message (server, source, dest, uids, delete_originals, cancellable, error);
-		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (source));
-		g_object_unref (server);
-	}
-
-	imapx_refresh_info (dest, cancellable, NULL);
-
-	return success;
-}
-
-static gboolean
-imapx_append_message (CamelFolder *folder,
-                      CamelMimeMessage *message,
-                      const CamelMessageInfo *info,
-                      gchar **appended_uid,
-                      GCancellable *cancellable,
-                      GError **error)
-{
-	CamelStore *parent_store;
-	CamelIMAPXStore *istore;
-	CamelIMAPXServer *server;
-	gboolean success = FALSE;
-
-	parent_store = camel_folder_get_parent_store (folder);
-	istore = CAMEL_IMAPX_STORE (parent_store);
-
-	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("You must be working online to complete this operation"));
-		return FALSE;
-	}
-
-	if (appended_uid)
-		*appended_uid = NULL;
-
-	server = camel_imapx_store_get_server (istore, NULL, cancellable, error);
-	if (server) {
-		success = camel_imapx_server_append_message (
-			server, folder, message, info, cancellable, error);
-		g_object_unref (server);
-	}
-
-	return success;
-}
-
 gchar *
 imapx_get_filename (CamelFolder *folder, const gchar *uid, GError **error)
 {
@@ -553,6 +275,285 @@ imapx_search_by_expression (CamelFolder *folder, const gchar *expression, GError
 	return matches;
 }
 
+static gboolean
+imapx_append_message_sync (CamelFolder *folder,
+                           CamelMimeMessage *message,
+                           const CamelMessageInfo *info,
+                           gchar **appended_uid,
+                           GCancellable *cancellable,
+                           GError **error)
+{
+	CamelStore *parent_store;
+	CamelIMAPXStore *istore;
+	CamelIMAPXServer *server;
+	gboolean success = FALSE;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	istore = CAMEL_IMAPX_STORE (parent_store);
+
+	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (istore))) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
+
+	if (appended_uid)
+		*appended_uid = NULL;
+
+	server = camel_imapx_store_get_server (istore, NULL, cancellable, error);
+	if (server) {
+		success = camel_imapx_server_append_message (
+			server, folder, message, info, cancellable, error);
+		g_object_unref (server);
+	}
+
+	return success;
+}
+
+static gboolean
+imapx_expunge_sync (CamelFolder *folder,
+                    GCancellable *cancellable,
+                    GError **error)
+{
+	CamelStore *parent_store;
+	CamelIMAPXStore *istore;
+	CamelIMAPXServer *server;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	istore = CAMEL_IMAPX_STORE (parent_store);
+
+	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (istore))) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
+
+	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);
+	if (server) {
+		camel_imapx_server_expunge (server, folder, cancellable, error);
+		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
+		g_object_unref (server);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static CamelMimeMessage *
+imapx_get_message_sync (CamelFolder *folder,
+                        const gchar *uid,
+                        GCancellable *cancellable,
+                        GError **error)
+{
+	CamelMimeMessage *msg = NULL;
+	CamelStream *stream = NULL;
+	CamelStore *parent_store;
+	CamelIMAPXStore *istore;
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
+	CamelIMAPXServer *server;
+	const gchar *path = NULL;
+	gboolean offline_message = FALSE;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	istore = CAMEL_IMAPX_STORE (parent_store);
+
+	if (!strchr (uid, '-'))
+		path = "cur";
+	else {
+		path = "new";
+		offline_message = TRUE;
+	}
+
+	stream = camel_data_cache_get (ifolder->cache, path, uid, NULL);
+	if (!stream) {
+		if (offline_message) {
+			g_set_error (
+				error, CAMEL_FOLDER_ERROR,
+				CAMEL_FOLDER_ERROR_INVALID_UID,
+				"Offline message vanished from disk: %s", uid);
+			return NULL;
+		}
+
+		if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (istore))) {
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_UNAVAILABLE,
+				_("You must be working online to complete this operation"));
+			return NULL;
+		}
+
+		server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);
+		if (server) {
+			stream = camel_imapx_server_get_message (server, folder, uid, cancellable, error);
+			camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
+			g_object_unref (server);
+		} else
+			return NULL;
+	}
+
+	if (stream != NULL) {
+		msg = camel_mime_message_new ();
+
+		g_mutex_lock (ifolder->stream_lock);
+		if (camel_data_wrapper_construct_from_stream_sync (
+			(CamelDataWrapper *)msg, stream, cancellable, error) == -1) {
+			g_object_unref (msg);
+			msg = NULL;
+		}
+		g_mutex_unlock (ifolder->stream_lock);
+		g_object_unref (stream);
+	}
+
+	return msg;
+}
+
+static gboolean
+imapx_refresh_info_sync (CamelFolder *folder,
+                         GCancellable *cancellable,
+                         GError **error)
+{
+	CamelStore *parent_store;
+	CamelIMAPXStore *istore;
+	CamelIMAPXServer *server;
+	gboolean success = FALSE;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	istore = CAMEL_IMAPX_STORE (parent_store);
+
+	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (istore))) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
+
+	if (!camel_service_connect_sync ((CamelService *)istore, error))
+		return FALSE;
+
+	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);
+	if (server != NULL) {
+		success = camel_imapx_server_refresh_info (server, folder, cancellable, error);
+		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
+		g_object_unref (server);
+	}
+
+	return success;
+}
+
+static gboolean
+imapx_synchronize_sync (CamelFolder *folder,
+                        gboolean expunge,
+                        GCancellable *cancellable,
+                        GError **error)
+{
+	CamelStore *parent_store;
+	CamelIMAPXStore *istore;
+	CamelIMAPXServer *server;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	istore = CAMEL_IMAPX_STORE (parent_store);
+
+	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (istore))) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
+
+	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);
+	if (!server)
+		return FALSE;
+
+	camel_imapx_server_sync_changes (server, folder, cancellable, NULL);
+
+	/* Sync twice - make sure deleted flags are written out,
+	   then sync again incase expunge changed anything */
+
+	if (expunge)
+		camel_imapx_server_expunge (server, folder, cancellable, NULL);
+
+	camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
+	g_object_unref (server);
+
+	return TRUE;
+}
+
+static gboolean
+imapx_synchronize_message_sync (CamelFolder *folder,
+                                const gchar *uid,
+                                GCancellable *cancellable,
+                                GError **error)
+{
+	CamelStore *parent_store;
+	CamelIMAPXStore *istore;
+	CamelIMAPXServer *server;
+	gboolean success;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	istore = CAMEL_IMAPX_STORE (parent_store);
+
+	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (istore))) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
+
+	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);
+	if (server == NULL)
+		return FALSE;
+
+	success = camel_imapx_server_sync_message (server, folder, uid, cancellable, error);
+	camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
+	g_object_unref (server);
+
+	return success;
+}
+
+static gboolean
+imapx_transfer_messages_to_sync (CamelFolder *source,
+                                 GPtrArray *uids,
+                                 CamelFolder *dest,
+                                 GPtrArray **transferred_uids,
+                                 gboolean delete_originals,
+                                 GCancellable *cancellable,
+                                 GError **error)
+{
+	CamelStore *parent_store;
+	CamelIMAPXStore *istore;
+	CamelIMAPXServer *server;
+	gboolean success = FALSE;
+
+	parent_store = camel_folder_get_parent_store (source);
+	istore = CAMEL_IMAPX_STORE (parent_store);
+
+	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (istore))) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
+
+	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (source), cancellable, error);
+	if (server) {
+		success = camel_imapx_server_copy_message (server, source, dest, uids, delete_originals, cancellable, error);
+		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (source));
+		g_object_unref (server);
+	}
+
+	imapx_refresh_info_sync (dest, cancellable, NULL);
+
+	return success;
+}
+
 static void
 camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 {
@@ -564,18 +565,18 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 	object_class->finalize = imapx_folder_finalize;
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
-	folder_class->refresh_info = imapx_refresh_info;
-	folder_class->sync = imapx_sync;
 	folder_class->search_by_expression = imapx_search_by_expression;
 	folder_class->search_by_uids = imapx_search_by_uids;
 	folder_class->count_by_expression = imapx_count_by_expression;
 	folder_class->search_free = imapx_search_free;
-	folder_class->expunge = imapx_expunge;
-	folder_class->get_message = imapx_get_message;
-	folder_class->sync_message = imapx_sync_message;
-	folder_class->append_message = imapx_append_message;
-	folder_class->transfer_messages_to = imapx_transfer_messages_to;
 	folder_class->get_filename = imapx_get_filename;
+	folder_class->append_message_sync = imapx_append_message_sync;
+	folder_class->expunge_sync = imapx_expunge_sync;
+	folder_class->get_message_sync = imapx_get_message_sync;
+	folder_class->refresh_info_sync = imapx_refresh_info_sync;
+	folder_class->synchronize_sync = imapx_synchronize_sync;
+	folder_class->synchronize_message_sync = imapx_synchronize_message_sync;
+	folder_class->transfer_messages_to_sync = imapx_transfer_messages_to_sync;
 }
 
 static void

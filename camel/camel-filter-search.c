@@ -590,7 +590,7 @@ run_command (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMess
 	message = camel_filter_search_get_message (fms, f);
 
 	stream = camel_stream_fs_new_with_fd (pipe_to_child);
-	camel_data_wrapper_write_to_stream (
+	camel_data_wrapper_write_to_stream_sync (
 		CAMEL_DATA_WRAPPER (message), stream, NULL, NULL);
 	camel_stream_flush (stream, NULL, NULL);
 	g_object_unref (stream);

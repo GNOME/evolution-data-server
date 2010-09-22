@@ -52,10 +52,10 @@ CamelServiceAuthType camel_sasl_plain_authtype = {
 G_DEFINE_TYPE (CamelSaslPlain, camel_sasl_plain, CAMEL_TYPE_SASL)
 
 static GByteArray *
-sasl_plain_challenge (CamelSasl *sasl,
-                      GByteArray *token,
-                      GCancellable *cancellable,
-                      GError **error)
+sasl_plain_challenge_sync (CamelSasl *sasl,
+                           GByteArray *token,
+                           GCancellable *cancellable,
+                           GError **error)
 {
 	GByteArray *buf = NULL;
 	CamelService *service;
@@ -85,7 +85,7 @@ camel_sasl_plain_class_init (CamelSaslPlainClass *class)
 	g_type_class_add_private (class, sizeof (CamelSaslPlainPrivate));
 
 	sasl_class = CAMEL_SASL_CLASS (class);
-	sasl_class->challenge = sasl_plain_challenge;
+	sasl_class->challenge_sync = sasl_plain_challenge_sync;
 }
 
 static void

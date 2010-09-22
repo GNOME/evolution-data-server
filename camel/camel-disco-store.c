@@ -59,10 +59,20 @@ disco_store_construct (CamelService *service,
 	return TRUE;
 }
 
+static void
+disco_store_cancel_connect (CamelService *service)
+{
+	CamelDiscoStore *store = CAMEL_DISCO_STORE (service);
+
+	/* Fall back */
+	store->status = CAMEL_DISCO_STORE_OFFLINE;
+	CAMEL_SERVICE_CLASS (camel_disco_store_parent_class)->cancel_connect (service);
+}
+
 static gboolean
-disco_store_connect (CamelService *service,
-                     GCancellable *cancellable,
-                     GError **error)
+disco_store_connect_sync (CamelService *service,
+                          GCancellable *cancellable,
+                          GError **error)
 {
 	CamelDiscoStore *store = CAMEL_DISCO_STORE (service);
 	CamelDiscoStoreStatus status;
@@ -71,7 +81,7 @@ disco_store_connect (CamelService *service,
 
 	status = camel_disco_store_status (store);
 	if (status != CAMEL_DISCO_STORE_OFFLINE) {
-		if (!CAMEL_SERVICE_CLASS (camel_disco_store_parent_class)->connect (service, cancellable, error)) {
+		if (!CAMEL_SERVICE_CLASS (camel_disco_store_parent_class)->connect_sync (service, cancellable, error)) {
 			status = camel_disco_store_status (store);
 			if (status != CAMEL_DISCO_STORE_OFFLINE)
 				return FALSE;
@@ -104,9 +114,9 @@ disco_store_connect (CamelService *service,
 			return FALSE;
 		}
 
-		if (!camel_service_disconnect (service, TRUE, error))
+		if (!camel_service_disconnect_sync (service, TRUE, error))
 			return FALSE;
-		return camel_service_connect (service, error);
+		return camel_service_connect_sync (service, error);
 
 	case CAMEL_DISCO_STORE_OFFLINE:
 		return CAMEL_DISCO_STORE_GET_CLASS (service)->connect_offline (service, cancellable, error);
@@ -117,10 +127,10 @@ disco_store_connect (CamelService *service,
 }
 
 static gboolean
-disco_store_disconnect (CamelService *service,
-                        gboolean clean,
-                        GCancellable *cancellable,
-                        GError **error)
+disco_store_disconnect_sync (CamelService *service,
+                             gboolean clean,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	CamelDiscoStore *store = CAMEL_DISCO_STORE (service);
 	CamelDiscoStoreClass *class;
@@ -144,25 +154,15 @@ disco_store_disconnect (CamelService *service,
 	}
 
 	return CAMEL_SERVICE_CLASS (camel_disco_store_parent_class)->
-		disconnect (service, clean, cancellable, error);
-}
-
-static void
-disco_store_cancel_connect (CamelService *service)
-{
-	CamelDiscoStore *store = CAMEL_DISCO_STORE (service);
-
-	/* Fall back */
-	store->status = CAMEL_DISCO_STORE_OFFLINE;
-	CAMEL_SERVICE_CLASS (camel_disco_store_parent_class)->cancel_connect (service);
+		disconnect_sync (service, clean, cancellable, error);
 }
 
 static CamelFolder *
-disco_store_get_folder (CamelStore *store,
-                        const gchar *name,
-                        guint32 flags,
-                        GCancellable *cancellable,
-                        GError **error)
+disco_store_get_folder_sync (CamelStore *store,
+                             const gchar *name,
+                             guint32 flags,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	CamelDiscoStore *disco_store = CAMEL_DISCO_STORE (store);
 	CamelDiscoStoreClass *class;
@@ -197,11 +197,11 @@ disco_store_get_folder (CamelStore *store,
 }
 
 static CamelFolderInfo *
-disco_store_get_folder_info (CamelStore *store,
-                             const gchar *top,
-                             guint32 flags,
-                             GCancellable *cancellable,
-                             GError **error)
+disco_store_get_folder_info_sync (CamelStore *store,
+                                  const gchar *top,
+                                  guint32 flags,
+                                  GCancellable *cancellable,
+                                  GError **error)
 {
 	CamelDiscoStore *disco_store = CAMEL_DISCO_STORE (store);
 	CamelDiscoStoreClass *class;
@@ -286,17 +286,18 @@ disco_store_set_status (CamelDiscoStore *disco_store,
 			}
 		}
 
-		camel_store_sync (
+		camel_store_synchronize_sync (
 			CAMEL_STORE (disco_store),
 			FALSE, cancellable, NULL);
 	}
 
-	if (!camel_service_disconnect (CAMEL_SERVICE (disco_store), network_available, error))
+	if (!camel_service_disconnect_sync (
+		CAMEL_SERVICE (disco_store), network_available, error))
 		return FALSE;
 
 	disco_store->status = status;
 
-	return camel_service_connect (CAMEL_SERVICE (disco_store), error);
+	return camel_service_connect_sync (CAMEL_SERVICE (disco_store), error);
 }
 
 static void
@@ -307,13 +308,13 @@ camel_disco_store_class_init (CamelDiscoStoreClass *class)
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->construct = disco_store_construct;
-	service_class->connect = disco_store_connect;
-	service_class->disconnect = disco_store_disconnect;
 	service_class->cancel_connect = disco_store_cancel_connect;
+	service_class->connect_sync = disco_store_connect_sync;
+	service_class->disconnect_sync = disco_store_disconnect_sync;
 
 	store_class = CAMEL_STORE_CLASS (class);
-	store_class->get_folder = disco_store_get_folder;
-	store_class->get_folder_info = disco_store_get_folder_info;
+	store_class->get_folder_sync = disco_store_get_folder_sync;
+	store_class->get_folder_info_sync = disco_store_get_folder_info_sync;
 
 	class->set_status = disco_store_set_status;
 }
@@ -456,7 +457,7 @@ camel_disco_store_prepare_for_offline (CamelDiscoStore *disco_store,
 			}
 		}
 
-		camel_store_sync (
+		camel_store_synchronize_sync (
 			CAMEL_STORE (disco_store),
 			FALSE, cancellable, NULL);
 	}

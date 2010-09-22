@@ -140,7 +140,8 @@ nntp_store_dispose (GObject *object)
 
 	/* Only run this the first time. */
 	if (nntp_store->summary != NULL)
-		camel_service_disconnect (CAMEL_SERVICE (object), TRUE, NULL);
+		camel_service_disconnect_sync (
+			CAMEL_SERVICE (object), TRUE, NULL);
 
 	if (nntp_store->summary != NULL) {
 		camel_store_summary_save (
@@ -530,9 +531,9 @@ nntp_store_get_name (CamelService *service, gboolean brief)
 extern CamelServiceAuthType camel_nntp_password_authtype;
 
 static GList *
-nntp_store_query_auth_types (CamelService *service,
-                             GCancellable *cancellable,
-                             GError **error)
+nntp_store_query_auth_types_sync (CamelService *service,
+                                  GCancellable *cancellable,
+                                  GError **error)
 {
 	return g_list_append (NULL, &camel_nntp_password_authtype);
 }
@@ -742,7 +743,7 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *store,
 				gchar *line;
 
 				folder = (CamelNNTPFolder *)
-					camel_store_get_folder (
+					camel_store_get_folder_sync (
 					(CamelStore *)store, si->path,
 					0, cancellable, NULL);
 				if (folder) {
@@ -1139,10 +1140,10 @@ nntp_store_folder_is_subscribed (CamelStore *store, const gchar *folder_name)
 }
 
 static gboolean
-nntp_store_subscribe_folder (CamelStore *store,
-                             const gchar *folder_name,
-                             GCancellable *cancellable,
-                             GError **error)
+nntp_store_subscribe_folder_sync (CamelStore *store,
+                                  const gchar *folder_name,
+                                  GCancellable *cancellable,
+                                  GError **error)
 {
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (store);
 	CamelStoreInfo *si;
@@ -1180,10 +1181,10 @@ nntp_store_subscribe_folder (CamelStore *store,
 }
 
 static gboolean
-nntp_store_unsubscribe_folder (CamelStore *store,
-                               const gchar *folder_name,
-                               GCancellable *cancellable,
-                               GError **error)
+nntp_store_unsubscribe_folder_sync (CamelStore *store,
+                                    const gchar *folder_name,
+                                    GCancellable *cancellable,
+                                    GError **error)
 {
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (store);
 	CamelFolderInfo *fi;
@@ -1222,11 +1223,11 @@ nntp_store_unsubscribe_folder (CamelStore *store,
 /* stubs for various folder operations we're not implementing */
 
 static CamelFolderInfo *
-nntp_create_folder (CamelStore *store,
-                    const gchar *parent_name,
-                    const gchar *folder_name,
-                    GCancellable *cancellable,
-                    GError **error)
+nntp_store_create_folder_sync (CamelStore *store,
+                               const gchar *parent_name,
+                               const gchar *folder_name,
+                               GCancellable *cancellable,
+                               GError **error)
 {
 	g_set_error (
 		error, CAMEL_FOLDER_ERROR,
@@ -1238,11 +1239,11 @@ nntp_create_folder (CamelStore *store,
 }
 
 static gboolean
-nntp_rename_folder (CamelStore *store,
-                    const gchar *old_name,
-                    const gchar *new_name_in,
-                    GCancellable *cancellable,
-                    GError **error)
+nntp_store_rename_folder_sync (CamelStore *store,
+                               const gchar *old_name,
+                               const gchar *new_name_in,
+                               GCancellable *cancellable,
+                               GError **error)
 {
 	g_set_error (
 		error, CAMEL_FOLDER_ERROR,
@@ -1253,12 +1254,13 @@ nntp_rename_folder (CamelStore *store,
 }
 
 static gboolean
-nntp_delete_folder (CamelStore *store,
-                    const gchar *folder_name,
-                    GCancellable *cancellable,
-                    GError **error)
+nntp_store_delete_folder_sync (CamelStore *store,
+                               const gchar *folder_name,
+                               GCancellable *cancellable,
+                               GError **error)
 {
-	nntp_store_unsubscribe_folder (store, folder_name, cancellable, NULL);
+	nntp_store_unsubscribe_folder_sync (
+		store, folder_name, cancellable, NULL);
 
 	g_set_error (
 		error, CAMEL_FOLDER_ERROR,
@@ -1350,18 +1352,18 @@ camel_nntp_store_class_init (CamelNNTPStoreClass *class)
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->construct = nntp_construct;
-	service_class->query_auth_types = nntp_store_query_auth_types;
 	service_class->get_name = nntp_store_get_name;
+	service_class->query_auth_types_sync = nntp_store_query_auth_types_sync;
 
 	store_class = CAMEL_STORE_CLASS (class);
+	store_class->can_refresh_folder = nntp_can_refresh_folder;
 	store_class->free_folder_info = camel_store_free_folder_info_full;
 	store_class->folder_is_subscribed = nntp_store_folder_is_subscribed;
-	store_class->subscribe_folder = nntp_store_subscribe_folder;
-	store_class->unsubscribe_folder = nntp_store_unsubscribe_folder;
-	store_class->create_folder = nntp_create_folder;
-	store_class->delete_folder = nntp_delete_folder;
-	store_class->rename_folder = nntp_rename_folder;
-	store_class->can_refresh_folder = nntp_can_refresh_folder;
+	store_class->create_folder_sync = nntp_store_create_folder_sync;
+	store_class->delete_folder_sync = nntp_store_delete_folder_sync;
+	store_class->rename_folder_sync = nntp_store_rename_folder_sync;
+	store_class->subscribe_folder_sync = nntp_store_subscribe_folder_sync;
+	store_class->unsubscribe_folder_sync = nntp_store_unsubscribe_folder_sync;
 
 	disco_store_class = CAMEL_DISCO_STORE_CLASS (class);
 	disco_store_class->can_work_offline = nntp_can_work_offline;
@@ -1560,7 +1562,7 @@ camel_nntp_command (CamelNNTPStore *store,
 		retry++;
 
 		if (store->stream == NULL
-		    && !camel_service_connect (CAMEL_SERVICE (store), error))
+		    && !camel_service_connect_sync (CAMEL_SERVICE (store), error))
 			return -1;
 
 		/* Check for unprocessed data, !*/
@@ -1610,11 +1612,11 @@ camel_nntp_command (CamelNNTPStore *store,
 		case 400:	/* service discontinued */
 		case 401:	/* wrong client state - this should quit but this is what the old code did */
 		case 503:	/* information not available - this should quit but this is what the old code did (?) */
-			camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
+			camel_service_disconnect_sync (CAMEL_SERVICE (store), FALSE, NULL);
 			ret = -1;
 			continue;
 		case -1:	/* i/o error */
-			camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
+			camel_service_disconnect_sync (CAMEL_SERVICE (store), FALSE, NULL);
 			if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED) || retry >= 3) {
 				g_propagate_error (error, local_error);
 				return -1;

@@ -1046,7 +1046,7 @@ get_current_message (CamelFolderSearch *search)
 		return NULL;
 
 	/* FIXME Pass a GCancellable */
-	return camel_folder_get_message (
+	return camel_folder_get_message_sync (
 		search->folder, search->current->uid, NULL, NULL);
 }
 
@@ -1433,7 +1433,8 @@ match_words_1message (CamelDataWrapper *object, struct _camel_search_words *word
 		stream = camel_stream_mem_new_with_byte_array (byte_array);
 
 		/* FIXME: The match should be part of a stream op */
-		camel_data_wrapper_decode_to_stream (containee, stream, NULL, NULL);
+		camel_data_wrapper_decode_to_stream_sync (
+			containee, stream, NULL, NULL);
 		camel_stream_write (stream, "", 1, NULL, NULL);
 		for (i=0;i<words->len;i++) {
 			/* FIXME: This is horridly slow, and should use a real search algorithm */
@@ -1462,7 +1463,7 @@ match_words_message (CamelFolder *folder,
 	CamelMimeMessage *msg;
 	gint truth = FALSE;
 
-	msg = camel_folder_get_message (folder, uid, cancellable, error);
+	msg = camel_folder_get_message_sync (folder, uid, cancellable, error);
 	if (msg) {
 		mask = 0;
 		truth = match_words_1message ((CamelDataWrapper *)msg, words, &mask);
@@ -1622,7 +1623,7 @@ search_body_regex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Came
 				gchar *uid = g_ptr_array_index (v, i);
 
 				/* FIXME Pass a GCancellable */
-				message = camel_folder_get_message (
+				message = camel_folder_get_message_sync (
 					search->folder, uid, NULL, NULL);
 				if (message) {
 					if (camel_search_message_body_contains ((CamelDataWrapper *) message, &pattern)) {
@@ -1838,7 +1839,7 @@ search_message_location (struct _ESExp *f, gint argc, struct _ESExpResult **argv
 	if (argc == 1 && argv[0]->type == ESEXP_RES_STRING) {
 		if (argv[0]->value.string && search->folder && parent_store && camel_folder_get_full_name (search->folder)) {
 			/* FIXME Pass a GCancellable */
-			CamelFolderInfo *fi = camel_store_get_folder_info (parent_store, camel_folder_get_full_name (search->folder), 0, NULL, NULL);
+			CamelFolderInfo *fi = camel_store_get_folder_info_sync (parent_store, camel_folder_get_full_name (search->folder), 0, NULL, NULL);
 			if (fi) {
 				same = g_str_equal (fi->uri ? fi->uri : "", argv[0]->value.string);
 

@@ -69,7 +69,7 @@ struct _CamelMimePart {
 struct _CamelMimePartClass {
 	CamelMediumClass parent_class;
 
-	gint	(*construct_from_parser)	(CamelMimePart *mime_part,
+	gint	(*construct_from_parser_sync)	(CamelMimePart *mime_part,
 						 CamelMimeParser *parser,
 						 GCancellable *cancellable,
 						 GError **error);
@@ -109,30 +109,23 @@ void		camel_mime_part_set_content_languages
 						 GList *content_languages);
 const GList *	camel_mime_part_get_content_languages
 						(CamelMimePart *mime_part);
-
-/* FIXME: what about content-type parameters?   what about major/minor parts? */
 void		camel_mime_part_set_content_type
 						(CamelMimePart *mime_part,
 						 const gchar *content_type);
 CamelContentType *
 		camel_mime_part_get_content_type
 						(CamelMimePart *mime_part);
-
-/* construction */
-gint		camel_mime_part_construct_from_parser
-						(CamelMimePart *mime_part,
-						 CamelMimeParser *parser,
-						 GCancellable *cancellable,
-						 GError **error);
-
-/* utility functions */
 void		camel_mime_part_set_content	(CamelMimePart *mime_part,
 						 const gchar *data,
 						 gint length,
 						 const gchar *type);
-
 gsize		camel_mime_part_get_content_size
 						(CamelMimePart *mime_part);
+gint		camel_mime_part_construct_from_parser_sync
+						(CamelMimePart *mime_part,
+						 CamelMimeParser *parser,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

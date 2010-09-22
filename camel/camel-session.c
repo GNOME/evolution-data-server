@@ -522,8 +522,9 @@ camel_session_get_service_connected (CamelSession *session,
 	if (svc == NULL)
 		return NULL;
 
+	/* FIXME This blocks.  Need to take a GCancellable. */
 	if (svc->status != CAMEL_SERVICE_CONNECTED) {
-		if (!camel_service_connect (svc, error)) {
+		if (!camel_service_connect_sync (svc, error)) {
 			g_object_unref (svc);
 			return NULL;
 		}

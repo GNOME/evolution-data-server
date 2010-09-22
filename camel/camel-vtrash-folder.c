@@ -68,7 +68,7 @@ transfer_messages (CamelFolder *folder,
 {
 	gint i;
 
-	camel_folder_transfer_messages_to (
+	camel_folder_transfer_messages_to_sync (
 		md->folder, md->uids, md->dest,
 		NULL, md->delete, md->cancellable, error);
 
@@ -84,12 +84,12 @@ transfer_messages (CamelFolder *folder,
 }
 
 static gboolean
-vtrash_folder_append_message (CamelFolder *folder,
-                              CamelMimeMessage *message,
-                              const CamelMessageInfo *info,
-                              gchar **appended_uid,
-                              GCancellable *cancellable,
-                              GError **error)
+vtrash_folder_append_message_sync (CamelFolder *folder,
+                                   CamelMimeMessage *message,
+                                   const CamelMessageInfo *info,
+                                   gchar **appended_uid,
+                                   GCancellable *cancellable,
+                                   GError **error)
 {
 	g_set_error (
 		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",
@@ -99,13 +99,13 @@ vtrash_folder_append_message (CamelFolder *folder,
 }
 
 static gboolean
-vtrash_folder_transfer_messages_to (CamelFolder *source,
-                                    GPtrArray *uids,
-                                    CamelFolder *dest,
-                                    GPtrArray **transferred_uids,
-                                    gboolean delete_originals,
-                                    GCancellable *cancellable,
-                                    GError **error)
+vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
+                                         GPtrArray *uids,
+                                         CamelFolder *dest,
+                                         GPtrArray **transferred_uids,
+                                         gboolean delete_originals,
+                                         GCancellable *cancellable,
+                                         GError **error)
 {
 	CamelVeeMessageInfo *mi;
 	gint i;
@@ -193,8 +193,8 @@ camel_vtrash_folder_class_init (CamelVTrashFolderClass *class)
 	CamelFolderClass *folder_class;
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
-	folder_class->append_message = vtrash_folder_append_message;
-	folder_class->transfer_messages_to = vtrash_folder_transfer_messages_to;
+	folder_class->append_message_sync = vtrash_folder_append_message_sync;
+	folder_class->transfer_messages_to_sync = vtrash_folder_transfer_messages_to_sync;
 }
 
 static void

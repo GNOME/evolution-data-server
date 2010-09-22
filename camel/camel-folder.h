@@ -144,23 +144,7 @@ struct _CamelFolderClass {
 	CamelObjectClass parent_class;
 
 	/* Methods */
-	gboolean	(*refresh_info)		(CamelFolder *folder,
-						 GCancellable *cancellable,
-						 GError **error);
-	gboolean	(*sync)			(CamelFolder *folder,
-						 gboolean expunge,
-						 GCancellable *cancellable,
-						 GError **error);
-	gboolean	(*expunge)		(CamelFolder *folder,
-						 GCancellable *cancellable,
-						 GError **error);
 	gint		(*get_message_count)	(CamelFolder *folder);
-	gboolean	(*append_message)	(CamelFolder *folder,
-						 CamelMimeMessage *message,
-						 const CamelMessageInfo *info,
-						 gchar **appended_uid,
-						 GCancellable *cancellable,
-						 GError **error);
 	guint32		(*get_permanent_flags)	(CamelFolder *folder);
 	guint32		(*get_message_flags)	(CamelFolder *folder,
 						 const gchar *uid);
@@ -182,11 +166,6 @@ struct _CamelFolderClass {
 						 const gchar *uid,
 						 const gchar *name,
 						 const gchar *value);
-	CamelMimeMessage *
-			(*get_message)		(CamelFolder *folder,
-						 const gchar *uid,
-						 GCancellable *cancellable,
-						 GError **error);
 	GPtrArray *	(*get_uids)		(CamelFolder *folder);
 	void		(*free_uids)		(CamelFolder *folder,
 						 GPtrArray *array);
@@ -215,13 +194,6 @@ struct _CamelFolderClass {
 						 CamelMessageInfo *info);
 	void		(*free_message_info)	(CamelFolder *folder,
 						 CamelMessageInfo *info);
-	gboolean	(*transfer_messages_to)	(CamelFolder *source,
-						 GPtrArray *uids,
-						 CamelFolder *destination,
-						 GPtrArray **transferred_uids,
-						 gboolean delete_originals,
-						 GCancellable *cancellable,
-						 GError **error);
 	void		(*delete)		(CamelFolder *folder);
 	void		(*rename)		(CamelFolder *folder,
 						 const gchar *newname);
@@ -233,15 +205,46 @@ struct _CamelFolderClass {
 	guint32		(*count_by_expression)	(CamelFolder *folder,
 						 const gchar *expression,
 						 GError **error);
-	gboolean	(*sync_message)		(CamelFolder *folder,
-						 const gchar *uid,
-						 GCancellable *cancellable,
-						 GError **error);
 	GPtrArray *	(*get_uncached_uids)	(CamelFolder *folder,
 						 GPtrArray *uids,
 						 GError **error);
 	gchar *		(*get_filename)		(CamelFolder *folder,
 						 const gchar *uid,
+						 GError **error);
+
+	gboolean	(*append_message_sync)	(CamelFolder *folder,
+						 CamelMimeMessage *message,
+						 const CamelMessageInfo *info,
+						 gchar **appended_uid,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(*expunge_sync)		(CamelFolder *folder,
+						 GCancellable *cancellable,
+						 GError **error);
+	CamelMimeMessage *
+			(*get_message_sync)	(CamelFolder *folder,
+						 const gchar *uid,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(*refresh_info_sync)	(CamelFolder *folder,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(*synchronize_sync)	(CamelFolder *folder,
+						 gboolean expunge,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(*synchronize_message_sync)
+						(CamelFolder *folder,
+						 const gchar *uid,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(*transfer_messages_to_sync)
+						(CamelFolder *source,
+						 GPtrArray *uids,
+						 CamelFolder *destination,
+						 GPtrArray **transferred_uids,
+						 gboolean delete_originals,
+						 GCancellable *cancellable,
 						 GError **error);
 
 	/* Signals */
@@ -254,25 +257,10 @@ struct _CamelFolderClass {
 
 GType		camel_folder_get_type		(void);
 GQuark		camel_folder_error_quark	(void) G_GNUC_CONST;
-gboolean	camel_folder_refresh_info	(CamelFolder *folder,
-						 GCancellable *cancellable,
-						 GError **error);
-gboolean	camel_folder_sync		(CamelFolder *folder,
-						 gboolean expunge,
-						 GCancellable *cancellable,
-						 GError **error);
 void		camel_folder_set_lock_async	(CamelFolder *folder,
 						 gboolean skip_folder_lock);
-
 struct _CamelStore *
 		camel_folder_get_parent_store	(CamelFolder *folder);
-
-/* delete operations */
-gboolean	camel_folder_expunge		(CamelFolder *folder,
-						 GCancellable *cancellable,
-						 GError **error);
-
-/* folder name operations */
 const gchar *	camel_folder_get_name		(CamelFolder *folder);
 void		camel_folder_set_name		(CamelFolder *folder,
 						 const gchar *name);
@@ -282,78 +270,45 @@ void		camel_folder_set_full_name	(CamelFolder *folder,
 const gchar *	camel_folder_get_description	(CamelFolder *folder);
 void		camel_folder_set_description	(CamelFolder *folder,
 						 const gchar *description);
-
-/* various properties accessors */
 guint32		camel_folder_get_permanent_flags (CamelFolder *folder);
-
 #ifndef CAMEL_DISABLE_DEPRECATED
 guint32		camel_folder_get_message_flags	(CamelFolder *folder,
 						 const gchar *uid);
-
 gboolean	camel_folder_set_message_flags	(CamelFolder *folder,
 						 const gchar *uid,
 						 guint32 flags,
 						 guint32 set);
-
 gboolean	camel_folder_get_message_user_flag
 						(CamelFolder *folder,
 						 const gchar *uid,
 						 const gchar *name);
-
 void		camel_folder_set_message_user_flag
 						(CamelFolder *folder,
 						 const gchar *uid,
 						 const gchar *name,
 						 gboolean value);
-
 const gchar *	camel_folder_get_message_user_tag
 						(CamelFolder *folder,
 						 const gchar *uid,
 						 const gchar *name);
-
 void		camel_folder_set_message_user_tag
 						(CamelFolder *folder,
 						 const gchar *uid,
 						 const gchar *name,
 						 const gchar *value);
 #endif /* CAMEL_DISABLE_DEPRECATED */
-
-/* message manipulation */
-gboolean	camel_folder_append_message	(CamelFolder *folder,
-						 CamelMimeMessage *message,
-						 const CamelMessageInfo *info,
-						 gchar **appended_uid,
-						 GCancellable *cancellable,
-						 GError **error);
-
-/* summary related operations */
 gboolean	camel_folder_has_summary_capability
 						(CamelFolder *folder);
-
 gint		camel_folder_get_message_count	(CamelFolder *folder);
-
 #ifndef CAMEL_DISABLE_DEPRECATED
 gint		camel_folder_get_unread_message_count
 						(CamelFolder *folder);
 #endif
-
 gint		camel_folder_get_deleted_message_count
 						(CamelFolder *folder);
-
 GPtrArray *	camel_folder_get_summary	(CamelFolder *folder);
 void		camel_folder_free_summary	(CamelFolder *folder,
 						 GPtrArray *array);
-
-/* uid based access operations */
-CamelMimeMessage *
-		camel_folder_get_message	(CamelFolder *folder,
-						 const gchar *uid,
-						 GCancellable *cancellable,
-						 GError **error);
-gboolean	camel_folder_sync_message	(CamelFolder *folder,
-						 const gchar *uid,
-						 GCancellable *cancellable,
-						 GError **error);
 
 #define camel_folder_delete_message(folder, uid) \
 	(camel_folder_set_message_flags ( \
@@ -372,8 +327,6 @@ gint		camel_folder_cmp_uids		(CamelFolder *folder,
 						 const gchar *uid2);
 void		camel_folder_sort_uids		(CamelFolder *folder,
 						 GPtrArray *uids);
-
-/* search api */
 gboolean	camel_folder_has_search_capability
 						(CamelFolder *folder);
 GPtrArray *	camel_folder_search_by_expression
@@ -389,8 +342,6 @@ void		camel_folder_search_free	(CamelFolder *folder,
 guint32		camel_folder_count_by_expression (CamelFolder *folder,
 						 const gchar *expression,
 						 GError **error);
-
-/* summary info */
 CamelMessageInfo *
 		camel_folder_get_message_info	(CamelFolder *folder,
 						 const gchar *uid);
@@ -400,29 +351,15 @@ void		camel_folder_free_message_info	(CamelFolder *folder,
 void		camel_folder_ref_message_info	(CamelFolder *folder,
 						 CamelMessageInfo *info);
 #endif
-
-gboolean	camel_folder_transfer_messages_to
-						(CamelFolder *source,
-						 GPtrArray *uids,
-						 CamelFolder *dest,
-						 GPtrArray **transferred_uids,
-						 gboolean delete_originals,
-						 GCancellable *cancellable,
-						 GError **error);
-
 void		camel_folder_delete		(CamelFolder *folder);
 void		camel_folder_rename		(CamelFolder *folder,
 						 const gchar *new);
 void		camel_folder_changed		(CamelFolder *folder,
 						 CamelFolderChangeInfo *changes);
-
-/* stop/restart getting events */
 void		camel_folder_freeze		(CamelFolder *folder);
 void		camel_folder_thaw		(CamelFolder *folder);
 gboolean	camel_folder_is_frozen		(CamelFolder *folder);
 gint		camel_folder_get_frozen_count	(CamelFolder *folder);
-
-/* quota support */
 CamelFolderQuotaInfo *
 		camel_folder_get_quota_info	(CamelFolder *folder);
 CamelFolderQuotaInfo *
@@ -432,17 +369,49 @@ CamelFolderQuotaInfo *
 CamelFolderQuotaInfo *
 		camel_folder_quota_info_clone	(const CamelFolderQuotaInfo *info);
 void		camel_folder_quota_info_free	(CamelFolderQuotaInfo *info);
-
-/* For use by subclasses (for free_{uids,summary,subfolder_names}) */
 void		camel_folder_free_nop		(CamelFolder *folder,
 						 GPtrArray *array);
 void		camel_folder_free_shallow	(CamelFolder *folder,
 						 GPtrArray *array);
 void		camel_folder_free_deep		(CamelFolder *folder,
 						 GPtrArray *array);
-
 gchar *		camel_folder_get_filename	(CamelFolder *folder,
 						 const gchar *uid,
+						 GError **error);
+gboolean	camel_folder_append_message_sync
+						(CamelFolder *folder,
+						 CamelMimeMessage *message,
+						 const CamelMessageInfo *info,
+						 gchar **appended_uid,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_folder_expunge_sync	(CamelFolder *folder,
+						 GCancellable *cancellable,
+						 GError **error);
+CamelMimeMessage *
+		camel_folder_get_message_sync	(CamelFolder *folder,
+						 const gchar *uid,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_folder_refresh_info_sync	(CamelFolder *folder,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_folder_synchronize_sync	(CamelFolder *folder,
+						 gboolean expunge,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_folder_synchronize_message_sync
+						(CamelFolder *folder,
+						 const gchar *uid,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_folder_transfer_messages_to_sync
+						(CamelFolder *source,
+						 GPtrArray *uids,
+						 CamelFolder *dest,
+						 GPtrArray **transferred_uids,
+						 gboolean delete_originals,
+						 GCancellable *cancellable,
 						 GError **error);
 
 /* update functions for change info */
@@ -482,6 +451,7 @@ void		camel_folder_change_info_change_uid
 void		camel_folder_change_info_recent_uid
 						(CamelFolderChangeInfo *info,
 						 const gchar *uid);
+
 void		camel_folder_lock		(CamelFolder *folder,
 						 CamelFolderLock lock);
 void		camel_folder_unlock		(CamelFolder *folder,

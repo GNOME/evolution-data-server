@@ -26,7 +26,7 @@ CamelTransport
 </para>
 
 
-<!-- ##### FUNCTION camel_transport_send_to ##### -->
+<!-- ##### FUNCTION camel_transport_send_to_sync ##### -->
 <para>
 
 </para>

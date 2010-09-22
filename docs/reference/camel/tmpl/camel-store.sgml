@@ -371,90 +371,6 @@ CamelStore
 
 
 
-<!-- ##### FUNCTION camel_store_get_folder ##### -->
-<para>
-
-</para>
-
-@store: 
-@folder_name: 
-@flags: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_store_get_inbox ##### -->
-<para>
-
-</para>
-
-@store: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_store_get_trash ##### -->
-<para>
-
-</para>
-
-@store: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_store_get_junk ##### -->
-<para>
-
-</para>
-
-@store: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_store_create_folder ##### -->
-<para>
-
-</para>
-
-@store: 
-@parent_name: 
-@folder_name: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_store_delete_folder ##### -->
-<para>
-
-</para>
-
-@store: 
-@folder_name: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_store_rename_folder ##### -->
-<para>
-
-</para>
-
-@store: 
-@old_namein: 
-@new_name: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_store_folder_created ##### -->
 <para>
 
@@ -499,31 +415,6 @@ CamelStore
 
 @store: 
 @info: 
-
-
-<!-- ##### FUNCTION camel_store_sync ##### -->
-<para>
-
-</para>
-
-@store: 
-@expunge: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_store_get_folder_info ##### -->
-<para>
-
-</para>
-
-@store: 
-@top: 
-@flags: 
-@cancellable: 
-@error: 
-@Returns: 
 
 
 <!-- ##### FUNCTION camel_store_free_folder_info ##### -->
@@ -610,41 +501,6 @@ CamelStore
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_store_subscribe_folder ##### -->
-<para>
-
-</para>
-
-@store: 
-@folder_name: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_store_unsubscribe_folder ##### -->
-<para>
-
-</para>
-
-@store: 
-@folder_name: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_store_noop ##### -->
-<para>
-
-</para>
-
-@store: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_store_folder_uri_equal ##### -->
 <para>
 
@@ -690,5 +546,149 @@ CamelStore
 
 @store: 
 @lock: 
+
+
+<!-- ##### FUNCTION camel_store_get_folder_sync ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@flags: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_get_folder_info_sync ##### -->
+<para>
+
+</para>
+
+@store: 
+@top: 
+@flags: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_get_inbox_folder_sync ##### -->
+<para>
+
+</para>
+
+@store: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_get_junk_folder_sync ##### -->
+<para>
+
+</para>
+
+@store: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_get_trash_folder_sync ##### -->
+<para>
+
+</para>
+
+@store: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_create_folder_sync ##### -->
+<para>
+
+</para>
+
+@store: 
+@parent_name: 
+@folder_name: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_delete_folder_sync ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_rename_folder_sync ##### -->
+<para>
+
+</para>
+
+@store: 
+@old_namein: 
+@new_name: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_subscribe_folder_sync ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_unsubscribe_folder_sync ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_synchronize_sync ##### -->
+<para>
+
+</para>
+
+@store: 
+@expunge: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_noop_sync ##### -->
+<para>
+
+</para>
+
+@store: 
+@cancellable: 
+@error: 
+@Returns: 
 
 

@@ -466,7 +466,7 @@ do_forward_to (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFil
 	/* make sure we have the message... */
 	if (p->message == NULL) {
 		/* FIXME Pass a GCancellable */
-		p->message = camel_folder_get_message (
+		p->message = camel_folder_get_message_sync (
 			p->source, p->uid, NULL, &p->error);
 		if (p->message == NULL)
 			return NULL;
@@ -505,21 +505,21 @@ do_copy (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDri
 				uids = g_ptr_array_new ();
 				g_ptr_array_add (uids, (gchar *) p->uid);
 				/* FIXME Pass a GCancellable */
-				camel_folder_transfer_messages_to (
+				camel_folder_transfer_messages_to_sync (
 					p->source, uids, outbox, NULL,
 					FALSE, NULL, &p->error);
 				g_ptr_array_free (uids, TRUE);
 			} else {
 				if (p->message == NULL)
 					/* FIXME Pass a GCancellable */
-					p->message = camel_folder_get_message (
+					p->message = camel_folder_get_message_sync (
 						p->source, p->uid, NULL, &p->error);
 
 				if (!p->message)
 					continue;
 
 				/* FIXME Pass a GCancellable */
-				camel_folder_append_message (
+				camel_folder_append_message_sync (
 					outbox, p->message, p->info,
 					NULL, NULL, &p->error);
 			}
@@ -566,21 +566,21 @@ do_move (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDri
 				uids = g_ptr_array_new ();
 				g_ptr_array_add (uids, (gchar *) p->uid);
 				/* FIXME Pass a GCancellable */
-				camel_folder_transfer_messages_to (
+				camel_folder_transfer_messages_to_sync (
 					p->source, uids, outbox, NULL,
 					last, NULL, &p->error);
 				g_ptr_array_free (uids, TRUE);
 			} else {
 				if (p->message == NULL)
 					/* FIXME Pass a GCancellable */
-					p->message = camel_folder_get_message (
+					p->message = camel_folder_get_message_sync (
 						p->source, p->uid, NULL, &p->error);
 
 				if (!p->message)
 					continue;
 
 				/* FIXME Pass a GCancellable */
-				camel_folder_append_message (
+				camel_folder_append_message_sync (
 					outbox, p->message, p->info,
 					NULL, NULL, &p->error);
 
@@ -808,7 +808,7 @@ pipe_to_system (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFi
 	/* make sure we have the message... */
 	if (p->message == NULL) {
 		/* FIXME Pass a GCancellable */
-		p->message = camel_folder_get_message (
+		p->message = camel_folder_get_message_sync (
 			p->source, p->uid, NULL, &p->error);
 		if (p->message == NULL)
 			return -1;
@@ -845,7 +845,8 @@ pipe_to_system (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFi
 	g_ptr_array_free (args, TRUE);
 
 	stream = camel_stream_fs_new_with_fd (pipe_to_child);
-	if (camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (p->message), stream, NULL, NULL) == -1) {
+	if (camel_data_wrapper_write_to_stream_sync (
+		CAMEL_DATA_WRAPPER (p->message), stream, NULL, NULL) == -1) {
 		g_object_unref (stream);
 		close (pipe_from_child);
 		goto wait;
@@ -876,7 +877,8 @@ pipe_to_system (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFi
 	g_object_unref (mem);
 
 	message = camel_mime_message_new ();
-	if (camel_mime_part_construct_from_parser ((CamelMimePart *) message, parser, NULL, NULL) == -1) {
+	if (camel_mime_part_construct_from_parser_sync (
+		(CamelMimePart *) message, parser, NULL, NULL) == -1) {
 		gint err = camel_mime_parser_errno (parser);
 		g_set_error (
 			&p->error, G_IO_ERROR,
@@ -1061,7 +1063,7 @@ close_folder (gpointer key, gpointer value, gpointer data)
 
 	if (folder != FOLDER_INVALID) {
 		/* FIXME Pass a GCancellable */
-		camel_folder_sync (
+		camel_folder_synchronize_sync (
 			folder, FALSE, NULL,
 			(p->error != NULL) ? NULL : &p->error);
 		camel_folder_thaw (folder);
@@ -1307,7 +1309,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 		message = camel_mime_message_new ();
 		mime_part = CAMEL_MIME_PART (message);
 
-		if (camel_mime_part_construct_from_parser (
+		if (camel_mime_part_construct_from_parser_sync (
 			mime_part, mp, cancellable, error) == -1) {
 			report_status (driver, CAMEL_FILTER_STATUS_END, 100, _("Failed on message %d"), i);
 			g_object_unref (message);
@@ -1347,7 +1349,8 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 
 	if (p->defaultfolder) {
 		report_status(driver, CAMEL_FILTER_STATUS_PROGRESS, 100, _("Syncing folder"));
-		camel_folder_sync (p->defaultfolder, FALSE, cancellable, NULL);
+		camel_folder_synchronize_sync (
+			p->defaultfolder, FALSE, cancellable, NULL);
 	}
 
 	report_status (driver, CAMEL_FILTER_STATUS_END, 100, _("Complete"));
@@ -1451,7 +1454,8 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 
 	if (p->defaultfolder) {
 		report_status (driver, CAMEL_FILTER_STATUS_PROGRESS, 100, _("Syncing folder"));
-		camel_folder_sync (p->defaultfolder, FALSE, cancellable, NULL);
+		camel_folder_synchronize_sync (
+			p->defaultfolder, FALSE, cancellable, NULL);
 	}
 
 	if (i == uids->len)
@@ -1489,7 +1493,7 @@ get_message_cb (gpointer data, GError **error)
 			uid = camel_message_info_uid (p->info);
 
 		/* FIXME Pass a GCancellable */
-		message = camel_folder_get_message (
+		message = camel_folder_get_message_sync (
 			p->source, uid, NULL, error);
 	}
 
@@ -1551,7 +1555,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 		if (message) {
 			g_object_ref (message);
 		} else {
-			message = camel_folder_get_message (
+			message = camel_folder_get_message_sync (
 				source, uid, cancellable, error);
 			if (!message)
 				return -1;
@@ -1666,19 +1670,19 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 
 			uids = g_ptr_array_new ();
 			g_ptr_array_add (uids, (gchar *) p->uid);
-			camel_folder_transfer_messages_to (
+			camel_folder_transfer_messages_to_sync (
 				p->source, uids, p->defaultfolder,
 				NULL, FALSE, cancellable, &p->error);
 			g_ptr_array_free (uids, TRUE);
 		} else {
 			if (p->message == NULL) {
-				p->message = camel_folder_get_message (
+				p->message = camel_folder_get_message_sync (
 					source, uid, cancellable, error);
 				if (!p->message)
 					goto error;
 			}
 
-			camel_folder_append_message (
+			camel_folder_append_message_sync (
 				p->defaultfolder, p->message,
 				p->info, NULL, cancellable, &p->error);
 		}

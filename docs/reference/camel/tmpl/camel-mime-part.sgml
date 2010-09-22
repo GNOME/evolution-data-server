@@ -226,7 +226,7 @@ CamelMimePart
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_mime_part_construct_from_parser ##### -->
+<!-- ##### FUNCTION camel_mime_part_construct_from_parser_sync ##### -->
 <para>
 
 </para>

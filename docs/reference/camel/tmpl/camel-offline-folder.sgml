@@ -49,7 +49,7 @@ CamelOfflineFolder
 @offline_sync: 
 
 
-<!-- ##### FUNCTION camel_offline_folder_downsync ##### -->
+<!-- ##### FUNCTION camel_offline_folder_downsync_sync ##### -->
 <para>
 
 </para>

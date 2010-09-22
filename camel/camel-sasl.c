@@ -255,92 +255,6 @@ camel_sasl_init (CamelSasl *sasl)
 }
 
 /**
- * camel_sasl_challenge:
- * @sasl: a #CamelSasl object
- * @token: a token, or %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * If @token is %NULL, generate the initial SASL message to send to
- * the server. (This will be %NULL if the client doesn't initiate the
- * exchange.) Otherwise, @token is a challenge from the server, and
- * the return value is the response.
- *
- * Returns: the SASL response or %NULL. If an error occurred, @error will
- * also be set.
- **/
-GByteArray *
-camel_sasl_challenge (CamelSasl *sasl,
-                      GByteArray *token,
-                      GCancellable *cancellable,
-                      GError **error)
-{
-	CamelSaslClass *class;
-	GByteArray *response;
-
-	g_return_val_if_fail (CAMEL_IS_SASL (sasl), NULL);
-
-	class = CAMEL_SASL_GET_CLASS (sasl);
-	g_return_val_if_fail (class->challenge != NULL, NULL);
-
-	response = class->challenge (sasl, token, cancellable, error);
-	if (token)
-		CAMEL_CHECK_GERROR (sasl, challenge, response != NULL, error);
-
-	return response;
-}
-
-/**
- * camel_sasl_challenge_base64:
- * @sasl: a #CamelSasl object
- * @token: a base64-encoded token
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * As with #camel_sasl_challenge, but the challenge @token and the
- * response are both base64-encoded.
- *
- * Returns: the base64 encoded challenge string
- **/
-gchar *
-camel_sasl_challenge_base64 (CamelSasl *sasl,
-                             const gchar *token,
-                             GCancellable *cancellable,
-                             GError **error)
-{
-	GByteArray *token_binary, *ret_binary;
-	gchar *ret;
-
-	g_return_val_if_fail (CAMEL_IS_SASL (sasl), NULL);
-
-	if (token && *token) {
-		guchar *data;
-		gsize length = 0;
-
-		data = g_base64_decode (token, &length);
-		token_binary = g_byte_array_new ();
-		g_byte_array_append (token_binary, data, length);
-		g_free (data);
-	} else
-		token_binary = NULL;
-
-	ret_binary = camel_sasl_challenge (
-		sasl, token_binary, cancellable, error);
-	if (token_binary)
-		g_byte_array_free (token_binary, TRUE);
-	if (!ret_binary)
-		return NULL;
-
-	if (ret_binary->len > 0)
-		ret = g_base64_encode (ret_binary->data, ret_binary->len);
-	else
-		ret = g_strdup ("");
-	g_byte_array_free (ret_binary, TRUE);
-
-	return ret;
-}
-
-/**
  * camel_sasl_new:
  * @service_name: the SASL service name
  * @mechanism: the SASL mechanism
@@ -462,6 +376,93 @@ camel_sasl_get_service_name (CamelSasl *sasl)
 	g_return_val_if_fail (CAMEL_IS_SASL (sasl), NULL);
 
 	return sasl->priv->service_name;
+}
+
+/**
+ * camel_sasl_challenge_sync:
+ * @sasl: a #CamelSasl object
+ * @token: a token, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * If @token is %NULL, generate the initial SASL message to send to
+ * the server. (This will be %NULL if the client doesn't initiate the
+ * exchange.) Otherwise, @token is a challenge from the server, and
+ * the return value is the response.
+ *
+ * Returns: the SASL response or %NULL. If an error occurred, @error will
+ * also be set.
+ **/
+GByteArray *
+camel_sasl_challenge_sync (CamelSasl *sasl,
+                           GByteArray *token,
+                           GCancellable *cancellable,
+                           GError **error)
+{
+	CamelSaslClass *class;
+	GByteArray *response;
+
+	g_return_val_if_fail (CAMEL_IS_SASL (sasl), NULL);
+
+	class = CAMEL_SASL_GET_CLASS (sasl);
+	g_return_val_if_fail (class->challenge_sync != NULL, NULL);
+
+	response = class->challenge_sync (sasl, token, cancellable, error);
+	if (token != NULL)
+		CAMEL_CHECK_GERROR (
+			sasl, challenge_sync, response != NULL, error);
+
+	return response;
+}
+
+/**
+ * camel_sasl_challenge_base64_sync:
+ * @sasl: a #CamelSasl object
+ * @token: a base64-encoded token
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * As with #camel_sasl_challenge, but the challenge @token and the
+ * response are both base64-encoded.
+ *
+ * Returns: the base64 encoded challenge string
+ **/
+gchar *
+camel_sasl_challenge_base64_sync (CamelSasl *sasl,
+                                  const gchar *token,
+                                  GCancellable *cancellable,
+                                  GError **error)
+{
+	GByteArray *token_binary, *ret_binary;
+	gchar *ret;
+
+	g_return_val_if_fail (CAMEL_IS_SASL (sasl), NULL);
+
+	if (token && *token) {
+		guchar *data;
+		gsize length = 0;
+
+		data = g_base64_decode (token, &length);
+		token_binary = g_byte_array_new ();
+		g_byte_array_append (token_binary, data, length);
+		g_free (data);
+	} else
+		token_binary = NULL;
+
+	ret_binary = camel_sasl_challenge_sync (
+		sasl, token_binary, cancellable, error);
+	if (token_binary)
+		g_byte_array_free (token_binary, TRUE);
+	if (!ret_binary)
+		return NULL;
+
+	if (ret_binary->len > 0)
+		ret = g_base64_encode (ret_binary->data, ret_binary->len);
+	else
+		ret = g_strdup ("");
+	g_byte_array_free (ret_binary, TRUE);
+
+	return ret;
 }
 
 /**

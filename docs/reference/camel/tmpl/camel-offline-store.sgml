@@ -26,29 +26,28 @@ CamelOfflineStore
 </para>
 
 
-<!-- ##### FUNCTION camel_offline_store_set_network_state ##### -->
+<!-- ##### FUNCTION camel_offline_store_get_online ##### -->
 <para>
 
 </para>
 
 @store: 
-@state: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_offline_store_set_online_sync ##### -->
+<para>
+
+</para>
+
+@store: 
+@online: 
 @cancellable: 
 @error: 
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_offline_store_get_network_state ##### -->
-<para>
-
-</para>
-
-@store: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_offline_store_prepare_for_offline ##### -->
+<!-- ##### FUNCTION camel_offline_store_prepare_for_offline_sync ##### -->
 <para>
 
 </para>

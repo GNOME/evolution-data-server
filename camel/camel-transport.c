@@ -75,7 +75,7 @@ camel_transport_init (CamelTransport *transport)
 }
 
 /**
- * camel_transport_send_to:
+ * camel_transport_send_to_sync:
  * @transport: a #CamelTransport object
  * @message: a #CamelMimeMessage to send
  * @from: a #CamelAddress to send from
@@ -90,12 +90,12 @@ camel_transport_init (CamelTransport *transport)
  * Return %TRUE on success or %FALSE on fail
  **/
 gboolean
-camel_transport_send_to (CamelTransport *transport,
-                         CamelMimeMessage *message,
-                         CamelAddress *from,
-                         CamelAddress *recipients,
-                         GCancellable *cancellable,
-                         GError **error)
+camel_transport_send_to_sync (CamelTransport *transport,
+                              CamelMimeMessage *message,
+                              CamelAddress *from,
+                              CamelAddress *recipients,
+                              GCancellable *cancellable,
+                              GError **error)
 {
 	CamelTransportClass *class;
 	gboolean success;
@@ -106,13 +106,13 @@ camel_transport_send_to (CamelTransport *transport,
 	g_return_val_if_fail (CAMEL_IS_ADDRESS (recipients), FALSE);
 
 	class = CAMEL_TRANSPORT_GET_CLASS (transport);
-	g_return_val_if_fail (class->send_to != NULL, FALSE);
+	g_return_val_if_fail (class->send_to_sync != NULL, FALSE);
 
 	camel_transport_lock (transport, CAMEL_TRANSPORT_SEND_LOCK);
 
-	success = class->send_to (
+	success = class->send_to_sync (
 		transport, message, from, recipients, cancellable, error);
-	CAMEL_CHECK_GERROR (transport, send_to, success, error);
+	CAMEL_CHECK_GERROR (transport, send_to_sync, success, error);
 
 	camel_transport_unlock (transport, CAMEL_TRANSPORT_SEND_LOCK);
 

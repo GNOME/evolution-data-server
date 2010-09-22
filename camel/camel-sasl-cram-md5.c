@@ -58,10 +58,10 @@ G_DEFINE_TYPE (CamelSaslCramMd5, camel_sasl_cram_md5, CAMEL_TYPE_SASL)
  */
 
 static GByteArray *
-sasl_cram_md5_challenge (CamelSasl *sasl,
-                         GByteArray *token,
-                         GCancellable *cancellable,
-                         GError **error)
+sasl_cram_md5_challenge_sync (CamelSasl *sasl,
+                              GByteArray *token,
+                              GCancellable *cancellable,
+                              GError **error)
 {
 	CamelService *service;
 	GChecksum *checksum;
@@ -140,7 +140,7 @@ camel_sasl_cram_md5_class_init (CamelSaslCramMd5Class *class)
 	g_type_class_add_private (class, sizeof (CamelSaslCramMd5Private));
 
 	sasl_class = CAMEL_SASL_CLASS (class);
-	sasl_class->challenge = sasl_cram_md5_challenge;
+	sasl_class->challenge_sync = sasl_cram_md5_challenge_sync;
 }
 
 static void

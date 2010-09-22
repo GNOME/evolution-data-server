@@ -52,12 +52,12 @@ sendmail_get_name (CamelService *service,
 }
 
 static gboolean
-sendmail_send_to (CamelTransport *transport,
-                  CamelMimeMessage *message,
-                  CamelAddress *from,
-                  CamelAddress *recipients,
-                  GCancellable *cancellable,
-                  GError **error)
+sendmail_send_to_sync (CamelTransport *transport,
+                       CamelMimeMessage *message,
+                       CamelAddress *from,
+                       CamelAddress *recipients,
+                       GCancellable *cancellable,
+                       GError **error)
 {
 	struct _camel_header_raw *header, *savedbcc, *n, *tail;
 	const gchar *from_addr, *addr, **argv;
@@ -175,7 +175,7 @@ sendmail_send_to (CamelTransport *transport,
 	g_object_unref (out);
 
 	out = (CamelStream *) filter;
-	if (camel_data_wrapper_write_to_stream (
+	if (camel_data_wrapper_write_to_stream_sync (
 		CAMEL_DATA_WRAPPER (message), out, cancellable, error) == -1
 	    || camel_stream_close (out, cancellable, error) == -1) {
 		g_object_unref (CAMEL_OBJECT (out));
@@ -239,7 +239,7 @@ camel_sendmail_transport_class_init (CamelSendmailTransportClass *class)
 	service_class->get_name = sendmail_get_name;
 
 	transport_class = CAMEL_TRANSPORT_CLASS (class);
-	transport_class->send_to = sendmail_send_to;
+	transport_class->send_to_sync = sendmail_send_to_sync;
 }
 
 static void

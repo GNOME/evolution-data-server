@@ -175,7 +175,7 @@ groupwise_entry_play_append (CamelOfflineJournal *journal,
 	}
 
 	message = camel_mime_message_new ();
-	if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) message, stream, cancellable, error) == -1) {
+	if (camel_data_wrapper_construct_from_stream_sync ((CamelDataWrapper *) message, stream, cancellable, error) == -1) {
 		g_object_unref (message);
 		g_object_unref (stream);
 		goto done;
@@ -188,7 +188,8 @@ groupwise_entry_play_append (CamelOfflineJournal *journal,
 		info = camel_message_info_new (NULL);
 	}
 
-	success = camel_folder_append_message (folder, message, info, NULL, cancellable, error);
+	success = camel_folder_append_message_sync (
+		folder, message, info, NULL, cancellable, error);
 	camel_message_info_free (info);
 	g_object_unref (message);
 
@@ -223,11 +224,12 @@ groupwise_entry_play_transfer (CamelOfflineJournal *journal,
 	}
 
 	name = camel_groupwise_store_folder_lookup ((CamelGroupwiseStore *) parent_store, entry->source_container);
-	if (name && (src = camel_store_get_folder (parent_store, name, 0, cancellable, error))) {
+	if (name && (src = camel_store_get_folder_sync (parent_store, name, 0, cancellable, error))) {
 		uids = g_ptr_array_sized_new (1);
 		g_ptr_array_add (uids, entry->original_uid);
 
-		if (camel_folder_transfer_messages_to (src, uids, folder, &xuids, FALSE, cancellable, error)) {
+		if (camel_folder_transfer_messages_to_sync (
+			src, uids, folder, &xuids, FALSE, cancellable, error)) {
 			real = (CamelGroupwiseMessageInfo *) camel_folder_summary_uid (folder->summary, xuids->pdata[0]);
 
 			/* transfer all the system flags, user flags/tags, etc */
@@ -326,7 +328,7 @@ update_cache (CamelGroupwiseJournal *groupwise_journal,
 		return FALSE;
 	}
 
-	if (camel_data_wrapper_write_to_stream (
+	if (camel_data_wrapper_write_to_stream_sync (
 		(CamelDataWrapper *) message, cache, cancellable, error) == -1
 	    || camel_stream_flush (cache, cancellable, error) == -1) {
 		g_prefix_error (

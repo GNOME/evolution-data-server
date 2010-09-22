@@ -138,7 +138,8 @@ struct _CamelCipherContextClass {
 						 const gchar *id);
 	const gchar *	(*hash_to_id)		(CamelCipherContext *context,
 						 CamelCipherHash hash);
-	gint		(*sign)			(CamelCipherContext *context,
+
+	gint		(*sign_sync)		(CamelCipherContext *context,
 						 const gchar *userid,
 						 CamelCipherHash hash,
 						 CamelMimePart *ipart,
@@ -146,11 +147,11 @@ struct _CamelCipherContextClass {
 						 GCancellable *cancellable,
 						 GError **error);
 	CamelCipherValidity *
-			(*verify)		(CamelCipherContext *context,
+			(*verify_sync)		(CamelCipherContext *context,
 						 CamelMimePart *ipart,
 						 GCancellable *cancellable,
 						 GError **error);
-	gint		(*encrypt)		(CamelCipherContext *context,
+	gint		(*encrypt_sync)		(CamelCipherContext *context,
 						 const gchar *userid,
 						 GPtrArray *recipients,
 						 CamelMimePart *ipart,
@@ -158,16 +159,16 @@ struct _CamelCipherContextClass {
 						 GCancellable *cancellable,
 						 GError **error);
 	CamelCipherValidity *
-			(*decrypt)		(CamelCipherContext *context,
+			(*decrypt_sync)		(CamelCipherContext *context,
 						 CamelMimePart *ipart,
 						 CamelMimePart *opart,
 						 GCancellable *cancellable,
 						 GError **error);
-	gint		(*import_keys)		(CamelCipherContext *context,
+	gint		(*import_keys_sync)	(CamelCipherContext *context,
 						 CamelStream *istream,
 						 GCancellable *cancellable,
 						 GError **error);
-	gint		(*export_keys)		(CamelCipherContext *context,
+	gint		(*export_keys_sync)	(CamelCipherContext *context,
 						 GPtrArray *keys,
 						 CamelStream *ostream,
 						 GCancellable *cancellable,
@@ -191,7 +192,7 @@ const gchar *	camel_cipher_hash_to_id		(CamelCipherContext *context,
    to the cipher, etc etc. */
 
 /* cipher routines */
-gint		camel_cipher_sign		(CamelCipherContext *context,
+gint		camel_cipher_sign_sync		(CamelCipherContext *context,
 						 const gchar *userid,
 						 CamelCipherHash hash,
 						 CamelMimePart *ipart,
@@ -199,11 +200,11 @@ gint		camel_cipher_sign		(CamelCipherContext *context,
 						 GCancellable *cancellable,
 						 GError **error);
 CamelCipherValidity *
-		camel_cipher_verify		(CamelCipherContext *context,
+		camel_cipher_verify_sync	(CamelCipherContext *context,
 						 CamelMimePart *ipart,
 						 GCancellable *cancellable,
 						 GError **error);
-gint		camel_cipher_encrypt		(CamelCipherContext *context,
+gint		camel_cipher_encrypt_sync	(CamelCipherContext *context,
 						 const gchar *userid,
 						 GPtrArray *recipients,
 						 CamelMimePart *ipart,
@@ -211,18 +212,18 @@ gint		camel_cipher_encrypt		(CamelCipherContext *context,
 						 GCancellable *cancellable,
 						 GError **error);
 CamelCipherValidity *
-		camel_cipher_decrypt		(CamelCipherContext *context,
+		camel_cipher_decrypt_sync	(CamelCipherContext *context,
 						 CamelMimePart *ipart,
 						 CamelMimePart *opart,
 						 GCancellable *cancellable,
 						 GError **error);
 
 /* key/certificate routines */
-gint		camel_cipher_import_keys	(CamelCipherContext *context,
+gint		camel_cipher_import_keys_sync	(CamelCipherContext *context,
 						 CamelStream *istream,
 						 GCancellable *cancellable,
 						 GError **error);
-gint		camel_cipher_export_keys	(CamelCipherContext *context,
+gint		camel_cipher_export_keys_sync	(CamelCipherContext *context,
 						 GPtrArray *keys,
 						 CamelStream *ostream,
 						 GCancellable *cancellable,

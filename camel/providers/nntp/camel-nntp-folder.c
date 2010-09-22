@@ -295,80 +295,6 @@ nntp_folder_cache_message (CamelDiscoFolder *disco_folder,
 	return success;
 }
 
-static CamelMimeMessage *
-nntp_folder_get_message (CamelFolder *folder,
-                         const gchar *uid,
-                         GCancellable *cancellable,
-                         GError **error)
-{
-	CamelStore *parent_store;
-	CamelMimeMessage *message = NULL;
-	CamelNNTPStore *nntp_store;
-	CamelFolderChangeInfo *changes;
-	CamelNNTPFolder *nntp_folder;
-	CamelStream *stream = NULL;
-	gchar *article, *msgid;
-
-	parent_store = camel_folder_get_parent_store (folder);
-
-	nntp_folder = CAMEL_NNTP_FOLDER (folder);
-	nntp_store = CAMEL_NNTP_STORE (parent_store);
-
-	article = alloca (strlen (uid)+1);
-	strcpy (article, uid);
-	msgid = strchr (article, ',');
-	if (msgid == NULL) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Internal error: UID in invalid format: %s"), uid);
-		return NULL;
-	}
-	*msgid++ = 0;
-
-	camel_service_lock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
-	/* Lookup in cache, NEWS is global messageid's so use a global cache path */
-	stream = camel_data_cache_get (nntp_store->cache, "cache", msgid, NULL);
-	if (stream == NULL) {
-		if (camel_disco_store_status ((CamelDiscoStore *) nntp_store) == CAMEL_DISCO_STORE_OFFLINE) {
-			g_set_error (
-				error, CAMEL_SERVICE_ERROR,
-				CAMEL_SERVICE_ERROR_UNAVAILABLE,
-				_("This message is not currently available"));
-			goto fail;
-		}
-
-		stream = nntp_folder_download_message (nntp_folder, article, msgid, cancellable, error);
-		if (stream == NULL)
-			goto fail;
-	}
-
-	message = camel_mime_message_new ();
-	if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) message, stream, cancellable, error) == -1) {
-		g_prefix_error (error, _("Cannot get message %s: "), uid);
-		g_object_unref (message);
-		message = NULL;
-	}
-
-	g_object_unref (stream);
-fail:
-	if (camel_folder_change_info_changed (nntp_folder->changes)) {
-		changes = nntp_folder->changes;
-		nntp_folder->changes = camel_folder_change_info_new ();
-	} else {
-		changes = NULL;
-	}
-
-	camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
-	if (changes) {
-		camel_folder_changed (folder, changes);
-		camel_folder_change_info_free (changes);
-	}
-
-	return message;
-}
-
 static GPtrArray*
 nntp_folder_search_by_expression (CamelFolder *folder, const gchar *expression, GError **error)
 {
@@ -437,6 +363,80 @@ nntp_folder_search_free (CamelFolder *folder, GPtrArray *result)
 	CAMEL_NNTP_FOLDER_LOCK (nntp_folder, search_lock);
 	camel_folder_search_free_result (nntp_folder->search, result);
 	CAMEL_NNTP_FOLDER_UNLOCK (nntp_folder, search_lock);
+}
+
+static CamelMimeMessage *
+nntp_folder_get_message_sync (CamelFolder *folder,
+                              const gchar *uid,
+                              GCancellable *cancellable,
+                              GError **error)
+{
+	CamelStore *parent_store;
+	CamelMimeMessage *message = NULL;
+	CamelNNTPStore *nntp_store;
+	CamelFolderChangeInfo *changes;
+	CamelNNTPFolder *nntp_folder;
+	CamelStream *stream = NULL;
+	gchar *article, *msgid;
+
+	parent_store = camel_folder_get_parent_store (folder);
+
+	nntp_folder = CAMEL_NNTP_FOLDER (folder);
+	nntp_store = CAMEL_NNTP_STORE (parent_store);
+
+	article = alloca (strlen (uid)+1);
+	strcpy (article, uid);
+	msgid = strchr (article, ',');
+	if (msgid == NULL) {
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Internal error: UID in invalid format: %s"), uid);
+		return NULL;
+	}
+	*msgid++ = 0;
+
+	camel_service_lock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+
+	/* Lookup in cache, NEWS is global messageid's so use a global cache path */
+	stream = camel_data_cache_get (nntp_store->cache, "cache", msgid, NULL);
+	if (stream == NULL) {
+		if (camel_disco_store_status ((CamelDiscoStore *) nntp_store) == CAMEL_DISCO_STORE_OFFLINE) {
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_UNAVAILABLE,
+				_("This message is not currently available"));
+			goto fail;
+		}
+
+		stream = nntp_folder_download_message (nntp_folder, article, msgid, cancellable, error);
+		if (stream == NULL)
+			goto fail;
+	}
+
+	message = camel_mime_message_new ();
+	if (camel_data_wrapper_construct_from_stream_sync ((CamelDataWrapper *) message, stream, cancellable, error) == -1) {
+		g_prefix_error (error, _("Cannot get message %s: "), uid);
+		g_object_unref (message);
+		message = NULL;
+	}
+
+	g_object_unref (stream);
+fail:
+	if (camel_folder_change_info_changed (nntp_folder->changes)) {
+		changes = nntp_folder->changes;
+		nntp_folder->changes = camel_folder_change_info_new ();
+	} else {
+		changes = NULL;
+	}
+
+	camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+
+	if (changes) {
+		camel_folder_changed (folder, changes);
+		camel_folder_change_info_free (changes);
+	}
+
+	return message;
 }
 
 static gboolean
@@ -518,7 +518,7 @@ nntp_folder_append_message_online (CamelFolder *folder,
 
 	/* write the message */
 	if (camel_stream_write (stream, group, strlen (group), cancellable, error) == -1
-	    || camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (mime_message), filtered_stream, cancellable, error) == -1
+	    || camel_data_wrapper_write_to_stream_sync (CAMEL_DATA_WRAPPER (mime_message), filtered_stream, cancellable, error) == -1
 	    || camel_stream_flush (filtered_stream, cancellable, error) == -1
 	    || camel_stream_write (stream, "\r\n.\r\n", 5, cancellable, error) == -1
 	    || (ret = camel_nntp_stream_line (nntp_store->stream, (guchar **)&line, &u, cancellable, error)) == -1) {
@@ -590,12 +590,12 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 	object_class->finalize = nntp_folder_finalize;
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
-	folder_class->get_message = nntp_folder_get_message;
 	folder_class->search_by_expression = nntp_folder_search_by_expression;
 	folder_class->count_by_expression = nntp_folder_count_by_expression;
 	folder_class->search_by_uids = nntp_folder_search_by_uids;
 	folder_class->search_free = nntp_folder_search_free;
 	folder_class->get_filename = nntp_get_filename;
+	folder_class->get_message_sync = nntp_folder_get_message_sync;
 
 	disco_folder_class = CAMEL_DISCO_FOLDER_CLASS (class);
 	disco_folder_class->sync_online = nntp_folder_sync_online;
@@ -671,7 +671,7 @@ camel_nntp_folder_new (CamelStore *parent,
 		camel_store_summary_info_free ((CamelStoreSummary *) ((CamelNNTPStore*) parent)->summary, si);
 	}
 
-	if (subscribed && !camel_folder_refresh_info (
+	if (subscribed && !camel_folder_refresh_info_sync (
 			folder, cancellable, error)) {
 		g_object_unref (folder);
 		folder = NULL;

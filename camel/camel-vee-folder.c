@@ -985,183 +985,6 @@ vee_folder_finalize (GObject *object)
 	G_OBJECT_CLASS (camel_vee_folder_parent_class)->finalize (object);
 }
 
-static gboolean
-vee_folder_refresh_info (CamelFolder *folder,
-                         GCancellable *cancellable,
-                         GError **error)
-{
-	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
-	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
-	GList *node, *list;
-	gboolean success = TRUE;
-
-	camel_vee_folder_lock (vf, CAMEL_VEE_FOLDER_CHANGED_LOCK);
-	list = p->folders_changed;
-	p->folders_changed = NULL;
-	camel_vee_folder_unlock (vf, CAMEL_VEE_FOLDER_CHANGED_LOCK);
-
-	node = list;
-	while (node) {
-		CamelFolder *f = node->data;
-
-		if (camel_vee_folder_rebuild_folder (vf, f, error) == -1) {
-			success = FALSE;
-			break;
-		}
-
-		node = node->next;
-	}
-
-	g_list_free (list);
-
-	return success;
-}
-
-static gboolean
-vee_folder_sync (CamelFolder *folder,
-                 gboolean expunge,
-                 GCancellable *cancellable,
-                 GError **error)
-{
-	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
-	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
-	GList *node;
-	GError *local_error = NULL;
-
-	if (((CamelVeeSummary *)folder->summary)->fake_visible_count)
-		folder->summary->visible_count = ((CamelVeeSummary *)folder->summary)->fake_visible_count;
-	((CamelVeeSummary *)folder->summary)->fake_visible_count = 0;
-
-	camel_vee_folder_lock (vf, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
-
-	node = p->folders;
-	while (node) {
-		CamelFolder *f = node->data;
-
-		if (!camel_folder_sync (f, expunge, cancellable, &local_error)) {
-			if (strncmp (local_error->message, "no such table", 13) != 0) {
-				const gchar *desc;
-
-				desc = camel_folder_get_description (f);
-				g_warning ("%s", local_error->message);
-				g_propagate_prefixed_error (
-					error, local_error,
-					_("Error storing '%s': "), desc);
-			} else
-				g_clear_error (&local_error);
-		}
-
-		/* auto update vfolders shouldn't need a rebuild */
-/*		if ((vf->flags & CAMEL_STORE_VEE_FOLDER_AUTO) == 0 */
-/*		    && camel_vee_folder_rebuild_folder (vf, f, ex) == -1) */
-/*			break; */
-
-		node = node->next;
-	}
-
-	if (vf->priv->unread_vfolder == 1) {
-		/* Cleanup Junk/Trash uids */
-		CamelStore *parent_store;
-		const gchar *full_name;
-		GSList *del = NULL;
-		gint i, count;
-
-		camel_folder_summary_prepare_fetch_all (folder->summary, NULL);
-		count = camel_folder_summary_count (folder->summary);
-		for (i=0; i < count; i++) {
-			CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *)camel_folder_summary_index (folder->summary, i);
-			if (mi->old_flags & CAMEL_MESSAGE_DELETED) {
-				del = g_slist_prepend (del, (gpointer) camel_pstring_strdup (((CamelMessageInfo *)mi)->uid));
-				camel_folder_summary_remove_index_fast (folder->summary, i);
-				count--;
-				i--;
-
-			}
-			camel_message_info_free (mi);
-		}
-
-		full_name = camel_folder_get_full_name (folder);
-		parent_store = camel_folder_get_parent_store (folder);
-		camel_db_delete_vuids (parent_store->cdb_w, full_name, "", del, NULL);
-		g_slist_foreach (del, (GFunc) camel_pstring_free, NULL);
-		g_slist_free (del);
-	}
-	camel_vee_folder_unlock (vf, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
-
-	camel_object_state_write (CAMEL_OBJECT (vf));
-
-	return TRUE;
-}
-
-static gboolean
-vee_folder_expunge (CamelFolder *folder,
-                    GCancellable *cancellable,
-                    GError **error)
-{
-	/* Force it to rebuild the counts, when some folders were expunged. */
-	((CamelVeeSummary *) folder->summary)->force_counts = TRUE;
-
-	return CAMEL_FOLDER_GET_CLASS (folder)->
-		sync (folder, TRUE, cancellable, error);
-}
-
-static CamelMimeMessage *
-vee_folder_get_message (CamelFolder *folder,
-                        const gchar *uid,
-                        GCancellable *cancellable,
-                        GError **error)
-{
-	CamelVeeMessageInfo *mi;
-	CamelMimeMessage *msg = NULL;
-
-	mi = (CamelVeeMessageInfo *)camel_folder_summary_uid (folder->summary, uid);
-	if (mi) {
-		msg = camel_folder_get_message (
-			mi->summary->folder, camel_message_info_uid (mi)+8,
-			cancellable, error);
-		camel_message_info_free ((CamelMessageInfo *)mi);
-	} else {
-		g_set_error (
-			error, CAMEL_FOLDER_ERROR,
-			CAMEL_FOLDER_ERROR_INVALID_UID,
-			_("No such message %s in %s"), uid,
-			camel_folder_get_name (folder));
-	}
-
-	return msg;
-}
-
-static gboolean
-vee_folder_append_message (CamelFolder *folder,
-                           CamelMimeMessage *message,
-                           const CamelMessageInfo *info,
-                           gchar **appended_uid,
-                           GCancellable *cancellable,
-                           GError **error)
-{
-	g_set_error (
-		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-		_("Cannot copy or move messages into a Virtual Folder"));
-
-	return FALSE;
-}
-
-static gboolean
-vee_folder_transfer_messages_to (CamelFolder *folder,
-                                 GPtrArray *uids,
-                                 CamelFolder *dest,
-                                 GPtrArray **transferred_uids,
-                                 gboolean delete_originals,
-                                 GCancellable *cancellable,
-                                 GError **error)
-{
-	g_set_error (
-		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-		_("Cannot copy or move messages into a Virtual Folder"));
-
-	return FALSE;
-}
-
 static GPtrArray *
 vee_folder_search_by_expression (CamelFolder *folder,
                                  const gchar *expression,
@@ -1382,6 +1205,183 @@ vee_folder_thaw (CamelFolder *folder)
 
 	/* call parent implementation */
 	CAMEL_FOLDER_CLASS (camel_vee_folder_parent_class)->thaw (folder);
+}
+
+static gboolean
+vee_folder_append_message_sync (CamelFolder *folder,
+                                CamelMimeMessage *message,
+                                const CamelMessageInfo *info,
+                                gchar **appended_uid,
+                                GCancellable *cancellable,
+                                GError **error)
+{
+	g_set_error (
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		_("Cannot copy or move messages into a Virtual Folder"));
+
+	return FALSE;
+}
+
+static gboolean
+vee_folder_expunge_sync (CamelFolder *folder,
+                         GCancellable *cancellable,
+                         GError **error)
+{
+	/* Force it to rebuild the counts, when some folders were expunged. */
+	((CamelVeeSummary *) folder->summary)->force_counts = TRUE;
+
+	return CAMEL_FOLDER_GET_CLASS (folder)->
+		synchronize_sync (folder, TRUE, cancellable, error);
+}
+
+static CamelMimeMessage *
+vee_folder_get_message_sync (CamelFolder *folder,
+                             const gchar *uid,
+                             GCancellable *cancellable,
+                             GError **error)
+{
+	CamelVeeMessageInfo *mi;
+	CamelMimeMessage *msg = NULL;
+
+	mi = (CamelVeeMessageInfo *)camel_folder_summary_uid (folder->summary, uid);
+	if (mi) {
+		msg = camel_folder_get_message_sync (
+			mi->summary->folder, camel_message_info_uid (mi)+8,
+			cancellable, error);
+		camel_message_info_free ((CamelMessageInfo *)mi);
+	} else {
+		g_set_error (
+			error, CAMEL_FOLDER_ERROR,
+			CAMEL_FOLDER_ERROR_INVALID_UID,
+			_("No such message %s in %s"), uid,
+			camel_folder_get_name (folder));
+	}
+
+	return msg;
+}
+
+static gboolean
+vee_folder_refresh_info_sync (CamelFolder *folder,
+                              GCancellable *cancellable,
+                              GError **error)
+{
+	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
+	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
+	GList *node, *list;
+	gboolean success = TRUE;
+
+	camel_vee_folder_lock (vf, CAMEL_VEE_FOLDER_CHANGED_LOCK);
+	list = p->folders_changed;
+	p->folders_changed = NULL;
+	camel_vee_folder_unlock (vf, CAMEL_VEE_FOLDER_CHANGED_LOCK);
+
+	node = list;
+	while (node) {
+		CamelFolder *f = node->data;
+
+		if (camel_vee_folder_rebuild_folder (vf, f, error) == -1) {
+			success = FALSE;
+			break;
+		}
+
+		node = node->next;
+	}
+
+	g_list_free (list);
+
+	return success;
+}
+
+static gboolean
+vee_folder_synchronize_sync (CamelFolder *folder,
+                             gboolean expunge,
+                             GCancellable *cancellable,
+                             GError **error)
+{
+	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
+	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
+	GList *node;
+	GError *local_error = NULL;
+
+	if (((CamelVeeSummary *)folder->summary)->fake_visible_count)
+		folder->summary->visible_count = ((CamelVeeSummary *)folder->summary)->fake_visible_count;
+	((CamelVeeSummary *)folder->summary)->fake_visible_count = 0;
+
+	camel_vee_folder_lock (vf, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
+
+	node = p->folders;
+	while (node) {
+		CamelFolder *f = node->data;
+
+		if (!camel_folder_synchronize_sync (f, expunge, cancellable, &local_error)) {
+			if (strncmp (local_error->message, "no such table", 13) != 0) {
+				const gchar *desc;
+
+				desc = camel_folder_get_description (f);
+				g_warning ("%s", local_error->message);
+				g_propagate_prefixed_error (
+					error, local_error,
+					_("Error storing '%s': "), desc);
+			} else
+				g_clear_error (&local_error);
+		}
+
+		/* auto update vfolders shouldn't need a rebuild */
+/*		if ((vf->flags & CAMEL_STORE_VEE_FOLDER_AUTO) == 0 */
+/*		    && camel_vee_folder_rebuild_folder (vf, f, ex) == -1) */
+/*			break; */
+
+		node = node->next;
+	}
+
+	if (vf->priv->unread_vfolder == 1) {
+		/* Cleanup Junk/Trash uids */
+		CamelStore *parent_store;
+		const gchar *full_name;
+		GSList *del = NULL;
+		gint i, count;
+
+		camel_folder_summary_prepare_fetch_all (folder->summary, NULL);
+		count = camel_folder_summary_count (folder->summary);
+		for (i=0; i < count; i++) {
+			CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *)camel_folder_summary_index (folder->summary, i);
+			if (mi->old_flags & CAMEL_MESSAGE_DELETED) {
+				del = g_slist_prepend (del, (gpointer) camel_pstring_strdup (((CamelMessageInfo *)mi)->uid));
+				camel_folder_summary_remove_index_fast (folder->summary, i);
+				count--;
+				i--;
+
+			}
+			camel_message_info_free (mi);
+		}
+
+		full_name = camel_folder_get_full_name (folder);
+		parent_store = camel_folder_get_parent_store (folder);
+		camel_db_delete_vuids (parent_store->cdb_w, full_name, "", del, NULL);
+		g_slist_foreach (del, (GFunc) camel_pstring_free, NULL);
+		g_slist_free (del);
+	}
+	camel_vee_folder_unlock (vf, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
+
+	camel_object_state_write (CAMEL_OBJECT (vf));
+
+	return TRUE;
+}
+
+static gboolean
+vee_folder_transfer_messages_to_sync (CamelFolder *folder,
+                                      GPtrArray *uids,
+                                      CamelFolder *dest,
+                                      GPtrArray **transferred_uids,
+                                      gboolean delete_originals,
+                                      GCancellable *cancellable,
+                                      GError **error)
+{
+	g_set_error (
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		_("Cannot copy or move messages into a Virtual Folder"));
+
+	return FALSE;
 }
 
 static void
@@ -1918,18 +1918,18 @@ camel_vee_folder_class_init (CamelVeeFolderClass *class)
 	object_class->finalize = vee_folder_finalize;
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
-	folder_class->refresh_info = vee_folder_refresh_info;
-	folder_class->sync = vee_folder_sync;
-	folder_class->expunge = vee_folder_expunge;
-	folder_class->get_message = vee_folder_get_message;
-	folder_class->append_message = vee_folder_append_message;
-	folder_class->transfer_messages_to = vee_folder_transfer_messages_to;
 	folder_class->search_by_expression = vee_folder_search_by_expression;
 	folder_class->search_by_uids = vee_folder_search_by_uids;
 	folder_class->count_by_expression = vee_folder_count_by_expression;
 	folder_class->delete = vee_folder_delete;
 	folder_class->freeze = vee_folder_freeze;
 	folder_class->thaw = vee_folder_thaw;
+	folder_class->append_message_sync = vee_folder_append_message_sync;
+	folder_class->expunge_sync = vee_folder_expunge_sync;
+	folder_class->get_message_sync = vee_folder_get_message_sync;
+	folder_class->refresh_info_sync = vee_folder_refresh_info_sync;
+	folder_class->synchronize_sync = vee_folder_synchronize_sync;
+	folder_class->transfer_messages_to_sync = vee_folder_transfer_messages_to_sync;
 
 	class->set_expression = vee_folder_set_expression;
 	class->add_folder = vee_folder_add_folder;

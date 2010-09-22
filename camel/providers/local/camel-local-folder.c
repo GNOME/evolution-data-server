@@ -216,65 +216,6 @@ local_folder_constructed (GObject *object)
 	g_free (path);
 }
 
-static gboolean
-local_folder_refresh_info (CamelFolder *folder,
-                           GCancellable *cancellable,
-                           GError **error)
-{
-	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
-
-	if (camel_local_summary_check ((CamelLocalSummary *)folder->summary, lf->changes, cancellable, error) == -1)
-		return FALSE;
-
-	if (camel_folder_change_info_changed (lf->changes)) {
-		camel_folder_changed (folder, lf->changes);
-		camel_folder_change_info_clear (lf->changes);
-	}
-
-	return TRUE;
-}
-
-static gboolean
-local_folder_sync (CamelFolder *folder,
-                   gboolean expunge,
-                   GCancellable *cancellable,
-                   GError **error)
-{
-	CamelLocalFolder *lf = CAMEL_LOCAL_FOLDER (folder);
-	gboolean success;
-
-	d(printf("local sync '%s' , expunge=%s\n", folder->full_name, expunge?"true":"false"));
-
-	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
-		return FALSE;
-
-	camel_object_state_write (CAMEL_OBJECT (lf));
-
-	/* if sync fails, we'll pass it up on exit through ex */
-	success = (camel_local_summary_sync (
-		(CamelLocalSummary *)folder->summary,
-		expunge, lf->changes, cancellable, error) == 0);
-	camel_local_folder_unlock (lf);
-
-	if (camel_folder_change_info_changed (lf->changes)) {
-		camel_folder_changed (folder, lf->changes);
-		camel_folder_change_info_clear (lf->changes);
-	}
-
-	return success;
-}
-
-static gboolean
-local_folder_expunge (CamelFolder *folder,
-                      GCancellable *cancellable,
-                      GError **error)
-{
-	/* Just do a sync with expunge, serves the same purpose */
-	/* call the callback directly, to avoid locking problems */
-	return CAMEL_FOLDER_GET_CLASS (folder)->sync (
-		folder, TRUE, cancellable, error);
-}
-
 static GPtrArray *
 local_folder_search_by_expression (CamelFolder *folder,
                                    const gchar *expression,
@@ -416,6 +357,65 @@ local_folder_get_uncached_uids (CamelFolder *folder,
 	return g_ptr_array_new ();
 }
 
+static gboolean
+local_folder_expunge_sync (CamelFolder *folder,
+                           GCancellable *cancellable,
+                           GError **error)
+{
+	/* Just do a sync with expunge, serves the same purpose */
+	/* call the callback directly, to avoid locking problems */
+	return CAMEL_FOLDER_GET_CLASS (folder)->synchronize_sync (
+		folder, TRUE, cancellable, error);
+}
+
+static gboolean
+local_folder_refresh_info_sync (CamelFolder *folder,
+                                GCancellable *cancellable,
+                                GError **error)
+{
+	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
+
+	if (camel_local_summary_check ((CamelLocalSummary *)folder->summary, lf->changes, cancellable, error) == -1)
+		return FALSE;
+
+	if (camel_folder_change_info_changed (lf->changes)) {
+		camel_folder_changed (folder, lf->changes);
+		camel_folder_change_info_clear (lf->changes);
+	}
+
+	return TRUE;
+}
+
+static gboolean
+local_folder_synchronize_sync (CamelFolder *folder,
+                               gboolean expunge,
+                               GCancellable *cancellable,
+                               GError **error)
+{
+	CamelLocalFolder *lf = CAMEL_LOCAL_FOLDER (folder);
+	gboolean success;
+
+	d(printf("local sync '%s' , expunge=%s\n", folder->full_name, expunge?"true":"false"));
+
+	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
+		return FALSE;
+
+	camel_object_state_write (CAMEL_OBJECT (lf));
+
+	/* if sync fails, we'll pass it up on exit through ex */
+	success = (camel_local_summary_sync (
+		(CamelLocalSummary *)folder->summary,
+		expunge, lf->changes, cancellable, error) == 0);
+	camel_local_folder_unlock (lf);
+
+	if (camel_folder_change_info_changed (lf->changes)) {
+		camel_folder_changed (folder, lf->changes);
+		camel_folder_change_info_clear (lf->changes);
+	}
+
+	return success;
+}
+
 static gint
 local_folder_lock (CamelLocalFolder *lf,
                    CamelLockType type,
@@ -446,9 +446,6 @@ camel_local_folder_class_init (CamelLocalFolderClass *class)
 	object_class->constructed = local_folder_constructed;
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
-	folder_class->refresh_info = local_folder_refresh_info;
-	folder_class->sync = local_folder_sync;
-	folder_class->expunge = local_folder_expunge;
 	folder_class->search_by_expression = local_folder_search_by_expression;
 	folder_class->search_by_uids = local_folder_search_by_uids;
 	folder_class->search_free = local_folder_search_free;
@@ -456,6 +453,9 @@ camel_local_folder_class_init (CamelLocalFolderClass *class)
 	folder_class->rename = local_folder_rename;
 	folder_class->count_by_expression = local_folder_count_by_expression;
 	folder_class->get_uncached_uids = local_folder_get_uncached_uids;
+	folder_class->expunge_sync = local_folder_expunge_sync;
+	folder_class->refresh_info_sync = local_folder_refresh_info_sync;
+	folder_class->synchronize_sync = local_folder_synchronize_sync;
 
 	class->lock = local_folder_lock;
 	class->unlock = local_folder_unlock;

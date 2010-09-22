@@ -241,10 +241,10 @@ send_dbus_message (gchar *name)
 /* END DBus stuff */
 
 static GByteArray *
-sasl_gssapi_challenge (CamelSasl *sasl,
-                       GByteArray *token,
-                       GCancellable *cancellable,
-                       GError **error)
+sasl_gssapi_challenge_sync (CamelSasl *sasl,
+                            GByteArray *token,
+                            GCancellable *cancellable,
+                            GError **error)
 {
 	CamelSaslGssapiPrivate *priv;
 	CamelService *service;
@@ -425,7 +425,7 @@ camel_sasl_gssapi_class_init (CamelSaslGssapiClass *class)
 	object_class->finalize = sasl_gssapi_finalize;
 
 	sasl_class = CAMEL_SASL_CLASS (class);
-	sasl_class->challenge = sasl_gssapi_challenge;
+	sasl_class->challenge_sync = sasl_gssapi_challenge_sync;
 }
 
 static void

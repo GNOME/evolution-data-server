@@ -38,593 +38,11 @@
 
 #define d(x)
 
-static CamelFolder *get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, GCancellable *cancellable, GError **error);
-static gboolean delete_folder (CamelStore *store, const gchar *folder_name, GCancellable *cancellable, GError **error);
-static gboolean rename_folder (CamelStore *store, const gchar *old, const gchar *new, GCancellable *cancellable, GError **error);
-static CamelFolderInfo *create_folder (CamelStore *store, const gchar *parent_name, const gchar *folder_name, GCancellable *cancellable, GError **error);
-static CamelFolderInfo *get_folder_info (CamelStore *store, const gchar *top, guint32 flags, GCancellable *cancellable, GError **error);
-static gchar *mbox_get_meta_path (CamelLocalStore *ls, const gchar *full_name, const gchar *ext);
-static gchar *mbox_get_full_path (CamelLocalStore *ls, const gchar *full_name);
-
 G_DEFINE_TYPE (CamelMboxStore, camel_mbox_store, CAMEL_TYPE_LOCAL_STORE)
-
-static void
-camel_mbox_store_class_init (CamelMboxStoreClass *class)
-{
-	CamelStoreClass *store_class;
-	CamelLocalStoreClass *local_store_class;
-
-	store_class = CAMEL_STORE_CLASS (class);
-	store_class->get_folder = get_folder;
-	store_class->delete_folder = delete_folder;
-	store_class->rename_folder = rename_folder;
-	store_class->create_folder = create_folder;
-	store_class->get_folder_info = get_folder_info;
-	store_class->free_folder_info = camel_store_free_folder_info_full;
-
-	local_store_class = CAMEL_LOCAL_STORE_CLASS (class);
-	local_store_class->get_full_path = mbox_get_full_path;
-	local_store_class->get_meta_path = mbox_get_meta_path;
-}
-
-static void
-camel_mbox_store_init (CamelMboxStore *mbox_store)
-{
-}
 
 static const gchar *extensions[] = {
 	".msf", ".ev-summary", ".ev-summary-meta", ".ibex.index", ".ibex.index.data", ".cmeta", ".lock", ".db", ".journal"
 };
-
-static gboolean
-ignore_file (const gchar *filename, gboolean sbd)
-{
-	gint flen, len, i;
-
-	/* TODO: Should probably just be 1 regex */
-	flen = strlen (filename);
-	if (flen > 0 && filename[flen-1] == '~')
-		return TRUE;
-
-	for (i = 0; i < G_N_ELEMENTS (extensions); i++) {
-		len = strlen (extensions[i]);
-		if (len < flen && !strcmp (filename + flen - len, extensions[i]))
-			return TRUE;
-	}
-
-	if (sbd && flen > 4 && !strcmp(filename + flen - 4, ".sbd"))
-		return TRUE;
-
-	return FALSE;
-}
-
-static CamelFolder *
-get_folder (CamelStore *store,
-            const gchar *folder_name,
-            guint32 flags,
-            GCancellable *cancellable,
-            GError **error)
-{
-	CamelStoreClass *store_class;
-	struct stat st;
-	gchar *name;
-
-	/* Chain up to parent's get_folder() method. */
-	store_class = CAMEL_STORE_CLASS (camel_mbox_store_parent_class);
-	if (!store_class->get_folder (store, folder_name, flags, cancellable, error))
-		return NULL;
-
-	name = camel_local_store_get_full_path (store, folder_name);
-
-	if (g_stat (name, &st) == -1) {
-		gchar *basename;
-		gchar *dirname;
-		gint fd;
-
-		if (errno != ENOENT) {
-			g_set_error (
-				error, G_IO_ERROR,
-				g_io_error_from_errno (errno),
-				_("Cannot get folder '%s': %s"),
-				folder_name, g_strerror (errno));
-			g_free (name);
-			return NULL;
-		}
-
-		if ((flags & CAMEL_STORE_FOLDER_CREATE) == 0) {
-			g_set_error (
-				error, CAMEL_STORE_ERROR,
-				CAMEL_STORE_ERROR_NO_FOLDER,
-				_("Cannot get folder '%s': folder does not exist."),
-				folder_name);
-			g_free (name);
-			return NULL;
-		}
-
-		/* sanity check the folder name */
-		basename = g_path_get_basename (folder_name);
-
-		if (basename[0] == '.' || ignore_file (basename, TRUE)) {
-			g_set_error (
-				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				_("Cannot create a folder by this name."));
-			g_free (name);
-			g_free (basename);
-			return NULL;
-		}
-		g_free (basename);
-
-		dirname = g_path_get_dirname (name);
-		if (g_mkdir_with_parents (dirname, 0700) == -1 && errno != EEXIST) {
-			g_set_error (
-				error, G_IO_ERROR,
-				g_io_error_from_errno (errno),
-				_("Cannot create folder '%s': %s"),
-				folder_name, g_strerror (errno));
-			g_free (dirname);
-			g_free (name);
-			return NULL;
-		}
-
-		g_free (dirname);
-
-		fd = g_open (name, O_LARGEFILE | O_WRONLY | O_CREAT | O_APPEND | O_BINARY, 0666);
-		if (fd == -1) {
-			g_set_error (
-				error, G_IO_ERROR,
-				g_io_error_from_errno (errno),
-				_("Cannot create folder '%s': %s"),
-				folder_name, g_strerror (errno));
-			g_free (name);
-			return NULL;
-		}
-
-		g_free (name);
-		close (fd);
-	} else if (!S_ISREG (st.st_mode)) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Cannot get folder '%s': not a regular file."),
-			folder_name);
-		g_free (name);
-		return NULL;
-	} else if (flags & CAMEL_STORE_FOLDER_EXCL) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Cannot create folder '%s': folder exists."),
-			folder_name);
-		g_free (name);
-		return NULL;
-	} else
-		g_free (name);
-
-	return camel_mbox_folder_new (store, folder_name, flags, cancellable, error);
-}
-
-static gboolean
-delete_folder (CamelStore *store,
-               const gchar *folder_name,
-               GCancellable *cancellable,
-               GError **error)
-{
-	CamelFolderInfo *fi;
-	CamelFolder *lf;
-	gchar *name, *path;
-	struct stat st;
-
-	name = camel_local_store_get_full_path (store, folder_name);
-	path = g_strdup_printf("%s.sbd", name);
-
-	if (g_rmdir (path) == -1 && errno != ENOENT) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			_("Could not delete folder '%s':\n%s"),
-			folder_name, g_strerror (errno));
-		g_free (path);
-		g_free (name);
-		return FALSE;
-	}
-
-	g_free (path);
-
-	if (g_stat (name, &st) == -1) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			_("Could not delete folder '%s':\n%s"),
-			folder_name, g_strerror (errno));
-		g_free (name);
-		return FALSE;
-	}
-
-	if (!S_ISREG (st.st_mode)) {
-		g_set_error (
-			error, CAMEL_STORE_ERROR,
-			CAMEL_STORE_ERROR_NO_FOLDER,
-			_("'%s' is not a regular file."), name);
-		g_free (name);
-		return FALSE;
-	}
-
-	if (st.st_size != 0) {
-		g_set_error (
-			error, CAMEL_FOLDER_ERROR,
-			CAMEL_FOLDER_ERROR_NON_EMPTY,
-			_("Folder '%s' is not empty. Not deleted."),
-			folder_name);
-		g_free (name);
-		return FALSE;
-	}
-
-	if (g_unlink (name) == -1 && errno != ENOENT) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			_("Could not delete folder '%s':\n%s"),
-			name, g_strerror (errno));
-		g_free (name);
-		return FALSE;
-	}
-
-	/* FIXME: we have to do our own meta cleanup here rather than
-	 * calling our parent class' delete_folder() method since our
-	 * naming convention is different. Need to find a way for
-	 * CamelLocalStore to be able to construct the folder & meta
-	 * paths itself */
-	path = camel_local_store_get_meta_path(store, folder_name, ".ev-summary");
-	if (g_unlink (path) == -1 && errno != ENOENT) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			_("Could not delete folder summary file '%s': %s"),
-			path, g_strerror (errno));
-		g_free (path);
-		g_free (name);
-		return FALSE;
-	}
-
-	g_free (path);
-
-	path = camel_local_store_get_meta_path(store, folder_name, ".ev-summary-meta");
-	if (g_unlink (path) == -1 && errno != ENOENT) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			_("Could not delete folder summary file '%s': %s"),
-			path, g_strerror (errno));
-		g_free (path);
-		g_free (name);
-		return FALSE;
-	}
-
-	g_free (path);
-
-	path = camel_local_store_get_meta_path(store, folder_name, ".ibex");
-	if (camel_text_index_remove (path) == -1 && errno != ENOENT) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			_("Could not delete folder index file '%s': %s"),
-			path, g_strerror (errno));
-		g_free (path);
-		g_free (name);
-		return FALSE;
-	}
-
-	g_free (path);
-
-	path = NULL;
-	if ((lf = camel_store_get_folder (store, folder_name, 0, cancellable, NULL))) {
-		CamelObject *object = CAMEL_OBJECT (lf);
-		const gchar *state_filename;
-
-		state_filename = camel_object_get_state_filename (object);
-		path = g_strdup (state_filename);
-
-		camel_object_set_state_filename (object, NULL);
-
-		g_object_unref (lf);
-	}
-
-	if (path == NULL)
-		path = camel_local_store_get_meta_path(store, folder_name, ".cmeta");
-
-	if (g_unlink (path) == -1 && errno != ENOENT) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			_("Could not delete folder meta file '%s': %s"),
-			path, g_strerror (errno));
-
-		g_free (path);
-		g_free (name);
-		return FALSE;
-	}
-
-	g_free (path);
-	g_free (name);
-
-	fi = camel_folder_info_new ();
-	fi->full_name = g_strdup (folder_name);
-	fi->name = g_path_get_basename (folder_name);
-	fi->uri = g_strdup_printf("mbox:%s#%s",((CamelService *) store)->url->path, folder_name);
-	fi->unread = -1;
-
-	camel_store_folder_deleted (store, fi);
-	camel_folder_info_free (fi);
-
-	return TRUE;
-}
-
-static CamelFolderInfo *
-create_folder (CamelStore *store,
-               const gchar *parent_name,
-               const gchar *folder_name,
-               GCancellable *cancellable,
-               GError **error)
-{
-	/* FIXME: this is almost an exact copy of CamelLocalStore::create_folder() except that we use
-	 * different path schemes... need to find a way to share parent's code? */
-	const gchar *toplevel_dir =((CamelLocalStore *) store)->toplevel_dir;
-	CamelFolderInfo *info = NULL;
-	gchar *path, *name, *dir;
-	CamelFolder *folder;
-	struct stat st;
-
-	if (!g_path_is_absolute (toplevel_dir)) {
-		g_set_error (
-			error, CAMEL_STORE_ERROR,
-			CAMEL_STORE_ERROR_NO_FOLDER,
-			_("Store root %s is not an absolute path"),
-			toplevel_dir);
-		return NULL;
-	}
-
-	if (folder_name[0] == '.' || ignore_file (folder_name, TRUE)) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Cannot create a folder by this name."));
-		return NULL;
-	}
-
-	if (parent_name && *parent_name)
-		name = g_strdup_printf("%s/%s", parent_name, folder_name);
-	else
-		name = g_strdup (folder_name);
-
-	path = camel_local_store_get_full_path (store, name);
-
-	dir = g_path_get_dirname (path);
-	if (g_mkdir_with_parents (dir, 0777) == -1 && errno != EEXIST) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			_("Cannot create directory '%s': %s."),
-			dir, g_strerror (errno));
-
-		g_free (path);
-		g_free (name);
-		g_free (dir);
-
-		return NULL;
-	}
-
-	g_free (dir);
-
-	if (g_stat (path, &st) == 0 || errno != ENOENT) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			_("Cannot create folder: %s: %s"),
-			path, errno ? g_strerror (errno) :
-			_("Folder already exists"));
-
-		g_free (path);
-		g_free (name);
-
-		return NULL;
-	}
-
-	g_free (path);
-
-	folder = CAMEL_STORE_GET_CLASS (store)->get_folder (
-		store, name, CAMEL_STORE_FOLDER_CREATE, cancellable, error);
-	if (folder) {
-		g_object_unref (folder);
-		info = CAMEL_STORE_GET_CLASS (store)->get_folder_info (
-			store, name, 0, cancellable, error);
-	}
-
-	g_free (name);
-
-	return info;
-}
-
-static gint
-xrename (CamelStore *store, const gchar *old_name, const gchar *new_name, const gchar *ext, gboolean missingok)
-{
-	CamelLocalStore *ls = (CamelLocalStore *)store;
-	gchar *oldpath, *newpath;
-	struct stat st;
-	gint ret = -1;
-	gint err = 0;
-
-	if (ext != NULL) {
-		oldpath = camel_local_store_get_meta_path (ls, old_name, ext);
-		newpath = camel_local_store_get_meta_path (ls, new_name, ext);
-	} else {
-		oldpath = camel_local_store_get_full_path (ls, old_name);
-		newpath = camel_local_store_get_full_path (ls, new_name);
-	}
-
-	if (g_stat (oldpath, &st) == -1) {
-		if (missingok && errno == ENOENT) {
-			ret = 0;
-		} else {
-			err = errno;
-			ret = -1;
-		}
-#ifndef G_OS_WIN32
-	} else if (S_ISDIR (st.st_mode)) {
-		/* use rename for dirs */
-		if (g_rename (oldpath, newpath) == 0 || g_stat (newpath, &st) == 0) {
-			ret = 0;
-		} else {
-			err = errno;
-			ret = -1;
-		}
-	} else if (link (oldpath, newpath) == 0 /* and link for files */
-		   ||(g_stat (newpath, &st) == 0 && st.st_nlink == 2)) {
-		if (unlink (oldpath) == 0) {
-			ret = 0;
-		} else {
-			err = errno;
-			unlink (newpath);
-			ret = -1;
-		}
-	} else {
-		err = errno;
-		ret = -1;
-#else
-	} else if ((!g_file_test (newpath, G_FILE_TEST_EXISTS) || g_remove (newpath) == 0) &&
-		   g_rename (oldpath, newpath) == 0) {
-		ret = 0;
-	} else {
-		err = errno;
-		ret = -1;
-#endif
-	}
-
-	g_free (oldpath);
-	g_free (newpath);
-
-	return ret;
-}
-
-static gboolean
-rename_folder (CamelStore *store,
-               const gchar *old,
-               const gchar *new,
-               GCancellable *cancellable,
-               GError **error)
-{
-	CamelLocalFolder *folder = NULL;
-	gchar *oldibex, *newibex, *newdir;
-	gint errnosav;
-
-	if (new[0] == '.' || ignore_file (new, TRUE)) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("The new folder name is illegal."));
-		return FALSE;
-	}
-
-	/* try to rollback failures, has obvious races */
-
-	oldibex = camel_local_store_get_meta_path(store, old, ".ibex");
-	newibex = camel_local_store_get_meta_path(store, new, ".ibex");
-
-	newdir = g_path_get_dirname (newibex);
-	if (g_mkdir_with_parents (newdir, 0700) == -1) {
-		if (errno != EEXIST) {
-			g_set_error (
-				error, G_IO_ERROR,
-				g_io_error_from_errno (errno),
-				_("Could not rename '%s': '%s': %s"),
-				old, new, g_strerror (errno));
-			g_free (oldibex);
-			g_free (newibex);
-			g_free (newdir);
-
-			return FALSE;
-		}
-
-		g_free (newdir);
-		newdir = NULL;
-	}
-
-	folder = camel_object_bag_get (store->folders, old);
-	if (folder && folder->index) {
-		if (camel_index_rename (folder->index, newibex) == -1 && errno != ENOENT) {
-			errnosav = errno;
-			goto ibex_failed;
-		}
-	} else {
-		/* TODO: camel_text_index_rename should find out if we have an active index itself? */
-		if (camel_text_index_rename (oldibex, newibex) == -1 && errno != ENOENT) {
-			errnosav = errno;
-			goto ibex_failed;
-		}
-	}
-
-	if (xrename(store, old, new, ".ev-summary", TRUE) == -1) {
-		errnosav = errno;
-		goto summary_failed;
-	}
-
-	if (xrename(store, old, new, ".ev-summary-meta", TRUE) == -1) {
-		errnosav = errno;
-		goto summary_failed;
-	}
-
-	if (xrename(store, old, new, ".cmeta", TRUE) == -1) {
-		errnosav = errno;
-		goto cmeta_failed;
-	}
-
-	if (xrename(store, old, new, ".sbd", TRUE) == -1) {
-		errnosav = errno;
-		goto subdir_failed;
-	}
-
-	if (xrename (store, old, new, NULL, FALSE) == -1) {
-		errnosav = errno;
-		goto base_failed;
-	}
-
-	g_free (oldibex);
-	g_free (newibex);
-
-	if (folder)
-		g_object_unref (folder);
-
-	return TRUE;
-
-base_failed:
-	xrename(store, new, old, ".sbd", TRUE);
-subdir_failed:
-	xrename(store, new, old, ".cmeta", TRUE);
-cmeta_failed:
-	xrename(store, new, old, ".ev-summary", TRUE);
-	xrename(store, new, old, ".ev-summary-meta", TRUE);
-summary_failed:
-	if (folder) {
-		if (folder->index)
-			camel_index_rename (folder->index, oldibex);
-	} else
-		camel_text_index_rename (newibex, oldibex);
-ibex_failed:
-	if (newdir) {
-		/* newdir is only non-NULL if we needed to mkdir */
-		g_rmdir (newdir);
-		g_free (newdir);
-	}
-
-	g_set_error (
-		error, G_IO_ERROR,
-		g_io_error_from_errno (errnosav),
-		_("Could not rename '%s' to %s: %s"),
-		old, new, g_strerror (errnosav));
-
-	g_free (newibex);
-	g_free (oldibex);
-
-	if (folder)
-		g_object_unref (folder);
-
-	return FALSE;
-}
 
 /* used to find out where we've visited already */
 struct _inode {
@@ -654,6 +72,28 @@ inode_free (gpointer k, gpointer v, gpointer d)
 	g_free (k);
 }
 
+static gboolean
+ignore_file (const gchar *filename, gboolean sbd)
+{
+	gint flen, len, i;
+
+	/* TODO: Should probably just be 1 regex */
+	flen = strlen (filename);
+	if (flen > 0 && filename[flen-1] == '~')
+		return TRUE;
+
+	for (i = 0; i < G_N_ELEMENTS (extensions); i++) {
+		len = strlen (extensions[i]);
+		if (len < flen && !strcmp (filename + flen - len, extensions[i]))
+			return TRUE;
+	}
+
+	if (sbd && flen > 4 && !strcmp(filename + flen - 4, ".sbd"))
+		return TRUE;
+
+	return FALSE;
+}
+
 /* NB: duplicated in maildir store */
 static void
 fill_fi (CamelStore *store,
@@ -667,7 +107,7 @@ fill_fi (CamelStore *store,
 	folder = camel_object_bag_get (store->folders, fi->full_name);
 	if (folder) {
 		if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
-			camel_folder_refresh_info (folder, NULL, NULL);
+			camel_folder_refresh_info_sync (folder, NULL, NULL);
 		fi->unread = camel_folder_get_unread_message_count (folder);
 		fi->total = camel_folder_get_message_count (folder);
 		g_object_unref (folder);
@@ -811,12 +251,176 @@ scan_dir (CamelStore *store, CamelURL *url, GHashTable *visited, CamelFolderInfo
 	return folders;
 }
 
+static gint
+xrename (CamelStore *store, const gchar *old_name, const gchar *new_name, const gchar *ext, gboolean missingok)
+{
+	CamelLocalStore *ls = (CamelLocalStore *)store;
+	gchar *oldpath, *newpath;
+	struct stat st;
+	gint ret = -1;
+	gint err = 0;
+
+	if (ext != NULL) {
+		oldpath = camel_local_store_get_meta_path (ls, old_name, ext);
+		newpath = camel_local_store_get_meta_path (ls, new_name, ext);
+	} else {
+		oldpath = camel_local_store_get_full_path (ls, old_name);
+		newpath = camel_local_store_get_full_path (ls, new_name);
+	}
+
+	if (g_stat (oldpath, &st) == -1) {
+		if (missingok && errno == ENOENT) {
+			ret = 0;
+		} else {
+			err = errno;
+			ret = -1;
+		}
+#ifndef G_OS_WIN32
+	} else if (S_ISDIR (st.st_mode)) {
+		/* use rename for dirs */
+		if (g_rename (oldpath, newpath) == 0 || g_stat (newpath, &st) == 0) {
+			ret = 0;
+		} else {
+			err = errno;
+			ret = -1;
+		}
+	} else if (link (oldpath, newpath) == 0 /* and link for files */
+		   ||(g_stat (newpath, &st) == 0 && st.st_nlink == 2)) {
+		if (unlink (oldpath) == 0) {
+			ret = 0;
+		} else {
+			err = errno;
+			unlink (newpath);
+			ret = -1;
+		}
+	} else {
+		err = errno;
+		ret = -1;
+#else
+	} else if ((!g_file_test (newpath, G_FILE_TEST_EXISTS) || g_remove (newpath) == 0) &&
+		   g_rename (oldpath, newpath) == 0) {
+		ret = 0;
+	} else {
+		err = errno;
+		ret = -1;
+#endif
+	}
+
+	g_free (oldpath);
+	g_free (newpath);
+
+	return ret;
+}
+
+static CamelFolder *
+mbox_store_get_folder_sync (CamelStore *store,
+                            const gchar *folder_name,
+                            guint32 flags,
+                            GCancellable *cancellable,
+                            GError **error)
+{
+	CamelStoreClass *store_class;
+	struct stat st;
+	gchar *name;
+
+	/* Chain up to parent's get_folder_sync() method. */
+	store_class = CAMEL_STORE_CLASS (camel_mbox_store_parent_class);
+	if (!store_class->get_folder_sync (store, folder_name, flags, cancellable, error))
+		return NULL;
+
+	name = camel_local_store_get_full_path (store, folder_name);
+
+	if (g_stat (name, &st) == -1) {
+		gchar *basename;
+		gchar *dirname;
+		gint fd;
+
+		if (errno != ENOENT) {
+			g_set_error (
+				error, G_IO_ERROR,
+				g_io_error_from_errno (errno),
+				_("Cannot get folder '%s': %s"),
+				folder_name, g_strerror (errno));
+			g_free (name);
+			return NULL;
+		}
+
+		if ((flags & CAMEL_STORE_FOLDER_CREATE) == 0) {
+			g_set_error (
+				error, CAMEL_STORE_ERROR,
+				CAMEL_STORE_ERROR_NO_FOLDER,
+				_("Cannot get folder '%s': folder does not exist."),
+				folder_name);
+			g_free (name);
+			return NULL;
+		}
+
+		/* sanity check the folder name */
+		basename = g_path_get_basename (folder_name);
+
+		if (basename[0] == '.' || ignore_file (basename, TRUE)) {
+			g_set_error (
+				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+				_("Cannot create a folder by this name."));
+			g_free (name);
+			g_free (basename);
+			return NULL;
+		}
+		g_free (basename);
+
+		dirname = g_path_get_dirname (name);
+		if (g_mkdir_with_parents (dirname, 0700) == -1 && errno != EEXIST) {
+			g_set_error (
+				error, G_IO_ERROR,
+				g_io_error_from_errno (errno),
+				_("Cannot create folder '%s': %s"),
+				folder_name, g_strerror (errno));
+			g_free (dirname);
+			g_free (name);
+			return NULL;
+		}
+
+		g_free (dirname);
+
+		fd = g_open (name, O_LARGEFILE | O_WRONLY | O_CREAT | O_APPEND | O_BINARY, 0666);
+		if (fd == -1) {
+			g_set_error (
+				error, G_IO_ERROR,
+				g_io_error_from_errno (errno),
+				_("Cannot create folder '%s': %s"),
+				folder_name, g_strerror (errno));
+			g_free (name);
+			return NULL;
+		}
+
+		g_free (name);
+		close (fd);
+	} else if (!S_ISREG (st.st_mode)) {
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Cannot get folder '%s': not a regular file."),
+			folder_name);
+		g_free (name);
+		return NULL;
+	} else if (flags & CAMEL_STORE_FOLDER_EXCL) {
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Cannot create folder '%s': folder exists."),
+			folder_name);
+		g_free (name);
+		return NULL;
+	} else
+		g_free (name);
+
+	return camel_mbox_folder_new (store, folder_name, flags, cancellable, error);
+}
+
 static CamelFolderInfo *
-get_folder_info (CamelStore *store,
-                 const gchar *top,
-                 guint32 flags,
-                 GCancellable *cancellable,
-                 GError **error)
+mbox_store_get_folder_info_sync (CamelStore *store,
+                                 const gchar *top,
+                                 guint32 flags,
+                                 GCancellable *cancellable,
+                                 GError **error)
 {
 	GHashTable *visited;
 #ifndef G_OS_WIN32
@@ -902,8 +506,373 @@ get_folder_info (CamelStore *store,
 	return fi;
 }
 
+static CamelFolderInfo *
+mbox_store_create_folder_sync (CamelStore *store,
+                               const gchar *parent_name,
+                               const gchar *folder_name,
+                               GCancellable *cancellable,
+                               GError **error)
+{
+	/* FIXME: this is almost an exact copy of CamelLocalStore::create_folder() except that we use
+	 * different path schemes... need to find a way to share parent's code? */
+	const gchar *toplevel_dir =((CamelLocalStore *) store)->toplevel_dir;
+	CamelFolderInfo *info = NULL;
+	gchar *path, *name, *dir;
+	CamelFolder *folder;
+	struct stat st;
+
+	if (!g_path_is_absolute (toplevel_dir)) {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
+			_("Store root %s is not an absolute path"),
+			toplevel_dir);
+		return NULL;
+	}
+
+	if (folder_name[0] == '.' || ignore_file (folder_name, TRUE)) {
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Cannot create a folder by this name."));
+		return NULL;
+	}
+
+	if (parent_name && *parent_name)
+		name = g_strdup_printf("%s/%s", parent_name, folder_name);
+	else
+		name = g_strdup (folder_name);
+
+	path = camel_local_store_get_full_path (store, name);
+
+	dir = g_path_get_dirname (path);
+	if (g_mkdir_with_parents (dir, 0777) == -1 && errno != EEXIST) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			_("Cannot create directory '%s': %s."),
+			dir, g_strerror (errno));
+
+		g_free (path);
+		g_free (name);
+		g_free (dir);
+
+		return NULL;
+	}
+
+	g_free (dir);
+
+	if (g_stat (path, &st) == 0 || errno != ENOENT) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			_("Cannot create folder: %s: %s"),
+			path, errno ? g_strerror (errno) :
+			_("Folder already exists"));
+
+		g_free (path);
+		g_free (name);
+
+		return NULL;
+	}
+
+	g_free (path);
+
+	folder = CAMEL_STORE_GET_CLASS (store)->get_folder_sync (
+		store, name, CAMEL_STORE_FOLDER_CREATE, cancellable, error);
+	if (folder) {
+		g_object_unref (folder);
+		info = CAMEL_STORE_GET_CLASS (store)->get_folder_info_sync (
+			store, name, 0, cancellable, error);
+	}
+
+	g_free (name);
+
+	return info;
+}
+
+static gboolean
+mbox_store_delete_folder_sync (CamelStore *store,
+                               const gchar *folder_name,
+                               GCancellable *cancellable,
+                               GError **error)
+{
+	CamelFolderInfo *fi;
+	CamelFolder *lf;
+	gchar *name, *path;
+	struct stat st;
+
+	name = camel_local_store_get_full_path (store, folder_name);
+	path = g_strdup_printf("%s.sbd", name);
+
+	if (g_rmdir (path) == -1 && errno != ENOENT) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			_("Could not delete folder '%s':\n%s"),
+			folder_name, g_strerror (errno));
+		g_free (path);
+		g_free (name);
+		return FALSE;
+	}
+
+	g_free (path);
+
+	if (g_stat (name, &st) == -1) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			_("Could not delete folder '%s':\n%s"),
+			folder_name, g_strerror (errno));
+		g_free (name);
+		return FALSE;
+	}
+
+	if (!S_ISREG (st.st_mode)) {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
+			_("'%s' is not a regular file."), name);
+		g_free (name);
+		return FALSE;
+	}
+
+	if (st.st_size != 0) {
+		g_set_error (
+			error, CAMEL_FOLDER_ERROR,
+			CAMEL_FOLDER_ERROR_NON_EMPTY,
+			_("Folder '%s' is not empty. Not deleted."),
+			folder_name);
+		g_free (name);
+		return FALSE;
+	}
+
+	if (g_unlink (name) == -1 && errno != ENOENT) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			_("Could not delete folder '%s':\n%s"),
+			name, g_strerror (errno));
+		g_free (name);
+		return FALSE;
+	}
+
+	/* FIXME: we have to do our own meta cleanup here rather than
+	 * calling our parent class' delete_folder() method since our
+	 * naming convention is different. Need to find a way for
+	 * CamelLocalStore to be able to construct the folder & meta
+	 * paths itself */
+	path = camel_local_store_get_meta_path(store, folder_name, ".ev-summary");
+	if (g_unlink (path) == -1 && errno != ENOENT) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			_("Could not delete folder summary file '%s': %s"),
+			path, g_strerror (errno));
+		g_free (path);
+		g_free (name);
+		return FALSE;
+	}
+
+	g_free (path);
+
+	path = camel_local_store_get_meta_path(store, folder_name, ".ev-summary-meta");
+	if (g_unlink (path) == -1 && errno != ENOENT) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			_("Could not delete folder summary file '%s': %s"),
+			path, g_strerror (errno));
+		g_free (path);
+		g_free (name);
+		return FALSE;
+	}
+
+	g_free (path);
+
+	path = camel_local_store_get_meta_path(store, folder_name, ".ibex");
+	if (camel_text_index_remove (path) == -1 && errno != ENOENT) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			_("Could not delete folder index file '%s': %s"),
+			path, g_strerror (errno));
+		g_free (path);
+		g_free (name);
+		return FALSE;
+	}
+
+	g_free (path);
+
+	path = NULL;
+	if ((lf = camel_store_get_folder_sync (store, folder_name, 0, cancellable, NULL))) {
+		CamelObject *object = CAMEL_OBJECT (lf);
+		const gchar *state_filename;
+
+		state_filename = camel_object_get_state_filename (object);
+		path = g_strdup (state_filename);
+
+		camel_object_set_state_filename (object, NULL);
+
+		g_object_unref (lf);
+	}
+
+	if (path == NULL)
+		path = camel_local_store_get_meta_path(store, folder_name, ".cmeta");
+
+	if (g_unlink (path) == -1 && errno != ENOENT) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			_("Could not delete folder meta file '%s': %s"),
+			path, g_strerror (errno));
+
+		g_free (path);
+		g_free (name);
+		return FALSE;
+	}
+
+	g_free (path);
+	g_free (name);
+
+	fi = camel_folder_info_new ();
+	fi->full_name = g_strdup (folder_name);
+	fi->name = g_path_get_basename (folder_name);
+	fi->uri = g_strdup_printf("mbox:%s#%s",((CamelService *) store)->url->path, folder_name);
+	fi->unread = -1;
+
+	camel_store_folder_deleted (store, fi);
+	camel_folder_info_free (fi);
+
+	return TRUE;
+}
+
+static gboolean
+mbox_store_rename_folder_sync (CamelStore *store,
+                               const gchar *old,
+                               const gchar *new,
+                               GCancellable *cancellable,
+                               GError **error)
+{
+	CamelLocalFolder *folder = NULL;
+	gchar *oldibex, *newibex, *newdir;
+	gint errnosav;
+
+	if (new[0] == '.' || ignore_file (new, TRUE)) {
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("The new folder name is illegal."));
+		return FALSE;
+	}
+
+	/* try to rollback failures, has obvious races */
+
+	oldibex = camel_local_store_get_meta_path(store, old, ".ibex");
+	newibex = camel_local_store_get_meta_path(store, new, ".ibex");
+
+	newdir = g_path_get_dirname (newibex);
+	if (g_mkdir_with_parents (newdir, 0700) == -1) {
+		if (errno != EEXIST) {
+			g_set_error (
+				error, G_IO_ERROR,
+				g_io_error_from_errno (errno),
+				_("Could not rename '%s': '%s': %s"),
+				old, new, g_strerror (errno));
+			g_free (oldibex);
+			g_free (newibex);
+			g_free (newdir);
+
+			return FALSE;
+		}
+
+		g_free (newdir);
+		newdir = NULL;
+	}
+
+	folder = camel_object_bag_get (store->folders, old);
+	if (folder && folder->index) {
+		if (camel_index_rename (folder->index, newibex) == -1 && errno != ENOENT) {
+			errnosav = errno;
+			goto ibex_failed;
+		}
+	} else {
+		/* TODO: camel_text_index_rename should find out if we have an active index itself? */
+		if (camel_text_index_rename (oldibex, newibex) == -1 && errno != ENOENT) {
+			errnosav = errno;
+			goto ibex_failed;
+		}
+	}
+
+	if (xrename(store, old, new, ".ev-summary", TRUE) == -1) {
+		errnosav = errno;
+		goto summary_failed;
+	}
+
+	if (xrename(store, old, new, ".ev-summary-meta", TRUE) == -1) {
+		errnosav = errno;
+		goto summary_failed;
+	}
+
+	if (xrename(store, old, new, ".cmeta", TRUE) == -1) {
+		errnosav = errno;
+		goto cmeta_failed;
+	}
+
+	if (xrename(store, old, new, ".sbd", TRUE) == -1) {
+		errnosav = errno;
+		goto subdir_failed;
+	}
+
+	if (xrename (store, old, new, NULL, FALSE) == -1) {
+		errnosav = errno;
+		goto base_failed;
+	}
+
+	g_free (oldibex);
+	g_free (newibex);
+
+	if (folder)
+		g_object_unref (folder);
+
+	return TRUE;
+
+base_failed:
+	xrename(store, new, old, ".sbd", TRUE);
+subdir_failed:
+	xrename(store, new, old, ".cmeta", TRUE);
+cmeta_failed:
+	xrename(store, new, old, ".ev-summary", TRUE);
+	xrename(store, new, old, ".ev-summary-meta", TRUE);
+summary_failed:
+	if (folder) {
+		if (folder->index)
+			camel_index_rename (folder->index, oldibex);
+	} else
+		camel_text_index_rename (newibex, oldibex);
+ibex_failed:
+	if (newdir) {
+		/* newdir is only non-NULL if we needed to mkdir */
+		g_rmdir (newdir);
+		g_free (newdir);
+	}
+
+	g_set_error (
+		error, G_IO_ERROR,
+		g_io_error_from_errno (errnosav),
+		_("Could not rename '%s' to %s: %s"),
+		old, new, g_strerror (errnosav));
+
+	g_free (newibex);
+	g_free (oldibex);
+
+	if (folder)
+		g_object_unref (folder);
+
+	return FALSE;
+}
+
 static gchar *
-mbox_get_full_path (CamelLocalStore *ls, const gchar *full_name)
+mbox_store_get_full_path (CamelLocalStore *ls,
+                          const gchar *full_name)
 {
 	const gchar *inptr = full_name;
 	gint subdirs = 0;
@@ -939,7 +908,9 @@ mbox_get_full_path (CamelLocalStore *ls, const gchar *full_name)
 }
 
 static gchar *
-mbox_get_meta_path (CamelLocalStore *ls, const gchar *full_name, const gchar *ext)
+mbox_store_get_meta_path (CamelLocalStore *ls,
+                          const gchar *full_name,
+                          const gchar *ext)
 {
 /*#define USE_HIDDEN_META_FILES*/
 #ifdef USE_HIDDEN_META_FILES
@@ -951,14 +922,39 @@ mbox_get_meta_path (CamelLocalStore *ls, const gchar *full_name, const gchar *ex
 	else
 		sprintf (name, ".%s%s", full_name, ext);
 
-	return mbox_get_full_path (ls, name);
+	return mbox_store_get_full_path (ls, name);
 #else
 	gchar *full_path, *path;
 
-	full_path = mbox_get_full_path (ls, full_name);
+	full_path = mbox_store_get_full_path (ls, full_name);
 	path = g_strdup_printf ("%s%s", full_path, ext);
 	g_free (full_path);
 
 	return path;
 #endif
 }
+
+static void
+camel_mbox_store_class_init (CamelMboxStoreClass *class)
+{
+	CamelStoreClass *store_class;
+	CamelLocalStoreClass *local_store_class;
+
+	store_class = CAMEL_STORE_CLASS (class);
+	store_class->free_folder_info = camel_store_free_folder_info_full;
+	store_class->get_folder_sync = mbox_store_get_folder_sync;
+	store_class->get_folder_info_sync = mbox_store_get_folder_info_sync;
+	store_class->create_folder_sync = mbox_store_create_folder_sync;
+	store_class->delete_folder_sync = mbox_store_delete_folder_sync;
+	store_class->rename_folder_sync = mbox_store_rename_folder_sync;
+
+	local_store_class = CAMEL_LOCAL_STORE_CLASS (class);
+	local_store_class->get_full_path = mbox_store_get_full_path;
+	local_store_class->get_meta_path = mbox_store_get_meta_path;
+}
+
+static void
+camel_mbox_store_init (CamelMboxStore *mbox_store)
+{
+}
+

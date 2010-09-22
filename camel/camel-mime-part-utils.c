@@ -78,7 +78,7 @@ simple_data_wrapper_construct_from_parser (CamelDataWrapper *dw,
 	d(printf("message part kept in memory!\n"));
 
 	mem = camel_stream_mem_new_with_byte_array (buffer);
-	retval = camel_data_wrapper_construct_from_stream (
+	retval = camel_data_wrapper_construct_from_stream_sync (
 		dw, mem, cancellable, error);
 	g_object_unref (mem);
 
@@ -123,7 +123,7 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw,
 	case CAMEL_MIME_PARSER_STATE_MESSAGE:
 		d(printf("Creating message part\n"));
 		content = (CamelDataWrapper *) camel_mime_message_new ();
-		success = (camel_mime_part_construct_from_parser (
+		success = (camel_mime_part_construct_from_parser_sync (
 			(CamelMimePart *)content, mp, cancellable, error) == 0);
 		break;
 	case CAMEL_MIME_PARSER_STATE_MULTIPART:
@@ -187,7 +187,7 @@ camel_mime_message_build_preview (CamelMimePart *msg,
 		    !camel_content_type_is (dw->mime_type, "text", "calendar")) {
 		CamelStream *mstream, *bstream;
 		mstream = camel_stream_mem_new ();
-		if (camel_data_wrapper_decode_to_stream (dw, mstream, NULL, NULL) > 0) {
+		if (camel_data_wrapper_decode_to_stream_sync (dw, mstream, NULL, NULL) > 0) {
 			gchar *line = NULL;
 			GString *str = g_string_new (NULL);
 

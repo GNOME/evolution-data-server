@@ -63,21 +63,13 @@ struct _CamelSasl {
 struct _CamelSaslClass {
 	CamelObjectClass parent_class;
 
-	GByteArray *	(*challenge)		(CamelSasl *sasl,
+	GByteArray *	(*challenge_sync)	(CamelSasl *sasl,
 						 GByteArray *token,
 						 GCancellable *cancellable,
 						 GError **error);
 };
 
 GType		camel_sasl_get_type		(void);
-GByteArray *	camel_sasl_challenge		(CamelSasl *sasl,
-						 GByteArray *token,
-						 GCancellable *cancellable,
-						 GError **error);
-gchar *		camel_sasl_challenge_base64	(CamelSasl *sasl,
-						 const gchar *token,
-						 GCancellable *cancellable,
-						 GError **error);
 CamelSasl *	camel_sasl_new			(const gchar *service_name,
 						 const gchar *mechanism,
 						 CamelService *service);
@@ -87,6 +79,15 @@ void		camel_sasl_set_authenticated	(CamelSasl *sasl,
 const gchar *	camel_sasl_get_mechanism	(CamelSasl *sasl);
 CamelService *	camel_sasl_get_service		(CamelSasl *sasl);
 const gchar *	camel_sasl_get_service_name	(CamelSasl *sasl);
+GByteArray *	camel_sasl_challenge_sync	(CamelSasl *sasl,
+						 GByteArray *token,
+						 GCancellable *cancellable,
+						 GError **error);
+gchar *		camel_sasl_challenge_base64_sync
+						(CamelSasl *sasl,
+						 const gchar *token,
+						 GCancellable *cancellable,
+						 GError **error);
 
 GList *		camel_sasl_authtype_list	(gboolean include_plain);
 CamelServiceAuthType *

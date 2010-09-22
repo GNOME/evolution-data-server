@@ -444,7 +444,7 @@ imap_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Cam
 	/* TODO: Cache offline searches too? */
 
 	/* If offline, search using the parent class, which can handle this manually */
-	if (CAMEL_OFFLINE_STORE (store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
+	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)))
 		return CAMEL_FOLDER_SEARCH_CLASS (camel_imap_search_parent_class)->body_contains (f, argc, argv, s);
 
 	/* optimise the match "" case - match everything */

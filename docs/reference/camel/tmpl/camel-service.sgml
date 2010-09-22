@@ -77,44 +77,6 @@ CamelService
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_service_connect ##### -->
-<para>
-
-</para>
-
-@service: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_service_disconnect ##### -->
-<para>
-
-</para>
-
-@service: 
-@clean: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_service_cancel_connect ##### -->
-<para>
-
-</para>
-
-@service: 
-
-
-<!-- ##### FUNCTION camel_service_get_url ##### -->
-<para>
-
-</para>
-
-@service: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_service_get_name ##### -->
 <para>
 
@@ -134,15 +96,6 @@ CamelService
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_service_get_session ##### -->
-<para>
-
-</para>
-
-@service: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_service_get_provider ##### -->
 <para>
 
@@ -152,7 +105,54 @@ CamelService
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_service_query_auth_types ##### -->
+<!-- ##### FUNCTION camel_service_get_session ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_service_get_url ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_service_cancel_connect ##### -->
+<para>
+
+</para>
+
+@service: 
+
+
+<!-- ##### FUNCTION camel_service_connect_sync ##### -->
+<para>
+
+</para>
+
+@service: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_service_disconnect_sync ##### -->
+<para>
+
+</para>
+
+@service: 
+@clean: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_service_query_auth_types_sync ##### -->
 <para>
 
 </para>

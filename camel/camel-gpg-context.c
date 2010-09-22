@@ -1366,7 +1366,7 @@ swrite (CamelMimePart *sigpart,
 	/* TODO: This should probably just write the decoded message content out, not the part + headers */
 
 	ostream = camel_stream_fs_new_with_fd (fd);
-	ret = camel_data_wrapper_write_to_stream (
+	ret = camel_data_wrapper_write_to_stream_sync (
 		CAMEL_DATA_WRAPPER (sigpart), ostream, cancellable, error);
 	if (ret != -1) {
 		ret = camel_stream_flush (ostream, cancellable, error);
@@ -1507,13 +1507,13 @@ gpg_id_to_hash (CamelCipherContext *context,
 }
 
 static gint
-gpg_sign (CamelCipherContext *context,
-          const gchar *userid,
-          CamelCipherHash hash,
-          CamelMimePart *ipart,
-          CamelMimePart *opart,
-          GCancellable *cancellable,
-          GError **error)
+gpg_sign_sync (CamelCipherContext *context,
+               const gchar *userid,
+               CamelCipherHash hash,
+               CamelMimePart *ipart,
+               CamelMimePart *opart,
+               GCancellable *cancellable,
+               GError **error)
 {
 	struct _GpgCtx *gpg = NULL;
 	CamelCipherContextClass *class;
@@ -1592,7 +1592,8 @@ gpg_sign (CamelCipherContext *context,
 
 	dw = camel_data_wrapper_new ();
 	camel_stream_reset (ostream, NULL);
-	camel_data_wrapper_construct_from_stream (dw, ostream, NULL, NULL);
+	camel_data_wrapper_construct_from_stream_sync (
+		dw, ostream, NULL, NULL);
 
 	sigpart = camel_mime_part_new ();
 	ct = camel_content_type_new("application", "pgp-signature");
@@ -1629,10 +1630,10 @@ fail:
 }
 
 static CamelCipherValidity *
-gpg_verify (CamelCipherContext *context,
-            CamelMimePart *ipart,
-            GCancellable *cancellable,
-            GError **error)
+gpg_verify_sync (CamelCipherContext *context,
+                 CamelMimePart *ipart,
+                 GCancellable *cancellable,
+                 GError **error)
 {
 	CamelCipherContextClass *class;
 	CamelCipherValidity *validity;
@@ -1688,7 +1689,7 @@ gpg_verify (CamelCipherContext *context,
 		CamelDataWrapper *content;
 		content = camel_medium_get_content ((CamelMedium *) ipart);
 		istream = camel_stream_mem_new ();
-		camel_data_wrapper_decode_to_stream (
+		camel_data_wrapper_decode_to_stream_sync (
 			content, istream, NULL, NULL);
 		camel_stream_reset (istream, NULL);
 		sigpart = NULL;
@@ -1831,13 +1832,13 @@ gpg_verify (CamelCipherContext *context,
 }
 
 static gint
-gpg_encrypt (CamelCipherContext *context,
-             const gchar *userid,
-             GPtrArray *recipients,
-             CamelMimePart *ipart,
-             CamelMimePart *opart,
-             GCancellable *cancellable,
-             GError **error)
+gpg_encrypt_sync (CamelCipherContext *context,
+                  const gchar *userid,
+                  GPtrArray *recipients,
+                  CamelMimePart *ipart,
+                  CamelMimePart *opart,
+                  GCancellable *cancellable,
+                  GError **error)
 {
 	CamelCipherContextClass *class;
 	CamelGpgContext *ctx = (CamelGpgContext *) context;
@@ -1897,7 +1898,8 @@ gpg_encrypt (CamelCipherContext *context,
 	res = 0;
 
 	dw = camel_data_wrapper_new ();
-	camel_data_wrapper_construct_from_stream (dw, ostream, NULL, NULL);
+	camel_data_wrapper_construct_from_stream_sync (
+		dw, ostream, NULL, NULL);
 
 	encpart = camel_mime_part_new ();
 	ct = camel_content_type_new("application", "octet-stream");
@@ -1917,7 +1919,8 @@ gpg_encrypt (CamelCipherContext *context,
 	verpart = camel_mime_part_new ();
 	dw = camel_data_wrapper_new ();
 	camel_data_wrapper_set_mime_type (dw, class->encrypt_protocol);
-	camel_data_wrapper_construct_from_stream (dw, vstream, NULL, NULL);
+	camel_data_wrapper_construct_from_stream_sync (
+		dw, vstream, NULL, NULL);
 	g_object_unref (vstream);
 	camel_medium_set_content ((CamelMedium *)verpart, dw);
 	g_object_unref (dw);
@@ -1947,11 +1950,11 @@ fail1:
 }
 
 static CamelCipherValidity *
-gpg_decrypt (CamelCipherContext *context,
-             CamelMimePart *ipart,
-             CamelMimePart *opart,
-             GCancellable *cancellable,
-             GError **error)
+gpg_decrypt_sync (CamelCipherContext *context,
+                  CamelMimePart *ipart,
+                  CamelMimePart *opart,
+                  GCancellable *cancellable,
+                  GError **error)
 {
 	struct _GpgCtx *gpg;
 	CamelCipherValidity *valid = NULL;
@@ -2002,7 +2005,8 @@ gpg_decrypt (CamelCipherContext *context,
 	}
 
 	istream = camel_stream_mem_new ();
-	camel_data_wrapper_decode_to_stream (content, istream, NULL, NULL);
+	camel_data_wrapper_decode_to_stream_sync (
+		content, istream, NULL, NULL);
 	camel_stream_reset (istream, NULL);
 
 	ostream = camel_stream_mem_new ();
@@ -2040,16 +2044,17 @@ gpg_decrypt (CamelCipherContext *context,
 		CamelStream *null = camel_stream_null_new ();
 
 		/* Multipart encrypted - parse a full mime part */
-		rv = camel_data_wrapper_construct_from_stream (
+		rv = camel_data_wrapper_construct_from_stream_sync (
 			CAMEL_DATA_WRAPPER (opart),
 			ostream, NULL, error);
 
 		dw = camel_medium_get_content ((CamelMedium *)opart);
-		if (!camel_data_wrapper_decode_to_stream (dw, null, cancellable, NULL)) {
+		if (!camel_data_wrapper_decode_to_stream_sync (
+			dw, null, cancellable, NULL)) {
 			/* nothing had been decoded from the stream, it doesn't
 			   contain any header, like Content-Type or such, thus
 			   write it as a message body */
-			rv = camel_data_wrapper_construct_from_stream (
+			rv = camel_data_wrapper_construct_from_stream_sync (
 				dw, ostream, NULL, error);
 		}
 
@@ -2058,7 +2063,7 @@ gpg_decrypt (CamelCipherContext *context,
 		/* Inline signed - raw data (may not be a mime part) */
 		CamelDataWrapper *dw;
 		dw = camel_data_wrapper_new ();
-		rv = camel_data_wrapper_construct_from_stream (
+		rv = camel_data_wrapper_construct_from_stream_sync (
 			dw, ostream, NULL, error);
 		camel_data_wrapper_set_mime_type(dw, "application/octet-stream");
 		camel_medium_set_content ((CamelMedium *)opart, dw);
@@ -2099,10 +2104,10 @@ gpg_decrypt (CamelCipherContext *context,
 }
 
 static gint
-gpg_import_keys (CamelCipherContext *context,
-                 CamelStream *istream,
-                 GCancellable *cancellable,
-                 GError **error)
+gpg_import_keys_sync (CamelCipherContext *context,
+                      CamelStream *istream,
+                      GCancellable *cancellable,
+                      GError **error)
 {
 	struct _GpgCtx *gpg;
 	gint res = -1;
@@ -2140,11 +2145,11 @@ fail:
 }
 
 static gint
-gpg_export_keys (CamelCipherContext *context,
-                 GPtrArray *keys,
-                 CamelStream *ostream,
-                 GCancellable *cancellable,
-                 GError **error)
+gpg_export_keys_sync (CamelCipherContext *context,
+                      GPtrArray *keys,
+                      CamelStream *ostream,
+                      GCancellable *cancellable,
+                      GError **error)
 {
 	struct _GpgCtx *gpg;
 	gint i;
@@ -2205,12 +2210,12 @@ camel_gpg_context_class_init (CamelGpgContextClass *class)
 	cipher_context_class->key_protocol = "application/pgp-keys";
 	cipher_context_class->hash_to_id = gpg_hash_to_id;
 	cipher_context_class->id_to_hash = gpg_id_to_hash;
-	cipher_context_class->sign = gpg_sign;
-	cipher_context_class->verify = gpg_verify;
-	cipher_context_class->encrypt = gpg_encrypt;
-	cipher_context_class->decrypt = gpg_decrypt;
-	cipher_context_class->import_keys = gpg_import_keys;
-	cipher_context_class->export_keys = gpg_export_keys;
+	cipher_context_class->sign_sync = gpg_sign_sync;
+	cipher_context_class->verify_sync = gpg_verify_sync;
+	cipher_context_class->encrypt_sync = gpg_encrypt_sync;
+	cipher_context_class->decrypt_sync = gpg_decrypt_sync;
+	cipher_context_class->import_keys_sync = gpg_import_keys_sync;
+	cipher_context_class->export_keys_sync = gpg_export_keys_sync;
 
 	g_object_class_install_property (
 		object_class,

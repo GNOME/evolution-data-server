@@ -64,12 +64,30 @@ multipart_finalize (GObject *object)
 	G_OBJECT_CLASS (camel_multipart_parent_class)->finalize (object);
 }
 
+static gboolean
+multipart_is_offline (CamelDataWrapper *data_wrapper)
+{
+	CamelMultipart *multipart = CAMEL_MULTIPART (data_wrapper);
+	GList *node;
+	CamelDataWrapper *part;
+
+	if (CAMEL_DATA_WRAPPER_CLASS (camel_multipart_parent_class)->is_offline (data_wrapper))
+		return TRUE;
+	for (node = multipart->parts; node; node = node->next) {
+		part = node->data;
+		if (camel_data_wrapper_is_offline (part))
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
 /* this is MIME specific, doesn't belong here really */
 static gssize
-multipart_write_to_stream (CamelDataWrapper *data_wrapper,
-                           CamelStream *stream,
-                           GCancellable *cancellable,
-                           GError **error)
+multipart_write_to_stream_sync (CamelDataWrapper *data_wrapper,
+                                CamelStream *stream,
+                                GCancellable *cancellable,
+                                GError **error)
 {
 	CamelMultipart *multipart = CAMEL_MULTIPART (data_wrapper);
 	const gchar *boundary;
@@ -108,7 +126,7 @@ multipart_write_to_stream (CamelDataWrapper *data_wrapper,
 			goto file_error;
 		total += count;
 
-		count = camel_data_wrapper_write_to_stream (
+		count = camel_data_wrapper_write_to_stream_sync (
 			CAMEL_DATA_WRAPPER (node->data),
 			stream, cancellable, error);
 		if (count == -1)
@@ -142,24 +160,6 @@ file_error:
 		"%s", g_strerror (errno));
 
 	return -1;
-}
-
-static gboolean
-multipart_is_offline (CamelDataWrapper *data_wrapper)
-{
-	CamelMultipart *multipart = CAMEL_MULTIPART (data_wrapper);
-	GList *node;
-	CamelDataWrapper *part;
-
-	if (CAMEL_DATA_WRAPPER_CLASS (camel_multipart_parent_class)->is_offline (data_wrapper))
-		return TRUE;
-	for (node = multipart->parts; node; node = node->next) {
-		part = node->data;
-		if (camel_data_wrapper_is_offline (part))
-			return TRUE;
-	}
-
-	return FALSE;
 }
 
 static void
@@ -312,7 +312,7 @@ multipart_construct_from_parser (CamelMultipart *multipart,
 	while (camel_mime_parser_step (mp, &buf, &len) != CAMEL_MIME_PARSER_STATE_MULTIPART_END) {
 		camel_mime_parser_unstep (mp);
 		bodypart = camel_mime_part_new ();
-		camel_mime_part_construct_from_parser (
+		camel_mime_part_construct_from_parser_sync (
 			bodypart, mp, NULL, NULL);
 		camel_multipart_add_part (multipart, bodypart);
 		g_object_unref (bodypart);
@@ -341,9 +341,9 @@ camel_multipart_class_init (CamelMultipartClass *class)
 	object_class->finalize = multipart_finalize;
 
 	data_wrapper_class = CAMEL_DATA_WRAPPER_CLASS (class);
-	data_wrapper_class->write_to_stream = multipart_write_to_stream;
-	data_wrapper_class->decode_to_stream = multipart_write_to_stream;
 	data_wrapper_class->is_offline = multipart_is_offline;
+	data_wrapper_class->write_to_stream_sync = multipart_write_to_stream_sync;
+	data_wrapper_class->decode_to_stream_sync = multipart_write_to_stream_sync;
 
 	class->add_part = multipart_add_part;
 	class->add_part_at = multipart_add_part_at;

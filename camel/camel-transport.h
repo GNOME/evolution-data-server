@@ -76,7 +76,7 @@ struct _CamelTransport {
 struct _CamelTransportClass {
 	CamelServiceClass parent_class;
 
-	gboolean	(*send_to)		(CamelTransport *transport,
+	gboolean	(*send_to_sync)		(CamelTransport *transport,
 						 CamelMimeMessage *message,
 						 CamelAddress *from,
 						 CamelAddress *recipients,
@@ -85,7 +85,7 @@ struct _CamelTransportClass {
 };
 
 GType		camel_transport_get_type	(void);
-gboolean	camel_transport_send_to		(CamelTransport *transport,
+gboolean	camel_transport_send_to_sync	(CamelTransport *transport,
 						 CamelMimeMessage *message,
 						 CamelAddress *from,
 						 CamelAddress *recipients,

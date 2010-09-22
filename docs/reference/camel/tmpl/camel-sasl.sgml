@@ -46,30 +46,6 @@ CamelSasl
 
 </para>
 
-<!-- ##### FUNCTION camel_sasl_challenge ##### -->
-<para>
-
-</para>
-
-@sasl: 
-@token: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_sasl_challenge_base64 ##### -->
-<para>
-
-</para>
-
-@sasl: 
-@token: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_sasl_new ##### -->
 <para>
 
@@ -123,6 +99,30 @@ CamelSasl
 </para>
 
 @sasl: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_sasl_challenge_sync ##### -->
+<para>
+
+</para>
+
+@sasl: 
+@token: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_sasl_challenge_base64_sync ##### -->
+<para>
+
+</para>
+
+@sasl: 
+@token: 
+@cancellable: 
+@error: 
 @Returns: 
 
 

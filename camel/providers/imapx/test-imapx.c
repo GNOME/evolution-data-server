@@ -45,13 +45,13 @@ main (gint argc, gchar *argv[])
 	camel_session_construct (session, "/tmp/test-camel-imapx");
 
 	service = camel_session_get_service (session, uri, CAMEL_PROVIDER_STORE, NULL);
-	camel_service_connect (service, NULL);
+	camel_service_connect_sync (service, NULL);
 
-	camel_store_get_folder_info (
+	camel_store_get_folder_info_sync (
 		CAMEL_STORE (service), "", 3, NULL, NULL);
-	folder = camel_store_get_folder (
+	folder = camel_store_get_folder_sync (
 		CAMEL_STORE (service), "INBOX", 0, NULL, NULL);
-	camel_folder_refresh_info (folder, NULL, NULL);
+	camel_folder_refresh_info_sync (folder, NULL, NULL);
 
 	while (1)
 	{

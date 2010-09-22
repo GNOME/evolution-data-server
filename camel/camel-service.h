@@ -118,20 +118,22 @@ struct _CamelServiceClass {
 						 CamelProvider *provider,
 						 CamelURL *url,
 						 GError **error);
-	gboolean	(*connect)		(CamelService *service,
-						 GCancellable *cancellable,
-						 GError **error);
-	gboolean	(*disconnect)		(CamelService *service,
-						 gboolean clean,
-						 GCancellable *cancellable,
-						 GError **error);
-	void		(*cancel_connect)	(CamelService *service);
-	GList *		(*query_auth_types)	(CamelService *service,
-						 GCancellable *cancellable,
-						 GError **error);
 	gchar *		(*get_name)		(CamelService *service,
 						 gboolean brief);
 	gchar *		(*get_path)		(CamelService *service);
+	void		(*cancel_connect)	(CamelService *service);
+
+	gboolean	(*connect_sync)		(CamelService *service,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(*disconnect_sync)	(CamelService *service,
+						 gboolean clean,
+						 GCancellable *cancellable,
+						 GError **error);
+	GList *		(*query_auth_types_sync)
+						(CamelService *service,
+						 GCancellable *cancellable,
+						 GError **error);
 };
 
 /* query_auth_types returns a GList of these */
@@ -150,20 +152,21 @@ gboolean	camel_service_construct		(CamelService *service,
 						 CamelProvider *provider,
 						 CamelURL *url,
 						 GError **error);
-gboolean	camel_service_connect		(CamelService *service,
-						 GError **error);
-gboolean	camel_service_disconnect	(CamelService *service,
-						 gboolean clean,
-						 GError **error);
-void		camel_service_cancel_connect	(CamelService *service);
-gchar *		camel_service_get_url		(CamelService *service);
 gchar *		camel_service_get_name		(CamelService *service,
 						 gboolean brief);
 gchar *		camel_service_get_path		(CamelService *service);
+CamelProvider *	camel_service_get_provider	(CamelService *service);
 struct _CamelSession *
 		camel_service_get_session	(CamelService *service);
-CamelProvider *	camel_service_get_provider	(CamelService *service);
-GList *		camel_service_query_auth_types	(CamelService *service,
+gchar *		camel_service_get_url		(CamelService *service);
+void		camel_service_cancel_connect	(CamelService *service);
+gboolean	camel_service_connect_sync	(CamelService *service,
+						 GError **error);
+gboolean	camel_service_disconnect_sync	(CamelService *service,
+						 gboolean clean,
+						 GError **error);
+GList *		camel_service_query_auth_types_sync
+						(CamelService *service,
 						 GCancellable *cancellable,
 						 GError **error);
 void		camel_service_lock		(CamelService *service,

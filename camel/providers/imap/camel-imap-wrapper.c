@@ -90,10 +90,10 @@ imap_wrapper_finalize (GObject *object)
 }
 
 static gssize
-imap_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
-                              CamelStream *stream,
-                              GCancellable *cancellable,
-                              GError **error)
+imap_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
+                                   CamelStream *stream,
+                                   GCancellable *cancellable,
+                                   GError **error)
 {
 	CamelImapWrapper *imap_wrapper = CAMEL_IMAP_WRAPPER (data_wrapper);
 
@@ -126,7 +126,7 @@ imap_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 	CAMEL_IMAP_WRAPPER_UNLOCK (imap_wrapper, lock);
 
 	return CAMEL_DATA_WRAPPER_CLASS (camel_imap_wrapper_parent_class)->
-		write_to_stream (data_wrapper, stream, cancellable, error);
+		write_to_stream_sync (data_wrapper, stream, cancellable, error);
 }
 
 static void
@@ -142,7 +142,7 @@ camel_imap_wrapper_class_init (CamelImapWrapperClass *class)
 	object_class->finalize = imap_wrapper_finalize;
 
 	data_wrapper_class = CAMEL_DATA_WRAPPER_CLASS (class);
-	data_wrapper_class->write_to_stream = imap_wrapper_write_to_stream;
+	data_wrapper_class->write_to_stream_sync = imap_wrapper_write_to_stream_sync;
 }
 
 static void

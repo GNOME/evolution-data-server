@@ -57,10 +57,10 @@ struct _CamelSaslLoginPrivate {
 G_DEFINE_TYPE (CamelSaslLogin, camel_sasl_login, CAMEL_TYPE_SASL)
 
 static GByteArray *
-sasl_login_challenge (CamelSasl *sasl,
-                      GByteArray *token,
-                      GCancellable *cancellable,
-                      GError **error)
+sasl_login_challenge_sync (CamelSasl *sasl,
+                           GByteArray *token,
+                           GCancellable *cancellable,
+                           GError **error)
 {
 	CamelSaslLoginPrivate *priv;
 	GByteArray *buf = NULL;
@@ -108,7 +108,7 @@ camel_sasl_login_class_init (CamelSaslLoginClass *class)
 	g_type_class_add_private (class, sizeof (CamelSaslLoginPrivate));
 
 	sasl_class = CAMEL_SASL_CLASS (class);
-	sasl_class->challenge = sasl_login_challenge;
+	sasl_class->challenge_sync = sasl_login_challenge_sync;
 }
 
 static void

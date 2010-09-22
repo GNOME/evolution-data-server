@@ -216,10 +216,10 @@ mime_message_finalize (GObject *object)
 }
 
 static gssize
-mime_message_write_to_stream (CamelDataWrapper *data_wrapper,
-                              CamelStream *stream,
-                              GCancellable *cancellable,
-                              GError **error)
+mime_message_write_to_stream_sync (CamelDataWrapper *data_wrapper,
+                                   CamelStream *stream,
+                                   GCancellable *cancellable,
+                                   GError **error)
 {
 	CamelDataWrapperClass *data_wrapper_class;
 	CamelMimeMessage *mm = CAMEL_MIME_MESSAGE (data_wrapper);
@@ -244,10 +244,10 @@ mime_message_write_to_stream (CamelDataWrapper *data_wrapper,
 	if (!camel_medium_get_header ((CamelMedium *)mm, "Mime-Version"))
 		camel_medium_set_header ((CamelMedium *)mm, "Mime-Version", "1.0");
 
-	/* Chain up to parent's write_to_stream() method. */
+	/* Chain up to parent's write_to_stream_sync() method. */
 	data_wrapper_class = CAMEL_DATA_WRAPPER_CLASS (
 		camel_mime_message_parent_class);
-	return data_wrapper_class->write_to_stream (
+	return data_wrapper_class->write_to_stream_sync (
 		data_wrapper, stream, cancellable, error);
 }
 
@@ -289,10 +289,10 @@ mime_message_remove_header (CamelMedium *medium,
 }
 
 static gint
-mime_message_construct_from_parser (CamelMimePart *dw,
-                                    CamelMimeParser *mp,
-                                    GCancellable *cancellable,
-                                    GError **error)
+mime_message_construct_from_parser_sync (CamelMimePart *dw,
+                                         CamelMimeParser *mp,
+                                         GCancellable *cancellable,
+                                         GError **error)
 {
 	CamelMimePartClass *mime_part_class;
 	gchar *buf;
@@ -301,13 +301,9 @@ mime_message_construct_from_parser (CamelMimePart *dw,
 	gint ret;
 	gint err;
 
-	d(printf("constructing mime-message\n"));
-
-	d(printf("mime_message::construct_from_parser()\n"));
-
 	/* let the mime-part construct the guts ... */
 	mime_part_class = CAMEL_MIME_PART_CLASS (camel_mime_message_parent_class);
-	ret = mime_part_class->construct_from_parser (
+	ret = mime_part_class->construct_from_parser_sync (
 		dw, mp, cancellable, error);
 
 	if (ret == -1)
@@ -328,7 +324,6 @@ mime_message_construct_from_parser (CamelMimePart *dw,
 		return -1;
 	}
 
-	d(printf("mime_message::construct_from_parser() leaving\n"));
 	err = camel_mime_parser_errno (mp);
 	if (err != 0) {
 		errno = err;
@@ -356,8 +351,8 @@ camel_mime_message_class_init (CamelMimeMessageClass *class)
 	object_class->finalize = mime_message_finalize;
 
 	data_wrapper_class = CAMEL_DATA_WRAPPER_CLASS (class);
-	data_wrapper_class->write_to_stream = mime_message_write_to_stream;
-	data_wrapper_class->decode_to_stream = mime_message_write_to_stream;
+	data_wrapper_class->write_to_stream_sync = mime_message_write_to_stream_sync;
+	data_wrapper_class->decode_to_stream_sync = mime_message_write_to_stream_sync;
 
 	medium_class = CAMEL_MEDIUM_CLASS (class);
 	medium_class->add_header = mime_message_add_header;
@@ -365,7 +360,7 @@ camel_mime_message_class_init (CamelMimeMessageClass *class)
 	medium_class->remove_header = mime_message_remove_header;
 
 	mime_part_class = CAMEL_MIME_PART_CLASS (class);
-	mime_part_class->construct_from_parser = mime_message_construct_from_parser;
+	mime_part_class->construct_from_parser_sync = mime_message_construct_from_parser_sync;
 
 	header_name_table = g_hash_table_new (
 		camel_strcase_hash, camel_strcase_equal);
@@ -910,7 +905,7 @@ find_best_encoding (CamelMimePart *part, CamelBestencRequired required, CamelBes
 	idb = camel_stream_filter_add (
 		CAMEL_STREAM_FILTER (filter), bestenc);
 	d(printf("writing to checking stream\n"));
-	camel_data_wrapper_decode_to_stream (content, filter, NULL, NULL);
+	camel_data_wrapper_decode_to_stream_sync (content, filter, NULL, NULL);
 	camel_stream_filter_remove (CAMEL_STREAM_FILTER (filter), idb);
 	if (idc != -1) {
 		camel_stream_filter_remove (CAMEL_STREAM_FILTER (filter), idc);
@@ -953,7 +948,7 @@ find_best_encoding (CamelMimePart *part, CamelBestencRequired required, CamelBes
 				CAMEL_STREAM_FILTER (filter), bestenc);
 
 			/* and write it to the new stream */
-			camel_data_wrapper_write_to_stream (
+			camel_data_wrapper_write_to_stream_sync (
 				content, filter, NULL, NULL);
 
 			g_object_unref (charenc);

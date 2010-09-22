@@ -787,10 +787,10 @@ sasl_digest_md5_finalize (GObject *object)
 }
 
 static GByteArray *
-sasl_digest_md5_challenge (CamelSasl *sasl,
-                           GByteArray *token,
-                           GCancellable *cancellable,
-                           GError **error)
+sasl_digest_md5_challenge_sync (CamelSasl *sasl,
+                                GByteArray *token,
+                                GCancellable *cancellable,
+                                GError **error)
 {
 	CamelSaslDigestMd5 *sasl_digest = CAMEL_SASL_DIGEST_MD5 (sasl);
 	struct _CamelSaslDigestMd5Private *priv = sasl_digest->priv;
@@ -940,7 +940,7 @@ camel_sasl_digest_md5_class_init (CamelSaslDigestMd5Class *class)
 	object_class->finalize = sasl_digest_md5_finalize;
 
 	sasl_class = CAMEL_SASL_CLASS (class);
-	sasl_class->challenge = sasl_digest_md5_challenge;
+	sasl_class->challenge_sync = sasl_digest_md5_challenge_sync;
 }
 
 static void

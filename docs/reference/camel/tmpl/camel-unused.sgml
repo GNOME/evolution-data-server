@@ -4510,6 +4510,80 @@ streams
 @context: 
 @session: 
 
+<!-- ##### FUNCTION camel_cipher_decrypt ##### -->
+<para>
+
+</para>
+
+@context: 
+@ipart: 
+@opart: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_cipher_encrypt ##### -->
+<para>
+
+</para>
+
+@context: 
+@userid: 
+@recipients: 
+@ipart: 
+@opart: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_cipher_export_keys ##### -->
+<para>
+
+</para>
+
+@context: 
+@keys: 
+@ostream: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_cipher_import_keys ##### -->
+<para>
+
+</para>
+
+@context: 
+@istream: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_cipher_sign ##### -->
+<para>
+
+</para>
+
+@context: 
+@userid: 
+@hash: 
+@ipart: 
+@opart: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_cipher_verify ##### -->
+<para>
+
+</para>
+
+@context: 
+@ipart: 
+@cancellable: 
+@error: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_data_cache_clear ##### -->
 <para>
 
@@ -4529,6 +4603,39 @@ streams
 @old: 
 @new: 
 @ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_data_wrapper_construct_from_stream ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@stream: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_data_wrapper_decode_to_stream ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@stream: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_data_wrapper_write_to_stream ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@stream: 
+@cancellable: 
+@error: 
 @Returns: 
 
 <!-- ##### FUNCTION camel_digest_folder_new ##### -->
@@ -4679,6 +4786,19 @@ streams
 @n: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_folder_append_message ##### -->
+<para>
+
+</para>
+
+@folder: 
+@message: 
+@info: 
+@appended_uid: 
+@cancellable: 
+@error: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_folder_construct ##### -->
 <para>
 
@@ -4688,6 +4808,37 @@ streams
 @parent_store: 
 @full_name: 
 @name: 
+
+<!-- ##### FUNCTION camel_folder_expunge ##### -->
+<para>
+
+</para>
+
+@folder: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_folder_get_message ##### -->
+<para>
+
+</para>
+
+@folder: 
+@uid: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_folder_refresh_info ##### -->
+<para>
+
+</para>
+
+@folder: 
+@cancellable: 
+@error: 
+@Returns: 
 
 <!-- ##### FUNCTION camel_folder_summary_array_free ##### -->
 <para>
@@ -4737,6 +4888,42 @@ streams
 </para>
 
 @summary: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_folder_sync ##### -->
+<para>
+
+</para>
+
+@folder: 
+@expunge: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_folder_sync_message ##### -->
+<para>
+
+</para>
+
+@folder: 
+@uid: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_folder_transfer_messages_to ##### -->
+<para>
+
+</para>
+
+@source: 
+@uids: 
+@dest: 
+@transferred_uids: 
+@delete_originals: 
+@cancellable: 
+@error: 
 @Returns: 
 
 <!-- ##### FUNCTION camel_groupwise_journal_append ##### -->
@@ -6621,6 +6808,17 @@ streams
 @stream: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_mime_part_construct_from_parser ##### -->
+<para>
+
+</para>
+
+@mime_part: 
+@parser: 
+@cancellable: 
+@error: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_mime_part_get_content_MD5 ##### -->
 <para>
 
@@ -7282,6 +7480,47 @@ streams
 
 @Param1: 
 
+<!-- ##### FUNCTION camel_offline_folder_downsync ##### -->
+<para>
+
+</para>
+
+@offline: 
+@expression: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_offline_store_get_network_state ##### -->
+<para>
+
+</para>
+
+@store: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_offline_store_prepare_for_offline ##### -->
+<para>
+
+</para>
+
+@store: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_offline_store_set_network_state ##### -->
+<para>
+
+</para>
+
+@store: 
+@state: 
+@cancellable: 
+@error: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_operation_cancel_block ##### -->
 <para>
 
@@ -7563,6 +7802,28 @@ streams
 @sasl: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_sasl_challenge ##### -->
+<para>
+
+</para>
+
+@sasl: 
+@token: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_sasl_challenge_base64 ##### -->
+<para>
+
+</para>
+
+@sasl: 
+@token: 
+@cancellable: 
+@error: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_search_build_match_regex ##### -->
 <para>
 
@@ -7663,6 +7924,35 @@ streams
 @len: 
 @type: 
 @words: 
+
+<!-- ##### FUNCTION camel_service_connect ##### -->
+<para>
+
+</para>
+
+@service: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_service_disconnect ##### -->
+<para>
+
+</para>
+
+@service: 
+@clean: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_service_query_auth_types ##### -->
+<para>
+
+</para>
+
+@service: 
+@cancellable: 
+@error: 
+@Returns: 
 
 <!-- ##### FUNCTION camel_session_check_junk ##### -->
 <para>
@@ -7806,6 +8096,138 @@ streams
 @xevline: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_store_create_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@parent_name: 
+@folder_name: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_store_delete_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_store_get_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@flags: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_store_get_folder_info ##### -->
+<para>
+
+</para>
+
+@store: 
+@top: 
+@flags: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_store_get_inbox ##### -->
+<para>
+
+</para>
+
+@store: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_store_get_junk ##### -->
+<para>
+
+</para>
+
+@store: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_store_get_trash ##### -->
+<para>
+
+</para>
+
+@store: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_store_noop ##### -->
+<para>
+
+</para>
+
+@store: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_store_rename_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@old_namein: 
+@new_name: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_store_subscribe_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_store_sync ##### -->
+<para>
+
+</para>
+
+@store: 
+@expunge: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_store_unsubscribe_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@cancellable: 
+@error: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_stream_filter_new_with_stream ##### -->
 <para>
 
@@ -7933,6 +8355,19 @@ streams
 
 </para>
 
+@Returns: 
+
+<!-- ##### FUNCTION camel_transport_send_to ##### -->
+<para>
+
+</para>
+
+@transport: 
+@message: 
+@from: 
+@recipients: 
+@cancellable: 
+@error: 
 @Returns: 
 
 <!-- ##### MACRO camel_type_get_global_classfuncs ##### -->

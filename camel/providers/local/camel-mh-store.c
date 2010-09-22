@@ -38,57 +38,7 @@
 
 #define d(x)
 
-static gboolean construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, GError **error);
-static CamelFolder *get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, GCancellable *cancellable, GError **error);
-static CamelFolder *get_inbox (CamelStore *store, GCancellable *cancellable, GError **error);
-static gboolean delete_folder (CamelStore *store, const gchar *folder_name, GCancellable *cancellable, GError **error);
-static gboolean rename_folder (CamelStore *store, const gchar *old, const gchar *new, GCancellable *cancellable, GError **error);
-static CamelFolderInfo * get_folder_info (CamelStore *store, const gchar *top, guint32 flags, GCancellable *cancellable, GError **error);
-
 G_DEFINE_TYPE (CamelMhStore, camel_mh_store, CAMEL_TYPE_LOCAL_STORE)
-
-static void
-camel_mh_store_class_init (CamelMhStoreClass *class)
-{
-	CamelServiceClass *service_class;
-	CamelStoreClass *store_class;
-
-	service_class = CAMEL_SERVICE_CLASS (class);
-	service_class->construct = construct;
-
-	store_class = CAMEL_STORE_CLASS (class);
-	store_class->get_folder = get_folder;
-	store_class->get_inbox = get_inbox;
-	store_class->delete_folder = delete_folder;
-	store_class->rename_folder = rename_folder;
-	store_class->get_folder_info = get_folder_info;
-}
-
-static void
-camel_mh_store_init (CamelMhStore *mh_store)
-{
-}
-
-static gboolean
-construct (CamelService *service,
-           CamelSession *session,
-           CamelProvider *provider,
-           CamelURL *url,
-           GError **error)
-{
-	CamelServiceClass *service_class;
-	CamelMhStore *mh_store = (CamelMhStore *)service;
-
-	/* Chain up to parent's construct() method. */
-	service_class = CAMEL_SERVICE_CLASS (camel_mh_store_parent_class);
-	if (!service_class->construct (service, session, provider, url, error))
-		return FALSE;
-
-	if (camel_url_get_param(url, "dotfolders"))
-		mh_store->flags |= CAMEL_MH_DOTFOLDERS;
-
-	return TRUE;
-}
 
 enum {
 	UPDATE_NONE,
@@ -191,141 +141,6 @@ fail:
 		g_object_unref (out);
 }
 
-static CamelFolder *
-get_folder (CamelStore *store,
-            const gchar *folder_name,
-            guint32 flags,
-            GCancellable *cancellable,
-            GError **error)
-{
-	CamelStoreClass *store_class;
-	gchar *name;
-	struct stat st;
-
-	/* Chain up to parent's get_folder() method. */
-	store_class = CAMEL_STORE_CLASS (camel_mh_store_parent_class);
-	if (store_class->get_folder (store, folder_name, flags, cancellable, error) == NULL)
-		return NULL;
-
-	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
-
-	if (g_stat (name, &st) == -1) {
-		if (errno != ENOENT) {
-			g_set_error (
-				error, G_IO_ERROR,
-				g_io_error_from_errno (errno),
-				_("Cannot get folder '%s': %s"),
-				folder_name, g_strerror (errno));
-			g_free (name);
-			return NULL;
-		}
-		if ((flags & CAMEL_STORE_FOLDER_CREATE) == 0) {
-			g_set_error (
-				error, CAMEL_STORE_ERROR,
-				CAMEL_STORE_ERROR_NO_FOLDER,
-				_("Cannot get folder '%s': folder does not exist."),
-				folder_name);
-			g_free (name);
-			return NULL;
-		}
-
-		if (mkdir (name, 0777) != 0) {
-			g_set_error (
-				error, G_IO_ERROR,
-				g_io_error_from_errno (errno),
-				_("Could not create folder '%s': %s"),
-				folder_name, g_strerror (errno));
-			g_free (name);
-			return NULL;
-		}
-
-		/* add to .folders if we are supposed to */
-		/* FIXME: throw exception on error */
-		if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS)
-			folders_update (((CamelLocalStore *)store)->toplevel_dir, UPDATE_ADD, folder_name, NULL, cancellable);
-	} else if (!S_ISDIR (st.st_mode)) {
-		g_set_error (
-			error, CAMEL_STORE_ERROR,
-			CAMEL_STORE_ERROR_NO_FOLDER,
-			_("Cannot get folder '%s': not a directory."),
-			folder_name);
-		g_free (name);
-		return NULL;
-	} else if (flags & CAMEL_STORE_FOLDER_EXCL) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Cannot create folder '%s': folder exists."),
-			folder_name);
-		g_free (name);
-		return NULL;
-	}
-
-	g_free (name);
-
-	return camel_mh_folder_new (store, folder_name, flags, cancellable, error);
-}
-
-static CamelFolder *
-get_inbox (CamelStore *store,
-           GCancellable *cancellable,
-           GError **error)
-{
-	return get_folder (store, "inbox", 0, cancellable, error);
-}
-
-static gboolean
-delete_folder (CamelStore *store,
-               const gchar *folder_name,
-               GCancellable *cancellable,
-               GError **error)
-{
-	CamelStoreClass *store_class;
-	gchar *name;
-
-	/* remove folder directory - will fail if not empty */
-	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
-	if (rmdir (name) == -1) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			_("Could not delete folder '%s': %s"),
-			folder_name, g_strerror (errno));
-		g_free (name);
-		return FALSE;
-	}
-	g_free (name);
-
-	/* remove from .folders if we are supposed to */
-	if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS)
-		folders_update (((CamelLocalStore *)store)->toplevel_dir, UPDATE_REMOVE, folder_name, NULL, cancellable);
-
-	/* Chain up to parent's delete_folder() method. */
-	store_class = CAMEL_STORE_CLASS (camel_mh_store_parent_class);
-	return store_class->delete_folder (store, folder_name, cancellable, error);
-}
-
-static gboolean
-rename_folder (CamelStore *store,
-               const gchar *old,
-               const gchar *new,
-               GCancellable *cancellable,
-               GError **error)
-{
-	CamelStoreClass *store_class;
-
-	/* Chain up to parent's rename_folder() method. */
-	store_class = CAMEL_STORE_CLASS (camel_mh_store_parent_class);
-	if (!store_class->rename_folder (store, old, new, cancellable, error))
-		return FALSE;
-
-	if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS) {
-		/* yeah this is messy, but so is mh! */
-		folders_update (((CamelLocalStore *)store)->toplevel_dir, UPDATE_RENAME, old, new, cancellable);
-	}
-
-	return TRUE;
-}
-
 static void
 fill_fi (CamelStore *store,
          CamelFolderInfo *fi,
@@ -338,11 +153,12 @@ fill_fi (CamelStore *store,
 
 	if (folder == NULL
 	    && (flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
-		folder = camel_store_get_folder (store, fi->full_name, 0, cancellable, NULL);
+		folder = camel_store_get_folder_sync (
+			store, fi->full_name, 0, cancellable, NULL);
 
 	if (folder) {
 		if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
-			camel_folder_refresh_info (folder, cancellable, NULL);
+			camel_folder_refresh_info_sync (folder, cancellable, NULL);
 		fi->unread = camel_folder_get_unread_message_count (folder);
 		fi->total = camel_folder_get_message_count (folder);
 		g_object_unref (folder);
@@ -595,12 +411,108 @@ inode_free (gpointer k, gpointer v, gpointer d)
 	g_free (k);
 }
 
+static gboolean
+mh_folder_store_construct (CamelService *service,
+                           CamelSession *session,
+                           CamelProvider *provider,
+                           CamelURL *url,
+                           GError **error)
+{
+	CamelServiceClass *service_class;
+	CamelMhStore *mh_store = (CamelMhStore *)service;
+
+	/* Chain up to parent's construct() method. */
+	service_class = CAMEL_SERVICE_CLASS (camel_mh_store_parent_class);
+	if (!service_class->construct (service, session, provider, url, error))
+		return FALSE;
+
+	if (camel_url_get_param(url, "dotfolders"))
+		mh_store->flags |= CAMEL_MH_DOTFOLDERS;
+
+	return TRUE;
+}
+
+static CamelFolder *
+mh_store_get_folder_sync (CamelStore *store,
+                          const gchar *folder_name,
+                          guint32 flags,
+                          GCancellable *cancellable,
+                          GError **error)
+{
+	CamelStoreClass *store_class;
+	gchar *name;
+	struct stat st;
+
+	/* Chain up to parent's get_folder() method. */
+	store_class = CAMEL_STORE_CLASS (camel_mh_store_parent_class);
+	if (store_class->get_folder_sync (
+		store, folder_name, flags, cancellable, error) == NULL)
+		return NULL;
+
+	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
+
+	if (g_stat (name, &st) == -1) {
+		if (errno != ENOENT) {
+			g_set_error (
+				error, G_IO_ERROR,
+				g_io_error_from_errno (errno),
+				_("Cannot get folder '%s': %s"),
+				folder_name, g_strerror (errno));
+			g_free (name);
+			return NULL;
+		}
+		if ((flags & CAMEL_STORE_FOLDER_CREATE) == 0) {
+			g_set_error (
+				error, CAMEL_STORE_ERROR,
+				CAMEL_STORE_ERROR_NO_FOLDER,
+				_("Cannot get folder '%s': folder does not exist."),
+				folder_name);
+			g_free (name);
+			return NULL;
+		}
+
+		if (mkdir (name, 0777) != 0) {
+			g_set_error (
+				error, G_IO_ERROR,
+				g_io_error_from_errno (errno),
+				_("Could not create folder '%s': %s"),
+				folder_name, g_strerror (errno));
+			g_free (name);
+			return NULL;
+		}
+
+		/* add to .folders if we are supposed to */
+		/* FIXME: throw exception on error */
+		if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS)
+			folders_update (((CamelLocalStore *)store)->toplevel_dir, UPDATE_ADD, folder_name, NULL, cancellable);
+	} else if (!S_ISDIR (st.st_mode)) {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
+			_("Cannot get folder '%s': not a directory."),
+			folder_name);
+		g_free (name);
+		return NULL;
+	} else if (flags & CAMEL_STORE_FOLDER_EXCL) {
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Cannot create folder '%s': folder exists."),
+			folder_name);
+		g_free (name);
+		return NULL;
+	}
+
+	g_free (name);
+
+	return camel_mh_folder_new (store, folder_name, flags, cancellable, error);
+}
+
 static CamelFolderInfo *
-get_folder_info (CamelStore *store,
-                 const gchar *top,
-                 guint32 flags,
-                 GCancellable *cancellable,
-                 GError **error)
+mh_store_get_folder_info_sync (CamelStore *store,
+                               const gchar *top,
+                               guint32 flags,
+                               GCancellable *cancellable,
+                               GError **error)
 {
 	CamelFolderInfo *fi = NULL;
 	CamelURL *url;
@@ -639,3 +551,90 @@ get_folder_info (CamelStore *store,
 
 	return fi;
 }
+
+static CamelFolder *
+mh_store_get_inbox_sync (CamelStore *store,
+                         GCancellable *cancellable,
+                         GError **error)
+{
+	return mh_store_get_folder_sync (
+		store, "inbox", 0, cancellable, error);
+}
+
+static gboolean
+mh_store_delete_folder_sync (CamelStore *store,
+                             const gchar *folder_name,
+                             GCancellable *cancellable,
+                             GError **error)
+{
+	CamelStoreClass *store_class;
+	gchar *name;
+
+	/* remove folder directory - will fail if not empty */
+	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
+	if (rmdir (name) == -1) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			_("Could not delete folder '%s': %s"),
+			folder_name, g_strerror (errno));
+		g_free (name);
+		return FALSE;
+	}
+	g_free (name);
+
+	/* remove from .folders if we are supposed to */
+	if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS)
+		folders_update (((CamelLocalStore *)store)->toplevel_dir, UPDATE_REMOVE, folder_name, NULL, cancellable);
+
+	/* Chain up to parent's delete_folder() method. */
+	store_class = CAMEL_STORE_CLASS (camel_mh_store_parent_class);
+	return store_class->delete_folder_sync (
+		store, folder_name, cancellable, error);
+}
+
+static gboolean
+mh_store_rename_folder_sync (CamelStore *store,
+                             const gchar *old,
+                             const gchar *new,
+                             GCancellable *cancellable,
+                             GError **error)
+{
+	CamelStoreClass *store_class;
+
+	/* Chain up to parent's rename_folder() method. */
+	store_class = CAMEL_STORE_CLASS (camel_mh_store_parent_class);
+	if (!store_class->rename_folder_sync (
+		store, old, new, cancellable, error))
+		return FALSE;
+
+	if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS) {
+		/* yeah this is messy, but so is mh! */
+		folders_update (((CamelLocalStore *)store)->toplevel_dir, UPDATE_RENAME, old, new, cancellable);
+	}
+
+	return TRUE;
+}
+
+static void
+camel_mh_store_class_init (CamelMhStoreClass *class)
+{
+	CamelServiceClass *service_class;
+	CamelStoreClass *store_class;
+
+	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->construct = mh_folder_store_construct;
+
+	store_class = CAMEL_STORE_CLASS (class);
+	store_class->get_folder_sync = mh_store_get_folder_sync;
+	store_class->get_folder_info_sync = mh_store_get_folder_info_sync;
+	store_class->get_inbox_folder_sync = mh_store_get_inbox_sync;
+	store_class->delete_folder_sync = mh_store_delete_folder_sync;
+	store_class->rename_folder_sync = mh_store_rename_folder_sync;
+}
+
+static void
+camel_mh_store_init (CamelMhStore *mh_store)
+{
+}
+

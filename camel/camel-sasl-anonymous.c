@@ -54,10 +54,10 @@ sasl_anonymous_finalize (GObject *object)
 }
 
 static GByteArray *
-sasl_anonymous_challenge (CamelSasl *sasl,
-                          GByteArray *token,
-                          GCancellable *cancellable,
-                          GError **error)
+sasl_anonymous_challenge_sync (CamelSasl *sasl,
+                               GByteArray *token,
+                               GCancellable *cancellable,
+                               GError **error)
 {
 	CamelSaslAnonymous *sasl_anon = CAMEL_SASL_ANONYMOUS (sasl);
 	CamelInternetAddress *cia;
@@ -125,7 +125,7 @@ camel_sasl_anonymous_class_init (CamelSaslAnonymousClass *class)
 	object_class->finalize = sasl_anonymous_finalize;
 
 	sasl_class = CAMEL_SASL_CLASS (class);
-	sasl_class->challenge = sasl_anonymous_challenge;
+	sasl_class->challenge_sync = sasl_anonymous_challenge_sync;
 }
 
 static void

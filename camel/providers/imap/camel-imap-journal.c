@@ -292,7 +292,7 @@ journal_decode_folder (CamelIMAPJournal *journal,
 
 		parent_store = camel_folder_get_parent_store (
 			CAMEL_OFFLINE_JOURNAL (journal)->folder);
-		folder = camel_store_get_folder (
+		folder = camel_store_get_folder_sync (
 			parent_store, name, 0, cancellable, &local_error);
 		if (folder)
 			g_hash_table_insert (journal->folders, (gchar *) name, folder);
@@ -332,7 +332,7 @@ imap_entry_play (CamelOfflineJournal *journal,
 		CamelMimeMessage *message;
 		CamelMessageInfo *info;
 
-		message = camel_folder_get_message (
+		message = camel_folder_get_message_sync (
 			journal->folder, imap_entry->append_uid,
 			cancellable, error);
 		if (!message) {
@@ -458,7 +458,7 @@ close_folder (gchar *name,
               CamelFolder *folder)
 {
 	g_free (name);
-	camel_folder_sync (folder, FALSE, NULL, NULL);
+	camel_folder_synchronize_sync (folder, FALSE, NULL, NULL);
 	g_object_unref (folder);
 }
 

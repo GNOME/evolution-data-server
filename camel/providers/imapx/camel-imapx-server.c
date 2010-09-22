@@ -460,7 +460,7 @@ imapx_command_add_part (CamelIMAPXCommand *ic, camel_imapx_command_part_t type, 
 		/* TODO: seekable streams we could just seek to the end and back */
 		null = (CamelStreamNull *)camel_stream_null_new ();
 		if ( (type & CAMEL_IMAPX_COMMAND_MASK) == CAMEL_IMAPX_COMMAND_DATAWRAPPER) {
-			camel_data_wrapper_write_to_stream ((CamelDataWrapper *)ob, (CamelStream *)null, NULL, NULL);
+			camel_data_wrapper_write_to_stream_sync ((CamelDataWrapper *)ob, (CamelStream *)null, NULL, NULL);
 		} else {
 			camel_stream_reset ((CamelStream *)ob, NULL);
 			camel_stream_write_to_stream ((CamelStream *)ob, (CamelStream *)null, NULL, NULL);
@@ -1628,7 +1628,7 @@ imapx_untagged (CamelIMAPXServer *imap,
 				path_name = camel_imapx_store_summary_full_to_path (s, sinfo->name, ns->sep);
 				c(imap->tagprefix, "Got folder path '%s' for full '%s'\n", path_name, sinfo->name);
 				if (path_name) {
-					ifolder = (gpointer)camel_store_get_folder (imap->store, path_name, 0, cancellable, error);
+					ifolder = (gpointer)camel_store_get_folder_sync (imap->store, path_name, 0, cancellable, error);
 					g_free (path_name);
 				}
 			}
@@ -1792,7 +1792,7 @@ imapx_continuation (CamelIMAPXServer *imap,
 	switch (cp->type & CAMEL_IMAPX_COMMAND_MASK) {
 	case CAMEL_IMAPX_COMMAND_DATAWRAPPER:
 		c(imap->tagprefix, "writing data wrapper to literal\n");
-		camel_data_wrapper_write_to_stream ((CamelDataWrapper *)cp->ob, (CamelStream *)imap->stream, cancellable, NULL);
+		camel_data_wrapper_write_to_stream_sync ((CamelDataWrapper *)cp->ob, (CamelStream *)imap->stream, cancellable, NULL);
 		break;
 	case CAMEL_IMAPX_COMMAND_STREAM:
 		c(imap->tagprefix, "writing stream to literal\n");
@@ -1805,7 +1805,7 @@ imapx_continuation (CamelIMAPXServer *imap,
 		if (camel_imapx_stream_text (imap->stream, &token, cancellable, error))
 			return -1;
 		    
-		resp = camel_sasl_challenge_base64 (
+		resp = camel_sasl_challenge_base64_sync (
 			(CamelSasl *) cp->ob, (const gchar *) token,
 			cancellable, error);
 		g_free(token);
@@ -2143,8 +2143,8 @@ imapx_command_idle_stop (CamelIMAPXServer *is, GError **error)
 			"Unable to issue DONE");
 		c(is->tagprefix, "Failed to issue DONE to terminate IDLE\n");
 		is->state = IMAPX_SHUTDOWN;
-		if (is->op)
-			camel_operation_cancel(is->op);
+		if (is->cancellable)
+			camel_operation_cancel (CAMEL_OPERATION (is->cancellable));
 		is->parser_quit = TRUE;
 		return FALSE;
 	}
@@ -4414,7 +4414,7 @@ imapx_job_delete_folder_start (CamelIMAPXServer *is,
 
 	encoded_fname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, job->u.folder_name);
 
-	job->folder = camel_store_get_folder (
+	job->folder = camel_store_get_folder_sync (
 		is->store, "INBOX", 0, job->cancellable, &job->error);
 
 	/* make sure to-be-deleted folder is not selected by selecting INBOX for this operation */
@@ -4455,7 +4455,7 @@ imapx_job_rename_folder_start (CamelIMAPXServer *is,
 	CamelIMAPXCommand *ic;
 	gchar *en_ofname = NULL, *en_nfname = NULL;
 
-	job->folder = camel_store_get_folder (
+	job->folder = camel_store_get_folder_sync (
 		is->store, "INBOX", 0, job->cancellable, &job->error);
 
 	en_ofname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, job->u.rename_folder.ofolder_name);
@@ -5285,7 +5285,7 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 	g_object_unref (stream);
 	canon = camel_mime_filter_canon_new (CAMEL_MIME_FILTER_CANON_CRLF);
 	camel_stream_filter_add ((CamelStreamFilter *)filter, canon);
-	res = camel_data_wrapper_write_to_stream (
+	res = camel_data_wrapper_write_to_stream_sync (
 		(CamelDataWrapper *)message, filter, cancellable, error);
 	g_object_unref (canon);
 	g_object_unref (filter);

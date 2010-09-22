@@ -62,7 +62,7 @@ struct _CamelOfflineFolder {
 struct _CamelOfflineFolderClass {
 	CamelFolderClass parent_class;
 
-	gboolean	(*downsync)		(CamelOfflineFolder *folder,
+	gboolean	(*downsync_sync)	(CamelOfflineFolder *folder,
 						 const gchar *expression,
 						 GCancellable *cancellable,
 						 GError **error);
@@ -74,7 +74,8 @@ gboolean	camel_offline_folder_get_offline_sync
 void		camel_offline_folder_set_offline_sync
 						(CamelOfflineFolder *offline,
 						 gboolean offline_sync);
-gboolean	camel_offline_folder_downsync	(CamelOfflineFolder *offline,
+gboolean	camel_offline_folder_downsync_sync
+						(CamelOfflineFolder *offline,
 						 const gchar *expression,
 						 GCancellable *cancellable,
 						 GError **error);

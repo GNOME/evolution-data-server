@@ -254,10 +254,10 @@ multipart_signed_set_mime_type_field (CamelDataWrapper *data_wrapper,
 }
 
 static gssize
-multipart_signed_write_to_stream (CamelDataWrapper *data_wrapper,
-                                  CamelStream *stream,
-                                  GCancellable *cancellable,
-                                  GError **error)
+multipart_signed_write_to_stream_sync (CamelDataWrapper *data_wrapper,
+                                       CamelStream *stream,
+                                       GCancellable *cancellable,
+                                       GError **error)
 {
 	CamelMultipartSigned *mps = (CamelMultipartSigned *)data_wrapper;
 	CamelMultipart *mp = (CamelMultipart *)mps;
@@ -326,7 +326,7 @@ multipart_signed_write_to_stream (CamelDataWrapper *data_wrapper,
 	total += count;
 
 	/* signature */
-	count = camel_data_wrapper_write_to_stream (
+	count = camel_data_wrapper_write_to_stream_sync (
 		CAMEL_DATA_WRAPPER (mps->signature),
 		stream, cancellable, error);
 	if (count == -1)
@@ -360,10 +360,10 @@ file_error:
 }
 
 static gint
-multipart_signed_construct_from_stream (CamelDataWrapper *data_wrapper,
-                                        CamelStream *stream,
-                                        GCancellable *cancellable,
-                                        GError **error)
+multipart_signed_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
+                                             CamelStream *stream,
+                                             GCancellable *cancellable,
+                                             GError **error)
 {
 	CamelMultipartSigned *mps = (CamelMultipartSigned *)data_wrapper;
 	CamelStream *mem = camel_stream_mem_new ();
@@ -436,7 +436,7 @@ multipart_signed_get_part (CamelMultipart *multipart,
 		}
 		camel_stream_reset (stream, NULL);
 		mps->content = camel_mime_part_new ();
-		camel_data_wrapper_construct_from_stream (
+		camel_data_wrapper_construct_from_stream_sync (
 			CAMEL_DATA_WRAPPER (mps->content), stream, NULL, NULL);
 		g_object_unref (stream);
 		return mps->content;
@@ -453,7 +453,7 @@ multipart_signed_get_part (CamelMultipart *multipart,
 		stream = camel_seekable_substream_new ((CamelSeekableStream *)dw->stream, mps->start2, mps->end2);
 		camel_stream_reset (stream, NULL);
 		mps->signature = camel_mime_part_new ();
-		camel_data_wrapper_construct_from_stream (
+		camel_data_wrapper_construct_from_stream_sync (
 			CAMEL_DATA_WRAPPER (mps->signature),
 			stream, NULL, NULL);
 		g_object_unref (stream);
@@ -532,9 +532,9 @@ camel_multipart_signed_class_init (CamelMultipartSignedClass *class)
 
 	data_wrapper_class = CAMEL_DATA_WRAPPER_CLASS (class);
 	data_wrapper_class->set_mime_type_field = multipart_signed_set_mime_type_field;
-	data_wrapper_class->write_to_stream = multipart_signed_write_to_stream;
-	data_wrapper_class->decode_to_stream = multipart_signed_write_to_stream;
-	data_wrapper_class->construct_from_stream = multipart_signed_construct_from_stream;
+	data_wrapper_class->write_to_stream_sync = multipart_signed_write_to_stream_sync;
+	data_wrapper_class->decode_to_stream_sync = multipart_signed_write_to_stream_sync;
+	data_wrapper_class->construct_from_stream_sync = multipart_signed_construct_from_stream_sync;
 
 	multipart_class = CAMEL_MULTIPART_CLASS (class);
 	multipart_class->add_part = multipart_signed_add_part;

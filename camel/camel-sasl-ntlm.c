@@ -659,10 +659,10 @@ deskey (DES_KS k, guchar *key, gint decrypt)
 }
 
 static GByteArray *
-sasl_ntlm_challenge (CamelSasl *sasl,
-                     GByteArray *token,
-                     GCancellable *cancellable,
-                     GError **error)
+sasl_ntlm_challenge_sync (CamelSasl *sasl,
+                          GByteArray *token,
+                          GCancellable *cancellable,
+                          GError **error)
 {
 	CamelService *service;
 	GByteArray *ret;
@@ -730,7 +730,7 @@ camel_sasl_ntlm_class_init (CamelSaslNTLMClass *class)
 	g_type_class_add_private (class, sizeof (CamelSaslNTLMPrivate));
 
 	sasl_class = CAMEL_SASL_CLASS (class);
-	sasl_class->challenge = sasl_ntlm_challenge;
+	sasl_class->challenge_sync = sasl_ntlm_challenge_sync;
 }
 
 static void
