@@ -427,6 +427,9 @@ e_cal_init (ECal *ecal)
 	g_static_rec_mutex_init (&priv->cache_lock);
 }
 
+static void
+gdbus_cal_disconnect (ECal *ecal);
+
 /*
  * Called when the calendar server dies.
  */
@@ -449,15 +452,7 @@ gdbus_cal_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished,
 		g_debug (G_STRLOC ": ECal GDBus connection is closed%s", remote_peer_vanished ? ", remote peer vanished" : "");
 	}
 
-	/* Ensure that everything relevant is NULL */
-	LOCK_FACTORY ();
-
-	if (ecal->priv->gdbus_cal) {
-		g_object_unref (ecal->priv->gdbus_cal);
-		ecal->priv->gdbus_cal = NULL;
-	}
-
-	UNLOCK_FACTORY ();
+	gdbus_cal_disconnect (ecal);
 
         g_signal_emit (G_OBJECT (ecal), e_cal_signals[BACKEND_DIED], 0);
 }
@@ -470,27 +465,24 @@ gdbus_cal_connection_gone_cb (GDBusConnection *connection, const gchar *sender_n
 	gdbus_cal_closed_cb (connection, TRUE, NULL, user_data);
 }
 
-/* Dispose handler for the calendar ecal */
+
 static void
-e_cal_dispose (GObject *object)
+gdbus_cal_disconnect (ECal *ecal)
 {
-	ECal *ecal;
-	ECalPrivate *priv;
+	/* Ensure that everything relevant is NULL */
+	LOCK_FACTORY ();
 
-	ecal = E_CAL (object);
-	priv = ecal->priv;
-
-	if (priv->gdbus_cal) {
+	if (ecal->priv->gdbus_cal) {
 		GError *error = NULL;
-		GDBusConnection *connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (priv->gdbus_cal));
+		GDBusConnection *connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (ecal->priv->gdbus_cal));
 
 		g_signal_handlers_disconnect_by_func (connection, gdbus_cal_closed_cb, ecal);
-		g_dbus_connection_signal_unsubscribe (connection, priv->gone_signal_id);
-		priv->gone_signal_id = 0;
+		g_dbus_connection_signal_unsubscribe (connection, ecal->priv->gone_signal_id);
+		ecal->priv->gone_signal_id = 0;
 
-		e_gdbus_cal_call_close_sync (priv->gdbus_cal, NULL, &error);
-		g_object_unref (priv->gdbus_cal);
-		priv->gdbus_cal = NULL;
+		e_gdbus_cal_call_close_sync (ecal->priv->gdbus_cal, NULL, &error);
+		g_object_unref (ecal->priv->gdbus_cal);
+		ecal->priv->gdbus_cal = NULL;
 
 		if (error) {
 			unwrap_gerror (&error);
@@ -499,6 +491,16 @@ e_cal_dispose (GObject *object)
 			g_error_free (error);
 		}
 	}
+	UNLOCK_FACTORY ();
+}
+
+/* Dispose handler for the calendar ecal */
+static void
+e_cal_dispose (GObject *object)
+{
+	ECal *ecal = E_CAL (object);
+
+	gdbus_cal_disconnect (ecal);
 
 	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
 }
