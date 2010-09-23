@@ -48,8 +48,22 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_STORE, CamelStorePrivate))
 
+typedef struct _AsyncContext AsyncContext;
+
 struct _CamelStorePrivate {
 	GStaticRecMutex folder_lock;	/* for locking folder operations */
+};
+
+struct _AsyncContext {
+	/* arguments */
+	gchar *folder_name_1;
+	gchar *folder_name_2;
+	gboolean expunge;
+	guint32 flags;
+
+	/* results */
+	CamelFolder *folder;
+	CamelFolderInfo *folder_info;
 };
 
 enum {
@@ -65,6 +79,20 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 G_DEFINE_ABSTRACT_TYPE (CamelStore, camel_store, CAMEL_TYPE_SERVICE)
+
+static void
+async_context_free (AsyncContext *async_context)
+{
+	g_free (async_context->folder_name_1);
+	g_free (async_context->folder_name_2);
+
+	if (async_context->folder != NULL)
+		g_object_unref (async_context->folder);
+
+	camel_folder_info_free (async_context->folder_info);
+
+	g_slice_free (AsyncContext, async_context);
+}
 
 /**
  * ignore_no_such_table_exception:
@@ -302,6 +330,789 @@ store_noop_sync (CamelStore *store,
 }
 
 static void
+store_get_folder_thread (GSimpleAsyncResult *simple,
+                         GObject *object,
+                         GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	async_context->folder = camel_store_get_folder_sync (
+		CAMEL_STORE (object), async_context->folder_name_1,
+		async_context->flags, cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+store_get_folder (CamelStore *store,
+                  const gchar *folder_name,
+                  guint32 flags,
+                  gint io_priority,
+                  GCancellable *cancellable,
+                  GAsyncReadyCallback callback,
+                  gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->folder_name_1 = g_strdup (folder_name);
+	async_context->flags = flags;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (store), callback, user_data, store_get_folder);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, store_get_folder_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static CamelFolder *
+store_get_folder_finish (CamelStore *store,
+                         GAsyncResult *result,
+                         GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (store), store_get_folder), NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	return g_object_ref (async_context->folder);
+}
+
+static void
+store_get_folder_info_thread (GSimpleAsyncResult *simple,
+                              GObject *object,
+                              GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	async_context->folder_info = camel_store_get_folder_info_sync (
+		CAMEL_STORE (object), async_context->folder_name_1,
+		async_context->flags, cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+store_get_folder_info (CamelStore *store,
+                       const gchar *top,
+                       guint32 flags,
+                       gint io_priority,
+                       GCancellable *cancellable,
+                       GAsyncReadyCallback callback,
+                       gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->folder_name_1 = g_strdup (top);
+	async_context->flags = flags;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (store), callback,
+		user_data, store_get_folder_info);
+
+	g_simple_async_result_run_in_thread (
+		simple, store_get_folder_info_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static CamelFolderInfo *
+store_get_folder_info_finish (CamelStore *store,
+                              GAsyncResult *result,
+                              GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	CamelFolderInfo *folder_info;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (store), store_get_folder_info), NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	folder_info = async_context->folder_info;
+	async_context->folder_info = NULL;
+
+	return folder_info;
+}
+
+static void
+store_get_inbox_folder_thread (GSimpleAsyncResult *simple,
+                               GObject *object,
+                               GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	async_context->folder = camel_store_get_inbox_folder_sync (
+		CAMEL_STORE (object), cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+store_get_inbox_folder (CamelStore *store,
+                        gint io_priority,
+                        GCancellable *cancellable,
+                        GAsyncReadyCallback callback,
+                        gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (store), callback,
+		user_data, store_get_inbox_folder);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, store_get_inbox_folder_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static CamelFolder *
+store_get_inbox_folder_finish (CamelStore *store,
+                               GAsyncResult *result,
+                               GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (store), store_get_inbox_folder), NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	return g_object_ref (async_context->folder);
+}
+
+static void
+store_get_junk_folder_thread (GSimpleAsyncResult *simple,
+                              GObject *object,
+                              GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	async_context->folder = camel_store_get_junk_folder_sync (
+		CAMEL_STORE (object), cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+store_get_junk_folder (CamelStore *store,
+                       gint io_priority,
+                       GCancellable *cancellable,
+                       GAsyncReadyCallback callback,
+                       gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (store), callback,
+		user_data, store_get_junk_folder);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, store_get_junk_folder_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static CamelFolder *
+store_get_junk_folder_finish (CamelStore *store,
+                              GAsyncResult *result,
+                              GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (store), store_get_folder), NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	return g_object_ref (async_context->folder);
+}
+
+static void
+store_get_trash_folder_thread (GSimpleAsyncResult *simple,
+                               GObject *object,
+                               GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	async_context->folder = camel_store_get_trash_folder_sync (
+		CAMEL_STORE (object), cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+store_get_trash_folder (CamelStore *store,
+                        gint io_priority,
+                        GCancellable *cancellable,
+                        GAsyncReadyCallback callback,
+                        gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (store), callback,
+		user_data, store_get_trash_folder);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, store_get_trash_folder_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static CamelFolder *
+store_get_trash_folder_finish (CamelStore *store,
+                               GAsyncResult *result,
+                               GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (store), store_get_trash_folder), NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	return g_object_ref (async_context->folder);
+}
+
+static void
+store_create_folder_thread (GSimpleAsyncResult *simple,
+                            GObject *object,
+                            GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	async_context->folder_info = camel_store_create_folder_sync (
+		CAMEL_STORE (object), async_context->folder_name_1,
+		async_context->folder_name_2, cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+store_create_folder (CamelStore *store,
+                     const gchar *parent_name,
+                     const gchar *folder_name,
+                     gint io_priority,
+                     GCancellable *cancellable,
+                     GAsyncReadyCallback callback,
+                     gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->folder_name_1 = g_strdup (parent_name);
+	async_context->folder_name_2 = g_strdup (folder_name);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (store), callback, user_data, store_create_folder);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, store_create_folder_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static CamelFolderInfo *
+store_create_folder_finish (CamelStore *store,
+                            GAsyncResult *result,
+                            GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	CamelFolderInfo *folder_info;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (store), store_create_folder_finish), NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	folder_info = async_context->folder_info;
+	async_context->folder_info = NULL;
+
+	return folder_info;
+}
+
+static void
+store_delete_folder_thread (GSimpleAsyncResult *simple,
+                            GObject *object,
+                            GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	camel_store_delete_folder_sync (
+		CAMEL_STORE (object), async_context->folder_name_1,
+		cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+store_delete_folder (CamelStore *store,
+                     const gchar *folder_name,
+                     gint io_priority,
+                     GCancellable *cancellable,
+                     GAsyncReadyCallback callback,
+                     gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->folder_name_1 = g_strdup (folder_name);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (store), callback, user_data, store_delete_folder);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, store_delete_folder_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+store_delete_folder_finish (CamelStore *store,
+                            GAsyncResult *result,
+                            GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (store), store_delete_folder), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+static void
+store_rename_folder_thread (GSimpleAsyncResult *simple,
+                            GObject *object,
+                            GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	camel_store_rename_folder_sync (
+		CAMEL_STORE (object), async_context->folder_name_1,
+		async_context->folder_name_2, cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+store_rename_folder (CamelStore *store,
+                     const gchar *old_name,
+                     const gchar *new_name,
+                     gint io_priority,
+                     GCancellable *cancellable,
+                     GAsyncReadyCallback callback,
+                     gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->folder_name_1 = g_strdup (old_name);
+	async_context->folder_name_2 = g_strdup (new_name);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (store), callback, user_data, store_rename_folder);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, store_rename_folder_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+store_rename_folder_finish (CamelStore *store,
+                            GAsyncResult *result,
+                            GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (store), store_rename_folder), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+static void
+store_subscribe_folder_thread (GSimpleAsyncResult *simple,
+                               GObject *object,
+                               GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	camel_store_subscribe_folder_sync (
+		CAMEL_STORE (object), async_context->folder_name_1,
+		cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+store_subscribe_folder (CamelStore *store,
+                        const gchar *folder_name,
+                        gint io_priority,
+                        GCancellable *cancellable,
+                        GAsyncReadyCallback callback,
+                        gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->folder_name_1 = g_strdup (folder_name);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (store), callback,
+		user_data, store_subscribe_folder);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, store_subscribe_folder_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+store_subscribe_folder_finish (CamelStore *store,
+                               GAsyncResult *result,
+                               GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (store), store_subscribe_folder), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+static void
+store_unsubscribe_folder_thread (GSimpleAsyncResult *simple,
+                                 GObject *object,
+                                 GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	camel_store_unsubscribe_folder_sync (
+		CAMEL_STORE (object), async_context->folder_name_1,
+		cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+store_unsubscribe_folder (CamelStore *store,
+                          const gchar *folder_name,
+                          gint io_priority,
+                          GCancellable *cancellable,
+                          GAsyncReadyCallback callback,
+                          gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->folder_name_1 = g_strdup (folder_name);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (store), callback,
+		user_data, store_unsubscribe_folder);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, store_unsubscribe_folder_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+store_unsubscribe_folder_finish (CamelStore *store,
+                                 GAsyncResult *result,
+                                 GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (store), store_unsubscribe_folder), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+static void
+store_synchronize_thread (GSimpleAsyncResult *simple,
+                          GObject *object,
+                          GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	camel_store_synchronize_sync (
+		CAMEL_STORE (object), async_context->expunge,
+		cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+store_synchronize (CamelStore *store,
+                   gboolean expunge,
+                   gint io_priority,
+                   GCancellable *cancellable,
+                   GAsyncReadyCallback callback,
+                   gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->expunge = expunge;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (store), callback, user_data, store_synchronize);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, store_synchronize_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+store_synchronize_finish (CamelStore *store,
+                          GAsyncResult *result,
+                          GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (store), store_synchronize), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+static void
+store_noop_thread (GSimpleAsyncResult *simple,
+                   GObject *object,
+                   GCancellable *cancellable)
+{
+	GError *error = NULL;
+
+	camel_store_noop_sync (CAMEL_STORE (object), cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+store_noop (CamelStore *store,
+            gint io_priority,
+            GCancellable *cancellable,
+            GAsyncReadyCallback callback,
+            gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (store), callback, user_data, store_noop);
+
+	g_simple_async_result_run_in_thread (
+		simple, store_noop_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+store_noop_finish (CamelStore *store,
+                   GAsyncResult *result,
+                   GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (store), store_noop), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+static void
 camel_store_class_init (CamelStoreClass *class)
 {
 	GObjectClass *object_class;
@@ -319,11 +1130,37 @@ camel_store_class_init (CamelStoreClass *class)
 	class->hash_folder_name = g_str_hash;
 	class->compare_folder_name = g_str_equal;
 	class->can_refresh_folder = store_can_refresh_folder;
+
 	class->get_inbox_folder_sync = store_get_inbox_folder_sync;
 	class->get_junk_folder_sync = store_get_junk_folder_sync;
 	class->get_trash_folder_sync = store_get_trash_folder_sync;
 	class->synchronize_sync = store_synchronize_sync;
 	class->noop_sync = store_noop_sync;
+
+	class->get_folder = store_get_folder;
+	class->get_folder_finish = store_get_folder_finish;
+	class->get_folder_info = store_get_folder_info;
+	class->get_folder_info_finish = store_get_folder_info_finish;
+	class->get_inbox_folder = store_get_inbox_folder;
+	class->get_inbox_folder_finish = store_get_inbox_folder_finish;
+	class->get_junk_folder = store_get_junk_folder;
+	class->get_junk_folder_finish = store_get_junk_folder_finish;
+	class->get_trash_folder = store_get_trash_folder;
+	class->get_trash_folder_finish = store_get_trash_folder_finish;
+	class->create_folder = store_create_folder;
+	class->create_folder_finish = store_create_folder_finish;
+	class->delete_folder = store_delete_folder;
+	class->delete_folder_finish = store_delete_folder_finish;
+	class->rename_folder = store_rename_folder;
+	class->rename_folder_finish = store_rename_folder_finish;
+	class->subscribe_folder = store_subscribe_folder;
+	class->subscribe_folder_finish = store_subscribe_folder_finish;
+	class->unsubscribe_folder = store_unsubscribe_folder;
+	class->unsubscribe_folder_finish = store_unsubscribe_folder_finish;
+	class->synchronize = store_synchronize;
+	class->synchronize_finish = store_synchronize_finish;
+	class->noop = store_noop;
+	class->noop_finish = store_noop_finish;
 
 	signals[FOLDER_CREATED] = g_signal_new (
 		"folder-created",
@@ -412,161 +1249,6 @@ camel_store_error_quark (void)
 	return quark;
 }
 
-/**
- * camel_store_get_folder_sync:
- * @store: a #CamelStore object
- * @folder_name: name of the folder to get
- * @flags: folder flags (create, save body index, etc)
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Get a specific folder object from the store by name.
- *
- * Returns: the folder corresponding to the path @folder_name or %NULL.
- **/
-CamelFolder *
-camel_store_get_folder_sync (CamelStore *store,
-                             const gchar *folder_name,
-                             guint32 flags,
-                             GCancellable *cancellable,
-                             GError **error)
-{
-	CamelStoreClass *class;
-	CamelFolder *folder = NULL;
-
-	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
-	g_return_val_if_fail (folder_name != NULL, NULL);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-
-	/* O_EXCL doesn't make sense if we aren't requesting to also create the folder if it doesn't exist */
-	if (!(flags & CAMEL_STORE_FOLDER_CREATE))
-		flags &= ~CAMEL_STORE_FOLDER_EXCL;
-
-	if (store->folders) {
-		/* Try cache first. */
-		folder = camel_object_bag_reserve (store->folders, folder_name);
-		if (folder && (flags & CAMEL_STORE_FOLDER_EXCL)) {
-			g_set_error (
-				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				_("Cannot create folder '%s': folder exists"),
-				folder_name);
-                        camel_object_bag_abort (store->folders, folder_name);
-			g_object_unref (folder);
-			return NULL;
-		}
-	}
-
-	if (!folder) {
-
-		if (flags & CAMEL_STORE_IS_MIGRATING) {
-			if ((store->flags & CAMEL_STORE_VTRASH) && strcmp (folder_name, CAMEL_VTRASH_NAME) == 0) {
-				if (store->folders)
-					camel_object_bag_abort (store->folders, folder_name);
-				return NULL;
-			}
-
-			if ((store->flags & CAMEL_STORE_VJUNK) && strcmp (folder_name, CAMEL_VJUNK_NAME) == 0) {
-				if (store->folders)
-						camel_object_bag_abort (store->folders, folder_name);
-				return NULL;
-			}
-		}
-
-		if ((store->flags & CAMEL_STORE_VTRASH) && strcmp(folder_name, CAMEL_VTRASH_NAME) == 0) {
-			folder = class->get_trash_folder_sync (store, cancellable, error);
-			CAMEL_CHECK_GERROR (store, get_trash_folder_sync, folder != NULL, error);
-		} else if ((store->flags & CAMEL_STORE_VJUNK) && strcmp(folder_name, CAMEL_VJUNK_NAME) == 0) {
-			folder = class->get_junk_folder_sync (store, cancellable, error);
-			CAMEL_CHECK_GERROR (store, get_junk_folder_sync, folder != NULL, error);
-		} else {
-			folder = class->get_folder_sync (
-				store, folder_name, flags, cancellable, error);
-			CAMEL_CHECK_GERROR (store, get_folder_sync, folder != NULL, error);
-
-			if (folder) {
-				CamelVeeFolder *vfolder;
-
-				if ((store->flags & CAMEL_STORE_VTRASH)
-				    && (vfolder = camel_object_bag_get (store->folders, CAMEL_VTRASH_NAME))) {
-					camel_vee_folder_add_folder (vfolder, folder);
-					g_object_unref (vfolder);
-				}
-
-				if ((store->flags & CAMEL_STORE_VJUNK)
-				    && (vfolder = camel_object_bag_get (store->folders, CAMEL_VJUNK_NAME))) {
-					camel_vee_folder_add_folder (vfolder, folder);
-					g_object_unref (vfolder);
-				}
-			}
-		}
-
-		if (store->folders) {
-			if (folder)
-				camel_object_bag_add (store->folders, folder_name, folder);
-			else
-				camel_object_bag_abort (store->folders, folder_name);
-		}
-
-		if (folder)
-			g_signal_emit (store, signals[FOLDER_OPENED], 0, folder);
-	}
-
-	return folder;
-}
-
-/**
- * camel_store_create_folder_sync:
- * @store: a #CamelStore object
- * @parent_name: name of the new folder's parent, or %NULL
- * @folder_name: name of the folder to create
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Creates a new folder as a child of an existing folder.
- * @parent_name can be %NULL to create a new top-level folder.
- *
- * Returns: info about the created folder, which the caller must
- * free with #camel_store_free_folder_info, or %NULL.
- **/
-CamelFolderInfo *
-camel_store_create_folder_sync (CamelStore *store,
-                                const gchar *parent_name,
-                                const gchar *folder_name,
-                                GCancellable *cancellable,
-                                GError **error)
-{
-	CamelStoreClass *class;
-	CamelFolderInfo *fi;
-
-	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
-	g_return_val_if_fail (folder_name != NULL, NULL);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->create_folder_sync != NULL, NULL);
-
-	if ((parent_name == NULL || parent_name[0] == 0)
-	    && (((store->flags & CAMEL_STORE_VTRASH) && strcmp (folder_name, CAMEL_VTRASH_NAME) == 0)
-		|| ((store->flags & CAMEL_STORE_VJUNK) && strcmp (folder_name, CAMEL_VJUNK_NAME) == 0))) {
-		g_set_error (
-			error, CAMEL_STORE_ERROR,
-			CAMEL_STORE_ERROR_INVALID,
-			_("Cannot create folder: %s: folder exists"),
-			folder_name);
-		return NULL;
-	}
-
-	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
-
-	fi = class->create_folder_sync (
-		store, parent_name, folder_name, cancellable, error);
-	CAMEL_CHECK_GERROR (store, create_folder_sync, fi != NULL, error);
-
-	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
-
-	return fi;
-}
-
 /* deletes folder/removes it from the folder cache, if it's there */
 static void
 cs_delete_cached_folder (CamelStore *store,
@@ -595,199 +1277,6 @@ cs_delete_cached_folder (CamelStore *store,
 		camel_object_bag_remove (store->folders, folder);
 		g_object_unref (folder);
 	}
-}
-
-/**
- * camel_store_delete_folder_sync:
- * @store: a #CamelStore object
- * @folder_name: name of the folder to delete
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Deletes the named folder. The folder must be empty.
- *
- * Returns: %TRUE on success, %FALSE on failure
- **/
-gboolean
-camel_store_delete_folder_sync (CamelStore *store,
-                                const gchar *folder_name,
-                                GCancellable *cancellable,
-                                GError **error)
-{
-	CamelStoreClass *class;
-	gboolean success;
-	GError *local_error = NULL;
-
-	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
-	g_return_val_if_fail (folder_name != NULL, FALSE);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->delete_folder_sync != NULL, FALSE);
-
-	/* TODO: should probably be a parameter/bit on the storeinfo */
-	if (((store->flags & CAMEL_STORE_VTRASH) && strcmp (folder_name, CAMEL_VTRASH_NAME) == 0)
-	    || ((store->flags & CAMEL_STORE_VJUNK) && strcmp (folder_name, CAMEL_VJUNK_NAME) == 0)) {
-		g_set_error (
-			error, CAMEL_STORE_ERROR,
-			CAMEL_STORE_ERROR_NO_FOLDER,
-			_("Cannot delete folder: %s: Invalid operation"),
-			folder_name);
-		return FALSE;
-	}
-
-	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
-
-	success = class->delete_folder_sync (
-		store, folder_name, cancellable, &local_error);
-	CAMEL_CHECK_GERROR (store, delete_folder_sync, success, &local_error);
-
-	/* ignore 'no such table' errors */
-	if (local_error != NULL &&
-	    g_ascii_strncasecmp (local_error->message, "no such table", 13) == 0)
-		g_clear_error (&local_error);
-
-	if (local_error == NULL)
-		cs_delete_cached_folder(store, folder_name);
-	else
-		g_propagate_error (error, local_error);
-
-	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
-
-	return success;
-}
-
-/**
- * camel_store_rename_folder_sync:
- * @store: a #CamelStore object
- * @old_namein: the current name of the folder
- * @new_name: the new name of the folder
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Rename a named folder to a new name.
- *
- * Returns: %TRUE on success, %FALSE on failure
- **/
-gboolean
-camel_store_rename_folder_sync (CamelStore *store,
-                                const gchar *old_namein,
-                                const gchar *new_name,
-                                GCancellable *cancellable,
-                                GError **error)
-{
-	CamelStoreClass *class;
-	CamelFolder *folder;
-	gint i, oldlen, namelen;
-	GPtrArray *folders = NULL;
-	gchar *old_name;
-	gboolean success;
-
-	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
-	g_return_val_if_fail (old_namein != NULL, FALSE);
-	g_return_val_if_fail (new_name != NULL, FALSE);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->rename_folder_sync != NULL, FALSE);
-
-	if (strcmp (old_namein, new_name) == 0)
-		return TRUE;
-
-	if (((store->flags & CAMEL_STORE_VTRASH) && strcmp (old_namein, CAMEL_VTRASH_NAME) == 0)
-	    || ((store->flags & CAMEL_STORE_VJUNK) && strcmp (old_namein, CAMEL_VJUNK_NAME) == 0)) {
-		g_set_error (
-			error, CAMEL_STORE_ERROR,
-			CAMEL_STORE_ERROR_NO_FOLDER,
-			_("Cannot rename folder: %s: Invalid operation"),
-			old_namein);
-		return FALSE;
-	}
-
-	/* need to save this, since old_namein might be folder->full_name, which could go away */
-	old_name = g_strdup (old_namein);
-	oldlen = strlen (old_name);
-
-	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
-
-	/* If the folder is open (or any subfolders of the open folder)
-	   We need to rename them atomically with renaming the actual folder path */
-	if (store->folders) {
-		folders = camel_object_bag_list (store->folders);
-		for (i=0;i<folders->len;i++) {
-			const gchar *full_name;
-
-			folder = folders->pdata[i];
-			full_name = camel_folder_get_full_name (folder);
-
-			namelen = strlen (full_name);
-			if ((namelen == oldlen &&
-			     strcmp (full_name, old_name) == 0)
-			    || ((namelen > oldlen)
-				&& strncmp (full_name, old_name, oldlen) == 0
-				&& full_name[oldlen] == '/')) {
-				camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
-			} else {
-				g_ptr_array_remove_index_fast (folders, i);
-				i--;
-				g_object_unref (folder);
-			}
-		}
-	}
-
-	/* Now try the real rename (will emit renamed signal) */
-	success = class->rename_folder_sync (
-		store, old_name, new_name, cancellable, error);
-	CAMEL_CHECK_GERROR (store, rename_folder_sync, success, error);
-
-	/* If it worked, update all open folders/unlock them */
-	if (folders) {
-		if (success) {
-			guint32 flags = CAMEL_STORE_FOLDER_INFO_RECURSIVE;
-			CamelFolderInfo *folder_info;
-
-			for (i=0;i<folders->len;i++) {
-				const gchar *full_name;
-				gchar *new;
-
-				folder = folders->pdata[i];
-				full_name = camel_folder_get_full_name (folder);
-
-				new = g_strdup_printf("%s%s", new_name, full_name + strlen(old_name));
-				camel_object_bag_rekey (store->folders, folder, new);
-				camel_folder_rename (folder, new);
-				g_free (new);
-
-				camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
-				g_object_unref (folder);
-			}
-
-			/* Emit renamed signal */
-			if (store->flags & CAMEL_STORE_SUBSCRIPTIONS)
-				flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIBED;
-
-			folder_info = class->get_folder_info_sync (
-				store, new_name, flags, cancellable, error);
-			CAMEL_CHECK_GERROR (store, get_folder_info, folder_info != NULL, error);
-
-			if (folder_info != NULL) {
-				camel_store_folder_renamed (store, old_name, folder_info);
-				class->free_folder_info (store, folder_info);
-			}
-		} else {
-			/* Failed, just unlock our folders for re-use */
-			for (i=0;i<folders->len;i++) {
-				folder = folders->pdata[i];
-				camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
-				g_object_unref (folder);
-			}
-		}
-	}
-
-	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
-
-	g_ptr_array_free (folders, TRUE);
-	g_free (old_name);
-
-	return success;
 }
 
 /**
@@ -898,140 +1387,6 @@ camel_store_folder_unsubscribed (CamelStore *store,
 	g_signal_emit (store, signals[FOLDER_UNSUBSCRIBED], 0, info);
 }
 
-/**
- * camel_store_get_inbox_folder_sync:
- * @store: a #CamelStore object
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Returns: the folder in the store into which new mail is delivered,
- * or %NULL if no such folder exists.
- **/
-CamelFolder *
-camel_store_get_inbox_folder_sync (CamelStore *store,
-                                   GCancellable *cancellable,
-                                   GError **error)
-{
-	CamelStoreClass *class;
-	CamelFolder *folder;
-
-	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->get_inbox_folder_sync != NULL, NULL);
-
-	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
-
-	folder = class->get_inbox_folder_sync (store, cancellable, error);
-	CAMEL_CHECK_GERROR (
-		store, get_inbox_folder_sync, folder != NULL, error);
-
-	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
-
-	return folder;
-}
-
-/**
- * camel_store_get_junk_folder_sync:
- * @store: a #CamelStore object
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Returns: the folder in the store into which junk is delivered, or
- * %NULL if no such folder exists.
- **/
-CamelFolder *
-camel_store_get_junk_folder_sync (CamelStore *store,
-                                  GCancellable *cancellable,
-                                  GError **error)
-{
-	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
-
-	if ((store->flags & CAMEL_STORE_VJUNK) == 0) {
-		CamelStoreClass *class;
-		CamelFolder *folder;
-
-		class = CAMEL_STORE_GET_CLASS (store);
-		g_return_val_if_fail (class->get_junk_folder_sync != NULL, NULL);
-
-		folder = class->get_junk_folder_sync (store, cancellable, error);
-		CAMEL_CHECK_GERROR (
-			store, get_junk_folder_sync, folder != NULL, error);
-
-		return folder;
-	}
-
-	return camel_store_get_folder_sync (
-		store, CAMEL_VJUNK_NAME, 0, cancellable, error);
-}
-
-/**
- * camel_store_get_trash_folder_sync:
- * @store: a #CamelStore object
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Returns: the folder in the store into which trash is delivered, or
- * %NULL if no such folder exists.
- **/
-CamelFolder *
-camel_store_get_trash_folder_sync (CamelStore *store,
-                                   GCancellable *cancellable,
-                                   GError **error)
-{
-	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
-
-	if ((store->flags & CAMEL_STORE_VTRASH) == 0) {
-		CamelStoreClass *class;
-		CamelFolder *folder;
-
-		class = CAMEL_STORE_GET_CLASS (store);
-		g_return_val_if_fail (class->get_trash_folder_sync != NULL, NULL);
-
-		folder = class->get_trash_folder_sync (
-			store, cancellable, error);
-		CAMEL_CHECK_GERROR (
-			store, get_trash_folder_sync, folder != NULL, error);
-
-		return folder;
-	}
-
-	return camel_store_get_folder_sync (
-		store, CAMEL_VTRASH_NAME, 0, cancellable, error);
-}
-
-/**
- * camel_store_synchronize_sync:
- * @store: a #CamelStore object
- * @expunge: %TRUE if an expunge should be done after sync or %FALSE otherwise
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Syncs any changes that have been made to the store object and its
- * folders with the real store.
- *
- * Returns: %TRUE on success, %FALSE on failure
- **/
-gboolean
-camel_store_synchronize_sync (CamelStore *store,
-                              gboolean expunge,
-                              GCancellable *cancellable,
-                              GError **error)
-{
-	CamelStoreClass *class;
-	gboolean success;
-
-	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->synchronize_sync != NULL, FALSE);
-
-	success = class->synchronize_sync (store, expunge, cancellable, error);
-	CAMEL_CHECK_GERROR (store, synchronize_sync, success, error);
-
-	return success;
-}
-
 static void
 add_special_info (CamelStore *store,
                   CamelFolderInfo *info,
@@ -1113,79 +1468,8 @@ dump_fi (CamelFolderInfo *fi, gint depth)
 }
 
 /**
- * camel_store_get_folder_info_sync:
- * @store: a #CamelStore object
- * @top: the name of the folder to start from
- * @flags: various CAMEL_STORE_FOLDER_INFO_* flags to control behavior
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * This fetches information about the folder structure of @store,
- * starting with @top, and returns a tree of CamelFolderInfo
- * structures. If @flags includes %CAMEL_STORE_FOLDER_INFO_SUBSCRIBED,
- * only subscribed folders will be listed.   If the store doesn't support
- * subscriptions, then it will list all folders.  If @flags includes
- * %CAMEL_STORE_FOLDER_INFO_RECURSIVE, the returned tree will include
- * all levels of hierarchy below @top. If not, it will only include
- * the immediate subfolders of @top. If @flags includes
- * %CAMEL_STORE_FOLDER_INFO_FAST, the unread_message_count fields of
- * some or all of the structures may be set to %-1, if the store cannot
- * determine that information quickly.  If @flags includes
- * %CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL, don't include special virtual
- * folders (such as vTrash or vJunk).
- *
- * The CAMEL_STORE_FOLDER_INFO_FAST flag should be considered
- * deprecated; most backends will behave the same whether it is
- * supplied or not.  The only guaranteed way to get updated folder
- * counts is to both open the folder and invoke refresh_info() it.
- *
- * Returns: a #CamelFolderInfo tree, which must be freed with
- * #camel_store_free_folder_info, or %NULL.
- **/
-CamelFolderInfo *
-camel_store_get_folder_info_sync (CamelStore *store,
-                                  const gchar *top,
-                                  guint32 flags,
-                                  GCancellable *cancellable,
-                                  GError **error)
-{
-	CamelStoreClass *class;
-	CamelFolderInfo *info;
-
-	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->get_folder_info_sync != NULL, NULL);
-
-	info = class->get_folder_info_sync (
-		store, top, flags, cancellable, error);
-	if (!(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED))
-		CAMEL_CHECK_GERROR (
-			store, get_folder_info_sync, info != NULL, error);
-
-	if (info && (top == NULL || *top == '\0') && (flags & CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL) == 0) {
-		if (info->uri && (store->flags & CAMEL_STORE_VTRASH))
-			/* the name of the Trash folder, used for deleted messages */
-			add_special_info (store, info, CAMEL_VTRASH_NAME, _("Trash"), FALSE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_TRASH);
-		if (info->uri && (store->flags & CAMEL_STORE_VJUNK))
-			/* the name of the Junk folder, used for spam messages */
-			add_special_info (store, info, CAMEL_VJUNK_NAME, _("Junk"), TRUE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_JUNK);
-	}
-
-	if (camel_debug_start("store:folder_info")) {
-		gchar *url = camel_url_to_string (((CamelService *)store)->url, CAMEL_URL_HIDE_ALL);
-		printf("Get folder info(%p:%s, '%s') =\n", (gpointer) store, url, top?top:"<null>");
-		g_free (url);
-		dump_fi (info, 2);
-		camel_debug_end ();
-	}
-
-	return info;
-}
-
-/**
  * camel_store_free_folder_info:
- * @store: a #CamelStore object
+ * @store: a #CamelStore
  * @fi: a #CamelFolderInfo as gotten via #camel_store_get_folder_info
  *
  * Frees the data returned by #camel_store_get_folder_info. If @fi is %NULL,
@@ -1210,7 +1494,7 @@ camel_store_free_folder_info (CamelStore *store,
 
 /**
  * camel_store_free_folder_info_full:
- * @store: a #CamelStore object
+ * @store: a #CamelStore
  * @fi: a #CamelFolderInfo as gotten via #camel_store_get_folder_info
  *
  * An implementation for #CamelStore::free_folder_info. Frees all
@@ -1225,7 +1509,7 @@ camel_store_free_folder_info_full (CamelStore *store,
 
 /**
  * camel_store_free_folder_info_nop:
- * @store: a #CamelStore object
+ * @store: a #CamelStore
  * @fi: a #CamelFolderInfo as gotten via #camel_store_get_folder_info
  *
  * An implementation for #CamelStore::free_folder_info. Does nothing.
@@ -1451,7 +1735,7 @@ camel_folder_info_clone (CamelFolderInfo *fi)
 
 /**
  * camel_store_supports_subscriptions:
- * @store: a #CamelStore object
+ * @store: a #CamelStore
  *
  * Get whether or not @store supports subscriptions to folders.
  *
@@ -1467,7 +1751,7 @@ camel_store_supports_subscriptions (CamelStore *store)
 
 /**
  * camel_store_folder_is_subscribed:
- * @store: a #CamelStore object
+ * @store: a #CamelStore
  * @folder_name: full path of the folder
  *
  * Find out if a folder has been subscribed to.
@@ -1498,116 +1782,8 @@ camel_store_folder_is_subscribed (CamelStore *store,
 }
 
 /**
- * camel_store_subscribe_folder_sync:
- * @store: a #CamelStore object
- * @folder_name: full path of the folder
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Subscribe to the folder described by @folder_name.
- *
- * Returns: %TRUE on success, %FALSE on failure
- **/
-gboolean
-camel_store_subscribe_folder_sync (CamelStore *store,
-                                   const gchar *folder_name,
-                                   GCancellable *cancellable,
-                                   GError **error)
-{
-	CamelStoreClass *class;
-	gboolean success;
-
-	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
-	g_return_val_if_fail (folder_name != NULL, FALSE);
-	g_return_val_if_fail (store->flags & CAMEL_STORE_SUBSCRIPTIONS, FALSE);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->subscribe_folder_sync != NULL, FALSE);
-
-	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
-
-	success = class->subscribe_folder_sync (
-		store, folder_name, cancellable, error);
-	CAMEL_CHECK_GERROR (store, subscribe_folder_sync, success, error);
-
-	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
-
-	return success;
-}
-
-/**
- * camel_store_unsubscribe_folder_sync:
- * @store: a #CamelStore object
- * @folder_name: full path of the folder
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Unsubscribe from the folder described by @folder_name.
- *
- * Returns: %TRUE on success, %FALSE on failure
- **/
-gboolean
-camel_store_unsubscribe_folder_sync (CamelStore *store,
-                                     const gchar *folder_name,
-                                     GCancellable *cancellable,
-                                     GError **error)
-{
-	CamelStoreClass *class;
-	gboolean success;
-
-	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
-	g_return_val_if_fail (folder_name != NULL, FALSE);
-	g_return_val_if_fail (store->flags & CAMEL_STORE_SUBSCRIPTIONS, FALSE);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->unsubscribe_folder_sync != NULL, FALSE);
-
-	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
-
-	success = class->unsubscribe_folder_sync (
-		store, folder_name, cancellable, error);
-	CAMEL_CHECK_GERROR (store, unsubscribe_folder_sync, success, error);
-
-	if (success)
-		cs_delete_cached_folder (store, folder_name);
-
-	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
-
-	return success;
-}
-
-/**
- * camel_store_noop_sync:
- * @store: a #CamelStore object
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Pings @store so that its connection doesn't timeout.
- *
- * Returns: %TRUE on success, %FALSE on failure
- **/
-gboolean
-camel_store_noop_sync (CamelStore *store,
-                       GCancellable *cancellable,
-                       GError **error)
-{
-	CamelStoreClass *class;
-	gboolean success;
-
-	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->noop_sync != NULL, FALSE);
-
-	success = class->noop_sync (store, cancellable, error);
-	CAMEL_CHECK_GERROR (store, noop_sync, success, error);
-
-	return success;
-}
-
-/**
  * camel_store_folder_uri_equal:
- * @store: a #CamelStore object
+ * @store: a #CamelStore
  * @uri0: a folder uri
  * @uri1: another folder uri
  *
@@ -1744,4 +1920,1522 @@ camel_store_unlock (CamelStore *store,
 		default:
 			g_return_if_reached ();
 	}
+}
+
+/**
+ * camel_store_get_folder_sync:
+ * @store: a #CamelStore
+ * @folder_name: name of the folder to get
+ * @flags: folder flags (create, save body index, etc)
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Gets a specific folder object from @store by name.
+ *
+ * Returns: the requested #CamelFolder object, or %NULL on error
+ *
+ * Since: 2.34
+ **/
+CamelFolder *
+camel_store_get_folder_sync (CamelStore *store,
+                             const gchar *folder_name,
+                             guint32 flags,
+                             GCancellable *cancellable,
+                             GError **error)
+{
+	CamelStoreClass *class;
+	CamelFolder *folder = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+	g_return_val_if_fail (folder_name != NULL, NULL);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+
+	/* O_EXCL doesn't make sense if we aren't requesting to also create the folder if it doesn't exist */
+	if (!(flags & CAMEL_STORE_FOLDER_CREATE))
+		flags &= ~CAMEL_STORE_FOLDER_EXCL;
+
+	if (store->folders) {
+		/* Try cache first. */
+		folder = camel_object_bag_reserve (store->folders, folder_name);
+		if (folder && (flags & CAMEL_STORE_FOLDER_EXCL)) {
+			g_set_error (
+				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+				_("Cannot create folder '%s': folder exists"),
+				folder_name);
+                        camel_object_bag_abort (store->folders, folder_name);
+			g_object_unref (folder);
+			return NULL;
+		}
+	}
+
+	if (!folder) {
+
+		if (flags & CAMEL_STORE_IS_MIGRATING) {
+			if ((store->flags & CAMEL_STORE_VTRASH) && strcmp (folder_name, CAMEL_VTRASH_NAME) == 0) {
+				if (store->folders)
+					camel_object_bag_abort (store->folders, folder_name);
+				return NULL;
+			}
+
+			if ((store->flags & CAMEL_STORE_VJUNK) && strcmp (folder_name, CAMEL_VJUNK_NAME) == 0) {
+				if (store->folders)
+						camel_object_bag_abort (store->folders, folder_name);
+				return NULL;
+			}
+		}
+
+		if ((store->flags & CAMEL_STORE_VTRASH) && strcmp(folder_name, CAMEL_VTRASH_NAME) == 0) {
+			folder = class->get_trash_folder_sync (store, cancellable, error);
+			CAMEL_CHECK_GERROR (store, get_trash_folder_sync, folder != NULL, error);
+		} else if ((store->flags & CAMEL_STORE_VJUNK) && strcmp(folder_name, CAMEL_VJUNK_NAME) == 0) {
+			folder = class->get_junk_folder_sync (store, cancellable, error);
+			CAMEL_CHECK_GERROR (store, get_junk_folder_sync, folder != NULL, error);
+		} else {
+			folder = class->get_folder_sync (
+				store, folder_name, flags, cancellable, error);
+			CAMEL_CHECK_GERROR (store, get_folder_sync, folder != NULL, error);
+
+			if (folder) {
+				CamelVeeFolder *vfolder;
+
+				if ((store->flags & CAMEL_STORE_VTRASH)
+				    && (vfolder = camel_object_bag_get (store->folders, CAMEL_VTRASH_NAME))) {
+					camel_vee_folder_add_folder (vfolder, folder);
+					g_object_unref (vfolder);
+				}
+
+				if ((store->flags & CAMEL_STORE_VJUNK)
+				    && (vfolder = camel_object_bag_get (store->folders, CAMEL_VJUNK_NAME))) {
+					camel_vee_folder_add_folder (vfolder, folder);
+					g_object_unref (vfolder);
+				}
+			}
+		}
+
+		if (store->folders) {
+			if (folder)
+				camel_object_bag_add (store->folders, folder_name, folder);
+			else
+				camel_object_bag_abort (store->folders, folder_name);
+		}
+
+		if (folder)
+			g_signal_emit (store, signals[FOLDER_OPENED], 0, folder);
+	}
+
+	return folder;
+}
+
+/**
+ * camel_store_get_folder:
+ * @store: a #CamelStore
+ * @folder_name: name of the folder to get
+ * @flags: folder flags (create, save body index, etc)
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously gets a specific folder object from @store by name.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_store_get_folder_finish() to get the result of the operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_store_get_folder (CamelStore *store,
+                        const gchar *folder_name,
+                        guint32 flags,
+                        gint io_priority,
+                        GCancellable *cancellable,
+                        GAsyncReadyCallback callback,
+                        gpointer user_data)
+{
+	CamelStoreClass *class;
+
+	g_return_if_fail (CAMEL_IS_STORE (store));
+	g_return_if_fail (folder_name != NULL);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_if_fail (class->get_folder != NULL);
+
+	class->get_folder (
+		store, folder_name, flags, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_store_get_folder_finish:
+ * @store: a #CamelStore
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_store_get_folder().
+ *
+ * Returns: the requested #CamelFolder object, or %NULL on error
+ *
+ * Since: 2.34
+ **/
+CamelFolder *
+camel_store_get_folder_finish (CamelStore *store,
+                               GAsyncResult *result,
+                               GError **error)
+{
+	CamelStoreClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->get_folder_finish != NULL, NULL);
+
+	return class->get_folder_finish (store, result, error);
+}
+
+/**
+ * camel_store_get_folder_info_sync:
+ * @store: a #CamelStore
+ * @top: the name of the folder to start from
+ * @flags: various CAMEL_STORE_FOLDER_INFO_* flags to control behavior
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * This fetches information about the folder structure of @store,
+ * starting with @top, and returns a tree of #CamelFolderInfo
+ * structures. If @flags includes %CAMEL_STORE_FOLDER_INFO_SUBSCRIBED,
+ * only subscribed folders will be listed.   If the store doesn't support
+ * subscriptions, then it will list all folders.  If @flags includes
+ * %CAMEL_STORE_FOLDER_INFO_RECURSIVE, the returned tree will include
+ * all levels of hierarchy below @top. If not, it will only include
+ * the immediate subfolders of @top. If @flags includes
+ * %CAMEL_STORE_FOLDER_INFO_FAST, the unread_message_count fields of
+ * some or all of the structures may be set to %-1, if the store cannot
+ * determine that information quickly.  If @flags includes
+ * %CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL, don't include special virtual
+ * folders (such as vTrash or vJunk).
+ *
+ * The returned #CamelFolderInfo tree should be freed with
+ * camel_store_free_folder_info().
+ *
+ * The CAMEL_STORE_FOLDER_INFO_FAST flag should be considered
+ * deprecated; most backends will behave the same whether it is
+ * supplied or not.  The only guaranteed way to get updated folder
+ * counts is to both open the folder and invoke refresh_info() it.
+ *
+ * Returns: a #CamelFolderInfo tree, or %NULL on error
+ *
+ * Since: 2.34
+ **/
+CamelFolderInfo *
+camel_store_get_folder_info_sync (CamelStore *store,
+                                  const gchar *top,
+                                  guint32 flags,
+                                  GCancellable *cancellable,
+                                  GError **error)
+{
+	CamelStoreClass *class;
+	CamelFolderInfo *info;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->get_folder_info_sync != NULL, NULL);
+
+	info = class->get_folder_info_sync (
+		store, top, flags, cancellable, error);
+	if (!(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED))
+		CAMEL_CHECK_GERROR (
+			store, get_folder_info_sync, info != NULL, error);
+
+	if (info && (top == NULL || *top == '\0') && (flags & CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL) == 0) {
+		if (info->uri && (store->flags & CAMEL_STORE_VTRASH))
+			/* the name of the Trash folder, used for deleted messages */
+			add_special_info (store, info, CAMEL_VTRASH_NAME, _("Trash"), FALSE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_TRASH);
+		if (info->uri && (store->flags & CAMEL_STORE_VJUNK))
+			/* the name of the Junk folder, used for spam messages */
+			add_special_info (store, info, CAMEL_VJUNK_NAME, _("Junk"), TRUE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_JUNK);
+	}
+
+	if (camel_debug_start("store:folder_info")) {
+		gchar *url = camel_url_to_string (((CamelService *)store)->url, CAMEL_URL_HIDE_ALL);
+		printf("Get folder info(%p:%s, '%s') =\n", (gpointer) store, url, top?top:"<null>");
+		g_free (url);
+		dump_fi (info, 2);
+		camel_debug_end ();
+	}
+
+	return info;
+}
+
+/**
+ * camel_store_get_folder_info:
+ * @store: a #CamelStore
+ * @top: the name of the folder to start from
+ * @flags: various CAMEL_STORE_FOLDER_INFO_* flags to control behavior
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously fetches information about the folder structure of @store,
+ * starting with @top.  For details of the behavior, see
+ * camel_store_get_folder_info_sync().
+ *
+ * When the operation is finished, @callback will be called.  You can
+ * then call camel_store_get_folder_info_finish() to get the result of
+ * the operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_store_get_folder_info (CamelStore *store,
+                             const gchar *top,
+                             guint32 flags,
+                             gint io_priority,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
+{
+	CamelStoreClass *class;
+
+	g_return_if_fail (CAMEL_IS_STORE (store));
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_if_fail (class->get_folder_info != NULL);
+
+	class->get_folder_info (
+		store, top, flags, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_store_get_folder_info_finish:
+ * @store: a #CamelStore
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_store_get_folder_info().
+ * The returned #CamelFolderInfo tree should be freed with
+ * camel_store_free_folder_info().
+ *
+ * Returns: a #CamelFolderInfo tree, or %NULL on error
+ *
+ * Since: 2.34
+ **/
+CamelFolderInfo *
+camel_store_get_folder_info_finish (CamelStore *store,
+                                    GAsyncResult *result,
+                                    GError **error)
+{
+	CamelStoreClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->get_folder_info_finish != NULL, NULL);
+
+	return class->get_folder_info_finish (store, result, error);
+}
+
+/**
+ * camel_store_get_inbox_folder_sync:
+ * @store: a #CamelStore
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Gets the folder in @store into which new mail is delivered.
+ *
+ * Returns: the inbox folder for @store, or %NULL on error or if no such
+ * folder exists
+ *
+ * Since: 2.34
+ **/
+CamelFolder *
+camel_store_get_inbox_folder_sync (CamelStore *store,
+                                   GCancellable *cancellable,
+                                   GError **error)
+{
+	CamelStoreClass *class;
+	CamelFolder *folder;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->get_inbox_folder_sync != NULL, NULL);
+
+	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
+
+	/* Check for cancellation after locking. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+		return NULL;
+	}
+
+	folder = class->get_inbox_folder_sync (store, cancellable, error);
+	CAMEL_CHECK_GERROR (
+		store, get_inbox_folder_sync, folder != NULL, error);
+
+	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+
+	return folder;
+}
+
+/**
+ * camel_store_get_inbox_folder:
+ * @store: a #CamelStore
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously gets the folder in @store into which new mail is delivered.
+ *
+ * When the operation is finished, @callback will be called.  You can
+ * then call camel_store_get_inbox_folder_finish() to get the result of
+ * the operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_store_get_inbox_folder (CamelStore *store,
+                              gint io_priority,
+                              GCancellable *cancellable,
+                              GAsyncReadyCallback callback,
+                              gpointer user_data)
+{
+	CamelStoreClass *class;
+
+	g_return_if_fail (CAMEL_IS_STORE (store));
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_if_fail (class->get_inbox_folder != NULL);
+
+	class->get_inbox_folder (
+		store, io_priority, cancellable, callback, user_data);
+}
+
+/**
+ * camel_store_get_inbox_folder_finish:
+ * @store: a #CamelStore
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_store_get_inbox_folder().
+ *
+ * Returns: the inbox folder for @store, or %NULL on error or if no such
+ * folder exists
+ *
+ * Since: 2.34
+ **/
+CamelFolder *
+camel_store_get_inbox_folder_finish (CamelStore *store,
+                                     GAsyncResult *result,
+                                     GError **error)
+{
+	CamelStoreClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->get_inbox_folder_finish != NULL, NULL);
+
+	return class->get_inbox_folder_finish (store, result, error);
+}
+
+/**
+ * camel_store_get_junk_folder_sync:
+ * @store: a #CamelStore
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Gets the folder in @store into which junk is delivered.
+ *
+ * Returns: the junk folder for @store, or %NULL on error or if no such
+ * folder exists
+ *
+ * Since: 2.34
+ **/
+CamelFolder *
+camel_store_get_junk_folder_sync (CamelStore *store,
+                                  GCancellable *cancellable,
+                                  GError **error)
+{
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+
+	if ((store->flags & CAMEL_STORE_VJUNK) == 0) {
+		CamelStoreClass *class;
+		CamelFolder *folder;
+
+		class = CAMEL_STORE_GET_CLASS (store);
+		g_return_val_if_fail (class->get_junk_folder_sync != NULL, NULL);
+
+		folder = class->get_junk_folder_sync (store, cancellable, error);
+		CAMEL_CHECK_GERROR (
+			store, get_junk_folder_sync, folder != NULL, error);
+
+		return folder;
+	}
+
+	return camel_store_get_folder_sync (
+		store, CAMEL_VJUNK_NAME, 0, cancellable, error);
+}
+
+/**
+ * camel_store_get_junk_folder:
+ * @store: a #CamelStore
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously gets the folder in @store into which junk is delivered.
+ *
+ * When the operation is finished, @callback will be called.  You can
+ * then call camel_store_get_junk_folder_finish() to get the result of
+ * the operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_store_get_junk_folder (CamelStore *store,
+                             gint io_priority,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
+{
+	CamelStoreClass *class;
+
+	g_return_if_fail (CAMEL_IS_STORE (store));
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_if_fail (class->get_junk_folder != NULL);
+
+	class->get_junk_folder (
+		store, io_priority, cancellable, callback, user_data);
+}
+
+/**
+ * camel_store_get_junk_folder_finish:
+ * @store: a #CamelStore
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_store_get_junk_folder().
+ *
+ * Returns: the junk folder for @store, or %NULL on error or if no such
+ * folder exists
+ *
+ * Since: 2.34
+ **/
+CamelFolder *
+camel_store_get_junk_folder_finish (CamelStore *store,
+                                    GAsyncResult *result,
+                                    GError **error)
+{
+	CamelStoreClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->get_junk_folder_finish != NULL, NULL);
+
+	return class->get_junk_folder_finish (store, result, error);
+}
+
+/**
+ * camel_store_get_trash_folder_sync:
+ * @store: a #CamelStore
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Gets the folder in @store into which trash is delivered.
+ *
+ * Returns: the trash folder for @store, or %NULL on error or if no such
+ * folder exists
+ *
+ * Since: 2.34
+ **/
+CamelFolder *
+camel_store_get_trash_folder_sync (CamelStore *store,
+                                   GCancellable *cancellable,
+                                   GError **error)
+{
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+
+	if ((store->flags & CAMEL_STORE_VTRASH) == 0) {
+		CamelStoreClass *class;
+		CamelFolder *folder;
+
+		class = CAMEL_STORE_GET_CLASS (store);
+		g_return_val_if_fail (class->get_trash_folder_sync != NULL, NULL);
+
+		folder = class->get_trash_folder_sync (
+			store, cancellable, error);
+		CAMEL_CHECK_GERROR (
+			store, get_trash_folder_sync, folder != NULL, error);
+
+		return folder;
+	}
+
+	return camel_store_get_folder_sync (
+		store, CAMEL_VTRASH_NAME, 0, cancellable, error);
+}
+
+/**
+ * camel_store_get_trash_folder:
+ * @store: a #CamelStore
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously gets the folder in @store into which trash is delivered.
+ *
+ * When the operation is finished, @callback will be called.  You can
+ * then call camel_store_get_trash_folder_finish() to get the result of
+ * the operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_store_get_trash_folder (CamelStore *store,
+                              gint io_priority,
+                              GCancellable *cancellable,
+                              GAsyncReadyCallback callback,
+                              gpointer user_data)
+{
+	CamelStoreClass *class;
+
+	g_return_if_fail (CAMEL_IS_STORE (store));
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_if_fail (class->get_trash_folder != NULL);
+
+	class->get_trash_folder (
+		store, io_priority, cancellable, callback, user_data);
+}
+
+/**
+ * camel_store_get_trash_folder_finish:
+ * @store: a #CamelStore
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_store_get_trash_folder().
+ *
+ * Returns: the trash folder for @store, or %NULL on error or if no such
+ * folder exists
+ *
+ * Since: 2.34
+ **/
+CamelFolder *
+camel_store_get_trash_folder_finish (CamelStore *store,
+                                     GAsyncResult *result,
+                                     GError **error)
+{
+	CamelStoreClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->get_trash_folder_finish != NULL, NULL);
+
+	return class->get_trash_folder_finish (store, result, error);
+}
+
+/**
+ * camel_store_create_folder_sync:
+ * @store: a #CamelStore
+ * @parent_name: name of the new folder's parent, or %NULL
+ * @folder_name: name of the folder to create
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates a new folder as a child of an existing folder.
+ * @parent_name can be %NULL to create a new top-level folder.
+ * The returned #CamelFolderInfo struct should be freed with
+ * camel_store_free_folder_info().
+ *
+ * Returns: info about the created folder, or %NULL on error
+ *
+ * Since: 2.34
+ **/
+CamelFolderInfo *
+camel_store_create_folder_sync (CamelStore *store,
+                                const gchar *parent_name,
+                                const gchar *folder_name,
+                                GCancellable *cancellable,
+                                GError **error)
+{
+	CamelStoreClass *class;
+	CamelFolderInfo *fi;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+	g_return_val_if_fail (folder_name != NULL, NULL);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->create_folder_sync != NULL, NULL);
+
+	if ((parent_name == NULL || parent_name[0] == 0)
+	    && (((store->flags & CAMEL_STORE_VTRASH) && strcmp (folder_name, CAMEL_VTRASH_NAME) == 0)
+		|| ((store->flags & CAMEL_STORE_VJUNK) && strcmp (folder_name, CAMEL_VJUNK_NAME) == 0))) {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_INVALID,
+			_("Cannot create folder: %s: folder exists"),
+			folder_name);
+		return NULL;
+	}
+
+	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
+
+	/* Check for cancellation after locking. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+		return NULL;
+	}
+
+	fi = class->create_folder_sync (
+		store, parent_name, folder_name, cancellable, error);
+	CAMEL_CHECK_GERROR (store, create_folder_sync, fi != NULL, error);
+
+	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+
+	return fi;
+}
+
+/**
+ * camel_store_create_folder:
+ * @store: a #CamelStore
+ * @parent_name: name of the new folder's parent, or %NULL
+ * @folder_name: name of the folder to create
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously creates a new folder as a child of an existing folder.
+ * @parent_name can be %NULL to create a new top-level folder.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_store_create_folder_finish() to get the result of the operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_store_create_folder (CamelStore *store,
+                           const gchar *parent_name,
+                           const gchar *folder_name,
+                           gint io_priority,
+                           GCancellable *cancellable,
+                           GAsyncReadyCallback callback,
+                           gpointer user_data)
+{
+	CamelStoreClass *class;
+
+	g_return_if_fail (CAMEL_IS_STORE (store));
+	g_return_if_fail (folder_name != NULL);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_if_fail (class->create_folder != NULL);
+
+	class->create_folder (
+		store, parent_name, folder_name, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_store_create_folder_finish:
+ * @store: a #CamelStore
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_store_create_folder().
+ * The returned #CamelFolderInfo struct should be freed with
+ * camel_store_free_folder_info().
+ *
+ * Returns: info about the created folder, or %NULL on error
+ *
+ * Since: 2.34
+ **/
+CamelFolderInfo *
+camel_store_create_folder_finish (CamelStore *store,
+                                  GAsyncResult *result,
+                                  GError **error)
+{
+	CamelStoreClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->create_folder_finish != NULL, NULL);
+
+	return class->create_folder_finish (store, result, error);
+}
+
+/**
+ * camel_store_delete_folder_sync:
+ * @store: a #CamelStore
+ * @folder_name: name of the folder to delete
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Deletes the folder described by @folder_name.  The folder must be empty.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_store_delete_folder_sync (CamelStore *store,
+                                const gchar *folder_name,
+                                GCancellable *cancellable,
+                                GError **error)
+{
+	CamelStoreClass *class;
+	gboolean success;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->delete_folder_sync != NULL, FALSE);
+
+	/* TODO: should probably be a parameter/bit on the storeinfo */
+	if (((store->flags & CAMEL_STORE_VTRASH) && strcmp (folder_name, CAMEL_VTRASH_NAME) == 0)
+	    || ((store->flags & CAMEL_STORE_VJUNK) && strcmp (folder_name, CAMEL_VJUNK_NAME) == 0)) {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
+			_("Cannot delete folder: %s: Invalid operation"),
+			folder_name);
+		return FALSE;
+	}
+
+	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
+
+	/* Check for cancellation after locking. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+		return FALSE;
+	}
+
+	success = class->delete_folder_sync (
+		store, folder_name, cancellable, &local_error);
+	CAMEL_CHECK_GERROR (store, delete_folder_sync, success, &local_error);
+
+	/* ignore 'no such table' errors */
+	if (local_error != NULL &&
+	    g_ascii_strncasecmp (local_error->message, "no such table", 13) == 0)
+		g_clear_error (&local_error);
+
+	if (local_error == NULL)
+		cs_delete_cached_folder(store, folder_name);
+	else
+		g_propagate_error (error, local_error);
+
+	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+
+	return success;
+}
+
+/**
+ * camel_store_delete_folder:
+ * @store: a #CamelStore
+ * @folder_name: name of the folder to delete
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously deletes the folder described by @folder_name.  The
+ * folder must be empty.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_store_delete_folder_finish() to get the result of the operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_store_delete_folder (CamelStore *store,
+                           const gchar *folder_name,
+                           gint io_priority,
+                           GCancellable *cancellable,
+                           GAsyncReadyCallback callback,
+                           gpointer user_data)
+{
+	CamelStoreClass *class;
+
+	g_return_if_fail (CAMEL_IS_STORE (store));
+	g_return_if_fail (folder_name != NULL);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_if_fail (class->delete_folder != NULL);
+
+	class->delete_folder (
+		store, folder_name, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_store_delete_folder_finish:
+ * @store: a #CamelStore
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_store_delete_folder().
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_store_delete_folder_finish (CamelStore *store,
+                                  GAsyncResult *result,
+                                  GError **error)
+{
+	CamelStoreClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->delete_folder_finish != NULL, FALSE);
+
+	return class->delete_folder_finish (store, result, error);
+}
+
+/**
+ * camel_store_rename_folder_sync:
+ * @store: a #CamelStore
+ * @old_name: the current name of the folder
+ * @new_name: the new name of the folder
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Renames the folder described by @old_name to @new_name.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_store_rename_folder_sync (CamelStore *store,
+                                const gchar *old_namein,
+                                const gchar *new_name,
+                                GCancellable *cancellable,
+                                GError **error)
+{
+	CamelStoreClass *class;
+	CamelFolder *folder;
+	gint i, oldlen, namelen;
+	GPtrArray *folders = NULL;
+	gchar *old_name;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (old_namein != NULL, FALSE);
+	g_return_val_if_fail (new_name != NULL, FALSE);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->rename_folder_sync != NULL, FALSE);
+
+	if (strcmp (old_namein, new_name) == 0)
+		return TRUE;
+
+	if (((store->flags & CAMEL_STORE_VTRASH) && strcmp (old_namein, CAMEL_VTRASH_NAME) == 0)
+	    || ((store->flags & CAMEL_STORE_VJUNK) && strcmp (old_namein, CAMEL_VJUNK_NAME) == 0)) {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
+			_("Cannot rename folder: %s: Invalid operation"),
+			old_namein);
+		return FALSE;
+	}
+
+	/* need to save this, since old_namein might be folder->full_name, which could go away */
+	old_name = g_strdup (old_namein);
+	oldlen = strlen (old_name);
+
+	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
+
+	/* Check for cancellation after locking. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+		return FALSE;
+	}
+
+	/* If the folder is open (or any subfolders of the open folder)
+	   We need to rename them atomically with renaming the actual folder path */
+	if (store->folders) {
+		folders = camel_object_bag_list (store->folders);
+		for (i=0;i<folders->len;i++) {
+			const gchar *full_name;
+
+			folder = folders->pdata[i];
+			full_name = camel_folder_get_full_name (folder);
+
+			namelen = strlen (full_name);
+			if ((namelen == oldlen &&
+			     strcmp (full_name, old_name) == 0)
+			    || ((namelen > oldlen)
+				&& strncmp (full_name, old_name, oldlen) == 0
+				&& full_name[oldlen] == '/')) {
+				camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+			} else {
+				g_ptr_array_remove_index_fast (folders, i);
+				i--;
+				g_object_unref (folder);
+			}
+		}
+	}
+
+	/* Now try the real rename (will emit renamed signal) */
+	success = class->rename_folder_sync (
+		store, old_name, new_name, cancellable, error);
+	CAMEL_CHECK_GERROR (store, rename_folder_sync, success, error);
+
+	/* If it worked, update all open folders/unlock them */
+	if (folders) {
+		if (success) {
+			guint32 flags = CAMEL_STORE_FOLDER_INFO_RECURSIVE;
+			CamelFolderInfo *folder_info;
+
+			for (i=0;i<folders->len;i++) {
+				const gchar *full_name;
+				gchar *new;
+
+				folder = folders->pdata[i];
+				full_name = camel_folder_get_full_name (folder);
+
+				new = g_strdup_printf("%s%s", new_name, full_name + strlen(old_name));
+				camel_object_bag_rekey (store->folders, folder, new);
+				camel_folder_rename (folder, new);
+				g_free (new);
+
+				camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+				g_object_unref (folder);
+			}
+
+			/* Emit renamed signal */
+			if (store->flags & CAMEL_STORE_SUBSCRIPTIONS)
+				flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIBED;
+
+			folder_info = class->get_folder_info_sync (
+				store, new_name, flags, cancellable, error);
+			CAMEL_CHECK_GERROR (store, get_folder_info, folder_info != NULL, error);
+
+			if (folder_info != NULL) {
+				camel_store_folder_renamed (store, old_name, folder_info);
+				class->free_folder_info (store, folder_info);
+			}
+		} else {
+			/* Failed, just unlock our folders for re-use */
+			for (i=0;i<folders->len;i++) {
+				folder = folders->pdata[i];
+				camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+				g_object_unref (folder);
+			}
+		}
+	}
+
+	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+
+	g_ptr_array_free (folders, TRUE);
+	g_free (old_name);
+
+	return success;
+}
+
+/**
+ * camel_store_rename_folder:
+ * @store: a #CamelStore
+ * @old_name: the current name of the folder
+ * @new_name: the new name of the folder
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously renames the folder described by @old_name to @new_name.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_store_rename_folder_finish() to get the result of the operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_store_rename_folder (CamelStore *store,
+                           const gchar *old_name,
+                           const gchar *new_name,
+                           gint io_priority,
+                           GCancellable *cancellable,
+                           GAsyncReadyCallback callback,
+                           gpointer user_data)
+{
+	CamelStoreClass *class;
+
+	g_return_if_fail (CAMEL_IS_STORE (store));
+	g_return_if_fail (old_name != NULL);
+	g_return_if_fail (new_name != NULL);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_if_fail (class->rename_folder != NULL);
+
+	class->rename_folder (
+		store, old_name, new_name, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_store_rename_folder_finish:
+ * @store: a #CamelStore
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_store_rename_folder().
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_store_rename_folder_finish (CamelStore *store,
+                                  GAsyncResult *result,
+                                  GError **error)
+{
+	CamelStoreClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->rename_folder_finish != NULL, FALSE);
+
+	return class->rename_folder_finish (store, result, error);
+}
+
+/**
+ * camel_store_subscribe_folder_sync:
+ * @store: a #CamelStore
+ * @folder_name: full path of the folder
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Subscribes to the folder described by @folder_name.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_store_subscribe_folder_sync (CamelStore *store,
+                                   const gchar *folder_name,
+                                   GCancellable *cancellable,
+                                   GError **error)
+{
+	CamelStoreClass *class;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
+	g_return_val_if_fail (store->flags & CAMEL_STORE_SUBSCRIPTIONS, FALSE);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->subscribe_folder_sync != NULL, FALSE);
+
+	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
+
+	/* Check for cancellation after locking. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+		return FALSE;
+	}
+
+	success = class->subscribe_folder_sync (
+		store, folder_name, cancellable, error);
+	CAMEL_CHECK_GERROR (store, subscribe_folder_sync, success, error);
+
+	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+
+	return success;
+}
+
+/**
+ * camel_store_subscribe_folder:
+ * @store: a #CamelStore
+ * @folder_name: full path of the folder
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously subscribes to the folder described by @folder_name.
+ *
+ * When the operation is finished, @callback will be called.  You can
+ * then call camel_store_subscribe_folder_finish() to get the result of
+ * the operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_store_subscribe_folder (CamelStore *store,
+                              const gchar *folder_name,
+                              gint io_priority,
+                              GCancellable *cancellable,
+                              GAsyncReadyCallback callback,
+                              gpointer user_data)
+{
+	CamelStoreClass *class;
+
+	g_return_if_fail (CAMEL_IS_STORE (store));
+	g_return_if_fail (folder_name != NULL);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_if_fail (class->subscribe_folder != NULL);
+
+	class->subscribe_folder (
+		store, folder_name, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_store_subscribe_folder_finish:
+ * @store: a #CamelStore
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_store_subscribe_folder().
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_store_subscribe_folder_finish (CamelStore *store,
+                                     GAsyncResult *result,
+                                     GError **error)
+{
+	CamelStoreClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->subscribe_folder_finish != NULL, FALSE);
+
+	return class->subscribe_folder_finish (store, result, error);
+}
+
+/**
+ * camel_store_unsubscribe_folder_sync:
+ * @store: a #CamelStore
+ * @folder_name: full path of the folder
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Unsubscribes from the folder described by @folder_name.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_store_unsubscribe_folder_sync (CamelStore *store,
+                                     const gchar *folder_name,
+                                     GCancellable *cancellable,
+                                     GError **error)
+{
+	CamelStoreClass *class;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
+	g_return_val_if_fail (store->flags & CAMEL_STORE_SUBSCRIPTIONS, FALSE);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->unsubscribe_folder_sync != NULL, FALSE);
+
+	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
+
+	/* Check for cancellation after locking. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+		return FALSE;
+	}
+
+	success = class->unsubscribe_folder_sync (
+		store, folder_name, cancellable, error);
+	CAMEL_CHECK_GERROR (store, unsubscribe_folder_sync, success, error);
+
+	if (success)
+		cs_delete_cached_folder (store, folder_name);
+
+	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+
+	return success;
+}
+
+/**
+ * camel_store_unsubscribe_folder:
+ * @store: a #CamelStore
+ * @folder_name: full path of the folder
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously unsubscribes from the folder described by @folder_name.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_store_unsubscribe_folder_finish() to get the result of the
+ * operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_store_unsubscribe_folder (CamelStore *store,
+                                const gchar *folder_name,
+                                gint io_priority,
+                                GCancellable *cancellable,
+                                GAsyncReadyCallback callback,
+                                gpointer user_data)
+{
+	CamelStoreClass *class;
+
+	g_return_if_fail (CAMEL_IS_STORE (store));
+	g_return_if_fail (folder_name != NULL);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_if_fail (class->unsubscribe_folder != NULL);
+
+	class->unsubscribe_folder (
+		store, folder_name, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_store_unsubscribe_folder_finish:
+ * @store: a #CamelStore
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_store_unsubscribe_folder().
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_store_unsubscribe_folder_finish (CamelStore *store,
+                                       GAsyncResult *result,
+                                       GError **error)
+{
+	CamelStoreClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->unsubscribe_folder_finish != NULL, FALSE);
+
+	return class->unsubscribe_folder_finish (store, result, error);
+}
+
+/**
+ * camel_store_synchronize_sync:
+ * @store: a #CamelStore
+ * @expunge: whether to expunge after synchronizing
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Synchronizes any changes that have been made to @store and its folders
+ * with the real store.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_store_synchronize_sync (CamelStore *store,
+                              gboolean expunge,
+                              GCancellable *cancellable,
+                              GError **error)
+{
+	CamelStoreClass *class;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->synchronize_sync != NULL, FALSE);
+
+	success = class->synchronize_sync (store, expunge, cancellable, error);
+	CAMEL_CHECK_GERROR (store, synchronize_sync, success, error);
+
+	return success;
+}
+
+/**
+ * camel_store_synchronize:
+ * @store: a #CamelStore
+ * @expunge: whether to expunge after synchronizing
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Synchronizes any changes that have been made to @store and its folders
+ * with the real store asynchronously.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_store_synchronize_finish() to get the result of the operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_store_synchronize (CamelStore *store,
+                         gboolean expunge,
+                         gint io_priority,
+                         GCancellable *cancellable,
+                         GAsyncReadyCallback callback,
+                         gpointer user_data)
+{
+	CamelStoreClass *class;
+
+	g_return_if_fail (CAMEL_IS_STORE (store));
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_if_fail (class->synchronize != NULL);
+
+	class->synchronize (
+		store, expunge, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_store_synchronize_finish:
+ * @store: a #CamelStore
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_store_synchronize().
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_store_synchronize_finish (CamelStore *store,
+                                GAsyncResult *result,
+                                GError **error)
+{
+	CamelStoreClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->synchronize_finish != NULL, FALSE);
+
+	return class->synchronize_finish (store, result, error);
+}
+
+/**
+ * camel_store_noop_sync:
+ * @store: a #CamelStore
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Pings @store so its connection doesn't time out.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_store_noop_sync (CamelStore *store,
+                       GCancellable *cancellable,
+                       GError **error)
+{
+	CamelStoreClass *class;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->noop_sync != NULL, FALSE);
+
+	success = class->noop_sync (store, cancellable, error);
+	CAMEL_CHECK_GERROR (store, noop_sync, success, error);
+
+	return success;
+}
+
+/**
+ * camel_store_noop:
+ * @store: a #CamelStore
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Pings @store asynchronously so its connection doesn't time out.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_store_noop_finish() to get the result of the operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_store_noop (CamelStore *store,
+                  gint io_priority,
+                  GCancellable *cancellable,
+                  GAsyncReadyCallback callback,
+                  gpointer user_data)
+{
+	CamelStoreClass *class;
+
+	g_return_if_fail (CAMEL_IS_STORE (store));
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_if_fail (class->noop != NULL);
+
+	class->noop (store, io_priority, cancellable, callback, user_data);
+}
+
+/**
+ * camel_store_noop_finish:
+ * @store: a #CamelStore
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_store_noop().
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_store_noop_finish (CamelStore *store,
+                         GAsyncResult *result,
+                         GError **error)
+{
+	CamelStoreClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->noop_finish != NULL, FALSE);
+
+	return class->noop_finish (store, result, error);
 }

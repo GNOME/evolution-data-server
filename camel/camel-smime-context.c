@@ -759,7 +759,7 @@ get_hash_from_oid (SECOidTag oidTag)
 	return CAMEL_CIPHER_HASH_DEFAULT;
 }
 
-static gint
+static gboolean
 smime_context_sign_sync (CamelCipherContext *context,
                          const gchar *userid,
                          CamelCipherHash hash,
@@ -769,7 +769,6 @@ smime_context_sign_sync (CamelCipherContext *context,
                          GError **error)
 {
 	CamelCipherContextClass *class;
-	gint res = -1;
 	NSSCMSMessage *cmsg;
 	CamelStream *ostream, *istream;
 	GByteArray *buffer;
@@ -777,6 +776,7 @@ smime_context_sign_sync (CamelCipherContext *context,
 	NSSCMSEncoderContext *enc;
 	CamelDataWrapper *dw;
 	CamelContentType *ct;
+	gboolean success = FALSE;
 
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 
@@ -846,7 +846,7 @@ smime_context_sign_sync (CamelCipherContext *context,
 		goto fail;
 	}
 
-	res = 0;
+	success = TRUE;
 
 	dw = camel_data_wrapper_new ();
 	camel_stream_reset (ostream, NULL);
@@ -872,7 +872,7 @@ smime_context_sign_sync (CamelCipherContext *context,
 
 		mps = camel_multipart_signed_new ();
 		ct = camel_content_type_new ("multipart", "signed");
-		camel_content_type_set_param (ct, "micalg", camel_cipher_hash_to_id (context, get_hash_from_oid (sechash)));
+		camel_content_type_set_param (ct, "micalg", camel_cipher_context_hash_to_id (context, get_hash_from_oid (sechash)));
 		camel_content_type_set_param (ct, "protocol", class->sign_protocol);
 		camel_data_wrapper_set_mime_type_field ((CamelDataWrapper *)mps, ct);
 		camel_content_type_unref (ct);
@@ -904,7 +904,7 @@ fail:
 	g_object_unref (ostream);
 	g_object_unref (istream);
 
-	return res;
+	return success;
 }
 
 static CamelCipherValidity *
@@ -998,7 +998,7 @@ fail:
 	return valid;
 }
 
-static gint
+static gboolean
 smime_context_encrypt_sync (CamelCipherContext *context,
                             const gchar *userid,
                             GPtrArray *recipients,
@@ -1029,7 +1029,7 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 	poolp = PORT_NewArena (1024);
 	if (poolp == NULL) {
 		set_nss_error (error, g_strerror (ENOMEM));
-		return -1;
+		return FALSE;
 	}
 
 	/* Lookup all recipients certs, for later working */
@@ -1164,7 +1164,7 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 	camel_mime_part_set_description (opart, "S/MIME Encrypted Message");
 	camel_mime_part_set_encoding (opart, CAMEL_TRANSFER_ENCODING_BASE64);
 
-	return 0;
+	return TRUE;
 
 fail:
 	if (ostream)
@@ -1181,7 +1181,7 @@ fail:
 
 	PORT_FreeArena (poolp, PR_FALSE);
 
-	return -1;
+	return FALSE;
 }
 
 static CamelCipherValidity *
@@ -1207,9 +1207,12 @@ smime_context_decrypt_sync (CamelCipherContext *context,
 	/* FIXME: stream this to the decoder incrementally */
 	buffer = g_byte_array_new ();
 	istream = camel_stream_mem_new_with_byte_array (buffer);
-	camel_data_wrapper_decode_to_stream_sync (
+	if (!camel_data_wrapper_decode_to_stream_sync (
 		camel_medium_get_content (CAMEL_MEDIUM (ipart)),
-		istream, NULL, NULL);
+		istream, cancellable, error)) {
+		g_object_unref (istream);
+		goto fail;
+	}
 	camel_stream_reset (istream, NULL);
 
 	dec = NSS_CMSDecoder_Start (NULL,
@@ -1352,6 +1355,7 @@ camel_smime_context_describe_part (CamelSMIMEContext *context, CamelMimePart *pa
 		/* FIXME: stream this to the decoder incrementally */
 		buffer = g_byte_array_new ();
 		istream = camel_stream_mem_new_with_byte_array (buffer);
+		/* FIXME Pass a GCancellable and GError here. */
 		camel_data_wrapper_decode_to_stream_sync (
 			camel_medium_get_content ((CamelMedium *)part),
 			istream, NULL, NULL);

@@ -175,7 +175,7 @@ groupwise_entry_play_append (CamelOfflineJournal *journal,
 	}
 
 	message = camel_mime_message_new ();
-	if (camel_data_wrapper_construct_from_stream_sync ((CamelDataWrapper *) message, stream, cancellable, error) == -1) {
+	if (!camel_data_wrapper_construct_from_stream_sync ((CamelDataWrapper *) message, stream, cancellable, error)) {
 		g_object_unref (message);
 		g_object_unref (stream);
 		goto done;
@@ -229,7 +229,7 @@ groupwise_entry_play_transfer (CamelOfflineJournal *journal,
 		g_ptr_array_add (uids, entry->original_uid);
 
 		if (camel_folder_transfer_messages_to_sync (
-			src, uids, folder, &xuids, FALSE, cancellable, error)) {
+			src, uids, folder, FALSE, &xuids, cancellable, error)) {
 			real = (CamelGroupwiseMessageInfo *) camel_folder_summary_uid (folder->summary, xuids->pdata[0]);
 
 			/* transfer all the system flags, user flags/tags, etc */

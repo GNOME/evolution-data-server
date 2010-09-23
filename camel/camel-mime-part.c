@@ -53,9 +53,9 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_MIME_PART, CamelMimePartPrivate))
 
-struct _CamelMimePartPrivate {
+typedef struct _AsyncContext AsyncContext;
 
-	/* TODO: these should be in a camelcontentinfo */
+struct _CamelMimePartPrivate {
 	gchar *description;
 	CamelContentDisposition *disposition;
 	gchar *content_id;
@@ -63,6 +63,11 @@ struct _CamelMimePartPrivate {
 	gchar *content_location;
 	GList *content_languages;
 	CamelTransferEncoding encoding;
+};
+
+struct _AsyncContext {
+	/* arguments */
+	CamelMimeParser *parser;
 };
 
 enum {
@@ -91,6 +96,15 @@ static GHashTable *header_name_table;
 static GHashTable *header_formatted_table;
 
 G_DEFINE_TYPE (CamelMimePart, camel_mime_part, CAMEL_TYPE_MEDIUM)
+
+static void
+async_context_free (AsyncContext *async_context)
+{
+	if (async_context->parser != NULL)
+		g_object_unref (async_context->parser);
+
+	g_slice_free (AsyncContext, async_context);
+}
 
 static gssize
 write_header (CamelStream *stream,
@@ -671,31 +685,32 @@ mime_part_write_to_stream_sync (CamelDataWrapper *dw,
 	return total;
 }
 
-static gint
+static gboolean
 mime_part_construct_from_stream_sync (CamelDataWrapper *dw,
-                                      CamelStream *s,
+                                      CamelStream *stream,
                                       GCancellable *cancellable,
                                       GError **error)
 {
-	CamelMimeParser *mp;
-	gint ret;
+	CamelMimeParser *parser;
+	gboolean success;
 
 	d(printf("mime_part::construct_from_stream()\n"));
 
-	mp = camel_mime_parser_new ();
-	if (camel_mime_parser_init_with_stream (mp, s, error) == -1) {
-		ret = -1;
+	parser = camel_mime_parser_new ();
+	if (camel_mime_parser_init_with_stream (parser, stream, error) == -1) {
+		success = FALSE;
 	} else {
-		ret = camel_mime_part_construct_from_parser_sync (
-			CAMEL_MIME_PART (dw), mp, cancellable, error);
+		success = camel_mime_part_construct_from_parser_sync (
+			CAMEL_MIME_PART (dw), parser, cancellable, error);
 	}
-	g_object_unref (mp);
-	return ret;
+	g_object_unref (parser);
+
+	return success;
 }
 
-static gint
+static gboolean
 mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
-                                      CamelMimeParser *mp,
+                                      CamelMimeParser *parser,
                                       GCancellable *cancellable,
                                       GError **error)
 {
@@ -705,10 +720,9 @@ mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
 	gchar *buf;
 	gsize len;
 	gint err;
-	gboolean success;
-	gboolean retval = 0;
+	gboolean success = TRUE;
 
-	switch (camel_mime_parser_step (mp, &buf, &len)) {
+	switch (camel_mime_parser_step (parser, &buf, &len)) {
 	case CAMEL_MIME_PARSER_STATE_MESSAGE:
 		/* set the default type of a message always */
 		if (dw->mime_type)
@@ -717,7 +731,7 @@ mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
 	case CAMEL_MIME_PARSER_STATE_HEADER:
 	case CAMEL_MIME_PARSER_STATE_MULTIPART:
 		/* we have the headers, build them into 'us' */
-		headers = camel_mime_parser_headers_raw (mp);
+		headers = camel_mime_parser_headers_raw (parser);
 
 		/* if content-type exists, process it first, set for fallback charset in headers */
 		content = camel_header_raw_find(&headers, "content-type", NULL);
@@ -734,24 +748,89 @@ mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
 		}
 
 		success = camel_mime_part_construct_content_from_parser (
-			mime_part, mp, cancellable, error);
-		retval = success ? 0 : -1;
+			mime_part, parser, cancellable, error);
 		break;
 	default:
-		g_warning("Invalid state encountered???: %u", camel_mime_parser_state(mp));
+		g_warning("Invalid state encountered???: %u", camel_mime_parser_state(parser));
 	}
 
-	err = camel_mime_parser_errno (mp);
+	err = camel_mime_parser_errno (parser);
 	if (err != 0) {
 		errno = err;
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
 			"%s", g_strerror (errno));
-		retval = -1;
+		success = FALSE;
 	}
 
-	return retval;
+	return success;
+}
+
+static void
+mime_part_construct_from_parser_thread (GSimpleAsyncResult *simple,
+                                        GObject *object,
+                                        GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	camel_mime_part_construct_from_parser_sync (
+		CAMEL_MIME_PART (object), async_context->parser,
+		cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+mime_part_construct_from_parser (CamelMimePart *mime_part,
+                                 CamelMimeParser *parser,
+                                 gint io_priority,
+                                 GCancellable *cancellable,
+                                 GAsyncReadyCallback callback,
+                                 gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->parser = g_object_ref (parser);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (mime_part), callback, user_data,
+		mime_part_construct_from_parser);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, mime_part_construct_from_parser_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+mime_part_construct_from_parser_finish (CamelMimePart *mime_part,
+                                        GAsyncResult *result,
+                                        GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (mime_part),
+		mime_part_construct_from_parser), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
 }
 
 static void
@@ -782,6 +861,8 @@ camel_mime_part_class_init (CamelMimePartClass *class)
 	data_wrapper_class->construct_from_stream_sync = mime_part_construct_from_stream_sync;
 
 	class->construct_from_parser_sync = mime_part_construct_from_parser_sync;
+	class->construct_from_parser = mime_part_construct_from_parser;
+	class->construct_from_parser_finish = mime_part_construct_from_parser_finish;
 
 	g_object_class_install_property (
 		object_class,
@@ -842,11 +923,293 @@ camel_mime_part_init (CamelMimePart *mime_part)
 	data_wrapper->mime_type = camel_content_type_new ("text", "plain");
 }
 
-/* **** Content-Description */
+/**
+ * camel_mime_part_new:
+ *
+ * Create a new MIME part.
+ *
+ * Returns: a new #CamelMimePart
+ **/
+CamelMimePart *
+camel_mime_part_new (void)
+{
+	return g_object_new (CAMEL_TYPE_MIME_PART, NULL);
+}
+
+/**
+ * camel_mime_part_set_content:
+ * @mime_part: a #CamelMimePart
+ * @data: data to put into the part
+ * @length: length of @data
+ * @type: Content-Type of the data
+ *
+ * Utility function used to set the content of a mime part object to
+ * be the provided data. If @length is 0, this routine can be used as
+ * a way to remove old content (in which case @data and @type are
+ * ignored and may be %NULL).
+ **/
+void
+camel_mime_part_set_content (CamelMimePart *mime_part,
+                             const gchar *data,
+                             gint length,
+                             const gchar *type) /* why on earth is the type last? */
+{
+	CamelMedium *medium = CAMEL_MEDIUM (mime_part);
+
+	if (length) {
+		CamelDataWrapper *dw;
+		CamelStream *stream;
+
+		dw = camel_data_wrapper_new ();
+		camel_data_wrapper_set_mime_type (dw, type);
+		stream = camel_stream_mem_new_with_buffer (data, length);
+		camel_data_wrapper_construct_from_stream_sync (
+			dw, stream, NULL, NULL);
+		g_object_unref (stream);
+		camel_medium_set_content (medium, dw);
+		g_object_unref (dw);
+	} else
+		camel_medium_set_content (medium, NULL);
+}
+
+/**
+ * camel_mime_part_get_content_disposition:
+ * @mime_part: a #CamelMimePart
+ *
+ * Get the disposition of the MIME part as a structure.
+ * Returned pointer is owned by #mime_part.
+ *
+ * Returns: the disposition structure
+ *
+ * Since: 2.30
+ **/
+const CamelContentDisposition *
+camel_mime_part_get_content_disposition (CamelMimePart *mime_part)
+{
+	g_return_val_if_fail (mime_part != NULL, NULL);
+
+	return mime_part->priv->disposition;
+}
+
+/**
+ * camel_mime_part_get_content_id:
+ * @mime_part: a #CamelMimePart
+ *
+ * Get the content-id field of a MIME part.
+ *
+ * Returns: the content-id field of the MIME part
+ **/
+const gchar *
+camel_mime_part_get_content_id (CamelMimePart *mime_part)
+{
+	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), NULL);
+
+	return mime_part->priv->content_id;
+}
+
+/**
+ * camel_mime_part_set_content_id:
+ * @mime_part: a #CamelMimePart
+ * @contentid: content id
+ *
+ * Set the content-id field on a MIME part.
+ **/
+void
+camel_mime_part_set_content_id (CamelMimePart *mime_part,
+                                const gchar *contentid)
+{
+	CamelMedium *medium;
+	gchar *cid, *id;
+
+	g_return_if_fail (CAMEL_IS_MIME_PART (mime_part));
+
+	medium = CAMEL_MEDIUM (mime_part);
+
+	if (contentid)
+		id = g_strstrip (g_strdup (contentid));
+	else
+		id = camel_header_msgid_generate ();
+
+	cid = g_strdup_printf ("<%s>", id);
+	camel_medium_set_header (medium, "Content-ID", cid);
+	g_free (cid);
+
+	g_free (id);
+
+	g_object_notify (G_OBJECT (mime_part), "content-id");
+}
+
+/**
+ * camel_mime_part_get_content_location:
+ * @mime_part: a #CamelMimePart
+ *
+ * Get the content-location field of a MIME part.
+ *
+ * Returns: the content-location field of a MIME part
+ **/
+const gchar *
+camel_mime_part_get_content_location (CamelMimePart *mime_part)
+{
+	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), NULL);
+
+	return mime_part->priv->content_location;
+}
+
+/**
+ * camel_mime_part_set_content_location:
+ * @mime_part: a #CamelMimePart
+ * @location: the content-location value of the MIME part
+ *
+ * Set the content-location field of the MIME part.
+ **/
+void
+camel_mime_part_set_content_location (CamelMimePart *mime_part,
+                                      const gchar *location)
+{
+	CamelMedium *medium;
+
+	g_return_if_fail (CAMEL_IS_MIME_PART (mime_part));
+
+	medium = CAMEL_MEDIUM (mime_part);
+
+	/* FIXME: this should perform content-location folding */
+	camel_medium_set_header (medium, "Content-Location", location);
+
+	g_object_notify (G_OBJECT (mime_part), "content-location");
+}
+
+/**
+ * camel_mime_part_get_content_md5:
+ * @mime_part: a #CamelMimePart
+ *
+ * Get the content-md5 field of the MIME part.
+ *
+ * Returns: the content-md5 field of the MIME part
+ **/
+const gchar *
+camel_mime_part_get_content_md5 (CamelMimePart *mime_part)
+{
+	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), NULL);
+
+	return mime_part->priv->content_md5;
+}
+
+/**
+ * camel_mime_part_set_content_md5:
+ * @mime_part: a #CamelMimePart
+ * @md5sum: the md5sum of the MIME part
+ *
+ * Set the content-md5 field of the MIME part.
+ **/
+void
+camel_mime_part_set_content_md5 (CamelMimePart *mime_part,
+                                 const gchar *content_md5)
+{
+	CamelMedium *medium;
+
+	g_return_if_fail (CAMEL_IS_MIME_PART (mime_part));
+
+	medium = CAMEL_MEDIUM (mime_part);
+
+	camel_medium_set_header (medium, "Content-MD5", content_md5);
+}
+
+/**
+ * camel_mime_part_get_content_languages:
+ * @mime_part: a #CamelMimePart
+ *
+ * Get the Content-Languages set on the MIME part.
+ *
+ * Returns: a #GList of languages
+ **/
+const GList *
+camel_mime_part_get_content_languages (CamelMimePart *mime_part)
+{
+	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), NULL);
+
+	return mime_part->priv->content_languages;
+}
+
+/**
+ * camel_mime_part_set_content_languages:
+ * @mime_part: a #CamelMimePart
+ * @content_languages: list of languages
+ *
+ * Set the Content-Languages field of a MIME part.
+ **/
+void
+camel_mime_part_set_content_languages (CamelMimePart *mime_part,
+                                       GList *content_languages)
+{
+	g_return_if_fail (CAMEL_IS_MIME_PART (mime_part));
+
+	if (mime_part->priv->content_languages)
+		camel_string_list_free (mime_part->priv->content_languages);
+
+	mime_part->priv->content_languages = content_languages;
+
+	/* FIXME: translate to a header and set it */
+}
+
+/**
+ * camel_mime_part_get_content_type:
+ * @mime_part: a #CamelMimePart
+ *
+ * Get the Content-Type of a MIME part.
+ *
+ * Returns: the parsed #CamelContentType of the MIME part
+ **/
+CamelContentType *
+camel_mime_part_get_content_type (CamelMimePart *mime_part)
+{
+	CamelDataWrapper *data_wrapper;
+
+	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), NULL);
+
+	data_wrapper = CAMEL_DATA_WRAPPER (mime_part);
+
+	return camel_data_wrapper_get_mime_type_field (data_wrapper);
+}
+
+/**
+ * camel_mime_part_set_content_type:
+ * @mime_part: a #CamelMimePart
+ * @content_type: content-type string
+ *
+ * Set the content-type on a MIME part.
+ **/
+void
+camel_mime_part_set_content_type (CamelMimePart *mime_part,
+                                  const gchar *content_type)
+{
+	CamelMedium *medium;
+
+	g_return_if_fail (CAMEL_IS_MIME_PART (mime_part));
+
+	medium = CAMEL_MEDIUM (mime_part);
+
+	camel_medium_set_header (medium, "Content-Type", content_type);
+}
+
+/**
+ * camel_mime_part_get_description:
+ * @mime_part: a #CamelMimePart
+ *
+ * Get the description of the MIME part.
+ *
+ * Returns: the description
+ **/
+const gchar *
+camel_mime_part_get_description (CamelMimePart *mime_part)
+{
+	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), NULL);
+
+	return mime_part->priv->description;
+}
 
 /**
  * camel_mime_part_set_description:
- * @mime_part: a #CamelMimePart object
+ * @mime_part: a #CamelMimePart
  * @description: description of the MIME part
  *
  * Set a description on the MIME part.
@@ -871,26 +1234,27 @@ camel_mime_part_set_description (CamelMimePart *mime_part,
 }
 
 /**
- * camel_mime_part_get_description:
- * @mime_part: a #CamelMimePart object
+ * camel_mime_part_get_disposition:
+ * @mime_part: a #CamelMimePart
  *
- * Get the description of the MIME part.
+ * Get the disposition of the MIME part.
  *
- * Returns: the description
+ * Returns: the disposition
  **/
 const gchar *
-camel_mime_part_get_description (CamelMimePart *mime_part)
+camel_mime_part_get_disposition (CamelMimePart *mime_part)
 {
 	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), NULL);
 
-	return mime_part->priv->description;
+	if (mime_part->priv->disposition)
+		return mime_part->priv->disposition->disposition;
+	else
+		return NULL;
 }
-
-/* **** Content-Disposition */
 
 /**
  * camel_mime_part_set_disposition:
- * @mime_part: a #CamelMimePart object
+ * @mime_part: a #CamelMimePart
  * @disposition: disposition of the MIME part
  *
  * Set a disposition on the MIME part.
@@ -923,54 +1287,77 @@ camel_mime_part_set_disposition (CamelMimePart *mime_part,
 }
 
 /**
- * camel_mime_part_get_disposition:
- * @mime_part: a #CamelMimePart object
+ * camel_mime_part_get_encoding:
+ * @mime_part: a #CamelMimePart
  *
- * Get the disposition of the MIME part.
+ * Get the Content-Transfer-Encoding of a MIME part.
  *
- * Returns: the disposition
+ * Returns: a #CamelTransferEncoding
  **/
-const gchar *
-camel_mime_part_get_disposition (CamelMimePart *mime_part)
+CamelTransferEncoding
+camel_mime_part_get_encoding (CamelMimePart *mime_part)
 {
-	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), NULL);
+	g_return_val_if_fail (
+		CAMEL_IS_MIME_PART (mime_part),
+		CAMEL_TRANSFER_ENCODING_DEFAULT);
 
-	if (mime_part->priv->disposition)
-		return mime_part->priv->disposition->disposition;
-	else
-		return NULL;
+	return mime_part->priv->encoding;
 }
 
 /**
- * camel_mime_part_get_content_disposition:
- * @mime_part: a #CamelMimePart object
+ * camel_mime_part_set_encoding:
+ * @mime_part: a #CamelMimePart
+ * @encoding: a #CamelTransferEncoding
  *
- * Get the disposition of the MIME part as a structure.
- * Returned pointer is owned by #mime_part.
- *
- * Returns: the disposition structure
- *
- * Since: 2.30
+ * Set the Content-Transfer-Encoding to use on a MIME part.
  **/
-const CamelContentDisposition *
-camel_mime_part_get_content_disposition (CamelMimePart *mime_part)
+void
+camel_mime_part_set_encoding (CamelMimePart *mime_part,
+                              CamelTransferEncoding encoding)
 {
-	g_return_val_if_fail (mime_part != NULL, NULL);
+	CamelMedium *medium;
+	const gchar *text;
 
-	return mime_part->priv->disposition;
+	g_return_if_fail (CAMEL_IS_MIME_PART (mime_part));
+
+	medium = CAMEL_MEDIUM (mime_part);
+
+	text = camel_transfer_encoding_to_string (encoding);
+	camel_medium_set_header (medium, "Content-Transfer-Encoding", text);
 }
 
-/* **** Content-Disposition: filename="xxx" */
+/**
+ * camel_mime_part_get_filename:
+ * @mime_part: a #CamelMimePart
+ *
+ * Get the filename of a MIME part.
+ *
+ * Returns: the filename of the MIME part
+ **/
+const gchar *
+camel_mime_part_get_filename (CamelMimePart *mime_part)
+{
+	if (mime_part->priv->disposition) {
+		const gchar *name = camel_header_param (
+			mime_part->priv->disposition->params, "filename");
+		if (name)
+			return name;
+	}
+
+	return camel_content_type_param (
+		((CamelDataWrapper *) mime_part)->mime_type, "name");
+}
 
 /**
  * camel_mime_part_set_filename:
- * @mime_part: a #CamelMimePart object
+ * @mime_part: a #CamelMimePart
  * @filename: filename given to the MIME part
  *
  * Set the filename on a MIME part.
  **/
 void
-camel_mime_part_set_filename (CamelMimePart *mime_part, const gchar *filename)
+camel_mime_part_set_filename (CamelMimePart *mime_part,
+                              const gchar *filename)
 {
 	CamelDataWrapper *dw;
 	CamelMedium *medium;
@@ -999,384 +1386,103 @@ camel_mime_part_set_filename (CamelMimePart *mime_part, const gchar *filename)
 }
 
 /**
- * camel_mime_part_get_filename:
- * @mime_part: a #CamelMimePart object
- *
- * Get the filename of a MIME part.
- *
- * Returns: the filename of the MIME part
- **/
-const gchar *
-camel_mime_part_get_filename (CamelMimePart *mime_part)
-{
-	if (mime_part->priv->disposition) {
-		const gchar *name = camel_header_param (
-			mime_part->priv->disposition->params, "filename");
-		if (name)
-			return name;
-	}
-
-	return camel_content_type_param (((CamelDataWrapper *) mime_part)->mime_type, "name");
-}
-
-/* **** Content-ID: */
-
-/**
- * camel_mime_part_set_content_id:
- * @mime_part: a #CamelMimePart object
- * @contentid: content id
- *
- * Set the content-id field on a MIME part.
- **/
-void
-camel_mime_part_set_content_id (CamelMimePart *mime_part,
-                                const gchar *contentid)
-{
-	CamelMedium *medium;
-	gchar *cid, *id;
-
-	g_return_if_fail (CAMEL_IS_MIME_PART (mime_part));
-
-	medium = CAMEL_MEDIUM (mime_part);
-
-	if (contentid)
-		id = g_strstrip (g_strdup (contentid));
-	else
-		id = camel_header_msgid_generate ();
-
-	cid = g_strdup_printf ("<%s>", id);
-	camel_medium_set_header (medium, "Content-ID", cid);
-	g_free (cid);
-
-	g_free (id);
-
-	g_object_notify (G_OBJECT (mime_part), "content-id");
-}
-
-/**
- * camel_mime_part_get_content_id:
- * @mime_part: a #CamelMimePart object
- *
- * Get the content-id field of a MIME part.
- *
- * Returns: the content-id field of the MIME part
- **/
-const gchar *
-camel_mime_part_get_content_id (CamelMimePart *mime_part)
-{
-	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), NULL);
-
-	return mime_part->priv->content_id;
-}
-
-/* **** Content-MD5: */
-
-/**
- * camel_mime_part_set_content_md5:
- * @mime_part: a #CamelMimePart object
- * @md5sum: the md5sum of the MIME part
- *
- * Set the content-md5 field of the MIME part.
- **/
-void
-camel_mime_part_set_content_md5 (CamelMimePart *mime_part,
-                                 const gchar *content_md5)
-{
-	CamelMedium *medium;
-
-	g_return_if_fail (CAMEL_IS_MIME_PART (mime_part));
-
-	medium = CAMEL_MEDIUM (mime_part);
-
-	camel_medium_set_header (medium, "Content-MD5", content_md5);
-}
-
-/**
- * camel_mime_part_get_content_md5:
- * @mime_part: a #CamelMimePart object
- *
- * Get the content-md5 field of the MIME part.
- *
- * Returns: the content-md5 field of the MIME part
- **/
-const gchar *
-camel_mime_part_get_content_md5 (CamelMimePart *mime_part)
-{
-	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), NULL);
-
-	return mime_part->priv->content_md5;
-}
-
-/* **** Content-Location: */
-
-/**
- * camel_mime_part_set_content_location:
- * @mime_part: a #CamelMimePart object
- * @location: the content-location value of the MIME part
- *
- * Set the content-location field of the MIME part.
- **/
-void
-camel_mime_part_set_content_location (CamelMimePart *mime_part,
-                                      const gchar *location)
-{
-	CamelMedium *medium;
-
-	g_return_if_fail (CAMEL_IS_MIME_PART (mime_part));
-
-	medium = CAMEL_MEDIUM (mime_part);
-
-	/* FIXME: this should perform content-location folding */
-	camel_medium_set_header (medium, "Content-Location", location);
-
-	g_object_notify (G_OBJECT (mime_part), "content-location");
-}
-
-/**
- * camel_mime_part_get_content_location:
- * @mime_part: a #CamelMimePart object
- *
- * Get the content-location field of a MIME part.
- *
- * Returns: the content-location field of a MIME part
- **/
-const gchar *
-camel_mime_part_get_content_location (CamelMimePart *mime_part)
-{
-	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), NULL);
-
-	return mime_part->priv->content_location;
-}
-
-/* **** Content-Transfer-Encoding: */
-
-/**
- * camel_mime_part_set_encoding:
- * @mime_part: a #CamelMimePart object
- * @encoding: a #CamelTransferEncoding
- *
- * Set the Content-Transfer-Encoding to use on a MIME part.
- **/
-void
-camel_mime_part_set_encoding (CamelMimePart *mime_part,
-                              CamelTransferEncoding encoding)
-{
-	CamelMedium *medium;
-	const gchar *text;
-
-	g_return_if_fail (CAMEL_IS_MIME_PART (mime_part));
-
-	medium = CAMEL_MEDIUM (mime_part);
-
-	text = camel_transfer_encoding_to_string (encoding);
-	camel_medium_set_header (medium, "Content-Transfer-Encoding", text);
-}
-
-/**
- * camel_mime_part_get_encoding:
- * @mime_part: a #CamelMimePart object
- *
- * Get the Content-Transfer-Encoding of a MIME part.
- *
- * Returns: a #CamelTransferEncoding
- **/
-CamelTransferEncoding
-camel_mime_part_get_encoding (CamelMimePart *mime_part)
-{
-	g_return_val_if_fail (
-		CAMEL_IS_MIME_PART (mime_part),
-		CAMEL_TRANSFER_ENCODING_DEFAULT);
-
-	return mime_part->priv->encoding;
-}
-
-/* FIXME: do something with this stuff ... */
-
-/**
- * camel_mime_part_set_content_languages:
- * @mime_part: a #CamelMimePart object
- * @content_languages: list of languages
- *
- * Set the Content-Languages field of a MIME part.
- **/
-void
-camel_mime_part_set_content_languages (CamelMimePart *mime_part,
-                                       GList *content_languages)
-{
-	g_return_if_fail (CAMEL_IS_MIME_PART (mime_part));
-
-	if (mime_part->priv->content_languages)
-		camel_string_list_free (mime_part->priv->content_languages);
-
-	mime_part->priv->content_languages = content_languages;
-
-	/* FIXME: translate to a header and set it */
-}
-
-/**
- * camel_mime_part_get_content_languages:
- * @mime_part: a #CamelMimePart object
- *
- * Get the Content-Languages set on the MIME part.
- *
- * Returns: a #GList of languages
- **/
-const GList *
-camel_mime_part_get_content_languages (CamelMimePart *mime_part)
-{
-	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), NULL);
-
-	return mime_part->priv->content_languages;
-}
-
-/* **** */
-
-/* **** Content-Type: */
-
-/**
- * camel_mime_part_set_content_type:
- * @mime_part: a #CamelMimePart object
- * @content_type: content-type string
- *
- * Set the content-type on a MIME part.
- **/
-void
-camel_mime_part_set_content_type (CamelMimePart *mime_part,
-                                  const gchar *content_type)
-{
-	CamelMedium *medium;
-
-	g_return_if_fail (CAMEL_IS_MIME_PART (mime_part));
-
-	medium = CAMEL_MEDIUM (mime_part);
-
-	camel_medium_set_header (medium, "Content-Type", content_type);
-}
-
-/**
- * camel_mime_part_get_content_type:
- * @mime_part: a #CamelMimePart object
- *
- * Get the Content-Type of a MIME part.
- *
- * Returns: the parsed #CamelContentType of the MIME part
- **/
-CamelContentType *
-camel_mime_part_get_content_type (CamelMimePart *mime_part)
-{
-	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), NULL);
-
-	return camel_data_wrapper_get_mime_type_field ((CamelDataWrapper *) mime_part);
-}
-
-/**
  * camel_mime_part_construct_from_parser_sync:
- * @mime_part: a #CamelMimePart object
- * @parser: a #CamelMimeParser object
+ * @mime_part: a #CamelMimePart
+ * @parser: a #CamelMimeParser
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Constructs a MIME part from a parser.
  *
- * Returns: %0 on success or %-1 on fail
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
  **/
-gint
+gboolean
 camel_mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
-                                            CamelMimeParser *mp,
+                                            CamelMimeParser *parser,
                                             GCancellable *cancellable,
                                             GError **error)
 {
 	CamelMimePartClass *class;
-	gint retval;
+	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), -1);
-	g_return_val_if_fail (CAMEL_IS_MIME_PARSER (mp), -1);
+	g_return_val_if_fail (CAMEL_IS_MIME_PARSER (parser), -1);
 
 	class = CAMEL_MIME_PART_GET_CLASS (mime_part);
 	g_return_val_if_fail (class->construct_from_parser_sync != NULL, -1);
 
-	retval = class->construct_from_parser_sync (
-		mime_part, mp, cancellable, error);
+	success = class->construct_from_parser_sync (
+		mime_part, parser, cancellable, error);
 	CAMEL_CHECK_GERROR (
-		mime_part, construct_from_parser_sync, retval == 0, error);
+		mime_part, construct_from_parser_sync, success, error);
 
-	return retval;
+	return success;
 }
 
 /**
- * camel_mime_part_new:
+ * camel_mime_part_construct_from_parser:
+ * @mime_part: a #CamelMimePart
+ * @parser: a #CamelMimeParser
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Create a new MIME part.
+ * Asynchronously constructs a MIME part from a parser.
  *
- * Returns: a new #CamelMimePart object
- **/
-CamelMimePart *
-camel_mime_part_new (void)
-{
-	return g_object_new (CAMEL_TYPE_MIME_PART, NULL);
-}
-
-/**
- * camel_mime_part_set_content:
- * @mime_part: a #CamelMimePart object
- * @data: data to put into the part
- * @length: length of @data
- * @type: Content-Type of the data
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_mime_part_construct_from_parser_finish() to get the result of
+ * the operation.
  *
- * Utility function used to set the content of a mime part object to
- * be the provided data. If @length is 0, this routine can be used as
- * a way to remove old content (in which case @data and @type are
- * ignored and may be %NULL).
+ * Since: 2.34
  **/
 void
-camel_mime_part_set_content (CamelMimePart *mime_part,
-			     const gchar *data, gint length,
-			     const gchar *type) /* why on earth is the type last? */
+camel_mime_part_construct_from_parser (CamelMimePart *mime_part,
+                                       CamelMimeParser *parser,
+                                       gint io_priority,
+                                       GCancellable *cancellable,
+                                       GAsyncReadyCallback callback,
+                                       gpointer user_data)
 {
-	CamelMedium *medium = CAMEL_MEDIUM (mime_part);
+	CamelMimePartClass *class;
 
-	if (length) {
-		CamelDataWrapper *dw;
-		CamelStream *stream;
+	g_return_if_fail (CAMEL_IS_MIME_PART (mime_part));
+	g_return_if_fail (CAMEL_IS_MIME_PARSER (parser));
 
-		dw = camel_data_wrapper_new ();
-		camel_data_wrapper_set_mime_type (dw, type);
-		stream = camel_stream_mem_new_with_buffer (data, length);
-		camel_data_wrapper_construct_from_stream_sync (
-			dw, stream, NULL, NULL);
-		g_object_unref (stream);
-		camel_medium_set_content (medium, dw);
-		g_object_unref (dw);
-	} else
-		camel_medium_set_content (medium, NULL);
+	class = CAMEL_MIME_PART_GET_CLASS (mime_part);
+	g_return_if_fail (class->construct_from_parser != NULL);
+
+	class->construct_from_parser (
+		mime_part, parser, io_priority,
+		cancellable, callback, user_data);
 }
 
 /**
- * camel_mime_part_get_content_size:
- * @mime_part: a #CamelMimePart object
+ * camel_mime_part_construct_from_parser_finish:
+ * @mime_part: a #CamelMimePart
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
  *
- * Get the decoded size of the MIME part's content.
+ * Finishes the operation started with camel_mime_part_construct_from_parser().
  *
- * Returns: the size of the MIME part's content in bytes.
+ * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.22
+ * Since: 2.34
  **/
-gsize
-camel_mime_part_get_content_size (CamelMimePart *mime_part)
+gboolean
+camel_mime_part_construct_from_parser_finish (CamelMimePart *mime_part,
+                                              GAsyncResult *result,
+                                              GError **error)
 {
-	CamelStream *null;
-	CamelDataWrapper *dw;
-	gsize size;
+	CamelMimePartClass *class;
 
-	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), 0);
+	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
 
-	dw = camel_medium_get_content (CAMEL_MEDIUM (mime_part));
+	class = CAMEL_MIME_PART_GET_CLASS (mime_part);
+	g_return_val_if_fail (class->construct_from_parser_finish != NULL, FALSE);
 
-	null = camel_stream_null_new ();
-	camel_data_wrapper_decode_to_stream_sync (dw, null, NULL, NULL);
-	size = CAMEL_STREAM_NULL (null)->written;
-
-	g_object_unref (null);
-
-	return size;
+	return class->construct_from_parser_finish (mime_part, result, error);
 }

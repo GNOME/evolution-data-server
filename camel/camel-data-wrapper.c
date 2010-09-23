@@ -40,9 +40,28 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_DATA_WRAPPER, CamelDataWrapperPrivate))
 
+typedef struct _AsyncContext AsyncContext;
+
 struct _CamelDataWrapperPrivate {
 	GStaticMutex stream_lock;
 };
+
+struct _AsyncContext {
+	/* arguments */
+	CamelStream *stream;
+
+	/* results */
+	gssize bytes_written;
+};
+
+static void
+async_context_free (AsyncContext *async_context)
+{
+	if (async_context->stream != NULL)
+		g_object_unref (async_context->stream);
+
+	g_slice_free (AsyncContext, async_context);
+}
 
 G_DEFINE_TYPE (CamelDataWrapper, camel_data_wrapper, CAMEL_TYPE_OBJECT)
 
@@ -130,8 +149,17 @@ data_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	}
 
 	camel_data_wrapper_lock (data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
+
+	/* Check for cancellation after locking. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		camel_data_wrapper_unlock (
+			data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
+		return -1;
+	}
+
 	if (camel_stream_reset (data_wrapper->stream, error) == -1) {
-		camel_data_wrapper_unlock (data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
+		camel_data_wrapper_unlock (
+			data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
 		return -1;
 	}
 
@@ -191,7 +219,7 @@ data_wrapper_decode_to_stream_sync (CamelDataWrapper *data_wrapper,
 	return ret;
 }
 
-static gint
+static gboolean
 data_wrapper_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
                                          CamelStream *stream,
                                          GCancellable *cancellable,
@@ -202,7 +230,217 @@ data_wrapper_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
 
 	data_wrapper->stream = g_object_ref (stream);
 
-	return 0;
+	return TRUE;
+}
+
+static void
+data_wrapper_write_to_stream_thread (GSimpleAsyncResult *simple,
+                                     GObject *object,
+                                     GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	async_context->bytes_written =
+		camel_data_wrapper_write_to_stream_sync (
+			CAMEL_DATA_WRAPPER (object),
+			async_context->stream,
+			cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
+                              CamelStream *stream,
+                              gint io_priority,
+                              GCancellable *cancellable,
+                              GAsyncReadyCallback callback,
+                              gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->stream = g_object_ref (stream);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (data_wrapper), callback,
+		user_data, data_wrapper_write_to_stream);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, data_wrapper_write_to_stream_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gssize
+data_wrapper_write_to_stream_finish (CamelDataWrapper *data_wrapper,
+                                     GAsyncResult *result,
+                                     GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (data_wrapper),
+		data_wrapper_write_to_stream), -1);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return -1;
+
+	return async_context->bytes_written;
+}
+
+static void
+data_wrapper_decode_to_stream_thread (GSimpleAsyncResult *simple,
+                                      GObject *object,
+                                      GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	async_context->bytes_written =
+		camel_data_wrapper_decode_to_stream_sync (
+			CAMEL_DATA_WRAPPER (object),
+			async_context->stream,
+			cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
+                               CamelStream *stream,
+                               gint io_priority,
+                               GCancellable *cancellable,
+                               GAsyncReadyCallback callback,
+                               gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->stream = g_object_ref (stream);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (data_wrapper), callback,
+		user_data, data_wrapper_decode_to_stream);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, data_wrapper_decode_to_stream_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gssize
+data_wrapper_decode_to_stream_finish (CamelDataWrapper *data_wrapper,
+                                      GAsyncResult *result,
+                                      GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (data_wrapper),
+		data_wrapper_decode_to_stream), -1);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return -1;
+
+	return async_context->bytes_written;
+}
+
+static void
+data_wrapper_construct_from_stream_thread (GSimpleAsyncResult *simple,
+                                           GObject *object,
+                                           GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	camel_data_wrapper_construct_from_stream_sync (
+		CAMEL_DATA_WRAPPER (object), async_context->stream,
+		cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
+                                    CamelStream *stream,
+                                    gint io_priority,
+                                    GCancellable *cancellable,
+                                    GAsyncReadyCallback callback,
+                                    gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->stream = g_object_ref (stream);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (data_wrapper), callback, user_data,
+		data_wrapper_construct_from_stream);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, data_wrapper_construct_from_stream_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+data_wrapper_construct_from_stream_finish (CamelDataWrapper *data_wrapper,
+                                           GAsyncResult *result,
+                                           GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (data_wrapper),
+		data_wrapper_construct_from_stream), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
 }
 
 static void
@@ -221,9 +459,17 @@ camel_data_wrapper_class_init (CamelDataWrapperClass *class)
 	class->get_mime_type_field = data_wrapper_get_mime_type_field;
 	class->set_mime_type_field = data_wrapper_set_mime_type_field;
 	class->is_offline = data_wrapper_is_offline;
+
 	class->write_to_stream_sync = data_wrapper_write_to_stream_sync;
 	class->decode_to_stream_sync = data_wrapper_decode_to_stream_sync;
 	class->construct_from_stream_sync = data_wrapper_construct_from_stream_sync;
+
+	class->write_to_stream = data_wrapper_write_to_stream;
+	class->write_to_stream_finish = data_wrapper_write_to_stream_finish;
+	class->decode_to_stream = data_wrapper_decode_to_stream;
+	class->decode_to_stream_finish = data_wrapper_decode_to_stream_finish;
+	class->construct_from_stream = data_wrapper_construct_from_stream;
+	class->construct_from_stream_finish = data_wrapper_construct_from_stream_finish;
 }
 
 static void
@@ -254,7 +500,7 @@ camel_data_wrapper_new (void)
 
 /**
  * camel_data_wrapper_set_mime_type:
- * @data_wrapper: a #CamelDataWrapper object
+ * @data_wrapper: a #CamelDataWrapper
  * @mime_type: a MIME type
  *
  * This sets the data wrapper's MIME type.
@@ -282,7 +528,7 @@ camel_data_wrapper_set_mime_type (CamelDataWrapper *data_wrapper,
 
 /**
  * camel_data_wrapper_get_mime_type:
- * @data_wrapper: a #CamelDataWrapper object
+ * @data_wrapper: a #CamelDataWrapper
  *
  * Returns: the MIME type which must be freed by the caller
  **/
@@ -301,7 +547,7 @@ camel_data_wrapper_get_mime_type (CamelDataWrapper *data_wrapper)
 
 /**
  * camel_data_wrapper_get_mime_type_field:
- * @data_wrapper: a #CamelDataWrapper object
+ * @data_wrapper: a #CamelDataWrapper
  *
  * Returns: the parsed form of the data wrapper's MIME type
  **/
@@ -320,7 +566,7 @@ camel_data_wrapper_get_mime_type_field (CamelDataWrapper *data_wrapper)
 
 /**
  * camel_data_wrapper_set_mime_type_field:
- * @data_wrapper: a #CamelDataWrapper object
+ * @data_wrapper: a #CamelDataWrapper
  * @mime_type: a #CamelContentType
  *
  * This sets the data wrapper's MIME type. It suffers from the same
@@ -343,7 +589,7 @@ camel_data_wrapper_set_mime_type_field (CamelDataWrapper *data_wrapper,
 
 /**
  * camel_data_wrapper_is_offline:
- * @data_wrapper: a #CamelDataWrapper object
+ * @data_wrapper: a #CamelDataWrapper
  *
  * Returns: whether @data_wrapper is "offline" (data stored
  * remotely) or not. Some optional code paths may choose to not
@@ -360,111 +606,6 @@ camel_data_wrapper_is_offline (CamelDataWrapper *data_wrapper)
 	g_return_val_if_fail (class->is_offline != NULL, TRUE);
 
 	return class->is_offline (data_wrapper);
-}
-
-/**
- * camel_data_wrapper_write_to_stream_sync:
- * @data_wrapper: a #CamelDataWrapper object
- * @stream: a #CamelStream for output
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Writes the content of @data_wrapper to @stream in a machine-independent
- * format appropriate for the data. It should be possible to construct an
- * equivalent data wrapper object later by passing this stream to
- * #camel_data_wrapper_construct_from_stream.
- *
- * Returns: the number of bytes written, or %-1 on fail
- **/
-gssize
-camel_data_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
-                                         CamelStream *stream,
-                                         GCancellable *cancellable,
-                                         GError **error)
-{
-	CamelDataWrapperClass *class;
-	gssize n_bytes;
-
-	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
-	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
-
-	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
-	g_return_val_if_fail (class->write_to_stream_sync != NULL, -1);
-
-	n_bytes = class->write_to_stream_sync (
-		data_wrapper, stream, cancellable, error);
-	CAMEL_CHECK_GERROR (
-		data_wrapper, write_to_stream_sync, n_bytes >= 0, error);
-
-	return n_bytes;
-}
-
-/**
- * camel_data_wrapper_decode_to_stream_sync:
- * @data_wrapper: a #CamelDataWrapper object
- * @stream: a #CamelStream for decoded data to be written to
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Writes the decoded data content to @stream.
- *
- * Returns: the number of bytes written, or %-1 on fail
- **/
-gssize
-camel_data_wrapper_decode_to_stream_sync (CamelDataWrapper *data_wrapper,
-                                          CamelStream *stream,
-                                          GCancellable *cancellable,
-                                          GError **error)
-{
-	CamelDataWrapperClass *class;
-	gssize n_bytes;
-
-	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
-	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
-
-	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
-	g_return_val_if_fail (class->decode_to_stream_sync != NULL, -1);
-
-	n_bytes = class->decode_to_stream_sync (
-		data_wrapper, stream, cancellable, error);
-	CAMEL_CHECK_GERROR (
-		data_wrapper, decode_to_stream_sync, n_bytes >= 0, error);
-
-	return n_bytes;
-}
-
-/**
- * camel_data_wrapper_construct_from_stream_sync:
- * @data_wrapper: a #CamelDataWrapper object
- * @stream: an input #CamelStream
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Constructs the content of @data_wrapper from the supplied @stream.
- *
- * Returns: %0 on success or %-1 on fail
- **/
-gint
-camel_data_wrapper_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
-                                               CamelStream *stream,
-                                               GCancellable *cancellable,
-                                               GError **error)
-{
-	CamelDataWrapperClass *class;
-	gint retval;
-
-	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
-	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
-
-	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
-	g_return_val_if_fail (class->construct_from_stream_sync != NULL, -1);
-
-	retval = class->construct_from_stream_sync (
-		data_wrapper, stream, cancellable, error);
-	CAMEL_CHECK_GERROR (
-		data_wrapper, construct_from_stream_sync, retval == 0, error);
-
-	return retval;
 }
 
 /**
@@ -514,4 +655,334 @@ camel_data_wrapper_unlock (CamelDataWrapper *data_wrapper,
 	default:
 		g_return_if_reached ();
 	}
+}
+
+/**
+ * camel_data_wrapper_write_to_stream_sync:
+ * @data_wrapper: a #CamelDataWrapper
+ * @stream: a #CamelStream for output
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Writes the content of @data_wrapper to @stream in a machine-independent
+ * format appropriate for the data.  It should be possible to construct an
+ * equivalent data wrapper object later by passing this stream to
+ * camel_data_wrapper_construct_from_stream_sync().
+ *
+ * <note>
+ *   <para>
+ *     This function may block even if the given output stream does not.
+ *     For example, the content may have to be fetched across a network
+ *     before it can be written to @stream.
+ *   </para>
+ * </note>
+ *
+ * Returns: the number of bytes written, or %-1 on error
+ *
+ * Since: 2.34
+ **/
+gssize
+camel_data_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
+                                         CamelStream *stream,
+                                         GCancellable *cancellable,
+                                         GError **error)
+{
+	CamelDataWrapperClass *class;
+	gssize n_bytes;
+
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
+	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
+
+	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class->write_to_stream_sync != NULL, -1);
+
+	n_bytes = class->write_to_stream_sync (
+		data_wrapper, stream, cancellable, error);
+	CAMEL_CHECK_GERROR (
+		data_wrapper, write_to_stream_sync, n_bytes >= 0, error);
+
+	return n_bytes;
+}
+
+/**
+ * camel_data_wrapper_write_to_stream:
+ * @data_wrapper: a #CamelDataWrapper
+ * @stream: a #CamelStream for writed data to be written to
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously writes the content of @data_wrapper to @stream in a
+ * machine-independent format appropriate for the data.  It should be
+ * possible to construct an equivalent data wrapper object later by
+ * passing this stream to camel_data_wrapper_construct_from_stream().
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_data_wrapper_write_to_stream_finish() to get the result of
+ * the operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
+                                    CamelStream *stream,
+                                    gint io_priority,
+                                    GCancellable *cancellable,
+                                    GAsyncReadyCallback callback,
+                                    gpointer user_data)
+{
+	CamelDataWrapperClass *class;
+
+	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper));
+	g_return_if_fail (CAMEL_IS_STREAM (stream));
+
+	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_if_fail (class->write_to_stream != NULL);
+
+	class->write_to_stream (
+		data_wrapper, stream, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_data_wrapper_write_to_stream_finish:
+ * @data_wrapper: a #CamelDataWrapper
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_data_wrapper_write_to_stream().
+ *
+ * Returns: the number of bytes written, or %-1 or error
+ *
+ * Since: 2.34
+ **/
+gssize
+camel_data_wrapper_write_to_stream_finish (CamelDataWrapper *data_wrapper,
+                                           GAsyncResult *result,
+                                           GError **error)
+{
+	CamelDataWrapperClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), -1);
+
+	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class->write_to_stream_finish != NULL, -1);
+
+	return class->write_to_stream_finish (data_wrapper, result, error);
+}
+
+/**
+ * camel_data_wrapper_decode_to_stream_sync:
+ * @data_wrapper: a #CamelDataWrapper
+ * @stream: a #CamelStream for decoded data to be written to
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Writes the decoded data content to @stream.
+ *
+ * <note>
+ *   <para>
+ *     This function may block even if the given output stream does not.
+ *     For example, the content may have to be fetched across a network
+ *     before it can be written to @stream.
+ *   </para>
+ * </note>
+ *
+ * Returns: the number of bytes written, or %-1 on error
+ *
+ * Since: 2.34
+ **/
+gssize
+camel_data_wrapper_decode_to_stream_sync (CamelDataWrapper *data_wrapper,
+                                          CamelStream *stream,
+                                          GCancellable *cancellable,
+                                          GError **error)
+{
+	CamelDataWrapperClass *class;
+	gssize n_bytes;
+
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
+	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
+
+	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class->decode_to_stream_sync != NULL, -1);
+
+	n_bytes = class->decode_to_stream_sync (
+		data_wrapper, stream, cancellable, error);
+	CAMEL_CHECK_GERROR (
+		data_wrapper, decode_to_stream_sync, n_bytes >= 0, error);
+
+	return n_bytes;
+}
+
+/**
+ * camel_data_wrapper_decode_to_stream:
+ * @data_wrapper: a #CamelDataWrapper
+ * @stream: a #CamelStream for decoded data to be written to
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously writes the decoded data content to @stream.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_data_wrapper_decode_to_stream_finish() to get the result of
+ * the operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
+                                     CamelStream *stream,
+                                     gint io_priority,
+                                     GCancellable *cancellable,
+                                     GAsyncReadyCallback callback,
+                                     gpointer user_data)
+{
+	CamelDataWrapperClass *class;
+
+	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper));
+	g_return_if_fail (CAMEL_IS_STREAM (stream));
+
+	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_if_fail (class->decode_to_stream != NULL);
+
+	class->decode_to_stream (
+		data_wrapper, stream, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_data_wrapper_decode_to_stream_finish:
+ * @data_wrapper: a #CamelDataWrapper
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_data_wrapper_decode_to_stream().
+ *
+ * Returns: the number of bytes written, or %-1 on error
+ *
+ * Since: 2.34
+ **/
+gssize
+camel_data_wrapper_decode_to_stream_finish (CamelDataWrapper *data_wrapper,
+                                            GAsyncResult *result,
+                                            GError **error)
+{
+	CamelDataWrapperClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), -1);
+
+	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class->decode_to_stream_finish != NULL, -1);
+
+	return class->decode_to_stream_finish (data_wrapper, result, error);
+}
+
+/**
+ * camel_data_wrapper_construct_from_stream_sync:
+ * @data_wrapper: a #CamelDataWrapper
+ * @stream: an input #CamelStream
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Constructs the content of @data_wrapper from the given @stream.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_data_wrapper_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
+                                               CamelStream *stream,
+                                               GCancellable *cancellable,
+                                               GError **error)
+{
+	CamelDataWrapperClass *class;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
+	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
+
+	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class->construct_from_stream_sync != NULL, -1);
+
+	success = class->construct_from_stream_sync (
+		data_wrapper, stream, cancellable, error);
+	CAMEL_CHECK_GERROR (
+		data_wrapper, construct_from_stream_sync, success, error);
+
+	return success;
+}
+
+/**
+ * camel_data_wrapper_construct_from_stream:
+ * @data_wrapper: a #CamelDataWrapper
+ * @stream: an input #CamelStream
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously constructs the content of @data_wrapper from the given
+ * @stream.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_data_wrapper_construct_from_stream_finish() to get the result
+ * of the operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
+                                          CamelStream *stream,
+                                          gint io_priority,
+                                          GCancellable *cancellable,
+                                          GAsyncReadyCallback callback,
+                                          gpointer user_data)
+{
+	CamelDataWrapperClass *class;
+
+	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper));
+	g_return_if_fail (CAMEL_IS_STREAM (stream));
+
+	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_if_fail (class->construct_from_stream != NULL);
+
+	class->construct_from_stream (
+		data_wrapper, stream, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_data_wrapper_construct_from_stream_finish:
+ * @data_wrapper: a #CamelDataWrapper
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with
+ * camel_data_wrapper_construct_from_stream().
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_data_wrapper_construct_from_stream_finish (CamelDataWrapper *data_wrapper,
+                                                 GAsyncResult *result,
+                                                 GError **error)
+{
+	CamelDataWrapperClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class->construct_from_stream_finish != NULL, FALSE);
+
+	return class->construct_from_stream_finish (data_wrapper, result, error);
 }

@@ -102,15 +102,15 @@ CamelStream *	camel_imap_folder_fetch_data	(CamelImapFolder *imap_folder,
 						 GError **error);
 gboolean	camel_imap_append_resyncing	(CamelFolder *folder,
 						 CamelMimeMessage *message,
-						 const CamelMessageInfo *info,
+						 CamelMessageInfo *info,
 						 gchar **appended_uid,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imap_transfer_resyncing	(CamelFolder *source,
 						 GPtrArray *uids,
 						 CamelFolder *dest,
-						 GPtrArray **transferred_uids,
 						 gboolean delete_originals,
+						 GPtrArray **transferred_uids,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imap_expunge_uids_resyncing

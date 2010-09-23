@@ -64,7 +64,7 @@ simple_data_wrapper_construct_from_parser (CamelDataWrapper *dw,
 	GByteArray *buffer;
 	CamelStream *mem;
 	gsize len;
-	gint retval;
+	gboolean success;
 
 	d(printf ("simple_data_wrapper_construct_from_parser()\n"));
 
@@ -78,11 +78,11 @@ simple_data_wrapper_construct_from_parser (CamelDataWrapper *dw,
 	d(printf("message part kept in memory!\n"));
 
 	mem = camel_stream_mem_new_with_byte_array (buffer);
-	retval = camel_data_wrapper_construct_from_stream_sync (
+	success = camel_data_wrapper_construct_from_stream_sync (
 		dw, mem, cancellable, error);
 	g_object_unref (mem);
 
-	return (retval == 0);
+	return success;
 }
 
 /**
@@ -123,8 +123,8 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw,
 	case CAMEL_MIME_PARSER_STATE_MESSAGE:
 		d(printf("Creating message part\n"));
 		content = (CamelDataWrapper *) camel_mime_message_new ();
-		success = (camel_mime_part_construct_from_parser_sync (
-			(CamelMimePart *)content, mp, cancellable, error) == 0);
+		success = camel_mime_part_construct_from_parser_sync (
+			(CamelMimePart *)content, mp, cancellable, error);
 		break;
 	case CAMEL_MIME_PARSER_STATE_MULTIPART:
 		d(printf("Creating multi-part\n"));
@@ -160,6 +160,12 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw,
 /**
  * camel_mime_message_build_preview:
  *
+ * <note>
+ *   <para>
+ *     This function blocks like crazy.
+ *   </para>
+ * </note>
+ *
  * Since: 2.28
  **/
 gboolean
@@ -186,6 +192,8 @@ camel_mime_message_build_preview (CamelMimePart *msg,
 		/*    !camel_content_type_is (dw->mime_type, "text", "html") && */
 		    !camel_content_type_is (dw->mime_type, "text", "calendar")) {
 		CamelStream *mstream, *bstream;
+
+		/* FIXME Pass a GCancellable and GError here. */
 		mstream = camel_stream_mem_new ();
 		if (camel_data_wrapper_decode_to_stream_sync (dw, mstream, NULL, NULL) > 0) {
 			gchar *line = NULL;

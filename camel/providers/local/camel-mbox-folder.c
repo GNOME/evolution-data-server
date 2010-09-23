@@ -138,7 +138,7 @@ fail:
 static gboolean
 mbox_folder_append_message_sync (CamelFolder *folder,
                                  CamelMimeMessage *message,
-                                 const CamelMessageInfo *info,
+                                 CamelMessageInfo *info,
                                  gchar **appended_uid,
                                  GCancellable *cancellable,
                                  GError **error)
@@ -380,8 +380,8 @@ retry:
 	}
 
 	message = camel_mime_message_new ();
-	if (camel_mime_part_construct_from_parser_sync (
-		(CamelMimePart *)message, parser, cancellable, error) == -1) {
+	if (!camel_mime_part_construct_from_parser_sync (
+		(CamelMimePart *)message, parser, cancellable, error)) {
 		g_prefix_error (
 			error, _("Cannot get message %s from folder %s: "),
 			uid, lf->folder_path);

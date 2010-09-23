@@ -469,7 +469,7 @@ summary_update (CamelLocalSummary *cls,
 
 	cls->index_force = FALSE;
 
-	camel_operation_start (cancellable, _("Storing folder"));
+	camel_operation_push_message (cancellable, _("Storing folder"));
 
 	fd = g_open (cls->folder_path, O_LARGEFILE | O_RDONLY | O_BINARY, 0);
 	if (fd == -1) {
@@ -479,7 +479,7 @@ summary_update (CamelLocalSummary *cls,
 			g_io_error_from_errno (errno),
 			_("Could not open folder: %s: %s"),
 			cls->folder_path, g_strerror (errno));
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 		return -1;
 	}
 
@@ -598,7 +598,7 @@ summary_update (CamelLocalSummary *cls,
 		}
 	}
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	return ok;
 }
@@ -691,7 +691,7 @@ mbox_summary_sync_full (CamelMboxSummary *mbs,
 
 	d(printf("performing full summary/sync\n"));
 
-	camel_operation_start (cancellable, _("Storing folder"));
+	camel_operation_push_message (cancellable, _("Storing folder"));
 
 	fd = g_open (cls->folder_path, O_LARGEFILE | O_RDONLY | O_BINARY, 0);
 	if (fd == -1) {
@@ -700,7 +700,7 @@ mbox_summary_sync_full (CamelMboxSummary *mbs,
 			g_io_error_from_errno (errno),
 			_("Could not open file: %s: %s"),
 			cls->folder_path, g_strerror (errno));
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 		return -1;
 	}
 
@@ -763,7 +763,7 @@ mbox_summary_sync_full (CamelMboxSummary *mbs,
 	}
 	tmpname = NULL;
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	return 0;
  error:
@@ -776,7 +776,7 @@ mbox_summary_sync_full (CamelMboxSummary *mbs,
 	if (tmpname)
 		g_unlink (tmpname);
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	return -1;
 }
@@ -827,7 +827,7 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
 
 	d(printf("Performing quick summary sync\n"));
 
-	camel_operation_start (cancellable, _("Storing folder"));
+	camel_operation_push_message (cancellable, _("Storing folder"));
 
 	fd = g_open (cls->folder_path, O_LARGEFILE|O_RDWR|O_BINARY, 0);
 	if (fd == -1) {
@@ -837,7 +837,7 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
 			_("Could not open file: %s: %s"),
 			cls->folder_path, g_strerror (errno));
 
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 		return -1;
 	}
 
@@ -960,7 +960,7 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
 	g_ptr_array_free (summary, TRUE);
 	g_object_unref (mp);
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return 0;
@@ -974,7 +974,7 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
 	if (info)
 		camel_message_info_free ((CamelMessageInfo *)info);
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return -1;

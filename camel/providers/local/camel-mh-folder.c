@@ -55,7 +55,7 @@ mh_folder_get_filename (CamelFolder *folder,
 static gboolean
 mh_folder_append_message_sync (CamelFolder *folder,
                                CamelMimeMessage *message,
-                               const CamelMessageInfo *info,
+                               CamelMessageInfo *info,
                                gchar **appended_uid,
                                GCancellable *cancellable,
                                GError **error)
@@ -171,9 +171,9 @@ mh_folder_get_message_sync (CamelFolder *folder,
 	}
 
 	message = camel_mime_message_new ();
-	if (camel_data_wrapper_construct_from_stream_sync (
+	if (!camel_data_wrapper_construct_from_stream_sync (
 		(CamelDataWrapper *)message,
-		message_stream, cancellable, error) == -1) {
+		message_stream, cancellable, error)) {
 		g_prefix_error (
 			error, _("Cannot get message %s from folder %s: "),
 			name, lf->folder_path);

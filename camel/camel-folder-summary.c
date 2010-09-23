@@ -4043,6 +4043,7 @@ summary_build_content_info_message (CamelFolderSummary *s, CamelMessageInfo *msg
 			CAMEL_STREAM_FILTER (p->filter_stream),
 			p->filter_index);
 
+		/* FIXME Pass a GCancellable and GError here. */
 		camel_data_wrapper_decode_to_stream_sync (
 			containee, p->filter_stream, NULL, NULL);
 		camel_stream_flush (p->filter_stream, NULL, NULL);
@@ -4452,7 +4453,7 @@ camel_message_info_new (CamelFolderSummary *s)
  *
  * Reference an info.
  **/
-void
+gpointer
 camel_message_info_ref (gpointer o)
 {
 	CamelMessageInfo *mi = o;
@@ -4468,6 +4469,8 @@ camel_message_info_ref (gpointer o)
 		mi->refcount++;
 		GLOBAL_INFO_UNLOCK (info);
 	}
+
+	return o;
 }
 
 /**

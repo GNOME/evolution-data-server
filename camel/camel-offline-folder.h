@@ -62,22 +62,45 @@ struct _CamelOfflineFolder {
 struct _CamelOfflineFolderClass {
 	CamelFolderClass parent_class;
 
+	/* Synchronous I/O Methods */
 	gboolean	(*downsync_sync)	(CamelOfflineFolder *folder,
 						 const gchar *expression,
 						 GCancellable *cancellable,
+						 GError **error);
+
+	/* Asynchronous I/O Methods (all have defaults) */
+	void		(*downsync)		(CamelOfflineFolder *folder,
+						 const gchar *expression,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*downsync_finish)	(CamelOfflineFolder *folder,
+						 GAsyncResult *result,
 						 GError **error);
 };
 
 GType		camel_offline_folder_get_type	(void);
 gboolean	camel_offline_folder_get_offline_sync
-						(CamelOfflineFolder *offline);
+						(CamelOfflineFolder *folder);
 void		camel_offline_folder_set_offline_sync
-						(CamelOfflineFolder *offline,
+						(CamelOfflineFolder *folder,
 						 gboolean offline_sync);
+
 gboolean	camel_offline_folder_downsync_sync
-						(CamelOfflineFolder *offline,
+						(CamelOfflineFolder *folder,
 						 const gchar *expression,
 						 GCancellable *cancellable,
+						 GError **error);
+void		camel_offline_folder_downsync	(CamelOfflineFolder *folder,
+						 const gchar *expression,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_offline_folder_downsync_finish
+						(CamelOfflineFolder *folder,
+						 GAsyncResult *result,
 						 GError **error);
 
 G_END_DECLS

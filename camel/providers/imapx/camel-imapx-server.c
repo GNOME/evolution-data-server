@@ -3847,7 +3847,7 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 
 		/* If we have any new messages, download their headers, but only a few (100?) at a time */
 		if (fetch_new) {
-			camel_operation_start (
+			camel_operation_push_message (
 				job->cancellable,
 				_("Fetching summary information for new messages in %s"),
 				camel_folder_get_name (job->folder));
@@ -3889,7 +3889,7 @@ imapx_job_scan_changes_start (CamelIMAPXServer *is,
 {
 	CamelIMAPXCommand *ic;
 
-	camel_operation_start (
+	camel_operation_push_message (
 		job->cancellable,
 		_("Scanning for changed messages in %s"),
 		camel_folder_get_name (job->folder));
@@ -3974,7 +3974,7 @@ imapx_job_fetch_new_messages_start (CamelIMAPXServer *is,
 	} else
 		uid = g_strdup ("1");
 
-	camel_operation_start (
+	camel_operation_push_message (
 		job->cancellable,
 		_("Fetching summary information for new messages in %s"),
 		camel_folder_get_name (folder));

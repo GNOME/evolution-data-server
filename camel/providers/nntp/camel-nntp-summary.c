@@ -241,7 +241,7 @@ add_range_xover (CamelNNTPSummary *cns,
 	s = (CamelFolderSummary *)cns;
 	summary_table = camel_folder_summary_get_hashtable (s);
 
-	camel_operation_start (
+	camel_operation_push_message (
 		cancellable, _("%s: Scanning new messages"),
 		((CamelService *)store)->url->host);
 
@@ -250,7 +250,7 @@ add_range_xover (CamelNNTPSummary *cns,
 		ret = camel_nntp_raw_command_auth (store, cancellable, error, &line, "xover %r", low, high);
 
 	if (ret != 224) {
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 		if (ret != -1)
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
@@ -321,7 +321,7 @@ add_range_xover (CamelNNTPSummary *cns,
 		camel_header_raw_clear (&headers);
 	}
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	camel_folder_summary_free_hashtable (summary_table);
 
@@ -352,7 +352,7 @@ add_range_head (CamelNNTPSummary *cns,
 
 	mp = camel_mime_parser_new ();
 
-	camel_operation_start (
+	camel_operation_push_message (
 		cancellable, _("%s: Scanning new messages"),
 		((CamelService *)store)->url->host);
 
@@ -426,7 +426,7 @@ ioerror:
 	}
 	g_object_unref (mp);
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	camel_folder_summary_free_hashtable (summary_table);
 

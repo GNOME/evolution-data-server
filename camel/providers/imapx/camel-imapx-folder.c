@@ -278,7 +278,7 @@ imapx_search_by_expression (CamelFolder *folder, const gchar *expression, GError
 static gboolean
 imapx_append_message_sync (CamelFolder *folder,
                            CamelMimeMessage *message,
-                           const CamelMessageInfo *info,
+                           CamelMessageInfo *info,
                            gchar **appended_uid,
                            GCancellable *cancellable,
                            GError **error)
@@ -399,8 +399,8 @@ imapx_get_message_sync (CamelFolder *folder,
 		msg = camel_mime_message_new ();
 
 		g_mutex_lock (ifolder->stream_lock);
-		if (camel_data_wrapper_construct_from_stream_sync (
-			(CamelDataWrapper *)msg, stream, cancellable, error) == -1) {
+		if (!camel_data_wrapper_construct_from_stream_sync (
+			(CamelDataWrapper *)msg, stream, cancellable, error)) {
 			g_object_unref (msg);
 			msg = NULL;
 		}
@@ -521,8 +521,8 @@ static gboolean
 imapx_transfer_messages_to_sync (CamelFolder *source,
                                  GPtrArray *uids,
                                  CamelFolder *dest,
-                                 GPtrArray **transferred_uids,
                                  gboolean delete_originals,
+                                 GPtrArray **transferred_uids,
                                  GCancellable *cancellable,
                                  GError **error)
 {

@@ -62,7 +62,7 @@ cdf_sync_offline (CamelSession *session, CamelSessionThreadMsg *mm)
 	struct _cdf_sync_msg *m = (struct _cdf_sync_msg *)mm;
 	gint i;
 
-	camel_operation_start (
+	camel_operation_push_message (
 		mm->cancellable,
 		_("Downloading new messages for offline mode"));
 
@@ -81,7 +81,7 @@ cdf_sync_offline (CamelSession *session, CamelSessionThreadMsg *mm)
 						       NULL, &mm->error);
 	}
 
-	camel_operation_end (mm->cancellable);
+	camel_operation_pop_message (mm->cancellable);
 }
 
 static void
@@ -203,7 +203,7 @@ disco_expunge_uids (CamelFolder *folder,
 static gboolean
 disco_append_message_sync (CamelFolder *folder,
                            CamelMimeMessage *message,
-                           const CamelMessageInfo *info,
+                           CamelMessageInfo *info,
                            gchar **appended_uid,
                            GCancellable *cancellable,
                            GError **error)
@@ -336,8 +336,8 @@ static gboolean
 disco_transfer_messages_to_sync (CamelFolder *source,
                                  GPtrArray *uids,
                                  CamelFolder *dest,
-                                 GPtrArray **transferred_uids,
                                  gboolean delete_originals,
+                                 GPtrArray **transferred_uids,
                                  GCancellable *cancellable,
                                  GError **error)
 {
@@ -385,7 +385,7 @@ disco_prepare_for_offline (CamelDiscoFolder *disco_folder,
 	gint i;
 	gboolean success = TRUE;
 
-	camel_operation_start (
+	camel_operation_push_message (
 		cancellable, _("Preparing folder '%s' for offline"),
 		camel_folder_get_full_name (folder));
 
@@ -395,7 +395,7 @@ disco_prepare_for_offline (CamelDiscoFolder *disco_folder,
 		uids = camel_folder_get_uids (folder);
 
 	if (!uids) {
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 		return FALSE;
 	}
 
@@ -411,7 +411,7 @@ disco_prepare_for_offline (CamelDiscoFolder *disco_folder,
 	else
 		camel_folder_free_uids (folder, uids);
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	return success;
 }

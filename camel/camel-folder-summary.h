@@ -435,7 +435,7 @@ void		camel_tag_list_free (CamelTag **list);
 /* Summary may be null */
 /* Use anonymous pointers to avoid tons of cast crap */
 gpointer camel_message_info_new (CamelFolderSummary *summary);
-void camel_message_info_ref (gpointer info);
+gpointer camel_message_info_ref (gpointer info);
 CamelMessageInfo *camel_message_info_new_from_header (CamelFolderSummary *summary, struct _camel_header_raw *header);
 void camel_message_info_free (gpointer info);
 gpointer camel_message_info_clone (gconstpointer info);

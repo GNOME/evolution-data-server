@@ -92,6 +92,30 @@ CamelDataWrapper
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_data_wrapper_write_to_stream ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@stream: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_data_wrapper_write_to_stream_finish ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@result: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_data_wrapper_decode_to_stream_sync ##### -->
 <para>
 
@@ -104,6 +128,30 @@ CamelDataWrapper
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_data_wrapper_decode_to_stream ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@stream: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_data_wrapper_decode_to_stream_finish ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@result: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_data_wrapper_construct_from_stream_sync ##### -->
 <para>
 
@@ -112,6 +160,30 @@ CamelDataWrapper
 @data_wrapper: 
 @stream: 
 @cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_data_wrapper_construct_from_stream ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@stream: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_data_wrapper_construct_from_stream_finish ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@result: 
 @error: 
 @Returns: 
 

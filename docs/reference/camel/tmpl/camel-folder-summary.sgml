@@ -718,6 +718,7 @@ CamelFolderSummary
 </para>
 
 @info: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_message_info_new_from_header ##### -->

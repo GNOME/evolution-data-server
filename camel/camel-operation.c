@@ -38,20 +38,13 @@
 typedef struct _StatusNode StatusNode;
 
 struct _StatusNode {
-	gboolean transient;
-	gchar *msg;
-	gint pc;		/* last percentage reported */
-	guint stamp;		/* last time stamp reported */
+	CamelOperation *operation;
+	guint source_id;  /* for timeout or idle */
+	gchar *message;
+	gint percent;
 };
 
 struct _CamelOperationPrivate {
-	guint status_idle_id;
-
-	/* For the next 'status' signal. */
-	gchar *status_msg;
-	gint status_pc;
-
-	guint status_update;
 
 	GQueue status_stack;
 
@@ -66,9 +59,6 @@ enum {
 	LAST_SIGNAL
 };
 
-/* Delay before a transient operation has any effect on the status */
-#define CAMEL_OPERATION_TRANSIENT_DELAY (5)
-
 static GStaticRecMutex operation_lock = G_STATIC_REC_MUTEX_INIT;
 #define LOCK() g_static_rec_mutex_lock (&operation_lock)
 #define UNLOCK() g_static_rec_mutex_unlock (&operation_lock)
@@ -79,82 +69,53 @@ static guint signals[LAST_SIGNAL];
 
 G_DEFINE_TYPE (CamelOperation, camel_operation, G_TYPE_CANCELLABLE)
 
-static StatusNode *
-status_node_new (CamelOperation *operation)
-{
-	StatusNode *node;
-
-	node = g_slice_new0 (StatusNode);
-	g_queue_push_head (&operation->priv->status_stack, node);
-
-	return node;
-}
-
 static void
 status_node_free (StatusNode *node)
 {
-	g_free (node->msg);
+	g_free (node->message);
+
+	if (node->source_id > 0)
+		g_source_remove (node->source_id);
+
 	g_slice_free (StatusNode, node);
 }
 
-static guint
-stamp (void)
-{
-	GTimeVal tv;
-
-	g_get_current_time (&tv);
-	/* update 4 times/second */
-	return (tv.tv_sec * 4) + tv.tv_usec / (1000000/4);
-}
-
 static gboolean
-operation_idle_cb (CamelOperation *operation)
+operation_emit_status_cb (StatusNode *node)
 {
-	gchar *msg;
-	gint pc;
+	StatusNode *head_node;
+	gchar *message = NULL;
+	gint percent = 0;
 
 	/* Keep the operation alive until we emit the signal,
 	 * otherwise it might be finalized between unlocking
 	 * the mutex and emitting the signal. */
-	g_object_ref (operation);
+	g_object_ref (node->operation);
 
 	LOCK ();
 
-	msg = operation->priv->status_msg;
-	operation->priv->status_msg = NULL;
+	node->source_id = 0;
 
-	pc = operation->priv->status_pc;
+	head_node = g_queue_peek_head (&node->operation->priv->status_stack);
 
-	operation->priv->status_idle_id = 0;
-
-	UNLOCK ();
-
-	if (msg != NULL) {
-		g_signal_emit (operation, signals[STATUS], 0, msg, pc);
-		g_free (msg);
+	if (node == head_node) {
+		message = g_strdup (node->message);
+		percent = node->percent;
 	}
 
-	g_object_unref (operation);
+	UNLOCK ();
+
+	if (message != NULL) {
+		g_signal_emit (
+			node->operation,
+			signals[STATUS], 0,
+			message, percent);
+		g_free (message);
+	}
+
+	g_object_unref (node->operation);
 
 	return FALSE;
-}
-
-static void
-operation_queue_status_update (CamelOperation *operation,
-                               StatusNode *node)
-{
-	LOCK ();
-
-	if (operation->priv->status_idle_id == 0)
-		operation->priv->status_idle_id = g_idle_add (
-			(GSourceFunc) operation_idle_cb, operation);
-
-	g_free (operation->priv->status_msg);
-	operation->priv->status_msg = g_strdup (node->msg);
-
-	operation->priv->status_pc = node->pc;
-
-	UNLOCK ();
 }
 
 static void
@@ -183,16 +144,13 @@ operation_finalize (GObject *object)
 
 	g_queue_remove (&operation_list, object);
 
-	if (priv->status_idle_id > 0)
-		g_source_remove (priv->status_idle_id);
-
 	operation_flush_msgport (CAMEL_OPERATION (object));
 	camel_msgport_destroy (priv->cancel_port);
 
 	while ((node = g_queue_pop_head (&priv->status_stack)) != NULL) {
 		g_warning (
 			"CamelOperation status stack non-empty: %s",
-			node->msg);
+			node->message);
 		status_node_free (node);
 	}
 
@@ -398,24 +356,24 @@ camel_operation_cancel_prfd (CamelOperation *operation)
 #endif /* CAMEL_HAVE_NSS */
 
 /**
- * camel_operation_start:
+ * camel_operation_push_message:
  * @cancellable: a #GCancellable or %NULL
- * @what: action being performed (printf-style format string)
- * @Varargs: varargs
+ * @format: a standard printf() format string
+ * @Varargs: the parameters to insert into the format string
  *
- * Report the start of an operation.  All start operations should have
- * similar end operations.
+ * Call this function to describe an operation being performed.
+ * Call camel_operation_progress() to report progress on the operation.
+ * Call camel_operation_pop_message() when the operation is complete.
  *
  * This function only works if @cancellable is a #CamelOperation cast as a
  * #GCancellable.  If @cancellable is a plain #GCancellable or %NULL, the
  * function does nothing and returns silently.
  **/
 void
-camel_operation_start (GCancellable *cancellable,
-                       const gchar *what, ...)
+camel_operation_push_message (GCancellable *cancellable,
+                              const gchar *format, ...)
 {
 	CamelOperation *operation;
-	const guint signal_id = signals[STATUS];
 	StatusNode *node;
 	va_list ap;
 
@@ -427,48 +385,45 @@ camel_operation_start (GCancellable *cancellable,
 
 	g_return_if_fail (CAMEL_IS_OPERATION (cancellable));
 
-	if (!g_signal_has_handler_pending (cancellable, signal_id, 0, TRUE))
-		return;
-
 	LOCK ();
 
 	operation = CAMEL_OPERATION (cancellable);
 
-	operation->priv->status_update = 0;
+	va_start (ap, format);
 
-	va_start (ap, what);
+	node = g_slice_new0 (StatusNode);
+	node->message = g_strdup_vprintf (format, ap);
+	node->operation = operation;  /* not referenced */
 
-	node = status_node_new (operation);
-	node->msg = g_strdup_vprintf (what, ap);
+	if (g_queue_is_empty (&operation->priv->status_stack))
+		node->source_id = g_idle_add (
+			(GSourceFunc) operation_emit_status_cb, node);
+	else
+		node->source_id = g_timeout_add_seconds (
+			4, (GSourceFunc) operation_emit_status_cb, node);
+
+	g_queue_push_head (&operation->priv->status_stack, node);
 
 	va_end (ap);
-
-	operation_queue_status_update (operation, node);
 
 	UNLOCK ();
 }
 
 /**
- * camel_operation_start_transient:
- * @cancellable: a #GCancellable or %NULL
- * @what: printf-style format string describing the action being performed
- * @Varargs: varargs
+ * camel_operation_pop_message:
+ * @cancellable: a #GCancellable
  *
- * Start a transient event.  We only update this to the display if it
- * takes very long to process, and if we do, we then go back to the
- * previous state when finished.
+ * Pops the most recently pushed message.
  *
  * This function only works if @cancellable is a #CamelOperation cast as a
  * #GCancellable.  If @cancellable is a plain #GCancellable or %NULL, the
  * function does nothing and returns silently.
  **/
 void
-camel_operation_start_transient (GCancellable *cancellable,
-                                 const gchar *what, ...)
+camel_operation_pop_message (GCancellable *cancellable)
 {
 	CamelOperation *operation;
 	StatusNode *node;
-	va_list ap;
 
 	if (cancellable == NULL)
 		return;
@@ -481,17 +436,16 @@ camel_operation_start_transient (GCancellable *cancellable,
 	LOCK ();
 
 	operation = CAMEL_OPERATION (cancellable);
+	node = g_queue_pop_head (&operation->priv->status_stack);
 
-	operation->priv->status_update = 0;
+	if (node != NULL)
+		status_node_free (node);
 
-	va_start (ap, what);
+	node = g_queue_peek_head (&operation->priv->status_stack);
 
-	node = status_node_new (operation);
-	node->msg = g_strdup_vprintf (what, ap);
-	node->stamp = stamp ();
-	node->transient = TRUE;
-
-	va_end (ap);
+	if (node != NULL && node->source_id == 0)
+		node->source_id = g_idle_add (
+			(GSourceFunc) operation_emit_status_cb, node);
 
 	UNLOCK ();
 }
@@ -499,9 +453,9 @@ camel_operation_start_transient (GCancellable *cancellable,
 /**
  * camel_operation_progress:
  * @cancellable: a #GCancellable or %NULL
- * @pc: percent complete, 0 to 100.
+ * @percent: percent complete, 0 to 100.
  *
- * Report progress on the current operation.  @pc reports the current
+ * Report progress on the current operation.  @percent reports the current
  * percentage of completion, which should be in the range of 0 to 100.
  *
  * This function only works if @cancellable is a #CamelOperation cast as a
@@ -510,12 +464,9 @@ camel_operation_start_transient (GCancellable *cancellable,
  **/
 void
 camel_operation_progress (GCancellable *cancellable,
-                          gint pc)
+                          gint percent)
 {
 	CamelOperation *operation;
-	const guint signal_id = signals[STATUS];
-	CamelOperationPrivate *priv;
-	guint now;
 	StatusNode *node;
 
 	if (cancellable == NULL)
@@ -526,83 +477,21 @@ camel_operation_progress (GCancellable *cancellable,
 
 	g_return_if_fail (CAMEL_IS_OPERATION (cancellable));
 
-	if (!g_signal_has_handler_pending (cancellable, signal_id, 0, TRUE))
-		return;
-
 	LOCK ();
 
 	operation = CAMEL_OPERATION (cancellable);
-	priv = operation->priv;
+	node = g_queue_peek_head (&operation->priv->status_stack);
 
-	if (g_queue_is_empty (&priv->status_stack)) {
-		UNLOCK ();
-		return;
+	if (node != NULL) {
+		node->percent = percent;
+
+		/* Rate limit progress updates. */
+		if (node->source_id == 0)
+			node->source_id = g_timeout_add (
+				250, (GSourceFunc)
+				operation_emit_status_cb, node);
 	}
-
-	node = g_queue_peek_head (&priv->status_stack);
-	node->pc = pc;
-
-	/* Transient messages dont start updating till 4 seconds after
-	   they started, then they update every second */
-	now = stamp ();
-	if (priv->status_update == now) {
-		operation = NULL;
-	} else if (node->transient) {
-		if (node->stamp + CAMEL_OPERATION_TRANSIENT_DELAY > now) {
-			operation = NULL;
-		} else {
-			priv->status_update = now;
-		}
-	} else {
-		node->stamp = priv->status_update = now;
-	}
-
-	if (operation != NULL)
-		operation_queue_status_update (operation, node);
 
 	UNLOCK ();
 }
 
-/**
- * camel_operation_end:
- * @cancellable: a #GCancellable
- *
- * Report the end of an operation.
- *
- * This function only works if @cancellable is a #CamelOperation cast as a
- * #GCancellable.  If @cancellable is a plain #GCancellable or %NULL, the
- * function does nothing and returns silently.
- **/
-void
-camel_operation_end (GCancellable *cancellable)
-{
-	CamelOperation *operation;
-	const guint signal_id = signals[STATUS];
-	GQueue *status_stack;
-	StatusNode *node;
-
-	if (cancellable == NULL)
-		return;
-
-	if (G_OBJECT_TYPE (cancellable) == G_TYPE_CANCELLABLE)
-		return;
-
-	g_return_if_fail (CAMEL_IS_OPERATION (cancellable));
-
-	if (!g_signal_has_handler_pending (cancellable, signal_id, 0, TRUE))
-		return;
-
-	LOCK ();
-
-	operation = CAMEL_OPERATION (cancellable);
-
-	status_stack = &operation->priv->status_stack;
-
-	if ((node = g_queue_pop_head (status_stack)) != NULL) {
-		node->pc = 100;
-		operation_queue_status_update (operation, node);
-		status_node_free (node);
-	}
-
-	UNLOCK ();
-}

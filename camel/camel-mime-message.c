@@ -288,7 +288,7 @@ mime_message_remove_header (CamelMedium *medium,
 	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->remove_header (medium, name);
 }
 
-static gint
+static gboolean
 mime_message_construct_from_parser_sync (CamelMimePart *dw,
                                          CamelMimeParser *mp,
                                          GCancellable *cancellable,
@@ -298,16 +298,16 @@ mime_message_construct_from_parser_sync (CamelMimePart *dw,
 	gchar *buf;
 	gsize len;
 	gint state;
-	gint ret;
 	gint err;
+	gboolean success;
 
 	/* let the mime-part construct the guts ... */
 	mime_part_class = CAMEL_MIME_PART_CLASS (camel_mime_message_parent_class);
-	ret = mime_part_class->construct_from_parser_sync (
+	success = mime_part_class->construct_from_parser_sync (
 		dw, mp, cancellable, error);
 
-	if (ret == -1)
-		return -1;
+	if (!success)
+		return FALSE;
 
 	/* ... then clean up the follow-on state */
 	state = camel_mime_parser_step (mp, &buf, &len);
@@ -321,7 +321,7 @@ mime_message_construct_from_parser_sync (CamelMimePart *dw,
 	default:
 		g_error ("Bad parser state: Expecing MESSAGE_END or EOF or EOM, got: %u", camel_mime_parser_state (mp));
 		camel_mime_parser_unstep (mp);
-		return -1;
+		return FALSE;
 	}
 
 	err = camel_mime_parser_errno (mp);
@@ -331,10 +331,10 @@ mime_message_construct_from_parser_sync (CamelMimePart *dw,
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
 			"%s", g_strerror (errno));
-		ret = -1;
+		success = FALSE;
 	}
 
-	return ret;
+	return success;
 }
 
 static void
@@ -845,7 +845,10 @@ camel_mime_message_has_8bit_parts (CamelMimeMessage *msg)
 
 /* finds the best charset and transfer encoding for a given part */
 static CamelTransferEncoding
-find_best_encoding (CamelMimePart *part, CamelBestencRequired required, CamelBestencEncoding enctype, gchar **charsetp)
+find_best_encoding (CamelMimePart *part,
+                    CamelBestencRequired required,
+                    CamelBestencEncoding enctype,
+                    gchar **charsetp)
 {
 	CamelMimeFilter *charenc = NULL;
 	CamelTransferEncoding encoding;
@@ -1034,7 +1037,9 @@ best_encoding (CamelMimeMessage *msg, CamelMimePart *part, gpointer datap)
  * parts will be encoded as binary and 8bit textual parts will be encoded as 8bit.
  **/
 void
-camel_mime_message_set_best_encoding (CamelMimeMessage *msg, CamelBestencRequired required, CamelBestencEncoding enctype)
+camel_mime_message_set_best_encoding (CamelMimeMessage *msg,
+                                      CamelBestencRequired required,
+                                      CamelBestencEncoding enctype)
 {
 	struct _enc_data data;
 

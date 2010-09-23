@@ -82,9 +82,9 @@ CamelDB
 </para>
 
 @Param1: 
-@Varargs: 
+@Param2: 
 @Param3: 
-@Varargs: 
+@Param4: 
 @Param5: 
 @Returns: 
 

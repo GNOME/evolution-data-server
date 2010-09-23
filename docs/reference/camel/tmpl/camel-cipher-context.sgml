@@ -116,7 +116,7 @@ CamelCipherContext
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_cipher_id_to_hash ##### -->
+<!-- ##### FUNCTION camel_cipher_context_id_to_hash ##### -->
 <para>
 
 </para>
@@ -126,7 +126,7 @@ CamelCipherContext
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_cipher_hash_to_id ##### -->
+<!-- ##### FUNCTION camel_cipher_context_hash_to_id ##### -->
 <para>
 
 </para>
@@ -136,7 +136,7 @@ CamelCipherContext
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_cipher_sign_sync ##### -->
+<!-- ##### FUNCTION camel_cipher_context_sign_sync ##### -->
 <para>
 
 </para>
@@ -151,7 +151,34 @@ CamelCipherContext
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_cipher_verify_sync ##### -->
+<!-- ##### FUNCTION camel_cipher_context_sign ##### -->
+<para>
+
+</para>
+
+@context: 
+@userid: 
+@hash: 
+@ipart: 
+@opart: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_cipher_context_sign_finish ##### -->
+<para>
+
+</para>
+
+@context: 
+@result: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_context_verify_sync ##### -->
 <para>
 
 </para>
@@ -163,7 +190,31 @@ CamelCipherContext
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_cipher_encrypt_sync ##### -->
+<!-- ##### FUNCTION camel_cipher_context_verify ##### -->
+<para>
+
+</para>
+
+@context: 
+@ipart: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_cipher_context_verify_finish ##### -->
+<para>
+
+</para>
+
+@context: 
+@result: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_context_encrypt_sync ##### -->
 <para>
 
 </para>
@@ -178,7 +229,34 @@ CamelCipherContext
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_cipher_decrypt_sync ##### -->
+<!-- ##### FUNCTION camel_cipher_context_encrypt ##### -->
+<para>
+
+</para>
+
+@context: 
+@userid: 
+@recipients: 
+@ipart: 
+@opart: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_cipher_context_encrypt_finish ##### -->
+<para>
+
+</para>
+
+@context: 
+@result: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_context_decrypt_sync ##### -->
 <para>
 
 </para>
@@ -191,7 +269,32 @@ CamelCipherContext
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_cipher_import_keys_sync ##### -->
+<!-- ##### FUNCTION camel_cipher_context_decrypt ##### -->
+<para>
+
+</para>
+
+@context: 
+@ipart: 
+@opart: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_cipher_context_decrypt_finish ##### -->
+<para>
+
+</para>
+
+@context: 
+@result: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_context_import_keys_sync ##### -->
 <para>
 
 </para>
@@ -203,7 +306,31 @@ CamelCipherContext
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_cipher_export_keys_sync ##### -->
+<!-- ##### FUNCTION camel_cipher_context_import_keys ##### -->
+<para>
+
+</para>
+
+@context: 
+@istream: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_cipher_context_import_keys_finish ##### -->
+<para>
+
+</para>
+
+@context: 
+@result: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_context_export_keys_sync ##### -->
 <para>
 
 </para>
@@ -212,6 +339,31 @@ CamelCipherContext
 @keys: 
 @ostream: 
 @cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_cipher_context_export_keys ##### -->
+<para>
+
+</para>
+
+@context: 
+@keys: 
+@ostream: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_cipher_context_export_keys_finish ##### -->
+<para>
+
+</para>
+
+@context: 
+@result: 
 @error: 
 @Returns: 
 
@@ -307,6 +459,44 @@ CamelCipherContext
 @name: 
 @email: 
 @cert_data: 
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
+@gpointer cert_data: 
+@gpointer cert_data:
 @gpointer cert_data: 
 @gpointer cert_data:
 @gpointer cert_data: 

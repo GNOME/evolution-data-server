@@ -648,6 +648,32 @@ CamelFolder
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_folder_append_message ##### -->
+<para>
+
+</para>
+
+@folder: 
+@message: 
+@info: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_folder_append_message_finish ##### -->
+<para>
+
+</para>
+
+@folder: 
+@result: 
+@appended_uid: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_folder_expunge_sync ##### -->
 <para>
 
@@ -659,14 +685,61 @@ CamelFolder
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_folder_expunge ##### -->
+<para>
+
+</para>
+
+@folder: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_folder_expunge_finish ##### -->
+<para>
+
+</para>
+
+@folder: 
+@result: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_folder_get_message_sync ##### -->
 <para>
 
 </para>
 
 @folder: 
-@uid: 
+@message_uid: 
 @cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_get_message ##### -->
+<para>
+
+</para>
+
+@folder: 
+@message_uid: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_folder_get_message_finish ##### -->
+<para>
+
+</para>
+
+@folder: 
+@result: 
 @error: 
 @Returns: 
 
@@ -678,6 +751,29 @@ CamelFolder
 
 @folder: 
 @cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_refresh_info ##### -->
+<para>
+
+</para>
+
+@folder: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_folder_refresh_info_finish ##### -->
+<para>
+
+</para>
+
+@folder: 
+@result: 
 @error: 
 @Returns: 
 
@@ -694,14 +790,62 @@ CamelFolder
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_folder_synchronize ##### -->
+<para>
+
+</para>
+
+@folder: 
+@expunge: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_folder_synchronize_finish ##### -->
+<para>
+
+</para>
+
+@folder: 
+@result: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_folder_synchronize_message_sync ##### -->
 <para>
 
 </para>
 
 @folder: 
-@uid: 
+@message_uid: 
 @cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_synchronize_message ##### -->
+<para>
+
+</para>
+
+@folder: 
+@message_uid: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_folder_synchronize_message_finish ##### -->
+<para>
+
+</para>
+
+@folder: 
+@result: 
 @error: 
 @Returns: 
 
@@ -712,11 +856,38 @@ CamelFolder
 </para>
 
 @source: 
-@uids: 
-@dest: 
-@transferred_uids: 
+@message_uids: 
+@destination: 
 @delete_originals: 
+@transferred_uids: 
 @cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_transfer_messages_to ##### -->
+<para>
+
+</para>
+
+@source: 
+@message_uids: 
+@destination: 
+@delete_originals: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_folder_transfer_messages_to_finish ##### -->
+<para>
+
+</para>
+
+@source: 
+@result: 
+@transferred_uids: 
 @error: 
 @Returns: 
 

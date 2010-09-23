@@ -70,7 +70,7 @@ transfer_messages (CamelFolder *folder,
 
 	camel_folder_transfer_messages_to_sync (
 		md->folder, md->uids, md->dest,
-		NULL, md->delete, md->cancellable, error);
+		md->delete, NULL, md->cancellable, error);
 
 	if (md->cancellable != NULL)
 		g_object_unref (md->cancellable);
@@ -86,7 +86,7 @@ transfer_messages (CamelFolder *folder,
 static gboolean
 vtrash_folder_append_message_sync (CamelFolder *folder,
                                    CamelMimeMessage *message,
-                                   const CamelMessageInfo *info,
+                                   CamelMessageInfo *info,
                                    gchar **appended_uid,
                                    GCancellable *cancellable,
                                    GError **error)
@@ -102,8 +102,8 @@ static gboolean
 vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
                                          GPtrArray *uids,
                                          CamelFolder *dest,
-                                         GPtrArray **transferred_uids,
                                          gboolean delete_originals,
+                                         GPtrArray **transferred_uids,
                                          GCancellable *cancellable,
                                          GError **error)
 {

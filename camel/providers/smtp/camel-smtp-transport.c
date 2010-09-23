@@ -614,7 +614,7 @@ smtp_send_to_sync (CamelTransport *transport,
 		return FALSE;
 	}
 
-	camel_operation_start (cancellable, _("Sending message"));
+	camel_operation_push_message (cancellable, _("Sending message"));
 
 	/* find out if the message has 8bit mime parts */
 	has_8bit_parts = camel_mime_message_has_8bit_parts (message);
@@ -623,7 +623,7 @@ smtp_send_to_sync (CamelTransport *transport,
 	   you'll be sending an 8bit mime message at "MAIL FROM:" time. */
 	if (!smtp_mail (
 		smtp_transport, addr, has_8bit_parts, cancellable, error)) {
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 		return FALSE;
 	}
 
@@ -632,7 +632,7 @@ smtp_send_to_sync (CamelTransport *transport,
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Cannot send message: no recipients defined."));
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 		return FALSE;
 	}
 
@@ -645,28 +645,28 @@ smtp_send_to_sync (CamelTransport *transport,
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Cannot send message: "
 				  "one or more invalid recipients"));
-			camel_operation_end (cancellable);
+			camel_operation_pop_message (cancellable);
 			return FALSE;
 		}
 
 		enc = camel_internet_address_encode_address (NULL, NULL, addr);
 		if (!smtp_rcpt (smtp_transport, enc, cancellable, error)) {
 			g_free (enc);
-			camel_operation_end (cancellable);
+			camel_operation_pop_message (cancellable);
 			return FALSE;
 		}
 		g_free (enc);
 	}
 
 	if (!smtp_data (smtp_transport, message, cancellable, error)) {
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 		return FALSE;
 	}
 
 	/* reset the service for our next transfer session */
 	smtp_rset (smtp_transport, cancellable, NULL);
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	return TRUE;
 }
@@ -1011,7 +1011,7 @@ smtp_helo (CamelSmtpTransport *transport,
 		transport->authtypes = NULL;
 	}
 
-	camel_operation_start_transient (cancellable, _("SMTP Greeting"));
+	camel_operation_push_message (cancellable, _("SMTP Greeting"));
 
 	addr = transport->localaddr;
 	addrlen = transport->localaddrlen;
@@ -1039,7 +1039,7 @@ smtp_helo (CamelSmtpTransport *transport,
 		transport->ostream, cmdbuf, cancellable, error) == -1) {
 		g_free (cmdbuf);
 		g_prefix_error (error, _("HELO command failed: "));
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 
 		camel_service_disconnect_sync (
 			(CamelService *) transport, FALSE, NULL);
@@ -1057,14 +1057,14 @@ smtp_helo (CamelSmtpTransport *transport,
 		if (respbuf == NULL) {
 			g_prefix_error (error, _("HELO command failed: "));
 			transport->connected = FALSE;
-			camel_operation_end (cancellable);
+			camel_operation_pop_message (cancellable);
 			return FALSE;
 		}
 		if (strncmp (respbuf, "250", 3)) {
 			smtp_set_error (
 				transport, respbuf, cancellable, error);
 			g_prefix_error (error, _("HELO command failed: "));
-			camel_operation_end (cancellable);
+			camel_operation_pop_message (cancellable);
 			g_free (respbuf);
 			return FALSE;
 		}
@@ -1113,7 +1113,7 @@ smtp_helo (CamelSmtpTransport *transport,
 	} while (*(respbuf+3) == '-'); /* if we got "250-" then loop again */
 	g_free (respbuf);
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	return TRUE;
 }
@@ -1131,11 +1131,11 @@ smtp_auth (CamelSmtpTransport *transport,
 
 	service = CAMEL_SERVICE (transport);
 
-	camel_operation_start_transient (cancellable, _("SMTP Authentication"));
+	camel_operation_push_message (cancellable, _("SMTP Authentication"));
 
 	sasl = camel_sasl_new ("smtp", mech, service);
 	if (!sasl) {
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Error creating SASL authentication object."));
@@ -1242,7 +1242,7 @@ smtp_auth (CamelSmtpTransport *transport,
 	}
 
 	g_object_unref (sasl);
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	g_free (respbuf);
 
@@ -1258,7 +1258,7 @@ smtp_auth (CamelSmtpTransport *transport,
 
  lose:
 	g_object_unref (sasl);
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	g_free (respbuf);
 

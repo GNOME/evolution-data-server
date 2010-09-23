@@ -47,7 +47,7 @@ typedef struct _CamelDBPrivate CamelDBPrivate;
  *
  * Since: 2.24
  **/
-typedef gint (*CamelDBCollate)(gpointer ,int,gconstpointer ,int,gconstpointer );
+typedef gint (*CamelDBCollate)(gpointer, gint, gconstpointer, gint, gconstpointer );
 
 /**
  * CamelDB:

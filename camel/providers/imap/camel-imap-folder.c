@@ -89,23 +89,27 @@ static CamelMimeMessage *imap_get_message_sync (CamelFolder *folder, const gchar
 static gboolean imap_synchronize_message_sync (CamelFolder *folder, const gchar *uid, GCancellable *cancellable,
 			       GError **error);
 static gboolean imap_append_online (CamelFolder *folder, CamelMimeMessage *message,
-				const CamelMessageInfo *info, gchar **appended_uid,
+				CamelMessageInfo *info, gchar **appended_uid,
 				GCancellable *cancellable,
 				GError **error);
 static gboolean imap_append_offline (CamelFolder *folder, CamelMimeMessage *message,
-				 const CamelMessageInfo *info, gchar **appended_uid,
+				 CamelMessageInfo *info, gchar **appended_uid,
 				 GError **error);
 
-static gboolean imap_transfer_online (CamelFolder *source, GPtrArray *uids,
-				  CamelFolder *dest, GPtrArray **transferred_uids,
-				  gboolean delete_originals,
-				  GCancellable *cancellable,
-				  GError **error);
-static gboolean imap_transfer_offline (CamelFolder *source, GPtrArray *uids,
-				   CamelFolder *dest, GPtrArray **transferred_uids,
-				   gboolean delete_originals,
-				   GCancellable *cancellable,
-				   GError **error);
+static gboolean	imap_transfer_online		(CamelFolder *source,
+						 GPtrArray *uids,
+						 CamelFolder *dest,
+						 gboolean delete_originals,
+						 GPtrArray **transferred_uids,
+						 GCancellable *cancellable,
+						 GError **error);
+static gboolean	imap_transfer_offline		(CamelFolder *source,
+						 GPtrArray *uids,
+						 CamelFolder *dest,
+						 gboolean delete_originals,
+						 GPtrArray **transferred_uids,
+						 GCancellable *cancellable,
+						 GError **error);
 
 /* searching */
 static GPtrArray *imap_search_by_expression (CamelFolder *folder, const gchar *expression, GError **error);
@@ -124,11 +128,14 @@ static CamelImapMessageInfo * imap_folder_summary_uid_or_error (
 	const gchar * uid,
 	GError **error);
 
-static gboolean
-imap_transfer_messages (CamelFolder *source, GPtrArray *uids,
-			CamelFolder *dest, GPtrArray **transferred_uids,
-			gboolean delete_originals, gboolean can_call_sync,
-			GCancellable *cancellable, GError **error);
+static gboolean	imap_transfer_messages		(CamelFolder *source,
+						 GPtrArray *uids,
+						 CamelFolder *dest,
+						 gboolean delete_originals,
+						 GPtrArray **transferred_uids,
+						 gboolean can_call_sync,
+						 GCancellable *cancellable,
+						 GError **error);
 
 #ifdef G_OS_WIN32
 /* The strtok() in Microsoft's C library is MT-safe (but still uses
@@ -979,13 +986,13 @@ imap_rescan (CamelFolder *folder,
 	}
 
 	/* Check UIDs and flags of all messages we already know of. */
-	camel_operation_start (
+	camel_operation_push_message (
 		cancellable, _("Scanning for changed messages in %s"),
 		camel_folder_get_name (folder));
 	uid = camel_folder_summary_uid_from_index (folder->summary, summary_len - 1);
 
 	if (!uid) {
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 		return TRUE;
 	}
 
@@ -994,7 +1001,7 @@ imap_rescan (CamelFolder *folder,
 		"UID FETCH 1:%s (FLAGS)", uid);
 	g_free (uid);
 	if (!ok) {
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 		return FALSE;
 	}
 
@@ -1029,13 +1036,13 @@ imap_rescan (CamelFolder *folder,
 	}
 
 	if (summary_got == 0 && summary_len == 0) {
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		g_free (new);
 		return TRUE;
 	}
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	if (type == CAMEL_IMAP_RESPONSE_ERROR || camel_application_is_exiting) {
 		for (i = 0; i < summary_len && new[i].uid; i++) {
@@ -1486,8 +1493,8 @@ move_messages (CamelFolder *src_folder,
 	if (src_folder != des_folder) {
 		/* do 'copy' to not be bothered with CAMEL_MESSAGE_DELETED again */
 		if (!imap_transfer_messages (
-			src_folder, uids, des_folder, NULL,
-			FALSE, FALSE, cancellable, error))
+			src_folder, uids, des_folder, FALSE,
+			NULL, FALSE, cancellable, error))
 			return;
 	}
 
@@ -2175,7 +2182,7 @@ get_temp_uid (void)
 static gboolean
 imap_append_offline (CamelFolder *folder,
                      CamelMimeMessage *message,
-                     const CamelMessageInfo *info,
+                     CamelMessageInfo *info,
                      gchar **appended_uid,
                      GError **error)
 {
@@ -2231,7 +2238,7 @@ imap_folder_uid_in_ignore_recent (CamelImapFolder *imap_folder, const gchar *uid
 static CamelImapResponse *
 do_append (CamelFolder *folder,
            CamelMimeMessage *message,
-           const CamelMessageInfo *info,
+           CamelMessageInfo *info,
            gchar **uid,
            GCancellable *cancellable,
            GError **error)
@@ -2341,7 +2348,7 @@ retry:
 static gboolean
 imap_append_online (CamelFolder *folder,
                     CamelMimeMessage *message,
-                    const CamelMessageInfo *info,
+                    CamelMessageInfo *info,
                     gchar **appended_uid,
                     GCancellable *cancellable,
                     GError **error)
@@ -2397,7 +2404,7 @@ imap_append_online (CamelFolder *folder,
 gboolean
 camel_imap_append_resyncing (CamelFolder *folder,
                              CamelMimeMessage *message,
-                             const CamelMessageInfo *info,
+                             CamelMessageInfo *info,
                              gchar **appended_uid,
                              GCancellable *cancellable,
                              GError **error)
@@ -2439,8 +2446,8 @@ static gboolean
 imap_transfer_offline (CamelFolder *source,
                        GPtrArray *uids,
                        CamelFolder *dest,
-                       GPtrArray **transferred_uids,
                        gboolean delete_originals,
+                       GPtrArray **transferred_uids,
                        GCancellable *cancellable,
                        GError **error)
 {
@@ -2758,8 +2765,8 @@ static gboolean
 imap_transfer_messages (CamelFolder *source,
                         GPtrArray *uids,
                         CamelFolder *dest,
-                        GPtrArray **transferred_uids,
                         gboolean delete_originals,
+                        GPtrArray **transferred_uids,
                         gboolean can_call_sync,
                         GCancellable *cancellable,
                         GError **error)
@@ -2774,8 +2781,8 @@ imap_transfer_messages (CamelFolder *source,
 
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)))
 		return imap_transfer_offline (
-			source, uids, dest, transferred_uids,
-			delete_originals, cancellable, error);
+			source, uids, dest, delete_originals,
+			transferred_uids, cancellable, error);
 
 	/* Sync message flags if needed. */
 	if (can_call_sync && !imap_synchronize_sync (
@@ -2806,22 +2813,22 @@ static gboolean
 imap_transfer_online (CamelFolder *source,
                       GPtrArray *uids,
                       CamelFolder *dest,
-                      GPtrArray **transferred_uids,
                       gboolean delete_originals,
+                      GPtrArray **transferred_uids,
                       GCancellable *cancellable,
                       GError **error)
 {
 	return imap_transfer_messages (
-		source, uids, dest, transferred_uids,
-		delete_originals, TRUE, cancellable, error);
+		source, uids, dest, delete_originals,
+		transferred_uids, TRUE, cancellable, error);
 }
 
 gboolean
 camel_imap_transfer_resyncing (CamelFolder *source,
                                GPtrArray *uids,
                                CamelFolder *dest,
-                               GPtrArray **transferred_uids,
                                gboolean delete_originals,
+                               GPtrArray **transferred_uids,
                                GCancellable *cancellable,
                                GError **error)
 {
@@ -3097,7 +3104,7 @@ get_content (CamelImapFolder *imap_folder,
 	if (camel_content_type_is (ci->type, "multipart", "signed")) {
 		CamelMultipartSigned *body_mp;
 		gchar *spec;
-		gint ret;
+		gboolean success;
 
 		/* Note: because we get the content parts uninterpreted anyway, we could potentially
 		   just use the normalmultipart code, except that multipart/signed wont let you yet! */
@@ -3116,10 +3123,10 @@ get_content (CamelImapFolder *imap_folder,
 
 		stream = camel_imap_folder_fetch_data (imap_folder, uid, spec, FALSE, cancellable, error);
 		if (stream) {
-			ret = camel_data_wrapper_construct_from_stream_sync (
+			success = camel_data_wrapper_construct_from_stream_sync (
 				CAMEL_DATA_WRAPPER (body_mp), stream, cancellable, error);
 			g_object_unref (CAMEL_OBJECT (stream));
-			if (ret == -1) {
+			if (!success) {
 				g_object_unref ( body_mp);
 				return NULL;
 			}
@@ -3154,13 +3161,13 @@ get_content (CamelImapFolder *imap_folder,
 			sprintf (child_spec + speclen, "%d.MIME", num++);
 			stream = camel_imap_folder_fetch_data (imap_folder, uid, child_spec, FALSE, cancellable, error);
 			if (stream) {
-				gint ret;
+				gboolean success;
 
 				part = camel_mime_part_new ();
-				ret = camel_data_wrapper_construct_from_stream_sync (
+				success = camel_data_wrapper_construct_from_stream_sync (
 					CAMEL_DATA_WRAPPER (part), stream, cancellable, error);
 				g_object_unref (CAMEL_OBJECT (stream));
-				if (ret == -1) {
+				if (!success) {
 					g_object_unref (CAMEL_OBJECT (part));
 					g_object_unref (CAMEL_OBJECT (body_mp));
 					g_free (child_spec);
@@ -3244,7 +3251,7 @@ get_message (CamelImapFolder *imap_folder,
 	CamelMimeMessage *msg;
 	CamelStream *stream;
 	gchar *section_text, *part_spec;
-	gint ret;
+	gboolean success;
 
 	folder = CAMEL_FOLDER (imap_folder);
 	parent_store = camel_folder_get_parent_store (folder);
@@ -3262,10 +3269,10 @@ get_message (CamelImapFolder *imap_folder,
 		return NULL;
 
 	msg = camel_mime_message_new ();
-	ret = camel_data_wrapper_construct_from_stream_sync (
+	success = camel_data_wrapper_construct_from_stream_sync (
 		CAMEL_DATA_WRAPPER (msg), stream, cancellable, error);
 	g_object_unref (CAMEL_OBJECT (stream));
-	if (ret == -1) {
+	if (!success) {
 		g_object_unref (CAMEL_OBJECT (msg));
 		return NULL;
 	}
@@ -3302,7 +3309,7 @@ get_message_simple (CamelImapFolder *imap_folder,
                     GError **error)
 {
 	CamelMimeMessage *msg;
-	gint ret;
+	gboolean success;
 
 	if (!stream) {
 		stream = camel_imap_folder_fetch_data (imap_folder, uid, "",
@@ -3312,10 +3319,10 @@ get_message_simple (CamelImapFolder *imap_folder,
 	}
 
 	msg = camel_mime_message_new ();
-	ret = camel_data_wrapper_construct_from_stream_sync (
+	success = camel_data_wrapper_construct_from_stream_sync (
 		CAMEL_DATA_WRAPPER (msg), stream, cancellable, error);
 	g_object_unref (CAMEL_OBJECT (stream));
-	if (ret == -1) {
+	if (!success) {
 		g_prefix_error (error, _("Unable to retrieve message: "));
 		g_object_unref (CAMEL_OBJECT (msg));
 		return NULL;
@@ -3730,8 +3737,8 @@ add_message_from_data (CamelFolder *folder,
 		g_ptr_array_set_size (messages, seq - first + 1);
 
 	msg = camel_mime_message_new ();
-	if (camel_data_wrapper_construct_from_stream_sync (
-		CAMEL_DATA_WRAPPER (msg), stream, cancellable, NULL) == -1) {
+	if (!camel_data_wrapper_construct_from_stream_sync (
+		CAMEL_DATA_WRAPPER (msg), stream, cancellable, NULL)) {
 		g_object_unref (CAMEL_OBJECT (msg));
 		return;
 	}
@@ -3907,7 +3914,7 @@ imap_update_summary (CamelFolder *folder,
 		return FALSE;
 	}
 
-	camel_operation_start (
+	camel_operation_push_message (
 		cancellable,
 		_("Fetching summary information for new messages in %s"),
 		camel_folder_get_name (folder));
@@ -3954,7 +3961,7 @@ imap_update_summary (CamelFolder *folder,
 		g_ptr_array_add (fetch_data, data);
 	}
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	if (type == CAMEL_IMAP_RESPONSE_ERROR || camel_application_is_exiting) {
 		if (type != CAMEL_IMAP_RESPONSE_ERROR && type != CAMEL_IMAP_RESPONSE_TAGGED)
@@ -3989,7 +3996,7 @@ imap_update_summary (CamelFolder *folder,
 		qsort (needheaders->pdata, needheaders->len,
 		       sizeof (gpointer), uid_compar);
 
-		camel_operation_start (
+		camel_operation_push_message (
 			cancellable,
 			_("Fetching summary information for new messages in %s"),
 			camel_folder_get_name (folder));
@@ -4000,7 +4007,7 @@ imap_update_summary (CamelFolder *folder,
 						       "UID FETCH %s BODYSTRUCTURE BODY.PEEK[%s]",
 						       uidset, header_spec->str)) {
 				g_ptr_array_free (needheaders, TRUE);
-				camel_operation_end (cancellable);
+				camel_operation_pop_message (cancellable);
 				g_free (uidset);
 				g_string_free (header_spec, TRUE);
 				goto lose;
@@ -4028,7 +4035,7 @@ imap_update_summary (CamelFolder *folder,
 
 			if (type == CAMEL_IMAP_RESPONSE_ERROR || camel_application_is_exiting) {
 				g_ptr_array_free (needheaders, TRUE);
-				camel_operation_end (cancellable);
+				camel_operation_pop_message (cancellable);
 
 				if (type != CAMEL_IMAP_RESPONSE_ERROR && type != CAMEL_IMAP_RESPONSE_TAGGED)
 					camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
@@ -4038,7 +4045,7 @@ imap_update_summary (CamelFolder *folder,
 		}
 		g_string_free (header_spec, TRUE);
 		g_ptr_array_free (needheaders, TRUE);
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 	}
 
 	/* Now finish up summary entries (fix UIDs, set flags and size) */

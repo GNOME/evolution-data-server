@@ -36,7 +36,7 @@ CamelOfflineFolder
 
 </para>
 
-@offline: 
+@folder: 
 @Returns: 
 
 
@@ -45,7 +45,7 @@ CamelOfflineFolder
 
 </para>
 
-@offline: 
+@folder: 
 @offline_sync: 
 
 
@@ -54,9 +54,33 @@ CamelOfflineFolder
 
 </para>
 
-@offline: 
+@folder: 
 @expression: 
 @cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_offline_folder_downsync ##### -->
+<para>
+
+</para>
+
+@folder: 
+@expression: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_offline_folder_downsync_finish ##### -->
+<para>
+
+</para>
+
+@folder: 
+@result: 
 @error: 
 @Returns: 
 

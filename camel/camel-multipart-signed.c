@@ -359,7 +359,7 @@ file_error:
 	return -1;
 }
 
-static gint
+static gboolean
 multipart_signed_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
                                              CamelStream *stream,
                                              GCancellable *cancellable,
@@ -370,11 +370,11 @@ multipart_signed_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
 
 	if (camel_stream_write_to_stream (
 		stream, mem, cancellable, error) == -1)
-		return -1;
+		return FALSE;
 
 	multipart_signed_set_stream (mps, mem);
 
-	return 0;
+	return TRUE;
 }
 
 static void

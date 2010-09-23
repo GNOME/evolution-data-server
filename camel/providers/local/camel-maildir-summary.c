@@ -552,7 +552,8 @@ maildir_summary_check (CamelLocalSummary *cls,
 
 	d(printf("checking summary ...\n"));
 
-	camel_operation_start (cancellable, _("Checking folder consistency"));
+	camel_operation_push_message (
+		cancellable, _("Checking folder consistency"));
 
 	/* scan the directory, check for mail files not in the index, or index entries that
 	   no longer exist */
@@ -565,7 +566,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 			cls->folder_path, g_strerror (errno));
 		g_free (cur);
 		g_free (new);
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 		g_mutex_unlock (((CamelMaildirSummary *) cls)->priv->summary_lock);
 		return -1;
 	}
@@ -642,9 +643,10 @@ maildir_summary_check (CamelLocalSummary *cls,
 	g_hash_table_foreach (left, (GHFunc)remove_summary, &rd);
 	g_hash_table_destroy (left);
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
-	camel_operation_start (cancellable, _("Checking for new messages"));
+	camel_operation_push_message (
+		cancellable, _("Checking for new messages"));
 
 	/* now, scan new for new messages, and copy them to cur, and so forth */
 	dir = opendir (new);
@@ -704,7 +706,8 @@ maildir_summary_check (CamelLocalSummary *cls,
 			g_free (src);
 			g_free (dest);
 		}
-		camel_operation_end (cancellable);
+
+		camel_operation_pop_message (cancellable);
 		closedir (dir);
 	}
 
@@ -736,7 +739,7 @@ maildir_summary_sync (CamelLocalSummary *cls,
 	if (camel_local_summary_check (cls, changes, cancellable, error) == -1)
 		return -1;
 
-	camel_operation_start (cancellable, _("Storing folder"));
+	camel_operation_push_message (cancellable, _("Storing folder"));
 
 	camel_folder_summary_prepare_fetch_all ((CamelFolderSummary *)cls, error);
 	count = camel_folder_summary_count ((CamelFolderSummary *)cls);
@@ -792,7 +795,7 @@ maildir_summary_sync (CamelLocalSummary *cls,
 		camel_message_info_free (info);
 	}
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	/* Chain up to parent's sync() method. */
 	local_summary_class = CAMEL_LOCAL_SUMMARY_CLASS (camel_maildir_summary_parent_class);

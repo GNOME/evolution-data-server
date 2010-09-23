@@ -338,7 +338,7 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 	/* Sigh, most of the crap in this function is so that the cancel button
 	   returns the proper exception code.  Sigh. */
 
-	camel_operation_start_transient (
+	camel_operation_push_message (
 		cancellable, _("Retrieving POP message %d"), fi->id);
 
 	/* If we have an oustanding retrieve message running, wait for that to complete
@@ -450,8 +450,8 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 	}
 
 	message = camel_mime_message_new ();
-	if (camel_data_wrapper_construct_from_stream_sync (
-		CAMEL_DATA_WRAPPER (message), stream, cancellable, error) == -1) {
+	if (!camel_data_wrapper_construct_from_stream_sync (
+		CAMEL_DATA_WRAPPER (message), stream, cancellable, error)) {
 		g_prefix_error (error, _("Cannot get message %s: "), uid);
 		g_object_unref (message);
 		message = NULL;
@@ -459,7 +459,7 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 done:
 	g_object_unref (stream);
 fail:
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	return message;
 }
@@ -479,7 +479,8 @@ pop3_folder_refresh_info_sync (CamelFolder *folder,
 	parent_store = camel_folder_get_parent_store (folder);
 	pop3_store = CAMEL_POP3_STORE (parent_store);
 
-	camel_operation_start (cancellable, _("Retrieving POP summary"));
+	camel_operation_push_message (
+		cancellable, _("Retrieving POP summary"));
 
 	pop3_folder->uids = g_ptr_array_new ();
 	pop3_folder->uids_uid = g_hash_table_new (g_str_hash, g_str_equal);
@@ -528,7 +529,7 @@ pop3_folder_refresh_info_sync (CamelFolder *folder,
 	/* dont need this anymore */
 	g_hash_table_destroy (pop3_folder->uids_id);
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	return success;
 }
@@ -553,17 +554,22 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
 	if (pop3_store->delete_after && !expunge) {
 		d(printf("%s(%d): pop3_store->delete_after = [%d], expunge=[%d]\n",
 			 __FILE__, __LINE__, pop3_store->delete_after, expunge));
-		camel_operation_start (cancellable, _("Expunging old messages"));
+		camel_operation_push_message (
+			cancellable, _("Expunging old messages"));
+
 		camel_pop3_delete_old (
 			folder, pop3_store->delete_after,
 			cancellable, error);
+
+		camel_operation_pop_message (cancellable);
 	}
 
 	if (!expunge) {
 		return TRUE;
 	}
 
-	camel_operation_start (cancellable, _("Expunging deleted messages"));
+	camel_operation_push_message (
+		cancellable, _("Expunging deleted messages"));
 
 	for (i = 0; i < pop3_folder->uids->len; i++) {
 		fi = pop3_folder->uids->pdata[i];
@@ -602,7 +608,7 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
 			cancellable, (i+1) * 100 / pop3_folder->uids->len);
 	}
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	camel_pop3_store_expunge (pop3_store, error);
 
@@ -681,8 +687,8 @@ pop3_get_message_time_from_cache (CamelFolder *folder, const gchar *uid, time_t 
 		CamelMimeMessage *message;
 
 		message = camel_mime_message_new ();
-		if (camel_data_wrapper_construct_from_stream_sync (
-			(CamelDataWrapper *)message, stream, NULL, NULL) == -1) {
+		if (!camel_data_wrapper_construct_from_stream_sync (
+			(CamelDataWrapper *)message, stream, NULL, NULL)) {
 			g_warning (_("Cannot get message %s: %s"), uid, g_strerror (errno));
 			g_object_unref (message);
 			message = NULL;
@@ -781,8 +787,6 @@ camel_pop3_delete_old (CamelFolder *folder,
 		camel_operation_progress (
 			cancellable, (i+1) * 100 / pop3_folder->uids->len);
 	}
-
-	camel_operation_end (cancellable);
 
 	camel_pop3_store_expunge (pop3_store, error);
 

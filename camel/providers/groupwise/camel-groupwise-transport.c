@@ -94,7 +94,7 @@ groupwise_send_to_sync (CamelTransport *transport,
 				    CAMEL_URL_HIDE_PARAMS   |
 				    CAMEL_URL_HIDE_AUTH) );
 
-	camel_operation_start (cancellable, _("Sending Message") );
+	camel_operation_push_message (cancellable, _("Sending Message") );
 
 	/*camel groupwise store and cnc*/
 	store = camel_session_get_store (service->session, url, NULL);
@@ -113,7 +113,7 @@ groupwise_send_to_sync (CamelTransport *transport,
 	cnc = cnc_lookup (priv);
 	if (!cnc) {
 		g_warning ("||| Eh!!! Failure |||\n");
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
@@ -140,7 +140,7 @@ groupwise_send_to_sync (CamelTransport *transport,
 	status = e_gw_connection_send_item (cnc, item, &sent_item_list);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_warning (" Error Sending mail");
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 		e_gw_item_set_link_info (item, NULL);
 		g_object_unref (item);
 		if (temp_item)
@@ -169,7 +169,7 @@ groupwise_send_to_sync (CamelTransport *transport,
 		g_object_unref (temp_item);
 	g_object_unref (item);
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	return TRUE;
 }

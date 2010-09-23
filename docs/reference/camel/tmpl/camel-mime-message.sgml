@@ -284,7 +284,17 @@ CamelMimeMessage
 
 </para>
 
-@msg: 
+@message: 
 @body: 
+
+
+<!-- ##### FUNCTION camel_mime_message_build_preview ##### -->
+<para>
+
+</para>
+
+@mime_part: 
+@info: 
+@Returns: 
 
 

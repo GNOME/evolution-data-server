@@ -63,9 +63,21 @@ struct _CamelSasl {
 struct _CamelSaslClass {
 	CamelObjectClass parent_class;
 
+	/* Synchronous I/O Methods */
 	GByteArray *	(*challenge_sync)	(CamelSasl *sasl,
 						 GByteArray *token,
 						 GCancellable *cancellable,
+						 GError **error);
+
+	/* Asynchronous I/O Methods (all have defaults) */
+	void		(*challenge)		(CamelSasl *sasl,
+						 GByteArray *token,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	GByteArray *	(*challenge_finish)	(CamelSasl *sasl,
+						 GAsyncResult *result,
 						 GError **error);
 };
 
@@ -79,14 +91,34 @@ void		camel_sasl_set_authenticated	(CamelSasl *sasl,
 const gchar *	camel_sasl_get_mechanism	(CamelSasl *sasl);
 CamelService *	camel_sasl_get_service		(CamelSasl *sasl);
 const gchar *	camel_sasl_get_service_name	(CamelSasl *sasl);
+
 GByteArray *	camel_sasl_challenge_sync	(CamelSasl *sasl,
 						 GByteArray *token,
 						 GCancellable *cancellable,
+						 GError **error);
+void		camel_sasl_challenge		(CamelSasl *sasl,
+						 GByteArray *token,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+GByteArray *	camel_sasl_challenge_finish	(CamelSasl *sasl,
+						 GAsyncResult *result,
 						 GError **error);
 gchar *		camel_sasl_challenge_base64_sync
 						(CamelSasl *sasl,
 						 const gchar *token,
 						 GCancellable *cancellable,
+						 GError **error);
+void		camel_sasl_challenge_base64	(CamelSasl *sasl,
+						 const gchar *token,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gchar *		camel_sasl_challenge_base64_finish
+						(CamelSasl *sasl,
+						 GAsyncResult *result,
 						 GError **error);
 
 GList *		camel_sasl_authtype_list	(gboolean include_plain);

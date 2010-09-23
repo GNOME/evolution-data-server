@@ -80,24 +80,22 @@ camel-operation
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_operation_start ##### -->
+<!-- ##### FUNCTION camel_operation_push_message ##### -->
 <para>
 
 </para>
 
 @cancellable: 
-@what: 
+@format: 
 @Varargs: 
 
 
-<!-- ##### FUNCTION camel_operation_start_transient ##### -->
+<!-- ##### FUNCTION camel_operation_pop_message ##### -->
 <para>
 
 </para>
 
 @cancellable: 
-@what: 
-@Varargs: 
 
 
 <!-- ##### FUNCTION camel_operation_progress ##### -->
@@ -106,14 +104,6 @@ camel-operation
 </para>
 
 @cancellable: 
-@pc: 
-
-
-<!-- ##### FUNCTION camel_operation_end ##### -->
-<para>
-
-</para>
-
-@cancellable: 
+@percent: 
 
 

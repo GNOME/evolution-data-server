@@ -1432,7 +1432,8 @@ match_words_1message (CamelDataWrapper *object, struct _camel_search_words *word
 		byte_array = g_byte_array_new ();
 		stream = camel_stream_mem_new_with_byte_array (byte_array);
 
-		/* FIXME: The match should be part of a stream op */
+		/* FIXME The match should be part of a stream op */
+		/* FIXME Pass a GCancellable and GError here. */
 		camel_data_wrapper_decode_to_stream_sync (
 			containee, stream, NULL, NULL);
 		camel_stream_write (stream, "", 1, NULL, NULL);

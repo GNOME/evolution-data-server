@@ -506,8 +506,8 @@ do_copy (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDri
 				g_ptr_array_add (uids, (gchar *) p->uid);
 				/* FIXME Pass a GCancellable */
 				camel_folder_transfer_messages_to_sync (
-					p->source, uids, outbox, NULL,
-					FALSE, NULL, &p->error);
+					p->source, uids, outbox, FALSE,
+					NULL, NULL, &p->error);
 				g_ptr_array_free (uids, TRUE);
 			} else {
 				if (p->message == NULL)
@@ -567,8 +567,8 @@ do_move (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDri
 				g_ptr_array_add (uids, (gchar *) p->uid);
 				/* FIXME Pass a GCancellable */
 				camel_folder_transfer_messages_to_sync (
-					p->source, uids, outbox, NULL,
-					last, NULL, &p->error);
+					p->source, uids, outbox, last,
+					NULL, NULL, &p->error);
 				g_ptr_array_free (uids, TRUE);
 			} else {
 				if (p->message == NULL)
@@ -877,8 +877,8 @@ pipe_to_system (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFi
 	g_object_unref (mem);
 
 	message = camel_mime_message_new ();
-	if (camel_mime_part_construct_from_parser_sync (
-		(CamelMimePart *) message, parser, NULL, NULL) == -1) {
+	if (!camel_mime_part_construct_from_parser_sync (
+		(CamelMimePart *) message, parser, NULL, NULL)) {
 		gint err = camel_mime_parser_errno (parser);
 		g_set_error (
 			&p->error, G_IO_ERROR,
@@ -1309,8 +1309,8 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 		message = camel_mime_message_new ();
 		mime_part = CAMEL_MIME_PART (message);
 
-		if (camel_mime_part_construct_from_parser_sync (
-			mime_part, mp, cancellable, error) == -1) {
+		if (!camel_mime_part_construct_from_parser_sync (
+			mime_part, mp, cancellable, error)) {
 			report_status (driver, CAMEL_FILTER_STATUS_END, 100, _("Failed on message %d"), i);
 			g_object_unref (message);
 			goto fail;
@@ -1672,7 +1672,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 			g_ptr_array_add (uids, (gchar *) p->uid);
 			camel_folder_transfer_messages_to_sync (
 				p->source, uids, p->defaultfolder,
-				NULL, FALSE, cancellable, &p->error);
+				FALSE, NULL, cancellable, &p->error);
 			g_ptr_array_free (uids, TRUE);
 		} else {
 			if (p->message == NULL) {

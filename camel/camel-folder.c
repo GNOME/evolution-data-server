@@ -49,6 +49,8 @@
 #define d(x)
 #define w(x)
 
+typedef struct _AsyncContext AsyncContext;
+
 struct _CamelFolderPrivate {
 	GStaticRecMutex lock;
 	GStaticMutex change_lock;
@@ -62,6 +64,20 @@ struct _CamelFolderPrivate {
 	gchar *name;
 	gchar *full_name;
 	gchar *description;
+};
+
+struct _AsyncContext {
+	/* arguments */
+	CamelMimeMessage *message;  /* also a result */
+	CamelMessageInfo *info;
+	CamelFolder *destination;
+	GPtrArray *message_uids;
+	gchar *message_uid;         /* also a result */
+	gboolean delete_originals;
+	gboolean expunge;
+
+	/* results */
+	GPtrArray *transferred_uids;
 };
 
 struct _CamelFolderChangeInfoPrivate {
@@ -102,6 +118,37 @@ static guint signals[LAST_SIGNAL];
 G_DEFINE_ABSTRACT_TYPE (CamelFolder, camel_folder, CAMEL_TYPE_OBJECT)
 
 static void
+async_context_free (AsyncContext *async_context)
+{
+	if (async_context->message != NULL)
+		g_object_unref (async_context->message);
+
+	/* XXX This is actually an unref.  Good god, no wonder we
+	 *     have so many crashes involving CamelMessageInfos! */
+	if (async_context->info != NULL)
+		camel_message_info_free (async_context->info);
+
+	if (async_context->destination != NULL)
+		g_object_unref (async_context->destination);
+
+	if (async_context->message_uids != NULL) {
+		g_ptr_array_foreach (
+			async_context->message_uids, (GFunc) g_free, NULL);
+		g_ptr_array_free (async_context->message_uids, TRUE);
+	}
+
+	if (async_context->transferred_uids != NULL) {
+		g_ptr_array_foreach (
+			async_context->transferred_uids, (GFunc) g_free, NULL);
+		g_ptr_array_free (async_context->transferred_uids, TRUE);
+	}
+
+	g_free (async_context->message_uid);
+
+	g_slice_free (AsyncContext, async_context);
+}
+
+static void
 filter_filter (CamelSession *session,
                CamelSessionThreadMsg *tmsg)
 {
@@ -121,7 +168,7 @@ filter_filter (CamelSession *session,
 
 	if (m->junk) {
 		/* Translators: The %s is replaced with a folder name where the operation is running. */
-		camel_operation_start (
+		camel_operation_push_message (
 			tmsg->cancellable, ngettext (
 			"Learning new spam message in '%s'",
 			"Learning new spam messages in '%s'",
@@ -140,12 +187,12 @@ filter_filter (CamelSession *session,
 				g_object_unref (msg);
 			}
 		}
-		camel_operation_end (tmsg->cancellable);
+		camel_operation_pop_message (tmsg->cancellable);
 	}
 
 	if (m->notjunk) {
 		/* Translators: The %s is replaced with a folder name where the operation is running. */
-		camel_operation_start (
+		camel_operation_push_message (
 			tmsg->cancellable, ngettext (
 			"Learning new ham message in '%s'",
 			"Learning new ham messages in '%s'",
@@ -163,7 +210,7 @@ filter_filter (CamelSession *session,
 				g_object_unref (msg);
 			}
 		}
-		camel_operation_end (tmsg->cancellable);
+		camel_operation_pop_message (tmsg->cancellable);
 	}
 
 	if (m->junk || m->notjunk)
@@ -171,7 +218,7 @@ filter_filter (CamelSession *session,
 
 	if (m->driver && m->recents) {
 		/* Translators: The %s is replaced with a folder name where the operation is running. */
-		camel_operation_start (
+		camel_operation_push_message (
 			tmsg->cancellable, ngettext (
 			"Filtering new message in '%s'",
 			"Filtering new messages in '%s'",
@@ -218,7 +265,7 @@ filter_filter (CamelSession *session,
 
 		g_free (source_url);
 
-		camel_operation_end (tmsg->cancellable);
+		camel_operation_pop_message (tmsg->cancellable);
 	}
 }
 
@@ -755,8 +802,8 @@ static gboolean
 folder_transfer_messages_to_sync (CamelFolder *source,
                                   GPtrArray *uids,
                                   CamelFolder *dest,
-                                  GPtrArray **transferred_uids,
                                   gboolean delete_originals,
+                                  GPtrArray **transferred_uids,
                                   GCancellable *cancellable,
                                   GError **error)
 {
@@ -770,10 +817,10 @@ folder_transfer_messages_to_sync (CamelFolder *source,
 	}
 
 	if (delete_originals)
-		camel_operation_start (
+		camel_operation_push_message (
 			cancellable, _("Moving messages"));
 	else
-		camel_operation_start (
+		camel_operation_push_message (
 			cancellable, _("Copying messages"));
 
 	if (uids->len > 1) {
@@ -798,12 +845,471 @@ folder_transfer_messages_to_sync (CamelFolder *source,
 			camel_folder_thaw (source);
 	}
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	if (local_error != NULL)
 		g_propagate_error (error, local_error);
 
 	return TRUE;
+}
+
+static void
+folder_append_message_thread (GSimpleAsyncResult *simple,
+                              GObject *object,
+                              GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	camel_folder_append_message_sync (
+		CAMEL_FOLDER (object), async_context->message,
+		async_context->info, &async_context->message_uid,
+		cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+folder_append_message (CamelFolder *folder,
+                       CamelMimeMessage *message,
+                       CamelMessageInfo *info,
+                       gint io_priority,
+                       GCancellable *cancellable,
+                       GAsyncReadyCallback callback,
+                       gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->message = g_object_ref (message);
+	async_context->info = camel_message_info_ref (info);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (folder), callback,
+		user_data, folder_append_message);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, folder_append_message_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+folder_append_message_finish (CamelFolder *folder,
+                              GAsyncResult *result,
+                              gchar **appended_uid,
+                              GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (folder), folder_append_message), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (appended_uid != NULL) {
+		*appended_uid = async_context->message_uid;
+		async_context->message_uid = NULL;
+	}
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+static void
+folder_expunge_thread (GSimpleAsyncResult *simple,
+                       GObject *object,
+                       GCancellable *cancellable)
+{
+	GError *error = NULL;
+
+	camel_folder_expunge_sync (
+		CAMEL_FOLDER (object), cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+folder_expunge (CamelFolder *folder,
+                gint io_priority,
+                GCancellable *cancellable,
+                GAsyncReadyCallback callback,
+                gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (folder), callback, user_data, folder_expunge);
+
+	g_simple_async_result_run_in_thread (
+		simple, folder_expunge_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+folder_expunge_finish (CamelFolder *folder,
+                       GAsyncResult *result,
+                       GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (folder), folder_expunge), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+static void
+folder_get_message_thread (GSimpleAsyncResult *simple,
+                           GObject *object,
+                           GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	async_context->message = camel_folder_get_message_sync (
+		CAMEL_FOLDER (object), async_context->message_uid,
+		cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+folder_get_message (CamelFolder *folder,
+                    const gchar *message_uid,
+                    gint io_priority,
+                    GCancellable *cancellable,
+                    GAsyncReadyCallback callback,
+                    gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->message_uid = g_strdup (message_uid);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (folder), callback, user_data, folder_get_message);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, folder_get_message_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static CamelMimeMessage *
+folder_get_message_finish (CamelFolder *folder,
+                           GAsyncResult *result,
+                           GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (folder), folder_get_message), NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	return g_object_ref (async_context->message);
+}
+
+static void
+folder_refresh_info_thread (GSimpleAsyncResult *simple,
+                            GObject *object,
+                            GCancellable *cancellable)
+{
+	GError *error = NULL;
+
+	camel_folder_refresh_info_sync (
+		CAMEL_FOLDER (object), cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+folder_refresh_info (CamelFolder *folder,
+                     gint io_priority,
+                     GCancellable *cancellable,
+                     GAsyncReadyCallback callback,
+                     gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (folder), callback, user_data, folder_refresh_info);
+
+	g_simple_async_result_run_in_thread (
+		simple, folder_refresh_info_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+folder_refresh_info_finish (CamelFolder *folder,
+                            GAsyncResult *result,
+                            GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (folder), folder_refresh_info), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+static void
+folder_synchronize_thread (GSimpleAsyncResult *simple,
+                           GObject *object,
+                           GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	camel_folder_synchronize_sync (
+		CAMEL_FOLDER (object), async_context->expunge,
+		cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+folder_synchronize (CamelFolder *folder,
+                    gboolean expunge,
+                    gint io_priority,
+                    GCancellable *cancellable,
+                    GAsyncReadyCallback callback,
+                    gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->expunge = expunge;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (folder), callback, user_data, folder_synchronize);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, folder_synchronize_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+folder_synchronize_finish (CamelFolder *folder,
+                           GAsyncResult *result,
+                           GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (folder), folder_synchronize), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+static void
+folder_synchronize_message_thread (GSimpleAsyncResult *simple,
+                                   GObject *object,
+                                   GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	camel_folder_synchronize_message_sync (
+		CAMEL_FOLDER (object), async_context->message_uid,
+		cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+folder_synchronize_message (CamelFolder *folder,
+                            const gchar *message_uid,
+                            gint io_priority,
+                            GCancellable *cancellable,
+                            GAsyncReadyCallback callback,
+                            gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->message_uid = g_strdup (message_uid);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (folder), callback,
+		user_data, folder_synchronize_message);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, folder_synchronize_message_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+folder_synchronize_message_finish (CamelFolder *folder,
+                                   GAsyncResult *result,
+                                   GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (folder),
+		folder_synchronize_message), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+static void
+folder_transfer_messages_to_thread (GSimpleAsyncResult *simple,
+                                    GObject *object,
+                                    GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	camel_folder_transfer_messages_to_sync (
+		CAMEL_FOLDER (object), async_context->message_uids,
+		async_context->destination, async_context->delete_originals,
+		&async_context->transferred_uids, cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+folder_transfer_messages_to (CamelFolder *source,
+                             GPtrArray *message_uids,
+                             CamelFolder *destination,
+                             gboolean delete_originals,
+                             gint io_priority,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	guint ii;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->message_uids = g_ptr_array_new ();
+	async_context->destination = g_object_ref (destination);
+	async_context->delete_originals = delete_originals;
+
+	for (ii = 0; ii < message_uids->len; ii++)
+		g_ptr_array_add (
+			async_context->message_uids,
+			g_strdup (message_uids->pdata[ii]));
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (source), callback,
+		user_data, folder_transfer_messages_to);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, folder_transfer_messages_to_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+folder_transfer_messages_to_finish (CamelFolder *source,
+                                    GAsyncResult *result,
+                                    GPtrArray **transferred_uids,
+                                    GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (source),
+		folder_transfer_messages_to), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (transferred_uids != NULL) {
+		*transferred_uids = async_context->transferred_uids;
+		async_context->transferred_uids = NULL;
+	}
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
 }
 
 /* Signal callback that stops emission when folder is frozen. */
@@ -935,6 +1441,21 @@ camel_folder_class_init (CamelFolderClass *class)
 	class->refresh_info_sync = folder_refresh_info_sync;
 	class->transfer_messages_to_sync = folder_transfer_messages_to_sync;
 	class->changed = folder_changed;
+
+	class->append_message = folder_append_message;
+	class->append_message_finish = folder_append_message_finish;
+	class->expunge = folder_expunge;
+	class->expunge_finish = folder_expunge_finish;
+	class->get_message = folder_get_message;
+	class->get_message_finish = folder_get_message_finish;
+	class->refresh_info = folder_refresh_info;
+	class->refresh_info_finish = folder_refresh_info_finish;
+	class->synchronize = folder_synchronize;
+	class->synchronize_finish = folder_synchronize_finish;
+	class->synchronize_message = folder_synchronize_message;
+	class->synchronize_message_finish = folder_synchronize_message_finish;
+	class->transfer_messages_to = folder_transfer_messages_to;
+	class->transfer_messages_to_finish = folder_transfer_messages_to_finish;
 
 	/**
 	 * CamelFolder:description
@@ -1112,78 +1633,6 @@ camel_folder_get_filename (CamelFolder *folder,
 }
 
 /**
- * camel_folder_synchronize_sync:
- * @folder: a #CamelFolder
- * @expunge: whether or not to expunge deleted messages
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Sync changes made to a folder to its backing store, possibly
- * expunging deleted messages as well.
- *
- * Returns: %TRUE on success, %FALSE on failure
- **/
-gboolean
-camel_folder_synchronize_sync (CamelFolder *folder,
-                               gboolean expunge,
-                               GCancellable *cancellable,
-                               GError **error)
-{
-	CamelFolderClass *class;
-	gboolean success = TRUE;
-
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_val_if_fail (class->synchronize_sync != NULL, FALSE);
-
-	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
-
-	if (!(folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED)) {
-		success = class->synchronize_sync (
-			folder, expunge, cancellable, error);
-		CAMEL_CHECK_GERROR (folder, synchronize_sync, success, error);
-	}
-
-	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
-
-	return success;
-}
-
-/**
- * camel_folder_refresh_info_sync:
- * @folder: a #CamelFolder
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Updates a folder's summary to be in sync with its backing store.
- *
- * Returns: %TRUE on success, %FALSE on failure
- **/
-gboolean
-camel_folder_refresh_info_sync (CamelFolder *folder,
-                                GCancellable *cancellable,
-                                GError **error)
-{
-	CamelFolderClass *class;
-	gboolean success;
-
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_val_if_fail (class->refresh_info_sync != NULL, FALSE);
-
-	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
-
-	success = class->refresh_info_sync (folder, cancellable, error);
-	CAMEL_CHECK_GERROR (folder, refresh_info_sync, success, error);
-
-	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
-
-	return success;
-}
-
-/**
  * camel_folder_get_name:
  * @folder: a #CamelFolder
  *
@@ -1316,41 +1765,6 @@ camel_folder_get_parent_store (CamelFolder *folder)
 }
 
 /**
- * camel_folder_expunge_sync:
- * @folder: a #CamelFolder
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Delete messages which have been marked as "DELETED"
- *
- * Returns: %TRUE on success, %FALSE on failure
- **/
-gboolean
-camel_folder_expunge_sync (CamelFolder *folder,
-                           GCancellable *cancellable,
-                           GError **error)
-{
-	CamelFolderClass *class;
-	gboolean success = TRUE;
-
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_val_if_fail (class->expunge_sync != NULL, FALSE);
-
-	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
-
-	if (!(folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED)) {
-		success = class->expunge_sync (folder, cancellable, error);
-		CAMEL_CHECK_GERROR (folder, expunge_sync, success, error);
-	}
-
-	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
-
-	return success;
-}
-
-/**
  * camel_folder_get_message_count:
  * @folder: a #CamelFolder
  *
@@ -1401,50 +1815,6 @@ camel_folder_get_deleted_message_count (CamelFolder *folder)
 	g_return_val_if_fail (folder->summary != NULL, -1);
 
 	return folder->summary->deleted_count;
-}
-
-/**
- * camel_folder_append_message_sync:
- * @folder: a #CamelFolder
- * @message: a #CamelMimeMessage object
- * @info: a #CamelMessageInfo with additional flags/etc to set on
- * new message, or %NULL
- * @appended_uid: if non-%NULL, the UID of the appended message will
- * be returned here, if it is known.
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Append @message to @folder. Only the flag and tag data from @info
- * are used. If @info is %NULL, no flags or tags will be set.
- *
- * Returns: %TRUE on success, %FALSE on failure
- **/
-gboolean
-camel_folder_append_message_sync (CamelFolder *folder,
-                                  CamelMimeMessage *message,
-                                  const CamelMessageInfo *info,
-                                  gchar **appended_uid,
-                                  GCancellable *cancellable,
-                                  GError **error)
-{
-	CamelFolderClass *class;
-	gboolean success;
-
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
-	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), FALSE);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_val_if_fail (class->append_message_sync != NULL, FALSE);
-
-	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
-
-	success = class->append_message_sync (
-		folder, message, info, appended_uid, cancellable, error);
-	CAMEL_CHECK_GERROR (folder, append_message_sync, success, error);
-
-	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
-
-	return success;
 }
 
 /**
@@ -1748,110 +2118,6 @@ camel_folder_has_summary_capability (CamelFolder *folder)
 }
 
 /* UIDs stuff */
-
-/**
- * camel_folder_get_message_sync:
- * @folder: a #CamelFolder
- * @uid: the UID
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Get a message from its UID in the folder.
- *
- * Returns: a #CamelMimeMessage corresponding to @uid
- **/
-CamelMimeMessage *
-camel_folder_get_message_sync (CamelFolder *folder,
-                               const gchar *uid,
-                               GCancellable *cancellable,
-                               GError **error)
-{
-	CamelFolderClass *class;
-	CamelMimeMessage *ret;
-
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
-	g_return_val_if_fail (uid != NULL, NULL);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_val_if_fail (class->get_message_sync != NULL, NULL);
-
-	camel_operation_start (
-		cancellable, _("Retrieving message '%s'"), uid);
-
-	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
-
-	ret = class->get_message_sync (folder, uid, cancellable, error);
-	CAMEL_CHECK_GERROR (folder, get_message_sync, ret != NULL, error);
-
-	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
-
-	camel_operation_end (cancellable);
-
-	if (ret && camel_debug_start (":folder")) {
-		printf ("CamelFolder:get_message ('%s', '%s') =\n",
-			camel_folder_get_full_name (folder), uid);
-		camel_mime_message_dump (ret, FALSE);
-		camel_debug_end ();
-	}
-
-	return ret;
-}
-
-/**
- * camel_folder_synchronize_message_sync:
- * @folder: a #CamelFolder
- * @uid: the UID
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Ensure that a message identified by UID has been synced in the folder (so
- * that camel_folder_get_message on it later will work in offline mode).
- *
- * Returns: %TRUE on success, %FALSE on failure
- *
- * Since: 2.26
- **/
-gboolean
-camel_folder_synchronize_message_sync (CamelFolder *folder,
-                                       const gchar *uid,
-                                       GCancellable *cancellable,
-                                       GError **error)
-{
-	CamelFolderClass *class;
-	gboolean success = FALSE;
-
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
-	g_return_val_if_fail (uid != NULL, FALSE);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_val_if_fail (class->get_message_sync != NULL, FALSE);
-
-	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
-
-	/* Use the sync_message method if the class implements it. */
-	if (class->synchronize_message_sync != NULL) {
-		success = class->synchronize_message_sync (
-			folder, uid, cancellable, error);
-		CAMEL_CHECK_GERROR (
-			folder, synchronize_message_sync, success, error);
-	} else {
-		CamelMimeMessage *message;
-
-		message = class->get_message_sync (
-			folder, uid, cancellable, error);
-		CAMEL_CHECK_GERROR (
-			folder, get_message_sync, message != NULL, error);
-
-		if (message != NULL) {
-			g_object_unref (message);
-			success = TRUE;
-		}
-	}
-
-	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
-
-	return success;
-}
 
 /**
  * camel_folder_get_uids:
@@ -2168,62 +2434,6 @@ camel_folder_search_free (CamelFolder *folder,
 	/* NOTE: upto the callee to CAMEL_FOLDER_REC_LOCK */
 
 	class->search_free (folder, result);
-}
-
-/**
- * camel_folder_transfer_messages_to_sync:
- * @source: the source #CamelFolder object
- * @uids: message UIDs in @source
- * @dest: the destination #CamelFolder object
- * @transferred_uids: if non-%NULL, the UIDs of the resulting messages
- * in @dest will be stored here, if known.
- * @delete_originals: whether or not to delete the original messages
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * This copies or moves messages from one folder to another. If the
- * @source and @dest folders have the same parent_store, this may be
- * more efficient than using #camel_folder_append_message.
- *
- * Returns: %TRUE on success, %FALSE on failure
- **/
-gboolean
-camel_folder_transfer_messages_to_sync (CamelFolder *source,
-                                        GPtrArray *uids,
-                                        CamelFolder *dest,
-                                        GPtrArray **transferred_uids,
-                                        gboolean delete_originals,
-                                        GCancellable *cancellable,
-                                        GError **error)
-{
-	CamelFolderClass *class;
-	gboolean success;
-
-	g_return_val_if_fail (CAMEL_IS_FOLDER (source), FALSE);
-	g_return_val_if_fail (CAMEL_IS_FOLDER (dest), FALSE);
-	g_return_val_if_fail (uids != NULL, FALSE);
-
-	if (source == dest || uids->len == 0) {
-		/* source and destination folders are the same, or no work to do, do nothing. */
-		return TRUE;
-	}
-
-	if (source->priv->parent_store == dest->priv->parent_store) {
-		/* If either folder is a vtrash, we need to use the
-		 * vtrash transfer method. */
-		if (CAMEL_IS_VTRASH_FOLDER (dest))
-			class = CAMEL_FOLDER_GET_CLASS (dest);
-		else
-			class = CAMEL_FOLDER_GET_CLASS (source);
-		success = class->transfer_messages_to_sync (
-			source, uids, dest, transferred_uids,
-			delete_originals, cancellable, error);
-	} else
-		success = folder_transfer_messages_to_sync (
-			source, uids, dest, transferred_uids,
-			delete_originals, cancellable, error);
-
-	return success;
 }
 
 /**
@@ -2548,6 +2758,830 @@ camel_folder_free_deep (CamelFolder *folder,
 	for (i = 0; i < array->len; i++)
 		g_free (array->pdata[i]);
 	g_ptr_array_free (array, TRUE);
+}
+
+/**
+ * camel_folder_lock:
+ * @folder: a #CamelFolder
+ * @lock: lock type to lock
+ *
+ * Locks #folder's #lock. Unlock it with camel_folder_unlock().
+ *
+ * Since: 2.32
+ **/
+void
+camel_folder_lock (CamelFolder *folder,
+                   CamelFolderLock lock)
+{
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	switch (lock) {
+		case CAMEL_FOLDER_CHANGE_LOCK:
+			g_static_mutex_lock (&folder->priv->change_lock);
+			break;
+		case CAMEL_FOLDER_REC_LOCK:
+			if (folder->priv->skip_folder_lock == FALSE)
+				g_static_rec_mutex_lock (&folder->priv->lock);
+			break;
+		default:
+			g_return_if_reached ();
+	}
+}
+
+/**
+ * camel_folder_unlock:
+ * @folder: a #CamelFolder
+ * @lock: lock type to unlock
+ *
+ * Unlocks #folder's #lock, previously locked with camel_folder_lock().
+ *
+ * Since: 2.32
+ **/
+void
+camel_folder_unlock (CamelFolder *folder,
+                     CamelFolderLock lock)
+{
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	switch (lock) {
+		case CAMEL_FOLDER_CHANGE_LOCK:
+			g_static_mutex_unlock (&folder->priv->change_lock);
+			break;
+		case CAMEL_FOLDER_REC_LOCK:
+			if (folder->priv->skip_folder_lock == FALSE)
+				g_static_rec_mutex_unlock (&folder->priv->lock);
+			break;
+		default:
+			g_return_if_reached ();
+	}
+}
+
+/**
+ * camel_folder_append_message_sync:
+ * @folder: a #CamelFolder
+ * @message: a #CamelMimeMessage
+ * @info: a #CamelMessageInfo with additional flags/etc to set on the
+ *        new message, or %NULL
+ * @appended_uid: if non-%NULL, the UID of the appended message will
+ *                be returned here, if it is known
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Appends @message to @folder.  Only the flag and tag data from @info
+ * are used.  If @info is %NULL, no flags or tags will be set.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_folder_append_message_sync (CamelFolder *folder,
+                                  CamelMimeMessage *message,
+                                  CamelMessageInfo *info,
+                                  gchar **appended_uid,
+                                  GCancellable *cancellable,
+                                  GError **error)
+{
+	CamelFolderClass *class;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), FALSE);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class->append_message_sync != NULL, FALSE);
+
+	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	/* Check for cancellation after locking. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		return FALSE;
+	}
+
+	success = class->append_message_sync (
+		folder, message, info, appended_uid, cancellable, error);
+	CAMEL_CHECK_GERROR (folder, append_message_sync, success, error);
+
+	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	return success;
+}
+
+/**
+ * camel_folder_append_message:
+ * @folder a #CamelFolder
+ * @message: a #CamelMimeMessage
+ * @info: a #CamelMessageInfo with additional flags/etc to set on the
+ *        new message, or %NULL
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Appends @message to @folder asynchronously.  Only the flag and tag data
+ * from @info are used.  If @info is %NULL, no flags or tags will be set.
+ *
+ * When the operation is finished, @callback will be called.  You can
+ * then call camel_folder_append_message_finish() to get the result of
+ * the operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_folder_append_message (CamelFolder *folder,
+                             CamelMimeMessage *message,
+                             CamelMessageInfo *info,
+                             gint io_priority,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
+{
+	CamelFolderClass *class;
+
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+	g_return_if_fail (CAMEL_IS_MIME_MESSAGE (message));
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class->append_message != NULL);
+
+	class->append_message (
+		folder, message, info, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_folder_append_message_finish:
+ * @folder: a #CamelFolder
+ * @result: a #GAsyncResult
+ * @appended_uid: if non-%NULL, the UID of the appended message will
+ *                be returned here, if it is known
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_folder_append_message_finish().
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_folder_append_message_finish (CamelFolder *folder,
+                                    GAsyncResult *result,
+                                    gchar **appended_uid,
+                                    GError **error)
+{
+	CamelFolderClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class->append_message_finish != NULL, FALSE);
+
+	return class->append_message_finish (
+		folder, result, appended_uid, error);
+}
+
+/**
+ * camel_folder_expunge_sync:
+ * @folder: a #CamelFolder
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Deletes messages which have been marked as "DELETED".
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_folder_expunge_sync (CamelFolder *folder,
+                           GCancellable *cancellable,
+                           GError **error)
+{
+	CamelFolderClass *class;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class->expunge_sync != NULL, FALSE);
+
+	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	/* Check for cancellation after locking. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		return FALSE;
+	}
+
+	if (!(folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED)) {
+		success = class->expunge_sync (folder, cancellable, error);
+		CAMEL_CHECK_GERROR (folder, expunge_sync, success, error);
+	}
+
+	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	return success;
+}
+
+/**
+ * camel_folder_expunge:
+ * @folder: a #CamelFolder
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously deletes messages which have been marked as "DELETED".
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_folder_expunge_finish() to get the result of the operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_folder_expunge (CamelFolder *folder,
+                      gint io_priority,
+                      GCancellable *cancellable,
+                      GAsyncReadyCallback callback,
+                      gpointer user_data)
+{
+	CamelFolderClass *class;
+
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class->expunge != NULL);
+
+	class->expunge (folder, io_priority, cancellable, callback, user_data);
+}
+
+/**
+ * camel_folder_expunge_finish:
+ * @folder: a #CamelFolder
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_folder_expunge().
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_folder_expunge_finish (CamelFolder *folder,
+                             GAsyncResult *result,
+                             GError **error)
+{
+	CamelFolderClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class->expunge_finish != NULL, FALSE);
+
+	return class->expunge_finish (folder, result, error);
+}
+
+/**
+ * camel_folder_get_message_sync:
+ * @folder: a #CamelFolder
+ * @message_uid: the message UID
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Gets the message corresponding to @message_uid from @folder.
+ *
+ * Returns: a #CamelMimeMessage corresponding to the requested UID
+ *
+ * Since: 2.34
+ **/
+CamelMimeMessage *
+camel_folder_get_message_sync (CamelFolder *folder,
+                               const gchar *message_uid,
+                               GCancellable *cancellable,
+                               GError **error)
+{
+	CamelFolderClass *class;
+	CamelMimeMessage *message;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
+	g_return_val_if_fail (message_uid != NULL, NULL);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class->get_message_sync != NULL, NULL);
+
+	camel_operation_push_message (
+		cancellable, _("Retrieving message '%s'"), message_uid);
+
+	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	/* Check for cancellation after locking. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		return NULL;
+	}
+
+	message = class->get_message_sync (
+		folder, message_uid, cancellable, error);
+	CAMEL_CHECK_GERROR (folder, get_message_sync, message != NULL, error);
+
+	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	camel_operation_pop_message (cancellable);
+
+	if (message != NULL && camel_debug_start (":folder")) {
+		printf ("CamelFolder:get_message ('%s', '%s') =\n",
+			camel_folder_get_full_name (folder), message_uid);
+		camel_mime_message_dump (message, FALSE);
+		camel_debug_end ();
+	}
+
+	return message;
+}
+
+/**
+ * camel_folder_get_message:
+ * @folder: a #CamelFolder
+ * @message_uid: the message UID
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously gets the message corresponding to @message_uid from @folder.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_folder_get_message_finish() to get the result of the operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_folder_get_message (CamelFolder *folder,
+                          const gchar *message_uid,
+                          gint io_priority,
+                          GCancellable *cancellable,
+                          GAsyncReadyCallback callback,
+                          gpointer user_data)
+{
+	CamelFolderClass *class;
+
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+	g_return_if_fail (message_uid != NULL);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class->get_message != NULL);
+
+	class->get_message (
+		folder, message_uid, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_folder_get_message_finish:
+ * @folder: a #CamelFolder
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError or %NULL
+ *
+ * Finishes the operation started with camel_folder_get_message().
+ *
+ * Returns: a #CamelMimeMessage corresponding to the requested UID
+ *
+ * Since: 2.34
+ **/
+CamelMimeMessage *
+camel_folder_get_message_finish (CamelFolder *folder,
+                                 GAsyncResult *result,
+                                 GError **error)
+{
+	CamelFolderClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class->get_message_finish != NULL, NULL);
+
+	return class->get_message_finish (folder, result, error);
+}
+
+/**
+ * camel_folder_refresh_info_sync:
+ * @folder: a #CamelFolder
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Synchronizes a folder's summary with its backing store.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_folder_refresh_info_sync (CamelFolder *folder,
+                                GCancellable *cancellable,
+                                GError **error)
+{
+	CamelFolderClass *class;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class->refresh_info_sync != NULL, FALSE);
+
+	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	/* Check for cancellation after locking. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		return FALSE;
+	}
+
+	success = class->refresh_info_sync (folder, cancellable, error);
+	CAMEL_CHECK_GERROR (folder, refresh_info_sync, success, error);
+
+	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	return success;
+}
+
+/**
+ * camel_folder_synchronize_sync:
+ * @folder: a #CamelFolder
+ * @expunge: whether to expunge after synchronizing
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Synchronizes any changes that have been made to @folder to its
+ * backing store, optionally expunging deleted messages as well.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_folder_synchronize_sync (CamelFolder *folder,
+                               gboolean expunge,
+                               GCancellable *cancellable,
+                               GError **error)
+{
+	CamelFolderClass *class;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class->synchronize_sync != NULL, FALSE);
+
+	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	/* Check for cancellation after locking. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		return FALSE;
+	}
+
+	if (!(folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED)) {
+		success = class->synchronize_sync (
+			folder, expunge, cancellable, error);
+		CAMEL_CHECK_GERROR (folder, synchronize_sync, success, error);
+	}
+
+	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	return success;
+}
+
+/**
+ * camel_folder_synchronize:
+ * @folder: a #CamelFolder
+ * @expunge: whether to expunge after synchronizing
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Synchronizes any changes that have been made to @folder to its backing
+ * store asynchronously, optionally expunging deleted messages as well.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_folder_synchronize_finish() to get the result of the operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_folder_synchronize (CamelFolder *folder,
+                          gboolean expunge,
+                          gint io_priority,
+                          GCancellable *cancellable,
+                          GAsyncReadyCallback callback,
+                          gpointer user_data)
+{
+	CamelFolderClass *class;
+
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class->synchronize != NULL);
+
+	class->synchronize (
+		folder, expunge, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_folder_synchronize_finish:
+ * @folder: a #CamelFolder
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_folder_synchronize().
+ *
+ * Returns: %TRUE on sucess, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_folder_synchronize_finish (CamelFolder *folder,
+                                 GAsyncResult *result,
+                                 GError **error)
+{
+	CamelFolderClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class->synchronize_finish != NULL, FALSE);
+
+	return class->synchronize_finish (folder, result, error);
+}
+
+/**
+ * camel_folder_synchronize_message_sync:
+ * @folder: a #CamelFolder
+ * @message_uid: a message UID
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Ensure that a message identified by @message_uid has been synchronized in
+ * @folder so that calling camel_folder_get_message() on it later will work
+ * in offline mode.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_folder_synchronize_message_sync (CamelFolder *folder,
+                                       const gchar *message_uid,
+                                       GCancellable *cancellable,
+                                       GError **error)
+{
+	CamelFolderClass *class;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (message_uid != NULL, FALSE);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class->get_message_sync != NULL, FALSE);
+
+	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	/* Check for cancellation after locking. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		return FALSE;
+	}
+
+	/* Use the sync_message method if the class implements it. */
+	if (class->synchronize_message_sync != NULL) {
+		success = class->synchronize_message_sync (
+			folder, message_uid, cancellable, error);
+		CAMEL_CHECK_GERROR (
+			folder, synchronize_message_sync, success, error);
+	} else {
+		CamelMimeMessage *message;
+
+		message = class->get_message_sync (
+			folder, message_uid, cancellable, error);
+		CAMEL_CHECK_GERROR (
+			folder, get_message_sync, message != NULL, error);
+
+		if (message != NULL) {
+			g_object_unref (message);
+			success = TRUE;
+		}
+	}
+
+	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	return success;
+}
+
+/**
+ * camel_folder_synchronize_message;
+ * @folder: a #CamelFolder
+ * @message_uid: a message UID
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously ensure that a message identified by @message_uid has been
+ * synchronized in @folder so that calling camel_folder_get_message() on it
+ * later will work in offline mode.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_folder_synchronize_message_finish() to get the result of the
+ * operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_folder_synchronize_message (CamelFolder *folder,
+                                  const gchar *message_uid,
+                                  gint io_priority,
+                                  GCancellable *cancellable,
+                                  GAsyncReadyCallback callback,
+                                  gpointer user_data)
+{
+	CamelFolderClass *class;
+
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+	g_return_if_fail (message_uid != NULL);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class->synchronize_message != NULL);
+
+	class->synchronize_message (
+		folder, message_uid, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_folder_synchronize_message_finish:
+ * @folder: a #CamelFolder
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_folder_synchronize_message().
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_folder_synchronize_message_finish (CamelFolder *folder,
+                                         GAsyncResult *result,
+                                         GError **error)
+{
+	CamelFolderClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class->synchronize_message_finish != NULL, FALSE);
+
+	return class->synchronize_message_finish (folder, result, error);
+}
+
+/**
+ * camel_folder_transfer_messages_to_sync:
+ * @source: the source #CamelFolder
+ * @message_uids: message UIDs in @source
+ * @destination: the destination #CamelFolder
+ * @delete_originals: whether or not to delete the original messages
+ * @transferred_uids: if non-%NULL, the UIDs of the resulting messages
+ *                    in @destination will be stored here, if known.
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Copies or moves messages from one folder to another.  If the
+ * @source and @destination folders have the same parent_store, this
+ * may be more efficient than using camel_folder_append_message_sync().
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_folder_transfer_messages_to_sync (CamelFolder *source,
+                                        GPtrArray *message_uids,
+                                        CamelFolder *destination,
+                                        gboolean delete_originals,
+                                        GPtrArray **transferred_uids,
+                                        GCancellable *cancellable,
+                                        GError **error)
+{
+	CamelFolderClass *class;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (source), FALSE);
+	g_return_val_if_fail (CAMEL_IS_FOLDER (destination), FALSE);
+	g_return_val_if_fail (message_uids != NULL, FALSE);
+
+	if (source == destination || message_uids->len == 0)
+		return TRUE;
+
+	if (source->priv->parent_store == destination->priv->parent_store) {
+		/* If either folder is a vtrash, we need to use the
+		 * vtrash transfer method. */
+		if (CAMEL_IS_VTRASH_FOLDER (destination))
+			class = CAMEL_FOLDER_GET_CLASS (destination);
+		else
+			class = CAMEL_FOLDER_GET_CLASS (source);
+		success = class->transfer_messages_to_sync (
+			source, message_uids, destination, delete_originals,
+			transferred_uids, cancellable, error);
+	} else
+		success = folder_transfer_messages_to_sync (
+			source, message_uids, destination, delete_originals,
+			transferred_uids, cancellable, error);
+
+	return success;
+}
+
+/**
+ * camel_folder_transfer_messages_to:
+ * @source: the source #CamelFolder
+ * @message_uids: message UIDs in @source
+ * @destination: the destination #CamelFolder
+ * @delete_originals: whether or not to delete the original messages
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously copies or moves messages from one folder to another.
+ * If the @source or @destination folders have the same parent store,
+ * this may be more efficient than using camel_folder_append_message().
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_folder_transfer_messages_to_finish() to get the result of the
+ * operation.
+ *
+ * Since: 2.34
+ **/
+void
+camel_folder_transfer_messages_to (CamelFolder *source,
+                                   GPtrArray *message_uids,
+                                   CamelFolder *destination,
+                                   gboolean delete_originals,
+                                   gint io_priority,
+                                   GCancellable *cancellable,
+                                   GAsyncReadyCallback callback,
+                                   gpointer user_data)
+{
+	CamelFolderClass *class;
+
+	g_return_if_fail (CAMEL_IS_FOLDER (source));
+	g_return_if_fail (CAMEL_IS_FOLDER (destination));
+	g_return_if_fail (message_uids != NULL);
+
+	class = CAMEL_FOLDER_GET_CLASS (source);
+	g_return_if_fail (class->transfer_messages_to != NULL);
+
+	class->transfer_messages_to (
+		source, message_uids, destination, delete_originals,
+		io_priority, cancellable, callback, user_data);
+}
+
+/**
+ * camel_folder_transfer_messages_to_finish:
+ * @source: a #CamelFolder
+ * @result: a #GAsyncResult
+ * @transferred_uids: if non-%NULL, the UIDs of the resulting messages
+ *                    in @destination will be stored here, if known.
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_folder_transfer_messages_to().
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 2.34
+ **/
+gboolean
+camel_folder_transfer_messages_to_finish (CamelFolder *source,
+                                          GAsyncResult *result,
+                                          GPtrArray **transferred_uids,
+                                          GError **error)
+{
+	CamelFolderClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (source), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = CAMEL_FOLDER_GET_CLASS (source);
+	g_return_val_if_fail (class->transfer_messages_to_finish != NULL, FALSE);
+
+	return class->transfer_messages_to_finish (
+		source, result, transferred_uids, error);
 }
 
 /**
@@ -2990,60 +4024,4 @@ camel_folder_change_info_free (CamelFolderChangeInfo *info)
 	g_ptr_array_free (info->uid_changed, TRUE);
 	g_ptr_array_free (info->uid_recent, TRUE);
 	g_slice_free (CamelFolderChangeInfo, info);
-}
-
-/**
- * camel_folder_lock:
- * @folder: a #CamelFolder
- * @lock: lock type to lock
- *
- * Locks #folder's #lock. Unlock it with camel_folder_unlock().
- *
- * Since: 2.32
- **/
-void
-camel_folder_lock (CamelFolder *folder,
-                   CamelFolderLock lock)
-{
-	g_return_if_fail (CAMEL_IS_FOLDER (folder));
-
-	switch (lock) {
-		case CAMEL_FOLDER_CHANGE_LOCK:
-			g_static_mutex_lock (&folder->priv->change_lock);
-			break;
-		case CAMEL_FOLDER_REC_LOCK:
-			if (folder->priv->skip_folder_lock == FALSE)
-				g_static_rec_mutex_lock (&folder->priv->lock);
-			break;
-		default:
-			g_return_if_reached ();
-	}
-}
-
-/**
- * camel_folder_unlock:
- * @folder: a #CamelFolder
- * @lock: lock type to unlock
- *
- * Unlocks #folder's #lock, previously locked with camel_folder_lock().
- *
- * Since: 2.32
- **/
-void
-camel_folder_unlock (CamelFolder *folder,
-                     CamelFolderLock lock)
-{
-	g_return_if_fail (CAMEL_IS_FOLDER (folder));
-
-	switch (lock) {
-		case CAMEL_FOLDER_CHANGE_LOCK:
-			g_static_mutex_unlock (&folder->priv->change_lock);
-			break;
-		case CAMEL_FOLDER_REC_LOCK:
-			if (folder->priv->skip_folder_lock == FALSE)
-				g_static_rec_mutex_unlock (&folder->priv->lock);
-			break;
-		default:
-			g_return_if_reached ();
-	}
 }

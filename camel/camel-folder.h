@@ -143,7 +143,7 @@ struct _CamelFolder {
 struct _CamelFolderClass {
 	CamelObjectClass parent_class;
 
-	/* Methods */
+	/* Non-Blocking Methods */
 	gint		(*get_message_count)	(CamelFolder *folder);
 	guint32		(*get_permanent_flags)	(CamelFolder *folder);
 	guint32		(*get_message_flags)	(CamelFolder *folder,
@@ -212,9 +212,10 @@ struct _CamelFolderClass {
 						 const gchar *uid,
 						 GError **error);
 
+	/* Synchronous I/O Methods */
 	gboolean	(*append_message_sync)	(CamelFolder *folder,
 						 CamelMimeMessage *message,
-						 const CamelMessageInfo *info,
+						 CamelMessageInfo *info,
 						 gchar **appended_uid,
 						 GCancellable *cancellable,
 						 GError **error);
@@ -223,7 +224,7 @@ struct _CamelFolderClass {
 						 GError **error);
 	CamelMimeMessage *
 			(*get_message_sync)	(CamelFolder *folder,
-						 const gchar *uid,
+						 const gchar *message_uid,
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(*refresh_info_sync)	(CamelFolder *folder,
@@ -235,16 +236,88 @@ struct _CamelFolderClass {
 						 GError **error);
 	gboolean	(*synchronize_message_sync)
 						(CamelFolder *folder,
-						 const gchar *uid,
+						 const gchar *message_uid,
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(*transfer_messages_to_sync)
 						(CamelFolder *source,
-						 GPtrArray *uids,
+						 GPtrArray *message_uids,
 						 CamelFolder *destination,
-						 GPtrArray **transferred_uids,
 						 gboolean delete_originals,
+						 GPtrArray **transferred_uids,
 						 GCancellable *cancellable,
+						 GError **error);
+
+	/* Asynchronous I/O Methods (all have defaults) */
+	void		(*append_message)	(CamelFolder *folder,
+						 CamelMimeMessage *message,
+						 CamelMessageInfo *info,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*append_message_finish)
+						(CamelFolder *folder,
+						 GAsyncResult *result,
+						 gchar **appended_uid,
+						 GError **error);
+	void		(*expunge)		(CamelFolder *folder,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*expunge_finish)	(CamelFolder *folder,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*get_message)		(CamelFolder *folder,
+						 const gchar *message_uid,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	CamelMimeMessage *
+			(*get_message_finish)	(CamelFolder *folder,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*refresh_info)		(CamelFolder *folder,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*refresh_info_finish)	(CamelFolder *folder,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*synchronize)		(CamelFolder *folder,
+						 gboolean expunge,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*synchronize_finish)	(CamelFolder *folder,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*synchronize_message)	(CamelFolder *folder,
+						 const gchar *message_uid,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*synchronize_message_finish)
+						(CamelFolder *folder,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*transfer_messages_to)	(CamelFolder *source,
+						 GPtrArray *message_uids,
+						 CamelFolder *destination,
+						 gboolean delete_originals,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*transfer_messages_to_finish)
+						(CamelFolder *source,
+						 GAsyncResult *result,
+						 GPtrArray **transferred_uids,
 						 GError **error);
 
 	/* Signals */
@@ -378,40 +451,118 @@ void		camel_folder_free_deep		(CamelFolder *folder,
 gchar *		camel_folder_get_filename	(CamelFolder *folder,
 						 const gchar *uid,
 						 GError **error);
+void		camel_folder_lock		(CamelFolder *folder,
+						 CamelFolderLock lock);
+void		camel_folder_unlock		(CamelFolder *folder,
+						 CamelFolderLock lock);
+
 gboolean	camel_folder_append_message_sync
 						(CamelFolder *folder,
 						 CamelMimeMessage *message,
-						 const CamelMessageInfo *info,
+						 CamelMessageInfo *info,
 						 gchar **appended_uid,
 						 GCancellable *cancellable,
+						 GError **error);
+void		camel_folder_append_message	(CamelFolder *folder,
+						 CamelMimeMessage *message,
+						 CamelMessageInfo *info,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_folder_append_message_finish
+						(CamelFolder *folder,
+						 GAsyncResult *result,
+						 gchar **appended_uid,
 						 GError **error);
 gboolean	camel_folder_expunge_sync	(CamelFolder *folder,
 						 GCancellable *cancellable,
 						 GError **error);
+void		camel_folder_expunge		(CamelFolder *folder,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_folder_expunge_finish	(CamelFolder *folder,
+						 GAsyncResult *result,
+						 GError **error);
 CamelMimeMessage *
 		camel_folder_get_message_sync	(CamelFolder *folder,
-						 const gchar *uid,
+						 const gchar *message_uid,
 						 GCancellable *cancellable,
+						 GError **error);
+void		camel_folder_get_message	(CamelFolder *folder,
+						 const gchar *message_uid,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+CamelMimeMessage *
+		camel_folder_get_message_finish	(CamelFolder *folder,
+						 GAsyncResult *result,
 						 GError **error);
 gboolean	camel_folder_refresh_info_sync	(CamelFolder *folder,
 						 GCancellable *cancellable,
+						 GError **error);
+void		camel_folder_refresh_info	(CamelFolder *folder,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_folder_refresh_info_finish
+						(CamelFolder *folder,
+						 GAsyncResult *result,
 						 GError **error);
 gboolean	camel_folder_synchronize_sync	(CamelFolder *folder,
 						 gboolean expunge,
 						 GCancellable *cancellable,
 						 GError **error);
+void		camel_folder_synchronize	(CamelFolder *folder,
+						 gboolean expunge,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_folder_synchronize_finish	(CamelFolder *folder,
+						 GAsyncResult *result,
+						 GError **error);
 gboolean	camel_folder_synchronize_message_sync
 						(CamelFolder *folder,
-						 const gchar *uid,
+						 const gchar *message_uid,
 						 GCancellable *cancellable,
+						 GError **error);
+void		camel_folder_synchronize_message
+						(CamelFolder *folder,
+						 const gchar *message_uid,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_folder_synchronize_message_finish
+						(CamelFolder *folder,
+						 GAsyncResult *result,
 						 GError **error);
 gboolean	camel_folder_transfer_messages_to_sync
 						(CamelFolder *source,
-						 GPtrArray *uids,
-						 CamelFolder *dest,
-						 GPtrArray **transferred_uids,
+						 GPtrArray *message_uids,
+						 CamelFolder *destination,
 						 gboolean delete_originals,
+						 GPtrArray **transferred_uids,
 						 GCancellable *cancellable,
+						 GError **error);
+void		camel_folder_transfer_messages_to
+						(CamelFolder *source,
+						 GPtrArray *message_uids,
+						 CamelFolder *destination,
+						 gboolean delete_originals,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_folder_transfer_messages_to_finish
+						(CamelFolder *source,
+						 GAsyncResult *result,
+						 GPtrArray **transferred_uids,
 						 GError **error);
 
 /* update functions for change info */
@@ -451,11 +602,6 @@ void		camel_folder_change_info_change_uid
 void		camel_folder_change_info_recent_uid
 						(CamelFolderChangeInfo *info,
 						 const gchar *uid);
-
-void		camel_folder_lock		(CamelFolder *folder,
-						 CamelFolderLock lock);
-void		camel_folder_unlock		(CamelFolder *folder,
-						 CamelFolderLock lock);
 
 G_END_DECLS
 

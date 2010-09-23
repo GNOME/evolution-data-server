@@ -128,7 +128,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 
 	d(printf("performing full summary/sync\n"));
 
-	camel_operation_start (cancellable, _("Storing folder"));
+	camel_operation_push_message (cancellable, _("Storing folder"));
 
 	fd = open (((CamelLocalSummary *)cls)->folder_path, O_RDWR|O_LARGEFILE);
 	if (fd == -1) {
@@ -138,7 +138,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 			_("Could not open file: %s: %s"),
 			((CamelLocalSummary *)cls)->folder_path,
 			g_strerror (errno));
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 		return -1;
 	}
 
@@ -286,7 +286,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 	if (tmpname[0] != '\0')
 		unlink (tmpname);
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	return 0;
  error:
@@ -299,7 +299,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 	if (tmpname[0] != '\0')
 		unlink (tmpname);
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	return -1;
 }

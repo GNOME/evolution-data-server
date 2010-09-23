@@ -76,25 +76,51 @@ struct _CamelTransport {
 struct _CamelTransportClass {
 	CamelServiceClass parent_class;
 
+	/* Synchronous I/O Methods */
 	gboolean	(*send_to_sync)		(CamelTransport *transport,
 						 CamelMimeMessage *message,
 						 CamelAddress *from,
 						 CamelAddress *recipients,
 						 GCancellable *cancellable,
 						 GError **error);
+
+	/* Asynchronous I/O Methods (all have defaults) */
+	void		(*send_to)		(CamelTransport *transport,
+						 CamelMimeMessage *message,
+						 CamelAddress *from,
+						 CamelAddress *recipients,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*send_to_finish)	(CamelTransport *transport,
+						 GAsyncResult *result,
+						 GError **error);
 };
 
 GType		camel_transport_get_type	(void);
+void		camel_transport_lock		(CamelTransport *transport,
+						 CamelTransportLock lock);
+void		camel_transport_unlock		(CamelTransport *transport,
+						 CamelTransportLock lock);
+
 gboolean	camel_transport_send_to_sync	(CamelTransport *transport,
 						 CamelMimeMessage *message,
 						 CamelAddress *from,
 						 CamelAddress *recipients,
 						 GCancellable *cancellable,
 						 GError **error);
-void		camel_transport_lock		(CamelTransport *transport,
-						 CamelTransportLock lock);
-void		camel_transport_unlock		(CamelTransport *transport,
-						 CamelTransportLock lock);
+void		camel_transport_send_to		(CamelTransport *transport,
+						 CamelMimeMessage *message,
+						 CamelAddress *from,
+						 CamelAddress *recipients,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_transport_send_to_finish	(CamelTransport *transport,
+						 GAsyncResult *result,
+						 GError **error);
 
 G_END_DECLS
 

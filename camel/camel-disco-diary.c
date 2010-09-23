@@ -300,7 +300,8 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 	g_return_if_fail (size != 0);
 	rewind (diary->file);
 
-	camel_operation_start (cancellable, _("Resynchronizing with server"));
+	camel_operation_push_message (
+		cancellable, _("Resynchronizing with server"));
 
 	while (local_error == NULL) {
 		camel_operation_progress (
@@ -390,8 +391,8 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 			}
 
 			camel_folder_transfer_messages_to_sync (
-				source, uids, destination, &ret_uids,
-				delete_originals, cancellable, &local_error);
+				source, uids, destination, delete_originals,
+				&ret_uids, cancellable, &local_error);
 
 			if (ret_uids) {
 				for (i = 0; i < uids->len; i++) {
@@ -410,7 +411,7 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 	}
 
  lose:
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	/* Close folders */
 	g_hash_table_foreach (

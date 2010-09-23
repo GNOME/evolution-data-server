@@ -370,7 +370,7 @@ imap_entry_play (CamelOfflineJournal *journal,
 
 		if (!camel_imap_transfer_resyncing (
 			journal->folder, imap_entry->uids, destination,
-			&ret_uids, imap_entry->move, cancellable, error))
+			imap_entry->move, &ret_uids, cancellable, error))
 			return -1;
 
 		if (ret_uids) {

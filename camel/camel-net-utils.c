@@ -691,7 +691,7 @@ camel_getaddrinfo (const gchar *name,
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return NULL;
 
-	camel_operation_start_transient (
+	camel_operation_push_message (
 		cancellable, _("Resolving: %s"), name);
 
 	/* force ipv4 addresses only */
@@ -729,7 +729,7 @@ camel_getaddrinfo (const gchar *name,
 
 	cs_freeinfo (msg);
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	return res;
 }
@@ -841,7 +841,7 @@ camel_getnameinfo (const struct sockaddr *sa,
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return -1;
 
-	camel_operation_start_transient (
+	camel_operation_push_message (
 		cancellable, _("Resolving address"));
 
 	msg = g_malloc0 (sizeof (*msg));
@@ -879,7 +879,7 @@ camel_getnameinfo (const struct sockaddr *sa,
 
 	cs_freeinfo (msg);
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	return result;
 }

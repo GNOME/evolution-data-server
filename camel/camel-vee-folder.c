@@ -1210,7 +1210,7 @@ vee_folder_thaw (CamelFolder *folder)
 static gboolean
 vee_folder_append_message_sync (CamelFolder *folder,
                                 CamelMimeMessage *message,
-                                const CamelMessageInfo *info,
+                                CamelMessageInfo *info,
                                 gchar **appended_uid,
                                 GCancellable *cancellable,
                                 GError **error)
@@ -1372,8 +1372,8 @@ static gboolean
 vee_folder_transfer_messages_to_sync (CamelFolder *folder,
                                       GPtrArray *uids,
                                       CamelFolder *dest,
-                                      GPtrArray **transferred_uids,
                                       gboolean delete_originals,
+                                      GPtrArray **transferred_uids,
                                       GCancellable *cancellable,
                                       GError **error)
 {

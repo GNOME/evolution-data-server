@@ -77,7 +77,7 @@ struct _CamelGroupwiseFolderPrivate {
 extern gint camel_application_is_exiting;
 
 /*prototypes*/
-static gboolean groupwise_transfer_messages_to_sync (CamelFolder *source, GPtrArray *uids, CamelFolder *destination, GPtrArray **transferred_uids, gboolean delete_originals, GCancellable *cancellable, GError **error);
+static gboolean groupwise_transfer_messages_to_sync (CamelFolder *source, GPtrArray *uids, CamelFolder *destination, gboolean delete_originals, GPtrArray **transferred_uids, GCancellable *cancellable, GError **error);
 void convert_to_calendar (EGwItem *item, gchar **str, gint *len);
 static void convert_to_task (EGwItem *item, gchar **str, gint *len);
 static void convert_to_note (EGwItem *item, gchar **str, gint *len);
@@ -548,7 +548,7 @@ move_to_mailbox (CamelFolder *folder,
 		CAMEL_GW_MESSAGE_JUNK, 0);
 	if (dest)
 		groupwise_transfer_messages_to_sync (
-			folder, uids, dest, NULL, TRUE, cancellable, error);
+			folder, uids, dest, TRUE, NULL, cancellable, error);
 	else
 		g_warning ("No Mailbox folder found");
 
@@ -577,7 +577,7 @@ move_to_junk (CamelFolder *folder,
 
 	if (dest)
 		groupwise_transfer_messages_to_sync (
-			folder, uids, dest, NULL, TRUE, cancellable, error);
+			folder, uids, dest, TRUE, NULL, cancellable, error);
 	else {
 		fi = create_junk_folder (parent_store);
 		dest = camel_store_get_folder_sync (
@@ -586,7 +586,7 @@ move_to_junk (CamelFolder *folder,
 			g_warning ("Could not get JunkFolder:Message not moved");
 		else
 			groupwise_transfer_messages_to_sync (
-				folder, uids, dest, NULL, TRUE, cancellable, error);
+				folder, uids, dest, TRUE, NULL, cancellable, error);
 	}
 	update_junk_list (parent_store, info, ADD_JUNK_ENTRY);
 }
@@ -1030,7 +1030,7 @@ update_update (CamelSession *session,
 		goto end1;
 	}
 
-	camel_operation_start (
+	camel_operation_push_message (
 		msg->cancellable,
 		_("Checking for deleted messages %s"),
 		camel_folder_get_name (m->folder));
@@ -1103,12 +1103,12 @@ update_update (CamelSession *session,
 
 	g_print ("\nNumber of items in the folder: %d \n", g_list_length(items_full_list));
 	gw_update_all_items (m->folder, items_full_list, NULL, NULL);
-	camel_operation_end (msg->cancellable);
+	camel_operation_pop_message (msg->cancellable);
 
 	return;
  end1:
 	camel_service_unlock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-	camel_operation_end (msg->cancellable);
+	camel_operation_pop_message (msg->cancellable);
 	if (items_full_list) {
 		g_list_foreach (items_full_list, (GFunc)g_free, NULL);
 		g_list_free (items_full_list);
@@ -1515,7 +1515,7 @@ gw_update_cache (CamelFolder *folder,
 		is_junk = TRUE;
 	}
 
-	camel_operation_start (
+	camel_operation_push_message (
 		cancellable,
 		_("Fetching summary information for new messages in %s"),
 		camel_folder_get_name (folder));
@@ -1714,7 +1714,7 @@ gw_update_cache (CamelFolder *folder,
 		g_object_unref (item);
 	}
 
-	camel_operation_end (cancellable);
+	camel_operation_pop_message (cancellable);
 
 	g_free (container_id);
 	g_string_free (str_to, TRUE);
@@ -2060,7 +2060,7 @@ groupwise_folder_item_to_msg ( CamelFolder *folder,
 	msg = camel_mime_message_new ();
 	if (has_mime_822 && body) {
 		temp_stream = camel_stream_mem_new_with_buffer (body, body_len);
-		if (camel_data_wrapper_construct_from_stream_sync ((CamelDataWrapper *) msg, temp_stream, NULL, error) == -1) {
+		if (!camel_data_wrapper_construct_from_stream_sync ((CamelDataWrapper *) msg, temp_stream, NULL, error)) {
 			g_object_unref (msg);
 			g_object_unref (temp_stream);
 			msg = NULL;
@@ -2398,7 +2398,7 @@ groupwise_folder_constructed (GObject *object)
 static gboolean
 groupwise_append_message_sync (CamelFolder *folder,
                                CamelMimeMessage *message,
-                               const CamelMessageInfo *info,
+                               CamelMessageInfo *info,
                                gchar **appended_uid,
                                GCancellable *cancellable,
                                GError **error)
@@ -2653,7 +2653,7 @@ groupwise_folder_get_message_sync (CamelFolder *folder,
 		camel_stream_reset (stream, NULL);
 		camel_stream_write_to_stream (cache_stream, stream, cancellable, NULL);
 		camel_stream_reset (stream, NULL);
-		if (camel_data_wrapper_construct_from_stream_sync ((CamelDataWrapper *) msg, stream, cancellable, error) == -1) {
+		if (!camel_data_wrapper_construct_from_stream_sync ((CamelDataWrapper *) msg, stream, cancellable, error)) {
 			if (errno == EINTR) {
 				g_object_unref (msg);
 				g_object_unref (cache_stream);
@@ -2810,8 +2810,8 @@ static gboolean
 groupwise_transfer_messages_to_sync (CamelFolder *source,
                                      GPtrArray *uids,
                                      CamelFolder *destination,
-                                     GPtrArray **transferred_uids,
                                      gboolean delete_originals,
+                                     GPtrArray **transferred_uids,
                                      GCancellable *cancellable,
                                      GError **error)
 {

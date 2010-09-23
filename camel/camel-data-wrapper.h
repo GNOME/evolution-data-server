@@ -83,6 +83,7 @@ struct _CamelDataWrapper {
 struct _CamelDataWrapperClass {
 	CamelObjectClass parent_class;
 
+	/* Non-Blocking Methods */
 	void		(*set_mime_type)	(CamelDataWrapper *data_wrapper,
 						 const gchar *mime_type);
 	gchar *		(*get_mime_type)	(CamelDataWrapper *data_wrapper);
@@ -92,6 +93,7 @@ struct _CamelDataWrapperClass {
 						 CamelContentType *mime_type_field);
 	gboolean	(*is_offline)		(CamelDataWrapper *data_wrapper);
 
+	/* Synchronous I/O Methods */
 	gssize		(*write_to_stream_sync)	(CamelDataWrapper *data_wrapper,
 						 CamelStream *stream,
 						 GCancellable *cancellable,
@@ -100,10 +102,43 @@ struct _CamelDataWrapperClass {
 						 CamelStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
-	gint		(*construct_from_stream_sync)
+	gboolean	(*construct_from_stream_sync)
 						(CamelDataWrapper *data_wrapper,
 						 CamelStream *stream,
 						 GCancellable *cancellable,
+						 GError **error);
+
+	/* Asyncrhonous I/O Methods (all have defaults) */
+	void		(*write_to_stream)	(CamelDataWrapper *data_wrapper,
+						 CamelStream *stream,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gssize		(*write_to_stream_finish)
+						(CamelDataWrapper *data_wrapper,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*decode_to_stream)	(CamelDataWrapper *data_wrapper,
+						 CamelStream *stream,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gssize		(*decode_to_stream_finish)
+						(CamelDataWrapper *data_wrapper,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*construct_from_stream)
+						(CamelDataWrapper *data_wrapper,
+						 CamelStream *stream,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*construct_from_stream_finish)
+						(CamelDataWrapper *data_wrapper,
+						 GAsyncResult *result,
 						 GError **error);
 };
 
@@ -120,25 +155,59 @@ void		camel_data_wrapper_set_mime_type_field
 						(CamelDataWrapper *data_wrapper,
 						 CamelContentType *mime_type);
 gboolean	camel_data_wrapper_is_offline	(CamelDataWrapper *data_wrapper);
+void		camel_data_wrapper_lock		(CamelDataWrapper *data_wrapper,
+						 CamelDataWrapperLock lock);
+void		camel_data_wrapper_unlock	(CamelDataWrapper *data_wrapper,
+						 CamelDataWrapperLock lock);
+
 gssize		camel_data_wrapper_write_to_stream_sync
 						(CamelDataWrapper *data_wrapper,
 						 CamelStream *stream,
 						 GCancellable *cancellable,
+						 GError **error);
+void		camel_data_wrapper_write_to_stream
+						(CamelDataWrapper *data_wrapper,
+						 CamelStream *stream,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gssize		camel_data_wrapper_write_to_stream_finish
+						(CamelDataWrapper *data_wrapper,
+						 GAsyncResult *result,
 						 GError **error);
 gssize		camel_data_wrapper_decode_to_stream_sync
 						(CamelDataWrapper *data_wrapper,
 						 CamelStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
-gint		camel_data_wrapper_construct_from_stream_sync
+void		camel_data_wrapper_decode_to_stream
+						(CamelDataWrapper *data_wrapper,
+						 CamelStream *stream,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gssize		camel_data_wrapper_decode_to_stream_finish
+						(CamelDataWrapper *data_wrapper,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	camel_data_wrapper_construct_from_stream_sync
 						(CamelDataWrapper *data_wrapper,
 						 CamelStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
-void		camel_data_wrapper_lock		(CamelDataWrapper *data_wrapper,
-						 CamelDataWrapperLock lock);
-void		camel_data_wrapper_unlock	(CamelDataWrapper *data_wrapper,
-						 CamelDataWrapperLock lock);
+void		camel_data_wrapper_construct_from_stream
+						(CamelDataWrapper *data_wrapper,
+						 CamelStream *stream,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_data_wrapper_construct_from_stream_finish
+						(CamelDataWrapper *data_wrapper,
+						 GAsyncResult *result,
+						 GError **error);
 
 G_END_DECLS
 

@@ -4522,7 +4522,33 @@ streams
 @error: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_cipher_decrypt_sync ##### -->
+<para>
+
+</para>
+
+@context: 
+@ipart: 
+@opart: 
+@cancellable: 
+@error: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_cipher_encrypt ##### -->
+<para>
+
+</para>
+
+@context: 
+@userid: 
+@recipients: 
+@ipart: 
+@opart: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_cipher_encrypt_sync ##### -->
 <para>
 
 </para>
@@ -4548,7 +4574,48 @@ streams
 @error: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_cipher_export_keys_sync ##### -->
+<para>
+
+</para>
+
+@context: 
+@keys: 
+@ostream: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_cipher_hash_to_id ##### -->
+<para>
+
+</para>
+
+@context: 
+@hash: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_cipher_id_to_hash ##### -->
+<para>
+
+</para>
+
+@context: 
+@id: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_cipher_import_keys ##### -->
+<para>
+
+</para>
+
+@context: 
+@istream: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_cipher_import_keys_sync ##### -->
 <para>
 
 </para>
@@ -4573,7 +4640,32 @@ streams
 @error: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_cipher_sign_sync ##### -->
+<para>
+
+</para>
+
+@context: 
+@userid: 
+@hash: 
+@ipart: 
+@opart: 
+@cancellable: 
+@error: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_cipher_verify ##### -->
+<para>
+
+</para>
+
+@context: 
+@ipart: 
+@cancellable: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_cipher_verify_sync ##### -->
 <para>
 
 </para>
@@ -4603,39 +4695,6 @@ streams
 @old: 
 @new: 
 @ex: 
-@Returns: 
-
-<!-- ##### FUNCTION camel_data_wrapper_construct_from_stream ##### -->
-<para>
-
-</para>
-
-@data_wrapper: 
-@stream: 
-@cancellable: 
-@error: 
-@Returns: 
-
-<!-- ##### FUNCTION camel_data_wrapper_decode_to_stream ##### -->
-<para>
-
-</para>
-
-@data_wrapper: 
-@stream: 
-@cancellable: 
-@error: 
-@Returns: 
-
-<!-- ##### FUNCTION camel_data_wrapper_write_to_stream ##### -->
-<para>
-
-</para>
-
-@data_wrapper: 
-@stream: 
-@cancellable: 
-@error: 
 @Returns: 
 
 <!-- ##### FUNCTION camel_digest_folder_new ##### -->
@@ -4786,19 +4845,6 @@ streams
 @n: 
 @Returns: 
 
-<!-- ##### FUNCTION camel_folder_append_message ##### -->
-<para>
-
-</para>
-
-@folder: 
-@message: 
-@info: 
-@appended_uid: 
-@cancellable: 
-@error: 
-@Returns: 
-
 <!-- ##### FUNCTION camel_folder_construct ##### -->
 <para>
 
@@ -4808,37 +4854,6 @@ streams
 @parent_store: 
 @full_name: 
 @name: 
-
-<!-- ##### FUNCTION camel_folder_expunge ##### -->
-<para>
-
-</para>
-
-@folder: 
-@cancellable: 
-@error: 
-@Returns: 
-
-<!-- ##### FUNCTION camel_folder_get_message ##### -->
-<para>
-
-</para>
-
-@folder: 
-@uid: 
-@cancellable: 
-@error: 
-@Returns: 
-
-<!-- ##### FUNCTION camel_folder_refresh_info ##### -->
-<para>
-
-</para>
-
-@folder: 
-@cancellable: 
-@error: 
-@Returns: 
 
 <!-- ##### FUNCTION camel_folder_summary_array_free ##### -->
 <para>
@@ -4908,20 +4923,6 @@ streams
 
 @folder: 
 @uid: 
-@cancellable: 
-@error: 
-@Returns: 
-
-<!-- ##### FUNCTION camel_folder_transfer_messages_to ##### -->
-<para>
-
-</para>
-
-@source: 
-@uids: 
-@dest: 
-@transferred_uids: 
-@delete_originals: 
 @cancellable: 
 @error: 
 @Returns: 
@@ -6808,17 +6809,6 @@ streams
 @stream: 
 @Returns: 
 
-<!-- ##### FUNCTION camel_mime_part_construct_from_parser ##### -->
-<para>
-
-</para>
-
-@mime_part: 
-@parser: 
-@cancellable: 
-@error: 
-@Returns: 
-
 <!-- ##### FUNCTION camel_mime_part_get_content_MD5 ##### -->
 <para>
 
@@ -7480,17 +7470,6 @@ streams
 
 @Param1: 
 
-<!-- ##### FUNCTION camel_offline_folder_downsync ##### -->
-<para>
-
-</para>
-
-@offline: 
-@expression: 
-@cancellable: 
-@error: 
-@Returns: 
-
 <!-- ##### FUNCTION camel_offline_store_get_network_state ##### -->
 <para>
 
@@ -7535,6 +7514,13 @@ streams
 
 @cc: 
 
+<!-- ##### FUNCTION camel_operation_end ##### -->
+<para>
+
+</para>
+
+@cancellable: 
+
 <!-- ##### FUNCTION camel_operation_mute ##### -->
 <para>
 
@@ -7572,6 +7558,24 @@ streams
 
 @void: 
 @Returns: 
+
+<!-- ##### FUNCTION camel_operation_start ##### -->
+<para>
+
+</para>
+
+@cancellable: 
+@what: 
+@Varargs: 
+
+<!-- ##### FUNCTION camel_operation_start_transient ##### -->
+<para>
+
+</para>
+
+@cancellable: 
+@what: 
+@Varargs: 
 
 <!-- ##### ENUM camel_operation_status_t ##### -->
 <para>
@@ -7800,28 +7804,6 @@ streams
 </para>
 
 @sasl: 
-@Returns: 
-
-<!-- ##### FUNCTION camel_sasl_challenge ##### -->
-<para>
-
-</para>
-
-@sasl: 
-@token: 
-@cancellable: 
-@error: 
-@Returns: 
-
-<!-- ##### FUNCTION camel_sasl_challenge_base64 ##### -->
-<para>
-
-</para>
-
-@sasl: 
-@token: 
-@cancellable: 
-@error: 
 @Returns: 
 
 <!-- ##### FUNCTION camel_search_build_match_regex ##### -->
@@ -8096,53 +8078,6 @@ streams
 @xevline: 
 @Returns: 
 
-<!-- ##### FUNCTION camel_store_create_folder ##### -->
-<para>
-
-</para>
-
-@store: 
-@parent_name: 
-@folder_name: 
-@cancellable: 
-@error: 
-@Returns: 
-
-<!-- ##### FUNCTION camel_store_delete_folder ##### -->
-<para>
-
-</para>
-
-@store: 
-@folder_name: 
-@cancellable: 
-@error: 
-@Returns: 
-
-<!-- ##### FUNCTION camel_store_get_folder ##### -->
-<para>
-
-</para>
-
-@store: 
-@folder_name: 
-@flags: 
-@cancellable: 
-@error: 
-@Returns: 
-
-<!-- ##### FUNCTION camel_store_get_folder_info ##### -->
-<para>
-
-</para>
-
-@store: 
-@top: 
-@flags: 
-@cancellable: 
-@error: 
-@Returns: 
-
 <!-- ##### FUNCTION camel_store_get_inbox ##### -->
 <para>
 
@@ -8173,39 +8108,6 @@ streams
 @error: 
 @Returns: 
 
-<!-- ##### FUNCTION camel_store_noop ##### -->
-<para>
-
-</para>
-
-@store: 
-@cancellable: 
-@error: 
-@Returns: 
-
-<!-- ##### FUNCTION camel_store_rename_folder ##### -->
-<para>
-
-</para>
-
-@store: 
-@old_namein: 
-@new_name: 
-@cancellable: 
-@error: 
-@Returns: 
-
-<!-- ##### FUNCTION camel_store_subscribe_folder ##### -->
-<para>
-
-</para>
-
-@store: 
-@folder_name: 
-@cancellable: 
-@error: 
-@Returns: 
-
 <!-- ##### FUNCTION camel_store_sync ##### -->
 <para>
 
@@ -8213,17 +8115,6 @@ streams
 
 @store: 
 @expunge: 
-@cancellable: 
-@error: 
-@Returns: 
-
-<!-- ##### FUNCTION camel_store_unsubscribe_folder ##### -->
-<para>
-
-</para>
-
-@store: 
-@folder_name: 
 @cancellable: 
 @error: 
 @Returns: 
@@ -8355,19 +8246,6 @@ streams
 
 </para>
 
-@Returns: 
-
-<!-- ##### FUNCTION camel_transport_send_to ##### -->
-<para>
-
-</para>
-
-@transport: 
-@message: 
-@from: 
-@recipients: 
-@cancellable: 
-@error: 
 @Returns: 
 
 <!-- ##### MACRO camel_type_get_global_classfuncs ##### -->

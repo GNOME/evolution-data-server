@@ -238,6 +238,30 @@ CamelMimePart
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_mime_part_construct_from_parser ##### -->
+<para>
+
+</para>
+
+@mime_part: 
+@parser: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_mime_part_construct_from_parser_finish ##### -->
+<para>
+
+</para>
+
+@mime_part: 
+@result: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_mime_part_set_content ##### -->
 <para>
 
@@ -249,15 +273,6 @@ CamelMimePart
 @type: 
 
 
-<!-- ##### FUNCTION camel_mime_part_get_content_size ##### -->
-<para>
-
-</para>
-
-@mime_part: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_mime_part_construct_content_from_parser ##### -->
 <para>
 
@@ -267,16 +282,6 @@ CamelMimePart
 @mp: 
 @cancellable: 
 @error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_mime_message_build_preview ##### -->
-<para>
-
-</para>
-
-@mime_part: 
-@info: 
 @Returns: 
 
 

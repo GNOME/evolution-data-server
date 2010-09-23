@@ -561,6 +561,31 @@ CamelStore
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_store_get_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@flags: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_store_get_folder_finish ##### -->
+<para>
+
+</para>
+
+@store: 
+@result: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_store_get_folder_info_sync ##### -->
 <para>
 
@@ -570,6 +595,31 @@ CamelStore
 @top: 
 @flags: 
 @cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_get_folder_info ##### -->
+<para>
+
+</para>
+
+@store: 
+@top: 
+@flags: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_store_get_folder_info_finish ##### -->
+<para>
+
+</para>
+
+@store: 
+@result: 
 @error: 
 @Returns: 
 
@@ -585,6 +635,29 @@ CamelStore
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_store_get_inbox_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_store_get_inbox_folder_finish ##### -->
+<para>
+
+</para>
+
+@store: 
+@result: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_store_get_junk_folder_sync ##### -->
 <para>
 
@@ -596,6 +669,29 @@ CamelStore
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_store_get_junk_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_store_get_junk_folder_finish ##### -->
+<para>
+
+</para>
+
+@store: 
+@result: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_store_get_trash_folder_sync ##### -->
 <para>
 
@@ -603,6 +699,29 @@ CamelStore
 
 @store: 
 @cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_get_trash_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_store_get_trash_folder_finish ##### -->
+<para>
+
+</para>
+
+@store: 
+@result: 
 @error: 
 @Returns: 
 
@@ -620,6 +739,31 @@ CamelStore
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_store_create_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@parent_name: 
+@folder_name: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_store_create_folder_finish ##### -->
+<para>
+
+</para>
+
+@store: 
+@result: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_store_delete_folder_sync ##### -->
 <para>
 
@@ -632,15 +776,64 @@ CamelStore
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_store_delete_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_store_delete_folder_finish ##### -->
+<para>
+
+</para>
+
+@store: 
+@result: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_store_rename_folder_sync ##### -->
 <para>
 
 </para>
 
 @store: 
-@old_namein: 
+@old_name: 
 @new_name: 
 @cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_rename_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@old_name: 
+@new_name: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_store_rename_folder_finish ##### -->
+<para>
+
+</para>
+
+@store: 
+@result: 
 @error: 
 @Returns: 
 
@@ -657,6 +850,30 @@ CamelStore
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_store_subscribe_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_store_subscribe_folder_finish ##### -->
+<para>
+
+</para>
+
+@store: 
+@result: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_store_unsubscribe_folder_sync ##### -->
 <para>
 
@@ -665,6 +882,30 @@ CamelStore
 @store: 
 @folder_name: 
 @cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_unsubscribe_folder ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_store_unsubscribe_folder_finish ##### -->
+<para>
+
+</para>
+
+@store: 
+@result: 
 @error: 
 @Returns: 
 
@@ -681,6 +922,30 @@ CamelStore
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_store_synchronize ##### -->
+<para>
+
+</para>
+
+@store: 
+@expunge: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_store_synchronize_finish ##### -->
+<para>
+
+</para>
+
+@store: 
+@result: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_store_noop_sync ##### -->
 <para>
 
@@ -688,6 +953,29 @@ CamelStore
 
 @store: 
 @cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_noop ##### -->
+<para>
+
+</para>
+
+@store: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_store_noop_finish ##### -->
+<para>
+
+</para>
+
+@store: 
+@result: 
 @error: 
 @Returns: 
 

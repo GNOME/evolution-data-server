@@ -114,7 +114,7 @@ maildir_folder_get_filename (CamelFolder *folder,
 static gboolean
 maildir_folder_append_message_sync (CamelFolder *folder,
                                     CamelMimeMessage *message,
-                                    const CamelMessageInfo *info,
+                                    CamelMessageInfo *info,
                                     gchar **appended_uid,
                                     GCancellable *cancellable,
                                     GError **error)
@@ -253,9 +253,9 @@ maildir_folder_get_message_sync (CamelFolder *folder,
 	}
 
 	message = camel_mime_message_new ();
-	if (camel_data_wrapper_construct_from_stream_sync (
+	if (!camel_data_wrapper_construct_from_stream_sync (
 		(CamelDataWrapper *)message,
-		message_stream, cancellable, error) == -1) {
+		message_stream, cancellable, error)) {
 		g_prefix_error (
 			error, _("Cannot get message %s from folder %s: "),
 			uid, lf->folder_path);
@@ -281,8 +281,8 @@ static gboolean
 maildir_folder_transfer_messages_to_sync (CamelFolder *source,
                                           GPtrArray *uids,
                                           CamelFolder *dest,
-                                          GPtrArray **transferred_uids,
                                           gboolean delete_originals,
+                                          GPtrArray **transferred_uids,
                                           GCancellable *cancellable,
                                           GError **error)
 {
@@ -293,7 +293,8 @@ maildir_folder_transfer_messages_to_sync (CamelFolder *source,
 		CamelLocalFolder *lf = (CamelLocalFolder *) source;
 		CamelLocalFolder *df = (CamelLocalFolder *) dest;
 
-		camel_operation_start (cancellable, _("Moving messages"));
+		camel_operation_push_message (
+			cancellable, _("Moving messages"));
 
 		camel_folder_freeze (dest);
 		camel_folder_freeze (source);
@@ -346,7 +347,7 @@ maildir_folder_transfer_messages_to_sync (CamelFolder *source,
 		camel_folder_thaw (source);
 		camel_folder_thaw (dest);
 
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 	} else
 		fallback = TRUE;
 
@@ -356,8 +357,8 @@ maildir_folder_transfer_messages_to_sync (CamelFolder *source,
 		/* Chain up to parent's transfer_messages_to() method. */
 		folder_class = CAMEL_FOLDER_CLASS (camel_maildir_folder_parent_class);
 		return folder_class->transfer_messages_to_sync (
-			source, uids, dest, transferred_uids,
-			delete_originals, cancellable, error);
+			source, uids, dest, delete_originals,
+			transferred_uids, cancellable, error);
 	}
 
 	return TRUE;

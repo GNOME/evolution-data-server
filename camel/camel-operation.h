@@ -84,15 +84,12 @@ struct PRFileDesc *
  * a GCancellable pointer and just return silently if the pointer is
  * NULL or the pointed to object actually is a plain GCancellable. */
 
-void		camel_operation_start		(GCancellable *cancellable,
-						 const gchar *what,
+void		camel_operation_push_message	(GCancellable *cancellable,
+						 const gchar *format,
 						 ...) G_GNUC_PRINTF (2, 3);
-void		camel_operation_start_transient	(GCancellable *cancellable,
-						 const gchar *what,
-						 ...) G_GNUC_PRINTF (2, 3);
+void		camel_operation_pop_message	(GCancellable *cancellable);
 void		camel_operation_progress	(GCancellable *cancellable,
-						 gint pc);
-void		camel_operation_end		(GCancellable *cancellable);
+						 gint percent);
 
 G_END_DECLS
 

@@ -667,7 +667,7 @@ groupwise_store_get_folder_sync (CamelStore *store,
 			return NULL;
 		}
 
-		camel_operation_start (
+		camel_operation_push_message (
 			cancellable,
 			_("Fetching summary information for new messages in %s"),
 			camel_folder_get_name (folder));
@@ -712,7 +712,7 @@ groupwise_store_get_folder_sync (CamelStore *store,
 
 		e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
 
-		camel_operation_end (cancellable);
+		camel_operation_pop_message (cancellable);
 	}
 	if (done && all_ok) {
 		if (summary->time_string)
@@ -798,7 +798,7 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store,
 					return FALSE;
 			}
 
-			camel_operation_start (
+			camel_operation_push_message (
 				cancellable,
 				_("Fetching summary information for new messages in %s"),
 				camel_folder_get_name (folder));
@@ -815,7 +815,7 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store,
 								error, CAMEL_SERVICE_ERROR,
 								CAMEL_SERVICE_ERROR_INVALID,
 								_("Authentication failed"));
-							camel_operation_end (cancellable);
+							camel_operation_pop_message (cancellable);
 							g_free (container_id);
 							return FALSE;
 					}
@@ -849,7 +849,7 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store,
 
 			e_gw_connection_destroy_cursor (priv->cnc, container_id, cursor);
 
-			camel_operation_end (cancellable);
+			camel_operation_pop_message (cancellable);
 	}
 
 	if (done) {

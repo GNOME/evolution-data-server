@@ -220,7 +220,7 @@ struct _CamelStoreClass {
 	GHashFunc hash_folder_name;
 	GCompareFunc compare_folder_name;
 
-	/* Methods */
+	/* Non-Blocking Methods */
 	gboolean	(*can_refresh_folder)	(CamelStore *store,
 						 CamelFolderInfo *info,
 						 GError **error);
@@ -229,6 +229,7 @@ struct _CamelStoreClass {
 	void		(*free_folder_info)	(CamelStore *store,
 						 CamelFolderInfo *fi);
 
+	/* Synchronous I/O Methods */
 	CamelFolder *	(*get_folder_sync)	(CamelStore *store,
 						 const gchar *folder_name,
 						 guint32 flags,
@@ -282,6 +283,124 @@ struct _CamelStoreClass {
 						 GError **error);
 	gboolean	(*noop_sync)		(CamelStore *store,
 						 GCancellable *cancellable,
+						 GError **error);
+
+	/* Asyncrhonous I/O Methods (all have defaults) */
+	void		(*get_folder)		(CamelStore *store,
+						 const gchar *folder_name,
+						 guint32 flags,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	CamelFolder *	(*get_folder_finish)	(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*get_folder_info)	(CamelStore *store,
+						 const gchar *top,
+						 guint32 flags,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	CamelFolderInfo *
+			(*get_folder_info_finish)
+						(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*get_inbox_folder)	(CamelStore *store,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	CamelFolder *	(*get_inbox_folder_finish)
+						(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*get_junk_folder)	(CamelStore *store,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	CamelFolder *	(*get_junk_folder_finish)
+						(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*get_trash_folder)	(CamelStore *store,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	CamelFolder *	(*get_trash_folder_finish)
+						(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*create_folder)	(CamelStore *store,
+						 const gchar *parent_name,
+						 const gchar *folder_name,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	CamelFolderInfo *
+			(*create_folder_finish)	(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*delete_folder)	(CamelStore *store,
+						 const gchar *folder_name,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*delete_folder_finish)	(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*rename_folder)	(CamelStore *store,
+						 const gchar *old_name,
+						 const gchar *new_name,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*rename_folder_finish)	(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*subscribe_folder)	(CamelStore *store,
+						 const gchar *folder_name,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*subscribe_folder_finish)
+						(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*unsubscribe_folder)	(CamelStore *store,
+						 const gchar *folder_name,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*unsubscribe_folder_finish)
+						(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*synchronize)		(CamelStore *store,
+						 gboolean expunge,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*synchronize_finish)	(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*noop)			(CamelStore *store,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*noop_finish)		(CamelStore *store,
+						 GAsyncResult *result,
 						 GError **error);
 
 	/* Signals */
@@ -352,6 +471,16 @@ CamelFolder *	camel_store_get_folder_sync	(CamelStore *store,
 						 guint32 flags,
 						 GCancellable *cancellable,
 						 GError **error);
+void		camel_store_get_folder		(CamelStore *store,
+						 const gchar *folder_name,
+						 guint32 flags,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+CamelFolder *	camel_store_get_folder_finish	(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
 CamelFolderInfo *
 		camel_store_get_folder_info_sync
 						(CamelStore *store,
@@ -359,17 +488,56 @@ CamelFolderInfo *
 						 guint32 flags,
 						 GCancellable *cancellable,
 						 GError **error);
+void		camel_store_get_folder_info	(CamelStore *store,
+						 const gchar *top,
+						 guint32 flags,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+CamelFolderInfo *
+		camel_store_get_folder_info_finish
+						(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
 CamelFolder *	camel_store_get_inbox_folder_sync
 						(CamelStore *store,
 						 GCancellable *cancellable,
+						 GError **error);
+void		camel_store_get_inbox_folder	(CamelStore *store,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+CamelFolder *	camel_store_get_inbox_folder_finish
+						(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
+CamelFolder *	camel_store_get_junk_folder_sync
+						(CamelStore *store,
+						 GCancellable *cancellable,
+						 GError **error);
+void		camel_store_get_junk_folder	(CamelStore *store,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+CamelFolder *	camel_store_get_junk_folder_finish
+						(CamelStore *store,
+						 GAsyncResult *result,
 						 GError **error);
 CamelFolder *	camel_store_get_trash_folder_sync
 						(CamelStore *store,
 						 GCancellable *cancellable,
 						 GError **error);
-CamelFolder *	camel_store_get_junk_folder_sync
-						(CamelStore *store,
+void		camel_store_get_trash_folder	(CamelStore *store,
+						 gint io_priority,
 						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+CamelFolder *	camel_store_get_trash_folder_finish
+						(CamelStore *store,
+						 GAsyncResult *result,
 						 GError **error);
 CamelFolderInfo *
 		camel_store_create_folder_sync	(CamelStore *store,
@@ -377,31 +545,101 @@ CamelFolderInfo *
 						 const gchar *folder_name,
 						 GCancellable *cancellable,
 						 GError **error);
+void		camel_store_create_folder	(CamelStore *store,
+						 const gchar *parent_name,
+						 const gchar *folder_name,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+CamelFolderInfo *
+		camel_store_create_folder_finish
+						(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
 gboolean	camel_store_delete_folder_sync	(CamelStore *store,
 						 const gchar *folder_name,
 						 GCancellable *cancellable,
 						 GError **error);
+void		camel_store_delete_folder	(CamelStore *store,
+						 const gchar *folder_name,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_store_delete_folder_finish
+						(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
 gboolean	camel_store_rename_folder_sync	(CamelStore *store,
-						 const gchar *old_namein,
+						 const gchar *old_name,
 						 const gchar *new_name,
 						 GCancellable *cancellable,
+						 GError **error);
+void		camel_store_rename_folder	(CamelStore *store,
+						 const gchar *old_name,
+						 const gchar *new_name,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_store_rename_folder_finish
+						(CamelStore *store,
+						 GAsyncResult *result,
 						 GError **error);
 gboolean	camel_store_subscribe_folder_sync
 						(CamelStore *store,
 						 const gchar *folder_name,
 						 GCancellable *cancellable,
 						 GError **error);
+void		camel_store_subscribe_folder	(CamelStore *store,
+						 const gchar *folder_name,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_store_subscribe_folder_finish
+						(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
 gboolean	camel_store_unsubscribe_folder_sync
 						(CamelStore *store,
 						 const gchar *folder_name,
 						 GCancellable *cancellable,
 						 GError **error);
+void		camel_store_unsubscribe_folder	(CamelStore *store,
+						 const gchar *folder_name,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_store_unsubscribe_folder_finish
+						(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
 gboolean	camel_store_synchronize_sync	(CamelStore *store,
 						 gboolean expunge,
 						 GCancellable *cancellable,
 						 GError **error);
+void		camel_store_synchronize		(CamelStore *store,
+						 gboolean expunge,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_store_synchronize_finish	(CamelStore *store,
+						 GAsyncResult *result,
+						 GError **error);
 gboolean	camel_store_noop_sync		(CamelStore *store,
 						 GCancellable *cancellable,
+						 GError **error);
+void		camel_store_noop		(CamelStore *store,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_store_noop_finish		(CamelStore *store,
+						 GAsyncResult *result,
 						 GError **error);
 
 G_END_DECLS

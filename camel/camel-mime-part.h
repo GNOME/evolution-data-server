@@ -69,9 +69,24 @@ struct _CamelMimePart {
 struct _CamelMimePartClass {
 	CamelMediumClass parent_class;
 
-	gint	(*construct_from_parser_sync)	(CamelMimePart *mime_part,
+	/* Synchronous I/O Methods */
+	gboolean	(*construct_from_parser_sync)
+						(CamelMimePart *mime_part,
 						 CamelMimeParser *parser,
 						 GCancellable *cancellable,
+						 GError **error);
+
+	/* Asynchronous I/O Methods (all have defaults) */
+	void		(*construct_from_parser)
+						(CamelMimePart *mime_part,
+						 CamelMimeParser *parser,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*construct_from_parser_finish)
+						(CamelMimePart *mime_part,
+						 GAsyncResult *result,
 						 GError **error);
 };
 
@@ -119,12 +134,22 @@ void		camel_mime_part_set_content	(CamelMimePart *mime_part,
 						 const gchar *data,
 						 gint length,
 						 const gchar *type);
-gsize		camel_mime_part_get_content_size
-						(CamelMimePart *mime_part);
-gint		camel_mime_part_construct_from_parser_sync
+
+gboolean	camel_mime_part_construct_from_parser_sync
 						(CamelMimePart *mime_part,
 						 CamelMimeParser *parser,
 						 GCancellable *cancellable,
+						 GError **error);
+void		camel_mime_part_construct_from_parser
+						(CamelMimePart *mime_part,
+						 CamelMimeParser *parser,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_mime_part_construct_from_parser_finish
+						(CamelMimePart *mime_part,
+						 GAsyncResult *result,
 						 GError **error);
 
 G_END_DECLS
