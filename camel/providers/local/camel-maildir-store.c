@@ -55,8 +55,10 @@ static CamelFolderInfo * maildir_get_folder_info (CamelStore *store, const gchar
 
 static gboolean maildir_compare_folder_name (gconstpointer a, gconstpointer b);
 static guint maildir_hash_folder_name (gconstpointer a);
-static char * maildir_full_name_to_dir_name (const gchar *full_name);
-static char * maildir_dir_name_to_fullname (const gchar *dir_name);
+static char *maildir_full_name_to_dir_name (const gchar *full_name);
+static char *maildir_dir_name_to_fullname (const gchar *dir_name);
+static gchar *maildir_get_full_path (CamelLocalStore *ls, const gchar *full_name);
+static gchar *maildir_get_meta_path (CamelLocalStore *ls, const gchar *full_name, const gchar *ext);
 
 G_DEFINE_TYPE (CamelMaildirStore, camel_maildir_store, CAMEL_TYPE_LOCAL_STORE)
 
@@ -64,6 +66,7 @@ static void
 camel_maildir_store_class_init (CamelMaildirStoreClass *class)
 {
 	CamelStoreClass *store_class;
+	CamelLocalStoreClass *local_class;
 
 	store_class = CAMEL_STORE_CLASS (class);
 	store_class->hash_folder_name = maildir_hash_folder_name;
@@ -75,6 +78,10 @@ camel_maildir_store_class_init (CamelMaildirStoreClass *class)
 	store_class->rename_folder = maildir_rename_folder;
 	store_class->get_folder_info = maildir_get_folder_info;
 	store_class->free_folder_info = camel_store_free_folder_info_full;
+	
+	local_class = CAMEL_LOCAL_STORE_CLASS (class);
+	local_class->get_full_path = maildir_get_full_path;
+	local_class->get_meta_path = maildir_get_meta_path;
 }
 
 static void
@@ -429,8 +436,14 @@ fill_fi (CamelStore *store,
 		
 		dir_name = maildir_full_name_to_dir_name (fi->full_name);
 
-		path = g_strdup_printf("%s/.%s.ev-summary", root, dir_name);
-		folderpath = g_strdup_printf("%s%s", root, dir_name);
+		if (!strcmp (dir_name, ".")) {
+			path = g_strdup_printf("%s/.ev-summary", root);
+			folderpath = g_strdup (root);
+		} else {
+			path = g_strdup_printf("%s/%s.ev-summary", root, dir_name);
+			folderpath = g_strdup_printf("%s%s", root, dir_name);
+		}
+		
 		s = (CamelFolderSummary *)camel_maildir_summary_new (NULL, path, folderpath, NULL);
 		if (camel_folder_summary_header_load_from_db (s, store, fi->full_name, NULL) != -1) {
 			fi->unread = s->unread_count;
@@ -769,6 +782,7 @@ fail:
 	return NULL;
 }
 
+<<<<<<< HEAD
 static CamelFolder *
 maildir_store_get_inbox_sync (CamelStore *store,
                               GCancellable *cancellable,
@@ -915,3 +929,27 @@ camel_maildir_store_init (CamelMaildirStore *maildir_store)
 {
 }
 
+static gchar *
+maildir_get_full_path (CamelLocalStore *ls, const gchar *full_name)
+{
+	gchar *dir_name, *path;
+
+	dir_name = maildir_full_name_to_dir_name (full_name);
+	path = g_strdup_printf("%s%s", ls->toplevel_dir, dir_name);
+	g_free (dir_name);
+
+	return path;
+}
+
+static gchar *
+maildir_get_meta_path (CamelLocalStore *ls, const gchar *full_name, const gchar *ext)
+{
+	gchar *dir_name, *path;
+	
+	dir_name = maildir_full_name_to_dir_name (full_name);
+	path = g_strdup_printf("%s%s%s", ls->toplevel_dir, dir_name, ext);
+	g_free (dir_name);
+	
+	return path;
+}
+>>>>>>> override get_full_path and get_meta_path in maildir store
