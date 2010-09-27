@@ -271,6 +271,7 @@ empty_cache (ECalBackendHttp *cbhttp)
 	}
 	g_slist_free (comps);
 
+	e_cal_backend_store_put_key_value (priv->store, "ETag", NULL);
 	e_cal_backend_store_clean (priv->store);
 }
 
@@ -328,6 +329,12 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 		return;
 	}
 
+	if (msg->status_code == SOUP_STATUS_NOT_MODIFIED) {
+		/* attempts with ETag can result in 304 status code */
+		priv->opened = TRUE;
+		return;
+	}
+
 	/* Handle redirection ourselves */
 	if (SOUP_STATUS_IS_REDIRECTION (msg->status_code)) {
 		newuri = soup_message_headers_get (msg->response_headers,
@@ -372,6 +379,15 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 
 		empty_cache (cbhttp);
 		return;
+	}
+
+	if (priv->store) {
+		const gchar *etag = soup_message_headers_get_one (msg->response_headers, "ETag");
+
+		if (!etag || !*etag)
+			etag = NULL;
+
+		e_cal_backend_store_put_key_value (priv->store, "ETag", etag);
 	}
 
 	/* get the calendar from the response */
@@ -470,6 +486,8 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 	/* free memory */
 	icalcomponent_free (icalcomp);
 
+	priv->opened = TRUE;
+
 	d(g_message ("Retrieval really done.\n"));
 }
 
@@ -537,6 +555,14 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 		g_signal_connect (priv->soup_session, "authenticate",
 				  G_CALLBACK (soup_authenticate), cbhttp);
 
+		if (g_getenv ("WEBCAL_DEBUG") != NULL) {
+			SoupLogger *logger;
+
+			logger = soup_logger_new (SOUP_LOGGER_LOG_BODY, 1024 * 1024);
+			soup_session_add_feature (priv->soup_session, SOUP_SESSION_FEATURE (logger));
+			g_object_unref (logger);
+		}
+
 		/* set the HTTP proxy, if configuration is set to do so */
 		proxy = e_proxy_new ();
 		e_proxy_setup_proxy (proxy);
@@ -557,9 +583,14 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 		return FALSE;
 	}
 
-	soup_message_headers_append (soup_message->request_headers, "User-Agent",
-				     "Evolution/" VERSION);
+	soup_message_headers_append (soup_message->request_headers, "User-Agent", "Evolution/" VERSION);
 	soup_message_set_flags (soup_message, SOUP_MESSAGE_NO_REDIRECT);
+	if (priv->store) {
+		const gchar *etag = e_cal_backend_store_get_key_value (priv->store, "ETag");
+
+		if (etag && *etag)
+			soup_message_headers_append (soup_message->request_headers, "If-None-Match", etag);
+	}
 
 	soup_session_queue_message (priv->soup_session, soup_message,
 				    (SoupSessionCallback) retrieval_done, cbhttp);
@@ -581,7 +612,6 @@ reload_cb (ECalBackendHttp *cbhttp)
 	d(g_message ("Reload!\n"));
 
 	priv->reload_timeout_id = 0;
-	priv->opened = TRUE;
 	begin_retrieval_cb (cbhttp);
 	return FALSE;
 }
