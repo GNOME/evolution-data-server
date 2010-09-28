@@ -2008,8 +2008,10 @@ gpg_decrypt_sync (CamelCipherContext *context,
 
 	istream = camel_stream_mem_new ();
 	if (!camel_data_wrapper_decode_to_stream_sync (
-		content, istream, cancellable, error))
-		goto fail;
+		content, istream, cancellable, error)) {
+		g_object_unref (istream);
+		return NULL;
+	}
 	camel_stream_reset (istream, NULL);
 
 	ostream = camel_stream_mem_new ();
