@@ -102,7 +102,8 @@ gint main (gint argc, gchar **argv)
 
 		stream = camel_stream_fs_new_with_fd (fd);
 		message = camel_mime_message_new ();
-		camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) message, stream, NULL);
+		camel_data_wrapper_construct_from_stream_sync (
+			CAMEL_DATA_WRAPPER (message), stream, NULL, NULL);
 		camel_stream_reset (stream, NULL);
 
 		/*dump_mime_struct ((CamelMimePart *) message, 0);*/

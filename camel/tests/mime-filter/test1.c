@@ -9,7 +9,7 @@
 
 #include "camel-test.h"
 
-#define d(x)
+#define d (x)
 
 #define NUM_CASES 1
 #define CHUNK_SIZE 4096
@@ -51,18 +51,18 @@ struct {
 gint
 main (gint argc, gchar **argv)
 {
-	CamelStream *filter;
+	CamelStream *stream;
 	CamelMimeFilter *sh;
 	gint i;
 
 	camel_test_init (argc, argv);
 
-	camel_test_start("canonicalisation filter tests");
+	camel_test_start ("canonicalisation filter tests");
 
 	for (i = 0; i < G_N_ELEMENTS (tests); i++) {
 		gint step;
 
-		camel_test_push("Data test %d '%s'\n", i, tests[i].in);
+		camel_test_push ("Data test %d '%s'\n", i, tests[i].in);
 
 		/* try all write sizes */
 		for (step=1;step<20;step++) {
@@ -70,27 +70,29 @@ main (gint argc, gchar **argv)
 			CamelStream *out;
 			const gchar *p;
 
-			camel_test_push("Chunk size %d\n", step);
+			camel_test_push ("Chunk size %d\n", step);
 
 			byte_array = g_byte_array_new ();
 			out = camel_stream_mem_new_with_byte_array (byte_array);
-			filter = camel_stream_filter_new (out);
+			stream = camel_stream_filter_new (out);
 			sh = camel_mime_filter_canon_new (tests[i].flags);
-			check (camel_stream_filter_add (filter, sh) != -1);
+			check (camel_stream_filter_add (
+				CAMEL_STREAM_FILTER (stream), sh) != -1);
 			check_unref (sh, 2);
 
 			p = tests[i].in;
 			while (*p) {
 				gint w = MIN (strlen (p), step);
 
-				check (camel_stream_write ((CamelStream *)filter, p, w, NULL) == w);
+				check (camel_stream_write (
+					stream, p, w, NULL, NULL) == w);
 				p += w;
 			}
-			camel_stream_flush ((CamelStream *)filter, NULL);
+			camel_stream_flush (stream, NULL, NULL);
 
-			check_msg(byte_array->len == strlen(tests[i].out), "Buffer length mismatch: expected %d got %d\n or '%s' got '%.*s'", strlen(tests[i].out), byte_array->len, tests[i].out, byte_array->len, byte_array->data);
-			check_msg(0 == memcmp(byte_array->data, tests[i].out, byte_array->len), "Buffer mismatch: expected '%s' got '%.*s'", tests[i].out, byte_array->len, byte_array->data);
-			check_unref (filter, 1);
+			check_msg (byte_array->len == strlen (tests[i].out), "Buffer length mismatch: expected %d got %d\n or '%s' got '%.*s'", strlen (tests[i].out), byte_array->len, tests[i].out, byte_array->len, byte_array->data);
+			check_msg (0 == memcmp (byte_array->data, tests[i].out, byte_array->len), "Buffer mismatch: expected '%s' got '%.*s'", tests[i].out, byte_array->len, byte_array->data);
+			check_unref (stream, 1);
 			check_unref (out, 1);
 
 			camel_test_pull ();

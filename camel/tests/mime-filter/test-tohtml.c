@@ -38,7 +38,7 @@ test_filter (CamelMimeFilter *f, const gchar *inname, const gchar *outname)
 
 	byte_array_out = g_byte_array_new ();
 	out = camel_stream_mem_new_with_byte_array (byte_array_out);
-	check (camel_stream_write_to_stream (outdisk, out, NULL) > 0);
+	check (camel_stream_write_to_stream (outdisk, out, NULL, NULL) > 0);
 
 	camel_test_pull ();
 
@@ -52,7 +52,7 @@ test_filter (CamelMimeFilter *f, const gchar *inname, const gchar *outname)
 	id = camel_stream_filter_add ((CamelStreamFilter *)filter, f);
 	check_count (f, 2);
 
-	check (camel_stream_write_to_stream (filter, in, NULL) > 0);
+	check (camel_stream_write_to_stream (filter, in, NULL, NULL) > 0);
 	check_msg (byte_array_in->len == byte_array_out->len
 		  && memcmp (byte_array_in->data, byte_array_out->data, byte_array_in->len) == 0,
 		  "Buffer content mismatch, %d != %d, in = '%.*s' != out = '%.*s'", byte_array_in->len, byte_array_out->len,
@@ -80,8 +80,8 @@ test_filter (CamelMimeFilter *f, const gchar *inname, const gchar *outname)
 	id = camel_stream_filter_add ((CamelStreamFilter *)filter, f);
 	check_count (f, 2);
 
-	check (camel_stream_write_to_stream (indisk, filter, NULL) > 0);
-	check (camel_stream_flush (filter, NULL) == 0);
+	check (camel_stream_write_to_stream (indisk, filter, NULL, NULL) > 0);
+	check (camel_stream_flush (filter, NULL, NULL) == 0);
 	check_msg (byte_array_in->len == byte_array_out->len
 		  && memcmp (byte_array_in->data, byte_array_out->data, byte_array_in->len) == 0,
 		  "Buffer content mismatch, %d != %d, in = '%.*s' != out = '%.*s'", byte_array_in->len, byte_array_out->len,

@@ -25,7 +25,7 @@ main (gint argc, gchar **argv)
 {
 	CamelStream *source;
 	CamelStream *correct;
-	CamelStreamFilter *filter;
+	CamelStream *stream;
 	CamelMimeFilter *sh;
 	gchar *work;
 	gint i;
@@ -80,8 +80,8 @@ main (gint argc, gchar **argv)
 			}
 			g_free (outfile);
 
-			filter = camel_stream_filter_new (CAMEL_STREAM (source));
-			if (!filter) {
+			stream = camel_stream_filter_new (source);
+			if (!stream) {
 				camel_test_fail ("Couldn't create CamelStreamFilter??");
 				continue;
 			}
@@ -92,7 +92,8 @@ main (gint argc, gchar **argv)
 				continue;
 			}
 
-			camel_stream_filter_add (filter, sh);
+			camel_stream_filter_add (
+				CAMEL_STREAM_FILTER (stream), sh);
 			camel_test_pull ();
 
 			camel_test_push ("Running filter and comparing to correct result");
@@ -100,7 +101,9 @@ main (gint argc, gchar **argv)
 			comp_progress = 0;
 
 			while (1) {
-				comp_correct_chunk = camel_stream_read (correct, comp_correct, CHUNK_SIZE, NULL);
+				comp_correct_chunk = camel_stream_read (
+					correct, comp_correct,
+					CHUNK_SIZE, NULL, NULL);
 				comp_filter_chunk = 0;
 
 				if (comp_correct_chunk == 0)
@@ -109,9 +112,11 @@ main (gint argc, gchar **argv)
 				while (comp_filter_chunk < comp_correct_chunk) {
 					gssize delta;
 
-					delta = camel_stream_read (CAMEL_STREAM (filter),
-								   comp_filter + comp_filter_chunk,
-								   CHUNK_SIZE - comp_filter_chunk, NULL);
+					delta = camel_stream_read (
+						stream,
+						comp_filter + comp_filter_chunk,
+						CHUNK_SIZE - comp_filter_chunk,
+						NULL, NULL);
 
 					if (delta == 0) {
 						camel_test_fail ("Chunks are different sizes: correct is %d, "
@@ -139,10 +144,10 @@ main (gint argc, gchar **argv)
 
 			/* inefficient */
 			camel_test_push ("Cleaning up");
-			g_object_unref (CAMEL_OBJECT (filter));
-			g_object_unref (CAMEL_OBJECT (correct));
-			g_object_unref (CAMEL_OBJECT (source));
-			g_object_unref (CAMEL_OBJECT (sh));
+			g_object_unref (stream);
+			g_object_unref (correct);
+			g_object_unref (source);
+			g_object_unref (sh);
 			camel_test_pull ();
 
 			camel_test_pull ();

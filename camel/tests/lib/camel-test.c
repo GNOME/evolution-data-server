@@ -55,7 +55,8 @@ dump_action (GThread *thread, struct _state *s, gpointer d)
 	printf("\tTest: %s\n", s->test);
 }
 
-static void die (gint sig)
+static void G_GNUC_NORETURN
+die (gint sig)
 {
 	static gint indie = 0;
 

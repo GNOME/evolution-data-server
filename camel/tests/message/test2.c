@@ -82,7 +82,7 @@ gint main (gint argc, gchar **argv)
 	gint i;
 	CamelInternetAddress *addr, *addr2;
 	gchar *name;
-	gchar *charset;
+	const gchar *charset;
 	const gchar *real, *where;
 	gchar *enc, *enc2, *format, *format2;
 

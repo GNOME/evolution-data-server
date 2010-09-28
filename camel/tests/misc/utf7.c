@@ -8,7 +8,7 @@
 #include "camel-test.h"
 
 static struct {
-	guchar *utf8;
+	const gchar *utf8;
 	const gchar *utf7;
 	guint32 unicode[200];
 } tests[] = {
@@ -42,7 +42,8 @@ static struct {
 gint
 main (gint argc, gchar **argv)
 {
-	gchar *utf8, *utf7, *p;
+	const gchar *p;
+	gchar *utf8, *utf7;
 	gint i, j;
 	guint32 u;
 	gchar utf8enc[256];
@@ -50,13 +51,13 @@ main (gint argc, gchar **argv)
 
 	camel_test_init (argc, argv);
 
-	out = g_string_new("");
+	out = g_string_new ("");
 
-	camel_test_start("UTF8, UTF7 RFC1642+RFC2060");
+	camel_test_start ("UTF8, UTF7 RFC1642+RFC2060");
 
 	for (i = 0; i < G_N_ELEMENTS (tests); i++) {
 
-		camel_test_push("%2d: %s utf8 decode", i, tests[i].utf7);
+		camel_test_push ("%2d: %s utf8 decode", i, tests[i].utf7);
 		p = tests[i].utf8;
 		j = 0;
 		do {
@@ -66,20 +67,20 @@ main (gint argc, gchar **argv)
 		} while (u);
 		camel_test_pull ();
 
-		camel_test_push("%2d: %s utf7->utf8", i, tests[i].utf7);
+		camel_test_push ("%2d: %s utf7->utf8", i, tests[i].utf7);
 		utf8 = camel_utf7_utf8 (tests[i].utf7);
-		check_msg(strcmp(utf8, tests[i].utf8) == 0, "utf8 = '%s'", utf8);
+		check_msg (strcmp (utf8, tests[i].utf8) == 0, "utf8 = '%s'", utf8);
 		camel_test_pull ();
 
-		camel_test_push("%2d: %s utf7->utf8->utf7", i, tests[i].utf7);
+		camel_test_push ("%2d: %s utf7->utf8->utf7", i, tests[i].utf7);
 		utf7 = camel_utf8_utf7 (utf8);
-		check_msg(strcmp(utf7, tests[i].utf7) == 0, "utf7 = '%s'", utf7);
+		check_msg (strcmp (utf7, tests[i].utf7) == 0, "utf7 = '%s'", utf7);
 		camel_test_pull ();
 
 		g_free (utf7);
 		g_free (utf8);
 
-		camel_test_push("%2d: %s utf8 encode", i, tests[i].utf7);
+		camel_test_push ("%2d: %s utf8 encode", i, tests[i].utf7);
 
 		g_string_truncate (out, 0);
 		p = utf8enc;

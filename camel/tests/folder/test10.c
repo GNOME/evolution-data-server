@@ -11,7 +11,7 @@
 #define MAX_LOOP (10000)
 #define MAX_THREADS (5)
 
-#define d(x)
+#define d (x)
 
 static const gchar *local_drivers[] = { "local" };
 static const gchar *local_providers[] = {
@@ -33,7 +33,9 @@ worker (gpointer d)
 
 	for (i=0;i<MAX_LOOP;i++) {
 		store = camel_session_get_store (session, path, NULL);
-		folder = camel_store_get_folder(store, "testbox", CAMEL_STORE_FOLDER_CREATE, NULL);
+		folder = camel_store_get_folder_sync (
+			store, "testbox",
+			CAMEL_STORE_FOLDER_CREATE, NULL, NULL);
 		if (testid == 0) {
 			g_object_unref (folder);
 			g_object_unref (store);
@@ -56,20 +58,20 @@ main (gint argc, gchar **argv)
 	camel_test_provider_init (1, local_drivers);
 
 	/* clear out any camel-test data */
-	system("/bin/rm -rf /tmp/camel-test");
+	system ("/bin/rm -rf /tmp/camel-test");
 
 	session = camel_test_session_new ("/tmp/camel-test");
 
 	for (testid=0;testid<2;testid++) {
 		if (testid == 0)
-			camel_test_start("store and folder bag torture test, stacked references");
+			camel_test_start ("store and folder bag torture test, stacked references");
 		else
-			camel_test_start("store and folder bag torture test, unstacked references");
+			camel_test_start ("store and folder bag torture test, unstacked references");
 
 		for (j = 0; j < G_N_ELEMENTS (local_providers); j++) {
 
-			camel_test_push("provider %s", local_providers[j]);
-			path = g_strdup_printf("%s:///tmp/camel-test/%s", local_providers[j], local_providers[j]);
+			camel_test_push ("provider %s", local_providers[j]);
+			path = g_strdup_printf ("%s:///tmp/camel-test/%s", local_providers[j], local_providers[j]);
 
 			for (i = 0; i < MAX_THREADS; i++) {
 				GError *error = NULL;

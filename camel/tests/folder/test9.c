@@ -95,27 +95,29 @@ gint main (gint argc, gchar **argv)
 	camel_test_provider_init (1, local_drivers);
 
 	/* clear out any camel-test data */
-	system("/bin/rm -rf /tmp/camel-test");
+	system ("/bin/rm -rf /tmp/camel-test");
 
-	camel_test_start("Simple filtering of mbox");
+	camel_test_start ("Simple filtering of mbox");
 
 	session = camel_test_session_new ("/tmp/camel-test");
 
 	/* todo: cross-check everything with folder_info checks as well */
 	/* todo: work out how to do imap/pop/nntp tests */
 
-	push("getting store");
-	store = camel_session_get_store(session, "mbox:///tmp/camel-test/mbox", &error);
-	check_msg(error == NULL, "getting store: %s", error->message);
+	push ("getting store");
+	store = camel_session_get_store (session, "mbox:///tmp/camel-test/mbox", &error);
+	check_msg (error == NULL, "getting store: %s", error->message);
 	check (store != NULL);
 	g_clear_error (&error);
 	pull ();
 
-	push("Creating output folders");
+	push ("Creating output folders");
 	for (i = 0; i < G_N_ELEMENTS (mailboxes); i++) {
-		push("creating %s", mailboxes[i].name);
-		mailboxes[i].folder = folder = camel_store_get_folder (store, mailboxes[i].name, CAMEL_STORE_FOLDER_CREATE, &error);
-		check_msg(error == NULL, "%s", error->message);
+		push ("creating %s", mailboxes[i].name);
+		mailboxes[i].folder = folder = camel_store_get_folder_sync (
+			store, mailboxes[i].name,
+			CAMEL_STORE_FOLDER_CREATE, NULL, &error);
+		check_msg (error == NULL, "%s", error->message);
 		check (folder != NULL);
 
 		/* we need an empty folder for this to work */
@@ -126,29 +128,30 @@ gint main (gint argc, gchar **argv)
 	pull ();
 
 	/* append a bunch of messages with specific content */
-	push("creating 100 test message mbox");
-	mbox = camel_stream_fs_new_with_name("/tmp/camel-test/inbox", O_WRONLY|O_CREAT|O_EXCL, 0600, NULL);
+	push ("creating 100 test message mbox");
+	mbox = camel_stream_fs_new_with_name ("/tmp/camel-test/inbox", O_WRONLY|O_CREAT|O_EXCL, 0600, NULL);
 	for (j=0;j<100;j++) {
 		gchar *content, *subject;
 
-		push("creating test message");
+		push ("creating test message");
 		msg = test_message_create_simple ();
-		content = g_strdup_printf("data%d content\n", j);
-		test_message_set_content_simple((CamelMimePart *)msg, 0, "text/plain",
+		content = g_strdup_printf ("data%d content\n", j);
+		test_message_set_content_simple ((CamelMimePart *)msg, 0, "text/plain",
 						content, strlen (content));
 		test_free (content);
-		subject = g_strdup_printf("Test%d message%d subject", j, 100-j);
+		subject = g_strdup_printf ("Test%d message%d subject", j, 100-j);
 		camel_mime_message_set_subject (msg, subject);
 
 		camel_mime_message_set_date (msg, j*60*24, 0);
 		pull ();
 
-		camel_stream_printf(mbox, "From \n");
-		check (camel_data_wrapper_write_to_stream ((CamelDataWrapper *)msg, mbox, NULL) != -1);
+		camel_stream_printf (mbox, "From \n");
+		check (camel_data_wrapper_write_to_stream_sync (
+			CAMEL_DATA_WRAPPER (msg), mbox, NULL, NULL) != -1);
 #if 0
-		push("appending simple message %d", j);
+		push ("appending simple message %d", j);
 		camel_folder_append_message (folder, msg, NULL, ex);
-		check_msg(error == NULL, "%s", error->message);
+		check_msg (error == NULL, "%s", error->message);
 		g_clear_error (&error);
 		pull ();
 #endif
@@ -156,11 +159,11 @@ gint main (gint argc, gchar **argv)
 
 		check_unref (msg, 1);
 	}
-	check (camel_stream_close (mbox, NULL) != -1);
+	check (camel_stream_close (mbox, NULL, NULL) != -1);
 	check_unref (mbox, 1);
 	pull ();
 
-	push("Building filters");
+	push ("Building filters");
 	driver = camel_filter_driver_new (session);
 	camel_filter_driver_set_folder_func (driver, get_folder, NULL);
 	for (i = 0; i < G_N_ELEMENTS (rules); i++) {
@@ -168,10 +171,11 @@ gint main (gint argc, gchar **argv)
 	}
 	pull ();
 
-	push("Executing filters");
+	push ("Executing filters");
 	camel_filter_driver_set_default_folder (driver, mailboxes[0].folder);
-	camel_filter_driver_filter_mbox(driver, "/tmp/camel-test/inbox", NULL, &error);
-	check_msg(error == NULL, "%s", error->message);
+	camel_filter_driver_filter_mbox (
+		driver, "/tmp/camel-test/inbox", NULL, NULL, &error);
+	check_msg (error == NULL, "%s", error->message);
 
 	/* now need to check the folder counts/etc */
 
@@ -180,13 +184,14 @@ gint main (gint argc, gchar **argv)
 	pull ();
 
 	/* this tests that invalid rules are caught */
-	push("Testing broken match rules");
+	push ("Testing broken match rules");
 	for (i = 0; i < G_N_ELEMENTS (brokens); i++) {
-		push("rule %s", brokens[i].match);
+		push ("rule %s", brokens[i].match);
 		driver = camel_filter_driver_new (session);
 		camel_filter_driver_set_folder_func (driver, get_folder, NULL);
 		camel_filter_driver_add_rule (driver, brokens[i].name, brokens[i].match, brokens[i].action);
-		camel_filter_driver_filter_mbox(driver, "/tmp/camel-test/inbox", NULL, &error);
+		camel_filter_driver_filter_mbox (
+			driver, "/tmp/camel-test/inbox", NULL, NULL, &error);
 		check (error != NULL);
 		check_unref (driver, 1);
 		g_clear_error (&error);
@@ -194,13 +199,14 @@ gint main (gint argc, gchar **argv)
 	}
 	pull ();
 
-	push("Testing broken action rules");
+	push ("Testing broken action rules");
 	for (i = 0; i < G_N_ELEMENTS (brokena); i++) {
-		push("rule %s", brokena[i].action);
+		push ("rule %s", brokena[i].action);
 		driver = camel_filter_driver_new (session);
 		camel_filter_driver_set_folder_func (driver, get_folder, NULL);
 		camel_filter_driver_add_rule (driver, brokena[i].name, brokena[i].match, brokena[i].action);
-		camel_filter_driver_filter_mbox(driver, "/tmp/camel-test/inbox", NULL, &error);
+		camel_filter_driver_filter_mbox (
+			driver, "/tmp/camel-test/inbox", NULL, NULL, &error);
 		check (error != NULL);
 		check_unref (driver, 1);
 		g_clear_error (&error);
