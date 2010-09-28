@@ -59,7 +59,7 @@ if test "x${enable_gtk3}" = "xyes"; then
 else	
 	LIBEDATASERVERUI_API_VERSION=1.2
 	GTK_PACKAGE="gtk+-2.0"
-	gtk_minimum_version="2.20.0"
+	gtk_minimum_version="2.22.0"
 	GWEATHER_PACKAGE="gweather"
 	gweather_minimum_version="2.25.4"
 fi

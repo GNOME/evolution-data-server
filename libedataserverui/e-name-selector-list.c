@@ -172,12 +172,9 @@ enl_popup_button_press (GtkWidget *widget,
 			GdkEventButton *event,
 			ENameSelectorList *list)
 {
-#if GTK_CHECK_VERSION (2,19,5)
 	if (!gtk_widget_get_mapped (widget))
-#else
-	if (!GTK_WIDGET_MAPPED (widget))
-#endif
 		return FALSE;
+
 	/* if we come here, it's usually time to popdown */
 	gtk_widget_hide ((GtkWidget *)list->priv->popup);
 
