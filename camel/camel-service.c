@@ -442,7 +442,7 @@ camel_service_connect_sync (CamelService *service,
 	/* Register a separate operation for connecting, so that
 	 * the offline code can cancel it. */
 	camel_service_lock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
-	service->connect_op = (GCancellable *) camel_operation_new ();
+	service->connect_op = camel_operation_new ();
 	camel_service_unlock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
 
 	service->status = CAMEL_SERVICE_CONNECTING;
@@ -489,7 +489,7 @@ camel_service_disconnect_sync (CamelService *service,
 	if (service->status != CAMEL_SERVICE_DISCONNECTED
 	    && service->status != CAMEL_SERVICE_DISCONNECTING) {
 		camel_service_lock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
-		service->connect_op = (GCancellable *) camel_operation_new ();
+		service->connect_op = camel_operation_new ();
 		camel_service_unlock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
 
 		service->status = CAMEL_SERVICE_DISCONNECTING;

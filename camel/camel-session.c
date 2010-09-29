@@ -276,7 +276,7 @@ session_thread_msg_new (CamelSession *session,
 	m = g_malloc0 (size);
 	m->ops = ops;
 	m->session = g_object_ref (session);
-	m->cancellable = (GCancellable *) camel_operation_new ();
+	m->cancellable = camel_operation_new ();
 	camel_session_lock (session, CAMEL_SESSION_THREAD_LOCK);
 	m->id = session->priv->thread_id++;
 	g_hash_table_insert (session->priv->thread_active, GINT_TO_POINTER (m->id), m);

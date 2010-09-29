@@ -206,7 +206,7 @@ camel_operation_init (CamelOperation *operation)
  *
  * Returns: A new operation handle.
  **/
-CamelOperation *
+GCancellable *
 camel_operation_new (void)
 {
 	return g_object_new (CAMEL_TYPE_OPERATION, NULL);

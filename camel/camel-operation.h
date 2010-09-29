@@ -67,7 +67,7 @@ struct _CamelOperationClass {
 GType		camel_operation_get_type	(void);
 
 /* main thread functions */
-CamelOperation *camel_operation_new		(void);
+GCancellable *	camel_operation_new		(void);
 void		camel_operation_cancel		(CamelOperation *operation);
 void		camel_operation_uncancel	(CamelOperation *operation);
 
