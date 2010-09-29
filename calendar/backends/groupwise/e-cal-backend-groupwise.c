@@ -2585,7 +2585,9 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 	}
 
 	g_object_unref (comp);
-	if (status == E_GW_CONNECTION_STATUS_INVALID_OBJECT)
+	if (status == E_GW_CONNECTION_STATUS_OK)
+		return;
+	else if (status == E_GW_CONNECTION_STATUS_INVALID_OBJECT)
 		g_propagate_error (perror, EDC_ERROR (InvalidObject));
 	else if (status == E_GW_CONNECTION_STATUS_OVER_QUOTA)
 		g_propagate_error (perror, EDC_ERROR (PermissionDenied));
