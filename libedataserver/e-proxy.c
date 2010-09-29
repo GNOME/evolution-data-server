@@ -555,6 +555,40 @@ ep_change_uri (SoupURI **soup_uri, const gchar *uri)
 	return changed;
 }
 
+static gchar *
+update_proxy_uri (const gchar *uri, const gchar *proxy_user, const gchar *proxy_pw)
+{
+	gchar *res, *user = NULL, *pw = NULL;
+	gboolean is_https;
+
+	g_return_val_if_fail (uri != NULL, NULL);
+
+	if (proxy_user && *proxy_user) {
+		user = soup_uri_encode (proxy_user, ":/;#@?\\");
+		if (proxy_pw)
+			pw = soup_uri_encode (proxy_pw, ":/;#@?\\");
+	}
+
+	if (!user)
+		return g_strdup (uri);
+
+	/*  here can be only http or https and nothing else */
+	is_https = g_str_has_prefix (uri, "https://");
+
+	res = g_strdup_printf ("%s://%s%s%s%s%s",
+		is_https ? "https" : "http",
+		user ? user : "",
+		pw ? ":" : "",
+		pw ? pw : "",
+		(user || pw) ? "@" : "",
+		uri + strlen ("http://") + (is_https ? 1 : 0));
+
+	g_free (user);
+	g_free (pw);
+
+	return res;
+}
+
 static void
 ep_set_proxy (GConfClient *client,
 	      gpointer user_data,
@@ -627,22 +661,14 @@ ep_set_proxy (GConfClient *client,
 		proxy_user = gconf_client_get_string (client, RIGHT_KEY (HTTP_AUTH_USER), NULL);
 		proxy_pw = gconf_client_get_string (client, RIGHT_KEY (HTTP_AUTH_PWD), NULL);
 
-		if (uri_http && proxy_user && *proxy_user && proxy_pw && *proxy_pw) {
+		if (uri_http && proxy_user && *proxy_user) {
 			tmp = uri_http;
-			uri_http = g_strdup_printf ("http://%s:%s@%s", proxy_user, proxy_pw, tmp + strlen ("http://"));
-		} else if (uri_http && proxy_user && *proxy_user) {
-			/* proxy without password, just try it */
-			tmp = uri_http;
-			uri_http = g_strdup_printf ("http://%s@%s", proxy_user, tmp + strlen ("http://"));
+			uri_http = update_proxy_uri (uri_http, proxy_user, proxy_pw);
 		}
 
-		if (uri_https && proxy_user && *proxy_user && proxy_pw && *proxy_pw) {
+		if (uri_https && proxy_user && *proxy_user) {
 			tmps = uri_https;
-			uri_https = g_strdup_printf ("https://%s:%s@%s", proxy_user, proxy_pw, tmps + strlen ("https://"));
-		} else if (uri_https && proxy_user && *proxy_user) {
-			/* proxy without password, just try it */
-			tmps = uri_https;
-			uri_https = g_strdup_printf ("https://%s@%s", proxy_user, tmps + strlen ("https://"));
+			uri_https = update_proxy_uri (uri_https, proxy_user, proxy_pw);
 		}
 
 		g_free (proxy_user);
