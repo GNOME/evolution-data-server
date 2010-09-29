@@ -4720,13 +4720,14 @@ imapx_parser_thread (gpointer d)
 
 	g_clear_error (&local_error);
 
+	QUEUE_LOCK (is);
 	if (op) {
 		camel_operation_unregister (op);
 		camel_operation_unref (op);
 	}
 	is->op = NULL;
+	QUEUE_UNLOCK (is);
 
-	is->parser_thread = NULL;
 	is->parser_quit = FALSE;
 
 	g_signal_emit (is, signals[SHUTDOWN], 0);
@@ -4772,14 +4773,16 @@ imapx_server_dispose (GObject *object)
 
 	QUEUE_LOCK(server);
 	server->state = IMAPX_SHUTDOWN;
-	QUEUE_UNLOCK(server);
 
 	server->parser_quit = TRUE;
 	if (server->op)
 		camel_operation_cancel (server->op);
+	QUEUE_UNLOCK(server);
 
-	if (server->parser_thread)
+	if (server->parser_thread) {
 		g_thread_join (server->parser_thread);
+		server->parser_thread = NULL;
+	}
 
 	if (server->cinfo && imapx_idle_supported (server))
 		imapx_exit_idle (server);
