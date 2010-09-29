@@ -106,6 +106,9 @@ e_book_error_quark (void)
 	return q;
 }
 
+static void
+gdbus_book_disconnect (EBook *book);
+
 /*
  * Called when the addressbook server dies.
  */
@@ -126,15 +129,7 @@ gdbus_book_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished
 		g_debug (G_STRLOC ": EBook GDBus connection is closed%s", remote_peer_vanished ? ", remote peer vanished" : "");
 	}
 
-	/* Ensure that everything relevant is NULL */
-	LOCK_FACTORY ();
-
-	if (book->priv->gdbus_book) {
-		g_object_unref (book->priv->gdbus_book);
-		book->priv->gdbus_book = NULL;
-	}
-
-	UNLOCK_FACTORY ();
+	gdbus_book_disconnect (book);
 
 	g_signal_emit (G_OBJECT (book), e_book_signals[BACKEND_DIED], 0);
 }
@@ -148,11 +143,10 @@ gdbus_book_connection_gone_cb (GDBusConnection *connection, const gchar *sender_
 }
 
 static void
-e_book_dispose (GObject *object)
+gdbus_book_disconnect (EBook *book)
 {
-	EBook *book = E_BOOK (object);
-
-	book->priv->loaded = FALSE;
+	/* Ensure that everything relevant is NULL */
+	LOCK_FACTORY ();
 
 	if (book->priv->gdbus_book) {
 		GDBusConnection *connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (book->priv->gdbus_book));
@@ -165,6 +159,17 @@ e_book_dispose (GObject *object)
 		g_object_unref (book->priv->gdbus_book);
 		book->priv->gdbus_book = NULL;
 	}
+	UNLOCK_FACTORY ();
+}
+
+static void
+e_book_dispose (GObject *object)
+{
+	EBook *book = E_BOOK (object);
+
+	book->priv->loaded = FALSE;
+
+	gdbus_book_disconnect (book);
 
 	if (book->priv->source) {
 		g_object_unref (book->priv->source);
