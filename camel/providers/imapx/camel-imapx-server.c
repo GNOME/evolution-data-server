@@ -4560,12 +4560,17 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	   if it isn't, i guess we'll fix up next refresh */
 
 	if (ic->error != NULL || ic->status->result != IMAPX_OK) {
-		if (ic->error == NULL)
-			g_set_error (
-				&job->error, CAMEL_IMAPX_ERROR, 1,
-				"Error syncing changes: %s", ic->status->text);
-		else
-			g_propagate_error (&job->error, ic->error);
+		if (!job->error) {
+			if (ic->error == NULL)
+				g_set_error (
+					&job->error, CAMEL_IMAPX_ERROR, 1,
+					"Error syncing changes: %s", ic->status->text);
+			else
+				g_propagate_error (&job->error, ic->error);
+		} else if (ic->error) {
+			g_clear_error (&ic->error);
+		}
+
 		failed = TRUE;
 	}
 
