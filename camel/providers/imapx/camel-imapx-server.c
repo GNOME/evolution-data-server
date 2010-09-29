@@ -2262,10 +2262,7 @@ static gpointer
 imapx_idle_thread (gpointer data)
 {
 	CamelIMAPXServer *is = (CamelIMAPXServer *) data;
-	GCancellable *cancellable;
 	GError *local_error = NULL;
-
-	cancellable = g_object_ref (is->cancellable);
 
 	while (TRUE) {
 		CamelIMAPXFolder *ifolder;
@@ -2286,11 +2283,11 @@ imapx_idle_thread (gpointer data)
 			}
 			IDLE_UNLOCK (is->idle);
 
-			camel_imapx_server_idle (is, (gpointer)ifolder, cancellable, &local_error);
+			camel_imapx_server_idle (is, (gpointer)ifolder, is->cancellable, &local_error);
 
 			if (local_error == NULL && ifolder->exists_on_server >
 			    camel_folder_summary_count (((CamelFolder *) ifolder)->summary) && imapx_is_command_queue_empty (is))
-				imapx_server_fetch_new_messages (is, is->select_folder, TRUE, TRUE, cancellable, &local_error);
+				imapx_server_fetch_new_messages (is, is->select_folder, TRUE, TRUE, is->cancellable, &local_error);
 
 			if (local_error != NULL) {
 				e (is->tagprefix, "Caught exception in idle thread:  %s \n", local_error->message);
@@ -2306,8 +2303,6 @@ imapx_idle_thread (gpointer data)
 		if (is->idle->idle_exit)
 			break;
 	}
-
-	g_object_unref (cancellable);
 
 	g_clear_error (&local_error);
 	is->idle->idle_thread = NULL;
@@ -4792,7 +4787,10 @@ imapx_parser_thread (gpointer d)
 	GCancellable *cancellable;
 	GError *local_error = NULL;
 
-	cancellable = g_object_ref (is->cancellable);
+	QUEUE_LOCK (is);
+	cancellable = g_cancellable_new ();
+	is->cancellable = g_object_ref (cancellable);
+	QUEUE_UNLOCK (is);
 
 	while (local_error == NULL && is->stream) {
 		g_cancellable_reset (cancellable);
@@ -4873,6 +4871,10 @@ imapx_parser_thread (gpointer d)
 	g_clear_error (&local_error);
 
 	QUEUE_LOCK (is);
+	if (is->cancellable != NULL) {
+		g_object_unref (is->cancellable);
+		is->cancellable = NULL;
+	}
 	g_object_unref (cancellable);
 	QUEUE_UNLOCK (is);
 
