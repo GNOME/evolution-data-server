@@ -4872,9 +4872,10 @@ imapx_parser_thread (gpointer d)
 
 	g_clear_error (&local_error);
 
+	QUEUE_LOCK (is);
 	g_object_unref (cancellable);
+	QUEUE_UNLOCK (is);
 
-	is->parser_thread = NULL;
 	is->parser_quit = FALSE;
 
 	g_signal_emit (is, signals[SHUTDOWN], 0);
@@ -4920,7 +4921,6 @@ imapx_server_dispose (GObject *object)
 
 	QUEUE_LOCK (server);
 	server->state = IMAPX_SHUTDOWN;
-	QUEUE_UNLOCK (server);
 
 	server->parser_quit = TRUE;
 
@@ -4929,9 +4929,12 @@ imapx_server_dispose (GObject *object)
 		g_object_unref (server->cancellable);
 		server->cancellable = NULL;
 	}
+	QUEUE_UNLOCK (server);
 
-	if (server->parser_thread)
+	if (server->parser_thread) {
 		g_thread_join (server->parser_thread);
+		server->parser_thread = NULL;
+	}
 
 	if (server->cinfo && imapx_idle_supported (server))
 		imapx_exit_idle (server);
