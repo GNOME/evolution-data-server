@@ -283,7 +283,6 @@ e_book_backend_cache_set_populated (EBookBackendCache *cache)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND_CACHE (cache));
 	e_file_cache_add_object (E_FILE_CACHE (cache), "populated", "TRUE");
-
 }
 
 /**
@@ -307,7 +306,8 @@ void
 e_book_backend_cache_set_time (EBookBackendCache *cache, const gchar *t)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND_CACHE (cache));
-	e_file_cache_add_object (E_FILE_CACHE (cache), "last_update_time", t);
+	if (!e_file_cache_add_object (E_FILE_CACHE (cache), "last_update_time", t))
+		e_file_cache_replace_object (E_FILE_CACHE (cache), "last_update_time", t);
 }
 
 gchar *
