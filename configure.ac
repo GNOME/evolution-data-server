@@ -249,7 +249,8 @@ dnl I18N stuff
 dnl ******************************
 IT_PROG_INTLTOOL([0.35.5])
 
-AM_GLIB_GNU_GETTEXT
+AM_GNU_GETTEXT_VERSION([0.17])
+AM_GNU_GETTEXT([external])
 
 GETTEXT_PACKAGE=evolution-data-server-$BASE_VERSION
 AC_SUBST(GETTEXT_PACKAGE)
