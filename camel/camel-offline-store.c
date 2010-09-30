@@ -138,13 +138,14 @@ camel_offline_store_set_network_state (CamelOfflineStore *store,
 			camel_store_sync (CAMEL_STORE (store), FALSE, NULL);
 		}
 
-		if (!camel_service_disconnect (CAMEL_SERVICE (store), network_available, error))
+		if (!camel_service_disconnect (CAMEL_SERVICE (store), network_available, error)) {
+			store->state = state;
 			return FALSE;
+		}
 	} else {
 		store->state = state;
 		/* network unavailable -> network available */
 		if (!camel_service_connect (CAMEL_SERVICE (store), error)) {
-			store->state = CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL;
 			return FALSE;
 		}
 	}
