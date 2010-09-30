@@ -155,13 +155,14 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 		}
 
 		if (!camel_service_disconnect_sync (
-			CAMEL_SERVICE (store), network_available, error))
+			CAMEL_SERVICE (store), network_available, error)) {
+			store->priv->online = online;
 			return FALSE;
+		}
 	} else {
 		store->priv->online = online;
 		/* network unavailable -> network available */
 		if (!camel_service_connect_sync (CAMEL_SERVICE (store), error)) {
-			store->priv->online = FALSE;
 			return FALSE;
 		}
 	}
