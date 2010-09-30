@@ -2295,7 +2295,7 @@ find_book_by_contact (GList *books, const gchar *contact_uid)
 }
 
 static void
-editor_closed_cb (GtkObject *editor, gpointer data)
+editor_closed_cb (GtkWidget *editor, gpointer data)
 {
 	EContact *contact;
 	gchar *contact_uid;
