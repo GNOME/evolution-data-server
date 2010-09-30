@@ -15,7 +15,7 @@ libegdbus_book_la_CPPFLAGS =			\
 	$(AM_CPPFLAGS)				\
 	-DG_LOG_DOMAIN=\"libegdbus-book\"	\
 	-I$(top_srcdir)/addressbook		\
-	$(GNOME_PLATFORM_CFLAGS)
+	$(E_DATA_SERVER_CFLAGS)
 
 libegdbus_book_la_SOURCES =			\
 	e-gdbus-egdbusbook.h			\
@@ -29,7 +29,7 @@ libegdbus_book_la_SOURCES =			\
 	e-gdbus-typemappers.h
 
 libegdbus_book_la_LIBADD =			\
-	$(GNOME_PLATFORM_LIBS)
+	$(E_DATA_SERVER_LIBS)
 
 libegdbus_book_la_LDFLAGS = $(NO_UNDEFINED)
 
