@@ -1101,6 +1101,10 @@ imapx_find_command_tag(CamelIMAPXServer *imap, guint tag)
 	for (ic = (CamelIMAPXCommand *)imap->active.head;ic->next;ic=ic->next)
 		if (ic->tag == tag)
 			goto found;
+
+	/* Not found: force it to NULL otherwise we return the tail address */
+	ic = NULL;
+
 found:
 	QUEUE_UNLOCK (imap);
 
