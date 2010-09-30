@@ -35,6 +35,9 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_OPERATION, CamelOperationPrivate))
 
+#define PROGRESS_DELAY		250  /* milliseconds */
+#define TRANSIENT_DELAY		4    /* seconds */
+
 typedef struct _StatusNode StatusNode;
 
 struct _StatusNode {
@@ -400,7 +403,8 @@ camel_operation_push_message (GCancellable *cancellable,
 			(GSourceFunc) operation_emit_status_cb, node);
 	else
 		node->source_id = g_timeout_add_seconds (
-			4, (GSourceFunc) operation_emit_status_cb, node);
+			TRANSIENT_DELAY, (GSourceFunc)
+			operation_emit_status_cb, node);
 
 	g_queue_push_head (&operation->priv->status_stack, node);
 
@@ -488,7 +492,7 @@ camel_operation_progress (GCancellable *cancellable,
 		/* Rate limit progress updates. */
 		if (node->source_id == 0)
 			node->source_id = g_timeout_add (
-				250, (GSourceFunc)
+				PROGRESS_DELAY, (GSourceFunc)
 				operation_emit_status_cb, node);
 	}
 
