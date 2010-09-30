@@ -28,6 +28,8 @@
 
 #include "libedataserver-private.h"
 
+#define d(x)
+
 typedef struct {
 	gchar *display_name;  /* localized category name */
 	gchar *clocale_name;  /* only for default categories */
@@ -223,7 +225,7 @@ idle_saver_cb (gpointer user_data)
 
 	filename = build_categories_filename ();
 
-	g_debug ("Saving categories to \"%s\"", filename);
+	d(g_debug ("Saving categories to \"%s\"", filename));
 
 	/* Build the file contents. */
 	buffer = g_string_new ("<categories>\n");
@@ -367,7 +369,7 @@ load_categories (void)
 	if (!g_file_test (filename, G_FILE_TEST_EXISTS))
 		goto exit;
 
-	g_debug ("Loading categories from \"%s\"", filename);
+	d(g_debug ("Loading categories from \"%s\"", filename));
 
 	if (!g_file_get_contents (filename, &contents, &length, &error)) {
 		g_warning ("Unable to load categories: %s", error->message);
@@ -423,7 +425,7 @@ migrate_old_categories (void)
 	if (string == NULL || *string == '\0')
 		goto exit;
 
-	g_debug ("Loading categories from GConf key \"%s\"", key);
+	d(g_debug ("Loading categories from GConf key \"%s\"", key));
 
 	n_added = parse_categories (string, strlen (string));
 	if (n_added == 0)
@@ -508,20 +510,20 @@ initialize_categories (void)
 
 	n_added = load_categories ();
 	if (n_added > 0) {
-		g_debug ("Loaded %d categories", n_added);
+		d(g_debug ("Loaded %d categories", n_added));
 		save_is_pending = FALSE;
 		return;
 	}
 
 	n_added = migrate_old_categories ();
 	if (n_added > 0) {
-		g_debug ("Loaded %d categories", n_added);
+		d(g_debug ("Loaded %d categories", n_added));
 		save_categories ();
 		return;
 	}
 
 	load_default_categories ();
-	g_debug ("Loaded default categories");
+	d(g_debug ("Loaded default categories"));
 	save_categories ();
 }
 
