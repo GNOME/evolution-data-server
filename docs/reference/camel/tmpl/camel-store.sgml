@@ -377,7 +377,7 @@ CamelStore
 </para>
 
 @store: 
-@info: 
+@folder_info: 
 
 
 <!-- ##### FUNCTION camel_store_folder_deleted ##### -->
@@ -386,7 +386,16 @@ CamelStore
 </para>
 
 @store: 
-@info: 
+@folder_info: 
+
+
+<!-- ##### FUNCTION camel_store_folder_opened ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder: 
 
 
 <!-- ##### FUNCTION camel_store_folder_renamed ##### -->
@@ -396,7 +405,7 @@ CamelStore
 
 @store: 
 @old_name: 
-@info: 
+@folder_info: 
 
 
 <!-- ##### FUNCTION camel_store_folder_subscribed ##### -->
@@ -405,7 +414,7 @@ CamelStore
 </para>
 
 @store: 
-@info: 
+@folder_info: 
 
 
 <!-- ##### FUNCTION camel_store_folder_unsubscribed ##### -->
@@ -414,7 +423,7 @@ CamelStore
 </para>
 
 @store: 
-@info: 
+@folder_info: 
 
 
 <!-- ##### FUNCTION camel_store_free_folder_info ##### -->

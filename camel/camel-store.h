@@ -405,33 +405,35 @@ struct _CamelStoreClass {
 
 	/* Signals */
 	void		(*folder_created)	(CamelStore *store,
-						 CamelFolderInfo *info);
+						 CamelFolderInfo *folder_info);
 	void		(*folder_deleted)	(CamelStore *store,
-						 CamelFolderInfo *info);
+						 CamelFolderInfo *folder_info);
 	void		(*folder_opened)	(CamelStore *store,
 						 CamelFolder *folder);
 	void		(*folder_renamed)	(CamelStore *store,
 						 const gchar *old_name,
-						 CamelFolderInfo *info);
+						 CamelFolderInfo *folder_info);
 	void		(*folder_subscribed)	(CamelStore *store,
-						 CamelFolderInfo *info);
+						 CamelFolderInfo *folder_info);
 	void		(*folder_unsubscribed)	(CamelStore *store,
-						 CamelFolderInfo *info);
+						 CamelFolderInfo *folder_info);
 };
 
 GType		camel_store_get_type		(void);
 GQuark		camel_store_error_quark		(void) G_GNUC_CONST;
 void		camel_store_folder_created	(CamelStore *store,
-						 CamelFolderInfo *info);
+						 CamelFolderInfo *folder_info);
 void		camel_store_folder_deleted	(CamelStore *store,
-						 CamelFolderInfo *info);
+						 CamelFolderInfo *folder_info);
+void		camel_store_folder_opened	(CamelStore *store,
+						 CamelFolder *folder);
 void		camel_store_folder_renamed	(CamelStore *store,
 						 const gchar *old_name,
-						 CamelFolderInfo *info);
+						 CamelFolderInfo *folder_info);
 void		camel_store_folder_subscribed	(CamelStore *store,
-						 CamelFolderInfo *info);
+						 CamelFolderInfo *folder_info);
 void		camel_store_folder_unsubscribed	(CamelStore *store,
-						 CamelFolderInfo *info);
+						 CamelFolderInfo *folder_info);
 void		camel_store_free_folder_info	(CamelStore *store,
 						 CamelFolderInfo *fi);
 void		camel_store_free_folder_info_full

@@ -426,7 +426,7 @@ void		camel_folder_ref_message_info	(CamelFolder *folder,
 #endif
 void		camel_folder_delete		(CamelFolder *folder);
 void		camel_folder_rename		(CamelFolder *folder,
-						 const gchar *new);
+						 const gchar *new_name);
 void		camel_folder_changed		(CamelFolder *folder,
 						 CamelFolderChangeInfo *changes);
 void		camel_folder_freeze		(CamelFolder *folder);

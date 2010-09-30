@@ -49,6 +49,7 @@
 	((obj), CAMEL_TYPE_STORE, CamelStorePrivate))
 
 typedef struct _AsyncContext AsyncContext;
+typedef struct _SignalData SignalData;
 
 struct _CamelStorePrivate {
 	GStaticRecMutex folder_lock;	/* for locking folder operations */
@@ -64,6 +65,13 @@ struct _AsyncContext {
 	/* results */
 	CamelFolder *folder;
 	CamelFolderInfo *folder_info;
+};
+
+struct _SignalData {
+	CamelStore *store;
+	CamelFolder *folder;
+	CamelFolderInfo *folder_info;
+	gchar *folder_name;
 };
 
 enum {
@@ -92,6 +100,90 @@ async_context_free (AsyncContext *async_context)
 	camel_folder_info_free (async_context->folder_info);
 
 	g_slice_free (AsyncContext, async_context);
+}
+
+static void
+signal_data_free (SignalData *data)
+{
+	if (data->store != NULL)
+		g_object_unref (data->store);
+
+	if (data->folder != NULL)
+		g_object_unref (data->folder);
+
+	if (data->folder_info != NULL)
+		camel_folder_info_free (data->folder_info);
+
+	g_free (data->folder_name);
+
+	g_slice_free (SignalData, data);
+}
+
+static gboolean
+store_emit_folder_created_cb (SignalData *data)
+{
+	g_signal_emit (
+		data->store,
+		signals[FOLDER_CREATED], 0,
+		data->folder_info);
+
+	return FALSE;
+}
+
+static gboolean
+store_emit_folder_deleted_cb (SignalData *data)
+{
+	g_signal_emit (
+		data->store,
+		signals[FOLDER_DELETED], 0,
+		data->folder_info);
+
+	return FALSE;
+}
+
+static gboolean
+store_emit_folder_opened_cb (SignalData *data)
+{
+	g_signal_emit (
+		data->store,
+		signals[FOLDER_OPENED], 0,
+		data->folder);
+
+	return FALSE;
+}
+
+static gboolean
+store_emit_folder_renamed_cb (SignalData *data)
+{
+	g_signal_emit (
+		data->store,
+		signals[FOLDER_RENAMED], 0,
+		data->folder_name,
+		data->folder_info);
+
+	return FALSE;
+}
+
+static gboolean
+store_emit_folder_subscribed_cb (SignalData *data)
+{
+	g_signal_emit (
+		data->store,
+		signals[FOLDER_SUBSCRIBED], 0,
+		data->folder_info);
+
+	return FALSE;
+}
+
+static gboolean
+store_emit_folder_unsubscribed_cb (SignalData *data)
+{
+	g_signal_emit (
+		data->store,
+		signals[FOLDER_UNSUBSCRIBED], 0,
+		data->folder_info);
+
+	return FALSE;
 }
 
 /**
@@ -1282,9 +1374,10 @@ cs_delete_cached_folder (CamelStore *store,
 /**
  * camel_store_folder_created:
  * @store: a #CamelStore
- * @info: information about the created folder
+ * @folder_info: information about the created folder
  *
- * Emits the #CamelStore::folder-created signal.
+ * Emits the #CamelStore::folder-created signal from an idle source on
+ * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
  *
  * This function is only intended for Camel providers.
  *
@@ -1292,20 +1385,30 @@ cs_delete_cached_folder (CamelStore *store,
  **/
 void
 camel_store_folder_created (CamelStore *store,
-                            CamelFolderInfo *info)
+                            CamelFolderInfo *folder_info)
 {
-	g_return_if_fail (CAMEL_STORE (store));
-	g_return_if_fail (info != NULL);
+	SignalData *data;
 
-	g_signal_emit (store, signals[FOLDER_CREATED], 0, info);
+	g_return_if_fail (CAMEL_IS_STORE (store));
+	g_return_if_fail (folder_info != NULL);
+
+	data = g_slice_new0 (SignalData);
+	data->store = g_object_ref (store);
+	data->folder_info = camel_folder_info_clone (folder_info);
+
+	g_idle_add_full (
+		G_PRIORITY_DEFAULT_IDLE,
+		(GSourceFunc) store_emit_folder_created_cb,
+		data, (GDestroyNotify) signal_data_free);
 }
 
 /**
  * camel_store_folder_deleted:
  * @store: a #CamelStore
- * @info: information about the deleted folder
+ * @folder_info: information about the deleted folder
  *
- * Emits the #CamelStore::folder-deleted signal.
+ * Emits the #CamelStore::folder-deleted signal from an idle source on
+ * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
  *
  * This function is only intended for Camel providers.
  *
@@ -1313,21 +1416,62 @@ camel_store_folder_created (CamelStore *store,
  **/
 void
 camel_store_folder_deleted (CamelStore *store,
-                            CamelFolderInfo *info)
+                            CamelFolderInfo *folder_info)
 {
-	g_return_if_fail (CAMEL_STORE (store));
-	g_return_if_fail (info != NULL);
+	SignalData *data;
 
-	g_signal_emit (store, signals[FOLDER_DELETED], 0, info);
+	g_return_if_fail (CAMEL_IS_STORE (store));
+	g_return_if_fail (folder_info != NULL);
+
+	data = g_slice_new0 (SignalData);
+	data->store = g_object_ref (store);
+	data->folder_info = camel_folder_info_clone (folder_info);
+
+	g_idle_add_full (
+		G_PRIORITY_DEFAULT_IDLE,
+		(GSourceFunc) store_emit_folder_deleted_cb,
+		data, (GDestroyNotify) signal_data_free);
+}
+
+/**
+ * camel_store_folder_opened:
+ * @store: a #CamelStore
+ * @folder: the #CamelFolder that was opened
+ *
+ * Emits the #CamelStore::folder-opened signal from an idle source on
+ * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
+ *
+ * This function is only intended for Camel providers.
+ *
+ * Since: 3.0
+ **/
+void
+camel_store_folder_opened (CamelStore *store,
+                           CamelFolder *folder)
+{
+	SignalData *data;
+
+	g_return_if_fail (CAMEL_IS_STORE (store));
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	data = g_slice_new0 (SignalData);
+	data->store = g_object_ref (store);
+	data->folder = g_object_ref (folder);
+
+	g_idle_add_full (
+		G_PRIORITY_DEFAULT_IDLE,
+		(GSourceFunc) store_emit_folder_opened_cb,
+		data, (GDestroyNotify) signal_data_free);
 }
 
 /**
  * camel_store_folder_renamed:
  * @store: a #CamelStore
  * @old_name: the old name of the folder
- * @info: information about the renamed folder
+ * @folder_info: information about the renamed folder
  *
- * Emits the #CamelStore::folder-renamed signal.
+ * Emits the #CamelStore::folder-renamed signal from an idle source on
+ * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
  *
  * This function is only intended for Camel providers.
  *
@@ -1336,21 +1480,32 @@ camel_store_folder_deleted (CamelStore *store,
 void
 camel_store_folder_renamed (CamelStore *store,
                             const gchar *old_name,
-                            CamelFolderInfo *info)
+                            CamelFolderInfo *folder_info)
 {
-	g_return_if_fail (CAMEL_STORE (store));
-	g_return_if_fail (old_name != NULL);
-	g_return_if_fail (info != NULL);
+	SignalData *data;
 
-	g_signal_emit (store, signals[FOLDER_RENAMED], 0, old_name, info);
+	g_return_if_fail (CAMEL_IS_STORE (store));
+	g_return_if_fail (old_name != NULL);
+	g_return_if_fail (folder_info != NULL);
+
+	data = g_slice_new0 (SignalData);
+	data->store = g_object_ref (store);
+	data->folder_info = camel_folder_info_clone (folder_info);
+	data->folder_name = g_strdup (old_name);
+
+	g_idle_add_full (
+		G_PRIORITY_DEFAULT_IDLE,
+		(GSourceFunc) store_emit_folder_renamed_cb,
+		data, (GDestroyNotify) signal_data_free);
 }
 
 /**
  * camel_store_folder_subscribed:
  * @store: a #CamelStore
- * @info: information about the subscribed folder
+ * @folder_info: information about the subscribed folder
  *
- * Emits the #CamelStore::folder-subscribed signal.
+ * Emits the #CamelStore::folder-subscribed signal from an idle source on
+ * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
  *
  * This function is only intended for Camel providers.
  *
@@ -1358,20 +1513,30 @@ camel_store_folder_renamed (CamelStore *store,
  **/
 void
 camel_store_folder_subscribed (CamelStore *store,
-                               CamelFolderInfo *info)
+                               CamelFolderInfo *folder_info)
 {
-	g_return_if_fail (CAMEL_STORE (store));
-	g_return_if_fail (info != NULL);
+	SignalData *data;
 
-	g_signal_emit (store, signals[FOLDER_SUBSCRIBED], 0, info);
+	g_return_if_fail (CAMEL_IS_STORE (store));
+	g_return_if_fail (folder_info != NULL);
+
+	data = g_slice_new0 (SignalData);
+	data->store = g_object_ref (store);
+	data->folder_info = camel_folder_info_clone (folder_info);
+
+	g_idle_add_full (
+		G_PRIORITY_DEFAULT_IDLE,
+		(GSourceFunc) store_emit_folder_subscribed_cb,
+		data, (GDestroyNotify) signal_data_free);
 }
 
 /**
  * camel_store_folder_unsubscribed:
  * @store: a #CamelStore
- * @info: information about the unsubscribed folder
+ * @folder_info: information about the unsubscribed folder
  *
- * Emits the #CamelStore::folder-unsubscribed signal.
+ * Emits the #CamelStore::folder-unsubscribed signal from an idle source on
+ * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
  *
  * This function is only intended for Camel providers.
  *
@@ -1379,12 +1544,21 @@ camel_store_folder_subscribed (CamelStore *store,
  **/
 void
 camel_store_folder_unsubscribed (CamelStore *store,
-                                 CamelFolderInfo *info)
+                                 CamelFolderInfo *folder_info)
 {
-	g_return_if_fail (CAMEL_STORE (store));
-	g_return_if_fail (info != NULL);
+	SignalData *data;
 
-	g_signal_emit (store, signals[FOLDER_UNSUBSCRIBED], 0, info);
+	g_return_if_fail (CAMEL_IS_STORE (store));
+	g_return_if_fail (folder_info != NULL);
+
+	data = g_slice_new0 (SignalData);
+	data->store = g_object_ref (store);
+	data->folder_info = camel_folder_info_clone (folder_info);
+
+	g_idle_add_full (
+		G_PRIORITY_DEFAULT_IDLE,
+		(GSourceFunc) store_emit_folder_unsubscribed_cb,
+		data, (GDestroyNotify) signal_data_free);
 }
 
 static void
@@ -2021,7 +2195,7 @@ camel_store_get_folder_sync (CamelStore *store,
 		}
 
 		if (folder)
-			g_signal_emit (store, signals[FOLDER_OPENED], 0, folder);
+			camel_store_folder_opened (store, folder);
 	}
 
 	return folder;

@@ -50,6 +50,7 @@
 #define w(x)
 
 typedef struct _AsyncContext AsyncContext;
+typedef struct _SignalData SignalData;
 
 struct _CamelFolderPrivate {
 	GStaticRecMutex lock;
@@ -85,6 +86,12 @@ struct _CamelFolderChangeInfoPrivate {
 	GHashTable *uid_source;	/* used to create unique lists */
 	GPtrArray  *uid_filter; /* uids to be filtered */
 	CamelMemPool *uid_pool;	/* pool used to store copies of uid strings */
+};
+
+struct _SignalData {
+	CamelFolder *folder;
+	CamelFolderChangeInfo *changes;
+	gchar *folder_name;
 };
 
 struct _folder_filter_msg {
@@ -146,6 +153,44 @@ async_context_free (AsyncContext *async_context)
 	g_free (async_context->message_uid);
 
 	g_slice_free (AsyncContext, async_context);
+}
+
+static void
+signal_data_free (SignalData *data)
+{
+	if (data->folder != NULL)
+		g_object_unref (data->folder);
+
+	if (data->changes != NULL)
+		camel_folder_change_info_free (data->changes);
+
+	g_free (data->folder_name);
+
+	g_slice_free (SignalData, data);
+}
+
+static gboolean
+folder_emit_changed_cb (SignalData *data)
+{
+	g_signal_emit (data->folder, signals[CHANGED], 0, data->changes);
+
+	return FALSE;
+}
+
+static gboolean
+folder_emit_deleted_cb (SignalData *data)
+{
+	g_signal_emit (data->folder, signals[DELETED], 0);
+
+	return FALSE;
+}
+
+static gboolean
+folder_emit_renamed_cb (SignalData *data)
+{
+	g_signal_emit (data->folder, signals[RENAMED], 0, data->folder_name);
+
+	return FALSE;
 }
 
 static void
@@ -773,7 +818,7 @@ folder_thaw (CamelFolder *folder)
 	camel_folder_unlock (folder, CAMEL_FOLDER_CHANGE_LOCK);
 
 	if (info) {
-		g_signal_emit (folder, signals[CHANGED], 0, info);
+		camel_folder_changed (folder, info);
 		camel_folder_change_info_free (info);
 	}
 }
@@ -2440,13 +2485,17 @@ camel_folder_search_free (CamelFolder *folder,
  * camel_folder_delete:
  * @folder: a #CamelFolder
  *
- * Marks a folder object as deleted and performs any required cleanup.
+ * Marks @folder as deleted and performs any required cleanup.
+ *
+ * This also emits the #CamelFolder::deleted signal from an idle source on
+ * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
  **/
 void
 camel_folder_delete (CamelFolder *folder)
 {
 	CamelFolderClass *class;
 	CamelStore *parent_store;
+	SignalData *data;
 	const gchar *full_name;
 
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
@@ -2471,43 +2520,58 @@ camel_folder_delete (CamelFolder *folder)
 	parent_store = camel_folder_get_parent_store (folder);
 	camel_db_delete_folder (parent_store->cdb_w, full_name, NULL);
 
-	g_signal_emit (folder, signals[DELETED], 0);
+	data = g_slice_new0 (SignalData);
+	data->folder = g_object_ref (folder);
+
+	g_idle_add_full (
+		G_PRIORITY_DEFAULT_IDLE,
+		(GSourceFunc) folder_emit_deleted_cb,
+		data, (GDestroyNotify) signal_data_free);
 }
 
 /**
  * camel_folder_rename:
  * @folder: a #CamelFolder
- * @new: new name for the folder
+ * @new_name: new name for the folder
  *
- * Mark an active folder object as renamed.
+ * Marks @folder as renamed.
+ *
+ * This also emits the #CamelFolder::renamed signal from an idle source on
+ * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
  *
  * NOTE: This is an internal function used by camel stores, no locking
  * is performed on the folder.
  **/
 void
 camel_folder_rename (CamelFolder *folder,
-                     const gchar *new)
+                     const gchar *new_name)
 {
 	CamelFolderClass *class;
 	CamelStore *parent_store;
-	gchar *old;
+	SignalData *data;
+	gchar *old_name;
 
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
-	g_return_if_fail (new != NULL);
+	g_return_if_fail (new_name != NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_if_fail (class->rename != NULL);
 
-	old = g_strdup (camel_folder_get_full_name (folder));
+	old_name = g_strdup (camel_folder_get_full_name (folder));
 
-	class->rename (folder, new);
+	class->rename (folder, new_name);
 
 	parent_store = camel_folder_get_parent_store (folder);
-	camel_db_rename_folder (parent_store->cdb_w, old, new, NULL);
+	camel_db_rename_folder (parent_store->cdb_w, old_name, new_name, NULL);
 
-	g_signal_emit (folder, signals[RENAMED], 0, old);
+	data = g_slice_new0 (SignalData);
+	data->folder = g_object_ref (folder);
+	data->folder_name = old_name;  /* transfer ownership */
 
-	g_free (old);
+	g_idle_add_full (
+		G_PRIORITY_DEFAULT_IDLE,
+		(GSourceFunc) folder_emit_renamed_cb,
+		data, (GDestroyNotify) signal_data_free);
 }
 
 /**
@@ -2515,7 +2579,8 @@ camel_folder_rename (CamelFolder *folder,
  * @folder: a #CamelFolder
  * @changes: change information for @folder
  *
- * Emits the #CamelFolder::changed signal.
+ * Emits the #CamelFolder::changed signal from an idle source on the
+ * main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
  *
  * Since: 2.32
  **/
@@ -2523,10 +2588,21 @@ void
 camel_folder_changed (CamelFolder *folder,
                       CamelFolderChangeInfo *changes)
 {
+	SignalData *data;
+
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 	g_return_if_fail (changes != NULL);
 
-	g_signal_emit (folder, signals[CHANGED], 0, changes);
+	data = g_slice_new0 (SignalData);
+	data->folder = g_object_ref (folder);
+	data->changes = camel_folder_change_info_new ();
+
+	camel_folder_change_info_cat (data->changes, changes);
+
+	g_idle_add_full (
+		G_PRIORITY_DEFAULT_IDLE,
+		(GSourceFunc) folder_emit_changed_cb,
+		data, (GDestroyNotify) signal_data_free);
 }
 
 /**

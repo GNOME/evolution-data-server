@@ -513,7 +513,7 @@ CamelFolder
 </para>
 
 @folder: 
-@new: 
+@new_name: 
 
 
 <!-- ##### FUNCTION camel_folder_changed ##### -->
