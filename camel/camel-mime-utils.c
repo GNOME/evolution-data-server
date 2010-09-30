@@ -3951,6 +3951,13 @@ parse_rfc822_date (struct _date_token *tokens, gint *tzone)
 	tm.tm_sec = sec;
 	token = token->next;
 
+	if (token && token->start && (
+	    g_ascii_strncasecmp (token->start, "AM", 2) == 0 ||
+	    g_ascii_strncasecmp (token->start, "PM", 2) == 0)) {
+		/* not a valid RFC 822 time representation */
+		return 0;
+	}
+
 	/* get the timezone */
 	if (!token || (n = get_tzone (&token)) == -1) {
 		/* I guess we assume tz is GMT? */
@@ -3984,7 +3991,7 @@ parse_rfc822_date (struct _date_token *tokens, gint *tzone)
 static time_t
 parse_broken_date (struct _date_token *tokens, gint *tzone)
 {
-	gboolean got_wday, got_month, got_tzone;
+	gboolean got_wday, got_month, got_tzone, is_pm;
 	gint hour, min, sec, offset, n;
 	struct _date_token *token;
 	struct tm tm;
@@ -3992,6 +3999,7 @@ parse_broken_date (struct _date_token *tokens, gint *tzone)
 
 	memset ((gpointer) &tm, 0, sizeof (struct tm));
 	got_wday = got_month = got_tzone = FALSE;
+	is_pm = FALSE;
 	offset = 0;
 
 	token = tokens;
@@ -4022,6 +4030,14 @@ parse_broken_date (struct _date_token *tokens, gint *tzone)
 				tm.tm_sec = sec;
 				goto next;
 			}
+		}
+
+		if (!got_tzone && token->start && (
+		    g_ascii_strncasecmp (token->start, "AM", 2) == 0 ||
+		    g_ascii_strncasecmp (token->start, "PM", 2) == 0)) {
+			is_pm = g_ascii_strncasecmp (token->start, "PM", 2) == 0;
+
+			goto next;
 		}
 
 		if (is_tzone (token) && !got_tzone) {
@@ -4083,6 +4099,9 @@ parse_broken_date (struct _date_token *tokens, gint *tzone)
 
 	/* this should convert the time to the GMT equiv time */
 	t -= ((offset / 100) * 60 * 60) + (offset % 100) * 60;
+
+	if (is_pm)
+		t += 12 * 60 * 60;
 
 	if (tzone)
 		*tzone = offset;
