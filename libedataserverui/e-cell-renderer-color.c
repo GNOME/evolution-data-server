@@ -131,9 +131,6 @@ cell_renderer_color_render (GtkCellRenderer *cell,
 	    !gdk_rectangle_intersect (expose_area, &draw_rect, &draw_rect))
 		return;
 
-	gdk_colormap_alloc_color (
-		gdk_colormap_get_system (), priv->color, FALSE, TRUE);
-
 	cr = gdk_cairo_create (window);
 	gdk_cairo_set_source_color (cr, priv->color);
 	cairo_rectangle (cr, pix_rect.x, pix_rect.y, draw_rect.width, draw_rect.height);
