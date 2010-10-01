@@ -345,6 +345,8 @@ camel_operation_cancel_prfd (CamelOperation *operation)
 	if (operation == NULL)
 		return NULL;
 
+	g_return_val_if_fail (CAMEL_IS_OPERATION (operation), NULL);
+
 	LOCK ();
 
 	priv = operation->priv;

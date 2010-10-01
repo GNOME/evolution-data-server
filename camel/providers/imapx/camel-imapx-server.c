@@ -4792,7 +4792,7 @@ imapx_parser_thread (gpointer d)
 	GError *local_error = NULL;
 
 	QUEUE_LOCK (is);
-	cancellable = g_cancellable_new ();
+	cancellable = camel_operation_new ();
 	is->cancellable = g_object_ref (cancellable);
 	QUEUE_UNLOCK (is);
 
