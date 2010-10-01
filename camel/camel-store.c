@@ -530,6 +530,9 @@ store_get_folder_info (CamelStore *store,
 		G_OBJECT (store), callback,
 		user_data, store_get_folder_info);
 
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
 	g_simple_async_result_run_in_thread (
 		simple, store_get_folder_info_thread,
 		io_priority, cancellable);
