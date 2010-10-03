@@ -43,7 +43,7 @@
 
 /* how many 'bits' of hash are used to key the toplevel directory */
 #define CAMEL_DATA_CACHE_BITS (6)
-#define CAMEL_DATA_CACHE_MASK ((1<<CAMEL_DATA_CACHE_BITS)-1)
+#define CAMEL_DATA_CACHE_MASK ((1 << CAMEL_DATA_CACHE_BITS)-1)
 
 /* timeout before a cache dir is checked again for expired entries,
    once an hour should be enough */
@@ -61,7 +61,7 @@ struct _CamelDataCachePrivate {
 	time_t expire_age;
 	time_t expire_access;
 
-	time_t expire_last[1<<CAMEL_DATA_CACHE_BITS];
+	time_t expire_last[1 << CAMEL_DATA_CACHE_BITS];
 };
 
 enum {

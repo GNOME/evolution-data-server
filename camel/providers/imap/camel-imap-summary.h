@@ -53,7 +53,7 @@
 G_BEGIN_DECLS
 
 enum {
-	CAMEL_IMAP_MESSAGE_RECENT = 1<<17
+	CAMEL_IMAP_MESSAGE_RECENT = 1 << 17
 };
 
 typedef struct _CamelImapSummary CamelImapSummary;

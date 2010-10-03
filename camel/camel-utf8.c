@@ -97,9 +97,9 @@ loop:
 				r = c;
 				goto loop;
 			}
-			v = (v<<6) | (c & 0x3f);
-			r<<=1;
-			m<<=5;
+			v = (v << 6) | (c & 0x3f);
+			r <<= 1;
+			m <<= 5;
 		} while (r & 0x40);
 
 		*ptr = p;
@@ -151,9 +151,9 @@ loop:
 					r = c;
 					goto loop;
 				}
-				v = (v<<6) | (c & 0x3f);
-				r<<=1;
-				m<<=5;
+				v = (v << 6) | (c & 0x3f);
+				r <<= 1;
+				m <<= 5;
 			} while (r & 0x40);
 
 			*ptr = p;
@@ -251,7 +251,7 @@ camel_utf7_utf8 (const gchar *ptr)
 			if (c == '-') {
 				state = 0;
 			} else if (utf7_rank[c] != 0xff) {
-				v = (v<<6) | utf7_rank[c];
+				v = (v << 6) | utf7_rank[c];
 				i+=6;
 				if (i >= 16) {
 					x = (v >> (i-16)) & 0xffff;

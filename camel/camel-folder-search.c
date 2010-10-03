@@ -1382,7 +1382,7 @@ match_words_index (CamelFolderSearch *search,
 						while ((name = camel_index_cursor_next (nc))) {
 								gint mask;
 
-								mask = (GPOINTER_TO_INT (g_hash_table_lookup (ht, name))) | (1<<i);
+								mask = (GPOINTER_TO_INT (g_hash_table_lookup (ht, name))) | (1 << i);
 								g_hash_table_insert (ht, (gchar *) camel_pstring_peek (name), GINT_TO_POINTER (mask));
 						}
 						g_object_unref (nc);
@@ -1393,7 +1393,7 @@ match_words_index (CamelFolderSearch *search,
 		g_object_unref (wc);
 
 		lambdafoo.uids = result;
-		lambdafoo.count = (1<<words->len) - 1;
+		lambdafoo.count = (1 << words->len) - 1;
 		g_hash_table_foreach (ht, (GHFunc)htand, &lambdafoo);
 		g_hash_table_destroy (ht);
 	}
@@ -1440,9 +1440,9 @@ match_words_1message (CamelDataWrapper *object, struct _camel_search_words *word
 		for (i=0;i<words->len;i++) {
 			/* FIXME: This is horridly slow, and should use a real search algorithm */
 			if (camel_ustrstrcase ((const gchar *) byte_array->data, words->words[i]->word) != NULL) {
-				*mask |= (1<<i);
+				*mask |= (1 << i);
 				/* shortcut a match */
-				if (*mask == (1<<(words->len))-1)
+				if (*mask == (1 << (words->len))-1)
 					return TRUE;
 			}
 		}

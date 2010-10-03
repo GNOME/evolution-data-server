@@ -222,7 +222,7 @@ camel_debug_hwatch (gint wp, gpointer addr)
      get_dr (7, control);
      /* set watch mode + size */
      rw = DR_RW_WRITE | DR_LEN_4;
-     control &= ~(((1<<DR_CONTROL_SIZE)-1) << (DR_CONTROL_SHIFT+DR_CONTROL_SIZE * wp));
+     control &= ~(((1 << DR_CONTROL_SIZE)-1) << (DR_CONTROL_SHIFT+DR_CONTROL_SIZE * wp));
      control |= rw << (DR_CONTROL_SHIFT + DR_CONTROL_SIZE*wp);
      /* set watch enable */
      control |=  ( 1<< (DR_LOCAL_ENABLE_SHIFT + DR_ENABLE_SIZE * wp));

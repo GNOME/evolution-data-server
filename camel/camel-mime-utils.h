@@ -245,16 +245,16 @@ gsize camel_quoted_encode_close (guchar *in, gsize len, guchar *out, gint *state
 
 /* camel ctype type functions for rfc822/rfc2047/other, which are non-locale specific */
 enum {
-	CAMEL_MIME_IS_CTRL		= 1<<0,
-	CAMEL_MIME_IS_LWSP		= 1<<1,
-	CAMEL_MIME_IS_TSPECIAL	= 1<<2,
-	CAMEL_MIME_IS_SPECIAL	= 1<<3,
-	CAMEL_MIME_IS_SPACE	= 1<<4,
-	CAMEL_MIME_IS_DSPECIAL	= 1<<5,
-	CAMEL_MIME_IS_QPSAFE	= 1<<6,
-	CAMEL_MIME_IS_ESAFE	= 1<<7,	/* encoded word safe */
-	CAMEL_MIME_IS_PSAFE	= 1<<8,	/* encoded word in phrase safe */
-	CAMEL_MIME_IS_ATTRCHAR  = 1<<9	/* attribute-char safe (rfc2184) */
+	CAMEL_MIME_IS_CTRL		= 1 << 0,
+	CAMEL_MIME_IS_LWSP		= 1 << 1,
+	CAMEL_MIME_IS_TSPECIAL	= 1 << 2,
+	CAMEL_MIME_IS_SPECIAL	= 1 << 3,
+	CAMEL_MIME_IS_SPACE	= 1 << 4,
+	CAMEL_MIME_IS_DSPECIAL	= 1 << 5,
+	CAMEL_MIME_IS_QPSAFE	= 1 << 6,
+	CAMEL_MIME_IS_ESAFE	= 1 << 7,	/* encoded word safe */
+	CAMEL_MIME_IS_PSAFE	= 1 << 8,	/* encoded word in phrase safe */
+	CAMEL_MIME_IS_ATTRCHAR  = 1 << 9	/* attribute-char safe (rfc2184) */
 };
 
 extern gushort camel_mime_special_table[256];

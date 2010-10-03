@@ -79,7 +79,7 @@ camel_imapx_id_t imapx_tokenise (register const gchar *str, register guint len);
 
 /* this flag should be part of imapfoldersummary */
 enum {
-	CAMEL_IMAPX_MESSAGE_RECENT = (1<<21),
+	CAMEL_IMAPX_MESSAGE_RECENT = (1 << 21),
 };
 
 /* ********************************************************************** */
@@ -146,18 +146,18 @@ struct _fetch_info {
 	gchar *uid;		/* UID */
 };
 
-#define FETCH_BODY (1<<0)
-#define FETCH_TEXT (1<<1)
-#define FETCH_HEADER (1<<2)
-#define FETCH_MINFO (1<<3)
-#define FETCH_CINFO (1<<4)
-#define FETCH_SIZE (1<<5)
-#define FETCH_OFFSET (1<<6)
-#define FETCH_FLAGS (1<<7)
-#define FETCH_DATE (1<<8)
-#define FETCH_SECTION (1<<9)
-#define FETCH_UID (1<<10)
-#define FETCH_MODSEQ (1<<11)
+#define FETCH_BODY (1 << 0)
+#define FETCH_TEXT (1 << 1)
+#define FETCH_HEADER (1 << 2)
+#define FETCH_MINFO (1 << 3)
+#define FETCH_CINFO (1 << 4)
+#define FETCH_SIZE (1 << 5)
+#define FETCH_OFFSET (1 << 6)
+#define FETCH_FLAGS (1 << 7)
+#define FETCH_DATE (1 << 8)
+#define FETCH_SECTION (1 << 9)
+#define FETCH_UID (1 << 10)
+#define FETCH_MODSEQ (1 << 11)
 
 struct _fetch_info *imapx_parse_fetch (struct _CamelIMAPXStream *is, GCancellable *cancellable, GError **error);
 void imapx_free_fetch (struct _fetch_info *finfo);
@@ -241,12 +241,12 @@ void camel_imapx_destroy_job_queue_info (IMAPXJobQueueInfo *jinfo);
 
 extern guchar imapx_specials[256];
 
-#define IMAPX_TYPE_CHAR (1<<0)
-#define IMAPX_TYPE_TEXT_CHAR (1<<1)
-#define IMAPX_TYPE_QUOTED_CHAR (1<<2)
-#define IMAPX_TYPE_ATOM_CHAR (1<<3)
-#define IMAPX_TYPE_TOKEN_CHAR (1<<4)
-#define IMAPX_TYPE_NOTID_CHAR (1<<5)
+#define IMAPX_TYPE_CHAR (1 << 0)
+#define IMAPX_TYPE_TEXT_CHAR (1 << 1)
+#define IMAPX_TYPE_QUOTED_CHAR (1 << 2)
+#define IMAPX_TYPE_ATOM_CHAR (1 << 3)
+#define IMAPX_TYPE_TOKEN_CHAR (1 << 4)
+#define IMAPX_TYPE_NOTID_CHAR (1 << 5)
 
 guchar imapx_is_mask (const gchar *p);
 
@@ -259,16 +259,16 @@ guchar imapx_is_mask (const gchar *p);
 #define imapx_is_atom(s) (imapx_is_mask(s) & IMAPX_TYPE_ATOM_CHAR)
 
 extern gint camel_imapx_debug_flags;
-#define CAMEL_IMAPX_DEBUG_command	(1<<0)
-#define CAMEL_IMAPX_DEBUG_debug		(1<<1)
-#define CAMEL_IMAPX_DEBUG_extra		(1<<2)
-#define CAMEL_IMAPX_DEBUG_io		(1<<3)
-#define CAMEL_IMAPX_DEBUG_token		(1<<4)
-#define CAMEL_IMAPX_DEBUG_parse		(1<<5)
-#define CAMEL_IMAPX_DEBUG_conman	(1<<6)
+#define CAMEL_IMAPX_DEBUG_command	(1 << 0)
+#define CAMEL_IMAPX_DEBUG_debug		(1 << 1)
+#define CAMEL_IMAPX_DEBUG_extra		(1 << 2)
+#define CAMEL_IMAPX_DEBUG_io		(1 << 3)
+#define CAMEL_IMAPX_DEBUG_token		(1 << 4)
+#define CAMEL_IMAPX_DEBUG_parse		(1 << 5)
+#define CAMEL_IMAPX_DEBUG_conman	(1 << 6)
 
 /* Set this to zero to remove all debug output at build time */
-#define CAMEL_IMAPX_DEBUG_ALL		((1<<7)-1)
+#define CAMEL_IMAPX_DEBUG_ALL		((1 << 7)-1)
 
 #define camel_debug_flag(type) (camel_imapx_debug_flags & CAMEL_IMAPX_DEBUG_ALL & CAMEL_IMAPX_DEBUG_ ## type)
 #define camel_imapx_debug(type, tagprefix, fmt, ...) do {		\

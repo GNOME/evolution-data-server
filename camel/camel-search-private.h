@@ -33,11 +33,11 @@
 G_BEGIN_DECLS
 
 typedef enum {
-	CAMEL_SEARCH_MATCH_START = 1<<0,
-	CAMEL_SEARCH_MATCH_END = 1<<1,
-	CAMEL_SEARCH_MATCH_REGEX = 1<<2, /* disables the first 2 */
-	CAMEL_SEARCH_MATCH_ICASE = 1<<3,
-	CAMEL_SEARCH_MATCH_NEWLINE = 1<<4
+	CAMEL_SEARCH_MATCH_START = 1 << 0,
+	CAMEL_SEARCH_MATCH_END = 1 << 1,
+	CAMEL_SEARCH_MATCH_REGEX = 1 << 2, /* disables the first 2 */
+	CAMEL_SEARCH_MATCH_ICASE = 1 << 3,
+	CAMEL_SEARCH_MATCH_NEWLINE = 1 << 4
 } camel_search_flags_t;
 
 typedef enum {

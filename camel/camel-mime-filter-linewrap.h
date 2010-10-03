@@ -50,8 +50,8 @@
 G_BEGIN_DECLS
 
 enum {
-	CAMEL_MIME_FILTER_LINEWRAP_NOINDENT = (1<<0), /* does not indent; it's forced for indent_char = 0 */
-	CAMEL_MIME_FILTER_LINEWRAP_WORD     = (1<<1), /* indents on word boundary */
+	CAMEL_MIME_FILTER_LINEWRAP_NOINDENT = (1 << 0), /* does not indent; it's forced for indent_char = 0 */
+	CAMEL_MIME_FILTER_LINEWRAP_WORD     = (1 << 1), /* indents on word boundary */
 };
 
 typedef struct _CamelMimeFilterLinewrap CamelMimeFilterLinewrap;

@@ -194,7 +194,7 @@ struct _CamelIndexClass {
 };
 
 /* flags, stored in 'state', set with set_state */
-#define CAMEL_INDEX_DELETED (1<<0)
+#define CAMEL_INDEX_DELETED (1 << 0)
 
 GType		camel_index_get_type		(void);
 CamelIndex *	camel_index_new			(const gchar *path,

@@ -15,12 +15,12 @@ struct {
 	{ "(this is a comment) <test@camel.host>", { "test@camel.host" } },
 	{ "<test@camel.host> (this is a comment)", { "test@camel.host" } },
 	{ "<test@camel.host> This is total rubbish!", { "test@camel.host" } },
-	{ "<<test.groupwise@bug.novell>@novell>", { "test.groupwise@bug.novell" } },
-	{ "<<test.groupwise@bug.novell>@novell> <test@camel.host>",
+	{ " << test.groupwise@bug.novell>@novell>", { "test.groupwise@bug.novell" } },
+	{ " << test.groupwise@bug.novell>@novell> <test@camel.host>",
 	  { "test@camel.host", "test.groupwise@bug.novell" } },
 	{ "<test@camel.host> <<test.groupwise@bug.novell>@novell> <test@camel.host>",
 	  { "test@camel.host", "test.groupwise@bug.novell", "test@camel.host" } },
-	{ "<<test.groupwise@bug.novell>@novell> <test@camel.host> <<test.groupwise@bug.novell>@novell>",
+	{ " << test.groupwise@bug.novell>@novell> <test@camel.host> <<test.groupwise@bug.novell>@novell>",
 	  { "test.groupwise@bug.novell", "test@camel.host", "test.groupwise@bug.novell" } },
 };
 

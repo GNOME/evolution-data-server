@@ -132,13 +132,13 @@ struct _CamelFolder {
 	gpointer later[4];
 };
 
-#define CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY (1<<0)
-#define CAMEL_FOLDER_HAS_SEARCH_CAPABILITY  (1<<1)
-#define CAMEL_FOLDER_FILTER_RECENT          (1<<2)
-#define CAMEL_FOLDER_HAS_BEEN_DELETED       (1<<3)
-#define CAMEL_FOLDER_IS_TRASH               (1<<4)
-#define CAMEL_FOLDER_IS_JUNK                (1<<5)
-#define CAMEL_FOLDER_FILTER_JUNK	    (1<<6)
+#define CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY (1 << 0)
+#define CAMEL_FOLDER_HAS_SEARCH_CAPABILITY  (1 << 1)
+#define CAMEL_FOLDER_FILTER_RECENT          (1 << 2)
+#define CAMEL_FOLDER_HAS_BEEN_DELETED       (1 << 3)
+#define CAMEL_FOLDER_IS_TRASH               (1 << 4)
+#define CAMEL_FOLDER_IS_JUNK                (1 << 5)
+#define CAMEL_FOLDER_FILTER_JUNK	    (1 << 6)
 
 struct _CamelFolderClass {
 	CamelObjectClass parent_class;

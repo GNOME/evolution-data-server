@@ -98,10 +98,10 @@ static DataType digest_args[] = {
 	{ NULL,        DIGEST_UNKNOWN   }
 };
 
-#define QOP_AUTH           (1<<0)
-#define QOP_AUTH_INT       (1<<1)
-#define QOP_AUTH_CONF      (1<<2)
-#define QOP_INVALID        (1<<3)
+#define QOP_AUTH           (1 << 0)
+#define QOP_AUTH_INT       (1 << 1)
+#define QOP_AUTH_CONF      (1 << 2)
+#define QOP_INVALID        (1 << 3)
 
 static DataType qop_types[] = {
 	{ "auth",      QOP_AUTH      },
@@ -110,12 +110,12 @@ static DataType qop_types[] = {
 	{ NULL,        QOP_INVALID   }
 };
 
-#define CIPHER_DES         (1<<0)
-#define CIPHER_3DES        (1<<1)
-#define CIPHER_RC4         (1<<2)
-#define CIPHER_RC4_40      (1<<3)
-#define CIPHER_RC4_56      (1<<4)
-#define CIPHER_INVALID     (1<<5)
+#define CIPHER_DES         (1 << 0)
+#define CIPHER_3DES        (1 << 1)
+#define CIPHER_RC4         (1 << 2)
+#define CIPHER_RC4_40      (1 << 3)
+#define CIPHER_RC4_56      (1 << 4)
+#define CIPHER_INVALID     (1 << 5)
 
 static DataType cipher_types[] = {
 	{ "des",    CIPHER_DES     },

@@ -54,7 +54,7 @@ struct _CamelStreamBufferPrivate {
 G_DEFINE_TYPE (CamelStreamBuffer, camel_stream_buffer, CAMEL_TYPE_STREAM)
 
 enum {
-	BUF_USER = 1<<0	/* user-supplied buffer, do not free */
+	BUF_USER = 1 << 0	/* user-supplied buffer, do not free */
 };
 
 #define BUF_SIZE 1024

@@ -78,13 +78,13 @@ typedef struct _CamelBlockFile CamelBlockFile;
 typedef struct _CamelBlockFileClass CamelBlockFileClass;
 typedef struct _CamelBlockFilePrivate CamelBlockFilePrivate;
 
-#define CAMEL_BLOCK_FILE_SYNC (1<<0)
+#define CAMEL_BLOCK_FILE_SYNC (1 << 0)
 
 #define CAMEL_BLOCK_SIZE (1024)
 #define CAMEL_BLOCK_SIZE_BITS (10) /* # bits to contain block_size bytes */
 
-#define CAMEL_BLOCK_DIRTY (1<<0)
-#define CAMEL_BLOCK_DETACHED (1<<1)
+#define CAMEL_BLOCK_DIRTY (1 << 0)
+#define CAMEL_BLOCK_DETACHED (1 << 1)
 
 struct _CamelBlockRoot {
 	gchar version[8];	/* version number */

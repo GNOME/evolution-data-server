@@ -77,17 +77,17 @@ enum {
 
 /* flags for server options */
 enum {
-	CAMEL_POP3_CAP_APOP = 1<<0,
-	CAMEL_POP3_CAP_UIDL = 1<<1,
-	CAMEL_POP3_CAP_SASL = 1<<2,
-	CAMEL_POP3_CAP_TOP  = 1<<3,
-	CAMEL_POP3_CAP_PIPE = 1<<4,
-	CAMEL_POP3_CAP_STLS = 1<<5
+	CAMEL_POP3_CAP_APOP = 1 << 0,
+	CAMEL_POP3_CAP_UIDL = 1 << 1,
+	CAMEL_POP3_CAP_SASL = 1 << 2,
+	CAMEL_POP3_CAP_TOP  = 1 << 3,
+	CAMEL_POP3_CAP_PIPE = 1 << 4,
+	CAMEL_POP3_CAP_STLS = 1 << 5
 };
 
 /* enable/disable flags for the engine itself */
 enum {
-	CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS = 1<<0
+	CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS = 1 << 0
 };
 
 typedef void (*CamelPOP3CommandFunc)(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data);

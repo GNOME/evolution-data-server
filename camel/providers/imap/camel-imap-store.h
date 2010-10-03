@@ -93,8 +93,8 @@ G_BEGIN_DECLS
 #define CAMEL_IMAP_STORE_CHECK_LSUB          (CAMEL_IMAP_STORE_ARG_CHECK_LSUB | CAMEL_ARG_BOO)
 
 /* CamelFolderInfo flags */
-#define CAMEL_IMAP_FOLDER_MARKED	     (1<<16)
-#define CAMEL_IMAP_FOLDER_UNMARKED	     (1<<17)
+#define CAMEL_IMAP_FOLDER_MARKED	     (1 << 16)
+#define CAMEL_IMAP_FOLDER_UNMARKED	     (1 << 17)
 
 typedef enum {
 	IMAP_LEVEL_UNKNOWN,

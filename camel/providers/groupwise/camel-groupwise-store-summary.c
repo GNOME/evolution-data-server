@@ -236,7 +236,7 @@ camel_groupwise_store_summary_path_to_full (CamelGroupwiseStoreSummary *s, const
 				break;
 			case 1:
 				state = 2;
-				v = hexnib (c)<<4;
+				v = hexnib (c) << 4;
 				break;
 			case 2:
 				state = 0;

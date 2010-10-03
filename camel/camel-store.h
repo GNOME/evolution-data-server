@@ -102,25 +102,25 @@ typedef struct _CamelFolderInfo {
 /* Note: these are abstractions (duh), its upto the provider to make them make sense */
 
 /* a folder which can't contain messages */
-#define CAMEL_FOLDER_NOSELECT (1<<0)
+#define CAMEL_FOLDER_NOSELECT (1 << 0)
 /* a folder which cannot have children */
-#define CAMEL_FOLDER_NOINFERIORS (1<<1)
+#define CAMEL_FOLDER_NOINFERIORS (1 << 1)
 /* a folder which has children (not yet fully implemented) */
-#define CAMEL_FOLDER_CHILDREN (1<<2)
+#define CAMEL_FOLDER_CHILDREN (1 << 2)
 /* a folder which does not have any children (not yet fully implemented) */
-#define CAMEL_FOLDER_NOCHILDREN (1<<3)
+#define CAMEL_FOLDER_NOCHILDREN (1 << 3)
 /* a folder which is subscribed */
-#define CAMEL_FOLDER_SUBSCRIBED (1<<4)
+#define CAMEL_FOLDER_SUBSCRIBED (1 << 4)
 /* a virtual folder, cannot copy/move messages here */
-#define CAMEL_FOLDER_VIRTUAL (1<<5)
+#define CAMEL_FOLDER_VIRTUAL (1 << 5)
 /* a system folder, cannot be renamed/deleted */
-#define CAMEL_FOLDER_SYSTEM (1<<6)
+#define CAMEL_FOLDER_SYSTEM (1 << 6)
 /* a virtual folder that can't be copied to, and can only be moved to if in an existing folder */
-#define CAMEL_FOLDER_VTRASH (1<<7)
+#define CAMEL_FOLDER_VTRASH (1 << 7)
 /* a shared folder i'm accessing */
-#define CAMEL_FOLDER_SHARED_TO_ME (1<<8)
+#define CAMEL_FOLDER_SHARED_TO_ME (1 << 8)
 /* a folder that i'm sharing */
-#define CAMEL_FOLDER_SHARED_BY_ME (1<<9)
+#define CAMEL_FOLDER_SHARED_BY_ME (1 << 9)
 
 /* use 3 bits as a hint for a folder type */
 #define CAMEL_FOLDER_TYPE_MASK (7 << 10)
@@ -138,7 +138,7 @@ typedef struct _CamelFolderInfo {
 /* a sent-items folder */
 #define CAMEL_FOLDER_TYPE_SENT (5 << 10)
 
-/* next bit is 1<<13 */
+/* next bit is 1 << 13 */
 
 /* store premissions */
 #define CAMEL_STORE_READ  (1 << 0)
@@ -189,10 +189,10 @@ struct _CamelStore {
 };
 
 /* open mode for folder */
-#define CAMEL_STORE_FOLDER_CREATE (1<<0)
-#define CAMEL_STORE_FOLDER_EXCL (1<<1)
-#define CAMEL_STORE_FOLDER_BODY_INDEX (1<<2)
-#define CAMEL_STORE_FOLDER_PRIVATE (1<<3) /* a private folder, that shouldn't show up in unmatched/folder info's, etc */
+#define CAMEL_STORE_FOLDER_CREATE (1 << 0)
+#define CAMEL_STORE_FOLDER_EXCL (1 << 1)
+#define CAMEL_STORE_FOLDER_BODY_INDEX (1 << 2)
+#define CAMEL_STORE_FOLDER_PRIVATE (1 << 3) /* a private folder, that shouldn't show up in unmatched/folder info's, etc */
 
 #define CAMEL_STORE_FOLDER_CREATE_EXCL (CAMEL_STORE_FOLDER_CREATE | CAMEL_STORE_FOLDER_EXCL)
 

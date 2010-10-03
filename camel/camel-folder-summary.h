@@ -85,31 +85,31 @@ struct _CamelMessageContentInfo {
 
 /* system flag bits */
 typedef enum _CamelMessageFlags {
-	CAMEL_MESSAGE_ANSWERED = 1<<0,
-	CAMEL_MESSAGE_DELETED = 1<<1,
-	CAMEL_MESSAGE_DRAFT = 1<<2,
-	CAMEL_MESSAGE_FLAGGED = 1<<3,
-	CAMEL_MESSAGE_SEEN = 1<<4,
+	CAMEL_MESSAGE_ANSWERED = 1 << 0,
+	CAMEL_MESSAGE_DELETED = 1 << 1,
+	CAMEL_MESSAGE_DRAFT = 1 << 2,
+	CAMEL_MESSAGE_FLAGGED = 1 << 3,
+	CAMEL_MESSAGE_SEEN = 1 << 4,
 
 	/* these aren't really system flag bits, but are convenience flags */
-	CAMEL_MESSAGE_ATTACHMENTS = 1<<5,
-	CAMEL_MESSAGE_ANSWERED_ALL = 1<<6,
-	CAMEL_MESSAGE_JUNK = 1<<7,
-	CAMEL_MESSAGE_SECURE = 1<<8,
-	CAMEL_MESSAGE_USER_NOT_DELETABLE = 1<<9,
-	CAMEL_MESSAGE_HIDDEN = 1<<10,
-	CAMEL_MESSAGE_NOTJUNK = 1<<11,
-	CAMEL_MESSAGE_FORWARDED = 1<<12,
+	CAMEL_MESSAGE_ATTACHMENTS = 1 << 5,
+	CAMEL_MESSAGE_ANSWERED_ALL = 1 << 6,
+	CAMEL_MESSAGE_JUNK = 1 << 7,
+	CAMEL_MESSAGE_SECURE = 1 << 8,
+	CAMEL_MESSAGE_USER_NOT_DELETABLE = 1 << 9,
+	CAMEL_MESSAGE_HIDDEN = 1 << 10,
+	CAMEL_MESSAGE_NOTJUNK = 1 << 11,
+	CAMEL_MESSAGE_FORWARDED = 1 << 12,
 
 	/* following flags are for the folder, and are not really permanent flags */
-	CAMEL_MESSAGE_FOLDER_FLAGGED = 1<<16, /* for use by the folder implementation */
-	/* flags after 1<<16 are used by camel providers,
+	CAMEL_MESSAGE_FOLDER_FLAGGED = 1 << 16, /* for use by the folder implementation */
+	/* flags after 1 << 16 are used by camel providers,
            if adding non permanent flags, add them to the end  */
 
-	CAMEL_MESSAGE_JUNK_LEARN = 1<<30, /* used when setting CAMEL_MESSAGE_JUNK flag
+	CAMEL_MESSAGE_JUNK_LEARN = 1 << 30, /* used when setting CAMEL_MESSAGE_JUNK flag
 					     to say that we request junk plugin
 					     to learn that message as junk/non junk */
-	CAMEL_MESSAGE_USER = 1<<31 /* supports user flags */
+	CAMEL_MESSAGE_USER = 1 << 31 /* supports user flags */
 } CamelMessageFlags;
 
 /* Changes to system flags will NOT trigger a folder changed event */
@@ -216,7 +216,7 @@ struct _CamelMessageInfoBase {
 };
 
 typedef enum _CamelFolderSummaryFlags {
-	CAMEL_SUMMARY_DIRTY = 1<<0
+	CAMEL_SUMMARY_DIRTY = 1 << 0
 } CamelFolderSummaryFlags;
 
 /**

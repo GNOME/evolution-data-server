@@ -45,8 +45,8 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_IMAPX_SERVER, CamelIMAPXServerClass))
 
-#define IMAPX_MODE_READ (1<<0)
-#define IMAPX_MODE_WRITE (1<<1)
+#define IMAPX_MODE_READ (1 << 0)
+#define IMAPX_MODE_WRITE (1 << 1)
 
 G_BEGIN_DECLS
 

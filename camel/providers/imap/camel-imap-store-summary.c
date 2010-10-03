@@ -211,7 +211,7 @@ camel_imap_store_summary_path_to_full (CamelImapStoreSummary *s, const gchar *pa
 			break;
 		case 1:
 			state = 2;
-			v = hexnib (c)<<4;
+			v = hexnib (c) << 4;
 			break;
 		case 2:
 			state = 0;
