@@ -161,14 +161,14 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 				batch = g_hash_table_new (NULL, NULL);
 			md = g_hash_table_lookup (batch, mi->summary->folder);
 			if (md == NULL) {
-				md = g_malloc0(sizeof(*md));
+				md = g_malloc0 (sizeof (*md));
 				md->cancellable = cancellable;
 				md->folder = g_object_ref (mi->summary->folder);
 				md->uids = g_ptr_array_new ();
 				md->dest = dest;
 				if (cancellable != NULL)
 					g_object_ref (cancellable);
-				g_hash_table_insert(batch, mi->summary->folder, md);
+				g_hash_table_insert (batch, mi->summary->folder, md);
 			}
 
 			tuid = uids->pdata[i];

@@ -342,7 +342,7 @@ try_sasl (CamelPOP3Store *store,
 		/* If we dont get continuation, or the sasl object's run out of work, or we dont get a challenge,
 		   its a protocol error, so fail, and try reset the server */
 		if (strncmp((gchar *) line, "+ ", 2) != 0
-		    || camel_sasl_get_authenticated(sasl)
+		    || camel_sasl_get_authenticated (sasl)
 		    || (resp = (guchar *) camel_sasl_challenge_base64_sync (sasl, (const gchar *) line+2, cancellable, NULL)) == NULL) {
 			camel_stream_printf((CamelStream *)stream, "*\r\n");
 			camel_pop3_stream_line (stream, &line, &len);
@@ -454,7 +454,7 @@ pop3_try_authenticate (CamelService *service,
 		l = store->engine->auth;
 		while (l) {
 			auth = l->data;
-			if (strcmp(auth->authproto, service->url->authmech) == 0)
+			if (strcmp (auth->authproto, service->url->authmech) == 0)
 				return try_sasl (
 					store, service->url->authmech,
 					cancellable, error);

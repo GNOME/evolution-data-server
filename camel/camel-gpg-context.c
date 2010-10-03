@@ -1116,7 +1116,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 	if ((polls[5].revents & G_IO_IN) &&
 		g_cancellable_set_error_if_cancelled (cancellable, error)) {
 
-		gpg_ctx_op_cancel(gpg);
+		gpg_ctx_op_cancel (gpg);
 		return -1;
 	}
 
@@ -1879,7 +1879,7 @@ gpg_encrypt_sync (CamelCipherContext *context,
 		goto fail;
 
 	/* FIXME: move this to a common routine */
-	while (!gpg_ctx_op_complete(gpg)) {
+	while (!gpg_ctx_op_complete (gpg)) {
 		if (gpg_ctx_op_step (gpg, cancellable, error) == -1) {
 			gpg_ctx_op_cancel (gpg);
 			goto fail;

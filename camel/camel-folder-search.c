@@ -1497,7 +1497,7 @@ match_words_messages (CamelFolderSearch *search,
 			if (match_words_message (
 					search->folder, uid, words,
 					cancellable, error))
-				g_ptr_array_add(matches, (gchar *)uid);
+				g_ptr_array_add (matches, (gchar *)uid);
 		}
 
 		g_ptr_array_free (indexed, TRUE);
@@ -1510,7 +1510,7 @@ match_words_messages (CamelFolderSearch *search,
 			if (match_words_message (
 				search->folder, uid, words,
 				cancellable, error))
-				g_ptr_array_add(matches, (gchar *)uid);
+				g_ptr_array_add (matches, (gchar *)uid);
 		}
 	}
 
@@ -1542,7 +1542,7 @@ search_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, C
 					} else {
 						/* TODO: cache current message incase of multiple body search terms */
 						/* FIXME Pass a GCancellable */
-						truth = match_words_message(search->folder, camel_message_info_uid(search->current), words, NULL, error);
+						truth = match_words_message (search->folder, camel_message_info_uid (search->current), words, NULL, error);
 					}
 					camel_search_words_free (words);
 				}
@@ -1573,7 +1573,7 @@ search_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, C
 						matches = match_words_index (search, words, error);
 					} else {
 						/* FIXME Pass a GCancellable */
-						matches = match_words_messages(search, words, NULL, error);
+						matches = match_words_messages (search, words, NULL, error);
 					}
 					for (j=0;j<matches->len;j++) {
 						g_hash_table_insert (ht, matches->pdata[j], matches->pdata[j]);

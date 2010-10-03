@@ -95,9 +95,11 @@ void		camel_imap_journal_log		(CamelOfflineJournal *journal,
 void		camel_imap_journal_uidmap_add	(CamelIMAPJournal *journal,
 						 const gchar *old_uid,
 						 const gchar *n_uid);
-const gchar *	camel_imap_journal_uidmap_lookup(CamelIMAPJournal *journal,
+const gchar *	camel_imap_journal_uidmap_lookup
+						(CamelIMAPJournal *journal,
 						 const gchar *uid);
-void		camel_imap_journal_close_folders(CamelIMAPJournal *journal);
+void		camel_imap_journal_close_folders
+						(CamelIMAPJournal *journal);
 
 G_END_DECLS
 

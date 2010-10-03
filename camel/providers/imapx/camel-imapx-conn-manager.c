@@ -233,7 +233,7 @@ imapx_find_connection (CamelIMAPXConnManager *con_man, const gchar *folder_name)
 		}
 	}
 
-	if (camel_debug_flag(conman))
+	if (camel_debug_flag (conman))
 		g_assert (!(con_man->priv->n_connections == g_slist_length (con_man->priv->connections) && !conn));
 
 	CON_UNLOCK (con_man);

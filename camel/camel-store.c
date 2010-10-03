@@ -1356,14 +1356,14 @@ cs_delete_cached_folder (CamelStore *store,
 		CamelVeeFolder *vfolder;
 
 		if ((store->flags & CAMEL_STORE_VTRASH)
-		    && (vfolder = camel_object_bag_get(store->folders, CAMEL_VTRASH_NAME))) {
+		    && (vfolder = camel_object_bag_get (store->folders, CAMEL_VTRASH_NAME))) {
 			camel_vee_folder_remove_folder (vfolder, folder);
 			g_object_unref (vfolder);
 		}
 
 		if ((store->flags & CAMEL_STORE_VJUNK)
-		    && (vfolder = camel_object_bag_get(store->folders, CAMEL_VJUNK_NAME))) {
-			camel_vee_folder_remove_folder(vfolder, folder);
+		    && (vfolder = camel_object_bag_get (store->folders, CAMEL_VJUNK_NAME))) {
+			camel_vee_folder_remove_folder (vfolder, folder);
 			g_object_unref (vfolder);
 		}
 
@@ -2162,10 +2162,10 @@ camel_store_get_folder_sync (CamelStore *store,
 			}
 		}
 
-		if ((store->flags & CAMEL_STORE_VTRASH) && strcmp(folder_name, CAMEL_VTRASH_NAME) == 0) {
+		if ((store->flags & CAMEL_STORE_VTRASH) && strcmp (folder_name, CAMEL_VTRASH_NAME) == 0) {
 			folder = class->get_trash_folder_sync (store, cancellable, error);
 			CAMEL_CHECK_GERROR (store, get_trash_folder_sync, folder != NULL, error);
-		} else if ((store->flags & CAMEL_STORE_VJUNK) && strcmp(folder_name, CAMEL_VJUNK_NAME) == 0) {
+		} else if ((store->flags & CAMEL_STORE_VJUNK) && strcmp (folder_name, CAMEL_VJUNK_NAME) == 0) {
 			folder = class->get_junk_folder_sync (store, cancellable, error);
 			CAMEL_CHECK_GERROR (store, get_junk_folder_sync, folder != NULL, error);
 		} else {
@@ -2915,7 +2915,7 @@ camel_store_delete_folder_sync (CamelStore *store,
 		g_clear_error (&local_error);
 
 	if (local_error == NULL)
-		cs_delete_cached_folder(store, folder_name);
+		cs_delete_cached_folder (store, folder_name);
 	else
 		g_propagate_error (error, local_error);
 

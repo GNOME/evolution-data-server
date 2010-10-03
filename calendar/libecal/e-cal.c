@@ -465,7 +465,6 @@ gdbus_cal_connection_gone_cb (GDBusConnection *connection, const gchar *sender_n
 	gdbus_cal_closed_cb (connection, TRUE, NULL, user_data);
 }
 
-
 static void
 gdbus_cal_disconnect (ECal *ecal)
 {

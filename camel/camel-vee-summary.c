@@ -267,10 +267,10 @@ vee_info_set_flags (CamelMessageInfo *mi,
 		if (hacked_unread_folder)
 			camel_vee_folder_mask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
 
-		camel_folder_freeze(rmi->summary->folder);
-		res = camel_message_info_set_flags(rmi, flags, set);
+		camel_folder_freeze (rmi->summary->folder);
+		res = camel_message_info_set_flags (rmi, flags, set);
 		((CamelVeeMessageInfo *) mi)->old_flags = camel_message_info_flags (rmi);
-		camel_folder_thaw(rmi->summary->folder);
+		camel_folder_thaw (rmi->summary->folder);
 
 		if (hacked_unread_folder)
 			camel_vee_folder_unmask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);

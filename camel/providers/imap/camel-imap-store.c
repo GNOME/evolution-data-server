@@ -916,7 +916,7 @@ imap_store_construct (CamelService *service,
 		imap_store->parameters |= IMAP_PARAM_SUBSCRIPTIONS;
 	if (camel_url_get_param (url, "override_namespace") && camel_url_get_param (url, "namespace")) {
 		imap_store->parameters |= IMAP_PARAM_OVERRIDE_NAMESPACE;
-		g_free(imap_store->users_namespace);
+		g_free (imap_store->users_namespace);
 		imap_store->users_namespace = g_strdup (camel_url_get_param (url, "namespace"));
 	}
 	if (camel_url_get_param (url, "check_all"))
@@ -964,25 +964,25 @@ imap_store_construct (CamelService *service,
 	}
 
 	/* setup/load the store summary */
-	tmp = alloca(strlen(imap_store->storage_path)+32);
+	tmp = alloca (strlen (imap_store->storage_path)+32);
 	sprintf(tmp, "%s/.ev-store-summary", imap_store->storage_path);
-	imap_store->summary = camel_imap_store_summary_new();
-	camel_store_summary_set_filename((CamelStoreSummary *)imap_store->summary, tmp);
-	summary_url = camel_url_new(imap_store->base_url, NULL);
-	camel_store_summary_set_uri_base((CamelStoreSummary *)imap_store->summary, summary_url);
-	camel_url_free(summary_url);
-	if (camel_store_summary_load((CamelStoreSummary *)imap_store->summary) == 0) {
+	imap_store->summary = camel_imap_store_summary_new ();
+	camel_store_summary_set_filename ((CamelStoreSummary *)imap_store->summary, tmp);
+	summary_url = camel_url_new (imap_store->base_url, NULL);
+	camel_store_summary_set_uri_base ((CamelStoreSummary *)imap_store->summary, summary_url);
+	camel_url_free (summary_url);
+	if (camel_store_summary_load ((CamelStoreSummary *)imap_store->summary) == 0) {
 		CamelImapStoreSummary *is = imap_store->summary;
 
 		if (is->namespace) {
 			/* if namespace has changed, clear folder list */
-			if (imap_store->users_namespace && strcmp(imap_store->users_namespace, is->namespace->full_name) != 0) {
-				camel_store_summary_clear((CamelStoreSummary *)is);
+			if (imap_store->users_namespace && strcmp (imap_store->users_namespace, is->namespace->full_name) != 0) {
+				camel_store_summary_clear ((CamelStoreSummary *)is);
 			}
 		}
 
 		imap_store->capabilities = is->capabilities;
-		imap_set_server_level(imap_store);
+		imap_set_server_level (imap_store);
 	}
 
 	return TRUE;
@@ -1342,14 +1342,14 @@ imap_set_server_level (CamelImapStore *store)
 
 /* folder_name is path name */
 static CamelFolderInfo *
-imap_build_folder_info(CamelImapStore *imap_store, const gchar *folder_name)
+imap_build_folder_info (CamelImapStore *imap_store, const gchar *folder_name)
 {
 	CamelURL *url;
 	const gchar *name;
 	CamelFolderInfo *fi;
 
 	fi = camel_folder_info_new ();
-	fi->full_name = g_strdup(folder_name);
+	fi->full_name = g_strdup (folder_name);
 	fi->unread = -1;
 	fi->total = -1;
 
@@ -1357,7 +1357,7 @@ imap_build_folder_info(CamelImapStore *imap_store, const gchar *folder_name)
 	g_free (url->path);
 	url->path = g_strdup_printf ("/%s", folder_name);
 	fi->uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
-	camel_url_free(url);
+	camel_url_free (url);
 	name = strrchr (fi->full_name, '/');
 	if (name == NULL)
 		name = fi->full_name;
@@ -1388,14 +1388,14 @@ imap_folder_effectively_unsubscribed (CamelImapStore *imap_store,
 	CamelFolderInfo *fi;
 	CamelStoreInfo *si;
 
-	si = camel_store_summary_path((CamelStoreSummary *)imap_store->summary, folder_name);
+	si = camel_store_summary_path ((CamelStoreSummary *)imap_store->summary, folder_name);
 	if (si) {
 		if (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) {
 			si->flags &= ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-			camel_store_summary_touch((CamelStoreSummary *)imap_store->summary);
-			camel_store_summary_save((CamelStoreSummary *)imap_store->summary);
+			camel_store_summary_touch ((CamelStoreSummary *)imap_store->summary);
+			camel_store_summary_save ((CamelStoreSummary *)imap_store->summary);
 		}
-		camel_store_summary_info_free((CamelStoreSummary *)imap_store->summary, si);
+		camel_store_summary_info_free ((CamelStoreSummary *)imap_store->summary, si);
 	}
 
 	if (imap_store->renaming) {
@@ -1406,7 +1406,7 @@ imap_folder_effectively_unsubscribed (CamelImapStore *imap_store,
 
 	}
 
-	fi = imap_build_folder_info(imap_store, folder_name);
+	fi = imap_build_folder_info (imap_store, folder_name);
 	camel_store_folder_unsubscribed (CAMEL_STORE (imap_store), fi);
 	camel_folder_info_free (fi);
 
@@ -1449,18 +1449,18 @@ imap_forget_folder (CamelImapStore *imap_store, const gchar *folder_name, GError
 	camel_imap_message_cache_delete (folder_dir, NULL);
 
 	state_file = g_strdup_printf("%s/subfolders", folder_dir);
-	g_rmdir(state_file);
-	g_free(state_file);
+	g_rmdir (state_file);
+	g_free (state_file);
 
 	g_rmdir (folder_dir);
 	g_free (folder_dir);
 
  event:
 
-	camel_store_summary_remove_path((CamelStoreSummary *)imap_store->summary, folder_name);
-	camel_store_summary_save((CamelStoreSummary *)imap_store->summary);
+	camel_store_summary_remove_path ((CamelStoreSummary *)imap_store->summary, folder_name);
+	camel_store_summary_save ((CamelStoreSummary *)imap_store->summary);
 
-	fi = imap_build_folder_info(imap_store, folder_name);
+	fi = imap_build_folder_info (imap_store, folder_name);
 	camel_store_folder_deleted (CAMEL_STORE (imap_store), fi);
 	camel_folder_info_free (fi);
 }

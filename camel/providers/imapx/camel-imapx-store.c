@@ -194,7 +194,7 @@ camel_imapx_store_get_server (CamelIMAPXStore *istore,
 {
 	CamelIMAPXServer *server = NULL;
 
-	if (camel_operation_cancel_check(NULL)) {
+	if (camel_operation_cancel_check (NULL)) {
 		g_set_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED,
 			     _("Cancelled"));
 		return NULL;
@@ -533,7 +533,7 @@ imapx_subscribe_folder (CamelStore *store,
 
 	success = camel_imapx_server_manage_subscription (
 		server, folder_name, TRUE, cancellable, error);
-	g_object_unref(server);
+	g_object_unref (server);
 
 	if (success)
 		imapx_mark_folder_subscribed (istore, folder_name, emit_signal);
@@ -561,7 +561,7 @@ imapx_unsubscribe_folder (CamelStore *store,
 
 	success = camel_imapx_server_manage_subscription (
 		server, folder_name, FALSE, cancellable, error);
-	g_object_unref(server);
+	g_object_unref (server);
 
 	if (success)
 		imapx_unmark_folder_subscribed (istore, folder_name, emit_signal);
@@ -1176,7 +1176,7 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 			istore->last_refresh_time = time (NULL);
 			m = camel_session_thread_msg_new (((CamelService *)store)->session, &imapx_refresh_ops, sizeof (*m));
 			m->store = g_object_ref (store);
-			camel_session_thread_queue(((CamelService *)store)->session, &m->msg, 0);
+			camel_session_thread_queue (((CamelService *)store)->session, &m->msg, 0);
 		}
 
 		fi = get_folder_info_offline (store, top, flags, error);

@@ -219,7 +219,7 @@ filter_filter (CamelSession *session,
 			"Learning new spam messages in '%s'",
 			m->junk->len), full_name);
 
-		for (i = 0; i < m->junk->len; i ++) {
+		for (i = 0; i < m->junk->len; i++) {
 			/* FIXME Pass a GCancellable */
 			CamelMimeMessage *msg = camel_folder_get_message_sync (
 				m->folder, m->junk->pdata[i], NULL, NULL);
@@ -242,7 +242,7 @@ filter_filter (CamelSession *session,
 			"Learning new ham message in '%s'",
 			"Learning new ham messages in '%s'",
 			m->notjunk->len), full_name);
-		for (i = 0; i < m->notjunk->len; i ++) {
+		for (i = 0; i < m->notjunk->len; i++) {
 			/* FIXME Pass a GCancellable */
 			CamelMimeMessage *msg = camel_folder_get_message_sync (
 				m->folder, m->notjunk->pdata[i], NULL, NULL);
@@ -1402,7 +1402,7 @@ folder_changed (CamelFolder *folder,
 				}
 				/* reset junk learn flag so that we don't process it again*/
 				camel_folder_set_message_flags (
-					folder, info->uid_changed->pdata [i],
+					folder, info->uid_changed->pdata[i],
 					CAMEL_MESSAGE_JUNK_LEARN, 0);
 			}
 		}

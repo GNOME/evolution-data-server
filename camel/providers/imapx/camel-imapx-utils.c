@@ -426,7 +426,7 @@ imapx_update_store_summary (CamelFolder *folder)
 
 /*
 capability_data ::= "CAPABILITY" SPACE [1#capability SPACE] "IMAP4rev1"
-                  [SPACE 1#capability]
+                 [SPACE 1#capability]
                     ;; IMAP4rev1 servers which offer RFC 1730
                     ;; compatibility MUST list "IMAP4" as the first
                     ;; capability.
@@ -639,14 +639,14 @@ body_extension  ::= nstring / number / "(" 1#body_extension ")"
                     ;; revisions of this specification.
 
 body_ext_1part  ::= body_fld_md5[SPACE body_fld_dsp
-                  [SPACE body_fld_lang
-                  [SPACE 1#body_extension]]]
+                 [SPACE body_fld_lang
+                 [SPACE 1#body_extension]]]
                     ;; MUST NOT be returned on non-extensible
                     ;; "BODY" fetch
 
 body_ext_mpart  ::= body_fld_param
-                  [SPACE body_fld_dsp SPACE body_fld_lang
-                  [SPACE 1#body_extension]]
+                 [SPACE body_fld_dsp SPACE body_fld_lang
+                 [SPACE 1#body_extension]]
                     ;; MUST NOT be returned on non-extensible
                     ;; "BODY" fetch
 
@@ -674,13 +674,13 @@ body_fld_octets ::= number
 body_fld_param  ::= "(" 1#(string SPACE string) ")" / nil
 
 body_type_1part ::= (body_type_basic / body_type_msg / body_type_text)
-                  [SPACE body_ext_1part]
+                 [SPACE body_ext_1part]
 
 body_type_basic ::= media_basic SPACE body_fields
                     ;; MESSAGE subtype MUST NOT be "RFC822"
 
 body_type_mpart ::= 1*body SPACE media_subtype
-                  [SPACE body_ext_mpart]
+                 [SPACE body_ext_mpart]
 
 body_type_msg   ::= media_message SPACE body_fields SPACE envelope
                     SPACE body SPACE body_fld_lines
@@ -727,7 +727,7 @@ media_text      ::= <"> "TEXT" <"> SPACE media_subtype
                     ;; Defined in[MIME-IMT]
 
  ( "type" "subtype"  body_fields [envelope body body_fld_lines]
-                               [body_fld_lines]
+                              [body_fld_lines]
 
  (("TEXT" "PLAIN" ("CHARSET"
                      "US-ASCII") NIL NIL "7BIT" 1152 23)("TEXT" "PLAIN"
@@ -813,14 +813,14 @@ imapx_parse_ext_optional (CamelIMAPXStream *is,
 	/* although the grammars are different, they can be parsed the same way */
 
 	/* body_ext_1part  ::= body_fld_md5 [SPACE body_fld_dsp
-	 [SPACE body_fld_lang
-	 [SPACE 1#body_extension]]]
+	[SPACE body_fld_lang
+	[SPACE 1#body_extension]]]
 	   ;; MUST NOT be returned on non-extensible
 	   ;; "BODY" fetch */
 
 	/* body_ext_mpart  ::= body_fld_param
-	 [SPACE body_fld_dsp SPACE body_fld_lang
-	 [SPACE 1#body_extension]]
+	[SPACE body_fld_dsp SPACE body_fld_lang
+	[SPACE 1#body_extension]]
 	   ;; MUST NOT be returned on non-extensible
 	   ;; "BODY" fetch */
 
@@ -1181,7 +1181,7 @@ imapx_parse_body (CamelIMAPXStream *is,
 	camel_imapx_stream_ungettoken (is, tok, token, len);
 	if (tok == '(') {
 		/* body_type_mpart ::= 1*body SPACE media_subtype
-		 [SPACE body_ext_mpart] */
+		[SPACE body_ext_mpart] */
 
 		cinfo = g_malloc0 (sizeof (*cinfo));
 		last = (struct _CamelMessageContentInfo *)&cinfo->childs;
@@ -1200,8 +1200,8 @@ imapx_parse_body (CamelIMAPXStream *is,
 		cinfo->type = camel_content_type_new("multipart", (gchar *) token);
 
 		/* body_ext_mpart  ::= body_fld_param
-		 [SPACE body_fld_dsp SPACE body_fld_lang
-		 [SPACE 1#body_extension]]
+		[SPACE body_fld_dsp SPACE body_fld_lang
+		[SPACE 1#body_extension]]
 		   ;; MUST NOT be returned on non-extensible
 		   ;; "BODY" fetch */
 
@@ -1225,7 +1225,7 @@ imapx_parse_body (CamelIMAPXStream *is,
 		}
 	} else {
 		/* body_type_1part ::= (body_type_basic / body_type_msg / body_type_text)
-		 [SPACE body_ext_1part]
+		[SPACE body_ext_1part]
 
 		   body_type_basic ::= media_basic SPACE body_fields
 		   body_type_text  ::= media_text SPACE body_fields SPACE body_fld_lines
@@ -1262,8 +1262,8 @@ imapx_parse_body (CamelIMAPXStream *is,
 		camel_imapx_stream_ungettoken (is, tok, token, len);
 
 		/* body_ext_1part  ::= body_fld_md5 [SPACE body_fld_dsp
-		 [SPACE body_fld_lang
-		 [SPACE 1#body_extension]]]
+		[SPACE body_fld_lang
+		[SPACE 1#body_extension]]]
 		   ;; MUST NOT be returned on non-extensible
 		   ;; "BODY" fetch */
 

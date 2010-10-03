@@ -21,7 +21,6 @@
  * Author: Federico Mena-Quintero <federico@novell.com>
  */
 
-
 #ifndef E_DEBUG_LOG_H
 #define E_DEBUG_LOG_H
 
