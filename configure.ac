@@ -1,7 +1,7 @@
 dnl Evolution-Data-Server version
 m4_define([eds_major_version], [2])
-m4_define([eds_minor_version], [33])
-m4_define([eds_micro_version], [1])
+m4_define([eds_minor_version], [91])
+m4_define([eds_micro_version], [0])
 
 m4_define([eds_version],
 	[eds_major_version.eds_minor_version.eds_micro_version])
@@ -10,8 +10,8 @@ dnl Base Version: This is for API/version tracking for things like
 dnl Bonobo server files.  This should always be the major/minor of
 dnl the stable version or stable version to be.  Note, this is set
 dnl the way it is so that GETTEXT_PACKAGE will be parsed correctly.
-BASE_VERSION=2.34
-m4_define([base_version], [2.34])
+BASE_VERSION=2.92
+m4_define([base_version], [2.92])
 
 dnl This number is meaningless, but we're now stuck with it in our
 dnl library names for backward compatibility.
