@@ -47,41 +47,40 @@ typedef enum {
 
 extern gchar *camel_provider_type_name[CAMEL_NUM_PROVIDER_TYPES];
 
-/* Provider flags:
- *
- * _IS_REMOTE   the provider works with remote data
- * _IS_LOCAL    it can be used as a backend for local folder
- *                tree folders. (*Not* just the opposite of _IS_REMOTE)
- * _IS_SOURCE   mail arrives there, so it should be offered as an
- *                option in the mail config dialog.
- * _IS_STORAGE  mail is stored there. it will appear in the folder tree.
- * _IS_EXTERNAL it appears in the folder tree but is not created by
- *                the mail component.
- * _HAS_LICENSE  the provider configuration first needs the license to
- *		   be accepted.
+/* CamelProviderFlags;
+ * @CAMEL_PROVIDER_IS_REMOTE:
+ *   Provider works with remote data.
+ * @CAMEL_PROVIDER_IS_LOCAL:
+ *   Provider can be used as a backend for local folder tree folders.
+ *   (Not just the opposite of #CAMEL_PROVIDER_IS_REMOTE.)
+ * @CAMEL_PROVIDER_IS_SOURCE:
+ *   Mail arrives there, so it should be offered as an option in the
+ *   mail config dialog.
+ * @CAMEL_PROVIDER_IS_STORAGE:
+ *   Mail is stored there.  It will appear in the folder tree.
+ * @CAMEL_PROVIDER_IS_EXTERNAL:
+ *   Provider appears in the folder tree but is not created by the
+ *   mail component.
+ * @CAMEL_PROVIDER_HAS_LICENSE:
+ *   Provider configuration first needs the license to be accepted.
+ *   (No longer used.)
+ * @CAMEL_PROVIDER_ALLOW_REAL_TRASH_FOLDER:
+ *   Provider may use a real trash folder instead of a virtual folder.
+ * @CAMEL_PROVIDER_ALLOW_REAL_JUNK_FOLDER:
+ *   Provider may use a real junk folder instead of a virtual folder.
  */
-#define CAMEL_PROVIDER_IS_REMOTE	(1 << 0)
-#define CAMEL_PROVIDER_IS_LOCAL		(1 << 1)
-#define CAMEL_PROVIDER_IS_EXTERNAL	(1 << 2)
-#define CAMEL_PROVIDER_IS_SOURCE	(1 << 3)
-#define CAMEL_PROVIDER_IS_STORAGE	(1 << 4)
-#define CAMEL_PROVIDER_SUPPORTS_SSL	(1 << 5)
-#define CAMEL_PROVIDER_HAS_LICENSE      (1 << 6)
-#define CAMEL_PROVIDER_DISABLE_SENT_FOLDER (1 << 7)
-
-/**
- * CAMEL_PROVIDER_ALLOW_REAL_TRASH_FOLDER:
- *
- * Since: 2.32
- **/
-#define CAMEL_PROVIDER_ALLOW_REAL_TRASH_FOLDER (1 << 8)
-
-/**
- * CAMEL_PROVIDER_ALLOW_REAL_JUNK_FOLDER:
- *
- * Since: 2.32
- **/
-#define CAMEL_PROVIDER_ALLOW_REAL_JUNK_FOLDER  (1 << 9)
+typedef enum {
+	CAMEL_PROVIDER_IS_REMOTE		= 1 << 0,
+	CAMEL_PROVIDER_IS_LOCAL			= 1 << 1,
+	CAMEL_PROVIDER_IS_EXTERNAL		= 1 << 2,
+	CAMEL_PROVIDER_IS_SOURCE		= 1 << 3,
+	CAMEL_PROVIDER_IS_STORAGE		= 1 << 4,
+	CAMEL_PROVIDER_SUPPORTS_SSL		= 1 << 5,
+	CAMEL_PROVIDER_HAS_LICENSE		= 1 << 6,
+	CAMEL_PROVIDER_DISABLE_SENT_FOLDER	= 1 << 7,
+	CAMEL_PROVIDER_ALLOW_REAL_TRASH_FOLDER	= 1 << 8,
+	CAMEL_PROVIDER_ALLOW_REAL_JUNK_FOLDER	= 1 << 9
+} CamelProviderFlags;
 
 /* Flags for url_flags. "ALLOW" means the config dialog will let the
  * user configure it. "NEED" implies "ALLOW" but means the user must
@@ -102,35 +101,40 @@ extern gchar *camel_provider_type_name[CAMEL_NUM_PROVIDER_TYPES];
 #define CAMEL_URL_PART_HIDDEN	(CAMEL_URL_PART_NEED + 8)
 
 /* Use these macros to test a provider's url_flags */
-#define CAMEL_PROVIDER_ALLOWS(prov, flags) (prov->url_flags & (flags | (flags << CAMEL_URL_PART_NEED) | (flags << CAMEL_URL_PART_HIDDEN)))
-#define CAMEL_PROVIDER_NEEDS(prov, flags) (prov->url_flags & (flags << CAMEL_URL_PART_NEED))
-#define CAMEL_PROVIDER_HIDDEN(prov, flags) (prov->url_flags & (flags << CAMEL_URL_PART_HIDDEN))
+#define CAMEL_PROVIDER_ALLOWS(prov, flags) \
+	(prov->url_flags & (flags | (flags << CAMEL_URL_PART_NEED) | (flags << CAMEL_URL_PART_HIDDEN)))
+#define CAMEL_PROVIDER_NEEDS(prov, flags) \
+	(prov->url_flags & (flags << CAMEL_URL_PART_NEED))
+#define CAMEL_PROVIDER_HIDDEN(prov, flags) \
+	(prov->url_flags & (flags << CAMEL_URL_PART_HIDDEN))
 
 /* Providers use these macros to actually define their url_flags */
-#define CAMEL_URL_ALLOW_USER	 (CAMEL_URL_PART_USER)
-#define CAMEL_URL_ALLOW_AUTH	 (CAMEL_URL_PART_AUTH)
-#define CAMEL_URL_ALLOW_PASSWORD (CAMEL_URL_PART_PASSWORD)
-#define CAMEL_URL_ALLOW_HOST	 (CAMEL_URL_PART_HOST)
-#define CAMEL_URL_ALLOW_PORT	 (CAMEL_URL_PART_PORT)
-#define CAMEL_URL_ALLOW_PATH	 (CAMEL_URL_PART_PATH)
+typedef enum {
+	CAMEL_URL_ALLOW_USER       = CAMEL_URL_PART_USER,
+	CAMEL_URL_ALLOW_AUTH       = CAMEL_URL_PART_AUTH,
+	CAMEL_URL_ALLOW_PASSWORD   = CAMEL_URL_PART_PASSWORD,
+	CAMEL_URL_ALLOW_HOST       = CAMEL_URL_PART_HOST,
+	CAMEL_URL_ALLOW_PORT       = CAMEL_URL_PART_PORT,
+	CAMEL_URL_ALLOW_PATH       = CAMEL_URL_PART_PATH,
 
-#define CAMEL_URL_NEED_USER	 (CAMEL_URL_PART_USER << CAMEL_URL_PART_NEED)
-#define CAMEL_URL_NEED_AUTH	 (CAMEL_URL_PART_AUTH << CAMEL_URL_PART_NEED)
-#define CAMEL_URL_NEED_PASSWORD	 (CAMEL_URL_PART_PASSWORD << CAMEL_URL_PART_NEED)
-#define CAMEL_URL_NEED_HOST	 (CAMEL_URL_PART_HOST << CAMEL_URL_PART_NEED)
-#define CAMEL_URL_NEED_PORT	 (CAMEL_URL_PART_PORT << CAMEL_URL_PART_NEED)
-#define CAMEL_URL_NEED_PATH	 (CAMEL_URL_PART_PATH << CAMEL_URL_PART_NEED)
-#define CAMEL_URL_NEED_PATH_DIR  (CAMEL_URL_PART_PATH_DIR << CAMEL_URL_PART_NEED)
+	CAMEL_URL_NEED_USER        = CAMEL_URL_PART_USER << CAMEL_URL_PART_NEED,
+	CAMEL_URL_NEED_AUTH        = CAMEL_URL_PART_AUTH << CAMEL_URL_PART_NEED,
+	CAMEL_URL_NEED_PASSWORD    = CAMEL_URL_PART_PASSWORD << CAMEL_URL_PART_NEED,
+	CAMEL_URL_NEED_HOST        = CAMEL_URL_PART_HOST << CAMEL_URL_PART_NEED,
+	CAMEL_URL_NEED_PORT        = CAMEL_URL_PART_PORT << CAMEL_URL_PART_NEED,
+	CAMEL_URL_NEED_PATH        = CAMEL_URL_PART_PATH << CAMEL_URL_PART_NEED,
+	CAMEL_URL_NEED_PATH_DIR    = CAMEL_URL_PART_PATH_DIR << CAMEL_URL_PART_NEED,
 
-#define CAMEL_URL_HIDDEN_USER	 (CAMEL_URL_PART_USER << CAMEL_URL_PART_HIDDEN)
-#define CAMEL_URL_HIDDEN_AUTH	 (CAMEL_URL_PART_AUTH << CAMEL_URL_PART_HIDDEN)
-#define CAMEL_URL_HIDDEN_PASSWORD	 (CAMEL_URL_PART_PASSWORD << CAMEL_URL_PART_HIDDEN)
-#define CAMEL_URL_HIDDEN_HOST	 (CAMEL_URL_PART_HOST << CAMEL_URL_PART_HIDDEN)
-#define CAMEL_URL_HIDDEN_PORT	 (CAMEL_URL_PART_PORT << CAMEL_URL_PART_HIDDEN)
-#define CAMEL_URL_HIDDEN_PATH	 (CAMEL_URL_PART_PATH << CAMEL_URL_PART_HIDDEN)
+	CAMEL_URL_HIDDEN_USER      = CAMEL_URL_PART_USER << CAMEL_URL_PART_HIDDEN,
+	CAMEL_URL_HIDDEN_AUTH      = CAMEL_URL_PART_AUTH << CAMEL_URL_PART_HIDDEN,
+	CAMEL_URL_HIDDEN_PASSWORD  = CAMEL_URL_PART_PASSWORD << CAMEL_URL_PART_HIDDEN,
+	CAMEL_URL_HIDDEN_HOST      = CAMEL_URL_PART_HOST << CAMEL_URL_PART_HIDDEN,
+	CAMEL_URL_HIDDEN_PORT      = CAMEL_URL_PART_PORT << CAMEL_URL_PART_HIDDEN,
+	CAMEL_URL_HIDDEN_PATH      = CAMEL_URL_PART_PATH << CAMEL_URL_PART_HIDDEN,
 
-#define CAMEL_URL_FRAGMENT_IS_PATH  (1 << 30) /* url uses fragment for folder name path, not path */
-#define CAMEL_URL_PATH_IS_ABSOLUTE (1 << 31)
+	CAMEL_URL_FRAGMENT_IS_PATH = 1 << 30, /* url uses fragment for folder name path, not path */
+	CAMEL_URL_PATH_IS_ABSOLUTE = 1 << 31,
+} CamelProviderURLFlags;
 
 #define CAMEL_PROVIDER_IS_STORE_AND_TRANSPORT(prov) (prov->object_types[CAMEL_PROVIDER_STORE] && prov->object_types[CAMEL_PROVIDER_TRANSPORT])
 
@@ -154,9 +158,12 @@ typedef struct {
 } CamelProviderConfEntry;
 
 /* Some defaults */
-#define CAMEL_PROVIDER_CONF_DEFAULT_USERNAME  { CAMEL_PROVIDER_CONF_LABEL, "username", NULL, N_("User_name:"), NULL }
-#define CAMEL_PROVIDER_CONF_DEFAULT_HOSTNAME  { CAMEL_PROVIDER_CONF_LABEL, "hostname", NULL, N_("_Host:"), NULL }
-#define CAMEL_PROVIDER_CONF_DEFAULT_PATH      { CAMEL_PROVIDER_CONF_ENTRY, "path", NULL, N_("_Path:"), "" }
+#define CAMEL_PROVIDER_CONF_DEFAULT_USERNAME \
+	{ CAMEL_PROVIDER_CONF_LABEL, "username", NULL, N_("User_name:"), NULL }
+#define CAMEL_PROVIDER_CONF_DEFAULT_HOSTNAME \
+	{ CAMEL_PROVIDER_CONF_LABEL, "hostname", NULL, N_("_Host:"), NULL }
+#define CAMEL_PROVIDER_CONF_DEFAULT_PATH \
+	{ CAMEL_PROVIDER_CONF_ENTRY, "path", NULL, N_("_Path:"), "" }
 
 typedef gint (*CamelProviderAutoDetectFunc) (CamelURL *url, GHashTable **auto_detected, GError **error);
 
@@ -182,7 +189,8 @@ typedef struct {
 	const gchar *domain;
 
 	/* Flags describing the provider, flags describing its URLs */
-	gint flags, url_flags;
+	CamelProviderFlags flags;
+	CamelProviderURLFlags url_flags;
 
 	/* The ConfEntry and AutoDetect functions will probably be
 	 * DEPRECATED in a future release */

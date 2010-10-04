@@ -78,13 +78,17 @@ typedef struct _CamelBlockFile CamelBlockFile;
 typedef struct _CamelBlockFileClass CamelBlockFileClass;
 typedef struct _CamelBlockFilePrivate CamelBlockFilePrivate;
 
-#define CAMEL_BLOCK_FILE_SYNC (1 << 0)
+typedef enum {
+	CAMEL_BLOCK_FILE_SYNC = 1 << 0
+} CamelBlockFileFlags;
 
 #define CAMEL_BLOCK_SIZE (1024)
 #define CAMEL_BLOCK_SIZE_BITS (10) /* # bits to contain block_size bytes */
 
-#define CAMEL_BLOCK_DIRTY (1 << 0)
-#define CAMEL_BLOCK_DETACHED (1 << 1)
+typedef enum {
+	CAMEL_BLOCK_DIRTY    = 1 << 0,
+	CAMEL_BLOCK_DETACHED = 1 << 1
+} CamelBlockFlags;
 
 struct _CamelBlockRoot {
 	gchar version[8];	/* version number */
@@ -103,7 +107,7 @@ struct _CamelBlock {
 	struct _CamelBlock *prev;
 
 	camel_block_t id;
-	guint32 flags;
+	CamelBlockFlags flags;
 	guint32 refcount;
 	guint32 align00;
 
@@ -116,7 +120,7 @@ struct _CamelBlockFile {
 
 	gchar version[8];
 	gchar *path;
-	gint flags;
+	CamelBlockFileFlags flags;
 
 	gint fd;
 	gsize block_size;

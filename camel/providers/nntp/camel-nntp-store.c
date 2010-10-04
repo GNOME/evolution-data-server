@@ -985,7 +985,7 @@ nntp_get_date (CamelNNTPStore *nntp_store,
 static CamelFolderInfo *
 nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
                                 const gchar *top,
-                                guint32 flags,
+                                CamelStoreGetFolderInfoFlags flags,
                                 gboolean online,
                                 GCancellable *cancellable,
                                 GError **error)
@@ -1077,7 +1077,7 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 static CamelFolderInfo *
 nntp_get_folder_info (CamelStore *store,
                       const gchar *top,
-                      guint32 flags,
+                      CamelStoreGetFolderInfoFlags flags,
                       gboolean online,
                       GCancellable *cancellable,
                       GError **error)
@@ -1104,7 +1104,7 @@ nntp_get_folder_info (CamelStore *store,
 static CamelFolderInfo *
 nntp_get_folder_info_online (CamelStore *store,
                              const gchar *top,
-                             guint32 flags,
+                             CamelStoreGetFolderInfoFlags flags,
                              GCancellable *cancellable,
                              GError **error)
 {
@@ -1115,7 +1115,7 @@ nntp_get_folder_info_online (CamelStore *store,
 static CamelFolderInfo *
 nntp_get_folder_info_offline (CamelStore *store,
                               const gchar *top,
-                              guint32 flags,
+                              CamelStoreGetFolderInfoFlags flags,
                               GCancellable *cancellable,
                               GError **error)
 {

@@ -87,8 +87,8 @@ static void imap_forget_folder (CamelImapStore *imap_store, const gchar *folder_
 static void imap_set_server_level (CamelImapStore *store);
 
 static gboolean imap_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, GError **error);
-static CamelFolder * imap_store_get_folder_sync (CamelStore *store, const gchar *folder_name, guint32 flags, GCancellable *cancellable, GError **error);
-static CamelFolderInfo * imap_store_get_folder_info_sync (CamelStore *store, const gchar *top, guint32 flags, GCancellable *cancellable, GError **error);
+static CamelFolder * imap_store_get_folder_sync (CamelStore *store, const gchar *folder_name, CamelStoreGetFolderFlags flags, GCancellable *cancellable, GError **error);
+static CamelFolderInfo * imap_store_get_folder_info_sync (CamelStore *store, const gchar *top, CamelStoreGetFolderInfoFlags flags, GCancellable *cancellable, GError **error);
 static CamelFolder * get_folder_offline (CamelStore *store, const gchar *folder_name, guint32 flags, GError **error);
 static CamelFolderInfo * get_folder_info_offline (CamelStore *store, const gchar *top, guint32 flags, GError **error);
 
@@ -1746,7 +1746,7 @@ get_folder_status (CamelImapStore *imap_store, const gchar *folder_name, const g
 static CamelFolder *
 imap_store_get_folder_sync (CamelStore *store,
                             const gchar *folder_name,
-                            guint32 flags,
+                            CamelStoreGetFolderFlags flags,
                             GCancellable *cancellable,
                             GError **error)
 {
@@ -2733,9 +2733,9 @@ static CamelSessionThreadOps refresh_ops = {
 static CamelFolderInfo *
 imap_store_get_folder_info_sync (CamelStore *store,
                                  const gchar *top,
-                                 guint32 flags,
-                                GCancellable *cancellable,
-                                GError **error)
+                                 CamelStoreGetFolderInfoFlags flags,
+                                 GCancellable *cancellable,
+                                 GError **error)
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
 	CamelFolderInfo *tree = NULL;

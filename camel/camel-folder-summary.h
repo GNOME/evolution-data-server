@@ -196,7 +196,7 @@ struct _CamelMessageInfoBase {
 	const gchar *cc;
 	const gchar *mlist;
 
-	guint32 flags;
+	CamelMessageFlags flags;
 	guint32 size;
 
 	time_t date_sent;
@@ -215,7 +215,7 @@ struct _CamelMessageInfoBase {
 	gchar *bodystructure;
 };
 
-typedef enum _CamelFolderSummaryFlags {
+typedef enum {
 	CAMEL_SUMMARY_DIRTY = 1 << 0
 } CamelFolderSummaryFlags;
 
@@ -238,7 +238,7 @@ struct _CamelFolderSummary {
 
 	/* header info */
 	guint32 version;	/* version of file loaded/loading */
-	guint32 flags;		/* flags */
+	CamelFolderSummaryFlags flags;
 	guint32 nextuid;	/* next uid? */
 	time_t time;		/* timestamp for this summary (for implementors to use) */
 	guint32 saved_count;	/* how many were saved/loaded */
@@ -422,8 +422,9 @@ gboolean	camel_flag_list_copy (CamelFlag **to, CamelFlag **from);
 gint		camel_flag_list_size (CamelFlag **list);
 void		camel_flag_list_free (CamelFlag **list);
 
-guint32         camel_system_flag (const gchar *name);
-gboolean        camel_system_flag_get (guint32 flags, const gchar *name);
+CamelMessageFlags
+		camel_system_flag (const gchar *name);
+gboolean	camel_system_flag_get (CamelMessageFlags flags, const gchar *name);
 
 /* message tag operations */
 const gchar	*camel_tag_get (CamelTag **list, const gchar *name);
@@ -498,7 +499,7 @@ time_t camel_message_info_time (const CamelMessageInfo *mi, gint id);
 gboolean camel_message_info_user_flag (const CamelMessageInfo *mi, const gchar *id);
 const gchar *camel_message_info_user_tag (const CamelMessageInfo *mi, const gchar *id);
 
-gboolean camel_message_info_set_flags (CamelMessageInfo *mi, guint32 flags, guint32 set);
+gboolean camel_message_info_set_flags (CamelMessageInfo *mi, CamelMessageFlags flags, guint32 set);
 gboolean camel_message_info_set_user_flag (CamelMessageInfo *mi, const gchar *id, gboolean state);
 gboolean camel_message_info_set_user_tag (CamelMessageInfo *mi, const gchar *id, const gchar *val);
 

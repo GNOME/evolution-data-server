@@ -98,17 +98,17 @@ struct _CamelDiscoStoreClass {
 
 	CamelFolder *	(*get_folder_online)	(CamelStore *store,
 						 const gchar *name,
-						 guint32 flags,
+						 CamelStoreGetFolderFlags flags,
 						 GCancellable *cancellable,
 						 GError **error);
 	CamelFolder *	(*get_folder_offline)	(CamelStore *store,
 						 const gchar *name,
-						 guint32 flags,
+						 CamelStoreGetFolderFlags flags,
 						 GCancellable *cancellable,
 						 GError **error);
 	CamelFolder *	(*get_folder_resyncing)	(CamelStore *store,
 						 const gchar *name,
-						 guint32 flags,
+						 CamelStoreGetFolderFlags flags,
 						 GCancellable *cancellable,
 						 GError **error);
 
@@ -116,21 +116,21 @@ struct _CamelDiscoStoreClass {
 			(*get_folder_info_online)
 						(CamelStore *store,
 						 const gchar *top,
-						 guint32 flags,
+						 CamelStoreGetFolderInfoFlags flags,
 						 GCancellable *cancellable,
 						 GError **error);
 	CamelFolderInfo *
 			(*get_folder_info_offline)
 						(CamelStore *store,
 						 const gchar *top,
-						 guint32 flags,
+						 CamelStoreGetFolderInfoFlags flags,
 						 GCancellable *cancellable,
 						 GError **error);
 	CamelFolderInfo *
 			(*get_folder_info_resyncing)
 						(CamelStore *store,
 						 const gchar *top,
-						 guint32 flags,
+						 CamelStoreGetFolderInfoFlags flags,
 						 GCancellable *cancellable,
 						 GError **error);
 };

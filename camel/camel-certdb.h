@@ -55,9 +55,9 @@ typedef struct _CamelCertDB CamelCertDB;
 typedef struct _CamelCertDBClass CamelCertDBClass;
 typedef struct _CamelCertDBPrivate CamelCertDBPrivate;
 
-enum {
-	CAMEL_CERTDB_DIRTY  = (1 << 0)
-};
+typedef enum {
+	CAMEL_CERTDB_DIRTY = 1 << 0
+} CamelCertDBFlags;
 
 enum {
 	CAMEL_CERT_STRING_ISSUER,
@@ -105,7 +105,7 @@ struct _CamelCertDB {
 	gchar *filename;
 	guint32 version;
 	guint32 saved_certs;
-	guint32 flags;
+	CamelCertDBFlags flags;
 
 	guint32 cert_size;
 

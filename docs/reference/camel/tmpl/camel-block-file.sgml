@@ -32,6 +32,21 @@ CamelKeyFile
 </para>
 
 
+<!-- ##### ENUM CamelBlockFileFlags ##### -->
+<para>
+
+</para>
+
+@CAMEL_BLOCK_FILE_SYNC: 
+
+<!-- ##### ENUM CamelBlockFlags ##### -->
+<para>
+
+</para>
+
+@CAMEL_BLOCK_DIRTY: 
+@CAMEL_BLOCK_DETACHED: 
+
 <!-- ##### STRUCT CamelBlockRoot ##### -->
 <para>
 
@@ -62,13 +77,6 @@ CamelKeyFile
 </para>
 
 
-<!-- ##### MACRO CAMEL_BLOCK_FILE_SYNC ##### -->
-<para>
-
-</para>
-
-
-
 <!-- ##### MACRO CAMEL_BLOCK_SIZE ##### -->
 <para>
 
@@ -77,20 +85,6 @@ CamelKeyFile
 
 
 <!-- ##### MACRO CAMEL_BLOCK_SIZE_BITS ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_BLOCK_DIRTY ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_BLOCK_DETACHED ##### -->
 <para>
 
 </para>

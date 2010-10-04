@@ -296,7 +296,7 @@ maildir_store_compare_folder_name (gconstpointer a,
 static CamelFolder *
 maildir_store_get_folder_sync (CamelStore *store,
                                const gchar *folder_name,
-                               guint32 flags,
+                               CamelStoreGetFolderFlags flags,
                                GCancellable *cancellable,
                                GError **error)
 {
@@ -399,7 +399,7 @@ fail:
 static CamelFolderInfo *
 maildir_store_get_folder_info_sync (CamelStore *store,
                                     const gchar *top,
-                                    guint32 flags,
+                                    CamelStoreGetFolderInfoFlags flags,
                                     GCancellable *cancellable,
                                     GError **error)
 {

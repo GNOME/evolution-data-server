@@ -20,6 +20,19 @@ CamelFolder
 <!-- ##### SECTION Image ##### -->
 
 
+<!-- ##### ENUM CamelFolderFlags ##### -->
+<para>
+
+</para>
+
+@CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY: 
+@CAMEL_FOLDER_HAS_SEARCH_CAPABILITY: 
+@CAMEL_FOLDER_FILTER_RECENT: 
+@CAMEL_FOLDER_HAS_BEEN_DELETED: 
+@CAMEL_FOLDER_IS_TRASH: 
+@CAMEL_FOLDER_IS_JUNK: 
+@CAMEL_FOLDER_FILTER_JUNK: 
+
 <!-- ##### STRUCT CamelFolder ##### -->
 <para>
 
@@ -110,55 +123,6 @@ CamelFolder
 @used: 
 @total: 
 @next: 
-
-<!-- ##### MACRO CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_HAS_SEARCH_CAPABILITY ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_FILTER_RECENT ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_HAS_BEEN_DELETED ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_IS_TRASH ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_IS_JUNK ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_FILTER_JUNK ##### -->
-<para>
-
-</para>
-
-
 
 <!-- ##### FUNCTION camel_folder_set_lock_async ##### -->
 <para>

@@ -78,7 +78,7 @@ struct _CamelTcpStreamSSLPrivate {
 	CamelSession *session;
 	gchar *expected_host;
 	gboolean ssl_mode;
-	guint32 flags;
+	CamelTcpStreamSSLFlags flags;
 };
 
 G_DEFINE_TYPE (CamelTcpStreamSSL, camel_tcp_stream_ssl, CAMEL_TYPE_TCP_STREAM_RAW)
@@ -773,10 +773,7 @@ camel_tcp_stream_ssl_init (CamelTcpStreamSSL *stream)
  * camel_tcp_stream_ssl_new:
  * @session: an active #CamelSession object
  * @expected_host: host that the stream is expected to connect with
- * @flags: a bitwise combination of any of
- * #CAMEL_TCP_STREAM_SSL_ENABLE_SSL2,
- * #CAMEL_TCP_STREAM_SSL_ENABLE_SSL3 or
- * #CAMEL_TCP_STREAM_SSL_ENABLE_TLS
+ * @flags: a bitwise combination of #CamelTcpStreamSSLFlags
  *
  * Since the SSL certificate authenticator may need to prompt the
  * user, a #CamelSession is needed. @expected_host is needed as a
@@ -785,7 +782,9 @@ camel_tcp_stream_ssl_init (CamelTcpStreamSSL *stream)
  * Returns: a new #CamelTcpStreamSSL stream preset in SSL mode
  **/
 CamelStream *
-camel_tcp_stream_ssl_new (CamelSession *session, const gchar *expected_host, guint32 flags)
+camel_tcp_stream_ssl_new (CamelSession *session,
+                          const gchar *expected_host,
+                          CamelTcpStreamSSLFlags flags)
 {
 	CamelTcpStreamSSL *stream;
 
@@ -805,10 +804,7 @@ camel_tcp_stream_ssl_new (CamelSession *session, const gchar *expected_host, gui
  * camel_tcp_stream_ssl_new_raw:
  * @session: an active #CamelSession object
  * @expected_host: host that the stream is expected to connect with
- * @flags: a bitwise combination of any of
- * #CAMEL_TCP_STREAM_SSL_ENABLE_SSL2,
- * #CAMEL_TCP_STREAM_SSL_ENABLE_SSL3 or
- * #CAMEL_TCP_STREAM_SSL_ENABLE_TLS
+ * @flags: a bitwise combination of #CamelTcpStreamSSLFlags
  *
  * Since the SSL certificate authenticator may need to prompt the
  * user, a CamelSession is needed. @expected_host is needed as a
@@ -817,7 +813,9 @@ camel_tcp_stream_ssl_new (CamelSession *session, const gchar *expected_host, gui
  * Returns: a new #CamelTcpStreamSSL stream not yet toggled into SSL mode
  **/
 CamelStream *
-camel_tcp_stream_ssl_new_raw (CamelSession *session, const gchar *expected_host, guint32 flags)
+camel_tcp_stream_ssl_new_raw (CamelSession *session,
+                              const gchar *expected_host,
+                              CamelTcpStreamSSLFlags flags)
 {
 	CamelTcpStreamSSL *stream;
 

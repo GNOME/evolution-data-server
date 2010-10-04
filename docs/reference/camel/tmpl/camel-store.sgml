@@ -90,6 +90,42 @@ CamelStore
 @CAMEL_STORE_ERROR_INVALID: 
 @CAMEL_STORE_ERROR_NO_FOLDER: 
 
+<!-- ##### MACRO CAMEL_FOLDER_TYPE_MASK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CAMEL_FOLDER_TYPE_BIT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### ENUM CamelFolderInfoFlags ##### -->
+<para>
+
+</para>
+
+@CAMEL_FOLDER_NOSELECT: 
+@CAMEL_FOLDER_NOINFERIORS: 
+@CAMEL_FOLDER_CHILDREN: 
+@CAMEL_FOLDER_NOCHILDREN: 
+@CAMEL_FOLDER_SUBSCRIBED: 
+@CAMEL_FOLDER_VIRTUAL: 
+@CAMEL_FOLDER_SYSTEM: 
+@CAMEL_FOLDER_VTRASH: 
+@CAMEL_FOLDER_SHARED_TO_ME: 
+@CAMEL_FOLDER_SHARED_BY_ME: 
+@CAMEL_FOLDER_TYPE_NORMAL: 
+@CAMEL_FOLDER_TYPE_INBOX: 
+@CAMEL_FOLDER_TYPE_OUTBOX: 
+@CAMEL_FOLDER_TYPE_TRASH: 
+@CAMEL_FOLDER_TYPE_JUNK: 
+@CAMEL_FOLDER_TYPE_SENT: 
+
 <!-- ##### STRUCT CamelFolderInfo ##### -->
 <para>
 
@@ -105,229 +141,37 @@ CamelStore
 @unread: 
 @total: 
 
-<!-- ##### MACRO CAMEL_FOLDER_NOSELECT ##### -->
+<!-- ##### ENUM CamelStoreFlags ##### -->
 <para>
 
 </para>
 
+@CAMEL_STORE_SUBSCRIPTIONS: 
+@CAMEL_STORE_VTRASH: 
+@CAMEL_STORE_FILTER_INBOX: 
+@CAMEL_STORE_VJUNK: 
+@CAMEL_STORE_PROXY: 
+@CAMEL_STORE_IS_MIGRATING: 
+@CAMEL_STORE_ASYNC: 
+@CAMEL_STORE_REAL_JUNK_FOLDER: 
 
-
-<!-- ##### MACRO CAMEL_FOLDER_NOINFERIORS ##### -->
+<!-- ##### ENUM CamelStorePermissionFlags ##### -->
 <para>
 
 </para>
 
+@CAMEL_STORE_READ: 
+@CAMEL_STORE_WRITE: 
 
-
-<!-- ##### MACRO CAMEL_FOLDER_CHILDREN ##### -->
+<!-- ##### ENUM CamelStoreGetFolderFlags ##### -->
 <para>
 
 </para>
 
-
-
-<!-- ##### MACRO CAMEL_FOLDER_NOCHILDREN ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_SUBSCRIBED ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_VIRTUAL ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_SYSTEM ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_VTRASH ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_SHARED_TO_ME ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_SHARED_BY_ME ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_TYPE_MASK ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_TYPE_BIT ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_TYPE_NORMAL ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_TYPE_INBOX ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_TYPE_OUTBOX ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_TYPE_TRASH ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_TYPE_JUNK ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_FOLDER_TYPE_SENT ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_STORE_READ ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_STORE_WRITE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_STORE_SUBSCRIPTIONS ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_STORE_VTRASH ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_STORE_FILTER_INBOX ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_STORE_VJUNK ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_STORE_PROXY ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_STORE_IS_MIGRATING ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_STORE_ASYNC ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_STORE_REAL_JUNK_FOLDER ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_STORE_FOLDER_CREATE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_STORE_FOLDER_EXCL ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_STORE_FOLDER_BODY_INDEX ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_STORE_FOLDER_PRIVATE ##### -->
-<para>
-
-</para>
-
-
+@CAMEL_STORE_FOLDER_CREATE: 
+@CAMEL_STORE_FOLDER_EXCL: 
+@CAMEL_STORE_FOLDER_BODY_INDEX: 
+@CAMEL_STORE_FOLDER_PRIVATE: 
 
 <!-- ##### MACRO CAMEL_STORE_FOLDER_CREATE_EXCL ##### -->
 <para>
@@ -336,40 +180,16 @@ CamelStore
 
 
 
-<!-- ##### MACRO CAMEL_STORE_FOLDER_INFO_FAST ##### -->
+<!-- ##### ENUM CamelStoreGetFolderInfoFlags ##### -->
 <para>
 
 </para>
 
-
-
-<!-- ##### MACRO CAMEL_STORE_FOLDER_INFO_RECURSIVE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_STORE_FOLDER_INFO_SUBSCRIBED ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST ##### -->
-<para>
-
-</para>
-
-
+@CAMEL_STORE_FOLDER_INFO_FAST: 
+@CAMEL_STORE_FOLDER_INFO_RECURSIVE: 
+@CAMEL_STORE_FOLDER_INFO_SUBSCRIBED: 
+@CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL: 
+@CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST: 
 
 <!-- ##### FUNCTION camel_store_folder_created ##### -->
 <para>

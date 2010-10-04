@@ -649,8 +649,8 @@ sync_flags (CamelFolder *folder, GList *uids)
 static gboolean
 groupwise_set_message_flags (CamelFolder *folder,
                              const gchar *uid,
-                             guint32 flags,
-                             guint32 set)
+                             CamelMessageFlags flags,
+                             CamelMessageFlags set)
 {
 	CamelMessageInfo *info;
 	gint res;

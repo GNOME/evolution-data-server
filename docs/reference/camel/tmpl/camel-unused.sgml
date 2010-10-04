@@ -2288,6 +2288,24 @@ streams
 </para>
 
 
+<!-- ##### MACRO CAMEL_BLOCK_DETACHED ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_BLOCK_DIRTY ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_BLOCK_FILE_SYNC ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### MACRO CAMEL_CHECK_CAST ##### -->
 <para>
 
@@ -2323,6 +2341,144 @@ streams
 @ctype: 
 
 <!-- ##### MACRO CAMEL_EXCEPTION_INITIALISER ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_CHILDREN ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_FILTER_JUNK ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_FILTER_RECENT ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_HAS_BEEN_DELETED ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_HAS_SEARCH_CAPABILITY ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_IS_JUNK ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_IS_TRASH ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_NOCHILDREN ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_NOINFERIORS ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_NOSELECT ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_SHARED_BY_ME ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_SHARED_TO_ME ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_SUBSCRIBED ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_SYSTEM ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_TYPE_INBOX ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_TYPE_JUNK ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_TYPE_NORMAL ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_TYPE_OUTBOX ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_TYPE_SENT ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_TYPE_TRASH ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_VIRTUAL ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_FOLDER_VTRASH ##### -->
 <para>
 
 </para>
@@ -2618,6 +2774,60 @@ streams
 </para>
 
 
+<!-- ##### MACRO CAMEL_PROVIDER_ALLOW_REAL_JUNK_FOLDER ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_ALLOW_REAL_TRASH_FOLDER ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_DISABLE_SENT_FOLDER ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_HAS_LICENSE ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_IS_EXTERNAL ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_IS_LOCAL ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_IS_SOURCE ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_IS_STORAGE ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_PROVIDER_SUPPORTS_SSL ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### MACRO CAMEL_SERVICE_AUTH ##### -->
 <para>
 
@@ -2673,6 +2883,282 @@ streams
 
 
 <!-- ##### MACRO CAMEL_SMTP_TRANSPORT_STARTTLS ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_ASYNC ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_FILTER_INBOX ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_FOLDER_BODY_INDEX ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_FOLDER_CREATE ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_FOLDER_EXCL ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_FOLDER_INFO_FAST ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_FOLDER_INFO_RECURSIVE ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_FOLDER_INFO_SUBSCRIBED ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_FOLDER_PRIVATE ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_IS_MIGRATING ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_PROXY ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_READ ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_REAL_JUNK_FOLDER ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_SUBSCRIPTIONS ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_VJUNK ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_VTRASH ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_STORE_WRITE ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_TCP_STREAM_SSL_ENABLE_SSL3 ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_TCP_STREAM_SSL_ENABLE_TLS ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_ALLOW_AUTH ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_ALLOW_HOST ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_ALLOW_PASSWORD ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_ALLOW_PATH ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_ALLOW_PORT ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_ALLOW_USER ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_FRAGMENT_IS_PATH ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_HIDDEN_AUTH ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_HIDDEN_HOST ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_HIDDEN_PASSWORD ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_HIDDEN_PATH ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_HIDDEN_PORT ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_HIDDEN_USER ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_HIDE_AUTH ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_HIDE_PARAMS ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_HIDE_PASSWORD ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_NEED_AUTH ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_NEED_HOST ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_NEED_PASSWORD ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_NEED_PATH ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_NEED_PATH_DIR ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_NEED_PORT ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_NEED_USER ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_URL_PATH_IS_ABSOLUTE ##### -->
 <para>
 
 </para>

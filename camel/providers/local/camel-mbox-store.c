@@ -315,7 +315,7 @@ xrename (CamelStore *store, const gchar *old_name, const gchar *new_name, const 
 static CamelFolder *
 mbox_store_get_folder_sync (CamelStore *store,
                             const gchar *folder_name,
-                            guint32 flags,
+                            CamelStoreGetFolderFlags flags,
                             GCancellable *cancellable,
                             GError **error)
 {
@@ -418,7 +418,7 @@ mbox_store_get_folder_sync (CamelStore *store,
 static CamelFolderInfo *
 mbox_store_get_folder_info_sync (CamelStore *store,
                                  const gchar *top,
-                                 guint32 flags,
+                                 CamelStoreGetFolderInfoFlags flags,
                                  GCancellable *cancellable,
                                  GError **error)
 {

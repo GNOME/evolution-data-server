@@ -529,18 +529,18 @@ folder_get_message_count (CamelFolder *folder)
 	return camel_folder_summary_count (folder->summary);
 }
 
-static guint32
+static CamelMessageFlags
 folder_get_permanent_flags (CamelFolder *folder)
 {
 	return folder->permanent_flags;
 }
 
-static guint32
+static CamelMessageFlags
 folder_get_message_flags (CamelFolder *folder,
                           const gchar *uid)
 {
 	CamelMessageInfo *info;
-	guint32 flags;
+	CamelMessageFlags flags;
 
 	g_return_val_if_fail (folder->summary != NULL, 0);
 
@@ -557,8 +557,8 @@ folder_get_message_flags (CamelFolder *folder,
 static gboolean
 folder_set_message_flags (CamelFolder *folder,
                           const gchar *uid,
-                          guint32 flags,
-                          guint32 set)
+                          CamelMessageFlags flags,
+                          CamelMessageFlags set)
 {
 	CamelMessageInfo *info;
 	gint res;
@@ -1386,7 +1386,7 @@ folder_changed (CamelFolder *folder,
 	camel_folder_unlock (folder, CAMEL_FOLDER_CHANGE_LOCK);
 
 	if (session->junk_plugin && info->uid_changed->len) {
-		guint32 flags;
+		CamelMessageFlags flags;
 
 		for (i = 0; i < info->uid_changed->len; i++) {
 			flags = camel_folder_get_message_flags (folder, info->uid_changed->pdata[i]);
@@ -1870,7 +1870,7 @@ camel_folder_get_deleted_message_count (CamelFolder *folder)
  * stored on a message between sessions. If it includes
  * #CAMEL_FLAG_USER, then user-defined flags will be remembered.
  **/
-guint32
+CamelMessageFlags
 camel_folder_get_permanent_flags (CamelFolder *folder)
 {
 	CamelFolderClass *class;
@@ -1893,7 +1893,7 @@ camel_folder_get_permanent_flags (CamelFolder *folder)
  * Returns: the #CamelMessageFlags that are set on the indicated
  * message.
  **/
-guint32
+CamelMessageFlags
 camel_folder_get_message_flags (CamelFolder *folder,
                                 const gchar *uid)
 {
@@ -1930,8 +1930,8 @@ camel_folder_get_message_flags (CamelFolder *folder,
 gboolean
 camel_folder_set_message_flags (CamelFolder *folder,
                                 const gchar *uid,
-                                guint32 flags,
-                                guint32 set)
+                                CamelMessageFlags flags,
+                                CamelMessageFlags set)
 {
 	CamelFolderClass *class;
 

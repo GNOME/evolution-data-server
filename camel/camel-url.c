@@ -327,7 +327,7 @@ camel_url_new (const gchar *url_string,
  * Returns: a string representing @url, which the caller must free
  **/
 gchar *
-camel_url_to_string (CamelURL *url, guint32 flags)
+camel_url_to_string (CamelURL *url, CamelURLFlags flags)
 {
 	GString *str;
 	gchar *return_result;

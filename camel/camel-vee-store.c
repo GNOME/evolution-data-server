@@ -156,7 +156,7 @@ vee_store_get_name (CamelService *service,
 static CamelFolder *
 vee_store_get_folder_sync (CamelStore *store,
                            const gchar *folder_name,
-                           guint32 flags,
+                           CamelStoreGetFolderFlags flags,
                            GCancellable *cancellable,
                            GError **error)
 {
@@ -199,7 +199,7 @@ vee_store_get_folder_sync (CamelStore *store,
 static CamelFolderInfo *
 vee_store_get_folder_info_sync (CamelStore *store,
                                 const gchar *top,
-                                guint32 flags,
+                                CamelStoreGetFolderInfoFlags flags,
                                 GCancellable *cancellable,
                                 GError **error)
 {

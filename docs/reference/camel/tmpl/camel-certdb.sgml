@@ -20,6 +20,13 @@ CamelCertDB
 <!-- ##### SECTION Image ##### -->
 
 
+<!-- ##### ENUM CamelCertDBFlags ##### -->
+<para>
+
+</para>
+
+@CAMEL_CERTDB_DIRTY: 
+
 <!-- ##### STRUCT CamelCertDB ##### -->
 <para>
 

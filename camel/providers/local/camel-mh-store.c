@@ -435,7 +435,7 @@ mh_folder_store_construct (CamelService *service,
 static CamelFolder *
 mh_store_get_folder_sync (CamelStore *store,
                           const gchar *folder_name,
-                          guint32 flags,
+                          CamelStoreGetFolderFlags flags,
                           GCancellable *cancellable,
                           GError **error)
 {
@@ -510,7 +510,7 @@ mh_store_get_folder_sync (CamelStore *store,
 static CamelFolderInfo *
 mh_store_get_folder_info_sync (CamelStore *store,
                                const gchar *top,
-                               guint32 flags,
+                               CamelStoreGetFolderInfoFlags flags,
                                GCancellable *cancellable,
                                GError **error)
 {

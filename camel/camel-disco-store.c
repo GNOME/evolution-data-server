@@ -160,7 +160,7 @@ disco_store_disconnect_sync (CamelService *service,
 static CamelFolder *
 disco_store_get_folder_sync (CamelStore *store,
                              const gchar *name,
-                             guint32 flags,
+                             CamelStoreGetFolderFlags flags,
                              GCancellable *cancellable,
                              GError **error)
 {
@@ -199,7 +199,7 @@ disco_store_get_folder_sync (CamelStore *store,
 static CamelFolderInfo *
 disco_store_get_folder_info_sync (CamelStore *store,
                                   const gchar *top,
-                                  guint32 flags,
+                                  CamelStoreGetFolderInfoFlags flags,
                                   GCancellable *cancellable,
                                   GError **error)
 {

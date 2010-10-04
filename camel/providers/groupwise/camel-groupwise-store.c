@@ -573,7 +573,7 @@ groupwise_get_folder_from_disk (CamelStore *store,
 static CamelFolder *
 groupwise_store_get_folder_sync (CamelStore *store,
                                  const gchar *folder_name,
-                                 guint32 flags,
+                                 CamelStoreGetFolderFlags flags,
                                  GCancellable *cancellable,
                                  GError **error)
 {
@@ -1137,7 +1137,7 @@ groupwise_get_folder_info_offline (CamelStore *store, const gchar *top,
 static CamelFolderInfo *
 groupwise_store_get_folder_info_sync (CamelStore *store,
                                       const gchar *top,
-                                      guint32 flags,
+                                      CamelStoreGetFolderInfoFlags flags,
                                       GCancellable *cancellable,
                                       GError **error)
 {

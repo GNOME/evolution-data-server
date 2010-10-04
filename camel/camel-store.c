@@ -444,7 +444,7 @@ store_get_folder_thread (GSimpleAsyncResult *simple,
 static void
 store_get_folder (CamelStore *store,
                   const gchar *folder_name,
-                  guint32 flags,
+                  CamelStoreGetFolderFlags flags,
                   gint io_priority,
                   GCancellable *cancellable,
                   GAsyncReadyCallback callback,
@@ -513,7 +513,7 @@ store_get_folder_info_thread (GSimpleAsyncResult *simple,
 static void
 store_get_folder_info (CamelStore *store,
                        const gchar *top,
-                       guint32 flags,
+                       CamelStoreGetFolderInfoFlags flags,
                        gint io_priority,
                        GCancellable *cancellable,
                        GAsyncReadyCallback callback,
@@ -1570,7 +1570,7 @@ add_special_info (CamelStore *store,
                   const gchar *name,
                   const gchar *translated,
                   gboolean unread_count,
-                  guint32 flags)
+                  CamelFolderInfoFlags flags)
 {
 	CamelFolderInfo *fi, *vinfo, *parent;
 	gchar *uri, *path;
@@ -2116,7 +2116,7 @@ camel_store_unlock (CamelStore *store,
 CamelFolder *
 camel_store_get_folder_sync (CamelStore *store,
                              const gchar *folder_name,
-                             guint32 flags,
+                             CamelStoreGetFolderFlags flags,
                              GCancellable *cancellable,
                              GError **error)
 {
@@ -2224,7 +2224,7 @@ camel_store_get_folder_sync (CamelStore *store,
 void
 camel_store_get_folder (CamelStore *store,
                         const gchar *folder_name,
-                        guint32 flags,
+                        CamelStoreGetFolderFlags flags,
                         gint io_priority,
                         GCancellable *cancellable,
                         GAsyncReadyCallback callback,
@@ -2308,7 +2308,7 @@ camel_store_get_folder_finish (CamelStore *store,
 CamelFolderInfo *
 camel_store_get_folder_info_sync (CamelStore *store,
                                   const gchar *top,
-                                  guint32 flags,
+                                  CamelStoreGetFolderInfoFlags flags,
                                   GCancellable *cancellable,
                                   GError **error)
 {
@@ -2369,7 +2369,7 @@ camel_store_get_folder_info_sync (CamelStore *store,
 void
 camel_store_get_folder_info (CamelStore *store,
                              const gchar *top,
-                             guint32 flags,
+                             CamelStoreGetFolderInfoFlags flags,
                              gint io_priority,
                              GCancellable *cancellable,
                              GAsyncReadyCallback callback,
@@ -3083,8 +3083,10 @@ camel_store_rename_folder_sync (CamelStore *store,
 	/* If it worked, update all open folders/unlock them */
 	if (folders) {
 		if (success) {
-			guint32 flags = CAMEL_STORE_FOLDER_INFO_RECURSIVE;
+			CamelStoreGetFolderInfoFlags flags;
 			CamelFolderInfo *folder_info;
+
+			flags = CAMEL_STORE_FOLDER_INFO_RECURSIVE;
 
 			for (i=0;i<folders->len;i++) {
 				const gchar *full_name;

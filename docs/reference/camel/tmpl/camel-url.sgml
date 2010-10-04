@@ -36,26 +36,14 @@ camel-url
 @query: 
 @fragment: 
 
-<!-- ##### MACRO CAMEL_URL_HIDE_PASSWORD ##### -->
+<!-- ##### ENUM CamelURLFlags ##### -->
 <para>
 
 </para>
 
-
-
-<!-- ##### MACRO CAMEL_URL_HIDE_PARAMS ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_HIDE_AUTH ##### -->
-<para>
-
-</para>
-
-
+@CAMEL_URL_HIDE_PASSWORD: 
+@CAMEL_URL_HIDE_PARAMS: 
+@CAMEL_URL_HIDE_AUTH: 
 
 <!-- ##### MACRO CAMEL_URL_HIDE_ALL ##### -->
 <para>

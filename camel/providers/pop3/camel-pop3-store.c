@@ -705,7 +705,7 @@ pop3_store_can_refresh_folder (CamelStore *store,
 static CamelFolder *
 pop3_store_get_folder_sync (CamelStore *store,
                             const gchar *folder_name,
-                            guint32 flags,
+                            CamelStoreGetFolderFlags flags,
                             GCancellable *cancellable,
                             GError **error)
 {
@@ -723,7 +723,7 @@ pop3_store_get_folder_sync (CamelStore *store,
 static CamelFolderInfo *
 pop3_store_get_folder_info_sync (CamelStore *store,
                                  const gchar *top,
-                                 guint32 flags,
+                                 CamelStoreGetFolderInfoFlags flags,
                                  GCancellable *cancellable,
                                  GError **error)
 {

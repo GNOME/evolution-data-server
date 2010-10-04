@@ -48,15 +48,18 @@ typedef struct _CamelURL {
 	gchar  *fragment;
 } CamelURL;
 
-#define CAMEL_URL_HIDE_PASSWORD	(1 << 0)
-#define CAMEL_URL_HIDE_PARAMS	(1 << 1)
-#define CAMEL_URL_HIDE_AUTH	(1 << 2)
+typedef enum {
+	CAMEL_URL_HIDE_PASSWORD = 1 << 0,
+	CAMEL_URL_HIDE_PARAMS   = 1 << 1,
+	CAMEL_URL_HIDE_AUTH     = 1 << 2
+} CamelURLFlags;
 
-#define CAMEL_URL_HIDE_ALL (CAMEL_URL_HIDE_PASSWORD | CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH)
+#define CAMEL_URL_HIDE_ALL \
+	(CAMEL_URL_HIDE_PASSWORD | CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH)
 
 CamelURL *camel_url_new_with_base (CamelURL *base, const gchar *url_string);
 CamelURL *camel_url_new (const gchar *url_string, GError **error);
-gchar *camel_url_to_string (CamelURL *url, guint32 flags);
+gchar *camel_url_to_string (CamelURL *url, CamelURLFlags flags);
 void camel_url_free (CamelURL *url);
 
 gchar *camel_url_encode (const gchar *part, const gchar *escape_extra);

@@ -38,12 +38,12 @@
 #define d(x)
 
 static gboolean construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, GError **error);
-static CamelFolder *local_store_get_folder_sync (CamelStore *store, const gchar *folder_name, guint32 flags, GCancellable *cancellable, GError **error);
+static CamelFolder *local_store_get_folder_sync (CamelStore *store, const gchar *folder_name, CamelStoreGetFolderFlags flags, GCancellable *cancellable, GError **error);
 static gchar *get_name (CamelService *service, gboolean brief);
 static CamelFolder *local_store_get_inbox_folder_sync (CamelStore *store, GCancellable *cancellable, GError **error);
 static CamelFolder *local_store_get_junk_folder_sync (CamelStore *store, GCancellable *cancellable, GError **error);
 static CamelFolder *local_store_get_trash_folder_sync (CamelStore *store, GCancellable *cancellable, GError **error);
-static CamelFolderInfo *local_store_get_folder_info_sync (CamelStore *store, const gchar *top, guint32 flags, GCancellable *cancellable, GError **error);
+static CamelFolderInfo *local_store_get_folder_info_sync (CamelStore *store, const gchar *top, CamelStoreGetFolderInfoFlags flags, GCancellable *cancellable, GError **error);
 static gboolean local_store_delete_folder_sync (CamelStore *store, const gchar *folder_name, GCancellable *cancellable, GError **error);
 static gboolean local_store_rename_folder_sync (CamelStore *store, const gchar *old, const gchar *new, GCancellable *cancellable, GError **error);
 static CamelFolderInfo *local_store_create_folder_sync (CamelStore *store, const gchar *parent_name, const gchar *folder_name, GCancellable *cancellable, GError **error);
@@ -134,7 +134,7 @@ camel_local_store_get_toplevel_dir (CamelLocalStore *store)
 static CamelFolder *
 local_store_get_folder_sync (CamelStore *store,
                              const gchar *folder_name,
-                             guint32 flags,
+                             CamelStoreGetFolderFlags flags,
                              GCancellable *cancellable,
                              GError **error)
 {
@@ -263,7 +263,7 @@ get_name (CamelService *service, gboolean brief)
 static CamelFolderInfo *
 local_store_get_folder_info_sync (CamelStore *store,
                                   const gchar *top,
-                                  guint32 flags,
+                                  CamelStoreGetFolderInfoFlags flags,
                                   GCancellable *cancellable,
                                   GError **error)
 {

@@ -372,7 +372,7 @@ spool_store_free_folder_info (CamelStore *store,
 static CamelFolder *
 spool_store_get_folder_sync (CamelStore *store,
                              const gchar *folder_name,
-                             guint32 flags,
+                             CamelStoreGetFolderFlags flags,
                              GCancellable *cancellable,
                              GError **error)
 {
@@ -436,7 +436,7 @@ spool_store_get_folder_sync (CamelStore *store,
 static CamelFolderInfo *
 spool_store_get_folder_info_sync (CamelStore *store,
                                   const gchar *top,
-                                  guint32 flags,
+                                  CamelStoreGetFolderInfoFlags flags,
                                   GCancellable *cancellable,
                                   GError **error)
 {

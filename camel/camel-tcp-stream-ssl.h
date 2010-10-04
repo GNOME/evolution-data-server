@@ -29,6 +29,7 @@
 
 #ifdef CAMEL_HAVE_SSL
 
+#include <camel/camel-session.h>
 #include <camel/camel-tcp-stream-raw.h>
 
 /* Standard GObject macros */
@@ -50,13 +51,7 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_TCP_STREAM_SSL, CamelTcpStreamSSLClass))
 
-#define CAMEL_TCP_STREAM_SSL_ENABLE_SSL2   (1 << 0)
-#define CAMEL_TCP_STREAM_SSL_ENABLE_SSL3   (1 << 1)
-#define CAMEL_TCP_STREAM_SSL_ENABLE_TLS    (1 << 2)
-
 G_BEGIN_DECLS
-
-struct _CamelSession;
 
 typedef struct _CamelTcpStreamSSL CamelTcpStreamSSL;
 typedef struct _CamelTcpStreamSSLClass CamelTcpStreamSSLClass;
@@ -71,14 +66,20 @@ struct _CamelTcpStreamSSLClass {
 	CamelTcpStreamRawClass parent_class;
 };
 
-GType camel_tcp_stream_ssl_get_type (void);
+typedef enum {
+	CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 = 1 << 0,
+	CAMEL_TCP_STREAM_SSL_ENABLE_SSL3 = 1 << 1,
+	CAMEL_TCP_STREAM_SSL_ENABLE_TLS  = 1 << 2
+} CamelTcpStreamSSLFlags;
 
-/* public methods */
-CamelStream *camel_tcp_stream_ssl_new (struct _CamelSession *session, const gchar *expected_host, guint32 flags);
-
-CamelStream *camel_tcp_stream_ssl_new_raw (struct _CamelSession *session, const gchar *expected_host, guint32 flags);
-
-gint camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl);
+GType		camel_tcp_stream_ssl_get_type	(void);
+CamelStream *	camel_tcp_stream_ssl_new	(CamelSession *session,
+						 const gchar *expected_host,
+						 CamelTcpStreamSSLFlags flags);
+CamelStream *	camel_tcp_stream_ssl_new_raw	(CamelSession *session,
+						 const gchar *expected_host,
+						 CamelTcpStreamSSLFlags flags);
+gint		camel_tcp_stream_ssl_enable_ssl	(CamelTcpStreamSSL *ssl);
 
 G_END_DECLS
 

@@ -1122,7 +1122,7 @@ imapx_folder_is_subscribed (CamelStore *store,
 static CamelFolder *
 imapx_store_get_folder_sync (CamelStore *store,
                              const gchar *folder_name,
-                             guint32 flags,
+                             CamelStoreGetFolderFlags flags,
                              GCancellable *cancellable,
                              GError **error)
 {
@@ -1143,7 +1143,7 @@ imapx_store_get_folder_sync (CamelStore *store,
 static CamelFolderInfo *
 imapx_store_get_folder_info_sync (CamelStore *store,
                                   const gchar *top,
-                                  guint32 flags,
+                                  CamelStoreGetFolderInfoFlags flags,
                                   GCancellable *cancellable,
                                   GError **error)
 {

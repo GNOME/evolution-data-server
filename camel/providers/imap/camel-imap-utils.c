@@ -541,7 +541,7 @@ imap_create_flag_list (guint32 flags, CamelMessageInfo *info, guint32 permanent_
 }
 
 gboolean
-imap_parse_flag_list (gchar **flag_list_p, guint32 *flags_out, gchar **custom_flags_out)
+imap_parse_flag_list (gchar **flag_list_p, CamelMessageFlags *flags_out, gchar **custom_flags_out)
 {
 	gchar *flag_list = *flag_list_p;
 	guint32 flags = 0;

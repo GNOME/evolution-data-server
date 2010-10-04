@@ -494,7 +494,7 @@ camel_imap_folder_selected (CamelFolder *folder,
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
 	CamelImapSummary *imap_summary = CAMEL_IMAP_SUMMARY (folder->summary);
 	gulong exists = 0, validity = 0, val, uid;
-	guint32 perm_flags = 0;
+	CamelMessageFlags perm_flags = 0;
 	GData *fetch_data;
 	gint i, count;
 	gchar *resp, *old_uid;
@@ -4406,7 +4406,7 @@ parse_fetch_response (CamelImapFolder *imap_folder, gchar *response)
 		response++;
 
 		if (!g_ascii_strncasecmp (response, "FLAGS ", 6)) {
-			guint32 flags;
+			CamelMessageFlags flags;
 			gchar *custom_flags = NULL;
 
 			response += 6;

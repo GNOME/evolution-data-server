@@ -3591,7 +3591,7 @@ message_info_migrate (CamelFolderSummary *s, FILE *in)
 	io(printf("Loading message info\n"));
 
 	camel_file_util_decode_string (in, &uid);
-	camel_file_util_decode_uint32 (in, &mi->flags);
+	camel_file_util_decode_uint32 (in, (guint32 *) &mi->flags);
 	camel_file_util_decode_uint32 (in, &mi->size);
 	camel_file_util_decode_time_t (in, &mi->date_sent);
 	camel_file_util_decode_time_t (in, &mi->date_received);
@@ -4384,7 +4384,7 @@ static struct flag_names_t {
  *
  * Returns: the integer value of the system flag string
  **/
-guint32
+CamelMessageFlags
 camel_system_flag (const gchar *name)
 {
 	struct flag_names_t *flag;
@@ -4408,7 +4408,7 @@ camel_system_flag (const gchar *name)
  * Returns: %TRUE if the named flag is set or %FALSE otherwise
  **/
 gboolean
-camel_system_flag_get (guint32 flags, const gchar *name)
+camel_system_flag_get (CamelMessageFlags flags, const gchar *name)
 {
 	g_return_val_if_fail (name != NULL, FALSE);
 
@@ -4670,7 +4670,7 @@ camel_folder_summary_update_flag_cache (CamelFolderSummary *s, const gchar *uid,
  * Returns: %TRUE if any of the flags changed or %FALSE otherwise
  **/
 gboolean
-camel_message_info_set_flags (CamelMessageInfo *mi, guint32 flags, guint32 set)
+camel_message_info_set_flags (CamelMessageInfo *mi, CamelMessageFlags flags, guint32 set)
 {
 	if (mi->summary)
 		return CAMEL_FOLDER_SUMMARY_GET_CLASS (mi->summary)->info_set_flags (mi, flags, set);

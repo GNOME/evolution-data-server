@@ -285,8 +285,8 @@ pop3_folder_get_filename (CamelFolder *folder,
 static gboolean
 pop3_folder_set_message_flags (CamelFolder *folder,
                                const gchar *uid,
-                               guint32 flags,
-                               guint32 set)
+                               CamelMessageFlags flags,
+                               CamelMessageFlags set)
 {
 	CamelPOP3Folder *pop3_folder = CAMEL_POP3_FOLDER (folder);
 	CamelPOP3FolderInfo *fi;

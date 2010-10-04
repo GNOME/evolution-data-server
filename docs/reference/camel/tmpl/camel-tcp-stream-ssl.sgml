@@ -28,26 +28,14 @@ CamelTcpStreamSSL
 @parent_object: 
 @priv: 
 
-<!-- ##### MACRO CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 ##### -->
+<!-- ##### ENUM CamelTcpStreamSSLFlags ##### -->
 <para>
 
 </para>
 
-
-
-<!-- ##### MACRO CAMEL_TCP_STREAM_SSL_ENABLE_SSL3 ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_TCP_STREAM_SSL_ENABLE_TLS ##### -->
-<para>
-
-</para>
-
-
+@CAMEL_TCP_STREAM_SSL_ENABLE_SSL2: 
+@CAMEL_TCP_STREAM_SSL_ENABLE_SSL3: 
+@CAMEL_TCP_STREAM_SSL_ENABLE_TLS: 
 
 <!-- ##### FUNCTION camel_tcp_stream_ssl_new ##### -->
 <para>

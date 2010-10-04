@@ -52,68 +52,21 @@ camel-provider
 @CAMEL_PROVIDER_TRANSPORT: 
 @CAMEL_NUM_PROVIDER_TYPES: 
 
-<!-- ##### MACRO CAMEL_PROVIDER_IS_LOCAL ##### -->
+<!-- ##### ENUM CamelProviderFlags ##### -->
 <para>
 
 </para>
 
-
-
-<!-- ##### MACRO CAMEL_PROVIDER_IS_EXTERNAL ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_PROVIDER_IS_SOURCE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_PROVIDER_IS_STORAGE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_PROVIDER_SUPPORTS_SSL ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_PROVIDER_HAS_LICENSE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_PROVIDER_DISABLE_SENT_FOLDER ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_PROVIDER_ALLOW_REAL_TRASH_FOLDER ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_PROVIDER_ALLOW_REAL_JUNK_FOLDER ##### -->
-<para>
-
-</para>
-
-
+@CAMEL_PROVIDER_IS_REMOTE: 
+@CAMEL_PROVIDER_IS_LOCAL: 
+@CAMEL_PROVIDER_IS_EXTERNAL: 
+@CAMEL_PROVIDER_IS_SOURCE: 
+@CAMEL_PROVIDER_IS_STORAGE: 
+@CAMEL_PROVIDER_SUPPORTS_SSL: 
+@CAMEL_PROVIDER_HAS_LICENSE: 
+@CAMEL_PROVIDER_DISABLE_SENT_FOLDER: 
+@CAMEL_PROVIDER_ALLOW_REAL_TRASH_FOLDER: 
+@CAMEL_PROVIDER_ALLOW_REAL_JUNK_FOLDER: 
 
 <!-- ##### MACRO CAMEL_URL_PART_USER ##### -->
 <para>
@@ -205,152 +158,32 @@ camel-provider
 @flags: 
 
 
-<!-- ##### MACRO CAMEL_URL_ALLOW_USER ##### -->
+<!-- ##### ENUM CamelProviderURLFlags ##### -->
 <para>
 
 </para>
 
-
-
-<!-- ##### MACRO CAMEL_URL_ALLOW_AUTH ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_ALLOW_PASSWORD ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_ALLOW_HOST ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_ALLOW_PORT ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_ALLOW_PATH ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_NEED_USER ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_NEED_AUTH ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_NEED_PASSWORD ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_NEED_HOST ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_NEED_PORT ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_NEED_PATH ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_NEED_PATH_DIR ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_HIDDEN_USER ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_HIDDEN_AUTH ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_HIDDEN_PASSWORD ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_HIDDEN_HOST ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_HIDDEN_PORT ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_HIDDEN_PATH ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_FRAGMENT_IS_PATH ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAMEL_URL_PATH_IS_ABSOLUTE ##### -->
-<para>
-
-</para>
-
-
+@CAMEL_URL_ALLOW_USER: 
+@CAMEL_URL_ALLOW_AUTH: 
+@CAMEL_URL_ALLOW_PASSWORD: 
+@CAMEL_URL_ALLOW_HOST: 
+@CAMEL_URL_ALLOW_PORT: 
+@CAMEL_URL_ALLOW_PATH: 
+@CAMEL_URL_NEED_USER: 
+@CAMEL_URL_NEED_AUTH: 
+@CAMEL_URL_NEED_PASSWORD: 
+@CAMEL_URL_NEED_HOST: 
+@CAMEL_URL_NEED_PORT: 
+@CAMEL_URL_NEED_PATH: 
+@CAMEL_URL_NEED_PATH_DIR: 
+@CAMEL_URL_HIDDEN_USER: 
+@CAMEL_URL_HIDDEN_AUTH: 
+@CAMEL_URL_HIDDEN_PASSWORD: 
+@CAMEL_URL_HIDDEN_HOST: 
+@CAMEL_URL_HIDDEN_PORT: 
+@CAMEL_URL_HIDDEN_PATH: 
+@CAMEL_URL_FRAGMENT_IS_PATH: 
+@CAMEL_URL_PATH_IS_ABSOLUTE: 
 
 <!-- ##### MACRO CAMEL_PROVIDER_IS_STORE_AND_TRANSPORT ##### -->
 <para>
