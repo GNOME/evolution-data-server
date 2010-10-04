@@ -1437,7 +1437,7 @@ e_contact_get (EContact *contact, EContactField field_id)
 				v = e_vcard_attribute_get_values (attr);
 				v = g_list_nth (v, info->list_elem);
 
-				return v ? g_strstrip (g_strdup (v->data)) : NULL;
+				return (v && v->data) ? g_strstrip (g_strdup (v->data)) : NULL;
 			}
 		}
 	}
@@ -1458,7 +1458,7 @@ e_contact_get (EContact *contact, EContactField field_id)
 					if (num_left-- == 0) {
 						GList *v = e_vcard_attribute_get_values (attr);
 
-						return v ? g_strstrip (g_strdup (v->data)) : NULL;
+						return (v && v->data) ? g_strstrip (g_strdup (v->data)) : NULL;
 					}
 				}
 			}
@@ -1470,7 +1470,7 @@ e_contact_get (EContact *contact, EContactField field_id)
 		if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
 			if (attr) {
 				GList *p = e_vcard_attribute_get_values (attr);
-				return g_strstrip (g_strdup (p->data));
+				return (p && p->data) ? g_strstrip (g_strdup (p->data)) : NULL;
 			}
 			else {
 				return NULL;
@@ -1561,10 +1561,10 @@ e_contact_get (EContact *contact, EContactField field_id)
 				v = e_vcard_attribute_get_values (attr);
 
 				if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
-					return v ? g_strstrip (g_strdup (v->data)) : NULL;
+					return (v && v->data) ? g_strstrip (g_strdup (v->data)) : NULL;
 				}
 				else {
-					rv = g_list_append (rv, v ? g_strstrip (g_strdup (v->data)) : NULL);
+					rv = g_list_append (rv, (v && v->data) ? g_strstrip (g_strdup (v->data)) : NULL);
 				}
 			}
 		}
