@@ -22,7 +22,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 2.31.x\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&component=Misc.\n"
 "POT-Creation-Date: 2010-09-11 18:13+0000\n"
-"PO-Revision-Date: 2010-09-12 22:30+0200\n"
+"PO-Revision-Date: 2010-10-04 23:40+0200\n"
 "Last-Translator: Luca Ferretti <lferrett@gnome.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -4967,7 +4967,7 @@ msgstr "%a %d/%m/%Y, %I.%M.%S %p"
 #. time, in 24-hour format.
 #: ../libedataserver/e-time-utils.c:1640 ../libedataserver/e-time-utils.c:1893
 msgid "%a %m/%d/%Y %H:%M:%S"
-msgstr "%a %d/%m/%Y, %-H.%M.%S"
+msgstr "%a %d/%m/%Y, %k.%M.%S"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without seconds.
@@ -4983,7 +4983,7 @@ msgstr "%a %d/%m/%Y, %I.%M %p"
 #. time, in 24-hour format, without seconds.
 #: ../libedataserver/e-time-utils.c:1650 ../libedataserver/e-time-utils.c:1889
 msgid "%a %m/%d/%Y %H:%M"
-msgstr "%a %d/%m/%Y, %-H.%M"
+msgstr "%a %d/%m/%Y, %k.%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
@@ -4995,7 +4995,7 @@ msgstr "%a %d/%m/%Y, %I %p"
 #. in 24-hour format, without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:1660
 msgid "%a %m/%d/%Y %H"
-msgstr "%a %d/%m/%Y, %-H"
+msgstr "%a %d/%m/%Y, %k"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
@@ -5012,7 +5012,7 @@ msgstr "%d/%m/%Y, %I.%M.%S %p"
 #. strptime format of a date and a time, in 24-hour format.
 #: ../libedataserver/e-time-utils.c:1674
 msgid "%m/%d/%Y %H:%M:%S"
-msgstr "%d/%m/%Y, %-H.%M.%S"
+msgstr "%d/%m/%Y, %k.%M.%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
@@ -5024,7 +5024,7 @@ msgstr "%d/%m/%Y, %I.%M %p"
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:1684
 msgid "%m/%d/%Y %H:%M"
-msgstr "%d/%m/%Y, %-H.%M"
+msgstr "%d/%m/%Y, %k.%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
@@ -5036,7 +5036,7 @@ msgstr "%d/%m/%Y, %I %p"
 #. without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:1694
 msgid "%m/%d/%Y %H"
-msgstr "%d/%m/%Y, %-H"
+msgstr "%d/%m/%Y, %k"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
@@ -5054,7 +5054,7 @@ msgstr "%I.%M.%S %p"
 #. strftime format of a time in 24-hour format.
 #: ../libedataserver/e-time-utils.c:1830 ../libedataserver/e-time-utils.c:1938
 msgid "%H:%M:%S"
-msgstr "%-H.%M.%S"
+msgstr "%k.%M.%S"
 
 #. strptime format for time of day, without seconds,
 #. in 12-hour format.
@@ -5069,12 +5069,12 @@ msgstr "%I.%M %p"
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:1839 ../libedataserver/e-time-utils.c:1935
 msgid "%H:%M"
-msgstr "%-H.%M"
+msgstr "%k.%M"
 
 #. strptime format for time of day, without seconds 24-hour format, and no colon.
 #: ../libedataserver/e-time-utils.c:1842
 msgid "%H%M"
-msgstr "%-H%M"
+msgstr "%k%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
 #: ../libedataserver/e-time-utils.c:1846
