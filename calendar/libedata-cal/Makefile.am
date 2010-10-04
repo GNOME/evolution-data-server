@@ -121,44 +121,47 @@ e_calendar_factory_LDADD =						\
 test_e_sexp_SOURCES = e-cal-backend-sexp.c e-cal-backend-sexp.h
 test_e_sexp_CPPFLAGS = \
 	$(AM_CPPFLAGS)				\
+	-I$(top_srcdir)				\
 	-I$(top_srcdir)/calendar		\
 	-I$(top_builddir)/calendar		\
 	$(EVOLUTION_CALENDAR_CFLAGS)		\
 	-DTESTER=1
 
 test_e_sexp_LDADD = \
-	libedata-cal-1.2.la 							\
-	$(top_builddir)/calendar/libecal/libecal-1.2.la 			\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la			\
+	libedata-cal-1.2.la					\
+	$(top_builddir)/calendar/libecal/libecal-1.2.la 	\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(E_DATA_SERVER_LIBS)
 
 test_intervaltree_SOURCES = test-intervaltree.c e-cal-backend-intervaltree.c
 
 test_intervaltree_CPPFLAGS = \
 	$(AM_CPPFLAGS)				\
+	-I$(top_srcdir)				\
 	-I$(top_srcdir)/calendar		\
 	-I$(top_builddir)/calendar		\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
 test_intervaltree_LDADD = \
-	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
-	libedata-cal-1.2.la		\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la			\
+	libedata-cal-1.2.la					\
+	$(top_builddir)/calendar/libecal/libecal-1.2.la		\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(EVOLUTION_CALENDAR_LIBS)
 
 test_intervaltree_coverage_SOURCES = test-intervaltree.c e-cal-backend-intervaltree.c
 
 test_intervaltree_coverage_CPPFLAGS = \
 	$(AM_CPPFLAGS)				\
+	-I$(top_srcdir)				\
 	-I$(top_srcdir)/calendar		\
 	-I$(top_builddir)/calendar		\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
 test_intervaltree_coverage_LDADD = \
-	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
-	libedata-cal-1.2.la		\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la			\
-	$(EVOLUTION_CALENDAR_LIBS)						\
+	libedata-cal-1.2.la					\
+	$(top_builddir)/calendar/libecal/libecal-1.2.la		\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
+	$(EVOLUTION_CALENDAR_LIBS)				\
 	-lgcov
 
 .PHONY: coverage
