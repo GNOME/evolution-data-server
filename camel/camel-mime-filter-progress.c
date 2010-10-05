@@ -160,7 +160,7 @@ camel_mime_filter_progress_new (GCancellable *cancellable,
 	priv = CAMEL_MIME_FILTER_PROGRESS_GET_PRIVATE (filter);
 
 	if (CAMEL_IS_OPERATION (cancellable))
-		priv->cancellable = cancellable;
+		priv->cancellable = g_object_ref (cancellable);
 
 	priv->total = total;
 
