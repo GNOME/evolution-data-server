@@ -36,15 +36,5 @@ libecalbackendweather_la_LIBADD =						\
 
 libecalbackendweather_la_LDFLAGS =		\
 	-module -avoid-version $(NO_UNDEFINED)
-	
-
-weatherdata_in_files = Locations.xml.in
-weatherdata_DATA = $(weatherdata_in_files:.xml.in=.xml)
-# FIXME - should probably do some sort of intltool merge here
-%.xml:	%.xml.in
-	cp $< $@
-
-DISTCLEANFILES = Locations.xml
-EXTRA_DIST = Locations.xml.in
 
 -include $(top_srcdir)/git.mk
