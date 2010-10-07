@@ -97,6 +97,24 @@ file_chooser_response (GtkDialog *dialog, gint response_id, GtkFileChooser *butt
 	}
 }
 
+static void
+category_name_changed_cb (GtkEntry *category_name_entry, CategoryPropertiesDialog *prop_dialog)
+{
+	gchar *name;
+
+	g_return_if_fail (prop_dialog != NULL);
+	g_return_if_fail (prop_dialog->the_dialog != NULL);
+	g_return_if_fail (category_name_entry != NULL);
+
+	name = g_strdup (gtk_entry_get_text (category_name_entry));
+	if (name)
+		name = g_strstrip (name);
+
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (prop_dialog->the_dialog), GTK_RESPONSE_OK, name && *name);
+
+	g_free (name);
+}
+
 static CategoryPropertiesDialog *
 load_properties_dialog (ECategoriesDialog *parent)
 {
@@ -135,6 +153,9 @@ load_properties_dialog (ECategoriesDialog *parent)
 	gtk_window_set_transient_for (GTK_WINDOW (prop_dialog->the_dialog), GTK_WINDOW (parent));
 
 	prop_dialog->category_name = GTK_WIDGET (gtk_builder_get_object (prop_dialog->gui, "category-name"));
+	g_signal_connect (prop_dialog->category_name, "changed", G_CALLBACK (category_name_changed_cb), prop_dialog);
+	category_name_changed_cb (GTK_ENTRY (prop_dialog->category_name), prop_dialog);
+
 	table = GTK_WIDGET (gtk_builder_get_object (prop_dialog->gui, "table-category-properties"));
 
 	if (table) {
@@ -333,8 +354,7 @@ check_category_name (const gchar *name)
 		p++;
 	}
 
-	p = str->str;
-	g_string_free (str, FALSE);
+	p = g_strstrip (g_string_free (str, FALSE));
 
 	return p;
 }

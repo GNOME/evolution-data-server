@@ -35,6 +35,7 @@ typedef struct {
 	gchar *clocale_name;  /* only for default categories */
 	gchar *icon_file;
 	gboolean is_default;
+	gboolean is_searchable;
 } CategoryInfo;
 
 typedef struct {
@@ -194,7 +195,7 @@ hash_to_xml_string (gpointer key, gpointer value, gpointer user_data)
 
 	g_string_append_len (string, "  <category", 11);
 
-	if (cat_info->is_default)
+	if (cat_info->is_default && cat_info->clocale_name && *cat_info->clocale_name)
 		category = escape_string (cat_info->clocale_name);
 	else
 		category = escape_string (cat_info->display_name);
@@ -206,7 +207,10 @@ hash_to_xml_string (gpointer key, gpointer value, gpointer user_data)
 			string, " icon=\"%s\"", cat_info->icon_file);
 
 	g_string_append_printf (
-		string, " default=\"%d\"", cat_info->is_default);
+		string, " default=\"%d\"", cat_info->is_default ? 1 : 0);
+
+	g_string_append_printf (
+		string, " searchable=\"%d\"", cat_info->is_searchable ? 1 : 0);
 
 	g_string_append_len (string, "/>\n", 3);
 }
@@ -264,10 +268,27 @@ save_categories (void)
 		idle_id = g_idle_add (idle_saver_cb, NULL);
 }
 
+static gchar *
+get_collation_key (const gchar *category)
+{
+	gchar *casefolded, *key;
+
+	g_return_val_if_fail (category != NULL, NULL);
+
+	casefolded = g_utf8_casefold (category, -1);
+	g_return_val_if_fail (casefolded != NULL, NULL);
+
+	key = g_utf8_collate_key (casefolded, -1);
+	g_free (casefolded);
+
+	return key;
+}
+
 static void
 categories_add_full (const gchar *category,
                      const gchar *icon_file,
-                     gboolean is_default)
+                     gboolean is_default,
+		     gboolean is_searchable)
 {
 	CategoryInfo *cat_info;
 	gchar *collation_key;
@@ -284,8 +305,9 @@ categories_add_full (const gchar *category,
 	}
 	cat_info->icon_file = g_strdup (icon_file);
 	cat_info->is_default = is_default;
+	cat_info->is_searchable = is_default || is_searchable;
 
-	collation_key = g_utf8_collate_key (cat_info->display_name, -1);
+	collation_key = get_collation_key (cat_info->display_name);
 	g_hash_table_insert (categories_table, collation_key, cat_info);
 
 	changed = TRUE;
@@ -298,7 +320,7 @@ categories_lookup (const gchar *category)
 	CategoryInfo *cat_info;
 	gchar *collation_key;
 
-	collation_key = g_utf8_collate_key (category, -1);
+	collation_key = get_collation_key (category);
 	cat_info = g_hash_table_lookup (categories_table, collation_key);
 	g_free (collation_key);
 
@@ -326,27 +348,25 @@ parse_categories (const gchar *contents, gsize length)
 	}
 
 	for (node = node->xmlChildrenNode; node != NULL; node = node->next) {
-		xmlChar *category, *icon_file, *is_default;
+		xmlChar *category, *icon_file, *is_default, *is_searchable;
 
 		category = xmlGetProp (node, (xmlChar *) "a");
 		icon_file = xmlGetProp (node, (xmlChar *) "icon");
 		is_default = xmlGetProp (node, (xmlChar *) "default");
+		is_searchable = xmlGetProp (node, (xmlChar *) "searchable");
 
-		/* Default categories used to be called "searchable". */
-		if (is_default == NULL)
-			is_default = xmlGetProp (
-				node, (xmlChar *) "searchable");
-
-		if (category != NULL) {
+		if (category != NULL && *category) {
 			categories_add_full (
 				(gchar *) category, (gchar *) icon_file,
-				g_strcmp0 ((gchar *) is_default, "1") == 0);
+				g_strcmp0 ((gchar *) is_default, "1") == 0,
+				g_strcmp0 ((gchar *) is_searchable, "1") == 0);
 			n_added++;
 		}
 
 		xmlFree (category);
 		xmlFree (icon_file);
 		xmlFree (is_default);
+		xmlFree (is_searchable);
 	}
 
 	xmlFreeDoc (doc);
@@ -456,7 +476,7 @@ load_default_categories (void)
 				E_DATA_SERVER_IMAGESDIR,
 				cat_info->icon_file, NULL);
 
-		categories_add_full (cat_info->category, icon_file, TRUE);
+		categories_add_full (cat_info->category, icon_file, TRUE, TRUE);
 
 		g_free (icon_file);
 		cat_info++;
@@ -573,11 +593,12 @@ e_categories_add (const gchar *category,
                   gboolean searchable)
 {
 	g_return_if_fail (category != NULL);
+	g_return_if_fail (*category);
 
 	if (!initialized)
 		initialize_categories ();
 
-	categories_add_full (category, icon_file, FALSE);
+	categories_add_full (category, icon_file, FALSE, searchable);
 }
 
 /**
@@ -589,15 +610,21 @@ e_categories_add (const gchar *category,
 void
 e_categories_remove (const gchar *category)
 {
+	gchar *collation_key;
+
 	g_return_if_fail (category != NULL);
 
 	if (!initialized)
 		initialize_categories ();
 
-	if (g_hash_table_remove (categories_table, category)) {
+	collation_key = get_collation_key (category);
+
+	if (g_hash_table_remove (categories_table, collation_key)) {
 		changed = TRUE;
 		save_categories ();
 	}
+
+	g_free (collation_key);
 }
 
 /**
@@ -616,7 +643,7 @@ e_categories_exist (const gchar *category)
 	if (!initialized)
 		initialize_categories ();
 
-	return (categories_lookup (category) != NULL);
+	return (!*category) || (categories_lookup (category) != NULL);
 }
 
 /**
@@ -694,7 +721,7 @@ e_categories_is_searchable (const gchar *category)
 	if (cat_info == NULL)
 		return FALSE;
 
-	return cat_info->is_default;
+	return cat_info->is_searchable;
 }
 
 /**
