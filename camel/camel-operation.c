@@ -90,6 +90,10 @@ operation_emit_status_cb (StatusNode *node)
 	gchar *message = NULL;
 	gint percent = 0;
 
+	/* Guard against reference counting errors. */
+	g_return_val_if_fail (node != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_OPERATION (node->operation), FALSE);
+
 	/* Keep the operation alive until we emit the signal,
 	 * otherwise it might be finalized between unlocking
 	 * the mutex and emitting the signal. */
