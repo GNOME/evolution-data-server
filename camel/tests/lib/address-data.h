@@ -94,3 +94,30 @@ static struct _l {
 	{ "gb2312", "ヮ痄善蚾庉敦諳奪燴最唗(AfterStep, Enlightenment, FVWM, IceWM, SawMill)" },
 	{ "big5", "視窗管理者只移動裝飾視窗\n(AfterStep, Enlightenment, FVWM, IceWM, Sawmill)" },
 };
+
+static struct _d {
+	const gchar *name;
+	const gchar *email;
+} test_decode[] = {
+	{ NULL,                   "email@example.com" },
+	{ NULL,                   "your.email@example.com" },
+	{ "Your",                 "email@example.com" },
+	{ "Your Email",           "email@example.com" },
+	{ "Mr Smith Black",       "smith@black.com" },
+	{ "Mr. Smith Black",      "smith@black.com" },
+	{ "Mr. Smith O. Black",   "smith.o@black.com" },
+	{ "Joe d'Magio",          "joe.d@example.com" },
+	{ "example.com address",  "email@example.com" },
+	{ "email at example.com", "email@example.com" },
+	{ "email.at.example.com", "email@example.com" }
+};
+
+static struct _ldf {
+	const gchar *with_name;
+	const gchar *without_name;
+} line_decode_formats[] = {
+	{"%s <%s>",      "%s" },
+	{ "%s<%s>",      "%s" },
+	{ "\"%s\" <%s>", " <%s>"},
+	{ "\"%s\"<%s>",  "<%s>"}
+};

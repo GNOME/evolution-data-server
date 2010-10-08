@@ -2476,6 +2476,8 @@ header_decode_mailbox (const gchar **in, const gchar *charset)
 		/* Another fix for seriously-broken-mailers */
 		if (*inptr && *inptr != ',') {
 			gchar *text;
+			const gchar *name_part;
+			gboolean in_quote;
 
 			w(g_warning("We didn't get an '@' where we expected in '%s', trying again", *in));
 			w(g_warning("Name is '%s', Addr is '%s' we're at '%s'\n", name?name->str:"<UNSET>", addr->str, inptr));
@@ -2485,6 +2487,29 @@ header_decode_mailbox (const gchar **in, const gchar *charset)
 				closeme = TRUE;
 			else
 				g_string_append_c (addr, *inptr);
+
+			name_part = *in;
+			in_quote = FALSE;
+			while (*name_part && *name_part != ',') {
+				if (*name_part == '\"')
+					in_quote = !in_quote;
+				else if (!in_quote && *name_part == '<')
+					break;
+				name_part++;
+			}
+
+			if (*name_part == '<' && ((!strchr (name_part, ',') && strchr (name_part, '>')) || (strchr (name_part, ',') > strchr (name_part, '>')))) {
+				/* it's of a form "display-name <addr-spec>" */
+				if (name)
+					g_string_free (name, TRUE);
+				name = NULL;
+				g_string_free (addr, TRUE);
+
+				if (name_part == *in)
+					addr = g_string_new ("");
+				else
+					addr = g_string_new_len (*in, name_part - *in - (camel_mime_is_lwsp (name_part[-1]) ? 1 : 0));
+			}
 
 			/* check for address is encoded word ... */
 			text = camel_header_decode_string (addr->str, charset);
