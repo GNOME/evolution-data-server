@@ -74,6 +74,24 @@ fail:
 	return out;
 }
 
+static void
+check_address_line_decode (gint i, const gchar *line, const gchar *name, const gchar *email)
+{
+	CamelInternetAddress *addr;
+	const gchar *dname, *demail;
+
+	push ("Testing address line %d '%s'", i, line);
+	dname = NULL;
+	demail = NULL;
+	addr = camel_internet_address_new ();
+	check (camel_address_decode (CAMEL_ADDRESS (addr), line) == 1);
+	check (camel_internet_address_get (CAMEL_INTERNET_ADDRESS (addr), 0, &dname, &demail));
+	check_msg (g_strcmp0 (dname, name) == 0  || (!name && dname && !*dname), "decoded name = '%s', but should be '%s'", dname, name);
+	check_msg (g_strcmp0 (demail, email) == 0, "decoded email = '%s', but should be '%s'", demail, email);
+	check_unref (addr, 1);
+	pull ();
+}
+
 #define to_utf8(in, type) convert(in, type, "utf-8")
 #define from_utf8(in, type) convert(in, "utf-8", type)
 
@@ -317,8 +335,33 @@ gint main(gint argc, gchar **argv)
 
 	camel_test_end();
 
-	/* FIXME: Add test of decoding of broken addresses */
+	camel_test_start ("CamelInternerAddress name & email decoder");
+
+	for (i = 0; i < G_N_ELEMENTS (test_decode); i++) {
+		gchar *line;
+		const gchar *name, *email;
+		gint jj;
+
+		name = test_decode[i].name;
+		email = test_decode[i].email;
+
+		for (jj = 0; jj < G_N_ELEMENTS (line_decode_formats); jj++) {
+			if (line_decode_formats[jj].without_name) {
+				line = g_strdup_printf (line_decode_formats[jj].without_name, email);
+				check_address_line_decode (i, line, NULL, email);
+				g_free (line);
+			}
+
+			if (!name)
+				continue;
+
+			line = g_strdup_printf (line_decode_formats[jj].with_name, name, email);
+			check_address_line_decode (i, line, name, email);
+			g_free (line);
+		}
+	}
+
+	camel_test_end();
 
 	return 0;
 }
-
