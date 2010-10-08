@@ -502,13 +502,15 @@ quote_etag (const gchar *etag)
 /* ************************************************************************* */
 
 static gboolean
-status_code_to_result (guint status_code, ECalBackendCalDAVPrivate  *priv, GError **perror)
+status_code_to_result (SoupMessage *message, ECalBackendCalDAVPrivate  *priv, GError **perror)
 {
-	if (SOUP_STATUS_IS_SUCCESSFUL (status_code)) {
+	g_return_val_if_fail (message != NULL, FALSE);
+
+	if (SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
 		return TRUE;
 	}
 
-	switch (status_code) {
+	switch (message->status_code) {
 
 	case 404:
 		g_propagate_error (perror, EDC_ERROR (NoSuchCal));
@@ -527,7 +529,13 @@ status_code_to_result (guint status_code, ECalBackendCalDAVPrivate  *priv, GErro
 
 	default:
 		d(g_debug ("CalDAV:%s: Unhandled status code %d\n", G_STRFUNC, status_code));
-		g_propagate_error (perror, e_data_cal_create_error_fmt (OtherError, _("Unexpected HTTP status code %d returned"), status_code));
+		g_propagate_error (perror,
+			e_data_cal_create_error_fmt (
+				OtherError,
+				_("Unexpected HTTP status code %d returned (%s)"),
+					message->status_code,
+					message->reason_phrase && *message->reason_phrase ? message->reason_phrase :
+					(soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : _("Unknown error"))));
 	}
 
 	return FALSE;
@@ -988,7 +996,7 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav, GError **perror)
 	send_and_handle_redirection (priv->session, message, NULL);
 
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
-		status_code_to_result (message->status_code, priv, perror);
+		status_code_to_result (message, priv, perror);
 		g_object_unref (message);
 		return FALSE;
 	}
@@ -1265,7 +1273,7 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, GError
 	send_and_handle_redirection (priv->session, message, NULL);
 
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
-		status_code_to_result (message->status_code, priv, perror);
+		status_code_to_result (message, priv, perror);
 
 		g_warning ("Could not fetch object '%s' from server, status:%d (%s)", uri, message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
 		g_object_unref (message);
@@ -1329,7 +1337,7 @@ caldav_post_freebusy (ECalBackendCalDAV *cbdav, const gchar *url, gchar **post_f
 	send_and_handle_redirection (priv->session, message, NULL);
 
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
-		status_code_to_result (message->status_code, priv, error);
+		status_code_to_result (message, priv, error);
 		g_warning ("Could not post free/busy request to '%s', status:%d (%s)", url, message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
 		g_object_unref (message);
 
@@ -1404,7 +1412,7 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, icalco
 		g_free (uri);
 	}
 
-	if (status_code_to_result (message->status_code, priv, perror)) {
+	if (status_code_to_result (message, priv, perror)) {
 		gboolean was_get = FALSE;
 
 		hdr = soup_message_headers_get (message->response_headers, "ETag");
@@ -1485,7 +1493,7 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, GEr
 
 	send_and_handle_redirection (priv->session, message, NULL);
 
-	status_code_to_result (message->status_code, priv, perror);
+	status_code_to_result (message, priv, perror);
 
 	g_object_unref (message);
 }

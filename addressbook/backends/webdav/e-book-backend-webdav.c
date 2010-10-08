@@ -187,7 +187,7 @@ download_contact (EBookBackendWebdav *webdav, const gchar *uri)
 }
 
 static guint
-upload_contact (EBookBackendWebdav *webdav, EContact *contact)
+upload_contact (EBookBackendWebdav *webdav, EContact *contact, gchar **reason)
 {
 	ESource     *source = e_book_backend_get_source (E_BOOK_BACKEND (webdav));
 	SoupMessage *message;
@@ -268,6 +268,11 @@ upload_contact (EBookBackendWebdav *webdav, EContact *contact)
 		e_contact_set (contact, E_CONTACT_UID, uri);
 	}
 
+	if (reason) {
+		*reason = g_strdup (message->reason_phrase && *message->reason_phrase ? message->reason_phrase :
+				    (soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : _("Unknown error")));
+	}
+
 	g_object_unref (message);
 	g_free (request);
 	g_free (uri);
@@ -301,6 +306,7 @@ e_book_backend_webdav_create_contact (EBookBackend *backend,
 	EContact                  *contact;
 	gchar                     *uid;
 	guint                      status;
+	gchar			  *status_reason = NULL;
 
 	if (priv->mode == E_DATA_BOOK_MODE_LOCAL) {
 		e_data_book_respond_create (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
@@ -318,7 +324,7 @@ e_book_backend_webdav_create_contact (EBookBackend *backend,
 	/* kill revision field (might have been set by some other backend) */
 	e_contact_set (contact, E_CONTACT_REV, NULL);
 
-	status = upload_contact (webdav, contact);
+	status = upload_contact (webdav, contact, &status_reason);
 	if (status != 201 && status != 204) {
 		g_object_unref (contact);
 		if (status == 401 || status == 407) {
@@ -326,12 +332,16 @@ e_book_backend_webdav_create_contact (EBookBackend *backend,
 		} else {
 			e_data_book_respond_create (book, opid,
 					e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-						_("Create resource '%s' failed with HTTP status: %d"), uid, status),
+						_("Create resource '%s' failed with HTTP status: %d (%s)"), uid, status, status_reason),
 					NULL);
 		}
 		g_free (uid);
+		g_free (status_reason);
 		return;
 	}
+
+	g_free (status_reason);
+
 	/* PUT request didn't return an etag? try downloading to get one */
 	if (e_contact_get_const (contact, E_CONTACT_REV) == NULL) {
 		const gchar *new_uid;
@@ -422,6 +432,7 @@ e_book_backend_webdav_modify_contact (EBookBackend *backend,
 	const gchar                *uid;
 	const gchar                *etag;
 	guint status;
+	gchar *status_reason = NULL;
 
 	if (priv->mode == E_DATA_BOOK_MODE_LOCAL) {
 		e_data_book_respond_create (book, opid,
@@ -431,11 +442,12 @@ e_book_backend_webdav_modify_contact (EBookBackend *backend,
 	}
 
 	/* modify contact */
-	status = upload_contact (webdav, contact);
+	status = upload_contact (webdav, contact, &status_reason);
 	if (status != 201 && status != 204) {
 		g_object_unref (contact);
 		if (status == 401 || status == 407) {
 			e_data_book_respond_remove_contacts (book, opid, webdav_handle_auth_request (webdav), NULL);
+			g_free (status_reason);
 			return;
 		}
 		/* data changed on server while we were editing */
@@ -445,15 +457,19 @@ e_book_backend_webdav_modify_contact (EBookBackend *backend,
 					e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
 						"Contact on server changed -> not modifying"),
 					NULL);
+			g_free (status_reason);
 			return;
 		}
 
 		e_data_book_respond_modify (book, opid,
 				e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-					"Modify contact failed with HTTP status: %d", status),
+					"Modify contact failed with HTTP status: %d (%s)", status, status_reason),
 				NULL);
+		g_free (status_reason);
 		return;
 	}
+
+	g_free (status_reason);
 
 	uid = e_contact_get_const (contact, E_CONTACT_UID);
 	e_book_backend_cache_remove_contact (priv->cache, uid);
@@ -857,9 +873,16 @@ download_contacts (EBookBackendWebdav *webdav, EFlag *running,
 		return webdav_handle_auth_request (webdav);
 	}
 	if (status != 207) {
+		GError *error;
+
+		error = e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "PROPFIND on webdav failed with HTTP status %d (%s)",
+			status,
+			message->reason_phrase && *message->reason_phrase ? message->reason_phrase :
+			(soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : _("Unknown error")));
+
 		g_object_unref (message);
 		g_free (new_ctag);
-		return e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "PROPFIND on webdav failed with HTTP status %d", status);
+		return error;
 	}
 	if (message->response_body == NULL) {
 		g_warning("No response body in webdav PROPFIND result");

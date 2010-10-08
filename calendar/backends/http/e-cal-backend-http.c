@@ -374,7 +374,8 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 	if (!SOUP_STATUS_IS_SUCCESSFUL (msg->status_code)) {
 		if (!priv->opened) {
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp),
-						    soup_status_get_phrase (msg->status_code));
+				msg->reason_phrase && *msg->reason_phrase ? msg->reason_phrase :
+				(soup_status_get_phrase (msg->status_code) ? soup_status_get_phrase (msg->status_code) : _("Unknown error")));
 		}
 
 		empty_cache (cbhttp);
