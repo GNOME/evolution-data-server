@@ -41,6 +41,7 @@
 typedef struct _StatusNode StatusNode;
 
 struct _StatusNode {
+	volatile gint ref_count;
 	CamelOperation *operation;
 	guint source_id;  /* for timeout or idle */
 	gchar *message;
@@ -72,13 +73,44 @@ static guint signals[LAST_SIGNAL];
 
 G_DEFINE_TYPE (CamelOperation, camel_operation, G_TYPE_CANCELLABLE)
 
-static void
-status_node_free (StatusNode *node)
+static StatusNode *
+status_node_new (void)
 {
-	g_free (node->message);
+	StatusNode *node;
+
+	node = g_slice_new0 (StatusNode);
+	node->ref_count = 1;
+
+	return node;
+}
+
+static StatusNode *
+status_node_ref (StatusNode *node)
+{
+	g_return_val_if_fail (node != NULL, NULL);
+	g_return_val_if_fail (node->ref_count > 0, node);
+
+	g_atomic_int_add (&node->ref_count, 1);
+
+	return node;
+}
+
+static void
+status_node_unref (StatusNode *node)
+{
+	g_return_if_fail (node != NULL);
+	g_return_if_fail (node->ref_count > 0);
+
+	if (g_atomic_int_exchange_and_add (&node->ref_count, -1) > 1)
+		return;
+
+	if (node->operation != NULL)
+		g_object_unref (node->operation);
 
 	if (node->source_id > 0)
 		g_source_remove (node->source_id);
+
+	g_free (node->message);
 
 	g_slice_free (StatusNode, node);
 }
@@ -87,40 +119,25 @@ static gboolean
 operation_emit_status_cb (StatusNode *node)
 {
 	StatusNode *head_node;
-	gchar *message = NULL;
-	gint percent = 0;
-
-	/* Guard against reference counting errors. */
-	g_return_val_if_fail (node != NULL, FALSE);
-	g_return_val_if_fail (CAMEL_IS_OPERATION (node->operation), FALSE);
-
-	/* Keep the operation alive until we emit the signal,
-	 * otherwise it might be finalized between unlocking
-	 * the mutex and emitting the signal. */
-	g_object_ref (node->operation);
+	gboolean emit_status;
 
 	LOCK ();
 
 	node->source_id = 0;
 
+	/* Check if we've been preempted by another StatusNode,
+	 * or if we've been cancelled and popped off the stack. */
 	head_node = g_queue_peek_head (&node->operation->priv->status_stack);
-
-	if (node == head_node) {
-		message = g_strdup (node->message);
-		percent = node->percent;
-	}
+	emit_status = (node == head_node);
 
 	UNLOCK ();
 
-	if (message != NULL) {
+	if (emit_status)
 		g_signal_emit (
 			node->operation,
 			signals[STATUS], 0,
-			message, percent);
-		g_free (message);
-	}
-
-	g_object_unref (node->operation);
+			node->message,
+			node->percent);
 
 	return FALSE;
 }
@@ -143,7 +160,6 @@ static void
 operation_finalize (GObject *object)
 {
 	CamelOperationPrivate *priv;
-	StatusNode *node;
 
 	priv = CAMEL_OPERATION_GET_PRIVATE (object);
 
@@ -154,12 +170,10 @@ operation_finalize (GObject *object)
 	operation_flush_msgport (CAMEL_OPERATION (object));
 	camel_msgport_destroy (priv->cancel_port);
 
-	while ((node = g_queue_pop_head (&priv->status_stack)) != NULL) {
-		g_warning (
-			"CamelOperation status stack non-empty: %s",
-			node->message);
-		status_node_free (node);
-	}
+	/* Because each StatusNode holds a reference to its
+	 * CamelOperation, the fact that we're being finalized
+	 * implies the stack should be empty now. */
+	g_warn_if_fail (g_queue_is_empty (&priv->status_stack));
 
 	UNLOCK ();
 
@@ -400,17 +414,22 @@ camel_operation_push_message (GCancellable *cancellable,
 
 	va_start (ap, format);
 
-	node = g_slice_new0 (StatusNode);
+	node = status_node_new ();
 	node->message = g_strdup_vprintf (format, ap);
-	node->operation = operation;  /* not referenced */
+	node->operation = g_object_ref (operation);
 
 	if (g_queue_is_empty (&operation->priv->status_stack))
-		node->source_id = g_idle_add (
-			(GSourceFunc) operation_emit_status_cb, node);
+		node->source_id = g_idle_add_full (
+			G_PRIORITY_DEFAULT_IDLE,
+			(GSourceFunc) operation_emit_status_cb,
+			status_node_ref (node),
+			(GDestroyNotify) status_node_unref);
 	else
-		node->source_id = g_timeout_add_seconds (
-			TRANSIENT_DELAY, (GSourceFunc)
-			operation_emit_status_cb, node);
+		node->source_id = g_timeout_add_seconds_full (
+			G_PRIORITY_DEFAULT, TRANSIENT_DELAY,
+			(GSourceFunc) operation_emit_status_cb,
+			status_node_ref (node),
+			(GDestroyNotify) status_node_unref);
 
 	g_queue_push_head (&operation->priv->status_stack, node);
 
@@ -448,14 +467,22 @@ camel_operation_pop_message (GCancellable *cancellable)
 	operation = CAMEL_OPERATION (cancellable);
 	node = g_queue_pop_head (&operation->priv->status_stack);
 
-	if (node != NULL)
-		status_node_free (node);
+	if (node != NULL) {
+		if (node->source_id > 0) {
+			g_source_remove (node->source_id);
+			node->source_id = 0;
+		}
+		status_node_unref (node);
+	}
 
 	node = g_queue_peek_head (&operation->priv->status_stack);
 
 	if (node != NULL && node->source_id == 0)
-		node->source_id = g_idle_add (
-			(GSourceFunc) operation_emit_status_cb, node);
+		node->source_id = g_idle_add_full (
+			G_PRIORITY_DEFAULT_IDLE,
+			(GSourceFunc) operation_emit_status_cb,
+			status_node_ref (node),
+			(GDestroyNotify) status_node_unref);
 
 	UNLOCK ();
 }
@@ -497,9 +524,11 @@ camel_operation_progress (GCancellable *cancellable,
 
 		/* Rate limit progress updates. */
 		if (node->source_id == 0)
-			node->source_id = g_timeout_add (
-				PROGRESS_DELAY, (GSourceFunc)
-				operation_emit_status_cb, node);
+			node->source_id = g_timeout_add_full (
+				G_PRIORITY_DEFAULT, PROGRESS_DELAY,
+				(GSourceFunc) operation_emit_status_cb,
+				status_node_ref (node),
+				(GDestroyNotify) status_node_unref);
 	}
 
 	UNLOCK ();
