@@ -459,8 +459,15 @@ mime_part_get_header (CamelMedium *medium,
                       const gchar *name)
 {
 	CamelMimePart *part = (CamelMimePart *)medium;
+	const gchar *value;
 
-	return camel_header_raw_find (&part->headers, name, NULL);
+	value = camel_header_raw_find (&part->headers, name, NULL);
+
+	/* Skip leading whitespace. */
+	while (value != NULL && g_ascii_isspace (*value))
+		value++;
+
+	return value;
 }
 
 static GArray *
