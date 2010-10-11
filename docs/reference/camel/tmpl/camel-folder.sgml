@@ -82,6 +82,11 @@ CamelFolder
 
 </para>
 
+<!-- ##### ARG CamelFolder:uri ##### -->
+<para>
+
+</para>
+
 <!-- ##### MACRO CAMEL_FOLDER_ERROR ##### -->
 <para>
 

@@ -347,6 +347,7 @@ void		camel_folder_set_full_name	(CamelFolder *folder,
 const gchar *	camel_folder_get_description	(CamelFolder *folder);
 void		camel_folder_set_description	(CamelFolder *folder,
 						 const gchar *description);
+const gchar *	camel_folder_get_uri		(CamelFolder *folder);
 CamelMessageFlags
 		camel_folder_get_permanent_flags
 						(CamelFolder *folder);
