@@ -537,7 +537,7 @@ camel_sasl_challenge_sync (CamelSasl *sasl,
  * When the operation is finished, @callback will be called.  You can then
  * call camel_sasl_challenge_finish() to get the result of the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_sasl_challenge (CamelSasl *sasl,
@@ -570,7 +570,7 @@ camel_sasl_challenge (CamelSasl *sasl,
  * Returns: the SASL response or %NULL.  If an error occurred, @error will
  * also be set.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 GByteArray *
 camel_sasl_challenge_finish (CamelSasl *sasl,
@@ -600,7 +600,7 @@ camel_sasl_challenge_finish (CamelSasl *sasl,
  *
  * Returns: the base64-encoded response
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gchar *
 camel_sasl_challenge_base64_sync (CamelSasl *sasl,
@@ -680,7 +680,7 @@ sasl_challenge_base64_thread (GSimpleAsyncResult *simple,
  * then call camel_store_challenge_base64_finish() to get the result of
  * the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_sasl_challenge_base64 (CamelSasl *sasl,
@@ -722,7 +722,7 @@ camel_sasl_challenge_base64 (CamelSasl *sasl,
  *
  * Returns: the base64-encoded response
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gchar *
 camel_sasl_challenge_base64_finish (CamelSasl *sasl,

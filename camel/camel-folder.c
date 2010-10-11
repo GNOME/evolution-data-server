@@ -2992,7 +2992,7 @@ camel_folder_unlock (CamelFolder *folder,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_folder_append_message_sync (CamelFolder *folder,
@@ -3046,7 +3046,7 @@ camel_folder_append_message_sync (CamelFolder *folder,
  * then call camel_folder_append_message_finish() to get the result of
  * the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_folder_append_message (CamelFolder *folder,
@@ -3082,7 +3082,7 @@ camel_folder_append_message (CamelFolder *folder,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_folder_append_message_finish (CamelFolder *folder,
@@ -3112,7 +3112,7 @@ camel_folder_append_message_finish (CamelFolder *folder,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_folder_expunge_sync (CamelFolder *folder,
@@ -3158,7 +3158,7 @@ camel_folder_expunge_sync (CamelFolder *folder,
  * When the operation is finished, @callback will be called.  You can then
  * call camel_folder_expunge_finish() to get the result of the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_folder_expunge (CamelFolder *folder,
@@ -3187,7 +3187,7 @@ camel_folder_expunge (CamelFolder *folder,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_folder_expunge_finish (CamelFolder *folder,
@@ -3216,7 +3216,7 @@ camel_folder_expunge_finish (CamelFolder *folder,
  *
  * Returns: a #CamelMimeMessage corresponding to the requested UID
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 CamelMimeMessage *
 camel_folder_get_message_sync (CamelFolder *folder,
@@ -3276,7 +3276,7 @@ camel_folder_get_message_sync (CamelFolder *folder,
  * When the operation is finished, @callback will be called.  You can then
  * call camel_folder_get_message_finish() to get the result of the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_folder_get_message (CamelFolder *folder,
@@ -3309,7 +3309,7 @@ camel_folder_get_message (CamelFolder *folder,
  *
  * Returns: a #CamelMimeMessage corresponding to the requested UID
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 CamelMimeMessage *
 camel_folder_get_message_finish (CamelFolder *folder,
@@ -3337,7 +3337,7 @@ camel_folder_get_message_finish (CamelFolder *folder,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_folder_refresh_info_sync (CamelFolder *folder,
@@ -3380,7 +3380,7 @@ camel_folder_refresh_info_sync (CamelFolder *folder,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_folder_synchronize_sync (CamelFolder *folder,
@@ -3430,7 +3430,7 @@ camel_folder_synchronize_sync (CamelFolder *folder,
  * When the operation is finished, @callback will be called.  You can then
  * call camel_folder_synchronize_finish() to get the result of the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_folder_synchronize (CamelFolder *folder,
@@ -3462,7 +3462,7 @@ camel_folder_synchronize (CamelFolder *folder,
  *
  * Returns: %TRUE on sucess, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_folder_synchronize_finish (CamelFolder *folder,
@@ -3493,7 +3493,7 @@ camel_folder_synchronize_finish (CamelFolder *folder,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_folder_synchronize_message_sync (CamelFolder *folder,
@@ -3560,7 +3560,7 @@ camel_folder_synchronize_message_sync (CamelFolder *folder,
  * call camel_folder_synchronize_message_finish() to get the result of the
  * operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_folder_synchronize_message (CamelFolder *folder,
@@ -3593,7 +3593,7 @@ camel_folder_synchronize_message (CamelFolder *folder,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_folder_synchronize_message_finish (CamelFolder *folder,
@@ -3628,7 +3628,7 @@ camel_folder_synchronize_message_finish (CamelFolder *folder,
  *
  * Returns: %TRUE on success, %FALSE on failure
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_folder_transfer_messages_to_sync (CamelFolder *source,
@@ -3686,7 +3686,7 @@ camel_folder_transfer_messages_to_sync (CamelFolder *source,
  * call camel_folder_transfer_messages_to_finish() to get the result of the
  * operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_folder_transfer_messages_to (CamelFolder *source,
@@ -3724,7 +3724,7 @@ camel_folder_transfer_messages_to (CamelFolder *source,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_folder_transfer_messages_to_finish (CamelFolder *source,

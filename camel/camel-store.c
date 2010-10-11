@@ -2111,7 +2111,7 @@ camel_store_unlock (CamelStore *store,
  *
  * Returns: the requested #CamelFolder object, or %NULL on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 CamelFolder *
 camel_store_get_folder_sync (CamelStore *store,
@@ -2219,7 +2219,7 @@ camel_store_get_folder_sync (CamelStore *store,
  * When the operation is finished, @callback will be called.  You can then
  * call camel_store_get_folder_finish() to get the result of the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_store_get_folder (CamelStore *store,
@@ -2253,7 +2253,7 @@ camel_store_get_folder (CamelStore *store,
  *
  * Returns: the requested #CamelFolder object, or %NULL on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 CamelFolder *
 camel_store_get_folder_finish (CamelStore *store,
@@ -2303,7 +2303,7 @@ camel_store_get_folder_finish (CamelStore *store,
  *
  * Returns: a #CamelFolderInfo tree, or %NULL on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 CamelFolderInfo *
 camel_store_get_folder_info_sync (CamelStore *store,
@@ -2364,7 +2364,7 @@ camel_store_get_folder_info_sync (CamelStore *store,
  * then call camel_store_get_folder_info_finish() to get the result of
  * the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_store_get_folder_info (CamelStore *store,
@@ -2399,7 +2399,7 @@ camel_store_get_folder_info (CamelStore *store,
  *
  * Returns: a #CamelFolderInfo tree, or %NULL on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 CamelFolderInfo *
 camel_store_get_folder_info_finish (CamelStore *store,
@@ -2428,7 +2428,7 @@ camel_store_get_folder_info_finish (CamelStore *store,
  * Returns: the inbox folder for @store, or %NULL on error or if no such
  * folder exists
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 CamelFolder *
 camel_store_get_inbox_folder_sync (CamelStore *store,
@@ -2474,7 +2474,7 @@ camel_store_get_inbox_folder_sync (CamelStore *store,
  * then call camel_store_get_inbox_folder_finish() to get the result of
  * the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_store_get_inbox_folder (CamelStore *store,
@@ -2505,7 +2505,7 @@ camel_store_get_inbox_folder (CamelStore *store,
  * Returns: the inbox folder for @store, or %NULL on error or if no such
  * folder exists
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 CamelFolder *
 camel_store_get_inbox_folder_finish (CamelStore *store,
@@ -2534,7 +2534,7 @@ camel_store_get_inbox_folder_finish (CamelStore *store,
  * Returns: the junk folder for @store, or %NULL on error or if no such
  * folder exists
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 CamelFolder *
 camel_store_get_junk_folder_sync (CamelStore *store,
@@ -2575,7 +2575,7 @@ camel_store_get_junk_folder_sync (CamelStore *store,
  * then call camel_store_get_junk_folder_finish() to get the result of
  * the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_store_get_junk_folder (CamelStore *store,
@@ -2606,7 +2606,7 @@ camel_store_get_junk_folder (CamelStore *store,
  * Returns: the junk folder for @store, or %NULL on error or if no such
  * folder exists
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 CamelFolder *
 camel_store_get_junk_folder_finish (CamelStore *store,
@@ -2635,7 +2635,7 @@ camel_store_get_junk_folder_finish (CamelStore *store,
  * Returns: the trash folder for @store, or %NULL on error or if no such
  * folder exists
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 CamelFolder *
 camel_store_get_trash_folder_sync (CamelStore *store,
@@ -2677,7 +2677,7 @@ camel_store_get_trash_folder_sync (CamelStore *store,
  * then call camel_store_get_trash_folder_finish() to get the result of
  * the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_store_get_trash_folder (CamelStore *store,
@@ -2708,7 +2708,7 @@ camel_store_get_trash_folder (CamelStore *store,
  * Returns: the trash folder for @store, or %NULL on error or if no such
  * folder exists
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 CamelFolder *
 camel_store_get_trash_folder_finish (CamelStore *store,
@@ -2741,7 +2741,7 @@ camel_store_get_trash_folder_finish (CamelStore *store,
  *
  * Returns: info about the created folder, or %NULL on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 CamelFolderInfo *
 camel_store_create_folder_sync (CamelStore *store,
@@ -2803,7 +2803,7 @@ camel_store_create_folder_sync (CamelStore *store,
  * When the operation is finished, @callback will be called.  You can then
  * call camel_store_create_folder_finish() to get the result of the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_store_create_folder (CamelStore *store,
@@ -2839,7 +2839,7 @@ camel_store_create_folder (CamelStore *store,
  *
  * Returns: info about the created folder, or %NULL on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 CamelFolderInfo *
 camel_store_create_folder_finish (CamelStore *store,
@@ -2868,7 +2868,7 @@ camel_store_create_folder_finish (CamelStore *store,
  *
  * Returns: %TRUE on success, %FALSE on failure
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_store_delete_folder_sync (CamelStore *store,
@@ -2939,7 +2939,7 @@ camel_store_delete_folder_sync (CamelStore *store,
  * When the operation is finished, @callback will be called.  You can then
  * call camel_store_delete_folder_finish() to get the result of the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_store_delete_folder (CamelStore *store,
@@ -2972,7 +2972,7 @@ camel_store_delete_folder (CamelStore *store,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_store_delete_folder_finish (CamelStore *store,
@@ -3002,7 +3002,7 @@ camel_store_delete_folder_finish (CamelStore *store,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_store_rename_folder_sync (CamelStore *store,
@@ -3149,7 +3149,7 @@ camel_store_rename_folder_sync (CamelStore *store,
  * When the operation is finished, @callback will be called.  You can then
  * call camel_store_rename_folder_finish() to get the result of the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_store_rename_folder (CamelStore *store,
@@ -3184,7 +3184,7 @@ camel_store_rename_folder (CamelStore *store,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_store_rename_folder_finish (CamelStore *store,
@@ -3213,7 +3213,7 @@ camel_store_rename_folder_finish (CamelStore *store,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_store_subscribe_folder_sync (CamelStore *store,
@@ -3263,7 +3263,7 @@ camel_store_subscribe_folder_sync (CamelStore *store,
  * then call camel_store_subscribe_folder_finish() to get the result of
  * the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_store_subscribe_folder (CamelStore *store,
@@ -3296,7 +3296,7 @@ camel_store_subscribe_folder (CamelStore *store,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_store_subscribe_folder_finish (CamelStore *store,
@@ -3325,7 +3325,7 @@ camel_store_subscribe_folder_finish (CamelStore *store,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_store_unsubscribe_folder_sync (CamelStore *store,
@@ -3378,7 +3378,7 @@ camel_store_unsubscribe_folder_sync (CamelStore *store,
  * call camel_store_unsubscribe_folder_finish() to get the result of the
  * operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_store_unsubscribe_folder (CamelStore *store,
@@ -3411,7 +3411,7 @@ camel_store_unsubscribe_folder (CamelStore *store,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_store_unsubscribe_folder_finish (CamelStore *store,
@@ -3441,7 +3441,7 @@ camel_store_unsubscribe_folder_finish (CamelStore *store,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_store_synchronize_sync (CamelStore *store,
@@ -3478,7 +3478,7 @@ camel_store_synchronize_sync (CamelStore *store,
  * When the operation is finished, @callback will be called.  You can then
  * call camel_store_synchronize_finish() to get the result of the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_store_synchronize (CamelStore *store,
@@ -3510,7 +3510,7 @@ camel_store_synchronize (CamelStore *store,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_store_synchronize_finish (CamelStore *store,
@@ -3538,7 +3538,7 @@ camel_store_synchronize_finish (CamelStore *store,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_store_noop_sync (CamelStore *store,
@@ -3572,7 +3572,7 @@ camel_store_noop_sync (CamelStore *store,
  * When the operation is finished, @callback will be called.  You can then
  * call camel_store_noop_finish() to get the result of the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_store_noop (CamelStore *store,
@@ -3601,7 +3601,7 @@ camel_store_noop (CamelStore *store,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_store_noop_finish (CamelStore *store,

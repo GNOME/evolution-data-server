@@ -1396,7 +1396,7 @@ camel_mime_part_set_filename (CamelMimePart *mime_part,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
@@ -1436,7 +1436,7 @@ camel_mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
  * call camel_mime_part_construct_from_parser_finish() to get the result of
  * the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_mime_part_construct_from_parser (CamelMimePart *mime_part,
@@ -1469,7 +1469,7 @@ camel_mime_part_construct_from_parser (CamelMimePart *mime_part,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_mime_part_construct_from_parser_finish (CamelMimePart *mime_part,

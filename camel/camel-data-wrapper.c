@@ -679,7 +679,7 @@ camel_data_wrapper_unlock (CamelDataWrapper *data_wrapper,
  *
  * Returns: the number of bytes written, or %-1 on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gssize
 camel_data_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
@@ -722,7 +722,7 @@ camel_data_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
  * call camel_data_wrapper_write_to_stream_finish() to get the result of
  * the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
@@ -755,7 +755,7 @@ camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
  *
  * Returns: the number of bytes written, or %-1 or error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gssize
 camel_data_wrapper_write_to_stream_finish (CamelDataWrapper *data_wrapper,
@@ -792,7 +792,7 @@ camel_data_wrapper_write_to_stream_finish (CamelDataWrapper *data_wrapper,
  *
  * Returns: the number of bytes written, or %-1 on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gssize
 camel_data_wrapper_decode_to_stream_sync (CamelDataWrapper *data_wrapper,
@@ -832,7 +832,7 @@ camel_data_wrapper_decode_to_stream_sync (CamelDataWrapper *data_wrapper,
  * call camel_data_wrapper_decode_to_stream_finish() to get the result of
  * the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
@@ -865,7 +865,7 @@ camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
  *
  * Returns: the number of bytes written, or %-1 on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gssize
 camel_data_wrapper_decode_to_stream_finish (CamelDataWrapper *data_wrapper,
@@ -894,7 +894,7 @@ camel_data_wrapper_decode_to_stream_finish (CamelDataWrapper *data_wrapper,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_data_wrapper_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
@@ -935,7 +935,7 @@ camel_data_wrapper_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
  * call camel_data_wrapper_construct_from_stream_finish() to get the result
  * of the operation.
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 void
 camel_data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
@@ -969,7 +969,7 @@ camel_data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.34
+ * Since: 2.92
  **/
 gboolean
 camel_data_wrapper_construct_from_stream_finish (CamelDataWrapper *data_wrapper,

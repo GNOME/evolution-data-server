@@ -201,6 +201,15 @@ CamelFolder
 @description: 
 
 
+<!-- ##### FUNCTION camel_folder_get_uri ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_folder_get_permanent_flags ##### -->
 <para>
 
