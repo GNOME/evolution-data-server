@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&component=Misc.\n"
-"POT-Creation-Date: 2010-10-05 15:34+0000\n"
-"PO-Revision-Date: 2010-10-06 14:55+0100\n"
+"POT-Creation-Date: 2010-10-11 15:14+0000\n"
+"PO-Revision-Date: 2010-10-12 20:06+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: \n"
@@ -90,10 +90,23 @@ msgstr "Sprejemanje rezultatov iskanja LDAP ..."
 msgid "Error performing search"
 msgstr "Napaka med iskanjem"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:329
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:273
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:881
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:538
+#: ../calendar/backends/http/e-cal-backend-http.c:378
+#: ../calendar/libecal/e-cal.c:4084
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:160
+#: ../camel/providers/imap/camel-imap-command.c:481
+#: ../camel/providers/imap/camel-imap-store.c:425
+#: ../camel/providers/pop3/camel-pop3-store.c:490
+#: ../servers/groupwise/e-gw-connection.c:243
+msgid "Unknown error"
+msgstr "Neznana napaka"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:335
 #, c-format
-msgid "Create resource '%s' failed with HTTP status: %d"
-msgstr "Ustvarjanje vira '%s' je spodletelo s stanjem HTTP: %d"
+msgid "Create resource '%s' failed with HTTP status: %d (%s)"
+msgstr "Ustvarjanje vira '%s' je spodletelo s stanjem HTTP: %d (%s)"
 
 #: ../addressbook/libebook/e-book.c:3000
 #, c-format
@@ -286,7 +299,7 @@ msgstr "Naslov URL bloga"
 
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:178
-#: ../libedataserverui/e-categories-dialog.c:670
+#: ../libedataserverui/e-categories-dialog.c:690
 msgid "Categories"
 msgstr "kategorije"
 
@@ -552,7 +565,7 @@ msgstr "Rojstni datum"
 
 #: ../addressbook/libebook/e-contact.c:262
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:717
-#: ../libedataserver/e-categories.c:46
+#: ../libedataserver/e-categories.c:47
 msgid "Anniversary"
 msgstr "Obletnica"
 
@@ -857,17 +870,17 @@ msgstr "Ni mogoče pridobiti sprememb: %s"
 msgid "Cancel operation failed: %s"
 msgstr "Opravilo preklica je spodletelo: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:530
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:535
 #, c-format
-msgid "Unexpected HTTP status code %d returned"
-msgstr "Vrnjena je nepričakovana koda stanja HTTP %d"
+msgid "Unexpected HTTP status code %d returned (%s)"
+msgstr "Odgovor HTTP je vrnil napačno kodo stanja %d (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4142
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4150
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Koledar ne podpira možnosti prostosti/zasedenosti"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:719
-#: ../libedataserver/e-categories.c:47
+#: ../libedataserver/e-categories.c:48
 msgid "Birthday"
 msgstr "Rojstni dan"
 
@@ -915,7 +928,7 @@ msgstr "Neveljaven naslov URI strežnika"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1123
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1383
-#: ../calendar/backends/http/e-cal-backend-http.c:720
+#: ../calendar/backends/http/e-cal-backend-http.c:721
 #: ../calendar/backends/weather/e-cal-backend-weather.c:520
 msgid "Could not create cache file"
 msgstr "Ni mogoče ustvariti datoteke predpomnilnika"
@@ -928,11 +941,11 @@ msgstr "Ni mogoče ustvariti niti za polnjenje predpomnilnika"
 msgid "Redirected to Invalid URI"
 msgstr "Preusmerjeno na neveljaven naslov URI"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:398
+#: ../calendar/backends/http/e-cal-backend-http.c:399
 msgid "Bad file format."
 msgstr "Napačna oblika datoteke."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:405
+#: ../calendar/backends/http/e-cal-backend-http.c:406
 msgid "Not a calendar."
 msgstr "Ni koledar."
 
@@ -1217,15 +1230,6 @@ msgstr "Zahtevana je overitev"
 #: ../calendar/libecal/e-cal.c:4082
 msgid "A D-Bus exception has occurred"
 msgstr "Prišlo je do izjemne napake vodila D-Bus"
-
-#: ../calendar/libecal/e-cal.c:4084
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:160
-#: ../camel/providers/imap/camel-imap-command.c:481
-#: ../camel/providers/imap/camel-imap-store.c:425
-#: ../camel/providers/pop3/camel-pop3-store.c:490
-#: ../servers/groupwise/e-gw-connection.c:243
-msgid "Unknown error"
-msgstr "Neznana napaka"
 
 #: ../calendar/libecal/e-cal.c:4086
 msgid "No error"
@@ -1751,7 +1755,7 @@ msgstr "(%s) kot rezultat pričakuje polje"
 msgid "(%s) requires the folder set"
 msgstr "(%s) zahteva seznam map"
 
-#: ../camel/camel-folder.c:218
+#: ../camel/camel-folder.c:220
 #, c-format
 msgid "Learning new spam message in '%s'"
 msgid_plural "Learning new spam messages in '%s'"
@@ -1760,7 +1764,7 @@ msgstr[1] "Preiskovanje novih neželenih sporočil v %s"
 msgstr[2] "Preiskovanje novih neželenih sporočil v %s"
 msgstr[3] "Preiskovanje novih neželenih sporočil v %s"
 
-#: ../camel/camel-folder.c:242
+#: ../camel/camel-folder.c:244
 #, c-format
 msgid "Learning new ham message in '%s'"
 msgid_plural "Learning new ham messages in '%s'"
@@ -1769,7 +1773,7 @@ msgstr[1] "Preiskovanje novih želenih sporočil v %s"
 msgstr[2] "Preiskovanje novih želenih sporočil v %s"
 msgstr[3] "Preiskovanje novih želenih sporočil v %s"
 
-#: ../camel/camel-folder.c:268
+#: ../camel/camel-folder.c:270
 #, c-format
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
@@ -1778,16 +1782,16 @@ msgstr[1] "Filtriranje novih sporočil v '%s'"
 msgstr[2] "Filtriranje novih sporočil v '%s'"
 msgstr[3] "Filtriranje novih sporočil v '%s'"
 
-#: ../camel/camel-folder.c:866
+#: ../camel/camel-folder.c:875
 #: ../camel/providers/local/camel-maildir-folder.c:297
 msgid "Moving messages"
 msgstr "Premikanje sporočil"
 
-#: ../camel/camel-folder.c:869
+#: ../camel/camel-folder.c:878
 msgid "Copying messages"
 msgstr "Kopiranje sporočil"
 
-#: ../camel/camel-folder.c:3153
+#: ../camel/camel-folder.c:3237
 #, c-format
 msgid "Retrieving message '%s'"
 msgstr "Pridobivanje sporočila '%s'"
@@ -4565,85 +4569,85 @@ msgstr "Ukaz RSET je spodletel:"
 msgid "QUIT command failed: "
 msgstr "Ukaz QUIT je spodletel:"
 
-#: ../libedataserver/e-categories.c:48
+#: ../libedataserver/e-categories.c:49
 msgid "Business"
 msgstr "Posel"
 
-#: ../libedataserver/e-categories.c:49
+#: ../libedataserver/e-categories.c:50
 msgid "Competition"
 msgstr "Tekmovanje"
 
-#: ../libedataserver/e-categories.c:50
+#: ../libedataserver/e-categories.c:51
 msgid "Favorites"
 msgstr "Priljubljeno"
 
-#: ../libedataserver/e-categories.c:51
+#: ../libedataserver/e-categories.c:52
 msgid "Gifts"
 msgstr "Darila"
 
-#: ../libedataserver/e-categories.c:52
+#: ../libedataserver/e-categories.c:53
 msgid "Goals/Objectives"
 msgstr "Cilji"
 
-#: ../libedataserver/e-categories.c:53
+#: ../libedataserver/e-categories.c:54
 msgid "Holiday"
 msgstr "Prazniki"
 
-#: ../libedataserver/e-categories.c:54
+#: ../libedataserver/e-categories.c:55
 msgid "Holiday Cards"
 msgstr "Praznične voščilnice"
 
 #. important people (e.g. new business partners)
-#: ../libedataserver/e-categories.c:56
+#: ../libedataserver/e-categories.c:57
 msgid "Hot Contacts"
 msgstr "Vroči stiki"
 
-#: ../libedataserver/e-categories.c:57
+#: ../libedataserver/e-categories.c:58
 msgid "Ideas"
 msgstr "Ideje"
 
-#: ../libedataserver/e-categories.c:58
+#: ../libedataserver/e-categories.c:59
 msgid "International"
 msgstr "Mednarodno"
 
-#: ../libedataserver/e-categories.c:59
+#: ../libedataserver/e-categories.c:60
 msgid "Key Customer"
 msgstr "Ključna stranka"
 
-#: ../libedataserver/e-categories.c:60
+#: ../libedataserver/e-categories.c:61
 msgid "Miscellaneous"
 msgstr "Razno"
 
-#: ../libedataserver/e-categories.c:61
+#: ../libedataserver/e-categories.c:62
 msgid "Personal"
 msgstr "Osebno"
 
-#: ../libedataserver/e-categories.c:62
+#: ../libedataserver/e-categories.c:63
 msgid "Phone Calls"
 msgstr "Telefonski klici"
 
 #. Translators: "Status" is a category name; it can mean anything user wants to
-#: ../libedataserver/e-categories.c:64
+#: ../libedataserver/e-categories.c:65
 msgid "Status"
 msgstr "Stanje"
 
-#: ../libedataserver/e-categories.c:65
+#: ../libedataserver/e-categories.c:66
 msgid "Strategies"
 msgstr "Strategije"
 
-#: ../libedataserver/e-categories.c:66
+#: ../libedataserver/e-categories.c:67
 msgid "Suppliers"
 msgstr "Dobavitelji"
 
-#: ../libedataserver/e-categories.c:67
+#: ../libedataserver/e-categories.c:68
 msgid "Time & Expenses"
 msgstr "Čas in stroški"
 
-#: ../libedataserver/e-categories.c:68
+#: ../libedataserver/e-categories.c:69
 msgid "VIP"
 msgstr "VIP"
 
-#: ../libedataserver/e-categories.c:69
+#: ../libedataserver/e-categories.c:70
 msgid "Waiting"
 msgstr "Čakanje"
 
@@ -4795,24 +4799,24 @@ msgstr "Brezimni dostop do strežnika LDAP"
 msgid "Failed to authenticate.\n"
 msgstr "Overitev je spodletela.\n"
 
-#: ../libedataserverui/e-categories-dialog.c:148
+#: ../libedataserverui/e-categories-dialog.c:169
 msgid "Category Icon"
 msgstr "Ikona kategorije"
 
-#: ../libedataserverui/e-categories-dialog.c:154
+#: ../libedataserverui/e-categories-dialog.c:175
 msgid "_No Image"
 msgstr "_Brez slike"
 
-#: ../libedataserverui/e-categories-dialog.c:371
+#: ../libedataserverui/e-categories-dialog.c:391
 #, c-format
 msgid "There is already a category '%s' in the configuration. Please use another name"
 msgstr "Kategorija '%s' je med nastavitvami že določena. Uporabite drugo ime."
 
-#: ../libedataserverui/e-categories-dialog.c:679
+#: ../libedataserverui/e-categories-dialog.c:699
 msgid "Icon"
 msgstr "Ikona"
 
-#: ../libedataserverui/e-categories-dialog.c:684
+#: ../libedataserverui/e-categories-dialog.c:704
 msgid "Category"
 msgstr "Kategorija"
 
