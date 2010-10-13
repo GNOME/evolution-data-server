@@ -148,6 +148,9 @@ camel_offline_journal_write (CamelOfflineJournal *journal,
 	}
 
 	fp = fdopen (fd, "w");
+	if (!fp)
+		goto exception;
+
 	entry = journal->queue.head;
 	while (entry->next) {
 		if (CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_write (journal, entry, fp) == -1)
@@ -158,7 +161,8 @@ camel_offline_journal_write (CamelOfflineJournal *journal,
 	if (fsync (fd) == -1)
 		goto exception;
 
-	fclose (fp);
+	if (fp)
+		fclose (fp);
 
 	return 0;
 
@@ -171,7 +175,8 @@ camel_offline_journal_write (CamelOfflineJournal *journal,
 		camel_folder_get_full_name (journal->folder),
 		g_strerror (errno));
 
-	fclose (fp);
+	if (fp)
+		fclose (fp);
 
 	return -1;
 }
