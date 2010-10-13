@@ -20,6 +20,7 @@
  * Author: Joergen Scheibengruber <joergen.scheibengruber AT googlemail.com>
  */
 
+#include <config.h>
 #include <string.h>
 #include <libsoup/soup.h>
 #include <gdata/gdata.h>
@@ -69,6 +70,10 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry, EContact *contact)
 	gboolean have_postal_primary = FALSE;
 	gboolean have_org_primary = FALSE;
 	const gchar *title, *role, *note;
+	#ifdef HAVE_GDATA_07
+	EContactDate *bdate;
+	const gchar *url;
+	#endif
 
 	attributes = e_vcard_get_attributes (E_VCARD (contact));
 
@@ -214,6 +219,40 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry, EContact *contact)
 			gdata_gd_organization_set_job_description (org, role);
 	}
 
+	#ifdef HAVE_GDATA_07
+	gdata_contacts_contact_remove_all_websites (GDATA_CONTACTS_CONTACT (entry));
+
+	url = e_contact_get_const (contact, E_CONTACT_HOMEPAGE_URL);
+	if (url && *url) {
+		GDataGContactWebsite *website = gdata_gcontact_website_new (url, GDATA_GCONTACT_WEBSITE_HOME_PAGE, NULL, FALSE);
+		if (website) {
+			gdata_contacts_contact_add_website (GDATA_CONTACTS_CONTACT (entry), website);
+			g_object_unref (website);
+		}
+	}
+
+	url = e_contact_get_const (contact, E_CONTACT_BLOG_URL);
+	if (url && *url) {
+		GDataGContactWebsite *website = gdata_gcontact_website_new (url, GDATA_GCONTACT_WEBSITE_BLOG, NULL, FALSE);
+		if (website) {
+			gdata_contacts_contact_add_website (GDATA_CONTACTS_CONTACT (entry), website);
+			g_object_unref (website);
+		}
+	}
+
+	gdata_contacts_contact_set_birthday (GDATA_CONTACTS_CONTACT (entry), NULL, TRUE);
+	bdate = e_contact_get (contact, E_CONTACT_BIRTH_DATE);
+	if (bdate) {
+		GDate *gdate = g_date_new_dmy (bdate->day, bdate->month, bdate->year);
+
+		if (gdate) {
+			gdata_contacts_contact_set_birthday (GDATA_CONTACTS_CONTACT (entry), gdate, TRUE);
+			g_date_free (gdate);
+		}
+		e_contact_date_free (bdate);
+	}
+	#endif
+
 	return TRUE;
 }
 
@@ -241,6 +280,11 @@ _e_contact_new_from_gdata_entry (GDataEntry *entry)
 	GDataGDPostalAddress *postal_address;
 	GDataGDOrganization *org;
 	GHashTable *extended_props;
+	#ifdef HAVE_GDATA_07
+	GList *websites;
+	GDate bdate;
+	gboolean bdate_has_year;
+	#endif
 
 	uid = gdata_entry_get_id (entry);
 	if (NULL == uid)
@@ -351,6 +395,44 @@ _e_contact_new_from_gdata_entry (GDataEntry *entry)
 	/* Extended properties */
 	extended_props = gdata_contacts_contact_get_extended_properties (GDATA_CONTACTS_CONTACT (entry));
 	g_hash_table_foreach (extended_props, (GHFunc) foreach_extended_props_cb, vcard);
+
+	#ifdef HAVE_GDATA_07
+	websites = gdata_contacts_contact_get_websites (GDATA_CONTACTS_CONTACT (entry));
+	for (itr = websites; itr != NULL; itr = itr->next) {
+		GDataGContactWebsite *website = itr->data;
+		const gchar *uri, *reltype;
+
+		if (!website)
+			continue;
+
+		uri = gdata_gcontact_website_get_uri (website);
+		reltype = gdata_gcontact_website_get_relation_type (website);
+
+		if (!uri || !*uri || !reltype)
+			continue;
+
+		if (g_str_equal (reltype, GDATA_GCONTACT_WEBSITE_HOME_PAGE))
+			e_contact_set (E_CONTACT (vcard), E_CONTACT_HOMEPAGE_URL, uri);
+		else if (g_str_equal (reltype, GDATA_GCONTACT_WEBSITE_BLOG))
+			e_contact_set (E_CONTACT (vcard), E_CONTACT_BLOG_URL, uri);
+	}
+
+	g_date_clear (&bdate, 1);
+	bdate_has_year = gdata_contacts_contact_get_birthday (GDATA_CONTACTS_CONTACT (entry), &bdate);
+	/* ignore birthdays without year */
+	if (g_date_valid (&bdate) && bdate_has_year) {
+		EContactDate *date = e_contact_date_new ();
+
+		if (date) {
+			date->day = g_date_get_day (&bdate);
+			date->month =  g_date_get_month (&bdate);
+			date->year = g_date_get_year (&bdate);
+
+			e_contact_set (E_CONTACT (vcard), E_CONTACT_BIRTH_DATE, date);
+			e_contact_date_free (date);
+		}
+	}
+	#endif
 
 	return E_CONTACT (vcard);
 }

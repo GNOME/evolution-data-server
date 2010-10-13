@@ -326,11 +326,13 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 	libsoup-2.4 >= libsoup_minimum_version
 	libgdata >= libgdata_minimum_version])
 
-dnl libgdata 0.7 will break API.  We don't want to deal with
-dnl that until 0.7 is released, so cap the supported version.
+ac_cv_have_gdata_07=no
+dnl libgdata 0.7 breaks API, thus deal with it.
 if $PKG_CONFIG --atleast-version=0.7 libgdata; then
-	AC_MSG_ERROR([libgdata 0.7 is not yet supported, use 0.6 instead])
+	ac_cv_have_gdata_07=yes
+	AC_DEFINE(HAVE_GDATA_07, 1, [libgdata is 0.7 or higher])
 fi
+AC_MSG_RESULT([$ac_cv_have_gdata_07])
 
 LIBICAL_REQUIRED=libical_minimum_version
 AC_SUBST(LIBICAL_REQUIRED)
