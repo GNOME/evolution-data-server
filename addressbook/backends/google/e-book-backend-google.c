@@ -511,7 +511,11 @@ get_new_contacts_in_chunks (EBookBackend *backend, gint chunk_size, GError **err
 		GTimeVal updated;
 
 		g_assert (g_time_val_from_iso8601 (last_updated, &updated) == TRUE);
+		#ifdef HAVE_GDATA_07
+		gdata_query_set_updated_min (query, updated.tv_sec);
+		#else
 		gdata_query_set_updated_min (query, &updated);
+		#endif
 		gdata_contacts_query_set_show_deleted (GDATA_CONTACTS_QUERY (query), TRUE);
 	}
 
@@ -788,11 +792,18 @@ e_book_backend_google_modify_contact (EBookBackendSync *backend, EDataBook *book
 	g_free (xml);
 
 	/* Update the contact on the server */
+	#ifdef HAVE_GDATA_07
+	new_entry = gdata_service_update_entry (
+			GDATA_SERVICE (priv->service),
+			entry,
+			NULL, &error);
+	#else
 	new_entry = GDATA_ENTRY (
 		gdata_contacts_service_update_contact (
 			GDATA_CONTACTS_SERVICE (priv->service),
 			GDATA_CONTACTS_CONTACT (entry),
 			NULL, &error));
+	#endif
 	g_object_unref (entry);
 
 	if (!new_entry) {
@@ -1189,6 +1200,11 @@ e_book_backend_google_get_supported_fields (EBookBackendSync *backend, EDataBook
 		E_CONTACT_ORG_UNIT,
 		E_CONTACT_TITLE,
 		E_CONTACT_ROLE,
+		#ifdef HAVE_GDATA_07
+		E_CONTACT_HOMEPAGE_URL,
+		E_CONTACT_BLOG_URL,
+		E_CONTACT_BIRTH_DATE,
+		#endif
 		E_CONTACT_NOTE
 	};
 
@@ -1470,7 +1486,7 @@ data_book_error_from_gdata_error (GError **dest_err, GError *error)
 			g_propagate_error (dest_err, EDB_ERROR (REPOSITORY_OFFLINE));
 			return;
 		case GDATA_SERVICE_ERROR_PROTOCOL_ERROR:
-			g_propagate_error (dest_err, EDB_ERROR (INVALID_QUERY));
+			g_propagate_error (dest_err, e_data_book_create_error (E_DATA_BOOK_STATUS_INVALID_QUERY, error->message));
 			return;
 		case GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED:
 			g_propagate_error (dest_err, EDB_ERROR (CONTACTID_ALREADY_EXISTS));
@@ -1488,7 +1504,7 @@ data_book_error_from_gdata_error (GError **dest_err, GError *error)
 			g_propagate_error (dest_err, EDB_ERROR (QUERY_REFUSED));
 			return;
 		case GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER:
-			g_propagate_error (dest_err, EDB_ERROR (INVALID_QUERY));
+			g_propagate_error (dest_err, e_data_book_create_error (E_DATA_BOOK_STATUS_INVALID_QUERY, error->message));
 			return;
 		default:
 			break;
