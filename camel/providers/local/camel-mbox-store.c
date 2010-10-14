@@ -650,7 +650,7 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 
 	fi->unread = -1;
 	fi->total = -1;
-	folder = camel_object_bag_get(store->folders, fi->full_name);
+	folder = camel_object_bag_peek (store->folders, fi->full_name);
 	if (folder) {
 		if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
 			camel_folder_refresh_info(folder, NULL);
@@ -676,6 +676,11 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 		g_free(folderpath);
 		g_free(path);
 	}
+
+	if (camel_local_store_is_main_store (CAMEL_LOCAL_STORE (store)) && fi->full_name
+	    && (fi->flags & CAMEL_FOLDER_TYPE_MASK) == CAMEL_FOLDER_TYPE_NORMAL)
+		fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK)
+			    | camel_local_store_get_folder_type_by_full_name (CAMEL_LOCAL_STORE (store), fi->full_name);
 }
 
 static CamelFolderInfo *
@@ -859,14 +864,13 @@ get_folder_info(CamelStore *store, const gchar *top, guint32 flags, GError **err
 	fi->unread = -1;
 	fi->total = -1;
 
+	fill_fi (store, fi, flags);
+
 	subdir = g_strdup_printf("%s.sbd", path);
 	if (g_stat(subdir, &st) == 0) {
 		if  (S_ISDIR(st.st_mode))
 			fi->child = scan_dir (store, url, visited, fi, subdir, top, flags, error);
-		else
-			fill_fi(store, fi, flags);
-	} else
-		fill_fi(store, fi, flags);
+	}
 
 	camel_url_free (url);
 

@@ -275,7 +275,7 @@ spool_fill_fi (CamelStore *store,
 
 	fi->unread = -1;
 	fi->total = -1;
-	folder = camel_object_bag_get(store->folders, fi->full_name);
+	folder = camel_object_bag_peek (store->folders, fi->full_name);
 	if (folder) {
 		if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
 			camel_folder_refresh_info(folder, NULL);
@@ -404,7 +404,7 @@ scan_dir (CamelStore *store,
 				gint isfolder = FALSE;
 
 				/* first, see if we already have it open */
-				folder = camel_object_bag_get(store->folders, fname);
+				folder = camel_object_bag_peek (store->folders, fname);
 				if (folder == NULL) {
 					fp = fopen(tmp, "r");
 					if (fp != NULL) {
