@@ -59,6 +59,57 @@ _gdata_entry_new_from_e_contact (EContact *contact)
 	return NULL;
 }
 
+#ifdef HAVE_GDATA_07
+static void
+remove_anniversary (GDataContactsContact *contact)
+{
+	GList *events, *itr;
+
+	events = gdata_contacts_contact_get_events (contact);
+	if (!events)
+		return;
+
+	events = g_list_copy (events);
+	g_list_foreach (events, (GFunc) g_object_ref, NULL);
+
+	gdata_contacts_contact_remove_all_events (contact);
+	for (itr = events; itr; itr = itr->next) {
+		GDataGContactEvent *event = itr->data;
+
+		if (g_strcmp0 (gdata_gcontact_event_get_relation_type (event), GDATA_GCONTACT_EVENT_ANNIVERSARY) != 0)
+			gdata_contacts_contact_add_event (contact, event);
+	}
+
+	g_list_foreach (events, (GFunc) g_object_unref, NULL);
+	g_list_free (events);
+}
+
+static void
+remove_websites (GDataContactsContact *contact)
+{
+	GList *websites, *itr;
+
+	websites = gdata_contacts_contact_get_websites (contact);
+	if (!websites)
+		return;
+
+	websites = g_list_copy (websites);
+	g_list_foreach (websites, (GFunc) g_object_ref, NULL);
+
+	gdata_contacts_contact_remove_all_websites (contact);
+	for (itr = websites; itr; itr = itr->next) {
+		GDataGContactWebsite *website = itr->data;
+
+		if (g_strcmp0 (gdata_gcontact_website_get_relation_type (website), GDATA_GCONTACT_WEBSITE_HOME_PAGE) != 0 &&
+		    g_strcmp0 (gdata_gcontact_website_get_relation_type (website), GDATA_GCONTACT_WEBSITE_BLOG) != 0)
+			gdata_contacts_contact_add_website (contact, website);
+	}
+
+	g_list_foreach (websites, (GFunc) g_object_unref, NULL);
+	g_list_free (websites);
+}
+#endif
+
 gboolean
 _gdata_entry_update_from_e_contact (GDataEntry *entry, EContact *contact)
 {
@@ -220,7 +271,7 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry, EContact *contact)
 	}
 
 	#ifdef HAVE_GDATA_07
-	gdata_contacts_contact_remove_all_websites (GDATA_CONTACTS_CONTACT (entry));
+	remove_websites (GDATA_CONTACTS_CONTACT (entry));
 
 	url = e_contact_get_const (contact, E_CONTACT_HOMEPAGE_URL);
 	if (url && *url) {
@@ -252,7 +303,7 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry, EContact *contact)
 		e_contact_date_free (bdate);
 	}
 
-	gdata_contacts_contact_remove_all_events (GDATA_CONTACTS_CONTACT (entry));
+	remove_anniversary (GDATA_CONTACTS_CONTACT (entry));
 	bdate = e_contact_get (contact, E_CONTACT_ANNIVERSARY);
 	if (bdate) {
 		GDate *gdate = g_date_new_dmy (bdate->day, bdate->month, bdate->year);
