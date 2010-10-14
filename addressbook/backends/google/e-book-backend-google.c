@@ -1205,6 +1205,7 @@ e_book_backend_google_get_supported_fields (EBookBackendSync *backend, EDataBook
 		E_CONTACT_HOMEPAGE_URL,
 		E_CONTACT_BLOG_URL,
 		E_CONTACT_BIRTH_DATE,
+		E_CONTACT_ANNIVERSARY,
 		#endif
 		E_CONTACT_NOTE
 	};
