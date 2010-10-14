@@ -23,6 +23,8 @@ libedataserver_1_2_la_SOURCES =		\
 	e-list-iterator.c		\
 	e-memory.c			\
 	e-proxy.c			\
+	e-soap-message.c		\
+	e-soap-response.c		\
 	e-sexp.c			\
 	e-source-group.c		\
 	e-source-list.c			\
@@ -58,6 +60,8 @@ libedataserverinclude_HEADERS =		\
 	e-list-iterator.h		\
 	e-memory.h			\
 	e-proxy.h			\
+	e-soap-message.h		\
+	e-soap-response.h		\
 	e-sexp.h			\
 	e-source-group.h		\
 	e-source-list.h			\
