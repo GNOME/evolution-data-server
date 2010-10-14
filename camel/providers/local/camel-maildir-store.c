@@ -63,7 +63,7 @@ fill_fi (CamelStore *store,
 {
 	CamelFolder *folder;
 
-	folder = camel_object_bag_get (store->folders, fi->full_name);
+	folder = camel_object_bag_peek (store->folders, fi->full_name);
 
 	if (folder == NULL
 	    && (flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
@@ -94,6 +94,11 @@ fill_fi (CamelStore *store,
 		g_free (folderpath);
 		g_free (path);
 	}
+
+	if (camel_local_store_is_main_store (CAMEL_LOCAL_STORE (store)) && fi->full_name
+	    && (fi->flags & CAMEL_FOLDER_TYPE_MASK) == CAMEL_FOLDER_TYPE_NORMAL)
+		fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK)
+			    | camel_local_store_get_folder_type_by_full_name (CAMEL_LOCAL_STORE (store), fi->full_name);
 }
 
 struct _scan_node {

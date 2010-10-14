@@ -32,6 +32,8 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
+#include <libedataserver/e-data-server-util.h>
+
 #include "camel-local-folder.h"
 #include "camel-local-store.h"
 
@@ -110,6 +112,7 @@ construct (CamelService *service,
 	CamelLocalStore *local_store = CAMEL_LOCAL_STORE (service);
 	CamelServiceClass *service_class;
 	gint len;
+	gchar *local_store_path, *local_store_uri;
 
 	/* Chain up to parent's construct() method. */
 	service_class = CAMEL_SERVICE_CLASS (camel_local_store_parent_class);
@@ -121,6 +124,24 @@ construct (CamelService *service,
 		local_store->toplevel_dir = g_strdup_printf ("%s/", service->url->path);
 	else
 		local_store->toplevel_dir = g_strdup (service->url->path);
+
+	local_store->is_main_store = FALSE;
+
+	local_store_path = g_build_filename (e_get_user_data_dir (), "mail", "local", NULL);
+	local_store_uri = g_filename_to_uri (local_store_path, NULL, NULL);
+	if (local_store_uri) {
+		CamelProvider *provider = service->provider;
+		CamelURL *local_store_url = camel_url_new (local_store_uri, NULL);
+
+		camel_url_set_protocol (local_store_url, service->url->protocol);
+		camel_url_set_host (local_store_url, service->url->host);
+
+		local_store->is_main_store = (provider && provider->url_equal) ? provider->url_equal (service->url, local_store_url) : camel_url_equal (service->url, local_store_url);
+		camel_url_free (local_store_url);
+	}
+
+	g_free (local_store_uri);
+	g_free (local_store_path);
 
 	return TRUE;
 }
@@ -542,4 +563,32 @@ local_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, GError **err
 {
 	/* any local folder can be refreshed */
 	return TRUE;
+}
+
+/* Returns whether is this store used as 'On This Computer' main store */
+gboolean
+camel_local_store_is_main_store (CamelLocalStore *store)
+{
+	g_return_val_if_fail (store != NULL, FALSE);
+
+	return store->is_main_store;
+}
+
+guint32
+camel_local_store_get_folder_type_by_full_name (CamelLocalStore *store, const gchar *full_name)
+{
+	g_return_val_if_fail (store != NULL, 0);
+	g_return_val_if_fail (full_name != NULL, 0);
+
+	if (!camel_local_store_is_main_store (store))
+		return CAMEL_FOLDER_TYPE_NORMAL;
+
+	if (g_ascii_strcasecmp (full_name, "Inbox") == 0)
+		return CAMEL_FOLDER_TYPE_INBOX;
+	else if (g_ascii_strcasecmp (full_name, "Outbox") == 0)
+		return CAMEL_FOLDER_TYPE_OUTBOX;
+	else if (g_ascii_strcasecmp (full_name, "Sent") == 0)
+		return CAMEL_FOLDER_TYPE_SENT;
+
+	return CAMEL_FOLDER_TYPE_NORMAL;
 }

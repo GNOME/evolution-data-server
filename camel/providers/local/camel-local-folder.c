@@ -499,7 +499,6 @@ camel_local_folder_construct (CamelLocalFolder *lf,
                               GError **error)
 {
 	CamelFolder *folder;
-	CamelFolderInfo *fi;
 	const gchar *root_dir_path;
 	gchar *tmp, *statepath;
 #ifndef G_OS_WIN32
@@ -507,7 +506,6 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 	struct stat st;
 #endif
 	gint forceindex, len;
-	CamelURL *url;
 	CamelLocalStore *ls;
 	CamelStore *parent_store;
 	const gchar *full_name;
@@ -609,17 +607,10 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 
 	/* TODO: This probably shouldn't be here? */
 	if ((flags & CAMEL_STORE_FOLDER_CREATE) != 0) {
-		url = camel_url_copy (((CamelService *) parent_store)->url);
-		camel_url_set_fragment (url, full_name);
+		CamelFolderInfo *fi;
 
-		fi = camel_folder_info_new ();
-		fi->full_name = g_strdup (full_name);
-		fi->name = g_strdup (name);
-		fi->uri = camel_url_to_string (url, 0);
-		fi->unread = camel_folder_get_unread_message_count (folder);
-		fi->flags = CAMEL_FOLDER_NOCHILDREN;
-
-		camel_url_free (url);
+		fi = camel_store_get_folder_info_sync (parent_store, full_name, 0, NULL, NULL);
+		g_return_val_if_fail (fi != NULL, lf);
 
 		camel_store_folder_created (parent_store, fi);
 		camel_folder_info_free (fi);
