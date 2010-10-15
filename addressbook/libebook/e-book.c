@@ -3186,7 +3186,24 @@ check_uri (ESource *source, gpointer uri)
 
 	suri = e_source_peek_absolute_uri (source);
 
-	return suri && g_ascii_strcasecmp (suri, uri) == 0;
+	if (suri && g_ascii_strcasecmp (suri, uri) == 0)
+		return TRUE;
+
+	if (!suri && e_source_peek_group (source)) {
+		gboolean res = FALSE;
+		gchar *my_uri = g_strconcat (
+			e_source_group_peek_base_uri (e_source_peek_group (source)),
+			e_source_peek_relative_uri (source),
+			NULL);
+
+		res = my_uri && g_ascii_strcasecmp (my_uri, uri) == 0;
+
+		g_free (my_uri);
+
+		return res;
+	}
+
+	return FALSE;
 }
 
 /**
