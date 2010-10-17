@@ -411,6 +411,7 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 
 	/* Truncate the log */
 	ftruncate (fileno (diary->file), 0);
+	rewind (diary->file);
 
 	g_propagate_error (error, local_error);
 }
