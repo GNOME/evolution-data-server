@@ -1595,6 +1595,7 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 	sync_destination_at_position (name_selector_entry, cursor_pos, &cursor_pos);
 
 	/* Place cursor at end of address */
+	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
 	get_range_at_position (text, cursor_pos, &range_start, &range_end);
 
 	if (priv->is_completing) {
