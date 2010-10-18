@@ -31,8 +31,8 @@ libecal_1_2_la_SOURCES =			\
 	e-cal-view-private.h
 
 libecal_1_2_la_LIBADD = 					\
-	$(top_builddir)/calendar/libegdbus/libegdbus-cal.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la 	\
+	$(top_builddir)/calendar/libegdbus/libegdbus-cal.la	\
 	$(LIBICAL_LIBS)						\
 	$(EVOLUTION_CALENDAR_LIBS)
 

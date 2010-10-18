@@ -36,8 +36,8 @@ libedata_cal_1_2_la_SOURCES =		\
 	e-data-cal-view.c
 
 libedata_cal_1_2_la_LIBADD =					\
-	$(top_builddir)/calendar/libegdbus/libegdbus-cal.la	\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la		\
+	$(top_builddir)/calendar/libegdbus/libegdbus-cal.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la 	\
 	$(top_builddir)/libebackend/libebackend-1.2.la 		\
 	$(LIBICAL_LIBS)						\
