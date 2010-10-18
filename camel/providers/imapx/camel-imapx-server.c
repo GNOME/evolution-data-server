@@ -578,7 +578,7 @@ imapx_command_addv(CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 				left = FALSE;
 				fill = FALSE;
 				zero = FALSE;
-				llong = FALSE;
+				llong = 0;
 
 				do {
 					c = *p++;
@@ -598,8 +598,8 @@ imapx_command_addv(CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 						break;
 				} while ((c = *p++));
 
-				if (c == 'l') {
-					llong = TRUE;
+				while (c == 'l') {
+					llong++;
 					c = *p++;
 				}
 
@@ -693,12 +693,18 @@ imapx_command_addv(CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 					break;
 				case 'd': /* int/unsigned */
 				case 'u':
-					if (llong) {
+					if (llong == 1) {
 						l = va_arg(ap, glong);
 						c(printf("got glong '%d'\n", (gint)l));
 						memcpy(buffer, start, p-start);
 						buffer[p-start] = 0;
 						camel_stream_printf((CamelStream *)ic->mem, buffer, l);
+					} else if (llong == 2) {
+						guint64 i64 = va_arg (ap, guint64);
+						c(printf("got guint64 '%d'\n", (gint)i64));
+						memcpy (buffer, start, p-start);
+						buffer[p-start] = 0;
+						camel_stream_printf ((CamelStream *)ic->mem, buffer, i64);
 					} else {
 						d = va_arg(ap, gint);
 						c(printf("got gint '%d'\n", d));
