@@ -1,3 +1,34 @@
+Evolution-Data-Server 2.91.1 2010-10-18
+---------------------------------------
+
+Bug Fixes:
+	Bug 558478 - Autocompletion inserts comma. (Vibha Yadav)
+	Bug 632376 - Rewind in camel-disco-diary to fix a crash (Pacho Ramos)
+	Bug 534369 - New mail notifications for local Inbox don't work (Milan Crha)
+	Bug 630358 - Google contacts doesn't sync anniversary (Milan Crha)
+	Bug 608557 - CamelOfflineJournal can call fclose with NULL (Milan Crha)
+	Bug 630358 - Google contacts doesn't sync birthday and URL (Milan Crha)
+	Bug 631594 - Various races in CamelOperation (Matthew Barnes)
+	Bug 347520 - Names containing a dot in address parsed incorrectly (Milan Crha)
+	Bug 630361 - Categories editing fixes (Milan Crha)
+	Bug 630889 - Use-after-free while sending messages (Milan Crha)
+	Bug 631404 - Stop shipping a Locations.xml (Matthew Barnes)
+
+Miscellaneous Fixes:
+	Prefix soup_soap_(message/response) with e_soap and add it in libedataserver so that groupwise, evolution-ews 
+	  and evolution-sync for ews (Chenthill Palanisamy)
+	Google contacts - do not drop all URLs/events on update (Milan Crha)
+	Add a CamelFolder:uri property. (Matthew Barnes)
+	Include also reason_phrase on libsoup errors (Milan Crha)
+	CamelOperation: Try to avoid crashing on refcount errors. (Matthew Barnes)
+	Really fix srcdir != builddir builds. (Javier Jardón)
+	Limit libgdata support to 0.6. (Matthew Barnes)
+
+Translations:
+	Matej Urbančič (sl)
+	Jorge González (es)
+	Kjartan Maraas (nn)
+
 Evolution-Data-Server 2.91.0 2010-10-04
 ---------------------------------------
 
