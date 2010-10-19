@@ -619,6 +619,14 @@ smtp_send_to_sync (CamelTransport *transport,
 	/* find out if the message has 8bit mime parts */
 	has_8bit_parts = camel_mime_message_has_8bit_parts (message);
 
+	/* If the connection needs a ReSET, then do so */
+	if (smtp_transport->need_rset &&
+	    !smtp_rset (smtp_transport, cancellable, error)) {
+		camel_operation_pop_message (cancellable);
+		return FALSE;
+	}
+	smtp_transport->need_rset = FALSE;
+
 	/* rfc1652 (8BITMIME) requires that you notify the ESMTP daemon that
 	   you'll be sending an 8bit mime message at "MAIL FROM:" time. */
 	if (!smtp_mail (
@@ -633,6 +641,7 @@ smtp_send_to_sync (CamelTransport *transport,
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Cannot send message: no recipients defined."));
 		camel_operation_pop_message (cancellable);
+		smtp_transport->need_rset = TRUE;
 		return FALSE;
 	}
 
@@ -646,6 +655,7 @@ smtp_send_to_sync (CamelTransport *transport,
 				_("Cannot send message: "
 				  "one or more invalid recipients"));
 			camel_operation_pop_message (cancellable);
+			smtp_transport->need_rset = TRUE;
 			return FALSE;
 		}
 
@@ -653,6 +663,7 @@ smtp_send_to_sync (CamelTransport *transport,
 		if (!smtp_rcpt (smtp_transport, enc, cancellable, error)) {
 			g_free (enc);
 			camel_operation_pop_message (cancellable);
+			smtp_transport->need_rset = TRUE;
 			return FALSE;
 		}
 		g_free (enc);
@@ -660,11 +671,9 @@ smtp_send_to_sync (CamelTransport *transport,
 
 	if (!smtp_data (smtp_transport, message, cancellable, error)) {
 		camel_operation_pop_message (cancellable);
+		smtp_transport->need_rset = TRUE;
 		return FALSE;
 	}
-
-	/* reset the service for our next transfer session */
-	smtp_rset (smtp_transport, cancellable, NULL);
 
 	camel_operation_pop_message (cancellable);
 

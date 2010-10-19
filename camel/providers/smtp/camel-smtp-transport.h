@@ -69,6 +69,7 @@ struct _CamelSmtpTransport {
 
 	guint32 flags;
 
+	gboolean need_rset;
 	gboolean connected;
 	struct sockaddr *localaddr;
 	socklen_t localaddrlen;
