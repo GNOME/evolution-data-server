@@ -124,7 +124,7 @@ e_name_selector_dialog_populate_categories (ENameSelectorDialog *name_selector_d
 		if (!e_categories_is_searchable (iter->data))
 			continue;
 
-		gtk_combo_box_append_text (
+		gtk_combo_box_text_append_text (
 			GTK_COMBO_BOX (combo_box), iter->data);
 	}
 
@@ -891,7 +891,7 @@ search_changed (ENameSelectorDialog *name_selector_dialog)
 	if (gtk_combo_box_get_active (GTK_COMBO_BOX (combo_box)) == -1)
 		gtk_combo_box_set_active (GTK_COMBO_BOX (combo_box), 0);
 
-	category = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combo_box));
+	category = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX (combo_box));
 	category_escaped = escape_sexp_string (category);
 
 	text = gtk_entry_get_text (name_selector_dialog->priv->search_entry);
