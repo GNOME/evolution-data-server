@@ -1022,7 +1022,6 @@ vee_folder_sync (CamelFolder *folder,
 	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
 	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
 	GList *node;
-	GError *local_error = NULL;
 
 	if (((CamelVeeSummary *)folder->summary)->fake_visible_count)
 		folder->summary->visible_count = ((CamelVeeSummary *)folder->summary)->fake_visible_count;
@@ -1032,10 +1031,11 @@ vee_folder_sync (CamelFolder *folder,
 
 	node = p->folders;
 	while (node) {
+		GError *local_error = NULL;
 		CamelFolder *f = node->data;
 
 		if (!camel_folder_sync (f, expunge, &local_error)) {
-			if (strncmp (local_error->message, "no such table", 13) != 0) {
+			if (local_error && strncmp (local_error->message, "no such table", 13) != 0 && error && !*error) {
 				const gchar *desc;
 
 				desc = camel_folder_get_description (f);
