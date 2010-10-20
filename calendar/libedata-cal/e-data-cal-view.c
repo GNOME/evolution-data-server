@@ -221,7 +221,7 @@ ensure_pending_flush_timeout (EDataCalView *view)
 	if (priv->flush_id)
 		return;
 
-	priv->flush_id = g_timeout_add_seconds (THRESHOLD_SECONDS, pending_flush_timeout_cb, view);
+	priv->flush_id = g_timeout_add (e_data_cal_view_is_done (view) ? 10 : (THRESHOLD_SECONDS * 1000), pending_flush_timeout_cb, view);
 }
 
 static void
