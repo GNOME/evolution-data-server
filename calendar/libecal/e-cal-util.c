@@ -1273,7 +1273,7 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 				rule_end = e_cal_recur_obtain_enddate (&ir, prop, utc_zone, TRUE);
 
 				if (rule_end == -1) /* repeats forever */
-					*end = -1;
+					*end = _TIME_MAX;
 				else if (rule_end > *end) /* new maximum */
 					*end = rule_end;
 			}
