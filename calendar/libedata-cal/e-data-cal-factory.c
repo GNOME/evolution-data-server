@@ -45,6 +45,10 @@
 
 #include "e-gdbus-egdbuscalfactory.h"
 
+#ifdef HAVE_ICAL_UNKNOWN_TOKEN_HANDLING
+#include <libical/ical.h>
+#endif
+
 #ifdef G_OS_WIN32
 #include <windows.h>
 #include <conio.h>
@@ -894,6 +898,10 @@ main (gint argc, gchar **argv)
 	g_type_init ();
 	g_set_prgname (E_PRGNAME);
 	if (!g_thread_supported ()) g_thread_init (NULL);
+
+	#ifdef HAVE_ICAL_UNKNOWN_TOKEN_HANDLING
+	ical_set_unknown_token_handling_setting (ICAL_DISCARD_TOKEN);
+	#endif
 
 	factory = g_object_new (E_TYPE_DATA_CAL_FACTORY, NULL);
 
