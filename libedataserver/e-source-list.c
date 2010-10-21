@@ -393,6 +393,11 @@ e_source_list_new_for_gconf_default (const gchar  *path)
 	return list;
 }
 
+/**
+ * e_source_list_peek_groups:
+ *
+ * Return value: (transfer none) (element-type ESourceGroup):
+ */
 GSList *
 e_source_list_peek_groups (ESourceList *list)
 {

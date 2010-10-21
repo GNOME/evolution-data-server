@@ -1038,7 +1038,7 @@ e_cal_component_set_new_vtype (ECalComponent *comp, ECalComponentVType type)
 /**
  * e_cal_component_set_icalcomponent:
  * @comp: A calendar component object.
- * @icalcomp: An #icalcomponent.
+ * @icalcomp: (type long): An #icalcomponent.
  *
  * Sets the contents of a calendar component object from an #icalcomponent
  * structure.  If the @comp already had an #icalcomponent set into it, it will

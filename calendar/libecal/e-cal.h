@@ -98,7 +98,6 @@ typedef gchar * (* ECalAuthFunc) (ECal *ecal,
 
 GType e_cal_get_type (void);
 
-GType e_cal_open_status_enum_get_type (void);
 GType e_cal_source_type_enum_get_type (void);
 GType e_cal_set_mode_status_enum_get_type (void);
 GType cal_mode_enum_get_type (void);

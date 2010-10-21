@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS=-I m4
 
-DISTCHECK_CONFIGURE_FLAGS = --disable-gtk3 --enable-gtk-doc --with-krb5=/usr --without-weather
+DISTCHECK_CONFIGURE_FLAGS = --disable-gtk3 --enable-gtk-doc --with-krb5=/usr --without-weather --enable-introspection
 
 if ENABLE_CALENDAR
 CALENDAR_DIR = calendar
@@ -62,6 +62,7 @@ MAINTAINERCLEANFILES =					\
 	$(srcdir)/m4/intlmacosx.m4			\
 	$(srcdir)/m4/intltool.m4			\
 	$(srcdir)/m4/intmax.m4				\
+	$(srcdir)/m4/introspection.m4			\
 	$(srcdir)/m4/inttypes-pri.m4			\
 	$(srcdir)/m4/inttypes_h.m4			\
 	$(srcdir)/m4/lcmessage.m4			\

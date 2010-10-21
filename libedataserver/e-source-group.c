@@ -645,6 +645,11 @@ e_source_group_get_readonly (ESourceGroup *group)
 	return group->priv->readonly;
 }
 
+/**
+ * e_source_group_peek_sources:
+ *
+ * Return value: (transfer none) (element-type ESource):
+ */
 GSList *
 e_source_group_peek_sources (ESourceGroup *group)
 {

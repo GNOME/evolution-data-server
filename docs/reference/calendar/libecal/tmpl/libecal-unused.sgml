@@ -512,6 +512,14 @@ ECalViewListener
 
 @listener: 
 
+<!-- ##### FUNCTION e_cal_open_status_enum_get_type ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
 <!-- ##### FUNCTION e_cal_remove_calendar ##### -->
 <para>
 

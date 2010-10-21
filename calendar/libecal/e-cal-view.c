@@ -277,7 +277,11 @@ e_cal_view_class_init (ECalViewClass *klass)
 	g_object_class_install_property (object_class, PROP_CLIENT,
 		g_param_spec_object ("client", "The e-cal for the view", NULL, E_TYPE_CAL,
 				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
-
+        /**
+         * ECalView::objects-added:
+         * @view:: self
+         * @objects: (type GLib.List) (transfer none) (element-type long):
+         */
 	signals[OBJECTS_ADDED] =
 		g_signal_new ("objects_added",
 			      G_TYPE_FROM_CLASS (klass),
@@ -286,6 +290,11 @@ e_cal_view_class_init (ECalViewClass *klass)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1, G_TYPE_POINTER);
+        /**
+         * ECalView::objects-modified:
+         * @view:: self
+         * @objects: (type GLib.List) (transfer none) (element-type long):
+         */
 	signals[OBJECTS_MODIFIED] =
 		g_signal_new ("objects_modified",
 			      G_TYPE_FROM_CLASS (klass),
@@ -294,6 +303,11 @@ e_cal_view_class_init (ECalViewClass *klass)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1, G_TYPE_POINTER);
+        /**
+         * ECalView::objects-removed:
+         * @view:: self
+         * @objects: (type GLib.List) (transfer none) (element-type ECalComponentId):
+         */
 	signals[OBJECTS_REMOVED] =
 		g_signal_new ("objects_removed",
 			      G_TYPE_FROM_CLASS (klass),

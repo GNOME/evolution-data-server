@@ -18,9 +18,9 @@ dnl library names for backward compatibility.
 m4_define([api_version], [1.2])
 
 dnl Autoconf / Automake Initialization
-AC_PREREQ(2.58)
+AC_PREREQ(2.62)
 AC_INIT([evolution-data-server],[eds_version],[http://bugzilla.gnome.org/enter_bug.cgi?product=Evolution-Data-Server])
-AM_INIT_AUTOMAKE([gnu 1.10 tar-ustar -Wall -Werror foreign])
+AM_INIT_AUTOMAKE([gnu 1.10 tar-ustar -Wall -Wno-portability -Werror foreign])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR(README)
 AC_CONFIG_HEADERS(config.h)
@@ -1412,6 +1412,8 @@ AC_PATH_PROG(GPERF, gperf, [no])
 if test "x$GPERF" = "xno"; then
   AC_MSG_ERROR([You need gperf to build evolution-data-server])
 fi
+
+GOBJECT_INTROSPECTION_CHECK([0.9.12])
 
 dnl ******************************
 dnl Makefiles

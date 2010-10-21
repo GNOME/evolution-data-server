@@ -315,10 +315,10 @@ e_cal_source_type_enum_get_type (void)
 	if (g_once_init_enter (&enum_type__volatile)) {
 		GType enum_type;
 		static GEnumValue values[] = {
-			{ E_CAL_SOURCE_TYPE_EVENT, "Event", NULL},
-			{ E_CAL_SOURCE_TYPE_TODO, "ToDo", NULL},
-			{ E_CAL_SOURCE_TYPE_JOURNAL, "Journal", NULL},
-			{ E_CAL_SOURCE_TYPE_LAST, "Invalid", NULL},
+			{ E_CAL_SOURCE_TYPE_EVENT, "Event", "Event"},
+			{ E_CAL_SOURCE_TYPE_TODO, "ToDo", "ToDo"},
+			{ E_CAL_SOURCE_TYPE_JOURNAL, "Journal", "Journal"},
+			{ E_CAL_SOURCE_TYPE_LAST, "Invalid", "Invalid"},
 			{ -1, NULL, NULL}
 		};
 
@@ -592,6 +592,11 @@ e_cal_class_init (ECalClass *klass)
 			      G_TYPE_NONE, 1, G_TYPE_INT);
 	#endif
 
+        /**
+         * ECal::cal-opened-ex:
+         * @ecal:: self
+         * @error: (type glong):
+         */
 	e_cal_signals[CAL_OPENED_EX] =
 		g_signal_new ("cal_opened_ex",
 			      G_TYPE_FROM_CLASS (klass),
@@ -2427,7 +2432,7 @@ e_cal_free_change_list (GList *list)
  * e_cal_get_object_list:
  * @ecal: A calendar client.
  * @query: Query string.
- * @objects: Return value for list of objects.
+ * @objects: (out) (element-type long): Return value for list of objects.
  * @error: Placeholder for error information.
  *
  * Gets a list of objects from the calendar that match the query specified
@@ -3933,7 +3938,7 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
  * e_cal_get_query:
  * @ecal: A calendar client.
  * @sexp: S-expression representing the query.
- * @query: Return value for the new query.
+ * @query: (out): Return value for the new query.
  * @error: Placeholder for error information.
  *
  * Creates a live query object from a loaded calendar.
