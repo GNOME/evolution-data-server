@@ -146,8 +146,10 @@ maildir_store_get_folder_sync (CamelStore *store,
 	dir_name = maildir_full_name_to_dir_name (folder_name);
 
 	store_class = CAMEL_STORE_CLASS (camel_maildir_store_parent_class);
-	if (!store_class->get_folder_sync (store, dir_name, flags, cancellable, error))
+	if (!store_class->get_folder_sync (store, dir_name, flags, cancellable, error)) {
+		g_free (dir_name);
 		return NULL;
+	}
 
 	/* maildir++ directory names start with a '.' */
 	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, dir_name);
@@ -426,6 +428,7 @@ scan_fi (CamelStore *store,
 	g_free (new);
 	g_free (cur);
 	g_free (tmp);
+	g_free (dir_name);
 
 	fill_fi (store, fi, flags, cancellable);
 
@@ -473,7 +476,8 @@ scan_dirs (CamelStore *store,
 	struct dirent *d;
 
 	folders = g_ptr_array_new ();
-	g_ptr_array_add (folders, topfi);
+	if (!strcmp (topfi->full_name, "."))
+		g_ptr_array_add (folders, topfi);
 
 	dir = opendir (root);
 	if (dir == NULL) {
@@ -514,8 +518,8 @@ scan_dirs (CamelStore *store,
 		else
 			short_name++;
 				
-		if ((strcmp (topfi->full_name, ".") != 0 && !g_str_has_prefix (topfi->full_name, full_name)) 
-				|| !strcmp (topfi->full_name, full_name)) {
+		if (strcmp (topfi->full_name, ".") != 0 
+					&& !g_str_has_prefix (topfi->full_name, full_name)) {
 			
 			g_free (full_name);
 			continue;
@@ -532,12 +536,16 @@ scan_dirs (CamelStore *store,
 
 	closedir (dir);
 	
-	if (!strcmp (topfi->full_name, "."))
-		camel_folder_info_build (folders, "", '/', TRUE);
-	else
-		camel_folder_info_build (folders, topfi->full_name, '/', TRUE);
+	if (folders->len != 0) {
+		if (!strcmp (topfi->full_name, "."))
+			camel_folder_info_build (folders, "", '/', TRUE);
+		else
+			camel_folder_info_build (folders, topfi->full_name, '/', TRUE);
+		
+		res = 0;
+	} else
+		res = -1;
 
-	res = 0;
 
 fail:
 	g_ptr_array_free (folders, TRUE);
@@ -621,6 +629,8 @@ maildir_store_rename_folder_sync (CamelStore *store,
                                   GError **error)
 {
 	CamelStoreClass *store_class;
+	gboolean ret;
+	gchar *old_dir, *new_dir;
 
 	if (strcmp(old, ".") == 0) {
 		g_set_error (
@@ -631,10 +641,18 @@ maildir_store_rename_folder_sync (CamelStore *store,
 		return FALSE;
 	}
 
+	old_dir = maildir_full_name_to_dir_name (old);
+	new_dir = maildir_full_name_to_dir_name (new);
+
 	/* Chain up to parent's rename_folder_sync() method. */
 	store_class = CAMEL_STORE_CLASS (camel_maildir_store_parent_class);
-	return store_class->rename_folder_sync (
-		store, old, new, cancellable, error);
+	ret = store_class->rename_folder_sync (
+		store, old_dir, new_dir, cancellable, error);
+
+	g_free (old_dir);
+	g_free (new_dir);
+
+	return ret;
 }
 
 static void
