@@ -514,8 +514,8 @@ scan_dirs (CamelStore *store,
 		else
 			short_name++;
 				
-		if (strcmp (topfi->full_name, ".") != 0 && 
-					!g_str_has_prefix (topfi->full_name, full_name)) {
+		if ((strcmp (topfi->full_name, ".") != 0 && !g_str_has_prefix (topfi->full_name, full_name)) 
+				|| !strcmp (topfi->full_name, full_name)) {
 			
 			g_free (full_name);
 			continue;
