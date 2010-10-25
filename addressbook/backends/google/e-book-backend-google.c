@@ -437,7 +437,6 @@ on_sequence_complete (EBookBackend *backend, GError *error)
 		data_book_error_from_gdata_error (&err, error);
 
 		__debug__ ("Book-view query failed: %s", error->message);
-		g_clear_error (&error);
 	}
 
 	for (iter = priv->bookviews; iter; iter = iter->next)
