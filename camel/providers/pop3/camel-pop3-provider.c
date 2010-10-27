@@ -41,6 +41,8 @@ static CamelProviderConfEntry pop3_conf_entries[] = {
 	  N_("_Leave messages on server"), "0" },
 	{ CAMEL_PROVIDER_CONF_CHECKSPIN, "delete_after", "keep_on_server",
 	  N_("_Delete after %s day(s)"), "0:1:7:365" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "delete_expunged", "keep_on_server",
+	  N_("Delete _expunged from local Inbox"), "0" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "disable_extensions", NULL,
 	  N_("Disable _support for all POP3 extensions"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },

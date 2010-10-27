@@ -119,7 +119,7 @@ connect_to_server (CamelService *service,
 	guint32 flags = 0;
 	gint clean_quit = TRUE;
 	gint ret;
-	const gchar *delete_days;
+	const gchar *param;
 
 	if (ssl_mode != MODE_CLEAR) {
 #ifdef CAMEL_HAVE_SSL
@@ -167,8 +167,13 @@ connect_to_server (CamelService *service,
 	if (camel_url_get_param (service->url, "disable_extensions"))
 		flags |= CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS;
 
-	if ((delete_days = (gchar *) camel_url_get_param(service->url,"delete_after")))
-		store->delete_after =  atoi (delete_days);
+	store->keep_on_server = camel_url_get_param (service->url, "keep_on_server") != NULL;
+	store->delete_expunged = camel_url_get_param (service->url, "delete_expunged") != NULL;
+
+	if ((param = camel_url_get_param (service->url, "delete_after")))
+		store->delete_after = atoi (param);
+	else
+		store->delete_after = 0;
 
 	if (!(store->engine = camel_pop3_engine_new (tcp_stream, flags))) {
 		g_set_error (

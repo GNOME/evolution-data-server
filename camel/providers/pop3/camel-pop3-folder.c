@@ -455,6 +455,9 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 		g_prefix_error (error, _("Cannot get message %s: "), uid);
 		g_object_unref (message);
 		message = NULL;
+	} else {
+		/* because the UID in the local store doesn't match with the UID in the pop3 store */
+		camel_medium_add_header (CAMEL_MEDIUM (message), "X-Evolution-POP3-UID", uid);
 	}
 done:
 	g_object_unref (stream);
@@ -551,7 +554,7 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
 	pop3_folder = CAMEL_POP3_FOLDER (folder);
 	pop3_store = CAMEL_POP3_STORE (parent_store);
 
-	if (pop3_store->delete_after && !expunge) {
+	if (pop3_store->delete_after > 0 && !expunge) {
 		d(printf("%s(%d): pop3_store->delete_after = [%d], expunge=[%d]\n",
 			 __FILE__, __LINE__, pop3_store->delete_after, expunge));
 		camel_operation_push_message (
@@ -564,7 +567,7 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
 		camel_operation_pop_message (cancellable);
 	}
 
-	if (!expunge) {
+	if (!expunge || (pop3_store->keep_on_server && !pop3_store->delete_expunged)) {
 		return TRUE;
 	}
 
@@ -792,4 +795,3 @@ camel_pop3_delete_old (CamelFolder *folder,
 
 	return 0;
 }
-

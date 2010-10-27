@@ -61,7 +61,9 @@ struct _CamelPOP3Store {
 
 	CamelDataCache *cache;
 
+	gboolean keep_on_server;
 	guint delete_after;
+	gboolean delete_expunged;
 };
 
 struct _CamelPOP3StoreClass {
