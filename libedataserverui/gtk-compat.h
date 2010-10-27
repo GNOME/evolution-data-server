@@ -9,6 +9,28 @@
 #define gtk_combo_box_text_new			gtk_combo_box_new_text
 #define gtk_combo_box_text_append_text		gtk_combo_box_append_text
 #define gtk_combo_box_text_get_active_text	gtk_combo_box_get_active_text
+#define GTK_COMBO_BOX_TEXT			GTK_COMBO_BOX
+
+/* The below can be used only once in sources */
+#define ENSURE_GTK_COMBO_BOX_TEXT_TYPE						\
+	GType gtk_combo_box_text_get_type (void);				\
+	typedef struct _GtkComboBoxText GtkComboBoxText;			\
+	typedef struct _GtkComboBoxTextClass GtkComboBoxTextClass;		\
+										\
+	struct _GtkComboBoxText {						\
+		GtkComboBox parent;						\
+	};									\
+										\
+	struct _GtkComboBoxTextClass {						\
+		GtkComboBoxClass parent_class;					\
+	};									\
+										\
+										\
+	G_DEFINE_TYPE (GtkComboBoxText, gtk_combo_box_text, GTK_TYPE_COMBO_BOX)	\
+										\
+	static void gtk_combo_box_text_init (GtkComboBoxText *cbt) {}		\
+	static void gtk_combo_box_text_class_init (GtkComboBoxTextClass *kl) {}
+
 #endif
 
 #if GTK_CHECK_VERSION (2,90,5)

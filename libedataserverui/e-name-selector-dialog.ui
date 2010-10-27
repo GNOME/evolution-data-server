@@ -224,7 +224,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkComboBox" id="combobox-category">
+                  <object class="GtkComboBoxText" id="combobox-category">
                     <property name="visible">True</property>
                     <property name="add_tearoffs">False</property>
                     <property name="focus_on_click">True</property>

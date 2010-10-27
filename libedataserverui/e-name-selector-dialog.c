@@ -42,6 +42,10 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_NAME_SELECTOR_DIALOG, ENameSelectorDialogPrivate))
 
+#if !GTK_CHECK_VERSION (2,23,0)
+	ENSURE_GTK_COMBO_BOX_TEXT_TYPE
+#endif
+
 typedef struct {
 	gchar        *name;
 
@@ -120,7 +124,7 @@ e_name_selector_dialog_populate_categories (ENameSelectorDialog *name_selector_d
 	category_list = e_categories_get_list ();
 	for (iter = category_list; iter != NULL; iter = iter->next)
 		gtk_combo_box_text_append_text (
-			GTK_COMBO_BOX (combo_box), iter->data);
+			GTK_COMBO_BOX_TEXT (combo_box), iter->data);
 	g_list_free (category_list);
 
 	g_signal_connect_swapped (
@@ -884,7 +888,7 @@ search_changed (ENameSelectorDialog *name_selector_dialog)
 	if (gtk_combo_box_get_active (GTK_COMBO_BOX (combo_box)) == -1)
 		gtk_combo_box_set_active (GTK_COMBO_BOX (combo_box), 0);
 
-	category = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX (combo_box));
+	category = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT (combo_box));
 	category_escaped = escape_sexp_string (category);
 
 	text = gtk_entry_get_text (name_selector_dialog->priv->search_entry);
