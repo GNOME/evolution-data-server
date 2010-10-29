@@ -997,11 +997,15 @@ vee_folder_search_by_expression (CamelFolder *folder,
 	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
 	GHashTable *searched = g_hash_table_new (NULL, NULL);
 	CamelVeeFolder *folder_unmatched = vf->parent_vee_store ? vf->parent_vee_store->folder_unmatched : NULL;
+	gboolean is_folder_unmatched = vf == folder_unmatched && folder_unmatched;
+	GHashTable *folder_unmatched_hash = NULL;
 
-	if (vf != folder_unmatched)
-		expr = g_strdup_printf ("(and %s %s)", vf->expression ? vf->expression : "", expression);
-	else
+	if (is_folder_unmatched) {
 		expr = g_strdup (expression);
+		folder_unmatched_hash = camel_folder_summary_get_hashtable (((CamelFolder *) folder_unmatched)->summary);
+	} else {
+		expr = g_strdup_printf ("(and %s %s)", vf->expression ? vf->expression : "", expression);
+	}
 
 	node = p->folders;
 	while (node) {
@@ -1020,7 +1024,9 @@ vee_folder_search_by_expression (CamelFolder *folder,
 					vuid = g_malloc (strlen (uid)+9);
 					memcpy (vuid, hash, 8);
 					strcpy (vuid+8, uid);
-					g_ptr_array_add (result, (gpointer) camel_pstring_strdup (vuid));
+
+					if (!is_folder_unmatched || g_hash_table_lookup (folder_unmatched_hash, vuid) != NULL)
+						g_ptr_array_add (result, (gpointer) camel_pstring_strdup (vuid));
 					g_free (vuid);
 				}
 				camel_folder_search_free (f, matches);
@@ -1030,6 +1036,8 @@ vee_folder_search_by_expression (CamelFolder *folder,
 		node = g_list_next (node);
 	}
 
+	if (folder_unmatched_hash)
+		camel_folder_summary_free_hashtable (folder_unmatched_hash);
 	g_free (expr);
 
 	g_hash_table_destroy (searched);
