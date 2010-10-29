@@ -4127,15 +4127,28 @@ e_cal_open_default (ECal **ecal,
 		return FALSE;
 
 	source = e_source_list_peek_default_source (source_list);
-	g_return_val_if_fail (source != NULL, FALSE);
+	if (!source) {
+		g_set_error_literal (error, E_CALENDAR_ERROR,
+			     E_CALENDAR_STATUS_NO_SUCH_CALENDAR,
+			     e_cal_get_error_message (E_CALENDAR_STATUS_NO_SUCH_CALENDAR));
+		g_object_unref (source_list);
+		return FALSE;
+	}
 
 	/* XXX This can fail but doesn't take a GError!? */
 	client = e_cal_new (source, type);
-	g_return_val_if_fail (client != NULL, FALSE);
+	if (!client) {
+		g_set_error_literal (error, E_CALENDAR_ERROR,
+			     E_CALENDAR_STATUS_OTHER_ERROR,
+			     e_cal_get_error_message (E_CALENDAR_STATUS_OTHER_ERROR));
+		g_object_unref (source_list);
+		return FALSE;
+	}
 
 	e_cal_set_auth_func (client, func, data);
 	if (!e_cal_open (client, TRUE, error)) {
 		g_object_unref (client);
+		g_object_unref (source_list);
 		return FALSE;
 	}
 
@@ -4164,7 +4177,9 @@ e_cal_set_default (ECal *ecal, GError **error)
 
 	source = e_cal_get_source (ecal);
 	if (!source) {
-		/* XXX gerror */
+		g_set_error_literal (error, E_CALENDAR_ERROR,
+			     E_CALENDAR_STATUS_NO_SUCH_CALENDAR,
+			     e_cal_get_error_message (E_CALENDAR_STATUS_NO_SUCH_CALENDAR));
 		return FALSE;
 	}
 
@@ -4184,7 +4199,9 @@ set_default_source (ESourceList *sources, ESource *source, GError **error)
 	   it's not we don't bother adding it, just return an error */
 	source = e_source_list_peek_source_by_uid (sources, uid);
 	if (!source) {
-		/* XXX gerror */
+		g_set_error_literal (error, E_CALENDAR_ERROR,
+			     E_CALENDAR_STATUS_NO_SUCH_CALENDAR,
+			     e_cal_get_error_message (E_CALENDAR_STATUS_NO_SUCH_CALENDAR));
 		g_object_unref (sources);
 		return FALSE;
 	}
@@ -4272,10 +4289,14 @@ e_cal_get_sources (ESourceList **sources, ECalSourceType type, GError **error)
 		return get_sources (sources, "/apps/evolution/memos/sources", error);
 		break;
 	default:
-		/* FIXME Fill in error */
+		g_set_error_literal (error, E_CALENDAR_ERROR,
+			     E_CALENDAR_STATUS_NO_SUCH_CALENDAR,
+			     e_cal_get_error_message (E_CALENDAR_STATUS_NO_SUCH_CALENDAR));
 		return FALSE;
 	}
 
-	/* FIXME Fill in error */
+	g_set_error_literal (error, E_CALENDAR_ERROR,
+		     E_CALENDAR_STATUS_NO_SUCH_CALENDAR,
+		     e_cal_get_error_message (E_CALENDAR_STATUS_NO_SUCH_CALENDAR));
 	return FALSE;
 }
