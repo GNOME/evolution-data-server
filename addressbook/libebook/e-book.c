@@ -3349,7 +3349,12 @@ e_book_new_default_addressbook (GError **error)
 		return NULL;
 
 	source = e_source_list_peek_default_source (source_list);
-	g_return_val_if_fail (source != NULL, NULL);
+	if (!source) {
+		g_set_error_literal (error, E_BOOK_ERROR, E_BOOK_ERROR_NO_SUCH_BOOK,
+			     _("Address book does not exist"));
+		g_object_unref (source_list);
+		return NULL;
+	}
 
 	book = e_book_new (source, error);
 
