@@ -54,6 +54,7 @@ static char *maildir_full_name_to_dir_name (const gchar *full_name);
 static char *maildir_dir_name_to_fullname (const gchar *dir_name);
 static gchar *maildir_get_full_path (CamelLocalStore *ls, const gchar *full_name);
 static gchar *maildir_get_meta_path (CamelLocalStore *ls, const gchar *full_name, const gchar *ext);
+static void maildir_migrate_hierarchy (CamelMaildirStore *mstore, GCancellable *cancellable, GError **error);
 
 /* This fixes up some historical cruft of names starting with "./" */
 static const gchar *
@@ -453,10 +454,14 @@ maildir_full_name_to_dir_name (const gchar *full_name)
 static char *
 maildir_dir_name_to_fullname (const gchar *dir_name)
 {
-	gchar *full_name;
+	gchar *full_name, *skip_dots;
 
 	full_name = g_strdup (dir_name + 1);
-	g_strdelimit (full_name, HIER_SEP, '/');
+	skip_dots = full_name;
+	
+	while (*skip_dots == '.')
+		skip_dots++;
+	g_strdelimit (skip_dots, HIER_SEP, '/');
 
 	return full_name;
 }
@@ -474,6 +479,7 @@ scan_dirs (CamelStore *store,
 	gint res = -1;
 	DIR *dir;
 	struct dirent *d;
+	gchar *meta_path = NULL;
 
 	folders = g_ptr_array_new ();
 	if (!strcmp (topfi->full_name, "."))
@@ -488,6 +494,10 @@ scan_dirs (CamelStore *store,
 				root, g_strerror (errno));
 		goto fail;
 	}
+
+	meta_path = maildir_get_meta_path ((CamelLocalStore *) store, ".", "maildir++");
+	if (!g_file_test (meta_path, G_FILE_TEST_EXISTS))
+		maildir_migrate_hierarchy ((CamelMaildirStore *) store, cancellable, error);
 
 	while ((d = readdir (dir))) {
 		gchar *full_name, *filename;
@@ -704,4 +714,192 @@ maildir_get_meta_path (CamelLocalStore *ls, const gchar *full_name, const gchar 
 	g_free (dir_name);
 	
 	return path;
+}
+
+/* Migration from old to maildir++ hierarchy */
+
+struct _scan_node {
+	struct _scan_node *next;
+	struct _scan_node *prev;
+
+	CamelFolderInfo *fi;
+
+	dev_t dnode;
+	ino_t inode;
+};
+
+static guint scan_hash(gconstpointer d)
+{
+	const struct _scan_node *v = d;
+
+	return v->inode ^ v->dnode;
+}
+
+static gboolean scan_equal(gconstpointer a, gconstpointer b)
+{
+	const struct _scan_node *v1 = a, *v2 = b;
+
+	return v1->inode == v2->inode && v1->dnode == v2->dnode;
+}
+
+static void scan_free(gpointer k, gpointer v, gpointer d)
+{
+	g_free(k);
+}
+
+static gint
+scan_old_dir_info (CamelStore *store, CamelFolderInfo *topfi, GError **error)
+{
+	CamelDList queue = CAMEL_DLIST_INITIALISER(queue);
+	struct _scan_node *sn;
+	const gchar *root = ((CamelService *)store)->url->path;
+	gchar *tmp;
+	GHashTable *visited;
+	struct stat st;
+	gint res = -1;
+
+	visited = g_hash_table_new(scan_hash, scan_equal);
+
+	sn = g_malloc0 (sizeof(*sn));
+	sn->fi = topfi;
+	camel_dlist_addtail(&queue, (CamelDListNode *)sn);
+	g_hash_table_insert(visited, sn, sn);
+
+	while (!camel_dlist_empty(&queue)) {
+		gchar *name;
+		DIR *dir;
+		struct dirent *d;
+		CamelFolderInfo *last;
+
+		sn = (struct _scan_node *)camel_dlist_remhead(&queue);
+
+		last = (CamelFolderInfo *)&sn->fi->child;
+
+		if (!strcmp(sn->fi->full_name, "."))
+			name = g_strdup(root);
+		else
+			name = g_build_filename(root, sn->fi->full_name, NULL);
+
+		dir = opendir(name);
+		if (dir == NULL) {
+			g_free(name);
+			g_set_error (
+				error, G_IO_ERROR,
+				g_io_error_from_errno (errno),
+				_("Could not scan folder '%s': %s"),
+				root, g_strerror (errno));
+
+			goto fail;
+		}
+
+		while ((d = readdir(dir))) {
+			if (strcmp(d->d_name, "tmp") == 0
+			    || strcmp(d->d_name, "cur") == 0
+			    || strcmp(d->d_name, "new") == 0
+			    || strcmp(d->d_name, ".#evolution") == 0
+			    || strcmp(d->d_name, ".") == 0
+			    || strcmp(d->d_name, "..") == 0)
+				continue;
+
+			tmp = g_build_filename(name, d->d_name, NULL);
+			if (stat(tmp, &st) == 0 && S_ISDIR(st.st_mode)) {
+				struct _scan_node in;
+
+				in.dnode = st.st_dev;
+				in.inode = st.st_ino;
+
+				/* see if we've visited already */
+				if (g_hash_table_lookup(visited, &in) == NULL) {
+					struct _scan_node *snew = g_malloc(sizeof(*snew));
+					gchar *full;
+					CamelFolderInfo *fi = NULL;
+
+					snew->dnode = in.dnode;
+					snew->inode = in.inode;
+
+					if (!strcmp(sn->fi->full_name, "."))
+						full = g_strdup(d->d_name);
+					else
+						full = g_strdup_printf("%s/%s", sn->fi->full_name, d->d_name);
+
+					fi = camel_folder_info_new ();
+					fi->full_name = full;
+					fi->name = g_strdup(d->d_name);
+					snew->fi = fi;
+
+					last->next =  snew->fi;
+					last = snew->fi;
+					snew->fi->parent = sn->fi;
+
+					g_hash_table_insert(visited, snew, snew);
+					camel_dlist_addtail(&queue, (CamelDListNode *)snew);
+				}
+			}
+			g_free(tmp);
+		}
+		closedir(dir);
+		g_free (name);
+	}
+
+	res = 0;
+fail:
+	g_hash_table_foreach(visited, scan_free, NULL);
+	g_hash_table_destroy(visited);
+
+	return res;
+}
+
+static void
+maildir_rename_old_folder (CamelMaildirStore *mstore, CamelFolderInfo *fi, GCancellable *cancellable, GError **error)
+{
+	gchar *new_name = NULL;
+	CamelStoreClass *store_class;
+
+	new_name = maildir_full_name_to_dir_name (fi->full_name);
+	
+	store_class = CAMEL_STORE_CLASS (camel_maildir_store_parent_class);
+	store_class->rename_folder_sync (
+		(CamelStore *)mstore, fi->full_name, new_name, cancellable, error);
+
+	g_free (new_name);
+}
+
+static void
+traverse_rename_folder_info (CamelMaildirStore *mstore, CamelFolderInfo *fi, GCancellable *cancellable, GError **error)
+{
+	if (fi != NULL)	{
+		if (fi->child) 
+			traverse_rename_folder_info (mstore, fi->child, cancellable, error);
+
+		if (strcmp (fi->full_name, ".") && ((!g_str_has_prefix (fi->full_name, ".") && (!fi->parent || !strcmp(fi->parent->full_name, "."))) || 
+					(fi->parent && strcmp (fi->parent->full_name, "."))))
+			maildir_rename_old_folder (mstore, fi, cancellable, error);
+		
+		traverse_rename_folder_info (mstore, fi->next, cancellable, error);
+	}
+}
+
+static void
+maildir_migrate_hierarchy (CamelMaildirStore *mstore, GCancellable *cancellable, GError **error)
+{
+	CamelFolderInfo *topfi;
+	gchar *meta_path;
+
+	topfi = camel_folder_info_new ();
+	topfi->full_name = g_strdup (".");
+	topfi->name = g_strdup ("Inbox");
+
+	if (scan_old_dir_info ((CamelStore *) mstore, topfi, error) == -1) {
+		g_warning ("Failed to scan the old folder info \n");
+		camel_folder_info_free (topfi);
+		return;
+	}
+	
+	traverse_rename_folder_info (mstore, topfi, cancellable, error);
+	
+	meta_path = maildir_get_meta_path ((CamelLocalStore *) mstore, ".", "maildir++");
+	g_file_set_contents (meta_path, "maildir++", -1, NULL);
+
+	camel_folder_info_free (topfi);
+	g_free (meta_path);
 }
