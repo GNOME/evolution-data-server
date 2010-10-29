@@ -353,10 +353,20 @@ rebuild_model (ESourceSelector *selector)
 	for (p = rebuild_data->deleted_uids; p; p = p->next) {
 		GtkTreeRowReference *row_ref = p->data;
 		GtkTreePath *path;
+		GtkTreeIter parent_iter;
+		gboolean parent_exists = FALSE;
 
 		path = gtk_tree_row_reference_get_path (row_ref);
 		gtk_tree_model_get_iter (model, &iter, path);
+
+		/* If it is the last source in the group, delete the group from the tree */
+		if (gtk_tree_model_iter_parent (model, &parent_iter, &iter))
+			parent_exists = TRUE;
+
 		gtk_tree_store_remove (store, &iter);
+
+		if (parent_exists && !gtk_tree_model_iter_has_child (model, &parent_iter))
+			gtk_tree_store_remove (store, &parent_iter);
 
 		gtk_tree_path_free (path);
 	}
