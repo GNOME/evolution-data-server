@@ -697,8 +697,8 @@ camel_folder_search_search (CamelFolderSearch *search,
 				d(g_warning ("Error during searching %s: %s\n", tmp, message));
 				/* Suppress no such table */
 				g_clear_error (&local_error);
-			}
-			g_propagate_error (error, local_error);
+			} else
+				g_propagate_error (error, local_error);
 		}
 		g_free (tmp);
 
