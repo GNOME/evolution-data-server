@@ -62,6 +62,11 @@ ESourceSelector
 
 @esourceselector: the object which received the signal.
 
+<!-- ##### ARG ESourceSelector:primary-selection ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG ESourceSelector:source-list ##### -->
 <para>
 
@@ -174,7 +179,7 @@ ESourceSelector
 @selector: 
 
 
-<!-- ##### FUNCTION e_source_selector_peek_primary_selection ##### -->
+<!-- ##### FUNCTION e_source_selector_get_primary_selection ##### -->
 <para>
 
 </para>
@@ -198,6 +203,14 @@ ESourceSelector
 </para>
 
 @selector: 
+@Returns: 
+
+
+<!-- ##### MACRO e_source_selector_peek_primary_selection ##### -->
+<para>
+
+</para>
+
 @Returns: 
 
 

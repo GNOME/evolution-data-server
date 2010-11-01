@@ -62,6 +62,7 @@ typedef struct {
 
 enum {
 	PROP_0,
+	PROP_PRIMARY_SELECTION,
 	PROP_SOURCE_LIST
 };
 
@@ -174,28 +175,30 @@ static gboolean
 source_is_selected (ESourceSelector *selector,
                     ESource *source)
 {
-	if (g_hash_table_lookup (selector->priv->selected_sources, source) == NULL)
-		return FALSE;
-	else
-		return TRUE;
+	GHashTable *hash_table;
+
+	hash_table = selector->priv->selected_sources;
+
+	return (g_hash_table_lookup (hash_table, source) != NULL);
 }
 
 static void
 select_source (ESourceSelector *selector,
                ESource *source)
 {
-	if (g_hash_table_lookup (selector->priv->selected_sources, source) != NULL)
+	if (source_is_selected (selector, source))
 		return;
 
-	g_hash_table_insert (selector->priv->selected_sources, source, source);
-	g_object_ref (source);
+	g_hash_table_insert (
+		selector->priv->selected_sources,
+		source, g_object_ref (source));
 }
 
 static void
 unselect_source (ESourceSelector *selector,
-		 ESource *source)
+                 ESource *source)
 {
-	if (g_hash_table_lookup (selector->priv->selected_sources, source) == NULL)
+	if (!source_is_selected (selector, source))
 		return;
 
 	/* (This will unref the source.)  */
@@ -345,7 +348,7 @@ rebuild_model (ESourceSelector *selector)
 	store = GTK_TREE_STORE (model);
 
 	rebuild_data = create_rebuild_data (selector);
-	set_primary = e_source_selector_peek_primary_selection (selector) != NULL;
+	set_primary = e_source_selector_get_primary_selection (selector) != NULL;
 
 	gtk_tree_model_foreach (model, rebuild_existing_cb, rebuild_data);
 
@@ -437,7 +440,7 @@ rebuild_model (ESourceSelector *selector)
 	if (rebuild_data->selection_changed)
 		g_signal_emit (selector, signals[SELECTION_CHANGED], 0);
 
-	source = e_source_selector_peek_primary_selection (selector);
+	source = e_source_selector_get_primary_selection (selector);
 	if (set_primary && source == NULL) {
 		ESourceList *source_list = selector->priv->list;
 		source = e_source_list_peek_source_any (source_list);
@@ -730,9 +733,10 @@ cell_toggled_callback (GtkCellRendererToggle *renderer,
 
 static void
 selection_changed_callback (GtkTreeSelection *selection,
-			    ESourceSelector *selector)
+                            ESourceSelector *selector)
 {
 	g_signal_emit (selector, signals[PRIMARY_SELECTION_CHANGED], 0);
+	g_object_notify (G_OBJECT (selector), "primary-selection");
 }
 
 static gboolean
@@ -790,6 +794,12 @@ source_selector_set_property (GObject *object,
                               GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_PRIMARY_SELECTION:
+			e_source_selector_set_primary_selection (
+				E_SOURCE_SELECTOR (object),
+				g_value_get_object (value));
+			return;
+
 		case PROP_SOURCE_LIST:
 			source_selector_set_source_list (
 				E_SOURCE_SELECTOR (object),
@@ -807,9 +817,17 @@ source_selector_get_property (GObject *object,
                               GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_PRIMARY_SELECTION:
+			g_value_set_object (
+				value,
+				e_source_selector_get_primary_selection (
+				E_SOURCE_SELECTOR (object)));
+			return;
+
 		case PROP_SOURCE_LIST:
 			g_value_set_object (
-				value, e_source_selector_get_source_list (
+				value,
+				e_source_selector_get_source_list (
 				E_SOURCE_SELECTOR (object)));
 			return;
 	}
@@ -1082,7 +1100,7 @@ source_selector_popup_menu (GtkWidget *widget)
 	gboolean res = FALSE;
 
 	selector = E_SOURCE_SELECTOR (widget);
-	source = e_source_selector_peek_primary_selection (selector);
+	source = e_source_selector_get_primary_selection (selector);
 	g_signal_emit (selector, signals[POPUP_EVENT], 0, source, NULL, &res);
 
 	return res;
@@ -1200,6 +1218,16 @@ e_source_selector_class_init (ESourceSelectorClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_PRIMARY_SELECTION,
+		g_param_spec_object (
+			"primary-selection",
+			NULL,
+			NULL,
+			E_TYPE_SOURCE,
+			G_PARAM_READWRITE));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_SOURCE_LIST,
 		g_param_spec_object (
 			"source-list",
@@ -1218,6 +1246,8 @@ e_source_selector_class_init (ESourceSelectorClass *class)
 		g_cclosure_marshal_VOID__VOID,
 		G_TYPE_NONE, 0);
 
+	/* XXX Consider this signal deprecated.  Connect
+	 *     to "notify::primary-selection" instead. */
 	signals[PRIMARY_SELECTION_CHANGED] = g_signal_new (
 		"primary-selection-changed",
 		G_OBJECT_CLASS_TYPE (object_class),
@@ -1726,7 +1756,7 @@ e_source_selector_edit_primary_selection (ESourceSelector *selector)
 }
 
 /**
- * e_source_selector_peek_primary_selection:
+ * e_source_selector_get_primary_selection:
  * @selector: An #ESourceSelector widget
  *
  * Get the primary selected source.  The primary selection is the one that is
@@ -1737,8 +1767,11 @@ e_source_selector_edit_primary_selection (ESourceSelector *selector)
  * Returns: The selected source.
  **/
 ESource *
-e_source_selector_peek_primary_selection (ESourceSelector *selector)
+e_source_selector_get_primary_selection (ESourceSelector *selector)
 {
+	GtkTreeRowReference *reference;
+	GtkTreeSelection *selection;
+	GtkTreeView *tree_view;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	gboolean have_iter = FALSE;
@@ -1746,29 +1779,34 @@ e_source_selector_peek_primary_selection (ESourceSelector *selector)
 
 	g_return_val_if_fail (E_IS_SOURCE_SELECTOR (selector), NULL);
 
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (selector));
+	tree_view = GTK_TREE_VIEW (selector);
+	model = gtk_tree_view_get_model (tree_view);
+	selection = gtk_tree_view_get_selection (tree_view);
 
-	if (selector->priv->saved_primary_selection) {
-		GtkTreePath *child_path;
+	reference = selector->priv->saved_primary_selection;
 
-		child_path = gtk_tree_row_reference_get_path (selector->priv->saved_primary_selection);
-		if (child_path) {
-			if (gtk_tree_model_get_iter (model, &iter, child_path))
-				have_iter = TRUE;
-			gtk_tree_path_free (child_path);
-		}
+	if (gtk_tree_row_reference_valid (reference)) {
+		GtkTreePath *path;
+
+		path = gtk_tree_row_reference_get_path (reference);
+		have_iter = gtk_tree_model_get_iter (model, &iter, path);
+		gtk_tree_path_free (path);
 	}
 
-	if (!have_iter && !gtk_tree_selection_get_selected (gtk_tree_view_get_selection (GTK_TREE_VIEW (selector)), NULL, &iter))
+	if (!have_iter)
+		have_iter = gtk_tree_selection_get_selected (
+			selection, NULL, &iter);
+
+	if (!have_iter)
 		return NULL;
 
 	gtk_tree_model_get (model, &iter, 0, &data, -1);
-	if (!data)
+
+	if (data == NULL)
 		return NULL;
 
 	if (!E_IS_SOURCE (data)) {
 		g_object_unref (data);
-
 		return NULL;
 	}
 
@@ -1837,6 +1875,7 @@ e_source_selector_set_primary_selection (ESourceSelector *selector,
 			}
 
 			g_signal_emit (selector, signals[PRIMARY_SELECTION_CHANGED], 0);
+			g_object_notify (G_OBJECT (selector), "primary-selection");
 		}
 
 		gtk_tree_path_free (path);

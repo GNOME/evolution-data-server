@@ -102,13 +102,19 @@ void		e_source_selector_set_select_new (ESourceSelector *selector,
 						 gboolean state);
 void		e_source_selector_edit_primary_selection
 						(ESourceSelector *selector);
-ESource *	e_source_selector_peek_primary_selection
+ESource *	e_source_selector_get_primary_selection
 						(ESourceSelector *selector);
 void		e_source_selector_set_primary_selection
 						(ESourceSelector *selector,
 						 ESource *source);
 ESourceGroup *	e_source_selector_get_primary_source_group
 						(ESourceSelector *selector);
+
+/* For backward-compatibility */
+#ifndef EDS_DISABLE_DEPRECATED
+#define e_source_selector_peek_primary_selection \
+	e_source_selector_get_primary_selection
+#endif
 
 G_END_DECLS
 

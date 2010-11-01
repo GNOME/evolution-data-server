@@ -76,6 +76,12 @@ ESourceOptionMenu
 </para>
 
 
+<!-- ##### ARG ESourceSelector:primary-source ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### STRUCT ESourceSelectorDialogPrivate ##### -->
 <para>
 

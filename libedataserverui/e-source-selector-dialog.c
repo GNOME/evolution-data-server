@@ -130,7 +130,7 @@ primary_selection_changed_cb (ESourceSelector *selector, gpointer user_data)
 
 	if (priv->selected_source)
 		g_object_unref (priv->selected_source);
-	priv->selected_source = e_source_selector_peek_primary_selection (selector);
+	priv->selected_source = e_source_selector_get_primary_selection (selector);
 
 	/* FIXME: add an API to "except-source" or to get the ESourceSelector from outside */
 	if (priv->selected_source) {
