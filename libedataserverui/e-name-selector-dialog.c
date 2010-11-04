@@ -896,7 +896,7 @@ search_changed (ENameSelectorDialog *name_selector_dialog)
 
 	user_fields_str = ens_util_populate_user_query_fields (priv->user_query_fields, text, text_escaped);
 
-	if (!strcmp (category, _("Any Category")))
+	if (g_strcmp0 (category, _("Any Category")) == 0)
 		query_string = g_strdup_printf (
 			"(or (beginswith \"file_as\" %s) "
 			"    (beginswith \"full_name\" %s) "
