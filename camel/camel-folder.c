@@ -2677,6 +2677,13 @@ camel_folder_changed (CamelFolder *folder,
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 	g_return_if_fail (changes != NULL);
 
+	if (camel_folder_is_frozen (folder)) {
+		/* folder_changed() will catch this case and pile
+		   the changes into folder->changed_frozen */
+		g_signal_emit (folder, signals[CHANGED], 0, changes);
+		return;
+	}
+
 	data = g_slice_new0 (SignalData);
 	data->folder = g_object_ref (folder);
 	data->changes = camel_folder_change_info_new ();
