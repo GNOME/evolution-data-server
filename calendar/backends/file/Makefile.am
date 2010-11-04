@@ -44,7 +44,8 @@ test_interval_searches_LDADD = \
 
 test_interval_searches_CPPFLAGS = \
 	$(AM_CPPFLAGS)			\
-	-I$(top_builddir)/calendar	\
+	-I$(top_srcdir)			\
+	-I$(top_srcdir)/calendar	\
 	$(EVOLUTION_CALENDAR_CFLAGS)	\
 	-DTEST_QUERY_RESULT=1
 

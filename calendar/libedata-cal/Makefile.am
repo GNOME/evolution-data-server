@@ -121,6 +121,7 @@ e_calendar_factory_LDADD =						\
 test_e_sexp_SOURCES = e-cal-backend-sexp.c e-cal-backend-sexp.h
 test_e_sexp_CPPFLAGS = \
 	$(AM_CPPFLAGS)				\
+	-I$(top_srcdir)				\
 	-I$(top_srcdir)/calendar		\
 	-I$(top_builddir)/calendar		\
 	$(EVOLUTION_CALENDAR_CFLAGS)		\
