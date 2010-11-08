@@ -425,12 +425,12 @@ imapx_update_store_summary (CamelFolder *folder)
 }
 
 /*
-capability_data ::= "CAPABILITY" SPACE [1#capability SPACE] "IMAP4rev1"
-                 [SPACE 1#capability]
-                    ;; IMAP4rev1 servers which offer RFC 1730
-                    ;; compatibility MUST list "IMAP4" as the first
-                    ;; capability.
-*/
+ * capability_data ::= "CAPABILITY" SPACE [1#capability SPACE] "IMAP4rev1"
+ *                     [SPACE 1#capability]
+ *                 ;; IMAP4rev1 servers which offer RFC 1730
+ *                 ;; compatibility MUST list "IMAP4" as the first
+ *                 ;; capability.
+ */
 
 struct {
 	const gchar *name;
@@ -628,114 +628,114 @@ exception:
 }
 
 /*
-body            ::= "(" body_type_1part / body_type_mpart ")"
-
-body_extension  ::= nstring / number / "(" 1#body_extension ")"
-                    ;; Future expansion.  Client implementations
-                    ;; MUST accept body_extension fields.  Server
-                    ;; implementations MUST NOT generate
-                    ;; body_extension fields except as defined by
-                    ;; future standard or standards-track
-                    ;; revisions of this specification.
-
-body_ext_1part  ::= body_fld_md5[SPACE body_fld_dsp
-                 [SPACE body_fld_lang
-                 [SPACE 1#body_extension]]]
-                    ;; MUST NOT be returned on non-extensible
-                    ;; "BODY" fetch
-
-body_ext_mpart  ::= body_fld_param
-                 [SPACE body_fld_dsp SPACE body_fld_lang
-                 [SPACE 1#body_extension]]
-                    ;; MUST NOT be returned on non-extensible
-                    ;; "BODY" fetch
-
-body_fields     ::= body_fld_param SPACE body_fld_id SPACE
-                    body_fld_desc SPACE body_fld_enc SPACE
-                    body_fld_octets
-
-body_fld_desc   ::= nstring
-
-body_fld_dsp    ::= "(" string SPACE body_fld_param ")" / nil
-
-body_fld_enc    ::= (<"> ("7BIT" / "8BIT" / "BINARY" / "BASE64"/
-                    "QUOTED-PRINTABLE") <">) / string
-
-body_fld_id     ::= nstring
-
-body_fld_lang   ::= nstring / "(" 1#string ")"
-
-body_fld_lines  ::= number
-
-body_fld_md5    ::= nstring
-
-body_fld_octets ::= number
-
-body_fld_param  ::= "(" 1#(string SPACE string) ")" / nil
-
-body_type_1part ::= (body_type_basic / body_type_msg / body_type_text)
-                 [SPACE body_ext_1part]
-
-body_type_basic ::= media_basic SPACE body_fields
-                    ;; MESSAGE subtype MUST NOT be "RFC822"
-
-body_type_mpart ::= 1*body SPACE media_subtype
-                 [SPACE body_ext_mpart]
-
-body_type_msg   ::= media_message SPACE body_fields SPACE envelope
-                    SPACE body SPACE body_fld_lines
-
-body_type_text  ::= media_text SPACE body_fields SPACE body_fld_lines
-
-envelope        ::= "(" env_date SPACE env_subject SPACE env_from
-                    SPACE env_sender SPACE env_reply_to SPACE env_to
-                    SPACE env_cc SPACE env_bcc SPACE env_in_reply_to
-                    SPACE env_message_id ")"
-
-env_bcc         ::= "(" 1*address ")" / nil
-
-env_cc          ::= "(" 1*address ")" / nil
-
-env_date        ::= nstring
-
-env_from        ::= "(" 1*address ")" / nil
-
-env_in_reply_to ::= nstring
-
-env_message_id  ::= nstring
-
-env_reply_to    ::= "(" 1*address ")" / nil
-
-env_sender      ::= "(" 1*address ")" / nil
-
-env_subject     ::= nstring
-
-env_to          ::= "(" 1*address ")" / nil
-
-media_basic     ::= (<"> ("APPLICATION" / "AUDIO" / "IMAGE" /
-                    "MESSAGE" / "VIDEO") <">) / string)
-                    SPACE media_subtype
-                    ;; Defined in[MIME-IMT]
-
-media_message   ::= <"> "MESSAGE" <"> SPACE <"> "RFC822" <">
-                    ;; Defined in[MIME-IMT]
-
-media_subtype   ::= string
-                    ;; Defined in[MIME-IMT]
-
-media_text      ::= <"> "TEXT" <"> SPACE media_subtype
-                    ;; Defined in[MIME-IMT]
-
- ( "type" "subtype"  body_fields [envelope body body_fld_lines]
-                              [body_fld_lines]
-
- (("TEXT" "PLAIN" ("CHARSET"
-                     "US-ASCII") NIL NIL "7BIT" 1152 23)("TEXT" "PLAIN"
-                     ("CHARSET" "US-ASCII" "NAME" "cc.diff")
-                     "<960723163407.20117h@cac.washington.edu>"
-                     "Compiler diff" "BASE64" 4554 73) "MIXED"))
-
-*/
+ * body            ::= "(" body_type_1part / body_type_mpart ")"
+ *
+ * body_extension  ::= nstring / number / "(" 1#body_extension ")"
+ *                     ;; Future expansion.  Client implementations
+ *                     ;; MUST accept body_extension fields.  Server
+ *                     ;; implementations MUST NOT generate
+ *                     ;; body_extension fields except as defined by
+ *                     ;; future standard or standards-track
+ *                     ;; revisions of this specification.
+ *
+ * body_ext_1part  ::= body_fld_md5[SPACE body_fld_dsp
+ *                 [SPACE body_fld_lang
+ *                 [SPACE 1#body_extension]]]
+ *                     ;; MUST NOT be returned on non-extensible
+ *                     ;; "BODY" fetch
+ *
+ * body_ext_mpart  ::= body_fld_param
+ *                 [SPACE body_fld_dsp SPACE body_fld_lang
+ *                 [SPACE 1#body_extension]]
+ *                     ;; MUST NOT be returned on non-extensible
+ *                     ;; "BODY" fetch
+ *
+ * body_fields     ::= body_fld_param SPACE body_fld_id SPACE
+ *                     body_fld_desc SPACE body_fld_enc SPACE
+ *                     body_fld_octets
+ *
+ * body_fld_desc   ::= nstring
+ *
+ * body_fld_dsp    ::= "(" string SPACE body_fld_param ")" / nil
+ *
+ * body_fld_enc    ::= (<"> ("7BIT" / "8BIT" / "BINARY" / "BASE64"/
+ *                     "QUOTED-PRINTABLE") <">) / string
+ *
+ * body_fld_id     ::= nstring
+ *
+ * body_fld_lang   ::= nstring / "(" 1#string ")"
+ *
+ * body_fld_lines  ::= number
+ *
+ * body_fld_md5    ::= nstring
+ *
+ * body_fld_octets ::= number
+ *
+ * body_fld_param  ::= "(" 1#(string SPACE string) ")" / nil
+ *
+ * body_type_1part ::= (body_type_basic / body_type_msg / body_type_text)
+ *                 [SPACE body_ext_1part]
+ *
+ * body_type_basic ::= media_basic SPACE body_fields
+ *                     ;; MESSAGE subtype MUST NOT be "RFC822"
+ *
+ * body_type_mpart ::= 1*body SPACE media_subtype
+ *                 [SPACE body_ext_mpart]
+ *
+ * body_type_msg   ::= media_message SPACE body_fields SPACE envelope
+ *                     SPACE body SPACE body_fld_lines
+ *
+ * body_type_text  ::= media_text SPACE body_fields SPACE body_fld_lines
+ *
+ * envelope        ::= "(" env_date SPACE env_subject SPACE env_from
+ *                     SPACE env_sender SPACE env_reply_to SPACE env_to
+ *                     SPACE env_cc SPACE env_bcc SPACE env_in_reply_to
+ *                     SPACE env_message_id ")"
+ *
+ * env_bcc         ::= "(" 1*address ")" / nil
+ *
+ * env_cc          ::= "(" 1*address ")" / nil
+ *
+ * env_date        ::= nstring
+ *
+ * env_from        ::= "(" 1*address ")" / nil
+ *
+ * env_in_reply_to ::= nstring
+ *
+ * env_message_id  ::= nstring
+ *
+ * env_reply_to    ::= "(" 1*address ")" / nil
+ *
+ * env_sender      ::= "(" 1*address ")" / nil
+ *
+ * env_subject     ::= nstring
+ *
+ * env_to          ::= "(" 1*address ")" / nil
+ *
+ * media_basic     ::= (<"> ("APPLICATION" / "AUDIO" / "IMAGE" /
+ *                     "MESSAGE" / "VIDEO") <">) / string)
+ *                     SPACE media_subtype
+ *                     ;; Defined in[MIME-IMT]
+ *
+ * media_message   ::= <"> "MESSAGE" <"> SPACE <"> "RFC822" <">
+ *                     ;; Defined in[MIME-IMT]
+ *
+ * media_subtype   ::= string
+ *                     ;; Defined in[MIME-IMT]
+ *
+ * media_text      ::= <"> "TEXT" <"> SPACE media_subtype
+ *                     ;; Defined in[MIME-IMT]
+ *
+ *  ( "type" "subtype"  body_fields [envelope body body_fld_lines]
+ *                              [body_fld_lines]
+ *
+ *  (("TEXT" "PLAIN" ("CHARSET"
+ *                      "US-ASCII") NIL NIL "7BIT" 1152 23)("TEXT" "PLAIN"
+ *                      ("CHARSET" "US-ASCII" "NAME" "cc.diff")
+ *                      "<960723163407.20117h@cac.washington.edu>"
+ *                      "Compiler diff" "BASE64" 4554 73) "MIXED"))
+ *
+ */
 
 /*
 struct _body_fields {

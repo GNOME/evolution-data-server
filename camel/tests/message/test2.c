@@ -361,7 +361,7 @@ gint main (gint argc, gchar **argv)
 		}
 	}
 
-	camel_test_end();
+	camel_test_end ();
 
 	return 0;
 }
