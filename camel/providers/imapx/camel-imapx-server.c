@@ -4819,6 +4819,14 @@ imapx_server_constructed (GObject *object)
 	if (class->tagprefix > 'Z')
 		class->tagprefix = 'A';
 }
+
+static gboolean
+join_helper (gpointer thread)
+{
+	g_thread_join (thread);
+	return FALSE;
+}
+
 static void
 imapx_server_dispose (GObject *object)
 {
@@ -4833,7 +4841,10 @@ imapx_server_dispose (GObject *object)
 	QUEUE_UNLOCK(server);
 
 	if (server->parser_thread) {
-		g_thread_join (server->parser_thread);
+		if (server->parser_thread == g_thread_self ())
+			g_idle_add (&join_helper, server->parser_thread);
+		else
+			g_thread_join (server->parser_thread);
 		server->parser_thread = NULL;
 	}
 
