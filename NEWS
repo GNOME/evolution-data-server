@@ -1,3 +1,63 @@
+Evolution-Data-Server 2.91.2 2010-11-08
+---------------------------------------
+
+Bug Fixes:
+	Bug 631073 - Task update operation has some delay (Milan Crha)
+	Bug 631290 - Crash in vee_folder_synchronize_sync (Milan Crha)
+	Bug 632687 - Doesn't build against gtk+ 2.91.1 (Matthew Barnes)
+	Bug 623017 - Add introspection support (Maxim Ermilov)
+	Bug 597567 - Crash in comp_subject() (Milan Crha)
+	Bug 632771 - Recurring calendar events set to recur forever do not
+	             display past first week (Chenthill Palanisamy)
+	Bug 631953 - A possible double-free in google backend
+	             (Gary Ching-Pang Lin)
+	Bug 632030 - Crashed while Groupwise server is not responding
+	             (Punit Jain)
+	Bug 445439 - Delete mail from pop-server when deleted from Inbox/Trash
+	             (Milan Crha)
+	Bug 631842 - Improve error reporting in some ECal/EBook functions
+	             (Christophe Fergeau)
+	Bug 632527 - Unmatched vFolder returns incorrect uids on search
+	             (Milan Crha)
+	Bug 632177 - Hide source group when none source lefts after remove
+	             (Aparna)
+	Bug 633122 - Maildir migration from old folder hierarchy to maildir++
+	             hierarchy (Chenthill Palanisamy)
+	Bug 632532 - Double free in imapx_job_done,
+	             imapx_command_step_fetch_done (Milan Crha)
+	Bug 633919 - Stuck on Mark messages as read (Milan Crha)
+	Bug 634167 - Fails to build with gir (James M. Cape)
+
+Other Changes:
+	* [IMAPX] Crash on QRESYNC line formatting on 32bit platform
+	  (Milan Crha)
+	* Fix linking against out-of-tree e-d-s (Priit Laes)
+	* Fix failure to RSET SMTP connection before re-use. (David Woodhouse)
+	* Commit a missing m4 file. (Matthew Barnes)
+	* Change the maildir folder hierarchy as per maildir++ spec
+	  (Chenthill Palanisamy)
+	* override get_full_path and get_meta_path in maildir store
+	  (Chenthill Palanisamy)
+	* Fix remove maildir folder (Chenthill Palanisamy)
+	* Fix maildir rename and some memory leaks (Chenthill Palanisamy)
+	* Fix memory leak on imapx_server_get_message() failure
+	  (David Woodhouse)
+	* Workaround GtkComboBoxText in .ui file (Milan Crha)
+	* camel-folder-search: Fix minor GError handling issue (Matthew Barnes)
+	* ESourceSelector: Add a "primary-selection" property. (Matthew Barnes)
+	* Fix a build failure due to used CPPFLAGS (Paul Smith)
+	* ENameSelectorDialog: Fix a potential string comparison crash
+	  (Matthew Barnes)
+
+Translations:
+	Xandru Armesto (ast)
+	Gil Forcada (ca)
+	Carles Ferrando (ca@valencia)
+	Jorge González (es)
+	Matej Urbančič (sl)
+	Aron Xu (zh_CN)
+	Ivar Smolin (et)
+
 Evolution-Data-Server 2.91.1 2010-10-18
 ---------------------------------------
 
