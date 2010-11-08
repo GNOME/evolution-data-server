@@ -137,13 +137,15 @@ compare_intervals (time_t x_start, time_t x_end, time_t y_start, time_t y_end)
 static void
 left_rotate (EIntervalTree *tree, EIntervalNode *x)
 {
-	EIntervalTreePrivate *priv = tree->priv;
+	EIntervalTreePrivate *priv;
 	EIntervalNode *y;
-	EIntervalNode *nil = priv->nil;
+	EIntervalNode *nil;
 
 	g_return_if_fail (tree != NULL);
 	g_return_if_fail (x != NULL);
 
+	priv = tree->priv;
+	nil = priv->nil;
 	y = x->right;
 	x->right = y->left;
 
@@ -180,13 +182,15 @@ left_rotate (EIntervalTree *tree, EIntervalNode *x)
 static void
 right_rotate (EIntervalTree *tree, EIntervalNode *y)
 {
-	EIntervalTreePrivate *priv = tree->priv;
+	EIntervalTreePrivate *priv;
 	EIntervalNode *x;
-	EIntervalNode *nil = priv->nil;
+	EIntervalNode *nil;
 
 	g_return_if_fail (tree != NULL);
 	g_return_if_fail (y != NULL);
 
+	priv = tree->priv;
+	nil = priv->nil;
 	x = y->left;
 	y->left = x->right;
 
@@ -272,15 +276,18 @@ binary_tree_insert (EIntervalTree *tree, EIntervalNode *z)
 gboolean
 e_intervaltree_insert (EIntervalTree *tree, time_t start, time_t end, ECalComponent *comp)
 {
-	EIntervalTreePrivate *priv = tree->priv;
+	EIntervalTreePrivate *priv;
 	EIntervalNode *y;
 	EIntervalNode *x;
 	EIntervalNode *newNode;
 	const gchar *uid;
 	gchar *rid;
+
 	g_return_val_if_fail (tree != NULL, FALSE);
 	g_return_val_if_fail (comp != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
+
+	priv = tree->priv;
 
 	g_static_rec_mutex_lock (&priv->mutex);
 
@@ -360,14 +367,17 @@ e_intervaltree_insert (EIntervalTree *tree, time_t start, time_t end, ECalCompon
 static EIntervalNode*
 intervaltree_node_next (EIntervalTree *tree, EIntervalNode *x)
 {
-	EIntervalTreePrivate *priv = tree->priv;
-	EIntervalNode *y;
-	EIntervalNode *nil = priv->nil;
-	EIntervalNode *root = priv->root;
+	EIntervalTreePrivate *priv;
+	EIntervalNode *y, *nil, *root;
 
 	g_return_val_if_fail (tree != NULL, NULL);
 	g_return_val_if_fail (x != NULL, NULL);
+
+	priv = tree->priv;
 	g_return_val_if_fail (x != priv->nil, NULL);
+
+	nil = priv->nil;
+	root = priv->root;
 
 	if (nil != (y = x->right))
 	{
@@ -401,12 +411,13 @@ intervaltree_node_next (EIntervalTree *tree, EIntervalNode *x)
 void
 e_intervaltree_destroy (EIntervalTree *tree)
 {
-	EIntervalTreePrivate *priv = tree->priv;
+	EIntervalTreePrivate *priv;
 	EIntervalNode *node;
 	GList *stack_start = NULL, *pos;
 
 	g_return_if_fail (tree != NULL);
 
+	priv = tree->priv;
 	stack_start = pos = g_list_insert (stack_start, priv->root->left, -1);
 
 	while (pos != NULL)
@@ -523,13 +534,14 @@ e_intervaltree_fixup_deletion (EIntervalTree *tree, EIntervalNode *x)
 GList*
 e_intervaltree_search (EIntervalTree *tree, time_t start, time_t end)
 {
-	EIntervalTreePrivate *priv = tree->priv;
+	EIntervalTreePrivate *priv;
 	EIntervalNode *node;
 	GList *list = NULL;
 	GList *stack_start = NULL, *pos;
 
 	g_return_val_if_fail (tree != NULL, NULL);
 
+	priv = tree->priv;
 	g_static_rec_mutex_lock (&priv->mutex);
 
 	stack_start = pos = g_list_insert (stack_start, priv->root->left, -1);
@@ -608,10 +620,11 @@ e_intervaltree_search_component (EIntervalTree *tree,
 				 const gchar *searched_uid,
 				 const gchar *searched_rid)
 {
-	EIntervalTreePrivate *priv = tree->priv;
+	EIntervalTreePrivate *priv;
 	g_return_val_if_fail (tree != NULL, NULL);
 	g_return_val_if_fail (searched_uid != NULL, NULL);
 
+	priv = tree->priv;
 	if (!searched_uid)
 	{
 		g_warning ("Searching the interval tree, the component "
@@ -634,15 +647,17 @@ e_intervaltree_remove (EIntervalTree *tree,
 		       const gchar *uid,
 		       const gchar *rid)
 {
-	EIntervalTreePrivate *priv = tree->priv;
+	EIntervalTreePrivate *priv;
 	EIntervalNode *y;
 	EIntervalNode *x;
 	EIntervalNode *z;
-	EIntervalNode *nil = priv->nil;
-	EIntervalNode *root = priv->root;
+	EIntervalNode *nil, *root;
 
 	g_return_val_if_fail (tree != NULL, FALSE);
 
+	priv = tree->priv;
+	nil = priv->nil;
+	root = priv->root;
 	g_static_rec_mutex_lock (&priv->mutex);
 
 	z = e_intervaltree_search_component (tree, uid, rid);
