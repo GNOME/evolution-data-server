@@ -1151,6 +1151,9 @@ async_open_report_result (ECal *ecal, const GError *error)
 
 	g_return_if_fail (ecal && E_IS_CAL (ecal));
 
+	if (!error)
+		ecal->priv->load_state = E_CAL_LOAD_LOADED;
+
 	if (error) {
 	#ifndef E_CAL_DISABLE_DEPRECATED
 		status = get_status_from_error (error);
@@ -1284,6 +1287,8 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error,
 			*status = E_CALENDAR_STATUS_DBUS_EXCEPTION;
 			#endif
 		}
+		if (!*error)
+			priv->load_state = E_CAL_LOAD_LOADED;
 	} else {
 		e_gdbus_cal_call_open (priv->gdbus_cal, only_if_exists, username ? username : "", password ? password : "", NULL, (GAsyncReadyCallback) async_open_ready_cb, ecal);
 	}
@@ -1292,8 +1297,6 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error,
 	g_free (username);
 
 	if (!*error) {
-		priv->load_state = E_CAL_LOAD_LOADED;
-
 		if (!async) {
 			GError *err = NULL;
 
