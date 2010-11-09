@@ -864,11 +864,17 @@ folder_transfer_messages_to_sync (CamelFolder *source,
 	gchar **ret_uid = NULL;
 	gint i;
 	GError *local_error = NULL;
+	GCancellable *local_cancellable = camel_operation_new ();
+	gulong handler_id = 0;
 
 	if (transferred_uids) {
 		*transferred_uids = g_ptr_array_new ();
 		g_ptr_array_set_size (*transferred_uids, uids->len);
 	}
+
+	/* to not propagate status messages from sub-functions into UI */
+	if (cancellable)
+		handler_id = g_signal_connect_swapped (cancellable, "cancelled", G_CALLBACK (g_cancellable_cancel), local_cancellable);
 
 	if (delete_originals)
 		camel_operation_push_message (
@@ -888,7 +894,7 @@ folder_transfer_messages_to_sync (CamelFolder *source,
 			ret_uid = (gchar **)&((*transferred_uids)->pdata[i]);
 		folder_transfer_message_to (
 			source, uids->pdata[i], dest, ret_uid,
-			delete_originals, cancellable, &local_error);
+			delete_originals, local_cancellable, &local_error);
 		camel_operation_progress (
 			cancellable, i * 100 / uids->len);
 	}
@@ -903,6 +909,9 @@ folder_transfer_messages_to_sync (CamelFolder *source,
 
 	if (local_error != NULL)
 		g_propagate_error (error, local_error);
+	g_object_unref (local_cancellable);
+	if (cancellable)
+		g_signal_handler_disconnect (cancellable, handler_id);
 
 	return TRUE;
 }

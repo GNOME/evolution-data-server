@@ -36,7 +36,8 @@
 	((obj), CAMEL_TYPE_OPERATION, CamelOperationPrivate))
 
 #define PROGRESS_DELAY		250  /* milliseconds */
-#define TRANSIENT_DELAY		4    /* seconds */
+#define TRANSIENT_DELAY		250  /* milliseconds */
+#define POP_MESSAGE_DELAY	999  /* milliseconds */
 
 typedef struct _StatusNode StatusNode;
 
@@ -425,7 +426,7 @@ camel_operation_push_message (GCancellable *cancellable,
 			status_node_ref (node),
 			(GDestroyNotify) status_node_unref);
 	else
-		node->source_id = g_timeout_add_seconds_full (
+		node->source_id = g_timeout_add_full (
 			G_PRIORITY_DEFAULT, TRANSIENT_DELAY,
 			(GSourceFunc) operation_emit_status_cb,
 			status_node_ref (node),
@@ -477,12 +478,16 @@ camel_operation_pop_message (GCancellable *cancellable)
 
 	node = g_queue_peek_head (&operation->priv->status_stack);
 
-	if (node != NULL && node->source_id == 0)
-		node->source_id = g_idle_add_full (
-			G_PRIORITY_DEFAULT_IDLE,
+	if (node != NULL) {
+		if (node->source_id != 0)
+			g_source_remove (node->source_id);
+
+		node->source_id = g_timeout_add_full (
+			G_PRIORITY_DEFAULT, POP_MESSAGE_DELAY,
 			(GSourceFunc) operation_emit_status_cb,
 			status_node_ref (node),
 			(GDestroyNotify) status_node_unref);
+	}
 
 	UNLOCK ();
 }
