@@ -549,9 +549,9 @@ pop3_store_connect (CamelService *service,
 			store->cache = camel_data_cache_new (root, error);
 			g_free(root);
 			if (store->cache) {
-				/* Default cache expiry - 1 week or not visited in a day */
-				camel_data_cache_set_expire_age(store->cache, 60*60*24*7);
-				camel_data_cache_set_expire_access(store->cache, 60*60*24);
+				/* Ensure cache will never expire, otherwise it causes redownload of messages */
+				camel_data_cache_set_expire_age (store->cache, -1);
+				camel_data_cache_set_expire_access (store->cache, -1);
 			}
 		}
 	}

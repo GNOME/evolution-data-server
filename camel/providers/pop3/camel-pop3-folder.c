@@ -429,7 +429,7 @@ camel_pop3_delete_old (CamelFolder *folder,
 	gint i;
 	CamelPOP3Store *pop3_store;
 	CamelMimeMessage *message;
-	time_t temp, message_time = 0;
+	time_t temp, message_time;
 
 	parent_store = camel_folder_get_parent_store (folder);
 
@@ -439,6 +439,7 @@ camel_pop3_delete_old (CamelFolder *folder,
 
 	d(printf("%s(%d): pop3_folder->uids->len=[%d]\n", __FILE__, __LINE__, pop3_folder->uids->len));
 	for (i = 0; i < pop3_folder->uids->len; i++) {
+		message_time = 0;
 		fi = pop3_folder->uids->pdata[i];
 
 		d(printf("%s(%d): fi->uid=[%s]\n", __FILE__, __LINE__, fi->uid));
