@@ -478,6 +478,8 @@ thread_summary(CamelFolderThread *thread, GPtrArray *summary)
 
 			d(printf("%s (%s) references:\n", G_STRLOC, G_STRFUNC); )
 			for (j=0;j<references->size;j++) {
+				gboolean found = FALSE;
+
 				/* should never be empty, but just incase */
 				if (references->references[j].id.id == 0)
 					continue;
@@ -487,9 +489,16 @@ thread_summary(CamelFolderThread *thread, GPtrArray *summary)
 					d(printf("%s (%s) not found\n", G_STRLOC, G_STRFUNC));
 					c = e_memchunk_alloc0(thread->node_chunks);
 					g_hash_table_insert(id_table, (gpointer)&references->references[j], c);
+				} else
+					found = TRUE;
+				if (c != child) {
+					container_parent_child (c, child);
+					/* Stop on the first parent found, no need to reparent
+					   it once it's placed in. Also, references are from
+					   parent to root, thus this should do the right thing. */
+					if (found)
+						break;
 				}
-				if (c!=child)
-					container_parent_child(c, child);
 				child = c;
 			}
 		}
