@@ -37,7 +37,7 @@
 #include "camel-maildir-store.h"
 #include "camel-maildir-summary.h"
 
-#define d(x) x
+#define d(x)
 
 G_DEFINE_TYPE (CamelMaildirStore, camel_maildir_store, CAMEL_TYPE_LOCAL_STORE)
 
@@ -91,6 +91,15 @@ maildir_store_create_folder_sync (CamelStore *store,
 			CAMEL_STORE_ERROR_NO_FOLDER,
 			_("Store root %s is not an absolute path"), path);
 		return NULL;
+	}
+
+	if (g_strstr_len (folder_name, -1, ".")) {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
+			_("Cannot create folder: %s : Folder name cannot contain a dot"), folder_name);
+		return NULL;
+
 	}
 
 	if (parent_name) {
@@ -528,7 +537,7 @@ scan_dirs (CamelStore *store,
 			short_name++;
 
 		if (strcmp (topfi->full_name, ".") != 0 
-					&& !g_str_has_prefix (topfi->full_name, full_name)) {
+					&& !g_str_has_prefix (full_name, topfi->full_name)) {
 
 			g_free (full_name);
 			continue;
@@ -647,6 +656,15 @@ maildir_store_rename_folder_sync (CamelStore *store,
 			_("Cannot rename folder: %s: Invalid operation"),
 			_("Inbox"));
 		return FALSE;
+	}
+
+	if (g_strstr_len (new, -1, ".")) {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
+			_("Cannot rename the folder: %s: Folder name cannot contain a dot"), new);
+		return FALSE;
+
 	}
 
 	old_dir = maildir_full_name_to_dir_name (old);
@@ -850,15 +868,18 @@ fail:
 static void
 maildir_rename_old_folder (CamelMaildirStore *mstore, CamelFolderInfo *fi, GCancellable *cancellable, GError **error)
 {
-	gchar *new_name = NULL;
+	gchar *new_name = NULL, *old_name;
 	CamelStoreClass *store_class;
 
-	new_name = maildir_full_name_to_dir_name (fi->full_name);
+	old_name = g_strdup (fi->full_name);
+	g_strdelimit (old_name, ".", '^');
+	new_name = maildir_full_name_to_dir_name (old_name);
 
 	store_class = CAMEL_STORE_CLASS (camel_maildir_store_parent_class);
 	store_class->rename_folder_sync (
 		(CamelStore *)mstore, fi->full_name, new_name, cancellable, error);
 
+	g_free (old_name);
 	g_free (new_name);
 }
 
