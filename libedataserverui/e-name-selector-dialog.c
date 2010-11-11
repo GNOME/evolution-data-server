@@ -64,17 +64,16 @@ typedef struct {
 } SelData;
 
 struct _ENameSelectorDialogPrivate {
-
 	ENameSelectorModel *name_selector_model;
 	GtkTreeModelSort *contact_sort;
 	GCancellable *cancellable;
 
-	GtkBuilder *gui;
 	GtkTreeView *contact_view;
 	GtkLabel *status_label;
 	GtkBox *destination_box;
 	GtkEntry *search_entry;
 	GtkSizeGroup *button_size_group;
+	GtkWidget *category_combobox;
 
 	GArray *sections;
 
@@ -115,8 +114,7 @@ e_name_selector_dialog_populate_categories (ENameSelectorDialog *name_selector_d
 	GList *category_list, *iter;
 
 	/* "Any Category" is preloaded. */
-	combo_box = GTK_WIDGET (gtk_builder_get_object (
-		name_selector_dialog->priv->gui, "combobox-category"));
+	combo_box = name_selector_dialog->priv->category_combobox;
 	if (gtk_combo_box_get_active (GTK_COMBO_BOX (combo_box)) == -1)
 		gtk_combo_box_set_active (GTK_COMBO_BOX (combo_box), 0);
 
@@ -138,87 +136,187 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	GtkTreeSelection  *contact_selection;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer   *cell_renderer;
-	GtkWidget         *widget;
-	GtkWidget         *container;
-	GtkWidget         *content_area;
-	GtkWidget	  *label;
-	GtkWidget         *parent;
 	GtkTreeSelection  *selection;
 	ESourceList       *source_list;
-	gchar             *uifile;
 	GConfClient *gconf_client;
-	gchar *uid;
-	GError *error = NULL;
+	gchar *uid, *tmp_str;
+	GtkWidget *name_selector_box;
+	GtkWidget *show_contacts_label;
+	GtkWidget *hbox2;
+	GtkWidget *label35;
+	GtkWidget *show_contacts_table;
+	GtkWidget *AddressBookLabel;
+	GtkWidget *label31;
+	GtkWidget *hbox1;
+	GtkWidget *search;
+	AtkObject *atko;
+	GtkWidget *label39;
+	GtkWidget *source_menu_box;
+	GtkWidget *combobox_category;
+	GtkWidget *label36;
+	GtkWidget *hbox3;
+	GtkWidget *label38;
+	GtkWidget *scrolledwindow1;
+	AtkRelationSet *tmp_relation_set;
+	AtkRelationType tmp_relationship;
+	AtkRelation *tmp_relation;
+	AtkObject *scrolledwindow1_relation_targets[1];
+	GtkWidget *source_tree_view;
+	GtkWidget *destination_box;
+	GtkWidget *status_message;
+	GtkWidget *source_combo;
 
 	name_selector_dialog->priv =
 		E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
 
-	/* Get GtkBuilder GUI */
-	uifile = g_build_filename (E_DATA_SERVER_UI_UIDIR,
-				"e-name-selector-dialog.ui",
-				NULL);
-	name_selector_dialog->priv->gui = gtk_builder_new ();
-	gtk_builder_set_translation_domain (
-		name_selector_dialog->priv->gui, GETTEXT_PACKAGE);
+	name_selector_box = gtk_vbox_new (FALSE, 6);
+	gtk_widget_show (name_selector_box);
+	gtk_container_set_border_width (GTK_CONTAINER (name_selector_box), 0);
 
-	if (!gtk_builder_add_from_file (
-		name_selector_dialog->priv->gui, uifile, &error)) {
-		g_free (uifile);
-		g_object_unref (name_selector_dialog->priv->gui);
-		name_selector_dialog->priv->gui = NULL;
+	tmp_str = g_strconcat ("<b>", _("Show Contacts"), "</b>", NULL);
+	show_contacts_label = gtk_label_new (tmp_str);
+	gtk_widget_show (show_contacts_label);
+	gtk_box_pack_start (GTK_BOX (name_selector_box), show_contacts_label, FALSE, FALSE, 0);
+	gtk_label_set_use_markup (GTK_LABEL (show_contacts_label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (show_contacts_label), 0, 0.5);
+	g_free (tmp_str);
 
-		g_warning ("%s: Cannot load e-name-selector-dialog.ui file, %s", G_STRFUNC, error ? error->message : "Unknown error");
+	hbox2 = gtk_hbox_new (FALSE, 12);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (name_selector_box), hbox2, FALSE, FALSE, 0);
 
-		if (error)
-			g_error_free (error);
+	label35 = gtk_label_new ("");
+	gtk_widget_show (label35);
+	gtk_box_pack_start (GTK_BOX (hbox2), label35, FALSE, FALSE, 0);
 
-		return;
-	}
+	show_contacts_table = gtk_table_new (3, 2, FALSE);
+	gtk_widget_show (show_contacts_table);
+	gtk_box_pack_start (GTK_BOX (hbox2), show_contacts_table, TRUE, TRUE, 0);
+	gtk_table_set_row_spacings (GTK_TABLE (show_contacts_table), 6);
+	gtk_table_set_col_spacings (GTK_TABLE (show_contacts_table), 12);
 
-	g_free (uifile);
+	AddressBookLabel = gtk_label_new_with_mnemonic (_("Address B_ook:"));
+	gtk_widget_show (AddressBookLabel);
+	gtk_table_attach (GTK_TABLE (show_contacts_table), AddressBookLabel, 0, 1, 0, 1,
+			  (GtkAttachOptions) (GTK_FILL),
+			  (GtkAttachOptions) (0), 0, 0);
+	gtk_label_set_justify (GTK_LABEL (AddressBookLabel), GTK_JUSTIFY_CENTER);
+	gtk_misc_set_alignment (GTK_MISC (AddressBookLabel), 0, 0.5);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (
-		name_selector_dialog->priv->gui, "name-selector-box"));
-	if (!widget) {
-		g_warning ("%s: Cannot load e-name-selector-dialog.ui file", G_STRFUNC);
-		g_object_unref (name_selector_dialog->priv->gui);
-		name_selector_dialog->priv->gui = NULL;
-		return;
-	}
+	label31 = gtk_label_new_with_mnemonic (_("Cate_gory:"));
+	gtk_widget_show (label31);
+	gtk_table_attach (GTK_TABLE (show_contacts_table), label31, 0, 1, 1, 2,
+			  (GtkAttachOptions) (GTK_FILL),
+			  (GtkAttachOptions) (0), 0, 0);
+	gtk_label_set_justify (GTK_LABEL (label31), GTK_JUSTIFY_CENTER);
+	gtk_misc_set_alignment (GTK_MISC (label31), 0, 0.5);
+
+	hbox1 = gtk_hbox_new (FALSE, 12);
+	gtk_widget_show (hbox1);
+	gtk_table_attach (GTK_TABLE (show_contacts_table), hbox1, 1, 2, 2, 3,
+			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+
+	search = gtk_entry_new ();
+	gtk_widget_show (search);
+	gtk_box_pack_start (GTK_BOX (hbox1), search, TRUE, TRUE, 0);
+
+	label39 = gtk_label_new_with_mnemonic (_("_Search:"));
+	gtk_widget_show (label39);
+	gtk_table_attach (GTK_TABLE (show_contacts_table), label39, 0, 1, 2, 3,
+			  (GtkAttachOptions) (GTK_FILL),
+			  (GtkAttachOptions) (0), 0, 0);
+	gtk_misc_set_alignment (GTK_MISC (label39), 0, 0.5);
+
+	source_menu_box = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (source_menu_box);
+	gtk_table_attach (GTK_TABLE (show_contacts_table), source_menu_box, 1, 2, 0, 1,
+			  (GtkAttachOptions) (GTK_FILL),
+			  (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+	combobox_category = gtk_combo_box_text_new ();
+	gtk_widget_show (combobox_category);
+	gtk_table_attach (GTK_TABLE (show_contacts_table), combobox_category, 1, 2, 1, 2,
+			  (GtkAttachOptions) (GTK_FILL),
+			  (GtkAttachOptions) (GTK_FILL), 0, 0);
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX (combobox_category), _("Any Category"));
+
+	tmp_str = g_strconcat ("<b>", _("Co_ntacts"), "</b>", NULL);
+	label36 = gtk_label_new_with_mnemonic (tmp_str);
+	gtk_widget_show (label36);
+	gtk_box_pack_start (GTK_BOX (name_selector_box), label36, FALSE, FALSE, 0);
+	gtk_label_set_use_markup (GTK_LABEL (label36), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label36), 0, 0.5);
+	g_free (tmp_str);
+
+	hbox3 = gtk_hbox_new (FALSE, 12);
+	gtk_widget_show (hbox3);
+	gtk_box_pack_start (GTK_BOX (name_selector_box), hbox3, TRUE, TRUE, 0);
+
+	label38 = gtk_label_new ("");
+	gtk_widget_show (label38);
+	gtk_box_pack_start (GTK_BOX (hbox3), label38, FALSE, FALSE, 0);
+
+	scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
+	gtk_widget_show (scrolledwindow1);
+	gtk_box_pack_start (GTK_BOX (hbox3), scrolledwindow1, TRUE, TRUE, 0);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_SHADOW_IN);
+
+	source_tree_view = gtk_tree_view_new ();
+	gtk_widget_show (source_tree_view);
+	gtk_container_add (GTK_CONTAINER (scrolledwindow1), source_tree_view);
+	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (source_tree_view), FALSE);
+	gtk_tree_view_set_enable_search (GTK_TREE_VIEW (source_tree_view), FALSE);
+
+	destination_box = gtk_vbox_new (TRUE, 6);
+	gtk_widget_show (destination_box);
+	gtk_box_pack_start (GTK_BOX (hbox3), destination_box, TRUE, TRUE, 0);
+
+	status_message = gtk_label_new ("");
+	gtk_widget_show (status_message);
+	gtk_box_pack_end (GTK_BOX (name_selector_box), status_message, FALSE, FALSE, 0);
+	gtk_label_set_use_markup (GTK_LABEL (status_message), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (status_message), 0, 0.5);
+	gtk_misc_set_padding (GTK_MISC (status_message), 0, 3);
+
+	gtk_label_set_mnemonic_widget (GTK_LABEL (AddressBookLabel), source_menu_box);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label31), combobox_category);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label39), search);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label36), source_tree_view);
+
+	atko = gtk_widget_get_accessible (search);
+	atk_object_set_name (atko, _("Search"));
+
+	atko = gtk_widget_get_accessible (source_menu_box);
+	atk_object_set_name (atko, _("Address Book"));
+
+	atko = gtk_widget_get_accessible (scrolledwindow1);
+	atk_object_set_name (atko, _("Contacts"));
+	tmp_relation_set = atk_object_ref_relation_set (atko);
+	scrolledwindow1_relation_targets[0] = gtk_widget_get_accessible (label36);
+	tmp_relationship = atk_relation_type_for_name ("labelled-by");
+	tmp_relation = atk_relation_new (scrolledwindow1_relation_targets, 1, tmp_relationship);
+	atk_relation_set_add (tmp_relation_set, tmp_relation);
+	g_object_unref (G_OBJECT (tmp_relation));
+	g_object_unref (G_OBJECT (tmp_relation_set));
 
 	/* Get addressbook sources */
 
 	if (!e_book_get_addressbooks (&source_list, NULL)) {
 		g_warning ("ENameSelectorDialog can't find any addressbooks!");
-		g_object_unref (name_selector_dialog->priv->gui);
 		return;
 	}
 
-	/* Reparent it to inside ourselves */
-
-	content_area = gtk_dialog_get_content_area (
-		GTK_DIALOG (name_selector_dialog));
-
-	g_object_ref (widget);
-	parent = gtk_widget_get_parent (widget);
-	gtk_container_remove (GTK_CONTAINER (parent), widget);
-	gtk_box_pack_start (GTK_BOX (content_area), widget, TRUE, TRUE, 0);
-	g_object_unref (widget);
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (name_selector_dialog))), name_selector_box, TRUE, TRUE, 0);
 
 	/* Store pointers to relevant widgets */
 
-	name_selector_dialog->priv->contact_view = GTK_TREE_VIEW (
-		gtk_builder_get_object (
-		name_selector_dialog->priv->gui, "source-tree-view"));
-	name_selector_dialog->priv->status_label = GTK_LABEL (
-		gtk_builder_get_object (
-		name_selector_dialog->priv->gui, "status-message"));
-	name_selector_dialog->priv->destination_box = GTK_BOX (
-		gtk_builder_get_object (
-		name_selector_dialog->priv->gui, "destination-box"));
-	name_selector_dialog->priv->search_entry = GTK_ENTRY (
-		gtk_builder_get_object (
-		name_selector_dialog->priv->gui, "search"));
+	name_selector_dialog->priv->contact_view = GTK_TREE_VIEW (source_tree_view);
+	name_selector_dialog->priv->status_label = GTK_LABEL (status_message);
+	name_selector_dialog->priv->destination_box = GTK_BOX (destination_box);
+	name_selector_dialog->priv->search_entry = GTK_ENTRY (search);
+	name_selector_dialog->priv->category_combobox = combobox_category;
 
 	/* Create size group for transfer buttons */
 
@@ -274,44 +372,33 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 
 	/* Create source menu */
 
-	widget = e_source_combo_box_new (source_list);
+	source_combo = e_source_combo_box_new (source_list);
 	g_signal_connect_swapped (
-		widget, "changed",
+		source_combo, "changed",
 		G_CALLBACK (source_changed), name_selector_dialog);
 	g_object_unref (source_list);
 
 	if (uid) {
 		e_source_combo_box_set_active_uid (
-			E_SOURCE_COMBO_BOX (widget), uid);
+			E_SOURCE_COMBO_BOX (source_combo), uid);
 		g_free (uid);
 	}
 
-	label = GTK_WIDGET (gtk_builder_get_object (
-		name_selector_dialog->priv->gui, "AddressBookLabel"));
-	gtk_label_set_mnemonic_widget (GTK_LABEL (label), widget);
-
-	gtk_widget_show (widget);
-
-	container = GTK_WIDGET (gtk_builder_get_object (
-		name_selector_dialog->priv->gui, "source-menu-box"));
-	gtk_box_pack_start (GTK_BOX (container), widget, TRUE, TRUE, 0);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (AddressBookLabel), source_combo);
+	gtk_widget_show (source_combo);
+	gtk_box_pack_start (GTK_BOX (source_menu_box), source_combo, TRUE, TRUE, 0);
 
 	e_name_selector_dialog_populate_categories (name_selector_dialog);
 
 	/* Set up search-as-you-type signal */
 
-	widget = GTK_WIDGET (gtk_builder_get_object (
-		name_selector_dialog->priv->gui, "search"));
-	g_signal_connect_swapped (widget, "changed", G_CALLBACK (search_changed), name_selector_dialog);
+	g_signal_connect_swapped (search, "changed", G_CALLBACK (search_changed), name_selector_dialog);
 
 	/* Display initial source */
 
 	/* TODO: Remember last used source */
 
 	/* Set up dialog defaults */
-#if 0 // MEEGO - but we should consider for everyone
-	gtk_widget_hide (GTK_WIDGET (gtk_builder_get_object (name_selector_dialog->gui, "show-contacts-label")));
-#endif
 
 	gtk_dialog_add_buttons (GTK_DIALOG (name_selector_dialog),
 				GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
@@ -326,7 +413,7 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 #endif
 	gtk_container_set_border_width  (GTK_CONTAINER (name_selector_dialog), 4);
 	gtk_window_set_title            (GTK_WINDOW (name_selector_dialog), _("Select Contacts from Address Book"));
-	gtk_widget_grab_focus (widget);
+	gtk_widget_grab_focus (search);
 }
 
 static void
@@ -807,9 +894,8 @@ book_loaded_cb (ESource *source,
 	if (error != NULL) {
 		gchar *message;
 
-		/* FIXME This shold be translated, no? */
 		message = g_strdup_printf (
-			"Error loading address book: %s", error->message);
+			_("Error loading address book: %s"), error->message);
 		gtk_label_set_text (
 			name_selector_dialog->priv->status_label, message);
 		g_free (message);
@@ -883,8 +969,7 @@ search_changed (ENameSelectorDialog *name_selector_dialog)
 	gchar         *category_escaped;
 	gchar         *user_fields_str;
 
-	combo_box = GTK_WIDGET (gtk_builder_get_object (
-		name_selector_dialog->priv->gui, "combobox-category"));
+	combo_box = priv->category_combobox;
 	if (gtk_combo_box_get_active (GTK_COMBO_BOX (combo_box)) == -1)
 		gtk_combo_box_set_active (GTK_COMBO_BOX (combo_box), 0);
 

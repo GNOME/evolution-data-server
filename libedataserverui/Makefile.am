@@ -134,12 +134,9 @@ test_name_selector_LDADD = $(TEST_EDATASERVERUI_LDFLAGS)
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libedataserverui-$(LIBEDATASERVERUI_API_VERSION).pc
 
-ui_DATA = e-categories-dialog.ui e-name-selector-dialog.ui
-
 BUILT_SOURCES = $(MARSHAL_GENERATED)
 
 EXTRA_DIST = 						\
-	$(ui_DATA)					\
 	e-data-server-ui-marshal.list			\
 	$(pkgconfig_DATA:-$(LIBEDATASERVERUI_API_VERSION).pc=.pc.in)
 

@@ -40,7 +40,6 @@
 G_DEFINE_TYPE (ECategoriesDialog, e_categories_dialog, GTK_TYPE_DIALOG)
 
 struct _ECategoriesDialogPrivate {
-	GtkBuilder *gui;
 	GtkWidget *categories_entry;
 	GtkWidget *categories_list;
 	GtkWidget *new_button;
@@ -65,7 +64,6 @@ static gpointer parent_class;
 
 typedef struct {
 	ECategoriesDialog *parent;
-	GtkBuilder *gui;
 	GtkWidget *the_dialog;
 	GtkWidget *category_name;
 	GtkWidget *category_icon;
@@ -119,49 +117,74 @@ category_name_changed_cb (GtkEntry *category_name_entry, CategoryPropertiesDialo
 }
 
 static CategoryPropertiesDialog *
-load_properties_dialog (ECategoriesDialog *parent)
+create_properties_dialog (ECategoriesDialog *parent)
 {
 	CategoryPropertiesDialog *prop_dialog;
-	const gchar *ui_to_load[] = { "properties-dialog", NULL };
-	gchar *uifile;
-	GError *error = NULL;
-	GtkWidget *table;
+	GtkWidget *properties_dialog;
+	GtkWidget *dialog_content;
+	GtkWidget *dialog_action_area;
+	GtkWidget *table_category_properties;
+	GtkWidget *label4;
+	GtkWidget *label6;
+	GtkWidget *category_name;
+	GtkWidget *cancelbutton1;
+	GtkWidget *okbutton1;
+
+	properties_dialog = gtk_dialog_new ();
+	gtk_window_set_title (GTK_WINDOW (properties_dialog), _("Category Properties"));
+	gtk_window_set_type_hint (GTK_WINDOW (properties_dialog), GDK_WINDOW_TYPE_HINT_DIALOG);
+
+	dialog_content = gtk_dialog_get_content_area (GTK_DIALOG (properties_dialog));
+
+	table_category_properties = gtk_table_new (3, 2, FALSE);
+	gtk_box_pack_start (GTK_BOX (dialog_content), table_category_properties, TRUE, TRUE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (table_category_properties), 12);
+	gtk_table_set_row_spacings (GTK_TABLE (table_category_properties), 6);
+	gtk_table_set_col_spacings (GTK_TABLE (table_category_properties), 6);
+
+	label4 = gtk_label_new_with_mnemonic (_("Category _Name"));
+	gtk_table_attach (GTK_TABLE (table_category_properties), label4, 0, 1, 0, 1,
+			  (GtkAttachOptions) (GTK_FILL),
+			  (GtkAttachOptions) (0), 0, 0);
+	gtk_misc_set_alignment (GTK_MISC (label4), 0, 0.5);
+
+	label6 = gtk_label_new_with_mnemonic (_("Category _Icon"));
+	gtk_table_attach (GTK_TABLE (table_category_properties), label6, 0, 1, 2, 3,
+			  (GtkAttachOptions) (GTK_FILL),
+			  (GtkAttachOptions) (0), 0, 0);
+	gtk_misc_set_alignment (GTK_MISC (label6), 0, 0.5);
+
+	category_name = gtk_entry_new ();
+	gtk_table_attach (GTK_TABLE (table_category_properties), category_name, 1, 2, 0, 1,
+			  (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL),
+			  (GtkAttachOptions) (0), 0, 0);
+
+	dialog_action_area = gtk_dialog_get_action_area (GTK_DIALOG (properties_dialog));
+	gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area), GTK_BUTTONBOX_END);
+
+	cancelbutton1 = gtk_button_new_from_stock ("gtk-cancel");
+	gtk_dialog_add_action_widget (GTK_DIALOG (properties_dialog), cancelbutton1, GTK_RESPONSE_CANCEL);
+	gtk_widget_set_can_default (cancelbutton1, TRUE);
+
+	okbutton1 = gtk_button_new_from_stock ("gtk-ok");
+	gtk_dialog_add_action_widget (GTK_DIALOG (properties_dialog), okbutton1, GTK_RESPONSE_OK);
+	gtk_widget_set_can_default (okbutton1, TRUE);
+
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label4), category_name);
+
+	gtk_widget_show_all (dialog_content);
 
 	prop_dialog = g_new0 (CategoryPropertiesDialog, 1);
-
-	uifile = g_build_filename (E_DATA_SERVER_UI_UIDIR,
-				      "e-categories-dialog.ui",
-				      NULL);
-	prop_dialog->gui = gtk_builder_new ();
-	gtk_builder_set_translation_domain (prop_dialog->gui, GETTEXT_PACKAGE);
-
-	if (!gtk_builder_add_objects_from_file (prop_dialog->gui, uifile, (gchar **) ui_to_load, &error)) {
-		g_object_unref (prop_dialog->gui);
-		g_free (prop_dialog);
-		g_free (uifile);
-
-		g_warning ("%s: Failed to load e-categories-dialog.ui, %s", G_STRFUNC, error ? error->message : "Unknown error");
-
-		if (error)
-			g_error_free (error);
-
-		return NULL;
-	}
-
-	g_free (uifile);
-
 	prop_dialog->parent = parent;
 
-	prop_dialog->the_dialog = GTK_WIDGET (gtk_builder_get_object (prop_dialog->gui, "properties-dialog"));
+	prop_dialog->the_dialog = properties_dialog;
 	gtk_window_set_transient_for (GTK_WINDOW (prop_dialog->the_dialog), GTK_WINDOW (parent));
 
-	prop_dialog->category_name = GTK_WIDGET (gtk_builder_get_object (prop_dialog->gui, "category-name"));
+	prop_dialog->category_name = category_name;
 	g_signal_connect (prop_dialog->category_name, "changed", G_CALLBACK (category_name_changed_cb), prop_dialog);
 	category_name_changed_cb (GTK_ENTRY (prop_dialog->category_name), prop_dialog);
 
-	table = GTK_WIDGET (gtk_builder_get_object (prop_dialog->gui, "table-category-properties"));
-
-	if (table) {
+	if (table_category_properties) {
 		GtkFileChooser *chooser;
 		GtkWidget *dialog, *button;
 		GtkWidget *image = gtk_image_new ();
@@ -187,7 +210,7 @@ load_properties_dialog (ECategoriesDialog *parent)
 
 		prop_dialog->category_icon = GTK_WIDGET (chooser);
 		gtk_widget_show (prop_dialog->category_icon);
-		gtk_table_attach (GTK_TABLE (table), prop_dialog->category_icon, 1, 2, 2, 3, GTK_FILL, GTK_FILL, 0, 0);
+		gtk_table_attach (GTK_TABLE (table_category_properties), prop_dialog->category_icon, 1, 2, 2, 3, GTK_FILL, GTK_FILL, 0, 0);
 
 		gtk_widget_show (image);
 
@@ -206,11 +229,6 @@ free_properties_dialog (CategoryPropertiesDialog *prop_dialog)
 	if (prop_dialog->the_dialog) {
 		gtk_widget_destroy (prop_dialog->the_dialog);
 		prop_dialog->the_dialog = NULL;
-	}
-
-	if (prop_dialog->gui) {
-		g_object_unref (prop_dialog->gui);
-		prop_dialog->gui = NULL;
 	}
 
 	g_free (prop_dialog);
@@ -370,7 +388,7 @@ new_button_clicked_cb (GtkButton *button, gpointer user_data)
 
 	dialog = user_data;
 
-	prop_dialog = load_properties_dialog (dialog);
+	prop_dialog = create_properties_dialog (dialog);
 	if (!prop_dialog)
 		return;
 
@@ -436,7 +454,7 @@ edit_button_clicked_cb (GtkButton *button, gpointer user_data)
 	g_return_if_fail (g_list_length (selected) == 1);
 
 	/* load the properties dialog */
-	prop_dialog = load_properties_dialog (dialog);
+	prop_dialog = create_properties_dialog (dialog);
 	if (!prop_dialog)
 		return;
 
@@ -571,11 +589,6 @@ categories_dialog_dispose (GObject *object)
 
 	priv = E_CATEGORIES_DIALOG_GET_PRIVATE (object);
 
-	if (priv->gui != NULL) {
-		g_object_unref (priv->gui);
-		priv->gui = NULL;
-	}
-
 	g_hash_table_remove_all (priv->selected_categories);
 
 	/* Chain up to parent's dispose() method. */
@@ -619,44 +632,100 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	GtkTreeViewColumn *column;
 	GtkTreeSelection *selection;
 	GtkTreeView *tree_view;
-	GtkWidget *main_widget;
-	GtkWidget *content_area;
-	gchar *uifile;
-	const gchar *ui_to_load[] = {"table-categories", NULL};
-	GError *error = NULL;
+	GtkWidget *dialog_content;
+	GtkWidget *table_categories;
+	GtkWidget *entry_categories;
+	GtkWidget *label_header;
+	GtkWidget *label2;
+	GtkWidget *scrolledwindow1;
+	GtkWidget *categories_list;
+	GtkWidget *hbuttonbox1;
+	GtkWidget *button_new;
+	GtkWidget *button_edit;
+	GtkWidget *alignment1;
+	GtkWidget *hbox1;
+	GtkWidget *image1;
+	GtkWidget *label3;
+	GtkWidget *button_delete;
+
+	dialog_content = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+
+	table_categories = gtk_table_new (5, 1, FALSE);
+	gtk_box_pack_start (GTK_BOX (dialog_content), table_categories, TRUE, TRUE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (table_categories), 12);
+	gtk_table_set_row_spacings (GTK_TABLE (table_categories), 6);
+	gtk_table_set_col_spacings (GTK_TABLE (table_categories), 6);
+
+	entry_categories = gtk_entry_new ();
+	gtk_table_attach (GTK_TABLE (table_categories), entry_categories, 0, 1, 1, 2,
+			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			  (GtkAttachOptions) (0), 0, 0);
+
+	label_header = gtk_label_new_with_mnemonic (_("Currently _used categories:"));
+	gtk_table_attach (GTK_TABLE (table_categories), label_header, 0, 1, 0, 1,
+			  (GtkAttachOptions) (GTK_FILL),
+			  (GtkAttachOptions) (0), 0, 0);
+	gtk_label_set_justify (GTK_LABEL (label_header), GTK_JUSTIFY_CENTER);
+	gtk_misc_set_alignment (GTK_MISC (label_header), 0, 0.5);
+
+	label2 = gtk_label_new_with_mnemonic (_("_Available Categories:"));
+	gtk_table_attach (GTK_TABLE (table_categories), label2, 0, 1, 2, 3,
+			  (GtkAttachOptions) (GTK_FILL),
+			  (GtkAttachOptions) (0), 0, 0);
+	gtk_label_set_justify (GTK_LABEL (label2), GTK_JUSTIFY_CENTER);
+	gtk_misc_set_alignment (GTK_MISC (label2), 0, 0.5);
+
+	scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
+	gtk_table_attach (GTK_TABLE (table_categories), scrolledwindow1, 0, 1, 3, 4,
+			  (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL),
+			  (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL), 0, 0);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_SHADOW_IN);
+
+	categories_list = gtk_tree_view_new ();
+	gtk_container_add (GTK_CONTAINER (scrolledwindow1), categories_list);
+	gtk_widget_set_size_request (categories_list, -1, 350);
+	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (categories_list), FALSE);
+	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (categories_list), TRUE);
+
+	hbuttonbox1 = gtk_hbutton_box_new ();
+	gtk_table_attach (GTK_TABLE (table_categories), hbuttonbox1, 0, 1, 4, 5,
+			  (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL),
+			  (GtkAttachOptions) (GTK_SHRINK), 0, 0);
+	gtk_box_set_spacing (GTK_BOX (hbuttonbox1), 6);
+
+	button_new = gtk_button_new_from_stock ("gtk-new");
+	gtk_container_add (GTK_CONTAINER (hbuttonbox1), button_new);
+	gtk_widget_set_can_default (button_new, TRUE);
+
+	button_edit = gtk_button_new ();
+	gtk_container_add (GTK_CONTAINER (hbuttonbox1), button_edit);
+	gtk_widget_set_can_default (button_edit, TRUE);
+
+	alignment1 = gtk_alignment_new (0.5, 0.5, 0, 0);
+	gtk_container_add (GTK_CONTAINER (button_edit), alignment1);
+
+	hbox1 = gtk_hbox_new (FALSE, 2);
+	gtk_container_add (GTK_CONTAINER (alignment1), hbox1);
+
+	image1 = gtk_image_new_from_stock ("gtk-properties", GTK_ICON_SIZE_BUTTON);
+	gtk_box_pack_start (GTK_BOX (hbox1), image1, FALSE, FALSE, 0);
+
+	label3 = gtk_label_new_with_mnemonic (_("_Edit"));
+	gtk_box_pack_start (GTK_BOX (hbox1), label3, FALSE, FALSE, 0);
+
+	button_delete = gtk_button_new_from_stock ("gtk-delete");
+	gtk_container_add (GTK_CONTAINER (hbuttonbox1), button_delete);
+	gtk_widget_set_can_default (button_delete, TRUE);
+
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label_header), entry_categories);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label2), categories_list);
 
 	dialog->priv = E_CATEGORIES_DIALOG_GET_PRIVATE (dialog);
 	dialog->priv->selected_categories = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
-	/* load the UI from our UI file */
-	uifile = g_build_filename (E_DATA_SERVER_UI_UIDIR,
-				      "e-categories-dialog.ui",
-				      NULL);
-	dialog->priv->gui = gtk_builder_new ();
-	gtk_builder_set_translation_domain (dialog->priv->gui, GETTEXT_PACKAGE);
-
-	if (!gtk_builder_add_objects_from_file (dialog->priv->gui, uifile, (gchar **) ui_to_load, &error)) {
-		g_free (uifile);
-		g_object_unref (dialog->priv->gui);
-		dialog->priv->gui = NULL;
-
-		g_warning ("%s: can't load e-categories-dialog.ui file, %s", G_STRFUNC, error ? error->message : "Unknown error");
-
-		if (error)
-			g_error_free (error);
-
-		return;
-	}
-
-	g_free (uifile);
-
-	content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
-
-	main_widget = GTK_WIDGET (gtk_builder_get_object (dialog->priv->gui, "table-categories"));
-	gtk_box_pack_start (GTK_BOX (content_area), main_widget, TRUE, TRUE, 0);
-
-	dialog->priv->categories_entry = GTK_WIDGET (gtk_builder_get_object (dialog->priv->gui, "entry-categories"));
-	dialog->priv->categories_list = GTK_WIDGET (gtk_builder_get_object (dialog->priv->gui, "categories-list"));
+	dialog->priv->categories_entry = entry_categories;
+	dialog->priv->categories_list = categories_list;
 
 	tree_view = GTK_TREE_VIEW (dialog->priv->categories_list);
 	selection = gtk_tree_view_get_selection (tree_view);
@@ -674,11 +743,11 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	gtk_entry_set_completion (GTK_ENTRY (dialog->priv->categories_entry), completion);
 	g_object_unref (completion);
 
-	dialog->priv->new_button = GTK_WIDGET (gtk_builder_get_object (dialog->priv->gui, "button-new"));
+	dialog->priv->new_button = button_new;
 	g_signal_connect (G_OBJECT (dialog->priv->new_button), "clicked", G_CALLBACK (new_button_clicked_cb), dialog);
-	dialog->priv->edit_button = GTK_WIDGET (gtk_builder_get_object (dialog->priv->gui, "button-edit"));
+	dialog->priv->edit_button = button_edit;
 	g_signal_connect (G_OBJECT (dialog->priv->edit_button), "clicked", G_CALLBACK (edit_button_clicked_cb), dialog);
-	dialog->priv->delete_button = GTK_WIDGET (gtk_builder_get_object (dialog->priv->gui, "button-delete"));
+	dialog->priv->delete_button = button_delete;
 	g_signal_connect_swapped (
 		G_OBJECT (dialog->priv->delete_button), "clicked",
 		G_CALLBACK (categories_dialog_delete_cb), dialog);
@@ -688,6 +757,8 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
 	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_OK, FALSE);
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Categories"));
+
+	gtk_widget_show_all (dialog_content);
 
 	renderer = gtk_cell_renderer_toggle_new ();
 	g_signal_connect (G_OBJECT (renderer), "toggled", G_CALLBACK (category_toggled_cb), dialog);

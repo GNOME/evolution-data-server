@@ -1384,9 +1384,6 @@ AC_SUBST(imagesdir)
 extensiondir='${libdir}'/evolution-data-server-$API_VERSION/extensions
 AC_SUBST(extensiondir)
 
-uidir="$privdatadir/ui"
-AC_SUBST(uidir)
-
 if test "x$use_gweather" = "xyes"; then
 	weatherdatadir="$privdatadir/weather"
 	AC_SUBST(weatherdatadir)
