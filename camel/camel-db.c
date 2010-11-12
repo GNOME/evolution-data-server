@@ -1090,63 +1090,6 @@ camel_db_delete_uid_from_vfolder_transaction (CamelDB *db,
 	return ret;
 }
 
-struct _db_data_uids_flags {
-	GPtrArray *uids;
-	GPtrArray *flags;
-};
-static gint
-read_uids_flags_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
-{
-	struct _db_data_uids_flags *data= (struct _db_data_uids_flags *) ref;
-
-	gint i;
-	for (i = 0; i < ncol; ++i) {
-		if (!strcmp (name [i], "uid"))
-			g_ptr_array_add (data->uids, (gchar *) (camel_pstring_strdup (cols[i])));
-		else if (!strcmp (name [i], "flags"))
-			g_ptr_array_add (data->flags, GUINT_TO_POINTER (strtoul (cols[i], NULL, 10)));
-	}
-
-	 return 0;
-}
-
-/**
- * camel_db_get_folder_uids_flags:
- *
- * Since: 2.26
- **/
-gint
-camel_db_get_folder_uids_flags (CamelDB *db,
-                                const gchar *folder_name,
-                                const gchar *sort_by,
-                                const gchar *collate,
-                                GPtrArray *summary,
-                                GHashTable *table,
-                                GError **error)
-{
-	 GPtrArray *uids = summary;
-	 GPtrArray *flags = g_ptr_array_new ();
-	 gchar *sel_query;
-	 gint ret;
-	 struct _db_data_uids_flags data;
-	 gint i;
-
-	 data.uids = uids;
-	 data.flags = flags;
-
-	 sel_query = sqlite3_mprintf("SELECT uid,flags FROM %Q%s%s%s%s", folder_name, sort_by ? " order by " : "", sort_by ? sort_by: "", (sort_by && collate) ? " collate " : "", (sort_by && collate) ? collate : "");
-
-	 ret = camel_db_select (db, sel_query, read_uids_flags_callback, &data, error);
-	 sqlite3_free (sel_query);
-
-	 for (i=0; i<uids->len; i++) {
-		 g_hash_table_insert (table, uids->pdata[i], flags->pdata[i]);
-	 }
-
-	 g_ptr_array_free (flags, TRUE);
-	 return ret;
-}
-
 static gint
 read_uids_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 {

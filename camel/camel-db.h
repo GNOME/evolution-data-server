@@ -259,7 +259,6 @@ gint camel_db_add_to_vfolder (CamelDB *db, gchar *folder_name, gchar *vuid, GErr
 gint camel_db_add_to_vfolder_transaction (CamelDB *db, const gchar *folder_name, const gchar *vuid, GError **error);
 
 gint camel_db_get_folder_uids (CamelDB *db, const gchar *folder_name, const gchar *sort_by, const gchar *collate, GPtrArray *array, GError **error);
-gint camel_db_get_folder_uids_flags (CamelDB *db, const gchar *folder_name, const gchar *sort_by, const gchar *collate, GPtrArray *summary, GHashTable *table, GError **error);
 
 GPtrArray * camel_db_get_folder_junk_uids (CamelDB *db, gchar *folder_name, GError **error);
 GPtrArray * camel_db_get_folder_deleted_uids (CamelDB *db, const gchar *folder_name, GError **error);

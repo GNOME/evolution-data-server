@@ -522,7 +522,6 @@ local_summary_add (CamelLocalSummary *cls,
 
 			update_summary (s, (CamelMessageInfoBase *) mi, (CamelMessageInfoBase *) info);
 			mi->info.flags |= (camel_message_info_flags (info) & 0xffff);
-			camel_folder_summary_update_flag_cache (s, mi->info.uid, mi->info.flags);
 			mi->info.size = camel_message_info_size (info);
 		}
 

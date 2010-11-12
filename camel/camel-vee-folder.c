@@ -161,6 +161,7 @@ folder_changed_add_uid (CamelFolder *sub, const gchar *uid, const gchar hash[8],
 		}
 		vinfo = (CamelVeeMessageInfo *)camel_folder_get_message_info ((CamelFolder *)folder_unmatched, vuid);
 		if (vinfo) {
+			camel_folder_summary_update_counts_by_flags (CAMEL_FOLDER (folder_unmatched)->summary, vinfo->old_flags, TRUE);
 			full_name = camel_folder_get_full_name (
 				CAMEL_FOLDER (folder_unmatched));
 			camel_folder_change_info_remove_uid (
@@ -197,6 +198,12 @@ folder_changed_remove_uid (CamelFolder *sub, const gchar *uid, const gchar hash[
 
 	parent_store = camel_folder_get_parent_store (folder);
 
+	vinfo = (CamelVeeMessageInfo *) camel_folder_summary_uid (folder->summary, vuid);
+	if (vinfo) {
+		camel_folder_summary_update_counts_by_flags (folder->summary, vinfo->old_flags, TRUE);
+		camel_message_info_free ((CamelMessageInfo *) vinfo);
+	}
+
 	camel_folder_change_info_remove_uid (vf->changes, vuid);
 	if (use_db) {
 		full_name = camel_folder_get_full_name (folder);
@@ -229,6 +236,7 @@ folder_changed_remove_uid (CamelFolder *sub, const gchar *uid, const gchar hash[
 
 			vinfo = (CamelVeeMessageInfo *)camel_folder_get_message_info ((CamelFolder *)folder_unmatched, vuid);
 			if (vinfo) {
+				camel_folder_summary_update_counts_by_flags (CAMEL_FOLDER (folder_unmatched)->summary, vinfo->old_flags, TRUE);
 				full_name = camel_folder_get_full_name (
 					CAMEL_FOLDER (folder_unmatched));
 				camel_folder_change_info_remove_uid (
@@ -243,6 +251,17 @@ folder_changed_remove_uid (CamelFolder *sub, const gchar *uid, const gchar hash[
 			}
 		}
 	}
+}
+
+static void
+update_old_flags (CamelFolderSummary *summary, CamelVeeMessageInfo *vinfo)
+{
+	g_return_if_fail (summary != NULL);
+	g_return_if_fail (vinfo != NULL);
+
+	camel_folder_summary_update_counts_by_flags (summary, vinfo->old_flags, TRUE);
+	vinfo->old_flags = camel_message_info_flags ((CamelMessageInfo *)vinfo);
+	camel_folder_summary_update_counts_by_flags (summary, vinfo->old_flags, FALSE);
 }
 
 static void
@@ -266,11 +285,13 @@ folder_changed_change_uid (CamelFolder *sub, const gchar *uid, const gchar hash[
 		if (info) {
 			if (vinfo) {
 				camel_folder_change_info_change_uid (vf->changes, vuid);
+				update_old_flags (folder->summary, vinfo);
 				camel_message_info_free ((CamelMessageInfo *)vinfo);
 			}
 
 			if (uinfo) {
 				camel_folder_change_info_change_uid (folder_unmatched->changes, vuid);
+				update_old_flags (CAMEL_FOLDER (folder_unmatched)->summary, uinfo);
 				camel_message_info_free ((CamelMessageInfo *)uinfo);
 			}
 
@@ -592,6 +613,7 @@ subfolder_renamed_update (CamelVeeFolder *vf, CamelFolder *sub, gchar hash[8])
 			gpointer oldval;
 
 			camel_folder_change_info_remove_uid (vf->changes, uid);
+			camel_folder_summary_update_counts_by_flags (CAMEL_FOLDER (vf)->summary, mi->old_flags, TRUE);
 			camel_folder_summary_remove (((CamelFolder *)vf)->summary, (CamelMessageInfo *)mi);
 
 			/* works since we always append on the end */
@@ -674,6 +696,7 @@ unmatched_check_uid (gchar *uidin, gpointer value, struct _update_data *u)
 			parent_store = camel_folder_get_parent_store (
 				CAMEL_FOLDER (u->folder_unmatched));
 
+			camel_folder_summary_update_counts_by_flags (CAMEL_FOLDER (u->folder_unmatched)->summary, mi->old_flags, TRUE);
 			camel_db_delete_uid_from_vfolder_transaction (
 				parent_store->cdb_w, full_name, uid, NULL);
 			camel_folder_summary_remove_uid_fast (
@@ -1355,6 +1378,7 @@ vee_folder_synchronize_sync (CamelFolder *folder,
 			CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *)camel_folder_summary_index (folder->summary, i);
 			if (mi->old_flags & CAMEL_MESSAGE_DELETED) {
 				del = g_slist_prepend (del, (gpointer) camel_pstring_strdup (((CamelMessageInfo *)mi)->uid));
+				camel_folder_summary_update_counts_by_flags (folder->summary, mi->old_flags, TRUE);
 				camel_folder_summary_remove_index_fast (folder->summary, i);
 				count--;
 				i--;
@@ -1422,11 +1446,6 @@ vee_folder_set_expression (CamelVeeFolder *vee_folder,
 
 		camel_folder_summary_clear (summary);
 		camel_db_recreate_vfolder (parent_store->cdb_w, full_name, NULL);
-		summary->junk_count = 0;
-		summary->deleted_count = 0;
-		summary->unread_count = 0;
-		summary->visible_count = 0;
-		summary->junk_not_deleted_count = 0;
 	}
 
 	g_free (vee_folder->expression);
@@ -1503,6 +1522,7 @@ vee_folder_remove_folder_helper (CamelVeeFolder *vf, CamelFolder *source)
 				if (mi) {
 					if (mi->summary == ssummary) {
 						camel_folder_change_info_remove_uid (folder_unmatched->changes, camel_message_info_uid (mi));
+						camel_folder_summary_update_counts_by_flags (CAMEL_FOLDER (folder_unmatched)->summary, mi->old_flags, TRUE);
 						if (last == -1) {
 							last = start = i;
 						} else if (last+1 == i) {
@@ -1533,6 +1553,7 @@ vee_folder_remove_folder_helper (CamelVeeFolder *vf, CamelFolder *source)
 				const gchar *uid = camel_message_info_uid (mi);
 
 				camel_folder_change_info_remove_uid (vf->changes, uid);
+				camel_folder_summary_update_counts_by_flags (folder->summary, mi->old_flags, TRUE);
 
 				if (last == -1) {
 					last = start = i;
@@ -1742,9 +1763,11 @@ vee_folder_rebuild_folder (CamelVeeFolder *vee_folder,
 					} else {
 						camel_folder_summary_remove_range (folder->summary, start, last);
 						i -= (last-start)+1;
+						count -= (last - start) + 1;
 						start = last = i;
 					}
 					camel_folder_change_info_remove_uid (vee_folder->changes, camel_message_info_uid (mi));
+					camel_folder_summary_update_counts_by_flags (folder->summary, mi->old_flags, TRUE);
 					if (!CAMEL_IS_VEE_FOLDER (source)
 					    && unmatched_uids != NULL
 					    && g_hash_table_lookup_extended (unmatched_uids, uid, (gpointer *)&oldkey, &oldval)) {
@@ -1792,10 +1815,16 @@ vee_folder_rebuild_folder (CamelVeeFolder *vee_folder,
 			if (uid) {
 				if (strncmp (uid, u.hash, 8) == 0) {
 					if (g_hash_table_lookup (allhash, uid+8) == NULL) {
+						CamelVeeMessageInfo *vinfo = (CamelVeeMessageInfo *) camel_folder_summary_index (CAMEL_FOLDER (folder_unmatched)->summary, i);
+						if (vinfo) {
+							camel_folder_summary_update_counts_by_flags (CAMEL_FOLDER (folder_unmatched)->summary, vinfo->old_flags, TRUE);
+							camel_message_info_free (vinfo);
+						}
 						/* no longer exists at all, just remove it entirely */
 						camel_folder_summary_remove_index_fast (((CamelFolder *)folder_unmatched)->summary, i);
 						camel_folder_change_info_remove_uid (folder_unmatched->changes, uid);
 						i--;
+						count--;
 					} else {
 						g_hash_table_remove (allhash, uid+8);
 					}

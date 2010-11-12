@@ -398,6 +398,9 @@ void camel_folder_summary_remove_range (CamelFolderSummary *summary, gint start,
 void camel_folder_summary_clear (CamelFolderSummary *summary);
 void camel_folder_summary_clear_db (CamelFolderSummary *s);
 
+/* update visible/unread/... counts based on message flags */
+void camel_folder_summary_update_counts_by_flags (CamelFolderSummary *summary, guint32 flags, gboolean subtract);
+
 /* lookup functions */
 guint camel_folder_summary_count (CamelFolderSummary *summary);
 CamelMessageInfo *camel_folder_summary_index (CamelFolderSummary *summary, gint index);
@@ -408,8 +411,6 @@ gboolean camel_folder_summary_check_uid (CamelFolderSummary *s, const gchar *uid
 GPtrArray *camel_folder_summary_array (CamelFolderSummary *summary);
 GHashTable *camel_folder_summary_get_hashtable (CamelFolderSummary *s);
 void camel_folder_summary_free_hashtable (GHashTable *ht);
-GHashTable *camel_folder_summary_get_flag_cache (CamelFolderSummary *summary);
-void camel_folder_summary_update_flag_cache (CamelFolderSummary *s, const gchar *uid, guint32 flag);
 
 /* basically like strings, but certain keywords can be compressed and de-cased */
 gint camel_folder_summary_encode_token (FILE *out, const gchar *str);
