@@ -28,9 +28,7 @@
 
 #include <errno.h>
 
-#include <netdb.h>
 #include <string.h>
-#include <sys/socket.h>
 #include <sys/types.h>
 
 #include <gio/gio.h>
