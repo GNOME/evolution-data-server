@@ -398,6 +398,9 @@ void camel_folder_summary_remove_range(CamelFolderSummary *summary, gint start, 
 void camel_folder_summary_clear(CamelFolderSummary *summary);
 void camel_folder_summary_clear_db (CamelFolderSummary *s);
 
+/* update visible/unread/... counts based on message flags */
+void camel_folder_summary_update_counts_by_flags (CamelFolderSummary *summary, guint32 flags, gboolean subtract);
+
 /* lookup functions */
 guint camel_folder_summary_count(CamelFolderSummary *summary);
 CamelMessageInfo *camel_folder_summary_index(CamelFolderSummary *summary, gint index);

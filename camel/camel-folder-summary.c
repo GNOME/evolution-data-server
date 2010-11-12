@@ -2486,45 +2486,50 @@ camel_folder_summary_insert (CamelFolderSummary *s, CamelMessageInfo *info, gboo
 	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 }
 
+void
+camel_folder_summary_update_counts_by_flags (CamelFolderSummary *summary, guint32 flags, gboolean subtract)
+{
+	gint unread=0, deleted=0, junk=0;
+
+	g_return_if_fail (summary != NULL);
+
+	if (!(flags & CAMEL_MESSAGE_SEEN))
+		unread = subtract ? -1 : 1;
+
+	if (flags & CAMEL_MESSAGE_DELETED)
+		deleted = subtract ? -1 : 1;
+
+	if (flags & CAMEL_MESSAGE_JUNK)
+		junk = subtract ? -1 : 1;
+
+	dd(printf("%p: %d %d %d | %d %d %d \n", (gpointer) summary, unread, deleted, junk, summary->unread_count, summary->visible_count, summary->saved_count));
+
+	if (unread)
+		summary->unread_count += unread;
+	if (deleted)
+		summary->deleted_count += deleted;
+	if (junk)
+		summary->junk_count += junk;
+	if (junk && !deleted)
+		summary->junk_not_deleted_count += junk;
+	if (!junk && !deleted)
+		summary->visible_count += subtract ? -1 : 1;
+
+	summary->saved_count += subtract ? -1 : 1;
+	camel_folder_summary_touch (summary);
+
+	dd(printf("%p: %d %d %d | %d %d %d\n", (gpointer) summary, unread, deleted, junk, summary->unread_count, summary->visible_count, summary->saved_count));
+}
+
 static void
 update_summary (CamelFolderSummary *summary, CamelMessageInfoBase *info)
 {
-	gint unread=0, deleted=0, junk=0;
-	guint32 flags = info->flags;
+	g_return_if_fail (summary != NULL);
+	g_return_if_fail (info != NULL);
 
-	if (!(flags & CAMEL_MESSAGE_SEEN))
-		unread = 1;
-
-	if (flags & CAMEL_MESSAGE_DELETED)
-		deleted = 1;
-
-	if (flags & CAMEL_MESSAGE_JUNK)
-		junk = 1;
-
-	dd(printf("%p: %d %d %d | %d %d %d \n", (gpointer) summary, unread, deleted, junk, summary->unread_count, summary->visible_count, summary->saved_count));
+	camel_folder_summary_update_counts_by_flags (summary, info->flags, FALSE);
 	info->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
 	info->dirty = TRUE;
-
-	if (summary) {
-
-		if (unread)
-			summary->unread_count += unread;
-		if (deleted)
-			summary->deleted_count += deleted;
-		if (junk)
-			summary->junk_count += junk;
-		if (junk && !deleted)
-			summary->junk_not_deleted_count += junk;
-		summary->visible_count++;
-		if (junk ||  deleted)
-			summary->visible_count -= junk ? junk : deleted;
-
-		summary->saved_count++;
-		camel_folder_summary_touch(summary);
-	}
-
-	dd(printf("%p: %d %d %d | %d %d %d\n", (gpointer) summary, unread, deleted, junk, summary->unread_count, summary->visible_count, summary->saved_count));
-
 }
 
 /**
@@ -2812,7 +2817,12 @@ camel_folder_summary_clear(CamelFolderSummary *s)
 	g_ptr_array_foreach (s->uids, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (s->uids, TRUE);
 	s->uids = g_ptr_array_new ();
-	s->visible_count = s->deleted_count = s->unread_count = 0;
+	s->saved_count = 0;
+	s->unread_count = 0;
+	s->deleted_count = 0;
+	s->junk_count = 0;
+	s->junk_not_deleted_count = 0;
+	s->visible_count = 0;
 
 	g_hash_table_destroy(s->loaded_infos);
 	s->loaded_infos = g_hash_table_new(g_str_hash, g_str_equal);
@@ -2852,7 +2862,12 @@ camel_folder_summary_clear_db (CamelFolderSummary *s)
 	g_ptr_array_foreach (s->uids, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (s->uids, TRUE);
 	s->uids = g_ptr_array_new ();
-	s->visible_count = s->deleted_count = s->unread_count = 0;
+	s->saved_count = 0;
+	s->unread_count = 0;
+	s->deleted_count = 0;
+	s->junk_count = 0;
+	s->junk_not_deleted_count = 0;
+	s->visible_count = 0;
 
 	g_hash_table_destroy(s->loaded_infos);
 	s->loaded_infos = g_hash_table_new(g_str_hash, g_str_equal);

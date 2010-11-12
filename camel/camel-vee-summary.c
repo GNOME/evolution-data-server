@@ -93,8 +93,6 @@ vee_info_uint32(const CamelMessageInfo *mi, gint id)
 
 	HANDLE_NULL_INFO(0);
 	ret = camel_message_info_uint32 (rmi, id);
-	if (id == CAMEL_MESSAGE_INFO_FLAGS)
-		((CamelVeeMessageInfo *) mi)->old_flags = camel_message_info_flags (rmi);
 	camel_message_info_free (rmi);
 
 	return ret;
@@ -282,14 +280,12 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 		if (hacked_unread_folder && !vsummary->fake_visible_count)
 			vsummary->fake_visible_count = mi->summary->visible_count;
 
-#if 0
 		/* Keep the summary in sync */
 		mi->summary->unread_count += unread - old_unread;
 		mi->summary->deleted_count += deleted - old_deleted;
 		mi->summary->junk_count += junked - old_junked;
 		mi->summary->junk_not_deleted_count += junked_not_deleted - old_junked_not_deleted;
 		mi->summary->visible_count += visible - old_visible;
-#endif
 
 		if (vsummary->fake_visible_count || hacked_unread_folder)
 			vsummary->fake_visible_count += visible - old_visible;
@@ -425,9 +421,6 @@ camel_vee_summary_new(CamelFolder *parent)
 	parent_store = camel_folder_get_parent_store (parent);
 	camel_db_create_vfolder (parent_store->cdb_w, full_name, NULL);
 
-	/* FIXME[disk-summary] handle excep and ret */
-	camel_folder_summary_header_load_from_db ((CamelFolderSummary *)s, parent_store, full_name, NULL);
-
 	return &s->summary;
 }
 
@@ -459,8 +452,8 @@ CamelVeeMessageInfo *
 camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const gchar *uid, const gchar hash[8])
 {
 	CamelVeeMessageInfo *mi;
+	CamelMessageInfo *rmi;
 	gchar *vuid;
-	GHashTable * fcache;
 	vuid = g_malloc(strlen(uid)+9);
 	memcpy(vuid, hash, 8);
 	strcpy(vuid+8, uid);
@@ -481,21 +474,20 @@ camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const gch
 	}
 
 	mi = (CamelVeeMessageInfo *)camel_message_info_new(&s->summary);
-	mi->summary = summary;
-	fcache = camel_folder_summary_get_flag_cache(summary);
-	mi->old_flags = GPOINTER_TO_UINT(g_hash_table_lookup (fcache, uid));
-	/* We would do lazy loading of flags, when the folders are loaded to memory through folder_reloaded signal */
-	g_object_ref (summary);
+	mi->summary = g_object_ref (summary);
 	mi->info.uid = (gchar *) camel_pstring_strdup (vuid);
 	g_free (vuid);
 	camel_message_info_ref (mi);
-	/* Get the flags and store it. We can use it a lot * /
+
+	/* Get actual flags and store it */
 	rmi = camel_folder_summary_uid (summary, uid);
 	if (rmi) {
 		mi->old_flags = camel_message_info_flags (rmi);
 		camel_message_info_free (rmi);
-	}*/
+	}
+
 	camel_folder_summary_insert(&s->summary, (CamelMessageInfo *)mi, FALSE);
+	camel_folder_summary_update_counts_by_flags (&s->summary, camel_message_info_flags (mi), FALSE);
 
 	return mi;
 }
