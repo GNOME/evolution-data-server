@@ -2552,14 +2552,13 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, GError
 		CamelIMAPXSummary *isum = (CamelIMAPXSummary *)folder->summary;
 		CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)folder;
 		gint total = camel_folder_summary_count (folder->summary);
-		gchar *firstuid = NULL, *lastuid = NULL;
+		gchar *firstuid, *lastuid;
 
-		if (total) {
+		if (total && isum->modseq && ifolder->uidvalidity_on_server) {
+
 			firstuid = camel_folder_summary_uid_from_index (folder->summary, 0);
 			lastuid = camel_folder_summary_uid_from_index (folder->summary, total - 1);
-		}
 
-		if (isum->modseq && ifolder->uidvalidity_on_server) {
 			c(printf("SELECT QRESYNC %" G_GUINT64_FORMAT
 				 " %" G_GUINT64_FORMAT "\n",
 				 ifolder->uidvalidity_on_server, isum->modseq));
@@ -2568,8 +2567,7 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, GError
 						G_GUINT64_FORMAT " %s:%s",
 						ifolder->uidvalidity_on_server,
 						isum->modseq,
-						firstuid?firstuid:"1",
-						lastuid?lastuid:"1");
+						firstuid, lastuid);
 
 			g_free (firstuid);
 			g_free (lastuid);
