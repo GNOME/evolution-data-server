@@ -6,7 +6,6 @@
 #include <libedataserver/e-list-iterator.h>
 #include <libedataserver/e-proxy.h>
 #include <libedataserver/e-source.h>
-#include <libedataserver/e-source-group.h>
 
 e_account_get_type
 e_account_list_get_type
@@ -16,4 +15,3 @@ e_list_get_type
 e_list_iterator_get_type
 e_proxy_get_type
 e_source_get_type
-e_source_group_get_type

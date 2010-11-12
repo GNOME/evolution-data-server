@@ -38,7 +38,6 @@ libedataserver_1_2_la_SOURCES =		\
 	e-operation-pool.c		\
 	e-proxy.c			\
 	e-sexp.c			\
-	e-source-group.c		\
 	e-source.c			\
 	e-debug-log.c			\
 	e-time-utils.c			\
@@ -80,7 +79,6 @@ libedataserverinclude_HEADERS =		\
 	e-operation-pool.h		\
 	e-proxy.h			\
 	e-sexp.h			\
-	e-source-group.h		\
 	e-source.h			\
 	e-debug-log.h			\
 	e-time-utils.h			\

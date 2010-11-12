@@ -25,7 +25,6 @@
     <xi:include href="xml/e-proxy.xml"/>
     <xi:include href="xml/e-sexp.xml"/>
     <xi:include href="xml/e-source.xml"/>
-    <xi:include href="xml/e-source-group.xml"/>
     <xi:include href="xml/e-time-utils.xml"/>
     <xi:include href="xml/e-uid.xml"/>
     <xi:include href="xml/e-util.xml"/>
