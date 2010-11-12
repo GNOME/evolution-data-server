@@ -1,30 +1,25 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* e-source.h
- *
- * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
+/*
+ * e-source.h
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
- * License as published by the Free Software Foundation.
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) version 3.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
+ * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1301, USA.
+ * License along with the program; if not, see <http://www.gnu.org/licenses/>
  *
- * Author: Ettore Perazzoli <ettore@ximian.com>
  */
 
 #ifndef E_SOURCE_H
 #define E_SOURCE_H
 
-#include <glib-object.h>
-#include <libxml/tree.h>
+#include <gio/gio.h>
 
 /* Standard GObject macros */
 #define E_TYPE_SOURCE \
@@ -45,20 +40,30 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), E_TYPE_SOURCE, ESourceClass))
 
+/**
+ * E_SOURCE_PARAM_SETTING:
+ *
+ * Extends #GParamFlags to indicate the #GObject property is associated
+ * with a key file value.  Use this flag when installing #GObject properties
+ * in #ESourceExtension subclasses.
+ *
+ * Since: 3.6
+ **/
+#define E_SOURCE_PARAM_SETTING (1 << G_PARAM_USER_SHIFT)
+
 G_BEGIN_DECLS
 
 typedef struct _ESource ESource;
 typedef struct _ESourceClass ESourceClass;
 typedef struct _ESourcePrivate ESourcePrivate;
 
-/* Avoids a cyclic dependency. */
-struct _ESourceGroup;
-
 /**
  * ESource:
  *
  * Contains only private data that should be read and manipulated using the
  * functions below.
+ *
+ * Since: 3.6
  **/
 struct _ESource {
 	GObject parent;
@@ -70,64 +75,88 @@ struct _ESourceClass {
 
 	/* Signals */
 	void		(*changed)		(ESource *source);
+
+	/* Methods */
+	gboolean	(*remove_sync)		(ESource *source,
+						 GCancellable *cancellable,
+						 GError **error);
+	void		(*remove)		(ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*remove_finish)	(ESource *source,
+						 GAsyncResult *result,
+						 GError **error);
+	gboolean	(*write_sync)		(ESource *source,
+						 GCancellable *cancellable,
+						 GError **error);
+	void		(*write)		(ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*write_finish)		(ESource *source,
+						 GAsyncResult *result,
+						 GError **error);
+
+	/* Reserved slots. */
+	gpointer reserved[16];
 };
 
 GType		e_source_get_type		(void) G_GNUC_CONST;
-ESource *	e_source_new			(const gchar *name,
-						 const gchar *relative_uri);
-ESource *	e_source_new_with_absolute_uri	(const gchar *name,
-						 const gchar *absolute_uri);
-ESource *	e_source_new_from_xml_node	(xmlNodePtr node);
-ESource *	e_source_new_from_standalone_xml
-						(const gchar *xml);
-ESource *	e_source_copy			(ESource *source);
-gboolean	e_source_update_from_xml_node	(ESource *source,
-						 xmlNodePtr node,
-						 gboolean *changed_return);
-gchar *		e_source_uid_from_xml_node	(xmlNodePtr node);
-void		e_source_set_group		(ESource *source,
-						 struct _ESourceGroup *group);
-void		e_source_set_name		(ESource *source,
-						 const gchar *name);
-void		e_source_set_relative_uri	(ESource *source,
-						 const gchar *relative_uri);
-void		e_source_set_absolute_uri	(ESource *source,
-						 const gchar *absolute_uri);
-void		e_source_set_color_spec		(ESource *source,
-						 const gchar *color_spec);
-void		e_source_set_readonly		(ESource *source,
-						 gboolean readonly);
-struct _ESourceGroup *
-		e_source_peek_group		(ESource *source);
-const gchar *	e_source_peek_uid		(ESource *source);
-const gchar *	e_source_peek_name		(ESource *source);
-const gchar *	e_source_peek_relative_uri	(ESource *source);
-const gchar *	e_source_peek_absolute_uri	(ESource *source);
-const gchar *	e_source_peek_color_spec	(ESource *source);
-gboolean	e_source_get_readonly		(ESource *source);
-gchar *		e_source_get_uri		(ESource *source);
-void		e_source_dump_to_xml_node	(ESource *source,
-						 xmlNodePtr parent_node);
-gchar *		e_source_to_standalone_xml	(ESource *source);
-const gchar *	e_source_get_property		(ESource *source,
-						 const gchar *property_name);
-void		e_source_set_property		(ESource *source,
-						 const gchar *property_name,
-						 const gchar *property_value);
-void		e_source_foreach_property	(ESource *source,
-						 GHFunc func,
+ESource *	e_source_new			(GDBusObject *dbus_object,
+						 GMainContext *main_context,
+						 GError **error);
+guint		e_source_hash			(ESource *source);
+gboolean	e_source_equal			(ESource *source1,
+						 ESource *source2);
+void		e_source_changed		(ESource *source);
+const gchar *	e_source_get_uid		(ESource *source);
+gchar *		e_source_dup_uid		(ESource *source);
+const gchar *	e_source_get_parent		(ESource *source);
+gchar *		e_source_dup_parent		(ESource *source);
+void		e_source_set_parent		(ESource *source,
+						 const gchar *parent);
+gboolean	e_source_get_enabled		(ESource *source);
+void		e_source_set_enabled		(ESource *source,
+						 gboolean enabled);
+gboolean	e_source_get_writable		(ESource *source);
+gboolean	e_source_get_removable		(ESource *source);
+gpointer	e_source_get_extension		(ESource *source,
+						 const gchar *extension_name);
+gboolean	e_source_has_extension		(ESource *source,
+						 const gchar *extension_name);
+GDBusObject *	e_source_ref_dbus_object	(ESource *source);
+GMainContext *	e_source_ref_main_context	(ESource *source);
+const gchar *	e_source_get_display_name	(ESource *source);
+gchar *		e_source_dup_display_name	(ESource *source);
+void		e_source_set_display_name	(ESource *source,
+						 const gchar *display_name);
+gint		e_source_compare_by_display_name
+						(ESource *source1,
+						 ESource *source2);
+gchar *		e_source_to_string		(ESource *source,
+						 gsize *length);
+gchar *		e_source_parameter_to_key	(const gchar *param_name);
+gboolean	e_source_remove_sync		(ESource *source,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_source_remove			(ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
 						 gpointer user_data);
-gchar *		e_source_get_duped_property	(ESource *source,
-						 const gchar *property_name);
-gchar *		e_source_build_absolute_uri	(ESource *source);
-gboolean	e_source_equal			(ESource *a,
-						 ESource *b);
-gboolean	e_source_xmlstr_equal		(const gchar *a,
-						 const gchar *b);
-
-/* New names to be used in the upcoming ESource rewrite. */
-#define e_source_get_uid		e_source_peek_uid
-#define e_source_get_display_name	e_source_peek_name
+gboolean	e_source_remove_finish		(ESource *source,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_source_write_sync		(ESource *source,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_source_write			(ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_source_write_finish		(ESource *source,
+						 GAsyncResult *result,
+						 GError **error);
 
 G_END_DECLS
 

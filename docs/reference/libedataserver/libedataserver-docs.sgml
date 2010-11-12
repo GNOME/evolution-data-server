@@ -11,32 +11,38 @@
   <chapter>
     <title>Data Sources</title>
     <xi:include href="xml/e-source.xml"/>
-    <xi:include href="xml/e-source-password.xml"/>
     <xi:include href="xml/e-source-registry.xml"/>
-    <xi:include href="xml/e-source-extension.xml"/>
-    <xi:include href="xml/e-source-alarms.xml"/>
-    <xi:include href="xml/e-source-authentication.xml"/>
-    <xi:include href="xml/e-source-autocomplete.xml"/>
-    <xi:include href="xml/e-source-mail-identity.xml"/>
-    <xi:include href="xml/e-source-offline.xml"/>
-    <xi:include href="xml/e-source-refresh.xml"/>
-    <xi:include href="xml/e-source-security.xml"/>
-    <xi:include href="xml/e-source-selectable.xml"/>
-    <xi:include href="xml/e-source-webdav.xml"/>
+    <xi:include href="xml/e-source-authenticator.xml"/>
   </chapter>
 
   <chapter>
-    <title>Generated Types</title>
-    <xi:include href="xml/e-dbus-object.xml"/>
-    <xi:include href="xml/e-dbus-object-proxy.xml"/>
-    <xi:include href="xml/e-dbus-object-skeleton.xml"/>
-    <xi:include href="xml/e-dbus-source.xml"/>
-    <xi:include href="xml/e-dbus-source-proxy.xml"/>
-    <xi:include href="xml/e-dbus-source-skeleton.xml"/>
-    <xi:include href="xml/e-dbus-source-manager.xml"/>
-    <xi:include href="xml/e-dbus-source-manager-proxy.xml"/>
-    <xi:include href="xml/e-dbus-source-manager-skeleton.xml"/>
-    <xi:include href="xml/e-dbus-object-manager-client.xml"/>
+    <title>Data Source Extensions</title>
+    <xi:include href="xml/e-source-extension.xml"/>
+    <xi:include href="xml/e-source-backend.xml"/>
+    <xi:include href="xml/e-source-selectable.xml"/>
+    <xi:include href="xml/e-source-address-book.xml"/>
+    <xi:include href="xml/e-source-alarms.xml"/>
+    <xi:include href="xml/e-source-authentication.xml"/>
+    <xi:include href="xml/e-source-autocomplete.xml"/>
+    <xi:include href="xml/e-source-calendar.xml"/>
+    <xi:include href="xml/e-source-camel.xml"/>
+    <xi:include href="xml/e-source-collection.xml"/>
+    <xi:include href="xml/e-source-goa.xml"/>
+    <xi:include href="xml/e-source-mail-account.xml"/>
+    <xi:include href="xml/e-source-mail-composition.xml"/>
+    <xi:include href="xml/e-source-mail-identity.xml"/>
+    <xi:include href="xml/e-source-mail-signature.xml"/>
+    <xi:include href="xml/e-source-mail-submission.xml"/>
+    <xi:include href="xml/e-source-mail-transport.xml"/>
+    <xi:include href="xml/e-source-mdn.xml"/>
+    <xi:include href="xml/e-source-memo-list.xml"/>
+    <xi:include href="xml/e-source-offline.xml"/>
+    <xi:include href="xml/e-source-openpgp.xml"/>
+    <xi:include href="xml/e-source-refresh.xml"/>
+    <xi:include href="xml/e-source-security.xml"/>
+    <xi:include href="xml/e-source-smime.xml"/>
+    <xi:include href="xml/e-source-task-list.xml"/>
+    <xi:include href="xml/e-source-webdav.xml"/>
   </chapter>
 
   <chapter>
@@ -50,7 +56,6 @@
     <xi:include href="xml/e-operation-pool.xml"/>
     <xi:include href="xml/e-proxy.xml"/>
     <xi:include href="xml/e-sexp.xml"/>
-    <xi:include href="xml/e-source.xml"/>
     <xi:include href="xml/e-time-utils.xml"/>
     <xi:include href="xml/e-uid.xml"/>
     <xi:include href="xml/e-util.xml"/>

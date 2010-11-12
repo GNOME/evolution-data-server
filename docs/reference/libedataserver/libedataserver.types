@@ -4,6 +4,30 @@
 #include <libedataserver/e-list-iterator.h>
 #include <libedataserver/e-proxy.h>
 #include <libedataserver/e-source.h>
+#include <libedataserver/e-source-address-book.h>
+#include <libedataserver/e-source-authentication.h>
+#include <libedataserver/e-source-authenticator.h>
+#include <libedataserver/e-source-backend.h>
+#include <libedataserver/e-source-calendar.h>
+#include <libedataserver/e-source-camel.h>
+#include <libedataserver/e-source-collection.h>
+#include <libedataserver/e-source-extension.h>
+#include <libedataserver/e-source-goa.h>
+#include <libedataserver/e-source-mail-account.h>
+#include <libedataserver/e-source-mail-composition.h>
+#include <libedataserver/e-source-mail-identity.h>
+#include <libedataserver/e-source-mail-signature.h>
+#include <libedataserver/e-source-mail-submission.h>
+#include <libedataserver/e-source-mail-transport.h>
+#include <libedataserver/e-source-mdn.h>
+#include <libedataserver/e-source-offline.h>
+#include <libedataserver/e-source-openpgp.h>
+#include <libedataserver/e-source-refresh.h>
+#include <libedataserver/e-source-registry.h>
+#include <libedataserver/e-source-security.h>
+#include <libedataserver/e-source-selectable.h>
+#include <libedataserver/e-source-smime.h>
+#include <libedataserver/e-source-webdav.h>
 
 e_client_get_type
 e_iterator_get_type
@@ -11,4 +35,30 @@ e_list_get_type
 e_list_iterator_get_type
 e_proxy_get_type
 e_source_get_type
+e_source_address_book_get_type
+e_source_authentication_get_type
+e_source_authenticator_get_type
+e_source_backend_get_type
+e_source_calendar_get_type
+e_source_camel_get_type
+e_source_collection_get_type
+e_source_extension_get_type
+e_source_goa_get_type
+e_source_mail_account_get_type
+e_source_mail_composition_get_type
+e_source_mail_identity_get_type
+e_source_mail_signature_get_type
+e_source_mail_submission_get_type
+e_source_mail_transport_get_type
+e_source_mdn_get_type
+e_source_memo_list_get_type
+e_source_offline_get_type
+e_source_openpgp_get_type
+e_source_refresh_get_type
+e_source_registry_get_type
+e_source_security_get_type
+e_source_selectable_get_type
+e_source_smime_get_type
+e_source_task_list_get_type
+e_source_webdav_get_type
 

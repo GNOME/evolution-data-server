@@ -1,0 +1,204 @@
+/*
+ * e-source-registry.h
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the program; if not, see <http://www.gnu.org/licenses/>
+ *
+ */
+
+#ifndef E_SOURCE_REGISTRY_H
+#define E_SOURCE_REGISTRY_H
+
+#include <libedataserver/e-source.h>
+#include <libedataserver/e-source-authenticator.h>
+
+/* Standard GObject macros */
+#define E_TYPE_SOURCE_REGISTRY \
+	(e_source_registry_get_type ())
+#define E_SOURCE_REGISTRY(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_SOURCE_REGISTRY, ESourceRegistry))
+#define E_SOURCE_REGISTRY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_SOURCE_REGISTRY, ESourceRegistryClass))
+#define E_IS_SOURCE_REGISTRY(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_SOURCE_REGISTRY))
+#define E_IS_SOURCE_REGISTRY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_SOURCE_REGISTRY))
+#define E_SOURCE_REGISTRY_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_SOURCE_REGISTRY, ESourceRegistryClass))
+
+G_BEGIN_DECLS
+
+typedef struct _ESourceRegistry ESourceRegistry;
+typedef struct _ESourceRegistryClass ESourceRegistryClass;
+typedef struct _ESourceRegistryPrivate ESourceRegistryPrivate;
+
+/**
+ * ESourceRegistry:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
+ * Since: 3.6
+ **/
+struct _ESourceRegistry {
+	GObject parent;
+	ESourceRegistryPrivate *priv;
+};
+
+struct _ESourceRegistryClass {
+	GObjectClass parent_class;
+
+	/* Signals */
+	void		(*source_added)		(ESourceRegistry *registry,
+						 ESource *source);
+	void		(*source_changed)	(ESourceRegistry *registry,
+						 ESource *source);
+	void		(*source_removed)	(ESourceRegistry *registry,
+						 ESource *source);
+	void		(*source_enabled)	(ESourceRegistry *registry,
+						 ESource *source);
+	void		(*source_disabled)	(ESourceRegistry *registry,
+						 ESource *source);
+};
+
+GType		e_source_registry_get_type	(void) G_GNUC_CONST;
+ESourceRegistry *
+		e_source_registry_new_sync	(GCancellable *cancellable,
+						 GError **error);
+void		e_source_registry_new		(GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+ESourceRegistry *
+		e_source_registry_new_finish	(GAsyncResult *result,
+						 GError **error);
+gboolean	e_source_registry_authenticate_sync
+						(ESourceRegistry *registry,
+						 ESource *source,
+						 ESourceAuthenticator *auth,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_source_registry_authenticate	(ESourceRegistry *registry,
+						 ESource *source,
+						 ESourceAuthenticator *auth,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_source_registry_authenticate_finish
+						(ESourceRegistry *registry,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_source_registry_commit_source_sync
+						(ESourceRegistry *registry,
+						 ESource *source,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_source_registry_commit_source	(ESourceRegistry *registry,
+						 ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_source_registry_commit_source_finish
+						(ESourceRegistry *registry,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_source_registry_create_sources_sync
+						(ESourceRegistry *registry,
+						 GList *list_of_sources,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_source_registry_create_sources
+						(ESourceRegistry *registry,
+						 GList *list_of_sources,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_source_registry_create_sources_finish
+						(ESourceRegistry *registry,
+						 GAsyncResult *result,
+						 GError **error);
+ESource *	e_source_registry_ref_source	(ESourceRegistry *registry,
+						 const gchar *uid);
+GList *		e_source_registry_list_sources	(ESourceRegistry *registry,
+						 const gchar *extension_name);
+ESource *	e_source_registry_find_extension
+						(ESourceRegistry *registry,
+						 ESource *source,
+						 const gchar *extension_name);
+GNode *		e_source_registry_build_display_tree
+						(ESourceRegistry *registry,
+						 const gchar *extension_name);
+void		e_source_registry_free_display_tree
+						(GNode *display_tree);
+void		e_source_registry_debug_dump	(ESourceRegistry *registry,
+						 const gchar *extension_name);
+
+/* The following is a front-end for the "org.gnome.Evolution.DefaultSources"
+ * GSettings schema, except that it gets and sets ESource objects instead of
+ * ESource UID strings. */
+
+ESource *	e_source_registry_ref_builtin_address_book
+						(ESourceRegistry *registry);
+ESource *	e_source_registry_ref_default_address_book
+						(ESourceRegistry *registry);
+void		e_source_registry_set_default_address_book
+						(ESourceRegistry *registry,
+						 ESource *default_source);
+ESource *	e_source_registry_ref_builtin_calendar
+						(ESourceRegistry *registry);
+ESource *	e_source_registry_ref_default_calendar
+						(ESourceRegistry *registry);
+void		e_source_registry_set_default_calendar
+						(ESourceRegistry *registry,
+						 ESource *default_source);
+ESource *	e_source_registry_ref_builtin_mail_account
+						(ESourceRegistry *registry);
+ESource *	e_source_registry_ref_default_mail_account
+						(ESourceRegistry *registry);
+void		e_source_registry_set_default_mail_account
+						(ESourceRegistry *registry,
+						 ESource *default_source);
+ESource *	e_source_registry_ref_default_mail_identity
+						(ESourceRegistry *registry);
+void		e_source_registry_set_default_mail_identity
+						(ESourceRegistry *registry,
+						 ESource *default_source);
+ESource *	e_source_registry_ref_builtin_memo_list
+						(ESourceRegistry *registry);
+ESource *	e_source_registry_ref_default_memo_list
+						(ESourceRegistry *registry);
+void		e_source_registry_set_default_memo_list
+						(ESourceRegistry *registry,
+						 ESource *default_source);
+ESource *	e_source_registry_ref_builtin_task_list
+						(ESourceRegistry *registry);
+ESource *	e_source_registry_ref_default_task_list
+						(ESourceRegistry *registry);
+void		e_source_registry_set_default_task_list
+						(ESourceRegistry *registry,
+						 ESource *default_source);
+ESource *	e_source_registry_ref_default_for_extension_name
+						(ESourceRegistry *registry,
+						 const gchar *extension_name);
+void		e_source_registry_set_default_for_extension_name
+						(ESourceRegistry *registry,
+						 const gchar *extension_name,
+						 ESource *default_source);
+
+G_END_DECLS
+
+#endif /* E_SOURCE_REGISTRY_H */

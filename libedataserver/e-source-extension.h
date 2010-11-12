@@ -1,0 +1,73 @@
+/*
+ * e-source-extension.h
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the program; if not, see <http://www.gnu.org/licenses/>
+ *
+ */
+
+#ifndef E_SOURCE_EXTENSION_H
+#define E_SOURCE_EXTENSION_H
+
+#include <libedataserver/e-source.h>
+
+/* Standard GObject macros */
+#define E_TYPE_SOURCE_EXTENSION \
+	(e_source_extension_get_type ())
+#define E_SOURCE_EXTENSION(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_SOURCE_EXTENSION, ESourceExtension))
+#define E_SOURCE_EXTENSION_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_SOURCE_EXTENSION, ESourceExtensionClass))
+#define E_IS_SOURCE_EXTENSION(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_SOURCE_EXTENSION))
+#define E_IS_SOURCE_EXTENSION_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_SOURCE_EXTENSION))
+#define E_SOURCE_EXTENSION_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_SOURCE_EXTENSION, ESourceExtensionClass))
+
+G_BEGIN_DECLS
+
+typedef struct _ESourceExtension ESourceExtension;
+typedef struct _ESourceExtensionClass ESourceExtensionClass;
+typedef struct _ESourceExtensionPrivate ESourceExtensionPrivate;
+
+/**
+ * ESourceExtension:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
+ * Since: 3.6
+ **/
+struct _ESourceExtension {
+	GObject parent;
+	ESourceExtensionPrivate *priv;
+};
+
+struct _ESourceExtensionClass {
+	GObjectClass parent_class;
+
+	const gchar *name;
+};
+
+GType		e_source_extension_get_type	(void) G_GNUC_CONST;
+ESource *	e_source_extension_get_source	(ESourceExtension *extension);
+
+G_END_DECLS
+
+#endif /* E_SOURCE_EXTENSION_H */

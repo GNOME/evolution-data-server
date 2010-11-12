@@ -1,7 +1,17 @@
+include $(top_srcdir)/glib-gen.mak
+glib_enum_headers=e-source-enums.h
+glib_enum_output=e-source-enumtypes
+glib_enum_define=E
+glib_enum_prefix=e
+
+ENUM_GENERATED = e-source-enumtypes.h e-source-enumtypes.c
+
 # The marshallers
 MARSHAL_GENERATED = \
 	e-gdbus-marshallers.c \
-	e-gdbus-marshallers.h
+	e-gdbus-marshallers.h \
+	e-marshal.c \
+	e-marshal.h
 @EVO_MARSHAL_RULE@
 
 BUILT_SOURCES = \
@@ -19,9 +29,11 @@ libedataserver_1_2_la_CPPFLAGS = \
 	-DE_DATA_SERVER_LOCALEDIR=\""$(localedir)"\"			\
 	-DE_DATA_SERVER_EXTENSIONDIR=\"$(extensiondir)\"		\
 	-DE_DATA_SERVER_IMAGESDIR=\"$(imagesdir)\"			\
+	-DE_DATA_SERVER_PRIVDATADIR=\"$(privdatadir)\"			\
 	-DE_DATA_SERVER_UI_UIDIR=\""$(uidir)"\"				\
 	-DDEFAULT_EDS_DBUS_TIMEOUT=$(DEFAULT_EDS_DBUS_TIMEOUT)		\
 	$(E_DATA_SERVER_CFLAGS)						\
+	$(GCR_BASE_CFLAGS)						\
 	$(GIO_UNIX_CFLAGS)						\
 	$(SOUP_CFLAGS)							\
 	$(CODE_COVERAGE_CFLAGS)						\
@@ -43,6 +55,32 @@ libedataserver_1_2_la_SOURCES =		\
 	e-proxy.c			\
 	e-sexp.c			\
 	e-source.c			\
+	e-source-extension.c		\
+	e-source-address-book.c		\
+	e-source-alarms.c		\
+	e-source-authentication.c	\
+	e-source-authenticator.c	\
+	e-source-autocomplete.c		\
+	e-source-backend.c		\
+	e-source-calendar.c		\
+	e-source-camel.c		\
+	e-source-collection.c		\
+	e-source-goa.c			\
+	e-source-mail-account.c		\
+	e-source-mail-composition.c	\
+	e-source-mail-identity.c	\
+	e-source-mail-signature.c	\
+	e-source-mail-submission.c	\
+	e-source-mail-transport.c	\
+	e-source-mdn.c			\
+	e-source-offline.c		\
+	e-source-openpgp.c		\
+	e-source-refresh.c		\
+	e-source-registry.c		\
+	e-source-security.c		\
+	e-source-selectable.c		\
+	e-source-smime.c		\
+	e-source-webdav.c		\
 	e-debug-log.c			\
 	e-time-utils.c			\
 	e-uid.c				\
@@ -57,6 +95,7 @@ libedataserver_1_2_la_LIBADD =				\
 	$(top_builddir)/camel/libcamel-1.2.la		\
 	$(top_builddir)/private/libedbus-private.la	\
 	$(E_DATA_SERVER_LIBS)				\
+	$(GCR_BASE_LIBS)				\
 	$(GIO_UNIX_LIBS)				\
 	$(ICONV_LIBS)					\
 	$(SOCKET_LIBS)					\
@@ -85,6 +124,34 @@ libedataserverinclude_HEADERS =		\
 	e-proxy.h			\
 	e-sexp.h			\
 	e-source.h			\
+	e-source-address-book.h		\
+	e-source-alarms.h		\
+	e-source-authentication.h	\
+	e-source-authenticator.h	\
+	e-source-autocomplete.h		\
+	e-source-backend.h		\
+	e-source-calendar.h		\
+	e-source-camel.h		\
+	e-source-collection.h		\
+	e-source-enums.h		\
+	e-source-enumtypes.h		\
+	e-source-extension.h		\
+	e-source-goa.h			\
+	e-source-mail-account.h		\
+	e-source-mail-composition.h	\
+	e-source-mail-identity.h	\
+	e-source-mail-signature.h	\
+	e-source-mail-submission.h	\
+	e-source-mail-transport.h	\
+	e-source-mdn.h			\
+	e-source-offline.h		\
+	e-source-openpgp.h		\
+	e-source-refresh.h		\
+	e-source-registry.h		\
+	e-source-security.h		\
+	e-source-selectable.h		\
+	e-source-smime.h		\
+	e-source-webdav.h		\
 	e-debug-log.h			\
 	e-time-utils.h			\
 	e-uid.h				\

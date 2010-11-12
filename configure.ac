@@ -1313,7 +1313,7 @@ PKG_CHECK_MODULES(SQLITE3, [sqlite3 >= sqlite_minimum_version])
 dnl ******************************
 dnl libedataserver flags
 dnl ******************************
-E_DATA_SERVER_DEPS="gio-2.0 gmodule-2.0 libxml-2.0 libsoup-2.4 gconf-2.0 $mozilla_nspr"
+E_DATA_SERVER_DEPS="gio-2.0 gmodule-2.0 gnome-keyring-1 libxml-2.0 libsoup-2.4 gconf-2.0 $mozilla_nspr"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER, $E_DATA_SERVER_DEPS, $MANUAL_NSPR_CFLAGS, $MANUAL_NSPR_LIBS)
 AC_SUBST(E_DATA_SERVER_CFLAGS)
