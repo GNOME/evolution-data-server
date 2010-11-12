@@ -345,41 +345,6 @@ e_source_group_get_type
 </SECTION>
 
 <SECTION>
-<FILE>e-source-list</FILE>
-<TITLE>ESourceList</TITLE>
-ESourceList
-e_source_list_new
-e_source_list_new_for_gconf
-e_source_list_new_for_gconf_default
-e_source_list_peek_groups
-e_source_list_peek_group_by_uid
-e_source_list_peek_group_by_base_uri
-e_source_list_peek_group_by_properties
-e_source_list_peek_source_by_uid
-e_source_list_peek_source_any
-e_source_list_peek_default_source
-e_source_list_add_group
-e_source_list_remove_group
-e_source_list_remove_group_by_uid
-e_source_list_ensure_group
-e_source_list_remove_group_by_base_uri
-e_source_list_remove_source_by_uid
-e_source_list_sync
-e_source_list_is_gconf_updated
-<SUBSECTION Standard>
-E_SOURCE_LIST
-E_IS_SOURCE_LIST
-E_TYPE_SOURCE_LIST
-E_SOURCE_LIST_CLASS
-E_IS_SOURCE_LIST_CLASS
-E_SOURCE_LIST_GET_CLASS
-ESourceListClass
-<SUBSECTION Private>
-ESourceListPrivate
-e_source_list_get_type
-</SECTION>
-
-<SECTION>
 <FILE>e-source</FILE>
 <TITLE>ESource</TITLE>
 ESource
