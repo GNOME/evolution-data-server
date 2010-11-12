@@ -323,36 +323,45 @@ maybe_delete_unused_uris (EBookBackendFile *bf,
 }
 
 static gchar *
-e_book_backend_file_extract_path_from_source (ESource *source,
+e_book_backend_file_extract_path_from_source (ESourceRegistry *registry,
+                                              ESource *source,
                                               GetPathType path_type)
 {
+	ESource *builtin_source;
 	const gchar *user_data_dir;
-	const gchar *source_dir;
-	gchar *mangled_source_dir;
+	const gchar *uid;
 	gchar *filename = NULL;
 
+	uid = e_source_get_uid (source);
+	g_return_val_if_fail (uid != NULL, NULL);
+
 	user_data_dir = e_get_user_data_dir ();
-	source_dir = e_source_peek_relative_uri (source);
 
-	if (!source_dir || !g_str_equal (source_dir, "system"))
-		source_dir = e_source_get_uid (source);
+	builtin_source = e_source_registry_ref_builtin_address_book (registry);
 
-	/* Mangle the URI to not contain invalid characters. */
-	mangled_source_dir = g_strdelimit (g_strdup (source_dir), ":/", '_');
+	/* XXX Backward-compatibility hack:
+	 *
+	 * The special built-in "Personal" data source UIDs are now named
+	 * "system-$COMPONENT" but since the data directories are already
+	 * split out by component, we'll continue to use the old "system"
+	 * directories for these particular data sources. */
+	if (e_source_equal (source, builtin_source))
+		uid = "system";
 
 	switch (path_type) {
-	case GET_PATH_DB_DIR:
-		filename = g_build_filename
-			(user_data_dir, "addressbook", mangled_source_dir, NULL);
-		break;
-	case GET_PATH_PHOTO_DIR:
-		filename = g_build_filename
-			(user_data_dir, "addressbook", mangled_source_dir, "photos", NULL);
-		break;
-	default:
-		break;
+		case GET_PATH_DB_DIR:
+			filename = g_build_filename (
+				user_data_dir, "addressbook", uid, NULL);
+			break;
+		case GET_PATH_PHOTO_DIR:
+			filename = g_build_filename (
+				user_data_dir, "addressbook", uid, "photos", NULL);
+			break;
+		default:
+			g_warn_if_reached ();
 	}
-	g_free (mangled_source_dir);
+
+	g_object_unref (builtin_source);
 
 	return filename;
 }
@@ -1701,15 +1710,6 @@ e_book_backend_file_stop_book_view (EBookBackend *backend,
 		g_thread_join (closure->thread);
 }
 
-static void
-e_book_backend_file_authenticate_user (EBookBackendSync *backend,
-                                       GCancellable *cancellable,
-                                       ECredentials *credentials,
-                                       GError **perror)
-{
-	/* Success */
-}
-
 /*
 ** versions:
 **
@@ -1879,6 +1879,7 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	gchar            *dirname, *filename;
 	gboolean          readonly = TRUE;
+	ESourceRegistry  *registry;
 	ESource          *source;
 	gint              db_error;
 	DB               *db;
@@ -1891,8 +1892,9 @@ e_book_backend_file_open (EBookBackendSync *backend,
 #endif
 
 	source = e_backend_get_source (E_BACKEND (backend));
+	registry = e_book_backend_get_registry (E_BOOK_BACKEND (backend));
 	dirname = e_book_backend_file_extract_path_from_source (
-		source, GET_PATH_DB_DIR);
+		registry, source, GET_PATH_DB_DIR);
 	filename = g_build_filename (dirname, "addressbook.db", NULL);
 
 	db_error = e_db3_utils_maybe_recover (filename);
@@ -2122,7 +2124,7 @@ e_book_backend_file_open (EBookBackendSync *backend,
 
 	/* Resolve the photo directory here */
 	dirname = e_book_backend_file_extract_path_from_source (
-		source, GET_PATH_PHOTO_DIR);
+		registry, source, GET_PATH_PHOTO_DIR);
 	if (!only_if_exists && !create_directory (dirname, perror))
 		return;
 	bf->priv->photo_dirname = dirname;
@@ -2469,7 +2471,6 @@ e_book_backend_file_class_init (EBookBackendFileClass *class)
 	sync_class->get_contact_sync		= e_book_backend_file_get_contact;
 	sync_class->get_contact_list_sync	= e_book_backend_file_get_contact_list;
 	sync_class->get_contact_list_uids_sync	= e_book_backend_file_get_contact_list_uids;
-	sync_class->authenticate_user_sync	= e_book_backend_file_authenticate_user;
 
 	object_class->dispose = e_book_backend_file_dispose;
 	object_class->finalize = e_book_backend_file_finalize;
