@@ -927,7 +927,8 @@ source_selector_button_press_event (GtkWidget *widget,
 	if (source == NULL)
 		goto chainup;
 
-	e_source_selector_set_primary_selection (selector, source);
+	if (source != e_source_selector_get_primary_selection (selector))
+		e_source_selector_set_primary_selection (selector, source);
 
 	if (right_click)
 		g_signal_emit (
