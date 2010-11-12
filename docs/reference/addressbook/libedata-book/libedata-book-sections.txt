@@ -14,13 +14,13 @@ BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS
 BOOK_BACKEND_PROPERTY_REVISION
 e_book_backend_get_cache_dir
 e_book_backend_set_cache_dir
+e_book_backend_get_registry
 e_book_backend_add_client
 e_book_backend_remove_client
 e_book_backend_is_opened
 e_book_backend_is_opening
 e_book_backend_is_readonly
 e_book_backend_is_removed
-e_book_backend_authenticate_user
 e_book_backend_get_backend_property
 e_book_backend_set_backend_property
 e_book_backend_open
@@ -32,7 +32,6 @@ e_book_backend_modify_contacts
 e_book_backend_get_contact
 e_book_backend_get_contact_list
 e_book_backend_get_contact_list_uids
-e_book_backend_authenticate_user
 e_book_backend_start_book_view
 e_book_backend_stop_book_view
 e_book_backend_add_book_view
@@ -44,7 +43,6 @@ e_book_backend_notify_complete
 e_book_backend_notify_error
 e_book_backend_notify_readonly
 e_book_backend_notify_online
-e_book_backend_notify_auth_required
 e_book_backend_notify_opened
 e_book_backend_notify_property_changed
 e_book_backend_sync
@@ -244,7 +242,6 @@ e_book_backend_sync_modify_contacts
 e_book_backend_sync_get_contact
 e_book_backend_sync_get_contact_list
 e_book_backend_sync_get_contact_list_uids
-e_book_backend_sync_authenticate_user
 <SUBSECTION Standard>
 E_BOOK_BACKEND_SYNC
 E_IS_BOOK_BACKEND_SYNC
@@ -285,7 +282,6 @@ e_data_book_respond_get_contact_list_uids
 e_data_book_report_error
 e_data_book_report_readonly
 e_data_book_report_online
-e_data_book_report_auth_required
 e_data_book_report_opened
 e_data_book_report_backend_property_changed
 e_data_book_string_slist_to_comma_string
@@ -314,6 +310,7 @@ e_data_book_status_get_type
 <TITLE>EDataBookFactory</TITLE>
 EDataBookFactory
 e_data_book_factory_new
+e_data_book_factory_get_registry
 <SUBSECTION Standard>
 E_DATA_BOOK_FACTORY
 E_IS_DATA_BOOK_FACTORY

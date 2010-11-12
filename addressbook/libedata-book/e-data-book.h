@@ -25,7 +25,6 @@
 
 #include <gio/gio.h>
 
-#include <libedataserver/e-credentials.h>
 #include <libedataserver/e-source.h>
 
 #include "e-book-backend.h"
@@ -146,7 +145,6 @@ void		e_data_book_respond_get_contact_list_uids	(EDataBook *book, guint32 opid, 
 void		e_data_book_report_error			(EDataBook *book, const gchar *message);
 void		e_data_book_report_readonly			(EDataBook *book, gboolean readonly);
 void		e_data_book_report_online			(EDataBook *book, gboolean is_online);
-void		e_data_book_report_auth_required		(EDataBook *book, const ECredentials *credentials);
 void		e_data_book_report_opened			(EDataBook *book, const GError *error);
 void		e_data_book_report_backend_property_changed	(EDataBook *book, const gchar *prop_name, const gchar *prop_value);
 

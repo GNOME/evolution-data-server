@@ -18,6 +18,16 @@ G_DEFINE_ABSTRACT_TYPE (
 	e_book_backend_factory,
 	E_TYPE_BACKEND_FACTORY)
 
+static EDataBookFactory *
+book_backend_factory_get_data_factory (EBackendFactory *factory)
+{
+	EExtensible *extensible;
+
+	extensible = e_extension_get_extensible (E_EXTENSION (factory));
+
+	return E_DATA_BOOK_FACTORY (extensible);
+}
+
 static const gchar *
 book_backend_factory_get_hash_key (EBackendFactory *factory)
 {
@@ -38,12 +48,20 @@ book_backend_factory_new_backend (EBackendFactory *factory,
                                   ESource *source)
 {
 	EBookBackendFactoryClass *class;
+	EDataBookFactory *data_factory;
+	ESourceRegistry *registry;
 
 	class = E_BOOK_BACKEND_FACTORY_GET_CLASS (factory);
 	g_return_val_if_fail (g_type_is_a (
 		class->backend_type, E_TYPE_BOOK_BACKEND), NULL);
 
-	return g_object_new (class->backend_type, "source", source, NULL);
+	data_factory = book_backend_factory_get_data_factory (factory);
+	registry = e_data_book_factory_get_registry (data_factory);
+
+	return g_object_new (
+		class->backend_type,
+		"registry", registry,
+		"source", source, NULL);
 }
 
 static void

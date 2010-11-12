@@ -28,8 +28,7 @@
 #include <libebackend/e-backend.h>
 #include <libedata-book/e-data-book-types.h>
 #include <libedata-book/e-data-book.h>
-#include <libedataserver/e-source.h>
-#include <libedataserver/e-credentials.h>
+#include <libedataserver/e-source-registry.h>
 
 G_BEGIN_DECLS
 
@@ -148,7 +147,6 @@ struct _EBookBackendClass {
 
 	void	(* open)			(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, gboolean only_if_exists);
 	void	(* remove)			(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable);
-	void	(* authenticate_user)		(EBookBackend *backend, GCancellable *cancellable, ECredentials *credentials);
 
 	void	(* refresh)			(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable);
 	void	(* create_contacts)		(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const GSList *vcards);
@@ -171,6 +169,8 @@ GType		e_book_backend_get_type		(void);
 
 const gchar *	e_book_backend_get_cache_dir	(EBookBackend *backend);
 void		e_book_backend_set_cache_dir	(EBookBackend *backend, const gchar *cache_dir);
+ESourceRegistry *
+		e_book_backend_get_registry	(EBookBackend *backend);
 
 gboolean	e_book_backend_add_client	(EBookBackend *backend, EDataBook *book);
 void		e_book_backend_remove_client	(EBookBackend *backend, EDataBook *book);
@@ -179,7 +179,6 @@ gboolean	e_book_backend_is_opened	(EBookBackend *backend);
 gboolean	e_book_backend_is_opening	(EBookBackend *backend);
 gboolean	e_book_backend_is_readonly	(EBookBackend *backend);
 gboolean	e_book_backend_is_removed	(EBookBackend *backend);
-void		e_book_backend_authenticate_user (EBookBackend *backend, GCancellable *cancellable, ECredentials *credentials);
 
 void		e_book_backend_get_backend_property (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *prop_name);
 void		e_book_backend_set_backend_property (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *prop_name, const gchar *prop_value);
@@ -207,7 +206,6 @@ void		e_book_backend_notify_complete	(EBookBackend *backend);
 void		e_book_backend_notify_error	(EBookBackend *backend, const gchar *message);
 void		e_book_backend_notify_readonly	(EBookBackend *backend, gboolean is_readonly);
 void		e_book_backend_notify_online	(EBookBackend *backend, gboolean is_online);
-void		e_book_backend_notify_auth_required (EBookBackend *backend, gboolean is_self, const ECredentials *credentials);
 void		e_book_backend_notify_opened	(EBookBackend *backend, GError *error);
 void		e_book_backend_notify_property_changed (EBookBackend *backend, const gchar *prop_name, const gchar *prop_value);
 

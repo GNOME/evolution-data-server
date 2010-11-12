@@ -22,6 +22,7 @@
 #define E_DATA_BOOK_FACTORY_H
 
 #include <libebackend/e-data-factory.h>
+#include <libedataserver/e-source-registry.h>
 
 /* Standard GObject macros */
 #define E_TYPE_DATA_BOOK_FACTORY \
@@ -60,6 +61,9 @@ struct _EDataBookFactoryClass {
 GType		e_data_book_factory_get_type	(void) G_GNUC_CONST;
 EDBusServer *	e_data_book_factory_new		(GCancellable *cancellable,
 						 GError **error);
+ESourceRegistry *
+		e_data_book_factory_get_registry
+						(EDataBookFactory *factory);
 
 G_END_DECLS
 

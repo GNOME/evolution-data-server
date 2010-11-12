@@ -24,6 +24,8 @@
 	((obj), E_TYPE_BOOK_BACKEND, EBookBackendPrivate))
 
 struct _EBookBackendPrivate {
+	ESourceRegistry *registry;
+
 	GMutex *clients_mutex;
 	GSList *clients;
 
@@ -38,7 +40,8 @@ struct _EBookBackendPrivate {
 /* Property IDs */
 enum {
 	PROP_0,
-	PROP_CACHE_DIR
+	PROP_CACHE_DIR,
+	PROP_REGISTRY
 };
 
 G_DEFINE_TYPE (EBookBackend, e_book_backend, E_TYPE_BACKEND)
@@ -48,21 +51,19 @@ book_backend_set_default_cache_dir (EBookBackend *backend)
 {
 	ESource *source;
 	const gchar *user_cache_dir;
-	gchar *mangled_uri;
+	const gchar *uid;
 	gchar *filename;
 
 	user_cache_dir = e_get_user_cache_dir ();
 	source = e_backend_get_source (E_BACKEND (backend));
 
-	/* Mangle the URI to not contain invalid characters. */
-	mangled_uri = g_strdelimit (e_source_get_uri (source), ":/", '_');
+	uid = e_source_get_uid (source);
+	g_return_if_fail (uid != NULL);
 
 	filename = g_build_filename (
-		user_cache_dir, "addressbook", mangled_uri, NULL);
+		user_cache_dir, "addressbook", uid, NULL);
 	e_book_backend_set_cache_dir (backend, filename);
 	g_free (filename);
-
-	g_free (mangled_uri);
 }
 
 static void
@@ -109,6 +110,16 @@ book_backend_set_backend_property (EBookBackend *backend,
 }
 
 static void
+book_backend_set_registry (EBookBackend *backend,
+                           ESourceRegistry *registry)
+{
+	g_return_if_fail (E_IS_SOURCE_REGISTRY (registry));
+	g_return_if_fail (backend->priv->registry == NULL);
+
+	backend->priv->registry = g_object_ref (registry);
+}
+
+static void
 book_backend_set_property (GObject *object,
                            guint property_id,
                            const GValue *value,
@@ -119,6 +130,12 @@ book_backend_set_property (GObject *object,
 			e_book_backend_set_cache_dir (
 				E_BOOK_BACKEND (object),
 				g_value_get_string (value));
+			return;
+
+		case PROP_REGISTRY:
+			book_backend_set_registry (
+				E_BOOK_BACKEND (object),
+				g_value_get_object (value));
 			return;
 	}
 
@@ -137,6 +154,12 @@ book_backend_get_property (GObject *object,
 				value, e_book_backend_get_cache_dir (
 				E_BOOK_BACKEND (object)));
 			return;
+
+		case PROP_REGISTRY:
+			g_value_set_object (
+				value, e_book_backend_get_registry (
+				E_BOOK_BACKEND (object)));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -148,6 +171,11 @@ book_backend_dispose (GObject *object)
 	EBookBackendPrivate *priv;
 
 	priv = E_BOOK_BACKEND_GET_PRIVATE (object);
+
+	if (priv->registry != NULL) {
+		g_object_unref (priv->registry);
+		priv->registry = NULL;
+	}
 
 	if (priv->views != NULL) {
 		g_slist_free (priv->views);
@@ -219,6 +247,18 @@ e_book_backend_class_init (EBookBackendClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_REGISTRY,
+		g_param_spec_object (
+			"registry",
+			"Registry",
+			"Data source registry",
+			E_TYPE_SOURCE_REGISTRY,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -275,6 +315,24 @@ e_book_backend_set_cache_dir (EBookBackend *backend,
 	backend->priv->cache_dir = g_strdup (cache_dir);
 
 	g_object_notify (G_OBJECT (backend), "cache-dir");
+}
+
+/**
+ * e_book_backend_get_registry:
+ * @backend: an #EBookBackend
+ *
+ * Returns the data source registry to which #EBackend:source belongs.
+ *
+ * Returns: an #ESourceRegistry
+ *
+ * Since: 3.6
+ **/
+ESourceRegistry *
+e_book_backend_get_registry (EBookBackend *backend)
+{
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
+
+	return backend->priv->registry;
 }
 
 /**
@@ -665,37 +723,6 @@ e_book_backend_stop_book_view (EBookBackend *backend,
 	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->stop_book_view);
 
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->stop_book_view) (backend, view);
-}
-
-/**
- * e_book_backend_authenticate_user:
- * @backend: an #EBookBackend
- * @cancellable: a #GCancellable for the operation
- * @credentials: #ECredentials to use for authentication
- *
- * Notifies @backend about @credentials provided by user to use
- * for authentication. This notification is usually called during
- * opening phase as a response to e_book_backend_notify_auth_required()
- * on the client side and it results in setting property 'opening' to %TRUE
- * unless the backend is already opened. This function finishes opening
- * phase, thus it should be finished with e_book_backend_notify_opened().
- *
- * See information at e_book_backend_open() for more details
- * how the opening phase works.
- **/
-void
-e_book_backend_authenticate_user (EBookBackend *backend,
-                                  GCancellable *cancellable,
-                                  ECredentials *credentials)
-{
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (credentials != NULL);
-	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->authenticate_user);
-
-	if (backend->priv->opened)
-		backend->priv->opening = TRUE;
-
-	(* E_BOOK_BACKEND_GET_CLASS (backend)->authenticate_user) (backend, cancellable, credentials);
 }
 
 /**
@@ -1157,48 +1184,6 @@ e_book_backend_notify_online (EBookBackend *backend,
 
 	for (clients = priv->clients; clients != NULL; clients = g_slist_next (clients))
 		e_data_book_report_online (E_DATA_BOOK (clients->data), is_online);
-
-	g_mutex_unlock (priv->clients_mutex);
-}
-
-/**
- * e_book_backend_notify_auth_required:
- * @backend: an #EBookBackend
- * @is_self: Use %TRUE to indicate the authentication is required
- *    for the @backend, otheriwse the authentication is for any
- *    other source. Having @credentials %NULL means @is_self
- *    automatically.
- * @credentials: an #ECredentials that contains extra information for
- *    a source for which authentication is requested.
- *    This parameter can be %NULL to indicate "for this book".
- *
- * Notifies clients that @backend requires authentication in order to
- * connect. This function call does not influence 'opening', but 
- * influences 'opened' property, which is set to %FALSE when @is_self
- * is %TRUE or @credentials is %NULL. Opening phase is finished
- * by e_book_backend_notify_opened() if this is requested for @backend.
- *
- * See e_book_backend_open() for a description how the whole opening
- * phase works.
- *
- * Meant to be used by backend implementations.
- **/
-void
-e_book_backend_notify_auth_required (EBookBackend *backend,
-                                     gboolean is_self,
-                                     const ECredentials *credentials)
-{
-	EBookBackendPrivate *priv;
-	GSList *clients;
-
-	priv = backend->priv;
-	g_mutex_lock (priv->clients_mutex);
-
-	if (is_self || !credentials)
-		priv->opened = FALSE;
-
-	for (clients = priv->clients; clients != NULL; clients = g_slist_next (clients))
-		e_data_book_report_auth_required (E_DATA_BOOK (clients->data), credentials);
 
 	g_mutex_unlock (priv->clients_mutex);
 }

@@ -29,11 +29,10 @@
 #ifdef HAVE_GOA
 #define GOA_API_IS_SUBJECT_TO_CHANGE
 #include <goa/goa.h>
-
-/* This is the property name or URL parameter under which we
- * embed the GoaAccount ID into an EAccount or ESource object. */
-#define GOA_KEY "goa-account-id"
 #endif
+
+#include <libedataserver/e-source-address-book.h>
+#include <libedataserver/e-source-goa.h>
 
 #include "e-book-backend.h"
 #include "e-book-backend-factory.h"
@@ -49,6 +48,7 @@
 	((obj), E_TYPE_DATA_BOOK_FACTORY, EDataBookFactoryPrivate))
 
 struct _EDataBookFactoryPrivate {
+	ESourceRegistry *registry;
 	EGdbusBookFactory *gdbus_object;
 
 	GMutex *books_lock;
@@ -65,6 +65,11 @@ struct _EDataBookFactoryPrivate {
 #endif
 };
 
+enum {
+	PROP_0,
+	PROP_REGISTRY
+};
+
 /* Forward Declarations */
 static void	e_data_book_factory_initable_init
 						(GInitableIface *interface);
@@ -77,39 +82,43 @@ G_DEFINE_TYPE_WITH_CODE (
 		G_TYPE_INITABLE,
 		e_data_book_factory_initable_init))
 
-static gchar *
-e_data_book_factory_extract_proto_from_uri (const gchar *uri)
-{
-	gchar *proto, *cp;
-
-	cp = strchr (uri, ':');
-	if (cp == NULL)
-		return NULL;
-
-	proto = g_malloc0 (cp - uri + 1);
-	strncpy (proto, uri, cp - uri);
-
-	return proto;
-}
-
 static EBackend *
-data_book_factory_ref_backend (EDataBookFactory *factory,
+data_book_factory_ref_backend (EDataFactory *factory,
                                ESource *source,
-                               const gchar *uri)
+                               GError **error)
 {
 	EBackend *backend;
-	gchar *hash_key;
+	ESourceBackend *extension;
+	const gchar *extension_name;
+	gchar *backend_name;
 
-	hash_key = e_data_book_factory_extract_proto_from_uri (uri);
-	if (hash_key == NULL) {
-		g_warning ("Cannot extract protocol from URI %s", uri);
+	/* For address books the hash key is simply the backend name.
+	 * (cf. calendar hash keys, which are slightly more complex) */
+
+	extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
+	extension = e_source_get_extension (source, extension_name);
+	backend_name = e_source_backend_dup_backend_name (extension);
+
+	if (backend_name == NULL || *backend_name == '\0') {
+		g_set_error (
+			error, E_DATA_BOOK_ERROR,
+			E_DATA_BOOK_STATUS_NO_SUCH_BOOK,
+			_("No backend name in source '%s'"),
+			e_source_get_display_name (source));
+		g_free (backend_name);
 		return NULL;
 	}
 
-	backend = e_data_factory_ref_backend (
-		E_DATA_FACTORY (factory), hash_key, source);
+	backend = e_data_factory_ref_backend (factory, backend_name, source);
 
-	g_free (hash_key);
+	if (backend == NULL)
+		g_set_error (
+			error, E_DATA_BOOK_ERROR,
+			E_DATA_BOOK_STATUS_NO_SUCH_BOOK,
+			_("Invalid backend name '%s' in source '%s'"),
+			backend_name, e_source_get_display_name (source));
+
+	g_free (backend_name);
 
 	return backend;
 }
@@ -173,19 +182,130 @@ book_freed_cb (EDataBookFactory *factory,
 	e_dbus_server_release (E_DBUS_SERVER (factory));
 }
 
+#ifdef HAVE_GOA
+static void
+data_book_factory_collect_goa_accounts (EDataBookFactory *factory)
+{
+	GList *list, *iter;
+
+	g_hash_table_remove_all (factory->priv->goa_accounts);
+
+	list = goa_client_get_accounts (factory->priv->goa_client);
+
+	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
+		GoaObject *goa_object;
+		GoaAccount *goa_account;
+		const gchar *goa_account_id;
+
+		goa_object = GOA_OBJECT (iter->data);
+
+		goa_account = goa_object_peek_account (goa_object);
+		goa_account_id = goa_account_get_id (goa_account);
+		g_return_if_fail (goa_account_id != NULL);
+
+		/* Takes ownership of the GoaObject. */
+		g_hash_table_insert (
+			factory->priv->goa_accounts,
+			g_strdup (goa_account_id), goa_object);
+	}
+
+	g_list_free (list);
+}
+
+static void
+data_book_factory_goa_account_added_cb (GoaClient *goa_client,
+                                        GoaObject *goa_object,
+                                        EDataBookFactory *factory)
+{
+	GoaAccount *goa_account;
+	const gchar *goa_account_id;
+
+	goa_account = goa_object_peek_account (goa_object);
+	goa_account_id = goa_account_get_id (goa_account);
+	g_return_if_fail (goa_account_id != NULL);
+
+	g_hash_table_insert (
+		factory->priv->goa_accounts,
+		g_strdup (goa_account_id),
+		g_object_ref (goa_object));
+}
+
+static void
+data_book_factory_goa_account_removed_cb (GoaClient *goa_client,
+                                          GoaObject *goa_object,
+                                          EDataBookFactory *factory)
+{
+	GoaAccount *goa_account;
+	const gchar *goa_account_id;
+
+	goa_account = goa_object_peek_account (goa_object);
+	goa_account_id = goa_account_get_id (goa_account);
+	g_return_if_fail (goa_account_id != NULL);
+
+	g_hash_table_remove (factory->priv->goa_accounts, goa_account_id);
+}
+
+static void
+book_backend_factory_match_goa_object (EDataBookFactory *factory,
+                                       EBackend *backend)
+{
+	ESource *source;
+	ESourceRegistry *registry;
+	GoaObject *goa_object = NULL;
+	gchar *goa_account_id = NULL;
+	const gchar *extension_name;
+
+	/* Embed the corresponding GoaObject in the EBookBackend
+	 * so the backend can retrieve it.  We're not ready to add
+	 * formal API for this to EBookBackend just yet. */
+
+	registry = e_data_book_factory_get_registry (factory);
+
+	source = e_backend_get_source (backend);
+	extension_name = E_SOURCE_EXTENSION_GOA;
+
+	/* Check source and its ancestors for a
+	 * [GNOME Online Accounts] extension. */
+	source = e_source_registry_find_extension (
+		registry, source, extension_name);
+
+	if (source != NULL) {
+		ESourceGoa *extension;
+
+		extension = e_source_get_extension (source, extension_name);
+		goa_account_id = e_source_goa_dup_account_id (extension);
+		g_object_unref (source);
+	}
+
+	if (goa_account_id != NULL) {
+		goa_object = g_hash_table_lookup (
+			factory->priv->goa_accounts, goa_account_id);
+		g_free (goa_account_id);
+	}
+
+	if (goa_object != NULL) {
+		g_object_set_data_full (
+			G_OBJECT (backend),
+			"GNOME Online Account",
+			g_object_ref (goa_object),
+			(GDestroyNotify) g_object_unref);
+	}
+}
+#endif /* HAVE_GOA */
+
 static gboolean
 impl_BookFactory_get_book (EGdbusBookFactory *object,
                            GDBusMethodInvocation *invocation,
-                           const gchar *in_source,
+                           const gchar *uid,
                            EDataBookFactory *factory)
 {
 	EDataBook *book;
 	EBackend *backend;
 	EDataBookFactoryPrivate *priv = factory->priv;
 	GDBusConnection *connection;
+	ESourceRegistry *registry;
 	ESource *source;
 	gchar *path;
-	gchar *uri;
 	const gchar *sender;
 	GList *list;
 	GError *error = NULL;
@@ -193,84 +313,51 @@ impl_BookFactory_get_book (EGdbusBookFactory *object,
 	sender = g_dbus_method_invocation_get_sender (invocation);
 	connection = g_dbus_method_invocation_get_connection (invocation);
 
-	if (in_source == NULL || in_source[0] == '\0') {
-		error = g_error_new (
+	registry = e_data_book_factory_get_registry (factory);
+
+	if (uid == NULL || *uid == '\0') {
+		error = g_error_new_literal (
 			E_DATA_BOOK_ERROR,
 			E_DATA_BOOK_STATUS_NO_SUCH_BOOK,
-			_("Empty URI"));
+			_("Missing source UID"));
 		g_dbus_method_invocation_return_gerror (invocation, error);
 		g_error_free (error);
 
 		return TRUE;
 	}
 
-	source = e_source_new_from_standalone_xml (in_source);
-	if (!source) {
+	source = e_source_registry_ref_source (registry, uid);
+
+	if (source == NULL) {
 		error = g_error_new (
 			E_DATA_BOOK_ERROR,
 			E_DATA_BOOK_STATUS_NO_SUCH_BOOK,
-			_("Invalid source"));
+			_("No such source for UID '%s'"), uid);
 		g_dbus_method_invocation_return_gerror (invocation, error);
 		g_error_free (error);
 
 		return TRUE;
 	}
 
-	uri = e_source_get_uri (source);
+	backend = data_book_factory_ref_backend (
+		E_DATA_FACTORY (factory), source, &error);
 
-	if (uri == NULL || *uri == '\0') {
-		g_object_unref (source);
-		g_free (uri);
+	g_object_unref (source);
 
-		error = g_error_new (
-			E_DATA_BOOK_ERROR,
-			E_DATA_BOOK_STATUS_NO_SUCH_BOOK,
-			_("Empty URI"));
+	if (error != NULL) {
 		g_dbus_method_invocation_return_gerror (invocation, error);
 		g_error_free (error);
 
 		return TRUE;
 	}
 
-	backend = data_book_factory_ref_backend (factory, source, uri);
-
-	if (backend == NULL) {
-		g_free (uri);
-		g_object_unref (source);
-
-		error = g_error_new (
-			E_DATA_BOOK_ERROR,
-			E_DATA_BOOK_STATUS_NO_SUCH_BOOK,
-			_("Invalid source"));
-		g_dbus_method_invocation_return_gerror (invocation, error);
-		g_error_free (error);
-
-		return TRUE;
-	}
-
-	g_mutex_lock (priv->books_lock);
+	g_return_val_if_fail (E_IS_BACKEND (backend), FALSE);
 
 	e_dbus_server_hold (E_DBUS_SERVER (factory));
 
 #ifdef HAVE_GOA
-	{
-		GoaObject *goa_object = NULL;
-		const gchar *goa_account_id;
-
-		/* Embed the corresponding GoaObject in the EBookBackend
-		 * so the backend can retrieve it.  We're not ready to add
-		 * formal API for this to EBookBackend just yet. */
-		goa_account_id = e_source_get_property (source, GOA_KEY);
-		if (goa_account_id != NULL)
-			goa_object = g_hash_table_lookup (
-				factory->priv->goa_accounts, goa_account_id);
-		if (GOA_IS_OBJECT (goa_object))
-			g_object_set_data_full (
-				G_OBJECT (backend),
-				"GNOME Online Account",
-				g_object_ref (goa_object),
-				(GDestroyNotify) g_object_unref);
-	}
+	/* See if there's a matching GoaObject for this backend. */
+	book_backend_factory_match_goa_object (factory, backend);
 #endif
 
 	path = construct_book_factory_path ();
@@ -292,9 +379,6 @@ impl_BookFactory_get_book (EGdbusBookFactory *object,
 	g_mutex_unlock (priv->connections_lock);
 
 	g_mutex_unlock (priv->books_lock);
-
-	g_object_unref (source);
-	g_free (uri);
 
 	e_gdbus_book_factory_complete_get_book (
 		object, invocation, path, error);
@@ -321,11 +405,34 @@ remove_data_book_cb (EDataBook *data_book)
 }
 
 static void
+data_book_factory_get_property (GObject *object,
+                                guint property_id,
+                                GValue *value,
+                                GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_REGISTRY:
+			g_value_set_object (
+				value,
+				e_data_book_factory_get_registry (
+				E_DATA_BOOK_FACTORY (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
 data_book_factory_dispose (GObject *object)
 {
 	EDataBookFactoryPrivate *priv;
 
 	priv = E_DATA_BOOK_FACTORY_GET_PRIVATE (object);
+
+	if (priv->registry != NULL) {
+		g_object_unref (priv->registry);
+		priv->registry = NULL;
+	}
 
 	if (priv->gdbus_object != NULL) {
 		g_object_unref (priv->gdbus_object);
@@ -451,9 +558,13 @@ data_book_factory_initable_init (GInitable *initable,
                                  GCancellable *cancellable,
                                  GError **error)
 {
-	/* XXX Nothing to do here just yet.  More to come soon. */
+	EDataBookFactoryPrivate *priv;
 
-	return TRUE;
+	priv = E_DATA_BOOK_FACTORY_GET_PRIVATE (initable);
+
+	priv->registry = e_source_registry_new_sync (cancellable, error);
+
+	return (priv->registry != NULL);
 }
 
 static void
@@ -466,6 +577,7 @@ e_data_book_factory_class_init (EDataBookFactoryClass *class)
 	g_type_class_add_private (class, sizeof (EDataBookFactoryPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->get_property = data_book_factory_get_property;
 	object_class->dispose = data_book_factory_dispose;
 	object_class->finalize = data_book_factory_finalize;
 
@@ -478,6 +590,17 @@ e_data_book_factory_class_init (EDataBookFactoryClass *class)
 
 	data_factory_class = E_DATA_FACTORY_CLASS (class);
 	data_factory_class->backend_factory_type = E_TYPE_BOOK_BACKEND_FACTORY;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_REGISTRY,
+		g_param_spec_object (
+			"registry",
+			"Registry",
+			"Data source registry",
+			E_TYPE_SOURCE_REGISTRY,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -485,44 +608,6 @@ e_data_book_factory_initable_init (GInitableIface *interface)
 {
 	interface->init = data_book_factory_initable_init;
 }
-
-#ifdef HAVE_GOA
-static void
-e_data_book_factory_update_goa_accounts (EDataBookFactory *factory)
-{
-	GList *list, *iter;
-
-	g_hash_table_remove_all (factory->priv->goa_accounts);
-
-	list = goa_client_get_accounts (factory->priv->goa_client);
-
-	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
-		GoaObject *goa_object;
-		GoaAccount *goa_account;
-		const gchar *goa_account_id;
-
-		goa_object = GOA_OBJECT (iter->data);
-		goa_account = goa_object_peek_account (goa_object);
-		goa_account_id = goa_account_get_id (goa_account);
-
-		/* Takes ownership of the GoaObject. */
-		g_hash_table_insert (
-			factory->priv->goa_accounts,
-			g_strdup (goa_account_id), goa_object);
-	}
-
-	g_list_free (list);
-}
-
-static void
-e_data_book_factory_accounts_changed_cb (GoaClient *client,
-                                         GDBusObject *object,
-                                         EDataBookFactory *factory)
-{
-	e_data_book_factory_update_goa_accounts (factory);
-}
-
-#endif
 
 static void
 e_data_book_factory_init (EDataBookFactory *factory)
@@ -561,17 +646,16 @@ e_data_book_factory_init (EDataBookFactory *factory)
 	factory->priv->goa_client = goa_client_new_sync (NULL, &error);
 
 	if (factory->priv->goa_client != NULL) {
-		e_data_book_factory_update_goa_accounts (factory);
+		data_book_factory_collect_goa_accounts (factory);
 
 		g_signal_connect (
 			factory->priv->goa_client, "account_added",
-			G_CALLBACK (e_data_book_factory_accounts_changed_cb), factory);
+			G_CALLBACK (data_book_factory_goa_account_added_cb),
+			factory);
 		g_signal_connect (
 			factory->priv->goa_client, "account_removed",
-			G_CALLBACK (e_data_book_factory_accounts_changed_cb), factory);
-		g_signal_connect (
-			factory->priv->goa_client, "account_changed",
-			G_CALLBACK (e_data_book_factory_accounts_changed_cb), factory);
+			G_CALLBACK (data_book_factory_goa_account_removed_cb),
+			factory);
 	} else if (error != NULL) {
 		g_warning ("%s", error->message);
 		g_error_free (error);
@@ -587,3 +671,12 @@ e_data_book_factory_new (GCancellable *cancellable,
 		E_TYPE_DATA_BOOK_FACTORY,
 		cancellable, error, NULL);
 }
+
+ESourceRegistry *
+e_data_book_factory_get_registry (EDataBookFactory *factory)
+{
+	g_return_val_if_fail (E_IS_DATA_BOOK_FACTORY (factory), NULL);
+
+	return factory->priv->registry;
+}
+

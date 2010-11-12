@@ -17,7 +17,6 @@
     <signal name="connection">
     	<arg name="connected" type="b"/>
     </signal>
-    <signal name="auth_required"/>
 
     <method name="open">
       <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_AddressBook_Book_open"/>
@@ -42,14 +41,6 @@
       <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
       <arg name="query" type="s" direction="in"/>
       <arg name="vcards" type="as" direction="out"/>
-    </method>
-
-    <method name="authenticateUser">
-      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_AddressBook_Book_authenticateUser"/>
-      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
-      <arg name="user" type="s" direction="in"/>
-      <arg name="passwd" type="s" direction="in"/>
-      <arg name="auth_method" type="s" direction="in"/>
     </method>
 
     <method name="addContact">

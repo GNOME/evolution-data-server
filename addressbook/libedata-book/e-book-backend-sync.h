@@ -39,8 +39,6 @@ struct _EBookBackendSyncClass {
 	void (*get_contact_sync)		(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *id, gchar **vcard, GError **error);
 	void (*get_contact_list_sync)		(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *query, GSList **contacts, GError **error);
 	void (*get_contact_list_uids_sync)	(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *query, GSList **contacts_uids, GError **error);
-
-	void (*authenticate_user_sync)		(EBookBackendSync *backend, GCancellable *cancellable, ECredentials *credentials, GError **error);
 };
 
 GType		e_book_backend_sync_get_type		(void);
@@ -58,8 +56,6 @@ void		e_book_backend_sync_modify_contacts	(EBookBackendSync *backend, EDataBook 
 void		e_book_backend_sync_get_contact		(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *id, gchar **vcard, GError **error);
 void		e_book_backend_sync_get_contact_list	(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *query, GSList **contacts, GError **error);
 void		e_book_backend_sync_get_contact_list_uids (EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *query, GSList **contacts_uids, GError **error);
-
-void		e_book_backend_sync_authenticate_user	(EBookBackendSync *backend, GCancellable *cancellable, ECredentials *credentials, GError **error);
 
 G_END_DECLS
 

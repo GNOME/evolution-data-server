@@ -384,28 +384,6 @@ e_book_backend_sync_get_contact_list_uids (EBookBackendSync *backend,
 	}
 }
 
-/**
- * e_book_backend_sync_authenticate_user:
- * @backend: an #EBookBackendSync
- * @cancellable: a #GCancellable for the operation
- * @credentials: an #ECredentials to authenticate with
- * @error: #GError to set, when something fails
- *
- * Authenticates @backend with given @credentials.
- **/
-void
-e_book_backend_sync_authenticate_user (EBookBackendSync *backend,
-                                       GCancellable *cancellable,
-                                       ECredentials *credentials,
-                                       GError **error)
-{
-	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (credentials, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->authenticate_user_sync, E_DATA_BOOK_STATUS_NOT_SUPPORTED);
-
-	(* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->authenticate_user_sync) (backend, cancellable, credentials, error);
-}
-
 static void
 book_backend_open (EBookBackend *backend,
                    EDataBook *book,
@@ -587,18 +565,6 @@ book_backend_get_contact_list_uids (EBookBackend *backend,
 	g_slist_free (uids);
 }
 
-static void
-book_backend_authenticate_user (EBookBackend *backend,
-                                GCancellable *cancellable,
-                                ECredentials *credentials)
-{
-	GError *error = NULL;
-
-	e_book_backend_sync_authenticate_user (E_BOOK_BACKEND_SYNC (backend), cancellable, credentials, &error);
-
-	e_book_backend_notify_opened (backend, error);
-}
-
 static gboolean
 book_backend_sync_get_backend_property (EBookBackendSync *backend,
                                         EDataBook *book,
@@ -634,7 +600,6 @@ e_book_backend_sync_class_init (EBookBackendSyncClass *class)
 	EBookBackendClass *backend_class = E_BOOK_BACKEND_CLASS (class);
 
 	backend_class->open			= book_backend_open;
-	backend_class->authenticate_user	= book_backend_authenticate_user;
 	backend_class->remove			= book_backend_remove;
 	backend_class->refresh			= book_backend_refresh;
 	backend_class->get_backend_property	= book_backend_get_backend_property;

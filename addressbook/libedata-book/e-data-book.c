@@ -25,7 +25,6 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 
-#include <libedataserver/e-credentials.h>
 #include <libedataserver/e-data-server-util.h>
 #include <libedataserver/e-operation-pool.h>
 
@@ -65,7 +64,6 @@ typedef enum {
 	OP_GET_CONTACT,
 	OP_GET_CONTACTS,
 	OP_GET_CONTACTS_UIDS,
-	OP_AUTHENTICATE,
 	OP_ADD_CONTACTS,
 	OP_REMOVE_CONTACTS,
 	OP_MODIFY_CONTACTS,
@@ -88,8 +86,6 @@ typedef struct {
 		gboolean only_if_exists;
 		/* OP_GET_CONTACT */
 		gchar *uid;
-		/* OP_AUTHENTICATE */
-		ECredentials *credentials;
 		/* OP_REMOVE_CONTACTS */
 		GSList *ids;
 		/* OP_ADD_CONTACT */
@@ -232,10 +228,6 @@ operation_thread (gpointer data,
 			g_free (path);
 		}
 		g_free (op->d.query);
-		break;
-	case OP_AUTHENTICATE:
-		e_book_backend_authenticate_user (backend, op->cancellable, op->d.credentials);
-		e_credentials_free (op->d.credentials);
 		break;
 	case OP_CANCEL_OPERATION:
 		g_static_rec_mutex_lock (&op->book->priv->pending_ops_lock);
@@ -746,31 +738,6 @@ impl_Book_get_view (EGdbusBook *object,
 }
 
 static gboolean
-impl_Book_authenticate_user (EGdbusBook *object,
-                             GDBusMethodInvocation *invocation,
-                             const gchar * const *in_credentials,
-                             EDataBook *book)
-{
-	OperationData *op;
-
-	if (in_credentials == NULL) {
-		GError *error = e_data_book_create_error (E_DATA_BOOK_STATUS_INVALID_ARG, NULL);
-		/* Translators: This is prefix to a detailed error message */
-		data_book_return_error (invocation, error, _("Cannot authenticate user: "));
-		g_error_free (error);
-		return TRUE;
-	}
-
-	op = op_new (OP_AUTHENTICATE, book);
-	op->d.credentials = e_credentials_new_strv (in_credentials);
-
-	e_gdbus_book_complete_authenticate_user (book->priv->gdbus_object, invocation, NULL);
-	e_operation_pool_push (ops_pool, op);
-
-	return TRUE;
-}
-
-static gboolean
 impl_Book_cancel_operation (EGdbusBook *object,
                             GDBusMethodInvocation *invocation,
                             guint in_opid,
@@ -1163,29 +1130,6 @@ e_data_book_report_online (EDataBook *book,
 	e_gdbus_book_emit_online (book->priv->gdbus_object, is_online);
 }
 
-/* credentilas contains extra information for a source for which authentication is requested.
- * This parameter can be NULL to indicate "for this book".
-*/
-void
-e_data_book_report_auth_required (EDataBook *book,
-                                  const ECredentials *credentials)
-{
-	gchar *empty_strv[2];
-	gchar **strv = NULL;
-
-	g_return_if_fail (book != NULL);
-
-	empty_strv[0] = NULL;
-	empty_strv[1] = NULL;
-
-	if (credentials)
-		strv = e_credentials_to_strv (credentials);
-
-	e_gdbus_book_emit_auth_required (book->priv->gdbus_object, (const gchar * const *) (strv ? strv : empty_strv));
-
-	g_strfreev (strv);
-}
-
 /**
  * e_data_book_report_opened:
  *
@@ -1403,9 +1347,6 @@ e_data_book_init (EDataBook *ebook)
 	g_signal_connect (
 		gdbus_object, "handle-get-contact-list-uids",
 		G_CALLBACK (impl_Book_get_contact_list_uids), ebook);
-	g_signal_connect (
-		gdbus_object, "handle-authenticate-user",
-		G_CALLBACK (impl_Book_authenticate_user), ebook);
 	g_signal_connect (
 		gdbus_object, "handle-add-contacts",
 		G_CALLBACK (impl_Book_add_contacts), ebook);
