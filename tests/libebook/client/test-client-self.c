@@ -10,6 +10,7 @@ main (gint argc,
       gchar **argv)
 {
 	EBookClient *book_client = NULL;
+	ESourceRegistry *registry;
 	EContact *contact = NULL;
 	GError *error = NULL;
 	gchar *vcard;
@@ -18,7 +19,11 @@ main (gint argc,
 
 	printf ("getting the self contact\n");
 
-	if (!e_book_client_get_self (&contact, &book_client, &error)) {
+	registry = e_source_registry_new_sync (NULL, &error);
+	if (error != NULL)
+		g_error ("%s", error->message);
+
+	if (!e_book_client_get_self (registry, &contact, &book_client, &error)) {
 		report_error ("get self", &error);
 		return 1;
 	}

@@ -168,6 +168,7 @@ test_bulk_modify (EBookClient *client,
 
 gint main (gint argc, gchar **argv)
 {
+#if 0  /* ACCOUNT_MGMT */
 	EBookClient *client = NULL;
 	const gchar
 		*test_vcard_str =
@@ -196,6 +197,7 @@ gint main (gint argc, gchar **argv)
 	g_print ("Passed.\n");
 
 	g_object_unref (client);
+#endif /* ACCOUNT_MGMT */
 
 	return 0;
 }

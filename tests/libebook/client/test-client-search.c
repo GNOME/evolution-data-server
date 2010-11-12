@@ -11,6 +11,7 @@ main (gint argc,
       gchar **argv)
 {
 	EBookClient *book_client;
+	ESourceRegistry *registry;
 	const gchar *query_string;
 	EBookQuery *query;
 	gchar *sexp;
@@ -27,6 +28,10 @@ main (gint argc,
 		query_string = argv[1];
 	}
 
+	registry = e_source_registry_new_sync (NULL, &error);
+	if (error != NULL)
+		g_error ("%s", error->message);
+
 	query = e_book_query_from_string (query_string);
 	if (!query) {
 		fprintf (stderr, " * Failed to parse query string '%s'\n", query_string);
@@ -36,7 +41,7 @@ main (gint argc,
 	sexp = e_book_query_to_string (query);
 	e_book_query_unref (query);
 
-	book_client = open_system_book (FALSE);
+	book_client = open_system_book (registry, FALSE);
 	if (!book_client) {
 		g_free (sexp);
 		return 1;

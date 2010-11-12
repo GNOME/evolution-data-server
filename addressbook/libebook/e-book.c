@@ -39,6 +39,7 @@
 #include <string.h>
 #include <glib/gi18n-lib.h>
 #include <gconf/gconf-client.h>
+#include <libedataserver/e-source-registry.h>
 #include <libedataserver/e-data-server-util.h>
 #include "e-book.h"
 #include "e-error.h"
@@ -81,7 +82,6 @@ struct _EBookPrivate {
 	guint gone_signal_id;
 
 	ESource *source;
-	gchar *uri;
 	gboolean loaded;
 	gboolean writable;
 	gboolean connected;
@@ -201,9 +201,6 @@ e_book_finalize (GObject *object)
 {
 	EBook *book = E_BOOK (object);
 
-	if (book->priv->uri)
-		g_free (book->priv->uri);
-
 	if (book->priv->cap)
 		g_free (book->priv->cap);
 
@@ -240,15 +237,6 @@ e_book_class_init (EBookClass *e_book_class)
 			      G_TYPE_NONE, 1,
 			      G_TYPE_BOOLEAN);
 
-	e_book_signals[AUTH_REQUIRED] =
-		g_signal_new ("auth_required",
-			      G_OBJECT_CLASS_TYPE (gobject_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EBookClass, auth_required),
-			      NULL, NULL,
-			      e_book_marshal_NONE__NONE,
-			      G_TYPE_NONE, 0);
-
 	e_book_signals[BACKEND_DIED] =
 		g_signal_new ("backend_died",
 			      G_OBJECT_CLASS_TYPE (gobject_class),
@@ -275,7 +263,6 @@ e_book_init (EBook *book)
 
 	book->priv->gdbus_book = NULL;
 	book->priv->source = NULL;
-	book->priv->uri = NULL;
 	book->priv->loaded = FALSE;
 	book->priv->writable = FALSE;
 	book->priv->connected = FALSE;
@@ -395,16 +382,6 @@ online_cb (EGdbusBook *object,
 	book->priv->connected = is_online;
 
 	g_signal_emit (G_OBJECT (book), e_book_signals[CONNECTION_STATUS], 0, is_online);
-}
-
-static void
-auth_required_cb (EGdbusBook *object,
-                  const ECredentials *credentials,
-                  EBook *book)
-{
-	g_return_if_fail (E_IS_BOOK (book));
-
-	g_signal_emit (G_OBJECT (book), e_book_signals[AUTH_REQUIRED], 0);
 }
 
 /**
@@ -1194,200 +1171,6 @@ e_book_get_supported_auth_methods_async (EBook *book,
 	data->closure = closure;
 
 	e_gdbus_book_call_get_backend_property (book->priv->gdbus_book, BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS, NULL, get_supported_auth_methods_reply, data);
-
-	return TRUE;
-}
-
-/**
- * e_book_authenticate_user:
- * @book: an #EBook
- * @user: a string
- * @passwd: a string
- * @auth_method: a string
- * @error: a #GError to set on failure
- *
- * Authenticates @user with @passwd, using the auth method
- * @auth_method.  @auth_method must be one of the authentication
- * methods returned using e_book_get_supported_auth_methods.
- *
- * Returns: %TRUE if successful, %FALSE otherwise
- *
- * Deprecated: 3.2: Connect to EClient::authenticate signal instead.
- **/
-gboolean
-e_book_authenticate_user (EBook *book,
-                          const gchar *user,
-                          const gchar *passwd,
-                          const gchar *auth_method,
-                          GError **error)
-{
-	GError *err = NULL;
-	ECredentials *credentials;
-	gchar **credentials_strv;
-
-	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
-
-	e_return_error_if_fail (
-		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-
-	credentials = e_credentials_new_args (
-		E_CREDENTIALS_KEY_USERNAME, user,
-		E_CREDENTIALS_KEY_PASSWORD, passwd,
-		E_CREDENTIALS_KEY_AUTH_METHOD, auth_method,
-		NULL);
-
-	credentials_strv = e_credentials_to_strv (credentials);
-
-	e_gdbus_book_call_authenticate_user_sync (book->priv->gdbus_book, (const gchar * const *) credentials_strv, NULL, &err);
-
-	g_strfreev (credentials_strv);
-	e_credentials_free (credentials);
-
-	return unwrap_gerror (err, error);
-}
-
-static void
-authenticate_user_reply (GObject *gdbus_book,
-                         GAsyncResult *res,
-                         gpointer user_data)
-{
-	GError *err = NULL, *error = NULL;
-	AsyncData *data = user_data;
-	EBookAsyncCallback excb = data->excallback;
-	EBookCallback cb = data->callback;
-
-	e_gdbus_book_call_authenticate_user_finish (G_DBUS_PROXY (gdbus_book), res, &error);
-
-	unwrap_gerror (error, &err);
-
-	if (cb)
-		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, data->closure);
-	if (excb)
-		excb (data->book, err, data->closure);
-
-	if (err)
-		g_error_free (err);
-
-	g_object_unref (data->book);
-	g_slice_free (AsyncData, data);
-}
-
-/**
- * e_book_async_authenticate_user:
- * @book: an #EBook
- * @user: user name
- * @passwd: password
- * @auth_method: string indicating authentication method
- * @cb: (scope async): function to call when the operation finishes
- * @closure: data to pass to callback function
- *
- * Authenticate @user with @passwd, using the auth method
- * @auth_method. @auth_method must be one of the authentication
- * methods returned using e_book_get_supported_auth_methods.
- * This function does not block.
- *
- * Returns: %FALSE if successful, %TRUE otherwise.
- *
- * Deprecated: 3.0: Use e_book_authenticate_user_async() instead.
- **/
-gboolean
-e_book_async_authenticate_user (EBook *book,
-                                const gchar *user,
-                                const gchar *passwd,
-                                const gchar *auth_method,
-                                EBookCallback cb,
-                                gpointer closure)
-{
-	AsyncData *data;
-	ECredentials *credentials;
-	gchar **credentials_strv;
-
-	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
-	g_return_val_if_fail (user != NULL, FALSE);
-	g_return_val_if_fail (passwd != NULL, FALSE);
-	g_return_val_if_fail (auth_method != NULL, FALSE);
-
-	e_return_async_error_if_fail (
-		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-
-	data = g_slice_new0 (AsyncData);
-	data->book = g_object_ref (book);
-	data->callback = cb;
-	data->closure = closure;
-
-	credentials = e_credentials_new_args (
-		E_CREDENTIALS_KEY_USERNAME, user,
-		E_CREDENTIALS_KEY_PASSWORD, passwd,
-		E_CREDENTIALS_KEY_AUTH_METHOD, auth_method,
-		NULL);
-
-	credentials_strv = e_credentials_to_strv (credentials);
-
-	e_gdbus_book_call_authenticate_user (book->priv->gdbus_book, (const gchar * const *) credentials_strv, NULL, authenticate_user_reply, data);
-
-	g_strfreev (credentials_strv);
-	e_credentials_free (credentials);
-
-	return TRUE;
-}
-
-/**
- * e_book_authenticate_user_async:
- * @book: an #EBook
- * @user: user name
- * @passwd: password
- * @auth_method: string indicating authentication method
- * @cb: (scope async): function to call when the operation finishes
- * @closure: data to pass to callback function
- *
- * Authenticate @user with @passwd, using the auth method
- * @auth_method. @auth_method must be one of the authentication
- * methods returned using e_book_get_supported_auth_methods.
- * This function does not block.
- *
- * Returns: %FALSE if successful, %TRUE otherwise.
- *
- * Since: 2.32
- *
- * Deprecated: 3.2: Connect to EClient::authenticate signal instead.
- **/
-gboolean
-e_book_authenticate_user_async (EBook *book,
-                                const gchar *user,
-                                const gchar *passwd,
-                                const gchar *auth_method,
-                                EBookAsyncCallback cb,
-                                gpointer closure)
-{
-	AsyncData *data;
-	ECredentials *credentials;
-	gchar **credentials_strv;
-
-	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
-	g_return_val_if_fail (user != NULL, FALSE);
-	g_return_val_if_fail (passwd != NULL, FALSE);
-	g_return_val_if_fail (auth_method != NULL, FALSE);
-
-	e_return_ex_async_error_if_fail (
-		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-
-	data = g_slice_new0 (AsyncData);
-	data->book = g_object_ref (book);
-	data->excallback = cb;
-	data->closure = closure;
-
-	credentials = e_credentials_new_args (
-		E_CREDENTIALS_KEY_USERNAME, user,
-		E_CREDENTIALS_KEY_PASSWORD, passwd,
-		E_CREDENTIALS_KEY_AUTH_METHOD, auth_method,
-		NULL);
-
-	credentials_strv = e_credentials_to_strv (credentials);
-
-	e_gdbus_book_call_authenticate_user (book->priv->gdbus_book, (const gchar * const *) credentials_strv, NULL, authenticate_user_reply, data);
-
-	g_strfreev (credentials_strv);
-	e_credentials_free (credentials);
 
 	return TRUE;
 }
@@ -2805,24 +2588,6 @@ e_book_remove_async (EBook *book,
 }
 
 /**
- * e_book_get_uri:
- * @book: an #EBook
- *
- * Get the URI that this book has loaded. This string should not be freed.
- *
- * Returns: The URI.
- *
- * Deprecated: 3.2: Use e_client_get_uri() on an #EBookClient object instead.
- */
-const gchar *
-e_book_get_uri (EBook *book)
-{
-	g_return_val_if_fail (E_IS_BOOK (book), NULL);
-
-	return book->priv->uri;
-}
-
-/**
  * e_book_get_source:
  * @book: an #EBook
  *
@@ -2999,6 +2764,7 @@ make_me_card (void)
 
 /**
  * e_book_get_self:
+ * @registry: an #ESourceRegistry
  * @contact: (out): an #EContact pointer to set
  * @book: (out): an #EBook pointer to set
  * @error: a #GError to set on failure
@@ -3011,16 +2777,22 @@ make_me_card (void)
  * Deprecated: 3.2: Use e_book_client_get_self() instead.
  **/
 gboolean
-e_book_get_self (EContact **contact,
+e_book_get_self (ESourceRegistry *registry,
+                 EContact **contact,
                  EBook **book,
                  GError **error)
 {
+	ESource *source;
 	GError *e = NULL;
 	GConfClient *gconf;
 	gboolean status;
 	gchar *uid;
 
-	*book = e_book_new_system_addressbook (&e);
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), FALSE);
+
+	source = e_source_registry_ref_builtin_address_book (registry);
+	*book = e_book_new (source, &e);
+	g_object_unref (source);
 
 	if (!*book) {
 		if (error)
@@ -3131,130 +2903,6 @@ e_book_is_self (EContact *contact)
 }
 
 /**
- * e_book_set_default_addressbook:
- * @book: An #EBook pointer
- * @error: A #GError pointer
- *
- * sets the #ESource of the #EBook as the "default" addressbook.  This is the source
- * that will be loaded in the e_book_get_default_addressbook call.
- *
- * Returns: %TRUE if the setting was stored in libebook's ESourceList, otherwise %FALSE.
- *
- * Deprecated: 3.2: Use e_book_client_set_default_addressbook() instead.
- */
-gboolean
-e_book_set_default_addressbook (EBook *book,
-                                GError **error)
-{
-	ESource *source;
-
-	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
-
-	e_return_error_if_fail (
-		book->priv->loaded == FALSE,
-		E_BOOK_ERROR_SOURCE_ALREADY_LOADED);
-
-	source = e_book_get_source (book);
-
-	return e_book_set_default_source (source, error);
-}
-
-/**
- * e_book_set_default_source:
- * @source: an #ESource
- * @error: return location for a #GError, or %NULL
- *
- * Sets @source as the default address book.  This is the source that
- * will be loaded in the e_book_get_default_addressbook call.
- *
- * Returns: %TRUE if the setting was stored in libebook's ESourceList, otherwise %FALSE.
- *
- * Deprecated: 3.2: Use e_book_client_set_default_source() instead.
- */
-gboolean
-e_book_set_default_source (ESource *source,
-                           GError **error)
-{
-	ESourceList *sources;
-	const gchar *uid;
-	GError *err = NULL;
-	GSList *g;
-
-	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
-
-	uid = e_source_get_uid (source);
-
-	if (!e_book_get_addressbooks (&sources, &err)) {
-		if (error)
-			g_propagate_error (error, err);
-		return FALSE;
-	}
-
-	/* make sure the source is actually in the ESourceList.  if
-	 * it's not we don't bother adding it, just return an error */
-	source = e_source_list_peek_source_by_uid (sources, uid);
-	if (!source) {
-		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_NO_SUCH_SOURCE,
-			     _("%s: there was no source for UID '%s' stored in GConf."), "e_book_set_default_source", uid);
-		g_object_unref (sources);
-		return FALSE;
-	}
-
-	/* loop over all the sources clearing out any "default"
-	 * properties we find */
-	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
-		GSList *s;
-		for (s = e_source_group_peek_sources (E_SOURCE_GROUP (g->data));
-		     s; s = s->next) {
-			e_source_set_property (E_SOURCE (s->data), "default", NULL);
-		}
-	}
-
-	/* set the "default" property on the source */
-	e_source_set_property (source, "default", "true");
-
-	if (!e_source_list_sync (sources, &err)) {
-		if (error)
-			g_propagate_error (error, err);
-
-		g_object_unref (sources);
-
-		return FALSE;
-	}
-
-	g_object_unref (sources);
-
-	return TRUE;
-}
-
-/**
- * e_book_get_addressbooks:
- * @addressbook_sources: (out): A pointer to a #ESourceList to set
- * @error: A pointer to a GError to set on error
- *
- * Populate *addressbook_sources with the list of all sources which have been
- * added to Evolution.
- *
- * Returns: %TRUE if @addressbook_sources was set, otherwise %FALSE.
- *
- * Deprecated: 3.2: Use e_book_client_get_sources() instead.
- */
-gboolean
-e_book_get_addressbooks (ESourceList **addressbook_sources,
-                         GError **error)
-{
-	GConfClient *gconf;
-
-	g_return_val_if_fail (addressbook_sources != NULL, FALSE);
-
-	gconf = gconf_client_get_default ();
-	*addressbook_sources = e_source_list_new_for_gconf (gconf, "/apps/evolution/addressbook/sources");
-	g_object_unref (gconf);
-
-	return TRUE;
-}
-
-/**
  * e_book_new:
  * @source: an #ESource
  * @error: return location for a #GError, or %NULL
@@ -3274,7 +2922,7 @@ e_book_new (ESource *source,
 	GError *err = NULL;
 	EBook *book;
 	gchar *path = NULL;
-	gchar *xml, *gdbus_xml = NULL;
+	const gchar *uid;
 	GDBusConnection *connection;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
@@ -3290,14 +2938,11 @@ e_book_new (ESource *source,
 	book = g_object_new (E_TYPE_BOOK, NULL);
 
 	book->priv->source = g_object_ref (source);
-	book->priv->uri = e_source_get_uri (source);
 
-	xml = e_source_to_standalone_xml (source);
+	uid = e_source_get_uid (source);
 
-	if (!e_gdbus_book_factory_call_get_book_sync (G_DBUS_PROXY (book_factory_proxy), e_util_ensure_gdbus_string (xml, &gdbus_xml), &path, NULL, &err)) {
+	if (!e_gdbus_book_factory_call_get_book_sync (G_DBUS_PROXY (book_factory_proxy), uid, &path, NULL, &err)) {
 		unwrap_gerror (err, &err);
-		g_free (xml);
-		g_free (gdbus_xml);
 		g_warning (G_STRLOC ": cannot get book from factory: %s", err ? err->message : "[no error]");
 		if (err)
 			g_propagate_error (error, err);
@@ -3305,8 +2950,6 @@ e_book_new (ESource *source,
 
 		return NULL;
 	}
-	g_free (xml);
-	g_free (gdbus_xml);
 
 	book->priv->gdbus_book = G_DBUS_PROXY (e_gdbus_book_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory_proxy)),
 						      G_DBUS_PROXY_FLAGS_NONE,
@@ -3340,311 +2983,6 @@ e_book_new (ESource *source,
 
 	g_signal_connect (book->priv->gdbus_book, "readonly", G_CALLBACK (readonly_cb), book);
 	g_signal_connect (book->priv->gdbus_book, "online", G_CALLBACK (online_cb), book);
-	g_signal_connect (book->priv->gdbus_book, "auth-required", G_CALLBACK (auth_required_cb), book);
-
-	return book;
-}
-
-/* for each known source calls check_func, which should return TRUE if the required
- * source have been found. Function returns NULL or the source on which was returned
- * TRUE by the check_func. Non-NULL pointer should be unreffed by g_object_unref. */
-static ESource *
-search_known_sources (gboolean (*check_func)(ESource *source,
-                                             gpointer user_data),
-                      gpointer user_data,
-                      ESourceList **sources,
-                      GError **error)
-{
-	ESource *res = NULL;
-	GSList *g;
-	GError *err = NULL;
-
-	g_return_val_if_fail (check_func != NULL, NULL);
-	g_return_val_if_fail (sources != NULL, NULL);
-
-	if (!e_book_get_addressbooks (sources, &err)) {
-		g_propagate_error (error, err);
-		return NULL;
-	}
-
-	for (g = e_source_list_peek_groups (*sources); g; g = g->next) {
-		ESourceGroup *group = E_SOURCE_GROUP (g->data);
-		GSList *s;
-
-		for (s = e_source_group_peek_sources (group); s; s = s->next) {
-			ESource *source = E_SOURCE (s->data);
-
-			if (check_func (source, user_data)) {
-				res = g_object_ref (source);
-				break;
-			}
-		}
-
-		if (res)
-			break;
-	}
-
-	return res;
-}
-
-static gboolean
-check_uri (ESource *source,
-           gpointer uri)
-{
-	const gchar *suri;
-
-	g_return_val_if_fail (source != NULL, FALSE);
-	g_return_val_if_fail (uri != NULL, FALSE);
-
-	suri = e_source_peek_absolute_uri (source);
-
-	if (suri && g_ascii_strcasecmp (suri, uri) == 0)
-		return TRUE;
-
-	if (!suri && e_source_peek_group (source)) {
-		gboolean res = FALSE;
-		gchar *my_uri = g_strconcat (
-			e_source_group_peek_base_uri (e_source_peek_group (source)),
-			e_source_peek_relative_uri (source),
-			NULL);
-
-		res = my_uri && g_ascii_strcasecmp (my_uri, uri) == 0;
-
-		g_free (my_uri);
-
-		return res;
-	} else {
-		gboolean ret;
-		gchar *suri2;
-
-		suri2 = e_source_get_uri (source);
-		ret = !g_ascii_strcasecmp (suri2, uri);
-		g_free (suri2);
-
-		return ret;
-	}
-}
-
-/**
- * e_book_new_from_uri:
- * @uri: the URI to load
- * @error: A #GError pointer
- *
- * Creates a new #EBook corresponding to the given uri.  See the
- * documentation for e_book_new for further information.
- *
- * Returns: a new but unopened #EBook.
- *
- * Deprecated: 3.2: Use e_book_client_new_from_uri() instead.
- */
-EBook *
-e_book_new_from_uri (const gchar *uri,
-                     GError **error)
-{
-	ESourceList *sources = NULL;
-	ESource *source;
-	EBook *book;
-	GError *err = NULL;
-
-	g_return_val_if_fail (uri != NULL, NULL);
-
-	source = search_known_sources (check_uri, (gpointer) uri, &sources, &err);
-	if (err) {
-		g_propagate_error (error, err);
-		if (sources)
-			g_object_unref (sources);
-		return NULL;
-	}
-
-	if (!source)
-		source = e_source_new_with_absolute_uri ("", uri);
-
-	book = e_book_new (source, &err);
-	if (err)
-		g_propagate_error (error, err);
-
-	g_object_unref (source);
-	if (sources)
-		g_object_unref (sources);
-
-	return book;
-}
-
-struct check_system_data
-{
-	const gchar *uri;
-	ESource *uri_source;
-};
-
-static gboolean
-check_system (ESource *source,
-              gpointer data)
-{
-	struct check_system_data *csd = data;
-
-	g_return_val_if_fail (source != NULL, FALSE);
-	g_return_val_if_fail (data != NULL, FALSE);
-
-	if (e_source_get_property (source, "system")) {
-		return TRUE;
-	}
-
-	if (check_uri (source, (gpointer) csd->uri)) {
-		if (csd->uri_source)
-			g_object_unref (csd->uri_source);
-		csd->uri_source = g_object_ref (source);
-	}
-
-	return FALSE;
-}
-
-static EBook *
-get_local_source (GError **error)
-{
-	ESourceGroup *on_this_computer;
-	ESourceList *sources;
-	GSList *local_sources, *iter;
-	ESource *personal = NULL;
-	const gchar *name;
-	gchar *source_uri = NULL;
-	EBook *book;
-
-	if (e_book_get_addressbooks (&sources, error)) {
-		on_this_computer = e_source_list_ensure_group (
-		        sources, _("On This Computer"), "local:", TRUE);
-
-		if (on_this_computer) {
-			local_sources = e_source_group_peek_sources (on_this_computer);
-
-			/* Make sure this group includes a "Personal" source. */
-			for (iter = local_sources; iter != NULL; iter = iter->next) {
-				ESource *source = iter->data;
-				const gchar *relative_uri;
-
-				relative_uri = e_source_peek_relative_uri (source);
-				if (g_strcmp0 (relative_uri, "system") == 0) {
-					personal = source;
-					break;
-				}
-			}
-
-			name = _("Personal");
-
-			if (personal == NULL) {
-				ESource *source;
-
-				/* Create the default Personal address book. */
-				source = e_source_new (name, "system");
-				e_source_group_add_source (on_this_computer, source, -1);
-				e_source_set_property (source, "completion", "true");
-
-				source_uri = e_source_get_uri (source);
-				g_object_unref (source);
-			} else {
-				/* Force the source name to the current locale. */
-				e_source_set_name (personal, name);
-
-				source_uri = e_source_get_uri (personal);
-			}
-
-			g_object_unref (on_this_computer);
-		}
-
-		g_object_unref (sources);
-	}
-
-	book = e_book_new_from_uri (source_uri?:"local:system", error);
-	g_free (source_uri);
-
-	return book;
-}
-
-/**
- * e_book_new_system_addressbook:
- * @error: A #GError pointer
- *
- * Creates a new #EBook corresponding to the user's system address book.
- * See the documentation for e_book_new() for further information.
- *
- * Returns: a new but unopened #EBook.
- *
- * Deprecated: 3.2: Use e_book_client_new_system() instead.
- */
-EBook *
-e_book_new_system_addressbook (GError **error)
-{
-	GError *err = NULL;
-	ESourceList *sources = NULL;
-	ESource *system_source = NULL;
-	EBook *book;
-	struct check_system_data csd;
-
-	csd.uri = "local:system";
-	csd.uri_source = NULL;
-
-	system_source = search_known_sources (check_system, &csd, &sources, &err);
-	if (err) {
-		g_propagate_error (error, err);
-		if (sources)
-			g_object_unref (sources);
-		return NULL;
-	}
-
-	if (!system_source) {
-		system_source = csd.uri_source;
-		csd.uri_source = NULL;
-	}
-
-	if (system_source) {
-		book = e_book_new (system_source, &err);
-		g_object_unref (system_source);
-	} else {
-		book = get_local_source (&err);
-	}
-
-	if (csd.uri_source)
-		g_object_unref (csd.uri_source);
-	if (sources)
-		g_object_unref (sources);
-
-	if (err)
-		g_propagate_error (error, err);
-
-	return book;
-}
-
-/**
- * e_book_new_default_addressbook:
- * @error: return location for a #GError, or %NULL
- *
- * Creates a new #EBook corresponding to the user's default address book.
- * See the documentation for e_book_new() for further information.
- *
- * Returns: a new but unopened #EBook
- *
- * Deprecated: 3.2: Use e_book_client_new_default() instead.
- */
-EBook *
-e_book_new_default_addressbook (GError **error)
-{
-	ESourceList *source_list;
-	ESource *source;
-	EBook *book;
-
-	if (!e_book_get_addressbooks (&source_list, error))
-		return NULL;
-
-	source = e_source_list_peek_default_source (source_list);
-	if (!source) {
-		g_set_error_literal (error, E_BOOK_ERROR, E_BOOK_ERROR_NO_SUCH_BOOK,
-			     _("Address book does not exist"));
-		g_object_unref (source_list);
-		return NULL;
-	}
-
-	book = e_book_new (source, error);
-
-	g_object_unref (source_list);
 
 	return book;
 }

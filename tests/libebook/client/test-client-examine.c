@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <libebook/e-book-client.h>
-#include <libedataserver/e-source-group.h>
 
 #include "client-test-utils.h"
 
@@ -118,28 +117,14 @@ print_values (const ExtraValues *evals,
 static void
 identify_source (ESource *source)
 {
-	const gchar *name, *uri;
-	gchar *abs_uri = NULL;
+	const gchar *name, *uid;
 
 	g_return_if_fail (source != NULL);
 
+	uid = e_source_get_uid (source);
 	name = e_source_get_display_name (source);
-	if (!name)
-		name = "Unknown name";
 
-	uri = e_source_peek_absolute_uri (source);
-	if (!uri) {
-		abs_uri = e_source_build_absolute_uri (source);
-		uri = abs_uri;
-	}
-	if (!uri)
-		uri = e_source_peek_relative_uri (source);
-	if (!uri)
-		uri = "Unknown uri";
-
-	g_print ("\n   Checking source '%s' (%s)\n", name, uri);
-
-	g_free (abs_uri);
+	g_print ("\n   Checking source '%s' (%s)\n", name, uid);
 }
 
 static void
@@ -331,14 +316,14 @@ check_source_sync (ESource *source)
 }
 
 static gboolean
-foreach_async (void)
+foreach_async (ESourceRegistry *registry)
 {
 	gpointer async_data;
 	ESource *source = NULL;
 	EBookClient *book_client;
 	GError *error = NULL;
 
-	async_data = foreach_configured_source_async_start (&source);
+	async_data = foreach_configured_source_async_start (registry, &source);
 	if (!async_data) {
 		stop_main_loop (1);
 		return FALSE;
@@ -366,28 +351,28 @@ foreach_async (void)
 }
 
 static gboolean
-in_main_thread_idle_cb (gpointer unused)
+in_main_thread_idle_cb (ESourceRegistry *registry)
 {
 	g_print ("* run in main thread with mainloop running\n");
-	foreach_configured_source (check_source_sync);
+	foreach_configured_source (registry, check_source_sync);
 	g_print ("---------------------------------------------------------\n\n");
 
 	g_print ("* run in main thread async\n");
 
-	if (!foreach_async ())
+	if (!foreach_async (registry))
 		return FALSE;
 
 	return FALSE;
 }
 
 static gpointer
-worker_thread (gpointer unused)
+worker_thread (ESourceRegistry *registry)
 {
 	g_print ("* run in dedicated thread with mainloop running\n");
-	foreach_configured_source (check_source_sync);
+	foreach_configured_source (registry, check_source_sync);
 	g_print ("---------------------------------------------------------\n\n");
 
-	g_idle_add (in_main_thread_idle_cb, NULL);
+	g_idle_add ((GSourceFunc) in_main_thread_idle_cb, registry);
 
 	return NULL;
 }
@@ -396,13 +381,20 @@ gint
 main (gint argc,
       gchar **argv)
 {
+	ESourceRegistry *registry;
+	GError *error = NULL;
+
 	main_initialize ();
 
+	registry = e_source_registry_new_sync (NULL, &error);
+	if (error != NULL)
+		g_error ("%s", error->message);
+
 	g_print ("* run in main thread without mainloop\n");
-	foreach_configured_source (check_source_sync);
+	foreach_configured_source (registry, check_source_sync);
 	g_print ("---------------------------------------------------------\n\n");
 
-	start_in_thread_with_main_loop (worker_thread, NULL);
+	start_in_thread_with_main_loop ((GThreadFunc) worker_thread, registry);
 
 	return get_main_loop_stop_result ();
 }

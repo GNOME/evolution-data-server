@@ -32,8 +32,7 @@ main (gint argc,
 	g_assert (contact_final == NULL);
         test_print ("successfully added and removed contact '%s'\n", uid);
 
-	ebook_test_utils_book_remove (book);
-	g_free (uid);
+        g_free (uid);
 
         /*
          * Async version
@@ -52,7 +51,6 @@ main (gint argc,
 
 	g_main_loop_run (loop);
 
-	ebook_test_utils_book_remove (book);
 	g_object_unref (contact_final);
 	g_free (uid);
 

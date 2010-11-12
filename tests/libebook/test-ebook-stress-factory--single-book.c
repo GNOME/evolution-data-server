@@ -27,9 +27,6 @@ main (gint argc,
 		g_object_unref (book);
 	}
 
-	book = ebook_test_utils_book_new_from_uri (uri);
-	ebook_test_utils_book_remove (book);
-
 	g_free (uri);
 
 	return 0;

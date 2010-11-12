@@ -18,7 +18,6 @@ main (gint argc,
 	/* Sync version */
 	book = ebook_test_utils_book_new_temp (&uri);
 	ebook_test_utils_book_open (book, FALSE);
-	ebook_test_utils_book_remove (book);
 
 	/* Async version */
 	book = ebook_test_utils_book_new_temp (&uri);

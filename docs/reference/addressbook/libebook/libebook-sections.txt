@@ -23,11 +23,6 @@ EBookViewPrivate
 <TITLE>EBook</TITLE>
 EBook
 e_book_new
-e_book_new_default_addressbook
-e_book_new_from_uri
-e_book_new_system_addressbook
-e_book_set_default_addressbook
-e_book_set_default_source
 e_book_remove
 e_book_open
 e_book_get_supported_fields
@@ -36,7 +31,6 @@ e_book_get_required_fields
 e_book_get_source
 e_book_is_online
 e_book_is_opened
-e_book_authenticate_user
 e_book_get_contact
 e_book_remove_contact
 e_book_remove_contacts
@@ -46,7 +40,6 @@ e_book_get_book_view
 e_book_get_contacts
 e_book_get_changes
 e_book_free_change_list
-e_book_get_uri
 e_book_get_static_capabilities
 e_book_check_static_capability
 e_book_is_writable
@@ -55,7 +48,6 @@ e_book_cancel_async_op
 e_book_get_self
 e_book_set_self
 e_book_is_self
-e_book_get_addressbooks
 e_return_error_if_fail
 e_return_async_error_if_fail
 e_return_async_error_val_if_fail
@@ -79,7 +71,6 @@ e_book_open_async
 e_book_remove_async
 e_book_get_supported_fields_async
 e_book_get_supported_auth_methods_async
-e_book_authenticate_user_async
 e_book_get_contact_async
 e_book_get_contacts_async
 e_book_remove_contact_async
@@ -94,7 +85,6 @@ e_book_async_open
 e_book_async_remove
 e_book_async_get_supported_fields
 e_book_async_get_supported_auth_methods
-e_book_async_authenticate_user
 e_book_async_get_contact
 e_book_async_get_contacts
 e_book_async_remove_contact
@@ -130,12 +120,6 @@ e_book_client_error_to_string
 e_book_client_error_create
 EBookClient
 e_book_client_new
-e_book_client_new_from_uri
-e_book_client_new_system
-e_book_client_new_default
-e_book_client_set_default
-e_book_client_set_default_source
-e_book_client_get_sources
 e_book_client_get_self
 e_book_client_set_self
 e_book_client_is_self

@@ -71,7 +71,5 @@ main (gint argc,
 
 	g_main_loop_run (loop);
 
-	ebook_test_utils_book_remove (book);
-
 	return 0;
 }

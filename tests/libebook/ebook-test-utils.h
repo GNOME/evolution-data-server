@@ -138,13 +138,6 @@ ebook_test_utils_book_open (EBook    *book,
                             gboolean  only_if_exists);
 
 void
-ebook_test_utils_book_remove (EBook *book);
-void
-ebook_test_utils_book_async_remove (EBook          *book,
-                                    GSourceFunc     callback,
-                                    gpointer        user_data);
-
-void
 ebook_test_utils_book_get_book_view (EBook       *book,
                                      EBookQuery  *query,
                                      EBookView  **view);

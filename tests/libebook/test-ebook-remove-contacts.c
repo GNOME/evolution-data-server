@@ -40,9 +40,8 @@ main (gint argc,
 
         test_print ("successfully added and removed contacts\n");
 
-	ebook_test_utils_book_remove (book);
-	g_free (uid_1);
-	g_free (uid_2);
+        g_free (uid_1);
+        g_free (uid_2);
 	g_list_free (uids);
 
         /*
@@ -63,9 +62,8 @@ main (gint argc,
 
 	g_main_loop_run (loop);
 
-	ebook_test_utils_book_remove (book);
-	g_free (uid_1);
-	g_free (uid_2);
+        g_free (uid_1);
+        g_free (uid_2);
 	g_list_free (uids);
 
 	return 0;

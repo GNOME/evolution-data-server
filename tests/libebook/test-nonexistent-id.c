@@ -1,7 +1,10 @@
+#include <stdlib.h>
 #include <libebook/e-book.h>
 
-gint main (gint argc, gchar **argv)
+gint
+main (gint argc, gchar **argv)
 {
+#if 0  /* ACCOUNT_MGMT */
 	GError *err = NULL;
 	EBook *book = NULL;
 
@@ -22,6 +25,7 @@ gint main (gint argc, gchar **argv)
 		printf ("error %d removing contact: %s\n", err->code, err->message);
 		g_clear_error (&err);
 	}
+#endif /* ACCOUNT_MGMT */
 
 	return 0;
 }

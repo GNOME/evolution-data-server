@@ -97,6 +97,7 @@ gint
 main (gint argc,
       gchar **argv)
 {
+#if 0  /* ACCOUNT_MGMT */
 	EBook *book;
 
 	g_type_init ();
@@ -112,6 +113,7 @@ main (gint argc,
 	e_book_open_async (book, FALSE, book_loaded_cb, book);
 
 	g_main_loop_run (loop);
+#endif /* ACCOUNT_MGMT */
 
 	return 0;
 }

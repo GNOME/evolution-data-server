@@ -1,6 +1,9 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <libedataserver/e-source-registry.h>
+#include <libedataserver/e-source-address-book.h>
 
 #include <libedataserver/e-gdbus-templates.h>
 
@@ -38,14 +41,19 @@ print_email (EContact *contact)
 }
 
 EBookClient *
-open_system_book (gboolean only_if_exists)
+open_system_book (ESourceRegistry *registry,
+                  gboolean only_if_exists)
 {
+	ESource *source;
 	EBookClient *book_client;
 	GError *error = NULL;
 
 	main_initialize ();
 
-	book_client = e_book_client_new_system (&error);
+	source = e_source_registry_ref_builtin_address_book (registry);
+	book_client = e_book_client_new (source, &error);
+	g_object_unref (source);
+
 	if (error) {
 		report_error ("create system addressbook", &error);
 		return NULL;
@@ -208,7 +216,8 @@ get_main_loop_stop_result (void)
 }
 
 void
-foreach_configured_source (void (*func) (ESource *source))
+foreach_configured_source (ESourceRegistry *registry,
+                           void (*func) (ESource *source))
 {
 	gpointer foreach_async_data;
 	ESource *source = NULL;
@@ -217,7 +226,7 @@ foreach_configured_source (void (*func) (ESource *source))
 
 	main_initialize ();
 
-	foreach_async_data = foreach_configured_source_async_start (&source);
+	foreach_async_data = foreach_configured_source_async_start (registry, &source);
 	if (!foreach_async_data)
 		return;
 
@@ -226,54 +235,29 @@ foreach_configured_source (void (*func) (ESource *source))
 	} while (foreach_configured_source_async_next (&foreach_async_data, &source));
 }
 
-struct ForeachConfiguredData
-{
-	ESourceList *source_list;
-	GSList *current_group;
-	GSList *current_source;
+struct ForeachConfiguredData {
+	GList *list;
 };
 
 gpointer
-foreach_configured_source_async_start (ESource **source)
+foreach_configured_source_async_start (ESourceRegistry *registry,
+                                       ESource **source)
 {
 	struct ForeachConfiguredData *async_data;
-	ESourceList *source_list = NULL;
-	GError *error = NULL;
+	const gchar *extension_name;
+	GList *list;
 
 	g_return_val_if_fail (source != NULL, NULL);
 
 	main_initialize ();
 
-	if (!e_book_client_get_sources (&source_list, &error)) {
-		report_error ("get addressbooks", &error);
-		return NULL;
-	}
-
-	g_return_val_if_fail (source_list != NULL, NULL);
+	extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
+	list = e_source_registry_list_sources (registry, extension_name);
 
 	async_data = g_new0 (struct ForeachConfiguredData, 1);
-	async_data->source_list = source_list;
-	async_data->current_group = e_source_list_peek_groups (source_list);
-	if (!async_data->current_group) {
-		gpointer ad = async_data;
+	async_data->list = list;
 
-		if (foreach_configured_source_async_next (&ad, source))
-			return ad;
-
-		return NULL;
-	}
-
-	async_data->current_source = e_source_group_peek_sources (async_data->current_group->data);
-	if (!async_data->current_source) {
-		gpointer ad = async_data;
-
-		if (foreach_configured_source_async_next (&ad, source))
-			return ad;
-
-		return NULL;
-	}
-
-	*source = async_data->current_source->data;
+	*source = async_data->list->data;
 
 	return async_data;
 }
@@ -289,28 +273,16 @@ foreach_configured_source_async_next (gpointer *foreach_async_data,
 
 	async_data = *foreach_async_data;
 	g_return_val_if_fail (async_data != NULL, FALSE);
-	g_return_val_if_fail (async_data->source_list != NULL, FALSE);
-	g_return_val_if_fail (async_data->current_group != NULL, FALSE);
 
-	if (async_data->current_source)
-		async_data->current_source = async_data->current_source->next;
-	if (async_data->current_source) {
-		*source = async_data->current_source->data;
+	if (async_data->list) {
+		g_object_unref (async_data->list->data);
+		async_data->list = async_data->list->next;
+	}
+	if (async_data->list) {
+		*source = async_data->list->data;
 		return TRUE;
 	}
 
-	do {
-		async_data->current_group = async_data->current_group->next;
-		if (async_data->current_group)
-			async_data->current_source = e_source_group_peek_sources (async_data->current_group->data);
-	} while (async_data->current_group && !async_data->current_source);
-
-	if (async_data->current_source) {
-		*source = async_data->current_source->data;
-		return TRUE;
-	}
-
-	g_object_unref (async_data->source_list);
 	g_free (async_data);
 
 	*foreach_async_data = NULL;
@@ -321,6 +293,7 @@ foreach_configured_source_async_next (gpointer *foreach_async_data,
 EBookClient *
 new_temp_client (gchar **uri)
 {
+#if 0  /* ACCOUNT_MGMT */
 	EBookClient *book_client;
 	ESource *source;
 	gchar *abs_uri, *filename;
@@ -353,6 +326,9 @@ new_temp_client (gchar **uri)
 		report_error ("new temp client", &error);
 
 	return book_client;
+#endif /* ACCOUNT_MGMT */
+
+	return NULL;
 }
 
 gchar *

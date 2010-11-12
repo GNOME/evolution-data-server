@@ -7,6 +7,7 @@ gint
 main (gint argc,
       gchar **argv)
 {
+#if 0  /* ACCOUNT_MGMT */
 	EBook *book;
 	EContact *contact;
 	GError *error = NULL;
@@ -28,6 +29,7 @@ main (gint argc,
 
 	g_object_unref (contact);
 	g_object_unref (book);
+#endif /* ACCOUNT_MGMT */
 
 	return 0;
 }

@@ -25,7 +25,7 @@
 #include <gio/gio.h>
 
 #include <libedataserver/e-client.h>
-#include <libedataserver/e-source-list.h>
+#include <libedataserver/e-source-registry.h>
 #include <libebook/e-book-client-view.h>
 #include <libebook/e-contact.h>
 
@@ -121,17 +121,9 @@ GType		e_book_client_get_type				(void);
 
 /* Creating a new addressbook */
 EBookClient *	e_book_client_new				(ESource *source, GError **error);
-EBookClient *	e_book_client_new_from_uri			(const gchar *uri, GError **error);
-EBookClient *	e_book_client_new_system			(GError **error);
-EBookClient *	e_book_client_new_default			(GError **error);
-
-/* Addressbook discovery */
-gboolean	e_book_client_set_default			(EBookClient *client, GError **error);
-gboolean	e_book_client_set_default_source		(ESource *source, GError **error);
-gboolean	e_book_client_get_sources			(ESourceList **sources, GError **error);
 
 /* Identity */
-gboolean	e_book_client_get_self				(EContact **contact, EBookClient **client, GError **error);
+gboolean	e_book_client_get_self				(ESourceRegistry *registry, EContact **contact, EBookClient **client, GError **error);
 gboolean	e_book_client_set_self				(EBookClient *client, EContact *contact, GError **error);
 gboolean	e_book_client_is_self				(EContact *contact);
 

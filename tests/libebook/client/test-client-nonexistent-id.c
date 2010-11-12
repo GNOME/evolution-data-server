@@ -8,14 +8,19 @@ gint
 main (gint argc,
       gchar **argv)
 {
-	GError *error = NULL;
 	EBookClient *book_client = NULL;
+	ESourceRegistry *registry;
+	GError *error = NULL;
 
 	main_initialize ();
 
+	registry = e_source_registry_new_sync (NULL, &error);
+	if (error != NULL)
+		g_error ("%s", error->message);
+
 	printf ("loading addressbook\n");
 
-	book_client = open_system_book (FALSE);
+	book_client = open_system_book (registry, FALSE);
 	if (!book_client)
 		return 1;
 

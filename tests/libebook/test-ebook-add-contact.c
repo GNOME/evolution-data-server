@@ -32,8 +32,6 @@ main (gint argc,
 	test_print ("successfully added and retrieved contact '%s'\n", uid);
 	g_object_unref (contact_final);
 
-	ebook_test_utils_book_remove (book);
-
 	/*
 	 * Async version
 	 */
@@ -49,7 +47,6 @@ main (gint argc,
 	g_free (uid);
 	g_main_loop_run (loop);
 
-	ebook_test_utils_book_remove (book);
 	g_free (vcard);
 
 	return 0;

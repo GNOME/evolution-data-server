@@ -74,8 +74,6 @@ main (gint argc,
 	g_object_unref (contact);
 	g_free (uid);
 
-	ebook_test_utils_book_remove (book);
-
 	/*
 	 * Async version
 	 */
@@ -92,7 +90,6 @@ main (gint argc,
 	g_main_loop_run (loop);
 
 	g_free (uid);
-	ebook_test_utils_book_remove (book);
 
 	return 0;
 }

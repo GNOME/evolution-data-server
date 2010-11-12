@@ -7,6 +7,7 @@ gint
 main (gint argc,
       gchar **argv)
 {
+#if 0  /* ACCOUNT_MGMT */
 	EBook *book;
 	gboolean status;
 	EBookQuery *query;
@@ -54,6 +55,7 @@ main (gint argc,
 	g_list_free (contacts);
 
 	g_object_unref (book);
+#endif /* ACCOUNT_MGMT */
 
 	return 0;
 }

@@ -15,8 +15,7 @@
 #ifndef E_BOOK_DISABLE_DEPRECATED
 
 #include <libedataserver/e-list.h>
-#include <libedataserver/e-source.h>
-#include <libedataserver/e-source-list.h>
+#include <libedataserver/e-source-registry.h>
 #include <libebook/e-contact.h>
 #include <libebook/e-book-query.h>
 #include <libebook/e-book-view.h>
@@ -112,7 +111,6 @@ struct _EBookClass {
 	 */
 	void (* writable_status) (EBook *book, gboolean writable);
 	void (* connection_status) (EBook *book, gboolean connected);
-	void (* auth_required) (EBook *book);
 	void (* backend_died)    (EBook *book);
 
 	/* Padding for future expansion */
@@ -125,9 +123,6 @@ struct _EBookClass {
 
 /* Creating a new addressbook. */
 EBook    *e_book_new                       (ESource *source, GError **error);
-EBook    *e_book_new_from_uri              (const gchar *uri, GError **error);
-EBook    *e_book_new_system_addressbook    (GError **error);
-EBook    *e_book_new_default_addressbook   (GError **error);
 
 /* loading addressbooks */
 gboolean e_book_open                       (EBook       *book,
@@ -199,29 +194,6 @@ gboolean    e_book_async_get_supported_auth_methods (EBook              *book,
 gboolean e_book_get_supported_auth_methods_async (EBook                  *book,
 						  EBookEListAsyncCallback cb,
 						  gpointer                closure);
-
-/* User authentication. */
-gboolean e_book_authenticate_user          (EBook       *book,
-					    const gchar  *user,
-					    const gchar  *passwd,
-					    const gchar  *auth_method,
-					    GError     **error);
-
-#ifndef E_BOOK_DISABLE_DEPRECATED
-gboolean e_book_async_authenticate_user       (EBook                 *book,
-					    const gchar            *user,
-					    const gchar            *passwd,
-					    const gchar            *auth_method,
-					    EBookCallback         cb,
-					    gpointer              closure);
-#endif
-
-gboolean e_book_authenticate_user_async (EBook                *book,
-					 const gchar          *user,
-					 const gchar          *passwd,
-					 const gchar          *auth_method,
-					 EBookAsyncCallback    cb,
-					 gpointer              closure);
 
 /* Fetching contacts. */
 gboolean e_book_get_contact                (EBook       *book,
@@ -378,7 +350,6 @@ gboolean e_book_get_changes_async       (EBook                 *book,
 
 void     e_book_free_change_list           (GList       *change_list);
 
-const gchar *e_book_get_uri                 (EBook       *book);
 ESource    *e_book_get_source              (EBook       *book);
 
 const gchar *e_book_get_static_capabilities (EBook    *book,
@@ -398,14 +369,9 @@ gboolean    e_book_cancel_async_op	   (EBook   *book,
 					    GError **error);
 
 /* Identity */
-gboolean    e_book_get_self                (EContact **contact, EBook **book, GError **error);
+gboolean    e_book_get_self                (ESourceRegistry *registry, EContact **contact, EBook **book, GError **error);
 gboolean    e_book_set_self                (EBook *book, EContact *contact, GError **error);
 gboolean    e_book_is_self                 (EContact *contact);
-
-/* Addressbook Discovery */
-gboolean    e_book_set_default_addressbook (EBook  *book, GError **error);
-gboolean    e_book_set_default_source      (ESource *source, GError **error);
-gboolean    e_book_get_addressbooks        (ESourceList ** addressbook_sources, GError **error);
 
 GType        e_book_get_type                  (void);
 

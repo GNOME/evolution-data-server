@@ -61,7 +61,6 @@ main (gint argc,
 	e_book_free_change_list (changes);
 
 	g_object_unref (contact);
-	ebook_test_utils_book_remove (book);
 
 	return 0;
 }

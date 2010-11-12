@@ -74,6 +74,7 @@ gint
 main (gint argc,
       gchar **argv)
 {
+#if 0  /* ACCOUNT_MGMT */
 	EBook *book;
 
 	g_type_init ();
@@ -98,6 +99,7 @@ main (gint argc,
 	print_all_emails (book);
 
 	g_object_unref (book);
+#endif /* ACCOUNT_MGMT */
 
 	return 0;
 }

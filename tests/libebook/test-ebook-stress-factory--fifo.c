@@ -26,9 +26,5 @@ main (gint argc,
 		g_free (uri);
 	}
 
-	for (i = 0; i < NUM_BOOKS; i++) {
-		ebook_test_utils_book_remove (books[i]);
-	}
-
 	return 0;
 }

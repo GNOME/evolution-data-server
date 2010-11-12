@@ -27,7 +27,5 @@ main (gint argc,
 
 	test_print ("successfully retrieved static capabilities: '%s'\n", caps);
 
-	ebook_test_utils_book_remove (book);
-
 	return 0;
 }
