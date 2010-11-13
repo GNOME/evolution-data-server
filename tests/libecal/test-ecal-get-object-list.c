@@ -42,8 +42,6 @@ main (gint argc,
 	ecal_test_utils_cal_assert_objects_equal_shallow (component,
 			component_final);
 
-	ecal_test_utils_cal_remove (cal);
-
 	e_cal_free_object_list (components);
 	g_free (uid);
 	icalcomponent_free (component);

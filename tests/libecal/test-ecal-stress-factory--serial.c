@@ -23,7 +23,6 @@ main (gint argc,
 		cal = ecal_test_utils_cal_new_temp (&uri,
 				E_CAL_SOURCE_TYPE_EVENT);
 		ecal_test_utils_cal_open (cal, FALSE);
-		ecal_test_utils_cal_remove (cal);
 
 		g_free (uri);
 	}

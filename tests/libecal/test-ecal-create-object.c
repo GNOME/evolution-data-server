@@ -27,8 +27,6 @@ main (gint argc,
 	component_final = ecal_test_utils_cal_get_object (cal, uid);
 	ecal_test_utils_cal_assert_objects_equal_shallow (component, component_final);
 
-	ecal_test_utils_cal_remove (cal);
-
 	g_free (uid);
 	icalcomponent_free (component);
 	icalcomponent_free (component_final);

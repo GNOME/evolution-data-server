@@ -40,7 +40,6 @@ main (gint argc,
 	/* Sync version */
 	cal = ecal_test_utils_cal_new_temp (&uri, E_CAL_SOURCE_TYPE_EVENT);
 	ecal_test_utils_cal_open (cal, FALSE);
-	ecal_test_utils_cal_remove (cal);
 
 	/* Async version */
 	cal = ecal_test_utils_cal_new_temp (&uri, E_CAL_SOURCE_TYPE_EVENT);
@@ -51,8 +50,6 @@ main (gint argc,
 	ecal_test_utils_cal_async_open (cal, FALSE,
 			(GSourceFunc) open_complete_cb, loop);
 	g_main_loop_run (loop);
-
-	ecal_test_utils_cal_remove (cal);
 
 	return 0;
 }

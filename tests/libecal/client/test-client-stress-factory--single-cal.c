@@ -11,6 +11,7 @@ gint
 main (gint argc,
       gchar **argv)
 {
+#if 0  /* ACCOUNT_MGMT */
 	ECalClientSourceType source_type = E_CAL_CLIENT_SOURCE_TYPE_EVENTS;
 	gchar *uri = NULL;
 	ECalClient *cal_client;
@@ -61,4 +62,7 @@ main (gint argc,
 	g_object_unref (cal_client);
 
 	return ii == NUM_OPENS ? 0 : 1;
+#endif /* ACCOUNT_MGMT */
+
+	return 0;
 }

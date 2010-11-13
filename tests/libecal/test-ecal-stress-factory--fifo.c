@@ -27,9 +27,5 @@ main (gint argc,
 		g_free (uri);
 	}
 
-	for (i = 0; i < NUM_CALS; i++) {
-		ecal_test_utils_cal_remove (cals[i]);
-	}
-
 	return 0;
 }

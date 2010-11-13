@@ -92,6 +92,7 @@ gint
 main (gint argc,
       gchar **argv)
 {
+#if 0  /* ACCOUNT_MGMT */
 	ECalClient *cal_client;
 	GError *error = NULL;
 
@@ -118,4 +119,7 @@ main (gint argc,
 	g_object_unref (cal_client);
 
 	return get_main_loop_stop_result ();
+#endif /* ACCOUNT_MGMT */
+
+	return 0;
 }

@@ -36,10 +36,6 @@ test_print (const gchar *format,
             ...);
 
 ECal *
-ecal_test_utils_cal_new_from_uri (const gchar     *uri,
-				  ECalSourceType  type);
-
-ECal *
 ecal_test_utils_cal_new_temp (gchar           **uri,
 			      ECalSourceType   type);
 
@@ -52,9 +48,6 @@ ecal_test_utils_cal_async_open (ECal        *cal,
                                 gboolean     only_if_exists,
                                 GSourceFunc  callback,
                                 gpointer     user_data);
-
-void
-ecal_test_utils_cal_remove (ECal *cal);
 
 gchar *
 ecal_test_utils_cal_get_alarm_email_address (ECal *cal);

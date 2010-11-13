@@ -30,8 +30,6 @@ main (gint argc,
 	component = e_cal_component_get_icalcomponent (e_component);
 	ecal_test_utils_cal_send_objects (cal, component, &users, &modified_component);
 
-	ecal_test_utils_cal_remove (cal);
-
 	g_list_foreach (users, (GFunc) g_free, NULL);
 	g_list_free (users);
 

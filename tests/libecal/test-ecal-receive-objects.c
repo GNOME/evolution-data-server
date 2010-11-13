@@ -28,8 +28,6 @@ main (gint argc,
 	component = e_cal_component_get_icalcomponent (e_component);
 	ecal_test_utils_cal_receive_objects (cal, component);
 
-	ecal_test_utils_cal_remove (cal);
-
 	g_object_unref (e_component);
 	g_free (uid);
 

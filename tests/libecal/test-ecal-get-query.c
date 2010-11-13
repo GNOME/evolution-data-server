@@ -144,9 +144,6 @@ alter_cal_cb (ECal *cal)
 	/* remove the object */
 	ecal_test_utils_cal_remove_object (cal, uid);
 
-	/* Clean-up */
-	ecal_test_utils_cal_remove (cal);
-
 	g_object_unref (e_component_final);
 	g_free (uid);
 	icalcomponent_free (component);

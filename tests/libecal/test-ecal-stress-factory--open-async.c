@@ -18,7 +18,6 @@ static void
 open_complete_cb (ECalTestClosure *closure)
 {
 	g_source_remove (open_timeout_id);
-	ecal_test_utils_cal_remove (closure->cal);
 
 	cals_processed++;
 

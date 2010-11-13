@@ -59,9 +59,6 @@ main (gint argc,
 	ecal_test_utils_cal_assert_e_cal_components_equal (e_component,
 			e_component_final);
 
-	/* Clean-up */
-	ecal_test_utils_cal_remove (cal);
-
 	g_object_unref (e_component_final);
 	g_free (uid);
 	icalcomponent_free (component);

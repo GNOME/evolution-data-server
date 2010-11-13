@@ -21,8 +21,6 @@ main (gint argc,
 	address = ecal_test_utils_cal_get_cal_address (cal);
 	test_print ("calendar address: '%s'\n", address);
 
-	ecal_test_utils_cal_remove (cal);
-
 	g_free (address);
 
 	return 0;

@@ -20,6 +20,9 @@ main (gint argc,
 	cal = ecal_test_utils_cal_new_temp (&uri, E_CAL_SOURCE_TYPE_EVENT);
 	g_object_unref (cal);
 
+	/* FIXME We don't build ECals from URIs anymore. */
+
+#if 0
 	/* open and close the same calendar repeatedly */
 	for (i = 0; i < NUM_OPENS - 1; i++) {
 		cal = ecal_test_utils_cal_new_from_uri (uri,
@@ -29,7 +32,7 @@ main (gint argc,
 	}
 
 	cal = ecal_test_utils_cal_new_from_uri (uri, E_CAL_SOURCE_TYPE_EVENT);
-	ecal_test_utils_cal_remove (cal);
+#endif
 
 	g_free (uri);
 

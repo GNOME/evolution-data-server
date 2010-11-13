@@ -76,15 +76,15 @@ e_gdbus_cal_factory_default_init (EGdbusCalFactoryIface *iface)
 /* encodes source and source type into a strv usable for a wire transfer;
  * Free returned pointer with g_strfreev () */
 gchar **
-e_gdbus_cal_factory_encode_get_cal (const gchar *in_source,
+e_gdbus_cal_factory_encode_get_cal (const gchar *in_uid,
                                     guint in_type)
 {
 	gchar **strv;
 
-	g_return_val_if_fail (in_source != NULL, NULL);
+	g_return_val_if_fail (in_uid != NULL, NULL);
 
 	strv = g_new0 (gchar *, 3);
-	strv[0] = g_strdup (in_source);
+	strv[0] = g_strdup (in_uid);
 	strv[1] = g_strdup_printf ("%u", (guint32) in_type);
 	strv[2] = NULL;
 
@@ -120,7 +120,8 @@ e_gdbus_cal_factory_call_get_cal (GDBusProxy *proxy,
                                   GAsyncReadyCallback callback,
                                   gpointer user_data)
 {
-	/* in_source_type has only two items, the first is ESource, the second is source type */
+	/* in_source_type has only two items, the first is the
+	 * ESource UID, the second is source type */
 	/* use e_gdbus_cal_factory_encode_get_cal() to encode them */
 
 	g_return_if_fail (in_source_type != NULL);
@@ -147,7 +148,8 @@ e_gdbus_cal_factory_call_get_cal_sync (GDBusProxy *proxy,
                                        GCancellable *cancellable,
                                        GError **error)
 {
-	/* in_source_type has only two items, the first is ESource, the second is source type */
+	/* in_source_type has only two items, the first is the
+	 * ESource UID, the second is source type */
 	/* use e_gdbus_cal_factory_encode_get_cal() to encode them */
 
 	g_return_val_if_fail (in_source_type != NULL, FALSE);

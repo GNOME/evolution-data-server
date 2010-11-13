@@ -26,7 +26,5 @@ main (gint argc,
 	g_assert (!g_strcmp0 (icaltimezone_get_tzid (zone),
 			icaltimezone_get_tzid (utc_zone)));
 
-	ecal_test_utils_cal_remove (cal);
-
 	return 0;
 }

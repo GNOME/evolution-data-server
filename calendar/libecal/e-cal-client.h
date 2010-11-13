@@ -144,14 +144,6 @@ GType			e_cal_client_get_type			(void);
 
 /* Creating a new calendar */
 ECalClient *		e_cal_client_new			(ESource *source, ECalClientSourceType source_type, GError **error);
-ECalClient *		e_cal_client_new_from_uri		(const gchar *uri, ECalClientSourceType source_type, GError **error);
-ECalClient *		e_cal_client_new_system			(ECalClientSourceType source_type, GError **error);
-ECalClient *		e_cal_client_new_default		(ECalClientSourceType source_type, GError **error);
-
-/* Calendar discovery */
-gboolean		e_cal_client_set_default		(ECalClient *client, GError **error);
-gboolean		e_cal_client_set_default_source		(ESource *source, ECalClientSourceType source_type, GError **error);
-gboolean		e_cal_client_get_sources		(ESourceList **sources, ECalClientSourceType source_type, GError **error);
 
 /* Calendar properties not managed by EClient */
 ECalClientSourceType	e_cal_client_get_source_type		(ECalClient *client);

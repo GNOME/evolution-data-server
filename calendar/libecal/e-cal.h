@@ -24,7 +24,6 @@
 
 #ifndef E_CAL_DISABLE_DEPRECATED
 
-#include <libedataserver/e-source-list.h>
 #include <libedataserver/e-source.h>
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-util.h>
@@ -66,7 +65,6 @@ typedef enum {
 /* Whether the ecal is not loaded, is being loaded, or is already loaded */
 typedef enum {
 	E_CAL_LOAD_NOT_LOADED,
-	E_CAL_LOAD_AUTHENTICATING,
 	E_CAL_LOAD_LOADING,
 	E_CAL_LOAD_LOADED
 } ECalLoadState;
@@ -106,11 +104,6 @@ struct _ECalClass {
 	void (* backend_died) (ECal *ecal);
 };
 
-typedef gchar * (* ECalAuthFunc) (ECal *ecal,
-				 const gchar *prompt,
-				 const gchar *key,
-				 gpointer user_data);
-
 GType e_cal_get_type (void);
 
 GType e_cal_source_type_enum_get_type (void);
@@ -118,12 +111,6 @@ GType e_cal_set_mode_status_enum_get_type (void);
 GType cal_mode_enum_get_type (void);
 
 ECal *e_cal_new (ESource *source, ECalSourceType type);
-ECal *e_cal_new_from_uri (const gchar *uri, ECalSourceType type);
-ECal *e_cal_new_system_calendar (void);
-ECal *e_cal_new_system_tasks (void);
-ECal *e_cal_new_system_memos (void);
-
-void e_cal_set_auth_func (ECal *ecal, ECalAuthFunc func, gpointer data);
 
 gboolean e_cal_open (ECal *ecal, gboolean only_if_exists, GError **error);
 void e_cal_open_async (ECal *ecal, gboolean only_if_exists);
@@ -136,7 +123,6 @@ ECalSourceType e_cal_get_source_type (ECal *ecal);
 ECalLoadState e_cal_get_load_state (ECal *ecal);
 
 ESource *e_cal_get_source (ECal *ecal);
-const gchar *e_cal_get_uri (ECal *ecal);
 
 gboolean e_cal_is_read_only (ECal *ecal, gboolean *read_only, GError **error);
 gboolean e_cal_get_cal_address (ECal *ecal, gchar **cal_address, GError **error);
@@ -219,10 +205,6 @@ gchar * e_cal_get_component_as_string (ECal *ecal, icalcomponent *icalcomp);
 const gchar * e_cal_get_error_message (ECalendarStatus status);
 
 /* Calendar/Tasks Discovery */
-gboolean    e_cal_open_default (ECal **ecal, ECalSourceType type, ECalAuthFunc func, gpointer data, GError **error);
-gboolean    e_cal_set_default (ECal  *ecal, GError **error);
-gboolean    e_cal_set_default_source (ESource *source, ECalSourceType type, GError **error);
-gboolean    e_cal_get_sources (ESourceList **sources, ECalSourceType type, GError **error);
 const gchar * e_cal_get_local_attachment_store (ECal *ecal);
 gboolean e_cal_get_recurrences_no_master (ECal *ecal);
 gboolean e_cal_get_attachments_for_comp (ECal *ecal, const gchar *uid, const gchar *rid, GSList **list, GError **error);

@@ -55,7 +55,5 @@ main (gint argc,
 
 	g_main_loop_run (loop);
 
-	ecal_test_utils_cal_remove (cal);
-
 	return 0;
 }

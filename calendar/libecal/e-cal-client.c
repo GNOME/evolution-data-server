@@ -439,25 +439,6 @@ online_cb (EGdbusCal *object,
 }
 
 static void
-auth_required_cb (EGdbusCal *object,
-                  const gchar * const *credentials_strv,
-                  ECalClient *client)
-{
-	ECredentials *credentials;
-
-	g_return_if_fail (E_IS_CAL_CLIENT (client));
-
-	if (credentials_strv)
-		credentials = e_credentials_new_strv (credentials_strv);
-	else
-		credentials = e_credentials_new ();
-
-	e_client_process_authentication (E_CLIENT (client), credentials);
-
-	e_credentials_free (credentials);
-}
-
-static void
 opened_cb (EGdbusCal *object,
            const gchar * const *error_strv,
            ECalClient *client)
@@ -612,7 +593,8 @@ e_cal_client_new (ESource *source,
 	ECalClient *client;
 	GError *err = NULL;
 	GDBusConnection *connection;
-	gchar *xml, **strv;
+	const gchar *uid;
+	gchar **strv;
 	gchar *path = NULL;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
@@ -633,18 +615,9 @@ e_cal_client_new (ESource *source,
 		return NULL;
 	}
 
-	xml = e_source_to_standalone_xml (source);
-	if (!xml || !*xml) {
-		UNLOCK_FACTORY ();
-		g_free (xml);
-		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_INVALID_ARG, _("Invalid source"));
-		return NULL;
-	}
-
-	strv = e_gdbus_cal_factory_encode_get_cal (xml, convert_type (source_type));
+	uid = e_source_get_uid (source);
+	strv = e_gdbus_cal_factory_encode_get_cal (uid, convert_type (source_type));
 	if (!strv) {
-		UNLOCK_FACTORY ();
-		g_free (xml);
 		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_OTHER_ERROR, _("Other error"));
 		return NULL;
 	}
@@ -656,7 +629,6 @@ e_cal_client_new (ESource *source,
 
 	if (!e_gdbus_cal_factory_call_get_cal_sync (G_DBUS_PROXY (cal_factory_proxy), (const gchar * const *) strv, &path, NULL, &err)) {
 		unwrap_dbus_error (err, &err);
-		g_free (xml);
 		g_strfreev (strv);
 		g_warning ("%s: Cannot get calendar from factory: %s", G_STRFUNC, err ? err->message : "[no error]");
 		if (err)
@@ -666,7 +638,6 @@ e_cal_client_new (ESource *source,
 		return NULL;
 	}
 
-	g_free (xml);
 	g_strfreev (strv);
 
 	client->priv->gdbus_cal = G_DBUS_PROXY (e_gdbus_cal_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy)),
@@ -705,255 +676,11 @@ e_cal_client_new (ESource *source,
 	g_signal_connect (client->priv->gdbus_cal, "backend_error", G_CALLBACK (backend_error_cb), client);
 	g_signal_connect (client->priv->gdbus_cal, "readonly", G_CALLBACK (readonly_cb), client);
 	g_signal_connect (client->priv->gdbus_cal, "online", G_CALLBACK (online_cb), client);
-	g_signal_connect (client->priv->gdbus_cal, "auth-required", G_CALLBACK (auth_required_cb), client);
 	g_signal_connect (client->priv->gdbus_cal, "opened", G_CALLBACK (opened_cb), client);
 	g_signal_connect (client->priv->gdbus_cal, "free-busy-data", G_CALLBACK (free_busy_data_cb), client);
 	g_signal_connect (client->priv->gdbus_cal, "backend-property-changed", G_CALLBACK (backend_property_changed_cb), client);
 
 	return client;
-}
-
-/**
- * e_cal_client_new_from_uri:
- * @uri: the URI to load
- * @source_type: source type of the calendar
- * @error: A #GError pointer
- *
- * Creates a new #ECalClient corresponding to the given uri.  See the
- * documentation for e_cal_client_new() for further information.
- *
- * Returns: a new but unopened #ECalClient.
- *
- * Since: 3.2
- **/
-ECalClient *
-e_cal_client_new_from_uri (const gchar *uri,
-                           ECalClientSourceType source_type,
-                           GError **error)
-{
-	ESourceList *source_list = NULL;
-	ESource *source;
-	ECalClient *client;
-
-	g_return_val_if_fail (uri != NULL, NULL);
-
-	if (!e_cal_client_get_sources (&source_list, source_type, error))
-		return NULL;
-
-	source = e_client_util_get_source_for_uri (source_list, uri);
-	if (!source && g_str_has_prefix (uri, "file://")) {
-		gchar *local_uri;
-
-		local_uri = g_strconcat ("local://", uri + 7, NULL);
-		source = e_client_util_get_source_for_uri (source_list, uri);
-
-		g_free (local_uri);
-	}
-
-	if (!source) {
-		g_object_unref (source_list);
-		g_set_error (error, E_CLIENT_ERROR, E_CLIENT_ERROR_INVALID_ARG, _("Incorrect uri '%s'"), uri);
-
-		return NULL;
-	}
-
-	client = e_cal_client_new (source, source_type, error);
-
-	g_object_unref (source);
-	g_object_unref (source_list);
-
-	return client;
-}
-
-/**
- * e_cal_client_new_system:
- * @source_type: source type of the calendar
- * @error: A #GError pointer
- *
- * Creates a new #ECalClient corresponding to the user's system
- * calendar.  See the documentation for e_cal_client_new() for further
- * information.
- *
- * Returns: a new but unopened #ECalClient.
- *
- * Since: 3.2
- **/
-ECalClient *
-e_cal_client_new_system (ECalClientSourceType source_type,
-                         GError **error)
-{
-	ESourceList *source_list = NULL;
-	ESource *source;
-	ECalClient *client;
-
-	if (!e_cal_client_get_sources (&source_list, source_type, error))
-		return NULL;
-
-	source = e_client_util_get_system_source (source_list);
-	if (!source) {
-		g_object_unref (source_list);
-		g_set_error_literal (error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR, _("Failed to find system calendar"));
-
-		return NULL;
-	}
-
-	client = e_cal_client_new (source, source_type, error);
-
-	g_object_unref (source);
-	g_object_unref (source_list);
-
-	return client;
-}
-
-/**
- * e_cal_client_new_default:
- * @source_type: source type of the calendar
- * @error: return location for a #GError, or %NULL
- *
- * Creates a new #ECalClient corresponding to the user's default
- * calendar.  See the documentation for e_cal_client_new() for
- * further information.
- *
- * Returns: a new but unopened #ECalClient
- *
- * Since: 3.2
- **/
-ECalClient *
-e_cal_client_new_default (ECalClientSourceType source_type,
-                          GError **error)
-{
-	ESourceList *source_list = NULL;
-	ESource *source;
-	ECalClient *client;
-
-	if (!e_cal_client_get_sources (&source_list, source_type, error))
-		return NULL;
-
-	source = e_source_list_peek_default_source (source_list);
-	if (!source) {
-		g_set_error_literal (error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR, _("Calendar does not exist"));
-		g_object_unref (source_list);
-
-		return NULL;
-	}
-
-	client = e_cal_client_new (source, source_type, error);
-
-	g_object_unref (source_list);
-
-	return client;
-}
-
-/**
- * e_cal_client_set_default:
- * @client: An #ECalClient pointer
- * @error: A #GError pointer
- *
- * Sets the #ESource of the #ECalClient as the "default" calendar.  This is the source
- * that will be loaded in the e_cal_client_get_default_calendar() call.
- *
- * Returns: %TRUE if the setting was stored in libecal's ESourceList, otherwise %FALSE.
- *
- * Since: 3.2
- **/
-gboolean
-e_cal_client_set_default (ECalClient *client,
-                          GError **error)
-{
-	ESource *source;
-
-	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-
-	source = e_client_get_source (E_CLIENT (client));
-	g_return_val_if_fail (source != NULL, FALSE);
-
-	return e_cal_client_set_default_source (source, e_cal_client_get_source_type (client), error);
-}
-
-/**
- * e_cal_client_set_default_source:
- * @source: An #ESource pointer
- * @source_type: source type of the calendar
- * @error: A #GError pointer
- *
- * Sets @source as the "default" calendar.  This is the source that
- * will be loaded in the e_cal_client_get_default_calendar() call.
- *
- * Returns: %TRUE if the setting was stored in libecal's ESourceList, otherwise %FALSE.
- *
- * Since: 3.2
- **/
-gboolean
-e_cal_client_set_default_source (ESource *source,
-                                 ECalClientSourceType source_type,
-                                 GError **error)
-{
-	ESourceList *source_list = NULL;
-	gboolean res = FALSE;
-
-	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
-
-	if (!e_cal_client_get_sources (&source_list, source_type, error))
-		return FALSE;
-
-	res = e_client_util_set_default (source_list, source);
-
-	if (res)
-		res = e_source_list_sync (source_list, error);
-	else
-		g_set_error (error, E_CLIENT_ERROR, E_CLIENT_ERROR_INVALID_ARG,
-			_("There was no source for UID '%s' stored in a source list."), e_source_get_uid (source));
-
-	g_object_unref (source_list);
-
-	return res;
-}
-
-/**
- * e_cal_client_get_sources:
- * @sources: (out): A pointer to an #ESourceList to set
- * @source_type: source type of calendars
- * @error: A pointer to a GError to set on error
- *
- * Populate @*sources with the list of all sources which have been
- * added to Evolution.
- *
- * Returns: %TRUE if @sources was set, otherwise %FALSE.
- *
- * Since: 3.2
- **/
-gboolean
-e_cal_client_get_sources (ESourceList **sources,
-                          ECalClientSourceType source_type,
-                          GError **error)
-{
-	GConfClient *gconf;
-	const gchar *key = NULL;
-
-	g_return_val_if_fail (sources != NULL, FALSE);
-
-	switch (source_type) {
-	case E_CAL_CLIENT_SOURCE_TYPE_EVENTS:
-		key = "/apps/evolution/calendar/sources";
-		break;
-	case E_CAL_CLIENT_SOURCE_TYPE_TASKS:
-		key = "/apps/evolution/tasks/sources";
-		break;
-	case E_CAL_CLIENT_SOURCE_TYPE_MEMOS:
-		key = "/apps/evolution/memos/sources";
-		break;
-	default:
-		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_INVALID_ARG, _("Invalid source type"));
-		return FALSE;
-	}
-
-	g_return_val_if_fail (key != NULL, FALSE);
-
-	gconf = gconf_client_get_default ();
-	*sources = e_source_list_new_for_gconf (gconf, key);
-	g_object_unref (gconf);
-
-	return TRUE;
 }
 
 /**
@@ -5363,35 +5090,6 @@ cal_client_unwrap_dbus_error (EClient *client,
 }
 
 static void
-cal_client_handle_authentication (EClient *client,
-                                  const ECredentials *credentials)
-{
-	ECalClient *cal_client;
-	GError *error = NULL;
-	gchar **strv;
-
-	g_return_if_fail (E_IS_CAL_CLIENT (client));
-	g_return_if_fail (credentials != NULL);
-
-	cal_client = E_CAL_CLIENT (client);
-
-	if (!cal_client->priv->gdbus_cal)
-		return;
-
-	strv = e_credentials_to_strv (credentials);
-	g_return_if_fail (strv != NULL);
-
-	e_gdbus_cal_call_authenticate_user_sync (cal_client->priv->gdbus_cal, (const gchar * const *) strv, NULL, &error);
-
-	g_strfreev (strv);
-
-	if (error) {
-		g_debug ("%s: Failed to authenticate user: %s", G_STRFUNC, error->message);
-		g_error_free (error);
-	}
-}
-
-static void
 cal_client_retrieve_capabilities (EClient *client,
                                   GCancellable *cancellable,
                                   GAsyncReadyCallback callback,
@@ -5509,7 +5207,6 @@ e_cal_client_class_init (ECalClientClass *class)
 	client_class = E_CLIENT_CLASS (class);
 	client_class->get_dbus_proxy			= cal_client_get_dbus_proxy;
 	client_class->unwrap_dbus_error			= cal_client_unwrap_dbus_error;
-	client_class->handle_authentication		= cal_client_handle_authentication;
 	client_class->retrieve_capabilities		= cal_client_retrieve_capabilities;
 	client_class->retrieve_capabilities_finish	= cal_client_retrieve_capabilities_finish;
 	client_class->retrieve_capabilities_sync	= cal_client_retrieve_capabilities_sync;

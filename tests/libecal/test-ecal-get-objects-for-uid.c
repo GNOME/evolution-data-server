@@ -38,8 +38,6 @@ main (gint argc,
 	component_final = e_cal_component_get_icalcomponent (e_component_final);
 	ecal_test_utils_cal_assert_objects_equal_shallow (component, component_final);
 
-	ecal_test_utils_cal_remove (cal);
-
 	g_list_foreach (components, (GFunc) g_object_unref, NULL);
 	g_list_free (components);
 	g_free (uid);

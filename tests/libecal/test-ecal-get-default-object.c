@@ -24,8 +24,6 @@ main (gint argc,
 	component_string = icalcomponent_as_ical_string (component);
 	test_print ("default object:\n%s", component_string);
 
-	ecal_test_utils_cal_remove (cal);
-
 	g_free (component_string);
 
 	return 0;

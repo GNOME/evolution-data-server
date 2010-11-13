@@ -17,7 +17,9 @@ main (gint argc,
 		exit (0);
 	}
 
-	ecal = e_cal_new_from_uri (argv[1], E_CAL_SOURCE_TYPE_EVENT);
+	/* FIXME We don't build ECals from URIs anymore. */
+	/* ecal = e_cal_new_from_uri (argv[1], E_CAL_SOURCE_TYPE_EVENT); */
+	ecal = NULL;
 
 	if (!e_cal_open (ecal, TRUE, NULL)) {
 		printf ("failed to open calendar\n");

@@ -30,8 +30,6 @@ main (gint argc,
 
 	free_busy = ecal_test_utils_cal_get_free_busy (cal, users, start, end);
 
-	ecal_test_utils_cal_remove (cal);
-
 	g_list_foreach (free_busy, (GFunc) g_object_unref, NULL);
 	g_list_free (free_busy);
 

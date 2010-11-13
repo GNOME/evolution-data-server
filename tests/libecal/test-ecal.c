@@ -335,24 +335,6 @@ test_get_alarms_in_range (ECal *client)
 }
 
 static const gchar *
-test_set_uri (ECal *client,
-              const gchar *uri)
-{
-	/* The uri is set as part of create_client call. This method merely
-	 * verifies it was done correctly.
-	 */
-	gchar *cal_uri;
-	gboolean compare = 0;
-	cal_uri = g_strconcat ("file://", uri, NULL);
-	compare = !strcmp (e_cal_get_uri (client), cal_uri);
-
-	g_free (cal_uri);
-	mu_assert ("Test set_uri : uri was not set correctly\n", compare);
-
-	return NULL;
-}
-
-static const gchar *
 test_cal_loaded (ECal *client)
 {
 	/* Test one loaded calendar and another that is not loaded. */
@@ -367,13 +349,13 @@ static const gchar *
 test_get_source (ECal *client,
                  const gchar *expected)
 {
-	ESource *source;
-	gchar *uri;
+	const gchar *uri;
 	gchar *cal_uri;
 	gboolean compare = 0;
 
-	source = e_cal_get_source (client);
-	uri = e_source_get_uri (source);
+	/* FIXME ESources no longer have built-in URIs. */
+	/* uri = e_source_get_uri (source); */
+	uri = "";
 	cal_uri = g_strconcat ("file://", expected, NULL);
 	compare = !strcmp (expected, uri);
 
@@ -466,6 +448,7 @@ test_e_cal_remove (ECal *ecal,
 static const gchar *
 test_new_system_calendar (void)
 {
+#if 0  /* ACCOUNT_MGMT */
 	const gchar *user_data_dir;
 	gchar *filename;
 	gboolean created;
@@ -479,6 +462,7 @@ test_new_system_calendar (void)
 	g_free (filename);
 
 	mu_assert ("Test creation of default system calendar : Failed", created);
+#endif /* ACCOUNT_MGMT */
 
 	return NULL;
 }
@@ -486,6 +470,7 @@ test_new_system_calendar (void)
 static const gchar *
 test_new_system_tasks (void)
 {
+#if 0  /* ACCOUNT_MGMT */
 	const gchar *user_data_dir;
 	gchar *filename;
 	gboolean created;
@@ -499,6 +484,7 @@ test_new_system_tasks (void)
 	g_free (filename);
 
 	mu_assert ("Test creation of default system tasks : Failed", created);
+#endif /* ACCOUNT_MGMT */
 
 	return NULL;
 }
@@ -506,6 +492,7 @@ test_new_system_tasks (void)
 static const gchar *
 test_new_system_memos (void)
 {
+#if 0  /* ACCOUNT_MGMT */
 	const gchar *user_data_dir;
 	gchar *filename;
 	gboolean created;
@@ -519,6 +506,7 @@ test_new_system_memos (void)
 	g_free (filename);
 
 	mu_assert ("Test creation of default system memos : Failed", created);
+#endif /* ACCOUNT_MGMT */
 
 	return NULL;
 }
@@ -655,7 +643,6 @@ all_tests (ECal *client,
 	mu_run_test (test_new_system_calendar ());
 	mu_run_test (test_new_system_tasks ());
 	mu_run_test (test_new_system_memos ());
-	mu_run_test (test_set_uri (client, uri));
 	mu_run_test (test_get_source (client, uri));
 	mu_run_test (test_cal_loaded (client));
 
@@ -698,7 +685,9 @@ create_client (ECal **client,
 	GError *error = NULL;
 
 	cal_uri = g_strconcat ("file://", uri, NULL);
-	*client = e_cal_new_from_uri (cal_uri, type);
+	/* FIXME We don't build ECals from URIs anymore. */
+	/* *client = e_cal_new_from_uri (cal_uri, type); */
+	*client = NULL;
 	if (!*client) {
 		g_message (G_STRLOC ": could not create the client");
 		exit (1);

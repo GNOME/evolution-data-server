@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <libecal/e-cal-client.h>
-#include <libedataserver/e-source-group.h>
 
 #include "client-test-utils.h"
 
@@ -149,8 +148,7 @@ static void
 identify_source (ESource *source,
                  ECalClientSourceType source_type)
 {
-	const gchar *name, *uri, *type;
-	gchar *abs_uri = NULL;
+	const gchar *name, *type, *uid;
 
 	g_return_if_fail (source != NULL);
 
@@ -169,23 +167,10 @@ identify_source (ESource *source,
 		break;
 	}
 
+	uid = e_source_get_uid (source);
 	name = e_source_get_display_name (source);
-	if (!name)
-		name = "Unknown name";
 
-	uri = e_source_peek_absolute_uri (source);
-	if (!uri) {
-		abs_uri = e_source_build_absolute_uri (source);
-		uri = abs_uri;
-	}
-	if (!uri)
-		uri = e_source_peek_relative_uri (source);
-	if (!uri)
-		uri = "Unknown uri";
-
-	g_print ("\n   Checking %s source '%s' (%s)\n", type, name, uri);
-
-	g_free (abs_uri);
+	g_print ("\n   Checking %s source '%s' (%s)\n", type, name, uid);
 }
 
 static void
@@ -412,14 +397,15 @@ check_source_sync (ESource *source,
 }
 
 static gboolean
-foreach_async (ECalClientSourceType source_type)
+foreach_async (ESourceRegistry *registry,
+               ECalClientSourceType source_type)
 {
 	gpointer async_data;
 	ESource *source = NULL;
 	ECalClient *cal_client;
 	GError *error = NULL;
 
-	async_data = foreach_configured_source_async_start (source_type, &source);
+	async_data = foreach_configured_source_async_start (registry, source_type, &source);
 	if (!async_data) {
 		stop_main_loop (1);
 		return FALSE;
@@ -447,38 +433,38 @@ foreach_async (ECalClientSourceType source_type)
 }
 
 static gboolean
-in_main_thread_idle_cb (gpointer unused)
+in_main_thread_idle_cb (ESourceRegistry *registry)
 {
 	g_print ("* run in main thread with mainloop running\n");
-	foreach_configured_source (E_CAL_CLIENT_SOURCE_TYPE_EVENTS, check_source_sync);
-	foreach_configured_source (E_CAL_CLIENT_SOURCE_TYPE_TASKS, check_source_sync);
-	foreach_configured_source (E_CAL_CLIENT_SOURCE_TYPE_MEMOS, check_source_sync);
+	foreach_configured_source (registry, E_CAL_CLIENT_SOURCE_TYPE_EVENTS, check_source_sync);
+	foreach_configured_source (registry, E_CAL_CLIENT_SOURCE_TYPE_TASKS, check_source_sync);
+	foreach_configured_source (registry, E_CAL_CLIENT_SOURCE_TYPE_MEMOS, check_source_sync);
 	g_print ("---------------------------------------------------------\n\n");
 
 	g_print ("* run in main thread async\n");
 
-	if (!foreach_async (E_CAL_CLIENT_SOURCE_TYPE_EVENTS))
+	if (!foreach_async (registry, E_CAL_CLIENT_SOURCE_TYPE_EVENTS))
 		return FALSE;
 
-	if (!foreach_async (E_CAL_CLIENT_SOURCE_TYPE_TASKS))
+	if (!foreach_async (registry, E_CAL_CLIENT_SOURCE_TYPE_TASKS))
 		return FALSE;
 
-	if (!foreach_async (E_CAL_CLIENT_SOURCE_TYPE_MEMOS))
+	if (!foreach_async (registry, E_CAL_CLIENT_SOURCE_TYPE_MEMOS))
 		return FALSE;
 
 	return FALSE;
 }
 
 static gpointer
-worker_thread (gpointer unused)
+worker_thread (ESourceRegistry *registry)
 {
 	g_print ("* run in dedicated thread with mainloop running\n");
-	foreach_configured_source (E_CAL_CLIENT_SOURCE_TYPE_EVENTS, check_source_sync);
-	foreach_configured_source (E_CAL_CLIENT_SOURCE_TYPE_TASKS, check_source_sync);
-	foreach_configured_source (E_CAL_CLIENT_SOURCE_TYPE_MEMOS, check_source_sync);
+	foreach_configured_source (registry, E_CAL_CLIENT_SOURCE_TYPE_EVENTS, check_source_sync);
+	foreach_configured_source (registry, E_CAL_CLIENT_SOURCE_TYPE_TASKS, check_source_sync);
+	foreach_configured_source (registry, E_CAL_CLIENT_SOURCE_TYPE_MEMOS, check_source_sync);
 	g_print ("---------------------------------------------------------\n\n");
 
-	g_idle_add (in_main_thread_idle_cb, NULL);
+	g_idle_add ((GSourceFunc) in_main_thread_idle_cb, registry);
 
 	return NULL;
 }
@@ -487,15 +473,22 @@ gint
 main (gint argc,
       gchar **argv)
 {
+	ESourceRegistry *registry;
+	GError *error = NULL;
+
 	main_initialize ();
 
+	registry = e_source_registry_new_sync (NULL, &error);
+	if (error != NULL)
+		g_error ("%s", error->message);
+
 	g_print ("* run in main thread without mainloop\n");
-	foreach_configured_source (E_CAL_CLIENT_SOURCE_TYPE_EVENTS, check_source_sync);
-	foreach_configured_source (E_CAL_CLIENT_SOURCE_TYPE_TASKS, check_source_sync);
-	foreach_configured_source (E_CAL_CLIENT_SOURCE_TYPE_MEMOS, check_source_sync);
+	foreach_configured_source (registry, E_CAL_CLIENT_SOURCE_TYPE_EVENTS, check_source_sync);
+	foreach_configured_source (registry, E_CAL_CLIENT_SOURCE_TYPE_TASKS, check_source_sync);
+	foreach_configured_source (registry, E_CAL_CLIENT_SOURCE_TYPE_MEMOS, check_source_sync);
 	g_print ("---------------------------------------------------------\n\n");
 
-	start_in_thread_with_main_loop (worker_thread, NULL);
+	start_in_thread_with_main_loop ((GThreadFunc) worker_thread, registry);
 
 	return get_main_loop_stop_result ();
 }

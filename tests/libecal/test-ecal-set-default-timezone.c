@@ -48,7 +48,6 @@ main (gint argc,
 	g_assert (!g_strcmp0 (icaltimezone_get_tznames (zone),
 			icaltimezone_get_tznames (zone_final)));
 
-	ecal_test_utils_cal_remove (cal);
 	icaltimezone_free (zone, TRUE);
 
 	return 0;

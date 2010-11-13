@@ -6,13 +6,7 @@ ECalSourceType
 ECalSetModeStatus
 ECalLoadState
 EDataCalMode
-ECalAuthFunc
 e_cal_new
-e_cal_new_from_uri
-e_cal_new_system_calendar
-e_cal_new_system_tasks
-e_cal_new_system_memos
-e_cal_set_auth_func
 e_cal_open
 e_cal_open_async
 e_cal_refresh
@@ -21,7 +15,6 @@ e_cal_uri_list
 e_cal_get_source_type
 e_cal_get_load_state
 e_cal_get_source
-e_cal_get_uri
 e_cal_is_read_only
 e_cal_get_cal_address
 e_cal_get_alarm_email_address
@@ -61,10 +54,6 @@ e_cal_get_query
 e_cal_resolve_tzid_cb
 e_cal_get_component_as_string
 e_cal_get_error_message
-e_cal_open_default
-e_cal_set_default
-e_cal_set_default_source
-e_cal_get_sources
 e_cal_get_local_attachment_store
 e_cal_get_recurrences_no_master
 e_cal_get_attachments_for_comp
@@ -110,12 +99,6 @@ ECalClientError
 e_cal_client_error_to_string
 e_cal_client_error_create
 e_cal_client_new
-e_cal_client_new_from_uri
-e_cal_client_new_system
-e_cal_client_new_default
-e_cal_client_set_default
-e_cal_client_set_default_source
-e_cal_client_get_sources
 e_cal_client_get_source_type
 e_cal_client_get_local_attachment_store
 e_cal_client_set_default_timezone
