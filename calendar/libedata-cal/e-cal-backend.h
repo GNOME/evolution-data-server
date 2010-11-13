@@ -24,8 +24,7 @@
 #define E_CAL_BACKEND_H
 
 #include <libebackend/e-backend.h>
-#include <libedataserver/e-credentials.h>
-#include <libedataserver/e-source.h>
+#include <libedataserver/e-source-registry.h>
 #include <libecal/e-cal-util.h>
 #include <libecal/e-cal-component.h>
 #include "e-data-cal-common.h"
@@ -154,7 +153,6 @@ struct _ECalBackendClass {
 
 	void	(* open)			(ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, gboolean only_if_exists);
 	void	(* remove)			(ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable);
-	void	(* authenticate_user)		(ECalBackend *backend, GCancellable *cancellable, ECredentials *credentials);
 
 	void	(* refresh)			(ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable);
 	void	(* get_object)			(ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *uid, const gchar *rid);
@@ -181,6 +179,8 @@ GType		e_cal_backend_get_type			(void);
 
 icalcomponent_kind
 		e_cal_backend_get_kind			(ECalBackend *backend);
+ESourceRegistry *
+		e_cal_backend_get_registry		(ECalBackend *backend);
 gboolean	e_cal_backend_is_opened			(ECalBackend *backend);
 gboolean	e_cal_backend_is_opening		(ECalBackend *backend);
 gboolean	e_cal_backend_is_readonly		(ECalBackend *backend);
@@ -201,8 +201,6 @@ void		e_cal_backend_set_notification_proxy	(ECalBackend *backend, ECalBackend *p
 
 void		e_cal_backend_get_backend_property	(ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *prop_name);
 void		e_cal_backend_set_backend_property	(ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *prop_name, const gchar *prop_value);
-
-void		e_cal_backend_authenticate_user		(ECalBackend *backend, GCancellable *cancellable, ECredentials *credentials);
 
 void		e_cal_backend_open			(ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, gboolean only_if_exists);
 void		e_cal_backend_remove			(ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable);
@@ -245,7 +243,6 @@ void		e_cal_backend_notify_objects_removed	(ECalBackend *backend, EDataCalView *
 void		e_cal_backend_notify_error		(ECalBackend *backend, const gchar *message);
 void		e_cal_backend_notify_readonly		(ECalBackend *backend, gboolean is_readonly);
 void		e_cal_backend_notify_online		(ECalBackend *backend, gboolean is_online);
-void		e_cal_backend_notify_auth_required	(ECalBackend *backend, gboolean is_self, const ECredentials *credentials);
 void		e_cal_backend_notify_opened		(ECalBackend *backend, GError *error);
 void		e_cal_backend_notify_property_changed	(ECalBackend *backend, const gchar *prop_name, const gchar *prop_value);
 

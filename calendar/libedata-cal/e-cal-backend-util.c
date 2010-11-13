@@ -26,12 +26,12 @@
 #include <string.h>
 #include <glib/gi18n-lib.h>
 #include "e-cal-backend-util.h"
-#include "libedataserver/e-account-list.h"
-
-static EAccountList *accounts;
+#include <libedataserver/e-source-mail-account.h>
+#include <libedataserver/e-source-mail-identity.h>
 
 /**
  * e_cal_backend_mail_account_get_default:
+ * @registry: an #ESourceRegistry
  * @address: placeholder for default address
  * @name: placeholder for name
  *
@@ -40,30 +40,38 @@ static EAccountList *accounts;
  * Returns: TRUE if there is a default account, FALSE otherwise.
  */
 gboolean
-e_cal_backend_mail_account_get_default (gchar **address,
+e_cal_backend_mail_account_get_default (ESourceRegistry *registry,
+                                        gchar **address,
                                         gchar **name)
 {
-	const EAccount *account;
+	ESource *source;
+	ESourceMailIdentity *extension;
+	const gchar *extension_name;
 
-	if (accounts == NULL) {
-		GConfClient *gconf = gconf_client_get_default ();
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), FALSE);
 
-		accounts = e_account_list_new (gconf);
+	source = e_source_registry_ref_default_mail_identity (registry);
 
-		g_object_unref (gconf);
-	}
+	if (source == NULL)
+		return FALSE;
 
-	account = e_account_list_get_default (accounts);
-	if (account) {
-		*address = g_strdup(account->id->address);
-		*name = g_strdup(account->id->name);
-	}
+	extension_name = E_SOURCE_EXTENSION_MAIL_IDENTITY;
+	extension = e_source_get_extension (source, extension_name);
 
-	return account != NULL;
+	if (address != NULL)
+		*address = e_source_mail_identity_dup_address (extension);
+
+	if (name != NULL)
+		*name = e_source_mail_identity_dup_name (extension);
+
+	g_object_unref (source);
+
+	return TRUE;
 }
 
 /**
  * e_cal_backend_mail_account_is_valid:
+ * @registry: an #ESourceRegistry
  * @user: user name for the account to check
  * @name: placeholder for the account name
  *
@@ -72,24 +80,73 @@ e_cal_backend_mail_account_get_default (gchar **address,
  * Returns: TRUE if the account is valid, FALSE if not.
  */
 gboolean
-e_cal_backend_mail_account_is_valid (gchar *user,
+e_cal_backend_mail_account_is_valid (ESourceRegistry *registry,
+                                     gchar *user,
                                      gchar **name)
 {
-	const EAccount *account;
+	GList *list, *iter;
+	const gchar *extension_name;
+	gboolean valid = FALSE;
 
-	if (accounts == NULL) {
-		GConfClient *gconf = gconf_client_get_default ();
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), FALSE);
+	g_return_val_if_fail (user != NULL, FALSE);
 
-		accounts = e_account_list_new (gconf);
+	extension_name = E_SOURCE_EXTENSION_MAIL_ACCOUNT;
 
-		g_object_unref (gconf);
+	list = e_source_registry_list_sources (registry, extension_name);
+
+	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
+		ESource *source = E_SOURCE (iter->data);
+		ESourceMailAccount *mail_account;
+		ESourceMailIdentity *mail_identity;
+		const gchar *uid;
+		gboolean match = FALSE;
+		gchar *address;
+
+		if (!e_source_get_enabled (source))
+			continue;
+
+		extension_name = E_SOURCE_EXTENSION_MAIL_ACCOUNT;
+		mail_account = e_source_get_extension (source, extension_name);
+		uid = e_source_mail_account_get_identity_uid (mail_account);
+
+		if (uid == NULL)
+			continue;
+
+		source = e_source_registry_ref_source (registry, uid);
+
+		if (source == NULL)
+			continue;
+
+		extension_name = E_SOURCE_EXTENSION_MAIL_IDENTITY;
+
+		if (!e_source_has_extension (source, extension_name)) {
+			g_object_unref (source);
+			continue;
+		}
+
+		mail_identity = e_source_get_extension (source, extension_name);
+		address = e_source_mail_identity_dup_address (mail_identity);
+
+		if (address != NULL) {
+			match = (g_ascii_strcasecmp (address, user) == 0);
+			g_free (address);
+		}
+
+		if (match && name != NULL)
+			*name = e_source_dup_display_name (source);
+
+		g_object_unref (source);
+
+		if (match) {
+			valid = TRUE;
+			break;
+		}
 	}
 
-	account = e_account_list_find (accounts, E_ACCOUNT_FIND_ID_ADDRESS, user);
-	if (account)
-		*name = g_strdup(account->id->name);
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
-	return account != NULL;
+	return valid;
 }
 
 /**
@@ -143,6 +200,7 @@ is_attendee_declined (icalcomponent *icalcomp,
 
 /**
  * e_cal_backend_user_declined:
+ * @registry: an #ESourceRegistry
  * @icalcomp: component where to check
  *
  * Returns: Whether icalcomp contains attendee with a mail same as any of
@@ -151,37 +209,42 @@ is_attendee_declined (icalcomponent *icalcomp,
  * Since: 2.26
  **/
 gboolean
-e_cal_backend_user_declined (icalcomponent *icalcomp)
+e_cal_backend_user_declined (ESourceRegistry *registry,
+                             icalcomponent *icalcomp)
 {
-	gboolean res = FALSE;
-	EAccountList *accounts;
-	GConfClient *gconf;
+	GList *list, *iter;
+	const gchar *extension_name;
+	gboolean declined = FALSE;
 
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), FALSE);
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
-	gconf = gconf_client_get_default ();
-	accounts = e_account_list_new (gconf);
+	extension_name = E_SOURCE_EXTENSION_MAIL_IDENTITY;
 
-	if (accounts) {
-		EIterator *it;
+	list = e_source_registry_list_sources (registry, extension_name);
 
-		for (it = e_list_get_iterator (E_LIST (accounts)); e_iterator_is_valid (it); e_iterator_next (it)) {
-			EAccount *account = (EAccount *) e_iterator_get (it);
+	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
+		ESource *source = E_SOURCE (iter->data);
+		ESourceMailIdentity *extension;
+		const gchar *address;
 
-			if (account && account->enabled && e_account_get_string (account, E_ACCOUNT_ID_ADDRESS)) {
-				res = is_attendee_declined (icalcomp, e_account_get_string (account, E_ACCOUNT_ID_ADDRESS));
+		if (!e_source_get_enabled (source))
+			continue;
 
-				if (res)
-					break;
-			}
+		extension = e_source_get_extension (source, extension_name);
+		address = e_source_mail_identity_get_address (extension);
+
+		if (address == NULL)
+			continue;
+
+		if (is_attendee_declined (icalcomp, address)) {
+			declined = TRUE;
+			break;
 		}
-
-		g_object_unref (it);
-		g_object_unref (accounts);
 	}
 
-	g_object_unref (gconf);
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
-	return res;
+	return declined;
 }
 

@@ -23,6 +23,7 @@
 #define E_DATA_CAL_FACTORY_H
 
 #include <libebackend/e-data-factory.h>
+#include <libedataserver/e-source-registry.h>
 
 /* Standard GObject macros */
 #define E_TYPE_DATA_CAL_FACTORY \
@@ -61,6 +62,8 @@ struct _EDataCalFactoryClass {
 GType		e_data_cal_factory_get_type	(void);
 EDBusServer *	e_data_cal_factory_new		(GCancellable *cancellable,
 						 GError **error);
+ESourceRegistry *
+		e_data_cal_factory_get_registry	(EDataCalFactory *factory);
 
 G_END_DECLS
 

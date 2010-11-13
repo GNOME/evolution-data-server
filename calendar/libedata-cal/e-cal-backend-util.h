@@ -23,6 +23,7 @@
 #define E_CAL_BACKEND_UTIL_H
 
 #include <libedata-cal/e-cal-backend.h>
+#include <libedataserver/e-source-registry.h>
 
 G_BEGIN_DECLS
 
@@ -31,12 +32,15 @@ G_BEGIN_DECLS
  */
 
 gboolean	e_cal_backend_mail_account_get_default
-						(gchar **address,
+						(ESourceRegistry *registry,
+						 gchar **address,
 						 gchar **name);
 gboolean	e_cal_backend_mail_account_is_valid
-						(gchar *user,
+						(ESourceRegistry *registry,
+						 gchar *user,
 						 gchar **name);
-gboolean	e_cal_backend_user_declined	(icalcomponent *icalcomp);
+gboolean	e_cal_backend_user_declined	(ESourceRegistry *registry,
+                                                 icalcomponent *icalcomp);
 
 G_END_DECLS
 

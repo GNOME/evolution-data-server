@@ -4,8 +4,6 @@
 	<interface name="org.gnome.evolution.dataserver.Calendar">
 		<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="EDataCal"/>
 		
-		<signal name="auth_required"/>
-
 		<signal name="backend_error">
                   <arg name="error" type="s"/>
                 </signal>
@@ -18,12 +16,6 @@
                   <arg name="mode" type="i"/>
                 </signal>
 		
-		<method name="getUri">
-			<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_Cal_get_uri"/>
-			<annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
-			<arg name="str_uri_copy" type="s" direction="out"/>
-		</method>
-
 		<method name="getCacheDir">
 			<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_Cal_getCacheDir"/>
 			<annotation name="org.freedesktop.DBus.GLib.Async" value=""/>

@@ -30,7 +30,6 @@
 #include <glib/gi18n-lib.h>
 #include <unistd.h>
 
-#include <libedataserver/e-credentials.h>
 #include <libedataserver/e-data-server-util.h>
 #include <libedataserver/e-operation-pool.h>
 
@@ -63,7 +62,6 @@ static EOperationPool *ops_pool = NULL;
 
 typedef enum {
 	OP_OPEN,
-	OP_AUTHENTICATE,
 	OP_REMOVE,
 	OP_REFRESH,
 	OP_GET_BACKEND_PROPERTY,
@@ -95,8 +93,6 @@ typedef struct {
 	union {
 		/* OP_OPEN */
 		gboolean only_if_exists;
-		/* OP_AUTHENTICATE */
-		ECredentials *credentials;
 		/* OP_GET_OBJECT */
 		/* OP_GET_ATTACHMENT_URIS */
 		struct _ur {
@@ -302,10 +298,6 @@ operation_thread (gpointer data,
 		e_cal_backend_add_timezone (backend, op->cal, op->id, op->cancellable, op->d.tzobject);
 		g_free (op->d.tzobject);
 		break;
-	case OP_AUTHENTICATE:
-		e_cal_backend_authenticate_user (backend, op->cancellable, op->d.credentials);
-		e_credentials_free (op->d.credentials);
-		break;
 	case OP_CANCEL_OPERATION:
 		g_static_rec_mutex_lock (&op->cal->priv->pending_ops_lock);
 
@@ -501,22 +493,6 @@ e_data_cal_create_error_fmt (EDataCalCallStatus status,
 	g_free (custom_msg);
 
 	return error;
-}
-
-static void
-data_cal_return_error (GDBusMethodInvocation *invocation,
-                       const GError *perror,
-                       const gchar *error_fmt)
-{
-	GError *error;
-
-	g_return_if_fail (perror != NULL);
-
-	error = g_error_new (E_DATA_CAL_ERROR, perror->code, error_fmt, perror->message);
-
-	g_dbus_method_invocation_return_gerror (invocation, error);
-
-	g_error_free (error);
 }
 
 /**
@@ -845,31 +821,6 @@ impl_Cal_add_timezone (EGdbusCal *object,
 	op->d.tzobject = g_strdup (in_tzobject);
 
 	e_gdbus_cal_complete_add_timezone (cal->priv->gdbus_object, invocation, op->id);
-	e_operation_pool_push (ops_pool, op);
-
-	return TRUE;
-}
-
-static gboolean
-impl_Cal_authenticate_user (EGdbusCal *object,
-                            GDBusMethodInvocation *invocation,
-                            const gchar * const *in_credentials,
-                            EDataCal *cal)
-{
-	OperationData *op;
-
-	if (in_credentials == NULL) {
-		GError *error = e_data_cal_create_error (InvalidArg, NULL);
-		/* Translators: This is prefix to a detailed error message */
-		data_cal_return_error (invocation, error, _("Cannot authenticate user: "));
-		g_error_free (error);
-		return TRUE;
-	}
-
-	op = op_new (OP_AUTHENTICATE, cal);
-	op->d.credentials = e_credentials_new_strv (in_credentials);
-
-	e_gdbus_cal_complete_authenticate_user (cal->priv->gdbus_object, invocation, NULL);
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -1536,37 +1487,6 @@ e_data_cal_report_online (EDataCal *cal,
 }
 
 /**
- * e_data_cal_report_auth_required:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-void
-e_data_cal_report_auth_required (EDataCal *cal,
-                                 const ECredentials *credentials)
-{
-	gchar *empty_strv[2];
-	gchar **strv = NULL;
-
-	/* credentilas contains extra information for a source for which
-	 * authentication is requested.  This parameter can be NULL to
-	 * indicate "for this calendar". */
-
-	g_return_if_fail (cal != NULL);
-
-	empty_strv[0] = NULL;
-	empty_strv[1] = NULL;
-
-	if (credentials)
-		strv = e_credentials_to_strv (credentials);
-
-	e_gdbus_cal_emit_auth_required (cal->priv->gdbus_object, (const gchar * const *) (strv ? strv : empty_strv));
-
-	g_strfreev (strv);
-}
-
-/**
  * e_data_cal_report_opened:
  *
  * Reports to associated client that opening phase of the cal is finished.
@@ -1767,9 +1687,6 @@ e_data_cal_init (EDataCal *ecal)
 	g_signal_connect (
 		gdbus_object, "handle-open",
 		G_CALLBACK (impl_Cal_open), ecal);
-	g_signal_connect (
-		gdbus_object, "handle-authenticate-user",
-		G_CALLBACK (impl_Cal_authenticate_user), ecal);
 	g_signal_connect (
 		gdbus_object, "handle-remove",
 		G_CALLBACK (impl_Cal_remove), ecal);

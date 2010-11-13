@@ -13,6 +13,7 @@ CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS
 CAL_BACKEND_PROPERTY_DEFAULT_OBJECT
 CAL_BACKEND_PROPERTY_REVISION
 e_cal_backend_get_kind
+e_cal_backend_get_registry
 e_cal_backend_is_opened
 e_cal_backend_is_opening
 e_cal_backend_is_readonly
@@ -28,7 +29,6 @@ e_cal_backend_foreach_view
 e_cal_backend_set_notification_proxy
 e_cal_backend_get_backend_property
 e_cal_backend_set_backend_property
-e_cal_backend_authenticate_user
 e_cal_backend_open
 e_cal_backend_remove
 e_cal_backend_refresh
@@ -59,7 +59,6 @@ e_cal_backend_notify_objects_removed
 e_cal_backend_notify_error
 e_cal_backend_notify_readonly
 e_cal_backend_notify_online
-e_cal_backend_notify_auth_required
 e_cal_backend_notify_opened
 e_cal_backend_notify_property_changed
 e_cal_backend_empty_cache
@@ -237,7 +236,6 @@ e_cal_backend_sync_get_attachment_uris
 e_cal_backend_sync_discard_alarm
 e_cal_backend_sync_get_timezone
 e_cal_backend_sync_add_timezone
-e_cal_backend_sync_authenticate_user
 <SUBSECTION Standard>
 E_CAL_BACKEND_SYNC
 E_IS_CAL_BACKEND_SYNC
@@ -292,7 +290,6 @@ e_data_cal_respond_add_timezone
 e_data_cal_report_error
 e_data_cal_report_readonly
 e_data_cal_report_online
-e_data_cal_report_auth_required
 e_data_cal_report_opened
 e_data_cal_report_free_busy_data
 e_data_cal_report_backend_property_changed
@@ -330,6 +327,7 @@ ECalBackendSExpClass
 <TITLE>EDataCalFactory</TITLE>
 EDataCalFactory
 e_data_cal_factory_new
+e_data_cal_factory_get_registry
 <SUBSECTION Standard>
 E_DATA_CAL_FACTORY
 E_IS_DATA_CAL_FACTORY

@@ -40,13 +40,12 @@
 
 /* Private part of the CalBackend structure */
 struct _ECalBackendPrivate {
+	ESourceRegistry *registry;
+
 	/* The kind of components for this backend */
 	icalcomponent_kind kind;
 
 	gboolean opening, opened, readonly, removed;
-
-	/* URI, from source. This is cached, since we return const. */
-	gchar *uri;
 
 	gchar *cache_dir;
 
@@ -66,7 +65,8 @@ struct _ECalBackendPrivate {
 enum {
 	PROP_0,
 	PROP_CACHE_DIR,
-	PROP_KIND
+	PROP_KIND,
+	PROP_REGISTRY
 };
 
 static void e_cal_backend_remove_client_private (ECalBackend *backend, EDataCal *cal, gboolean weak_unref);
@@ -80,13 +80,16 @@ cal_backend_set_default_cache_dir (ECalBackend *backend)
 	icalcomponent_kind kind;
 	const gchar *component_type;
 	const gchar *user_cache_dir;
-	gchar *mangled_uri;
+	const gchar *uid;
 	gchar *filename;
 
 	user_cache_dir = e_get_user_cache_dir ();
 
 	kind = e_cal_backend_get_kind (backend);
 	source = e_backend_get_source (E_BACKEND (backend));
+
+	uid = e_source_get_uid (source);
+	g_return_if_fail (uid != NULL);
 
 	switch (kind) {
 		case ICAL_VEVENT_COMPONENT:
@@ -102,15 +105,10 @@ cal_backend_set_default_cache_dir (ECalBackend *backend)
 			g_return_if_reached ();
 	}
 
-	/* Mangle the URI to not contain invalid characters. */
-	mangled_uri = g_strdelimit (e_source_get_uri (source), ":/", '_');
-
 	filename = g_build_filename (
-		user_cache_dir, component_type, mangled_uri, NULL);
+		user_cache_dir, component_type, uid, NULL);
 	e_cal_backend_set_cache_dir (backend, filename);
 	g_free (filename);
-
-	g_free (mangled_uri);
 }
 
 static void
@@ -164,6 +162,16 @@ cal_backend_set_kind (ECalBackend *backend,
 }
 
 static void
+cal_backend_set_registry (ECalBackend *backend,
+                          ESourceRegistry *registry)
+{
+	g_return_if_fail (E_IS_SOURCE_REGISTRY (registry));
+	g_return_if_fail (backend->priv->registry == NULL);
+
+	backend->priv->registry = g_object_ref (registry);
+}
+
+static void
 cal_backend_set_property (GObject *object,
                           guint property_id,
                           const GValue *value,
@@ -180,6 +188,12 @@ cal_backend_set_property (GObject *object,
 			cal_backend_set_kind (
 				E_CAL_BACKEND (object),
 				g_value_get_ulong (value));
+			return;
+
+		case PROP_REGISTRY:
+			cal_backend_set_registry (
+				E_CAL_BACKEND (object),
+				g_value_get_object (value));
 			return;
 	}
 
@@ -204,9 +218,31 @@ cal_backend_get_property (GObject *object,
 				value, e_cal_backend_get_kind (
 				E_CAL_BACKEND (object)));
 			return;
+
+		case PROP_REGISTRY:
+			g_value_set_object (
+				value, e_cal_backend_get_registry (
+				E_CAL_BACKEND (object)));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+cal_backend_dispose (GObject *object)
+{
+	ECalBackendPrivate *priv;
+
+	priv = E_CAL_BACKEND_GET_PRIVATE (object);
+
+	if (priv->registry != NULL) {
+		g_object_unref (priv->registry);
+		priv->registry = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_cal_backend_parent_class)->dispose (object);
 }
 
 static void
@@ -249,6 +285,7 @@ e_cal_backend_class_init (ECalBackendClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = cal_backend_set_property;
 	object_class->get_property = cal_backend_get_property;
+	object_class->dispose = cal_backend_dispose;
 	object_class->finalize = cal_backend_finalize;
 	object_class->constructed = cal_backend_constructed;
 
@@ -277,6 +314,18 @@ e_cal_backend_class_init (ECalBackendClass *class)
 			ICAL_NO_COMPONENT,
 			ICAL_XLICMIMEPART_COMPONENT,
 			ICAL_NO_COMPONENT,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_REGISTRY,
+		g_param_spec_object (
+			"registry",
+			"Registry",
+			"Data source registry",
+			E_TYPE_SOURCE_REGISTRY,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
@@ -310,6 +359,24 @@ e_cal_backend_get_kind (ECalBackend *backend)
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), ICAL_NO_COMPONENT);
 
 	return backend->priv->kind;
+}
+
+/**
+ * e_cal_backend_get_registry:
+ * @backend: an #ECalBackend
+ *
+ * Returns the data source registry to which #EBackend:source belongs.
+ *
+ * Returns: an #ESourceRegistry
+ *
+ * Since: 3.6
+ **/
+ESourceRegistry *
+e_cal_backend_get_registry (ECalBackend *backend)
+{
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
+
+	return backend->priv->registry;
 }
 
 /**
@@ -813,39 +880,6 @@ e_cal_backend_open (ECalBackend *backend,
 
 		(* E_CAL_BACKEND_GET_CLASS (backend)->open) (backend, cal, opid, cancellable, only_if_exists);
 	}
-}
-
-/**
- * e_cal_backend_authenticate_user:
- * @backend: an #ECalBackend
- * @cancellable: a #GCancellable for the operation
- * @credentials: #ECredentials to use for authentication
- *
- * Notifies @backend about @credentials provided by user to use
- * for authentication. This notification is usually called during
- * opening phase as a response to e_cal_backend_notify_auth_required()
- * on the client side and it results in setting property 'opening' to %TRUE
- * unless the backend is already opened. This function finishes opening
- * phase, thus it should be finished with e_cal_backend_notify_opened().
- *
- * See information at e_cal_backend_open() for more details
- * how the opening phase works.
- *
- * Since: 3.2
- **/
-void
-e_cal_backend_authenticate_user (ECalBackend *backend,
-                                 GCancellable *cancellable,
-                                 ECredentials *credentials)
-{
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (credentials != NULL);
-	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->authenticate_user);
-
-	if (!e_cal_backend_is_opened (backend))
-		backend->priv->opening = TRUE;
-
-	(* E_CAL_BACKEND_GET_CLASS (backend)->authenticate_user) (backend, cancellable, credentials);
 }
 
 /**
@@ -1870,54 +1904,6 @@ e_cal_backend_notify_online (ECalBackend *backend,
 
 	for (clients = priv->clients; clients != NULL; clients = g_slist_next (clients))
 		e_data_cal_report_online (E_DATA_CAL (clients->data), is_online);
-
-	g_mutex_unlock (priv->clients_mutex);
-}
-
-/**
- * e_cal_backend_notify_auth_required:
- * @backend: an #ECalBackend
- * @is_self: Use %TRUE to indicate the authentication is required
- *    for the @backend, otheriwse the authentication is for any
- *    other source. Having @credentials %NULL means @is_self
- *    automatically.
- * @credentials: an #ECredentials that contains extra information for
- *    a source for which authentication is requested.
- *    This parameter can be NULL to indicate "for this calendar".
- *
- * Notifies clients that @backend requires authentication in order to
- * connect. This function call does not influence 'opening', but 
- * influences 'opened' property, which is set to %FALSE when @is_self
- * is %TRUE or @credentials is %NULL. Opening phase is finished
- * by e_cal_backend_notify_opened() if this is requested for @backend.
- *
- * See e_cal_backend_open() for a description how the whole opening
- * phase works.
- *
- * Meant to be used by backend implementations.
- **/
-void
-e_cal_backend_notify_auth_required (ECalBackend *backend,
-                                    gboolean is_self,
-                                    const ECredentials *credentials)
-{
-	ECalBackendPrivate *priv;
-	GSList *clients;
-
-	priv = backend->priv;
-
-	if (priv->notification_proxy) {
-		e_cal_backend_notify_auth_required (priv->notification_proxy, is_self, credentials);
-		return;
-	}
-
-	g_mutex_lock (priv->clients_mutex);
-
-	if (is_self || !credentials)
-		priv->opened = FALSE;
-
-	for (clients = priv->clients; clients != NULL; clients = g_slist_next (clients))
-		e_data_cal_report_auth_required (E_DATA_CAL (clients->data), credentials);
 
 	g_mutex_unlock (priv->clients_mutex);
 }

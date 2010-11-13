@@ -30,6 +30,8 @@
 #include <unistd.h>
 #include <glib/gi18n.h>
 
+#include <libedataserver/e-source-calendar.h>
+
 #include "e-cal-backend.h"
 #include "e-cal-backend-factory.h"
 #include "e-data-cal.h"
@@ -46,6 +48,7 @@
 	((obj), E_TYPE_DATA_CAL_FACTORY, EDataCalFactoryPrivate))
 
 struct _EDataCalFactoryPrivate {
+	ESourceRegistry *registry;
 	EGdbusCalFactory *gdbus_object;
 
 	GMutex *calendars_lock;
@@ -55,6 +58,11 @@ struct _EDataCalFactoryPrivate {
 	GMutex *connections_lock;
 	/* This is a hash of client addresses to GList* of EDataCals */
 	GHashTable *connections;
+};
+
+enum {
+	PROP_0,
+	PROP_REGISTRY
 };
 
 /* Forward Declarations */
@@ -69,62 +77,59 @@ G_DEFINE_TYPE_WITH_CODE (
 		G_TYPE_INITABLE,
 		e_data_cal_factory_initable_init))
 
-static const gchar *
-calobjtype_to_string (const EDataCalObjType type)
-{
-	switch (type) {
-	case Event:
-		return "VEVENT";
-	case Todo:
-		return "VTODO";
-	case Journal:
-		return "VJOURNAL";
-	case AnyType:
-		break;
-	}
-
-	g_return_val_if_reached (NULL);
-}
-
-static gchar *
-e_data_cal_factory_extract_proto_from_uri (const gchar *uri)
-{
-	gchar *proto, *cp;
-
-	cp = strchr (uri, ':');
-	if (cp == NULL)
-		return NULL;
-
-	proto = g_malloc0 (cp - uri + 1);
-	strncpy (proto, uri, cp - uri);
-
-	return proto;
-}
-
 static EBackend *
-data_cal_factory_ref_backend (EDataCalFactory *factory,
+data_cal_factory_ref_backend (EDataFactory *factory,
                               ESource *source,
-                              const gchar *uri,
-                              EDataCalObjType type)
+                              EDataCalObjType type,
+                              GError **error)
 {
 	EBackend *backend;
-	gchar *protocol;
+	ESourceBackend *extension;
+	const gchar *extension_name;
+	const gchar *type_string;
+	gchar *backend_name;
 	gchar *hash_key;
 
-	protocol = e_data_cal_factory_extract_proto_from_uri (uri);
-	if (protocol == NULL) {
-		g_warning ("Cannot extract protocol from URI %s", uri);
+	switch (type) {
+		case Event:
+			extension_name = E_SOURCE_EXTENSION_CALENDAR;
+			type_string = "VEVENT";
+			break;
+		case Todo:
+			extension_name = E_SOURCE_EXTENSION_TASK_LIST;
+			type_string = "VTODO";
+			break;
+		case Journal:
+			extension_name = E_SOURCE_EXTENSION_MEMO_LIST;
+			type_string = "VJOURNAL";
+			break;
+		default:
+			g_return_val_if_reached (NULL);
+	}
+
+	extension = e_source_get_extension (source, extension_name);
+	backend_name = e_source_backend_dup_backend_name (extension);
+
+	if (backend_name == NULL || *backend_name == '\0') {
+		g_set_error (
+			error, E_DATA_CAL_ERROR, NoSuchCal,
+			_("No backend name in source '%s'"),
+			e_source_get_display_name (source));
+		g_free (backend_name);
 		return NULL;
 	}
 
-	hash_key = g_strdup_printf (
-		"%s:%s", protocol, calobjtype_to_string (type));
-
-	backend = e_data_factory_ref_backend (
-		E_DATA_FACTORY (factory), hash_key, source);
-
+	hash_key = g_strdup_printf ("%s:%s", backend_name, type_string);
+	backend = e_data_factory_ref_backend (factory, hash_key, source);
 	g_free (hash_key);
-	g_free (protocol);
+
+	if (backend == NULL)
+		g_set_error (
+			error, E_DATA_CAL_ERROR, NoSuchCal,
+			_("Invalid backend name '%s' in source '%s'"),
+			backend_name, e_source_get_display_name (source));
+
+	g_free (backend_name);
 
 	return backend;
 }
@@ -198,19 +203,21 @@ impl_CalFactory_get_cal (EGdbusCalFactory *object,
 	EBackend *backend;
 	EDataCalFactoryPrivate *priv = factory->priv;
 	GDBusConnection *connection;
+	ESourceRegistry *registry;
 	ESource *source;
-	gchar *uri;
 	gchar *path = NULL;
 	const gchar *sender;
 	GList *list;
 	GError *error = NULL;
-	gchar *source_xml = NULL;
+	gchar *uid = NULL;
 	guint type = 0;
 
 	sender = g_dbus_method_invocation_get_sender (invocation);
 	connection = g_dbus_method_invocation_get_connection (invocation);
 
-	if (!e_gdbus_cal_factory_decode_get_cal (in_source_type, &source_xml, &type)) {
+	registry = e_data_cal_factory_get_registry (factory);
+
+	if (!e_gdbus_cal_factory_decode_get_cal (in_source_type, &uid, &type)) {
 		error = g_error_new (
 			E_DATA_CAL_ERROR, NoSuchCal, _("Invalid call"));
 		g_dbus_method_invocation_return_gerror (invocation, error);
@@ -219,48 +226,43 @@ impl_CalFactory_get_cal (EGdbusCalFactory *object,
 		return TRUE;
 	}
 
-	source = e_source_new_from_standalone_xml (source_xml);
-	g_free (source_xml);
+	if (uid == NULL || *uid == '\0') {
+		error = g_error_new_literal (
+			E_DATA_CAL_ERROR, NoSuchCal,
+			_("Missing source UID"));
+		g_dbus_method_invocation_return_gerror (invocation, error);
+		g_error_free (error);
+		g_free (uid);
 
-	if (!source) {
+		return TRUE;
+	}
+
+	source = e_source_registry_ref_source (registry, uid);
+
+	if (source == NULL) {
 		error = g_error_new (
-			E_DATA_CAL_ERROR,
-			NoSuchCal,
-			_("Invalid source"));
+			E_DATA_CAL_ERROR, NoSuchCal,
+			_("No such source for UID '%s'"), uid);
+		g_dbus_method_invocation_return_gerror (invocation, error);
+		g_error_free (error);
+		g_free (uid);
+
+		return TRUE;
+	}
+
+	backend = data_cal_factory_ref_backend (
+		E_DATA_FACTORY (factory), source, type, &error);
+
+	g_object_unref (source);
+
+	if (error != NULL) {
 		g_dbus_method_invocation_return_gerror (invocation, error);
 		g_error_free (error);
 
 		return TRUE;
 	}
 
-	uri = e_source_get_uri (source);
-
-	if (uri == NULL || *uri == '\0') {
-		g_object_unref (source);
-		g_free (uri);
-
-		error = g_error_new (
-			E_DATA_CAL_ERROR,
-			NoSuchCal,
-			_("Empty URI"));
-		g_dbus_method_invocation_return_gerror (invocation, error);
-		g_error_free (error);
-
-		return TRUE;
-	}
-
-	backend = data_cal_factory_ref_backend (factory, source, uri, type);
-
-	if (backend == NULL) {
-		error = g_error_new (
-			E_DATA_CAL_ERROR,
-			NoSuchCal,
-			_("Invalid source"));
-		g_dbus_method_invocation_return_gerror (invocation, error);
-		g_error_free (error);
-
-		return TRUE;
-	}
+	g_return_val_if_fail (E_IS_BACKEND (backend), FALSE);
 
 	g_mutex_lock (priv->calendars_lock);
 
@@ -286,8 +288,7 @@ impl_CalFactory_get_cal (EGdbusCalFactory *object,
 
 	g_mutex_unlock (priv->calendars_lock);
 
-	g_object_unref (source);
-	g_free (uri);
+	g_free (uid);
 
 	e_gdbus_cal_factory_complete_get_cal (
 		object, invocation, path, error);
@@ -314,11 +315,34 @@ remove_data_cal_cb (EDataCal *data_cal)
 }
 
 static void
+data_cal_factory_get_property (GObject *object,
+                               guint property_id,
+                               GValue *value,
+                               GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_REGISTRY:
+			g_value_set_object (
+				value,
+				e_data_cal_factory_get_registry (
+				E_DATA_CAL_FACTORY (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
 data_cal_factory_dispose (GObject *object)
 {
 	EDataCalFactoryPrivate *priv;
 
 	priv = E_DATA_CAL_FACTORY_GET_PRIVATE (object);
+
+	if (priv->registry != NULL) {
+		g_object_unref (priv->registry);
+		priv->registry = NULL;
+	}
 
 	if (priv->gdbus_object != NULL) {
 		g_object_unref (priv->gdbus_object);
@@ -431,9 +455,13 @@ data_cal_factory_initable_init (GInitable *initable,
                                 GCancellable *cancellable,
                                 GError **error)
 {
-	/* XXX Nothing to do here just yet.  More to come soon. */
+	EDataCalFactoryPrivate *priv;
 
-	return TRUE;
+	priv = E_DATA_CAL_FACTORY_GET_PRIVATE (initable);
+
+	priv->registry = e_source_registry_new_sync (cancellable, error);
+
+	return (priv->registry != NULL);
 }
 
 static void
@@ -446,6 +474,7 @@ e_data_cal_factory_class_init (EDataCalFactoryClass *class)
 	g_type_class_add_private (class, sizeof (EDataCalFactoryPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->get_property = data_cal_factory_get_property;
 	object_class->dispose = data_cal_factory_dispose;
 	object_class->finalize = data_cal_factory_finalize;
 
@@ -458,6 +487,17 @@ e_data_cal_factory_class_init (EDataCalFactoryClass *class)
 
 	data_factory_class = E_DATA_FACTORY_CLASS (class);
 	data_factory_class->backend_factory_type = E_TYPE_CAL_BACKEND_FACTORY;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_REGISTRY,
+		g_param_spec_object (
+			"registry",
+			"Registry",
+			"Data source registry",
+			E_TYPE_SOURCE_REGISTRY,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -526,4 +566,12 @@ e_data_cal_factory_new (GCancellable *cancellable,
 	return g_initable_new (
 		E_TYPE_DATA_CAL_FACTORY,
 		cancellable, error, NULL);
+}
+
+ESourceRegistry *
+e_data_cal_factory_get_registry (EDataCalFactory *factory)
+{
+	g_return_val_if_fail (E_IS_DATA_CAL_FACTORY (factory), NULL);
+
+	return factory->priv->registry;
 }

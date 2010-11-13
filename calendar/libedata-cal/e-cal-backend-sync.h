@@ -48,8 +48,6 @@ struct _ECalBackendSyncClass {
 	void	(* discard_alarm_sync)		(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, const gchar *auid, GError **error);
 	void	(* get_timezone_sync)		(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzid, gchar **tzobject, GError **error);
 	void	(* add_timezone_sync)		(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobject, GError **error);
-
-	void	(* authenticate_user_sync)	(ECalBackendSync *backend, GCancellable *cancellable, ECredentials *credentials, GError **error);
 };
 
 GType	e_cal_backend_sync_get_type		(void);
@@ -73,8 +71,6 @@ void	e_cal_backend_sync_get_attachment_uris	(ECalBackendSync *backend, EDataCal 
 void	e_cal_backend_sync_discard_alarm	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, const gchar *auid, GError **error);
 void	e_cal_backend_sync_get_timezone		(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzid, gchar **tzobject, GError **error);
 void	e_cal_backend_sync_add_timezone		(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobject, GError **error);
-
-void	e_cal_backend_sync_authenticate_user	(ECalBackendSync *backend, GCancellable *cancellable, ECredentials *credentials, GError **error);
 
 G_END_DECLS
 

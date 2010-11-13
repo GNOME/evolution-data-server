@@ -89,29 +89,6 @@ e_cal_backend_sync_open (ECalBackendSync *backend,
 }
 
 /**
- * e_cal_backend_sync_authenticate_user:
- * @backend: an #ECalBackendSync
- * @cancellable: a #GCancellable for the operation
- * @credentials: an #ECredentials to authenticate with
- * @error: #GError to set, when something fails
- *
- * Authenticates @backend with given @credentials.
- *
- * Since: 3.2
- **/
-void
-e_cal_backend_sync_authenticate_user (ECalBackendSync *backend,
-                                      GCancellable *cancellable,
-                                      ECredentials *credentials,
-                                      GError **error)
-{
-	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
-	e_return_data_cal_error_if_fail (credentials, InvalidArg);
-
-	LOCK_WRAPPER (authenticate_user_sync, (backend, cancellable, credentials, error));
-}
-
-/**
  * e_cal_backend_sync_remove:
  * @backend: An ECalBackendSync object.
  * @cal: An EDataCal object.
@@ -597,18 +574,6 @@ cal_backend_open (ECalBackend *backend,
 }
 
 static void
-cal_backend_authenticate_user (ECalBackend *backend,
-                               GCancellable *cancellable,
-                               ECredentials *credentials)
-{
-	GError *error = NULL;
-
-	e_cal_backend_sync_authenticate_user (E_CAL_BACKEND_SYNC (backend), cancellable, credentials, &error);
-
-	e_cal_backend_notify_opened (backend, error);
-}
-
-static void
 cal_backend_remove (ECalBackend *backend,
                     EDataCal *cal,
                     guint32 opid,
@@ -1040,7 +1005,6 @@ e_cal_backend_sync_class_init (ECalBackendSyncClass *class)
 
 	backend_class = E_CAL_BACKEND_CLASS (class);
 	backend_class->open			= cal_backend_open;
-	backend_class->authenticate_user	= cal_backend_authenticate_user;
 	backend_class->remove			= cal_backend_remove;
 	backend_class->refresh			= cal_backend_refresh;
 	backend_class->get_backend_property	= cal_backend_get_backend_property;
