@@ -16,8 +16,8 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=Misc.\n"
-"POT-Creation-Date: 2010-11-04 10:56+0000\n"
-"PO-Revision-Date: 2010-11-05 09:09+0200\n"
+"POT-Creation-Date: 2010-11-11 14:39+0000\n"
+"PO-Revision-Date: 2010-11-12 07:59+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -2645,6 +2645,10 @@ msgid "Cannot transfer message to destination folder: %s"
 msgstr "Sõnumit pole võimalik sihtkausta üle viia: %s"
 
 #, c-format
+msgid "Cannot create folder: %s : Folder name cannot contain a dot"
+msgstr "Kausta pole võimalik luua: %s: kausta nimi ei tohi sisaldada punkti"
+
+#, c-format
 msgid "Cannot create folder '%s': %s"
 msgstr "Kausta '%s' pole võimalik luua: %s"
 
@@ -2670,6 +2674,11 @@ msgstr "ei ole maildir vormingus kataloog"
 #, c-format
 msgid "Could not scan folder '%s': %s"
 msgstr "Kausta '%s' pole võimalik läbi vaadata: %s"
+
+#, c-format
+msgid "Cannot rename the folder: %s: Folder name cannot contain a dot"
+msgstr ""
+"Kausta nime pole võimalik muuta: %s: kausta nimi ei tohi sisaldada punkti"
 
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
@@ -3577,6 +3586,15 @@ msgstr "Anonüümne ligipääs LDAP-serverile"
 msgid "Failed to authenticate.\n"
 msgstr "Tõrge autentimisel.\n"
 
+msgid "Category Properties"
+msgstr "Kategooria omadused"
+
+msgid "Category _Name"
+msgstr "Kategooria _nimi"
+
+msgid "Category _Icon"
+msgstr "Kategooria _ikoon"
+
 msgid "Category Icon"
 msgstr "Kategooria ikoon"
 
@@ -3590,21 +3608,6 @@ msgid ""
 msgstr ""
 "Kategooria '%s' on juba seadistustes olemas. Palun kasuta mõnda muud nime"
 
-msgid "Icon"
-msgstr "Ikoon"
-
-msgid "Category"
-msgstr "Kategooria"
-
-msgid "Category Properties"
-msgstr "Kategooria omadused"
-
-msgid "Category _Icon"
-msgstr "Kategooria _ikoon"
-
-msgid "Category _Name"
-msgstr "Kategooria _nimi"
-
 msgid "Currently _used categories:"
 msgstr "Hetkel kasutatavad _kategooriad:"
 
@@ -3614,12 +3617,42 @@ msgstr "Saa_daolevad kategooriad:"
 msgid "_Edit"
 msgstr "_Redaktor"
 
-msgid "categories"
-msgstr "kategooriad"
+msgid "Icon"
+msgstr "Ikoon"
+
+msgid "Category"
+msgstr "Kategooria"
 
 #, c-format
 msgid "Create category \"%s\""
 msgstr "Kategooria \"%s\" loomine"
+
+msgid "Show Contacts"
+msgstr "Kontaktide näitamine"
+
+msgid "Address B_ook:"
+msgstr "_Aadressiraamat:"
+
+msgid "Cate_gory:"
+msgstr "K_ategooria:"
+
+msgid "_Search:"
+msgstr "_Otsing:"
+
+msgid "Any Category"
+msgstr "Iga kategooria"
+
+msgid "Co_ntacts"
+msgstr "_Kontaktid"
+
+msgid "Search"
+msgstr "Otsing"
+
+msgid "Address Book"
+msgstr "Aadressiraamat"
+
+msgid "Contacts"
+msgstr "Kontaktid"
 
 msgid "Select Contacts from Address Book"
 msgstr "Vali aadressiraamatust kontaktid"
@@ -3630,35 +3663,9 @@ msgstr "_Lisa"
 msgid "_Remove"
 msgstr "_Eemalda"
 
-msgid "Any Category"
-msgstr "Iga kategooria"
-
-msgid "*"
-msgstr "*"
-
-msgid "<b>Co_ntacts</b>"
-msgstr "<b>_Kontaktid</b>"
-
-msgid "<b>Show Contacts</b>"
-msgstr "<b>Kontaktide näitamine</b>"
-
-msgid "Address B_ook:"
-msgstr "_Aadressiraamat:"
-
-msgid "Address Book"
-msgstr "Aadressiraamat"
-
-msgid "Cate_gory:"
-msgstr "K_ategooria:"
-
-msgid "Contacts"
-msgstr "Kontaktid"
-
-msgid "Search"
-msgstr "Otsing"
-
-msgid "_Search:"
-msgstr "_Otsing:"
+#, c-format
+msgid "Error loading address book: %s"
+msgstr "Viga aadressiraamatu laadimisel: %s"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
 #, c-format
