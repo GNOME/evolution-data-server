@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&component=Misc.\n"
-"POT-Creation-Date: 2010-10-27 19:42+0000\n"
-"PO-Revision-Date: 2010-10-28 21:29+0100\n"
+"POT-Creation-Date: 2010-11-13 23:04+0000\n"
+"PO-Revision-Date: 2010-11-14 12:13+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: \n"
@@ -94,7 +94,7 @@ msgstr "Napaka med iskanjem"
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:881
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:538
 #: ../calendar/backends/http/e-cal-backend-http.c:378
-#: ../calendar/libecal/e-cal.c:4089
+#: ../calendar/libecal/e-cal.c:4092
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:160
 #: ../camel/providers/imap/camel-imap-command.c:481
 #: ../camel/providers/imap/camel-imap-store.c:425
@@ -112,6 +112,11 @@ msgstr "Ustvarjanje vira '%s' je spodletelo s stanjem HTTP: %d (%s)"
 #, c-format
 msgid "%s: there was no source for UID '%s' stored in GConf."
 msgstr "%s: v GConf ni shranjenega vira za UID '%s'."
+
+#: ../addressbook/libebook/e-book.c:3354
+#: ../addressbook/libedata-book/e-data-book.c:181
+msgid "Address book does not exist"
+msgstr "Imenik ne obstaja."
 
 #. Dummy row as EContactField starts from 1
 #: ../addressbook/libebook/e-contact.c:115
@@ -299,7 +304,7 @@ msgstr "Naslov URL bloga"
 
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:178
-#: ../libedataserverui/e-categories-dialog.c:690
+#: ../libedataserverui/e-categories-dialog.c:759
 msgid "Categories"
 msgstr "kategorije"
 
@@ -672,7 +677,7 @@ msgid "Repository offline"
 msgstr "Odložišče ni povezano"
 
 #: ../addressbook/libedata-book/e-data-book.c:173
-#: ../calendar/libecal/e-cal.c:4071
+#: ../calendar/libecal/e-cal.c:4074
 #: ../calendar/libedata-cal/e-data-cal.c:111
 msgid "Permission denied"
 msgstr "Ni ustreznih dovoljenj"
@@ -709,10 +714,6 @@ msgstr "Nepodprt način overitve"
 #: ../calendar/libedata-cal/e-data-cal.c:121
 msgid "TLS not available"
 msgstr "TLS ni na voljo"
-
-#: ../addressbook/libedata-book/e-data-book.c:181
-msgid "Address book does not exist"
-msgstr "Imenik ne obstaja."
 
 #: ../addressbook/libedata-book/e-data-book.c:182
 msgid "Book removed"
@@ -760,13 +761,13 @@ msgid "No space"
 msgstr "Ni prostora"
 
 #: ../addressbook/libedata-book/e-data-book.c:192
-#: ../calendar/libecal/e-cal.c:4055
+#: ../calendar/libecal/e-cal.c:4058
 #: ../calendar/libedata-cal/e-data-cal.c:132
 msgid "Invalid argument"
 msgstr "Neveljaven argument"
 
 #: ../addressbook/libedata-book/e-data-book.c:193
-#: ../calendar/libecal/e-cal.c:4093
+#: ../calendar/libecal/e-cal.c:4096
 #: ../calendar/libedata-cal/e-data-cal.c:133
 msgid "Not supported"
 msgstr "Ni podprto"
@@ -1141,7 +1142,7 @@ msgstr "nizka"
 msgid "Undefined"
 msgstr "Nedoločeno"
 
-#: ../calendar/libecal/e-cal.c:1233
+#: ../calendar/libecal/e-cal.c:1236
 #: ../libedataserverui/e-book-auth-util.c:206
 #: ../libedataserverui/e-book-auth-util.c:435
 #, c-format
@@ -1152,66 +1153,66 @@ msgstr "Vnesite geslo za %s (uporabnik %s)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:1247
+#: ../calendar/libecal/e-cal.c:1250
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Vnesite geslo za %s za vklop posredovalnega strežnika za uporabnika %s"
 
-#: ../calendar/libecal/e-cal.c:4057
+#: ../calendar/libecal/e-cal.c:4060
 msgid "Backend is busy"
 msgstr "Zaledje je zaposleno"
 
-#: ../calendar/libecal/e-cal.c:4059
+#: ../calendar/libecal/e-cal.c:4062
 msgid "Repository is offline"
 msgstr "Odložišče ni na zvezi"
 
-#: ../calendar/libecal/e-cal.c:4061
+#: ../calendar/libecal/e-cal.c:4064
 msgid "No such calendar"
 msgstr "Ni takega koledarja"
 
-#: ../calendar/libecal/e-cal.c:4063
+#: ../calendar/libecal/e-cal.c:4066
 #: ../calendar/libedata-cal/e-data-cal.c:113
 #: ../servers/groupwise/e-gw-connection.c:235
 msgid "Object not found"
 msgstr "Predmeta ni mogoče najti"
 
-#: ../calendar/libecal/e-cal.c:4065
+#: ../calendar/libecal/e-cal.c:4068
 #: ../calendar/libedata-cal/e-data-cal.c:114
 #: ../servers/groupwise/e-gw-connection.c:229
 msgid "Invalid object"
 msgstr "Neveljaven predmet"
 
-#: ../calendar/libecal/e-cal.c:4067
+#: ../calendar/libecal/e-cal.c:4070
 msgid "URI not loaded"
 msgstr "Naslov URI ni naložen"
 
-#: ../calendar/libecal/e-cal.c:4069
+#: ../calendar/libecal/e-cal.c:4072
 msgid "URI already loaded"
 msgstr "Naslov URI je že naložen"
 
-#: ../calendar/libecal/e-cal.c:4073
+#: ../calendar/libecal/e-cal.c:4076
 #: ../servers/groupwise/e-gw-connection.c:237
 msgid "Unknown User"
 msgstr "Neznan uporabnik"
 
-#: ../calendar/libecal/e-cal.c:4075
+#: ../calendar/libecal/e-cal.c:4078
 #: ../calendar/libedata-cal/e-data-cal.c:115
 msgid "Object ID already exists"
 msgstr "Predmet ID že obstaja"
 
-#: ../calendar/libecal/e-cal.c:4077
+#: ../calendar/libecal/e-cal.c:4080
 msgid "Protocol not supported"
 msgstr "Protokol ni podprt"
 
-#: ../calendar/libecal/e-cal.c:4079
+#: ../calendar/libecal/e-cal.c:4082
 msgid "Operation has been canceled"
 msgstr "Opravilo je preklicano"
 
-#: ../calendar/libecal/e-cal.c:4081
+#: ../calendar/libecal/e-cal.c:4084
 msgid "Could not cancel operation"
 msgstr "Ni mogoče preklicati dejanja"
 
-#: ../calendar/libecal/e-cal.c:4083
+#: ../calendar/libecal/e-cal.c:4086
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1311
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1329
 #: ../camel/providers/groupwise/camel-groupwise-store.c:635
@@ -1222,16 +1223,16 @@ msgstr "Ni mogoče preklicati dejanja"
 msgid "Authentication failed"
 msgstr "Overitev je spodletela"
 
-#: ../calendar/libecal/e-cal.c:4085
+#: ../calendar/libecal/e-cal.c:4088
 #: ../camel/providers/smtp/camel-smtp-transport.c:768
 msgid "Authentication required"
 msgstr "Zahtevana je overitev"
 
-#: ../calendar/libecal/e-cal.c:4087
+#: ../calendar/libecal/e-cal.c:4090
 msgid "A D-Bus exception has occurred"
 msgstr "Prišlo je do izjemne napake vodila D-Bus"
 
-#: ../calendar/libecal/e-cal.c:4091
+#: ../calendar/libecal/e-cal.c:4094
 msgid "No error"
 msgstr "Brez napake"
 
@@ -1782,16 +1783,16 @@ msgstr[1] "Filtriranje novih sporočil v '%s'"
 msgstr[2] "Filtriranje novih sporočil v '%s'"
 msgstr[3] "Filtriranje novih sporočil v '%s'"
 
-#: ../camel/camel-folder.c:875
+#: ../camel/camel-folder.c:881
 #: ../camel/providers/local/camel-maildir-folder.c:297
 msgid "Moving messages"
 msgstr "Premikanje sporočil"
 
-#: ../camel/camel-folder.c:878
+#: ../camel/camel-folder.c:884
 msgid "Copying messages"
 msgstr "Kopiranje sporočil"
 
-#: ../camel/camel-folder.c:3237
+#: ../camel/camel-folder.c:3253
 #, c-format
 msgid "Retrieving message '%s'"
 msgstr "Pridobivanje sporočila '%s'"
@@ -1857,8 +1858,8 @@ msgstr "Nepričakovana zahteva GnuPG za '%s'"
 #: ../camel/camel-gpg-context.c:832
 #: ../camel/camel-net-utils.c:515
 #: ../camel/camel-tcp-stream-raw.c:255
-#: ../camel/providers/imapx/camel-imapx-server.c:4854
-#: ../camel/providers/imapx/camel-imapx-server.c:4871
+#: ../camel/providers/imapx/camel-imapx-server.c:4908
+#: ../camel/providers/imapx/camel-imapx-server.c:4925
 #: ../camel/providers/imapx/camel-imapx-store.c:199
 #: ../camel/providers/nntp/camel-nntp-summary.c:413
 #: ../camel/providers/pop3/camel-pop3-folder.c:364
@@ -2203,64 +2204,64 @@ msgstr "Odziv strežnika je vseboval nepopolne podatke o pooblastilih"
 msgid "Server response does not match"
 msgstr "Odziv strežnika ne ustreza"
 
-#: ../camel/camel-sasl-gssapi.c:87
+#: ../camel/camel-sasl-gssapi.c:85
 msgid "GSSAPI"
 msgstr "GSSAPI"
 
-#: ../camel/camel-sasl-gssapi.c:89
+#: ../camel/camel-sasl-gssapi.c:87
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr "Ta možnost bo vzpostavila povezavo s strežnikom z uporabo overitve Kerberos 4."
 
-#: ../camel/camel-sasl-gssapi.c:130
+#: ../camel/camel-sasl-gssapi.c:128
 msgid "The specified mechanism is not supported by the provided credential, or is unrecognized by the implementation."
 msgstr "Navedenega načina ne podpirajo ponujene poverilnice ali pa ga izvedba ne prepozna."
 
-#: ../camel/camel-sasl-gssapi.c:135
+#: ../camel/camel-sasl-gssapi.c:133
 msgid "The provided target_name parameter was ill-formed."
 msgstr "Ponujen parameter target_name je napačno oblikovan."
 
-#: ../camel/camel-sasl-gssapi.c:138
+#: ../camel/camel-sasl-gssapi.c:136
 msgid "The provided target_name parameter contained an invalid or unsupported type of name."
 msgstr "Ponujen parameter target_name je vseboval neveljavno ali nepodprto vrsto imena."
 
-#: ../camel/camel-sasl-gssapi.c:142
+#: ../camel/camel-sasl-gssapi.c:140
 msgid "The input_token contains different channel bindings to those specified via the input_chan_bindings parameter."
 msgstr "Žeton input_token vsebuje drugačne kanalske povezave, kot so navedene v parametru input_chan_bindings."
 
-#: ../camel/camel-sasl-gssapi.c:147
+#: ../camel/camel-sasl-gssapi.c:145
 msgid "The input_token contains an invalid signature, or a signature that could not be verified."
 msgstr "Žeton input_token vsebuje neveljaven podpis ali pa podpis, ki se ga ne da overiti."
 
-#: ../camel/camel-sasl-gssapi.c:151
+#: ../camel/camel-sasl-gssapi.c:149
 msgid "The supplied credentials were not valid for context initiation, or the credential handle did not reference any credentials."
 msgstr "Priskrbljene poverilnice niso veljavne za začenjanje vsebine ali pa se ročnik poverilnic ni skliceval na nobeno poverilnico."
 
-#: ../camel/camel-sasl-gssapi.c:156
+#: ../camel/camel-sasl-gssapi.c:154
 msgid "The supplied context handle did not refer to a valid context."
 msgstr "Ponujen ročnik vsebine se ne sklicuje na veljavno vsebino."
 
-#: ../camel/camel-sasl-gssapi.c:159
+#: ../camel/camel-sasl-gssapi.c:157
 msgid "The consistency checks performed on the input_token failed."
 msgstr "Preizkus skladnosti na input_token je spodletel."
 
-#: ../camel/camel-sasl-gssapi.c:162
+#: ../camel/camel-sasl-gssapi.c:160
 msgid "The consistency checks performed on the credential failed."
 msgstr "Preizkus skladnosti poverilnic je spodletel."
 
-#: ../camel/camel-sasl-gssapi.c:165
+#: ../camel/camel-sasl-gssapi.c:163
 msgid "The referenced credentials have expired."
 msgstr "Sklicane poverilnice so potekle."
 
-#: ../camel/camel-sasl-gssapi.c:171
-#: ../camel/camel-sasl-gssapi.c:311
-#: ../camel/camel-sasl-gssapi.c:355
-#: ../camel/camel-sasl-gssapi.c:372
+#: ../camel/camel-sasl-gssapi.c:169
+#: ../camel/camel-sasl-gssapi.c:309
+#: ../camel/camel-sasl-gssapi.c:353
+#: ../camel/camel-sasl-gssapi.c:370
 #: ../camel/providers/smtp/camel-smtp-transport.c:1249
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Strežnik ni sprejel odziva podatkov overitve."
 
-#: ../camel/camel-sasl-gssapi.c:384
+#: ../camel/camel-sasl-gssapi.c:382
 #, c-format
 msgid "Unsupported security layer."
 msgstr "Nepodprt varnostni sloj."
@@ -2568,14 +2569,14 @@ msgstr "Ni mogoče ustvariti mape: %s: mapa že obstaja"
 
 #: ../camel/camel-store.c:2895
 #: ../camel/camel-vee-store.c:367
-#: ../camel/providers/local/camel-maildir-store.c:254
+#: ../camel/providers/local/camel-maildir-store.c:264
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Ni mogoče izbrisati mape: %s: neveljavno dejanje"
 
 #: ../camel/camel-store.c:3036
 #: ../camel/camel-vee-store.c:417
-#: ../camel/providers/local/camel-maildir-store.c:639
+#: ../camel/providers/local/camel-maildir-store.c:650
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Ni mogoče preimenovati mape %s: neveljavno dejanje"
@@ -2739,18 +2740,18 @@ msgstr ""
 msgid "Could not parse URL '%s'"
 msgstr "Ni mogoče razčleniti naslova URL '%s'"
 
-#: ../camel/camel-vee-folder.c:1220
-#: ../camel/camel-vee-folder.c:1382
+#: ../camel/camel-vee-folder.c:1251
+#: ../camel/camel-vee-folder.c:1414
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Ni mogoče kopirati ali premikati sporočil v Navidezno mapo"
 
-#: ../camel/camel-vee-folder.c:1256
+#: ../camel/camel-vee-folder.c:1287
 #, c-format
 msgid "No such message %s in %s"
 msgstr "Ni takšnega sporočila %s v %s"
 
-#: ../camel/camel-vee-folder.c:1324
+#: ../camel/camel-vee-folder.c:1355
 #, c-format
 msgid "Error storing '%s': "
 msgstr "Napaka med shranjevanjem '%s':"
@@ -2795,8 +2796,8 @@ msgstr "Preverjanje izbrisanih sporočil %s"
 #: ../camel/providers/groupwise/camel-groupwise-store.c:803
 #: ../camel/providers/imap/camel-imap-folder.c:3919
 #: ../camel/providers/imap/camel-imap-folder.c:4001
-#: ../camel/providers/imapx/camel-imapx-server.c:3857
-#: ../camel/providers/imapx/camel-imapx-server.c:3984
+#: ../camel/providers/imapx/camel-imapx-server.c:3889
+#: ../camel/providers/imapx/camel-imapx-server.c:4020
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Prenašanje povzetkov novih sporočil v %s"
@@ -2940,7 +2941,7 @@ msgstr "Gostitelj ali uporabnik ni na voljo v url."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:209
 #: ../camel/providers/imap/camel-imap-store.c:801
-#: ../camel/providers/imapx/camel-imapx-server.c:3080
+#: ../camel/providers/imapx/camel-imapx-server.c:3100
 #, c-format
 msgid "You did not enter a password."
 msgstr "Niste vnesli gesla."
@@ -3084,7 +3085,7 @@ msgid "Could not create directory %s: %s"
 msgstr "Ni mogoče ustvariti mape %s: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:990
-#: ../camel/providers/imapx/camel-imapx-server.c:3899
+#: ../camel/providers/imapx/camel-imapx-server.c:3933
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Preiskovanje spremenjenih sporočil v %s"
@@ -3094,13 +3095,13 @@ msgid "Unable to retrieve message: "
 msgstr "Ni mogoče pridobiti sporočila:"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3361
-#: ../camel/providers/imapx/camel-imapx-server.c:5152
+#: ../camel/providers/imapx/camel-imapx-server.c:5217
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Ni mogoče dobiti sporočila zID %s: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3362
-#: ../camel/providers/imapx/camel-imapx-server.c:5153
+#: ../camel/providers/imapx/camel-imapx-server.c:5218
 msgid "No such message available."
 msgstr "Na voljo ni takšnega sporočila."
 
@@ -3244,20 +3245,20 @@ msgstr "Ni se mogoče povezati s strežnikom %s:"
 #: ../camel/providers/imap/camel-imap-store.c:390
 #: ../camel/providers/imap/camel-imap-store.c:397
 #: ../camel/providers/imap/camel-imap-store.c:424
-#: ../camel/providers/imapx/camel-imapx-server.c:2926
-#: ../camel/providers/imapx/camel-imapx-server.c:2964
+#: ../camel/providers/imapx/camel-imapx-server.c:2942
+#: ../camel/providers/imapx/camel-imapx-server.c:2982
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Povezava s strežnikom IMAP %s v varnem načinu je spodletela: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:371
-#: ../camel/providers/imapx/camel-imapx-server.c:2927
+#: ../camel/providers/imapx/camel-imapx-server.c:2943
 #: ../camel/providers/smtp/camel-smtp-transport.c:238
 msgid "STARTTLS not supported"
 msgstr "STARTTLS ni podprt"
 
 #: ../camel/providers/imap/camel-imap-store.c:391
-#: ../camel/providers/imapx/camel-imapx-server.c:2965
+#: ../camel/providers/imapx/camel-imapx-server.c:2983
 msgid "SSL negotiations failed"
 msgstr "Pogajanje SSL je spodletelo"
 
@@ -3267,32 +3268,32 @@ msgid "SSL is not available in this build"
 msgstr "SSL v tej izdaji ni na voljo"
 
 #: ../camel/providers/imap/camel-imap-store.c:549
-#: ../camel/providers/imapx/camel-imapx-server.c:2756
+#: ../camel/providers/imapx/camel-imapx-server.c:2770
 #, c-format
 msgid "Connection cancelled"
 msgstr "Povezava prekinjena"
 
 #: ../camel/providers/imap/camel-imap-store.c:554
-#: ../camel/providers/imapx/camel-imapx-server.c:2761
+#: ../camel/providers/imapx/camel-imapx-server.c:2775
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "Ni se mogoče povezati z ukazom \"%s\": %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:740
-#: ../camel/providers/imapx/camel-imapx-server.c:3036
+#: ../camel/providers/imapx/camel-imapx-server.c:3056
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "Strežnik IMAP %s ne podpira zahtevanega načina overitve %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:752
-#: ../camel/providers/imapx/camel-imapx-server.c:3048
+#: ../camel/providers/imapx/camel-imapx-server.c:3068
 #: ../camel/providers/smtp/camel-smtp-transport.c:420
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "Ni podpore za način overitve %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:836
-#: ../camel/providers/imapx/camel-imapx-server.c:3123
+#: ../camel/providers/imapx/camel-imapx-server.c:3144
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3321,10 +3322,10 @@ msgstr "Storitev IMAP za %s na %s"
 #: ../camel/providers/imapx/camel-imapx-store.c:372
 #: ../camel/providers/imapx/camel-imapx-store.c:794
 #: ../camel/providers/local/camel-maildir-folder.c:413
-#: ../camel/providers/local/camel-maildir-store.c:255
-#: ../camel/providers/local/camel-maildir-store.c:585
-#: ../camel/providers/local/camel-maildir-store.c:592
-#: ../camel/providers/local/camel-maildir-store.c:640
+#: ../camel/providers/local/camel-maildir-store.c:265
+#: ../camel/providers/local/camel-maildir-store.c:596
+#: ../camel/providers/local/camel-maildir-store.c:603
+#: ../camel/providers/local/camel-maildir-store.c:651
 #: ../camel/providers/local/camel-spool-store.c:289
 msgid "Inbox"
 msgstr "Dohodna pošta"
@@ -3337,7 +3338,7 @@ msgid "The folder name \"%s\" is invalid because it contains the character \"%c\
 msgstr "Ime mape \"%s\" je neveljavno, ker vsebuje znak \"%c\""
 
 #: ../camel/providers/imap/camel-imap-store.c:1939
-#: ../camel/providers/local/camel-maildir-store.c:226
+#: ../camel/providers/local/camel-maildir-store.c:236
 #: ../camel/providers/local/camel-mbox-store.c:413
 #: ../camel/providers/local/camel-mh-store.c:504
 #, c-format
@@ -3402,21 +3403,21 @@ msgstr "Napaka med pisanjem v predpomnilnik pretoka:"
 msgid "Not authenticated"
 msgstr "Ni overjeno"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2851
+#: ../camel/providers/imapx/camel-imapx-server.c:2865
 #, c-format
 msgid "Could not connect to %s (port %s): "
 msgstr "Ni se mogoče povezati s %s (vrata %s):"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3303
+#: ../camel/providers/imapx/camel-imapx-server.c:3329
 msgid "Closing tmp stream failed: "
 msgstr "Zapiranje začasnega pretoka je spodletelo:"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5300
+#: ../camel/providers/imapx/camel-imapx-server.c:5365
 #, c-format
 msgid "Cannot create spool file: %s"
 msgstr "Ni mogoče ustvariti vrstilne datoteke: %s:"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5316
+#: ../camel/providers/imapx/camel-imapx-server.c:5381
 msgid "Cannot create spool file: "
 msgstr "Ni mogoče ustvariti vrstilne datoteke:"
 
@@ -3521,7 +3522,7 @@ msgstr "Običajna Unix vrstilna mapa poštnega predala mbox"
 
 #: ../camel/providers/local/camel-local-store.c:174
 #: ../camel/providers/local/camel-local-store.c:319
-#: ../camel/providers/local/camel-maildir-store.c:91
+#: ../camel/providers/local/camel-maildir-store.c:92
 #: ../camel/providers/local/camel-mbox-store.c:532
 #: ../camel/providers/local/camel-spool-store.c:318
 #, c-format
@@ -3536,7 +3537,7 @@ msgstr "Korenska mapa shrambe %s ni običajna mapa"
 #: ../camel/providers/local/camel-local-store.c:194
 #: ../camel/providers/local/camel-local-store.c:204
 #: ../camel/providers/local/camel-local-store.c:332
-#: ../camel/providers/local/camel-maildir-store.c:106
+#: ../camel/providers/local/camel-maildir-store.c:116
 #, c-format
 msgid "Cannot get folder: %s: %s"
 msgstr "Ni mogoče pridobiti mape: %s: %s"
@@ -3573,7 +3574,7 @@ msgstr "Ni mogoče izbrisati datoteke kazala mape '%s': %s"
 msgid "Could not delete folder meta file '%s': %s"
 msgstr "Ni mogoče izbrisati metadatoteke mape '%s': %s"
 
-#: ../camel/providers/local/camel-local-summary.c:549
+#: ../camel/providers/local/camel-local-summary.c:548
 #, c-format
 msgid "Unable to add message to summary: unknown reason"
 msgstr "Ni mogoče dodati sporočila k povzetku: razlog neznan."
@@ -3597,50 +3598,61 @@ msgstr "Ni mogoče pridobiti sporočila %s iz mape %s:"
 msgid "Cannot transfer message to destination folder: %s"
 msgstr "Ni mogoče prenesti sporočila v ciljno mapo: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:173
-#: ../camel/providers/local/camel-maildir-store.c:204
+#: ../camel/providers/local/camel-maildir-store.c:100
+#, c-format
+msgid "Cannot create folder: %s : Folder name cannot contain a dot"
+msgstr "Ni mogoče ustvariti mape %s: ime mape ne sme vsebovati pike"
+
+#: ../camel/providers/local/camel-maildir-store.c:183
+#: ../camel/providers/local/camel-maildir-store.c:214
 #: ../camel/providers/local/camel-mbox-store.c:381
 #: ../camel/providers/local/camel-mbox-store.c:395
 #, c-format
 msgid "Cannot create folder '%s': %s"
 msgstr "Ni mogoče ustvariti mape '%s': %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:188
+#: ../camel/providers/local/camel-maildir-store.c:198
 #: ../camel/providers/local/camel-mbox-store.c:347
 #: ../camel/providers/local/camel-mh-store.c:464
 #, c-format
 msgid "Cannot get folder '%s': %s"
 msgstr "Ni mogoče pridobiti mape '%s': %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:194
+#: ../camel/providers/local/camel-maildir-store.c:204
 #: ../camel/providers/local/camel-mbox-store.c:357
 #: ../camel/providers/local/camel-mh-store.c:473
 #, c-format
 msgid "Cannot get folder '%s': folder does not exist."
 msgstr "Ni mogoče pridobiti mape '%s': mapa ne obstaja."
 
-#: ../camel/providers/local/camel-maildir-store.c:221
+#: ../camel/providers/local/camel-maildir-store.c:231
 #, c-format
 msgid "Cannot get folder '%s': not a maildir directory."
 msgstr "Ni mogoče pridobiti mape '%s': ni mapa vrste maildir."
 
-#: ../camel/providers/local/camel-maildir-store.c:275
-#: ../camel/providers/local/camel-maildir-store.c:315
+#: ../camel/providers/local/camel-maildir-store.c:285
+#: ../camel/providers/local/camel-maildir-store.c:325
 #: ../camel/providers/local/camel-mh-store.c:584
 #, c-format
 msgid "Could not delete folder '%s': %s"
 msgstr "Ni mogoče izbrisati mape '%s': %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:277
+#: ../camel/providers/local/camel-maildir-store.c:287
 msgid "not a maildir directory"
 msgstr "ni mapa vrste maildir"
 
-#: ../camel/providers/local/camel-maildir-store.c:487
+#: ../camel/providers/local/camel-maildir-store.c:496
+#: ../camel/providers/local/camel-maildir-store.c:799
 #: ../camel/providers/local/camel-spool-store.c:143
 #: ../camel/providers/local/camel-spool-store.c:159
 #, c-format
 msgid "Could not scan folder '%s': %s"
 msgstr "Ni mogoče preiskati mape '%s': %s"
+
+#: ../camel/providers/local/camel-maildir-store.c:659
+#, c-format
+msgid "Cannot rename the folder: %s: Folder name cannot contain a dot"
+msgstr "Ni mogoče preimenovati mape %s: ime mape ne sme vsebovati pike"
 
 #: ../camel/providers/local/camel-maildir-summary.c:435
 #: ../camel/providers/local/camel-maildir-summary.c:565
@@ -4805,112 +4817,109 @@ msgstr "Brezimni dostop do strežnika LDAP"
 msgid "Failed to authenticate.\n"
 msgstr "Overitev je spodletela.\n"
 
-#: ../libedataserverui/e-categories-dialog.c:169
+#: ../libedataserverui/e-categories-dialog.c:134
+msgid "Category Properties"
+msgstr "Lastnosti kategorije"
+
+#: ../libedataserverui/e-categories-dialog.c:145
+msgid "Category _Name"
+msgstr "I_me kategorije"
+
+#: ../libedataserverui/e-categories-dialog.c:151
+msgid "Category _Icon"
+msgstr "_Ikona kategorije"
+
+#: ../libedataserverui/e-categories-dialog.c:192
 msgid "Category Icon"
 msgstr "Ikona kategorije"
 
-#: ../libedataserverui/e-categories-dialog.c:175
+#: ../libedataserverui/e-categories-dialog.c:198
 msgid "_No Image"
 msgstr "_Brez slike"
 
-#: ../libedataserverui/e-categories-dialog.c:391
+#: ../libedataserverui/e-categories-dialog.c:409
 #, c-format
 msgid "There is already a category '%s' in the configuration. Please use another name"
 msgstr "Kategorija '%s' je med nastavitvami že določena. Uporabite drugo ime."
 
-#: ../libedataserverui/e-categories-dialog.c:699
-msgid "Icon"
-msgstr "Ikona"
-
-#: ../libedataserverui/e-categories-dialog.c:704
-msgid "Category"
-msgstr "Kategorija"
-
-#: ../libedataserverui/e-categories-dialog.ui.h:1
-msgid "Category Properties"
-msgstr "Lastnosti kategorije"
-
-#: ../libedataserverui/e-categories-dialog.ui.h:2
-msgid "Category _Icon"
-msgstr "_Ikona kategorije"
-
-#: ../libedataserverui/e-categories-dialog.ui.h:3
-msgid "Category _Name"
-msgstr "I_me kategorije"
-
-#: ../libedataserverui/e-categories-dialog.ui.h:4
+#: ../libedataserverui/e-categories-dialog.c:664
 msgid "Currently _used categories:"
 msgstr "Trenutno _uporabljene kategorije:"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:5
+#: ../libedataserverui/e-categories-dialog.c:671
 msgid "_Available Categories:"
 msgstr "Razpoložljive k_ategorije:"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:6
+#: ../libedataserverui/e-categories-dialog.c:714
 msgid "_Edit"
 msgstr "_Uredi"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:7
-msgid "categories"
-msgstr "kategorije"
+#: ../libedataserverui/e-categories-dialog.c:770
+msgid "Icon"
+msgstr "Ikona"
+
+#: ../libedataserverui/e-categories-dialog.c:775
+msgid "Category"
+msgstr "Kategorija"
 
 #: ../libedataserverui/e-category-completion.c:292
 #, c-format
 msgid "Create category \"%s\""
 msgstr "Ustvari kategorijo \"%s\""
 
-#: ../libedataserverui/e-name-selector-dialog.c:328
-msgid "Select Contacts from Address Book"
-msgstr "Izberi stike iz imenika"
+#: ../libedataserverui/e-name-selector-dialog.c:176
+msgid "Show Contacts"
+msgstr "Pokaži stike"
 
-#: ../libedataserverui/e-name-selector-dialog.c:667
-msgid "_Add"
-msgstr "_Dodaj"
-
-#: ../libedataserverui/e-name-selector-dialog.c:671
-msgid "_Remove"
-msgstr "_Odstrani"
-
-#: ../libedataserverui/e-name-selector-dialog.c:899
-#: ../libedataserverui/e-name-selector-dialog.ui.h:6
-msgid "Any Category"
-msgstr "Katerakoli kategorija"
-
-#: ../libedataserverui/e-name-selector-dialog.ui.h:1
-msgid "*"
-msgstr "*"
-
-#: ../libedataserverui/e-name-selector-dialog.ui.h:2
-msgid "<b>Co_ntacts</b>"
-msgstr "<b>_Stiki</b>"
-
-#: ../libedataserverui/e-name-selector-dialog.ui.h:3
-msgid "<b>Show Contacts</b>"
-msgstr "<b>Pokaži stike</b>"
-
-#: ../libedataserverui/e-name-selector-dialog.ui.h:4
+#: ../libedataserverui/e-name-selector-dialog.c:198
 msgid "Address B_ook:"
 msgstr "_Imenik:"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:5
-msgid "Address Book"
-msgstr "Imenik"
-
-#: ../libedataserverui/e-name-selector-dialog.ui.h:7
+#: ../libedataserverui/e-name-selector-dialog.c:206
 msgid "Cate_gory:"
 msgstr "K_ategorija:"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:8
-msgid "Contacts"
-msgstr "Stiki"
+#: ../libedataserverui/e-name-selector-dialog.c:224
+msgid "_Search:"
+msgstr "_Poišči:"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:9
+#: ../libedataserverui/e-name-selector-dialog.c:242
+#: ../libedataserverui/e-name-selector-dialog.c:984
+msgid "Any Category"
+msgstr "Katerakoli kategorija"
+
+#: ../libedataserverui/e-name-selector-dialog.c:244
+msgid "Co_ntacts"
+msgstr "_Stiki"
+
+#: ../libedataserverui/e-name-selector-dialog.c:289
 msgid "Search"
 msgstr "Iskanje"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:10
-msgid "_Search:"
-msgstr "_Poišči:"
+#: ../libedataserverui/e-name-selector-dialog.c:292
+msgid "Address Book"
+msgstr "Imenik"
+
+#: ../libedataserverui/e-name-selector-dialog.c:295
+msgid "Contacts"
+msgstr "Stiki"
+
+#: ../libedataserverui/e-name-selector-dialog.c:415
+msgid "Select Contacts from Address Book"
+msgstr "Izberi stike iz imenika"
+
+#: ../libedataserverui/e-name-selector-dialog.c:754
+msgid "_Add"
+msgstr "_Dodaj"
+
+#: ../libedataserverui/e-name-selector-dialog.c:758
+msgid "_Remove"
+msgstr "_Odstrani"
+
+#: ../libedataserverui/e-name-selector-dialog.c:898
+#, c-format
+msgid "Error loading address book: %s"
+msgstr "Napaka med nalaganjem imenika: %s"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
 #: ../libedataserverui/e-name-selector-entry.c:2641
@@ -4991,6 +5000,14 @@ msgstr "ni odziva strežnika"
 msgid "Bad parameter"
 msgstr "Slab parameter"
 
+#~ msgid "categories"
+#~ msgstr "kategorije"
+#~ msgid "*"
+#~ msgstr "*"
+#~ msgid "<b>Co_ntacts</b>"
+#~ msgstr "<b>_Stiki</b>"
+#~ msgid "<b>Show Contacts</b>"
+#~ msgstr "<b>Pokaži stike</b>"
 #~ msgid "Verifying message"
 #~ msgstr "Preverjanje sporočila"
 #~ msgid "UnknownUser"
