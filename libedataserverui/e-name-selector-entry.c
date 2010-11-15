@@ -2338,30 +2338,47 @@ editor_closed_cb (GtkWidget *editor, gpointer data)
 static void
 popup_activate_inline_expand (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
 {
-	const gchar *email_list, *text;
-	gchar *sanitized_text;
+	const gchar *text;
+	GString *sanitized_text = g_string_new ("");
 	EDestination *destination = name_selector_entry->priv->popup_destination;
 	gint position, start, end;
+	const GList *dests;
 
 	position = GPOINTER_TO_INT(g_object_get_data ((GObject *)name_selector_entry, "index"));
 
-	email_list = e_destination_get_address (destination);
+	for (dests = e_destination_list_get_dests (destination); dests; dests = dests->next) {
+		const EDestination *dest = dests->data;
+		gchar *sanitized;
+
+		if (!dest)
+			continue;
+
+		text = e_destination_get_address (dest);
+		if (!text || !*text)
+			continue;
+
+		sanitized = sanitize_string (text);
+		if (!sanitized)
+			continue;
+
+		if (*sanitized) {
+			if (*sanitized_text->str)
+				g_string_append (sanitized_text, ", ");
+
+			g_string_append (sanitized_text, sanitized);
+		}
+
+		g_free (sanitized);
+	}
+
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
 	get_range_at_position (text, position, &start, &end);
-
-	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
-
 	gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), start, end);
-
-	sanitized_text = sanitize_string (email_list);
-	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), sanitized_text, -1, &start);
-	g_free (sanitized_text);
-
-	g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
+	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), sanitized_text->str, -1, &start);
+	g_string_free (sanitized_text, TRUE);
 
 	clear_completion_model (name_selector_entry);
 	generate_attribute_list (name_selector_entry);
-
 }
 
 static void
