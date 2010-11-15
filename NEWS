@@ -1,3 +1,60 @@
+Evolution-Data-Server 2.32.1 2010-11-15
+---------------------------------------
+
+Bug Fixes:
+	Bug #634658 - Unread counts for vfolders never update (Milan Crha)
+	Bug #632692 - Thread by In-Reply-To, then first found reference (Milan Crha)
+	Bug #538716 - Do not set expiration on POP3 message cache (Milan Crha)
+	Bug #631804 - Aborts with pthread error in imapx_server_dispose() (David Woodhouse)
+	Bug #634084 - ECal reports loaded state too early (Milan Crha)
+	Bug #632532 - Double free in imapx_job_done, imapx_command_step_fetch_done (Milan Crha)
+	Bug #631842 - Improve error reporting in some ECal/EBook functions (Christophe Fergeau)
+	Bug #632030 - Crashed while Groupwise server is not responding (Punit Jain)
+	Bug #631953 - A possible double-free in google backend (Gary Ching-Pang Lin)
+	Bug #632771 - Recurring calendar events set to recur forever do not display past first week (Chenthill Palanisamy)
+	Bug #597567 - Crash in comp_subject() (Milan Crha)
+	Bug #631290 - Crash in vee_folder_synchronize_sync (Milan Crha)
+	Bug #631073 - Task update operation has some delay (Milan Crha)
+	Bug #558478 - Autocompletion inserts comma. (Vibha Yadav)
+	Bug 632376 - Rewind in camel-disco-diary to fix a crash (Pacho Ramos)
+	Bug #534369 - New mail notifications for local Inbox don't work (Milan Crha)
+	Bug #608557 - CamelOfflineJournal can call fclose with NULL (Milan Crha)
+	Bug #347520 - Names containing a dot in address parsed incorrectly (Milan Crha)
+	Bug #630361 - Categories editing fixes (Milan Crha)
+	Bug #631122 - Change %-H to %k in Italian translation (Luca Ferretti)
+	Bug #616598 - AM/PM in Date header confuses parser (Milan Crha)
+	Bug #616596 - Disable debug prints from e-categories.c (Milan Crha)
+	Bug #615828 - Incorrectly set off-line state on CamelOfflineStore (Milan Crha)
+	Bug #616172 - Return NULL from imapx_find_commad_tag when not found (Julien Ducourthial)
+	Bug #629507 - e_book_backend_cache_set_time doesn't rewrite old value (Milan Crha)
+	Bug #630321 - Disabling IMAPX account produces runtime warnings (Milan Crha)
+	Bug #628655 - imapx parser thread gerror memory leak (Milan Crha)
+	Bug #629752 - ldap doesn't work in offline (Milan Crha)
+	Bug #629908 - assertion failed: (E_IS_BOOK (book)) (David Woodhouse)
+	Bug #615274 - Encode proxy user/password in proxy URL (Milan Crha)
+	Bug #599741 - Cannot accept meeting request (Vibha Yadav)
+	Bug #630265 - Refetches unchanged 'On The Web' calendar (Milan Crha)
+
+Miscellaneous Fixes:
+	Fix memory leak recently introduced in imapx QRESYNC (David Woodhouse)
+	Fix QRESYNC protocol violation (RH #648082) (David Woodhouse)
+	Fix a build failure due to used CPPFLAGS (Paul Smith)
+	Fix linking against out-of-tree e-d-s (Priit Laes)
+	[IMAPX] Crash on QRESYNC line formatting on 32bit platform (Milan Crha)
+	Opening default/system addressbook doesn't always work (Milan Crha)
+	Limit libgdata support to 0.6. (Matthew Barnes)
+	Avoid passing NULL to g_strstrip in e_contact_get calls (part ][) (Milan Crha)
+	Don't link libebook to GTK+. (Matthew Barnes)
+
+Translations:
+	Gil Forcada (ca)
+	Aron Xu ()
+	Petr Kovar (cs)
+	Valencian translation  (ca)
+	Mario Blättermann (nl)
+	Xandru Armesto (ast)
+	Ivar Smolin (et)
+
 Evolution-Data-Server 2.32.0 2010-09-27
 ---------------------------------------
 
