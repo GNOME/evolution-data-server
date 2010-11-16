@@ -34,7 +34,7 @@ struct _EFileCachePrivate {
 	gchar *filename;
 	EXmlHash *xml_hash;
 	gboolean dirty;
-	gboolean frozen;
+	guint32 frozen;
 };
 
 /* Property IDs */
@@ -159,7 +159,7 @@ e_file_cache_init (EFileCache *cache)
 
 	priv = g_new0 (EFileCachePrivate, 1);
 	priv->dirty = FALSE;
-	priv->frozen = FALSE;
+	priv->frozen = 0;
 	cache->priv = priv;
 }
 
@@ -463,7 +463,8 @@ e_file_cache_freeze_changes (EFileCache *cache)
 
 	priv = cache->priv;
 
-	priv->frozen = TRUE;
+	priv->frozen++;
+	g_return_if_fail (priv->frozen > 0);
 }
 
 /**
@@ -481,8 +482,10 @@ e_file_cache_thaw_changes (EFileCache *cache)
 
 	priv = cache->priv;
 
-	priv->frozen = FALSE;
-	if (priv->dirty) {
+	g_return_if_fail (priv->frozen > 0);
+
+	priv->frozen--;
+	if (!priv->frozen && priv->dirty) {
 		e_xmlhash_write (priv->xml_hash);
 		priv->dirty = FALSE;
 	}
