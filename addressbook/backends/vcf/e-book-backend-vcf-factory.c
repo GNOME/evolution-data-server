@@ -27,6 +27,7 @@
 
 #include <libedata-book/e-book-backend-factory.h>
 #include "e-book-backend-vcf.h"
+#include "e-source-vcf.h"
 
 #define FACTORY_NAME "vcf"
 
@@ -65,6 +66,7 @@ e_book_backend_vcf_factory_init (EBookBackendFactory *factory)
 G_MODULE_EXPORT void
 e_module_load (GTypeModule *type_module)
 {
+	e_source_vcf_type_register (type_module);
 	e_book_backend_vcf_factory_register_type (type_module);
 }
 

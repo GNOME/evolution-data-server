@@ -49,6 +49,7 @@
 #include "libedata-book/e-book-backend-sexp.h"
 
 #include "e-book-backend-vcf.h"
+#include "e-source-vcf.h"
 
 #define E_BOOK_BACKEND_VCF_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -572,23 +573,6 @@ e_book_backend_vcf_stop_book_view (EBookBackend *backend,
 		g_thread_join (closure->thread);
 }
 
-static gchar *
-e_book_backend_vcf_extract_path_from_uri (const gchar *uri)
-{
-	g_assert (g_ascii_strncasecmp (uri, "vcf://", 6) == 0);
-
-	return g_strdup (uri + 6);
-}
-
-static void
-e_book_backend_vcf_authenticate_user (EBookBackendSync *backend,
-                                      GCancellable *cancellable,
-                                      ECredentials *credentials,
-                                      GError **perror)
-{
-	/* Success */
-}
-
 #ifdef CREATE_DEFAULT_VCARD
 # include <libedata-book/ximian-vcard.h>
 #endif
@@ -602,15 +586,17 @@ e_book_backend_vcf_open (EBookBackendSync *backend,
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
 	ESource *source;
+	ESourceVCF *vcf_extension;
+	const gchar *extension_name;
 	gchar *dirname;
 	gboolean readonly = TRUE;
-	gchar *uri;
 	gint fd;
 
 	source = e_backend_get_source (E_BACKEND (backend));
-	uri = e_source_get_uri (source);
+	extension_name = E_SOURCE_EXTENSION_VCF_BACKEND;
+	vcf_extension = e_source_get_extension (source, extension_name);
 
-	dirname = e_book_backend_vcf_extract_path_from_uri (uri);
+	dirname = e_source_vcf_dup_path (vcf_extension);
 	bvcf->priv->filename = g_build_filename (dirname, "addressbook.vcf", NULL);
 
 	fd = g_open (bvcf->priv->filename, O_RDWR | O_BINARY, 0);
@@ -638,7 +624,7 @@ e_book_backend_vcf_open (EBookBackendSync *backend,
 				} else {
 					g_propagate_error (perror, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "Failed to make directory %s: %s", dirname, g_strerror (errno)));
 				}
-				return;
+				goto exit;
 			}
 
 			fd = g_open (bvcf->priv->filename, O_CREAT | O_BINARY, 0666);
@@ -660,11 +646,14 @@ e_book_backend_vcf_open (EBookBackendSync *backend,
 	}
 
 	if (fd == -1) {
-		g_warning ("Failed to open addressbook at uri `%s'", uri);
+		g_warning ("Failed to open addressbook at `%s'", dirname);
 		g_warning ("error == %s", g_strerror(errno));
-		g_propagate_error (perror, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "Failed to open addressbook at uri '%s': %s", uri, g_strerror (errno)));
-		g_free (uri);
-		return;
+		g_propagate_error (
+			perror, e_data_book_create_error_fmt (
+			E_DATA_BOOK_STATUS_OTHER_ERROR,
+			"Failed to open addressbook at '%s': %s",
+			dirname, g_strerror (errno)));
+		goto exit;
 	}
 
 	load_file (bvcf, fd);
@@ -673,7 +662,8 @@ e_book_backend_vcf_open (EBookBackendSync *backend,
 	e_book_backend_notify_online (E_BOOK_BACKEND (backend), TRUE);
 	e_book_backend_notify_opened (E_BOOK_BACKEND (backend), NULL);
 
-	g_free (uri);
+exit:
+	g_free (dirname);
 }
 
 static gboolean
@@ -772,9 +762,11 @@ e_book_backend_vcf_class_init (EBookBackendVCFClass *class)
 	sync_class->modify_contacts_sync	= e_book_backend_vcf_modify_contacts;
 	sync_class->get_contact_sync		= e_book_backend_vcf_get_contact;
 	sync_class->get_contact_list_sync	= e_book_backend_vcf_get_contact_list;
-	sync_class->authenticate_user_sync	= e_book_backend_vcf_authenticate_user;
 
 	object_class->finalize = e_book_backend_vcf_finalize;
+
+	/* Register our ESource extension. */
+	E_TYPE_SOURCE_VCF;
 }
 
 static void

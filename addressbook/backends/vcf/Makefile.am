@@ -14,7 +14,9 @@ libebookbackendvcf_la_CPPFLAGS = \
 libebookbackendvcf_la_SOURCES =			\
 	e-book-backend-vcf.c			\
 	e-book-backend-vcf.h			\
-	e-book-backend-vcf-factory.c
+	e-book-backend-vcf-factory.c		\
+	e-source-vcf.c				\
+	e-source-vcf.h
 
 libebookbackendvcf_la_LIBADD =						\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la		\
