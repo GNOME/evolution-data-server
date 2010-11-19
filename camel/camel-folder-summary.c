@@ -1269,8 +1269,10 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
 		ret = camel_db_read_message_info_record_with_uid (
 			cdb, folder_name, uid, &data,
 			camel_read_mir_callback, NULL);
-		if (ret != 0)
+		if (ret != 0) {
+			camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 			return NULL;
+		}
 
 		/* We would have double reffed at camel_read_mir_callback */
 		info = g_hash_table_lookup (s->loaded_infos, uid);
