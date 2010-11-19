@@ -15,7 +15,9 @@ libebookbackendldap_la_CPPFLAGS = \
 libebookbackendldap_la_SOURCES =			\
 	e-book-backend-ldap.c				\
 	e-book-backend-ldap.h				\
-	e-book-backend-ldap-factory.c
+	e-book-backend-ldap-factory.c			\
+	e-source-ldap.c					\
+	e-source-ldap.h
 
 libebookbackendldap_la_LIBADD =						\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la		\

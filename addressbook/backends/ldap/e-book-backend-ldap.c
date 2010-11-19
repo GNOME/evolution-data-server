@@ -125,6 +125,8 @@
 
 #include <glib/gi18n-lib.h>
 #include <libedataserver/e-sexp.h>
+#include <libedataserver/e-source-authentication.h>
+#include <libedataserver/e-source-offline.h>
 #include <libebook/e-contact.h>
 
 #include <libedata-book/e-book-backend-sexp.h>
@@ -133,6 +135,7 @@
 #include <libedata-book/e-book-backend-cache.h>
 #include <libedata-book/e-book-backend-summary.h>
 #include "e-book-backend-ldap.h"
+#include "e-source-ldap.h"
 
 /* this is broken currently, don't enable it */
 /*#define ENABLE_SASL_BINDS*/
@@ -140,12 +143,6 @@
 #define E_BOOK_BACKEND_LDAP_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_BOOK_BACKEND_LDAP, EBookBackendLDAPPrivate))
-
-typedef enum {
-	E_BOOK_BACKEND_LDAP_TLS_NO,
-	E_BOOK_BACKEND_LDAP_TLS_ALWAYS,
-	E_BOOK_BACKEND_LDAP_TLS_WHEN_POSSIBLE
-} EBookBackendLDAPUseTLS;
 
 /* interval for our poll_ldap timeout */
 #define LDAP_POLL_INTERVAL 20
@@ -177,7 +174,17 @@ typedef struct LDAPOp LDAPOp;
 #define EDB_ERROR_NOT_CONNECTED() e_data_book_create_error (E_DATA_BOOK_STATUS_OTHER_ERROR, _("Not connected"))
 #define EDB_ERROR_MSG_TYPE(_msg_type) e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_INVALID_ARG, "Incorrect msg type %d passed to %s", _msg_type, G_STRFUNC)
 
-G_DEFINE_TYPE (EBookBackendLDAP, e_book_backend_ldap, E_TYPE_BOOK_BACKEND)
+/* Forward Declarations */
+static void	e_book_backend_ldap_source_authenticator_init
+				(ESourceAuthenticatorInterface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (
+	EBookBackendLDAP,
+	e_book_backend_ldap,
+	E_TYPE_BOOK_BACKEND,
+	G_IMPLEMENT_INTERFACE (
+		E_TYPE_SOURCE_AUTHENTICATOR,
+		e_book_backend_ldap_source_authenticator_init))
 
 struct _EBookBackendLDAPPrivate {
 	gboolean connected;
@@ -199,7 +206,7 @@ struct _EBookBackendLDAPPrivate {
 	gboolean starttls;     /* TRUE if the *library * supports
                                   starttls.  will be false if openssl
                                   was not built into openldap. */
-	EBookBackendLDAPUseTLS use_tls;
+	ESourceLDAPSecurity security;
 
 	LDAP     *ldap;
 
@@ -441,20 +448,18 @@ static struct prop_info {
 static gboolean
 can_browse (EBookBackend *backend)
 {
-	ESource *source = NULL;
-	const gchar *can_browse;
+	ESource *source;
+	ESourceLDAP *extension;
+	const gchar *extension_name;
 
-	/* XXX Backend can really be NULL here, or
-	 *     are we just being needlessly paranoid? */
-	if (backend == NULL)
+	if (E_IS_BOOK_BACKEND (backend))
 		return FALSE;
 
 	source = e_backend_get_source (E_BACKEND (backend));
-	g_return_val_if_fail (source != NULL, FALSE);
+	extension_name = E_SOURCE_EXTENSION_LDAP_BACKEND;
+	extension = e_source_get_extension (source, extension_name);
 
-	can_browse = e_source_get_property (source, "can-browse");
-
-	return (g_strcmp0 (can_browse, "1") == 0);
+	return e_source_ldap_get_can_browse (extension);
 }
 
 static gboolean
@@ -857,7 +862,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl,
 	}
 
 #ifdef SUNLDAP
-	if (bl->priv->use_tls != E_BOOK_BACKEND_LDAP_TLS_NO) {
+	if (bl->priv->security == E_SOURCE_LDAP_SECURITY_LDAPS) {
 		const gchar *user_data_dir = e_get_user_data_dir ();
 		ldap_flag = ldapssl_client_init (user_data_dir, NULL);
 		blpriv->ldap = ldapssl_init (blpriv->ldap_host, blpriv->ldap_port, 1);
@@ -883,22 +888,20 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl,
 		} else
 			bl->priv->ldap_v3 = TRUE;
 
-		if (bl->priv->use_tls != E_BOOK_BACKEND_LDAP_TLS_NO) {
+		if (!bl->priv->ldap_v3 && bl->priv->security == E_SOURCE_LDAP_SECURITY_STARTTLS) {
+			g_message ("TLS not available (fatal version), v3 protocol could not be established (ldap_error 0x%02x)", ldap_error);
+			ldap_unbind (blpriv->ldap);
+			blpriv->ldap = NULL;
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+			g_propagate_error (error, EDB_ERROR (TLS_NOT_AVAILABLE));
+			return FALSE;
+		}
 
-			if (!bl->priv->ldap_v3 && bl->priv->use_tls == E_BOOK_BACKEND_LDAP_TLS_ALWAYS) {
-				g_message ("TLS not available (fatal version), v3 protocol could not be established (ldap_error 0x%02x)", ldap_error);
-				ldap_unbind (blpriv->ldap);
-				blpriv->ldap = NULL;
-				g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-				g_propagate_error (error, EDB_ERROR (TLS_NOT_AVAILABLE));
-				return FALSE;
-			}
-
-			if (bl->priv->ldap_port == LDAPS_PORT && bl->priv->use_tls == E_BOOK_BACKEND_LDAP_TLS_ALWAYS) {
+		if (bl->priv->ldap_port == LDAPS_PORT && bl->priv->security == E_SOURCE_LDAP_SECURITY_LDAPS) {
 #ifdef SUNLDAP
-				if (ldap_error == LDAP_SUCCESS) {
-					ldap_set_option (blpriv->ldap, LDAP_OPT_RECONNECT, LDAP_OPT_ON );
-				}
+			if (ldap_error == LDAP_SUCCESS) {
+				ldap_set_option (blpriv->ldap, LDAP_OPT_RECONNECT, LDAP_OPT_ON );
+			}
 #else
 #if defined (LDAP_OPT_X_TLS_HARD) && defined (LDAP_OPT_X_TLS)
 				gint tls_level = LDAP_OPT_X_TLS_HARD;
@@ -908,46 +911,41 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl,
 				tls_level = LDAP_OPT_X_TLS_ALLOW;
 				ldap_set_option (NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &tls_level);
 #elif defined (G_OS_WIN32)
-				ldap_set_option (blpriv->ldap, LDAP_OPT_SSL, LDAP_OPT_ON);
+			ldap_set_option (blpriv->ldap, LDAP_OPT_SSL, LDAP_OPT_ON);
 #else
-				g_message ("TLS option not available");
+			g_message ("TLS option not available");
 #endif
 #endif
-			} else if (bl->priv->use_tls) {
+		} else if (bl->priv->security == E_SOURCE_LDAP_SECURITY_STARTTLS) {
 #ifdef SUNLDAP
-				if (ldap_error == LDAP_SUCCESS) {
-					ldap_set_option (blpriv->ldap, LDAP_OPT_RECONNECT, LDAP_OPT_ON );
-				}
+			if (ldap_error == LDAP_SUCCESS) {
+				ldap_set_option (blpriv->ldap, LDAP_OPT_RECONNECT, LDAP_OPT_ON );
+			}
 #else
 #ifdef _WIN32
-				typedef ULONG (*PFN_ldap_start_tls_s)(PLDAP,PLDAPControl *,PLDAPControl *);
-				PFN_ldap_start_tls_s pldap_start_tls_s =
-				(PFN_ldap_start_tls_s) GetProcAddress (GetModuleHandle ("wldap32.dll"), "ldap_start_tls_s");
-				if (!pldap_start_tls_s)
-					(PFN_ldap_start_tls_s) GetProcAddress (GetModuleHandle ("wldap32.dll"), "ldap_start_tls_sA");
+			typedef ULONG (*PFN_ldap_start_tls_s)(PLDAP,PLDAPControl *,PLDAPControl *);
+			PFN_ldap_start_tls_s pldap_start_tls_s =
+			(PFN_ldap_start_tls_s) GetProcAddress (GetModuleHandle ("wldap32.dll"), "ldap_start_tls_s");
+			if (!pldap_start_tls_s)
+				(PFN_ldap_start_tls_s) GetProcAddress (GetModuleHandle ("wldap32.dll"), "ldap_start_tls_sA");
 
-				if (!pldap_start_tls_s)
-					ldap_error = LDAP_NOT_SUPPORTED;
-				else
-					ldap_error = pldap_start_tls_s (blpriv->ldap, NULL, NULL);
+			if (!pldap_start_tls_s)
+				ldap_error = LDAP_NOT_SUPPORTED;
+			else
+				ldap_error = pldap_start_tls_s (blpriv->ldap, NULL, NULL);
 #else /* !defined(_WIN32) */
-				ldap_error = ldap_start_tls_s (blpriv->ldap, NULL, NULL);
+			ldap_error = ldap_start_tls_s (blpriv->ldap, NULL, NULL);
 #endif /* _WIN32 */
 #endif
-				if (ldap_error != LDAP_SUCCESS) {
-					if (bl->priv->use_tls == E_BOOK_BACKEND_LDAP_TLS_ALWAYS) {
-						g_message ("TLS not available (fatal version), (ldap_error 0x%02x)", ldap_error);
-						ldap_unbind (blpriv->ldap);
-						blpriv->ldap = NULL;
-						g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-						g_propagate_error (error, EDB_ERROR (TLS_NOT_AVAILABLE));
-						return FALSE;
-					} else {
-						g_message ("TLS not available (ldap_error 0x%02x)", ldap_error);
-					}
-				} else if (enable_debug)
-					g_message ("TLS active");
-			}
+			if (ldap_error != LDAP_SUCCESS) {
+				g_message ("TLS not available (fatal version), (ldap_error 0x%02x)", ldap_error);
+				ldap_unbind (blpriv->ldap);
+				blpriv->ldap = NULL;
+				g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+				g_propagate_error (error, EDB_ERROR (TLS_NOT_AVAILABLE));
+				return FALSE;
+			} else if (enable_debug)
+				g_message ("TLS active");
 		}
 
 		/* bind anonymously initially, we'll actually
@@ -5128,188 +5126,6 @@ generate_cache (EBookBackendLDAP *book_backend_ldap)
 }
 
 static void
-e_book_backend_ldap_authenticate_user (EBookBackend *backend,
-                                       GCancellable *cancellable,
-                                       ECredentials *credentials)
-{
-	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
-	gint ldap_error;
-	gchar *dn = NULL;
-	const gchar *auth_method = e_credentials_peek (credentials, E_CREDENTIALS_KEY_AUTH_METHOD);
-	const gchar *user = e_credentials_peek (credentials, E_CREDENTIALS_KEY_USERNAME);
-
-	if (enable_debug)
-		printf ("e_book_backend_ldap_authenticate_user ... \n");
-
-	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
-	if (!auth_method || !*auth_method) {
-		ESource *source;
-
-		source = e_backend_get_source (E_BACKEND (backend));
-		auth_method = e_source_get_property (source, "auth");
-	}
-
-	if (!e_backend_get_online (E_BACKEND (backend))) {
-		e_book_backend_notify_readonly (backend, TRUE);
-		e_book_backend_notify_online (backend, FALSE);
-		e_book_backend_notify_opened (backend, EDB_ERROR (SUCCESS));
-		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-		return;
-	}
-
-	if (bl->priv->connected) {
-		/* other client connected meanwhile, report success and return */
-		e_book_backend_notify_opened (backend, EDB_ERROR (SUCCESS));
-		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-		return;
-	}
-	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-
-	if (!g_ascii_strncasecmp (auth_method, LDAP_SIMPLE_PREFIX, strlen (LDAP_SIMPLE_PREFIX))) {
-
-		if (bl->priv->ldap && !strcmp (auth_method, "ldap/simple-email")) {
-			LDAPMessage    *res, *e;
-			gchar *query = g_strdup_printf ("(mail=%s)", user);
-
-			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
-			ldap_error = ldap_search_s (bl->priv->ldap,
-						    bl->priv->ldap_rootdn,
-						    bl->priv->ldap_scope,
-						    query,
-						    NULL, 0, &res);
-			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-			g_free (query);
-
-			if (ldap_error == LDAP_SUCCESS) {
-				gchar *entry_dn;
-
-				g_static_rec_mutex_lock (&eds_ldap_handler_lock);
-				e = ldap_first_entry (bl->priv->ldap, res);
-				g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-				if (!e) {
-					g_warning ("Failed to get the DN for %s", user);
-					ldap_msgfree (res);
-					e_book_backend_notify_opened (backend, EDB_ERROR (AUTHENTICATION_FAILED));
-					return;
-				}
-
-				g_static_rec_mutex_lock (&eds_ldap_handler_lock);
-				entry_dn = ldap_get_dn (bl->priv->ldap, e);
-				bl->priv->connected = FALSE; /* to reconnect with credentials */
-				g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-				dn = g_strdup (entry_dn);
-
-				ldap_memfree (entry_dn);
-				ldap_msgfree (res);
-			} else {
-				e_book_backend_notify_opened (backend, EDB_ERROR (PERMISSION_DENIED));
-				return;
-			}
-		}
-		else if (!g_strcmp0 (auth_method, "ldap/simple-binddn")) {
-			dn = g_strdup (user);
-		}
-
-		g_free (bl->priv->auth_dn);
-		e_credentials_util_safe_free_string (bl->priv->auth_secret);
-
-		bl->priv->auth_dn = dn;
-		bl->priv->auth_secret = e_credentials_get (credentials, E_CREDENTIALS_KEY_PASSWORD);
-
-		/* now authenticate against the DN we were either supplied or queried for */
-		if (enable_debug)
-			printf ("simple auth as %s\n", dn);
-		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
-		if (!bl->priv->connected || !bl->priv->ldap) {
-			GError *error = NULL;
-
-			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-
-			if (!e_book_backend_ldap_connect (bl, &error)) {
-				if (error)
-					e_book_backend_notify_opened (backend, error);
-				return;
-			}
-		}
-
-		ldap_error = ldap_simple_bind_s (bl->priv->ldap,
-						bl->priv->auth_dn,
-						bl->priv->auth_secret);
-		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-		/* Some ldap servers are returning (ex active directory ones) LDAP_SERVER_DOWN
-		 * when we try to do an ldap operation  after being  idle
-		 * for some time. This error is handled by poll_ldap in case of search operations
-		 * We need to handle it explicitly for this bind call. We call reconnect so that
-		 * we get a fresh ldap handle Fixes #67541 */
-
-		if (ldap_error == LDAP_SERVER_DOWN) {
-			if (e_book_backend_ldap_reconnect (bl, find_book_view (bl), ldap_error)) {
-				ldap_error = LDAP_SUCCESS;
-			}
-
-		}
-
-		e_book_backend_notify_opened (backend, ldap_error_to_response (ldap_error));
-	}
-#ifdef ENABLE_SASL_BINDS
-	else if (!g_ascii_strncasecmp (auth_method, SASL_PREFIX, strlen (SASL_PREFIX))) {
-		g_print ("sasl bind (mech = %s) as %s", auth_method + strlen (SASL_PREFIX), user);
-		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
-		if (!bl->priv->connected || !bl->priv->ldap) {
-			GError *error = NULL;
-
-			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-
-			if (!e_book_backend_ldap_connect (bl)) {
-				if (error)
-					e_book_backend_notify_opened (backend, error);
-				return;
-			}
-		}
-		ldap_error = ldap_sasl_bind_s (bl->priv->ldap,
-					       NULL,
-					       auth_method + strlen (SASL_PREFIX),
-					       e_credentials_peek (credentials, E_CREDENTIALS_KEY_PASSWORD),
-					       NULL,
-					       NULL,
-					       NULL);
-		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-
-		if (ldap_error == LDAP_NOT_SUPPORTED)
-			e_book_backend_notify_opened (backend, EDB_ERROR (UNSUPPORTED_AUTHENTICATION_METHOD));
-		else
-			e_book_backend_notify_opened (backend, ldap_error_to_response (ldap_error));
-	}
-#endif
-	else {
-		e_book_backend_notify_opened (backend, EDB_ERROR (UNSUPPORTED_AUTHENTICATION_METHOD));
-		return;
-	}
-
-	if (ldap_error == LDAP_SUCCESS) {
-		e_book_backend_notify_readonly (backend, FALSE);
-
-		/* force a requery on the root dse since some ldap
-		 * servers are set up such that they don't report
-		 * anything (including the schema DN) until the user
-		 * is authenticated */
-		if (!bl->priv->evolutionPersonChecked) {
-			ldap_error = query_ldap_root_dse (bl);
-
-			if (LDAP_SUCCESS == ldap_error) {
-				if (!bl->priv->evolutionPersonChecked)
-					check_schema_support (bl);
-			}
-			else
-				g_warning ("Failed to perform root dse query after authenticating, (ldap_error 0x%02x)", ldap_error);
-		}
-
-		if (bl->priv->marked_for_offline && bl->priv->cache)
-			generate_cache (bl);
-	}
-}
-
-static void
 ldap_cancel_op (gpointer key,
                 gpointer value,
                 gpointer data)
@@ -5342,78 +5158,68 @@ e_book_backend_ldap_open (EBookBackend *backend,
                           gboolean only_if_exists)
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
+	ESourceAuthentication *auth_extension;
+	ESourceLDAP *ldap_extension;
+	ESourceOffline *offline_extension;
+	ESourceRegistry *registry;
 	ESource *source;
-	LDAPURLDesc    *lud;
-	gint ldap_error;
-	gint limit = 100;
-	gint timeout = 60; /* 1 minute */
-	gchar *uri;
+	const gchar *extension_name;
 	const gchar *cache_dir;
-	const gchar *str;
-	const gchar *offline;
 	gchar *filename;
-	GError *err = NULL;
 	gboolean auth_required;
+	GError *error = NULL;
 
-	g_assert (bl->priv->connected == FALSE);
+	g_return_if_fail (!bl->priv->connected);
 
 	if (enable_debug)
 		printf ("%s ... \n", G_STRFUNC);
 
 	source = e_backend_get_source (E_BACKEND (backend));
-	uri = e_source_get_uri (source);
 	cache_dir = e_book_backend_get_cache_dir (backend);
 
-	offline = e_source_get_property (source, "offline_sync");
-	if (offline  &&   g_str_equal (offline, "1"))
-		bl->priv->marked_for_offline = TRUE;
-	str = e_source_get_property (source, "limit");
-	if (str)
-		limit = atoi (str);
+	registry = e_book_backend_get_registry (backend);
 
-	bl->priv->use_tls = E_BOOK_BACKEND_LDAP_TLS_NO;
+	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
+	auth_extension = e_source_get_extension (source, extension_name);
 
-	str = e_source_get_property (source, "ssl");
-	if (str) {
-		if (!strcmp (str, "always"))
-			bl->priv->use_tls = E_BOOK_BACKEND_LDAP_TLS_ALWAYS;
-		else if (!strcmp (str, "whenever_possible"))
-			bl->priv->use_tls = E_BOOK_BACKEND_LDAP_TLS_WHEN_POSSIBLE;
-		else if (strcmp (str, "never"))
-			g_warning ("Unhandled value for 'ssl', not using it.");
+	extension_name = E_SOURCE_EXTENSION_LDAP_BACKEND;
+	ldap_extension = e_source_get_extension (source, extension_name);
+
+	extension_name = E_SOURCE_EXTENSION_OFFLINE;
+	offline_extension = e_source_get_extension (source, extension_name);
+
+	bl->priv->marked_for_offline =
+		e_source_offline_get_stay_synchronized (offline_extension);
+
+	bl->priv->security = e_source_ldap_get_security (ldap_extension);
+
+	bl->priv->ldap_host =
+		e_source_authentication_dup_host (auth_extension);
+
+	bl->priv->ldap_port =
+		e_source_authentication_get_port (auth_extension);
+	/* If a port wasn't specified, default to LDAP_PORT. */
+	if (bl->priv->ldap_port == 0)
+		bl->priv->ldap_port = LDAP_PORT;
+
+	bl->priv->ldap_rootdn =
+		e_source_ldap_dup_root_dn (ldap_extension);
+
+	bl->priv->ldap_search_filter =
+		e_source_ldap_dup_filter (ldap_extension);
+
+	bl->priv->ldap_limit = e_source_ldap_get_limit (ldap_extension);
+
+	switch (e_source_ldap_get_scope (ldap_extension)) {
+		case E_SOURCE_LDAP_SCOPE_ONELEVEL:
+			bl->priv->ldap_scope = LDAP_SCOPE_ONELEVEL;
+			break;
+		case E_SOURCE_LDAP_SCOPE_SUBTREE:
+			bl->priv->ldap_scope = LDAP_SCOPE_SUBTREE;
+			break;
+		default:
+			g_warn_if_reached ();
 	}
-
-	str = e_source_get_property (source, "timeout");
-	if (str)
-		timeout = atoi (str);
-
-	ldap_error = ldap_url_parse ((gchar *) uri, &lud);
-
-	if (ldap_error == LDAP_SUCCESS) {
-		bl->priv->ldap_host = g_strdup (lud->lud_host);
-		bl->priv->ldap_port = lud->lud_port;
-		/* if a port wasn't specified, default to LDAP_PORT */
-		if (bl->priv->ldap_port == 0)
-			bl->priv->ldap_port = LDAP_PORT;
-		bl->priv->ldap_rootdn = g_strdup (lud->lud_dn);
-		/* in case of migration, filter will be set to NULL and hence the search will fail */
-		if (lud->lud_filter)
-			bl->priv->ldap_search_filter = g_strdup (lud->lud_filter);
-		bl->priv->ldap_limit = limit;
-		bl->priv->ldap_timeout = timeout;
-		bl->priv->ldap_scope = lud->lud_scope;
-
-		ldap_free_urldesc (lud);
-	} else {
-		if (enable_debug)
-			printf ("%s ... failed to parse the ldap URI %s\n", G_STRFUNC, uri);
-		g_free (uri);
-		e_book_backend_respond_opened (backend, book, opid, EDB_ERROR_EX (OTHER_ERROR, "Failed to parse LDAP URI"));
-		return;
-	}
-
-	if (bl->priv->ldap_port == LDAPS_PORT)
-		bl->priv->use_tls = E_BOOK_BACKEND_LDAP_TLS_ALWAYS;
 
 	if (bl->priv->cache) {
 		g_object_unref (bl->priv->cache);
@@ -5424,66 +5230,48 @@ e_book_backend_ldap_open (EBookBackend *backend,
 	bl->priv->cache = e_book_backend_cache_new (filename);
 	g_free (filename);
 
-	g_free (uri);
-
 	if (!e_backend_get_online (E_BACKEND (backend))) {
 
 		/* Offline */
 		e_book_backend_notify_readonly (backend, TRUE);
 		e_book_backend_notify_online (backend, FALSE);
 
-		if (!bl->priv->marked_for_offline) {
-			e_book_backend_respond_opened (backend, book, opid, EDB_ERROR (OFFLINE_UNAVAILABLE));
-			return;
-		}
+		if (!bl->priv->marked_for_offline)
+			error = EDB_ERROR (OFFLINE_UNAVAILABLE);
 
-#if 0
-		if (!e_book_backend_cache_is_populated (bl->priv->cache)) {
-			e_book_backend_respond_opened (backend, book, opid, EDB_ERROR (OFFLINE_UNAVAILABLE));
-			return;
-		}
-#endif
-		e_book_backend_respond_opened (backend, book, opid, NULL /* Success */);
-		return;
-	} else {
-		e_book_backend_notify_readonly (backend, FALSE);
-		e_book_backend_notify_online (backend, TRUE);
-	}
-
-	str = e_source_get_property (source, "auth");
-	auth_required = str && *str && !g_str_equal (str, "none") && !g_str_equal (str, "0");
-	if (auth_required && !g_str_equal (str, "ldap/simple-email")) {
-		/* Requires authentication, do not try to bind without it,
-		 * but report success instead, as we are loaded. */
-		if (enable_debug)
-			printf ("%s ... skipping anonymous bind, because auth required\n", G_STRFUNC);
-
-		if (!e_book_backend_is_opened (backend))
-			e_book_backend_notify_auth_required (backend, TRUE, NULL);
-		else
-			e_book_backend_notify_opened (backend, NULL);
-		e_data_book_respond_open (book, opid, NULL /* Success */);
+		e_book_backend_respond_opened (backend, book, opid, error);
 		return;
 	}
 
-	/* Online */
-	if (!e_book_backend_ldap_connect (bl, &err)) {
-		if (enable_debug)
-			printf ("%s ... failed to connect to server \n", G_STRFUNC);
-		e_book_backend_respond_opened (backend, book, opid, err);
-		return;
+	e_book_backend_notify_readonly (backend, FALSE);
+	e_book_backend_notify_online (backend, TRUE);
+
+	auth_required = e_source_authentication_required (auth_extension);
+
+	if (!auth_required)
+		e_book_backend_ldap_connect (bl, &error);
+
+	if (g_error_matches (
+		error, E_DATA_BOOK_ERROR,
+		E_DATA_BOOK_STATUS_AUTHENTICATION_REQUIRED)) {
+
+		g_clear_error (&error);
+		auth_required = TRUE;
 	}
 
-	if (auth_required && !e_book_backend_is_opened (backend)) {
-		e_book_backend_notify_auth_required (E_BOOK_BACKEND (bl), TRUE, NULL);
-		e_data_book_respond_open (book, opid, NULL /* Success */);
-		return;
-	}
+	if (auth_required && error == NULL)
+		e_source_registry_authenticate_sync (
+			registry, source,
+			E_SOURCE_AUTHENTICATOR (backend),
+			cancellable, &error);
 
-	if (bl->priv->marked_for_offline)
+	if (error != NULL && enable_debug)
+		printf ("%s ... failed to connect to server \n", G_STRFUNC);
+
+	if (error == NULL && bl->priv->marked_for_offline)
 		generate_cache (bl);
 
-	e_book_backend_respond_opened (backend, book, opid, NULL /* Success */);
+	e_book_backend_respond_opened (backend, book, opid, error);
 }
 
 static void
@@ -5643,10 +5431,12 @@ e_book_backend_ldap_notify_online_cb (EBookBackend *backend,
 		if (e_book_backend_is_opened (backend)) {
 			GError *error = NULL;
 
-			if (e_book_backend_ldap_connect (bl, &error))
-				e_book_backend_notify_auth_required (backend, TRUE, NULL);
+			if (!e_book_backend_ldap_connect (bl, &error)) {
+				e_book_backend_notify_error (
+					backend, error->message);
+				g_error_free (error);
+			}
 
-			g_clear_error (&error);
 #if 0
 			start_views (backend);
 #endif
@@ -5725,6 +5515,226 @@ e_book_backend_ldap_finalize (GObject *object)
 	G_OBJECT_CLASS (e_book_backend_ldap_parent_class)->finalize (object);
 }
 
+static ESourceAuthenticationResult
+book_backend_ldap_try_password_sync (ESourceAuthenticator *authenticator,
+                                     const GString *password,
+                                     GCancellable *cancellable,
+                                     GError **error)
+{
+	ESourceAuthenticationResult result;
+	EBookBackendLDAP *bl;
+	ESourceAuthentication *auth_extension;
+	ESource *source;
+	gint ldap_error;
+	gchar *dn = NULL;
+	const gchar *extension_name;
+	gchar *method;
+	gchar *user;
+
+	bl = E_BOOK_BACKEND_LDAP (authenticator);
+	source = e_backend_get_source (E_BACKEND (authenticator));
+
+	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
+	auth_extension = e_source_get_extension (source, extension_name);
+
+	/* We should not have gotten here if we're offline. */
+	g_return_val_if_fail (
+		e_backend_get_online (E_BACKEND (authenticator)),
+		E_SOURCE_AUTHENTICATION_ERROR);
+
+	method = e_source_authentication_dup_method (auth_extension);
+	user = e_source_authentication_dup_user (auth_extension);
+
+	if (!g_ascii_strncasecmp (method, LDAP_SIMPLE_PREFIX, strlen (LDAP_SIMPLE_PREFIX))) {
+
+		if (bl->priv->ldap && !strcmp (method, "ldap/simple-email")) {
+			LDAPMessage    *res, *e;
+			gchar *query = g_strdup_printf ("(mail=%s)", user);
+			gchar *entry_dn;
+
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+			ldap_error = ldap_search_s (bl->priv->ldap,
+						    bl->priv->ldap_rootdn,
+						    bl->priv->ldap_scope,
+						    query,
+						    NULL, 0, &res);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+			g_free (query);
+
+			if (ldap_error != LDAP_SUCCESS)
+				goto exit;
+
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+			e = ldap_first_entry (bl->priv->ldap, res);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+			if (!e) {
+				ldap_msgfree (res);
+				g_set_error (
+					error, G_IO_ERROR,
+					G_IO_ERROR_INVALID_DATA,
+					_("Failed to get the DN "
+					  "for user '%s'"), user);
+				return E_SOURCE_AUTHENTICATION_ERROR;
+			}
+
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+			entry_dn = ldap_get_dn (bl->priv->ldap, e);
+			bl->priv->connected = FALSE; /* to reconnect with credentials */
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+			dn = g_strdup (entry_dn);
+
+			ldap_memfree (entry_dn);
+			ldap_msgfree (res);
+
+		} else if (!g_strcmp0 (method, "ldap/simple-binddn")) {
+			dn = g_strdup (user);
+		}
+
+		g_free (bl->priv->auth_dn);
+		g_free (bl->priv->auth_secret);
+
+		bl->priv->auth_dn = dn;
+		bl->priv->auth_secret = g_strdup (password->str);
+
+		/* now authenticate against the DN we were either supplied or queried for */
+		if (enable_debug)
+			printf ("simple auth as %s\n", dn);
+
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+
+		if (!bl->priv->connected || !bl->priv->ldap) {
+			GError *local_error = NULL;
+
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+			e_book_backend_ldap_connect (bl, &local_error);
+
+			if (local_error == NULL) {
+				return E_SOURCE_AUTHENTICATION_ACCEPTED;
+
+			} else if (g_error_matches (
+				local_error, E_DATA_BOOK_ERROR,
+				E_DATA_BOOK_STATUS_AUTHENTICATION_FAILED)) {
+
+				g_clear_error (&local_error);
+				return E_SOURCE_AUTHENTICATION_REJECTED;
+
+			} else {
+				g_propagate_error (error, local_error);
+				return E_SOURCE_AUTHENTICATION_ERROR;
+			}
+		}
+
+		ldap_error = ldap_simple_bind_s (bl->priv->ldap,
+						 bl->priv->auth_dn,
+						 bl->priv->auth_secret);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+		/* Some ldap servers are returning (ex active directory ones)
+		 * LDAP_SERVER_DOWN when we try to do an ldap operation after
+		 * being idle for some time. This error is handled by poll_ldap
+		 * in case of search operations. 
+		 *
+		 * We need to handle it explicitly for this bind call.
+		 * We call reconnect so that we get a fresh ldap handle.
+		 * Fixes #67541 */
+		if (ldap_error == LDAP_SERVER_DOWN) {
+			if (e_book_backend_ldap_reconnect (bl, find_book_view (bl), ldap_error))
+				ldap_error = LDAP_SUCCESS;
+		}
+	}
+#ifdef ENABLE_SASL_BINDS
+	else if (!g_ascii_strncasecmp (method, SASL_PREFIX, strlen (SASL_PREFIX))) {
+		g_print ("sasl bind (mech = %s) as %s", method + strlen (SASL_PREFIX), user);
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+
+		if (!bl->priv->connected || !bl->priv->ldap) {
+			GError *local_error = NULL;
+
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+			e_book_backend_ldap_connect (bl, &local_error);
+
+			if (local_error == NULL) {
+				return E_SOURCE_AUTHENTICATION_ACCEPTED;
+
+			} else if (g_error_matches (
+				local_error, E_DATA_BOOK_ERROR,
+				E_DATA_BOOK_STATUS_AUTHENTICATION_FAILED)) {
+
+				g_clear_error (&local_error);
+				return E_SOURCE_AUTHENTICATION_REJECTED;
+
+			} else {
+				g_propagate_error (error, local_error);
+				return E_SOURCE_AUTHENTICATION_ERROR;
+			}
+		}
+
+		ldap_error = ldap_sasl_bind_s (bl->priv->ldap,
+					       NULL,
+					       method + strlen (SASL_PREFIX),
+					       bl->priv->auth_secret,
+					       NULL,
+					       NULL,
+					       NULL);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+	}
+#endif
+	else {
+		ldap_error = LDAP_NOT_SUPPORTED;
+	}
+
+exit:
+	switch (ldap_error) {
+		case LDAP_SUCCESS:
+			e_book_backend_notify_readonly (
+				E_BOOK_BACKEND (authenticator), FALSE);
+
+			/* force a requery on the root dse since some ldap
+			 * servers are set up such that they don't report
+			 * anything (including the schema DN) until the user
+			 * is authenticated */
+			if (!bl->priv->evolutionPersonChecked) {
+				ldap_error = query_ldap_root_dse (bl);
+
+				if (LDAP_SUCCESS == ldap_error) {
+					if (!bl->priv->evolutionPersonChecked)
+						check_schema_support (bl);
+				} else
+					g_warning ("Failed to perform root dse query after authenticating, (ldap_error 0x%02x)", ldap_error);
+			}
+
+			if (bl->priv->marked_for_offline && bl->priv->cache)
+				generate_cache (bl);
+
+			result = E_SOURCE_AUTHENTICATION_ACCEPTED;
+			break;
+
+		case LDAP_INVALID_CREDENTIALS:
+			result = E_SOURCE_AUTHENTICATION_REJECTED;
+			break;
+
+		case LDAP_NOT_SUPPORTED:
+			g_propagate_error (
+				error, EDB_ERROR (
+				UNSUPPORTED_AUTHENTICATION_METHOD));
+			result = E_SOURCE_AUTHENTICATION_ERROR;
+			break;
+
+		default:
+			g_propagate_error (
+				error, ldap_error_to_response (ldap_error));
+			result = E_SOURCE_AUTHENTICATION_ERROR;
+			break;
+	}
+
+	g_free (method);
+	g_free (user);
+
+	return result;
+}
+
 static void
 e_book_backend_ldap_class_init (EBookBackendLDAPClass *class)
 {
@@ -5752,9 +5762,17 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *class)
 	parent_class->get_contact_list_uids	= e_book_backend_ldap_get_contact_list_uids;
 	parent_class->start_book_view		= e_book_backend_ldap_start_book_view;
 	parent_class->stop_book_view		= e_book_backend_ldap_stop_book_view;
-	parent_class->authenticate_user		= e_book_backend_ldap_authenticate_user;
 
 	object_class->finalize = e_book_backend_ldap_finalize;
+
+	/* Register our ESource extension. */
+	E_TYPE_SOURCE_LDAP;
+}
+
+static void
+e_book_backend_ldap_source_authenticator_init (ESourceAuthenticatorInterface *interface)
+{
+	interface->try_password_sync = book_backend_ldap_try_password_sync;
 }
 
 static void
