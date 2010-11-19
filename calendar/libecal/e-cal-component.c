@@ -24,8 +24,10 @@
 #include <unistd.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
+#include <glib/gstdio.h>
 #include "e-cal-component.h"
 #include "e-cal-time-util.h"
+#include "libedataserver/e-data-server-util.h"
 
 
 
@@ -56,6 +58,10 @@ struct attendee {
 struct attachment {
 	icalproperty *prop;
 	icalattach *attach;
+
+	/* for inline attachments, where the file is stored;
+	   it unlinks it on attachment free. */
+	gchar *temporary_filename;
 };
 
 struct text {
@@ -248,6 +254,30 @@ free_alarm_cb (gpointer key, gpointer value, gpointer data)
 	return TRUE;
 }
 
+static void
+free_attachment (struct attachment *attachment)
+{
+	if (!attachment)
+		return;
+
+	icalattach_unref (attachment->attach);
+
+	if (attachment->temporary_filename) {
+		gchar *sep;
+
+		g_unlink (attachment->temporary_filename);
+
+		sep = strrchr (attachment->temporary_filename, G_DIR_SEPARATOR);
+		if (sep) {
+			*sep = '\0';
+			g_rmdir (attachment->temporary_filename);
+		}
+	}
+
+	g_free (attachment->temporary_filename);
+	g_free (attachment);
+}
+
 /* Frees the internal icalcomponent only if it does not have a parent.  If it
  * does, it means we don't own it and we shouldn't free it.
  */
@@ -255,7 +285,6 @@ static void
 free_icalcomponent (ECalComponent *comp, gboolean free)
 {
 	ECalComponentPrivate *priv;
-	GSList *l;
 
 	priv = comp->priv;
 
@@ -268,20 +297,11 @@ free_icalcomponent (ECalComponent *comp, gboolean free)
 
 	priv->status = NULL;
 
-	for (l = priv->attachment_list; l != NULL; l = l->next) {
-		struct attachment *attachment;
-
-		attachment = l->data;
-
-		icalattach_unref (attachment->attach);
-		g_free (attachment);
-	}
-
+	g_slist_foreach (priv->attachment_list, (GFunc) free_attachment, NULL);
 	g_slist_free (priv->attachment_list);
 	priv->attachment_list = NULL;
 
-	for (l = priv->attendee_list; l != NULL; l = l->next)
-		g_free (l->data);
+	g_slist_foreach (priv->attendee_list, (GFunc) g_free, NULL);
 	g_slist_free (priv->attendee_list);
 	priv->attendee_list = NULL;
 
@@ -503,7 +523,7 @@ scan_attachment (GSList **attachment_list, icalproperty *prop)
 {
 	struct attachment *attachment;
 
-	attachment = g_new (struct attachment, 1);
+	attachment = g_new0 (struct attachment, 1);
 	attachment->prop = prop;
 
 	attachment->attach = icalproperty_get_attach (prop);
@@ -1459,27 +1479,50 @@ e_cal_component_set_uid (ECalComponent *comp, const gchar *uid)
 	icalproperty_set_uid (priv->uid, (gchar *) uid);
 }
 
+static gboolean
+case_contains (const gchar *where, const gchar *what)
+{
+	gchar *lwhere, *lwhat;
+	gboolean res = FALSE;
+
+	if (!where || !what) {
+		return FALSE;
+	}
+
+	lwhere = g_ascii_strdown (where, -1);
+	lwhat = g_ascii_strdown (what, -1);
+
+	res = lwhere && lwhat && strstr (lwhere, lwhat) != NULL;
+
+	g_free (lwhat);
+	g_free (lwhere);
+
+	return res;
+}
+
 /* Gets a text list value */
 static void
-get_attachment_list (GSList *attachment_list, GSList **al)
+get_attachment_list (ECalComponent *comp, GSList *attachment_list, GSList **al)
 {
 	GSList *l;
+	gint index;
 
 	*al = NULL;
 
 	if (!attachment_list)
 		return;
 
-	for (l = attachment_list; l; l = l->next) {
+	for (index = 0, l = attachment_list; l; l = l->next, index++) {
 		struct attachment *attachment;
-		const gchar *data;
-		gsize buf_size;
 		gchar *buf = NULL;
 
 		attachment = l->data;
 		g_return_if_fail (attachment->attach != NULL);
 
 		if (icalattach_get_is_url (attachment->attach)) {
+			const gchar *data;
+			gsize buf_size;
+
 			/* FIXME : this ref count is screwed up
 			 * These structures are being leaked.
 			 */
@@ -1488,10 +1531,75 @@ get_attachment_list (GSList *attachment_list, GSList **al)
 			buf_size = strlen (data);
 			buf = g_malloc0 (buf_size+1);
 			icalvalue_decode_ical_string (data, buf, buf_size);
+		} else if (attachment->prop) {
+			if (!attachment->temporary_filename) {
+				icalparameter *encoding_par = icalproperty_get_first_parameter (attachment->prop, ICAL_ENCODING_PARAMETER);
+				if (encoding_par) {
+					gchar *str_value = icalproperty_get_value_as_string_r (attachment->prop);
+
+					if (str_value) {
+						icalparameter_encoding encoding = icalparameter_get_encoding (encoding_par);
+						guint8 *data = NULL;
+						gsize data_len = 0;
+
+						switch (encoding) {
+						case ICAL_ENCODING_8BIT:
+							data = (guint8 *) str_value;
+							data_len = strlen (str_value);
+							str_value = NULL;
+							break;
+						case ICAL_ENCODING_BASE64:
+							data = g_base64_decode (str_value, &data_len);
+							break;
+						default:
+							break;
+						}
+
+						if (data) {
+							gchar *dir, *id_str;
+							ECalComponentId *id = e_cal_component_get_id (comp);
+
+							id_str = g_strconcat (id ? id->uid : NULL, "-", id ? id->rid : NULL, NULL);
+							dir = g_build_filename (e_get_user_cache_dir (), "tmp", "calendar", id_str, NULL);
+							e_cal_component_free_id (id);
+							g_free (id_str);
+
+							if (g_mkdir_with_parents (dir, 0700) >= 0) {
+								icalparameter *param;
+								gchar *file = NULL;
+
+								for (param = icalproperty_get_first_parameter (attachment->prop, ICAL_X_PARAMETER);
+								     param && !file;
+								     param = icalproperty_get_next_parameter (attachment->prop, ICAL_X_PARAMETER)) {
+									if (case_contains (icalparameter_get_xname (param), "NAME") && icalparameter_get_xvalue (param) && *icalparameter_get_xvalue (param))
+										file = g_strdup (icalparameter_get_xvalue (param));
+								}
+
+								if (!file)
+									file = g_strdup_printf ("%d.dat", index);
+
+								attachment->temporary_filename = g_build_filename (dir, file, NULL);
+								if (!g_file_set_contents (attachment->temporary_filename, (const gchar *) data, data_len, NULL)) {
+									g_free (attachment->temporary_filename);
+									attachment->temporary_filename = NULL;
+								}
+							}
+
+							g_free (dir);
+						}
+
+						g_free (str_value);
+						g_free (data);
+					}
+				}
+			}
+
+			if (attachment->temporary_filename)
+				buf = g_filename_to_uri (attachment->temporary_filename, NULL, NULL);
 		}
-		else
-			data = NULL;
-		*al = g_slist_prepend (*al, (gchar *)buf);
+
+		if (buf)
+			*al = g_slist_prepend (*al, buf);
 	}
 
 	*al = g_slist_reverse (*al);
@@ -1515,9 +1623,7 @@ set_attachment_list (icalcomponent *icalcomp,
 			g_return_if_fail (attachment->attach != NULL);
 
 			icalcomponent_remove_property (icalcomp, attachment->prop);
-			icalproperty_free (attachment->prop);
-			icalattach_unref (attachment->attach);
-			g_free (attachment);
+			free_attachment (attachment);
 		}
 
 		g_slist_free (*attachment_list);
@@ -1564,7 +1670,7 @@ e_cal_component_get_attachment_list (ECalComponent *comp, GSList **attachment_li
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
 
-	get_attachment_list (priv->attachment_list, attachment_list);
+	get_attachment_list (comp, priv->attachment_list, attachment_list);
 }
 
 /**

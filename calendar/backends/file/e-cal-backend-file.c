@@ -2886,16 +2886,20 @@ fetch_attachments (ECalBackendSync *backend, ECalComponent *comp)
 		user_data_dir, "calendar", "system", NULL);
 
 	for (l = attach_list; l; l = l->next) {
-		gchar *sfname = (gchar *)l->data;
+		gchar *sfname = g_filename_from_uri ((const gchar *)l->data, NULL, NULL);
 		gchar *filename, *new_filename;
 		GMappedFile *mapped_file;
 		GError *error = NULL;
 
+		if (!sfname)
+			continue;
+
 		mapped_file = g_mapped_file_new (sfname, FALSE, &error);
 		if (!mapped_file) {
 			g_message ("DEBUG: could not map %s: %s\n",
-				   sfname, error->message);
+				   sfname, error ? error->message : "???");
 			g_error_free (error);
+			g_free (sfname);
 			continue;
 		}
 		filename = g_path_get_basename (sfname);
@@ -2924,6 +2928,7 @@ fetch_attachments (ECalBackendSync *backend, ECalComponent *comp)
 		dest_url = g_filename_to_uri (dest_file, NULL, NULL);
 		g_free (dest_file);
 		new_attach_list = g_slist_append (new_attach_list, dest_url);
+		g_free (sfname);
 	}
 	g_free (attach_store);
 	e_cal_component_set_attachment_list (comp, new_attach_list);
