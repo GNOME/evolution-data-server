@@ -605,7 +605,7 @@ sanitise_group_name (GDataEntry *group)
 }
 
 static void
-process_group (GDataEntry *entry, EBookBackend *backend)
+process_group (GDataEntry *entry, guint entry_key, guint entry_count, EBookBackend *backend)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	const gchar *uid;
@@ -631,44 +631,50 @@ process_group (GDataEntry *entry, EBookBackend *backend)
 	g_free (name);
 }
 
-static gboolean
-get_groups (EBookBackend *backend, GError **error)
+static void
+get_groups_cb (GDataService *service, GAsyncResult *result, EBookBackend *backend)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	GDataFeed *feed;
-	GDataQuery *query;
-	GError *our_error = NULL;
-	GList *groups;
+	GError *gdata_error = NULL;
 
 	__debug__ (G_STRFUNC);
-	g_return_val_if_fail (priv->service && gdata_service_is_authenticated (priv->service), FALSE);
+	feed = gdata_service_query_finish (service, result, &gdata_error);
+	if (__e_book_backend_google_debug__ && feed) {
+		GList *entries = gdata_feed_get_entries (feed);
+		__debug__ ("Group feed has %d entries", g_list_length (entries));
+	}
+	g_object_unref (feed);
+
+	if (!gdata_error) {
+		/* Update the update time */
+		g_get_current_time (&(priv->last_groups_update));
+	}
+
+	g_clear_error (&gdata_error);
+}
+
+static void
+get_groups (EBookBackend *backend)
+{
+	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	GDataQuery *query;
+
+	__debug__ (G_STRFUNC);
+	g_return_if_fail (priv->service && gdata_service_is_authenticated (priv->service));
 
 	/* Build our query */
-	query = GDATA_QUERY (gdata_contacts_query_new (NULL));
+	query = GDATA_QUERY (gdata_contacts_query_new_with_limits (NULL, 0, G_MAXINT));
 	if (priv->last_groups_update.tv_sec != 0 || priv->last_groups_update.tv_usec != 0) {
 		gdata_query_set_updated_min (query, priv->last_groups_update.tv_sec);
 		gdata_contacts_query_set_show_deleted (GDATA_CONTACTS_QUERY (query), TRUE);
 	}
 
-	/* Run the query */
-	feed = gdata_contacts_service_query_groups (GDATA_CONTACTS_SERVICE (priv->service), query, NULL, NULL, NULL, &our_error);
+	/* Run the query asynchronously */
+	gdata_contacts_service_query_groups_async (GDATA_CONTACTS_SERVICE (priv->service), query, NULL, (GDataQueryProgressCallback) process_group,
+	                                           backend, (GAsyncReadyCallback) get_groups_cb, backend);
 
-	if (our_error) {
-		g_propagate_error (error, our_error);
-		return FALSE;
-	}
-
-	groups = gdata_feed_get_entries (feed);
-	__debug__ ("Group feed has %d entries", groups ? g_list_length (groups) : 0);
-
-	/* Process the entries from this page */
-	g_list_foreach (groups, (GFunc) process_group, backend);
-	g_object_unref (feed);
-
-	/* Store the last update time */
-	g_get_current_time (&(priv->last_groups_update));
-
-	return TRUE;
+	g_object_unref (query);
 }
 
 static gchar *
@@ -702,7 +708,7 @@ create_group (EBookBackend *backend, const gchar *category_name, GError **error)
 	return uid;
 }
 
-static gboolean cache_refresh_if_needed (EBookBackend *backend, GError **error);
+static gboolean cache_refresh_if_needed (EBookBackend *backend);
 
 static gboolean
 on_refresh_timeout (EBookBackend *backend)
@@ -713,13 +719,13 @@ on_refresh_timeout (EBookBackend *backend)
 
 	priv->refresh_id = 0;
 	if (priv->live_mode)
-		cache_refresh_if_needed (backend, NULL);
+		cache_refresh_if_needed (backend);
 
 	return FALSE;
 }
 
 static gboolean
-cache_refresh_if_needed (EBookBackend *backend, GError **error)
+cache_refresh_if_needed (EBookBackend *backend)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	guint remaining_secs;
@@ -734,11 +740,9 @@ cache_refresh_if_needed (EBookBackend *backend, GError **error)
 
 	install_timeout = (priv->live_mode && priv->refresh_interval > 0 && 0 == priv->refresh_id);
 
-	if (!get_groups (backend, error))
-		return FALSE;
-
 	if (cache_needs_update (backend, &remaining_secs)) {
 		/* Update the cache asynchronously and schedule a new timeout */
+		get_groups (backend);
 		get_new_contacts (backend);
 		remaining_secs = priv->refresh_interval;
 	}
@@ -1078,7 +1082,7 @@ on_refresh_idle (EBookBackend *backend)
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 
 	priv->idle_id = 0;
-	cache_refresh_if_needed (backend, NULL);
+	cache_refresh_if_needed (backend);
 
 	return FALSE;
 }
@@ -1097,7 +1101,7 @@ set_live_mode (EBookBackend *backend, gboolean live_mode)
 	}
 
 	if (priv->live_mode)
-		cache_refresh_if_needed (backend, NULL);
+		cache_refresh_if_needed (backend);
 }
 
 static void
