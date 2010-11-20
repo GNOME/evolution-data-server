@@ -1023,26 +1023,11 @@ e_book_backend_google_get_contact (EBookBackend *backend, EDataBook *book, guint
 {
 	EContact *contact;
 	gchar *vcard_str;
-	GError *our_error = NULL;
 
 	__debug__ (G_STRFUNC);
 
-	/* Refresh the cache */
-	cache_refresh_if_needed (backend, &our_error);
-
-	if (our_error) {
-		GError *error = NULL;
-		data_book_error_from_gdata_error (&error, our_error);
-		__debug__ ("Getting contact with uid %s failed: %s", uid, our_error->message);
-		g_error_free (our_error);
-
-		e_data_book_respond_get_contact (book, opid, error, NULL);
-		return;
-	}
-
 	/* Get the contact */
 	contact = cache_get_contact (backend, uid, NULL);
-
 	if (!contact) {
 		__debug__ ("Getting contact with uid %s failed: Contact not found in cache.", uid);
 
@@ -1061,23 +1046,9 @@ static void
 e_book_backend_google_get_contact_list (EBookBackend *backend, EDataBook *book, guint32 opid, const gchar *query)
 {
 	EBookBackendSExp *sexp;
-	GError *our_error = NULL;
 	GList *all_contacts, *filtered_contacts = NULL;
 
 	__debug__ (G_STRFUNC);
-
-	/* Refresh the cache */
-	cache_refresh_if_needed (backend, &our_error);
-
-	if (our_error) {
-		GError *error = NULL;
-		data_book_error_from_gdata_error (&error, our_error);
-		__debug__ ("Getting all contacts failed: %s", our_error->message);
-		g_error_free (our_error);
-
-		e_data_book_respond_get_contact_list (book, opid, error, NULL);
-		return;
-	}
 
 	/* Get all contacts */
 	sexp = e_book_backend_sexp_new (query);
@@ -1228,16 +1199,7 @@ authenticate_user_cb (GDataService *service, GAsyncResult *result, AuthenticateU
 	__debug__ (G_STRFUNC);
 
 	/* Finish authenticating */
-	if (!gdata_service_authenticate_finish (service, result, &gdata_error))
-		goto finish;
-
-	/* Update the cache if necessary */
-	cache_refresh_if_needed (data->backend, &gdata_error);
-	if (gdata_error)
-		goto finish;
-
-finish:
-	if (gdata_error) {
+	if (!gdata_service_authenticate_finish (service, result, &gdata_error)) {
 		data_book_error_from_gdata_error (&book_error, gdata_error);
 		__debug__ ("Authentication failed: %s", gdata_error->message);
 		g_error_free (gdata_error);
