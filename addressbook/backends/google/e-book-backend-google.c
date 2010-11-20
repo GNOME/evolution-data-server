@@ -462,7 +462,7 @@ on_sequence_complete (EBookBackend *backend, GError *error)
 }
 
 static void
-process_subsequent_entry (GDataEntry *entry, EBookBackend *backend)
+process_subsequent_entry (GDataEntry *entry, guint entry_key, guint entry_count, EBookBackend *backend)
 {
 	gboolean is_deleted, is_cached;
 	const gchar *uid;
@@ -491,7 +491,7 @@ process_subsequent_entry (GDataEntry *entry, EBookBackend *backend)
 }
 
 static void
-process_initial_entry (GDataEntry *entry, EBookBackend *backend)
+process_initial_entry (GDataEntry *entry, guint entry_key, guint entry_count, EBookBackend *backend)
 {
 	EContact *contact;
 
@@ -502,53 +502,67 @@ process_initial_entry (GDataEntry *entry, EBookBackend *backend)
 	g_object_unref (contact);
 }
 
-static gboolean
-get_new_contacts_in_chunks (EBookBackend *backend, gint chunk_size, GTimeVal *last_updated, GError **error)
+static void
+get_new_contacts_cb (GDataService *service, GAsyncResult *result, EBookBackend *backend)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	GDataFeed *feed;
-	GDataQuery *query;
-	GError *our_error = NULL;
-	gint results;
+	GError *gdata_error = NULL;
 
 	__debug__ (G_STRFUNC);
-	g_return_val_if_fail (priv->service && gdata_service_is_authenticated (priv->service), FALSE);
+	feed = gdata_service_query_finish (service, result, &gdata_error);
+	if (__e_book_backend_google_debug__ && feed) {
+		GList *entries = gdata_feed_get_entries (feed);
+		__debug__ ("Feed has %d entries", g_list_length (entries));
+	}
+	g_object_unref (feed);
+
+	if (!gdata_error) {
+		/* Finish updating the cache */
+		GTimeVal current_time;
+		g_get_current_time (&current_time);
+		cache_set_last_update (backend, &current_time);
+	}
+
+	on_sequence_complete (backend, gdata_error);
+
+	/* Thaw the cache again */
+	cache_thaw (backend);
+
+	g_clear_error (&gdata_error);
+}
+
+static void
+get_new_contacts (EBookBackend *backend)
+{
+	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	gchar *last_updated;
+	GTimeVal updated;
+	GDataQuery *query;
+
+	__debug__ (G_STRFUNC);
+	g_return_if_fail (priv->service && gdata_service_is_authenticated (priv->service));
+
+	/* Sort out update times */
+	last_updated = cache_get_last_update (backend);
+	g_assert (last_updated == NULL || g_time_val_from_iso8601 (last_updated, &updated) == TRUE);
+	g_free (last_updated);
+
+	/* Prevent the cache writing each change to disk individually (thawed in get_new_contacts_cb()) */
+	cache_freeze (backend);
 
 	/* Build our query */
-	query = GDATA_QUERY (gdata_contacts_query_new_with_limits (NULL, 1, chunk_size));
+	query = GDATA_QUERY (gdata_contacts_query_new_with_limits (NULL, 0, G_MAXINT));
 	if (last_updated) {
-		gdata_query_set_updated_min (query, last_updated->tv_sec);
+		gdata_query_set_updated_min (query, updated.tv_sec);
 		gdata_contacts_query_set_show_deleted (GDATA_CONTACTS_QUERY (query), TRUE);
 	}
 
-	/* Get the paginated results */
-	do {
-		GList *entries;
+	/* Query for new contacts asynchronously */
+	gdata_contacts_service_query_contacts_async (GDATA_CONTACTS_SERVICE (priv->service), query, NULL,
+	                                             (GDataQueryProgressCallback) (last_updated ? process_subsequent_entry : process_initial_entry),
+	                                             backend, (GAsyncReadyCallback) get_new_contacts_cb, backend);
 
-		/* Run the query */
-		feed = gdata_contacts_service_query_contacts (GDATA_CONTACTS_SERVICE (priv->service), query, NULL, NULL, NULL, &our_error);
-
-		if (our_error) {
-			g_propagate_error (error, our_error);
-			return FALSE;
-		}
-
-		entries = gdata_feed_get_entries (feed);
-		results = entries ? g_list_length (entries) : 0;
-		__debug__ ("Feed has %d entries", results);
-
-		/* Process the entries from this page */
-		if (last_updated)
-			g_list_foreach (entries, (GFunc) process_subsequent_entry, backend);
-		else
-			g_list_foreach (entries, (GFunc) process_initial_entry, backend);
-		g_object_unref (feed);
-
-		/* Move to the next page */
-		gdata_query_next_page (query);
-	} while (results == chunk_size);
-
-	return TRUE;
+	g_object_unref (query);
 }
 
 static gchar *
@@ -708,9 +722,7 @@ static gboolean
 cache_refresh_if_needed (EBookBackend *backend, GError **error)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
-	GError *child_error = NULL;
 	guint remaining_secs;
-	gint rv;
 	gboolean install_timeout;
 
 	__debug__ (G_STRFUNC);
@@ -722,45 +734,21 @@ cache_refresh_if_needed (EBookBackend *backend, GError **error)
 
 	install_timeout = (priv->live_mode && priv->refresh_interval > 0 && 0 == priv->refresh_id);
 
-	rv = get_groups (backend, error);
-	if (rv == FALSE)
+	if (!get_groups (backend, error))
 		return FALSE;
 
 	if (cache_needs_update (backend, &remaining_secs)) {
-		gchar *last_updated;
-		GTimeVal updated;
-
-		last_updated = cache_get_last_update (backend);
-		g_assert (last_updated == NULL || g_time_val_from_iso8601 (last_updated, &updated) == TRUE);
-		g_free (last_updated);
-
-		cache_freeze (backend);
-
-		rv = get_new_contacts_in_chunks (backend, 32, (last_updated != NULL) ? &updated : NULL, &child_error);
-
-		if (rv == TRUE) {
-			/* Finish updating the cache */
-			GTimeVal current_time;
-			g_get_current_time (&current_time);
-			cache_set_last_update (backend, &current_time);
-		}
-
-		on_sequence_complete (backend, child_error);
-		if (child_error != NULL)
-			g_propagate_error (error, child_error);
-
-		cache_thaw (backend);
-
-		if (install_timeout)
-			priv->refresh_id = g_timeout_add_seconds (priv->refresh_interval, (GSourceFunc) on_refresh_timeout, backend);
-	} else {
-		if (install_timeout) {
-			__debug__ ("Installing timeout with %d seconds", remaining_secs);
-			priv->refresh_id = g_timeout_add_seconds (remaining_secs, (GSourceFunc) on_refresh_timeout, backend);
-		}
+		/* Update the cache asynchronously and schedule a new timeout */
+		get_new_contacts (backend);
+		remaining_secs = priv->refresh_interval;
 	}
 
-	return rv;
+	if (install_timeout) {
+		__debug__ ("Installing timeout with %d seconds", remaining_secs);
+		priv->refresh_id = g_timeout_add_seconds (remaining_secs, (GSourceFunc) on_refresh_timeout, backend);
+	}
+
+	return TRUE;
 }
 
 static void
