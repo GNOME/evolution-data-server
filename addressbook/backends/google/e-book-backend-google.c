@@ -927,15 +927,59 @@ e_book_backend_google_remove_contacts (EBookBackend *backend, EDataBook *book, g
 	g_list_free (ids);
 }
 
+typedef struct {
+	EBookBackend *backend;
+	EDataBook *book;
+	guint32 opid;
+} ModifyContactData;
+
+static void
+modify_contact_cb (GDataService *service, GAsyncResult *result, ModifyContactData *data)
+{
+	GError *gdata_error = NULL;
+	GDataEntry *new_contact;
+	EContact *contact;
+
+	__debug__ (G_STRFUNC);
+
+	new_contact = gdata_service_update_entry_finish (service, result, &gdata_error);
+	if (!new_contact) {
+		GError *book_error = NULL;
+		data_book_error_from_gdata_error (&book_error, gdata_error);
+		__debug__ ("Modifying contact failed: %s", gdata_error->message);
+		g_error_free (gdata_error);
+
+		e_data_book_respond_modify (data->book, data->opid, book_error, NULL);
+		goto finish;
+	}
+
+	/* Output debug XML */
+	if (__e_book_backend_google_debug__) {
+		gchar *xml = gdata_parsable_get_xml (GDATA_PARSABLE (new_contact));
+		__debug__ ("After:\n%s", xml);
+		g_free (xml);
+	}
+
+	/* Add the new entry to the cache */
+	contact = cache_add_contact (data->backend, new_contact);
+	e_data_book_respond_modify (data->book, data->opid, NULL, contact);
+	g_object_unref (contact);
+	g_object_unref (new_contact);
+
+finish:
+	g_object_unref (data->book);
+	g_object_unref (data->backend);
+	g_slice_free (ModifyContactData, data);
+}
+
 static void
 e_book_backend_google_modify_contact (EBookBackend *backend, EDataBook *book, guint32 opid, const gchar *vcard_str)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	EContact *contact, *cached_contact;
-	GError *our_error = NULL;
-	GDataEntry *entry = NULL, *new_entry;
-	gchar *xml;
+	GDataEntry *entry = NULL;
 	const gchar *uid;
+	ModifyContactData *data;
 
 	__debug__ (G_STRFUNC);
 
@@ -970,39 +1014,20 @@ e_book_backend_google_modify_contact (EBookBackend *backend, EDataBook *book, gu
 	g_object_unref (contact);
 
 	/* Output debug XML */
-	xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
-	__debug__ ("Before:\n%s", xml);
-	g_free (xml);
-
-	/* Update the contact on the server */
-	new_entry = gdata_service_update_entry (
-			GDATA_SERVICE (priv->service),
-			entry,
-			NULL, &our_error);
-	g_object_unref (entry);
-
-	if (!new_entry) {
-		GError *error = NULL;
-		data_book_error_from_gdata_error (&error, our_error);
-		__debug__ ("Modifying contact failed: %s", our_error->message);
-		g_error_free (our_error);
-
-		e_data_book_respond_modify (book, opid, error, NULL);
-		return;
+	if (__e_book_backend_google_debug__) {
+		gchar *xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
+		__debug__ ("Before:\n%s", xml);
+		g_free (xml);
 	}
 
-	/* Output debug XML */
-	xml = NULL;
-	if (new_entry)
-		xml = gdata_parsable_get_xml (GDATA_PARSABLE (new_entry));
-	__debug__ ("After:\n%s", xml);
-	g_free (xml);
+	/* Update the contact on the server asynchronously */
+	data = g_slice_new (ModifyContactData);
+	data->backend = g_object_ref (backend);
+	data->book = g_object_ref (book);
+	data->opid = opid;
 
-	/* Add the new entry to the cache */
-	contact = cache_add_contact (backend, new_entry);
-	e_data_book_respond_modify (book, opid, NULL, contact);
-	g_object_unref (contact);
-	g_object_unref (new_entry);
+	gdata_service_update_entry_async (GDATA_SERVICE (priv->service), entry, NULL, (GAsyncReadyCallback) modify_contact_cb, data);
+	g_object_unref (entry);
 }
 
 static void
