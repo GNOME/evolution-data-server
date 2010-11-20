@@ -44,6 +44,7 @@
 #include <libedata-cal/e-cal-backend-sexp.h>
 #include <libedata-cal/e-cal-backend-intervaltree.h>
 #include "e-cal-backend-file-events.h"
+#include "e-source-local.h"
 
 #ifndef O_BINARY
 #define O_BINARY 0
@@ -99,9 +100,6 @@ struct _ECalBackendFilePrivate {
 
 	GList *comp;
 
-	/* a custom filename opened */
-	gchar *custom_file;
-
 	/* guards refresh members */
 	GMutex *refresh_lock;
 	/* set to TRUE to indicate thread should stop */
@@ -113,11 +111,7 @@ struct _ECalBackendFilePrivate {
 	/* increased when backend saves the file */
 	guint refresh_skip;
 
-	/* Monitor for a refresh type "1" */
 	GFileMonitor *refresh_monitor;
-
-	/* timeour id for refresh type "2" */
-	guint refresh_timeout_id;
 
 	/* Just an incremental number to ensure uniqueness across revisions */
 	guint revision_counter;
@@ -361,7 +355,6 @@ e_cal_backend_file_finalize (GObject *object)
 	g_static_rec_mutex_free (&priv->idle_save_rmutex);
 
 	g_free (priv->path);
-	g_free (priv->custom_file);
 	g_free (priv->file_name);
 
 	/* Chain up to parent's finalize() method. */
@@ -866,6 +859,9 @@ uri_to_path (ECalBackend *backend)
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	ESource *source;
+	ESourceLocal *local_extension;
+	GFile *custom_file;
+	const gchar *extension_name;
 	const gchar *cache_dir;
 	gchar *filename = NULL;
 
@@ -875,12 +871,14 @@ uri_to_path (ECalBackend *backend)
 	cache_dir = e_cal_backend_get_cache_dir (backend);
 
 	source = e_backend_get_source (E_BACKEND (backend));
-	if (source && e_source_get_property (source, "custom-file")) {
-		const gchar *property;
 
-		/* custom-uri is with a filename already */
-		property = e_source_get_property (source, "custom-file");
-		filename = g_strdup (property);
+	extension_name = E_SOURCE_EXTENSION_LOCAL_BACKEND;
+	local_extension = e_source_get_extension (source, extension_name);
+
+	custom_file = e_source_local_dup_custom_file (local_extension);
+	if (custom_file != NULL) {
+		filename = g_file_get_path (custom_file);
+		g_object_unref (custom_file);
 	}
 
 	if (filename == NULL)
@@ -899,17 +897,26 @@ refresh_thread_func (gpointer data)
 {
 	ECalBackendFile *cbfile = data;
 	ECalBackendFilePrivate *priv;
-	GFile *file;
+	ESource *source;
+	ESourceLocal *extension;
 	GFileInfo *info;
+	GFile *file;
+	const gchar *extension_name;
 	guint64 last_modified, modified;
 
 	g_return_val_if_fail (cbfile != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_FILE (cbfile), NULL);
 
 	priv = cbfile->priv;
-	g_return_val_if_fail (priv->custom_file != NULL, NULL);
 
-	file = g_file_new_for_path (priv->custom_file);
+	extension_name = E_SOURCE_EXTENSION_LOCAL_BACKEND;
+	source = e_backend_get_source (E_BACKEND (cbfile));
+	extension = e_source_get_extension (source, extension_name);
+
+	/* This returns a newly-created GFile. */
+	file = e_source_local_dup_custom_file (extension);
+	g_return_val_if_fail (G_IS_FILE (file), NULL);
+
 	info = g_file_query_info (
 		file, G_FILE_ATTRIBUTE_TIME_MODIFIED,
 		G_FILE_QUERY_INFO_NONE, NULL, NULL);
@@ -962,19 +969,6 @@ refresh_thread_func (gpointer data)
 	return NULL;
 }
 
-static gboolean
-check_refresh_calendar_timeout (ECalBackendFilePrivate *priv)
-{
-	g_return_val_if_fail (priv != NULL, FALSE);
-
-	/* called in the main thread */
-	if (priv->refresh_cond)
-		g_cond_signal (priv->refresh_cond);
-
-	/* call it next time again */
-	return TRUE;
-}
-
 static void
 custom_file_changed (GFileMonitor *monitor,
                      GFile *file,
@@ -991,7 +985,9 @@ prepare_refresh_data (ECalBackendFile *cbfile)
 {
 	ECalBackendFilePrivate *priv;
 	ESource *source;
-	const gchar *value;
+	ESourceLocal *local_extension;
+	GFile *custom_file;
+	const gchar *extension_name;
 
 	g_return_if_fail (cbfile != NULL);
 
@@ -1003,32 +999,31 @@ prepare_refresh_data (ECalBackendFile *cbfile)
 	priv->refresh_skip = 0;
 
 	source = e_backend_get_source (E_BACKEND (cbfile));
-	value = e_source_get_property (source, "refresh-type");
-	if (e_source_get_property (source, "custom-file") && value && *value && !value[1]) {
-		GFile *file;
+
+	extension_name = E_SOURCE_EXTENSION_LOCAL_BACKEND;
+	local_extension = e_source_get_extension (source, extension_name);
+
+	custom_file = e_source_local_dup_custom_file (local_extension);
+
+	if (custom_file != NULL) {
 		GError *error = NULL;
 
-		switch (*value) {
-		case '1': /* on file change */
-			file = g_file_new_for_path (priv->custom_file);
-			priv->refresh_monitor = g_file_monitor_file (file, G_FILE_MONITOR_WATCH_MOUNTS, NULL, &error);
-			if (file)
-				g_object_unref (file);
-			if (priv->refresh_monitor)
-				g_signal_connect (G_OBJECT (priv->refresh_monitor), "changed", G_CALLBACK (custom_file_changed), priv);
-			break;
-		case '2': /* on refresh timeout */
-			value = e_source_get_property (source, "refresh");
-			if (value && atoi (value) > 0) {
-				priv->refresh_timeout_id = g_timeout_add_seconds (60 * atoi (value), (GSourceFunc) check_refresh_calendar_timeout, priv);
-			}
-			break;
-		default:
-			break;
+		priv->refresh_monitor = g_file_monitor_file (
+			custom_file, G_FILE_MONITOR_WATCH_MOUNTS, NULL, &error);
+
+		if (error == NULL) {
+			g_signal_connect (
+				priv->refresh_monitor, "changed",
+				G_CALLBACK (custom_file_changed), priv);
+		} else {
+			g_warning ("%s", error->message);
+			g_error_free (error);
 		}
+
+		g_object_unref (custom_file);
 	}
 
-	if (priv->refresh_monitor || priv->refresh_timeout_id) {
+	if (priv->refresh_monitor) {
 		priv->refresh_cond = g_cond_new ();
 		priv->refresh_gone_cond = g_cond_new ();
 
@@ -1052,10 +1047,6 @@ free_refresh_data (ECalBackendFile *cbfile)
 	if (priv->refresh_monitor)
 		g_object_unref (priv->refresh_monitor);
 	priv->refresh_monitor = NULL;
-
-	if (priv->refresh_timeout_id)
-		g_source_remove (priv->refresh_timeout_id);
-	priv->refresh_timeout_id = 0;
 
 	if (priv->refresh_cond) {
 		priv->refresh_thread_stop = TRUE;
@@ -1105,8 +1096,6 @@ open_cal (ECalBackendFile *cbfile,
 
 	priv->icalcomp = icalcomp;
 	priv->path = uri_to_path (E_CAL_BACKEND (cbfile));
-	g_free (priv->custom_file);
-	priv->custom_file = g_strdup (uristr);
 
 	priv->comp_uid_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_object_data);
 	priv->interval_tree = e_intervaltree_new ();
@@ -1292,8 +1281,6 @@ create_cal (ECalBackendFile *cbfile,
 
 	save (cbfile, TRUE);
 
-	g_free (priv->custom_file);
-	priv->custom_file = g_strdup (uristr);
 	prepare_refresh_data (cbfile);
 }
 
@@ -1313,37 +1300,37 @@ static void
 source_changed_cb (ESource *source,
                    ECalBackend *backend)
 {
-	const gchar *value;
+	ECalBackendFile *cbfile;
+	ESourceLocal *extension;
+	const gchar *extension_name;
+	gboolean read_only;
 
 	g_return_if_fail (source != NULL);
-	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
-	value = e_source_get_property (source, "custom-file");
-	if (value && *value) {
-		ECalBackendFile *cbfile;
-		gboolean forced_readonly;
+	cbfile = E_CAL_BACKEND_FILE (backend);
 
-		cbfile = E_CAL_BACKEND_FILE (backend);
-		g_return_if_fail (cbfile != NULL);
+	extension_name = E_SOURCE_EXTENSION_LOCAL_BACKEND;
+	extension = e_source_get_extension (source, extension_name);
 
-		value = e_source_get_property (source, "custom-file-readonly");
-		forced_readonly = value && g_str_equal (value, "1");
+	if (e_source_local_get_custom_file (extension) == NULL)
+		return;
 
-		if ((forced_readonly != FALSE) != (cbfile->priv->read_only != FALSE)) {
-			cbfile->priv->read_only = forced_readonly;
-			if (!forced_readonly) {
-				gchar *str_uri = get_uri_string (backend);
+	read_only = !e_source_get_writable (source);
 
-				g_return_if_fail (str_uri != NULL);
+	if (read_only != cbfile->priv->read_only) {
+		cbfile->priv->read_only = read_only;
+		if (e_source_get_writable (source)) {
+			gchar *str_uri = get_uri_string (backend);
 
-				cbfile->priv->read_only = g_access (str_uri, W_OK) != 0;
+			g_return_if_fail (str_uri != NULL);
 
-				g_free (str_uri);
-			}
+			cbfile->priv->read_only = g_access (str_uri, W_OK) != 0;
 
-			e_cal_backend_notify_readonly (backend, cbfile->priv->read_only);
+			g_free (str_uri);
 		}
+
+		e_cal_backend_notify_readonly (backend, cbfile->priv->read_only);
 	}
 }
 
@@ -1398,7 +1385,7 @@ e_cal_backend_file_open (ECalBackendSync *backend,
 				source, "changed",
 				G_CALLBACK (source_changed_cb), backend);
 
-			if (e_source_get_property (source, "custom-file-readonly") && g_str_equal (e_source_get_property (source, "custom-file-readonly"), "1"))
+			if (!e_source_get_writable (source))
 				priv->read_only = TRUE;
 		}
 	}
@@ -1424,9 +1411,11 @@ e_cal_backend_file_remove (ECalBackendSync *backend,
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
+	ESourceLocal *extension;
 	ESource *source;
 	gchar *str_uri = NULL, *dirname = NULL;
 	gchar *full_path = NULL;
+	const gchar *extension_name;
 	const gchar *fname;
 	GDir *dir = NULL;
 	GError *local_error = NULL;
@@ -1442,8 +1431,11 @@ e_cal_backend_file_remove (ECalBackendSync *backend,
 		goto done;
 	}
 
+	extension_name = E_SOURCE_EXTENSION_LOCAL_BACKEND;
 	source = e_backend_get_source (E_BACKEND (backend));
-	if (!source || e_source_get_property (source, "custom-file")) {
+	extension = e_source_get_extension (source, extension_name);
+
+	if (e_source_local_get_custom_file (extension) != NULL) {
 		/* skip file and directory removal for custom calendars */
 		goto done;
 	}
@@ -2120,6 +2112,7 @@ e_cal_backend_file_get_free_busy (ECalBackendSync *backend,
                                   GSList **freebusy,
                                   GError **error)
 {
+	ESourceRegistry *registry;
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	gchar *address, *name;
@@ -2138,8 +2131,10 @@ e_cal_backend_file_get_free_busy (ECalBackendSync *backend,
 
 	*freebusy = NULL;
 
+	registry = e_cal_backend_get_registry (E_CAL_BACKEND (backend));
+
 	if (users == NULL) {
-		if (e_cal_backend_mail_account_get_default (&address, &name)) {
+		if (e_cal_backend_mail_account_get_default (registry, &address, &name)) {
 			vfb = create_user_free_busy (cbfile, address, name, start, end);
 			calobj = icalcomponent_as_ical_string_r (vfb);
 			*freebusy = g_slist_append (*freebusy, calobj);
@@ -2150,7 +2145,7 @@ e_cal_backend_file_get_free_busy (ECalBackendSync *backend,
 	} else {
 		for (l = users; l != NULL; l = l->next ) {
 			address = l->data;
-			if (e_cal_backend_mail_account_is_valid (address, &name)) {
+			if (e_cal_backend_mail_account_is_valid (registry, address, &name)) {
 				vfb = create_user_free_busy (cbfile, address, name, start, end);
 				calobj = icalcomponent_as_ical_string_r (vfb);
 				*freebusy = g_slist_append (*freebusy, calobj);
@@ -3141,6 +3136,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
                                     const gchar *calobj,
                                     GError **error)
 {
+	ESourceRegistry *registry;
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	icalcomponent *toplevel_comp, *icalcomp = NULL;
@@ -3167,6 +3163,8 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 	}
 
 	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+
+	registry = e_cal_backend_get_registry (E_CAL_BACKEND (backend));
 
 	kind = icalcomponent_isa (toplevel_comp);
 	if (kind != ICAL_VCALENDAR_COMPONENT) {
@@ -3275,7 +3273,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 		case ICAL_METHOD_PUBLISH:
 		case ICAL_METHOD_REQUEST:
 		case ICAL_METHOD_REPLY:
-			is_declined = e_cal_backend_user_declined (subcomp);
+			is_declined = e_cal_backend_user_declined (registry, subcomp);
 
 			/* handle attachments */
 			if (!is_declined && e_cal_component_has_attachments (comp))
@@ -3449,12 +3447,13 @@ static void
 cal_backend_file_constructed (GObject *object)
 {
 	ECalBackend *backend;
+	ESourceRegistry *registry;
+	ESource *builtin_source;
 	ESource *source;
 	icalcomponent_kind kind;
-	const gchar *source_dir;
 	const gchar *user_data_dir;
 	const gchar *component_type;
-	gchar *mangled_source_dir;
+	const gchar *uid;
 	gchar *filename;
 
 	user_data_dir = e_get_user_data_dir ();
@@ -3467,36 +3466,45 @@ cal_backend_file_constructed (GObject *object)
 	backend = E_CAL_BACKEND (object);
 	kind = e_cal_backend_get_kind (backend);
 	source = e_backend_get_source (E_BACKEND (backend));
+	registry = e_cal_backend_get_registry (E_CAL_BACKEND (backend));
+
+	uid = e_source_get_uid (source);
+	g_return_if_fail (uid != NULL);
 
 	switch (kind) {
 		case ICAL_VEVENT_COMPONENT:
 			component_type = "calendar";
+			builtin_source = e_source_registry_ref_builtin_calendar (registry);
 			break;
 		case ICAL_VTODO_COMPONENT:
 			component_type = "tasks";
+			builtin_source = e_source_registry_ref_builtin_task_list (registry);
 			break;
 		case ICAL_VJOURNAL_COMPONENT:
 			component_type = "memos";
+			builtin_source = e_source_registry_ref_builtin_memo_list (registry);
 			break;
 		default:
 			g_warn_if_reached ();
 			component_type = "calendar";
+			builtin_source = e_source_registry_ref_builtin_calendar (registry);
 			break;
 	}
 
-	source_dir = e_source_peek_relative_uri (source);
-	if (!source_dir || !g_str_equal (source_dir, "system"))
-		source_dir = e_source_get_uid (source);
+	/* XXX Backward-compatibility hack:
+	 *
+	 * The special built-in "Personal" data source UIDs are now named
+	 * "system-$COMPONENT" but since the data directories are already
+	 * split out by component, we'll continue to use the old "system"
+	 * directories for these particular data sources. */
+	if (e_source_equal (source, builtin_source))
+		uid = "system";
 
-	/* Mangle the URI to not contain invalid characters. */
-	mangled_source_dir = g_strdelimit (g_strdup (source_dir), ":/", '_');
-
-	filename = g_build_filename (
-		user_data_dir, component_type, mangled_source_dir, NULL);
+	filename = g_build_filename (user_data_dir, component_type, uid, NULL);
 	e_cal_backend_set_cache_dir (backend, filename);
 	g_free (filename);
 
-	g_free (mangled_source_dir);
+	g_object_unref (builtin_source);
 }
 
 /* Class initialization function for the file backend */
@@ -3533,6 +3541,9 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 
 	backend_class->start_view		= e_cal_backend_file_start_view;
 	backend_class->internal_get_timezone	= e_cal_backend_file_internal_get_timezone;
+
+	/* Register our ESource extension. */
+	E_TYPE_SOURCE_LOCAL;
 }
 
 void
@@ -3601,7 +3612,7 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile,
 
 		source = e_backend_get_source (E_BACKEND (cbfile));
 
-		if (e_source_get_property (source, "custom-file-readonly") && g_str_equal (e_source_get_property (source, "custom-file-readonly"), "1"))
+		if (!e_source_get_writable (source))
 			priv->read_only = TRUE;
 	}
   done:

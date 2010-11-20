@@ -22,7 +22,9 @@ libecalbackendfile_la_SOURCES =		\
 	e-cal-backend-file-todos.c	\
 	e-cal-backend-file-todos.h	\
 	e-cal-backend-file.c		\
-	e-cal-backend-file.h
+	e-cal-backend-file.h		\
+	e-source-local.c		\
+	e-source-local.h
 
 libecalbackendfile_la_LIBADD =						\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
@@ -36,7 +38,10 @@ libecalbackendfile_la_LDFLAGS =		\
 	$(CODE_COVERAGE_LDFLAGS) \
 	$(NULL)
 
-test_interval_searches_SOURCES = e-cal-backend-file.c
+test_interval_searches_SOURCES =	\
+	e-cal-backend-file.c		\
+	e-source-local.c		\
+	e-source-local.h
 
 test_interval_searches_LDADD = \
 	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
