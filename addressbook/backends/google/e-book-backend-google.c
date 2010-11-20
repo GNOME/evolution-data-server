@@ -512,7 +512,7 @@ get_new_contacts_in_chunks (EBookBackend *backend, gint chunk_size, GTimeVal *la
 	gint results;
 
 	__debug__ (G_STRFUNC);
-	g_return_val_if_fail (priv->service, FALSE);
+	g_return_val_if_fail (priv->service && gdata_service_is_authenticated (priv->service), FALSE);
 
 	/* Build our query */
 	query = GDATA_QUERY (gdata_contacts_query_new_with_limits (NULL, 1, chunk_size));
@@ -627,7 +627,7 @@ get_groups (EBookBackend *backend, GError **error)
 	GList *groups;
 
 	__debug__ (G_STRFUNC);
-	g_return_val_if_fail (priv->service, FALSE);
+	g_return_val_if_fail (priv->service && gdata_service_is_authenticated (priv->service), FALSE);
 
 	/* Build our query */
 	query = GDATA_QUERY (gdata_contacts_query_new (NULL));
@@ -715,7 +715,7 @@ cache_refresh_if_needed (EBookBackend *backend, GError **error)
 
 	__debug__ (G_STRFUNC);
 
-	if (priv->offline || !priv->service) {
+	if (priv->offline || !priv->service || !gdata_service_is_authenticated (priv->service)) {
 		__debug__ ("We are not connected to Google%s.", priv->offline ? " (offline mode)" : "");
 		return TRUE;
 	}
@@ -841,7 +841,7 @@ e_book_backend_google_create_contact (EBookBackend *backend, EDataBook *book, gu
 		return;
 	}
 
-	g_return_if_fail (priv->service);
+	g_return_if_fail (priv->service && gdata_service_is_authenticated (priv->service));
 
 	/* Build the GDataEntry from the vCard */
 	contact = e_contact_new_from_vcard (vcard_str);
@@ -879,7 +879,7 @@ e_book_backend_google_remove_contacts (EBookBackend *backend, EDataBook *book, g
 		return;
 	}
 
-	g_return_if_fail (priv->service);
+	g_return_if_fail (priv->service && gdata_service_is_authenticated (priv->service));
 
 	for (id_iter = id_list; id_iter; id_iter = id_iter->next) {
 		GError *our_error = NULL;
@@ -990,7 +990,7 @@ e_book_backend_google_modify_contact (EBookBackend *backend, EDataBook *book, gu
 		return;
 	}
 
-	g_return_if_fail (priv->service);
+	g_return_if_fail (priv->service && gdata_service_is_authenticated (priv->service));
 
 	/* Get the new contact and its UID */
 	contact = e_contact_new_from_vcard (vcard_str);
@@ -1162,7 +1162,7 @@ e_book_backend_google_start_book_view (EBookBackend *backend, EDataBookView *boo
 
 	/* Update the cache if necessary */
 	if (cache_needs_update (backend, NULL)) {
-		if (!priv->service) {
+		if (!priv->service || !gdata_service_is_authenticated (priv->service)) {
 			/* We need authorization first */
 			e_book_backend_notify_auth_required (backend);
 		} else {
@@ -1240,7 +1240,7 @@ e_book_backend_google_authenticate_user (EBookBackend *backend, EDataBook *book,
 		return;
 	}
 
-	if (priv->service) {
+	if (priv->service && gdata_service_is_authenticated (priv->service)) {
 		g_warning ("Connection to Google already established.");
 		e_book_backend_notify_writable (backend, TRUE);
 		e_data_book_respond_authenticate_user (book, opid, NULL);
@@ -1260,13 +1260,16 @@ e_book_backend_google_authenticate_user (EBookBackend *backend, EDataBook *book,
 	}
 
 	/* Set up the service and proxy */
-	priv->service = GDATA_SERVICE (gdata_contacts_service_new ("evolution-client-0.1.0"));
+	if (!priv->service)
+		priv->service = GDATA_SERVICE (gdata_contacts_service_new ("evolution-client-0.1.0"));
 
-	priv->proxy = e_proxy_new ();
-	e_proxy_setup_proxy (priv->proxy);
+	if (!priv->proxy) {
+		priv->proxy = e_proxy_new ();
+		e_proxy_setup_proxy (priv->proxy);
 
-	proxy_settings_changed (priv->proxy, backend);
-	g_signal_connect (priv->proxy, "changed", G_CALLBACK (proxy_settings_changed), backend);
+		proxy_settings_changed (priv->proxy, backend);
+		g_signal_connect (priv->proxy, "changed", G_CALLBACK (proxy_settings_changed), backend);
+	}
 
 	/* Authenticate with the server */
 	if (!gdata_service_authenticate (priv->service, priv->username, password, NULL, &our_error)) {
