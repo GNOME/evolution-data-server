@@ -784,14 +784,53 @@ cache_destroy (EBookBackend *backend)
 	priv->cache_type = NO_CACHE;
 }
 
+typedef struct {
+	EBookBackend *backend;
+	EDataBook *book;
+	guint32 opid;
+} CreateContactData;
+
+static void
+create_contact_cb (GDataService *service, GAsyncResult *result, CreateContactData *data)
+{
+	GError *gdata_error = NULL;
+	GDataEntry *new_contact;
+	EContact *contact;
+
+	__debug__ (G_STRFUNC);
+
+	new_contact = gdata_service_insert_entry_finish (service, result, &gdata_error);
+
+	if (!new_contact) {
+		GError *book_error = NULL;
+		data_book_error_from_gdata_error (&book_error, gdata_error);
+		__debug__ ("Creating contact failed: %s", gdata_error->message);
+		g_error_free (gdata_error);
+
+		e_data_book_respond_create (data->book, data->opid, book_error, NULL);
+		goto finish;
+	}
+
+	/* Add the new contact to the cache */
+	contact = cache_add_contact (data->backend, new_contact);
+	e_data_book_respond_create (data->book, data->opid, NULL, contact);
+	g_object_unref (contact);
+	g_object_unref (new_contact);
+
+finish:
+	g_object_unref (data->book);
+	g_object_unref (data->backend);
+	g_slice_free (CreateContactData, data);
+}
+
 static void
 e_book_backend_google_create_contact (EBookBackend *backend, EDataBook *book, guint32 opid, const gchar *vcard_str)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	EContact *contact;
-	GError *our_error = NULL;
-	GDataEntry *entry, *new_entry;
+	GDataEntry *entry;
 	gchar *xml;
+	CreateContactData *data;
 
 	__debug__ (G_STRFUNC);
 
@@ -814,29 +853,15 @@ e_book_backend_google_create_contact (EBookBackend *backend, EDataBook *book, gu
 	__debug__ ("new entry with xml: %s", xml);
 	g_free (xml);
 
-	/* Insert the entry on the server */
-	new_entry = GDATA_ENTRY (
-		gdata_contacts_service_insert_contact (
-			GDATA_CONTACTS_SERVICE (priv->service),
-			GDATA_CONTACTS_CONTACT (entry),
-			NULL, &our_error));
+	/* Insert the entry on the server asynchronously */
+	data = g_slice_new (CreateContactData);
+	data->backend = g_object_ref (backend);
+	data->book = g_object_ref (book);
+	data->opid = opid;
+
+	gdata_contacts_service_insert_contact_async (GDATA_CONTACTS_SERVICE (priv->service), GDATA_CONTACTS_CONTACT (entry), NULL,
+	                                             (GAsyncReadyCallback) create_contact_cb, data);
 	g_object_unref (entry);
-
-	if (!new_entry) {
-		GError *error = NULL;
-		data_book_error_from_gdata_error (&error, our_error);
-		__debug__ ("Creating contact failed: %s", our_error->message);
-		g_error_free (our_error);
-
-		e_data_book_respond_create (book, opid, error, NULL);
-		return;
-	}
-
-	/* Add the new contact to the cache */
-	contact = cache_add_contact (backend, new_entry);
-	e_data_book_respond_create (book, opid, NULL, contact);
-	g_object_unref (contact);
-	g_object_unref (new_entry);
 }
 
 static void
