@@ -22,7 +22,7 @@
 #ifndef __E_BOOK_BACKEND_GOOGLE_H__
 #define __E_BOOK_BACKEND_GOOGLE_H__
 
-#include <libedata-book/e-book-backend-sync.h>
+#include <libedata-book/e-book-backend.h>
 
 #define E_TYPE_BOOK_BACKEND_GOOGLE         (e_book_backend_google_get_type ())
 #define E_BOOK_BACKEND_GOOGLE(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BOOK_BACKEND_GOOGLE, EBookBackendGoogle))
@@ -36,12 +36,12 @@ typedef struct _EBookBackendGoogleClass   EBookBackendGoogleClass;
 typedef struct _EBookBackendGooglePrivate EBookBackendGooglePrivate;
 
 struct _EBookBackendGoogle {
-	EBookBackendSync parent_object;
+	EBookBackend parent_object;
 	EBookBackendGooglePrivate *priv;
 };
 
 struct _EBookBackendGoogleClass {
-	EBookBackendSyncClass parent_class;
+	EBookBackendClass parent_class;
 };
 
 EBookBackend *e_book_backend_google_new (void);
