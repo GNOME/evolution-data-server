@@ -2767,7 +2767,7 @@ gdata_gd_postal_address_from_attribute (EVCardAttribute *attr, gboolean *have_pr
 	GList *values;
 
 	values = e_vcard_attribute_get_values (attr);
-	if (values) {
+	if (values && values->data && *((gchar *) values->data) != '\0') {
 		GList *types, *value;
 		gchar *rel;
 		const gchar *label;
@@ -2791,8 +2791,6 @@ gdata_gd_postal_address_from_attribute (EVCardAttribute *attr, gboolean *have_pr
 
 		/* Set the components of the address from the vCard's attribute values */
 		value = values;
-		if (!value)
-			return address;
 		gdata_gd_postal_address_set_po_box (address, (*((gchar *) value->data) != '\0') ? value->data : NULL);
 		value = value->next;
 		if (!value)
