@@ -1225,13 +1225,51 @@ proxy_settings_changed (EProxy *proxy, EBookBackend *backend)
 	g_free (uri);
 }
 
+typedef struct {
+	EBookBackend *backend;
+	EDataBook *book;
+	guint32 opid;
+} AuthenticateUserData;
+
+static void
+authenticate_user_cb (GDataService *service, GAsyncResult *result, AuthenticateUserData *data)
+{
+	GError *gdata_error = NULL;
+	GError *book_error = NULL;
+
+	__debug__ (G_STRFUNC);
+
+	/* Finish authenticating */
+	if (!gdata_service_authenticate_finish (service, result, &gdata_error))
+		goto finish;
+
+	/* Update the cache if necessary */
+	cache_refresh_if_needed (data->backend, &gdata_error);
+	if (gdata_error)
+		goto finish;
+
+finish:
+	if (gdata_error) {
+		data_book_error_from_gdata_error (&book_error, gdata_error);
+		__debug__ ("Authentication failed: %s", gdata_error->message);
+		g_error_free (gdata_error);
+	}
+
+	e_book_backend_notify_writable (data->backend, (!gdata_error) ? TRUE : FALSE);
+	e_data_book_respond_authenticate_user (data->book, data->opid, book_error);
+
+	g_object_unref (data->book);
+	g_object_unref (data->backend);
+	g_slice_free (AuthenticateUserData, data);
+}
+
 static void
 e_book_backend_google_authenticate_user (EBookBackend *backend, EDataBook *book, guint32 opid,
                                          const gchar *username, const gchar *password, const gchar *auth_method)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
-	GError *our_error = NULL;
 	gboolean match;
+	AuthenticateUserData *data;
 
 	__debug__ (G_STRFUNC);
 
@@ -1271,39 +1309,13 @@ e_book_backend_google_authenticate_user (EBookBackend *backend, EDataBook *book,
 		g_signal_connect (priv->proxy, "changed", G_CALLBACK (proxy_settings_changed), backend);
 	}
 
-	/* Authenticate with the server */
-	if (!gdata_service_authenticate (priv->service, priv->username, password, NULL, &our_error)) {
-		GError *error = NULL;
+	/* Authenticate with the server asynchronously */
+	data = g_slice_new (AuthenticateUserData);
+	data->backend = g_object_ref (backend);
+	data->book = g_object_ref (book);
+	data->opid = opid;
 
-		g_object_unref (priv->service);
-		priv->service = NULL;
-		g_object_unref (priv->proxy);
-		priv->proxy = NULL;
-
-		data_book_error_from_gdata_error (&error, our_error);
-		__debug__ ("Authentication failed: %s", our_error->message);
-		g_error_free (our_error);
-
-		e_data_book_respond_authenticate_user (book, opid, error);
-		return;
-	}
-
-	/* Update the cache if neccessary */
-	cache_refresh_if_needed (backend, &our_error);
-
-	if (our_error) {
-		GError *error = NULL;
-
-		data_book_error_from_gdata_error (&error, our_error);
-		__debug__ ("Authentication failed: %s", our_error->message);
-		g_error_free (our_error);
-
-		e_data_book_respond_authenticate_user (book, opid, error);
-		return;
-	}
-
-	e_book_backend_notify_writable (backend, TRUE);
-	e_data_book_respond_authenticate_user (book, opid, NULL);
+	gdata_service_authenticate_async (priv->service, priv->username, password, NULL, (GAsyncReadyCallback) authenticate_user_cb, data);
 }
 
 static void
