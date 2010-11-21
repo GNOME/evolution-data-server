@@ -71,7 +71,6 @@ struct _EBookBackendGooglePrivate {
 	/* Time when the groups were last queried */
 	GTimeVal last_groups_update;
 
-	gboolean offline;
 	GDataService *service;
 	EProxy *proxy;
 	guint refresh_interval;
@@ -372,7 +371,7 @@ cache_needs_update (EBookBackend *backend, guint *remaining_secs)
 		*remaining_secs = G_MAXUINT;
 
 	/* We never want to update in offline mode */
-	if (priv->offline)
+	if (priv->mode != E_DATA_BOOK_MODE_REMOTE)
 		return FALSE;
 
 	rv = cache_get_last_update_tv (backend, &last);
@@ -769,8 +768,8 @@ cache_refresh_if_needed (EBookBackend *backend)
 
 	__debug__ (G_STRFUNC);
 
-	if (priv->offline || !priv->service || !gdata_service_is_authenticated (priv->service)) {
-		__debug__ ("We are not connected to Google%s.", priv->offline ? " (offline mode)" : "");
+	if (priv->mode != E_DATA_BOOK_MODE_REMOTE || !priv->service || !gdata_service_is_authenticated (priv->service)) {
+		__debug__ ("We are not connected to Google%s.", (priv->mode != E_DATA_BOOK_MODE_REMOTE) ? " (offline mode)" : "");
 		return TRUE;
 	}
 
@@ -1308,7 +1307,9 @@ e_book_backend_google_authenticate_user (EBookBackend *backend, EDataBook *book,
 	__debug__ (G_STRFUNC);
 
 	if (priv->mode != E_DATA_BOOK_MODE_REMOTE) {
-		e_data_book_respond_authenticate_user (book, opid, EDB_ERROR (OFFLINE_UNAVAILABLE));
+		e_book_backend_notify_writable (backend, FALSE);
+		e_book_backend_notify_connection_status (backend, FALSE);
+		e_data_book_respond_authenticate_user (book, opid, EDB_ERROR (SUCCESS));
 		return;
 	}
 
@@ -1501,36 +1502,6 @@ e_book_backend_google_remove (EBookBackend *backend, EDataBook *book, guint32 op
 	e_data_book_respond_remove (book, opid, NULL);
 }
 
-static void e_book_backend_google_cancel_operation (EBookBackend *backend, EDataBook *book, GError **error);
-
-static void
-set_offline_mode (EBookBackend *backend, gboolean offline)
-{
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
-
-	__debug__ (G_STRFUNC);
-
-	priv->offline = offline;
-
-	if (offline) {
-		/* Cancel all running operations */
-		e_book_backend_google_cancel_operation (backend, NULL, NULL);
-
-		/* Going offline, so we can free our service and proxy */
-		if (priv->service)
-			g_object_unref (priv->service);
-		priv->service = NULL;
-
-		if (priv->proxy)
-			g_object_unref (priv->proxy);
-		priv->proxy = NULL;
-	} else {
-		/* Going online, so we need to re-authenticate and re-create the service and proxy.
-		 * This is done in e_book_backend_google_authenticate_user() when it gets the authentication data. */
-		e_book_backend_notify_auth_required (backend);
-	}
-}
-
 static void
 e_book_backend_google_load_source (EBookBackend *backend, ESource *source, gboolean only_if_exists, GError **error)
 {
@@ -1581,9 +1552,14 @@ e_book_backend_google_load_source (EBookBackend *backend, ESource *source, gbool
 
 	/* Set up ready to be interacted with */
 	e_book_backend_set_is_loaded (backend, TRUE);
-	e_book_backend_notify_connection_status (backend, TRUE);
 	e_book_backend_set_is_writable (backend, FALSE);
-	set_offline_mode (backend, (priv->mode == E_DATA_BOOK_MODE_LOCAL));
+	e_book_backend_notify_connection_status (backend, (priv->mode == E_DATA_BOOK_MODE_REMOTE) ? TRUE : FALSE);
+
+	if (priv->mode == E_DATA_BOOK_MODE_REMOTE) {
+		/* We're going online, so we need to authenticate and create the service and proxy.
+		 * This is done in e_book_backend_google_authenticate_user() when it gets the authentication data. */
+		e_book_backend_notify_auth_required (backend);
+	}
 }
 
 static gchar *
@@ -1623,13 +1599,29 @@ e_book_backend_google_set_mode (EBookBackend *backend, EDataBookMode mode)
 
 	priv->mode = mode;
 
-	set_offline_mode (backend, !online);
 	e_book_backend_notify_connection_status (backend, online);
 
-	/* Mark the book as unwriteable if we're going offline, but don't do the inverse when we go online;
-	 * e_book_backend_google_authenticate_user() will mark us as writeable again once the user's authenticated again. */
-	if (!online)
+	if (online) {
+		/* Going online, so we need to re-authenticate and re-create the service and proxy.
+		 * This is done in e_book_backend_google_authenticate_user() when it gets the authentication data. */
+		e_book_backend_notify_auth_required (backend);
+	} else {
+		/* Going offline, so cancel all running operations */
+		e_book_backend_google_cancel_operation (backend, NULL, NULL);
+
+		/* Mark the book as unwriteable if we're going offline, but don't do the inverse when we go online;
+		 * e_book_backend_google_authenticate_user() will mark us as writeable again once the user's authenticated again. */
 		e_book_backend_notify_writable (backend, FALSE);
+
+		/* We can free our service and proxy */
+		if (priv->service)
+			g_object_unref (priv->service);
+		priv->service = NULL;
+
+		if (priv->proxy)
+			g_object_unref (priv->proxy);
+		priv->proxy = NULL;
+	}
 }
 
 static void
