@@ -1197,7 +1197,7 @@ e_book_backend_google_start_book_view (EBookBackend *backend, EDataBookView *boo
 	priv->bookviews = g_list_append (priv->bookviews, bookview);
 
 	e_data_book_view_ref (bookview);
-	e_data_book_view_notify_status_message (bookview, "Loading...");
+	e_data_book_view_notify_status_message (bookview, _("Loading…"));
 
 	/* Ensure that we're ready to support a view */
 	set_live_mode (backend, TRUE);
