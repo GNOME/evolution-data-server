@@ -896,13 +896,56 @@ e_book_backend_google_create_contact (EBookBackend *backend, EDataBook *book, gu
 	g_object_unref (entry);
 }
 
+typedef struct {
+	EBookBackend *backend;
+	EDataBook *book;
+	guint32 opid;
+	gchar *uid;
+} RemoveContactData;
+
+static void
+remove_contact_cb (GDataService *service, GAsyncResult *result, RemoveContactData *data)
+{
+	GError *gdata_error = NULL;
+	gboolean success;
+	GList *ids;
+
+	__debug__ (G_STRFUNC);
+
+	success = gdata_service_delete_entry_finish (service, result, &gdata_error);
+	finish_operation (data->backend, data->opid);
+
+	if (!success) {
+		GError *book_error = NULL;
+		data_book_error_from_gdata_error (&book_error, gdata_error);
+		__debug__ ("Deleting contact %s failed: %s", data->uid, gdata_error->message);
+		g_error_free (gdata_error);
+
+		e_data_book_respond_remove_contacts (data->book, data->opid, book_error, NULL);
+		goto finish;
+	}
+
+	/* List the entry's ID in the success list */
+	ids = g_list_prepend (NULL, data->uid);
+	e_data_book_respond_remove_contacts (data->book, data->opid, NULL, ids);
+	g_list_free (ids);
+
+finish:
+	g_free (data->uid);
+	g_object_unref (data->book);
+	g_object_unref (data->backend);
+	g_slice_free (RemoveContactData, data);
+}
+
 static void
 e_book_backend_google_remove_contacts (EBookBackend *backend, EDataBook *book, guint32 opid, GList *id_list)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
-	GList *id_iter;
-	GError *error = NULL;
-	GList *ids = NULL;
+	const gchar *uid = id_list->data;
+	GDataEntry *entry = NULL;
+	EContact *cached_contact;
+	GCancellable *cancellable;
+	RemoveContactData *data;
 
 	__debug__ (G_STRFUNC);
 
@@ -913,50 +956,36 @@ e_book_backend_google_remove_contacts (EBookBackend *backend, EDataBook *book, g
 
 	g_return_if_fail (priv->service && gdata_service_is_authenticated (priv->service));
 
-	for (id_iter = id_list; id_iter; id_iter = id_iter->next) {
-		GError *our_error = NULL;
-		const gchar *uid;
-		GDataEntry *entry = NULL;
-		EContact *cached_contact;
+	/* We make the assumption that the ID list we're passed is always exactly one element long, since we haven't specified "bulk-removes"
+	 * in our static capability list. This simplifies a lot of the logic, especially around asynchronous results. */
+	g_return_if_fail (!id_list->next);
 
-		/* Get the contact and associated GDataEntry from the cache */
-		uid = id_iter->data;
-		cached_contact = cache_get_contact (backend, uid, &entry);
+	/* Get the contact and associated GDataEntry from the cache */
+	cached_contact = cache_get_contact (backend, uid, &entry);
 
-		if (!cached_contact) {
-			/* Only the last error will be reported */
-			g_clear_error (&error);
-			error = EDB_ERROR (CONTACT_NOT_FOUND);
-			__debug__ ("Deleting contact %s failed: Contact not found in cache.", uid);
+	if (!cached_contact) {
+		__debug__ ("Deleting contact %s failed: Contact not found in cache.", uid);
 
-			continue;
-		}
-
-		g_object_unref (cached_contact);
-
-		/* Remove the contact from the cache */
-		cache_remove_contact (backend, uid);
-
-		/* Delete the contact from the server */
-		if (!gdata_service_delete_entry (GDATA_SERVICE (priv->service), entry, NULL, &our_error)) {
-			/* Only last error will be reported */
-			data_book_error_from_gdata_error (&error, our_error);
-			__debug__ ("Deleting contact %s failed: %s", uid, our_error->message);
-			g_error_free (our_error);
-		} else {
-			/* Success! */
-			ids = g_list_append (ids, g_strdup (uid));
-		}
-
-		g_object_unref (entry);
+		e_data_book_respond_remove_contacts (book, opid, EDB_ERROR (CONTACT_NOT_FOUND), NULL);
+		return;
 	}
 
-	/* On error, return the last one */
-	if (!ids && !error)
-		error = EDB_ERROR (OTHER_ERROR);
+	g_object_unref (cached_contact);
 
-	e_data_book_respond_remove_contacts (book, opid, error, ids);
-	g_list_free (ids);
+	/* Remove the contact from the cache */
+	cache_remove_contact (backend, uid);
+
+	/* Delete the contact from the server asynchronously */
+	data = g_slice_new (RemoveContactData);
+	data->backend = g_object_ref (backend);
+	data->book = g_object_ref (book);
+	data->opid = opid;
+	data->uid = g_strdup (uid);
+
+	cancellable = start_operation (backend, opid, _("Deleting contact…"));
+	gdata_service_delete_entry_async (GDATA_SERVICE (priv->service), entry, cancellable, (GAsyncReadyCallback) remove_contact_cb, data);
+	g_object_unref (cancellable);
+	g_object_unref (entry);
 }
 
 typedef struct {
