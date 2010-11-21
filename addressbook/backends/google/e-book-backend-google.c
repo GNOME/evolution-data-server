@@ -85,6 +85,9 @@ struct _EBookBackendGooglePrivate {
 	guint idle_id;
 
 	guint refresh_id;
+
+	/* Map of active opids to GCancellables */
+	GHashTable *cancellables;
 };
 
 gboolean __e_book_backend_google_debug__;
@@ -461,6 +464,31 @@ on_sequence_complete (EBookBackend *backend, GError *error)
 		g_error_free (err);
 }
 
+static GCancellable *
+start_operation (EBookBackend *backend, guint32 opid, const gchar *message)
+{
+	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	GCancellable *cancellable;
+	GList *iter;
+
+	/* Insert the operation into the set of active cancellable operations */
+	cancellable = g_cancellable_new ();
+	g_hash_table_insert (priv->cancellables, GUINT_TO_POINTER (opid), g_object_ref (cancellable));
+
+	/* Send out a status message to each view */
+	for (iter = priv->bookviews; iter; iter = iter->next)
+		e_data_book_view_notify_status_message (E_DATA_BOOK_VIEW (iter->data), message);
+
+	return cancellable;
+}
+
+static void
+finish_operation (EBookBackend *backend, guint32 opid)
+{
+	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	g_hash_table_remove (priv->cancellables, GUINT_TO_POINTER (opid));
+}
+
 static void
 process_subsequent_entry (GDataEntry *entry, guint entry_key, guint entry_count, EBookBackend *backend)
 {
@@ -523,6 +551,7 @@ get_new_contacts_cb (GDataService *service, GAsyncResult *result, EBookBackend *
 		cache_set_last_update (backend, &current_time);
 	}
 
+	finish_operation (backend, 0);
 	on_sequence_complete (backend, gdata_error);
 
 	/* Thaw the cache again */
@@ -538,6 +567,7 @@ get_new_contacts (EBookBackend *backend)
 	gchar *last_updated;
 	GTimeVal updated;
 	GDataQuery *query;
+	GCancellable *cancellable;
 
 	__debug__ (G_STRFUNC);
 	g_return_if_fail (priv->service && gdata_service_is_authenticated (priv->service));
@@ -558,10 +588,12 @@ get_new_contacts (EBookBackend *backend)
 	}
 
 	/* Query for new contacts asynchronously */
-	gdata_contacts_service_query_contacts_async (GDATA_CONTACTS_SERVICE (priv->service), query, NULL,
+	cancellable = start_operation (backend, 0, _("Querying for updated contacts…"));
+	gdata_contacts_service_query_contacts_async (GDATA_CONTACTS_SERVICE (priv->service), query, cancellable,
 	                                             (GDataQueryProgressCallback) (last_updated ? process_subsequent_entry : process_initial_entry),
 	                                             backend, (GAsyncReadyCallback) get_new_contacts_cb, backend);
 
+	g_object_unref (cancellable);
 	g_object_unref (query);
 }
 
@@ -651,6 +683,8 @@ get_groups_cb (GDataService *service, GAsyncResult *result, EBookBackend *backen
 		g_get_current_time (&(priv->last_groups_update));
 	}
 
+	finish_operation (backend, 1);
+
 	g_clear_error (&gdata_error);
 }
 
@@ -659,6 +693,7 @@ get_groups (EBookBackend *backend)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	GDataQuery *query;
+	GCancellable *cancellable;
 
 	__debug__ (G_STRFUNC);
 	g_return_if_fail (priv->service && gdata_service_is_authenticated (priv->service));
@@ -671,9 +706,11 @@ get_groups (EBookBackend *backend)
 	}
 
 	/* Run the query asynchronously */
-	gdata_contacts_service_query_groups_async (GDATA_CONTACTS_SERVICE (priv->service), query, NULL, (GDataQueryProgressCallback) process_group,
-	                                           backend, (GAsyncReadyCallback) get_groups_cb, backend);
+	cancellable = start_operation (backend, 1, _("Querying for updated groups…"));
+	gdata_contacts_service_query_groups_async (GDATA_CONTACTS_SERVICE (priv->service), query, cancellable,
+	                                           (GDataQueryProgressCallback) process_group, backend, (GAsyncReadyCallback) get_groups_cb, backend);
 
+	g_object_unref (cancellable);
 	g_object_unref (query);
 }
 
@@ -792,6 +829,7 @@ create_contact_cb (GDataService *service, GAsyncResult *result, CreateContactDat
 	__debug__ (G_STRFUNC);
 
 	new_contact = gdata_service_insert_entry_finish (service, result, &gdata_error);
+	finish_operation (data->backend, data->opid);
 
 	if (!new_contact) {
 		GError *book_error = NULL;
@@ -823,6 +861,7 @@ e_book_backend_google_create_contact (EBookBackend *backend, EDataBook *book, gu
 	GDataEntry *entry;
 	gchar *xml;
 	CreateContactData *data;
+	GCancellable *cancellable;
 
 	__debug__ (G_STRFUNC);
 
@@ -851,8 +890,10 @@ e_book_backend_google_create_contact (EBookBackend *backend, EDataBook *book, gu
 	data->book = g_object_ref (book);
 	data->opid = opid;
 
-	gdata_contacts_service_insert_contact_async (GDATA_CONTACTS_SERVICE (priv->service), GDATA_CONTACTS_CONTACT (entry), NULL,
+	cancellable = start_operation (backend, opid, _("Creating new contact…"));
+	gdata_contacts_service_insert_contact_async (GDATA_CONTACTS_SERVICE (priv->service), GDATA_CONTACTS_CONTACT (entry), cancellable,
 	                                             (GAsyncReadyCallback) create_contact_cb, data);
+	g_object_unref (cancellable);
 	g_object_unref (entry);
 }
 
@@ -935,6 +976,8 @@ modify_contact_cb (GDataService *service, GAsyncResult *result, ModifyContactDat
 	__debug__ (G_STRFUNC);
 
 	new_contact = gdata_service_update_entry_finish (service, result, &gdata_error);
+	finish_operation (data->backend, data->opid);
+
 	if (!new_contact) {
 		GError *book_error = NULL;
 		data_book_error_from_gdata_error (&book_error, gdata_error);
@@ -972,6 +1015,7 @@ e_book_backend_google_modify_contact (EBookBackend *backend, EDataBook *book, gu
 	GDataEntry *entry = NULL;
 	const gchar *uid;
 	ModifyContactData *data;
+	GCancellable *cancellable;
 
 	__debug__ (G_STRFUNC);
 
@@ -1018,7 +1062,9 @@ e_book_backend_google_modify_contact (EBookBackend *backend, EDataBook *book, gu
 	data->book = g_object_ref (book);
 	data->opid = opid;
 
-	gdata_service_update_entry_async (GDATA_SERVICE (priv->service), entry, NULL, (GAsyncReadyCallback) modify_contact_cb, data);
+	cancellable = start_operation (backend, opid, _("Modifying contact…"));
+	gdata_service_update_entry_async (GDATA_SERVICE (priv->service), entry, cancellable, (GAsyncReadyCallback) modify_contact_cb, data);
+	g_object_unref (cancellable);
 	g_object_unref (entry);
 }
 
@@ -1209,6 +1255,7 @@ authenticate_user_cb (GDataService *service, GAsyncResult *result, AuthenticateU
 		g_error_free (gdata_error);
 	}
 
+	finish_operation (data->backend, data->opid);
 	e_book_backend_notify_writable (data->backend, (!gdata_error) ? TRUE : FALSE);
 	e_data_book_respond_authenticate_user (data->book, data->opid, book_error);
 
@@ -1224,6 +1271,7 @@ e_book_backend_google_authenticate_user (EBookBackend *backend, EDataBook *book,
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	gboolean match;
 	AuthenticateUserData *data;
+	GCancellable *cancellable;
 
 	__debug__ (G_STRFUNC);
 
@@ -1269,7 +1317,9 @@ e_book_backend_google_authenticate_user (EBookBackend *backend, EDataBook *book,
 	data->book = g_object_ref (book);
 	data->opid = opid;
 
-	gdata_service_authenticate_async (priv->service, priv->username, password, NULL, (GAsyncReadyCallback) authenticate_user_cb, data);
+	cancellable = start_operation (backend, opid, _("Authenticating with the server…"));
+	gdata_service_authenticate_async (priv->service, priv->username, password, cancellable, (GAsyncReadyCallback) authenticate_user_cb, data);
+	g_object_unref (cancellable);
 }
 
 static void
@@ -1426,6 +1476,8 @@ e_book_backend_google_remove (EBookBackend *backend, EDataBook *book, guint32 op
 	e_data_book_respond_remove (book, opid, NULL);
 }
 
+static void e_book_backend_google_cancel_operation (EBookBackend *backend, EDataBook *book, GError **error);
+
 static void
 set_offline_mode (EBookBackend *backend, gboolean offline)
 {
@@ -1436,6 +1488,9 @@ set_offline_mode (EBookBackend *backend, gboolean offline)
 	priv->offline = offline;
 
 	if (offline) {
+		/* Cancel all running operations */
+		e_book_backend_google_cancel_operation (backend, NULL, NULL);
+
 		/* Going offline, so we can free our service and proxy */
 		if (priv->service)
 			g_object_unref (priv->service);
@@ -1497,6 +1552,7 @@ e_book_backend_google_load_source (EBookBackend *backend, ESource *source, gbool
 	/* Set up our object */
 	priv->groups_by_id = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->groups_by_name = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	priv->cancellables = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
 	priv->username = g_strdup (username);
 	cache_init (backend, use_cache);
 	priv->use_ssl = use_ssl;
@@ -1525,8 +1581,18 @@ e_book_backend_google_get_static_capabilities (EBookBackend *backend)
 static void
 e_book_backend_google_cancel_operation (EBookBackend *backend, EDataBook *book, GError **error)
 {
+	GHashTableIter iter;
+	gpointer opid_ptr;
+	GCancellable *cancellable;
+	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+
 	__debug__ (G_STRFUNC);
-	g_propagate_error (error, EDB_ERROR (COULD_NOT_CANCEL));
+
+	/* Cancel all active operations */
+	g_hash_table_iter_init (&iter, priv->cancellables);
+	while (g_hash_table_iter_next (&iter, &opid_ptr, (gpointer *) &cancellable)) {
+		g_cancellable_cancel (cancellable);
+	}
 }
 
 static void
@@ -1557,6 +1623,9 @@ e_book_backend_google_dispose (GObject *object)
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (object)->priv;
 
 	__debug__ (G_STRFUNC);
+
+	/* Cancel all outstanding operations */
+	e_book_backend_google_cancel_operation (E_BOOK_BACKEND (object), NULL, NULL);
 
 	while (priv->bookviews) {
 		e_data_book_view_unref (priv->bookviews->data);
@@ -1591,6 +1660,7 @@ e_book_backend_google_finalize (GObject *object)
 	g_free (priv->username);
 	g_hash_table_destroy (priv->groups_by_id);
 	g_hash_table_destroy (priv->groups_by_name);
+	g_hash_table_destroy (priv->cancellables);
 
 	G_OBJECT_CLASS (e_book_backend_google_parent_class)->finalize (object);
 }
