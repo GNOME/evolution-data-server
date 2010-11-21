@@ -1167,15 +1167,20 @@ set_live_mode (EBookBackend *backend, gboolean live_mode)
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 
 	__debug__ (G_STRFUNC);
+
+	if (priv->live_mode == live_mode)
+		return;
+
 	priv->live_mode = live_mode;
 
-	if (!live_mode && priv->refresh_id > 0) {
+	if (live_mode) {
+		/* Entering live mode, we need to refresh */
+		cache_refresh_if_needed (backend);
+	} else if (priv->refresh_id > 0) {
+		/* Leaving live mode, we can stop periodically refreshing */
 		g_source_remove (priv->refresh_id);
 		priv->refresh_id = 0;
 	}
-
-	if (priv->live_mode)
-		cache_refresh_if_needed (backend);
 }
 
 static void
