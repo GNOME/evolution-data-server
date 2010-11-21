@@ -54,7 +54,6 @@ struct _EBookBackendGooglePrivate {
 	EDataBookMode mode;
 	GList *bookviews;
 
-	gchar *username;
 	CacheType cache_type;
 	union {
 		EBookBackendCache *on_disk;
@@ -1269,7 +1268,6 @@ e_book_backend_google_authenticate_user (EBookBackend *backend, EDataBook *book,
                                          const gchar *username, const gchar *password, const gchar *auth_method)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
-	gboolean match;
 	AuthenticateUserData *data;
 	GCancellable *cancellable;
 
@@ -1292,13 +1290,6 @@ e_book_backend_google_authenticate_user (EBookBackend *backend, EDataBook *book,
 		return;
 	}
 
-	match = (strcmp (username, priv->username) == 0);
-	if (!match) {
-		g_warning ("Username given when loading source and on authentication did not match!");
-		e_data_book_respond_authenticate_user (book, opid, EDB_ERROR (AUTHENTICATION_REQUIRED));
-		return;
-	}
-
 	/* Set up the service and proxy */
 	if (!priv->service)
 		priv->service = GDATA_SERVICE (gdata_contacts_service_new ("evolution-client-0.1.0"));
@@ -1318,7 +1309,7 @@ e_book_backend_google_authenticate_user (EBookBackend *backend, EDataBook *book,
 	data->opid = opid;
 
 	cancellable = start_operation (backend, opid, _("Authenticating with the server…"));
-	gdata_service_authenticate_async (priv->service, priv->username, password, cancellable, (GAsyncReadyCallback) authenticate_user_cb, data);
+	gdata_service_authenticate_async (priv->service, username, password, cancellable, (GAsyncReadyCallback) authenticate_user_cb, data);
 	g_object_unref (cancellable);
 }
 
@@ -1513,20 +1504,11 @@ e_book_backend_google_load_source (EBookBackend *backend, ESource *source, gbool
 	const gchar *refresh_interval_str, *use_ssl_str, *use_cache_str;
 	guint refresh_interval;
 	gboolean use_ssl, use_cache;
-	const gchar *username;
 
 	__debug__ (G_STRFUNC);
 
-	if (priv->username) {
+	if (priv->cancellables) {
 		g_propagate_error (error, EDB_ERROR_EX (OTHER_ERROR, "Source already loaded!"));
-		return;
-	}
-
-	/* Parse the username property */
-	username = e_source_get_property (source, "username");
-
-	if (!username || username[0] == '\0') {
-		g_propagate_error (error, EDB_ERROR_EX (OTHER_ERROR, "No or empty username!"));
 		return;
 	}
 
@@ -1553,7 +1535,6 @@ e_book_backend_google_load_source (EBookBackend *backend, ESource *source, gbool
 	priv->groups_by_id = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->groups_by_name = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->cancellables = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
-	priv->username = g_strdup (username);
 	cache_init (backend, use_cache);
 	priv->use_ssl = use_ssl;
 	priv->refresh_interval = refresh_interval;
@@ -1657,7 +1638,6 @@ e_book_backend_google_finalize (GObject *object)
 
 	__debug__ (G_STRFUNC);
 
-	g_free (priv->username);
 	g_hash_table_destroy (priv->groups_by_id);
 	g_hash_table_destroy (priv->groups_by_name);
 	g_hash_table_destroy (priv->cancellables);
