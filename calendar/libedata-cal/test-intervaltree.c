@@ -144,7 +144,7 @@ static ECalComponent*
 create_test_component (time_t start, time_t end)
 {
 	ECalComponent *comp = e_cal_component_new ();
-	ECalComponentText *summary;
+	ECalComponentText summary;
 	struct icaltimetype current;
 	e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
 
@@ -162,12 +162,12 @@ create_test_component (time_t start, time_t end)
 	e_cal_component_set_dtend (comp, &dtend);
 	*/
 
-	summary = g_new (ECalComponentText, 1);
+	summary.value = g_strdup_printf ("%ld - %ld", start, end);
+	summary.altrep = NULL;
 
-	summary->value = g_strdup_printf ("%ld - %ld", start, end);
-	summary->altrep = NULL;
+	e_cal_component_set_summary (comp, &summary);
 
-	e_cal_component_set_summary (comp, summary);
+	g_free ((gchar *) summary.value);
 
 	current = icaltime_from_timet (time (NULL), 0);
 	e_cal_component_set_created (comp, &current);
@@ -213,7 +213,7 @@ print_list (GList *l2)
 */
 
 static void
-random_test ()
+random_test (void)
 {
 	/*
 	 * outline:
@@ -248,7 +248,6 @@ random_test ()
 		interval->start = start;
 		interval->end = end;
 		interval->comp = comp;
-		g_object_ref (comp);
 
 		list = g_list_insert (list, interval, -1);
 
@@ -271,7 +270,6 @@ random_test ()
 		interval->start = start;
 		interval->end = _TIME_MAX;
 		interval->comp = comp;
-		g_object_ref (comp);
 		list = g_list_insert (list, interval, -1);
 
 		e_intervaltree_insert (tree, start, interval->end, comp);
@@ -416,12 +414,52 @@ random_test ()
 	g_list_free (list);
 }
 
+static void
+mem_test (void)
+{
+	EIntervalTree *tree;
+	time_t start = 10, end = 50;
+	ECalComponent *comp = create_test_component (start, end), *clone_comp;
+	const gchar *uid;
+	gchar *rid;
+
+	tree = e_intervaltree_new ();
+
+	g_assert (((GObject *) comp)->ref_count == 1);
+	e_intervaltree_insert (tree, start, end, comp);
+	g_assert (((GObject *) comp)->ref_count == 2);
+
+	e_cal_component_get_uid (comp, &uid);
+	rid = e_cal_component_get_recurid_as_string (comp);
+	e_intervaltree_remove (tree, uid, rid);
+	g_free (rid);
+	g_assert (((GObject *) comp)->ref_count == 1);
+
+	e_intervaltree_insert (tree, start, end, comp);
+	g_assert (((GObject *) comp)->ref_count == 2);
+
+	clone_comp = e_cal_component_clone (comp);
+	e_intervaltree_insert (tree, start, end, clone_comp);
+
+	g_assert (((GObject *) comp)->ref_count == 1);
+	g_assert (((GObject *) clone_comp)->ref_count == 2);
+
+	e_intervaltree_destroy (tree);
+
+	g_assert (((GObject *) comp)->ref_count == 1);
+	g_assert (((GObject *) clone_comp)->ref_count == 1);
+
+	g_object_unref (comp);
+	g_object_unref (clone_comp);
+}
+
 gint
 main (gint argc, gchar **argv)
 {
 	g_type_init ();
 
 	myrand = g_rand_new ();
+	mem_test ();
 	random_test ();
 	g_print ("Everything OK\n");
 
