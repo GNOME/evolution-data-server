@@ -866,7 +866,7 @@ maildir_rename_old_folder (CamelMaildirStore *mstore, CamelFolderInfo *fi, GCanc
 	CamelStoreClass *store_class;
 
 	old_name = g_strdup (fi->full_name);
-	g_strdelimit (old_name, ".", '^');
+	g_strdelimit (old_name, ".", '_');
 	new_name = maildir_full_name_to_dir_name (old_name);
 
 	store_class = CAMEL_STORE_CLASS (camel_maildir_store_parent_class);
