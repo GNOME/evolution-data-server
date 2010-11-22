@@ -291,6 +291,10 @@ e_intervaltree_insert (EIntervalTree *tree, time_t start, time_t end, ECalCompon
 
 	g_static_rec_mutex_lock (&priv->mutex);
 
+	e_cal_component_get_uid (comp, &uid);
+	rid = e_cal_component_get_recurid_as_string (comp);
+	e_intervaltree_remove (tree, uid, rid);
+
 	x = g_new (EIntervalNode, 1);
 	x->min = x->start = start;
 	x->max = x->end = end;
@@ -354,8 +358,6 @@ e_intervaltree_insert (EIntervalTree *tree, time_t start, time_t end, ECalCompon
 	}
 
 	priv->root->left->red = FALSE;
-	e_cal_component_get_uid (comp, &uid);
-	rid = e_cal_component_get_recurid_as_string (comp);
 	g_hash_table_insert (priv->id_node_hash, component_key(uid, rid), newNode);
 	g_free (rid);
 
@@ -615,12 +617,15 @@ e_intervaltree_dump (EIntervalTree *tree)
 /**
   * Caller should hold the lock.	
  **/
-static EIntervalNode*
+static EIntervalNode *
 e_intervaltree_search_component (EIntervalTree *tree,
 				 const gchar *searched_uid,
 				 const gchar *searched_rid)
 {
 	EIntervalTreePrivate *priv;
+	EIntervalNode *node;
+	gchar *key;
+
 	g_return_val_if_fail (tree != NULL, NULL);
 	g_return_val_if_fail (searched_uid != NULL, NULL);
 
@@ -633,7 +638,11 @@ e_intervaltree_search_component (EIntervalTree *tree,
 		return NULL;
 	}
 
-	return g_hash_table_lookup (priv->id_node_hash, component_key(searched_uid, searched_rid));
+	key = component_key (searched_uid, searched_rid);
+	node = g_hash_table_lookup (priv->id_node_hash, key);
+	g_free (key);
+
+	return node;
 }
 
 /**
@@ -652,6 +661,7 @@ e_intervaltree_remove (EIntervalTree *tree,
 	EIntervalNode *x;
 	EIntervalNode *z;
 	EIntervalNode *nil, *root;
+	gchar *key;
 
 	g_return_val_if_fail (tree != NULL, FALSE);
 
@@ -662,9 +672,7 @@ e_intervaltree_remove (EIntervalTree *tree,
 
 	z = e_intervaltree_search_component (tree, uid, rid);
 
-	if (!z || z == nil)
-	{
-		g_message (G_STRLOC ": Cannot remove node - could not find node in tree\n");
+	if (!z || z == nil) {
 		g_static_rec_mutex_unlock (&priv->mutex);
 		return FALSE;
 	}
@@ -722,7 +730,9 @@ e_intervaltree_remove (EIntervalTree *tree,
 			e_intervaltree_fixup_deletion (tree, x);
 	}
 
-	g_hash_table_remove (priv->id_node_hash, component_key(uid, rid));
+	key = component_key (uid, rid);
+	g_hash_table_remove (priv->id_node_hash, key);
+	g_free (key);
 
 	g_object_unref (z->comp);
 	g_free (z);
@@ -769,8 +779,9 @@ e_intervaltree_init (EIntervalTree *tree)
 {
 	EIntervalTreePrivate *priv;
 	EIntervalNode *root, *nil;
-	priv = g_new0 (EIntervalTreePrivate, 1);
-	tree->priv = priv;
+
+	tree->priv = E_INTERVALTREE_GET_PRIVATE (tree);
+	priv = tree->priv;
 
 	priv->nil = nil = g_new (EIntervalNode, 1);
 	nil->parent = nil->left = nil->right = nil;

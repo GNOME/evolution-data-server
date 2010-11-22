@@ -831,8 +831,6 @@ timeout_save_cache (gpointer user_data)
 	if (g_rename (tmpfile, priv->cache_file_name) != 0)
 		g_unlink (tmpfile);
 
-	e_file_cache_thaw_changes (priv->keys_cache);
-
 error:
 	g_static_rw_lock_reader_unlock (&priv->lock);
 	g_free (tmpfile);
