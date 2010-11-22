@@ -265,7 +265,7 @@ rebuild_existing_cb (GtkTreeModel *model,
 				rebuild_data->remaining_uids,
 				g_strdup (uid), reference);
 		else
-			rebuild_data->deleted_uids = g_slist_prepend (
+			rebuild_data->deleted_uids = g_slist_append (
 				rebuild_data->deleted_uids, reference);
 	} else {
 		uid = e_source_peek_uid (E_SOURCE (node));
@@ -360,6 +360,13 @@ rebuild_model (ESourceSelector *selector)
 		gboolean parent_exists = FALSE;
 
 		path = gtk_tree_row_reference_get_path (row_ref);
+		if (!path) {
+			/* skip this, if the reference is not valid any more, like when
+			   removing a group, which got removed in the previous iteration
+			   because it had no children */
+			continue;
+		}
+
 		gtk_tree_model_get_iter (model, &iter, path);
 
 		/* If it is the last source in the group, delete the group from the tree */
