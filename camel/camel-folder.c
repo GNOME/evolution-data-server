@@ -381,8 +381,8 @@ folder_transfer_message_to (CamelFolder *source,
 	} else
 		info = camel_message_info_new_from_header (NULL, ((CamelMimePart *)msg)->headers);
 
-	/* we don't want to retain the deleted flag */
-	camel_message_info_set_flags (info, CAMEL_MESSAGE_DELETED, 0);
+	/* FIXME decide this based on the source folder */
+//	camel_message_info_set_flags (info, CAMEL_MESSAGE_DELETED, 0);
 
 	camel_folder_append_message_sync (
 		dest, msg, info, transferred_uid,
