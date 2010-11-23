@@ -102,12 +102,20 @@ maildir_store_create_folder_sync (CamelStore *store,
 
 	}
 
+	if (!g_ascii_strcasecmp (folder_name, "Inbox")) {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
+			_("Folder %s already exists"), folder_name);
+		return NULL;
+	}
+
 	if (parent_name) {
 		gchar *dir_name = maildir_full_name_to_dir_name (parent_name);
 		name = g_strdup_printf("%s/%s.%s", path, dir_name, folder_name);
 		g_free (dir_name);
 	} else
-		name = g_strdup_printf("%s/.%s", path, folder_name);
+		name = maildir_full_name_to_dir_name (folder_name);
 
 	if (g_stat (name, &st) == 0 || errno != ENOENT) {
 		g_set_error (
@@ -169,7 +177,7 @@ maildir_store_get_folder_sync (CamelStore *store,
 	cur = g_strdup_printf("%s/cur", name);
 	new = g_strdup_printf("%s/new", name);
 
-	if (!strcmp(folder_name, ".")) {
+	if (!g_ascii_strcasecmp (folder_name, "Inbox")) {
 		/* special case "." (aka inbox), may need to be created */
 		if (g_stat (tmp, &st) != 0 || !S_ISDIR (st.st_mode)
 		    || g_stat (cur, &st) != 0 || !S_ISDIR (st.st_mode)
@@ -257,7 +265,7 @@ maildir_store_delete_folder_sync (CamelStore *store,
 	struct stat st;
 	gboolean success = TRUE;
 
-	if (strcmp(folder_name, ".") == 0) {
+	if (!g_ascii_strcasecmp (folder_name, "Inbox") == 0) {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_NO_FOLDER,
@@ -426,7 +434,7 @@ scan_fi (CamelStore *store,
 
 	if (!(g_stat (tmp, &st) == 0 && S_ISDIR (st.st_mode)
 	      && g_stat (cur, &st) == 0 && S_ISDIR (st.st_mode)
-	      && g_stat (new, &st) == 0 && S_ISDIR (st.st_mode)))
+	      && g_stat (new, &st) == 0 && S_ISDIR (st.st_mode))) 
 		fi->flags |= CAMEL_FOLDER_NOSELECT;
 
 	g_free (new);
@@ -445,8 +453,12 @@ maildir_full_name_to_dir_name (const gchar *full_name)
 {
 	gchar *path;
 
-	if (strcmp (full_name, ".")) {
-		path = g_strconcat (".", full_name, NULL);
+	if (g_ascii_strcasecmp (full_name, "Inbox")) {
+		if (!g_ascii_strncasecmp (full_name, "Inbox/", 6))
+			path = g_strconcat (".", full_name + 5, NULL);
+		else
+			path = g_strconcat (".", full_name, NULL);
+
 		g_strdelimit (path + 1, "/", HIER_SEP_CHAR);
 	} else
 		path = g_strdup (".");
@@ -457,14 +469,14 @@ maildir_full_name_to_dir_name (const gchar *full_name)
 static gchar *
 maildir_dir_name_to_fullname (const gchar *dir_name)
 {
-	gchar *full_name, *skip_dots;
+	gchar *full_name;
 
-	full_name = g_strdup (dir_name + 1);
-	skip_dots = full_name;
-
-	while (*skip_dots == '.')
-		skip_dots++;
-	g_strdelimit (skip_dots, HIER_SEP, '/');
+	if (!g_ascii_strncasecmp (dir_name, "..", 2))
+		full_name = g_strconcat ("Inbox/", dir_name + 2, NULL);
+	else
+		full_name = g_strdup (dir_name + 1);
+	
+	g_strdelimit (full_name, HIER_SEP, '/');
 
 	return full_name;
 }
@@ -485,7 +497,7 @@ scan_dirs (CamelStore *store,
 	gchar *meta_path = NULL;
 
 	folders = g_ptr_array_new ();
-	if (!strcmp (topfi->full_name, "."))
+	if (!g_ascii_strcasecmp (topfi->full_name, "Inbox"))
 		g_ptr_array_add (folders, topfi);
 
 	dir = opendir (root);
@@ -530,7 +542,7 @@ scan_dirs (CamelStore *store,
 		else
 			short_name++;
 
-		if (strcmp (topfi->full_name, ".") != 0 
+		if (g_ascii_strcasecmp (topfi->full_name, "Inbox") != 0 
 					&& !g_str_has_prefix (full_name, topfi->full_name)) {
 
 			g_free (full_name);
@@ -547,7 +559,7 @@ scan_dirs (CamelStore *store,
 	}
 
 	closedir (dir);
-
+	
 	if (folders->len != 0) {
 		if (!strcmp (topfi->full_name, "."))
 			camel_folder_info_build (folders, "", '/', TRUE);
@@ -593,15 +605,14 @@ maildir_store_get_folder_info_sync (CamelStore *store,
 
 	if (top == NULL || top[0] == 0) {
 		/* create a dummy "." parent inbox, use to scan, then put back at the top level */
-		fi = scan_fi(store, flags, url, ".", _("Inbox"), cancellable);
+		fi = scan_fi(store, flags, url, "Inbox", _("Inbox"), cancellable);
 		if (scan_dirs (store, flags, fi, url, cancellable, error) == -1)
 			goto fail;
 
-		fi->flags &= ~CAMEL_FOLDER_CHILDREN;
-		fi->flags |= CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN|CAMEL_FOLDER_NOINFERIORS|CAMEL_FOLDER_TYPE_INBOX;
+		fi->flags |= CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_TYPE_INBOX;
 	} else if (!strcmp(top, ".")) {
-		fi = scan_fi(store, flags, url, ".", _("Inbox"), cancellable);
-		fi->flags |= CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN|CAMEL_FOLDER_NOINFERIORS|CAMEL_FOLDER_TYPE_INBOX;
+		fi = scan_fi(store, flags, url, "Inbox", _("Inbox"), cancellable);
+		fi->flags |= CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_TYPE_INBOX;
 	} else {
 		const gchar *name = strrchr (top, '/');
 
@@ -629,7 +640,7 @@ maildir_store_get_inbox_sync (CamelStore *store,
                               GError **error)
 {
 	return camel_store_get_folder_sync (
-		store, ".", CAMEL_STORE_FOLDER_CREATE, cancellable, error);
+		store, "Inbox", CAMEL_STORE_FOLDER_CREATE, cancellable, error);
 }
 
 static gboolean
@@ -659,6 +670,14 @@ maildir_store_rename_folder_sync (CamelStore *store,
 			_("Cannot rename the folder: %s: Folder name cannot contain a dot"), new);
 		return FALSE;
 
+	}
+
+	if (!g_ascii_strcasecmp (new, "Inbox")) {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
+			_("Folder %s already exists"), new);
+		return FALSE;
 	}
 
 	old_dir = maildir_full_name_to_dir_name (old);
