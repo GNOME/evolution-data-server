@@ -28,6 +28,11 @@
 #include <glib/gi18n-lib.h>
 #include "libedataserver/e-xml-hash-utils.h"
 #include "libedataserver/e-proxy.h"
+#include "libedataserver/e-source-authentication.h"
+#include "libedataserver/e-source-authenticator.h"
+#include "libedataserver/e-source-refresh.h"
+#include "libedataserver/e-source-security.h"
+#include "libedataserver/e-source-webdav.h"
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-util.h>
 #include <libecal/e-cal-time-util.h>
@@ -46,10 +51,17 @@
 #define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
 #define EDC_ERROR_EX(_code, _msg) e_data_cal_create_error (_code, _msg)
 
-G_DEFINE_TYPE (
+/* Forward Declarations */
+static void	e_cal_backend_http_source_authenticator_init
+				(ESourceAuthenticatorInterface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (
 	ECalBackendHttp,
 	e_cal_backend_http,
-	E_TYPE_CAL_BACKEND_SYNC)
+	E_TYPE_CAL_BACKEND_SYNC,
+	G_IMPLEMENT_INTERFACE (
+		E_TYPE_SOURCE_AUTHENTICATOR,
+		e_cal_backend_http_source_authenticator_init))
 
 /* Private part of the ECalBackendHttp structure */
 struct _ECalBackendHttpPrivate {
@@ -72,13 +84,39 @@ struct _ECalBackendHttpPrivate {
 	gboolean opened;
 	gboolean requires_auth;
 
-	ECredentials *credentials;
+	gchar *password;
 };
 
 #define d(x)
 
-static gboolean begin_retrieval_cb (ECalBackendHttp *cbhttp);
 static void e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **perror);
+
+static void
+soup_authenticate (SoupSession *session,
+                   SoupMessage *msg,
+                   SoupAuth *auth,
+                   gboolean retrying,
+                   gpointer data)
+{
+	ECalBackendHttp *cbhttp;
+	ESourceAuthentication *auth_extension;
+	ESource *source;
+	const gchar *extension_name;
+
+	cbhttp = E_CAL_BACKEND_HTTP (data);
+
+	source = e_backend_get_source (E_BACKEND (data));
+	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
+	auth_extension = e_source_get_extension (source, extension_name);
+
+	if (!retrying && cbhttp->priv->password != NULL) {
+		gchar *user;
+
+		user = e_source_authentication_dup_user (auth_extension);
+		soup_auth_authenticate (auth, user, cbhttp->priv->password);
+		g_free (user);
+	}
+}
 
 /* Dispose handler for the file backend */
 static void
@@ -100,10 +138,6 @@ e_cal_backend_http_dispose (GObject *object)
 		g_object_unref (priv->soup_session);
 		priv->soup_session = NULL;
 	}
-
-	e_credentials_free (priv->credentials);
-	priv->credentials = NULL;
-
 	if (priv->source_changed_id) {
 		g_signal_handler_disconnect (
 			e_backend_get_source (E_BACKEND (cbhttp)),
@@ -131,9 +165,53 @@ e_cal_backend_http_finalize (GObject *object)
 	}
 
 	g_free (priv->uri);
+	g_free (priv->password);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_http_parent_class)->finalize (object);
+}
+
+static void
+e_cal_backend_http_constructed (GObject *object)
+{
+	ESource *source;
+	ECalBackendHttp *backend;
+	ESourceWebdav *extension;
+	SoupSession *soup_session;
+	const gchar *extension_name;
+
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (e_cal_backend_http_parent_class)->constructed (object);
+
+	soup_session = soup_session_sync_new ();
+
+	backend = E_CAL_BACKEND_HTTP (object);
+	backend->priv->soup_session = soup_session;
+
+	source = e_backend_get_source (E_BACKEND (backend));
+	extension_name = E_SOURCE_EXTENSION_WEBDAV_BACKEND;
+	extension = e_source_get_extension (source, extension_name);
+
+	g_object_bind_property (
+		extension, "ignore-invalid-cert",
+		soup_session, SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE,
+		G_BINDING_SYNC_CREATE |
+		G_BINDING_INVERT_BOOLEAN);
+
+	g_signal_connect (
+		backend->priv->soup_session, "authenticate",
+		G_CALLBACK (soup_authenticate), backend);
+
+	if (g_getenv ("WEBCAL_DEBUG") != NULL) {
+		SoupLogger *logger;
+
+		logger = soup_logger_new (
+			SOUP_LOGGER_LOG_BODY, 1024 * 1024);
+		soup_session_add_feature (
+			backend->priv->soup_session,
+			SOUP_SESSION_FEATURE (logger));
+		g_object_unref (logger);
+	}
 }
 
 /* Calendar backend methods */
@@ -335,56 +413,127 @@ put_component_to_store (ECalBackendHttp *cb,
 	return TRUE;
 }
 
-static void
-retrieval_done (SoupSession *session,
-                SoupMessage *msg,
-                ECalBackendHttp *cbhttp)
+static SoupMessage *
+cal_backend_http_new_message (ECalBackendHttp *backend,
+                              const gchar *uri)
 {
-	ECalBackendHttpPrivate *priv;
+	SoupMessage *soup_message;
+
+	/* create message to be sent to server */
+	soup_message = soup_message_new (SOUP_METHOD_GET, uri);
+	if (soup_message == NULL)
+		return NULL;
+
+	soup_message_headers_append (
+		soup_message->request_headers,
+		"User-Agent", "Evolution/" VERSION);
+	soup_message_headers_append (
+		soup_message->request_headers,
+		"Connection", "close");
+	soup_message_set_flags (
+		soup_message, SOUP_MESSAGE_NO_REDIRECT);
+	if (backend->priv->store != NULL) {
+		const gchar *etag;
+
+		etag = e_cal_backend_store_get_key_value (
+			backend->priv->store, "ETag");
+
+		if (etag != NULL && *etag != '\0')
+			soup_message_headers_append (
+				soup_message->request_headers,
+				"If-None-Match", etag);
+	}
+
+	return soup_message;
+}
+
+static void
+cal_backend_http_cancelled (GCancellable *cancellable,
+                            gpointer user_data)
+{
+	struct {
+		SoupSession *soup_session;
+		SoupMessage *soup_message;
+	} *cancel_data = user_data;
+
+	soup_session_cancel_message (
+		cancel_data->soup_session,
+		cancel_data->soup_message,
+		SOUP_STATUS_CANCELLED);
+}
+
+static gboolean
+cal_backend_http_load (ECalBackendHttp *backend,
+                       GCancellable *cancellable,
+                       const gchar *uri,
+                       GError **error)
+{
+	ECalBackendHttpPrivate *priv = backend->priv;
+	SoupMessage *soup_message;
+	SoupSession *soup_session;
 	icalcomponent *icalcomp, *subcomp;
 	icalcomponent_kind kind;
 	const gchar *newuri;
 	SoupURI *uri_parsed;
 	GHashTable *old_cache;
 	GSList *comps_in_cache;
+	guint status_code;
+	gulong cancel_id = 0;
 
-	if (!msg || msg->status_code == SOUP_STATUS_CANCELLED) {
-		/* the backend probably gone in this case, thus just return */
-		g_object_unref (cbhttp);
-		return;
+	struct {
+		SoupSession *soup_session;
+		SoupMessage *soup_message;
+	} cancel_data;
+
+	soup_session = backend->priv->soup_session;
+	soup_message = cal_backend_http_new_message (backend, uri);
+
+	if (soup_message == NULL) {
+		g_set_error (
+			error, SOUP_HTTP_ERROR,
+			SOUP_STATUS_MALFORMED,
+			_("Malformed URI: %s"), uri);
+		return FALSE;
 	}
 
-	priv = cbhttp->priv;
+	if (G_IS_CANCELLABLE (cancellable)) {
+		cancel_data.soup_session = soup_session;
+		cancel_data.soup_message = soup_message;
 
-	priv->is_loading = FALSE;
-	d(g_message ("Retrieval done.\n"));
-
-	if (!priv->uri) {
-		/* uri changed meanwhile, retrieve again */
-		begin_retrieval_cb (cbhttp);
-		g_object_unref (cbhttp);
-		return;
+		cancel_id = g_cancellable_connect (
+			cancellable,
+			G_CALLBACK (cal_backend_http_cancelled),
+			&cancel_data, (GDestroyNotify) NULL);
 	}
 
-	if (msg->status_code == SOUP_STATUS_NOT_MODIFIED) {
+	status_code = soup_session_send_message (soup_session, soup_message);
+
+	if (G_IS_CANCELLABLE (cancellable))
+		g_cancellable_disconnect (cancellable, cancel_id);
+
+	if (status_code == SOUP_STATUS_NOT_MODIFIED) {
 		/* attempts with ETag can result in 304 status code */
+		g_object_unref (soup_message);
 		priv->opened = TRUE;
-		g_object_unref (cbhttp);
-		return;
+		return TRUE;
 	}
 
 	/* Handle redirection ourselves */
-	if (SOUP_STATUS_IS_REDIRECTION (msg->status_code)) {
-		newuri = soup_message_headers_get (
-			msg->response_headers, "Location");
+	if (SOUP_STATUS_IS_REDIRECTION (status_code)) {
+		gboolean success;
 
-		d(g_message ("Redirected from %s to %s\n", priv->uri, newuri));
+		newuri = soup_message_headers_get (
+			soup_message->response_headers, "Location");
+
+		d(g_message ("Redirected from %s to %s\n", async_context->uri, newuri));
 
 		if (newuri != NULL) {
+			gchar *redirected_uri;
+
 			if (newuri[0]=='/') {
 				g_warning ("Hey! Relative URI returned! Working around...\n");
 
-				uri_parsed = soup_uri_new (priv->uri);
+				uri_parsed = soup_uri_new (uri);
 				soup_uri_set_path (uri_parsed, newuri);
 				soup_uri_set_query (uri_parsed, NULL);
 				/* g_free (newuri); */
@@ -394,60 +543,39 @@ retrieval_done (SoupSession *session,
 				soup_uri_free (uri_parsed);
 			}
 
-			g_free (priv->uri);
+			redirected_uri =
+				webcal_to_http_method (newuri, FALSE);
+			success = cal_backend_http_load (
+				backend, cancellable, redirected_uri, error);
+			g_free (redirected_uri);
 
-			priv->uri = webcal_to_http_method (newuri, FALSE);
-			begin_retrieval_cb (cbhttp);
 		} else {
-			if (!priv->opened) {
-				e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp),
-							    _("Redirected to Invalid URI"));
-			}
+			g_set_error (
+				error, SOUP_HTTP_ERROR,
+				SOUP_STATUS_BAD_REQUEST,
+				_("Redirected to Invalid URI"));
+			success = FALSE;
 		}
 
-		g_object_unref (cbhttp);
-		return;
+		g_object_unref (soup_message);
+		return success;
 	}
 
 	/* check status code */
-	if (!SOUP_STATUS_IS_SUCCESSFUL (msg->status_code)) {
-		if (!priv->opened) {
-			if (msg->status_code == 401 || msg->status_code == 403) {
-				priv->requires_auth = TRUE;
-				e_cal_backend_notify_auth_required (E_CAL_BACKEND (cbhttp), TRUE, priv->credentials);
-				g_object_unref (cbhttp);
-				return;
-			} else if (msg->status_code == SOUP_STATUS_SSL_FAILED) {
-				ESource *source = e_backend_get_source (E_BACKEND (cbhttp));
-				gchar *err_msg;
-
-				if (g_strcmp0 (e_source_get_property (source, "ignore-invalid-cert"), "1") == 0) {
-					err_msg = g_strdup_printf (_("Failed to connect to a server using SSL: %s"),
-						msg->reason_phrase && *msg->reason_phrase ? msg->reason_phrase :
-						(soup_status_get_phrase (msg->status_code) ? soup_status_get_phrase (msg->status_code) : _("Unknown error")));
-				} else {
-					err_msg = g_strdup (_("Failed to connect to a server using SSL. "
-						"One possible reason is an invalid certificate being used by the server. "
-						"If this is expected, like self-signed certificate being used on the server, "
-						"then disable certificate validity tests by selecting 'Ignore invalid SSL certificate' option "
-						"in Properties"));
-				}
-
-				e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), err_msg);
-				g_free (err_msg);
-			} else
-				e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp),
-					msg->reason_phrase && *msg->reason_phrase ? msg->reason_phrase :
-					(soup_status_get_phrase (msg->status_code) ? soup_status_get_phrase (msg->status_code) : _("Unknown error")));
-		}
-
-		empty_cache (cbhttp);
-		g_object_unref (cbhttp);
-		return;
+	if (!SOUP_STATUS_IS_SUCCESSFUL (status_code)) {
+		g_set_error (
+			error, SOUP_HTTP_ERROR, status_code,
+			"%s", soup_message->reason_phrase);
+		g_object_unref (soup_message);
+		empty_cache (backend);
+		return FALSE;
 	}
 
 	if (priv->store) {
-		const gchar *etag = soup_message_headers_get_one (msg->response_headers, "ETag");
+		const gchar *etag;
+
+		etag = soup_message_headers_get_one (
+			soup_message->response_headers, "ETag");
 
 		if (etag != NULL && *etag == '\0')
 			etag = NULL;
@@ -456,24 +584,31 @@ retrieval_done (SoupSession *session,
 	}
 
 	/* get the calendar from the response */
-	icalcomp = icalparser_parse_string (msg->response_body->data);
+	icalcomp = icalparser_parse_string (soup_message->response_body->data);
 
 	if (!icalcomp) {
-		if (!priv->opened)
-			e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), _("Bad file format."));
-		empty_cache (cbhttp);
-		g_object_unref (cbhttp);
-		return;
+		g_set_error (
+			error, SOUP_HTTP_ERROR,
+			SOUP_STATUS_MALFORMED,
+			_("Bad file format."));
+		g_object_unref (soup_message);
+		empty_cache (backend);
+		return FALSE;
 	}
 
 	if (icalcomponent_isa (icalcomp) != ICAL_VCALENDAR_COMPONENT) {
-		if (!priv->opened)
-			e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), _("Not a calendar."));
+		g_set_error (
+			error, SOUP_HTTP_ERROR,
+			SOUP_STATUS_MALFORMED,
+			_("Not a calendar."));
 		icalcomponent_free (icalcomp);
-		empty_cache (cbhttp);
-		g_object_unref (cbhttp);
-		return;
+		g_object_unref (soup_message);
+		empty_cache (backend);
+		return FALSE;
 	}
+
+	g_object_unref (soup_message);
+	soup_message = NULL;
 
 	/* Update cache */
 	old_cache = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
@@ -490,7 +625,7 @@ retrieval_done (SoupSession *session,
 		g_object_unref (comp);
 	}
 
-	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbhttp));
+	kind = e_cal_backend_get_kind (E_CAL_BACKEND (backend));
 	subcomp = icalcomponent_get_first_component (icalcomp, ICAL_ANY_COMPONENT);
 	e_cal_backend_store_freeze_changes (priv->store);
 	while (subcomp) {
@@ -514,18 +649,18 @@ retrieval_done (SoupSession *session,
 
 				e_cal_component_get_uid (comp, &uid);
 
-				if (!put_component_to_store (cbhttp, comp)) {
+				if (!put_component_to_store (backend, comp)) {
 					g_hash_table_remove (old_cache, uid);
 				} else if (g_hash_table_lookup_extended (old_cache, uid, &orig_key, &orig_value)) {
 					ECalComponent *orig_comp = e_cal_component_new_from_string (orig_value);
 
-					e_cal_backend_notify_component_modified (E_CAL_BACKEND (cbhttp), orig_comp, comp);
+					e_cal_backend_notify_component_modified (E_CAL_BACKEND (backend), orig_comp, comp);
 
 					g_hash_table_remove (old_cache, uid);
 					if (orig_comp)
 						g_object_unref (orig_comp);
 				} else {
-					e_cal_backend_notify_component_created (E_CAL_BACKEND (cbhttp), comp);
+					e_cal_backend_notify_component_created (E_CAL_BACKEND (backend), comp);
 				}
 			}
 
@@ -546,7 +681,7 @@ retrieval_done (SoupSession *session,
 	e_cal_backend_store_thaw_changes (priv->store);
 
 	/* notify the removals */
-	g_hash_table_foreach_remove (old_cache, (GHRFunc) notify_and_remove_from_cache, cbhttp);
+	g_hash_table_foreach_remove (old_cache, (GHRFunc) notify_and_remove_from_cache, backend);
 	g_hash_table_destroy (old_cache);
 
 	/* free memory */
@@ -554,123 +689,112 @@ retrieval_done (SoupSession *session,
 
 	priv->opened = TRUE;
 
-	g_object_unref (cbhttp);
-
-	d(g_message ("Retrieval really done.\n"));
+	return TRUE;
 }
 
-/* ************************************************************************* */
-/* Authentication helpers for libsoup */
-
-static void
-soup_authenticate (SoupSession *session,
-                   SoupMessage *msg,
-                   SoupAuth *auth,
-                   gboolean retrying,
-                   gpointer data)
+static const gchar *
+cal_backend_http_ensure_uri (ECalBackendHttp *backend)
 {
-	ECalBackendHttpPrivate *priv;
-	ECalBackendHttp        *cbhttp;
+	ESource *source;
+	ESourceSecurity *security_extension;
+	ESourceWebdav *webdav_extension;
+	SoupURI *soup_uri;
+	EProxy *proxy;
+	gboolean secure_connection;
+	const gchar *extension_name;
+	gchar *uri_string;
 
-	cbhttp = E_CAL_BACKEND_HTTP (data);
-	priv =  cbhttp->priv;
+	if (backend->priv->uri != NULL)
+		return backend->priv->uri;
 
-	if (!retrying && priv->credentials && e_credentials_has_key (priv->credentials, E_CREDENTIALS_KEY_USERNAME)) {
-		soup_auth_authenticate (auth, e_credentials_peek (priv->credentials, E_CREDENTIALS_KEY_USERNAME), e_credentials_peek (priv->credentials, E_CREDENTIALS_KEY_PASSWORD));
-		e_credentials_clear_peek (priv->credentials);
-	}
+	source = e_backend_get_source (E_BACKEND (backend));
+
+	extension_name = E_SOURCE_EXTENSION_SECURITY;
+	security_extension = e_source_get_extension (source, extension_name);
+
+	extension_name = E_SOURCE_EXTENSION_WEBDAV_BACKEND;
+	webdav_extension = e_source_get_extension (source, extension_name);
+
+	secure_connection = e_source_security_get_secure (security_extension);
+
+	soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
+	uri_string = soup_uri_to_string (soup_uri, FALSE);
+	soup_uri_free (soup_uri);
+
+	backend->priv->uri = webcal_to_http_method (
+		uri_string, secure_connection);
+
+	g_free (uri_string);
+
+	/* set the HTTP proxy, if configuration is set to do so */
+
+	proxy = e_proxy_new ();
+	e_proxy_setup_proxy (proxy);
+
+	if (e_proxy_require_proxy_for_uri (proxy, backend->priv->uri))
+		soup_uri = e_proxy_peek_uri_for (proxy, backend->priv->uri);
+	else
+		soup_uri = NULL;
+
+	g_object_set (
+		G_OBJECT (backend->priv->soup_session),
+		SOUP_SESSION_PROXY_URI, soup_uri, NULL);
+
+	g_object_unref (proxy);
+
+	return backend->priv->uri;
 }
 
-static gboolean reload_cb                  (ECalBackendHttp *cbhttp);
 static void     maybe_start_reload_timeout (ECalBackendHttp *cbhttp);
 
 static gboolean
-begin_retrieval_cb (ECalBackendHttp *cbhttp)
+begin_retrieval_cb (GIOSchedulerJob *job,
+                    GCancellable *cancellable,
+                    ECalBackendHttp *backend)
 {
-	ECalBackendHttpPrivate *priv;
-	SoupMessage *soup_message;
+	ESource *source;
+	ESourceRegistry *registry;
+	const gchar *uri;
+	GError *error = NULL;
 
-	priv = cbhttp->priv;
-
-	if (!e_backend_get_online (E_BACKEND (cbhttp)))
+	if (!e_backend_get_online (E_BACKEND (backend)))
 		return FALSE;
 
-	maybe_start_reload_timeout (cbhttp);
+	maybe_start_reload_timeout (backend);
+
+	if (backend->priv->is_loading)
+		return FALSE;
 
 	d(g_message ("Starting retrieval...\n"));
 
-	if (priv->is_loading)
-		return FALSE;
+	backend->priv->is_loading = TRUE;
 
-	priv->is_loading = TRUE;
+	source = e_backend_get_source (E_BACKEND (backend));
+	registry = e_cal_backend_get_registry (E_CAL_BACKEND (backend));
 
-	if (priv->uri == NULL) {
-		ESource *source = e_backend_get_source (E_BACKEND (cbhttp));
-		const gchar *secure_prop = e_source_get_property (source, "use_ssl");
-		gchar *uri = e_source_get_uri (source);
+	uri = cal_backend_http_ensure_uri (backend);
+	cal_backend_http_load (backend, cancellable, uri, &error);
 
-		priv->uri = webcal_to_http_method (uri,
-			(secure_prop && g_str_equal(secure_prop, "1")));
-
-		g_free (uri);
+	if (g_error_matches (error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
+		g_clear_error (&error);
+		e_source_registry_authenticate_sync (
+			registry, source,
+			E_SOURCE_AUTHENTICATOR (backend),
+			cancellable, &error);
 	}
 
-	/* create the Soup session if not already created */
-	if (!priv->soup_session) {
-		EProxy *proxy;
-		SoupURI *proxy_uri = NULL;
-		ESource *source = e_backend_get_source (E_BACKEND (cbhttp));
+	backend->priv->is_loading = FALSE;
 
-		priv->soup_session = soup_session_async_new_with_options (
-			SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE,
-			g_strcmp0 (e_source_get_property (source, "ignore-invalid-cert"), "1") != 0,
-			NULL);
-
-		g_signal_connect (priv->soup_session, "authenticate",
-				  G_CALLBACK (soup_authenticate), cbhttp);
-
-		if (g_getenv ("WEBCAL_DEBUG") != NULL) {
-			SoupLogger *logger;
-
-			logger = soup_logger_new (SOUP_LOGGER_LOG_BODY, 1024 * 1024);
-			soup_session_add_feature (priv->soup_session, SOUP_SESSION_FEATURE (logger));
-			g_object_unref (logger);
-		}
-
-		/* set the HTTP proxy, if configuration is set to do so */
-		proxy = e_proxy_new ();
-		e_proxy_setup_proxy (proxy);
-		if (e_proxy_require_proxy_for_uri (proxy, priv->uri)) {
-			proxy_uri = e_proxy_peek_uri_for (proxy, priv->uri);
-		}
-
-		g_object_set (G_OBJECT (priv->soup_session), SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
-
-		g_object_unref (proxy);
+	if (error != NULL) {
+		e_cal_backend_notify_error (
+			E_CAL_BACKEND (backend),
+			error->message);
+		empty_cache (backend);
+		g_error_free (error);
 	}
 
-	/* create message to be sent to server */
-	soup_message = soup_message_new (SOUP_METHOD_GET, priv->uri);
-	if (soup_message == NULL) {
-		priv->is_loading = FALSE;
-		empty_cache (cbhttp);
-		return FALSE;
-	}
+	d(g_message ("Retrieval really done.\n"));
 
-	soup_message_headers_append (soup_message->request_headers, "User-Agent", "Evolution/" VERSION);
-	soup_message_headers_append (soup_message->request_headers, "Connection", "close");
-	soup_message_set_flags (soup_message, SOUP_MESSAGE_NO_REDIRECT);
-	if (priv->store) {
-		const gchar *etag = e_cal_backend_store_get_key_value (priv->store, "ETag");
-
-		if (etag && *etag)
-			soup_message_headers_append (soup_message->request_headers, "If-None-Match", etag);
-	}
-
-	soup_session_queue_message (priv->soup_session, soup_message,
-				    (SoupSessionCallback) retrieval_done, g_object_ref (cbhttp));
-
-	d(g_message ("Retrieval started.\n"));
 	return FALSE;
 }
 
@@ -687,7 +811,13 @@ reload_cb (ECalBackendHttp *cbhttp)
 	d(g_message ("Reload!\n"));
 
 	priv->reload_timeout_id = 0;
-	begin_retrieval_cb (cbhttp);
+
+	g_io_scheduler_push_job (
+		(GIOSchedulerJobFunc) begin_retrieval_cb,
+		g_object_ref (cbhttp),
+		(GDestroyNotify) g_object_unref,
+		G_PRIORITY_DEFAULT, NULL);
+
 	return FALSE;
 }
 
@@ -696,7 +826,9 @@ maybe_start_reload_timeout (ECalBackendHttp *cbhttp)
 {
 	ECalBackendHttpPrivate *priv;
 	ESource *source;
-	const gchar *refresh_str;
+	ESourceRefresh *extension;
+	const gchar *extension_name;
+	guint interval_in_minutes = 0;
 
 	priv = cbhttp->priv;
 
@@ -711,10 +843,17 @@ maybe_start_reload_timeout (ECalBackendHttp *cbhttp)
 		return;
 	}
 
-	refresh_str = e_source_get_property (source, "refresh");
+	extension_name = E_SOURCE_EXTENSION_REFRESH;
+	extension = e_source_get_extension (source, extension_name);
 
-	priv->reload_timeout_id = g_timeout_add ((refresh_str ? atoi (refresh_str) : 30) * 60000,
-						 (GSourceFunc) reload_cb, cbhttp);
+	if (e_source_refresh_get_enabled (extension))
+		interval_in_minutes =
+			e_source_refresh_get_interval_minutes (extension);
+
+	if (interval_in_minutes > 0)
+		priv->reload_timeout_id = g_timeout_add_seconds (
+			interval_in_minutes * 60,
+			(GSourceFunc) reload_cb, cbhttp);
 }
 
 static void
@@ -724,27 +863,27 @@ source_changed_cb (ESource *source,
 	g_return_if_fail (E_IS_CAL_BACKEND_HTTP (cbhttp));
 
 	if (cbhttp->priv->uri != NULL) {
-		ESource *source;
-		const gchar *secure_prop;
-		gchar *new_uri;
+		gboolean uri_changed;
+		const gchar *new_uri;
+		gchar *old_uri;
 
-		source = e_backend_get_source (E_BACKEND (cbhttp));
-		secure_prop = e_source_get_property (source, "use_ssl");
+		old_uri = g_strdup (cbhttp->priv->uri);
 
-		new_uri = webcal_to_http_method (
-			e_source_get_uri (source),
-			(secure_prop && g_str_equal(secure_prop, "1")));
+		g_free (cbhttp->priv->uri);
+		cbhttp->priv->uri = NULL;
 
-		if (new_uri && !g_str_equal (cbhttp->priv->uri, new_uri)) {
-			/* uri changed, do reload some time soon */
-			g_free (cbhttp->priv->uri);
-			cbhttp->priv->uri = NULL;
+		new_uri = cal_backend_http_ensure_uri (cbhttp);
 
-			if (!cbhttp->priv->is_loading)
-				g_idle_add ((GSourceFunc) begin_retrieval_cb, cbhttp);
-		}
+		uri_changed = (g_strcmp0 (old_uri, new_uri) != 0);
 
-		g_free (new_uri);
+		if (uri_changed && !cbhttp->priv->is_loading)
+			g_io_scheduler_push_job (
+				(GIOSchedulerJobFunc) begin_retrieval_cb,
+				g_object_ref (cbhttp),
+				(GDestroyNotify) g_object_unref,
+				G_PRIORITY_DEFAULT, NULL);
+
+		g_free (old_uri);
 	}
 }
 
@@ -759,6 +898,12 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
 	ESource *source;
+	ESourceRegistry *registry;
+	ESourceAuthentication *auth_extension;
+	const gchar *extension_name;
+	const gchar *cache_dir;
+	gboolean auth_required;
+	gboolean opened = TRUE;
 	gboolean online;
 	gchar *tmp;
 
@@ -772,6 +917,13 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 	}
 
 	source = e_backend_get_source (E_BACKEND (backend));
+	cache_dir = e_cal_backend_get_cache_dir (E_CAL_BACKEND (backend));
+
+	registry = e_cal_backend_get_registry (E_CAL_BACKEND (backend));
+
+	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
+	auth_extension = e_source_get_extension (source, extension_name);
+	auth_required = e_source_authentication_required (auth_extension);
 
 	if (priv->source_changed_id == 0) {
 		priv->source_changed_id = g_signal_connect (
@@ -785,10 +937,6 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 	g_free (tmp);
 
 	if (priv->store == NULL) {
-		const gchar *cache_dir;
-
-		cache_dir = e_cal_backend_get_cache_dir (E_CAL_BACKEND (backend));
-
 		/* remove the old cache while migrating to ECalBackendStore */
 		e_cal_backend_cache_remove (cache_dir, "cache.xml");
 		priv->store = e_cal_backend_file_store_new (cache_dir);
@@ -812,54 +960,34 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 	e_cal_backend_notify_online (E_CAL_BACKEND (backend), online);
 
 	if (online) {
-		if (priv->soup_session)
-			g_object_set (G_OBJECT (priv->soup_session),
-				SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE,
-				g_strcmp0 (e_source_get_property (source, "ignore-invalid-cert"), "1") != 0,
-				NULL);
+		const gchar *uri;
+		GError *local_error = NULL;
 
-		if (e_source_get_property (source, "auth")) {
-			e_cal_backend_notify_auth_required (E_CAL_BACKEND (cbhttp), TRUE, priv->credentials);
-		} else if (priv->requires_auth && perror && !*perror) {
-			g_propagate_error (perror, EDC_ERROR (AuthenticationRequired));
-			e_cal_backend_notify_opened (E_CAL_BACKEND (backend), EDC_ERROR (AuthenticationRequired));
-		} else {
-			e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
-			g_idle_add ((GSourceFunc) begin_retrieval_cb, cbhttp);
+		uri = cal_backend_http_ensure_uri (cbhttp);
+
+		if (!auth_required) {
+			opened = cal_backend_http_load (
+				cbhttp, cancellable,
+				uri, &local_error);
+			auth_required = g_error_matches (
+				local_error, SOUP_HTTP_ERROR,
+				SOUP_STATUS_UNAUTHORIZED);
 		}
-	} else {
+
+		if (auth_required) {
+			g_clear_error (&local_error);
+			opened = e_source_registry_authenticate_sync (
+				registry, source,
+				E_SOURCE_AUTHENTICATOR (backend),
+				cancellable, &local_error);
+		}
+
+		if (local_error != NULL)
+			g_propagate_error (perror, local_error);
+	}
+
+	if (opened)
 		e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
-	}
-}
-
-static void
-e_cal_backend_http_authenticate_user (ECalBackendSync *backend,
-                                      GCancellable *cancellable,
-                                      ECredentials *credentials,
-                                      GError **error)
-{
-	ECalBackendHttp        *cbhttp;
-	ECalBackendHttpPrivate *priv;
-
-	cbhttp = E_CAL_BACKEND_HTTP (backend);
-	priv  = cbhttp->priv;
-
-	if (priv->credentials && credentials && e_credentials_equal_keys (priv->credentials, credentials, E_CREDENTIALS_KEY_USERNAME, E_CREDENTIALS_KEY_PASSWORD, NULL)) {
-		g_propagate_error (error, EDC_ERROR (AuthenticationRequired));
-		return;
-	}
-
-	e_credentials_free (priv->credentials);
-	priv->credentials = NULL;
-
-	if (!credentials || !e_credentials_has_key (credentials, E_CREDENTIALS_KEY_USERNAME)) {
-		g_propagate_error (error, EDC_ERROR (AuthenticationRequired));
-		return;
-	}
-
-	priv->credentials = e_credentials_new_clone (credentials);
-
-	g_idle_add ((GSourceFunc) begin_retrieval_cb, cbhttp);
 }
 
 static void
@@ -927,7 +1055,11 @@ e_cal_backend_http_notify_online_cb (ECalBackend *backend,
 		}
 	} else {
 		if (loaded)
-			g_idle_add ((GSourceFunc) begin_retrieval_cb, backend);
+			g_io_scheduler_push_job (
+				(GIOSchedulerJobFunc) begin_retrieval_cb,
+				g_object_ref (backend),
+				(GDestroyNotify) g_object_unref,
+				G_PRIORITY_DEFAULT, NULL);
 	}
 
 	if (loaded)
@@ -1248,6 +1380,7 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend,
                                   GSList **freebusy,
                                   GError **error)
 {
+	ESourceRegistry *registry;
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
 	gchar *address, *name;
@@ -1265,8 +1398,10 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend,
 		return;
 	}
 
+	registry = e_cal_backend_get_registry (E_CAL_BACKEND (backend));
+
 	if (users == NULL) {
-		if (e_cal_backend_mail_account_get_default (&address, &name)) {
+		if (e_cal_backend_mail_account_get_default (registry, &address, &name)) {
 			vfb = create_user_free_busy (cbhttp, address, name, start, end);
 			calobj = icalcomponent_as_ical_string_r (vfb);
                         *freebusy = g_slist_append (*freebusy, calobj);
@@ -1278,7 +1413,7 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend,
 		const GSList *l;
 		for (l = users; l != NULL; l = l->next ) {
 			address = l->data;
-			if (e_cal_backend_mail_account_is_valid (address, &name)) {
+			if (e_cal_backend_mail_account_is_valid (registry, address, &name)) {
 				vfb = create_user_free_busy (cbhttp, address, name, start, end);
 				calobj = icalcomponent_as_ical_string_r (vfb);
                                 *freebusy = g_slist_append (*freebusy, calobj);
@@ -1382,6 +1517,38 @@ e_cal_backend_http_internal_get_timezone (ECalBackend *backend,
 	return zone;
 }
 
+static ESourceAuthenticationResult
+cal_backend_http_try_password_sync (ESourceAuthenticator *authenticator,
+                                    const GString *password,
+                                    GCancellable *cancellable,
+                                    GError **error)
+{
+	ECalBackendHttp *backend;
+	ESourceAuthenticationResult result;
+	const gchar *uri;
+	GError *local_error = NULL;
+
+	backend = E_CAL_BACKEND_HTTP (authenticator);
+
+	g_free (backend->priv->password);
+	backend->priv->password = g_strdup (password->str);
+
+	uri = cal_backend_http_ensure_uri (backend);
+	cal_backend_http_load (backend, cancellable, uri, &local_error);
+
+	if (local_error == NULL) {
+		result = E_SOURCE_AUTHENTICATION_ACCEPTED;
+	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
+		result = E_SOURCE_AUTHENTICATION_REJECTED;
+		g_clear_error (&local_error);
+	} else {
+		result = E_SOURCE_AUTHENTICATION_ERROR;
+		g_propagate_error (error, local_error);
+	}
+
+	return result;
+}
+
 /* Object initialization function for the file backend */
 static void
 e_cal_backend_http_init (ECalBackendHttp *cbhttp)
@@ -1411,10 +1578,10 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 
 	object_class->dispose = e_cal_backend_http_dispose;
 	object_class->finalize = e_cal_backend_http_finalize;
+	object_class->constructed = e_cal_backend_http_constructed;
 
 	sync_class->get_backend_property_sync	= e_cal_backend_http_get_backend_property;
 	sync_class->open_sync			= e_cal_backend_http_open;
-	sync_class->authenticate_user_sync	= e_cal_backend_http_authenticate_user;
 	sync_class->refresh_sync		= e_cal_backend_http_refresh;
 	sync_class->remove_sync			= e_cal_backend_http_remove;
 	sync_class->create_objects_sync		= e_cal_backend_http_create_objects;
@@ -1430,3 +1597,10 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 	backend_class->start_view		= e_cal_backend_http_start_view;
 	backend_class->internal_get_timezone	= e_cal_backend_http_internal_get_timezone;
 }
+
+static void
+e_cal_backend_http_source_authenticator_init (ESourceAuthenticatorInterface *interface)
+{
+	interface->try_password_sync = cal_backend_http_try_password_sync;
+}
+
