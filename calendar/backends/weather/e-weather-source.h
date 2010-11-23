@@ -100,7 +100,7 @@ struct _EWeatherSourceClass {
 };
 
 GType		e_weather_source_get_type	(void);
-EWeatherSource *e_weather_source_new		(const gchar *uri);
+EWeatherSource *e_weather_source_new		(const gchar *location);
 void		e_weather_source_parse		(EWeatherSource *source,
 						 EWeatherSourceFinished done,
 						 gpointer data);

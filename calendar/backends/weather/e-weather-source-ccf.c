@@ -437,26 +437,27 @@ e_weather_source_ccf_init (EWeatherSourceCCF *source)
 }
 
 EWeatherSource *
-e_weather_source_ccf_new (const gchar *uri)
+e_weather_source_ccf_new (const gchar *location)
 {
-	/* Old URI is formatted as weather://ccf/AAA[/BBB] - AAA is the 3-letter station
-	 * code for identifying the providing station (subdirectory within the crh data
-	 * repository). BBB is an optional additional station ID for the station within
-	 * the CCF file. If not present, BBB is assumed to be the same station as AAA.
-	 * But the new URI is as weather://code/name, where code is 4-letter code.
-	 * So if got the old URI, then migrate to the new one, if possible.
+	/* Old location is formatted as ccf/AAA[/BBB] - AAA is the 3-letter
+	 * station code for identifying the providing station (subdirectory
+	 * within the crh data repository). BBB is an optional additional
+	 * station ID for the station within the CCF file. If not present,
+	 * BBB is assumed to be the same station as AAA.  But the new
+	 * location is code/name, where code is 4-letter code.  So if we
+	 * got the old format, then migrate to the new one, if possible.
 	 */
 
 	WeatherLocation *wl;
 	EWeatherSourceCCF *source;
 
-	if (uri == NULL)
+	if (location == NULL)
 		return NULL;
 
-	if (strncmp (uri, "ccf/", 4) == 0)
-		wl = find_location (uri + 4, TRUE);
+	if (strncmp (location, "ccf/", 4) == 0)
+		wl = find_location (location + 4, TRUE);
 	else
-		wl = find_location (uri, FALSE);
+		wl = find_location (location, FALSE);
 
 	if (wl == NULL)
 		return NULL;

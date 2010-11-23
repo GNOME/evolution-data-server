@@ -21,6 +21,8 @@ libecalbackendweather_la_SOURCES =	\
 	e-cal-backend-weather-factory.c	\
 	e-cal-backend-weather.c		\
 	e-cal-backend-weather.h		\
+	e-source-weather.c		\
+	e-source-weather.h		\
 	e-weather-source.c		\
 	e-weather-source.h		\
 	e-weather-source-ccf.c		\

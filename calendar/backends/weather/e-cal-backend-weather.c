@@ -23,9 +23,11 @@
 #include <libedata-cal/e-cal-backend-file-store.h>
 #include <libedata-cal/e-cal-backend-util.h>
 #include <libedata-cal/e-cal-backend-sexp.h>
+#include <libedataserver/e-source-refresh.h>
 #include <glib/gi18n-lib.h>
 #include <string.h>
 #include "e-cal-backend-weather.h"
+#include "e-source-weather.h"
 #include "e-weather-source.h"
 
 #define GWEATHER_I_KNOW_THIS_IS_UNSTABLE
@@ -60,7 +62,6 @@ struct _ECalBackendWeatherPrivate {
 
 	/* Reload */
 	guint reload_timeout_id;
-	guint source_changed_id;
 	guint is_loading : 1;
 
 	/* Flags */
@@ -92,21 +93,13 @@ reload_cb (ECalBackendWeather *cbw)
 }
 
 static void
-source_changed (ESource *source,
-                ECalBackendWeather *cbw)
-{
-	/* FIXME
-	 * We should force a reload of the data when this gets called. Unfortunately,
-	 * this signal isn't getting through from evolution to the backend
-	 */
-}
-
-static void
 maybe_start_reload_timeout (ECalBackendWeather *cbw)
 {
 	ECalBackendWeatherPrivate *priv;
 	ESource *source;
-	const gchar *refresh_str;
+	ESourceRefresh *extension;
+	const gchar *extension_name;
+	guint interval_in_minutes = 0;
 
 	priv = cbw->priv;
 
@@ -114,27 +107,25 @@ maybe_start_reload_timeout (ECalBackendWeather *cbw)
 		return;
 
 	source = e_backend_get_source (E_BACKEND (cbw));
-	if (!source) {
-		g_warning ("Could not get source for ECalBackendWeather reload.");
-		return;
-	}
 
-	if (priv->source_changed_id == 0)
-		priv->source_changed_id = g_signal_connect (G_OBJECT (source),
-							    "changed",
-							    G_CALLBACK (source_changed),
-							    cbw);
-
-	refresh_str = e_source_get_property (source, "refresh");
+	extension_name = E_SOURCE_EXTENSION_REFRESH;
+	extension = e_source_get_extension (source, extension_name);
 
 	/* By default, reload every 4 hours. At least for CCF, the forecasts
 	 * only come out twice a day, and chances are while the NWS and similar
 	 * organizations have some serious bandwidth, they would appreciate it
 	 * if we didn't hammer their servers. */
-	priv->reload_timeout_id = g_timeout_add (
-		(refresh_str ? atoi (refresh_str) : 240) * 60000,
-		(GSourceFunc) reload_cb, cbw);
+	if (e_source_refresh_get_enabled (extension)) {
+		interval_in_minutes =
+			e_source_refresh_get_interval_minutes (extension);
+		if (interval_in_minutes == 0)
+			interval_in_minutes = 240;
+	}
 
+	if (interval_in_minutes > 0)
+		priv->reload_timeout_id = g_timeout_add_seconds (
+			interval_in_minutes * 60,
+			(GSourceFunc) reload_cb, cbw);
 }
 
 /* TODO Do not replicate this in every backend */
@@ -237,20 +228,29 @@ static gboolean
 begin_retrieval_cb (ECalBackendWeather *cbw)
 {
 	ECalBackendWeatherPrivate *priv = cbw->priv;
+	ESource *e_source;
 	GSource *source;
+
+	/* XXX Too much overloading of the word 'source' here! */
 
 	if (!e_backend_get_online (E_BACKEND (cbw)))
 		return TRUE;
 
 	maybe_start_reload_timeout (cbw);
 
-	if (priv->source == NULL) {
-		ESource *e_source;
-		const gchar *uri;
+	e_source = e_backend_get_source (E_BACKEND (cbw));
 
-		e_source = e_backend_get_source (E_BACKEND (cbw));
-		uri = e_source_get_uri (e_source);
-		priv->source = e_weather_source_new (uri);
+	if (priv->source == NULL) {
+		ESourceWeather *extension;
+		const gchar *extension_name;
+		gchar *location;
+
+		extension_name = E_SOURCE_EXTENSION_WEATHER_BACKEND;
+		extension = e_source_get_extension (e_source, extension_name);
+
+		location = e_source_weather_dup_location (extension);
+		priv->source = e_weather_source_new (location);
+		g_free (location);
 	}
 
 	source = g_main_current_source ();
@@ -319,11 +319,13 @@ create_weather (ECalBackendWeather *cbw,
 	GSList                    *text_list = NULL;
 	ECalComponentText         *description;
 	ESource                   *source;
-	gboolean                   metric;
-	const gchar                *tmp;
+	const gchar               *tmp;
 	time_t			   update_time;
 	icaltimezone		  *update_zone = NULL;
+	ESourceWeather            *extension;
+	const gchar               *extension_name;
 	const WeatherLocation     *location;
+	ESourceWeatherUnits        units;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_WEATHER (cbw), NULL);
 
@@ -333,21 +335,16 @@ create_weather (ECalBackendWeather *cbw,
 	priv = cbw->priv;
 
 	source = e_backend_get_source (E_BACKEND (cbw));
-	tmp = e_source_get_property (source, "units");
-	if (tmp == NULL) {
-		tmp = e_source_get_property (source, "temperature");
-		if (tmp == NULL)
-			metric = FALSE;
-		else
-			metric = (strcmp (tmp, "fahrenheit") != 0);
-	} else {
-		metric = (strcmp (tmp, "metric") == 0);
-	}
 
-	if (metric)
-		weather_info_to_metric (report);
-	else
+	extension_name = E_SOURCE_EXTENSION_WEATHER_BACKEND;
+	extension = e_source_get_extension (source, extension_name);
+	units = e_source_weather_get_units (extension);
+
+	/* Prefer metric if units is invalid. */
+	if (units == E_SOURCE_WEATHER_UNITS_IMPERIAL)
 		weather_info_to_imperial (report);
+	else
+		weather_info_to_metric (report);
 
 	/* create the component and event object */
 	ical_comp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
@@ -496,21 +493,26 @@ e_cal_backend_weather_open (ECalBackendSync *backend,
 	ECalBackendWeather *cbw;
 	ECalBackendWeatherPrivate *priv;
 	ESource *source;
+	ESourceWeather *extension;
+	const gchar *extension_name;
 	const gchar *cache_dir;
-	const gchar *uri;
+	gchar *location;
 	gboolean online;
 
 	cbw = E_CAL_BACKEND_WEATHER (backend);
 	priv = cbw->priv;
 
 	source = e_backend_get_source (E_BACKEND (backend));
-	uri = e_source_get_uri (source);
-
 	cache_dir = e_cal_backend_get_cache_dir (E_CAL_BACKEND (backend));
 
-	if (priv->city)
-		g_free (priv->city);
-	priv->city = g_strdup (strrchr (uri, '/') + 1);
+	extension_name = E_SOURCE_EXTENSION_WEATHER_BACKEND;
+	extension = e_source_get_extension (source, extension_name);
+
+	g_free (priv->city);
+
+	location = e_source_weather_dup_location (extension);
+	priv->city = g_strdup (strrchr (location, '/') + 1);
+	g_free (location);
 
 	e_cal_backend_notify_readonly (E_CAL_BACKEND (backend), TRUE);
 
@@ -903,4 +905,7 @@ e_cal_backend_weather_class_init (ECalBackendWeatherClass *class)
 
 	backend_class->start_view		= e_cal_backend_weather_start_view;
 	backend_class->internal_get_timezone	= e_cal_backend_weather_internal_get_timezone;
+
+	/* Register our ESource extension. */
+	E_TYPE_SOURCE_WEATHER;
 }

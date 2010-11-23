@@ -53,9 +53,9 @@ e_weather_source_init (EWeatherSource *source)
 }
 
 EWeatherSource *
-e_weather_source_new (const gchar *uri)
+e_weather_source_new (const gchar *location)
 {
-	const gchar *base = uri + 10; /* skip weather:// */
+	g_return_val_if_fail (location != NULL, NULL);
 
-	return e_weather_source_ccf_new (base);
+	return e_weather_source_ccf_new (location);
 }

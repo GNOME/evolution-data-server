@@ -69,7 +69,7 @@ struct _EWeatherSourceCCFClass {
 };
 
 GType		e_weather_source_ccf_get_type	(void);
-EWeatherSource *e_weather_source_ccf_new	(const gchar *uri);
+EWeatherSource *e_weather_source_ccf_new	(const gchar *location);
 
 G_END_DECLS
 
