@@ -17,7 +17,9 @@ libecalbackendcontacts_la_CPPFLAGS = \
 libecalbackendcontacts_la_SOURCES =		\
 	e-cal-backend-contacts-factory.c	\
 	e-cal-backend-contacts.c		\
-	e-cal-backend-contacts.h
+	e-cal-backend-contacts.h		\
+	e-source-contacts.c			\
+	e-source-contacts.h
 
 libecalbackendcontacts_la_LIBADD =						\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la				\

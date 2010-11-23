@@ -11,6 +11,7 @@
 
 #include <libedata-cal/e-cal-backend-factory.h>
 #include "e-cal-backend-contacts.h"
+#include "e-source-contacts.h"
 
 #define FACTORY_NAME "contacts"
 
@@ -50,6 +51,7 @@ e_cal_backend_contacts_events_factory_init (ECalBackendFactory *factory)
 G_MODULE_EXPORT void
 e_module_load (GTypeModule *type_module)
 {
+	e_source_contacts_type_register (type_module);
 	e_cal_backend_contacts_events_factory_register_type (type_module);
 }
 
