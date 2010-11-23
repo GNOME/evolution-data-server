@@ -111,6 +111,7 @@ e_calendar_factory_CPPFLAGS = \
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
 e_calendar_factory_LDADD =						\
+	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
 	$(top_builddir)/calendar/libegdbus/libegdbus-cal.la		\
 	libedata-cal-1.2.la						\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la 		\
@@ -131,6 +132,7 @@ test_e_sexp_LDADD = \
 	libedata-cal-1.2.la					\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la 	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
+	$(EVOLUTION_CALENDAR_LIBS)				\
 	$(E_DATA_SERVER_LIBS)
 
 test_intervaltree_SOURCES = test-intervaltree.c e-cal-backend-intervaltree.c

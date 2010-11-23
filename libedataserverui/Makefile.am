@@ -98,11 +98,15 @@ TEST_EDATASERVERUI_CPPFLAGS= \
 if ENABLE_GTK3
 TEST_EDATASERVERUI_LDFLAGS = \
 	libedataserverui-3.0.la 				\
+	$(top_builddir)/camel/libcamel-1.2.la			\
+	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(E_DATA_SERVER_UI_LIBS)
 else
 TEST_EDATASERVERUI_LDFLAGS = \
 	libedataserverui-1.2.la 				\
+	$(top_builddir)/camel/libcamel-1.2.la			\
+	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(E_DATA_SERVER_UI_LIBS)
 endif
