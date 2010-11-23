@@ -54,6 +54,7 @@ test_imapx_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"camel-imapx\"
 test_imapx_SOURCES = test-imapx.c
 test_imapx_LDADD =							\
+	$(CAMEL_LIBS)							\
 	$(top_builddir)/camel/libcamel-1.2.la				\
 	$(top_builddir)/camel/libcamel-provider-1.2.la
 
