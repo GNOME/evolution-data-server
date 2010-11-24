@@ -1839,7 +1839,7 @@ camel_folder_info_build (GPtrArray *folders,
 				tail = tail->next;
 			tail->next = fi;
 			fi->parent = pfi;
-		} else if (!top)
+		} else if (!top || !g_ascii_strcasecmp (fi->full_name, "Inbox"))
 			top = fi;
 	}
 	g_hash_table_destroy (hash);
