@@ -30,10 +30,6 @@
 
 G_BEGIN_DECLS
 
-EBook *		e_load_book_source		(ESource *source,
-						 EBookCallback open_func,
-						 gpointer user_data);
-
 void		e_load_book_source_async	(ESource *source,
 						 GtkWindow *parent,
 						 GCancellable *cancellable,
