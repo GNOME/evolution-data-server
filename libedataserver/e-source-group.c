@@ -246,8 +246,10 @@ e_source_group_new (const gchar *name,
 	return new;
 }
 
-ESourceGroup *
-e_source_group_new_from_xml (const gchar *xml)
+static ESourceGroup *source_group_new_from_xmldoc (xmlDocPtr doc, gboolean can_migrate);
+
+static ESourceGroup *
+source_group_new_from_xml (const gchar *xml, gboolean can_migrate)
 {
 	xmlDocPtr doc;
 	ESourceGroup *group;
@@ -256,14 +258,20 @@ e_source_group_new_from_xml (const gchar *xml)
 	if (doc == NULL)
 		return NULL;
 
-	group = e_source_group_new_from_xmldoc (doc);
+	group = source_group_new_from_xmldoc (doc, can_migrate);
 	xmlFreeDoc (doc);
 
 	return group;
 }
 
 ESourceGroup *
-e_source_group_new_from_xmldoc (xmlDocPtr doc)
+e_source_group_new_from_xml (const gchar *xml)
+{
+	return source_group_new_from_xml (xml, TRUE);
+}
+
+static ESourceGroup *
+source_group_new_from_xmldoc (xmlDocPtr doc, gboolean can_migrate)
 {
 	xmlNodePtr root, p;
 	xmlChar *uid;
@@ -300,7 +308,7 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 	 *     directory, but that caused all kinds of portability
 	 *     issues so now we just use "local:" and leave the
 	 *     absolute file system path implicit. */
-	if (g_str_has_prefix (GC base_uri, "file:"))
+	if (can_migrate && g_str_has_prefix (GC base_uri, "file:"))
 		e_source_group_set_base_uri (new, "local:");
 	else
 		e_source_group_set_base_uri (new, GC base_uri);
@@ -337,6 +345,12 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 	if (readonly_str != NULL)
 		xmlFree (readonly_str);
 	return new;
+}
+
+ESourceGroup *
+e_source_group_new_from_xmldoc (xmlDocPtr doc)
+{
+	return source_group_new_from_xmldoc (doc, TRUE);
 }
 
 gboolean
@@ -901,8 +915,8 @@ e_source_group_xmlstr_equal (const gchar *a, const gchar *b)
 	ESourceGroup *grpa, *grpb;
 	gboolean retval;
 
-	grpa = e_source_group_new_from_xml (a);
-	grpb = e_source_group_new_from_xml (b);
+	grpa = source_group_new_from_xml (a, FALSE);
+	grpb = source_group_new_from_xml (b, FALSE);
 
 	retval = e_source_group_equal (grpa, grpb);
 
