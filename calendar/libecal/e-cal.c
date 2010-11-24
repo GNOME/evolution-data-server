@@ -1354,7 +1354,7 @@ e_cal_open (ECal *ecal, gboolean only_if_exists, GError **error)
 struct idle_async_error_reply_data
 {
 	ECal *ecal; /* ref-ed */
-	GError *error; /* cannot be NULL */
+	GError *error; /* can be NULL */
 };
 
 static gboolean
@@ -1364,15 +1364,30 @@ idle_async_error_reply_cb (gpointer user_data)
 
 	g_return_val_if_fail (data != NULL, FALSE);
 	g_return_val_if_fail (data->ecal != NULL, FALSE);
-	g_return_val_if_fail (data->error != NULL, FALSE);
 
 	async_open_report_result (data->ecal, data->error);
 
 	g_object_unref (data->ecal);
-	g_error_free (data->error);
+	if (data->error)
+		g_error_free (data->error);
 	g_free (data);
 
 	return FALSE;
+}
+
+/* takes ownership of error */
+static void
+async_report_idle (ECal *ecal, GError *error)
+{
+	struct idle_async_error_reply_data *data;
+
+	g_return_if_fail (ecal != NULL);
+
+	data = g_new0 (struct idle_async_error_reply_data, 1);
+	data->ecal = g_object_ref (ecal);
+	data->error = error;
+
+	g_idle_add (idle_async_error_reply_cb, data);
 }
 
 /**
@@ -1409,20 +1424,10 @@ e_cal_open_async (ECal *ecal, gboolean only_if_exists)
 	switch (priv->load_state) {
 	case E_CAL_LOAD_AUTHENTICATING :
 	case E_CAL_LOAD_LOADING :
-		#ifndef E_CAL_DISABLE_DEPRECATED
-		g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED], 0, E_CALENDAR_STATUS_BUSY);
-		#endif
-
-		error = g_error_new_literal (E_CALENDAR_ERROR, E_CALENDAR_STATUS_BUSY, e_cal_get_error_message (E_CALENDAR_STATUS_BUSY));
-		g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED_EX], 0, error);
-		g_error_free (error);
+		async_report_idle (ecal, g_error_new_literal (E_CALENDAR_ERROR, E_CALENDAR_STATUS_BUSY, e_cal_get_error_message (E_CALENDAR_STATUS_BUSY)));
 		return;
 	case E_CAL_LOAD_LOADED :
-		#ifndef E_CAL_DISABLE_DEPRECATED
-		g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED], 0, E_CALENDAR_STATUS_OK);
-		#endif
-
-		g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED_EX], 0, NULL);
+		async_report_idle (ecal, NULL /* success */);
 		return;
 	default:
 		/* ignore everything else */
@@ -1434,14 +1439,9 @@ e_cal_open_async (ECal *ecal, gboolean only_if_exists)
 		&status,
 		#endif
 		FALSE, TRUE);
-	if (error) {
-		struct idle_async_error_reply_data *data;
 
-		data = g_new0 (struct idle_async_error_reply_data, 1);
-		data->ecal = g_object_ref (ecal);
-		data->error = error;
-		g_idle_add (idle_async_error_reply_cb, data);
-	}
+	if (error)
+		async_report_idle (ecal, error);
 }
 
 /**
