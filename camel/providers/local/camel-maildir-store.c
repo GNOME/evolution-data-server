@@ -265,7 +265,7 @@ maildir_store_delete_folder_sync (CamelStore *store,
 	struct stat st;
 	gboolean success = TRUE;
 
-	if (!g_ascii_strcasecmp (folder_name, "Inbox") == 0) {
+	if (g_ascii_strcasecmp (folder_name, "Inbox") == 0) {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_NO_FOLDER,
