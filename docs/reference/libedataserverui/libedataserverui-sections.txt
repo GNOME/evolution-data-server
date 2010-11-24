@@ -205,6 +205,7 @@ e_destination_store_get_type
 <TITLE>ENameSelector</TITLE>
 ENameSelector
 e_name_selector_new
+e_name_selector_get_registry
 e_name_selector_peek_model
 e_name_selector_peek_dialog
 e_name_selector_peek_section_entry

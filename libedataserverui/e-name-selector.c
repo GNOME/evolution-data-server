@@ -29,10 +29,12 @@
 #include <glib/gi18n-lib.h>
 #include <libebook/e-book-client.h>
 #include <libebook/e-contact.h>
-
-#include "e-contact-store.h"
-#include "e-destination-store.h"
-#include "e-client-utils.h"
+#include <libedataserver/e-source-address-book.h>
+#include <libedataserver/e-source-autocomplete.h>
+#include <libedataserverui/e-client-utils.h>
+#include <libedataserverui/e-contact-store.h>
+#include <libedataserverui/e-destination-store.h>
+#include <libedataserverui/e-book-auth-util.h>
 #include "e-name-selector.h"
 
 #define E_NAME_SELECTOR_GET_PRIVATE(obj) \
@@ -50,15 +52,20 @@ typedef struct {
 } SourceBook;
 
 struct _ENameSelectorPrivate {
+	ESourceRegistry *registry;
 	ENameSelectorModel *model;
 	ENameSelectorDialog *dialog;
 
 	GArray *sections;
-	ESourceList *source_list;
 
 	gboolean books_loaded;
 	GCancellable *cancellable;
 	GArray *source_books;
+};
+
+enum {
+	PROP_0,
+	PROP_REGISTRY
 };
 
 G_DEFINE_TYPE (ENameSelector, e_name_selector, G_TYPE_OBJECT)
@@ -153,58 +160,41 @@ name_selector_book_loaded_cb (GObject *source_object,
 void
 e_name_selector_load_books (ENameSelector *name_selector)
 {
-	ESourceList *source_list;
-	GSList *groups;
-	GSList *iter1;
+	ESourceRegistry *registry;
+	GList *list, *iter;
+	const gchar *extension_name;
 
 	g_return_if_fail (E_IS_NAME_SELECTOR (name_selector));
-	g_return_if_fail (!name_selector->priv->books_loaded);
 
-	name_selector->priv->books_loaded = TRUE;
+	extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
+	registry = e_name_selector_get_registry (name_selector);
+	list = e_source_registry_list_sources (registry, extension_name);
 
-	if (!e_book_client_get_sources (&source_list, NULL)) {
-		g_warning ("ENameSelector can't find any addressbooks!");
-		return;
+	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
+		ESource *source = E_SOURCE (iter->data);
+		ESourceAutocomplete *extension;
+		const gchar *extension_name;
+
+		extension_name = E_SOURCE_EXTENSION_AUTOCOMPLETE;
+		extension = e_source_get_extension (source, extension_name);
+
+		/* Skip disabled address books. */
+		if (!e_source_get_enabled (source))
+			continue;
+
+		/* Only load address books with autocomplete enabled,
+		 * so as to avoid unnecessary authentication prompts. */
+		if (!e_source_autocomplete_get_include_me (extension))
+			continue;
+
+		e_client_utils_open_new (
+			source, E_CLIENT_SOURCE_TYPE_CONTACTS,
+			TRUE, name_selector->priv->cancellable,
+			name_selector_book_loaded_cb,
+			g_object_ref (name_selector));
 	}
 
-	/* This keeps the source groups alive while the async operation
-	 * is running, without which e_book_new() can't obtain an absolute
-	 * URI for the ESource.   We drop the reference in dispose(). */
-	name_selector->priv->source_list = source_list;
-
-	groups = e_source_list_peek_groups (source_list);
-
-	for (iter1 = groups; iter1 != NULL; iter1 = iter1->next) {
-		ESourceGroup *source_group;
-		GSList *sources;
-		GSList *iter2;
-
-		source_group = E_SOURCE_GROUP (iter1->data);
-		sources = e_source_group_peek_sources (source_group);
-
-		for (iter2 = sources; iter2 != NULL; iter2 = iter2->next) {
-			ESource *source;
-			const gchar *property;
-
-			source = E_SOURCE (iter2->data);
-
-			/* We're only loading completion books for now,
-			 * as we don't want unnecessary authentication
-			 * prompts. */
-			property = e_source_get_property (source, "completion");
-
-			if (property == NULL)
-				continue;
-
-			if (g_ascii_strcasecmp (property, "true") != 0)
-				continue;
-
-			e_client_utils_open_new (
-				source, E_CLIENT_SOURCE_TYPE_CONTACTS, TRUE, name_selector->priv->cancellable,
-				e_client_utils_authenticate_handler, NULL,
-				name_selector_book_loaded_cb, g_object_ref (name_selector));
-		}
-	}
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 }
 
 /**
@@ -226,6 +216,51 @@ e_name_selector_cancel_loading (ENameSelector *name_selector)
 }
 
 static void
+name_selector_set_registry (ENameSelector *name_selector,
+                            ESourceRegistry *registry)
+{
+	g_return_if_fail (E_IS_SOURCE_REGISTRY (registry));
+	g_return_if_fail (name_selector->priv->registry == NULL);
+
+	name_selector->priv->registry = g_object_ref (registry);
+}
+
+static void
+name_selector_set_property (GObject *object,
+                            guint property_id,
+                            const GValue *value,
+                            GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_REGISTRY:
+			name_selector_set_registry (
+				E_NAME_SELECTOR (object),
+				g_value_get_object (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+name_selector_get_property (GObject *object,
+                            guint property_id,
+                            GValue *value,
+                            GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_REGISTRY:
+			g_value_set_object (
+				value,
+				e_name_selector_get_registry (
+				E_NAME_SELECTOR (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
 name_selector_dispose (GObject *object)
 {
 	ENameSelectorPrivate *priv;
@@ -237,11 +272,6 @@ name_selector_dispose (GObject *object)
 		g_cancellable_cancel (priv->cancellable);
 		g_object_unref (priv->cancellable);
 		priv->cancellable = NULL;
-	}
-
-	if (priv->source_list != NULL) {
-		g_object_unref (priv->source_list);
-		priv->source_list = NULL;
 	}
 
 	for (ii = 0; ii < priv->source_books->len; ii++) {
@@ -293,8 +323,22 @@ e_name_selector_class_init (ENameSelectorClass *class)
 	g_type_class_add_private (class, sizeof (ENameSelectorPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = name_selector_set_property;
+	object_class->get_property = name_selector_get_property;
 	object_class->dispose = name_selector_dispose;
 	object_class->finalize = name_selector_finalize;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_REGISTRY,
+		g_param_spec_object (
+			"registry",
+			"Registry",
+			"Data source registry",
+			E_TYPE_SOURCE_REGISTRY,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -316,15 +360,28 @@ e_name_selector_init (ENameSelector *name_selector)
 
 /**
  * e_name_selector_new:
+ * @registry: an #ESourceRegistry
  *
  * Creates a new #ENameSelector.
  *
  * Returns: A new #ENameSelector.
  **/
 ENameSelector *
-e_name_selector_new (void)
+e_name_selector_new (ESourceRegistry *registry)
 {
-	return g_object_new (E_TYPE_NAME_SELECTOR, NULL);
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
+
+	return g_object_new (
+		E_TYPE_NAME_SELECTOR,
+		"registry", registry, NULL);
+}
+
+ESourceRegistry *
+e_name_selector_get_registry (ENameSelector *name_selector)
+{
+	g_return_val_if_fail (E_IS_NAME_SELECTOR (name_selector), NULL);
+
+	return name_selector->priv->registry;
 }
 
 /* ------- *
@@ -403,10 +460,12 @@ e_name_selector_peek_dialog (ENameSelector *name_selector)
 	g_return_val_if_fail (E_IS_NAME_SELECTOR (name_selector), NULL);
 
 	if (name_selector->priv->dialog == NULL) {
+		ESourceRegistry *registry;
 		ENameSelectorDialog *dialog;
 		ENameSelectorModel *model;
 
-		dialog = e_name_selector_dialog_new ();
+		registry = e_name_selector_get_registry (name_selector);
+		dialog = e_name_selector_dialog_new (registry);
 		name_selector->priv->dialog = dialog;
 
 		model = e_name_selector_peek_model (name_selector);
@@ -485,11 +544,13 @@ e_name_selector_peek_section_entry (ENameSelector *name_selector,
 	section = &g_array_index (name_selector->priv->sections, Section, n);
 
 	if (!section->entry) {
+		ESourceRegistry *registry;
 		EContactStore *contact_store;
 		gchar         *text;
 		gint           i;
 
-		section->entry = e_name_selector_entry_new ();
+		registry = e_name_selector_get_registry (name_selector);
+		section->entry = e_name_selector_entry_new (registry);
 		g_object_weak_ref (G_OBJECT (section->entry), reset_pointer_cb, name_selector);
 		if (pango_parse_markup (name, -1, '_', NULL,
 					&text, NULL, NULL))  {
@@ -555,11 +616,13 @@ e_name_selector_peek_section_list (ENameSelector *name_selector,
 
 	if (!section->entry) {
 		EContactStore *contact_store;
+		ESourceRegistry *registry;
 		gchar         *text;
 		gint           i;
 
+		registry = name_selector->priv->registry;
 		section->entry = (ENameSelectorEntry *)
-			e_name_selector_list_new ();
+			e_name_selector_list_new (registry);
 		g_object_weak_ref (G_OBJECT (section->entry), reset_pointer_cb, name_selector);
 		if (pango_parse_markup (name, -1, '_', NULL,
 					&text, NULL, NULL))  {

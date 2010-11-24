@@ -41,7 +41,7 @@ close_dialog (GtkWidget *widget,
 }
 
 static gboolean
-start_test (void)
+start_test (ESourceRegistry *registry)
 {
 	ENameSelectorModel  *name_selector_model;
 	ENameSelectorEntry  *name_selector_entry;
@@ -55,11 +55,11 @@ start_test (void)
 	e_name_selector_model_add_section (name_selector_model, "cc", "Cc", NULL);
 	e_name_selector_model_add_section (name_selector_model, "bcc", "Bcc", NULL);
 
-	name_selector_dialog = e_name_selector_dialog_new ();
+	name_selector_dialog = e_name_selector_dialog_new (registry);
 	e_name_selector_dialog_set_model (name_selector_dialog, name_selector_model);
 	gtk_window_set_modal (GTK_WINDOW (name_selector_dialog), FALSE);
 
-	name_selector_entry = e_name_selector_entry_new ();
+	name_selector_entry = e_name_selector_entry_new (registry);
 	e_name_selector_entry_set_destination_store (name_selector_entry, destination_store);
 
 	g_signal_connect (name_selector_dialog, "response", G_CALLBACK (close_dialog), name_selector_dialog);
@@ -80,11 +80,22 @@ gint
 main (gint argc,
       gchar **argv)
 {
+	ESourceRegistry *registry;
+	GError *error = NULL;
+
 	gtk_init (&argc, &argv);
 
 	camel_init (NULL, 0);
 
-	g_idle_add ((GSourceFunc) start_test, NULL);
+	registry = e_source_registry_new_sync (NULL, &error);
+
+	if (error != NULL) {
+		g_error ("Failed to load ESource registry: %s",
+			error->message);
+		g_assert_not_reached ();
+	}
+
+	g_idle_add ((GSourceFunc) start_test, registry);
 
 	gtk_main ();
 

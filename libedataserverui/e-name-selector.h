@@ -23,7 +23,7 @@
 #ifndef E_NAME_SELECTOR_H
 #define E_NAME_SELECTOR_H
 
-#include <libedataserver/e-source-list.h>
+#include <libedataserver/e-source-registry.h>
 #include <libedataserverui/e-name-selector-model.h>
 #include <libedataserverui/e-name-selector-dialog.h>
 #include <libedataserverui/e-name-selector-entry.h>
@@ -64,7 +64,9 @@ struct _ENameSelectorClass {
 };
 
 GType		e_name_selector_get_type	(void);
-ENameSelector *	e_name_selector_new		(void);
+ENameSelector *	e_name_selector_new		(ESourceRegistry *registry);
+ESourceRegistry *
+		e_name_selector_get_registry	(ENameSelector *name_selector);
 ENameSelectorModel *
 		e_name_selector_peek_model	(ENameSelector *name_selector);
 ENameSelectorDialog *
