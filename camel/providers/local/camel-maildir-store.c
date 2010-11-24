@@ -513,7 +513,7 @@ scan_dirs (CamelStore *store,
 	meta_path = maildir_get_meta_path ((CamelLocalStore *) store, ".", "maildir++");
 	if (!g_file_test (meta_path, G_FILE_TEST_EXISTS))
 		maildir_migrate_hierarchy ((CamelMaildirStore *) store, cancellable, error);
-
+	
 	while ((d = readdir (dir))) {
 		gchar *full_name, *filename;
 		const gchar *short_name;
@@ -561,7 +561,7 @@ scan_dirs (CamelStore *store,
 	closedir (dir);
 	
 	if (folders->len != 0) {
-		if (!strcmp (topfi->full_name, "."))
+		if (!g_ascii_strcasecmp (topfi->full_name, "Inbox"))
 			camel_folder_info_build (folders, "", '/', TRUE);
 		else
 			camel_folder_info_build (folders, topfi->full_name, '/', TRUE);
