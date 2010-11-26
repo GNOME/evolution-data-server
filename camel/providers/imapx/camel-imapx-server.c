@@ -5202,7 +5202,8 @@ camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, Cam
 	tmp = camel_data_cache_get_filename (ifolder->cache, "new", uid, NULL);
 	info = camel_folder_summary_info_new_from_message((CamelFolderSummary *)folder->summary, message, NULL);
 	info->uid = camel_pstring_strdup (uid);
-	((CamelMessageInfoBase *) info)->flags = ((CamelMessageInfoBase *) mi)->flags;
+	if (mi)
+		((CamelMessageInfoBase *) info)->flags = ((CamelMessageInfoBase *) mi)->flags;
 	g_free (uid);
 
 	/* So, we actually just want to let the server loop that
