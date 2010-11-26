@@ -30,6 +30,7 @@
 
 #include <glib-object.h>
 #include <libedataserver/e-debug-log.h>
+#include "libedataserver/e-data-server-util.h"
 #include "e-cal-backend-sexp.h"
 #include "e-data-cal-view.h"
 #include "e-gdbus-egdbuscalview.h"
@@ -278,7 +279,7 @@ notify_remove (EDataCalView *view, ECalComponentId *id)
 	}
 
 	/* TODO: store ECalComponentId instead of just uid*/
-	uid = g_strdup (id->uid);
+	uid = e_util_utf8_make_valid (id->uid);
 	g_array_append_val (priv->removes, uid);
 
 	g_hash_table_remove (priv->ids, id);
@@ -289,11 +290,15 @@ notify_remove (EDataCalView *view, ECalComponentId *id)
 static void
 notify_done (EDataCalView *view, const GError *error)
 {
+	gchar *gdbus_error_msg = NULL;
+
 	send_pending_adds (view);
 	send_pending_changes (view);
 	send_pending_removes (view);
 
-	e_gdbus_cal_view_emit_done (view->priv->gdbus_object, error ? error->code : 0, error ? error->message : "");
+	e_gdbus_cal_view_emit_done (view->priv->gdbus_object, error ? error->code : 0, e_util_ensure_gdbus_string (error ? error->message : "", &gdbus_error_msg));
+
+	g_free (gdbus_error_msg);
 }
 
 static gboolean
@@ -604,7 +609,7 @@ e_data_cal_view_notify_objects_added (EDataCalView *view, const GList *objects)
 	g_mutex_lock (priv->pending_mutex);
 
 	for (l = objects; l; l = l->next) {
-		notify_add (view, g_strdup (l->data));
+		notify_add (view, e_util_utf8_make_valid (l->data));
 	}
 
 	g_mutex_unlock (priv->pending_mutex);
@@ -652,7 +657,7 @@ e_data_cal_view_notify_objects_modified (EDataCalView *view, const GList *object
 
 	for (l = objects; l; l = l->next) {
 		/* TODO: send add/remove/change as relevant, based on ->ids */
-		notify_change (view, g_strdup (l->data));
+		notify_change (view, e_util_utf8_make_valid (l->data));
 	}
 
 	g_mutex_unlock (priv->pending_mutex);
@@ -738,6 +743,7 @@ void
 e_data_cal_view_notify_progress (EDataCalView *view, const gchar *message, gint percent)
 {
 	EDataCalViewPrivate *priv;
+	gchar *gdbus_message = NULL;
 
 	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
 	priv = view->priv;
@@ -745,7 +751,9 @@ e_data_cal_view_notify_progress (EDataCalView *view, const gchar *message, gint 
 	if (!priv->started || priv->stopped)
 		return;
 
-	e_gdbus_cal_view_emit_progress (view->priv->gdbus_object, message ? message : "", percent);
+	e_gdbus_cal_view_emit_progress (view->priv->gdbus_object, e_util_ensure_gdbus_string (message, &gdbus_message), percent);
+
+	g_free (gdbus_message);
 }
 
 /**

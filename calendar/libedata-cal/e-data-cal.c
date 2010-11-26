@@ -32,6 +32,7 @@
 
 #include <glib-object.h>
 #include <libedataserver/e-debug-log.h>
+#include <libedataserver/e-data-server-util.h>
 #include "e-data-cal.h"
 #include "e-data-cal-enumtypes.h"
 #include "e-gdbus-egdbuscal.h"
@@ -537,7 +538,7 @@ impl_Cal_setDefaultTimezone (EGdbusCal *object, GDBusMethodInvocation *invocatio
 	return TRUE;
 }
 
-/* free returned pointer with g_free() */
+/* free returned pointer with g_strfreev() */
 static gchar **
 create_str_array_from_glist (GList *lst)
 {
@@ -547,13 +548,13 @@ create_str_array_from_glist (GList *lst)
 
 	seq = g_new0 (gchar *, g_list_length (lst) + 1);
 	for (l = lst, i = 0; l; l = l->next, i++) {
-		seq[i] = l->data;
+		seq[i] = e_util_utf8_make_valid (l->data);
 	}
 
 	return seq;
 }
 
-/* free returned pointer with g_free() */
+/* free returned pointer with g_strfreev() */
 static gchar **
 create_str_array_from_gslist (GSList *lst)
 {
@@ -563,7 +564,7 @@ create_str_array_from_gslist (GSList *lst)
 
 	seq = g_new0 (gchar *, g_slist_length (lst) + 1);
 	for (l = lst, i = 0; l; l = l->next, i++) {
-		seq[i] = l->data;
+		seq[i] = e_util_utf8_make_valid (l->data);
 	}
 
 	return seq;
@@ -607,8 +608,13 @@ e_data_cal_notify_cal_address (EDataCal *cal, EServerMethodContext context, GErr
 		/* Translators: The '%s' is replaced with a detailed error message */
 		data_cal_return_error (invocation, error, _("Cannot retrieve calendar address: %s"));
 		g_error_free (error);
-	} else
-		e_gdbus_cal_complete_get_cal_address (cal->priv->gdbus_object, invocation, address ? address : "");
+	} else {
+		gchar *gdbus_address = NULL;
+
+		e_gdbus_cal_complete_get_cal_address (cal->priv->gdbus_object, invocation, e_util_ensure_gdbus_string (address, &gdbus_address));
+
+		g_free (gdbus_address);
+	}
 }
 
 /**
@@ -627,8 +633,13 @@ e_data_cal_notify_alarm_email_address (EDataCal *cal, EServerMethodContext conte
 		/* Translators: The '%s' is replaced with a detailed error message */
 		data_cal_return_error (invocation, error, _("Cannot retrieve calendar alarm e-mail address: %s"));
 		g_error_free (error);
-	} else
-		e_gdbus_cal_complete_get_alarm_email_address (cal->priv->gdbus_object, invocation, address ? address : "");
+	} else {
+		gchar *gdbus_address = NULL;
+
+		e_gdbus_cal_complete_get_alarm_email_address (cal->priv->gdbus_object, invocation, e_util_ensure_gdbus_string (address, &gdbus_address));
+
+		g_free (gdbus_address);
+	}
 }
 
 /**
@@ -647,8 +658,13 @@ e_data_cal_notify_ldap_attribute (EDataCal *cal, EServerMethodContext context, G
 		/* Translators: The '%s' is replaced with a detailed error message */
 		data_cal_return_error (invocation, error, _("Cannot retrieve calendar's LDAP attribute: %s"));
 		g_error_free (error);
-	} else
-		e_gdbus_cal_complete_get_ldap_attribute (cal->priv->gdbus_object, invocation, attribute ? attribute : "");
+	} else {
+		gchar *gdbus_attribute = NULL;
+
+		e_gdbus_cal_complete_get_ldap_attribute (cal->priv->gdbus_object, invocation, e_util_ensure_gdbus_string (attribute, &gdbus_attribute));
+
+		g_free (gdbus_attribute);
+	}
 }
 
 /**
@@ -667,8 +683,13 @@ e_data_cal_notify_static_capabilities (EDataCal *cal, EServerMethodContext conte
 		/* Translators: The '%s' is replaced with a detailed error message */
 		data_cal_return_error (invocation, error, _("Cannot retrieve calendar scheduling information: %s"));
 		g_error_free (error);
-	} else
-		e_gdbus_cal_complete_get_scheduling_information (cal->priv->gdbus_object, invocation, capabilities ? capabilities : "");
+	} else {
+		gchar *gdbus_capabilities = NULL;
+
+		e_gdbus_cal_complete_get_scheduling_information (cal->priv->gdbus_object, invocation, e_util_ensure_gdbus_string (capabilities, &gdbus_capabilities));
+
+		g_free (gdbus_capabilities);
+	}
 }
 
 /**
@@ -748,8 +769,12 @@ e_data_cal_notify_object_created (EDataCal *cal, EServerMethodContext context, G
 		data_cal_return_error (invocation, error, _("Cannot create calendar object: %s"));
 		g_error_free (error);
 	} else {
+		gchar *gdbus_uid = NULL;
+
 		e_cal_backend_notify_object_created (cal->priv->backend, object);
-		e_gdbus_cal_complete_create_object (cal->priv->gdbus_object, invocation, uid ? uid : "");
+		e_gdbus_cal_complete_create_object (cal->priv->gdbus_object, invocation, e_util_ensure_gdbus_string (uid, &gdbus_uid));
+
+		g_free (gdbus_uid);
 	}
 }
 
@@ -860,10 +885,12 @@ e_data_cal_notify_objects_sent (EDataCal *cal, EServerMethodContext context, GEr
 		g_error_free (error);
 	} else {
 		gchar **users_array = create_str_array_from_glist (users);
+		gchar *gdbus_calobj = NULL;
 
-		e_gdbus_cal_complete_send_objects (cal->priv->gdbus_object, invocation, (const gchar * const *) users_array, calobj ? calobj : "");
+		e_gdbus_cal_complete_send_objects (cal->priv->gdbus_object, invocation, (const gchar * const *) users_array, e_util_ensure_gdbus_string (calobj, &gdbus_calobj));
 
-		g_free (users_array);
+		g_free (gdbus_calobj);
+		g_strfreev (users_array);
 	}
 }
 
@@ -883,8 +910,13 @@ e_data_cal_notify_default_object (EDataCal *cal, EServerMethodContext context, G
 		/* Translators: The '%s' is replaced with a detailed error message */
 		data_cal_return_error (invocation, error, _("Cannot retrieve default calendar object path: %s"));
 		g_error_free (error);
-	} else
-		e_gdbus_cal_complete_get_default_object (cal->priv->gdbus_object, invocation, object ? object : "");
+	} else {
+		gchar *gdbus_object = NULL;
+
+		e_gdbus_cal_complete_get_default_object (cal->priv->gdbus_object, invocation, e_util_ensure_gdbus_string (object, &gdbus_object));
+
+		g_free (gdbus_object);
+	}
 }
 
 /**
@@ -903,8 +935,13 @@ e_data_cal_notify_object (EDataCal *cal, EServerMethodContext context, GError *e
 		/* Translators: The '%s' is replaced with a detailed error message */
 		data_cal_return_error (invocation, error, _("Cannot retrieve calendar object path: %s"));
 		g_error_free (error);
-	} else
-		e_gdbus_cal_complete_get_object (cal->priv->gdbus_object, invocation, object ? object : "");
+	} else {
+		gchar *gdbus_object = NULL;
+
+		e_gdbus_cal_complete_get_object (cal->priv->gdbus_object, invocation, e_util_ensure_gdbus_string (object, &gdbus_object));
+
+		g_free (gdbus_object);
+	}
 }
 
 /**
@@ -928,7 +965,7 @@ e_data_cal_notify_object_list (EDataCal *cal, EServerMethodContext context, GErr
 
 		e_gdbus_cal_complete_get_object_list (cal->priv->gdbus_object, invocation, (const gchar * const *) seq);
 
-		g_free (seq);
+		g_strfreev (seq);
 	}
 }
 
@@ -954,7 +991,7 @@ e_data_cal_notify_attachment_list (EDataCal *cal, EServerMethodContext context, 
 	} else
 		e_gdbus_cal_complete_get_attachment_list (cal->priv->gdbus_object, invocation, (const gchar * const *) seq);
 
-	g_free (seq);
+	g_strfreev (seq);
 }
 
 /**
@@ -977,8 +1014,13 @@ e_data_cal_notify_query (EDataCal *cal, EServerMethodContext context, GError *er
 		/* Translators: The '%s' is replaced with a detailed error message */
 		data_cal_return_error (invocation, error, _("Could not complete calendar query: %s"));
 		g_error_free (error);
-	} else
-		e_gdbus_cal_complete_get_query (cal->priv->gdbus_object, invocation, query);
+	} else {
+		gchar *gdbus_query = NULL;
+
+		e_gdbus_cal_complete_get_query (cal->priv->gdbus_object, invocation, e_util_ensure_gdbus_string (query, &gdbus_query));
+
+		g_free (gdbus_query);
+	}
 }
 
 /**
@@ -997,8 +1039,13 @@ e_data_cal_notify_timezone_requested (EDataCal *cal, EServerMethodContext contex
 		/* Translators: The '%s' is replaced with a detailed error message */
 		data_cal_return_error (invocation, error, _("Could not retrieve calendar time zone: %s"));
 		g_error_free (error);
-	} else
-		e_gdbus_cal_complete_get_timezone (cal->priv->gdbus_object, invocation, object ? object : "");
+	} else {
+		gchar *gdbus_object = NULL;
+
+		e_gdbus_cal_complete_get_timezone (cal->priv->gdbus_object, invocation, e_util_ensure_gdbus_string (object, &gdbus_object));
+
+		g_free (gdbus_object);
+	}
 }
 
 /**
@@ -1068,9 +1115,9 @@ e_data_cal_notify_changes (EDataCal *cal, EServerMethodContext context, GError *
 
 		e_gdbus_cal_complete_get_changes (cal->priv->gdbus_object, invocation, (const gchar * const *) additions, (const gchar * const *) modifications, (const gchar * const *) removals);
 
-		g_free (additions);
-		g_free (modifications);
-		g_free (removals);
+		g_strfreev (additions);
+		g_strfreev (modifications);
+		g_strfreev (removals);
 	}
 }
 
@@ -1097,7 +1144,7 @@ e_data_cal_notify_free_busy (EDataCal *cal, EServerMethodContext context, GError
 
 		e_gdbus_cal_complete_get_free_busy (cal->priv->gdbus_object, invocation, (const gchar * const *) seq);
 
-		g_free (seq);
+		g_strfreev (seq);
 	}
 }
 
@@ -1145,10 +1192,14 @@ e_data_cal_notify_auth_required (EDataCal *cal)
 void
 e_data_cal_notify_error (EDataCal *cal, const gchar *message)
 {
+	gchar *gdbus_message = NULL;
+
 	g_return_if_fail (cal != NULL);
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
-	e_gdbus_cal_emit_backend_error (cal->priv->gdbus_object, message);
+	e_gdbus_cal_emit_backend_error (cal->priv->gdbus_object, e_util_ensure_gdbus_string (message, &gdbus_message));
+
+	g_free (gdbus_message);
 }
 
 /* Instance init */

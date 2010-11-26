@@ -44,6 +44,8 @@ const gchar *	e_util_utf8_strstrcasedecomp	(const gchar *haystack,
 gint		e_util_utf8_strcasecmp		(const gchar *s1,
 						 const gchar *s2);
 gchar *		e_util_utf8_remove_accents	(const gchar *str);
+gchar *		e_util_utf8_make_valid		(const gchar *str);
+const gchar *   e_util_ensure_gdbus_string	(const gchar *str, gchar **gdbus_str);
 guint64		e_util_gthread_id		(GThread *thread);
 void		e_filename_make_safe		(gchar *string);
 

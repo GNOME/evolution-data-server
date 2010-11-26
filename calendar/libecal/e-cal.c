@@ -1282,15 +1282,25 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error,
 	*status = E_CALENDAR_STATUS_OK;
 	#endif
 	if (!async) {
-		if (!e_gdbus_cal_call_open_sync (priv->gdbus_cal, only_if_exists, username ? username : "", password ? password : "", NULL, error)) {
+		gchar *gdbus_username = NULL, *gdbus_password = NULL;
+
+		if (!e_gdbus_cal_call_open_sync (priv->gdbus_cal, only_if_exists, e_util_ensure_gdbus_string (username, &gdbus_username), e_util_ensure_gdbus_string (password, &gdbus_password), NULL, error)) {
 			#ifndef E_CAL_DISABLE_DEPRECATED
 			*status = E_CALENDAR_STATUS_DBUS_EXCEPTION;
 			#endif
 		}
 		if (!*error)
 			priv->load_state = E_CAL_LOAD_LOADED;
+
+		g_free (gdbus_username);
+		g_free (gdbus_password);
 	} else {
-		e_gdbus_cal_call_open (priv->gdbus_cal, only_if_exists, username ? username : "", password ? password : "", NULL, (GAsyncReadyCallback) async_open_ready_cb, ecal);
+		gchar *gdbus_username = NULL, *gdbus_password = NULL;
+
+		e_gdbus_cal_call_open (priv->gdbus_cal, only_if_exists, e_util_ensure_gdbus_string (username, &gdbus_username), e_util_ensure_gdbus_string (password, &gdbus_password), NULL, (GAsyncReadyCallback) async_open_ready_cb, ecal);
+
+		g_free (gdbus_username);
+		g_free (gdbus_password);
 	}
 
 	g_free (password);
@@ -2042,7 +2052,7 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
 {
 	ECalPrivate *priv;
 	ECalendarStatus status;
-	gchar *object;
+	gchar *object = NULL;
 
 	e_return_error_if_fail (icalcomp != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
@@ -2093,6 +2103,7 @@ e_cal_get_attachments_for_comp (ECal *ecal, const gchar *uid, const gchar *rid, 
 	ECalPrivate *priv;
 	ECalendarStatus status;
 	gchar **list_array;
+	gchar *gdbus_uid = NULL, *gdbus_rid = NULL;
 
 	e_return_error_if_fail (uid != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (list != NULL, E_CALENDAR_STATUS_INVALID_ARG);
@@ -2105,9 +2116,15 @@ e_cal_get_attachments_for_comp (ECal *ecal, const gchar *uid, const gchar *rid, 
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	if (!e_gdbus_cal_call_get_attachment_list_sync (priv->gdbus_cal, uid, rid ? rid: "", &list_array, NULL, error)) {
+	if (!e_gdbus_cal_call_get_attachment_list_sync (priv->gdbus_cal, e_util_ensure_gdbus_string (uid, &gdbus_uid), e_util_ensure_gdbus_string (rid, &gdbus_rid), &list_array, NULL, error)) {
+		g_free (gdbus_uid);
+		g_free (gdbus_rid);
+
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
+
+	g_free (gdbus_uid);
+	g_free (gdbus_rid);
 
 	if (list_array) {
 		gchar **string;
@@ -2140,7 +2157,7 @@ e_cal_get_object (ECal *ecal, const gchar *uid, const gchar *rid, icalcomponent 
 {
 	ECalPrivate *priv;
 	ECalendarStatus status;
-	gchar *object;
+	gchar *object = NULL, *gdbus_uid = NULL, *gdbus_rid = NULL;
 	icalcomponent *tmp_icalcomp;
 	icalcomponent_kind kind;
 
@@ -2155,9 +2172,15 @@ e_cal_get_object (ECal *ecal, const gchar *uid, const gchar *rid, icalcomponent 
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	if (!e_gdbus_cal_call_get_object_sync (priv->gdbus_cal, uid, rid ? rid : "", &object, NULL, error)) {
+	if (!e_gdbus_cal_call_get_object_sync (priv->gdbus_cal, e_util_ensure_gdbus_string (uid, &gdbus_uid), e_util_ensure_gdbus_string (rid, &gdbus_rid), &object, NULL, error)) {
+		g_free (gdbus_uid);
+		g_free (gdbus_rid);
+
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
+
+	g_free (gdbus_uid);
+	g_free (gdbus_rid);
 
 	status = E_CALENDAR_STATUS_OK;
 	tmp_icalcomp = icalparser_parse_string (object);
@@ -2219,7 +2242,7 @@ e_cal_get_objects_for_uid (ECal *ecal, const gchar *uid, GList **objects, GError
 {
 	ECalPrivate *priv;
 	ECalendarStatus status;
-	gchar *object;
+	gchar *object = NULL, *gdbus_uid = NULL;
 
 	e_return_error_if_fail (uid != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (objects != NULL, E_CALENDAR_STATUS_INVALID_ARG);
@@ -2232,9 +2255,13 @@ e_cal_get_objects_for_uid (ECal *ecal, const gchar *uid, GList **objects, GError
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	if (!e_gdbus_cal_call_get_object_sync (priv->gdbus_cal, uid, "", &object, NULL, error)) {
+	if (!e_gdbus_cal_call_get_object_sync (priv->gdbus_cal, e_util_ensure_gdbus_string (uid, &gdbus_uid), "", &object, NULL, error)) {
+		g_free (gdbus_uid);
+
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
+
+	g_free (gdbus_uid);
 
 	status = E_CALENDAR_STATUS_OK;
 	{
@@ -2335,6 +2362,7 @@ e_cal_get_changes (ECal *ecal, const gchar *change_id, GList **changes, GError *
 {
 	ECalPrivate *priv;
 	gchar **additions = NULL, **modifications = NULL, **removals = NULL;
+	gchar *gdbus_change_id = NULL;
 
 	e_return_error_if_fail (changes != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (change_id != NULL, E_CALENDAR_STATUS_INVALID_ARG);
@@ -2347,9 +2375,13 @@ e_cal_get_changes (ECal *ecal, const gchar *change_id, GList **changes, GError *
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	if (!e_gdbus_cal_call_get_changes_sync (priv->gdbus_cal, change_id, &additions, &modifications, &removals, NULL, error)) {
+	if (!e_gdbus_cal_call_get_changes_sync (priv->gdbus_cal, e_util_ensure_gdbus_string (change_id, &gdbus_change_id), &additions, &modifications, &removals, NULL, error)) {
+		g_free (gdbus_change_id);
+
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
+
+	g_free (gdbus_change_id);
 
 	/* TODO: Be more elegant and split this into a function */
 	/* Mostly copied from the old e-cal-listener.c */
@@ -2449,7 +2481,7 @@ gboolean
 e_cal_get_object_list (ECal *ecal, const gchar *query, GList **objects, GError **error)
 {
 	ECalPrivate *priv;
-	gchar **object_array;
+	gchar **object_array = NULL, *gdbus_query = NULL;
 
 	e_return_error_if_fail (objects != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (query, E_CALENDAR_STATUS_INVALID_ARG);
@@ -2462,9 +2494,13 @@ e_cal_get_object_list (ECal *ecal, const gchar *query, GList **objects, GError *
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	if (!e_gdbus_cal_call_get_object_list_sync (priv->gdbus_cal, query, &object_array, NULL, error)) {
+	if (!e_gdbus_cal_call_get_object_list_sync (priv->gdbus_cal, e_util_ensure_gdbus_string (query, &gdbus_query), &object_array, NULL, error)) {
+		g_free (gdbus_query);
+
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
+
+	g_free (gdbus_query);
 
 	if (object_array) {
 		icalcomponent *comp;
@@ -2594,7 +2630,7 @@ e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end,
 {
 	ECalPrivate *priv;
 	gchar **users_list;
-	gchar **freebusy_array;
+	gchar **freebusy_array = NULL;
 	GList *l;
 	gint i;
 
@@ -2611,7 +2647,7 @@ e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end,
 
 	users_list = g_new0 (gchar *, g_list_length (users) + 1);
 	for (l = users, i = 0; l; l = l->next, i++)
-		users_list[i] = g_strdup (l->data);
+		users_list[i] = e_util_utf8_make_valid (l->data);
 
 	if (!e_gdbus_cal_call_get_free_busy_sync (priv->gdbus_cal, (const gchar * const *) users_list, start, end, &freebusy_array, NULL, error)) {
 		g_strfreev (users_list);
@@ -3332,7 +3368,8 @@ gboolean
 e_cal_discard_alarm (ECal *ecal, ECalComponent *comp, const gchar *auid, GError **error)
 {
 	ECalPrivate *priv;
-	const gchar *uid;
+	const gchar *uid = NULL;
+	gchar *gdbus_uid = NULL, *gdbus_auid = NULL;
 
 	e_return_error_if_fail (ecal != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
@@ -3348,9 +3385,15 @@ e_cal_discard_alarm (ECal *ecal, ECalComponent *comp, const gchar *auid, GError 
 
 	e_cal_component_get_uid (comp, &uid);
 
-	if (!e_gdbus_cal_call_discard_alarm_sync (priv->gdbus_cal, uid ? uid : "", auid, NULL, error)) {
+	if (!e_gdbus_cal_call_discard_alarm_sync (priv->gdbus_cal, e_util_ensure_gdbus_string (uid, &gdbus_uid), e_util_ensure_gdbus_string (auid, &gdbus_auid), NULL, error)) {
+		g_free (gdbus_uid);
+		g_free (gdbus_auid);
+
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
+
+	g_free (gdbus_uid);
+	g_free (gdbus_auid);
 
 	E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
 }
@@ -3538,7 +3581,7 @@ gboolean
 e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, gchar **uid, GError **error)
 {
 	ECalPrivate *priv;
-	gchar *obj, *muid = NULL;
+	gchar *obj, *muid = NULL, *gdbus_obj = NULL;
 
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomp != NULL, E_CALENDAR_STATUS_INVALID_ARG);
@@ -3551,12 +3594,15 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, gchar **uid, GError **
 	}
 
 	obj = icalcomponent_as_ical_string_r (icalcomp);
-	if (!e_gdbus_cal_call_create_object_sync (priv->gdbus_cal, obj, &muid, NULL, error)) {
+	if (!e_gdbus_cal_call_create_object_sync (priv->gdbus_cal, e_util_ensure_gdbus_string (obj, &gdbus_obj), &muid, NULL, error)) {
 		g_free (obj);
+		g_free (gdbus_obj);
+
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
 
 	g_free (obj);
+	g_free (gdbus_obj);
 
 	if (!muid) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OTHER_ERROR, error);
@@ -3593,7 +3639,7 @@ gboolean
 e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GError **error)
 {
 	ECalPrivate *priv;
-	gchar *obj;
+	gchar *obj, *gdbus_obj = NULL;
 
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomp, E_CALENDAR_STATUS_INVALID_ARG);
@@ -3607,12 +3653,16 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
 	}
 
 	obj = icalcomponent_as_ical_string_r (icalcomp);
-	if (!e_gdbus_cal_call_modify_object_sync (priv->gdbus_cal, obj, mod, NULL, error)) {
+	if (!e_gdbus_cal_call_modify_object_sync (priv->gdbus_cal, e_util_ensure_gdbus_string (obj, &gdbus_obj), mod, NULL, error)) {
 		g_free (obj);
+		g_free (gdbus_obj);
+
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
 
 	g_free (obj);
+	g_free (gdbus_obj);
+
 	E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
 }
 
@@ -3640,6 +3690,7 @@ e_cal_remove_object_with_mod (ECal *ecal, const gchar *uid,
 			      const gchar *rid, CalObjModType mod, GError **error)
 {
 	ECalPrivate *priv;
+	gchar *gdbus_uid = NULL, *gdbus_rid = NULL;
 
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (uid, E_CALENDAR_STATUS_INVALID_ARG);
@@ -3651,9 +3702,15 @@ e_cal_remove_object_with_mod (ECal *ecal, const gchar *uid,
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	if (!e_gdbus_cal_call_remove_object_sync (priv->gdbus_cal, uid, rid ? rid : "", mod, NULL, error)) {
+	if (!e_gdbus_cal_call_remove_object_sync (priv->gdbus_cal, e_util_ensure_gdbus_string (uid, &gdbus_uid), e_util_ensure_gdbus_string (rid, &gdbus_rid), mod, NULL, error)) {
+		g_free (gdbus_uid);
+		g_free (gdbus_rid);
+
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
+
+	g_free (gdbus_uid);
+	g_free (gdbus_rid);
 
 	E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
 }
@@ -3695,6 +3752,7 @@ gboolean
 e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
 {
 	ECalPrivate *priv;
+	gchar *obj, *gdbus_obj = NULL;
 
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomp, E_CALENDAR_STATUS_INVALID_ARG);
@@ -3706,9 +3764,16 @@ e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	if (!e_gdbus_cal_call_receive_objects_sync (priv->gdbus_cal, icalcomponent_as_ical_string (icalcomp), NULL, error)) {
+	obj = icalcomponent_as_ical_string_r (icalcomp);
+	if (!e_gdbus_cal_call_receive_objects_sync (priv->gdbus_cal, e_util_ensure_gdbus_string (obj, &gdbus_obj), NULL, error)) {
+		g_free (obj);
+		g_free (gdbus_obj);
+
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
+
+	g_free (obj);
+	g_free (gdbus_obj);
 
 	E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
 }
@@ -3732,8 +3797,8 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 {
 	ECalPrivate *priv;
 	ECalendarStatus status;
-	gchar **users_array;
-	gchar *object;
+	gchar **users_array = NULL;
+	gchar *object = NULL, *obj, *gdbus_obj = NULL;
 
 	e_return_error_if_fail (users != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (modified_icalcomp != NULL, E_CALENDAR_STATUS_INVALID_ARG);
@@ -3749,9 +3814,16 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	if (!e_gdbus_cal_call_send_objects_sync (priv->gdbus_cal, icalcomponent_as_ical_string (icalcomp), &users_array, &object, NULL, error)) {
+	obj = icalcomponent_as_ical_string_r (icalcomp);
+	if (!e_gdbus_cal_call_send_objects_sync (priv->gdbus_cal, e_util_ensure_gdbus_string (obj, &gdbus_obj), &users_array, &object, NULL, error)) {
+		g_free (obj);
+		g_free (gdbus_obj);
+
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
+
+	g_free (obj);
+	g_free (gdbus_obj);
 
 	status = E_CALENDAR_STATUS_OK;
 	if (users_array) {
@@ -3786,7 +3858,7 @@ e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError *
 	ECalPrivate *priv;
 	ECalendarStatus status = E_CALENDAR_STATUS_OK;
 	icalcomponent *icalcomp = NULL;
-	gchar *object;
+	gchar *object = NULL, *gdbus_tzid = NULL;
 	const gchar *systzid = NULL;
 
 	e_return_error_if_fail (zone, E_CALENDAR_STATUS_INVALID_ARG);
@@ -3829,10 +3901,14 @@ e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError *
 	systzid = e_cal_match_tzid (tzid);
 	if (!systzid) {
 		/* call the backend */
-		if (!e_gdbus_cal_call_get_timezone_sync (priv->gdbus_cal, tzid, &object, NULL, error)) {
+		if (!e_gdbus_cal_call_get_timezone_sync (priv->gdbus_cal, e_util_ensure_gdbus_string (tzid, &gdbus_tzid), &object, NULL, error)) {
+			g_free (gdbus_tzid);
+
 			UNLOCK_CACHE ();
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 		}
+
+		g_free (gdbus_tzid);
 
 		icalcomp = icalparser_parse_string (object);
 		if (!icalcomp)
@@ -3901,7 +3977,7 @@ gboolean
 e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
 {
 	ECalPrivate *priv;
-	gchar *tzobj;
+	gchar *tzobj, *gdbus_tzobj = NULL;
 	icalcomponent *icalcomp;
 
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
@@ -3928,12 +4004,16 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
 	tzobj = icalcomponent_as_ical_string_r (icalcomp);
 
 	/* call the backend */
-	if (!e_gdbus_cal_call_add_timezone_sync (priv->gdbus_cal, tzobj, NULL, error)) {
+	if (!e_gdbus_cal_call_add_timezone_sync (priv->gdbus_cal, e_util_ensure_gdbus_string (tzobj, &gdbus_tzobj), NULL, error)) {
 		g_free (tzobj);
+		g_free (gdbus_tzobj);
+
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
 
 	g_free (tzobj);
+	g_free (gdbus_tzobj);
+
 	E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
 }
 
@@ -3954,7 +4034,7 @@ e_cal_get_query (ECal *ecal, const gchar *sexp, ECalView **query, GError **error
 {
 	ECalPrivate *priv;
 	ECalendarStatus status;
-	gchar *query_path;
+	gchar *query_path = NULL, *gdbus_sexp = NULL;
 	EGdbusCalView *gdbus_calview;
 
 	e_return_error_if_fail (sexp, E_CALENDAR_STATUS_INVALID_ARG);
@@ -3968,9 +4048,13 @@ e_cal_get_query (ECal *ecal, const gchar *sexp, ECalView **query, GError **error
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	if (!e_gdbus_cal_call_get_query_sync (priv->gdbus_cal, sexp, &query_path, NULL, error)) {
+	if (!e_gdbus_cal_call_get_query_sync (priv->gdbus_cal, e_util_ensure_gdbus_string (sexp, &gdbus_sexp), &query_path, NULL, error)) {
+		g_free (gdbus_sexp);
+
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
+
+	g_free (gdbus_sexp);
 
 	status = E_CALENDAR_STATUS_OK;
 
@@ -4010,7 +4094,7 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 {
 	ECalPrivate *priv;
 	icalcomponent *icalcomp = NULL;
-	gchar *tzobj;
+	gchar *tzobj, *gdbus_tzobj = NULL;
 
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (zone, E_CALENDAR_STATUS_INVALID_ARG);
@@ -4031,12 +4115,16 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 	tzobj = icalcomponent_as_ical_string_r (icalcomp);
 
 	/* call the backend */
-	if (!e_gdbus_cal_call_set_default_timezone_sync (priv->gdbus_cal, tzobj, NULL, error)) {
+	if (!e_gdbus_cal_call_set_default_timezone_sync (priv->gdbus_cal, e_util_ensure_gdbus_string (tzobj, &gdbus_tzobj), NULL, error)) {
 		g_free (tzobj);
+		g_free (gdbus_tzobj);
+
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
 
 	g_free (tzobj);
+	g_free (gdbus_tzobj);
+
 	priv->default_zone = zone;
 
 	E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);

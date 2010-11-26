@@ -394,15 +394,17 @@ e_book_add_contact (EBook           *book,
 		    GError         **error)
 {
 	GError *err = NULL;
-	gchar *vcard, *uid = NULL;
+	gchar *vcard, *uid = NULL, *gdbus_vcard = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-	e_gdbus_book_call_add_contact_sync (book->priv->gdbus_book, vcard, &uid, NULL, &err);
+	e_gdbus_book_call_add_contact_sync (book->priv->gdbus_book, e_util_ensure_gdbus_string (vcard, &gdbus_vcard), &uid, NULL, &err);
 	g_free (vcard);
+	g_free (gdbus_vcard);
+
 	if (uid) {
 		e_contact_set (contact, E_CONTACT_UID, uid);
 		g_free (uid);
@@ -468,7 +470,7 @@ e_book_async_add_contact (EBook                 *book,
 			  EBookIdCallback        cb,
 			  gpointer               closure)
 {
-	gchar *vcard;
+	gchar *vcard, *gdbus_vcard = NULL;
 	AsyncData *data;
 
 	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
@@ -482,9 +484,10 @@ e_book_async_add_contact (EBook                 *book,
 	data->callback = cb;
 	data->closure = closure;
 
-	e_gdbus_book_call_add_contact (book->priv->gdbus_book, vcard, NULL, add_contact_reply, data);
+	e_gdbus_book_call_add_contact (book->priv->gdbus_book, e_util_ensure_gdbus_string (vcard, &gdbus_vcard), NULL, add_contact_reply, data);
 
 	g_free (vcard);
+	g_free (gdbus_vcard);
 
 	return 0;
 }
@@ -509,7 +512,7 @@ e_book_add_contact_async (EBook                *book,
 			  EBookIdAsyncCallback  cb,
 			  gpointer              closure)
 {
-	gchar *vcard;
+	gchar *vcard, *gdbus_vcard = NULL;
 	AsyncData *data;
 
 	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
@@ -523,9 +526,10 @@ e_book_add_contact_async (EBook                *book,
 	data->excallback = cb;
 	data->closure = closure;
 
-	e_gdbus_book_call_add_contact (book->priv->gdbus_book, vcard, NULL, add_contact_reply, data);
+	e_gdbus_book_call_add_contact (book->priv->gdbus_book, e_util_ensure_gdbus_string (vcard, &gdbus_vcard), NULL, add_contact_reply, data);
 
 	g_free (vcard);
+	g_free (gdbus_vcard);
 
 	return TRUE;
 }
@@ -547,15 +551,16 @@ e_book_commit_contact (EBook           *book,
 		       GError         **error)
 {
 	GError *err = NULL;
-	gchar *vcard;
+	gchar *vcard, *gdbus_vcard = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-	e_gdbus_book_call_modify_contact_sync (book->priv->gdbus_book, vcard, NULL, &err);
+	e_gdbus_book_call_modify_contact_sync (book->priv->gdbus_book, e_util_ensure_gdbus_string (vcard, &gdbus_vcard), NULL, &err);
 	g_free (vcard);
+	g_free (gdbus_vcard);
 
 	return unwrap_gerror (err, error);
 }
@@ -610,7 +615,7 @@ e_book_async_commit_contact (EBook                 *book,
 			     EBookCallback          cb,
 			     gpointer               closure)
 {
-	gchar *vcard;
+	gchar *vcard, *gdbus_vcard = NULL;
 	AsyncData *data;
 
 	e_return_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
@@ -624,9 +629,10 @@ e_book_async_commit_contact (EBook                 *book,
 	data->callback = cb;
 	data->closure = closure;
 
-	e_gdbus_book_call_modify_contact (book->priv->gdbus_book, vcard, NULL, modify_contact_reply, data);
+	e_gdbus_book_call_modify_contact (book->priv->gdbus_book, e_util_ensure_gdbus_string (vcard, &gdbus_vcard), NULL, modify_contact_reply, data);
 
 	g_free (vcard);
+	g_free (gdbus_vcard);
 
 	return 0;
 }
@@ -652,7 +658,7 @@ e_book_commit_contact_async (EBook              *book,
 			     EBookAsyncCallback  cb,
 			     gpointer            closure)
 {
-	gchar *vcard;
+	gchar *vcard, *gdbus_vcard = NULL;
 	AsyncData *data;
 
 	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
@@ -666,9 +672,10 @@ e_book_commit_contact_async (EBook              *book,
 	data->excallback = cb;
 	data->closure = closure;
 
-	e_gdbus_book_call_modify_contact (book->priv->gdbus_book, vcard, NULL, modify_contact_reply, data);
+	e_gdbus_book_call_modify_contact (book->priv->gdbus_book, e_util_ensure_gdbus_string (vcard, &gdbus_vcard), NULL, modify_contact_reply, data);
 
 	g_free (vcard);
+	g_free (gdbus_vcard);
 
 	return TRUE;
 }
@@ -1107,11 +1114,19 @@ e_book_authenticate_user (EBook         *book,
 			  GError       **error)
 {
 	GError *err = NULL;
+	gchar *gdbus_user = NULL, *gdbus_passwd = NULL, *gdbus_auth_method = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
-	e_gdbus_book_call_authenticate_user_sync (book->priv->gdbus_book, user, passwd, auth_method, NULL, &err);
+	e_gdbus_book_call_authenticate_user_sync (book->priv->gdbus_book,
+		e_util_ensure_gdbus_string (user, &gdbus_user),
+		e_util_ensure_gdbus_string (passwd, &gdbus_passwd),
+		e_util_ensure_gdbus_string (auth_method, &gdbus_auth_method), NULL, &err);
+
+	g_free (gdbus_user);
+	g_free (gdbus_passwd);
+	g_free (gdbus_auth_method);
 
 	return unwrap_gerror (err, error);
 }
@@ -1172,6 +1187,7 @@ e_book_async_authenticate_user (EBook                 *book,
 				gpointer              closure)
 {
 	AsyncData *data;
+	gchar *gdbus_user = NULL, *gdbus_passwd = NULL, *gdbus_auth_method = NULL;
 
 	e_return_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
@@ -1184,7 +1200,14 @@ e_book_async_authenticate_user (EBook                 *book,
 	data->callback = cb;
 	data->closure = closure;
 
-	e_gdbus_book_call_authenticate_user (book->priv->gdbus_book, user, passwd, auth_method, NULL, authenticate_user_reply, data);
+	e_gdbus_book_call_authenticate_user (book->priv->gdbus_book,
+		e_util_ensure_gdbus_string (user, &gdbus_user),
+		e_util_ensure_gdbus_string (passwd, &gdbus_passwd),
+		e_util_ensure_gdbus_string (auth_method, &gdbus_auth_method), NULL, authenticate_user_reply, data);
+
+	g_free (gdbus_user);
+	g_free (gdbus_passwd);
+	g_free (gdbus_auth_method);
 
 	return 0;
 }
@@ -1217,6 +1240,7 @@ e_book_authenticate_user_async (EBook              *book,
 				gpointer            closure)
 {
 	AsyncData *data;
+	gchar *gdbus_user = NULL, *gdbus_passwd = NULL, *gdbus_auth_method = NULL;
 
 	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_ex_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
@@ -1229,7 +1253,14 @@ e_book_authenticate_user_async (EBook              *book,
 	data->excallback = cb;
 	data->closure = closure;
 
-	e_gdbus_book_call_authenticate_user (book->priv->gdbus_book, user, passwd, auth_method, NULL, authenticate_user_reply, data);
+	e_gdbus_book_call_authenticate_user (book->priv->gdbus_book,
+		e_util_ensure_gdbus_string (user, &gdbus_user),
+		e_util_ensure_gdbus_string (passwd, &gdbus_passwd),
+		e_util_ensure_gdbus_string (auth_method, &gdbus_auth_method), NULL, authenticate_user_reply, data);
+
+	g_free (gdbus_user);
+	g_free (gdbus_passwd);
+	g_free (gdbus_auth_method);
 
 	return TRUE;
 }
@@ -1253,12 +1284,14 @@ e_book_get_contact (EBook       *book,
 		    GError     **error)
 {
 	GError *err = NULL;
-	gchar *vcard = NULL;
+	gchar *vcard = NULL, *gdbus_id = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
-	e_gdbus_book_call_get_contact_sync (book->priv->gdbus_book, id, &vcard, NULL, &err);
+	e_gdbus_book_call_get_contact_sync (book->priv->gdbus_book, e_util_ensure_gdbus_string (id, &gdbus_id), &vcard, NULL, &err);
+
+	g_free (gdbus_id);
 
 	if (vcard) {
 		*contact = e_contact_new_from_vcard (vcard);
@@ -1323,6 +1356,7 @@ e_book_async_get_contact (EBook                 *book,
 			  gpointer               closure)
 {
 	AsyncData *data;
+	gchar *gdbus_id = NULL;
 
 	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
@@ -1333,7 +1367,9 @@ e_book_async_get_contact (EBook                 *book,
 	data->callback = cb;
 	data->closure = closure;
 
-	e_gdbus_book_call_get_contact (book->priv->gdbus_book, id, NULL, get_contact_reply, data);
+	e_gdbus_book_call_get_contact (book->priv->gdbus_book, e_util_ensure_gdbus_string (id, &gdbus_id), NULL, get_contact_reply, data);
+
+	g_free (gdbus_id);
 
 	return 0;
 }
@@ -1359,6 +1395,7 @@ e_book_get_contact_async (EBook                     *book,
 			  gpointer                   closure)
 {
 	AsyncData *data;
+	gchar *gdbus_id = NULL;
 
 	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
@@ -1369,7 +1406,9 @@ e_book_get_contact_async (EBook                     *book,
 	data->excallback = cb;
 	data->closure = closure;
 
-	e_gdbus_book_call_get_contact (book->priv->gdbus_book, id, NULL, get_contact_reply, data);
+	e_gdbus_book_call_get_contact (book->priv->gdbus_book, e_util_ensure_gdbus_string (id, &gdbus_id), NULL, get_contact_reply, data);
+
+	g_free (gdbus_id);
 
 	return TRUE;
 }
@@ -1396,10 +1435,12 @@ e_book_remove_contact (EBook       *book,
 	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_error_if_fail (id, E_BOOK_ERROR_INVALID_ARG);
 
-	l[0] = id;
+	l[0] = e_util_utf8_make_valid (id);
 	l[1] = NULL;
 
 	e_gdbus_book_call_remove_contacts_sync (book->priv->gdbus_book, (const gchar * const *) l, NULL, &err);
+
+	g_free ((gchar *) l[0]);
 
 	return unwrap_gerror (err, error);
 }
@@ -1461,7 +1502,7 @@ e_book_remove_contacts (EBook    *book,
 
 	e_gdbus_book_call_remove_contacts_sync (book->priv->gdbus_book, (const gchar * const *) l, NULL, &err);
 
-	g_free (l);
+	g_strfreev (l);
 
 	return unwrap_gerror (err, error);
 }
@@ -1493,7 +1534,7 @@ e_book_async_remove_contact (EBook                 *book,
 	e_return_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_async_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
 
-	l[0] = e_contact_get_const (contact, E_CONTACT_UID);
+	l[0] = e_util_utf8_make_valid (e_contact_get_const (contact, E_CONTACT_UID));
 	l[1] = NULL;
 
 	data = g_slice_new0 (AsyncData);
@@ -1502,6 +1543,8 @@ e_book_async_remove_contact (EBook                 *book,
 	data->closure = closure;
 
 	e_gdbus_book_call_remove_contacts (book->priv->gdbus_book, (const gchar * const *) l, NULL, remove_contact_reply, data);
+
+	g_free ((gchar *) l[0]);
 
 	return 0;
 }
@@ -1533,7 +1576,7 @@ e_book_remove_contact_async (EBook              *book,
 	e_return_ex_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_ex_async_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
 
-	l[0] = e_contact_get_const (contact, E_CONTACT_UID);
+	l[0] = e_util_utf8_make_valid (e_contact_get_const (contact, E_CONTACT_UID));
 	l[1] = NULL;
 
 	data = g_slice_new0 (AsyncData);
@@ -1542,6 +1585,8 @@ e_book_remove_contact_async (EBook              *book,
 	data->closure = closure;
 
 	e_gdbus_book_call_remove_contacts (book->priv->gdbus_book, (const gchar * const *) l, NULL, remove_contact_reply, data);
+
+	g_free ((gchar *) l[0]);
 
 	return TRUE;
 }
@@ -1601,7 +1646,7 @@ e_book_async_remove_contact_by_id (EBook                 *book,
 	e_return_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_async_error_if_fail (id, E_BOOK_ERROR_INVALID_ARG);
 
-	l[0] = id;
+	l[0] = e_util_utf8_make_valid (id);
 	l[1] = NULL;
 
 	data = g_slice_new0 (AsyncData);
@@ -1610,6 +1655,8 @@ e_book_async_remove_contact_by_id (EBook                 *book,
 	data->closure = closure;
 
 	e_gdbus_book_call_remove_contacts (book->priv->gdbus_book, (const gchar * const *) l, NULL, remove_contact_by_id_reply, data);
+
+	g_free ((gchar *) l[0]);
 
 	return 0;
 }
@@ -1641,7 +1688,7 @@ e_book_remove_contact_by_id_async (EBook              *book,
 	e_return_ex_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 	e_return_ex_async_error_if_fail (id, E_BOOK_ERROR_INVALID_ARG);
 
-	l[0] = id;
+	l[0] = e_util_utf8_make_valid (id);
 	l[1] = NULL;
 
 	data = g_slice_new0 (AsyncData);
@@ -1650,6 +1697,8 @@ e_book_remove_contact_by_id_async (EBook              *book,
 	data->closure = closure;
 
 	e_gdbus_book_call_remove_contacts (book->priv->gdbus_book, (const gchar * const *) l, NULL, remove_contact_by_id_reply, data);
+
+	g_free ((gchar *) l[0]);
 
 	return TRUE;
 }
@@ -1726,7 +1775,7 @@ e_book_async_remove_contacts (EBook                 *book,
 
 	e_gdbus_book_call_remove_contacts (book->priv->gdbus_book, (const gchar * const *) l, NULL, remove_contacts_reply, data);
 
-	g_free (l);
+	g_strfreev (l);
 
 	return 0;
 }
@@ -1775,7 +1824,7 @@ e_book_remove_contacts_async (EBook              *book,
 
 	e_gdbus_book_call_remove_contacts (book->priv->gdbus_book, (const gchar *const *) l, NULL, remove_contacts_reply, data);
 
-	g_free (l);
+	g_strfreev (l);
 
 	return TRUE;
 }
@@ -1805,7 +1854,7 @@ e_book_get_book_view (EBook       *book,
 {
 	GError *err = NULL;
 	EGdbusBookView *gdbus_bookview;
-	gchar *sexp, *view_path;
+	gchar *sexp, *view_path = NULL, *gdbus_sexp = NULL;
 	gboolean ret = TRUE;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
@@ -1813,9 +1862,10 @@ e_book_get_book_view (EBook       *book,
 
 	sexp = e_book_query_to_string (query);
 
-	if (!e_gdbus_book_call_get_book_view_sync (book->priv->gdbus_book, sexp, max_results, &view_path, NULL, &err)) {
+	if (!e_gdbus_book_call_get_book_view_sync (book->priv->gdbus_book, e_util_ensure_gdbus_string (sexp, &gdbus_sexp), max_results, &view_path, NULL, &err)) {
 		*book_view = NULL;
 		g_free (sexp);
+		g_free (gdbus_sexp);
 
 		return unwrap_gerror (err, error);
 	}
@@ -1838,6 +1888,7 @@ e_book_get_book_view (EBook       *book,
 
 	g_free (view_path);
 	g_free (sexp);
+	g_free (gdbus_sexp);
 
 	return ret;
 }
@@ -1911,7 +1962,7 @@ e_book_async_get_book_view (EBook                 *book,
 			    gpointer               closure)
 {
 	AsyncData *data;
-	gchar *sexp;
+	gchar *sexp, *gdbus_sexp = NULL;
 
 	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
@@ -1924,9 +1975,11 @@ e_book_async_get_book_view (EBook                 *book,
 
 	sexp = e_book_query_to_string (query);
 
-	e_gdbus_book_call_get_book_view (book->priv->gdbus_book, sexp, max_results, NULL, get_book_view_reply, data);
+	e_gdbus_book_call_get_book_view (book->priv->gdbus_book, e_util_ensure_gdbus_string (sexp, &gdbus_sexp), max_results, NULL, get_book_view_reply, data);
 
 	g_free (sexp);
+	g_free (gdbus_sexp);
+
 	return 0;
 }
 #endif
@@ -1956,7 +2009,7 @@ e_book_get_book_view_async (EBook                      *book,
 			    gpointer                    closure)
 {
 	AsyncData *data;
-	gchar *sexp;
+	gchar *sexp, *gdbus_sexp = NULL;
 
 	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
@@ -1969,9 +2022,10 @@ e_book_get_book_view_async (EBook                      *book,
 
 	sexp = e_book_query_to_string (query);
 
-	e_gdbus_book_call_get_book_view (book->priv->gdbus_book, sexp, max_results, NULL, get_book_view_reply, data);
+	e_gdbus_book_call_get_book_view (book->priv->gdbus_book, e_util_ensure_gdbus_string (sexp, &gdbus_sexp), max_results, NULL, get_book_view_reply, data);
 
 	g_free (sexp);
+	g_free (gdbus_sexp);
 
 	return TRUE;
 }
@@ -1996,16 +2050,17 @@ e_book_get_contacts (EBook       *book,
 {
 	GError *err = NULL;
 	gchar **list = NULL;
-	gchar *sexp;
+	gchar *sexp, *gdbus_sexp = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	sexp = e_book_query_to_string (query);
 
-	e_gdbus_book_call_get_contact_list_sync (book->priv->gdbus_book, sexp, &list, NULL, &err);
+	e_gdbus_book_call_get_contact_list_sync (book->priv->gdbus_book, e_util_ensure_gdbus_string (sexp, &gdbus_sexp), &list, NULL, &err);
 
 	g_free (sexp);
+	g_free (gdbus_sexp);
 
 	if (!err) {
 		GList *l = NULL;
@@ -2085,7 +2140,7 @@ e_book_async_get_contacts (EBook             *book,
 			   gpointer           closure)
 {
 	AsyncData *data;
-	gchar *sexp;
+	gchar *sexp, *gdbus_sexp = NULL;
 
 	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
@@ -2098,9 +2153,10 @@ e_book_async_get_contacts (EBook             *book,
 	data->callback = cb;
 	data->closure = closure;
 
-	e_gdbus_book_call_get_contact_list (book->priv->gdbus_book, sexp, NULL, get_contacts_reply, data);
+	e_gdbus_book_call_get_contact_list (book->priv->gdbus_book, e_util_ensure_gdbus_string (sexp, &gdbus_sexp), NULL, get_contacts_reply, data);
 
 	g_free (sexp);
+	g_free (gdbus_sexp);
 
 	return 0;
 }
@@ -2126,7 +2182,7 @@ e_book_get_contacts_async (EBook                  *book,
 			   gpointer                closure)
 {
 	AsyncData *data;
-	gchar *sexp;
+	gchar *sexp, *gdbus_sexp = NULL;
 
 	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
@@ -2139,9 +2195,10 @@ e_book_get_contacts_async (EBook                  *book,
 	data->excallback = cb;
 	data->closure = closure;
 
-	e_gdbus_book_call_get_contact_list (book->priv->gdbus_book, sexp, NULL, get_contacts_reply, data);
+	e_gdbus_book_call_get_contact_list (book->priv->gdbus_book, e_util_ensure_gdbus_string (sexp, &gdbus_sexp), NULL, get_contacts_reply, data);
 
 	g_free (sexp);
+	g_free (gdbus_sexp);
 
 	return TRUE;
 }
@@ -2197,11 +2254,14 @@ e_book_get_changes (EBook       *book,
 {
 	GError *err = NULL;
 	GVariant *var_changes = NULL;
+	gchar *gdbus_changeid = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
-	e_gdbus_book_call_get_changes_sync (book->priv->gdbus_book, changeid, &var_changes, NULL, &err);
+	e_gdbus_book_call_get_changes_sync (book->priv->gdbus_book, e_util_ensure_gdbus_string (changeid, &gdbus_changeid), &var_changes, NULL, &err);
+
+	g_free (gdbus_changeid);
 
 	if (!err) {
 		*changes = parse_changes_array (var_changes);
@@ -2272,6 +2332,7 @@ e_book_async_get_changes (EBook             *book,
 			  gpointer           closure)
 {
 	AsyncData *data;
+	gchar *gdbus_changeid = NULL;
 
 	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
@@ -2281,7 +2342,9 @@ e_book_async_get_changes (EBook             *book,
 	data->callback = cb;
 	data->closure = closure;
 
-	e_gdbus_book_call_get_changes (book->priv->gdbus_book, changeid, NULL, get_changes_reply, data);
+	e_gdbus_book_call_get_changes (book->priv->gdbus_book, e_util_ensure_gdbus_string (changeid, &gdbus_changeid), NULL, get_changes_reply, data);
+
+	g_free (gdbus_changeid);
 
 	return 0;
 }
@@ -2308,6 +2371,7 @@ e_book_get_changes_async (EBook                  *book,
 			  gpointer                closure)
 {
 	AsyncData *data;
+	gchar *gdbus_changeid = NULL;
 
 	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
@@ -2317,7 +2381,9 @@ e_book_get_changes_async (EBook                  *book,
 	data->excallback = cb;
 	data->closure = closure;
 
-	e_gdbus_book_call_get_changes (book->priv->gdbus_book, changeid, NULL, get_changes_reply, data);
+	e_gdbus_book_call_get_changes (book->priv->gdbus_book, e_util_ensure_gdbus_string (changeid, &gdbus_changeid), NULL, get_changes_reply, data);
+
+	g_free (gdbus_changeid);
 
 	return TRUE;
 }
@@ -3069,7 +3135,7 @@ e_book_new (ESource *source, GError **error)
 {
 	GError *err = NULL;
 	EBook *book;
-	gchar *path, *xml;
+	gchar *path = NULL, *xml, *gdbus_xml = NULL;
 	GDBusConnection *connection;
 
 	e_return_error_if_fail (E_IS_SOURCE (source), E_BOOK_ERROR_INVALID_ARG);
@@ -3089,9 +3155,10 @@ e_book_new (ESource *source, GError **error)
 
 	xml = e_source_to_standalone_xml (source);
 
-	if (!e_gdbus_book_factory_call_get_book_sync (book_factory_proxy, xml, &path, NULL, &err)) {
+	if (!e_gdbus_book_factory_call_get_book_sync (book_factory_proxy, e_util_ensure_gdbus_string (xml, &gdbus_xml), &path, NULL, &err)) {
 		unwrap_gerror (err, &err);
 		g_free (xml);
+		g_free (gdbus_xml);
 		g_warning (G_STRLOC ": cannot get book from factory: %s", err ? err->message : "[no error]");
 		if (err)
 			g_propagate_error (error, err);
@@ -3100,6 +3167,7 @@ e_book_new (ESource *source, GError **error)
 		return NULL;
 	}
 	g_free (xml);
+	g_free (gdbus_xml);
 
 	book->priv->gdbus_book = e_gdbus_book_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory_proxy)),
 						      G_DBUS_PROXY_FLAGS_NONE,
@@ -3462,7 +3530,7 @@ unwrap_gerror (GError *error, GError **client_error)
 }
 
 /**
- * Turn a GList of strings into an array of strings.
+ * Turn a GList of strings into an array of strings. Free with g_strfreev().
  */
 static gchar **
 flatten_stringlist (GList *list)
@@ -3471,7 +3539,7 @@ flatten_stringlist (GList *list)
 	GList *l = list;
 	gint i = 0;
 	while (l != NULL) {
-		array[i++] = l->data;
+		array[i++] = e_util_utf8_make_valid (l->data);
 		l = l->next;
 	}
 	return array;
@@ -3486,7 +3554,7 @@ array_to_stringlist (gchar **list)
 	GList *l = NULL;
 	gchar **i = list;
 	while (*i != NULL) {
-		l = g_list_prepend (l, g_strdup (*i++));
+		l = g_list_prepend (l, e_util_utf8_make_valid (*i++));
 	}
 	return g_list_reverse (l);
 }
@@ -3502,7 +3570,7 @@ array_to_elist (gchar **list)
 		return elst;
 
 	while (*i != NULL) {
-		e_list_append (elst, g_strdup (*i++));
+		e_list_append (elst, e_util_utf8_make_valid (*i++));
 	}
 
 	return elst;

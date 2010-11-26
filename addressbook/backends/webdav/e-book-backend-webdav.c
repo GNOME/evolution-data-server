@@ -1368,12 +1368,18 @@ e_book_backend_webdav_dispose (GObject *object)
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (object);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
 
-	g_object_unref (priv->session);
-	g_object_unref (priv->proxy);
-	g_object_unref (priv->cache);
-	g_free (priv->uri);
-	g_free (priv->username);
-	g_free (priv->password);
+	#define do_unref(x) { if (x) g_object_unref (x); x = NULL; }
+	#define do_free(x) { if (x) g_free (x); x = NULL; }
+
+	do_unref (priv->session);
+	do_unref (priv->proxy);
+	do_unref (priv->cache);
+	do_free (priv->uri);
+	do_free (priv->username);
+	do_free (priv->password);
+
+	#undef do_unref
+	#undef do_free
 
 	G_OBJECT_CLASS (parent_class)->dispose (object);
 }

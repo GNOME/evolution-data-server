@@ -26,6 +26,7 @@
 
 #include <string.h>
 #include <libebook/e-contact.h>
+#include "libedataserver/e-data-server-util.h"
 #include "e-data-book-view.h"
 
 #include "e-gdbus-egdbusbookview.h"
@@ -176,13 +177,14 @@ ensure_pending_flush_timeout (EDataBookView *view)
 }
 
 /*
- * Queue @vcard to be sent as a change notification. This takes ownership of
- * @vcard.
+ * Queue @vcard to be sent as a change notification.
  */
 static void
-notify_change (EDataBookView *view, gchar *vcard)
+notify_change (EDataBookView *view, const gchar *vcard)
 {
 	EDataBookViewPrivate *priv = view->priv;
+	gchar *utf8_vcard;
+
 	send_pending_adds (view);
 	send_pending_removes (view);
 
@@ -190,18 +192,20 @@ notify_change (EDataBookView *view, gchar *vcard)
 		send_pending_changes (view);
 	}
 
-	g_array_append_val (priv->changes, vcard);
+	utf8_vcard = e_util_utf8_make_valid (vcard);
+	g_array_append_val (priv->changes, utf8_vcard);
 
 	ensure_pending_flush_timeout (view);
 }
 
 /*
- * Queue @id to be sent as a change notification. This takes ownership of @id.
+ * Queue @id to be sent as a change notification.
  */
 static void
-notify_remove (EDataBookView *view, gchar *id)
+notify_remove (EDataBookView *view, const gchar *id)
 {
 	EDataBookViewPrivate *priv = view->priv;
+	gchar *valid_id;
 
 	send_pending_adds (view);
 	send_pending_changes (view);
@@ -210,20 +214,22 @@ notify_remove (EDataBookView *view, gchar *id)
 		send_pending_removes (view);
 	}
 
-	g_array_append_val (priv->removes, id);
-	g_hash_table_remove (priv->ids, id);
+	valid_id = e_util_utf8_make_valid (id);
+	g_array_append_val (priv->removes, valid_id);
+	g_hash_table_remove (priv->ids, valid_id);
 
 	ensure_pending_flush_timeout (view);
 }
 
 /*
- * Queue @id and @vcard to be sent as a change notification. This takes ownership of
- * @vcard but not @id.
+ * Queue @id and @vcard to be sent as a change notification.
  */
 static void
-notify_add (EDataBookView *view, const gchar *id, gchar *vcard)
+notify_add (EDataBookView *view, const gchar *id, const gchar *vcard)
 {
 	EDataBookViewPrivate *priv = view->priv;
+	gchar *utf8_vcard;
+
 	send_pending_changes (view);
 	send_pending_removes (view);
 
@@ -231,8 +237,9 @@ notify_add (EDataBookView *view, const gchar *id, gchar *vcard)
 		send_pending_adds (view);
 	}
 
-	g_array_append_val (priv->adds, vcard);
-	g_hash_table_insert (priv->ids, g_strdup (id),
+	utf8_vcard = e_util_utf8_make_valid (vcard);
+	g_array_append_val (priv->adds, utf8_vcard);
+	g_hash_table_insert (priv->ids, e_util_utf8_make_valid (id),
 			     GUINT_TO_POINTER (1));
 
 	ensure_pending_flush_timeout (view);
@@ -252,6 +259,22 @@ reset_array (GArray *array)
 
 	/* Force the array size to 0 */
 	g_array_set_size (array, 0);
+}
+
+static gboolean
+id_is_in_view (EDataBookView *book_view, const gchar *id)
+{
+	gchar *valid_id;
+	gboolean res;
+
+	g_return_val_if_fail (book_view != NULL, FALSE);
+	g_return_val_if_fail (id != NULL, FALSE);
+
+	valid_id = e_util_utf8_make_valid (id);
+	res = g_hash_table_lookup (book_view->priv->ids, valid_id) != NULL;
+	g_free (valid_id);
+
+	return res;
 }
 
 /**
@@ -281,8 +304,7 @@ e_data_book_view_notify_update (EDataBookView *book_view,
 
 	id = e_contact_get_const (contact, E_CONTACT_UID);
 
-	currently_in_view =
-		g_hash_table_lookup (priv->ids, id) != NULL;
+	currently_in_view = id_is_in_view (book_view, id);
 	want_in_view =
 		e_book_backend_sexp_match_contact (priv->card_sexp, contact);
 
@@ -294,9 +316,11 @@ e_data_book_view_notify_update (EDataBookView *book_view,
 			notify_change (book_view, vcard);
 		else
 			notify_add (book_view, id, vcard);
+
+		g_free (vcard);
 	} else {
 		if (currently_in_view)
-			notify_remove (book_view, g_strdup (id));
+			notify_remove (book_view, id);
 		/* else nothing; we're removing a card that wasn't there */
 	}
 
@@ -324,15 +348,16 @@ e_data_book_view_notify_update_vcard (EDataBookView *book_view, gchar *vcard)
 	const gchar *id;
 	EContact *contact;
 
-	if (!priv->running)
+	if (!priv->running) {
+		g_free (vcard);
 		return;
+	}
 
 	g_mutex_lock (priv->pending_mutex);
 
 	contact = e_contact_new_from_vcard (vcard);
 	id = e_contact_get_const (contact, E_CONTACT_UID);
-	currently_in_view =
-		g_hash_table_lookup (priv->ids, id) != NULL;
+	currently_in_view = id_is_in_view (book_view, id);
 	want_in_view =
 		e_book_backend_sexp_match_contact (priv->card_sexp, contact);
 
@@ -343,13 +368,12 @@ e_data_book_view_notify_update_vcard (EDataBookView *book_view, gchar *vcard)
 			notify_add (book_view, id, vcard);
 	} else {
 		if (currently_in_view)
-			notify_remove (book_view, g_strdup (id));
-		else
-			/* else nothing; we're removing a card that wasn't there */
-			g_free (vcard);
+			notify_remove (book_view, id);
 	}
+
 	/* Do this last so that id is still valid when notify_ is called */
 	g_object_unref (contact);
+	g_free (vcard);
 
 	g_mutex_unlock (priv->pending_mutex);
 }
@@ -380,18 +404,21 @@ e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *book_view, cons
 	EDataBookViewPrivate *priv = book_view->priv;
 	gboolean currently_in_view;
 
-	if (!priv->running)
+	if (!priv->running) {
+		g_free (vcard);
 		return;
+	}
 
 	g_mutex_lock (priv->pending_mutex);
 
-	currently_in_view =
-		g_hash_table_lookup (priv->ids, id) != NULL;
+	currently_in_view = id_is_in_view (book_view, id);
 
 	if (currently_in_view)
 		notify_change (book_view, vcard);
 	else
 		notify_add (book_view, id, vcard);
+
+	g_free (vcard);
 
 	g_mutex_unlock (priv->pending_mutex);
 }
@@ -414,8 +441,8 @@ e_data_book_view_notify_remove (EDataBookView *book_view, const gchar *id)
 
 	g_mutex_lock (priv->pending_mutex);
 
-	if (g_hash_table_lookup (priv->ids, id))
-		notify_remove (book_view, g_strdup (id));
+	if (id_is_in_view (book_view, id))
+		notify_remove (book_view, id);
 
 	g_mutex_unlock (priv->pending_mutex);
 }
@@ -433,6 +460,7 @@ void
 e_data_book_view_notify_complete (EDataBookView *book_view, const GError *error)
 {
 	EDataBookViewPrivate *priv = book_view->priv;
+	gchar *gdbus_error_msg = NULL;
 
 	if (!priv->running)
 		return;
@@ -448,7 +476,9 @@ e_data_book_view_notify_complete (EDataBookView *book_view, const GError *error)
 	/* We're done now, so tell the backend to stop?  TODO: this is a bit different to
 	   how the CORBA backend works... */
 
-	e_gdbus_book_view_emit_complete (priv->gdbus_object, error ? error->code : 0, error ? error->message : "");
+	e_gdbus_book_view_emit_complete (priv->gdbus_object, error ? error->code : 0, e_util_ensure_gdbus_string (error ? error->message : "", &gdbus_error_msg));
+
+	g_free (gdbus_error_msg);
 }
 
 /**
@@ -464,11 +494,14 @@ void
 e_data_book_view_notify_status_message (EDataBookView *book_view, const gchar *message)
 {
 	EDataBookViewPrivate *priv = E_DATA_BOOK_VIEW_GET_PRIVATE (book_view);
+	gchar *gdbus_message = NULL;
 
 	if (!priv->running)
 		return;
 
-	e_gdbus_book_view_emit_status_message (priv->gdbus_object, message ? message : "");
+	e_gdbus_book_view_emit_status_message (priv->gdbus_object, e_util_ensure_gdbus_string (message, &gdbus_message));
+
+	g_free (gdbus_message);
 }
 
 /**
@@ -494,7 +527,7 @@ e_data_book_view_new (EDataBook *book, const gchar *card_query, EBookBackendSExp
 	/* Attach a weak reference to the book, so if it dies the book view is destroyed too */
 	g_object_weak_ref (G_OBJECT (priv->book), book_destroyed_cb, view);
 	priv->backend = g_object_ref (e_data_book_get_backend (book));
-	priv->card_query = g_strdup (card_query);
+	priv->card_query = e_util_utf8_make_valid (card_query);
 	priv->card_sexp = card_sexp;
 	priv->max_results = max_results;
 

@@ -26,6 +26,8 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
+#include "libedataserver/e-data-server-util.h"
+
 #include "e-data-book-enumtypes.h"
 #include "e-data-book-factory.h"
 #include "e-data-book.h"
@@ -380,7 +382,11 @@ e_data_book_respond_get_contact (EDataBook *book, guint32 opid, GError *error, c
 		data_book_return_error  (invocation, error, _("Cannot get contact: %s"));
 		g_error_free (error);
 	} else {
-		e_gdbus_book_complete_get_contact (book->priv->gdbus_object, invocation, vcard);
+		gchar *gdbus_vcard = NULL;
+
+		e_gdbus_book_complete_get_contact (book->priv->gdbus_object, invocation, e_util_ensure_gdbus_string (vcard, &gdbus_vcard));
+
+		g_free (gdbus_vcard);
 	}
 }
 
@@ -430,9 +436,11 @@ data_book_return_error (GDBusMethodInvocation *invocation, const GError *perror,
 {
 	GError *error;
 
-	g_return_if_fail (perror != NULL);
+	if (perror == NULL)
+		error = g_error_new (E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_OTHER_ERROR, error_fmt, _("Unknown error"));
+	else
+		error = g_error_new (E_DATA_BOOK_ERROR, perror->code, error_fmt, perror->message);
 
-	error = g_error_new (E_DATA_BOOK_ERROR, perror->code, error_fmt, perror->message);
 	g_dbus_method_invocation_return_gerror (invocation, error);
 
 	g_error_free (error);
@@ -482,10 +490,14 @@ e_data_book_respond_create (EDataBook *book, guint32 opid, GError *error, EConta
 		data_book_return_error (invocation, error, _("Cannot add contact: %s"));
 		g_error_free (error);
 	} else {
+		gchar *gdbus_uid = NULL;
+
 		e_book_backend_notify_update (e_data_book_get_backend (book), contact);
 		e_book_backend_notify_complete (e_data_book_get_backend (book));
 
-		e_gdbus_book_complete_add_contact (book->priv->gdbus_object, invocation, e_contact_get_const (contact, E_CONTACT_UID));
+		e_gdbus_book_complete_add_contact (book->priv->gdbus_object, invocation, e_util_ensure_gdbus_string (e_contact_get_const (contact, E_CONTACT_UID), &gdbus_uid));
+
+		g_free (gdbus_uid);
 	}
 }
 
@@ -572,10 +584,12 @@ static gboolean
 impl_Book_getStaticCapabilities (EGdbusBook *object, GDBusMethodInvocation *invocation, EDataBook *book)
 {
 	gchar *capabilities = e_book_backend_get_static_capabilities (e_data_book_get_backend (book));
+	gchar *gdbus_capabilities = NULL;
 
-	e_gdbus_book_complete_get_static_capabilities (object, invocation, capabilities ? capabilities : "");
+	e_gdbus_book_complete_get_static_capabilities (object, invocation, e_util_ensure_gdbus_string (capabilities, &gdbus_capabilities));
 
 	g_free (capabilities);
+	g_free (gdbus_capabilities);
 
 	return TRUE;
 }
@@ -705,9 +719,11 @@ e_data_book_respond_get_changes (EDataBook *book, guint32 opid, GError *error, G
 
 		while (changes != NULL) {
 			EDataBookChange *change = (EDataBookChange *) changes->data;
+			gchar *gdbus_vcard = NULL;
 
-			g_variant_builder_add (builder, "(us)", change->change_type, change->vcard ? change->vcard : "");
+			g_variant_builder_add (builder, "(us)", change->change_type, e_util_ensure_gdbus_string (change->vcard, &gdbus_vcard));
 
+			g_free (gdbus_vcard);
 			g_free (change->vcard);
 			g_free (change);
 
@@ -798,16 +814,14 @@ return_error_and_list (EGdbusBook *gdbus_object, void (* complete_func) (EGdbusB
 
 		array = g_new0 (gchar *, g_list_length (list) + 1);
 		for (l = list; l != NULL; l = l->next) {
-			array[i++] = l->data;
+			array[i++] = e_util_utf8_make_valid (l->data);
+			if (free_data)
+				g_free (l->data);
 		}
 
 		complete_func (gdbus_object, invocation, (const gchar * const *) array);
 
-		if (free_data) {
-			g_strfreev (array);
-		} else {
-			g_free (array);
-		}
+		g_strfreev (array);
 	}
 }
 

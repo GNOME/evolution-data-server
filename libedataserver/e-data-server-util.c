@@ -412,6 +412,111 @@ e_util_utf8_remove_accents (const gchar *str)
 }
 
 /**
+ * e_util_utf8_make_valid:
+ *
+ * Returns newly allocates string, copy of 'str', which
+ * is UTF8 valid string. Invalid letters are replaced
+ * with question marks U+FFFD.
+ *
+ * Since: 2.92
+ **/
+gchar *
+e_util_utf8_make_valid (const gchar *str)
+{
+	/* almost identical copy of glib's _g_utf8_make_valid() */
+	GString *string;
+	const gchar *remainder, *invalid;
+	gint remaining_bytes, valid_bytes, total_bytes, len = -1;
+
+	g_return_val_if_fail (str != NULL, NULL);
+
+	string = NULL;
+	remainder = str;
+	if (len == -1) {
+		remaining_bytes = strlen (str);
+	} else {
+		const gchar *start = str, *end = str;
+
+		while (len > 0) {
+			gunichar uc = g_utf8_get_char_validated (end, -1);
+
+			if (uc == (gunichar) -2 || uc == (gunichar) -1) {
+				end++;
+			} else if (uc == 0) {
+				break;
+			} else {
+				end = g_utf8_next_char (end);
+			}
+
+			len--;
+		}
+
+		remaining_bytes = end - start;
+	}
+
+	total_bytes = remaining_bytes;
+
+	while (remaining_bytes != 0) {
+		if (g_utf8_validate (remainder, remaining_bytes, &invalid))
+			break;
+		valid_bytes = invalid - remainder;
+
+		if (string == NULL)
+			string = g_string_sized_new (remaining_bytes);
+
+		g_string_append_len (string, remainder, valid_bytes);
+		/* append U+FFFD REPLACEMENT CHARACTER */
+		g_string_append (string, "\357\277\275");
+
+		remaining_bytes -= valid_bytes + 1;
+		remainder = invalid + 1;
+	}
+
+	if (string == NULL)
+		return g_strndup (str, total_bytes);
+
+	g_string_append (string, remainder);
+
+	g_assert (g_utf8_validate (string->str, -1, NULL));
+
+	return g_string_free (string, FALSE);
+}
+
+/**
+ * e_util_ensure_gdbus_string:
+ * @str: What to convert, if NULL, then returns empty string.
+ * @gdbus_str: In case that 'str' is not valid UTF8 string
+ *   and new memory allocated, then it is returned in this
+ *   variable, and its value should be freed with g_free().
+ *   It cannot be NULL.
+ *
+ * Returns string usable for GDBus, or more precisely GVariant,
+ * which requires UTF8 encoded strings for a transfer.
+ * If the str is not UTF8 valid, then new string is allocated
+ * and returned in gdbus_str, on which is supposed to be called
+ * g_free().
+ *
+ * Since: 2.92
+ **/
+const gchar *
+e_util_ensure_gdbus_string (const gchar *str, gchar **gdbus_str)
+{
+	g_return_val_if_fail (gdbus_str != NULL, NULL);
+
+	*gdbus_str = NULL;
+
+	if (!str || !*str)
+		return "";
+
+	if (g_utf8_validate (str, -1, NULL))
+		return str;
+
+	*gdbus_str = e_util_utf8_make_valid (str);
+
+	return *gdbus_str;
+}
+
+/**
  * e_strftime:
  * @string: The string array to store the result in.
  * @max: The size of array @s.
