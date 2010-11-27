@@ -1,0 +1,11 @@
+
+[Data Source]
+_DisplayName=Personal
+Enabled=true
+Parent=local-stub
+
+[Calendar]
+BackendName=local
+Color=#becedd
+Selected=true
+

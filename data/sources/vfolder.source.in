@@ -1,0 +1,9 @@
+# Special built-in mail store.
+
+[Data Source]
+_DisplayName=Search Folders
+Enabled=true
+Parent=
+
+[Mail Account]
+BackendName=vfolder

@@ -1,0 +1,8 @@
+
+[Data Source]
+_DisplayName=Sendmail
+Enabled=true
+Parent=
+
+[Mail Transport]
+BackendName=sendmail

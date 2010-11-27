@@ -1,3 +1,5 @@
+SUBDIRS = sources
+
 gsettings_SCHEMAS = \
 	org.gnome.Evolution.DefaultSources.gschema.xml
 

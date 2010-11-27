@@ -1,0 +1,9 @@
+
+[Data Source]
+_DisplayName=Personal
+Enabled=true
+Parent=local-stub
+
+[Address Book]
+BackendName=local
+Color=#becedd
