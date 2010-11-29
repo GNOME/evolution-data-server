@@ -1,3 +1,47 @@
+Evolution-Data-Server 2.91.3 2010-11-29
+---------------------------------------
+Bug Fixes:
+	Bug #635825 - Ensure valid UTF8 strings are passed to GDBus/GVariant (Milan Crha)
+	Bug #624420 - Crash camel_imapx_server_append_message (Milan Crha)
+	Bug #635673 - Stack overflow when opening slow calendar (Milan Crha)
+	Bug #632962 - Duplicate "On this computer" sources after update (Milan Crha)
+	Bug 635572 - Various linking failures (Diego Escalante Urrelo)
+	Bug #635550 - e-calendar-factory leaks memory (Milan Crha)
+	Bug #633780 - ESourceSelector - check paths when removing source/group (Milan Crha)
+	Bug #634573 - Crash when importing ics file (Milan Crha)
+	Bug #633181 - Deadlock after moving some mails in maildir (Milan Crha)
+	Bug #486553 - Inline expansion of email lists are not separated by commas (Milan Crha)
+	Bug #634658 - Unread counts for vfolders never update (Milan Crha)
+	Bug #602958 - Right click over source in calendar view opens a calendar (Milan Crha)
+	Bug 634593 - Maildir hang when create new folders (Chenthill Palanisamy)
+	Bug 633122 - git head 2010-10-25 maildir folders that used to work now don't (Chenthill Palanisamy)
+	Bug #581288 - Remove .ui files from evolution-data-server (Milan Crha)
+	Bug #632692 - Thread by In-Reply-To, then first found reference (Milan Crha)
+	Bug #538716 - Do not set expiration on POP3 message cache (Milan Crha)
+	Bug #632676 - Only "Checking for new mail" in status bar and nothing else (Milan Crha)
+	Bug #631804 - Aborts with pthread error in imapx_server_dispose() (David Woodhouse)
+	Bug #634084 - ECal reports loaded state too early (Milan Crha)
+
+Miscellaneous Fixes:
+	Cannot delete maildir folder (ritz)
+	CamelStore: Place Inbox at the top while building folder info (Chenthill Palanisamy)
+	Maildir: Use Inbox instead of '.' while building folder info (Chenthill Palanisamy)
+	Maildir: Allow subfolders for Inbox (Chenthill Palanisamy)
+	Use '_' instead of '^' for renaming folders with dot symbol in it (Chenthill Palanisamy)
+	Do not unset the deleted flag while copying mails across folders (Chenthill Palanisamy)
+	Make EFileCache changes freezer recursiveable (Milan Crha)
+	Fix QRESYNC protocol violation (RH #648082) (David Woodhouse)
+
+Translations:
+	Gheyret T.Kenji (ug)
+	Ivar Smolin (et)
+	Jorge González (es)
+	Fran Diéguez (gl)
+	Georgios Stefanakis (el)
+	Matej Urbančič (sl)
+	Marcos Lans (gl)
+	Kjartan Maraas (nn)
+
 Evolution-Data-Server 2.91.2 2010-11-08
 ---------------------------------------
 
