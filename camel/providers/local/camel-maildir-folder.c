@@ -103,8 +103,17 @@ maildir_folder_get_filename (CamelFolder *folder,
 
 	mdi = (CamelMaildirMessageInfo *)info;
 
-	/* what do we do if the message flags (and :info data) changes?  filename mismatch - need to recheck I guess */
-	res = g_strdup_printf("%s/cur/%s", lf->folder_path, camel_maildir_info_filename (mdi));
+	/* what do we do if the message flags (and :info data) changes?  filename mismatch - need to recheck I guess 
+	   If filename is NULL, it means folder_summary_check is not yet executed. */
+	if (!camel_maildir_info_filename (mdi)) {
+		gchar *temp;
+
+		temp = camel_maildir_summary_info_to_name (mdi);
+		res = g_strdup_printf("%s/cur/%s", lf->folder_path, temp);
+
+		g_free (temp);
+	} else
+		res = g_strdup_printf("%s/cur/%s", lf->folder_path, camel_maildir_info_filename (mdi));
 
 	camel_message_info_free (info);
 
@@ -219,29 +228,16 @@ maildir_folder_get_message_sync (CamelFolder *folder,
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelStream *message_stream = NULL;
 	CamelMimeMessage *message = NULL;
-	CamelMessageInfo *info;
 	gchar *name = NULL;
-	CamelMaildirMessageInfo *mdi;
 
 	d(printf("getting message: %s\n", uid));
 
 	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
 		return NULL;
 
-	/* get the message summary info */
-	if ((info = camel_folder_summary_uid (folder->summary, uid)) == NULL) {
-		set_cannot_get_message_ex (
-			error, CAMEL_FOLDER_ERROR_INVALID_UID,
-			uid, lf->folder_path, _("No such message"));
+	name = maildir_folder_get_filename (folder, uid, error);
+	if (!name)
 		goto fail;
-	}
-
-	mdi = (CamelMaildirMessageInfo *)info;
-
-	/* what do we do if the message flags (and :info data) changes?  filename mismatch - need to recheck I guess */
-	name = g_strdup_printf("%s/cur/%s", lf->folder_path, camel_maildir_info_filename(mdi));
-
-	camel_message_info_free (info);
 
 	message_stream = camel_stream_fs_new_with_name (
 		name, O_RDONLY, 0, error);
