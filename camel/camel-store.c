@@ -387,10 +387,53 @@ store_synchronize_sync (CamelStore *store,
 	if (store->folders == NULL)
 		return TRUE;
 
+	if (expunge) {
+		/* ensure all folders are used when expunging */
+		CamelFolderInfo *root, *fi;
+
+		folders = g_ptr_array_new ();
+		root = camel_store_get_folder_info_sync (store, NULL, CAMEL_STORE_FOLDER_INFO_RECURSIVE | CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL, NULL, NULL);
+		fi = root;
+		while (fi) {
+			CamelFolderInfo *next;
+
+			if ((fi->flags & CAMEL_FOLDER_NOSELECT) == 0) {
+				CamelFolder *fldr;
+
+				fldr = camel_store_get_folder_sync (store, fi->full_name, 0, NULL, NULL);
+				if (fldr)
+					g_ptr_array_add (folders, fldr);
+			}
+
+			/* pick the next */
+			next = fi->child;
+			if (!next)
+				next = fi->next;
+			if (!next) {
+				next = fi->parent;
+				while (next) {
+					if (next->next) {
+						next = next->next;
+						break;
+					}
+
+					next = next->parent;
+				}
+			}
+
+			fi = next;
+		}
+
+		if (root)
+			camel_store_free_folder_info_full (store, root);
+	} else {
+		/* sync only folders opened until now */
+		folders = camel_object_bag_list (store->folders);
+	}
+
 	/* We don't sync any vFolders, that is used to update certain
 	 * vfolder queries mainly, and we're really only interested in
 	 * storing/expunging the physical mails. */
-	folders = camel_object_bag_list (store->folders);
 	for (i=0;i<folders->len;i++) {
 		folder = folders->pdata[i];
 		if (!CAMEL_IS_VEE_FOLDER (folder)
