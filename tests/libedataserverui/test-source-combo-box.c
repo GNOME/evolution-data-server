@@ -20,7 +20,13 @@
  * Author: Ettore Perazzoli <ettore@ximian.com>
  */
 
+#include <config.h>
+#include <gtk/gtk.h>
+
+#include <libedataserver/e-source-address-book.h>
 #include <libedataserverui/e-source-combo-box.h>
+
+static const gchar *extension_name;
 
 static void
 source_changed_cb (ESourceComboBox *combo_box)
@@ -39,27 +45,34 @@ source_changed_cb (ESourceComboBox *combo_box)
 }
 
 static gint
-on_idle_create_widget (const gchar *gconf_path)
+on_idle_create_widget (ESourceRegistry *registry)
 {
 	GtkWidget *window;
+	GtkWidget *box;
 	GtkWidget *combo_box;
-	ESourceList *source_list;
-	GConfClient *gconf_client;
-
-	gconf_client = gconf_client_get_default ();
-	source_list = e_source_list_new_for_gconf (gconf_client, gconf_path);
+	GtkWidget *button;
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	combo_box = e_source_combo_box_new (source_list);
+
+	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+	gtk_container_add (GTK_CONTAINER (window), box);
+
+	combo_box = e_source_combo_box_new (registry, extension_name);
 	g_signal_connect (
 		combo_box, "changed",
 		G_CALLBACK (source_changed_cb), NULL);
+	gtk_box_pack_start (GTK_BOX (box), combo_box, FALSE, FALSE, 0);
 
-	gtk_container_add (GTK_CONTAINER (window), combo_box);
+	button = gtk_toggle_button_new_with_label ("Show Colors");
+	gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
+
+	g_object_bind_property (
+		combo_box, "show-colors",
+		button, "active",
+		G_BINDING_SYNC_CREATE |
+		G_BINDING_BIDIRECTIONAL);
+
 	gtk_widget_show_all (window);
-
-	g_object_unref (gconf_client);
-	g_object_unref (source_list);
 
 	return FALSE;
 }
@@ -68,16 +81,25 @@ gint
 main (gint argc,
       gchar **argv)
 {
-	const gchar *gconf_path;
+	ESourceRegistry *registry;
+	GError *error = NULL;
 
 	gtk_init (&argc, &argv);
 
 	if (argc < 2)
-		gconf_path = "/apps/evolution/calendar/sources";
+		extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
 	else
-		gconf_path = argv[1];
+		extension_name = argv[1];
 
-	g_idle_add ((GSourceFunc) on_idle_create_widget, (gpointer) gconf_path);
+	registry = e_source_registry_new_sync (NULL, &error);
+
+	if (error != NULL) {
+		g_error ("Failed to load ESource registry: %s",
+			error->message);
+		g_assert_not_reached ();
+	}
+
+	g_idle_add ((GSourceFunc) on_idle_create_widget, registry);
 
 	gtk_main ();
 

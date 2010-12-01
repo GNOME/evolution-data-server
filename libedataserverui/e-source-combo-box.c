@@ -1,5 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* e-source-option-menu.c
+/* e-source-combo-box.c
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
@@ -22,6 +22,8 @@
 #include <config.h>
 #endif
 
+#include <libedataserver/e-source-selectable.h>
+
 #include "e-source-combo-box.h"
 #include "e-cell-renderer-color.h"
 
@@ -30,182 +32,308 @@
 	((obj), E_TYPE_SOURCE_COMBO_BOX, ESourceComboBoxPrivate))
 
 struct _ESourceComboBoxPrivate {
-	ESourceList *source_list;
-	GHashTable *uid_index;
-	gulong handler_id;
+	ESourceRegistry *registry;
+	gchar *extension_name;
+
+	gulong source_added_handler_id;
+	gulong source_removed_handler_id;
+	gulong source_enabled_handler_id;
+	gulong source_disabled_handler_id;
+
+	gboolean show_colors;
 };
 
 enum {
 	PROP_0,
-	PROP_SOURCE_LIST
+	PROP_EXTENSION_NAME,
+	PROP_REGISTRY,
+	PROP_SHOW_COLORS
 };
 
 enum {
 	COLUMN_COLOR,		/* GDK_TYPE_COLOR */
 	COLUMN_NAME,		/* G_TYPE_STRING */
 	COLUMN_SENSITIVE,	/* G_TYPE_BOOLEAN */
-	COLUMN_SOURCE,		/* G_TYPE_OBJECT */
 	COLUMN_UID,		/* G_TYPE_STRING */
-	COLUMN_VISIBLE,		/* G_TYPE_BOOLEAN */
 	NUM_COLUMNS
 };
 
 G_DEFINE_TYPE (ESourceComboBox, e_source_combo_box, GTK_TYPE_COMBO_BOX)
 
-static gint
-compare_source_names (ESource *source_a,
-                      ESource *source_b)
+static gboolean
+source_combo_box_traverse (GNode *node,
+                           ESourceComboBox *combo_box)
 {
-	const gchar *name_a;
-	const gchar *name_b;
+	ESource *source;
+	ESourceSelectable *extension = NULL;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	GString *indented;
+	GdkColor color;
+	const gchar *ext_name;
+	const gchar *display_name;
+	const gchar *uid;
+	gboolean sensitive = FALSE;
+	gboolean use_color = FALSE;
+	guint depth;
 
-	g_return_val_if_fail (E_IS_SOURCE (source_a), -1);
-	g_return_val_if_fail (E_IS_SOURCE (source_b),  1);
+	/* Skip the root node. */
+	if (G_NODE_IS_ROOT (node))
+		return FALSE;
 
-	name_a = e_source_get_display_name (source_a);
-	name_b = e_source_get_display_name (source_b);
+	ext_name = e_source_combo_box_get_extension_name (combo_box);
 
-	return g_utf8_collate (name_a, name_b);
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo_box));
+	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+
+	source = E_SOURCE (node->data);
+	uid = e_source_get_uid (source);
+	display_name = e_source_get_display_name (source);
+
+	indented = g_string_new (NULL);
+
+	depth = g_node_depth (node);
+	g_warn_if_fail (depth > 1);
+	while (--depth > 1)
+		g_string_append (indented, "    ");
+	g_string_append (indented, display_name);
+
+	if (ext_name != NULL && e_source_has_extension (source, ext_name)) {
+		extension = e_source_get_extension (source, ext_name);
+		sensitive = TRUE;
+	}
+
+	if (E_IS_SOURCE_SELECTABLE (extension)) {
+		const gchar *color_spec;
+
+		color_spec = e_source_selectable_get_color (extension);
+		if (color_spec != NULL && *color_spec != '\0')
+			use_color = gdk_color_parse (color_spec, &color);
+	}
+
+	gtk_list_store_set (
+		GTK_LIST_STORE (model), &iter,
+		COLUMN_COLOR, use_color ? &color : NULL,
+		COLUMN_NAME, indented->str,
+		COLUMN_SENSITIVE, sensitive,
+		COLUMN_UID, uid,
+		-1);
+
+	g_string_free (indented, TRUE);
+
+	return FALSE;
 }
 
 static void
-source_list_changed_cb (ESourceList *source_list,
-                        ESourceComboBox *source_combo_box)
+source_combo_box_build_model (ESourceComboBox *combo_box)
 {
-	ESourceComboBoxPrivate *priv;
-	GtkComboBox *combo_box;
+	ESourceRegistry *registry;
+	GtkComboBox *gtk_combo_box;
 	GtkTreeModel *model;
-	GtkListStore *store;
-	GtkTreeIter iter;
-	GtkTreePath *path;
-	GSList *groups;
-	GSList *sources, *s;
-	const gchar *name;
-	const gchar *uid;
-	gchar *indented_name;
-	gboolean visible = FALSE;
-	gboolean iter_valid;
+	GNode *root;
+	const gchar *active_id;
+	const gchar *extension_name;
 
-	priv = source_combo_box->priv;
+	registry = e_source_combo_box_get_registry (combo_box);
+	extension_name = e_source_combo_box_get_extension_name (combo_box);
 
-	combo_box = GTK_COMBO_BOX (source_combo_box);
+	gtk_combo_box = GTK_COMBO_BOX (combo_box);
+	model = gtk_combo_box_get_model (gtk_combo_box);
 
-	model = gtk_combo_box_get_model (combo_box);
-	store = GTK_LIST_STORE (model);
-
-	if (source_list == NULL) {
-		gtk_list_store_clear (store);
+	/* Constructor properties trigger this function before the
+	 * list store is configured.  Detect it and return silently. */
+	if (model == NULL)
 		return;
-	}
 
-	/* XXX The algorithm below is needlessly complex.  Would be
-	 *     easier just to clear and rebuild the store.  There's
-	 *     hardly a performance issue here since source lists
-	 *     are short. */
+	/* Remember the active ID so we can try to restore it. */
+	active_id = gtk_combo_box_get_active_id (gtk_combo_box);
 
-	iter_valid = gtk_tree_model_get_iter_first (model, &iter);
+	gtk_list_store_clear (GTK_LIST_STORE (model));
 
-	for (groups = e_source_list_peek_groups (source_list);
-		groups != NULL; groups = groups->next) {
+	/* If we have no registry, leave the combo box empty. */
+	if (registry == NULL)
+		return;
 
-		/* Only show source groups that have sources. */
-		if (e_source_group_peek_sources (groups->data) == NULL)
-			continue;
+	/* If we have no extension name, leave the combo box empty. */
+	if (extension_name == NULL)
+		return;
 
-		name = e_source_group_peek_name (groups->data);
-		if (!iter_valid)
-			gtk_list_store_append (store, &iter);
-		gtk_list_store_set (
-			store, &iter,
-			COLUMN_COLOR, NULL,
-			COLUMN_NAME, name,
-			COLUMN_SENSITIVE, FALSE,
-			COLUMN_SOURCE, groups->data,
-			-1);
-		iter_valid = gtk_tree_model_iter_next (model, &iter);
+	root = e_source_registry_build_display_tree (registry, extension_name);
 
-		sources = e_source_group_peek_sources (groups->data);
+	g_node_traverse (
+		root, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+		(GNodeTraverseFunc) source_combo_box_traverse,
+		combo_box);
 
-		/* Create a shallow copy and sort by name. */
-		sources = g_slist_sort (
-			g_slist_copy (sources),
-			(GCompareFunc) compare_source_names);
+	e_source_registry_free_display_tree (root);
 
-		for (s = sources; s != NULL; s = s->next) {
-			const gchar *color_spec;
-			GdkColor color;
+	/* Restore the active ID, or else set it to something reasonable. */
+	gtk_combo_box_set_active_id (gtk_combo_box, active_id);
+	if (gtk_combo_box_get_active_id (gtk_combo_box) == NULL) {
+		ESource *source;
 
-			uid = e_source_get_uid (s->data);
-			name = e_source_get_display_name (s->data);
-			indented_name = g_strconcat ("    ", name, NULL);
-
-			color_spec = e_source_peek_color_spec (s->data);
-			if (color_spec != NULL) {
-				gdk_color_parse (color_spec, &color);
-				visible = TRUE;
-			}
-
-			if (!iter_valid)
-				gtk_list_store_append (store, &iter);
-			gtk_list_store_set (
-				store, &iter,
-				COLUMN_COLOR, color_spec ? &color : NULL,
-				COLUMN_NAME, indented_name,
-				COLUMN_SENSITIVE, TRUE,
-				COLUMN_SOURCE, s->data,
-				COLUMN_UID, uid,
-				-1);
-
-			path = gtk_tree_model_get_path (model, &iter);
-			g_hash_table_replace (
-				priv->uid_index, g_strdup (uid),
-				gtk_tree_row_reference_new (model, path));
-			gtk_tree_path_free (path);
-			iter_valid = gtk_tree_model_iter_next (model, &iter);
-
-			g_free (indented_name);
+		source = e_source_registry_ref_default_for_extension_name (
+			registry, extension_name);
+		if (source != NULL) {
+			e_source_combo_box_set_active (combo_box, source);
+			g_object_unref (source);
 		}
-		g_slist_free (sources);
-	}
-
-	/* Remove any extra references that might be leftover from the original model */
-	while (gtk_list_store_iter_is_valid (store, &iter))
-		gtk_list_store_remove (store, &iter);
-
-	/* Set the visible column based on whether we've seen a color. */
-	iter_valid = gtk_tree_model_get_iter_first (model, &iter);
-	while (iter_valid) {
-		gtk_list_store_set (
-			store, &iter, COLUMN_VISIBLE, visible, -1);
-		iter_valid = gtk_tree_model_iter_next (model, &iter);
 	}
 }
 
-static GObject *
-e_source_combo_box_constructor (GType type,
-                                guint n_construct_properties,
-                                GObjectConstructParam *construct_properties)
+static void
+source_combo_box_source_added_cb (ESourceRegistry *registry,
+                                  ESource *source,
+                                  ESourceComboBox *combo_box)
+{
+	source_combo_box_build_model (combo_box);
+}
+
+static void
+source_combo_box_source_removed_cb (ESourceRegistry *registry,
+                                    ESource *source,
+                                    ESourceComboBox *combo_box)
+{
+	source_combo_box_build_model (combo_box);
+}
+
+static void
+source_combo_box_source_enabled_cb (ESourceRegistry *registry,
+                                    ESource *source,
+                                    ESourceComboBox *combo_box)
+{
+	source_combo_box_build_model (combo_box);
+}
+
+static void
+source_combo_box_source_disabled_cb (ESourceRegistry *registry,
+                                     ESource *source,
+                                     ESourceComboBox *combo_box)
+{
+	source_combo_box_build_model (combo_box);
+}
+
+static void
+source_combo_box_set_property (GObject *object,
+                               guint property_id,
+                               const GValue *value,
+                               GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_EXTENSION_NAME:
+			e_source_combo_box_set_extension_name (
+				E_SOURCE_COMBO_BOX (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_REGISTRY:
+			e_source_combo_box_set_registry (
+				E_SOURCE_COMBO_BOX (object),
+				g_value_get_object (value));
+			return;
+
+		case PROP_SHOW_COLORS:
+			e_source_combo_box_set_show_colors (
+				E_SOURCE_COMBO_BOX (object),
+				g_value_get_boolean (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+source_combo_box_get_property (GObject *object,
+                               guint property_id,
+                               GValue *value,
+                               GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_EXTENSION_NAME:
+			g_value_set_string (
+				value,
+				e_source_combo_box_get_extension_name (
+				E_SOURCE_COMBO_BOX (object)));
+			return;
+
+		case PROP_REGISTRY:
+			g_value_set_object (
+				value,
+				e_source_combo_box_get_registry (
+				E_SOURCE_COMBO_BOX (object)));
+			return;
+
+		case PROP_SHOW_COLORS:
+			g_value_set_boolean (
+				value,
+				e_source_combo_box_get_show_colors (
+				E_SOURCE_COMBO_BOX (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+source_combo_box_dispose (GObject *object)
+{
+	ESourceComboBoxPrivate *priv;
+
+	priv = E_SOURCE_COMBO_BOX_GET_PRIVATE (object);
+
+	if (priv->registry != NULL) {
+		g_signal_handler_disconnect (
+			priv->registry,
+			priv->source_added_handler_id);
+		g_signal_handler_disconnect (
+			priv->registry,
+			priv->source_removed_handler_id);
+		g_signal_handler_disconnect (
+			priv->registry,
+			priv->source_enabled_handler_id);
+		g_signal_handler_disconnect (
+			priv->registry,
+			priv->source_disabled_handler_id);
+		g_object_unref (priv->registry);
+		priv->registry = NULL;
+	}
+
+	/* Chain up to parent's "dispose" method. */
+	G_OBJECT_CLASS (e_source_combo_box_parent_class)->dispose (object);
+}
+
+static void
+source_combo_box_finalize (GObject *object)
+{
+	ESourceComboBoxPrivate *priv;
+
+	priv = E_SOURCE_COMBO_BOX_GET_PRIVATE (object);
+
+	g_free (priv->extension_name);
+
+	/* Chain up to parent's "finalize" method. */
+	G_OBJECT_CLASS (e_source_combo_box_parent_class)->finalize (object);
+}
+
+static void
+source_combo_box_constructed (GObject *object)
 {
 	ESourceComboBox *combo_box;
 	GtkCellRenderer *renderer;
 	GtkCellLayout *layout;
 	GtkListStore *store;
-	GObject *object;
-
-	/* Chain up to parent's "constructor" method. */
-	object = G_OBJECT_CLASS (e_source_combo_box_parent_class)->constructor (
-		type, n_construct_properties, construct_properties);
 
 	combo_box = E_SOURCE_COMBO_BOX (object);
+
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (e_source_combo_box_parent_class)->constructed (object);
 
 	store = gtk_list_store_new (
 		NUM_COLUMNS,
 		GDK_TYPE_COLOR,		/* COLUMN_COLOR */
 		G_TYPE_STRING,		/* COLUMN_NAME */
 		G_TYPE_BOOLEAN,		/* COLUMN_SENSITIVE */
-		G_TYPE_OBJECT,		/* COLUMN_SOURCE */
-		G_TYPE_STRING,		/* COLUMN_UID */
-		G_TYPE_BOOLEAN);	/* COLUMN_VISIBLE */
+		G_TYPE_STRING);		/* COLUMN_UID */
 	gtk_combo_box_set_model (
 		GTK_COMBO_BOX (combo_box),
 		GTK_TREE_MODEL (store));
@@ -221,8 +349,12 @@ e_source_combo_box_constructor (GType type,
 		layout, renderer,
 		"color", COLUMN_COLOR,
 		"sensitive", COLUMN_SENSITIVE,
-		"visible", COLUMN_VISIBLE,
 		NULL);
+
+	g_object_bind_property (
+		combo_box, "show-colors",
+		renderer, "visible",
+		G_BINDING_SYNC_CREATE);
 
 	renderer = gtk_cell_renderer_text_new ();
 	gtk_cell_layout_pack_start (layout, renderer, TRUE);
@@ -232,74 +364,7 @@ e_source_combo_box_constructor (GType type,
 		"sensitive", COLUMN_SENSITIVE,
 		NULL);
 
-	return object;
-}
-
-static void
-e_source_combo_box_set_property (GObject *object,
-                                 guint property_id,
-                                 const GValue *value,
-                                 GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_SOURCE_LIST:
-			e_source_combo_box_set_source_list (
-				E_SOURCE_COMBO_BOX (object),
-				g_value_get_object (value));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
-e_source_combo_box_get_property (GObject *object,
-                                 guint property_id,
-                                 GValue *value,
-                                 GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_SOURCE_LIST:
-			g_value_set_object (
-				value, e_source_combo_box_get_source_list (
-				E_SOURCE_COMBO_BOX (object)));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
-e_source_combo_box_dispose (GObject *object)
-{
-	ESourceComboBoxPrivate *priv;
-
-	priv = E_SOURCE_COMBO_BOX_GET_PRIVATE (object);
-
-	if (priv->source_list != NULL) {
-		g_signal_handler_disconnect (
-			priv->source_list, priv->handler_id);
-		g_object_unref (priv->source_list);
-		priv->source_list = NULL;
-	}
-
-	g_hash_table_remove_all (priv->uid_index);
-
-	/* Chain up to parent's "dispose" method. */
-	G_OBJECT_CLASS (e_source_combo_box_parent_class)->dispose (object);
-}
-
-static void
-e_source_combo_box_finalize (GObject *object)
-{
-	ESourceComboBoxPrivate *priv;
-
-	priv = E_SOURCE_COMBO_BOX_GET_PRIVATE (object);
-
-	g_hash_table_destroy (priv->uid_index);
-
-	/* Chain up to parent's "finalize" method. */
-	G_OBJECT_CLASS (e_source_combo_box_parent_class)->finalize (object);
+	source_combo_box_build_model (combo_box);
 }
 
 static void
@@ -309,119 +374,266 @@ e_source_combo_box_class_init (ESourceComboBoxClass *class)
 
 	g_type_class_add_private (class, sizeof (ESourceComboBoxPrivate));
 
-	object_class->constructor = e_source_combo_box_constructor;
-	object_class->set_property = e_source_combo_box_set_property;
-	object_class->get_property = e_source_combo_box_get_property;
-	object_class->dispose = e_source_combo_box_dispose;
-	object_class->finalize = e_source_combo_box_finalize;
+	object_class->set_property = source_combo_box_set_property;
+	object_class->get_property = source_combo_box_get_property;
+	object_class->dispose = source_combo_box_dispose;
+	object_class->finalize = source_combo_box_finalize;
+	object_class->constructed = source_combo_box_constructed;
 
 	g_object_class_install_property (
 		object_class,
-		PROP_SOURCE_LIST,
+		PROP_EXTENSION_NAME,
+		g_param_spec_string (
+			"extension-name",
+			"Extension Name",
+			"ESource extension name to filter",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT));
+
+	/* XXX Don't use G_PARAM_CONSTRUCT_ONLY here.  We need to allow
+	 *     for this class to be instantiated by a GtkBuilder with no
+	 *     special construct parameters, and then subsequently give
+	 *     it an ESourceRegistry. */
+	g_object_class_install_property (
+		object_class,
+		PROP_REGISTRY,
 		g_param_spec_object (
-			"source-list",
-			"source-list",
-			"List of sources to choose from",
-			E_TYPE_SOURCE_LIST,
-			G_PARAM_READWRITE));
+			"registry",
+			"Registry",
+			"Data source registry",
+			E_TYPE_SOURCE_REGISTRY,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_SHOW_COLORS,
+		g_param_spec_boolean (
+			"show-colors",
+			"Show Colors",
+			"Whether to show colors next to names",
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
-e_source_combo_box_init (ESourceComboBox *source_combo_box)
+e_source_combo_box_init (ESourceComboBox *combo_box)
 {
-	source_combo_box->priv =
-		E_SOURCE_COMBO_BOX_GET_PRIVATE (source_combo_box);
-	source_combo_box->priv->uid_index =
-		g_hash_table_new_full (
-			g_str_hash, g_str_equal,
-			(GDestroyNotify) g_free,
-			(GDestroyNotify) gtk_tree_row_reference_free);
+	combo_box->priv = E_SOURCE_COMBO_BOX_GET_PRIVATE (combo_box);
+
 }
 
 /**
  * e_source_combo_box_new:
- * @source_list: an #ESourceList
+ * @registry: an #ESourceRegistry, or %NULL
+ * @extension_name: an #ESource extension name
  *
  * Creates a new #ESourceComboBox widget that lets the user pick an #ESource
- * from the provided #ESourceList.
+ * from the provided #ESourceRegistry.  The displayed sources are restricted
+ * to those which have an @extension_name extension.
  *
  * Returns: a new #ESourceComboBox
  *
  * Since: 2.22
  **/
 GtkWidget *
-e_source_combo_box_new (ESourceList *source_list)
+e_source_combo_box_new (ESourceRegistry *registry,
+                        const gchar *extension_name)
 {
-	g_return_val_if_fail (E_IS_SOURCE_LIST (source_list), NULL);
+	if (registry != NULL)
+		g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
 
 	return g_object_new (
-		E_TYPE_SOURCE_COMBO_BOX,
-		"source-list", source_list, NULL);
+		E_TYPE_SOURCE_COMBO_BOX, "registry", registry,
+		"extension-name", extension_name, NULL);
 }
 
 /**
- * e_source_combo_box_get_source_list:
+ * e_source_combo_box_get_registry:
  * @combo_box: an #ESourceComboBox
  *
- * Returns the #ESourceList which is acting as a data source for
- * @combo_box.
+ * Returns the #ESourceRegistry used to populate @combo_box.
  *
- * Returns: an #ESourceList
+ * Returns: the #ESourceRegistry, or %NULL
  *
- * Since: 2.22
+ * Since: 3.6
  **/
-ESourceList *
-e_source_combo_box_get_source_list (ESourceComboBox *combo_box)
+ESourceRegistry *
+e_source_combo_box_get_registry (ESourceComboBox *combo_box)
 {
 	g_return_val_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box), NULL);
 
-	return combo_box->priv->source_list;
+	return combo_box->priv->registry;
 }
 
 /**
- * e_source_combo_box_set_source_list:
+ * e_source_combo_box_set_registry:
  * @combo_box: an #ESourceComboBox
- * @source_list: an #ESourceList
+ * @registry: an #ESourceRegistry
  *
- * Sets the source list used by @source_combo_box to be @source_list.  This
- * causes the contents of @source_combo_box to be regenerated.
+ * Sets the #ESourceRegistry used to populate @combo_box.
  *
- * Since: 2.22
+ * This function is intended for cases where @combo_box is instantiated
+ * by a #GtkBuilder and has to be given an #ESourceRegistry after it is
+ * fully constructed.
+ *
+ * Since: 3.6
  **/
 void
-e_source_combo_box_set_source_list (ESourceComboBox *combo_box,
-                                    ESourceList *source_list)
+e_source_combo_box_set_registry (ESourceComboBox *combo_box,
+                                 ESourceRegistry *registry)
 {
 	g_return_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box));
 
-	if (source_list != NULL) {
-		g_return_if_fail (E_IS_SOURCE_LIST (source_list));
-		g_object_ref (source_list);
+	if (registry != NULL) {
+		g_return_if_fail (E_IS_SOURCE_REGISTRY (registry));
+		g_object_ref (registry);
 	}
 
-	if (combo_box->priv->source_list != NULL) {
+	if (combo_box->priv->registry != NULL) {
 		g_signal_handler_disconnect (
-			combo_box->priv->source_list,
-			combo_box->priv->handler_id);
-		g_object_unref (combo_box->priv->source_list);
-		combo_box->priv->handler_id = 0;
+			combo_box->priv->registry,
+			combo_box->priv->source_added_handler_id);
+		g_signal_handler_disconnect (
+			combo_box->priv->registry,
+			combo_box->priv->source_removed_handler_id);
+		g_signal_handler_disconnect (
+			combo_box->priv->registry,
+			combo_box->priv->source_enabled_handler_id);
+		g_signal_handler_disconnect (
+			combo_box->priv->registry,
+			combo_box->priv->source_disabled_handler_id);
+		g_object_unref (combo_box->priv->registry);
 	}
 
-	combo_box->priv->source_list = source_list;
+	combo_box->priv->registry = registry;
 
-	/* Reset the tree store. */
-	source_list_changed_cb (source_list, combo_box);
+	combo_box->priv->source_added_handler_id = 0;
+	combo_box->priv->source_removed_handler_id = 0;
+	combo_box->priv->source_enabled_handler_id = 0;
+	combo_box->priv->source_disabled_handler_id = 0;
 
-	/* Watch for source list changes. */
-	if (source_list != NULL) {
-		combo_box->priv->handler_id =
-			g_signal_connect_object (
-				source_list, "changed",
-				G_CALLBACK (source_list_changed_cb),
-				combo_box, 0);
+	if (registry != NULL) {
+		gulong handler_id;
+
+		handler_id = g_signal_connect (
+			registry, "source-added",
+			G_CALLBACK (source_combo_box_source_added_cb),
+			combo_box);
+		combo_box->priv->source_added_handler_id = handler_id;
+
+		handler_id = g_signal_connect (
+			registry, "source-removed",
+			G_CALLBACK (source_combo_box_source_removed_cb),
+			combo_box);
+		combo_box->priv->source_removed_handler_id = handler_id;
+
+		handler_id = g_signal_connect (
+			registry, "source-enabled",
+			G_CALLBACK (source_combo_box_source_enabled_cb),
+			combo_box);
+		combo_box->priv->source_enabled_handler_id = handler_id;
+
+		handler_id = g_signal_connect (
+			registry, "source-disabled",
+			G_CALLBACK (source_combo_box_source_disabled_cb),
+			combo_box);
+		combo_box->priv->source_disabled_handler_id = handler_id;
 	}
 
-	g_object_notify (G_OBJECT (combo_box), "source-list");
+	source_combo_box_build_model (combo_box);
+
+	g_object_notify (G_OBJECT (combo_box), "registry");
+}
+
+/**
+ * e_source_combo_box_get_extension_name:
+ * @combo_box: an #ESourceComboBox
+ *
+ * Returns the extension name used to filter which data sources are
+ * shown in @combo_box.
+ *
+ * Returns: the #ESource extension name
+ *
+ * Since: 3.6
+ **/
+const gchar *
+e_source_combo_box_get_extension_name (ESourceComboBox *combo_box)
+{
+	g_return_val_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box), NULL);
+
+	return combo_box->priv->extension_name;
+}
+
+/**
+ * e_source_combo_box_set_extension_name:
+ * @combo_box: an #ESourceComboBox
+ * @extension_name: an #ESource extension name
+ *
+ * Sets the extension name used to filter which data sources are shown in
+ * @combo_box.
+ *
+ * Since: 3.6
+ **/
+void
+e_source_combo_box_set_extension_name (ESourceComboBox *combo_box,
+                                       const gchar *extension_name)
+{
+	g_return_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box));
+
+	g_free (combo_box->priv->extension_name);
+	combo_box->priv->extension_name = g_strdup (extension_name);
+
+	source_combo_box_build_model (combo_box);
+
+	g_object_notify (G_OBJECT (combo_box), "extension-name");
+}
+
+/**
+ * e_source_combo_box_get_show_colors:
+ * @combo_box: an #ESourceComboBox
+ *
+ * Returns whether colors are shown next to data sources.
+ *
+ * Returns: %TRUE if colors are being shown
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_source_combo_box_get_show_colors (ESourceComboBox *combo_box)
+{
+	g_return_val_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box), FALSE);
+
+	return combo_box->priv->show_colors;
+}
+
+/**
+ * e_source_combo_box_set_show_colors:
+ * @combo_box: an #ESourceComboBox
+ * @show_colors: whether to show colors
+ *
+ * Sets whether to show colors next to data sources.
+ *
+ * Since: 3.6
+ **/
+void
+e_source_combo_box_set_show_colors (ESourceComboBox *combo_box,
+                                    gboolean show_colors)
+{
+	g_return_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box));
+
+	if (show_colors == combo_box->priv->show_colors)
+		return;
+
+	combo_box->priv->show_colors = show_colors;
+
+	source_combo_box_build_model (combo_box);
+
+	g_object_notify (G_OBJECT (combo_box), "show-colors");
 }
 
 /**
@@ -441,22 +653,21 @@ e_source_combo_box_set_source_list (ESourceComboBox *combo_box,
 ESource *
 e_source_combo_box_ref_active (ESourceComboBox *combo_box)
 {
+	ESourceRegistry *registry;
 	GtkComboBox *gtk_combo_box;
-	GtkTreeIter iter;
-	ESource *source;
+	const gchar *active_id;
 
 	g_return_val_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box), NULL);
 
-	gtk_combo_box = GTK_COMBO_BOX (combo_box);
+	registry = e_source_combo_box_get_registry (combo_box);
 
-	if (!gtk_combo_box_get_active_iter (gtk_combo_box, &iter))
+	gtk_combo_box = GTK_COMBO_BOX (combo_box);
+	active_id = gtk_combo_box_get_active_id (gtk_combo_box);
+
+	if (active_id == NULL)
 		return NULL;
 
-	gtk_tree_model_get (
-		gtk_combo_box_get_model (gtk_combo_box),
-		&iter, COLUMN_SOURCE, &source, -1);
-
-	return source;
+	return e_source_registry_ref_source (registry, active_id);
 }
 
 /**

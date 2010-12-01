@@ -38,6 +38,7 @@
 #include <libebook/e-book-client.h>
 #include <libebook/e-book-client-view.h>
 #include <libebook/e-book-query.h>
+#include <libebook/e-source-address-book.h>
 
 #include "e-source-combo-box.h"
 #include "e-destination-store.h"
@@ -182,7 +183,6 @@ name_selector_dialog_constructed (GObject *object)
 	GtkTreeViewColumn *column;
 	GtkCellRenderer   *cell_renderer;
 	GtkTreeSelection  *selection;
-	ESourceList       *source_list;
 	gchar *tmp_str;
 	GtkWidget *name_selector_box;
 	GtkWidget *show_contacts_label;
@@ -210,6 +210,7 @@ name_selector_dialog_constructed (GObject *object)
 	GtkWidget *destination_box;
 	GtkWidget *status_message;
 	GtkWidget *source_combo;
+	ESourceRegistry *registry;
 
 	priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (object);
 
@@ -358,14 +359,7 @@ name_selector_dialog_constructed (GObject *object)
 	g_object_unref (G_OBJECT (tmp_relation));
 	g_object_unref (G_OBJECT (tmp_relation_set));
 
-	/* Get addressbook sources */
-
-	if (!e_book_client_get_sources (&source_list, NULL)) {
-		g_warning ("ENameSelectorDialog can't find any addressbooks!");
-		return;
-	}
-
-	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (object))), name_selector_box, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (name_selector_dialog))), name_selector_box, TRUE, TRUE, 0);
 
 	/* Store pointers to relevant widgets */
 
@@ -417,11 +411,11 @@ name_selector_dialog_constructed (GObject *object)
 
 	/* Create source menu */
 
-	source_combo = e_source_combo_box_new (source_list);
+	registry = e_source_registry_get_default ();
+	source_combo = e_source_combo_box_new (registry, "address-book");
 	g_signal_connect_swapped (
 		source_combo, "changed",
-		G_CALLBACK (source_changed), object);
-	g_object_unref (source_list);
+		G_CALLBACK (source_changed), name_selector_dialog);
 
 	gtk_label_set_mnemonic_widget (GTK_LABEL (AddressBookLabel), source_combo);
 	gtk_widget_show (source_combo);

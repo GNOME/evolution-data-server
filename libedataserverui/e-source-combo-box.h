@@ -22,7 +22,7 @@
 #define E_SOURCE_COMBO_BOX_H
 
 #include <gtk/gtk.h>
-#include <libedataserver/e-source-list.h>
+#include <libedataserver/e-source-registry.h>
 
 #define E_TYPE_SOURCE_COMBO_BOX \
 	(e_source_combo_box_get_type ())
@@ -61,12 +61,22 @@ struct _ESourceComboBoxClass {
 };
 
 GType		e_source_combo_box_get_type	(void);
-GtkWidget *	e_source_combo_box_new		(ESourceList *source_list);
-ESourceList *	e_source_combo_box_get_source_list
+GtkWidget *	e_source_combo_box_new		(ESourceRegistry *registry,
+						 const gchar *extension_name);
+ESourceRegistry *
+		e_source_combo_box_get_registry	(ESourceComboBox *combo_box);
+void		e_source_combo_box_set_registry	(ESourceComboBox *combo_box,
+						 ESourceRegistry *registry);
+const gchar *	e_source_combo_box_get_extension_name
 						(ESourceComboBox *combo_box);
-void		e_source_combo_box_set_source_list
+void		e_source_combo_box_set_extension_name
 						(ESourceComboBox *combo_box,
-						 ESourceList *source_list);
+						 const gchar *extension_name);
+gboolean	e_source_combo_box_get_show_colors
+						(ESourceComboBox *combo_box);
+void		e_source_combo_box_set_show_colors
+						(ESourceComboBox *combo_box,
+						 gboolean show_colors);
 ESource *	e_source_combo_box_ref_active	(ESourceComboBox *combo_box);
 void		e_source_combo_box_set_active	(ESourceComboBox *combo_box,
 						 ESource *source);
