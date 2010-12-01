@@ -26,6 +26,7 @@
 
 #include <gtk/gtk.h>
 #include <libebook/e-contact.h>
+#include <libedataserver/e-source-registry.h>
 #include <libedataserverui/e-contact-store.h>
 #include <libedataserverui/e-destination-store.h>
 #include <libedataserverui/e-tree-model-generator.h>
@@ -80,7 +81,13 @@ struct _ENameSelectorEntryClass {
 
 GType		e_name_selector_entry_get_type	(void);
 ENameSelectorEntry *
-		e_name_selector_entry_new	(void);
+		e_name_selector_entry_new	(ESourceRegistry *registry);
+ESourceRegistry *
+		e_name_selector_entry_get_registry
+						(ENameSelectorEntry *name_selector_entry);
+void		e_name_selector_entry_set_registry
+						(ENameSelectorEntry *name_selector_entry,
+						 ESourceRegistry *registry);
 EContactStore *	e_name_selector_entry_peek_contact_store
 						(ENameSelectorEntry *name_selector_entry);
 void		e_name_selector_entry_set_contact_store

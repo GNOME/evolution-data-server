@@ -31,6 +31,10 @@
 #include <libebook/e-contact.h>
 #include <libebook/e-destination.h>
 
+#include <libedataserver/e-source-address-book.h>
+#include <libedataserver/e-source-autocomplete.h>
+#include <libedataserver/e-source-registry.h>
+
 #include <libedataserver/e-sexp.h>
 #include <libebackend/e-extensible.h>
 #include <libedataserverui/e-client-utils.h>
@@ -43,8 +47,9 @@
 
 struct _ENameSelectorEntryPrivate {
 
+	ESourceRegistry *registry;
+
 	PangoAttrList *attr_list;
-	ESourceList *source_list;
 	EContactStore *contact_store;
 	ETreeModelGenerator *email_generator;
 	EDestinationStore *destination_store;
@@ -70,6 +75,11 @@ struct _ENameSelectorEntryPrivate {
 
 	/* For asynchronous operations. */
 	GQueue cancellables;
+};
+
+enum {
+	PROP_0,
+	PROP_REGISTRY
 };
 
 enum {
@@ -109,11 +119,51 @@ static void setup_default_contact_store (ENameSelectorEntry *name_selector_entry
 static void deep_free_list (GList *list);
 
 static void
+name_selector_entry_set_property (GObject *object,
+                                  guint property_id,
+                                  const GValue *value,
+                                  GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_REGISTRY:
+			e_name_selector_entry_set_registry (
+				E_NAME_SELECTOR_ENTRY (object),
+				g_value_get_object (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+name_selector_entry_get_property (GObject *object,
+                                  guint property_id,
+                                  GValue *value,
+                                  GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_REGISTRY:
+			g_value_set_object (
+				value,
+				e_name_selector_entry_get_registry (
+				E_NAME_SELECTOR_ENTRY (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
 name_selector_entry_dispose (GObject *object)
 {
 	ENameSelectorEntryPrivate *priv;
 
 	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (object);
+
+	if (priv->registry != NULL) {
+		g_object_unref (priv->registry);
+		priv->registry = NULL;
+	}
 
 	if (priv->attr_list != NULL) {
 		pango_attr_list_unref (priv->attr_list);
@@ -247,12 +297,26 @@ e_name_selector_entry_class_init (ENameSelectorEntryClass *class)
 	g_type_class_add_private (class, sizeof (ENameSelectorEntryPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = name_selector_entry_set_property;
+	object_class->get_property = name_selector_entry_get_property;
 	object_class->dispose = name_selector_entry_dispose;
 	object_class->constructed = name_selector_entry_constructed;
 
 	widget_class = GTK_WIDGET_CLASS (class);
 	widget_class->realize = name_selector_entry_realize;
 	widget_class->drag_data_received = name_selector_entry_drag_data_received;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_REGISTRY,
+		g_param_spec_object (
+			"registry",
+			"Registry",
+			"Data source registry",
+			E_TYPE_SOURCE_REGISTRY,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
 
 	signals[UPDATED] = g_signal_new (
 		"updated",
@@ -2101,9 +2165,10 @@ book_loaded_cb (GObject *source_object,
 static void
 setup_default_contact_store (ENameSelectorEntry *name_selector_entry)
 {
+	ESourceRegistry *registry;
 	EContactStore *contact_store;
-	GSList *groups;
-	GSList *l;
+	GList *list, *iter;
+	const gchar *extension_name;
 
 	g_return_if_fail (name_selector_entry->priv->contact_store == NULL);
 
@@ -2111,35 +2176,44 @@ setup_default_contact_store (ENameSelectorEntry *name_selector_entry)
 
 	contact_store = e_contact_store_new ();
 	name_selector_entry->priv->contact_store = contact_store;
-	groups = e_source_list_peek_groups (name_selector_entry->priv->source_list);
 
-	for (l = groups; l; l = g_slist_next (l)) {
-		ESourceGroup *group   = l->data;
-		GSList       *sources = e_source_group_peek_sources (group);
-		GSList       *m;
+	extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
+	registry = e_name_selector_entry_get_registry (name_selector_entry);
 
-		for (m = sources; m; m = g_slist_next (m)) {
-			ESource *source = m->data;
-			GCancellable *cancellable;
-			const gchar *completion;
+	/* An ESourceRegistry should have been set by now. */
+	g_return_if_fail (registry != NULL);
 
-			/* Skip non-completion sources */
-			completion = e_source_get_property (source, "completion");
-			if (!completion || g_ascii_strcasecmp (completion, "true"))
-				continue;
+	list = e_source_registry_list_sources (registry, extension_name);
 
-			cancellable = g_cancellable_new ();
+	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
+		ESource *source = E_SOURCE (iter->data);
+		ESourceAutocomplete *extension;
+		GCancellable *cancellable;
+		const gchar *extension_name;
 
-			g_queue_push_tail (
-				&name_selector_entry->priv->cancellables,
-				cancellable);
+		extension_name = E_SOURCE_EXTENSION_AUTOCOMPLETE;
+		extension = e_source_get_extension (source, extension_name);
 
-			e_client_utils_open_new (
-				source, E_CLIENT_SOURCE_TYPE_CONTACTS, TRUE, cancellable,
-				e_client_utils_authenticate_handler, NULL,
-				book_loaded_cb, g_object_ref (contact_store));
-		}
+		/* Skip disabled address books. */
+		if (!e_source_get_enabled (source))
+			continue;
+
+		/* Skip non-completion address books. */
+		if (!e_source_autocomplete_get_include_me (extension))
+			continue;
+
+		cancellable = g_cancellable_new ();
+
+		g_queue_push_tail (
+			&name_selector_entry->priv->cancellables,
+			cancellable);
+
+		e_client_utils_open_new (
+			source, E_CLIENT_SOURCE_TYPE_CONTACTS, TRUE, cancellable,
+			book_loaded_cb, g_object_ref (contact_store));
 	}
+
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
 	setup_contact_store (name_selector_entry);
 }
@@ -3009,13 +3083,6 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 
 	g_queue_init (&name_selector_entry->priv->cancellables);
 
-	/* Source list */
-
-	if (!e_book_client_get_sources (&name_selector_entry->priv->source_list, NULL)) {
-		g_warning ("ENameSelectorEntry can't find any addressbooks!");
-		return;
-	}
-
 	/* read minimum_query_length from gconf*/
 	gconf = gconf_client_get_default ();
 	if (COMPLETION_CUE_MIN_LEN == 0) {
@@ -3122,9 +3189,64 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
  * Returns: A new #ENameSelectorEntry.
  **/
 ENameSelectorEntry *
-e_name_selector_entry_new (void)
+e_name_selector_entry_new (ESourceRegistry *registry)
 {
-	return g_object_new (E_TYPE_NAME_SELECTOR_ENTRY, NULL);
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
+
+	return g_object_new (
+		E_TYPE_NAME_SELECTOR_ENTRY,
+		"registry", registry, NULL);
+}
+
+/**
+ * e_name_selector_entry_get_registry:
+ * @name_selector_entry: an #ENameSelectorEntry
+ *
+ * Returns the #ESourceRegistry used to query address books.
+ *
+ * Returns: the #ESourceRegistry, or %NULL
+ *
+ * Since: 3.6
+ **/
+ESourceRegistry *
+e_name_selector_entry_get_registry (ENameSelectorEntry *name_selector_entry)
+{
+	g_return_val_if_fail (
+		E_IS_NAME_SELECTOR_ENTRY (name_selector_entry), NULL);
+
+	return name_selector_entry->priv->registry;
+}
+
+/**
+ * e_name_selector_entry_set_registry:
+ * @name_selector_entry: an #ENameSelectorEntry
+ * @registry: an #ESourceRegistry
+ *
+ * Sets the #ESourceRegistry used to query address books.
+ *
+ * This function is intended for cases where @name_selector_entry is
+ * instantiated by a #GtkBuilder and has to be given an #EsourceRegistry
+ * after it is fully constructed.
+ *
+ * Since: 3.6
+ **/
+void
+e_name_selector_entry_set_registry (ENameSelectorEntry *name_selector_entry,
+                                    ESourceRegistry *registry)
+{
+	g_return_if_fail (E_IS_NAME_SELECTOR_ENTRY (name_selector_entry));
+
+	if (registry != NULL) {
+		g_return_if_fail (E_IS_SOURCE_REGISTRY (registry));
+		g_object_ref (registry);
+	}
+
+	if (name_selector_entry->priv->registry != NULL)
+		g_object_unref (name_selector_entry->priv->registry);
+
+	name_selector_entry->priv->registry = registry;
+
+	g_object_notify (G_OBJECT (name_selector_entry), "registry");
 }
 
 /**
