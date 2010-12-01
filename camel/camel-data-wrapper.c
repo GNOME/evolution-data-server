@@ -203,7 +203,7 @@ data_wrapper_decode_to_stream_sync (CamelDataWrapper *data_wrapper,
 		break;
 	}
 
-	if (camel_content_type_is (data_wrapper->mime_type, "text", "*")) {
+	if (!(camel_content_type_is (data_wrapper->mime_type, "text", "pdf")) && camel_content_type_is (data_wrapper->mime_type, "text", "*")) {
 		filter = camel_mime_filter_crlf_new (CAMEL_MIME_FILTER_CRLF_DECODE,
 						     CAMEL_MIME_FILTER_CRLF_MODE_CRLF_ONLY);
 		camel_stream_filter_add (CAMEL_STREAM_FILTER (fstream), filter);
