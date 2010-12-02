@@ -208,6 +208,27 @@ system_timezone_read_etc_conf_d_clock (void)
                                               "TIMEZONE");
 }
 
+static void
+update_fallback (gchar **fallback, gchar *adept)
+{
+	g_return_if_fail (fallback != NULL);
+
+	if (!*fallback) {
+		*fallback = adept;
+		return;
+	}
+
+	if (!adept)
+		return;
+
+	if (strlen (*fallback) < strlen (adept)) {
+		g_free (*fallback);
+		*fallback = adept;
+	} else {
+		g_free (adept);
+	}
+}
+
 typedef gboolean (*CompareFiles) (struct stat *a_stat,
 				  struct stat *b_stat,
 				  const gchar  *a_content,
@@ -219,7 +240,9 @@ recursive_compare (struct stat  *localtime_stat,
 		   const gchar   *localtime_content,
 		   gsize	 localtime_content_len,
 		   const gchar	*file,
-		   CompareFiles  compare_func)
+		   CompareFiles  compare_func,
+		   gint deep_level,
+		   gchar **fallback)
 {
 	struct stat file_stat;
 
@@ -231,9 +254,14 @@ recursive_compare (struct stat  *localtime_stat,
 				  &file_stat,
 				  localtime_content,
 				  localtime_content_len,
-				  file))
+				  file)) {
+			if (deep_level <= 1) {
+				update_fallback (fallback, system_timezone_strip_path_if_valid (file));
+				return NULL;
+			}
+
 			return system_timezone_strip_path_if_valid (file);
-		else
+		} else
 			return NULL;
 	} else if (S_ISDIR (file_stat.st_mode)) {
 		GDir       *dir = NULL;
@@ -252,7 +280,9 @@ recursive_compare (struct stat  *localtime_stat,
 						 localtime_content,
 						 localtime_content_len,
 						 subpath,
-						 compare_func);
+						 compare_func,
+						 deep_level + 1,
+						 fallback);
 
 			g_free (subpath);
 
@@ -300,6 +330,7 @@ static gchar *
 system_timezone_read_etc_localtime_hardlink (void)
 {
 	struct stat stat_localtime;
+	gchar *retval, *fallback = NULL;
 
 	if (g_stat (ETC_LOCALTIME, &stat_localtime) != 0)
 		return NULL;
@@ -307,11 +338,20 @@ system_timezone_read_etc_localtime_hardlink (void)
 	if (!S_ISREG (stat_localtime.st_mode))
 		return NULL;
 
-	return recursive_compare (&stat_localtime,
+	retval = recursive_compare (&stat_localtime,
 				  NULL,
 				  0,
 				  SYSTEM_ZONEINFODIR,
-				  files_are_identical_inode);
+				  files_are_identical_inode,
+				  0,
+				  &fallback);
+
+	if (retval)
+		g_free (fallback);
+	else
+		retval = fallback;
+
+	return retval;
 }
 
 static gboolean
@@ -350,7 +390,7 @@ system_timezone_read_etc_localtime_content (void)
 	struct stat  stat_localtime;
 	gchar	*localtime_content = NULL;
 	gsize	localtime_content_len = -1;
-	gchar	*retval;
+	gchar	*retval, *fallback = NULL;
 
 	if (g_stat (ETC_LOCALTIME, &stat_localtime) != 0)
 		return NULL;
@@ -368,9 +408,16 @@ system_timezone_read_etc_localtime_content (void)
 				   localtime_content,
 				   localtime_content_len,
 				   SYSTEM_ZONEINFODIR,
-				   files_are_identical_content);
+				   files_are_identical_content,
+				   0,
+				   &fallback);
 
 	g_free (localtime_content);
+
+	if (retval)
+		g_free (fallback);
+	else
+		retval = fallback;
 
 	return retval;
 }
