@@ -96,17 +96,15 @@ cell_renderer_color_get_size (GtkCellRenderer *cell,
 
 static void
 cell_renderer_color_render (GtkCellRenderer *cell,
-                            GdkWindow *window,
+                            cairo_t *cr,
                             GtkWidget *widget,
                             GdkRectangle *background_area,
                             GdkRectangle *cell_area,
-                            GdkRectangle *expose_area,
                             GtkCellRendererState flags)
 {
 	ECellRendererColorPrivate *priv;
 	GdkRectangle pix_rect;
 	GdkRectangle draw_rect;
-	cairo_t *cr;
 	guint xpad;
 	guint ypad;
 
@@ -127,16 +125,13 @@ cell_renderer_color_render (GtkCellRenderer *cell,
 	pix_rect.width  -= xpad * 2;
 	pix_rect.height -= ypad * 2;
 
-	if (!gdk_rectangle_intersect (cell_area, &pix_rect, &draw_rect) ||
-	    !gdk_rectangle_intersect (expose_area, &draw_rect, &draw_rect))
+	if (!gdk_rectangle_intersect (cell_area, &pix_rect, &draw_rect))
 		return;
 
-	cr = gdk_cairo_create (window);
 	gdk_cairo_set_source_color (cr, priv->color);
 	cairo_rectangle (cr, pix_rect.x, pix_rect.y, draw_rect.width, draw_rect.height);
 
 	cairo_fill (cr);
-	cairo_destroy (cr);
 }
 
 static void
