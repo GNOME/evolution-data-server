@@ -26,7 +26,7 @@
  * This looks a lot more complicated than it is, and than you'd think
  * it would need to be.  There is however, method to the madness.
  *
- * The code most cope with being called from any thread at any time,
+ * The code must cope with being called from any thread at any time,
  * recursively from the main thread, and then serialising every
  * request so that sane and correct values are always returned, and
  * duplicate requests are never made.
@@ -46,14 +46,11 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
+#include <gnome-keyring.h>
 
 #include "e-passwords.h"
 #include "libedataserver/e-flag.h"
 #include "libedataserver/e-url.h"
-
-#ifdef WITH_GNOME_KEYRING
-#include <gnome-keyring.h>
-#endif
 
 #define d(x)
 
@@ -92,134 +89,7 @@ static GtkDialog *password_dialog = NULL;
 static GQueue message_queue = G_QUEUE_INIT;
 static gint idle_id;
 static gint ep_online_state = TRUE;
-
-#ifdef WITH_GNOME_KEYRING
 static gchar *default_keyring = NULL;
-#endif
-
-#define KEY_FILE_GROUP_PREFIX "Passwords-"
-static GKeyFile *key_file = NULL;
-
-static gboolean
-check_key_file (const gchar *funcname)
-{
-	if (!key_file)
-		g_message ("%s: Failed to create key file!", funcname);
-
-	return key_file != NULL;
-}
-
-static gchar *
-ep_key_file_get_filename (void)
-{
-#ifndef G_OS_WIN32
-	const gchar *override;
-
-	/* XXX It would be nice to someday move this data elsewhere, or else
-	 * fully migrate to GNOME Keyring or whatever software supercedes it.
-	 * Evolution is one of the few remaining GNOME-2 applications that
-	 * still uses the deprecated ~/.gnome2_private directory. */
-
-	override = g_getenv ("GNOME22_USER_DIR");
-	if (override != NULL) {
-		gchar resolved_path[PATH_MAX];
-
-		/* Use realpath() to canonicalize the path, which
-		 * strips off any trailing directory separators so
-		 * we can safely tack on "_private". */
-		return g_strdup_printf (
-			"%s_private" G_DIR_SEPARATOR_S "Evolution",
-			realpath (override, resolved_path));
-	}
-#endif
-	return g_build_filename (
-		g_get_home_dir (), ".gnome2_private", "Evolution", NULL);
-}
-
-static gchar *
-ep_key_file_get_group (const gchar *component)
-{
-	return g_strconcat (KEY_FILE_GROUP_PREFIX, component, NULL);
-}
-
-static gchar *
-ep_key_file_normalize_key (const gchar *key)
-{
-	/* XXX Previous code converted all slashes and equal signs in the
-	 * key to underscores for use with "gnome-config" functions.  While
-	 * it may not be necessary to convert slashes for use with GKeyFile,
-	 * we continue to do the same for backward-compatibility. */
-
-	gchar *normalized_key, *cp;
-
-	normalized_key = g_strdup (key);
-	for (cp = normalized_key; *cp != '\0'; cp++)
-		if (*cp == '/' || *cp == '=')
-			*cp = '_';
-
-	return normalized_key;
-}
-
-static void
-ep_key_file_load (void)
-{
-	gchar *filename;
-	GError *error = NULL;
-
-	if (!check_key_file (G_STRFUNC))
-		return;
-
-	filename = ep_key_file_get_filename ();
-
-	if (!g_file_test (filename, G_FILE_TEST_EXISTS))
-		goto exit;
-
-	g_key_file_load_from_file (
-		key_file, filename, G_KEY_FILE_KEEP_COMMENTS |
-		G_KEY_FILE_KEEP_TRANSLATIONS, &error);
-
-	if (error != NULL) {
-		g_warning ("%s: %s", filename, error->message);
-		g_error_free (error);
-	}
-
-exit:
-	g_free (filename);
-}
-
-static void
-ep_key_file_save (void)
-{
-	gchar *contents;
-	gchar *filename;
-	gchar *pathname;
-	gsize length = 0;
-	GError *error = NULL;
-
-	if (!check_key_file (G_STRFUNC))
-		return;
-
-	filename = ep_key_file_get_filename ();
-	contents = g_key_file_to_data (key_file, &length, &error);
-	pathname = g_path_get_dirname (filename);
-
-	if (!error) {
-		g_mkdir_with_parents (pathname, 0700);
-		g_file_set_contents (filename, contents, length, &error);
-	}
-
-	g_free (pathname);
-
-	if (error != NULL) {
-		g_warning ("%s: %s", filename, error->message);
-		g_error_free (error);
-	}
-
-	g_free (contents);
-	g_free (filename);
-}
-
-#ifdef WITH_GNOME_KEYRING
 
 /* XXX Unfortunately, gnome-keyring doesn't use GErrors. */
 #define EP_KEYRING_ERROR	(ep_keyring_error_domain ())
@@ -442,36 +312,6 @@ ep_keyring_lookup_passwords (const gchar *user,
 
 	return passwords;
 }
-#endif
-
-static gchar *
-ep_password_encode (const gchar *password)
-{
-	/* XXX The previous Base64 encoding function did not encode the
-	 * password's trailing nul byte.  This makes decoding the Base64
-	 * string into a nul-terminated password more difficult, but we
-	 * continue to do it this way for backward-compatibility. */
-
-	gsize length = strlen (password);
-	return g_base64_encode ((const guchar *) password, length);
-}
-
-static gchar *
-ep_password_decode (const gchar *encoded_password)
-{
-	/* XXX The previous Base64 encoding function did not encode the
-	 * password's trailing nul byte, so we have to append a nul byte
-	 * to the decoded data to make it a nul-terminated string. */
-
-	gchar *password;
-	gsize length = 0;
-
-	password = (gchar *) g_base64_decode (encoded_password, &length);
-	password = g_realloc (password, length + 1);
-	password[length] = '\0';
-
-	return password;
-}
 
 static gboolean
 ep_idle_dispatch (gpointer data)
@@ -550,9 +390,9 @@ ep_msg_send (EPassMsg *msg)
 }
 
 /* the functions that actually do the work */
-#ifdef WITH_GNOME_KEYRING
+
 static void
-ep_clear_passwords_keyring (EPassMsg *msg)
+ep_clear_passwords (EPassMsg *msg)
 {
 	GList *passwords;
 	GError *error = NULL;
@@ -572,130 +412,35 @@ ep_clear_passwords_keyring (EPassMsg *msg)
 
 	} else if (error != NULL)
 		g_propagate_error (&msg->error, error);
-}
-#endif
-
-static void
-ep_clear_passwords_keyfile (EPassMsg *msg)
-{
-	gchar *group;
-	GError *error = NULL;
-
-	if (!check_key_file (G_STRFUNC))
-		return;
-
-	group = ep_key_file_get_group (msg->component);
-
-	if (g_key_file_remove_group (key_file, group, &error))
-		ep_key_file_save ();
-
-	/* Not finding the requested group is acceptable, but we still
-	 * want to leave an informational message on the terminal. */
-	else if (g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_GROUP_NOT_FOUND)) {
-		g_message ("%s", error->message);
-		g_error_free (error);
-
-	} else if (error != NULL)
-		g_propagate_error (&msg->error, error);
-
-	g_free (group);
-}
-
-static void
-ep_clear_passwords (EPassMsg *msg)
-{
-#ifdef WITH_GNOME_KEYRING
-	if (gnome_keyring_is_available ())
-		ep_clear_passwords_keyring (msg);
-	else
-		ep_clear_passwords_keyfile (msg);
-#else
-	ep_clear_passwords_keyfile (msg);
-#endif
 
 	if (!msg->noreply)
 		e_flag_set (msg->done);
 }
 
-#ifdef WITH_GNOME_KEYRING
 static void
-ep_forget_passwords_keyring (EPassMsg *msg)
+ep_forget_passwords (EPassMsg *msg)
 {
 	GList *passwords;
 	GError *error = NULL;
+
+	g_hash_table_remove_all (password_cache);
 
 	/* Find all Evolution passwords and delete them. */
 	passwords = ep_keyring_lookup_passwords (NULL, NULL, NULL, &error);
 	if (passwords != NULL) {
 		ep_keyring_delete_passwords (NULL, NULL, NULL, passwords, &error);
 		gnome_keyring_found_list_free (passwords);
-
 	}
 
 	if (error != NULL)
 		g_propagate_error (&msg->error, error);
-}
-#endif
-
-static void
-ep_forget_passwords_keyfile (EPassMsg *msg)
-{
-	gchar **groups;
-	gsize length = 0, ii;
-
-	if (!check_key_file (G_STRFUNC))
-		return;
-
-	groups = g_key_file_get_groups (key_file, &length);
-
-	if (!groups)
-		return;
-
-	for (ii = 0; ii < length; ii++) {
-		GError *error = NULL;
-
-		if (!g_str_has_prefix (groups[ii], KEY_FILE_GROUP_PREFIX))
-			continue;
-
-		g_key_file_remove_group (key_file, groups[ii], &error);
-
-		/* Not finding the requested group is acceptable, but we still
-		 * want to leave an informational message on the terminal. */
-		if (g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_GROUP_NOT_FOUND)) {
-			g_message ("%s", error->message);
-			g_error_free (error);
-
-		/* Issue a warning if anything else goes wrong. */
-		} else if (error != NULL) {
-			g_warning ("%s", error->message);
-			g_error_free (error);
-		}
-	}
-	ep_key_file_save ();
-	g_strfreev (groups);
-}
-
-static void
-ep_forget_passwords (EPassMsg *msg)
-{
-	g_hash_table_remove_all (password_cache);
-
-#ifdef WITH_GNOME_KEYRING
-	if (gnome_keyring_is_available ())
-		ep_forget_passwords_keyring (msg);
-	else
-		ep_forget_passwords_keyfile (msg);
-#else
-	ep_forget_passwords_keyfile (msg);
-#endif
 
 	if (!msg->noreply)
 		e_flag_set (msg->done);
 }
 
-#ifdef WITH_GNOME_KEYRING
 static void
-ep_remember_password_keyring (EPassMsg *msg)
+ep_remember_password (EPassMsg *msg)
 {
 	gchar *password;
 	EUri *uri;
@@ -704,12 +449,12 @@ ep_remember_password_keyring (EPassMsg *msg)
 	password = g_hash_table_lookup (password_cache, msg->key);
 	if (password == NULL) {
 		g_warning ("Password for key \"%s\" not found", msg->key);
-		return;
+		goto exit;
 	}
 
 	uri = ep_keyring_uri_new (msg->key, &msg->error);
 	if (uri == NULL)
-		return;
+		goto exit;
 
 	/* Only remove the password from the session hash
 	 * if the keyring insertion was successful. */
@@ -720,62 +465,24 @@ ep_remember_password_keyring (EPassMsg *msg)
 		g_propagate_error (&msg->error, error);
 
 	e_uri_free (uri);
-}
-#endif
 
-static void
-ep_remember_password_keyfile (EPassMsg *msg)
-{
-	gchar *group, *key, *password;
-
-	password = g_hash_table_lookup (password_cache, msg->key);
-	if (password == NULL) {
-		g_warning ("Password for key \"%s\" not found", msg->key);
-		return;
-	}
-
-	group = ep_key_file_get_group (msg->component);
-	key = ep_key_file_normalize_key (msg->key);
-	password = ep_password_encode (password);
-
-	g_hash_table_remove (password_cache, msg->key);
-	if (check_key_file (G_STRFUNC)) {
-		g_key_file_set_string (key_file, group, key, password);
-		ep_key_file_save ();
-	}
-
-	g_free (group);
-	g_free (key);
-	g_free (password);
-}
-
-static void
-ep_remember_password (EPassMsg *msg)
-{
-#ifdef WITH_GNOME_KEYRING
-	if (gnome_keyring_is_available ())
-		ep_remember_password_keyring (msg);
-	else
-		ep_remember_password_keyfile (msg);
-#else
-	ep_remember_password_keyfile (msg);
-#endif
-
+exit:
 	if (!msg->noreply)
 		e_flag_set (msg->done);
 }
 
-#ifdef WITH_GNOME_KEYRING
 static void
-ep_forget_password_keyring (EPassMsg *msg)
+ep_forget_password (EPassMsg *msg)
 {
 	GList *passwords;
 	EUri *uri;
 	GError *error = NULL;
 
+	g_hash_table_remove (password_cache, msg->key);
+
 	uri = ep_keyring_uri_new (msg->key, &msg->error);
 	if (uri == NULL)
-		return;
+		goto exit;
 
 	/* Find all Evolution passwords matching the URI and delete them.
 	 *
@@ -795,71 +502,30 @@ ep_forget_password_keyring (EPassMsg *msg)
 		g_propagate_error (&msg->error, error);
 
 	e_uri_free (uri);
-}
-#endif
 
-static void
-ep_forget_password_keyfile (EPassMsg *msg)
-{
-	gchar *group, *key;
-	GError *error = NULL;
-
-	if (!check_key_file (G_STRFUNC))
-		return;
-
-	group = ep_key_file_get_group (msg->component);
-	key = ep_key_file_normalize_key (msg->key);
-
-	if (g_key_file_remove_key (key_file, group, key, &error))
-		ep_key_file_save ();
-
-	/* Not finding the requested key is acceptable, but we still
-	 * want to leave an informational message on the terminal. */
-	else if (g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
-		g_message ("%s", error->message);
-		g_error_free (error);
-
-	/* Not finding the requested group is also acceptable. */
-	} else if (g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_GROUP_NOT_FOUND)) {
-		g_message ("%s", error->message);
-		g_error_free (error);
-
-	} else if (error != NULL)
-		g_propagate_error (&msg->error, error);
-
-	g_free (group);
-	g_free (key);
-}
-
-static void
-ep_forget_password (EPassMsg *msg)
-{
-	g_hash_table_remove (password_cache, msg->key);
-
-#ifdef WITH_GNOME_KEYRING
-	if (gnome_keyring_is_available ())
-		ep_forget_password_keyring (msg);
-	else
-		ep_forget_password_keyfile (msg);
-#else
-	ep_forget_password_keyfile (msg);
-#endif
-
+exit:
 	if (!msg->noreply)
 		e_flag_set (msg->done);
 }
 
-#ifdef WITH_GNOME_KEYRING
 static void
-ep_get_password_keyring (EPassMsg *msg)
+ep_get_password (EPassMsg *msg)
 {
-	GList *passwords;
 	EUri *uri;
+	GList *passwords;
+	gchar *password;
 	GError *error = NULL;
+
+	/* Check the in-memory cache first. */
+	password = g_hash_table_lookup (password_cache, msg->key);
+	if (password != NULL) {
+		msg->password = g_strdup (password);
+		goto exit;
+	}
 
 	uri = ep_keyring_uri_new (msg->key, &msg->error);
 	if (uri == NULL)
-		return;
+		goto exit;
 
 	/* Find the first Evolution password that matches the URI. */
 	passwords = ep_keyring_lookup_passwords (uri->user, uri->host, uri->protocol, &error);
@@ -931,93 +597,8 @@ done:
 		g_propagate_error (&msg->error, error);
 
 	e_uri_free (uri);
-}
-#endif
 
-static void
-ep_get_password_keyfile (EPassMsg *msg)
-{
-	gchar *group, *key, *password;
-	GError *error = NULL;
-
-	if (!check_key_file (G_STRFUNC))
-		return;
-
-	group = ep_key_file_get_group (msg->component);
-	key = ep_key_file_normalize_key (msg->key);
-
-	password = g_key_file_get_string (key_file, group, key, &error);
-	if (password != NULL) {
-		msg->password = ep_password_decode (password);
-		g_free (password);
-
-	/* Not finding the requested key is acceptable, but we still
-	 * want to leave an informational message on the terminal. */
-	} else if (g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
-		g_message ("%s", error->message);
-		g_error_free (error);
-
-	/* Not finding the requested group is also acceptable. */
-	} else if (g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_GROUP_NOT_FOUND)) {
-		g_message ("%s", error->message);
-		g_error_free (error);
-
-	} else if (error != NULL)
-		g_propagate_error (&msg->error, error);
-
-	g_free (group);
-	g_free (key);
-}
-
-#ifdef WITH_GNOME_KEYRING
-static void
-ep_keyring_migrate_from_keyfile (EPassMsg *msg)
-{
-	/* Fetch the password from the keyfile. */
-	ep_get_password_keyfile (msg);
-	if (msg->password == NULL)
-		return;
-
-	/* Add it to the in-memory cache. */
-	g_hash_table_insert (
-		password_cache, g_strdup (msg->key),
-		g_strdup (msg->password));
-
-	/* Remember it in the keyring. */
-	ep_remember_password_keyring (msg);
-
-	/* Remove it from the in-memory cache. */
-	g_hash_table_remove (password_cache, msg->key);
-
-	/* Remove it from the keyfile only if the keyring
-	 * insertion was successful. */
-	if (msg->error == NULL)
-		ep_forget_password_keyfile (msg);
-}
-#endif
-
-static void
-ep_get_password (EPassMsg *msg)
-{
-	gchar *password;
-
-	/* Check the in-memory cache first. */
-	password = g_hash_table_lookup (password_cache, msg->key);
-	if (password != NULL) {
-		msg->password = g_strdup (password);
-
-#ifdef WITH_GNOME_KEYRING
-	} else if (gnome_keyring_is_available ()) {
-		ep_get_password_keyring (msg);
-
-		/* Try looking for the password in the keyfile.
-		 * If we find it, migrate it to the keyring. */
-		if (msg->password == NULL && msg->error == NULL)
-			ep_keyring_migrate_from_keyfile (msg);
-#endif
-	} else
-		ep_get_password_keyfile (msg);
-
+exit:
 	if (!msg->noreply)
 		e_flag_set (msg->done);
 }
@@ -1296,15 +877,7 @@ e_passwords_init (void)
 			(GDestroyNotify) g_free);
 		main_thread = g_thread_self ();
 
-		/* Load the keyfile even if we're using the keyring.
-		 * We might be able to extract passwords from it. */
-		key_file = g_key_file_new ();
-		ep_key_file_load ();
-
-	#ifdef WITH_GNOME_KEYRING
-		if (gnome_keyring_is_available ())
-			gnome_keyring_get_default_keyring_sync (&default_keyring);
-	#endif
+		gnome_keyring_get_default_keyring_sync (&default_keyring);
 	}
 
 	G_UNLOCK (passwords);
@@ -1350,9 +923,7 @@ e_passwords_shutdown (void)
 		password_cache = NULL;
 	}
 
-#ifdef WITH_GNOME_KEYRING
 	g_free (default_keyring);
-#endif
 
 	G_UNLOCK (passwords);
 
@@ -1525,11 +1096,11 @@ e_passwords_add_password (const gchar *key, const gchar *passwd)
  **/
 gchar *
 e_passwords_ask_password (const gchar *title, const gchar *component_name,
-			  const gchar *key,
-			  const gchar *prompt,
-			  EPasswordsRememberType type,
-			  gboolean *remember,
-			  GtkWindow *parent)
+                          const gchar *key,
+                          const gchar *prompt,
+                          EPasswordsRememberType type,
+                          gboolean *remember,
+                          GtkWindow *parent)
 {
 	gchar *passwd;
 	EPassMsg *msg;

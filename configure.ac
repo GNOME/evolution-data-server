@@ -324,7 +324,8 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 	gconf-2.0 >= gconf_minimum_version
 	libxml-2.0 >= libxml_minimum_version
 	libsoup-2.4 >= libsoup_minimum_version
-	libgdata >= libgdata_minimum_version])
+	libgdata >= libgdata_minimum_version
+	gnome-keyring-1 >= gnome_keyring_minimum_version])
 
 ac_cv_have_gdata_07=no
 dnl libgdata 0.7 breaks API, thus deal with it.
@@ -1166,24 +1167,6 @@ dnl ******************************
 
 AC_DEFINE(ENABLE_THREADS,1,[Required])
 
-dnl ***********************
-dnl Gnome keyring support
-dnl ***********************
-AC_ARG_ENABLE([gnome-keyring],
-	AS_HELP_STRING([--enable-gnome-keyring],
-	[Attempt to use Gnome Keyring for storing passwords @<:@default=yes@:>@]),
-	[enable_gnome_keyring="$enableval"],[enable_gnome_keyring="yes"])
-
-if test "x${enable_gnome_keyring}" = "xyes"; then
-	PKG_CHECK_MODULES(GNOME_KEYRING, gnome-keyring-1 >= gnome_keyring_minimum_version, have_gnome_keyring="yes", have_gnome_keyring="no");
-	if test "x${have_gnome_keyring}" = "xyes"; then
-		AC_DEFINE(WITH_GNOME_KEYRING, 1, [Gnome Keyring available])
-		GNOME_KEYRING_REQUIREMENT="gnome-keyring-1"
-	else
-		AC_MSG_ERROR([gnome-keyring >= gnome_keyring_minimum_version is required for gnome keyring support. Use --disable-gnome-keyring if you want to disable gnome-keyring support.])
-	fi
-fi
-
 dnl ******************************
 dnl Utility macro to set compiler flags for a specific lib.
 dnl EVO_SET_COMPILE_FLAGS(VAR-PREFIX, DEPS, EXTRA-CFLAGS, EXTRA-LIBS)
@@ -1206,7 +1189,7 @@ AC_SUBST(E_DATA_SERVER_LIBS)
 dnl ******************************
 dnl libedataserverui
 dnl ******************************
-E_DATA_SERVER_UI_DEPS="gio-2.0 $GTK_PACKAGE libxml-2.0 gconf-2.0 $GNOME_KEYRING_REQUIREMENT"
+E_DATA_SERVER_UI_DEPS="gio-2.0 $GTK_PACKAGE libxml-2.0 gconf-2.0 gnome-keyring-1"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, , )
 AC_SUBST(E_DATA_SERVER_UI_CFLAGS)
@@ -1525,7 +1508,6 @@ echo "
 	LDAP support:		$msg_ldap
 	NNTP support:		$msg_nntp
 	Kerberos 5:		$msg_krb5
-	Gnome Keyring:		$enable_gnome_keyring
 	SSL support:		$msg_ssl
 	SMIME support:		$msg_smime
 	IPv6 support:		$msg_ipv6
