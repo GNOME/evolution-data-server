@@ -84,6 +84,8 @@ struct _ECalBackendCalDAVPrivate {
 
 	/* TRUE after caldav_open */
 	gboolean loaded;
+	/* TRUE when server reachable */
+	gboolean opened;
 
 	/* lock to indicate a busy state */
 	GMutex *busy_lock;
@@ -511,7 +513,19 @@ status_code_to_result (SoupMessage *message, ECalBackendCalDAVPrivate  *priv, GE
 	}
 
 	switch (message->status_code) {
-
+	case SOUP_STATUS_CANT_CONNECT:
+	case SOUP_STATUS_CANT_CONNECT_PROXY:
+		g_propagate_error (perror,
+			e_data_cal_create_error_fmt (
+				OtherError,
+				_("Server is unreachable (%s)"),
+					message->reason_phrase && *message->reason_phrase ? message->reason_phrase :
+					(soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : _("Unknown error"))));
+		if (priv) {
+			priv->opened = FALSE;
+			priv->read_only = TRUE;
+		}
+		break;
 	case 404:
 		g_propagate_error (perror, EDC_ERROR (NoSuchCal));
 		break;
@@ -536,6 +550,7 @@ status_code_to_result (SoupMessage *message, ECalBackendCalDAVPrivate  *priv, GE
 					message->status_code,
 					message->reason_phrase && *message->reason_phrase ? message->reason_phrase :
 					(soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : _("Unknown error"))));
+		break;
 	}
 
 	return FALSE;
@@ -972,7 +987,7 @@ caldav_generate_uri (ECalBackendCalDAV *cbdav, const gchar *target)
 }
 
 static gboolean
-caldav_server_open_calendar (ECalBackendCalDAV *cbdav, GError **perror)
+caldav_server_open_calendar (ECalBackendCalDAV *cbdav, gboolean *server_unreachable, GError **perror)
 {
 	ECalBackendCalDAVPrivate  *priv;
 	SoupMessage               *message;
@@ -980,6 +995,9 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav, GError **perror)
 	gboolean                   calendar_access;
 	gboolean                   put_allowed;
 	gboolean                   delete_allowed;
+
+	g_return_val_if_fail (cbdav != NULL, FALSE);
+	g_return_val_if_fail (server_unreachable != NULL, FALSE);
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
@@ -996,7 +1014,15 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav, GError **perror)
 	send_and_handle_redirection (priv->session, message, NULL);
 
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
+		switch (message->status_code) {
+		case SOUP_STATUS_CANT_CONNECT:
+		case SOUP_STATUS_CANT_CONNECT_PROXY:
+			*server_unreachable = TRUE;
+			break;
+		}
+
 		status_code_to_result (message, priv, perror);
+
 		g_object_unref (message);
 		return FALSE;
 	}
@@ -1234,7 +1260,17 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, gint 
 
 	/* Check the result */
 	if (message->status_code != 207) {
-		g_warning ("Server did not response with 207, but with code %d (%s)", message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
+		switch (message->status_code) {
+		case SOUP_STATUS_CANT_CONNECT:
+		case SOUP_STATUS_CANT_CONNECT_PROXY:
+			priv->opened = FALSE;
+			priv->read_only = TRUE;
+			e_cal_backend_notify_readonly (E_CAL_BACKEND (cbdav), priv->read_only);
+			break;
+		default:
+			g_warning ("Server did not response with 207, but with code %d (%s)", message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
+			break;
+		}
 
 		g_object_unref (message);
 		return FALSE;
@@ -1980,7 +2016,26 @@ synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
 	g_tree_destroy (c_uid2complist);
 }
 
+static gboolean
+is_google_uri (const gchar *uri)
+{
+	SoupURI *suri;
+	gboolean res;
+
+	g_return_val_if_fail (uri != NULL, FALSE);
+
+	suri = soup_uri_new (uri);
+	g_return_val_if_fail (suri != NULL, FALSE);
+
+	res = suri->host && g_ascii_strcasecmp (suri->host, "www.google.com") == 0;
+
+	soup_uri_free (suri);
+
+	return res;
+}
+
 /* ************************************************************************* */
+
 static gpointer
 caldav_synch_slave_loop (gpointer data)
 {
@@ -1988,11 +2043,14 @@ caldav_synch_slave_loop (gpointer data)
 	ECalBackendCalDAV        *cbdav;
 	time_t now;
 	icaltimezone *utc = icaltimezone_get_utc_timezone ();
+	gboolean know_unreachable;
 
 	cbdav = E_CAL_BACKEND_CALDAV (data);
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
 	g_mutex_lock (priv->busy_lock);
+
+	know_unreachable = !priv->opened;
 
 	while (priv->slave_cmd != SLAVE_SHOULD_DIE) {
 		GTimeVal alarm_clock;
@@ -2009,25 +2067,62 @@ caldav_synch_slave_loop (gpointer data)
 		 */
 		priv->slave_busy = TRUE;
 
-		time (&now);
-		/* check for events in the month before/after today first,
-		   to show user actual data as soon as possible */
-		synchronize_cache (cbdav, time_add_week_with_zone (now, -5, utc), time_add_week_with_zone (now, +5, utc));
+		if (!priv->opened) {
+			gboolean server_unreachable = FALSE;
+			GError *local_error = NULL;
 
-		if (priv->slave_cmd != SLAVE_SHOULD_SLEEP) {
-			/* and then check for changes in a whole calendar */
-			synchronize_cache (cbdav, 0, 0);
+			if (caldav_server_open_calendar (cbdav, &server_unreachable, &local_error)) {
+				priv->opened = TRUE;
+				priv->slave_cmd = SLAVE_SHOULD_WORK;
+				g_cond_signal (priv->cond);
+
+				priv->is_google = is_google_uri (priv->uri);
+				know_unreachable = FALSE;
+			} else if (local_error) {
+				priv->opened = FALSE;
+				priv->read_only = TRUE;
+
+				if (!know_unreachable) {
+					gchar *msg;
+
+					know_unreachable = TRUE;
+
+					msg = g_strdup_printf (_("Server is unreachable, calendar is opened in read-only mode.\nError message: %s"), local_error->message);
+					e_cal_backend_notify_error (E_CAL_BACKEND (cbdav), msg);
+					g_free (msg);
+				}
+
+				g_clear_error (&local_error);
+			} else {
+				priv->opened = FALSE;
+				priv->read_only = TRUE;
+				know_unreachable = TRUE;
+			}
+
+			e_cal_backend_notify_readonly (E_CAL_BACKEND (cbdav), priv->read_only);
 		}
 
-		if (caldav_debug_show (DEBUG_SERVER_ITEMS)) {
-			GSList *c_objs;
+		if (priv->opened) {
+			time (&now);
+			/* check for events in the month before/after today first,
+			   to show user actual data as soon as possible */
+			synchronize_cache (cbdav, time_add_week_with_zone (now, -5, utc), time_add_week_with_zone (now, +5, utc));
 
-			c_objs = e_cal_backend_store_get_components (priv->store);
+			if (priv->slave_cmd != SLAVE_SHOULD_SLEEP) {
+				/* and then check for changes in a whole calendar */
+				synchronize_cache (cbdav, 0, 0);
+			}
 
-			printf ("CalDAV - finished syncing with %d items in a cache\n", g_slist_length (c_objs)); fflush (stdout);
+			if (caldav_debug_show (DEBUG_SERVER_ITEMS)) {
+				GSList *c_objs;
 
-			g_slist_foreach (c_objs, (GFunc) g_object_unref, NULL);
-			g_slist_free (c_objs);
+				c_objs = e_cal_backend_store_get_components (priv->store);
+
+				printf ("CalDAV - finished syncing with %d items in a cache\n", g_slist_length (c_objs)); fflush (stdout);
+
+				g_slist_foreach (c_objs, (GFunc) g_object_unref, NULL);
+				g_slist_free (c_objs);
+			}
 		}
 
 		priv->slave_busy = FALSE;
@@ -2311,24 +2406,6 @@ proxy_settings_changed (EProxy *proxy, gpointer user_data)
 	g_object_set (priv->session, SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
 }
 
-static gboolean
-is_google_uri (const gchar *uri)
-{
-	SoupURI *suri;
-	gboolean res;
-
-	g_return_val_if_fail (uri != NULL, FALSE);
-
-	suri = soup_uri_new (uri);
-	g_return_val_if_fail (suri != NULL, FALSE);
-
-	res = suri->host && g_ascii_strcasecmp (suri->host, "www.google.com") == 0;
-
-	soup_uri_free (suri);
-
-	return res;
-}
-
 static void
 caldav_do_open (ECalBackendSync *backend,
 		EDataCal        *cal,
@@ -2373,17 +2450,32 @@ caldav_do_open (ECalBackendSync *backend,
 	}
 
 	priv->loaded = TRUE;
+	priv->opened = TRUE;
 	priv->is_google = FALSE;
 
 	if (priv->mode == CAL_MODE_REMOTE) {
+		gboolean server_unreachable = FALSE;
+		GError *local_error = NULL;
+
 		/* set forward proxy */
 		proxy_settings_changed (priv->proxy, priv);
 
-		if (caldav_server_open_calendar (cbdav, perror)) {
+		if (caldav_server_open_calendar (cbdav, &server_unreachable, &local_error)) {
 			priv->slave_cmd = SLAVE_SHOULD_WORK;
 			g_cond_signal (priv->cond);
 
 			priv->is_google = is_google_uri (priv->uri);
+		} else if (server_unreachable) {
+			priv->opened = FALSE;
+			priv->read_only = TRUE;
+			if (local_error) {
+				gchar *msg = g_strdup_printf (_("Server is unreachable, calendar is opened in read-only mode.\nError message: %s"), local_error->message);
+				e_cal_backend_notify_error (E_CAL_BACKEND (backend), msg);
+				g_free (msg);
+				g_clear_error (&local_error);
+			}
+		} else {
+			g_propagate_error (perror, local_error);
 		}
 	} else {
 		priv->read_only = TRUE;
@@ -2449,6 +2541,7 @@ caldav_remove (ECalBackendSync *backend,
 	e_cal_backend_store_remove (priv->store);
 	priv->store = NULL;
 	priv->loaded = FALSE;
+	priv->opened = FALSE;
 
 	if (priv->synch_slave) {
 		g_cond_signal (priv->cond);
@@ -4546,6 +4639,7 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 
 	priv->disposed = FALSE;
 	priv->loaded   = FALSE;
+	priv->opened = FALSE;
 
 	/* Thinks the 'getctag' extension is available the first time, but unset it when realizes it isn't. */
 	priv->ctag_supported = TRUE;
