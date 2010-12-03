@@ -474,6 +474,16 @@ CamelFolderSummary
 @s: 
 
 
+<!-- ##### FUNCTION camel_folder_summary_update_counts_by_flags ##### -->
+<para>
+
+</para>
+
+@summary: 
+@flags: 
+@subtract: 
+
+
 <!-- ##### FUNCTION camel_folder_summary_count ##### -->
 <para>
 
@@ -547,25 +557,6 @@ CamelFolderSummary
 </para>
 
 @ht: 
-
-
-<!-- ##### FUNCTION camel_folder_summary_get_flag_cache ##### -->
-<para>
-
-</para>
-
-@summary: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_folder_summary_update_flag_cache ##### -->
-<para>
-
-</para>
-
-@s: 
-@uid: 
-@flag: 
 
 
 <!-- ##### FUNCTION camel_folder_summary_encode_token ##### -->

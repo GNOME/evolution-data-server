@@ -96,7 +96,7 @@ ESExp
 @Returns: 
 
 
-<!-- ##### MACRO e_sexp_ref ##### -->
+<!-- ##### FUNCTION e_sexp_ref ##### -->
 <para>
 
 </para>
@@ -104,7 +104,7 @@ ESExp
 @f: 
 
 
-<!-- ##### MACRO e_sexp_unref ##### -->
+<!-- ##### FUNCTION e_sexp_unref ##### -->
 <para>
 
 </para>

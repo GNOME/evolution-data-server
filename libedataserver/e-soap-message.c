@@ -90,6 +90,8 @@ fetch_ns (ESoapMessage *msg, const gchar *prefix, const gchar *ns_uri)
  *
  * Returns: the new #ESoapMessage (or %NULL if @uri_string could not be
  * parsed).
+ *
+ * Since: 2.92
  */
 ESoapMessage *
 e_soap_message_new (const gchar *method, const gchar *uri_string,
@@ -123,6 +125,8 @@ e_soap_message_new (const gchar *method, const gchar *uri_string,
  * Creates a new empty #ESoapMessage, which will connect to @uri
  *
  * Returns: the new #ESoapMessage
+ *
+ * Since: 2.92
  */
 ESoapMessage *
 e_soap_message_new_from_uri (const gchar *method, SoupURI *uri,
@@ -159,6 +163,8 @@ e_soap_message_new_from_uri (const gchar *method, SoupURI *uri,
  * @msg: the %ESoapMessage.
  *
  * Starts the top level SOAP Envelope element.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_start_envelope (ESoapMessage *msg)
@@ -205,6 +211,8 @@ e_soap_message_start_envelope (ESoapMessage *msg)
  * @msg: the %ESoapMessage.
  *
  * Closes the top level SOAP Envelope element.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_end_envelope (ESoapMessage *msg)
@@ -217,6 +225,8 @@ e_soap_message_end_envelope (ESoapMessage *msg)
  * @msg: the %ESoapMessage.
  *
  * Starts the SOAP Body element.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_start_body (ESoapMessage *msg)
@@ -241,6 +251,8 @@ e_soap_message_start_body (ESoapMessage *msg)
  * @msg: the %ESoapMessage.
  *
  * Closes the SOAP Body element.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_end_body (ESoapMessage *msg)
@@ -268,6 +280,8 @@ e_soap_message_end_body (ESoapMessage *msg)
  *
  * Passing NULL for both @prefix and @ns_uri causes no prefix to be
  * used, and the element will be in the default namespace.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_start_element (ESoapMessage *msg,
@@ -294,6 +308,8 @@ e_soap_message_start_element (ESoapMessage *msg,
  * @msg: the #ESoapMessage.
  *
  * Closes the current message element.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_end_element (ESoapMessage *msg)
@@ -319,6 +335,8 @@ e_soap_message_end_element (ESoapMessage *msg)
  * If you wish to add the faultdetail element, use
  * e_soap_message_start_fault_detail(), and then
  * e_soap_message_start_element() to add arbitrary sub-elements.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_start_fault (ESoapMessage *msg,
@@ -350,6 +368,8 @@ e_soap_message_start_fault (ESoapMessage *msg,
  * @msg: the #ESoapMessage.
  *
  * Closes the current SOAP Fault element.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_end_fault (ESoapMessage *msg)
@@ -364,6 +384,8 @@ e_soap_message_end_fault (ESoapMessage *msg)
  * Start the faultdetail child element of the current SOAP Fault
  * element. The faultdetail element allows arbitrary data to be sent
  * in a returned fault.
+ *
+ * Since: 2.92
  **/
 void
 e_soap_message_start_fault_detail (ESoapMessage *msg)
@@ -384,6 +406,8 @@ e_soap_message_start_fault_detail (ESoapMessage *msg)
  * @msg: the #ESoapMessage.
  *
  * Closes the current SOAP faultdetail element.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_end_fault_detail (ESoapMessage *msg)
@@ -402,6 +426,8 @@ e_soap_message_end_fault_detail (ESoapMessage *msg)
  *
  * This should be called after e_soap_message_start_envelope() and
  * before e_soap_message_start_body().
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_start_header (ESoapMessage *msg)
@@ -420,6 +446,8 @@ e_soap_message_start_header (ESoapMessage *msg)
  * @msg: the #ESoapMessage.
  *
  * Closes the current SOAP Header element.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_end_header (ESoapMessage *msg)
@@ -438,6 +466,8 @@ e_soap_message_end_header (ESoapMessage *msg)
  * @ns_uri: the namespace URI
  *
  * Starts a new SOAP arbitrary header element.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_start_header_element (ESoapMessage *msg,
@@ -464,6 +494,8 @@ e_soap_message_start_header_element (ESoapMessage *msg,
  * @msg: the #ESoapMessage.
  *
  * Closes the current SOAP header element.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_end_header_element (ESoapMessage *msg)
@@ -477,6 +509,8 @@ e_soap_message_end_header_element (ESoapMessage *msg)
  * @i: the integer value to write.
  *
  * Writes the stringified value of @i as the current element's content.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_write_int (ESoapMessage *msg, glong i)
@@ -492,6 +526,8 @@ e_soap_message_write_int (ESoapMessage *msg, glong i)
  * @d: the double value to write.
  *
  * Writes the stringified value of @d as the current element's content.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_write_double (ESoapMessage *msg, gdouble d)
@@ -509,6 +545,8 @@ e_soap_message_write_double (ESoapMessage *msg, gdouble d)
  *
  * Writes the Base-64 encoded value of @string as the current
  * element's content.
+ *
+ * Since: 2.92
  **/
 void
 e_soap_message_write_base64 (ESoapMessage *msg, const gchar *string, gint len)
@@ -525,6 +563,8 @@ e_soap_message_write_base64 (ESoapMessage *msg, const gchar *string, gint len)
  *
  * Writes the stringified value of @timeval as the current element's
  * content.
+ *
+ * Since: 2.92
  **/
 void
 e_soap_message_write_time (ESoapMessage *msg, const time_t *timeval)
@@ -539,6 +579,8 @@ e_soap_message_write_time (ESoapMessage *msg, const time_t *timeval)
  * @string: string to write.
  *
  * Writes the @string as the current element's content.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_write_string (ESoapMessage *msg, const gchar *string)
@@ -559,6 +601,8 @@ e_soap_message_write_string (ESoapMessage *msg, const gchar *string)
  *
  * Writes the string buffer pointed to by @buffer as the current
  * element's content.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_write_buffer (ESoapMessage *msg, const gchar *buffer, gint len)
@@ -578,6 +622,8 @@ e_soap_message_write_buffer (ESoapMessage *msg, const gchar *buffer, gint len)
  *
  * Sets the current element's XML schema xsi:type attribute, which
  * specifies the element's type name.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_set_element_type (ESoapMessage *msg, const gchar *xsi_type)
@@ -595,6 +641,8 @@ e_soap_message_set_element_type (ESoapMessage *msg, const gchar *xsi_type)
  * @msg: the #ESoapMessage.
  *
  * Sets the current element's XML Schema xsi:null attribute.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_set_null (ESoapMessage *msg)
@@ -616,6 +664,8 @@ e_soap_message_set_null (ESoapMessage *msg)
  * @ns_uri: the namespace URI
  *
  * Adds an XML attribute to the current element.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_add_attribute (ESoapMessage *msg,
@@ -641,6 +691,8 @@ e_soap_message_add_attribute (ESoapMessage *msg,
  * @ns_uri: the namespace URI, or NULL for empty namespace
  *
  * Adds a new XML namespace to the current element.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_add_namespace (ESoapMessage *msg, const gchar *prefix, const gchar *ns_uri)
@@ -661,6 +713,8 @@ e_soap_message_add_namespace (ESoapMessage *msg, const gchar *prefix, const gcha
  * Sets the default namespace to the URI specified in @ns_uri. The
  * default namespace becomes the namespace all non-explicitly
  * namespaced child elements fall into.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_set_default_namespace (ESoapMessage *msg, const gchar *ns_uri)
@@ -680,6 +734,8 @@ e_soap_message_set_default_namespace (ESoapMessage *msg, const gchar *ns_uri)
  *
  * Sets the encodingStyle attribute on the current element to the
  * value of @enc_style.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_set_encoding_style (ESoapMessage *msg, const gchar *enc_style)
@@ -697,6 +753,8 @@ e_soap_message_set_encoding_style (ESoapMessage *msg, const gchar *enc_style)
  * @msg: the #ESoapMessage.
  *
  * Resets the internal XML representation of the SOAP message.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_reset (ESoapMessage *msg)
@@ -728,6 +786,8 @@ e_soap_message_reset (ESoapMessage *msg)
  * @msg: the #ESoapMessage.
  *
  * Writes the serialized XML tree to the #SoupMessage's buffer.
+ *
+ * Since: 2.92
  */
 void
 e_soap_message_persist (ESoapMessage *msg)
@@ -756,6 +816,8 @@ e_soap_message_persist (ESoapMessage *msg)
  *
  * Returns: The namespace prefix, or %NULL if no namespace exists
  * for the URI given.
+ *
+ * Since: 2.92
  */
 const gchar *
 e_soap_message_get_namespace_prefix (ESoapMessage *msg, const gchar *ns_uri)
@@ -786,6 +848,8 @@ e_soap_message_get_namespace_prefix (ESoapMessage *msg, const gchar *ns_uri)
  * #ESoapMessage pointed to by @msg.
  *
  * Returns: the #xmlDocPtr representing the SOAP message.
+ *
+ * Since: 2.92
  */
 xmlDocPtr
 e_soap_message_get_xml_doc (ESoapMessage *msg)
@@ -806,6 +870,8 @@ e_soap_message_get_xml_doc (ESoapMessage *msg)
  *
  * Returns: a #ESoapResponse representing the response from
  * the server, or %NULL if there was an error.
+ *
+ * Since: 2.92
  */
 ESoapResponse *
 e_soap_message_parse_response (ESoapMessage *msg)

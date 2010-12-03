@@ -1,0 +1,208 @@
+<!-- ##### SECTION Title ##### -->
+ESoapResponse
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### FUNCTION e_soap_response_new ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_soap_response_new_from_string ##### -->
+<para>
+
+</para>
+
+@xmlstr: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_soap_response_from_string ##### -->
+<para>
+
+</para>
+
+@response: 
+@xmlstr: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_soap_response_get_method_name ##### -->
+<para>
+
+</para>
+
+@response: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_soap_response_set_method_name ##### -->
+<para>
+
+</para>
+
+@response: 
+@method_name: 
+
+
+<!-- ##### TYPEDEF ESoapParameter ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_soap_parameter_get_name ##### -->
+<para>
+
+</para>
+
+@param: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_soap_parameter_get_int_value ##### -->
+<para>
+
+</para>
+
+@param: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_soap_parameter_get_string_value ##### -->
+<para>
+
+</para>
+
+@param: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_soap_parameter_get_first_child ##### -->
+<para>
+
+</para>
+
+@param: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_soap_parameter_get_first_child_by_name ##### -->
+<para>
+
+</para>
+
+@param: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_soap_parameter_get_next_child ##### -->
+<para>
+
+</para>
+
+@param: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_soap_parameter_get_next_child_by_name ##### -->
+<para>
+
+</para>
+
+@param: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_soap_parameter_get_property ##### -->
+<para>
+
+</para>
+
+@param: 
+@prop_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_soap_response_get_parameters ##### -->
+<para>
+
+</para>
+
+@response: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_soap_response_get_first_parameter ##### -->
+<para>
+
+</para>
+
+@response: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_soap_response_get_first_parameter_by_name ##### -->
+<para>
+
+</para>
+
+@response: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_soap_response_get_next_parameter ##### -->
+<para>
+
+</para>
+
+@response: 
+@from: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_soap_response_get_next_parameter_by_name ##### -->
+<para>
+
+</para>
+
+@response: 
+@from: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_soap_response_dump_response ##### -->
+<para>
+
+</para>
+
+@response: 
+@buffer: 
+@Returns: 
+
+

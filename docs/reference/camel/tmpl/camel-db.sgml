@@ -631,21 +631,6 @@ CamelDB
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_db_get_folder_uids_flags ##### -->
-<para>
-
-</para>
-
-@db: 
-@folder_name: 
-@sort_by: 
-@collate: 
-@summary: 
-@table: 
-@error: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_db_get_folder_junk_uids ##### -->
 <para>
 

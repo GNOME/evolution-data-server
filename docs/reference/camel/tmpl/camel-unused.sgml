@@ -5183,6 +5183,20 @@ streams
 @ex: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_db_get_folder_uids_flags ##### -->
+<para>
+
+</para>
+
+@db: 
+@folder_name: 
+@sort_by: 
+@collate: 
+@summary: 
+@table: 
+@error: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_digest_folder_new ##### -->
 <para>
 
@@ -5366,6 +5380,14 @@ streams
 @at_least: 
 @ex: 
 
+<!-- ##### FUNCTION camel_folder_summary_get_flag_cache ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_folder_summary_load ##### -->
 <para>
 
@@ -5390,6 +5412,15 @@ streams
 
 @summary: 
 @Returns: 
+
+<!-- ##### FUNCTION camel_folder_summary_update_flag_cache ##### -->
+<para>
+
+</para>
+
+@s: 
+@uid: 
+@flag: 
 
 <!-- ##### FUNCTION camel_folder_sync ##### -->
 <para>

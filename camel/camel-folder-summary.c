@@ -2465,6 +2465,11 @@ camel_folder_summary_insert (CamelFolderSummary *s, CamelMessageInfo *info, gboo
 	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 }
 
+/**
+ * camel_folder_summary_update_counts_by_flags:
+ *
+ * Since: 2.92
+ **/
 void
 camel_folder_summary_update_counts_by_flags (CamelFolderSummary *summary, guint32 flags, gboolean subtract)
 {

@@ -177,7 +177,6 @@ ECalSourceType
 ECalSetModeStatus
 ECalLoadState
 ECalAuthFunc
-e_cal_open_status_enum_get_type
 e_cal_source_type_enum_get_type
 e_cal_set_mode_status_enum_get_type
 cal_mode_enum_get_type
