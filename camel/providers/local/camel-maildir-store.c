@@ -434,7 +434,7 @@ scan_fi (CamelStore *store,
 
 	if (!(g_stat (tmp, &st) == 0 && S_ISDIR (st.st_mode)
 	      && g_stat (cur, &st) == 0 && S_ISDIR (st.st_mode)
-	      && g_stat (new, &st) == 0 && S_ISDIR (st.st_mode))) 
+	      && g_stat (new, &st) == 0 && S_ISDIR (st.st_mode)))
 		fi->flags |= CAMEL_FOLDER_NOSELECT;
 
 	g_free (new);
@@ -475,7 +475,7 @@ maildir_dir_name_to_fullname (const gchar *dir_name)
 		full_name = g_strconcat ("Inbox/", dir_name + 2, NULL);
 	else
 		full_name = g_strdup (dir_name + 1);
-	
+
 	g_strdelimit (full_name, HIER_SEP, '/');
 
 	return full_name;
@@ -513,7 +513,7 @@ scan_dirs (CamelStore *store,
 	meta_path = maildir_get_meta_path ((CamelLocalStore *) store, ".", "maildir++");
 	if (!g_file_test (meta_path, G_FILE_TEST_EXISTS))
 		maildir_migrate_hierarchy ((CamelMaildirStore *) store, cancellable, error);
-	
+
 	while ((d = readdir (dir))) {
 		gchar *full_name, *filename;
 		const gchar *short_name;
@@ -559,7 +559,7 @@ scan_dirs (CamelStore *store,
 	}
 
 	closedir (dir);
-	
+
 	if (folders->len != 0) {
 		if (!g_ascii_strcasecmp (topfi->full_name, "Inbox"))
 			camel_folder_info_build (folders, "", '/', TRUE);
