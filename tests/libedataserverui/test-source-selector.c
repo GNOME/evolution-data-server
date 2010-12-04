@@ -21,7 +21,10 @@
  * Author: Ettore Perazzoli <ettore@ximian.com>
  */
 
+#include <libedataserver/e-source-address-book.h>
 #include <libedataserverui/e-source-selector.h>
+
+static const gchar *extension_name;
 
 static void
 dump_selection (ESourceSelector *selector)
@@ -36,10 +39,15 @@ dump_selection (ESourceSelector *selector)
 
 		for (p = selection; p != NULL; p = p->next) {
 			ESource *source = E_SOURCE (p->data);
+			ESourceBackend *extension;
 
-			g_print ("\tSource %s (group %s)\n",
-				 e_source_get_display_name (source),
-				 e_source_group_peek_name (e_source_peek_group (source)));
+			extension = e_source_get_extension (
+				source, extension_name);
+
+			g_print (
+				"\tSource %s (backend %s)\n",
+				e_source_get_display_name (source),
+				e_source_backend_get_backend_name (extension));
 		}
 	}
 
@@ -47,57 +55,65 @@ dump_selection (ESourceSelector *selector)
 }
 
 static void
-selection_changed_callback (ESourceSelector *selector,
-                            gpointer unused_data)
+selection_changed_callback (ESourceSelector *selector)
 {
 	g_print ("Selection changed!\n");
 	dump_selection (selector);
 }
 
-static void
-check_toggled_callback (GtkToggleButton *button,
-                        ESourceSelector *selector)
-{
-	e_source_selector_show_selection (selector, gtk_toggle_button_get_active (button));
-}
-
 static gint
-on_idle_create_widget (const gchar *gconf_path)
+on_idle_create_widget (ESourceRegistry *registry)
 {
 	GtkWidget *window;
 	GtkWidget *vbox;
 	GtkWidget *selector;
 	GtkWidget *scrolled_window;
 	GtkWidget *check;
-	ESourceList *list;
-	GConfClient *gconf_client;
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_default_size (GTK_WINDOW (window), 200, 300);
 
-	vbox = gtk_vbox_new (FALSE, 3);
+	g_signal_connect (
+		window, "delete-event",
+		G_CALLBACK (gtk_main_quit), NULL);
+
+	vbox = gtk_vbox_new (FALSE, 6);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
-	gconf_client = gconf_client_get_default ();
-	list = e_source_list_new_for_gconf (gconf_client, gconf_path);
-	selector = e_source_selector_new (list);
-	g_signal_connect (selector, "selection_changed", G_CALLBACK (selection_changed_callback), NULL);
+	selector = e_source_selector_new (registry, extension_name);
+	g_signal_connect (
+		selector, "selection_changed",
+		G_CALLBACK (selection_changed_callback), NULL);
 
 	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled_window), GTK_SHADOW_IN);
+	gtk_scrolled_window_set_policy (
+		GTK_SCROLLED_WINDOW (scrolled_window),
+		GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (
+		GTK_SCROLLED_WINDOW (scrolled_window), GTK_SHADOW_IN);
 	gtk_container_add (GTK_CONTAINER (scrolled_window), selector);
-	gtk_box_pack_start (GTK_BOX (vbox), scrolled_window, TRUE, TRUE, 3);
+	gtk_box_pack_start (GTK_BOX (vbox), scrolled_window, TRUE, TRUE, 0);
 
-	check = gtk_check_button_new_with_label ("Show checkboxes");
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check),
-				      e_source_selector_selection_shown (E_SOURCE_SELECTOR (selector)));
-	g_signal_connect (check, "toggled", G_CALLBACK (check_toggled_callback), selector);
-	gtk_box_pack_start (GTK_BOX (vbox), check, FALSE, TRUE, 3);
+	check = gtk_check_button_new_with_label ("Show colors");
+	gtk_box_pack_start (GTK_BOX (vbox), check, FALSE, TRUE, 0);
+
+	g_object_bind_property (
+		selector, "show-colors",
+		check, "active",
+		G_BINDING_BIDIRECTIONAL |
+		G_BINDING_SYNC_CREATE);
+
+	check = gtk_check_button_new_with_label ("Show toggles");
+	gtk_box_pack_start (GTK_BOX (vbox), check, FALSE, TRUE, 0);
+
+	g_object_bind_property (
+		selector, "show-toggles",
+		check, "active",
+		G_BINDING_BIDIRECTIONAL |
+		G_BINDING_SYNC_CREATE);
 
 	gtk_widget_show_all (window);
 
-	g_object_unref (gconf_client);
 	return FALSE;
 }
 
@@ -105,15 +121,25 @@ gint
 main (gint argc,
       gchar **argv)
 {
-	const gchar *gconf_path;
+	ESourceRegistry *registry;
+	GError *error = NULL;
 
 	gtk_init (&argc, &argv);
-	if (argc < 2)
-		gconf_path = "/apps/evolution/calendar/sources";
-	else
-		gconf_path = argv[1];
 
-	g_idle_add ((GSourceFunc) on_idle_create_widget, (gpointer) gconf_path);
+	if (argc < 2)
+		extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
+	else
+		extension_name = argv[1];
+
+	registry = e_source_registry_new_sync (NULL, &error);
+
+	if (error != NULL) {
+		g_error ("Failed to load ESource registry: %s",
+			error->message);
+		g_assert_not_reached ();
+	}
+
+	g_idle_add ((GSourceFunc) on_idle_create_widget, registry);
 
 	gtk_main ();
 

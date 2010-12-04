@@ -25,7 +25,7 @@
 #define E_SOURCE_SELECTOR_H
 
 #include <gtk/gtk.h>
-#include <libedataserver/e-source-list.h>
+#include <libedataserver/e-source-registry.h>
 
 /* Standard GObject macros */
 #define E_TYPE_SOURCE_SELECTOR \
@@ -60,6 +60,14 @@ struct _ESourceSelector {
 struct _ESourceSelectorClass {
 	GtkTreeViewClass parent_class;
 
+	/* Methods */
+	gboolean	(*get_source_selected)	(ESourceSelector *selector,
+						 ESource *source);
+	void		(*set_source_selected)	(ESourceSelector *selector,
+						 ESource *source,
+						 gboolean selected);
+
+	/* Signals */
 	void		(*selection_changed)	(ESourceSelector *selector);
 	void		(*primary_selection_changed)
 						(ESourceSelector *selector);
@@ -78,9 +86,22 @@ struct _ESourceSelectorClass {
 };
 
 GType		e_source_selector_get_type	(void);
-GtkWidget *	e_source_selector_new		(ESourceList *list);
-ESourceList *	e_source_selector_get_source_list
+GtkWidget *	e_source_selector_new		(ESourceRegistry *registry,
+						 const gchar *extension_name);
+ESourceRegistry *
+		e_source_selector_get_registry	(ESourceSelector *selector);
+const gchar *	e_source_selector_get_extension_name
 						(ESourceSelector *selector);
+gboolean	e_source_selector_get_show_colors
+						(ESourceSelector *selector);
+void		e_source_selector_set_show_colors
+						(ESourceSelector *selector,
+						 gboolean show_colors);
+gboolean	e_source_selector_get_show_toggles
+						(ESourceSelector *selector);
+void		e_source_selector_set_show_toggles
+						(ESourceSelector *selector,
+						 gboolean show_toggles);
 void		e_source_selector_select_source	(ESourceSelector *selector,
 						 ESource *source);
 void		e_source_selector_unselect_source
@@ -95,11 +116,6 @@ gboolean	e_source_selector_source_is_selected
 GSList *	e_source_selector_get_selection	(ESourceSelector *selector);
 void		e_source_selector_free_selection
 						(GSList *list);
-void		e_source_selector_show_selection
-						(ESourceSelector *selector,
-						 gboolean show);
-gboolean	e_source_selector_selection_shown
-						(ESourceSelector *selector);
 void		e_source_selector_set_select_new
 						(ESourceSelector *selector,
 						 gboolean state);
@@ -110,11 +126,11 @@ ESource *	e_source_selector_ref_primary_selection
 void		e_source_selector_set_primary_selection
 						(ESourceSelector *selector,
 						 ESource *source);
-ESourceGroup *	e_source_selector_get_primary_source_group
-						(ESourceSelector *selector);
 ESource *	e_source_selector_ref_source_by_path
 						(ESourceSelector *selector,
 						 GtkTreePath *path);
+void		e_source_selector_queue_write	(ESourceSelector *selector,
+						 ESource *source);
 
 G_END_DECLS
 
