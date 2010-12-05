@@ -32,13 +32,13 @@
 
 #include <libedataserver/e-sexp.h>
 #include <libedataserver/e-categories.h>
+#include <libedataserver/e-source-address-book.h>
 
 #include <libebackend/e-extensible.h>
 
 #include <libebook/e-book-client.h>
 #include <libebook/e-book-client-view.h>
 #include <libebook/e-book-query.h>
-#include <libebook/e-source-address-book.h>
 
 #include "e-source-combo-box.h"
 #include "e-destination-store.h"
@@ -69,6 +69,7 @@ typedef struct {
 } SelData;
 
 struct _ENameSelectorDialogPrivate {
+	ESourceRegistry *registry;
 	ENameSelectorModel *name_selector_model;
 	GtkTreeModelSort *contact_sort;
 	GCancellable *cancellable;
@@ -86,6 +87,11 @@ struct _ENameSelectorDialogPrivate {
 	guint destination_index;
 	GSList *user_query_fields;
 	GtkSizeGroup *dest_label_size_group;
+};
+
+enum {
+	PROP_0,
+	PROP_REGISTRY
 };
 
 static void     search_changed                (ENameSelectorDialog *name_selector_dialog);
@@ -148,10 +154,64 @@ name_selector_dialog_populate_categories (ENameSelectorDialog *name_selector_dia
 }
 
 static void
+name_selector_dialog_set_registry (ENameSelectorDialog *name_selector_dialog,
+                                   ESourceRegistry *registry)
+{
+	g_return_if_fail (E_IS_SOURCE_REGISTRY (registry));
+	g_return_if_fail (name_selector_dialog->priv->registry == NULL);
+
+	name_selector_dialog->priv->registry = g_object_ref (registry);
+}
+
+static void
+name_selector_dialog_set_property (GObject *object,
+                                   guint property_id,
+                                   const GValue *value,
+                                   GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_REGISTRY:
+			name_selector_dialog_set_registry (
+				E_NAME_SELECTOR_DIALOG (object),
+				g_value_get_object (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+name_selector_dialog_get_property (GObject *object,
+                                   guint property_id,
+                                   GValue *value,
+                                   GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_REGISTRY:
+			g_value_set_object (
+				value,
+				e_name_selector_dialog_get_registry (
+				E_NAME_SELECTOR_DIALOG (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
 name_selector_dialog_dispose (GObject *object)
 {
+	ENameSelectorDialogPrivate *priv;
+
+	priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (object);
+
 	remove_books (E_NAME_SELECTOR_DIALOG (object));
 	shutdown_name_selector_model (E_NAME_SELECTOR_DIALOG (object));
+
+	if (priv->registry != NULL) {
+		g_object_unref (priv->registry);
+		priv->registry = NULL;
+	}
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->dispose (object);
@@ -183,6 +243,7 @@ name_selector_dialog_constructed (GObject *object)
 	GtkTreeViewColumn *column;
 	GtkCellRenderer   *cell_renderer;
 	GtkTreeSelection  *selection;
+	ESource *source;
 	gchar *tmp_str;
 	GtkWidget *name_selector_box;
 	GtkWidget *show_contacts_label;
@@ -210,7 +271,7 @@ name_selector_dialog_constructed (GObject *object)
 	GtkWidget *destination_box;
 	GtkWidget *status_message;
 	GtkWidget *source_combo;
-	ESourceRegistry *registry;
+	const gchar *extension_name;
 
 	priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (object);
 
@@ -359,7 +420,7 @@ name_selector_dialog_constructed (GObject *object)
 	g_object_unref (G_OBJECT (tmp_relation));
 	g_object_unref (G_OBJECT (tmp_relation_set));
 
-	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (name_selector_dialog))), name_selector_box, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (object))), name_selector_box, TRUE, TRUE, 0);
 
 	/* Store pointers to relevant widgets */
 
@@ -411,11 +472,11 @@ name_selector_dialog_constructed (GObject *object)
 
 	/* Create source menu */
 
-	registry = e_source_registry_get_default ();
-	source_combo = e_source_combo_box_new (registry, "address-book");
+	extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
+	source_combo = e_source_combo_box_new (priv->registry, extension_name);
 	g_signal_connect_swapped (
 		source_combo, "changed",
-		G_CALLBACK (source_changed), name_selector_dialog);
+		G_CALLBACK (source_changed), object);
 
 	gtk_label_set_mnemonic_widget (GTK_LABEL (AddressBookLabel), source_combo);
 	gtk_widget_show (source_combo);
@@ -432,7 +493,10 @@ name_selector_dialog_constructed (GObject *object)
 
 	/* Display initial source */
 
-	/* TODO: Remember last used source */
+	source = e_source_registry_ref_default_address_book (priv->registry);
+	e_source_combo_box_set_active (
+		E_SOURCE_COMBO_BOX (source_combo), source);
+	g_object_unref (source);
 
 	/* Set up dialog defaults */
 
@@ -476,9 +540,23 @@ e_name_selector_dialog_class_init (ENameSelectorDialogClass *class)
 	g_type_class_add_private (class, sizeof (ENameSelectorDialogPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = name_selector_dialog_set_property;
+	object_class->get_property = name_selector_dialog_get_property;
 	object_class->dispose = name_selector_dialog_dispose;
 	object_class->finalize = name_selector_dialog_finalize;
 	object_class->constructed = name_selector_dialog_constructed;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_REGISTRY,
+		g_param_spec_object (
+			"registry",
+			"Registry",
+			"Data source registry",
+			E_TYPE_SOURCE_REGISTRY,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -490,15 +568,29 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 
 /**
  * e_name_selector_dialog_new:
+ * @registry: an #ESourceRegistry
  *
  * Creates a new #ENameSelectorDialog.
  *
  * Returns: A new #ENameSelectorDialog.
  **/
 ENameSelectorDialog *
-e_name_selector_dialog_new (void)
+e_name_selector_dialog_new (ESourceRegistry *registry)
 {
-	return g_object_new (E_TYPE_NAME_SELECTOR_DIALOG, NULL);
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
+
+	return g_object_new (
+		E_TYPE_NAME_SELECTOR_DIALOG,
+		"registry", registry, NULL);
+}
+
+ESourceRegistry *
+e_name_selector_dialog_get_registry (ENameSelectorDialog *name_selector_dialog)
+{
+	g_return_val_if_fail (
+		E_IS_NAME_SELECTOR_DIALOG (name_selector_dialog), NULL);
+
+	return name_selector_dialog->priv->registry;
 }
 
 /* --------- *
@@ -1018,7 +1110,6 @@ source_changed (ENameSelectorDialog *name_selector_dialog,
 	/* Start loading selected book */
 	e_client_utils_open_new (
 		source, E_CLIENT_SOURCE_TYPE_CONTACTS, TRUE, cancellable,
-		e_client_utils_authenticate_handler, parent,
 		book_loaded_cb, g_object_ref (name_selector_dialog));
 
 	g_object_unref (source);

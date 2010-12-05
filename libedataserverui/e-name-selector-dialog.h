@@ -25,6 +25,7 @@
 #define E_NAME_SELECTOR_DIALOG_H
 
 #include <gtk/gtk.h>
+#include <libedataserver/e-source-registry.h>
 #include <libedataserverui/e-contact-store.h>
 #include <libedataserverui/e-name-selector-model.h>
 
@@ -64,7 +65,10 @@ struct _ENameSelectorDialogClass {
 
 GType		e_name_selector_dialog_get_type	(void);
 ENameSelectorDialog *
-		e_name_selector_dialog_new	(void);
+		e_name_selector_dialog_new	(ESourceRegistry *registry);
+ESourceRegistry *
+		e_name_selector_dialog_get_registry
+						(ENameSelectorDialog *name_selector_dialog);
 ENameSelectorModel *
 		e_name_selector_dialog_peek_model
 						(ENameSelectorDialog *name_selector_dialog);

@@ -231,6 +231,7 @@ e_name_selector_get_type
 <TITLE>ENameSelectorDialog</TITLE>
 ENameSelectorDialog
 e_name_selector_dialog_new
+e_name_selector_dialog_get_registry
 e_name_selector_dialog_peek_model
 e_name_selector_dialog_set_model
 e_name_selector_dialog_set_destination_index
@@ -433,8 +434,9 @@ e_source_selector_get_type
 <TITLE>ESourceSelectorDialog</TITLE>
 ESourceSelectorDialog
 e_source_selector_dialog_new
+e_source_selector_dialog_get_registry
+e_source_selector_dialog_get_extension_name
 e_source_selector_dialog_get_selector
-e_source_selector_dialog_select_default_source
 e_source_selector_dialog_peek_primary_selection
 <SUBSECTION Standard>
 E_SOURCE_SELECTOR_DIALOG

@@ -34,9 +34,17 @@
 	((obj), E_TYPE_SOURCE_SELECTOR_DIALOG, ESourceSelectorDialogPrivate))
 
 struct _ESourceSelectorDialogPrivate {
-	GtkWidget *source_selector;
-	ESourceList *source_list;
+	GtkWidget *selector;
+	ESourceRegistry *registry;
 	ESource *selected_source;
+	gchar *extension_name;
+};
+
+enum {
+	PROP_0,
+	PROP_EXTENSION_NAME,
+	PROP_REGISTRY,
+	PROP_SELECTOR
 };
 
 G_DEFINE_TYPE (
@@ -72,20 +80,91 @@ primary_selection_changed_cb (ESourceSelector *selector,
 		except_source = g_object_get_data (
 			G_OBJECT (dialog), "except-source");
 
-		if (except_source != NULL) {
-			const gchar *except_uid, *selected_uid;
-
-			except_uid = e_source_get_uid (except_source);
-			selected_uid = e_source_get_uid (priv->selected_source);
-
-			if (except_uid && selected_uid && g_str_equal (except_uid, selected_uid))
+		if (except_source != NULL)
+			if (e_source_equal (except_source, priv->selected_source)) {
+				g_object_unref (priv->selected_source);
 				priv->selected_source = NULL;
-		}
+			}
 	}
 
 	gtk_dialog_set_response_sensitive (
 		GTK_DIALOG (dialog), GTK_RESPONSE_OK,
 		(priv->selected_source != NULL));
+}
+
+static void
+source_selector_dialog_set_extension_name (ESourceSelectorDialog *dialog,
+                                           const gchar *extension_name)
+{
+	g_return_if_fail (extension_name != NULL);
+	g_return_if_fail (dialog->priv->extension_name == NULL);
+
+	dialog->priv->extension_name = g_strdup (extension_name);
+}
+
+static void
+source_selector_dialog_set_registry (ESourceSelectorDialog *dialog,
+                                     ESourceRegistry *registry)
+{
+	g_return_if_fail (E_IS_SOURCE_REGISTRY (registry));
+	g_return_if_fail (dialog->priv->registry == NULL);
+
+	dialog->priv->registry = g_object_ref (registry);
+}
+
+static void
+source_selector_dialog_set_property (GObject *object,
+                                     guint property_id,
+                                     const GValue *value,
+                                     GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_EXTENSION_NAME:
+			source_selector_dialog_set_extension_name (
+				E_SOURCE_SELECTOR_DIALOG (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_REGISTRY:
+			source_selector_dialog_set_registry (
+				E_SOURCE_SELECTOR_DIALOG (object),
+				g_value_get_object (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+source_selector_dialog_get_property (GObject *object,
+                                     guint property_id,
+                                     GValue *value,
+                                     GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_EXTENSION_NAME:
+			g_value_set_string (
+				value,
+				e_source_selector_dialog_get_extension_name (
+				E_SOURCE_SELECTOR_DIALOG (object)));
+			return;
+
+		case PROP_REGISTRY:
+			g_value_set_object (
+				value,
+				e_source_selector_dialog_get_registry (
+				E_SOURCE_SELECTOR_DIALOG (object)));
+			return;
+
+		case PROP_SELECTOR:
+			g_value_set_object (
+				value,
+				e_source_selector_dialog_get_selector (
+				E_SOURCE_SELECTOR_DIALOG (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static void
@@ -95,9 +174,9 @@ source_selector_dialog_dispose (GObject *object)
 
 	priv = E_SOURCE_SELECTOR_DIALOG_GET_PRIVATE (object);
 
-	if (priv->source_list) {
-		g_object_unref (priv->source_list);
-		priv->source_list = NULL;
+	if (priv->registry != NULL) {
+		g_object_unref (priv->registry);
+		priv->registry = NULL;
 	}
 
 	if (priv->selected_source != NULL) {
@@ -110,62 +189,28 @@ source_selector_dialog_dispose (GObject *object)
 }
 
 static void
+source_selector_dialog_finalize (GObject *object)
+{
+	ESourceSelectorDialogPrivate *priv;
+
+	priv = E_SOURCE_SELECTOR_DIALOG_GET_PRIVATE (object);
+
+	g_free (priv->extension_name);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_source_selector_dialog_parent_class)->finalize (object);
+}
+
+static void
 source_selector_dialog_constructed (GObject *object)
 {
 	ESourceSelectorDialog *dialog;
-	GtkWidget *action_area;
-	GtkWidget *content_area;
-
-	dialog = E_SOURCE_SELECTOR_DIALOG (object);
-
-	action_area = gtk_dialog_get_action_area (GTK_DIALOG (dialog));
-	content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
-
-	/* prepare the dialog */
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Select destination"));
-	gtk_window_set_default_size (GTK_WINDOW (dialog), 320, 240);
-	gtk_container_set_border_width (GTK_CONTAINER (content_area), 0);
-	gtk_container_set_border_width (GTK_CONTAINER (action_area), 12);
-	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-				GTK_STOCK_OK, GTK_RESPONSE_OK,
-				NULL);
-	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_OK, FALSE);
-}
-
-static void
-e_source_selector_dialog_class_init (ESourceSelectorDialogClass *class)
-{
-	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (ESourceSelectorDialogPrivate));
-
-	object_class = G_OBJECT_CLASS (class);
-	object_class->dispose = source_selector_dialog_dispose;
-	object_class->constructed = source_selector_dialog_constructed;
-}
-
-static void
-e_source_selector_dialog_init (ESourceSelectorDialog *dialog)
-{
-	dialog->priv = E_SOURCE_SELECTOR_DIALOG_GET_PRIVATE (dialog);
-}
-
-/* Public API */
-
-static GtkWidget *
-setup_dialog (GtkWindow *parent,
-              ESourceSelectorDialog *dialog,
-              ESourceList *source_list)
-{
 	GtkWidget *label, *hbox;
 	GtkWidget *container;
 	GtkWidget *widget;
 	gchar *label_text;
-	ESourceSelectorDialogPrivate *priv = dialog->priv;
 
-	priv->source_list = g_object_ref (source_list);
+	dialog = E_SOURCE_SELECTOR_DIALOG (object);
 
 	container = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 
@@ -203,11 +248,13 @@ setup_dialog (GtkWindow *parent,
 
 	container = widget;
 
-	widget = e_source_selector_new (source_list);
-	e_source_selector_show_selection (E_SOURCE_SELECTOR (widget), FALSE);
+	widget = e_source_selector_new (
+		dialog->priv->registry,
+		dialog->priv->extension_name);
+	e_source_selector_set_show_toggles (E_SOURCE_SELECTOR (widget), FALSE);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), widget);
 	gtk_container_add (GTK_CONTAINER (container), widget);
-	dialog->priv->source_selector = widget;
+	dialog->priv->selector = widget;
 	gtk_widget_show (widget);
 
 	g_signal_connect (
@@ -216,78 +263,163 @@ setup_dialog (GtkWindow *parent,
 	g_signal_connect (
 		widget, "primary_selection_changed",
 		G_CALLBACK (primary_selection_changed_cb), dialog);
+}
 
-	return GTK_WIDGET (dialog);
+static void
+e_source_selector_dialog_class_init (ESourceSelectorDialogClass *class)
+{
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (ESourceSelectorDialogPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = source_selector_dialog_set_property;
+	object_class->get_property = source_selector_dialog_get_property;
+	object_class->dispose = source_selector_dialog_dispose;
+	object_class->finalize = source_selector_dialog_finalize;
+	object_class->constructed = source_selector_dialog_constructed;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_EXTENSION_NAME,
+		g_param_spec_string (
+			"extension-name",
+			NULL,
+			NULL,
+			NULL,
+			G_PARAM_WRITABLE |
+			G_PARAM_CONSTRUCT_ONLY));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_REGISTRY,
+		g_param_spec_object (
+			"registry",
+			NULL,
+			NULL,
+			E_TYPE_SOURCE_REGISTRY,
+			G_PARAM_WRITABLE |
+			G_PARAM_CONSTRUCT_ONLY));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_SELECTOR,
+		g_param_spec_object (
+			"selector",
+			NULL,
+			NULL,
+			E_TYPE_SOURCE_SELECTOR,
+			G_PARAM_READABLE));
+}
+
+static void
+e_source_selector_dialog_init (ESourceSelectorDialog *dialog)
+{
+	GtkWidget *action_area;
+	GtkWidget *content_area;
+
+	dialog->priv = E_SOURCE_SELECTOR_DIALOG_GET_PRIVATE (dialog);
+
+	action_area = gtk_dialog_get_action_area (GTK_DIALOG (dialog));
+	content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Select destination"));
+	gtk_window_set_default_size (GTK_WINDOW (dialog), 320, 240);
+
+	gtk_widget_ensure_style (GTK_WIDGET (dialog));
+	gtk_container_set_border_width (GTK_CONTAINER (content_area), 0);
+	gtk_container_set_border_width (GTK_CONTAINER (action_area), 12);
+
+	gtk_dialog_add_buttons (
+		GTK_DIALOG (dialog),
+		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+		GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
+	gtk_dialog_set_default_response (
+		GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+	gtk_dialog_set_response_sensitive (
+		GTK_DIALOG (dialog), GTK_RESPONSE_OK, FALSE);
 }
 
 /**
  * e_source_selector_dialog_new:
  * @parent: a parent window
- * @source_list: an #ESourceList
+ * @registry: an #ESourceRegistry
+ * @extension_name: the name of an #ESource extension
  *
- * Create a new source selector dialog for the given @list.
+ * Displays a list of sources from @registry having an extension named
+ * @extension_name in a dialog window.  The sources are grouped by backend
+ * or groupware account, which are described by the parent source.
  *
  * Returns: a new #ESourceSelectorDialog
  **/
 GtkWidget *
 e_source_selector_dialog_new (GtkWindow *parent,
-                              ESourceList *source_list)
+                              ESourceRegistry *registry,
+                              const gchar *extension_name)
 {
-	ESourceSelectorDialog *dialog;
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
+	g_return_val_if_fail (extension_name != NULL, NULL);
 
-	g_return_val_if_fail (E_IS_SOURCE_LIST (source_list), NULL);
-
-	dialog = g_object_new (E_TYPE_SOURCE_SELECTOR_DIALOG, NULL);
-
-	return setup_dialog (parent, dialog, source_list);
+	return g_object_new (
+		E_TYPE_SOURCE_SELECTOR_DIALOG,
+		"transient-for", parent,
+		"registry", registry,
+		"extension-name", extension_name,
+		NULL);
 }
 
 /**
- * e_source_selector_dialog_select_default_source:
+ * e_source_selector_dialog_get_registry:
  * @dialog: an #ESourceSelectorDialog
  *
- * Selects the default source in the dialog.
+ * Returns the #ESourceRegistry passed to e_source_selector_dialog_new().
  *
- * Returns: %TRUE if a default source was selected
+ * Returns: the #ESourceRegistry for @dialog
  *
- * Since: 2.28
+ * Since: 3.6
  **/
-gboolean
-e_source_selector_dialog_select_default_source (ESourceSelectorDialog *dialog)
+ESourceRegistry *
+e_source_selector_dialog_get_registry (ESourceSelectorDialog *dialog)
 {
-	ESourceSelectorDialogPrivate *priv;
+	g_return_val_if_fail (E_IS_SOURCE_SELECTOR_DIALOG (dialog), NULL);
 
-	g_return_val_if_fail (E_IS_SOURCE_SELECTOR_DIALOG (dialog), FALSE);
+	return dialog->priv->registry;
+}
 
-	priv = dialog->priv;
+/**
+ * e_source_selector_dialog_get_extension_name:
+ * @dialog: an #ESourceSelectorDialog
+ *
+ * Returns the extension name passed to e_source_selector_dialog_new().
+ *
+ * Returns: the extension name for @dialog
+ *
+ * Since: 3.6
+ **/
+const gchar *
+e_source_selector_dialog_get_extension_name (ESourceSelectorDialog *dialog)
+{
+	g_return_val_if_fail (E_IS_SOURCE_SELECTOR_DIALOG (dialog), NULL);
 
-	if (priv->source_list) {
-		ESource *default_source = NULL;
-		GSList *groups, *g;
+	return dialog->priv->extension_name;
+}
 
-		groups = e_source_list_peek_groups (priv->source_list);
-		for (g = groups; g != NULL && !default_source; g = g->next) {
-			ESourceGroup *group = E_SOURCE_GROUP (g->data);
-			GSList *sources, *s;
+/**
+ * e_source_selector_dialog_get_selector:
+ * @dialog: an #ESourceSelectorDialog
+ *
+ * Returns the #ESourceSelector widget embedded in @dialog.
+ *
+ * Returns: the #ESourceSelector widget
+ *
+ * Since: 3.6
+ **/
+ESourceSelector *
+e_source_selector_dialog_get_selector (ESourceSelectorDialog *dialog)
+{
+	g_return_val_if_fail (E_IS_SOURCE_SELECTOR_DIALOG (dialog), NULL);
 
-			sources = e_source_group_peek_sources (group);
-
-			for (s = sources; s != NULL && !default_source; s = s->next) {
-				ESource *source = E_SOURCE (s->data);
-
-				if (source && e_source_get_property (source, "default"))
-					default_source = source;
-			}
-
-		}
-
-		if (default_source)
-			e_source_selector_set_primary_selection (E_SOURCE_SELECTOR (priv->source_selector), default_source);
-
-		return default_source != NULL;
-	}
-
-	return FALSE;
+	return E_SOURCE_SELECTOR (dialog->priv->selector);
 }
 
 /**
