@@ -525,7 +525,8 @@ scan_dirs (CamelStore *store,
 				|| strcmp(d->d_name, "new") == 0
 				|| strcmp(d->d_name, ".#evolution") == 0
 				|| strcmp(d->d_name, ".") == 0
-				|| strcmp(d->d_name, "..") == 0)
+				|| strcmp(d->d_name, "..") == 0
+				|| !g_str_has_prefix (d->d_name, "."))
 
 				continue;
 
