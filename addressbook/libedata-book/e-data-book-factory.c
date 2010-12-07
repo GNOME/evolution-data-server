@@ -559,6 +559,30 @@ on_name_lost (GDBusConnection *connection,
 	g_mutex_unlock (factory->priv->connections_lock);
 }
 
+#ifndef G_OS_WIN32
+static void
+quit_signal (gint sig)
+{
+	g_return_if_fail (sig == SIGQUIT);
+
+	g_print ("Received quit signal...\n");
+	g_main_loop_quit (loop);
+}
+
+static void
+setup_quit_signal (void)
+{
+	struct sigaction sa, osa;
+
+	sigaction (SIGQUIT, NULL, &osa);
+
+	sa.sa_flags = 0;
+	sigemptyset (&sa.sa_mask);
+	sa.sa_handler = quit_signal;
+	sigaction (SIGQUIT, &sa, NULL);
+}
+#endif
+
 gint
 main (gint argc, gchar **argv)
 {
@@ -614,7 +638,11 @@ main (gint argc, gchar **argv)
 	/* Migrate user data from ~/.evolution to XDG base directories. */
 	e_data_book_migrate ();
 
-	printf ("Server is up and running...\n");
+	#ifndef G_OS_WIN32
+	setup_quit_signal ();
+	#endif
+
+	g_print ("Server is up and running...\n");
 
 	g_main_loop_run (loop);
 
@@ -622,7 +650,7 @@ main (gint argc, gchar **argv)
 	g_object_unref (eol);
 	g_object_unref (factory);
 
-	printf ("Bye.\n");
+	g_print ("Bye.\n");
 
 	return 0;
 }
