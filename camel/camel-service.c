@@ -423,6 +423,7 @@ camel_service_connect_sync (CamelService *service,
                             GError **error)
 {
 	CamelServiceClass *class;
+	GCancellable *op;
 	gboolean ret = FALSE;
 
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), FALSE);
@@ -443,6 +444,7 @@ camel_service_connect_sync (CamelService *service,
 	 * the offline code can cancel it. */
 	camel_service_lock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
 	service->connect_op = camel_operation_new ();
+	op = service->connect_op;
 	camel_service_unlock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
 
 	service->status = CAMEL_SERVICE_CONNECTING;
@@ -451,8 +453,9 @@ camel_service_connect_sync (CamelService *service,
 	service->status = ret ? CAMEL_SERVICE_CONNECTED : CAMEL_SERVICE_DISCONNECTED;
 
 	camel_service_lock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
-	g_object_unref (service->connect_op);
-	service->connect_op = NULL;
+	g_object_unref (op);
+	if (op == service->connect_op)
+		service->connect_op = NULL;
 	camel_service_unlock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
 
 	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
@@ -488,8 +491,10 @@ camel_service_disconnect_sync (CamelService *service,
 
 	if (service->status != CAMEL_SERVICE_DISCONNECTED
 	    && service->status != CAMEL_SERVICE_DISCONNECTING) {
+		GCancellable *op;
 		camel_service_lock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
 		service->connect_op = camel_operation_new ();
+		op = service->connect_op;
 		camel_service_unlock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
 
 		service->status = CAMEL_SERVICE_DISCONNECTING;
@@ -499,8 +504,9 @@ camel_service_disconnect_sync (CamelService *service,
 		service->status = CAMEL_SERVICE_DISCONNECTED;
 
 		camel_service_lock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
-		g_object_unref (service->connect_op);
-		service->connect_op = NULL;
+		g_object_unref (op);
+		if (op == service->connect_op)
+			service->connect_op = NULL;
 		camel_service_unlock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
 	}
 
