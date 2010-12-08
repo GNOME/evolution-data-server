@@ -1215,6 +1215,7 @@ e_book_backend_webdav_load_source (EBookBackend *backend,
 	gchar                     *filename;
 	SoupSession               *session;
 	SoupURI                   *suri;
+	gint			   port;
 
 	/* will try fetch ctag for the first time, if it fails then sets this to FALSE */
 	priv->supports_getctag = TRUE;
@@ -1253,12 +1254,16 @@ e_book_backend_webdav_load_source (EBookBackend *backend,
 		return;
 	}
 
+	port = soup_uri_get_port (suri);
 	use_ssl = e_source_get_property (source, "use_ssl");
 	if (use_ssl != NULL && strcmp (use_ssl, "1") == 0) {
 		soup_uri_set_scheme (suri, "https");
 	} else {
 		soup_uri_set_scheme (suri, "https");
 	}
+
+	if (port > 0 && port != soup_uri_get_port (suri))
+		soup_uri_set_port (suri, port);
 
 	/* append slash if missing */
 	if (!suri->path || !*suri->path || suri->path[strlen (suri->path) - 1] != '/') {
