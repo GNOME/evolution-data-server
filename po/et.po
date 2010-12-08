@@ -16,8 +16,8 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=Misc.\n"
-"POT-Creation-Date: 2010-11-24 13:43+0000\n"
-"PO-Revision-Date: 2010-11-26 12:24+0200\n"
+"POT-Creation-Date: 2010-12-03 16:16+0000\n"
+"PO-Revision-Date: 2010-12-08 06:28+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -639,8 +639,20 @@ msgid "Cancel operation failed: %s"
 msgstr "Tõrge toimingu tühistamisel: %s"
 
 #, c-format
+msgid "Server is unreachable (%s)"
+msgstr "Server pole kättesaadav (%s)"
+
+#, c-format
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "Tagastati ootamatu HTTP-olekukood %d (%s)"
+
+#, c-format
+msgid ""
+"Server is unreachable, calendar is opened in read-only mode.\n"
+"Error message: %s"
+msgstr ""
+"Server pole kättesaadav, kalender avatakse ainult lugemiseks.\n"
+"Veateade: %s"
 
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Kalender ei toeta vaba/hõivatud funktsionaalsust"
