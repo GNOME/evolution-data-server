@@ -2147,7 +2147,7 @@ caldav_synch_slave_loop (gpointer data)
 }
 
 static gchar *
-get_users_email (const gchar *username, const gchar *may_append)
+maybe_append_email_domain (const gchar *username, const gchar *may_append)
 {
 	if (!username || !*username)
 		return NULL;
@@ -2156,6 +2156,36 @@ get_users_email (const gchar *username, const gchar *may_append)
 		return g_strdup (username);
 
 	return g_strconcat (username, may_append, NULL);
+}
+
+static gchar *
+get_usermail (ECalBackend *backend)
+{
+	ECalBackendCalDAV        *cbdav;
+	ECalBackendCalDAVPrivate *priv;
+	ESource *source;
+	gchar *res = NULL;
+
+	g_return_val_if_fail (backend != NULL, NULL);
+
+	source = e_cal_backend_get_source (backend);
+	if (source) {
+		res = e_source_get_duped_property (source, "usermail");
+		if (res && *res)
+			return res;
+
+		g_free (res);
+		res = NULL;
+	}
+
+	cbdav = E_CAL_BACKEND_CALDAV (backend);
+	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+
+	if (priv && priv->is_google && priv->username) {
+		res = maybe_append_email_domain (priv->username, "@gmail.com");
+	}
+
+	return res;
 }
 
 /* ************************************************************************* */
@@ -2187,17 +2217,7 @@ caldav_get_cal_address (ECalBackendSync  *backend,
 			gchar           **address,
 			GError          **perror)
 {
-	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
-
-	*address = NULL;
-
-	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
-
-	if (priv && priv->is_google && priv->username) {
-		*address = get_users_email (priv->username, "@gmail.com");
-	}
+	*address = get_usermail (E_CAL_BACKEND (backend));
 }
 
 static void
@@ -2206,17 +2226,7 @@ caldav_get_alarm_email_address (ECalBackendSync  *backend,
 				gchar           **address,
 				GError          **perror)
 {
-	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
-
-	*address = NULL;
-
-	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
-
-	if (priv && priv->is_google && priv->username) {
-		*address = get_users_email (priv->username, "@gmail.com");
-	}
+	*address = get_usermail (E_CAL_BACKEND (backend));
 }
 
 static void
@@ -2236,19 +2246,32 @@ caldav_get_static_capabilities (ECalBackendSync  *backend,
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
+	ESource *source;
+	GString *caps;
+	gchar *usermail;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	if (priv && priv->is_google)
-		*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
-					  CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
-					  CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED);
-	else
-		*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS ","
-					  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
-					  CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
-					  CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED);
+	caps = g_string_new (CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
+			     CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
+			     CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED);
+
+	usermail = get_usermail (E_CAL_BACKEND (backend));
+	if (!usermail || !*usermail)
+		g_string_append (caps, "," CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS);
+	g_free (usermail);
+
+	source = e_cal_backend_get_source (E_CAL_BACKEND (backend));
+	if (source) {
+		const gchar *prop = e_source_get_property (source, "autoschedule");
+
+		if (prop && g_str_equal (prop, "1"))
+			g_string_append (caps, "," CAL_STATIC_CAPABILITY_CREATE_MESSAGES
+					       "," CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
+	}
+
+	*capabilities = g_string_free (caps, FALSE);
 }
 
 static gboolean
@@ -4226,7 +4249,7 @@ caldav_get_free_busy (ECalBackendSync  *backend,
 	ECalComponentDateTime dt;
 	struct icaltimetype dtvalue;
 	icaltimezone *utc;
-	gchar *str;
+	gchar *str, *usermail;
 	GList *u;
 	GSList *attendees = NULL, *to_free = NULL;
 	GError *err = NULL;
@@ -4273,12 +4296,24 @@ caldav_get_free_busy (ECalBackendSync  *backend,
 	dtvalue = icaltime_from_timet_with_zone (end, FALSE, utc);
 	e_cal_component_set_dtend (comp, &dt);
 
-	if (priv->username) {
+	usermail = get_usermail (E_CAL_BACKEND (backend));
+	if (usermail && !*usermail) {
+		g_free (usermail);
+		usermail = NULL;
+	}
+
+	if (priv->username || usermail) {
 		ECalComponentOrganizer organizer = {NULL};
 
-		organizer.value = priv->username;
+		organizer.value = usermail ? usermail : priv->username;
+		organizer.value = g_strconcat ("mailto:", organizer.value, NULL);
+
 		e_cal_component_set_organizer (comp, &organizer);
+
+		g_free ((gchar *) organizer.value);
 	}
+
+	g_free (usermail);
 
 	for (u = users; u; u = u->next) {
 		ECalComponentAttendee *ca;
