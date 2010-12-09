@@ -35,9 +35,6 @@
 
 #define CAMEL_IMAPX_SUMMARY_VERSION (4)
 
-#define EXTRACT_FIRST_DIGIT(val) val=strtoull (part, &part, 10);
-#define EXTRACT_DIGIT(val) if (*part) part++; val=strtoull (part, &part, 10);
-
 static gint summary_header_load (CamelFolderSummary *, FILE *);
 static gint summary_header_save (CamelFolderSummary *, FILE *);
 
@@ -202,19 +199,12 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 
 	part = mir->bdata;
 
-	if (part) {
-		EXTRACT_FIRST_DIGIT (ims->version)
-	}
-
-	if (part) {
-		EXTRACT_DIGIT (ims->validity)
-	}
+	ims->version = bdata_extract_digit (&part);
+	ims->validity = bdata_extract_digit (&part);
 
 	if (ims->version >= 4) {
-		if (part)
-			EXTRACT_DIGIT (ims->uidnext);
-		if (part)
-			EXTRACT_DIGIT (ims->modseq);
+		ims->uidnext = bdata_extract_digit (&part);
+		ims->modseq = bdata_extract_digit (&part);
 	}
 
 	if (ims->version > CAMEL_IMAPX_SUMMARY_VERSION) {
@@ -313,11 +303,10 @@ message_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 
 	info = folder_summary_class->message_info_from_db (s, mir);
 	if (info) {
-		gchar *part = g_strdup (mir->bdata), *tmp;
-		tmp = part;
+		gchar *part = mir->bdata;
+
 		iinfo = (CamelIMAPXMessageInfo *)info;
-		EXTRACT_FIRST_DIGIT (iinfo->server_flags)
-		g_free (tmp);
+		iinfo->server_flags = bdata_extract_digit (&part);
 	}
 
 	return info;
@@ -396,7 +385,7 @@ content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 		if (*part == ' ')
 			part++;
 		if (part) {
-			EXTRACT_FIRST_DIGIT (type);
+			type = bdata_extract_digit (&part);
 		}
 	}
 	mir->cinfo = part;

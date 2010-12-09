@@ -38,9 +38,6 @@
 
 #define CAMEL_GW_SUMMARY_VERSION (1)
 
-#define EXTRACT_FIRST_DIGIT(val) part ? val=strtoul (part, &part, 10) : 0;
-#define EXTRACT_DIGIT(val) part++; part ? val=strtoul (part, &part, 10) : 0;
-
 #define d(x)
 
 /*Prototypes*/
@@ -144,13 +141,10 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 
 	part = mir->bdata;
 
-	if (part)
-		EXTRACT_FIRST_DIGIT (gms->version);
+	gms->version = bdata_extract_digit (&part);
+	gms->validity = bdata_extract_digit (&part);
 
-	if (part)
-		EXTRACT_DIGIT (gms->validity);
-
-	if (part && part++) {
+	if (part && *part && part++) {
 		gms->time_string = g_strdup (part);
 	}
 
@@ -213,7 +207,7 @@ message_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 	if (info) {
 		gchar *part = mir->bdata;
 		iinfo = (CamelGroupwiseMessageInfo *)info;
-		EXTRACT_FIRST_DIGIT (iinfo->server_flags)
+		iinfo->server_flags = bdata_extract_digit (&part);
 	}
 
 	return info;}
@@ -260,7 +254,7 @@ content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 		if (*part == ' ')
 			part++;
 		if (part) {
-			EXTRACT_FIRST_DIGIT (type);
+			type = bdata_extract_digit (&part);
 		}
 	}
 	mir->cinfo = part;

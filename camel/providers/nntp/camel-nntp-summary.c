@@ -44,9 +44,6 @@
 
 #define CAMEL_NNTP_SUMMARY_VERSION (1)
 
-#define EXTRACT_FIRST_DIGIT(val) val=strtoul (part, &part, 10);
-#define EXTRACT_DIGIT(val) part++; val=strtoul (part, &part, 10);
-
 #define CAMEL_NNTP_SUMMARY_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_NNTP_SUMMARY, CamelNNTPSummaryPrivate))
@@ -143,17 +140,9 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 
 	part = mir->bdata;
 
-	if (part) {
-		EXTRACT_FIRST_DIGIT (cns->version)
-	}
-
-	if (part) {
-		EXTRACT_DIGIT (cns->high)
-	}
-
-	if (part) {
-		EXTRACT_DIGIT (cns->low)
-	}
+	cns->version = bdata_extract_digit (&part);
+	cns->high = bdata_extract_digit (&part);
+	cns->low = bdata_extract_digit (&part);
 
 	return 0;
 }

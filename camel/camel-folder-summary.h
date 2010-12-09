@@ -521,6 +521,10 @@ gint camel_folder_summary_migrate_infos (CamelFolderSummary *s);
 void camel_folder_summary_lock   (CamelFolderSummary *summary, CamelFolderSummaryLock lock);
 void camel_folder_summary_unlock (CamelFolderSummary *summary, CamelFolderSummaryLock lock);
 
+/* utility functions for bdata string decomposition */
+gint   bdata_extract_digit (/* const */ gchar **part);
+gchar *bdata_extract_string (/* const */ gchar **part);
+
 G_END_DECLS
 
 #endif /* CAMEL_FOLDER_SUMMARY_H */

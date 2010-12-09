@@ -43,9 +43,6 @@
 
 #define CAMEL_MBOX_SUMMARY_VERSION (1)
 
-#define EXTRACT_DIGIT(val) part++; val=strtoul (part, &part, 10);
-#define EXTRACT_FIRST_DIGIT(val) val=strtoul (part, &part, 10);
-
 static CamelFIRecord * summary_header_to_db (CamelFolderSummary *, GError **error);
 static gint summary_header_from_db (CamelFolderSummary *, CamelFIRecord *);
 static CamelMessageInfo * message_info_from_db (CamelFolderSummary *s, CamelMIRecord *record);
@@ -233,8 +230,8 @@ summary_header_from_db (CamelFolderSummary *s, struct _CamelFIRecord *fir)
 
 	part = fir->bdata;
 	if (part) {
-		EXTRACT_DIGIT (mbs->version)
-		EXTRACT_DIGIT (mbs->folder_size)
+		mbs->version = bdata_extract_digit (&part);
+		mbs->folder_size = bdata_extract_digit (&part);
 	}
 
 	return 0;
@@ -393,15 +390,14 @@ static CamelMessageInfo *
 message_info_from_db (CamelFolderSummary *s, struct _CamelMIRecord *mir)
 {
 	CamelMessageInfo *mi;
-	gchar *part;
 
 	mi = CAMEL_FOLDER_SUMMARY_CLASS (camel_mbox_summary_parent_class)->message_info_from_db (s, mir);
 
 	if (mi) {
 		CamelMboxMessageInfo *mbi = (CamelMboxMessageInfo *)mi;
-		part = mir->bdata;
+		gchar *part = mir->bdata;
 		if (part) {
-			EXTRACT_FIRST_DIGIT (mbi->frompos)
+			mbi->frompos = bdata_extract_digit (&part);
 		}
 	}
 

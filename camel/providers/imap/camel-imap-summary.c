@@ -36,9 +36,6 @@
 
 #define CAMEL_IMAP_SUMMARY_VERSION (3)
 
-#define EXTRACT_FIRST_DIGIT(val) val=strtoul (part, &part, 10);
-#define EXTRACT_DIGIT(val) if (*part) part++; val=strtoul (part, &part, 10);
-
 static gint summary_header_load (CamelFolderSummary *, FILE *);
 static gint summary_header_save (CamelFolderSummary *, FILE *);
 
@@ -192,13 +189,8 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 
 	part = mir->bdata;
 
-	if (part) {
-		EXTRACT_FIRST_DIGIT (ims->version)
-	}
-
-	if (part) {
-		EXTRACT_DIGIT (ims->validity)
-	}
+	ims->version = bdata_extract_digit (&part);
+	ims->validity = bdata_extract_digit (&part);
 
 	if (ims->version > CAMEL_IMAP_SUMMARY_VERSION) {
 		g_warning("Unkown summary version\n");
@@ -280,11 +272,10 @@ message_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 
 	info = CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->message_info_from_db (s, mir);
 	if (info) {
-		gchar *part = g_strdup (mir->bdata), *tmp;
-		tmp = part;
+		gchar *part = mir->bdata;
+
 		iinfo = (CamelImapMessageInfo *)info;
-		EXTRACT_FIRST_DIGIT (iinfo->server_flags)
-		g_free (tmp);
+		iinfo->server_flags = bdata_extract_digit (&part);
 	}
 
 	return info;
@@ -347,7 +338,7 @@ content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 		if (*part == ' ')
 			part++;
 		if (part) {
-			EXTRACT_FIRST_DIGIT (type);
+			type = bdata_extract_digit (&part);
 		}
 	}
 	mir->cinfo = part;

@@ -107,11 +107,6 @@ static GStaticMutex info_lock = G_STATIC_MUTEX_INIT;
 
 #define META_SUMMARY_SUFFIX_LEN 5 /* strlen("-meta") */
 
-#define EXTRACT_FIRST_STRING(val) len=strtoul (part, &part, 10); if (*part) part++; val=g_strndup (part, len); part+=len;
-#define EXTRACT_STRING(val) if (*part) part++; len=strtoul (part, &part, 10); if (*part) part++; val=g_strndup (part, len); part+=len;
-#define EXTRACT_FIRST_DIGIT(val) val=strtoul (part, &part, 10);
-#define EXTRACT_DIGIT(val) if (*part && *part == ' ') part++; val=strtoul (part, &part, 10);
-
 /* trivial lists, just because ... */
 struct _node {
 	struct _node *next;
@@ -355,16 +350,16 @@ message_info_from_db (CamelFolderSummary *s, CamelMIRecord *record)
 	mi->content = NULL;
 	part = record->part;
 	if (part) {
-		EXTRACT_FIRST_DIGIT (mi->message_id.id.part.hi)
-		EXTRACT_DIGIT (mi->message_id.id.part.lo)
-		EXTRACT_DIGIT (count)
+		mi->message_id.id.part.hi = bdata_extract_digit (&part);
+		mi->message_id.id.part.lo = bdata_extract_digit (&part);
+		count = bdata_extract_digit (&part);
 
 		if (count > 0) {
 			mi->references = g_malloc (sizeof (*mi->references) + ((count-1) * sizeof (mi->references->references[0])));
 			mi->references->size = count;
 			for (i=0;i<count;i++) {
-				EXTRACT_DIGIT (mi->references->references[i].id.part.hi)
-				EXTRACT_DIGIT (mi->references->references[i].id.part.lo)
+				mi->references->references[i].id.part.hi = bdata_extract_digit (&part);
+				mi->references->references[i].id.part.lo = bdata_extract_digit (&part);
 			}
 		} else
 			mi->references = NULL;
@@ -388,13 +383,14 @@ message_info_from_db (CamelFolderSummary *s, CamelMIRecord *record)
 
 	/* Extract User tags */
 	part = record->usertags;
-	EXTRACT_FIRST_DIGIT (count)
+	count = bdata_extract_digit (&part);
 	for (i=0;i<count;i++) {
-		gint len;
 		gchar *name, *value;
-		EXTRACT_STRING (name)
-		EXTRACT_STRING (value)
+
+		name = bdata_extract_string (&part);
+		value = bdata_extract_string (&part);
 		camel_tag_set (&mi->user_tags, name, value);
+
 		g_free (name);
 		g_free (value);
 	}
@@ -488,7 +484,6 @@ content_info_from_db (CamelFolderSummary *s, CamelMIRecord *record)
 	guint32 count, i;
 	CamelContentType *ct;
 	gchar *part = record->cinfo;
-	gint len;
 
 	io(printf("Loading content info from db\n"));
 
@@ -498,17 +493,17 @@ content_info_from_db (CamelFolderSummary *s, CamelMIRecord *record)
 	ci = camel_folder_summary_content_info_new (s);
 	if (*part == ' ') part++; /* Move off the space in the record*/
 
-	EXTRACT_FIRST_STRING (type)
-	EXTRACT_STRING (subtype)
+	type = bdata_extract_string (&part);
+	subtype = bdata_extract_string (&part);
 	ct = camel_content_type_new (type, subtype);
 	g_free (type);		/* can this be removed? */
 	g_free (subtype);
-	EXTRACT_DIGIT (count)
+	count = bdata_extract_digit (&part);
 
 	for (i = 0; i < count; i++) {
 		gchar *name, *value;
-		EXTRACT_STRING (name)
-		EXTRACT_STRING (value)
+		name = bdata_extract_string (&part);
+		value = bdata_extract_string (&part);
 
 		camel_content_type_set_param (ct, name, value);
 		/* TODO: do this so we dont have to double alloc/free */
@@ -518,10 +513,10 @@ content_info_from_db (CamelFolderSummary *s, CamelMIRecord *record)
 	ci->type = ct;
 
 	/* FIXME[disk-summary] move all these to camel pstring */
-	EXTRACT_STRING (ci->id);
-	EXTRACT_STRING (ci->description)
-	EXTRACT_STRING (ci->encoding)
-	EXTRACT_DIGIT (ci->size)
+	ci->id = bdata_extract_string (&part);
+	ci->description = bdata_extract_string (&part);
+	ci->encoding = bdata_extract_string (&part);
+	ci->size = bdata_extract_digit (&part);
 
 	record->cinfo = part; /* Keep moving the cursor in the record */
 
@@ -1397,7 +1392,7 @@ perform_content_info_load_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 	if (!part)
 		return ci;
 	if (*part == ' ') part++;
-	EXTRACT_DIGIT (count);
+	count = bdata_extract_digit (&part);
 
 	mir->cinfo = part;
 	for (i=0;i<count;i++) {
@@ -1841,6 +1836,8 @@ mir_from_cols (CamelMIRecord *mir, CamelFolderSummary *s, gint ncol, gchar ** co
 	gint i;
 
 	for (i = 0; i < ncol; ++i) {
+		if (!name[i] || !cols[i])
+			continue;
 
 		if (!strcmp (name [i], "uid"))
 			mir->uid = (gchar *) camel_pstring_strdup (cols[i]);
@@ -1910,8 +1907,8 @@ camel_read_mir_callback (gpointer  ref, gint ncol, gchar ** cols, gchar ** name)
 	mir_from_cols (mir, s, ncol, cols, name);
 
 	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-	if (g_hash_table_lookup (s->loaded_infos, mir->uid)) {
-		/* Unlock and better return*/
+	if (!mir->uid || g_hash_table_lookup (s->loaded_infos, mir->uid)) {
+		/* Unlock and better return */
 		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 		camel_db_camel_mir_free (mir);
 		return ret;
@@ -4902,3 +4899,48 @@ camel_folder_summary_unlock (CamelFolderSummary *summary,
 			g_return_if_reached ();
 	}
 }
+
+gint
+bdata_extract_digit (/* const */ gchar **part)
+{
+	if (!part || !*part || !**part)
+		return 0;
+
+	if (**part == ' ')
+		*part += 1;
+
+	if (!**part)
+		return 0;
+
+	return strtoul (*part, part, 10);
+}
+
+/* expecting "digit-value", where digit is length of the value */
+gchar *
+bdata_extract_string (/* const */ gchar **part)
+{
+	gint len, has_len;
+	gchar *val;
+
+	len = bdata_extract_digit (part);
+
+	/* might be a '-' sign */
+	if (part && *part && **part)
+		*part += 1;
+
+	if (len <= 0 || !part || !*part || !**part)
+		return g_strdup ("");
+
+	if (!**part)
+		return g_strdup ("");
+
+	has_len = strlen (*part);
+	if (has_len < len)
+		len = has_len;
+
+	val = g_strndup (*part, len);
+	*part += len;
+
+	return val;
+}
+	

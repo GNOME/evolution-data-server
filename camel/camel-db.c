@@ -1089,10 +1089,14 @@ read_uids_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 	#if 0
 	gint i;
 	for (i = 0; i < ncol; ++i) {
+		if (!name[i] || !cols[i])
+			continue;
+
 		if (!strcmp (name [i], "uid"))
 			g_ptr_array_add (array, (gchar *) (camel_pstring_strdup (cols[i])));
 	}
 	#else
+		if (cols[0])
 			g_ptr_array_add (array, (gchar *) (camel_pstring_strdup (cols[0])));
 	#endif
 
@@ -1186,6 +1190,9 @@ read_preview_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 	gint i;
 
 	for (i = 0; i < ncol; ++i) {
+		if (!name[i] || !cols[i])
+			continue;
+
 		if (!strcmp (name [i], "uid"))
 			uid = camel_pstring_strdup (cols[i]);
 		else if (!strcmp (name [i], "preview"))
@@ -1250,20 +1257,24 @@ camel_db_write_preview_record (CamelDB *db,
 static gint
 read_vuids_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 {
-	 GPtrArray *array = (GPtrArray *)ref;
+	GPtrArray *array = (GPtrArray *)ref;
 
-	 #if 0
-	 gint i;
+	#if 0
+	gint i;
 
-	 for (i = 0; i < ncol; ++i) {
-		  if (!strcmp (name [i], "vuid"))
-			   g_ptr_array_add (array, (gchar *) (camel_pstring_strdup (cols[i]+8)));
-	 }
-	 #else
-			   g_ptr_array_add (array, (gchar *) (camel_pstring_strdup (cols[0]+8)));
-	 #endif
+	for (i = 0; i < ncol; ++i) {
+		if (!name[i] || !cols[i] || strlen (cols[i]) <= 8)
+			continue;
 
-	 return 0;
+		if (!strcmp (name [i], "vuid"))
+			g_ptr_array_add (array, (gchar *) (camel_pstring_strdup (cols[i]+8)));
+	}
+	#else
+		if (cols[0] && strlen (cols[0]) > 8)
+			g_ptr_array_add (array, (gchar *) (camel_pstring_strdup (cols[0]+8)));
+	#endif
+
+	return 0;
 }
 
 /**
@@ -1740,14 +1751,11 @@ read_fir_callback (gpointer  ref, gint ncol, gchar ** cols, gchar ** name)
 	gint i;
 
 	d(g_print ("\nread_fir_callback called \n"));
-#if 0
-	record->folder_name = cols[0];
-	record->version = cols[1];
-	/* Just a sequential mapping of struct members to columns is enough I guess.
-	Needs some checking */
-#else
 
 	for (i = 0; i < ncol; ++i) {
+		if (!name[i] || !cols[i])
+			continue;
+
 		if (!strcmp (name [i], "folder_name"))
 			record->folder_name = g_strdup (cols[i]);
 
@@ -1782,7 +1790,7 @@ read_fir_callback (gpointer  ref, gint ncol, gchar ** cols, gchar ** name)
 			record->bdata = g_strdup (cols[i]);
 
 	}
-#endif
+
 	return 0;
 }
 
