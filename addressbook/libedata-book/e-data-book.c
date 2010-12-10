@@ -192,6 +192,7 @@ e_data_book_status_to_string (EDataBookStatus status)
 		{ E_DATA_BOOK_STATUS_INVALID_SERVER_VERSION,		N_("Invalid server version") },
 		{ E_DATA_BOOK_STATUS_NO_SPACE,				N_("No space") },
 		{ E_DATA_BOOK_STATUS_INVALID_ARG,			N_("Invalid argument") },
+		/* Translators: The string for NOT_SUPPORTED error */
 		{ E_DATA_BOOK_STATUS_NOT_SUPPORTED,			N_("Not supported") }
 	};
 

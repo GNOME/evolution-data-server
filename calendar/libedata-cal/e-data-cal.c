@@ -131,6 +131,7 @@ e_data_cal_status_to_string (EDataCalCallStatus status)
 		/* { OtherError,			N_("Other error") }, */
 		{ InvalidServerVersion,			N_("Invalid server version") },
 		{ InvalidArg,				N_("Invalid argument") },
+		/* Translators: The string for NOT_SUPPORTED error */
 		{ NotSupported,				N_("Not supported") }
 	};
 

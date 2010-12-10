@@ -503,6 +503,7 @@ sm_status_description (NSSCMSVerificationStatus status)
 	switch (status) {
 	case NSSCMSVS_Unverified:
 	default:
+		/* Translators: A fallback message when couldn't verify an SMIME signature */
 		return _("Unverified");
 	case NSSCMSVS_GoodSignature:
 		return _("Good signature");

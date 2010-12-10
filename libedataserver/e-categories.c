@@ -44,30 +44,30 @@ typedef struct {
 } DefaultCategory;
 
 static DefaultCategory default_categories[] = {
-	{ N_("Anniversary") },
-	{ N_("Birthday"), "category_birthday_16.png" },
-	{ N_("Business"), "category_business_16.png" },
-	{ N_("Competition") },
-	{ N_("Favorites"), "category_favorites_16.png" },
-	{ N_("Gifts"), "category_gifts_16.png" },
-	{ N_("Goals/Objectives"), "category_goals_16.png" },
-	{ N_("Holiday"), "category_holiday_16.png" },
-	{ N_("Holiday Cards"), "category_holiday-cards_16.png" },
+	{ NC_("CategoryName", "Anniversary") },
+	{ NC_("CategoryName", "Birthday"), "category_birthday_16.png" },
+	{ NC_("CategoryName", "Business"), "category_business_16.png" },
+	{ NC_("CategoryName", "Competition") },
+	{ NC_("CategoryName", "Favorites"), "category_favorites_16.png" },
+	{ NC_("CategoryName", "Gifts"), "category_gifts_16.png" },
+	{ NC_("CategoryName", "Goals/Objectives"), "category_goals_16.png" },
+	{ NC_("CategoryName", "Holiday"), "category_holiday_16.png" },
+	{ NC_("CategoryName", "Holiday Cards"), "category_holiday-cards_16.png" },
 	/* important people (e.g. new business partners) */
-	{ N_("Hot Contacts"), "category_hot-contacts_16.png" },
-	{ N_("Ideas"), "category_ideas_16.png" },
-	{ N_("International"), "category_international_16.png" },
-	{ N_("Key Customer"), "category_key-customer_16.png" },
-	{ N_("Miscellaneous"), "category_miscellaneous_16.png" },
-	{ N_("Personal"), "category_personal_16.png" },
-	{ N_("Phone Calls"), "category_phonecalls_16.png" },
+	{ NC_("CategoryName", "Hot Contacts"), "category_hot-contacts_16.png" },
+	{ NC_("CategoryName", "Ideas"), "category_ideas_16.png" },
+	{ NC_("CategoryName", "International"), "category_international_16.png" },
+	{ NC_("CategoryName", "Key Customer"), "category_key-customer_16.png" },
+	{ NC_("CategoryName", "Miscellaneous"), "category_miscellaneous_16.png" },
+	{ NC_("CategoryName", "Personal"), "category_personal_16.png" },
+	{ NC_("CategoryName", "Phone Calls"), "category_phonecalls_16.png" },
 	/* Translators: "Status" is a category name; it can mean anything user wants to */
-	{ N_("Status"), "category_status_16.png" },
-	{ N_("Strategies"), "category_strategies_16.png" },
-	{ N_("Suppliers"), "category_suppliers_16.png" },
-	{ N_("Time & Expenses"), "category_time-and-expenses_16.png" },
-	{ N_("VIP") },
-	{ N_("Waiting") },
+	{ NC_("CategoryName", "Status"), "category_status_16.png" },
+	{ NC_("CategoryName", "Strategies"), "category_strategies_16.png" },
+	{ NC_("CategoryName", "Suppliers"), "category_suppliers_16.png" },
+	{ NC_("CategoryName", "Time & Expenses"), "category_time-and-expenses_16.png" },
+	{ NC_("CategoryName", "VIP") },
+	{ NC_("CategoryName", "Waiting") },
 	{ NULL }
 };
 
@@ -296,7 +296,7 @@ categories_add_full (const gchar *category,
 	cat_info = g_slice_new (CategoryInfo);
 	if (is_default) {
 		const gchar *display_name;
-		display_name = g_dgettext (GETTEXT_PACKAGE, category);
+		display_name = g_dpgettext2 (GETTEXT_PACKAGE, "CategoryName", category);
 		cat_info->display_name = g_strdup (display_name);
 		cat_info->clocale_name = g_strdup (category);
 	} else {

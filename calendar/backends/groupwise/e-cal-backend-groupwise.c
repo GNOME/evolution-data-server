@@ -311,7 +311,6 @@ populate_cache (ECalBackendGroupwise *cbgw)
 			}
 			for (l = list; l != NULL; l = g_list_next (l)) {
 				EGwItem *item;
-				gchar *progress_string = NULL;
 
 				item = E_GW_ITEM (l->data);
 				comp = e_gw_item_to_cal_component (item, cbgw);
@@ -327,8 +326,14 @@ populate_cache (ECalBackendGroupwise *cbgw)
 				if (percent > 100)
 					percent = 99;
 
-				progress_string = g_strdup_printf (_("Loading %s items"), type);
-				e_cal_backend_notify_view_progress (E_CAL_BACKEND (cbgw), progress_string, percent);
+				if (g_str_equal (type, "Appointment"))
+					e_cal_backend_notify_view_progress (E_CAL_BACKEND (cbgw), _("Loading Appointment items"), percent);
+				else if (g_str_equal (type, "Task"))
+					e_cal_backend_notify_view_progress (E_CAL_BACKEND (cbgw), _("Loading Task items"), percent);
+				else if (g_str_equal (type, "Note"))
+					e_cal_backend_notify_view_progress (E_CAL_BACKEND (cbgw), _("Loading Note items"), percent);
+				else
+					e_cal_backend_notify_view_progress (E_CAL_BACKEND (cbgw), _("Loading items"), percent);
 
 				if (E_IS_CAL_COMPONENT (comp)) {
 					gchar *comp_str;
@@ -340,7 +345,6 @@ populate_cache (ECalBackendGroupwise *cbgw)
 					put_component_to_store (cbgw, comp);
 					g_object_unref (comp);
 				}
-				g_free (progress_string);
 			}
 
 			if (!list  || g_list_length (list) == 0)

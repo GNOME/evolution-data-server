@@ -4181,6 +4181,7 @@ e_cal_get_error_message (ECalendarStatus status)
 	case E_CALENDAR_STATUS_OK :
 		return _("No error");
 	case E_CALENDAR_STATUS_NOT_SUPPORTED :
+		/* Translators: The string for NOT_SUPPORTED error */
 		return _("Not supported");
 	default:
 		/* ignore everything else */
