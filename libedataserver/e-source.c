@@ -342,7 +342,12 @@ e_source_update_from_xml_node (ESource *source,
 
 	if (absolute_uri != NULL) {
 		g_free (source->priv->absolute_uri);
-		source->priv->absolute_uri = g_strdup ((gchar *)absolute_uri);
+
+		if (relative_uri && g_str_equal ((const gchar *) relative_uri, "system") &&
+		    (g_str_has_prefix ((const gchar *) absolute_uri, "file:") || g_str_equal ((const gchar *) absolute_uri, "local:/system")))
+			source->priv->absolute_uri = NULL;
+		else
+			source->priv->absolute_uri = g_strdup ((gchar *)absolute_uri);
 		changed = TRUE;
 	}
 
@@ -445,7 +450,7 @@ e_source_build_absolute_uri (ESource *source)
 		uri_str = g_strconcat (base_uri_str, source->priv->relative_uri, NULL);
 	else {
 		if (source->priv->relative_uri != NULL)
-			uri_str = g_strconcat (base_uri_str, "/", source->priv->relative_uri,
+			uri_str = g_strconcat (base_uri_str, g_str_equal (base_uri_str, "local:") ? "" : "/", source->priv->relative_uri,
 				       NULL);
 		else
 			uri_str = g_strdup (base_uri_str);
@@ -697,8 +702,10 @@ dump_common_to_xml_node (ESource *source,
 	xmlSetProp (node, (xmlChar*)"uid", (xmlChar*)e_source_peek_uid (source));
 	xmlSetProp (node, (xmlChar*)"name", (xmlChar*)e_source_peek_name (source));
 	abs_uri = e_source_peek_absolute_uri (source);
+	/* do not store absolute uris for local:system sources */
 	relative_uri = e_source_peek_relative_uri (source);
-	if (abs_uri)
+	if (abs_uri && !(relative_uri && g_str_equal (relative_uri, "system") &&
+		    (g_str_has_prefix (abs_uri, "file:") || g_str_has_prefix (abs_uri, "local:"))))
 		xmlSetProp (node, (xmlChar*)"uri", (xmlChar*)abs_uri);
 	if (relative_uri)
 		xmlSetProp (node, (xmlChar*)"relative_uri", (xmlChar*)relative_uri);
