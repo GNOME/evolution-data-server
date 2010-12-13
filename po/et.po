@@ -692,7 +692,7 @@ msgid "Loading Note items"
 msgstr "Märkmekirjete laadimine"
 
 msgid "Loading items"
-msgstr "%s kirjete laadimine"
+msgstr "Kirjete laadimine"
 
 msgid "Calendar"
 msgstr "Kalender"
@@ -3507,7 +3507,7 @@ msgstr "Telefonikõned"
 #. Translators: "Status" is a category name; it can mean anything user wants to
 msgctxt "CategoryName"
 msgid "Status"
-msgstr "Olek"
+msgstr "Staatus"
 
 msgctxt "CategoryName"
 msgid "Strategies"
