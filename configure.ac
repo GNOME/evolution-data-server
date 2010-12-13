@@ -199,7 +199,15 @@ dnl	-Wstrict-aliasing=2
 AM_CPPFLAGS="$WARNING_FLAGS -fno-strict-aliasing"
 AC_SUBST(AM_CPPFLAGS)
 
-LDFLAGS="$LDFLAGS -Wl,--no-undefined"
+
+case "$host" in
+*openbsd*|*freebsd*)
+	dnl Do not set '-Wl,--no-undefined' on freebsd/openbsd
+	;;
+*)
+	LDFLAGS="$LDFLAGS -Wl,--no-undefined"
+	;;
+esac
 
 dnl ******************************
 dnl Initialize maintainer mode
