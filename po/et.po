@@ -16,8 +16,8 @@ msgstr ""
 "Project-Id-Version: Evolution-data-server MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=Misc.\n"
-"POT-Creation-Date: 2010-12-03 16:16+0000\n"
-"PO-Revision-Date: 2010-12-08 06:28+0200\n"
+"POT-Creation-Date: 2010-12-10 17:38+0000\n"
+"PO-Revision-Date: 2010-12-13 06:23+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -39,6 +39,7 @@ msgstr "Kontaktide allalaadimine (%d)... "
 msgid "Updating contacts cache (%d)... "
 msgstr "Kontaktide puhvri uuendamine (%d)... "
 
+#. Translators: An error message shown to a user when trying to do an operation on the LDAP address book which is not connected to the server
 msgid "Not connected"
 msgstr "Ühendamata"
 
@@ -557,6 +558,7 @@ msgstr "Puudub ruum"
 msgid "Invalid argument"
 msgstr "Vigane parameeter"
 
+#. Translators: The string for NOT_SUPPORTED error
 msgid "Not supported"
 msgstr "Pole toetatud"
 
@@ -680,8 +682,16 @@ msgstr "Vastuse soovija: "
 msgid "Reply Requested: When convenient"
 msgstr "Vastuse soov: sobival hetkel"
 
-#, c-format
-msgid "Loading %s items"
+msgid "Loading Appointment items"
+msgstr "Sündmusekirjete laadimine"
+
+msgid "Loading Task items"
+msgstr "Ülesandekirjete laadimine"
+
+msgid "Loading Note items"
+msgstr "Märkmekirjete laadimine"
+
+msgid "Loading items"
 msgstr "%s kirjete laadimine"
 
 msgid "Calendar"
@@ -1803,6 +1813,7 @@ msgstr "Krüptimissertifikaati pole võimalik lisada"
 msgid "Cannot add CMS Signer information"
 msgstr "CMS signeerija andmeid pole võimalik lisada"
 
+#. Translators: A fallback message when couldn't verify an SMIME signature
 msgid "Unverified"
 msgstr "Määramata"
 
@@ -3087,6 +3098,7 @@ msgstr "Sõnumite säilitamine"
 msgid "_Leave messages on server"
 msgstr "Sõnumid _jäetakse serverisse"
 
+#. Translators: '%s' is replaced with a widget, where user can select how many days can be message left on the server
 #, c-format
 msgid "_Delete after %s day(s)"
 msgstr "_Kustutatakse %s päeva möödumisel"
@@ -3427,65 +3439,93 @@ msgstr "Tõrge RSET käsu täitmisel: "
 msgid "QUIT command failed: "
 msgstr "Tõrge QUIT käsu täitmisel: "
 
+msgctxt "CategoryName"
+msgid "Anniversary"
+msgstr "Aastapäev"
+
+msgctxt "CategoryName"
+msgid "Birthday"
+msgstr "Sünnipäev"
+
+msgctxt "CategoryName"
 msgid "Business"
 msgstr "Äri"
 
+msgctxt "CategoryName"
 msgid "Competition"
 msgstr "Võistlused"
 
+msgctxt "CategoryName"
 msgid "Favorites"
 msgstr "Lemmikud"
 
+msgctxt "CategoryName"
 msgid "Gifts"
 msgstr "Kingitused"
 
+msgctxt "CategoryName"
 msgid "Goals/Objectives"
 msgstr "Eesmärgid"
 
+msgctxt "CategoryName"
 msgid "Holiday"
 msgstr "Puhkus"
 
+msgctxt "CategoryName"
 msgid "Holiday Cards"
 msgstr "Puhkusekaardid"
 
 #. important people (e.g. new business partners)
+msgctxt "CategoryName"
 msgid "Hot Contacts"
 msgstr "Kuumad kontaktid"
 
+msgctxt "CategoryName"
 msgid "Ideas"
 msgstr "Ideed"
 
+msgctxt "CategoryName"
 msgid "International"
 msgstr "Rahvusvaheline"
 
+msgctxt "CategoryName"
 msgid "Key Customer"
 msgstr "Võtmeklient"
 
+msgctxt "CategoryName"
 msgid "Miscellaneous"
 msgstr "Muu"
 
+msgctxt "CategoryName"
 msgid "Personal"
 msgstr "Isiklik"
 
+msgctxt "CategoryName"
 msgid "Phone Calls"
 msgstr "Telefonikõned"
 
 #. Translators: "Status" is a category name; it can mean anything user wants to
+msgctxt "CategoryName"
 msgid "Status"
 msgstr "Olek"
 
+msgctxt "CategoryName"
 msgid "Strategies"
 msgstr "Strateegiad"
 
+msgctxt "CategoryName"
 msgid "Suppliers"
 msgstr "Tarnijad"
 
+msgctxt "CategoryName"
 msgid "Time & Expenses"
 msgstr "Aeg ja kulutused"
 
+msgctxt "CategoryName"
 msgid "VIP"
 msgstr "VIP"
 
+msgctxt "CategoryName"
 msgid "Waiting"
 msgstr "Ootamine"
 
