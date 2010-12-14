@@ -93,8 +93,8 @@ safe_toggle_activate (GtkCellRenderer      *cell,
 		      GdkEvent             *event,
 		      GtkWidget            *widget,
 		      const gchar          *path,
-		      GdkRectangle         *background_area,
-		      GdkRectangle         *cell_area,
+		      const GdkRectangle   *background_area,
+		      const GdkRectangle   *cell_area,
 		      GtkCellRendererState  flags)
 {
 	if (event->type == GDK_BUTTON_PRESS && cell_area) {
