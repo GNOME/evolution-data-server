@@ -292,7 +292,7 @@ read_from_prfd (PRFileDesc *fd,
 		PRSocketOptionData sockopts;
 		PRPollDesc pollfds[2];
 		gboolean nonblock;
-		gint error;
+		gint saved_errno;
 
 		/* get O_NONBLOCK options */
 		sockopts.option = PR_SockOpt_Nonblocking;
@@ -340,11 +340,11 @@ read_from_prfd (PRFileDesc *fd,
 
 		/* restore O_NONBLOCK options */
 	failed:
-		error = errno;
+		saved_errno = errno;
 		sockopts.option = PR_SockOpt_Nonblocking;
 		sockopts.value.non_blocking = nonblock;
 		PR_SetSocketOption (fd, &sockopts);
-		errno = error;
+		errno = saved_errno;
 	}
 
 	if (nread == -1)
@@ -403,7 +403,7 @@ write_to_prfd (PRFileDesc *fd,
 		PRSocketOptionData sockopts;
 		PRPollDesc pollfds[2];
 		gboolean nonblock;
-		gint error;
+		gint saved_errno;
 
 		/* get O_NONBLOCK options */
 		sockopts.option = PR_SockOpt_Nonblocking;
@@ -455,15 +455,17 @@ write_to_prfd (PRFileDesc *fd,
 		} while (w != -1 && written < n);
 
 		/* restore O_NONBLOCK options */
-		error = errno;
+		saved_errno = errno;
 		sockopts.option = PR_SockOpt_Nonblocking;
 		sockopts.value.non_blocking = nonblock;
 		PR_SetSocketOption (fd, &sockopts);
-		errno = error;
+		errno = saved_errno;
 	}
 
-	if (w == -1)
+	if (w == -1) {
 		_set_g_error_from_errno (error, TRUE);
+		written = -1;
+	}
 
 	return written;
 }
