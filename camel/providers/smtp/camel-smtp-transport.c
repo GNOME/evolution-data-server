@@ -519,13 +519,20 @@ smtp_connect (CamelService *service, GError **error)
 				transport, authtype->authproto, &local_error);
 			if (!authenticated) {
 				if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED) ||
-				    g_error_matches (local_error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_UNAVAILABLE))
+				    g_error_matches (local_error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_UNAVAILABLE)) {
+					g_free (service->url->passwd);
+					service->url->passwd = NULL;
+
+					if (local_error)
+						g_clear_error (&local_error);
+
 					return FALSE;
+				}
 
 				errbuf = g_markup_printf_escaped (
 					_("Unable to authenticate "
 					  "to SMTP server.\n%s\n\n"),
-					local_error->message);
+					local_error ? local_error->message : _("Unknown error"));
 				g_clear_error (&local_error);
 
 				g_free (service->url->passwd);
