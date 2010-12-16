@@ -291,20 +291,77 @@ resolve_tzid (const gchar *tzid, gpointer user_data)
 	return zone;
 }
 
-static void
+static gboolean
 put_component_to_store (ECalBackendHttp *cb,
 			ECalComponent *comp)
 {
 	time_t time_start, time_end;
 	ECalBackendHttpPrivate *priv;
+	ECalComponent *cache_comp;
+	const gchar *uid;
+	gchar *rid;
 
 	priv = cb->priv;
+
+	e_cal_component_get_uid (comp, &uid);
+	rid = e_cal_component_get_recurid_as_string (comp);
+	cache_comp = e_cal_backend_store_get_component (priv->store, uid, rid);
+	g_free (rid);
+
+	if (cache_comp) {
+		gboolean changed = TRUE;
+		struct icaltimetype stamp1, stamp2;
+
+		stamp1 = icaltime_null_time ();
+		stamp2 = icaltime_null_time ();
+
+		e_cal_component_get_dtstamp (comp, &stamp1);
+		e_cal_component_get_dtstamp (cache_comp, &stamp2);
+
+		changed = (icaltime_is_null_time (stamp1) && !icaltime_is_null_time (stamp2)) ||
+			  (!icaltime_is_null_time (stamp1) && icaltime_is_null_time (stamp2)) ||
+			  (icaltime_compare (stamp1, stamp2) != 0);
+
+		if (!changed) {
+			struct icaltimetype *last_modified1 = NULL, *last_modified2 = NULL;
+
+			e_cal_component_get_last_modified (comp, &last_modified1);
+			e_cal_component_get_last_modified (cache_comp, &last_modified2);
+
+			changed = (last_modified1 != NULL && last_modified2 == NULL) ||
+				  (last_modified1 == NULL && last_modified2 != NULL) ||
+				  (last_modified1 != NULL && last_modified2 != NULL && icaltime_compare (*last_modified1, *last_modified2) != 0);
+
+			if (last_modified1)
+				e_cal_component_free_icaltimetype (last_modified1);
+			if (last_modified2)
+				e_cal_component_free_icaltimetype (last_modified2);
+
+			if (!changed) {
+				gint *sequence1 = NULL, *sequence2 = NULL;
+
+				e_cal_component_get_sequence (comp, &sequence1);
+				e_cal_component_get_sequence (cache_comp, &sequence2);
+
+				changed = (sequence1 != NULL && sequence2 == NULL) ||
+					  (sequence1 == NULL && sequence2 != NULL) ||
+					  (sequence1 != NULL && sequence2 != NULL && *sequence1 != *sequence2);
+			}
+		}
+
+		g_object_unref (cache_comp);
+
+		if (!changed)
+			return FALSE;
+	}
 
 	e_cal_util_get_component_occur_times (comp, &time_start, &time_end,
 				   resolve_tzid, cb, priv->default_zone,
 				   e_cal_backend_get_kind (E_CAL_BACKEND (cb)));
 
 	e_cal_backend_store_put_component_with_time_range (priv->store, comp, time_start, time_end);
+
+	return TRUE;
 }
 
 static void
@@ -442,23 +499,22 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 		if (subcomp_kind == kind) {
 			comp = e_cal_component_new ();
 			if (e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (subcomp))) {
-				const gchar *uid, *orig_key, *orig_value;
+				const gchar *uid;
+				gpointer orig_key, orig_value;
 				gchar *obj;
 
-				put_component_to_store (cbhttp, comp);
 				e_cal_component_get_uid (comp, &uid);
-				/* middle (gpointer) cast only because of 'dereferencing type-punned pointer will break strict-aliasing rules' */
-				if (g_hash_table_lookup_extended (old_cache, uid, (gpointer *)(gpointer)&orig_key, (gpointer *)(gpointer)&orig_value)) {
+
+				if (!put_component_to_store (cbhttp, comp)) {
+					g_hash_table_remove (old_cache, uid);
+				} else if (g_hash_table_lookup_extended (old_cache, uid, &orig_key, &orig_value)) {
 					obj = icalcomponent_as_ical_string_r (subcomp);
-					e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbhttp),
-									      orig_value,
-									      obj);
+					e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbhttp), (const gchar *) orig_value, obj);
 					g_free (obj);
 					g_hash_table_remove (old_cache, uid);
 				} else {
 					obj = icalcomponent_as_ical_string_r (subcomp);
-					e_cal_backend_notify_object_created (E_CAL_BACKEND (cbhttp),
-									     obj);
+					e_cal_backend_notify_object_created (E_CAL_BACKEND (cbhttp), obj);
 					g_free (obj);
 				}
 			}
@@ -584,6 +640,7 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 	}
 
 	soup_message_headers_append (soup_message->request_headers, "User-Agent", "Evolution/" VERSION);
+	soup_message_headers_append (soup_message->request_headers, "Connection", "close");
 	soup_message_set_flags (soup_message, SOUP_MESSAGE_NO_REDIRECT);
 	if (priv->store) {
 		const gchar *etag = e_cal_backend_store_get_key_value (priv->store, "ETag");
@@ -685,6 +742,11 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
+
+	/* already opened, thus can skip all this initialization */
+	if (priv->opened)
+		return;
+
 	source = e_cal_backend_get_source (E_CAL_BACKEND (backend));
 
 	if (priv->source_changed_id == 0) {
