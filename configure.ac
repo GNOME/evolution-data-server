@@ -33,6 +33,7 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 dnl Required Package Versions
 m4_define([glib_minimum_version], [2.25.12])
+m4_define([gtk_minimum_version], [2.90.4])
 m4_define([gconf_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libxml_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libsoup_minimum_version], [2.3.0])
@@ -40,37 +41,10 @@ m4_define([libgdata_minimum_version], [0.7.0])
 m4_define([gnome_keyring_minimum_version], [2.20.1])
 m4_define([sqlite_minimum_version], [3.5])
 m4_define([libical_minimum_version], [0.43])
-
-dnl **********************************
-dnl Gtk-3 compatibility
-dnl Use the API version 3.0 while compiling with gtk+-3
-dnl **********************************
-AC_ARG_ENABLE([gtk3],
-	AS_HELP_STRING([--enable-gtk3],
-	[Attempt to use gtk+-3]),
-	[enable_gtk3=$enableval],[enable_gtk3=no])
-
-if test "x${enable_gtk3}" = "xyes"; then
-	LIBEDATASERVERUI_API_VERSION=3.0
-	GTK_PACKAGE="gtk+-3.0"
-	gtk_minimum_version="2.90.4"
-	GWEATHER_PACKAGE="gweather-3.0"
-	gweather_minimum_version="2.90.0"
-else	
-	LIBEDATASERVERUI_API_VERSION=1.2
-	GTK_PACKAGE="gtk+-2.0"
-	gtk_minimum_version="2.22.0"
-	GWEATHER_PACKAGE="gweather"
-	gweather_minimum_version="2.25.4"
-fi
-
-AM_CONDITIONAL([ENABLE_GTK3], [test "$enable_gtk3" = yes])
-GTK_MODULE="$GTK_PACKAGE >= $gtk_minimum_version"
-AC_SUBST(GTK_MODULE)
+m4_define([gweather_minimum_version], [2.90.0])
 
 AC_SUBST([BASE_VERSION],[base_version])
 AC_SUBST([API_VERSION],[api_version])
-AC_SUBST([LIBEDATASERVERUI_API_VERSION])
 AC_DEFINE_UNQUOTED(BASE_VERSION, ["$BASE_VERSION"], [Base version (Major.Minor)])
 AC_DEFINE_UNQUOTED(API_VERSION, ["$API_VERSION"], [API version (Major.Minor)])
 
@@ -104,13 +78,9 @@ LIBEDATASERVER_CURRENT=14
 LIBEDATASERVER_REVISION=0
 LIBEDATASERVER_AGE=0
 
-LIBEDATASERVERUI_CURRENT=11
+LIBEDATASERVERUI_CURRENT=0
 LIBEDATASERVERUI_REVISION=0
 LIBEDATASERVERUI_AGE=0
-
-LIBEDATASERVERUI_GTK3_CURRENT=0
-LIBEDATASERVERUI_GTK3_REVISION=0
-LIBEDATASERVERUI_GTK3_AGE=0
 
 LIBECAL_CURRENT=10
 LIBECAL_REVISION=2
@@ -149,9 +119,6 @@ AC_SUBST(LIBEDATASERVER_AGE)
 AC_SUBST(LIBEDATASERVERUI_CURRENT)
 AC_SUBST(LIBEDATASERVERUI_REVISION)
 AC_SUBST(LIBEDATASERVERUI_AGE)
-AC_SUBST(LIBEDATASERVERUI_GTK3_CURRENT)
-AC_SUBST(LIBEDATASERVERUI_GTK3_REVISION)
-AC_SUBST(LIBEDATASERVERUI_GTK3_AGE)
 AC_SUBST(LIBECAL_CURRENT)
 AC_SUBST(LIBECAL_REVISION)
 AC_SUBST(LIBECAL_AGE)
@@ -346,7 +313,7 @@ dnl Check for base dependencies early.
 dnl ***********************************
 PKG_CHECK_MODULES(GNOME_PLATFORM,
 	[gio-2.0 >= glib_minimum_version
-	$GTK_MODULE
+	gtk+-3.0 >= gtk_minimum_version
 	gconf-2.0 >= gconf_minimum_version
 	libxml-2.0 >= libxml_minimum_version
 	libsoup-2.4 >= libsoup_minimum_version
@@ -1034,8 +1001,8 @@ fi
 
 AC_MSG_RESULT([$use_gweather])
 if test "x$use_gweather" = "xyes"; then
-	PKG_CHECK_MODULES([LIBGWEATHER], [$GWEATHER_PACKAGE >= $gweather_minimum_version],[],
-	[AC_MSG_ERROR([The weather calendar backend requires GWeather >= $gweather_minimum_version. Alternatively, you may specify --disable-weather as a configure option to avoid building the backend.])])
+	PKG_CHECK_MODULES([LIBGWEATHER], [gweather-3.0 >= gweather_minimum_version],[],
+	[AC_MSG_ERROR([The weather calendar backend requires GWeather >= gweather_minimum_version. Alternatively, you may specify --disable-weather as a configure option to avoid building the backend.])])
 fi
 AM_CONDITIONAL(ENABLE_WEATHER, [test $use_gweather = yes])
 
@@ -1209,7 +1176,7 @@ AC_SUBST(E_DATA_SERVER_LIBS)
 dnl ******************************
 dnl libedataserverui
 dnl ******************************
-E_DATA_SERVER_UI_DEPS="gio-2.0 $GTK_PACKAGE libxml-2.0 gconf-2.0 gnome-keyring-1"
+E_DATA_SERVER_UI_DEPS="gtk+-3.0 libxml-2.0 gconf-2.0 gnome-keyring-1"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, , )
 AC_SUBST(E_DATA_SERVER_UI_CFLAGS)
@@ -1512,7 +1479,6 @@ AC_OUTPUT
 
 echo "
 	evolution-data-server has been configured as follows:
-	GTK+ package:		$GTK_PACKAGE
 	Calendar:		$msg_calendar
 	Weather calendar:	$use_gweather
 	Mail Directory:		$system_mail_dir, $system_mail_perm
