@@ -1745,7 +1745,7 @@ user_focus_out (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_fo
 
 	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
 
-	if (!event_focus->in && priv->is_completing) {
+	if (!event_focus->in) {
 		entry_activate (name_selector_entry);
 	}
 
