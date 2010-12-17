@@ -879,7 +879,7 @@ generate_attribute_list (ENameSelectorEntry *name_selector_entry)
 }
 
 static gboolean
-expose_event (ENameSelectorEntry *name_selector_entry)
+draw_event (ENameSelectorEntry *name_selector_entry)
 {
 	PangoLayout *layout;
 
@@ -2864,9 +2864,9 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 	g_signal_connect (name_selector_entry, "focus-out-event", G_CALLBACK (user_focus_out), name_selector_entry);
 	g_signal_connect_after (name_selector_entry, "focus-in-event", G_CALLBACK (user_focus_in), name_selector_entry);
 
-	/* Exposition */
+	/* Drawing */
 
-	g_signal_connect (name_selector_entry, "expose-event", G_CALLBACK (expose_event), name_selector_entry);
+	g_signal_connect (name_selector_entry, "draw", G_CALLBACK (draw_event), name_selector_entry);
 
 	/* Activation: Complete current entry if possible */
 
