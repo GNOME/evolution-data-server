@@ -1012,10 +1012,10 @@ dnl **********************************
 dnl Weather calendar backend support
 dnl **********************************
 AC_MSG_CHECKING([if we should build the weather calendar backend])
-AC_ARG_WITH([weather],
-	[AS_HELP_STRING([--with-weather],
+AC_ARG_ENABLE([weather],
+	[AS_HELP_STRING([--enable-weather],
 	[Build the weather calendar backend (default=yes)])],
-	[use_gweather=$withval], [use_gweather=yes])
+	[use_gweather=$enableval], [use_gweather=yes])
 if test "$enable_calendar" = "no"; then
 	use_gweather="no (calendar support is disabled)"
 fi
@@ -1023,7 +1023,7 @@ fi
 AC_MSG_RESULT([$use_gweather])
 if test "x$use_gweather" = "xyes"; then
 	PKG_CHECK_MODULES([LIBGWEATHER], [$GWEATHER_PACKAGE >= $gweather_minimum_version],[],
-	[AC_MSG_ERROR([The weather calendar backend requires GWeather >= $gweather_minimum_version. Alternatively, you may specify --without-weather as a configure option to avoid building the backend.])])
+	[AC_MSG_ERROR([The weather calendar backend requires GWeather >= $gweather_minimum_version. Alternatively, you may specify --disable-weather as a configure option to avoid building the backend.])])
 fi
 AM_CONDITIONAL(ENABLE_WEATHER, [test $use_gweather = yes])
 
