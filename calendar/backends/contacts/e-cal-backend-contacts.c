@@ -120,13 +120,13 @@ book_record_new (ECalBackendContacts *cbc, ESource *source)
         BookRecord *br;
 	GError     *error = NULL;
 
-	book = e_book_new (source, NULL);
+	book = e_book_new (source, &error);
         if (!book || !e_book_open (book, TRUE, &error) || error) {
-		g_object_unref (book);
-		if (error) {
-			g_warning ("%s: Failed to open book, error: %s", G_STRFUNC, error->message);
+		g_warning ("%s: Failed to open book '%s': %s", G_STRFUNC, e_source_peek_name (source), error ? error->message : "Unknown error");
+		if (book)
+			g_object_unref (book);
+		if (error)
 			g_error_free (error);
-		}
 		return NULL;
 	}
 
@@ -136,10 +136,16 @@ book_record_new (ECalBackendContacts *cbc, ESource *source)
         fields = g_list_append (fields, (gchar *)e_contact_field_name (E_CONTACT_ANNIVERSARY));
         query = e_book_query_any_field_contains ("");
 
-        if (!e_book_get_book_view (book, query, fields, -1, &book_view, NULL)) {
+        if (!e_book_get_book_view (book, query, fields, -1, &book_view, &error)) {
+		g_warning ("%s: Failed to get book view on '%s': %s", G_STRFUNC, e_source_peek_name (source), error ? error->message : "Unknown error");
+
                 e_book_query_unref (query);
                 g_object_unref (book);
                 g_list_free (fields);
+
+		if (error)
+			g_error_free (error);
+
                 return NULL;
         }
         e_book_query_unref (query);
@@ -306,7 +312,7 @@ is_source_usable (ESource *source, ESourceGroup *group)
 	prop = e_source_get_property (source, "use-in-contacts-calendar");
 
 	/* the later check is for backward compatibility */
-	return (prop && g_str_equal (prop, "1")) || (!prop && g_str_has_prefix (base_uri, "file://"));
+	return (prop && g_str_equal (prop, "1")) || (!prop && g_str_has_prefix (base_uri, "file://")) || (!prop && g_str_has_prefix (base_uri, "local:"));
 }
 
 /* SourceList callbacks */
