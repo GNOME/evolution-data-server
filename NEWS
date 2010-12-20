@@ -1,3 +1,36 @@
+Evolution-Data-Server 2.91.4 2010-12-20
+---------------------------------------
+
+Bug Fixes:
+	Bug 636334 - Birthdays&Anniversaries calendar skips local address books (Milan Crha)
+	Bug 636850 - Consistent libgweather configure options (Matthew Barnes)
+	Bug 633180 -Attendee uneditable if typed manually (jpunit)
+	Bug 420813 - Unnecessarily slow update/reopen of webcal calendars (Milan Crha)
+	Bug 634385 - Crash in smtp_connect (Milan Crha)
+	Bug 616452 - Do not set '-Wl,--no-undefined' on freebsd/openbsd (Milan Crha)
+	Bug 633557 - Translation comments needed (Milan Crha)
+	Bug 573125 - Crashes right after startup when having broken db summary (Milan Crha)
+	Bug 633332 - Preserve port number in WebDAV address book (Milan Crha)
+	Bug 631568 - Scheduling Meetings with CalDAV calendars (Milan Crha)
+	Bug 590245 - 'evolution --force-shutdown' should kill factories (Milan Crha)
+	Bug 628563 - Use-after-free crash in objects_added_cb() (Milan Crha)
+	Bug 530205 - Use CalDAV calendar read-only when server unreachable (Milan Crha)
+	Bug 625048 - Fails to detect America/New York system timezone (Milan Crha)
+	Bug 590476 - Evolution corrupts PDF files. (bnc) (Vibha Yadav)
+	Bug 6498 - Filters are not applied to imapx Inboxes (bmo) (Federico Mena Quintero)
+
+Miscellaneous Fixes:
+	Do not store and generate locel:/system URIs (Milan Crha)
+	Maildir: Hide folders which do not start with a dot (Chenthill Palanisamy)
+	Drop support for password key files. (Matthew Barnes)
+	Use less threads in CamelDB (Milan Crha)
+
+Translations:
+	Fran Diéguez (gl)
+	Jorge González (es)
+	Kjartan Maraas (nn)
+	Ivar Smolin (et)
+
 Evolution-Data-Server 2.91.3 2010-11-29
 ---------------------------------------
 Bug Fixes:
