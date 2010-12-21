@@ -239,7 +239,7 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	gtk_table_attach (GTK_TABLE (show_contacts_table), combobox_category, 1, 2, 1, 2,
 			  (GtkAttachOptions) (GTK_FILL),
 			  (GtkAttachOptions) (GTK_FILL), 0, 0);
-	gtk_combo_box_text_append_text (GTK_COMBO_BOX (combobox_category), _("Any Category"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combobox_category), _("Any Category"));
 
 	tmp_str = g_strconcat ("<b>", _("Co_ntacts"), "</b>", NULL);
 	label36 = gtk_label_new_with_mnemonic (tmp_str);
