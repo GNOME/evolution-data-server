@@ -67,6 +67,9 @@ struct _ENameSelectorEntryPrivate {
 
 	gboolean is_completing;
 	GSList *user_query_fields;
+
+	/* For asynchronous operations. */
+	GQueue cancellables;
 };
 
 enum {
@@ -135,6 +138,15 @@ name_selector_entry_dispose (GObject *object)
 	g_slist_foreach (priv->user_query_fields, (GFunc)g_free, NULL);
 	g_slist_free (priv->user_query_fields);
 	priv->user_query_fields = NULL;
+
+	/* Cancel any stuck book loading operations. */
+	while (!g_queue_is_empty (&priv->cancellables)) {
+		GCancellable *cancellable;
+
+		cancellable = g_queue_pop_head (&priv->cancellables);
+		g_cancellable_cancel (cancellable);
+		g_object_unref (cancellable);
+	}
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_name_selector_entry_parent_class)->dispose (object);
@@ -1974,10 +1986,9 @@ setup_contact_store (ENameSelectorEntry *name_selector_entry)
 static void
 book_loaded_cb (ESource *source,
                 GAsyncResult *result,
-                ENameSelectorEntry *name_selector_entry)
+                EContactStore *contact_store)
 {
 	EBook *book;
-	EContactStore *store;
 	GError *error = NULL;
 
 	book = e_load_book_source_finish (source, result, &error);
@@ -1996,18 +2007,17 @@ book_loaded_cb (ESource *source,
 	}
 
 	g_return_if_fail (E_IS_BOOK (book));
-
-	store = name_selector_entry->priv->contact_store;
-	e_contact_store_add_book (store, book);
+	e_contact_store_add_book (contact_store, book);
 	g_object_unref (book);
 
 exit:
-	g_object_unref (name_selector_entry);
+	g_object_unref (contact_store);
 }
 
 static void
 setup_default_contact_store (ENameSelectorEntry *name_selector_entry)
 {
+	EContactStore *contact_store;
 	GSList *groups;
 	GSList *l;
 
@@ -2015,7 +2025,8 @@ setup_default_contact_store (ENameSelectorEntry *name_selector_entry)
 
 	/* Create a book for each completion source, and assign them to the contact store */
 
-	name_selector_entry->priv->contact_store = e_contact_store_new ();
+	contact_store = e_contact_store_new ();
+	name_selector_entry->priv->contact_store = contact_store;
 	groups = e_source_list_peek_groups (name_selector_entry->priv->source_list);
 
 	for (l = groups; l; l = g_slist_next (l)) {
@@ -2025,6 +2036,7 @@ setup_default_contact_store (ENameSelectorEntry *name_selector_entry)
 
 		for (m = sources; m; m = g_slist_next (m)) {
 			ESource *source = m->data;
+			GCancellable *cancellable;
 			const gchar *completion;
 
 			/* Skip non-completion sources */
@@ -2032,10 +2044,16 @@ setup_default_contact_store (ENameSelectorEntry *name_selector_entry)
 			if (!completion || g_ascii_strcasecmp (completion, "true"))
 				continue;
 
+			cancellable = g_cancellable_new ();
+
+			g_queue_push_tail (
+				&name_selector_entry->priv->cancellables,
+				cancellable);
+
 			e_load_book_source_async (
-				source, NULL, NULL,
+				source, NULL, cancellable,
 				(GAsyncReadyCallback) book_loaded_cb,
-				g_object_ref (name_selector_entry));
+				g_object_ref (contact_store));
 		}
 	}
 
@@ -2821,6 +2839,8 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 
 	name_selector_entry->priv =
 		E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
+
+	g_queue_init (&name_selector_entry->priv->cancellables);
 
 	/* Source list */
 
