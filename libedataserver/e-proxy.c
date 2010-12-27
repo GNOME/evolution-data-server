@@ -245,6 +245,9 @@ e_proxy_dispose (GObject *object)
 		g_free (priv);
 		priv = NULL;
 	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_proxy_parent_class)->dispose (object);
 }
 
 static gboolean

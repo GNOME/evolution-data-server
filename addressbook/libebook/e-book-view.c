@@ -301,6 +301,9 @@ e_book_view_dispose (GObject *object)
 		g_object_unref (book_view->priv->book);
 		book_view->priv->book = NULL;
 	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_book_view_parent_class)->dispose (object);
 }
 
 static void
