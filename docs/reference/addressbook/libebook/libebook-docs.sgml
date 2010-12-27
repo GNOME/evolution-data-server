@@ -57,4 +57,7 @@
     <title>Index of new symbols in 1.12</title>
     <xi:include href="xml/api-index-1.12.xml"><xi:fallback /></xi:include>
   </index>
+
+  <xi:include href="xml/annotation-glossary.xml"><xi:fallback /></xi:include>
+
 </book>
