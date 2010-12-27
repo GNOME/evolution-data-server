@@ -625,7 +625,9 @@ dnl check if pkg-config files exist (which are only shipped by distributions, no
 	dnl ******************
 		AC_MSG_CHECKING([for Mozilla nspr4 includes])
 			CPPFLAGS_save="$CPPFLAGS"
-			CPPFLAGS="$CPPFLAGS -I$with_nspr_includes"
+			if test -n "$with_nspr_includes"; then
+				CPPFLAGS="$CPPFLAGS -I$with_nspr_includes"
+			fi
 
 			AC_CHECK_HEADERS(nspr.h prio.h,
 			[moz_nspr_includes="yes"],[moz_nspr_includes="no"])
