@@ -4,21 +4,21 @@
 # Robert Brady <rwb197@zepler.org> 2000
 #
 #
-# A S Alam <aalam@users.sf.net>, 2005, 2006, 2007, 2009, 2010.
+# A S Alam <aalam@users.sf.net>, 2005, 2006, 2007, 2009, 2010, 2011.
 # ASB <aalam@users.sf.net>, 2007.
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=evolution-data-server&component=Misc.\n"
-"POT-Creation-Date: 2010-09-01 08:23+0000\n"
-"PO-Revision-Date: 2010-09-03 08:04+0530\n"
+"POT-Creation-Date: 2010-12-10 17:38+0000\n"
+"PO-Revision-Date: 2011-01-02 06:25+0530\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.0\n"
+"X-Generator: Lokalize 1.1\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:570
@@ -31,74 +31,95 @@ msgstr "ਲੋਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2261
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2283
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2328
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4482
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4506
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "ਖੋਜ ਜਾਰੀ ਹੈ..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2698
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4641
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2699
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4665
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "ਸੰਪਰਕ (%d) ਡਾਊਨਲੋਡ ਕੀਤੇ ਜਾ ਰਹੇ ਹਨ... "
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2846
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3029
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3073
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2847
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3030
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3077
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "ਸੰਪਰਕ ਕੈਂਚੇ (%d) ਅੱਪਡੇਟ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ... "
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:172
+#. Translators: An error message shown to a user when trying to do an operation on the LDAP address book which is not connected to the server
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:173
 msgid "Not connected"
 msgstr "ਕੁਨੈਕਟ ਨਹੀਂ ਹੈ"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:753
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:764
 msgid "Using Distinguished Name (DN)"
 msgstr "ਵੱਖਰਾ ਨਾਂ ਵਰਤੋਂ (DN)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:756
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:767
 msgid "Using Email Address"
 msgstr "ਈਮੇਲ ਐਡਰੈੱਸ ਵਰਤ ਕੇ"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1022
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1033
 msgid "Reconnecting to LDAP server..."
 msgstr "LDAP ਸਰਵਰ ਨਾਲ ਜੁੜਿਆ ਜਾ ਰਿਹਾ ਹੈ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1147
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1158
 msgid "Invalid DN syntax"
 msgstr "ਗਲਤ DN ਸੰਟੈਕਸ"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1663
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1675
 msgid "Adding contact to LDAP server..."
 msgstr "LDAP ਸਰਵਰ ਨਾਲ ਸੰਪਰਕ ਸ਼ਾਮਿਲ ਕੀਤੇ ਜਾ ਰਹੇ ਹਨ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1795
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1807
 msgid "Removing contact from LDAP server..."
 msgstr "LDAP ਸਰਵਰ ਨਾਲ ਸੰਪਰਕ ਹਟਾਏ ਜਾ ਰਹੇ ਹਨ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2229
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2243
 msgid "Modifying contact from LDAP server..."
 msgstr "LDAP ਸਰਵਰ ਨਾਲ ਸੰਪਰਕ ਤਬਦੀਲ ਕੀਤੇ ਜਾ ਰਹੇ ਹਨ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4332
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4356
 msgid "Receiving LDAP search results..."
 msgstr "LDAP ਤੋਂ ਖੋਜ ਨਤੀਜੇ ਪ੍ਰਾਪਤ ਕੀਤੇ ਜਾ ਰਹੇ ਹਨ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4504
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4528
 msgid "Error performing search"
 msgstr "ਖੋਜ ਚਲਾਉਣ ਵਿੱਚ ਗਲਤੀ"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:329
-#, c-format
-#| msgid "Create resource '%s' failed with http status: %d"
-msgid "Create resource '%s' failed with HTTP status: %d"
-msgstr "'%s' ਸਰੋਤ ਬਣਾਉਣ ਲਈ ਫੇਲ੍ਹ, HTTP ਹਾਲਤ ਨਾਲ: %d"
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:273
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:881
+#: ../addressbook/libedata-book/e-data-book.c:441
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:523
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:552
+#: ../calendar/backends/http/e-cal-backend-http.c:378
+#: ../calendar/libecal/e-cal.c:4180
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:160
+#: ../camel/providers/imap/camel-imap-command.c:481
+#: ../camel/providers/imap/camel-imap-store.c:425
+#: ../camel/providers/pop3/camel-pop3-store.c:495
+#: ../servers/groupwise/e-gw-connection.c:243
+msgid "Unknown error"
+msgstr "ਅਣਪਛਾਤੀ ਗਲਤੀ"
 
-#: ../addressbook/libebook/e-book.c:2995
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:335
+#, c-format
+#| msgid "Create resource '%s' failed with HTTP status: %d"
+msgid "Create resource '%s' failed with HTTP status: %d (%s)"
+msgstr "'%s' ਸਰੋਤ ਬਣਾਉਣ ਲਈ ਫੇਲ੍ਹ, HTTP ਹਾਲਤ ਨਾਲ: %d (%s)"
+
+#: ../addressbook/libebook/e-book.c:3066
 #, c-format
 msgid "%s: there was no source for UID '%s' stored in GConf."
 msgstr "%s: ਜੀ-ਕਾਨਫ ਵਿੱਚ ਸਟੋਰ ਕੀਤੇ UID `%s' ਲਈ ਕੋਈ ਸਰੋਤ ਨਹੀਂ ਹੈ।"
+
+#: ../addressbook/libebook/e-book.c:3422
+#: ../addressbook/libedata-book/e-data-book.c:183
+msgid "Address book does not exist"
+msgstr "ਐਡਰੈੱਸ ਬੁੱਕ ਮੌਜੂਦ ਨਹੀਂ ਹੈ"
 
 #. Dummy row as EContactField starts from 1
 #: ../addressbook/libebook/e-contact.c:115
@@ -286,7 +307,7 @@ msgstr "ਵੈਬਲਾਗ URL"
 
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:178
-#: ../libedataserverui/e-categories-dialog.c:667
+#: ../libedataserverui/e-categories-dialog.c:759
 msgid "Categories"
 msgstr "ਕੈਟਾਗਰੀ"
 
@@ -552,7 +573,6 @@ msgstr "ਜਨਮ ਦਿਨ"
 
 #: ../addressbook/libebook/e-contact.c:262
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:717
-#: ../libedataserver/e-categories.c:44
 msgid "Anniversary"
 msgstr "ਵਰੇ-ਗੰਢ"
 
@@ -635,238 +655,248 @@ msgstr "SIP ਐਡਰੈੱਸ"
 msgid "Unnamed List"
 msgstr "ਬਿਨਾਂ ਨਾਂ ਸੂਚੀ"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:287
+#: ../addressbook/libedata-book/e-data-book-factory.c:298
 #, c-format
 msgid "Empty URI"
 msgstr "ਖਾਲੀ URI"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:306
-#: ../addressbook/libedata-book/e-data-book-factory.c:344
-#: ../calendar/libedata-cal/e-data-cal-factory.c:331
-#: ../calendar/libedata-cal/e-data-cal-factory.c:343
+#: ../addressbook/libedata-book/e-data-book-factory.c:317
+#: ../addressbook/libedata-book/e-data-book-factory.c:355
+#: ../calendar/libedata-cal/e-data-cal-factory.c:346
+#: ../calendar/libedata-cal/e-data-cal-factory.c:358
 #, c-format
 msgid "Invalid source"
 msgstr "ਗਲਤ ਸਰੋਤ"
 
-#: ../addressbook/libedata-book/e-data-book.c:171
-#: ../calendar/libedata-cal/e-data-cal.c:109
+#: ../addressbook/libedata-book/e-data-book.c:173
+#: ../calendar/libedata-cal/e-data-cal.c:110
 msgid "Success"
 msgstr "ਸਫ਼ਲ"
 
-#: ../addressbook/libedata-book/e-data-book.c:172
-#: ../calendar/libedata-cal/e-data-cal.c:110
+#: ../addressbook/libedata-book/e-data-book.c:174
+#: ../calendar/libedata-cal/e-data-cal.c:111
 msgid "Repository offline"
 msgstr "Repository ਆਫਲਾਈਨ ਹੈ"
 
-#: ../addressbook/libedata-book/e-data-book.c:173
-#: ../calendar/libecal/e-cal.c:4065 ../calendar/libedata-cal/e-data-cal.c:111
+#: ../addressbook/libedata-book/e-data-book.c:175
+#: ../calendar/libecal/e-cal.c:4162 ../calendar/libedata-cal/e-data-cal.c:112
 msgid "Permission denied"
 msgstr "ਅਧਿਕਾਰ ਪਾਬੰਦੀ ਹੈ"
 
-#: ../addressbook/libedata-book/e-data-book.c:174
+#: ../addressbook/libedata-book/e-data-book.c:176
 msgid "Contact not found"
 msgstr "ਸੰਪਰਕ ਨਹੀਂ ਲੱਭਿਆ"
 
-#: ../addressbook/libedata-book/e-data-book.c:175
+#: ../addressbook/libedata-book/e-data-book.c:177
 msgid "Contact ID already exists"
 msgstr "ਸੰਪਰਕ ID ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ"
 
-#: ../addressbook/libedata-book/e-data-book.c:176
-#: ../calendar/libedata-cal/e-data-cal.c:116
+#: ../addressbook/libedata-book/e-data-book.c:178
+#: ../calendar/libedata-cal/e-data-cal.c:117
 msgid "Authentication Failed"
 msgstr "ਪ੍ਰਮਾਣਕਿਤਾ ਫੇਲ੍ਹ ਹੋਈ"
 
-#: ../addressbook/libedata-book/e-data-book.c:177
-#: ../calendar/libedata-cal/e-data-cal.c:117
+#: ../addressbook/libedata-book/e-data-book.c:179
+#: ../calendar/libedata-cal/e-data-cal.c:118
 msgid "Authentication Required"
 msgstr "ਪ੍ਰਮਾਣਕਿਤਾ ਲੋੜੀਦੀ ਹੈ"
 
-#: ../addressbook/libedata-book/e-data-book.c:178
-#: ../calendar/libedata-cal/e-data-cal.c:118
+#: ../addressbook/libedata-book/e-data-book.c:180
+#: ../calendar/libedata-cal/e-data-cal.c:119
 msgid "Unsupported field"
 msgstr "ਗੈਰ-ਸਹਾਇਕ ਖੇਤਰ"
 
-#: ../addressbook/libedata-book/e-data-book.c:179
-#: ../calendar/libedata-cal/e-data-cal.c:120
+#: ../addressbook/libedata-book/e-data-book.c:181
+#: ../calendar/libedata-cal/e-data-cal.c:121
 msgid "Unsupported authentication method"
 msgstr "ਗ਼ੈਰ-ਸਹਾਇਕ ਪਰਮਾਣਕਿਤਾ ਢੰਗ"
 
-#: ../addressbook/libedata-book/e-data-book.c:180
-#: ../calendar/libedata-cal/e-data-cal.c:121
+#: ../addressbook/libedata-book/e-data-book.c:182
+#: ../calendar/libedata-cal/e-data-cal.c:122
 msgid "TLS not available"
 msgstr "TLS ਉਪਲੱਬਧ ਨਹੀਂ"
 
-#: ../addressbook/libedata-book/e-data-book.c:181
-#| msgid "Address Book does not exist"
-msgid "Address book does not exist"
-msgstr "ਐਡਰੈੱਸ ਬੁੱਕ ਮੌਜੂਦ ਨਹੀਂ ਹੈ"
-
-#: ../addressbook/libedata-book/e-data-book.c:182
+#: ../addressbook/libedata-book/e-data-book.c:184
 msgid "Book removed"
 msgstr "ਕਿਤਾਬ ਹਟਾਈ"
 
-#: ../addressbook/libedata-book/e-data-book.c:183
-#: ../calendar/libedata-cal/e-data-cal.c:124
+#: ../addressbook/libedata-book/e-data-book.c:185
+#: ../calendar/libedata-cal/e-data-cal.c:125
 msgid "Not available in offline mode"
 msgstr "ਆਫਲਾਈਨ ਵਿੱਚ ਉਪਲੱਬਧ ਨਹੀਂ ਹੈ।"
 
-#: ../addressbook/libedata-book/e-data-book.c:184
-#: ../calendar/libedata-cal/e-data-cal.c:125
+#: ../addressbook/libedata-book/e-data-book.c:186
+#: ../calendar/libedata-cal/e-data-cal.c:126
 msgid "Search size limit exceeded"
 msgstr "ਖੋਜ ਸਾਈਜ਼ ਲਿਮਟ ਵੱਧ ਗਈ"
 
-#: ../addressbook/libedata-book/e-data-book.c:185
-#: ../calendar/libedata-cal/e-data-cal.c:126
+#: ../addressbook/libedata-book/e-data-book.c:187
+#: ../calendar/libedata-cal/e-data-cal.c:127
 msgid "Search time limit exceeded"
 msgstr "ਖੋਜ ਟਾਈਮ ਲਿਮਟ ਵੱਧ ਗਈ"
 
-#: ../addressbook/libedata-book/e-data-book.c:186
-#: ../calendar/libedata-cal/e-data-cal.c:127
+#: ../addressbook/libedata-book/e-data-book.c:188
+#: ../calendar/libedata-cal/e-data-cal.c:128
 msgid "Invalid query"
 msgstr "ਗਲਤ ਕਿਊਰੀ"
 
-#: ../addressbook/libedata-book/e-data-book.c:187
-#: ../calendar/libedata-cal/e-data-cal.c:128
+#: ../addressbook/libedata-book/e-data-book.c:189
+#: ../calendar/libedata-cal/e-data-cal.c:129
 msgid "Query refused"
 msgstr "ਕਿਊਰੀ ਤੋਂ ਇਨਕਾਰ ਕੀਤਾ ਗਿਆ"
 
-#: ../addressbook/libedata-book/e-data-book.c:188
-#: ../calendar/libedata-cal/e-data-cal.c:129
+#: ../addressbook/libedata-book/e-data-book.c:190
+#: ../calendar/libedata-cal/e-data-cal.c:130
 msgid "Could not cancel"
 msgstr "ਰੱਦ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ"
 
 #. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
 #. { OtherError,			N_("Other error") },
-#: ../addressbook/libedata-book/e-data-book.c:190
-#: ../calendar/libedata-cal/e-data-cal.c:131
+#: ../addressbook/libedata-book/e-data-book.c:192
+#: ../calendar/libedata-cal/e-data-cal.c:132
 msgid "Invalid server version"
 msgstr "ਗਲਤ ਸਰਵਰ ਵਰਜਨ"
 
-#: ../addressbook/libedata-book/e-data-book.c:191
+#: ../addressbook/libedata-book/e-data-book.c:193
 msgid "No space"
 msgstr "ਥਾਂ ਨਹੀਂ ਬਾਕੀ"
 
-#: ../addressbook/libedata-book/e-data-book.c:192
-#: ../calendar/libecal/e-cal.c:4049 ../calendar/libedata-cal/e-data-cal.c:132
+#: ../addressbook/libedata-book/e-data-book.c:194
+#: ../calendar/libecal/e-cal.c:4146 ../calendar/libedata-cal/e-data-cal.c:133
 msgid "Invalid argument"
 msgstr "ਗਲਤ ਆਰਗੂਮਿੰਟ"
 
-#: ../addressbook/libedata-book/e-data-book.c:193
-#: ../calendar/libecal/e-cal.c:4087 ../calendar/libedata-cal/e-data-cal.c:133
+#. Translators: The string for NOT_SUPPORTED error
+#: ../addressbook/libedata-book/e-data-book.c:196
+#: ../calendar/libecal/e-cal.c:4185 ../calendar/libedata-cal/e-data-cal.c:135
 msgid "Not supported"
 msgstr "ਸਹਾਇਕ ਨਹੀਂ"
 
-#: ../addressbook/libedata-book/e-data-book.c:201
-#: ../calendar/libedata-cal/e-data-cal.c:141
+#: ../addressbook/libedata-book/e-data-book.c:204
+#: ../calendar/libedata-cal/e-data-cal.c:143
 msgid "Other error"
 msgstr "ਹੋਰ ਗਲਤੀ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:322
+#: ../addressbook/libedata-book/e-data-book.c:325
 #, c-format
 msgid "Cannot open book: %s"
 msgstr "%s: ਬੁੱਕ ਖੋਲ੍ਹੀ ਨਹੀਂ ਜਾ ਸਕਦੀ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:344
+#: ../addressbook/libedata-book/e-data-book.c:347
 #, c-format
 msgid "Cannot remove book: %s"
 msgstr "%s: ਬੁੱਕ ਹਟਾਈ ਜਾ ਨਹੀਂ ਜਾ ਸਕਦੀ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:361
-#: ../addressbook/libedata-book/e-data-book.c:380
+#: ../addressbook/libedata-book/e-data-book.c:364
+#: ../addressbook/libedata-book/e-data-book.c:383
 #, c-format
 msgid "Cannot get contact: %s"
 msgstr "%s: ਸੰਪਰਕ ਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:395
+#: ../addressbook/libedata-book/e-data-book.c:402
 #, c-format
 msgid "Empty query: %s"
 msgstr "%s: ਕਿਊਰੀ ਖਾਲੀ ਹੈ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:411
+#: ../addressbook/libedata-book/e-data-book.c:418
 #, c-format
 msgid "Cannot get contact list: %s"
 msgstr "%s: ਸੰਪਰਕ ਲਿਸਟ ਲਈ ਨਹੀਂ ਜਾ ਸਕਦੀ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:448
+#: ../addressbook/libedata-book/e-data-book.c:457
 #, c-format
 msgid "Cannot authenticate user: %s"
 msgstr "%s: ਪਰਮਾਣਿਤ ਹੋਇਆ ਯੂਜ਼ਰ ਨਹੀਂ ਹੈ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:463
-#: ../addressbook/libedata-book/e-data-book.c:482
+#: ../addressbook/libedata-book/e-data-book.c:472
+#: ../addressbook/libedata-book/e-data-book.c:491
 #, c-format
 msgid "Cannot add contact: %s"
 msgstr "%s: ਸੰਪਰਕ ਸ਼ਾਮਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:500
-#: ../addressbook/libedata-book/e-data-book.c:519
+#: ../addressbook/libedata-book/e-data-book.c:513
+#: ../addressbook/libedata-book/e-data-book.c:532
 #, c-format
 msgid "Cannot modify contact: %s"
 msgstr "%s: ਸੰਪਰਕ ਸੋਧਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:558
+#: ../addressbook/libedata-book/e-data-book.c:571
 #, c-format
 msgid "Cannot remove contacts: %s"
 msgstr "%s: ਸੰਪਰਕ ਹਟਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:595
+#: ../addressbook/libedata-book/e-data-book.c:610
 #, c-format
 msgid "Cannot get supported fields: %s"
 msgstr "%s: ਸਹਾਇਕ ਖੇਤਰ ਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:610
+#: ../addressbook/libedata-book/e-data-book.c:625
 #, c-format
 msgid "Cannot get required fields: %s"
 msgstr "%s: ਲੋੜੀਦੇ ਖੇਤਰ ਲਏ ਨਹੀਂ ਜਾ ਸਕਦੇ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:625
+#: ../addressbook/libedata-book/e-data-book.c:640
 #, c-format
-#| msgid "Cannot get supported auth methods: %s"
 msgid "Cannot get supported authentication methods: %s"
 msgstr "%s: ਸਹਾਇਕ ਪਰਮਾਣਕਿਤਾ ਢੰਗ ਲਏ ਨਹੀਂ ਜਾ ਸਕਦੇ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:651
-#: ../addressbook/libedata-book/e-data-book.c:662
+#: ../addressbook/libedata-book/e-data-book.c:666
+#: ../addressbook/libedata-book/e-data-book.c:677
 #, c-format
 msgid "Invalid query: %s"
 msgstr "%s: ਗਲਤ ਕਿਊਰੀ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:698
+#: ../addressbook/libedata-book/e-data-book.c:713
 #, c-format
 msgid "Cannot get changes: %s"
 msgstr "%s: ਬਦਲਾਅ ਨਹੀਂ ਲਏ ਜਾ ਸਕਦੇ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:737
+#: ../addressbook/libedata-book/e-data-book.c:755
 #, c-format
 msgid "Cancel operation failed: %s"
 msgstr "%s: ਓਪਰੇਸ਼ਨ ਰੱਦ ਕਰਨ ਲਈ ਫੇਲ੍ਹ"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:498
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:521
 #, c-format
-msgid "Unexpected HTTP status code %d returned"
-msgstr "ਗਲਤ HTTP ਹਾਲਤ ਕੋਡ %d ਮਿਲਿਆ"
+msgid "Server is unreachable (%s)"
+msgstr "ਸਰਵਰ ਪਹੁੰਚ ਵਿੱਚ ਨਹੀਂ ਹੈ (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4094
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:549
+#, c-format
+#| msgid "Unexpected HTTP status code %d returned"
+msgid "Unexpected HTTP status code %d returned (%s)"
+msgstr "ਗਲਤ HTTP ਹਾਲਤ ਕੋਡ %d ਮਿਲਿਆ (%s)"
+
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2090
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2495
+#, c-format
+msgid ""
+"Server is unreachable, calendar is opened in read-only mode.\n"
+"Error message: %s"
+msgstr ""
+"ਸਰਵਰ ਪਹੁੰਚ 'ਚ ਨਹੀਂ ਹੈ, ਕੈਲੰਡਰ ਨੂੰ ਕੇਵਲ ਪੜ੍ਹਨ ਮੋਡ 'ਚ ਹੀ ਖੋਲ੍ਹਿਆ ਜਾ ਰਿਹਾ ਹੈ।\n"
+"ਗਲਤੀ ਸੁਨੇਹਾ: %s"
+
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4266
 msgid "Calendar doesn't support Free/Busy"
 msgstr "ਕੈਲੰਡਰ ਵਿਹਲੇ/ਰੁਝਿਆ ਲਈ ਸਹਾਇਕ ਨਹੀਂ"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:719
-#: ../libedataserver/e-categories.c:45
 msgid "Birthday"
 msgstr "ਜਨਮਦਿਨ"
 
@@ -880,251 +910,266 @@ msgstr "ਜਨਮਦਿਨ: %s"
 msgid "Anniversary: %s"
 msgstr "ਵਰੇਗੰਢ: %s"
 
-#: ../calendar/backends/file/e-cal-backend-file.c:239
+#: ../calendar/backends/file/e-cal-backend-file.c:251
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "ਕੈਲੰਡਰ ਡਾਟੇ ਨੂੰ ਸੰਭਾਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: ਨਿਕਾਰਾ URI"
 
-#: ../calendar/backends/file/e-cal-backend-file.c:246
-#: ../calendar/backends/file/e-cal-backend-file.c:252
+#: ../calendar/backends/file/e-cal-backend-file.c:258
+#: ../calendar/backends/file/e-cal-backend-file.c:264
 msgid "Cannot save calendar data"
 msgstr "ਕੈਲੰਡਰ ਡਾਟੇ ਨੂੰ ਸੰਭਾਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1121
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2224
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1130
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2107
 msgid "Reply Requested: by "
 msgstr "ਜਵਾਬ ਦੀ ਬੇਨਤੀ: ਵਲੋਂ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1126
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2229
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1135
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2112
 msgid "Reply Requested: When convenient"
 msgstr "ਜਵਾਬ ਲਈ ਬੇਨਤੀ: ਜਦੋਂ ਠੀਕ ਲੱਗੇ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:295
-#, c-format
-msgid "Loading %s items"
-msgstr "ਇਕਾਈਆਂ %s ਲੋਡ ਕੀਤੀਆਂ ਜਾ ਰਹੀਆਂ ਹਨ"
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:330
+#| msgid "Loading %s items"
+msgid "Loading Appointment items"
+msgstr "ਮੁਲਾਕਾਤ ਆਈਟਮਾਂ ਲੋਡ ਕੀਤੀਆਂ ਜਾ ਰਹੀਆਂ ਹਨ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:926
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:332
+#| msgid "Loading %s items"
+msgid "Loading Task items"
+msgstr "ਟਾਸਕ ਆਈਟਮਾਂ ਲੋਡ ਕੀਤੀਆਂ ਜਾ ਰਹੀਆਂ ਹਨ"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:334
+#| msgid "Loading %s items"
+msgid "Loading Note items"
+msgstr "ਨੋਟ ਆਈਟਮਾਂ ਲੋਡ ਕੀਤੀਆਂ ਜਾ ਰਹੀਆਂ ਹਨ"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:336
+#| msgid "Loading %s items"
+msgid "Loading items"
+msgstr "ਆਈਟਮਾਂ ਲੋਡ ਕੀਤੀਆਂ ਜਾ ਰਹੀਆਂ ਹਨ"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:963
 msgid "Calendar"
 msgstr "ਕੈਲੰਡਰ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:989
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1026
 msgid "Invalid server URI"
 msgstr "ਗਲਤ ਸਰਵਰ URI"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1082
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1343
-#: ../calendar/backends/http/e-cal-backend-http.c:659
-#: ../calendar/backends/weather/e-cal-backend-weather.c:487
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1127
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1387
+#: ../calendar/backends/http/e-cal-backend-http.c:721
+#: ../calendar/backends/weather/e-cal-backend-weather.c:520
 msgid "Could not create cache file"
 msgstr "ਕੈਂਚੇ ਫਾਇਲ ਨੂੰ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1095
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1139
 msgid "Could not create thread for populating cache"
 msgstr "ਕੈਂਚੇ ਥਰਿੱਡ ਨੂੰ ਵਿਕਸਤ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:327
+#: ../calendar/backends/http/e-cal-backend-http.c:366
 msgid "Redirected to Invalid URI"
 msgstr "ਗਲਤ URI ਲਈ ਭੇਜਿਆ "
 
-#: ../calendar/backends/http/e-cal-backend-http.c:350
+#: ../calendar/backends/http/e-cal-backend-http.c:399
 msgid "Bad file format."
 msgstr "ਗਲਤ ਫਾਇਲ ਫਾਰਮਿਟ"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:357
+#: ../calendar/backends/http/e-cal-backend-http.c:406
 msgid "Not a calendar."
 msgstr "ਕੋਈ ਕੈਲੰਡਰ ਨਹੀਂ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:154
+#: ../calendar/backends/weather/e-cal-backend-weather.c:186
 msgid "Could not retrieve weather data"
 msgstr "ਕੈਂਚੇ ਫਾਇਲ ਨੂੰ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:253
+#: ../calendar/backends/weather/e-cal-backend-weather.c:286
 msgid "Weather: Fog"
 msgstr "ਮੌਸਮ: ਧੁੰਦ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:254
+#: ../calendar/backends/weather/e-cal-backend-weather.c:287
 msgid "Weather: Cloudy Night"
 msgstr "ਮੌਸਮ: ਬੱਦਲਵਾਈ ਵਾਲੀ ਰਾਤ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:255
+#: ../calendar/backends/weather/e-cal-backend-weather.c:288
 msgid "Weather: Cloudy"
 msgstr "ਮੌਸਮ: ਬੱਦਲਵਾਈ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:256
+#: ../calendar/backends/weather/e-cal-backend-weather.c:289
 msgid "Weather: Overcast"
 msgstr "ਮੌਸਮ: ਓਵਰਕਾਸਟ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:257
+#: ../calendar/backends/weather/e-cal-backend-weather.c:290
 msgid "Weather: Showers"
 msgstr "ਮੌਸਮ: ਫੁਹਾਰ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:258
+#: ../calendar/backends/weather/e-cal-backend-weather.c:291
 msgid "Weather: Snow"
 msgstr "ਮੌਸਮ: ਬਰਫ਼"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:259
+#: ../calendar/backends/weather/e-cal-backend-weather.c:292
 msgid "Weather: Clear Night"
 msgstr "ਮੌਸਮ: ਸਾਫ਼ ਰਾਤ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:260
+#: ../calendar/backends/weather/e-cal-backend-weather.c:293
 msgid "Weather: Sunny"
 msgstr "ਮੌਸਮ: ਖਿੜਿਆ ਦਿਨ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:261
+#: ../calendar/backends/weather/e-cal-backend-weather.c:294
 msgid "Weather: Thunderstorms"
 msgstr "ਮੌਸਮ: ਬਰਫ਼ੀਲਾ ਤੂਫਾਨ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:407
+#: ../calendar/backends/weather/e-cal-backend-weather.c:440
 msgid "Forecast"
 msgstr "ਅਨੁਮਾਨ"
 
-#: ../calendar/libecal/e-cal-component.c:1286
+#: ../calendar/libecal/e-cal-component.c:1306
 msgid "Untitled appointment"
 msgstr "ਬਿਨਾਂ ਨਾਂ ਰੁਝੇਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3951
+#: ../calendar/libecal/e-cal-recur.c:3979
 msgid "1st"
 msgstr "੧ਹਿਲਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3952
+#: ../calendar/libecal/e-cal-recur.c:3980
 msgid "2nd"
 msgstr "੨ਜਾ"
 
-#: ../calendar/libecal/e-cal-recur.c:3953
+#: ../calendar/libecal/e-cal-recur.c:3981
 msgid "3rd"
 msgstr "੩ਜਾ"
 
-#: ../calendar/libecal/e-cal-recur.c:3954
+#: ../calendar/libecal/e-cal-recur.c:3982
 msgid "4th"
 msgstr "੪ਥਾ"
 
-#: ../calendar/libecal/e-cal-recur.c:3955
+#: ../calendar/libecal/e-cal-recur.c:3983
 msgid "5th"
 msgstr "੫ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3956
+#: ../calendar/libecal/e-cal-recur.c:3984
 msgid "6th"
 msgstr "੬ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3957
+#: ../calendar/libecal/e-cal-recur.c:3985
 msgid "7th"
 msgstr "੭ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3958
+#: ../calendar/libecal/e-cal-recur.c:3986
 msgid "8th"
 msgstr "੮ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3959
+#: ../calendar/libecal/e-cal-recur.c:3987
 msgid "9th"
 msgstr "੯ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3960
+#: ../calendar/libecal/e-cal-recur.c:3988
 msgid "10th"
 msgstr "੧੦ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3961
+#: ../calendar/libecal/e-cal-recur.c:3989
 msgid "11th"
 msgstr "੧੧ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3962
+#: ../calendar/libecal/e-cal-recur.c:3990
 msgid "12th"
 msgstr "੧੨ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3963
+#: ../calendar/libecal/e-cal-recur.c:3991
 msgid "13th"
 msgstr "੧੩ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3964
+#: ../calendar/libecal/e-cal-recur.c:3992
 msgid "14th"
 msgstr "੧੪ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3965
+#: ../calendar/libecal/e-cal-recur.c:3993
 msgid "15th"
 msgstr "੧੫ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3966
+#: ../calendar/libecal/e-cal-recur.c:3994
 msgid "16th"
 msgstr "੧੬ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3967
+#: ../calendar/libecal/e-cal-recur.c:3995
 msgid "17th"
 msgstr "੧੭ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3968
+#: ../calendar/libecal/e-cal-recur.c:3996
 msgid "18th"
 msgstr "੧੮ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3969
+#: ../calendar/libecal/e-cal-recur.c:3997
 msgid "19th"
 msgstr "੧੯ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3970
+#: ../calendar/libecal/e-cal-recur.c:3998
 msgid "20th"
 msgstr "੨੦ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3971
+#: ../calendar/libecal/e-cal-recur.c:3999
 msgid "21st"
 msgstr "੨੧ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3972
+#: ../calendar/libecal/e-cal-recur.c:4000
 msgid "22nd"
 msgstr "੨੨ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3973
+#: ../calendar/libecal/e-cal-recur.c:4001
 msgid "23rd"
 msgstr "੨੩ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3974
+#: ../calendar/libecal/e-cal-recur.c:4002
 msgid "24th"
 msgstr "੨੪ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3975
+#: ../calendar/libecal/e-cal-recur.c:4003
 msgid "25th"
 msgstr "੨੫ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3976
+#: ../calendar/libecal/e-cal-recur.c:4004
 msgid "26th"
 msgstr "੨੬ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3977
+#: ../calendar/libecal/e-cal-recur.c:4005
 msgid "27th"
 msgstr "੨੭ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3978
+#: ../calendar/libecal/e-cal-recur.c:4006
 msgid "28th"
 msgstr "੨੮ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3979
+#: ../calendar/libecal/e-cal-recur.c:4007
 msgid "29th"
 msgstr "੨੯ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3980
+#: ../calendar/libecal/e-cal-recur.c:4008
 msgid "30th"
 msgstr "੩੦ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-recur.c:3981
+#: ../calendar/libecal/e-cal-recur.c:4009
 msgid "31st"
 msgstr "੩੧ਵਾਂ"
 
-#: ../calendar/libecal/e-cal-util.c:688 ../calendar/libecal/e-cal-util.c:715
+#: ../calendar/libecal/e-cal-util.c:678 ../calendar/libecal/e-cal-util.c:705
 msgid "High"
 msgstr "ਉੱਚ"
 
-#: ../calendar/libecal/e-cal-util.c:690 ../calendar/libecal/e-cal-util.c:717
+#: ../calendar/libecal/e-cal-util.c:680 ../calendar/libecal/e-cal-util.c:707
 msgid "Normal"
 msgstr "ਸਧਾਰਨ"
 
-#: ../calendar/libecal/e-cal-util.c:692 ../calendar/libecal/e-cal-util.c:719
+#: ../calendar/libecal/e-cal-util.c:682 ../calendar/libecal/e-cal-util.c:709
 msgid "Low"
 msgstr "ਨਿਊਨਤਮ"
 
 #. An empty string is the same as 'None'.
-#: ../calendar/libecal/e-cal-util.c:713
+#: ../calendar/libecal/e-cal-util.c:703
 msgid "Undefined"
 msgstr "ਨਾ-ਪ੍ਰਭਾਸ਼ਿਤ"
 
-#: ../calendar/libecal/e-cal.c:1227 ../libedataserverui/e-book-auth-util.c:206
+#: ../calendar/libecal/e-cal.c:1236 ../libedataserverui/e-book-auth-util.c:206
 #: ../libedataserverui/e-book-auth-util.c:435
 #, c-format
 msgid "Enter password for %s (user %s)"
@@ -1134,92 +1179,82 @@ msgstr "%s ਲਈ ਪਾਸਵਰਡ ਦਿਓ (ਯੂਜ਼ਰ %s)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:1241
+#: ../calendar/libecal/e-cal.c:1250
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "%s ਲਈ ਪਾਸਵਰਡ ਯੂਜ਼ਰ %s ਲਈ ਪਰਾਕਸੀ ਯੋਗ ਕਰਨ ਲਈ ਦਿਓ"
 
-#: ../calendar/libecal/e-cal.c:4051
+#: ../calendar/libecal/e-cal.c:4148
 msgid "Backend is busy"
 msgstr "ਪਿੱਛਲਾ ਤਾਂ ਰੁਝਿਆ ਹੈ"
 
-#: ../calendar/libecal/e-cal.c:4053
+#: ../calendar/libecal/e-cal.c:4150
 msgid "Repository is offline"
 msgstr "Repository ਆਫਲਾਈਨ ਹੈ"
 
-#: ../calendar/libecal/e-cal.c:4055
+#: ../calendar/libecal/e-cal.c:4152
 msgid "No such calendar"
 msgstr "ਇੱਦਾਂ ਦਾ ਕੋਈ ਕੈਲੰਡਰ ਨਹੀਂ ਹੈ"
 
-#: ../calendar/libecal/e-cal.c:4057 ../calendar/libedata-cal/e-data-cal.c:113
+#: ../calendar/libecal/e-cal.c:4154 ../calendar/libedata-cal/e-data-cal.c:114
 #: ../servers/groupwise/e-gw-connection.c:235
 msgid "Object not found"
 msgstr "ਇਕਾਈ ਨਹੀਂ ਹੈ"
 
-#: ../calendar/libecal/e-cal.c:4059 ../calendar/libedata-cal/e-data-cal.c:114
+#: ../calendar/libecal/e-cal.c:4156 ../calendar/libedata-cal/e-data-cal.c:115
 #: ../servers/groupwise/e-gw-connection.c:229
 msgid "Invalid object"
 msgstr "ਗਲਤ ਇਕਾਈ"
 
-#: ../calendar/libecal/e-cal.c:4061
+#: ../calendar/libecal/e-cal.c:4158
 msgid "URI not loaded"
 msgstr "URI ਲੋਡ ਨਹੀਂ ਹੈ"
 
-#: ../calendar/libecal/e-cal.c:4063
+#: ../calendar/libecal/e-cal.c:4160
 msgid "URI already loaded"
 msgstr "URI ਪਹਿਲਾਂ ਹੀ ਲੋਡ ਹੈ"
 
-#: ../calendar/libecal/e-cal.c:4067 ../servers/groupwise/e-gw-connection.c:237
+#: ../calendar/libecal/e-cal.c:4164 ../servers/groupwise/e-gw-connection.c:237
 msgid "Unknown User"
 msgstr "ਅਣਜਾਣ ਯੂਜ਼ਰ"
 
-#: ../calendar/libecal/e-cal.c:4069 ../calendar/libedata-cal/e-data-cal.c:115
+#: ../calendar/libecal/e-cal.c:4166 ../calendar/libedata-cal/e-data-cal.c:116
 msgid "Object ID already exists"
 msgstr "ਇਕਾਈ ID ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ"
 
-#: ../calendar/libecal/e-cal.c:4071
+#: ../calendar/libecal/e-cal.c:4168
 msgid "Protocol not supported"
 msgstr "ਪਰੋਟੋਕਾਲ ਸਹਾਇਕ ਨਹੀਂ ਹੈ"
 
-#: ../calendar/libecal/e-cal.c:4073
+#: ../calendar/libecal/e-cal.c:4170
 msgid "Operation has been canceled"
 msgstr "ਕਾਰਵਾਈ ਰੱਦ ਕੀਤੀ ਗਈ ਹੈ"
 
-#: ../calendar/libecal/e-cal.c:4075
+#: ../calendar/libecal/e-cal.c:4172
 msgid "Could not cancel operation"
 msgstr "ਕਾਰਵਾਈ ਨੂੰ ਰੱਦ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: ../calendar/libecal/e-cal.c:4077
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1434
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1452
-#: ../camel/providers/groupwise/camel-groupwise-store.c:618
-#: ../camel/providers/groupwise/camel-groupwise-store.c:793
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:85
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:118
+#: ../calendar/libecal/e-cal.c:4174
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1311
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1329
+#: ../camel/providers/groupwise/camel-groupwise-store.c:635
+#: ../camel/providers/groupwise/camel-groupwise-store.c:817
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:87
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:120
 #, c-format
 msgid "Authentication failed"
 msgstr "ਪ੍ਰਮਾਣਕਿਤਾ ਅਸਫਲ"
 
-#: ../calendar/libecal/e-cal.c:4079
-#: ../camel/providers/smtp/camel-smtp-transport.c:166
+#: ../calendar/libecal/e-cal.c:4176
+#: ../camel/providers/smtp/camel-smtp-transport.c:768
 msgid "Authentication required"
 msgstr "ਪ੍ਰਮਾਣਕਿਤਾ ਲੋੜੀਦੀ ਹੈ"
 
-#: ../calendar/libecal/e-cal.c:4081
-#| msgid "A DBUS exception has occurred"
+#: ../calendar/libecal/e-cal.c:4178
 msgid "A D-Bus exception has occurred"
 msgstr "D-BUS ਟਕਰਾ ਆਇਆ"
 
-#: ../calendar/libecal/e-cal.c:4083
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:158
-#: ../camel/providers/imap/camel-imap-command.c:457
-#: ../camel/providers/imap/camel-imap-store.c:627
-#: ../camel/providers/pop3/camel-pop3-store.c:474
-#: ../servers/groupwise/e-gw-connection.c:243
-msgid "Unknown error"
-msgstr "ਅਣਪਛਾਤੀ ਗਲਤੀ"
-
-#: ../calendar/libecal/e-cal.c:4085
+#: ../calendar/libecal/e-cal.c:4182
 msgid "No error"
 msgstr "ਕੋਈ ਗਲਤੀ ਨਹੀਂ"
 
@@ -1316,222 +1351,216 @@ msgid ""
 "be a boolean false (#f)"
 msgstr "\"%s\" ਲਈ ਸਭ ਆਰਗੂਮਿੰਟ ਜਾਂ ਤਾਂ ਸਤਰ ਹੋਣ ਜਾਂ ਸਿਰਫ ਇੱਕ ਆਰਗੂਮਿੰਟ ਬੂਲੀਅਨ (ਗਲਤ) ਹੋਵੇ"
 
-#: ../calendar/libedata-cal/e-data-cal.c:112
+#: ../calendar/libedata-cal/e-data-cal.c:113
 msgid "Invalid range"
 msgstr "ਗਲਤ ਰੇਜ਼"
 
-#: ../calendar/libedata-cal/e-data-cal.c:119
+#: ../calendar/libedata-cal/e-data-cal.c:120
 msgid "Unsupported method"
 msgstr "ਗ਼ੈਰ-ਸਹਾਇਕ ਢੰਗ"
 
-#: ../calendar/libedata-cal/e-data-cal.c:122
+#: ../calendar/libedata-cal/e-data-cal.c:123
 msgid "Calendar does not exist"
 msgstr "ਕੈਲੰਡਰ ਮੌਜੂਦ ਨਹੀਂ"
 
-#: ../calendar/libedata-cal/e-data-cal.c:123
-#| msgid "Unknown User"
+#: ../calendar/libedata-cal/e-data-cal.c:124
 msgid "Unknown user"
 msgstr "ਅਣਜਾਣ ਯੂਜ਼ਰ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:604
+#: ../calendar/libedata-cal/e-data-cal.c:610
 #, c-format
 msgid "Cannot retrieve calendar address: %s"
 msgstr "ਕੈਲੰਡਰ ਐਡਰੈੱਸ ਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:624
+#: ../calendar/libedata-cal/e-data-cal.c:635
 #, c-format
 msgid "Cannot retrieve calendar alarm e-mail address: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਅਲਾਰਮ ਈਮੇਲ ਐਡਰੈੱਸ ਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:644
+#: ../calendar/libedata-cal/e-data-cal.c:660
 #, c-format
-#| msgid "Cannot retrieve calendar's ldap attribute: %s"
 msgid "Cannot retrieve calendar's LDAP attribute: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਦਾ LDAP ਗੁਣ ਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:664
+#: ../calendar/libedata-cal/e-data-cal.c:685
 #, c-format
 msgid "Cannot retrieve calendar scheduling information: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਸੈਡੀਊਲ ਜਾਣਕਾਰੀ ਲਈ ਨਹੀਂ ਜਾ ਸਕਦੀ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:683
+#: ../calendar/libedata-cal/e-data-cal.c:709
 #, c-format
 msgid "Cannot open calendar: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਖੋਲ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:704
+#: ../calendar/libedata-cal/e-data-cal.c:730
 #, c-format
 msgid "Cannot refresh calendar: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਤਾਜ਼ਾ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:723
+#: ../calendar/libedata-cal/e-data-cal.c:749
 #, c-format
 msgid "Cannot remove calendar: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਹਟਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:744
+#: ../calendar/libedata-cal/e-data-cal.c:770
 #, c-format
 msgid "Cannot create calendar object: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਆਬਜੈਕਟ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:768
+#: ../calendar/libedata-cal/e-data-cal.c:798
 #, c-format
 msgid "Cannot modify calendar object: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਆਬਜੈਕਟ ਸੋਧਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:794
+#: ../calendar/libedata-cal/e-data-cal.c:824
 #, c-format
 msgid "Cannot remove calendar object: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਆਬਜੈਕਟ ਹਟਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:815
+#: ../calendar/libedata-cal/e-data-cal.c:845
 #, c-format
 msgid "Cannot receive calendar objects: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਆਬਜੈਕਟ ਲਏ ਨਹੀਂ ਜਾ ਸਕਦੇ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:834
+#: ../calendar/libedata-cal/e-data-cal.c:864
 #, c-format
 msgid "Cannot discard calendar alarm: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਅਲਾਰਮ ਅਣਡਿੱਠਾ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦੇ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:855
+#: ../calendar/libedata-cal/e-data-cal.c:885
 #, c-format
 msgid "Cannot send calendar objects: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਆਬਜੈਕਟ ਭੇਜੇ ਨਹੀਂ ਜਾ ਸਕਦੇ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:880
+#: ../calendar/libedata-cal/e-data-cal.c:912
 #, c-format
 msgid "Cannot retrieve default calendar object path: %s"
 msgstr "%s: ਡਿਫਾਲਟ ਕੈਲੰਡਰ ਆਬਜੈਕਟ ਪਾਥ ਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:900
+#: ../calendar/libedata-cal/e-data-cal.c:937
 #, c-format
 msgid "Cannot retrieve calendar object path: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਆਬਜੈਕਟ ਪਾਥ ਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:920
+#: ../calendar/libedata-cal/e-data-cal.c:962
 #, c-format
 msgid "Cannot retrieve calendar object list: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਆਬਜੈਕਟ ਲਿਸਟ ਨਹੀਂ ਲਈ ਜਾ ਸਕਦੀ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:948
+#: ../calendar/libedata-cal/e-data-cal.c:990
 #, c-format
 msgid "Could not retrieve attachment list: %s"
 msgstr "%s: ਅਟੈਚਮੈਂਟ ਲਿਸਟ ਲਈ ਨਹੀਂ ਜਾ ਸਕਦੀ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:974
+#: ../calendar/libedata-cal/e-data-cal.c:1016
 #, c-format
 msgid "Could not complete calendar query: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਕਿਊਰੀ ਪੂਰੀ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕੀ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:994
+#: ../calendar/libedata-cal/e-data-cal.c:1041
 #, c-format
 msgid "Could not retrieve calendar time zone: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਸਮਾਂ ਖੇਤਰ ਲਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1014
+#: ../calendar/libedata-cal/e-data-cal.c:1066
 #, c-format
 msgid "Could not add calendar time zone: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਸਮਾਂ ਖੇਤਰ ਸ਼ਾਮਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1033
+#: ../calendar/libedata-cal/e-data-cal.c:1085
 #, c-format
 msgid "Could not set default calendar time zone: %s"
 msgstr "%s: ਡਿਫਾਲਟ ਕੈਲੰਡਰ ਸਮਾਂ ਖੇਤਰ ਸੈੱਟ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1056
+#: ../calendar/libedata-cal/e-data-cal.c:1108
 #, c-format
 msgid "Cannot retrieve calendar changes: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਬਦਲਾਅ ਲਏ ਨਹੀਂ ਜਾ ਸਕਦੇ"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1087
+#: ../calendar/libedata-cal/e-data-cal.c:1139
 #, c-format
 msgid "Cannot retrieve calendar free/busy list: %s"
 msgstr "%s: ਕੈਲੰਡਰ ਵਿਹਲੇ/ਰੁਝਿਆ ਲਿਸਟ ਲਈ ਨਹੀਂ ਜਾ ਸਕਦੀ"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:353
+#: ../calendar/libedata-cal/e-data-cal-factory.c:368
 #, c-format
 msgid "Invalid URI"
 msgstr "ਗਲਤ URI"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:371
+#: ../calendar/libedata-cal/e-data-cal-factory.c:386
 #, c-format
 msgid "No backend factory for '%s' of '%s'"
 msgstr "'%2$s' ਵਿੱਚੋਂ '%1$s' ਲਈ ਬੈਕਐਂਡ ਫੈਕਟਰੀ ਨਹੀਂ ਹੈ"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:421
+#: ../calendar/libedata-cal/e-data-cal-factory.c:436
 #, c-format
 msgid "Could not instantiate backend"
 msgstr "ਬੈਕਐਂਡ ਸ਼ੁਰੂ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ"
 
-#: ../camel/camel-cipher-context.c:75
+#: ../camel/camel-cipher-context.c:204
 #, c-format
 msgid "Signing is not supported by this cipher"
 msgstr "ਇਸ ਸੀਫ਼ਰ ਦਸਤਖਤਾਂ ਲਈ ਸਹਾਈ ਨਹੀਂ ਹੈ"
 
-#: ../camel/camel-cipher-context.c:110
-msgid "Signing message"
-msgstr "ਸੁਨੇਹਾ ਸਾਇਨ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
-
-#: ../camel/camel-cipher-context.c:131
+#: ../camel/camel-cipher-context.c:217
 #, c-format
 msgid "Verifying is not supported by this cipher"
 msgstr "ਇਹ ਸੀਫ਼ਰ ਜਾਂਚ ਲਈ ਸਹਾਈ ਨਹੀਂ ਹੈ"
 
-#: ../camel/camel-cipher-context.c:164
-msgid "Verifying message"
-msgstr "ਸੁਨੇਹੇ ਦੀ ਜਾਂਚ ਜਾਰੀ ਹੈ"
-
-#: ../camel/camel-cipher-context.c:188
+#: ../camel/camel-cipher-context.c:233
 #, c-format
 msgid "Encryption is not supported by this cipher"
 msgstr "ਇਹ ਸੀਫ਼ਰ ਇਕ੍ਰਿਪਸ਼ਨ ਲਈ ਸਹਾਈ ਨਹੀਂ ਹੈ"
 
-#: ../camel/camel-cipher-context.c:223
-msgid "Encrypting message"
-msgstr "ਸੁਨੇਹਾ ਇੰਕ੍ਰਿਪਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
-
-#: ../camel/camel-cipher-context.c:246
+#: ../camel/camel-cipher-context.c:247
 #, c-format
 msgid "Decryption is not supported by this cipher"
 msgstr "ਇਹ ਸੀਫ਼ਰ ਡਿਸਕ੍ਰਿਪਸ਼ਨ ਲਈ ਸਹਾਈ ਨਹੀਂ ਹੈ"
 
-#: ../camel/camel-cipher-context.c:276
-msgid "Decrypting message"
-msgstr "ਸੁਨੇਹਾ ਡਿਕ੍ਰਿਪਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
-
-#: ../camel/camel-cipher-context.c:297
+#: ../camel/camel-cipher-context.c:260
 #, c-format
 msgid "You may not import keys with this cipher"
 msgstr "ਤੁਸੀਂ ਇਸ ਸੀਫ਼ਰ ਤੋਂ ਕੀ ਇੰਪੋਰਟ ਨਹੀਂ ਕਰ ਸਕਦੇ ਹੋ"
 
-#: ../camel/camel-cipher-context.c:341
+#: ../camel/camel-cipher-context.c:274
 #, c-format
 msgid "You may not export keys with this cipher"
 msgstr "ਤੁਸੀਂ ਸੀਫ਼ਰ ਲਈ ਕੀ ਐਕਸਪੋਰਟ ਨਹੀਂ ਕਰ ਸਕਦੇ"
+
+#: ../camel/camel-cipher-context.c:815
+msgid "Signing message"
+msgstr "ਸੁਨੇਹਾ ਸਾਇਨ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
+
+#: ../camel/camel-cipher-context.c:1056
+msgid "Encrypting message"
+msgstr "ਸੁਨੇਹਾ ਇੰਕ੍ਰਿਪਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
+
+#: ../camel/camel-cipher-context.c:1183
+msgid "Decrypting message"
+msgstr "ਸੁਨੇਹਾ ਡਿਕ੍ਰਿਪਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
 
 #: ../camel/camel-data-cache.c:181
 #, c-format
@@ -1543,12 +1572,12 @@ msgstr "ਕੈਸ਼ ਮਾਰਗ ਬਣਾਉਣ ਵਿੱਚ ਅਸਫਲ"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "ਕੈਸ਼ ਇੰਦਰਾਜ ਨੂੰ ਹਟਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s: %s"
 
-#: ../camel/camel-data-wrapper.c:89
+#: ../camel/camel-data-wrapper.c:147
 #, c-format
 msgid "No stream available"
 msgstr "ਕੋਈ ਸਟਰੀਮ ਉਪਲੱਬਧ ਨਹੀਂ ਹੈ।"
 
-#: ../camel/camel-db.c:464
+#: ../camel/camel-db.c:455
 #, c-format
 msgid "Insufficient memory"
 msgstr "ਲੋੜੀਦੀ ਮੈਮੋਰੀ ਨਹੀਂ"
@@ -1564,8 +1593,8 @@ msgstr ""
 "ਇਸ ਸਰਵਰ ਤੇ ਹੋਰ ਕਾਰਵਾਈ ਤੁਹਾਡੇ ਨੈੱਟਵਰਕ ਤੇ ਮੁੜ ਜੁੜਨ ਤੇ ਮੁੜ\n"
 "ਦੁਹਰਾਏ ਨਾ ਜਾ ਸਕਣਗੇ।"
 
-#: ../camel/camel-disco-diary.c:258
-#: ../camel/providers/imap/camel-imap-journal.c:298
+#: ../camel/camel-disco-diary.c:260
+#: ../camel/providers/imap/camel-imap-journal.c:300
 #, c-format
 msgid ""
 "Could not open '%s':\n"
@@ -1576,119 +1605,107 @@ msgstr ""
 "%s\n"
 "ਇਸ ਫੋਲਡਰ ਵਿੱਚ ਕੀਤੀਆਂ ਤਬਦੀਲੀਆਂ ਮੁੜ-ਸਮਕਾਲੀ ਨਹੀਂ ਕੀਤੀਆਂ ਜਾ ਸਕਣਗੀਆਂ।"
 
-#: ../camel/camel-disco-diary.c:299
+#: ../camel/camel-disco-diary.c:304
 msgid "Resynchronizing with server"
 msgstr "ਸਰਵਰ ਨਾਲ ਮੁੜ-ਸਮਕਾਲੀ"
 
-#: ../camel/camel-disco-folder.c:68 ../camel/camel-offline-folder.c:66
+#: ../camel/camel-disco-folder.c:67 ../camel/camel-offline-folder.c:83
 msgid "Downloading new messages for offline mode"
 msgstr "ਆਫਲਾਇਨ ਮੋਡ ਲਈ ਨਵੇਂ ਸੁਨੇਹੇ ਡਾਊਨਲੋਡ ਕੀਤੇ ਜਾ ਰਹੇ ਹਨ"
 
-#: ../camel/camel-disco-folder.c:379
+#: ../camel/camel-disco-folder.c:389
 #, c-format
 msgid "Preparing folder '%s' for offline"
 msgstr "ਫੋਲਡਰ '%s' ਨੂੰ ਆਫਲਾਈਨ ਲਈ ਤਿਆਰ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
 
-#: ../camel/camel-disco-folder.c:445 ../camel/camel-offline-folder.c:224
+#: ../camel/camel-disco-folder.c:455 ../camel/camel-offline-folder.c:316
 msgid "Copy folder content locally for offline operation"
 msgstr "ਬੰਦ ਕਾਰਵਾਈ ਦੌਰਾਨ ਫੋਲਡਰ ਭਾਗ ਨਕਲ ਕਰੋ"
 
-#: ../camel/camel-disco-store.c:395
-#: ../camel/providers/groupwise/camel-groupwise-store.c:230
-#: ../camel/providers/imap/camel-imap-store.c:876
-#: ../camel/providers/imap/camel-imap-store.c:1720
-#: ../camel/providers/imap/camel-imap-store.c:2178
-#: ../camel/providers/imap/camel-imap-store.c:3022
-#: ../camel/providers/imapx/camel-imapx-store.c:185
-#: ../camel/providers/imapx/camel-imapx-store.c:709
-#: ../camel/providers/imapx/camel-imapx-store.c:772
-#: ../camel/providers/imapx/camel-imapx-store.c:831
+#: ../camel/camel-disco-store.c:420
+#: ../camel/providers/groupwise/camel-groupwise-store.c:232
+#: ../camel/providers/imap/camel-imap-store.c:1250
+#: ../camel/providers/imap/camel-imap-store.c:1771
+#: ../camel/providers/imap/camel-imap-store.c:2244
+#: ../camel/providers/imap/camel-imap-store.c:3094
+#: ../camel/providers/imapx/camel-imapx-folder.c:298
+#: ../camel/providers/imapx/camel-imapx-folder.c:331
+#: ../camel/providers/imapx/camel-imapx-folder.c:385
+#: ../camel/providers/imapx/camel-imapx-folder.c:431
+#: ../camel/providers/imapx/camel-imapx-folder.c:465
+#: ../camel/providers/imapx/camel-imapx-folder.c:505
+#: ../camel/providers/imapx/camel-imapx-folder.c:541
+#: ../camel/providers/imapx/camel-imapx-store.c:277
+#: ../camel/providers/imapx/camel-imapx-store.c:1299
+#: ../camel/providers/imapx/camel-imapx-store.c:1387
+#: ../camel/providers/imapx/camel-imapx-store.c:1422
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "ਇਸ ਕਾਰਵਾਈ ਨੂੰ ਸੰਪੂਰਨ ਕਰਨ ਲਈ ਤੁਹਾਨੂੰ ਆਨ-ਲਾਇਨ ਰਹਿਣਾ ਚਾਹੀਦਾ ਹੈ"
 
-#: ../camel/camel-file-utils.c:430 ../camel/camel-file-utils.c:489
-#: ../camel/camel-file-utils.c:529 ../camel/camel-file-utils.c:599
-#: ../camel/camel-file-utils.c:691 ../camel/camel-gpg-context.c:887
-#: ../camel/camel-gpg-context.c:1175 ../camel/camel-net-utils.c:512
-#: ../camel/camel-net-utils.c:689 ../camel/camel-net-utils.c:838
-#: ../camel/camel-tcp-stream-raw.c:250
-#: ../camel/providers/imapx/camel-imapx-server.c:4654
-#: ../camel/providers/imapx/camel-imapx-server.c:4671
-#: ../camel/providers/nntp/camel-nntp-summary.c:396
-#: ../camel/providers/pop3/camel-pop3-folder.c:269
-#: ../camel/providers/pop3/camel-pop3-folder.c:625
-#: ../camel/providers/pop3/camel-pop3-folder.c:690
-#: ../camel/providers/pop3/camel-pop3-store.c:466
-#: ../libedataserverui/e-book-auth-util.c:229
-#, c-format
-msgid "Cancelled"
-msgstr "ਰੱਦ ਕੀਤਾ"
-
-#: ../camel/camel-file-utils.c:643 ../camel/camel-file-utils.c:734
-#: ../camel/camel-file-utils.c:791
+#: ../camel/camel-file-utils.c:719
 #, c-format
 msgid "Canceled"
 msgstr "ਰੱਦ ਕੀਤਾ"
 
-#: ../camel/camel-filter-driver.c:808 ../camel/camel-filter-search.c:582
+#: ../camel/camel-filter-driver.c:839 ../camel/camel-filter-search.c:582
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "ਅਗਲੀ ਕਿਰਿਆ `%s' ਬਣਾਉਣ ਵਿੱਚ ਅਸਫਲ: %s"
 
-#: ../camel/camel-filter-driver.c:853
+#: ../camel/camel-filter-driver.c:886
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "%s ਤੋਂ ਗਲਤ ਸੁਨੇਹਾ ਲੜੀ ਪ੍ਰਾਪਤ ਹੋਈ ਹੈ: %s"
 
-#: ../camel/camel-filter-driver.c:1037 ../camel/camel-filter-driver.c:1046
+#: ../camel/camel-filter-driver.c:1073 ../camel/camel-filter-driver.c:1082
 msgid "Syncing folders"
 msgstr "ਫੋਲਡਰ ਸਮਕਾਲੀ"
 
-#: ../camel/camel-filter-driver.c:1134 ../camel/camel-filter-driver.c:1569
+#: ../camel/camel-filter-driver.c:1170 ../camel/camel-filter-driver.c:1620
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "ਫਿਲਟਰ ਨੂੰ ਪਾਰਸ ਕਰਨ ਵਿੱਚ ਗਲਤੀ: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1145 ../camel/camel-filter-driver.c:1580
+#: ../camel/camel-filter-driver.c:1181 ../camel/camel-filter-driver.c:1631
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "ਫਿਲਟਰ ਚਲਾਉਣ ਵਿੱਚ ਗਲਤੀ: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1240
+#: ../camel/camel-filter-driver.c:1278
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "ਸਪੂਲ ਫੋਲਡਰ ਖੋਲਣ ਵਿੱਚ ਗਲਤੀ"
 
-#: ../camel/camel-filter-driver.c:1251
+#: ../camel/camel-filter-driver.c:1289
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "ਕਾਰਜ ਸਪੂਲ ਫੋਲਡਰ ਖੋਲਣ ਤੋਂ ਅਸਮਰੱਥ"
 
-#: ../camel/camel-filter-driver.c:1269
+#: ../camel/camel-filter-driver.c:1307
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "%d ਸੁਨੇਹਾ ਪ੍ਰਾਪਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ(%d%%)"
 
-#: ../camel/camel-filter-driver.c:1275 ../camel/camel-filter-driver.c:1297
+#: ../camel/camel-filter-driver.c:1314 ../camel/camel-filter-driver.c:1336
 #, c-format
 msgid "Failed on message %d"
 msgstr "ਸੁਨੇਹਾ %d ਤੇ ਅਸਫਲ"
 
-#: ../camel/camel-filter-driver.c:1312 ../camel/camel-filter-driver.c:1411
+#: ../camel/camel-filter-driver.c:1351 ../camel/camel-filter-driver.c:1456
 msgid "Syncing folder"
 msgstr "ਫੋਲਡਰ ਸਮਕਾਲੀ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
 
-#: ../camel/camel-filter-driver.c:1316 ../camel/camel-filter-driver.c:1416
+#: ../camel/camel-filter-driver.c:1356 ../camel/camel-filter-driver.c:1462
 msgid "Complete"
 msgstr "ਮੁਕੰਮਲ"
 
-#: ../camel/camel-filter-driver.c:1377
+#: ../camel/camel-filter-driver.c:1420
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "%2d ਵਿੱਚੋਂ %1d ਸੁਨੇਹਾ ਪ੍ਰਾਪਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
 
-#: ../camel/camel-filter-driver.c:1395
+#: ../camel/camel-filter-driver.c:1438
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "%2d ਵਿੱਚੋਂ %1d ਸੁਨੇਹਾ ਪ੍ਰਾਪਤ ਕਰਨ ਵਿੱਚ ਅਸਫਲ"
@@ -1755,49 +1772,55 @@ msgstr "(%s) ਲਈ ਇੱਕ ਲੜੀ ਨਤੀਜੇ ਦੀ ਲੋੜ ਹੈ"
 msgid "(%s) requires the folder set"
 msgstr "(%s) ਲਈ ਫੋਲਡਰ ਸੈੱਟ ਦੀ ਲੋੜ ਹੈ"
 
-#: ../camel/camel-folder.c:125
+#: ../camel/camel-folder.c:220
 #, c-format
 msgid "Learning new spam message in '%s'"
 msgid_plural "Learning new spam messages in '%s'"
 msgstr[0] "'%s' ਵਿੱਚ ਨਵੇਂ ਸਪਮ ਸੁਨੇਹਾ ਸਿੱਖਿਆ ਜਾ ਰਿਹਾ ਹੈ"
 msgstr[1] "'%s' ਵਿੱਚ ਨਵੇਂ ਸਪਮ ਸੁਨੇਹੇ ਸਿੱਖੇ ਜਾ ਰਹੇ ਹਨ"
 
-#: ../camel/camel-folder.c:147
+#: ../camel/camel-folder.c:244
 #, c-format
 msgid "Learning new ham message in '%s'"
 msgid_plural "Learning new ham messages in '%s'"
 msgstr[0] "'%s' ਵਿੱਚ ਨਵਾਂ ਹਮ ਸੁਨੇਹਾ ਸਿੱਖਿਆ ਜਾ ਰਿਹਾ ਹੈ"
 msgstr[1] "'%s' ਵਿੱਚ ਨਵੇਂ ਹਮ ਸੁਨੇਹੇ ਸਿੱਖੇ ਜਾ ਰਹੇ ਹਨ"
 
-#: ../camel/camel-folder.c:171
+#: ../camel/camel-folder.c:270
 #, c-format
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
 msgstr[0] "'%s' ਵਿੱਚ ਨਵਾਂ ਸੁਨੇਹਾ ਫਿਲਟਰ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
 msgstr[1] "'%s' ਵਿੱਚ ਨਵੇਂ ਸੁਨੇਹੇ ਫਿਲਟਰ ਕੀਤੇ ਜਾ ਰਹੇ ਹਨ"
 
-#: ../camel/camel-folder.c:688
-#: ../camel/providers/local/camel-maildir-folder.c:366
+#: ../camel/camel-folder.c:881
+#: ../camel/providers/local/camel-maildir-folder.c:293
 msgid "Moving messages"
 msgstr "ਸੁਨੇਹੇ ਭੇਜੇ ਜਾ ਰਹੇ ਹਨ"
 
-#: ../camel/camel-folder.c:690
+#: ../camel/camel-folder.c:884
 msgid "Copying messages"
 msgstr "ਸੁਨੇਹੇ ਕਾਪੀ ਕੀਤੇ ਜਾ ਰਹੇ ਹਨ"
 
-#: ../camel/camel-gpg-context.c:701 ../camel/camel-gpg-context.c:706
-#: ../camel/camel-gpg-context.c:1330
+#: ../camel/camel-folder.c:3253
+#, c-format
+#| msgid "Retrieving POP message %d"
+msgid "Retrieving message '%s'"
+msgstr "ਸੁਨੇਹਾ '%s' ਪ੍ਰਾਪਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
+
+#: ../camel/camel-gpg-context.c:646 ../camel/camel-gpg-context.c:651
+#: ../camel/camel-gpg-context.c:1276
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "gpg ਨੂੰ ਚਲਾਉਣ ਵਿੱਚ ਅਸਫਲ: %s"
 
-#: ../camel/camel-gpg-context.c:706
-#: ../camel/providers/smtp/camel-smtp-transport.c:114
-#: ../camel/providers/smtp/camel-smtp-transport.c:169
+#: ../camel/camel-gpg-context.c:651
+#: ../camel/providers/smtp/camel-smtp-transport.c:716
+#: ../camel/providers/smtp/camel-smtp-transport.c:771
 msgid "Unknown"
 msgstr "ਅਣਜਾਣ"
 
-#: ../camel/camel-gpg-context.c:770
+#: ../camel/camel-gpg-context.c:715
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -1808,17 +1831,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/camel-gpg-context.c:787
+#: ../camel/camel-gpg-context.c:732
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "gpg userid ਸੰਕੇਤ ਨੂੰ ਪਾਰਸ ਕਰਨ ਤੋਂ ਅਸਫਲ।"
 
-#: ../camel/camel-gpg-context.c:812 ../camel/camel-gpg-context.c:827
+#: ../camel/camel-gpg-context.c:757 ../camel/camel-gpg-context.c:772
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "gpg passphrase ਸੰਕੇਤ ਨੂੰ ਪਾਰਸ ਕਰਨ ਤੋਂ ਅਸਫਲ।"
 
-#: ../camel/camel-gpg-context.c:848
+#: ../camel/camel-gpg-context.c:793
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -1827,7 +1850,7 @@ msgstr ""
 "ਤੁਹਾਨੂੰ ਤੁਹਾਡੇ ਸਮਾਰਟ-ਕਾਰਡ ਲਈ ਇੱਕ PIN ਅਣ-ਲਾਕ ਕਰਨ\n"
 "ਲਈ ਲੋੜੀਦਾ ਹੈ: \"%s\""
 
-#: ../camel/camel-gpg-context.c:852
+#: ../camel/camel-gpg-context.c:797
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -1836,68 +1859,83 @@ msgstr ""
 "ਤੁਹਾਨੂੰ ਯੂਜ਼ਰ ਲਈ ਪਾਸ-ਪ੍ਰਸੰਗ ਲੋੜੀਦਾ ਹੈ, ਜੋ ਕਿ\n"
 "ਖੋਲ ਸਕੇ: \"%s\""
 
-#: ../camel/camel-gpg-context.c:858
+#: ../camel/camel-gpg-context.c:803
 #, c-format
 msgid "Unexpected request from GnuPG for '%s'"
 msgstr "GnuPG ਤੋਂ '%s' ਤੋਂ ਨਾ-ਲੋੜੀਦਾ ਜਵਾਬ ਪ੍ਰਾਪਤ ਹੋਇਆ"
 
-#: ../camel/camel-gpg-context.c:905
+#: ../camel/camel-gpg-context.c:832 ../camel/camel-net-utils.c:515
+#: ../camel/camel-tcp-stream-raw.c:255
+#: ../camel/providers/imapx/camel-imapx-server.c:4908
+#: ../camel/providers/imapx/camel-imapx-server.c:4925
+#: ../camel/providers/imapx/camel-imapx-store.c:199
+#: ../camel/providers/nntp/camel-nntp-summary.c:402
+#: ../camel/providers/pop3/camel-pop3-folder.c:364
+#: ../camel/providers/pop3/camel-pop3-folder.c:429
+#: ../camel/providers/pop3/camel-pop3-folder.c:504
+#: ../camel/providers/pop3/camel-pop3-store.c:487
+#: ../libedataserverui/e-book-auth-util.c:229
+#, c-format
+msgid "Cancelled"
+msgstr "ਰੱਦ ਕੀਤਾ"
+
+#: ../camel/camel-gpg-context.c:850
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "ਗੁਪਤ ਕੀ ਨੂੰ ਖੋਲ੍ਹਣ ਵਿੱਚ ਅਸਫਲ: ੩ ਗਲਤ ਪਾਸ-ਪੈਰੇ ਦਿੱਤੇ ਹਨ।"
 
-#: ../camel/camel-gpg-context.c:917
+#: ../camel/camel-gpg-context.c:862
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "GnuPG ਤੋਂ ਨਾ-ਲੋੜੀਦਾ ਜਵਾਬ ਪ੍ਰਾਪਤ ਹੋਇਆ: %s"
 
-#: ../camel/camel-gpg-context.c:1048
+#: ../camel/camel-gpg-context.c:993
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "ਇਕ੍ਰਿਪਟ ਲਈ ਅਸਫਲ:ਕੋਈ ਜਾਇਜ ਪ੍ਰਾਪਤ ਕਰਨ ਨਿਰਧਾਰਿਤ ਨਹੀਂ ਹੈ।"
 
-#: ../camel/camel-gpg-context.c:1434 ../camel/camel-smime-context.c:821
+#: ../camel/camel-gpg-context.c:1539 ../camel/camel-smime-context.c:824
 msgid "Could not generate signing data: "
 msgstr "ਦਸਤਖਤੀ ਡਾਟਾ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: "
 
-#: ../camel/camel-gpg-context.c:1481 ../camel/camel-gpg-context.c:1740
-#: ../camel/camel-gpg-context.c:1848 ../camel/camel-gpg-context.c:1987
-#: ../camel/camel-gpg-context.c:2081 ../camel/camel-gpg-context.c:2128
+#: ../camel/camel-gpg-context.c:1586 ../camel/camel-gpg-context.c:1786
+#: ../camel/camel-gpg-context.c:1896 ../camel/camel-gpg-context.c:2042
+#: ../camel/camel-gpg-context.c:2141 ../camel/camel-gpg-context.c:2189
 msgid "Failed to execute gpg."
 msgstr "gpg ਨੂੰ ਚਲਾਉਣ ਵਿੱਚ ਅਸਫਲ"
 
-#: ../camel/camel-gpg-context.c:1622 ../camel/camel-gpg-context.c:1630
-#: ../camel/camel-gpg-context.c:1638 ../camel/camel-gpg-context.c:1655
-#: ../camel/camel-smime-context.c:943 ../camel/camel-smime-context.c:957
-#: ../camel/camel-smime-context.c:966
+#: ../camel/camel-gpg-context.c:1666 ../camel/camel-gpg-context.c:1674
+#: ../camel/camel-gpg-context.c:1682 ../camel/camel-gpg-context.c:1701
+#: ../camel/camel-smime-context.c:948 ../camel/camel-smime-context.c:962
+#: ../camel/camel-smime-context.c:971
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "ਸੁਨੇਹਾ ਦਸਤਖਤ ਜਾਂਚੇ ਨਹੀਂ ਜਾ ਸਕੇ ਹਨ: ਗਲਤ ਸੁਨੇਹਾ ਫਾਰਮਿਟ"
 
-#: ../camel/camel-gpg-context.c:1695
+#: ../camel/camel-gpg-context.c:1741
 msgid "Cannot verify message signature: "
 msgstr "ਸੁਨੇਹਾ ਦਸਤਖਤ ਜਾਂਚੇ ਨਹੀਂ ਜਾ ਸਕੇ ਹਨ: "
 
-#: ../camel/camel-gpg-context.c:1814
+#: ../camel/camel-gpg-context.c:1862
 msgid "Could not generate encrypting data: "
 msgstr "ਇੰਕ੍ਰਿਪਟਡ ਡਾਟਾ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਿਆ ਹੈ: "
 
-#: ../camel/camel-gpg-context.c:1866
+#: ../camel/camel-gpg-context.c:1915
 msgid "This is a digitally encrypted message part"
 msgstr "ਇਹ ਸੁਨੇਹੇ ਦਾ ਡਿਜ਼ੀਟਲ ਇਕ੍ਰਿਪਟਡ ਭਾਗ ਹੈ"
 
-#: ../camel/camel-gpg-context.c:1922 ../camel/camel-gpg-context.c:1931
-#: ../camel/camel-gpg-context.c:1954
+#: ../camel/camel-gpg-context.c:1973 ../camel/camel-gpg-context.c:1982
+#: ../camel/camel-gpg-context.c:2005
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "ਸੁਨੇਹਾ ਡੀ-ਕਰਿਪਟ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ: ਗਲਤ ਸੁਨੇਹਾ ਫਾਰਮਿਟ"
 
-#: ../camel/camel-gpg-context.c:1942
+#: ../camel/camel-gpg-context.c:1993
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "MIME ਭਾਗ ਡਿਕ੍ਰਿਪਟ ਕਰਨ ਤੋਂ ਅਸਫਲ: ਪ੍ਰੋਟੋਕਾਲ ਗਲਤੀ"
 
-#: ../camel/camel-gpg-context.c:2023 ../camel/camel-smime-context.c:1241
+#: ../camel/camel-gpg-context.c:2082 ../camel/camel-smime-context.c:1255
 msgid "Encrypted content"
 msgstr "ਇਕ੍ਰਿਪਟਡ ਭਾਗ"
 
@@ -1995,54 +2033,54 @@ msgstr "ਆਰਜੀ ਪੱਤਰ ਫਾਇਲ ਤੇ ਲਿਖਣ ਵਿੱਚ 
 msgid "Error copying mail temp file: %s"
 msgstr "ਆਰਜੀ ਪੱਤਰ ਫਾਇਲ ਨੂੰ ਨਕਲ ਕਰਨ ਵਿੱਚ ਗਲਤੀ: %s"
 
-#: ../camel/camel-multipart-signed.c:285
+#: ../camel/camel-multipart-signed.c:286
 #, c-format
 msgid "No content available"
 msgstr "ਕੋਈ ਸਮੱਗਰੀ ਉਪਲੱਬਧ ਨਹੀਂ"
 
-#: ../camel/camel-multipart-signed.c:293
+#: ../camel/camel-multipart-signed.c:294
 #, c-format
 msgid "No signature available"
 msgstr "ਕੋਈ ਦਸਤਖਤ ਉਪਲੱਬਧ ਨਹੀਂ"
 
-#: ../camel/camel-multipart-signed.c:612
+#: ../camel/camel-multipart-signed.c:620
 #, c-format
 msgid "parse error"
 msgstr "ਪਾਰਸ ਗਲਤੀ"
 
-#: ../camel/camel-net-utils.c:693
+#: ../camel/camel-net-utils.c:695
 #, c-format
 msgid "Resolving: %s"
 msgstr "ਹੱਲ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ: %s"
 
-#: ../camel/camel-net-utils.c:715
+#: ../camel/camel-net-utils.c:718
 msgid "Host lookup failed"
 msgstr "ਹੋਸਟ ਖੋਜ ਅਸਫਲ"
 
-#: ../camel/camel-net-utils.c:719
+#: ../camel/camel-net-utils.c:724
 #, c-format
 msgid "Host lookup failed: %s: %s"
 msgstr "ਹੋਸਟ ਖੋਜ ਅਸਫਲ: %s: %s"
 
-#: ../camel/camel-net-utils.c:842
+#: ../camel/camel-net-utils.c:845
 msgid "Resolving address"
 msgstr "ਐਡਰੈੱਸ ਖੋਜਿਆ ਜਾ ਰਿਹਾ ਹੈ"
 
-#: ../camel/camel-net-utils.c:862
+#: ../camel/camel-net-utils.c:866
 msgid "Name lookup failed"
 msgstr "ਨਾਂ ਖੋਜ ਅਸਫਲ"
 
-#: ../camel/camel-net-utils.c:867
+#: ../camel/camel-net-utils.c:872
 #, c-format
 msgid "Name lookup failed: %s"
 msgstr "ਨਾਂ ਖੋਜ ਅਸਫਲ: %s"
 
-#: ../camel/camel-offline-folder.c:169
+#: ../camel/camel-offline-folder.c:193
 #, c-format
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "ਫੋਲਡਰ `%s' ਵਿੱਚ ਸੁਨੇਹਿਆਂ ਨੂੰ ਡਿਸਕ ਤੇ ਲਿਖਿਆ ਜਾ ਰਿਹਾ ਹੈ"
 
-#: ../camel/camel-offline-journal.c:144 ../camel/camel-offline-journal.c:170
+#: ../camel/camel-offline-journal.c:144 ../camel/camel-offline-journal.c:174
 #, c-format
 msgid "Cannot write offline journal for folder '%s': %s"
 msgstr "ਫੋਲਡਰ '%s' ਲਈ ਆਫਲਾਈਨ ਜਰਨਲ ਲਿਖਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ: %s"
@@ -2070,7 +2108,7 @@ msgstr "%s ਨੂੰ ਲੋਡ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹ
 msgid "Could not load %s: No initialization code in module."
 msgstr "%s ਨੂੰ ਲੋਡ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ: ਇਸ ਮੋਡੀਊਲ ਵਿੱਚ ਕੋਈ ਸ਼ੁਰੂਆਤੀ ਕੋਡ ਨਹੀਂ ਹੈ।"
 
-#: ../camel/camel-provider.c:388 ../camel/camel-session.c:207
+#: ../camel/camel-provider.c:388 ../camel/camel-session.c:206
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "ਪਰੋਟੋਕਾਲ '%s' ਲਈ ਕੋਈ ਉਪਲੱਬਧ ਕਰਤਾ ਨਹੀਂ ਹੈ"
@@ -2083,12 +2121,12 @@ msgstr "ਗੁੰਮਨਾਮ"
 msgid "This option will connect to the server using an anonymous login."
 msgstr "ਇਸ ਚੋਣ ਨਾਲ ਸਰਵਰ ਨਾਲ ਅਣਜਾਣ ਦੇ ਤੌਰ ਤੇ ਲਾੱਗਆਨ ਕੀਤਾ ਜਾਵੇਗਾ।"
 
-#: ../camel/camel-sasl-anonymous.c:69
+#: ../camel/camel-sasl-anonymous.c:70
 #, c-format
 msgid "Authentication failed."
 msgstr "ਪ੍ਰਮਾਣਿਕਤਾ ਅਸਫਲ।"
 
-#: ../camel/camel-sasl-anonymous.c:80
+#: ../camel/camel-sasl-anonymous.c:81
 #, c-format
 msgid ""
 "Invalid email address trace information:\n"
@@ -2097,7 +2135,7 @@ msgstr ""
 "ਗਲਤ ਈਮੇਲ ਸਿਰਨਾਵੀ ਜਾਂਚ ਜਾਣਕਾਰੀ:\n"
 "%s"
 
-#: ../camel/camel-sasl-anonymous.c:94
+#: ../camel/camel-sasl-anonymous.c:95
 #, c-format
 msgid ""
 "Invalid opaque trace information:\n"
@@ -2106,7 +2144,7 @@ msgstr ""
 "ਗਲਤ ਅਪਾਰਦਰਸ਼ੀ ਜਾਂਚ ਜਾਣਕਾਰੀ:\n"
 "%s"
 
-#: ../camel/camel-sasl-anonymous.c:108
+#: ../camel/camel-sasl-anonymous.c:109
 #, c-format
 msgid ""
 "Invalid trace information:\n"
@@ -2125,11 +2163,11 @@ msgid ""
 "the server supports it."
 msgstr "ਇਹ ਚੋਣ ਤੁਹਾਨੂੰ ਸਰਵਰ ਨਾਲ ਸੁਰੱਖਿਅਤ CRAM-MD5 ਪਾਸਵਰਡ ਨਾਲ ਜੋੜਦਾ ਹੈ, ਜੇਕਰ ਸਰਵਰ ਸਹਾਈ ਹੋਇਆ ਤਾਂ।"
 
-#: ../camel/camel-sasl-digest-md5.c:56
+#: ../camel/camel-sasl-digest-md5.c:58
 msgid "DIGEST-MD5"
 msgstr "DIGEST-MD5"
 
-#: ../camel/camel-sasl-digest-md5.c:58
+#: ../camel/camel-sasl-digest-md5.c:60
 msgid ""
 "This option will connect to the server using a secure DIGEST-MD5 password, "
 "if the server supports it."
@@ -2137,73 +2175,73 @@ msgstr ""
 "ਇਹ ਚੋਣ ਤੁਹਾਨੂੰ ਸਰਵਰ ਨਾਲ ਸੁਰੱਖਿਅਤ DIGEST-MD5 ਪਾਸਵਰਡ ਨਾਲ ਜੋੜਦਾ ਹੈ, ਜੇਕਰ ਸਰਵਰ ਸਹਾਈ ਹੋਇਆ "
 "ਤਾਂ।"
 
-#: ../camel/camel-sasl-digest-md5.c:818
+#: ../camel/camel-sasl-digest-md5.c:821
 #, c-format
 msgid "Server challenge too long (>2048 octets)"
 msgstr "ਸਰਵਰ ਚੁਣੌਤੀ ਬਹੁਤ ਲੰਮੀ ਹੈ (>2048 octets)"
 
-#: ../camel/camel-sasl-digest-md5.c:829
+#: ../camel/camel-sasl-digest-md5.c:832
 #, c-format
 msgid "Server challenge invalid\n"
 msgstr "ਸਰਵਰ ਜਾਂਚ ਗਲਤ ਹੈ\n"
 
-#: ../camel/camel-sasl-digest-md5.c:837
+#: ../camel/camel-sasl-digest-md5.c:840
 #, c-format
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr "ਸਰਵਰ ਚੁਣੌਤੀ ਵਿੱਚ \"ਸੁਰੱਖਿਆ ਦਾ ਗੁਣ\" ਟੋਕਨ ਗਲਤ ਹੈ"
 
-#: ../camel/camel-sasl-digest-md5.c:869
+#: ../camel/camel-sasl-digest-md5.c:875
 #, c-format
 msgid "Server response did not contain authorization data"
 msgstr "ਸਰਵਰ ਜਵਾਬ ਵਿੱਚ ਪਰਮਾਣਿਤ ਡਾਟਾ ਨਹੀਂ ਹੈ"
 
-#: ../camel/camel-sasl-digest-md5.c:890
+#: ../camel/camel-sasl-digest-md5.c:896
 #, c-format
 msgid "Server response contained incomplete authorization data"
 msgstr "ਸਰਵਰ ਜਵਾਬ ਵਿੱਚ ਨਾ-ਸੰਪੂਰਨ ਪ੍ਰਮਾਣਿਤ ਡਾਟਾ ਹੈ"
 
-#: ../camel/camel-sasl-digest-md5.c:903
+#: ../camel/camel-sasl-digest-md5.c:909
 #, c-format
 msgid "Server response does not match"
 msgstr "ਸਰਵਰ ਜਵਾਬ ਮੇਲ ਨਹੀਂ ਖਾ ਰਿਹਾ ਹੈ"
 
-#: ../camel/camel-sasl-gssapi.c:80
+#: ../camel/camel-sasl-gssapi.c:85
 msgid "GSSAPI"
 msgstr "GSSAPI"
 
-#: ../camel/camel-sasl-gssapi.c:82
+#: ../camel/camel-sasl-gssapi.c:87
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr "ਇਹ ਚੋਣ ਤੁਹਾਨੂੰ ਕੀਬੋਰਸ ੫ ਪ੍ਰਮਾਣਕਿਤਾ ਵਰਤ ਕੇ ਸਰਵਰ ਨਾਲ ਜੋੜੇਗਾ।"
 
-#: ../camel/camel-sasl-gssapi.c:119
+#: ../camel/camel-sasl-gssapi.c:128
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
 msgstr "ਨਿਰਧਾਰਿਤ ਢੰਗ ਪ੍ਰਮਾਣ-ਪੱਤਰ ਦੁਆਰਾ ਸਹਾਇਕ ਨਹੀਂ ਹੈ ਜਾਂ ਇਹ ਸਥਾਪਨ ਦੁਆਰਾ ਪਛਾਣਿਆ ਨਹੀਂ ਗਿਆ।"
 
-#: ../camel/camel-sasl-gssapi.c:124
+#: ../camel/camel-sasl-gssapi.c:133
 msgid "The provided target_name parameter was ill-formed."
 msgstr "ਉਪਲੱਬਧ ਨਿਯਤ ਨਾਂ ਪੈਰਾਮੀਟਰ ਗਲਤ ਢਾਂਚੇ ਵਿੱਚ ਹੈ।"
 
-#: ../camel/camel-sasl-gssapi.c:127
+#: ../camel/camel-sasl-gssapi.c:136
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
 msgstr "ਉਪਲੱਬਧ ਨਿਯਤ ਨਾਂ ਪੈਰਾਮੀਟਰ ਗਲਤ ਹੈ ਜਾਂ ਨਾ ਸਹਾਇਕ ਕਿਸਮ ਦਾ ਨਾਂ ਹੈ।"
 
-#: ../camel/camel-sasl-gssapi.c:131
+#: ../camel/camel-sasl-gssapi.c:140
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
 msgstr "input_token input_chan_bindings ਪੈਰਾਮੀਟਰ ਦੁਆਰਾ ਨਿਰਧਾਰਿਤ ਤੋਂ ਵੱਖਰਾ ਚੈਨਲ ਵਰਤ ਰਿਹਾ ਹੈ।"
 
-#: ../camel/camel-sasl-gssapi.c:136
+#: ../camel/camel-sasl-gssapi.c:145
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
 msgstr "input_token ਵਿੱਚ ਗਲਤ ਦਸਤਖਤ ਹਨ ਜਾਂ ਦਸਤਖਤ ਜਾਂਚੇ ਨਹੀਂ ਜਾ ਸਕਦੇ ਹਨ।"
 
-#: ../camel/camel-sasl-gssapi.c:140
+#: ../camel/camel-sasl-gssapi.c:149
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
@@ -2211,30 +2249,30 @@ msgstr ""
 "ਉਪਲੱਬਧ ਪ੍ਰਮਾਣ-ਪੱਤਰ ਪ੍ਰਸੰਗ ਸ਼ੁਰੂਆਤ ਲਈ ਠੀਕ ਨਹੀਂ ਹਨ, ਜਾਂ ਪ੍ਰਮਾਣ-ਪੱਤਰ ਸੰਭਾਲ ਕਰਤਾ ਕਿਸੇ ਜਾਇਜ "
 "ਹਵਾਲੇ ਲਈ ਹੈ।"
 
-#: ../camel/camel-sasl-gssapi.c:145
+#: ../camel/camel-sasl-gssapi.c:154
 msgid "The supplied context handle did not refer to a valid context."
 msgstr "ਉਪਲੱਬਧ ਕਰਵਾਇਆ ਪ੍ਰਸੰਗ ਸਹੀਂ ਪ੍ਰਸੰਗ ਦਾ ਹਵਾਲਾ ਨਹੀਂ ਦੇ ਰਿਹਾ ਹੈ।"
 
-#: ../camel/camel-sasl-gssapi.c:148
+#: ../camel/camel-sasl-gssapi.c:157
 msgid "The consistency checks performed on the input_token failed."
 msgstr "input_token ਤੇ ਇਕਸਾਰਤਾ ਜਾਂਚ ਅਸਫਲ ਰਹੀ ਹੈ।"
 
-#: ../camel/camel-sasl-gssapi.c:151
+#: ../camel/camel-sasl-gssapi.c:160
 msgid "The consistency checks performed on the credential failed."
 msgstr "ਪ੍ਰਮਾਣ-ਪੱਤਰ ਦੀ ਪ੍ਰਮਾਣਕਿਤਾ ਜਾਂਚ ਅਸਫਲ ਰਹੀ ਹੈ।"
 
-#: ../camel/camel-sasl-gssapi.c:154
+#: ../camel/camel-sasl-gssapi.c:163
 msgid "The referenced credentials have expired."
 msgstr "ਹਵਾਲਾ ਪ੍ਰਮਾਣ-ਪੱਤਰ ਦੀ ਮਿਆਦ ਸਮਾਪਤ ਹੋ ਚੁੱਕੀ ਹੈ।"
 
-#: ../camel/camel-sasl-gssapi.c:160 ../camel/camel-sasl-gssapi.c:296
-#: ../camel/camel-sasl-gssapi.c:340 ../camel/camel-sasl-gssapi.c:357
-#: ../camel/providers/smtp/camel-smtp-transport.c:1171
+#: ../camel/camel-sasl-gssapi.c:169 ../camel/camel-sasl-gssapi.c:309
+#: ../camel/camel-sasl-gssapi.c:353 ../camel/camel-sasl-gssapi.c:370
+#: ../camel/providers/smtp/camel-smtp-transport.c:1249
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "ਸਰਵਰ ਤੋਂ ਗਲਤ ਜਵਾਬ ਮਿਲਿਆ ਹੈ।"
 
-#: ../camel/camel-sasl-gssapi.c:369
+#: ../camel/camel-sasl-gssapi.c:382
 #, c-format
 msgid "Unsupported security layer."
 msgstr "ਨਾ ਸਹਾਇਕ ਸੁਰੱਖਿਆ ਪਰਤ।"
@@ -2247,7 +2285,7 @@ msgstr "ਲਾਗਇਨ"
 msgid "This option will connect to the server using a simple password."
 msgstr "ਇਹ ਚੋਣ ਤੁਹਾਨੂੰ ਸਰਵਰ ਨਾਲ ਸਧਾਰਨ ਪਾਸਵਰਡ ਨਾਲ ਜੋੜੇਗੀ।"
 
-#: ../camel/camel-sasl-login.c:94
+#: ../camel/camel-sasl-login.c:95
 #, c-format
 msgid "Unknown authentication state."
 msgstr "ਅਣਪਛਾਤੀ ਪ੍ਰਮਾਣਕਿਤਾ ਸਥਿਤੀ।"
@@ -2276,19 +2314,17 @@ msgstr "SMTP ਤੋਂ ਪਹਿਲਾਂ POP"
 msgid "This option will authorise a POP connection before attempting SMTP"
 msgstr "ਇਹ ਚੋਣ POP ਕੁਨੈਕਸ਼ਨ ਪ੍ਰਮਾਣਕਿਤਾ ਨੂੰ SMTP ਤੋਂ ਪਹਿਲਾਂ ਜਾਂਚੇਗੀ"
 
-#: ../camel/camel-sasl-popb4smtp.c:82
+#: ../camel/camel-sasl-popb4smtp.c:83
 msgid "POP Source URI"
 msgstr "POP ਸਰੋਤ URI"
 
-#: ../camel/camel-sasl-popb4smtp.c:89
+#: ../camel/camel-sasl-popb4smtp.c:90
 #, c-format
-#| msgid "POP Before SMTP auth using an unknown transport"
 msgid "POP Before SMTP authentication using an unknown transport"
 msgstr "ਇੱਕ ਨਾ-ਜਾਣੇ ਟਰਾਂਸਪੋਰਟ ਰਾਹੀ POP SMTP ਪਰਮਾਣਕਿਤਾ ਤੋਂ ਪਹਿਲਾਂ"
 
-#: ../camel/camel-sasl-popb4smtp.c:97
+#: ../camel/camel-sasl-popb4smtp.c:98
 #, c-format
-#| msgid "POP Before SMTP auth using a non-pop source"
 msgid "POP Before SMTP authentication using a non-POP source"
 msgstr "ਇੱਕ ਗ਼ੈਰ-POP ਸਰੋਤ ਰਾਹੀ POP SMTP ਪਰਮਾਣਕਿਤਾ ਤੋਂ ਪਹਿਲਾਂ"
 
@@ -2297,22 +2333,22 @@ msgstr "ਇੱਕ ਗ਼ੈਰ-POP ਸਰੋਤ ਰਾਹੀ POP SMTP ਪਰਮ�
 msgid "Regular expression compilation failed: %s: %s"
 msgstr "ਨਿਯਮਿਤ ਸਮੀਕਰਨ ਕੰਪਾਇਲੇਸ਼ਨ ਅਸਫਲ: %s: %s"
 
-#: ../camel/camel-service.c:88
+#: ../camel/camel-service.c:89
 #, c-format
 msgid "URL '%s' needs a username component"
 msgstr "URL '%s' ਨੂੰ ਯੂਜ਼ਰ ਭਾਗ ਲੋੜੀਦਾ ਹੈ"
 
-#: ../camel/camel-service.c:92
+#: ../camel/camel-service.c:93
 #, c-format
 msgid "URL '%s' needs a host component"
 msgstr "URL '%s' ਨੂੰ ਹੋਸਟ ਭਾਗ ਲੋੜੀਦਾ ਹੈ"
 
-#: ../camel/camel-service.c:96
+#: ../camel/camel-service.c:97
 #, c-format
 msgid "URL '%s' needs a path component"
 msgstr "URL '%s' ਨੂੰ ਰਸਤਾ ਭਾਗ ਲੋੜੀਦਾ ਹੈ"
 
-#: ../camel/camel-session.c:261
+#: ../camel/camel-session.c:260
 #, c-format
 msgid ""
 "Could not create directory %s:\n"
@@ -2321,12 +2357,12 @@ msgstr ""
 "ਡਾਇਰੈਕਟਰੀ %s ਬਣਾਉਣ ਵਿੱਚ ਅਸਫਲ:\n"
 "%s"
 
-#: ../camel/camel-session.c:758
+#: ../camel/camel-session.c:757
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
 msgstr "ਹੋਸਟ %3$s ਲਈ %2$s ਵਾਸਤੇ %1$s ਪਾਸਵਰਡ ਦਿਓ ਜੀ।"
 
-#: ../camel/camel-smime-context.c:348 ../camel/camel-smime-context.c:1041
+#: ../camel/camel-smime-context.c:348 ../camel/camel-smime-context.c:1048
 #, c-format
 msgid "Cannot find certificate for '%s'"
 msgstr "'%s' ਲਈ ਸਰਟੀਫਿਕੇਟ ਲੱਭਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ ਹੈ"
@@ -2380,237 +2416,249 @@ msgstr "ਇੰਕ੍ਰਿਪਸ਼ਨ ਸਰਟੀਫਿਕੇਟ ਸ਼ਾਮਿਲ 
 msgid "Cannot add CMS Signer information"
 msgstr "CMS ਦਸਤਖਤੀ ਜਾਣਕਾਰੀ ਸ਼ਾਮਲ ਨਹੀਂ ਹੋ ਸਕਦੀ"
 
-#: ../camel/camel-smime-context.c:506
+#. Translators: A fallback message when couldn't verify an SMIME signature
+#: ../camel/camel-smime-context.c:507
 msgid "Unverified"
 msgstr "ਨਾ-ਜਾਂਚਿਆ"
 
-#: ../camel/camel-smime-context.c:508
+#: ../camel/camel-smime-context.c:509
 msgid "Good signature"
 msgstr "ਵਧੀਆ ਦਸਤਖਤ"
 
-#: ../camel/camel-smime-context.c:510
+#: ../camel/camel-smime-context.c:511
 msgid "Bad signature"
 msgstr "ਗਲਤ ਦਸਤਖਤ"
 
-#: ../camel/camel-smime-context.c:512
+#: ../camel/camel-smime-context.c:513
 msgid "Content tampered with or altered in transit"
 msgstr "ਤਬਦੀਲੀ ਦੌਰਾਨ ਪ੍ਰਸੰਗ ਵਿਗੜ ਗਿਆ ਜਾਂ ਸੁਚੇਤ ਕੀਤਾ "
 
-#: ../camel/camel-smime-context.c:514
+#: ../camel/camel-smime-context.c:515
 msgid "Signing certificate not found"
 msgstr "ਦਸਤਖਤੀ ਸਰਟੀਫਿਕੇਟ ਨਹੀਂ ਲੱਭਿਆ ਹੈ"
 
-#: ../camel/camel-smime-context.c:516
+#: ../camel/camel-smime-context.c:517
 msgid "Signing certificate not trusted"
 msgstr "ਦਸਤਖਤੀ ਸਰਟੀਫਿਕੇਟ ਭਰੋਸੇਯੋਗ ਨਹੀਂ ਹੈ"
 
-#: ../camel/camel-smime-context.c:518
+#: ../camel/camel-smime-context.c:519
 msgid "Signature algorithm unknown"
 msgstr "ਅਣਜਾਣਾ ਦਸਤਖਤੀ ਐਲੋਗਰਿਥਮ"
 
-#: ../camel/camel-smime-context.c:520
+#: ../camel/camel-smime-context.c:521
 msgid "Signature algorithm unsupported"
 msgstr "ਦਸਤਖਤੀ ਐਲੋਗਰਿੱਥਮ ਸਹਾਇਕ ਨਹੀਂ ਹੈ"
 
-#: ../camel/camel-smime-context.c:522
+#: ../camel/camel-smime-context.c:523
 msgid "Malformed signature"
 msgstr "ਨਿਕਾਰਾ ਦਸਤਖਤ"
 
-#: ../camel/camel-smime-context.c:524
+#: ../camel/camel-smime-context.c:525
 msgid "Processing error"
 msgstr "ਪ੍ਰੋਸੈਂਸਿੰਗ ਗਲਤੀ"
 
-#: ../camel/camel-smime-context.c:566
+#: ../camel/camel-smime-context.c:568
 msgid "No signed data in signature"
 msgstr "ਦਸਤਖਤ ਵਿੱਚ ਡਾਟਾ ਦਸਤਖਤੀ ਨਹੀਂ"
 
-#: ../camel/camel-smime-context.c:571
+#: ../camel/camel-smime-context.c:573
 msgid "Digests missing from enveloped data"
 msgstr "ਸੰਖੇਪ ਲਪੇਟੇ ਡਾਟੇ ਤੋਂ ਬਿਨਾਂ ਹੈ"
 
-#: ../camel/camel-smime-context.c:584 ../camel/camel-smime-context.c:595
+#: ../camel/camel-smime-context.c:586 ../camel/camel-smime-context.c:597
 msgid "Cannot calculate digests"
 msgstr "ਸੰਖੇਪ ਨੂੰ ਮਿਣਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
 
-#: ../camel/camel-smime-context.c:602 ../camel/camel-smime-context.c:606
+#: ../camel/camel-smime-context.c:604 ../camel/camel-smime-context.c:608
 msgid "Cannot set message digests"
 msgstr "ਸੁਨੇਹਾ ਸੰਖੇਪ ਨੂੰ ਨਿਰਧਾਰਿਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ ਹੈ"
 
-#: ../camel/camel-smime-context.c:616 ../camel/camel-smime-context.c:621
+#: ../camel/camel-smime-context.c:618 ../camel/camel-smime-context.c:623
 msgid "Certificate import failed"
 msgstr "ਸਰਟੀਫਿਕੇਟ ਆਯਾਤ ਅਸਫਲ"
 
-#: ../camel/camel-smime-context.c:631
+#: ../camel/camel-smime-context.c:633
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr "ਸੁਨੇਹਾ ਹੀ ਸਰਟੀਫਿਕੇਟ ਹੈ, ਸਰਟੀਫਿਕੇਟ ਜਾਂਚੇ ਨਹੀਂ ਹਨ"
 
-#: ../camel/camel-smime-context.c:634
+#: ../camel/camel-smime-context.c:636
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr "ਸਰਟੀਫਿਕੇਟ ਸਿਰਫ਼ ਸੁਨੇਹਾ, ਸਰਟੀਫਿਕੇਟ ਆਯਾਤ ਅਤੇ ਜਾਂਚ ਹੋ ਸਕਦਾ ਹੈ"
 
-#: ../camel/camel-smime-context.c:638
+#: ../camel/camel-smime-context.c:640
 msgid "Cannot find signature digests"
 msgstr "ਦਸਤਖਤੀ ਸੰਖੇਪ ਨਹੀਂ ਲੱਭਾ ਹੈ"
 
-#: ../camel/camel-smime-context.c:654
+#: ../camel/camel-smime-context.c:656
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
 msgstr "ਦਸਤਖਤੀ: %s <%s>: %s\n"
 
-#: ../camel/camel-smime-context.c:832 ../camel/camel-smime-context.c:1114
+#: ../camel/camel-smime-context.c:835 ../camel/camel-smime-context.c:1121
 msgid "Cannot create encoder context"
 msgstr "ਇਕੋਡਰ ਪ੍ਰਸੰਗ ਨਹੀਂ ਬਣਾਇਆ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: ../camel/camel-smime-context.c:838
+#: ../camel/camel-smime-context.c:841
 msgid "Failed to add data to CMS encoder"
 msgstr "CMS ਇਕੋਡਰ ਵਿੱਚ ਡਾਟਾ ਸ਼ਾਮਿਲ ਕਰਨ ਤੋਂ ਅਸਮਰੱਥ"
 
-#: ../camel/camel-smime-context.c:843 ../camel/camel-smime-context.c:1131
+#: ../camel/camel-smime-context.c:846 ../camel/camel-smime-context.c:1138
 msgid "Failed to encode data"
 msgstr "ਡਾਟਾ ਇਕੋਡਿਗ ਕਰਨ ਵਿੱਚ ਅਸਫਲ"
 
-#: ../camel/camel-smime-context.c:981 ../camel/camel-smime-context.c:1220
+#: ../camel/camel-smime-context.c:987 ../camel/camel-smime-context.c:1233
 msgid "Decoder failed"
 msgstr "ਡੀਕੋਡਰ ਅਸਫਲ"
 
-#: ../camel/camel-smime-context.c:1049
+#: ../camel/camel-smime-context.c:1056
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "ਆਮ ਬਲਕ ਇਕ੍ਰਿਪਸ਼ਨ ਐਲੋਗਰਿਥਮ ਨੂੰ ਲੱਭਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: ../camel/camel-smime-context.c:1057
+#: ../camel/camel-smime-context.c:1064
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "ਇਕ੍ਰਿਪਸ਼ਨ ਬਲਕ ਕੀ ਲਈ ਜਾਰੀ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: ../camel/camel-smime-context.c:1068
+#: ../camel/camel-smime-context.c:1075
 msgid "Cannot create CMS Message"
 msgstr "CMS ਸੁਨੇਹਾ ਨਹੀਂ ਬਣਾਇਆ ਜਾ ਸਕਿਆ ਹੈ"
 
-#: ../camel/camel-smime-context.c:1074
+#: ../camel/camel-smime-context.c:1081
 msgid "Cannot create CMS Enveloped data"
 msgstr "CMS ਲਿਫਾਫਾ ਡਾਟਾ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
 
-#: ../camel/camel-smime-context.c:1080
+#: ../camel/camel-smime-context.c:1087
 msgid "Cannot attach CMS Enveloped data"
 msgstr "CMS ਲਿਫਾਫਾ ਡਾਟਾ ਨੱਥੀ ਨਹੀਂ ਹੋ ਸਕਦੀ"
 
-#: ../camel/camel-smime-context.c:1086
+#: ../camel/camel-smime-context.c:1093
 msgid "Cannot attach CMS data object"
 msgstr "CMS ਡਾਟਾ ਇਕਾਈ ਸ਼ਾਮਿਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ ਹੈ"
 
-#: ../camel/camel-smime-context.c:1095
+#: ../camel/camel-smime-context.c:1102
 msgid "Cannot create CMS Recipient information"
 msgstr "CMS ਸੁਨੇਹੀ ਜਾਣਕਾਰੀ ਬਣਾਈ ਨਹੀਂ ਜਾ ਸਕਦੀ"
 
-#: ../camel/camel-smime-context.c:1100
+#: ../camel/camel-smime-context.c:1107
 msgid "Cannot add CMS Recipient information"
 msgstr "CMS ਸੁਨੇਹੀ ਜਾਣਕਾਰੀ ਸ਼ਾਮਲ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ"
 
-#: ../camel/camel-smime-context.c:1125
+#: ../camel/camel-smime-context.c:1132
 msgid "Failed to add data to encoder"
 msgstr "ਡਾਟਾ ਨੂੰ ਇਕੋਡਰ ਵਿੱਚ ਸ਼ਾਮਿਲ ਕਰਨ ਵਿੱਚ ਅਸਫਲ"
 
-#: ../camel/camel-smime-context.c:1227
+#: ../camel/camel-smime-context.c:1240
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME Decrypt: ਕੋਈ ਇਕ੍ਰਿਪਟਡ ਪ੍ਰਸੰਗ ਨਹੀਂ ਲੱਭਾ ਹੈ"
 
-#: ../camel/camel-store.c:444
+#: ../camel/camel-store.c:2184
 #, c-format
 msgid "Cannot create folder '%s': folder exists"
 msgstr "ਫੋਲਡਰ '%s' ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: ਫੋਲਡਰ ਮੌਜੂਦ ਹੈ"
 
-#: ../camel/camel-store.c:543
-#, c-format
-msgid "Cannot create folder: %s: folder exists"
-msgstr "ਫੋਲਡਰ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ %s: ਮੌਜੂਦ ਹੈ"
-
-#: ../camel/camel-store.c:616 ../camel/camel-vee-store.c:263
-#: ../camel/providers/local/camel-maildir-store.c:224
-#, c-format
-msgid "Cannot delete folder: %s: Invalid operation"
-msgstr "ਫੋਲਡਰ ਹਟਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s: ਗਲਤ ਕਾਰਵਾਈ"
-
-#: ../camel/camel-store.c:680 ../camel/camel-vee-store.c:213
-#: ../camel/providers/local/camel-maildir-store.c:314
-#, c-format
-msgid "Cannot rename folder: %s: Invalid operation"
-msgstr "ਫੋਲਡਰ ਦਾ ਨਾਂ ਤਬਦੀਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ: %s: ਗਲਤ ਕਾਰਵਾਈ"
-
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:1128 ../camel/camel-vtrash-folder.c:48
+#: ../camel/camel-store.c:2375 ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "ਰੱਦੀ"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:1131 ../camel/camel-vtrash-folder.c:50
+#: ../camel/camel-store.c:2378 ../camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "ਜੰਕ"
 
-#: ../camel/camel-tcp-stream-raw.c:809
+#: ../camel/camel-store.c:2811
+#, c-format
+msgid "Cannot create folder: %s: folder exists"
+msgstr "ਫੋਲਡਰ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ %s: ਮੌਜੂਦ ਹੈ"
+
+#: ../camel/camel-store.c:2938 ../camel/camel-vee-store.c:367
+#: ../camel/providers/local/camel-maildir-store.c:272
+#, c-format
+msgid "Cannot delete folder: %s: Invalid operation"
+msgstr "ਫੋਲਡਰ ਹਟਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s: ਗਲਤ ਕਾਰਵਾਈ"
+
+#: ../camel/camel-store.c:3079 ../camel/camel-vee-store.c:417
+#: ../camel/providers/local/camel-maildir-store.c:662
+#, c-format
+msgid "Cannot rename folder: %s: Invalid operation"
+msgstr "ਫੋਲਡਰ ਦਾ ਨਾਂ ਤਬਦੀਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ: %s: ਗਲਤ ਕਾਰਵਾਈ"
+
+#: ../camel/camel-tcp-stream-raw.c:747 ../camel/camel-tcp-stream-raw.c:758
+#, c-format
+#| msgid "The proxy host does not support SOCKS5"
+msgid "The proxy host does not support SOCKS4"
+msgstr "ਪਰਾਕਸੀ ਹੋਸਟ SOCKS4 ਲਈ ਸਹਾਇਕ ਨਹੀਂ"
+
+#: ../camel/camel-tcp-stream-raw.c:769
+#, c-format
+msgid "The proxy host denied our request: code %d"
+msgstr "ਪਰਾਕਸੀ ਹੋਸਟ ਨੇ ਸਾਡੀ ਮੰਗ ਨੂੰ ਇਨਕਾਰਿਆ: ਕੋਡ %d"
+
+#: ../camel/camel-tcp-stream-raw.c:865 ../camel/camel-tcp-stream-raw.c:871
 #, c-format
 msgid "The proxy host does not support SOCKS5"
 msgstr "ਪਰਾਕਸੀ ਹੋਸਟ SOCKS5 ਲਈ ਸਹਾਇਕ ਨਹੀਂ"
 
-#: ../camel/camel-tcp-stream-raw.c:815
+#: ../camel/camel-tcp-stream-raw.c:877
 #, c-format
 msgid "Could not find a suitable authentication type: code 0x%x"
 msgstr "ਢੁੱਕਵੀ ਪਰਮਾਣਕਿਤਾ ਕਿਸਮ ਨਹੀਂ ਲੱਭੀ ਜਾ ਸਕੀ: code 0x%x"
 
-#: ../camel/camel-tcp-stream-raw.c:827
+#: ../camel/camel-tcp-stream-raw.c:889
 msgid "General SOCKS server failure"
 msgstr "ਆਮ SOCKS ਸਰਵਰ ਫੇਲ੍ਹ ਹੈ"
 
-#: ../camel/camel-tcp-stream-raw.c:828
+#: ../camel/camel-tcp-stream-raw.c:890
 msgid "SOCKS server's rules do not allow connection"
 msgstr "SOCKS ਸਰਵਰ ਦੇ ਨਿਯਮ ਕੁਨੈਕਸ਼ਨ ਮਨਜ਼ੂਰ ਨਹੀਂ ਕਰਦੇ"
 
-#: ../camel/camel-tcp-stream-raw.c:829
+#: ../camel/camel-tcp-stream-raw.c:891
 msgid "Network is unreachable from SOCKS server"
 msgstr "ਨੈੱਟਵਰਕ SOCKS ਸਰਵਰ ਤੋਂ ਪਹੁੰਚਯੋਗ ਨਹੀਂ ਹੈ"
 
-#: ../camel/camel-tcp-stream-raw.c:830
+#: ../camel/camel-tcp-stream-raw.c:892
 msgid "Host is unreachable from SOCKS server"
 msgstr "ਹੋਸਟ SOCKS ਸਰਵਰ ਤੋਂ ਪਹੁੰਚਯੋਗ ਨਹੀਂ ਹੈ"
 
-#: ../camel/camel-tcp-stream-raw.c:831
+#: ../camel/camel-tcp-stream-raw.c:893
 msgid "Connection refused"
 msgstr "ਕੁਨੈਕਸ਼ਨ ਤੋਂ ਇਨਕਾਰ ਕੀਤਾ।"
 
-#: ../camel/camel-tcp-stream-raw.c:832
+#: ../camel/camel-tcp-stream-raw.c:894
 msgid "Time-to-live expired"
 msgstr "ਟਾਈਮ-ਟੂ-ਲਿਵ ਖਤਮ"
 
-#: ../camel/camel-tcp-stream-raw.c:833
+#: ../camel/camel-tcp-stream-raw.c:895
 msgid "Command not supported by SOCKS server"
 msgstr "SOCKS ਸਰਵਰ ਵਲੋਂ ਕਮਾਂਡ ਸਹਾਇਕ ਨਹੀਂ"
 
-#: ../camel/camel-tcp-stream-raw.c:834
+#: ../camel/camel-tcp-stream-raw.c:896
 msgid "Address type not supported by SOCKS server"
 msgstr "SOCKS ਸਰਵਰ ਵਲੋਂ ਐਡਰੈੱਸ ਕਿਸਮ ਸਹਾਇਕ ਨਹੀਂ"
 
-#: ../camel/camel-tcp-stream-raw.c:835
+#: ../camel/camel-tcp-stream-raw.c:897
 msgid "Unknown error from SOCKS server"
 msgstr "SOCKS ਸਰਵਰ ਤੋਂ ਅਣਜਾਣ ਗਲਤੀ"
 
-#: ../camel/camel-tcp-stream-raw.c:865
+#: ../camel/camel-tcp-stream-raw.c:930
 #, c-format
 msgid "Got unknown address type from SOCKS server"
 msgstr "SOCKS ਸਰਵਰ ਤੋਂ ਅਣਜਾਣ ਐਡਰੈਸ ਕਿਸਮ ਮਿਲੀ"
 
-#: ../camel/camel-tcp-stream-raw.c:882
+#: ../camel/camel-tcp-stream-raw.c:948
 #, c-format
 msgid "Incomplete reply from SOCKS server"
 msgstr "SOCKS ਸਰਵਰ ਤੋਂ ਅਧੂਰਾ ਜਵਾਬ"
 
-#: ../camel/camel-tcp-stream-raw.c:897
+#: ../camel/camel-tcp-stream-raw.c:968
 #, c-format
 msgid "Hostname is too long (maximum is 255 characters)"
 msgstr "ਹੋਸਟ-ਨਾਂ ਬਹੁਤ ਲੰਮਾ ਹੈ (ਵੱਧੋ-ਵੱਧ ੨੫੫ ਅੱਖਰ)"
 
 #. SOCKS5
 #. reserved - must be 0
-#: ../camel/camel-tcp-stream-raw.c:929 ../camel/camel-tcp-stream-raw.c:939
+#: ../camel/camel-tcp-stream-raw.c:1000 ../camel/camel-tcp-stream-raw.c:1010
 #, c-format
 msgid "Invalid reply from proxy server"
 msgstr "ਪਰਾਕਸੀ ਸਰਵਰ ਤੋਂ ਗਲਤ ਜਵਾਬ"
@@ -2693,35 +2741,35 @@ msgstr ""
 msgid "Could not parse URL '%s'"
 msgstr "URL '%s' ਨੂੰ ਪਾਰਸ ਨਹੀ ਕੀਤਾ ਜਾ ਸਕਦਾ"
 
-#: ../camel/camel-vee-folder.c:1044
-#, c-format
-msgid "Error storing '%s': "
-msgstr "'%s' ਸਟੋਰ ਕਰਨ ਦੌਰਾਨ ਗਲਤੀ: "
-
-#: ../camel/camel-vee-folder.c:1117
-#, c-format
-msgid "No such message %s in %s"
-msgstr "%2$s ਵਿੱਚ %1$s ਤਰ੍ਹਾਂ ਦਾ ਕੋਈ ਸੁਨੇਹਾ ਨਹੀਂ ਹੈ"
-
-#: ../camel/camel-vee-folder.c:1133 ../camel/camel-vee-folder.c:1148
+#: ../camel/camel-vee-folder.c:1251 ../camel/camel-vee-folder.c:1414
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "ਫਰਜ਼ੀ ਫੋਲਡਰ ਵਿੱਚ ਸੁਨਹਿਆਂ ਨੂੰ ਕਾਪੀ ਜਾਂ ਭੇਜਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ"
 
+#: ../camel/camel-vee-folder.c:1287
+#, c-format
+msgid "No such message %s in %s"
+msgstr "%2$s ਵਿੱਚ %1$s ਤਰ੍ਹਾਂ ਦਾ ਕੋਈ ਸੁਨੇਹਾ ਨਹੀਂ ਹੈ"
+
+#: ../camel/camel-vee-folder.c:1355
+#, c-format
+msgid "Error storing '%s': "
+msgstr "'%s' ਸਟੋਰ ਕਰਨ ਦੌਰਾਨ ਗਲਤੀ: "
+
 #: ../camel/camel-vee-store.c:141 ../camel/camel-vee-store.c:143
-#: ../camel/camel-vee-store.c:417
+#: ../camel/camel-vee-store.c:322
 msgid "Unmatched"
 msgstr "ਨਾ-ਮਿਲਦਾ"
 
-#: ../camel/camel-vee-store.c:223
-#, c-format
-msgid "Cannot rename folder: %s: No such folder"
-msgstr "ਫੋਲਡਰ ਦਾ ਨਾਂ ਤਬਦੀਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ: %s: ਇਸ ਤਰਾਂ ਕੋਈ ਫੋਲਡਰ ਨਹੀਂ ਹੈ"
-
-#: ../camel/camel-vee-store.c:289
+#: ../camel/camel-vee-store.c:393
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
 msgstr "ਫੋਲਡਰ ਨੂੰ ਹਟਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s: ਇਸਤਰਾਂ ਦਾ ਕੋਈ ਫੋਲਡਰ ਨਹੀਂ ਹੈ"
+
+#: ../camel/camel-vee-store.c:427
+#, c-format
+msgid "Cannot rename folder: %s: No such folder"
+msgstr "ਫੋਲਡਰ ਦਾ ਨਾਂ ਤਬਦੀਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ: %s: ਇਸ ਤਰਾਂ ਕੋਈ ਫੋਲਡਰ ਨਹੀਂ ਹੈ"
 
 #: ../camel/camel-vtrash-folder.c:49
 msgid "Cannot copy messages to the Trash folder"
@@ -2731,7 +2779,48 @@ msgstr "ਸੁਨੇਹੇ ਨੂੰ ਰੱਦੀ ਵਿੱਚ ਕਾਪੀ ਨ�
 msgid "Cannot copy messages to the Junk folder"
 msgstr "ਸੁਨੇਹੇ ਨੂੰ ਜੰਕ ਫੋਲਡਰ ਵਿੱਚ ਕਾਪੀ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:139
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:959
+#: ../camel/providers/imap/camel-imap-folder.c:390
+#, c-format
+msgid "Could not load summary for %s"
+msgstr "%s ਲਈ ਸੰਖੇਪ ਲੋਡ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1035
+#, c-format
+msgid "Checking for deleted messages %s"
+msgstr "ਹਟਾਏ ਗਏ ਸੁਨੇਹੇ %s ਲਈ ਚੈਕ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1520
+#: ../camel/providers/groupwise/camel-groupwise-store.c:672
+#: ../camel/providers/groupwise/camel-groupwise-store.c:803
+#: ../camel/providers/imap/camel-imap-folder.c:3919
+#: ../camel/providers/imap/camel-imap-folder.c:4001
+#: ../camel/providers/imapx/camel-imapx-server.c:3889
+#: ../camel/providers/imapx/camel-imapx-server.c:4020
+#, c-format
+msgid "Fetching summary information for new messages in %s"
+msgstr "%s ਵਿੱਚ ਨਵੇਂ ਸੁਨਹਿਆਂ ਲਈ ਸੰਖੇਪ ਜਾਣਕਾਰੀ ਲਈ ਜਾ ਰਹੀ ਹੈ"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1992
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2046
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2710
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2720
+#, c-format
+msgid "Could not get message"
+msgstr "ਕੈਂਚੇ ਫਾਇਲ ਨੂੰ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2430
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2480
+#, c-format
+msgid "Cannot append message to folder '%s': %s"
+msgstr "ਫੋਲਡਰ '%s' ਲਈ ਸੁਨੇਹਾ ਸ਼ਾਮਲ ਨਹੀਂ ਹੋ ਸਕਦਾ: %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2466
+#, c-format
+msgid "Cannot create message: %s"
+msgstr "ਸੁਨੇਹਾ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ: %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2646
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2740,83 +2829,41 @@ msgstr ""
 "ਸੁਨੇਹਾ ਪ੍ਰਾਪਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ: %s\n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:139
-#: ../camel/providers/local/camel-maildir-folder.c:233
-#: ../camel/providers/local/camel-maildir-folder.c:268
-#: ../camel/providers/local/camel-maildir-folder.c:380
-#: ../camel/providers/local/camel-mbox-folder.c:329
-#: ../camel/providers/local/camel-mbox-folder.c:380
-#: ../camel/providers/local/camel-mh-folder.c:215
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2646
+#: ../camel/providers/local/camel-maildir-folder.c:100
+#: ../camel/providers/local/camel-maildir-folder.c:307
+#: ../camel/providers/local/camel-mbox-folder.c:117
+#: ../camel/providers/local/camel-mbox-folder.c:325
+#: ../camel/providers/local/camel-mh-folder.c:156
 msgid "No such message"
 msgstr "ਇੰਝ ਦਾ ਕੋਈ ਸੁਨੇਹਾ ਨਹੀਂ"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:158
-#: ../camel/providers/nntp/camel-nntp-folder.c:244
-#: ../camel/providers/nntp/camel-nntp-folder.c:337
-#: ../camel/providers/pop3/camel-pop3-folder.c:714
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2665
+#: ../camel/providers/nntp/camel-nntp-folder.c:251
+#: ../camel/providers/nntp/camel-nntp-folder.c:418
+#: ../camel/providers/pop3/camel-pop3-folder.c:455
 #, c-format
 msgid "Cannot get message %s: "
 msgstr "%s ਸੁਨੇਹਾ ਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ: "
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:176
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:186
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2645
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2683
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2693
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2897
 #, c-format
 msgid "This message is not available in offline mode."
 msgstr "ਇਹ ਸੁਨੇਹਾ ਆਫਲਾਇਨ ਵਿੱਚ ਉਪਲੱਬਧ ਨਹੀਂ ਹੈ।"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:203
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:213
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2109
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2163
-#, c-format
-msgid "Could not get message"
-msgstr "ਕੈਂਚੇ ਫਾਇਲ ਨੂੰ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ"
-
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1038
-#: ../camel/providers/imap/camel-imap-folder.c:376
-#, c-format
-msgid "Could not load summary for %s"
-msgstr "%s ਲਈ ਸੰਖੇਪ ਲੋਡ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ"
-
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1112
-#, c-format
-msgid "Checking for deleted messages %s"
-msgstr "ਹਟਾਏ ਗਏ ਸੁਨੇਹੇ %s ਲਈ ਚੈਕ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
-
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1637
-#: ../camel/providers/groupwise/camel-groupwise-store.c:654
-#: ../camel/providers/groupwise/camel-groupwise-store.c:779
-#: ../camel/providers/imap/camel-imap-folder.c:3814
-#: ../camel/providers/imap/camel-imap-folder.c:3892
-#: ../camel/providers/imapx/camel-imapx-server.c:3719
-#: ../camel/providers/imapx/camel-imapx-server.c:3844
-#, c-format
-msgid "Fetching summary information for new messages in %s"
-msgstr "%s ਵਿੱਚ ਨਵੇਂ ਸੁਨਹਿਆਂ ਲਈ ਸੰਖੇਪ ਜਾਣਕਾਰੀ ਲਈ ਜਾ ਰਹੀ ਹੈ"
-
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2475
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2525
-#, c-format
-msgid "Cannot append message to folder '%s': %s"
-msgstr "ਫੋਲਡਰ '%s' ਲਈ ਸੁਨੇਹਾ ਸ਼ਾਮਲ ਨਹੀਂ ਹੋ ਸਕਦਾ: %s"
-
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2511
-#, c-format
-msgid "Cannot create message: %s"
-msgstr "ਸੁਨੇਹਾ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ: %s"
-
-#: ../camel/providers/groupwise/camel-groupwise-journal.c:240
+#: ../camel/providers/groupwise/camel-groupwise-journal.c:248
 #, c-format
 msgid "Cannot get folder container %s"
 msgstr "ਫੋਲਡਰ ਬਕਸਾ %s ਪ੍ਰਾਪਤ ਕੀਤਾ ਜਾ ਸਕਿਆ"
 
-#: ../camel/providers/groupwise/camel-groupwise-journal.c:303
+#: ../camel/providers/groupwise/camel-groupwise-journal.c:318
 #, c-format
 msgid "Cannot append message in offline mode: cache unavailable"
 msgstr "ਆਫਲਾਇਨ ਵਿੱਚ ਸੁਨੇਹਾ ਸ਼ਾਮਿਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ: ਕੈਂਚੇ ਉਪਲੱਬਧ ਨਹੀਂ"
 
-#: ../camel/providers/groupwise/camel-groupwise-journal.c:320
+#: ../camel/providers/groupwise/camel-groupwise-journal.c:335
 msgid "Cannot append message in offline mode: "
 msgstr "ਆਫਲਾਇਨ ਵਿੱਚ ਸੁਨੇਹਾ ਸ਼ਾਮਿਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ: "
 
@@ -2826,13 +2873,13 @@ msgstr "ਨਵੀਂ ਮੇਲ ਲਈ ਚੈੱਕ ਕੀਤੀ ਜਾ ਰਿਹ
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:50
 #: ../camel/providers/imap/camel-imap-provider.c:42
-#: ../camel/providers/imapx/camel-imapx-provider.c:47
+#: ../camel/providers/imapx/camel-imapx-provider.c:46
 msgid "C_heck for new messages in all folders"
 msgstr "ਸਭ ਫੋਲਡਰਾਂ ਵਿੱਚ ਨਵੇਂ ਸੁਨੇਹਿਆਂ ਲਈ ਜਾਂਚ(_h)"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:53
 #: ../camel/providers/imap/camel-imap-provider.c:64
-#: ../camel/providers/imapx/camel-imapx-provider.c:73
+#: ../camel/providers/imapx/camel-imapx-provider.c:72
 #: ../camel/providers/local/camel-local-provider.c:42
 #: ../camel/providers/local/camel-local-provider.c:82
 #: ../camel/providers/local/camel-local-provider.c:102
@@ -2849,7 +2896,7 @@ msgstr "ਨਵੇਂ ਸੁਨੇਹਿਆਂ ਨੂੰ ਜੰਕ ਸਮੱਗ�
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:59
 #: ../camel/providers/imap/camel-imap-provider.c:70
-#: ../camel/providers/imapx/camel-imapx-provider.c:79
+#: ../camel/providers/imapx/camel-imapx-provider.c:78
 msgid "Only check for Junk messages in the IN_BOX folder"
 msgstr "ਆਉਣ-ਬਕਸਾ ਫੋਲਡਰ ਵਿੱਚ ਜੰਕ ਸੁਨੇਹਿਆਂ ਲਈ ਚੈੱਕ ਕਰੋ(_B)"
 
@@ -2875,9 +2922,9 @@ msgstr "Novell GroupWise ਸਰਵਰ ਵਰਤਣ ਲਈ"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:98
 #: ../camel/providers/imap/camel-imap-provider.c:97
-#: ../camel/providers/imapx/camel-imapx-provider.c:105
+#: ../camel/providers/imapx/camel-imapx-provider.c:104
 #: ../camel/providers/nntp/camel-nntp-provider.c:72
-#: ../camel/providers/pop3/camel-pop3-provider.c:70
+#: ../camel/providers/pop3/camel-pop3-provider.c:73
 msgid "Password"
 msgstr "ਪਾਸਵਰਡ"
 
@@ -2890,75 +2937,75 @@ msgstr "ਇਸ ਚੋਣ ਨਾਲ GroupWise ਸਰਵਰ ਨਾਲ ਇੱਕ �
 msgid "Host or user not available in url"
 msgstr "url ਵਿੱਚ ਹੋਸਟ ਜਾਂ ਯੂਜ਼ਰ ਉਪਲੱਬਧ ਨਹੀਂ"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:207
-#: ../camel/providers/imap/camel-imap-store.c:1188
-#: ../camel/providers/imapx/camel-imapx-server.c:2972
+#: ../camel/providers/groupwise/camel-groupwise-store.c:209
+#: ../camel/providers/imap/camel-imap-store.c:801
+#: ../camel/providers/imapx/camel-imapx-server.c:3100
 #, c-format
 msgid "You did not enter a password."
 msgstr "ਤੁਸੀਂ ਪਾਸਵਰਡ ਨਹੀਂ ਭਰਿਆ ਹੈ।"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:328
+#: ../camel/providers/groupwise/camel-groupwise-store.c:332
 msgid "Some features may not work correctly with your current server version"
 msgstr "ਤੁਹਾਡੇ ਸਰਵਰ ਦੇ ਮੌਜੂਦਾ ਵਰਜਨ ਨਾਲ ਕੁਝ ਗੁਣ ਠੀਕ ਤਰਾਂ ਕੰਮ ਨਹੀਂ ਕਰ ਸਕਦੇ ਹਨ"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:550
-#: ../camel/providers/imap/camel-imap-store.c:1757
-#: ../camel/providers/imap/camel-imap-store.c:1952
-#: ../camel/providers/imapx/camel-imapx-store.c:410
+#: ../camel/providers/groupwise/camel-groupwise-store.c:563
+#: ../camel/providers/imap/camel-imap-store.c:1808
+#: ../camel/providers/imap/camel-imap-store.c:2005
+#: ../camel/providers/imapx/camel-imapx-store.c:342
 #, c-format
 msgid "No such folder %s"
 msgstr "ਫੋਲਡਰ %s ਮੌਜੂਦ ਨਹੀਂ ਹੈ"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1187
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1224
 #, c-format
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "ਆਫਲਾਇਨ ਢੰਗ ਵਿੱਚ GroupWise ਫੋਲਡਰ ਬਣਾਉਣੇ ਸੰਭਵ ਨਹੀਂ ਹਨ।"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1196
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1233
 #, c-format
 msgid "Cannot create a special system folder"
 msgstr "ਖਾਸ ਸਿਸਟਮ ਫੋਲਡਰ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1206
-#: ../camel/providers/imap/camel-imap-store.c:1835
-#: ../camel/providers/imap/camel-imap-store.c:2257
-#: ../camel/providers/imapx/camel-imapx-store.c:873
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1243
+#: ../camel/providers/imap/camel-imap-store.c:1886
+#: ../camel/providers/imap/camel-imap-store.c:2323
+#: ../camel/providers/imapx/camel-imapx-store.c:1341
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "ਮੁੱਢਲੇ ਫੋਲਡਰ ਵਿੱਚ ਸਬ-ਫੋਲਡਰ ਸਵੀਕਾਰ ਨਹੀਂ ਹੈ।"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1289
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1314
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1328
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1353
 #, c-format
 msgid "Cannot rename GroupWise folder '%s' to '%s'"
 msgstr "GroupWise ਫੋਲਡਰ '%s' ਦਾ ਨਾਂ-ਤਬਦੀਲ '%s' ਲਈ ਕੀਤਾ ਜਾ ਸਕਦਾ"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1348
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:54
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1387
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:47
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise ਸਰਵਰ %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1350
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1389
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "ਗਰੁੱਪਵਾਇਜ਼ ਸੇਵਾ %s ਲਈ %s ਉੱਤੇ"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:58
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:51
 #, c-format
 msgid "GroupWise mail delivery via %s"
 msgstr "%s ਨਾਲ ਗਰੁੱਪਵਾਈਜ ਪੱਤਰ"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:95
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:97
 msgid "Sending Message"
 msgstr "ਸੁਨੇਹਾ ਭੇਜਿਆ ਜਾ ਰਿਹਾ ਹੈ"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:105
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:107
 #, c-format
 msgid "Cannot get folder: Invalid operation on this store"
 msgstr "ਫੋਲਡਰ ਪ੍ਰਾਪਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ: ਇਸ ਸੰਭਾਲ ਤੇ ਗਲਤ ਕਾਰਵਾਈ"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:152
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:154
 #, c-format
 msgid ""
 "You have exceeded this account's storage limit. Your messages are queued in "
@@ -2968,36 +3015,36 @@ msgstr ""
 "ਤੁਸੀਂ ਇਹ ਅਕਾਊਂਟ ਦੀ ਸੰਭਾਲਣ ਸਮੱਰਥਾ ਤੋਂ ਵੱਧ ਗਏ ਹੋ। ਤੁਹਾਡਾ ਸੁਨੇਹਾ ਤੁਹਾਡੇ ਆਉਟ-ਬਕਸੇ 'ਚ ਪਿਆ ਹੈ। ਆਪਣੇ "
 "ਕੁਝ ਪੱਤਰ ਹਟਾ ਕੇ/ਅਕਾਇਵ ਬਣਾ ਕੇ ਭੇਜੋ/ਲਵੋ ਬਟਨ ਦੱਬ ਕੇ ਮੁੜ ਭੇਜੋ।\n"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:157
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:159
 #, c-format
 msgid "Could not send message: %s"
 msgstr "ਸੁਨੇਹਾ ਨਹੀਂ ਭੇਜਿਆ ਜਾ ਸਕਦਾ : %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:190
-#: ../camel/providers/imap/camel-imap-command.c:288
+#: ../camel/providers/imap/camel-imap-command.c:197
+#: ../camel/providers/imap/camel-imap-command.c:301
 #, c-format
 msgid "No output stream"
 msgstr "ਕੋਈ ਆਉਟਪੁੱਟ ਸਟਰੀਮ"
 
-#: ../camel/providers/imap/camel-imap-command.c:198
-#: ../camel/providers/imap/camel-imap-command.c:296
+#: ../camel/providers/imap/camel-imap-command.c:205
+#: ../camel/providers/imap/camel-imap-command.c:309
 #, c-format
 msgid "No input stream"
 msgstr "ਇੰਪੁੱਟ ਸਟਰੀਮ ਨਹੀਂ"
 
-#: ../camel/providers/imap/camel-imap-command.c:245
+#: ../camel/providers/imap/camel-imap-command.c:255
 #, c-format
 msgid "Operation cancelled"
 msgstr "ਕਾਰਵਾਈ ਅਸਫਲ"
 
-#: ../camel/providers/imap/camel-imap-command.c:353
+#: ../camel/providers/imap/camel-imap-command.c:373
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "ਸਰਵਰ ਅਸਧਾਰਨ ਤੌਰ ਤੇ ਵੱਖ ਹੋ ਗਿਆ: %s"
 
 #. for imap ALERT codes, account user@host
 #. we might get a ']' from a BAD response since we +12, but who cares?
-#: ../camel/providers/imap/camel-imap-command.c:373
+#: ../camel/providers/imap/camel-imap-command.c:394
 #, c-format
 msgid ""
 "Alert from IMAP server %s@%s:\n"
@@ -3006,79 +3053,79 @@ msgstr ""
 "IMAP ਸਰਵਰ %s@%s ਵਲੋਂ ਚੇਤਾਵਨੀ:\n"
 "%s"
 
-#: ../camel/providers/imap/camel-imap-command.c:444
+#: ../camel/providers/imap/camel-imap-command.c:468
 #, c-format
 msgid "Unexpected response from IMAP server: %s"
 msgstr "IMAP ਸਰਵਰ ਵਲੋਂ ਅਸਧਾਰਨ ਜਵਾਬ: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:456
+#: ../camel/providers/imap/camel-imap-command.c:480
 #, c-format
 msgid "IMAP command failed: %s"
 msgstr "IMAP ਕਮਾਂਡ ਅਸਫਲ: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:532
+#: ../camel/providers/imap/camel-imap-command.c:560
 #, c-format
 msgid "Server response ended too soon."
 msgstr "ਸਰਵਰ ਦਾ ਜਵਾਬ ਬੜੀ ਛੇਤੀ ਸਮਾਪਤ ਹੋ ਗਿਆ ਹੈ।"
 
-#: ../camel/providers/imap/camel-imap-command.c:740
+#: ../camel/providers/imap/camel-imap-command.c:771
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "IMAP ਸਰਵਰ ਦੇ ਜਵਾਬ ਵਿੱਚ %s ਜਾਣਕਾਰੀ ਨਹੀਂ ਸੀ"
 
-#: ../camel/providers/imap/camel-imap-command.c:778
+#: ../camel/providers/imap/camel-imap-command.c:809
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "IMAP ਸਰਵਰ ਤੋਂ ਅਸਧਾਰਨ ਸਭ ਠੀਕ ਹੈਂ ਜਵਾਬ: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:281
+#: ../camel/providers/imap/camel-imap-folder.c:291
 msgid "Always check for new mail in this folder"
 msgstr "ਇਸ ਫੋਲਡਰ ਵਿੱਚ ਹਮੇਸ਼ਾ ਨਵੀਂ ਚਿੱਠੀ ਵੇਖੋ"
 
-#: ../camel/providers/imap/camel-imap-folder.c:353
+#: ../camel/providers/imap/camel-imap-folder.c:367
 #, c-format
 msgid "Could not create directory %s: %s"
 msgstr "ਡਾਇਰੈਕਟਰੀ %s ਬਣਾਈ ਨਹੀਂ ਜਾ ਸਕਦੀ ਹੈ: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:960
-#: ../camel/providers/imapx/camel-imapx-server.c:3759
+#: ../camel/providers/imap/camel-imap-folder.c:990
+#: ../camel/providers/imapx/camel-imapx-server.c:3933
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "%s ਵਿੱਚ ਤਬਦੀਲ ਸੁਨੇਹਿਆਂ ਦੀ ਜਾਂਚ ਜਾਰੀ ਹੈ"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3231
+#: ../camel/providers/imap/camel-imap-folder.c:3326
 msgid "Unable to retrieve message: "
 msgstr "ਸੁਨੇਹਾ ਲੈਣ ਲਈ ਅਸਮਰੱਥ: "
 
-#: ../camel/providers/imap/camel-imap-folder.c:3266
-#: ../camel/providers/imapx/camel-imapx-server.c:4935
+#: ../camel/providers/imap/camel-imap-folder.c:3361
+#: ../camel/providers/imapx/camel-imapx-server.c:5217
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "ਸੁਨੇਹਾ ID %s ਪ੍ਰਾਪਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3267
-#: ../camel/providers/imapx/camel-imapx-server.c:4936
+#: ../camel/providers/imap/camel-imap-folder.c:3362
+#: ../camel/providers/imapx/camel-imapx-server.c:5218
 msgid "No such message available."
 msgstr "ਇੰਝ ਦਾ ਕੋਈ ਸੁਨੇਹਾ ਨਹੀਂ ਹੈ।"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3341
-#: ../camel/providers/imap/camel-imap-folder.c:4211
-#: ../camel/providers/nntp/camel-nntp-folder.c:326
+#: ../camel/providers/imap/camel-imap-folder.c:3437
+#: ../camel/providers/imap/camel-imap-folder.c:4332
+#: ../camel/providers/nntp/camel-nntp-folder.c:407
 #, c-format
 msgid "This message is not currently available"
 msgstr "ਇਹ ਸੁਨੇਹਾ ਮੌਕੇ ਤੇ ਉਪਲੱਬਧ ਹੈ"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4021
+#: ../camel/providers/imap/camel-imap-folder.c:4133
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "ਸਰਵਰ ਤੋਂ ਅਧੂਰਾ ਜਵਾਬ: ਸੁਨੇਹਾ %d ਲਈ ਕੋਈ ਜਾਣਕਾਰੀ ਉਪਲੱਬਧ ਨਹੀਂ ਹੈ"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4031
+#: ../camel/providers/imap/camel-imap-folder.c:4143
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "ਅਧੂਰਾ ਸਰਵਰ ਜਵਾਬ: ਸੁਨੇਹੇ %d ਲਈ ਕੋਈ UID ਉਪਲੱਬਧ ਨਹੀਂ ਹੈ"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4251
+#: ../camel/providers/imap/camel-imap-folder.c:4372
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "FETCH ਜਵਾਬ ਵਿੱਚ ਸੁਨੇਹਾ ਭਾਗ ਨਹੀਂ ਮਿਲਿਆ।"
@@ -3093,33 +3140,33 @@ msgstr "ਕੈਸ਼ ਡਾਇਰੈਕਟਰੀ ਖੋਲ੍ਹੀ ਨਹੀਂ
 msgid "Failed to cache message %s: %s"
 msgstr "ਸੁਨੇਹਾ %s ਕੈਸ ਲੈਣ ਵਿੱਚ ਅਸਫਲ: %s"
 
-#: ../camel/providers/imap/camel-imap-message-cache.c:388
+#: ../camel/providers/imap/camel-imap-message-cache.c:391
 #, c-format
 msgid "Failed to cache message %s: "
 msgstr "ਸੁਨੇਹਾ %s ਕੈਸ਼ ਕਰਨ ਲਈ ਫੇਲ੍ਹ: "
 
-#: ../camel/providers/imap/camel-imap-message-cache.c:525
+#: ../camel/providers/imap/camel-imap-message-cache.c:529
 #, c-format
 msgid "Failed to cache %s: "
 msgstr "ਕੈਸ %s ਲਈ ਅਸਫਲ: "
 
 #: ../camel/providers/imap/camel-imap-provider.c:40
-#: ../camel/providers/imapx/camel-imapx-provider.c:41
+#: ../camel/providers/imapx/camel-imapx-provider.c:40
 msgid "Checking for New Mail"
 msgstr "ਨਵੇਂ ਮੇਲ ਲਈ ਚੈੱਕ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
 
 #: ../camel/providers/imap/camel-imap-provider.c:44
-#: ../camel/providers/imapx/camel-imapx-provider.c:49
+#: ../camel/providers/imapx/camel-imapx-provider.c:48
 msgid "Ch_eck for new messages in subscribed folders"
 msgstr "ਮੈਂਬਰ ਬਣਾਏ ਫੋਲਡਰਾਂ ਵਿੱਚ ਨਵੇਂ ਸੁਨੇਹੇ ਚੈੱਕ ਕਰੋ(_e)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:48
-#: ../camel/providers/imapx/camel-imapx-provider.c:53
+#: ../camel/providers/imapx/camel-imapx-provider.c:52
 msgid "Connection to Server"
 msgstr "ਸਰਵਰ ਨਾਲ ਕੁਨੈਕਟ ਕਰੋ"
 
 #: ../camel/providers/imap/camel-imap-provider.c:50
-#: ../camel/providers/imapx/camel-imapx-provider.c:55
+#: ../camel/providers/imapx/camel-imapx-provider.c:54
 msgid "_Use custom command to connect to server"
 msgstr "ਸਰਵਰ ਨਾਲ ਜੁੜਨ ਲਈ ਪਸੰਦੀਦਾ ਕਮਾਂਡ ਵਰਤੋਂ(_U)"
 
@@ -3128,18 +3175,18 @@ msgid "Co_mmand:"
 msgstr "ਕਮਾਂਡ(_m):"
 
 #: ../camel/providers/imap/camel-imap-provider.c:56
-#: ../camel/providers/imapx/camel-imapx-provider.c:63
+#: ../camel/providers/imapx/camel-imapx-provider.c:62
 #: ../camel/providers/nntp/camel-nntp-provider.c:42
 msgid "Folders"
 msgstr "ਫੋਲਡਰ"
 
 #: ../camel/providers/imap/camel-imap-provider.c:58
-#: ../camel/providers/imapx/camel-imapx-provider.c:65
+#: ../camel/providers/imapx/camel-imapx-provider.c:64
 msgid "_Show only subscribed folders"
 msgstr "ਮੈਂਬਰੀ ਫੋਲਡਰ ਹੀ ਵੇਖੋ(_S)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:60
-#: ../camel/providers/imapx/camel-imapx-provider.c:68
+#: ../camel/providers/imapx/camel-imapx-provider.c:67
 msgid "O_verride server-supplied folder namespace"
 msgstr "ਸਰਵਰ-ਰਾਹੀਂ ਉਪਲੱਬਧ ਫੋਲਡਰ ਨਾਂ-ਥਾਂ ਉੱਪਰ(_v)"
 
@@ -3148,17 +3195,17 @@ msgid "Names_pace:"
 msgstr "ਨੇਮ-ਸਪੇਸ(_p):"
 
 #: ../camel/providers/imap/camel-imap-provider.c:66
-#: ../camel/providers/imapx/camel-imapx-provider.c:75
+#: ../camel/providers/imapx/camel-imapx-provider.c:74
 msgid "_Apply filters to new messages in INBOX on this server"
 msgstr "ਇਸ ਸਰਵਰ ਉੱਤੇ ਇਨ-ਬਾਕਸ(INBOX) ਵਿੱਚ ਨਵੇਂ ਸੁਨਹਿਆਂ ਉੱਤੇ ਫਿਲਟਰ ਲਗਾਓ(_A)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:68
-#: ../camel/providers/imapx/camel-imapx-provider.c:77
+#: ../camel/providers/imapx/camel-imapx-provider.c:76
 msgid "Check new messages for Jun_k contents"
 msgstr "ਨਵੇਂ ਸੁਨੇਹਿਆਂ ਨੂੰ ਜੰਕ ਸਮੱਗਰੀ ਲਈ ਚੈੱਕ ਕਰੋ(_K)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:72
-#: ../camel/providers/imapx/camel-imapx-provider.c:81
+#: ../camel/providers/imapx/camel-imapx-provider.c:80
 msgid "Automatically synchroni_ze remote mail locally"
 msgstr "ਰਿਮੋਟ ਮੇਲ ਲੋਕਲੀ ਆਟੋਮੈਟਿਕ ਹੀ ਸਿਕਰਾਨਾਇਜ਼ ਕਰੋ(_z)"
 
@@ -3167,115 +3214,89 @@ msgid "IMAP"
 msgstr "IMAP"
 
 #: ../camel/providers/imap/camel-imap-provider.c:81
-#: ../camel/providers/imapx/camel-imapx-provider.c:91
+#: ../camel/providers/imapx/camel-imapx-provider.c:90
 msgid "For reading and storing mail on IMAP servers."
 msgstr "IMAP ਸਰਵਰਾਂ ਉੱਤੇ ਮੇਲ ਪੜਨ ਅਤੇ ਸੰਭਾਲਣ ਲਈ"
 
 #: ../camel/providers/imap/camel-imap-provider.c:99
-#: ../camel/providers/imapx/camel-imapx-provider.c:107
+#: ../camel/providers/imapx/camel-imapx-provider.c:106
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "ਇਹ ਚੋਣ IMAP ਸਰਵਰ ਨਾਲ ਪਲੇਨ-ਟੈਕਸਟ ਪਾਸਵਰਡ ਨਾਲ ਸ਼ਾਮਿਲ ਕਰਨ ਲਈ ਸਹਾਇਕ ਹੈ।"
 
-#: ../camel/providers/imap/camel-imap-store.c:310
-#: ../camel/providers/imapx/camel-imapx-store.c:220
-#, c-format
-msgid "IMAP server %s"
-msgstr "IMAP ਸਰਵਰ %s"
-
-#: ../camel/providers/imap/camel-imap-store.c:312
-#: ../camel/providers/imapx/camel-imapx-store.c:222
-#, c-format
-msgid "IMAP service for %s on %s"
-msgstr "IMAP ਸਰਵਿਸ %2$s ਉੱਤੇ %1$s ਲਈ"
-
-#: ../camel/providers/imap/camel-imap-store.c:447
-#: ../camel/providers/nntp/camel-nntp-store.c:234
-#: ../camel/providers/pop3/camel-pop3-store.c:132
-#: ../camel/providers/smtp/camel-smtp-transport.c:215
+#: ../camel/providers/imap/camel-imap-store.c:243
+#: ../camel/providers/nntp/camel-nntp-store.c:313
+#: ../camel/providers/pop3/camel-pop3-store.c:135
+#: ../camel/providers/smtp/camel-smtp-transport.c:151
 #, c-format
 msgid "Could not connect to %s: %s"
 msgstr "%s ਨਾਲ ਜੁੜ ਨਹੀਂ ਸਕਦਾ: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:448
-#: ../camel/providers/nntp/camel-nntp-store.c:235
-#: ../camel/providers/pop3/camel-pop3-store.c:133
-#: ../camel/providers/smtp/camel-smtp-transport.c:216
+#: ../camel/providers/imap/camel-imap-store.c:244
+#: ../camel/providers/nntp/camel-nntp-store.c:314
+#: ../camel/providers/pop3/camel-pop3-store.c:136
+#: ../camel/providers/smtp/camel-smtp-transport.c:152
 msgid "SSL unavailable"
 msgstr "SSL ਉਪਲੱਬਧ ਨਹੀ ਹੈ"
 
-#: ../camel/providers/imap/camel-imap-store.c:466
-#: ../camel/providers/nntp/camel-nntp-store.c:252
+#: ../camel/providers/imap/camel-imap-store.c:264
+#: ../camel/providers/nntp/camel-nntp-store.c:333
 #, c-format
 msgid "Could not connect to %s: "
 msgstr "%s ਨਾਲ ਕੁਨੈਕਟ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ: "
 
-#: ../camel/providers/imap/camel-imap-store.c:572
-#: ../camel/providers/imap/camel-imap-store.c:592
-#: ../camel/providers/imap/camel-imap-store.c:599
-#: ../camel/providers/imap/camel-imap-store.c:626
-#: ../camel/providers/imapx/camel-imapx-server.c:2825
-#: ../camel/providers/imapx/camel-imapx-server.c:2861
+#: ../camel/providers/imap/camel-imap-store.c:370
+#: ../camel/providers/imap/camel-imap-store.c:390
+#: ../camel/providers/imap/camel-imap-store.c:397
+#: ../camel/providers/imap/camel-imap-store.c:424
+#: ../camel/providers/imapx/camel-imapx-server.c:2942
+#: ../camel/providers/imapx/camel-imapx-server.c:2982
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "IMAP ਸਰਵਰ %s ਨਾਲ ਸੁਰੱਖਿਅਤ ਢੰਗ ਨਾਲ ਜੁੜਨ ਵਿੱਚ ਅਸਫਲ: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:573
-#: ../camel/providers/imapx/camel-imapx-server.c:2826
-#: ../camel/providers/smtp/camel-smtp-transport.c:295
+#: ../camel/providers/imap/camel-imap-store.c:371
+#: ../camel/providers/imapx/camel-imapx-server.c:2943
+#: ../camel/providers/smtp/camel-smtp-transport.c:238
 msgid "STARTTLS not supported"
 msgstr "ਪ੍ਰੋਟੋਕਾਲ ਸਹਾਇਕ ਨਹੀਂ ਹੈ"
 
-#: ../camel/providers/imap/camel-imap-store.c:593
-#: ../camel/providers/imapx/camel-imapx-server.c:2862
+#: ../camel/providers/imap/camel-imap-store.c:391
+#: ../camel/providers/imapx/camel-imapx-server.c:2983
 msgid "SSL negotiations failed"
 msgstr "SSL ਗੱਲਬਾਤ ਅਸਫਲ"
 
-#: ../camel/providers/imap/camel-imap-store.c:600
-#: ../camel/providers/smtp/camel-smtp-transport.c:339
+#: ../camel/providers/imap/camel-imap-store.c:398
+#: ../camel/providers/smtp/camel-smtp-transport.c:285
 msgid "SSL is not available in this build"
 msgstr "ਇਸ ਨਿਰਮਾਣ ਵਿੱਚ SSL ਉਪਲੱਬਧ ਨਹੀਂ"
 
-#: ../camel/providers/imap/camel-imap-store.c:748
-#: ../camel/providers/imapx/camel-imapx-server.c:2662
+#: ../camel/providers/imap/camel-imap-store.c:549
+#: ../camel/providers/imapx/camel-imapx-server.c:2770
 #, c-format
 msgid "Connection cancelled"
 msgstr "ਕੁਨੈਕਸ਼ਨ ਰੱਦ ਕੀਤਾ"
 
-#: ../camel/providers/imap/camel-imap-store.c:753
-#: ../camel/providers/imapx/camel-imapx-server.c:2667
+#: ../camel/providers/imap/camel-imap-store.c:554
+#: ../camel/providers/imapx/camel-imapx-server.c:2775
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "ਕਮਾਂਡ \"%s\" ਨਾਲ ਜੁੜਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s"
 
-#. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/providers/imap/camel-imap-store.c:926
-#: ../camel/providers/imap/camel-imap-store.c:2350
-#: ../camel/providers/imapx/camel-imapx-store.c:457
-#: ../camel/providers/imapx/camel-imapx-store.c:1054
-#: ../camel/providers/local/camel-maildir-folder.c:90
-#: ../camel/providers/local/camel-maildir-store.c:225
-#: ../camel/providers/local/camel-maildir-store.c:315
-#: ../camel/providers/local/camel-maildir-store.c:562
-#: ../camel/providers/local/camel-maildir-store.c:575
-#: ../camel/providers/local/camel-spool-store.c:508
-msgid "Inbox"
-msgstr "ਆਉਣ-ਬਕਸਾ"
-
-#: ../camel/providers/imap/camel-imap-store.c:1129
-#: ../camel/providers/imapx/camel-imapx-server.c:2928
+#: ../camel/providers/imap/camel-imap-store.c:740
+#: ../camel/providers/imapx/camel-imapx-server.c:3056
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "IMAP ਸਰਵਰ %s ਲੋੜੀਦੀ ਪ੍ਰਮਾਣਿਤ ਕਿਸਮ %s ਲਈ ਸਹਾਇਕ ਨਹੀਂ ਹੈ"
 
-#: ../camel/providers/imap/camel-imap-store.c:1141
-#: ../camel/providers/imapx/camel-imapx-server.c:2940
-#: ../camel/providers/smtp/camel-smtp-transport.c:462
+#: ../camel/providers/imap/camel-imap-store.c:752
+#: ../camel/providers/imapx/camel-imapx-server.c:3068
+#: ../camel/providers/smtp/camel-smtp-transport.c:420
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "ਪ੍ਰਮਾਣਕਿਤਾ ਢੰਗ %s ਲਈ ਸਹਾਈ ਨਹੀਂ ਹੈ"
 
-#: ../camel/providers/imap/camel-imap-store.c:1220
-#: ../camel/providers/imapx/camel-imapx-server.c:3010
+#: ../camel/providers/imap/camel-imap-store.c:836
+#: ../camel/providers/imapx/camel-imapx-server.c:3144
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3286,134 +3307,160 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/imap/camel-imap-store.c:1771
-#: ../camel/providers/imap/camel-imap-store.c:2193
-#: ../camel/providers/imapx/camel-imapx-store.c:852
+#: ../camel/providers/imap/camel-imap-store.c:997
+#: ../camel/providers/imapx/camel-imapx-store.c:183
+#, c-format
+msgid "IMAP server %s"
+msgstr "IMAP ਸਰਵਰ %s"
+
+#: ../camel/providers/imap/camel-imap-store.c:1001
+#: ../camel/providers/imapx/camel-imapx-store.c:185
+#, c-format
+msgid "IMAP service for %s on %s"
+msgstr "IMAP ਸਰਵਿਸ %2$s ਉੱਤੇ %1$s ਲਈ"
+
+#. create a dummy "." parent inbox, use to scan, then put back at the top level
+#: ../camel/providers/imap/camel-imap-store.c:1367
+#: ../camel/providers/imap/camel-imap-store.c:2416
+#: ../camel/providers/imapx/camel-imapx-store.c:372
+#: ../camel/providers/imapx/camel-imapx-store.c:794
+#: ../camel/providers/local/camel-maildir-folder.c:409
+#: ../camel/providers/local/camel-maildir-store.c:273
+#: ../camel/providers/local/camel-maildir-store.c:609
+#: ../camel/providers/local/camel-maildir-store.c:615
+#: ../camel/providers/local/camel-maildir-store.c:663
+#: ../camel/providers/local/camel-spool-store.c:289
+msgid "Inbox"
+msgstr "ਆਉਣ-ਬਕਸਾ"
+
+#: ../camel/providers/imap/camel-imap-store.c:1822
+#: ../camel/providers/imap/camel-imap-store.c:2259
+#: ../camel/providers/imapx/camel-imapx-store.c:1320
 #, c-format
 msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "ਫੋਲਡਰ ਨਾਂ \"%s\" ਜਾਇਜ ਨਹੀਂ ਹੈ, ਕਿਉਕਿ ਇਸ ਵਿੱਚ \"%c\" ਅੱਖਰ ਸ਼ਾਮਿਲ ਹੈ।"
 
-#: ../camel/providers/imap/camel-imap-store.c:1887
-#: ../camel/providers/local/camel-maildir-store.c:189
-#: ../camel/providers/local/camel-mbox-store.c:193
-#: ../camel/providers/local/camel-mh-store.c:255
+#: ../camel/providers/imap/camel-imap-store.c:1939
+#: ../camel/providers/local/camel-maildir-store.c:244
+#: ../camel/providers/local/camel-mbox-store.c:413
+#: ../camel/providers/local/camel-mh-store.c:504
 #, c-format
 msgid "Cannot create folder '%s': folder exists."
 msgstr "ਫੋਲਡਰ '%s' ਨਹੀਂ ਬਣਾਇਆ ਜਾ ਸਕਦਾ ਹੈ: ਫੋਲਡਰ ਮੌਜੂਦ ਹੈ।"
 
-#: ../camel/providers/imap/camel-imap-store.c:2206
-#: ../camel/providers/imapx/camel-imapx-store.c:863
+#: ../camel/providers/imap/camel-imap-store.c:2272
+#: ../camel/providers/imapx/camel-imapx-store.c:1331
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "ਅਣਜਾਣਾ ਮੁੱਢਲਾ ਫੋਲਡਰ: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:3062
+#: ../camel/providers/imap/camel-imap-store.c:3137
 #, c-format
 msgid "Server unexpectedly disconnected"
 msgstr "ਸਰਵਰ ਅਚਾਨਕ ਡਿਸ-ਕੁਨੈਕਟ ਹੋ ਗਿਆ"
 
-#: ../camel/providers/imap/camel-imap-store.c:3065
+#: ../camel/providers/imap/camel-imap-store.c:3140
 msgid "Server unexpectedly disconnected: "
 msgstr "ਸਰਵਰ ਅਸਧਾਰਨ ਤੌਰ ਤੇ ਡਿਸ-ਕੁਨੈਕਟ ਹੋ ਗਿਆ: "
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:75
+#: ../camel/providers/imapx/camel-imapx-folder.c:74
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "%s ਲਈ ਫੋਲਡਰ ਸੰਖੇਪ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਿਆ"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:83
+#: ../camel/providers/imapx/camel-imapx-folder.c:82
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "%s ਲਈ ਕੈਸ਼ ਨਹੀਂ ਬਣਾਈ ਜਾ ਸਕੀ: "
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:43
+#: ../camel/providers/imapx/camel-imapx-provider.c:42
 msgid "Use _Quick Resync if the server supports it"
 msgstr "ਤੁਰੰਤ ਸਿੰਕ, ਜੇ ਸਰਵਰ ਇਸ ਲਈ ਸਹਾਇਕ ਹੈ(_Q)"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:45
+#: ../camel/providers/imapx/camel-imapx-provider.c:44
 msgid "Use I_dle if the server supports it"
 msgstr "ਵੇਹਲਾ ਵਰਤੋਂ, ਜੇ ਸਰਵਰ ਇਸ ਲਈ ਸਹਾਇਕ ਹੈ(_d)"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:57
+#: ../camel/providers/imapx/camel-imapx-provider.c:56
 msgid "Command:"
 msgstr "ਕਮਾਂਡ:"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:59
+#: ../camel/providers/imapx/camel-imapx-provider.c:58
 msgid "Numbe_r of cached connections to use"
 msgstr "ਵਰਤਣ ਲਈ ਕੈਸ਼ ਕੀਤੇ ਗਏ ਕੁਨੈਕਸ਼ਨ ਦੀ ਗਿਣਤੀ(_r)"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:70
+#: ../camel/providers/imapx/camel-imapx-provider.c:69
 msgid "Namespace:"
 msgstr "ਨੇਮ-ਸਪੇਸ:"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:89
+#: ../camel/providers/imapx/camel-imapx-provider.c:88
 msgid "IMAP+"
 msgstr "IMAP+"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1365
+#: ../camel/providers/imapx/camel-imapx-server.c:1410
 msgid "Error writing to cache stream: "
 msgstr "ਕੈਸ ਸਟਰੀਮ ਲਿਖਣ ਲਈ ਗਲਤੀ: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2019
+#: ../camel/providers/imapx/camel-imapx-server.c:2092
 #, c-format
 msgid "Not authenticated"
 msgstr "ਪਰਮਾਣਿਤ ਨਹੀਂ ਹੈ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2753
+#: ../camel/providers/imapx/camel-imapx-server.c:2865
 #, c-format
 msgid "Could not connect to %s (port %s): "
 msgstr "%s (ਪੋਰਟ %s) ਨਾਲ ਕੁਨੈਕਟ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3182
+#: ../camel/providers/imapx/camel-imapx-server.c:3329
 msgid "Closing tmp stream failed: "
 msgstr "ਆਰਜ਼ੀ ਸਟਰੀਮ ਬੰਦ ਕਰਨ ਲਈ ਫੇਲ੍ਹ: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5059
+#: ../camel/providers/imapx/camel-imapx-server.c:5365
 #, c-format
 msgid "Cannot create spool file: %s"
 msgstr "ਸਪੂਲ ਫਾਇਲ ਬਣਾਈ ਨਹੀਂ ਜਾ ਸਕਦੀ: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5074
+#: ../camel/providers/imapx/camel-imapx-server.c:5381
 msgid "Cannot create spool file: "
 msgstr "ਸਪੂਲ ਫਾਇਲ ਬਣਾਈ ਨਹੀਂ ਜਾ ਸਕਦੀ: "
 
-#: ../camel/providers/imapx/camel-imapx-store.c:426
-#: ../camel/providers/nntp/camel-nntp-store.c:1510
+#: ../camel/providers/imapx/camel-imapx-store.c:1136
+#: ../camel/providers/nntp/camel-nntp-store.c:1610
 #, c-format
 msgid "No such folder: %s"
 msgstr "ਇਹ ਕੋਈ ਫੋਲਡਰ ਨਹੀਂ ਹੈ: %s"
 
-#: ../camel/providers/imapx/camel-imapx-stream.c:71
+#: ../camel/providers/imapx/camel-imapx-stream.c:70
 #, c-format
 msgid "Source stream returned no data"
 msgstr "ਸਰੋਤ ਸਟਰੀਮ ਨੇ ਕੋਈ ਡਾਟਾ ਨਹੀਂ ਦਿੱਤਾ"
 
-#: ../camel/providers/imapx/camel-imapx-stream.c:80
+#: ../camel/providers/imapx/camel-imapx-stream.c:79
 #, c-format
 msgid "Source stream unavailable"
 msgstr "ਸਰੋਤ ਸਟਰੀਮ ਉਪਲੱਬਧ ਨਹੀਂ"
 
-#: ../camel/providers/local/camel-local-folder.c:199
+#: ../camel/providers/local/camel-local-folder.c:182
 #, c-format
 msgid "~%s (%s)"
 msgstr "~%s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:209
-#: ../camel/providers/local/camel-local-folder.c:218
+#: ../camel/providers/local/camel-local-folder.c:192
+#: ../camel/providers/local/camel-local-folder.c:201
 #, c-format
 msgid "mailbox: %s (%s)"
 msgstr "mailbox: %s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:227
+#: ../camel/providers/local/camel-local-folder.c:210
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:272
+#: ../camel/providers/local/camel-local-folder.c:469
 msgid "Index message body data"
 msgstr "ਇੰਡੈਕਸ ਸੁਨੇਹਾ ਭਾਗ ਡਾਟਾ"
 
-#: ../camel/providers/local/camel-local-folder.c:686
+#: ../camel/providers/local/camel-local-folder.c:685
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -3479,183 +3526,219 @@ msgstr ""
 msgid "Standard Unix mbox spool directory"
 msgstr "ਸਟੈਂਡਰਡ Unix mbox ਸਪੂਲ ਡਾਇਰੈਕਟਰੀ"
 
-#: ../camel/providers/local/camel-local-store.c:149
-#: ../camel/providers/local/camel-local-store.c:284
-#: ../camel/providers/local/camel-mbox-store.c:371
-#: ../camel/providers/local/camel-spool-store.c:109
+#: ../camel/providers/local/camel-local-store.c:174
+#: ../camel/providers/local/camel-local-store.c:319
+#: ../camel/providers/local/camel-maildir-store.c:92
+#: ../camel/providers/local/camel-mbox-store.c:532
+#: ../camel/providers/local/camel-spool-store.c:318
 #, c-format
 msgid "Store root %s is not an absolute path"
 msgstr "ਪ੍ਰਬੰਧਕ(root) %s ਸੰਭਾਲ ਇੱਕ ਅਸਲੀ ਰਸਤਾ ਨਹੀ ਹੈ।"
 
-#: ../camel/providers/local/camel-local-store.c:158
+#: ../camel/providers/local/camel-local-store.c:183
 #, c-format
 msgid "Store root %s is not a regular directory"
 msgstr "ਪ੍ਰਬੰਧਕ(root) %s ਸੰਭਾਲ ਇੱਕ ਅਸਲੀ ਡਾਇਰੈਕਟਰੀ ਨਹੀਂ ਹੈ।"
 
-#: ../camel/providers/local/camel-local-store.c:169
-#: ../camel/providers/local/camel-local-store.c:179
-#: ../camel/providers/local/camel-local-store.c:297
+#: ../camel/providers/local/camel-local-store.c:194
+#: ../camel/providers/local/camel-local-store.c:204
+#: ../camel/providers/local/camel-local-store.c:332
+#: ../camel/providers/local/camel-maildir-store.c:124
 #, c-format
 msgid "Cannot get folder: %s: %s"
 msgstr "ਫੋਲਡਰ ਪ੍ਰਾਪਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ: %s: %s"
 
-#: ../camel/providers/local/camel-local-store.c:193
+#: ../camel/providers/local/camel-local-store.c:220
 #, c-format
 msgid "Local stores do not have an inbox"
 msgstr "ਆਉਣ-ਬਕਸੇ ਵਿੱਚ ਲੋਕਲ ਸੰਭਾਲ ਬਕਸਾ ਨਹੀਂ ਹੈ"
 
-#: ../camel/providers/local/camel-local-store.c:250
+#: ../camel/providers/local/camel-local-store.c:281
 #, c-format
 msgid "Local mail file %s"
 msgstr "ਲੋਕਲ ਪੱਤਰ ਫਾਇਲ %s"
 
-#: ../camel/providers/local/camel-local-store.c:358
+#: ../camel/providers/local/camel-local-store.c:393
 #, c-format
 msgid "Could not rename folder %s to %s: %s"
 msgstr "ਫੋਲਡਰ %s ਦਾ ਨਾਂ-ਤਬਦੀਲ %s ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ: %s"
 
-#: ../camel/providers/local/camel-local-store.c:431
+#: ../camel/providers/local/camel-local-store.c:467
 #, c-format
 msgid "Could not rename '%s': %s"
 msgstr "'%s' ਦਾ ਨਾਂ ਤਬਦੀਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ: %s"
 
-#: ../camel/providers/local/camel-local-store.c:461
-#: ../camel/providers/local/camel-mbox-store.c:304
+#: ../camel/providers/local/camel-local-store.c:498
+#: ../camel/providers/local/camel-mbox-store.c:701
 #, c-format
 msgid "Could not delete folder index file '%s': %s"
 msgstr "ਫੋਲਡਰ ਇੰਡੈਕਸ ਫਾਇਲ '%s' ਨੂੰ ਹਟਾਇਆ ਨਹੀ ਜਾ ਸਕਦਾ: %s"
 
-#: ../camel/providers/local/camel-local-store.c:489
-#: ../camel/providers/local/camel-mbox-store.c:333
+#: ../camel/providers/local/camel-local-store.c:526
+#: ../camel/providers/local/camel-mbox-store.c:730
 #, c-format
 msgid "Could not delete folder meta file '%s': %s"
 msgstr "ਫੋਲਡਰ ਮੈਟਾ ਫਾਇਲ '%s' ਨੂੰ ਹਟਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s"
 
-#: ../camel/providers/local/camel-local-summary.c:537
+#: ../camel/providers/local/camel-local-summary.c:548
 #, c-format
 msgid "Unable to add message to summary: unknown reason"
 msgstr "ਸੁਨੇਹੇ ਨੂੰ ਸੰਖੇਪ ਵਿੱਚ ਸੰਭਾਲਣ ਵਿੱਚ ਅਸਫਲ: ਅਣਜਾਣਾ ਕਾਰਨ"
 
-#: ../camel/providers/local/camel-maildir-folder.c:195
+#: ../camel/providers/local/camel-maildir-folder.c:198
 #, c-format
 msgid "Cannot append message to maildir folder: %s: "
 msgstr "maildir ਫੋਲਡਰ ਵਿੱਚ ਸ਼ਾਮਿਲ ਨਹੀ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ: %s: "
 
-#: ../camel/providers/local/camel-maildir-folder.c:283
-#: ../camel/providers/local/camel-maildir-folder.c:291
-#: ../camel/providers/local/camel-mbox-folder.c:440
-#: ../camel/providers/local/camel-mh-folder.c:227
-#: ../camel/providers/local/camel-mh-folder.c:235
+#: ../camel/providers/local/camel-maildir-folder.c:246
+#: ../camel/providers/local/camel-maildir-folder.c:256
+#: ../camel/providers/local/camel-mbox-folder.c:386
+#: ../camel/providers/local/camel-mh-folder.c:168
+#: ../camel/providers/local/camel-mh-folder.c:178
 #, c-format
 msgid "Cannot get message %s from folder %s: "
 msgstr "%2$s ਫੋਲਡਰ ਤੋਂ %1$s ਸੁਨੇਹਾ ਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ: "
 
-#: ../camel/providers/local/camel-maildir-folder.c:399
+#: ../camel/providers/local/camel-maildir-folder.c:326
 #, c-format
 msgid "Cannot transfer message to destination folder: %s"
 msgstr "ਸੁਨੇਹੇ ਨੂੰ ਟਿਕਾਣਾ ਫੋਲਡਰ ਵਿੱਚ ਭੇਜਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:136
-#: ../camel/providers/local/camel-maildir-store.c:167
-#: ../camel/providers/local/camel-mbox-store.c:161
-#: ../camel/providers/local/camel-mbox-store.c:175
+#: ../camel/providers/local/camel-maildir-store.c:100
+#, c-format
+#| msgid "Cannot create folder: %s: folder exists"
+msgid "Cannot create folder: %s : Folder name cannot contain a dot"
+msgstr "%s: ਫੋਲਡਰ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ: ਫੋਲਡਰ ਨਾਂ ਵਿੱਚ ਬਿੰਦੀ ਨਹੀਂ ਹੋ ਸਕਦੀ"
+
+#: ../camel/providers/local/camel-maildir-store.c:109
+#: ../camel/providers/local/camel-maildir-store.c:680
+#, c-format
+#| msgid "Folder already exists"
+msgid "Folder %s already exists"
+msgstr "ਫੋਲਡਰ %s ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ"
+
+#: ../camel/providers/local/camel-maildir-store.c:191
+#: ../camel/providers/local/camel-maildir-store.c:222
+#: ../camel/providers/local/camel-mbox-store.c:381
+#: ../camel/providers/local/camel-mbox-store.c:395
 #, c-format
 msgid "Cannot create folder '%s': %s"
 msgstr "ਫੋਲਡਰ '%s' ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:151
-#: ../camel/providers/local/camel-mbox-store.c:127
-#: ../camel/providers/local/camel-mh-store.c:215
+#: ../camel/providers/local/camel-maildir-store.c:206
+#: ../camel/providers/local/camel-mbox-store.c:347
+#: ../camel/providers/local/camel-mh-store.c:464
 #, c-format
 msgid "Cannot get folder '%s': %s"
 msgstr "ਫੋਲਡਰ '%s' ਪ੍ਰਾਪਤ ਨਹੀਂ ਕੀਤੇ ਜਾ ਸਕਦਾ ਹੈ: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:157
-#: ../camel/providers/local/camel-mbox-store.c:137
-#: ../camel/providers/local/camel-mh-store.c:224
+#: ../camel/providers/local/camel-maildir-store.c:212
+#: ../camel/providers/local/camel-mbox-store.c:357
+#: ../camel/providers/local/camel-mh-store.c:473
 #, c-format
 msgid "Cannot get folder '%s': folder does not exist."
 msgstr "ਫੋਲਡਰ '%s' ਪ੍ਰਾਪਤ ਨਹੀਂ ਕੀਤੇ ਜਾ ਸਕਦਾ ਹੈ: ਫੋਲਡਰ ਮੌਜੂਦ ਨਹੀਂ ਹੈ।"
 
-#: ../camel/providers/local/camel-maildir-store.c:184
+#: ../camel/providers/local/camel-maildir-store.c:239
 #, c-format
 msgid "Cannot get folder '%s': not a maildir directory."
 msgstr "ਫੋਲਡਰ '%s' ਪ੍ਰਾਪਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ: ਇੱਕ maildir ਡਾਇਰੈਕਟਰੀ ਨਹੀਂ ਹੈ"
 
-#: ../camel/providers/local/camel-maildir-store.c:242
-#: ../camel/providers/local/camel-maildir-store.c:282
-#: ../camel/providers/local/camel-mh-store.c:287
+#: ../camel/providers/local/camel-maildir-store.c:293
+#: ../camel/providers/local/camel-maildir-store.c:333
+#: ../camel/providers/local/camel-mh-store.c:584
 #, c-format
 msgid "Could not delete folder '%s': %s"
 msgstr "ਫੋਲਡਰ '%s' ਹਟਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:244
+#: ../camel/providers/local/camel-maildir-store.c:295
 msgid "not a maildir directory"
 msgstr "ਇੱਕ maildir ਡਾਇਰੈਕਟਰੀ ਨਹੀਂ ਹੈ"
 
-#: ../camel/providers/local/camel-maildir-store.c:482
-#: ../camel/providers/local/camel-spool-store.c:364
-#: ../camel/providers/local/camel-spool-store.c:380
+#: ../camel/providers/local/camel-maildir-store.c:508
+#: ../camel/providers/local/camel-maildir-store.c:819
+#: ../camel/providers/local/camel-spool-store.c:143
+#: ../camel/providers/local/camel-spool-store.c:159
 #, c-format
 msgid "Could not scan folder '%s': %s"
 msgstr "ਫੋਲਡਰ '%s' ਦੀ ਜਾਂਚ ਨਹੀਂ ਹੋ ਸਕੀ ਹੈ: %s"
 
+#: ../camel/providers/local/camel-maildir-store.c:671
+#, c-format
+#| msgid "Cannot create folder: %s: folder exists"
+msgid "Cannot rename the folder: %s: Folder name cannot contain a dot"
+msgstr "%s: ਫੋਲਡਰ ਨਾਂ ਨਹੀਂ ਬਦਲਿਆ ਜਾ ਸਕਦਾ, ਫੋਲਡਰ ਨਾਂ ਵਿੱਚ ਬਿੰਦੀ ਨਹੀਂ ਹੋ ਸਕਦੀ"
+
 #: ../camel/providers/local/camel-maildir-summary.c:435
-#: ../camel/providers/local/camel-maildir-summary.c:558
+#: ../camel/providers/local/camel-maildir-summary.c:565
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
 msgstr "maildir ਡਾਇਰੈਕਟਰੀ ਰਸਤਾ ਖੋਲ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s: %s"
 
-#: ../camel/providers/local/camel-maildir-summary.c:549
+#: ../camel/providers/local/camel-maildir-summary.c:556
 msgid "Checking folder consistency"
 msgstr "ਫੋਲਡਰ ਇਕਸਾਰਤਾ ਦੀ ਜਾਂਚ ਜਾਰੀ ਹੈ"
 
-#: ../camel/providers/local/camel-maildir-summary.c:641
+#: ../camel/providers/local/camel-maildir-summary.c:649
 msgid "Checking for new messages"
 msgstr "ਨਵੇਂ ਸੁਨਹਿਆਂ ਲਈ ਜਾਂਚ ਜਾਰੀ ਹੈ"
 
-#: ../camel/providers/local/camel-maildir-summary.c:732
-#: ../camel/providers/local/camel-mbox-summary.c:465
-#: ../camel/providers/local/camel-mbox-summary.c:679
-#: ../camel/providers/local/camel-mbox-summary.c:809
-#: ../camel/providers/local/camel-spool-summary.c:130
+#: ../camel/providers/local/camel-maildir-summary.c:742
+#: ../camel/providers/local/camel-mbox-summary.c:468
+#: ../camel/providers/local/camel-mbox-summary.c:690
+#: ../camel/providers/local/camel-mbox-summary.c:826
+#: ../camel/providers/local/camel-spool-summary.c:131
 msgid "Storing folder"
 msgstr "ਫੋਲਡਰ ਕ੍ਰਮਬੱਧ ਕੀਤੇ ਜਾ ਰਹੇ ਹਨ"
 
-#: ../camel/providers/local/camel-mbox-folder.c:124
-#: ../camel/providers/local/camel-spool-folder.c:125
-#, c-format
-msgid "Cannot create folder lock on %s: %s"
-msgstr "%s ਤੇ ਫੋਲਡਰ ਲਾੱਕ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s"
-
-#: ../camel/providers/local/camel-mbox-folder.c:194
+#: ../camel/providers/local/camel-mbox-folder.c:183
 #, c-format
 msgid "Cannot open mailbox: %s: "
 msgstr "mailbox ਖੋਲ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s: "
 
-#: ../camel/providers/local/camel-mbox-folder.c:260
+#: ../camel/providers/local/camel-mbox-folder.c:249
 #, c-format
 msgid "Cannot append message to mbox file: %s: "
 msgstr "mbox ਫਾਇਲ ਵਿੱਚ ਸੁਨੇਹਾ ਸ਼ਾਮਿਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ: %s: "
 
-#: ../camel/providers/local/camel-mbox-folder.c:433
+#: ../camel/providers/local/camel-mbox-folder.c:378
 msgid "The folder appears to be irrecoverably corrupted."
 msgstr "ਫੋਲਡਰ ਵਿੱਚ ਨਾ-ਪ੍ਰਾਪਤਯੋਗ ਨਿਕਾਰਾਪਨ ਹੈ।"
 
-#: ../camel/providers/local/camel-mbox-store.c:149
-#: ../camel/providers/local/camel-mbox-store.c:379
+#: ../camel/providers/local/camel-mbox-folder.c:436
+#: ../camel/providers/local/camel-spool-folder.c:70
+#, c-format
+msgid "Cannot create folder lock on %s: %s"
+msgstr "%s ਤੇ ਫੋਲਡਰ ਲਾੱਕ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s"
+
+#: ../camel/providers/local/camel-mbox-store.c:369
+#: ../camel/providers/local/camel-mbox-store.c:540
 #, c-format
 msgid "Cannot create a folder by this name."
 msgstr "ਇਸ ਨਾਂ ਨਾਲ ਫੋਲਡਰ ਨਹੀਂ ਬਣਾਇਆ ਜਾ ਸਕਦਾ ਹੈ।"
 
-#: ../camel/providers/local/camel-mbox-store.c:186
+#: ../camel/providers/local/camel-mbox-store.c:406
 #, c-format
 msgid "Cannot get folder '%s': not a regular file."
 msgstr "ਫੋਲਡਰ '%s' ਪ੍ਰਾਪਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ: ਇੱਕ ਨਿਯਮਿਤ ਫਾਇਲ ਨਹੀਂ ਹੈ।"
 
-#: ../camel/providers/local/camel-mbox-store.c:218
-#: ../camel/providers/local/camel-mbox-store.c:231
-#: ../camel/providers/local/camel-mbox-store.c:260
+#: ../camel/providers/local/camel-mbox-store.c:556
+#, c-format
+msgid "Cannot create directory '%s': %s."
+msgstr "ਡਾਇਰੈਕਟਰੀ '%s' ਬਣਾਈ ਨਹੀਂ ਜਾ ਸਕਦੀ ਹੈ: %s।"
+
+#: ../camel/providers/local/camel-mbox-store.c:572
+#, c-format
+msgid "Cannot create folder: %s: %s"
+msgstr "ਫੋਲਡਰ ਬਣਾਇਆ ਨਹੀ ਜਾ ਸਕਿਆ ਹੈ: %s: %s"
+
+#: ../camel/providers/local/camel-mbox-store.c:574
+msgid "Folder already exists"
+msgstr "ਫੋਲਡਰ ਮੌਜੂਦ ਹੈ"
+
+#: ../camel/providers/local/camel-mbox-store.c:615
+#: ../camel/providers/local/camel-mbox-store.c:628
+#: ../camel/providers/local/camel-mbox-store.c:657
 #, c-format
 msgid ""
 "Could not delete folder '%s':\n"
@@ -3664,103 +3747,89 @@ msgstr ""
 "ਫੋਲਡਰ '%s' ਹਟਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ:\n"
 "%s"
 
-#: ../camel/providers/local/camel-mbox-store.c:241
+#: ../camel/providers/local/camel-mbox-store.c:638
 #, c-format
 msgid "'%s' is not a regular file."
 msgstr "'%s' ਇਕ ਨਿਯਮਿਤ ਫਾਇਲ ਨਹੀ ਹੈ।"
 
-#: ../camel/providers/local/camel-mbox-store.c:250
+#: ../camel/providers/local/camel-mbox-store.c:647
 #, c-format
 msgid "Folder '%s' is not empty. Not deleted."
 msgstr "ਫੋਲਡਰ `'%s' ਖਾਲੀ ਨਹੀਂ ਹੈ। ਹਟਾਇਆ ਨਹੀਂ ਗਿਆ।"
 
-#: ../camel/providers/local/camel-mbox-store.c:276
-#: ../camel/providers/local/camel-mbox-store.c:290
+#: ../camel/providers/local/camel-mbox-store.c:673
+#: ../camel/providers/local/camel-mbox-store.c:687
 #, c-format
 msgid "Could not delete folder summary file '%s': %s"
 msgstr "ਫੋਲਡਰ ਸੰਖੇਪ ਫਾਇਲ '%s' ਨੂੰ ਹਟਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ: %s"
 
-#: ../camel/providers/local/camel-mbox-store.c:395
-#, c-format
-msgid "Cannot create directory '%s': %s."
-msgstr "ਡਾਇਰੈਕਟਰੀ '%s' ਬਣਾਈ ਨਹੀਂ ਜਾ ਸਕਦੀ ਹੈ: %s।"
-
-#: ../camel/providers/local/camel-mbox-store.c:411
-#, c-format
-msgid "Cannot create folder: %s: %s"
-msgstr "ਫੋਲਡਰ ਬਣਾਇਆ ਨਹੀ ਜਾ ਸਕਿਆ ਹੈ: %s: %s"
-
-#: ../camel/providers/local/camel-mbox-store.c:413
-msgid "Folder already exists"
-msgstr "ਫੋਲਡਰ ਮੌਜੂਦ ਹੈ"
-
-#: ../camel/providers/local/camel-mbox-store.c:507
+#: ../camel/providers/local/camel-mbox-store.c:767
 #, c-format
 msgid "The new folder name is illegal."
 msgstr "ਨਵਾਂ ਫੋਲਡਰ ਨਾਂ ਗਲਤ ਹੈ।"
 
-#: ../camel/providers/local/camel-mbox-store.c:522
+#: ../camel/providers/local/camel-mbox-store.c:782
 #, c-format
 msgid "Could not rename '%s': '%s': %s"
 msgstr "'%s' ਦਾ ਨਾਂ ਬਦਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: '%s': %s"
 
-#: ../camel/providers/local/camel-mbox-store.c:605
+#: ../camel/providers/local/camel-mbox-store.c:865
 #, c-format
 msgid "Could not rename '%s' to %s: %s"
 msgstr "'%s' ਦਾ ਨਾਂ %s ਤਬਦੀਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:473
+#: ../camel/providers/local/camel-mbox-summary.c:476
 #, c-format
 msgid "Could not open folder: %s: %s"
 msgstr "ਫੋਲਡਰ ਖੋਲ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:533
+#: ../camel/providers/local/camel-mbox-summary.c:537
 #, c-format
 msgid "Fatal mail parser error near position %s in folder %s"
 msgstr "%2$s ਫੋਲਡਰ 'ਚ %1$s ਸਥਿਤੀ ਨੇੜੇ ਮੇਲ ਪਾਰਸ ਕਰਨ ਦੌਰਾਨ ਘਾਤਕ ਗਲਤੀ"
 
-#: ../camel/providers/local/camel-mbox-summary.c:615
+#: ../camel/providers/local/camel-mbox-summary.c:622
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "ਫੋਲਡਰ ਦੀ ਜਾਂਚ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ ਹੈ: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:686
-#: ../camel/providers/local/camel-mbox-summary.c:816
-#: ../camel/providers/local/camel-spool-summary.c:137
+#: ../camel/providers/local/camel-mbox-summary.c:697
+#: ../camel/providers/local/camel-mbox-summary.c:833
+#: ../camel/providers/local/camel-spool-summary.c:138
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "ਫਾਇਲ ਖੋਲੀ ਨਹੀਂ ਜਾ ਸਕਦੀ ਹੈ: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:700
-#: ../camel/providers/local/camel-spool-summary.c:152
+#: ../camel/providers/local/camel-mbox-summary.c:711
+#: ../camel/providers/local/camel-spool-summary.c:153
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "ਆਰਜ਼ੀ mailbox ਖੋਲ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:715
-#: ../camel/providers/local/camel-mbox-summary.c:932
+#: ../camel/providers/local/camel-mbox-summary.c:728
+#: ../camel/providers/local/camel-mbox-summary.c:949
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "ਸਰੋਤ ਫੋਲਡਰ %s ਨੂੰ ਬੰਦ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:726
+#: ../camel/providers/local/camel-mbox-summary.c:739
 #, c-format
 msgid "Could not close temporary folder: %s"
 msgstr "ਆਰਜ਼ੀ ਫੋਲਡਰ ਬੰਦ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:743
+#: ../camel/providers/local/camel-mbox-summary.c:756
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "ਫੋਲਡਰ ਦਾ ਨਾਂ ਬਦਲਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:829
-#: ../camel/providers/local/camel-mbox-summary.c:1070
+#: ../camel/providers/local/camel-mbox-summary.c:846
+#: ../camel/providers/local/camel-mbox-summary.c:1099
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "ਫੋਲਡਰ ਨੂੰ ਸੰਭਾਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:869
-#: ../camel/providers/local/camel-mbox-summary.c:1102
+#: ../camel/providers/local/camel-mbox-summary.c:886
+#: ../camel/providers/local/camel-mbox-summary.c:1131
 #, c-format
 msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn't get "
@@ -3769,65 +3838,75 @@ msgstr ""
 "MBOX ਫਾਇਲ ਖ਼ਰਾਬ ਹੋ ਗਈ ਹੈ, ਇਸ ਨੂੰ ਠੀਕ ਕਰੋ ਜੀ। (ਵਲੋਂ (From) ਲਾਈਨ ਦੀ ਲੋੜ ਸੀ, ਪਰ ਇਹ ਮਿਲੀ "
 "ਨਹੀਂ।)"
 
-#: ../camel/providers/local/camel-mbox-summary.c:878
-#: ../camel/providers/local/camel-mbox-summary.c:1111
+#: ../camel/providers/local/camel-mbox-summary.c:895
+#: ../camel/providers/local/camel-mbox-summary.c:1140
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "ਸੰਖੇਪ ਤੇ ਫੋਲਡਰ ਮੇਲ ਨਹੀਂ ਖਾ ਰਹੇ ਹਨ, ਸਮਕਾਲੀ ਕਰਨ ਮਗਰੋਂ ਵੀ"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1029
-#: ../camel/providers/local/camel-spool-summary.c:337
+#: ../camel/providers/local/camel-mbox-summary.c:1052
+#: ../camel/providers/local/camel-spool-summary.c:343
 #, c-format
 msgid "Unknown error: %s"
 msgstr "ਅਣਜਾਣੀ ਗਲਤੀ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1181
-#: ../camel/providers/local/camel-mbox-summary.c:1211
+#: ../camel/providers/local/camel-mbox-summary.c:1210
+#: ../camel/providers/local/camel-mbox-summary.c:1240
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "ਆਰਜ਼ੀ mailbox ਉੱਤੇ ਲਿਖਣਾ ਅਸਫਲ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1200
+#: ../camel/providers/local/camel-mbox-summary.c:1229
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "ਆਰਜ਼ੀ mailbox ਉੱਤੇ ਲਿਖਣ ਲਈ ਫੇਲ੍ਹ: %s: %s"
 
-#: ../camel/providers/local/camel-mh-folder.c:165
+#: ../camel/providers/local/camel-mh-folder.c:115
 #, c-format
 msgid "Cannot append message to mh folder: %s: "
 msgstr "mh ਫੋਲਡਰ ਵਿੱਚ ਸ਼ਾਮਿਲ ਕਰਨ ਤੋਂ ਅਸਫਲ: %s: "
 
-#: ../camel/providers/local/camel-mh-store.c:234
+#: ../camel/providers/local/camel-mh-store.c:483
 #, c-format
 msgid "Could not create folder '%s': %s"
 msgstr "'%s' ਫੋਲਡਰ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s"
 
-#: ../camel/providers/local/camel-mh-store.c:248
+#: ../camel/providers/local/camel-mh-store.c:497
 #, c-format
 msgid "Cannot get folder '%s': not a directory."
 msgstr "ਫੋਲਡਰ '%s' ਪ੍ਰਾਪਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ: ਇੱਕ ਡਾਇਰੈਕਟਰੀ ਨਹੀਂ ਹੈ।"
 
-#: ../camel/providers/local/camel-mh-summary.c:228
+#: ../camel/providers/local/camel-mh-summary.c:230
 #, c-format
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "MH ਡਾਇਰੈਕਟਰੀ ਰਸਤਾ ਖੋਲ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s: %s"
 
-#: ../camel/providers/local/camel-spool-store.c:118
+#: ../camel/providers/local/camel-spool-store.c:327
 #, c-format
 msgid "Spool '%s' cannot be opened: %s"
 msgstr "ਸਪੂਲ '%s' ਨੂੰ ਖੋਲ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s"
 
-#: ../camel/providers/local/camel-spool-store.c:132
+#: ../camel/providers/local/camel-spool-store.c:341
 #, c-format
 msgid "Spool '%s' is not a regular file or directory"
 msgstr "ਸਪੂਲ '%s' ਇੱਕ ਨਿਯਮਿਤ ਫਾਇਲ ਜਾਂ ਡਾਇਰੈਕਟਰੀ ਨਹੀਂ ਹੈ"
 
-#: ../camel/providers/local/camel-spool-store.c:158
+#: ../camel/providers/local/camel-spool-store.c:357
+#, c-format
+msgid "Spool mail file %s"
+msgstr "ਸਪੂਲ ਪੱਤਰ ਫਾਇਲ %s"
+
+#: ../camel/providers/local/camel-spool-store.c:357
+#, c-format
+msgid "Spool folder tree %s"
+msgstr "ਸਪੂਲ ਫੋਲਡਰ ਲੜੀ %s"
+
+#: ../camel/providers/local/camel-spool-store.c:391
 #, c-format
 msgid "Folder '%s/%s' does not exist."
 msgstr "ਫੋਲਡਰ '%s/%s' ਮੌਜੂਦ ਨਹੀਂ ਹੈ"
 
-#: ../camel/providers/local/camel-spool-store.c:170
+#: ../camel/providers/local/camel-spool-store.c:403
 #, c-format
 msgid ""
 "Could not open folder '%s':\n"
@@ -3836,12 +3915,12 @@ msgstr ""
 "ਫੋਲਡਰ '%s' ਖੋਲ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ:\n"
 "%s"
 
-#: ../camel/providers/local/camel-spool-store.c:176
+#: ../camel/providers/local/camel-spool-store.c:409
 #, c-format
 msgid "Folder '%s' does not exist."
 msgstr "ਫੋਲਡਰ '%s' ਮੌਜੂਦ ਨਹੀਂ ਹੈ।"
 
-#: ../camel/providers/local/camel-spool-store.c:183
+#: ../camel/providers/local/camel-spool-store.c:416
 #, c-format
 msgid ""
 "Could not create folder '%s':\n"
@@ -3850,57 +3929,42 @@ msgstr ""
 "ਫੋਲਡਰ '%s' ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ:\n"
 "%s"
 
-#: ../camel/providers/local/camel-spool-store.c:193
+#: ../camel/providers/local/camel-spool-store.c:426
 #, c-format
 msgid "'%s' is not a mailbox file."
 msgstr "'%s' ਇੱਕ mailbox ਫਾਇਲ ਨਹੀਂ ਹੈ"
 
-#: ../camel/providers/local/camel-spool-store.c:213
+#: ../camel/providers/local/camel-spool-store.c:462
 #, c-format
 msgid "Store does not support an INBOX"
 msgstr "ਸਟੋਰੇਜ਼ ਇੱਕ ਆਉਣ-ਬਕਸੇ ਲਈ ਸਹਾਈ ਨਹੀਂ ਹੈ"
 
-#: ../camel/providers/local/camel-spool-store.c:226
-#, c-format
-msgid "Spool mail file %s"
-msgstr "ਸਪੂਲ ਪੱਤਰ ਫਾਇਲ %s"
-
-#: ../camel/providers/local/camel-spool-store.c:226
-#, c-format
-msgid "Spool folder tree %s"
-msgstr "ਸਪੂਲ ਫੋਲਡਰ ਲੜੀ %s"
-
-#: ../camel/providers/local/camel-spool-store.c:238
-#, c-format
-msgid "Spool folders cannot be renamed"
-msgstr "ਸਪੂ ਫੋਲਡਰਾਂ ਦਾ ਨਾਂ-ਤਬਦੀਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ"
-
-#: ../camel/providers/local/camel-spool-store.c:251
+#: ../camel/providers/local/camel-spool-store.c:476
 #, c-format
 msgid "Spool folders cannot be deleted"
 msgstr "ਸਪੂਲ ਫੋਲਡਰ ਹਟਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
 
-#: ../camel/providers/local/camel-spool-summary.c:166
-#: ../camel/providers/local/camel-spool-summary.c:178
-#: ../camel/providers/local/camel-spool-summary.c:190
+#: ../camel/providers/local/camel-spool-store.c:491
 #, c-format
-#| msgid "Could not sync temporary folder %s: %s"
+msgid "Spool folders cannot be renamed"
+msgstr "ਸਪੂ ਫੋਲਡਰਾਂ ਦਾ ਨਾਂ-ਤਬਦੀਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ"
+
+#: ../camel/providers/local/camel-spool-summary.c:169
+#: ../camel/providers/local/camel-spool-summary.c:181
+#: ../camel/providers/local/camel-spool-summary.c:193
+#, c-format
 msgid "Could not synchronize temporary folder %s: %s"
 msgstr "ਆਰਜ਼ੀ ਫੋਲਡਰ %s ਨੂੰ ਸੈਕਰੋਨਾਈਜ਼ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ: %s"
 
-#: ../camel/providers/local/camel-spool-summary.c:208
+#: ../camel/providers/local/camel-spool-summary.c:211
 #, c-format
-#| msgid "Could not sync spool folder %s: %s"
 msgid "Could not synchronize spool folder %s: %s"
 msgstr "ਸਪੂਲ ਫੋਲਡਰ %s ਨੂੰ ਸੈਕਰੋਨਾਈਜ਼ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ: %s"
 
-#: ../camel/providers/local/camel-spool-summary.c:240
-#: ../camel/providers/local/camel-spool-summary.c:259
-#: ../camel/providers/local/camel-spool-summary.c:272
+#: ../camel/providers/local/camel-spool-summary.c:243
+#: ../camel/providers/local/camel-spool-summary.c:262
+#: ../camel/providers/local/camel-spool-summary.c:275
 #, c-format
-#| msgid ""
-#| "Could not sync spool folder %s: %s\n"
-#| "Folder may be corrupt, copy saved in '%s'"
 msgid ""
 "Could not synchronize spool folder %s: %s\n"
 "Folder may be corrupt, copy saved in '%s'"
@@ -3908,40 +3972,40 @@ msgstr ""
 "ਸਪੂਲ ਫੋਲਡਰ %s ਨੂੰ ਸੈਕਰੋਨਾਈਜ਼ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ: %s\n"
 "ਫੋਲਡਰ ਨਿਕਾਰਾ ਹੋ ਸਕਦਾ ਹੈ, ਨਕਲ '%s' ਵਿੱਚ ਸੰਭਾਲੀ ਗਈ ਹੈ।"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:197
-#: ../camel/providers/nntp/camel-nntp-folder.c:271
-#: ../camel/providers/nntp/camel-nntp-folder.c:312
+#: ../camel/providers/nntp/camel-nntp-folder.c:200
+#: ../camel/providers/nntp/camel-nntp-folder.c:279
+#: ../camel/providers/nntp/camel-nntp-folder.c:393
 #, c-format
 msgid "Internal error: UID in invalid format: %s"
 msgstr "ਅੰਦਰੂਨੀ ਗਲਤੀ: UID ਗਲਤ ਫਾਰਮੈਟ ਵਿੱਚ ਹੈ: %s"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:234
-#: ../camel/providers/nntp/camel-nntp-folder.c:238
-#: ../camel/providers/pop3/camel-pop3-folder.c:402
-#: ../camel/providers/pop3/camel-pop3-folder.c:630
+#: ../camel/providers/nntp/camel-nntp-folder.c:241
+#: ../camel/providers/nntp/camel-nntp-folder.c:245
+#: ../camel/providers/pop3/camel-pop3-folder.c:369
+#: ../camel/providers/pop3/camel-pop3-folder.c:434
+#: ../camel/providers/pop3/camel-pop3-folder.c:446
 #: ../camel/providers/pop3/camel-pop3-folder.c:695
-#: ../camel/providers/pop3/camel-pop3-folder.c:706
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "ਸੁਨੇਹਾ %s ਪ੍ਰਾਪਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ: %s"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:465
-#: ../camel/providers/nntp/camel-nntp-folder.c:471
-#: ../camel/providers/nntp/camel-nntp-folder.c:518
+#: ../camel/providers/nntp/camel-nntp-folder.c:477
+#: ../camel/providers/nntp/camel-nntp-folder.c:483
+#: ../camel/providers/nntp/camel-nntp-folder.c:530
 #, c-format
 msgid "Posting failed: %s"
 msgstr "ਭੇਜਣ ਕਾਰਵਾਈ ਅਸਫਲ: %s"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:513
+#: ../camel/providers/nntp/camel-nntp-folder.c:525
 msgid "Posting failed: "
 msgstr "ਪੋਸਟ ਕਰਨ ਲਈ ਫੇਲ੍ਹ: "
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:541
+#: ../camel/providers/nntp/camel-nntp-folder.c:554
 #, c-format
 msgid "You cannot post NNTP messages while working offline!"
 msgstr "ਤੁਸੀਂ ਆਫਲਾਈਨ ਕੰਮ ਕਰਦੇ ਸਮੇਂ NNTP ਸੁਨੇਹੇ ਭੇਜ ਨਹੀਂ ਸਕਦੇ !"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:560
+#: ../camel/providers/nntp/camel-nntp-folder.c:574
 #, c-format
 msgid "You cannot copy messages from a NNTP folder!"
 msgstr "ਤੁਸੀਂ NNTP ਫੋਲਡਰ ਤੋਂ ਸੁਨੇਹੇ ਨਕਲ ਨਹੀਂ ਕਰ ਸਕਦੇ ਹੋ!"
@@ -3968,22 +4032,32 @@ msgid ""
 "password."
 msgstr "ਇਸ ਚੋਣ ਨਾਲ NNTP ਸਰਵਰ ਤੇ ਪਲੇਨ-ਟੈਕਸਟ ਪਾਸਵਰਡ ਪ੍ਰਮਾਣਕਿਤਾ ਲਈ ਵਰਤਿਆ ਜਾਵੇਗਾ।"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:265
+#: ../camel/providers/nntp/camel-nntp-store.c:77
+#, c-format
+msgid "Authentication requested but no username provided"
+msgstr "ਪ੍ਰਮਾਣਕਿਤਾ ਲੋੜੀਦੀ ਹੈ, ਪਰ ਕੋਈ ਯੂਜ਼ਰ ਦਿੱਤਾ ਨਹੀਂ ਗਿਆ"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:89
+#, c-format
+msgid "Cannot authenticate to server: %s"
+msgstr "ਸਰਵਰ ਨਾਲ ਪ੍ਰਮਾਣਿਤ ਹੋਣ ਵਿੱਚ ਅਸਫਲ: %s"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:346
 #, c-format
 msgid "Could not read greeting from %s: "
 msgstr "%s ਤੋਂ ਸਵਾਗਤੀ ਸੁਨੇਹਾ ਪੜ੍ਹਨ ਨਹੀਂ ਜਾ ਸਕਿਆ: "
 
-#: ../camel/providers/nntp/camel-nntp-store.c:278
+#: ../camel/providers/nntp/camel-nntp-store.c:359
 #, c-format
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "NNTP ਸਰਵਰ %s ਨੇ ਗਲਤੀ ਕੋਡ %d ਭੇਜਿਆ ਹੈ: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:434
+#: ../camel/providers/nntp/camel-nntp-store.c:527
 #, c-format
 msgid "USENET News via %s"
 msgstr "USENET ਖਬਰਾਂ %s ਰਾਹੀ"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:927
+#: ../camel/providers/nntp/camel-nntp-store.c:1045
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -3994,7 +4068,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1024
+#: ../camel/providers/nntp/camel-nntp-store.c:1160
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -4005,7 +4079,7 @@ msgstr ""
 "\n"
 "ਇਸ ਤਰਾਂ ਦਾ ਕੋਈ ਖਬਰ-ਸਮੂਹ ਨਹੀਂ ਹੈ। ਸਾਇਦ ਚੁਣੀ ਇਕਾਈ ਮੁੱਢਲਾ ਫੋਲਡਰ ਹੈ।"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1064
+#: ../camel/providers/nntp/camel-nntp-store.c:1202
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -4016,94 +4090,82 @@ msgstr ""
 "\n"
 "ਇਸ ਤਰਾਂ ਦਾ ਕੋਈ ਖਬਰ-ਸਮੂਹ ਨਹੀਂ ਹੈ।"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1094
+#: ../camel/providers/nntp/camel-nntp-store.c:1235
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "ਤੁਸੀਂ ਖਬਰ ਸੰਭਾਲ ਵਿੱਚ ਫੋਲਡਰ ਨਹੀਂ ਬਣਾ ਸਕਦੇ ਹੋ: ਸਵੀਕਾਰ ਹੀ ਕਰੋ।"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1106
+#: ../camel/providers/nntp/camel-nntp-store.c:1251
 #, c-format
 msgid "You cannot rename a folder in a News store."
 msgstr "ਖਬਰ ਸੰਭਾਲ ਵਿੱਚ ਫੋਲਡਰ ਨਹੀਂ ਬਣਾਇਆ ਜਾ ਸਕਦਾ ਹੈ।"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1119
+#: ../camel/providers/nntp/camel-nntp-store.c:1268
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr "ਤੁਸੀਂ ਖਬਰ ਸੰਭਾਲ ਵਿੱਚ ਫੋਲਡਰ ਨਹੀਂ ਹਟਾ ਸਕਦੇ ਹੋ: ਅਸਵੀਕਾਰ ਹੀ ਕਰੋ।"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1257
-#, c-format
-msgid "Authentication requested but no username provided"
-msgstr "ਪ੍ਰਮਾਣਕਿਤਾ ਲੋੜੀਦੀ ਹੈ, ਪਰ ਕੋਈ ਯੂਜ਼ਰ ਦਿੱਤਾ ਨਹੀਂ ਗਿਆ"
-
-#: ../camel/providers/nntp/camel-nntp-store.c:1269
-#, c-format
-msgid "Cannot authenticate to server: %s"
-msgstr "ਸਰਵਰ ਨਾਲ ਪ੍ਰਮਾਣਿਤ ਹੋਣ ਵਿੱਚ ਅਸਫਲ: %s"
-
-#: ../camel/providers/nntp/camel-nntp-store.c:1395
+#: ../camel/providers/nntp/camel-nntp-store.c:1479
 msgid "NNTP Command failed: "
 msgstr "NNTP ਕਮਾਂਡ ਅਸਫਲ: "
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1453
+#: ../camel/providers/nntp/camel-nntp-store.c:1553
 #, c-format
 msgid "Not connected."
 msgstr "ਕੁਨੈਕਟ ਨਹੀਂ ਹੈ।"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:238
-#: ../camel/providers/nntp/camel-nntp-summary.c:340
+#: ../camel/providers/nntp/camel-nntp-summary.c:234
+#: ../camel/providers/nntp/camel-nntp-summary.c:345
 #, c-format
 msgid "%s: Scanning new messages"
 msgstr "%s: ਨਵੇਂ ਸੁਨੇਹਿਆਂ ਦੀ ਜਾਂਚ ਜਾਰੀ ਹੈ"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:249
+#: ../camel/providers/nntp/camel-nntp-summary.c:246
 #, c-format
 msgid "Unexpected server response from xover: %s"
 msgstr "xover ਤੋ ਅਸਧਾਰਨ ਸਰਵਰ ਜਵਾਬ ਹੈ: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:356
+#: ../camel/providers/nntp/camel-nntp-summary.c:362
 #, c-format
 msgid "Unexpected server response from head: %s"
 msgstr "head ਤੋ ਅਸਧਾਰਨ ਸਰਵਰ ਜਵਾਬ ਹੈ: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:401
+#: ../camel/providers/nntp/camel-nntp-summary.c:407
 #, c-format
 msgid "Operation failed: %s"
 msgstr "ਕਾਰਵਾਈ ਅਸਫਲ: %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:251
-msgid "Retrieving POP summary"
-msgstr "POP ਸੰਖੇਪ ਜਾਣਕਾਰੀ ਪ੍ਰਾਪਤ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
-
-#: ../camel/providers/pop3/camel-pop3-folder.c:274
-#, c-format
-msgid "Cannot get POP summary: %s"
-msgstr "POP ਸੰਖੇਪ ਪ੍ਰਾਪਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦੀ ਹੈ: %s"
-
-#: ../camel/providers/pop3/camel-pop3-folder.c:324
-msgid "Expunging old messages"
-msgstr "ਹਟਾਏ ਸੁਨੇਹੇ ਸੁੰਘੜੇ ਜਾ ਰਹੇ ਹਨ"
-
-#: ../camel/providers/pop3/camel-pop3-folder.c:332
-msgid "Expunging deleted messages"
-msgstr "ਹਟਾਏ ਸੁਨੇਹੇ ਫੋਲੇ ਜਾ ਰਹੇ ਹਨ"
-
-#: ../camel/providers/pop3/camel-pop3-folder.c:566
-#: ../camel/providers/pop3/camel-pop3-folder.c:596
+#: ../camel/providers/pop3/camel-pop3-folder.c:277
+#: ../camel/providers/pop3/camel-pop3-folder.c:334
 #, c-format
 msgid "No message with UID %s"
 msgstr "UID %s ਨਾਲ ਕੋਈ ਸੁਨੇਹਾ ਨਹੀਂ ਹੈ"
 
-#. Sigh, most of the crap in this function is so that the cancel button
-#. returns the proper exception code.  Sigh.
-#: ../camel/providers/pop3/camel-pop3-folder.c:603
+#: ../camel/providers/pop3/camel-pop3-folder.c:342
 #, c-format
 msgid "Retrieving POP message %d"
 msgstr "POP ਸੁਨੇਹੇ %d ਪ੍ਰਾਪਤ ਕੀਤੇ ਜਾ ਰਹੇ ਹਨ"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:707
+#: ../camel/providers/pop3/camel-pop3-folder.c:447
 msgid "Unknown reason"
 msgstr "ਅਣਜਾਣ ਕਾਰਨ"
+
+#: ../camel/providers/pop3/camel-pop3-folder.c:486
+msgid "Retrieving POP summary"
+msgstr "POP ਸੰਖੇਪ ਜਾਣਕਾਰੀ ਪ੍ਰਾਪਤ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+
+#: ../camel/providers/pop3/camel-pop3-folder.c:509
+#, c-format
+msgid "Cannot get POP summary: %s"
+msgstr "POP ਸੰਖੇਪ ਪ੍ਰਾਪਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦੀ ਹੈ: %s"
+
+#: ../camel/providers/pop3/camel-pop3-folder.c:561
+msgid "Expunging old messages"
+msgstr "ਹਟਾਏ ਸੁਨੇਹੇ ਸੁੰਘੜੇ ਜਾ ਰਹੇ ਹਨ"
+
+#: ../camel/providers/pop3/camel-pop3-folder.c:575
+msgid "Expunging deleted messages"
+msgstr "ਹਟਾਏ ਸੁਨੇਹੇ ਫੋਲੇ ਜਾ ਰਹੇ ਹਨ"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:39
 msgid "Message storage"
@@ -4113,24 +4175,29 @@ msgstr "ਸੁਨੇਹਾ ਸਟੋਰੇਜ਼"
 msgid "_Leave messages on server"
 msgstr "ਸਰਵਰ ਤੇ ਸੁਨੇਹੇ ਛੱਡੋ(_L)"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:43
+#. Translators: '%s' is replaced with a widget, where user can select how many days can be message left on the server
+#: ../camel/providers/pop3/camel-pop3-provider.c:44
 #, c-format
 msgid "_Delete after %s day(s)"
 msgstr "%s ਦਿਨਾਂ ਬਾਅਦ ਹਟਾਓ(_D)"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:45
+#: ../camel/providers/pop3/camel-pop3-provider.c:46
+msgid "Delete _expunged from local Inbox"
+msgstr "ਲੋਕਲ ਇਨਬਾਕਸ ਤੋਂ ਫੈਲਾਏ ਹਟਾਓ(_e)"
+
+#: ../camel/providers/pop3/camel-pop3-provider.c:48
 msgid "Disable _support for all POP3 extensions"
 msgstr "ਸਭ POP3 ਐਕਸ਼ਟੇਸ਼ਨ ਲਈ ਸਹਿਯੋਗ ਅਯੋਗ(_s)"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:53
+#: ../camel/providers/pop3/camel-pop3-provider.c:56
 msgid "POP"
 msgstr "POP"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:55
+#: ../camel/providers/pop3/camel-pop3-provider.c:58
 msgid "For connecting to and downloading mail from POP servers."
 msgstr "ਕੁਨੈਕਟ ਲਈ POP ਸਰਵਰ ਤੋਂ ਸੁਨੇਹੇ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ।"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:72
+#: ../camel/providers/pop3/camel-pop3-provider.c:75
 msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
@@ -4138,7 +4205,7 @@ msgstr ""
 "ਇਹ ਚੋਣ ਤੁਹਾਨੂੰ POP ਸਰਵਰ ਨਾਲ ਸਧਾਰਨ-ਪਾਠ ਪਾਸਵਰਡ ਨਾਲ ਜੋੜੇਗਾ,ਇਹ ਹੀ ਚੋਣ ਹੈ, ਜੋ ਕਿ ਅਕਸਰ POP "
 "ਸਰਵਰਾਂ ਤੇ ਉਪਲੱਬਧ ਹੁੰਦੀ ਹੈ।"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:82
+#: ../camel/providers/pop3/camel-pop3-provider.c:85
 msgid ""
 "This option will connect to the POP server using an encrypted password via "
 "the APOP protocol. This may not work for all users even on servers that "
@@ -4152,38 +4219,38 @@ msgstr ""
 msgid ": "
 msgstr ": "
 
-#: ../camel/providers/pop3/camel-pop3-store.c:168
+#: ../camel/providers/pop3/camel-pop3-store.c:181
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
 msgstr "POP ਸਰਵਰ %s ਤੋਂ ਸੁਨੇਹਾ ਪੜਨ ਵਿੱਚ ਫੇਲ੍ਹ"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:186
-#: ../camel/providers/pop3/camel-pop3-store.c:217
-#: ../camel/providers/pop3/camel-pop3-store.c:224
+#: ../camel/providers/pop3/camel-pop3-store.c:199
+#: ../camel/providers/pop3/camel-pop3-store.c:230
+#: ../camel/providers/pop3/camel-pop3-store.c:237
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "POP ਸਰਵਰ %s ਨਾਲ ਸੁਰੱਖਿਅਤ ਢੰਗ ਨਾਲ ਜੁੜਨ ਵਿੱਚ ਅਸਫਲ: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:187
+#: ../camel/providers/pop3/camel-pop3-store.c:200
 msgid "STLS not supported by server"
 msgstr "ਸਰਵਰ ਵਲੋਂ STLS ਸਹਾਇਕ ਨਹੀਂ"
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
-#: ../camel/providers/pop3/camel-pop3-store.c:205
+#: ../camel/providers/pop3/camel-pop3-store.c:218
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode%s"
 msgstr "POP ਸਰਵਰ %s ਨਾਲ ਸੁਰੱਖਿਅਤ ਢੰਗ ਨਾਲ ਜੁੜਨ ਵਿੱਚ ਅਸਫਲ%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:218
+#: ../camel/providers/pop3/camel-pop3-store.c:231
 msgid "TLS negotiations failed"
 msgstr "TLS ਗੱਲਬਾਤ ਫੇਲ੍ਹ"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:225
+#: ../camel/providers/pop3/camel-pop3-store.c:238
 msgid "TLS is not available in this build"
 msgstr "ਇਸ ਨਿਰਮਾਣ ਵਿੱਚ TLS ਉਪਲੱਬਧ ਨਹੀਂ"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:300
-#: ../camel/providers/pop3/camel-pop3-store.c:452
+#: ../camel/providers/pop3/camel-pop3-store.c:317
+#: ../camel/providers/pop3/camel-pop3-store.c:472
 #, c-format
 msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
@@ -4191,22 +4258,22 @@ msgid ""
 msgstr "POP ਸਰਵਰ %s ਨਾਲ ਜੁੜਨ ਵਿੱਚ ਅਸਫਲ: ਲੋੜੀਦੇ ਪ੍ਰਮਾਣਕਿਤਾ ਢੰਗ ਲਈ ਸਹਾਇਕ ਨਹੀਂ।"
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
-#: ../camel/providers/pop3/camel-pop3-store.c:323
+#: ../camel/providers/pop3/camel-pop3-store.c:340
 #, c-format
 msgid "SASL '%s' Login failed for POP server %s%s"
 msgstr "POP ਸਰਵਰ %2$s%3$s ਉੱਤੇ SASL '%1$s' ਲਾਗਇਨ ਅਸਫਲ"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:340
+#: ../camel/providers/pop3/camel-pop3-store.c:357
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "POP ਸਰਵਰ %s ਉੱਤੇ ਲਾਗਆਨ ਕਰਨ ਤੋਂ ਅਸਫਲ: SASL ਪਰੋਟੋਕਾਲ ਗਲਤੀ"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:357
+#: ../camel/providers/pop3/camel-pop3-store.c:374
 #, c-format
 msgid "Failed to authenticate on POP server %s: "
 msgstr "POP ਸਰਵਰ %s ਤੇ ਪ੍ਰਮਾਣਕਿਤਾ ਫੇਲ੍ਹ: "
 
-#: ../camel/providers/pop3/camel-pop3-store.c:421
+#: ../camel/providers/pop3/camel-pop3-store.c:439
 #, c-format
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
@@ -4215,7 +4282,7 @@ msgstr ""
 "POP ਸਰਵਰ %s ਨਾਲ ਜੁੜਨ ਲਈ ਅਸਮੱਰਥ ਹੈ।\tਗਲਤ APOP ID ਮਿਲਿਆ ਹੈ। Impersonation ਹਮਲੇ ਦਾ "
 "ਸ਼ੱਕ ਹੈ। ਆਪਣੇ ਪਰਸ਼ਾਸ਼ਕ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:471
+#: ../camel/providers/pop3/camel-pop3-store.c:492
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4225,7 +4292,7 @@ msgstr ""
 "ਪਾਸਵਰਡ ਭੇਜਣ ਵਿੱਚ ਅਸਫਲ: %s"
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
-#: ../camel/providers/pop3/camel-pop3-store.c:484
+#: ../camel/providers/pop3/camel-pop3-store.c:505
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4235,7 +4302,7 @@ msgstr ""
 "ਯੂਜ਼ਰ ਨਾਂ%s ਭੇਜਣ ਦੌਰਾਨ ਗਲਤੀ"
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
-#: ../camel/providers/pop3/camel-pop3-store.c:497
+#: ../camel/providers/pop3/camel-pop3-store.c:518
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4244,27 +4311,27 @@ msgstr ""
 "POP ਸਰਵਰ %s ਨਾਲ ਜੁੜਨ ਵਿੱਚ ਅਸਮਰੱਥ ਹੈ।\n"
 "ਪਾਸਵਰਡ%s ਭੇਜਣ ਦੌਰਾਨ ਗਲਤੀ"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:653
-#, c-format
-msgid "Could not connect to POP server %s"
-msgstr "POP ਸਰਵਰ %s ਨਾਲ ਜੁੜਨ ਵਿੱਚ ਅਸਫਲ"
-
-#: ../camel/providers/pop3/camel-pop3-store.c:666
+#: ../camel/providers/pop3/camel-pop3-store.c:558
 #, c-format
 msgid "POP3 server %s"
 msgstr "POP3 ਸਰਵਰ %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:670
+#: ../camel/providers/pop3/camel-pop3-store.c:562
 #, c-format
 msgid "POP3 server for %s on %s"
 msgstr "POP3 ਸਰਵਿਸ %2$s ਉੱਤੇ %1$s ਲਈ"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:685
+#: ../camel/providers/pop3/camel-pop3-store.c:694
+#, c-format
+msgid "Could not connect to POP server %s"
+msgstr "POP ਸਰਵਰ %s ਨਾਲ ਜੁੜਨ ਵਿੱਚ ਅਸਫਲ"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:721
 #, c-format
 msgid "No such folder '%s'."
 msgstr "'%s' ਫੋਲਡਰ ਨਹੀਂ ਹੈ।"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:709
+#: ../camel/providers/pop3/camel-pop3-store.c:738
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr "POP3 ਸਟੋਰ ਚ ਕੋਈ ਫੋਲਡਰ ਲੜੀ ਨਹੀਂ ਹੈ"
@@ -4279,47 +4346,47 @@ msgid ""
 "system."
 msgstr "ਲੋਕਲ ਸਿਸਟਮ ਤੇ ਪੱਤਰ ਭੇਜਣ ਲਈ \"sendmail\" ਨੂੰ ਵਰਤੋਂ।"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:98
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:49
+msgid "sendmail"
+msgstr "sendmail"
+
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:51
+msgid "Mail delivery via the sendmail program"
+msgstr "sendmail ਪਰੋਗਰਾਮ ਰਾਹੀਂ ਪੱਤਰ ਭੇਜੋ"
+
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:86
 #, c-format
 msgid "Could not parse recipient list"
 msgstr "ਪ੍ਰਾਪਤ ਸੂਚੀ ਨੂੰ ਪਾਰਸ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:131
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:119
 #, c-format
 msgid "Could not create pipe to sendmail: %s: mail not sent"
 msgstr "sendmail ਨਾਲ ਜੋੜਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s: ਪੱਤਰ ਭੇਜਿਆ ਨਹੀਂ ਗਿਆ ਹੈ।"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:153
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:141
 #, c-format
 msgid "Could not fork sendmail: %s: mail not sent"
 msgstr "sendmail ਨੂੰ ਵੰਡਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ: %s: ਪੱਤਰ ਨਹੀਂ ਭੇਜਿਆ ਜਾ ਸਕਦਾ ਹੈ"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:194
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:182
 msgid "Could not send message: "
 msgstr "ਸੁਨੇਹਾ ਭੇਜਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ: "
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:222
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:210
 #, c-format
 msgid "sendmail exited with signal %s: mail not sent."
 msgstr "sendmail ਸੰਕੇਤ %s ਨਾਲ ਬੰਦ ਹੋ ਗਈ ਹੈ: ਪੱਤਰ ਨਹੀਂ ਭੇਜਿਆ ਗਿਆ ਹੈ।"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:229
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:217
 #, c-format
 msgid "Could not execute %s: mail not sent."
 msgstr "%s ਨੂੰ ਚਲਾਇਆ ਨਹੀਂ ਜਾ ਸਕਿਆ: ਪੱਤਰ ਨਹੀਂ ਭੇਜਿਆ ਗਿਆ"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:234
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:222
 #, c-format
 msgid "sendmail exited with status %d: mail not sent."
 msgstr "sendmail ਸਥਿਤੀ %d ਨਾਲ ਬੰਦ: ਪੱਤਰ ਨਹੀਂ ਭੇਜਿਆ ਗਿਆ।"
-
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:248
-msgid "sendmail"
-msgstr "sendmail"
-
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:250
-msgid "Mail delivery via the sendmail program"
-msgstr "sendmail ਪਰੋਗਰਾਮ ਰਾਹੀਂ ਪੱਤਰ ਭੇਜੋ"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:43
 msgid "SMTP"
@@ -4329,126 +4396,40 @@ msgstr "SMTP"
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr "ਰਿਮੋਟ mailhub ਨੂੰ SMTP ਵਰਤ ਕੇ ਪੱਤਰ ਭੇਜਣ ਲਈ।"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:116
-msgid "Syntax error, command unrecognized"
-msgstr "ਸੰਟੈਕਸ ਗਲਤੀ, ਕਮਾਂਡ ਪਛਾਣੀ ਨਹੀਂ ਜਾ ਸਕੀ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:118
-msgid "Syntax error in parameters or arguments"
-msgstr "ਪੈਰਾਮੀਟਰ ਜਾਂ ਆਰਗੂਮਿੰਟ ਵਿੱਚ ਸੰਟੈਕਸ ਗਲਤੀ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:120
-msgid "Command not implemented"
-msgstr "ਕਮਾਂਡ ਲਾਗੂ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕੀ ਹੈ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:122
-msgid "Command parameter not implemented"
-msgstr "ਕਮਾਂਡ ਪੈਰਾਮੀਟਰ ਲਾਗੂ ਨਹੀਂ ਹੈ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:124
-msgid "System status, or system help reply"
-msgstr "ਸਿਸਟਮ ਸਥਿਤੀ ਜਾਂ ਸਿਸਟਮ ਮੱਦਦ ਜਵਾਬ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:126
-msgid "Help message"
-msgstr "ਮੱਦਦ ਸੁਨੇਹਾ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:128
-msgid "Service ready"
-msgstr "ਸਰਵਿਸ ਤਿਆਰ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:130
-msgid "Service closing transmission channel"
-msgstr "ਸਰਵਿਸ ਬੰਦ ਕਰਨ ਲਈ ਸੰਚਾਰ ਚੈਨਲ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:132
-msgid "Service not available, closing transmission channel"
-msgstr "ਸਰਵਿਸ ਉਪਲੱਬਧ ਨਹੀਂ ਹੈ, ਸੰਚਾਰ ਚੈਨਲ ਬੰਦ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:134
-msgid "Requested mail action okay, completed"
-msgstr "ਲੋੜੀਦਾ ਪੱਤਰ ਕਾਰਵਾਈ ਠੀਕ ਹੈ, ਸਮਾਪਤ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:136
-msgid "User not local; will forward to <forward-path>"
-msgstr "ਯੂਜ਼ਰ ਲੋਕਲ ਨਹੀਂ ਹੈ; ਅੱਗੇ <forward-path> ਭੇਜਿਆ ਜਾਵੇਗਾ।"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:138
-msgid "Requested mail action not taken: mailbox unavailable"
-msgstr "ਲੋੜੀਦੀ ਪੱਤਰ ਕਾਰਵਾਈ ਕੀਤੀ ਨਹੀਂ ਜਾ ਸਕਦੀ: mailbox ਉਪਲੱਬਧ ਨਹੀ।"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:140
-msgid "Requested action not taken: mailbox unavailable"
-msgstr "ਲੋੜੀਦੀ ਕਾਰਵਾਈ ਕੀਤੀ ਨਹੀਂ ਜਾ ਸਕਦੀ: mailbox ਉਪਲੱਬਧ ਨਹੀਂ।"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:142
-msgid "Requested action aborted: error in processing"
-msgstr "ਲੋੜੀਦੀ ਕਾਰਵਾਈ ਛੱਡੀ ਗਈ ਗਈ, ਕਾਰਵਾਈ ਵਿੱਚ ਗਲਤੀ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:144
-msgid "User not local; please try <forward-path>"
-msgstr "ਯੂਜ਼ਰ ਲੋਕਲ ਨਹੀਂ ਹੈ; ਕਿਰਪਾ ਕਰਕੇ <forward-path> ਵਰਤੋਂ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:146
-msgid "Requested action not taken: insufficient system storage"
-msgstr "ਲੋੜੀਦੀ ਕਾਰਵਾਈ ਕੀਤੀ ਨਹੀਂ ਜਾ ਸਕਦੀ ਹੈ: ਲੋੜੀਦੀ ਸਿਸਟਮ ਥਾਂ ਉਪਲੱਬਧ ਨਹੀਂ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:148
-msgid "Requested mail action aborted: exceeded storage allocation"
-msgstr "ਲੋੜੀਦੀ ਪੱਤਰ ਕਾਰਵਾਈ ਅਧੂਰੀ: ਉਪਲੱਬਧ ਲੋੜ ਸੀਮਾ ਤੋਂ ਵਧੇਰੇ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:150
-msgid "Requested action not taken: mailbox name not allowed"
-msgstr "ਲੋੜੀਦੀ ਕਾਰਵਾਈ ਸੰਭਵ ਨਹੀਂ: mailbox ਨਾਂ ਸੰਭਵ ਹੈ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:152
-msgid "Start mail input; end with <CRLF>.<CRLF>"
-msgstr "ਮੇਲ ਇੰਪੁੱਟ ਸ਼ੁਰੂ; <CRLF>.<CRLF> ਨਾਲ ਸਮਾਪਤ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:154
-msgid "Transaction failed"
-msgstr "ਟਰਾਂਸ਼ੈਕਸ਼ਨ ਫੇਲ੍ਹ ਹੋਈ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:158
-msgid "A password transition is needed"
-msgstr "ਇੱਕ ਪਾਸਵਰਡ ਤਬਦੀਲੀ ਲੋੜੀਦੀ ਹੈ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:160
-msgid "Authentication mechanism is too weak"
-msgstr "ਪ੍ਰਮਾਣਿਕਤਾ ਢੰਗ ਬਹੁਤ ਕਮਜ਼ੋਰ ਹੈ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:162
-msgid "Encryption required for requested authentication mechanism"
-msgstr "ਲੋੜੀਦੇ ਪ੍ਰਮਾਣਕਿਤਾ ਢੰਗ ਲਈ ਇਕ੍ਰਿਪਸ਼ਨ ਲੋੜੀਦੀ ਹੈ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:164
-msgid "Temporary authentication failure"
-msgstr "ਆਰਜ਼ੀ ਪ੍ਰਮਾਣਕਿਤਾ ਅਸਫਲ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:252
-#: ../camel/providers/smtp/camel-smtp-transport.c:258
+#: ../camel/providers/smtp/camel-smtp-transport.c:193
+#: ../camel/providers/smtp/camel-smtp-transport.c:200
 msgid "Welcome response error: "
 msgstr "ਜੀ ਆਇਆਂ ਨੂੰ ਜਵਾਬ ਗਲਤੀ: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:294
-#: ../camel/providers/smtp/camel-smtp-transport.c:331
-#: ../camel/providers/smtp/camel-smtp-transport.c:338
+#: ../camel/providers/smtp/camel-smtp-transport.c:237
+#: ../camel/providers/smtp/camel-smtp-transport.c:277
+#: ../camel/providers/smtp/camel-smtp-transport.c:284
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
 msgstr "SMTP ਸਰਵਰ %s ਨਾਲ ਸੁਰੱਖਿਅਤ ਢੰਗ ਨਾਲ ਜੁੜ ਵਿੱਚ ਅਸਫਲ: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:302
-#: ../camel/providers/smtp/camel-smtp-transport.c:314
-#: ../camel/providers/smtp/camel-smtp-transport.c:320
+#: ../camel/providers/smtp/camel-smtp-transport.c:246
+#: ../camel/providers/smtp/camel-smtp-transport.c:259
+#: ../camel/providers/smtp/camel-smtp-transport.c:266
 msgid "STARTTLS command failed: "
 msgstr "STARTTLS ਕਮਾਂਡ ਅਸਫਲ: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:450
+#: ../camel/providers/smtp/camel-smtp-transport.c:357
+#, c-format
+msgid "SMTP server %s"
+msgstr "SMTP ਸਰਵਰ %s"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:361
+#, c-format
+msgid "SMTP mail delivery via %s"
+msgstr "SMTP ਪੱਤਰ ਪਹੁੰਚ %s ਰਾਹੀ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:408
 #, c-format
 msgid "SMTP server %s does not support requested authentication type %s."
 msgstr "SMTP ਸਰਵਰ %s ਲੋੜੀਦੀ ਪ੍ਰਮਾਣਕਿਤਾ ਕਿਸਮ %s ਲਈ ਸਹਾਇਕ ਨਹੀਂ ਹੈ।"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:526
+#: ../camel/providers/smtp/camel-smtp-transport.c:488
 #, c-format
 msgid ""
 "Unable to authenticate to SMTP server.\n"
@@ -4459,182 +4440,320 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:664
-#, c-format
-msgid "SMTP server %s"
-msgstr "SMTP ਸਰਵਰ %s"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:666
-#, c-format
-msgid "SMTP mail delivery via %s"
-msgstr "SMTP ਪੱਤਰ ਪਹੁੰਚ %s ਰਾਹੀ"
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:686
+#: ../camel/providers/smtp/camel-smtp-transport.c:606
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "ਸੁਨੇਹਾ ਭੇਜਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ: ਸੇਵਾ ਜੁੜੀ ਨਹੀਂ ਹੈ।"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:693
+#: ../camel/providers/smtp/camel-smtp-transport.c:613
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "ਸੁਨੇਹਾ ਭੇਜਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ: ਭੇਜਣ ਵਾਲੇ ਦਾ ਐਡਰੈੱਸ ਜਾਇਜ ਨਹੀਂ ਹੈ।"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:697
+#: ../camel/providers/smtp/camel-smtp-transport.c:617
 msgid "Sending message"
 msgstr "ਸੁਨੇਹਾ ਭੇਜਿਆ ਜਾ ਰਿਹਾ ਹੈ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:713
+#: ../camel/providers/smtp/camel-smtp-transport.c:642
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "ਸੁਨੇਹਾ ਭੇਜਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ: ਕੋਈ ਪ੍ਰਾਪਤ ਕਰਤਾ ਨਹੀਂ ਹੈ।"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:725
+#: ../camel/providers/smtp/camel-smtp-transport.c:655
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "ਸੁਨੇਹਾ ਭੇਜਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ: ਇੱਕ ਜਾਂ ਵਧੇਰੇ ਪ੍ਰਾਪਤ-ਕਰਤਾ ਗਲਤ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:961
+#: ../camel/providers/smtp/camel-smtp-transport.c:718
+msgid "Syntax error, command unrecognized"
+msgstr "ਸੰਟੈਕਸ ਗਲਤੀ, ਕਮਾਂਡ ਪਛਾਣੀ ਨਹੀਂ ਜਾ ਸਕੀ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:720
+msgid "Syntax error in parameters or arguments"
+msgstr "ਪੈਰਾਮੀਟਰ ਜਾਂ ਆਰਗੂਮਿੰਟ ਵਿੱਚ ਸੰਟੈਕਸ ਗਲਤੀ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:722
+msgid "Command not implemented"
+msgstr "ਕਮਾਂਡ ਲਾਗੂ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕੀ ਹੈ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:724
+msgid "Command parameter not implemented"
+msgstr "ਕਮਾਂਡ ਪੈਰਾਮੀਟਰ ਲਾਗੂ ਨਹੀਂ ਹੈ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:726
+msgid "System status, or system help reply"
+msgstr "ਸਿਸਟਮ ਸਥਿਤੀ ਜਾਂ ਸਿਸਟਮ ਮੱਦਦ ਜਵਾਬ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:728
+msgid "Help message"
+msgstr "ਮੱਦਦ ਸੁਨੇਹਾ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:730
+msgid "Service ready"
+msgstr "ਸਰਵਿਸ ਤਿਆਰ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:732
+msgid "Service closing transmission channel"
+msgstr "ਸਰਵਿਸ ਬੰਦ ਕਰਨ ਲਈ ਸੰਚਾਰ ਚੈਨਲ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:734
+msgid "Service not available, closing transmission channel"
+msgstr "ਸਰਵਿਸ ਉਪਲੱਬਧ ਨਹੀਂ ਹੈ, ਸੰਚਾਰ ਚੈਨਲ ਬੰਦ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:736
+msgid "Requested mail action okay, completed"
+msgstr "ਲੋੜੀਦਾ ਪੱਤਰ ਕਾਰਵਾਈ ਠੀਕ ਹੈ, ਸਮਾਪਤ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:738
+msgid "User not local; will forward to <forward-path>"
+msgstr "ਯੂਜ਼ਰ ਲੋਕਲ ਨਹੀਂ ਹੈ; ਅੱਗੇ <forward-path> ਭੇਜਿਆ ਜਾਵੇਗਾ।"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:740
+msgid "Requested mail action not taken: mailbox unavailable"
+msgstr "ਲੋੜੀਦੀ ਪੱਤਰ ਕਾਰਵਾਈ ਕੀਤੀ ਨਹੀਂ ਜਾ ਸਕਦੀ: mailbox ਉਪਲੱਬਧ ਨਹੀ।"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:742
+msgid "Requested action not taken: mailbox unavailable"
+msgstr "ਲੋੜੀਦੀ ਕਾਰਵਾਈ ਕੀਤੀ ਨਹੀਂ ਜਾ ਸਕਦੀ: mailbox ਉਪਲੱਬਧ ਨਹੀਂ।"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:744
+msgid "Requested action aborted: error in processing"
+msgstr "ਲੋੜੀਦੀ ਕਾਰਵਾਈ ਛੱਡੀ ਗਈ ਗਈ, ਕਾਰਵਾਈ ਵਿੱਚ ਗਲਤੀ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:746
+msgid "User not local; please try <forward-path>"
+msgstr "ਯੂਜ਼ਰ ਲੋਕਲ ਨਹੀਂ ਹੈ; ਕਿਰਪਾ ਕਰਕੇ <forward-path> ਵਰਤੋਂ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:748
+msgid "Requested action not taken: insufficient system storage"
+msgstr "ਲੋੜੀਦੀ ਕਾਰਵਾਈ ਕੀਤੀ ਨਹੀਂ ਜਾ ਸਕਦੀ ਹੈ: ਲੋੜੀਦੀ ਸਿਸਟਮ ਥਾਂ ਉਪਲੱਬਧ ਨਹੀਂ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:750
+msgid "Requested mail action aborted: exceeded storage allocation"
+msgstr "ਲੋੜੀਦੀ ਪੱਤਰ ਕਾਰਵਾਈ ਅਧੂਰੀ: ਉਪਲੱਬਧ ਲੋੜ ਸੀਮਾ ਤੋਂ ਵਧੇਰੇ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:752
+msgid "Requested action not taken: mailbox name not allowed"
+msgstr "ਲੋੜੀਦੀ ਕਾਰਵਾਈ ਸੰਭਵ ਨਹੀਂ: mailbox ਨਾਂ ਸੰਭਵ ਹੈ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:754
+msgid "Start mail input; end with <CRLF>.<CRLF>"
+msgstr "ਮੇਲ ਇੰਪੁੱਟ ਸ਼ੁਰੂ; <CRLF>.<CRLF> ਨਾਲ ਸਮਾਪਤ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:756
+msgid "Transaction failed"
+msgstr "ਟਰਾਂਸ਼ੈਕਸ਼ਨ ਫੇਲ੍ਹ ਹੋਈ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:760
+msgid "A password transition is needed"
+msgstr "ਇੱਕ ਪਾਸਵਰਡ ਤਬਦੀਲੀ ਲੋੜੀਦੀ ਹੈ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:762
+msgid "Authentication mechanism is too weak"
+msgstr "ਪ੍ਰਮਾਣਿਕਤਾ ਢੰਗ ਬਹੁਤ ਕਮਜ਼ੋਰ ਹੈ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:764
+msgid "Encryption required for requested authentication mechanism"
+msgstr "ਲੋੜੀਦੇ ਪ੍ਰਮਾਣਕਿਤਾ ਢੰਗ ਲਈ ਇਕ੍ਰਿਪਸ਼ਨ ਲੋੜੀਦੀ ਹੈ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:766
+msgid "Temporary authentication failure"
+msgstr "ਆਰਜ਼ੀ ਪ੍ਰਮਾਣਕਿਤਾ ਅਸਫਲ"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1023
 msgid "SMTP Greeting"
 msgstr "SMTP ਸ਼ੁੱਭ-ਸੁਨੇਹਾ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:985
-#: ../camel/providers/smtp/camel-smtp-transport.c:1000
-#: ../camel/providers/smtp/camel-smtp-transport.c:1007
+#: ../camel/providers/smtp/camel-smtp-transport.c:1050
+#: ../camel/providers/smtp/camel-smtp-transport.c:1067
+#: ../camel/providers/smtp/camel-smtp-transport.c:1075
 msgid "HELO command failed: "
 msgstr "HELO ਕਮਾਂਡ ਅਸਫਲ: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1074
+#: ../camel/providers/smtp/camel-smtp-transport.c:1143
 msgid "SMTP Authentication"
 msgstr "SMTP ਪ੍ਰਮਾਣਕਿਤਾ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1081
+#: ../camel/providers/smtp/camel-smtp-transport.c:1150
 #, c-format
 msgid "Error creating SASL authentication object."
 msgstr "ਗਲਤੀ, SASL ਪ੍ਰਮਾਣਕਿਤਾ ਇਕਾਈ ਬਣਾਉਣ ਵਿੱਚ।"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1097
-#: ../camel/providers/smtp/camel-smtp-transport.c:1107
-#: ../camel/providers/smtp/camel-smtp-transport.c:1115
+#: ../camel/providers/smtp/camel-smtp-transport.c:1169
+#: ../camel/providers/smtp/camel-smtp-transport.c:1180
+#: ../camel/providers/smtp/camel-smtp-transport.c:1189
 msgid "AUTH command failed: "
 msgstr "AUTH ਕਮਾਂਡ ਅਸਫਲ: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1214
-#: ../camel/providers/smtp/camel-smtp-transport.c:1226
-#: ../camel/providers/smtp/camel-smtp-transport.c:1233
+#: ../camel/providers/smtp/camel-smtp-transport.c:1297
+#: ../camel/providers/smtp/camel-smtp-transport.c:1311
+#: ../camel/providers/smtp/camel-smtp-transport.c:1320
 msgid "MAIL FROM command failed: "
 msgstr "MAIL FROM ਕਮਾਂਡ ਅਸਫਲ: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1256
+#: ../camel/providers/smtp/camel-smtp-transport.c:1347
 msgid "RCPT TO command failed: "
 msgstr "RCPT TO ਕਮਾਂਡ ਫੇਲ੍ਹ: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1270
-#: ../camel/providers/smtp/camel-smtp-transport.c:1278
+#: ../camel/providers/smtp/camel-smtp-transport.c:1363
+#: ../camel/providers/smtp/camel-smtp-transport.c:1372
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> ਫੇਲ੍ਹ: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1316
-#: ../camel/providers/smtp/camel-smtp-transport.c:1325
-#: ../camel/providers/smtp/camel-smtp-transport.c:1335
-#: ../camel/providers/smtp/camel-smtp-transport.c:1392
-#: ../camel/providers/smtp/camel-smtp-transport.c:1408
-#: ../camel/providers/smtp/camel-smtp-transport.c:1419
-#: ../camel/providers/smtp/camel-smtp-transport.c:1426
+#: ../camel/providers/smtp/camel-smtp-transport.c:1414
+#: ../camel/providers/smtp/camel-smtp-transport.c:1424
+#: ../camel/providers/smtp/camel-smtp-transport.c:1434
+#: ../camel/providers/smtp/camel-smtp-transport.c:1493
+#: ../camel/providers/smtp/camel-smtp-transport.c:1512
+#: ../camel/providers/smtp/camel-smtp-transport.c:1525
+#: ../camel/providers/smtp/camel-smtp-transport.c:1533
 msgid "DATA command failed: "
 msgstr "DATA ਕਮਾਂਡ ਫੇਲ੍ਹ: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1448
-#: ../camel/providers/smtp/camel-smtp-transport.c:1460
-#: ../camel/providers/smtp/camel-smtp-transport.c:1467
+#: ../camel/providers/smtp/camel-smtp-transport.c:1558
+#: ../camel/providers/smtp/camel-smtp-transport.c:1572
+#: ../camel/providers/smtp/camel-smtp-transport.c:1580
 msgid "RSET command failed: "
 msgstr "RSET ਕਮਾਂਡ ਫੇਲ੍ਹ: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1489
-#: ../camel/providers/smtp/camel-smtp-transport.c:1502
-#: ../camel/providers/smtp/camel-smtp-transport.c:1508
+#: ../camel/providers/smtp/camel-smtp-transport.c:1605
+#: ../camel/providers/smtp/camel-smtp-transport.c:1619
+#: ../camel/providers/smtp/camel-smtp-transport.c:1626
 msgid "QUIT command failed: "
 msgstr "QUIT ਕਮਾਂਡ ਫੇਲ੍ਹ: "
 
-#: ../libedataserver/e-categories.c:46
-msgid "Business"
-msgstr "ਵਪਾਰ"
-
 #: ../libedataserver/e-categories.c:47
+#| msgid "Anniversary"
+msgctxt "CategoryName"
+msgid "Anniversary"
+msgstr "ਵਰ੍ਹੇ-ਗੰਢ"
+
+#: ../libedataserver/e-categories.c:48
+#| msgid "Birthday"
+msgctxt "CategoryName"
+msgid "Birthday"
+msgstr "ਜਨਮਦਿਨ"
+
+#: ../libedataserver/e-categories.c:49
+#| msgid "Business"
+msgctxt "CategoryName"
+msgid "Business"
+msgstr "ਵਪਾਰਕ"
+
+#: ../libedataserver/e-categories.c:50
+#| msgid "Competition"
+msgctxt "CategoryName"
 msgid "Competition"
 msgstr "ਮੁਕਾਬਲਾ"
 
-#: ../libedataserver/e-categories.c:48
+#: ../libedataserver/e-categories.c:51
+#| msgid "Favorites"
+msgctxt "CategoryName"
 msgid "Favorites"
 msgstr "ਪਸੰਦੀਦਾ"
 
-#: ../libedataserver/e-categories.c:49
+#: ../libedataserver/e-categories.c:52
+#| msgid "Gifts"
+msgctxt "CategoryName"
 msgid "Gifts"
 msgstr "ਤੋਹਫੇ"
 
-#: ../libedataserver/e-categories.c:50
+#: ../libedataserver/e-categories.c:53
+#| msgid "Goals/Objectives"
+msgctxt "CategoryName"
 msgid "Goals/Objectives"
 msgstr "ਨਿਸ਼ਾਨੇ/ਟੀਚੇ"
 
-#: ../libedataserver/e-categories.c:51
+#: ../libedataserver/e-categories.c:54
+#| msgid "Holiday"
+msgctxt "CategoryName"
 msgid "Holiday"
 msgstr "ਛੁੱਟੀ"
 
-#: ../libedataserver/e-categories.c:52
+#: ../libedataserver/e-categories.c:55
+#| msgid "Holiday Cards"
+msgctxt "CategoryName"
 msgid "Holiday Cards"
-msgstr "ਛੁੱਟੀਆਂ ਕਾਰਡ"
+msgstr "ਛੁੱਟੀ ਕਾਰਡ"
 
 #. important people (e.g. new business partners)
-#: ../libedataserver/e-categories.c:54
+#: ../libedataserver/e-categories.c:57
+#| msgid "Hot Contacts"
+msgctxt "CategoryName"
 msgid "Hot Contacts"
-msgstr "ਤੇਜ਼ ਸੰਪਰਕ"
+msgstr "ਤੁਰੰਤ ਸੰਪਰਕ"
 
-#: ../libedataserver/e-categories.c:55
+#: ../libedataserver/e-categories.c:58
+#| msgid "Ideas"
+msgctxt "CategoryName"
 msgid "Ideas"
 msgstr "ਢੰਗ"
 
-#: ../libedataserver/e-categories.c:56
+#: ../libedataserver/e-categories.c:59
+#| msgid "International"
+msgctxt "CategoryName"
 msgid "International"
 msgstr "ਅੰਤਰਰਾਸ਼ਟਰੀ"
 
-#: ../libedataserver/e-categories.c:57
+#: ../libedataserver/e-categories.c:60
+#| msgid "Key Customer"
+msgctxt "CategoryName"
 msgid "Key Customer"
 msgstr "ਖਾਸ ਗਾਹਕ"
 
-#: ../libedataserver/e-categories.c:58
+#: ../libedataserver/e-categories.c:61
+#| msgid "Miscellaneous"
+msgctxt "CategoryName"
 msgid "Miscellaneous"
 msgstr "ਫੁਟਕਲ"
 
-#: ../libedataserver/e-categories.c:59
+#: ../libedataserver/e-categories.c:62
+#| msgid "Personal"
+msgctxt "CategoryName"
 msgid "Personal"
 msgstr "ਨਿੱਜੀ"
 
-#: ../libedataserver/e-categories.c:60
+#: ../libedataserver/e-categories.c:63
+#| msgid "Phone Calls"
+msgctxt "CategoryName"
 msgid "Phone Calls"
 msgstr "ਫੋਨ ਕਾਲ"
 
 #. Translators: "Status" is a category name; it can mean anything user wants to
-#: ../libedataserver/e-categories.c:62
+#: ../libedataserver/e-categories.c:65
+#| msgid "Status"
+msgctxt "CategoryName"
 msgid "Status"
 msgstr "ਹਾਲਤ"
 
-#: ../libedataserver/e-categories.c:63
+#: ../libedataserver/e-categories.c:66
+#| msgid "Strategies"
+msgctxt "CategoryName"
 msgid "Strategies"
 msgstr "ਨੀਤੀ"
 
-#: ../libedataserver/e-categories.c:64
+#: ../libedataserver/e-categories.c:67
+#| msgid "Suppliers"
+msgctxt "CategoryName"
 msgid "Suppliers"
 msgstr "ਸਪਲਾਇਰ"
 
-#: ../libedataserver/e-categories.c:65
+#: ../libedataserver/e-categories.c:68
+#| msgid "Time & Expenses"
+msgctxt "CategoryName"
 msgid "Time & Expenses"
 msgstr "ਸਮਾਂ ਅਤੇ ਖਰਚੇ"
 
-#: ../libedataserver/e-categories.c:66
+#: ../libedataserver/e-categories.c:69
+#| msgid "VIP"
+msgctxt "CategoryName"
 msgid "VIP"
 msgstr "VIP"
 
-#: ../libedataserver/e-categories.c:67
+#: ../libedataserver/e-categories.c:70
+#| msgid "Waiting"
+msgctxt "CategoryName"
 msgid "Waiting"
 msgstr "ਉਡੀਕ ਜਾਰੀ"
 
@@ -4759,7 +4878,7 @@ msgstr "%H:%M"
 #. strptime format for time of day, without seconds 24-hour format, and no colon.
 #: ../libedataserver/e-time-utils.c:1842
 msgid "%H%M"
-msgstr "%H:%M"
+msgstr "%H%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
 #: ../libedataserver/e-time-utils.c:1846
@@ -4776,55 +4895,51 @@ msgstr "LDAP ਸਰਵਰ ਨੂੰ ਅਗਿਆਤ ਦੇ ਤੌਰ 'ਤੇ ਵ
 msgid "Failed to authenticate.\n"
 msgstr "ਡਾਟਾ ਇਕੋਡਿਗ ਕਰਨ ਵਿੱਚ ਅਸਫਲ ਹੈ।\n"
 
+#: ../libedataserverui/e-categories-dialog.c:134
+msgid "Category Properties"
+msgstr "ਕੈਟਾਗਰੀ ਗੁਣ"
+
 #: ../libedataserverui/e-categories-dialog.c:145
+msgid "Category _Name"
+msgstr "ਕੈਟਾਗਰੀ ਨਾਂ(_N)"
+
+#: ../libedataserverui/e-categories-dialog.c:151
+msgid "Category _Icon"
+msgstr "ਕੈਟਾਗਰੀ ਆਈਕਾਨ(_I)"
+
+#: ../libedataserverui/e-categories-dialog.c:192
 msgid "Category Icon"
 msgstr "ਕੈਟਾਗਰੀ ਆਈਕਾਨ"
 
-#: ../libedataserverui/e-categories-dialog.c:151
+#: ../libedataserverui/e-categories-dialog.c:198
 msgid "_No Image"
 msgstr "ਕੋਈ ਚਿੱਤਰ ਨਹੀਂ(_N)"
 
-#: ../libedataserverui/e-categories-dialog.c:368
+#: ../libedataserverui/e-categories-dialog.c:409
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
 msgstr "ਸੰਰਚਨਾ ਵਿੱਚ ਪਹਿਲਾਂ ਹੀ '%s' ਕੈਟਾਗਰੀ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਵੱਖਰਾ ਨਾਂ ਵਰਤੋਂ।"
 
-#: ../libedataserverui/e-categories-dialog.c:676
-msgid "Icon"
-msgstr "ਆਈਕਾਨ"
-
-#: ../libedataserverui/e-categories-dialog.c:681
-msgid "Category"
-msgstr "ਕੈਟਾਗਰੀ"
-
-#: ../libedataserverui/e-categories-dialog.ui.h:1
-msgid "Category Properties"
-msgstr "ਕੈਟਾਗਰੀ ਗੁਣ"
-
-#: ../libedataserverui/e-categories-dialog.ui.h:2
-msgid "Category _Icon"
-msgstr "ਕੈਟਾਗਰੀ ਆਈਕਾਨ(_I)"
-
-#: ../libedataserverui/e-categories-dialog.ui.h:3
-msgid "Category _Name"
-msgstr "ਕੈਟਾਗਰੀ ਨਾਂ(_N)"
-
-#: ../libedataserverui/e-categories-dialog.ui.h:4
+#: ../libedataserverui/e-categories-dialog.c:664
 msgid "Currently _used categories:"
 msgstr "ਇਸ ਸਮੇਂ ਵਰਤੀਆਂ ਕੈਟਾਗਰੀਆਂ(_u):"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:5
+#: ../libedataserverui/e-categories-dialog.c:671
 msgid "_Available Categories:"
 msgstr "ਉਪਲੱਬਧ ਕੈਟਾਗਰੀਆਂ(_A):"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:6
+#: ../libedataserverui/e-categories-dialog.c:714
 msgid "_Edit"
 msgstr "ਸੋਧ(_E)"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:7
-msgid "categories"
+#: ../libedataserverui/e-categories-dialog.c:770
+msgid "Icon"
+msgstr "ਆਈਕਾਨ"
+
+#: ../libedataserverui/e-categories-dialog.c:775
+msgid "Category"
 msgstr "ਕੈਟਾਗਰੀ"
 
 #: ../libedataserverui/e-category-completion.c:292
@@ -4832,79 +4947,83 @@ msgstr "ਕੈਟਾਗਰੀ"
 msgid "Create category \"%s\""
 msgstr "ਕੈਟਾਗਰੀ \"%s\" ਬਣਾਓ"
 
-#: ../libedataserverui/e-name-selector-dialog.c:319
-msgid "Select Contacts from Address Book"
-msgstr "ਐਡਰੈੱਸ ਬੁੱਕ ਵਿੱਚੋਂ ਸੰਪਰਕ ਚੁਣੋ"
+#: ../libedataserverui/e-name-selector-dialog.c:176
+#| msgid "Hot Contacts"
+msgid "Show Contacts"
+msgstr "ਸੰਪਰਕ ਵੇਖੋ"
 
-#: ../libedataserverui/e-name-selector-dialog.c:658
-msgid "_Add"
-msgstr "ਸ਼ਾਮਲ(_A)"
-
-#: ../libedataserverui/e-name-selector-dialog.c:662
-msgid "_Remove"
-msgstr "ਹਟਾਓ(_R)"
-
-#: ../libedataserverui/e-name-selector-dialog.c:890
-#: ../libedataserverui/e-name-selector-dialog.ui.h:6
-msgid "Any Category"
-msgstr "ਕੋਈ ਵੀ ਕੈਟਾਗਰੀ"
-
-#: ../libedataserverui/e-name-selector-dialog.ui.h:1
-msgid "*"
-msgstr "*"
-
-#: ../libedataserverui/e-name-selector-dialog.ui.h:2
-msgid "<b>Co_ntacts</b>"
-msgstr "<b>ਸੰਪਰਕ(_n)</b>"
-
-#: ../libedataserverui/e-name-selector-dialog.ui.h:3
-msgid "<b>Show Contacts</b>"
-msgstr "<b>ਸੰਪਰਕ ਵੇਖੋ</b>"
-
-#: ../libedataserverui/e-name-selector-dialog.ui.h:4
+#: ../libedataserverui/e-name-selector-dialog.c:198
 msgid "Address B_ook:"
 msgstr "ਐਡਰੈੱਸ ਕਿਤਾਬ(_o):"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:5
-msgid "Address Book"
-msgstr "ਐਡਰੈੱਸ ਕਿਤਾਬ"
-
-#: ../libedataserverui/e-name-selector-dialog.ui.h:7
+#: ../libedataserverui/e-name-selector-dialog.c:206
 msgid "Cate_gory:"
 msgstr "ਕੈਟਾਗਰੀ(_g):"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:8
-msgid "Contacts"
-msgstr "ਸੰਪਰਕ"
-
-#: ../libedataserverui/e-name-selector-dialog.ui.h:9
-msgid "Search"
-msgstr "ਖੋਜ"
-
-#: ../libedataserverui/e-name-selector-dialog.ui.h:10
+#: ../libedataserverui/e-name-selector-dialog.c:224
 msgid "_Search:"
 msgstr "ਖੋਜ(_S):"
 
+#: ../libedataserverui/e-name-selector-dialog.c:242
+#: ../libedataserverui/e-name-selector-dialog.c:984
+msgid "Any Category"
+msgstr "ਕੋਈ ਵੀ ਕੈਟਾਗਰੀ"
+
+#: ../libedataserverui/e-name-selector-dialog.c:244
+#| msgid "Contacts"
+msgid "Co_ntacts"
+msgstr "ਸੰਪਰਕ(_n)"
+
+#: ../libedataserverui/e-name-selector-dialog.c:289
+msgid "Search"
+msgstr "ਖੋਜ"
+
+#: ../libedataserverui/e-name-selector-dialog.c:292
+msgid "Address Book"
+msgstr "ਐਡਰੈੱਸ ਕਿਤਾਬ"
+
+#: ../libedataserverui/e-name-selector-dialog.c:295
+msgid "Contacts"
+msgstr "ਸੰਪਰਕ"
+
+#: ../libedataserverui/e-name-selector-dialog.c:415
+msgid "Select Contacts from Address Book"
+msgstr "ਐਡਰੈੱਸ ਬੁੱਕ ਵਿੱਚੋਂ ਸੰਪਰਕ ਚੁਣੋ"
+
+#: ../libedataserverui/e-name-selector-dialog.c:754
+msgid "_Add"
+msgstr "ਸ਼ਾਮਲ(_A)"
+
+#: ../libedataserverui/e-name-selector-dialog.c:758
+msgid "_Remove"
+msgstr "ਹਟਾਓ(_R)"
+
+#: ../libedataserverui/e-name-selector-dialog.c:898
+#, c-format
+#| msgid "Error reading mail file: %s"
+msgid "Error loading address book: %s"
+msgstr "ਐਡਰੈੱਸ ਬੁੱਕ ਲੋਡ ਕਰਨ ਦੌਰਾਨ ਗਲਤੀ: %s"
+
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2636
+#: ../libedataserverui/e-name-selector-entry.c:2658
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "%s ਲਾਇਨ 'ਚ ਫੈਲਾਓ(_x)"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2651
+#: ../libedataserverui/e-name-selector-entry.c:2673
 #, c-format
 msgid "Cop_y %s"
 msgstr "%s ਕਾਪੀ ਕਰੋ(_y)"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2661
+#: ../libedataserverui/e-name-selector-entry.c:2683
 #, c-format
 msgid "C_ut %s"
 msgstr "%s ਕੱਟੋ(_U)"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2678
+#: ../libedataserverui/e-name-selector-entry.c:2700
 #, c-format
 msgid "_Edit %s"
 msgstr "%s ਸੋਧ(_E)"
@@ -4914,28 +5033,28 @@ msgstr "%s ਸੋਧ(_E)"
 msgid "_Delete %s"
 msgstr "%s ਹਟਾਓ(_D)"
 
-#: ../libedataserverui/e-passwords.c:257
+#: ../libedataserverui/e-passwords.c:127
 #, c-format
 msgid "Keyring key is unusable: no user or host name"
 msgstr "ਕੀਰਿੰਗ ਕੀ ਅਣ-ਵਰਤੋਂਯੋਗ ਹੈ: ਕੋਈ ਹੋਸਟ ਜਾਂ ਯੂਜ਼ਰ ਨਹੀਂ"
 
-#: ../libedataserverui/e-passwords.c:1120
+#: ../libedataserverui/e-passwords.c:701
 msgid "You have the Caps Lock key on."
 msgstr "ਤੁਸੀਂ ਕੈਪਸ ਲਾਕ ਨੂੰ ਚਾਲੂ ਕੀਤਾ ਹੈ।"
 
-#: ../libedataserverui/e-passwords.c:1241
+#: ../libedataserverui/e-passwords.c:824
 msgid "_Remember this passphrase"
 msgstr "ਇਹ ਪਾਸਵਰਡ ਯਾਦ ਰੱਖੋ(_R)"
 
-#: ../libedataserverui/e-passwords.c:1242
+#: ../libedataserverui/e-passwords.c:825
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "ਇਸ ਸ਼ੈਸ਼ਨ ਲਈ ਇਹ ਪਾਸਵਰਡ ਯਾਦ ਰੱਖੋ(_R)"
 
-#: ../libedataserverui/e-passwords.c:1247
+#: ../libedataserverui/e-passwords.c:830
 msgid "_Remember this password"
 msgstr "ਇਹ ਪਾਸਵਰਡ ਯਾਦ ਰੱਖੋ(_R)"
 
-#: ../libedataserverui/e-passwords.c:1248
+#: ../libedataserverui/e-passwords.c:831
 msgid "_Remember this password for the remainder of this session"
 msgstr "ਇਸ ਸ਼ੈਸਨ ਲਈ ਇਹ ਪਾਸਵਰਡ ਯਾਦ ਰੱਖੋ(_R)"
 
@@ -4944,7 +5063,7 @@ msgstr "ਇਸ ਸ਼ੈਸਨ ਲਈ ਇਹ ਪਾਸਵਰਡ ਯਾਦ ਰੱ
 msgid "Select destination"
 msgstr "ਟਿਕਾਣਾ ਚੁਣੋ"
 
-#: ../libedataserverui/e-source-selector-dialog.c:172
+#: ../libedataserverui/e-source-selector-dialog.c:174
 msgid "_Destination"
 msgstr "ਟਿਕਾਣਾ(_D)"
 
@@ -4963,6 +5082,21 @@ msgstr "ਸਰਵਰ ਤੋਂ ਕੋਈ ਜਵਾਬ ਨਹੀਂ"
 #: ../servers/groupwise/e-gw-connection.c:239
 msgid "Bad parameter"
 msgstr "ਗਲਤ ਪੈਰਾਮੀਟਰ"
+
+#~ msgid "Verifying message"
+#~ msgstr "ਸੁਨੇਹੇ ਦੀ ਜਾਂਚ ਜਾਰੀ ਹੈ"
+
+#~ msgid "categories"
+#~ msgstr "ਕੈਟਾਗਰੀ"
+
+#~ msgid "*"
+#~ msgstr "*"
+
+#~ msgid "<b>Co_ntacts</b>"
+#~ msgstr "<b>ਸੰਪਰਕ(_n)</b>"
+
+#~ msgid "<b>Show Contacts</b>"
+#~ msgstr "<b>ਸੰਪਰਕ ਵੇਖੋ</b>"
 
 #~| msgid "Unknown User"
 #~ msgid "UnknownUser"
