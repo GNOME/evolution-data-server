@@ -27,20 +27,25 @@
 
 G_BEGIN_DECLS
 
-void   e_data_server_module_init             (void);
-GList *e_data_server_get_extensions_for_type (GType type);
-void   e_data_server_extension_list_free     (GList *list);
-void   e_data_server_module_remove_unused    (void);
+gboolean	e_data_server_module_init	(const gchar *module_path,
+						 GError **error);
+GList *		e_data_server_get_extensions_for_type
+						(GType type);
+void		e_data_server_extension_list_free
+						(GList *list);
+void		e_data_server_module_remove_unused
+						(void);
 
 /* Add a type to the module interface - allows EDS to add its own modules
  * without putting them in separate shared libraries */
-void   e_data_server_module_add_type         (GType  type);
+void		e_data_server_module_add_type	(GType  type);
 
 /* The following three functions should exist in modules that are
    written to be dynamically loaded */
-void                 eds_module_initialize (GTypeModule *module);
-void                 eds_module_shutdown   (void);
-void                 eds_module_list_types (const GType **types, gint *num_types);
+void		eds_module_initialize		(GTypeModule *module);
+void		eds_module_shutdown		(void);
+void		eds_module_list_types		(const GType **types,
+						 gint *num_types);
 
 G_END_DECLS
 

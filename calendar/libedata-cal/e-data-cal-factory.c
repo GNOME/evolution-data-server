@@ -522,6 +522,8 @@ remove_data_cal_cb (gpointer data_cl,
 static void
 e_data_cal_factory_init (EDataCalFactory *factory)
 {
+	GError *error = NULL;
+
 	factory->priv = E_DATA_CAL_FACTORY_GET_PRIVATE (factory);
 
 	factory->priv->gdbus_object = e_gdbus_cal_factory_stub_new ();
@@ -549,7 +551,9 @@ e_data_cal_factory_init (EDataCalFactory *factory)
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) NULL);
 
-	e_data_server_module_init ();
+	if (!e_data_server_module_init (BACKENDDIR, &error))
+		g_error ("%s", error->message);
+
 	e_data_cal_factory_register_backends (factory);
 }
 

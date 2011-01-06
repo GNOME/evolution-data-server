@@ -1,4 +1,4 @@
-extension_LTLIBRARIES = libebookbackendldap.la
+ebook_backend_LTLIBRARIES = libebookbackendldap.la
 
 libebookbackendldap_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)					\

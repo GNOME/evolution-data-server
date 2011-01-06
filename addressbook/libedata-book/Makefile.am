@@ -69,6 +69,7 @@ e_addressbook_factory_CPPFLAGS = \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)		\
 	-DG_LOG_DOMAIN=\"libedata-book\"	\
 	-DE_PRGNAME=\"e-addressbook-factory\"	\
+	-DBACKENDDIR=\"$(ebook_backenddir)\"	\
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/addressbook		\
 	-I$(top_srcdir)/addressbook/libegdbus	\

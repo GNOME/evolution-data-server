@@ -182,42 +182,38 @@ e_data_server_module_load_file (const gchar *filename)
 	}
 }
 
-static void
-load_module_dir (const gchar *dirname)
-{
-	GDir *dir;
-
-	dir = g_dir_open (dirname, 0, NULL);
-
-	if (dir) {
-		const gchar *name;
-
-		while ((name = g_dir_read_name (dir))) {
-			if (g_str_has_suffix (name, "." G_MODULE_SUFFIX)) {
-				gchar *filename;
-
-				filename = g_build_filename (dirname,
-							     name,
-							     NULL);
-				e_data_server_module_load_file (filename);
-				g_free (filename);
-			}
-		}
-
-		g_dir_close (dir);
-	}
-}
-
-void
-e_data_server_module_init (void)
+gboolean
+e_data_server_module_init (const gchar *module_path,
+                           GError **error)
 {
 	static gboolean initialized = FALSE;
+	const gchar *name;
+	GDir *dir;
 
-	if (!initialized) {
-		initialized = TRUE;
+	if (initialized)
+		return TRUE;
 
-		load_module_dir (E_DATA_SERVER_EXTENSIONDIR);
+	g_return_val_if_fail (module_path != NULL, FALSE);
+
+	dir = g_dir_open (module_path, 0, error);
+	if (dir == NULL)
+		return FALSE;
+
+	while ((name = g_dir_read_name (dir))) {
+		if (g_str_has_suffix (name, "." G_MODULE_SUFFIX)) {
+			gchar *filename;
+
+			filename = g_build_filename (module_path, name, NULL);
+			e_data_server_module_load_file (filename);
+			g_free (filename);
+		}
 	}
+
+	g_dir_close (dir);
+
+	initialized = TRUE;
+
+	return TRUE;
 }
 
 GList *

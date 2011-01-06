@@ -1,4 +1,4 @@
-extension_LTLIBRARIES = libecalbackendcaldav.la
+ecal_backend_LTLIBRARIES = libecalbackendcaldav.la
 
 libecalbackendcaldav_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)	\

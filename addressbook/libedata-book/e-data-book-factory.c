@@ -411,6 +411,8 @@ remove_data_book_cb (gpointer data_bk, gpointer user_data)
 static void
 e_data_book_factory_init (EDataBookFactory *factory)
 {
+	GError *error = NULL;
+
 	factory->priv = E_DATA_BOOK_FACTORY_GET_PRIVATE (factory);
 
 	factory->priv->gdbus_object = e_gdbus_book_factory_stub_new ();
@@ -433,7 +435,9 @@ e_data_book_factory_init (EDataBookFactory *factory)
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) NULL);
 
-	e_data_server_module_init ();
+	if (!e_data_server_module_init (BACKENDDIR, &error))
+		g_error ("%s", error->message);
+
 	e_data_book_factory_register_backends (factory);
 }
 

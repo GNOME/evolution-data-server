@@ -1,3 +1,24 @@
+(NEWS blurb for 2.91.5.  Put this above the bug fixes and such.)
+
+Address book and calendar backend modules are now split into different
+installation directories so the D-Bus factory processes will only load
+relevant backend modules.
+
+This changes some pkg-config details for third-party backend modules.
+
+Instead of querying the backend directory with:
+
+  pkg-config --variable=extensiondir evolution-data-server-1.2
+
+you must query the directory for address book backends with:
+
+  pkg-config --variable=backenddir libedata-book-1.2
+
+and the directory for calendar backends with:
+
+  pkg-config --variable=backenddir libedata-cal-1.2
+
+
 Evolution-Data-Server 2.91.4 2010-12-20
 ---------------------------------------
 

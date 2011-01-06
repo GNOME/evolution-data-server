@@ -1,4 +1,4 @@
-extension_LTLIBRARIES = libecalbackendgroupwise.la
+ecal_backend_LTLIBRARIES = libecalbackendgroupwise.la
 
 libecalbackendgroupwise_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)					\

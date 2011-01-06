@@ -1,4 +1,4 @@
-extension_LTLIBRARIES = libebookbackendgroupwise.la
+ebook_backend_LTLIBRARIES = libebookbackendgroupwise.la
 
 libebookbackendgroupwise_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)					\

@@ -3,7 +3,6 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 privlibdir=@privlibdir@
-extensiondir=@extensiondir@
 datarootdir=@datarootdir@
 datadir=@datadir@
 privdatadir=@privdatadir@

@@ -97,11 +97,11 @@ LIBECAL_CURRENT=10
 LIBECAL_REVISION=2
 LIBECAL_AGE=2
 
-LIBEDATACAL_CURRENT=10
+LIBEDATACAL_CURRENT=11
 LIBEDATACAL_REVISION=0
 LIBEDATACAL_AGE=0
 
-LIBEDATABOOK_CURRENT=8
+LIBEDATABOOK_CURRENT=9
 LIBEDATABOOK_REVISION=0
 LIBEDATABOOK_AGE=0
 
@@ -113,12 +113,12 @@ LIBEGROUPWISE_CURRENT=13
 LIBEGROUPWISE_REVISION=1
 LIBEGROUPWISE_AGE=0
 
-LIBCAMEL_CURRENT=21
+LIBCAMEL_CURRENT=22
 LIBCAMEL_REVISION=0
 LIBCAMEL_AGE=0
 
-LIBEBACKEND_CURRENT=0
-LIBEBACKEND_REVISION=1
+LIBEBACKEND_CURRENT=1
+LIBEBACKEND_REVISION=0
 LIBEBACKEND_AGE=0
 
 AC_SUBST(EDS_MAJOR_VERSION)
@@ -1373,8 +1373,11 @@ AC_SUBST(privlibdir)
 imagesdir='${datadir}'/pixmaps/evolution-data-server
 AC_SUBST(imagesdir)
 
-extensiondir='${libdir}'/evolution-data-server-$API_VERSION/extensions
-AC_SUBST(extensiondir)
+ebook_backenddir='${libdir}'/evolution-data-server/addressbook-backends
+AC_SUBST(ebook_backenddir)
+
+ecal_backenddir='${libdir}'/evolution-data-server/calendar-backends
+AC_SUBST(ecal_backenddir)
 
 if test "x$use_gweather" = "xyes"; then
 	weatherdatadir="$privdatadir/weather"
@@ -1382,7 +1385,7 @@ if test "x$use_gweather" = "xyes"; then
 fi
 
 dnl separate camel from e-d-s? or should it be under the same spot? same for now.
-camel_providerdir='${libdir}'/evolution-data-server-$API_VERSION/camel-providers
+camel_providerdir='${libdir}'/evolution-data-server/camel-providers
 AC_SUBST(camel_providerdir)
 
 dnl ******************************

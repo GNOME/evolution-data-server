@@ -25,7 +25,9 @@ e-data-server-module
 
 </para>
 
-@void: 
+@module_path: 
+@error: 
+@Returns: 
 
 
 <!-- ##### FUNCTION e_data_server_get_extensions_for_type ##### -->

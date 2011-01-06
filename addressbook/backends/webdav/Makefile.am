@@ -1,4 +1,4 @@
-extension_LTLIBRARIES = libebookbackendwebdav.la
+ebook_backend_LTLIBRARIES = libebookbackendwebdav.la
 
 libebookbackendwebdav_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)					\

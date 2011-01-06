@@ -2,6 +2,7 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
+backenddir=@ebook_backenddir@
 datarootdir=@datarootdir@
 datadir=@datadir@
 

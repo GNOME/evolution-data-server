@@ -1,4 +1,4 @@
-extension_LTLIBRARIES = libecalbackendweather.la
+ecal_backend_LTLIBRARIES = libecalbackendweather.la
 
 libecalbackendweather_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)					\
