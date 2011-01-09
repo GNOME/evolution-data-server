@@ -30,9 +30,6 @@
 #include "e-data-server-ui-marshal.h"
 #include "e-source-selector.h"
 
-/* backward-compatibility cruft */
-#include "gtk-compat.h"
-
 #define E_SOURCE_SELECTOR_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_SOURCE_SELECTOR, ESourceSelectorPrivate))
@@ -101,14 +98,21 @@ safe_toggle_activate (GtkCellRenderer      *cell,
 		      GtkCellRendererState  flags)
 {
 	if (event->type == GDK_BUTTON_PRESS && cell_area) {
-		GdkRegion *reg = gdk_region_rectangle (cell_area);
+		cairo_region_t *region;
+		gboolean contains_point;
 
-		if (!gdk_region_point_in (reg, event->button.x, event->button.y)) {
-			gdk_region_destroy (reg);
+		if (cell_area->width > 0 && cell_area->height > 0)
+			region = cairo_region_create_rectangle (cell_area);
+		else
+			region = cairo_region_create ();
+
+		contains_point = cairo_region_contains_point (
+			region, event->button.x, event->button.y);
+
+		cairo_region_destroy (region);
+
+		if (!contains_point)
 			return FALSE;
-		}
-
-		gdk_region_destroy (reg);
 	}
 
 	return GTK_CELL_RENDERER_CLASS (e_cell_renderer_safe_toggle_parent_class)->activate (cell, event, widget, path, background_area, cell_area, flags);

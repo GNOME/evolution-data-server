@@ -37,9 +37,6 @@
 #include <libedataserverui/e-name-selector-entry.h>
 #include "e-name-selector-list.h"
 
-/* backward-compatibility cruft */
-#include "gtk-compat.h"
-
 #define E_NAME_SELECTOR_LIST_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_NAME_SELECTOR_LIST, ENameSelectorListPrivate))

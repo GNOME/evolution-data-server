@@ -56,8 +56,7 @@ libedataserverui_3_0_la_SOURCES =	\
 	e-source-selector-dialog.c	\
 	e-source-combo-box.c		\
 	e-tree-model-generator.c	\
-	e-cell-renderer-color.c		\
-	gtk-compat.h
+	e-cell-renderer-color.c
 
 libedataserverui_3_0_la_CPPFLAGS = $(CPPFLAGS)
 

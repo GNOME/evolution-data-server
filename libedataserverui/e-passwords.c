@@ -724,9 +724,6 @@ ep_ask_password (EPassMsg *msg)
 		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 		GTK_STOCK_OK, GTK_RESPONSE_OK,
 		NULL);
-#if !GTK_CHECK_VERSION(2,90,7)
-	g_object_set (widget, "has-separator", FALSE, NULL);
-#endif
 	gtk_dialog_set_default_response (
 		GTK_DIALOG (widget), GTK_RESPONSE_OK);
 	gtk_window_set_resizable (GTK_WINDOW (widget), FALSE);
