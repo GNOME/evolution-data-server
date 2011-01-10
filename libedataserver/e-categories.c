@@ -17,23 +17,20 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
+#include <config.h>
 #include <string.h>
 #include <libxml/parser.h>
-#include <glib.h>
-#include <glib/gi18n.h>
+#include <glib/gi18n-lib.h>
 #include <gconf/gconf-client.h>
 #include "e-categories.h"
 
 #include "libedataserver-private.h"
 
 typedef struct {
-	gchar *category;
+	gchar *display_name;  /* localized category name */
+	gchar *clocale_name;  /* only for default categories */
 	gchar *icon_file;
-	gboolean searchable;
+	gboolean is_default;
 } CategoryInfo;
 
 typedef struct {
@@ -129,9 +126,11 @@ build_categories_filename (void)
 static void
 free_category_info (CategoryInfo *cat_info)
 {
-	g_free (cat_info->category);
+	g_free (cat_info->display_name);
+	g_free (cat_info->clocale_name);
 	g_free (cat_info->icon_file);
-	g_free (cat_info);
+
+	g_slice_free (CategoryInfo, cat_info);
 }
 
 static gchar *
@@ -172,9 +171,12 @@ hash_to_xml_string (gpointer key, gpointer value, gpointer user_data)
 	GString *string = user_data;
 	gchar *category;
 
-	g_string_append_len (string, "\t<category", 10);
+	g_string_append_len (string, "  <category", 10);
 
-	category = escape_string (cat_info->category);
+	if (cat_info->is_default)
+		category = escape_string (cat_info->clocale_name);
+	else
+		category = escape_string (cat_info->display_name);
 	g_string_append_printf (string, " a=\"%s\"", category);
 	g_free (category);
 
@@ -183,7 +185,7 @@ hash_to_xml_string (gpointer key, gpointer value, gpointer user_data)
 			string, " icon=\"%s\"", cat_info->icon_file);
 
 	g_string_append_printf (
-		string, " searchable=\"%d\"", cat_info->searchable);
+		string, " default=\"%d\"", cat_info->is_default);
 
 	g_string_append_len (string, "/>\n", 3);
 }
@@ -236,6 +238,47 @@ save_categories (void)
 		idle_id = g_idle_add (idle_saver_cb, NULL);
 }
 
+static void
+categories_add_full (const gchar *category,
+                     const gchar *icon_file,
+                     gboolean is_default)
+{
+	CategoryInfo *cat_info;
+	gchar *collation_key;
+
+	cat_info = g_slice_new (CategoryInfo);
+	if (is_default) {
+		const gchar *display_name;
+		display_name = g_dgettext (GETTEXT_PACKAGE, category);
+		cat_info->display_name = g_strdup (display_name);
+		cat_info->clocale_name = g_strdup (category);
+	} else {
+		cat_info->display_name = g_strdup (category);
+		cat_info->clocale_name = NULL;
+	}
+	cat_info->icon_file = g_strdup (icon_file);
+	cat_info->is_default = is_default;
+
+	collation_key = g_utf8_collate_key (cat_info->display_name, -1);
+	g_hash_table_insert (categories_table, collation_key, cat_info);
+
+	changed = TRUE;
+	save_categories ();
+}
+
+static CategoryInfo *
+categories_lookup (const gchar *category)
+{
+	CategoryInfo *cat_info;
+	gchar *collation_key;
+
+	collation_key = g_utf8_collate_key (category, -1);
+	cat_info = g_hash_table_lookup (categories_table, collation_key);
+	g_free (collation_key);
+
+	return cat_info;
+}
+
 static gint
 parse_categories (const gchar *contents, gsize length)
 {
@@ -257,38 +300,27 @@ parse_categories (const gchar *contents, gsize length)
 	}
 
 	for (node = node->xmlChildrenNode; node != NULL; node = node->next) {
-		xmlChar *category, *icon, *searchable;
-		#ifndef EDS_DISABLE_DEPRECATED
-		xmlChar *color;
-		#endif
+		xmlChar *category, *icon_file, *is_default;
 
 		category = xmlGetProp (node, (xmlChar *) "a");
-		icon = xmlGetProp (node, (xmlChar *) "icon");
-		#ifndef EDS_DISABLE_DEPRECATED
-		color = xmlGetProp (node, (xmlChar *) "color");
-		#endif
-		searchable = xmlGetProp (node, (xmlChar *) "searchable");
+		icon_file = xmlGetProp (node, (xmlChar *) "icon");
+		is_default = xmlGetProp (node, (xmlChar *) "default");
+
+		/* Default categories used to be called "searchable". */
+		if (is_default == NULL)
+			is_default = xmlGetProp (
+				node, (xmlChar *) "searchable");
 
 		if (category != NULL) {
-			e_categories_add (
-				(gchar *) category,
-				#ifndef EDS_DISABLE_DEPRECATED
-				(gchar *) color,
-				#else
-				NULL,
-				#endif
-				(gchar *) icon,
-				(searchable != NULL) &&
-				strcmp ((gchar *) searchable, "0") != 0);
+			categories_add_full (
+				(gchar *) category, (gchar *) icon_file,
+				g_strcmp0 ((gchar *) is_default, "1") == 0);
 			n_added++;
 		}
 
 		xmlFree (category);
-		xmlFree (icon);
-		#ifndef EDS_DISABLE_DEPRECATED
-		xmlFree (color);
-		#endif
-		xmlFree (searchable);
+		xmlFree (icon_file);
+		xmlFree (is_default);
 	}
 
 	xmlFreeDoc (doc);
@@ -389,17 +421,18 @@ static void
 load_default_categories (void)
 {
 	DefaultCategory *cat_info = default_categories;
-	gchar *icon_file = NULL;
 
-	/* Note: All default categories are searchable. */
 	while (cat_info->category != NULL) {
+		gchar *icon_file = NULL;
+
 		if (cat_info->icon_file != NULL)
-			icon_file = g_build_filename (E_DATA_SERVER_IMAGESDIR, cat_info->icon_file, NULL);
-		e_categories_add (
-			gettext (cat_info->category),
-			NULL, icon_file, TRUE);
+			icon_file = g_build_filename (
+				E_DATA_SERVER_IMAGESDIR,
+				cat_info->icon_file, NULL);
+
+		categories_add_full (cat_info->category, icon_file, TRUE);
+
 		g_free (icon_file);
-		icon_file = NULL;
 		cat_info++;
 	}
 }
@@ -438,8 +471,11 @@ initialize_categories (void)
 
 	initialized = TRUE;
 
+	bindtextdomain (GETTEXT_PACKAGE, EVOLUTION_LOCALEDIR);
+
 	categories_table = g_hash_table_new_full (
-		g_str_hash, g_str_equal, g_free,
+		g_str_hash, g_str_equal,
+		(GDestroyNotify) g_free,
 		(GDestroyNotify) free_category_info);
 
 	listeners = g_object_new (e_changed_listener_get_type (), NULL);
@@ -465,14 +501,6 @@ initialize_categories (void)
 	save_categories ();
 }
 
-static void
-add_hash_to_list (gpointer key, gpointer value, gpointer user_data)
-{
-	GList **list = user_data;
-
-	*list = g_list_prepend (*list, key);
-}
-
 /**
  * e_categories_get_list:
  *
@@ -485,12 +513,19 @@ add_hash_to_list (gpointer key, gpointer value, gpointer user_data)
 GList *
 e_categories_get_list (void)
 {
+	GHashTableIter iter;
 	GList *list = NULL;
+	gpointer key, value;
 
 	if (!initialized)
 		initialize_categories ();
 
-	g_hash_table_foreach (categories_table, add_hash_to_list, &list);
+	g_hash_table_iter_init (&iter, categories_table);
+
+	while (g_hash_table_iter_next (&iter, &key, &value)) {
+		CategoryInfo *cat_info = value;
+		list = g_list_prepend (list, cat_info->display_name);
+	}
 
 	return g_list_sort (list, (GCompareFunc) g_utf8_collate);
 }
@@ -506,25 +541,17 @@ e_categories_get_list (void)
  * configuration database.
  */
 void
-e_categories_add (const gchar *category, const gchar *unused, const gchar *icon_file, gboolean searchable)
+e_categories_add (const gchar *category,
+                  const gchar *unused,
+                  const gchar *icon_file,
+                  gboolean searchable)
 {
-	CategoryInfo *cat_info;
-
 	g_return_if_fail (category != NULL);
 
 	if (!initialized)
 		initialize_categories ();
 
-	/* add the new category */
-	cat_info = g_new0 (CategoryInfo, 1);
-	cat_info->category = g_strdup (category);
-	cat_info->icon_file = g_strdup (icon_file);
-	cat_info->searchable = searchable;
-
-	g_hash_table_insert (categories_table, g_strdup (category), cat_info);
-
-	changed = TRUE;
-	save_categories ();
+	categories_add_full (category, icon_file, FALSE);
 }
 
 /**
@@ -563,7 +590,7 @@ e_categories_exist (const gchar *category)
 	if (!initialized)
 		initialize_categories ();
 
-	return (g_hash_table_lookup (categories_table, category) != NULL);
+	return (categories_lookup (category) != NULL);
 }
 
 #ifndef EDS_DISABLE_DEPRECATED
@@ -614,7 +641,7 @@ e_categories_get_icon_file_for (const gchar *category)
 	if (!initialized)
 		initialize_categories ();
 
-	cat_info = g_hash_table_lookup (categories_table, category);
+	cat_info = categories_lookup (category);
 	if (cat_info == NULL)
 		return NULL;
 
@@ -638,11 +665,12 @@ e_categories_set_icon_file_for (const gchar *category, const gchar *icon_file)
 	if (!initialized)
 		initialize_categories ();
 
-	cat_info = g_hash_table_lookup (categories_table, category);
+	cat_info = categories_lookup (category);
 	g_return_if_fail (cat_info != NULL);
 
 	g_free (cat_info->icon_file);
 	cat_info->icon_file = g_strdup (icon_file);
+
 	changed = TRUE;
 	save_categories ();
 }
@@ -665,11 +693,11 @@ e_categories_is_searchable (const gchar *category)
 	if (!initialized)
 		initialize_categories ();
 
-	cat_info = g_hash_table_lookup (categories_table, category);
+	cat_info = categories_lookup (category);
 	if (cat_info == NULL)
 		return FALSE;
 
-	return cat_info->searchable;
+	return cat_info->is_default;
 }
 
 /**
