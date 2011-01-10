@@ -3061,7 +3061,7 @@ camel_imap_store_readline (CamelImapStore *store, gchar **dest, CamelException *
 		return -1;
 	}
 
-	if (TRUE) {
+	if (camel_verbose_debug) {
 		fprintf (stderr, "received: ");
 		fwrite (ba->data, 1, ba->len, stderr);
 	}

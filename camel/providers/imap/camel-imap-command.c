@@ -205,7 +205,7 @@ imap_command_start (CamelImapStore *store, CamelFolder *folder,
 	}
 
 	/* Send the command */
-	if (TRUE) {
+	if (camel_verbose_debug) {
 		const gchar *mask;
 
 		if (!strncmp ("LOGIN \"", cmd, 7))
