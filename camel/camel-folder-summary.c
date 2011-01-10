@@ -4698,7 +4698,10 @@ gconstpointer
 camel_message_info_ptr(const CamelMessageInfo *mi, gint id)
 {
 	if (mi->summary)
-		return ((CamelFolderSummaryClass *)((CamelObject *)mi->summary)->klass)->info_ptr(mi, id);
+		if (((CamelFolderSummaryClass *)((CamelObject *)mi->summary)->klass)->info_ptr)
+			return ((CamelFolderSummaryClass *)((CamelObject *)mi->summary)->klass)->info_ptr(mi, id);
+		else
+			return info_ptr(mi, id);
 	else
 		return info_ptr(mi, id);
 }
