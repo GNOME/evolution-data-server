@@ -124,6 +124,9 @@ stream_fs_flush (CamelStream *stream,
 
 	priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 
+	if (g_cancellable_set_error_if_cancelled (cancellable, error))
+		return -1;
+
 	if (fsync (priv->fd) == -1) {
 		g_set_error (
 			error, G_IO_ERROR,
@@ -143,6 +146,9 @@ stream_fs_close (CamelStream *stream,
 	CamelStreamFsPrivate *priv;
 
 	priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
+
+	if (g_cancellable_set_error_if_cancelled (cancellable, error))
+		return -1;
 
 	if (close (priv->fd) == -1) {
 		g_set_error (
