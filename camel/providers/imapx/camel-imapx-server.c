@@ -5251,7 +5251,7 @@ imapx_server_get_message (CamelIMAPXServer *is,
 
 	if (success)
 		stream = job->u.get_message.stream;
-	else
+	else if (job->u.get_message.stream != NULL)
 		g_object_unref (job->u.get_message.stream);
 
 	g_free (job);
