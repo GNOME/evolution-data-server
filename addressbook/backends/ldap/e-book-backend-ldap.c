@@ -3676,22 +3676,28 @@ func_and(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 	gchar ** strings;
 
 	if (argc > 0) {
-		gint i;
+		gint i, empty;
 
 		strings = g_new0(gchar *, argc+3);
 		strings[0] = g_strdup ("(&");
 		strings[argc+3 - 2] = g_strdup (")");
 
+		empty = 0;
 		for (i = 0; i < argc; i ++) {
 			GList *list_head = ldap_data->list;
 			if (!list_head)
 				break;
+			if (strlen (list_head->data) == 0)
+				empty++;
 			strings[argc - i] = list_head->data;
 			ldap_data->list = g_list_remove_link(list_head, list_head);
 			g_list_free_1(list_head);
 		}
 
-		ldap_data->list = g_list_prepend(ldap_data->list, g_strjoinv(" ", strings));
+		if (empty == argc)
+			ldap_data->list = g_list_prepend(ldap_data->list, g_strdup(" "));
+		else
+			ldap_data->list = g_list_prepend(ldap_data->list, g_strjoinv(" ", strings));
 
 		for (i = 0; i < argc + 2; i ++)
 			g_free (strings[i]);
@@ -3713,22 +3719,28 @@ func_or(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 	gchar ** strings;
 
 	if (argc > 0) {
-		gint i;
+		gint i, empty;
 
 		strings = g_new0(gchar *, argc+3);
 		strings[0] = g_strdup ("(|");
 		strings[argc+3 - 2] = g_strdup (")");
 
+		empty = 0;
 		for (i = 0; i < argc; i ++) {
 			GList *list_head = ldap_data->list;
 			if (!list_head)
 				break;
+			if (strlen (list_head->data) == 0)
+				empty++;
 			strings[argc - i] = list_head->data;
 			ldap_data->list = g_list_remove_link(list_head, list_head);
 			g_list_free_1(list_head);
 		}
 
-		ldap_data->list = g_list_prepend(ldap_data->list, g_strjoinv(" ", strings));
+		if (empty == argc)
+			ldap_data->list = g_list_prepend(ldap_data->list, g_strdup(" "));
+		else
+			ldap_data->list = g_list_prepend(ldap_data->list, g_strjoinv(" ", strings));
 
 		for (i = 0; i < argc + 2; i ++)
 			g_free (strings[i]);
@@ -3881,6 +3893,7 @@ func_beginswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointe
 		if (strlen (str) == 0) {
 			g_free (str);
 
+			ldap_data->list = g_list_prepend (ldap_data->list, g_strdup (""));
 			r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 			r->value.bool = FALSE;
 			return r;
