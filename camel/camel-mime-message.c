@@ -1161,20 +1161,21 @@ camel_mime_message_build_mbox_from (CamelMimeMessage *message)
 static gboolean
 find_attachment (CamelMimeMessage *msg, CamelMimePart *part, gpointer data)
 {
-	const gchar *disp;
+	const CamelContentDisposition *cd;
 	gboolean *found = (gboolean *)data;
 
 	g_return_val_if_fail (part != NULL, FALSE);
 
-	disp = camel_mime_part_get_disposition (part);
+	cd = camel_mime_part_get_content_disposition (part);
 
-	if (disp) {
-		CamelContentDisposition *cd = camel_content_disposition_decode (disp);
+	if (cd) {
+		const struct _camel_header_param *param;
 
-		if (cd) {
-			*found = (cd->disposition && g_ascii_strcasecmp (cd->disposition, "attachment") == 0);
+		*found = (cd->disposition && g_ascii_strcasecmp (cd->disposition, "attachment") == 0);
 
-			camel_content_disposition_unref (cd);
+		for (param = cd->params; param && !(*found); param = param->next) {
+			if (param->name && param->value && *param->value && g_ascii_strcasecmp (param->name, "filename") == 0)
+				*found = TRUE;
 		}
 	}
 
