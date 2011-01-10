@@ -4901,6 +4901,10 @@ imapx_parser_thread (gpointer d)
 				errno = EINTR;
 		}
 
+		/* Jump out of the loop if an error occurred. */
+		if (local_error != NULL)
+			break;
+
 		if (is->parser_quit) {
 			g_set_error (
 				&local_error, G_IO_ERROR,
