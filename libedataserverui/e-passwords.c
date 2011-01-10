@@ -110,13 +110,19 @@ check_key_file (const gchar *funcname)
 static gchar *
 ep_key_file_get_filename (void)
 {
+	const char *override;
+
 	/* XXX It would be nice to someday move this data elsewhere, or else
 	 * fully migrate to GNOME Keyring or whatever software supercedes it.
 	 * Evolution is one of the few remaining GNOME-2 applications that
 	 * still uses the deprecated ~/.gnome2_private directory. */
 
-	return g_build_filename (
-		g_get_home_dir (), ".gnome2_private", "Evolution", NULL);
+	override = g_getenv ("GNOME22_USER_DIR");
+	if (override)
+		return g_strdup_printf ("%s_private" G_DIR_SEPARATOR_S "Evolution", override);
+	else
+		return g_build_filename (
+			g_get_home_dir (), ".gnome2_private", "Evolution", NULL);
 }
 
 static gchar *
