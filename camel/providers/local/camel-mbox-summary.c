@@ -866,6 +866,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 	camel_mime_parser_scan_pre_from(mp, TRUE);
 	camel_mime_parser_init_with_fd(mp, pfd);
 
+	camel_folder_summary_lock_summary (s);
 	/* Sync only the changes */
 	summary = camel_folder_summary_get_changed ((CamelFolderSummary *)mbs);
 	if (summary->len)
@@ -964,6 +965,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 	camel_object_unref((CamelObject *)mp);
 
 	camel_operation_end(NULL);
+	camel_folder_summary_unlock_summary (s);
 
 	return 0;
  error:
@@ -977,6 +979,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 		camel_message_info_free((CamelMessageInfo *)info);
 
 	camel_operation_end(NULL);
+	camel_folder_summary_unlock_summary (s);
 
 	return -1;
 }
@@ -1090,6 +1093,7 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 	camel_mime_parser_scan_pre_from(mp, TRUE);
 	camel_mime_parser_init_with_fd(mp, fd);
 
+	camel_folder_summary_lock_summary (s);
 	count = camel_folder_summary_count(s);
 	for (i = 0; i < count; i++) {
 		gint pc = (i + 1) * 100 / count;
@@ -1254,6 +1258,8 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 	if (touched)
 		camel_folder_summary_header_save_to_db (s, ex);
 
+	camel_folder_summary_unlock_summary (s);
+
 	return 0;
  error:
 	g_free(xevnew);
@@ -1262,6 +1268,8 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 		camel_object_unref((CamelObject *)mp);
 	if (info)
 		camel_message_info_free((CamelMessageInfo *)info);
+
+	camel_folder_summary_unlock_summary (s);
 
 	return -1;
 }
