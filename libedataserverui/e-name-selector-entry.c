@@ -1094,6 +1094,30 @@ remove_destination_by_index (ENameSelectorEntry *name_selector_entry, gint index
 	}
 }
 
+static void
+post_insert_update (ENameSelectorEntry *name_selector_entry,
+                    gint position)
+{
+	const gchar *text;
+	glong length;
+
+	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
+	length = g_utf8_strlen (text, -1);
+	text = g_utf8_next_char (text);
+
+	if (*text == '\0') {
+		/* First and only character, create initial destination. */
+		insert_destination_at_position (name_selector_entry, 0);
+	} else {
+		/* Modified an existing destination. */
+		modify_destination_at_position (name_selector_entry, position);
+	}
+
+	/* If editing within the string, regenerate attributes. */
+	if (position < length)
+		generate_attribute_list (name_selector_entry);
+}
+
 /* Returns the number of characters inserted */
 static gint
 insert_unichar (ENameSelectorEntry *name_selector_entry, gint *pos, gunichar c)
@@ -1170,21 +1194,7 @@ insert_unichar (ENameSelectorEntry *name_selector_entry, gint *pos, gunichar c)
 
 	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), buf, -1, pos);
 
-	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
-	len = g_utf8_strlen (text, -1);
-	text = g_utf8_next_char (text);
-
-	if (!*text) {
-		/* First and only character so far, create initial destination */
-		insert_destination_at_position (name_selector_entry, 0);
-	} else {
-		/* Modified existing destination */
-		modify_destination_at_position (name_selector_entry, *pos);
-	}
-
-	/* If editing within the string, we need to regenerate attributes */
-	if (*pos < len)
-		generate_attribute_list (name_selector_entry);
+	post_insert_update (name_selector_entry, *pos);
 
 	return 1;
 }
@@ -1193,19 +1203,39 @@ static void
 user_insert_text (ENameSelectorEntry *name_selector_entry, gchar *new_text,
 		  gint new_text_length, gint *position, gpointer user_data)
 {
-	gchar *p;
-	gint   chars_inserted = 0;
+	gint chars_inserted = 0;
+	gboolean fast_insert;
 
 	g_signal_handlers_block_by_func (name_selector_entry, user_insert_text, name_selector_entry);
 	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 
-	/* Apply some rules as to where spaces and commas can be inserted, and insert
-	 * a trailing space after comma. */
+	fast_insert =
+		(g_utf8_strchr (new_text, new_text_length, ' ') == NULL) &&
+		(g_utf8_strchr (new_text, new_text_length, ',') == NULL);
 
-	for (p = new_text; *p; p = g_utf8_next_char (p)) {
-		gunichar c = g_utf8_get_char (p);
-		insert_unichar (name_selector_entry, position, c);
-		chars_inserted++;
+	/* If the text to insert does not contain spaces or commas,
+	 * insert all of it at once.  This avoids confusing on-going
+	 * input method behavior. */
+	if (fast_insert) {
+		gint old_position = *position;
+
+		gtk_editable_insert_text (
+			GTK_EDITABLE (name_selector_entry),
+			new_text, new_text_length, position);
+		post_insert_update (name_selector_entry, *position);
+
+		chars_inserted = *position - old_position;
+
+	/* Otherwise, apply some rules as to where spaces and commas
+	 * can be inserted, and insert a trailing space after comma. */
+	} else {
+		const gchar *cp;
+
+		for (cp = new_text; *cp; cp = g_utf8_next_char (cp)) {
+			gunichar uc = g_utf8_get_char (cp);
+			insert_unichar (name_selector_entry, position, uc);
+			chars_inserted++;
+		}
 	}
 
 	if (chars_inserted >= 1) {
@@ -1230,7 +1260,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	gunichar     str_context [2], str_b_context [2];
 	gint         len;
 	gint         i;
-	gboolean     already_selected = FALSE, del_space = FALSE, del_comma = FALSE;
+	gboolean     del_space = FALSE, del_comma = FALSE;
 
 	if (start_pos == end_pos)
 		return;
@@ -1238,12 +1268,9 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
 	len = g_utf8_strlen (text, -1);
 
-	if (gtk_editable_get_selection_bounds (GTK_EDITABLE (name_selector_entry),
-					       &selection_start,
-					       &selection_end))
-		if ((g_utf8_get_char (g_utf8_offset_to_pointer (text, selection_end)) == 0) ||
-		    (g_utf8_get_char (g_utf8_offset_to_pointer (text, selection_end)) == ','))
-			already_selected = TRUE;
+	gtk_editable_get_selection_bounds (
+		GTK_EDITABLE (name_selector_entry),
+		&selection_start, &selection_end);
 
 	get_utf8_string_context (text, start_pos, str_context, 2);
 	get_utf8_string_context (text, end_pos, str_b_context, 2);
