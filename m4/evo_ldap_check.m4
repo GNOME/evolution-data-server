@@ -14,6 +14,18 @@ AC_DEFUN([EVO_LDAP_CHECK],[
 		[AS_HELP_STRING([--with-static-ldap],
 		[Link LDAP support statically into evolution])])
 	AC_CACHE_CHECK([for OpenLDAP], [ac_cv_with_openldap], [ac_cv_with_openldap="${with_openldap:=$default}"])
+
+	AC_MSG_CHECKING(for multilib subdirectory)
+	if test "$GCC" = "yes" ; then
+		multilibsubdir=`$CC -print-multi-os-directory 2> /dev/null`
+	fi
+	multilibsubdir=${multilibsubdir:-.}
+	AC_MSG_RESULT($multilibsubdir)
+	AC_MSG_CHECKING(for lib subdirectory)
+	libsubdir=`echo lib/${multilibsubdir} | sed -re 's,lib/../([[^/]]*),\1,g'`
+	libsubdir=${libsubdir:-lib}
+	AC_MSG_RESULT($libsubdir)
+
 	case $ac_cv_with_openldap in
 	no|"")
 		with_openldap=no
@@ -24,7 +36,7 @@ AC_DEFUN([EVO_LDAP_CHECK],[
 	*)
 		with_openldap=$ac_cv_with_openldap
 		LDAP_CFLAGS="-I$ac_cv_with_openldap/include"
-		LDAP_LDFLAGS="-L$ac_cv_with_openldap/lib"
+		LDAP_LDFLAGS="-L$ac_cv_with_openldap/$libsubdir"
 		;;
 	esac
 
@@ -60,20 +72,20 @@ AC_DEFUN([EVO_LDAP_CHECK],[
 		AC_CHECK_LIB(nsl, gethostbyaddr, [LDAP_LIBS="$LDAP_LIBS -lnsl"])
 		AC_CHECK_LIB(lber, ber_get_tag, [
 			if test "$with_static_ldap" = "yes"; then
-				LDAP_LIBS="$with_openldap/lib/liblber.a $LDAP_LIBS"
+				LDAP_LIBS="$with_openldap/$libsubdir/liblber.a $LDAP_LIBS"
 
 				# libldap might depend on OpenSSL... We need to pull
 				# in the dependency libs explicitly here since we're
 				# not using libtool for the configure test.
-				if test -f $with_openldap/lib/libldap.la; then
-					LDAP_LIBS="`. $with_openldap/lib/libldap.la; echo $dependency_libs` $LDAP_LIBS"
+				if test -f $with_openldap/$libsubdir/libldap.la; then
+					LDAP_LIBS="`. $with_openldap/$libsubdir/libldap.la; echo $dependency_libs` $LDAP_LIBS"
 				fi
 			else
 				LDAP_LIBS="-llber $LDAP_LIBS"
 			fi
 			AC_CHECK_LIB(ldap, ldap_open, [
 					if test $with_static_ldap = "yes"; then
-						LDAP_LIBS="$with_openldap/lib/libldap.a $LDAP_LIBS"
+						LDAP_LIBS="$with_openldap/$libsubdir/libldap.a $LDAP_LIBS"
 					else
 						LDAP_LIBS="-lldap $LDAP_LIBS"
 					fi],
