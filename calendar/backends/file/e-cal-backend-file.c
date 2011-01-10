@@ -547,9 +547,9 @@ add_component_to_intervaltree (ECalBackendFile *cbfile, ECalComponent *comp)
 static gboolean
 remove_component_from_intervaltree (ECalBackendFile *cbfile, ECalComponent *comp)
 {
-	time_t time_start = -1, time_end = -1;
 	const gchar *uid = NULL;
 	gchar *rid;
+	gboolean res;
 	ECalBackendFilePrivate *priv;
 
 	g_return_val_if_fail (cbfile != NULL, FALSE);
@@ -557,21 +557,12 @@ remove_component_from_intervaltree (ECalBackendFile *cbfile, ECalComponent *comp
 
 	priv = cbfile->priv;
 
-	e_cal_util_get_component_occur_times (comp, &time_start, &time_end,
-				   resolve_tzid, priv->icalcomp, priv->default_zone,
-				   e_cal_backend_get_kind (E_CAL_BACKEND (cbfile)));
+	rid = e_cal_component_get_recurid_as_string (comp);
+	e_cal_component_get_uid (comp, &uid);
+	res = e_intervaltree_remove (priv->interval_tree, uid, rid);
+	g_free (rid);
 
-	if (time_end != -1 && time_start > time_end) {
-		g_error ("Bogus component %s\n", e_cal_component_get_as_string (comp));
-		return FALSE;
-	} else {
-		gboolean res;
-		rid = e_cal_component_get_recurid_as_string (comp);
-		e_cal_component_get_uid (comp, &uid);
-		res = e_intervaltree_remove (priv->interval_tree, uid, rid);
-		g_free (rid);
-		return res;
-	}
+	return res;
 }
 
 /* Tries to add an icalcomponent to the file backend.  We only store the objects
