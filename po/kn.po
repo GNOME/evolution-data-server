@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.gnome-2-28.kn\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&component=general\n"
-"POT-Creation-Date: 2009-08-11 14:04+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-03-29 12:51+0530\n"
 "PO-Revision-Date: 2009-09-11 16:16+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: Kannada <en@li.org>\n"
@@ -27,13 +27,13 @@ msgstr "ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2260
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2282
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2327
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4510
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4550
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:476
 msgid "Searching..."
 msgstr "ಹುಡುಕಲಾಗುತ್ತಿದೆ..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2695
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4674
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4714
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "ಸಂಪರ್ಕಗಳನ್ನು ಡೌನ್‍ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ (%d)... "
@@ -45,35 +45,35 @@ msgstr "ಸಂಪರ್ಕಗಳನ್ನು ಡೌನ್‍ಲೋಡ್ ಮಾ�
 msgid "Updating contacts cache (%d)... "
 msgstr "ಸಂಪರ್ಕಗಳ ಕ್ಯಾಶೆಯನ್ನು ಅಪ್ಡೇಟ್ ಮಾಡಲಾಗುತ್ತಿದೆ (%d)... "
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:788
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:818
 msgid "Using Distinguished Name (DN)"
 msgstr "Distinguished Name (DN) ಅನ್ನು ಬಳಸಲಾಗುತ್ತಿದೆ"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:791
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:821
 msgid "Using Email Address"
 msgstr "ಇಮೈಲ್ ವಿಳಾಸವನ್ನು ಬಳಸಿಕೊಂಡು"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1067
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1096
 msgid "Reconnecting to LDAP server..."
 msgstr "LDAP ಪರಿಚಾರಕಕ್ಕೆ ಮರಳಿ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1711
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1738
 msgid "Adding contact to LDAP server..."
 msgstr "LDAP ಪರಿಚಾರಕಕ್ಕಾಗಿ ಸಂಪರ್ಕವಿಳಾಸವನ್ನು ಸೇರಿಸಲಾಗುತ್ತಿದೆ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1845
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1872
 msgid "Removing contact from LDAP server..."
 msgstr "LDAP ಪರಿಚಾರಕದಿಂದ ಸಂಪರ್ಕವಿಳಾಸವನ್ನು ತೆಗೆಯಲಾಗುತ್ತಿದೆ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2282
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2309
 msgid "Modifying contact from LDAP server..."
 msgstr "LDAP ಪರಿಚಾರಕದಿಂದ ಸಂಪರ್ಕವಿಳಾಸವನ್ನು ಮಾರ್ಪಡಿಸಲಾಗುತ್ತಿದೆ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4371
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4411
 msgid "Receiving LDAP search results..."
 msgstr "LDAP ಹುಡುಕು ಫಲಿತಾಂಶಗಳನ್ನು ಪಡೆಯಲಾಗುತ್ತಿದೆ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4532
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4572
 msgid "Error performing search"
 msgstr "ಹುಡುಕುವಾಗ ದೋಷ ಉಂಟಾಗಿದೆ"
 
@@ -737,25 +737,25 @@ msgstr "ಡೇಲ್ಟಾಗಳನ್ನು ಪಡೆದುಕೊಳ್ಳಲ�
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:376
 #: ../calendar/backends/google/e-cal-backend-google.c:1189
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1080
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1381
-#: ../calendar/backends/http/e-cal-backend-http.c:659
-#: ../calendar/backends/weather/e-cal-backend-weather.c:486
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1079
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1380
+#: ../calendar/backends/http/e-cal-backend-http.c:673
+#: ../calendar/backends/weather/e-cal-backend-weather.c:488
 msgid "Could not create cache file"
 msgstr "ಕ್ಯಾಶೆ ಕಡತವನ್ನು ರಚಿಸಲಾಗಿಲ್ಲ"
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:389
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1093
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1092
 msgid "Could not create thread for populating cache"
 msgstr "ಕ್ಯಾಶೆಯನ್ನು ನಿಬಿಡಗೊಳಿಸಲು ಎಳೆಯನ್ನು ರಚಿಸಲಾಗಿಲ್ಲ"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1082
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2078
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2123
 msgid "Reply Requested: by "
 msgstr "ಪ್ರತ್ಯುತ್ತರಕ್ಕೆ ಮನವಿ ಸಲ್ಲಿಸಲಾಗಿದೆ:ಇಂದ "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1087
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2083
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2128
 msgid "Reply Requested: When convenient"
 msgstr "ಪ್ರತ್ಯುತ್ತರಕ್ಕೆ ಮನವಿ ಸಲ್ಲಿಸಲಾಗಿದೆ: ಅನುಕೂಲವಾದಾಗ"
 
@@ -764,23 +764,23 @@ msgstr "ಪ್ರತ್ಯುತ್ತರಕ್ಕೆ ಮನವಿ ಸಲ್ಲ�
 msgid "Loading %s items"
 msgstr "%s ಅಂಶಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:918
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:917
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "ಕ್ಯಾಲೆಂಡರ್"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:976
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:975
 msgid "Invalid server URI"
 msgstr "ಅಮಾನ್ಯ ಪರಿಚಾರಕ URI"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:995
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1004
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1098
-#: ../calendar/libecal/e-cal.c:5117
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:994
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1003
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1097
+#: ../calendar/libecal/e-cal.c:5115
 #: ../calendar/libedata-cal/e-cal-backend-util.c:117
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1291
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1327
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1342
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1336
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1372
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1387
 #: ../camel/providers/groupwise/camel-groupwise-store.c:598
 #: ../camel/providers/groupwise/camel-groupwise-store.c:773
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:154
@@ -788,15 +788,15 @@ msgstr "ಅಮಾನ್ಯ ಪರಿಚಾರಕ URI"
 msgid "Authentication failed"
 msgstr "ದೃಢೀಕರಣವು ವಿಫಲಗೊಂಡಿದೆ"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:316
+#: ../calendar/backends/http/e-cal-backend-http.c:330
 msgid "Redirected to Invalid URI"
 msgstr "ಅಮಾನ್ಯವಾದ ಯುಆರ್ಐಗೆ ಪುನರ್ನಿರ್ದೇಶಿತಗೊಂಡಿದೆ"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:339
+#: ../calendar/backends/http/e-cal-backend-http.c:353
 msgid "Bad file format."
 msgstr "ಸರಿಯಲ್ಲದ ಕಡತದ ಮಾದರಿ."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:346
+#: ../calendar/backends/http/e-cal-backend-http.c:360
 msgid "Not a calendar."
 msgstr "ಒಂದು ಕ್ಯಾಲೆಂಡರ್ ಅಲ್ಲ."
 
@@ -804,43 +804,43 @@ msgstr "ಒಂದು ಕ್ಯಾಲೆಂಡರ್ ಅಲ್ಲ."
 msgid "Could not retrieve weather data"
 msgstr "ಹವಾಮಾನ ದತ್ತಾಂಶವನ್ನು ಮರುಗಳಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:247
+#: ../calendar/backends/weather/e-cal-backend-weather.c:249
 msgid "Weather: Fog"
 msgstr "ಹವಾಮಾನ: ದಟ್ಟ ಮಂಜು"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:248
+#: ../calendar/backends/weather/e-cal-backend-weather.c:250
 msgid "Weather: Cloudy"
 msgstr "ಹವಾಮಾನ: ಮೋಡದಿಂದ ಕೂಡಿದ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:249
+#: ../calendar/backends/weather/e-cal-backend-weather.c:251
 msgid "Weather: Cloudy Night"
 msgstr "ಹವಾಮಾನ: ಮೋಡದಿಂದ ಕೂಡಿದ ರಾತ್ರಿ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:250
+#: ../calendar/backends/weather/e-cal-backend-weather.c:252
 msgid "Weather: Overcast"
 msgstr "ಹವಾಮಾನ: ಮೋಡ ಕವಿದ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:251
+#: ../calendar/backends/weather/e-cal-backend-weather.c:253
 msgid "Weather: Showers"
 msgstr "ಹವಾಮಾನ: ಮಳೆ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:252
+#: ../calendar/backends/weather/e-cal-backend-weather.c:254
 msgid "Weather: Snow"
 msgstr "ಹವಾಮಾನ: ಹಿಮಪಾತ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:253
+#: ../calendar/backends/weather/e-cal-backend-weather.c:255
 msgid "Weather: Sunny"
 msgstr "ಹವಾಮಾನ: ಬಿಸಿಲು"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:254
+#: ../calendar/backends/weather/e-cal-backend-weather.c:256
 msgid "Weather: Clear Night"
 msgstr "ಹವಾಮಾನ: ಸ್ವಚ್ಛ ಆಗಸದ ರಾತ್ರಿ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:255
+#: ../calendar/backends/weather/e-cal-backend-weather.c:257
 msgid "Weather: Thunderstorms"
 msgstr "ಹವಾಮಾನ: ಮಿಂಚುಗುಡುಗು"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:400
+#: ../calendar/backends/weather/e-cal-backend-weather.c:402
 msgid "Forecast"
 msgstr "ಮುನ್ಸೂಚನೆ"
 
@@ -972,20 +972,20 @@ msgstr "೩೦ನೆಯ"
 msgid "31st"
 msgstr "೩೧ನೆಯ"
 
-#: ../calendar/libecal/e-cal-util.c:685 ../calendar/libecal/e-cal-util.c:712
+#: ../calendar/libecal/e-cal-util.c:688 ../calendar/libecal/e-cal-util.c:715
 msgid "High"
 msgstr "ಉತ್ತಮ"
 
-#: ../calendar/libecal/e-cal-util.c:687 ../calendar/libecal/e-cal-util.c:714
+#: ../calendar/libecal/e-cal-util.c:690 ../calendar/libecal/e-cal-util.c:717
 msgid "Normal"
 msgstr "ಸಾಮಾನ್ಯ"
 
-#: ../calendar/libecal/e-cal-util.c:689 ../calendar/libecal/e-cal-util.c:716
+#: ../calendar/libecal/e-cal-util.c:692 ../calendar/libecal/e-cal-util.c:719
 msgid "Low"
 msgstr "ಕೆಳ ಮಟ್ಟದ"
 
 #. An empty string is the same as 'None'.
-#: ../calendar/libecal/e-cal-util.c:710
+#: ../calendar/libecal/e-cal-util.c:713
 msgid "Undefined"
 msgstr "ವಿವರಿಸದೆ ಇರುವ"
 
@@ -1003,86 +1003,87 @@ msgstr "%s ಕ್ಕಾಗಿ ಗುಪ್ತಪದವನ್ನು ನಮೂದ�
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "%s ಗಾಗಿ %s ಬಳಕೆದಾರನಿಗಾಗಿ ಪ್ರಾಕ್ಸಿಯನ್ನು ಶಕ್ತಗೊಳಿಸಲು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ"
 
-#: ../calendar/libecal/e-cal.c:5089
+#: ../calendar/libecal/e-cal.c:5087
 msgid "Invalid argument"
 msgstr "ಅಮಾನ್ಯವಾದ ಆರ್ಗ್ಯುಮೆಂಟ್"
 
-#: ../calendar/libecal/e-cal.c:5091
+#: ../calendar/libecal/e-cal.c:5089
 msgid "Backend is busy"
 msgstr "ಬ್ಯಾಕೆಂಡ್ ಕಾರ್ಯನಿರತವಾಗಿದೆ"
 
-#: ../calendar/libecal/e-cal.c:5093
+#: ../calendar/libecal/e-cal.c:5091
 #: ../calendar/libedata-cal/e-cal-backend-util.c:105
 msgid "Repository is offline"
 msgstr "ರೆಪೊಸಿಟರಿಯು ಆಫ್‌ಲೈನಿನಲ್ಲಿದೆ"
 
-#: ../calendar/libecal/e-cal.c:5095
+#: ../calendar/libecal/e-cal.c:5093
 #: ../calendar/libedata-cal/e-cal-backend-util.c:129
 msgid "No such calendar"
 msgstr "ಯಾವುದೆ ಕ್ಯಾಲೆಂಡರ್ ಇಲ್ಲ"
 
-#: ../calendar/libecal/e-cal.c:5097
+#: ../calendar/libecal/e-cal.c:5095
 #: ../calendar/libedata-cal/e-cal-backend-util.c:111
 #: ../servers/groupwise/e-gw-connection.c:233
 msgid "Object not found"
 msgstr "ಆಬ್ಜೆಕ್ಟ್ ಕಂಡು ಬಂದಿಲ್ಲ"
 
-#: ../calendar/libecal/e-cal.c:5099
+#: ../calendar/libecal/e-cal.c:5097
 #: ../calendar/libedata-cal/e-cal-backend-util.c:113
 #: ../servers/groupwise/e-gw-connection.c:227
 msgid "Invalid object"
 msgstr "ಅಮಾನ್ಯ ಆಬ್ಜೆಕ್ಟ್"
 
-#: ../calendar/libecal/e-cal.c:5101
+#: ../calendar/libecal/e-cal.c:5099
 msgid "URI not loaded"
 msgstr "URI ಲೋಡ್ ಆಗಿಲ್ಲ"
 
-#: ../calendar/libecal/e-cal.c:5103
+#: ../calendar/libecal/e-cal.c:5101
 msgid "URI already loaded"
 msgstr "URI ಈಗಾಗಲೆ ಲೋಡ್ ಆಗಿದೆ"
 
-#: ../calendar/libecal/e-cal.c:5105
+#: ../calendar/libecal/e-cal.c:5103
 #: ../calendar/libedata-cal/e-cal-backend-util.c:107
 #: ../servers/exchange/storage/e-storage.c:573
 msgid "Permission denied"
 msgstr "ಅನುಮತಿಯು ನಿರಾಕರಿಸಲ್ಪಟ್ಟಿದೆ"
 
-#: ../calendar/libecal/e-cal.c:5107
+#: ../calendar/libecal/e-cal.c:5105
 #: ../calendar/libedata-cal/e-cal-backend-util.c:131
 #: ../servers/groupwise/e-gw-connection.c:235
 msgid "Unknown User"
 msgstr "ಗೊತ್ತಿರದ ಬಳಕೆದಾರ"
 
-#: ../calendar/libecal/e-cal.c:5109
+#: ../calendar/libecal/e-cal.c:5107
 #: ../calendar/libedata-cal/e-cal-backend-util.c:115
 msgid "Object ID already exists"
 msgstr "ಆಬ್ಜೆಕ್ಟ್‍ ಐಡಿ ಈಗಾಗಲೆ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ"
 
-#: ../calendar/libecal/e-cal.c:5111
+#: ../calendar/libecal/e-cal.c:5109
 msgid "Protocol not supported"
 msgstr "ಪ್ರೊಟೊಕಾಲ್ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ"
 
-#: ../calendar/libecal/e-cal.c:5113
+#: ../calendar/libecal/e-cal.c:5111
 msgid "Operation has been canceled"
 msgstr "ಕಾರ್ಯವು ರದ್ದು ಮಾಡಲ್ಪಟ್ಟಿದೆ"
 
-#: ../calendar/libecal/e-cal.c:5115
+#: ../calendar/libecal/e-cal.c:5113
 #: ../calendar/libedata-cal/e-cal-backend-util.c:143
 msgid "Could not cancel operation"
 msgstr "ಕಾರ್ಯವನ್ನು ರದ್ದು ಮಾಡಲಾಗಿಲ್ಲ"
 
-#: ../calendar/libecal/e-cal.c:5119
+#: ../calendar/libecal/e-cal.c:5117
 #: ../calendar/libedata-cal/e-cal-backend-util.c:119
 #: ../camel/providers/smtp/camel-smtp-transport.c:217
 msgid "Authentication required"
 msgstr "ದೃಢೀಕರಣದ ಅಗತ್ಯವಿದೆ"
 
-#: ../calendar/libecal/e-cal.c:5121
+#: ../calendar/libecal/e-cal.c:5119
 msgid "A CORBA exception has occurred"
 msgstr "ಒಂದು CORBA ಎಕ್ಸೆಪ್ಶನ್ ಸಂಭವಿಸಿದೆ"
 
-#: ../calendar/libecal/e-cal.c:5123
+#: ../calendar/libecal/e-cal.c:5121
 #: ../calendar/libedata-cal/e-cal-backend-util.c:146
+#: ../camel/camel-net-utils.c:523
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:214
 #: ../camel/providers/imap/camel-imap-command.c:432
 #: ../camel/providers/imap/camel-imap-store.c:743
@@ -1101,7 +1102,7 @@ msgstr "ಒಂದು CORBA ಎಕ್ಸೆಪ್ಶನ್ ಸಂಭವಿಸಿ�
 msgid "Unknown error"
 msgstr "ಅಜ್ಞಾತ ದೋಷ"
 
-#: ../calendar/libecal/e-cal.c:5125
+#: ../calendar/libecal/e-cal.c:5123
 #: ../calendar/libedata-cal/e-cal-backend-util.c:103
 #: ../servers/exchange/storage/e-storage.c:555
 msgid "No error"
@@ -1138,7 +1139,8 @@ msgstr "ಮೊದಲ ಆರ್ಗ್ಯುಮೆಂಟ್‌ ಒಂದು ವಾ
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:121
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "ಮೊದಲ ಆರ್ಗ್ಯುಮೆಂಟ್‌ ಒಂದು ISO 8601 ದಿನಾಂಕ/ಸಮಯ ವಾಕ್ಯವಾಗಿರಬೇಕೆಂದು \"%s\" ನಿರೀಕ್ಷಿಸುತ್ತದೆ"
+msgstr ""
+"ಮೊದಲ ಆರ್ಗ್ಯುಮೆಂಟ್‌ ಒಂದು ISO 8601 ದಿನಾಂಕ/ಸಮಯ ವಾಕ್ಯವಾಗಿರಬೇಕೆಂದು \"%s\" ನಿರೀಕ್ಷಿಸುತ್ತದೆ"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:160
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:361
@@ -1519,7 +1521,7 @@ msgstr "ರದ್ದಿಯಲ್ಲದನ್ನು ಅರಿಯಲಾಗುತ�
 msgid "Filtering new message(s)"
 msgstr "ಹೊಸ ಸಂದೇಶವನ್ನು(ಗಳನ್ನು) ಫಿಲ್ಟರ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
 
-#: ../camel/camel-gpg-context.c:751
+#: ../camel/camel-gpg-context.c:753
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -1530,15 +1532,15 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/camel-gpg-context.c:766
+#: ../camel/camel-gpg-context.c:768
 msgid "Failed to parse gpg userid hint."
 msgstr "ಜಿಪಿಜಿ ಬಳಕೆದಾರ ಐಡಿ ಸುಳಿವನ್ನು ಪಾರ್ಸ್ ಮಾಡುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ."
 
-#: ../camel/camel-gpg-context.c:790 ../camel/camel-gpg-context.c:804
+#: ../camel/camel-gpg-context.c:792 ../camel/camel-gpg-context.c:806
 msgid "Failed to parse gpg passphrase request."
 msgstr "ಜಿಪಿಜಿ ಗುಪ್ತಪದ ಮನವಿಯನ್ನು ಪಾರ್ಸ್ ಮಾಡುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ."
 
-#: ../camel/camel-gpg-context.c:824
+#: ../camel/camel-gpg-context.c:826
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -1547,7 +1549,7 @@ msgstr ""
 "ನಿಮ್ಮ ಈ ಸ್ಮಾರ್ಟ್-ಕಾರ್ಡಿಗೆ ಕೀಲಿಯನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಲು ನಿಮಗೆ ಒಂದು PIN ನ\n"
 "ಅಗತ್ಯವಿದೆ: \"%s\""
 
-#: ../camel/camel-gpg-context.c:828
+#: ../camel/camel-gpg-context.c:830
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -1556,92 +1558,94 @@ msgstr ""
 "ಈ ಬಳಕೆದಾರನಿಗಾಗಿ ಕೀಲಿಯನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಲು ನಿಮಗೆ ಒಂದು ಗುಪ್ತವಾಕ್ಯದ\n"
 "ಅಗತ್ಯವಿದೆ: \"%s\""
 
-#: ../camel/camel-gpg-context.c:833
+#: ../camel/camel-gpg-context.c:835
 #, c-format
 msgid "Unexpected request from GnuPG for '%s'"
 msgstr "GnuPG ಯಿಂದ '%s' ಗಾಗಿ ಅನಿರೀಕ್ಷಿತ ಮನವಿ"
 
-#: ../camel/camel-gpg-context.c:858 ../camel/camel-gpg-context.c:1067
+#: ../camel/camel-gpg-context.c:860 ../camel/camel-gpg-context.c:1076
 #: ../camel/providers/nntp/camel-nntp-store.c:1313
 msgid "Canceled."
 msgstr "ರದ್ದು ಮಾಡಲಾಗಿದೆ."
 
-#: ../camel/camel-gpg-context.c:872
+#: ../camel/camel-gpg-context.c:874
 msgid "Failed to unlock secret key: 3 bad passphrases given."
-msgstr "ರಹಸ್ಯ ಕೀಲಿಯನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ೩ ಬಾರಿ ತಪ್ಪು ಗುಪ್ತಪದವನ್ನು ನೀಡಲಾಗಿದೆ."
+msgstr ""
+"ರಹಸ್ಯ ಕೀಲಿಯನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ೩ ಬಾರಿ ತಪ್ಪು ಗುಪ್ತಪದವನ್ನು ನೀಡಲಾಗಿದೆ."
 
-#: ../camel/camel-gpg-context.c:880
+#: ../camel/camel-gpg-context.c:882
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "GnuPG ಯಿಂದ ಅನಿರೀಕ್ಷಿತ ಪ್ರತ್ಯುತ್ತರ: %s"
 
-#: ../camel/camel-gpg-context.c:943
+#: ../camel/camel-gpg-context.c:951
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "ಗೂಢಲಿಪೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ಯಾವುದೆ ಮಾನ್ಯವಾದ ಸ್ವೀಕರಿಸುವವರನ್ನು ಸೂಚಿಸಲಾಗಿಲ್ಲ."
 
 #. always called on an i/o error
-#: ../camel/camel-gpg-context.c:1205 ../camel/camel-gpg-context.c:1330
-#: ../camel/camel-gpg-context.c:1852 ../camel/camel-gpg-context.c:1897
+#: ../camel/camel-gpg-context.c:1224 ../camel/camel-gpg-context.c:1349
+#: ../camel/camel-gpg-context.c:1871 ../camel/camel-gpg-context.c:1916
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "ಜಿಪಿಜಿಯನ್ನು ಕಾರ್ಯಗತಗೊಳಿಸಲು ವಿಫಲಗೊಂಡಿದೆ: %s"
 
-#: ../camel/camel-gpg-context.c:1298 ../camel/camel-smime-context.c:602
+#: ../camel/camel-gpg-context.c:1317 ../camel/camel-smime-context.c:602
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "ಸಹಿಯ ಮಾಹಿತಿಯ ಉತ್ಪತ್ತಿ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
 
-#: ../camel/camel-gpg-context.c:1345 ../camel/camel-gpg-context.c:1546
-#: ../camel/camel-gpg-context.c:1562 ../camel/camel-gpg-context.c:1642
-#: ../camel/camel-gpg-context.c:1657 ../camel/camel-gpg-context.c:1773
-#: ../camel/camel-gpg-context.c:1788 ../camel/camel-gpg-context.c:1868
-#: ../camel/camel-gpg-context.c:1913
+#: ../camel/camel-gpg-context.c:1364 ../camel/camel-gpg-context.c:1565
+#: ../camel/camel-gpg-context.c:1581 ../camel/camel-gpg-context.c:1661
+#: ../camel/camel-gpg-context.c:1676 ../camel/camel-gpg-context.c:1792
+#: ../camel/camel-gpg-context.c:1807 ../camel/camel-gpg-context.c:1887
+#: ../camel/camel-gpg-context.c:1932
 msgid "Failed to execute gpg."
 msgstr "ಜಿಪಿಜಿಯನ್ನು ಕಾರ್ಯಗತಗೊಳಿಸಲು ವಿಫಲಗೊಂಡಿದೆ."
 
-#: ../camel/camel-gpg-context.c:1364
+#: ../camel/camel-gpg-context.c:1383
 msgid "This is a digitally signed message part"
 msgstr "ಇದು ಒಂದು ಡಿಜಿಟಲಿ ಸಹಿ ಮಾಡಲಾದ ಸಂದೇಶದ ಭಾಗ"
 
-#: ../camel/camel-gpg-context.c:1450 ../camel/camel-gpg-context.c:1456
-#: ../camel/camel-gpg-context.c:1462 ../camel/camel-gpg-context.c:1477
+#: ../camel/camel-gpg-context.c:1469 ../camel/camel-gpg-context.c:1475
+#: ../camel/camel-gpg-context.c:1481 ../camel/camel-gpg-context.c:1496
 #: ../camel/camel-smime-context.c:910 ../camel/camel-smime-context.c:921
 #: ../camel/camel-smime-context.c:928
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "ಸಂದೇಶವನ್ನು ಪರಿಶೀಲಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ಸಂದೇಶದ ವಿನ್ಯಾಸವು ಸರಿಯಾಗಿಲ್ಲ"
 
-#: ../camel/camel-gpg-context.c:1516
+#: ../camel/camel-gpg-context.c:1535
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
-msgstr "ಸಂದೇಶದ ಸಹಿಯನ್ನು ಪರಿಶೀಲಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ತಾತ್ಕಾಲಿಕ ಕಡತವನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
+msgstr ""
+"ಸಂದೇಶದ ಸಹಿಯನ್ನು ಪರಿಶೀಲಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ತಾತ್ಕಾಲಿಕ ಕಡತವನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
 
-#: ../camel/camel-gpg-context.c:1625
+#: ../camel/camel-gpg-context.c:1644
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "ಗೂಢಲಿಪೀಕರಿಸಲಾದ ಮಾಹಿತಿಯನ್ನು ಉತ್ಪತ್ತಿ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
 
-#: ../camel/camel-gpg-context.c:1675
+#: ../camel/camel-gpg-context.c:1694
 msgid "This is a digitally encrypted message part"
 msgstr "ಇದು ಡಿಜಿಟಲಿ ಗೂಢಲಿಪೀಕರಿಸಲಾದಂತಹ ಸಂದೇಶದ ಭಾಗ"
 
-#: ../camel/camel-gpg-context.c:1728 ../camel/camel-gpg-context.c:1736
-#: ../camel/camel-gpg-context.c:1755
+#: ../camel/camel-gpg-context.c:1747 ../camel/camel-gpg-context.c:1755
+#: ../camel/camel-gpg-context.c:1774
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "ಸಂದೇಶವನ್ನು ಡೀಕ್ರಿಪ್ಟ್‍ ಮಾಡಲಾಗಿಲ್ಲ: ಸಂದೇಶವು ಸರಿಯಾಗಿ ರಚಿತವಾಗಿಲ್ಲ"
 
-#: ../camel/camel-gpg-context.c:1745
+#: ../camel/camel-gpg-context.c:1764
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "MIME ಭಾಗವನ್ನು ಡೀಕ್ರಿಪ್ಟ್‍ ಮಾಡುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ: ಪ್ರೊಟೋಕಾಲ್ ದೋಷ"
 
-#: ../camel/camel-gpg-context.c:1810 ../camel/camel-smime-context.c:1186
+#: ../camel/camel-gpg-context.c:1829 ../camel/camel-smime-context.c:1186
 msgid "Encrypted content"
 msgstr "ಗೂಢಲಿಪೀಕರಣಗೊಂಡ ವಿಷಯ"
 
-#: ../camel/camel-gpg-context.c:1829
+#: ../camel/camel-gpg-context.c:1848
 msgid "Unable to parse message content"
 msgstr "ಸಂದೇಶದ ವಿಷಯವನ್ನು ಪಾರ್ಸ್ ಮಾಡಲಾಗಿಲ್ಲ"
 
-#: ../camel/camel-gpg-context.c:1853 ../camel/camel-gpg-context.c:1898
+#: ../camel/camel-gpg-context.c:1872 ../camel/camel-gpg-context.c:1917
 #: ../camel/camel-tcp-stream-openssl.c:627
 #: ../camel/providers/imap4/camel-imap4-utils.c:614
 #: ../camel/providers/smtp/camel-smtp-transport.c:165
@@ -1747,40 +1751,40 @@ msgstr "ಮೈಲ್‌ನ ತಾತ್ಕಾಲಿಕ ಕಡತವನ್ನು 
 msgid "parse error"
 msgstr "ಪಾರ್ಸ್ ದೋಷ"
 
-#: ../camel/camel-net-utils.c:503 ../camel/camel-net-utils.c:674
-#: ../camel/camel-net-utils.c:806
+#: ../camel/camel-net-utils.c:503 ../camel/camel-net-utils.c:673
+#: ../camel/camel-net-utils.c:802
 #: ../camel/providers/pop3/camel-pop3-store.c:446
 #: ../camel/providers/pop3/camel-pop3-store.c:546
 msgid "Canceled"
 msgstr "ರದ್ದು ಮಾಡಲಾಗಿದೆ"
 
-#: ../camel/camel-net-utils.c:522
+#: ../camel/camel-net-utils.c:523
 msgid "cannot create thread"
 msgstr "ಎಳೆಯನ್ನು ರಚಿಸಲಾಗಿಲ್ಲ"
 
-#: ../camel/camel-net-utils.c:678
+#: ../camel/camel-net-utils.c:677
 #, c-format
 msgid "Resolving: %s"
 msgstr "ಪರಿಹರಿಸಲಾಗುತ್ತಿದೆ: %s"
 
-#: ../camel/camel-net-utils.c:700
+#: ../camel/camel-net-utils.c:699
 msgid "Host lookup failed"
 msgstr "ಅತಿಥೇಯಕ್ಕಾಗಿ ನೋಡುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ"
 
-#: ../camel/camel-net-utils.c:702
+#: ../camel/camel-net-utils.c:701
 #, c-format
 msgid "Host lookup failed: %s: %s"
 msgstr "ಅತಿಥೇಯಕ್ಕಾಗಿ ನೋಡುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ: %s: %s"
 
-#: ../camel/camel-net-utils.c:810
+#: ../camel/camel-net-utils.c:806
 msgid "Resolving address"
 msgstr "ವಿಳಾಸವನ್ನು ಪರಿಹರಿಸಲಾಗುತ್ತಿದೆ"
 
-#: ../camel/camel-net-utils.c:830
+#: ../camel/camel-net-utils.c:826
 msgid "Name lookup failed"
 msgstr "ಹೆಸರಿಗಾಗಿ ನೋಡುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ"
 
-#: ../camel/camel-net-utils.c:833
+#: ../camel/camel-net-utils.c:829
 #, c-format
 msgid "Name lookup failed: %s"
 msgstr "ಹೆಸರಿಗಾಗಿ ನೋಡುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ: %s"
@@ -1806,7 +1810,8 @@ msgstr "ಮೈಲ್ ಅನ್ನು ಮತ್ತೊಂದು ಕಂತಿನ �
 #: ../camel/camel-provider.c:184
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
-msgstr "%s ಅನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ಘಟಕವನ್ನು ಲೋಡ್ ಮಾಡಲು ಈ ವ್ಯವಸ್ಥೆಯಲ್ಲಿ ಬೆಂಬಲವಿಲ್ಲ."
+msgstr ""
+"%s ಅನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ಘಟಕವನ್ನು ಲೋಡ್ ಮಾಡಲು ಈ ವ್ಯವಸ್ಥೆಯಲ್ಲಿ ಬೆಂಬಲವಿಲ್ಲ."
 
 #: ../camel/camel-provider.c:193
 #, c-format
@@ -1916,7 +1921,8 @@ msgstr "GSSAPI"
 
 #: ../camel/camel-sasl-gssapi.c:65
 msgid "This option will connect to the server using Kerberos 5 authentication."
-msgstr "ಈ ಆಯ್ಕೆಯಿಂದಾಗಿ ಕರ್ಬರೋಸ್ ೫ ದೃಡೀಕರಣವನ್ನು ಬಳಸಿಕೊಂಡು ಪರಿಚಾರಕದೊಂದಿಗೆ ಸಂಪರ್ಕಸಾಧಿಸುತ್ತದೆ."
+msgstr ""
+"ಈ ಆಯ್ಕೆಯಿಂದಾಗಿ ಕರ್ಬರೋಸ್ ೫ ದೃಡೀಕರಣವನ್ನು ಬಳಸಿಕೊಂಡು ಪರಿಚಾರಕದೊಂದಿಗೆ ಸಂಪರ್ಕಸಾಧಿಸುತ್ತದೆ."
 
 #: ../camel/camel-sasl-gssapi.c:159
 msgid ""
@@ -1995,7 +2001,8 @@ msgstr "ಕರ್ಬರೋಸ್ ೪"
 
 #: ../camel/camel-sasl-kerberos4.c:49
 msgid "This option will connect to the server using Kerberos 4 authentication."
-msgstr "ಈ ಆಯ್ಕೆಯಿಂದಾಗಿ ಕರ್ಬರೋಸ್ ೪ ದೃಡೀಕರಣವನ್ನು ಬಳಸಿಕೊಂಡು ಪರಿಚಾರಕದೊಂದಿಗೆ ಸಂಪರ್ಕಸಾಧಿಸುತ್ತದೆ."
+msgstr ""
+"ಈ ಆಯ್ಕೆಯಿಂದಾಗಿ ಕರ್ಬರೋಸ್ ೪ ದೃಡೀಕರಣವನ್ನು ಬಳಸಿಕೊಂಡು ಪರಿಚಾರಕದೊಂದಿಗೆ ಸಂಪರ್ಕಸಾಧಿಸುತ್ತದೆ."
 
 #: ../camel/camel-sasl-kerberos4.c:173
 #, c-format
@@ -2228,7 +2235,8 @@ msgstr "ಪ್ರಮಾಣಪತ್ರವು ಕೇವಲ ಸಂದೇಶವಾ�
 #: ../camel/camel-smime-context.c:820
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr "ಪ್ರಮಾಣಪತ್ರವು ಕೇವಲ ಸಂದೇಶವಾಗಿದೆ, ಪ್ರಮಾಣಪತ್ರಗಳನ್ನು ಆಮದು ಮಾಡಲಾಗಿದೆ ಹಾಗು ಪರಿಶೀಲಿಸಲಾಗಿದೆ"
+msgstr ""
+"ಪ್ರಮಾಣಪತ್ರವು ಕೇವಲ ಸಂದೇಶವಾಗಿದೆ, ಪ್ರಮಾಣಪತ್ರಗಳನ್ನು ಆಮದು ಮಾಡಲಾಗಿದೆ ಹಾಗು ಪರಿಶೀಲಿಸಲಾಗಿದೆ"
 
 #: ../camel/camel-smime-context.c:824
 msgid "Cannot find signature digests"
@@ -2369,17 +2377,14 @@ msgid "Certificate has expired"
 msgstr "ಪ್ರಮಾಣಪತ್ರದ ವಾಯಿದೆಯು ತೀರಿದೆ"
 
 #: ../camel/camel-tcp-stream-openssl.c:582
-#| msgid "Certificate Revocation List signature failure"
 msgid "Certificate Revocation List (CRL) not yet valid"
 msgstr "ಪ್ರಮಾಣಪತ್ರ ರದ್ದತಿ ಪಟ್ಟಿಯು(CRL) ಇನ್ನೂ ಸಹ ಮಾನ್ಯವಾಗಿಲ್ಲ"
 
 #: ../camel/camel-tcp-stream-openssl.c:584
-#| msgid "Certificate Revocation List signature failure"
 msgid "Certificate Revocation List (CRL) has expired"
 msgstr "ಪ್ರಮಾಣಪತ್ರ ರದ್ದತಿ ಪಟ್ಟಿಯ(CRL) ವಾಯಿದೆಯು ತೀರಿದೆ"
 
 #: ../camel/camel-tcp-stream-openssl.c:589
-#| msgid "Unable to get Certificate Revocation List"
 msgid "Error in Certificate Revocation List (CRL)"
 msgstr "ಪ್ರಮಾಣಪತ್ರ ರದ್ದತಿ ಪಟ್ಟಿಯಲ್ಲಿ (CRL) ದೋಷ ಉಂಟಾಗಿದೆ"
 
@@ -2548,17 +2553,17 @@ msgstr ""
 msgid "Could not parse URL '%s'"
 msgstr "'%s' URL ಅನ್ನು ಪಾರ್ಸ್ ಮಾಡಲಾಗಿಲ್ಲ"
 
-#: ../camel/camel-vee-folder.c:580
+#: ../camel/camel-vee-folder.c:581
 #, c-format
 msgid "Error storing '%s': %s"
 msgstr "'%s' ಅನ್ನು ಶೇಖರಿಸಿಡುವಲ್ಲಿ ದೋಷ: %s"
 
-#: ../camel/camel-vee-folder.c:657
+#: ../camel/camel-vee-folder.c:658
 #, c-format
 msgid "No such message %s in %s"
 msgstr "ಆ ಬಗೆಯ ಯಾವುದೆ ಸಂದೇಶ %s ವು %s ನಲ್ಲಿ ಇಲ್ಲ"
 
-#: ../camel/camel-vee-folder.c:816 ../camel/camel-vee-folder.c:822
+#: ../camel/camel-vee-folder.c:817 ../camel/camel-vee-folder.c:823
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "ವರ್ಚುವಲ್ ಫೋಲ್ಡರಿಗೆ ಸಂದೇಶಗಳನ್ನು ಕಾಪಿ ಮಾಡಲಾಗಲಿ ಅಥವ ಸ್ಥಳಾಂತರಿಸಲಾಗಲಿ ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
@@ -2585,7 +2590,7 @@ msgstr "ಕಸಬುಟ್ಟಿ ಫೋಲ್ಡರಿಗೆ ಸಂದೇಶವ�
 msgid "Cannot copy messages to the Junk folder"
 msgstr "ರದ್ದಿ ಫೋಲ್ಡರಿಗೆ ಸಂದೇಶವನ್ನು ಕಾಪಿ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:136
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:137
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2594,16 +2599,16 @@ msgstr ""
 "ಈ ಸಂದೇಶವನ್ನು ಪಡೆಯಲಾಗಿಲ್ಲ: %s\n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:136
-#: ../camel/providers/local/camel-maildir-folder.c:255
-#: ../camel/providers/local/camel-maildir-folder.c:281
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:137
+#: ../camel/providers/local/camel-maildir-folder.c:278
+#: ../camel/providers/local/camel-maildir-folder.c:310
 #: ../camel/providers/local/camel-mbox-folder.c:363
 #: ../camel/providers/local/camel-mbox-folder.c:414
-#: ../camel/providers/local/camel-mh-folder.c:216
+#: ../camel/providers/local/camel-mh-folder.c:245
 msgid "No such message"
 msgstr "ಆ ಬಗೆಯ ಯಾವುದೆ ಸಂದೇಶ ಇಲ್ಲ"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:148
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:149
 #: ../camel/providers/imap4/camel-imap4-folder.c:814
 #: ../camel/providers/nntp/camel-nntp-folder.c:175
 #: ../camel/providers/nntp/camel-nntp-folder.c:250
@@ -2615,7 +2620,7 @@ msgstr "ಆ ಬಗೆಯ ಯಾವುದೆ ಸಂದೇಶ ಇಲ್ಲ"
 msgid "User canceled"
 msgstr "ಬಳಕೆದಾರನನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:155
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:156
 #: ../camel/providers/imap4/camel-imap4-folder.c:819
 #: ../camel/providers/nntp/camel-nntp-folder.c:166
 #: ../camel/providers/nntp/camel-nntp-folder.c:168
@@ -2630,37 +2635,36 @@ msgstr "ಬಳಕೆದಾರನನ್ನು ರದ್ದುಗೊಳಿಸಲ�
 msgid "Cannot get message %s: %s"
 msgstr "%s ಸಂದೇಶವನ್ನು ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:172
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:180
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2463
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:173
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:181
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2508
 #: ../camel/providers/imap4/camel-imap4-folder.c:837
 msgid "This message is not available in offline mode."
 msgstr "ಈ ಸಂದೇಶವು ಆಫ್‌ಲೈನ್‌ ಕ್ರಮದಲ್ಲಿ ಲಭ್ಯವಿರುವುದಿಲ್ಲ."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:194
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:201
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1966
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2017
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:195
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:202
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2011
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2062
 msgid "Could not get message"
 msgstr "ಸಂದೇಶವನ್ನು ಪಡೆಯಲಾಗಿಲ್ಲ"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:939
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:984
 #: ../camel/providers/imap/camel-imap-folder.c:296
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "%s ಗಾಗಿ ಸಾರಾಂಶವನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1012
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1057
 #, c-format
-#| msgid "Checking for new messages"
 msgid "Checking for deleted messages %s"
 msgstr "ಅಳಿಸಲಾದ ಸಂದೇಶ %s ಕ್ಕಾಗಿ ಪರೀಕ್ಷಿಸಲಾಗುತ್ತಿದೆ"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1287
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1332
 msgid "Trash Folder Full. Please Empty."
 msgstr "ಕಸಬುಟ್ಟಿ ಫೋಲ್ಡರ್ ಭರ್ತಿಯಾಗಿದೆ: ದಯವಿಟ್ಟು ಖಾಲಿ ಮಾಡಿ."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1521
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1566
 #: ../camel/providers/groupwise/camel-groupwise-store.c:633
 #: ../camel/providers/groupwise/camel-groupwise-store.c:763
 #: ../camel/providers/imap/camel-imap-folder.c:3421
@@ -2669,13 +2673,13 @@ msgstr "ಕಸಬುಟ್ಟಿ ಫೋಲ್ಡರ್ ಭರ್ತಿಯಾಗ�
 msgid "Fetching summary information for new messages in %s"
 msgstr "%s ನಲ್ಲಿನ ಹೊಸ ಸಂದೇಶಗಳಿಗಾಗಿ ಮಾಹಿತಿಗಳನ್ನು ಪಡೆದುಕೊಳ್ಳಲಾಗುತ್ತಿದೆ"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2317
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2360
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2362
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2405
 #, c-format
 msgid "Cannot append message to folder '%s': %s"
 msgstr "'%s' ಫೋಲ್ಡರಿಗೆ ಸಂದೇಶವನ್ನು ಸೇರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2348
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2393
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "ಸಂದೇಶವನ್ನು ರಚಿಸಲಾಗಿಲ್ಲ: %s"
@@ -2736,7 +2740,7 @@ msgstr "ಸ್ಥಳೀಯವಾಗಿ ಖಾತೆಯನ್ನು ಸ್ವಯ�
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:72
 msgid "SOAP Settings"
-msgstr "SOAP ಸಂಯೋಜನೆಗಳು"
+msgstr "SOAP ಸಿದ್ಧತೆಗಳು"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:75
 msgid "Post Office Agent SOAP _Port:"
@@ -2761,7 +2765,8 @@ msgid "Password"
 msgstr "ಗುಪ್ತಪದ"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:106
-msgid "This option will connect to the GroupWise server using a plaintext password."
+msgid ""
+"This option will connect to the GroupWise server using a plaintext password."
 msgstr ""
 "ಈ ಆಯ್ಕೆಯಿಂದಾಗಿ ಸರಳಪಠ್ಯ ಗುಪ್ತಪದದ ಮೂಲಕ GroupWise ಪರಿಚಾರಕದೊಂದಿಗೆ ಸಂಪರ್ಕಸಾಧಿಸಲು "
 "ಸಹಾಯವಾಗುತ್ತದೆ."
@@ -2777,7 +2782,8 @@ msgstr "ನೀವು ಒಂದು ಗುಪ್ತಪದವನ್ನು ನಮೂ
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:319
 msgid "Some features may not work correctly with your current server version"
-msgstr "ನಿಮ್ಮಲ್ಲಿರು ಪರಿಚಾರಕದ ಪ್ರಸಕ್ತ ಆವೃತ್ತಿಯಲ್ಲಿ ಕೆಲವು ಸವಲತ್ತುಗಳು ಸಮರ್ಪಕವಾಗಿ ಕೆಲಸ ಮಾಡುವುದಿಲ್ಲ"
+msgstr ""
+"ನಿಮ್ಮಲ್ಲಿರು ಪರಿಚಾರಕದ ಪ್ರಸಕ್ತ ಆವೃತ್ತಿಯಲ್ಲಿ ಕೆಲವು ಸವಲತ್ತುಗಳು ಸಮರ್ಪಕವಾಗಿ ಕೆಲಸ ಮಾಡುವುದಿಲ್ಲ"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:540
 #: ../camel/providers/imap/camel-imap-store.c:1849
@@ -3004,7 +3010,8 @@ msgstr "ಈ ಸಂದೇಶವು ಸದ್ಯಕ್ಕೆ ಲಭ್ಯವಿಲ
 #: ../camel/providers/imap/camel-imap-folder.c:3624
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
-msgstr "ಅಪೂರ್ಣವಾದ ಪರಿಚಾರಕ ಪ್ರತ್ಯುತ್ತರ: ಸಂದೇಶ %d ಕ್ಕಾಗಿ ಯಾವುದೆ ಮಾಹಿತಿಯನ್ನು ಒದಗಿಸಲಾಗಿಲ್ಲ"
+msgstr ""
+"ಅಪೂರ್ಣವಾದ ಪರಿಚಾರಕ ಪ್ರತ್ಯುತ್ತರ: ಸಂದೇಶ %d ಕ್ಕಾಗಿ ಯಾವುದೆ ಮಾಹಿತಿಯನ್ನು ಒದಗಿಸಲಾಗಿಲ್ಲ"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3632
 #, c-format
@@ -3160,7 +3167,8 @@ msgstr "ಇನ್‍ಬಾಕ್ಸ್‍"
 #: ../camel/providers/imap/camel-imap-store.c:1305
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
-msgstr "IMAP ಪರಿಚಾರಕ %s ಮನವಿ ಸಲ್ಲಿಸಲಾದ ದೃಢೀಕರಣದ ಬೆಂಬಲದ ಬಗೆ %s ಅನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
+msgstr ""
+"IMAP ಪರಿಚಾರಕ %s ಮನವಿ ಸಲ್ಲಿಸಲಾದ ದೃಢೀಕರಣದ ಬೆಂಬಲದ ಬಗೆ %s ಅನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
 
 #: ../camel/providers/imap/camel-imap-store.c:1315
 #: ../camel/providers/smtp/camel-smtp-transport.c:506
@@ -3183,7 +3191,8 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-store.c:2242
 #: ../camel/providers/imap4/camel-imap4-store.c:954
 #, c-format
-msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgid ""
+"The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "ಫೋಲ್ಡರಿನ ಹೆಸರು \"%s\" ಅಮಾನ್ಯವಾಗಿದೆ ಏಕೆಂದರೆ ಅದು ಅಕ್ಷರ \"%c\" ಅನ್ನು ಹೊಂದಿದೆ"
 
 #: ../camel/providers/imap/camel-imap-store.c:1978
@@ -3200,7 +3209,6 @@ msgid "Unknown parent folder: %s"
 msgstr "ಗೊತ್ತಿರದ ಮೂಲ ಫೋಲ್ಡರ್: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:3053
-#| msgid "Server unexpectedly disconnected: %s"
 msgid "Server unexpectedly disconnected"
 msgstr "ಪರಿಚಾರಕದಿಂದ ಅನಿರೀಕ್ಷಿತವಾಗಿ ಸಂಪರ್ಕ ಕಡಿದು ಹೋಗಿದೆ"
 
@@ -3291,7 +3299,8 @@ msgstr "ಫೋಲ್ಡರ್ '%s' ಅನ್ನು ತೆಗೆದುಹಾಕ�
 #: ../camel/providers/imap4/camel-imap4-folder.c:891
 #, c-format
 msgid "Cannot get message %s from folder '%s': No such message"
-msgstr "'%s' ಸಂದೇಶವನ್ನು '%s' ಫೋಲ್ಡರಿನಿಂದ ಪಡೆದುಕೊಳ್ಳಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ಅಂತಹ ಯಾವುದೆ ಸಂದೇಶವಿಲ್ಲ"
+msgstr ""
+"'%s' ಸಂದೇಶವನ್ನು '%s' ಫೋಲ್ಡರಿನಿಂದ ಪಡೆದುಕೊಳ್ಳಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ಅಂತಹ ಯಾವುದೆ ಸಂದೇಶವಿಲ್ಲ"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:896
 #, c-format
@@ -3326,12 +3335,14 @@ msgstr "ಫೋಲ್ಡರ್ '%s' ನಲ್ಲಿನ ಸಂದೇಶಗಳನ�
 #: ../camel/providers/imap4/camel-imap4-folder.c:1194
 #, c-format
 msgid "Cannot move messages from folder '%s' to folder '%s': Bad command"
-msgstr "ಫೋಲ್ಡರ್ '%s' ನಲ್ಲಿನ ಸಂದೇಶಗಳನ್ನು '%s' ಗೆ ಸ್ಥಳಾಂತರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ಸರಿಯಲ್ಲದ ಆಜ್ಞೆ"
+msgstr ""
+"ಫೋಲ್ಡರ್ '%s' ನಲ್ಲಿನ ಸಂದೇಶಗಳನ್ನು '%s' ಗೆ ಸ್ಥಳಾಂತರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ಸರಿಯಲ್ಲದ ಆಜ್ಞೆ"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1198
 #, c-format
 msgid "Cannot copy messages from folder '%s' to folder '%s': Bad command"
-msgstr "ಫೋಲ್ಡರ್ '%s' ನಲ್ಲಿನ ಸಂದೇಶಗಳನ್ನು '%s' ಗೆ ಕಾಪಿ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ಸರಿಯಲ್ಲದ ಆಜ್ಞೆ"
+msgstr ""
+"ಫೋಲ್ಡರ್ '%s' ನಲ್ಲಿನ ಸಂದೇಶಗಳನ್ನು '%s' ಗೆ ಕಾಪಿ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ಸರಿಯಲ್ಲದ ಆಜ್ಞೆ"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:55
 msgid "Check new messages for _Junk contents"
@@ -3350,7 +3361,8 @@ msgid "For reading and storing mail on IMAPv4rev1 servers."
 msgstr "IMAPv4rev1 ಪರಿಚಾರಕಗಳಲ್ಲಿ ಮೈಲ್‌ಗಳನ್ನು ಓದಲು ಹಾಗು ಶೇಖರಿಸಿಡಲು."
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:85
-msgid "This option will connect to the IMAPv4rev1 server using a plaintext password."
+msgid ""
+"This option will connect to the IMAPv4rev1 server using a plaintext password."
 msgstr ""
 "ಈ ಆಯ್ಕೆಯಿಂದಾಗಿ ಸರಳಪಠ್ಯ ಗುಪ್ತಪದದ ಮೂಲಕ IMAPv4rev1 ನೊಂದಿಗೆ ಸಂಪರ್ಕಸಾಧಿಸಲು "
 "ಸಹಾಯವಾಗುತ್ತದೆ."
@@ -3380,7 +3392,8 @@ msgstr "TLS ನೊಂದಿಗಿನ ಸಂಧಾನವು ವಿಫಲವಾಗ
 
 #: ../camel/providers/imap4/camel-imap4-store.c:411
 #, c-format
-msgid "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+msgid ""
+"Cannot authenticate to IMAP server %s using the %s authentication mechanism"
 msgstr "IMAP ಪರಿಚಾರಕ %s ಅನ್ನು %s ದೃಢೀಕರಣ ಕಾರ್ಯವಿನ್ಯಾಸದ ಮೂಲಕ ದೃಢೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:534
@@ -3440,7 +3453,8 @@ msgstr "ಫೋಲ್ಡರ್ '%s' ಅನ್ನು ಅಳಿಸಲು ಸಾಧ�
 #: ../camel/providers/imap4/camel-imap4-store.c:1099
 #, c-format
 msgid "Cannot rename folder '%s' to '%s': Special folder"
-msgstr "ಫೋಲ್ಡರ್ '%s' ನ ಹೆಸರನ್ನು '%s' ಗೆ ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ವಿಶೇಷವಾದ ಫೋಲ್ಡರ್ ಆಗಿದೆ"
+msgstr ""
+"ಫೋಲ್ಡರ್ '%s' ನ ಹೆಸರನ್ನು '%s' ಗೆ ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ವಿಶೇಷವಾದ ಫೋಲ್ಡರ್ ಆಗಿದೆ"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1106
 msgid "Cannot rename IMAP folders in offline mode."
@@ -3449,7 +3463,8 @@ msgstr "ಆಫ್‌ಲೈನ್‌ ಸ್ಥಿತಿಯಲ್ಲಿ IMAP ಫ�
 #: ../camel/providers/imap4/camel-imap4-store.c:1137
 #, c-format
 msgid "Cannot rename folder '%s' to '%s': Invalid mailbox name"
-msgstr "ಫೋಲ್ಡರ್ '%s' ನ ಹೆಸರನ್ನು '%s' ಗೆ ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ಅಮಾನ್ಯವಾದ ಅಂಚೆಪೆಟ್ಟಿಗೆ ಹೆಸರು"
+msgstr ""
+"ಫೋಲ್ಡರ್ '%s' ನ ಹೆಸರನ್ನು '%s' ಗೆ ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ಅಮಾನ್ಯವಾದ ಅಂಚೆಪೆಟ್ಟಿಗೆ ಹೆಸರು"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1142
 #, c-format
@@ -3567,7 +3582,6 @@ msgstr "~%s (%s)"
 #: ../camel/providers/local/camel-local-folder.c:399
 #: ../camel/providers/local/camel-local-folder.c:402
 #, c-format
-#| msgid "mailbox:%s (%s)"
 msgid "mailbox: %s (%s)"
 msgstr "ಮೈಲ್‌ಬಾಕ್ಸ್‍: %s (%s)"
 
@@ -3690,27 +3704,27 @@ msgstr "'%s' ಫೋಲ್ಡರ್ ಮೆಟಾ ಕಡತವನ್ನು ಅಳ�
 msgid "Unable to add message to summary: unknown reason"
 msgstr "ಸಾರಾಂಶಕ್ಕೆ ಸಂದೇಶವನ್ನು ಸೇರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ಕಾರಣ ತಿಳಿದಿಲ್ಲ"
 
-#: ../camel/providers/local/camel-maildir-folder.c:229
+#: ../camel/providers/local/camel-maildir-folder.c:244
 msgid "Maildir append message canceled"
 msgstr "Maildir ಸೇರಿಸಲಾದ ಸಂದೇಶವನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
 
-#: ../camel/providers/local/camel-maildir-folder.c:232
+#: ../camel/providers/local/camel-maildir-folder.c:247
 #, c-format
 msgid "Cannot append message to maildir folder: %s: %s"
 msgstr "maildir ಫೋಲ್ಡರಿಗೆ ಸಂದೇಶವನ್ನು ಸೇರಿಸಲಾಗಿಲ್ಲ: %s: %s"
 
-#: ../camel/providers/local/camel-maildir-folder.c:254
-#: ../camel/providers/local/camel-maildir-folder.c:280
-#: ../camel/providers/local/camel-maildir-folder.c:294
-#: ../camel/providers/local/camel-maildir-folder.c:303
+#: ../camel/providers/local/camel-maildir-folder.c:277
+#: ../camel/providers/local/camel-maildir-folder.c:309
+#: ../camel/providers/local/camel-maildir-folder.c:323
+#: ../camel/providers/local/camel-maildir-folder.c:331
 #: ../camel/providers/local/camel-mbox-folder.c:362
 #: ../camel/providers/local/camel-mbox-folder.c:413
 #: ../camel/providers/local/camel-mbox-folder.c:434
 #: ../camel/providers/local/camel-mbox-folder.c:465
 #: ../camel/providers/local/camel-mbox-folder.c:473
-#: ../camel/providers/local/camel-mh-folder.c:215
-#: ../camel/providers/local/camel-mh-folder.c:226
-#: ../camel/providers/local/camel-mh-folder.c:235
+#: ../camel/providers/local/camel-mh-folder.c:244
+#: ../camel/providers/local/camel-mh-folder.c:255
+#: ../camel/providers/local/camel-mh-folder.c:263
 #, c-format
 msgid ""
 "Cannot get message: %s from folder %s\n"
@@ -3719,7 +3733,7 @@ msgstr ""
 "ಸಂದೇಶವನ್ನು ಪಡೆದುಕೊಳ್ಳಲಾಗಿಲ್ಲ: %s, %s ಫೋಲ್ಡರಿನಿಂದ\n"
 "  %s"
 
-#: ../camel/providers/local/camel-maildir-folder.c:304
+#: ../camel/providers/local/camel-maildir-folder.c:332
 msgid "Invalid message contents"
 msgstr "ಸಂದೇಶದ ಒಳಪಿಡಿಗಳು ಅಮಾನ್ಯವಾಗಿದೆ"
 
@@ -3782,7 +3796,7 @@ msgstr "ಫೋಲ್ಡರಿನ ಸ್ಥಿರತೆಗಾಗಿ ಪರಿಶ�
 msgid "Checking for new messages"
 msgstr "ಹೊಸ ಸಂದೇಶಕ್ಕಾಗಿ ಪರೀಕ್ಷಿಸಲಾಗುತ್ತಿದೆ"
 
-#: ../camel/providers/local/camel-maildir-summary.c:744
+#: ../camel/providers/local/camel-maildir-summary.c:748
 #: ../camel/providers/local/camel-mbox-summary.c:526
 #: ../camel/providers/local/camel-mbox-summary.c:722
 #: ../camel/providers/local/camel-mbox-summary.c:842
@@ -3815,7 +3829,7 @@ msgid "The folder appears to be irrecoverably corrupted."
 msgstr "ಫೋಲ್ಡರಿನಲ್ಲಿ ಸರಿಪಡಿಸಲಾಗದಷ್ಟು ದೋಷವನ್ನು ಹೊಂದಿರುವಂತೆ ತೋರುತ್ತಿದೆ."
 
 #: ../camel/providers/local/camel-mbox-folder.c:474
-#: ../camel/providers/local/camel-mh-folder.c:236
+#: ../camel/providers/local/camel-mh-folder.c:264
 msgid "Message construction failed."
 msgstr "ಸಂದೇಶ ನಿರ್ಮಾಣವು ವಿಫಲಗೊಂಡಿದೆ."
 
@@ -3958,11 +3972,11 @@ msgstr "ತಾತ್ಕಾಲಿಕ ಅಂಚೆಪೆಟ್ಟಿಗೆಗೆ �
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "ತಾತ್ಕಾಲಿಕ ಅಂಚೆಪೆಟ್ಟಿಗೆಗೆ ಬರೆಯುವಲ್ಲಿ ವಿಫಲವಾಗಿದೆ: %s: %s"
 
-#: ../camel/providers/local/camel-mh-folder.c:181
+#: ../camel/providers/local/camel-mh-folder.c:184
 msgid "MH append message canceled"
 msgstr "MH ಸೇರಿಸಲಾದ ಸಂದೇಶವನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
 
-#: ../camel/providers/local/camel-mh-folder.c:184
+#: ../camel/providers/local/camel-mh-folder.c:187
 #, c-format
 msgid "Cannot append message to mh folder: %s: %s"
 msgstr "mh ಫೋಲ್ಡರಿಗೆ ಸಂದೇಶವನ್ನು ಸೇರಿಸಲಾಗಿಲ್ಲ: %s: %s"
@@ -4094,7 +4108,8 @@ msgid "You cannot copy messages from a NNTP folder!"
 msgstr "NTTP ಫೋಲ್ಡರಿನಿಂದ ಸಂದೇಶಗಳನ್ನು ಕಾಪಿ ಮಾಡಲಾಗಿಲ್ಲ!"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
-msgid "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgid ""
+"_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr ""
 "ಫೋಲ್ಡರಿನ ಹೆಸರುಗಳನ್ನು ಸಂಕ್ಷಿಪ್ತವಾಗಿ ತೋರಿಸು (ಉದಾ. comp.os.linux ಬದಲಿಗೆ c.o.linux "
 "ಎಂದು)(_S)"
@@ -4169,7 +4184,8 @@ msgstr ""
 
 #: ../camel/providers/nntp/camel-nntp-store.c:970
 msgid "You cannot create a folder in a News store: subscribe instead."
-msgstr "ಸುದ್ದಿ ಅಂಗಡಿಯಲ್ಲಿ(News store) ಒಂದು ಫೋಲ್ಡರನ್ನು ರಚಿಸುವಂತಿಲ್ಲ:ಬದಲಿಗೆ ಚಂದಾದಾರರಾಗಿ."
+msgstr ""
+"ಸುದ್ದಿ ಅಂಗಡಿಯಲ್ಲಿ(News store) ಒಂದು ಫೋಲ್ಡರನ್ನು ರಚಿಸುವಂತಿಲ್ಲ:ಬದಲಿಗೆ ಚಂದಾದಾರರಾಗಿ."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:978
 msgid "You cannot rename a folder in a News store."
@@ -4395,7 +4411,8 @@ msgstr "ಸೆಂಡ್‌ಮೈಲ್"
 msgid ""
 "For delivering mail by passing it to the \"sendmail\" program on the local "
 "system."
-msgstr "ಸ್ಥಳೀಯ ಗಣಕದಲ್ಲಿ \"sendmail\" ಪ್ರೊಗ್ರಾಮಿಗೆ ಕಳುಹಿಸುವುದರಿಂದ ಮೈಲನ್ನು ರವಾನಿಸುವ ಸಲುವಾಗಿ."
+msgstr ""
+"ಸ್ಥಳೀಯ ಗಣಕದಲ್ಲಿ \"sendmail\" ಪ್ರೊಗ್ರಾಮಿಗೆ ಕಳುಹಿಸುವುದರಿಂದ ಮೈಲನ್ನು ರವಾನಿಸುವ ಸಲುವಾಗಿ."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:113
 msgid "Could not parse recipient list"
@@ -4496,7 +4513,8 @@ msgstr "ಮನವಿ ಸಲ್ಲಿಸಲಾದ ಕಾರ್ಯವನ್ನು 
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:193
 msgid "Requested action aborted: error in processing"
-msgstr "ವಿನಂತಿ ಮಾಡಲಾದ ಮೈಲ್ ಕ್ರಿಯೆಯನ್ನು ಅರ್ಧಕ್ಕೆ ಕೈ ಬಿಡಲಾಗಿದೆ, ಸಂಸ್ಕರಿಸುವಾಗ ದೋಷ ಉಂಟಾಗಿದೆ"
+msgstr ""
+"ವಿನಂತಿ ಮಾಡಲಾದ ಮೈಲ್ ಕ್ರಿಯೆಯನ್ನು ಅರ್ಧಕ್ಕೆ ಕೈ ಬಿಡಲಾಗಿದೆ, ಸಂಸ್ಕರಿಸುವಾಗ ದೋಷ ಉಂಟಾಗಿದೆ"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:195
 msgid "User not local; please try <forward-path>"
@@ -4508,11 +4526,13 @@ msgstr "ಮನವಿ ಸಲ್ಲಿಸಲಾದ ಕಾರ್ಯವನ್ನು 
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:199
 msgid "Requested mail action aborted: exceeded storage allocation"
-msgstr "ವಿನಂತಿ ಮಾಡಲಾದ ಮೈಲ್ ಕ್ರಿಯೆಯನ್ನು ಅರ್ಧಕ್ಕೆ ಕೈ ಬಿಡಲಾಗಿದೆ: ನಿಗದಿತ ಶೇಖರಣೆ ಜಾಗವನ್ನು ಮೀರಿದೆ"
+msgstr ""
+"ವಿನಂತಿ ಮಾಡಲಾದ ಮೈಲ್ ಕ್ರಿಯೆಯನ್ನು ಅರ್ಧಕ್ಕೆ ಕೈ ಬಿಡಲಾಗಿದೆ: ನಿಗದಿತ ಶೇಖರಣೆ ಜಾಗವನ್ನು ಮೀರಿದೆ"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:201
 msgid "Requested action not taken: mailbox name not allowed"
-msgstr "ಮನವಿ ಸಲ್ಲಿಸಲಾದ ಕಾರ್ಯವನ್ನು ತೆಗೆದುಕೊಳ್ಳಲಾಗಿಲ್ಲ: ಮೈಲ್‌ಬಾಕ್ಸಿನ ಈ ಹೆಸರಿಗೆ ಅನುಮತಿ ಇಲ್ಲ"
+msgstr ""
+"ಮನವಿ ಸಲ್ಲಿಸಲಾದ ಕಾರ್ಯವನ್ನು ತೆಗೆದುಕೊಳ್ಳಲಾಗಿಲ್ಲ: ಮೈಲ್‌ಬಾಕ್ಸಿನ ಈ ಹೆಸರಿಗೆ ಅನುಮತಿ ಇಲ್ಲ"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:203
 msgid "Start mail input; end with <CRLF>.<CRLF>"
@@ -4777,7 +4797,7 @@ msgstr "ಕಾಯಲಾಗುತ್ತಿದೆ"
 #. in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1635 ../libedataserver/e-time-utils.c:1900
+#: ../libedataserver/e-time-utils.c:1633 ../libedataserver/e-time-utils.c:1898
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a %m/%d/%Y %I:%M:%S %p"
 
@@ -4785,7 +4805,7 @@ msgstr "%a %m/%d/%Y %I:%M:%S %p"
 #. in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1640 ../libedataserver/e-time-utils.c:1891
+#: ../libedataserver/e-time-utils.c:1638 ../libedataserver/e-time-utils.c:1889
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a %m/%d/%Y %H:%M:%S"
 
@@ -4793,7 +4813,7 @@ msgstr "%a %m/%d/%Y %H:%M:%S"
 #. in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 12-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1645 ../libedataserver/e-time-utils.c:1896
+#: ../libedataserver/e-time-utils.c:1643 ../libedataserver/e-time-utils.c:1894
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a %m/%d/%Y %I:%M %p"
 
@@ -4801,78 +4821,78 @@ msgstr "%a %m/%d/%Y %I:%M %p"
 #. in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. time, in 24-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1650 ../libedataserver/e-time-utils.c:1887
+#: ../libedataserver/e-time-utils.c:1648 ../libedataserver/e-time-utils.c:1885
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a %m/%d/%Y %H:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1655
+#: ../libedataserver/e-time-utils.c:1653
 msgid "%a %m/%d/%Y %I %p"
 msgstr "%a %m/%d/%Y %I %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1660
+#: ../libedataserver/e-time-utils.c:1658
 msgid "%a %m/%d/%Y %H"
 msgstr "%a %m/%d/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: ../libedataserver/e-time-utils.c:1663 ../libedataserver/e-time-utils.c:1763
-#: ../libedataserver/e-time-utils.c:1882
+#: ../libedataserver/e-time-utils.c:1661 ../libedataserver/e-time-utils.c:1761
+#: ../libedataserver/e-time-utils.c:1880
 msgid "%a %m/%d/%Y"
 msgstr "%a %m/%d/%Y"
 
 #. strptime format of a date and a time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1670
+#: ../libedataserver/e-time-utils.c:1668
 msgid "%m/%d/%Y %I:%M:%S %p"
 msgstr "%m/%d/%Y %I:%M:%S %p"
 
 #. strptime format of a date and a time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1674
+#: ../libedataserver/e-time-utils.c:1672
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%m/%d/%Y %H:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1679
+#: ../libedataserver/e-time-utils.c:1677
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "%m/%d/%Y %I:%M %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1684
+#: ../libedataserver/e-time-utils.c:1682
 msgid "%m/%d/%Y %H:%M"
 msgstr "%m/%d/%Y %H:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1689
+#: ../libedataserver/e-time-utils.c:1687
 msgid "%m/%d/%Y %I %p"
 msgstr "%m/%d/%Y %I %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1694
+#: ../libedataserver/e-time-utils.c:1692
 msgid "%m/%d/%Y %H"
 msgstr "%m/%d/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: ../libedataserver/e-time-utils.c:1697 ../libedataserver/e-time-utils.c:1766
+#: ../libedataserver/e-time-utils.c:1695 ../libedataserver/e-time-utils.c:1764
 msgid "%m/%d/%Y"
 msgstr "%m/%d/%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1824 ../libedataserver/e-time-utils.c:1944
+#: ../libedataserver/e-time-utils.c:1822 ../libedataserver/e-time-utils.c:1942
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1828 ../libedataserver/e-time-utils.c:1936
+#: ../libedataserver/e-time-utils.c:1826 ../libedataserver/e-time-utils.c:1934
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -4880,24 +4900,24 @@ msgstr "%H:%M:%S"
 #. in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1833 ../libedataserver/e-time-utils.c:1941
+#: ../libedataserver/e-time-utils.c:1831 ../libedataserver/e-time-utils.c:1939
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. without seconds.
-#: ../libedataserver/e-time-utils.c:1837 ../libedataserver/e-time-utils.c:1933
+#: ../libedataserver/e-time-utils.c:1835 ../libedataserver/e-time-utils.c:1931
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for time of day, without seconds 24-hour format, and no colon.
-#: ../libedataserver/e-time-utils.c:1840
+#: ../libedataserver/e-time-utils.c:1838
 msgid "%H%M"
 msgstr "%H%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: ../libedataserver/e-time-utils.c:1844
+#: ../libedataserver/e-time-utils.c:1842
 msgid "%I %p"
 msgstr "%I %p"
 
@@ -5024,25 +5044,25 @@ msgid "_Search:"
 msgstr "ಹುಡುಕು(_S):"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2455
+#: ../libedataserverui/e-name-selector-entry.c:2508
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "%s ಅನ್ನು ಸಾಲಿನ ಒಳಗೆಯೆ ವಿಸ್ತರಿಸು(_x)"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2470
+#: ../libedataserverui/e-name-selector-entry.c:2523
 #, c-format
 msgid "Cop_y %s"
 msgstr "%s ಅನ್ನು ಕಾಪಿ ಮಾಡು(_y)"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2480
+#: ../libedataserverui/e-name-selector-entry.c:2533
 #, c-format
 msgid "C_ut %s"
 msgstr "%s ಅನ್ನು ಕತ್ತರಿಸು(_C)"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2497
+#: ../libedataserverui/e-name-selector-entry.c:2550
 #, c-format
 msgid "_Edit %s"
 msgstr "%s ಅನ್ನು ಸಂಪಾದಿಸು(_E)"
@@ -5279,4 +5299,3 @@ msgstr "ಇವಲ್ಯೂಶನ್ ದತ್ತಾಂಶ ಪರಿಚಾರಕ 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:4
 msgid "Evolution Data Server logging service"
 msgstr "ಇವಲ್ಯೂಶನ್ ದತ್ತಾಂಶ ಪರಿಚಾರಕದ ಲಾಗಿಂಗ್ ಸೇವೆ"
-
