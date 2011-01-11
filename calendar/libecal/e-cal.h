@@ -40,6 +40,7 @@ G_BEGIN_DECLS
 #define E_IS_CAL(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_CAL))
 #define E_IS_CAL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_CAL))
 
+#define E_TYPE_CAL_SOURCE_TYPE (e_cal_source_type_enum_get_type ())
 #define E_CAL_SET_MODE_STATUS_ENUM_TYPE (e_cal_set_mode_status_enum_get_type ())
 #define CAL_MODE_ENUM_TYPE                   (cal_mode_enum_get_type ())
 

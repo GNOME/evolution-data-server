@@ -171,15 +171,10 @@ e_cal_component_get_type
 <FILE>e-cal</FILE>
 <TITLE>ECal</TITLE>
 ECal
-E_CAL_SET_MODE_STATUS_ENUM_TYPE
-CAL_MODE_ENUM_TYPE
 ECalSourceType
 ECalSetModeStatus
 ECalLoadState
 ECalAuthFunc
-e_cal_source_type_enum_get_type
-e_cal_set_mode_status_enum_get_type
-cal_mode_enum_get_type
 e_cal_new
 e_cal_new_from_uri
 e_cal_new_system_calendar
@@ -247,10 +242,16 @@ E_IS_CAL
 E_TYPE_CAL
 E_CAL_CLASS
 E_IS_CAL_CLASS
+E_TYPE_CAL_SOURCE_TYPE
+E_CAL_SET_MODE_STATUS_ENUM_TYPE
+CAL_MODE_ENUM_TYPE
 ECalClass
 <SUBSECTION Private>
 ECalPrivate
 e_cal_get_type
+e_cal_set_mode_status_enum_get_type
+e_cal_source_type_enum_get_type
+cal_mode_enum_get_type
 </SECTION>
 
 <SECTION>

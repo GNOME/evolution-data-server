@@ -50,6 +50,12 @@ ECalViewListener
 
 
 
+<!-- ##### MACRO CAL_MODE_ENUM_TYPE ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### ENUM CalObjType ##### -->
 <para>
 
@@ -452,6 +458,12 @@ ECalViewListener
 </para>
 
 
+<!-- ##### MACRO E_CAL_SET_MODE_STATUS_ENUM_TYPE ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### MACRO E_CAL_VIEW ##### -->
 <para>
 
@@ -485,6 +497,32 @@ ECalViewListener
 </para>
 
 @klass: 
+
+<!-- ##### FUNCTION cal_mode_enum_get_type ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
+<!-- ##### FUNCTION e_cal_get_sources ##### -->
+<para>
+
+</para>
+
+@sources: 
+@type: 
+@error: 
+@Returns: 
+
+<!-- ##### FUNCTION e_cal_get_uri ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@Returns: 
 
 <!-- ##### FUNCTION e_cal_listener_construct ##### -->
 <para>
@@ -527,6 +565,22 @@ ECalViewListener
 
 @ecal: 
 @error: 
+@Returns: 
+
+<!-- ##### FUNCTION e_cal_set_mode_status_enum_get_type ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
+<!-- ##### FUNCTION e_cal_source_type_enum_get_type ##### -->
+<para>
+
+</para>
+
+@void: 
 @Returns: 
 
 <!-- ##### FUNCTION e_cal_util_expand_uri ##### -->

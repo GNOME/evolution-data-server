@@ -66,20 +66,6 @@ Represents an entire calendar or task list, not individual items within them.2
 @arg1: 
 @arg2: 
 
-<!-- ##### MACRO E_CAL_SET_MODE_STATUS_ENUM_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO CAL_MODE_ENUM_TYPE ##### -->
-<para>
-
-</para>
-
-
-
 <!-- ##### ENUM ECalSourceType ##### -->
 <para>
 
@@ -118,33 +104,6 @@ Represents an entire calendar or task list, not individual items within them.2
 @prompt: 
 @key: 
 @user_data: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_cal_source_type_enum_get_type ##### -->
-<para>
-
-</para>
-
-@void: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_cal_set_mode_status_enum_get_type ##### -->
-<para>
-
-</para>
-
-@void: 
-@Returns: 
-
-
-<!-- ##### FUNCTION cal_mode_enum_get_type ##### -->
-<para>
-
-</para>
-
-@void: 
 @Returns: 
 
 
