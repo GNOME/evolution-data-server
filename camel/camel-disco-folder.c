@@ -176,6 +176,7 @@ disco_expunge_uids (CamelFolder *folder,
 
 	switch (camel_disco_store_status (CAMEL_DISCO_STORE (parent_store))) {
 	case CAMEL_DISCO_STORE_ONLINE:
+		g_return_val_if_fail (disco_folder_class->expunge_uids_online != NULL, FALSE);
 		success = disco_folder_class->expunge_uids_online (
 			folder, uids, error);
 		CAMEL_CHECK_GERROR (
@@ -183,6 +184,7 @@ disco_expunge_uids (CamelFolder *folder,
 		return success;
 
 	case CAMEL_DISCO_STORE_OFFLINE:
+		g_return_val_if_fail (disco_folder_class->expunge_uids_offline != NULL, FALSE);
 		success = disco_folder_class->expunge_uids_offline (
 			folder, uids, error);
 		CAMEL_CHECK_GERROR (
@@ -190,6 +192,7 @@ disco_expunge_uids (CamelFolder *folder,
 		return success;
 
 	case CAMEL_DISCO_STORE_RESYNCING:
+		g_return_val_if_fail (disco_folder_class->expunge_uids_resyncing != NULL, FALSE);
 		success = disco_folder_class->expunge_uids_resyncing (
 			folder, uids, error);
 		CAMEL_CHECK_GERROR (
@@ -217,6 +220,7 @@ disco_append_message_sync (CamelFolder *folder,
 
 	switch (camel_disco_store_status (CAMEL_DISCO_STORE (parent_store))) {
 	case CAMEL_DISCO_STORE_ONLINE:
+		g_return_val_if_fail (disco_folder_class->append_online != NULL, FALSE);
 		success = disco_folder_class->append_online (
 			folder, message, info,
 			appended_uid, cancellable, error);
@@ -224,6 +228,7 @@ disco_append_message_sync (CamelFolder *folder,
 		return success;
 
 	case CAMEL_DISCO_STORE_OFFLINE:
+		g_return_val_if_fail (disco_folder_class->append_offline != NULL, FALSE);
 		success = disco_folder_class->append_offline (
 			folder, message, info,
 			appended_uid, cancellable, error);
@@ -231,6 +236,7 @@ disco_append_message_sync (CamelFolder *folder,
 		return success;
 
 	case CAMEL_DISCO_STORE_RESYNCING:
+		g_return_val_if_fail (disco_folder_class->append_resyncing != NULL, FALSE);
 		success = disco_folder_class->append_resyncing (
 			folder, message, info,
 			appended_uid, cancellable, error);
@@ -286,6 +292,7 @@ disco_refresh_info_sync (CamelFolder *folder,
 		return TRUE;
 
 	disco_folder_class = CAMEL_DISCO_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (disco_folder_class->refresh_info_online != NULL, FALSE);
 
 	success = disco_folder_class->refresh_info_online (
 		folder, cancellable, error);
@@ -314,16 +321,19 @@ disco_synchronize_sync (CamelFolder *folder,
 
 	switch (camel_disco_store_status (CAMEL_DISCO_STORE (parent_store))) {
 	case CAMEL_DISCO_STORE_ONLINE:
+		g_return_val_if_fail (disco_folder_class->sync_online != NULL, FALSE);
 		success = disco_folder_class->sync_online (folder, error);
 		CAMEL_CHECK_GERROR (folder, sync_online, success, error);
 		return success;
 
 	case CAMEL_DISCO_STORE_OFFLINE:
+		g_return_val_if_fail (disco_folder_class->sync_offline != NULL, FALSE);
 		success = disco_folder_class->sync_offline (folder, error);
 		CAMEL_CHECK_GERROR (folder, sync_offline, success, error);
 		return success;
 
 	case CAMEL_DISCO_STORE_RESYNCING:
+		g_return_val_if_fail (disco_folder_class->sync_resyncing != NULL, FALSE);
 		success = disco_folder_class->sync_resyncing (folder, error);
 		CAMEL_CHECK_GERROR (folder, sync_resyncing, success, error);
 		return success;
@@ -350,6 +360,7 @@ disco_transfer_messages_to_sync (CamelFolder *source,
 
 	switch (camel_disco_store_status (CAMEL_DISCO_STORE (parent_store))) {
 	case CAMEL_DISCO_STORE_ONLINE:
+		g_return_val_if_fail (disco_folder_class->transfer_online != NULL, FALSE);
 		success = disco_folder_class->transfer_online (
 			source, uids, dest, transferred_uids,
 			delete_originals, cancellable, error);
@@ -357,6 +368,7 @@ disco_transfer_messages_to_sync (CamelFolder *source,
 		return success;
 
 	case CAMEL_DISCO_STORE_OFFLINE:
+		g_return_val_if_fail (disco_folder_class->transfer_offline != NULL, FALSE);
 		success = disco_folder_class->transfer_offline (
 			source, uids, dest, transferred_uids,
 			delete_originals, cancellable, error);
@@ -364,6 +376,7 @@ disco_transfer_messages_to_sync (CamelFolder *source,
 		return success;
 
 	case CAMEL_DISCO_STORE_RESYNCING:
+		g_return_val_if_fail (disco_folder_class->transfer_resyncing != NULL, FALSE);
 		success = disco_folder_class->transfer_resyncing (
 			source, uids, dest, transferred_uids,
 			delete_originals, cancellable, error);

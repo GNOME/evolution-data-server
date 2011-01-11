@@ -576,6 +576,32 @@ nntp_folder_transfer_message (CamelFolder *source,
 	return FALSE;
 }
 
+static gboolean
+nntp_folder_expunge_uids_offline (CamelFolder *folder, GPtrArray *uids, GError **error)
+{
+	CamelFolderChangeInfo *changes;
+	gint ii;
+
+	g_return_val_if_fail (folder != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_NNTP_FOLDER (folder), FALSE);
+	g_return_val_if_fail (uids != NULL, FALSE);
+	g_return_val_if_fail (folder->summary != NULL, FALSE);
+
+	/* can only remove deleted messages from a local cache */
+
+	changes = camel_folder_change_info_new ();
+	for (ii = 0; ii < uids->len; ii++) {
+		camel_folder_summary_remove_uid (folder->summary, uids->pdata[ii]);
+		camel_folder_change_info_remove_uid (changes, uids->pdata[ii]);
+	}
+
+	camel_folder_summary_save_to_db (folder->summary, NULL);
+	camel_folder_changed (folder, changes);
+	camel_folder_change_info_free (changes);
+
+	return TRUE;
+}
+
 static void
 camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 {
@@ -609,6 +635,9 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 	disco_folder_class->transfer_resyncing = nntp_folder_transfer_message;
 	disco_folder_class->transfer_offline = nntp_folder_transfer_message;
 	disco_folder_class->refresh_info_online = nntp_folder_refresh_info_online;
+	disco_folder_class->expunge_uids_online = nntp_folder_expunge_uids_offline;
+	disco_folder_class->expunge_uids_offline = nntp_folder_expunge_uids_offline;
+	disco_folder_class->expunge_uids_resyncing = nntp_folder_expunge_uids_offline;
 }
 
 static void
