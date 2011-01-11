@@ -2299,7 +2299,7 @@ find_book_by_contact (GList *books, const gchar *contact_uid)
 
 	for (l = books; l; l = g_list_next (l)) {
 		EBook    *book = l->data;
-		EContact *contact;
+		EContact *contact = NULL;
 		gboolean  result;
 
 		result = e_book_get_contact (book, contact_uid, &contact, NULL);
@@ -2349,7 +2349,6 @@ editor_closed_cb (GtkWidget *editor, gpointer data)
 
 	g_free (contact_uid);
 	g_object_unref (contact);
-	g_object_unref (editor);
 	g_object_unref (name_selector_entry);
 }
 
