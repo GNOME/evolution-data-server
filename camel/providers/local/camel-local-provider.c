@@ -164,7 +164,7 @@ local_url_hash (gconstpointer v)
 	const CamelURL *u = v;
 	guint hash = 0;
 
-#define ADD_HASH(s) if (s) hash ^= g_str_hash (s);
+#define ADD_HASH(s) if (s && *s) hash ^= g_str_hash (s);
 
 	ADD_HASH (u->protocol);
 	ADD_HASH (u->user);
