@@ -557,6 +557,15 @@ e_data_cal_factory_init (EDataCalFactory *factory)
 }
 
 static void
+unref_backend_cb (gpointer key, gpointer value, gpointer user_data)
+{
+	ECalBackend *backend = value;
+
+	if (backend)
+		g_object_unref (backend);
+}
+
+static void
 e_data_cal_factory_finalize (GObject *object)
 {
 	EDataCalFactory *factory = E_DATA_CAL_FACTORY (object);
@@ -564,6 +573,8 @@ e_data_cal_factory_finalize (GObject *object)
 	g_return_if_fail (factory != NULL);
 
 	g_object_unref (factory->priv->gdbus_object);
+
+	g_hash_table_foreach (factory->priv->backends, unref_backend_cb, NULL);
 
 	g_hash_table_destroy (factory->priv->methods);
 	g_hash_table_destroy (factory->priv->backends);
