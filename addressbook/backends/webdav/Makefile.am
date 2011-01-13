@@ -2,7 +2,7 @@ ebook_backend_LTLIBRARIES = libebookbackendwebdav.la
 
 libebookbackendwebdav_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)					\
-	-DG_LOG_DOMAIN=\"libebookbackendgoogle\" 	\
+	-DG_LOG_DOMAIN=\"libebookbackendwebdav\" 	\
 	-I$(top_srcdir) 				\
 	-I$(top_builddir) 				\
 	-I$(top_srcdir)/addressbook 			\
