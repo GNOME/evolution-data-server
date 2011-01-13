@@ -1234,7 +1234,7 @@ e_book_backend_webdav_load_source(EBookBackend *backend,
 	if (use_ssl != NULL && strcmp (use_ssl, "1") == 0) {
 		soup_uri_set_scheme (suri, "https");
 	} else {
-		soup_uri_set_scheme (suri, "https");
+		soup_uri_set_scheme (suri, "http");
 	}
 
 	/* append slash if missing */
