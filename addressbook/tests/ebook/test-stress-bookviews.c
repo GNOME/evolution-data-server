@@ -100,6 +100,7 @@ main (gint argc, gchar **argv)
 	g_object_unref (view);
 
 	e_book_query_unref (query);
+	g_object_unref (book);
 
 	return 0;
 }

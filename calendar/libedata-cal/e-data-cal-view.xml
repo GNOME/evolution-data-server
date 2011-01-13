@@ -11,6 +11,10 @@
     <method name="stop">
       <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_EDataCalView_stop"/>
     </method>
+
+    <method name="dispose">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_EDataCalView_dispose"/>
+    </method>
     
     <signal name="ObjectsAdded">
       <arg name="objects" type="as"/>

@@ -44,8 +44,6 @@
 struct _ECalBackendPrivate {
 	/* The source for this backend */
 	ESource *source;
-	/* signal handler ID for source's 'changed' signal */
-	gulong source_changed_id;
 
 	/* URI, from source. This is cached, since we return const. */
 	gchar *uri;
@@ -161,17 +159,12 @@ cal_backend_set_source (ECalBackend *backend,
                         ESource *source)
 {
 	if (backend->priv->source != NULL) {
-		if (backend->priv->source_changed_id > 0) {
-			g_signal_handler_disconnect (
-				backend->priv->source,
-				backend->priv->source_changed_id);
-			backend->priv->source_changed_id = 0;
-		}
+		g_signal_handlers_disconnect_matched (backend->priv->source, G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, 0, 0, NULL, source_changed_cb, backend);
 		g_object_unref (backend->priv->source);
 	}
 
 	if (source != NULL)
-		backend->priv->source_changed_id = g_signal_connect (
+		g_signal_connect (
 			g_object_ref (source), "changed",
 			G_CALLBACK (source_changed_cb), backend);
 
@@ -283,11 +276,10 @@ cal_backend_finalize (GObject *object)
 	g_free (priv->uri);
 	g_free (priv->cache_dir);
 
-	if (priv->source_changed_id && priv->source) {
-		g_signal_handler_disconnect (priv->source, priv->source_changed_id);
-		priv->source_changed_id = 0;
+	if (priv->source) {
+		g_signal_handlers_disconnect_matched (priv->source, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, object);
+		g_object_unref (priv->source);
 	}
-	g_object_unref (priv->source);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_parent_class)->finalize (object);
@@ -376,8 +368,8 @@ e_cal_backend_init (ECalBackend *backend)
 	backend->priv->clients_mutex = g_mutex_new ();
 
 	backend->priv->queries = e_list_new (
-		(EListCopyFunc) g_object_ref,
-		(EListFreeFunc) g_object_unref, NULL);
+		(EListCopyFunc) NULL,
+		(EListFreeFunc) NULL, NULL);
 	backend->priv->queries_mutex = g_mutex_new ();
 }
 

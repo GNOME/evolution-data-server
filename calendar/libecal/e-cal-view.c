@@ -193,10 +193,8 @@ e_cal_view_set_property (GObject *object, guint property_id, const GValue *value
 
 	switch (property_id) {
 	case PROP_VIEW:
-		if (priv->gdbus_calview != NULL) {
-			g_signal_handlers_disconnect_matched (priv->gdbus_calview, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, view);
-			g_object_unref (priv->gdbus_calview);
-		}
+		/* gdbus_calview can be set only once */
+		g_return_if_fail (priv->gdbus_calview == NULL);
 
 		priv->gdbus_calview = g_object_ref (g_value_get_pointer (value));
 		g_signal_connect (priv->gdbus_calview, "objects-added", G_CALLBACK (objects_added_cb), view);
@@ -250,8 +248,17 @@ e_cal_view_finalize (GObject *object)
 	priv = view->priv;
 
 	if (priv->gdbus_calview != NULL) {
+		GError *error = NULL;
+
 		g_signal_handlers_disconnect_matched (priv->gdbus_calview, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, view);
+		e_gdbus_cal_view_call_dispose_sync (priv->gdbus_calview, NULL, &error);
 		g_object_unref (priv->gdbus_calview);
+		priv->gdbus_calview = NULL;
+
+		if (error) {
+			g_warning ("Failed to dispose cal view: %s", error->message);
+			g_error_free (error);
+		}
 	}
 
 	g_object_unref (priv->client);

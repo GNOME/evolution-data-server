@@ -71,6 +71,7 @@ enum
   __DONE_SIGNAL,
   __START_METHOD,
   __STOP_METHOD,
+  __DISPOSE_METHOD,
   __LAST_SIGNAL
 };
 
@@ -345,6 +346,7 @@ e_gdbus_cal_view_default_init (EGdbusCalViewIface *iface)
   _property_name_to_gname = g_hash_table_new (g_str_hash, g_str_equal);
   g_hash_table_insert (_method_name_to_id, (gpointer) "start", GUINT_TO_POINTER (__START_METHOD));
   g_hash_table_insert (_method_name_to_id, (gpointer) "stop", GUINT_TO_POINTER (__STOP_METHOD));
+  g_hash_table_insert (_method_name_to_id, (gpointer) "dispose", GUINT_TO_POINTER (__DISPOSE_METHOD));
   g_hash_table_insert (_signal_name_to_id, (gpointer) "ObjectsAdded", GUINT_TO_POINTER (__OBJECTS_ADDED_SIGNAL));
   g_hash_table_insert (_signal_name_to_id, (gpointer) "ObjectsModified", GUINT_TO_POINTER (__OBJECTS_MODIFIED_SIGNAL));
   g_hash_table_insert (_signal_name_to_id, (gpointer) "ObjectsRemoved", GUINT_TO_POINTER (__OBJECTS_REMOVED_SIGNAL));
@@ -549,6 +551,31 @@ e_gdbus_cal_view_default_init (EGdbusCalViewIface *iface)
                   G_TYPE_FROM_INTERFACE (iface),
                   G_SIGNAL_RUN_LAST,
                   G_STRUCT_OFFSET (EGdbusCalViewIface, handle_stop),
+                  g_signal_accumulator_true_handled,
+                  NULL,
+                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+                  G_TYPE_BOOLEAN,
+                  1,
+                  G_TYPE_DBUS_METHOD_INVOCATION);
+
+  /**
+   * EGdbusCalView::handle-dispose:
+   * @object: The exported object emitting the signal.
+   * @invocation: A #GDBusMethodInvocation object that can be used to return a value or error.
+   *
+   * On exported objects, this signal is emitted when a remote process (identified by @invocation) invokes the <literal>dispose</literal> D-Bus method on @object. Use e_gdbus_cal_view_complete_dispose() to return a value or g_dbus_method_invocation_return_error() to return an error.
+   *
+   * The signal is emitted in the thread-default main loop of the thread that e_gdbus_cal_view_register_object() was called from.
+   *
+   * On proxies, this signal is never emitted.
+   *
+   * Returns: %TRUE if you want to handle the method call (will stop further handlers from being called), %FALSE otherwise.
+   */
+  signals[__DISPOSE_METHOD] =
+    g_signal_new ("handle-dispose",
+                  G_TYPE_FROM_INTERFACE (iface),
+                  G_SIGNAL_RUN_LAST,
+                  G_STRUCT_OFFSET (EGdbusCalViewIface, handle_dispose),
                   g_signal_accumulator_true_handled,
                   NULL,
                   _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
@@ -762,6 +789,106 @@ _out:
 }
 
 /**
+ * e_gdbus_cal_view_call_dispose:
+ * @proxy: A #EGdbusCalView.
+ * @cancellable: A #GCancellable or %NULL.
+ * @callback: A #GAsyncReadyCallback to call when the request is satisfied or %NULL if you don't care about the result of the method invocation.
+ * @user_data: Data to pass to @callback.
+ *
+ * Invokes the <literal>org.gnome.evolution.dataserver.calendar.CalView.dispose</literal>
+ * D-Bus method on the remote object represented by @proxy.
+ *
+ * This is an asynchronous method. When the operation is finished,
+ * callback will be invoked in the thread-default main loop of the
+ * thread you are calling this method from. You can then call
+ * e_gdbus_cal_view_call_dispose_finish() to get the result of the operation.
+ *
+ * See e_gdbus_cal_view_call_dispose_sync() for the synchronous version of this method.
+ */
+void e_gdbus_cal_view_call_dispose (
+        EGdbusCalView *proxy,
+        GCancellable *cancellable,
+        GAsyncReadyCallback callback,
+        gpointer user_data)
+{
+  GVariant *_params;
+  _params = NULL;
+  g_dbus_proxy_call (G_DBUS_PROXY (proxy),
+                     "dispose",
+                     _params,
+                     G_DBUS_CALL_FLAGS_NONE,
+                     -1,
+                     cancellable,
+                     callback,
+                     user_data);
+}
+
+/**
+ * e_gdbus_cal_view_call_dispose_finish:
+ * @proxy: A #EGdbusCalView.
+ * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to e_gdbus_cal_view_call_dispose().
+ * @error: Return location for error or %NULL.
+ *
+ * Finishes invoking the <literal>org.gnome.evolution.dataserver.calendar.CalView.dispose</literal>
+ * D-Bus method on the remote object represented by @proxy.
+ *
+ * Returns: %TRUE if the call succeeded, %FALSE if @error is set.
+ */
+gboolean e_gdbus_cal_view_call_dispose_finish (
+        EGdbusCalView *proxy,
+        GAsyncResult *res,
+        GError **error)
+{
+  gboolean _ret = FALSE;
+  GVariant *_result;
+  _result = g_dbus_proxy_call_finish (G_DBUS_PROXY (proxy), res, error);
+  if (_result == NULL)
+    goto _out;
+  g_variant_unref (_result);
+  _ret = TRUE;
+_out:
+  return _ret;
+}
+
+/**
+ * e_gdbus_cal_view_call_dispose_sync:
+ * @proxy: A #EGdbusCalView.
+ * @cancellable: A #GCancellable or %NULL.
+ * @error: Return location for error or %NULL.
+ *
+ * Synchronously invokes the <literal>org.gnome.evolution.dataserver.calendar.CalView.dispose</literal>
+ * D-Bus method on the remote object represented by @proxy.
+ *
+ * The calling thread is blocked until a reply is received. See
+ * e_gdbus_cal_view_call_dispose() for the asynchronous version of this method.
+ *
+ * Returns: %TRUE if the call succeeded, %FALSE if @error is set.
+ */
+gboolean e_gdbus_cal_view_call_dispose_sync (
+        EGdbusCalView *proxy,
+        GCancellable *cancellable,
+        GError **error)
+{
+  gboolean _ret = FALSE;
+  GVariant *_params;
+  GVariant *_result;
+  _params = NULL;
+  _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
+                                   "dispose",
+                                   _params,
+                                   G_DBUS_CALL_FLAGS_NONE,
+                                   -1,
+                                   cancellable,
+                                   error);
+  if (_result == NULL)
+    goto _out;
+  g_variant_unref (_result);
+  _ret = TRUE;
+_out:
+  return _ret;
+}
+
+/**
  * e_gdbus_cal_view_complete_start:
  * @object: A #EGdbusCalView.
  * @invocation: A #GDBusMethodInvocation.
@@ -795,6 +922,26 @@ void e_gdbus_cal_view_complete_start (
  * This method will free @invocation, you cannot use it afterwards.
  */
 void e_gdbus_cal_view_complete_stop (
+        EGdbusCalView *object,
+        GDBusMethodInvocation *invocation)
+{
+  g_dbus_method_invocation_return_value (invocation, NULL);
+}
+
+/**
+ * e_gdbus_cal_view_complete_dispose:
+ * @object: A #EGdbusCalView.
+ * @invocation: A #GDBusMethodInvocation.
+ *
+ * Completes handling the <literal>org.gnome.evolution.dataserver.calendar.CalView.dispose</literal>
+ * D-Bus method invocation by returning a value.
+ *
+ * If you want to return an error, use g_dbus_method_invocation_return_error()
+ * or similar instead.
+ *
+ * This method will free @invocation, you cannot use it afterwards.
+ */
+void e_gdbus_cal_view_complete_dispose (
         EGdbusCalView *object,
         GDBusMethodInvocation *invocation)
 {
@@ -1029,10 +1176,20 @@ static const GDBusMethodInfo e_gdbus_cal_view_method_stop =
   (GDBusAnnotationInfo **) NULL,
 };
 
+static const GDBusMethodInfo e_gdbus_cal_view_method_dispose =
+{
+  -1,
+  (gchar *) "dispose",
+  (GDBusArgInfo **) NULL,
+  (GDBusArgInfo **) NULL,
+  (GDBusAnnotationInfo **) NULL,
+};
+
 static const GDBusMethodInfo * const e_gdbus_cal_view_method_info_pointers[] =
 {
   &e_gdbus_cal_view_method_start,
   &e_gdbus_cal_view_method_stop,
+  &e_gdbus_cal_view_method_dispose,
   NULL
 };
 
@@ -1072,6 +1229,18 @@ handle_method_call (GDBusConnection       *connection,
       break;
 
     case __STOP_METHOD:
+      {
+        EGdbusCalView *object = E_GDBUS_CAL_VIEW (user_data);
+        gboolean handled;
+        g_signal_emit (object,
+                       signals[method_id],
+                       0, invocation, &handled);
+        if (!handled)
+          goto not_implemented;
+      }
+      break;
+
+    case __DISPOSE_METHOD:
       {
         EGdbusCalView *object = E_GDBUS_CAL_VIEW (user_data);
         gboolean handled;
