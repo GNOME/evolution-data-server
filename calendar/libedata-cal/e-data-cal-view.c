@@ -333,6 +333,16 @@ impl_DataCalView_stop (EGdbusCalView *object, GDBusMethodInvocation *invocation,
 	return TRUE;
 }
 
+static gboolean
+impl_DataCalView_dispose (EGdbusCalView *object, GDBusMethodInvocation *invocation, EDataCalView *query)
+{
+	e_gdbus_cal_view_complete_dispose (object, invocation);
+
+	g_object_unref (query);
+
+	return TRUE;
+}
+
 static void
 e_data_cal_view_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
@@ -388,6 +398,7 @@ e_data_cal_view_init (EDataCalView *query)
 	priv->gdbus_object = e_gdbus_cal_view_stub_new ();
 	g_signal_connect (priv->gdbus_object, "handle-start", G_CALLBACK (impl_DataCalView_start), query);
 	g_signal_connect (priv->gdbus_object, "handle-stop", G_CALLBACK (impl_DataCalView_stop), query);
+	g_signal_connect (priv->gdbus_object, "handle-dispose", G_CALLBACK (impl_DataCalView_dispose), query);
 
 	priv->backend = NULL;
 	priv->started = FALSE;
@@ -418,6 +429,7 @@ e_data_cal_view_dispose (GObject *object)
 	priv = query->priv;
 
 	if (priv->backend) {
+		e_cal_backend_remove_query (priv->backend, query);
 		g_object_unref (priv->backend);
 		priv->backend = NULL;
 	}
