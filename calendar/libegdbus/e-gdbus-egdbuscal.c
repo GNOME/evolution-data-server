@@ -1226,7 +1226,7 @@ void e_gdbus_cal_call_get_uri (
                      "getUri",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -1295,7 +1295,7 @@ gboolean e_gdbus_cal_call_get_uri_sync (
                                    "getUri",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -1340,7 +1340,7 @@ void e_gdbus_cal_call_get_cache_dir (
                      "getCacheDir",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -1409,7 +1409,7 @@ gboolean e_gdbus_cal_call_get_cache_dir_sync (
                                    "getCacheDir",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -1463,7 +1463,7 @@ void e_gdbus_cal_call_open (
                      "open",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -1532,7 +1532,7 @@ gboolean e_gdbus_cal_call_open_sync (
                                    "open",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -1572,7 +1572,7 @@ void e_gdbus_cal_call_refresh (
                      "refresh",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -1632,7 +1632,7 @@ gboolean e_gdbus_cal_call_refresh_sync (
                                    "refresh",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -1672,7 +1672,7 @@ void e_gdbus_cal_call_close (
                      "close",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -1732,7 +1732,7 @@ gboolean e_gdbus_cal_call_close_sync (
                                    "close",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -1772,7 +1772,7 @@ void e_gdbus_cal_call_remove (
                      "remove",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -1832,7 +1832,7 @@ gboolean e_gdbus_cal_call_remove_sync (
                                    "remove",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -1872,7 +1872,7 @@ void e_gdbus_cal_call_is_read_only (
                      "isReadOnly",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -1932,7 +1932,7 @@ gboolean e_gdbus_cal_call_is_read_only_sync (
                                    "isReadOnly",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -1972,7 +1972,7 @@ void e_gdbus_cal_call_get_cal_address (
                      "getCalAddress",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -2041,7 +2041,7 @@ gboolean e_gdbus_cal_call_get_cal_address_sync (
                                    "getCalAddress",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -2086,7 +2086,7 @@ void e_gdbus_cal_call_get_alarm_email_address (
                      "getAlarmEmailAddress",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -2155,7 +2155,7 @@ gboolean e_gdbus_cal_call_get_alarm_email_address_sync (
                                    "getAlarmEmailAddress",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -2200,7 +2200,7 @@ void e_gdbus_cal_call_get_ldap_attribute (
                      "getLdapAttribute",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -2269,7 +2269,7 @@ gboolean e_gdbus_cal_call_get_ldap_attribute_sync (
                                    "getLdapAttribute",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -2314,7 +2314,7 @@ void e_gdbus_cal_call_get_scheduling_information (
                      "getSchedulingInformation",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -2383,7 +2383,7 @@ gboolean e_gdbus_cal_call_get_scheduling_information_sync (
                                    "getSchedulingInformation",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -2431,7 +2431,7 @@ void e_gdbus_cal_call_set_mode (
                      "setMode",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -2494,7 +2494,7 @@ gboolean e_gdbus_cal_call_set_mode_sync (
                                    "setMode",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -2534,7 +2534,7 @@ void e_gdbus_cal_call_get_default_object (
                      "getDefaultObject",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -2603,7 +2603,7 @@ gboolean e_gdbus_cal_call_get_default_object_sync (
                                    "getDefaultObject",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -2654,7 +2654,7 @@ void e_gdbus_cal_call_get_object (
                      "getObject",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -2729,7 +2729,7 @@ gboolean e_gdbus_cal_call_get_object_sync (
                                    "getObject",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -2777,7 +2777,7 @@ void e_gdbus_cal_call_get_object_list (
                      "getObjectList",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -2849,7 +2849,7 @@ gboolean e_gdbus_cal_call_get_object_list_sync (
                                    "getObjectList",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -2897,7 +2897,7 @@ void e_gdbus_cal_call_get_changes (
                      "getChanges",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -2979,7 +2979,7 @@ gboolean e_gdbus_cal_call_get_changes_sync (
                                    "getChanges",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -3035,7 +3035,7 @@ void e_gdbus_cal_call_get_free_busy (
                      "getFreeBusy",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -3113,7 +3113,7 @@ gboolean e_gdbus_cal_call_get_free_busy_sync (
                                    "getFreeBusy",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -3164,7 +3164,7 @@ void e_gdbus_cal_call_discard_alarm (
                      "discardAlarm",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -3230,7 +3230,7 @@ gboolean e_gdbus_cal_call_discard_alarm_sync (
                                    "discardAlarm",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -3273,7 +3273,7 @@ void e_gdbus_cal_call_create_object (
                      "createObject",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -3345,7 +3345,7 @@ gboolean e_gdbus_cal_call_create_object_sync (
                                    "createObject",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -3396,7 +3396,7 @@ void e_gdbus_cal_call_modify_object (
                      "modifyObject",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -3462,7 +3462,7 @@ gboolean e_gdbus_cal_call_modify_object_sync (
                                    "modifyObject",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -3511,7 +3511,7 @@ void e_gdbus_cal_call_remove_object (
                      "removeObject",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -3580,7 +3580,7 @@ gboolean e_gdbus_cal_call_remove_object_sync (
                                    "removeObject",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -3623,7 +3623,7 @@ void e_gdbus_cal_call_receive_objects (
                      "receiveObjects",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -3686,7 +3686,7 @@ gboolean e_gdbus_cal_call_receive_objects_sync (
                                    "receiveObjects",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -3729,7 +3729,7 @@ void e_gdbus_cal_call_send_objects (
                      "sendObjects",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -3806,7 +3806,7 @@ gboolean e_gdbus_cal_call_send_objects_sync (
                                    "sendObjects",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -3858,7 +3858,7 @@ void e_gdbus_cal_call_get_attachment_list (
                      "getAttachmentList",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -3933,7 +3933,7 @@ gboolean e_gdbus_cal_call_get_attachment_list_sync (
                                    "getAttachmentList",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -3981,7 +3981,7 @@ void e_gdbus_cal_call_get_query (
                      "getQuery",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -4053,7 +4053,7 @@ gboolean e_gdbus_cal_call_get_query_sync (
                                    "getQuery",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -4101,7 +4101,7 @@ void e_gdbus_cal_call_get_timezone (
                      "getTimezone",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -4173,7 +4173,7 @@ gboolean e_gdbus_cal_call_get_timezone_sync (
                                    "getTimezone",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -4221,7 +4221,7 @@ void e_gdbus_cal_call_add_timezone (
                      "addTimezone",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -4284,7 +4284,7 @@ gboolean e_gdbus_cal_call_add_timezone_sync (
                                    "addTimezone",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -4327,7 +4327,7 @@ void e_gdbus_cal_call_set_default_timezone (
                      "setDefaultTimezone",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -4390,7 +4390,7 @@ gboolean e_gdbus_cal_call_set_default_timezone_sync (
                                    "setDefaultTimezone",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -6875,7 +6875,7 @@ e_gdbus_cal_proxy_set_property (GObject      *object,
                                         property_name,
                                         new_value),
                          G_DBUS_CALL_FLAGS_NONE,
-                         -1,
+                         G_MAXINT,
                          NULL,
                          (GAsyncReadyCallback) property_set_cb,
                          (gpointer) property_name);

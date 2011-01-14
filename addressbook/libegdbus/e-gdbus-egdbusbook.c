@@ -814,7 +814,7 @@ void e_gdbus_book_call_open (
                      "open",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -877,7 +877,7 @@ gboolean e_gdbus_book_call_open_sync (
                                    "open",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -917,7 +917,7 @@ void e_gdbus_book_call_remove (
                      "remove",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -977,7 +977,7 @@ gboolean e_gdbus_book_call_remove_sync (
                                    "remove",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -1020,7 +1020,7 @@ void e_gdbus_book_call_get_contact (
                      "getContact",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -1092,7 +1092,7 @@ gboolean e_gdbus_book_call_get_contact_sync (
                                    "getContact",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -1140,7 +1140,7 @@ void e_gdbus_book_call_get_contact_list (
                      "getContactList",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -1212,7 +1212,7 @@ gboolean e_gdbus_book_call_get_contact_list_sync (
                                    "getContactList",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -1266,7 +1266,7 @@ void e_gdbus_book_call_authenticate_user (
                      "authenticateUser",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -1335,7 +1335,7 @@ gboolean e_gdbus_book_call_authenticate_user_sync (
                                    "authenticateUser",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -1378,7 +1378,7 @@ void e_gdbus_book_call_add_contact (
                      "addContact",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -1450,7 +1450,7 @@ gboolean e_gdbus_book_call_add_contact_sync (
                                    "addContact",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -1498,7 +1498,7 @@ void e_gdbus_book_call_remove_contacts (
                      "removeContacts",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -1561,7 +1561,7 @@ gboolean e_gdbus_book_call_remove_contacts_sync (
                                    "removeContacts",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -1604,7 +1604,7 @@ void e_gdbus_book_call_modify_contact (
                      "modifyContact",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -1667,7 +1667,7 @@ gboolean e_gdbus_book_call_modify_contact_sync (
                                    "modifyContact",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -1707,7 +1707,7 @@ void e_gdbus_book_call_get_static_capabilities (
                      "getStaticCapabilities",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -1776,7 +1776,7 @@ gboolean e_gdbus_book_call_get_static_capabilities_sync (
                                    "getStaticCapabilities",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -1821,7 +1821,7 @@ void e_gdbus_book_call_get_required_fields (
                      "getRequiredFields",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -1890,7 +1890,7 @@ gboolean e_gdbus_book_call_get_required_fields_sync (
                                    "getRequiredFields",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -1935,7 +1935,7 @@ void e_gdbus_book_call_get_supported_fields (
                      "getSupportedFields",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -2004,7 +2004,7 @@ gboolean e_gdbus_book_call_get_supported_fields_sync (
                                    "getSupportedFields",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -2049,7 +2049,7 @@ void e_gdbus_book_call_get_supported_auth_methods (
                      "getSupportedAuthMethods",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -2118,7 +2118,7 @@ gboolean e_gdbus_book_call_get_supported_auth_methods_sync (
                                    "getSupportedAuthMethods",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -2169,7 +2169,7 @@ void e_gdbus_book_call_get_book_view (
                      "getBookView",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -2244,7 +2244,7 @@ gboolean e_gdbus_book_call_get_book_view_sync (
                                    "getBookView",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -2292,7 +2292,7 @@ void e_gdbus_book_call_get_changes (
                      "getChanges",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -2364,7 +2364,7 @@ gboolean e_gdbus_book_call_get_changes_sync (
                                    "getChanges",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -2409,7 +2409,7 @@ void e_gdbus_book_call_cancel_operation (
                      "cancelOperation",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -2469,7 +2469,7 @@ gboolean e_gdbus_book_call_cancel_operation_sync (
                                    "cancelOperation",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -2509,7 +2509,7 @@ void e_gdbus_book_call_close (
                      "close",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -2569,7 +2569,7 @@ gboolean e_gdbus_book_call_close_sync (
                                    "close",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -4136,7 +4136,7 @@ e_gdbus_book_proxy_set_property (GObject      *object,
                                         property_name,
                                         new_value),
                          G_DBUS_CALL_FLAGS_NONE,
-                         -1,
+                         G_MAXINT,
                          NULL,
                          (GAsyncReadyCallback) property_set_cb,
                          (gpointer) property_name);

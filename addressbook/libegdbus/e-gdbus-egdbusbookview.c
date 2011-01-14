@@ -611,7 +611,7 @@ void e_gdbus_book_view_call_start (
                      "start",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -671,7 +671,7 @@ gboolean e_gdbus_book_view_call_start_sync (
                                    "start",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -711,7 +711,7 @@ void e_gdbus_book_view_call_stop (
                      "stop",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -771,7 +771,7 @@ gboolean e_gdbus_book_view_call_stop_sync (
                                    "stop",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -811,7 +811,7 @@ void e_gdbus_book_view_call_dispose (
                      "dispose",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -871,7 +871,7 @@ gboolean e_gdbus_book_view_call_dispose_sync (
                                    "dispose",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -1678,7 +1678,7 @@ e_gdbus_book_view_proxy_set_property (GObject      *object,
                                         property_name,
                                         new_value),
                          G_DBUS_CALL_FLAGS_NONE,
-                         -1,
+                         G_MAXINT,
                          NULL,
                          (GAsyncReadyCallback) property_set_cb,
                          (gpointer) property_name);

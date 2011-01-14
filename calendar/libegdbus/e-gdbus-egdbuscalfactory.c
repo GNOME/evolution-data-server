@@ -200,7 +200,7 @@ void e_gdbus_cal_factory_call_get_cal (
                      "getCal",
                      _params,
                      G_DBUS_CALL_FLAGS_NONE,
-                     -1,
+                     G_MAXINT,
                      cancellable,
                      callback,
                      user_data);
@@ -275,7 +275,7 @@ gboolean e_gdbus_cal_factory_call_get_cal_sync (
                                    "getCal",
                                    _params,
                                    G_DBUS_CALL_FLAGS_NONE,
-                                   -1,
+                                   G_MAXINT,
                                    cancellable,
                                    error);
   if (_result == NULL)
@@ -783,7 +783,7 @@ e_gdbus_cal_factory_proxy_set_property (GObject      *object,
                                         property_name,
                                         new_value),
                          G_DBUS_CALL_FLAGS_NONE,
-                         -1,
+                         G_MAXINT,
                          NULL,
                          (GAsyncReadyCallback) property_set_cb,
                          (gpointer) property_name);
