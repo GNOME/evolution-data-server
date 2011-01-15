@@ -36,7 +36,7 @@ m4_define([glib_minimum_version], [2.25.12])
 m4_define([gconf_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libxml_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libsoup_minimum_version], [2.3.0])
-m4_define([libgdata_minimum_version], [0.6.3])
+m4_define([libgdata_minimum_version], [0.7.0])
 m4_define([gnome_keyring_minimum_version], [2.20.1])
 m4_define([sqlite_minimum_version], [3.5])
 m4_define([libical_minimum_version], [0.43])
@@ -333,14 +333,6 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 	libsoup-2.4 >= libsoup_minimum_version
 	libgdata >= libgdata_minimum_version
 	gnome-keyring-1 >= gnome_keyring_minimum_version])
-
-ac_cv_have_gdata_07=no
-dnl libgdata 0.7 breaks API, thus deal with it.
-if $PKG_CONFIG --atleast-version=0.7 libgdata; then
-	ac_cv_have_gdata_07=yes
-	AC_DEFINE(HAVE_GDATA_07, 1, [libgdata is 0.7 or higher])
-fi
-AC_MSG_RESULT([$ac_cv_have_gdata_07])
 
 LIBICAL_REQUIRED=libical_minimum_version
 AC_SUBST(LIBICAL_REQUIRED)

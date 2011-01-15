@@ -517,11 +517,7 @@ get_new_contacts_in_chunks (EBookBackend *backend, gint chunk_size, GTimeVal *la
 	/* Build our query */
 	query = GDATA_QUERY (gdata_contacts_query_new_with_limits (NULL, 1, chunk_size));
 	if (last_updated) {
-		#ifdef HAVE_GDATA_07
 		gdata_query_set_updated_min (query, last_updated->tv_sec);
-		#else
-		gdata_query_set_updated_min (query, last_updated);
-		#endif
 		gdata_contacts_query_set_show_deleted (GDATA_CONTACTS_QUERY (query), TRUE);
 	}
 
@@ -576,7 +572,6 @@ sanitise_group_id (const gchar *group_id)
 static gchar *
 sanitise_group_name (GDataEntry *group)
 {
-	#ifdef HAVE_GDATA_07
 	const gchar *system_group_id = gdata_contacts_group_get_system_group_id (GDATA_CONTACTS_GROUP (group));
 
 	if (system_group_id == NULL) {
@@ -593,28 +588,6 @@ sanitise_group_name (GDataEntry *group)
 		g_warning ("Unknown system group '%s' for group with ID '%s'.", system_group_id, gdata_entry_get_id (group));
 		return g_strdup (gdata_entry_get_title (group));
 	}
-	#else
-	gchar *name;
-	const gchar *group_id = gdata_entry_get_id (group);
-
-	/* Google Contacts provides four "system groups", which are immutable. They have IDs of the form:
-	 *   "http://www.google.com/m8/feeds/groups/<e-mail address>/full/<x>"
-	 * where <x> is "6", "d", "e" or "f". The (immutable) labels provided by Google Contacts for these groups all start with "System Group:" and
-	 * are in English, so we need to provide our own, translated, labels.
-	 * See: http://code.google.com/apis/contacts/docs/3.0/developers_guide_protocol.html#Groups. */
-	if (g_str_has_suffix (group_id, "/6"))
-		name = g_strdup (_("Personal")); /* System Group: My Contacts */
-	else if (g_str_has_suffix (group_id, "/d"))
-		name = g_strdup (_("Friends")); /* System Group: Friends */
-	else if (g_str_has_suffix (group_id, "/e"))
-		name = g_strdup (_("Family")); /* System Group: Family */
-	else if (g_str_has_suffix (group_id, "/f"))
-		name = g_strdup (_("Coworkers")); /* System Group: Coworkers */
-	else
-		name = g_strdup (gdata_entry_get_title (group));
-
-	return name;
-	#endif
 }
 
 static void
@@ -629,11 +602,7 @@ process_group (GDataEntry *entry, EBookBackend *backend)
 	uid = gdata_entry_get_id (entry);
 	name = sanitise_group_name (entry);
 
-	#ifdef HAVE_GDATA_07
 	is_deleted = gdata_contacts_group_is_deleted (GDATA_CONTACTS_GROUP (entry));
-	#else
-	is_deleted = gdata_contacts_contact_is_deleted (GDATA_CONTACTS_CONTACT (entry));
-	#endif
 
 	if (is_deleted) {
 		__debug__ ("Processing (deleting) group %s, %s", uid, name);
@@ -663,21 +632,12 @@ get_groups (EBookBackend *backend, GError **error)
 	/* Build our query */
 	query = GDATA_QUERY (gdata_contacts_query_new (NULL));
 	if (priv->last_groups_update.tv_sec != 0 || priv->last_groups_update.tv_usec != 0) {
-		#ifdef HAVE_GDATA_07
 		gdata_query_set_updated_min (query, priv->last_groups_update.tv_sec);
-		#else
-		gdata_query_set_updated_min (query, &(priv->last_groups_update));
-		#endif
 		gdata_contacts_query_set_show_deleted (GDATA_CONTACTS_QUERY (query), TRUE);
 	}
 
 	/* Run the query */
-	#ifdef HAVE_GDATA_07
 	feed = gdata_contacts_service_query_groups (GDATA_CONTACTS_SERVICE (priv->service), query, NULL, NULL, NULL, &our_error);
-	#else
-	feed = gdata_service_query (priv->service, "http://www.google.com/m8/feeds/groups/default/full", query, GDATA_TYPE_CONTACTS_CONTACT, NULL,
-	                            NULL, NULL, &our_error);
-	#endif
 
 	if (our_error) {
 		g_propagate_error (error, our_error);
@@ -703,33 +663,16 @@ create_group (EBookBackend *backend, const gchar *category_name, GError **error)
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	GDataEntry *group, *new_group;
 	gchar *uid;
-	#ifndef HAVE_GDATA_07
-	GDataCategory *category;
-	#endif
 
-	#ifdef HAVE_GDATA_07
 	group = GDATA_ENTRY (gdata_contacts_group_new (NULL));
-	#else
-	group = gdata_entry_new (NULL);
-	#endif
 
 	gdata_entry_set_title (group, category_name);
 	__debug__ ("Creating group %s", category_name);
 
-	#ifdef HAVE_GDATA_07
 	/* Insert the new group */
 	new_group = GDATA_ENTRY (gdata_contacts_service_insert_group (GDATA_CONTACTS_SERVICE (priv->service), GDATA_CONTACTS_GROUP (group),
 	                                                              NULL, error));
 	g_object_unref (group);
-	#else
-	category = gdata_category_new ("http://schemas.google.com/contact/2008#group", "http://schemas.google.com/g/2005#kind", NULL);
-	gdata_entry_add_category (group, category);
-	g_object_unref (category);
-
-	/* Insert the new group */
-	new_group = gdata_service_insert_entry (priv->service, "http://www.google.com/m8/feeds/groups/default/full", group, NULL, error);
-	g_object_unref (group);
-	#endif
 
 	if (new_group == NULL)
 		return NULL;
@@ -1003,18 +946,10 @@ e_book_backend_google_modify_contact (EBookBackendSync *backend, EDataBook *book
 	g_free (xml);
 
 	/* Update the contact on the server */
-	#ifdef HAVE_GDATA_07
 	new_entry = gdata_service_update_entry (
 			GDATA_SERVICE (priv->service),
 			entry,
 			NULL, &our_error);
-	#else
-	new_entry = GDATA_ENTRY (
-		gdata_contacts_service_update_contact (
-			GDATA_CONTACTS_SERVICE (priv->service),
-			GDATA_CONTACTS_CONTACT (entry),
-			NULL, &our_error));
-	#endif
 	g_object_unref (entry);
 
 	if (!new_entry) {
@@ -1411,12 +1346,10 @@ e_book_backend_google_get_supported_fields (EBookBackendSync *backend, EDataBook
 		E_CONTACT_ORG_UNIT,
 		E_CONTACT_TITLE,
 		E_CONTACT_ROLE,
-		#ifdef HAVE_GDATA_07
 		E_CONTACT_HOMEPAGE_URL,
 		E_CONTACT_BLOG_URL,
 		E_CONTACT_BIRTH_DATE,
 		E_CONTACT_ANNIVERSARY,
-		#endif
 		E_CONTACT_NOTE,
 		E_CONTACT_CATEGORIES,
 		E_CONTACT_CATEGORY_LIST
@@ -1764,7 +1697,6 @@ _gdata_entry_new_from_e_contact (EBookBackend *backend, EContact *contact)
 	return NULL;
 }
 
-#ifdef HAVE_GDATA_07
 static void
 remove_anniversary (GDataContactsContact *contact)
 {
@@ -1813,7 +1745,6 @@ remove_websites (GDataContactsContact *contact)
 	g_list_foreach (websites, (GFunc) g_object_unref, NULL);
 	g_list_free (websites);
 }
-#endif
 
 static gboolean
 _gdata_entry_update_from_e_contact (EBookBackend *backend, GDataEntry *entry, EContact *contact)
@@ -1827,10 +1758,8 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend, GDataEntry *entry, EC
 	gboolean have_postal_primary = FALSE;
 	gboolean have_org_primary = FALSE;
 	const gchar *title, *role, *note;
-	#ifdef HAVE_GDATA_07
 	EContactDate *bdate;
 	const gchar *url;
-	#endif
 
 	attributes = e_vcard_get_attributes (E_VCARD (contact));
 
@@ -1981,7 +1910,6 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend, GDataEntry *entry, EC
 			gdata_gd_organization_set_job_description (org, role);
 	}
 
-	#ifdef HAVE_GDATA_07
 	remove_websites (GDATA_CONTACTS_CONTACT (entry));
 
 	url = e_contact_get_const (contact, E_CONTACT_HOMEPAGE_URL);
@@ -2031,7 +1959,6 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend, GDataEntry *entry, EC
 		}
 		e_contact_date_free (bdate);
 	}
-	#endif
 
 	/* CATEGORIES */
 	for (category_names = e_contact_get (contact, E_CONTACT_CATEGORY_LIST); category_names != NULL; category_names = category_names->next) {
@@ -2085,11 +2012,9 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend, GDataEntry *entry)
 	GDataGDPostalAddress *postal_address;
 	GDataGDOrganization *org;
 	GHashTable *extended_props;
-	#ifdef HAVE_GDATA_07
 	GList *websites, *events;
 	GDate bdate;
 	gboolean bdate_has_year;
-	#endif
 
 	uid = gdata_entry_get_id (entry);
 	if (NULL == uid)
@@ -2220,7 +2145,6 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend, GDataEntry *entry)
 	extended_props = gdata_contacts_contact_get_extended_properties (GDATA_CONTACTS_CONTACT (entry));
 	g_hash_table_foreach (extended_props, (GHFunc) foreach_extended_props_cb, vcard);
 
-	#ifdef HAVE_GDATA_07
 	websites = gdata_contacts_contact_get_websites (GDATA_CONTACTS_CONTACT (entry));
 	for (itr = websites; itr != NULL; itr = itr->next) {
 		GDataGContactWebsite *website = itr->data;
@@ -2296,7 +2220,6 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend, GDataEntry *entry)
 
 		break;
 	}
-	#endif
 
 	return E_CONTACT (vcard);
 }
