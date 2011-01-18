@@ -1894,3 +1894,36 @@ e_source_selector_set_primary_selection (ESourceSelector *selector,
 	}
 }
 
+/**
+ * e_source_selector_get_source_by_path:
+ * @selector: an #ESourceSelector
+ * @path: a #GtkTreePath
+ *
+ * Returns the #ESource object at @path, or %NULL if @path is invalid.
+ *
+ * Returns: the #ESource object at @path, or %NULL
+ *
+ * Since: 2.92
+ **/
+ESource *
+e_source_selector_get_source_by_path (ESourceSelector *selector,
+                                      GtkTreePath *path)
+{
+	ESource *source = NULL;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+
+	g_return_val_if_fail (E_IS_SOURCE_SELECTOR (selector), NULL);
+	g_return_val_if_fail (path != NULL, NULL);
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (selector));
+
+	if (gtk_tree_model_get_iter (model, &iter, path))
+		gtk_tree_model_get (model, &iter, 0, &source, -1);
+
+	/* Return a borrowed reference. */
+	if (source != NULL)
+		g_object_unref (source);
+
+	return source;
+}

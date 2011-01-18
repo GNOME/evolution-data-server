@@ -214,3 +214,13 @@ ESourceSelector
 @Returns: 
 
 
+<!-- ##### FUNCTION e_source_selector_get_source_by_path ##### -->
+<para>
+
+</para>
+
+@selector: 
+@path: 
+@Returns: 
+
+

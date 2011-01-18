@@ -109,6 +109,9 @@ void		e_source_selector_set_primary_selection
 						 ESource *source);
 ESourceGroup *	e_source_selector_get_primary_source_group
 						(ESourceSelector *selector);
+ESource *	e_source_selector_get_source_by_path
+						(ESourceSelector *selector,
+						 GtkTreePath *path);
 
 /* For backward-compatibility */
 #ifndef EDS_DISABLE_DEPRECATED
