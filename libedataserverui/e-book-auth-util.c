@@ -256,9 +256,14 @@ load_source_cb (EBook *book, const GError *error, gpointer closure)
 	if (!error && book != NULL) {
 		const gchar *auth;
 
+		/* Listen for "auth-required" signals regardless of
+		 * whether the ESource claims to require authentication. */
+		g_signal_connect (
+			book, "auth-required",
+			G_CALLBACK (auth_required_cb), NULL);
+
 		auth = e_source_get_property (load_source_data->source, "auth");
 		if (auth && strcmp (auth, "none")) {
-			g_signal_connect (book, "auth_required", (GCallback) auth_required_cb, NULL);
 
 			if (e_book_is_online (book)) {
 				addressbook_authenticate (book, FALSE, load_source_data->source,
