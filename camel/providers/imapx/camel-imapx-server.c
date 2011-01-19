@@ -5180,18 +5180,10 @@ imapx_server_get_message (CamelIMAPXServer *is,
 	CamelStream *stream = NULL, *tmp_stream;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
 	CamelIMAPXJob *job;
-	gchar *cache_file = NULL;
 	CamelMessageInfo *mi;
 	gboolean registered;
 	EFlag *flag = NULL;
 	gboolean success;
-
-	cache_file = camel_data_cache_get_filename  (ifolder->cache, "cur", uid, NULL);
-	if (g_file_test (cache_file, G_FILE_TEST_EXISTS)) {
-		g_free (cache_file);
-		return NULL;
-	}
-	g_free (cache_file);
 
 	QUEUE_LOCK (is);
 
@@ -5205,11 +5197,11 @@ imapx_server_get_message (CamelIMAPXServer *is,
 
 		e_flag_wait (flag);
 
-		stream = camel_data_cache_get (ifolder->cache, "cur", uid, NULL);
-		if (!stream)
-			g_set_error (
-				error, CAMEL_IMAPX_ERROR, 1,
-				"Could not retrieve the message");
+		stream = camel_data_cache_get (
+			ifolder->cache, "cur", uid, error);
+		if (stream == NULL)
+			g_prefix_error (
+				error, "Could not retrieve the message: ");
 		return stream;
 	}
 
@@ -5291,12 +5283,17 @@ camel_imapx_server_sync_message (CamelIMAPXServer *is,
 	gchar *cache_file = NULL;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
 	CamelStream *stream;
+	gboolean is_cached;
+	struct stat st;
 
-	cache_file = camel_data_cache_get_filename  (ifolder->cache, "cur", uid, NULL);
-	if (g_file_test (cache_file, G_FILE_TEST_EXISTS)) {
-		g_free (cache_file);
+	/* Check if the cache file already exists and is non-empty. */
+	cache_file = camel_data_cache_get_filename (
+		ifolder->cache, "cur", uid, NULL);
+	is_cached = (g_stat (cache_file, &st) == 0 && st.st_size > 0);
+	g_free (cache_file);
+
+	if (is_cached)
 		return TRUE;
-	}
 
 	stream = imapx_server_get_message (
 		is, folder, uid,
@@ -5361,13 +5358,9 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 
 	/* chen cleanup this later */
 	uid = imapx_get_temp_uid ();
-	stream = camel_data_cache_add (ifolder->cache, "new", uid, NULL);
+	stream = camel_data_cache_add (ifolder->cache, "new", uid, error);
 	if (stream == NULL) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			_("Cannot create spool file: %s"),
-			g_strerror (errno));
+		g_prefix_error (error, _("Cannot create spool file: "));
 		g_free (uid);
 		return FALSE;
 	}
