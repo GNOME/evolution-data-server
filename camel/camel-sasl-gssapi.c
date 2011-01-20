@@ -20,53 +20,60 @@
  *
  */
 
+/* If building without Kerberos support, this class is an empty shell. */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
 #include <errno.h>
 
-#ifdef HAVE_KRB5
 #include <netdb.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+
+#include <gio/gio.h>
+#include <glib/gi18n-lib.h>
+
+#include "camel-net-utils.h"
+#include "camel-sasl-gssapi.h"
+#include "camel-session.h"
+
+#ifdef HAVE_KRB5
+
 #ifdef HAVE_HEIMDAL_KRB5
 #include <krb5.h>
 #else
 #include <krb5/krb5.h>
-#endif
+#endif /* HAVE_HEIMDAL_KRB5 */
+
 #ifdef HAVE_ET_COM_ERR_H
 #include <et/com_err.h>
 #else
 #ifdef HAVE_COM_ERR_H
 #include <com_err.h>
-#endif
-#endif
+#endif /* HAVE_COM_ERR_H */
+#endif /* HAVE_ET_COM_ERR_H */
+
 #ifdef HAVE_MIT_KRB5
 #include <gssapi/gssapi.h>
 #include <gssapi/gssapi_generic.h>
-#endif
+#endif /* HAVE_MIT_KRB5 */
+
 #ifdef HAVE_HEIMDAL_KRB5
 #include <gssapi.h>
 #else
-#ifdef  HAVE_SUN_KRB5
+#ifdef HAVE_SUN_KRB5
 #include <gssapi/gssapi.h>
 #include <gssapi/gssapi_ext.h>
 extern gss_OID gss_nt_service_name;
-#endif
-#endif
+#endif /* HAVE_SUN_KRB5 */
+#endif /* HAVE_HEIMDAL_KRB5 */
 
 #ifndef GSS_C_OID_KRBV5_DES
 #define GSS_C_OID_KRBV5_DES GSS_C_NO_OID
 #endif
-
-#include <glib/gi18n-lib.h>
-#include <gio/gio.h>
-
-#include "camel-net-utils.h"
-#include "camel-sasl-gssapi.h"
-#include "camel-session.h"
 
 #define DBUS_PATH		"/org/gnome/KrbAuthDialog"
 #define DBUS_INTERFACE		"org.gnome.KrbAuthDialog"
@@ -105,7 +112,11 @@ struct _CamelSaslGssapiPrivate {
 	gss_name_t target;
 };
 
+#endif /* HAVE_KRB5 */
+
 G_DEFINE_TYPE (CamelSaslGssapi, camel_sasl_gssapi, CAMEL_TYPE_SASL)
+
+#ifdef HAVE_KRB5
 
 static void
 gssapi_set_exception (OM_uint32 major,
@@ -409,9 +420,12 @@ sasl_gssapi_challenge (CamelSasl *sasl,
 	return challenge;
 }
 
+#endif /* HAVE_KRB5 */
+
 static void
 camel_sasl_gssapi_class_init (CamelSaslGssapiClass *class)
 {
+#ifdef HAVE_KRB5
 	GObjectClass *object_class;
 	CamelSaslClass *sasl_class;
 
@@ -422,16 +436,17 @@ camel_sasl_gssapi_class_init (CamelSaslGssapiClass *class)
 
 	sasl_class = CAMEL_SASL_CLASS (class);
 	sasl_class->challenge = sasl_gssapi_challenge;
+#endif /* HAVE_KRB5 */
 }
 
 static void
 camel_sasl_gssapi_init (CamelSaslGssapi *sasl)
 {
+#ifdef HAVE_KRB5
 	sasl->priv = CAMEL_SASL_GSSAPI_GET_PRIVATE (sasl);
 
 	sasl->priv->state = GSSAPI_STATE_INIT;
 	sasl->priv->ctx = GSS_C_NO_CONTEXT;
 	sasl->priv->target = GSS_C_NO_NAME;
-}
-
 #endif /* HAVE_KRB5 */
+}
