@@ -56,6 +56,7 @@
 #include "camel-string-utils.h"
 #include "camel-store.h"
 #include "camel-vee-folder.h"
+#include "camel-vtrash-folder.h"
 #include "camel-mime-part-utils.h"
 
 #define CAMEL_FOLDER_SUMMARY_GET_PRIVATE(obj) \
@@ -850,7 +851,7 @@ info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set)
 		else if ((mi->flags & CAMEL_MESSAGE_JUNK) && deleted)
 			mi->summary->junk_not_deleted_count -= deleted;
 
-		if (((junk && !(mi->flags & CAMEL_MESSAGE_DELETED)))||  (deleted && !(mi->flags & CAMEL_MESSAGE_JUNK)) )
+		if (((junk && !(mi->flags & CAMEL_MESSAGE_DELETED))) || (deleted && !(mi->flags & CAMEL_MESSAGE_JUNK)))
 			mi->summary->visible_count -= junk ? junk : deleted;
 	}
 	if (mi->uid)
@@ -2492,8 +2493,16 @@ void
 camel_folder_summary_update_counts_by_flags (CamelFolderSummary *summary, guint32 flags, gboolean subtract)
 {
 	gint unread=0, deleted=0, junk=0;
+	gboolean is_junk_folder = FALSE, is_trash_folder = FALSE;
 
 	g_return_if_fail (summary != NULL);
+
+	if (summary->folder && CAMEL_IS_VTRASH_FOLDER (summary->folder)) {
+		CamelVTrashFolder *vtrash = CAMEL_VTRASH_FOLDER (summary->folder);
+
+		is_junk_folder = vtrash && vtrash->type == CAMEL_VTRASH_FOLDER_JUNK;
+		is_trash_folder = vtrash && vtrash->type == CAMEL_VTRASH_FOLDER_TRASH;
+	}
 
 	if (!(flags & CAMEL_MESSAGE_SEEN))
 		unread = subtract ? -1 : 1;
@@ -2506,8 +2515,6 @@ camel_folder_summary_update_counts_by_flags (CamelFolderSummary *summary, guint3
 
 	dd(printf("%p: %d %d %d | %d %d %d \n", (gpointer) summary, unread, deleted, junk, summary->unread_count, summary->visible_count, summary->saved_count));
 
-	if (unread)
-		summary->unread_count += unread;
 	if (deleted)
 		summary->deleted_count += deleted;
 	if (junk)
@@ -2516,6 +2523,14 @@ camel_folder_summary_update_counts_by_flags (CamelFolderSummary *summary, guint3
 		summary->junk_not_deleted_count += junk;
 	if (!junk && !deleted)
 		summary->visible_count += subtract ? -1 : 1;
+
+	if (junk && !is_junk_folder)
+		unread = 0;
+	if (deleted && !is_trash_folder)
+		unread = 0;
+
+	if (unread)
+		summary->unread_count += unread;
 
 	summary->saved_count += subtract ? -1 : 1;
 	camel_folder_summary_touch (summary);

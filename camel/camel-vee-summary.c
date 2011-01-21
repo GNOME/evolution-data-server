@@ -247,18 +247,15 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 		hacked_unread_folder = TRUE;
 
 	if (mi->uid) {
-		guint32 old_visible, old_unread, old_deleted, old_junked, old_junked_not_deleted;
-		guint32 visible, unread, deleted, junked, junked_not_deleted;
+		guint32 old_visible, visible, old_unread;
 		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
 		CamelVeeSummary *vsummary = (CamelVeeSummary *)mi->summary;
 
 		HANDLE_NULL_INFO(FALSE);
 
-		old_unread = rmi->summary->unread_count;
-		old_deleted = rmi->summary->deleted_count;
-		old_junked = rmi->summary->junk_count;
-		old_junked_not_deleted = rmi->summary->junk_not_deleted_count;
 		old_visible = rmi->summary->visible_count;
+		old_unread = mi->summary->unread_count;
+		camel_folder_summary_update_counts_by_flags (mi->summary, camel_message_info_flags (rmi), TRUE);
 
 		if (hacked_unread_folder)
 			camel_vee_folder_mask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
@@ -271,21 +268,13 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 		if (hacked_unread_folder)
 			camel_vee_folder_unmask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
 
-		unread = rmi->summary->unread_count;
-		deleted = rmi->summary->deleted_count;
-		junked = rmi->summary->junk_count;
-		junked_not_deleted = rmi->summary->junk_not_deleted_count;
 		visible = rmi->summary->visible_count;
+
+		/* Keep the summary in sync */
+		camel_folder_summary_update_counts_by_flags (mi->summary, camel_message_info_flags (rmi), FALSE);
 
 		if (hacked_unread_folder && !vsummary->fake_visible_count)
 			vsummary->fake_visible_count = mi->summary->visible_count;
-
-		/* Keep the summary in sync */
-		mi->summary->unread_count += unread - old_unread;
-		mi->summary->deleted_count += deleted - old_deleted;
-		mi->summary->junk_count += junked - old_junked;
-		mi->summary->junk_not_deleted_count += junked_not_deleted - old_junked_not_deleted;
-		mi->summary->visible_count += visible - old_visible;
 
 		if (vsummary->fake_visible_count || hacked_unread_folder)
 			vsummary->fake_visible_count += visible - old_visible;
@@ -293,7 +282,7 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 		d(printf("VF %d %d %d %d %d\n", mi->summary->unread_count, mi->summary->deleted_count, mi->summary->junk_count, mi->summary->junk_not_deleted_count, mi->summary->visible_count));
 
 		/* This is where the ugly-created-hack is used */
-		if (hacked_unread_folder && unread - old_unread != 0) {
+		if (hacked_unread_folder && mi->summary->unread_count - old_unread != 0) {
 			CamelFolderChangeInfo *changes = camel_folder_change_info_new();
 			GPtrArray *match, *array;
 

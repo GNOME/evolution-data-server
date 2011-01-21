@@ -1130,6 +1130,27 @@ camel_store_get_folder_info (CamelStore *store,
 		if (info->uri && (store->flags & CAMEL_STORE_VJUNK))
 			/* the name of the Junk folder, used for spam messages */
 			add_special_info (store, info, CAMEL_VJUNK_NAME, _("Junk"), TRUE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_JUNK);
+	} else if (!info && top && (flags & CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL) == 0) {
+		CamelFolderInfo *root_info = NULL;
+
+		if ((store->flags & CAMEL_STORE_VTRASH) != 0 && g_str_equal (top, CAMEL_VTRASH_NAME)) {
+			root_info = class->get_folder_info (store, NULL, flags & (~CAMEL_STORE_FOLDER_INFO_RECURSIVE), error);
+			if (root_info && root_info->uri)
+				add_special_info (store, root_info, CAMEL_VTRASH_NAME, _("Trash"), FALSE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_TRASH);
+		} else if ((store->flags & CAMEL_STORE_VJUNK) != 0 && g_str_equal (top, CAMEL_VJUNK_NAME)) {
+			root_info = class->get_folder_info (store, NULL, flags & (~CAMEL_STORE_FOLDER_INFO_RECURSIVE), error);
+			if (root_info && root_info->uri)
+				add_special_info (store, root_info, CAMEL_VJUNK_NAME, _("Junk"), TRUE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_JUNK);
+		}
+
+		if (root_info) {
+			info = root_info->next;
+			root_info->next = NULL;
+			info->next = NULL;
+			info->parent = NULL;
+
+			camel_store_free_folder_info (store, root_info);
+		}
 	}
 
 	if (camel_debug_start("store:folder_info")) {
