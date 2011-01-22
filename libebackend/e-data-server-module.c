@@ -33,7 +33,7 @@
 #define E_DATA_SERVER_TYPE_MODULE		(e_data_server_module_get_type ())
 #define E_DATA_SERVER_MODULE(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_DATA_SERVER_TYPE_MODULE, EDataServerModule))
 #define E_DATA_SERVER_MODULE_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), E_DATA_SERVER_TYPE_MODULE, EDataServerModule))
-#define E_DATA_SERVER_IS_MODULE(obj)		(G_TYPE_INSTANCE_CHECK_TYPE ((obj), E_DATA_SERVER_TYPE_MODULE))
+#define E_DATA_SERVER_IS_MODULE(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_DATA_SERVER_TYPE_MODULE))
 #define E_DATA_SERVER_IS_MODULE_CLASS(klass)	(G_TYPE_CLASS_CHECK_CLASS_TYPE ((klass), E_DATA_SERVER_TYPE_MODULE))
 
 typedef struct _EDataServerModule        EDataServerModule;
