@@ -2225,9 +2225,7 @@ camel_stream_filter_get_type
 <TITLE>CamelStreamFs</TITLE>
 CamelStreamFs
 camel_stream_fs_new_with_name
-camel_stream_fs_new_with_name_and_bounds
 camel_stream_fs_new_with_fd
-camel_stream_fs_new_with_fd_and_bounds
 camel_stream_fs_get_fd
 <SUBSECTION Standard>
 CAMEL_STREAM_FS

@@ -284,32 +284,6 @@ camel_stream_fs_new_with_fd (gint fd)
 }
 
 /**
- * camel_stream_fs_new_with_fd_and_bounds:
- * @fd: a file descriptor
- * @start: the first valid position in the file
- * @end: the first invalid position in the file, or #CAMEL_STREAM_UNBOUND
- *
- * Gets a stream associated with the given file descriptor and bounds.
- * When the stream is destroyed, the file descriptor will be closed.
- *
- * Returns: the bound stream
- **/
-CamelStream *
-camel_stream_fs_new_with_fd_and_bounds (gint fd,
-                                        goffset start,
-                                        goffset end,
-                                        GError **error)
-{
-	CamelStream *stream;
-
-	stream = camel_stream_fs_new_with_fd (fd);
-	camel_seekable_stream_set_bounds (
-		CAMEL_SEEKABLE_STREAM (stream), start, end, error);
-
-	return stream;
-}
-
-/**
  * camel_stream_fs_new_with_name:
  * @name: a local filename
  * @flags: flags as in open(2)
@@ -339,46 +313,6 @@ camel_stream_fs_new_with_name (const gchar *name,
 	}
 
 	return camel_stream_fs_new_with_fd (fd);
-}
-
-/**
- * camel_stream_fs_new_with_name_and_bounds:
- * @name: a local filename
- * @flags: flags as in open(2)
- * @mode: a file mode
- * @start: the first valid position in the file
- * @end: the first invalid position in the file, or #CAMEL_STREAM_UNBOUND
- * @error: return location for a #GError, or %NULL
- *
- * Creates a new CamelStream corresponding to the given arguments.
- *
- * Returns: the stream, or %NULL on error.
- **/
-CamelStream *
-camel_stream_fs_new_with_name_and_bounds (const gchar *name,
-                                          gint flags,
-                                          mode_t mode,
-                                          goffset start,
-                                          goffset end,
-                                          GError **error)
-{
-	CamelStream *stream;
-	gint retval;
-
-	stream = camel_stream_fs_new_with_name (name, flags, mode, error);
-	if (stream == NULL)
-		return NULL;
-
-	retval = camel_seekable_stream_set_bounds (
-		CAMEL_SEEKABLE_STREAM (stream),
-		start, end, error);
-
-	if (retval == -1) {
-		g_object_unref (stream);
-		stream = NULL;
-	}
-
-	return stream;
 }
 
 /**

@@ -38,38 +38,12 @@ CamelStreamFs
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_stream_fs_new_with_name_and_bounds ##### -->
-<para>
-
-</para>
-
-@name: 
-@flags: 
-@mode: 
-@start: 
-@end: 
-@error: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_stream_fs_new_with_fd ##### -->
 <para>
 
 </para>
 
 @fd: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_stream_fs_new_with_fd_and_bounds ##### -->
-<para>
-
-</para>
-
-@fd: 
-@start: 
-@end: 
-@error: 
 @Returns: 
 
 
