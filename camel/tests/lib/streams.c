@@ -24,7 +24,7 @@ test_stream_seekable_writepart (CamelSeekableStream *s)
 	push ("seekable stream test, writing ");
 
 	check (camel_seekable_stream_tell (s) == 0);
-	check (camel_seekable_stream_seek (s, 0, CAMEL_STREAM_SET, NULL) == 0);
+	check (camel_seekable_stream_seek (s, 0, G_SEEK_SET, NULL) == 0);
 	check (camel_seekable_stream_tell (s) == 0);
 
 	check (camel_stream_write (CAMEL_STREAM (s), "", 0, NULL, NULL) == 0);
@@ -41,10 +41,10 @@ test_stream_seekable_writepart (CamelSeekableStream *s)
 	}
 	end = 10240*sizeof (teststring)+1;
 
-	check_msg (camel_seekable_stream_seek (s, 0, CAMEL_STREAM_END, NULL) == end, "seek =%d end = %d",
-		  camel_seekable_stream_seek (s, 0, CAMEL_STREAM_END, NULL), end);
+	check_msg (camel_seekable_stream_seek (s, 0, G_SEEK_END, NULL) == end, "seek =%d end = %d",
+		  camel_seekable_stream_seek (s, 0, G_SEEK_END, NULL), end);
 
-	check (camel_seekable_stream_seek (s, 0, CAMEL_STREAM_END, NULL) == end);
+	check (camel_seekable_stream_seek (s, 0, G_SEEK_END, NULL) == end);
 	check (camel_seekable_stream_tell (s) == end);
 	/* need to read 0 first to set eos */
 	check (camel_stream_read (
@@ -64,7 +64,7 @@ test_stream_seekable_readpart (CamelSeekableStream *s)
 
 	end = 10240*sizeof (teststring)+1;
 
-	check (camel_seekable_stream_seek (s, 0, CAMEL_STREAM_SET, NULL) == 0);
+	check (camel_seekable_stream_seek (s, 0, G_SEEK_SET, NULL) == 0);
 	check (camel_seekable_stream_tell (s) == 0);
 	check (!camel_stream_eos (CAMEL_STREAM (s)));
 
@@ -76,13 +76,13 @@ test_stream_seekable_readpart (CamelSeekableStream *s)
 		/* exercise all seek methods */
 		switch (i % 3) {
 		case 0:
-			check (camel_seekable_stream_seek (s, new, CAMEL_STREAM_SET, NULL) == new);
+			check (camel_seekable_stream_seek (s, new, G_SEEK_SET, NULL) == new);
 			break;
 		case 1:
-			check (camel_seekable_stream_seek (s, new-off, CAMEL_STREAM_CUR, NULL) == new);
+			check (camel_seekable_stream_seek (s, new-off, G_SEEK_CUR, NULL) == new);
 			break;
 		case 2:
-			check (camel_seekable_stream_seek (s, new-end, CAMEL_STREAM_END, NULL) == new);
+			check (camel_seekable_stream_seek (s, new-end, G_SEEK_END, NULL) == new);
 			break;
 		}
 		check (camel_seekable_stream_tell (s) == new);
@@ -102,7 +102,7 @@ test_stream_seekable_readpart (CamelSeekableStream *s)
 	}
 
 	/* verify end-of-file behaviour */
-	check (camel_seekable_stream_seek (s, -1, CAMEL_STREAM_END, NULL) == end-1);
+	check (camel_seekable_stream_seek (s, -1, G_SEEK_END, NULL) == end-1);
 	check (camel_seekable_stream_tell (s) == end-1);
 
 	check (camel_stream_read (
@@ -111,7 +111,7 @@ test_stream_seekable_readpart (CamelSeekableStream *s)
 
 	check (camel_stream_read (
 		CAMEL_STREAM (s), testbuf, 10240, NULL, NULL) == 0);
-	check (camel_seekable_stream_seek (s, 0, CAMEL_STREAM_CUR, NULL) == end);
+	check (camel_seekable_stream_seek (s, 0, G_SEEK_CUR, NULL) == end);
 	check (camel_seekable_stream_tell (s) == end);
 	check (camel_stream_eos (CAMEL_STREAM (s)));
 
@@ -133,11 +133,11 @@ test_seekable_substream_writepart (CamelStream *s, gint type)
 	push ("writing substream, type %d", type);
 
 	if (type == 1) {
-		check (camel_seekable_stream_seek (sp, ss->bound_start, CAMEL_STREAM_SET, NULL) == ss->bound_start);
+		check (camel_seekable_stream_seek (sp, ss->bound_start, G_SEEK_SET, NULL) == ss->bound_start);
 		s = (CamelStream *)sp;
 	} else {
 		check (camel_seekable_stream_tell (ss) == ss->bound_start);
-		check (camel_seekable_stream_seek (ss, 0, CAMEL_STREAM_SET, NULL) == ss->bound_start);
+		check (camel_seekable_stream_seek (ss, 0, G_SEEK_SET, NULL) == ss->bound_start);
 	}
 
 	check (camel_seekable_stream_tell (CAMEL_SEEKABLE_STREAM (s)) == ss->bound_start);
@@ -189,10 +189,10 @@ test_seekable_substream_readpart (CamelStream *s)
 
 	push ("reading substream");
 
-	check (camel_seekable_stream_seek (ss, 0, CAMEL_STREAM_SET, NULL) == ss->bound_start);
+	check (camel_seekable_stream_seek (ss, 0, G_SEEK_SET, NULL) == ss->bound_start);
 	check (camel_seekable_stream_tell (ss) == ss->bound_start);
 
-	check (camel_seekable_stream_seek (sp, ss->bound_start, CAMEL_STREAM_SET, NULL) == ss->bound_start);
+	check (camel_seekable_stream_seek (sp, ss->bound_start, G_SEEK_SET, NULL) == ss->bound_start);
 	check (camel_seekable_stream_tell (sp) == ss->bound_start);
 
 	/* check writes, cross check with parent stream */
@@ -205,7 +205,7 @@ test_seekable_substream_readpart (CamelStream *s)
 			check (camel_seekable_stream_tell (ss) == ss->bound_start + (i+1)*sizeof (teststring));
 
 			/* yeah great, the substreams affect the seek ... */
-			check (camel_seekable_stream_seek (sp, ss->bound_start + (i)*sizeof (teststring), CAMEL_STREAM_SET, NULL) == ss->bound_start + i*sizeof (teststring));
+			check (camel_seekable_stream_seek (sp, ss->bound_start + (i)*sizeof (teststring), G_SEEK_SET, NULL) == ss->bound_start + i*sizeof (teststring));
 			check (camel_stream_read (
 				CAMEL_STREAM (sp), testbuf,
 				sizeof (teststring), NULL, NULL)
@@ -217,7 +217,7 @@ test_seekable_substream_readpart (CamelStream *s)
 		check (camel_stream_read (s, testbuf, len, NULL, NULL) == len);
 		check (memcmp (testbuf, teststring, len) == 0);
 
-		check (camel_seekable_stream_seek (sp, ss->bound_end - len, CAMEL_STREAM_SET, NULL) == ss->bound_end - len);
+		check (camel_seekable_stream_seek (sp, ss->bound_end - len, G_SEEK_SET, NULL) == ss->bound_end - len);
 		check (camel_stream_read (
 			CAMEL_STREAM (sp), testbuf, len, NULL, NULL) == len);
 		check (memcmp (testbuf, teststring, len) == 0);
@@ -238,7 +238,7 @@ test_seekable_substream_readpart (CamelStream *s)
 			check (memcmp (testbuf, teststring, sizeof (teststring)) == 0);
 			check (camel_seekable_stream_tell (ss) == ss->bound_start + (i+1)*sizeof (teststring));
 
-			check (camel_seekable_stream_seek (sp, ss->bound_start + (i)*sizeof (teststring), CAMEL_STREAM_SET, NULL) == ss->bound_start + i*sizeof (teststring));
+			check (camel_seekable_stream_seek (sp, ss->bound_start + (i)*sizeof (teststring), G_SEEK_SET, NULL) == ss->bound_start + i*sizeof (teststring));
 			check (camel_stream_read (
 				CAMEL_STREAM (sp), testbuf,
 				sizeof (teststring), NULL, NULL)

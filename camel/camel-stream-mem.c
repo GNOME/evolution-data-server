@@ -153,7 +153,7 @@ stream_mem_eos (CamelStream *stream)
 static goffset
 stream_mem_seek (CamelSeekableStream *stream,
                  goffset offset,
-                 CamelStreamSeekPolicy policy,
+                 GSeekType type,
                  GError **error)
 {
 	CamelStreamMemPrivate *priv;
@@ -161,14 +161,14 @@ stream_mem_seek (CamelSeekableStream *stream,
 
 	priv = CAMEL_STREAM_MEM_GET_PRIVATE (stream);
 
-	switch  (policy) {
-	case CAMEL_STREAM_SET:
+	switch (type) {
+	case G_SEEK_SET:
 		position = offset;
 		break;
-	case CAMEL_STREAM_CUR:
+	case G_SEEK_CUR:
 		position = stream->position + offset;
 		break;
-	case CAMEL_STREAM_END:
+	case G_SEEK_END:
 		position = (priv->buffer)->len + offset;
 		break;
 	default:

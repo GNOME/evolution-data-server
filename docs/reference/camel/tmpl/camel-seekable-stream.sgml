@@ -26,15 +26,6 @@ CamelSeekableStream
 </para>
 
 
-<!-- ##### ENUM CamelStreamSeekPolicy ##### -->
-<para>
-
-</para>
-
-@CAMEL_STREAM_SET: 
-@CAMEL_STREAM_CUR: 
-@CAMEL_STREAM_END: 
-
 <!-- ##### MACRO CAMEL_STREAM_UNBOUND ##### -->
 <para>
 
@@ -49,7 +40,7 @@ CamelSeekableStream
 
 @stream: 
 @offset: 
-@policy: 
+@type: 
 @error: 
 @Returns: 
 

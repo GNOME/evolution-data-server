@@ -1400,7 +1400,7 @@ imapx_untagged (CamelIMAPXServer *imap,
 			if (job && job->error == NULL) {
 				if (job->u.get_message.use_multi_fetch) {
 					job->u.get_message.body_offset = finfo->offset;
-					camel_seekable_stream_seek ((CamelSeekableStream *)job->u.get_message.stream, finfo->offset, CAMEL_STREAM_SET, NULL);
+					camel_seekable_stream_seek ((CamelSeekableStream *)job->u.get_message.stream, finfo->offset, G_SEEK_SET, NULL);
 				}
 
 				job->u.get_message.body_len = camel_stream_write_to_stream (finfo->body, job->u.get_message.stream, job->cancellable, &job->error);

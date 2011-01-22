@@ -40,7 +40,7 @@ seekable_substream_parent_reset (CamelSeekableSubstream *seekable_substream,
 
 	return camel_seekable_stream_seek (
 		parent, seekable_stream->position,
-		CAMEL_STREAM_SET, NULL) == seekable_stream->position;
+		G_SEEK_SET, NULL) == seekable_stream->position;
 }
 
 static void
@@ -191,7 +191,7 @@ seekable_substream_eos (CamelStream *stream)
 static goffset
 seekable_substream_seek (CamelSeekableStream *seekable_stream,
                          goffset offset,
-                         CamelStreamSeekPolicy policy,
+                         GSeekType type,
                          GError **error)
 {
 	CamelStream *stream;
@@ -203,20 +203,20 @@ seekable_substream_seek (CamelSeekableStream *seekable_stream,
 
 	stream->eos = FALSE;
 
-	switch (policy) {
-	case CAMEL_STREAM_SET:
+	switch (type) {
+	case G_SEEK_SET:
 		real_offset = offset;
 		break;
 
-	case CAMEL_STREAM_CUR:
+	case G_SEEK_CUR:
 		real_offset = seekable_stream->position + offset;
 		break;
 
-	case CAMEL_STREAM_END:
+	case G_SEEK_END:
 		if (seekable_stream->bound_end == CAMEL_STREAM_UNBOUND) {
 			real_offset = camel_seekable_stream_seek (
 				seekable_substream->parent_stream,
-				offset, CAMEL_STREAM_END, error);
+				offset, G_SEEK_END, error);
 			if (real_offset != -1) {
 				if (real_offset<seekable_stream->bound_start)
 					real_offset = seekable_stream->bound_start;

@@ -40,7 +40,7 @@ seekable_stream_reset (CamelStream *stream,
 
 	return camel_seekable_stream_seek (
 		seekable_stream, seekable_stream->bound_start,
-		CAMEL_STREAM_SET, error);
+		G_SEEK_SET, error);
 }
 
 static goffset
@@ -61,7 +61,7 @@ seekable_stream_set_bounds (CamelSeekableStream *stream,
 
 	if (start > stream->position)
 		return camel_seekable_stream_seek (
-			stream, start, CAMEL_STREAM_SET, error);
+			stream, start, G_SEEK_SET, error);
 
 	return 0;
 }
@@ -89,20 +89,18 @@ camel_seekable_stream_init (CamelSeekableStream *stream)
  * camel_seekable_stream_seek:
  * @stream: a #CamelStream object
  * @offset: offset value
- * @policy: what to do with the offset
+ * @type: what to do with the offset
  * @error: return location for a #GError, or %NULL
  *
  * Seek to the specified position in @stream.
  *
- * If @policy is #CAMEL_STREAM_SET, seeks to @offset.
+ * If @type is #G_SEEK_SET, seeks to @offset.
  *
- * If @policy is #CAMEL_STREAM_CUR, seeks to the current position plus
- * @offset.
+ * If @type is #G_SEEK_CUR, seeks to the current position plus @offset.
  *
- * If @policy is #CAMEL_STREAM_END, seeks to the end of the stream plus
- * @offset.
+ * If @type is #G_SEEK_END, seeks to the end of the stream plus @offset.
  *
- * Regardless of @policy, the stream's final position will be clamped
+ * Regardless of @type, the stream's final position will be clamped
  * to the range specified by its lower and upper bounds, and the
  * stream's eos state will be updated.
  *
@@ -111,7 +109,7 @@ camel_seekable_stream_init (CamelSeekableStream *stream)
 goffset
 camel_seekable_stream_seek (CamelSeekableStream *stream,
                             goffset offset,
-                            CamelStreamSeekPolicy policy,
+                            GSeekType type,
                             GError **error)
 {
 	CamelSeekableStreamClass *class;
@@ -122,7 +120,7 @@ camel_seekable_stream_seek (CamelSeekableStream *stream,
 	class = CAMEL_SEEKABLE_STREAM_GET_CLASS (stream);
 	g_return_val_if_fail (class->seek != NULL, -1);
 
-	new_offset = class->seek (stream, offset, policy, error);
+	new_offset = class->seek (stream, offset, type, error);
 	CAMEL_CHECK_GERROR (stream, seek, new_offset >= 0, error);
 
 	return new_offset;

@@ -57,12 +57,6 @@ G_BEGIN_DECLS
 typedef struct _CamelSeekableStream CamelSeekableStream;
 typedef struct _CamelSeekableStreamClass CamelSeekableStreamClass;
 
-typedef enum {
-	CAMEL_STREAM_SET = SEEK_SET,
-	CAMEL_STREAM_CUR = SEEK_CUR,
-	CAMEL_STREAM_END = SEEK_END
-} CamelStreamSeekPolicy;
-
 #define CAMEL_STREAM_UNBOUND (~0)
 
 struct _CamelSeekableStream {
@@ -78,7 +72,7 @@ struct _CamelSeekableStreamClass {
 
 	goffset		(*seek)			(CamelSeekableStream *stream,
 						 goffset offset,
-						 CamelStreamSeekPolicy policy,
+						 GSeekType type,
 						 GError **error);
 	goffset		(*tell)			(CamelSeekableStream *stream);
 	gint		(*set_bounds)		(CamelSeekableStream *stream,
@@ -90,7 +84,7 @@ struct _CamelSeekableStreamClass {
 GType		camel_seekable_stream_get_type	(void);
 goffset		camel_seekable_stream_seek	(CamelSeekableStream *stream,
 						 goffset offset,
-						 CamelStreamSeekPolicy policy,
+						 GSeekType type,
 						 GError **error);
 goffset		camel_seekable_stream_tell	(CamelSeekableStream *stream);
 gint		camel_seekable_stream_set_bounds (CamelSeekableStream *stream,

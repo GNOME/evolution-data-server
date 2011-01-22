@@ -166,7 +166,7 @@ stream_fs_close (CamelStream *stream,
 static goffset
 stream_fs_seek (CamelSeekableStream *stream,
                 goffset offset,
-                CamelStreamSeekPolicy policy,
+                GSeekType type,
                 GError **error)
 {
 	CamelStreamFsPrivate *priv;
@@ -174,14 +174,14 @@ stream_fs_seek (CamelSeekableStream *stream,
 
 	priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 
-	switch (policy) {
-	case CAMEL_STREAM_SET:
+	switch (type) {
+	case G_SEEK_SET:
 		real = offset;
 		break;
-	case CAMEL_STREAM_CUR:
+	case G_SEEK_CUR:
 		real = stream->position + offset;
 		break;
-	case CAMEL_STREAM_END:
+	case G_SEEK_END:
 		if (stream->bound_end == CAMEL_STREAM_UNBOUND) {
 			real = lseek (priv->fd, offset, SEEK_END);
 			if (real != -1) {

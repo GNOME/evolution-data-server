@@ -245,7 +245,7 @@ save_match (CamelImapSearch *is, struct _match_record *mr)
 
 	if (camel_stream_write (stream, (gchar *)&header, sizeof (header), NULL, NULL) != sizeof (header)
 	    || camel_stream_write (stream, mr->matches->data, mr->matches->len*sizeof (guint32), NULL, NULL) != mr->matches->len*sizeof (guint32)
-	    || camel_seekable_stream_seek ((CamelSeekableStream *)stream, 0, CAMEL_STREAM_SET, NULL) == -1
+	    || camel_seekable_stream_seek ((CamelSeekableStream *)stream, 0, G_SEEK_SET, NULL) == -1
 	    || camel_stream_write (stream, (gchar *)&mark, sizeof (mark), NULL, NULL) != sizeof (mark)) {
 		d(printf(" saving failed, removing cache entry\n"));
 		camel_data_cache_remove(is->cache, "search/body-contains", mr->hash, NULL);

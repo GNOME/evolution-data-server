@@ -1872,7 +1872,6 @@ camel_sexp_to_sql_sexp
 <FILE>camel-seekable-stream</FILE>
 <TITLE>CamelSeekableStream</TITLE>
 CamelSeekableStream
-CamelStreamSeekPolicy
 CAMEL_STREAM_UNBOUND
 camel_seekable_stream_seek
 camel_seekable_stream_tell
