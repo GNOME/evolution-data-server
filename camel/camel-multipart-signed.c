@@ -48,6 +48,44 @@
 
 G_DEFINE_TYPE (CamelMultipartSigned, camel_multipart_signed, CAMEL_TYPE_MULTIPART)
 
+static CamelStream *
+multipart_signed_clip_stream (CamelMultipartSigned *mps,
+                              goffset start,
+                              goffset end,
+                              GCancellable *cancellable,
+                              GError **error)
+{
+	CamelDataWrapper *data_wrapper;
+	CamelStream *stream;
+	goffset position;
+	gchar *buffer;
+	gssize n_read;
+	gsize length;
+
+	data_wrapper = CAMEL_DATA_WRAPPER (mps);
+	stream = data_wrapper->stream;
+
+	position = camel_seekable_stream_seek (
+		CAMEL_SEEKABLE_STREAM (stream), start, G_SEEK_SET, error);
+	if (position < 0)
+		return NULL;
+
+	length = end - start;
+	buffer = g_malloc0 (length + 1);
+
+	n_read = camel_stream_read (
+		stream, buffer, length, cancellable, error);
+
+	if (n_read >= 0)
+		stream = camel_stream_mem_new_with_buffer (buffer, n_read);
+	else
+		stream = NULL;
+
+	g_free (buffer);
+
+	return stream;
+}
+
 static gint
 multipart_signed_skip_content (CamelMimeParser *cmp)
 {
@@ -432,7 +470,8 @@ multipart_signed_get_part (CamelMultipart *multipart,
 		} else if (mps->start1 == -1) {
 			stream = g_object_ref (dw->stream);
 		} else {
-			stream = camel_seekable_substream_new ((CamelSeekableStream *)dw->stream, mps->start1, mps->end1);
+			stream = multipart_signed_clip_stream (
+				mps, mps->start1, mps->end1, NULL, NULL);
 		}
 		camel_stream_reset (stream, NULL);
 		mps->content = camel_mime_part_new ();
@@ -450,7 +489,8 @@ multipart_signed_get_part (CamelMultipart *multipart,
 		} else if (dw->stream == NULL) {
 			return NULL;
 		}
-		stream = camel_seekable_substream_new ((CamelSeekableStream *)dw->stream, mps->start2, mps->end2);
+		stream = multipart_signed_clip_stream (
+			mps, mps->start2, mps->end2, NULL, NULL);
 		camel_stream_reset (stream, NULL);
 		mps->signature = camel_mime_part_new ();
 		camel_data_wrapper_construct_from_stream_sync (
@@ -610,7 +650,7 @@ camel_multipart_signed_get_content_stream (CamelMultipartSigned *mps,
 	if (mps->contentraw) {
 		constream = g_object_ref (mps->contentraw);
 	} else {
-		CamelStream *sub;
+		CamelStream *stream;
 		CamelMimeFilter *canon_filter;
 
 		if (mps->start1 == -1 && multipart_signed_parse_content (mps) == -1) {
@@ -622,9 +662,16 @@ camel_multipart_signed_get_content_stream (CamelMultipartSigned *mps,
 		}
 
 		/* first, prepare our parts */
-		sub = camel_seekable_substream_new ((CamelSeekableStream *)((CamelDataWrapper *)mps)->stream, mps->start1, mps->end1);
-		constream = camel_stream_filter_new (sub);
-		g_object_unref (sub);
+
+		/* FIXME Missing a GCancellable */
+		stream = multipart_signed_clip_stream (
+			mps, mps->start1, mps->end1, NULL, error);
+
+		if (stream == NULL)
+			return NULL;
+
+		constream = camel_stream_filter_new (stream);
+		g_object_unref (stream);
 
 		/* Note: see rfc2015 or rfc3156, section 5 */
 		canon_filter = camel_mime_filter_canon_new (CAMEL_MIME_FILTER_CANON_CRLF);
