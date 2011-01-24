@@ -171,7 +171,7 @@ category_completion_is_match (GtkEntryCompletion *completion,
 	GValue value = { 0, };
 	gboolean match;
 
-	priv = E_CATEGORY_COMPLETION_GET_PRIVATE (completion);
+	priv = E_CATEGORY_COMPLETION (completion)->priv;
 	entry = gtk_entry_completion_get_entry (completion);
 	model = gtk_entry_completion_get_model (completion);
 
@@ -206,7 +206,7 @@ category_completion_update_prefix (GtkEntryCompletion *completion)
 	gchar *input;
 	glong offset;
 
-	priv = E_CATEGORY_COMPLETION_GET_PRIVATE (completion);
+	priv = E_CATEGORY_COMPLETION (completion)->priv;
 	entry = gtk_entry_completion_get_entry (completion);
 	model = gtk_entry_completion_get_model (completion);
 
@@ -326,7 +326,7 @@ category_completion_track_entry (GtkEntryCompletion *completion)
 {
 	ECategoryCompletionPrivate *priv;
 
-	priv = E_CATEGORY_COMPLETION_GET_PRIVATE (completion);
+	priv = E_CATEGORY_COMPLETION (completion)->priv;
 
 	if (priv->last_known_entry != NULL) {
 		g_signal_handlers_disconnect_matched (
@@ -360,11 +360,44 @@ category_completion_track_entry (GtkEntryCompletion *completion)
 }
 
 static void
+category_completion_constructed (GObject *object)
+{
+	GtkCellRenderer *renderer;
+	GtkEntryCompletion *completion;
+
+	if (G_OBJECT_CLASS (parent_class)->constructed)
+		G_OBJECT_CLASS (parent_class)->constructed (object);
+
+	completion = GTK_ENTRY_COMPLETION (object);
+
+	gtk_entry_completion_set_match_func (
+		completion, (GtkEntryCompletionMatchFunc)
+		category_completion_is_match, NULL, NULL);
+
+	gtk_entry_completion_set_text_column (completion, COLUMN_CATEGORY);
+
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	gtk_cell_layout_pack_start (
+		GTK_CELL_LAYOUT (completion), renderer, FALSE);
+	gtk_cell_layout_add_attribute (
+		GTK_CELL_LAYOUT (completion),
+		renderer, "pixbuf", COLUMN_PIXBUF);
+	gtk_cell_layout_reorder (
+		GTK_CELL_LAYOUT (completion), renderer, 0);
+
+	e_categories_register_change_listener (
+		G_CALLBACK (category_completion_categories_changed_cb),
+		completion);
+
+	category_completion_build_model (completion);
+}
+
+static void
 category_completion_dispose (GObject *object)
 {
 	ECategoryCompletionPrivate *priv;
 
-	priv = E_CATEGORY_COMPLETION_GET_PRIVATE (object);
+	priv = E_CATEGORY_COMPLETION (object)->priv;
 
 	if (priv->last_known_entry != NULL) {
 		g_signal_handlers_disconnect_matched (
@@ -383,7 +416,7 @@ category_completion_finalize (GObject *object)
 {
 	ECategoryCompletionPrivate *priv;
 
-	priv = E_CATEGORY_COMPLETION_GET_PRIVATE (object);
+	priv = E_CATEGORY_COMPLETION (object)->priv;
 
 	g_free (priv->create);
 	g_free (priv->prefix);
@@ -417,7 +450,7 @@ category_completion_action_activated (GtkEntryCompletion *completion,
 	ECategoryCompletionPrivate *priv;
 	gchar *category;
 
-	priv = E_CATEGORY_COMPLETION_GET_PRIVATE (completion);
+	priv = E_CATEGORY_COMPLETION (completion)->priv;
 
 	category = g_strdup (priv->create);
 	e_categories_add (category, NULL, NULL, TRUE);
@@ -435,6 +468,7 @@ e_category_completion_class_init (ECategoryCompletionClass *class)
 	g_type_class_add_private (class, sizeof (ECategoryCompletionPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->constructed = category_completion_constructed;
 	object_class->dispose = category_completion_dispose;
 	object_class->finalize = category_completion_finalize;
 
@@ -446,34 +480,8 @@ e_category_completion_class_init (ECategoryCompletionClass *class)
 static void
 e_category_completion_init (ECategoryCompletion *category_completion)
 {
-	GtkCellRenderer *renderer;
-	GtkEntryCompletion *completion;
-
 	category_completion->priv =
 		E_CATEGORY_COMPLETION_GET_PRIVATE (category_completion);
-
-	completion = GTK_ENTRY_COMPLETION (category_completion);
-
-	gtk_entry_completion_set_match_func (
-		completion, (GtkEntryCompletionMatchFunc)
-		category_completion_is_match, NULL, NULL);
-
-	gtk_entry_completion_set_text_column (completion, COLUMN_CATEGORY);
-
-	renderer = gtk_cell_renderer_pixbuf_new ();
-	gtk_cell_layout_pack_start (
-		GTK_CELL_LAYOUT (completion), renderer, FALSE);
-	gtk_cell_layout_add_attribute (
-		GTK_CELL_LAYOUT (completion),
-		renderer, "pixbuf", COLUMN_PIXBUF);
-	gtk_cell_layout_reorder (
-		GTK_CELL_LAYOUT (completion), renderer, 0);
-
-	e_categories_register_change_listener (
-		G_CALLBACK (category_completion_categories_changed_cb),
-		completion);
-
-	category_completion_build_model (completion);
 }
 
 /**
