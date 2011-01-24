@@ -1869,26 +1869,6 @@ camel_sexp_to_sql_sexp
 </SECTION>
 
 <SECTION>
-<FILE>camel-seekable-stream</FILE>
-<TITLE>CamelSeekableStream</TITLE>
-CamelSeekableStream
-CAMEL_STREAM_UNBOUND
-camel_seekable_stream_seek
-camel_seekable_stream_tell
-camel_seekable_stream_set_bounds
-<SUBSECTION Standard>
-CAMEL_SEEKABLE_STREAM
-CAMEL_IS_SEEKABLE_STREAM
-CAMEL_TYPE_SEEKABLE_STREAM
-CAMEL_SEEKABLE_STREAM_CLASS
-CAMEL_IS_SEEKABLE_STREAM_CLASS
-CAMEL_SEEKABLE_STREAM_GET_CLASS
-CamelSeekableStreamClass
-<SUBSECTION Private>
-camel_seekable_stream_get_type
-</SECTION>
-
-<SECTION>
 <FILE>camel-service</FILE>
 <TITLE>CamelService</TITLE>
 CamelService

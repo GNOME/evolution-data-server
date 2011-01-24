@@ -28,7 +28,7 @@
 #define CAMEL_MIME_FILTER_SAVE_H
 
 #include <camel/camel-mime-filter.h>
-#include <camel/camel-seekable-stream.h>
+#include <camel/camel-stream.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_MIME_FILTER_SAVE \

@@ -37,7 +37,6 @@
 #include "camel-mime-filter.h"
 #include "camel-mime-parser.h"
 #include "camel-mime-utils.h"
-#include "camel-seekable-stream.h"
 #include "camel-stream.h"
 
 #define r(x)
@@ -961,12 +960,13 @@ folder_seek (struct _header_scan_state *s, goffset offset, gint whence)
 	goffset newoffset;
 
 	if (s->stream) {
-		if (CAMEL_IS_SEEKABLE_STREAM (s->stream)) {
+		if (G_IS_SEEKABLE (s->stream)) {
 			/* NOTE: assumes whence seekable stream == whence libc, which is probably
 			   the case (or bloody well should've been) */
-			newoffset = camel_seekable_stream_seek (
-				CAMEL_SEEKABLE_STREAM (s->stream),
-				offset, whence, NULL);
+			g_seekable_seek (
+				G_SEEKABLE (s->stream),
+				offset, whence, NULL, NULL);
+			newoffset = g_seekable_tell (G_SEEKABLE (s->stream));
 		} else {
 			newoffset = -1;
 			errno = EINVAL;

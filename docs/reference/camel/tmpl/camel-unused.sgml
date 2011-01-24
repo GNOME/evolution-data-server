@@ -3030,6 +3030,12 @@ streams
 </para>
 
 
+<!-- ##### MACRO CAMEL_STREAM_UNBOUND ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### MACRO CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 ##### -->
 <para>
 
@@ -4361,6 +4367,12 @@ streams
 
 @old_base: 
 @new: 
+
+<!-- ##### STRUCT CamelSeekableStream ##### -->
+<para>
+
+</para>
+
 
 <!-- ##### STRUCT CamelSeekableSubstream ##### -->
 <para>
@@ -8457,6 +8469,17 @@ streams
 @len: 
 @type: 
 @words: 
+
+<!-- ##### FUNCTION camel_seekable_stream_set_bounds ##### -->
+<para>
+
+</para>
+
+@stream: 
+@start: 
+@end: 
+@error: 
+@Returns: 
 
 <!-- ##### FUNCTION camel_seekable_substream_new ##### -->
 <para>

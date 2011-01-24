@@ -50,7 +50,6 @@
     <chapter id="Streams">
       <title>Streams</title>
       <xi:include href="xml/camel-stream.xml"/>
-      <xi:include href="xml/camel-seekable-stream.xml"/>
       <xi:include href="xml/camel-stream-buffer.xml"/>
       <xi:include href="xml/camel-stream-filter.xml"/>
       <xi:include href="xml/camel-stream-fs.xml"/>

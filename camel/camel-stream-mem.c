@@ -44,9 +44,15 @@ struct _CamelStreamMemPrivate {
 				   (only if we own it) */
 
 	GByteArray *buffer;
+	goffset position;
 };
 
-G_DEFINE_TYPE (CamelStreamMem, camel_stream_mem, CAMEL_TYPE_SEEKABLE_STREAM)
+/* Forward Declarations */
+static void camel_stream_mem_seekable_init (GSeekableIface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (
+	CamelStreamMem, camel_stream_mem, CAMEL_TYPE_STREAM,
+	G_IMPLEMENT_INTERFACE (G_TYPE_SEEKABLE, camel_stream_mem_seekable_init))
 
 /* could probably be a util method */
 static void
@@ -93,18 +99,14 @@ stream_mem_read (CamelStream *stream,
                  GError **error)
 {
 	CamelStreamMemPrivate *priv;
-	CamelSeekableStream *seekable = CAMEL_SEEKABLE_STREAM (stream);
 	gssize nread;
 
 	priv = CAMEL_STREAM_MEM_GET_PRIVATE (stream);
 
-	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
-		n = MIN (seekable->bound_end - seekable->position, n);
-
-	nread = MIN (n, priv->buffer->len - seekable->position);
+	nread = MIN (n, priv->buffer->len - priv->position);
 	if (nread > 0) {
-		memcpy (buffer, priv->buffer->data + seekable->position, nread);
-		seekable->position += nread;
+		memcpy (buffer, priv->buffer->data + priv->position, nread);
+		priv->position += nread;
 	} else
 		nread = 0;
 
@@ -119,22 +121,18 @@ stream_mem_write (CamelStream *stream,
                   GError **error)
 {
 	CamelStreamMemPrivate *priv;
-	CamelSeekableStream *seekable = CAMEL_SEEKABLE_STREAM (stream);
 	gssize nwrite = n;
 
 	priv = CAMEL_STREAM_MEM_GET_PRIVATE (stream);
 
-	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
-		nwrite = MIN (seekable->bound_end - seekable->position, n);
-
 	/* FIXME: we shouldn't use g_byte_arrays or g_malloc perhaps? */
-	if (seekable->position == priv->buffer->len) {
+	if (priv->position == priv->buffer->len) {
 		g_byte_array_append (priv->buffer, (const guint8 *)buffer, nwrite);
 	} else {
 		g_byte_array_set_size (priv->buffer, nwrite + priv->buffer->len);
-		memcpy (priv->buffer->data + seekable->position, buffer, nwrite);
+		memcpy (priv->buffer->data + priv->position, buffer, nwrite);
 	}
-	seekable->position += nwrite;
+	priv->position += nwrite;
 
 	return nwrite;
 }
@@ -143,30 +141,46 @@ static gboolean
 stream_mem_eos (CamelStream *stream)
 {
 	CamelStreamMemPrivate *priv;
-	CamelSeekableStream *seekable_stream = CAMEL_SEEKABLE_STREAM (stream);
 
 	priv = CAMEL_STREAM_MEM_GET_PRIVATE (stream);
 
-	return priv->buffer->len <= seekable_stream->position;
+	return priv->buffer->len <= priv->position;
 }
 
 static goffset
-stream_mem_seek (CamelSeekableStream *stream,
+stream_mem_tell (GSeekable *seekable)
+{
+	CamelStreamMemPrivate *priv;
+
+	priv = CAMEL_STREAM_MEM_GET_PRIVATE (seekable);
+
+	return priv->position;
+}
+
+static gboolean
+stream_mem_can_seek (GSeekable *seekable)
+{
+	return TRUE;
+}
+
+static gboolean
+stream_mem_seek (GSeekable *seekable,
                  goffset offset,
                  GSeekType type,
+                 GCancellable *cancellable,
                  GError **error)
 {
 	CamelStreamMemPrivate *priv;
 	goffset position;
 
-	priv = CAMEL_STREAM_MEM_GET_PRIVATE (stream);
+	priv = CAMEL_STREAM_MEM_GET_PRIVATE (seekable);
 
 	switch (type) {
 	case G_SEEK_SET:
 		position = offset;
 		break;
 	case G_SEEK_CUR:
-		position = stream->position + offset;
+		position = priv->position + offset;
 		break;
 	case G_SEEK_END:
 		position = (priv->buffer)->len + offset;
@@ -176,12 +190,7 @@ stream_mem_seek (CamelSeekableStream *stream,
 		break;
 	}
 
-	if (stream->bound_end != CAMEL_STREAM_UNBOUND)
-		position = MIN (position, stream->bound_end);
-	if (stream->bound_start != CAMEL_STREAM_UNBOUND)
-		position = MAX (position, 0);
-	else
-		position = MAX (position, stream->bound_start);
+	position = MAX (position, 0);
 
 	if (position > priv->buffer->len) {
 		gint oldlen = priv->buffer->len;
@@ -190,9 +199,29 @@ stream_mem_seek (CamelSeekableStream *stream,
 			position - oldlen);
 	}
 
-	stream->position = position;
+	priv->position = position;
 
-	return position;
+	return TRUE;
+}
+
+static gboolean
+stream_mem_can_truncate (GSeekable *seekable)
+{
+	return FALSE;
+}
+
+static gboolean
+stream_mem_truncate_fn (GSeekable *seekable,
+                        goffset offset,
+                        GCancellable *cancellable,
+                        GError **error)
+{
+	/* XXX Don't bother translating this.  Camel never calls it. */
+	g_set_error (
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		"Truncation is not supported");
+
+	return FALSE;
 }
 
 static void
@@ -200,7 +229,6 @@ camel_stream_mem_class_init (CamelStreamMemClass *class)
 {
 	GObjectClass *object_class;
 	CamelStreamClass *stream_class;
-	CamelSeekableStreamClass *seekable_stream_class;
 
 	g_type_class_add_private (class, sizeof (CamelStreamMemPrivate));
 
@@ -211,9 +239,16 @@ camel_stream_mem_class_init (CamelStreamMemClass *class)
 	stream_class->read = stream_mem_read;
 	stream_class->write = stream_mem_write;
 	stream_class->eos = stream_mem_eos;
+}
 
-	seekable_stream_class = CAMEL_SEEKABLE_STREAM_CLASS (class);
-	seekable_stream_class->seek = stream_mem_seek;
+static void
+camel_stream_mem_seekable_init (GSeekableIface *interface)
+{
+	interface->tell = stream_mem_tell;
+	interface->can_seek = stream_mem_can_seek;
+	interface->seek = stream_mem_seek;
+	interface->can_truncate = stream_mem_can_truncate;
+	interface->truncate_fn = stream_mem_truncate_fn;
 }
 
 static void

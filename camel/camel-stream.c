@@ -80,7 +80,13 @@ static gint
 stream_reset (CamelStream *stream,
               GError **error)
 {
-	return 0;
+	gboolean success = TRUE;
+
+	if (G_IS_SEEKABLE (stream))
+		success = g_seekable_seek (
+			G_SEEKABLE (stream), 0, G_SEEK_SET, NULL, error);
+
+	return success ? 0 : -1;
 }
 
 static void

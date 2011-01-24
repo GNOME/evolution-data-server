@@ -56,7 +56,6 @@ multipart_signed_clip_stream (CamelMultipartSigned *mps,
 {
 	CamelDataWrapper *data_wrapper;
 	CamelStream *stream;
-	goffset position;
 	gchar *buffer;
 	gssize n_read;
 	gsize length;
@@ -64,9 +63,9 @@ multipart_signed_clip_stream (CamelMultipartSigned *mps,
 	data_wrapper = CAMEL_DATA_WRAPPER (mps);
 	stream = data_wrapper->stream;
 
-	position = camel_seekable_stream_seek (
-		CAMEL_SEEKABLE_STREAM (stream), start, G_SEEK_SET, error);
-	if (position < 0)
+	if (!g_seekable_seek (
+		G_SEEKABLE (stream), start,
+		G_SEEK_SET, cancellable, error))
 		return NULL;
 
 	length = end - start;

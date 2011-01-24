@@ -30,7 +30,7 @@
 #define CAMEL_STREAM_MEM_H
 
 #include <sys/types.h>
-#include <camel/camel-seekable-stream.h>
+#include <camel/camel-stream.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_STREAM_MEM \
@@ -58,12 +58,12 @@ typedef struct _CamelStreamMemClass CamelStreamMemClass;
 typedef struct _CamelStreamMemPrivate CamelStreamMemPrivate;
 
 struct _CamelStreamMem {
-	CamelSeekableStream parent;
+	CamelStream parent;
 	CamelStreamMemPrivate *priv;
 };
 
 struct _CamelStreamMemClass {
-	CamelSeekableStreamClass parent_class;
+	CamelStreamClass parent_class;
 };
 
 GType		camel_stream_mem_get_type	(void);

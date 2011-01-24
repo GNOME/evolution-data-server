@@ -31,7 +31,7 @@
 #define CAMEL_STREAM_BUFFER_H
 
 #include <stdio.h>
-#include <camel/camel-seekable-stream.h>
+#include <camel/camel-stream.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_STREAM_BUFFER \

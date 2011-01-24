@@ -34,7 +34,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include <camel/camel-seekable-stream.h>
+#include <camel/camel-stream.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_STREAM_FS \
@@ -62,12 +62,12 @@ typedef struct _CamelStreamFsClass CamelStreamFsClass;
 typedef struct _CamelStreamFsPrivate CamelStreamFsPrivate;
 
 struct _CamelStreamFs {
-	CamelSeekableStream parent;
+	CamelStream parent;
 	CamelStreamFsPrivate *priv;
 };
 
 struct _CamelStreamFsClass {
-	CamelSeekableStreamClass parent_class;
+	CamelStreamClass parent_class;
 };
 
 GType		camel_stream_fs_get_type	(void);

@@ -1400,7 +1400,7 @@ imapx_untagged (CamelIMAPXServer *imap,
 			if (job && job->error == NULL) {
 				if (job->u.get_message.use_multi_fetch) {
 					job->u.get_message.body_offset = finfo->offset;
-					camel_seekable_stream_seek ((CamelSeekableStream *)job->u.get_message.stream, finfo->offset, G_SEEK_SET, NULL);
+					g_seekable_seek (G_SEEKABLE (job->u.get_message.stream), finfo->offset, G_SEEK_SET, NULL, NULL);
 				}
 
 				job->u.get_message.body_len = camel_stream_write_to_stream (finfo->body, job->u.get_message.stream, job->cancellable, &job->error);
@@ -3261,7 +3261,7 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		failed = TRUE;
 		job->u.get_message.body_len = -1;
 	} else  if (job->u.get_message.use_multi_fetch) {
-		gsize really_fetched = CAMEL_SEEKABLE_STREAM (job->u.get_message.stream)->position;
+		gsize really_fetched = g_seekable_tell (G_SEEKABLE (job->u.get_message.stream));
 		/* Don't automatically stop when we reach the reported message
 		   size -- some crappy servers (like Microsoft Exchange) have
 		   a tendency to lie about it. Keep going (one request at a
