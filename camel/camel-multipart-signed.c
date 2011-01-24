@@ -39,7 +39,6 @@
 #include "camel-mime-part.h"
 #include "camel-mime-part.h"
 #include "camel-multipart-signed.h"
-#include "camel-seekable-substream.h"
 #include "camel-stream-filter.h"
 #include "camel-stream-mem.h"
 

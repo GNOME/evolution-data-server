@@ -43,7 +43,6 @@
 #include "camel-multipart-encrypted.h"
 #include "camel-multipart-signed.h"
 #include "camel-multipart.h"
-#include "camel-seekable-substream.h"
 #include "camel-stream-filter.h"
 #include "camel-stream-fs.h"
 #include "camel-stream-mem.h"

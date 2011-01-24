@@ -1889,23 +1889,6 @@ camel_seekable_stream_get_type
 </SECTION>
 
 <SECTION>
-<FILE>camel-seekable-substream</FILE>
-<TITLE>CamelSeekableSubstream</TITLE>
-CamelSeekableSubstream
-camel_seekable_substream_new
-<SUBSECTION Standard>
-CAMEL_SEEKABLE_SUBSTREAM
-CAMEL_IS_SEEKABLE_SUBSTREAM
-CAMEL_TYPE_SEEKABLE_SUBSTREAM
-CAMEL_SEEKABLE_SUBSTREAM_CLASS
-CAMEL_IS_SEEKABLE_SUBSTREAM_CLASS
-CAMEL_SEEKABLE_SUBSTREAM_GET_CLASS
-CamelSeekableSubstreamClass
-<SUBSECTION Private>
-camel_seekable_substream_get_type
-</SECTION>
-
-<SECTION>
 <FILE>camel-service</FILE>
 <TITLE>CamelService</TITLE>
 CamelService

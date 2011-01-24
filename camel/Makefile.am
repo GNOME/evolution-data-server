@@ -212,7 +212,6 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-operation.c			\
 	camel-partition-table.c			\
 	camel-seekable-stream.c			\
-	camel-seekable-substream.c		\
 	camel-stream-buffer.c			\
 	camel-stream-filter.c			\
 	camel-stream-fs.c			\
@@ -283,7 +282,6 @@ libcamelinclude_HEADERS =			\
 	camel-partition-table.h			\
 	camel-search-private.h			\
 	camel-seekable-stream.h			\
-	camel-seekable-substream.h		\
 	camel-stream-buffer.h			\
 	camel-stream-filter.h			\
 	camel-stream-fs.h			\

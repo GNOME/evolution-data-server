@@ -1954,6 +1954,34 @@ camel-search-private
 camel-search-sql-sexp.h
 
 
+<!-- ##### SECTION ./tmpl/camel-seekable-substream.sgml:Image ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-seekable-substream.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-seekable-substream.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-seekable-substream.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-seekable-substream.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-seekable-substream.sgml:Title ##### -->
+CamelSeekableSubstream
+
+
 <!-- ##### SECTION ./tmpl/camel-sendmail-transport.sgml:Image ##### -->
 
 
@@ -4333,6 +4361,12 @@ streams
 
 @old_base: 
 @new: 
+
+<!-- ##### STRUCT CamelSeekableSubstream ##### -->
+<para>
+
+</para>
+
 
 <!-- ##### STRUCT CamelSendmailTransport ##### -->
 <para>
@@ -8423,6 +8457,16 @@ streams
 @len: 
 @type: 
 @words: 
+
+<!-- ##### FUNCTION camel_seekable_substream_new ##### -->
+<para>
+
+</para>
+
+@parent_stream: 
+@start: 
+@end: 
+@Returns: 
 
 <!-- ##### FUNCTION camel_service_connect ##### -->
 <para>
