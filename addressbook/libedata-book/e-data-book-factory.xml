@@ -6,9 +6,9 @@
   Copyright (C) 2005 Opened Hand Ltd
   Copyright (C) 2009 Intel Corporation
 -->
-<node name="/org/gnome/evolution/dataserver/addressbook/BookFactory">
+<node name="/org/gnome/evolution/dataserver/AddressBookFactory">
 
-  <interface name="org.gnome.evolution.dataserver.addressbook.BookFactory">
+  <interface name="org.gnome.evolution.dataserver.AddressBookFactory">
     <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="EDataBookFactory"/>
     <annotation name="org.freedesktop.DBus.GLib.Singleton" value="true"/>
 

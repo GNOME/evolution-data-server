@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <node>
-  <interface name="org.gnome.evolution.dataserver.calendar.CalView">
+  <interface name="org.gnome.evolution.dataserver.CalendarView">
     <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="EDataCalView"/>
     
     <method name="start">

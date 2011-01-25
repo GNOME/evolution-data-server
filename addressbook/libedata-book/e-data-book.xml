@@ -8,7 +8,7 @@
 -->
 <node>
 
-  <interface name="org.gnome.evolution.dataserver.addressbook.Book">
+  <interface name="org.gnome.evolution.dataserver.AddressBook">
     <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="EDataBook"/>
 
     <signal name="writable">

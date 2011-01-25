@@ -208,7 +208,7 @@ e_data_book_status_to_string (EDataBookStatus status)
 GQuark
 e_data_book_error_quark (void)
 {
-	#define ERR_PREFIX "org.gnome.evolution.dataserver.addressbook.Book."
+	#define ERR_PREFIX "org.gnome.evolution.dataserver.AddressBook."
 
 	static const GDBusErrorEntry entries[] = {
 		{ E_DATA_BOOK_STATUS_SUCCESS,				ERR_PREFIX "Success" },
@@ -645,7 +645,7 @@ construct_bookview_path (void)
 {
 	static volatile guint counter = 1;
 
-	return g_strdup_printf ("/org/gnome/evolution/dataserver/addressbook/BookView/%d/%d",
+	return g_strdup_printf ("/org/gnome/evolution/dataserver/AddressBookView/%d/%d",
 				getpid (),
 				g_atomic_int_exchange_and_add ((int*)&counter, 1));
 }

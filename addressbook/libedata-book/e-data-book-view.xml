@@ -8,7 +8,7 @@
 -->
 <node>
 
-  <interface name="org.gnome.evolution.dataserver.addressbook.BookView">
+  <interface name="org.gnome.evolution.dataserver.AddressBookView">
     <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="EDataBookView"/>
 
     <method name="start">

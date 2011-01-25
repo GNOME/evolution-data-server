@@ -228,7 +228,7 @@ construct_book_factory_path (void)
 	static volatile gint counter = 1;
 
 	return g_strdup_printf (
-		"/org/gnome/evolution/dataserver/addressbook/%d/%u",
+		"/org/gnome/evolution/dataserver/AddressBook/%d/%u",
 		getpid (), g_atomic_int_exchange_and_add (&counter, 1));
 }
 
@@ -506,9 +506,6 @@ offline_state_changed_cb (EOfflineListener *eol, EDataBookFactory *factory)
 		E_DATA_BOOK_MODE_REMOTE : E_DATA_BOOK_MODE_LOCAL);
 }
 
-#define E_DATA_BOOK_FACTORY_SERVICE_NAME \
-	"org.gnome.evolution.dataserver.AddressBook"
-
 static void
 on_bus_acquired (GDBusConnection *connection,
                  const gchar     *name,
@@ -521,7 +518,7 @@ on_bus_acquired (GDBusConnection *connection,
 	registration_id = e_data_book_factory_register_gdbus_object (
 		factory,
 		connection,
-		"/org/gnome/evolution/dataserver/addressbook/BookFactory",
+		"/org/gnome/evolution/dataserver/AddressBookFactory",
 		&error);
 
 	if (error)
@@ -631,7 +628,7 @@ main (gint argc, gchar **argv)
 		G_CALLBACK (offline_state_changed_cb), factory);
 
 	owner_id = g_bus_own_name (G_BUS_TYPE_SESSION,
-		E_DATA_BOOK_FACTORY_SERVICE_NAME,
+		ADDRESS_BOOK_DBUS_SERVICE_NAME,
 		G_BUS_NAME_OWNER_FLAGS_NONE,
 		on_bus_acquired,
 		on_name_acquired,

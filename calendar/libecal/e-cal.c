@@ -212,7 +212,7 @@ e_calendar_error_quark (void)
 static ECalendarStatus
 get_status_from_error (const GError *error)
 {
-	#define err(a,b) "org.gnome.evolution.dataserver.calendar.Cal." a, b
+	#define err(a,b) "org.gnome.evolution.dataserver.Calendar." a, b
 	static struct {
 		const gchar *name;
 		ECalendarStatus err_code;
@@ -702,8 +702,8 @@ e_cal_activate (GError **error)
 	cal_factory_proxy = e_gdbus_cal_factory_proxy_new_for_bus_sync (
 		G_BUS_TYPE_SESSION,
 		G_DBUS_PROXY_FLAGS_NONE,
-		"org.gnome.evolution.dataserver.Calendar",
-		"/org/gnome/evolution/dataserver/calendar/CalFactory",
+		CALENDAR_DBUS_SERVICE_NAME,
+		"/org/gnome/evolution/dataserver/CalendarFactory",
 		NULL,
 		error);
 
@@ -715,11 +715,11 @@ e_cal_activate (GError **error)
 	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy));
 	g_dbus_connection_set_exit_on_close (connection, FALSE);
 	cal_connection_closed_id = g_dbus_connection_signal_subscribe (connection,
-		NULL,						/* sender */
-		"org.freedesktop.DBus",				/* interface */
-		"NameOwnerChanged",				/* member */
-		"/org/freedesktop/DBus",			/* object_path */
-		"org.gnome.evolution.dataserver.Calendar",	/* arg0 */
+		NULL,					/* sender */
+		"org.freedesktop.DBus",			/* interface */
+		"NameOwnerChanged",			/* member */
+		"/org/freedesktop/DBus",		/* object_path */
+		CALENDAR_DBUS_SERVICE_NAME,		/* arg0 */
 		G_DBUS_SIGNAL_FLAGS_NONE,
 		cal_factory_connection_gone_cb, NULL, NULL);
 
@@ -897,7 +897,7 @@ e_cal_new (ESource *source, ECalSourceType type)
 
 	priv->gdbus_cal = e_gdbus_cal_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy)),
 						      G_DBUS_PROXY_FLAGS_NONE,
-						      "org.gnome.evolution.dataserver.Calendar",
+						      CALENDAR_DBUS_SERVICE_NAME,
 						      path,
 						      NULL,
 						      &error);
@@ -914,11 +914,11 @@ e_cal_new (ESource *source, ECalSourceType type)
 
 	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (priv->gdbus_cal));
 	priv->gone_signal_id = g_dbus_connection_signal_subscribe (connection,
-		"org.freedesktop.DBus",				/* sender */
-		"org.freedesktop.DBus",				/* interface */
-		"NameOwnerChanged",				/* member */
-		"/org/freedesktop/DBus",			/* object_path */
-		"org.gnome.evolution.dataserver.Calendar",	/* arg0 */
+		"org.freedesktop.DBus",			/* sender */
+		"org.freedesktop.DBus",			/* interface */
+		"NameOwnerChanged",			/* member */
+		"/org/freedesktop/DBus",		/* object_path */
+		CALENDAR_DBUS_SERVICE_NAME,		/* arg0 */
 		G_DBUS_SIGNAL_FLAGS_NONE,
 		gdbus_cal_connection_gone_cb, ecal, NULL);
 	g_signal_connect (connection, "closed", G_CALLBACK (gdbus_cal_closed_cb), ecal);
@@ -4060,7 +4060,7 @@ e_cal_get_query (ECal *ecal, const gchar *sexp, ECalView **query, GError **error
 
 	gdbus_calview = e_gdbus_cal_view_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy)),
 							G_DBUS_PROXY_FLAGS_NONE,
-							"org.gnome.evolution.dataserver.Calendar",
+							CALENDAR_DBUS_SERVICE_NAME,
 							query_path,
 							NULL,
 							error);

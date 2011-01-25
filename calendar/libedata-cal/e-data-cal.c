@@ -55,7 +55,7 @@ struct _EDataCalPrivate {
 GQuark
 e_data_cal_error_quark (void)
 {
-	#define ERR_PREFIX "org.gnome.evolution.dataserver.calendar.Cal."
+	#define ERR_PREFIX "org.gnome.evolution.dataserver.Calendar."
 
 	static const GDBusErrorEntry entries[] = {
 		{ Success,				ERR_PREFIX "Success" },
@@ -458,7 +458,7 @@ static gchar *
 construct_calview_path (void)
 {
 	static guint counter = 1;
-	return g_strdup_printf ("/org/gnome/evolution/dataserver/calendar/CalView/%d/%d", getpid(), counter++);
+	return g_strdup_printf ("/org/gnome/evolution/dataserver/CalendarView/%d/%d", getpid(), counter++);
 }
 
 /* EDataCal::getQuery method */

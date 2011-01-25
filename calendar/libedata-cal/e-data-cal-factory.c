@@ -244,7 +244,7 @@ construct_cal_factory_path (void)
 	static volatile gint counter = 1;
 
 	return g_strdup_printf (
-		"/org/gnome/evolution/dataserver/calendar/%d/%u",
+		"/org/gnome/evolution/dataserver/Calendar/%d/%u",
 		getpid (), g_atomic_int_exchange_and_add (&counter, 1));
 }
 
@@ -822,9 +822,6 @@ offline_state_changed_cb (EOfflineListener *eol,
 		factory, state == EOL_STATE_ONLINE ? Remote : Local);
 }
 
-#define E_DATA_CAL_FACTORY_SERVICE_NAME \
-	"org.gnome.evolution.dataserver.Calendar"
-
 static void
 on_bus_acquired (GDBusConnection *connection,
                  const gchar     *name,
@@ -837,11 +834,11 @@ on_bus_acquired (GDBusConnection *connection,
 	registration_id = e_data_cal_factory_register_gdbus_object (
 		factory,
 		connection,
-		"/org/gnome/evolution/dataserver/calendar/CalFactory",
+		"/org/gnome/evolution/dataserver/CalendarFactory",
 		&error);
 
 	if (error)
-		die ("Failed to register a CalFactory object", error);
+		die ("Failed to register a CalendarFactory object", error);
 
 	g_assert (registration_id > 0);
 }
@@ -953,7 +950,7 @@ main (gint argc, gchar **argv)
 		G_CALLBACK (offline_state_changed_cb), factory);
 
 	owner_id = g_bus_own_name (G_BUS_TYPE_SESSION,
-		E_DATA_CAL_FACTORY_SERVICE_NAME,
+		CALENDAR_DBUS_SERVICE_NAME,
 		G_BUS_NAME_OWNER_FLAGS_NONE,
 		on_bus_acquired,
 		on_name_acquired,

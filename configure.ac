@@ -79,6 +79,25 @@ EDS_MINOR_VERSION=eds_minor_version
 EDS_MICRO_VERSION=eds_micro_version
 
 dnl ******************************
+dnl D-Bus versioning
+dnl ******************************
+ADDRESS_BOOK_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.AddressBook0"
+CALENDAR_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Calendar0"
+
+AC_DEFINE_UNQUOTED(
+       ADDRESS_BOOK_DBUS_SERVICE_NAME,
+       ["$ADDRESS_BOOK_DBUS_SERVICE_NAME"],
+       [D-Bus service name for the address book factory])
+
+AC_DEFINE_UNQUOTED(
+       CALENDAR_DBUS_SERVICE_NAME,
+       ["$CALENDAR_DBUS_SERVICE_NAME"],
+       [D-Bus service name for the calendar factory])
+
+AC_SUBST(ADDRESS_BOOK_DBUS_SERVICE_NAME)
+AC_SUBST(CALENDAR_DBUS_SERVICE_NAME)
+
+dnl ******************************
 dnl Libtool versioning
 dnl ******************************
 LIBEDATASERVER_CURRENT=14
@@ -1380,22 +1399,10 @@ dnl separate camel from e-d-s? or should it be under the same spot? same for now
 camel_providerdir='${libdir}'/evolution-data-server/camel-providers
 AC_SUBST(camel_providerdir)
 
-dnl ******************************
-dnl IDL/Component Versioning
-dnl ******************************
-INTERFACE_VERSION="$BASE_VERSION"
-AC_SUBST(INTERFACE_VERSION)
-AC_DEFINE_UNQUOTED(INTERFACE_VERSION, "$INTERFACE_VERSION", [IDL interface version (Major.Minor)])
-
-EVO_SUBST_SERVER_RULE='%.server.in: %.server.in.in ; sed -e "s|\@BINDIR\@|$(bindir)|" -e "s|\@LIBEXECDIR_IN_SERVER_FILE\@|$(LIBEXECDIR_IN_SERVER_FILE)|" -e "s|\@COMPONENTDIR\@|$(componentdir)|" -e "s|\@IMPORTERSDIR\@|$(importersdir)|" -e "s|\@EXEEXT\@|$(EXEEXT)|" -e "s|\@VERSION\@|$(BASE_VERSION)|" -e "s|\@API_VERSION\@|$(API_VERSION)|" -e "s|\@INTERFACE_VERSION\@|$(INTERFACE_VERSION)|" $< > $@'
-EVO_NAME_SERVER_RULE='%_$(API_VERSION).server: %.server ; mv $< $@'
-AC_SUBST(EVO_SUBST_SERVER_RULE)
-AC_SUBST(EVO_NAME_SERVER_RULE)
-
 dnl *******************
 dnl D-BUS service stuff
 dnl *******************
-EVO_SUBST_SERVICE_RULE='%.service: %.service.in Makefile ; sed -e "s|\@BINDIR\@|$(bindir)|" -e "s|\@LIBEXECDIR\@|$(libexecdir)|" -e "s|\@COMPONENTDIR\@|$(componentdir)|" -e "s|\@IMPORTERSDIR\@|$(importersdir)|" -e "s|\@VERSION\@|$(BASE_VERSION)|" -e "s|\@EXEEXT\@|$(EXEEXT)|" -e "s|\@INTERFACE_VERSION\@|$(INTERFACE_VERSION)|" $< > $@'
+EVO_SUBST_SERVICE_RULE='%.service: %.service.in Makefile ; sed -e "s|\@libexecdir\@|$(libexecdir)|" -e s"|\@ADDRESS_BOOK_DBUS_SERVICE_NAME\@|$(ADDRESS_BOOK_DBUS_SERVICE_NAME)|" -e "s|\@CALENDAR_DBUS_SERVICE_NAME\@|$(CALENDAR_DBUS_SERVICE_NAME)|" $< > $@'
 AC_SUBST(EVO_SUBST_SERVICE_RULE)
 
 dnl ******************************

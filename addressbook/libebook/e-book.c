@@ -47,8 +47,6 @@
 #include "e-gdbus-egdbusbook.h"
 #include "e-gdbus-egdbusbookview.h"
 
-#define E_DATA_BOOK_FACTORY_SERVICE_NAME "org.gnome.evolution.dataserver.AddressBook"
-
 static gchar ** flatten_stringlist (GList *list);
 static GList *array_to_stringlist (gchar **list);
 static EList *array_to_elist (gchar **list);
@@ -322,8 +320,8 @@ e_book_activate (GError **error)
 	book_factory_proxy = e_gdbus_book_factory_proxy_new_for_bus_sync (
 		G_BUS_TYPE_SESSION,
 		G_DBUS_PROXY_FLAGS_NONE,
-		E_DATA_BOOK_FACTORY_SERVICE_NAME,
-		"/org/gnome/evolution/dataserver/addressbook/BookFactory",
+		ADDRESS_BOOK_DBUS_SERVICE_NAME,
+		"/org/gnome/evolution/dataserver/AddressBookFactory",
 		NULL,
 		error);
 
@@ -1872,7 +1870,7 @@ e_book_get_book_view (EBook       *book,
 
 	gdbus_bookview = e_gdbus_book_view_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory_proxy)),
 							G_DBUS_PROXY_FLAGS_NONE,
-							E_DATA_BOOK_FACTORY_SERVICE_NAME,
+							ADDRESS_BOOK_DBUS_SERVICE_NAME,
 							view_path,
 							NULL,
 							error);
@@ -1911,7 +1909,7 @@ get_book_view_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	if (view_path) {
 		gdbus_bookview = e_gdbus_book_view_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory_proxy)),
 							G_DBUS_PROXY_FLAGS_NONE,
-							E_DATA_BOOK_FACTORY_SERVICE_NAME,
+							ADDRESS_BOOK_DBUS_SERVICE_NAME,
 							view_path,
 							NULL,
 							&error);
@@ -3171,7 +3169,7 @@ e_book_new (ESource *source, GError **error)
 
 	book->priv->gdbus_book = e_gdbus_book_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory_proxy)),
 						      G_DBUS_PROXY_FLAGS_NONE,
-						      E_DATA_BOOK_FACTORY_SERVICE_NAME,
+						      ADDRESS_BOOK_DBUS_SERVICE_NAME,
 						      path,
 						      NULL,
 						      &err);
@@ -3438,7 +3436,7 @@ e_book_new_default_addressbook (GError **error)
 static EBookStatus
 get_status_from_error (GError *error)
 {
-	#define err(a,b) "org.gnome.evolution.dataserver.addressbook.Book." a, b
+	#define err(a,b) "org.gnome.evolution.dataserver.AddressBook." a, b
 	static struct {
 		const gchar *name;
 		EBookStatus err_code;
