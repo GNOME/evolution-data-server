@@ -645,6 +645,8 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	GtkWidget *label3;
 	GtkWidget *button_delete;
 
+	gtk_window_set_default_size (GTK_WINDOW (dialog), -1, 400);
+
 	dialog_content = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 
 	table_categories = gtk_table_new (5, 1, FALSE);
