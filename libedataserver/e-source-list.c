@@ -191,12 +191,14 @@ sync_idle_callback (ESourceList *list)
 {
 	GError *error = NULL;
 
+	g_object_ref (list);
 	if (!e_source_list_sync (list, &error)) {
 		g_warning ("Cannot update \"%s\": %s", list->priv->gconf_path, error ? error->message : "Unknown error");
 		g_error_free (error);
 	}
 
 	list->priv->sync_idle_id= 0;
+	g_object_unref (list);
 
 	return FALSE;
 }
@@ -205,11 +207,15 @@ static void
 group_changed_callback (ESourceGroup *group,
 			ESourceList *list)
 {
+	g_object_ref (list);
+
 	if (!list->priv->ignore_group_changed)
 		g_signal_emit (list, signals[CHANGED], 0);
 
 	if (list->priv->sync_idle_id == 0)
 		list->priv->sync_idle_id = g_idle_add ((GSourceFunc) sync_idle_callback, list);
+
+	g_object_unref (list);
 }
 
 static void
@@ -218,7 +224,9 @@ conf_changed_callback (GConfClient *client,
 		       GConfEntry *entry,
 		       ESourceList *list)
 {
+	g_object_ref (list);
 	load_from_gconf (list);
+	g_object_unref (list);
 }
 
 /* GObject methods.  */
@@ -229,6 +237,11 @@ static void
 impl_dispose (GObject *object)
 {
 	ESourceListPrivate *priv = E_SOURCE_LIST (object)->priv;
+
+	if (priv->gconf_client != NULL && priv->gconf_notify_id != 0) {
+		gconf_client_notify_remove (priv->gconf_client, priv->gconf_notify_id);
+		priv->gconf_notify_id = 0;
+	}
 
 	if (priv->sync_idle_id != 0) {
 		GError *error = NULL;
@@ -252,16 +265,8 @@ impl_dispose (GObject *object)
 	}
 
 	if (priv->gconf_client != NULL) {
-		if (priv->gconf_notify_id != 0) {
-			gconf_client_notify_remove (priv->gconf_client,
-						    priv->gconf_notify_id);
-			priv->gconf_notify_id = 0;
-		}
-
 		g_object_unref (priv->gconf_client);
 		priv->gconf_client = NULL;
-	} else {
-		g_assert_not_reached ();
 	}
 
 	(* G_OBJECT_CLASS (e_source_list_parent_class)->dispose) (object);
@@ -271,12 +276,6 @@ static void
 impl_finalize (GObject *object)
 {
 	ESourceListPrivate *priv = E_SOURCE_LIST (object)->priv;
-
-	if (priv->gconf_notify_id != 0) {
-		gconf_client_notify_remove (priv->gconf_client,
-					    priv->gconf_notify_id);
-		priv->gconf_notify_id = 0;
-	}
 
 	g_free (priv->gconf_path);
 	g_free (priv);
