@@ -122,7 +122,7 @@ append_string_verbatim (CamelMimeFilter *mime_filter,
 }
 
 static gint
-citation_depth (const gchar *in)
+citation_depth (const gchar *in, const gchar *inend)
 {
 	register const gchar *inptr = in;
 	gint depth = 1;
@@ -136,11 +136,11 @@ citation_depth (const gchar *in)
 		return 0;
 #endif
 
-	while (*inptr != '\n') {
+	while (inptr < inend && *inptr != '\n') {
 		if (*inptr == ' ')
 			inptr++;
 
-		if (*inptr++ != '>')
+		if (inptr >= inend || *inptr++ != '>')
 			break;
 
 		depth++;
@@ -285,7 +285,7 @@ html_convert (CamelMimeFilter *mime_filter,
 		depth = 0;
 
 		if (priv->flags & CAMEL_MIME_FILTER_TOHTML_MARK_CITATION) {
-			if ((depth = citation_depth (start)) > 0) {
+			if ((depth = citation_depth (start, inend)) > 0) {
 				/* FIXME: we could easily support multiple color depths here */
 
 				outptr = check_size (mime_filter, outptr, &outend, 25);
