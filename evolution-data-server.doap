@@ -41,7 +41,7 @@
     <foaf:Person>
       <foaf:name>Ross Burton</foaf:name>
       <foaf:mbox rdf:resource="mailto:ross@burtonini.com" />
-      <gnome:userid>ross</gnome:userid>
+      <gnome:userid>rburton</gnome:userid>
     </foaf:Person>
   </maintainer>
 
