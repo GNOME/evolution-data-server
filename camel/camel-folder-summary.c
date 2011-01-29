@@ -4958,4 +4958,4 @@ bdata_extract_string (/* const */ gchar **part)
 
 	return val;
 }
-	
+

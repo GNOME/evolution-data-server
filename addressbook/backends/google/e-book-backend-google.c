@@ -588,8 +588,8 @@ get_new_contacts (EBookBackend *backend)
 	/* Query for new contacts asynchronously */
 	cancellable = start_operation (backend, 0, _("Querying for updated contacts…"));
 	gdata_contacts_service_query_contacts_async (GDATA_CONTACTS_SERVICE (priv->service), query, cancellable,
-	                                             (GDataQueryProgressCallback) (last_updated ? process_subsequent_entry : process_initial_entry),
-	                                             backend, (GAsyncReadyCallback) get_new_contacts_cb, backend);
+						     (GDataQueryProgressCallback) (last_updated ? process_subsequent_entry : process_initial_entry),
+						     backend, (GAsyncReadyCallback) get_new_contacts_cb, backend);
 
 	g_object_unref (cancellable);
 	g_object_unref (query);
@@ -706,7 +706,7 @@ get_groups (EBookBackend *backend)
 	/* Run the query asynchronously */
 	cancellable = start_operation (backend, 1, _("Querying for updated groups…"));
 	gdata_contacts_service_query_groups_async (GDATA_CONTACTS_SERVICE (priv->service), query, cancellable,
-	                                           (GDataQueryProgressCallback) process_group, backend, (GAsyncReadyCallback) get_groups_cb, backend);
+						   (GDataQueryProgressCallback) process_group, backend, (GAsyncReadyCallback) get_groups_cb, backend);
 
 	g_object_unref (cancellable);
 	g_object_unref (query);
@@ -726,7 +726,7 @@ create_group (EBookBackend *backend, const gchar *category_name, GError **error)
 
 	/* Insert the new group */
 	new_group = GDATA_ENTRY (gdata_contacts_service_insert_group (GDATA_CONTACTS_SERVICE (priv->service), GDATA_CONTACTS_GROUP (group),
-	                                                              NULL, error));
+								      NULL, error));
 	g_object_unref (group);
 
 	if (new_group == NULL)
@@ -890,7 +890,7 @@ e_book_backend_google_create_contact (EBookBackend *backend, EDataBook *book, gu
 
 	cancellable = start_operation (backend, opid, _("Creating new contact…"));
 	gdata_contacts_service_insert_contact_async (GDATA_CONTACTS_SERVICE (priv->service), GDATA_CONTACTS_CONTACT (entry), cancellable,
-	                                             (GAsyncReadyCallback) create_contact_cb, data);
+						     (GAsyncReadyCallback) create_contact_cb, data);
 	g_object_unref (cancellable);
 	g_object_unref (entry);
 }
