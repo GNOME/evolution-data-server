@@ -51,11 +51,8 @@ static void
 camel_tcp_stream_finalize (GObject *object)
 {
 	CamelTcpStream *stream = CAMEL_TCP_STREAM (object);
-	CamelTcpStreamPrivate *priv = stream->priv;
 
-	priv = stream->priv;
-	g_free (priv->socks_host);
-	priv->socks_host = NULL;
+	g_free (stream->priv->socks_host);
 
 	G_OBJECT_CLASS (camel_tcp_stream_parent_class)->finalize (object);
 }
