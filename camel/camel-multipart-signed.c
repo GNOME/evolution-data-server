@@ -118,7 +118,7 @@ multipart_signed_skip_content (CamelMimeParser *cmp)
 		break;
 	case CAMEL_MIME_PARSER_STATE_MULTIPART:
 		/* embedded multipart */
-		while ((state = camel_mime_parser_step (cmp, &buf, &len)) != CAMEL_MIME_PARSER_STATE_MULTIPART_END)
+		while (camel_mime_parser_step (cmp, &buf, &len) != CAMEL_MIME_PARSER_STATE_MULTIPART_END)
 			multipart_signed_skip_content (cmp);
 		break;
 	default:
