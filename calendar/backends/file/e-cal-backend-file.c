@@ -3636,7 +3636,6 @@ main (gint argc, gchar **argv)
 {
 	gchar * line = NULL;
 	gsize len = 0;
-	gssize read;
 	ECalBackendFile* cbfile;
 	gint num = 0;
 	GError *error = NULL;
@@ -3686,7 +3685,7 @@ main (gint argc, gchar **argv)
 		fin = stdin;
 	}
 
-	while ((read = private_getline (&line, &len, fin)) != -1) {
+	while (private_getline (&line, &len, fin) != -1) {
 		g_print ("Query %d: %s", num++, line);
 
 		if (only_execute)
