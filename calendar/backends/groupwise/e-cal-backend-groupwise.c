@@ -487,14 +487,13 @@ get_deltas (gpointer handle)
 		gchar *cache_comp_str = NULL, *modif_comp_str, *rid = NULL;
 		icaltimetype *tt = NULL, *c_tt = NULL;
 		const gchar *uid;
-		gint r_key;
 
 		item = E_GW_ITEM (item_list->data);
 		modified_comp = e_gw_item_to_cal_component (item, cbgw);
 		if (!modified_comp) {
 			continue;
 		}
-		if ((r_key = e_gw_item_get_recurrence_key (item)) != 0)
+		if (e_gw_item_get_recurrence_key (item) != 0)
 			rid = e_cal_component_get_recurid_as_string (modified_comp);
 
 		e_cal_component_get_uid (modified_comp, &uid);
