@@ -166,32 +166,32 @@ struct _EGdbusBookViewIface
 
   /* Signal handlers for receiving D-Bus signals: */
   void (*contacts_added) (
-        EGdbusBookView *object,
-        const gchar * const *arg_vcards);
+	EGdbusBookView *object,
+	const gchar * const *arg_vcards);
   void (*contacts_changed) (
-        EGdbusBookView *object,
-        const gchar * const *arg_vcards);
+	EGdbusBookView *object,
+	const gchar * const *arg_vcards);
   void (*contacts_removed) (
-        EGdbusBookView *object,
-        const gchar * const *arg_ids);
+	EGdbusBookView *object,
+	const gchar * const *arg_ids);
   void (*status_message) (
-        EGdbusBookView *object,
-        const gchar *arg_message);
+	EGdbusBookView *object,
+	const gchar *arg_message);
   void (*complete) (
-        EGdbusBookView *object,
-        guint arg_status,
-        const gchar *arg_message);
+	EGdbusBookView *object,
+	guint arg_status,
+	const gchar *arg_message);
 
   /* Signal handlers for handling D-Bus method calls: */
   gboolean (*handle_start) (
-        EGdbusBookView *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusBookView *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_stop) (
-        EGdbusBookView *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusBookView *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_dispose) (
-        EGdbusBookView *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusBookView *object,
+	GDBusMethodInvocation *invocation);
 };
 
 /* C Bindings for properties */

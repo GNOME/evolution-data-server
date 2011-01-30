@@ -33,7 +33,7 @@ get_required_fields_cb (EBookTestClosure *closure)
 
 	g_object_unref (closure->list);
 
-        g_main_loop_quit ((GMainLoop*) (closure->user_data));
+	g_main_loop_quit ((GMainLoop*) (closure->user_data));
 }
 
 gint

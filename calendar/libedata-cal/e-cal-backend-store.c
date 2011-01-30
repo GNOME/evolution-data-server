@@ -420,7 +420,7 @@ e_cal_backend_store_get_components_occuring_in_range (ECalBackendStore *store, t
 	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
 
 	if (!(l = e_intervaltree_search (priv->intervaltree, start, end)))
-                return NULL;
+		return NULL;
 
 	for (; l != NULL; l = g_list_next (l)) {
 		ECalComponent *comp = l->data;

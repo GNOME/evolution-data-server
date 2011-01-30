@@ -44,9 +44,9 @@ subtest_passed (SubTestId id)
 static void
 objects_added_cb (GObject *object, GList *objects, gpointer data)
 {
-        GList *l;
+	GList *l;
 
-        for (l = objects; l; l = l->next)
+	for (l = objects; l; l = l->next)
                 test_print ("Object added %s\n", icalcomponent_get_uid (l->data));
 
 	subtest_passed (SUBTEST_OBJECTS_ADDED);
@@ -55,9 +55,9 @@ objects_added_cb (GObject *object, GList *objects, gpointer data)
 static void
 objects_modified_cb (GObject *object, GList *objects, gpointer data)
 {
-        GList *l;
+	GList *l;
 
-        for (l = objects; l; l = l->next)
+	for (l = objects; l; l = l->next)
                 test_print ("Object modified %s\n", icalcomponent_get_uid (l->data));
 
 	subtest_passed (SUBTEST_OBJECTS_MODIFIED);
@@ -66,9 +66,9 @@ objects_modified_cb (GObject *object, GList *objects, gpointer data)
 static void
 objects_removed_cb (GObject *object, GList *objects, gpointer data)
 {
-        GList *l;
+	GList *l;
 
-        for (l = objects; l; l = l->next) {
+	for (l = objects; l; l = l->next) {
 		ECalComponentId *id = l->data;
 
                 test_print ("Object removed: uid: %s, rid: %s\n", id->uid,
@@ -109,7 +109,7 @@ alter_cal_cb (ECal *cal)
 			INITIAL_BEGIN_TIMEZONE, INITIAL_END_TIME,
 			INITIAL_END_TIMEZONE, EVENT_SUMMARY, &e_component,
 			&uid);
-        component = e_cal_component_get_icalcomponent (e_component);
+	component = e_cal_component_get_icalcomponent (e_component);
 
 	component_final = ecal_test_utils_cal_get_object (cal, uid);
 	ecal_test_utils_cal_assert_objects_equal_shallow (component,
@@ -124,13 +124,13 @@ alter_cal_cb (ECal *cal)
 	ecal_test_utils_cal_modify_object (cal, component, CALOBJ_MOD_ALL);
 
 	/* verify the modification */
-        component_final = ecal_test_utils_cal_get_object (cal, uid);
-        e_component_final = e_cal_component_new ();
-        ecal_test_utils_cal_component_set_icalcomponent (e_component_final,
-                                component_final);
+	component_final = ecal_test_utils_cal_get_object (cal, uid);
+	e_component_final = e_cal_component_new ();
+	ecal_test_utils_cal_component_set_icalcomponent (e_component_final,
+				component_final);
 
-        ecal_test_utils_cal_assert_e_cal_components_equal (e_component,
-                        e_component_final);
+	ecal_test_utils_cal_assert_e_cal_components_equal (e_component,
+			e_component_final);
 
 	/* remove the object */
 	ecal_test_utils_cal_remove_object (cal, uid);
@@ -171,12 +171,12 @@ main (gint argc, gchar **argv)
 
 	e_cal_view_start (view);
 
-        loop = g_main_loop_new (NULL, TRUE);
+	loop = g_main_loop_new (NULL, TRUE);
 	alter_cal_id = g_idle_add ((GSourceFunc) alter_cal_cb, cal);
-        complete_timeout_id = g_timeout_add_seconds (COMPLETE_TIMEOUT,
-                        (GSourceFunc) complete_timeout_cb, cal);
+	complete_timeout_id = g_timeout_add_seconds (COMPLETE_TIMEOUT,
+			(GSourceFunc) complete_timeout_cb, cal);
 
-        g_main_loop_run (loop);
+	g_main_loop_run (loop);
 
 	g_object_unref (view);
 

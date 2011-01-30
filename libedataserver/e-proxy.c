@@ -169,14 +169,14 @@ e_proxy_class_init (EProxyClass *klass)
          *
          * Emitted when proxy settings in gconf changes.
          **/
-        signals[CHANGED] =
+	signals[CHANGED] =
                 g_signal_new ("changed",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (EProxyClass, changed),
-                              NULL, NULL,
-                              g_cclosure_marshal_VOID__VOID,
-                              G_TYPE_NONE, 0);
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (EProxyClass, changed),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
 
 }
 
@@ -436,10 +436,10 @@ ep_manipulate_ipv6 (ProxyHostAddr *host_addr,
 	addr = g_new0 (struct in6_addr, 1);
 	mask = g_new0 (struct in6_addr, 1);
 
-        for (i = 0; i < 16; ++i) {
+	for (i = 0; i < 16; ++i) {
 		addr->s6_addr[i] = addr_in6->s6_addr[i];
-        }
-        if (netmask) {
+	}
+	if (netmask) {
 		gchar *endptr;
 		gint width = strtol (netmask, &endptr, 10);
 
@@ -454,11 +454,11 @@ ep_manipulate_ipv6 (ProxyHostAddr *host_addr,
 		}
 		mask->s6_addr[i] = (0xff << (8 - width % 8)) & 0xff;
 		ipv6_network_addr (addr, mask, addr);
-        } else {
+	} else {
 		for (i = 0; i < 16; ++i) {
 			mask->s6_addr[i] = 0xff;
 		}
-        }
+	}
 
 	host_addr->addr = addr;
 	host_addr->mask = mask;

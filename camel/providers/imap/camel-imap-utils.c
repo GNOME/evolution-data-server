@@ -148,8 +148,8 @@ imap_namespace_decode (const gchar **in, struct _namespace **namespace)
 
 			if (*inptr == ' ') {
 				/* parse extra flags... for now we
-                                   don't save them, but in the future
-                                   we may want to? */
+				   don't save them, but in the future
+				   we may want to? */
 				while (*inptr == ' ')
 					inptr++;
 
@@ -170,8 +170,8 @@ imap_namespace_decode (const gchar **in, struct _namespace **namespace)
 				goto exception;
 
 			/* there shouldn't be spaces according to the
-                           ABNF grammar, but we all know how closely
-                           people follow specs */
+			   ABNF grammar, but we all know how closely
+			   people follow specs */
 			while (*inptr == ' ')
 				inptr++;
 		}

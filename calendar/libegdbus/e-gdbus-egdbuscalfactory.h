@@ -161,10 +161,10 @@ struct _EGdbusCalFactoryIface
 
   /* Signal handlers for handling D-Bus method calls: */
   gboolean (*handle_get_cal) (
-        EGdbusCalFactory *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_source,
-        guint in_type);
+	EGdbusCalFactory *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_source,
+	guint in_type);
 };
 
 /* C Bindings for properties */

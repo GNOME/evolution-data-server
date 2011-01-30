@@ -507,7 +507,7 @@ impl_Cal_getQuery (EGdbusCal *object, GDBusMethodInvocation *invocation, const g
 
 	e_data_cal_notify_query (cal, invocation, EDC_ERROR (Success), path);
 
-        g_free (path);
+	g_free (path);
 
 	return TRUE;
 }

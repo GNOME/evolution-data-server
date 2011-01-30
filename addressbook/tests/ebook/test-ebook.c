@@ -88,7 +88,7 @@ main (gint argc, gchar **argv)
 		exit (0);
 	}
 
-        ebook_test_utils_book_open (book, FALSE);
+	ebook_test_utils_book_open (book, FALSE);
 
 	printf ("printing one contact\n");
 	print_one_email (book);

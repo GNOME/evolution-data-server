@@ -190,13 +190,13 @@ e_destination_copy (const EDestination *dest)
 
 	new_dest = e_destination_new ();
 
-        new_dest->priv->source_uid         = g_strdup (dest->priv->source_uid);
-        new_dest->priv->contact_uid        = g_strdup (dest->priv->contact_uid);
-        new_dest->priv->name               = g_strdup (dest->priv->name);
-        new_dest->priv->email              = g_strdup (dest->priv->email);
-        new_dest->priv->addr               = g_strdup (dest->priv->addr);
-        new_dest->priv->email_num          = dest->priv->email_num;
-        new_dest->priv->ignored            = dest->priv->ignored;
+	new_dest->priv->source_uid         = g_strdup (dest->priv->source_uid);
+	new_dest->priv->contact_uid        = g_strdup (dest->priv->contact_uid);
+	new_dest->priv->name               = g_strdup (dest->priv->name);
+	new_dest->priv->email              = g_strdup (dest->priv->email);
+	new_dest->priv->addr               = g_strdup (dest->priv->addr);
+	new_dest->priv->email_num          = dest->priv->email_num;
+	new_dest->priv->ignored            = dest->priv->ignored;
 
 	if (dest->priv->contact)
 		new_dest->priv->contact = g_object_ref (dest->priv->contact);
@@ -211,7 +211,7 @@ e_destination_copy (const EDestination *dest)
 	}
 
 	/* XXX other settings? */
-        new_dest->priv->raw = g_strdup (dest->priv->raw);
+	new_dest->priv->raw = g_strdup (dest->priv->raw);
 
 	return new_dest;
 }
@@ -1090,8 +1090,8 @@ e_destination_get_textrepv (EDestination **destv)
 	g_return_val_if_fail (destv, NULL);
 
 	/* Q: Please tell me this is only for assertion
-           reasons. If this is considered to be ok behavior then you
-           shouldn't use g_return's. Just a reminder;-)
+	   reasons. If this is considered to be ok behavior then you
+	   shouldn't use g_return's. Just a reminder;-)
 
 	   A: Yes, this is just an assertion.  (Though it does find the
 	   length of the vector in the process...)

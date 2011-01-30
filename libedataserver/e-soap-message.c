@@ -32,9 +32,9 @@ finalize (GObject *object)
 	if (priv->action)
 		g_free (priv->action);
 	if (priv->env_uri)
-                xmlFree (priv->env_uri);
+		xmlFree (priv->env_uri);
 	if (priv->env_prefix)
-                xmlFree (priv->env_prefix);
+		xmlFree (priv->env_prefix);
 
 	G_OBJECT_CLASS (e_soap_message_parent_class)->finalize (object);
 }
@@ -64,17 +64,17 @@ static xmlNsPtr
 fetch_ns (ESoapMessage *msg, const gchar *prefix, const gchar *ns_uri)
 {
 	ESoapMessagePrivate *priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
-        xmlNsPtr ns = NULL;
+	xmlNsPtr ns = NULL;
 
-        if (prefix && ns_uri)
-                ns = xmlNewNs (priv->last_node, (const xmlChar *)ns_uri, (const xmlChar *)prefix);
-        else if (prefix && !ns_uri) {
-                ns = xmlSearchNs (priv->doc, priv->last_node, (const xmlChar *)prefix);
-                if (!ns)
+	if (prefix && ns_uri)
+		ns = xmlNewNs (priv->last_node, (const xmlChar *)ns_uri, (const xmlChar *)prefix);
+	else if (prefix && !ns_uri) {
+		ns = xmlSearchNs (priv->doc, priv->last_node, (const xmlChar *)prefix);
+		if (!ns)
 			ns = xmlNewNs (priv->last_node, (const xmlChar *)"", (const xmlChar *)prefix);
-        }
+	}
 
-        return ns;
+	return ns;
 }
 
 /**
@@ -374,7 +374,7 @@ e_soap_message_start_fault (ESoapMessage *msg,
 void
 e_soap_message_end_fault (ESoapMessage *msg)
 {
-        e_soap_message_end_element (msg);
+	e_soap_message_end_element (msg);
 }
 
 /**
@@ -392,10 +392,10 @@ e_soap_message_start_fault_detail (ESoapMessage *msg)
 {
 	ESoapMessagePrivate *priv;
 
-        g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
+	g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
 	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
 
-        priv->last_node = xmlNewChild (priv->last_node,
+	priv->last_node = xmlNewChild (priv->last_node,
 				       priv->soap_ns,
 				       (const xmlChar *)"detail",
 				       NULL);
@@ -551,9 +551,9 @@ e_soap_message_write_double (ESoapMessage *msg, gdouble d)
 void
 e_soap_message_write_base64 (ESoapMessage *msg, const gchar *string, gint len)
 {
-        gchar *str = g_base64_encode ((const guchar *)string, len);
-        e_soap_message_write_string (msg, str);
-        g_free (str);
+	gchar *str = g_base64_encode ((const guchar *)string, len);
+	e_soap_message_write_string (msg, str);
+	g_free (str);
 }
 
 /**
@@ -569,8 +569,8 @@ e_soap_message_write_base64 (ESoapMessage *msg, const gchar *string, gint len)
 void
 e_soap_message_write_time (ESoapMessage *msg, const time_t *timeval)
 {
-        gchar *str = g_strchomp (ctime (timeval));
-        e_soap_message_write_string (msg, str);
+	gchar *str = g_strchomp (ctime (timeval));
+	e_soap_message_write_string (msg, str);
 }
 
 /**

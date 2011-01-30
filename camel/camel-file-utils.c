@@ -84,21 +84,21 @@ camel_file_util_encode_uint32 (FILE *out, guint32 value)
 gint
 camel_file_util_decode_uint32 (FILE *in, guint32 *dest)
 {
-        guint32 value = 0;
+	guint32 value = 0;
 	gint v;
 
         /* until we get the last byte, keep decoding 7 bits at a time */
-        while ( ((v = fgetc (in)) & 0x80) == 0 && v!=EOF) {
-                value |= v;
-                value <<= 7;
-        }
+	while ( ((v = fgetc (in)) & 0x80) == 0 && v!=EOF) {
+		value |= v;
+		value <<= 7;
+	}
 	if (v == EOF) {
 		*dest = value >> 7;
 		return -1;
 	}
 	*dest = value | (v & 0x7f);
 
-        return 0;
+	return 0;
 }
 
 /**
@@ -165,7 +165,7 @@ camel_file_util_decode_##type (FILE *in, type *dest)	\
 	gint i = sizeof (type) - 1;			\
 	gint v = EOF;					\
 							\
-        while (i >= 0 && (v = fgetc (in)) != EOF) {	\
+	while (i >= 0 && (v = fgetc (in)) != EOF) {	\
 		save |= ((type)v) << (i * 8);		\
 		i--;					\
 	}						\

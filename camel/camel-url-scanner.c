@@ -503,9 +503,9 @@ url_scanner_table_init (void)
 	url_scanner_table['-'] |= IS_DOMAIN;
 
 	/* not defined to be special in rfc0822, but when scanning
-           backwards to find the beginning of the email address we do
-           not want to include this gchar if we come accross it - so
-           this is kind of a hack */
+	   backwards to find the beginning of the email address we do
+	   not want to include this gchar if we come accross it - so
+	   this is kind of a hack */
 	url_scanner_table['/'] |= IS_SPECIAL;
 
 	table_init_bits (IS_LWSP, CHARS_LWSP);

@@ -82,31 +82,31 @@ system_timezone_read_etc_localtime_softlink (void)
 static gchar *
 system_timezone_read_etc_timezone (void)
 {
-        FILE    *etc_timezone;
-        GString *reading;
-        gint      c;
+	FILE    *etc_timezone;
+	GString *reading;
+	gint      c;
 
         etc_timezone = g_fopen (ETC_TIMEZONE, "r");
-        if (!etc_timezone)
-                return NULL;
+	if (!etc_timezone)
+		return NULL;
 
         reading = g_string_new ("");
 
-        c = fgetc (etc_timezone);
+	c = fgetc (etc_timezone);
         /* only get the first line, we'll validate the value later */
-        while (c != EOF && !g_ascii_isspace (c)) {
-                reading = g_string_append_c (reading, c);
-                c = fgetc (etc_timezone);
-        }
+	while (c != EOF && !g_ascii_isspace (c)) {
+		reading = g_string_append_c (reading, c);
+		c = fgetc (etc_timezone);
+	}
 
-        fclose (etc_timezone);
+	fclose (etc_timezone);
 
-        if (reading->str && reading->str[0] != '\0')
-                return g_string_free (reading, FALSE);
-        else
-                g_string_free (reading, TRUE);
+	if (reading->str && reading->str[0] != '\0')
+		return g_string_free (reading, FALSE);
+	else
+		g_string_free (reading, TRUE);
 
-        return NULL;
+	return NULL;
 }
 
 /* Read a file that looks like a key-file (but there's no need for groups)
@@ -115,64 +115,64 @@ static gchar *
 system_timezone_read_key_file (const gchar *filename,
                                const gchar *key)
 {
-        GIOChannel *channel;
-        gchar       *key_eq;
-        gchar       *line;
-        gchar       *retval;
+	GIOChannel *channel;
+	gchar       *key_eq;
+	gchar       *line;
+	gchar       *retval;
 
-        if (!g_file_test (filename, G_FILE_TEST_IS_REGULAR))
-                return NULL;
+	if (!g_file_test (filename, G_FILE_TEST_IS_REGULAR))
+		return NULL;
 
         channel = g_io_channel_new_file (filename, "r", NULL);
-        if (!channel)
-                return NULL;
+	if (!channel)
+		return NULL;
 
         key_eq = g_strdup_printf ("%s=", key);
-        retval = NULL;
+	retval = NULL;
 
-        while (g_io_channel_read_line (channel, &line, NULL,
-                                       NULL, NULL) == G_IO_STATUS_NORMAL) {
-                if (g_str_has_prefix (line, key_eq)) {
-                        gchar *value;
-                        gint   len;
+	while (g_io_channel_read_line (channel, &line, NULL,
+				       NULL, NULL) == G_IO_STATUS_NORMAL) {
+		if (g_str_has_prefix (line, key_eq)) {
+			gchar *value;
+			gint   len;
 
-                        value = line + strlen (key_eq);
-                        g_strstrip (value);
+			value = line + strlen (key_eq);
+			g_strstrip (value);
 
-                        len = strlen (value);
+			len = strlen (value);
 
-                        if (value[0] == '\"') {
-                                if (value[len - 1] == '\"') {
-                                        if (retval)
-                                                g_free (retval);
+			if (value[0] == '\"') {
+				if (value[len - 1] == '\"') {
+					if (retval)
+						g_free (retval);
 
-                                        retval = g_strndup (value + 1,
-                                                            len - 2);
-                                }
-                        } else {
-                                if (retval)
-                                        g_free (retval);
+					retval = g_strndup (value + 1,
+							    len - 2);
+				}
+			} else {
+				if (retval)
+					g_free (retval);
 
-                                retval = g_strdup (line + strlen (key_eq));
-                        }
+				retval = g_strdup (line + strlen (key_eq));
+			}
 
-                        g_strstrip (retval);
-                }
+			g_strstrip (retval);
+		}
 
-                g_free (line);
-        }
+		g_free (line);
+	}
 
-        g_free (key_eq);
-        g_io_channel_unref (channel);
+	g_free (key_eq);
+	g_io_channel_unref (channel);
 
-        return retval;
+	return retval;
 }
 
 /* This works for Fedora and Mandriva */
 static gchar *
 system_timezone_read_etc_sysconfig_clock (void)
 {
-        return system_timezone_read_key_file (ETC_SYSCONFIG_CLOCK,
+	return system_timezone_read_key_file (ETC_SYSCONFIG_CLOCK,
                                               "ZONE");
 }
 
@@ -180,7 +180,7 @@ system_timezone_read_etc_sysconfig_clock (void)
 static gchar *
 system_timezone_read_etc_sysconfig_clock_alt (void)
 {
-        return system_timezone_read_key_file (ETC_SYSCONFIG_CLOCK,
+	return system_timezone_read_key_file (ETC_SYSCONFIG_CLOCK,
                                               "TIMEZONE");
 }
 
@@ -188,7 +188,7 @@ system_timezone_read_etc_sysconfig_clock_alt (void)
 static gchar *
 system_timezone_read_etc_TIMEZONE (void)
 {
-        return system_timezone_read_key_file (ETC_TIMEZONE_MAJ,
+	return system_timezone_read_key_file (ETC_TIMEZONE_MAJ,
                                               "TZ");
 }
 
@@ -196,7 +196,7 @@ system_timezone_read_etc_TIMEZONE (void)
 static gchar *
 system_timezone_read_etc_rc_conf (void)
 {
-        return system_timezone_read_key_file (ETC_RC_CONF,
+	return system_timezone_read_key_file (ETC_RC_CONF,
                                               "TIMEZONE");
 }
 
@@ -204,7 +204,7 @@ system_timezone_read_etc_rc_conf (void)
 static gchar *
 system_timezone_read_etc_conf_d_clock (void)
 {
-        return system_timezone_read_key_file (ETC_CONF_D_CLOCK,
+	return system_timezone_read_key_file (ETC_CONF_D_CLOCK,
                                               "TIMEZONE");
 }
 

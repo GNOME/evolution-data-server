@@ -2151,8 +2151,8 @@ camel_db_rename_folder (CamelDB *cdb,
 	sqlite3_free (cmd);
 
 	cmd = sqlite3_mprintf ("ALTER TABLE '%q_version' RENAME TO  '%q_version'", old_folder, new_folder);
-        ret = camel_db_add_to_transaction (cdb, cmd, error);
-        sqlite3_free (cmd);
+	ret = camel_db_add_to_transaction (cdb, cmd, error);
+	sqlite3_free (cmd);
 
 	cmd = sqlite3_mprintf ("UPDATE %Q SET modified=strftime(\"%%s\", 'now'), created=strftime(\"%%s\", 'now')", new_folder);
 	ret = camel_db_add_to_transaction (cdb, cmd, error);

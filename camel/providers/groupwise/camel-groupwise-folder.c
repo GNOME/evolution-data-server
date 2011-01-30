@@ -1619,8 +1619,8 @@ gw_update_cache (CamelFolder *folder,
 
 		if (e_gw_item_has_attachment (item))
 			mi->info.flags |= CAMEL_MESSAGE_ATTACHMENTS;
-                if (is_proxy)
-                        mi->info.flags |= CAMEL_MESSAGE_USER_NOT_DELETABLE;
+		if (is_proxy)
+			mi->info.flags |= CAMEL_MESSAGE_USER_NOT_DELETABLE;
 
 		mi->server_flags = mi->info.flags;
 

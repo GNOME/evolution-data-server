@@ -27,7 +27,7 @@ main (gint argc, gchar **argv)
 	ecal_test_utils_create_component (cal, "20040109T090000Z", "UTC",
 			"20040109T103000", "UTC", EVENT_SUMMARY, &e_component,
 			&uid);
-        component = e_cal_component_get_icalcomponent (e_component);
+	component = e_cal_component_get_icalcomponent (e_component);
 
 	component_final = ecal_test_utils_cal_get_object (cal, uid);
 	ecal_test_utils_cal_assert_objects_equal_shallow (component,

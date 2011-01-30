@@ -23,7 +23,7 @@ main (gint argc, gchar **argv)
 	ecal_test_utils_cal_open (cal, FALSE);
 	ecal_test_utils_create_component (cal, "20040109T090000Z", "UTC",
                         "20040109T103000", "UTC", EVENT_SUMMARY, &e_component,
-                        &uid);
+			&uid);
 
 	icalcomponent_final = ecal_test_utils_cal_get_object (cal, uid);
 	e_component_final = e_cal_component_new ();

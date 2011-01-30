@@ -287,7 +287,7 @@ connect_to_server (CamelService *service,
 #endif /* CAMEL_HAVE_SSL */
 
 	/* We are supposed to re-EHLO after a successful STARTTLS to
-           re-fetch any supported extensions. */
+	   re-fetch any supported extensions. */
 	if (!smtp_helo (transport, cancellable, error)) {
 		camel_service_disconnect_sync (
 			(CamelService *) transport, TRUE, NULL);

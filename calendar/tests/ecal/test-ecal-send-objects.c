@@ -11,7 +11,7 @@ main (gint argc, gchar **argv)
 {
 	ECal *cal;
 	gchar *uri = NULL;
-        GList *users = NULL;
+	GList *users = NULL;
 	ECalComponent *e_component = NULL;
 	icalcomponent *component = NULL;
 	icalcomponent *modified_component = NULL;
@@ -24,7 +24,7 @@ main (gint argc, gchar **argv)
 
         ecal_test_utils_create_component (cal, "20040109T090000Z", "UTC",
                         "20040109T103000", "UTC", "new event", &e_component,
-                        &uid);
+			&uid);
 
 	component = e_cal_component_get_icalcomponent (e_component);
 	ecal_test_utils_cal_send_objects (cal, component, &users, &modified_component);

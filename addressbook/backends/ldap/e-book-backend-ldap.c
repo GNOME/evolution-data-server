@@ -1294,7 +1294,7 @@ build_mods_from_contacts (EBookBackendLDAP *bl, EContact *current, EContact *new
 		gchar *current_prop = NULL;
 
 		/* XXX if it's an evolutionPerson prop and the ldap
-                   server doesn't support that objectclass, skip it. */
+		   server doesn't support that objectclass, skip it. */
 		if (prop_info[i].prop_type & PROP_EVOLVE ) {
 			if (!bl->priv->evolutionPersonSupported)
 				continue;
@@ -1307,9 +1307,9 @@ build_mods_from_contacts (EBookBackendLDAP *bl, EContact *current, EContact *new
 		}
 
 		/* get the value for the new contact, and compare it to
-                   the value in the current contact to see if we should
-                   update it -- if adding is TRUE, short circuit the
-                   check. */
+		   the value in the current contact to see if we should
+		   update it -- if adding is TRUE, short circuit the
+		   check. */
 		if (prop_info[i].prop_type & PROP_TYPE_STRING) {
 			new_prop = e_contact_get (new, prop_info[i].field_id);
 			new_prop_present = (new_prop != NULL);
@@ -1320,10 +1320,10 @@ build_mods_from_contacts (EBookBackendLDAP *bl, EContact *current, EContact *new
 		}
 
 		/* need to set INCLUDE to true if the field needs to
-                   show up in the ldap modify request */
+		   show up in the ldap modify request */
 		if (adding) {
 			/* if we're creating a new contact, include it if the
-                           field is there at all */
+			   field is there at all */
 			if (prop_info[i].prop_type & PROP_TYPE_STRING)
 				include = (new_prop_present && *new_prop); /* empty strings cause problems */
 			else
@@ -1331,10 +1331,10 @@ build_mods_from_contacts (EBookBackendLDAP *bl, EContact *current, EContact *new
 		}
 		else {
 			/* if we're modifying an existing contact,
-                           include it if the current field value is
-                           different than the new one, if it didn't
-                           exist previously, or if it's been
-                           removed. */
+			   include it if the current field value is
+			   different than the new one, if it didn't
+			   exist previously, or if it's been
+			   removed. */
 			if (prop_info[i].prop_type & PROP_TYPE_STRING) {
 				current_prop = e_contact_get (current, prop_info[i].field_id);
 				current_prop_present = (current_prop != NULL);
@@ -1367,8 +1367,8 @@ build_mods_from_contacts (EBookBackendLDAP *bl, EContact *current, EContact *new
 			LDAPMod *mod = g_new (LDAPMod, 1);
 
 			/* the included attribute has changed - we
-                           need to update the dn if it's one of the
-                           attributes we compute the dn from. */
+			   need to update the dn if it's one of the
+			   attributes we compute the dn from. */
 			if (new_dn_needed) {
 				const gchar *current_dn = e_contact_get_const (current, E_CONTACT_UID);
 
@@ -1437,8 +1437,8 @@ add_objectclass_mod (EBookBackendLDAP *bl, GPtrArray *mod_array, GList *existing
 		objectclass_mod->mod_type = g_strdup ("objectClass");
 
 		/* yes, this is a linear search for each of our
-                   objectclasses, but really, how many objectclasses
-                   are there going to be in any sane ldap entry? */
+		   objectclasses, but really, how many objectclasses
+		   are there going to be in any sane ldap entry? */
 		if (!is_rename)
 			FIND_INSERT (TOP);
 		if (is_list) {
@@ -1957,7 +1957,7 @@ modify_contact_search_handler (LDAPOp *op, LDAPMessage *res)
 		gint new_dn_needed;
 
 		/* grab the result code, and set up the actual modify (or rename)
-                   if it was successful */
+		   if it was successful */
 		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		ldap_parse_result (bl->priv->ldap, res, &ldap_error,
 				   NULL, &ldap_error_msg, NULL, NULL, 0);
@@ -3243,7 +3243,7 @@ static EContactAddress * getormakeEContactAddress (EContact * card, EContactFiel
 {
     EContactAddress *contact_addr = e_contact_get (card, field);
     if (!contact_addr)
-        contact_addr = g_new0 (EContactAddress, 1);
+	contact_addr = g_new0 (EContactAddress, 1);
     return contact_addr;
 }
 
@@ -3274,81 +3274,81 @@ static void
 work_city_populate (EContact * card, gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
-        contact_addr->locality = g_strdup (values[0]);
-        e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
-        e_contact_address_free (contact_addr);
+	contact_addr->locality = g_strdup (values[0]);
+	e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
+	e_contact_address_free (contact_addr);
 }
 
 static void
 work_state_populate (EContact * card, gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
-        contact_addr->region = g_strdup (values[0]);
-        e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
-        e_contact_address_free (contact_addr);
+	contact_addr->region = g_strdup (values[0]);
+	e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
+	e_contact_address_free (contact_addr);
 }
 
 static void
 work_po_populate (EContact * card, gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
-        contact_addr->po = g_strdup (values[0]);
-        e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
-        e_contact_address_free (contact_addr);
+	contact_addr->po = g_strdup (values[0]);
+	e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
+	e_contact_address_free (contact_addr);
 }
 
 static void
 work_zip_populate (EContact * card, gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
-        contact_addr->code = g_strdup (values[0]);
-        e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
-        e_contact_address_free (contact_addr);
+	contact_addr->code = g_strdup (values[0]);
+	e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
+	e_contact_address_free (contact_addr);
 }
 
 static void
 work_country_populate (EContact * card, gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_WORK);
-        contact_addr->country = g_strdup (values[0]);
-        e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
-        e_contact_address_free (contact_addr);
+	contact_addr->country = g_strdup (values[0]);
+	e_contact_set (card, E_CONTACT_ADDRESS_WORK, contact_addr);
+	e_contact_address_free (contact_addr);
 }
 
 static void
 home_city_populate (EContact * card, gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_HOME);
-        contact_addr->locality = g_strdup (values[0]);
-        e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
-        e_contact_address_free (contact_addr);
+	contact_addr->locality = g_strdup (values[0]);
+	e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
+	e_contact_address_free (contact_addr);
 }
 
 static void
 home_state_populate (EContact * card, gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_HOME);
-        contact_addr->region = g_strdup (values[0]);
-        e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
-        e_contact_address_free (contact_addr);
+	contact_addr->region = g_strdup (values[0]);
+	e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
+	e_contact_address_free (contact_addr);
 }
 
 static void
 home_zip_populate (EContact * card, gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_HOME);
-        contact_addr->code = g_strdup (values[0]);
-        e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
-        e_contact_address_free (contact_addr);
+	contact_addr->code = g_strdup (values[0]);
+	e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
+	e_contact_address_free (contact_addr);
 }
 
 static void
 home_country_populate (EContact * card, gchar **values)
 {
 	EContactAddress *contact_addr = getormakeEContactAddress (card, E_CONTACT_ADDRESS_HOME);
-        contact_addr->country = g_strdup (values[0]);
-        e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
-        e_contact_address_free (contact_addr);
+	contact_addr->country = g_strdup (values[0]);
+	e_contact_set (card, E_CONTACT_ADDRESS_HOME, contact_addr);
+	e_contact_address_free (contact_addr);
 }
 
 static void
@@ -3449,15 +3449,15 @@ other_address_compare (EContact * ecard1, EContact * ecard2)
 static void
 photo_populate (EContact *contact, struct berval **ber_values)
 {
-        if (ber_values && ber_values[0]) {
-                EContactPhoto photo;
-                photo.type = E_CONTACT_PHOTO_TYPE_INLINED;
-                photo.data.inlined.mime_type = NULL;
-                photo.data.inlined.data = (guchar *)ber_values[0]->bv_val;
-                photo.data.inlined.length = ber_values[0]->bv_len;
+	if (ber_values && ber_values[0]) {
+		EContactPhoto photo;
+		photo.type = E_CONTACT_PHOTO_TYPE_INLINED;
+		photo.data.inlined.mime_type = NULL;
+		photo.data.inlined.data = (guchar *)ber_values[0]->bv_val;
+		photo.data.inlined.length = ber_values[0]->bv_len;
 
-                e_contact_set (contact, E_CONTACT_PHOTO, &photo);
-        }
+		e_contact_set (contact, E_CONTACT_PHOTO, &photo);
+	}
 }
 
 static struct berval **
@@ -3518,13 +3518,13 @@ photo_compare (EContact * ecard1, EContact * ecard2)
 static void
 cert_populate (EContact *contact, struct berval **ber_values)
 {
-        if (ber_values && ber_values[0]) {
-                EContactCert cert;
-                cert.data = ber_values[0]->bv_val;
-                cert.length = ber_values[0]->bv_len;
+	if (ber_values && ber_values[0]) {
+		EContactCert cert;
+		cert.data = ber_values[0]->bv_val;
+		cert.length = ber_values[0]->bv_len;
 
-                e_contact_set (contact, E_CONTACT_X509_CERT, &cert);
-        }
+		e_contact_set (contact, E_CONTACT_X509_CERT, &cert);
+	}
 }
 
 typedef struct {

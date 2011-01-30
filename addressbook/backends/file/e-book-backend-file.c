@@ -334,10 +334,10 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 	vcard_with_rev = e_vcard_to_string (E_VCARD (*contact), EVC_FORMAT_VCARD_30);
 
 	/* This is disgusting, but for a time cards were added with
-           ID's that are no longer used (they contained both the uri
-           and the id.) If we recognize it as a uri (file:///...) trim
-           off everything before the last '/', and use that as the
-           id.*/
+	   ID's that are no longer used (they contained both the uri
+	   and the id.) If we recognize it as a uri (file:///...) trim
+	   off everything before the last '/', and use that as the
+	   id.*/
 	if (!strncmp (id, "file:///", strlen ("file:///"))) {
 		lookup_id = strrchr (id, '/') + 1;
 	}
@@ -979,7 +979,7 @@ e_book_backend_file_upgrade_db (EBookBackendFile *bf, gchar *old_version)
 
 	if (!strcmp (old_version, "0.1")) {
 		/* we just loop through all the cards in the db,
-                   giving them valid ids if they don't have them */
+		   giving them valid ids if they don't have them */
 		DBT  id_dbt, vcard_dbt;
 		DBC *dbc;
 		gint  card_failed = 0;

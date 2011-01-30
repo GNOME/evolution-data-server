@@ -62,7 +62,7 @@ online_status_changed (GConfClient *client, gint cnxn_id, GConfEntry *entry, gpo
 {
 	GConfValue *value;
 	gboolean offline;
-        EOfflineListener *eol;
+	EOfflineListener *eol;
 	EOfflineListenerPrivate *priv;
 
 	eol = E_OFFLINE_LISTENER (data);

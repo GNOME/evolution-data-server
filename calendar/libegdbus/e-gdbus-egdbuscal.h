@@ -190,129 +190,129 @@ struct _EGdbusCalIface
 
   /* Signal handlers for receiving D-Bus signals: */
   void (*auth_required) (
-        EGdbusCal *object);
+	EGdbusCal *object);
   void (*backend_error) (
-        EGdbusCal *object,
-        const gchar *arg_error);
+	EGdbusCal *object,
+	const gchar *arg_error);
   void (*readonly) (
-        EGdbusCal *object,
-        gboolean arg_is_readonly);
+	EGdbusCal *object,
+	gboolean arg_is_readonly);
   void (*mode) (
-        EGdbusCal *object,
-        gint arg_mode);
+	EGdbusCal *object,
+	gint arg_mode);
 
   /* Signal handlers for handling D-Bus method calls: */
   gboolean (*handle_get_uri) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_get_cache_dir) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_open) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation,
-        gboolean in_only_if_exists,
-        const gchar *in_username,
-        const gchar *in_password);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation,
+	gboolean in_only_if_exists,
+	const gchar *in_username,
+	const gchar *in_password);
   gboolean (*handle_refresh) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_close) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_remove) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_is_read_only) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_get_cal_address) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_get_alarm_email_address) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_get_ldap_attribute) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_get_scheduling_information) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_set_mode) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation,
-        guint in_mode);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation,
+	guint in_mode);
   gboolean (*handle_get_default_object) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_get_object) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_uid,
-        const gchar *in_rid);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_uid,
+	const gchar *in_rid);
   gboolean (*handle_get_object_list) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_sexp);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_sexp);
   gboolean (*handle_get_changes) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_change_id);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_change_id);
   gboolean (*handle_get_free_busy) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation,
-        const gchar * const *in_user_list,
-        guint in_start,
-        guint in_end);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation,
+	const gchar * const *in_user_list,
+	guint in_start,
+	guint in_end);
   gboolean (*handle_discard_alarm) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_uid,
-        const gchar *in_auid);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_uid,
+	const gchar *in_auid);
   gboolean (*handle_create_object) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_calobj);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_calobj);
   gboolean (*handle_modify_object) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_calobj,
-        guint in_mod);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_calobj,
+	guint in_mod);
   gboolean (*handle_remove_object) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_uid,
-        const gchar *in_rid,
-        guint in_mod);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_uid,
+	const gchar *in_rid,
+	guint in_mod);
   gboolean (*handle_receive_objects) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_calobj);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_calobj);
   gboolean (*handle_send_objects) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_calobj);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_calobj);
   gboolean (*handle_get_attachment_list) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_uid,
-        const gchar *in_rid);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_uid,
+	const gchar *in_rid);
   gboolean (*handle_get_query) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_sexp);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_sexp);
   gboolean (*handle_get_timezone) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_tzid);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_tzid);
   gboolean (*handle_add_timezone) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_tz);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_tz);
   gboolean (*handle_set_default_timezone) (
-        EGdbusCal *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_tz);
+	EGdbusCal *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_tz);
 };
 
 /* C Bindings for properties */

@@ -593,9 +593,9 @@ make_valid_utf8 (const gchar *name)
 
 	g_string_append (string, remainder);
 
-        g_assert (g_utf8_validate (string->str, -1, NULL));
+	g_assert (g_utf8_validate (string->str, -1, NULL));
 
-        return g_string_free (string, FALSE);
+	return g_string_free (string, FALSE);
 }
 
 /* we try to be as forgiving as we possibly can here - this isn't a
@@ -1787,21 +1787,21 @@ EVCardAttribute *
 e_vcard_get_attribute (EVCard     *evc,
 		       const gchar *name)
 {
-        GList *attrs, *l;
+	GList *attrs, *l;
 
-        g_return_val_if_fail (E_IS_VCARD (evc), NULL);
-        g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (E_IS_VCARD (evc), NULL);
+	g_return_val_if_fail (name != NULL, NULL);
 
-        attrs = e_vcard_get_attributes (evc);
-        for (l = attrs; l; l = l->next) {
-                EVCardAttribute *attr;
+	attrs = e_vcard_get_attributes (evc);
+	for (l = attrs; l; l = l->next) {
+		EVCardAttribute *attr;
 
-                attr = (EVCardAttribute *) l->data;
-                if (g_ascii_strcasecmp (attr->name, name) == 0)
-                        return attr;
-        }
+		attr = (EVCardAttribute *) l->data;
+		if (g_ascii_strcasecmp (attr->name, name) == 0)
+			return attr;
+	}
 
-        return NULL;
+	return NULL;
 }
 /**
  * e_vcard_attribute_get_group:

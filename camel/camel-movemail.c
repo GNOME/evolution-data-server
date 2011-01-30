@@ -300,22 +300,22 @@ camel_movemail_copy_file (gint sfd,
 static gint
 camel_movemail_copy (gint fromfd, gint tofd, goffset start, gsize bytes)
 {
-        gchar buffer[4096];
-        gint written = 0;
+	gchar buffer[4096];
+	gint written = 0;
 
 	d(printf("writing %d bytes ... ", bytes));
 
 	if (lseek (fromfd, start, SEEK_SET) != start)
 		return -1;
 
-        while (bytes>0) {
-                gint toread, towrite;
+	while (bytes>0) {
+		gint toread, towrite;
 
-                toread = bytes;
-                if (bytes>4096)
-                        toread = 4096;
-                else
-                        toread = bytes;
+		toread = bytes;
+		if (bytes>4096)
+			toread = 4096;
+		else
+			toread = bytes;
 		do {
 			towrite = read (fromfd, buffer, toread);
 		} while (towrite == -1 && errno == EINTR);
@@ -324,9 +324,9 @@ camel_movemail_copy (gint fromfd, gint tofd, goffset start, gsize bytes)
 			return -1;
 
                 /* check for 'end of file' */
-                if (towrite == 0) {
+		if (towrite == 0) {
 			d(printf("end of file?\n"));
-                        break;
+			break;
 		}
 
 		do {
@@ -336,13 +336,13 @@ camel_movemail_copy (gint fromfd, gint tofd, goffset start, gsize bytes)
 		if (toread == -1)
 			return -1;
 
-                written += toread;
-                bytes -= toread;
-        }
+		written += toread;
+		bytes -= toread;
+	}
 
         d(printf("written %d bytes\n", written));
 
-        return written;
+	return written;
 }
 #endif
 
@@ -352,8 +352,8 @@ camel_movemail_copy (gint fromfd, gint tofd, goffset start, gsize bytes)
 static gint
 camel_movemail_copy_filter (gint fromfd, gint tofd, goffset start, gsize bytes, CamelMimeFilter *filter)
 {
-        gchar buffer[4096+PRE_SIZE];
-        gint written = 0;
+	gchar buffer[4096+PRE_SIZE];
+	gint written = 0;
 	gchar *filterbuffer;
 	gint filterlen, filterpre;
 
@@ -364,14 +364,14 @@ camel_movemail_copy_filter (gint fromfd, gint tofd, goffset start, gsize bytes, 
 	if (lseek (fromfd, start, SEEK_SET) != start)
 		return -1;
 
-        while (bytes>0) {
-                gint toread, towrite;
+	while (bytes>0) {
+		gint toread, towrite;
 
-                toread = bytes;
-                if (bytes>4096)
-                        toread = 4096;
-                else
-                        toread = bytes;
+		toread = bytes;
+		if (bytes>4096)
+			toread = 4096;
+		else
+			toread = bytes;
 		do {
 			towrite = read (fromfd, buffer+PRE_SIZE, toread);
 		} while (towrite == -1 && errno == EINTR);
@@ -382,7 +382,7 @@ camel_movemail_copy_filter (gint fromfd, gint tofd, goffset start, gsize bytes, 
 		d(printf("read %d unfiltered bytes\n", towrite));
 
                 /* check for 'end of file' */
-                if (towrite == 0) {
+		if (towrite == 0) {
 			d(printf("end of file?\n"));
 			camel_mime_filter_complete (filter, buffer+PRE_SIZE, towrite, PRE_SIZE,
 						   &filterbuffer, &filterlen, &filterpre);
@@ -404,13 +404,13 @@ camel_movemail_copy_filter (gint fromfd, gint tofd, goffset start, gsize bytes, 
 		if (toread == -1)
 			return -1;
 
-                written += toread;
-                bytes -= toread;
-        }
+		written += toread;
+		bytes -= toread;
+	}
 
         d(printf("written %d bytes\n", written));
 
-        return written;
+	return written;
 }
 
 /* write the headers back out again, but not he Content-Length header, because we dont
@@ -418,15 +418,15 @@ camel_movemail_copy_filter (gint fromfd, gint tofd, goffset start, gsize bytes, 
 static gint
 solaris_header_write (gint fd, struct _camel_header_raw *header)
 {
-        struct iovec iv[4];
-        gint outlen = 0, len;
+	struct iovec iv[4];
+	gint outlen = 0, len;
 
         iv[1].iov_base = ":";
-        iv[1].iov_len = 1;
+	iv[1].iov_len = 1;
         iv[3].iov_base = "\n";
-        iv[3].iov_len = 1;
+	iv[3].iov_len = 1;
 
-        while (header) {
+	while (header) {
 		if (g_ascii_strcasecmp(header->name, "Content-Length")) {
 			iv[0].iov_base = header->name;
 			iv[0].iov_len = strlen (header->name);
@@ -441,8 +441,8 @@ solaris_header_write (gint fd, struct _camel_header_raw *header)
 				return -1;
 			outlen += len;
 		}
-                header = header->next;
-        }
+		header = header->next;
+	}
 
 	do {
 		len = write(fd, "\n", 1);
@@ -455,7 +455,7 @@ solaris_header_write (gint fd, struct _camel_header_raw *header)
 
 	d(printf("Wrote %d bytes of headers\n", outlen));
 
-        return outlen;
+	return outlen;
 }
 
 /* Well, since Solaris is a tad broken wrt its 'mbox' folder format,

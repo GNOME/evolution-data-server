@@ -161,9 +161,9 @@ struct _EGdbusBookFactoryIface
 
   /* Signal handlers for handling D-Bus method calls: */
   gboolean (*handle_get_book) (
-        EGdbusBookFactory *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_source);
+	EGdbusBookFactory *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_source);
 };
 
 /* C Bindings for properties */

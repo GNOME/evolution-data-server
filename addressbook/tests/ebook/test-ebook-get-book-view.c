@@ -109,7 +109,7 @@ main (gint argc, gchar **argv)
 	loop = g_main_loop_new (NULL, TRUE);
 	g_main_loop_run (loop);
 
-        e_book_query_unref (query);
+	e_book_query_unref (query);
 	ebook_test_utils_book_remove (book);
 
 	/*
@@ -124,7 +124,7 @@ main (gint argc, gchar **argv)
 
 	g_main_loop_run (loop);
 
-        e_book_query_unref (query);
+	e_book_query_unref (query);
 	ebook_test_utils_book_remove (book);
 
 	return 0;

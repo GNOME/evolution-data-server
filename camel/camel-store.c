@@ -2183,7 +2183,7 @@ camel_store_get_folder_sync (CamelStore *store,
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Cannot create folder '%s': folder exists"),
 				folder_name);
-                        camel_object_bag_abort (store->folders, folder_name);
+			camel_object_bag_abort (store->folders, folder_name);
 			g_object_unref (folder);
 			return NULL;
 		}

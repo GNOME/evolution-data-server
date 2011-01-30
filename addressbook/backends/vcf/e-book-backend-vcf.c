@@ -283,7 +283,7 @@ e_book_backend_vcf_create_contact (EBookBackendSync *backend,
 	*contact = do_create(bvcf, vcard, TRUE);
 	if (!*contact) {
 		/* XXX need a different call status for this case, i
-                   think */
+		   think */
 		g_propagate_error (perror, EDB_ERROR (CONTACT_NOT_FOUND));
 	}
 }

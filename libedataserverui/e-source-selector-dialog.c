@@ -117,7 +117,7 @@ static void
 row_activated_cb (GtkTreeView *tree_view, GtkTreePath *path,
 		  GtkTreeViewColumn *column, GtkWidget *dialog)
 {
-        gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+	gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
 }
 
 static void

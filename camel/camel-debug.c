@@ -156,38 +156,38 @@ i386_length_and_rw_bits (gint len, enum target_hw_bp_type type)
   switch (type)
     {
       case hw_execute:
-        rw = DR_RW_EXECUTE;
-        break;
+	rw = DR_RW_EXECUTE;
+	break;
       case hw_write:
-        rw = DR_RW_WRITE;
-        break;
+	rw = DR_RW_WRITE;
+	break;
       case hw_read:      /* x86 doesn't support data-read watchpoints */
       case hw_access:
-        rw = DR_RW_READ;
-        break;
+	rw = DR_RW_READ;
+	break;
 #if 0
       case hw_io_access: /* not yet supported */
-        rw = DR_RW_IORW;
-        break;
+	rw = DR_RW_IORW;
+	break;
 #endif
       default:
-        internal_error (__FILE__, __LINE__, "\
+	internal_error (__FILE__, __LINE__, "\
 Invalid hw breakpoint type %d in i386_length_and_rw_bits.\n", (gint)type);
     }
 
   switch (len)
     {
       case 1:
-        return (DR_LEN_1 | rw);
+	return (DR_LEN_1 | rw);
       case 2:
-        return (DR_LEN_2 | rw);
+	return (DR_LEN_2 | rw);
       case 4:
-        return (DR_LEN_4 | rw);
+	return (DR_LEN_4 | rw);
       case 8:
-        if (TARGET_HAS_DR_LEN_8)
-          return (DR_LEN_8 | rw);
+	if (TARGET_HAS_DR_LEN_8)
+	  return (DR_LEN_8 | rw);
       default:
-        internal_error (__FILE__, __LINE__, "\
+	internal_error (__FILE__, __LINE__, "\
 Invalid hw breakpoint length %d in i386_length_and_rw_bits.\n", len);
     }
 }

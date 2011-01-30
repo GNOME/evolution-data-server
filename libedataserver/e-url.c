@@ -396,7 +396,7 @@ e_uri_to_string (EUri *uri, gboolean show_password)
 	else
 		str_uri = g_strdup_printf (
                         "%s://%s%s%s%s%s%s%s%s%s%s",
-                        uri->protocol,
+			uri->protocol,
                         uri->user ? uri->user : "",
                         uri->authmech ? ";auth=" : "",
                         uri->authmech ? uri->authmech : "",

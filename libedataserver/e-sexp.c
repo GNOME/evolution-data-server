@@ -862,7 +862,7 @@ unary_generator (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r)
 	if (argv[0]->type != ESEXP_RES_TIME)
 		return FALSE;
 
-        r->occuring_start = 0;
+	r->occuring_start = 0;
 	r->occuring_end = argv[0]->value.time;
 
 	return TRUE;

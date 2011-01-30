@@ -267,7 +267,7 @@ e_address_western_extract_postal_code (gchar *line)
 static void
 e_address_western_extract_street (gchar *line, gchar **street, gchar **extended)
 {
-        const gchar *split = NULL;
+	const gchar *split = NULL;
 	gint cntr;
 
 	for (cntr = 0; extended_keywords[cntr] != NULL; cntr++) {

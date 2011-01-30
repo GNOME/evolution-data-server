@@ -154,7 +154,7 @@ enl_entry_focus_out (ENameSelectorList *list, GdkEventFocus *event, gpointer dum
 {
 	/* When we lose focus and popup is still present hide it. Dont do it, when we click the popup. Look for grab */
 	if (gtk_widget_get_visible (GTK_WIDGET (list->priv->popup))
-            && !gtk_widget_has_grab (GTK_WIDGET (list->priv->popup))) {
+	    && !gtk_widget_has_grab (GTK_WIDGET (list->priv->popup))) {
 		enl_popup_ungrab (list);
 		gtk_widget_hide ((GtkWidget *)list->priv->popup);
 

@@ -169,12 +169,12 @@ signal_emission_hook_cb_auth_required (GSignalInvocationHint *ihint,
   params = NULL;
 
   g_dbus_connection_emit_signal (connection,
-                                 NULL,
-                                 path,
+				 NULL,
+				 path,
                                  "org.gnome.evolution.dataserver.Calendar",
                                  "auth_required",
-                                 params,
-                                 NULL);
+				 params,
+				 NULL);
 out:
   return TRUE;
 }
@@ -210,12 +210,12 @@ signal_emission_hook_cb_backend_error (GSignalInvocationHint *ihint,
   g_variant_builder_unref (builder);
 
   g_dbus_connection_emit_signal (connection,
-                                 NULL,
-                                 path,
+				 NULL,
+				 path,
                                  "org.gnome.evolution.dataserver.Calendar",
                                  "backend_error",
-                                 params,
-                                 NULL);
+				 params,
+				 NULL);
 out:
   return TRUE;
 }
@@ -251,12 +251,12 @@ signal_emission_hook_cb_readonly (GSignalInvocationHint *ihint,
   g_variant_builder_unref (builder);
 
   g_dbus_connection_emit_signal (connection,
-                                 NULL,
-                                 path,
+				 NULL,
+				 path,
                                  "org.gnome.evolution.dataserver.Calendar",
                                  "readonly",
-                                 params,
-                                 NULL);
+				 params,
+				 NULL);
 out:
   return TRUE;
 }
@@ -292,12 +292,12 @@ signal_emission_hook_cb_mode (GSignalInvocationHint *ihint,
   g_variant_builder_unref (builder);
 
   g_dbus_connection_emit_signal (connection,
-                                 NULL,
-                                 path,
+				 NULL,
+				 path,
                                  "org.gnome.evolution.dataserver.Calendar",
                                  "mode",
-                                 params,
-                                 NULL);
+				 params,
+				 NULL);
 out:
   return TRUE;
 }
@@ -360,19 +360,19 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    * On exported objects, emitting this signal causes the actual D-Bus signal to be emitted. You can use e_gdbus_cal_emit_auth_required() to do this.
    */  signals[__AUTH_REQUIRED_SIGNAL] =
     g_signal_new ("auth-required",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, auth_required),
-                  NULL,
-                  NULL,
-                  g_cclosure_marshal_VOID__VOID,
-                  G_TYPE_NONE,
-                  0);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, auth_required),
+		  NULL,
+		  NULL,
+		  g_cclosure_marshal_VOID__VOID,
+		  G_TYPE_NONE,
+		  0);
   g_signal_add_emission_hook (signals[__AUTH_REQUIRED_SIGNAL],
-                              0,
-                              signal_emission_hook_cb_auth_required,
+			      0,
+			      signal_emission_hook_cb_auth_required,
                               (gpointer) "auth_required",
-                              NULL);
+			      NULL);
 
   /**
    * EGdbusCal::backend-error:
@@ -389,20 +389,20 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    * On exported objects, emitting this signal causes the actual D-Bus signal to be emitted. You can use e_gdbus_cal_emit_backend_error() to do this.
    */  signals[__BACKEND_ERROR_SIGNAL] =
     g_signal_new ("backend-error",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, backend_error),
-                  NULL,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_VOID__STRING,
-                  G_TYPE_NONE,
-                  1,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, backend_error),
+		  NULL,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_VOID__STRING,
+		  G_TYPE_NONE,
+		  1,
+		  G_TYPE_STRING);
   g_signal_add_emission_hook (signals[__BACKEND_ERROR_SIGNAL],
-                              0,
-                              signal_emission_hook_cb_backend_error,
+			      0,
+			      signal_emission_hook_cb_backend_error,
                               (gpointer) "backend_error",
-                              NULL);
+			      NULL);
 
   /**
    * EGdbusCal::readonly:
@@ -419,20 +419,20 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    * On exported objects, emitting this signal causes the actual D-Bus signal to be emitted. You can use e_gdbus_cal_emit_readonly() to do this.
    */  signals[__READONLY_SIGNAL] =
     g_signal_new ("readonly",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, readonly),
-                  NULL,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_VOID__BOOLEAN,
-                  G_TYPE_NONE,
-                  1,
-                  G_TYPE_BOOLEAN);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, readonly),
+		  NULL,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_VOID__BOOLEAN,
+		  G_TYPE_NONE,
+		  1,
+		  G_TYPE_BOOLEAN);
   g_signal_add_emission_hook (signals[__READONLY_SIGNAL],
-                              0,
-                              signal_emission_hook_cb_readonly,
+			      0,
+			      signal_emission_hook_cb_readonly,
                               (gpointer) "readonly",
-                              NULL);
+			      NULL);
 
   /**
    * EGdbusCal::mode:
@@ -449,20 +449,20 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    * On exported objects, emitting this signal causes the actual D-Bus signal to be emitted. You can use e_gdbus_cal_emit_mode() to do this.
    */  signals[__MODE_SIGNAL] =
     g_signal_new ("mode",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, mode),
-                  NULL,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_VOID__INT,
-                  G_TYPE_NONE,
-                  1,
-                  G_TYPE_INT);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, mode),
+		  NULL,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_VOID__INT,
+		  G_TYPE_NONE,
+		  1,
+		  G_TYPE_INT);
   g_signal_add_emission_hook (signals[__MODE_SIGNAL],
-                              0,
-                              signal_emission_hook_cb_mode,
+			      0,
+			      signal_emission_hook_cb_mode,
                               (gpointer) "mode",
-                              NULL);
+			      NULL);
 
   /* GObject signals definitions for D-Bus methods: */
   /**
@@ -480,15 +480,15 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__GET_URI_METHOD] =
     g_signal_new ("handle-get-uri",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_uri),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_uri),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusCal::handle-get-cache-dir:
    * @object: The exported object emitting the signal.
@@ -504,15 +504,15 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__GET_CACHE_DIR_METHOD] =
     g_signal_new ("handle-get-cache-dir",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_cache_dir),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_cache_dir),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusCal::handle-open:
    * @object: The exported object emitting the signal.
@@ -531,18 +531,18 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__OPEN_METHOD] =
     g_signal_new ("handle-open",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_open),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_BOOLEAN_STRING_STRING,
-                  G_TYPE_BOOLEAN,
-                  4,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_BOOLEAN,
-                  G_TYPE_STRING,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_open),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_BOOLEAN_STRING_STRING,
+		  G_TYPE_BOOLEAN,
+		  4,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_BOOLEAN,
+		  G_TYPE_STRING,
+		  G_TYPE_STRING);
   /**
    * EGdbusCal::handle-refresh:
    * @object: The exported object emitting the signal.
@@ -558,15 +558,15 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__REFRESH_METHOD] =
     g_signal_new ("handle-refresh",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_refresh),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_refresh),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusCal::handle-close:
    * @object: The exported object emitting the signal.
@@ -582,15 +582,15 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__CLOSE_METHOD] =
     g_signal_new ("handle-close",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_close),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_close),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusCal::handle-remove:
    * @object: The exported object emitting the signal.
@@ -606,15 +606,15 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__REMOVE_METHOD] =
     g_signal_new ("handle-remove",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_remove),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_remove),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusCal::handle-is-read-only:
    * @object: The exported object emitting the signal.
@@ -630,15 +630,15 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__IS_READ_ONLY_METHOD] =
     g_signal_new ("handle-is-read-only",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_is_read_only),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_is_read_only),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusCal::handle-get-cal-address:
    * @object: The exported object emitting the signal.
@@ -654,15 +654,15 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__GET_CAL_ADDRESS_METHOD] =
     g_signal_new ("handle-get-cal-address",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_cal_address),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_cal_address),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusCal::handle-get-alarm-email-address:
    * @object: The exported object emitting the signal.
@@ -678,15 +678,15 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__GET_ALARM_EMAIL_ADDRESS_METHOD] =
     g_signal_new ("handle-get-alarm-email-address",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_alarm_email_address),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_alarm_email_address),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusCal::handle-get-ldap-attribute:
    * @object: The exported object emitting the signal.
@@ -702,15 +702,15 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__GET_LDAP_ATTRIBUTE_METHOD] =
     g_signal_new ("handle-get-ldap-attribute",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_ldap_attribute),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_ldap_attribute),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusCal::handle-get-scheduling-information:
    * @object: The exported object emitting the signal.
@@ -726,15 +726,15 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__GET_SCHEDULING_INFORMATION_METHOD] =
     g_signal_new ("handle-get-scheduling-information",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_scheduling_information),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_scheduling_information),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusCal::handle-set-mode:
    * @object: The exported object emitting the signal.
@@ -751,16 +751,16 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__SET_MODE_METHOD] =
     g_signal_new ("handle-set-mode",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_set_mode),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_UINT,
-                  G_TYPE_BOOLEAN,
-                  2,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_UINT);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_set_mode),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_UINT,
+		  G_TYPE_BOOLEAN,
+		  2,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_UINT);
   /**
    * EGdbusCal::handle-get-default-object:
    * @object: The exported object emitting the signal.
@@ -776,15 +776,15 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__GET_DEFAULT_OBJECT_METHOD] =
     g_signal_new ("handle-get-default-object",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_default_object),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_default_object),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusCal::handle-get-object:
    * @object: The exported object emitting the signal.
@@ -802,17 +802,17 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__GET_OBJECT_METHOD] =
     g_signal_new ("handle-get-object",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_object),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING_STRING,
-                  G_TYPE_BOOLEAN,
-                  3,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_object),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING_STRING,
+		  G_TYPE_BOOLEAN,
+		  3,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING,
+		  G_TYPE_STRING);
   /**
    * EGdbusCal::handle-get-object-list:
    * @object: The exported object emitting the signal.
@@ -829,16 +829,16 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__GET_OBJECT_LIST_METHOD] =
     g_signal_new ("handle-get-object-list",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_object_list),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
-                  G_TYPE_BOOLEAN,
-                  2,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_object_list),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
+		  G_TYPE_BOOLEAN,
+		  2,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING);
   /**
    * EGdbusCal::handle-get-changes:
    * @object: The exported object emitting the signal.
@@ -855,16 +855,16 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__GET_CHANGES_METHOD] =
     g_signal_new ("handle-get-changes",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_changes),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
-                  G_TYPE_BOOLEAN,
-                  2,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_changes),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
+		  G_TYPE_BOOLEAN,
+		  2,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING);
   /**
    * EGdbusCal::handle-get-free-busy:
    * @object: The exported object emitting the signal.
@@ -883,18 +883,18 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__GET_FREE_BUSY_METHOD] =
     g_signal_new ("handle-get-free-busy",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_free_busy),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_BOXED_UINT_UINT,
-                  G_TYPE_BOOLEAN,
-                  4,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRV,
-                  G_TYPE_UINT,
-                  G_TYPE_UINT);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_free_busy),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_BOXED_UINT_UINT,
+		  G_TYPE_BOOLEAN,
+		  4,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRV,
+		  G_TYPE_UINT,
+		  G_TYPE_UINT);
   /**
    * EGdbusCal::handle-discard-alarm:
    * @object: The exported object emitting the signal.
@@ -912,17 +912,17 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__DISCARD_ALARM_METHOD] =
     g_signal_new ("handle-discard-alarm",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_discard_alarm),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING_STRING,
-                  G_TYPE_BOOLEAN,
-                  3,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_discard_alarm),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING_STRING,
+		  G_TYPE_BOOLEAN,
+		  3,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING,
+		  G_TYPE_STRING);
   /**
    * EGdbusCal::handle-create-object:
    * @object: The exported object emitting the signal.
@@ -939,16 +939,16 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__CREATE_OBJECT_METHOD] =
     g_signal_new ("handle-create-object",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_create_object),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
-                  G_TYPE_BOOLEAN,
-                  2,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_create_object),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
+		  G_TYPE_BOOLEAN,
+		  2,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING);
   /**
    * EGdbusCal::handle-modify-object:
    * @object: The exported object emitting the signal.
@@ -966,17 +966,17 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__MODIFY_OBJECT_METHOD] =
     g_signal_new ("handle-modify-object",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_modify_object),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING_UINT,
-                  G_TYPE_BOOLEAN,
-                  3,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING,
-                  G_TYPE_UINT);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_modify_object),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING_UINT,
+		  G_TYPE_BOOLEAN,
+		  3,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING,
+		  G_TYPE_UINT);
   /**
    * EGdbusCal::handle-remove-object:
    * @object: The exported object emitting the signal.
@@ -995,18 +995,18 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__REMOVE_OBJECT_METHOD] =
     g_signal_new ("handle-remove-object",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_remove_object),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING_STRING_UINT,
-                  G_TYPE_BOOLEAN,
-                  4,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING,
-                  G_TYPE_STRING,
-                  G_TYPE_UINT);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_remove_object),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING_STRING_UINT,
+		  G_TYPE_BOOLEAN,
+		  4,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING,
+		  G_TYPE_STRING,
+		  G_TYPE_UINT);
   /**
    * EGdbusCal::handle-receive-objects:
    * @object: The exported object emitting the signal.
@@ -1023,16 +1023,16 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__RECEIVE_OBJECTS_METHOD] =
     g_signal_new ("handle-receive-objects",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_receive_objects),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
-                  G_TYPE_BOOLEAN,
-                  2,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_receive_objects),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
+		  G_TYPE_BOOLEAN,
+		  2,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING);
   /**
    * EGdbusCal::handle-send-objects:
    * @object: The exported object emitting the signal.
@@ -1049,16 +1049,16 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__SEND_OBJECTS_METHOD] =
     g_signal_new ("handle-send-objects",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_send_objects),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
-                  G_TYPE_BOOLEAN,
-                  2,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_send_objects),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
+		  G_TYPE_BOOLEAN,
+		  2,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING);
   /**
    * EGdbusCal::handle-get-attachment-list:
    * @object: The exported object emitting the signal.
@@ -1076,17 +1076,17 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__GET_ATTACHMENT_LIST_METHOD] =
     g_signal_new ("handle-get-attachment-list",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_attachment_list),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING_STRING,
-                  G_TYPE_BOOLEAN,
-                  3,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_attachment_list),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING_STRING,
+		  G_TYPE_BOOLEAN,
+		  3,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING,
+		  G_TYPE_STRING);
   /**
    * EGdbusCal::handle-get-query:
    * @object: The exported object emitting the signal.
@@ -1103,16 +1103,16 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__GET_QUERY_METHOD] =
     g_signal_new ("handle-get-query",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_query),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
-                  G_TYPE_BOOLEAN,
-                  2,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_query),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
+		  G_TYPE_BOOLEAN,
+		  2,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING);
   /**
    * EGdbusCal::handle-get-timezone:
    * @object: The exported object emitting the signal.
@@ -1129,16 +1129,16 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__GET_TIMEZONE_METHOD] =
     g_signal_new ("handle-get-timezone",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_timezone),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
-                  G_TYPE_BOOLEAN,
-                  2,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_get_timezone),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
+		  G_TYPE_BOOLEAN,
+		  2,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING);
   /**
    * EGdbusCal::handle-add-timezone:
    * @object: The exported object emitting the signal.
@@ -1155,16 +1155,16 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__ADD_TIMEZONE_METHOD] =
     g_signal_new ("handle-add-timezone",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_add_timezone),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
-                  G_TYPE_BOOLEAN,
-                  2,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_add_timezone),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
+		  G_TYPE_BOOLEAN,
+		  2,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING);
   /**
    * EGdbusCal::handle-set-default-timezone:
    * @object: The exported object emitting the signal.
@@ -1181,16 +1181,16 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
    */
   signals[__SET_DEFAULT_TIMEZONE_METHOD] =
     g_signal_new ("handle-set-default-timezone",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusCalIface, handle_set_default_timezone),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
-                  G_TYPE_BOOLEAN,
-                  2,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusCalIface, handle_set_default_timezone),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
+		  G_TYPE_BOOLEAN,
+		  2,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING);
 
   /* GObject property definitions for D-Bus properties: */
 }
@@ -1224,12 +1224,12 @@ void e_gdbus_cal_call_get_uri (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getUri",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -1258,7 +1258,7 @@ gboolean e_gdbus_cal_call_get_uri_finish (
   {
     g_variant_get (_result,
                    "(s)",
-                   out_str_uri_copy);
+		   out_str_uri_copy);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -1293,17 +1293,17 @@ gboolean e_gdbus_cal_call_get_uri_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getUri",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(s)",
-                   out_str_uri_copy);
+		   out_str_uri_copy);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -1338,12 +1338,12 @@ void e_gdbus_cal_call_get_cache_dir (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getCacheDir",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -1372,7 +1372,7 @@ gboolean e_gdbus_cal_call_get_cache_dir_finish (
   {
     g_variant_get (_result,
                    "(s)",
-                   out_dirname);
+		   out_dirname);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -1407,17 +1407,17 @@ gboolean e_gdbus_cal_call_get_cache_dir_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getCacheDir",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(s)",
-                   out_dirname);
+		   out_dirname);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -1456,17 +1456,17 @@ void e_gdbus_cal_call_open (
 {
   GVariant *_params;
   _params = g_variant_new ("(bss)",
-                           in_only_if_exists,
-                           in_username,
-                           in_password);
+			   in_only_if_exists,
+			   in_username,
+			   in_password);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "open",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -1525,16 +1525,16 @@ gboolean e_gdbus_cal_call_open_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(bss)",
-                           in_only_if_exists,
-                           in_username,
-                           in_password);
+			   in_only_if_exists,
+			   in_username,
+			   in_password);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "open",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -1570,12 +1570,12 @@ void e_gdbus_cal_call_refresh (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "refresh",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -1630,11 +1630,11 @@ gboolean e_gdbus_cal_call_refresh_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "refresh",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -1670,12 +1670,12 @@ void e_gdbus_cal_call_close (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "close",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -1730,11 +1730,11 @@ gboolean e_gdbus_cal_call_close_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "close",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -1770,12 +1770,12 @@ void e_gdbus_cal_call_remove (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "remove",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -1830,11 +1830,11 @@ gboolean e_gdbus_cal_call_remove_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "remove",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -1870,12 +1870,12 @@ void e_gdbus_cal_call_is_read_only (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "isReadOnly",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -1930,11 +1930,11 @@ gboolean e_gdbus_cal_call_is_read_only_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "isReadOnly",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -1970,12 +1970,12 @@ void e_gdbus_cal_call_get_cal_address (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getCalAddress",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -2004,7 +2004,7 @@ gboolean e_gdbus_cal_call_get_cal_address_finish (
   {
     g_variant_get (_result,
                    "(s)",
-                   out_address);
+		   out_address);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2039,17 +2039,17 @@ gboolean e_gdbus_cal_call_get_cal_address_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getCalAddress",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(s)",
-                   out_address);
+		   out_address);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2084,12 +2084,12 @@ void e_gdbus_cal_call_get_alarm_email_address (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getAlarmEmailAddress",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -2118,7 +2118,7 @@ gboolean e_gdbus_cal_call_get_alarm_email_address_finish (
   {
     g_variant_get (_result,
                    "(s)",
-                   out_address);
+		   out_address);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2153,17 +2153,17 @@ gboolean e_gdbus_cal_call_get_alarm_email_address_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getAlarmEmailAddress",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(s)",
-                   out_address);
+		   out_address);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2198,12 +2198,12 @@ void e_gdbus_cal_call_get_ldap_attribute (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getLdapAttribute",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -2232,7 +2232,7 @@ gboolean e_gdbus_cal_call_get_ldap_attribute_finish (
   {
     g_variant_get (_result,
                    "(s)",
-                   out_address);
+		   out_address);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2267,17 +2267,17 @@ gboolean e_gdbus_cal_call_get_ldap_attribute_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getLdapAttribute",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(s)",
-                   out_address);
+		   out_address);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2312,12 +2312,12 @@ void e_gdbus_cal_call_get_scheduling_information (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getSchedulingInformation",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -2346,7 +2346,7 @@ gboolean e_gdbus_cal_call_get_scheduling_information_finish (
   {
     g_variant_get (_result,
                    "(s)",
-                   out_capabilities);
+		   out_capabilities);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2381,17 +2381,17 @@ gboolean e_gdbus_cal_call_get_scheduling_information_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getSchedulingInformation",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(s)",
-                   out_capabilities);
+		   out_capabilities);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2426,15 +2426,15 @@ void e_gdbus_cal_call_set_mode (
 {
   GVariant *_params;
   _params = g_variant_new ("(u)",
-                           in_mode);
+			   in_mode);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "setMode",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -2489,14 +2489,14 @@ gboolean e_gdbus_cal_call_set_mode_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(u)",
-                           in_mode);
+			   in_mode);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "setMode",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -2532,12 +2532,12 @@ void e_gdbus_cal_call_get_default_object (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getDefaultObject",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -2566,7 +2566,7 @@ gboolean e_gdbus_cal_call_get_default_object_finish (
   {
     g_variant_get (_result,
                    "(s)",
-                   out_object);
+		   out_object);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2601,17 +2601,17 @@ gboolean e_gdbus_cal_call_get_default_object_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getDefaultObject",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(s)",
-                   out_object);
+		   out_object);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2648,16 +2648,16 @@ void e_gdbus_cal_call_get_object (
 {
   GVariant *_params;
   _params = g_variant_new ("(ss)",
-                           in_uid,
-                           in_rid);
+			   in_uid,
+			   in_rid);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getObject",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -2686,7 +2686,7 @@ gboolean e_gdbus_cal_call_get_object_finish (
   {
     g_variant_get (_result,
                    "(s)",
-                   out_object);
+		   out_object);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2723,21 +2723,21 @@ gboolean e_gdbus_cal_call_get_object_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(ss)",
-                           in_uid,
-                           in_rid);
+			   in_uid,
+			   in_rid);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getObject",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(s)",
-                   out_object);
+		   out_object);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2772,15 +2772,15 @@ void e_gdbus_cal_call_get_object_list (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           in_sexp);
+			   in_sexp);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getObjectList",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -2809,7 +2809,7 @@ gboolean e_gdbus_cal_call_get_object_list_finish (
   {
     g_variant_get (_result,
                    "(^as)",
-                   out_objects);
+		   out_objects);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2844,20 +2844,20 @@ gboolean e_gdbus_cal_call_get_object_list_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(s)",
-                           in_sexp);
+			   in_sexp);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getObjectList",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(^as)",
-                   out_objects);
+		   out_objects);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2892,15 +2892,15 @@ void e_gdbus_cal_call_get_changes (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           in_change_id);
+			   in_change_id);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getChanges",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -2933,9 +2933,9 @@ gboolean e_gdbus_cal_call_get_changes_finish (
   {
     g_variant_get (_result,
                    "(^as^as^as)",
-                   out_additions,
-                   out_modifications,
-                   out_removals);
+		   out_additions,
+		   out_modifications,
+		   out_removals);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2974,22 +2974,22 @@ gboolean e_gdbus_cal_call_get_changes_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(s)",
-                           in_change_id);
+			   in_change_id);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getChanges",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(^as^as^as)",
-                   out_additions,
-                   out_modifications,
-                   out_removals);
+		   out_additions,
+		   out_modifications,
+		   out_removals);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -3028,17 +3028,17 @@ void e_gdbus_cal_call_get_free_busy (
 {
   GVariant *_params;
   _params = g_variant_new ("(^asuu)",
-                           in_user_list,
-                           in_start,
-                           in_end);
+			   in_user_list,
+			   in_start,
+			   in_end);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getFreeBusy",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -3067,7 +3067,7 @@ gboolean e_gdbus_cal_call_get_free_busy_finish (
   {
     g_variant_get (_result,
                    "(^as)",
-                   out_freebusy);
+		   out_freebusy);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -3106,22 +3106,22 @@ gboolean e_gdbus_cal_call_get_free_busy_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(^asuu)",
-                           in_user_list,
-                           in_start,
-                           in_end);
+			   in_user_list,
+			   in_start,
+			   in_end);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getFreeBusy",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(^as)",
-                   out_freebusy);
+		   out_freebusy);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -3158,16 +3158,16 @@ void e_gdbus_cal_call_discard_alarm (
 {
   GVariant *_params;
   _params = g_variant_new ("(ss)",
-                           in_uid,
-                           in_auid);
+			   in_uid,
+			   in_auid);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "discardAlarm",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -3224,15 +3224,15 @@ gboolean e_gdbus_cal_call_discard_alarm_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(ss)",
-                           in_uid,
-                           in_auid);
+			   in_uid,
+			   in_auid);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "discardAlarm",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -3268,15 +3268,15 @@ void e_gdbus_cal_call_create_object (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           in_calobj);
+			   in_calobj);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "createObject",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -3305,7 +3305,7 @@ gboolean e_gdbus_cal_call_create_object_finish (
   {
     g_variant_get (_result,
                    "(s)",
-                   out_uid);
+		   out_uid);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -3340,20 +3340,20 @@ gboolean e_gdbus_cal_call_create_object_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(s)",
-                           in_calobj);
+			   in_calobj);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "createObject",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(s)",
-                   out_uid);
+		   out_uid);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -3390,16 +3390,16 @@ void e_gdbus_cal_call_modify_object (
 {
   GVariant *_params;
   _params = g_variant_new ("(su)",
-                           in_calobj,
-                           in_mod);
+			   in_calobj,
+			   in_mod);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "modifyObject",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -3456,15 +3456,15 @@ gboolean e_gdbus_cal_call_modify_object_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(su)",
-                           in_calobj,
-                           in_mod);
+			   in_calobj,
+			   in_mod);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "modifyObject",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -3504,17 +3504,17 @@ void e_gdbus_cal_call_remove_object (
 {
   GVariant *_params;
   _params = g_variant_new ("(ssu)",
-                           in_uid,
-                           in_rid,
-                           in_mod);
+			   in_uid,
+			   in_rid,
+			   in_mod);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "removeObject",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -3573,16 +3573,16 @@ gboolean e_gdbus_cal_call_remove_object_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(ssu)",
-                           in_uid,
-                           in_rid,
-                           in_mod);
+			   in_uid,
+			   in_rid,
+			   in_mod);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "removeObject",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -3618,15 +3618,15 @@ void e_gdbus_cal_call_receive_objects (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           in_calobj);
+			   in_calobj);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "receiveObjects",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -3681,14 +3681,14 @@ gboolean e_gdbus_cal_call_receive_objects_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(s)",
-                           in_calobj);
+			   in_calobj);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "receiveObjects",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -3724,15 +3724,15 @@ void e_gdbus_cal_call_send_objects (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           in_calobj);
+			   in_calobj);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "sendObjects",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -3763,8 +3763,8 @@ gboolean e_gdbus_cal_call_send_objects_finish (
   {
     g_variant_get (_result,
                    "(^ass)",
-                   out_users,
-                   out_calobj);
+		   out_users,
+		   out_calobj);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -3801,21 +3801,21 @@ gboolean e_gdbus_cal_call_send_objects_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(s)",
-                           in_calobj);
+			   in_calobj);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "sendObjects",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(^ass)",
-                   out_users,
-                   out_calobj);
+		   out_users,
+		   out_calobj);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -3852,16 +3852,16 @@ void e_gdbus_cal_call_get_attachment_list (
 {
   GVariant *_params;
   _params = g_variant_new ("(ss)",
-                           in_uid,
-                           in_rid);
+			   in_uid,
+			   in_rid);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getAttachmentList",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -3890,7 +3890,7 @@ gboolean e_gdbus_cal_call_get_attachment_list_finish (
   {
     g_variant_get (_result,
                    "(^as)",
-                   out_attachments);
+		   out_attachments);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -3927,21 +3927,21 @@ gboolean e_gdbus_cal_call_get_attachment_list_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(ss)",
-                           in_uid,
-                           in_rid);
+			   in_uid,
+			   in_rid);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getAttachmentList",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(^as)",
-                   out_attachments);
+		   out_attachments);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -3976,15 +3976,15 @@ void e_gdbus_cal_call_get_query (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           in_sexp);
+			   in_sexp);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getQuery",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -4013,7 +4013,7 @@ gboolean e_gdbus_cal_call_get_query_finish (
   {
     g_variant_get (_result,
                    "(o)",
-                   out_query);
+		   out_query);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -4048,20 +4048,20 @@ gboolean e_gdbus_cal_call_get_query_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(s)",
-                           in_sexp);
+			   in_sexp);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getQuery",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(o)",
-                   out_query);
+		   out_query);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -4096,15 +4096,15 @@ void e_gdbus_cal_call_get_timezone (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           in_tzid);
+			   in_tzid);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getTimezone",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -4133,7 +4133,7 @@ gboolean e_gdbus_cal_call_get_timezone_finish (
   {
     g_variant_get (_result,
                    "(s)",
-                   out_object);
+		   out_object);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -4168,20 +4168,20 @@ gboolean e_gdbus_cal_call_get_timezone_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(s)",
-                           in_tzid);
+			   in_tzid);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getTimezone",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(s)",
-                   out_object);
+		   out_object);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -4216,15 +4216,15 @@ void e_gdbus_cal_call_add_timezone (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           in_tz);
+			   in_tz);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "addTimezone",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -4279,14 +4279,14 @@ gboolean e_gdbus_cal_call_add_timezone_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(s)",
-                           in_tz);
+			   in_tz);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "addTimezone",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -4322,15 +4322,15 @@ void e_gdbus_cal_call_set_default_timezone (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           in_tz);
+			   in_tz);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "setDefaultTimezone",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -4385,14 +4385,14 @@ gboolean e_gdbus_cal_call_set_default_timezone_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(s)",
-                           in_tz);
+			   in_tz);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "setDefaultTimezone",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -4422,7 +4422,7 @@ void e_gdbus_cal_complete_get_uri (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           out_str_uri_copy);
+			   out_str_uri_copy);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -4447,7 +4447,7 @@ void e_gdbus_cal_complete_get_cache_dir (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           out_dirname);
+			   out_dirname);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -4572,7 +4572,7 @@ void e_gdbus_cal_complete_get_cal_address (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           out_address);
+			   out_address);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -4597,7 +4597,7 @@ void e_gdbus_cal_complete_get_alarm_email_address (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           out_address);
+			   out_address);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -4622,7 +4622,7 @@ void e_gdbus_cal_complete_get_ldap_attribute (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           out_address);
+			   out_address);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -4647,7 +4647,7 @@ void e_gdbus_cal_complete_get_scheduling_information (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           out_capabilities);
+			   out_capabilities);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -4692,7 +4692,7 @@ void e_gdbus_cal_complete_get_default_object (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           out_object);
+			   out_object);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -4717,7 +4717,7 @@ void e_gdbus_cal_complete_get_object (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           out_object);
+			   out_object);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -4742,7 +4742,7 @@ void e_gdbus_cal_complete_get_object_list (
 {
   GVariant *_params;
   _params = g_variant_new ("(^as)",
-                           out_objects);
+			   out_objects);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -4771,9 +4771,9 @@ void e_gdbus_cal_complete_get_changes (
 {
   GVariant *_params;
   _params = g_variant_new ("(^as^as^as)",
-                           out_additions,
-                           out_modifications,
-                           out_removals);
+			   out_additions,
+			   out_modifications,
+			   out_removals);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -4798,7 +4798,7 @@ void e_gdbus_cal_complete_get_free_busy (
 {
   GVariant *_params;
   _params = g_variant_new ("(^as)",
-                           out_freebusy);
+			   out_freebusy);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -4843,7 +4843,7 @@ void e_gdbus_cal_complete_create_object (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           out_uid);
+			   out_uid);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -4930,8 +4930,8 @@ void e_gdbus_cal_complete_send_objects (
 {
   GVariant *_params;
   _params = g_variant_new ("(^ass)",
-                           out_users,
-                           out_calobj);
+			   out_users,
+			   out_calobj);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -4956,7 +4956,7 @@ void e_gdbus_cal_complete_get_attachment_list (
 {
   GVariant *_params;
   _params = g_variant_new ("(^as)",
-                           out_attachments);
+			   out_attachments);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -4981,7 +4981,7 @@ void e_gdbus_cal_complete_get_query (
 {
   GVariant *_params;
   _params = g_variant_new ("(o)",
-                           out_query);
+			   out_query);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -5006,7 +5006,7 @@ void e_gdbus_cal_complete_get_timezone (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           out_object);
+			   out_object);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -6031,436 +6031,436 @@ handle_method_call (GDBusConnection       *connection,
     {
     case __GET_URI_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_CACHE_DIR_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __OPEN_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        gboolean arg_only_if_exists;
-        const gchar *arg_username;
-        const gchar *arg_password;
-        g_variant_get (parameters,
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	gboolean arg_only_if_exists;
+	const gchar *arg_username;
+	const gchar *arg_password;
+	g_variant_get (parameters,
                        "(b&s&s)",
-                       &arg_only_if_exists,
-                       &arg_username,
-                       &arg_password);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_only_if_exists, arg_username, arg_password, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_only_if_exists,
+		       &arg_username,
+		       &arg_password);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_only_if_exists, arg_username, arg_password, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __REFRESH_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __CLOSE_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __REMOVE_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __IS_READ_ONLY_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_CAL_ADDRESS_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_ALARM_EMAIL_ADDRESS_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_LDAP_ATTRIBUTE_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_SCHEDULING_INFORMATION_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __SET_MODE_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        guint arg_mode;
-        g_variant_get (parameters,
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	guint arg_mode;
+	g_variant_get (parameters,
                        "(u)",
-                       &arg_mode);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_mode, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_mode);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_mode, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_DEFAULT_OBJECT_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_OBJECT_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        const gchar *arg_uid;
-        const gchar *arg_rid;
-        g_variant_get (parameters,
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	const gchar *arg_uid;
+	const gchar *arg_rid;
+	g_variant_get (parameters,
                        "(&s&s)",
-                       &arg_uid,
-                       &arg_rid);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_uid, arg_rid, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_uid,
+		       &arg_rid);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_uid, arg_rid, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_OBJECT_LIST_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        const gchar *arg_sexp;
-        g_variant_get (parameters,
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	const gchar *arg_sexp;
+	g_variant_get (parameters,
                        "(&s)",
-                       &arg_sexp);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_sexp, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_sexp);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_sexp, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_CHANGES_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        const gchar *arg_change_id;
-        g_variant_get (parameters,
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	const gchar *arg_change_id;
+	g_variant_get (parameters,
                        "(&s)",
-                       &arg_change_id);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_change_id, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_change_id);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_change_id, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_FREE_BUSY_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        const gchar * const *arg_user_list;
-        guint arg_start;
-        guint arg_end;
-        g_variant_get (parameters,
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	const gchar * const *arg_user_list;
+	guint arg_start;
+	guint arg_end;
+	g_variant_get (parameters,
                        "(^a&suu)",
-                       &arg_user_list,
-                       &arg_start,
-                       &arg_end);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_user_list, arg_start, arg_end, &handled);
-        g_free ((gpointer) arg_user_list);
-        if (!handled)
-          goto not_implemented;
+		       &arg_user_list,
+		       &arg_start,
+		       &arg_end);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_user_list, arg_start, arg_end, &handled);
+	g_free ((gpointer) arg_user_list);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __DISCARD_ALARM_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        const gchar *arg_uid;
-        const gchar *arg_auid;
-        g_variant_get (parameters,
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	const gchar *arg_uid;
+	const gchar *arg_auid;
+	g_variant_get (parameters,
                        "(&s&s)",
-                       &arg_uid,
-                       &arg_auid);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_uid, arg_auid, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_uid,
+		       &arg_auid);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_uid, arg_auid, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __CREATE_OBJECT_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        const gchar *arg_calobj;
-        g_variant_get (parameters,
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	const gchar *arg_calobj;
+	g_variant_get (parameters,
                        "(&s)",
-                       &arg_calobj);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_calobj, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_calobj);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_calobj, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __MODIFY_OBJECT_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        const gchar *arg_calobj;
-        guint arg_mod;
-        g_variant_get (parameters,
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	const gchar *arg_calobj;
+	guint arg_mod;
+	g_variant_get (parameters,
                        "(&su)",
-                       &arg_calobj,
-                       &arg_mod);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_calobj, arg_mod, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_calobj,
+		       &arg_mod);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_calobj, arg_mod, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __REMOVE_OBJECT_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        const gchar *arg_uid;
-        const gchar *arg_rid;
-        guint arg_mod;
-        g_variant_get (parameters,
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	const gchar *arg_uid;
+	const gchar *arg_rid;
+	guint arg_mod;
+	g_variant_get (parameters,
                        "(&s&su)",
-                       &arg_uid,
-                       &arg_rid,
-                       &arg_mod);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_uid, arg_rid, arg_mod, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_uid,
+		       &arg_rid,
+		       &arg_mod);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_uid, arg_rid, arg_mod, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __RECEIVE_OBJECTS_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        const gchar *arg_calobj;
-        g_variant_get (parameters,
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	const gchar *arg_calobj;
+	g_variant_get (parameters,
                        "(&s)",
-                       &arg_calobj);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_calobj, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_calobj);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_calobj, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __SEND_OBJECTS_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        const gchar *arg_calobj;
-        g_variant_get (parameters,
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	const gchar *arg_calobj;
+	g_variant_get (parameters,
                        "(&s)",
-                       &arg_calobj);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_calobj, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_calobj);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_calobj, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_ATTACHMENT_LIST_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        const gchar *arg_uid;
-        const gchar *arg_rid;
-        g_variant_get (parameters,
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	const gchar *arg_uid;
+	const gchar *arg_rid;
+	g_variant_get (parameters,
                        "(&s&s)",
-                       &arg_uid,
-                       &arg_rid);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_uid, arg_rid, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_uid,
+		       &arg_rid);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_uid, arg_rid, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_QUERY_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        const gchar *arg_sexp;
-        g_variant_get (parameters,
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	const gchar *arg_sexp;
+	g_variant_get (parameters,
                        "(&s)",
-                       &arg_sexp);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_sexp, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_sexp);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_sexp, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_TIMEZONE_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        const gchar *arg_tzid;
-        g_variant_get (parameters,
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	const gchar *arg_tzid;
+	g_variant_get (parameters,
                        "(&s)",
-                       &arg_tzid);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_tzid, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_tzid);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_tzid, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __ADD_TIMEZONE_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        const gchar *arg_tz;
-        g_variant_get (parameters,
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	const gchar *arg_tz;
+	g_variant_get (parameters,
                        "(&s)",
-                       &arg_tz);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_tz, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_tz);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_tz, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __SET_DEFAULT_TIMEZONE_METHOD:
       {
-        EGdbusCal *object = E_GDBUS_CAL (user_data);
-        gboolean handled;
-        const gchar *arg_tz;
-        g_variant_get (parameters,
+	EGdbusCal *object = E_GDBUS_CAL (user_data);
+	gboolean handled;
+	const gchar *arg_tz;
+	g_variant_get (parameters,
                        "(&s)",
-                       &arg_tz);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_tz, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_tz);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_tz, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     default:
 not_implemented:
       g_dbus_method_invocation_return_error (invocation,
-                                             G_DBUS_ERROR,
-                                             G_DBUS_ERROR_NOT_SUPPORTED,
+					     G_DBUS_ERROR,
+					     G_DBUS_ERROR_NOT_SUPPORTED,
                                              "Method `%s' is not implemented",
-                                             method_name);
+					     method_name);
       break;
     }
 };
@@ -6482,10 +6482,10 @@ get_property (GDBusConnection  *connection,
     {
     default:
       g_set_error (error,
-                   G_DBUS_ERROR,
-                   G_DBUS_ERROR_NOT_SUPPORTED,
+		   G_DBUS_ERROR,
+		   G_DBUS_ERROR_NOT_SUPPORTED,
                    "This implementation does not support property `%s'",
-                   property_name);
+		   property_name);
       break;
     }
 
@@ -6510,10 +6510,10 @@ set_property (GDBusConnection  *connection,
     {
     default:
       g_set_error (error,
-                   G_DBUS_ERROR,
-                   G_DBUS_ERROR_NOT_SUPPORTED,
+		   G_DBUS_ERROR,
+		   G_DBUS_ERROR_NOT_SUPPORTED,
                    "This implementation does not support property `%s'",
-                   property_name);
+		   property_name);
       ret = FALSE;
       break;
     }
@@ -6558,25 +6558,25 @@ emit_notifications_in_idle (gpointer user_data)
       GVariant *cached_value;
       cached_value = g_hash_table_lookup (pvc, property_name);
       if (cached_value == NULL || !g_variant_equal (cached_value, value))
-        {
-          g_hash_table_insert (pvc, (gpointer) property_name, (gpointer) g_variant_ref (value));
+	{
+	  g_hash_table_insert (pvc, (gpointer) property_name, (gpointer) g_variant_ref (value));
           g_variant_builder_add (builder, "{sv}", property_name, value);
-          has_changes = TRUE;
-        }
+	  has_changes = TRUE;
+	}
     }
 
   if (has_changes)
     {
       g_dbus_connection_emit_signal (connection,
-                                     NULL,
-                                     path,
+				     NULL,
+				     path,
                                      "org.freedesktop.DBus.Properties",
                                      "PropertiesChanged",
                                      g_variant_new ("(sa{sv}as)",
                                                     "org.gnome.evolution.dataserver.Calendar",
-                                                    builder,
-                                                    invalidated_builder),
-                                     NULL);
+						    builder,
+						    invalidated_builder),
+				     NULL);
     }
   else
     {
@@ -6610,9 +6610,9 @@ queue_notification (GObject     *object,
       idle_source = g_idle_source_new ();
       g_source_set_priority (idle_source, G_PRIORITY_DEFAULT);
       g_source_set_callback (idle_source,
-                             emit_notifications_in_idle,
-                             g_object_ref (object),
-                             (GDestroyNotify) g_object_unref);
+			     emit_notifications_in_idle,
+			     g_object_ref (object),
+			     (GDestroyNotify) g_object_unref);
       idle_id = g_source_attach (idle_source, g_main_context_get_thread_default ());
       g_source_unref (idle_source);
       g_object_set_data (object, "gdbus-codegen-notification-idle-id", GUINT_TO_POINTER (idle_id));
@@ -6717,12 +6717,12 @@ e_gdbus_cal_register_object (EGdbusCal *object,
   g_object_set_data_full (G_OBJECT (object), "gdbus-codegen-pvc", (gpointer) pvc, (GDestroyNotify) g_hash_table_unref);
   g_signal_connect (object, "notify", G_CALLBACK (on_notify), NULL);
   return g_dbus_connection_register_object (connection,
-          object_path,
-          (GDBusInterfaceInfo *) &_e_gdbus_cal_interface_info,
-          &e_gdbus_cal_interface_vtable,
-          object,
-          (GDestroyNotify) on_object_unregistered,
-          error);
+	  object_path,
+	  (GDBusInterfaceInfo *) &_e_gdbus_cal_interface_info,
+	  &e_gdbus_cal_interface_vtable,
+	  object,
+	  (GDestroyNotify) on_object_unregistered,
+	  error);
 }
 
 /**
@@ -6749,7 +6749,7 @@ static void
 e_gdbus_cal_proxy_init (EGdbusCalProxy *proxy)
 {
   g_dbus_proxy_set_interface_info (G_DBUS_PROXY (proxy),
-                                   (GDBusInterfaceInfo *) &_e_gdbus_cal_interface_info);
+				   (GDBusInterfaceInfo *) &_e_gdbus_cal_interface_info);
 }
 
 static void
@@ -6764,45 +6764,45 @@ g_signal (GDBusProxy  *proxy,
     {
     case __AUTH_REQUIRED_SIGNAL:
       {
-        g_signal_emit (proxy,
-                       signals[signal_id],
-                       0);
+	g_signal_emit (proxy,
+		       signals[signal_id],
+		       0);
       }
       break;
 
     case __BACKEND_ERROR_SIGNAL:
       {
-        const gchar *arg_error;
-        g_variant_get (parameters,
+	const gchar *arg_error;
+	g_variant_get (parameters,
                        "(&s)",
-                       &arg_error);
-        g_signal_emit (proxy,
-                       signals[signal_id],
-                       0, arg_error);
+		       &arg_error);
+	g_signal_emit (proxy,
+		       signals[signal_id],
+		       0, arg_error);
       }
       break;
 
     case __READONLY_SIGNAL:
       {
-        gboolean arg_is_readonly;
-        g_variant_get (parameters,
+	gboolean arg_is_readonly;
+	g_variant_get (parameters,
                        "(b)",
-                       &arg_is_readonly);
-        g_signal_emit (proxy,
-                       signals[signal_id],
-                       0, arg_is_readonly);
+		       &arg_is_readonly);
+	g_signal_emit (proxy,
+		       signals[signal_id],
+		       0, arg_is_readonly);
       }
       break;
 
     case __MODE_SIGNAL:
       {
-        gint arg_mode;
-        g_variant_get (parameters,
+	gint arg_mode;
+	g_variant_get (parameters,
                        "(i)",
-                       &arg_mode);
-        g_signal_emit (proxy,
-                       signals[signal_id],
-                       0, arg_mode);
+		       &arg_mode);
+	g_signal_emit (proxy,
+		       signals[signal_id],
+		       0, arg_mode);
       }
       break;
 
@@ -6872,13 +6872,13 @@ e_gdbus_cal_proxy_set_property (GObject      *object,
                          "org.freedesktop.DBus.Properties.Set",
                          g_variant_new ("(ssv)",
                                         "org.gnome.evolution.dataserver.Calendar",
-                                        property_name,
-                                        new_value),
-                         G_DBUS_CALL_FLAGS_NONE,
-                         G_MAXINT,
-                         NULL,
-                         (GAsyncReadyCallback) property_set_cb,
-                         (gpointer) property_name);
+					property_name,
+					new_value),
+			 G_DBUS_CALL_FLAGS_NONE,
+			 G_MAXINT,
+			 NULL,
+			 (GAsyncReadyCallback) property_set_cb,
+			 (gpointer) property_name);
       g_variant_unref (new_value);
     }
 
@@ -6899,14 +6899,14 @@ g_properties_changed (GDBusProxy         *proxy,
     {
       gname = lookup_property_gname_from_property_name (key);
       if (gname != NULL)
-        g_object_notify (G_OBJECT (proxy), gname);
+	g_object_notify (G_OBJECT (proxy), gname);
     }
 
   for (n = 0; invalidated_properties[n] != NULL; n++)
     {
       gname = lookup_property_gname_from_property_name (invalidated_properties[n]);
       if (gname != NULL)
-        g_object_notify (G_OBJECT (proxy), gname);
+	g_object_notify (G_OBJECT (proxy), gname);
     }
 
 }
@@ -6955,16 +6955,16 @@ void e_gdbus_cal_proxy_new (GDBusConnection     *connection,
                    gpointer             user_data)
 {
   g_async_initable_new_async (E_GDBUS_TYPE_CAL_PROXY,
-                              G_PRIORITY_DEFAULT,
-                              cancellable,
-                              callback,
-                              user_data,
+			      G_PRIORITY_DEFAULT,
+			      cancellable,
+			      callback,
+			      user_data,
                               "g-flags", flags,
                               "g-name", name,
                               "g-connection", connection,
                               "g-object-path", object_path,
                               "g-interface-name", "org.gnome.evolution.dataserver.Calendar",
-                              NULL);
+			      NULL);
 }
 
 /**
@@ -6984,8 +6984,8 @@ EGdbusCal *e_gdbus_cal_proxy_new_finish (GAsyncResult  *res,
   source_object = g_async_result_get_source_object (res);
   g_assert (source_object != NULL);
   object = g_async_initable_new_finish (G_ASYNC_INITABLE (source_object),
-                                        res,
-                                        error);
+					res,
+					error);
   g_object_unref (source_object);
   if (object != NULL)
     return E_GDBUS_CAL (object);
@@ -7017,14 +7017,14 @@ EGdbusCal *e_gdbus_cal_proxy_new_sync (GDBusConnection     *connection,
 {
   GInitable *initable;
   initable = g_initable_new (E_GDBUS_TYPE_CAL_PROXY,
-                             cancellable,
-                             error,
+			     cancellable,
+			     error,
                              "g-flags", flags,
                              "g-name", name,
                              "g-connection", connection,
                              "g-object-path", object_path,
                              "g-interface-name", "org.gnome.evolution.dataserver.Calendar",
-                             NULL);
+			     NULL);
   if (initable != NULL)
     return E_GDBUS_CAL (initable);
   else
@@ -7054,16 +7054,16 @@ void e_gdbus_cal_proxy_new_for_bus (GBusType             bus_type,
                            gpointer             user_data)
 {
   g_async_initable_new_async (E_GDBUS_TYPE_CAL_PROXY,
-                              G_PRIORITY_DEFAULT,
-                              cancellable,
-                              callback,
-                              user_data,
+			      G_PRIORITY_DEFAULT,
+			      cancellable,
+			      callback,
+			      user_data,
                               "g-flags", flags,
                               "g-name", name,
                               "g-bus-type", bus_type,
                               "g-object-path", object_path,
                               "g-interface-name", "org.gnome.evolution.dataserver.Calendar",
-                              NULL);
+			      NULL);
 }
 
 /**
@@ -7083,8 +7083,8 @@ EGdbusCal *e_gdbus_cal_proxy_new_for_bus_finish (GAsyncResult  *res,
   source_object = g_async_result_get_source_object (res);
   g_assert (source_object != NULL);
   object = g_async_initable_new_finish (G_ASYNC_INITABLE (source_object),
-                                        res,
-                                        error);
+					res,
+					error);
   g_object_unref (source_object);
   if (object != NULL)
     return E_GDBUS_CAL (object);
@@ -7116,14 +7116,14 @@ EGdbusCal *e_gdbus_cal_proxy_new_for_bus_sync (GBusType             bus_type,
 {
   GInitable *initable;
   initable = g_initable_new (E_GDBUS_TYPE_CAL_PROXY,
-                             cancellable,
-                             error,
+			     cancellable,
+			     error,
                              "g-flags", flags,
                              "g-name", name,
                              "g-bus-type", bus_type,
                              "g-object-path", object_path,
                              "g-interface-name", "org.gnome.evolution.dataserver.Calendar",
-                             NULL);
+			     NULL);
   if (initable != NULL)
     return E_GDBUS_CAL (initable);
   else

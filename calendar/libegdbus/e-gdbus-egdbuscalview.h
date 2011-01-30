@@ -166,33 +166,33 @@ struct _EGdbusCalViewIface
 
   /* Signal handlers for receiving D-Bus signals: */
   void (*objects_added) (
-        EGdbusCalView *object,
-        const gchar * const *arg_objects);
+	EGdbusCalView *object,
+	const gchar * const *arg_objects);
   void (*objects_modified) (
-        EGdbusCalView *object,
-        const gchar * const *arg_objects);
+	EGdbusCalView *object,
+	const gchar * const *arg_objects);
   void (*objects_removed) (
-        EGdbusCalView *object,
-        const gchar * const *arg_ids);
+	EGdbusCalView *object,
+	const gchar * const *arg_ids);
   void (*progress) (
-        EGdbusCalView *object,
-        const gchar *arg_message,
-        guint arg_progress);
+	EGdbusCalView *object,
+	const gchar *arg_message,
+	guint arg_progress);
   void (*done) (
-        EGdbusCalView *object,
-        guint arg_status,
-        const gchar *arg_message);
+	EGdbusCalView *object,
+	guint arg_status,
+	const gchar *arg_message);
 
   /* Signal handlers for handling D-Bus method calls: */
   gboolean (*handle_start) (
-        EGdbusCalView *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusCalView *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_stop) (
-        EGdbusCalView *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusCalView *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_dispose) (
-        EGdbusCalView *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusCalView *object,
+	GDBusMethodInvocation *invocation);
 };
 
 /* C Bindings for properties */

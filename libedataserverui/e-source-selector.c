@@ -1092,7 +1092,7 @@ source_selector_drag_data_received (GtkWidget *widget,
 	g_signal_emit (
 		widget, signals[DATA_DROPPED], 0, selection_data,
 		object, gdk_drag_context_get_selected_action (context),
-                info, &success);
+		info, &success);
 
 exit:
 	if (path != NULL)

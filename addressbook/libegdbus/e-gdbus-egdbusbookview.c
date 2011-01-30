@@ -154,12 +154,12 @@ signal_emission_hook_cb_contacts_added (GSignalInvocationHint *ihint,
   g_variant_builder_unref (builder);
 
   g_dbus_connection_emit_signal (connection,
-                                 NULL,
-                                 path,
+				 NULL,
+				 path,
                                  "org.gnome.evolution.dataserver.AddressBookView",
                                  "ContactsAdded",
-                                 params,
-                                 NULL);
+				 params,
+				 NULL);
 out:
   return TRUE;
 }
@@ -195,12 +195,12 @@ signal_emission_hook_cb_contacts_changed (GSignalInvocationHint *ihint,
   g_variant_builder_unref (builder);
 
   g_dbus_connection_emit_signal (connection,
-                                 NULL,
-                                 path,
+				 NULL,
+				 path,
                                  "org.gnome.evolution.dataserver.AddressBookView",
                                  "ContactsChanged",
-                                 params,
-                                 NULL);
+				 params,
+				 NULL);
 out:
   return TRUE;
 }
@@ -236,12 +236,12 @@ signal_emission_hook_cb_contacts_removed (GSignalInvocationHint *ihint,
   g_variant_builder_unref (builder);
 
   g_dbus_connection_emit_signal (connection,
-                                 NULL,
-                                 path,
+				 NULL,
+				 path,
                                  "org.gnome.evolution.dataserver.AddressBookView",
                                  "ContactsRemoved",
-                                 params,
-                                 NULL);
+				 params,
+				 NULL);
 out:
   return TRUE;
 }
@@ -277,12 +277,12 @@ signal_emission_hook_cb_status_message (GSignalInvocationHint *ihint,
   g_variant_builder_unref (builder);
 
   g_dbus_connection_emit_signal (connection,
-                                 NULL,
-                                 path,
+				 NULL,
+				 path,
                                  "org.gnome.evolution.dataserver.AddressBookView",
                                  "StatusMessage",
-                                 params,
-                                 NULL);
+				 params,
+				 NULL);
 out:
   return TRUE;
 }
@@ -321,12 +321,12 @@ signal_emission_hook_cb_complete (GSignalInvocationHint *ihint,
   g_variant_builder_unref (builder);
 
   g_dbus_connection_emit_signal (connection,
-                                 NULL,
-                                 path,
+				 NULL,
+				 path,
                                  "org.gnome.evolution.dataserver.AddressBookView",
                                  "Complete",
-                                 params,
-                                 NULL);
+				 params,
+				 NULL);
 out:
   return TRUE;
 }
@@ -366,20 +366,20 @@ e_gdbus_book_view_default_init (EGdbusBookViewIface *iface)
    * On exported objects, emitting this signal causes the actual D-Bus signal to be emitted. You can use e_gdbus_book_view_emit_contacts_added() to do this.
    */  signals[__CONTACTS_ADDED_SIGNAL] =
     g_signal_new ("contacts-added",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookViewIface, contacts_added),
-                  NULL,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_VOID__BOXED,
-                  G_TYPE_NONE,
-                  1,
-                  G_TYPE_STRV);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookViewIface, contacts_added),
+		  NULL,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_VOID__BOXED,
+		  G_TYPE_NONE,
+		  1,
+		  G_TYPE_STRV);
   g_signal_add_emission_hook (signals[__CONTACTS_ADDED_SIGNAL],
-                              0,
-                              signal_emission_hook_cb_contacts_added,
+			      0,
+			      signal_emission_hook_cb_contacts_added,
                               (gpointer) "ContactsAdded",
-                              NULL);
+			      NULL);
 
   /**
    * EGdbusBookView::contacts-changed:
@@ -396,20 +396,20 @@ e_gdbus_book_view_default_init (EGdbusBookViewIface *iface)
    * On exported objects, emitting this signal causes the actual D-Bus signal to be emitted. You can use e_gdbus_book_view_emit_contacts_changed() to do this.
    */  signals[__CONTACTS_CHANGED_SIGNAL] =
     g_signal_new ("contacts-changed",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookViewIface, contacts_changed),
-                  NULL,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_VOID__BOXED,
-                  G_TYPE_NONE,
-                  1,
-                  G_TYPE_STRV);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookViewIface, contacts_changed),
+		  NULL,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_VOID__BOXED,
+		  G_TYPE_NONE,
+		  1,
+		  G_TYPE_STRV);
   g_signal_add_emission_hook (signals[__CONTACTS_CHANGED_SIGNAL],
-                              0,
-                              signal_emission_hook_cb_contacts_changed,
+			      0,
+			      signal_emission_hook_cb_contacts_changed,
                               (gpointer) "ContactsChanged",
-                              NULL);
+			      NULL);
 
   /**
    * EGdbusBookView::contacts-removed:
@@ -426,20 +426,20 @@ e_gdbus_book_view_default_init (EGdbusBookViewIface *iface)
    * On exported objects, emitting this signal causes the actual D-Bus signal to be emitted. You can use e_gdbus_book_view_emit_contacts_removed() to do this.
    */  signals[__CONTACTS_REMOVED_SIGNAL] =
     g_signal_new ("contacts-removed",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookViewIface, contacts_removed),
-                  NULL,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_VOID__BOXED,
-                  G_TYPE_NONE,
-                  1,
-                  G_TYPE_STRV);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookViewIface, contacts_removed),
+		  NULL,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_VOID__BOXED,
+		  G_TYPE_NONE,
+		  1,
+		  G_TYPE_STRV);
   g_signal_add_emission_hook (signals[__CONTACTS_REMOVED_SIGNAL],
-                              0,
-                              signal_emission_hook_cb_contacts_removed,
+			      0,
+			      signal_emission_hook_cb_contacts_removed,
                               (gpointer) "ContactsRemoved",
-                              NULL);
+			      NULL);
 
   /**
    * EGdbusBookView::status-message:
@@ -456,20 +456,20 @@ e_gdbus_book_view_default_init (EGdbusBookViewIface *iface)
    * On exported objects, emitting this signal causes the actual D-Bus signal to be emitted. You can use e_gdbus_book_view_emit_status_message() to do this.
    */  signals[__STATUS_MESSAGE_SIGNAL] =
     g_signal_new ("status-message",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookViewIface, status_message),
-                  NULL,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_VOID__STRING,
-                  G_TYPE_NONE,
-                  1,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookViewIface, status_message),
+		  NULL,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_VOID__STRING,
+		  G_TYPE_NONE,
+		  1,
+		  G_TYPE_STRING);
   g_signal_add_emission_hook (signals[__STATUS_MESSAGE_SIGNAL],
-                              0,
-                              signal_emission_hook_cb_status_message,
+			      0,
+			      signal_emission_hook_cb_status_message,
                               (gpointer) "StatusMessage",
-                              NULL);
+			      NULL);
 
   /**
    * EGdbusBookView::complete:
@@ -487,21 +487,21 @@ e_gdbus_book_view_default_init (EGdbusBookViewIface *iface)
    * On exported objects, emitting this signal causes the actual D-Bus signal to be emitted. You can use e_gdbus_book_view_emit_complete() to do this.
    */  signals[__COMPLETE_SIGNAL] =
     g_signal_new ("complete",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookViewIface, complete),
-                  NULL,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_VOID__UINT_STRING,
-                  G_TYPE_NONE,
-                  2,
-                  G_TYPE_UINT,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookViewIface, complete),
+		  NULL,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_VOID__UINT_STRING,
+		  G_TYPE_NONE,
+		  2,
+		  G_TYPE_UINT,
+		  G_TYPE_STRING);
   g_signal_add_emission_hook (signals[__COMPLETE_SIGNAL],
-                              0,
-                              signal_emission_hook_cb_complete,
+			      0,
+			      signal_emission_hook_cb_complete,
                               (gpointer) "Complete",
-                              NULL);
+			      NULL);
 
   /* GObject signals definitions for D-Bus methods: */
   /**
@@ -519,15 +519,15 @@ e_gdbus_book_view_default_init (EGdbusBookViewIface *iface)
    */
   signals[__START_METHOD] =
     g_signal_new ("handle-start",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookViewIface, handle_start),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookViewIface, handle_start),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusBookView::handle-stop:
    * @object: The exported object emitting the signal.
@@ -543,15 +543,15 @@ e_gdbus_book_view_default_init (EGdbusBookViewIface *iface)
    */
   signals[__STOP_METHOD] =
     g_signal_new ("handle-stop",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookViewIface, handle_stop),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookViewIface, handle_stop),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusBookView::handle-dispose:
    * @object: The exported object emitting the signal.
@@ -567,15 +567,15 @@ e_gdbus_book_view_default_init (EGdbusBookViewIface *iface)
    */
   signals[__DISPOSE_METHOD] =
     g_signal_new ("handle-dispose",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookViewIface, handle_dispose),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookViewIface, handle_dispose),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
 
   /* GObject property definitions for D-Bus properties: */
 }
@@ -609,12 +609,12 @@ void e_gdbus_book_view_call_start (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "start",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -669,11 +669,11 @@ gboolean e_gdbus_book_view_call_start_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "start",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -709,12 +709,12 @@ void e_gdbus_book_view_call_stop (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "stop",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -769,11 +769,11 @@ gboolean e_gdbus_book_view_call_stop_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "stop",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -809,12 +809,12 @@ void e_gdbus_book_view_call_dispose (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "dispose",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -869,11 +869,11 @@ gboolean e_gdbus_book_view_call_dispose_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "dispose",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -1202,47 +1202,47 @@ handle_method_call (GDBusConnection       *connection,
     {
     case __START_METHOD:
       {
-        EGdbusBookView *object = E_GDBUS_BOOK_VIEW (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusBookView *object = E_GDBUS_BOOK_VIEW (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __STOP_METHOD:
       {
-        EGdbusBookView *object = E_GDBUS_BOOK_VIEW (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusBookView *object = E_GDBUS_BOOK_VIEW (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __DISPOSE_METHOD:
       {
-        EGdbusBookView *object = E_GDBUS_BOOK_VIEW (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusBookView *object = E_GDBUS_BOOK_VIEW (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     default:
 not_implemented:
       g_dbus_method_invocation_return_error (invocation,
-                                             G_DBUS_ERROR,
-                                             G_DBUS_ERROR_NOT_SUPPORTED,
+					     G_DBUS_ERROR,
+					     G_DBUS_ERROR_NOT_SUPPORTED,
                                              "Method `%s' is not implemented",
-                                             method_name);
+					     method_name);
       break;
     }
 };
@@ -1264,10 +1264,10 @@ get_property (GDBusConnection  *connection,
     {
     default:
       g_set_error (error,
-                   G_DBUS_ERROR,
-                   G_DBUS_ERROR_NOT_SUPPORTED,
+		   G_DBUS_ERROR,
+		   G_DBUS_ERROR_NOT_SUPPORTED,
                    "This implementation does not support property `%s'",
-                   property_name);
+		   property_name);
       break;
     }
 
@@ -1292,10 +1292,10 @@ set_property (GDBusConnection  *connection,
     {
     default:
       g_set_error (error,
-                   G_DBUS_ERROR,
-                   G_DBUS_ERROR_NOT_SUPPORTED,
+		   G_DBUS_ERROR,
+		   G_DBUS_ERROR_NOT_SUPPORTED,
                    "This implementation does not support property `%s'",
-                   property_name);
+		   property_name);
       ret = FALSE;
       break;
     }
@@ -1340,25 +1340,25 @@ emit_notifications_in_idle (gpointer user_data)
       GVariant *cached_value;
       cached_value = g_hash_table_lookup (pvc, property_name);
       if (cached_value == NULL || !g_variant_equal (cached_value, value))
-        {
-          g_hash_table_insert (pvc, (gpointer) property_name, (gpointer) g_variant_ref (value));
+	{
+	  g_hash_table_insert (pvc, (gpointer) property_name, (gpointer) g_variant_ref (value));
           g_variant_builder_add (builder, "{sv}", property_name, value);
-          has_changes = TRUE;
-        }
+	  has_changes = TRUE;
+	}
     }
 
   if (has_changes)
     {
       g_dbus_connection_emit_signal (connection,
-                                     NULL,
-                                     path,
+				     NULL,
+				     path,
                                      "org.freedesktop.DBus.Properties",
                                      "PropertiesChanged",
                                      g_variant_new ("(sa{sv}as)",
                                                     "org.gnome.evolution.dataserver.AddressBookView",
-                                                    builder,
-                                                    invalidated_builder),
-                                     NULL);
+						    builder,
+						    invalidated_builder),
+				     NULL);
     }
   else
     {
@@ -1392,9 +1392,9 @@ queue_notification (GObject     *object,
       idle_source = g_idle_source_new ();
       g_source_set_priority (idle_source, G_PRIORITY_DEFAULT);
       g_source_set_callback (idle_source,
-                             emit_notifications_in_idle,
-                             g_object_ref (object),
-                             (GDestroyNotify) g_object_unref);
+			     emit_notifications_in_idle,
+			     g_object_ref (object),
+			     (GDestroyNotify) g_object_unref);
       idle_id = g_source_attach (idle_source, g_main_context_get_thread_default ());
       g_source_unref (idle_source);
       g_object_set_data (object, "gdbus-codegen-notification-idle-id", GUINT_TO_POINTER (idle_id));
@@ -1499,12 +1499,12 @@ e_gdbus_book_view_register_object (EGdbusBookView *object,
   g_object_set_data_full (G_OBJECT (object), "gdbus-codegen-pvc", (gpointer) pvc, (GDestroyNotify) g_hash_table_unref);
   g_signal_connect (object, "notify", G_CALLBACK (on_notify), NULL);
   return g_dbus_connection_register_object (connection,
-          object_path,
-          (GDBusInterfaceInfo *) &_e_gdbus_book_view_interface_info,
-          &e_gdbus_book_view_interface_vtable,
-          object,
-          (GDestroyNotify) on_object_unregistered,
-          error);
+	  object_path,
+	  (GDBusInterfaceInfo *) &_e_gdbus_book_view_interface_info,
+	  &e_gdbus_book_view_interface_vtable,
+	  object,
+	  (GDestroyNotify) on_object_unregistered,
+	  error);
 }
 
 /**
@@ -1531,7 +1531,7 @@ static void
 e_gdbus_book_view_proxy_init (EGdbusBookViewProxy *proxy)
 {
   g_dbus_proxy_set_interface_info (G_DBUS_PROXY (proxy),
-                                   (GDBusInterfaceInfo *) &_e_gdbus_book_view_interface_info);
+				   (GDBusInterfaceInfo *) &_e_gdbus_book_view_interface_info);
 }
 
 static void
@@ -1546,66 +1546,66 @@ g_signal (GDBusProxy  *proxy,
     {
     case __CONTACTS_ADDED_SIGNAL:
       {
-        const gchar * const *arg_vcards;
-        g_variant_get (parameters,
+	const gchar * const *arg_vcards;
+	g_variant_get (parameters,
                        "(^a&s)",
-                       &arg_vcards);
-        g_signal_emit (proxy,
-                       signals[signal_id],
-                       0, arg_vcards);
-        g_free ((gpointer) arg_vcards);
+		       &arg_vcards);
+	g_signal_emit (proxy,
+		       signals[signal_id],
+		       0, arg_vcards);
+	g_free ((gpointer) arg_vcards);
       }
       break;
 
     case __CONTACTS_CHANGED_SIGNAL:
       {
-        const gchar * const *arg_vcards;
-        g_variant_get (parameters,
+	const gchar * const *arg_vcards;
+	g_variant_get (parameters,
                        "(^a&s)",
-                       &arg_vcards);
-        g_signal_emit (proxy,
-                       signals[signal_id],
-                       0, arg_vcards);
-        g_free ((gpointer) arg_vcards);
+		       &arg_vcards);
+	g_signal_emit (proxy,
+		       signals[signal_id],
+		       0, arg_vcards);
+	g_free ((gpointer) arg_vcards);
       }
       break;
 
     case __CONTACTS_REMOVED_SIGNAL:
       {
-        const gchar * const *arg_ids;
-        g_variant_get (parameters,
+	const gchar * const *arg_ids;
+	g_variant_get (parameters,
                        "(^a&s)",
-                       &arg_ids);
-        g_signal_emit (proxy,
-                       signals[signal_id],
-                       0, arg_ids);
-        g_free ((gpointer) arg_ids);
+		       &arg_ids);
+	g_signal_emit (proxy,
+		       signals[signal_id],
+		       0, arg_ids);
+	g_free ((gpointer) arg_ids);
       }
       break;
 
     case __STATUS_MESSAGE_SIGNAL:
       {
-        const gchar *arg_message;
-        g_variant_get (parameters,
+	const gchar *arg_message;
+	g_variant_get (parameters,
                        "(&s)",
-                       &arg_message);
-        g_signal_emit (proxy,
-                       signals[signal_id],
-                       0, arg_message);
+		       &arg_message);
+	g_signal_emit (proxy,
+		       signals[signal_id],
+		       0, arg_message);
       }
       break;
 
     case __COMPLETE_SIGNAL:
       {
-        guint arg_status;
-        const gchar *arg_message;
-        g_variant_get (parameters,
+	guint arg_status;
+	const gchar *arg_message;
+	g_variant_get (parameters,
                        "(u&s)",
-                       &arg_status,
-                       &arg_message);
-        g_signal_emit (proxy,
-                       signals[signal_id],
-                       0, arg_status, arg_message);
+		       &arg_status,
+		       &arg_message);
+	g_signal_emit (proxy,
+		       signals[signal_id],
+		       0, arg_status, arg_message);
       }
       break;
 
@@ -1675,13 +1675,13 @@ e_gdbus_book_view_proxy_set_property (GObject      *object,
                          "org.freedesktop.DBus.Properties.Set",
                          g_variant_new ("(ssv)",
                                         "org.gnome.evolution.dataserver.AddressBookView",
-                                        property_name,
-                                        new_value),
-                         G_DBUS_CALL_FLAGS_NONE,
-                         G_MAXINT,
-                         NULL,
-                         (GAsyncReadyCallback) property_set_cb,
-                         (gpointer) property_name);
+					property_name,
+					new_value),
+			 G_DBUS_CALL_FLAGS_NONE,
+			 G_MAXINT,
+			 NULL,
+			 (GAsyncReadyCallback) property_set_cb,
+			 (gpointer) property_name);
       g_variant_unref (new_value);
     }
 
@@ -1702,14 +1702,14 @@ g_properties_changed (GDBusProxy         *proxy,
     {
       gname = lookup_property_gname_from_property_name (key);
       if (gname != NULL)
-        g_object_notify (G_OBJECT (proxy), gname);
+	g_object_notify (G_OBJECT (proxy), gname);
     }
 
   for (n = 0; invalidated_properties[n] != NULL; n++)
     {
       gname = lookup_property_gname_from_property_name (invalidated_properties[n]);
       if (gname != NULL)
-        g_object_notify (G_OBJECT (proxy), gname);
+	g_object_notify (G_OBJECT (proxy), gname);
     }
 
 }
@@ -1758,16 +1758,16 @@ void e_gdbus_book_view_proxy_new (GDBusConnection     *connection,
                    gpointer             user_data)
 {
   g_async_initable_new_async (E_GDBUS_TYPE_BOOK_VIEW_PROXY,
-                              G_PRIORITY_DEFAULT,
-                              cancellable,
-                              callback,
-                              user_data,
+			      G_PRIORITY_DEFAULT,
+			      cancellable,
+			      callback,
+			      user_data,
                               "g-flags", flags,
                               "g-name", name,
                               "g-connection", connection,
                               "g-object-path", object_path,
                               "g-interface-name", "org.gnome.evolution.dataserver.AddressBookView",
-                              NULL);
+			      NULL);
 }
 
 /**
@@ -1787,8 +1787,8 @@ EGdbusBookView *e_gdbus_book_view_proxy_new_finish (GAsyncResult  *res,
   source_object = g_async_result_get_source_object (res);
   g_assert (source_object != NULL);
   object = g_async_initable_new_finish (G_ASYNC_INITABLE (source_object),
-                                        res,
-                                        error);
+					res,
+					error);
   g_object_unref (source_object);
   if (object != NULL)
     return E_GDBUS_BOOK_VIEW (object);
@@ -1820,14 +1820,14 @@ EGdbusBookView *e_gdbus_book_view_proxy_new_sync (GDBusConnection     *connectio
 {
   GInitable *initable;
   initable = g_initable_new (E_GDBUS_TYPE_BOOK_VIEW_PROXY,
-                             cancellable,
-                             error,
+			     cancellable,
+			     error,
                              "g-flags", flags,
                              "g-name", name,
                              "g-connection", connection,
                              "g-object-path", object_path,
                              "g-interface-name", "org.gnome.evolution.dataserver.AddressBookView",
-                             NULL);
+			     NULL);
   if (initable != NULL)
     return E_GDBUS_BOOK_VIEW (initable);
   else
@@ -1857,16 +1857,16 @@ void e_gdbus_book_view_proxy_new_for_bus (GBusType             bus_type,
                            gpointer             user_data)
 {
   g_async_initable_new_async (E_GDBUS_TYPE_BOOK_VIEW_PROXY,
-                              G_PRIORITY_DEFAULT,
-                              cancellable,
-                              callback,
-                              user_data,
+			      G_PRIORITY_DEFAULT,
+			      cancellable,
+			      callback,
+			      user_data,
                               "g-flags", flags,
                               "g-name", name,
                               "g-bus-type", bus_type,
                               "g-object-path", object_path,
                               "g-interface-name", "org.gnome.evolution.dataserver.AddressBookView",
-                              NULL);
+			      NULL);
 }
 
 /**
@@ -1886,8 +1886,8 @@ EGdbusBookView *e_gdbus_book_view_proxy_new_for_bus_finish (GAsyncResult  *res,
   source_object = g_async_result_get_source_object (res);
   g_assert (source_object != NULL);
   object = g_async_initable_new_finish (G_ASYNC_INITABLE (source_object),
-                                        res,
-                                        error);
+					res,
+					error);
   g_object_unref (source_object);
   if (object != NULL)
     return E_GDBUS_BOOK_VIEW (object);
@@ -1919,14 +1919,14 @@ EGdbusBookView *e_gdbus_book_view_proxy_new_for_bus_sync (GBusType             b
 {
   GInitable *initable;
   initable = g_initable_new (E_GDBUS_TYPE_BOOK_VIEW_PROXY,
-                             cancellable,
-                             error,
+			     cancellable,
+			     error,
                              "g-flags", flags,
                              "g-name", name,
                              "g-bus-type", bus_type,
                              "g-object-path", object_path,
                              "g-interface-name", "org.gnome.evolution.dataserver.AddressBookView",
-                             NULL);
+			     NULL);
   if (initable != NULL)
     return E_GDBUS_BOOK_VIEW (initable);
   else

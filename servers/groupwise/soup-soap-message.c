@@ -32,9 +32,9 @@ finalize (GObject *object)
 	if (priv->action)
 		g_free (priv->action);
 	if (priv->env_uri)
-                xmlFree (priv->env_uri);
+		xmlFree (priv->env_uri);
 	if (priv->env_prefix)
-                xmlFree (priv->env_prefix);
+		xmlFree (priv->env_prefix);
 
 	G_OBJECT_CLASS (soup_soap_message_parent_class)->finalize (object);
 }
@@ -64,17 +64,17 @@ static xmlNsPtr
 fetch_ns (SoupSoapMessage *msg, const gchar *prefix, const gchar *ns_uri)
 {
 	SoupSoapMessagePrivate *priv = SOUP_SOAP_MESSAGE_GET_PRIVATE (msg);
-        xmlNsPtr ns = NULL;
+	xmlNsPtr ns = NULL;
 
-        if (prefix && ns_uri)
-                ns = xmlNewNs (priv->last_node, (const xmlChar *)ns_uri, (const xmlChar *)prefix);
-        else if (prefix && !ns_uri) {
-                ns = xmlSearchNs (priv->doc, priv->last_node, (const xmlChar *)prefix);
-                if (!ns)
+	if (prefix && ns_uri)
+		ns = xmlNewNs (priv->last_node, (const xmlChar *)ns_uri, (const xmlChar *)prefix);
+	else if (prefix && !ns_uri) {
+		ns = xmlSearchNs (priv->doc, priv->last_node, (const xmlChar *)prefix);
+		if (!ns)
 			ns = xmlNewNs (priv->last_node, (const xmlChar *)"", (const xmlChar *)prefix);
-        }
+	}
 
-        return ns;
+	return ns;
 }
 
 /**
@@ -354,7 +354,7 @@ soup_soap_message_start_fault (SoupSoapMessage *msg,
 void
 soup_soap_message_end_fault (SoupSoapMessage *msg)
 {
-        soup_soap_message_end_element (msg);
+	soup_soap_message_end_element (msg);
 }
 
 /**
@@ -370,10 +370,10 @@ soup_soap_message_start_fault_detail (SoupSoapMessage *msg)
 {
 	SoupSoapMessagePrivate *priv;
 
-        g_return_if_fail (SOUP_IS_SOAP_MESSAGE (msg));
+	g_return_if_fail (SOUP_IS_SOAP_MESSAGE (msg));
 	priv = SOUP_SOAP_MESSAGE_GET_PRIVATE (msg);
 
-        priv->last_node = xmlNewChild (priv->last_node,
+	priv->last_node = xmlNewChild (priv->last_node,
 				       priv->soap_ns,
 				       (const xmlChar *)"detail",
 				       NULL);
@@ -513,9 +513,9 @@ soup_soap_message_write_double (SoupSoapMessage *msg, gdouble d)
 void
 soup_soap_message_write_base64 (SoupSoapMessage *msg, const gchar *string, gint len)
 {
-        gchar *str = g_base64_encode ((const guchar *)string, len);
-        soup_soap_message_write_string (msg, str);
-        g_free (str);
+	gchar *str = g_base64_encode ((const guchar *)string, len);
+	soup_soap_message_write_string (msg, str);
+	g_free (str);
 }
 
 /**
@@ -529,8 +529,8 @@ soup_soap_message_write_base64 (SoupSoapMessage *msg, const gchar *string, gint 
 void
 soup_soap_message_write_time (SoupSoapMessage *msg, const time_t *timeval)
 {
-        gchar *str = g_strchomp (ctime (timeval));
-        soup_soap_message_write_string (msg, str);
+	gchar *str = g_strchomp (ctime (timeval));
+	soup_soap_message_write_string (msg, str);
 }
 
 /**

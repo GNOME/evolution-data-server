@@ -333,12 +333,12 @@ resolve_tzid (const gchar *tzid, gpointer user_data)
 {
 	SearchContext *ctx = user_data;
 
-        if (!tzid || !tzid[0])
-                return NULL;
+	if (!tzid || !tzid[0])
+		return NULL;
         else if (!strcmp (tzid, "UTC"))
-                return icaltimezone_get_utc_timezone ();
+		return icaltimezone_get_utc_timezone ();
 
-        return e_cal_backend_internal_get_timezone (ctx->backend, tzid);
+	return e_cal_backend_internal_get_timezone (ctx->backend, tzid);
 }
 
 /* (occur-in-time-range? START END)

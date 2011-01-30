@@ -454,7 +454,7 @@ gdbus_cal_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished,
 
 	gdbus_cal_disconnect (ecal);
 
-        g_signal_emit (G_OBJECT (ecal), e_cal_signals[BACKEND_DIED], 0);
+	g_signal_emit (G_OBJECT (ecal), e_cal_signals[BACKEND_DIED], 0);
 }
 
 static void

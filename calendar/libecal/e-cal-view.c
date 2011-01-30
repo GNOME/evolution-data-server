@@ -104,7 +104,7 @@ build_id_list (const gchar * const *seq)
 static void
 objects_added_cb (EGdbusCalView *gdbus_calview, const gchar * const *objects, ECalView *view)
 {
-        GList *list;
+	GList *list;
 
 	g_return_if_fail (E_IS_CAL_VIEW (view));
 	g_object_ref (view);
@@ -122,7 +122,7 @@ objects_added_cb (EGdbusCalView *gdbus_calview, const gchar * const *objects, EC
 static void
 objects_modified_cb (EGdbusCalView *gdbus_calview, const gchar * const *objects, ECalView *view)
 {
-        GList *list;
+	GList *list;
 
 	g_return_if_fail (E_IS_CAL_VIEW (view));
 	g_object_ref (view);
@@ -140,7 +140,7 @@ objects_modified_cb (EGdbusCalView *gdbus_calview, const gchar * const *objects,
 static void
 objects_removed_cb (EGdbusCalView *gdbus_calview, const gchar * const *uids, ECalView *view)
 {
-        GList *list;
+	GList *list;
 
 	g_return_if_fail (E_IS_CAL_VIEW (view));
 	g_object_ref (view);

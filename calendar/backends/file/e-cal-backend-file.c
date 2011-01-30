@@ -456,10 +456,10 @@ resolve_tzid (const gchar *tzid, gpointer user_data)
 	icalcomponent *vcalendar_comp = user_data;
 	icaltimezone* zone;
 
-        if (!tzid || !tzid[0])
-                return NULL;
+	if (!tzid || !tzid[0])
+		return NULL;
         else if (!strcmp (tzid, "UTC"))
-                return icaltimezone_get_utc_timezone ();
+		return icaltimezone_get_utc_timezone ();
 
 	zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
 
@@ -508,15 +508,15 @@ static struct icaltimetype
 get_rid_icaltime (ECalComponent *comp)
 {
 	ECalComponentRange range;
-        struct icaltimetype tt;
+	struct icaltimetype tt;
 
-        e_cal_component_get_recurid (comp, &range);
-        if (!range.datetime.value)
-                return icaltime_null_time ();
-        tt = *range.datetime.value;
-        e_cal_component_free_range (&range);
+	e_cal_component_get_recurid (comp, &range);
+	if (!range.datetime.value)
+		return icaltime_null_time ();
+	tt = *range.datetime.value;
+	e_cal_component_free_range (&range);
 
-        return tt;
+	return tt;
 }
 
 /* Adds component to the interval tree
@@ -1344,19 +1344,19 @@ e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
-        g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	/* Claim a succesful open if we are already open */
 	if (priv->path && priv->comp_uid_hash) {
 		/* Success */
 		goto done;
-        }
+	}
 
 	str_uri = get_uri_string (E_CAL_BACKEND (backend));
 	if (!str_uri) {
 		err = EDC_ERROR_NO_URI ();
 		goto done;
-        }
+	}
 
 	priv->read_only = FALSE;
 	if (g_access (str_uri, R_OK) == 0) {
@@ -1390,7 +1390,7 @@ e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	g_free (str_uri);
 
   done:
-        g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	if (err)
 		g_propagate_error (perror, err);
@@ -1402,24 +1402,24 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal, GError **per
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	gchar *str_uri = NULL, *dirname = NULL;
-        gchar *full_path = NULL;
+	gchar *full_path = NULL;
 	const gchar *fname;
 	GDir *dir = NULL;
 	GError *error = NULL, *err = NULL;
 
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
-        g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	str_uri = get_uri_string (E_CAL_BACKEND (backend));
 	if (!str_uri) {
 		err = EDC_ERROR_NO_URI ();
-                goto done;
-        }
+		goto done;
+	}
 
 	if (g_access (str_uri, W_OK) != 0) {
 		err = EDC_ERROR (PermissionDenied);
-                goto done;
+		goto done;
 	}
 
 	/* remove all files in the directory */
@@ -1427,34 +1427,34 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal, GError **per
 	dir = g_dir_open (dirname, 0, &error);
 	if (!dir) {
 		err = e_data_cal_create_error (PermissionDenied, error ? error->message : NULL);
-                goto done;
+		goto done;
 	}
 
 	while ((fname = g_dir_read_name (dir))) {
 		full_path = g_build_filename (dirname, fname, NULL);
 		if (g_unlink (full_path) != 0) {
 			err = EDC_ERROR (OtherError);
-                        goto done;
+			goto done;
 		}
 
 		g_free (full_path);
-                full_path = NULL;
+		full_path = NULL;
 	}
 
 	/* remove the directory itself */
 	if (g_rmdir (dirname) != 0) {
 		err = EDC_ERROR (OtherError);
-        }
+	}
 
   done:
-        if (dir) {
-            g_dir_close (dir);
-        }
+	if (dir) {
+	    g_dir_close (dir);
+	}
 	g_free (str_uri);
 	g_free (dirname);
-        g_free (full_path);
+	g_free (full_path);
 
-        g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	/* lie here a bit, but otherwise the calendar will not be removed, even it should */
 	if (err) {
@@ -1586,7 +1586,7 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const gc
 				g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 				g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 				return;
-                        }
+			}
 
 			*object = icalcomponent_as_ical_string_r (icalcomp);
 
@@ -3159,12 +3159,12 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 	g_list_free (del_comps);
 
         /* check and patch timezones */
-        if (!err) {
-            if (!e_cal_check_timezones (toplevel_comp,
-                                       NULL,
-                                       e_cal_tzlookup_icomp,
-                                       priv->icalcomp,
-                                       &err)) {
+	if (!err) {
+	    if (!e_cal_check_timezones (toplevel_comp,
+				       NULL,
+				       e_cal_tzlookup_icomp,
+				       priv->icalcomp,
+				       &err)) {
                 /*
                  * This makes assumptions about what kind of
                  * errors can occur inside e_cal_check_timezones().
@@ -3172,9 +3172,9 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
                  * is the code really identical with the calendar
                  * status?
                  */
-                goto error;
-            }
-        }
+		goto error;
+	    }
+	}
 
 	/* Merge the iCalendar components with our existing VCALENDAR,
 	   resolving any conflicting TZIDs. */
@@ -3344,14 +3344,14 @@ e_cal_backend_file_set_file_name (ECalBackendFile *cbfile, const gchar *file_nam
 	g_return_if_fail (file_name != NULL);
 
 	priv = cbfile->priv;
-        g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	if (priv->file_name)
 		g_free (priv->file_name);
 
 	priv->file_name = g_strdup (file_name);
 
-        g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 }
 
 const gchar *
@@ -3375,13 +3375,13 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile, GError **perror)
 	GError *err = NULL;
 
 	priv = cbfile->priv;
-        g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	str_uri = get_uri_string (E_CAL_BACKEND (cbfile));
 	if (!str_uri) {
 		err = EDC_ERROR_NO_URI ();
-                goto done;
-        }
+		goto done;
+	}
 
 	if (g_access (str_uri, R_OK) == 0) {
 		reload_cal (cbfile, str_uri, &err);
@@ -3400,7 +3400,7 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile, GError **perror)
 			priv->read_only = TRUE;
 	}
   done:
-        g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	if (err)
 		g_propagate_error (perror, err);

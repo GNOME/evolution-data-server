@@ -78,7 +78,7 @@ test_message_set_content_simple (CamelMimePart *part, gint how, const gchar *typ
 
 	if (content != 0) {
 		dw = camel_data_wrapper_new ();
-                camel_data_wrapper_set_mime_type (dw, type);
+		camel_data_wrapper_set_mime_type (dw, type);
 
 		camel_data_wrapper_construct_from_stream_sync (
 			dw, (CamelStream *)content, NULL, NULL);

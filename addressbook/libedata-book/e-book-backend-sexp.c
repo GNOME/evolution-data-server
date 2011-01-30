@@ -527,7 +527,7 @@ contains_helper (const gchar *s1, const gchar *s2)
 	}
 
 	/* breaking s2 into words */
-        words = NULL;
+	words = NULL;
 	have_nonspace = FALSE;
 	have_space = FALSE;
 	last_word = NULL;

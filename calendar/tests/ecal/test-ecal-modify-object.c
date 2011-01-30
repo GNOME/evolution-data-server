@@ -35,7 +35,7 @@ main (gint argc, gchar **argv)
 			INITIAL_BEGIN_TIMEZONE, INITIAL_END_TIME,
 			INITIAL_END_TIMEZONE, EVENT_SUMMARY, &e_component,
 			&uid);
-        component = e_cal_component_get_icalcomponent (e_component);
+	component = e_cal_component_get_icalcomponent (e_component);
 
 	component_final = ecal_test_utils_cal_get_object (cal, uid);
 	ecal_test_utils_cal_assert_objects_equal_shallow (component,
@@ -50,13 +50,13 @@ main (gint argc, gchar **argv)
 	ecal_test_utils_cal_modify_object (cal, component, CALOBJ_MOD_ALL);
 
 	/* verify */
-        component_final = ecal_test_utils_cal_get_object (cal, uid);
-        e_component_final = e_cal_component_new ();
-        ecal_test_utils_cal_component_set_icalcomponent (e_component_final,
-                                component_final);
+	component_final = ecal_test_utils_cal_get_object (cal, uid);
+	e_component_final = e_cal_component_new ();
+	ecal_test_utils_cal_component_set_icalcomponent (e_component_final,
+				component_final);
 
-        ecal_test_utils_cal_assert_e_cal_components_equal (e_component,
-                        e_component_final);
+	ecal_test_utils_cal_assert_e_cal_components_equal (e_component,
+			e_component_final);
 
 	/* Clean-up */
 	ecal_test_utils_cal_remove (cal);

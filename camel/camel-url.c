@@ -736,29 +736,29 @@ camel_url_copy (const CamelURL *in)
 gchar *
 camel_url_decode_path (const gchar *path)
 {
-        gchar **comps;
-        gchar *new_path = NULL;
-        GString *str;
-        gint i = 0;
+	gchar **comps;
+	gchar *new_path = NULL;
+	GString *str;
+	gint i = 0;
 
-        if (!path)
+	if (!path)
                 return g_strdup("");    /* ??? or NULL? */
 
-        str = g_string_new (NULL);
+	str = g_string_new (NULL);
 
         comps = g_strsplit (path, "/", -1);
-        while (comps[i]) {
-                camel_url_decode (comps[i]);
-                g_string_append (str, comps[i]);
-                g_string_append_c (str, '/');
-                i++;
-        }
+	while (comps[i]) {
+		camel_url_decode (comps[i]);
+		g_string_append (str, comps[i]);
+		g_string_append_c (str, '/');
+		i++;
+	}
 
         /* Strip-off the trailing "/" */
-        new_path = g_strndup (str->str, str->len-1);
+	new_path = g_strndup (str->str, str->len-1);
 
-        g_strfreev (comps);
-        g_string_free (str, TRUE);
+	g_strfreev (comps);
+	g_string_free (str, TRUE);
 
-        return new_path;
+	return new_path;
 }

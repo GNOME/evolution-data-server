@@ -25,7 +25,7 @@ main (gint argc, gchar **argv)
 	g_type_init ();
 
 	book = ebook_test_utils_book_new_temp (&uri);
-        ebook_test_utils_book_open (book, FALSE);
+	ebook_test_utils_book_open (book, FALSE);
 
 	/* get an initial change set */
 	if (!e_book_get_changes (book, "changeidtest", &changes, &error)) {

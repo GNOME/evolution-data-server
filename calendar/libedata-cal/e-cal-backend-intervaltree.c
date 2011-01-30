@@ -815,5 +815,5 @@ e_intervaltree_new (void)
 {
 	EIntervalTree *tree;
 	tree = g_object_new (E_TYPE_INTERVALTREE, NULL);
-        return tree;
+	return tree;
 }

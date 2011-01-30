@@ -400,7 +400,7 @@ connect_to_server (CamelService *service,
 #endif /* CAMEL_HAVE_SSL */
 
 	/* rfc2595, section 4 states that after a successful STLS
-           command, the client MUST discard prior CAPA responses */
+	   command, the client MUST discard prior CAPA responses */
 	if (!imap_get_capability (service, cancellable, error)) {
 		if (store->istream) {
 			g_object_unref (store->istream);
@@ -1400,8 +1400,8 @@ imap_folder_effectively_unsubscribed (CamelImapStore *imap_store,
 
 	if (imap_store->renaming) {
 		/* we don't need to emit a "folder_unsubscribed" signal
-                   if we are in the process of renaming folders, so we
-                   are done here... */
+		   if we are in the process of renaming folders, so we
+		   are done here... */
 		return TRUE;
 
 	}
@@ -2144,8 +2144,8 @@ imap_store_rename_folder_sync (CamelStore *store,
 	}
 
 	/* make sure this folder isn't currently SELECTed - it's
-           actually possible to rename INBOX but if you do another
-           INBOX will immediately be created by the server */
+	   actually possible to rename INBOX but if you do another
+	   INBOX will immediately be created by the server */
 	response = camel_imap_command (imap_store, NULL, cancellable, error, "SELECT INBOX");
 	if (!response) {
 		success = FALSE;
@@ -3000,8 +3000,8 @@ imap_store_subscribe_folder_sync (CamelStore *store,
 
 	if (imap_store->renaming) {
 		/* we don't need to emit a "folder_subscribed" signal
-                   if we are in the process of renaming folders, so we
-                   are done here... */
+		   if we are in the process of renaming folders, so we
+		   are done here... */
 		goto done;
 	}
 
@@ -3151,7 +3151,7 @@ camel_imap_store_readline (CamelImapStore *store,
 	}
 
 	/* camel-imap-command.c:imap_read_untagged expects the CRLFs
-           to be stripped off and be nul-terminated *sigh* */
+	   to be stripped off and be nul-terminated *sigh* */
 	nread = ba->len - 1;
 	ba->data[nread] = '\0';
 	if (ba->data[nread - 1] == '\r') {

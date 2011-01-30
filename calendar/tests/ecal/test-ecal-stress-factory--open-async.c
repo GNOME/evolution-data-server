@@ -50,14 +50,14 @@ main (gint argc, gchar **argv)
 	loop = g_main_loop_new (NULL, TRUE);
 
         /* open and close many calendars in parallel */
-        for (i = 0; i < NUM_CALS; i++) {
-                cals[i] = ecal_test_utils_cal_new_temp (&uri,
-                                E_CAL_SOURCE_TYPE_EVENT);
+	for (i = 0; i < NUM_CALS; i++) {
+		cals[i] = ecal_test_utils_cal_new_temp (&uri,
+				E_CAL_SOURCE_TYPE_EVENT);
 		ecal_test_utils_cal_async_open (cals[i], FALSE,
 				(GSourceFunc) open_complete_cb, loop);
 
 		g_free (uri);
-        }
+	}
 
 	g_main_loop_run (loop);
 

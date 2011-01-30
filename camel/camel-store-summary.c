@@ -965,14 +965,14 @@ camel_store_summary_remove_path (CamelStoreSummary *summary,
 
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-        if (g_hash_table_lookup_extended (summary->folders_path, path, (gpointer)&oldpath, (gpointer)&oldinfo)) {
+	if (g_hash_table_lookup_extended (summary->folders_path, path, (gpointer)&oldpath, (gpointer)&oldinfo)) {
 		/* make sure it doesn't vanish while we're removing it */
 		oldinfo->refcount++;
 		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 		camel_store_summary_remove (summary, oldinfo);
 		camel_store_summary_info_free (summary, oldinfo);
-        } else {
+	} else {
 		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 	}

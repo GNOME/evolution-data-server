@@ -449,7 +449,7 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg, gint status_fd, gchar **sfd, gint passwd_
 
 	if (passwd_fd == -1) {
 		/* only use batch mode if we don't intend on using the
-                   interactive --command-fd option */
+		   interactive --command-fd option */
 		g_ptr_array_add (argv, (guint8 *) "--batch");
 		g_ptr_array_add (argv, (guint8 *) "--yes");
 	}
@@ -1762,7 +1762,7 @@ gpg_verify_sync (CamelCipherContext *context,
 	gpg = gpg_ctx_new (context);
 	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_VERIFY);
 	if (sigfile)
-                gpg_ctx_set_sigfile (gpg, sigfile);
+		gpg_ctx_set_sigfile (gpg, sigfile);
 	gpg_ctx_set_istream (gpg, canon_stream);
 
 	if (!gpg_ctx_op_start (gpg, error))

@@ -636,16 +636,16 @@ e_gw_container_get_is_frequent_contacts (EGwContainer *container)
 {
 	g_return_val_if_fail (E_IS_GW_CONTAINER (container), FALSE);
 
-        return container->priv->is_frequent_contacts;
+	return container->priv->is_frequent_contacts;
 
 }
 
 void
 e_gw_container_set_is_frequent_contacts (EGwContainer *container, gboolean is_frequent_contacts)
 {
-        g_return_if_fail (E_IS_GW_CONTAINER (container));
+	g_return_if_fail (E_IS_GW_CONTAINER (container));
 
-        container->priv->is_frequent_contacts = is_frequent_contacts;
+	container->priv->is_frequent_contacts = is_frequent_contacts;
 }
 
 gboolean

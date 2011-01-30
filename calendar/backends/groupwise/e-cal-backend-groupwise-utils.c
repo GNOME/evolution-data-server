@@ -118,31 +118,31 @@ set_categories_for_gw_item (EGwItem *item, GSList *category_names, ECalBackendGr
 	g_return_if_fail (categories_by_id != NULL || categories_by_name != NULL || cnc != NULL);
 
 	for (; category_names != NULL; category_names = g_slist_next (category_names)) {
-                     if (!category_names->data || strlen (category_names->data) == 0 )
-                             continue;
-                     id = g_hash_table_lookup (categories_by_name, category_names->data);
-                     if (id)
-                            category_ids = g_list_append (category_ids, g_strdup (id));
-                     else {
-                             EGwItem *category_item;
-                            category_item = e_gw_item_new_empty ();
-                             e_gw_item_set_item_type (category_item,  E_GW_ITEM_TYPE_CATEGORY);
-                             e_gw_item_set_category_name (category_item, category_names->data);
-                             status = e_gw_connection_create_item (cnc, category_item, &id);
-                             if (status == E_GW_CONNECTION_STATUS_OK && id != NULL) {
+		     if (!category_names->data || strlen (category_names->data) == 0 )
+			     continue;
+		     id = g_hash_table_lookup (categories_by_name, category_names->data);
+		     if (id)
+			    category_ids = g_list_append (category_ids, g_strdup (id));
+		     else {
+			     EGwItem *category_item;
+			    category_item = e_gw_item_new_empty ();
+			     e_gw_item_set_item_type (category_item,  E_GW_ITEM_TYPE_CATEGORY);
+			     e_gw_item_set_category_name (category_item, category_names->data);
+			     status = e_gw_connection_create_item (cnc, category_item, &id);
+			     if (status == E_GW_CONNECTION_STATUS_OK && id != NULL) {
                                      gchar **components = g_strsplit (id, "@", -1);
-                                     gchar *temp_id = components[0];
+				     gchar *temp_id = components[0];
 
-                                     g_hash_table_insert (categories_by_name, g_strdup (category_names->data), g_strdup (temp_id));
-                                     g_hash_table_insert (categories_by_id, g_strdup (temp_id), g_strdup (category_names->data));
-                                     category_ids = g_list_append (category_ids, g_strdup (temp_id));
-                                     g_free (id);
-                                     g_strfreev (components);
-                             }
-                             g_object_unref (category_item);
-                     }
-             }
-             e_gw_item_set_categories (item, category_ids);
+				     g_hash_table_insert (categories_by_name, g_strdup (category_names->data), g_strdup (temp_id));
+				     g_hash_table_insert (categories_by_id, g_strdup (temp_id), g_strdup (category_names->data));
+				     category_ids = g_list_append (category_ids, g_strdup (temp_id));
+				     g_free (id);
+				     g_strfreev (components);
+			     }
+			     g_object_unref (category_item);
+		     }
+	     }
+	     e_gw_item_set_categories (item, category_ids);
 }
 
 static void
@@ -1070,7 +1070,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	const gchar *t;
 	gchar *name;
 	GList *category_ids;
-        GSList *categories;
+	GSList *categories;
 	GHashTable *categories_by_id;
 	gboolean is_allday;
 	icaltimezone *default_zone;
@@ -1677,17 +1677,17 @@ static EGwConnectionStatus
 start_freebusy_session (EGwConnection *cnc, GList *users,
                time_t start, time_t end, gchar **session)
 {
-        SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
-        SoupSoapParameter *param;
-        GList *l;
-        icaltimetype icaltime;
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+	SoupSoapParameter *param;
+	GList *l;
+	icaltimetype icaltime;
 	icaltimezone *utc;
-        gchar *start_date, *end_date;
+	gchar *start_date, *end_date;
 
 	if (users == NULL)
-                return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
+		return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
 
         /* build the SOAP message */
 	msg = e_gw_message_new_with_header (e_gw_connection_get_uri (cnc),
@@ -1697,13 +1697,13 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
          * email id apart from the name*/
 
         soup_soap_message_start_element (msg, "users", NULL, NULL);
-        for ( l = users; l != NULL; l = g_list_next (l)) {
+	for ( l = users; l != NULL; l = g_list_next (l)) {
 		soup_soap_message_start_element (msg, "user", NULL, NULL);
                 e_gw_message_write_string_parameter (msg, "email", NULL, l->data);
 		soup_soap_message_end_element (msg);
-        }
+	}
 
-        soup_soap_message_end_element (msg);
+	soup_soap_message_end_element (msg);
 
 	utc = icaltimezone_get_utc_timezone ();
 	icaltime = icaltime_from_timet_with_zone (start, FALSE, utc);
@@ -1727,20 +1727,20 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
 	}
 
 	status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK)
-        {
-                g_object_unref (msg);
-                g_object_unref (response);
-                return status;
-        }
+	if (status != E_GW_CONNECTION_STATUS_OK)
+	{
+		g_object_unref (msg);
+		g_object_unref (response);
+		return status;
+	}
 
 	/* if status is OK - parse result, return the list */
         param = soup_soap_response_get_first_parameter_by_name (response, "freeBusySessionId");
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+	if (!param) {
+		g_object_unref (response);
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
 
 	*session = soup_soap_parameter_get_string_value (param);
         /* free memory */
@@ -1753,7 +1753,7 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
 static EGwConnectionStatus
 close_freebusy_session (EGwConnection *cnc, const gchar *session)
 {
-        SoupSoapMessage *msg;
+	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
 	EGwConnectionStatus status;
 
@@ -1762,7 +1762,7 @@ close_freebusy_session (EGwConnection *cnc, const gchar *session)
 					    e_gw_connection_get_session_id (cnc),
 					    "closeFreeBusySessionRequest");
 	e_gw_message_write_string_parameter (msg, "freeBusySessionId", NULL, session);
-        e_gw_message_write_footer (msg);
+	e_gw_message_write_footer (msg);
 
 	/* send message to server */
 	response = e_gw_connection_send_message (cnc, msg);
@@ -1773,20 +1773,20 @@ close_freebusy_session (EGwConnection *cnc, const gchar *session)
 
 	status = e_gw_connection_parse_response_status (response);
 
-        g_object_unref (msg);
-        g_object_unref (response);
-        return status;
+	g_object_unref (msg);
+	g_object_unref (response);
+	return status;
 }
 
 EGwConnectionStatus
 e_gw_connection_get_freebusy_info (ECalBackendGroupwise *cbgw, GList *users, time_t start, time_t end, GList **freebusy)
 {
-        SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
-        SoupSoapParameter *param, *subparam, *param_outstanding;
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+	SoupSoapParameter *param, *subparam, *param_outstanding;
 	EGwConnection *cnc;
-        gchar *session;
+	gchar *session;
 	gchar *outstanding = NULL;
 	gboolean resend_request = TRUE;
 	gint request_iteration = 0;
@@ -1798,10 +1798,10 @@ e_gw_connection_get_freebusy_info (ECalBackendGroupwise *cbgw, GList *users, tim
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 
 	/* Perform startFreeBusySession */
-        status = start_freebusy_session (cnc, users, start, end, &session);
+	status = start_freebusy_session (cnc, users, start, end, &session);
         /*FIXME log error messages  */
-        if (status != E_GW_CONNECTION_STATUS_OK)
-                return status;
+	if (status != E_GW_CONNECTION_STATUS_OK)
+		return status;
 
 	resend :
 	while (resend_request) {
@@ -1812,7 +1812,7 @@ e_gw_connection_get_freebusy_info (ECalBackendGroupwise *cbgw, GList *users, tim
 					    e_gw_connection_get_session_id (cnc),
 					    "getFreeBusyRequest");
 	e_gw_message_write_string_parameter (msg, "freeBusySessionId", NULL, session);
-        e_gw_message_write_footer (msg);
+	e_gw_message_write_footer (msg);
 
 	/* send message to server */
 	response = e_gw_connection_send_message (cnc, msg);
@@ -1823,20 +1823,20 @@ e_gw_connection_get_freebusy_info (ECalBackendGroupwise *cbgw, GList *users, tim
 	}
 
 	status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
-                g_object_unref (msg);
-                g_object_unref (response);
+	if (status != E_GW_CONNECTION_STATUS_OK) {
+		g_object_unref (msg);
+		g_object_unref (response);
 		g_free (session);
-                return status;
-        }
+		return status;
+	}
 
 	param = soup_soap_response_get_first_parameter_by_name (response, "freeBusyStats");
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
+	if (!param) {
+		g_object_unref (response);
+		g_object_unref (msg);
 		g_free (session);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
 
 	param_outstanding = soup_soap_parameter_get_first_child_by_name (param, "outstanding");
 	if (param_outstanding)
@@ -1855,11 +1855,11 @@ e_gw_connection_get_freebusy_info (ECalBackendGroupwise *cbgw, GList *users, tim
 
         /* FIXME  the FreeBusyStats are not used currently.  */
         param = soup_soap_response_get_first_parameter_by_name (response, "freeBusyInfo");
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+	if (!param) {
+		g_object_unref (response);
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
 
 	resend_request = FALSE;
 
@@ -1996,8 +1996,8 @@ e_gw_connection_get_freebusy_info (ECalBackendGroupwise *cbgw, GList *users, tim
 		e_cal_backend_groupwise_priv_unlock (cbgw);
 	}
 
-        g_object_unref (msg);
-        g_object_unref (response);
+	g_object_unref (msg);
+	g_object_unref (response);
 
 	} /* end of while loop */
 
@@ -2005,7 +2005,7 @@ e_gw_connection_get_freebusy_info (ECalBackendGroupwise *cbgw, GList *users, tim
 	status = close_freebusy_session (cnc, session);
 	g_free (session);
 
-        return status;
+	return status;
 }
 
 #define SET_DELTA(fieldname) G_STMT_START{                                                                \

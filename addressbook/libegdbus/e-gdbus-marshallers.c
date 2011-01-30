@@ -58,9 +58,9 @@ _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING (GClosure     *closure
                                                            gpointer      marshal_data)
 {
   typedef gboolean (*GMarshalFunc_BOOLEAN__OBJECT_STRING) (gpointer     data1,
-                                                           gpointer     arg_1,
-                                                           gpointer     arg_2,
-                                                           gpointer     data2);
+							   gpointer     arg_1,
+							   gpointer     arg_2,
+							   gpointer     data2);
   register GMarshalFunc_BOOLEAN__OBJECT_STRING callback;
   register GCClosure *cc = (GCClosure*) closure;
   register gpointer data1, data2;
@@ -82,9 +82,9 @@ _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING (GClosure     *closure
   callback = (GMarshalFunc_BOOLEAN__OBJECT_STRING) (marshal_data ? marshal_data : cc->callback);
 
   v_return = callback (data1,
-                       g_marshal_value_peek_object (param_values + 1),
-                       g_marshal_value_peek_string (param_values + 2),
-                       data2);
+		       g_marshal_value_peek_object (param_values + 1),
+		       g_marshal_value_peek_string (param_values + 2),
+		       data2);
 
   g_value_set_boolean (return_value, v_return);
 }
@@ -103,9 +103,9 @@ _e_gdbus_gdbus_cclosure_marshaller_VOID__UINT_STRING (GClosure     *closure,
                                                       gpointer      marshal_data)
 {
   typedef void (*GMarshalFunc_VOID__UINT_STRING) (gpointer     data1,
-                                                  guint        arg_1,
-                                                  gpointer     arg_2,
-                                                  gpointer     data2);
+						  guint        arg_1,
+						  gpointer     arg_2,
+						  gpointer     data2);
   register GMarshalFunc_VOID__UINT_STRING callback;
   register GCClosure *cc = (GCClosure*) closure;
   register gpointer data1, data2;
@@ -125,9 +125,9 @@ _e_gdbus_gdbus_cclosure_marshaller_VOID__UINT_STRING (GClosure     *closure,
   callback = (GMarshalFunc_VOID__UINT_STRING) (marshal_data ? marshal_data : cc->callback);
 
   callback (data1,
-            g_marshal_value_peek_uint (param_values + 1),
-            g_marshal_value_peek_string (param_values + 2),
-            data2);
+	    g_marshal_value_peek_uint (param_values + 1),
+	    g_marshal_value_peek_string (param_values + 2),
+	    data2);
 }
 
 /* BOOLEAN:OBJECT (e-gdbus-marshallers.list:5) */
@@ -140,8 +140,8 @@ _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT (GClosure     *closure,
                                                     gpointer      marshal_data)
 {
   typedef gboolean (*GMarshalFunc_BOOLEAN__OBJECT) (gpointer     data1,
-                                                    gpointer     arg_1,
-                                                    gpointer     data2);
+						    gpointer     arg_1,
+						    gpointer     data2);
   register GMarshalFunc_BOOLEAN__OBJECT callback;
   register GCClosure *cc = (GCClosure*) closure;
   register gpointer data1, data2;
@@ -163,8 +163,8 @@ _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT (GClosure     *closure,
   callback = (GMarshalFunc_BOOLEAN__OBJECT) (marshal_data ? marshal_data : cc->callback);
 
   v_return = callback (data1,
-                       g_marshal_value_peek_object (param_values + 1),
-                       data2);
+		       g_marshal_value_peek_object (param_values + 1),
+		       data2);
 
   g_value_set_boolean (return_value, v_return);
 }
@@ -181,9 +181,9 @@ _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_BOOLEAN (GClosure     *closur
                                                             gpointer      marshal_data)
 {
   typedef gboolean (*GMarshalFunc_BOOLEAN__OBJECT_BOOLEAN) (gpointer     data1,
-                                                            gpointer     arg_1,
-                                                            gboolean     arg_2,
-                                                            gpointer     data2);
+							    gpointer     arg_1,
+							    gboolean     arg_2,
+							    gpointer     data2);
   register GMarshalFunc_BOOLEAN__OBJECT_BOOLEAN callback;
   register GCClosure *cc = (GCClosure*) closure;
   register gpointer data1, data2;
@@ -205,9 +205,9 @@ _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_BOOLEAN (GClosure     *closur
   callback = (GMarshalFunc_BOOLEAN__OBJECT_BOOLEAN) (marshal_data ? marshal_data : cc->callback);
 
   v_return = callback (data1,
-                       g_marshal_value_peek_object (param_values + 1),
-                       g_marshal_value_peek_boolean (param_values + 2),
-                       data2);
+		       g_marshal_value_peek_object (param_values + 1),
+		       g_marshal_value_peek_boolean (param_values + 2),
+		       data2);
 
   g_value_set_boolean (return_value, v_return);
 }
@@ -222,11 +222,11 @@ _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING_STRING_STRING (GClosur
                                                                          gpointer      marshal_data)
 {
   typedef gboolean (*GMarshalFunc_BOOLEAN__OBJECT_STRING_STRING_STRING) (gpointer     data1,
-                                                                         gpointer     arg_1,
-                                                                         gpointer     arg_2,
-                                                                         gpointer     arg_3,
-                                                                         gpointer     arg_4,
-                                                                         gpointer     data2);
+									 gpointer     arg_1,
+									 gpointer     arg_2,
+									 gpointer     arg_3,
+									 gpointer     arg_4,
+									 gpointer     data2);
   register GMarshalFunc_BOOLEAN__OBJECT_STRING_STRING_STRING callback;
   register GCClosure *cc = (GCClosure*) closure;
   register gpointer data1, data2;
@@ -248,11 +248,11 @@ _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING_STRING_STRING (GClosur
   callback = (GMarshalFunc_BOOLEAN__OBJECT_STRING_STRING_STRING) (marshal_data ? marshal_data : cc->callback);
 
   v_return = callback (data1,
-                       g_marshal_value_peek_object (param_values + 1),
-                       g_marshal_value_peek_string (param_values + 2),
-                       g_marshal_value_peek_string (param_values + 3),
-                       g_marshal_value_peek_string (param_values + 4),
-                       data2);
+		       g_marshal_value_peek_object (param_values + 1),
+		       g_marshal_value_peek_string (param_values + 2),
+		       g_marshal_value_peek_string (param_values + 3),
+		       g_marshal_value_peek_string (param_values + 4),
+		       data2);
 
   g_value_set_boolean (return_value, v_return);
 }
@@ -267,9 +267,9 @@ _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_BOXED (GClosure     *closure,
                                                           gpointer      marshal_data)
 {
   typedef gboolean (*GMarshalFunc_BOOLEAN__OBJECT_BOXED) (gpointer     data1,
-                                                          gpointer     arg_1,
-                                                          gpointer     arg_2,
-                                                          gpointer     data2);
+							  gpointer     arg_1,
+							  gpointer     arg_2,
+							  gpointer     data2);
   register GMarshalFunc_BOOLEAN__OBJECT_BOXED callback;
   register GCClosure *cc = (GCClosure*) closure;
   register gpointer data1, data2;
@@ -291,9 +291,9 @@ _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_BOXED (GClosure     *closure,
   callback = (GMarshalFunc_BOOLEAN__OBJECT_BOXED) (marshal_data ? marshal_data : cc->callback);
 
   v_return = callback (data1,
-                       g_marshal_value_peek_object (param_values + 1),
-                       g_marshal_value_peek_boxed (param_values + 2),
-                       data2);
+		       g_marshal_value_peek_object (param_values + 1),
+		       g_marshal_value_peek_boxed (param_values + 2),
+		       data2);
 
   g_value_set_boolean (return_value, v_return);
 }
@@ -308,10 +308,10 @@ _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING_UINT (GClosure     *cl
                                                                 gpointer      marshal_data)
 {
   typedef gboolean (*GMarshalFunc_BOOLEAN__OBJECT_STRING_UINT) (gpointer     data1,
-                                                                gpointer     arg_1,
-                                                                gpointer     arg_2,
-                                                                guint        arg_3,
-                                                                gpointer     data2);
+								gpointer     arg_1,
+								gpointer     arg_2,
+								guint        arg_3,
+								gpointer     data2);
   register GMarshalFunc_BOOLEAN__OBJECT_STRING_UINT callback;
   register GCClosure *cc = (GCClosure*) closure;
   register gpointer data1, data2;
@@ -333,10 +333,10 @@ _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING_UINT (GClosure     *cl
   callback = (GMarshalFunc_BOOLEAN__OBJECT_STRING_UINT) (marshal_data ? marshal_data : cc->callback);
 
   v_return = callback (data1,
-                       g_marshal_value_peek_object (param_values + 1),
-                       g_marshal_value_peek_string (param_values + 2),
-                       g_marshal_value_peek_uint (param_values + 3),
-                       data2);
+		       g_marshal_value_peek_object (param_values + 1),
+		       g_marshal_value_peek_string (param_values + 2),
+		       g_marshal_value_peek_uint (param_values + 3),
+		       data2);
 
   g_value_set_boolean (return_value, v_return);
 }

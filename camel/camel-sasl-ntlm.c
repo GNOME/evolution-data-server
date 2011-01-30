@@ -192,27 +192,27 @@ setup_schedule (const guchar *key_56, DES_KS ks)
 			key[i] ^= 0x01;
 	}
 
-        deskey (ks, key, 0);
+	deskey (ks, key, 0);
 }
 
 static void
 ntlm_calc_response (const guchar key[21], const guchar plaintext[8],
 		    guchar results[24])
 {
-        DES_KS ks;
+	DES_KS ks;
 
 	memcpy (results, plaintext, 8);
 	memcpy (results + 8, plaintext, 8);
 	memcpy (results + 16, plaintext, 8);
 
-        setup_schedule (key, ks);
+	setup_schedule (key, ks);
 	des (ks, results);
 
-        setup_schedule (key + 7, ks);
+	setup_schedule (key + 7, ks);
 	des (ks, results + 8);
 
-        setup_schedule (key + 14, ks);
-        des (ks, results + 16);
+	setup_schedule (key + 14, ks);
+	des (ks, results + 16);
 }
 
 /*

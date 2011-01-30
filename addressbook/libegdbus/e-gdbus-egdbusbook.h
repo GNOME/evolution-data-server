@@ -177,75 +177,75 @@ struct _EGdbusBookIface
 
   /* Signal handlers for receiving D-Bus signals: */
   void (*writable) (
-        EGdbusBook *object,
-        gboolean arg_value);
+	EGdbusBook *object,
+	gboolean arg_value);
   void (*connection) (
-        EGdbusBook *object,
-        gboolean arg_connected);
+	EGdbusBook *object,
+	gboolean arg_connected);
   void (*auth_required) (
-        EGdbusBook *object);
+	EGdbusBook *object);
 
   /* Signal handlers for handling D-Bus method calls: */
   gboolean (*handle_open) (
-        EGdbusBook *object,
-        GDBusMethodInvocation *invocation,
-        gboolean in_only_if_exists);
+	EGdbusBook *object,
+	GDBusMethodInvocation *invocation,
+	gboolean in_only_if_exists);
   gboolean (*handle_remove) (
-        EGdbusBook *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusBook *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_get_contact) (
-        EGdbusBook *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_uid);
+	EGdbusBook *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_uid);
   gboolean (*handle_get_contact_list) (
-        EGdbusBook *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_query);
+	EGdbusBook *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_query);
   gboolean (*handle_authenticate_user) (
-        EGdbusBook *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_user,
-        const gchar *in_passwd,
-        const gchar *in_auth_method);
+	EGdbusBook *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_user,
+	const gchar *in_passwd,
+	const gchar *in_auth_method);
   gboolean (*handle_add_contact) (
-        EGdbusBook *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_vcard);
+	EGdbusBook *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_vcard);
   gboolean (*handle_remove_contacts) (
-        EGdbusBook *object,
-        GDBusMethodInvocation *invocation,
-        const gchar * const *in_list);
+	EGdbusBook *object,
+	GDBusMethodInvocation *invocation,
+	const gchar * const *in_list);
   gboolean (*handle_modify_contact) (
-        EGdbusBook *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_vcard);
+	EGdbusBook *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_vcard);
   gboolean (*handle_get_static_capabilities) (
-        EGdbusBook *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusBook *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_get_required_fields) (
-        EGdbusBook *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusBook *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_get_supported_fields) (
-        EGdbusBook *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusBook *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_get_supported_auth_methods) (
-        EGdbusBook *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusBook *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_get_book_view) (
-        EGdbusBook *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_query,
-        guint in_max_results);
+	EGdbusBook *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_query,
+	guint in_max_results);
   gboolean (*handle_get_changes) (
-        EGdbusBook *object,
-        GDBusMethodInvocation *invocation,
-        const gchar *in_change_id);
+	EGdbusBook *object,
+	GDBusMethodInvocation *invocation,
+	const gchar *in_change_id);
   gboolean (*handle_cancel_operation) (
-        EGdbusBook *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusBook *object,
+	GDBusMethodInvocation *invocation);
   gboolean (*handle_close) (
-        EGdbusBook *object,
-        GDBusMethodInvocation *invocation);
+	EGdbusBook *object,
+	GDBusMethodInvocation *invocation);
 };
 
 /* C Bindings for properties */

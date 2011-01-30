@@ -785,9 +785,9 @@ camel_iconv_strndup (iconv_t cd, const gchar *string, gsize n)
 	iconv (cd, NULL, NULL, &outbuf, &outleft);
 
 	/* Note: not all charsets can be nul-terminated with a single
-           nul byte. UCS2, for example, needs 2 nul bytes and UCS4
-           needs 4. I hope that 4 nul bytes is enough to terminate all
-           multibyte charsets? */
+	   nul byte. UCS2, for example, needs 2 nul bytes and UCS4
+	   needs 4. I hope that 4 nul bytes is enough to terminate all
+	   multibyte charsets? */
 
 	/* nul-terminate the string */
 	memset (outbuf, 0, 4);
@@ -1755,7 +1755,7 @@ camel_header_encode_phrase (const guchar *in)
 		case WORD_2047:
 			if (last_word && last_word->type == WORD_2047) {
 				/* include the whitespace chars between these 2 words in the
-                                   resulting rfc2047 encoded word. */
+				   resulting rfc2047 encoded word. */
 				len = word->end - last_word->end;
 				start = (const gchar *) last_word->end;
 
@@ -3690,7 +3690,7 @@ datetok (const gchar *date)
 {
 	struct _date_token *tokens = NULL, *token, *tail = (struct _date_token *) &tokens;
 	const gchar *start, *end;
-        guchar mask;
+	guchar mask;
 
 	start = date;
 	while (*start) {
@@ -3760,7 +3760,7 @@ decode_int (const gchar *in, gsize inlen)
 static gint
 get_days_in_month (gint month, gint year)
 {
-        switch (month) {
+	switch (month) {
 	case 1:
 	case 3:
 	case 5:

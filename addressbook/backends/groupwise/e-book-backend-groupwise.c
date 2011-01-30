@@ -164,14 +164,14 @@ static const struct field_element_mapping {
 static void
 free_attr_list (GList *attr_list)
 {
-        GList *l;
+	GList *l;
 
-        for (l = attr_list; l; l = g_list_next (l)) {
-                EVCardAttribute *attr = l->data;
-                e_vcard_attribute_free (attr);
-        }
+	for (l = attr_list; l; l = g_list_next (l)) {
+		EVCardAttribute *attr = l->data;
+		e_vcard_attribute_free (attr);
+	}
 
-        g_list_free (attr_list);
+	g_list_free (attr_list);
 }
 
 static void
@@ -786,7 +786,7 @@ populate_contact_members (EContact *contact, gpointer data)
 
 		attr = e_vcard_attribute_new (NULL, EVC_EMAIL);
 		e_vcard_attribute_add_param_with_value (attr,
-                                                        e_vcard_attribute_param_new (EVC_X_DEST_CONTACT_UID),
+							e_vcard_attribute_param_new (EVC_X_DEST_CONTACT_UID),
 							member->id);
 		if (member->name) {
 			gint len = strlen (member->name);
@@ -1979,8 +1979,8 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 						gchar *uid = g_ptr_array_index (ids, i);
 						contact = e_book_backend_db_cache_get_contact (egwb->priv->file_db, uid);
 						vcard_list = g_list_append (vcard_list,
-                                                            e_vcard_to_string (E_VCARD (contact),
-                                                            EVC_FORMAT_VCARD_30));
+							    e_vcard_to_string (E_VCARD (contact),
+							    EVC_FORMAT_VCARD_30));
 						g_object_unref (contact);
 					}
 					g_ptr_array_free (ids, TRUE);
@@ -2104,8 +2104,8 @@ get_contacts_from_cache (EBookBackendGroupwise *ebgw,
 		gchar *uid;
 		EContact *contact;
 
-                if (!e_flag_is_set (closure->running))
-                        break;
+		if (!e_flag_is_set (closure->running))
+			break;
 
 		uid = g_ptr_array_index (ids, i);
 		contact = e_book_backend_db_cache_get_contact (ebgw->priv->file_db, uid);
@@ -3134,54 +3134,54 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 static gpointer
 address_book_deltas_thread (gpointer data)
 {
-        EBookBackendGroupwise *ebgw = data;
-        EBookBackendGroupwisePrivate *priv = ebgw->priv;
-        GTimeVal timeout;
+	EBookBackendGroupwise *ebgw = data;
+	EBookBackendGroupwisePrivate *priv = ebgw->priv;
+	GTimeVal timeout;
 
-        timeout.tv_sec = 0;
-        timeout.tv_usec = 0;
+	timeout.tv_sec = 0;
+	timeout.tv_usec = 0;
 
-        while (TRUE)    {
-                gboolean succeeded = update_address_book_deltas (ebgw);
+	while (TRUE)    {
+		gboolean succeeded = update_address_book_deltas (ebgw);
 
-                g_mutex_lock (priv->dlock->mutex);
+		g_mutex_lock (priv->dlock->mutex);
 
-                if (!succeeded || priv->dlock->exit)
-                        break;
+		if (!succeeded || priv->dlock->exit)
+			break;
 
-                g_get_current_time (&timeout);
-                g_time_val_add (&timeout, CACHE_REFRESH_INTERVAL * 1000);
-                g_cond_timed_wait (priv->dlock->cond, priv->dlock->mutex, &timeout);
+		g_get_current_time (&timeout);
+		g_time_val_add (&timeout, CACHE_REFRESH_INTERVAL * 1000);
+		g_cond_timed_wait (priv->dlock->cond, priv->dlock->mutex, &timeout);
 
-                if (priv->dlock->exit)
-                        break;
+		if (priv->dlock->exit)
+			break;
 
-                g_mutex_unlock (priv->dlock->mutex);
-        }
+		g_mutex_unlock (priv->dlock->mutex);
+	}
 
-        g_mutex_unlock (priv->dlock->mutex);
-        priv->dthread = NULL;
-        return NULL;
+	g_mutex_unlock (priv->dlock->mutex);
+	priv->dthread = NULL;
+	return NULL;
 }
 
 static gboolean
 fetch_address_book_deltas (EBookBackendGroupwise *ebgw)
 {
-        EBookBackendGroupwisePrivate *priv = ebgw->priv;
-        GError *error = NULL;
+	EBookBackendGroupwisePrivate *priv = ebgw->priv;
+	GError *error = NULL;
 
         /* If the thread is already running just return back */
-        if (priv->dthread)
-                return FALSE;
+	if (priv->dthread)
+		return FALSE;
 
-        priv->dlock->exit = FALSE;
-        priv->dthread = g_thread_create ((GThreadFunc) address_book_deltas_thread, ebgw, TRUE, &error);
-        if (!priv->dthread) {
+	priv->dlock->exit = FALSE;
+	priv->dthread = g_thread_create ((GThreadFunc) address_book_deltas_thread, ebgw, TRUE, &error);
+	if (!priv->dthread) {
                 g_warning (G_STRLOC ": %s", error->message);
-                g_error_free (error);
-        }
+		g_error_free (error);
+	}
 
-        return TRUE;
+	return TRUE;
 }
 
 static gboolean
@@ -3191,8 +3191,8 @@ update_address_book_cache (gpointer data)
 
 	fetch_address_book_deltas (ebgw);
 
-        ebgw->priv->cache_timeout = 0;
-        return FALSE;
+	ebgw->priv->cache_timeout = 0;
+	return FALSE;
 }
 
 static void
@@ -3452,8 +3452,8 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	EBookBackendGroupwise *ebgw;
 	EBookBackendGroupwisePrivate *priv;
 	gchar *dirname, *filename, *tmp;
-        gchar *book_name;
-        gchar *uri;
+	gchar *book_name;
+	gchar *uri;
 	gchar **tokens;
 	const gchar *cache_dir;
 	const gchar *port;
@@ -3771,36 +3771,36 @@ e_book_backend_groupwise_dispose (GObject *object)
 {
 	EBookBackendGroupwise *bgw;
 
-        EBookBackendGroupwisePrivate *priv;
+	EBookBackendGroupwisePrivate *priv;
 
 	bgw = E_BOOK_BACKEND_GROUPWISE (object);
-        priv = bgw->priv;
+	priv = bgw->priv;
 
 	if (enable_debug)
 		printf ("\ne_book_backend_groupwise_dispose...\n");
 
 	/* Clean up */
 
-        if (priv->cache_timeout) {
-                g_source_remove (priv->cache_timeout);
-                priv->cache_timeout = 0;
-        }
+	if (priv->cache_timeout) {
+		g_source_remove (priv->cache_timeout);
+		priv->cache_timeout = 0;
+	}
 
-        if (priv->dlock) {
-                g_mutex_lock (priv->dlock->mutex);
-                priv->dlock->exit = TRUE;
-                g_mutex_unlock (priv->dlock->mutex);
+	if (priv->dlock) {
+		g_mutex_lock (priv->dlock->mutex);
+		priv->dlock->exit = TRUE;
+		g_mutex_unlock (priv->dlock->mutex);
 
-                g_cond_signal (priv->dlock->cond);
+		g_cond_signal (priv->dlock->cond);
 
-                if (priv->dthread)
-                        g_thread_join (priv->dthread);
+		if (priv->dthread)
+			g_thread_join (priv->dthread);
 
-                g_mutex_free (priv->dlock->mutex);
-                g_cond_free (priv->dlock->cond);
-                g_free (priv->dlock);
-                priv->dthread = NULL;
-        }
+		g_mutex_free (priv->dlock->mutex);
+		g_cond_free (priv->dlock->cond);
+		g_free (priv->dlock);
+		priv->dthread = NULL;
+	}
 
 	if (bgw->priv) {
 		if (bgw->priv->file_db)
@@ -3913,10 +3913,10 @@ e_book_backend_groupwise_init (EBookBackendGroupwise *backend)
 	backend->priv = priv;
 
 	if (!priv->dlock) {
-                priv->dlock = g_new0 (SyncUpdate, 1);
-                priv->dlock->mutex = g_mutex_new ();
-                priv->dlock->cond = g_cond_new ();
-        }
+		priv->dlock = g_new0 (SyncUpdate, 1);
+		priv->dlock->mutex = g_mutex_new ();
+		priv->dlock->cond = g_cond_new ();
+	}
 
 	if (g_getenv ("GROUPWISE_DEBUG")) {
 		if (atoi (g_getenv ("GROUPWISE_DEBUG")) == 2)

@@ -160,34 +160,34 @@ struct {
    and g_list's are f@@#$ed up to make this a hassle */
 static void camel_dlist_init (CamelDList *v)
 {
-        v->head = (CamelDListNode *)&v->tail;
-        v->tail = NULL;
-        v->tailpred = (CamelDListNode *)&v->head;
+	v->head = (CamelDListNode *)&v->tail;
+	v->tail = NULL;
+	v->tailpred = (CamelDListNode *)&v->head;
 }
 
 static CamelDListNode *camel_dlist_addhead (CamelDList *l, CamelDListNode *n)
 {
-        n->next = l->head;
-        n->prev = (CamelDListNode *)&l->head;
-        l->head->prev = n;
-        l->head = n;
-        return n;
+	n->next = l->head;
+	n->prev = (CamelDListNode *)&l->head;
+	l->head->prev = n;
+	l->head = n;
+	return n;
 }
 
 static CamelDListNode *camel_dlist_addtail (CamelDList *l, CamelDListNode *n)
 {
-        n->next = (CamelDListNode *)&l->tail;
-        n->prev = l->tailpred;
-        l->tailpred->next = n;
-        l->tailpred = n;
-        return n;
+	n->next = (CamelDListNode *)&l->tail;
+	n->prev = l->tailpred;
+	l->tailpred->next = n;
+	l->tailpred = n;
+	return n;
 }
 
 static CamelDListNode *camel_dlist_remove (CamelDListNode *n)
 {
-        n->next->prev = n->prev;
-        n->prev->next = n->next;
-        return n;
+	n->next->prev = n->prev;
+	n->prev->next = n->next;
+	return n;
 }
 
 static const gchar *

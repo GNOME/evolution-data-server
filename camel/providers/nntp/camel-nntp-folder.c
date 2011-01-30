@@ -704,7 +704,7 @@ camel_nntp_folder_new (CamelStore *parent,
 			folder, cancellable, error)) {
 		g_object_unref (folder);
 		folder = NULL;
-        }
+	}
 
 	return folder;
 }

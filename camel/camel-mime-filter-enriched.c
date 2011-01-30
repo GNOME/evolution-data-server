@@ -453,8 +453,8 @@ enriched_to_html (CamelMimeFilter *mime_filter,
  need_input:
 
 	/* the reason we ignore @flush here is because if there isn't
-           enough input to parse a tag, then there's nothing we can
-           do. */
+	   enough input to parse a tag, then there's nothing we can
+	   do. */
 
 	if (inptr < inend)
 		camel_mime_filter_backup (mime_filter, inptr, (unsigned) (inend - inptr));

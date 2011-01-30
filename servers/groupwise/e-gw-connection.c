@@ -117,12 +117,12 @@ reauthenticate (EGwConnection *cnc)
 	   when multiple e_gw_connection apis see inavlid connection error
 	   at the sma time this prevents this function sending login requests multiple times */
 	response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
+	if (!response) {
+		g_object_unref (msg);
 		g_mutex_unlock (priv->reauth_mutex);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
-        status = e_gw_connection_parse_response_status (response);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
+	status = e_gw_connection_parse_response_status (response);
 	g_object_unref (response);
 
 	if (status == E_GW_CONNECTION_STATUS_OK) {
@@ -440,8 +440,8 @@ e_gw_connection_init (EGwConnection *cnc)
 		timeout = atoi (g_getenv ("SOUP_SESSION_TIMEOUT"));
 
         /* Initialize proxy settings */
-        priv->proxy = e_proxy_new ();
-        e_proxy_setup_proxy (priv->proxy);
+	priv->proxy = e_proxy_new ();
+	e_proxy_setup_proxy (priv->proxy);
         g_signal_connect (priv->proxy, "changed", G_CALLBACK (proxy_settings_changed), cnc);
 
 	/* create the SoupSession for this connection */
@@ -707,7 +707,7 @@ e_gw_connection_get_container_list (EGwConnection *cnc, const gchar *top, GList 
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
-        EGwConnectionStatus status;
+	EGwConnectionStatus status;
 	SoupSoapParameter *param;
 
 	/* when user cancels password dialog, then the cnc is NULL */
@@ -717,10 +717,10 @@ e_gw_connection_get_container_list (EGwConnection *cnc, const gchar *top, GList 
 	g_return_val_if_fail (container_list != NULL, E_GW_CONNECTION_STATUS_UNKNOWN);
 
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getFolderListRequest");
-        if (!msg) {
+	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 
 	e_gw_message_write_string_parameter (msg, "parent", NULL, top);
 	e_gw_message_write_string_parameter (msg, "recurse", NULL, "true");
@@ -728,24 +728,24 @@ e_gw_connection_get_container_list (EGwConnection *cnc, const gchar *top, GList 
 
         /* send message to server */
 	response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
-        g_object_unref (msg);
+	status = e_gw_connection_parse_response_status (response);
+	g_object_unref (msg);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                return status;
-        }
+		return status;
+	}
 
 	/* if status is OK - parse result. return the list */
 	param = soup_soap_response_get_first_parameter_by_name (response, "folders");
-        if (param) {
+	if (param) {
 		SoupSoapParameter *subparam;
 		for (subparam = soup_soap_parameter_get_first_child_by_name (param, "folder");
 		     subparam != NULL;
@@ -760,7 +760,7 @@ e_gw_connection_get_container_list (EGwConnection *cnc, const gchar *top, GList 
 
 	g_object_unref (response);
 
-        return status;
+	return status;
 }
 
 void
@@ -775,7 +775,7 @@ e_gw_connection_free_container_list (GList *container_list)
 gchar *
 e_gw_connection_get_container_id (EGwConnection *cnc, const gchar *name)
 {
-        EGwConnectionStatus status;
+	EGwConnectionStatus status;
 	GList *container_list = NULL, *l;
 	gchar *container_id = NULL;
 
@@ -787,8 +787,8 @@ e_gw_connection_get_container_id (EGwConnection *cnc, const gchar *name)
 		status = e_gw_connection_get_container_list (cnc, "folders", &container_list);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		e_gw_connection_free_container_list (container_list);
-                return NULL;
-        }
+		return NULL;
+	}
 
 	/* search the container in the list */
 	for (l = container_list; l != NULL; l = l->next) {
@@ -855,47 +855,47 @@ EGwConnectionStatus
 e_gw_connection_get_items_delta_info (EGwConnection *cnc, const gchar *container, gdouble *first_sequence,
 					gdouble *last_sequence, gdouble *last_po_rebuild_time )
 {
-        SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
-        SoupSoapParameter *param, *subparam;
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+	SoupSoapParameter *param, *subparam;
 	gchar *tmp = NULL;
 
-        g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	/* build the SOAP message */
         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getDeltaInfoRequest");
-        if (!msg) {
+	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 
 	e_gw_message_write_string_parameter (msg, "container", NULL, container);
 
 	e_gw_message_write_footer (msg);
 
         /* send message to server */
-        response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
+	status = e_gw_connection_parse_response_status (response);
+	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                g_object_unref (msg);
+		g_object_unref (msg);
 		return status;
 	}
 
 	param = soup_soap_response_get_first_parameter_by_name (response, "deltaInfo");
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+	if (!param) {
+		g_object_unref (response);
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
 
         /* parse these parameters */
 
@@ -927,7 +927,7 @@ e_gw_connection_get_items_delta_info (EGwConnection *cnc, const gchar *container
 	} else
 		*last_po_rebuild_time = -1;
 
-        g_object_unref (response);
+	g_object_unref (response);
 	g_object_unref (msg);
 
 	return status;
@@ -936,19 +936,19 @@ e_gw_connection_get_items_delta_info (EGwConnection *cnc, const gchar *container
 EGwConnectionStatus
 e_gw_connection_get_items_delta (EGwConnection *cnc, const gchar *container, const gchar *view, const gchar *count, const gchar * start_sequence, GList **add_list, GList **delete_list)
 {
-        SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
-        SoupSoapParameter *param, *subparam, *subsubparam;
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+	SoupSoapParameter *param, *subparam, *subsubparam;
 
-        g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	/* build the SOAP message */
         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getDeltasRequest");
-        if (!msg) {
+	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 
 	e_gw_message_write_string_parameter (msg, "container", NULL, container);
 	if (view)
@@ -962,28 +962,28 @@ e_gw_connection_get_items_delta (EGwConnection *cnc, const gchar *container, con
         /* send message to server */
 
 	e_gw_message_write_footer (msg);
-        response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
+	status = e_gw_connection_parse_response_status (response);
+	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                g_object_unref (msg);
+		g_object_unref (msg);
 		return status;
 	}
 
 	/* if status is OK - parse result. return the list */
 	param = soup_soap_response_get_first_parameter_by_name (response, "items");
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+	if (!param) {
+		g_object_unref (response);
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
 
         /* parse these parameters */
         for (subparam = soup_soap_parameter_get_first_child_by_name (param, "item");
@@ -1005,32 +1005,32 @@ e_gw_connection_get_items_delta (EGwConnection *cnc, const gchar *container, con
 			}
 			g_free (value);
 		}
-        }
+	}
 
 	/* free memory */
-        g_object_unref (response);
+	g_object_unref (response);
 	g_object_unref (msg);
 
-        return E_GW_CONNECTION_STATUS_OK;
+	return E_GW_CONNECTION_STATUS_OK;
 
 }
 
 EGwConnectionStatus
 e_gw_connection_get_items (EGwConnection *cnc, const gchar *container, const gchar *view, EGwFilter *filter, GList **list)
 {
-        SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
-        SoupSoapParameter *param, *subparam;
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+	SoupSoapParameter *param, *subparam;
 
-        g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	/* build the SOAP message */
         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getItemsRequest");
-        if (!msg) {
+	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 
 	e_gw_message_write_string_parameter (msg, "container", NULL, container);
 	if (view)
@@ -1041,28 +1041,28 @@ e_gw_connection_get_items (EGwConnection *cnc, const gchar *container, const gch
 	e_gw_message_write_footer (msg);
 
         /* send message to server */
-        response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
+	status = e_gw_connection_parse_response_status (response);
+	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                g_object_unref (msg);
+		g_object_unref (msg);
 		return status;
 	}
 
 	/* if status is OK - parse result. return the list */
 	param = soup_soap_response_get_first_parameter_by_name (response, "items");
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+	if (!param) {
+		g_object_unref (response);
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
 
         /* parse these parameters into ecalcomponents*/
         for (subparam = soup_soap_parameter_get_first_child_by_name (param, "item");
@@ -1073,31 +1073,31 @@ e_gw_connection_get_items (EGwConnection *cnc, const gchar *container, const gch
 		item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, container, subparam);
 		if (item)
 			*list = g_list_append (*list, item);
-        }
+	}
 
 	/* free memory */
-        g_object_unref (response);
+	g_object_unref (response);
 	g_object_unref (msg);
 
-        return E_GW_CONNECTION_STATUS_OK;
+	return E_GW_CONNECTION_STATUS_OK;
 }
 
 EGwConnectionStatus
 e_gw_connection_get_items_from_ids (EGwConnection *cnc, const gchar *container, const gchar *view, GPtrArray *item_ids, GList **list)
 {
-        SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
-        SoupSoapParameter *param, *subparam;
+	SoupSoapMessage *msg;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+	SoupSoapParameter *param, *subparam;
 	gint i;
-        g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	/* build the SOAP message */
         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getItemsRequest");
-        if (!msg) {
+	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 
 	e_gw_message_write_string_parameter (msg, "container", NULL, container);
 	if (view)
@@ -1112,28 +1112,28 @@ e_gw_connection_get_items_from_ids (EGwConnection *cnc, const gchar *container, 
 	e_gw_message_write_footer (msg);
 
         /* send message to server */
-        response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
+	status = e_gw_connection_parse_response_status (response);
+	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                g_object_unref (msg);
+		g_object_unref (msg);
 		return status;
 	}
 
 	/* if status is OK - parse result. return the list */
 	param = soup_soap_response_get_first_parameter_by_name (response, "items");
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+	if (!param) {
+		g_object_unref (response);
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
 
         /* parse these parameters into ecalcomponents*/
         for (subparam = soup_soap_parameter_get_first_child_by_name (param, "item");
@@ -1144,49 +1144,49 @@ e_gw_connection_get_items_from_ids (EGwConnection *cnc, const gchar *container, 
 		item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, container, subparam);
 		if (item)
 			*list = g_list_append (*list, item);
-        }
+	}
 
 	/* free memory */
-        g_object_unref (response);
+	g_object_unref (response);
 	g_object_unref (msg);
 
-        return E_GW_CONNECTION_STATUS_OK;
+	return E_GW_CONNECTION_STATUS_OK;
 }
 
 EGwConnectionStatus
 e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes, GSList **updates)
 {
 	SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
-        SoupSoapParameter *param, *subparam;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+	SoupSoapParameter *param, *subparam;
 	gchar *tmp;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	/* build the SOAP message */
          msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getDeltaRequest");
-         if (!msg) {
+	 if (!msg) {
                  g_warning (G_STRLOC ": Could not build SOAP message");
 		 /* g_object_unref (cnc); */
-                 return E_GW_CONNECTION_STATUS_UNKNOWN;
-         }
+		 return E_GW_CONNECTION_STATUS_UNKNOWN;
+	 }
 
 	 /*FIXME  make this generic */
          soup_soap_message_start_element (msg, "CalendarItem", NULL, NULL);
-         soup_soap_message_end_element (msg);
-         e_gw_message_write_footer (msg);
+	 soup_soap_message_end_element (msg);
+	 e_gw_message_write_footer (msg);
 
          /* send message to server */
-         response = e_gw_connection_send_message (cnc, msg);
-         if (!response) {
-                 g_object_unref (msg);
+	 response = e_gw_connection_send_message (cnc, msg);
+	 if (!response) {
+		 g_object_unref (msg);
 		 /* g_object_unref (cnc); */
-                 return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-         }
+		 return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	 }
 
-         status = e_gw_connection_parse_response_status (response);
-         if (status != E_GW_CONNECTION_STATUS_OK) {
+	 status = e_gw_connection_parse_response_status (response);
+	 if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_object_unref (response);
 		g_object_unref (msg);
 		/* g_object_unref (cnc); */
@@ -1195,82 +1195,82 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
 
 	/* if status is OK - parse result. return the list */
 	param = soup_soap_response_get_first_parameter_by_name (response, "changed");
-         if (!param) {
-                 g_object_unref (response);
-                 g_object_unref (msg);
+	 if (!param) {
+		 g_object_unref (response);
+		 g_object_unref (msg);
 		 /* g_object_unref (cnc); */
-                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-         }
+		 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	 }
 
 	tmp = soup_soap_parameter_get_string_value (param);
 	if (!g_ascii_strcasecmp (tmp, "0")) {
 		g_free (tmp);
                  g_message ("No deltas");
 		 /* g_object_unref (cnc); */
-                 return E_GW_CONNECTION_STATUS_OK;
-        }
+		 return E_GW_CONNECTION_STATUS_OK;
+	}
 
 	g_free (tmp);
 
          param = soup_soap_response_get_first_parameter_by_name (response, "deltas");
-         if (!param) {
-                 g_object_unref (response);
-                 g_object_unref (msg);
+	 if (!param) {
+		 g_object_unref (response);
+		 g_object_unref (msg);
 		/* g_object_unref (cnc); */
 		/* return E_GW_CONNECTION_STATUS_INVALID_RESPONSE; */
 		/* getting around the server behavior that deltas can be null
 		 * though changes is true */
 		 return E_GW_CONNECTION_STATUS_OK;
-         }
+	 }
 
          /* process all deletes first*/
          param = soup_soap_parameter_get_first_child_by_name (param, "delete");
-         if (param) {
+	 if (param) {
                  for (subparam = soup_soap_parameter_get_first_child_by_name (param, "item");
-                         subparam != NULL;
+			 subparam != NULL;
                          subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) {
                                  /*process each item */
-                                 gchar *uid;
-                                 SoupSoapParameter *param_id;
+				 gchar *uid;
+				 SoupSoapParameter *param_id;
 
                                  param_id = soup_soap_parameter_get_first_child_by_name (subparam, "id");
-                                 if (!param_id) {
-                                         g_object_unref (response);
-                                         g_object_unref (msg);
+				 if (!param_id) {
+					 g_object_unref (response);
+					 g_object_unref (msg);
 					/* g_object_unref (cnc); */
-                                 }
-                                 uid = (gchar *)soup_soap_parameter_get_string_value (param_id);
+				 }
+				 uid = (gchar *)soup_soap_parameter_get_string_value (param_id);
                                  /*if (!e_cal_backend_cache_remove_component (cache, uid, NULL))
                                          g_message ("Could not remove %s", uid); */
 				 *deletes = g_slist_append (*deletes, uid);
-                 }
-         }
+		 }
+	 }
 
          /* process adds*/
          param = soup_soap_parameter_get_first_child_by_name (param, "add");
-         if (param) {
+	 if (param) {
                  for (subparam = soup_soap_parameter_get_first_child_by_name (param, "item");
-                         subparam != NULL;
+			 subparam != NULL;
                          subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) {
 				/*process each item */
 				EGwItem *item;
 				/*FIXME  pass the container id */
 				item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, "Calendar", subparam);
-                                if (!item) {
-                                         g_object_unref (response);
-                                         g_object_unref (msg);
+				if (!item) {
+					 g_object_unref (response);
+					 g_object_unref (msg);
 					/* g_object_unref (cnc); */
 					return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-                                 }
+				 }
                                  /*if (!e_cal_backend_cache_put_component (cache, comp))
                                          g_message ("Could not add the component"); */
 				 *adds = g_slist_append (*adds, item);
-                 }
-         }
+		 }
+	 }
 
          /* process updates*/
          param = soup_soap_parameter_get_first_child_by_name (param, "update");
-         if (param) {
+	 if (param) {
                  for (subparam = soup_soap_parameter_get_first_child_by_name(param, "item");
 		     subparam != NULL;
 		     subparam = soup_soap_parameter_get_next_child (subparam)) {
@@ -1280,14 +1280,14 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
 			 item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, "Calendar", subparam);
 			 if (item)
 				 *updates = g_slist_append (*updates, item);
-                 }
-         }
+		 }
+	 }
 
 	 /* free memory */
 	 g_object_unref (response);
 	 g_object_unref (msg);
 
-        return E_GW_CONNECTION_STATUS_OK;
+	return E_GW_CONNECTION_STATUS_OK;
 }
 
 EGwConnectionStatus
@@ -1396,17 +1396,17 @@ EGwConnectionStatus
 e_gw_connection_modify_item (EGwConnection *cnc, const gchar *id , EGwItem *item)
 {
 	SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	/* build the SOAP message */
         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "modifyItemRequest");
-        if (!msg) {
+	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 
 	e_gw_message_write_string_parameter (msg, "id", NULL, id);
 
@@ -1440,18 +1440,18 @@ e_gw_connection_get_item (EGwConnection *cnc, const gchar *container, const gcha
 {
 
 	SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
-        SoupSoapParameter *param;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+	SoupSoapParameter *param;
 
-        g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	/* build the SOAP message */
         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getItemRequest");
-        if (!msg) {
+	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 
 	e_gw_message_write_string_parameter (msg, "id", NULL, id);
 
@@ -1460,39 +1460,39 @@ e_gw_connection_get_item (EGwConnection *cnc, const gchar *container, const gcha
 	e_gw_message_write_footer (msg);
 
         /* send message to server */
-        response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
+	status = e_gw_connection_parse_response_status (response);
+	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                g_object_unref (msg);
+		g_object_unref (msg);
 		return status;
 	}
 
 	/* if status is OK - parse result. return the list */
 	param = soup_soap_response_get_first_parameter_by_name (response, "item");
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+	if (!param) {
+		g_object_unref (response);
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
 
 	*item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, container, param);
 
 	/* free memory */
-        g_object_unref (response);
+	g_object_unref (response);
 	g_object_unref (msg);
 
 	if (!*item)
 		return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
 
-        return E_GW_CONNECTION_STATUS_OK;
+	return E_GW_CONNECTION_STATUS_OK;
 }
 
 EGwConnectionStatus
@@ -1589,12 +1589,12 @@ e_gw_connection_accept_request (EGwConnection *cnc, const gchar *id, const gchar
 	e_gw_message_write_footer (msg);
 
 	response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
+	status = e_gw_connection_parse_response_status (response);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 		reauthenticate (cnc);
 	g_object_unref (response);
@@ -1623,12 +1623,12 @@ e_gw_connection_decline_request (EGwConnection *cnc, const gchar *id, const gcha
 	e_gw_message_write_footer (msg);
 
 	response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
+	status = e_gw_connection_parse_response_status (response);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 		reauthenticate (cnc);
 	g_object_unref (response);
@@ -1651,12 +1651,12 @@ e_gw_connection_retract_request (EGwConnection *cnc, const gchar *id, const gcha
 	e_gw_message_write_footer (msg);
 
 	response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
+	status = e_gw_connection_parse_response_status (response);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 		reauthenticate (cnc);
 	g_object_unref (response);
@@ -1678,12 +1678,12 @@ e_gw_connection_complete_request (EGwConnection *cnc, const gchar *id)
 	e_gw_message_write_footer (msg);
 
 	response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
+	status = e_gw_connection_parse_response_status (response);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 		reauthenticate (cnc);
 	g_object_unref (response);
@@ -1714,12 +1714,12 @@ e_gw_connection_delegate_request (EGwConnection *cnc, EGwItem *item, const gchar
 	e_gw_message_write_footer (msg);
 
 	response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
+	status = e_gw_connection_parse_response_status (response);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 		reauthenticate (cnc);
 
@@ -1791,22 +1791,22 @@ e_gw_connection_get_server_time (EGwConnection *cnc)
 gchar *
 e_gw_connection_format_date_string (const gchar *dtstring)
 {
-        gchar *str2;
-        gint i, j, len = strlen (dtstring);
+	gchar *str2;
+	gint i, j, len = strlen (dtstring);
 
-        str2 = g_malloc0 (len);
+	str2 = g_malloc0 (len);
 	if (len <= 0)
 		return str2;
 
-        for (i = 0,j = 0; i < len; i++) {
-                if ((dtstring[i] != '-') && (dtstring[i] != ':')) {
+	for (i = 0,j = 0; i < len; i++) {
+		if ((dtstring[i] != '-') && (dtstring[i] != ':')) {
 			str2[j] = dtstring[i];
 			j++;
-                }
-        }
+		}
+	}
 
 	str2[j] = '\0';
-        return str2;
+	return str2;
 }
 
 time_t
@@ -1846,7 +1846,7 @@ e_gw_connection_get_date_from_string (const gchar *dtstring)
 	} else
 		g_warning ("Could not parse the string \n");
 
-        return t;
+	return t;
 }
 
 EGwConnectionStatus
@@ -1866,17 +1866,17 @@ e_gw_connection_create_book (EGwConnection *cnc, gchar *book_name, gchar **id)
 	e_gw_message_write_footer (msg);
 
 	response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
+	status = e_gw_connection_parse_response_status (response);
+	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                g_object_unref (msg);
+		g_object_unref (msg);
 		return status;
 	}
 	value = NULL;
@@ -1895,7 +1895,7 @@ e_gw_connection_get_address_book_list (EGwConnection *cnc, GList **container_lis
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
-        EGwConnectionStatus status;
+	EGwConnectionStatus status;
 	EGwConnectionPrivate *priv;
 	SoupSoapParameter *param;
 	SoupSoapParameter *type_param;
@@ -1915,40 +1915,40 @@ e_gw_connection_get_address_book_list (EGwConnection *cnc, GList **container_lis
 	}
 
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getAddressBookListRequest");
-        if (!msg) {
+	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
 		g_static_mutex_unlock (&connecting);
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 
 	e_gw_message_write_footer (msg);
 
         /* send message to server */
 	response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
+	if (!response) {
+		g_object_unref (msg);
 		g_static_mutex_unlock (&connecting);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
-        g_object_unref (msg);
+	status = e_gw_connection_parse_response_status (response);
+	g_object_unref (msg);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
-                g_object_unref (response);
+		g_object_unref (response);
 		g_static_mutex_unlock (&connecting);
-                return status;
-        }
+		return status;
+	}
 
 	/* if status is OK - parse result. return the list */
 	param = soup_soap_response_get_first_parameter_by_name (response, "books");
-        if (!param) {
-                g_object_unref (response);
+	if (!param) {
+		g_object_unref (response);
 		g_static_mutex_unlock (&connecting);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        } else {
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	} else {
 		SoupSoapParameter *subparam;
 		for (subparam = soup_soap_parameter_get_first_child_by_name (param, "book");
 		     subparam != NULL;
@@ -1970,9 +1970,9 @@ e_gw_connection_get_address_book_list (EGwConnection *cnc, GList **container_lis
 				value = NULL;
 				type_param = soup_soap_parameter_get_first_child_by_name (subparam, "isFrequentContacts");
 				if (type_param)
-                                        value = soup_soap_parameter_get_string_value (type_param);
+					value = soup_soap_parameter_get_string_value (type_param);
                                 if (value && g_str_equal(value , "1"))
-                                        e_gw_container_set_is_frequent_contacts (container, TRUE);
+					e_gw_container_set_is_frequent_contacts (container, TRUE);
 
 				g_free (value);
 
@@ -1985,7 +1985,7 @@ e_gw_connection_get_address_book_list (EGwConnection *cnc, GList **container_lis
 	*container_list = priv->book_list;
 	g_static_mutex_unlock (&connecting);
 
-        return status;
+	return status;
 }
 
 EGwConnectionStatus
@@ -1998,9 +1998,9 @@ e_gw_connection_get_address_book_id ( EGwConnection *cnc, gchar *book_name, gcha
 	g_return_val_if_fail (book_name != NULL, E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	status = e_gw_connection_get_address_book_list (cnc, &container_list);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
-                return status;
-        }
+	if (status != E_GW_CONNECTION_STATUS_OK) {
+		return status;
+	}
 
 	/* search the container in the list */
 	for (l = container_list; l != NULL; l = l->next) {
@@ -2033,8 +2033,8 @@ e_gw_connection_modify_settings (EGwConnection *cnc, EGwSendOptions *opts)
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "modifySettingsRequest");
 	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 
 	if (!e_gw_sendoptions_form_message_to_modify (msg, opts, priv->opts)) {
 		g_warning (G_STRLOC ": Could not append changes to SOAP message");
@@ -2045,18 +2045,18 @@ e_gw_connection_modify_settings (EGwConnection *cnc, EGwSendOptions *opts)
 	e_gw_message_write_footer (msg);
 
         /* send message to server */
-        response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
 	status = e_gw_connection_parse_response_status (response);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                g_object_unref (msg);
+		g_object_unref (msg);
 		return status;
 	} else {
 		g_object_unref (priv->opts);
@@ -2065,7 +2065,7 @@ e_gw_connection_modify_settings (EGwConnection *cnc, EGwSendOptions *opts)
 	}
 
 	g_object_unref (response);
-        g_object_unref (msg);
+	g_object_unref (msg);
 
 	return status;
 }
@@ -2098,41 +2098,41 @@ e_gw_connection_get_settings (EGwConnection *cnc, EGwSendOptions **opts)
 	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
 		g_static_mutex_unlock (&connecting);
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 	e_gw_message_write_footer (msg);
 
         /* send message to server */
-        response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
 		g_static_mutex_unlock (&connecting);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
+	status = e_gw_connection_parse_response_status (response);
+	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                g_object_unref (msg);
+		g_object_unref (msg);
 		g_static_mutex_unlock (&connecting);
 		return status;
 	}
 
 	param = soup_soap_response_get_first_parameter_by_name (response, "settings");
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
+	if (!param) {
+		g_object_unref (response);
+		g_object_unref (msg);
 		g_static_mutex_unlock (&connecting);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        } else
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	} else
 		priv->opts = e_gw_sendoptions_new_from_soap_parameter (param);
 
 	g_object_ref (priv->opts);
 	*opts = priv->opts;
 	g_object_unref (response);
-        g_object_unref (msg);
+	g_object_unref (msg);
 	g_static_mutex_unlock (&connecting);
 
 	return E_GW_CONNECTION_STATUS_OK;
@@ -2142,14 +2142,14 @@ EGwConnectionStatus
 e_gw_connection_get_categories (EGwConnection *cnc, GHashTable **categories_by_id, GHashTable **categories_by_name)
 {
 	SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
 	EGwConnectionPrivate *priv;
-        SoupSoapParameter *param, *subparam, *second_level_child;
+	SoupSoapParameter *param, *subparam, *second_level_child;
 	gchar *id, *name;
 	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;
 
-        g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	priv = cnc->priv;
 	g_static_mutex_lock (&connecting);
@@ -2163,39 +2163,39 @@ e_gw_connection_get_categories (EGwConnection *cnc, GHashTable **categories_by_i
 
 	/* build the SOAP message */
         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getCategoryListRequest");
-        if (!msg) {
+	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
 		g_static_mutex_unlock (&connecting);
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 	e_gw_message_write_footer (msg);
 
         /* send message to server */
-        response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
 		g_static_mutex_unlock (&connecting);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
+	status = e_gw_connection_parse_response_status (response);
+	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                g_object_unref (msg);
+		g_object_unref (msg);
 		g_static_mutex_unlock (&connecting);
 		return status;
 	}
 
 	/* if status is OK - parse result. return the list */
 	param = soup_soap_response_get_first_parameter_by_name (response, "categories");
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
+	if (!param) {
+		g_object_unref (response);
+		g_object_unref (msg);
 		g_static_mutex_unlock (&connecting);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
 
 	priv->categories_by_id = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->categories_by_name = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
@@ -2223,16 +2223,16 @@ e_gw_connection_get_categories (EGwConnection *cnc, GHashTable **categories_by_i
 		}
 		g_free (id);
 		g_free (name);
-        }
+	}
 
 	/* free memory */
-        g_object_unref (response);
+	g_object_unref (response);
 	g_object_unref (msg);
 	*categories_by_id = priv->categories_by_id;
 	*categories_by_name = priv->categories_by_name;
 	g_static_mutex_unlock (&connecting);
 
-        return E_GW_CONNECTION_STATUS_OK;
+	return E_GW_CONNECTION_STATUS_OK;
 }
 
 EGwConnectionStatus
@@ -2240,17 +2240,17 @@ e_gw_connection_add_members (EGwConnection *cnc, const gchar *group_id, GList *m
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
-        EGwConnectionStatus status;
+	EGwConnectionStatus status;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
 	g_return_val_if_fail (member_ids != NULL, E_GW_CONNECTION_STATUS_UNKNOWN);
 	g_return_val_if_fail (group_id != NULL, E_GW_CONNECTION_STATUS_UNKNOWN);
 
 	 msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "addMembersRequest");
-        if (!msg) {
+	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 	e_gw_message_write_string_parameter (msg, "container", NULL, group_id);
 	soup_soap_message_start_element (msg, "members", NULL, NULL);
 
@@ -2263,12 +2263,12 @@ e_gw_connection_add_members (EGwConnection *cnc, const gchar *group_id, GList *m
 	soup_soap_message_end_element (msg);
 	e_gw_message_write_footer (msg);
 	response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
+	status = e_gw_connection_parse_response_status (response);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 		reauthenticate (cnc);
 	g_object_unref (response);
@@ -2283,17 +2283,17 @@ e_gw_connection_remove_members (EGwConnection *cnc, const gchar *group_id, GList
 
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
-        EGwConnectionStatus status;
+	EGwConnectionStatus status;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
 	g_return_val_if_fail (member_ids != NULL, E_GW_CONNECTION_STATUS_UNKNOWN);
 	g_return_val_if_fail (group_id != NULL, E_GW_CONNECTION_STATUS_UNKNOWN);
 
 	msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "removeMembersRequest");
-        if (!msg) {
+	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 	e_gw_message_write_string_parameter (msg, "container", NULL, group_id);
 	soup_soap_message_start_element (msg, "members", NULL, NULL);
 
@@ -2306,12 +2306,12 @@ e_gw_connection_remove_members (EGwConnection *cnc, const gchar *group_id, GList
 	soup_soap_message_end_element (msg);
 	e_gw_message_write_footer (msg);
 	response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
+	status = e_gw_connection_parse_response_status (response);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 		reauthenticate (cnc);
 	g_object_unref (response);
@@ -2325,7 +2325,7 @@ e_gw_connection_create_cursor (EGwConnection *cnc, const gchar *container, const
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
-        EGwConnectionStatus status;
+	EGwConnectionStatus status;
 	SoupSoapParameter *param;
 	gchar *value;
 
@@ -2342,39 +2342,39 @@ e_gw_connection_create_cursor (EGwConnection *cnc, const gchar *container, const
 	e_gw_message_write_footer (msg);
 
 	response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
 	status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
+	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                g_object_unref (msg);
+		g_object_unref (msg);
 		return status;
 	}
 	param = soup_soap_response_get_first_parameter_by_name (response, "cursor");
 	if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+		g_object_unref (response);
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
 	value = soup_soap_parameter_get_string_value (param);
 
 	if (!value) {
 		 g_object_unref (response);
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
 
 	*cursor =(gint) g_ascii_strtod (value, NULL);
 
 	g_free (value);
 	g_object_unref (response);
 	g_object_unref (msg);
-        return E_GW_CONNECTION_STATUS_OK;
+	return E_GW_CONNECTION_STATUS_OK;
 }
 
 EGwConnectionStatus
@@ -2382,7 +2382,7 @@ e_gw_connection_destroy_cursor (EGwConnection *cnc, const gchar *container,  gin
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
-        EGwConnectionStatus status;
+	EGwConnectionStatus status;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
 	g_return_val_if_fail ((container != NULL), E_GW_CONNECTION_STATUS_UNKNOWN);
@@ -2394,10 +2394,10 @@ e_gw_connection_destroy_cursor (EGwConnection *cnc, const gchar *container,  gin
 	e_gw_message_write_footer (msg);
 
 	response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
 	status = e_gw_connection_parse_response_status (response);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
@@ -2413,7 +2413,7 @@ e_gw_connection_position_cursor (EGwConnection *cnc, const gchar *container, gin
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
-        EGwConnectionStatus status;
+	EGwConnectionStatus status;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
 	g_return_val_if_fail ((container != NULL), E_GW_CONNECTION_STATUS_UNKNOWN);
@@ -2427,14 +2427,14 @@ e_gw_connection_position_cursor (EGwConnection *cnc, const gchar *container, gin
 	e_gw_message_write_footer (msg);
 
 	response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
 	status = e_gw_connection_parse_response_status (response);
 	g_object_unref (response);
-        g_object_unref (msg);
+	g_object_unref (msg);
 	return status;
 }
 
@@ -2443,7 +2443,7 @@ e_gw_connection_read_cursor (EGwConnection *cnc, const gchar *container, gint cu
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
-        EGwConnectionStatus status;
+	EGwConnectionStatus status;
 	SoupSoapParameter *param, *subparam;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
@@ -2461,27 +2461,27 @@ e_gw_connection_read_cursor (EGwConnection *cnc, const gchar *container, gint cu
 	e_gw_message_write_footer (msg);
 
 	response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
 	status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
+	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                g_object_unref (msg);
+		g_object_unref (msg);
 		return status;
 	}
 
 	/* if status is OK - parse result. return the list */
 	param = soup_soap_response_get_first_parameter_by_name (response, "items");
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+	if (!param) {
+		g_object_unref (response);
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
 
 	for (subparam = soup_soap_parameter_get_first_child_by_name (param, "item");
 	     subparam != NULL;
@@ -2491,19 +2491,19 @@ e_gw_connection_read_cursor (EGwConnection *cnc, const gchar *container, gint cu
 		item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, container, subparam);
 		if (item)
 			*item_list = g_list_append (*item_list, item);
-        }
+	}
 
 	/* free memory */
-        g_object_unref (response);
+	g_object_unref (response);
 	g_object_unref (msg);
-        return E_GW_CONNECTION_STATUS_OK;
+	return E_GW_CONNECTION_STATUS_OK;
 }
 
 EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, const gchar *container, const gchar *view, gchar **start_date, const gchar *message_list, const gchar *item_types, const gchar *item_sources, gint count, GSList **item_list)
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
-        EGwConnectionStatus status;
+	EGwConnectionStatus status;
 	SoupSoapParameter *param, *subparam;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
@@ -2527,28 +2527,28 @@ EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, cons
 	e_gw_message_write_footer (msg);
 
 	response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
 	status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
+	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                g_object_unref (msg);
+		g_object_unref (msg);
 		return status;
 	}
 
 	/* if status is OK - parse result. return the list */
 	*item_list = NULL;
 	param = soup_soap_response_get_first_parameter_by_name (response, "items");
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+	if (!param) {
+		g_object_unref (response);
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
 	if (start_date && *start_date && (((!strcmp (message_list, "New")) || (!strcmp (message_list, "Modified"))))) {
 		subparam = soup_soap_response_get_first_parameter_by_name (response, "startDate");
 		if (subparam) {
@@ -2610,12 +2610,12 @@ EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, cons
 		item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, container, subparam);
 		if (item)
 			*item_list = g_slist_append (*item_list, item);
-        }
+	}
 
 	/* free memory */
-        g_object_unref (response);
+	g_object_unref (response);
 	g_object_unref (msg);
-        return E_GW_CONNECTION_STATUS_OK;
+	return E_GW_CONNECTION_STATUS_OK;
 
 }
 
@@ -2640,16 +2640,16 @@ e_gw_connection_create_folder (EGwConnection *cnc, const gchar *parent_name,cons
 	e_gw_message_write_footer (msg);
 
 	response =  e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 	status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
+	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                g_object_unref (msg);
+		g_object_unref (msg);
 		return status;
 	} else {
 		param = soup_soap_response_get_first_parameter_by_name (response, "id");
@@ -2669,19 +2669,19 @@ e_gw_connection_get_attachment (EGwConnection *cnc, const gchar *id, gint offset
 {
 
 	SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
 	SoupSoapParameter *param;
 	gchar *buffer = NULL, *buf_length = NULL;
 
-        g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	/* build the SOAP message */
         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getAttachmentRequest");
-        if (!msg) {
+	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 
 	e_gw_message_write_string_parameter (msg, "id", NULL, id);
 	e_gw_message_write_int_parameter (msg, "offset", NULL, offset);
@@ -2690,18 +2690,18 @@ e_gw_connection_get_attachment (EGwConnection *cnc, const gchar *id, gint offset
 	e_gw_message_write_footer (msg);
 
         /* send message to server */
-        response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
+	status = e_gw_connection_parse_response_status (response);
+	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                g_object_unref (msg);
+		g_object_unref (msg);
 		return status;
 	}
 
@@ -2723,10 +2723,10 @@ e_gw_connection_get_attachment (EGwConnection *cnc, const gchar *id, gint offset
 	/* free memory */
 	g_free (buffer);
 	g_free (buf_length);
-        g_object_unref (response);
+	g_object_unref (response);
 	g_object_unref (msg);
 
-        return E_GW_CONNECTION_STATUS_OK;
+	return E_GW_CONNECTION_STATUS_OK;
 }
 
 /*
@@ -2737,19 +2737,19 @@ e_gw_connection_get_attachment_base64 (EGwConnection *cnc, const gchar *id, gint
 {
 
 	SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
 	SoupSoapParameter *param;
 	gchar *buffer = NULL, *buf_length = NULL, *o_return = NULL;
 
-        g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
+	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	/* build the SOAP message */
         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getAttachmentRequest");
-        if (!msg) {
+	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 
 	e_gw_message_write_string_parameter (msg, "id", NULL, id);
 	e_gw_message_write_int_parameter (msg, "offset", NULL, offset);
@@ -2758,18 +2758,18 @@ e_gw_connection_get_attachment_base64 (EGwConnection *cnc, const gchar *id, gint
 	e_gw_message_write_footer (msg);
 
         /* send message to server */
-        response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
-        status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
+	status = e_gw_connection_parse_response_status (response);
+	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                g_object_unref (msg);
+		g_object_unref (msg);
 		return status;
 	}
 
@@ -2798,10 +2798,10 @@ e_gw_connection_get_attachment_base64 (EGwConnection *cnc, const gchar *id, gint
 	g_free (buffer);
 	g_free (buf_length);
 	g_free (o_return);
-        g_object_unref (response);
+	g_object_unref (response);
 	g_object_unref (msg);
 
-        return E_GW_CONNECTION_STATUS_OK;
+	return E_GW_CONNECTION_STATUS_OK;
 }
 
 EGwConnectionStatus
@@ -2883,17 +2883,17 @@ EGwConnectionStatus
 e_gw_connection_rename_folder (EGwConnection *cnc, const gchar *id ,const gchar *new_name)
 {
 	SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	/* build the SOAP message */
         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "modifyItemRequest");
-        if (!msg) {
+	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 
 	e_gw_message_write_string_parameter (msg, "id", NULL, id);
 
@@ -3154,18 +3154,18 @@ EGwConnectionStatus
 e_gw_connection_reply_item (EGwConnection *cnc, const gchar *id, const gchar *view, EGwItem **item)
 {
 	SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
-        SoupSoapParameter *param;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+	SoupSoapParameter *param;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	/* build the SOAP message */
         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "replyRequest");
-        if (!msg) {
+	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 
 	e_gw_message_write_string_parameter (msg, "id", NULL, id);
 
@@ -3174,57 +3174,57 @@ e_gw_connection_reply_item (EGwConnection *cnc, const gchar *id, const gchar *vi
 	e_gw_message_write_footer (msg);
 
 	/* send message to server */
-        response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
 	status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
+	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                g_object_unref (msg);
+		g_object_unref (msg);
 		return status;
 	}
 
 	/* if status is OK - parse result. return the list */
 	param = soup_soap_response_get_first_parameter_by_name (response, "item");
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+	if (!param) {
+		g_object_unref (response);
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
 
 	*item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, "", param);
 
 	/* free memory */
-        g_object_unref (response);
+	g_object_unref (response);
 	g_object_unref (msg);
 
 	if (!*item)
 		return E_GW_CONNECTION_STATUS_INVALID_OBJECT;
 
-        return E_GW_CONNECTION_STATUS_OK;
+	return E_GW_CONNECTION_STATUS_OK;
 }
 
 EGwConnectionStatus
 e_gw_connection_forward_item (EGwConnection *cnc, const gchar *id, const gchar *view, gboolean embed, EGwItem **item)
 {
 	SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
-        SoupSoapParameter *param;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+	SoupSoapParameter *param;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	/* build the SOAP message */
         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "forwardRequest");
-        if (!msg) {
+	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 
 	e_gw_message_write_string_parameter (msg, "id", NULL, id);
 
@@ -3236,28 +3236,28 @@ e_gw_connection_forward_item (EGwConnection *cnc, const gchar *id, const gchar *
 
 	e_gw_message_write_footer (msg);
 	/* send message to server */
-        response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 
 	status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
+	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                g_object_unref (msg);
+		g_object_unref (msg);
 		return status;
 	}
 
 	/* if status is OK - parse result. return the list */
 	param = soup_soap_response_get_first_parameter_by_name (response, "item");
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+	if (!param) {
+		g_object_unref (response);
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
 
 	*item = e_gw_item_new_from_soap_parameter (cnc->priv->user_email, "", param);
 
@@ -3282,18 +3282,18 @@ EGwConnectionStatus
 e_gw_connection_create_junk_entry (EGwConnection *cnc, const gchar *value, const gchar *match_type, const gchar *list_type)
 {
 	SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 	g_return_val_if_fail (value != NULL, E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
 	/* build the SOAP message */
         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "createJunkEntryRequest");
-        if (!msg) {
+	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 	soup_soap_message_start_element (msg, "entry", NULL, NULL);
 	e_gw_message_write_string_parameter (msg, "match", NULL, value);
 	e_gw_message_write_string_parameter (msg, "matchType", NULL, match_type);
@@ -3376,9 +3376,9 @@ EGwConnectionStatus
 e_gw_connection_get_junk_settings (EGwConnection *cnc, gint *use_junk, gint *use_block, gint *use_pab, gint *persistence)
 {
 	SoupSoapMessage *msg;
-        SoupSoapResponse *response;
+	SoupSoapResponse *response;
 	SoupSoapParameter *param;
-        EGwConnectionStatus status;
+	EGwConnectionStatus status;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
@@ -3387,8 +3387,8 @@ e_gw_connection_get_junk_settings (EGwConnection *cnc, gint *use_junk, gint *use
 
 	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 	e_gw_message_write_footer (msg);
 	response =  e_gw_connection_send_message (cnc, msg);
 
@@ -3571,8 +3571,8 @@ EGwConnectionStatus
 e_gw_connection_get_junk_entries (EGwConnection *cnc, GList **entries)
 {
 	SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 
@@ -3581,8 +3581,8 @@ e_gw_connection_get_junk_entries (EGwConnection *cnc, GList **entries)
 
 	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 	e_gw_message_write_footer (msg);
 	response =  e_gw_connection_send_message (cnc, msg);
 
@@ -3995,47 +3995,47 @@ EGwConnectionStatus
 e_gw_connection_get_proxy_list (EGwConnection *cnc, GList **proxy_info)
 {
 	SoupSoapMessage *msg;
-        SoupSoapResponse *response;
-        EGwConnectionStatus status;
-        SoupSoapParameter *param;
+	SoupSoapResponse *response;
+	EGwConnectionStatus status;
+	SoupSoapParameter *param;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_OBJECT);
 	/* build the SOAP message */
         msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getProxyListRequest");
-        if (!msg) {
+	if (!msg) {
                 g_warning (G_STRLOC ": Could not build SOAP message");
-                return E_GW_CONNECTION_STATUS_UNKNOWN;
-        }
+		return E_GW_CONNECTION_STATUS_UNKNOWN;
+	}
 
 	e_gw_message_write_footer (msg);
 
 	/* send message to server */
-        response = e_gw_connection_send_message (cnc, msg);
-        if (!response) {
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_NO_RESPONSE;
-        }
+	response = e_gw_connection_send_message (cnc, msg);
+	if (!response) {
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_NO_RESPONSE;
+	}
 	status = e_gw_connection_parse_response_status (response);
-        if (status != E_GW_CONNECTION_STATUS_OK) {
+	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			reauthenticate (cnc);
 		g_object_unref (response);
-                g_object_unref (msg);
+		g_object_unref (msg);
 		return status;
 	}
 	/* if status is OK - parse result. return the list */
 	param = soup_soap_response_get_first_parameter_by_name (response, "proxies");
-        e_gw_proxy_construct_proxy_list (param, proxy_info);
-        if (!param) {
-                g_object_unref (response);
-                g_object_unref (msg);
-                return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
-        }
+	e_gw_proxy_construct_proxy_list (param, proxy_info);
+	if (!param) {
+		g_object_unref (response);
+		g_object_unref (msg);
+		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+	}
 
-        g_object_unref (response);
+	g_object_unref (response);
 	g_object_unref (msg);
 
-        return E_GW_CONNECTION_STATUS_OK;
+	return E_GW_CONNECTION_STATUS_OK;
 }
 
 static SoupSoapMessage*

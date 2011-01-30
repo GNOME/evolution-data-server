@@ -556,8 +556,8 @@ cs_getaddrinfo (gpointer data)
 	while ((msg->result = camel_gethostbyname_r (msg->name, &h, msg->hostbufmem, msg->hostbuflen, &herr)) == ERANGE) {
 		if (msg->cancelled)
 			break;
-                msg->hostbuflen *= 2;
-                msg->hostbufmem = g_realloc (msg->hostbufmem, msg->hostbuflen);
+		msg->hostbuflen *= 2;
+		msg->hostbufmem = g_realloc (msg->hostbufmem, msg->hostbuflen);
 	}
 
 	/* If we got cancelled, dont reply, just free it */
@@ -777,8 +777,8 @@ cs_getnameinfo (gpointer data)
 						    msg->hostbufmem, msg->hostbuflen, &herr)) == ERANGE) {
 		if (msg->cancelled)
 			break;
-                msg->hostbuflen *= 2;
-                msg->hostbufmem = g_realloc (msg->hostbufmem, msg->hostbuflen);
+		msg->hostbuflen *= 2;
+		msg->hostbufmem = g_realloc (msg->hostbufmem, msg->hostbuflen);
 	}
 
 	if (msg->cancelled)

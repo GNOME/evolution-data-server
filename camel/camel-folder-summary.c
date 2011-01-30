@@ -3018,8 +3018,8 @@ void
 camel_folder_summary_remove_index_fast (CamelFolderSummary *s, gint index)
 {
 	const gchar *uid = s->uids->pdata[index];
-        CamelMessageInfo *oldinfo;
-        gchar *olduid;
+	CamelMessageInfo *oldinfo;
+	gchar *olduid;
 
 	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_REF_LOCK);

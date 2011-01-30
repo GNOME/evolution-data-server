@@ -163,7 +163,7 @@ addressbook_authenticate (EBook *book, gboolean previous_failure, ESource *sourc
 	const gchar *component_name;
 	gchar *password = NULL;
 	const gchar *uri = e_book_get_uri (book);
-        gchar *stripped_uri = remove_parameters_from_uri (uri);
+	gchar *stripped_uri = remove_parameters_from_uri (uri);
 	const gchar *auth_domain = e_source_get_property (source, "auth-domain");
 
 	component_name = auth_domain ? auth_domain : "Addressbook";

@@ -232,8 +232,8 @@ populate_cache (ECalBackendGroupwise *cbgw)
 {
 	ECalBackendGroupwisePrivate *priv;
 	EGwConnectionStatus status;
-        ECalComponent *comp;
-        GList *list = NULL, *l;
+	ECalComponent *comp;
+	GList *list = NULL, *l;
 	gboolean done = FALSE,  forward = FALSE;
 	gint cursor = 0;
 	guint32	total, num = 0;
@@ -907,7 +907,7 @@ cache_init (ECalBackendGroupwise *cbgw)
 	cnc_status = e_gw_connection_get_categories (priv->cnc, &priv->categories_by_id, &priv->categories_by_name);
 	if (cnc_status != E_GW_CONNECTION_STATUS_OK) {
 		g_warning (G_STRLOC ": Could not get the categories from the server");
-        }
+	}
 
 	priv->mode = CAL_MODE_REMOTE;
 
@@ -1498,7 +1498,7 @@ e_cal_backend_groupwise_get_default_object (ECalBackendSync *backend, EDataCal *
 
 	ECalComponent *comp;
 
-        comp = e_cal_component_new ();
+	comp = e_cal_component_new ();
 
 	switch (e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
 	case ICAL_VEVENT_COMPONENT:
@@ -1637,7 +1637,7 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 {
 	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
-        GSList *components, *l;
+	GSList *components, *l;
 	ECalBackendSExp *cbsexp;
 	gboolean search_needed = TRUE;
 	time_t occur_start = -1, occur_end = -1;
@@ -1665,7 +1665,7 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 		: e_cal_backend_store_get_components (priv->store);
 
 	for (l = components; l != NULL; l = l->next) {
-                ECalComponent *comp = E_CAL_COMPONENT (l->data);
+		ECalComponent *comp = E_CAL_COMPONENT (l->data);
 
 		if (e_cal_backend_get_kind (E_CAL_BACKEND (backend)) ==
 		    icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
@@ -1674,7 +1674,7 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 				*objects = g_list_append (*objects, e_cal_component_get_as_string (comp));
 			}
 		}
-        }
+	}
 
 	g_object_unref (cbsexp);
 	g_slist_foreach (components, (GFunc) g_object_unref, NULL);
@@ -1687,18 +1687,18 @@ e_cal_backend_groupwise_start_query (ECalBackend *backend, EDataCalView *query)
 {
 	ECalBackendGroupwise *cbgw;
 	ECalBackendGroupwisePrivate *priv;
-        GList *objects = NULL;
+	GList *objects = NULL;
 	GError *err = NULL;
 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
 
-        e_cal_backend_groupwise_get_object_list (E_CAL_BACKEND_SYNC (backend), NULL,
+	e_cal_backend_groupwise_get_object_list (E_CAL_BACKEND_SYNC (backend), NULL,
 							  e_data_cal_view_get_text (query), &objects, &err);
-        if (err) {
+	if (err) {
 		e_data_cal_view_notify_done (query, err);
 		g_error_free (err);
-                return;
+		return;
 	}
 
 	/* notify listeners of all objects */
@@ -1788,9 +1788,9 @@ e_cal_backend_groupwise_compute_changes (ECalBackendGroupwise *cbgw, const gchar
 	g_free (unescaped_uri);
 
         e_cal_backend_groupwise_get_object_list (E_CAL_BACKEND_SYNC (cbgw), NULL, "#t", &list, &err);
-        if (err) {
+	if (err) {
 		g_propagate_error (perror, err);
-                return;
+		return;
 	}
 
         /* Calculate adds and modifies */
@@ -1842,7 +1842,7 @@ static void
 e_cal_backend_groupwise_get_changes (ECalBackendSync *backend, EDataCal *cal, const gchar *change_id,
 				     GList **adds, GList **modifies, GList **deletes, GError **error)
 {
-        ECalBackendGroupwise *cbgw;
+	ECalBackendGroupwise *cbgw;
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 
 	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw), InvalidArg);
@@ -1947,7 +1947,7 @@ static void
 e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid, GError **error)
 {
 	ECalBackendGroupwise *cbgw;
-        ECalBackendGroupwisePrivate *priv;
+	ECalBackendGroupwisePrivate *priv;
 	icalcomponent *icalcomp;
 	ECalComponent *comp;
 	EGwConnectionStatus status;
@@ -2070,7 +2070,7 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 				       CalObjModType mod, gchar **old_object, gchar **new_object, GError **error)
 {
 	ECalBackendGroupwise *cbgw;
-        ECalBackendGroupwisePrivate *priv;
+	ECalBackendGroupwisePrivate *priv;
 	icalcomponent *icalcomp;
 	ECalComponent *comp, *cache_comp = NULL;
 	EGwConnectionStatus status;
@@ -2235,7 +2235,7 @@ e_cal_backend_groupwise_remove_object (ECalBackendSync *backend, EDataCal *cal,
 				       gchar **object, GError **perror)
 {
 	ECalBackendGroupwise *cbgw;
-        ECalBackendGroupwisePrivate *priv;
+	ECalBackendGroupwisePrivate *priv;
 	EGwConnectionStatus status;
 	gchar *calobj = NULL;
 	GError *err = NULL;
@@ -2604,7 +2604,7 @@ static void
 e_cal_backend_groupwise_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GError **perror)
 {
 	ECalBackendGroupwise *cbgw;
-        ECalBackendGroupwisePrivate *priv;
+	ECalBackendGroupwisePrivate *priv;
 	icalcomponent *icalcomp, *subcomp;
 	icalcomponent_kind kind;
 	GError *err = NULL;

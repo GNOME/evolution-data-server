@@ -147,16 +147,16 @@ e_gdbus_book_factory_default_init (EGdbusBookFactoryIface *iface)
    */
   signals[__GET_BOOK_METHOD] =
     g_signal_new ("handle-get-book",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookFactoryIface, handle_get_book),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
-                  G_TYPE_BOOLEAN,
-                  2,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookFactoryIface, handle_get_book),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
+		  G_TYPE_BOOLEAN,
+		  2,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING);
 
   /* GObject property definitions for D-Bus properties: */
 }
@@ -190,15 +190,15 @@ void e_gdbus_book_factory_call_get_book (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           in_source);
+			   in_source);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getBook",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -227,7 +227,7 @@ gboolean e_gdbus_book_factory_call_get_book_finish (
   {
     g_variant_get (_result,
                    "(o)",
-                   out_path);
+		   out_path);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -262,20 +262,20 @@ gboolean e_gdbus_book_factory_call_get_book_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(s)",
-                           in_source);
+			   in_source);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getBook",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(o)",
-                   out_path);
+		   out_path);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -304,7 +304,7 @@ void e_gdbus_book_factory_complete_get_book (
 {
   GVariant *_params;
   _params = g_variant_new ("(o)",
-                           out_path);
+			   out_path);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -374,27 +374,27 @@ handle_method_call (GDBusConnection       *connection,
     {
     case __GET_BOOK_METHOD:
       {
-        EGdbusBookFactory *object = E_GDBUS_BOOK_FACTORY (user_data);
-        gboolean handled;
-        const gchar *arg_source;
-        g_variant_get (parameters,
+	EGdbusBookFactory *object = E_GDBUS_BOOK_FACTORY (user_data);
+	gboolean handled;
+	const gchar *arg_source;
+	g_variant_get (parameters,
                        "(&s)",
-                       &arg_source);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_source, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_source);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_source, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     default:
 not_implemented:
       g_dbus_method_invocation_return_error (invocation,
-                                             G_DBUS_ERROR,
-                                             G_DBUS_ERROR_NOT_SUPPORTED,
+					     G_DBUS_ERROR,
+					     G_DBUS_ERROR_NOT_SUPPORTED,
                                              "Method `%s' is not implemented",
-                                             method_name);
+					     method_name);
       break;
     }
 };
@@ -416,10 +416,10 @@ get_property (GDBusConnection  *connection,
     {
     default:
       g_set_error (error,
-                   G_DBUS_ERROR,
-                   G_DBUS_ERROR_NOT_SUPPORTED,
+		   G_DBUS_ERROR,
+		   G_DBUS_ERROR_NOT_SUPPORTED,
                    "This implementation does not support property `%s'",
-                   property_name);
+		   property_name);
       break;
     }
 
@@ -444,10 +444,10 @@ set_property (GDBusConnection  *connection,
     {
     default:
       g_set_error (error,
-                   G_DBUS_ERROR,
-                   G_DBUS_ERROR_NOT_SUPPORTED,
+		   G_DBUS_ERROR,
+		   G_DBUS_ERROR_NOT_SUPPORTED,
                    "This implementation does not support property `%s'",
-                   property_name);
+		   property_name);
       ret = FALSE;
       break;
     }
@@ -492,25 +492,25 @@ emit_notifications_in_idle (gpointer user_data)
       GVariant *cached_value;
       cached_value = g_hash_table_lookup (pvc, property_name);
       if (cached_value == NULL || !g_variant_equal (cached_value, value))
-        {
-          g_hash_table_insert (pvc, (gpointer) property_name, (gpointer) g_variant_ref (value));
+	{
+	  g_hash_table_insert (pvc, (gpointer) property_name, (gpointer) g_variant_ref (value));
           g_variant_builder_add (builder, "{sv}", property_name, value);
-          has_changes = TRUE;
-        }
+	  has_changes = TRUE;
+	}
     }
 
   if (has_changes)
     {
       g_dbus_connection_emit_signal (connection,
-                                     NULL,
-                                     path,
+				     NULL,
+				     path,
                                      "org.freedesktop.DBus.Properties",
                                      "PropertiesChanged",
                                      g_variant_new ("(sa{sv}as)",
                                                     "org.gnome.evolution.dataserver.AddressBookFactory",
-                                                    builder,
-                                                    invalidated_builder),
-                                     NULL);
+						    builder,
+						    invalidated_builder),
+				     NULL);
     }
   else
     {
@@ -544,9 +544,9 @@ queue_notification (GObject     *object,
       idle_source = g_idle_source_new ();
       g_source_set_priority (idle_source, G_PRIORITY_DEFAULT);
       g_source_set_callback (idle_source,
-                             emit_notifications_in_idle,
-                             g_object_ref (object),
-                             (GDestroyNotify) g_object_unref);
+			     emit_notifications_in_idle,
+			     g_object_ref (object),
+			     (GDestroyNotify) g_object_unref);
       idle_id = g_source_attach (idle_source, g_main_context_get_thread_default ());
       g_source_unref (idle_source);
       g_object_set_data (object, "gdbus-codegen-notification-idle-id", GUINT_TO_POINTER (idle_id));
@@ -651,12 +651,12 @@ e_gdbus_book_factory_register_object (EGdbusBookFactory *object,
   g_object_set_data_full (G_OBJECT (object), "gdbus-codegen-pvc", (gpointer) pvc, (GDestroyNotify) g_hash_table_unref);
   g_signal_connect (object, "notify", G_CALLBACK (on_notify), NULL);
   return g_dbus_connection_register_object (connection,
-          object_path,
-          (GDBusInterfaceInfo *) &_e_gdbus_book_factory_interface_info,
-          &e_gdbus_book_factory_interface_vtable,
-          object,
-          (GDestroyNotify) on_object_unregistered,
-          error);
+	  object_path,
+	  (GDBusInterfaceInfo *) &_e_gdbus_book_factory_interface_info,
+	  &e_gdbus_book_factory_interface_vtable,
+	  object,
+	  (GDestroyNotify) on_object_unregistered,
+	  error);
 }
 
 /**
@@ -683,7 +683,7 @@ static void
 e_gdbus_book_factory_proxy_init (EGdbusBookFactoryProxy *proxy)
 {
   g_dbus_proxy_set_interface_info (G_DBUS_PROXY (proxy),
-                                   (GDBusInterfaceInfo *) &_e_gdbus_book_factory_interface_info);
+				   (GDBusInterfaceInfo *) &_e_gdbus_book_factory_interface_info);
 }
 
 static void
@@ -762,13 +762,13 @@ e_gdbus_book_factory_proxy_set_property (GObject      *object,
                          "org.freedesktop.DBus.Properties.Set",
                          g_variant_new ("(ssv)",
                                         "org.gnome.evolution.dataserver.AddressBookFactory",
-                                        property_name,
-                                        new_value),
-                         G_DBUS_CALL_FLAGS_NONE,
-                         G_MAXINT,
-                         NULL,
-                         (GAsyncReadyCallback) property_set_cb,
-                         (gpointer) property_name);
+					property_name,
+					new_value),
+			 G_DBUS_CALL_FLAGS_NONE,
+			 G_MAXINT,
+			 NULL,
+			 (GAsyncReadyCallback) property_set_cb,
+			 (gpointer) property_name);
       g_variant_unref (new_value);
     }
 
@@ -789,14 +789,14 @@ g_properties_changed (GDBusProxy         *proxy,
     {
       gname = lookup_property_gname_from_property_name (key);
       if (gname != NULL)
-        g_object_notify (G_OBJECT (proxy), gname);
+	g_object_notify (G_OBJECT (proxy), gname);
     }
 
   for (n = 0; invalidated_properties[n] != NULL; n++)
     {
       gname = lookup_property_gname_from_property_name (invalidated_properties[n]);
       if (gname != NULL)
-        g_object_notify (G_OBJECT (proxy), gname);
+	g_object_notify (G_OBJECT (proxy), gname);
     }
 
 }
@@ -845,16 +845,16 @@ void e_gdbus_book_factory_proxy_new (GDBusConnection     *connection,
                    gpointer             user_data)
 {
   g_async_initable_new_async (E_GDBUS_TYPE_BOOK_FACTORY_PROXY,
-                              G_PRIORITY_DEFAULT,
-                              cancellable,
-                              callback,
-                              user_data,
+			      G_PRIORITY_DEFAULT,
+			      cancellable,
+			      callback,
+			      user_data,
                               "g-flags", flags,
                               "g-name", name,
                               "g-connection", connection,
                               "g-object-path", object_path,
                               "g-interface-name", "org.gnome.evolution.dataserver.AddressBookFactory",
-                              NULL);
+			      NULL);
 }
 
 /**
@@ -874,8 +874,8 @@ EGdbusBookFactory *e_gdbus_book_factory_proxy_new_finish (GAsyncResult  *res,
   source_object = g_async_result_get_source_object (res);
   g_assert (source_object != NULL);
   object = g_async_initable_new_finish (G_ASYNC_INITABLE (source_object),
-                                        res,
-                                        error);
+					res,
+					error);
   g_object_unref (source_object);
   if (object != NULL)
     return E_GDBUS_BOOK_FACTORY (object);
@@ -907,14 +907,14 @@ EGdbusBookFactory *e_gdbus_book_factory_proxy_new_sync (GDBusConnection     *con
 {
   GInitable *initable;
   initable = g_initable_new (E_GDBUS_TYPE_BOOK_FACTORY_PROXY,
-                             cancellable,
-                             error,
+			     cancellable,
+			     error,
                              "g-flags", flags,
                              "g-name", name,
                              "g-connection", connection,
                              "g-object-path", object_path,
                              "g-interface-name", "org.gnome.evolution.dataserver.AddressBookFactory",
-                             NULL);
+			     NULL);
   if (initable != NULL)
     return E_GDBUS_BOOK_FACTORY (initable);
   else
@@ -944,16 +944,16 @@ void e_gdbus_book_factory_proxy_new_for_bus (GBusType             bus_type,
                            gpointer             user_data)
 {
   g_async_initable_new_async (E_GDBUS_TYPE_BOOK_FACTORY_PROXY,
-                              G_PRIORITY_DEFAULT,
-                              cancellable,
-                              callback,
-                              user_data,
+			      G_PRIORITY_DEFAULT,
+			      cancellable,
+			      callback,
+			      user_data,
                               "g-flags", flags,
                               "g-name", name,
                               "g-bus-type", bus_type,
                               "g-object-path", object_path,
                               "g-interface-name", "org.gnome.evolution.dataserver.AddressBookFactory",
-                              NULL);
+			      NULL);
 }
 
 /**
@@ -973,8 +973,8 @@ EGdbusBookFactory *e_gdbus_book_factory_proxy_new_for_bus_finish (GAsyncResult  
   source_object = g_async_result_get_source_object (res);
   g_assert (source_object != NULL);
   object = g_async_initable_new_finish (G_ASYNC_INITABLE (source_object),
-                                        res,
-                                        error);
+					res,
+					error);
   g_object_unref (source_object);
   if (object != NULL)
     return E_GDBUS_BOOK_FACTORY (object);
@@ -1006,14 +1006,14 @@ EGdbusBookFactory *e_gdbus_book_factory_proxy_new_for_bus_sync (GBusType        
 {
   GInitable *initable;
   initable = g_initable_new (E_GDBUS_TYPE_BOOK_FACTORY_PROXY,
-                             cancellable,
-                             error,
+			     cancellable,
+			     error,
                              "g-flags", flags,
                              "g-name", name,
                              "g-bus-type", bus_type,
                              "g-object-path", object_path,
                              "g-interface-name", "org.gnome.evolution.dataserver.AddressBookFactory",
-                             NULL);
+			     NULL);
   if (initable != NULL)
     return E_GDBUS_BOOK_FACTORY (initable);
   else

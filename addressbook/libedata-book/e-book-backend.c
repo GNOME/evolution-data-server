@@ -927,7 +927,7 @@ e_book_backend_set_mode (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->set_mode);
 
-        (* E_BOOK_BACKEND_GET_CLASS (backend)->set_mode) (backend,  mode);
+	(* E_BOOK_BACKEND_GET_CLASS (backend)->set_mode) (backend,  mode);
 
 }
 

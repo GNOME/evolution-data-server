@@ -127,7 +127,7 @@ e_data_server_module_finalize (GObject *object)
 
 	g_free (module->path);
 
-        if (G_OBJECT_CLASS (e_data_server_module_parent_class)->finalize)
+	if (G_OBJECT_CLASS (e_data_server_module_parent_class)->finalize)
 		(*G_OBJECT_CLASS (e_data_server_module_parent_class)->finalize) (object);
 }
 

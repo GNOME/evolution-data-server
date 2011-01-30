@@ -22,7 +22,7 @@ cal_set_mode_cb (ECalTestClosure *closure)
 				MODE_FINAL);
 	}
 
-        g_main_loop_quit ((GMainLoop*) closure->user_data);
+	g_main_loop_quit ((GMainLoop*) closure->user_data);
 }
 
 static void

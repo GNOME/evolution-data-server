@@ -165,12 +165,12 @@ signal_emission_hook_cb_writable (GSignalInvocationHint *ihint,
   g_variant_builder_unref (builder);
 
   g_dbus_connection_emit_signal (connection,
-                                 NULL,
-                                 path,
+				 NULL,
+				 path,
                                  "org.gnome.evolution.dataserver.AddressBook",
                                  "writable",
-                                 params,
-                                 NULL);
+				 params,
+				 NULL);
 out:
   return TRUE;
 }
@@ -206,12 +206,12 @@ signal_emission_hook_cb_connection (GSignalInvocationHint *ihint,
   g_variant_builder_unref (builder);
 
   g_dbus_connection_emit_signal (connection,
-                                 NULL,
-                                 path,
+				 NULL,
+				 path,
                                  "org.gnome.evolution.dataserver.AddressBook",
                                  "connection",
-                                 params,
-                                 NULL);
+				 params,
+				 NULL);
 out:
   return TRUE;
 }
@@ -238,12 +238,12 @@ signal_emission_hook_cb_auth_required (GSignalInvocationHint *ihint,
   params = NULL;
 
   g_dbus_connection_emit_signal (connection,
-                                 NULL,
-                                 path,
+				 NULL,
+				 path,
                                  "org.gnome.evolution.dataserver.AddressBook",
                                  "auth_required",
-                                 params,
-                                 NULL);
+				 params,
+				 NULL);
 out:
   return TRUE;
 }
@@ -294,20 +294,20 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    * On exported objects, emitting this signal causes the actual D-Bus signal to be emitted. You can use e_gdbus_book_emit_writable() to do this.
    */  signals[__WRITABLE_SIGNAL] =
     g_signal_new ("writable",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, writable),
-                  NULL,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_VOID__BOOLEAN,
-                  G_TYPE_NONE,
-                  1,
-                  G_TYPE_BOOLEAN);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, writable),
+		  NULL,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_VOID__BOOLEAN,
+		  G_TYPE_NONE,
+		  1,
+		  G_TYPE_BOOLEAN);
   g_signal_add_emission_hook (signals[__WRITABLE_SIGNAL],
-                              0,
-                              signal_emission_hook_cb_writable,
+			      0,
+			      signal_emission_hook_cb_writable,
                               (gpointer) "writable",
-                              NULL);
+			      NULL);
 
   /**
    * EGdbusBook::connection:
@@ -324,20 +324,20 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    * On exported objects, emitting this signal causes the actual D-Bus signal to be emitted. You can use e_gdbus_book_emit_connection() to do this.
    */  signals[__CONNECTION_SIGNAL] =
     g_signal_new ("connection",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, connection),
-                  NULL,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_VOID__BOOLEAN,
-                  G_TYPE_NONE,
-                  1,
-                  G_TYPE_BOOLEAN);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, connection),
+		  NULL,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_VOID__BOOLEAN,
+		  G_TYPE_NONE,
+		  1,
+		  G_TYPE_BOOLEAN);
   g_signal_add_emission_hook (signals[__CONNECTION_SIGNAL],
-                              0,
-                              signal_emission_hook_cb_connection,
+			      0,
+			      signal_emission_hook_cb_connection,
                               (gpointer) "connection",
-                              NULL);
+			      NULL);
 
   /**
    * EGdbusBook::auth-required:
@@ -353,19 +353,19 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    * On exported objects, emitting this signal causes the actual D-Bus signal to be emitted. You can use e_gdbus_book_emit_auth_required() to do this.
    */  signals[__AUTH_REQUIRED_SIGNAL] =
     g_signal_new ("auth-required",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, auth_required),
-                  NULL,
-                  NULL,
-                  g_cclosure_marshal_VOID__VOID,
-                  G_TYPE_NONE,
-                  0);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, auth_required),
+		  NULL,
+		  NULL,
+		  g_cclosure_marshal_VOID__VOID,
+		  G_TYPE_NONE,
+		  0);
   g_signal_add_emission_hook (signals[__AUTH_REQUIRED_SIGNAL],
-                              0,
-                              signal_emission_hook_cb_auth_required,
+			      0,
+			      signal_emission_hook_cb_auth_required,
                               (gpointer) "auth_required",
-                              NULL);
+			      NULL);
 
   /* GObject signals definitions for D-Bus methods: */
   /**
@@ -384,16 +384,16 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    */
   signals[__OPEN_METHOD] =
     g_signal_new ("handle-open",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, handle_open),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_BOOLEAN,
-                  G_TYPE_BOOLEAN,
-                  2,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_BOOLEAN);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, handle_open),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_BOOLEAN,
+		  G_TYPE_BOOLEAN,
+		  2,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_BOOLEAN);
   /**
    * EGdbusBook::handle-remove:
    * @object: The exported object emitting the signal.
@@ -409,15 +409,15 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    */
   signals[__REMOVE_METHOD] =
     g_signal_new ("handle-remove",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, handle_remove),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, handle_remove),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusBook::handle-get-contact:
    * @object: The exported object emitting the signal.
@@ -434,16 +434,16 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    */
   signals[__GET_CONTACT_METHOD] =
     g_signal_new ("handle-get-contact",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, handle_get_contact),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
-                  G_TYPE_BOOLEAN,
-                  2,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, handle_get_contact),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
+		  G_TYPE_BOOLEAN,
+		  2,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING);
   /**
    * EGdbusBook::handle-get-contact-list:
    * @object: The exported object emitting the signal.
@@ -460,16 +460,16 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    */
   signals[__GET_CONTACT_LIST_METHOD] =
     g_signal_new ("handle-get-contact-list",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, handle_get_contact_list),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
-                  G_TYPE_BOOLEAN,
-                  2,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, handle_get_contact_list),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
+		  G_TYPE_BOOLEAN,
+		  2,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING);
   /**
    * EGdbusBook::handle-authenticate-user:
    * @object: The exported object emitting the signal.
@@ -488,18 +488,18 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    */
   signals[__AUTHENTICATE_USER_METHOD] =
     g_signal_new ("handle-authenticate-user",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, handle_authenticate_user),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING_STRING_STRING,
-                  G_TYPE_BOOLEAN,
-                  4,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING,
-                  G_TYPE_STRING,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, handle_authenticate_user),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING_STRING_STRING,
+		  G_TYPE_BOOLEAN,
+		  4,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING,
+		  G_TYPE_STRING,
+		  G_TYPE_STRING);
   /**
    * EGdbusBook::handle-add-contact:
    * @object: The exported object emitting the signal.
@@ -516,16 +516,16 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    */
   signals[__ADD_CONTACT_METHOD] =
     g_signal_new ("handle-add-contact",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, handle_add_contact),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
-                  G_TYPE_BOOLEAN,
-                  2,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, handle_add_contact),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
+		  G_TYPE_BOOLEAN,
+		  2,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING);
   /**
    * EGdbusBook::handle-remove-contacts:
    * @object: The exported object emitting the signal.
@@ -542,16 +542,16 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    */
   signals[__REMOVE_CONTACTS_METHOD] =
     g_signal_new ("handle-remove-contacts",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, handle_remove_contacts),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_BOXED,
-                  G_TYPE_BOOLEAN,
-                  2,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRV);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, handle_remove_contacts),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_BOXED,
+		  G_TYPE_BOOLEAN,
+		  2,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRV);
   /**
    * EGdbusBook::handle-modify-contact:
    * @object: The exported object emitting the signal.
@@ -568,16 +568,16 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    */
   signals[__MODIFY_CONTACT_METHOD] =
     g_signal_new ("handle-modify-contact",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, handle_modify_contact),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
-                  G_TYPE_BOOLEAN,
-                  2,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, handle_modify_contact),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
+		  G_TYPE_BOOLEAN,
+		  2,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING);
   /**
    * EGdbusBook::handle-get-static-capabilities:
    * @object: The exported object emitting the signal.
@@ -593,15 +593,15 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    */
   signals[__GET_STATIC_CAPABILITIES_METHOD] =
     g_signal_new ("handle-get-static-capabilities",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, handle_get_static_capabilities),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, handle_get_static_capabilities),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusBook::handle-get-required-fields:
    * @object: The exported object emitting the signal.
@@ -617,15 +617,15 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    */
   signals[__GET_REQUIRED_FIELDS_METHOD] =
     g_signal_new ("handle-get-required-fields",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, handle_get_required_fields),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, handle_get_required_fields),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusBook::handle-get-supported-fields:
    * @object: The exported object emitting the signal.
@@ -641,15 +641,15 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    */
   signals[__GET_SUPPORTED_FIELDS_METHOD] =
     g_signal_new ("handle-get-supported-fields",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, handle_get_supported_fields),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, handle_get_supported_fields),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusBook::handle-get-supported-auth-methods:
    * @object: The exported object emitting the signal.
@@ -665,15 +665,15 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    */
   signals[__GET_SUPPORTED_AUTH_METHODS_METHOD] =
     g_signal_new ("handle-get-supported-auth-methods",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, handle_get_supported_auth_methods),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, handle_get_supported_auth_methods),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusBook::handle-get-book-view:
    * @object: The exported object emitting the signal.
@@ -691,17 +691,17 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    */
   signals[__GET_BOOK_VIEW_METHOD] =
     g_signal_new ("handle-get-book-view",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, handle_get_book_view),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING_UINT,
-                  G_TYPE_BOOLEAN,
-                  3,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING,
-                  G_TYPE_UINT);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, handle_get_book_view),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING_UINT,
+		  G_TYPE_BOOLEAN,
+		  3,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING,
+		  G_TYPE_UINT);
   /**
    * EGdbusBook::handle-get-changes:
    * @object: The exported object emitting the signal.
@@ -718,16 +718,16 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    */
   signals[__GET_CHANGES_METHOD] =
     g_signal_new ("handle-get-changes",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, handle_get_changes),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
-                  G_TYPE_BOOLEAN,
-                  2,
-                  G_TYPE_DBUS_METHOD_INVOCATION,
-                  G_TYPE_STRING);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, handle_get_changes),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT_STRING,
+		  G_TYPE_BOOLEAN,
+		  2,
+		  G_TYPE_DBUS_METHOD_INVOCATION,
+		  G_TYPE_STRING);
   /**
    * EGdbusBook::handle-cancel-operation:
    * @object: The exported object emitting the signal.
@@ -743,15 +743,15 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    */
   signals[__CANCEL_OPERATION_METHOD] =
     g_signal_new ("handle-cancel-operation",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, handle_cancel_operation),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, handle_cancel_operation),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
   /**
    * EGdbusBook::handle-close:
    * @object: The exported object emitting the signal.
@@ -767,15 +767,15 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
    */
   signals[__CLOSE_METHOD] =
     g_signal_new ("handle-close",
-                  G_TYPE_FROM_INTERFACE (iface),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (EGdbusBookIface, handle_close),
-                  g_signal_accumulator_true_handled,
-                  NULL,
-                  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
-                  G_TYPE_BOOLEAN,
-                  1,
-                  G_TYPE_DBUS_METHOD_INVOCATION);
+		  G_TYPE_FROM_INTERFACE (iface),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (EGdbusBookIface, handle_close),
+		  g_signal_accumulator_true_handled,
+		  NULL,
+		  _e_gdbus_gdbus_cclosure_marshaller_BOOLEAN__OBJECT,
+		  G_TYPE_BOOLEAN,
+		  1,
+		  G_TYPE_DBUS_METHOD_INVOCATION);
 
   /* GObject property definitions for D-Bus properties: */
 }
@@ -809,15 +809,15 @@ void e_gdbus_book_call_open (
 {
   GVariant *_params;
   _params = g_variant_new ("(b)",
-                           in_only_if_exists);
+			   in_only_if_exists);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "open",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -872,14 +872,14 @@ gboolean e_gdbus_book_call_open_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(b)",
-                           in_only_if_exists);
+			   in_only_if_exists);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "open",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -915,12 +915,12 @@ void e_gdbus_book_call_remove (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "remove",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -975,11 +975,11 @@ gboolean e_gdbus_book_call_remove_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "remove",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -1015,15 +1015,15 @@ void e_gdbus_book_call_get_contact (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           in_uid);
+			   in_uid);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getContact",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -1052,7 +1052,7 @@ gboolean e_gdbus_book_call_get_contact_finish (
   {
     g_variant_get (_result,
                    "(s)",
-                   out_vcard);
+		   out_vcard);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -1087,20 +1087,20 @@ gboolean e_gdbus_book_call_get_contact_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(s)",
-                           in_uid);
+			   in_uid);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getContact",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(s)",
-                   out_vcard);
+		   out_vcard);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -1135,15 +1135,15 @@ void e_gdbus_book_call_get_contact_list (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           in_query);
+			   in_query);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getContactList",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -1172,7 +1172,7 @@ gboolean e_gdbus_book_call_get_contact_list_finish (
   {
     g_variant_get (_result,
                    "(^as)",
-                   out_vcards);
+		   out_vcards);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -1207,20 +1207,20 @@ gboolean e_gdbus_book_call_get_contact_list_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(s)",
-                           in_query);
+			   in_query);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getContactList",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(^as)",
-                   out_vcards);
+		   out_vcards);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -1259,17 +1259,17 @@ void e_gdbus_book_call_authenticate_user (
 {
   GVariant *_params;
   _params = g_variant_new ("(sss)",
-                           in_user,
-                           in_passwd,
-                           in_auth_method);
+			   in_user,
+			   in_passwd,
+			   in_auth_method);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "authenticateUser",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -1328,16 +1328,16 @@ gboolean e_gdbus_book_call_authenticate_user_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(sss)",
-                           in_user,
-                           in_passwd,
-                           in_auth_method);
+			   in_user,
+			   in_passwd,
+			   in_auth_method);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "authenticateUser",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -1373,15 +1373,15 @@ void e_gdbus_book_call_add_contact (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           in_vcard);
+			   in_vcard);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "addContact",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -1410,7 +1410,7 @@ gboolean e_gdbus_book_call_add_contact_finish (
   {
     g_variant_get (_result,
                    "(s)",
-                   out_uid);
+		   out_uid);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -1445,20 +1445,20 @@ gboolean e_gdbus_book_call_add_contact_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(s)",
-                           in_vcard);
+			   in_vcard);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "addContact",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(s)",
-                   out_uid);
+		   out_uid);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -1493,15 +1493,15 @@ void e_gdbus_book_call_remove_contacts (
 {
   GVariant *_params;
   _params = g_variant_new ("(^as)",
-                           in_list);
+			   in_list);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "removeContacts",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -1556,14 +1556,14 @@ gboolean e_gdbus_book_call_remove_contacts_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(^as)",
-                           in_list);
+			   in_list);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "removeContacts",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -1599,15 +1599,15 @@ void e_gdbus_book_call_modify_contact (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           in_vcard);
+			   in_vcard);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "modifyContact",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -1662,14 +1662,14 @@ gboolean e_gdbus_book_call_modify_contact_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(s)",
-                           in_vcard);
+			   in_vcard);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "modifyContact",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -1705,12 +1705,12 @@ void e_gdbus_book_call_get_static_capabilities (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getStaticCapabilities",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -1739,7 +1739,7 @@ gboolean e_gdbus_book_call_get_static_capabilities_finish (
   {
     g_variant_get (_result,
                    "(s)",
-                   out_capabilities);
+		   out_capabilities);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -1774,17 +1774,17 @@ gboolean e_gdbus_book_call_get_static_capabilities_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getStaticCapabilities",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(s)",
-                   out_capabilities);
+		   out_capabilities);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -1819,12 +1819,12 @@ void e_gdbus_book_call_get_required_fields (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getRequiredFields",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -1853,7 +1853,7 @@ gboolean e_gdbus_book_call_get_required_fields_finish (
   {
     g_variant_get (_result,
                    "(^as)",
-                   out_fields);
+		   out_fields);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -1888,17 +1888,17 @@ gboolean e_gdbus_book_call_get_required_fields_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getRequiredFields",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(^as)",
-                   out_fields);
+		   out_fields);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -1933,12 +1933,12 @@ void e_gdbus_book_call_get_supported_fields (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getSupportedFields",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -1967,7 +1967,7 @@ gboolean e_gdbus_book_call_get_supported_fields_finish (
   {
     g_variant_get (_result,
                    "(^as)",
-                   out_fields);
+		   out_fields);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2002,17 +2002,17 @@ gboolean e_gdbus_book_call_get_supported_fields_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getSupportedFields",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(^as)",
-                   out_fields);
+		   out_fields);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2047,12 +2047,12 @@ void e_gdbus_book_call_get_supported_auth_methods (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getSupportedAuthMethods",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -2081,7 +2081,7 @@ gboolean e_gdbus_book_call_get_supported_auth_methods_finish (
   {
     g_variant_get (_result,
                    "(^as)",
-                   out_auth_methods);
+		   out_auth_methods);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2116,17 +2116,17 @@ gboolean e_gdbus_book_call_get_supported_auth_methods_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getSupportedAuthMethods",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(^as)",
-                   out_auth_methods);
+		   out_auth_methods);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2163,16 +2163,16 @@ void e_gdbus_book_call_get_book_view (
 {
   GVariant *_params;
   _params = g_variant_new ("(su)",
-                           in_query,
-                           in_max_results);
+			   in_query,
+			   in_max_results);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getBookView",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -2201,7 +2201,7 @@ gboolean e_gdbus_book_call_get_book_view_finish (
   {
     g_variant_get (_result,
                    "(o)",
-                   out_view);
+		   out_view);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2238,21 +2238,21 @@ gboolean e_gdbus_book_call_get_book_view_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(su)",
-                           in_query,
-                           in_max_results);
+			   in_query,
+			   in_max_results);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getBookView",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(o)",
-                   out_view);
+		   out_view);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2287,15 +2287,15 @@ void e_gdbus_book_call_get_changes (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           in_change_id);
+			   in_change_id);
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "getChanges",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -2324,7 +2324,7 @@ gboolean e_gdbus_book_call_get_changes_finish (
   {
     g_variant_get (_result,
                    "(*)",
-                   out_changes);
+		   out_changes);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2359,20 +2359,20 @@ gboolean e_gdbus_book_call_get_changes_sync (
   GVariant *_params;
   GVariant *_result;
   _params = g_variant_new ("(s)",
-                           in_change_id);
+			   in_change_id);
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "getChanges",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   {
     g_variant_get (_result,
                    "(*)",
-                   out_changes);
+		   out_changes);
   }
   g_variant_unref (_result);
   _ret = TRUE;
@@ -2407,12 +2407,12 @@ void e_gdbus_book_call_cancel_operation (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "cancelOperation",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -2467,11 +2467,11 @@ gboolean e_gdbus_book_call_cancel_operation_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "cancelOperation",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -2507,12 +2507,12 @@ void e_gdbus_book_call_close (
   _params = NULL;
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
                      "close",
-                     _params,
-                     G_DBUS_CALL_FLAGS_NONE,
-                     G_MAXINT,
-                     cancellable,
-                     callback,
-                     user_data);
+		     _params,
+		     G_DBUS_CALL_FLAGS_NONE,
+		     G_MAXINT,
+		     cancellable,
+		     callback,
+		     user_data);
 }
 
 /**
@@ -2567,11 +2567,11 @@ gboolean e_gdbus_book_call_close_sync (
   _params = NULL;
   _result = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
                                    "close",
-                                   _params,
-                                   G_DBUS_CALL_FLAGS_NONE,
-                                   G_MAXINT,
-                                   cancellable,
-                                   error);
+				   _params,
+				   G_DBUS_CALL_FLAGS_NONE,
+				   G_MAXINT,
+				   cancellable,
+				   error);
   if (_result == NULL)
     goto _out;
   g_variant_unref (_result);
@@ -2641,7 +2641,7 @@ void e_gdbus_book_complete_get_contact (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           out_vcard);
+			   out_vcard);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -2666,7 +2666,7 @@ void e_gdbus_book_complete_get_contact_list (
 {
   GVariant *_params;
   _params = g_variant_new ("(^as)",
-                           out_vcards);
+			   out_vcards);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -2711,7 +2711,7 @@ void e_gdbus_book_complete_add_contact (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           out_uid);
+			   out_uid);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -2776,7 +2776,7 @@ void e_gdbus_book_complete_get_static_capabilities (
 {
   GVariant *_params;
   _params = g_variant_new ("(s)",
-                           out_capabilities);
+			   out_capabilities);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -2801,7 +2801,7 @@ void e_gdbus_book_complete_get_required_fields (
 {
   GVariant *_params;
   _params = g_variant_new ("(^as)",
-                           out_fields);
+			   out_fields);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -2826,7 +2826,7 @@ void e_gdbus_book_complete_get_supported_fields (
 {
   GVariant *_params;
   _params = g_variant_new ("(^as)",
-                           out_fields);
+			   out_fields);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -2851,7 +2851,7 @@ void e_gdbus_book_complete_get_supported_auth_methods (
 {
   GVariant *_params;
   _params = g_variant_new ("(^as)",
-                           out_auth_methods);
+			   out_auth_methods);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -2876,7 +2876,7 @@ void e_gdbus_book_complete_get_book_view (
 {
   GVariant *_params;
   _params = g_variant_new ("(o)",
-                           out_view);
+			   out_view);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -2901,7 +2901,7 @@ void e_gdbus_book_complete_get_changes (
 {
   GVariant *_params;
   _params = g_variant_new ("(*)",
-                           out_changes);
+			   out_changes);
   g_dbus_method_invocation_return_value (invocation, _params);
 }
 
@@ -3494,246 +3494,246 @@ handle_method_call (GDBusConnection       *connection,
     {
     case __OPEN_METHOD:
       {
-        EGdbusBook *object = E_GDBUS_BOOK (user_data);
-        gboolean handled;
-        gboolean arg_only_if_exists;
-        g_variant_get (parameters,
+	EGdbusBook *object = E_GDBUS_BOOK (user_data);
+	gboolean handled;
+	gboolean arg_only_if_exists;
+	g_variant_get (parameters,
                        "(b)",
-                       &arg_only_if_exists);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_only_if_exists, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_only_if_exists);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_only_if_exists, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __REMOVE_METHOD:
       {
-        EGdbusBook *object = E_GDBUS_BOOK (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusBook *object = E_GDBUS_BOOK (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_CONTACT_METHOD:
       {
-        EGdbusBook *object = E_GDBUS_BOOK (user_data);
-        gboolean handled;
-        const gchar *arg_uid;
-        g_variant_get (parameters,
+	EGdbusBook *object = E_GDBUS_BOOK (user_data);
+	gboolean handled;
+	const gchar *arg_uid;
+	g_variant_get (parameters,
                        "(&s)",
-                       &arg_uid);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_uid, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_uid);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_uid, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_CONTACT_LIST_METHOD:
       {
-        EGdbusBook *object = E_GDBUS_BOOK (user_data);
-        gboolean handled;
-        const gchar *arg_query;
-        g_variant_get (parameters,
+	EGdbusBook *object = E_GDBUS_BOOK (user_data);
+	gboolean handled;
+	const gchar *arg_query;
+	g_variant_get (parameters,
                        "(&s)",
-                       &arg_query);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_query, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_query);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_query, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __AUTHENTICATE_USER_METHOD:
       {
-        EGdbusBook *object = E_GDBUS_BOOK (user_data);
-        gboolean handled;
-        const gchar *arg_user;
-        const gchar *arg_passwd;
-        const gchar *arg_auth_method;
-        g_variant_get (parameters,
+	EGdbusBook *object = E_GDBUS_BOOK (user_data);
+	gboolean handled;
+	const gchar *arg_user;
+	const gchar *arg_passwd;
+	const gchar *arg_auth_method;
+	g_variant_get (parameters,
                        "(&s&s&s)",
-                       &arg_user,
-                       &arg_passwd,
-                       &arg_auth_method);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_user, arg_passwd, arg_auth_method, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_user,
+		       &arg_passwd,
+		       &arg_auth_method);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_user, arg_passwd, arg_auth_method, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __ADD_CONTACT_METHOD:
       {
-        EGdbusBook *object = E_GDBUS_BOOK (user_data);
-        gboolean handled;
-        const gchar *arg_vcard;
-        g_variant_get (parameters,
+	EGdbusBook *object = E_GDBUS_BOOK (user_data);
+	gboolean handled;
+	const gchar *arg_vcard;
+	g_variant_get (parameters,
                        "(&s)",
-                       &arg_vcard);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_vcard, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_vcard);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_vcard, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __REMOVE_CONTACTS_METHOD:
       {
-        EGdbusBook *object = E_GDBUS_BOOK (user_data);
-        gboolean handled;
-        const gchar * const *arg_list;
-        g_variant_get (parameters,
+	EGdbusBook *object = E_GDBUS_BOOK (user_data);
+	gboolean handled;
+	const gchar * const *arg_list;
+	g_variant_get (parameters,
                        "(^a&s)",
-                       &arg_list);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_list, &handled);
-        g_free ((gpointer) arg_list);
-        if (!handled)
-          goto not_implemented;
+		       &arg_list);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_list, &handled);
+	g_free ((gpointer) arg_list);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __MODIFY_CONTACT_METHOD:
       {
-        EGdbusBook *object = E_GDBUS_BOOK (user_data);
-        gboolean handled;
-        const gchar *arg_vcard;
-        g_variant_get (parameters,
+	EGdbusBook *object = E_GDBUS_BOOK (user_data);
+	gboolean handled;
+	const gchar *arg_vcard;
+	g_variant_get (parameters,
                        "(&s)",
-                       &arg_vcard);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_vcard, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_vcard);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_vcard, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_STATIC_CAPABILITIES_METHOD:
       {
-        EGdbusBook *object = E_GDBUS_BOOK (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusBook *object = E_GDBUS_BOOK (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_REQUIRED_FIELDS_METHOD:
       {
-        EGdbusBook *object = E_GDBUS_BOOK (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusBook *object = E_GDBUS_BOOK (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_SUPPORTED_FIELDS_METHOD:
       {
-        EGdbusBook *object = E_GDBUS_BOOK (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusBook *object = E_GDBUS_BOOK (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_SUPPORTED_AUTH_METHODS_METHOD:
       {
-        EGdbusBook *object = E_GDBUS_BOOK (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusBook *object = E_GDBUS_BOOK (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_BOOK_VIEW_METHOD:
       {
-        EGdbusBook *object = E_GDBUS_BOOK (user_data);
-        gboolean handled;
-        const gchar *arg_query;
-        guint arg_max_results;
-        g_variant_get (parameters,
+	EGdbusBook *object = E_GDBUS_BOOK (user_data);
+	gboolean handled;
+	const gchar *arg_query;
+	guint arg_max_results;
+	g_variant_get (parameters,
                        "(&su)",
-                       &arg_query,
-                       &arg_max_results);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_query, arg_max_results, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_query,
+		       &arg_max_results);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_query, arg_max_results, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __GET_CHANGES_METHOD:
       {
-        EGdbusBook *object = E_GDBUS_BOOK (user_data);
-        gboolean handled;
-        const gchar *arg_change_id;
-        g_variant_get (parameters,
+	EGdbusBook *object = E_GDBUS_BOOK (user_data);
+	gboolean handled;
+	const gchar *arg_change_id;
+	g_variant_get (parameters,
                        "(&s)",
-                       &arg_change_id);
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, arg_change_id, &handled);
-        if (!handled)
-          goto not_implemented;
+		       &arg_change_id);
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, arg_change_id, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __CANCEL_OPERATION_METHOD:
       {
-        EGdbusBook *object = E_GDBUS_BOOK (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusBook *object = E_GDBUS_BOOK (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     case __CLOSE_METHOD:
       {
-        EGdbusBook *object = E_GDBUS_BOOK (user_data);
-        gboolean handled;
-        g_signal_emit (object,
-                       signals[method_id],
-                       0, invocation, &handled);
-        if (!handled)
-          goto not_implemented;
+	EGdbusBook *object = E_GDBUS_BOOK (user_data);
+	gboolean handled;
+	g_signal_emit (object,
+		       signals[method_id],
+		       0, invocation, &handled);
+	if (!handled)
+	  goto not_implemented;
       }
       break;
 
     default:
 not_implemented:
       g_dbus_method_invocation_return_error (invocation,
-                                             G_DBUS_ERROR,
-                                             G_DBUS_ERROR_NOT_SUPPORTED,
+					     G_DBUS_ERROR,
+					     G_DBUS_ERROR_NOT_SUPPORTED,
                                              "Method `%s' is not implemented",
-                                             method_name);
+					     method_name);
       break;
     }
 };
@@ -3755,10 +3755,10 @@ get_property (GDBusConnection  *connection,
     {
     default:
       g_set_error (error,
-                   G_DBUS_ERROR,
-                   G_DBUS_ERROR_NOT_SUPPORTED,
+		   G_DBUS_ERROR,
+		   G_DBUS_ERROR_NOT_SUPPORTED,
                    "This implementation does not support property `%s'",
-                   property_name);
+		   property_name);
       break;
     }
 
@@ -3783,10 +3783,10 @@ set_property (GDBusConnection  *connection,
     {
     default:
       g_set_error (error,
-                   G_DBUS_ERROR,
-                   G_DBUS_ERROR_NOT_SUPPORTED,
+		   G_DBUS_ERROR,
+		   G_DBUS_ERROR_NOT_SUPPORTED,
                    "This implementation does not support property `%s'",
-                   property_name);
+		   property_name);
       ret = FALSE;
       break;
     }
@@ -3831,25 +3831,25 @@ emit_notifications_in_idle (gpointer user_data)
       GVariant *cached_value;
       cached_value = g_hash_table_lookup (pvc, property_name);
       if (cached_value == NULL || !g_variant_equal (cached_value, value))
-        {
-          g_hash_table_insert (pvc, (gpointer) property_name, (gpointer) g_variant_ref (value));
+	{
+	  g_hash_table_insert (pvc, (gpointer) property_name, (gpointer) g_variant_ref (value));
           g_variant_builder_add (builder, "{sv}", property_name, value);
-          has_changes = TRUE;
-        }
+	  has_changes = TRUE;
+	}
     }
 
   if (has_changes)
     {
       g_dbus_connection_emit_signal (connection,
-                                     NULL,
-                                     path,
+				     NULL,
+				     path,
                                      "org.freedesktop.DBus.Properties",
                                      "PropertiesChanged",
                                      g_variant_new ("(sa{sv}as)",
                                                     "org.gnome.evolution.dataserver.AddressBook",
-                                                    builder,
-                                                    invalidated_builder),
-                                     NULL);
+						    builder,
+						    invalidated_builder),
+				     NULL);
     }
   else
     {
@@ -3883,9 +3883,9 @@ queue_notification (GObject     *object,
       idle_source = g_idle_source_new ();
       g_source_set_priority (idle_source, G_PRIORITY_DEFAULT);
       g_source_set_callback (idle_source,
-                             emit_notifications_in_idle,
-                             g_object_ref (object),
-                             (GDestroyNotify) g_object_unref);
+			     emit_notifications_in_idle,
+			     g_object_ref (object),
+			     (GDestroyNotify) g_object_unref);
       idle_id = g_source_attach (idle_source, g_main_context_get_thread_default ());
       g_source_unref (idle_source);
       g_object_set_data (object, "gdbus-codegen-notification-idle-id", GUINT_TO_POINTER (idle_id));
@@ -3990,12 +3990,12 @@ e_gdbus_book_register_object (EGdbusBook *object,
   g_object_set_data_full (G_OBJECT (object), "gdbus-codegen-pvc", (gpointer) pvc, (GDestroyNotify) g_hash_table_unref);
   g_signal_connect (object, "notify", G_CALLBACK (on_notify), NULL);
   return g_dbus_connection_register_object (connection,
-          object_path,
-          (GDBusInterfaceInfo *) &_e_gdbus_book_interface_info,
-          &e_gdbus_book_interface_vtable,
-          object,
-          (GDestroyNotify) on_object_unregistered,
-          error);
+	  object_path,
+	  (GDBusInterfaceInfo *) &_e_gdbus_book_interface_info,
+	  &e_gdbus_book_interface_vtable,
+	  object,
+	  (GDestroyNotify) on_object_unregistered,
+	  error);
 }
 
 /**
@@ -4022,7 +4022,7 @@ static void
 e_gdbus_book_proxy_init (EGdbusBookProxy *proxy)
 {
   g_dbus_proxy_set_interface_info (G_DBUS_PROXY (proxy),
-                                   (GDBusInterfaceInfo *) &_e_gdbus_book_interface_info);
+				   (GDBusInterfaceInfo *) &_e_gdbus_book_interface_info);
 }
 
 static void
@@ -4037,33 +4037,33 @@ g_signal (GDBusProxy  *proxy,
     {
     case __WRITABLE_SIGNAL:
       {
-        gboolean arg_value;
-        g_variant_get (parameters,
+	gboolean arg_value;
+	g_variant_get (parameters,
                        "(b)",
-                       &arg_value);
-        g_signal_emit (proxy,
-                       signals[signal_id],
-                       0, arg_value);
+		       &arg_value);
+	g_signal_emit (proxy,
+		       signals[signal_id],
+		       0, arg_value);
       }
       break;
 
     case __CONNECTION_SIGNAL:
       {
-        gboolean arg_connected;
-        g_variant_get (parameters,
+	gboolean arg_connected;
+	g_variant_get (parameters,
                        "(b)",
-                       &arg_connected);
-        g_signal_emit (proxy,
-                       signals[signal_id],
-                       0, arg_connected);
+		       &arg_connected);
+	g_signal_emit (proxy,
+		       signals[signal_id],
+		       0, arg_connected);
       }
       break;
 
     case __AUTH_REQUIRED_SIGNAL:
       {
-        g_signal_emit (proxy,
-                       signals[signal_id],
-                       0);
+	g_signal_emit (proxy,
+		       signals[signal_id],
+		       0);
       }
       break;
 
@@ -4133,13 +4133,13 @@ e_gdbus_book_proxy_set_property (GObject      *object,
                          "org.freedesktop.DBus.Properties.Set",
                          g_variant_new ("(ssv)",
                                         "org.gnome.evolution.dataserver.AddressBook",
-                                        property_name,
-                                        new_value),
-                         G_DBUS_CALL_FLAGS_NONE,
-                         G_MAXINT,
-                         NULL,
-                         (GAsyncReadyCallback) property_set_cb,
-                         (gpointer) property_name);
+					property_name,
+					new_value),
+			 G_DBUS_CALL_FLAGS_NONE,
+			 G_MAXINT,
+			 NULL,
+			 (GAsyncReadyCallback) property_set_cb,
+			 (gpointer) property_name);
       g_variant_unref (new_value);
     }
 
@@ -4160,14 +4160,14 @@ g_properties_changed (GDBusProxy         *proxy,
     {
       gname = lookup_property_gname_from_property_name (key);
       if (gname != NULL)
-        g_object_notify (G_OBJECT (proxy), gname);
+	g_object_notify (G_OBJECT (proxy), gname);
     }
 
   for (n = 0; invalidated_properties[n] != NULL; n++)
     {
       gname = lookup_property_gname_from_property_name (invalidated_properties[n]);
       if (gname != NULL)
-        g_object_notify (G_OBJECT (proxy), gname);
+	g_object_notify (G_OBJECT (proxy), gname);
     }
 
 }
@@ -4216,16 +4216,16 @@ void e_gdbus_book_proxy_new (GDBusConnection     *connection,
                    gpointer             user_data)
 {
   g_async_initable_new_async (E_GDBUS_TYPE_BOOK_PROXY,
-                              G_PRIORITY_DEFAULT,
-                              cancellable,
-                              callback,
-                              user_data,
+			      G_PRIORITY_DEFAULT,
+			      cancellable,
+			      callback,
+			      user_data,
                               "g-flags", flags,
                               "g-name", name,
                               "g-connection", connection,
                               "g-object-path", object_path,
                               "g-interface-name", "org.gnome.evolution.dataserver.AddressBook",
-                              NULL);
+			      NULL);
 }
 
 /**
@@ -4245,8 +4245,8 @@ EGdbusBook *e_gdbus_book_proxy_new_finish (GAsyncResult  *res,
   source_object = g_async_result_get_source_object (res);
   g_assert (source_object != NULL);
   object = g_async_initable_new_finish (G_ASYNC_INITABLE (source_object),
-                                        res,
-                                        error);
+					res,
+					error);
   g_object_unref (source_object);
   if (object != NULL)
     return E_GDBUS_BOOK (object);
@@ -4278,14 +4278,14 @@ EGdbusBook *e_gdbus_book_proxy_new_sync (GDBusConnection     *connection,
 {
   GInitable *initable;
   initable = g_initable_new (E_GDBUS_TYPE_BOOK_PROXY,
-                             cancellable,
-                             error,
+			     cancellable,
+			     error,
                              "g-flags", flags,
                              "g-name", name,
                              "g-connection", connection,
                              "g-object-path", object_path,
                              "g-interface-name", "org.gnome.evolution.dataserver.AddressBook",
-                             NULL);
+			     NULL);
   if (initable != NULL)
     return E_GDBUS_BOOK (initable);
   else
@@ -4315,16 +4315,16 @@ void e_gdbus_book_proxy_new_for_bus (GBusType             bus_type,
                            gpointer             user_data)
 {
   g_async_initable_new_async (E_GDBUS_TYPE_BOOK_PROXY,
-                              G_PRIORITY_DEFAULT,
-                              cancellable,
-                              callback,
-                              user_data,
+			      G_PRIORITY_DEFAULT,
+			      cancellable,
+			      callback,
+			      user_data,
                               "g-flags", flags,
                               "g-name", name,
                               "g-bus-type", bus_type,
                               "g-object-path", object_path,
                               "g-interface-name", "org.gnome.evolution.dataserver.AddressBook",
-                              NULL);
+			      NULL);
 }
 
 /**
@@ -4344,8 +4344,8 @@ EGdbusBook *e_gdbus_book_proxy_new_for_bus_finish (GAsyncResult  *res,
   source_object = g_async_result_get_source_object (res);
   g_assert (source_object != NULL);
   object = g_async_initable_new_finish (G_ASYNC_INITABLE (source_object),
-                                        res,
-                                        error);
+					res,
+					error);
   g_object_unref (source_object);
   if (object != NULL)
     return E_GDBUS_BOOK (object);
@@ -4377,14 +4377,14 @@ EGdbusBook *e_gdbus_book_proxy_new_for_bus_sync (GBusType             bus_type,
 {
   GInitable *initable;
   initable = g_initable_new (E_GDBUS_TYPE_BOOK_PROXY,
-                             cancellable,
-                             error,
+			     cancellable,
+			     error,
                              "g-flags", flags,
                              "g-name", name,
                              "g-bus-type", bus_type,
                              "g-object-path", object_path,
                              "g-interface-name", "org.gnome.evolution.dataserver.AddressBook",
-                             NULL);
+			     NULL);
   if (initable != NULL)
     return E_GDBUS_BOOK (initable);
   else

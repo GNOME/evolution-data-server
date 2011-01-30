@@ -1549,11 +1549,11 @@ e_cal_backend_notify_mode (ECalBackend *backend,
 void
 e_cal_backend_notify_auth_required (ECalBackend *backend)
 {
-        ECalBackendPrivate *priv = backend->priv;
-        GList *l;
+	ECalBackendPrivate *priv = backend->priv;
+	GList *l;
 
-        for (l = priv->clients; l; l = l->next)
-                e_data_cal_notify_auth_required (l->data);
+	for (l = priv->clients; l; l = l->next)
+		e_data_cal_notify_auth_required (l->data);
 }
 
 /**

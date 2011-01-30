@@ -198,8 +198,8 @@ mime_filter_charset_filter (CamelMimeFilter *mime_filter,
 
 	if (((gint) inleft) > 0) {
 		/* We've either got an E2BIG or EINVAL. Save the
-                   remainder of the buffer as we'll process this next
-                   time through */
+		   remainder of the buffer as we'll process this next
+		   time through */
 		camel_mime_filter_backup (mime_filter, inbuf, inleft);
 	}
 

@@ -232,13 +232,13 @@ send_dbus_message (gchar *name)
 		g_error_free (error);
 	}
 
-        if (reply) {
+	if (reply) {
 		GVariant *body = g_dbus_message_get_body (reply);
 
 		success = body && g_variant_get_boolean (body);
 
-                g_object_unref (reply);
-        }
+		g_object_unref (reply);
+	}
 
 	/* Free the message */
 	g_object_unref (message);
