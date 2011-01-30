@@ -1360,7 +1360,7 @@ camel_text_index_validate (CamelTextIndex *idx)
 			}
 		}
 
-		if ((oldword = g_hash_table_lookup (word_word, word)) != NULL) {
+		if (g_hash_table_lookup (word_word, word) != NULL) {
 			printf ("Warning, word '%s' occurs more than once\n", word);
 		} else {
 			g_hash_table_insert (word_word, word, word);
