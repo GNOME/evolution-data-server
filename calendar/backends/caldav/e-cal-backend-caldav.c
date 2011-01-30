@@ -3486,7 +3486,7 @@ do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType m
 
 		if (e_cal_component_is_instance (comp)) {
 			/* set detached instance as the old object, if any */
-			ECalComponent *old_instance = old_instance = e_cal_backend_store_get_component (priv->store, id->uid, id->rid);
+			ECalComponent *old_instance = e_cal_backend_store_get_component (priv->store, id->uid, id->rid);
 
 			if (old_instance) {
 				*old_object = e_cal_component_get_as_string (old_instance);
