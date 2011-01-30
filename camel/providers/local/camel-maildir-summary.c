@@ -586,7 +586,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 	/* joy, use this to pre-count the total, so we can report progress meaningfully */
 	total = 0;
 	count = 0;
-	while ((d = readdir (dir)))
+	while (readdir (dir))
 		total++;
 	rewinddir (dir);
 
@@ -653,7 +653,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 	if (dir != NULL) {
 		total = 0;
 		count = 0;
-		while ((d = readdir (dir)))
+		while (readdir (dir))
 			total++;
 		rewinddir (dir);
 
