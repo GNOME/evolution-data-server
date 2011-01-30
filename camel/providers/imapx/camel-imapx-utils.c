@@ -874,7 +874,7 @@ imapx_parse_ext_optional (CamelIMAPXStream *is,
 		case IMAPX_TOK_LITERAL:
 			/* we have a literal string */
 			camel_imapx_stream_set_literal (is, len);
-			while ((tok = camel_imapx_stream_getl (is, &token, &len, cancellable, NULL)) > 0) {
+			while (camel_imapx_stream_getl (is, &token, &len, cancellable, NULL) > 0) {
 				d(is->tagprefix, "Skip literal data '%.*s'\n", (gint)len, token);
 			}
 			break;
