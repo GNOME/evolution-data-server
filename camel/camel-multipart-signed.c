@@ -460,7 +460,7 @@ multipart_signed_get_part (CamelMultipart *multipart,
 			stream = g_object_ref (mps->contentraw);
 		} else if (mps->start1 == -1
 			   && multipart_signed_parse_content (mps) == -1
-			   && (stream = ((CamelDataWrapper *)mps)->stream) == NULL) {
+			   && ((CamelDataWrapper *)mps)->stream == NULL) {
 			g_warning("Trying to get content on an invalid multipart/signed");
 			return NULL;
 		} else if (dw->stream == NULL) {
