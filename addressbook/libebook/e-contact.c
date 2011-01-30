@@ -861,8 +861,7 @@ e_contact_set_property (GObject *object,
 								   with *only* the TYPE='s we need.  This may seem like
 								   an odd restriction but it's the only way at present to
 								   implement the Other Fax and Other Phone attributes. */
-								found_needed1 =
-									found_needed2 = FALSE;
+								found_needed1 = FALSE;
 								break;
 							}
 						}
@@ -1132,8 +1131,7 @@ e_contact_find_attribute_with_types (EContact *contact, const gchar *attr_name, 
 						   with *only* the TYPE='s we need.  This may seem like
 						   an odd restriction but it's the only way at present to
 						   implement the Other Fax and Other Phone attributes. */
-						found_needed1 =
-							found_needed2 = FALSE;
+						found_needed1 = FALSE;
 						break;
 					}
 				}
