@@ -1399,7 +1399,7 @@ end1:
 	return;
 }
 
-static guint8*
+static guint8 *
 get_md5_digest (const guchar *str)
 {
 	guint8 *digest;
@@ -1407,7 +1407,7 @@ get_md5_digest (const guchar *str)
 	GChecksum *checksum;
 
 	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
-	digest = g_alloca (length);
+	digest = g_malloc0 (length);
 
 	checksum = g_checksum_new (G_CHECKSUM_MD5);
 	g_checksum_update (checksum, str, -1);
@@ -1434,6 +1434,7 @@ groupwise_folder_set_threading_data (CamelGroupwiseMessageInfo *mi, EGwItem *ite
 	msgid = camel_header_msgid_decode (message_id);
 	digest = get_md5_digest ((const guchar *)msgid);
 	memcpy (mi->info.message_id.id.hash, digest, sizeof (mi->info.message_id.id.hash));
+	g_free (digest);
 	g_free (msgid);
 
 	parent_threads = e_gw_item_get_parent_thread_ids (item);
@@ -1450,6 +1451,7 @@ groupwise_folder_set_threading_data (CamelGroupwiseMessageInfo *mi, EGwItem *ite
 	while (scan) {
 		digest = get_md5_digest ((const guchar *) scan->id);
 		memcpy (mi->info.references->references[count].id.hash, digest, sizeof (mi->info.message_id.id.hash));
+		g_free (digest);
 
 		count++;
 		scan = scan->next;
