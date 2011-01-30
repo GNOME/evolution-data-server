@@ -521,7 +521,7 @@ nntp_folder_append_message_online (CamelFolder *folder,
 	    || camel_data_wrapper_write_to_stream_sync (CAMEL_DATA_WRAPPER (mime_message), filtered_stream, cancellable, error) == -1
 	    || camel_stream_flush (filtered_stream, cancellable, error) == -1
 	    || camel_stream_write (stream, "\r\n.\r\n", 5, cancellable, error) == -1
-	    || (ret = camel_nntp_stream_line (nntp_store->stream, (guchar **)&line, &u, cancellable, error)) == -1) {
+	    || camel_nntp_stream_line (nntp_store->stream, (guchar **)&line, &u, cancellable, error) == -1) {
 		g_prefix_error (error, _("Posting failed: "));
 		success = FALSE;
 	} else if (atoi (line) != 240) {
