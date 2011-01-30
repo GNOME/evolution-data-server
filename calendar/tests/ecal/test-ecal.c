@@ -304,7 +304,7 @@ test_get_alarms_in_range (ECal *client)
 {
 	GSList *alarms;
 	icaltimezone *utc;
-	time_t start = time (NULL), end;
+	time_t start, end;
 	gboolean compare;
 
 	utc = icaltimezone_get_utc_timezone ();
@@ -513,7 +513,7 @@ test_get_free_busy (ECal *client)
 	GList *l, *freebusy = NULL;
 	GError *error = NULL;
 	icaltimezone *utc;
-	time_t start = time (NULL), end;
+	time_t start, end;
 
 	utc = icaltimezone_get_utc_timezone ();
 	start = time_from_isodate ("20040212T000000Z");

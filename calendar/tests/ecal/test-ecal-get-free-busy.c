@@ -14,7 +14,7 @@ main (gint argc, gchar **argv)
 	gchar *uri = NULL;
 	GList *users = NULL;
 	icaltimezone *utc;
-	time_t start = time (NULL), end;
+	time_t start, end;
 	GList *free_busy;
 
 	g_type_init ();
@@ -23,7 +23,7 @@ main (gint argc, gchar **argv)
 	ecal_test_utils_cal_open (cal, FALSE);
 
 	utc = icaltimezone_get_utc_timezone ();
-        start = time_from_isodate ("20040212T000000Z");
+	start = time_from_isodate ("20040212T000000Z");
 	end = time_add_day_with_zone (start, 2, utc);
 	/* XXX: create dummy list, which the file backend will ignore */
 	users = g_list_prepend (users, NULL);
