@@ -1,3 +1,47 @@
+Evolution-Data-Server 2.91.6 2011-01-31
+---------------------------------------
+
+Bug Fixes:
+	Bug 640898 - Evolution creates invalid vCard (Matthew Barnes)
+	Bug #623933 - Crash under ESourceList::conf_changed_callback (Milan Crha)
+	Bug 640529 - Default size of category window is too small (Matthew Barnes)
+	Bug #636495 - Build fails :GtkStyle deprecated (Vibha Yadav)
+	Bug #635519 - Crash at cell_renderer_color_render (Vibha Yadav)
+	Bug #635339 - 'Mark as read' from popup menu not working on Junk folder (Milan Crha)
+	Bug 635353 — Don't parse empty addresses in the Google Contacts backend (Philip Withnall)
+	Bug 566441 — The Google backend doesn't use the tags/categories/groups (Philip Withnall)
+	Bug #639469 - WebDAV addressbook only uses https (Andrew McMillan)
+	Bug #627788 - EDataCalView is never freed in a factory process (Milan Crha)
+	Bug #639165 - maildir expunge not working as expected (Milan Crha)
+	Bug #525565 - Crash in find_book_by_contact at e-name-selector-entry.c (Milan Crha)
+	Bug #638948 - NNTP folder doesn't implement Expunge (Milan Crha)
+
+Miscellaneous Fixes:
+	CamelGroupwiseFolder: Dynamically allocate MD5 digest. (Matthew Barnes)
+	Fix possible invalid read when checking citation depth (Milan Crha)
+	Require the latest gtk+-3.0 release until 3.0. (Matthew Barnes)
+	Drop support for gtk+-2.0. (Matthew Barnes)
+	Add versioning to D-Bus service names. (Matthew Barnes)
+	Kill CamelSeekableStream. (Matthew Barnes)
+	Kill CamelSeekableSubstream. (Matthew Barnes)
+	CamelMultipartSigned: Avoid using bounded streams. (Matthew Barnes)
+	Replace CamelStreamSeekPolicy with GSeekType. (Matthew Barnes)
+	Bump libcamel's shared object name. (Matthew Barnes)
+	Make contact removal asynchronous in the Google Contacts backend (Philip Withnall)
+	Add cancellation support to the Google Contacts backend (Philip Withnall)
+	Rebase the Google Contacts backend as an asynchronous EBookBackend (Philip Withnall)
+	Add e_source_selector_get_source_by_path() (Matthew Barnes)
+	Bump libgdata dependency to 0.7.0 (Philip Withnall)
+	Use GDBus calls without any timeout set (Milan Crha)
+	imapx_server_get_message: Avoid unreffing a NULL stream. (Matthew Barnes)
+	CamelStreamFs: Check for cancellation before closing or flushing (Matthew Barnes)
+	Crash on bogus component removal in file calendar backend (Milan Crha)
+
+Translations:
+	Michael Kotsarinis (el)
+	Andika Triwidada (id)
+	Fran Diéguez (gl)
+
 Evolution-Data-Server 2.91.5 2010-01-10
 ---------------------------------------
 
