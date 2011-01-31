@@ -1525,24 +1525,23 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 }
 
 static gboolean
-completion_match_selected (ENameSelectorEntry *name_selector_entry, GtkTreeModel *model,
-			   GtkTreeIter *iter)
+completion_match_selected (ENameSelectorEntry *name_selector_entry, ETreeModelGenerator *email_generator_model,
+			   GtkTreeIter *generator_iter)
 {
 	EContact      *contact;
 	EDestination  *destination;
 	gint           cursor_pos;
-	GtkTreeIter    generator_iter;
 	GtkTreeIter    contact_iter;
 	gint           email_n;
 
 	if (!name_selector_entry->priv->contact_store)
 		return FALSE;
 
-	gtk_tree_model_filter_convert_iter_to_child_iter (GTK_TREE_MODEL_FILTER (model),
-							  &generator_iter, iter);
-	e_tree_model_generator_convert_iter_to_child_iter (name_selector_entry->priv->email_generator,
+	g_return_val_if_fail (name_selector_entry->priv->email_generator == email_generator_model, FALSE);
+
+	e_tree_model_generator_convert_iter_to_child_iter (email_generator_model,
 							   &contact_iter, &email_n,
-							   &generator_iter);
+							   generator_iter);
 
 	contact = e_contact_store_get_contact (name_selector_entry->priv->contact_store, &contact_iter);
 	cursor_pos = gtk_editable_get_position (GTK_EDITABLE (name_selector_entry));
