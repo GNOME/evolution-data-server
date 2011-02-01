@@ -1441,6 +1441,36 @@ imap_sync_offline (CamelFolder *folder,
 	return TRUE;
 }
 
+static gboolean
+host_ends_with (const gchar *host, const gchar *ends)
+{
+	gint host_len, ends_len;
+
+	g_return_val_if_fail (host != NULL, FALSE);
+	g_return_val_if_fail (ends != NULL, FALSE);
+
+	host_len = strlen (host);
+	ends_len = strlen (ends);
+
+	return ends_len <= host_len && g_ascii_strcasecmp (host + host_len - ends_len, ends) == 0;
+}
+
+static gboolean
+is_google_account (CamelStore *store)
+{
+	CamelService *service;
+
+	g_return_val_if_fail (store != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+
+	service = CAMEL_SERVICE (store);
+	g_return_val_if_fail (service != NULL, FALSE);
+
+	return service->url && service->url->host && (
+		host_ends_with (service->url->host, "gmail.com") ||
+		host_ends_with (service->url->host, "googlemail.com"));
+}
+
 static void
 move_messages (CamelFolder *src_folder,
                GPtrArray *uids,
@@ -1455,6 +1485,12 @@ move_messages (CamelFolder *src_folder,
 
 	/* moving to the same folder means expunge only */
 	if (src_folder != des_folder) {
+		/* Google's IMAP implementation: Moving to other folder means changing
+		   a tag, so do not delete (move to a real trash) the source message
+		   when moving messages between folders. */
+		if (is_google_account (camel_folder_get_parent_store (src_folder)))
+			return;
+
 		/* do 'copy' to not be bothered with CAMEL_MESSAGE_DELETED again */
 		if (!imap_transfer_messages (src_folder, uids, des_folder, NULL, FALSE, FALSE, error))
 			return;
@@ -1472,7 +1508,7 @@ imap_sync (CamelFolder *folder,
 	CamelImapStore *store;
 	CamelImapMessageInfo *info;
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
-	gboolean success;
+	gboolean success, is_gmail;
 	CamelFolder *real_junk = NULL;
 	CamelFolder *real_trash = NULL;
 	GError *local_error = NULL;
@@ -1483,6 +1519,7 @@ imap_sync (CamelFolder *folder,
 
 	parent_store = camel_folder_get_parent_store (folder);
 	store = CAMEL_IMAP_STORE (parent_store);
+	is_gmail = is_google_account (parent_store);
 
 	if (folder->permanent_flags == 0 || CAMEL_OFFLINE_STORE (store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		if (expunge) {
@@ -1582,7 +1619,7 @@ imap_sync (CamelFolder *folder,
 			break;
 		}
 
-		if (deleted_uids && (info->info.flags & CAMEL_MESSAGE_DELETED) != 0) {
+		if (deleted_uids && !is_gmail && (info->info.flags & CAMEL_MESSAGE_DELETED) != 0) {
 			/* there is a real trash, do not set it on the server */
 			info->info.flags &= ~CAMEL_MESSAGE_DELETED;
 		}
@@ -1634,7 +1671,7 @@ imap_sync (CamelFolder *folder,
 		if (local_error == NULL) {
 			for (j = 0; j < matches->len; j++) {
 				info = matches->pdata[j];
-				if (deleted_uids) {
+				if (deleted_uids && !is_gmail) {
 					/* there is a real trash, do not keep this set */
 					info->info.flags &= ~CAMEL_MESSAGE_DELETED;
 				}
