@@ -1267,7 +1267,7 @@ e_book_authenticate_user_async (EBook              *book,
  * e_book_get_contact:
  * @book: an #EBook
  * @id: a unique string ID specifying the contact
- * @contact: an #EContact
+ * @contact: (out) (transfer: full): an #EContact
  * @error: a #GError to set on failure
  *
  * Fills in @contact with the contents of the vcard in @book
@@ -1941,7 +1941,7 @@ get_book_view_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  * @query: an #EBookQuery
  * @requested_fields: a #GList containing the names of fields to return, or NULL for all
  * @max_results: the maximum number of contacts to show (or 0 for all)
- * @cb: a function to call when the operation finishes
+ * @cb: (scope call): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Query @book with @query, creating a #EBookView with the fields
@@ -1988,7 +1988,7 @@ e_book_async_get_book_view (EBook                 *book,
  * @query: an #EBookQuery
  * @requested_fields: a #GList containing the names of fields to return, or NULL for all
  * @max_results: the maximum number of contacts to show (or 0 for all)
- * @cb: a function to call when the operation finishes
+ * @cb: (scope call): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Query @book with @query, creating a #EBookView with the fields
@@ -2518,7 +2518,7 @@ open_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  * e_book_async_open:
  * @book: an #EBook
  * @only_if_exists: if %TRUE, fail if this book doesn't already exist, otherwise create it first
- * @open_response: a function to call when the operation finishes
+ * @open_response: (scope call) (closure closure): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Opens the addressbook, making it ready for queries and other operations.
@@ -2554,7 +2554,7 @@ e_book_async_open (EBook                 *book,
  * e_book_open_async:
  * @book: an #EBook
  * @only_if_exists: if %TRUE, fail if this book doesn't already exist, otherwise create it first
- * @open_response: a function to call when the operation finishes
+ * @open_response: (scope call): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Opens the addressbook, making it ready for queries and other operations.
@@ -3095,7 +3095,7 @@ e_book_set_default_source (ESource *source, GError **error)
 
 /**
  * e_book_get_addressbooks:
- * @addressbook_sources: A pointer to a ESourceList* to set
+ * @addressbook_sources: (out): A pointer to a #ESourceList* to set
  * @error: A pointer to a GError* to set on error
  *
  * Populate *addressbook_sources with the list of all sources which have been
