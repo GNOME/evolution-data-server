@@ -166,7 +166,7 @@ setup_dialog (GtkWindow *parent, ESourceSelectorDialog *dialog, ESourceList *sou
 
 	vbox = gtk_vbox_new (FALSE, 12);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
-	gtk_container_add (GTK_CONTAINER (content_area), vbox);
+	gtk_box_pack_start (GTK_BOX (content_area), vbox, TRUE, TRUE, 0);
 	gtk_widget_show (vbox);
 
 	label_text = g_strdup_printf ("<b>%s</b>", _("_Destination"));
