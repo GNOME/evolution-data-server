@@ -69,6 +69,11 @@ enum {
 	PROP_CHECK_FOLDER = 0x2500
 };
 
+enum {
+	/* used when moving messages and has real trash folder set with a google account */
+	CAMEL_MESSAGE_IMAP_MOVED = CAMEL_MESSAGE_FOLDER_FLAGGED << 1
+};
+
 extern gint camel_application_is_exiting;
 
 static gboolean imap_rescan (CamelFolder *folder, gint exists, GError **error);
@@ -1364,8 +1369,9 @@ get_matching (CamelFolder *folder, guint32 flags, guint32 mask, CamelMessageInfo
 			}
 		}
 
-		if (deleted_uids && (info->info.flags & CAMEL_MESSAGE_DELETED) != 0) {
+		if (deleted_uids && (info->info.flags & (CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_IMAP_MOVED)) == CAMEL_MESSAGE_DELETED) {
 			g_ptr_array_add (deleted_uids, (gpointer) camel_pstring_strdup (camel_message_info_uid (info)));
+			info->info.flags &= ~CAMEL_MESSAGE_DELETED;
 		} else if (junked_uids && (info->info.flags & CAMEL_MESSAGE_JUNK) != 0) {
 			g_ptr_array_add (junked_uids, (gpointer) camel_pstring_strdup (camel_message_info_uid (info)));
 		}
@@ -1485,12 +1491,6 @@ move_messages (CamelFolder *src_folder,
 
 	/* moving to the same folder means expunge only */
 	if (src_folder != des_folder) {
-		/* Google's IMAP implementation: Moving to other folder means changing
-		   a tag, so do not delete (move to a real trash) the source message
-		   when moving messages between folders. */
-		if (is_google_account (camel_folder_get_parent_store (src_folder)))
-			return;
-
 		/* do 'copy' to not be bothered with CAMEL_MESSAGE_DELETED again */
 		if (!imap_transfer_messages (src_folder, uids, des_folder, NULL, FALSE, FALSE, error))
 			return;
@@ -1676,7 +1676,7 @@ imap_sync (CamelFolder *folder,
 					info->info.flags &= ~CAMEL_MESSAGE_DELETED;
 				}
 
-				info->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
+				info->info.flags &= ~(CAMEL_MESSAGE_FOLDER_FLAGGED | CAMEL_MESSAGE_IMAP_MOVED);
 				((CamelImapMessageInfo *) info)->server_flags =	info->info.flags & CAMEL_IMAP_SERVER_FLAGS;
 				info->info.dirty = TRUE; /* Sync it back to the DB */
 				if (((CamelMessageInfo *) info)->summary)
@@ -2679,9 +2679,11 @@ do_copy (CamelFolder *source,
 	gchar *uidset;
 	gint uid = 0, last=0, i;
 	GError *local_error = NULL;
+	gboolean mark_moved;
 
 	parent_store = camel_folder_get_parent_store (source);
 	store = CAMEL_IMAP_STORE (parent_store);
+	mark_moved = is_google_account (parent_store) && store && store->real_trash_path && *store->real_trash_path;
 
 	full_name = camel_folder_get_full_name (destination);
 
@@ -2709,8 +2711,15 @@ do_copy (CamelFolder *source,
 		}
 
 		if (local_error == NULL && delete_originals) {
-			for (i=last;i<uid;i++)
+			for (i = last; i < uid; i++) {
 				camel_folder_delete_message(source, uids->pdata[i]);
+				if (mark_moved) {
+					CamelMessageInfoBase *info = (CamelMessageInfoBase *) camel_folder_summary_uid (source->summary, uids->pdata[i]);
+
+					if (info)
+						info->flags |= CAMEL_MESSAGE_IMAP_MOVED;
+				}
+			}
 			last = uid;
 		}
 		g_free (uidset);
