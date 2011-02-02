@@ -1394,7 +1394,7 @@ e_contact_field_id_from_vcard (const gchar *vcard_field)
  *
  * Gets the value of @contact's field specified by @field_id.
  *
- * Returns: Depends on the field's type, owned by the caller.
+ * Returns: (transfer full): Depends on the field's type, owned by the caller.
  **/
 gpointer
 e_contact_get (EContact *contact, EContactField field_id)
@@ -1634,7 +1634,7 @@ e_contact_set (EContact *contact, EContactField field_id, gconstpointer value)
  *
  * Gets a list of the vcard attributes for @contact's @field_id.
  *
- * Returns: A #GList of pointers to #EVCardAttribute, owned by the caller.
+ * Returns: (element-type EVCardAttribute) (transfer: full): A #GList of pointers to #EVCardAttribute, owned by the caller.
  **/
 GList*
 e_contact_get_attributes (EContact *contact, EContactField field_id)
