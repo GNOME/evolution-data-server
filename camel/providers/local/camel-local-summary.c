@@ -536,7 +536,7 @@ local_summary_add (CamelLocalSummary *cls,
 			g_object_unref (sn);
 		}
 
-		mi->info.flags &= ~(CAMEL_MESSAGE_FOLDER_NOXEV|CAMEL_MESSAGE_FOLDER_FLAGGED);
+		mi->info.flags &= ~(CAMEL_MESSAGE_FOLDER_NOXEV);
 		xev = camel_local_summary_encode_x_evolution (cls, mi);
 		camel_medium_set_header((CamelMedium *)msg, "X-Evolution", xev);
 		g_free (xev);
@@ -752,6 +752,7 @@ message_info_new_from_header (CamelFolderSummary *s, struct _camel_header_raw *h
 		if (xev==NULL || camel_local_summary_decode_x_evolution (cls, xev, mi) == -1) {
 			/* to indicate it has no xev header */
 			mi->info.flags |= CAMEL_MESSAGE_FOLDER_FLAGGED | CAMEL_MESSAGE_FOLDER_NOXEV;
+			mi->info.dirty = TRUE;
 			camel_pstring_free (mi->info.uid);
 			mi->info.uid = camel_pstring_add (camel_folder_summary_next_uid_string (s), TRUE);
 

@@ -1253,7 +1253,6 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
 		struct _db_pass_data data;
 
 		d(printf ("\ncamel_folder_summary_uid called \n"));
-		s->flags &= ~CAMEL_SUMMARY_DIRTY;
 
 		folder_name = camel_folder_get_full_name (s->folder);
 		parent_store = camel_folder_get_parent_store (s->folder);
@@ -1804,9 +1803,10 @@ camel_folder_summary_load_from_db (CamelFolderSummary *s,
 	gint ret = 0;
 	GError *local_error = NULL;
 
+	camel_folder_summary_save_to_db (s, NULL);
+
 	/* struct _db_pass_data data; */
 	d(printf ("\ncamel_folder_summary_load_from_db called \n"));
-	s->flags &= ~CAMEL_SUMMARY_DIRTY;
 
 	full_name = camel_folder_get_full_name (s->folder);
 	parent_store = camel_folder_get_parent_store (s->folder);
@@ -2208,6 +2208,9 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s,
 	CamelFIRecord *record;
 	gint ret, count;
 
+	if (!(s->flags & CAMEL_SUMMARY_DIRTY))
+		return 0;
+
 	parent_store = camel_folder_get_parent_store (s->folder);
 	cdb = parent_store->cdb_w;
 
@@ -2220,9 +2223,6 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s,
 		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 		camel_db_end_transaction (parent_store->cdb_w, NULL);
 	}
-
-	if (!(s->flags & CAMEL_SUMMARY_DIRTY))
-		return 0;
 
 	s->flags &= ~CAMEL_SUMMARY_DIRTY;
 
@@ -2343,7 +2343,8 @@ camel_folder_summary_header_load_from_db (CamelFolderSummary *s,
 	gint ret = 0;
 
 	d(printf ("\ncamel_folder_summary_load_from_db called \n"));
-	s->flags &= ~CAMEL_SUMMARY_DIRTY;
+
+	camel_folder_summary_save_to_db (s, NULL);
 
 	cdb = store->cdb_r;
 
@@ -2983,30 +2984,30 @@ camel_folder_summary_remove_uid (CamelFolderSummary *s, const gchar *uid)
 void
 camel_folder_summary_remove_uid_fast (CamelFolderSummary *s, const gchar *uid)
 {
-		CamelMessageInfo *oldinfo;
-		gchar *olduid;
+	CamelMessageInfo *oldinfo;
+	gchar *olduid;
 
-		camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-		camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_REF_LOCK);
-		if (g_hash_table_lookup_extended (s->loaded_infos, uid, (gpointer)&olduid, (gpointer)&oldinfo)) {
-				/* make sure it doesn't vanish while we're removing it */
-				camel_message_info_ref (oldinfo);
-				camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_REF_LOCK);
-				g_hash_table_remove (s->loaded_infos, olduid);
-				summary_remove_uid (s, olduid);
-				s->flags |= CAMEL_SUMMARY_DIRTY;
-				s->meta_summary->msg_expunged = TRUE;
-				camel_message_info_free (oldinfo);
-				camel_message_info_free (oldinfo);
-				camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-		} else {
-				gchar *tmpid = g_strdup (uid);
-				/* Info isn't loaded into the memory. We must just remove the UID*/
-				summary_remove_uid (s, uid);
-				camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_REF_LOCK);
-				camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-				g_free (tmpid);
-		}
+	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_REF_LOCK);
+	if (g_hash_table_lookup_extended (s->loaded_infos, uid, (gpointer)&olduid, (gpointer)&oldinfo)) {
+		/* make sure it doesn't vanish while we're removing it */
+		camel_message_info_ref (oldinfo);
+		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_REF_LOCK);
+		g_hash_table_remove (s->loaded_infos, olduid);
+		summary_remove_uid (s, olduid);
+		s->flags |= CAMEL_SUMMARY_DIRTY;
+		s->meta_summary->msg_expunged = TRUE;
+		camel_message_info_free (oldinfo);
+		camel_message_info_free (oldinfo);
+		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	} else {
+		gchar *tmpid = g_strdup (uid);
+		/* Info isn't loaded into the memory. We must just remove the UID*/
+		summary_remove_uid (s, uid);
+		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_REF_LOCK);
+		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		g_free (tmpid);
+	}
 }
 
 /**
