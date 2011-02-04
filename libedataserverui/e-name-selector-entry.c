@@ -1547,6 +1547,8 @@ completion_match_selected (ENameSelectorEntry *name_selector_entry, GtkTreeModel
 	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), ", ", -1, &cursor_pos);
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_insert_text, name_selector_entry);
 
+	/*Add destination at end for next entry*/
+	insert_destination_at_position (name_selector_entry, cursor_pos);
 	/* Place cursor at end of address */
 
 	gtk_editable_set_position (GTK_EDITABLE (name_selector_entry), cursor_pos);
