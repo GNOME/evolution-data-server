@@ -64,6 +64,9 @@
 
 static GMainLoop *loop;
 
+/* Keeps running after the last client is closed. */
+static gboolean opt_keep_running = FALSE;
+
 /* Convenience macro to test and set a GError/return on failure */
 #define g_set_error_val_if_fail(test, returnval, error, domain, code) G_STMT_START{ \
 		if G_LIKELY (test) {} else {				\
@@ -282,8 +285,11 @@ calendar_freed_cb (EDataCalFactory *factory, GObject *dead)
 		}
 	}
 
+	if (g_hash_table_size (priv->calendars) > 0)
+		return;
+
 	/* If there are no open calendars, start a timer to quit. */
-	if (priv->exit_timeout == 0 && g_hash_table_size (priv->calendars) == 0)
+	if (!opt_keep_running && priv->exit_timeout == 0)
 		priv->exit_timeout = g_timeout_add_seconds (
 			10, (GSourceFunc) g_main_loop_quit, loop);
 }
@@ -898,12 +904,24 @@ setup_quit_signal (void)
 }
 #endif
 
+static GOptionEntry entries[] = {
+
+	/* FIXME Have the description translated for 3.2, but this
+	 *       option is to aid in testing and development so it
+	 *       doesn't really matter. */
+	{ "keep-running", 'r', 0, G_OPTION_ARG_NONE, &opt_keep_running,
+	  "Keep running after the last client is closed", NULL },
+	{ NULL }
+};
+
 gint
 main (gint argc, gchar **argv)
 {
 	EOfflineListener *eol;
+	GOptionContext *context;
 	EDataCalFactory *factory;
 	guint owner_id;
+	GError *error = NULL;
 
 #ifdef G_OS_WIN32
 	/* Reduce risks */
@@ -935,9 +953,19 @@ main (gint argc, gchar **argv)
 	g_set_prgname (E_PRGNAME);
 	if (!g_thread_supported ()) g_thread_init (NULL);
 
-	#ifdef HAVE_ICAL_UNKNOWN_TOKEN_HANDLING
+	context = g_option_context_new (NULL);
+	g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);
+	g_option_context_parse (context, &argc, &argv, &error);
+	g_option_context_free (context);
+
+	if (error != NULL) {
+		g_printerr ("%s\n", error->message);
+		exit (EXIT_FAILURE);
+	}
+
+#ifdef HAVE_ICAL_UNKNOWN_TOKEN_HANDLING
 	ical_set_unknown_token_handling_setting (ICAL_DISCARD_TOKEN);
-	#endif
+#endif
 
 	factory = g_object_new (E_TYPE_DATA_CAL_FACTORY, NULL);
 
@@ -961,9 +989,9 @@ main (gint argc, gchar **argv)
 	/* Migrate user data from ~/.evolution to XDG base directories. */
 	e_data_cal_migrate ();
 
-	#ifndef G_OS_WIN32
+#ifndef G_OS_WIN32
 	setup_quit_signal ();
-	#endif
+#endif
 
 	g_print ("Server is up and running...\n");
 
