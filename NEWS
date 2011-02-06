@@ -1,3 +1,43 @@
+Evolution-Data-Server 2.32.2 2011-02-07
+---------------------------------------
+
+Bug Fixes:
+	Bug 420813 - Unnecessarily slow update/reopen of webcal calendars
+	             (Milan Crha)
+	Bug 624420 - Crash camel_imapx_server_append_message (Milan Crha)
+	Bug 625048 - Fails to detect America/New York system timezone
+	             (Milan Crha)
+	Bug 632962 - Duplicate "On this computer" sources after update
+	             (Milan Crha)
+	Bug 633181 - Deadlock after moving some mails in maildir (Milan Crha)
+	Bug 634385 - Crash in smtp_connect (Milan Crha)
+	Bug 634573 - Crash when importing ics file (Milan Crha)
+	Bug 634743 - Moving message on GMail with real Trash set deletes it
+	             (Milan Crha)
+	Bug 635339 - 'Mark as read' from popup menu not working on Junk
+	             folder (Milan Crha)
+	Bug 635550 - e-calendar-factory leaks memory (Milan Crha)
+	Bug 635572 - Various linking failures (Diego Escalante Urrelo)
+	Bug 635673 - Stack overflow when opening slow calendar (Milan Crha)
+	Bug 636334 - Birthdays&Anniversaries calendar skips local address
+	             books (Milan Crha)
+	Bug 637916 - configure.ac with_nspr_includes test is incorrect
+	             (Stef Walter)
+	Bug 638948 - NNTP folder doesn't implement Expunge (Milan Crha)
+	Bug 640898 - Evolution creates invalid vCard (Matthew Barnes)
+	Bug 641250 - Cannot add more than 2 recipients in To: or Cc: field
+	             (Vibha Yadav)
+
+Other Changes:
+	* Apply filters to imapx Inboxes (Federico Mena Quintero)
+	* Do not store and generate local:/system URIs (Milan Crha)
+	* Crash on bogus component removal in file calendar backend
+	  (Milan Crha)
+	* Camel: Treat empty cache files as nonexistent. (Matthew Barnes)
+	* Fix build issue when not using Kerberos. (Jonathan-Christofer Demay)
+	* Improve libebook annotations. (Raul Gutierrez Segales)
+
+
 Evolution-Data-Server 2.32.1 2010-11-15
 ---------------------------------------
 
