@@ -2745,7 +2745,7 @@ convert_to_inline_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 			 * be embedded in a soap message
 			 */
 			encoded = g_base64_encode ((guchar *) content, len);
-			attach = icalattach_new_from_data ((guchar *) encoded, NULL, NULL);
+			attach = icalattach_new_from_data (encoded, NULL, NULL);
 			g_free(content);
 			g_free(encoded);
 
