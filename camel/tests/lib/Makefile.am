@@ -6,7 +6,6 @@ libcameltest_a_SOURCES = \
 	addresses.c addresses.h \
 	folders.c folders.h \
 	session.c session.h \
-	streams.c streams.h \
 	address-data.h
 
 libcameltest_provider_a_CPPFLAGS = \
