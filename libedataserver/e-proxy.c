@@ -93,6 +93,7 @@ enum ProxyType {
 #define KEY_GCONF_SYS_SOCKS_HOST        PATH_GCONF_SYS_PROXY "/socks_host"
 #define KEY_GCONF_SYS_SOCKS_PORT        PATH_GCONF_SYS_PROXY "/socks_port"
 #define KEY_GCONF_SYS_AUTOCONFIG_URL    PATH_GCONF_SYS_PROXY "/autoconfig_url"
+#define KEY_GCONF_SYS_MODE		PATH_GCONF_SYS_PROXY "/mode"
 
 #define RIGHT_KEY(sufix) (priv->type == PROXY_TYPE_SYSTEM ? KEY_GCONF_SYS_ ## sufix : KEY_GCONF_EVO_ ## sufix)
 
@@ -602,7 +603,7 @@ ep_set_proxy (GConfClient *client,
 	EProxy* proxy = (EProxy *)user_data;
 	EProxyPrivate* priv = proxy->priv;
 	GSList *ignore;
-	gboolean changed = FALSE;
+	gboolean changed = FALSE, sys_manual = TRUE;
 
 	old_type = priv->type;
 	priv->type = gconf_client_get_int (client, KEY_GCONF_EVO_PROXY_TYPE, NULL);
@@ -610,8 +611,17 @@ ep_set_proxy (GConfClient *client,
 		priv->type = PROXY_TYPE_SYSTEM;
 	changed = priv->type != old_type;
 
+	if (priv->type == PROXY_TYPE_SYSTEM) {
+		gchar *mode = gconf_client_get_string (client, KEY_GCONF_SYS_MODE, NULL);
+
+		/* supporting only manual system proxy setting */
+		sys_manual = mode && g_str_equal (mode, "manual");
+
+		g_free (mode);
+	}
+
 	priv->use_proxy = gconf_client_get_bool (client, RIGHT_KEY (USE_HTTP_PROXY), NULL);
-	if (!priv->use_proxy || priv->type == PROXY_TYPE_NO_PROXY) {
+	if (!priv->use_proxy || priv->type == PROXY_TYPE_NO_PROXY || !sys_manual) {
 		changed = ep_change_uri (&priv->uri_http, NULL) || changed;
 		changed = ep_change_uri (&priv->uri_https, NULL) || changed;
 		goto emit_signal;
