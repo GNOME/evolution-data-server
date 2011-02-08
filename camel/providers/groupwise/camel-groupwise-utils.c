@@ -628,9 +628,8 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 		CamelStream *content;
 		CamelDataWrapper *dw = NULL;
 		GByteArray *buffer;
-		const gchar *disposition, *filename;
+		const gchar *filename;
 		const gchar *content_id = NULL;
-		gboolean is_alternative = FALSE;
 
 		buffer = g_byte_array_new ();
 		content = camel_stream_mem_new_with_byte_array (buffer);
@@ -666,11 +665,9 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 
 			temp_part = camel_multipart_get_part ((CamelMultipart *)dw, 1);
 			if (temp_part) {
-				is_alternative = TRUE;
 				temp_dw = camel_medium_get_content (CAMEL_MEDIUM (temp_part));
 				camel_data_wrapper_write_to_stream_sync (temp_dw, temp_content, NULL, NULL);
 				filename = camel_mime_part_get_filename (temp_part);
-				disposition = camel_mime_part_get_disposition (temp_part);
 				cid = camel_mime_part_get_content_id (temp_part);
 				send_as_attachment (cnc, item, temp_content, type, temp_dw, filename, cid, attach_list);
 			}
@@ -707,7 +704,6 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 			e_gw_item_set_message (item, (const gchar *) buffer->data);
 		} else {
 			filename = camel_mime_part_get_filename (part);
-			disposition = camel_mime_part_get_disposition (part);
 			content_id = camel_mime_part_get_content_id (part);
 
 			camel_data_wrapper_decode_to_stream_sync (dw, content, NULL, NULL);

@@ -215,7 +215,7 @@ camel_sexp_to_sql (const gchar *txt)
 	GList *tlist;
 	GList *operators=NULL, *operands=NULL, *all=NULL, *preserve=NULL;
 	GList *tmp;
-	Node *n1=NULL, *n2=NULL, *n3=NULL, *op=NULL, *last, *lastoper=NULL;
+	Node *n1=NULL, *n2=NULL, *n3=NULL, *last, *lastoper=NULL;
 	GList *res=NULL;
 	gboolean last_sysnode = FALSE;
 
@@ -730,7 +730,7 @@ camel_sexp_to_sql (const gchar *txt)
 
 	res=NULL;
 	tmp = all;
-	op=NULL; n1=NULL;
+	n1=NULL;
 
 	/* Time to operate on the stack. */
 	tmp = all;

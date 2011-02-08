@@ -211,9 +211,6 @@ static ECalComponent *
 e_cal_backend_file_store_get_component (ECalBackendStore *store, const gchar *uid, const gchar *rid)
 {
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
-	ECalBackendFileStorePrivate *priv;
-
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
 
 	return get_component (fstore, uid, rid);
 }
@@ -424,7 +421,6 @@ e_cal_backend_file_store_set_default_timezone (ECalBackendStore *store, const ic
 	const gchar *tzid;
 	icaltimezone *copy;
 	const gchar *key = "default-zone";
-	gboolean ret_val;
 
 	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
 
@@ -435,9 +431,9 @@ e_cal_backend_file_store_set_default_timezone (ECalBackendStore *store, const ic
 	g_hash_table_insert (priv->timezones, g_strdup (tzid), copy);
 
 	if (e_file_cache_get_object (priv->keys_cache, key))
-		ret_val = e_file_cache_replace_object (priv->keys_cache, key, tzid);
+		e_file_cache_replace_object (priv->keys_cache, key, tzid);
 	else
-		ret_val = e_file_cache_add_object (priv->keys_cache, key, tzid);
+		e_file_cache_add_object (priv->keys_cache, key, tzid);
 
 	g_static_rw_lock_writer_unlock (&priv->lock);
 
@@ -645,11 +641,8 @@ static void
 scan_vcalendar (ECalBackendStore *store, icalcomponent *top_icalcomp)
 {
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
-	ECalBackendFileStorePrivate *priv;
 	icalcompiter iter;
 	time_t time_start, time_end;
-
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
 
 	for (iter = icalcomponent_begin_component (top_icalcomp, ICAL_ANY_COMPONENT);
 	     icalcompiter_deref (&iter) != NULL;

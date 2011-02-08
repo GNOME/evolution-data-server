@@ -110,7 +110,6 @@ struct _ECalBackendGroupwisePrivate {
 #define PRIV_LOCK(p)   (g_static_rec_mutex_lock (&(p)->rec_mutex))
 #define PRIV_UNLOCK(p) (g_static_rec_mutex_unlock (&(p)->rec_mutex))
 
-static void e_cal_backend_groupwise_dispose (GObject *object);
 static void e_cal_backend_groupwise_finalize (GObject *object);
 static void e_cal_backend_groupwise_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj, GError **perror);
 static const gchar * get_gw_item_id (icalcomponent *icalcomp);
@@ -458,7 +457,6 @@ get_deltas (gpointer handle)
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 
-		const gchar *msg = NULL;
 		gint failures;
 
 		if (!attempts)
@@ -469,12 +467,6 @@ get_deltas (gpointer handle)
 		attempts = g_strdup_printf ("%d", failures);
 		e_cal_backend_store_put_key_value (store, ATTEMPTS_KEY, attempts);
 		g_free (attempts);
-
-		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
-			return TRUE;
-		}
-
-		msg = e_gw_connection_get_error_message (status);
 
 		return TRUE;
 	}
@@ -884,10 +876,7 @@ cache_init (ECalBackendGroupwise *cbgw)
 {
 	ECalBackendGroupwisePrivate *priv = cbgw->priv;
 	EGwConnectionStatus cnc_status;
-	icalcomponent_kind kind;
 	EGwSendOptions *opts;
-
-	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
 
 	cnc_status = e_gw_connection_get_settings (priv->cnc, &opts);
 	if (cnc_status == E_GW_CONNECTION_STATUS_OK) {
@@ -1147,20 +1136,6 @@ connect_to_server (ECalBackendGroupwise *cbgw, GError **perror)
 	if (!e_gw_connection_get_version (priv->cnc)) {
 		g_propagate_error (perror, EDC_ERROR (InvalidServerVersion));
 	}
-}
-
-/* Dispose handler for the file backend */
-static void
-e_cal_backend_groupwise_dispose (GObject *object)
-{
-	ECalBackendGroupwise *cbgw;
-	ECalBackendGroupwisePrivate *priv;
-
-	cbgw = E_CAL_BACKEND_GROUPWISE (object);
-	priv = cbgw->priv;
-
-	if (G_OBJECT_CLASS (parent_class)->dispose)
-		(* G_OBJECT_CLASS (parent_class)->dispose) (object);
 }
 
 /* Finalize handler for the file backend */
@@ -1684,13 +1659,8 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 static void
 e_cal_backend_groupwise_start_query (ECalBackend *backend, EDataCalView *query)
 {
-	ECalBackendGroupwise *cbgw;
-	ECalBackendGroupwisePrivate *priv;
 	GList *objects = NULL;
 	GError *err = NULL;
-
-	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
-	priv = cbgw->priv;
 
 	e_cal_backend_groupwise_get_object_list (E_CAL_BACKEND_SYNC (backend), NULL,
 							  e_data_cal_view_get_text (query), &objects, &err);
@@ -1717,12 +1687,10 @@ static void
 e_cal_backend_groupwise_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList *users,
 				       time_t start, time_t end, GList **freebusy, GError **perror)
 {
-       EGwConnectionStatus status;
-       ECalBackendGroupwise *cbgw;
-       EGwConnection *cnc;
+	EGwConnectionStatus status;
+	ECalBackendGroupwise *cbgw;
 
-       cbgw = E_CAL_BACKEND_GROUPWISE (backend);
-       cnc = cbgw->priv->cnc;
+	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 
 	if (cbgw->priv->mode == CAL_MODE_LOCAL) {
 		in_offline (cbgw);
@@ -1889,14 +1857,12 @@ update_from_server (ECalBackendGroupwise *cbgw, GSList *uid_list, gchar **calobj
 {
 	EGwConnectionStatus stat;
 	ECalBackendGroupwisePrivate *priv;
-	ECalBackendSync *backend;
 	GList *list = NULL, *tmp;
 	GSList *l;
 	GPtrArray *uid_array = g_ptr_array_new ();
 	gint i;
 
 	priv = cbgw->priv;
-	backend = E_CAL_BACKEND_SYNC (cbgw);
 
 	for (l = uid_list; l; l = g_slist_next (l)) {
 		g_ptr_array_add (uid_array, l->data);
@@ -2814,7 +2780,6 @@ e_cal_backend_groupwise_class_init (ECalBackendGroupwiseClass *class)
 
 	parent_class = g_type_class_peek_parent (class);
 
-	object_class->dispose = e_cal_backend_groupwise_dispose;
 	object_class->finalize = e_cal_backend_groupwise_finalize;
 
 	sync_class->is_read_only_sync = e_cal_backend_groupwise_is_read_only;

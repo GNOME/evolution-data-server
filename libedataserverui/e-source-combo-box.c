@@ -231,10 +231,6 @@ e_source_combo_box_set_property (GObject *object,
                                  const GValue *value,
                                  GParamSpec *pspec)
 {
-	ESourceComboBoxPrivate *priv;
-
-	priv = E_SOURCE_COMBO_BOX_GET_PRIVATE (object);
-
 	switch (property_id) {
 		case PROP_SOURCE_LIST:
 			e_source_combo_box_set_source_list (
@@ -252,10 +248,6 @@ e_source_combo_box_get_property (GObject *object,
                                  GValue *value,
                                  GParamSpec *pspec)
 {
-	ESourceComboBoxPrivate *priv;
-
-	priv = E_SOURCE_COMBO_BOX_GET_PRIVATE (object);
-
 	switch (property_id) {
 		case PROP_SOURCE_LIST:
 			g_value_set_object (

@@ -3096,7 +3096,6 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 				     time_t start, time_t end,
 				     ECalRecurInstanceFn cb, gpointer cb_data)
 {
-	ECalPrivate *priv;
 	ECalComponent *comp;
 	const gchar *uid;
 	gchar *rid;
@@ -3111,8 +3110,6 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 	g_return_if_fail (start >= 0);
 	g_return_if_fail (end >= 0);
 	g_return_if_fail (cb != NULL);
-
-	priv = ecal->priv;
 
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));

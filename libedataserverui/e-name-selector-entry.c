@@ -787,14 +787,11 @@ find_existing_completion (ENameSelectorEntry *name_selector_entry, const gchar *
 	EContact      *best_contact    = NULL;
 	gint           best_field_rank = G_MAXINT;
 	EContactField  best_field = 0;
-	gint           cue_len;
 
 	g_assert (cue_str);
 
 	if (!name_selector_entry->priv->contact_store)
 		return FALSE;
-
-	cue_len = strlen (cue_str);
 
 	ENS_DEBUG (g_print ("Completing '%s'\n", cue_str));
 
@@ -1751,10 +1748,6 @@ user_focus_in (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_foc
 static gboolean
 user_focus_out (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_focus)
 {
-	ENameSelectorEntryPrivate *priv;
-
-	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
-
 	if (!event_focus->in) {
 		entry_activate (name_selector_entry);
 	}
@@ -2319,7 +2312,6 @@ editor_closed_cb (GtkWidget *editor, gpointer data)
 	EDestination *destination;
 	GList *books;
 	EBook *book;
-	gboolean result;
 	gint email_num;
 	ENameSelectorEntry *name_selector_entry = E_NAME_SELECTOR_ENTRY (data);
 
@@ -2341,7 +2333,7 @@ editor_closed_cb (GtkWidget *editor, gpointer data)
 	if (!book)
 		return;
 
-	result = e_book_get_contact (book, contact_uid, &contact, NULL);
+	e_book_get_contact (book, contact_uid, &contact, NULL);
 	email_num = e_destination_get_email_num (destination);
 	e_destination_set_contact (destination, contact, email_num);
 

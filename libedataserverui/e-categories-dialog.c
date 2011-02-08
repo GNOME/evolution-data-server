@@ -432,7 +432,6 @@ static void
 edit_button_clicked_cb (GtkButton *button, gpointer user_data)
 {
 	ECategoriesDialog *dialog;
-	ECategoriesDialogPrivate *priv;
 	CategoryPropertiesDialog *prop_dialog;
 	GtkTreeSelection *selection;
 	GtkTreeIter iter;
@@ -443,7 +442,6 @@ edit_button_clicked_cb (GtkButton *button, gpointer user_data)
 	const gchar *icon_file;
 
 	dialog = user_data;
-	priv = dialog->priv;
 
 	tree_view = GTK_TREE_VIEW (dialog->priv->categories_list);
 	selection = gtk_tree_view_get_selection (tree_view);

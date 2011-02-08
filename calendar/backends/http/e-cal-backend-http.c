@@ -917,13 +917,8 @@ e_cal_backend_http_set_mode (ECalBackend *backend, CalMode mode)
 static void
 e_cal_backend_http_get_default_object (ECalBackendSync *backend, EDataCal *cal, gchar **object, GError **perror)
 {
-	ECalBackendHttp *cbhttp;
-	ECalBackendHttpPrivate *priv;
 	icalcomponent *icalcomp;
 	icalcomponent_kind kind;
-
-	cbhttp = E_CAL_BACKEND_HTTP (backend);
-	priv = cbhttp->priv;
 
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (backend));
 	icalcomp = e_cal_util_new_component (kind);
@@ -1299,12 +1294,6 @@ static void
 e_cal_backend_http_get_changes (ECalBackendSync *backend, EDataCal *cal, const gchar *change_id,
 				GList **adds, GList **modifies, GList **deletes, GError **perror)
 {
-	ECalBackendHttp *cbhttp;
-	ECalBackendHttpPrivate *priv;
-
-	cbhttp = E_CAL_BACKEND_HTTP (backend);
-	priv = cbhttp->priv;
-
 	g_propagate_error (perror, EDC_ERROR (NotSupported));
 }
 
@@ -1312,24 +1301,12 @@ e_cal_backend_http_get_changes (ECalBackendSync *backend, EDataCal *cal, const g
 static void
 e_cal_backend_http_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *auid, GError **perror)
 {
-	ECalBackendHttp *cbhttp;
-	ECalBackendHttpPrivate *priv;
-
-	cbhttp = E_CAL_BACKEND_HTTP (backend);
-	priv = cbhttp->priv;
-
 	/* FIXME */
 }
 
 static void
 e_cal_backend_http_create_object (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid, GError **perror)
 {
-	ECalBackendHttp *cbhttp;
-	ECalBackendHttpPrivate *priv;
-
-	cbhttp = E_CAL_BACKEND_HTTP (backend);
-	priv = cbhttp->priv;
-
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
@@ -1337,12 +1314,6 @@ static void
 e_cal_backend_http_modify_object (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj,
 				CalObjModType mod, gchar **old_object, gchar **new_object, GError **perror)
 {
-	ECalBackendHttp *cbhttp;
-	ECalBackendHttpPrivate *priv;
-
-	cbhttp = E_CAL_BACKEND_HTTP (backend);
-	priv = cbhttp->priv;
-
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
@@ -1353,12 +1324,6 @@ e_cal_backend_http_remove_object (ECalBackendSync *backend, EDataCal *cal,
 				CalObjModType mod, gchar **old_object,
 				gchar **object, GError **perror)
 {
-	ECalBackendHttp *cbhttp;
-	ECalBackendHttpPrivate *priv;
-
-	cbhttp = E_CAL_BACKEND_HTTP (backend);
-	priv = cbhttp->priv;
-
 	*old_object = *object = NULL;
 
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
@@ -1368,10 +1333,6 @@ e_cal_backend_http_remove_object (ECalBackendSync *backend, EDataCal *cal,
 static void
 e_cal_backend_http_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GError **perror)
 {
-	ECalBackendHttp *cbhttp;
-
-	cbhttp = E_CAL_BACKEND_HTTP (backend);
-
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
@@ -1379,12 +1340,6 @@ static void
 e_cal_backend_http_send_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GList **users,
 				 gchar **modified_calobj, GError **perror)
 {
-	ECalBackendHttp *cbhttp;
-	ECalBackendHttpPrivate *priv;
-
-	cbhttp = E_CAL_BACKEND_HTTP (backend);
-	priv = cbhttp->priv;
-
 	*users = NULL;
 	*modified_calobj = NULL;
 

@@ -446,12 +446,11 @@ test_e_cal_remove (ECal *ecal, const gchar *uri)
 static const gchar *
 test_new_system_calendar (void)
 {
-	ECal *cal;
 	const gchar *user_data_dir;
 	gchar *filename;
 	gboolean created;
 
-	cal = e_cal_new_system_calendar ();
+	e_cal_new_system_calendar ();
 
 	user_data_dir = e_get_user_data_dir ();
 	filename = g_build_filename (
@@ -467,12 +466,11 @@ test_new_system_calendar (void)
 static const gchar *
 test_new_system_tasks (void)
 {
-	ECal *cal;
 	const gchar *user_data_dir;
 	gchar *filename;
 	gboolean created;
 
-	cal = e_cal_new_system_tasks ();
+	e_cal_new_system_tasks ();
 
 	user_data_dir = e_get_user_data_dir ();
 	filename = g_build_filename (
@@ -488,12 +486,11 @@ test_new_system_tasks (void)
 static const gchar *
 test_new_system_memos (void)
 {
-	ECal *cal;
 	const gchar *user_data_dir;
 	gchar *filename;
 	gboolean created;
 
-	cal = e_cal_new_system_memos ();
+	e_cal_new_system_memos ();
 
 	user_data_dir = e_get_user_data_dir ();
 	filename = g_build_filename (

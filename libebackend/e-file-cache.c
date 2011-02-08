@@ -405,12 +405,8 @@ e_file_cache_add_object (EFileCache *cache, const gchar *key, const gchar *value
 gboolean
 e_file_cache_replace_object (EFileCache *cache, const gchar *key, const gchar *new_value)
 {
-	EFileCachePrivate *priv;
-
 	g_return_val_if_fail (E_IS_FILE_CACHE (cache), FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
-
-	priv = cache->priv;
 
 	if (!e_file_cache_get_object (cache, key))
 		return FALSE;

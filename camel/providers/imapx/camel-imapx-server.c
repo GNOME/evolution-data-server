@@ -540,9 +540,6 @@ imapx_command_addv (CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 	guint width;
 	gchar ch;
 	gint llong;
-	gint left;
-	gint fill;
-	gint zero;
 	gchar *s;
 	gchar *P;
 	gint d;
@@ -573,17 +570,14 @@ imapx_command_addv (CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 				camel_stream_write ((CamelStream *)ic->mem, ps, p-ps-1, ic->cancellable, NULL);
 				start = p-1;
 				width = 0;
-				left = FALSE;
-				fill = FALSE;
-				zero = FALSE;
 				llong = 0;
 
 				do {
 					c = *p++;
 					if (c == '0')
-						zero = TRUE;
+						;
 					else if ( c== '-')
-						left = TRUE;
+						;
 					else
 						break;
 				} while (c);
@@ -2028,10 +2022,7 @@ imapx_command_complete (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 static void
 imapx_command_run_sync (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
-	CamelIMAPXCommandFunc complete = NULL;
-
 	ic->flag = e_flag_new ();
-	complete = ic->complete;
 
 	if (!ic->complete)
 		ic->complete = imapx_command_complete;
@@ -2193,9 +2184,6 @@ imapx_job_idle_start (CamelIMAPXServer *is,
 {
 	CamelIMAPXCommand *ic;
 	CamelIMAPXCommandPart *cp;
-	const gchar *full_name;
-
-	full_name = camel_folder_get_full_name (job->folder);
 
 	ic = camel_imapx_command_new (
 		is, "IDLE", job->folder,
@@ -2548,9 +2536,6 @@ imapx_select (CamelIMAPXServer *is,
               GError **error)
 {
 	CamelIMAPXCommand *ic;
-	const gchar *full_name;
-
-	full_name = camel_folder_get_full_name (folder);
 
 	/* Select is complicated by the fact we may have commands
 	   active on the server for a different selection.
@@ -3246,7 +3231,6 @@ static void
 imapx_command_fetch_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job = ic->job;
-	const gchar *full_name;
 	gboolean failed = FALSE;
 
 	/* We either have more to fetch (partial mode?), we are complete,
@@ -3254,8 +3238,6 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	   we just return the job, or keep it alive with more requests */
 
 	job->commands--;
-
-	full_name = camel_folder_get_full_name (job->folder);
 
 	if (ic->error != NULL || ic->status->result != IMAPX_OK) {
 		failed = TRUE;

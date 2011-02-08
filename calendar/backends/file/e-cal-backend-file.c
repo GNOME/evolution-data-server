@@ -1483,12 +1483,6 @@ e_cal_backend_file_is_loaded (ECalBackend *backend)
 static CalMode
 e_cal_backend_file_get_mode (ECalBackend *backend)
 {
-	ECalBackendFile *cbfile;
-	ECalBackendFilePrivate *priv;
-
-	cbfile = E_CAL_BACKEND_FILE (backend);
-	priv = cbfile->priv;
-
 	return CAL_MODE_LOCAL;
 }
 

@@ -946,7 +946,6 @@ e_tree_model_generator_convert_iter_to_child_iter (ETreeModelGenerator *tree_mod
 {
 	GtkTreePath *path;
 	GArray      *group;
-	gint         generator_index;
 	gint         index;
 	gint         internal_offset = 0;
 
@@ -956,11 +955,8 @@ e_tree_model_generator_convert_iter_to_child_iter (ETreeModelGenerator *tree_mod
 	path = gtk_tree_path_new ();
 	ITER_GET (generator_iter, &group, &index);
 
-	generator_index = index;
 	index = generated_offset_to_child_offset (group, index, &internal_offset);
 	gtk_tree_path_prepend_index (path, index);
-
-	ETMG_DEBUG (g_print ("iter_to_child_iter: %d -> %d (%d)\n", generator_index, index, internal_offset));
 
 	while (group) {
 		Node *node = &g_array_index (group, Node, index);

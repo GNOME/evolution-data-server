@@ -50,10 +50,6 @@ struct _EOfflineListenerPrivate
 static void
 set_online_status (EOfflineListener *eol, gboolean is_offline)
 {
-	EOfflineListenerPrivate *priv;
-
-	priv = eol->priv;
-
 	g_signal_emit (eol, signals[CHANGED], 0);
 }
 

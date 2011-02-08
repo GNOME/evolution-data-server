@@ -34,13 +34,8 @@
 typedef struct _ECalBackendFileJournal ECalBackendFileJournal;
 typedef struct _ECalBackendFileJournalClass ECalBackendFileJournalClass;
 
-typedef struct _ECalBackendFileJournalPrivate ECalBackendFileJournalPrivate;
-
 struct _ECalBackendFileJournal {
 	ECalBackendFile backend;
-
-	/* Private data */
-	ECalBackendFileJournalPrivate *priv;
 };
 
 struct _ECalBackendFileJournalClass {

@@ -510,10 +510,8 @@ folder_dispose (GObject *object)
 static void
 folder_finalize (GObject *object)
 {
-	CamelFolder *folder;
 	CamelFolderPrivate *priv;
 
-	folder = CAMEL_FOLDER (object);
 	priv = CAMEL_FOLDER_GET_PRIVATE (object);
 
 	g_free (priv->name);

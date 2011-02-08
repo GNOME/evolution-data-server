@@ -573,7 +573,6 @@ pop3_store_connect_sync (CamelService *service,
 	gboolean reprompt = FALSE;
 	CamelSession *session;
 	gchar *errbuf = NULL;
-	gint status;
 	GError *local_error = NULL;
 
 	session = camel_service_get_session (service);
@@ -597,7 +596,7 @@ pop3_store_connect_sync (CamelService *service,
 		return FALSE;
 
 	while (1) {
-		status = pop3_try_authenticate (
+		pop3_try_authenticate (
 			service, reprompt, errbuf,
 			cancellable, &local_error);
 		g_free (errbuf);

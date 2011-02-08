@@ -462,7 +462,6 @@ e_account_list_set_default (EAccountList *accounts, EAccount *account)
 const EAccount *
 e_account_list_find (EAccountList *accounts, e_account_find_t type, const gchar *key)
 {
-	gchar *val;
 	EIterator *it;
 	const EAccount *account = NULL;
 
@@ -479,7 +478,6 @@ e_account_list_find (EAccountList *accounts, e_account_find_t type, const gchar 
 
 		account = (const EAccount *)e_iterator_get (it);
 
-		val = NULL;
 		switch (type) {
 		case E_ACCOUNT_FIND_NAME:
 			found = strcmp (account->name, key) == 0;

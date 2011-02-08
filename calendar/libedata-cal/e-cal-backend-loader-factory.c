@@ -17,8 +17,6 @@
 
 G_DEFINE_TYPE (ECalBackendLoaderFactory, e_cal_backend_loader_factory, E_TYPE_CAL_BACKEND_FACTORY)
 
-static GObjectClass *parent_class = NULL;
-
 static void
 e_cal_backend_loader_factory_init (ECalBackendLoaderFactory *factory)
 {
@@ -27,10 +25,4 @@ e_cal_backend_loader_factory_init (ECalBackendLoaderFactory *factory)
 static void
 e_cal_backend_loader_factory_class_init (ECalBackendLoaderFactoryClass *klass)
 {
-	GObjectClass *object_class;
-
-	parent_class = g_type_class_peek_parent (klass);
-
-	object_class = G_OBJECT_CLASS (klass);
-
 }

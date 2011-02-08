@@ -267,11 +267,8 @@ e_cal_backend_store_put_component_with_time_range (ECalBackendStore *store, ECal
 gboolean
 e_cal_backend_store_put_component (ECalBackendStore *store, ECalComponent *comp)
 {
-	ECalBackendStorePrivate *priv;
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
-
-	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
 
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->put_component (store, comp);
 }

@@ -774,15 +774,10 @@ summary_header_to_db (CamelFolderSummary *s,
                       GError **error)
 {
 	CamelFIRecord * record = g_new0 (CamelFIRecord, 1);
-	CamelStore *parent_store;
-	CamelDB *db;
 	const gchar *full_name;
-	guint32 visible, unread, deleted, junked, junked_not_deleted;
 
 	/* We do this during write, so lets use write handle, though we gonna read */
 	full_name = camel_folder_get_full_name (s->folder);
-	parent_store = camel_folder_get_parent_store (s->folder);
-	db = parent_store->cdb_w;
 
 	record->folder_name = g_strdup (full_name);
 
@@ -793,12 +788,6 @@ summary_header_to_db (CamelFolderSummary *s,
 	record->time = s->time;
 
 	record->saved_count = s->uids->len;
-
-	unread = s->unread_count;
-	deleted = s->deleted_count;
-	junked = s->junk_count;
-	junked_not_deleted = s->junk_not_deleted_count;
-	visible = s->visible_count;
 
 	if (1) { /* We always would do this. Just refactor the code again. */
 		/*!(((CamelVeeSummary *) s)->force_counts) && !g_getenv ("FORCE_VFOLDER_COUNT")) {*/
@@ -2404,14 +2393,11 @@ camel_vee_folder_sync_headers (CamelFolder *vf,
 {
 	CamelFIRecord * record;
 	CamelStore *parent_store;
-	time_t start, end;
 
 	/* Save the counts to DB */
-	start = time (NULL);
 	record = summary_header_to_db (vf->summary, error);
 	parent_store = camel_folder_get_parent_store (vf);
 	camel_db_write_folder_info_record (parent_store->cdb_w, record, error);
-	end = time (NULL);
 
 	g_free (record->folder_name);
 	g_free (record);

@@ -25,8 +25,6 @@
 
 G_BEGIN_DECLS
 
-
-
 #define E_TYPE_CAL_BACKEND_FILE_EVENTS            (e_cal_backend_file_events_get_type ())
 #define E_CAL_BACKEND_FILE_EVENTS(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_CAL_BACKEND_FILE_EVENTS,		\
 					  ECalBackendFileEvents))
@@ -38,13 +36,8 @@ G_BEGIN_DECLS
 typedef struct _ECalBackendFileEvents ECalBackendFileEvents;
 typedef struct _ECalBackendFileEventsClass ECalBackendFileEventsClass;
 
-typedef struct _ECalBackendFileEventsPrivate ECalBackendFileEventsPrivate;
-
 struct _ECalBackendFileEvents {
 	ECalBackendFile backend;
-
-	/* Private data */
-	ECalBackendFileEventsPrivate *priv;
 };
 
 struct _ECalBackendFileEventsClass {
@@ -52,8 +45,6 @@ struct _ECalBackendFileEventsClass {
 };
 
 GType e_cal_backend_file_events_get_type (void);
-
-
 
 G_END_DECLS
 

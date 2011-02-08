@@ -222,12 +222,9 @@ e_cal_backend_cache_remove_component (ECalBackendCache *cache,
 {
 	gchar *real_key;
 	gboolean retval;
-	ECalBackendCachePrivate *priv;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
-
-	priv = cache->priv;
 
 	real_key = get_key (uid, rid);
 	if (!e_file_cache_get_object (E_FILE_CACHE (cache), real_key)) {
@@ -450,14 +447,11 @@ e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *z
 gboolean
 e_cal_backend_cache_put_default_timezone (ECalBackendCache *cache, icaltimezone *default_zone)
 {
-	ECalBackendCachePrivate *priv;
 	icalcomponent *icalcomp;
 	gboolean retval;
 	gchar *obj;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
-
-	priv = cache->priv;
 
 	/* add the timezone to the cache file */
 	icalcomp = icaltimezone_get_component (default_zone);
@@ -496,11 +490,8 @@ e_cal_backend_cache_get_default_timezone (ECalBackendCache *cache)
 {
 	icaltimezone *zone;
 	const gchar *comp_str;
-	ECalBackendCachePrivate *priv;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
-
-	priv = cache->priv;
 
 	/*  look for the timezone in the cache */
 	comp_str = e_file_cache_get_object (E_FILE_CACHE (cache), "default_zone");

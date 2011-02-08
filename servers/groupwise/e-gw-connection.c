@@ -3693,19 +3693,7 @@ e_gw_connection_read_cal_ids (EGwConnection *cnc, const gchar *container, gint c
 			subparam = soup_soap_parameter_get_next_child_by_name (subparam, "item")) {
 		SoupSoapParameter *param_id;
 		EGwItemCalId *calid = g_new0 (EGwItemCalId, 1);
-		EGwItemType type;
-		gchar *id = NULL, *item_type = NULL;
-
-		item_type = soup_soap_parameter_get_property (subparam, "type");
-
-		if (g_str_equal (item_type, "Appointment"))
-				type  = E_GW_ITEM_TYPE_APPOINTMENT;
-		else if  (g_str_equal (item_type, "Task"))
-			type = E_GW_ITEM_TYPE_TASK;
-		else {
-			type = E_GW_ITEM_TYPE_NOTE;
-		}
-		g_free (item_type);
+		gchar *id = NULL;
 
 		param_id = soup_soap_parameter_get_first_child_by_name (subparam, "id");
 		if (param_id) {
@@ -3939,7 +3927,6 @@ e_gw_connection_remove_proxy (EGwConnection *cnc, proxyHandler *removeProxy)
 {
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
-	EGwConnectionStatus status;
 
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_UNKNOWN);
 
@@ -3954,7 +3941,7 @@ e_gw_connection_remove_proxy (EGwConnection *cnc, proxyHandler *removeProxy)
 		g_object_unref (msg);
 		return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
 	}
-	status = e_gw_connection_parse_response_status (response);
+	e_gw_connection_parse_response_status (response);
 	g_object_unref (response);
 	g_object_unref (msg);
 	return E_GW_CONNECTION_STATUS_OK;
@@ -4061,7 +4048,6 @@ e_gw_connection_get_proxy_connection (EGwConnection *parent_cnc, gchar *username
 	EGwConnection *cnc;
 	SoupSoapMessage *msg;
 	SoupSoapResponse *response;
-	EGwConnectionStatus status;
 	SoupSoapParameter *param;
 	SoupSoapParameter *subparam;
 	gchar *hash_key;
@@ -4114,7 +4100,7 @@ e_gw_connection_get_proxy_connection (EGwConnection *parent_cnc, gchar *username
 		return NULL;
 	}
 
-	status = e_gw_connection_parse_response_status (response);
+	e_gw_connection_parse_response_status (response);
 
 	param = soup_soap_response_get_first_parameter_by_name (response, "session");
 	if (!param) {

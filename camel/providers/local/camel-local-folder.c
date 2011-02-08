@@ -509,10 +509,8 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 	CamelLocalStore *ls;
 	CamelStore *parent_store;
 	const gchar *full_name;
-	const gchar *name;
 
 	folder = CAMEL_FOLDER (lf);
-	name = camel_folder_get_name (folder);
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
 
@@ -593,17 +591,6 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 			}
 		}
 	}
-
-	/* We don't need to sync here ..., it can sync later on when it calls refresh info */
-#if 0
-	/*if (camel_local_summary_check((CamelLocalSummary *)folder->summary, lf->changes, ex) == -1) {*/
-	/* we sync here so that any hard work setting up the folder isn't lost */
-	/*if (camel_local_summary_sync((CamelLocalSummary *)folder->summary, FALSE, lf->changes, ex) == -1) {
-		g_object_unref (CAMEL_OBJECT (folder));
-		g_free (name);
-		return NULL;
-		}*/
-#endif
 
 	/* TODO: This probably shouldn't be here? */
 	if ((flags & CAMEL_STORE_FOLDER_CREATE) != 0) {

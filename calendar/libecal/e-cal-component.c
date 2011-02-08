@@ -889,12 +889,9 @@ add_alarm (ECalComponent *comp, icalcomponent *alarm, const gchar *auid)
 static void
 scan_alarm (ECalComponent *comp, icalcomponent *alarm)
 {
-	ECalComponentPrivate *priv;
 	icalproperty *prop;
 	const gchar *auid;
 	gchar *new_auid;
-
-	priv = comp->priv;
 
 	for (prop = icalcomponent_get_first_property (alarm, ICAL_X_PROPERTY);
 	     prop;
@@ -1141,12 +1138,8 @@ e_cal_component_get_icalcomponent (ECalComponent *comp)
 void
 e_cal_component_rescan (ECalComponent *comp)
 {
-	ECalComponentPrivate *priv;
-
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
-
-	priv = comp->priv;
 
 	/* Clear everything out */
 	free_icalcomponent (comp, FALSE);

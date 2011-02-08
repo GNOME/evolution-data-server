@@ -114,11 +114,8 @@ e_book_backend_cache_add_contact (EBookBackendCache *cache,
 	gchar *vcard_str;
 	const gchar *uid;
 	gboolean retval;
-	EBookBackendCachePrivate *priv;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_CACHE (cache), FALSE);
-
-	priv = cache->priv;
 
 	uid = e_contact_get_const (contact, E_CONTACT_UID);
 	vcard_str = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
@@ -147,21 +144,13 @@ e_book_backend_cache_remove_contact (EBookBackendCache *cache,
 				    const gchar *uid)
 
 {
-	gboolean retval;
-	EBookBackendCachePrivate *priv;
-
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_CACHE (cache), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	priv = cache->priv;
-
-	if (!e_file_cache_get_object (E_FILE_CACHE (cache), uid)) {
+	if (!e_file_cache_get_object (E_FILE_CACHE (cache), uid))
 		return FALSE;
-	}
 
-	retval = e_file_cache_remove_object (E_FILE_CACHE (cache), uid);
-
-	return retval;
+	return e_file_cache_remove_object (E_FILE_CACHE (cache), uid);
 }
 
 /**
@@ -178,12 +167,9 @@ e_book_backend_cache_check_contact (EBookBackendCache *cache, const gchar *uid)
 {
 
 	gboolean retval;
-	EBookBackendCachePrivate *priv;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_CACHE (cache), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
-
-	priv = cache->priv;
 
 	retval = FALSE;
 	if (e_file_cache_get_object (E_FILE_CACHE (cache), uid))

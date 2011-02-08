@@ -535,8 +535,10 @@ sm_verify_cmsg (CamelCipherContext *context,
 {
 	CamelSMIMEContextPrivate *p = ((CamelSMIMEContext *)context)->priv;
 	NSSCMSSignedData *sigd = NULL;
+#if 0
 	NSSCMSEnvelopedData *envd;
 	NSSCMSEncryptedData *encd;
+#endif
 	SECAlgorithmID **digestalgs;
 	NSSCMSDigestContext *digcx;
 	gint count, i, nsigners, j;
@@ -673,10 +675,12 @@ sm_verify_cmsg (CamelCipherContext *context,
 			}
 			break;
 		case SEC_OID_PKCS7_ENVELOPED_DATA:
-			envd = (NSSCMSEnvelopedData *)NSS_CMSContentInfo_GetContent (cinfo);
+			/* FIXME Do something with this? */
+			/*envd = (NSSCMSEnvelopedData *)NSS_CMSContentInfo_GetContent (cinfo);*/
 			break;
 		case SEC_OID_PKCS7_ENCRYPTED_DATA:
-			encd = (NSSCMSEncryptedData *)NSS_CMSContentInfo_GetContent (cinfo);
+			/* FIXME Do something with this? */
+			/*encd = (NSSCMSEncryptedData *)NSS_CMSContentInfo_GetContent (cinfo);*/
 			break;
 		case SEC_OID_PKCS7_DATA:
 			break;

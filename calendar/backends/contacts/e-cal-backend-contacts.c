@@ -1275,12 +1275,6 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 static void
 e_cal_backend_contacts_create_object (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid, GError **perror)
 {
-	ECalBackendContacts *cbcontacts;
-	ECalBackendContactsPrivate *priv;
-
-	cbcontacts = E_CAL_BACKEND_CONTACTS (backend);
-	priv = cbcontacts->priv;
-
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 

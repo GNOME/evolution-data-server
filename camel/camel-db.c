@@ -1023,12 +1023,11 @@ camel_db_recreate_vfolder (CamelDB *db,
                            const gchar *folder_name,
                            GError **error)
 {
-	gint ret;
 	gchar *table_query;
 
 	table_query = sqlite3_mprintf ("DROP TABLE %Q", folder_name);
 
-	ret = camel_db_command (db, table_query, error);
+	camel_db_command (db, table_query, error);
 
 	sqlite3_free (table_query);
 

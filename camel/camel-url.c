@@ -58,14 +58,16 @@ CamelURL *
 camel_url_new_with_base (CamelURL *base, const gchar *url_string)
 {
 	CamelURL *url;
-	const gchar *start;
 	const gchar *end, *hash, *colon, *semi, *at, *slash, *question;
 	const gchar *p;
+
+#ifdef G_OS_WIN32
+	const gchar *start = url_string;
+#endif
 
 	g_return_val_if_fail (url_string != NULL, NULL);
 
 	url = g_new0 (CamelURL, 1);
-	start = url_string;
 
 	/* See RFC1808 for details. IF YOU CHANGE ANYTHING IN THIS
 	 * FUNCTION, RUN tests/misc/url AFTERWARDS.

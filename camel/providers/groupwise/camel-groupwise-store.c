@@ -513,9 +513,6 @@ groupwise_forget_folder (CamelGroupwiseStore *gw_store, const gchar *folder_name
 	gchar *state_file;
 	gchar *folder_dir, *storage_path;
 	CamelFolderInfo *fi;
-	const gchar *name;
-
-	name = folder_name;
 
 	storage_path = g_strdup_printf ("%s/folders", priv->storage_path);
 	folder_dir = e_path_to_physical (storage_path,folder_name);

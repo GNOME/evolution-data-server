@@ -2202,7 +2202,6 @@ e_cal_backend_groupwise_store_settings (GwSettings *hold)
 
 		/* Delay delivery */
 		if (gopts->delay_enabled) {
-			gchar *value;
 			tt = icaltime_today ();
 			icaltime_adjust (&tt, gopts->delay_until, 0, 0, 0);
 			value = icaltime_as_ical_string_r (tt);
@@ -2265,10 +2264,9 @@ e_cal_backend_groupwise_utils_check_delegate (ECalComponent *comp, const gchar *
 	prop = icalcomponent_get_first_property (icalcomp,
 						 ICAL_X_PROPERTY);
 	while (prop) {
-		const gchar *x_name, *x_val;
+		const gchar *x_name;
 
 		x_name = icalproperty_get_x_name (prop);
-		x_val = icalproperty_get_x (prop);
 		if (!strcmp (x_name, "X-EVOLUTION-DELEGATED")) {
 			icalcomponent_remove_property (icalcomp, prop);
 			return TRUE;

@@ -3099,7 +3099,7 @@ cal_obj_byday_expand_weekly	(RecurData  *recur_data,
 	GArray *new_occs;
 	CalObjTime *occ;
 	GList *elem;
-	gint len, i, weekday, week_num;
+	gint len, i, weekday;
 	gint weekday_offset, new_weekday_offset;
 
 	/* If BYDAY has not been specified, or the array is empty, just
@@ -3121,7 +3121,7 @@ cal_obj_byday_expand_weekly	(RecurData  *recur_data,
 			/* FIXME: Currently we just ignore this, but maybe we
 			   should skip all elements where week_num != 0.
 			   The spec isn't clear about this. */
-			week_num = GPOINTER_TO_INT (elem->data);
+			/*week_num = GPOINTER_TO_INT (elem->data);*/
 			elem = elem->next;
 
 			weekday_offset = cal_obj_time_weekday_offset (occ, recur_data->recur);

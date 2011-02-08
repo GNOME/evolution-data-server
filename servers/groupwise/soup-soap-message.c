@@ -665,10 +665,7 @@ soup_soap_message_add_namespace (SoupSoapMessage *msg, const gchar *prefix, cons
 void
 soup_soap_message_set_default_namespace (SoupSoapMessage *msg, const gchar *ns_uri)
 {
-	SoupSoapMessagePrivate *priv;
-
 	g_return_if_fail (SOUP_IS_SOAP_MESSAGE (msg));
-	priv = SOUP_SOAP_MESSAGE_GET_PRIVATE (msg);
 
 	soup_soap_message_add_namespace (msg, NULL, ns_uri);
 }

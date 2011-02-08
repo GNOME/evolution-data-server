@@ -2244,14 +2244,9 @@ caldav_get_static_capabilities (ECalBackendSync  *backend,
 				gchar           **capabilities,
 				GError          **perror)
 {
-	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
 	ESource *source;
 	GString *caps;
 	gchar *usermail;
-
-	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
 	caps = g_string_new (CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
 			     CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
@@ -2713,15 +2708,12 @@ get_comp_from_cache (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *ri
 static gboolean
 put_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp, const gchar *href, const gchar *etag)
 {
-	ECalBackendCalDAVPrivate *priv;
 	icalcomponent_kind my_kind;
 	ECalComponent *comp;
 	gboolean res = FALSE;
 
 	g_return_val_if_fail (cbdav != NULL, FALSE);
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
-
-	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
 	my_kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbdav));
 	comp = e_cal_component_new ();
@@ -2809,7 +2801,6 @@ strip_unneeded_x_props (icalcomponent *icomp)
 static void
 convert_to_inline_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 {
-	ECalBackendCalDAVPrivate *priv;
 	icalcomponent *cclone;
 	icalproperty *p;
 	GSList *to_remove = NULL;
@@ -2837,7 +2828,6 @@ convert_to_inline_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 	g_slist_free (to_remove);
 
 	/* convert local url attachments to inline attachments now */
-	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 	for (p = icalcomponent_get_first_property (cclone, ICAL_ATTACH_PROPERTY);
 	     p;
 	     p = icalcomponent_get_next_property (cclone, ICAL_ATTACH_PROPERTY)) {
@@ -2900,7 +2890,6 @@ convert_to_inline_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 static void
 convert_to_url_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 {
-	ECalBackendCalDAVPrivate *priv;
 	ECalBackend *backend;
 	GSList *to_remove = NULL;
 	const gchar *cache_dir;
@@ -2929,7 +2918,6 @@ convert_to_url_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 	g_slist_free (to_remove);
 
 	/* convert inline attachments to url attachments now */
-	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 	for (p = icalcomponent_get_first_property (cclone, ICAL_ATTACH_PROPERTY);
 	     p;
 	     p = icalcomponent_get_next_property (cclone, ICAL_ATTACH_PROPERTY)) {
@@ -2995,13 +2983,12 @@ remove_dir (const gchar *dir)
 
 		while ((entry = g_dir_read_name (d)) != NULL) {
 			gchar *path;
-			gint ret;
 
 			path = g_build_filename (dir, entry, NULL);
 			if (g_file_test (path, G_FILE_TEST_IS_DIR))
 				remove_dir (path);
 			else
-				ret = g_unlink (path);
+				g_unlink (path);
 			g_free (path);
 		}
 		g_dir_close (d);
@@ -3100,11 +3087,8 @@ add_timezones_from_component (ECalBackendCalDAV *cbdav, icalcomponent *vcal_comp
 static gchar *
 pack_cobj (ECalBackendCalDAV *cbdav, icalcomponent *icomp)
 {
-	ECalBackendCalDAVPrivate *priv;
 	icalcomponent *calcomp;
 	gchar          *objstr;
-
-	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
 	if (icalcomponent_isa (icomp) != ICAL_VCALENDAR_COMPONENT) {
 		icalcomponent *cclone;
@@ -3324,14 +3308,11 @@ replace_master (ECalBackendCalDAV *cbdav, icalcomponent *old_comp, icalcomponent
 static void
 do_create_object (ECalBackendCalDAV *cbdav, gchar **calobj, gchar **uid, GError **perror)
 {
-	ECalBackendCalDAVPrivate *priv;
 	ECalComponent            *comp;
 	gboolean                  online, did_put = FALSE;
 	struct icaltimetype current;
 	icalcomponent *icalcomp;
 	const gchar *comp_uid;
-
-	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
 	if (!check_state (cbdav, &online, perror))
 		return;
@@ -3765,7 +3746,6 @@ process_object (ECalBackendCalDAV   *cbdav,
 		icalproperty_method  method,
 		GError             **error)
 {
-	ECalBackendCalDAVPrivate *priv;
 	ECalBackend              *backend;
 	struct icaltimetype       now;
 	gchar *new_obj_str;
@@ -3774,7 +3754,6 @@ process_object (ECalBackendCalDAV   *cbdav,
 	ECalComponentId *id = e_cal_component_get_id (ecomp);
 	GError *err = NULL;
 
-	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 	backend = E_CAL_BACKEND (cbdav);
 
 	e_return_data_cal_error_if_fail (id != NULL, InvalidObject);
@@ -3872,7 +3851,6 @@ static void
 do_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
 	icalcomponent            *icomp;
 	icalcomponent_kind        kind;
 	icalproperty_method       tmethod;
@@ -3882,7 +3860,6 @@ do_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj
 	GError *err = NULL;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
 	if (!check_state (cbdav, &online, perror))
 		return;
@@ -4029,11 +4006,9 @@ static void
 caldav_get_object (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, gchar **object, GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
 	icalcomponent            *icalcomp;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
 	*object = NULL;
 	icalcomp = get_comp_from_cache (cbdav, uid, rid, NULL, NULL);

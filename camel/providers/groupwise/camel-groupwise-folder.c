@@ -562,7 +562,6 @@ move_to_junk (CamelFolder *folder,
               GError **error)
 {
 	CamelFolder *dest;
-	CamelFolderInfo *fi;
 	CamelStore *parent_store;
 	GPtrArray *uids;
 	const gchar *uid = camel_message_info_uid (info);
@@ -579,7 +578,7 @@ move_to_junk (CamelFolder *folder,
 		groupwise_transfer_messages_to_sync (
 			folder, uids, dest, TRUE, NULL, cancellable, error);
 	else {
-		fi = create_junk_folder (parent_store);
+		create_junk_folder (parent_store);
 		dest = camel_store_get_folder_sync (
 			parent_store, JUNK_FOLDER, 0, cancellable, error);
 		if (!dest)
@@ -1476,7 +1475,7 @@ gw_update_cache (CamelFolder *folder,
 	CamelOfflineFolder *offline_folder;
 	CamelStore *parent_store;
 	EGwConnection *cnc;
-	guint32 item_status, status_flags = 0;
+	guint32 item_status;
 	CamelFolderChangeInfo *changes = NULL;
 	gboolean exists = FALSE;
 	GString *str_to = g_string_new (NULL);
@@ -1536,7 +1535,6 @@ gw_update_cache (CamelFolder *folder,
 		gint rk;
 
 		exists = FALSE;
-		status_flags = 0;
 
 		if (uid_flag == FALSE) {
 			temp_item = (EGwItem *)item_list->data;
@@ -1951,7 +1949,6 @@ groupwise_folder_item_to_msg ( CamelFolder *folder,
 	gchar *body = NULL;
 	gint body_len = 0;
 	const gchar *uid = NULL, *message_id, *parent_threads;
-	gboolean is_text_html = FALSE;
 	gboolean has_mime_822 = FALSE, ignore_mime_822 = FALSE;
 	gboolean is_text_html_embed = FALSE;
 	gboolean is_base64_encoded = FALSE;
@@ -1998,7 +1995,6 @@ groupwise_folder_item_to_msg ( CamelFolder *folder,
 				if (!g_ascii_strcasecmp (attach->name, "TEXT.htm")) {
 					body = g_strdup (attachment);
 					g_free (attachment);
-					is_text_html = TRUE;
 				}
 			}/* if attachment and len */
 		} /* if Mime.822 or TEXT.htm */
@@ -2817,7 +2813,7 @@ groupwise_transfer_messages_to_sync (CamelFolder *source,
                                      GCancellable *cancellable,
                                      GError **error)
 {
-	gint count, index = 0;
+	gint index = 0;
 	GList *item_ids = NULL;
 	const gchar *source_container_id = NULL, *dest_container_id = NULL;
 	CamelGroupwiseStore *gw_store;
@@ -2846,7 +2842,6 @@ groupwise_transfer_messages_to_sync (CamelFolder *source,
 	else
 		destination_is_trash = FALSE;
 
-	count = camel_folder_summary_count (destination->summary);
 	qsort (uids->pdata, uids->len, sizeof (gpointer), uid_compar);
 
 	changes = camel_folder_change_info_new ();
@@ -2915,8 +2910,6 @@ groupwise_transfer_messages_to_sync (CamelFolder *source,
 		CamelMessageInfo *info = NULL;
 		CamelGroupwiseMessageInfo *gw_info = NULL;
 		flags_diff_t diff, unset_flags;
-		gint count;
-		count = camel_folder_summary_count (destination->summary);
 
 		info = camel_folder_summary_uid (source->summary, uids->pdata[index]);
 		if (!info) {

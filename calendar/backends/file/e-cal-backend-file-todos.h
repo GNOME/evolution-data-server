@@ -25,8 +25,6 @@
 
 G_BEGIN_DECLS
 
-
-
 #define E_TYPE_CAL_BACKEND_FILE_TODOS            (e_cal_backend_file_todos_get_type ())
 #define E_CAL_BACKEND_FILE_TODOS(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_CAL_BACKEND_FILE_TODOS,		\
 					  ECalBackendFileTodos))
@@ -38,13 +36,8 @@ G_BEGIN_DECLS
 typedef struct _ECalBackendFileTodos ECalBackendFileTodos;
 typedef struct _ECalBackendFileTodosClass ECalBackendFileTodosClass;
 
-typedef struct _ECalBackendFileTodosPrivate ECalBackendFileTodosPrivate;
-
 struct _ECalBackendFileTodos {
 	ECalBackendFile backend;
-
-	/* Private data */
-	ECalBackendFileTodosPrivate *priv;
 };
 
 struct _ECalBackendFileTodosClass {
@@ -52,8 +45,6 @@ struct _ECalBackendFileTodosClass {
 };
 
 GType e_cal_backend_file_todos_get_type (void);
-
-
 
 G_END_DECLS
 

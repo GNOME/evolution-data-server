@@ -263,7 +263,6 @@ xrename (CamelStore *store, const gchar *old_name, const gchar *new_name, const 
 	gchar *oldpath, *newpath;
 	struct stat st;
 	gint ret = -1;
-	gint err = 0;
 
 	if (ext != NULL) {
 		oldpath = camel_local_store_get_meta_path (ls, old_name, ext);
@@ -277,7 +276,6 @@ xrename (CamelStore *store, const gchar *old_name, const gchar *new_name, const 
 		if (missingok && errno == ENOENT) {
 			ret = 0;
 		} else {
-			err = errno;
 			ret = -1;
 		}
 #ifndef G_OS_WIN32
@@ -286,7 +284,6 @@ xrename (CamelStore *store, const gchar *old_name, const gchar *new_name, const 
 		if (g_rename (oldpath, newpath) == 0 || g_stat (newpath, &st) == 0) {
 			ret = 0;
 		} else {
-			err = errno;
 			ret = -1;
 		}
 	} else if (link (oldpath, newpath) == 0 /* and link for files */
@@ -294,19 +291,16 @@ xrename (CamelStore *store, const gchar *old_name, const gchar *new_name, const 
 		if (unlink (oldpath) == 0) {
 			ret = 0;
 		} else {
-			err = errno;
 			unlink (newpath);
 			ret = -1;
 		}
 	} else {
-		err = errno;
 		ret = -1;
 #else
 	} else if ((!g_file_test (newpath, G_FILE_TEST_EXISTS) || g_remove (newpath) == 0) &&
 		   g_rename (oldpath, newpath) == 0) {
 		ret = 0;
 	} else {
-		err = errno;
 		ret = -1;
 #endif
 	}

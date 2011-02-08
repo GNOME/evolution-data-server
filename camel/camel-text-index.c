@@ -328,7 +328,7 @@ text_index_sync (CamelIndex *idx)
 	CamelTextIndexPrivate *p = CAMEL_TEXT_INDEX_GET_PRIVATE (idx);
 	struct _CamelTextIndexWord *ww;
 	struct _CamelTextIndexRoot *rb;
-	gint ret = 0, wfrag, nfrag, work = FALSE;
+	gint ret = 0, wfrag, nfrag;
 
 	d (printf ("sync: blocks = %p\n", p->blocks));
 
@@ -347,8 +347,6 @@ text_index_sync (CamelIndex *idx)
 	p->blocks->block_cache_limit = 128;
 	/* this doesn't really need to be dropped, its only used in updates anyway */
 	p->word_cache_limit = 1024;
-
-	work = !camel_dlist_empty (&p->word_cache);
 
 	while ((ww = (struct _CamelTextIndexWord *)camel_dlist_remhead (&p->word_cache))) {
 		if (ww->used > 0) {
@@ -378,7 +376,6 @@ text_index_sync (CamelIndex *idx)
 	/* only do the frag/compress check if we did some new writes on this index */
 	wfrag = rb->words ? (((rb->keys - rb->words) * 100)/ rb->words) : 0;
 	nfrag = rb->names ? ((rb->deleted * 100) / rb->names) : 0;
-	d (printf ("wfrag = %d, nfrag = %d, work = %s, ret = %d\n", wfrag, nfrag, work?"true":"false", ret));
 	d (printf ("  words = %d, keys = %d\n", rb->words, rb->keys));
 
 	if (ret == 0) {

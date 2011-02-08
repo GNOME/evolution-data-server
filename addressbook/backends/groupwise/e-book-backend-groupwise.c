@@ -2904,7 +2904,6 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	gulong diff;
 	gchar *cache_file_name;
 	struct stat buf;
-	time_t mod_time;
 
 	if (!ebgw)
 		return FALSE;
@@ -2978,7 +2977,6 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	cache_file_name = e_book_backend_db_cache_get_filename (ebgw->priv->file_db);
 	g_stat (cache_file_name, &buf);
 	g_free (cache_file_name);
-	mod_time = buf.st_mtime;
 
 	if (cache_last_sequence != server_last_sequence) {
 
@@ -3688,12 +3686,8 @@ e_book_backend_groupwise_remove (EBookBackend *backend,
 static gchar *
 e_book_backend_groupwise_get_static_capabilities (EBookBackend *backend)
 {
-	EBookBackendGroupwise *ebgw;
-
 	if (enable_debug)
 		printf ("\ne_book_backend_groupwise_get_static_capabilities...\n");
-
-	ebgw = E_BOOK_BACKEND_GROUPWISE (backend);
 
 	/* do-initialy-query is enabled for system address book also, so that we get the
 	 * book_view, which is needed for displaying cache update progress.

@@ -409,10 +409,6 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 static void
 e_name_selector_dialog_dispose (GObject *object)
 {
-	ENameSelectorDialogPrivate *priv;
-
-	priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (object);
-
 	remove_books (E_NAME_SELECTOR_DIALOG (object));
 	shutdown_name_selector_model (E_NAME_SELECTOR_DIALOG (object));
 
@@ -1273,7 +1269,6 @@ transfer_button_clicked (ENameSelectorDialog *name_selector_dialog, GtkButton *t
 static void
 setup_name_selector_model (ENameSelectorDialog *name_selector_dialog)
 {
-	EContactStore       *contact_store;
 	ETreeModelGenerator *contact_filter;
 	GList               *new_sections;
 	GList               *l;
@@ -1311,8 +1306,6 @@ setup_name_selector_model (ENameSelectorDialog *name_selector_dialog)
 
 	/* Get contact store and its filter wrapper */
 
-	contact_store  = e_name_selector_model_peek_contact_store  (
-		name_selector_dialog->priv->name_selector_model);
 	contact_filter = e_name_selector_model_peek_contact_filter (
 		name_selector_dialog->priv->name_selector_model);
 
