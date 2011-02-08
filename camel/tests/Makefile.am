@@ -1,5 +1,5 @@
 SUBDIRS = lib \
-	message folder stream smime misc mime-filter
+	message folder smime misc mime-filter
 
 EXTRA_DIST = data
 
