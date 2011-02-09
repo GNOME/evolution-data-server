@@ -375,7 +375,8 @@ local_folder_refresh_info_sync (CamelFolder *folder,
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 
-	if (camel_local_summary_check ((CamelLocalSummary *)folder->summary, lf->changes, cancellable, error) == -1)
+	if (lf->need_summary_check &&
+	    camel_local_summary_check ((CamelLocalSummary *)folder->summary, lf->changes, cancellable, error) == -1)
 		return FALSE;
 
 	if (camel_folder_change_info_changed (lf->changes)) {
@@ -509,12 +510,15 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 	CamelLocalStore *ls;
 	CamelStore *parent_store;
 	const gchar *full_name;
+	const gchar *summary_check;
+	CamelURL *url;
 
 	folder = CAMEL_FOLDER (lf);
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
 
 	ls = CAMEL_LOCAL_STORE (parent_store);
+	url = CAMEL_SERVICE (parent_store)->url;
 
 	root_dir_path = camel_local_store_get_toplevel_dir (ls);
 	/* strip the trailing '/' which is always present */
@@ -533,6 +537,12 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 
 	camel_object_set_state_filename (CAMEL_OBJECT (lf), statepath);
 	g_free (statepath);
+
+	summary_check = camel_url_get_param (url, "need-summary-check");
+	if (summary_check && !strcmp (summary_check, "no"))
+		lf->need_summary_check = FALSE;
+	else
+		lf->need_summary_check = TRUE;
 
 	lf->flags = flags;
 
@@ -583,7 +593,8 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 	folder->summary = (CamelFolderSummary *)CAMEL_LOCAL_FOLDER_GET_CLASS (lf)->create_summary (lf, lf->summary_path, lf->folder_path, lf->index);
 	if (!(flags & CAMEL_STORE_IS_MIGRATING) && camel_local_summary_load ((CamelLocalSummary *)folder->summary, forceindex, NULL) == -1) {
 		/* ? */
-		if (camel_local_summary_check ((CamelLocalSummary *)folder->summary, lf->changes, cancellable, error) == 0) {
+		if (lf->need_summary_check && 
+		    camel_local_summary_check ((CamelLocalSummary *)folder->summary, lf->changes, cancellable, error) == 0) {
 			/* we sync here so that any hard work setting up the folder isn't lost */
 			if (camel_local_summary_sync ((CamelLocalSummary *)folder->summary, FALSE, lf->changes, cancellable, error) == -1) {
 				g_object_unref (CAMEL_OBJECT (folder));
