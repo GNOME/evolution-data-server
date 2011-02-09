@@ -68,6 +68,9 @@ gchar *		e_util_replace_prefix		(const gchar *configure_time_prefix,
 						 const gchar *configure_time_path);
 #endif
 
+void		e_data_server_util_set_dbus_call_timeout (gint timeout_msec);
+gint		e_data_server_util_get_dbus_call_timeout (void);
+
 G_END_DECLS
 
 #endif /* E_DATA_SERVER_UTIL_H */

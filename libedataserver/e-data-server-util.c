@@ -833,3 +833,39 @@ PUBLIC_GETTER (cp_prefix)
 PUBLIC_GETTER (localedir)
 
 #endif	/* G_OS_WIN32 */
+
+static gint default_dbus_timeout = DEFAULT_EDS_DBUS_TIMEOUT;
+
+/**
+ * e_data_server_util_set_dbus_call_timeout:
+ * @timeout_msec: Default timeout for DBus calls in miliseconds.
+ *
+ * Sets default timeout, in miliseconds, for calls of g_dbus_proxy_call()
+ * family functions.
+ *
+ * -1 means the default value as set by DBus itself.
+ * G_MAXINT means no timeout at all.
+ *
+ * Default value is set also by configure option --with-dbus-call-timeout=ms
+ * and -1 is used when not set.
+ *
+ * Since: 3.0
+ **/
+void
+e_data_server_util_set_dbus_call_timeout (gint timeout_msec)
+{
+	default_dbus_timeout = timeout_msec;
+}
+
+/**
+ * e_data_server_util_get_dbus_call_timeout:
+ *
+ * Returns value set by e_data_server_util_set_dbus_call_timeout()
+ *
+ * Since: 3.0
+ **/
+gint
+e_data_server_util_get_dbus_call_timeout (void)
+{
+	return default_dbus_timeout;
+}

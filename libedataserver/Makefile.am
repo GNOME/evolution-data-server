@@ -9,7 +9,8 @@ libedataserver_1_2_la_CPPFLAGS = \
 	-DE_DATA_SERVER_LOCALEDIR=\""$(localedir)"\"			\
 	-DE_DATA_SERVER_EXTENSIONDIR=\"$(extensiondir)\"		\
 	-DE_DATA_SERVER_IMAGESDIR=\"$(imagesdir)\"			\
-	-DE_DATA_SERVER_UI_UIDIR=\""$(uidir)"\"			\
+	-DE_DATA_SERVER_UI_UIDIR=\""$(uidir)"\"				\
+	-DDEFAULT_EDS_DBUS_TIMEOUT=$(DEFAULT_EDS_DBUS_TIMEOUT)		\
 	$(E_DATA_SERVER_CFLAGS)						\
 	$(SOUP_CFLAGS)
 

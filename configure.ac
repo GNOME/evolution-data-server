@@ -1074,6 +1074,18 @@ fi
 
 AC_MSG_RESULT([$with_broken_spool])
 
+dnl ******************************
+dnl DBus call timeout
+dnl ******************************
+
+AC_ARG_WITH([dbus-call-timeout],
+	AS_HELP_STRING([--with-dbus-call-timeout=miliseconds],
+	[Default timeout used when invoking g_dbus_proxy_call() family functions in EBook and ECal library (default=-1)]),
+	[ac_cv_dbus_call_timeout=$withval],[ac_cv_dbus_call_timeout=-1])
+
+DEFAULT_EDS_DBUS_TIMEOUT=$ac_cv_dbus_call_timeout
+AC_SUBST(DEFAULT_EDS_DBUS_TIMEOUT)
+
 dnl ***********
 dnl Kerberos 5
 dnl ***********
