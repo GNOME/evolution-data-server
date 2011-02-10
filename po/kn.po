@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=evolution-data-server&component=Misc.\n"
 "POT-Creation-Date: 2011-02-07 14:36+0000\n"
-"PO-Revision-Date: 2011-02-09 17:22+0530\n"
+"PO-Revision-Date: 2011-02-10 21:05+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -36,7 +36,7 @@ msgstr "ಹುಡುಕಲಾಗುತ್ತಿದೆ..."
 #. Query for new contacts asynchronously
 #: ../addressbook/backends/google/e-book-backend-google.c:589
 msgid "Querying for updated contacts…"
-msgstr ""
+msgstr "ಅಪ್‌ಡೇಟ್ ಮಾಡಲಾದ ಸಂಪರ್ಕವಿಳಾಸಕ್ಕಾಗಿ ಮನವಿ ಸಲ್ಲಿಸಲಾಗುತ್ತಿದೆ..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:624
 msgid "Personal"
@@ -59,16 +59,15 @@ msgstr "ಸಹಉದ್ಯೋಗಿಗಳು"
 #. Run the query asynchronously
 #: ../addressbook/backends/google/e-book-backend-google.c:707
 msgid "Querying for updated groups…"
-msgstr ""
+msgstr "ಅಪ್‌ಡೇಟ್ ಮಾಡಲಾದ ಗುಂಪಿಗಾಗಿ ಮನವಿ ಸಲ್ಲಿಸಲಾಗುತ್ತಿದೆ..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:891
-#, fuzzy
 msgid "Creating new contact…"
-msgstr "ಫೋಲ್ಡರ್ ಹೊಂದಿರುವ %s ಅನ್ನು ಪಡೆಯಲು ಆಗುತ್ತಿಲ್ಲ"
+msgstr "ಹೊಸ ಸಂಪರ್ಕವಿಳಾಸವನ್ನು ರಚಿಸಲಾಗುತ್ತಿದೆ…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:984
 msgid "Deleting contact…"
-msgstr ""
+msgstr "ಸಂಪರ್ಕವಿಳಾಸವನ್ನು ಅಳಿಸಲಾಗುತ್ತಿದೆ…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1092
 #| msgid "Cannot modify contact"
@@ -841,84 +840,84 @@ msgstr "ಇತರೆ ದೋಷ"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:325
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot open book: %s"
-msgstr "ಸಂದೇಶವನ್ನು ತೆರೆಯಲಾಗಲಿಲ್ಲ"
+msgstr "ಪುಸ್ತಕವನ್ನು ತೆರೆಯಲಾಗಲಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:347
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot remove book: %s"
-msgstr "ಸಂದೇಶವನ್ನು ತೆರೆಯಲಾಗಲಿಲ್ಲ"
+msgstr "ಪುಸ್ತಕವನ್ನು ತೆಗೆದು ಹಾಕಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:364
 #: ../addressbook/libedata-book/e-data-book.c:383
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot get contact: %s"
-msgstr "ಫೋಲ್ಡರ್ ಹೊಂದಿರುವ %s ಅನ್ನು ಪಡೆಯಲು ಆಗುತ್ತಿಲ್ಲ"
+msgstr "ಸಂಪರ್ಕ ವಿಳಾಸವನ್ನು ಪಡೆಯಲಾಗುತ್ತಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:402
 #, c-format
 msgid "Empty query: %s"
-msgstr ""
+msgstr "ಖಾಲಿ ಇರುವ ಮನವಿ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:418
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot get contact list: %s"
-msgstr "ಫೋಲ್ಡರ್ ಹೊಂದಿರುವ %s ಅನ್ನು ಪಡೆಯಲು ಆಗುತ್ತಿಲ್ಲ"
+msgstr "ಸಂಪರ್ಕವಿಳಾಸದ ಪಟ್ಟಿಯನ್ನು ಪಡೆಯಲು ಆಗುತ್ತಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:457
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot authenticate user: %s"
-msgstr "ಪರಿಚಾರಕಕ್ಕೆ ದೃಡೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
+msgstr "ಬಳಕೆದಾರನನ್ನು ದೃಡೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:472
 #: ../addressbook/libedata-book/e-data-book.c:491
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot add contact"
 msgid "Cannot add contact: %s"
-msgstr "ಸಂಪರ್ಕವಿಳಾಸವನ್ನು ಸೇರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
+msgstr "ಸಂಪರ್ಕವಿಳಾಸವನ್ನು ಸೇರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:513
 #: ../addressbook/libedata-book/e-data-book.c:532
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot modify contact"
 msgid "Cannot modify contact: %s"
-msgstr "ಸಂಪರ್ಕವಿಳಾಸವನ್ನು ಬದಲಾಯಿಸಲಾಗಿಲ್ಲ"
+msgstr "ಸಂಪರ್ಕವಿಳಾಸವನ್ನು ಬದಲಾಯಿಸಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:571
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot remove contacts"
 msgid "Cannot remove contacts: %s"
-msgstr "ಸಂಪರ್ಕವಿಳಾಸವನ್ನು ತೆಗೆದು ಹಾಕಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
+msgstr "ಸಂಪರ್ಕವಿಳಾಸವನ್ನು ತೆಗೆದು ಹಾಕಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:610
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot get message %s: %s"
 msgid "Cannot get supported fields: %s"
-msgstr "%s ಸಂದೇಶವನ್ನು ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
+msgstr "ಬೆಂಬಲಿತವಾದ ಸ್ಥಳಗಳನ್ನು ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:625
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot get message %s: %s"
 msgid "Cannot get required fields: %s"
-msgstr "%s ಸಂದೇಶವನ್ನು ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
+msgstr "ಅಗತ್ಯವಿರುವ ಸ್ಥಳಗಳನ್ನು ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:640
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unsupported authentication method"
 msgid "Cannot get supported authentication methods: %s"
-msgstr "ಬೆಂಬಲವಿಲ್ಲದ ದೃಢೀಕರಣ ವಿಧಾನ"
+msgstr "ಬೆಂಬಲಿತವಾದ ದೃಢೀಕರಣ ವಿಧಾನಗಳನ್ನು ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:666
@@ -944,19 +943,16 @@ msgstr "ರದ್ದುಗೊಳಿಕೆ ಕಾರ್ಯವು ವಿಫಲಗ�
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:521
 #, c-format
 msgid "Server is unreachable (%s)"
-msgstr ""
+msgstr "ಪರಿಚಾರಕವನ್ನು ತಲುಪಲಾಗುತ್ತಿಲ್ಲ (%s)"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:549
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Unexpected GnuPG status message encountered:\n"
 #| "\n"
 #| "%s"
 msgid "Unexpected HTTP status code %d returned (%s)"
-msgstr ""
-"ಅನಿರೀಕ್ಷಿತವಾದ GnuPG ಸ್ಥಿತಿ ಸಂದೇಶವು ಎದುರಾಗಿದೆ:\n"
-"\n"
-"%s"
+msgstr "%s ಎಂಬ ಅನಿರೀಕ್ಷಿತವಾದ HTTP ಸ್ಥಿತಿ ಸಂಕೇತವನ್ನು ಮರಳಿಸಲಾಗಿದೆ (%s)"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2090
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2495
@@ -1004,28 +1000,24 @@ msgid "Reply Requested: When convenient"
 msgstr "ಪ್ರತ್ಯುತ್ತರಕ್ಕೆ ಮನವಿ ಸಲ್ಲಿಸಲಾಗಿದೆ: ಅನುಕೂಲವಾದಾಗ"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:330
-#, fuzzy
 #| msgid "Loading %s items"
 msgid "Loading Appointment items"
-msgstr "%s ಅಂಶಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
+msgstr "ಅಪಾಯಿಂಟ್‌ಮೆಂಟಿನ ಅಂಶಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:332
-#, fuzzy
 #| msgid "Loading %s items"
 msgid "Loading Task items"
-msgstr "%s ಅಂಶಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
+msgstr "ಕಾರ್ಯದ ಅಂಶಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:334
-#, fuzzy
 #| msgid "Loading %s items"
 msgid "Loading Note items"
-msgstr "%s ಅಂಶಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
+msgstr "ಟಿಪ್ಪಣಿ ಅಂಶಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:336
-#, fuzzy
 #| msgid "Loading %s items"
 msgid "Loading items"
-msgstr "%s ಅಂಶಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
+msgstr "ಅಂಶಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:962
 msgid "Calendar"
@@ -1657,10 +1649,10 @@ msgid "Could not remove cache entry: %s: %s"
 msgstr "ಕ್ಯಾಶೆ ನಮೂದನ್ನು ತೆಗೆದು ಹಾಕಲಾಗಲಿಲ್ಲ: %s: %s"
 
 #: ../camel/camel-data-wrapper.c:147
-#, fuzzy, c-format
+#, c-format
 #| msgid "No such message available."
 msgid "No stream available"
-msgstr "ಅಂತಹ ಯಾವುದೆ ಸಂದೇಶವು ಲಭ್ಯವಿಲ್ಲ."
+msgstr "ಯಾವುದೆ ಸ್ಟ್ರೀಮ್ ಲಭ್ಯವಿಲ್ಲ"
 
 #: ../camel/camel-db.c:455
 #, c-format
@@ -1888,10 +1880,10 @@ msgid "Copying messages"
 msgstr "ಸಂದೇಶಗಳನ್ನು ಕಾಪಿ ಮಾಡಲಾಗುತ್ತಿದೆ"
 
 #: ../camel/camel-folder.c:3253
-#, fuzzy, c-format
+#, c-format
 #| msgid "Retrieving POP message %d"
 msgid "Retrieving message '%s'"
-msgstr "POP ಸಂದೇಶ %d ಅನ್ನು ಪಡೆಯಲಾಗುತ್ತಿದೆ"
+msgstr "'%s' ಸಂದೇಶವನ್ನು ಹಿಂದಕ್ಕೆ ಪಡೆಯಲಾಗುತ್ತಿದೆ"
 
 #: ../camel/camel-gpg-context.c:646 ../camel/camel-gpg-context.c:651
 #: ../camel/camel-gpg-context.c:1276
@@ -1960,7 +1952,7 @@ msgstr "GnuPG ಯಿಂದ '%s' ಗಾಗಿ ಅನಿರೀಕ್ಷಿತ ಮ�
 #: ../camel/providers/pop3/camel-pop3-folder.c:504
 #: ../camel/providers/pop3/camel-pop3-store.c:487
 #: ../libedataserverui/e-book-auth-util.c:229
-#, fuzzy, c-format
+#, c-format
 #| msgid "Canceled"
 msgid "Cancelled"
 msgstr "ರದ್ದು ಮಾಡಲಾಗಿದೆ"
@@ -1982,10 +1974,9 @@ msgid "Failed to encrypt: No valid recipients specified."
 msgstr "ಗೂಢಲಿಪೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ಯಾವುದೆ ಮಾನ್ಯವಾದ ಸ್ವೀಕರಿಸುವವರನ್ನು ಸೂಚಿಸಲಾಗಿಲ್ಲ."
 
 #: ../camel/camel-gpg-context.c:1539 ../camel/camel-smime-context.c:824
-#, fuzzy
 #| msgid "Could not generate signing data: %s"
 msgid "Could not generate signing data: "
-msgstr "ಸಹಿಯ ಮಾಹಿತಿಯ ಉತ್ಪತ್ತಿ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
+msgstr "ಸಹಿಯ ಮಾಹಿತಿಯ ಉತ್ಪತ್ತಿ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: "
 
 #: ../camel/camel-gpg-context.c:1586 ../camel/camel-gpg-context.c:1786
 #: ../camel/camel-gpg-context.c:1896 ../camel/camel-gpg-context.c:2042
@@ -2002,16 +1993,14 @@ msgid "Cannot verify message signature: Incorrect message format"
 msgstr "ಸಂದೇಶವನ್ನು ಪರಿಶೀಲಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ಸಂದೇಶದ ವಿನ್ಯಾಸವು ಸರಿಯಾಗಿಲ್ಲ"
 
 #: ../camel/camel-gpg-context.c:1741
-#, fuzzy
 #| msgid "Cannot verify message signature: Incorrect message format"
 msgid "Cannot verify message signature: "
-msgstr "ಸಂದೇಶವನ್ನು ಪರಿಶೀಲಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ಸಂದೇಶದ ವಿನ್ಯಾಸವು ಸರಿಯಾಗಿಲ್ಲ"
+msgstr "ಸಂದೇಶದ ಸಹಿಯನ್ನು ಪರಿಶೀಲಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: "
 
 #: ../camel/camel-gpg-context.c:1862
-#, fuzzy
 #| msgid "Could not generate encrypting data: %s"
 msgid "Could not generate encrypting data: "
-msgstr "ಗೂಢಲಿಪೀಕರಿಸಲಾದ ಮಾಹಿತಿಯನ್ನು ಉತ್ಪತ್ತಿ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
+msgstr "ಗೂಢಲಿಪೀಕರಿಸಲಾದ ಮಾಹಿತಿಯನ್ನು ಉತ್ಪತ್ತಿ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: "
 
 #: ../camel/camel-gpg-context.c:1915
 msgid "This is a digitally encrypted message part"
@@ -2128,16 +2117,16 @@ msgid "Error copying mail temp file: %s"
 msgstr "ಮೈಲ್‌ನ ತಾತ್ಕಾಲಿಕ ಕಡತವನ್ನು ಕಾಪಿ ಮಾಡುವಲ್ಲಿ ದೋಷ: %s"
 
 #: ../camel/camel-multipart-signed.c:322
-#, fuzzy, c-format
+#, c-format
 #| msgid "No description available"
 msgid "No content available"
-msgstr "ಯಾವುದೆ ವಿವರಣೆ ಲಭ್ಯವಿಲ್ಲ"
+msgstr "ಯಾವುದೆ ವಿಷಯವು ಲಭ್ಯವಿಲ್ಲ"
 
 #: ../camel/camel-multipart-signed.c:330
-#, fuzzy, c-format
+#, c-format
 #| msgid "No description available"
 msgid "No signature available"
-msgstr "ಯಾವುದೆ ವಿವರಣೆ ಲಭ್ಯವಿಲ್ಲ"
+msgstr "ಯಾವುದೆ  ಸಹಿಯು ಲಭ್ಯವಾಗಿಲ್ಲ"
 
 #: ../camel/camel-multipart-signed.c:658
 #, c-format
@@ -2702,27 +2691,27 @@ msgstr "ಫೋಲ್ಡರಿನ ಹೆಸರನ್ನು ಬದಲಾಯಿಸ�
 #: ../camel/camel-tcp-stream-raw.c:749 ../camel/camel-tcp-stream-raw.c:760
 #, c-format
 msgid "The proxy host does not support SOCKS4"
-msgstr ""
+msgstr "ಪ್ರಾಕ್ಸಿ ಆತಿಥೇಯವು SOCKS4 ಅನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
 
 #: ../camel/camel-tcp-stream-raw.c:771
 #, c-format
 msgid "The proxy host denied our request: code %d"
-msgstr ""
+msgstr "ಪ್ರಾಕ್ಸಿ ಆತಿಥೇಯವು ನಮ್ಮ ಮನವಿಯನ್ನು ತಿರಸ್ಕರಿಸಿದೆ: ಕೋಡ್ %d"
 
 #: ../camel/camel-tcp-stream-raw.c:867 ../camel/camel-tcp-stream-raw.c:873
 #, c-format
 msgid "The proxy host does not support SOCKS5"
-msgstr ""
+msgstr "ಪ್ರಾಕ್ಸಿ ಆತಿಥೇಯವು SOCKS5 ಅನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
 
 #: ../camel/camel-tcp-stream-raw.c:879
-#, fuzzy, c-format
+#, c-format
 #| msgid "No support for authentication type %s"
 msgid "Could not find a suitable authentication type: code 0x%x"
-msgstr "%s ಬಗೆಯ ದೃಢೀಕರಣಕ್ಕೆ ಯಾವುದೆ ಬೆಂಬಲವಿಲ್ಲ"
+msgstr "ಸೂಕ್ತವಾದ ಬಗೆಯ ದೃಢೀಕರಣವು ಕಂಡು ಬಂದಿಲ್ಲ: ಕೋಡ್ 0x%x"
 
 #: ../camel/camel-tcp-stream-raw.c:891
 msgid "General SOCKS server failure"
-msgstr ""
+msgstr "ಸಾಮಾನ್ಯ SOCKS ಪರಿಚಾರಕದ ದೋಷ"
 
 #: ../camel/camel-tcp-stream-raw.c:892
 msgid "SOCKS server's rules do not allow connection"
@@ -2730,27 +2719,25 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-raw.c:893
 msgid "Network is unreachable from SOCKS server"
-msgstr ""
+msgstr "SOCKS ಪರಿಚಾರಕದಿಂದ ಜಾಲಬಂಧವನ್ನು ತಲುಪಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
 #: ../camel/camel-tcp-stream-raw.c:894
 msgid "Host is unreachable from SOCKS server"
-msgstr ""
+msgstr "SOCKS ಪರಿಚಾರಕದಿಂದ ಆತಿಥೇಯವನ್ನು ತಲುಪಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
 #: ../camel/camel-tcp-stream-raw.c:895
-#, fuzzy
 #| msgid "Connection canceled"
 msgid "Connection refused"
-msgstr "ಸಂಪರ್ಕವು ರದ್ದಾಗಿದೆ"
+msgstr "ಸಂಪರ್ಕವು ನಿರಾಕರಿಸಲಾಗಿದೆ"
 
 #: ../camel/camel-tcp-stream-raw.c:896
 msgid "Time-to-live expired"
-msgstr ""
+msgstr "ಬದುಕಬೇಕಿರುವ ಕಾಲವು ತೀರಿದೆ"
 
 #: ../camel/camel-tcp-stream-raw.c:897
-#, fuzzy
 #| msgid "STLS not supported by server"
 msgid "Command not supported by SOCKS server"
-msgstr "STLS ಪರಿಚಾರಕದಿಂದ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ"
+msgstr "ಈ ಆಜ್ಞೆಯು SOCKS ಪರಿಚಾರಕದಿಂದ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ"
 
 #: ../camel/camel-tcp-stream-raw.c:898
 #, fuzzy
@@ -2759,21 +2746,20 @@ msgid "Address type not supported by SOCKS server"
 msgstr "STLS ಪರಿಚಾರಕದಿಂದ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ"
 
 #: ../camel/camel-tcp-stream-raw.c:899
-#, fuzzy
 #| msgid "Unknown error: %s"
 msgid "Unknown error from SOCKS server"
-msgstr "ಗೊತ್ತಿರದ ದೋಷ: %s"
+msgstr "SOCKS ಪರಿಚಾರಕದಿಂದ ಗೊತ್ತಿರದ ದೋಷ"
 
 #: ../camel/camel-tcp-stream-raw.c:932
 #, c-format
 msgid "Got unknown address type from SOCKS server"
-msgstr ""
+msgstr "SOCKS ಪರಿಚಾರಕದಿಂದ ಅಪೂರ್ಣವಾದ ವಿಳಾಸವನ್ನು ಪಡೆಯಲಾಗಿದೆ"
 
 #: ../camel/camel-tcp-stream-raw.c:950
-#, fuzzy, c-format
+#, c-format
 #| msgid "Invalid response from server"
 msgid "Incomplete reply from SOCKS server"
-msgstr "ಪರಿಚಾರಕದಿಂದ ಅಮಾನ್ಯವಾದ ಪರಿಚಾರಕ"
+msgstr "SOCKS ಪರಿಚಾರಕದಿಂದ ಅಮಾನ್ಯವಾದ ಪ್ರತ್ಯುತ್ತರ"
 
 #: ../camel/camel-tcp-stream-raw.c:970
 #, c-format
@@ -2783,10 +2769,10 @@ msgstr ""
 #. SOCKS5
 #. reserved - must be 0
 #: ../camel/camel-tcp-stream-raw.c:1002 ../camel/camel-tcp-stream-raw.c:1012
-#, fuzzy, c-format
+#, c-format
 #| msgid "Invalid response from server"
 msgid "Invalid reply from proxy server"
-msgstr "ಪರಿಚಾರಕದಿಂದ ಅಮಾನ್ಯವಾದ ಪರಿಚಾರಕ"
+msgstr "ಪ್ರಾಕ್ಸಿ ಪರಿಚಾರಕದಿಂದ ಅಮಾನ್ಯವಾದ ಪ್ರತ್ಯುತ್ತರ"
 
 #: ../camel/camel-tcp-stream-ssl.c:457
 #, c-format
@@ -2877,10 +2863,10 @@ msgid "No such message %s in %s"
 msgstr "ಆ ಬಗೆಯ ಯಾವುದೆ ಸಂದೇಶ %s ವು %s ನಲ್ಲಿ ಇಲ್ಲ"
 
 #: ../camel/camel-vee-folder.c:1355
-#, fuzzy, c-format
+#, c-format
 #| msgid "Error storing '%s': %s"
 msgid "Error storing '%s': "
-msgstr "'%s' ಅನ್ನು ಶೇಖರಿಸಿಡುವಲ್ಲಿ ದೋಷ: %s"
+msgstr "'%s' ಅನ್ನು ಶೇಖರಿಸಿಡುವಲ್ಲಿ ದೋಷ: "
 
 #: ../camel/camel-vee-store.c:141 ../camel/camel-vee-store.c:143
 #: ../camel/camel-vee-store.c:322
@@ -2968,10 +2954,10 @@ msgstr "ಆ ಬಗೆಯ ಯಾವುದೆ ಸಂದೇಶ ಇಲ್ಲ"
 #: ../camel/providers/nntp/camel-nntp-folder.c:251
 #: ../camel/providers/nntp/camel-nntp-folder.c:418
 #: ../camel/providers/pop3/camel-pop3-folder.c:455
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot get message %s: %s"
 msgid "Cannot get message %s: "
-msgstr "%s ಸಂದೇಶವನ್ನು ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
+msgstr "%s ಸಂದೇಶವನ್ನು ಪಡೆಯಲಾಗಿಲ್ಲ: "
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2685
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2695
@@ -2991,10 +2977,9 @@ msgid "Cannot append message in offline mode: cache unavailable"
 msgstr "ಆಫ್‌ಲೈನ್‌ ಸ್ಥಿತಿಯಲ್ಲಿ ಸಂದೇಶವನ್ನು ಸೇರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ: ಕ್ಯಾಶೆ ಲಭ್ಯವಿಲ್ಲ"
 
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:335
-#, fuzzy
 #| msgid "Cannot append message in offline mode: %s"
 msgid "Cannot append message in offline mode: "
-msgstr "ಆಫ್‌ಲೈನ್‌ ಸ್ಥಿತಿಯಲ್ಲಿ ಸಂದೇಶವನ್ನು ಸೇರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ: %s"
+msgstr "ಆಫ್‌ಲೈನ್‌ ಸ್ಥಿತಿಯಲ್ಲಿ ಸಂದೇಶವನ್ನು ಸೇರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ: "
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:48
 msgid "Checking for new mail"
@@ -3094,10 +3079,10 @@ msgid "Cannot create GroupWise folders in offline mode."
 msgstr "ಆಫ್‌ಲೈನ್‌ ಸ್ಥಿತಿಯಲ್ಲಿ GroupWise ಫೋಲ್ಡರುಗಳನ್ನು ರಚಿಸುವಂತಿಲ್ಲ."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1233
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot delete folder '%s': Special folder"
 msgid "Cannot create a special system folder"
-msgstr "ಫೋಲ್ಡರ್ '%s' ಅನ್ನು ಅಳಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ವಿಶೇಷವಾದ ಫೋಲ್ಡರ್ ಆಗಿದೆ"
+msgstr "ವಿಶೇಷವಾದ ವ್ಯವಸ್ಥೆಯ ಫೋಲ್ಡರ್ ಅನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1243
 #: ../camel/providers/imap/camel-imap-store.c:1886
@@ -3228,10 +3213,9 @@ msgid "Scanning for changed messages in %s"
 msgstr "%s ನಲ್ಲಿ ಬದಲಾಯಿಸಲಾದ ಸಂದೇಶಗಳಿಗಾಗಿ ಪರಿಶೋಧನೆ"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3372
-#, fuzzy
 #| msgid "Unable to retrieve message: %s"
 msgid "Unable to retrieve message: "
-msgstr "ಸಂದೇಶವನ್ನು ಹಿಂದಕ್ಕೆ ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
+msgstr "ಸಂದೇಶವನ್ನು ಹಿಂದಕ್ಕೆ ಪಡೆಯಲಾಗಿಲ್ಲ: "
 
 #: ../camel/providers/imap/camel-imap-folder.c:3407
 #: ../camel/providers/imapx/camel-imapx-server.c:5213
@@ -3268,10 +3252,9 @@ msgstr "FETCH ಪ್ರತ್ಯುತ್ತರದಲ್ಲಿ ಸಂದೇಶ�
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:193
 #: ../camel/providers/imap/camel-imap-message-cache.c:253
-#, fuzzy
 #| msgid "Could not open cache directory: %s"
 msgid "Could not open cache directory: "
-msgstr "ಕ್ಯಾಶೆ ಕೋಶವನ್ನು ತೆಗೆಯಲಾಗಲಿಲ್ಲ: %s"
+msgstr "ಕ್ಯಾಶೆ ಕೋಶವನ್ನು ತೆಗೆಯಲಾಗಲಿಲ್ಲ: "
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:326
 #, c-format
@@ -3279,16 +3262,16 @@ msgid "Failed to cache message %s: %s"
 msgstr "ಸಂದೇಶ %s ಅನ್ನು ಕ್ಯಾಶೆ ಮಾಡಲು ವಿಫಲಗೊಂಡಿದೆ: %s"
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:391
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to cache message %s: %s"
 msgid "Failed to cache message %s: "
-msgstr "ಸಂದೇಶ %s ಅನ್ನು ಕ್ಯಾಶೆ ಮಾಡಲು ವಿಫಲಗೊಂಡಿದೆ: %s"
+msgstr "ಸಂದೇಶ %s ಅನ್ನು ಕ್ಯಾಶೆ ಮಾಡಲು ವಿಫಲಗೊಂಡಿದೆ: "
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:529
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to cache %s: %s"
 msgid "Failed to cache %s: "
-msgstr "%s ಅನ್ನು ಕ್ಯಾಶೆ ಮಾಡಲು ವಿಫಲಗೊಂಡಿದೆ: %s"
+msgstr "%s ಅನ್ನು ಕ್ಯಾಶೆ ಮಾಡಲು ವಿಫಲಗೊಂಡಿದೆ: "
 
 #: ../camel/providers/imap/camel-imap-provider.c:40
 #: ../camel/providers/imapx/camel-imapx-provider.c:40
@@ -3331,9 +3314,8 @@ msgid "O_verride server-supplied folder namespace"
 msgstr "ಪರಿಚಾರಕದಿಂದ ನೀಡಲಾದ ಪೋಲ್ಡರ್ ನೇಮ್‌ಸ್ಪೇಸನ್ನು ಅತಿಕ್ರಮಿಸು(_v)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:62
-#, fuzzy
 msgid "Names_pace:"
-msgstr "ನೇಮ್‍ಸ್ಪೇಸ್:"
+msgstr "ನೇಮ್‍ಸ್ಪೇಸ್ (_p): "
 
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imapx/camel-imapx-provider.c:74
@@ -3383,10 +3365,10 @@ msgstr "SSL ಲಭ್ಯವಿಲ್ಲ"
 
 #: ../camel/providers/imap/camel-imap-store.c:264
 #: ../camel/providers/nntp/camel-nntp-store.c:333
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not connect to %s: %s"
 msgid "Could not connect to %s: "
-msgstr "%s ದೊಂದಿಗೆ ಸಂಪರ್ಕ ಹೊಂದಲಾಗಿಲ್ಲ: %s"
+msgstr "%s ದೊಂದಿಗೆ ಸಂಪರ್ಕ ಹೊಂದಲಾಗಿಲ್ಲ: "
 
 #: ../camel/providers/imap/camel-imap-store.c:370
 #: ../camel/providers/imap/camel-imap-store.c:390
@@ -3504,21 +3486,20 @@ msgid "Server unexpectedly disconnected"
 msgstr "ಪರಿಚಾರಕದಿಂದ ಅನಿರೀಕ್ಷಿತವಾಗಿ ಸಂಪರ್ಕ ಕಡಿದು ಹೋಗಿದೆ"
 
 #: ../camel/providers/imap/camel-imap-store.c:3140
-#, fuzzy
 #| msgid "Server unexpectedly disconnected: %s"
 msgid "Server unexpectedly disconnected: "
-msgstr "ಪರಿಚಾರಕದಿಂದ ಅನಿರೀಕ್ಷಿತವಾಗಿ ಸಂಪರ್ಕ ಕಡಿದು ಹೋಗಿದೆ: %s"
+msgstr "ಪರಿಚಾರಕದಿಂದ ಅನಿರೀಕ್ಷಿತವಾಗಿ ಸಂಪರ್ಕ ಕಡಿದು ಹೋಗಿದೆ: "
 
 #: ../camel/providers/imapx/camel-imapx-folder.c:74
-#, fuzzy, c-format
+#, c-format
 msgid "Could not create folder summary for %s"
-msgstr "%s ಗಾಗಿ ಸಾರಾಂಶವನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
+msgstr "%s ಗಾಗಿ ಫೋಲ್ಡರ್ ಸಾರಾಂಶವನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
 #: ../camel/providers/imapx/camel-imapx-folder.c:82
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not create cache for %s"
 msgid "Could not create cache for %s: "
-msgstr "%s ಗಾಗಿ ಕ್ಯಾಶೆಯನ್ನು ನಿರ್ಮಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
+msgstr "%s ಗಾಗಿ ಕ್ಯಾಶೆಯನ್ನು ನಿರ್ಮಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: "
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:42
 msgid "Use _Quick Resync if the server supports it"
@@ -3526,7 +3507,7 @@ msgstr ""
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:44
 msgid "Use I_dle if the server supports it"
-msgstr ""
+msgstr "ಪರಿಚಾರಕವು ಬೆಂಬಲಿಸುವುದಾದರೆ ಜಡ ಸ್ಥಿತಿಯನ್ನು ಬಳಸು (_I)"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:56
 msgid "Command:"
@@ -3545,34 +3526,31 @@ msgid "IMAP+"
 msgstr "IMAP+"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:1410
-#, fuzzy
 #| msgid "Error writing mail temp file: %s"
 msgid "Error writing to cache stream: "
-msgstr "ಮೈಲ್‌ನ ತಾತ್ಕಾಲಿಕ ಕಡತವನ್ನು ಬರೆಯುವಲ್ಲಿ ದೋಷ: %s"
+msgstr "ಕ್ಯಾಶೆ ಸ್ಟ್ರೀಮ್‌ಗೆ ಬರೆಯುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ: "
 
 #: ../camel/providers/imapx/camel-imapx-server.c:2092
-#, fuzzy, c-format
+#, c-format
 msgid "Not authenticated"
-msgstr "ಪರಿಚಾರಕಕ್ಕೆ ದೃಡೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
+msgstr "ದೃಡೀಕರಿಸಲಾಗಿಲ್ಲ"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:2865
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not connect to %s (port %s): %s"
 msgid "Could not connect to %s (port %s): "
-msgstr "%s ದೊಂದಿಗೆ ಸಂಪರ್ಕ ಕಲ್ಪಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ(ಸಂಪರ್ಕ ಸ್ಥಾನ %s): %s"
+msgstr "%s ದೊಂದಿಗೆ ಸಂಪರ್ಕ ಕಲ್ಪಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ (ಸಂಪರ್ಕ ಸ್ಥಾನ %s): "
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3329
-#, fuzzy
 #| msgid "Posting failed: %s"
 msgid "Closing tmp stream failed: "
-msgstr "ಪೋಸ್ಟಿಂಗ್ ವಿಫಲವಾಗಿದೆ: %s"
+msgstr "tmp ಸ್ಟ್ರೀಮ್‌ ಅನ್ನು ಅಂತ್ಯಗೊಳಿಸುವಿಕೆಯು ವಿಫಲವಾಗಿದೆ: "
 
 #: ../camel/providers/imapx/camel-imapx-server.c:5363
 #: ../camel/providers/imapx/camel-imapx-server.c:5378
-#, fuzzy
 #| msgid "Cannot create message: %s"
 msgid "Cannot create spool file: "
-msgstr "ಸಂದೇಶವನ್ನು ರಚಿಸಲಾಗಿಲ್ಲ: %s"
+msgstr "ಸ್ಪೂಲ್ ಕಡತವನ್ನು ರಚಿಸಲಾಗಿಲ್ಲ: "
 
 #: ../camel/providers/imapx/camel-imapx-store.c:1136
 #: ../camel/providers/nntp/camel-nntp-store.c:1610
@@ -3583,13 +3561,13 @@ msgstr "ಅಂತಹ ಫೋಲ್ಡರುಗಳಿಲ್ಲ: %s"
 #: ../camel/providers/imapx/camel-imapx-stream.c:70
 #, c-format
 msgid "Source stream returned no data"
-msgstr ""
+msgstr "ಮೂಲದ ಸ್ಟ್ರೀಮ್ ಯಾವುದೆ ಮಾಹಿತಿಯನ್ನು ಮರಳಿಸಿಲ್ಲ"
 
 #: ../camel/providers/imapx/camel-imapx-stream.c:79
-#, fuzzy, c-format
+#, c-format
 #| msgid "service unavailable"
 msgid "Source stream unavailable"
-msgstr "ಸೇವೆಯು ಲಭ್ಯವಿಲ್ಲ"
+msgstr "ಮೂಲದ ಸ್ಟ್ರೀಮ್ ಲಭ್ಯವಿಲ್ಲ"
 
 #: ../camel/providers/local/camel-local-folder.c:182
 #, c-format
@@ -3738,10 +3716,10 @@ msgid "Unable to add message to summary: unknown reason"
 msgstr "ಸಾರಾಂಶಕ್ಕೆ ಸಂದೇಶವನ್ನು ಸೇರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ಕಾರಣ ತಿಳಿದಿಲ್ಲ"
 
 #: ../camel/providers/local/camel-maildir-folder.c:198
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot append message to maildir folder: %s: %s"
 msgid "Cannot append message to maildir folder: %s: "
-msgstr "maildir ಫೋಲ್ಡರಿಗೆ ಸಂದೇಶವನ್ನು ಸೇರಿಸಲಾಗಿಲ್ಲ: %s: %s"
+msgstr "maildir ಫೋಲ್ಡರಿಗೆ ಸಂದೇಶವನ್ನು ಸೇರಿಸಲಾಗಿಲ್ಲ: %s: "
 
 #: ../camel/providers/local/camel-maildir-folder.c:246
 #: ../camel/providers/local/camel-maildir-folder.c:256
@@ -3994,6 +3972,8 @@ msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn't get "
 "it.)"
 msgstr ""
+"MBOX ಕಡತವು ಹಾಳಾಗಿದೆ, ದಯವಿಟ್ಟು ಅದನ್ನು ಸರಿಪಡಿಸಿ. (ಒಂದು \"ಇಂದ\" ಸಾಲನ್ನು ನಿರೀಕ್ಷಿಸಲಾಗಿತ್ತು "
+"ಆದರು ಅದು ಕಾಣಿಸುತ್ತಿಲ್ಲ.)"
 
 #: ../camel/providers/local/camel-mbox-summary.c:895
 #: ../camel/providers/local/camel-mbox-summary.c:1140
