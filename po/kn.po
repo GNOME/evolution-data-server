@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=evolution-data-server&component=Misc.\n"
 "POT-Creation-Date: 2011-02-07 14:36+0000\n"
-"PO-Revision-Date: 2011-02-10 21:05+0530\n"
+"PO-Revision-Date: 2011-02-11 12:45+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -159,7 +159,7 @@ msgstr "ಅಜ್ಞಾತ ದೋಷ"
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:335
 #, c-format
 msgid "Create resource '%s' failed with HTTP status: %d (%s)"
-msgstr ""
+msgstr "'%s' ಎಂಬ ಸಂಪನ್ಮೂಲದ ನಿರ್ಮಾಣವು HTTP ಸ್ಥಿತಿಯೊಂದಿಗೆ ವಿಫಲಗೊಂಡಿದೆ: %d (%s)"
 
 #: ../addressbook/libebook/e-book.c:3064
 #, c-format
@@ -952,7 +952,7 @@ msgstr "ಪರಿಚಾರಕವನ್ನು ತಲುಪಲಾಗುತ್ತ�
 #| "\n"
 #| "%s"
 msgid "Unexpected HTTP status code %d returned (%s)"
-msgstr "%d ಎಂಬ ಅನಿರೀಕ್ಷಿತವಾದ HTTP ಸ್ಥಿತಿ ಸಂಕೇತವನ್ನು ಮರಳಿಸಲಾಗಿದೆ (%s)"
+msgstr "%s ಎಂಬ ಅನಿರೀಕ್ಷಿತವಾದ HTTP ಸ್ಥಿತಿ ಸಂಕೇತವನ್ನು ಮರಳಿಸಲಾಗಿದೆ (%s)"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2090
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2495
@@ -961,10 +961,13 @@ msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
 "Error message: %s"
 msgstr ""
+"ಪರಿಚಾರಕವನ್ನು ತಲುಪಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ, ಕ್ಯಾಲೆಂಡರನ್ನು ಕೇವಲ ಓದುವ ವಿಧಾನದಲ್ಲಿ ಮಾತ್ರ "
+"ತೆರೆಯಲಾಗಿದೆ.\n"
+"ದೋಷ ಸಂದೇಶ: %s"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4266
 msgid "Calendar doesn't support Free/Busy"
-msgstr ""
+msgstr "ಬಿಡುವ/ಕಾರ್ಯನಿರತವನ್ನು ಕ್ಯಾಲೆಂಡರ್ ಅನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:725
 msgid "Birthday"
@@ -1445,27 +1448,27 @@ msgstr "ಗೊತ್ತಿರದ ಬಳಕೆದಾರ"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:610
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot retrieve calendar address: %s"
-msgstr "ಕ್ಯಾಲೆಂಡರ್ ದತ್ತಾಂಶವನ್ನು ಉಳಿಸಲಾಗಿಲ್ಲ"
+msgstr "ಕ್ಯಾಲೆಂಡರ್ ವಿಳಾಸವನ್ನು ಹಿಂದಕ್ಕೆ ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:635
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot retrieve calendar alarm e-mail address: %s"
-msgstr "ಕ್ಯಾಲೆಂಡರ್ ಮಾಹಿತಿಯನ್ನು ಉಳಿಸಲಾಗಿಲ್ಲ: ತಪ್ಪಾಗಿರುವ ಯುಆರ್ಐ."
+msgstr "ಕ್ಯಾಲೆಂಡರ್ ಅಲಾರಂ ಇ-ಮೈಲ್ ವಿಳಾಸವನ್ನು ಹಿಂದಕ್ಕೆ ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:660
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot retrieve calendar's LDAP attribute: %s"
-msgstr "ಕ್ಯಾಲೆಂಡರ್ ದತ್ತಾಂಶವನ್ನು ಉಳಿಸಲಾಗಿಲ್ಲ"
+msgstr "ಕ್ಯಾಲೆಂಡರ್ LDAP ಗುಣವಿಶೇಷವನ್ನು ಹಿಂದಕ್ಕೆ ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:685
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot retrieve calendar scheduling information: %s"
-msgstr "CMS ಸ್ವೀಕರಿಸುವವರ ಮಾಹಿತಿಯನ್ನು ರಚಿಸಲಾಗಿಲ್ಲ"
+msgstr "ಕ್ಯಾಲೆಂಡರ್ ಶೆಡ್ಯೂಲಿಂಗ ಮಾಹಿತಿಯನ್ನು ಹಿಂದಕ್ಕೆ ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:709
@@ -1499,87 +1502,87 @@ msgstr "ಕ್ಯಾಲೆಂಡರ್ ವಸ್ತುವನ್ನು ಮಾರ�
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:824
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot remove calendar object: %s"
-msgstr "ಕ್ಯಾಲೆಂಡರ್ ದತ್ತಾಂಶವನ್ನು ಉಳಿಸಲಾಗಿಲ್ಲ"
+msgstr "ಕ್ಯಾಲೆಂಡರ್ ವಸ್ತುವನ್ನು ತೆಗೆದು ಹಾಕಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:845
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot receive calendar objects: %s"
-msgstr "ಕ್ಯಾಲೆಂಡರ್ ದತ್ತಾಂಶವನ್ನು ಉಳಿಸಲಾಗಿಲ್ಲ"
+msgstr "ಕ್ಯಾಲೆಂಡರ್ ವಸ್ತುಗಳನ್ನು ಸ್ವೀಕರಿಸಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:864
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot discard calendar alarm: %s"
-msgstr "ಕ್ಯಾಲೆಂಡರ್ ದತ್ತಾಂಶವನ್ನು ಉಳಿಸಲಾಗಿಲ್ಲ"
+msgstr "ಕ್ಯಾಲೆಂಡರ್ ಅಲಾರಂ ಅನ್ನು ಕಡೆಗಣಿಸಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:885
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot send calendar objects: %s"
-msgstr "ಕ್ಯಾಲೆಂಡರ್ ದತ್ತಾಂಶವನ್ನು ಉಳಿಸಲಾಗಿಲ್ಲ"
+msgstr "ಕ್ಯಾಲೆಂಡರ್ ವಸ್ತುಗಳನ್ನು ಕಳುಹಿಸಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:912
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot retrieve default calendar object path: %s"
-msgstr "ಕ್ಯಾಲೆಂಡರ್ ದತ್ತಾಂಶವನ್ನು ಉಳಿಸಲಾಗಿಲ್ಲ"
+msgstr "ಪೂರ್ವನಿಯೋಜಿತ ಕ್ಯಾಲೆಂಡರ್ ವಸ್ತುವಿನ ಮಾರ್ಗವನ್ನು ಹಿಂದಕ್ಕೆ ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:937
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot retrieve calendar object path: %s"
-msgstr "ಕ್ಯಾಲೆಂಡರ್ ದತ್ತಾಂಶವನ್ನು ಉಳಿಸಲಾಗಿಲ್ಲ"
+msgstr "ಕ್ಯಾಲೆಂಡರ್ ವಸ್ತುವಿನ ಮಾರ್ಗವನ್ನು ಹಿಂದಕ್ಕೆ ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:962
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot retrieve calendar object list: %s"
-msgstr "ಕ್ಯಾಲೆಂಡರ್ ದತ್ತಾಂಶವನ್ನು ಉಳಿಸಲಾಗಿಲ್ಲ"
+msgstr "ಕ್ಯಾಲೆಂಡರ್ ವಸ್ತುವಿನ ಪಟ್ಟಿಯನ್ನು ಹಿಂದಕ್ಕೆ ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:990
-#, fuzzy, c-format
+#, c-format
 msgid "Could not retrieve attachment list: %s"
-msgstr "ಹವಾಮಾನ ದತ್ತಾಂಶವನ್ನು ಮರುಗಳಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
+msgstr "ಲಗತ್ತಿನ ಪಟ್ಟಿಯನ್ನು ಹಿಂದಕ್ಕೆ ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1016
-#, fuzzy, c-format
+#, c-format
 msgid "Could not complete calendar query: %s"
-msgstr "ಕ್ಯಾಶೆ ಕಡತವನ್ನು ರಚಿಸಲಾಗಿಲ್ಲ"
+msgstr "ಕ್ಯಾಲೆಂಡರಿನ ಮನವಿಯನ್ನು ಪೂರ್ಣಗೊಳಿಸಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1041
-#, fuzzy, c-format
+#, c-format
 msgid "Could not retrieve calendar time zone: %s"
-msgstr "ಹವಾಮಾನ ದತ್ತಾಂಶವನ್ನು ಮರುಗಳಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
+msgstr "ಕ್ಯಾಲೆಂಡರ್ ಕಾಲವಲಯವನ್ನು ಮರುಗಳಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1066
-#, fuzzy, c-format
+#, c-format
 msgid "Could not add calendar time zone: %s"
-msgstr "ಕಾರ್ಯವನ್ನು ರದ್ದು ಮಾಡಲಾಗಿಲ್ಲ"
+msgstr "ಕ್ಯಾಲೆಂಡರ್ ಕಾಲವಲಯವನ್ನು ಸೇರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1085
-#, fuzzy, c-format
+#, c-format
 msgid "Could not set default calendar time zone: %s"
-msgstr "ಹವಾಮಾನ ದತ್ತಾಂಶವನ್ನು ಮರುಗಳಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
+msgstr "ಪೂರ್ವನಿಯೋಜಿತ ಕಾಲ ವಲಯವನ್ನು ಹೊಂದಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1108
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot retrieve calendar changes: %s"
-msgstr "ಕ್ಯಾಲೆಂಡರ್ ದತ್ತಾಂಶವನ್ನು ಉಳಿಸಲಾಗಿಲ್ಲ"
+msgstr "ಕ್ಯಾಲೆಂಡರ್ ಬದಲಾವಣೆಗಳನ್ನು ಹಿಂದಕ್ಕೆ ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1139
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot retrieve calendar free/busy list: %s"
-msgstr "ಕ್ಯಾಲೆಂಡರ್ ದತ್ತಾಂಶವನ್ನು ಉಳಿಸಲಾಗಿಲ್ಲ"
+msgstr "ಕ್ಯಾಲೆಂಡರ್ ಬಿಡುವ/ಕಾರ್ಯನಿರತ ಪಟ್ಟಿಯನ್ನು ಹಿಂದಕ್ಕೆ ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
 
 #: ../calendar/libedata-cal/e-data-cal-factory.c:374
 #, c-format
@@ -1589,12 +1592,12 @@ msgstr "ಅಮಾನ್ಯ URI"
 #: ../calendar/libedata-cal/e-data-cal-factory.c:392
 #, c-format
 msgid "No backend factory for '%s' of '%s'"
-msgstr ""
+msgstr "'%s' ಗಾಗಿ, ('%s' ನಲ್ಲಿ) ಯಾವುದೆ ಬ್ಯಾಕೆಂಡ್ ಫ್ಯಾಕ್ಟರಿ ಇಲ್ಲ"
 
 #: ../calendar/libedata-cal/e-data-cal-factory.c:442
-#, fuzzy, c-format
+#, c-format
 msgid "Could not instantiate backend"
-msgstr "ಕ್ಯಾಶೆ ಕಡತವನ್ನು ರಚಿಸಲಾಗಿಲ್ಲ"
+msgstr "ಬ್ಯಾಕೆಂಡ್ ಅನ್ನು ದಿಡೀರ್ ದೊರಕುವಂತೆ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
 #: ../camel/camel-cipher-context.c:204
 #, c-format
@@ -1850,25 +1853,25 @@ msgid "(%s) requires the folder set"
 msgstr "(%s) ಕ್ಕಾಗಿ ಫೋಲ್ಡರಿನ ಸೆಟ್‌ ಬೇಕಾಗಿದೆ"
 
 #: ../camel/camel-folder.c:220
-#, fuzzy, c-format
+#, c-format
 msgid "Learning new spam message in '%s'"
 msgid_plural "Learning new spam messages in '%s'"
-msgstr[0] "%s ನಲ್ಲಿ ಬದಲಾಯಿಸಲಾದ ಸಂದೇಶಗಳಿಗಾಗಿ ಪರಿಶೋಧನೆ"
-msgstr[1] "%s ನಲ್ಲಿ ಬದಲಾಯಿಸಲಾದ ಸಂದೇಶಗಳಿಗಾಗಿ ಪರಿಶೋಧನೆ"
+msgstr[0] "%s ನಲ್ಲಿ ಹೊಸ ಸ್ಪ್ಯಾಮ್ ಸಂದೇಶಗಳನ್ನು ಅರಿತುಕೊಳ್ಳಲಾಗುತ್ತಿದೆ"
+msgstr[1] "%s ನಲ್ಲಿ ಹೊಸ ಸ್ಪ್ಯಾಮ್ ಸಂದೇಶವನ್ನು ಅರಿತುಕೊಳ್ಳಲಾಗುತ್ತಿದೆ"
 
 #: ../camel/camel-folder.c:244
-#, fuzzy, c-format
+#, c-format
 msgid "Learning new ham message in '%s'"
 msgid_plural "Learning new ham messages in '%s'"
-msgstr[0] "%s ನಲ್ಲಿ ಬದಲಾಯಿಸಲಾದ ಸಂದೇಶಗಳಿಗಾಗಿ ಪರಿಶೋಧನೆ"
-msgstr[1] "%s ನಲ್ಲಿ ಬದಲಾಯಿಸಲಾದ ಸಂದೇಶಗಳಿಗಾಗಿ ಪರಿಶೋಧನೆ"
+msgstr[0] "%s ನಲ್ಲಿ ಹೊಸ ಹ್ಯಾಮ್‌ ಸಂದೇಶವನ್ನು ಅರಿತುಕೊಳ್ಳಲಾಗುತ್ತಿದೆ"
+msgstr[1] "%s ನಲ್ಲಿ ಹೊಸ ಹ್ಯಾಮ್‌ ಸಂದೇಶಗಳನ್ನು ಅರಿತುಕೊಳ್ಳಲಾಗುತ್ತಿದೆ"
 
 #: ../camel/camel-folder.c:270
-#, fuzzy, c-format
+#, c-format
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
-msgstr[0] "ಹೊಸ ಸಂದೇಶವನ್ನು(ಗಳನ್ನು) ಫಿಲ್ಟರ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
-msgstr[1] "ಹೊಸ ಸಂದೇಶವನ್ನು(ಗಳನ್ನು) ಫಿಲ್ಟರ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
+msgstr[0] "%s ನಲ್ಲಿ ಹೊಸ ಸಂದೇಶವನ್ನು ಫಿಲ್ಟರ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
+msgstr[1] "%s ನಲ್ಲಿ ಹೊಸ ಸಂದೇಶಗಳನ್ನು ಫಿಲ್ಟರ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
 
 #: ../camel/camel-folder.c:881
 #: ../camel/providers/local/camel-maildir-folder.c:293
@@ -2047,10 +2050,12 @@ msgid "Could not create lock file for %s: %s"
 msgstr "%s ಗಾಗಿ ಲಾಕ್‌ ಕಡತವನ್ನು ನಿರ್ಮಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
 
 #: ../camel/camel-lock.c:145
-#, fuzzy, c-format
+#, c-format
 #| msgid "Timed out trying to get lock file on %s. Try again later."
 msgid "Timed out trying to get lock file on %s.  Try again later."
-msgstr "%s ನಲ್ಲಿ ಲಾಕ್ ಕಡತವನ್ನು ಪಡೆಯಲು ಪ್ರಯತ್ನಿಸಿದಾಗ ಕಾಲಾವಧಿ ತೀರಿದೆ. ಪುನಃ ಪ್ರಯತ್ನಿಸಿ."
+msgstr ""
+"%s ನಲ್ಲಿ ಲಾಕ್ ಕಡತವನ್ನು ಪಡೆಯಲು ಪ್ರಯತ್ನಿಸಿದಾಗ ಕಾಲಾವಧಿ ತೀರಿದೆ. ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಪುನಃ "
+"ಪ್ರಯತ್ನಿಸಿ."
 
 #: ../camel/camel-lock.c:205
 #, c-format
@@ -2418,16 +2423,16 @@ msgid "POP Source URI"
 msgstr "POP ಆಕರ URI"
 
 #: ../camel/camel-sasl-popb4smtp.c:90
-#, fuzzy, c-format
+#, c-format
 #| msgid "POP Before SMTP auth using an unknown transport"
 msgid "POP Before SMTP authentication using an unknown transport"
-msgstr "POP Before SMTP auth ಒಂದು ತಿಳಿಯದ ವರ್ಗಾವಣೆಯನ್ನು ಬಳಸುತ್ತಿದೆ"
+msgstr "SMTP ದೃಢೀಕರಣದ ಮೊದಲು POP ಒಂದು ತಿಳಿಯದ ವರ್ಗಾವಣೆಯನ್ನು ಬಳಸುತ್ತಿದೆ"
 
 #: ../camel/camel-sasl-popb4smtp.c:98
-#, fuzzy, c-format
+#, c-format
 #| msgid "POP Before SMTP auth using a non-pop source"
 msgid "POP Before SMTP authentication using a non-POP source"
-msgstr "POP Before SMTP auth ಒಂದು pop ಅಲ್ಲದ ಆಕರವನ್ನು ಬಳಸುತ್ತಿದೆ"
+msgstr "SMTP ದೃಢೀಕರಣದ ಮೊದಲು POP ಒಂದು POP ಅಲ್ಲದ ಮೂಲವನ್ನು ಬಳಸುತ್ತಿದೆ"
 
 #: ../camel/camel-search-private.c:112
 #, c-format
@@ -2715,7 +2720,7 @@ msgstr "ಸಾಮಾನ್ಯ SOCKS ಪರಿಚಾರಕದ ದೋಷ"
 
 #: ../camel/camel-tcp-stream-raw.c:892
 msgid "SOCKS server's rules do not allow connection"
-msgstr ""
+msgstr "SOCKS ಪರಿಚಾರಕದ ನಿಯಮಗಳು ಸಂಪರ್ಕವನ್ನು ಜೋಡಿಸಲು ಅನುಮತಿಸುವುದಿಲ್ಲ"
 
 #: ../camel/camel-tcp-stream-raw.c:893
 msgid "Network is unreachable from SOCKS server"
@@ -2740,10 +2745,9 @@ msgid "Command not supported by SOCKS server"
 msgstr "ಈ ಆಜ್ಞೆಯು SOCKS ಪರಿಚಾರಕದಿಂದ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ"
 
 #: ../camel/camel-tcp-stream-raw.c:898
-#, fuzzy
 #| msgid "STLS not supported by server"
 msgid "Address type not supported by SOCKS server"
-msgstr "STLS ಪರಿಚಾರಕದಿಂದ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ"
+msgstr "ವಿಳಾಸದ ಬಗೆಗೆ SOCKS ಪರಿಚಾರಕದಿಂದ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ"
 
 #: ../camel/camel-tcp-stream-raw.c:899
 #| msgid "Unknown error: %s"
@@ -2764,7 +2768,7 @@ msgstr "SOCKS ಪರಿಚಾರಕದಿಂದ ಅಮಾನ್ಯವಾದ ಪ�
 #: ../camel/camel-tcp-stream-raw.c:970
 #, c-format
 msgid "Hostname is too long (maximum is 255 characters)"
-msgstr ""
+msgstr "ಆತಿಥೇಯ ಗಣಕದ ಹೆಸರು ಬಹಳದ ದೊಡ್ಡದಾಗಿದೆ (ಗರಿಷ್ಟ 255 ಅಕ್ಷರಗಳನ್ನು ಹೊಂದಿರಬಹುದು)"
 
 #. SOCKS5
 #. reserved - must be 0
@@ -3503,7 +3507,7 @@ msgstr "%s ಗಾಗಿ ಕ್ಯಾಶೆಯನ್ನು ನಿರ್ಮಿಸ�
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:42
 msgid "Use _Quick Resync if the server supports it"
-msgstr ""
+msgstr "ಪರಿಚಾರಕವು ಬೆಂಬಲಿಸುವಂತಿದ್ದಲ್ಲಿ ಕ್ವಿಕ್ ರಿಸಿಂಕ್ ಅನ್ನು ಬಳಸು (_Q)"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:44
 msgid "Use I_dle if the server supports it"
@@ -3515,7 +3519,7 @@ msgstr "ಆಜ್ಞೆ:"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:58
 msgid "Numbe_r of cached connections to use"
-msgstr ""
+msgstr "ಬಳಸಬೇಕಿರುವ ಕ್ಯಾಶ್ ಮಾಡಲಾದ ಸಂಪರ್ಕಗಳ ಸಂಖ್ಯೆ (_r)"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:69
 msgid "Namespace:"
@@ -4332,7 +4336,7 @@ msgstr "%s ದಿನ(ಗಳ) ನಂತರ ಅಳಿಸಿ ಹಾಕು(_D)"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:46
 msgid "Delete _expunged from local Inbox"
-msgstr ""
+msgstr "ಸ್ಥಳೀಯ ಇನ್‌ಬಾಕ್ಸಿನಿಂದ ತೆಗೆದು ಹಾಕಲಾಗಿದ್ದನ್ನು ಅಳಿಸು (_e)"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:48
 msgid "Disable _support for all POP3 extensions"
@@ -4490,7 +4494,7 @@ msgstr "'%s' ನಂತಹ ಯಾವುದೆ ಫೋಲ್ಡರ್ ಇಲ್ಲ.
 #: ../camel/providers/pop3/camel-pop3-store.c:738
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
-msgstr ""
+msgstr "POP3 ಯು ಯಾವುದೆ ಫೋಲ್ಡರ್ ಶ್ರೇಣಿ ವ್ಯವಸ್ಥೆಯನ್ನು ಹೊಂದಿರುವುದಿಲ್ಲ"
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:36
 msgid "Sendmail"
