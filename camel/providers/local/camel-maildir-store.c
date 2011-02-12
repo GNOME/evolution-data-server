@@ -514,6 +514,8 @@ scan_dirs (CamelStore *store,
 	if (!g_file_test (meta_path, G_FILE_TEST_EXISTS))
 		maildir_migrate_hierarchy ((CamelMaildirStore *) store, cancellable, error);
 
+	g_free(meta_path);
+
 	while ((d = readdir (dir))) {
 		gchar *full_name, *filename;
 		const gchar *short_name;
