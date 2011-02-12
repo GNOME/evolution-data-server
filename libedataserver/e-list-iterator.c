@@ -87,8 +87,8 @@ e_list_iterator_dispose (GObject *object)
 	e_list_remove_iterator (iterator->list, E_ITERATOR (iterator));
 	g_object_unref (iterator->list);
 
-	if (G_OBJECT_CLASS (e_list_iterator_parent_class)->dispose)
-		(* G_OBJECT_CLASS (e_list_iterator_parent_class)->dispose) (object);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_list_iterator_parent_class)->dispose (object);
 }
 
 static gconstpointer

@@ -465,8 +465,8 @@ e_data_book_factory_finalize (GObject *object)
 	g_mutex_free (factory->priv->books_lock);
 	g_mutex_free (factory->priv->connections_lock);
 
-	if (G_OBJECT_CLASS (e_data_book_factory_parent_class)->finalize)
-		G_OBJECT_CLASS (e_data_book_factory_parent_class)->finalize (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_data_book_factory_parent_class)->finalize (object);
 }
 
 static void

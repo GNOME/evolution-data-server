@@ -1253,8 +1253,8 @@ e_data_cal_finalize (GObject *object)
 
 	g_object_unref (cal->priv->gdbus_object);
 
-	if (G_OBJECT_CLASS (e_data_cal_parent_class)->finalize)
-		G_OBJECT_CLASS (e_data_cal_parent_class)->finalize (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_data_cal_parent_class)->finalize (object);
 }
 
 /* Class init */

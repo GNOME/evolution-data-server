@@ -365,8 +365,8 @@ category_completion_constructed (GObject *object)
 	GtkCellRenderer *renderer;
 	GtkEntryCompletion *completion;
 
-	if (G_OBJECT_CLASS (parent_class)->constructed)
-		G_OBJECT_CLASS (parent_class)->constructed (object);
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (parent_class)->constructed (object);
 
 	completion = GTK_ENTRY_COMPLETION (object);
 

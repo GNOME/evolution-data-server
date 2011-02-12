@@ -174,8 +174,8 @@ e_book_dispose (GObject *object)
 		book->priv->source = NULL;
 	}
 
-	if (G_OBJECT_CLASS (e_book_parent_class)->dispose)
-		G_OBJECT_CLASS (e_book_parent_class)->dispose (object);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_book_parent_class)->dispose (object);
 }
 
 static void
@@ -189,8 +189,8 @@ e_book_finalize (GObject *object)
 	if (book->priv->cap)
 		g_free (book->priv->cap);
 
-	if (G_OBJECT_CLASS (e_book_parent_class)->finalize)
-		G_OBJECT_CLASS (e_book_parent_class)->finalize (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_book_parent_class)->finalize (object);
 
 	LOCK_FACTORY ();
 	active_books--;

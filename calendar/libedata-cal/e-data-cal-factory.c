@@ -590,8 +590,8 @@ e_data_cal_factory_finalize (GObject *object)
 
 	g_mutex_free (factory->priv->backends_mutex);
 
-	if (G_OBJECT_CLASS (e_data_cal_factory_parent_class)->finalize)
-		G_OBJECT_CLASS (e_data_cal_factory_parent_class)->finalize (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_data_cal_factory_parent_class)->finalize (object);
 }
 
 /* Class initialization function for the calendar factory */

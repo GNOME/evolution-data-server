@@ -4604,8 +4604,8 @@ e_cal_backend_caldav_dispose (GObject *object)
 	priv->disposed = TRUE;
 	g_mutex_unlock (priv->busy_lock);
 
-	if (G_OBJECT_CLASS (parent_class)->dispose)
-		(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
@@ -4626,8 +4626,8 @@ e_cal_backend_caldav_finalize (GObject *object)
 	}
 	priv->default_zone = NULL;
 
-	if (G_OBJECT_CLASS (parent_class)->finalize)
-		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void

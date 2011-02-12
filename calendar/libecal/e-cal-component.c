@@ -388,8 +388,8 @@ e_cal_component_finalize (GObject *object)
 	g_free (priv);
 	comp->priv = NULL;
 
-	if (G_OBJECT_CLASS (parent_class)->finalize)
-		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 

@@ -1236,8 +1236,8 @@ e_cal_backend_contacts_finalize (GObject *object)
 	g_free (priv);
 	cbc->priv = NULL;
 
-	if (G_OBJECT_CLASS (parent_class)->finalize)
-		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 /* Object initialization function for the contacts backend */

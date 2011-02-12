@@ -116,9 +116,9 @@ utf8_casefold_collate (const gchar *str1, const gchar *str2)
 }
 
 static void
-e_destination_dispose (GObject *obj)
+e_destination_dispose (GObject *object)
 {
-	EDestination *dest = E_DESTINATION (obj);
+	EDestination *dest = E_DESTINATION (object);
 
 	if (dest->priv) {
 		e_destination_clear (dest);
@@ -127,8 +127,8 @@ e_destination_dispose (GObject *obj)
 		dest->priv = NULL;
 	}
 
-	if (G_OBJECT_CLASS (parent_class)->dispose)
-		(* G_OBJECT_CLASS (parent_class)->dispose) (obj);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void

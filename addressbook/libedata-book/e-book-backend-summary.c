@@ -198,8 +198,8 @@ e_book_backend_summary_dispose (GObject *object)
 		summary->priv = NULL;
 	}
 
-	if (G_OBJECT_CLASS (parent_class)->dispose)
-		G_OBJECT_CLASS (parent_class)->dispose (object);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void

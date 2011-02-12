@@ -1219,8 +1219,8 @@ e_cal_backend_groupwise_finalize (GObject *object)
 	g_free (priv);
 	cbgw->priv = NULL;
 
-	if (G_OBJECT_CLASS (parent_class)->finalize)
-		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 /* Calendar backend methods */

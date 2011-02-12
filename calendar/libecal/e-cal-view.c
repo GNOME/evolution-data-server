@@ -263,8 +263,8 @@ e_cal_view_finalize (GObject *object)
 
 	g_object_unref (priv->client);
 
-	if (G_OBJECT_CLASS (e_cal_view_parent_class)->finalize)
-		(* G_OBJECT_CLASS (e_cal_view_parent_class)->finalize) (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_cal_view_parent_class)->finalize (object);
 }
 
 /* Class initialization function for the calendar view */

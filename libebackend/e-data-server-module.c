@@ -127,8 +127,8 @@ e_data_server_module_finalize (GObject *object)
 
 	g_free (module->path);
 
-	if (G_OBJECT_CLASS (e_data_server_module_parent_class)->finalize)
-		(*G_OBJECT_CLASS (e_data_server_module_parent_class)->finalize) (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_data_server_module_parent_class)->finalize (object);
 }
 
 static void

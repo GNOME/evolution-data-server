@@ -113,8 +113,8 @@ e_cal_backend_http_dispose (GObject *object)
 		priv->source_changed_id = 0;
 	}
 
-	if (G_OBJECT_CLASS (parent_class)->dispose)
-		(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 /* Finalize handler for the file backend */
@@ -161,8 +161,8 @@ e_cal_backend_http_finalize (GObject *object)
 	g_free (priv);
 	cbhttp->priv = NULL;
 
-	if (G_OBJECT_CLASS (parent_class)->finalize)
-		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 

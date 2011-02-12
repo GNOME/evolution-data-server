@@ -907,8 +907,8 @@ e_book_backend_sexp_dispose (GObject *object)
 		sexp->priv = NULL;
 	}
 
-	if (G_OBJECT_CLASS (parent_class)->dispose)
-		G_OBJECT_CLASS (parent_class)->dispose (object);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void

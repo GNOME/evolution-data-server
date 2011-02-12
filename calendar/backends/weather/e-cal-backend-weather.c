@@ -948,8 +948,8 @@ e_cal_backend_weather_finalize (GObject *object)
 	g_free (priv);
 	cbw->priv = NULL;
 
-	if (G_OBJECT_CLASS (parent_class)->finalize)
-		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 /* Object initialization function for the weather backend */
