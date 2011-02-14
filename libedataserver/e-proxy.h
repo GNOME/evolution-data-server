@@ -21,21 +21,34 @@
  *
  */
 
-#ifndef __E_PROXY_H__
-#define __E_PROXY_H__
+#ifndef E_PROXY_H
+#define E_PROXY_H
 
 #include <libsoup/soup-uri.h>
 
+/* Standard GObject macros */
+#define E_TYPE_PROXY \
+	(e_proxy_get_type ())
+#define E_PROXY(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_PROXY, EProxy))
+#define E_PROXY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_PROXY, EProxyClass))
+#define E_IS_PROXY(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_PROXY))
+#define E_IS_PROXY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_PROXY))
+#define E_PROXY_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_PROXY, EProxyClass))
+
 G_BEGIN_DECLS
 
-#define E_TYPE_PROXY            (e_proxy_get_type ())
-#define E_PROXY(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_PROXY, EProxy))
-#define E_PROXY_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_PROXY, EProxyClass))
-#define E_IS_PROXY(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_PROXY))
-#define E_IS_PROXY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_PROXY))
-
-typedef struct _EProxy        EProxy;
-typedef struct _EProxyClass   EProxyClass;
+typedef struct _EProxy EProxy;
+typedef struct _EProxyClass EProxyClass;
 typedef struct _EProxyPrivate EProxyPrivate;
 
 /**
@@ -50,18 +63,19 @@ struct _EProxy {
 
 struct _EProxyClass {
 	GObjectClass parent_class;
-	/* Signals.  */
 
+	/* Signals  */
 	void (*changed) (EProxy *proxy);
 };
 
-EProxy* e_proxy_new (void);
-SoupURI* e_proxy_peek_uri_for (EProxy* proxy, const gchar *uri);
-void e_proxy_setup_proxy (EProxy* proxy);
-GType e_proxy_get_type (void);
-gboolean e_proxy_require_proxy_for_uri (EProxy *proxy,
-					const gchar * uri);
+GType		e_proxy_get_type		(void);
+EProxy *	e_proxy_new			(void);
+void		e_proxy_setup_proxy		(EProxy *proxy);
+SoupURI *	e_proxy_peek_uri_for		(EProxy *proxy,
+						 const gchar *uri);
+gboolean	e_proxy_require_proxy_for_uri	(EProxy *proxy,
+						 const gchar *uri);
 
 G_END_DECLS
 
-#endif
+#endif /* E_PROXY_H */

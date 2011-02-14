@@ -97,6 +97,10 @@ enum ProxyType {
 
 #define RIGHT_KEY(sufix) (priv->type == PROXY_TYPE_SYSTEM ? KEY_GCONF_SYS_ ## sufix : KEY_GCONF_EVO_ ## sufix)
 
+#define E_PROXY_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_PROXY, EProxyPrivate))
+
 struct _EProxyPrivate {
 	SoupURI *uri_http, *uri_https;
 	guint notify_id_evo, notify_id_sys, notify_id_sys_http; /* conxn id of gconf_client_notify_add  */
@@ -124,14 +128,12 @@ enum {
 	LAST_SIGNAL
 };
 
-static GObjectClass *parent_class;
 static guint signals[LAST_SIGNAL] = { 0 };
 
 /* Forward declarations.  */
 
 static void	ep_setting_changed	(GConfClient *client, guint32 cnxn_id,
 					 GConfEntry *entry, gpointer user_data);
-static void	e_proxy_dispose	(GObject* object);
 
 static void	ipv6_network_addr	(const struct in6_addr *addr,
 					 const struct in6_addr *mask,
@@ -154,101 +156,81 @@ ep_free_proxy_host_addr (ProxyHostAddr* host)
 }
 
 static void
-e_proxy_class_init (EProxyClass *klass)
-{
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-	parent_class = g_type_class_peek_parent (klass);
-
-	object_class->dispose = e_proxy_dispose;
-
-        /* signals */
-
-        /**
-         * EProxy::changed:
-         * @proxy: the proxy
-         *
-         * Emitted when proxy settings in gconf changes.
-         **/
-	signals[CHANGED] =
-                g_signal_new ("changed",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (EProxyClass, changed),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE, 0);
-
-}
-
-static void
-e_proxy_init (EProxy *pxy)
-{
-	EProxyPrivate *priv;
-
-	/* allocate internal structure */
-	priv = g_new0 (EProxyPrivate, 1);
-	pxy->priv = priv;
-	priv->ign_hosts = NULL;
-	priv->ign_addrs = NULL;
-	priv->uri_http = NULL;
-	priv->uri_https = NULL;
-	priv->notify_id_evo = 0;
-	priv->notify_id_sys = 0;
-	priv->notify_id_sys_http = 0;
-	priv->use_proxy = FALSE;
-	priv->type = PROXY_TYPE_SYSTEM;
-}
-
-static void
 e_proxy_dispose (GObject *object)
 {
-	EProxy *proxy = (EProxy *)object;
 	EProxyPrivate *priv;
+	GConfClient* client;
 
-	if (!E_IS_PROXY (proxy))
-		return;
+	priv = E_PROXY_GET_PRIVATE (object);
 
-	priv = proxy->priv;
+	client = gconf_client_get_default ();
 
-	if (priv) {
-		GConfClient* client = NULL;
-
-		if ((client = gconf_client_get_default ())) {
-			if (priv->notify_id_evo > 0)
-				gconf_client_notify_remove (client, priv->notify_id_evo);
-			if (priv->notify_id_sys > 0)
-				gconf_client_notify_remove (client, priv->notify_id_sys);
-			if (priv->notify_id_sys_http > 0)
-				gconf_client_notify_remove (client, priv->notify_id_sys_http);
-			g_object_unref (client);
-		}
-
-		if (priv->uri_http)
-			soup_uri_free (priv->uri_http);
-		if (priv->uri_https)
-			soup_uri_free (priv->uri_https);
-
-		if (priv->ign_hosts) {
-			g_slist_foreach (priv->ign_hosts, (GFunc) g_free, NULL);
-			g_slist_free (priv->ign_hosts);
-		}
-
-		if (priv->ign_addrs) {
-			g_slist_foreach (priv->ign_addrs, (GFunc) ep_free_proxy_host_addr, NULL);
-			g_slist_free (priv->ign_addrs);
-		}
-
+	if (priv->notify_id_evo > 0) {
+		gconf_client_notify_remove (client, priv->notify_id_evo);
 		priv->notify_id_evo = 0;
-		priv->notify_id_sys = 0;
-		priv->notify_id_sys_http = 0;
-
-		g_free (priv);
-		priv = NULL;
 	}
+
+	if (priv->notify_id_sys > 0) {
+		gconf_client_notify_remove (client, priv->notify_id_sys);
+		priv->notify_id_sys = 0;
+	}
+
+	if (priv->notify_id_sys_http > 0) {
+		gconf_client_notify_remove (client, priv->notify_id_sys_http);
+		priv->notify_id_sys_http = 0;
+	}
+
+	g_object_unref (client);
+
+	if (priv->uri_http)
+		soup_uri_free (priv->uri_http);
+
+	if (priv->uri_https)
+		soup_uri_free (priv->uri_https);
+
+	g_slist_foreach (priv->ign_hosts, (GFunc) g_free, NULL);
+	g_slist_free (priv->ign_hosts);
+
+	g_slist_foreach (priv->ign_addrs, (GFunc) ep_free_proxy_host_addr, NULL);
+	g_slist_free (priv->ign_addrs);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_proxy_parent_class)->dispose (object);
+}
+
+static void
+e_proxy_class_init (EProxyClass *class)
+{
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (EProxyPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = e_proxy_dispose;
+
+	/**
+	 * EProxy::changed:
+	 * @proxy: the #EProxy which emitted the signal
+	 *
+	 * Emitted when proxy settings in gconf changes.
+	 **/
+	signals[CHANGED] = g_signal_new (
+		"changed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (EProxyClass, changed),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__VOID,
+		G_TYPE_NONE, 0);
+
+}
+
+static void
+e_proxy_init (EProxy *proxy)
+{
+	proxy->priv = E_PROXY_GET_PRIVATE (proxy);
+
+	proxy->priv->type = PROXY_TYPE_SYSTEM;
 }
 
 static gboolean
@@ -756,14 +738,10 @@ ep_setting_changed (GConfClient *client, guint32 cnxn_id, GConfEntry *entry, gpo
  *
  * Since: 2.24
  **/
-EProxy*
+EProxy *
 e_proxy_new (void)
 {
-	EProxy *proxy = NULL;
-
-	proxy = g_object_new (E_TYPE_PROXY, NULL);
-
-	return proxy;
+	return g_object_new (E_TYPE_PROXY, NULL);
 }
 
 /**
@@ -772,7 +750,7 @@ e_proxy_new (void)
  * Since: 2.24
  **/
 void
-e_proxy_setup_proxy (EProxy* proxy)
+e_proxy_setup_proxy (EProxy *proxy)
 {
 	GConfClient *client;
 
@@ -780,28 +758,34 @@ e_proxy_setup_proxy (EProxy* proxy)
 	   set soup up to use the proxy,
 	   and listen to any changes */
 
-	if (!(client = gconf_client_get_default ()))
-		return;
+	/* XXX Why can't we do this automatically in constructed() ? */
 
-	if (!proxy || !proxy->priv)
-		return;
+	g_return_if_fail (E_IS_PROXY (proxy));
+
+	client = gconf_client_get_default ();
 
 	if (proxy->priv->notify_id_evo == 0) {
 		/* Listen to the changes in the evolution-shell path */
-		gconf_client_add_dir (client, PATH_GCONF_EVO_NETWORK_CONFIG, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+		gconf_client_add_dir (
+			client, PATH_GCONF_EVO_NETWORK_CONFIG,
+			GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
 		/* and system proxy setup changes */
-		gconf_client_add_dir (client, PATH_GCONF_SYS_PROXY, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-		gconf_client_add_dir (client, PATH_GCONF_SYS_HTTP_PROXY, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+		gconf_client_add_dir (
+			client, PATH_GCONF_SYS_PROXY,
+			GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+		gconf_client_add_dir (
+			client, PATH_GCONF_SYS_HTTP_PROXY,
+			GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
 
-		proxy->priv->notify_id_evo = gconf_client_notify_add (client, PATH_GCONF_EVO_NETWORK_CONFIG,
-								      ep_setting_changed, (gpointer)proxy,
-								      NULL, NULL);
-		proxy->priv->notify_id_sys = gconf_client_notify_add (client, PATH_GCONF_SYS_PROXY,
-								      ep_setting_changed, (gpointer)proxy,
-								      NULL, NULL);
-		proxy->priv->notify_id_sys_http = gconf_client_notify_add (client, PATH_GCONF_SYS_HTTP_PROXY,
-								      ep_setting_changed, (gpointer)proxy,
-								      NULL, NULL);
+		proxy->priv->notify_id_evo = gconf_client_notify_add (
+			client, PATH_GCONF_EVO_NETWORK_CONFIG,
+			ep_setting_changed, (gpointer) proxy, NULL, NULL);
+		proxy->priv->notify_id_sys = gconf_client_notify_add (
+			client, PATH_GCONF_SYS_PROXY,
+			ep_setting_changed, (gpointer) proxy, NULL, NULL);
+		proxy->priv->notify_id_sys_http = gconf_client_notify_add (
+			client, PATH_GCONF_SYS_HTTP_PROXY,
+			ep_setting_changed, (gpointer) proxy, NULL, NULL);
 	}
 
 	ep_set_proxy (client, proxy, TRUE);
@@ -814,20 +798,21 @@ e_proxy_setup_proxy (EProxy* proxy)
  *
  * Since: 2.26
  **/
-SoupURI*
-e_proxy_peek_uri_for (EProxy* proxy, const gchar *uri)
+SoupURI *
+e_proxy_peek_uri_for (EProxy *proxy,
+                      const gchar *uri)
 {
-	SoupURI *suri;
+	SoupURI *soup_uri;
 
-	if (!proxy || !proxy->priv || !uri || !*uri)
+	g_return_val_if_fail (E_IS_PROXY (proxy), NULL);
+	g_return_val_if_fail (uri != NULL, NULL);
+
+	soup_uri = soup_uri_new (uri);
+	if (soup_uri == NULL)
 		return NULL;
 
-	suri = soup_uri_new (uri);
-	g_return_val_if_fail (suri != NULL, NULL);
-
-	if (suri->scheme == SOUP_URI_SCHEME_HTTPS) {
+	if (soup_uri->scheme == SOUP_URI_SCHEME_HTTPS)
 		return proxy->priv->uri_https;
-	}
 
 	return proxy->priv->uri_http;
 }
@@ -838,30 +823,30 @@ e_proxy_peek_uri_for (EProxy* proxy, const gchar *uri)
  * Since: 2.24
  **/
 gboolean
-e_proxy_require_proxy_for_uri (EProxy* proxy, const gchar * uri)
+e_proxy_require_proxy_for_uri (EProxy *proxy,
+                               const gchar *uri)
 {
-	SoupURI *srv_uri = NULL;
-	gboolean ret = FALSE;
+	SoupURI *soup_uri = NULL;
+	gboolean need_proxy = FALSE;
 
-	if (!uri || !proxy || !proxy->priv)
-		return ret;
+	g_return_val_if_fail (E_IS_PROXY (proxy), FALSE);
+	g_return_val_if_fail (uri != NULL, FALSE);
 
 	if (!proxy->priv->use_proxy || proxy->priv->type == PROXY_TYPE_NO_PROXY) {
 		d(g_print ("[%s] don't need a proxy to connect to internet\n", uri));
-		return ret;
+		return FALSE;
 	}
 
-	srv_uri = soup_uri_new (uri);
+	soup_uri = soup_uri_new (uri);
+	if (soup_uri == NULL)
+		return FALSE;
 
-	if (srv_uri) {
-		if (srv_uri->scheme == SOUP_URI_SCHEME_HTTPS) {
-			ret = ep_need_proxy_https (proxy, srv_uri->host);
-		} else {
-			ret = ep_need_proxy_http (proxy, srv_uri->host);
-		}
+	if (soup_uri->scheme == SOUP_URI_SCHEME_HTTPS)
+		need_proxy = ep_need_proxy_https (proxy, soup_uri->host);
+	else
+		need_proxy = ep_need_proxy_http (proxy, soup_uri->host);
 
-		soup_uri_free (srv_uri);
-	}
+	soup_uri_free (soup_uri);
 
-	return ret;
+	return need_proxy;
 }
