@@ -2035,6 +2035,9 @@ camel_folder_summary_migrate_infos (CamelFolderSummary *s)
 	ret = save_message_infos_to_db (s, TRUE, NULL);
 
 	if (ret != 0) {
+		g_free (record->folder_name);
+		g_free (record->bdata);
+		g_free (record);
 		return -1;
 	}
 
@@ -2042,6 +2045,7 @@ camel_folder_summary_migrate_infos (CamelFolderSummary *s)
 	ret = camel_db_write_folder_info_record (cdb, record, NULL);
 	camel_db_end_transaction (cdb, NULL);
 
+	g_free (record->folder_name);
 	g_free (record->bdata);
 	g_free (record);
 
@@ -2314,6 +2318,7 @@ camel_folder_summary_header_save_to_db (CamelFolderSummary *s,
 
 	camel_db_begin_transaction (cdb, NULL);
 	ret = camel_db_write_folder_info_record (cdb, record, error);
+	g_free (record->folder_name);
 	g_free (record->bdata);
 	g_free (record);
 

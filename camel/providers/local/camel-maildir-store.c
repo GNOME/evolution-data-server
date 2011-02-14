@@ -484,7 +484,7 @@ maildir_dir_name_to_fullname (const gchar *dir_name)
 static gint
 scan_dirs (CamelStore *store,
            guint32 flags,
-           CamelFolderInfo *topfi,
+           CamelFolderInfo **topfi,
            CamelURL *url,
            GCancellable *cancellable,
            GError **error)
@@ -497,8 +497,8 @@ scan_dirs (CamelStore *store,
 	gchar *meta_path = NULL;
 
 	folders = g_ptr_array_new ();
-	if (!g_ascii_strcasecmp (topfi->full_name, "Inbox"))
-		g_ptr_array_add (folders, topfi);
+	if (!g_ascii_strcasecmp ((*topfi)->full_name, "Inbox"))
+		g_ptr_array_add (folders, (*topfi));
 
 	dir = opendir (root);
 	if (dir == NULL) {
@@ -545,8 +545,8 @@ scan_dirs (CamelStore *store,
 		else
 			short_name++;
 
-		if (g_ascii_strcasecmp (topfi->full_name, "Inbox") != 0 
-					&& !g_str_has_prefix (full_name, topfi->full_name)) {
+		if (g_ascii_strcasecmp ((*topfi)->full_name, "Inbox") != 0 
+					&& !g_str_has_prefix (full_name, (*topfi)->full_name)) {
 
 			g_free (full_name);
 			continue;
@@ -564,10 +564,14 @@ scan_dirs (CamelStore *store,
 	closedir (dir);
 
 	if (folders->len != 0) {
-		if (!g_ascii_strcasecmp (topfi->full_name, "Inbox"))
-			camel_folder_info_build (folders, "", '/', TRUE);
-		else
-			camel_folder_info_build (folders, topfi->full_name, '/', TRUE);
+		if (!g_ascii_strcasecmp ((*topfi)->full_name, "Inbox")) {
+			*topfi = camel_folder_info_build (folders, "", '/', TRUE);
+		} else {
+			CamelFolderInfo *old_topfi = *topfi;
+
+			*topfi = camel_folder_info_build (folders, (*topfi)->full_name, '/', TRUE);
+			camel_store_free_folder_info (store, old_topfi);
+		}
 
 		res = 0;
 	} else
@@ -609,7 +613,7 @@ maildir_store_get_folder_info_sync (CamelStore *store,
 	if (top == NULL || top[0] == 0) {
 		/* create a dummy "." parent inbox, use to scan, then put back at the top level */
 		fi = scan_fi(store, flags, url, "Inbox", _("Inbox"), cancellable);
-		if (scan_dirs (store, flags, fi, url, cancellable, error) == -1)
+		if (scan_dirs (store, flags, &fi, url, cancellable, error) == -1)
 			goto fail;
 
 		fi->flags |= CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_TYPE_INBOX;
@@ -620,7 +624,7 @@ maildir_store_get_folder_info_sync (CamelStore *store,
 		const gchar *name = strrchr (top, '/');
 
 		fi = scan_fi (store, flags, url, top, name?name+1:top, cancellable);
-		if (scan_dirs (store, flags, fi, url, cancellable, error) == -1)
+		if (scan_dirs (store, flags, &fi, url, cancellable, error) == -1)
 			goto fail;
 	}
 
