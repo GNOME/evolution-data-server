@@ -63,7 +63,7 @@ static CamelProviderConfEntry imap_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter", NULL,
-	  N_("_Apply filters to new messages in INBOX on this server"), "1" },
+	  N_("_Apply filters to new messages in Inbox on this server"), "1" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter_junk", NULL,
 	  N_("Check new messages for Jun_k contents"), "0" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter_junk_inbox", "filter_junk",
