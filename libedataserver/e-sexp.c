@@ -883,6 +883,8 @@ const gint generators_count = sizeof (generators) / sizeof (generators[0]);
 static gboolean
 or_operator (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r)
 {
+	gint ii;
+
 	/*
 	   A          B           A or B
 	   ----       ----        ------
@@ -893,11 +895,21 @@ or_operator (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r)
 	   */
 
 	g_return_val_if_fail (r != NULL, FALSE);
-	g_return_val_if_fail (argc == 2, FALSE);
+	g_return_val_if_fail (argc > 0, FALSE);
 
-	if ((r->time_generator = argv[0]->time_generator & argv[1]->time_generator)) {
-		r->occuring_start = MIN (argv[0]->occuring_start, argv[1]->occuring_start);
-		r->occuring_end = MAX (argv[0]->occuring_end, argv[1]->occuring_end);
+	r->time_generator = TRUE;
+	for (ii = 0; ii < argc && r->time_generator; ii++) {
+		r->time_generator = argv[ii]->time_generator;
+	}
+
+	if (r->time_generator) {
+		r->occuring_start = argv[0]->occuring_start;
+		r->occuring_end = argv[0]->occuring_end;
+
+		for (ii = 1; ii < argc; ii++) {
+			r->occuring_start = MIN (r->occuring_start, argv[ii]->occuring_start);
+			r->occuring_end = MAX (r->occuring_end, argv[ii]->occuring_end);
+		}
 	}
 
 	return TRUE;
@@ -906,6 +918,8 @@ or_operator (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r)
 static gboolean
 and_operator (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r)
 {
+	gint ii;
+
 	/*
 	   A           B          A and B
 	   ----        ----       ------- -
@@ -916,12 +930,21 @@ and_operator (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r)
 	   */
 
 	g_return_val_if_fail (r != NULL, FALSE);
-	g_return_val_if_fail (argc == 2, FALSE);
+	g_return_val_if_fail (argc > 0, FALSE);
 
-	if ((r->time_generator = argv[0]->time_generator | argv[1]->time_generator)) {
-		/* constraint interval */
-		r->occuring_start = MAX (argv[0]->occuring_start, argv[1]->occuring_start);
-		r->occuring_end = MIN (argv[0]->occuring_end, argv[1]->occuring_end);
+	r->time_generator = FALSE;
+	for (ii = 0; ii < argc && !r->time_generator; ii++) {
+		r->time_generator = argv[ii]->time_generator;
+	}
+
+	if (r->time_generator) {
+		r->occuring_start = argv[0]->occuring_start;
+		r->occuring_end = argv[0]->occuring_end;
+
+		for (ii = 1; ii < argc; ii++) {
+			r->occuring_start = MAX (r->occuring_start, argv[ii]->occuring_start);
+			r->occuring_end = MIN (r->occuring_end, argv[ii]->occuring_end);
+		}
 	}
 
 	return TRUE;
