@@ -31,7 +31,11 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#ifndef _WIN32
 #include <sys/uio.h>
+#else
+#include <winsock2.h>
+#endif
 
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
@@ -373,7 +377,7 @@ static gchar *maildir_summary_next_uid_string(CamelFolderSummary *s)
 			if (retry > 0) {
 				g_free(name);
 				g_free(uid);
-				sleep(2);
+				g_usleep(2*G_USEC_PER_SEC);
 			}
 			uid = g_strdup_printf("%ld.%d_%u.%s", time(NULL), getpid(), nextuid, mds->priv->hostname);
 			name = g_strdup_printf("%s/tmp/%s", cls->folder_path, uid);

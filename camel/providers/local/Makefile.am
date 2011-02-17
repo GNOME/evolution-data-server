@@ -5,12 +5,6 @@ if OS_WIN32
 SYSDEP_PROVIDER_SOURCES =
 else
 SYSDEP_PROVIDER_SOURCES = \
-	camel-mh-folder.c			\
-	camel-mh-store.c			\
-	camel-mh-summary.c			\
-	camel-maildir-folder.c			\
-	camel-maildir-store.c			\
-	camel-maildir-summary.c			\
 	camel-spool-folder.c			\
 	camel-spool-store.c			\
 	camel-spool-summary.c
@@ -32,6 +26,12 @@ libcamellocal_la_SOURCES = 			\
 	camel-mbox-folder.c			\
 	camel-mbox-store.c			\
 	camel-mbox-summary.c			\
+	camel-mh-folder.c			\
+	camel-mh-store.c			\
+	camel-mh-summary.c			\
+	camel-maildir-folder.c			\
+	camel-maildir-store.c			\
+	camel-maildir-summary.c			\
 	$(SYSDEP_PROVIDER_SOURCES)
 
 noinst_HEADERS =				\

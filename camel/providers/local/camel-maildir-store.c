@@ -127,9 +127,9 @@ get_folder (CamelStore *store,
 		if (g_stat(tmp, &st) != 0 || !S_ISDIR(st.st_mode)
 		    || g_stat(cur, &st) != 0 || !S_ISDIR(st.st_mode)
 		    || g_stat(new, &st) != 0 || !S_ISDIR(st.st_mode)) {
-			if (mkdir(tmp, 0700) != 0
-			    || mkdir(cur, 0700) != 0
-			    || mkdir(new, 0700) != 0) {
+			if (g_mkdir_with_parents(tmp, 0700) != 0
+			    || g_mkdir_with_parents(cur, 0700) != 0
+			    || g_mkdir_with_parents(new, 0700) != 0) {
 				g_set_error (
 					error, G_IO_ERROR,
 					g_io_error_from_errno (errno),
@@ -157,10 +157,10 @@ get_folder (CamelStore *store,
 				_("Cannot get folder '%s': folder does not exist."),
 				folder_name);
 		} else {
-			if (mkdir(name, 0700) != 0
-			    || mkdir(tmp, 0700) != 0
-			    || mkdir(cur, 0700) != 0
-			    || mkdir(new, 0700) != 0) {
+			if (g_mkdir_with_parents(name, 0700) != 0
+			    || g_mkdir_with_parents(tmp, 0700) != 0
+			    || g_mkdir_with_parents(cur, 0700) != 0
+			    || g_mkdir_with_parents(new, 0700) != 0) {
 				g_set_error (
 					error, G_IO_ERROR,
 					g_io_error_from_errno (errno),
@@ -272,10 +272,10 @@ delete_folder (CamelStore *store,
 
 		if (err != 0) {
 			/* easier just to mkdir all (and let them fail), than remember what we got to */
-			mkdir(name, 0700);
-			mkdir(cur, 0700);
-			mkdir(new, 0700);
-			mkdir(tmp, 0700);
+			g_mkdir_with_parents(name, 0700);
+			g_mkdir_with_parents(cur, 0700);
+			g_mkdir_with_parents(new, 0700);
+			g_mkdir_with_parents(tmp, 0700);
 			g_set_error (
 				error, G_IO_ERROR,
 				g_io_error_from_errno (err),
