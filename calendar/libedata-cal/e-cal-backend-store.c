@@ -407,7 +407,7 @@ GSList *
 e_cal_backend_store_get_components_occuring_in_range (ECalBackendStore *store, time_t start, time_t end)
 {
 	ECalBackendStorePrivate *priv;
-	GList *l;
+	GList *l, *objects;
 	GSList *list = NULL;
 	icalcomponent *icalcomp;
 
@@ -416,10 +416,10 @@ e_cal_backend_store_get_components_occuring_in_range (ECalBackendStore *store, t
 
 	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
 
-	if (!(l = e_intervaltree_search (priv->intervaltree, start, end)))
+	if (!(objects = e_intervaltree_search (priv->intervaltree, start, end)))
 		return NULL;
 
-	for (; l != NULL; l = g_list_next (l)) {
+	for (l = objects; l != NULL; l = g_list_next (l)) {
 		ECalComponent *comp = l->data;
 		icalcomp = e_cal_component_get_icalcomponent (comp);
 		if (icalcomp) {
@@ -428,11 +428,15 @@ e_cal_backend_store_get_components_occuring_in_range (ECalBackendStore *store, t
 			kind = icalcomponent_isa (icalcomp);
 			if (kind == ICAL_VEVENT_COMPONENT || kind == ICAL_VTODO_COMPONENT || kind == ICAL_VJOURNAL_COMPONENT) {
 				list = g_slist_prepend (list, comp);
+			} else {
+				g_object_unref (comp);
 			}
 		}
 	}
 
-	return list;
+	g_list_free (objects);
+
+	return g_slist_reverse (list);
 }
 
 /**
