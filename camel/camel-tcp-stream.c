@@ -36,16 +36,16 @@
 
 #define w(x)
 
-G_DEFINE_TYPE (CamelTcpStream, camel_tcp_stream, CAMEL_TYPE_STREAM)
+#define CAMEL_TCP_STREAM_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_TCP_STREAM, CamelTcpStreamPrivate))
 
 struct _CamelTcpStreamPrivate {
 	gchar *socks_host;
 	gint socks_port;
 };
 
-#define CAMEL_TCP_STREAM_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_TCP_STREAM, CamelTcpStreamPrivate))
+G_DEFINE_TYPE (CamelTcpStream, camel_tcp_stream, CAMEL_TYPE_STREAM)
 
 static void
 camel_tcp_stream_finalize (GObject *object)
@@ -72,8 +72,6 @@ static void
 camel_tcp_stream_init (CamelTcpStream *tcp_stream)
 {
 	tcp_stream->priv = CAMEL_TCP_STREAM_GET_PRIVATE (tcp_stream);
-	tcp_stream->priv->socks_host = NULL;
-	tcp_stream->priv->socks_port = 0;
 }
 
 /**
@@ -81,7 +79,8 @@ camel_tcp_stream_init (CamelTcpStream *tcp_stream)
  * @stream: a #CamelTcpStream object
  * @host: Hostname for connection
  * @service: Service name or port number in string form
- * @fallback_port: Port number to retry if @service is not present in the system's services database, or 0 to avoid retrying.
+ * @fallback_port: Port number to retry if @service is not present
+ * in the system's services database, or 0 to avoid retrying
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -91,7 +90,7 @@ camel_tcp_stream_init (CamelTcpStream *tcp_stream)
  **/
 gint
 camel_tcp_stream_connect (CamelTcpStream *stream,
-			  const gchar *host,
+                          const gchar *host,
                           const gchar *service,
                           gint fallback_port,
                           GCancellable *cancellable,
@@ -240,28 +239,26 @@ camel_tcp_stream_get_file_desc (CamelTcpStream *stream)
  * @socks_host: hostname to use for the SOCKS proxy
  * @socks_port: port number to use for the SOCKS proxy
  *
- * Configures a SOCKS proxy for the specified @stream.  Instead of direct connections,
- * this @stream will instead go through the proxy.
+ * Configures a SOCKS proxy for the specified @stream.  Instead of
+ * direct connections, this @stream will instead go through the proxy.
  *
  * Since: 2.32
  */
 void
-camel_tcp_stream_set_socks_proxy (CamelTcpStream *stream, const gchar *socks_host, gint socks_port)
+camel_tcp_stream_set_socks_proxy (CamelTcpStream *stream,
+                                  const gchar *socks_host,
+                                  gint socks_port)
 {
-	CamelTcpStreamPrivate *priv;
-
 	g_return_if_fail (CAMEL_IS_TCP_STREAM (stream));
 
-	priv = stream->priv;
+	g_free (stream->priv->socks_host);
 
-	g_free (priv->socks_host);
-
-	if (socks_host && socks_host[0] != '\0') {
-		priv->socks_host = g_strdup (socks_host);
-		priv->socks_port = socks_port;
+	if (socks_host != NULL && socks_host[0] != '\0') {
+		stream->priv->socks_host = g_strdup (socks_host);
+		stream->priv->socks_port = socks_port;
 	} else {
-		priv->socks_host = NULL;
-		priv->socks_port = 0;
+		stream->priv->socks_host = NULL;
+		stream->priv->socks_port = 0;
 	}
 }
 
@@ -277,17 +274,15 @@ camel_tcp_stream_set_socks_proxy (CamelTcpStream *stream, const gchar *socks_hos
  * Since: 2.32
  */
 void
-camel_tcp_stream_peek_socks_proxy (CamelTcpStream *stream, const gchar **socks_host_ret, gint *socks_port_ret)
+camel_tcp_stream_peek_socks_proxy (CamelTcpStream *stream,
+                                   const gchar **socks_host_ret,
+                                   gint *socks_port_ret)
 {
-	CamelTcpStreamPrivate *priv;
-
 	g_return_if_fail (CAMEL_IS_TCP_STREAM (stream));
 
-	priv = stream->priv;
+	if (socks_host_ret != NULL)
+		*socks_host_ret = stream->priv->socks_host;
 
-	if (socks_host_ret)
-		*socks_host_ret = priv->socks_host;
-
-	if (socks_port_ret)
-		*socks_port_ret = priv->socks_port;
+	if (socks_port_ret != NULL)
+		*socks_port_ret = stream->priv->socks_port;
 }
