@@ -69,6 +69,12 @@ category_completion_build_model (GtkEntryCompletion *completion)
 		GdkPixbuf *pixbuf = NULL;
 		GtkTreeIter iter;
 
+		/* Only add user-visible categories. */
+		if (!e_categories_is_searchable (category)) {
+			list = g_list_delete_link (list, list);
+			continue;
+		}
+
 		filename = e_categories_get_icon_file_for (category);
 		if (filename != NULL && *filename != '\0')
 			pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
