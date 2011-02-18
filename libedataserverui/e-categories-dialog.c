@@ -235,6 +235,10 @@ categories_dialog_build_model (ECategoriesDialog *dialog)
 		GtkTreeIter iter;
 		gboolean active;
 
+		/* Only add user-visible categories. */
+		if (!e_categories_is_searchable (category_name))
+			continue;
+
 		active = (g_hash_table_lookup (
 			dialog->priv->selected_categories,
 			category_name) != NULL);

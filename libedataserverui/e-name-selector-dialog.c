@@ -119,9 +119,15 @@ e_name_selector_dialog_populate_categories (ENameSelectorDialog *name_selector_d
 
 	/* Categories are already sorted. */
 	category_list = e_categories_get_list ();
-	for (iter = category_list; iter != NULL; iter = iter->next)
+	for (iter = category_list; iter != NULL; iter = iter->next) {
+		/* Only add user-visible categories. */
+		if (!e_categories_is_searchable (iter->data))
+			continue;
+
 		gtk_combo_box_append_text (
 			GTK_COMBO_BOX (combo_box), iter->data);
+	}
+
 	g_list_free (category_list);
 
 	g_signal_connect_swapped (
