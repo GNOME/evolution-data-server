@@ -593,7 +593,7 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 	folder->summary = (CamelFolderSummary *)CAMEL_LOCAL_FOLDER_GET_CLASS (lf)->create_summary (lf, lf->summary_path, lf->folder_path, lf->index);
 	if (!(flags & CAMEL_STORE_IS_MIGRATING) && camel_local_summary_load ((CamelLocalSummary *)folder->summary, forceindex, NULL) == -1) {
 		/* ? */
-		if (lf->need_summary_check && 
+		if (lf->need_summary_check &&
 		    camel_local_summary_check ((CamelLocalSummary *)folder->summary, lf->changes, cancellable, error) == 0) {
 			/* we sync here so that any hard work setting up the folder isn't lost */
 			if (camel_local_summary_sync ((CamelLocalSummary *)folder->summary, FALSE, lf->changes, cancellable, error) == -1) {
