@@ -996,7 +996,14 @@ e_cal_recur_from_icalproperty (icalproperty *prop, gboolean exception,
 		ir = icalproperty_get_rrule (prop);
 
 	r->freq = ir.freq;
-	r->interval = ir.interval;
+
+	if(G_UNLIKELY(ir.interval < 1)){
+		g_warning("Invalid interval in rule %s - using 1\n",
+			icalrecurrencetype_as_string(&ir));
+		r->interval = 1;
+	} else {
+		r->interval = ir.interval;
+	}
 
   r->enddate = e_cal_recur_obtain_enddate (&ir, prop, zone, convert_end_date);
 
