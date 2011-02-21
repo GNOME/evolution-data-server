@@ -139,8 +139,6 @@ static void filter_run(CamelMimeFilter *f,
 					  const gchar *in, gsize len, gsize prespace,
 					  gchar **out, gsize *outlen, gsize *outprespace))
 {
-	struct _CamelMimeFilterPrivate *p;
-
 #ifdef MALLOC_CHECK
 	checkmem(f->outreal);
 	checkmem(f->backbuf);
@@ -149,36 +147,39 @@ static void filter_run(CamelMimeFilter *f,
 	  here we take a performance hit, if the input buffer doesn't
 	  have the pre-space required.  We make a buffer that does ...
 	*/
-	if (prespace < f->backlen) {
-		gint newlen = len+prespace+f->backlen;
-		p = CAMEL_MIME_FILTER_GET_PRIVATE(f);
+	if (f->backlen > 0) {
+		struct _CamelMimeFilterPrivate *p;
+		gint newlen;
+
+		p = CAMEL_MIME_FILTER_GET_PRIVATE (f);
+
+		newlen = len + prespace + f->backlen;
 		if (p->inlen < newlen) {
 			/* NOTE: g_realloc copies data, we dont need that (slower) */
 			g_free(p->inbuf);
 			p->inbuf = g_malloc(newlen+PRE_HEAD);
 			p->inlen = newlen+PRE_HEAD;
 		}
+
 		/* copy to end of structure */
-		memcpy(p->inbuf+p->inlen - len, in, len);
-		in = p->inbuf+p->inlen - len;
+		memcpy (p->inbuf + p->inlen - len, in, len);
+		in = p->inbuf + p->inlen - len;
 		prespace = p->inlen - len;
-	}
 
-#ifdef MALLOC_CHECK
-	checkmem(f->outreal);
-	checkmem(f->backbuf);
-#endif
-
-	/* preload any backed up data */
-	if (f->backlen > 0) {
-		memcpy((gchar *) in-f->backlen, f->backbuf, f->backlen);
+		/* preload any backed up data */
+		memcpy ((gchar *) in - f->backlen, f->backbuf, f->backlen);
 		in -= f->backlen;
 		len += f->backlen;
 		prespace -= f->backlen;
 		f->backlen = 0;
 	}
 
-	filterfunc(f, in, len, prespace, out, outlen, outprespace);
+#ifdef MALLOC_CHECK
+	checkmem (f->outreal);
+	checkmem (f->backbuf);
+#endif
+
+	filterfunc (f, in, len, prespace, out, outlen, outprespace);
 
 #ifdef MALLOC_CHECK
 	checkmem(f->outreal);
