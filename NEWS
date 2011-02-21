@@ -1,3 +1,45 @@
+Evolution-Data-Server 2.91.90 2011-02-21
+---------------------------------------
+
+Bug Fixes:
+	Bug 639483 - Category list includes weather information (hao.h.li)
+	Bug 638563 - Make string consistent with other providers (Milan Crha)
+	Bug 638246 - Runtime warning: and_operator: assertion `argc == 2' failed (Milan Crha)
+	Bug 638089 - Some mobile phone contacts are not shown in preview (Milan Crha)
+	Bug 641757 - Fix warnings from GCC 4.6 (Kjartan Maraas)
+	Bug 601111 - Do not use empty host names in EProxy (Milan Crha)
+	Bug 641250 - Cannot add more than 2 recipients in To: or Cc: field (Vibha Yadav)
+	Bug 640696 - Hidden new messages in On This Computer/Inbox (Milan Crha)
+	Bug 634743 - Moving message on GMail with real Trash set deletes it (2nd try) (Milan Crha)
+	Bug 641110 - Improve 'select destination' window in copy/move to calendar (Milan Crha)
+	Bug 634743 - Moving message on GMail with real Trash set deletes it (Milan Crha)
+
+Miscellaneous Fixes:
+	CamelTcpStream cleanups. (Matthew Barnes)
+	Memory leak fix and return events in proper order (Milan Crha)
+	Remove NULL checks for GObject methods. (Matthew Barnes)
+	CamelMaildirStore: Fix memory leak (Carlos Martín Nieto)
+	Bump GTK+ requirement to 3.0. (Matthew Barnes)
+	Be able to define DBus call timeout in configure and runtime (Milan Crha)
+	Perform consistency check on local folders based on the parameter 'need-summary-check' (Chenthill Palanisamy)
+	Remove streams tests (Kjartan Maraas)
+	Add a --keep-running option to e-calendar-factory. (Matthew Barnes)
+	Add a --keep-running option to e-addressbook-factory. (Matthew Barnes)
+	Improve libebook annotations. (Raul Gutierrez Segales)
+
+Translations:
+	Changwoo Ryu (ko)
+	Mario Blättermann (de)
+	Mattias Põldaru (et)
+	Kjartan Maraas (nn)
+	Ivar Smolin (et)
+	Petr Kovar (cs)
+	Jorge González (es)
+	Fran Diéguez (gl)
+	krishnababu k (ug)
+	Shankar Prasad (kn)
+	Runa Bhattacharjee (bn)
+
 Evolution-Data-Server 2.91.6 2011-01-31
 ---------------------------------------
 
