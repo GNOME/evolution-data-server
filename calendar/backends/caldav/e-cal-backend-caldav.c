@@ -933,6 +933,12 @@ redirect_handler (SoupMessage *msg, gpointer user_data)
 			return;
 		}
 
+		if (new_uri->host && g_str_has_suffix (new_uri->host, "yahoo.com")) {
+			/* yahoo! returns port 7070, which is unreachable;
+			   it also requires https being used (below call resets port as well) */
+			soup_uri_set_scheme (new_uri, SOUP_URI_SCHEME_HTTPS);
+		}
+
 		soup_message_set_uri (msg, new_uri);
 		soup_session_requeue_message (soup_session, msg);
 
@@ -4638,6 +4644,8 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
 	priv->session = soup_session_sync_new ();
+	g_object_set (priv->session, SOUP_SESSION_TIMEOUT, 90, NULL);
+
 	priv->proxy = e_proxy_new ();
 	e_proxy_setup_proxy (priv->proxy);
 	g_signal_connect (priv->proxy, "changed", G_CALLBACK (proxy_settings_changed), priv);
