@@ -321,6 +321,8 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 	gint i, last;
 	CamelStream *stream = NULL;
 
+	g_return_val_if_fail (uid != NULL, NULL);
+
 	parent_store = camel_folder_get_parent_store (folder);
 
 	pop3_folder = CAMEL_POP3_FOLDER (folder);
@@ -735,6 +737,19 @@ camel_pop3_delete_old (CamelFolder *folder,
 	for (i = 0; i < pop3_folder->uids->len; i++) {
 		message_time = 0;
 		fi = pop3_folder->uids->pdata[i];
+
+		if (fi->cmd) {
+			while (camel_pop3_engine_iterate (pop3_store->engine, fi->cmd) > 0) {
+				; /* do nothing - iterating until end */
+			}
+
+			camel_pop3_engine_command_free (pop3_store->engine, fi->cmd);
+			fi->cmd = NULL;
+		}
+
+		/* continue, if message wasn't received yet */
+		if (!fi->uid)
+			continue;
 
 		d(printf("%s(%d): fi->uid=[%s]\n", __FILE__, __LINE__, fi->uid));
 		if (!pop3_get_message_time_from_cache (folder, fi->uid, &message_time)) {
