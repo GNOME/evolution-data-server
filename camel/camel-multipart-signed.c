@@ -60,6 +60,10 @@ multipart_signed_clip_stream (CamelMultipartSigned *mps,
 	gssize n_read;
 	gsize length;
 
+	g_return_val_if_fail (start != -1, NULL);
+	g_return_val_if_fail (end != -1, NULL);
+	g_return_val_if_fail (end >= start, NULL);
+
 	data_wrapper = CAMEL_DATA_WRAPPER (mps);
 	stream = data_wrapper->stream;
 
@@ -192,6 +196,9 @@ multipart_signed_parse_content (CamelMultipartSigned *mps)
 	g_object_unref (cmp);
 
 	if (mps->end2 == -1 || mps->start2 == -1) {
+		if (mps->end1 == -1)
+			mps->start1 = -1;
+
 		return -1;
 	}
 
