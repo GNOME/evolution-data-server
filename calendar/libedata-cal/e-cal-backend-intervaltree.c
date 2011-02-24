@@ -39,10 +39,6 @@
 
 G_DEFINE_TYPE (EIntervalTree, e_intervaltree, G_TYPE_OBJECT)
 
-#define E_INTERVALTREE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_INTERVALTREE, EIntervalTreePrivate))
-
 typedef struct _EIntervalNode EIntervalNode;
 
 static EIntervalNode*
@@ -744,7 +740,7 @@ e_intervaltree_remove (EIntervalTree *tree,
 static void
 e_intervaltree_finalize (GObject *object)
 {
-	EIntervalTreePrivate *priv = E_INTERVALTREE_GET_PRIVATE (object);
+	EIntervalTreePrivate *priv = E_INTERVALTREE (object)->priv;
 
 	if (priv->root) {
 		g_free (priv->root);
@@ -780,7 +776,7 @@ e_intervaltree_init (EIntervalTree *tree)
 	EIntervalTreePrivate *priv;
 	EIntervalNode *root, *nil;
 
-	tree->priv = E_INTERVALTREE_GET_PRIVATE (tree);
+	tree->priv = G_TYPE_INSTANCE_GET_PRIVATE (tree, E_TYPE_INTERVALTREE, EIntervalTreePrivate);
 	priv = tree->priv;
 
 	priv->nil = nil = g_new (EIntervalNode, 1);

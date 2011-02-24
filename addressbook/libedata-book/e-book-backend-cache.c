@@ -28,10 +28,6 @@
 #include "e-book-backend-cache.h"
 #include "e-book-backend-sexp.h"
 
-#define E_BOOK_BACKEND_CACHE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_BOOK_BACKEND_CACHE, EBookBackendCachePrivate))
-
 struct _EBookBackendCachePrivate {
 	gint placeholder;
 };
@@ -47,7 +43,7 @@ e_book_backend_cache_class_init (EBookBackendCacheClass *class)
 static void
 e_book_backend_cache_init (EBookBackendCache *cache)
 {
-	cache->priv = E_BOOK_BACKEND_CACHE_GET_PRIVATE (cache);
+	cache->priv = G_TYPE_INSTANCE_GET_PRIVATE (cache, E_TYPE_BOOK_BACKEND_CACHE, EBookBackendCachePrivate);
 }
 
 /**

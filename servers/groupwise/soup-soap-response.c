@@ -11,7 +11,7 @@
 
 G_DEFINE_TYPE (SoupSoapResponse, soup_soap_response, G_TYPE_OBJECT)
 
-typedef struct {
+struct _SoupSoapResponsePrivate {
 	/* the XML document */
 	xmlDocPtr xmldoc;
 	xmlNodePtr xml_root;
@@ -19,15 +19,14 @@ typedef struct {
 	xmlNodePtr xml_method;
 	xmlNodePtr soap_fault;
 	GList *parameters;
-} SoupSoapResponsePrivate;
-#define SOUP_SOAP_RESPONSE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), SOUP_TYPE_SOAP_RESPONSE, SoupSoapResponsePrivate))
+};
 
 static xmlNode *soup_xml_real_node (xmlNode *node);
 
 static void
 finalize (GObject *object)
 {
-	SoupSoapResponsePrivate *priv = SOUP_SOAP_RESPONSE_GET_PRIVATE (object);
+	SoupSoapResponsePrivate *priv = SOUP_SOAP_RESPONSE (object)->priv;
 
 	if (priv->xmldoc)
 		xmlFreeDoc (priv->xmldoc);
@@ -50,9 +49,8 @@ soup_soap_response_class_init (SoupSoapResponseClass *soup_soap_response_class)
 static void
 soup_soap_response_init (SoupSoapResponse *response)
 {
-	SoupSoapResponsePrivate *priv = SOUP_SOAP_RESPONSE_GET_PRIVATE (response);
-
-	priv->xmldoc = xmlNewDoc ((const xmlChar *)"1.0");
+	response->priv = G_TYPE_INSTANCE_GET_PRIVATE (response, SOUP_TYPE_SOAP_RESPONSE, SoupSoapResponsePrivate);
+	response->priv->xmldoc = xmlNewDoc ((const xmlChar *)"1.0");
 }
 
 /**
@@ -135,7 +133,7 @@ soup_soap_response_from_string (SoupSoapResponse *response, const gchar *xmlstr)
 	xmlNodePtr xml_root, xml_body, xml_method = NULL;
 
 	g_return_val_if_fail (SOUP_IS_SOAP_RESPONSE (response), FALSE);
-	priv = SOUP_SOAP_RESPONSE_GET_PRIVATE (response);
+	priv = response->priv;
 	g_return_val_if_fail (xmlstr != NULL, FALSE);
 
 	/* clear the previous contents */
@@ -202,7 +200,7 @@ soup_soap_response_get_method_name (SoupSoapResponse *response)
 	SoupSoapResponsePrivate *priv;
 
 	g_return_val_if_fail (SOUP_IS_SOAP_RESPONSE (response), NULL);
-	priv = SOUP_SOAP_RESPONSE_GET_PRIVATE (response);
+	priv = response->priv;
 	g_return_val_if_fail (priv->xml_method != NULL, NULL);
 
 	return (const gchar *) priv->xml_method->name;
@@ -221,7 +219,7 @@ soup_soap_response_set_method_name (SoupSoapResponse *response, const gchar *met
 	SoupSoapResponsePrivate *priv;
 
 	g_return_if_fail (SOUP_IS_SOAP_RESPONSE (response));
-	priv = SOUP_SOAP_RESPONSE_GET_PRIVATE (response);
+	priv = response->priv;
 	g_return_if_fail (priv->xml_method != NULL);
 	g_return_if_fail (method_name != NULL);
 
@@ -431,7 +429,7 @@ soup_soap_response_get_parameters (SoupSoapResponse *response)
 	SoupSoapResponsePrivate *priv;
 
 	g_return_val_if_fail (SOUP_IS_SOAP_RESPONSE (response), NULL);
-	priv = SOUP_SOAP_RESPONSE_GET_PRIVATE (response);
+	priv = response->priv;
 
 	return (const GList *) priv->parameters;
 }
@@ -451,7 +449,7 @@ soup_soap_response_get_first_parameter (SoupSoapResponse *response)
 	SoupSoapResponsePrivate *priv;
 
 	g_return_val_if_fail (SOUP_IS_SOAP_RESPONSE (response), NULL);
-	priv = SOUP_SOAP_RESPONSE_GET_PRIVATE (response);
+	priv = response->priv;
 
 	return priv->parameters ? priv->parameters->data : NULL;
 }
@@ -475,7 +473,7 @@ soup_soap_response_get_first_parameter_by_name (SoupSoapResponse *response,
 	GList *l;
 
 	g_return_val_if_fail (SOUP_IS_SOAP_RESPONSE (response), NULL);
-	priv = SOUP_SOAP_RESPONSE_GET_PRIVATE (response);
+	priv = response->priv;
 	g_return_val_if_fail (name != NULL, NULL);
 
 	for (l = priv->parameters; l != NULL; l = l->next) {
@@ -506,7 +504,7 @@ soup_soap_response_get_next_parameter (SoupSoapResponse *response,
 	GList *l;
 
 	g_return_val_if_fail (SOUP_IS_SOAP_RESPONSE (response), NULL);
-	priv = SOUP_SOAP_RESPONSE_GET_PRIVATE (response);
+	priv = response->priv;
 	g_return_val_if_fail (from != NULL, NULL);
 
 	l = g_list_find (priv->parameters, (gconstpointer) from);
@@ -568,7 +566,7 @@ soup_soap_response_dump_response (SoupSoapResponse *response, FILE *buffer)
 	xmlChar *xmlbuff;
 	gint buffersize, ret;
 
-	SoupSoapResponsePrivate *priv = SOUP_SOAP_RESPONSE_GET_PRIVATE (response);
+	SoupSoapResponsePrivate *priv = response->priv;
 	xmlDocDumpFormatMemory (priv->xmldoc, &xmlbuff, &buffersize, 1);
 
 	ret = fputs ((gchar *) xmlbuff, buffer);

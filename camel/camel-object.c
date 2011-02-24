@@ -35,10 +35,6 @@
 
 #define d(x)
 
-#define CAMEL_OBJECT_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_OBJECT, CamelObjectPrivate))
-
 struct _CamelObjectPrivate {
 	gchar *state_filename;
 };
@@ -132,7 +128,7 @@ object_finalize (GObject *object)
 {
 	CamelObjectPrivate *priv;
 
-	priv = CAMEL_OBJECT_GET_PRIVATE (object);
+	priv = CAMEL_OBJECT (object)->priv;
 
 	g_free (priv->state_filename);
 
@@ -364,7 +360,7 @@ camel_object_class_init (CamelObjectClass *class)
 static void
 camel_object_init (CamelObject *object)
 {
-	object->priv = CAMEL_OBJECT_GET_PRIVATE (object);
+	object->priv = G_TYPE_INSTANCE_GET_PRIVATE (object, CAMEL_TYPE_OBJECT, CamelObjectPrivate);
 }
 
 GQuark

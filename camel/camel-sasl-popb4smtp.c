@@ -34,10 +34,6 @@
 #include "camel-session.h"
 #include "camel-store.h"
 
-#define CAMEL_SASL_POPB4SMTP_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SASL_POPB4SMTP, CamelSaslPOPB4SMTPPrivate))
-
 struct _CamelSaslPOPB4SMTPPrivate {
 	gint placeholder;  /* allow for future expansion */
 };
@@ -152,5 +148,5 @@ camel_sasl_popb4smtp_class_init (CamelSaslPOPB4SMTPClass *class)
 static void
 camel_sasl_popb4smtp_init (CamelSaslPOPB4SMTP *sasl)
 {
-	sasl->priv = CAMEL_SASL_POPB4SMTP_GET_PRIVATE (sasl);
+	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (sasl, CAMEL_TYPE_SASL_POPB4SMTP, CamelSaslPOPB4SMTPPrivate);
 }

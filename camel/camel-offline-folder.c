@@ -33,10 +33,6 @@
 #include "camel-session.h"
 #include "camel-store.h"
 
-#define CAMEL_OFFLINE_FOLDER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_OFFLINE_FOLDER, CamelOfflineFolderPrivate))
-
 typedef struct _AsyncContext AsyncContext;
 
 struct _CamelOfflineFolderPrivate {
@@ -322,7 +318,7 @@ camel_offline_folder_class_init (CamelOfflineFolderClass *class)
 static void
 camel_offline_folder_init (CamelOfflineFolder *folder)
 {
-	folder->priv = CAMEL_OFFLINE_FOLDER_GET_PRIVATE (folder);
+	folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (folder, CAMEL_TYPE_OFFLINE_FOLDER, CamelOfflineFolderPrivate);
 
 	g_signal_connect (
 		folder, "changed",

@@ -39,8 +39,6 @@
 
 G_DEFINE_TYPE (EDataCal, e_data_cal, G_TYPE_OBJECT);
 
-#define E_DATA_CAL_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_DATA_CAL, EDataCalPrivate))
-
 #define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
 #define EDC_ERROR_EX(_code, _msg) e_data_cal_create_error (_code, _msg)
 
@@ -1209,7 +1207,7 @@ e_data_cal_init (EDataCal *ecal)
 {
 	EGdbusCal *gdbus_object;
 
-	ecal->priv = E_DATA_CAL_GET_PRIVATE (ecal);
+	ecal->priv = G_TYPE_INSTANCE_GET_PRIVATE (ecal, E_TYPE_DATA_CAL, EDataCalPrivate);
 
 	ecal->priv->gdbus_object = e_gdbus_cal_stub_new ();
 

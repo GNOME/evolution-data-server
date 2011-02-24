@@ -61,10 +61,6 @@
 
 #define d(x)
 
-#define CAMEL_SMIME_CONTEXT_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SMIME_CONTEXT, CamelSMIMEContextPrivate))
-
 struct _CamelSMIMEContextPrivate {
 	CERTCertDBHandle *certdb;
 
@@ -1289,8 +1285,7 @@ camel_smime_context_class_init (CamelSMIMEContextClass *class)
 static void
 camel_smime_context_init (CamelSMIMEContext *smime_context)
 {
-	smime_context->priv = CAMEL_SMIME_CONTEXT_GET_PRIVATE (smime_context);
-
+	smime_context->priv = G_TYPE_INSTANCE_GET_PRIVATE (smime_context, CAMEL_TYPE_SMIME_CONTEXT, CamelSMIMEContextPrivate);
 	smime_context->priv->certdb = CERT_GetDefaultCertDB ();
 	smime_context->priv->sign_mode = CAMEL_SMIME_SIGN_CLEARSIGN;
 	smime_context->priv->password_tries = 0;

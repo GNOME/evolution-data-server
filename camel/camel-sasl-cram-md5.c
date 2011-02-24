@@ -33,10 +33,6 @@
 #include "camel-sasl-cram-md5.h"
 #include "camel-service.h"
 
-#define CAMEL_SASL_CRAM_MD5_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SASL_CRAM_MD5, CamelSaslCramMd5Private))
-
 struct _CamelSaslCramMd5Private {
 	gint placeholder;  /* allow for future expansion */
 };
@@ -146,5 +142,5 @@ camel_sasl_cram_md5_class_init (CamelSaslCramMd5Class *class)
 static void
 camel_sasl_cram_md5_init (CamelSaslCramMd5 *sasl)
 {
-	sasl->priv = CAMEL_SASL_CRAM_MD5_GET_PRIVATE (sasl);
+	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (sasl, CAMEL_TYPE_SASL_CRAM_MD5, CamelSaslCramMd5Private);
 }

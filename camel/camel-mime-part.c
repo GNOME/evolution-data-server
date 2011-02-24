@@ -49,10 +49,6 @@
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 
-#define CAMEL_MIME_PART_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MIME_PART, CamelMimePartPrivate))
-
 typedef struct _AsyncContext AsyncContext;
 
 struct _CamelMimePartPrivate {
@@ -399,7 +395,7 @@ mime_part_finalize (GObject *object)
 {
 	CamelMimePartPrivate *priv;
 
-	priv = CAMEL_MIME_PART_GET_PRIVATE (object);
+	priv = CAMEL_MIME_PART (object)->priv;
 
 	g_free (priv->description);
 	g_free (priv->content_id);
@@ -919,7 +915,7 @@ camel_mime_part_init (CamelMimePart *mime_part)
 {
 	CamelDataWrapper *data_wrapper;
 
-	mime_part->priv = CAMEL_MIME_PART_GET_PRIVATE (mime_part);
+	mime_part->priv = G_TYPE_INSTANCE_GET_PRIVATE (mime_part, CAMEL_TYPE_MIME_PART, CamelMimePartPrivate);
 	mime_part->priv->encoding = CAMEL_TRANSFER_ENCODING_DEFAULT;
 
 	data_wrapper = CAMEL_DATA_WRAPPER (mime_part);

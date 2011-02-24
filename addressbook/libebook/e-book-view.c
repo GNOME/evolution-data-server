@@ -30,9 +30,6 @@
 
 G_DEFINE_TYPE (EBookView, e_book_view, G_TYPE_OBJECT);
 
-#define E_BOOK_VIEW_GET_PRIVATE(o)					\
-	(G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_BOOK_VIEW, EBookViewPrivate))
-
 struct _EBookViewPrivate {
 	EGdbusBookView *gdbus_bookview;
 	EBook *book;
@@ -269,13 +266,10 @@ e_book_view_stop (EBookView *book_view)
 static void
 e_book_view_init (EBookView *book_view)
 {
-	EBookViewPrivate *priv = E_BOOK_VIEW_GET_PRIVATE (book_view);
-
-	priv->gdbus_bookview = NULL;
-	priv->book = NULL;
-	priv->running = FALSE;
-
-	book_view->priv = priv;
+	book_view->priv = G_TYPE_INSTANCE_GET_PRIVATE (book_view, E_TYPE_BOOK_VIEW, EBookViewPrivate);
+	book_view->priv->gdbus_bookview = NULL;
+	book_view->priv->book = NULL;
+	book_view->priv->running = FALSE;
 }
 
 static void

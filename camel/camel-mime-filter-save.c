@@ -27,10 +27,6 @@
 #include "camel-mime-filter-save.h"
 #include "camel-stream-mem.h"
 
-#define CAMEL_MIME_FILTER_SAVE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MIME_FILTER_SAVE, CamelMimeFilterSavePrivate))
-
 struct _CamelMimeFilterSavePrivate {
 	CamelStream *stream;
 };
@@ -48,7 +44,7 @@ mime_filter_save_filter (CamelMimeFilter *mime_filter,
 {
 	CamelMimeFilterSavePrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_SAVE_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_SAVE (mime_filter)->priv;
 
 	if (priv->stream != NULL)
 		camel_stream_write (priv->stream, in, len, NULL, NULL);
@@ -95,7 +91,7 @@ camel_mime_filter_save_class_init (CamelMimeFilterSaveClass *class)
 static void
 camel_mime_filter_save_init (CamelMimeFilterSave *filter)
 {
-	filter->priv = CAMEL_MIME_FILTER_SAVE_GET_PRIVATE (filter);
+	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (filter, CAMEL_TYPE_MIME_FILTER_SAVE, CamelMimeFilterSavePrivate);
 }
 
 /**
@@ -117,7 +113,7 @@ camel_mime_filter_save_new (CamelStream *stream)
 		g_return_val_if_fail (CAMEL_IS_STREAM (stream), NULL);
 
 	filter = g_object_new (CAMEL_TYPE_MIME_FILTER_SAVE, NULL);
-	priv = CAMEL_MIME_FILTER_SAVE_GET_PRIVATE (filter);
+	priv = CAMEL_MIME_FILTER_SAVE (filter)->priv;
 
 	if (stream != NULL)
 		priv->stream = g_object_ref (stream);

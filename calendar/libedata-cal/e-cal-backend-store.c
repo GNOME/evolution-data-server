@@ -23,10 +23,6 @@
 #include "e-cal-backend-intervaltree.h"
 #include <libedataserver/e-data-server-util.h>
 
-#define E_CAL_BACKEND_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_CAL_BACKEND_STORE, ECalBackendStorePrivate))
-
 struct _ECalBackendStorePrivate {
 	gchar *path;
 	EIntervalTree *intervaltree;
@@ -89,7 +85,7 @@ cal_backend_store_finalize (GObject *object)
 {
 	ECalBackendStorePrivate *priv;
 
-	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (object);
+	priv = E_CAL_BACKEND_STORE (object)->priv;
 
 	g_free (priv->path);
 	if (priv->intervaltree) {
@@ -128,10 +124,8 @@ e_cal_backend_store_class_init (ECalBackendStoreClass *class)
 static void
 e_cal_backend_store_init (ECalBackendStore *store)
 {
-	ECalBackendStorePrivate *priv;
-	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
-	store->priv = priv;
-	priv->intervaltree = e_intervaltree_new ();
+	store->priv = G_TYPE_INSTANCE_GET_PRIVATE (store, E_TYPE_CAL_BACKEND_STORE, ECalBackendStorePrivate);
+	store->priv->intervaltree = e_intervaltree_new ();
 }
 
 /**
@@ -159,7 +153,7 @@ e_cal_backend_store_load (ECalBackendStore *store)
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 
-	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
+	priv = store->priv;
 
 	if (priv->loaded)
 		return TRUE;
@@ -178,9 +172,10 @@ gboolean
 e_cal_backend_store_remove (ECalBackendStore *store)
 {
 	ECalBackendStorePrivate *priv;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 
-	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
+	priv = store->priv;
 	/* remove interval tree */
 	e_intervaltree_destroy (priv->intervaltree);
 	priv->intervaltree = NULL;
@@ -197,9 +192,10 @@ gboolean
 e_cal_backend_store_clean (ECalBackendStore *store)
 {
 	ECalBackendStorePrivate *priv;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 
-	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
+	priv = store->priv;
 
 	if (priv->intervaltree) {
 		e_intervaltree_destroy (priv->intervaltree);
@@ -246,10 +242,11 @@ gboolean
 e_cal_backend_store_put_component_with_time_range (ECalBackendStore *store, ECalComponent *comp, time_t occurence_start, time_t occurence_end)
 {
 	ECalBackendStorePrivate *priv;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 
-	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
+	priv = store->priv;
 
 	if ((E_CAL_BACKEND_STORE_GET_CLASS (store))->put_component (store, comp)) {
 		if (e_intervaltree_insert (priv->intervaltree, occurence_start, occurence_end, comp))
@@ -282,10 +279,11 @@ gboolean
 e_cal_backend_store_remove_component (ECalBackendStore *store, const gchar *uid, const gchar *rid)
 {
 	ECalBackendStorePrivate *priv;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
+	priv = store->priv;
 
 	if ((E_CAL_BACKEND_STORE_GET_CLASS (store))->remove_component (store, uid, rid)) {
 		if (e_intervaltree_remove (priv->intervaltree, uid, rid))
@@ -414,7 +412,7 @@ e_cal_backend_store_get_components_occuring_in_range (ECalBackendStore *store, t
 	g_return_val_if_fail (store != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 
-	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
+	priv = store->priv;
 
 	if (!(objects = e_intervaltree_search (priv->intervaltree, start, end)))
 		return NULL;
@@ -515,10 +513,11 @@ void
 e_cal_backend_store_interval_tree_add_comp (ECalBackendStore *store, ECalComponent *comp, time_t occurence_start, time_t occurence_end)
 {
 	ECalBackendStorePrivate *priv;
+
 	g_return_if_fail (E_IS_CAL_BACKEND_STORE (store));
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 
-	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
+	priv = store->priv;
 
 	e_intervaltree_insert (priv->intervaltree, occurence_start, occurence_end, comp);
 }

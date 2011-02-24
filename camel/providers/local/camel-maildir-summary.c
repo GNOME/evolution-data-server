@@ -42,10 +42,6 @@
 
 #define CAMEL_MAILDIR_SUMMARY_VERSION (0x2000)
 
-#define CAMEL_MAILDIR_SUMMARY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MAILDIR_SUMMARY, CamelMaildirSummaryPrivate))
-
 static CamelMessageInfo *message_info_migrate (CamelFolderSummary *s, FILE *in);
 static CamelMessageInfo *message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
 static void message_info_free (CamelFolderSummary *, CamelMessageInfo *mi);
@@ -74,7 +70,7 @@ maildir_summary_finalize (GObject *object)
 {
 	CamelMaildirSummaryPrivate *priv;
 
-	priv = CAMEL_MAILDIR_SUMMARY_GET_PRIVATE (object);
+	priv = CAMEL_MAILDIR_SUMMARY (object)->priv;
 
 	g_free (priv->hostname);
 	g_mutex_free (priv->summary_lock);
@@ -120,8 +116,7 @@ camel_maildir_summary_init (CamelMaildirSummary *maildir_summary)
 
 	folder_summary = CAMEL_FOLDER_SUMMARY (maildir_summary);
 
-	maildir_summary->priv =
-		CAMEL_MAILDIR_SUMMARY_GET_PRIVATE (maildir_summary);
+	maildir_summary->priv = G_TYPE_INSTANCE_GET_PRIVATE (maildir_summary, CAMEL_TYPE_MAILDIR_SUMMARY, CamelMaildirSummaryPrivate);
 
 	/* set unique file version */
 	folder_summary->version += CAMEL_MAILDIR_SUMMARY_VERSION;

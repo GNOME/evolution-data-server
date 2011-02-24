@@ -42,10 +42,6 @@
 #define d(x)
 #define w(x)
 
-#define CAMEL_SERVICE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SERVICE, CamelServicePrivate))
-
 struct _CamelServicePrivate {
 	GStaticRecMutex connect_lock;	/* for locking connection operations */
 	GStaticMutex connect_op_lock;	/* for locking the connection_op */
@@ -228,7 +224,7 @@ camel_service_class_init (CamelServiceClass *class)
 static void
 camel_service_init (CamelService *service)
 {
-	service->priv = CAMEL_SERVICE_GET_PRIVATE (service);
+	service->priv = G_TYPE_INSTANCE_GET_PRIVATE (service, CAMEL_TYPE_SERVICE, CamelServicePrivate);
 
 	g_static_rec_mutex_init (&service->priv->connect_lock);
 	g_static_mutex_init (&service->priv->connect_op_lock);

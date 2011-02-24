@@ -36,10 +36,6 @@
 
 #define w(x)
 
-#define CAMEL_TCP_STREAM_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_TCP_STREAM, CamelTcpStreamPrivate))
-
 struct _CamelTcpStreamPrivate {
 	gchar *socks_host;
 	gint socks_port;
@@ -71,7 +67,7 @@ camel_tcp_stream_class_init (CamelTcpStreamClass *class)
 static void
 camel_tcp_stream_init (CamelTcpStream *tcp_stream)
 {
-	tcp_stream->priv = CAMEL_TCP_STREAM_GET_PRIVATE (tcp_stream);
+	tcp_stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (tcp_stream, CAMEL_TYPE_TCP_STREAM, CamelTcpStreamPrivate);
 }
 
 /**

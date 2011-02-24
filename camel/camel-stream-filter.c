@@ -35,10 +35,6 @@
 /*extern void g_check(gpointer mp);*/
 #define g_check(x)
 
-#define CAMEL_STREAM_FILTER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_STREAM_FILTER, CamelStreamFilterPrivate))
-
 struct _filter {
 	struct _filter *next;
 	gint id;
@@ -99,7 +95,7 @@ stream_filter_read (CamelStream *stream,
 	gssize size;
 	struct _filter *f;
 
-	priv = CAMEL_STREAM_FILTER_GET_PRIVATE (stream);
+	priv = CAMEL_STREAM_FILTER (stream)->priv;
 
 	priv->last_was_read = TRUE;
 
@@ -178,7 +174,7 @@ stream_filter_write (CamelStream *stream,
 	gsize presize, len, left = n;
 	gchar *buffer, realbuffer[READ_SIZE+READ_PAD];
 
-	priv = CAMEL_STREAM_FILTER_GET_PRIVATE (stream);
+	priv = CAMEL_STREAM_FILTER (stream)->priv;
 
 	priv->last_was_read = FALSE;
 
@@ -230,7 +226,7 @@ stream_filter_flush (CamelStream *stream,
 	gsize presize;
 	gsize len;
 
-	priv = CAMEL_STREAM_FILTER_GET_PRIVATE (stream);
+	priv = CAMEL_STREAM_FILTER (stream)->priv;
 
 	if (priv->last_was_read)
 		return 0;
@@ -267,7 +263,7 @@ stream_filter_close (CamelStream *stream,
 {
 	CamelStreamFilterPrivate *priv;
 
-	priv = CAMEL_STREAM_FILTER_GET_PRIVATE (stream);
+	priv = CAMEL_STREAM_FILTER (stream)->priv;
 
 	/* Ignore errors while flushing. */
 	if (!priv->last_was_read)
@@ -281,7 +277,7 @@ stream_filter_eos (CamelStream *stream)
 {
 	CamelStreamFilterPrivate *priv;
 
-	priv = CAMEL_STREAM_FILTER_GET_PRIVATE (stream);
+	priv = CAMEL_STREAM_FILTER (stream)->priv;
 
 	if (priv->filteredlen > 0)
 		return FALSE;
@@ -299,7 +295,7 @@ stream_filter_reset (CamelStream *stream,
 	CamelStreamFilterPrivate *priv;
 	struct _filter *f;
 
-	priv = CAMEL_STREAM_FILTER_GET_PRIVATE (stream);
+	priv = CAMEL_STREAM_FILTER (stream)->priv;
 
 	priv->filteredlen = 0;
 	priv->flushed = FALSE;
@@ -337,8 +333,7 @@ camel_stream_filter_class_init (CamelStreamFilterClass *class)
 static void
 camel_stream_filter_init (CamelStreamFilter *stream)
 {
-	stream->priv = CAMEL_STREAM_FILTER_GET_PRIVATE (stream);
-
+	stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (stream, CAMEL_TYPE_STREAM_FILTER, CamelStreamFilterPrivate);
 	stream->priv->realbuffer = g_malloc (READ_SIZE + READ_PAD);
 	stream->priv->buffer = stream->priv->realbuffer + READ_PAD;
 	stream->priv->last_was_read = TRUE;
@@ -363,7 +358,7 @@ camel_stream_filter_new (CamelStream *source)
 	g_return_val_if_fail (CAMEL_IS_STREAM (source), NULL);
 
 	stream = g_object_new (CAMEL_TYPE_STREAM_FILTER, NULL);
-	priv = CAMEL_STREAM_FILTER_GET_PRIVATE (stream);
+	priv = CAMEL_STREAM_FILTER (stream)->priv;
 
 	priv->source = g_object_ref (source);
 
@@ -407,7 +402,7 @@ camel_stream_filter_add (CamelStreamFilter *stream,
 	g_return_val_if_fail (CAMEL_IS_STREAM_FILTER (stream), -1);
 	g_return_val_if_fail (CAMEL_IS_MIME_FILTER (filter), -1);
 
-	priv = CAMEL_STREAM_FILTER_GET_PRIVATE (stream);
+	priv = stream->priv;
 
 	fn = g_malloc (sizeof (*fn));
 	fn->id = priv->filterid++;
@@ -438,7 +433,7 @@ camel_stream_filter_remove (CamelStreamFilter *stream,
 
 	g_return_if_fail (CAMEL_IS_STREAM_FILTER (stream));
 
-	priv = CAMEL_STREAM_FILTER_GET_PRIVATE (stream);
+	priv = stream->priv;
 
 	f = (struct _filter *)&priv->filters;
 	while (f && f->next) {

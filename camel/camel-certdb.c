@@ -42,10 +42,6 @@
 
 #define CAMEL_CERTDB_VERSION  0x100
 
-#define CAMEL_CERTDB_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_CERTDB, CamelCertDBPrivate))
-
 struct _CamelCertDBPrivate {
 	GMutex *db_lock;	/* for the db hashtable/array */
 	GMutex *io_lock;	/* load/save lock, for access to saved_count, etc */
@@ -71,7 +67,7 @@ certdb_finalize (GObject *object)
 	CamelCertDB *certdb = CAMEL_CERTDB (object);
 	CamelCertDBPrivate *priv;
 
-	priv = CAMEL_CERTDB_GET_PRIVATE (object);
+	priv = certdb->priv;
 
 	if (certdb->flags & CAMEL_CERTDB_DIRTY)
 		camel_certdb_save (certdb);
@@ -118,8 +114,7 @@ camel_certdb_class_init (CamelCertDBClass *class)
 static void
 camel_certdb_init (CamelCertDB *certdb)
 {
-	certdb->priv = CAMEL_CERTDB_GET_PRIVATE (certdb);
-
+	certdb->priv = G_TYPE_INSTANCE_GET_PRIVATE (certdb, CAMEL_TYPE_CERTDB, CamelCertDBPrivate);
 	certdb->filename = NULL;
 	certdb->version = CAMEL_CERTDB_VERSION;
 	certdb->saved_certs = 0;

@@ -35,7 +35,6 @@ static void reset_array (GArray *array);
 static void ensure_pending_flush_timeout (EDataBookView *view);
 
 G_DEFINE_TYPE (EDataBookView, e_data_book_view, G_TYPE_OBJECT);
-#define E_DATA_BOOK_VIEW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_DATA_BOOK_VIEW, EDataBookViewPrivate))
 
 #define THRESHOLD_ITEMS   32	/* how many items can be hold in a cache, before propagated to UI */
 #define THRESHOLD_SECONDS  2	/* how long to wait until notifications are propagated to UI; in seconds */
@@ -434,7 +433,7 @@ e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *book_view, cons
 void
 e_data_book_view_notify_remove (EDataBookView *book_view, const gchar *id)
 {
-	EDataBookViewPrivate *priv = E_DATA_BOOK_VIEW_GET_PRIVATE (book_view);
+	EDataBookViewPrivate *priv = book_view->priv;
 
 	if (!priv->running)
 		return;
@@ -493,7 +492,7 @@ e_data_book_view_notify_complete (EDataBookView *book_view, const GError *error)
 void
 e_data_book_view_notify_status_message (EDataBookView *book_view, const gchar *message)
 {
-	EDataBookViewPrivate *priv = E_DATA_BOOK_VIEW_GET_PRIVATE (book_view);
+	EDataBookViewPrivate *priv = book_view->priv;
 	gchar *gdbus_message = NULL;
 
 	if (!priv->running)
@@ -596,7 +595,8 @@ impl_DataBookView_dispose (EGdbusBookView *object, GDBusMethodInvocation *invoca
 static void
 e_data_book_view_init (EDataBookView *book_view)
 {
-	EDataBookViewPrivate *priv = E_DATA_BOOK_VIEW_GET_PRIVATE (book_view);
+	EDataBookViewPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (book_view, E_TYPE_DATA_BOOK_VIEW, EDataBookViewPrivate);
+
 	book_view->priv = priv;
 
 	priv->gdbus_object = e_gdbus_book_view_stub_new ();

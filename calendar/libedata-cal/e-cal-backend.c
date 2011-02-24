@@ -31,10 +31,6 @@
 #include "e-cal-backend.h"
 #include "e-cal-backend-cache.h"
 
-#define E_CAL_BACKEND_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_CAL_BACKEND, ECalBackendPrivate))
-
 /* For convenience */
 #define CLASS(backend) (E_CAL_BACKEND_GET_CLASS(backend))
 
@@ -264,7 +260,7 @@ cal_backend_finalize (GObject *object)
 {
 	ECalBackendPrivate *priv;
 
-	priv = E_CAL_BACKEND_GET_PRIVATE (object);
+	priv = E_CAL_BACKEND (object)->priv;
 
 	g_assert (priv->clients == NULL);
 
@@ -362,7 +358,7 @@ e_cal_backend_class_init (ECalBackendClass *class)
 static void
 e_cal_backend_init (ECalBackend *backend)
 {
-	backend->priv = E_CAL_BACKEND_GET_PRIVATE (backend);
+	backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (backend, E_TYPE_CAL_BACKEND, ECalBackendPrivate);
 
 	backend->priv->clients = NULL;
 	backend->priv->clients_mutex = g_mutex_new ();

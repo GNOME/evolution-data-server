@@ -9,7 +9,7 @@
 
 G_DEFINE_TYPE (ESoapMessage, e_soap_message, SOUP_TYPE_MESSAGE)
 
-typedef struct {
+struct _ESoapMessagePrivate {
 	/* Serialization fields */
 	xmlDocPtr doc;
 	xmlNodePtr last_node;
@@ -19,13 +19,12 @@ typedef struct {
 	xmlChar *env_uri;
 	gboolean body_started;
 	gchar *action;
-} ESoapMessagePrivate;
-#define E_SOAP_MESSAGE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_SOAP_MESSAGE, ESoapMessagePrivate))
+};
 
 static void
 finalize (GObject *object)
 {
-	ESoapMessagePrivate *priv = E_SOAP_MESSAGE_GET_PRIVATE (object);
+	ESoapMessagePrivate *priv = E_SOAP_MESSAGE (object)->priv;
 
 	if (priv->doc)
 		xmlFreeDoc (priv->doc);
@@ -52,18 +51,18 @@ e_soap_message_class_init (ESoapMessageClass *e_soap_message_class)
 static void
 e_soap_message_init (ESoapMessage *msg)
 {
-	ESoapMessagePrivate *priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	msg->priv = G_TYPE_INSTANCE_GET_PRIVATE (msg, E_TYPE_SOAP_MESSAGE, ESoapMessagePrivate);
 
 	/* initialize XML structures */
-	priv->doc = xmlNewDoc ((const xmlChar *)"1.0");
-	priv->doc->standalone = FALSE;
-	priv->doc->encoding = xmlCharStrdup ("UTF-8");
+	msg->priv->doc = xmlNewDoc ((const xmlChar *)"1.0");
+	msg->priv->doc->standalone = FALSE;
+	msg->priv->doc->encoding = xmlCharStrdup ("UTF-8");
 }
 
 static xmlNsPtr
 fetch_ns (ESoapMessage *msg, const gchar *prefix, const gchar *ns_uri)
 {
-	ESoapMessagePrivate *priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	ESoapMessagePrivate *priv = msg->priv;
 	xmlNsPtr ns = NULL;
 
 	if (prefix && ns_uri)
@@ -141,7 +140,7 @@ e_soap_message_new_from_uri (const gchar *method, SoupURI *uri,
 			    SOUP_MESSAGE_URI, uri,
 			    NULL);
 
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	priv->doc->standalone = standalone;
 
@@ -172,7 +171,7 @@ e_soap_message_start_envelope (ESoapMessage *msg)
 	ESoapMessagePrivate *priv;
 
 	g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	priv->last_node = priv->doc->xmlRootNode =
 		xmlNewDocNode (priv->doc, NULL, (const xmlChar *)"Envelope", NULL);
@@ -234,7 +233,7 @@ e_soap_message_start_body (ESoapMessage *msg)
 	ESoapMessagePrivate *priv;
 
 	g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	if (priv->body_started)
 		return;
@@ -292,7 +291,7 @@ e_soap_message_start_element (ESoapMessage *msg,
 	ESoapMessagePrivate *priv;
 
 	g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	priv->last_node = xmlNewChild (priv->last_node, NULL, (const xmlChar *)name, NULL);
 
@@ -317,7 +316,7 @@ e_soap_message_end_element (ESoapMessage *msg)
 	ESoapMessagePrivate *priv;
 
 	g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	priv->last_node = priv->last_node->parent;
 }
@@ -347,7 +346,7 @@ e_soap_message_start_fault (ESoapMessage *msg,
 	ESoapMessagePrivate *priv;
 
 	g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	priv->last_node = xmlNewChild (priv->last_node,
 				       priv->soap_ns,
@@ -393,7 +392,7 @@ e_soap_message_start_fault_detail (ESoapMessage *msg)
 	ESoapMessagePrivate *priv;
 
 	g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	priv->last_node = xmlNewChild (priv->last_node,
 				       priv->soap_ns,
@@ -435,7 +434,7 @@ e_soap_message_start_header (ESoapMessage *msg)
 	ESoapMessagePrivate *priv;
 
 	g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	priv->last_node = xmlNewChild (priv->last_node, priv->soap_ns,
 				       (const xmlChar *)"Header", NULL);
@@ -480,7 +479,7 @@ e_soap_message_start_header_element (ESoapMessage *msg,
 	ESoapMessagePrivate *priv;
 
 	g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	e_soap_message_start_element (msg, name, prefix, ns_uri);
 	if (actor_uri)
@@ -588,7 +587,7 @@ e_soap_message_write_string (ESoapMessage *msg, const gchar *string)
 	ESoapMessagePrivate *priv;
 
 	g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	xmlNodeAddContent (priv->last_node, (const xmlChar *)string);
 }
@@ -610,7 +609,7 @@ e_soap_message_write_buffer (ESoapMessage *msg, const gchar *buffer, gint len)
 	ESoapMessagePrivate *priv;
 
 	g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	xmlNodeAddContentLen (priv->last_node, (const xmlChar *)buffer, len);
 }
@@ -631,7 +630,7 @@ e_soap_message_set_element_type (ESoapMessage *msg, const gchar *xsi_type)
 	ESoapMessagePrivate *priv;
 
 	g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	xmlNewNsProp (priv->last_node, priv->xsi_ns, (const xmlChar *)"type", (const xmlChar *)xsi_type);
 }
@@ -650,7 +649,7 @@ e_soap_message_set_null (ESoapMessage *msg)
 	ESoapMessagePrivate *priv;
 
 	g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	xmlNewNsProp (priv->last_node, priv->xsi_ns, (const xmlChar *)"null", (const xmlChar *)"1");
 }
@@ -677,7 +676,7 @@ e_soap_message_add_attribute (ESoapMessage *msg,
 	ESoapMessagePrivate *priv;
 
 	g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	xmlNewNsProp (priv->last_node,
 		      fetch_ns (msg, prefix, ns_uri),
@@ -700,7 +699,7 @@ e_soap_message_add_namespace (ESoapMessage *msg, const gchar *prefix, const gcha
 	ESoapMessagePrivate *priv;
 
 	g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	xmlNewNs (priv->last_node, (const xmlChar *)(ns_uri ? ns_uri : ""), (const xmlChar *)prefix);
 }
@@ -740,7 +739,7 @@ e_soap_message_set_encoding_style (ESoapMessage *msg, const gchar *enc_style)
 	ESoapMessagePrivate *priv;
 
 	g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	xmlNewNsProp (priv->last_node, priv->soap_ns, (const xmlChar *)"encodingStyle", (const xmlChar *)enc_style);
 }
@@ -759,7 +758,7 @@ e_soap_message_reset (ESoapMessage *msg)
 	ESoapMessagePrivate *priv;
 
 	g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	xmlFreeDoc (priv->doc);
 	priv->doc = xmlNewDoc ((const xmlChar *)"1.0");
@@ -794,7 +793,7 @@ e_soap_message_persist (ESoapMessage *msg)
 	gint len;
 
 	g_return_if_fail (E_IS_SOAP_MESSAGE (msg));
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	xmlDocDumpMemory (priv->doc, &body, &len);
 
@@ -823,7 +822,7 @@ e_soap_message_get_namespace_prefix (ESoapMessage *msg, const gchar *ns_uri)
 	xmlNsPtr ns = NULL;
 
 	g_return_val_if_fail (E_IS_SOAP_MESSAGE (msg), NULL);
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 	g_return_val_if_fail (ns_uri != NULL, NULL);
 
 	ns = xmlSearchNsByHref (priv->doc, priv->last_node, (const xmlChar *)ns_uri);
@@ -854,7 +853,7 @@ e_soap_message_get_xml_doc (ESoapMessage *msg)
 	ESoapMessagePrivate *priv;
 
 	g_return_val_if_fail (E_IS_SOAP_MESSAGE (msg), NULL);
-	priv = E_SOAP_MESSAGE_GET_PRIVATE (msg);
+	priv = msg->priv;
 
 	return priv->doc;
 }

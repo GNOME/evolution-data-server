@@ -66,7 +66,6 @@ static GStaticRecMutex cal_factory_proxy_lock = G_STATIC_REC_MUTEX_INIT;
 #define UNLOCK_CACHE() g_static_rec_mutex_unlock (&priv->cache_lock)
 
 G_DEFINE_TYPE (ECal, e_cal, G_TYPE_OBJECT)
-#define E_CAL_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_CAL, ECalPrivate))
 
 static gboolean open_calendar (ECal *ecal, gboolean only_if_exists, GError **error,
 	#ifndef E_CAL_DISABLE_DEPRECATED
@@ -411,7 +410,7 @@ e_cal_init (ECal *ecal)
 	active_cals++;
 	UNLOCK_FACTORY ();
 
-	ecal->priv = priv = E_CAL_GET_PRIVATE (ecal);
+	ecal->priv = priv = G_TYPE_INSTANCE_GET_PRIVATE (ecal, E_TYPE_CAL, ECalPrivate);
 
 	priv->load_state = E_CAL_LOAD_NOT_LOADED;
 	priv->uri = NULL;

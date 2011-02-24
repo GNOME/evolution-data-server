@@ -54,10 +54,6 @@
 
 #define DUMP_EXTENSIONS
 
-#define CAMEL_NNTP_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_NNTP_STORE, CamelNNTPStorePrivate))
-
 G_DEFINE_TYPE (CamelNNTPStore, camel_nntp_store, CAMEL_TYPE_DISCO_STORE)
 
 static gint
@@ -1388,7 +1384,7 @@ camel_nntp_store_init (CamelNNTPStore *nntp_store)
 
 	nntp_store->mem = (CamelStreamMem *)camel_stream_mem_new ();
 
-	nntp_store->priv = CAMEL_NNTP_STORE_GET_PRIVATE (nntp_store);
+	nntp_store->priv = G_TYPE_INSTANCE_GET_PRIVATE (nntp_store, CAMEL_TYPE_NNTP_STORE, CamelNNTPStorePrivate);
 }
 
 /* Enter owning lock */

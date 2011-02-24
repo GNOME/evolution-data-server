@@ -33,10 +33,6 @@
 
 #define d(x)
 
-#define CAMEL_MEDIUM_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MEDIUM, CamelMediumPrivate))
-
 struct _CamelMediumPrivate {
 	/* The content of the medium, as opposed to our parent
 	 * CamelDataWrapper, which wraps both the headers and
@@ -90,7 +86,7 @@ medium_dispose (GObject *object)
 {
 	CamelMediumPrivate *priv;
 
-	priv = CAMEL_MEDIUM_GET_PRIVATE (object);
+	priv = CAMEL_MEDIUM (object)->priv;
 
 	if (priv->content != NULL) {
 		g_object_unref (priv->content);
@@ -166,7 +162,7 @@ camel_medium_class_init (CamelMediumClass *class)
 static void
 camel_medium_init (CamelMedium *medium)
 {
-	medium->priv = CAMEL_MEDIUM_GET_PRIVATE (medium);
+	medium->priv = G_TYPE_INSTANCE_GET_PRIVATE (medium, CAMEL_TYPE_MEDIUM, CamelMediumPrivate);
 }
 
 /**

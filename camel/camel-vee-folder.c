@@ -44,10 +44,6 @@
 #define d(x)
 #define dd(x) (camel_debug ("vfolder")?(x):0)
 
-#define CAMEL_VEE_FOLDER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_VEE_FOLDER, CamelVeeFolderPrivate))
-
 struct _CamelVeeFolderPrivate {
 	gboolean destroyed;
 	GList *folders;			/* lock using subfolder_lock before changing/accessing */
@@ -336,7 +332,7 @@ folder_changed_change (CamelSession *session, CamelSessionThreadMsg *msg)
 
 	/* Check the folder hasn't beem removed while we weren't watching */
 	camel_vee_folder_lock (vf, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
-	if (g_list_find (CAMEL_VEE_FOLDER_GET_PRIVATE (vf)->folders, sub) == NULL) {
+	if (g_list_find (vf->priv->folders, sub) == NULL) {
 		camel_vee_folder_unlock (vf, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
 		return;
 	}
@@ -756,7 +752,7 @@ count_result (CamelFolderSummary *summary,
 	guint32 count=0;
 	gchar *expr = g_strdup_printf ("(and %s %s)", vf->expression ? vf->expression : "", query);
 	GList *node;
-	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
+	CamelVeeFolderPrivate *p = vf->priv;
 
 	node = p->folders;
 	while (node) {
@@ -856,7 +852,7 @@ vee_folder_stop_folder (CamelVeeFolder *vf,
                         CamelFolder *sub,
                         GCancellable *cancellable)
 {
-	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
+	CamelVeeFolderPrivate *p = vf->priv;
 	gint i;
 	CamelVeeFolder *folder_unmatched = vf->parent_vee_store ? vf->parent_vee_store->folder_unmatched : NULL;
 
@@ -886,7 +882,7 @@ vee_folder_stop_folder (CamelVeeFolder *vf,
 	camel_vee_folder_unlock (vf, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
 
 	if (folder_unmatched != NULL) {
-		CamelVeeFolderPrivate *up = CAMEL_VEE_FOLDER_GET_PRIVATE (folder_unmatched);
+		CamelVeeFolderPrivate *up = folder_unmatched->priv;
 
 		camel_vee_folder_lock (folder_unmatched, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
 		/* if folder deleted, then blow it away from unmatched always, and remove all refs to it */
@@ -1006,7 +1002,7 @@ vee_folder_search_by_expression (CamelFolder *folder,
 	GPtrArray *matches, *result = g_ptr_array_new ();
 	gchar *expr;
 	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
-	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
+	CamelVeeFolderPrivate *p = vf->priv;
 	GHashTable *searched = g_hash_table_new (NULL, NULL);
 	CamelVeeFolder *folder_unmatched = vf->parent_vee_store ? vf->parent_vee_store->folder_unmatched : NULL;
 	gboolean is_folder_unmatched = vf == folder_unmatched && folder_unmatched;
@@ -1068,7 +1064,7 @@ vee_folder_search_by_uids (CamelFolder *folder,
 	GPtrArray *folder_uids = g_ptr_array_new ();
 	gchar *expr;
 	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
-	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
+	CamelVeeFolderPrivate *p = vf->priv;
 	GHashTable *searched = g_hash_table_new (NULL, NULL);
 
 	camel_vee_folder_lock (vf, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
@@ -1130,7 +1126,7 @@ vee_folder_count_by_expression (CamelFolder *folder,
 	gchar *expr;
 	guint32 count = 0;
 	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
-	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
+	CamelVeeFolderPrivate *p = vf->priv;
 	GHashTable *searched = g_hash_table_new (NULL, NULL);
 	CamelVeeFolder *folder_unmatched = vf->parent_vee_store ? vf->parent_vee_store->folder_unmatched : NULL;
 
@@ -1160,7 +1156,7 @@ vee_folder_count_by_expression (CamelFolder *folder,
 static void
 vee_folder_delete (CamelFolder *folder)
 {
-	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (folder);
+	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER (folder)->priv;
 
 	/* NB: this is never called on UNMTACHED */
 
@@ -1185,7 +1181,7 @@ static void
 vee_folder_freeze (CamelFolder *folder)
 {
 	CamelVeeFolder *vfolder = (CamelVeeFolder *)folder;
-	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vfolder);
+	CamelVeeFolderPrivate *p = vfolder->priv;
 	GList *node;
 
 	camel_vee_folder_lock (vfolder, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
@@ -1208,7 +1204,7 @@ static void
 vee_folder_thaw (CamelFolder *folder)
 {
 	CamelVeeFolder *vfolder = (CamelVeeFolder *)folder;
-	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vfolder);
+	CamelVeeFolderPrivate *p = vfolder->priv;
 	GList *node;
 
 	camel_vee_folder_lock (vfolder, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
@@ -1286,7 +1282,7 @@ vee_folder_refresh_info_sync (CamelFolder *folder,
                               GError **error)
 {
 	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
-	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
+	CamelVeeFolderPrivate *p = vf->priv;
 	GList *node, *list;
 	gboolean success = TRUE;
 
@@ -1319,7 +1315,7 @@ vee_folder_synchronize_sync (CamelFolder *folder,
                              GError **error)
 {
 	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
-	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
+	CamelVeeFolderPrivate *p = vf->priv;
 	GList *node;
 
 	if (((CamelVeeSummary *)folder->summary)->fake_visible_count)
@@ -1409,7 +1405,7 @@ static void
 vee_folder_set_expression (CamelVeeFolder *vee_folder,
                            const gchar *query)
 {
-	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vee_folder);
+	CamelVeeFolderPrivate *p = vee_folder->priv;
 	GList *node;
 
 	camel_vee_folder_lock (vee_folder, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
@@ -1492,7 +1488,7 @@ vee_folder_remove_folder_helper (CamelVeeFolder *vf, CamelFolder *source)
 		/* check if this folder is still to be part of unmatched */
 		if ((vf->flags & CAMEL_STORE_FOLDER_PRIVATE) == 0 && !killun) {
 			camel_vee_folder_lock (folder_unmatched, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
-			still = g_list_find (CAMEL_VEE_FOLDER_GET_PRIVATE (folder_unmatched)->folders, source) != NULL;
+			still = g_list_find (folder_unmatched->priv->folders, source) != NULL;
 			camel_vee_folder_unlock (folder_unmatched, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
 			camel_vee_folder_hash_folder (source, hash);
 		}
@@ -1892,7 +1888,7 @@ vee_folder_folder_changed (CamelVeeFolder *vee_folder,
                            CamelFolder *sub,
                            CamelFolderChangeInfo *changes)
 {
-	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vee_folder);
+	CamelVeeFolderPrivate *p = vee_folder->priv;
 	struct _folder_changed_msg *m;
 	CamelStore *parent_store;
 	CamelSession *session;
@@ -1970,7 +1966,7 @@ camel_vee_folder_init (CamelVeeFolder *vee_folder)
 {
 	CamelFolder *folder = CAMEL_FOLDER (vee_folder);
 
-	vee_folder->priv = CAMEL_VEE_FOLDER_GET_PRIVATE (vee_folder);
+	vee_folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (vee_folder, CAMEL_TYPE_VEE_FOLDER, CamelVeeFolderPrivate);
 
 	folder->folder_flags |= (CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |
 				 CAMEL_FOLDER_HAS_SEARCH_CAPABILITY);
@@ -2076,7 +2072,7 @@ camel_vee_folder_set_expression (CamelVeeFolder *vf, const gchar *query)
 void
 camel_vee_folder_add_folder (CamelVeeFolder *vf, CamelFolder *sub)
 {
-	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
+	CamelVeeFolderPrivate *p = vf->priv;
 	gint i;
 	CamelVeeFolder *folder_unmatched = vf->parent_vee_store ? vf->parent_vee_store->folder_unmatched : NULL;
 
@@ -2101,7 +2097,7 @@ camel_vee_folder_add_folder (CamelVeeFolder *vf, CamelFolder *sub)
 		camel_folder_unlock (CAMEL_FOLDER (vf), CAMEL_FOLDER_CHANGE_LOCK);
 	}
 	if ((vf->flags & CAMEL_STORE_FOLDER_PRIVATE) == 0 && !CAMEL_IS_VEE_FOLDER (sub) && folder_unmatched != NULL) {
-		CamelVeeFolderPrivate *up = CAMEL_VEE_FOLDER_GET_PRIVATE (folder_unmatched);
+		CamelVeeFolderPrivate *up = folder_unmatched->priv;
 		up->folders = g_list_append (
 			up->folders, g_object_ref (sub));
 
@@ -2142,7 +2138,7 @@ void
 camel_vee_folder_remove_folder (CamelVeeFolder *vf,
                                 CamelFolder *sub)
 {
-	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
+	CamelVeeFolderPrivate *p = vf->priv;
 	gint i;
 	CamelVeeFolder *folder_unmatched = vf->parent_vee_store ? vf->parent_vee_store->folder_unmatched : NULL;
 
@@ -2172,7 +2168,7 @@ camel_vee_folder_remove_folder (CamelVeeFolder *vf,
 	camel_vee_folder_unlock (vf, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
 
 	if (folder_unmatched != NULL) {
-		CamelVeeFolderPrivate *up = CAMEL_VEE_FOLDER_GET_PRIVATE (folder_unmatched);
+		CamelVeeFolderPrivate *up = folder_unmatched->priv;
 
 		camel_vee_folder_lock (folder_unmatched, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
 		/* if folder deleted, then blow it away from unmatched always, and remove all refs to it */
@@ -2245,7 +2241,7 @@ remove_folders (CamelFolder *folder,
 void
 camel_vee_folder_set_folders (CamelVeeFolder *vf, GList *folders)
 {
-	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
+	CamelVeeFolderPrivate *p = vf->priv;
 	GHashTable *remove = g_hash_table_new (NULL, NULL);
 	GList *l;
 	CamelFolder *folder;

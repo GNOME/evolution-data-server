@@ -18,9 +18,12 @@ G_BEGIN_DECLS
 #define E_IS_SOAP_RESPONSE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_SOAP_RESPONSE))
 #define E_SOAP_RESPONSE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_SOAP_RESPONSE, ESoapResponseClass))
 
+typedef struct _ESoapResponsePrivate ESoapResponsePrivate;
+
 typedef struct {
 	GObject parent;
 
+	ESoapResponsePrivate *priv;
 } ESoapResponse;
 
 typedef struct {

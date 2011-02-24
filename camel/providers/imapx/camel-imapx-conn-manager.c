@@ -25,10 +25,6 @@
 
 #define c(...) camel_imapx_debug(conman, __VA_ARGS__)
 
-#define CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_OBJECT, CamelIMAPXConnManager))
-
 #define CON_LOCK(x) (g_static_rec_mutex_lock(&(x)->priv->con_man_lock))
 #define CON_UNLOCK(x) (g_static_rec_mutex_unlock(&(x)->priv->con_man_lock))
 
@@ -100,10 +96,7 @@ camel_imapx_conn_manager_class_init (CamelIMAPXConnManagerClass *class)
 static void
 camel_imapx_conn_manager_init (CamelIMAPXConnManager *con_man)
 {
-	CamelIMAPXConnManagerPrivate *priv;
-
-	priv = g_new0 (CamelIMAPXConnManagerPrivate, 1);
-	con_man->priv = priv;
+	con_man->priv = G_TYPE_INSTANCE_GET_PRIVATE (con_man, CAMEL_TYPE_OBJECT, CamelIMAPXConnManagerPrivate);
 
 	/* default is 1 connection */
 	con_man->priv->n_connections = 1;

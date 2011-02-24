@@ -33,10 +33,6 @@
 
 #include "camel-stream-buffer.h"
 
-#define CAMEL_STREAM_BUFFER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_STREAM_BUFFER, CamelStreamBufferPrivate))
-
 struct _CamelStreamBufferPrivate {
 
 	CamelStream *stream;
@@ -89,7 +85,7 @@ set_vbuf (CamelStreamBuffer *stream,
 {
 	CamelStreamBufferPrivate *priv;
 
-	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
+	priv = CAMEL_STREAM_BUFFER (stream)->priv;
 
 	if (priv->buf && !(priv->flags & BUF_USER))
 		g_free (priv->buf);
@@ -113,7 +109,7 @@ stream_buffer_dispose (GObject *object)
 {
 	CamelStreamBufferPrivate *priv;
 
-	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (object);
+	priv = CAMEL_STREAM_BUFFER (object)->priv;
 
 	if (priv->stream != NULL) {
 		g_object_unref (priv->stream);
@@ -129,7 +125,7 @@ stream_buffer_finalize (GObject *object)
 {
 	CamelStreamBufferPrivate *priv;
 
-	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (object);
+	priv = CAMEL_STREAM_BUFFER (object)->priv;
 
 	if (!(priv->flags & BUF_USER))
 		g_free (priv->buf);
@@ -153,7 +149,7 @@ stream_buffer_read (CamelStream *stream,
 	gchar *bptr = buffer;
 	GError *local_error = NULL;
 
-	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
+	priv = CAMEL_STREAM_BUFFER (stream)->priv;
 
 	g_return_val_if_fail (
 		(priv->mode & CAMEL_STREAM_BUFFER_MODE) ==
@@ -225,7 +221,7 @@ stream_buffer_write (CamelStream *stream,
 	gssize total = n;
 	gssize left, todo;
 
-	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
+	priv = CAMEL_STREAM_BUFFER (stream)->priv;
 
 	g_return_val_if_fail (
 		(priv->mode & CAMEL_STREAM_BUFFER_MODE) ==
@@ -273,7 +269,7 @@ stream_buffer_flush (CamelStream *stream,
 {
 	CamelStreamBufferPrivate *priv;
 
-	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
+	priv = CAMEL_STREAM_BUFFER (stream)->priv;
 
 	if ((priv->mode & CAMEL_STREAM_BUFFER_MODE) == CAMEL_STREAM_BUFFER_WRITE) {
 		gsize len = priv->ptr - priv->buf;
@@ -298,7 +294,7 @@ stream_buffer_close (CamelStream *stream,
 {
 	CamelStreamBufferPrivate *priv;
 
-	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
+	priv = CAMEL_STREAM_BUFFER (stream)->priv;
 
 	if (stream_buffer_flush (stream, cancellable, error) == -1)
 		return -1;
@@ -311,7 +307,7 @@ stream_buffer_eos (CamelStream *stream)
 {
 	CamelStreamBufferPrivate *priv;
 
-	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
+	priv = CAMEL_STREAM_BUFFER (stream)->priv;
 
 	return camel_stream_eos (priv->stream) && priv->ptr == priv->end;
 }
@@ -325,7 +321,7 @@ stream_buffer_init_vbuf (CamelStreamBuffer *stream,
 {
 	CamelStreamBufferPrivate *priv;
 
-	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
+	priv = CAMEL_STREAM_BUFFER (stream)->priv;
 
 	set_vbuf (stream, buf, mode, size);
 
@@ -369,8 +365,7 @@ camel_stream_buffer_class_init (CamelStreamBufferClass *class)
 static void
 camel_stream_buffer_init (CamelStreamBuffer *stream)
 {
-	stream->priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
-
+	stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (stream, CAMEL_TYPE_STREAM_BUFFER, CamelStreamBufferPrivate);
 	stream->priv->flags = 0;
 	stream->priv->size = BUF_SIZE;
 	stream->priv->buf = g_malloc (BUF_SIZE);

@@ -28,10 +28,6 @@
 
 #include "camel-mime-filter-yenc.h"
 
-#define CAMEL_MIME_FILTER_YENC_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MIME_FILTER_YENC, CamelMimeFilterYencPrivate))
-
 struct _CamelMimeFilterYencPrivate {
 
 	CamelMimeFilterYencDirection direction;
@@ -58,7 +54,7 @@ mime_filter_yenc_filter (CamelMimeFilter *mime_filter,
 	CamelMimeFilterYencPrivate *priv;
 	gsize newlen = 0;
 
-	priv = CAMEL_MIME_FILTER_YENC_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_YENC (mime_filter)->priv;
 
 	switch (priv->direction) {
 		case CAMEL_MIME_FILTER_YENC_DIRECTION_ENCODE:
@@ -167,7 +163,7 @@ mime_filter_yenc_complete (CamelMimeFilter *mime_filter,
 	CamelMimeFilterYencPrivate *priv;
 	gsize newlen = 0;
 
-	priv = CAMEL_MIME_FILTER_YENC_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_YENC (mime_filter)->priv;
 
 	switch (priv->direction) {
 	case CAMEL_MIME_FILTER_YENC_DIRECTION_ENCODE:
@@ -209,7 +205,7 @@ mime_filter_yenc_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterYencPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_YENC_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_YENC (mime_filter)->priv;
 
 	switch (priv->direction) {
 		case CAMEL_MIME_FILTER_YENC_DIRECTION_ENCODE:
@@ -240,7 +236,7 @@ camel_mime_filter_yenc_class_init (CamelMimeFilterYencClass *class)
 static void
 camel_mime_filter_yenc_init (CamelMimeFilterYenc *filter)
 {
-	filter->priv = CAMEL_MIME_FILTER_YENC_GET_PRIVATE (filter);
+	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (filter, CAMEL_TYPE_MIME_FILTER_YENC, CamelMimeFilterYencPrivate);
 
 	filter->priv->part = 0;
 	filter->priv->pcrc = CAMEL_MIME_YENCODE_CRC_INIT;
@@ -262,7 +258,7 @@ camel_mime_filter_yenc_new (CamelMimeFilterYencDirection direction)
 	CamelMimeFilterYencPrivate *priv;
 
 	filter = g_object_new (CAMEL_TYPE_MIME_FILTER_YENC, NULL);
-	priv = CAMEL_MIME_FILTER_YENC_GET_PRIVATE (filter);
+	priv = CAMEL_MIME_FILTER_YENC (filter)->priv;
 
 	priv->direction = direction;
 

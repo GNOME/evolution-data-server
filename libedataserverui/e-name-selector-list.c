@@ -37,10 +37,6 @@
 #include <libedataserverui/e-name-selector-entry.h>
 #include "e-name-selector-list.h"
 
-#define E_NAME_SELECTOR_LIST_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_NAME_SELECTOR_LIST, ENameSelectorListPrivate))
-
 #define MAX_ROW	10
 
 struct _ENameSelectorListPrivate {
@@ -624,8 +620,7 @@ e_name_selector_list_init (ENameSelectorList *list)
 	EDestinationStore *store;
 	GtkEntryCompletion *completion;
 
-	list->priv = E_NAME_SELECTOR_LIST_GET_PRIVATE (list);
-
+	list->priv = G_TYPE_INSTANCE_GET_PRIVATE (list, E_TYPE_NAME_SELECTOR_LIST, ENameSelectorListPrivate);
 	list->priv->menu = NULL;
 
 	entry = E_NAME_SELECTOR_ENTRY (list);

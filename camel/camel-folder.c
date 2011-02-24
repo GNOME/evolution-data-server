@@ -42,10 +42,6 @@
 #include "camel-vtrash-folder.h"
 #include "camel-string-utils.h"
 
-#define CAMEL_FOLDER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_FOLDER, CamelFolderPrivate))
-
 #define d(x)
 #define w(x)
 
@@ -512,7 +508,7 @@ folder_finalize (GObject *object)
 {
 	CamelFolderPrivate *priv;
 
-	priv = CAMEL_FOLDER_GET_PRIVATE (object);
+	priv = CAMEL_FOLDER (object)->priv;
 
 	g_free (priv->name);
 	g_free (priv->full_name);
@@ -1645,8 +1641,7 @@ camel_folder_class_init (CamelFolderClass *class)
 static void
 camel_folder_init (CamelFolder *folder)
 {
-	folder->priv = CAMEL_FOLDER_GET_PRIVATE (folder);
-
+	folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (folder, CAMEL_TYPE_FOLDER, CamelFolderPrivate);
 	folder->priv->frozen = 0;
 	folder->priv->changed_frozen = camel_folder_change_info_new ();
 

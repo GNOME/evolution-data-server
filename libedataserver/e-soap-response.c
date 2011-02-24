@@ -11,7 +11,7 @@
 
 G_DEFINE_TYPE (ESoapResponse, e_soap_response, G_TYPE_OBJECT)
 
-typedef struct {
+struct _ESoapResponsePrivate {
 	/* the XML document */
 	xmlDocPtr xmldoc;
 	xmlNodePtr xml_root;
@@ -19,15 +19,14 @@ typedef struct {
 	xmlNodePtr xml_method;
 	xmlNodePtr soap_fault;
 	GList *parameters;
-} ESoapResponsePrivate;
-#define E_SOAP_RESPONSE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_SOAP_RESPONSE, ESoapResponsePrivate))
+};
 
 static xmlNode *soup_xml_real_node (xmlNode *node);
 
 static void
 finalize (GObject *object)
 {
-	ESoapResponsePrivate *priv = E_SOAP_RESPONSE_GET_PRIVATE (object);
+	ESoapResponsePrivate *priv = E_SOAP_RESPONSE (object)->priv;
 
 	if (priv->xmldoc)
 		xmlFreeDoc (priv->xmldoc);
@@ -50,9 +49,8 @@ e_soap_response_class_init (ESoapResponseClass *e_soap_response_class)
 static void
 e_soap_response_init (ESoapResponse *response)
 {
-	ESoapResponsePrivate *priv = E_SOAP_RESPONSE_GET_PRIVATE (response);
-
-	priv->xmldoc = xmlNewDoc ((const xmlChar *)"1.0");
+	response->priv = G_TYPE_INSTANCE_GET_PRIVATE (response, E_TYPE_SOAP_RESPONSE, ESoapResponsePrivate);
+	response->priv->xmldoc = xmlNewDoc ((const xmlChar *)"1.0");
 }
 
 /**
@@ -141,7 +139,7 @@ e_soap_response_from_string (ESoapResponse *response, const gchar *xmlstr)
 	xmlNodePtr xml_root, xml_body, xml_method = NULL;
 
 	g_return_val_if_fail (E_IS_SOAP_RESPONSE (response), FALSE);
-	priv = E_SOAP_RESPONSE_GET_PRIVATE (response);
+	priv = response->priv;
 	g_return_val_if_fail (xmlstr != NULL, FALSE);
 
 	/* clear the previous contents */
@@ -210,7 +208,7 @@ e_soap_response_get_method_name (ESoapResponse *response)
 	ESoapResponsePrivate *priv;
 
 	g_return_val_if_fail (E_IS_SOAP_RESPONSE (response), NULL);
-	priv = E_SOAP_RESPONSE_GET_PRIVATE (response);
+	priv = response->priv;
 	g_return_val_if_fail (priv->xml_method != NULL, NULL);
 
 	return (const gchar *) priv->xml_method->name;
@@ -231,7 +229,7 @@ e_soap_response_set_method_name (ESoapResponse *response, const gchar *method_na
 	ESoapResponsePrivate *priv;
 
 	g_return_if_fail (E_IS_SOAP_RESPONSE (response));
-	priv = E_SOAP_RESPONSE_GET_PRIVATE (response);
+	priv = response->priv;
 	g_return_if_fail (priv->xml_method != NULL);
 	g_return_if_fail (method_name != NULL);
 
@@ -459,7 +457,7 @@ e_soap_response_get_parameters (ESoapResponse *response)
 	ESoapResponsePrivate *priv;
 
 	g_return_val_if_fail (E_IS_SOAP_RESPONSE (response), NULL);
-	priv = E_SOAP_RESPONSE_GET_PRIVATE (response);
+	priv = response->priv;
 
 	return (const GList *) priv->parameters;
 }
@@ -481,7 +479,7 @@ e_soap_response_get_first_parameter (ESoapResponse *response)
 	ESoapResponsePrivate *priv;
 
 	g_return_val_if_fail (E_IS_SOAP_RESPONSE (response), NULL);
-	priv = E_SOAP_RESPONSE_GET_PRIVATE (response);
+	priv = response->priv;
 
 	return priv->parameters ? priv->parameters->data : NULL;
 }
@@ -507,7 +505,7 @@ e_soap_response_get_first_parameter_by_name (ESoapResponse *response,
 	GList *l;
 
 	g_return_val_if_fail (E_IS_SOAP_RESPONSE (response), NULL);
-	priv = E_SOAP_RESPONSE_GET_PRIVATE (response);
+	priv = response->priv;
 	g_return_val_if_fail (name != NULL, NULL);
 
 	for (l = priv->parameters; l != NULL; l = l->next) {
@@ -540,7 +538,7 @@ e_soap_response_get_next_parameter (ESoapResponse *response,
 	GList *l;
 
 	g_return_val_if_fail (E_IS_SOAP_RESPONSE (response), NULL);
-	priv = E_SOAP_RESPONSE_GET_PRIVATE (response);
+	priv = response->priv;
 	g_return_val_if_fail (from != NULL, NULL);
 
 	l = g_list_find (priv->parameters, (gconstpointer) from);
@@ -609,7 +607,7 @@ e_soap_response_dump_response (ESoapResponse *response, FILE *buffer)
 	xmlChar *xmlbuff;
 	gint buffersize, ret;
 
-	ESoapResponsePrivate *priv = E_SOAP_RESPONSE_GET_PRIVATE (response);
+	ESoapResponsePrivate *priv = response->priv;
 	xmlDocDumpFormatMemory (priv->xmldoc, &xmlbuff, &buffersize, 1);
 
 	ret = fputs ((gchar *) xmlbuff, buffer);

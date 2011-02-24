@@ -20,9 +20,12 @@ G_BEGIN_DECLS
 #define E_IS_SOAP_MESSAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_SOAP_MESSAGE))
 #define E_SOAP_MESSAGE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_SOAP_MESSAGE, ESoapMessageClass))
 
+typedef struct _ESoapMessagePrivate ESoapMessagePrivate;
+
 typedef struct {
 	SoupMessage parent;
 
+	ESoapMessagePrivate *priv;
 } ESoapMessage;
 
 typedef struct {

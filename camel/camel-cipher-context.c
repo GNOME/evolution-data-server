@@ -46,10 +46,6 @@
 
 #define d(x)
 
-#define CAMEL_CIPHER_CONTEXT_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_CIPHER_CONTEXT, CamelCipherContextPrivate))
-
 typedef struct _AsyncContext AsyncContext;
 
 struct _CamelCipherContextPrivate {
@@ -152,7 +148,7 @@ cipher_context_dispose (GObject *object)
 {
 	CamelCipherContextPrivate *priv;
 
-	priv = CAMEL_CIPHER_CONTEXT_GET_PRIVATE (object);
+	priv = CAMEL_CIPHER_CONTEXT (object)->priv;
 
 	if (priv->session != NULL) {
 		g_object_unref (priv->session);
@@ -168,7 +164,7 @@ cipher_context_finalize (GObject *object)
 {
 	CamelCipherContextPrivate *priv;
 
-	priv = CAMEL_CIPHER_CONTEXT_GET_PRIVATE (object);
+	priv = CAMEL_CIPHER_CONTEXT (object)->priv;
 
 	g_mutex_free (priv->lock);
 
@@ -765,7 +761,7 @@ camel_cipher_context_class_init (CamelCipherContextClass *class)
 static void
 camel_cipher_context_init (CamelCipherContext *context)
 {
-	context->priv = CAMEL_CIPHER_CONTEXT_GET_PRIVATE (context);
+	context->priv = G_TYPE_INSTANCE_GET_PRIVATE (context, CAMEL_TYPE_CIPHER_CONTEXT, CamelCipherContextPrivate);
 	context->priv->lock = g_mutex_new ();
 }
 

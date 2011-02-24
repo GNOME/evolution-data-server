@@ -14,10 +14,6 @@
 #include "e-data-book.h"
 #include "e-book-backend.h"
 
-#define E_BOOK_BACKEND_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_BOOK_BACKEND, EBookBackendPrivate))
-
 struct _EBookBackendPrivate {
 	GMutex *open_mutex;
 
@@ -112,7 +108,7 @@ book_backend_dispose (GObject *object)
 {
 	EBookBackendPrivate *priv;
 
-	priv = E_BOOK_BACKEND_GET_PRIVATE (object);
+	priv = E_BOOK_BACKEND (object)->priv;
 
 	if (priv->views != NULL) {
 		g_object_unref (priv->views);
@@ -133,7 +129,7 @@ book_backend_finalize (GObject *object)
 {
 	EBookBackendPrivate *priv;
 
-	priv = E_BOOK_BACKEND_GET_PRIVATE (object);
+	priv = E_BOOK_BACKEND (object)->priv;
 
 	g_list_free (priv->clients);
 
@@ -183,7 +179,7 @@ e_book_backend_class_init (EBookBackendClass *class)
 static void
 e_book_backend_init (EBookBackend *backend)
 {
-	backend->priv = E_BOOK_BACKEND_GET_PRIVATE (backend);
+	backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (backend, E_TYPE_BOOK_BACKEND, EBookBackendPrivate);
 
 	backend->priv->views = e_list_new (
 		(EListCopyFunc) NULL, (EListFreeFunc) NULL, NULL);

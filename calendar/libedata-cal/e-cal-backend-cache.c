@@ -30,10 +30,6 @@
 #include <libedataserver/e-data-server-util.h>
 #include "e-cal-backend-cache.h"
 
-#define E_CAL_BACKEND_CACHE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_CAL_BACKEND_CACHE, ECalBackendCachePrivate))
-
 struct _ECalBackendCachePrivate {
 	GHashTable *timezones;
 };
@@ -45,7 +41,7 @@ e_cal_backend_cache_finalize (GObject *object)
 {
 	ECalBackendCachePrivate *priv;
 
-	priv = E_CAL_BACKEND_CACHE_GET_PRIVATE (object);
+	priv = E_CAL_BACKEND_CACHE (object)->priv;
 
 	g_hash_table_destroy (priv->timezones);
 
@@ -73,7 +69,7 @@ timezones_value_destroy (icaltimezone *zone)
 static void
 e_cal_backend_cache_init (ECalBackendCache *cache)
 {
-	cache->priv = E_CAL_BACKEND_CACHE_GET_PRIVATE (cache);
+	cache->priv = G_TYPE_INSTANCE_GET_PRIVATE (cache, E_TYPE_CAL_BACKEND_CACHE, ECalBackendCachePrivate);
 
 	cache->priv->timezones = g_hash_table_new_full (
 		g_str_hash, g_str_equal,

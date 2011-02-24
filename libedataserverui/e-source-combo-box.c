@@ -25,10 +25,6 @@
 #include "e-source-combo-box.h"
 #include "e-cell-renderer-color.h"
 
-#define E_SOURCE_COMBO_BOX_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_COMBO_BOX, ESourceComboBoxPrivate))
-
 G_DEFINE_TYPE (ESourceComboBox, e_source_combo_box, GTK_TYPE_COMBO_BOX)
 
 struct _ESourceComboBoxPrivate {
@@ -264,7 +260,7 @@ e_source_combo_box_dispose (GObject *object)
 {
 	ESourceComboBoxPrivate *priv;
 
-	priv = E_SOURCE_COMBO_BOX_GET_PRIVATE (object);
+	priv = E_SOURCE_COMBO_BOX (object)->priv;
 
 	if (priv->source_list != NULL) {
 		g_signal_handler_disconnect (
@@ -284,7 +280,7 @@ e_source_combo_box_finalize (GObject *object)
 {
 	ESourceComboBoxPrivate *priv;
 
-	priv = E_SOURCE_COMBO_BOX_GET_PRIVATE (object);
+	priv = E_SOURCE_COMBO_BOX (object)->priv;
 
 	g_hash_table_destroy (priv->uid_index);
 
@@ -321,9 +317,7 @@ e_source_combo_box_class_init (ESourceComboBoxClass *class)
 static void
 e_source_combo_box_init (ESourceComboBox *source_combo_box)
 {
-	source_combo_box->priv =
-		E_SOURCE_COMBO_BOX_GET_PRIVATE (source_combo_box);
-
+	source_combo_box->priv = G_TYPE_INSTANCE_GET_PRIVATE (source_combo_box, E_TYPE_SOURCE_COMBO_BOX, ESourceComboBoxPrivate);
 	source_combo_box->priv->uid_index =
 		g_hash_table_new_full (
 			g_str_hash, g_str_equal,

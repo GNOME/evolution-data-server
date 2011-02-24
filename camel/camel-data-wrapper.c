@@ -36,10 +36,6 @@
 
 #define d(x)
 
-#define CAMEL_DATA_WRAPPER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_DATA_WRAPPER, CamelDataWrapperPrivate))
-
 typedef struct _AsyncContext AsyncContext;
 
 struct _CamelDataWrapperPrivate {
@@ -475,7 +471,7 @@ camel_data_wrapper_class_init (CamelDataWrapperClass *class)
 static void
 camel_data_wrapper_init (CamelDataWrapper *data_wrapper)
 {
-	data_wrapper->priv = CAMEL_DATA_WRAPPER_GET_PRIVATE (data_wrapper);
+	data_wrapper->priv = G_TYPE_INSTANCE_GET_PRIVATE (data_wrapper, CAMEL_TYPE_DATA_WRAPPER, CamelDataWrapperPrivate);
 
 	g_static_mutex_init (&data_wrapper->priv->stream_lock);
 

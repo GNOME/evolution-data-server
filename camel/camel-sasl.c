@@ -40,10 +40,6 @@
 
 #define w(x)
 
-#define CAMEL_SASL_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SASL, CamelSaslPrivate))
-
 typedef struct _AsyncContext AsyncContext;
 
 struct _CamelSaslPrivate {
@@ -193,7 +189,7 @@ sasl_dispose (GObject *object)
 {
 	CamelSaslPrivate *priv;
 
-	priv = CAMEL_SASL_GET_PRIVATE (object);
+	priv = CAMEL_SASL (object)->priv;
 
 	if (priv->service != NULL) {
 		g_object_unref (priv->service);
@@ -209,7 +205,7 @@ sasl_finalize (GObject *object)
 {
 	CamelSaslPrivate *priv;
 
-	priv = CAMEL_SASL_GET_PRIVATE (object);
+	priv = CAMEL_SASL (object)->priv;
 
 	g_free (priv->mechanism);
 	g_free (priv->service_name);
@@ -354,7 +350,7 @@ camel_sasl_class_init (CamelSaslClass *class)
 static void
 camel_sasl_init (CamelSasl *sasl)
 {
-	sasl->priv = CAMEL_SASL_GET_PRIVATE (sasl);
+	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (sasl, CAMEL_TYPE_SASL, CamelSaslPrivate);
 }
 
 /**

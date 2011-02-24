@@ -31,10 +31,6 @@
 #include "camel-offline-store.h"
 #include "camel-session.h"
 
-#define CAMEL_OFFLINE_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_OFFLINE_STORE, CamelOfflineStorePrivate))
-
 struct _CamelOfflineStorePrivate {
 	gboolean online;
 };
@@ -75,7 +71,7 @@ camel_offline_store_class_init (CamelOfflineStoreClass *class)
 static void
 camel_offline_store_init (CamelOfflineStore *store)
 {
-	store->priv = CAMEL_OFFLINE_STORE_GET_PRIVATE (store);
+	store->priv = G_TYPE_INSTANCE_GET_PRIVATE (store, CAMEL_TYPE_OFFLINE_STORE, CamelOfflineStorePrivate);
 	store->priv->online = TRUE;
 }
 

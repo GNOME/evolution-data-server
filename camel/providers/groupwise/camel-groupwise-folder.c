@@ -61,10 +61,6 @@ which needs to be better organized via functions */
 #define MAX_ATTACHMENT_SIZE 1*1024*1024   /*In bytes*/
 #define GROUPWISE_BULK_DELETE_LIMIT 100
 
-#define CAMEL_GROUPWISE_FOLDER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_GROUPWISE_FOLDER, CamelGroupwiseFolderPrivate))
-
 struct _CamelGroupwiseFolderPrivate {
 
 #ifdef ENABLE_THREADS
@@ -3054,7 +3050,7 @@ camel_groupwise_folder_init (CamelGroupwiseFolder *gw_folder)
 {
 	CamelFolder *folder = CAMEL_FOLDER (gw_folder);
 
-	gw_folder->priv = CAMEL_GROUPWISE_FOLDER_GET_PRIVATE (gw_folder);
+	gw_folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (gw_folder, CAMEL_TYPE_GROUPWISE_FOLDER, CamelGroupwiseFolderPrivate);
 
 	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED | CAMEL_MESSAGE_DELETED |
 		CAMEL_MESSAGE_DRAFT | CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN;

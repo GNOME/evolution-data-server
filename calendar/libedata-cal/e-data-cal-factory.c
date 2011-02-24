@@ -78,8 +78,6 @@ static gboolean opt_keep_running = FALSE;
 
 G_DEFINE_TYPE (EDataCalFactory, e_data_cal_factory, G_TYPE_OBJECT);
 
-#define E_DATA_CAL_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_DATA_CAL_FACTORY, EDataCalFactoryPrivate))
-
 struct _EDataCalFactoryPrivate {
 	EGdbusCalFactory *gdbus_object;
 
@@ -530,7 +528,7 @@ e_data_cal_factory_init (EDataCalFactory *factory)
 {
 	GError *error = NULL;
 
-	factory->priv = E_DATA_CAL_FACTORY_GET_PRIVATE (factory);
+	factory->priv = G_TYPE_INSTANCE_GET_PRIVATE (factory, E_TYPE_DATA_CAL_FACTORY, EDataCalFactoryPrivate);
 
 	factory->priv->gdbus_object = e_gdbus_cal_factory_stub_new ();
 	g_signal_connect (factory->priv->gdbus_object, "handle-get-cal", G_CALLBACK (impl_CalFactory_getCal), factory);

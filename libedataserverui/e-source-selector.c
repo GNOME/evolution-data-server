@@ -30,10 +30,6 @@
 #include "e-data-server-ui-marshal.h"
 #include "e-source-selector.h"
 
-#define E_SOURCE_SELECTOR_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_SOURCE_SELECTOR, ESourceSelectorPrivate))
-
 struct _ESourceSelectorPrivate {
 	ESourceList *list;
 
@@ -1128,7 +1124,7 @@ source_selector_test_collapse_row (GtkTreeView *tree_view,
 	GtkTreeModel *model;
 	GtkTreeIter child_iter;
 
-	priv = E_SOURCE_SELECTOR_GET_PRIVATE (tree_view);
+	priv = E_SOURCE_SELECTOR (tree_view)->priv;
 
 	/* Clear this because something else has been clicked on now */
 	priv->toggled_last = FALSE;
@@ -1164,7 +1160,7 @@ source_selector_row_expanded (GtkTreeView *tree_view,
 	GtkTreePath *child_path;
 	GtkTreeIter child_iter;
 
-	priv = E_SOURCE_SELECTOR_GET_PRIVATE (tree_view);
+	priv = E_SOURCE_SELECTOR (tree_view)->priv;
 
 	if (!priv->saved_primary_selection)
 		return;
@@ -1303,7 +1299,7 @@ e_source_selector_init (ESourceSelector *selector)
 	GtkTreeStore *tree_store;
 	GtkTreeView *tree_view;
 
-	selector->priv = E_SOURCE_SELECTOR_GET_PRIVATE (selector);
+	selector->priv = G_TYPE_INSTANCE_GET_PRIVATE (selector, E_TYPE_SOURCE_SELECTOR, ESourceSelectorPrivate);
 	priv = selector->priv;
 
 	tree_view = GTK_TREE_VIEW (selector);

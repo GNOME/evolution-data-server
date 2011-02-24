@@ -49,10 +49,6 @@
 
 #define d(x)
 
-#define CAMEL_SESSION_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SESSION, CamelSessionPrivate))
-
 struct _CamelSessionPrivate {
 	GMutex *lock;		/* for locking everything basically */
 	GMutex *thread_lock;	/* locking threads */
@@ -429,8 +425,7 @@ camel_session_class_init (CamelSessionClass *class)
 static void
 camel_session_init (CamelSession *session)
 {
-	session->priv = CAMEL_SESSION_GET_PRIVATE (session);
-
+	session->priv = G_TYPE_INSTANCE_GET_PRIVATE (session, CAMEL_TYPE_SESSION, CamelSessionPrivate);
 	session->priv->lock = g_mutex_new ();
 	session->priv->thread_lock = g_mutex_new ();
 	session->priv->thread_id = 1;

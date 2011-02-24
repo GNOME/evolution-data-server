@@ -30,10 +30,6 @@
 #include "e-categories-dialog.h"
 #include "e-category-completion.h"
 
-#define E_CATEGORIES_DIALOG_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_CATEGORIES_DIALOG, ECategoriesDialogPrivate))
-
 G_DEFINE_TYPE (ECategoriesDialog, e_categories_dialog, GTK_TYPE_DIALOG)
 
 struct _ECategoriesDialogPrivate {
@@ -586,7 +582,7 @@ categories_dialog_dispose (GObject *object)
 {
 	ECategoriesDialogPrivate *priv;
 
-	priv = E_CATEGORIES_DIALOG_GET_PRIVATE (object);
+	priv = E_CATEGORIES_DIALOG (object)->priv;
 
 	g_hash_table_remove_all (priv->selected_categories);
 
@@ -599,7 +595,7 @@ categories_dialog_finalize (GObject *object)
 {
 	ECategoriesDialogPrivate *priv;
 
-	priv = E_CATEGORIES_DIALOG_GET_PRIVATE (object);
+	priv = E_CATEGORIES_DIALOG (object)->priv;
 
 	e_categories_unregister_change_listener (
 		G_CALLBACK (categories_dialog_listener_cb), object);
@@ -722,7 +718,7 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label_header), entry_categories);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label2), categories_list);
 
-	dialog->priv = E_CATEGORIES_DIALOG_GET_PRIVATE (dialog);
+	dialog->priv = G_TYPE_INSTANCE_GET_PRIVATE (dialog, E_TYPE_CATEGORIES_DIALOG, ECategoriesDialogPrivate);
 	dialog->priv->selected_categories = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
 	dialog->priv->categories_entry = entry_categories;

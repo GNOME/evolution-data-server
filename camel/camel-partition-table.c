@@ -46,10 +46,6 @@
 #define CAMEL_PARTITION_TABLE_LOCK(kf, lock) (g_static_mutex_lock(&(kf)->priv->lock))
 #define CAMEL_PARTITION_TABLE_UNLOCK(kf, lock) (g_static_mutex_unlock(&(kf)->priv->lock))
 
-#define CAMEL_PARTITION_TABLE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_PARTITION_TABLE, CamelPartitionTablePrivate))
-
 struct _CamelPartitionTablePrivate {
 	GStaticMutex lock;	/* for locking partition */
 };
@@ -92,7 +88,7 @@ camel_partition_table_class_init (CamelPartitionTableClass *class)
 static void
 camel_partition_table_init (CamelPartitionTable *cpi)
 {
-	cpi->priv = CAMEL_PARTITION_TABLE_GET_PRIVATE (cpi);
+	cpi->priv = G_TYPE_INSTANCE_GET_PRIVATE (cpi, CAMEL_TYPE_PARTITION_TABLE, CamelPartitionTablePrivate);
 
 	camel_dlist_init (&cpi->partition);
 	g_static_mutex_init (&cpi->priv->lock);
@@ -599,10 +595,6 @@ fail:
 
 /* ********************************************************************** */
 
-#define CAMEL_KEY_TABLE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_KEY_TABLE, CamelKeyTablePrivate))
-
 #define CAMEL_KEY_TABLE_LOCK(kf, lock) (g_static_mutex_lock(&(kf)->priv->lock))
 #define CAMEL_KEY_TABLE_UNLOCK(kf, lock) (g_static_mutex_unlock(&(kf)->priv->lock))
 
@@ -646,7 +638,7 @@ camel_key_table_class_init (CamelKeyTableClass *class)
 static void
 camel_key_table_init (CamelKeyTable *table)
 {
-	table->priv = CAMEL_KEY_TABLE_GET_PRIVATE (table);
+	table->priv = G_TYPE_INSTANCE_GET_PRIVATE (table, CAMEL_TYPE_KEY_TABLE, CamelKeyTablePrivate);
 	g_static_mutex_init (&table->priv->lock);
 }
 

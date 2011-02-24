@@ -38,10 +38,6 @@
 	(iter)->user_data = GINT_TO_POINTER (index); \
 	} G_STMT_END
 
-#define E_DESTINATION_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_DESTINATION_STORE, EDestinationStorePrivate))
-
 struct _EDestinationStorePrivate {
 	GPtrArray *destinations;
 	gint stamp;
@@ -96,7 +92,7 @@ destination_store_dispose (GObject *object)
 	EDestinationStorePrivate *priv;
 	gint ii;
 
-	priv = E_DESTINATION_STORE_GET_PRIVATE (object);
+	priv = E_DESTINATION_STORE (object)->priv;
 
 	for (ii = 0; ii < priv->destinations->len; ii++) {
 		EDestination *destination;
@@ -116,7 +112,7 @@ destination_store_finalize (GObject *object)
 {
 	EDestinationStorePrivate *priv;
 
-	priv = E_DESTINATION_STORE_GET_PRIVATE (object);
+	priv = E_DESTINATION_STORE (object)->priv;
 
 	g_ptr_array_free (priv->destinations, TRUE);
 
@@ -156,8 +152,7 @@ e_destination_store_tree_model_init (GtkTreeModelIface *iface)
 static void
 e_destination_store_init (EDestinationStore *destination_store)
 {
-	destination_store->priv =
-		E_DESTINATION_STORE_GET_PRIVATE (destination_store);
+	destination_store->priv = G_TYPE_INSTANCE_GET_PRIVATE (destination_store, E_TYPE_DESTINATION_STORE, EDestinationStorePrivate);
 	destination_store->priv->destinations = g_ptr_array_new ();
 	destination_store->priv->stamp = g_random_int ();
 }

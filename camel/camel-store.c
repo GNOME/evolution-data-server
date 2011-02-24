@@ -44,10 +44,6 @@
 #define d(x)
 #define w(x)
 
-#define CAMEL_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_STORE, CamelStorePrivate))
-
 typedef struct _AsyncContext AsyncContext;
 typedef struct _SignalData SignalData;
 
@@ -1365,7 +1361,7 @@ camel_store_class_init (CamelStoreClass *class)
 static void
 camel_store_init (CamelStore *store)
 {
-	store->priv = CAMEL_STORE_GET_PRIVATE (store);
+	store->priv = G_TYPE_INSTANCE_GET_PRIVATE (store, CAMEL_TYPE_STORE, CamelStorePrivate);
 
 	/* set vtrash and vjunk on by default */
 	store->flags = CAMEL_STORE_VTRASH | CAMEL_STORE_VJUNK;

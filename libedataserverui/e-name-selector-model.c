@@ -29,10 +29,6 @@
 #include <glib/gi18n-lib.h>
 #include "e-name-selector-model.h"
 
-#define E_NAME_SELECTOR_MODEL_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_NAME_SELECTOR_MODEL, ENameSelectorModelPrivate))
-
 typedef struct {
 	gchar              *name;
 	gchar              *pretty_name;
@@ -74,8 +70,7 @@ G_DEFINE_TYPE (ENameSelectorModel, e_name_selector_model, G_TYPE_OBJECT)
 static void
 e_name_selector_model_init (ENameSelectorModel *name_selector_model)
 {
-	name_selector_model->priv =
-		E_NAME_SELECTOR_MODEL_GET_PRIVATE (name_selector_model);
+	name_selector_model->priv = G_TYPE_INSTANCE_GET_PRIVATE (name_selector_model, E_TYPE_NAME_SELECTOR_MODEL, ENameSelectorModelPrivate);
 	name_selector_model->priv->sections       = g_array_new (FALSE, FALSE, sizeof (Section));
 	name_selector_model->priv->contact_store  = e_contact_store_new ();
 
@@ -99,7 +94,7 @@ name_selector_model_finalize (GObject *object)
 	ENameSelectorModelPrivate *priv;
 	gint i;
 
-	priv = E_NAME_SELECTOR_MODEL_GET_PRIVATE (object);
+	priv = E_NAME_SELECTOR_MODEL (object)->priv;
 
 	for (i = 0; i < priv->sections->len; i++)
 		free_section (E_NAME_SELECTOR_MODEL (object), i);

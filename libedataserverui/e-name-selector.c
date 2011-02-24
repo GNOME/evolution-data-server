@@ -35,10 +35,6 @@
 #include <libedataserverui/e-book-auth-util.h>
 #include "e-name-selector.h"
 
-#define E_NAME_SELECTOR_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_NAME_SELECTOR, ENameSelectorPrivate))
-
 typedef struct {
 	gchar *name;
 	ENameSelectorEntry *entry;
@@ -71,7 +67,7 @@ reset_pointer_cb (gpointer data, GObject *where_was)
 
 	g_return_if_fail (E_IS_NAME_SELECTOR (name_selector));
 
-	priv = E_NAME_SELECTOR_GET_PRIVATE (name_selector);
+	priv = name_selector->priv;
 
 	for (ii = 0; ii < priv->sections->len; ii++) {
 		Section *section;
@@ -190,7 +186,7 @@ name_selector_dispose (GObject *object)
 	ENameSelectorPrivate *priv;
 	guint ii;
 
-	priv = E_NAME_SELECTOR_GET_PRIVATE (object);
+	priv = E_NAME_SELECTOR (object)->priv;
 
 	if (priv->source_list != NULL) {
 		g_object_unref (priv->source_list);
@@ -227,7 +223,7 @@ name_selector_finalize (GObject *object)
 {
 	ENameSelectorPrivate *priv;
 
-	priv = E_NAME_SELECTOR_GET_PRIVATE (object);
+	priv = E_NAME_SELECTOR (object)->priv;
 
 	g_array_free (priv->source_books, TRUE);
 	g_array_free (priv->sections, TRUE);
@@ -257,7 +253,7 @@ e_name_selector_init (ENameSelector *name_selector)
 	sections = g_array_new (FALSE, FALSE, sizeof (Section));
 	source_books = g_array_new (FALSE, FALSE, sizeof (SourceBook));
 
-	name_selector->priv = E_NAME_SELECTOR_GET_PRIVATE (name_selector);
+	name_selector->priv = G_TYPE_INSTANCE_GET_PRIVATE (name_selector, E_TYPE_NAME_SELECTOR, ENameSelectorPrivate);
 	name_selector->priv->sections = sections;
 	name_selector->priv->model = e_name_selector_model_new ();
 	name_selector->priv->source_books = source_books;
@@ -419,7 +415,7 @@ e_name_selector_peek_section_entry (ENameSelector *name_selector, const gchar *n
 	g_return_val_if_fail (E_IS_NAME_SELECTOR (name_selector), NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 
-	priv = E_NAME_SELECTOR_GET_PRIVATE (name_selector);
+	priv = name_selector->priv;
 	model = e_name_selector_peek_model (name_selector);
 
 	if (!e_name_selector_model_peek_section (
@@ -487,7 +483,7 @@ e_name_selector_peek_section_list (ENameSelector *name_selector, const gchar *na
 	g_return_val_if_fail (E_IS_NAME_SELECTOR (name_selector), NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 
-	priv = E_NAME_SELECTOR_GET_PRIVATE (name_selector);
+	priv = name_selector->priv;
 	model = e_name_selector_peek_model (name_selector);
 
 	if (!e_name_selector_model_peek_section (

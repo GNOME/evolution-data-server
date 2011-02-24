@@ -64,7 +64,6 @@ struct _EDataCalViewPrivate {
 };
 
 G_DEFINE_TYPE (EDataCalView, e_data_cal_view, G_TYPE_OBJECT);
-#define E_DATA_CAL_VIEW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_DATA_CAL_VIEW_TYPE, EDataCalViewPrivate))
 
 static void e_data_cal_view_dispose (GObject *object);
 static void e_data_cal_view_finalize (GObject *object);
@@ -391,7 +390,7 @@ e_data_cal_view_get_property (GObject *object, guint property_id, GValue *value,
 static void
 e_data_cal_view_init (EDataCalView *query)
 {
-	EDataCalViewPrivate *priv = E_DATA_CAL_VIEW_GET_PRIVATE (query);
+	EDataCalViewPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (query, E_DATA_CAL_VIEW_TYPE, EDataCalViewPrivate);
 
 	query->priv = priv;
 

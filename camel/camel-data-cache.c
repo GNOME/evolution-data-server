@@ -49,10 +49,6 @@
    once an hour should be enough */
 #define CAMEL_DATA_CACHE_CYCLE_TIME (60*60)
 
-#define CAMEL_DATA_CACHE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_DATA_CACHE, CamelDataCachePrivate))
-
 struct _CamelDataCachePrivate {
 	CamelObjectBag *busy_bag;
 
@@ -110,7 +106,7 @@ data_cache_finalize (GObject *object)
 {
 	CamelDataCachePrivate *priv;
 
-	priv = CAMEL_DATA_CACHE_GET_PRIVATE (object);
+	priv = CAMEL_DATA_CACHE (object)->priv;
 
 	camel_object_bag_destroy (priv->busy_bag);
 	g_free (priv->path);
@@ -153,7 +149,7 @@ camel_data_cache_init (CamelDataCache *data_cache)
 		(CamelCopyFunc) g_strdup,
 		(GFreeFunc) g_free);
 
-	data_cache->priv = CAMEL_DATA_CACHE_GET_PRIVATE (data_cache);
+	data_cache->priv = G_TYPE_INSTANCE_GET_PRIVATE (data_cache, CAMEL_TYPE_DATA_CACHE, CamelDataCachePrivate);
 	data_cache->priv->busy_bag = busy_bag;
 	data_cache->priv->expire_age = -1;
 	data_cache->priv->expire_access = -1;

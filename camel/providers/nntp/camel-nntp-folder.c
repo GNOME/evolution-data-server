@@ -39,10 +39,6 @@
 #include "camel-nntp-store.h"
 #include "camel-nntp-summary.h"
 
-#define CAMEL_NNTP_FOLDER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_NNTP_FOLDER, CamelNNTPFolderPrivate))
-
 G_DEFINE_TYPE (CamelNNTPFolder, camel_nntp_folder, CAMEL_TYPE_DISCO_FOLDER)
 
 static void
@@ -643,7 +639,7 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 static void
 camel_nntp_folder_init (CamelNNTPFolder *nntp_folder)
 {
-	nntp_folder->priv = CAMEL_NNTP_FOLDER_GET_PRIVATE (nntp_folder);
+	nntp_folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (nntp_folder, CAMEL_TYPE_NNTP_FOLDER, CamelNNTPFolderPrivate);
 
 	nntp_folder->changes = camel_folder_change_info_new ();
 	nntp_folder->priv->search_lock = g_mutex_new ();

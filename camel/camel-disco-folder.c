@@ -32,10 +32,6 @@
 #include "camel-disco-store.h"
 #include "camel-session.h"
 
-#define CAMEL_DISCO_FOLDER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_DISCO_FOLDER, CamelDiscoFolderPrivate))
-
 struct _CamelDiscoFolderPrivate {
 	gboolean offline_sync;
 };
@@ -474,7 +470,7 @@ camel_disco_folder_class_init (CamelDiscoFolderClass *class)
 static void
 camel_disco_folder_init (CamelDiscoFolder *disco_folder)
 {
-	disco_folder->priv = CAMEL_DISCO_FOLDER_GET_PRIVATE (disco_folder);
+	disco_folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (disco_folder, CAMEL_TYPE_DISCO_FOLDER, CamelDiscoFolderPrivate);
 
 	g_signal_connect (
 		disco_folder, "changed",

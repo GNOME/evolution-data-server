@@ -65,8 +65,6 @@ static gboolean opt_keep_running = FALSE;
 
 G_DEFINE_TYPE (EDataBookFactory, e_data_book_factory, G_TYPE_OBJECT);
 
-#define E_DATA_BOOK_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_DATA_BOOK_FACTORY, EDataBookFactoryPrivate))
-
 struct _EDataBookFactoryPrivate {
 	EGdbusBookFactory *gdbus_object;
 
@@ -419,7 +417,7 @@ e_data_book_factory_init (EDataBookFactory *factory)
 {
 	GError *error = NULL;
 
-	factory->priv = E_DATA_BOOK_FACTORY_GET_PRIVATE (factory);
+	factory->priv = G_TYPE_INSTANCE_GET_PRIVATE (factory, E_TYPE_DATA_BOOK_FACTORY, EDataBookFactoryPrivate);
 
 	factory->priv->gdbus_object = e_gdbus_book_factory_stub_new ();
 	g_signal_connect (factory->priv->gdbus_object, "handle-get-book", G_CALLBACK (impl_BookFactory_getBook), factory);

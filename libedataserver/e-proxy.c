@@ -97,10 +97,6 @@ enum ProxyType {
 
 #define RIGHT_KEY(sufix) (priv->type == PROXY_TYPE_SYSTEM ? KEY_GCONF_SYS_ ## sufix : KEY_GCONF_EVO_ ## sufix)
 
-#define E_PROXY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_PROXY, EProxyPrivate))
-
 struct _EProxyPrivate {
 	SoupURI *uri_http, *uri_https;
 	guint notify_id_evo, notify_id_sys, notify_id_sys_http; /* conxn id of gconf_client_notify_add  */
@@ -161,7 +157,7 @@ e_proxy_dispose (GObject *object)
 	EProxyPrivate *priv;
 	GConfClient* client;
 
-	priv = E_PROXY_GET_PRIVATE (object);
+	priv = E_PROXY (object)->priv;
 
 	client = gconf_client_get_default ();
 
@@ -228,7 +224,7 @@ e_proxy_class_init (EProxyClass *class)
 static void
 e_proxy_init (EProxy *proxy)
 {
-	proxy->priv = E_PROXY_GET_PRIVATE (proxy);
+	proxy->priv = G_TYPE_INSTANCE_GET_PRIVATE (proxy, E_TYPE_PROXY, EProxyPrivate);
 
 	proxy->priv->type = PROXY_TYPE_SYSTEM;
 }

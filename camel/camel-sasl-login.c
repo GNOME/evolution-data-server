@@ -31,10 +31,6 @@
 #include "camel-sasl-login.h"
 #include "camel-service.h"
 
-#define CAMEL_SASL_LOGIN_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SASL_LOGIN, CamelSaslLoginPrivate))
-
 CamelServiceAuthType camel_sasl_login_authtype = {
 	N_("Login"),
 
@@ -67,7 +63,7 @@ sasl_login_challenge_sync (CamelSasl *sasl,
 	CamelService *service;
 	CamelURL *url;
 
-	priv = CAMEL_SASL_LOGIN_GET_PRIVATE (sasl);
+	priv = CAMEL_SASL_LOGIN (sasl)->priv;
 
 	service = camel_sasl_get_service (sasl);
 	url = service->url;
@@ -114,5 +110,5 @@ camel_sasl_login_class_init (CamelSaslLoginClass *class)
 static void
 camel_sasl_login_init (CamelSaslLogin *sasl)
 {
-	sasl->priv = CAMEL_SASL_LOGIN_GET_PRIVATE (sasl);
+	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (sasl, CAMEL_TYPE_SASL_LOGIN, CamelSaslLoginPrivate);
 }

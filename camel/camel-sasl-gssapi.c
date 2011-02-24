@@ -77,10 +77,6 @@ extern gss_OID gss_nt_service_name;
 #define DBUS_INTERFACE		"org.gnome.KrbAuthDialog"
 #define DBUS_METHOD		"org.gnome.KrbAuthDialog.acquireTgt"
 
-#define CAMEL_SASL_GSSAPI_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SASL_GSSAPI, CamelSaslGssapiPrivate))
-
 CamelServiceAuthType camel_sasl_gssapi_authtype = {
 	N_("GSSAPI"),
 
@@ -268,7 +264,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 	struct addrinfo *ai, hints;
 	const gchar *service_name;
 
-	priv = CAMEL_SASL_GSSAPI_GET_PRIVATE (sasl);
+	priv = CAMEL_SASL_GSSAPI (sasl)->priv;
 
 	service = camel_sasl_get_service (sasl);
 	service_name = camel_sasl_get_service_name (sasl);
@@ -445,8 +441,7 @@ static void
 camel_sasl_gssapi_init (CamelSaslGssapi *sasl)
 {
 #ifdef HAVE_KRB5
-	sasl->priv = CAMEL_SASL_GSSAPI_GET_PRIVATE (sasl);
-
+	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (sasl, CAMEL_TYPE_SASL_GSSAPI, CamelSaslGssapiPrivate);
 	sasl->priv->state = GSSAPI_STATE_INIT;
 	sasl->priv->ctx = GSS_C_NO_CONTEXT;
 	sasl->priv->target = GSS_C_NO_NAME;

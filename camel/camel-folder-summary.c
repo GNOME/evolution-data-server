@@ -59,10 +59,6 @@
 #include "camel-vtrash-folder.h"
 #include "camel-mime-part-utils.h"
 
-#define CAMEL_FOLDER_SUMMARY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_FOLDER_SUMMARY, CamelFolderSummaryPrivate))
-
 /* Make 5 minutes as default cache drop */
 #define SUMMARY_CACHE_DROP 300
 #define dd(x) if (camel_debug("sync")) x
@@ -157,7 +153,7 @@ folder_summary_dispose (GObject *object)
 {
 	CamelFolderSummaryPrivate *priv;
 
-	priv = CAMEL_FOLDER_SUMMARY_GET_PRIVATE (object);
+	priv = CAMEL_FOLDER_SUMMARY (object)->priv;
 
 	if (priv->filter_index != NULL) {
 		g_object_unref (priv->filter_index);
@@ -915,7 +911,7 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *class)
 static void
 camel_folder_summary_init (CamelFolderSummary *summary)
 {
-	summary->priv = CAMEL_FOLDER_SUMMARY_GET_PRIVATE (summary);
+	summary->priv = G_TYPE_INSTANCE_GET_PRIVATE (summary, CAMEL_TYPE_FOLDER_SUMMARY, CamelFolderSummaryPrivate);
 
 	summary->priv->filter_charset = g_hash_table_new (
 		camel_strcase_hash, camel_strcase_equal);
@@ -1005,7 +1001,7 @@ camel_folder_summary_set_filename (CamelFolderSummary *s, const gchar *name)
 void
 camel_folder_summary_set_index (CamelFolderSummary *s, CamelIndex *index)
 {
-	struct _CamelFolderSummaryPrivate *p = CAMEL_FOLDER_SUMMARY_GET_PRIVATE (s);
+	struct _CamelFolderSummaryPrivate *p = s->priv;
 
 	if (p->index)
 		g_object_unref (p->index);
@@ -1730,7 +1726,7 @@ cfs_reload_from_db (CamelFolderSummary *s, GError **error)
 
 	cfs_schedule_info_release_timer (s);
 
-	if (CAMEL_FOLDER_SUMMARY_GET_PRIVATE (s)->need_preview) {
+	if (s->priv->need_preview) {
 		struct _preview_update_msg *m;
 
 		m = camel_session_thread_msg_new (((CamelService *)parent_store)->session, &preview_update_ops, sizeof (*m));
@@ -1751,7 +1747,7 @@ void
 camel_folder_summary_add_preview (CamelFolderSummary *s, CamelMessageInfo *info)
 {
 	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-	g_hash_table_insert (CAMEL_FOLDER_SUMMARY_GET_PRIVATE (s)->preview_updates, (gchar *)info->uid, ((CamelMessageInfoBase *)info)->preview);
+	g_hash_table_insert (s->priv->preview_updates, (gchar *)info->uid, ((CamelMessageInfoBase *)info)->preview);
 	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 }
 
@@ -2219,11 +2215,11 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s,
 	cdb = parent_store->cdb_w;
 
 	d(printf ("\ncamel_folder_summary_save_to_db called \n"));
-	if (CAMEL_FOLDER_SUMMARY_GET_PRIVATE (s)->need_preview && g_hash_table_size (CAMEL_FOLDER_SUMMARY_GET_PRIVATE (s)->preview_updates)) {
+	if (s->priv->need_preview && g_hash_table_size (s->priv->preview_updates)) {
 		camel_db_begin_transaction (parent_store->cdb_w, NULL);
 		camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-		g_hash_table_foreach (CAMEL_FOLDER_SUMMARY_GET_PRIVATE (s)->preview_updates, (GHFunc)msg_save_preview, s->folder);
-		g_hash_table_remove_all (CAMEL_FOLDER_SUMMARY_GET_PRIVATE (s)->preview_updates);
+		g_hash_table_foreach (s->priv->preview_updates, (GHFunc)msg_save_preview, s->folder);
+		g_hash_table_remove_all (s->priv->preview_updates);
 		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 		camel_db_end_transaction (parent_store->cdb_w, NULL);
 	}
@@ -2661,7 +2657,7 @@ camel_folder_summary_info_new_from_parser (CamelFolderSummary *s, CamelMimeParse
 	CamelMessageInfo *info = NULL;
 	gchar *buffer;
 	gsize len;
-	struct _CamelFolderSummaryPrivate *p = CAMEL_FOLDER_SUMMARY_GET_PRIVATE (s);
+	CamelFolderSummaryPrivate *p = s->priv;
 	goffset start;
 	CamelIndexName *name = NULL;
 
@@ -2720,7 +2716,7 @@ CamelMessageInfo *
 camel_folder_summary_info_new_from_message (CamelFolderSummary *s, CamelMimeMessage *msg, const gchar *bodystructure)
 {
 	CamelMessageInfo *info;
-	struct _CamelFolderSummaryPrivate *p = CAMEL_FOLDER_SUMMARY_GET_PRIVATE (s);
+	CamelFolderSummaryPrivate *p = s->priv;
 	CamelIndexName *name = NULL;
 
 	info = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->message_info_new_from_message (s, msg, bodystructure);
@@ -3810,7 +3806,7 @@ summary_build_content_info (CamelFolderSummary *s, CamelMessageInfo *msginfo, Ca
 	CamelMessageContentInfo *info = NULL;
 	CamelContentType *ct;
 	gint enc_id = -1, chr_id = -1, html_id = -1, idx_id = -1;
-	struct _CamelFolderSummaryPrivate *p = CAMEL_FOLDER_SUMMARY_GET_PRIVATE (s);
+	CamelFolderSummaryPrivate *p = s->priv;
 	CamelMimeFilter *mfc;
 	CamelMessageContentInfo *part;
 	const gchar *calendar_header;
@@ -3972,7 +3968,7 @@ summary_build_content_info_message (CamelFolderSummary *s, CamelMessageInfo *msg
 {
 	CamelDataWrapper *containee;
 	gint parts, i;
-	struct _CamelFolderSummaryPrivate *p = CAMEL_FOLDER_SUMMARY_GET_PRIVATE (s);
+	CamelFolderSummaryPrivate *p = s->priv;
 	CamelMessageContentInfo *info = NULL, *child;
 	CamelContentType *ct;
 	const struct _camel_header_raw *header;
@@ -4776,7 +4772,7 @@ camel_message_info_dump (CamelMessageInfo *mi)
 void
 camel_folder_summary_set_need_preview (CamelFolderSummary *summary, gboolean preview)
 {
-	CAMEL_FOLDER_SUMMARY_GET_PRIVATE (summary)->need_preview = preview;
+	summary->priv->need_preview = preview;
 }
 
 /**
@@ -4787,7 +4783,7 @@ camel_folder_summary_set_need_preview (CamelFolderSummary *summary, gboolean pre
 gboolean
 camel_folder_summary_get_need_preview (CamelFolderSummary *summary)
 {
-	return CAMEL_FOLDER_SUMMARY_GET_PRIVATE (summary)->need_preview;
+	return summary->priv->need_preview;
 }
 
 static gboolean

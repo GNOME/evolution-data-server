@@ -27,10 +27,6 @@
 
 #include "camel-mime-filter-from.h"
 
-#define CAMEL_MIME_FILTER_FROM_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MIME_FILTER_FROM, CamelMimeFilterFromPrivate))
-
 #define d(x)
 
 struct _CamelMimeFilterFromPrivate {
@@ -61,7 +57,7 @@ mime_filter_from_filter (CamelMimeFilter *mime_filter,
 	struct fromnode *head = NULL, *tail = (struct fromnode *)&head, *node;
 	gchar *outptr;
 
-	priv = CAMEL_MIME_FILTER_FROM_GET_PRIVATE (mime_filter);
+	priv = CAMEL_MIME_FILTER_FROM (mime_filter)->priv;
 
 	inptr = in;
 	inend = inptr+len;
@@ -164,7 +160,7 @@ camel_mime_filter_from_class_init (CamelMimeFilterFromClass *class)
 static void
 camel_mime_filter_from_init (CamelMimeFilterFrom *filter)
 {
-	filter->priv = CAMEL_MIME_FILTER_FROM_GET_PRIVATE (filter);
+	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (filter, CAMEL_TYPE_MIME_FILTER_FROM, CamelMimeFilterFromPrivate);
 }
 
 /**

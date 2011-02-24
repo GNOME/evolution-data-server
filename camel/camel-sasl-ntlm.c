@@ -29,10 +29,6 @@
 
 #include "camel-sasl-ntlm.h"
 
-#define CAMEL_SASL_NTLM_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SASL_NTLM, CamelSaslNTLMPrivate))
-
 struct _CamelSaslNTLMPrivate {
 	gint placeholder;  /* allow for future expansion */
 };
@@ -736,5 +732,5 @@ camel_sasl_ntlm_class_init (CamelSaslNTLMClass *class)
 static void
 camel_sasl_ntlm_init (CamelSaslNTLM *sasl)
 {
-	sasl->priv = CAMEL_SASL_NTLM_GET_PRIVATE (sasl);
+	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (sasl, CAMEL_TYPE_SASL_NTLM, CamelSaslNTLMPrivate);
 }

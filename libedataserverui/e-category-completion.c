@@ -25,10 +25,6 @@
 #include <glib/gi18n-lib.h>
 #include <libedataserver/e-categories.h>
 
-#define E_CATEGORY_COMPLETION_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_CATEGORY_COMPLETION, ECategoryCompletionPrivate))
-
 G_DEFINE_TYPE (ECategoryCompletion, e_category_completion, GTK_TYPE_ENTRY_COMPLETION)
 
 struct _ECategoryCompletionPrivate {
@@ -486,8 +482,7 @@ e_category_completion_class_init (ECategoryCompletionClass *class)
 static void
 e_category_completion_init (ECategoryCompletion *category_completion)
 {
-	category_completion->priv =
-		E_CATEGORY_COMPLETION_GET_PRIVATE (category_completion);
+	category_completion->priv = G_TYPE_INSTANCE_GET_PRIVATE (category_completion, E_TYPE_CATEGORY_COMPLETION, ECategoryCompletionPrivate);
 }
 
 /**

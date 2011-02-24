@@ -29,10 +29,6 @@
 #include <mcheck.h>
 #endif
 
-#define CAMEL_MIME_FILTER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MIME_FILTER, CamelMimeFilterPrivate))
-
 struct _CamelMimeFilterPrivate {
 	gchar *inbuf;
 	gsize inlen;
@@ -86,7 +82,7 @@ camel_mime_filter_class_init (CamelMimeFilterClass *class)
 static void
 camel_mime_filter_init (CamelMimeFilter *mime_filter)
 {
-	mime_filter->priv = CAMEL_MIME_FILTER_GET_PRIVATE (mime_filter);
+	mime_filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (mime_filter, CAMEL_TYPE_MIME_FILTER, CamelMimeFilterPrivate);
 
 	mime_filter->outreal = NULL;
 	mime_filter->outbuf = NULL;
@@ -151,7 +147,7 @@ static void filter_run (CamelMimeFilter *f,
 		struct _CamelMimeFilterPrivate *p;
 		gint newlen;
 
-		p = CAMEL_MIME_FILTER_GET_PRIVATE (f);
+		p = f->priv;
 
 		newlen = len + prespace + f->backlen;
 		if (p->inlen < newlen) {

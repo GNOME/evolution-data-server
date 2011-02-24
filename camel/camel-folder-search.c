@@ -57,10 +57,6 @@
 #define r(x)
 #define dd(x) if (camel_debug("search")) x
 
-#define CAMEL_FOLDER_SEARCH_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_FOLDER_SEARCH, CamelFolderSearchPrivate))
-
 struct _CamelFolderSearchPrivate {
 	GError **error;
 
@@ -161,7 +157,7 @@ camel_folder_search_class_init (CamelFolderSearchClass *class)
 static void
 camel_folder_search_init (CamelFolderSearch *search)
 {
-	search->priv = CAMEL_FOLDER_SEARCH_GET_PRIVATE (search);
+	search->priv = G_TYPE_INSTANCE_GET_PRIVATE (search, CAMEL_TYPE_FOLDER_SEARCH, CamelFolderSearchPrivate);
 	search->sexp = e_sexp_new ();
 }
 

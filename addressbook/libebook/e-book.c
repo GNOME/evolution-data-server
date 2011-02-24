@@ -53,7 +53,6 @@ static EList *array_to_elist (gchar **list);
 static gboolean unwrap_gerror (GError *error, GError **client_error);
 
 G_DEFINE_TYPE (EBook, e_book, G_TYPE_OBJECT)
-#define E_BOOK_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_BOOK, EBookPrivate))
 
 enum {
 	WRITABLE_STATUS,
@@ -249,21 +248,20 @@ e_book_class_init (EBookClass *e_book_class)
 static void
 e_book_init (EBook *book)
 {
-	EBookPrivate *priv = E_BOOK_GET_PRIVATE (book);
+	book->priv = G_TYPE_INSTANCE_GET_PRIVATE (book, E_TYPE_BOOK, EBookPrivate);
 
 	LOCK_FACTORY ();
 	active_books++;
 	UNLOCK_FACTORY ();
 
-	priv->gdbus_book = NULL;
-	priv->source = NULL;
-	priv->uri = NULL;
-	priv->loaded = FALSE;
-	priv->writable = FALSE;
-	priv->connected = FALSE;
-	priv->cap = NULL;
-	priv->cap_queried = FALSE;
-	book->priv = priv;
+	book->priv->gdbus_book = NULL;
+	book->priv->source = NULL;
+	book->priv->uri = NULL;
+	book->priv->loaded = FALSE;
+	book->priv->writable = FALSE;
+	book->priv->connected = FALSE;
+	book->priv->cap = NULL;
+	book->priv->cap_queried = FALSE;
 }
 
 static void

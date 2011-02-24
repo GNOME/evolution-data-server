@@ -53,10 +53,6 @@
 #define JUNK_ENABLE 1
 #define JUNK_PERSISTENCE 14
 
-#define CAMEL_GROUPWISE_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_GROUPWISE_STORE, CamelGroupwiseStorePrivate))
-
 const gchar * CREATE_CURSOR_VIEW = "peek id default recipient threading hasAttachment subject status priority startDate created delivered size recurrenceKey";
 
 struct _CamelGroupwiseStorePrivate {
@@ -1590,8 +1586,7 @@ camel_groupwise_store_class_init (CamelGroupwiseStoreClass *class)
 static void
 camel_groupwise_store_init (CamelGroupwiseStore *groupwise_store)
 {
-	groupwise_store->priv =
-		CAMEL_GROUPWISE_STORE_GET_PRIVATE (groupwise_store);
+	groupwise_store->priv = G_TYPE_INSTANCE_GET_PRIVATE (groupwise_store, CAMEL_TYPE_GROUPWISE_STORE, CamelGroupwiseStorePrivate);
 
 	d("in groupwise store init\n");
 	groupwise_store->priv->server_name = NULL;

@@ -73,10 +73,6 @@
 static gint logid;
 #endif
 
-#define CAMEL_GPG_CONTEXT_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_GPG_CONTEXT, CamelGpgContextPrivate))
-
 struct _CamelGpgContextPrivate {
 	gboolean always_trust;
 };
@@ -2237,7 +2233,7 @@ camel_gpg_context_class_init (CamelGpgContextClass *class)
 static void
 camel_gpg_context_init (CamelGpgContext *context)
 {
-	context->priv = CAMEL_GPG_CONTEXT_GET_PRIVATE (context);
+	context->priv = G_TYPE_INSTANCE_GET_PRIVATE (context, CAMEL_TYPE_GPG_CONTEXT, CamelGpgContextPrivate);
 }
 
 /**

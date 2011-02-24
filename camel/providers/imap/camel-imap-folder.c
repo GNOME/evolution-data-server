@@ -58,10 +58,6 @@
  * octets) */
 #define UID_SET_LIMIT  (768)
 
-#define CAMEL_IMAP_FOLDER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_IMAP_FOLDER, CamelImapFolderPrivate))
-
 /* The custom property ID is a CamelArg artifact.
  * It still identifies the property in state files. */
 enum {
@@ -304,7 +300,7 @@ camel_imap_folder_init (CamelImapFolder *imap_folder)
 {
 	CamelFolder *folder = CAMEL_FOLDER (imap_folder);
 
-	imap_folder->priv = CAMEL_IMAP_FOLDER_GET_PRIVATE (imap_folder);
+	imap_folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (imap_folder, CAMEL_TYPE_IMAP_FOLDER, CamelImapFolderPrivate);
 
 	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED | CAMEL_MESSAGE_DELETED |
 		CAMEL_MESSAGE_DRAFT | CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN;

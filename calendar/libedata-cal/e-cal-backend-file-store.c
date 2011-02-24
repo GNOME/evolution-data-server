@@ -29,10 +29,6 @@
 #define KEY_FILE_NAME "keys.xml"
 #define IDLE_SAVE_TIMEOUT 6000
 
-#define E_CAL_BACKEND_FILE_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_CAL_BACKEND_FILE_STORE, ECalBackendFileStorePrivate))
-
 typedef struct {
 	ECalComponent *comp;
 	GHashTable *recurrences;
@@ -111,7 +107,7 @@ put_component (ECalBackendFileStore *fstore, ECalComponent *comp)
 
 	g_return_val_if_fail (comp != NULL, FALSE);
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 	e_cal_component_get_uid (comp, &uid);
 
 	if (uid == NULL) {
@@ -151,7 +147,7 @@ remove_component (ECalBackendFileStore *fstore, const gchar *uid, const gchar *r
 	gboolean ret_val = TRUE;
 	gboolean remove_completely = FALSE;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	g_static_rw_lock_writer_lock (&priv->lock);
 
@@ -186,7 +182,7 @@ get_component (ECalBackendFileStore *fstore, const gchar *uid, const gchar *rid)
 	FullCompObject *obj = NULL;
 	ECalComponent *comp = NULL;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	g_static_rw_lock_reader_lock (&priv->lock);
 
@@ -223,7 +219,7 @@ e_cal_backend_file_store_has_component (ECalBackendStore *store, const gchar *ui
 	gboolean ret_val = FALSE;
 	FullCompObject *obj = NULL;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	g_static_rw_lock_reader_lock (&priv->lock);
 
@@ -252,7 +248,7 @@ e_cal_backend_file_store_put_component (ECalBackendStore *store, ECalComponent *
 	ECalBackendFileStorePrivate *priv;
 	gboolean ret_val = FALSE;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	ret_val = put_component (fstore, comp);
 
@@ -273,7 +269,7 @@ e_cal_backend_file_store_remove_component (ECalBackendStore *store, const gchar 
 	ECalBackendFileStorePrivate *priv;
 	gboolean ret_val = FALSE;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	ret_val = remove_component (fstore, uid, rid);
 
@@ -294,7 +290,7 @@ e_cal_backend_file_store_get_timezone (ECalBackendStore *store, const gchar *tzi
 	ECalBackendFileStorePrivate *priv;
 	const icaltimezone *zone = NULL;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	g_static_rw_lock_reader_lock (&priv->lock);
 	zone = g_hash_table_lookup (priv->timezones, tzid);
@@ -311,7 +307,7 @@ e_cal_backend_file_store_put_timezone (ECalBackendStore *store, const icaltimezo
 	gboolean ret_val = FALSE;
 	icaltimezone *copy;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	g_static_rw_lock_writer_lock (&priv->lock);
 	copy = copy_timezone ((icaltimezone *) zone);
@@ -335,7 +331,7 @@ e_cal_backend_file_store_remove_timezone (ECalBackendStore *store, const gchar *
 	ECalBackendFileStorePrivate *priv;
 	gboolean ret_val = FALSE;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	g_static_rw_lock_writer_lock (&priv->lock);
 	ret_val = g_hash_table_remove (priv->timezones, tzid);
@@ -358,7 +354,7 @@ e_cal_backend_file_store_get_key_value (ECalBackendStore *store, const gchar *ke
 	ECalBackendFileStorePrivate *priv;
 	const gchar *value;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	g_static_rw_lock_reader_lock (&priv->lock);
 	value = e_file_cache_get_object (priv->keys_cache, key);
@@ -374,7 +370,7 @@ e_cal_backend_file_store_put_key_value (ECalBackendStore *store, const gchar *ke
 	ECalBackendFileStorePrivate *priv;
 	gboolean ret_val = FALSE;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	g_static_rw_lock_writer_lock (&priv->lock);
 
@@ -400,7 +396,7 @@ e_cal_backend_file_store_get_default_timezone (ECalBackendStore *store)
 	const gchar *tzid;
 	const icaltimezone *zone = NULL;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	g_static_rw_lock_reader_lock (&priv->lock);
 
@@ -422,7 +418,7 @@ e_cal_backend_file_store_set_default_timezone (ECalBackendStore *store, const ic
 	icaltimezone *copy;
 	const gchar *key = "default-zone";
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	g_static_rw_lock_writer_lock (&priv->lock);
 
@@ -446,7 +442,7 @@ e_cal_backend_file_store_thaw_changes (ECalBackendStore *store)
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	priv->freeze_changes = FALSE;
 
@@ -462,7 +458,7 @@ e_cal_backend_file_store_freeze_changes (ECalBackendStore *store)
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	priv->freeze_changes = TRUE;
 	e_file_cache_freeze_changes (priv->keys_cache);
@@ -486,7 +482,7 @@ e_cal_backend_file_store_get_components_by_uid (ECalBackendStore *store, const g
 	FullCompObject *obj = NULL;
 	GSList *comps = NULL;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	g_static_rw_lock_reader_lock (&priv->lock);
 
@@ -528,7 +524,7 @@ e_cal_backend_file_store_get_components (ECalBackendStore *store)
 	ECalBackendFileStorePrivate *priv;
 	GSList *comps = NULL;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	g_static_rw_lock_reader_lock (&priv->lock);
 	g_hash_table_foreach (priv->comp_uid_hash, (GHFunc) add_full_comp_to_slist, &comps);
@@ -570,7 +566,7 @@ e_cal_backend_file_store_get_component_ids (ECalBackendStore *store)
 	ECalBackendFileStorePrivate *priv;
 	GSList *comp_ids = NULL;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	g_static_rw_lock_reader_lock (&priv->lock);
 	g_hash_table_foreach (priv->comp_uid_hash, (GHFunc) add_comp_ids_to_slist, &comp_ids);
@@ -587,7 +583,7 @@ add_timezone (ECalBackendFileStore *fstore, icalcomponent *vtzcomp)
 	icaltimezone *zone;
 	const gchar *tzid;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	prop = icalcomponent_get_first_property (vtzcomp, ICAL_TZID_PROPERTY);
 	if (!prop)
@@ -691,7 +687,7 @@ e_cal_backend_file_store_load (ECalBackendStore *store)
 	ECalBackendFileStorePrivate *priv;
 	icalcomponent *icalcomp;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	if (!priv->cache_file_name || !priv->key_file_name)
 		return FALSE;
@@ -721,7 +717,7 @@ e_cal_backend_file_store_remove (ECalBackendStore *store)
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	/* This will remove all the contents in the directory */
 	e_file_cache_remove (priv->keys_cache);
@@ -741,7 +737,7 @@ e_cal_backend_file_store_clean (ECalBackendStore *store)
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (store);
+	priv = fstore->priv;
 
 	g_static_rw_lock_writer_lock (&priv->lock);
 
@@ -799,7 +795,7 @@ timeout_save_cache (gpointer user_data)
 	gsize len, nwrote;
 	FILE *f;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	g_static_rw_lock_reader_lock (&priv->lock);
 
@@ -836,7 +832,7 @@ save_cache (ECalBackendFileStore *store)
 {
 	ECalBackendFileStorePrivate *priv;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (store);
+	priv = store->priv;
 
 	if (priv->save_timeout_id) {
 		g_source_remove (priv->save_timeout_id);
@@ -859,7 +855,7 @@ cal_backend_file_store_finalize (GObject *object)
 	ECalBackendFileStore *fstore = (ECalBackendFileStore *) object;
 	ECalBackendFileStorePrivate *priv;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (fstore);
+	priv = fstore->priv;
 
 	if (priv->save_timeout_id) {
 		g_source_remove (priv->save_timeout_id);
@@ -906,7 +902,7 @@ cal_backend_file_store_constructed (GObject *object)
 	ECalBackendFileStorePrivate *priv;
 	const gchar *path;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (object);
+	priv = E_CAL_BACKEND_FILE_STORE (object)->priv;
 
 	path = e_cal_backend_store_get_path (E_CAL_BACKEND_STORE (object));
 	priv->cache_file_name = g_build_filename (path, CACHE_FILE_NAME, NULL);
@@ -952,7 +948,7 @@ e_cal_backend_file_store_init (ECalBackendFileStore *store)
 {
 	ECalBackendFileStorePrivate *priv;
 
-	priv = E_CAL_BACKEND_FILE_STORE_GET_PRIVATE (store);
+	priv = G_TYPE_INSTANCE_GET_PRIVATE (store, E_TYPE_CAL_BACKEND_FILE_STORE, ECalBackendFileStorePrivate);
 
 	store->priv = priv;
 

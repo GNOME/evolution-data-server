@@ -51,10 +51,6 @@
 /* current version */
 #define CAMEL_STORE_SUMMARY_VERSION (2)
 
-#define CAMEL_STORE_SUMMARY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_STORE_SUMMARY, CamelStoreSummaryPrivate))
-
 struct _CamelStoreSummaryPrivate {
 	GMutex *summary_lock;	/* for the summary hashtable/array */
 	GMutex *io_lock;	/* load/save lock, for access to saved_count, etc */
@@ -320,8 +316,7 @@ camel_store_summary_class_init (CamelStoreSummaryClass *class)
 static void
 camel_store_summary_init (CamelStoreSummary *summary)
 {
-	summary->priv = CAMEL_STORE_SUMMARY_GET_PRIVATE (summary);
-
+	summary->priv = G_TYPE_INSTANCE_GET_PRIVATE (summary, CAMEL_TYPE_STORE_SUMMARY, CamelStoreSummaryPrivate);
 	summary->store_info_size = sizeof (CamelStoreInfo);
 
 	summary->store_info_chunks = NULL;

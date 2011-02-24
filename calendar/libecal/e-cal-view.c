@@ -33,7 +33,6 @@
 #include "e-gdbus-egdbuscalview.h"
 
 G_DEFINE_TYPE (ECalView, e_cal_view, G_TYPE_OBJECT);
-#define E_CAL_VIEW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_CAL_VIEW, ECalViewPrivate))
 
 /* Private part of the ECalView structure */
 struct _ECalViewPrivate {
@@ -179,7 +178,7 @@ done_cb (EGdbusCalView *gdbus_calview, /* ECalendarStatus */ guint status, const
 static void
 e_cal_view_init (ECalView *view)
 {
-	view->priv = E_CAL_VIEW_GET_PRIVATE (view);
+	view->priv = G_TYPE_INSTANCE_GET_PRIVATE (view, E_TYPE_CAL_VIEW, ECalViewPrivate);
 }
 
 static void
@@ -189,7 +188,7 @@ e_cal_view_set_property (GObject *object, guint property_id, const GValue *value
 	ECalViewPrivate *priv;
 
 	view = E_CAL_VIEW (object);
-	priv = E_CAL_VIEW_GET_PRIVATE (view);
+	priv = view->priv;
 
 	switch (property_id) {
 	case PROP_VIEW:
@@ -219,7 +218,7 @@ e_cal_view_get_property (GObject *object, guint property_id, GValue *value, GPar
 	ECalViewPrivate *priv;
 
 	view = E_CAL_VIEW (object);
-	priv = E_CAL_VIEW_GET_PRIVATE (view);
+	priv = view->priv;
 
 	switch (property_id) {
 	case PROP_VIEW:
@@ -415,7 +414,7 @@ e_cal_view_start (ECalView *view)
 	g_return_if_fail (view != NULL);
 	g_return_if_fail (E_IS_CAL_VIEW (view));
 
-	priv = E_CAL_VIEW_GET_PRIVATE (view);
+	priv = view->priv;
 
 	if (priv->gdbus_calview) {
 		e_gdbus_cal_view_call_start_sync (priv->gdbus_calview, NULL, &error);
@@ -451,7 +450,7 @@ e_cal_view_stop (ECalView *view)
 	g_return_if_fail (view != NULL);
 	g_return_if_fail (E_IS_CAL_VIEW (view));
 
-	priv = E_CAL_VIEW_GET_PRIVATE (view);
+	priv = view->priv;
 
 	if (priv->gdbus_calview) {
 		e_gdbus_cal_view_call_stop_sync (priv->gdbus_calview, NULL, &error);
