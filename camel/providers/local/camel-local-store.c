@@ -491,7 +491,7 @@ local_store_delete_folder_sync (CamelStore *store,
 	/* remove metadata only */
 	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
 	str = g_strdup_printf("%s.ibex", name);
-	if (camel_text_index_remove (str) == -1 && errno != ENOENT) {
+	if (camel_text_index_remove (str) == -1 && errno != ENOENT && errno != ENOTDIR) {
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
@@ -519,7 +519,7 @@ local_store_delete_folder_sync (CamelStore *store,
 	if (str == NULL)
 		str = g_strdup_printf ("%s.cmeta", name);
 
-	if (g_unlink (str) == -1 && errno != ENOENT) {
+	if (g_unlink (str) == -1 && errno != ENOENT && errno != ENOTDIR) {
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),

@@ -110,7 +110,7 @@ maildir_store_create_folder_sync (CamelStore *store,
 		return NULL;
 	}
 
-	if (parent_name) {
+	if (parent_name && *parent_name) {
 		gchar *dir_name = maildir_full_name_to_dir_name (parent_name);
 		name = g_strdup_printf("%s/%s.%s", path, dir_name, folder_name);
 		g_free (dir_name);
@@ -129,7 +129,7 @@ maildir_store_create_folder_sync (CamelStore *store,
 
 	g_free (name);
 
-	if (parent_name)
+	if (parent_name && *parent_name)
 		name = g_strdup_printf("%s/%s", parent_name, folder_name);
 	else
 		name = g_strdup_printf("%s", folder_name);

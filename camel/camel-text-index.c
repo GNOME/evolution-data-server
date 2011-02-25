@@ -1001,10 +1001,13 @@ camel_text_index_remove (const gchar *old)
 	sprintf (block, "%s.index", old);
 	sprintf (key, "%s.index.data", old);
 
-	if (g_unlink (block) == -1 && errno != ENOENT)
+	if (g_unlink (block) == -1 && errno != ENOENT && errno != ENOTDIR)
 		ret = -1;
-	if (g_unlink (key) == -1 && errno != ENOENT)
+	if (g_unlink (key) == -1 && errno != ENOENT && errno != ENOTDIR)
 		ret = -1;
+
+	if (ret == 0)
+		errno = 0;
 
 	return ret;
 }
