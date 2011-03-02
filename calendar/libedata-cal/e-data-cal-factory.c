@@ -104,7 +104,7 @@ struct _EDataCalFactoryPrivate {
 };
 
 /* Forward Declarations */
-void e_data_cal_migrate (void);
+void e_data_cal_migrate_basedir (void);
 
 /* Create the EDataCalFactory error quark */
 GQuark
@@ -985,7 +985,7 @@ main (gint argc, gchar **argv)
 		NULL);
 
 	/* Migrate user data from ~/.evolution to XDG base directories. */
-	e_data_cal_migrate ();
+	e_data_cal_migrate_basedir ();
 
 #ifndef G_OS_WIN32
 	setup_quit_signal ();

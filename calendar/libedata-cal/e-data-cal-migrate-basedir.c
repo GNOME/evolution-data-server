@@ -1,5 +1,5 @@
 /*
- * e-data-cal-migrate.c
+ * e-data-cal-migrate-basedir.c
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,7 @@
 #include <glib/gstdio.h>
 #include <libedataserver/e-data-server-util.h>
 
-void e_data_cal_migrate (void);
+void e_data_cal_migrate_basedir (void);
 
 static gboolean
 data_cal_migrate_rename (const gchar *old_filename,
@@ -358,7 +358,7 @@ data_cal_migrate_to_user_data_dir (const gchar *old_base_dir)
 }
 
 void
-e_data_cal_migrate (void)
+e_data_cal_migrate_basedir (void)
 {
 	const gchar *home_dir;
 	gchar *old_base_dir;
