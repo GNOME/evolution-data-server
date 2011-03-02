@@ -79,7 +79,7 @@ e_addressbook_factory_CPPFLAGS = \
 e_addressbook_factory_SOURCES = \
 	e-data-book-factory.c \
 	e-data-book-factory.h \
-	e-data-book-migrate.c
+	e-data-book-migrate-basedir.c
 
 e_addressbook_factory_LDADD =					\
 	libedata-book-1.2.la					\

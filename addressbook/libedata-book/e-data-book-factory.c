@@ -89,7 +89,7 @@ struct _EDataBookFactoryPrivate {
 };
 
 /* Forward Declarations */
-void e_data_book_migrate (void);
+void e_data_book_migrate_basedir (void);
 
 /* Create the EDataBookFactory error quark */
 GQuark
@@ -663,7 +663,7 @@ main (gint argc, gchar **argv)
 		NULL);
 
 	/* Migrate user data from ~/.evolution to XDG base directories. */
-	e_data_book_migrate ();
+	e_data_book_migrate_basedir ();
 
 #ifndef G_OS_WIN32
 	setup_quit_signal ();
