@@ -948,8 +948,8 @@ e_source_copy (ESource *source)
 	e_source_set_name (new_source, e_source_peek_name (source));
 
 	new_source->priv->color_spec = g_strdup (source->priv->color_spec);
-
 	new_source->priv->absolute_uri = g_strdup (e_source_peek_absolute_uri (source));
+	new_source->priv->relative_uri = g_strdup (e_source_peek_relative_uri (source));
 
 	e_source_foreach_property (source, (GHFunc) copy_property, new_source);
 
