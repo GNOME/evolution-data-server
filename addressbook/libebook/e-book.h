@@ -135,7 +135,7 @@ gboolean e_book_open                       (EBook       *book,
 					    GError     **error);
 
 #ifndef E_BOOK_DISABLE_DEPRECATED
-guint    e_book_async_open                 (EBook         *book,
+gboolean    e_book_async_open                 (EBook         *book,
 					    gboolean       only_if_exists,
 					    EBookCallback  open_response,
 					    gpointer       closure);
@@ -149,7 +149,7 @@ gboolean e_book_open_async                 (EBook              *book,
 gboolean e_book_remove                     (EBook       *book,
 					    GError     **error);
 #ifndef E_BOOK_DISABLE_DEPRECATED
-guint    e_book_async_remove               (EBook   *book,
+gboolean    e_book_async_remove               (EBook   *book,
 					    EBookCallback cb,
 					    gpointer closure);
 #endif
@@ -163,7 +163,7 @@ gboolean e_book_get_required_fields       (EBook       *book,
 					    GError     **error);
 
 #ifndef E_BOOK_DISABLE_DEPRECATED
-guint    e_book_async_get_required_fields (EBook              *book,
+gboolean e_book_async_get_required_fields (EBook              *book,
 					    EBookEListCallback  cb,
 					    gpointer            closure);
 #endif
@@ -177,7 +177,7 @@ gboolean e_book_get_supported_fields       (EBook       *book,
 					    GError     **error);
 
 #ifndef E_BOOK_DISABLE_DEPRECATED
-guint    e_book_async_get_supported_fields (EBook              *book,
+gboolean    e_book_async_get_supported_fields (EBook              *book,
 					    EBookEListCallback  cb,
 					    gpointer            closure);
 #endif
@@ -191,7 +191,7 @@ gboolean e_book_get_supported_auth_methods       (EBook       *book,
 						  GError     **error);
 
 #ifndef E_BOOK_DISABLE_DEPRECATED
-guint    e_book_async_get_supported_auth_methods (EBook              *book,
+gboolean    e_book_async_get_supported_auth_methods (EBook              *book,
 						  EBookEListCallback  cb,
 						  gpointer            closure);
 #endif
@@ -208,7 +208,7 @@ gboolean e_book_authenticate_user          (EBook       *book,
 					    GError     **error);
 
 #ifndef E_BOOK_DISABLE_DEPRECATED
-guint e_book_async_authenticate_user       (EBook                 *book,
+gboolean e_book_async_authenticate_user       (EBook                 *book,
 					    const gchar            *user,
 					    const gchar            *passwd,
 					    const gchar            *auth_method,
@@ -230,7 +230,7 @@ gboolean e_book_get_contact                (EBook       *book,
 					    GError     **error);
 
 #ifndef E_BOOK_DISABLE_DEPRECATED
-guint     e_book_async_get_contact         (EBook                 *book,
+gboolean     e_book_async_get_contact         (EBook                 *book,
 					    const gchar            *id,
 					    EBookContactCallback   cb,
 					    gpointer               closure);
@@ -247,11 +247,11 @@ gboolean e_book_remove_contact             (EBook       *book,
 					    GError     **error);
 
 #ifndef E_BOOK_DISABLE_DEPRECATED
-guint    e_book_async_remove_contact       (EBook                 *book,
+gboolean    e_book_async_remove_contact       (EBook                 *book,
 					    EContact              *contact,
 					    EBookCallback          cb,
 					    gpointer               closure);
-guint    e_book_async_remove_contact_by_id (EBook                 *book,
+gboolean    e_book_async_remove_contact_by_id (EBook                 *book,
 					    const gchar           *id,
 					    EBookCallback          cb,
 					    gpointer               closure);
@@ -271,7 +271,7 @@ gboolean e_book_remove_contacts            (EBook       *book,
 					    GError     **error);
 
 #ifndef E_BOOK_DISABLE_DEPRECATED
-guint    e_book_async_remove_contacts      (EBook                 *book,
+gboolean    e_book_async_remove_contacts      (EBook                 *book,
 					    GList                 *ids,
 					    EBookCallback          cb,
 					    gpointer               closure);
@@ -305,7 +305,7 @@ gboolean e_book_commit_contact             (EBook       *book,
 					    GError     **error);
 
 #ifndef E_BOOK_DISABLE_DEPRECATED
-guint e_book_async_commit_contact          (EBook                 *book,
+gboolean e_book_async_commit_contact          (EBook                 *book,
 					    EContact              *contact,
 					    EBookCallback          cb,
 					    gpointer               closure);
@@ -325,7 +325,7 @@ gboolean e_book_get_book_view              (EBook       *book,
 					    GError     **error);
 
 #ifndef E_BOOK_DISABLE_DEPRECATED
-guint e_book_async_get_book_view           (EBook                 *book,
+gboolean e_book_async_get_book_view           (EBook                 *book,
 					    EBookQuery            *query,
 					    GList                 *requested_fields,
 					    gint                    max_results,
@@ -347,7 +347,7 @@ gboolean e_book_get_contacts               (EBook       *book,
 					    GError     **error);
 
 #ifndef E_BOOK_DISABLE_DEPRECATED
-guint     e_book_async_get_contacts        (EBook             *book,
+gboolean     e_book_async_get_contacts        (EBook             *book,
 					    EBookQuery        *query,
 					    EBookListCallback  cb,
 					    gpointer           closure);
@@ -365,7 +365,7 @@ gboolean e_book_get_changes                (EBook       *book,
 					    GError     **error);
 
 #ifndef E_BOOK_DISABLE_DEPRECATED
-guint    e_book_async_get_changes          (EBook             *book,
+gboolean    e_book_async_get_changes          (EBook             *book,
 					    const gchar       *changeid,
 					    EBookListCallback  cb,
 					    gpointer           closure);

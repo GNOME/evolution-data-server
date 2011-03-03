@@ -22,7 +22,8 @@
 		G_STRFUNC,						\
 		#expr);							\
 	 return FALSE;							\
-       };				}G_STMT_END
+       } \
+  } G_STMT_END
 
 /**
  * e_return_async_error_if_fail:
@@ -35,9 +36,9 @@
              "file %s: line %d (%s): assertion `%s' failed",     \
              __FILE__, __LINE__, G_STRFUNC, #expr);    \
       cb (book, error, closure);                           \
-      return 0;                                                  \
+      return TRUE;                                                  \
     }                                                            \
-  } G_STMT_END                                                   \
+  } G_STMT_END
 
 #define e_return_async_error_val_if_fail(expr, error) G_STMT_START { \
     if G_LIKELY (expr) {} else {                                 \
@@ -45,9 +46,9 @@
              "file %s: line %d (%s): assertion `%s' failed",     \
              __FILE__, __LINE__, G_STRFUNC, #expr);    \
       cb (book, error, NULL, closure);                           \
-      return 0;                                                  \
+      return TRUE;                                                  \
     }                                                            \
-  } G_STMT_END                                                   \
+  } G_STMT_END
 
 #define e_return_ex_async_error_if_fail(expr, error) G_STMT_START {	\
     if G_LIKELY (expr) {} else {					\
@@ -80,6 +81,6 @@
 		__FILE__, __LINE__, G_STRFUNC, #expr);			\
       cb (book, err, NULL, closure);					\
       g_error_free (err);						\
-      return 0;							\
+      return TRUE;							\
     }								\
   } G_STMT_END

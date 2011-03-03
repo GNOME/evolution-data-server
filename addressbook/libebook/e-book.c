@@ -385,16 +385,18 @@ auth_required_cb (EGdbusBook *object, EBook *book)
  * Returns: %TRUE if successful, %FALSE otherwise.
  **/
 gboolean
-e_book_add_contact (EBook           *book,
-		    EContact        *contact,
-		    GError         **error)
+e_book_add_contact (EBook *book,
+                    EContact *contact,
+                    GError **error)
 {
 	GError *err = NULL;
 	gchar *vcard, *uid = NULL, *gdbus_vcard = NULL;
 
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
+
+	e_return_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 	e_gdbus_book_call_add_contact_sync (book->priv->gdbus_book, e_util_ensure_gdbus_string (vcard, &gdbus_vcard), &uid, NULL, &err);
@@ -461,17 +463,19 @@ add_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  * Deprecated: 3.0: Use e_book_add_contact_async() instead.
  **/
 gboolean
-e_book_async_add_contact (EBook                 *book,
-			  EContact              *contact,
-			  EBookIdCallback        cb,
-			  gpointer               closure)
+e_book_async_add_contact (EBook *book,
+                          EContact *contact,
+                          EBookIdCallback cb,
+                          gpointer closure)
 {
 	gchar *vcard, *gdbus_vcard = NULL;
 	AsyncData *data;
 
-	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_async_error_val_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
+
+	e_return_async_error_val_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 
@@ -485,7 +489,7 @@ e_book_async_add_contact (EBook                 *book,
 	g_free (vcard);
 	g_free (gdbus_vcard);
 
-	return 0;
+	return TRUE;
 }
 #endif
 
@@ -503,17 +507,19 @@ e_book_async_add_contact (EBook                 *book,
  * Since: 2.32
  **/
 gboolean
-e_book_add_contact_async (EBook                *book,
-			  EContact             *contact,
-			  EBookIdAsyncCallback  cb,
-			  gpointer              closure)
+e_book_add_contact_async (EBook *book,
+                          EContact *contact,
+                          EBookIdAsyncCallback cb,
+                          gpointer closure)
 {
 	gchar *vcard, *gdbus_vcard = NULL;
 	AsyncData *data;
 
-	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_ex_async_error_val_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
+
+	e_return_ex_async_error_val_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 
@@ -542,16 +548,18 @@ e_book_add_contact_async (EBook                *book,
  * Returns: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
-e_book_commit_contact (EBook           *book,
-		       EContact        *contact,
-		       GError         **error)
+e_book_commit_contact (EBook *book,
+                       EContact *contact,
+                       GError **error)
 {
 	GError *err = NULL;
 	gchar *vcard, *gdbus_vcard = NULL;
 
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
+
+	e_return_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 	e_gdbus_book_call_modify_contact_sync (book->priv->gdbus_book, e_util_ensure_gdbus_string (vcard, &gdbus_vcard), NULL, &err);
@@ -605,18 +613,20 @@ modify_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data
  *
  * Deprecated: 3.0: Use e_book_commit_contact_async() instead.
  **/
-guint
-e_book_async_commit_contact (EBook                 *book,
-			     EContact              *contact,
-			     EBookCallback          cb,
-			     gpointer               closure)
+gboolean
+e_book_async_commit_contact (EBook *book,
+                             EContact *contact,
+                             EBookCallback cb,
+                             gpointer closure)
 {
 	gchar *vcard, *gdbus_vcard = NULL;
 	AsyncData *data;
 
-	e_return_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_async_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
+
+	e_return_async_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 
@@ -630,7 +640,7 @@ e_book_async_commit_contact (EBook                 *book,
 	g_free (vcard);
 	g_free (gdbus_vcard);
 
-	return 0;
+	return TRUE;
 }
 #endif
 
@@ -649,17 +659,19 @@ e_book_async_commit_contact (EBook                 *book,
  * Since: 2.32
  **/
 gboolean
-e_book_commit_contact_async (EBook              *book,
-			     EContact           *contact,
-			     EBookAsyncCallback  cb,
-			     gpointer            closure)
+e_book_commit_contact_async (EBook *book,
+                             EContact *contact,
+                             EBookAsyncCallback cb,
+                             gpointer closure)
 {
 	gchar *vcard, *gdbus_vcard = NULL;
 	AsyncData *data;
 
-	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_ex_async_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
+
+	e_return_ex_async_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 
@@ -690,15 +702,17 @@ e_book_commit_contact_async (EBook              *book,
  * Returns: %TRUE if successful, %FALSE otherwise.
  **/
 gboolean
-e_book_get_required_fields  (EBook            *book,
-			      GList           **fields,
-			      GError          **error)
+e_book_get_required_fields (EBook *book,
+                            GList **fields,
+                            GError **error)
 {
 	GError *err = NULL;
 	gchar **list = NULL;
 
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	e_gdbus_book_call_get_required_fields_sync (book->priv->gdbus_book, &list, NULL, &err);
 
@@ -759,15 +773,17 @@ get_required_fields_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user
  *
  * Deprecated: 3.0: Use e_book_get_required_fields_async() instead.
  **/
-guint
-e_book_async_get_required_fields (EBook              *book,
-				  EBookEListCallback  cb,
-				  gpointer            closure)
+gboolean
+e_book_async_get_required_fields (EBook *book,
+                                  EBookEListCallback cb,
+                                  gpointer closure)
 {
 	AsyncData *data;
 
-	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_async_error_val_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
@@ -776,7 +792,7 @@ e_book_async_get_required_fields (EBook              *book,
 
 	e_gdbus_book_call_get_required_fields (book->priv->gdbus_book, NULL, get_required_fields_reply, data);
 
-	return 0;
+	return TRUE;
 }
 #endif
 
@@ -794,14 +810,16 @@ e_book_async_get_required_fields (EBook              *book,
  * Since: 2.32
  **/
 gboolean
-e_book_get_required_fields_async (EBook                   *book,
-				  EBookEListAsyncCallback  cb,
-				  gpointer                 closure)
+e_book_get_required_fields_async (EBook *book,
+                                  EBookEListAsyncCallback cb,
+                                  gpointer closure)
 {
 	AsyncData *data;
 
-	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_ex_async_error_val_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
@@ -827,15 +845,17 @@ e_book_get_required_fields_async (EBook                   *book,
  * Returns: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
-e_book_get_supported_fields  (EBook            *book,
-			      GList           **fields,
-			      GError          **error)
+e_book_get_supported_fields  (EBook *book,
+                              GList **fields,
+                              GError **error)
 {
 	GError *err = NULL;
 	gchar **list = NULL;
 
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	e_gdbus_book_call_get_supported_fields_sync (book->priv->gdbus_book, &list, NULL, &err);
 
@@ -897,15 +917,17 @@ get_supported_fields_reply (GObject *gdbus_book, GAsyncResult *res, gpointer use
  *
  * Deprecated: 3.0: Use e_book_get_supported_fields_async() instead.
  **/
-guint
-e_book_async_get_supported_fields (EBook              *book,
-				   EBookEListCallback  cb,
-				   gpointer            closure)
+gboolean
+e_book_async_get_supported_fields (EBook *book,
+                                   EBookEListCallback cb,
+                                   gpointer closure)
 {
 	AsyncData *data;
 
-	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_async_error_val_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
@@ -914,7 +936,7 @@ e_book_async_get_supported_fields (EBook              *book,
 
 	e_gdbus_book_call_get_supported_fields (book->priv->gdbus_book, NULL, get_supported_fields_reply, data);
 
-	return 0;
+	return TRUE;
 }
 #endif
 
@@ -933,14 +955,16 @@ e_book_async_get_supported_fields (EBook              *book,
  * Since: 2.32
  **/
 gboolean
-e_book_get_supported_fields_async (EBook                   *book,
-				   EBookEListAsyncCallback  cb,
-				   gpointer                 closure)
+e_book_get_supported_fields_async (EBook *book,
+                                   EBookEListAsyncCallback cb,
+                                   gpointer closure)
 {
 	AsyncData *data;
 
-	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_ex_async_error_val_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
@@ -965,15 +989,17 @@ e_book_get_supported_fields_async (EBook                   *book,
  * Returns: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
-e_book_get_supported_auth_methods (EBook            *book,
-				   GList           **auth_methods,
-				   GError          **error)
+e_book_get_supported_auth_methods (EBook *book,
+                                   GList **auth_methods,
+                                   GError **error)
 {
 	GError *err = NULL;
 	gchar **list = NULL;
 
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	e_gdbus_book_call_get_supported_auth_methods_sync (book->priv->gdbus_book, &list, NULL, &err);
 
@@ -1034,15 +1060,17 @@ get_supported_auth_methods_reply (GObject *gdbus_book, GAsyncResult *res, gpoint
  *
  * Deprecated: 3.0: Use e_book_get_supported_auth_methods_async() instead.
  **/
-guint
-e_book_async_get_supported_auth_methods (EBook              *book,
-					 EBookEListCallback  cb,
-					 gpointer            closure)
+gboolean
+e_book_async_get_supported_auth_methods (EBook *book,
+                                         EBookEListCallback cb,
+                                         gpointer closure)
 {
 	AsyncData *data;
 
-	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_async_error_val_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
@@ -1051,7 +1079,7 @@ e_book_async_get_supported_auth_methods (EBook              *book,
 
 	e_gdbus_book_call_get_supported_auth_methods (book->priv->gdbus_book, NULL, get_supported_auth_methods_reply, data);
 
-	return 0;
+	return TRUE;
 }
 #endif
 
@@ -1069,14 +1097,16 @@ e_book_async_get_supported_auth_methods (EBook              *book,
  * Since: 2.32
  **/
 gboolean
-e_book_get_supported_auth_methods_async (EBook                   *book,
-					 EBookEListAsyncCallback  cb,
-					 gpointer                 closure)
+e_book_get_supported_auth_methods_async (EBook *book,
+                                         EBookEListAsyncCallback cb,
+                                         gpointer closure)
 {
 	AsyncData *data;
 
-	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_ex_async_error_val_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
@@ -1103,17 +1133,19 @@ e_book_get_supported_auth_methods_async (EBook                   *book,
  * Returns: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
-e_book_authenticate_user (EBook         *book,
-			  const gchar    *user,
-			  const gchar    *passwd,
-			  const gchar    *auth_method,
-			  GError       **error)
+e_book_authenticate_user (EBook *book,
+                          const gchar *user,
+                          const gchar *passwd,
+                          const gchar *auth_method,
+                          GError **error)
 {
 	GError *err = NULL;
 	gchar *gdbus_user = NULL, *gdbus_passwd = NULL, *gdbus_auth_method = NULL;
 
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	e_gdbus_book_call_authenticate_user_sync (book->priv->gdbus_book,
 		e_util_ensure_gdbus_string (user, &gdbus_user),
@@ -1174,22 +1206,24 @@ authenticate_user_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_d
  *
  * Deprecated: 3.0: Use e_book_authenticate_user_async() instead.
  **/
-guint
-e_book_async_authenticate_user (EBook                 *book,
-				const gchar            *user,
-				const gchar            *passwd,
-				const gchar            *auth_method,
-				EBookCallback         cb,
-				gpointer              closure)
+gboolean
+e_book_async_authenticate_user (EBook *book,
+                                const gchar *user,
+                                const gchar *passwd,
+                                const gchar *auth_method,
+                                EBookCallback cb,
+                                gpointer closure)
 {
 	AsyncData *data;
 	gchar *gdbus_user = NULL, *gdbus_passwd = NULL, *gdbus_auth_method = NULL;
 
-	e_return_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_async_error_if_fail (user, E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_if_fail (passwd, E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_if_fail (auth_method, E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (user != NULL, FALSE);
+	g_return_val_if_fail (passwd != NULL, FALSE);
+	g_return_val_if_fail (auth_method != NULL, FALSE);
+
+	e_return_async_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
@@ -1205,7 +1239,7 @@ e_book_async_authenticate_user (EBook                 *book,
 	g_free (gdbus_passwd);
 	g_free (gdbus_auth_method);
 
-	return 0;
+	return TRUE;
 }
 #endif
 
@@ -1228,21 +1262,23 @@ e_book_async_authenticate_user (EBook                 *book,
  * Since: 2.32
  **/
 gboolean
-e_book_authenticate_user_async (EBook              *book,
-				const gchar        *user,
-				const gchar        *passwd,
-				const gchar        *auth_method,
-				EBookAsyncCallback  cb,
-				gpointer            closure)
+e_book_authenticate_user_async (EBook *book,
+                                const gchar *user,
+                                const gchar *passwd,
+                                const gchar *auth_method,
+                                EBookAsyncCallback cb,
+                                gpointer closure)
 {
 	AsyncData *data;
 	gchar *gdbus_user = NULL, *gdbus_passwd = NULL, *gdbus_auth_method = NULL;
 
-	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_ex_async_error_if_fail (user, E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_if_fail (passwd, E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_if_fail (auth_method, E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (user != NULL, FALSE);
+	g_return_val_if_fail (passwd != NULL, FALSE);
+	g_return_val_if_fail (auth_method != NULL, FALSE);
+
+	e_return_ex_async_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
@@ -1274,16 +1310,18 @@ e_book_authenticate_user_async (EBook              *book,
  * Returns: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
-e_book_get_contact (EBook       *book,
-		    const gchar  *id,
-		    EContact   **contact,
-		    GError     **error)
+e_book_get_contact (EBook *book,
+                    const gchar *id,
+                    EContact **contact,
+                    GError **error)
 {
 	GError *err = NULL;
 	gchar *vcard = NULL, *gdbus_id = NULL;
 
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	e_gdbus_book_call_get_contact_sync (book->priv->gdbus_book, e_util_ensure_gdbus_string (id, &gdbus_id), &vcard, NULL, &err);
 
@@ -1345,18 +1383,20 @@ get_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  *
  * Deprecated: 3.0: Use e_book_get_contact_async() instead.
  **/
-guint
-e_book_async_get_contact (EBook                 *book,
-			  const gchar            *id,
-			  EBookContactCallback   cb,
-			  gpointer               closure)
+gboolean
+e_book_async_get_contact (EBook *book,
+                          const gchar *id,
+                          EBookContactCallback cb,
+                          gpointer closure)
 {
 	AsyncData *data;
 	gchar *gdbus_id = NULL;
 
-	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_async_error_val_if_fail (id, E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (id != NULL, FALSE);
+
+	e_return_async_error_val_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
@@ -1367,7 +1407,7 @@ e_book_async_get_contact (EBook                 *book,
 
 	g_free (gdbus_id);
 
-	return 0;
+	return TRUE;
 }
 #endif
 
@@ -1385,17 +1425,19 @@ e_book_async_get_contact (EBook                 *book,
  * Since: 2.32
  **/
 gboolean
-e_book_get_contact_async (EBook                     *book,
-			  const gchar               *id,
-			  EBookContactAsyncCallback  cb,
-			  gpointer                   closure)
+e_book_get_contact_async (EBook *book,
+                          const gchar *id,
+                          EBookContactAsyncCallback cb,
+                          gpointer closure)
 {
 	AsyncData *data;
 	gchar *gdbus_id = NULL;
 
-	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_ex_async_error_val_if_fail (id, E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (id != NULL, FALSE);
+
+	e_return_ex_async_error_val_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
@@ -1420,16 +1462,18 @@ e_book_get_contact_async (EBook                     *book,
  * Returns: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
-e_book_remove_contact (EBook       *book,
-		       const gchar  *id,
-		       GError     **error)
+e_book_remove_contact (EBook *book,
+                       const gchar *id,
+                       GError **error)
 {
 	GError *err = NULL;
 	const gchar *l[2];
 
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_error_if_fail (id, E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (id != NULL, FALSE);
+
+	e_return_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	l[0] = e_util_utf8_make_valid (id);
 	l[1] = NULL;
@@ -1483,16 +1527,18 @@ remove_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data
  * Returns: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
-e_book_remove_contacts (EBook    *book,
-			GList    *ids,
-			GError  **error)
+e_book_remove_contacts (EBook *book,
+                        GList *ids,
+                        GError **error)
 {
 	GError *err = NULL;
 	gchar **l;
 
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_error_if_fail (ids, E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (ids != NULL, FALSE);
+
+	e_return_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	l = flatten_stringlist (ids);
 
@@ -1517,18 +1563,20 @@ e_book_remove_contacts (EBook    *book,
  *
  * Deprecated: 3.0: Use e_book_remove_contact_async() instead.
  **/
-guint
-e_book_async_remove_contact (EBook                 *book,
-			     EContact              *contact,
-			     EBookCallback          cb,
-			     gpointer               closure)
+gboolean
+e_book_async_remove_contact (EBook *book,
+                             EContact *contact,
+                             EBookCallback cb,
+                             gpointer closure)
 {
 	AsyncData *data;
 	const gchar *l[2];
 
-	e_return_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_async_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
+
+	e_return_async_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	l[0] = e_util_utf8_make_valid (e_contact_get_const (contact, E_CONTACT_UID));
 	l[1] = NULL;
@@ -1542,7 +1590,7 @@ e_book_async_remove_contact (EBook                 *book,
 
 	g_free ((gchar *) l[0]);
 
-	return 0;
+	return TRUE;
 }
 #endif
 
@@ -1560,17 +1608,19 @@ e_book_async_remove_contact (EBook                 *book,
  * Since: 2.32
  **/
 gboolean
-e_book_remove_contact_async (EBook              *book,
-			     EContact           *contact,
-			     EBookAsyncCallback  cb,
-			     gpointer            closure)
+e_book_remove_contact_async (EBook *book,
+                             EContact *contact,
+                             EBookAsyncCallback cb,
+                             gpointer closure)
 {
 	AsyncData *data;
 	const gchar *l[2];
 
-	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_ex_async_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
+
+	e_return_ex_async_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	l[0] = e_util_utf8_make_valid (e_contact_get_const (contact, E_CONTACT_UID));
 	l[1] = NULL;
@@ -1629,18 +1679,20 @@ remove_contact_by_id_reply (GObject *gdbus_book, GAsyncResult *res, gpointer use
  *
  * Deprecated: 3.0: Use e_book_remove_contact_by_id_async() instead.
  **/
-guint
-e_book_async_remove_contact_by_id (EBook                 *book,
-				   const gchar            *id,
-				   EBookCallback          cb,
-				   gpointer               closure)
+gboolean
+e_book_async_remove_contact_by_id (EBook *book,
+                                   const gchar *id,
+                                   EBookCallback cb,
+                                   gpointer closure)
 {
 	AsyncData *data;
 	const gchar *l[2];
 
-	e_return_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_async_error_if_fail (id, E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (id != NULL, FALSE);
+
+	e_return_async_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	l[0] = e_util_utf8_make_valid (id);
 	l[1] = NULL;
@@ -1654,7 +1706,7 @@ e_book_async_remove_contact_by_id (EBook                 *book,
 
 	g_free ((gchar *) l[0]);
 
-	return 0;
+	return TRUE;
 }
 #endif
 
@@ -1672,17 +1724,19 @@ e_book_async_remove_contact_by_id (EBook                 *book,
  * Since: 2.32
  **/
 gboolean
-e_book_remove_contact_by_id_async (EBook              *book,
-				   const gchar        *id,
-				   EBookAsyncCallback  cb,
-				   gpointer            closure)
+e_book_remove_contact_by_id_async (EBook *book,
+                                   const gchar *id,
+                                   EBookAsyncCallback cb,
+                                   gpointer closure)
 {
 	AsyncData *data;
 	const gchar *l[2];
 
-	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_ex_async_error_if_fail (id, E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (id != NULL, FALSE);
+
+	e_return_ex_async_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	l[0] = e_util_utf8_make_valid (id);
 	l[1] = NULL;
@@ -1744,22 +1798,24 @@ remove_contacts_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_dat
  *
  * Deprecated: 3.0: Use e_book_remove_contacts_async() instead.
  **/
-guint
-e_book_async_remove_contacts (EBook                 *book,
-			      GList                 *ids,
-			      EBookCallback          cb,
-			      gpointer               closure)
+gboolean
+e_book_async_remove_contacts (EBook *book,
+                              GList *ids,
+                              EBookCallback cb,
+                              gpointer closure)
 {
 	AsyncData *data;
 	gchar **l;
 
-	e_return_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_async_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	if (ids == NULL) {
 		if (cb)
 			cb (book, E_BOOK_ERROR_OK, closure);
-		return 0;
+		return TRUE;
 	}
 
 	l = flatten_stringlist (ids);
@@ -1773,7 +1829,7 @@ e_book_async_remove_contacts (EBook                 *book,
 
 	g_strfreev (l);
 
-	return 0;
+	return TRUE;
 }
 #endif
 
@@ -1794,21 +1850,23 @@ e_book_async_remove_contacts (EBook                 *book,
  * Since: 2.32
  **/
 gboolean
-e_book_remove_contacts_async (EBook              *book,
-			      GList              *ids,
-			      EBookAsyncCallback  cb,
-			      gpointer            closure)
+e_book_remove_contacts_async (EBook *book,
+                              GList *ids,
+                              EBookAsyncCallback cb,
+                              gpointer closure)
 {
 	AsyncData *data;
 	gchar **l;
 
-	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_ex_async_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	if (ids == NULL) {
 		if (cb)
 			cb (book, E_BOOK_ERROR_OK, closure);
-		return 0;
+		return TRUE;
 	}
 
 	l = flatten_stringlist (ids);
@@ -1853,8 +1911,10 @@ e_book_get_book_view (EBook       *book,
 	gchar *sexp, *view_path = NULL, *gdbus_sexp = NULL;
 	gboolean ret = TRUE;
 
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	sexp = e_book_query_to_string (query);
 
@@ -1949,20 +2009,22 @@ get_book_view_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  *
  * Deprecated: 3.0: Use e_book_get_book_view_async() instead.
  **/
-guint
-e_book_async_get_book_view (EBook                 *book,
-			    EBookQuery            *query,
-			    GList                 *requested_fields,
-			    gint                    max_results,
-			    EBookBookViewCallback  cb,
-			    gpointer               closure)
+gboolean
+e_book_async_get_book_view (EBook *book,
+                            EBookQuery *query,
+                            GList *requested_fields,
+                            gint max_results,
+                            EBookBookViewCallback cb,
+                            gpointer closure)
 {
 	AsyncData *data;
 	gchar *sexp, *gdbus_sexp = NULL;
 
-	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_async_error_val_if_fail (query, E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (query != NULL, FALSE);
+
+	e_return_async_error_val_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
@@ -1976,7 +2038,7 @@ e_book_async_get_book_view (EBook                 *book,
 	g_free (sexp);
 	g_free (gdbus_sexp);
 
-	return 0;
+	return TRUE;
 }
 #endif
 
@@ -1997,19 +2059,21 @@ e_book_async_get_book_view (EBook                 *book,
  * Since: 2.32
  **/
 gboolean
-e_book_get_book_view_async (EBook                      *book,
-			    EBookQuery                 *query,
-			    GList                      *requested_fields,
-			    gint                        max_results,
-			    EBookBookViewAsyncCallback  cb,
-			    gpointer                    closure)
+e_book_get_book_view_async (EBook *book,
+                            EBookQuery *query,
+                            GList *requested_fields,
+                            gint max_results,
+                            EBookBookViewAsyncCallback cb,
+                            gpointer closure)
 {
 	AsyncData *data;
 	gchar *sexp, *gdbus_sexp = NULL;
 
-	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_ex_async_error_val_if_fail (query, E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (query != NULL, FALSE);
+
+	e_return_ex_async_error_val_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
@@ -2048,8 +2112,10 @@ e_book_get_contacts (EBook       *book,
 	gchar **list = NULL;
 	gchar *sexp, *gdbus_sexp = NULL;
 
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	sexp = e_book_query_to_string (query);
 
@@ -2129,18 +2195,20 @@ get_contacts_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  *
  * Deprecated: 3.0: Use e_book_get_contacts_async() instead.
  **/
-guint
-e_book_async_get_contacts (EBook             *book,
-			   EBookQuery        *query,
-			   EBookListCallback  cb,
-			   gpointer           closure)
+gboolean
+e_book_async_get_contacts (EBook *book,
+                           EBookQuery *query,
+                           EBookListCallback cb,
+                           gpointer closure)
 {
 	AsyncData *data;
 	gchar *sexp, *gdbus_sexp = NULL;
 
-	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_async_error_val_if_fail (query, E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (query != NULL, FALSE);
+
+	e_return_async_error_val_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	sexp = e_book_query_to_string (query);
 
@@ -2154,7 +2222,7 @@ e_book_async_get_contacts (EBook             *book,
 	g_free (sexp);
 	g_free (gdbus_sexp);
 
-	return 0;
+	return TRUE;
 }
 #endif
 
@@ -2172,17 +2240,19 @@ e_book_async_get_contacts (EBook             *book,
  * Since: 2.32
  **/
 gboolean
-e_book_get_contacts_async (EBook                  *book,
-			   EBookQuery             *query,
-			   EBookListAsyncCallback  cb,
-			   gpointer                closure)
+e_book_get_contacts_async (EBook *book,
+                           EBookQuery *query,
+                           EBookListAsyncCallback cb,
+                           gpointer closure)
 {
 	AsyncData *data;
 	gchar *sexp, *gdbus_sexp = NULL;
 
-	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	e_return_ex_async_error_val_if_fail (query, E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (query != NULL, FALSE);
+
+	e_return_ex_async_error_val_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	sexp = e_book_query_to_string (query);
 
@@ -2237,10 +2307,10 @@ parse_changes_array (GVariant *var_changes)
  * @changes: return location for a #GList of #EBookChange items
  * @error: a #GError to set on failure.
  *
- * Get the set of changes since the previous call to #e_book_get_changes for a
- * given change ID.
+ * Get the set of changes since the previous call to e_book_get_changes()
+ * for a given change ID.
  *
- * Returns: TRUE on success, FALSE otherwise
+ * Returns: %TRUE on success, %FALSE otherwise
  */
 gboolean
 e_book_get_changes (EBook       *book,
@@ -2252,8 +2322,10 @@ e_book_get_changes (EBook       *book,
 	GVariant *var_changes = NULL;
 	gchar *gdbus_changeid = NULL;
 
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	e_gdbus_book_call_get_changes_sync (book->priv->gdbus_book, e_util_ensure_gdbus_string (changeid, &gdbus_changeid), &var_changes, NULL, &err);
 
@@ -2314,24 +2386,26 @@ get_changes_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  * @cb: function to call when operation finishes
  * @closure: data to pass to callback function
  *
- * Get the set of changes since the previous call to #e_book_async_get_changes
- * for a given change ID.
+ * Get the set of changes since the previous call to
+ * e_book_async_get_changes() for a given change ID.
  *
- * Returns: TRUE on success, FALSE otherwise
+ * Returns: %TRUE on success, %FALSE otherwise
  *
  * Deprecated: 3.0: Use e_book_get_changes_async() instead.
  */
-guint
-e_book_async_get_changes (EBook             *book,
-			  const gchar       *changeid,
-			  EBookListCallback  cb,
-			  gpointer           closure)
+gboolean
+e_book_async_get_changes (EBook *book,
+                          const gchar *changeid,
+                          EBookListCallback cb,
+                          gpointer closure)
 {
 	AsyncData *data;
 	gchar *gdbus_changeid = NULL;
 
-	e_return_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_async_error_val_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
@@ -2342,7 +2416,7 @@ e_book_async_get_changes (EBook             *book,
 
 	g_free (gdbus_changeid);
 
-	return 0;
+	return TRUE;
 }
 #endif
 
@@ -2353,24 +2427,26 @@ e_book_async_get_changes (EBook             *book,
  * @cb: function to call when operation finishes
  * @closure: data to pass to callback function
  *
- * Get the set of changes since the previous call to #e_book_async_get_changes
- * for a given change ID.
+ * Get the set of changes since the previous call to
+ * e_book_async_get_changes() for a given change ID.
  *
- * Returns: TRUE on success, FALSE otherwise
+ * Returns: %TRUE on success, %FALSE otherwise
  *
  * Since: 2.32
  */
 gboolean
-e_book_get_changes_async (EBook                  *book,
-			  const gchar            *changeid,
-			  EBookListAsyncCallback  cb,
-			  gpointer                closure)
+e_book_get_changes_async (EBook *book,
+                          const gchar *changeid,
+                          EBookListAsyncCallback cb,
+                          gpointer closure)
 {
 	AsyncData *data;
 	gchar *gdbus_changeid = NULL;
 
-	e_return_ex_async_error_val_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_val_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_ex_async_error_val_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
@@ -2425,8 +2501,10 @@ gboolean
 e_book_cancel (EBook   *book,
 	       GError **error)
 {
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	return e_gdbus_book_call_cancel_operation_sync (book->priv->gdbus_book, NULL, error);
 }
@@ -2442,8 +2520,10 @@ e_book_cancel (EBook   *book,
 gboolean
 e_book_cancel_async_op (EBook *book, GError **error)
 {
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	return e_gdbus_book_call_cancel_operation_sync (book->priv->gdbus_book, NULL, error);
 }
@@ -2465,8 +2545,10 @@ e_book_open (EBook     *book,
 {
 	GError *err = NULL;
 
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	if (!e_gdbus_book_call_open_sync (book->priv->gdbus_book, only_if_exists, NULL, &err)) {
 
@@ -2526,16 +2608,18 @@ open_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  *
  * Deprecated: 3.0: Use e_book_open_async() instead.
  **/
-guint
-e_book_async_open (EBook                 *book,
-		   gboolean               only_if_exists,
-		   EBookCallback          cb,
-		   gpointer               closure)
+gboolean
+e_book_async_open (EBook *book,
+                   gboolean only_if_exists,
+                   EBookCallback cb,
+                   gpointer closure)
 {
 	AsyncData *data;
 
-	e_return_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_async_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
@@ -2544,7 +2628,7 @@ e_book_async_open (EBook                 *book,
 
 	e_gdbus_book_call_open (book->priv->gdbus_book, only_if_exists, NULL, open_reply, data);
 
-	return 0;
+	return TRUE;
 }
 #endif
 
@@ -2563,15 +2647,17 @@ e_book_async_open (EBook                 *book,
  * Since: 2.32
  **/
 gboolean
-e_book_open_async (EBook              *book,
-		   gboolean            only_if_exists,
-		   EBookAsyncCallback  cb,
-		   gpointer            closure)
+e_book_open_async (EBook *book,
+                   gboolean only_if_exists,
+                   EBookAsyncCallback cb,
+                   gpointer closure)
 {
 	AsyncData *data;
 
-	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	g_return_val_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
@@ -2599,8 +2685,10 @@ e_book_remove (EBook   *book,
 {
 	GError *err = NULL;
 
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	e_gdbus_book_call_remove_sync (book->priv->gdbus_book, NULL, &err);
 
@@ -2649,15 +2737,17 @@ remove_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  *
  * Deprecated: 3.0: Use e_book_remove_async() instead.
  **/
-guint
-e_book_async_remove (EBook   *book,
-		     EBookCallback cb,
-		     gpointer closure)
+gboolean
+e_book_async_remove (EBook *book,
+                     EBookCallback cb,
+                     gpointer closure)
 {
 	AsyncData *data;
 
-	e_return_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_async_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
@@ -2666,7 +2756,7 @@ e_book_async_remove (EBook   *book,
 
 	e_gdbus_book_call_remove (book->priv->gdbus_book, NULL, remove_reply, data);
 
-	return 0;
+	return TRUE;
 }
 #endif
 
@@ -2684,14 +2774,16 @@ e_book_async_remove (EBook   *book,
  * Since: 2.32
  **/
 gboolean
-e_book_remove_async (EBook              *book,
-		     EBookAsyncCallback  cb,
-		     gpointer            closure)
+e_book_remove_async (EBook *book,
+                     EBookAsyncCallback  cb,
+                     gpointer closure)
 {
 	AsyncData *data;
 
-	e_return_ex_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_ex_async_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_ex_async_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
@@ -2746,11 +2838,13 @@ e_book_get_source (EBook *book)
  * Returns: The capabilities list
  */
 const gchar *
-e_book_get_static_capabilities (EBook   *book,
-				GError **error)
+e_book_get_static_capabilities (EBook *book,
+                                GError **error)
 {
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_BOOK (book), NULL);
+
+	e_return_error_if_fail (
+		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	if (!book->priv->cap_queried) {
 		gchar *cap = NULL;
@@ -2778,11 +2872,11 @@ e_book_get_static_capabilities (EBook   *book,
  */
 gboolean
 e_book_check_static_capability (EBook *book,
-				const gchar  *cap)
+                                const gchar *cap)
 {
 	const gchar *caps;
 
-	g_return_val_if_fail (book && E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
 
 	caps = e_book_get_static_capabilities (book, NULL);
 
@@ -2963,8 +3057,8 @@ e_book_set_self (EBook *book, EContact *contact, GError **error)
 {
 	GConfClient *gconf;
 
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (E_IS_CONTACT (contact), E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
 
 	gconf = gconf_client_get_default ();
 	gconf_client_set_string (gconf, SELF_UID_KEY, e_contact_get_const (contact, E_CONTACT_UID), NULL);
@@ -2989,7 +3083,7 @@ e_book_is_self (EContact *contact)
 	gboolean rv;
 
 	/* XXX this should probably be e_return_error_if_fail, but we
-	   need a GError** arg for that */
+	   need a GError arg for that */
 	g_return_val_if_fail (contact && E_IS_CONTACT (contact), FALSE);
 
 	gconf = gconf_client_get_default ();
@@ -3018,8 +3112,11 @@ e_book_set_default_addressbook (EBook *book, GError **error)
 {
 	ESource *source;
 
-	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
-	e_return_error_if_fail (book->priv->loaded == FALSE, E_BOOK_ERROR_SOURCE_ALREADY_LOADED);
+	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
+
+	e_return_error_if_fail (
+		book->priv->loaded == FALSE,
+		E_BOOK_ERROR_SOURCE_ALREADY_LOADED);
 
 	source = e_book_get_source (book);
 
@@ -3044,7 +3141,7 @@ e_book_set_default_source (ESource *source, GError **error)
 	GError *err = NULL;
 	GSList *g;
 
-	e_return_error_if_fail (source && E_IS_SOURCE (source), E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	uid = e_source_peek_uid (source);
 
@@ -3093,8 +3190,8 @@ e_book_set_default_source (ESource *source, GError **error)
 
 /**
  * e_book_get_addressbooks:
- * @addressbook_sources: (out): A pointer to a #ESourceList* to set
- * @error: A pointer to a GError* to set on error
+ * @addressbook_sources: (out): A pointer to a #ESourceList to set
+ * @error: A pointer to a GError to set on error
  *
  * Populate *addressbook_sources with the list of all sources which have been
  * added to Evolution.
@@ -3106,7 +3203,7 @@ e_book_get_addressbooks (ESourceList **addressbook_sources, GError **error)
 {
 	GConfClient *gconf;
 
-	e_return_error_if_fail (addressbook_sources, E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (addressbook_sources != NULL, FALSE);
 
 	gconf = gconf_client_get_default ();
 	*addressbook_sources = e_source_list_new_for_gconf (gconf, "/apps/evolution/addressbook/sources");
@@ -3126,7 +3223,7 @@ e_book_get_addressbooks (ESourceList **addressbook_sources, GError **error)
  *
  * Returns: a new but unopened #EBook.
  */
-EBook*
+EBook *
 e_book_new (ESource *source, GError **error)
 {
 	GError *err = NULL;
@@ -3134,7 +3231,7 @@ e_book_new (ESource *source, GError **error)
 	gchar *path = NULL, *xml, *gdbus_xml = NULL;
 	GDBusConnection *connection;
 
-	e_return_error_if_fail (E_IS_SOURCE (source), E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
 	if (!e_book_activate (&err)) {
 		unwrap_gerror (err, &err);
@@ -3280,7 +3377,7 @@ check_uri (ESource *source, gpointer uri)
  *
  * Returns: a new but unopened #EBook.
  */
-EBook*
+EBook *
 e_book_new_from_uri (const gchar *uri, GError **error)
 {
 	ESourceList *sources = NULL;
@@ -3288,7 +3385,7 @@ e_book_new_from_uri (const gchar *uri, GError **error)
 	EBook *book;
 	GError *err = NULL;
 
-	e_return_error_if_fail (uri, E_BOOK_ERROR_INVALID_ARG);
+	g_return_val_if_fail (uri != NULL, NULL);
 
 	source = search_known_sources (check_uri, (gpointer) uri, &sources, &err);
 	if (err) {
@@ -3349,7 +3446,7 @@ check_system (ESource *source, gpointer data)
  *
  * Returns: a new but unopened #EBook.
  */
-EBook*
+EBook *
 e_book_new_system_addressbook (GError **error)
 {
 	GError *err = NULL;
