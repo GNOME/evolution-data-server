@@ -210,3 +210,20 @@ Miscellaneous utility functions for evolution-data-server.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_data_server_util_get_dbus_call_timeout ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_server_util_set_dbus_call_timeout ##### -->
+<para>
+
+</para>
+
+@timeout_msec: 
+
+

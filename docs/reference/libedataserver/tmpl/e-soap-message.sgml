@@ -26,6 +26,7 @@ ESoapMessage
 </para>
 
 @parent: 
+@priv: 
 
 <!-- ##### FUNCTION e_soap_message_new ##### -->
 <para>

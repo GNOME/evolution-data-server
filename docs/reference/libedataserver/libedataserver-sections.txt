@@ -420,6 +420,7 @@ E_IS_SOAP_MESSAGE_CLASS
 E_SOAP_MESSAGE_GET_CLASS
 ESoapMessageClass
 <SUBSECTION Private>
+ESoapMessagePrivate
 e_soap_message_get_type
 </SECTION>
 
@@ -455,6 +456,7 @@ E_IS_SOAP_RESPONSE_CLASS
 E_SOAP_RESPONSE_GET_CLASS
 ESoapResponseClass
 <SUBSECTION Private>
+ESoapResponsePrivate
 e_soap_response_get_type
 </SECTION>
 
@@ -512,6 +514,8 @@ e_util_get_prefix
 e_util_get_cp_prefix
 e_util_get_localedir
 e_util_replace_prefix
+e_data_server_util_get_dbus_call_timeout
+e_data_server_util_set_dbus_call_timeout
 </SECTION>
 
 <SECTION>

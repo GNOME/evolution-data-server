@@ -429,6 +429,24 @@ The writable status for this book is being reported.
 @error: 
 
 
+<!-- ##### MACRO e_return_async_error_val_if_fail ##### -->
+<para>
+
+</para>
+
+@expr: 
+@error: 
+
+
+<!-- ##### MACRO e_return_ex_async_error_if_fail ##### -->
+<para>
+
+</para>
+
+@expr: 
+@error: 
+
+
 <!-- ##### MACRO e_return_ex_async_error_val_if_fail ##### -->
 <para>
 

@@ -58,6 +58,8 @@ e_book_is_self
 e_book_get_addressbooks
 e_return_error_if_fail
 e_return_async_error_if_fail
+e_return_async_error_val_if_fail
+e_return_ex_async_error_if_fail
 e_return_ex_async_error_val_if_fail
 EBookAsyncCallback
 EBookOpenProgressCallback
