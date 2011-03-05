@@ -782,7 +782,7 @@ camel_cipher_context_init (CamelCipherContext *context)
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 gboolean
 camel_cipher_context_sign_sync (CamelCipherContext *context,
@@ -841,7 +841,7 @@ camel_cipher_context_sign_sync (CamelCipherContext *context,
  * When the operation is finished, @callback will be called.  You can then
  * call camel_cipher_context_sign_finish() to get the result of the operation.
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 void
 camel_cipher_context_sign (CamelCipherContext *context,
@@ -876,7 +876,7 @@ camel_cipher_context_sign (CamelCipherContext *context,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 gboolean
 camel_cipher_context_sign_finish (CamelCipherContext *context,
@@ -953,7 +953,7 @@ camel_cipher_context_verify_sync (CamelCipherContext *context,
  * then call camel_cipher_context_verify_finish() to get the result of
  * the operation.
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 void
 camel_cipher_context_verify (CamelCipherContext *context,
@@ -988,7 +988,7 @@ camel_cipher_context_verify (CamelCipherContext *context,
  * about the integrity of the input stream, or %NULL on failure to
  * execute at all
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 CamelCipherValidity *
 camel_cipher_context_verify_finish (CamelCipherContext *context,
@@ -1021,7 +1021,7 @@ camel_cipher_context_verify_finish (CamelCipherContext *context,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 gboolean
 camel_cipher_context_encrypt_sync (CamelCipherContext *context,
@@ -1083,7 +1083,7 @@ camel_cipher_context_encrypt_sync (CamelCipherContext *context,
  * then call camel_cipher_context_encrypt_finish() to get the result of
  * the operation.
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 void
 camel_cipher_context_encrypt (CamelCipherContext *context,
@@ -1120,7 +1120,7 @@ camel_cipher_context_encrypt (CamelCipherContext *context,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 gboolean
 camel_cipher_context_encrypt_finish (CamelCipherContext *context,
@@ -1150,7 +1150,7 @@ camel_cipher_context_encrypt_finish (CamelCipherContext *context,
  *
  * Returns: a validity/encryption status, or %NULL on error
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 CamelCipherValidity *
 camel_cipher_context_decrypt_sync (CamelCipherContext *context,
@@ -1206,7 +1206,7 @@ camel_cipher_context_decrypt_sync (CamelCipherContext *context,
  * then call camel_cipher_context_decrypt_finish() to get the result of
  * the operation.
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 void
 camel_cipher_context_decrypt (CamelCipherContext *context,
@@ -1241,7 +1241,7 @@ camel_cipher_context_decrypt (CamelCipherContext *context,
  *
  * Returns: a validity/encryption status, or %NULL on error
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 CamelCipherValidity *
 camel_cipher_context_decrypt_finish (CamelCipherContext *context,
@@ -1271,7 +1271,7 @@ camel_cipher_context_decrypt_finish (CamelCipherContext *context,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 gboolean
 camel_cipher_context_import_keys_sync (CamelCipherContext *context,
@@ -1311,7 +1311,7 @@ camel_cipher_context_import_keys_sync (CamelCipherContext *context,
  * then call camel_cipher_context_import_keys_finish() to get the result
  * of the operation.
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 void
 camel_cipher_context_import_keys (CamelCipherContext *context,
@@ -1344,7 +1344,7 @@ camel_cipher_context_import_keys (CamelCipherContext *context,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 gboolean
 camel_cipher_context_import_keys_finish (CamelCipherContext *context,
@@ -1375,7 +1375,7 @@ camel_cipher_context_import_keys_finish (CamelCipherContext *context,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 gboolean
 camel_cipher_context_export_keys_sync (CamelCipherContext *context,
@@ -1418,7 +1418,7 @@ camel_cipher_context_export_keys_sync (CamelCipherContext *context,
  * call camel_cipher_context_export_keys_finish() to get the result of the
  * operation.
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 void
 camel_cipher_context_export_keys (CamelCipherContext *context,
@@ -1453,7 +1453,7 @@ camel_cipher_context_export_keys (CamelCipherContext *context,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 gboolean
 camel_cipher_context_export_keys_finish (CamelCipherContext *context,

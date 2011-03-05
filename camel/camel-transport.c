@@ -229,7 +229,7 @@ camel_transport_unlock (CamelTransport *transport,
  *
  * Returns: %TRUE on success or %FALSE on error
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 gboolean
 camel_transport_send_to_sync (CamelTransport *transport,
@@ -285,7 +285,7 @@ camel_transport_send_to_sync (CamelTransport *transport,
  * When the operation is finished, @callback will be called.  You can then
  * call camel_transport_send_to_finish() to get the result of the operation.
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 void
 camel_transport_send_to (CamelTransport *transport,
@@ -322,7 +322,7 @@ camel_transport_send_to (CamelTransport *transport,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 gboolean
 camel_transport_send_to_finish (CamelTransport *transport,

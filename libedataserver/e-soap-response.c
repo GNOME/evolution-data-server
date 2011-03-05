@@ -63,7 +63,7 @@ e_soap_response_init (ESoapResponse *response)
  * Returns: the new #ESoapResponse (or %NULL if there was an
  * error).
  *
- * Since: 2.92
+ * Since: 3.0
  */
 ESoapResponse *
 e_soap_response_new (void)
@@ -84,7 +84,7 @@ e_soap_response_new (void)
  * Returns: the new #ESoapResponse (or %NULL if there was an
  * error).
  *
- * Since: 2.92
+ * Since: 3.0
  */
 ESoapResponse *
 e_soap_response_new_from_string (const gchar *xmlstr)
@@ -130,7 +130,7 @@ parse_parameters (ESoapResponsePrivate *priv, xmlNodePtr xml_method)
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
- * Since: 2.92
+ * Since: 3.0
  */
 gboolean
 e_soap_response_from_string (ESoapResponse *response, const gchar *xmlstr)
@@ -201,7 +201,7 @@ e_soap_response_from_string (ESoapResponse *response, const gchar *xmlstr)
  *
  * Returns: the method name.
  *
- * Since: 2.92
+ * Since: 3.0
  */
 const gchar *
 e_soap_response_get_method_name (ESoapResponse *response)
@@ -222,7 +222,7 @@ e_soap_response_get_method_name (ESoapResponse *response)
  *
  * Sets the method name on the given #ESoapResponse.
  *
- * Since: 2.92
+ * Since: 3.0
  */
 void
 e_soap_response_set_method_name (ESoapResponse *response, const gchar *method_name)
@@ -245,7 +245,7 @@ e_soap_response_set_method_name (ESoapResponse *response, const gchar *method_na
  *
  * Returns: the parameter name.
  *
- * Since: 2.92
+ * Since: 3.0
  */
 const gchar *
 e_soap_parameter_get_name (ESoapParameter *param)
@@ -263,7 +263,7 @@ e_soap_parameter_get_name (ESoapParameter *param)
  *
  * Returns: the parameter value as an integer
  *
- * Since: 2.92
+ * Since: 3.0
  */
 gint
 e_soap_parameter_get_int_value (ESoapParameter *param)
@@ -292,7 +292,7 @@ e_soap_parameter_get_int_value (ESoapParameter *param)
  * Returns: the parameter value as a string, which must be freed
  * by the caller.
  *
- * Since: 2.92
+ * Since: 3.0
  */
 gchar *
 e_soap_parameter_get_string_value (ESoapParameter *param)
@@ -318,7 +318,7 @@ e_soap_parameter_get_string_value (ESoapParameter *param)
  *
  * Returns: the first child or %NULL if there are no children.
  *
- * Since: 2.92
+ * Since: 3.0
  */
 ESoapParameter *
 e_soap_parameter_get_first_child (ESoapParameter *param)
@@ -339,7 +339,7 @@ e_soap_parameter_get_first_child (ESoapParameter *param)
  * Returns: the first child with the given name or %NULL if there
  * are no children.
  *
- * Since: 2.92
+ * Since: 3.0
  */
 ESoapParameter *
 e_soap_parameter_get_first_child_by_name (ESoapParameter *param, const gchar *name)
@@ -372,7 +372,7 @@ e_soap_parameter_get_first_child_by_name (ESoapParameter *param, const gchar *na
  * Returns: the next sibling, or %NULL if there are no more
  * siblings.
  *
- * Since: 2.92
+ * Since: 3.0
  */
 ESoapParameter *
 e_soap_parameter_get_next_child (ESoapParameter *param)
@@ -394,7 +394,7 @@ e_soap_parameter_get_next_child (ESoapParameter *param)
  *
  * Returns: the next sibling with the given name, or %NULL
  *
- * Since: 2.92
+ * Since: 3.0
  */
 ESoapParameter *
 e_soap_parameter_get_next_child_by_name (ESoapParameter *param,
@@ -424,7 +424,7 @@ e_soap_parameter_get_next_child_by_name (ESoapParameter *param,
  *
  * Returns: the property, which must be freed by the caller.
  *
- * Since: 2.92
+ * Since: 3.0
  */
 gchar *
 e_soap_parameter_get_property (ESoapParameter *param, const gchar *prop_name)
@@ -450,7 +450,7 @@ e_soap_parameter_get_property (ESoapParameter *param, const gchar *prop_name)
  *
  * Returns: a list of #ESoapParameter
  *
- * Since: 2.92
+ * Since: 3.0
  */
 const GList *
 e_soap_response_get_parameters (ESoapResponse *response)
@@ -472,7 +472,7 @@ e_soap_response_get_parameters (ESoapResponse *response)
  * Returns: a #ESoapParameter representing the first
  * parameter, or %NULL if there are no parameters.
  *
- * Since: 2.92
+ * Since: 3.0
  */
 ESoapParameter *
 e_soap_response_get_first_parameter (ESoapResponse *response)
@@ -496,7 +496,7 @@ e_soap_response_get_first_parameter (ESoapResponse *response)
  * Returns: a #ESoapParameter representing the first parameter
  * with the given name, or %NULL.
  *
- * Since: 2.92
+ * Since: 3.0
  */
 ESoapParameter *
 e_soap_response_get_first_parameter_by_name (ESoapResponse *response,
@@ -529,7 +529,7 @@ e_soap_response_get_first_parameter_by_name (ESoapResponse *response,
  *
  * Returns: a #ESoapParameter representing the parameter.
  *
- * Since: 2.92
+ * Since: 3.0
  */
 ESoapParameter *
 e_soap_response_get_next_parameter (ESoapResponse *response,
@@ -560,7 +560,7 @@ e_soap_response_get_next_parameter (ESoapResponse *response,
  *
  * Returns: a #ESoapParameter representing the parameter.
  *
- * Since: 2.92
+ * Since: 3.0
  */
 ESoapParameter *
 e_soap_response_get_next_parameter_by_name (ESoapResponse *response,
@@ -600,7 +600,7 @@ soup_xml_real_node (xmlNode *node)
 /**
  * e_soap_response_dump_response:
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 gint
 e_soap_response_dump_response (ESoapResponse *response, FILE *buffer)

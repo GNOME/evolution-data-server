@@ -418,7 +418,7 @@ e_util_utf8_remove_accents (const gchar *str)
  * is UTF8 valid string. Invalid letters are replaced
  * with question marks U+FFFD.
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 gchar *
 e_util_utf8_make_valid (const gchar *str)
@@ -496,7 +496,7 @@ e_util_utf8_make_valid (const gchar *str)
  * and returned in gdbus_str, on which is supposed to be called
  * g_free().
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 const gchar *
 e_util_ensure_gdbus_string (const gchar *str, gchar **gdbus_str)

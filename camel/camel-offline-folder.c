@@ -371,7 +371,7 @@ camel_offline_folder_set_offline_sync (CamelOfflineFolder *folder,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 gboolean
 camel_offline_folder_downsync_sync (CamelOfflineFolder *folder,
@@ -411,7 +411,7 @@ camel_offline_folder_downsync_sync (CamelOfflineFolder *folder,
  * call camel_offline_folder_downsync_finish() to get the result of the
  * operation.
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 void
 camel_offline_folder_downsync (CamelOfflineFolder *folder,
@@ -443,7 +443,7 @@ camel_offline_folder_downsync (CamelOfflineFolder *folder,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 gboolean
 camel_offline_folder_downsync_finish (CamelOfflineFolder *folder,

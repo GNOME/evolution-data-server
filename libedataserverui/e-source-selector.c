@@ -1904,7 +1904,7 @@ e_source_selector_set_primary_selection (ESourceSelector *selector,
  *
  * Returns: the #ESource object at @path, or %NULL
  *
- * Since: 2.92
+ * Since: 3.0
  **/
 ESource *
 e_source_selector_get_source_by_path (ESourceSelector *selector,
