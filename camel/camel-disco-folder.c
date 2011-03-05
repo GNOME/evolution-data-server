@@ -470,7 +470,9 @@ camel_disco_folder_class_init (CamelDiscoFolderClass *class)
 static void
 camel_disco_folder_init (CamelDiscoFolder *disco_folder)
 {
-	disco_folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (disco_folder, CAMEL_TYPE_DISCO_FOLDER, CamelDiscoFolderPrivate);
+	disco_folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		disco_folder, CAMEL_TYPE_DISCO_FOLDER,
+		CamelDiscoFolderPrivate);
 
 	g_signal_connect (
 		disco_folder, "changed",

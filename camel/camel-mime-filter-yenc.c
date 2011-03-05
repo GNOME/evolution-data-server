@@ -236,7 +236,9 @@ camel_mime_filter_yenc_class_init (CamelMimeFilterYencClass *class)
 static void
 camel_mime_filter_yenc_init (CamelMimeFilterYenc *filter)
 {
-	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (filter, CAMEL_TYPE_MIME_FILTER_YENC, CamelMimeFilterYencPrivate);
+	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		filter, CAMEL_TYPE_MIME_FILTER_YENC,
+		CamelMimeFilterYencPrivate);
 
 	filter->priv->part = 0;
 	filter->priv->pcrc = CAMEL_MIME_YENCODE_CRC_INIT;

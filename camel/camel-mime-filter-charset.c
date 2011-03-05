@@ -249,7 +249,9 @@ camel_mime_filter_charset_class_init (CamelMimeFilterCharsetClass *class)
 static void
 camel_mime_filter_charset_init (CamelMimeFilterCharset *filter)
 {
-	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (filter, CAMEL_TYPE_MIME_FILTER_CHARSET, CamelMimeFilterCharsetPrivate);
+	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		filter, CAMEL_TYPE_MIME_FILTER_CHARSET,
+		CamelMimeFilterCharsetPrivate);
 	filter->priv->ic = (iconv_t) -1;
 }
 

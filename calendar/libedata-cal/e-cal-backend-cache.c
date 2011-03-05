@@ -69,7 +69,8 @@ timezones_value_destroy (icaltimezone *zone)
 static void
 e_cal_backend_cache_init (ECalBackendCache *cache)
 {
-	cache->priv = G_TYPE_INSTANCE_GET_PRIVATE (cache, E_TYPE_CAL_BACKEND_CACHE, ECalBackendCachePrivate);
+	cache->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		cache, E_TYPE_CAL_BACKEND_CACHE, ECalBackendCachePrivate);
 
 	cache->priv->timezones = g_hash_table_new_full (
 		g_str_hash, g_str_equal,

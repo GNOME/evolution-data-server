@@ -1708,7 +1708,9 @@ static void
 e_book_backend_google_init (EBookBackendGoogle *backend)
 {
 	__debug__ (G_STRFUNC);
-	backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (backend, E_TYPE_BOOK_BACKEND_GOOGLE, EBookBackendGooglePrivate);
+	backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		backend, E_TYPE_BOOK_BACKEND_GOOGLE,
+		EBookBackendGooglePrivate);
 }
 
 EBookBackend *

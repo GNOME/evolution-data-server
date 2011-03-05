@@ -620,7 +620,8 @@ e_name_selector_list_init (ENameSelectorList *list)
 	EDestinationStore *store;
 	GtkEntryCompletion *completion;
 
-	list->priv = G_TYPE_INSTANCE_GET_PRIVATE (list, E_TYPE_NAME_SELECTOR_LIST, ENameSelectorListPrivate);
+	list->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		list, E_TYPE_NAME_SELECTOR_LIST, ENameSelectorListPrivate);
 	list->priv->menu = NULL;
 
 	entry = E_NAME_SELECTOR_ENTRY (list);

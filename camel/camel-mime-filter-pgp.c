@@ -200,7 +200,9 @@ camel_mime_filter_pgp_class_init (CamelMimeFilterPgpClass *class)
 static void
 camel_mime_filter_pgp_init (CamelMimeFilterPgp *filter)
 {
-	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (filter, CAMEL_TYPE_MIME_FILTER_PGP, CamelMimeFilterPgpPrivate);
+	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		filter, CAMEL_TYPE_MIME_FILTER_PGP,
+		CamelMimeFilterPgpPrivate);
 }
 
 CamelMimeFilter *

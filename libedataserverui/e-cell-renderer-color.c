@@ -216,7 +216,9 @@ e_cell_renderer_color_class_init (ECellRendererColorClass *class)
 static void
 e_cell_renderer_color_init (ECellRendererColor *cellcolor)
 {
-	cellcolor->priv = G_TYPE_INSTANCE_GET_PRIVATE (cellcolor, E_TYPE_CELL_RENDERER_COLOR, ECellRendererColorPrivate);
+	cellcolor->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		cellcolor, E_TYPE_CELL_RENDERER_COLOR,
+		ECellRendererColorPrivate);
 
 	g_object_set (cellcolor, "xpad", 4, NULL);
 }

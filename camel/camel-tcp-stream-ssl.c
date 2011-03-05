@@ -762,7 +762,8 @@ camel_tcp_stream_ssl_class_init (CamelTcpStreamSSLClass *class)
 static void
 camel_tcp_stream_ssl_init (CamelTcpStreamSSL *stream)
 {
-	stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (stream, CAMEL_TYPE_TCP_STREAM_SSL, CamelTcpStreamSSLPrivate);
+	stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		stream, CAMEL_TYPE_TCP_STREAM_SSL, CamelTcpStreamSSLPrivate);
 }
 
 /**

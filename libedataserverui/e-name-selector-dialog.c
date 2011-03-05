@@ -161,7 +161,9 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	GtkWidget *status_message;
 	GtkWidget *source_combo;
 
-	name_selector_dialog->priv = G_TYPE_INSTANCE_GET_PRIVATE (name_selector_dialog, E_TYPE_NAME_SELECTOR_DIALOG, ENameSelectorDialogPrivate);
+	name_selector_dialog->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		name_selector_dialog, E_TYPE_NAME_SELECTOR_DIALOG,
+		ENameSelectorDialogPrivate);
 
 	name_selector_box = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (name_selector_box);

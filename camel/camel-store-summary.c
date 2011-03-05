@@ -316,7 +316,8 @@ camel_store_summary_class_init (CamelStoreSummaryClass *class)
 static void
 camel_store_summary_init (CamelStoreSummary *summary)
 {
-	summary->priv = G_TYPE_INSTANCE_GET_PRIVATE (summary, CAMEL_TYPE_STORE_SUMMARY, CamelStoreSummaryPrivate);
+	summary->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		summary, CAMEL_TYPE_STORE_SUMMARY, CamelStoreSummaryPrivate);
 	summary->store_info_size = sizeof (CamelStoreInfo);
 
 	summary->store_info_chunks = NULL;

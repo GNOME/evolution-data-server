@@ -82,7 +82,8 @@ camel_mime_filter_class_init (CamelMimeFilterClass *class)
 static void
 camel_mime_filter_init (CamelMimeFilter *mime_filter)
 {
-	mime_filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (mime_filter, CAMEL_TYPE_MIME_FILTER, CamelMimeFilterPrivate);
+	mime_filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		mime_filter, CAMEL_TYPE_MIME_FILTER, CamelMimeFilterPrivate);
 
 	mime_filter->outreal = NULL;
 	mime_filter->outbuf = NULL;

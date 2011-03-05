@@ -528,7 +528,8 @@ e_data_cal_factory_init (EDataCalFactory *factory)
 {
 	GError *error = NULL;
 
-	factory->priv = G_TYPE_INSTANCE_GET_PRIVATE (factory, E_TYPE_DATA_CAL_FACTORY, EDataCalFactoryPrivate);
+	factory->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		factory, E_TYPE_DATA_CAL_FACTORY, EDataCalFactoryPrivate);
 
 	factory->priv->gdbus_object = e_gdbus_cal_factory_stub_new ();
 	g_signal_connect (factory->priv->gdbus_object, "handle-get-cal", G_CALLBACK (impl_CalFactory_getCal), factory);

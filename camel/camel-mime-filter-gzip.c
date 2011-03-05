@@ -441,7 +441,9 @@ camel_mime_filter_gzip_class_init (CamelMimeFilterGZipClass *class)
 static void
 camel_mime_filter_gzip_init (CamelMimeFilterGZip *mime_filter)
 {
-	mime_filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (mime_filter, CAMEL_TYPE_MIME_FILTER_GZIP, CamelMimeFilterGZipPrivate);
+	mime_filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		mime_filter, CAMEL_TYPE_MIME_FILTER_GZIP,
+		CamelMimeFilterGZipPrivate);
 	mime_filter->priv->stream = g_new0 (z_stream, 1);
 	mime_filter->priv->crc32 = crc32 (0, Z_NULL, 0);
 }

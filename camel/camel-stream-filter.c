@@ -333,7 +333,8 @@ camel_stream_filter_class_init (CamelStreamFilterClass *class)
 static void
 camel_stream_filter_init (CamelStreamFilter *stream)
 {
-	stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (stream, CAMEL_TYPE_STREAM_FILTER, CamelStreamFilterPrivate);
+	stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		stream, CAMEL_TYPE_STREAM_FILTER, CamelStreamFilterPrivate);
 	stream->priv->realbuffer = g_malloc (READ_SIZE + READ_PAD);
 	stream->priv->buffer = stream->priv->realbuffer + READ_PAD;
 	stream->priv->last_was_read = TRUE;

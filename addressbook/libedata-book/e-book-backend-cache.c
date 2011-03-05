@@ -43,7 +43,8 @@ e_book_backend_cache_class_init (EBookBackendCacheClass *class)
 static void
 e_book_backend_cache_init (EBookBackendCache *cache)
 {
-	cache->priv = G_TYPE_INSTANCE_GET_PRIVATE (cache, E_TYPE_BOOK_BACKEND_CACHE, EBookBackendCachePrivate);
+	cache->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		cache, E_TYPE_BOOK_BACKEND_CACHE, EBookBackendCachePrivate);
 }
 
 /**

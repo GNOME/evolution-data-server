@@ -162,7 +162,8 @@ camel_medium_class_init (CamelMediumClass *class)
 static void
 camel_medium_init (CamelMedium *medium)
 {
-	medium->priv = G_TYPE_INSTANCE_GET_PRIVATE (medium, CAMEL_TYPE_MEDIUM, CamelMediumPrivate);
+	medium->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		medium, CAMEL_TYPE_MEDIUM, CamelMediumPrivate);
 }
 
 /**

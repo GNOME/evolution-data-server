@@ -142,5 +142,6 @@ camel_sasl_cram_md5_class_init (CamelSaslCramMd5Class *class)
 static void
 camel_sasl_cram_md5_init (CamelSaslCramMd5 *sasl)
 {
-	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (sasl, CAMEL_TYPE_SASL_CRAM_MD5, CamelSaslCramMd5Private);
+	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		sasl, CAMEL_TYPE_SASL_CRAM_MD5, CamelSaslCramMd5Private);
 }

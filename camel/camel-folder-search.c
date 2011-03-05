@@ -157,7 +157,8 @@ camel_folder_search_class_init (CamelFolderSearchClass *class)
 static void
 camel_folder_search_init (CamelFolderSearch *search)
 {
-	search->priv = G_TYPE_INSTANCE_GET_PRIVATE (search, CAMEL_TYPE_FOLDER_SEARCH, CamelFolderSearchPrivate);
+	search->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		search, CAMEL_TYPE_FOLDER_SEARCH, CamelFolderSearchPrivate);
 	search->sexp = e_sexp_new ();
 }
 

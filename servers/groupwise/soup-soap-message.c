@@ -51,7 +51,8 @@ soup_soap_message_class_init (SoupSoapMessageClass *soup_soap_message_class)
 static void
 soup_soap_message_init (SoupSoapMessage *msg)
 {
-	msg->priv = G_TYPE_INSTANCE_GET_PRIVATE (msg, SOUP_TYPE_SOAP_MESSAGE, SoupSoapMessagePrivate);
+	msg->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		msg, SOUP_TYPE_SOAP_MESSAGE, SoupSoapMessagePrivate);
 
 	/* initialize XML structures */
 	msg->priv->doc = xmlNewDoc ((const xmlChar *)"1.0");

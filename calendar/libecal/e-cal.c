@@ -410,7 +410,8 @@ e_cal_init (ECal *ecal)
 	active_cals++;
 	UNLOCK_FACTORY ();
 
-	ecal->priv = priv = G_TYPE_INSTANCE_GET_PRIVATE (ecal, E_TYPE_CAL, ECalPrivate);
+	ecal->priv = priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		ecal, E_TYPE_CAL, ECalPrivate);
 
 	priv->load_state = E_CAL_LOAD_NOT_LOADED;
 	priv->uri = NULL;

@@ -114,7 +114,8 @@ camel_certdb_class_init (CamelCertDBClass *class)
 static void
 camel_certdb_init (CamelCertDB *certdb)
 {
-	certdb->priv = G_TYPE_INSTANCE_GET_PRIVATE (certdb, CAMEL_TYPE_CERTDB, CamelCertDBPrivate);
+	certdb->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		certdb, CAMEL_TYPE_CERTDB, CamelCertDBPrivate);
 	certdb->filename = NULL;
 	certdb->version = CAMEL_CERTDB_VERSION;
 	certdb->saved_certs = 0;

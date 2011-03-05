@@ -850,7 +850,8 @@ e_data_book_init (EDataBook *ebook)
 {
 	EGdbusBook *gdbus_object;
 
-	ebook->priv = G_TYPE_INSTANCE_GET_PRIVATE (ebook, E_TYPE_DATA_BOOK, EDataBookPrivate);
+	ebook->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		ebook, E_TYPE_DATA_BOOK, EDataBookPrivate);
 
 	ebook->priv->gdbus_object = e_gdbus_book_stub_new ();
 

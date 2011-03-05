@@ -441,7 +441,8 @@ static void
 camel_sasl_gssapi_init (CamelSaslGssapi *sasl)
 {
 #ifdef HAVE_KRB5
-	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (sasl, CAMEL_TYPE_SASL_GSSAPI, CamelSaslGssapiPrivate);
+	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		sasl, CAMEL_TYPE_SASL_GSSAPI, CamelSaslGssapiPrivate);
 	sasl->priv->state = GSSAPI_STATE_INIT;
 	sasl->priv->ctx = GSS_C_NO_CONTEXT;
 	sasl->priv->target = GSS_C_NO_NAME;

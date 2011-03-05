@@ -732,5 +732,6 @@ camel_sasl_ntlm_class_init (CamelSaslNTLMClass *class)
 static void
 camel_sasl_ntlm_init (CamelSaslNTLM *sasl)
 {
-	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (sasl, CAMEL_TYPE_SASL_NTLM, CamelSaslNTLMPrivate);
+	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		sasl, CAMEL_TYPE_SASL_NTLM, CamelSaslNTLMPrivate);
 }

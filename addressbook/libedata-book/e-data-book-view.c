@@ -595,7 +595,8 @@ impl_DataBookView_dispose (EGdbusBookView *object, GDBusMethodInvocation *invoca
 static void
 e_data_book_view_init (EDataBookView *book_view)
 {
-	EDataBookViewPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (book_view, E_TYPE_DATA_BOOK_VIEW, EDataBookViewPrivate);
+	EDataBookViewPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		book_view, E_TYPE_DATA_BOOK_VIEW, EDataBookViewPrivate);
 
 	book_view->priv = priv;
 

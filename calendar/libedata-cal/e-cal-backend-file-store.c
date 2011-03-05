@@ -948,7 +948,9 @@ e_cal_backend_file_store_init (ECalBackendFileStore *store)
 {
 	ECalBackendFileStorePrivate *priv;
 
-	priv = G_TYPE_INSTANCE_GET_PRIVATE (store, E_TYPE_CAL_BACKEND_FILE_STORE, ECalBackendFileStorePrivate);
+	priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		store, E_TYPE_CAL_BACKEND_FILE_STORE,
+		ECalBackendFileStorePrivate);
 
 	store->priv = priv;
 

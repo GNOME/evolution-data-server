@@ -128,7 +128,9 @@ camel_mime_filter_progress_class_init (CamelMimeFilterProgressClass *class)
 static void
 camel_mime_filter_progress_init (CamelMimeFilterProgress *filter)
 {
-	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (filter, CAMEL_TYPE_MIME_FILTER_PROGRESS, CamelMimeFilterProgressPrivate);
+	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		filter, CAMEL_TYPE_MIME_FILTER_PROGRESS,
+		CamelMimeFilterProgressPrivate);
 }
 
 /**

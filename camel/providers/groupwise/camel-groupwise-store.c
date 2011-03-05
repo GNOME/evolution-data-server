@@ -1586,7 +1586,9 @@ camel_groupwise_store_class_init (CamelGroupwiseStoreClass *class)
 static void
 camel_groupwise_store_init (CamelGroupwiseStore *groupwise_store)
 {
-	groupwise_store->priv = G_TYPE_INSTANCE_GET_PRIVATE (groupwise_store, CAMEL_TYPE_GROUPWISE_STORE, CamelGroupwiseStorePrivate);
+	groupwise_store->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		groupwise_store, CAMEL_TYPE_GROUPWISE_STORE,
+		CamelGroupwiseStorePrivate);
 
 	d("in groupwise store init\n");
 	groupwise_store->priv->server_name = NULL;

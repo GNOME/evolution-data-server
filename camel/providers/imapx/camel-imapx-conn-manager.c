@@ -96,7 +96,8 @@ camel_imapx_conn_manager_class_init (CamelIMAPXConnManagerClass *class)
 static void
 camel_imapx_conn_manager_init (CamelIMAPXConnManager *con_man)
 {
-	con_man->priv = G_TYPE_INSTANCE_GET_PRIVATE (con_man, CAMEL_TYPE_OBJECT, CamelIMAPXConnManagerPrivate);
+	con_man->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		con_man, CAMEL_TYPE_OBJECT, CamelIMAPXConnManagerPrivate);
 
 	/* default is 1 connection */
 	con_man->priv->n_connections = 1;

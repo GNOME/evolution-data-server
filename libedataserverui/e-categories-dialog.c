@@ -718,7 +718,8 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label_header), entry_categories);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label2), categories_list);
 
-	dialog->priv = G_TYPE_INSTANCE_GET_PRIVATE (dialog, E_TYPE_CATEGORIES_DIALOG, ECategoriesDialogPrivate);
+	dialog->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		dialog, E_TYPE_CATEGORIES_DIALOG, ECategoriesDialogPrivate);
 	dialog->priv->selected_categories = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
 	dialog->priv->categories_entry = entry_categories;

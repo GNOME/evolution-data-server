@@ -474,7 +474,9 @@ camel_local_folder_init (CamelLocalFolder *local_folder)
 {
 	CamelFolder *folder = CAMEL_FOLDER (local_folder);
 
-	local_folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (local_folder, CAMEL_TYPE_LOCAL_FOLDER, CamelLocalFolderPrivate);
+	local_folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		local_folder, CAMEL_TYPE_LOCAL_FOLDER,
+		CamelLocalFolderPrivate);
 	local_folder->priv->search_lock = g_mutex_new ();
 
 	folder->folder_flags |= (CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |

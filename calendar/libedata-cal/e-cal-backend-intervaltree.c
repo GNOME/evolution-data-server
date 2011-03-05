@@ -776,7 +776,8 @@ e_intervaltree_init (EIntervalTree *tree)
 	EIntervalTreePrivate *priv;
 	EIntervalNode *root, *nil;
 
-	tree->priv = G_TYPE_INSTANCE_GET_PRIVATE (tree, E_TYPE_INTERVALTREE, EIntervalTreePrivate);
+	tree->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		tree, E_TYPE_INTERVALTREE, EIntervalTreePrivate);
 	priv = tree->priv;
 
 	priv->nil = nil = g_new (EIntervalNode, 1);

@@ -149,7 +149,8 @@ camel_data_cache_init (CamelDataCache *data_cache)
 		(CamelCopyFunc) g_strdup,
 		(GFreeFunc) g_free);
 
-	data_cache->priv = G_TYPE_INSTANCE_GET_PRIVATE (data_cache, CAMEL_TYPE_DATA_CACHE, CamelDataCachePrivate);
+	data_cache->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		data_cache, CAMEL_TYPE_DATA_CACHE, CamelDataCachePrivate);
 	data_cache->priv->busy_bag = busy_bag;
 	data_cache->priv->expire_age = -1;
 	data_cache->priv->expire_access = -1;

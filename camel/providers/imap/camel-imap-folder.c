@@ -300,7 +300,8 @@ camel_imap_folder_init (CamelImapFolder *imap_folder)
 {
 	CamelFolder *folder = CAMEL_FOLDER (imap_folder);
 
-	imap_folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (imap_folder, CAMEL_TYPE_IMAP_FOLDER, CamelImapFolderPrivate);
+	imap_folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		imap_folder, CAMEL_TYPE_IMAP_FOLDER, CamelImapFolderPrivate);
 
 	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED | CAMEL_MESSAGE_DELETED |
 		CAMEL_MESSAGE_DRAFT | CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN;

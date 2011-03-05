@@ -51,7 +51,8 @@ e_soap_message_class_init (ESoapMessageClass *e_soap_message_class)
 static void
 e_soap_message_init (ESoapMessage *msg)
 {
-	msg->priv = G_TYPE_INSTANCE_GET_PRIVATE (msg, E_TYPE_SOAP_MESSAGE, ESoapMessagePrivate);
+	msg->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		msg, E_TYPE_SOAP_MESSAGE, ESoapMessagePrivate);
 
 	/* initialize XML structures */
 	msg->priv->doc = xmlNewDoc ((const xmlChar *)"1.0");

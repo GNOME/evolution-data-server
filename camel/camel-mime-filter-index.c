@@ -119,7 +119,9 @@ camel_mime_filter_index_class_init (CamelMimeFilterIndexClass *class)
 static void
 camel_mime_filter_index_init (CamelMimeFilterIndex *filter)
 {
-	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (filter, CAMEL_TYPE_MIME_FILTER_INDEX, CamelMimeFilterIndexPrivate);
+	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		filter, CAMEL_TYPE_MIME_FILTER_INDEX,
+		CamelMimeFilterIndexPrivate);
 }
 
 /**

@@ -178,7 +178,8 @@ done_cb (EGdbusCalView *gdbus_calview, /* ECalendarStatus */ guint status, const
 static void
 e_cal_view_init (ECalView *view)
 {
-	view->priv = G_TYPE_INSTANCE_GET_PRIVATE (view, E_TYPE_CAL_VIEW, ECalViewPrivate);
+	view->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		view, E_TYPE_CAL_VIEW, ECalViewPrivate);
 }
 
 static void

@@ -91,7 +91,9 @@ camel_mime_filter_save_class_init (CamelMimeFilterSaveClass *class)
 static void
 camel_mime_filter_save_init (CamelMimeFilterSave *filter)
 {
-	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (filter, CAMEL_TYPE_MIME_FILTER_SAVE, CamelMimeFilterSavePrivate);
+	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		filter, CAMEL_TYPE_MIME_FILTER_SAVE,
+		CamelMimeFilterSavePrivate);
 }
 
 /**

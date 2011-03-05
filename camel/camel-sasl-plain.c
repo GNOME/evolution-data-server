@@ -87,5 +87,6 @@ camel_sasl_plain_class_init (CamelSaslPlainClass *class)
 static void
 camel_sasl_plain_init (CamelSaslPlain *sasl)
 {
-	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (sasl, CAMEL_TYPE_SASL_PLAIN, CamelSaslPlainPrivate);
+	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		sasl, CAMEL_TYPE_SASL_PLAIN, CamelSaslPlainPrivate);
 }

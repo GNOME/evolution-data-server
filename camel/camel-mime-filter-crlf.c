@@ -166,7 +166,9 @@ camel_mime_filter_crlf_class_init (CamelMimeFilterCRLFClass *class)
 static void
 camel_mime_filter_crlf_init (CamelMimeFilterCRLF *filter)
 {
-	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (filter, CAMEL_TYPE_MIME_FILTER_CRLF, CamelMimeFilterCRLFPrivate);
+	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		filter, CAMEL_TYPE_MIME_FILTER_CRLF,
+		CamelMimeFilterCRLFPrivate);
 
 	filter->priv->saw_cr = FALSE;
 	filter->priv->saw_lf = TRUE;

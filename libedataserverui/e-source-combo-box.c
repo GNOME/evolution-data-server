@@ -317,7 +317,9 @@ e_source_combo_box_class_init (ESourceComboBoxClass *class)
 static void
 e_source_combo_box_init (ESourceComboBox *source_combo_box)
 {
-	source_combo_box->priv = G_TYPE_INSTANCE_GET_PRIVATE (source_combo_box, E_TYPE_SOURCE_COMBO_BOX, ESourceComboBoxPrivate);
+	source_combo_box->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		source_combo_box, E_TYPE_SOURCE_COMBO_BOX,
+		ESourceComboBoxPrivate);
 	source_combo_box->priv->uid_index =
 		g_hash_table_new_full (
 			g_str_hash, g_str_equal,

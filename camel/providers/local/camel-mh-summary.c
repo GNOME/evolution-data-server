@@ -74,7 +74,8 @@ camel_mh_summary_init (CamelMhSummary *mh_summary)
 {
 	CamelFolderSummary *folder_summary;
 
-	mh_summary->priv = G_TYPE_INSTANCE_GET_PRIVATE (mh_summary, CAMEL_TYPE_MH_SUMMARY, CamelMhSummaryPrivate);
+	mh_summary->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		mh_summary, CAMEL_TYPE_MH_SUMMARY, CamelMhSummaryPrivate);
 
 	folder_summary = CAMEL_FOLDER_SUMMARY (mh_summary);
 

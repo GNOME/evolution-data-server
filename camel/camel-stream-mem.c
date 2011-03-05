@@ -250,7 +250,8 @@ camel_stream_mem_seekable_init (GSeekableIface *interface)
 static void
 camel_stream_mem_init (CamelStreamMem *stream)
 {
-	stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (stream, CAMEL_TYPE_STREAM_MEM, CamelStreamMemPrivate);
+	stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		stream, CAMEL_TYPE_STREAM_MEM, CamelStreamMemPrivate);
 }
 
 /**

@@ -224,7 +224,8 @@ camel_service_class_init (CamelServiceClass *class)
 static void
 camel_service_init (CamelService *service)
 {
-	service->priv = G_TYPE_INSTANCE_GET_PRIVATE (service, CAMEL_TYPE_SERVICE, CamelServicePrivate);
+	service->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		service, CAMEL_TYPE_SERVICE, CamelServicePrivate);
 
 	g_static_rec_mutex_init (&service->priv->connect_lock);
 	g_static_mutex_init (&service->priv->connect_op_lock);

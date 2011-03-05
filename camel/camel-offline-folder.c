@@ -318,7 +318,8 @@ camel_offline_folder_class_init (CamelOfflineFolderClass *class)
 static void
 camel_offline_folder_init (CamelOfflineFolder *folder)
 {
-	folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (folder, CAMEL_TYPE_OFFLINE_FOLDER, CamelOfflineFolderPrivate);
+	folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		folder, CAMEL_TYPE_OFFLINE_FOLDER, CamelOfflineFolderPrivate);
 
 	g_signal_connect (
 		folder, "changed",

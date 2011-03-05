@@ -365,7 +365,8 @@ camel_stream_buffer_class_init (CamelStreamBufferClass *class)
 static void
 camel_stream_buffer_init (CamelStreamBuffer *stream)
 {
-	stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (stream, CAMEL_TYPE_STREAM_BUFFER, CamelStreamBufferPrivate);
+	stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		stream, CAMEL_TYPE_STREAM_BUFFER, CamelStreamBufferPrivate);
 	stream->priv->flags = 0;
 	stream->priv->size = BUF_SIZE;
 	stream->priv->buf = g_malloc (BUF_SIZE);

@@ -639,7 +639,8 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 static void
 camel_nntp_folder_init (CamelNNTPFolder *nntp_folder)
 {
-	nntp_folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (nntp_folder, CAMEL_TYPE_NNTP_FOLDER, CamelNNTPFolderPrivate);
+	nntp_folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		nntp_folder, CAMEL_TYPE_NNTP_FOLDER, CamelNNTPFolderPrivate);
 
 	nntp_folder->changes = camel_folder_change_info_new ();
 	nntp_folder->priv->search_lock = g_mutex_new ();

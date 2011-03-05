@@ -813,7 +813,8 @@ camel_text_index_class_init (CamelTextIndexClass *class)
 static void
 camel_text_index_init (CamelTextIndex *text_index)
 {
-	text_index->priv = G_TYPE_INSTANCE_GET_PRIVATE (text_index, CAMEL_TYPE_TEXT_INDEX, CamelTextIndexPrivate);
+	text_index->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		text_index, CAMEL_TYPE_TEXT_INDEX, CamelTextIndexPrivate);
 
 	camel_dlist_init (&text_index->priv->word_cache);
 	text_index->priv->words = g_hash_table_new (g_str_hash, g_str_equal);

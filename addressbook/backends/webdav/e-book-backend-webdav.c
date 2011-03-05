@@ -1426,7 +1426,8 @@ e_book_backend_webdav_class_init (EBookBackendWebdavClass *klass)
 static void
 e_book_backend_webdav_init (EBookBackendWebdav *backend)
 {
-	backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (backend,
-			E_TYPE_BOOK_BACKEND_WEBDAV, EBookBackendWebdavPrivate);
+	backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		backend, E_TYPE_BOOK_BACKEND_WEBDAV,
+		EBookBackendWebdavPrivate);
 }
 

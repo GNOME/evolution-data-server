@@ -253,7 +253,8 @@ e_name_selector_init (ENameSelector *name_selector)
 	sections = g_array_new (FALSE, FALSE, sizeof (Section));
 	source_books = g_array_new (FALSE, FALSE, sizeof (SourceBook));
 
-	name_selector->priv = G_TYPE_INSTANCE_GET_PRIVATE (name_selector, E_TYPE_NAME_SELECTOR, ENameSelectorPrivate);
+	name_selector->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		name_selector, E_TYPE_NAME_SELECTOR, ENameSelectorPrivate);
 	name_selector->priv->sections = sections;
 	name_selector->priv->model = e_name_selector_model_new ();
 	name_selector->priv->source_books = source_books;

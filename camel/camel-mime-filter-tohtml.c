@@ -460,7 +460,9 @@ camel_mime_filter_tohtml_class_init (CamelMimeFilterToHTMLClass *class)
 static void
 camel_mime_filter_tohtml_init (CamelMimeFilterToHTML *filter)
 {
-	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (filter, CAMEL_TYPE_MIME_FILTER_TOHTML, CamelMimeFilterToHTMLPrivate);
+	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		filter, CAMEL_TYPE_MIME_FILTER_TOHTML,
+		CamelMimeFilterToHTMLPrivate);
 	filter->priv->scanner = camel_url_scanner_new ();
 }
 

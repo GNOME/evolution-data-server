@@ -148,5 +148,6 @@ camel_sasl_popb4smtp_class_init (CamelSaslPOPB4SMTPClass *class)
 static void
 camel_sasl_popb4smtp_init (CamelSaslPOPB4SMTP *sasl)
 {
-	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (sasl, CAMEL_TYPE_SASL_POPB4SMTP, CamelSaslPOPB4SMTPPrivate);
+	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		sasl, CAMEL_TYPE_SASL_POPB4SMTP, CamelSaslPOPB4SMTPPrivate);
 }

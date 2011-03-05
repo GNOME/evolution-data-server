@@ -358,7 +358,8 @@ e_cal_backend_class_init (ECalBackendClass *class)
 static void
 e_cal_backend_init (ECalBackend *backend)
 {
-	backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (backend, E_TYPE_CAL_BACKEND, ECalBackendPrivate);
+	backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		backend, E_TYPE_CAL_BACKEND, ECalBackendPrivate);
 
 	backend->priv->clients = NULL;
 	backend->priv->clients_mutex = g_mutex_new ();

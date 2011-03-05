@@ -482,7 +482,9 @@ e_category_completion_class_init (ECategoryCompletionClass *class)
 static void
 e_category_completion_init (ECategoryCompletion *category_completion)
 {
-	category_completion->priv = G_TYPE_INSTANCE_GET_PRIVATE (category_completion, E_TYPE_CATEGORY_COMPLETION, ECategoryCompletionPrivate);
+	category_completion->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		category_completion, E_TYPE_CATEGORY_COMPLETION,
+		ECategoryCompletionPrivate);
 }
 
 /**

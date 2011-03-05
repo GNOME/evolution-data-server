@@ -249,7 +249,9 @@ camel_filter_driver_init (CamelFilterDriver *filter_driver)
 {
 	gint ii;
 
-	filter_driver->priv = G_TYPE_INSTANCE_GET_PRIVATE (filter_driver, CAMEL_TYPE_FILTER_DRIVER, CamelFilterDriverPrivate);
+	filter_driver->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		filter_driver, CAMEL_TYPE_FILTER_DRIVER,
+		CamelFilterDriverPrivate);
 
 	camel_dlist_init (&filter_driver->priv->rules);
 

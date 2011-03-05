@@ -915,7 +915,8 @@ camel_mime_part_init (CamelMimePart *mime_part)
 {
 	CamelDataWrapper *data_wrapper;
 
-	mime_part->priv = G_TYPE_INSTANCE_GET_PRIVATE (mime_part, CAMEL_TYPE_MIME_PART, CamelMimePartPrivate);
+	mime_part->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		mime_part, CAMEL_TYPE_MIME_PART, CamelMimePartPrivate);
 	mime_part->priv->encoding = CAMEL_TRANSFER_ENCODING_DEFAULT;
 
 	data_wrapper = CAMEL_DATA_WRAPPER (mime_part);

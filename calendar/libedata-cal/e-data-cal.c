@@ -1207,7 +1207,8 @@ e_data_cal_init (EDataCal *ecal)
 {
 	EGdbusCal *gdbus_object;
 
-	ecal->priv = G_TYPE_INSTANCE_GET_PRIVATE (ecal, E_TYPE_DATA_CAL, EDataCalPrivate);
+	ecal->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		ecal, E_TYPE_DATA_CAL, EDataCalPrivate);
 
 	ecal->priv->gdbus_object = e_gdbus_cal_stub_new ();
 

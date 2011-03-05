@@ -1313,7 +1313,8 @@ camel_tcp_stream_raw_init (CamelTcpStreamRaw *stream)
 {
 	CamelTcpStreamRawPrivate *priv;
 
-	stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (stream, CAMEL_TYPE_TCP_STREAM_RAW, CamelTcpStreamRawPrivate);
+	stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		stream, CAMEL_TYPE_TCP_STREAM_RAW, CamelTcpStreamRawPrivate);
 	priv = stream->priv;
 
 	priv->sockfd = NULL;

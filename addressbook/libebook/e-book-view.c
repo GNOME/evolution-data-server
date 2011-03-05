@@ -266,7 +266,8 @@ e_book_view_stop (EBookView *book_view)
 static void
 e_book_view_init (EBookView *book_view)
 {
-	book_view->priv = G_TYPE_INSTANCE_GET_PRIVATE (book_view, E_TYPE_BOOK_VIEW, EBookViewPrivate);
+	book_view->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		book_view, E_TYPE_BOOK_VIEW, EBookViewPrivate);
 	book_view->priv->gdbus_bookview = NULL;
 	book_view->priv->book = NULL;
 	book_view->priv->running = FALSE;

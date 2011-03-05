@@ -425,7 +425,8 @@ camel_session_class_init (CamelSessionClass *class)
 static void
 camel_session_init (CamelSession *session)
 {
-	session->priv = G_TYPE_INSTANCE_GET_PRIVATE (session, CAMEL_TYPE_SESSION, CamelSessionPrivate);
+	session->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		session, CAMEL_TYPE_SESSION, CamelSessionPrivate);
 	session->priv->lock = g_mutex_new ();
 	session->priv->thread_lock = g_mutex_new ();
 	session->priv->thread_id = 1;

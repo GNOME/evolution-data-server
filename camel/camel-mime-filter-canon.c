@@ -189,7 +189,9 @@ camel_mime_filter_canon_class_init (CamelMimeFilterCanonClass *class)
 static void
 camel_mime_filter_canon_init (CamelMimeFilterCanon *filter)
 {
-	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (filter, CAMEL_TYPE_MIME_FILTER_CANON, CamelMimeFilterCanonPrivate);
+	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		filter, CAMEL_TYPE_MIME_FILTER_CANON,
+		CamelMimeFilterCanonPrivate);
 }
 
 /**

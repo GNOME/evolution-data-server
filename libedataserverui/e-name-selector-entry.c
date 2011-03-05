@@ -2822,7 +2822,9 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 	GtkCellRenderer *renderer;
 	GConfClient *gconf;
 
-	name_selector_entry->priv = G_TYPE_INSTANCE_GET_PRIVATE (name_selector_entry, E_TYPE_NAME_SELECTOR_ENTRY, ENameSelectorEntryPrivate);
+	name_selector_entry->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		name_selector_entry, E_TYPE_NAME_SELECTOR_ENTRY,
+		ENameSelectorEntryPrivate);
 
 	g_queue_init (&name_selector_entry->priv->cancellables);
 

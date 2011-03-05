@@ -224,7 +224,8 @@ e_proxy_class_init (EProxyClass *class)
 static void
 e_proxy_init (EProxy *proxy)
 {
-	proxy->priv = G_TYPE_INSTANCE_GET_PRIVATE (proxy, E_TYPE_PROXY, EProxyPrivate);
+	proxy->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		proxy, E_TYPE_PROXY, EProxyPrivate);
 
 	proxy->priv->type = PROXY_TYPE_SYSTEM;
 }

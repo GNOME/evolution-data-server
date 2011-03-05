@@ -1641,7 +1641,8 @@ camel_folder_class_init (CamelFolderClass *class)
 static void
 camel_folder_init (CamelFolder *folder)
 {
-	folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (folder, CAMEL_TYPE_FOLDER, CamelFolderPrivate);
+	folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		folder, CAMEL_TYPE_FOLDER, CamelFolderPrivate);
 	folder->priv->frozen = 0;
 	folder->priv->changed_frozen = camel_folder_change_info_new ();
 

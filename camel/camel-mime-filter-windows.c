@@ -134,7 +134,9 @@ camel_mime_filter_windows_class_init (CamelMimeFilterWindowsClass *class)
 static void
 camel_mime_filter_windows_init (CamelMimeFilterWindows *filter)
 {
-	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (filter, CAMEL_TYPE_MIME_FILTER_WINDOWS, CamelMimeFilterWindowsPrivate);
+	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		filter, CAMEL_TYPE_MIME_FILTER_WINDOWS,
+		CamelMimeFilterWindowsPrivate);
 }
 
 /**

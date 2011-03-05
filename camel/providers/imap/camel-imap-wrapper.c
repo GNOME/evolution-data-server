@@ -144,7 +144,9 @@ camel_imap_wrapper_class_init (CamelImapWrapperClass *class)
 static void
 camel_imap_wrapper_init (CamelImapWrapper *imap_wrapper)
 {
-	imap_wrapper->priv = G_TYPE_INSTANCE_GET_PRIVATE (imap_wrapper, CAMEL_TYPE_IMAP_WRAPPER, CamelImapWrapperPrivate);
+	imap_wrapper->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		imap_wrapper, CAMEL_TYPE_IMAP_WRAPPER,
+		CamelImapWrapperPrivate);
 	imap_wrapper->priv->lock = g_mutex_new ();
 }
 

@@ -175,7 +175,9 @@ camel_mime_filter_linewrap_class_init (CamelMimeFilterLinewrapClass *class)
 static void
 camel_mime_filter_linewrap_init (CamelMimeFilterLinewrap *filter)
 {
-	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (filter, CAMEL_TYPE_MIME_FILTER_LINEWRAP, CamelMimeFilterLinewrapPrivate);
+	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		filter, CAMEL_TYPE_MIME_FILTER_LINEWRAP,
+		CamelMimeFilterLinewrapPrivate);
 }
 
 CamelMimeFilter *

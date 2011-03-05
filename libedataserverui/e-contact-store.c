@@ -176,7 +176,8 @@ e_contact_store_init (EContactStore *contact_store)
 
 	contact_sources = g_array_new (FALSE, FALSE, sizeof (ContactSource));
 
-	contact_store->priv = G_TYPE_INSTANCE_GET_PRIVATE (contact_store, E_TYPE_CONTACT_STORE, EContactStorePrivate);
+	contact_store->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		contact_store, E_TYPE_CONTACT_STORE, EContactStorePrivate);
 	contact_store->priv->stamp = g_random_int ();
 	contact_store->priv->contact_sources = contact_sources;
 }

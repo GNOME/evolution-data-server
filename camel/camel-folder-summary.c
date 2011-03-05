@@ -911,7 +911,8 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *class)
 static void
 camel_folder_summary_init (CamelFolderSummary *summary)
 {
-	summary->priv = G_TYPE_INSTANCE_GET_PRIVATE (summary, CAMEL_TYPE_FOLDER_SUMMARY, CamelFolderSummaryPrivate);
+	summary->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		summary, CAMEL_TYPE_FOLDER_SUMMARY, CamelFolderSummaryPrivate);
 
 	summary->priv->filter_charset = g_hash_table_new (
 		camel_strcase_hash, camel_strcase_equal);

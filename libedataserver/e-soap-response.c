@@ -49,7 +49,8 @@ e_soap_response_class_init (ESoapResponseClass *e_soap_response_class)
 static void
 e_soap_response_init (ESoapResponse *response)
 {
-	response->priv = G_TYPE_INSTANCE_GET_PRIVATE (response, E_TYPE_SOAP_RESPONSE, ESoapResponsePrivate);
+	response->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		response, E_TYPE_SOAP_RESPONSE, ESoapResponsePrivate);
 	response->priv->xmldoc = xmlNewDoc ((const xmlChar *)"1.0");
 }
 

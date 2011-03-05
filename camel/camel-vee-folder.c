@@ -1966,7 +1966,8 @@ camel_vee_folder_init (CamelVeeFolder *vee_folder)
 {
 	CamelFolder *folder = CAMEL_FOLDER (vee_folder);
 
-	vee_folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (vee_folder, CAMEL_TYPE_VEE_FOLDER, CamelVeeFolderPrivate);
+	vee_folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		vee_folder, CAMEL_TYPE_VEE_FOLDER, CamelVeeFolderPrivate);
 
 	folder->folder_flags |= (CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |
 				 CAMEL_FOLDER_HAS_SEARCH_CAPABILITY);

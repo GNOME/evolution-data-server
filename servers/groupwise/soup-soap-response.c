@@ -49,7 +49,8 @@ soup_soap_response_class_init (SoupSoapResponseClass *soup_soap_response_class)
 static void
 soup_soap_response_init (SoupSoapResponse *response)
 {
-	response->priv = G_TYPE_INSTANCE_GET_PRIVATE (response, SOUP_TYPE_SOAP_RESPONSE, SoupSoapResponsePrivate);
+	response->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		response, SOUP_TYPE_SOAP_RESPONSE, SoupSoapResponsePrivate);
 	response->priv->xmldoc = xmlNewDoc ((const xmlChar *)"1.0");
 }
 

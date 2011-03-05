@@ -761,7 +761,8 @@ camel_cipher_context_class_init (CamelCipherContextClass *class)
 static void
 camel_cipher_context_init (CamelCipherContext *context)
 {
-	context->priv = G_TYPE_INSTANCE_GET_PRIVATE (context, CAMEL_TYPE_CIPHER_CONTEXT, CamelCipherContextPrivate);
+	context->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		context, CAMEL_TYPE_CIPHER_CONTEXT, CamelCipherContextPrivate);
 	context->priv->lock = g_mutex_new ();
 }
 

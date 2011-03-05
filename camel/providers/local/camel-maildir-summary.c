@@ -116,7 +116,9 @@ camel_maildir_summary_init (CamelMaildirSummary *maildir_summary)
 
 	folder_summary = CAMEL_FOLDER_SUMMARY (maildir_summary);
 
-	maildir_summary->priv = G_TYPE_INSTANCE_GET_PRIVATE (maildir_summary, CAMEL_TYPE_MAILDIR_SUMMARY, CamelMaildirSummaryPrivate);
+	maildir_summary->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		maildir_summary, CAMEL_TYPE_MAILDIR_SUMMARY,
+		CamelMaildirSummaryPrivate);
 
 	/* set unique file version */
 	folder_summary->version += CAMEL_MAILDIR_SUMMARY_VERSION;

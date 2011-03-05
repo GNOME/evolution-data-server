@@ -70,7 +70,9 @@ G_DEFINE_TYPE (ENameSelectorModel, e_name_selector_model, G_TYPE_OBJECT)
 static void
 e_name_selector_model_init (ENameSelectorModel *name_selector_model)
 {
-	name_selector_model->priv = G_TYPE_INSTANCE_GET_PRIVATE (name_selector_model, E_TYPE_NAME_SELECTOR_MODEL, ENameSelectorModelPrivate);
+	name_selector_model->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		name_selector_model, E_TYPE_NAME_SELECTOR_MODEL,
+		ENameSelectorModelPrivate);
 	name_selector_model->priv->sections       = g_array_new (FALSE, FALSE, sizeof (Section));
 	name_selector_model->priv->contact_store  = e_contact_store_new ();
 

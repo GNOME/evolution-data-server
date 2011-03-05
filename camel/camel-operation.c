@@ -203,7 +203,8 @@ camel_operation_class_init (CamelOperationClass *class)
 static void
 camel_operation_init (CamelOperation *operation)
 {
-	operation->priv = G_TYPE_INSTANCE_GET_PRIVATE (operation, CAMEL_TYPE_OPERATION, CamelOperationPrivate);
+	operation->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		operation, CAMEL_TYPE_OPERATION, CamelOperationPrivate);
 
 	g_queue_init (&operation->priv->status_stack);
 	operation->priv->cancel_port = camel_msgport_new ();

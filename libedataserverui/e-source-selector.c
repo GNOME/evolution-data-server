@@ -1299,7 +1299,8 @@ e_source_selector_init (ESourceSelector *selector)
 	GtkTreeStore *tree_store;
 	GtkTreeView *tree_view;
 
-	selector->priv = G_TYPE_INSTANCE_GET_PRIVATE (selector, E_TYPE_SOURCE_SELECTOR, ESourceSelectorPrivate);
+	selector->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		selector, E_TYPE_SOURCE_SELECTOR, ESourceSelectorPrivate);
 	priv = selector->priv;
 
 	tree_view = GTK_TREE_VIEW (selector);

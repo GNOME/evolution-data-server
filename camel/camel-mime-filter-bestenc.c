@@ -211,7 +211,9 @@ camel_mime_filter_bestenc_class_init (CamelMimeFilterBestencClass *class)
 static void
 camel_mime_filter_bestenc_init (CamelMimeFilterBestenc *filter)
 {
-	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (filter, CAMEL_TYPE_MIME_FILTER_BESTENC, CamelMimeFilterBestencPrivate);
+	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		filter, CAMEL_TYPE_MIME_FILTER_BESTENC,
+		CamelMimeFilterBestencPrivate);
 
 	mime_filter_bestenc_reset (CAMEL_MIME_FILTER (filter));
 }

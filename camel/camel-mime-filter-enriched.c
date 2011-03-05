@@ -545,7 +545,9 @@ camel_mime_filter_enriched_class_init (CamelMimeFilterEnrichedClass *class)
 static void
 camel_mime_filter_enriched_init (CamelMimeFilterEnriched *filter)
 {
-	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (filter, CAMEL_TYPE_MIME_FILTER_ENRICHED, CamelMimeFilterEnrichedPrivate);
+	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		filter, CAMEL_TYPE_MIME_FILTER_ENRICHED,
+		CamelMimeFilterEnrichedPrivate);
 }
 
 /**

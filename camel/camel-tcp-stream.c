@@ -67,7 +67,8 @@ camel_tcp_stream_class_init (CamelTcpStreamClass *class)
 static void
 camel_tcp_stream_init (CamelTcpStream *tcp_stream)
 {
-	tcp_stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (tcp_stream, CAMEL_TYPE_TCP_STREAM, CamelTcpStreamPrivate);
+	tcp_stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		tcp_stream, CAMEL_TYPE_TCP_STREAM, CamelTcpStreamPrivate);
 }
 
 /**

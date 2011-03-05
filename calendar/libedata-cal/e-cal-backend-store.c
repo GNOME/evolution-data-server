@@ -124,7 +124,8 @@ e_cal_backend_store_class_init (ECalBackendStoreClass *class)
 static void
 e_cal_backend_store_init (ECalBackendStore *store)
 {
-	store->priv = G_TYPE_INSTANCE_GET_PRIVATE (store, E_TYPE_CAL_BACKEND_STORE, ECalBackendStorePrivate);
+	store->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		store, E_TYPE_CAL_BACKEND_STORE, ECalBackendStorePrivate);
 	store->priv->intervaltree = e_intervaltree_new ();
 }
 

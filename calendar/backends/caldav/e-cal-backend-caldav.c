@@ -4639,7 +4639,8 @@ e_cal_backend_caldav_finalize (GObject *object)
 static void
 e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 {
-	cbdav->priv = G_TYPE_INSTANCE_GET_PRIVATE (cbdav, E_TYPE_CAL_BACKEND_CALDAV, ECalBackendCalDAVPrivate);
+	cbdav->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		cbdav, E_TYPE_CAL_BACKEND_CALDAV, ECalBackendCalDAVPrivate);
 
 	cbdav->priv->session = soup_session_sync_new ();
 	g_object_set (cbdav->priv->session, SOUP_SESSION_TIMEOUT, 90, NULL);

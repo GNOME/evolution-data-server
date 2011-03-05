@@ -110,5 +110,6 @@ camel_sasl_login_class_init (CamelSaslLoginClass *class)
 static void
 camel_sasl_login_init (CamelSaslLogin *sasl)
 {
-	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (sasl, CAMEL_TYPE_SASL_LOGIN, CamelSaslLoginPrivate);
+	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		sasl, CAMEL_TYPE_SASL_LOGIN, CamelSaslLoginPrivate);
 }

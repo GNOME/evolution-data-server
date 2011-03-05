@@ -179,7 +179,8 @@ e_book_backend_class_init (EBookBackendClass *class)
 static void
 e_book_backend_init (EBookBackend *backend)
 {
-	backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (backend, E_TYPE_BOOK_BACKEND, EBookBackendPrivate);
+	backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		backend, E_TYPE_BOOK_BACKEND, EBookBackendPrivate);
 
 	backend->priv->views = e_list_new (
 		(EListCopyFunc) NULL, (EListFreeFunc) NULL, NULL);

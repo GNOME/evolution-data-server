@@ -390,7 +390,8 @@ e_data_cal_view_get_property (GObject *object, guint property_id, GValue *value,
 static void
 e_data_cal_view_init (EDataCalView *query)
 {
-	EDataCalViewPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (query, E_DATA_CAL_VIEW_TYPE, EDataCalViewPrivate);
+	EDataCalViewPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		query, E_DATA_CAL_VIEW_TYPE, EDataCalViewPrivate);
 
 	query->priv = priv;
 

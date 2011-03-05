@@ -360,7 +360,8 @@ camel_object_class_init (CamelObjectClass *class)
 static void
 camel_object_init (CamelObject *object)
 {
-	object->priv = G_TYPE_INSTANCE_GET_PRIVATE (object, CAMEL_TYPE_OBJECT, CamelObjectPrivate);
+	object->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		object, CAMEL_TYPE_OBJECT, CamelObjectPrivate);
 }
 
 GQuark

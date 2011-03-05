@@ -248,7 +248,8 @@ e_book_class_init (EBookClass *e_book_class)
 static void
 e_book_init (EBook *book)
 {
-	book->priv = G_TYPE_INSTANCE_GET_PRIVATE (book, E_TYPE_BOOK, EBookPrivate);
+	book->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		book, E_TYPE_BOOK, EBookPrivate);
 
 	LOCK_FACTORY ();
 	active_books++;

@@ -235,7 +235,9 @@ e_tree_model_generator_tree_model_init (GtkTreeModelIface *iface)
 static void
 e_tree_model_generator_init (ETreeModelGenerator *tree_model_generator)
 {
-	tree_model_generator->priv = G_TYPE_INSTANCE_GET_PRIVATE (tree_model_generator, E_TYPE_TREE_MODEL_GENERATOR, ETreeModelGeneratorPrivate);
+	tree_model_generator->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		tree_model_generator, E_TYPE_TREE_MODEL_GENERATOR,
+		ETreeModelGeneratorPrivate);
 
 	tree_model_generator->priv->stamp      = g_random_int ();
 	tree_model_generator->priv->root_nodes = g_array_new (FALSE, FALSE, sizeof (Node));

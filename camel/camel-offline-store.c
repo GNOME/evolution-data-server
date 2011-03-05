@@ -71,7 +71,8 @@ camel_offline_store_class_init (CamelOfflineStoreClass *class)
 static void
 camel_offline_store_init (CamelOfflineStore *store)
 {
-	store->priv = G_TYPE_INSTANCE_GET_PRIVATE (store, CAMEL_TYPE_OFFLINE_STORE, CamelOfflineStorePrivate);
+	store->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		store, CAMEL_TYPE_OFFLINE_STORE, CamelOfflineStorePrivate);
 	store->priv->online = TRUE;
 }
 

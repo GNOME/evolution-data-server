@@ -152,7 +152,9 @@ e_destination_store_tree_model_init (GtkTreeModelIface *iface)
 static void
 e_destination_store_init (EDestinationStore *destination_store)
 {
-	destination_store->priv = G_TYPE_INSTANCE_GET_PRIVATE (destination_store, E_TYPE_DESTINATION_STORE, EDestinationStorePrivate);
+	destination_store->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		destination_store, E_TYPE_DESTINATION_STORE,
+		EDestinationStorePrivate);
 	destination_store->priv->destinations = g_ptr_array_new ();
 	destination_store->priv->stamp = g_random_int ();
 }

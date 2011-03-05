@@ -74,7 +74,8 @@ camel_index_class_init (CamelIndexClass *class)
 static void
 camel_index_init (CamelIndex *index)
 {
-	index->priv = G_TYPE_INSTANCE_GET_PRIVATE (index, CAMEL_TYPE_INDEX, CamelIndexPrivate);
+	index->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+		index, CAMEL_TYPE_INDEX, CamelIndexPrivate);
 	index->version = CAMEL_INDEX_VERSION;
 }
 
