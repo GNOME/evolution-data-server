@@ -1,3 +1,39 @@
+Evolution-Data-Server 2.91.91 2011-03-07
+----------------------------------------
+
+Bug Fixes:
+	Bug 614480 - Avoid using G_TYPE_INSTANCE_GET_PRIVATE repeatedly
+	             (Milan Crha)
+	Bug 617763 - Cannot create events on Yahoo through CalDAV (Milan Crha)
+	Bug 633156 - Runtime warning when creating direct subfolder of
+	             On This Computer (Milan Crha)
+	Bug 639201 - Crash on startup - pop3_get_message,
+	             camel_pop3_delete_old (Milan Crha)
+	Bug 640829 - Can drop text/plain message lines in message preview
+	             (Milan Crha)
+	Bug 643095 - Crash when opening invalid multipart/signed message
+	             (Milan Crha)
+
+Other Changes:
+	* ECalRecur: Convert intervals < 1 into the default (1)
+	  (Carlos Martín Nieto)
+	* e_source_copy() may copy also relative_uri (Milan Crha)
+	* Modularize e-addressbook-factory migration. (Matthew Barnes)
+	* Modularize e-calendar-factory migration. (Matthew Barnes)
+	* Bump BASE_VERSION to 3.0. (Matthew Barnes)
+
+Translations:
+	Khaled Hosny (ar)
+	David Planella (ca)
+	Bruno Brouard (fr)
+	Luca Ferretti (it)
+	Rudolfs Mazurs (lv)
+	Duarte Loreto (pt)
+	Yuri Myasoedov (ru)
+	Daniel Nylander (sv)
+	Wei Li (zh_CN)
+
+
 Evolution-Data-Server 2.91.90 2011-02-21
 ---------------------------------------
 
