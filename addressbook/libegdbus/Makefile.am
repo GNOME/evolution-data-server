@@ -14,6 +14,7 @@ noinst_LTLIBRARIES = libegdbus-book.la
 libegdbus_book_la_CPPFLAGS =			\
 	$(AM_CPPFLAGS)				\
 	-DG_LOG_DOMAIN=\"libegdbus-book\"	\
+	-I$(top_srcdir)				\
 	-I$(top_srcdir)/addressbook		\
 	$(E_DATA_SERVER_CFLAGS)
 

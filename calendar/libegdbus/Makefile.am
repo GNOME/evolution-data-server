@@ -14,6 +14,7 @@ noinst_LTLIBRARIES = libegdbus-cal.la
 libegdbus_cal_la_CPPFLAGS =			\
 	$(AM_CPPFLAGS)				\
 	-DG_LOG_DOMAIN=\"libegdbus-cal\"	\
+	-I$(top_srcdir)				\
 	-I$(top_srcdir)/calendar		\
 	$(GNOME_PLATFORM_CFLAGS)
 
