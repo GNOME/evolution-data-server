@@ -130,7 +130,7 @@ pkgconfig_DATA = libedataserverui-3.0.pc
 BUILT_SOURCES = $(MARSHAL_GENERATED)
 
 EXTRA_DIST = 						\
-	e_passwords_dist \
+	$(e_passwords_dist) \
 	e-data-server-ui-marshal.list			\
 	$(pkgconfig_DATA:-3.0.pc=.pc.in)
 
