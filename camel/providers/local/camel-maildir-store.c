@@ -179,12 +179,12 @@ maildir_store_get_folder_sync (CamelStore *store,
 
 	if (!g_ascii_strcasecmp (folder_name, "Inbox")) {
 		/* special case "." (aka inbox), may need to be created */
-		if (g_stat (tmp, &st) != 0 || !S_ISDIR (st.st_mode)
-		    || g_stat (cur, &st) != 0 || !S_ISDIR (st.st_mode)
-		    || g_stat (new, &st) != 0 || !S_ISDIR (st.st_mode)) {
-			if (mkdir (tmp, 0700) != 0
-			    || mkdir (cur, 0700) != 0
-			    || mkdir (new, 0700) != 0) {
+		if (g_stat(tmp, &st) != 0 || !S_ISDIR(st.st_mode)
+		    || g_stat (cur, &st) != 0 || !S_ISDIR(st.st_mode)
+		    || g_stat (new, &st) != 0 || !S_ISDIR(st.st_mode)) {
+			if (g_mkdir (tmp, 0700) != 0
+			    || g_mkdir (cur, 0700) != 0
+			    || g_mkdir (new, 0700) != 0) {
 				g_set_error (
 					error, G_IO_ERROR,
 					g_io_error_from_errno (errno),
@@ -212,10 +212,10 @@ maildir_store_get_folder_sync (CamelStore *store,
 				_("Cannot get folder '%s': folder does not exist."),
 				folder_name);
 		} else {
-			if (mkdir (name, 0700) != 0
-			    || mkdir (tmp, 0700) != 0
-			    || mkdir (cur, 0700) != 0
-			    || mkdir (new, 0700) != 0) {
+			if (g_mkdir (name, 0700) != 0
+			    || g_mkdir (tmp, 0700) != 0
+			    || g_mkdir (cur, 0700) != 0
+			    || g_mkdir (new, 0700) != 0) {
 				g_set_error (
 					error, G_IO_ERROR,
 					g_io_error_from_errno (errno),
@@ -323,10 +323,10 @@ maildir_store_delete_folder_sync (CamelStore *store,
 
 		if (err != 0) {
 			/* easier just to mkdir all (and let them fail), than remember what we got to */
-			mkdir (name, 0700);
-			mkdir (cur, 0700);
-			mkdir (new, 0700);
-			mkdir (tmp, 0700);
+			g_mkdir (name, 0700);
+			g_mkdir (cur, 0700);
+			g_mkdir (new, 0700);
+			g_mkdir (tmp, 0700);
 			g_set_error (
 				error, G_IO_ERROR,
 				g_io_error_from_errno (err),

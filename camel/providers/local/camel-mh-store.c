@@ -476,7 +476,7 @@ mh_store_get_folder_sync (CamelStore *store,
 			return NULL;
 		}
 
-		if (mkdir (name, 0777) != 0) {
+		if (g_mkdir (name, 0777) != 0) {
 			g_set_error (
 				error, G_IO_ERROR,
 				g_io_error_from_errno (errno),

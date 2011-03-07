@@ -31,6 +31,11 @@
 #include <string.h>
 #include <sys/types.h>
 
+#ifndef _WIN32
+#include <netdb.h>
+#include <sys/socket.h>
+#endif
+
 #include <gio/gio.h>
 #include <glib/gi18n-lib.h>
 
