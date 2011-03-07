@@ -317,8 +317,17 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 	gconf-2.0 >= gconf_minimum_version
 	libxml-2.0 >= libxml_minimum_version
 	libsoup-2.4 >= libsoup_minimum_version
-	libgdata >= libgdata_minimum_version
-	gnome-keyring-1 >= gnome_keyring_minimum_version])
+	libgdata >= libgdata_minimum_version])
+
+
+if test x$os_win32 = xno; then
+  dnl ***********************************
+  dnl Check for GNOME Keyring.
+  dnl ***********************************
+  PKG_CHECK_MODULES(GNOME_KEYRING,
+	[gnome-keyring-1 >= gnome_keyring_minimum_version])
+fi
+
 
 LIBICAL_REQUIRED=libical_minimum_version
 AC_SUBST(LIBICAL_REQUIRED)
@@ -1188,7 +1197,7 @@ AC_SUBST(E_DATA_SERVER_LIBS)
 dnl ******************************
 dnl libedataserverui
 dnl ******************************
-E_DATA_SERVER_UI_DEPS="gtk+-3.0 libxml-2.0 gconf-2.0 gnome-keyring-1"
+E_DATA_SERVER_UI_DEPS="gtk+-3.0 libxml-2.0 gconf-2.0"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, , )
 AC_SUBST(E_DATA_SERVER_UI_CFLAGS)
