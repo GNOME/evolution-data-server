@@ -501,7 +501,11 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 	const gchar *root_dir_path;
 	gchar *tmp, *statepath;
 #ifndef G_OS_WIN32
+#ifdef __GLIBC__
+	gchar *folder_path;
+#else
 	gchar folder_path[PATH_MAX];
+#endif
 	struct stat st;
 #endif
 	gint forceindex, len;
@@ -549,12 +553,27 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 		camel_local_folder_set_index_body (lf, TRUE);
 		camel_object_state_write (CAMEL_OBJECT (lf));
 	}
+
+	/* XXX Canonicalizing the folder path portably is a messy affair.
+	 *     The proposed GLib function in [1] would be useful here.
+	 *
+	 *     [1] https://bugzilla.gnome.org/show_bug.cgi?id=111848
+	 */
 #ifndef G_OS_WIN32
 	/* follow any symlinks to the mailbox */
 	if (g_lstat (lf->folder_path, &st) != -1 && S_ISLNK (st.st_mode) &&
+#ifdef __GLIBC__
+	    (folder_path = realpath (lf->folder_path, NULL)) != NULL) {
+#else
 	    realpath (lf->folder_path, folder_path) != NULL) {
+#endif
 		g_free (lf->folder_path);
 		lf->folder_path = g_strdup (folder_path);
+#ifdef __GLIBC__
+		/* Not a typo.  Use free() here, not g_free().
+		 * The path string was allocated by realpath(). */
+		free (folder_path);
+#endif
 	}
 #endif
 	lf->changes = camel_folder_change_info_new ();
