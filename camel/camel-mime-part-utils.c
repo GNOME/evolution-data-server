@@ -49,8 +49,7 @@
 #include "camel-stream-buffer.h"
 #include "camel-utf8.h"
 
-#define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))
-	       #include <stdio.h>*/
+#define d(x) /* (printf("%s(%d): ", __FILE__, __LINE__),(x)) */
 
 /* simple data wrapper */
 static gboolean

@@ -1411,11 +1411,11 @@ camel_mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
 	CamelMimePartClass *class;
 	gboolean success;
 
-	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), -1);
-	g_return_val_if_fail (CAMEL_IS_MIME_PARSER (parser), -1);
+	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), FALSE);
+	g_return_val_if_fail (CAMEL_IS_MIME_PARSER (parser), FALSE);
 
 	class = CAMEL_MIME_PART_GET_CLASS (mime_part);
-	g_return_val_if_fail (class->construct_from_parser_sync != NULL, -1);
+	g_return_val_if_fail (class->construct_from_parser_sync != NULL, FALSE);
 
 	success = class->construct_from_parser_sync (
 		mime_part, parser, cancellable, error);

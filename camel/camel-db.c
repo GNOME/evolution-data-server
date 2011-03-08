@@ -359,13 +359,13 @@ cdb_sql_exec (sqlite3 *db,
 
 	d(g_print("Camel SQL Exec:\n%s\n", stmt));
 
-	ret = sqlite3_exec (db, stmt, 0, 0, &errmsg);
+	ret = sqlite3_exec (db, stmt, NULL, NULL, &errmsg);
 	while (ret == SQLITE_BUSY || ret == SQLITE_LOCKED || ret == -1) {
 		if (errmsg) {
 			sqlite3_free (errmsg);
 			errmsg = NULL;
 		}
-		ret = sqlite3_exec (db, stmt, 0, 0, &errmsg);
+		ret = sqlite3_exec (db, stmt, NULL, NULL, &errmsg);
 	}
 
 	if (ret != SQLITE_OK) {

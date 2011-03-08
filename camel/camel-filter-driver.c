@@ -1271,7 +1271,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 
 	source_url = g_filename_to_uri (mbox, NULL, NULL);
 
-	while (camel_mime_parser_step (mp, 0, 0) == CAMEL_MIME_PARSER_STATE_FROM) {
+	while (camel_mime_parser_step (mp, NULL, NULL) == CAMEL_MIME_PARSER_STATE_FROM) {
 		CamelMessageInfo *info;
 		CamelMimeMessage *message;
 		CamelMimePart *mime_part;
@@ -1320,7 +1320,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 		i++;
 
 		/* skip over the FROM_END state */
-		camel_mime_parser_step (mp, 0, 0);
+		camel_mime_parser_step (mp, NULL, NULL);
 
 		camel_message_info_free (info);
 	}

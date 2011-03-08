@@ -876,7 +876,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 			if (!strncmp ((gchar *) status, "SIG_CREATED ", 12)) {
 				/* SIG_CREATED <type> <pubkey algo> <hash algo> <class> <timestamp> <key fpr> */
 				const gchar *str, *p;
-				gint i;
+				gint i = 0;
 
 				str = (const gchar *) status + 12;
 				while (p = strchr (str, ' '), i < 2 && p) {

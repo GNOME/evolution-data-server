@@ -36,7 +36,6 @@
 #include "camel-nntp-folder.h"
 #include "camel-nntp-private.h"
 #include "camel-nntp-store.h"
-#include "camel-nntp-store.h"
 #include "camel-nntp-summary.h"
 
 G_DEFINE_TYPE (CamelNNTPFolder, camel_nntp_folder, CAMEL_TYPE_DISCO_FOLDER)

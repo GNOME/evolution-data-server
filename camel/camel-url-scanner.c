@@ -464,8 +464,6 @@ camel_url_web_end (const gchar *in, const gchar *pos, const gchar *inend, urlmat
 
 #ifdef BUILD_TABLE
 
-#include <stdio.h>
-
 /* got these from rfc1738 */
 #define CHARS_LWSP " \t\n\r"               /* linear whitespace chars */
 #define CHARS_SPECIAL "()<>@,;:\\\".[]"

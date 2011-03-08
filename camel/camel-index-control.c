@@ -13,7 +13,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
-#include <sys/stat.h>
 #include <sys/types.h>
 
 #include "camel-list-utils.h"
@@ -142,7 +141,6 @@ gint main (gint argc, gchar **argv)
 	return 1;
 }
 
-#include <sys/types.h>
 #include <dirent.h>
 #include "camel-stream-null.h"
 #include "camel-stream-filter.h"

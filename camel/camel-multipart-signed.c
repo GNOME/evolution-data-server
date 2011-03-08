@@ -37,13 +37,11 @@
 #include "camel-mime-message.h"
 #include "camel-mime-parser.h"
 #include "camel-mime-part.h"
-#include "camel-mime-part.h"
 #include "camel-multipart-signed.h"
 #include "camel-stream-filter.h"
 #include "camel-stream-mem.h"
 
-#define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))
-	       #include <stdio.h>;*/
+#define d(x) /* (printf("%s(%d): ", __FILE__, __LINE__),(x)) */
 
 G_DEFINE_TYPE (CamelMultipartSigned, camel_multipart_signed, CAMEL_TYPE_MULTIPART)
 

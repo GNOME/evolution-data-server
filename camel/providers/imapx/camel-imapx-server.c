@@ -237,10 +237,10 @@ struct _CamelIMAPXJob {
 
 	void (*start)(CamelIMAPXServer *is, struct _CamelIMAPXJob *job);
 
-	gint noreply:1;		/* dont wait for reply */
+	guint noreply:1;	/* dont wait for reply */
 	guint32 type;		/* operation type */
 	gint pri;		/* the command priority */
-	gshort commands;		/* counts how many commands are outstanding */
+	gshort commands;	/* counts how many commands are outstanding */
 
 	CamelFolder *folder;
 
@@ -4869,8 +4869,6 @@ imapx_parser_thread (gpointer d)
 			pollfds[0].in_flags = PR_POLL_READ;
 			pollfds[1].fd = camel_operation_cancel_prfd (CAMEL_OPERATION (cancellable));
 			pollfds[1].in_flags = PR_POLL_READ;
-
-#include <prio.h>
 
 			res = PR_Poll (pollfds, 2, PR_MillisecondsToInterval (30 * 1000));
 			if (res == -1)

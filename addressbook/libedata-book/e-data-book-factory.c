@@ -32,7 +32,6 @@
 #include "e-data-book-factory.h"
 #include "e-data-book.h"
 #include "e-book-backend.h"
-#include "e-book-backend-factory.h"
 
 #include "e-gdbus-egdbusbookfactory.h"
 

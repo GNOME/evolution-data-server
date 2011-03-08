@@ -807,7 +807,7 @@ smime_context_sign_sync (CamelCipherContext *context,
 		(CamelSMIMEContext *)context, userid, &sechash,
 		((CamelSMIMEContext *)context)->priv->sign_mode == CAMEL_SMIME_SIGN_CLEARSIGN, error);
 	if (cmsg == NULL)
-		return -1;
+		return FALSE;
 
 	ostream = camel_stream_mem_new ();
 

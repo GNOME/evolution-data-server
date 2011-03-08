@@ -637,7 +637,7 @@ e_data_cal_view_notify_objects_added (EDataCalView *view, const GList *objects)
 void
 e_data_cal_view_notify_objects_added_1 (EDataCalView *view, const gchar *object)
 {
-	GList l = {0,};
+	GList l = {NULL,};
 
 	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
 	g_return_if_fail (object);
@@ -685,7 +685,7 @@ e_data_cal_view_notify_objects_modified (EDataCalView *view, const GList *object
 void
 e_data_cal_view_notify_objects_modified_1 (EDataCalView *view, const gchar *object)
 {
-	GList l = {0,};
+	GList l = {NULL,};
 
 	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
 	g_return_if_fail (object);
@@ -734,7 +734,7 @@ e_data_cal_view_notify_objects_removed (EDataCalView *view, const GList *ids)
 void
 e_data_cal_view_notify_objects_removed_1 (EDataCalView *view, const ECalComponentId *id)
 {
-	GList l = {0,};
+	GList l = {NULL,};
 
 	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
 	g_return_if_fail (id);

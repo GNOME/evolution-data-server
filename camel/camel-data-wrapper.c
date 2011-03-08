@@ -903,11 +903,11 @@ camel_data_wrapper_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
 	CamelDataWrapperClass *class;
 	gboolean success;
 
-	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
-	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), FALSE);
+	g_return_val_if_fail (CAMEL_IS_STREAM (stream), FALSE);
 
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
-	g_return_val_if_fail (class->construct_from_stream_sync != NULL, -1);
+	g_return_val_if_fail (class->construct_from_stream_sync != NULL, FALSE);
 
 	success = class->construct_from_stream_sync (
 		data_wrapper, stream, cancellable, error);

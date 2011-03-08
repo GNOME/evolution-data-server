@@ -38,7 +38,6 @@
 #include "camel-vee-store.h"	/* for open flags */
 #include "camel-vee-summary.h"
 #include "camel-string-utils.h"
-#include "camel-vee-folder.h"
 #include "camel-vtrash-folder.h"
 
 #define d(x)

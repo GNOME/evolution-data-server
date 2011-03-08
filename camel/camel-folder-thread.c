@@ -44,7 +44,6 @@
 
 #ifdef TIMEIT
 #include <sys/time.h>
-#include <unistd.h>
 #endif
 
 static void
