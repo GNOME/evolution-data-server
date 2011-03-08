@@ -321,23 +321,26 @@ camel_file_util_decode_string (FILE *in, gchar **str)
 gint
 camel_file_util_encode_fixed_string (FILE *out, const gchar *str, gsize len)
 {
-	gchar buf[len];
-
-	/* Don't allow empty strings to be written */
-	if (len < 1)
-		return -1;
+	gint retval = -1;
 
 	/* Max size is 64K */
 	if (len > 65536)
 		len = 65536;
 
-	memset (buf, 0x00, len);
-	g_strlcpy (buf, str, len);
+	/* Don't allow empty strings to be written. */
+	if (len > 0) {
+		gchar *buf;
 
-	if (fwrite (buf, len, 1, out) == len)
-		return 0;
+		buf = g_malloc0 (len);
+		g_strlcpy (buf, str, len);
 
-	return -1;
+		if (fwrite (buf, len, 1, out) == len)
+			retval = 0;
+
+		g_free (buf);
+	}
+
+	return retval;
 }
 
 /**
