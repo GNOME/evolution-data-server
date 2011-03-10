@@ -40,8 +40,7 @@
 extern CamelServiceAuthType camel_pop3_password_authtype;
 extern CamelServiceAuthType camel_pop3_apop_authtype;
 
-extern gint camel_verbose_debug;
-#define dd(x) (camel_verbose_debug?(x):0)
+#define dd(x) (camel_debug ("pop3")?(x):0)
 
 static void get_capabilities (CamelPOP3Engine *pe);
 

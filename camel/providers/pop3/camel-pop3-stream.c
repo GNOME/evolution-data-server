@@ -33,8 +33,7 @@
 
 #include "camel-pop3-stream.h"
 
-extern gint camel_verbose_debug;
-#define dd(x) (camel_verbose_debug?(x):0)
+#define dd(x) (camel_debug ("pop3")?(x):0)
 
 #define CAMEL_POP3_STREAM_SIZE (4096)
 #define CAMEL_POP3_STREAM_LINE (1024) /* maximum line size */
