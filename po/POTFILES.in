@@ -193,5 +193,6 @@ libedataserverui/e-name-selector-dialog.c
 libedataserverui/e-name-selector-entry.c
 libedataserverui/e-name-selector-list.c
 libedataserverui/e-passwords.c
+libedataserverui/e-passwords-win32.c
 libedataserverui/e-source-selector-dialog.c
 servers/groupwise/e-gw-connection.c
