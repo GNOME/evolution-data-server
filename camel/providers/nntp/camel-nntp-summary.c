@@ -232,9 +232,14 @@ add_range_xover (CamelNNTPSummary *cns,
 		cancellable, _("%s: Scanning new messages"),
 		((CamelService *)store)->url->host);
 
-	ret = camel_nntp_raw_command_auth (store, cancellable, error, &line, "over %r", low, high);
-	if (ret != 224)
+	if ((store->capabilities & NNTP_CAPABILITY_OVER) != 0)
+		ret = camel_nntp_raw_command_auth (store, cancellable, error, &line, "over %r", low, high);
+	else
+		ret = -1;
+	if (ret != 224) {
+		store->capabilities = store->capabilities & (~NNTP_CAPABILITY_OVER);
 		ret = camel_nntp_raw_command_auth (store, cancellable, error, &line, "xover %r", low, high);
+	}
 
 	if (ret != 224) {
 		camel_operation_pop_message (cancellable);

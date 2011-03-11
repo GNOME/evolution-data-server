@@ -196,6 +196,39 @@ nntp_can_work_offline (CamelDiscoStore *store)
 	return TRUE;
 }
 
+static gint
+check_capabilities (CamelNNTPStore *store,
+             GCancellable *cancellable,
+             GError **error)
+{
+	gint ret;
+	gchar *line;
+	guint len;
+
+	store->capabilities = 0;
+
+	ret = camel_nntp_raw_command_auth (store, cancellable, error, &line, "CAPABILITIES");
+	if (ret != 101)
+		return -1;
+
+	while ((ret = camel_nntp_stream_line (store->stream, (guchar **) &line, &len, cancellable, error)) > 0) {
+		while (len > 0 && g_ascii_isspace (*line)) {
+			line++;
+			len--;
+		}
+
+		if (len == 4 && g_ascii_strncasecmp (line, "OVER", len) == 0)
+			store->capabilities |= NNTP_CAPABILITY_OVER;
+
+		if (len == 1 && g_ascii_strncasecmp (line, ".", len) == 0) {
+			ret = 0;
+			break;
+		}
+	}
+
+	return ret;
+}
+
 static struct {
 	const gchar *name;
 	gint type;
@@ -409,10 +442,12 @@ nntp_connect_online (CamelService *service,
                      GCancellable *cancellable,
                      GError **error)
 {
+	CamelNNTPStore *store = CAMEL_NNTP_STORE (service);
 	const gchar *ssl_mode;
 	gint mode, i;
 	gchar *serv;
 	gint fallback_port;
+	GError *local_error = NULL;
 
 	if ((ssl_mode = camel_url_get_param (service->url, "use_ssl"))) {
 		for (i = 0; ssl_options[i].value; i++)
@@ -432,6 +467,30 @@ nntp_connect_online (CamelService *service,
 		sprintf (serv, "%d", service->url->port);
 		fallback_port = 0;
 	}
+
+	if (!connect_to_server (
+		service, service->url->host, serv,
+		fallback_port, mode, cancellable, error))
+		return FALSE;
+
+	if (check_capabilities (store, cancellable, &local_error) != -1)
+		return TRUE;
+
+	if (local_error)
+		g_error_free (local_error);
+
+	store->capabilities = 0;
+
+	/* disconnect and reconnect without capability check */
+	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+
+	if (store->stream)
+		g_object_unref (store->stream);
+	store->stream = NULL;
+	g_free (store->current_folder);
+	store->current_folder = NULL;
+
+	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return connect_to_server (
 		service, service->url->host, serv,

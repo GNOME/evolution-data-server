@@ -78,6 +78,11 @@ struct _xover_header {
 	xover_t type:8;
 };
 
+/* names of supported capabilities on the server */
+enum nntp_capabilities {
+	NNTP_CAPABILITY_OVER = (1 << 0)  /* supports OVER command */
+};
+
 struct _CamelNNTPStore {
 	CamelDiscoStore parent;
 
@@ -100,6 +105,7 @@ struct _CamelNNTPStore {
 	gchar *current_folder, *storage_path, *base_url;
 
 	struct _xover_header *xover;
+	guint32 capabilities; /* bit-or of nntp_capabilities */
 };
 
 struct _CamelNNTPStoreClass {
