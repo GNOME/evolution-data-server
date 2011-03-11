@@ -1828,21 +1828,14 @@ read_uid_callback (gpointer  ref, gint ncol, gchar ** cols, gchar **name)
 static ESExpResult *
 search_message_location (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
 {
-	CamelStore *parent_store;
 	ESExpResult *r;
 	gboolean same = FALSE;
 
-	parent_store = camel_folder_get_parent_store (search->folder);
-
 	if (argc == 1 && argv[0]->type == ESEXP_RES_STRING) {
-		if (argv[0]->value.string && search->folder && parent_store && camel_folder_get_full_name (search->folder)) {
-			/* FIXME Pass a GCancellable */
-			CamelFolderInfo *fi = camel_store_get_folder_info_sync (parent_store, camel_folder_get_full_name (search->folder), 0, NULL, NULL);
-			if (fi) {
-				same = g_str_equal (fi->uri ? fi->uri : "", argv[0]->value.string);
+		if (argv[0]->value.string && search->folder) {
+			const gchar *furi = camel_folder_get_uri (search->folder);
 
-				camel_store_free_folder_info (parent_store, fi);
-			}
+			same = g_str_equal (furi ? furi : "", argv[0]->value.string);
 		}
 	}
 
