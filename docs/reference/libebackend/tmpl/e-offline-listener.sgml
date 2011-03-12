@@ -33,8 +33,13 @@ EOfflineListener
 
 </para>
 
-@parent: 
-@priv: 
+
+<!-- ##### SIGNAL EOfflineListener::changed ##### -->
+<para>
+
+</para>
+
+@eofflinelistener: the object which received the signal.
 
 <!-- ##### FUNCTION e_offline_listener_new ##### -->
 <para>

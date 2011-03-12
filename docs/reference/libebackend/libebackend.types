@@ -1,3 +1,5 @@
 #include <libebackend/e-file-cache.h>
+#include <libebackend/e-offline-listener.h>
 
 e_file_cache_get_type
+e_offline_listener_get_type

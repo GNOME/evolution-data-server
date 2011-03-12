@@ -1,5 +1,12 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
+/**
+ * SECTION: e-db3-utils
+ * @short_description: Utilities for Berkeley DB databases
+ *
+ * Utilities for coping with Berkeley DB file format changes.
+ **/
+
 #include "config.h"
 
 #include <errno.h>
@@ -42,7 +49,9 @@ cp_file (const gchar *src, const gchar *dest)
 	i = g_open (src, O_RDONLY | O_BINARY, 0);
 	if (i == -1)
 		return -1;
-	o = g_open (dest, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, S_IREAD | S_IWRITE);
+	o = g_open (
+		dest, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY,
+		S_IREAD | S_IWRITE);
 	if (o == -1) {
 		close (i);
 		return -1;
@@ -92,16 +101,21 @@ cp_file (const gchar *src, const gchar *dest)
 static gint
 touch_file (const gchar *file)
 {
-	gint o;
-	o = g_open (file, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, S_IREAD | S_IWRITE);
-	if (o == -1)
+	gint fd;
+
+	fd = g_open (
+		file, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY,
+		S_IREAD | S_IWRITE);
+	if (fd == -1)
 		return -1;
 
-	return close (o);
+	return close (fd);
 }
 
 static gint
-resume_upgrade (const gchar *filename, const gchar *copy_filename, const gchar *check_filename)
+resume_upgrade (const gchar *filename,
+                const gchar *copy_filename,
+                const gchar *check_filename)
 {
 	DB *db;
 	gint ret_val;
@@ -124,6 +138,14 @@ resume_upgrade (const gchar *filename, const gchar *copy_filename, const gchar *
 	return ret_val;
 }
 
+/**
+ * e_db3_utils_maybe_recover:
+ * @filename: path to a Berkeley DB file
+ *
+ * Tries to recover from a failed file format upgrade.
+ *
+ * Returns: 0 if successful, -1 on failure
+ **/
 gint
 e_db3_utils_maybe_recover (const gchar *filename)
 {
@@ -145,6 +167,14 @@ e_db3_utils_maybe_recover (const gchar *filename)
 	return ret_val;
 }
 
+/**
+ * e_db3_utils_upgrade_format:
+ * @filename: path to a Berkeley DB file
+ *
+ * Upgrades the file format of a Berkeley DB file from a previous version.
+ *
+ * Returns: 0 if successful, -1 on failure
+ **/
 gint
 e_db3_utils_upgrade_format (const gchar *filename)
 {

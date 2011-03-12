@@ -20,6 +20,13 @@ e-dbhash
 <!-- ##### SECTION Image ##### -->
 
 
+<!-- ##### STRUCT EDbHash ##### -->
+<para>
+
+</para>
+
+@priv: 
+
 <!-- ##### ENUM EDbHashStatus ##### -->
 <para>
 
@@ -28,19 +35,6 @@ e-dbhash
 @E_DBHASH_STATUS_SAME: 
 @E_DBHASH_STATUS_DIFFERENT: 
 @E_DBHASH_STATUS_NOT_FOUND: 
-
-<!-- ##### STRUCT EDbHash ##### -->
-<para>
-
-</para>
-
-@priv: 
-
-<!-- ##### STRUCT EDbHashPrivate ##### -->
-<para>
-
-</para>
-
 
 <!-- ##### USER_FUNCTION EDbHashFunc ##### -->
 <para>

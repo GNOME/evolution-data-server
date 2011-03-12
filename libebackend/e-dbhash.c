@@ -6,6 +6,14 @@
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
+/**
+ * SECTION: e-dbhash
+ * @short_description: Simple DB-based hash table for strings
+ *
+ * An #EDbHash is a simple hash table of strings backed by a Berkeley DB
+ * file for permanent storage.
+ **/
+
 #include <config.h>
 
 #include "e-dbhash.h"
@@ -14,11 +22,19 @@
 #include <fcntl.h>
 #include "db.h"
 
-struct _EDbHashPrivate
-{
+struct _EDbHashPrivate {
 	DB *db;
 };
 
+/**
+ * e_dbhash_new:
+ * @filename: path to a Berkeley DB file
+ *
+ * Creates a new #EDbHash structure and opens the given Berkeley DB file,
+ * creating the DB file if necessary.
+ *
+ * Returns: a new #EDbHash
+ **/
 EDbHash *
 e_dbhash_new (const gchar *filename)
 {
@@ -65,8 +81,18 @@ md5_to_dbt (const guint8 str[16], DBT *dbt)
 	dbt->size = 16;
 }
 
+/**
+ * e_dbhash_add:
+ * @edbh: an #EDbHash
+ * @key: a database key
+ * @data: a database object for @key
+ *
+ * Adds a database object for @key.
+ **/
 void
-e_dbhash_add (EDbHash *edbh, const gchar *key, const gchar *data)
+e_dbhash_add (EDbHash *edbh,
+              const gchar *key,
+              const gchar *data)
 {
 	DB *db;
 	DBT dkey;
@@ -102,8 +128,16 @@ e_dbhash_add (EDbHash *edbh, const gchar *key, const gchar *data)
 	db->put (db, NULL, &dkey, &ddata, 0);
 }
 
+/**
+ * e_dbhash_remove:
+ * @edbh: an #EDbHash
+ * @key: a database key
+ *
+ * Removes the database object corresponding to @key.
+ **/
 void
-e_dbhash_remove (EDbHash *edbh, const gchar *key)
+e_dbhash_remove (EDbHash *edbh,
+                 const gchar *key)
 {
 	DB *db;
 	DBT dkey;
@@ -121,8 +155,18 @@ e_dbhash_remove (EDbHash *edbh, const gchar *key)
 	db->del (db, NULL, &dkey, 0);
 }
 
+/**
+ * e_dbhash_foreach_key:
+ * @edbh: an #EDbHash
+ * @func: a callback function
+ * @user_data: data to pass to @func
+ *
+ * Calls @func for each database object.
+ **/
 void
-e_dbhash_foreach_key (EDbHash *edbh, EDbHashFunc func, gpointer user_data)
+e_dbhash_foreach_key (EDbHash *edbh,
+                      EDbHashFunc func,
+                      gpointer user_data)
 {
 	DB *db;
 	DBT dkey;
@@ -154,8 +198,23 @@ e_dbhash_foreach_key (EDbHash *edbh, EDbHashFunc func, gpointer user_data)
 	dbc->c_close (dbc);
 }
 
+/**
+ * e_dbhash_compare:
+ * @edbh: an #EDbHash
+ * @key: a database key
+ * @compare_data: data to compare against the database
+ *
+ * Compares @compare_data to the database object corresponding to
+ * @key using an MD5 checksum.  Returns #E_DBHASH_STATUS_SAME if the
+ * checksums match, #E_DBHASH_STATUS_DIFFERENT if the checksums differ,
+ * or #E_DBHASH_STATUS_NOT_FOUND if @key is not present in the database.
+ *
+ * Returns: a checksum comparison status
+ **/
 EDbHashStatus
-e_dbhash_compare (EDbHash *edbh, const gchar *key, const gchar *compare_data)
+e_dbhash_compare (EDbHash *edbh,
+                  const gchar *key,
+                  const gchar *compare_data)
 {
 	DB *db;
 	DBT dkey;
@@ -195,6 +254,12 @@ e_dbhash_compare (EDbHash *edbh, const gchar *key, const gchar *compare_data)
 	return E_DBHASH_STATUS_SAME;
 }
 
+/**
+ * e_dbhash_write:
+ * @edbh: an #EDbHash
+ *
+ * Flushes database changes to disk.
+ **/
 void
 e_dbhash_write (EDbHash *edbh)
 {
@@ -209,6 +274,12 @@ e_dbhash_write (EDbHash *edbh)
 	db->sync (db, 0);
 }
 
+/**
+ * e_dbhash_destroy:
+ * @edbh: an #EDbHash
+ *
+ * Closes the database file and frees the #EDbHash.
+ **/
 void
 e_dbhash_destroy (EDbHash *edbh)
 {

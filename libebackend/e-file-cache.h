@@ -24,41 +24,65 @@
 
 #include <glib-object.h>
 
+/* Standard GObject macros */
+#define E_TYPE_FILE_CACHE \
+	(e_file_cache_get_type ())
+#define E_FILE_CACHE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_FILE_CACHE, EFileCache))
+#define E_FILE_CACHE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_FILE_CACHE, EFileCacheClass))
+#define E_IS_FILE_CACHE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_FILE_CACHE))
+#define E_IS_FILE_CACHE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_FILE_CACHE))
+#define E_FILE_CACHE_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_FILE_CACHE, EFileCacheClass))
+
 G_BEGIN_DECLS
 
-#define E_TYPE_FILE_CACHE            (e_file_cache_get_type ())
-#define E_FILE_CACHE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_FILE_CACHE, EFileCache))
-#define E_FILE_CACHE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_FILE_CACHE, EFileCacheClass))
-#define E_IS_FILE_CACHE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_FILE_CACHE))
-#define E_IS_FILE_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_FILE_CACHE))
-
+typedef struct _EFileCache EFileCache;
+typedef struct _EFileCacheClass EFileCacheClass;
 typedef struct _EFileCachePrivate EFileCachePrivate;
 
-typedef struct {
+/**
+ * EFileCache:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ **/
+struct _EFileCache {
 	GObject parent;
 	EFileCachePrivate *priv;
-} EFileCache;
+};
 
-typedef struct {
+struct _EFileCacheClass {
 	GObjectClass parent_class;
-} EFileCacheClass;
+};
 
-GType       e_file_cache_get_type (void);
-
-EFileCache *e_file_cache_new (const gchar *filename);
-gboolean    e_file_cache_remove (EFileCache *cache);
-gboolean    e_file_cache_clean (EFileCache *cache);
-
-const gchar *e_file_cache_get_object (EFileCache *cache, const gchar *key);
-GSList     *e_file_cache_get_objects (EFileCache *cache);
-GSList     *e_file_cache_get_keys (EFileCache *cache);
-gboolean    e_file_cache_add_object (EFileCache *cache, const gchar *key, const gchar *value);
-gboolean    e_file_cache_replace_object (EFileCache *cache, const gchar *key, const gchar *new_value);
-gboolean    e_file_cache_remove_object (EFileCache *cache, const gchar *key);
-
-void        e_file_cache_freeze_changes (EFileCache *cache);
-void        e_file_cache_thaw_changes (EFileCache *cache);
-const gchar *e_file_cache_get_filename (EFileCache *cache);
+GType		e_file_cache_get_type		(void) G_GNUC_CONST;
+EFileCache *	e_file_cache_new		(const gchar *filename);
+gboolean	e_file_cache_remove		(EFileCache *cache);
+gboolean	e_file_cache_clean		(EFileCache *cache);
+const gchar *	e_file_cache_get_object		(EFileCache *cache,
+						 const gchar *key);
+GSList *	e_file_cache_get_objects	(EFileCache *cache);
+GSList *	e_file_cache_get_keys		(EFileCache *cache);
+gboolean	e_file_cache_add_object		(EFileCache *cache,
+						 const gchar *key,
+						 const gchar *value);
+gboolean	e_file_cache_replace_object	(EFileCache *cache,
+						 const gchar *key,
+						 const gchar *new_value);
+gboolean	e_file_cache_remove_object	(EFileCache *cache,
+						 const gchar *key);
+void		e_file_cache_freeze_changes	(EFileCache *cache);
+void		e_file_cache_thaw_changes	(EFileCache *cache);
+const gchar *	e_file_cache_get_filename	(EFileCache *cache);
 
 G_END_DECLS
 

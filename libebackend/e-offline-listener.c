@@ -20,6 +20,19 @@
  * Author: Sivaiah Nallagatla <snallagatla@novell.com>
  */
 
+/**
+ * SECTION: e-offline-listener
+ * @short_description: Tracks Evolution's online/offline state
+ *
+ * An #EOfflineListener basically just tracks Evolution's online/offline
+ * state and emits a #EOfflineListener:changed signal when a state change
+ * is detected.
+ *
+ * This class is highly Evolution-centric and probably not suitable for
+ * general purpose use.  Frankly it should be deprecated and replaced
+ * with a D-Bus method.
+ **/
+
 /*Note : Copied from src/offline_listener.c . This should be replaced */
 /* with network manager code */
 
@@ -41,8 +54,7 @@ static guint signals[NUM_SIGNALS] = { 0 };
 
 static GObjectClass *parent_class = NULL;
 
-struct _EOfflineListenerPrivate
-{
+struct _EOfflineListenerPrivate {
 	GConfClient *default_client;
 	gboolean is_offline_now;
 };
@@ -54,7 +66,10 @@ set_online_status (EOfflineListener *eol, gboolean is_offline)
 }
 
 static void
-online_status_changed (GConfClient *client, gint cnxn_id, GConfEntry *entry, gpointer data)
+online_status_changed (GConfClient *client,
+                       gint cnxn_id,
+                       GConfEntry *entry,
+                       gpointer data)
 {
 	GConfValue *value;
 	gboolean offline;
@@ -120,52 +135,55 @@ e_offline_listener_dispose (GObject *object)
 		eol->priv->default_client = NULL;
 	}
 
-	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
 e_offline_listener_finalize (GObject *object)
 {
 	EOfflineListener *eol;
-	EOfflineListenerPrivate *priv;
 
 	eol = E_OFFLINE_LISTENER (object);
-	priv = eol->priv;
 
-	g_free (priv);
+	g_free (eol->priv);
 	eol->priv = NULL;
 
-	parent_class->finalize (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
 e_offline_listener_init (EOfflineListener *eol)
 {
-	EOfflineListenerPrivate *priv;
-
-	priv = g_new0 (EOfflineListenerPrivate, 1);
-	eol->priv = priv;
+	eol->priv = g_new0 (EOfflineListenerPrivate, 1);
 }
 
 static void
-e_offline_listener_class_init (EOfflineListenerClass *klass)
+e_offline_listener_class_init (EOfflineListenerClass *class)
 {
 	GObjectClass *object_class;
 
-	parent_class = g_type_class_peek_parent (klass);
+	parent_class = g_type_class_peek_parent (class);
 
-	object_class = G_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = e_offline_listener_dispose;
 	object_class->finalize = e_offline_listener_finalize;
 
-	signals[CHANGED] =
-		g_signal_new ("changed",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EOfflineListenerClass, changed),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE, 0);
+	/**
+	 * EOfflineListener::changed:
+	 * @listener: the #EOfflineListener that received the signal
+	 *
+	 * Emitted when Evolution's online/offline state changes.
+	 **/
+	signals[CHANGED] = g_signal_new (
+		"changed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EOfflineListenerClass, changed),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__VOID,
+		G_TYPE_NONE, 0);
 }
 
 /**
@@ -173,6 +191,8 @@ e_offline_listener_class_init (EOfflineListenerClass *klass)
  * @eol: an #EOfflineListener
  *
  * FIXME Document me!
+ *
+ * Returns: #EOL_STATE_OFFLINE or #EOL_STATE_ONLINE
  *
  * Since: 2.30
  **/

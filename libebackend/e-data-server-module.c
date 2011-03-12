@@ -23,6 +23,18 @@
  *
  */
 
+/**
+ * SECTION: e-data-server-module
+ * @short_description: Backend module loader
+ *
+ * An #EDataServerModule loads backend modules from the directory given
+ * in e_data_server_module_init().  Each backend module must export three
+ * functions.  The first two -- eds_module_initialize() and
+ * eds_module_list_types() -- are called immediately after the backend
+ * module is loaded.  The last one -- eds_module_shutdown() -- is called
+ * when the backend module is unloaded.
+ **/
+
 #include <config.h>
 #include "e-data-server-module.h"
 
@@ -182,6 +194,16 @@ e_data_server_module_load_file (const gchar *filename)
 	}
 }
 
+/**
+ * e_data_server_module_init:
+ * @module_path: directory of backend modules
+ * @error: return location for a #GError, or %NULL
+ *
+ * Loads all backend modules in @module_path.  If an error occurs,
+ * the function sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ **/
 gboolean
 e_data_server_module_init (const gchar *module_path,
                            GError **error)
@@ -216,6 +238,17 @@ e_data_server_module_init (const gchar *module_path,
 	return TRUE;
 }
 
+/**
+ * e_data_server_get_extensions_for_type:
+ * @type: a #GType
+ *
+ * Returns a list of objects derived from @type which have been registered
+ * through eds_module_list_types() or e_data_server_module_add_type().
+ *
+ * Free the returned list using e_data_server_extension_list_free().
+ *
+ * Returns: a list of extension objects
+ **/
 GList *
 e_data_server_get_extensions_for_type (GType type)
 {
@@ -234,17 +267,26 @@ e_data_server_get_extensions_for_type (GType type)
 	return ret;
 }
 
+/**
+ * e_data_server_extension_list_free:
+ * @extensions: a list of extension objects
+ *
+ * Frees a list of objects returned by
+ * e_data_server_get_extensions_for_type().
+ **/
 void
 e_data_server_extension_list_free (GList *extensions)
 {
-	GList *l;
-
-	for (l = extensions; l != NULL; l = l->next) {
-		g_object_unref (l->data);
-	}
-	g_list_free (extensions);
+	g_list_free_full (extensions, (GDestroyNotify) g_object_unref);
 }
 
+/**
+ * e_data_server_module_add_type:
+ * @type: a #GType
+ *
+ * Creates an instance of @type and adds the instance to an internal list
+ * which can be queried using e_data_server_get_extensions_for_type().
+ **/
 void
 e_data_server_module_add_type (GType type)
 {
@@ -258,10 +300,12 @@ e_data_server_module_add_type (GType type)
 	module_objects = g_list_prepend (module_objects, object);
 }
 
-/*
- * Unref all loaded modules, so that unused modules are unloaded from the
+/**
+ * e_data_server_module_remove_unused:
+ *
+ * Unrefs all loaded modules, so that unused modules are unloaded from the
  * system.
- */
+ **/
 void
 e_data_server_module_remove_unused (void)
 {

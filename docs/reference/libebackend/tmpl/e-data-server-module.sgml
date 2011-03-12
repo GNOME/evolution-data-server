@@ -44,7 +44,7 @@ e-data-server-module
 
 </para>
 
-@list: 
+@extensions: 
 
 
 <!-- ##### FUNCTION e_data_server_module_remove_unused ##### -->

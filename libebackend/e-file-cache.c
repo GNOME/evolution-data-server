@@ -19,6 +19,15 @@
  * Authors: Rodrigo Moya <rodrigo@ximian.com>
  */
 
+/**
+ * SECTION: e-file-cache
+ * @short_description: Simple file-based hash table for strings
+ *
+ * An #EFileCache is a simple hash table of strings backed by an XML file
+ * for permanent storage.  The XML file is written to disk with every unless
+ * the cache is temporarily frozen with e_file_cache_freeze_changes().
+ **/
+
 #include <config.h>
 #include <string.h>
 #include <unistd.h>
@@ -146,6 +155,11 @@ e_file_cache_class_init (EFileCacheClass *klass)
 	object_class->set_property = e_file_cache_set_property;
 	object_class->get_property = e_file_cache_get_property;
 
+	/**
+	 * EFileCache:filename
+	 *
+	 * The filename of the cache.
+	 **/
 	g_object_class_install_property (object_class, PROP_FILENAME,
 					 g_param_spec_string ("filename", NULL, NULL, "",
 							      G_PARAM_READABLE | G_PARAM_WRITABLE
@@ -165,12 +179,12 @@ e_file_cache_init (EFileCache *cache)
 
 /**
  * e_file_cache_new
- * @filename: filename where the cache is kept.
+ * @filename: filename where the cache is kept
  *
  * Creates a new #EFileCache object, which implements a cache of
- * objects, very useful for remote backends.
+ * objects.  Useful for remote backends.
  *
- * Returns: The newly created object.
+ * Returns: a new #EFileCache
  */
 EFileCache *
 e_file_cache_new (const gchar *filename)
@@ -184,11 +198,11 @@ e_file_cache_new (const gchar *filename)
 
 /**
  * e_file_cache_remove:
- * @cache: A #EFileCache object.
+ * @cache: an #EFileCache
  *
  * Remove the cache from disk.
  *
- * Returns: TRUE if successful, FALSE otherwise.
+ * Returns: %TRUE if successful, %FALSE if a file error occurred
  */
 gboolean
 e_file_cache_remove (EFileCache *cache)
@@ -252,28 +266,28 @@ add_key_to_slist (const gchar *key, const gchar *value, gpointer user_data)
 
 /**
  * e_file_cache_clean:
- * @cache: A #EFileCache object.
+ * @cache: an #EFileCache
  *
  * Clean up the cache's contents.
  *
- * Returns: TRUE if successful, FALSE otherwise.
+ * Returns: %TRUE always
  */
 gboolean
 e_file_cache_clean (EFileCache *cache)
 {
-	EFileCachePrivate *priv;
 	GSList *keys = NULL;
 	gboolean iFroze;
 
 	g_return_val_if_fail (E_IS_FILE_CACHE (cache), FALSE);
 
-	priv = cache->priv;
-	iFroze = !priv->frozen;
+	iFroze = !cache->priv->frozen;
 
 	if (iFroze)
 		e_file_cache_freeze_changes (cache);
 
-	e_xmlhash_foreach_key (priv->xml_hash, (EXmlHashFunc) add_key_to_slist, &keys);
+	e_xmlhash_foreach_key (
+		cache->priv->xml_hash,
+		(EXmlHashFunc) add_key_to_slist, &keys);
 	while (keys != NULL) {
 		e_file_cache_remove_object (cache, (const gchar *) keys->data);
 		keys = g_slist_remove (keys, keys->data);
@@ -307,23 +321,30 @@ find_object_in_hash (gpointer key, gpointer value, gpointer user_data)
 
 /**
  * e_file_cache_get_object:
+ * @cache: an #EFileCache
+ * @key: the hash key of the object to find
+ *
+ * Returns the object corresponding to @key.  If no such object exists
+ * in @cache, the function returns %NULL.
+ *
+ * Returns: the object corresponding to @key
  */
 const gchar *
-e_file_cache_get_object (EFileCache *cache, const gchar *key)
+e_file_cache_get_object (EFileCache *cache,
+                         const gchar *key)
 {
 	CacheFindData find_data;
-	EFileCachePrivate *priv;
 
 	g_return_val_if_fail (E_IS_FILE_CACHE (cache), NULL);
 	g_return_val_if_fail (key != NULL, NULL);
-
-	priv = cache->priv;
 
 	find_data.key = key;
 	find_data.found = FALSE;
 	find_data.found_value = NULL;
 
-	e_xmlhash_foreach_key (priv->xml_hash, (EXmlHashFunc) find_object_in_hash, &find_data);
+	e_xmlhash_foreach_key (
+		cache->priv->xml_hash,
+		(EXmlHashFunc) find_object_in_hash, &find_data);
 
 	return find_data.found_value;
 }
@@ -338,62 +359,78 @@ add_object_to_slist (const gchar *key, const gchar *value, gpointer user_data)
 
 /**
  * e_file_cache_get_objects:
+ * @cache: an #EFileCache
+ *
+ * Returns a list of objects in @cache.  The objects are owned by @cache and
+ * must not be modified or freed.  Free the returned list with g_slist_free().
+ *
+ * Returns: a list of objects
  */
 GSList *
 e_file_cache_get_objects (EFileCache *cache)
 {
-	EFileCachePrivate *priv;
 	GSList *list = NULL;
 
 	g_return_val_if_fail (E_IS_FILE_CACHE (cache), NULL);
 
-	priv = cache->priv;
-
-	e_xmlhash_foreach_key (priv->xml_hash, (EXmlHashFunc) add_object_to_slist, &list);
+	e_xmlhash_foreach_key (
+		cache->priv->xml_hash,
+		(EXmlHashFunc) add_object_to_slist, &list);
 
 	return list;
 }
 
 /**
  * e_file_cache_get_keys:
+ * @cache: an #EFileCache
+ *
+ * Returns a list of keys in @cache.  The keys are owned by @cache and must
+ * not be modified or freed.  Free the returned list with g_slist_free().
+ *
+ * Returns: a list of keys
  */
 GSList *
 e_file_cache_get_keys (EFileCache *cache)
 {
-	EFileCachePrivate *priv;
 	GSList *list = NULL;
 
 	g_return_val_if_fail (E_IS_FILE_CACHE (cache), NULL);
 
-	priv = cache->priv;
-
-	e_xmlhash_foreach_key (priv->xml_hash, (EXmlHashFunc) add_key_to_slist, &list);
+	e_xmlhash_foreach_key (
+		cache->priv->xml_hash,
+		(EXmlHashFunc) add_key_to_slist, &list);
 
 	return list;
 }
 
 /**
  * e_file_cache_add_object:
+ * @cache: an #EFileCache
+ * @key: the hash key of the object to add
+ * @value: the object to add
+ *
+ * Adds a new @key / @value entry to @cache.  If an object corresponding
+ * to @key already exists in @cache, the function returns %FALSE.
+ *
+ * Returns: %TRUE if successful, %FALSE if @key already exists
  */
 gboolean
-e_file_cache_add_object (EFileCache *cache, const gchar *key, const gchar *value)
+e_file_cache_add_object (EFileCache *cache,
+                         const gchar *key,
+                         const gchar *value)
 {
-	EFileCachePrivate *priv;
-
 	g_return_val_if_fail (E_IS_FILE_CACHE (cache), FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
-
-	priv = cache->priv;
 
 	if (e_file_cache_get_object (cache, key))
 		return FALSE;
 
-	e_xmlhash_add (priv->xml_hash, key, value);
-	if (priv->frozen)
-		priv->dirty = TRUE;
+	e_xmlhash_add (cache->priv->xml_hash, key, value);
+	if (cache->priv->frozen)
+		cache->priv->dirty = TRUE;
 	else {
-		e_xmlhash_write (priv->xml_hash);
-		priv->dirty = FALSE;
+		e_xmlhash_write (cache->priv->xml_hash);
+		cache->priv->dirty = FALSE;
 	}
 
 	return TRUE;
@@ -401,9 +438,19 @@ e_file_cache_add_object (EFileCache *cache, const gchar *key, const gchar *value
 
 /**
  * e_file_cache_replace_object:
+ * @cache: an #EFileCache
+ * @key: the hash key of the object to replace
+ * @new_value: the new object for @key
+ *
+ * Replaces the object corresponding to @key with @new_value.
+ * If no such object exists in @cache, the function returns %FALSE.
+ *
+ * Returns: %TRUE if successful, %FALSE if @key was not found
  */
 gboolean
-e_file_cache_replace_object (EFileCache *cache, const gchar *key, const gchar *new_value)
+e_file_cache_replace_object (EFileCache *cache,
+                             const gchar *key,
+                             const gchar *new_value)
 {
 	g_return_val_if_fail (E_IS_FILE_CACHE (cache), FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
@@ -419,9 +466,17 @@ e_file_cache_replace_object (EFileCache *cache, const gchar *key, const gchar *n
 
 /**
  * e_file_cache_remove_object:
+ * @cache: an #EFileCache
+ * @key: the hash key of the object to remove
+ *
+ * Removes the object corresponding to @key from @cache.
+ * If no such object exists in @cache, the function returns %FALSE.
+ *
+ * Returns: %TRUE if successful, %FALSE if @key was not found
  */
 gboolean
-e_file_cache_remove_object (EFileCache *cache, const gchar *key)
+e_file_cache_remove_object (EFileCache *cache,
+                            const gchar *key)
 {
 	EFileCachePrivate *priv;
 
@@ -446,44 +501,36 @@ e_file_cache_remove_object (EFileCache *cache, const gchar *key)
 
 /**
  * e_file_cache_freeze_changes:
- * @cache: An #EFileCache object.
+ * @cache: an #EFileCache
  *
- * Disables temporarily all writes to disk for the given cache object.
+ * Disables temporarily all writes to disk for @cache.
  */
 void
 e_file_cache_freeze_changes (EFileCache *cache)
 {
-	EFileCachePrivate *priv;
-
 	g_return_if_fail (E_IS_FILE_CACHE (cache));
 
-	priv = cache->priv;
-
-	priv->frozen++;
-	g_return_if_fail (priv->frozen > 0);
+	cache->priv->frozen++;
+	g_return_if_fail (cache->priv->frozen > 0);
 }
 
 /**
  * e_file_cache_thaw_changes:
- * @cache: An #EFileCache object.
+ * @cache: an #EFileCache
  *
- * Enables again writes to disk on every change.
+ * Reverts the affects of e_file_cache_freeze_changes().
+ * Each change to @cache is once again written to disk.
  */
 void
 e_file_cache_thaw_changes (EFileCache *cache)
 {
-	EFileCachePrivate *priv;
-
 	g_return_if_fail (E_IS_FILE_CACHE (cache));
+	g_return_if_fail (cache->priv->frozen > 0);
 
-	priv = cache->priv;
-
-	g_return_if_fail (priv->frozen > 0);
-
-	priv->frozen--;
-	if (!priv->frozen && priv->dirty) {
-		e_xmlhash_write (priv->xml_hash);
-		priv->dirty = FALSE;
+	cache->priv->frozen--;
+	if (!cache->priv->frozen && cache->priv->dirty) {
+		e_xmlhash_write (cache->priv->xml_hash);
+		cache->priv->dirty = FALSE;
 	}
 }
 
@@ -499,6 +546,7 @@ const gchar *
 e_file_cache_get_filename (EFileCache *cache)
 {
 	g_return_val_if_fail (E_IS_FILE_CACHE (cache), NULL);
-	return (const gchar *) cache->priv->filename;
+
+	return cache->priv->filename;
 }
 

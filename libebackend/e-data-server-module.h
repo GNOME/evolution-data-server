@@ -32,7 +32,7 @@ gboolean	e_data_server_module_init	(const gchar *module_path,
 GList *		e_data_server_get_extensions_for_type
 						(GType type);
 void		e_data_server_extension_list_free
-						(GList *list);
+						(GList *extensions);
 void		e_data_server_module_remove_unused
 						(void);
 
@@ -40,10 +40,33 @@ void		e_data_server_module_remove_unused
  * without putting them in separate shared libraries */
 void		e_data_server_module_add_type	(GType  type);
 
-/* The following three functions should exist in modules that are
-   written to be dynamically loaded */
+/**
+ * eds_module_initialize:
+ * @module: a #GTypeModule
+ *
+ * Each backend module must define this function.  The module should call
+ * g_type_module_register_type() to register all dynamically-loaded types.
+ **/
 void		eds_module_initialize		(GTypeModule *module);
+
+/**
+ * eds_module_shutdown:
+ *
+ * Each backend module must define this function.  The module should
+ * release resources and perform any necessary cleanup actions prior
+ * to the service being shut down.
+ **/
 void		eds_module_shutdown		(void);
+
+/**
+ * eds_module_list_types:
+ * @types: return location for a #GType list
+ * @num_types: the length of the #GType list
+ *
+ * Each backend module must define this function.  The module should
+ * point @types to a list of types registered in eds_module_initialize()
+ * and also set @num_types to the length of that list.
+ **/
 void		eds_module_list_types		(const GType **types,
 						 gint *num_types);
 

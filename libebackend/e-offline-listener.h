@@ -20,8 +20,8 @@
  * Author: Sivaiah Nallagatla <snallagatla@novell.com>
  */
 
-#ifndef _E_OFFLINE_LISTENER_H_
-#define _E_OFFLINE_LISTENER_H_
+#ifndef E_OFFLINE_LISTENER_H
+#define E_OFFLINE_LISTENER_H
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -29,22 +29,39 @@
 
 #include <glib-object.h>
 
+/* Standard GObject macros */
+#define E_TYPE_OFFLINE_LISTENER \
+	(e_offline_listener_get_type ())
+#define E_OFFLINE_LISTENER(obj) \
+	((G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_OFFLINE_LISTENER, EOfflineListener)))
+#define E_OFFLINE_LISTENER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_OFFLINE_LISTENER, EOfflineListenerClass))
+#define E_IS_OFFLINE_LISTENER(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_OFFLINE_LISTENER))
+#define E_IS_OFFLINE_LISTENER_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_OFFLINE_LISTENER))
+#define E_OFFLINE_LISTENER_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_OFFLINE_LISTENER, EOfflineListenerClass))
+
 G_BEGIN_DECLS
 
-#define E_TYPE_OFFLINE_LISTENER			(e_offline_listener_get_type ())
-#define E_OFFLINE_LISTENER(obj)			((G_TYPE_CHECK_INSTANCE_CAST((obj), E_TYPE_OFFLINE_LISTENER, EOfflineListener)))
-#define E_OFFLINE_LISTENER_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST((klass), E_TYPE_OFFLINE_LISTENER, EOfflineListenerClass))
-#define E_IS_OFFLINE_LISTENER(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_OFFLINE_LISTENER))
-#define E_IS_OFFLINE_LISTENER_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_OFFLINE_LISTENER))
-
-typedef struct _EOfflineListener         EOfflineListener;
-typedef struct _EOfflineListenerPrivate  EOfflineListenerPrivate;
-typedef struct _EOfflineListenerClass    EOfflineListenerClass;
+typedef struct _EOfflineListener EOfflineListener;
+typedef struct _EOfflineListenerClass EOfflineListenerClass;
+typedef struct _EOfflineListenerPrivate EOfflineListenerPrivate;
 
 /**
  * EOfflineListenerState:
  * @EOL_STATE_OFFLINE:
+ *   Evolution is in offline mode.
  * @EOL_STATE_ONLINE:
+ *   Evolution is in online mode.
+ *
+ * Indicates the online/offline state of the listener.
  *
  * Since: 2.30
  **/
@@ -56,6 +73,9 @@ typedef enum {
 /**
  * EOfflineListener:
  *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
  * Since: 2.30
  **/
 struct _EOfflineListener {
@@ -64,17 +84,17 @@ struct _EOfflineListener {
 };
 
 struct _EOfflineListenerClass {
-	GObjectClass  parent_class;
+	GObjectClass parent_class;
 
 	void (*changed) (EOfflineListener *eol, EOfflineListenerState state);
 };
 
-GType e_offline_listener_get_type  (void);
-
-EOfflineListener  *e_offline_listener_new (void);
-
-EOfflineListenerState e_offline_listener_get_state (EOfflineListener *eol);
+GType		e_offline_listener_get_type	(void);
+EOfflineListener *
+		e_offline_listener_new		(void);
+EOfflineListenerState
+		e_offline_listener_get_state	(EOfflineListener *eol);
 
 G_END_DECLS
 
-#endif /* _E_OFFLINE_LISTENER_H_ */
+#endif /* E_OFFLINE_LISTENER_H */

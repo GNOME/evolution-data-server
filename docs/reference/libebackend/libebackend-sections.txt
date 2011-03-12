@@ -1,6 +1,5 @@
 <SECTION>
 <FILE>e-file-cache</FILE>
-EFileCachePrivate
 <TITLE>EFileCache</TITLE>
 EFileCache
 e_file_cache_new
@@ -22,14 +21,16 @@ E_TYPE_FILE_CACHE
 e_file_cache_get_type
 E_FILE_CACHE_CLASS
 E_IS_FILE_CACHE_CLASS
+E_FILE_CACHE_GET_CLASS
 EFileCacheClass
+<SUBSECTION Private>
+EFileCachePrivate
 </SECTION>
 
 <SECTION>
 <FILE>e-dbhash</FILE>
-EDbHashStatus
 EDbHash
-EDbHashPrivate
+EDbHashStatus
 EDbHashFunc
 e_dbhash_new
 e_dbhash_add
@@ -38,6 +39,8 @@ e_dbhash_compare
 e_dbhash_foreach_key
 e_dbhash_write
 e_dbhash_destroy
+<SUBSECTION Private>
+EDbHashPrivate
 </SECTION>
 
 <SECTION>
@@ -71,6 +74,7 @@ E_IS_OFFLINE_LISTENER
 E_TYPE_OFFLINE_LISTENER
 E_OFFLINE_LISTENER_CLASS
 E_IS_OFFLINE_LISTENER_CLASS
+E_OFFLINE_LISTENER_GET_CLASS
 EOfflineListenerClass
 <SUBSECTION Private>
 EOfflineListenerPrivate
