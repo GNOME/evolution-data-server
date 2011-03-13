@@ -21,14 +21,15 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _LIBEDATASERVER_PRIVATE_H_
-#define _LIBEDATASERVER_PRIVATE_H_
+#ifndef LIBEDATASERVER_PRIVATE_H
+#define LIBEDATASERVER_PRIVATE_H
 
 #ifdef G_OS_WIN32
 
-const gchar *_libedataserver_get_extensiondir (void) G_GNUC_CONST;
-const gchar *_libedataserver_get_imagesdir (void) G_GNUC_CONST;
-const gchar *_libedataserver_get_ui_uidir (void) G_GNUC_CONST;
+const gchar *	_libedataserver_get_extensiondir
+						(void) G_GNUC_CONST;
+const gchar *	_libedataserver_get_imagesdir	(void) G_GNUC_CONST;
+const gchar *	_libedataserver_get_ui_uidir	(void) G_GNUC_CONST;
 
 #undef E_DATA_SERVER_EXTENSIONDIR
 #define E_DATA_SERVER_EXTENSIONDIR _libedataserver_get_extensiondir ()
@@ -41,4 +42,4 @@ const gchar *_libedataserver_get_ui_uidir (void) G_GNUC_CONST;
 
 #endif	/* G_OS_WIN32 */
 
-#endif	/* _LIBEDATASERVER_PRIVATE_H_ */
+#endif	/* LIBEDATASERVER_PRIVATE_H */

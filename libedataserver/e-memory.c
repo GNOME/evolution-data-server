@@ -59,128 +59,148 @@ typedef struct _MemChunkFreeNode {
 	guint atoms;
 } MemChunkFreeNode;
 
-typedef struct _EMemChunk {
+struct _EMemChunk {
 	guint blocksize;	/* number of atoms in a block */
 	guint atomsize;	/* size of each atom */
 	GPtrArray *blocks;	/* blocks of raw memory */
 	struct _MemChunkFreeNode *free;
-} MemChunk;
+};
 
 /**
  * e_memchunk_new:
- * @atomcount: The number of atoms stored in a single malloc'd block of memory.
- * @atomsize: The size of each allocation.
+ * @atomcount: the number of atoms stored in a single malloc'd block of memory
+ * @atomsize: the size of each allocation
  *
- * Create a new memchunk header.  Memchunks are an efficient way to allocate
- * and deallocate identical sized blocks of memory quickly, and space efficiently.
+ * Create a new #EMemChunk header.  Memchunks are an efficient way to
+ * allocate and deallocate identical sized blocks of memory quickly, and
+ * space efficiently.
  *
- * e_memchunks are effectively the same as gmemchunks, only faster (much), and
- * they use less memory overhead for housekeeping.
+ * e_memchunks are effectively the same as gmemchunks, only faster (much),
+ * and they use less memory overhead for housekeeping.
  *
- * Returns: The new header.
+ * Returns: a new #EMemChunk
  **/
-MemChunk *e_memchunk_new (gint atomcount, gint atomsize)
+EMemChunk *
+e_memchunk_new (gint atomcount, gint atomsize)
 {
-	MemChunk *m = g_malloc (sizeof (*m));
+	EMemChunk *memchunk = g_malloc (sizeof (*memchunk));
 
-	m->blocksize = atomcount;
-	m->atomsize = MAX (atomsize, sizeof (MemChunkFreeNode));
-	m->blocks = g_ptr_array_new ();
-	m->free = NULL;
+	memchunk->blocksize = atomcount;
+	memchunk->atomsize = MAX (atomsize, sizeof (MemChunkFreeNode));
+	memchunk->blocks = g_ptr_array_new ();
+	memchunk->free = NULL;
 
-	return m;
+	return memchunk;
 }
 
 /**
- * memchunk_alloc:
- * @m:
+ * e_memchunk_alloc:
+ * @memchunk: an #EMemChunk
  *
- * Allocate a new atom size block of memory from a memchunk.
+ * Allocate a new atom size block of memory from an #EMemChunk.
+ * Free the returned atom with e_memchunk_free().
+ *
+ * Returns: an allocated block of memory
  **/
-gpointer e_memchunk_alloc (MemChunk *m)
+gpointer
+e_memchunk_alloc (EMemChunk *memchunk)
 {
 	gchar *b;
 	MemChunkFreeNode *f;
 	gpointer mem;
 
-	f = m->free;
+	f = memchunk->free;
 	if (f) {
 		f->atoms--;
 		if (f->atoms > 0) {
-			mem = ((gchar *)f) + (f->atoms*m->atomsize);
+			mem = ((gchar *)f) + (f->atoms * memchunk->atomsize);
 		} else {
 			mem = f;
-			m->free = m->free->next;
+			memchunk->free = memchunk->free->next;
 		}
 		return mem;
 	} else {
-		b = g_malloc (m->blocksize * m->atomsize);
-		g_ptr_array_add (m->blocks, b);
-		f = (MemChunkFreeNode *)&b[m->atomsize];
-		f->atoms = m->blocksize-1;
+		b = g_malloc (memchunk->blocksize * memchunk->atomsize);
+		g_ptr_array_add (memchunk->blocks, b);
+		f = (MemChunkFreeNode *) &b[memchunk->atomsize];
+		f->atoms = memchunk->blocksize-1;
 		f->next = NULL;
-		m->free = f;
+		memchunk->free = f;
 		return b;
 	}
 }
 
-gpointer e_memchunk_alloc0 (EMemChunk *m)
+/**
+ * e_memchunk_alloc0:
+ * @memchunk: an #EMemChunk
+ *
+ * Allocate a new atom size block of memory from an #EMemChunk,
+ * and fill the memory with zeros.  Free the returned atom with
+ * e_memchunk_free().
+ *
+ * Returns: an allocated block of memory
+ **/
+gpointer
+e_memchunk_alloc0 (EMemChunk *memchunk)
 {
 	gpointer mem;
 
-	mem = e_memchunk_alloc (m);
-	memset (mem, 0, m->atomsize);
+	mem = e_memchunk_alloc (memchunk);
+	memset (mem, 0, memchunk->atomsize);
 
 	return mem;
 }
 
 /**
  * e_memchunk_free:
- * @m:
- * @mem: Address of atom to free.
+ * @memchunk: an #EMemChunk
+ * @mem: address of atom to free
  *
  * Free a single atom back to the free pool of atoms in the given
  * memchunk.
  **/
 void
-e_memchunk_free (MemChunk *m, gpointer mem)
+e_memchunk_free (EMemChunk *memchunk,
+                 gpointer mem)
 {
 	MemChunkFreeNode *f;
 
-	/* put the location back in the free list.  If we knew if the preceeding or following
-	   cells were free, we could merge the free nodes, but it doesn't really add much */
+	/* Put the location back in the free list.  If we knew if the
+	 * preceeding or following cells were free, we could merge the
+	 * free nodes, but it doesn't really add much. */
 	f = mem;
-	f->next = m->free;
-	m->free = f;
+	f->next = memchunk->free;
+	memchunk->free = f;
 	f->atoms = 1;
 
-	/* we could store the free list sorted - we could then do the above, and also
-	   probably improve the locality of reference properties for the allocator */
-	/* and it would simplify some other algorithms at that, but slow this one down
-	   significantly */
+	/* We could store the free list sorted - we could then do the above,
+	 * and also probably improve the locality of reference properties for
+	 * the allocator.  (And it would simplify some other algorithms at
+	 * that, but slow this one down significantly.) */
 }
 
 /**
  * e_memchunk_empty:
- * @m:
+ * @memchunk: an #EMemChunk
  *
  * Clean out the memchunk buffers.  Marks all allocated memory as free blocks,
  * but does not give it back to the system.  Can be used if the memchunk
  * is to be used repeatedly.
  **/
 void
-e_memchunk_empty (MemChunk *m)
+e_memchunk_empty (EMemChunk *memchunk)
 {
-	gint i;
 	MemChunkFreeNode *f, *h = NULL;
+	gint i;
 
-	for (i=0;i<m->blocks->len;i++) {
-		f = (MemChunkFreeNode *)m->blocks->pdata[i];
-		f->atoms = m->blocksize;
+	for (i = 0; i < memchunk->blocks->len; i++) {
+		f = (MemChunkFreeNode *) memchunk->blocks->pdata[i];
+		f->atoms = memchunk->blocksize;
 		f->next = h;
 		h = f;
 	}
-	m->free = h;
+
+	memchunk->free = h;
 }
 
 struct _cleaninfo {
@@ -190,7 +210,9 @@ struct _cleaninfo {
 	gint size;		/* just so tree_search has it, sigh */
 };
 
-static gint tree_compare (struct _cleaninfo *a, struct _cleaninfo *b)
+static gint
+tree_compare (struct _cleaninfo *a,
+              struct _cleaninfo *b)
 {
 	if (a->base < b->base)
 		return -1;
@@ -199,7 +221,9 @@ static gint tree_compare (struct _cleaninfo *a, struct _cleaninfo *b)
 	return 0;
 }
 
-static gint tree_search (struct _cleaninfo *a, gchar *mem)
+static gint
+tree_search (struct _cleaninfo *a,
+             gchar *mem)
 {
 	if (a->base <= mem) {
 		if (mem < &a->base[a->size])
@@ -211,7 +235,7 @@ static gint tree_search (struct _cleaninfo *a, gchar *mem)
 
 /**
  * e_memchunk_clean:
- * @m:
+ * @memchunk: an #EMemChunk
  *
  * Scan all empty blocks and check for blocks which can be free'd
  * back to the system.
@@ -221,24 +245,24 @@ static gint tree_search (struct _cleaninfo *a, gchar *mem)
  * greater than atomcount).
  **/
 void
-e_memchunk_clean (MemChunk *m)
+e_memchunk_clean (EMemChunk *memchunk)
 {
 	GTree *tree;
 	gint i;
 	MemChunkFreeNode *f;
 	struct _cleaninfo *ci, *hi = NULL;
 
-	f = m->free;
-	if (m->blocks->len == 0 || f == NULL)
+	f = memchunk->free;
+	if (memchunk->blocks->len == 0 || f == NULL)
 		return;
 
 	/* first, setup the tree/list so we can map free block addresses to block addresses */
 	tree = g_tree_new ((GCompareFunc)tree_compare);
-	for (i=0;i<m->blocks->len;i++) {
+	for (i = 0; i < memchunk->blocks->len; i++) {
 		ci = alloca (sizeof (*ci));
 		ci->count = 0;
-		ci->base = m->blocks->pdata[i];
-		ci->size = m->blocksize * m->atomsize;
+		ci->base = memchunk->blocks->pdata[i];
+		ci->size = memchunk->blocksize * memchunk->atomsize;
 		g_tree_insert (tree, ci, ci);
 		ci->next = hi;
 		hi = ci;
@@ -258,17 +282,17 @@ e_memchunk_clean (MemChunk *m)
 	/* if any nodes are all free, free & unlink them */
 	ci = hi;
 	while (ci) {
-		if (ci->count == m->blocksize) {
+		if (ci->count == memchunk->blocksize) {
 			MemChunkFreeNode *prev = NULL;
 
-			f = m->free;
+			f = memchunk->free;
 			while (f) {
 				if (tree_search (ci, (gpointer) f) == 0) {
 					/* prune this node from our free-node list */
 					if (prev)
 						prev->next = f->next;
 					else
-						m->free = f->next;
+						memchunk->free = f->next;
 				} else {
 					prev = f;
 				}
@@ -276,7 +300,7 @@ e_memchunk_clean (MemChunk *m)
 				f = f->next;
 			}
 
-			g_ptr_array_remove_fast (m->blocks, ci->base);
+			g_ptr_array_remove_fast (memchunk->blocks, ci->base);
 			g_free (ci->base);
 		}
 		ci = ci->next;
@@ -287,22 +311,24 @@ e_memchunk_clean (MemChunk *m)
 
 /**
  * e_memchunk_destroy:
- * @m:
+ * @memchunk: an #EMemChunk
  *
  * Free the memchunk header, and all associated memory.
  **/
 void
-e_memchunk_destroy (MemChunk *m)
+e_memchunk_destroy (EMemChunk *memchunk)
 {
 	gint i;
 
-	if (m == NULL)
+	if (memchunk == NULL)
 		return;
 
-	for (i=0;i<m->blocks->len;i++)
-		g_free (m->blocks->pdata[i]);
-	g_ptr_array_free (m->blocks, TRUE);
-	g_free (m);
+	for (i = 0; i < memchunk->blocks->len; i++)
+		g_free (memchunk->blocks->pdata[i]);
+
+	g_ptr_array_free (memchunk->blocks, TRUE);
+
+	g_free (memchunk);
 }
 
 #if 0

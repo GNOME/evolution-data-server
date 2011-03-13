@@ -26,7 +26,7 @@
 
 #include <string.h>
 
-struct EAccountListPrivate {
+struct _EAccountListPrivate {
 	GConfClient *gconf;
 	guint notify_id;
 };
@@ -210,9 +210,9 @@ free_func (gpointer data, gpointer closure)
 
 /**
  * e_account_list_new:
- * @gconf: a #GConfClient
+ * @client: a #GConfClient
  *
- * Reads the list of accounts from @gconf and listens for changes.
+ * Reads the list of accounts from @client and listens for changes.
  * Will emit %account_added, %account_changed, and %account_removed
  * signals according to notifications from GConf.
  *
@@ -327,86 +327,107 @@ e_account_list_remove_account_proxies (EAccountList *accounts, EAccount *account
 	e_account_list_save (accounts);
 }
 
-gint
-e_account_list_account_has_proxies (EAccountList *accounts, EAccount *account)
+gboolean
+e_account_list_account_has_proxies (EAccountList *account_list,
+                                    EAccount *account)
 {
-	if (e_account_list_find (accounts, E_ACCOUNT_FIND_PARENT_UID, account->uid))
-		return TRUE;
+	const EAccount *parent;
 
-	return FALSE;
+	g_return_val_if_fail (E_IS_ACCOUNT_LIST (account_list), FALSE);
+	g_return_val_if_fail (E_IS_ACCOUNT (account), FALSE);
+
+	parent = e_account_list_find (
+		account_list, E_ACCOUNT_FIND_PARENT_UID, account->uid);
+
+	return (parent != NULL);
 }
 
 /**
  * e_account_list_add:
- * @accounts:
- * @account:
+ * @account_list: an #EAccountList
+ * @account: an #EAccount
  *
- * Add an account to the account list.  Will emit the account-changed
- * event.
+ * Adds @account to @account_list and emits the
+ * #EAccountList::account-added signal.
  **/
 void
-e_account_list_add (EAccountList *accounts, EAccount *account)
+e_account_list_add (EAccountList *account_list,
+                    EAccount *account)
 {
+	g_return_if_fail (E_IS_ACCOUNT_LIST (account_list));
+	g_return_if_fail (E_IS_ACCOUNT (account));
+
 	/* FIXME: should we check for duplicate accounts? */
 
-	e_list_append ((EList *)accounts, account);
-	g_signal_emit (accounts, signals[ACCOUNT_ADDED], 0, account);
+	e_list_append (E_LIST (account_list), account);
+	g_signal_emit (account_list, signals[ACCOUNT_ADDED], 0, account);
 }
 
 /**
  * e_account_list_change:
- * @accounts:
- * @account:
+ * @account_list: an #EAccountList
+ * @account: an #EAccount
  *
- * Signal that the details of an account have changed.
+ * Emits the #EAccountList::account-changed signal.
  **/
 void
-e_account_list_change (EAccountList *accounts, EAccount *account)
+e_account_list_change (EAccountList *account_list,
+                       EAccount *account)
 {
-	/* maybe the account should do this itself ... */
-	g_signal_emit (accounts, signals[ACCOUNT_CHANGED], 0, account);
+	g_return_if_fail (E_IS_ACCOUNT_LIST (account_list));
+	g_return_if_fail (E_IS_ACCOUNT (account));
+
+	g_signal_emit (account_list, signals[ACCOUNT_CHANGED], 0, account);
 }
 
 /**
  * e_account_list_remove:
- * @accounts:
- * @account:
+ * @account_list: an #EAccountList
+ * @account: an #EAccount
  *
- * Remove an account from the account list, and emit the
- * account-removed signal.  If the account was the default account,
- * then reset the default to the first account.
+ * Removes @account from @account list, and emits the
+ * #EAccountList::account-removed signal.  If @account was the default
+ * account, then the first account in @account_list becomes the new default.
  **/
 void
-e_account_list_remove (EAccountList *accounts, EAccount *account)
+e_account_list_remove (EAccountList *account_list,
+                       EAccount *account)
 {
-	if (account == e_account_list_get_default (accounts))
-		gconf_client_unset (accounts->priv->gconf, "/apps/evolution/mail/default_account", NULL);
+	g_return_if_fail (E_IS_ACCOUNT_LIST (account_list));
+	g_return_if_fail (E_IS_ACCOUNT (account));
+
+	if (account == e_account_list_get_default (account_list))
+		gconf_client_unset (
+			account_list->priv->gconf,
+			"/apps/evolution/mail/default_account", NULL);
 
 	/* not sure if need to ref but no harm */
 	g_object_ref (account);
-	e_list_remove ((EList *) accounts, account);
-	g_signal_emit (accounts, signals[ACCOUNT_REMOVED], 0, account);
+	e_list_remove ((EList *) account_list, account);
+	g_signal_emit (account_list, signals[ACCOUNT_REMOVED], 0, account);
 	g_object_unref (account);
 }
 
 /**
  * e_account_list_get_default:
- * @accounts:
+ * @account_list: an #EAccountList
  *
- * Get the default account.  If no default is specified, or the default
+ * Get the default #EAccount.  If no default is specified, or the default
  * has become stale, then the first account is made the default.
  *
- * Returns: The account or NULL if no accounts are defined.
+ * Returns: the default #EAccount, or %NULL if no accounts are defined.
  **/
 const EAccount *
-e_account_list_get_default (EAccountList *accounts)
+e_account_list_get_default (EAccountList *account_list)
 {
 	gchar *uid;
 	EIterator *it;
 	const EAccount *account = NULL;
 
-	uid = gconf_client_get_string (accounts->priv->gconf, "/apps/evolution/mail/default_account", NULL);
-	it = e_list_get_iterator ((EList *)accounts);
+	uid = gconf_client_get_string (
+		account_list->priv->gconf,
+		"/apps/evolution/mail/default_account", NULL);
+	it = e_list_get_iterator (E_LIST (account_list));
 
 	if (uid) {
 		for (;e_iterator_is_valid (it);e_iterator_next (it)) {
@@ -422,7 +443,10 @@ e_account_list_get_default (EAccountList *accounts)
 	/* no uid or uid not found, @it will be at the first account */
 	if (account == NULL && e_iterator_is_valid (it)) {
 		account = (const EAccount *) e_iterator_get (it);
-		gconf_client_set_string (accounts->priv->gconf, "/apps/evolution/mail/default_account", account->uid, NULL);
+		gconf_client_set_string (
+			account_list->priv->gconf,
+			"/apps/evolution/mail/default_account",
+			account->uid, NULL);
 	}
 
 	g_object_unref (it);
@@ -433,34 +457,43 @@ e_account_list_get_default (EAccountList *accounts)
 
 /**
  * e_account_list_set_default:
- * @accounts:
- * @account:
+ * @account_list: an #EAccountList
+ * @account: an #EAccount
  *
- * Set the account @account to be the default account.
+ * Set the @account to be the default account in @account_list.
  **/
 void
-e_account_list_set_default (EAccountList *accounts, EAccount *account)
+e_account_list_set_default (EAccountList *account_list,
+                            EAccount *account)
 {
-	gconf_client_set_string (accounts->priv->gconf, "/apps/evolution/mail/default_account", account->uid, NULL);
+	g_return_if_fail (E_IS_ACCOUNT_LIST (account_list));
+	g_return_if_fail (E_IS_ACCOUNT (account));
+
+	gconf_client_set_string (
+		account_list->priv->gconf,
+		"/apps/evolution/mail/default_account",
+		account->uid, NULL);
 }
 
 /**
  * e_account_list_find:
- * @accounts:
- * @type: Type of search.
- * @key: Search key.
+ * @account_list: an #EAccountList
+ * @type: type of search
+ * @key: the search key
  *
- * Perform a search of the account list on a single key.
+ * Perform a search of @account_list on a single key.
  *
  * @type must be set from one of the following search types:
  * E_ACCOUNT_FIND_NAME - Find an account by account name.
  * E_ACCOUNT_FIND_ID_NAME - Find an account by the owner's identity name.
  * E_ACCOUNT_FIND_ID_ADDRESS - Find an account by the owner's identity address.
  *
- * Returns: The account or NULL if it doesn't exist.
+ * Returns: The account or %NULL if it doesn't exist.
  **/
 const EAccount *
-e_account_list_find (EAccountList *accounts, e_account_find_t type, const gchar *key)
+e_account_list_find (EAccountList *account_list,
+                     e_account_find_t type,
+                     const gchar *key)
 {
 	EIterator *it;
 	const EAccount *account = NULL;
@@ -471,7 +504,7 @@ e_account_list_find (EAccountList *accounts, e_account_find_t type, const gchar 
 	if (!key)
 		return NULL;
 
-	for (it = e_list_get_iterator ((EList *)accounts);
+	for (it = e_list_get_iterator ((EList *)account_list);
 	     e_iterator_is_valid (it);
 	     e_iterator_next (it)) {
 		gint found = 0;

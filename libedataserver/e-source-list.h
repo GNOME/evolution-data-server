@@ -20,80 +20,104 @@
  * Author: Ettore Perazzoli <ettore@ximian.com>
  */
 
-#ifndef _E_SOURCE_LIST_H_
-#define _E_SOURCE_LIST_H_
+#ifndef E_SOURCE_LIST_H
+#define E_SOURCE_LIST_H
 
 #include <libxml/tree.h>
 #include <gconf/gconf-client.h>
+#include <libedataserver/e-source-group.h>
 
-#include "e-source-group.h"
+/* Standard GObject macros */
+#define E_TYPE_SOURCE_LIST \
+	(e_source_list_get_type ())
+#define E_SOURCE_LIST(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_SOURCE_LIST, ESourceList))
+#define E_SOURCE_LIST_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_SOURCE_LIST, ESourceListClass))
+#define E_IS_SOURCE_LIST(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_SOURCE_LIST))
+#define E_IS_SOURCE_LIST_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_SOURCE_LIST))
+#define E_SOURCE_LIST_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_SOURCE_LIST, ESourceListClass))
 
 G_BEGIN_DECLS
 
-#define E_TYPE_SOURCE_LIST			(e_source_list_get_type ())
-#define E_SOURCE_LIST(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_SOURCE_LIST, ESourceList))
-#define E_SOURCE_LIST_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_SOURCE_LIST, ESourceListClass))
-#define E_IS_SOURCE_LIST(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_SOURCE_LIST))
-#define E_IS_SOURCE_LIST_CLASS(klass)		(G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_SOURCE_LIST))
-
-typedef struct _ESourceList        ESourceList;
+typedef struct _ESourceList ESourceList;
+typedef struct _ESourceListClass ESourceListClass;
 typedef struct _ESourceListPrivate ESourceListPrivate;
-typedef struct _ESourceListClass   ESourceListClass;
 
+/**
+ * ESourceList:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ **/
 struct _ESourceList {
 	GObject parent;
-
 	ESourceListPrivate *priv;
 };
 
 struct _ESourceListClass {
 	GObjectClass parent_class;
 
-	/* Signals.  */
-
-	void (* changed) (ESourceList *source_list);
-
-	void (* group_removed) (ESourceList *source_list, ESourceGroup *group);
-	void (* group_added) (ESourceList *source_list, ESourceGroup *group);
+	/* Signals */
+	void		(*changed)		(ESourceList *source_list);
+	void		(*group_removed)	(ESourceList *source_list,
+						 ESourceGroup *group);
+	void		(*group_added)		(ESourceList *source_list,
+						 ESourceGroup *group);
 };
 
-GType    e_source_list_get_type (void);
-
-ESourceList *e_source_list_new            (void);
-ESourceList *e_source_list_new_for_gconf  (GConfClient *client,
-					   const gchar  *path);
-ESourceList *e_source_list_new_for_gconf_default  (const gchar  *path);
-
-GSList       *e_source_list_peek_groups         (ESourceList *list);
-ESourceGroup *e_source_list_peek_group_by_uid   (ESourceList *list,
+GType		e_source_list_get_type		(void) G_GNUC_CONST;
+ESourceList *	e_source_list_new		(void);
+ESourceList *	e_source_list_new_for_gconf	(GConfClient *client,
+						 const gchar  *path);
+ESourceList *	e_source_list_new_for_gconf_default
+						(const gchar *path);
+GSList *	e_source_list_peek_groups	(ESourceList *list);
+ESourceGroup *	e_source_list_peek_group_by_uid	(ESourceList *list,
+						 const gchar *uid);
+ESourceGroup *	e_source_list_peek_group_by_base_uri
+						(ESourceList *list,
+						 const gchar *base_uri);
+ESourceGroup *	e_source_list_peek_group_by_properties
+						(ESourceList *list,
+						 const gchar *property_name,
+						 ...);
+ESource *	e_source_list_peek_source_by_uid
+						(ESourceList *list,
 						 const gchar  *uid);
-ESourceGroup *e_source_list_peek_group_by_base_uri (ESourceList *list, const gchar *base_uri);
-ESourceGroup *e_source_list_peek_group_by_properties (ESourceList *list, const gchar *property_name, ...);
-
-ESource      *e_source_list_peek_source_by_uid  (ESourceList *list,
-						 const gchar  *uid);
-ESource      *e_source_list_peek_source_any     (ESourceList *list);
-ESource      *e_source_list_peek_default_source (ESourceList *list);
-
-gboolean  e_source_list_add_group             (ESourceList  *list,
-					       ESourceGroup *group,
-					       gint           position);
-gboolean  e_source_list_remove_group          (ESourceList  *list,
-					       ESourceGroup *group);
-gboolean  e_source_list_remove_group_by_uid   (ESourceList  *list,
-					       const gchar   *uid);
-
-ESourceGroup *e_source_list_ensure_group (ESourceList *list, const gchar *name, const gchar *base_uri, gboolean ret_it);
-gboolean e_source_list_remove_group_by_base_uri (ESourceList *list, const gchar *base_uri);
-
-gboolean  e_source_list_remove_source_by_uid  (ESourceList  *list,
-					       const gchar   *uidj);
-
-gboolean  e_source_list_sync  (ESourceList  *list,
-			       GError      **error);
-
-gboolean e_source_list_is_gconf_updated (ESourceList *list);
+ESource *	e_source_list_peek_source_any	(ESourceList *list);
+ESource *	e_source_list_peek_default_source
+						(ESourceList *list);
+gboolean	e_source_list_add_group		(ESourceList *list,
+						 ESourceGroup *group,
+						 gint position);
+gboolean	e_source_list_remove_group	(ESourceList  *list,
+						 ESourceGroup *group);
+gboolean	e_source_list_remove_group_by_uid
+						(ESourceList *list,
+						 const gchar *uid);
+ESourceGroup *	e_source_list_ensure_group	(ESourceList *list,
+						 const gchar *name,
+						 const gchar *base_uri,
+						 gboolean ret_it);
+gboolean	e_source_list_remove_group_by_base_uri
+						(ESourceList *list,
+						 const gchar *base_uri);
+gboolean	e_source_list_remove_source_by_uid
+						(ESourceList  *list,
+						 const gchar *uidj);
+gboolean	e_source_list_sync		(ESourceList *list,
+						 GError **error);
+gboolean	e_source_list_is_gconf_updated	(ESourceList *list);
 
 G_END_DECLS
 
-#endif /* _E_SOURCE_LIST_H_ */
+#endif /* E_SOURCE_LIST_H */

@@ -45,7 +45,7 @@ Functions for manipulating xml as a hash table.
 
 @hash: 
 @type: 
-@root_node: 
+@root_name: 
 @Returns: 
 
 

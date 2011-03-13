@@ -250,7 +250,7 @@ ESource
 </para>
 
 @source: 
-@property: 
+@property_name: 
 @Returns: 
 
 
@@ -260,8 +260,8 @@ ESource
 </para>
 
 @source: 
-@property: 
-@value: 
+@property_name: 
+@property_value: 
 
 
 <!-- ##### FUNCTION e_source_foreach_property ##### -->
@@ -271,7 +271,7 @@ ESource
 
 @source: 
 @func: 
-@data: 
+@user_data: 
 
 
 <!-- ##### FUNCTION e_source_get_duped_property ##### -->
@@ -280,7 +280,7 @@ ESource
 </para>
 
 @source: 
-@property: 
+@property_name: 
 @Returns: 
 
 

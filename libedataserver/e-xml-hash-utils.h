@@ -17,8 +17,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __E_XML_HASH_UTILS_H__
-#define __E_XML_HASH_UTILS_H__
+#ifndef E_XML_HASH_UTILS_H
+#define E_XML_HASH_UTILS_H
 
 #include <glib.h>
 #include <libxml/parser.h>
@@ -35,13 +35,12 @@ typedef enum {
 	E_XML_HASH_TYPE_PROPERTY
 } EXmlHashType;
 
-GHashTable *e_xml_to_hash      (xmlDoc       *doc,
-				EXmlHashType  type);
-xmlDoc     *e_xml_from_hash    (GHashTable   *hash,
-				EXmlHashType  type,
-				const gchar   *root_node);
-
-void        e_xml_destroy_hash (GHashTable   *hash);
+GHashTable *	e_xml_to_hash			(xmlDoc *doc,
+						 EXmlHashType type);
+xmlDoc *	e_xml_from_hash			(GHashTable *hash,
+						 EXmlHashType type,
+						 const gchar *root_name);
+void		e_xml_destroy_hash		(GHashTable *hash);
 
 /**
  * EXmlHashStatus:
@@ -55,32 +54,33 @@ typedef enum {
 	E_XMLHASH_STATUS_NOT_FOUND
 } EXmlHashStatus;
 
-typedef void (* EXmlHashFunc) (const gchar *key, const gchar *value, gpointer user_data);
-typedef gboolean (* EXmlHashRemoveFunc) (const gchar *key, const gchar *value, gpointer user_data);
+typedef void		(*EXmlHashFunc)		(const gchar *key,
+						 const gchar *value,
+						 gpointer user_data);
+typedef gboolean	(*EXmlHashRemoveFunc)	(const gchar *key,
+						 const gchar *value,
+						 gpointer user_data);
 
 typedef struct EXmlHash EXmlHash;
 
-EXmlHash      *e_xmlhash_new         (const gchar   *filename);
-
-void           e_xmlhash_add         (EXmlHash     *hash,
-				      const gchar   *key,
-				      const gchar   *data);
-void           e_xmlhash_remove      (EXmlHash     *hash,
-				      const gchar   *key);
-
-EXmlHashStatus e_xmlhash_compare     (EXmlHash     *hash,
-				      const gchar   *key,
-				      const gchar   *compare_data);
-void           e_xmlhash_foreach_key (EXmlHash     *hash,
-				      EXmlHashFunc  func,
-				      gpointer      user_data);
-void           e_xmlhash_foreach_key_remove (EXmlHash     *hash,
-				      EXmlHashRemoveFunc  func,
-				      gpointer      user_data);
-
-void           e_xmlhash_write       (EXmlHash     *hash);
-void           e_xmlhash_destroy     (EXmlHash     *hash);
+EXmlHash *	e_xmlhash_new			(const gchar *filename);
+void		e_xmlhash_add			(EXmlHash *hash,
+						 const gchar *key,
+						 const gchar *data);
+void		e_xmlhash_remove		(EXmlHash *hash,
+						 const gchar *key);
+EXmlHashStatus	e_xmlhash_compare		(EXmlHash *hash,
+						 const gchar *key,
+						 const gchar *compare_data);
+void		e_xmlhash_foreach_key		(EXmlHash *hash,
+						 EXmlHashFunc func,
+						 gpointer user_data);
+void		e_xmlhash_foreach_key_remove	(EXmlHash *hash,
+						 EXmlHashRemoveFunc func,
+						 gpointer user_data);
+void		e_xmlhash_write			(EXmlHash *hash);
+void		e_xmlhash_destroy		(EXmlHash *hash);
 
 G_END_DECLS
 
-#endif
+#endif /* E_XML_HASH_UTILS_H */

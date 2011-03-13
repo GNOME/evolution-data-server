@@ -39,6 +39,16 @@
 #define fsync(fd) 0
 #endif
 
+/**
+ * e_xml_parse_file:
+ * @filename: path to an XML file
+ *
+ * Reads a local XML file and parses the contents into an XML document
+ * structure.  If the XML file cannot be read or its contents are malformed,
+ * the function returns %NULL.
+ *
+ * Returns: an XML document structure, or %NULL
+ **/
 xmlDocPtr
 e_xml_parse_file (const gchar *filename)
 {
@@ -48,19 +58,28 @@ e_xml_parse_file (const gchar *filename)
 
 	mapped_file = g_mapped_file_new (filename, FALSE, NULL);
 	if (mapped_file) {
-		result = xmlParseMemory (g_mapped_file_get_contents (mapped_file),
-					 g_mapped_file_get_length (mapped_file));
-#if GLIB_CHECK_VERSION(2,21,3)
+		result = xmlParseMemory (
+			g_mapped_file_get_contents (mapped_file),
+			g_mapped_file_get_length (mapped_file));
 		g_mapped_file_unref (mapped_file);
-#else
-		g_mapped_file_free (mapped_file);
-#endif
 	}
+
 	return result;
 }
 
+/**
+ * e_xml_save_file:
+ * @filename: path to a file to save to
+ * @doc: an XML document structure
+ *
+ * Writes the given XML document structure to the file given by @filename.
+ * If an error occurs while saving, the function returns -1 and sets errno.
+ *
+ * Returns: 0 on success, -1 on failure
+ **/
 gint
-e_xml_save_file (const gchar *filename, xmlDocPtr doc)
+e_xml_save_file (const gchar *filename,
+                 xmlDocPtr doc)
 {
 	gchar *filesave;
 	xmlChar *xmlbuf;
@@ -133,8 +152,19 @@ e_xml_save_file (const gchar *filename, xmlDocPtr doc)
 	return 0;
 }
 
+/**
+ * e_xml_get_child_by_name:
+ * @parent: an XML node structure
+ * @child_name: element name of a child node
+ *
+ * Attempts to find a child element of @parent named @child_name.
+ * If no such child exists, the function returns %NULL.
+ *
+ * Returns: a child XML node structure, or %NULL
+ **/
 xmlNode *
-e_xml_get_child_by_name (const xmlNode *parent, const xmlChar *child_name)
+e_xml_get_child_by_name (const xmlNode *parent,
+                         const xmlChar *child_name)
 {
 	xmlNode *child;
 

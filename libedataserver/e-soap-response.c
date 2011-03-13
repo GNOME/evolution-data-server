@@ -122,13 +122,13 @@ parse_parameters (ESoapResponsePrivate *priv, xmlNodePtr xml_method)
 
 /**
  * e_soap_response_from_string:
- * @response: the #ESoapResponse object.
- * @xmlstr: XML string to parse.
+ * @response: an #ESoapResponse
+ * @xmlstr: XML string to parse
  *
  * Parses the string contained in @xmlstr and sets all properties from
  * it in the @response object.
  *
- * Returns: %TRUE if successful, %FALSE otherwise.
+ * Returns: %TRUE if successful, %FALSE otherwise
  *
  * Since: 3.0
  */
@@ -195,11 +195,11 @@ e_soap_response_from_string (ESoapResponse *response, const gchar *xmlstr)
 
 /**
  * e_soap_response_get_method_name:
- * @response: the #ESoapResponse object.
+ * @response: an #ESoapResponse
  *
  * Gets the method name from the SOAP response.
  *
- * Returns: the method name.
+ * Returns: the method name
  *
  * Since: 3.0
  */
@@ -217,15 +217,16 @@ e_soap_response_get_method_name (ESoapResponse *response)
 
 /**
  * e_soap_response_set_method_name:
- * @response: the #ESoapResponse object.
- * @method_name: the method name to set.
+ * @response: an #ESoapResponse object
+ * @method_name: the method name to set
  *
  * Sets the method name on the given #ESoapResponse.
  *
  * Since: 3.0
  */
 void
-e_soap_response_set_method_name (ESoapResponse *response, const gchar *method_name)
+e_soap_response_set_method_name (ESoapResponse *response,
+                                 const gchar *method_name)
 {
 	ESoapResponsePrivate *priv;
 
@@ -444,7 +445,7 @@ e_soap_parameter_get_property (ESoapParameter *param, const gchar *prop_name)
 
 /**
  * e_soap_response_get_parameters:
- * @response: the #ESoapResponse object.
+ * @response: an #ESoapResponse
  *
  * Returns the list of parameters received in the SOAP response.
  *
@@ -465,12 +466,12 @@ e_soap_response_get_parameters (ESoapResponse *response)
 
 /**
  * e_soap_response_get_first_parameter:
- * @response: the #ESoapResponse object.
+ * @response: an #ESoapResponse
  *
  * Retrieves the first parameter contained in the SOAP response.
  *
- * Returns: a #ESoapParameter representing the first
- * parameter, or %NULL if there are no parameters.
+ * Returns: a #ESoapParameter representing the first parameter, or
+ *          %NULL if there are no parameters
  *
  * Since: 3.0
  */
@@ -487,14 +488,14 @@ e_soap_response_get_first_parameter (ESoapResponse *response)
 
 /**
  * e_soap_response_get_first_parameter_by_name:
- * @response: the #ESoapResponse object.
- * @name: the name of the parameter to look for.
+ * @response: an #ESoapResponse
+ * @name: the name of the parameter to look for
  *
  * Retrieves the first parameter contained in the SOAP response whose
  * name is @name.
  *
- * Returns: a #ESoapParameter representing the first parameter
- * with the given name, or %NULL.
+ * Returns: a #ESoapParameter representing the first parameter with
+ *          the given name, or %NULL
  *
  * Since: 3.0
  */
@@ -521,13 +522,13 @@ e_soap_response_get_first_parameter_by_name (ESoapResponse *response,
 
 /**
  * e_soap_response_get_next_parameter:
- * @response: the #ESoapResponse object.
- * @from: the parameter to start from.
+ * @response: an #ESoapResponse
+ * @from: the parameter to start from
  *
  * Retrieves the parameter following @from in the #ESoapResponse
  * object.
  *
- * Returns: a #ESoapParameter representing the parameter.
+ * Returns: a #ESoapParameter representing the parameter
  *
  * Since: 3.0
  */
@@ -551,14 +552,14 @@ e_soap_response_get_next_parameter (ESoapResponse *response,
 
 /**
  * e_soap_response_get_next_parameter_by_name:
- * @response: the #ESoapResponse object.
- * @from: the parameter to start from.
- * @name: the name of the parameter to look for.
+ * @response: an #ESoapResponse
+ * @from: the parameter to start from
+ * @name: the name of the parameter to look for
  *
  * Retrieves the first parameter following @from in the
  * #ESoapResponse object whose name matches @name.
  *
- * Returns: a #ESoapParameter representing the parameter.
+ * Returns: a #ESoapParameter representing the parameter
  *
  * Since: 3.0
  */
@@ -599,6 +600,12 @@ soup_xml_real_node (xmlNode *node)
 
 /**
  * e_soap_response_dump_response:
+ * @response: an #ESoapResponse
+ * @buffer: an open file stream
+ *
+ * This is a debugging utility.  Dumps the contents of @reponse to a file.
+ *
+ * Returns: 0 on success, -1 on failure
  *
  * Since: 3.0
  **/

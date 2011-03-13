@@ -41,7 +41,7 @@ e-memory
 
 </para>
 
-@m: 
+@memchunk: 
 @Returns: 
 
 
@@ -50,7 +50,7 @@ e-memory
 
 </para>
 
-@m: 
+@memchunk: 
 @Returns: 
 
 
@@ -59,7 +59,7 @@ e-memory
 
 </para>
 
-@m: 
+@memchunk: 
 @mem: 
 
 
@@ -68,7 +68,7 @@ e-memory
 
 </para>
 
-@m: 
+@memchunk: 
 
 
 <!-- ##### FUNCTION e_memchunk_clean ##### -->
@@ -76,7 +76,7 @@ e-memory
 
 </para>
 
-@m: 
+@memchunk: 
 
 
 <!-- ##### FUNCTION e_memchunk_destroy ##### -->
@@ -84,6 +84,6 @@ e-memory
 
 </para>
 
-@m: 
+@memchunk: 
 
 

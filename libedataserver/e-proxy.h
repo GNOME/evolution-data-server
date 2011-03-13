@@ -54,6 +54,9 @@ typedef struct _EProxyPrivate EProxyPrivate;
 /**
  * EProxy:
  *
+ * Contains only private data that should be read and manipulated using the
+ * function below.
+ *
  * Since: 2.24
  **/
 struct _EProxy {
@@ -68,7 +71,7 @@ struct _EProxyClass {
 	void (*changed) (EProxy *proxy);
 };
 
-GType		e_proxy_get_type		(void);
+GType		e_proxy_get_type		(void) G_GNUC_CONST;
 EProxy *	e_proxy_new			(void);
 void		e_proxy_setup_proxy		(EProxy *proxy);
 SoupURI *	e_proxy_peek_uri_for		(EProxy *proxy,

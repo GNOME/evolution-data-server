@@ -25,15 +25,14 @@
  * USA.
  */
 
-#ifndef __E_URL_H__
-#define __E_URL_H__
+#ifndef E_URL_H
+#define E_URL_H
 
 #include <glib.h>
 
 G_BEGIN_DECLS
 
-gchar *e_url_shroud (const gchar *url);
-gboolean e_url_equal (const gchar *url1, const gchar *url2);
+typedef struct _EUri EUri;
 
 /**
  * EUri:
@@ -45,31 +44,36 @@ gboolean e_url_equal (const gchar *url1, const gchar *url2);
  * @port: The port number.
  * @path: The file path on the host.
  * @params: Additional parameters.
- * @query:
- * @fragment:
+ * @query: The URI query.
+ * @fragment: The URI fragment.
  *
  * A structure representing a URI.
  **/
-typedef struct {
-	gchar  *protocol;
-	gchar  *user;
-	gchar  *authmech;
-	gchar  *passwd;
-	gchar  *host;
-	gint    port;
-	gchar  *path;
+struct _EUri {
+	gchar *protocol;
+	gchar *user;
+	gchar *authmech;
+	gchar *passwd;
+	gchar *host;
+	gint port;
+	gchar *path;
 	GData *params;
-	gchar  *query;
-	gchar  *fragment;
-} EUri;
+	gchar *query;
+	gchar *fragment;
+};
 
-EUri       *e_uri_new       (const gchar *uri_string);
-void        e_uri_free      (EUri *uri);
-const gchar *e_uri_get_param (EUri *uri, const gchar *name);
-EUri       *e_uri_copy      (EUri *uri);
-gchar       *e_uri_to_string (EUri *uri, gboolean show_password);
+EUri *		e_uri_new			(const gchar *uri_string);
+void		e_uri_free			(EUri *uri);
+const gchar *	e_uri_get_param			(EUri *uri,
+						 const gchar *name);
+EUri *		e_uri_copy			(EUri *uri);
+gchar *		e_uri_to_string			(EUri *uri,
+						 gboolean show_password);
+gchar *		e_url_shroud			(const gchar *url);
+gboolean	e_url_equal			(const gchar *url1,
+						 const gchar *url2);
 
 G_END_DECLS
 
-#endif /* __E_URL_H__ */
+#endif /* E_URL_H */
 

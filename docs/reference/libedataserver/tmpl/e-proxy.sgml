@@ -25,8 +25,13 @@ EProxy
 
 </para>
 
-@parent: 
-@priv: 
+
+<!-- ##### SIGNAL EProxy::changed ##### -->
+<para>
+
+</para>
+
+@eproxy: the object which received the signal.
 
 <!-- ##### FUNCTION e_proxy_new ##### -->
 <para>

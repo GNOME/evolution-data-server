@@ -27,7 +27,7 @@
 
 G_BEGIN_DECLS
 
-gchar *e_uid_new  (void);
+gchar *		e_uid_new			(void);
 
 G_END_DECLS
 

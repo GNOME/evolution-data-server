@@ -354,6 +354,16 @@ e_util_utf8_strstrcasedecomp (const gchar *haystack,
 	return NULL;
 }
 
+/**
+ * e_util_utf8_strcasecmp:
+ * @s1: a UTF-8 string
+ * @s2: another UTF-8 string
+ *
+ * Compares two UTF-8 strings using approximate case-insensitive ordering.
+ *
+ * Returns: < 0 if @s1 compares before @s2, 0 if they compare equal,
+ *          > 0 if @s1 compares after @s2
+ **/
 gint
 e_util_utf8_strcasecmp (const gchar *s1,
                         const gchar *s2)
@@ -379,8 +389,11 @@ e_util_utf8_strcasecmp (const gchar *s1,
 
 /**
  * e_util_utf8_remove_accents:
+ * @str: a UTF-8 string, or %NULL
  *
- * Returns newly allocates string, copy of 'str', without accents.
+ * Returns a newly-allocated copy of @str with accents removed.
+ *
+ * Returns: a newly-allocated string
  *
  * Since: 2.28
  **/
@@ -390,7 +403,7 @@ e_util_utf8_remove_accents (const gchar *str)
 	gchar *res;
 	gint i, j;
 
-	if (!str)
+	if (str == NULL)
 		return NULL;
 
 	res = g_utf8_normalize (str, -1, G_NORMALIZE_NFD);
@@ -413,10 +426,12 @@ e_util_utf8_remove_accents (const gchar *str)
 
 /**
  * e_util_utf8_make_valid:
+ * @str: a UTF-8 string
  *
- * Returns newly allocates string, copy of 'str', which
- * is UTF8 valid string. Invalid letters are replaced
- * with question marks U+FFFD.
+ * Returns a newly-allocated copy of @str, with invalid characters
+ * replaced by Unicode replacement characters (U+FFFD).
+ *
+ * Returns: a newly-allocated string
  *
  * Since: 3.0
  **/
@@ -484,22 +499,46 @@ e_util_utf8_make_valid (const gchar *str)
 
 /**
  * e_util_ensure_gdbus_string:
- * @str: What to convert, if NULL, then returns empty string.
- * @gdbus_str: In case that 'str' is not valid UTF8 string
- *   and new memory allocated, then it is returned in this
- *   variable, and its value should be freed with g_free().
- *   It cannot be NULL.
+ * @str: a possibly invalid UTF-8 string, or %NULL
+ * @gdbus_str: return location for the corrected string
  *
- * Returns string usable for GDBus, or more precisely GVariant,
- * which requires UTF8 encoded strings for a transfer.
- * If the str is not UTF8 valid, then new string is allocated
- * and returned in gdbus_str, on which is supposed to be called
- * g_free().
+ * If @str is a valid UTF-8 string, the function returns @str and does
+ * not set @gdbus_str.
+ *
+ * If @str is an invalid UTF-8 string, the function calls
+ * e_util_utf8_make_valid() and points @gdbus_str to the newly-allocated,
+ * valid UTF-8 string, and also returns it.  The caller should free the
+ * string pointed to by @gdbus_str with g_free().
+ *
+ * If @str is %NULL, the function returns an empty string and does not
+ * set @gdbus_str.
+ *
+ * Admittedly, the function semantics are a little awkward.  The example
+ * below illustrates the easiest way to cope with the @gdbus_str argument:
+ *
+ * <informalexample>
+ *   <programlisting>
+ *     const gchar *trusted_utf8;
+ *     gchar *allocated = NULL;
+ *
+ *     trusted_utf8 = e_util_ensure_gdbus_string (untrusted_utf8, &allocated);
+ *
+ *     Do stuff with trusted_utf8, then clear it.
+ *
+ *     trusted_utf8 = NULL;
+ *
+ *     g_free (allocated);
+ *     allocated = NULL;
+ *   </programlisting>
+ * </informalexample>
+ *
+ * Returns: a valid UTF-8 string
  *
  * Since: 3.0
  **/
 const gchar *
-e_util_ensure_gdbus_string (const gchar *str, gchar **gdbus_str)
+e_util_ensure_gdbus_string (const gchar *str,
+                            gchar **gdbus_str)
 {
 	g_return_val_if_fail (gdbus_str != NULL, NULL);
 
@@ -838,12 +877,12 @@ static gint default_dbus_timeout = DEFAULT_EDS_DBUS_TIMEOUT;
 
 /**
  * e_data_server_util_set_dbus_call_timeout:
- * @timeout_msec: Default timeout for DBus calls in miliseconds.
+ * @timeout_msec: default timeout for D-Bus calls in miliseconds
  *
- * Sets default timeout, in miliseconds, for calls of g_dbus_proxy_call()
+ * Sets default timeout, in milliseconds, for calls of g_dbus_proxy_call()
  * family functions.
  *
- * -1 means the default value as set by DBus itself.
+ * -1 means the default value as set by D-Bus itself.
  * G_MAXINT means no timeout at all.
  *
  * Default value is set also by configure option --with-dbus-call-timeout=ms
@@ -860,7 +899,9 @@ e_data_server_util_set_dbus_call_timeout (gint timeout_msec)
 /**
  * e_data_server_util_get_dbus_call_timeout:
  *
- * Returns value set by e_data_server_util_set_dbus_call_timeout()
+ * Returns the value set by e_data_server_util_set_dbus_call_timeout().
+ *
+ * Returns: the D-Bus call timeout in milliseconds
  *
  * Since: 3.0
  **/

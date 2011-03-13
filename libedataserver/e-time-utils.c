@@ -1596,9 +1596,9 @@ has_correct_date (const struct tm *value)
  * Since: 2.22
  */
 ETimeParseStatus
-e_time_parse_date_and_time_ex		(const gchar	*value,
-					 struct tm	*result,
-					 gboolean	*two_digit_year)
+e_time_parse_date_and_time_ex (const gchar *value,
+                               struct tm *result,
+                               gboolean *two_digit_year)
 {
 	struct tm *today_tm;
 	time_t t;
@@ -1724,9 +1724,25 @@ e_time_parse_date_and_time_ex		(const gchar	*value,
 	return status;
 }
 
+/**
+ * e_time_parse_date_and_time:
+ * @value: the string to parse a date and time from
+ * @result: a #tm to store the result in
+ *
+ * Parses a string @value containing a date and a time and stores the
+ * result in @result. The date in @value is expected to be in a format
+ * like "Wed 3/13/00 14:20:00", though gettext() is used to support the
+ * appropriate local formats. There is also some leniency on the
+ * format of the string, e.g. the weekday can be skipped or 12-hour
+ * formats with am/pm can be used.
+ *
+ * Returns: E_TIME_PARSE_OK if the string was successfully parsed,
+ *          E_TIME_PARSE_NONE if the string was empty, or
+ *          E_TIME_PARSE_INVALID if the string could not be parsed.
+ */
 ETimeParseStatus
-e_time_parse_date_and_time		(const gchar	*value,
-					 struct tm	*result)
+e_time_parse_date_and_time (const gchar	*value,
+                            struct tm *result)
 {
 	return e_time_parse_date_and_time_ex (value, result, NULL);
 }
@@ -1747,7 +1763,9 @@ e_time_parse_date_and_time		(const gchar	*value,
  * Since: 2.22
  **/
 ETimeParseStatus
-e_time_parse_date_ex (const gchar *value, struct tm *result, gboolean *two_digit_year)
+e_time_parse_date_ex (const gchar *value,
+                      struct tm *result,
+                      gboolean *two_digit_year)
 {
 	const gchar *format[4];
 	ETimeParseStatus status;
@@ -1794,6 +1812,17 @@ e_time_parse_date_ex (const gchar *value, struct tm *result, gboolean *two_digit
 	return status;
 }
 
+/**
+ * e_time_parse_date:
+ * @value: A date string.
+ * @result: Return value for the parsed date.
+ *
+ * Takes in a date string entered by the user and tries to convert it to
+ * a struct #tm.
+ *
+ * Returns: An #ETimeParseStatus result code indicating whether
+ * @value was an empty string, a valid date, or an invalid date.
+ **/
 ETimeParseStatus
 e_time_parse_date (const gchar *value, struct tm *result)
 {
@@ -2027,6 +2056,11 @@ static gint _e_string_replace (gchar **str, const gchar *old, const gchar *new)
 
 /**
  * e_time_get_d_fmt_with_4digit_year:
+ *
+ * Retrieves a date format string with a 4-digit year (D_FMT on systems with
+ * nl_langinfo() available).  Free the returned string with g_free().
+ *
+ * Returns: a newly-allocated date format string
  *
  * Since: 2.22
  **/

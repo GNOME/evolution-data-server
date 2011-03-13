@@ -17,18 +17,34 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __E_ACCOUNT__
-#define __E_ACCOUNT__
+#ifndef E_ACCOUNT_H
+#define E_ACCOUNT_H
 
 #include <glib-object.h>
 
+/* Standard GObject macros */
+#define E_TYPE_ACCOUNT \
+	(e_account_get_type ())
+#define E_ACCOUNT(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_ACCOUNT, EAccount))
+#define E_ACCOUNT_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_ACCOUNT, EAccountClass))
+#define E_IS_ACCOUNT(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_ACCOUNT))
+#define E_IS_ACCOUNT_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_ACCOUNT))
+#define E_ACCOUNT_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_ACCOUNT, EAccountClass))
+
 G_BEGIN_DECLS
 
-#define E_TYPE_ACCOUNT            (e_account_get_type ())
-#define E_ACCOUNT(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_ACCOUNT, EAccount))
-#define E_ACCOUNT_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_ACCOUNT, EAccountClass))
-#define E_IS_ACCOUNT(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_ACCOUNT))
-#define E_IS_ACCOUNT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_ACCOUNT))
+typedef struct _EAccount EAccount;
+typedef struct _EAccountClass EAccountClass;
 
 typedef enum _e_account_item_t {
 	E_ACCOUNT_NAME,
@@ -106,8 +122,8 @@ typedef struct _EAccountService {
 	gboolean get_password_canceled;
 } EAccountService;
 
-typedef struct _EAccount {
-	GObject parent_object;
+struct _EAccount {
+	GObject parent;
 
 	gchar *name;
 	gchar *uid;
@@ -142,55 +158,45 @@ typedef struct _EAccount {
 	gboolean smime_sign_default;
 	gboolean smime_encrypt_to_self;
 	gboolean smime_encrypt_default;
-} EAccount;
+};
 
-typedef struct {
+struct _EAccountClass {
 	GObjectClass parent_class;
 
-	void (*changed)(EAccount *, gint field);
-} EAccountClass;
+	void		(*changed)		(EAccount *account,
+						 gint field);
+};
 
-GType     e_account_get_type (void);
-
-EAccount *e_account_new          (void);
-
-EAccount *e_account_new_from_xml (const gchar *xml);
-
-gboolean  e_account_set_from_xml (EAccount   *account,
-				  const gchar *xml);
-
-void      e_account_import       (EAccount   *dest,
-				  EAccount   *src);
-
-gchar     *e_account_to_xml       (EAccount   *account);
-
-gchar     *e_account_uid_from_xml (const gchar *xml);
-
-const gchar *e_account_get_string (EAccount *,
-				  e_account_item_t type);
-
-gint       e_account_get_int      (EAccount *,
-				  e_account_item_t type);
-
-gboolean  e_account_get_bool     (EAccount *,
-				  e_account_item_t type);
-
-void      e_account_set_string   (EAccount *,
-				  e_account_item_t type, const gchar *);
-
-void      e_account_set_int      (EAccount *,
-				  e_account_item_t type, gint);
-
-void      e_account_set_bool     (EAccount *,
-				  e_account_item_t type, gboolean);
-
-gboolean  e_account_writable     (EAccount *ea,
-				  e_account_item_t type);
-
-gboolean  e_account_writable_option (EAccount *ea,
-				  const gchar *protocol,
-				  const gchar *option);
+GType		e_account_get_type		(void) G_GNUC_CONST;
+EAccount *	e_account_new			(void);
+EAccount *	e_account_new_from_xml		(const gchar *xml);
+gboolean	e_account_set_from_xml		(EAccount *account,
+						 const gchar *xml);
+void		e_account_import		(EAccount *dest,
+						 EAccount *src);
+gchar *		e_account_to_xml		(EAccount *account);
+gchar *		e_account_uid_from_xml		(const gchar *xml);
+const gchar *	e_account_get_string		(EAccount *account,
+						 e_account_item_t type);
+gint		e_account_get_int		(EAccount *account,
+						 e_account_item_t type);
+gboolean	e_account_get_bool		(EAccount *account,
+						 e_account_item_t type);
+void		e_account_set_string		(EAccount *account,
+						 e_account_item_t type,
+						 const gchar *v_string);
+void		e_account_set_int		(EAccount *account,
+						 e_account_item_t type,
+						 gint v_int);
+void		e_account_set_bool		(EAccount *account,
+						 e_account_item_t type,
+						 gboolean v_bool);
+gboolean	e_account_writable		(EAccount *account,
+				 		 e_account_item_t type);
+gboolean	e_account_writable_option	(EAccount *account,
+						 const gchar *protocol,
+						 const gchar *option);
 
 G_END_DECLS
 
-#endif /* __E_ACCOUNT__ */
+#endif /* E_ACCOUNT_H */

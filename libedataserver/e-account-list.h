@@ -24,15 +24,30 @@
 #include "e-account.h"
 #include <gconf/gconf-client.h>
 
+/* Standard GObject macros */
+#define E_TYPE_ACCOUNT_LIST \
+	(e_account_list_get_type ())
+#define E_ACCOUNT_LIST(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_ACCOUNT_LIST, EAccountList))
+#define E_ACCOUNT_LIST_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_ACCOUNT_LIST, EAccountListClass))
+#define E_IS_ACCOUNT_LIST(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_ACCOUNT_LIST))
+#define E_IS_ACCOUNT_LIST_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_ACCOUNT_LIST))
+#define E_ACCOUNT_LIST_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_ACCOUNT_LIST, EAccountListClass))
+
 G_BEGIN_DECLS
 
-#define E_TYPE_ACCOUNT_LIST            (e_account_list_get_type ())
-#define E_ACCOUNT_LIST(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_ACCOUNT_LIST, EAccountList))
-#define E_ACCOUNT_LIST_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_ACCOUNT_LIST, EAccountListClass))
-#define E_IS_ACCOUNT_LIST(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_ACCOUNT_LIST))
-#define E_IS_ACCOUNT_LIST_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_ACCOUNT_LIST))
-
-typedef struct EAccountListPrivate EAccountListPrivate;
+typedef struct _EAccountList EAccountList;
+typedef struct _EAccountListClass EAccountListClass;
+typedef struct _EAccountListPrivate EAccountListPrivate;
 
 /* search options for the find command */
 typedef enum _e_account_find_t {
@@ -43,40 +58,53 @@ typedef enum _e_account_find_t {
 	E_ACCOUNT_FIND_PARENT_UID
 } e_account_find_t;
 
-typedef struct _EAccountList {
-	EList parent_object;
-
+/**
+ * EAccountList:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ **/
+struct _EAccountList {
+	EList parent;
 	EAccountListPrivate *priv;
-} EAccountList;
+};
 
-typedef struct {
+struct _EAccountListClass {
 	EListClass parent_class;
 
 	/* signals */
-	void (*account_added)   (EAccountList *, EAccount *);
-	void (*account_changed) (EAccountList *, EAccount *);
-	void (*account_removed) (EAccountList *, EAccount *);
-} EAccountListClass;
+	void		(*account_added)	(EAccountList *account_list,
+						 EAccount *account);
+	void		(*account_changed)	(EAccountList *account_list,
+						 EAccount *account);
+	void		(*account_removed)	(EAccountList *account_list,
+						 EAccount *account);
+};
 
-GType           e_account_list_get_type (void);
-
-EAccountList   *e_account_list_new       (GConfClient  *gconf);
-void            e_account_list_construct (EAccountList *account_list,
-					  GConfClient  *gconf);
-
-void            e_account_list_save      (EAccountList *account_list);
-
-void            e_account_list_add       (EAccountList *, EAccount *);
-void            e_account_list_change    (EAccountList *, EAccount *);
-void            e_account_list_remove    (EAccountList *, EAccount *);
-
-const EAccount *e_account_list_get_default (EAccountList *);
-void            e_account_list_set_default (EAccountList *, EAccount *);
-const EAccount *e_account_list_find       (EAccountList *, e_account_find_t type, const gchar *key);
-
-void e_account_list_prune_proxies (EAccountList *);
-void e_account_list_remove_account_proxies (EAccountList *, EAccount *);
-gint e_account_list_account_has_proxies (EAccountList *, EAccount *);
+GType		e_account_list_get_type		(void) G_GNUC_CONST;
+EAccountList *	e_account_list_new		(GConfClient *client);
+void		e_account_list_construct	(EAccountList *account_list,
+						 GConfClient *client);
+void		e_account_list_save		(EAccountList *account_list);
+void		e_account_list_add		(EAccountList *account_list,
+						 EAccount *account);
+void		e_account_list_change		(EAccountList *account_list,
+						 EAccount *account);
+void		e_account_list_remove		(EAccountList *account_list,
+						 EAccount *account);
+const EAccount *e_account_list_get_default	(EAccountList *account_list);
+void		e_account_list_set_default	(EAccountList *account_list,
+						 EAccount *account);
+const EAccount *e_account_list_find		(EAccountList *account_list,
+						 e_account_find_t type,
+						 const gchar *key);
+void		e_account_list_prune_proxies	(EAccountList *account_list);
+void		e_account_list_remove_account_proxies
+						(EAccountList *account_list,
+						 EAccount *account);
+gboolean	e_account_list_account_has_proxies
+						(EAccountList *account_list,
+						 EAccount *account);
 
 G_END_DECLS
 

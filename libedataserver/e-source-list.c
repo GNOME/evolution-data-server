@@ -426,13 +426,20 @@ e_source_list_peek_group_by_uid (ESourceList *list,
 
 /**
  * e_source_list_peek_group_by_base_uri:
+ * @list: an #ESourceList
+ * @base_uri: a group base URI
  *
- * Returns the first group which base uri begins with a base_uri.
+ * Returns the first #ESourceGroup having the given base URI.
+ * The base URI is usually just the URI scheme, such as "http://".
+ * If no such group is present in @list, the function returns %NULL.
+ *
+ * Returns: an #ESourceGroup with a matching base URI, or %NULL
  *
  * Since: 2.28
  **/
 ESourceGroup *
-e_source_list_peek_group_by_base_uri (ESourceList *list, const gchar *base_uri)
+e_source_list_peek_group_by_base_uri (ESourceList *list,
+                                      const gchar *base_uri)
 {
 	GSList *p;
 	gint len;
@@ -625,19 +632,25 @@ e_source_list_peek_default_source (ESourceList *source_list)
 
 gboolean
 e_source_list_add_group (ESourceList *list,
-			 ESourceGroup *group,
-			 gint position)
+                         ESourceGroup *group,
+                         gint position)
 {
+	const gchar *uid;
+
 	g_return_val_if_fail (E_IS_SOURCE_LIST (list), FALSE);
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), FALSE);
 
-	if (e_source_list_peek_group_by_uid (list, e_source_group_peek_uid (group)) != NULL)
+	uid = e_source_group_peek_uid (group);
+
+	if (e_source_list_peek_group_by_uid (list, uid) != NULL)
 		return FALSE;
 
-	list->priv->groups = g_slist_insert (list->priv->groups, group, position);
-	g_object_ref (group);
+	list->priv->groups = g_slist_insert (
+		list->priv->groups, g_object_ref (group), position);
 
-	g_signal_connect (group, "changed", G_CALLBACK (group_changed_callback), list);
+	g_signal_connect (
+		group, "changed",
+		G_CALLBACK (group_changed_callback), list);
 
 	g_signal_emit (list, signals[GROUP_ADDED], 0, group);
 	g_signal_emit (list, signals[CHANGED], 0);
@@ -645,23 +658,50 @@ e_source_list_add_group (ESourceList *list,
 	return TRUE;
 }
 
+/**
+ * e_source_list_remove_group:
+ * @list: an #ESourceList
+ * @group: an #ESourceGroup
+ *
+ * Removes the first #ESourceGroup with a unique ID matching @group
+ * (possibly @group itself) from @list.  The function returns %TRUE if a
+ * matching group was found, otherwise %FALSE.
+ *
+ * Returns: %TRUE if an #ESourceGroup was removed, %FALSE otherwise
+ **/
 gboolean
 e_source_list_remove_group (ESourceList *list,
-			    ESourceGroup *group)
+                            ESourceGroup *group)
 {
+	const gchar *uid;
+
 	g_return_val_if_fail (E_IS_SOURCE_LIST (list), FALSE);
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), FALSE);
 
-	if (e_source_list_peek_group_by_uid (list, e_source_group_peek_uid (group)) == NULL)
+	uid = e_source_group_peek_uid (group);
+
+	if (e_source_list_peek_group_by_uid (list, uid) == NULL)
 		return FALSE;
 
 	remove_group (list, group);
+
 	return TRUE;
 }
 
+/**
+ * e_source_list_remove_group_by_uid:
+ * @list: an #ESourceList
+ * @uid: the unique ID of an #ESourceGroup
+ *
+ * Removes the first #ESourceGroup with the given unique ID from @list.
+ * The function returns %TRUE if a matching group was found, otherwise
+ * %FALSE.
+ *
+ * Returns: %TRUE if an #ESourceGroup was removed, %FALSE otherwise
+ **/
 gboolean
 e_source_list_remove_group_by_uid (ESourceList *list,
-				    const gchar *uid)
+                                   const gchar *uid)
 {
 	ESourceGroup *group;
 
@@ -678,15 +718,24 @@ e_source_list_remove_group_by_uid (ESourceList *list,
 
 /**
  * e_source_list_ensure_group:
+ * @list: an #ESourceList
+ * @name: a localized group name
+ * @base_uri: a group base URI
+ * @ret_it: whether to return the group
  *
- * Ensures group with the @base_uri will exists in the @list and its name will be @name.
- * If ret_it will be TRUE the group will be also returned, in that case caller should
- * g_object_unref the group. Otherwise it returns NULL.
+ * Ensures an #ESourceGroup with the given base URI exists in @list, and
+ * renames its to the given name.  If @ret_it is %TRUE, the matching group
+ * will be returned and should be unreferenced with g_object_unref().
+ *
+ * Returns: the matching #ESourceGroup if @ret_it is %TRUE, otherwise %NULL
  *
  * Since: 2.28
  **/
 ESourceGroup *
-e_source_list_ensure_group (ESourceList *list, const gchar *name, const gchar *base_uri, gboolean ret_it)
+e_source_list_ensure_group (ESourceList *list,
+                            const gchar *name,
+                            const gchar *base_uri,
+                            gboolean ret_it)
 {
 	ESourceGroup *group;
 
@@ -724,14 +773,20 @@ e_source_list_ensure_group (ESourceList *list, const gchar *name, const gchar *b
 
 /**
  * e_source_list_remove_group_by_base_uri:
+ * @list: an #ESourceList
+ * @base_uri: a group base URI
  *
- * Removes group with given base_uri.
- * Returns TRUE if group was found.
+ * Removes the first #ESourceGroup having the given base URI from @list.
+ * The base URI is usually just the URI scheme, such as "http://".  The
+ * function returns %TRUE if a matching group was found, otherwise %FALSE.
+ *
+ * Returns: %TRUE if an #ESourceGroup was removed, %FALSE otherwise
  *
  * Since: 2.28
  **/
 gboolean
-e_source_list_remove_group_by_base_uri (ESourceList *list, const gchar *base_uri)
+e_source_list_remove_group_by_base_uri (ESourceList *list,
+                                        const gchar *base_uri)
 {
 	ESourceGroup *group;
 
@@ -746,9 +801,19 @@ e_source_list_remove_group_by_base_uri (ESourceList *list, const gchar *base_uri
 	return TRUE;
 }
 
+/**
+ * e_source_list_remove_source_by_uid:
+ * @list: an #ESourceList
+ * @uid: the unique ID of an #ESource
+ *
+ * Removes the first #ESource with the given unique ID from @list.  The
+ * function returns %TRUE if a matching source was found, otherwise %FALSE.
+ *
+ * Returns: %TRUE if an #ESource was removed, %FALSE otherwise
+ **/
 gboolean
 e_source_list_remove_source_by_uid (ESourceList *list,
-				     const gchar *uid)
+                                    const gchar *uid)
 {
 	GSList *p;
 
@@ -767,9 +832,20 @@ e_source_list_remove_source_by_uid (ESourceList *list,
 	return FALSE;
 }
 
+/**
+ * e_source_list_sync:
+ * @list: an #ESourceList
+ * @error: return location for a #GError, or %NULL
+ *
+ * Writes the contents of @list to GConf.  If an error occurs, such as
+ * the GConf daemon not responding, the function sets @error and returns
+ * %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ **/
 gboolean
 e_source_list_sync (ESourceList *list,
-		    GError **error)
+                    GError **error)
 {
 	GSList *conf_list;
 	GSList *p;
@@ -779,15 +855,17 @@ e_source_list_sync (ESourceList *list,
 
 	conf_list = NULL;
 	for (p = list->priv->groups; p != NULL; p = p->next)
-		conf_list = g_slist_prepend (conf_list, e_source_group_to_xml (E_SOURCE_GROUP (p->data)));
+		conf_list = g_slist_prepend (
+			conf_list, e_source_group_to_xml (
+			E_SOURCE_GROUP (p->data)));
 	conf_list = g_slist_reverse (conf_list);
 
 	if (!e_source_list_is_gconf_updated (list))
-		retval = gconf_client_set_list (list->priv->gconf_client,
-						list->priv->gconf_path,
-						GCONF_VALUE_STRING,
-						conf_list,
-						error);
+		retval = gconf_client_set_list (
+			list->priv->gconf_client,
+			list->priv->gconf_path,
+			GCONF_VALUE_STRING,
+			conf_list, error);
 	else
 		retval = TRUE;
 
@@ -797,6 +875,15 @@ e_source_list_sync (ESourceList *list,
 	return retval;
 }
 
+/**
+ * e_source_list_is_gconf_updated:
+ * @list: an #ESourceList
+ *
+ * Returns %TRUE if the GConf data for @list is up-to-date, %FALSE if
+ * e_source_list_sync() should be called.
+ *
+ * Returns: %TRUE if the GConf data for @list is up-to-date
+ **/
 gboolean
 e_source_list_is_gconf_updated (ESourceList *list)
 {

@@ -114,18 +114,19 @@ foreach_save_func (gpointer key, gpointer value, gpointer user_data)
 
 /**
  * e_xml_from_hash:
- * @hash: The #GHashTable to extract the XML from.
- * @type: The #EXmlHashType used to store the XML.
- * @root_name: The name to call the new #xmlDoc.
+ * @hash: The #GHashTable to extract the XML from
+ * @type: The #EXmlHashType used to store the XML
+ * @root_name: The name to call the new #xmlDoc
  *
  * Uses the key/value pair representation of an XML structure in @hash
- * to build an equivalent #xmlDoc. This is the reverse of
- * e_xml_to_hash().
+ * to build an equivalent #xmlDoc. This is the reverse of e_xml_to_hash().
  *
- * Returns: The #xmlDoc created from the data in @hash.
+ * Returns: the #xmlDoc created from the data in @hash
  **/
 xmlDoc *
-e_xml_from_hash (GHashTable *hash, EXmlHashType type, const gchar *root_name)
+e_xml_from_hash (GHashTable *hash,
+                 EXmlHashType type,
+                 const gchar *root_name)
 {
 	xmlDoc *doc;
 	struct save_data sd;
@@ -150,7 +151,7 @@ free_values (gpointer key, gpointer value, gpointer data)
 
 /**
  * e_xml_destroy_hash:
- * @hash: The #GHashTable to destroy.
+ * @hash: the #GHashTable to destroy
  *
  * Frees the memory used by @hash and its contents.
  **/
@@ -173,7 +174,7 @@ struct EXmlHash {
 
 /**
  * e_xmlhash_new:
- * @filename: The name of an XML file.
+ * @filename: the name of an XML file
  *
  * Creates a new #EXmlHash from the file @filename. If @filename does
  * not already exist, an empty #EXmlHash will be created.
@@ -210,14 +211,16 @@ e_xmlhash_new (const gchar *filename)
 
 /**
  * e_xmlhash_add:
- * @hash: The #EXmlHash to add an entry to.
- * @key: The key to use for the entry.
- * @data: The value of the new entry.
+ * @hash: the #EXmlHash to add an entry to
+ * @key: the key to use for the entry
+ * @data: the value of the new entry
  *
  * Adds a new key/value pair to the #EXmlHash @hash.
  **/
 void
-e_xmlhash_add (EXmlHash *hash, const gchar *key, const gchar *data)
+e_xmlhash_add (EXmlHash *hash,
+               const gchar *key,
+               const gchar *data)
 {
 	g_return_if_fail (hash != NULL);
 	g_return_if_fail (key != NULL);
@@ -229,13 +232,14 @@ e_xmlhash_add (EXmlHash *hash, const gchar *key, const gchar *data)
 
 /**
  * e_xmlhash_remove:
- * @hash: The #EXmlHash to remove an entry from.
- * @key: The key of the entry to remove.
+ * @hash: the #EXmlHash to remove an entry from
+ * @key: the key of the entry to remove
  *
  * Remove the entry in @hash with key equal to @key, if it exists.
  **/
 void
-e_xmlhash_remove (EXmlHash *hash, const gchar *key)
+e_xmlhash_remove (EXmlHash *hash,
+                  const gchar *key)
 {
 	gpointer orig_key;
 	gpointer orig_value;
@@ -252,9 +256,9 @@ e_xmlhash_remove (EXmlHash *hash, const gchar *key)
 
 /**
  * e_xmlhash_compare:
- * @hash: The #EXmlHash to compare against.
- * @key: The key of the hash entry to compare with.
- * @compare_data: The data to compare against the hash entry.
+ * @hash: the #EXmlHash to compare against
+ * @key: the key of the hash entry to compare with
+ * @compare_data: the data to compare against the hash entry
  *
  * Compares the value with key equal to @key in @hash against
  * @compare_data.
@@ -265,7 +269,9 @@ e_xmlhash_remove (EXmlHash *hash, const gchar *key)
  *          its key equal to @key.
  **/
 EXmlHashStatus
-e_xmlhash_compare (EXmlHash *hash, const gchar *key, const gchar *compare_data)
+e_xmlhash_compare (EXmlHash *hash,
+                   const gchar *key,
+                   const gchar *compare_data)
 {
 	gchar *data;
 	gint rc;
@@ -300,14 +306,16 @@ foreach_hash_func (gpointer  key, gpointer value, gpointer user_data)
 
 /**
  * e_xmlhash_foreach_key:
- * @hash: An #EXmlHash.
- * @func: The #EXmlHashFunc to execute on the data in @hash.
- * @user_data: The data to pass to @func.
+ * @hash: an #EXmlHash
+ * @func: the #EXmlHashFunc to execute on the data in @hash
+ * @user_data: the data to pass to @func
  *
  * Executes @func against each key/value pair in @hash.
  **/
 void
-e_xmlhash_foreach_key (EXmlHash *hash, EXmlHashFunc func, gpointer user_data)
+e_xmlhash_foreach_key (EXmlHash *hash,
+                       EXmlHashFunc func,
+                       gpointer user_data)
 {
 	foreach_data_t data;
 
@@ -319,8 +327,19 @@ e_xmlhash_foreach_key (EXmlHash *hash, EXmlHashFunc func, gpointer user_data)
 	g_hash_table_foreach (hash->objects, foreach_hash_func, &data);
 }
 
+/**
+ * e_xmlhash_foreach_key_remove:
+ * @hash: an #EXmlHash
+ * @func: the #EXmlHashFunc to execute on the data in @hash
+ * @user_data: the data to pass to @func
+ *
+ * Calls g_hash_table_foreach_remove() on @hash<!-- -->'s internal hash
+ * table.  See g_hash_table_foreach_remove() for details.
+ **/
 void
-e_xmlhash_foreach_key_remove (EXmlHash *hash, EXmlHashRemoveFunc func, gpointer user_data)
+e_xmlhash_foreach_key_remove (EXmlHash *hash,
+                              EXmlHashRemoveFunc func,
+                              gpointer user_data)
 {
 	g_return_if_fail (hash != NULL);
 	g_return_if_fail (func != NULL);
@@ -342,7 +361,8 @@ e_xmlhash_write (EXmlHash *hash)
 
 	g_return_if_fail (hash != NULL);
 
-	doc = e_xml_from_hash (hash->objects, E_XML_HASH_TYPE_OBJECT_UID, "xmlhash");
+	doc = e_xml_from_hash (
+		hash->objects, E_XML_HASH_TYPE_OBJECT_UID, "xmlhash");
 
 	e_xml_save_file (hash->filename, doc);
 

@@ -17,22 +17,21 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __E_XML_UTILS_H__
-#define __E_XML_UTILS_H__
+#ifndef E_XML_UTILS_H
+#define E_XML_UTILS_H
 
 #include <glib.h>
-
 #include <libxml/parser.h>
 
 G_BEGIN_DECLS
 
-xmlDocPtr   e_xml_parse_file (const gchar *filename);
-gint         e_xml_save_file  (const gchar *filename,
-			      xmlDocPtr   doc);
-xmlNode    *e_xml_get_child_by_name (const xmlNode *parent,
-				     const xmlChar *child_name);
+xmlDocPtr	e_xml_parse_file		(const gchar *filename);
+gint		e_xml_save_file			(const gchar *filename,
+						 xmlDocPtr doc);
+xmlNode *	e_xml_get_child_by_name		(const xmlNode *parent,
+						 const xmlChar *child_name);
 
 G_END_DECLS
 
-#endif /* __E_XML_UTILS_H__ */
+#endif /* E_XML_UTILS_H */
 

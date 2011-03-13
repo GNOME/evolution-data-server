@@ -31,42 +31,49 @@
  *
  * Since: 2.32
  **/
-#define E_DEBUG_LOG_DOMAIN_USER		"USER"		/* always enabled */
+#define E_DEBUG_LOG_DOMAIN_USER "USER" /* always enabled */
 
 /**
  * E_DEBUG_LOG_DOMAIN_GLOG:
  *
  * Since: 2.32
  **/
-#define E_DEBUG_LOG_DOMAIN_GLOG		"GLog"		/* used for GLog messages; don't use it yourself */
+#define E_DEBUG_LOG_DOMAIN_GLOG "GLog" /* used for GLog messages; don't use it yourself */
 
 /**
  * E_DEBUG_LOG_DOMAIN_CAL_QUERIES:
  *
  * Since: 2.32
  **/
-#define E_DEBUG_LOG_DOMAIN_CAL_QUERIES  "CalQueries"    /* used for calendar queries analysis */
+#define E_DEBUG_LOG_DOMAIN_CAL_QUERIES "CalQueries" /* used for calendar queries analysis */
 
-void e_debug_log (gboolean is_milestone, const gchar *domain, const gchar *format, ...);
+G_BEGIN_DECLS
 
-void e_debug_logv (gboolean is_milestone, const gchar *domain, const gchar *format, va_list args);
-
-gboolean e_debug_log_load_configuration (const gchar *filename, GError **error);
-
-void e_debug_log_enable_domains (const gchar **domains, gint n_domains);
-void e_debug_log_disable_domains (const gchar **domains, gint n_domains);
-
-gboolean e_debug_log_is_domain_enabled (const gchar *domain);
-
-gboolean e_debug_log_dump (const gchar *filename, GError **error);
-
-gboolean e_debug_log_dump_to_dated_file (GError **error);
-
-void e_debug_log_set_max_lines (gint num_lines);
-gint e_debug_log_get_max_lines (void);
+void		e_debug_log			(gboolean is_milestone,
+						 const gchar *domain,
+						 const gchar *format,
+						 ...);
+void		e_debug_logv			(gboolean is_milestone,
+						 const gchar *domain,
+						 const gchar *format,
+						 va_list args);
+gboolean	e_debug_log_load_configuration	(const gchar *filename,
+						 GError **error);
+void		e_debug_log_enable_domains	(const gchar **domains,
+						 gint n_domains);
+void		e_debug_log_disable_domains	(const gchar **domains,
+						 gint n_domains);
+gboolean	e_debug_log_is_domain_enabled	(const gchar *domain);
+gboolean	e_debug_log_dump		(const gchar *filename,
+						 GError **error);
+gboolean	e_debug_log_dump_to_dated_file	(GError **error);
+void		e_debug_log_set_max_lines	(gint num_lines);
+gint		e_debug_log_get_max_lines	(void);
 
 /* For testing only */
-void e_debug_log_clear (void);
+void		e_debug_log_clear		(void);
+
+G_END_DECLS
 
 #endif /* E_DEBUG_LOG_H */
 

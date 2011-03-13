@@ -17,8 +17,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __E_CATEGORIES__
-#define __E_CATEGORIES__
+#ifndef E_CATEGORIES_H
+#define E_CATEGORIES_H
 
 #include <glib-object.h>
 
@@ -47,4 +47,4 @@ void		e_categories_unregister_change_listener
 
 G_END_DECLS
 
-#endif
+#endif /* E_CATEGORIES_H */

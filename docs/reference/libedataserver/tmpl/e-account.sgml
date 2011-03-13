@@ -173,7 +173,7 @@ EAccount
 
 </para>
 
-@Param1: 
+@account: 
 @type: 
 @Returns: 
 
@@ -183,7 +183,7 @@ EAccount
 
 </para>
 
-@Param1: 
+@account: 
 @type: 
 @Returns: 
 
@@ -193,7 +193,7 @@ EAccount
 
 </para>
 
-@Param1: 
+@account: 
 @type: 
 @Returns: 
 
@@ -203,9 +203,9 @@ EAccount
 
 </para>
 
-@Param1: 
+@account: 
 @type: 
-@Param3: 
+@v_string: 
 
 
 <!-- ##### FUNCTION e_account_set_int ##### -->
@@ -213,9 +213,9 @@ EAccount
 
 </para>
 
-@Param1: 
+@account: 
 @type: 
-@Param3: 
+@v_int: 
 
 
 <!-- ##### FUNCTION e_account_set_bool ##### -->
@@ -223,9 +223,9 @@ EAccount
 
 </para>
 
-@Param1: 
+@account: 
 @type: 
-@Param3: 
+@v_bool: 
 
 
 <!-- ##### FUNCTION e_account_writable ##### -->
@@ -233,7 +233,7 @@ EAccount
 
 </para>
 
-@ea: 
+@account: 
 @type: 
 @Returns: 
 
@@ -243,7 +243,7 @@ EAccount
 
 </para>
 
-@ea: 
+@account: 
 @protocol: 
 @option: 
 @Returns: 

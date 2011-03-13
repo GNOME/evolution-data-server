@@ -30,13 +30,15 @@ G_BEGIN_DECLS
 /* this is like gmemchunk, only faster and less overhead (only 4 bytes for every atomcount allocations) */
 typedef struct _EMemChunk EMemChunk;
 
-EMemChunk *e_memchunk_new (gint atomcount, gint atomsize);
-gpointer e_memchunk_alloc (EMemChunk *m);
-gpointer e_memchunk_alloc0 (EMemChunk *m);
-void e_memchunk_free (EMemChunk *m, gpointer mem);
-void e_memchunk_empty (EMemChunk *m);
-void e_memchunk_clean (EMemChunk *m);
-void e_memchunk_destroy (EMemChunk *m);
+EMemChunk *	e_memchunk_new			(gint atomcount,
+						 gint atomsize);
+gpointer	e_memchunk_alloc		(EMemChunk *memchunk);
+gpointer	e_memchunk_alloc0		(EMemChunk *memchunk);
+void		e_memchunk_free			(EMemChunk *memchunk,
+						 gpointer mem);
+void		e_memchunk_empty		(EMemChunk *memchunk);
+void		e_memchunk_clean		(EMemChunk *memchunk);
+void		e_memchunk_destroy		(EMemChunk *memchunk);
 
 G_END_DECLS
 

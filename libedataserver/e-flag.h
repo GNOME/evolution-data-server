@@ -30,6 +30,9 @@ G_BEGIN_DECLS
 /**
  * EFlag:
  *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
  * Since: 1.12
  **/
 typedef struct _EFlag EFlag;
