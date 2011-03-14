@@ -263,7 +263,11 @@ e_book_backend_load_source (EBookBackend           *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->load_source);
 
+	g_object_ref (backend);
+
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->load_source) (backend, source, only_if_exists, &local_error);
+
+	g_object_unref (backend);
 
 	if (g_error_matches (local_error, E_DATA_BOOK_ERROR,
 		E_DATA_BOOK_STATUS_INVALID_SERVER_VERSION))
@@ -349,7 +353,11 @@ e_book_backend_remove (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->remove);
 
+	g_object_ref (backend);
+
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->remove) (backend, book, opid);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -374,7 +382,11 @@ e_book_backend_create_contact (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->create_contact);
 
+	g_object_ref (backend);
+
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->create_contact) (backend, book, opid, vcard);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -399,7 +411,11 @@ e_book_backend_remove_contacts (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->remove_contacts);
 
+	g_object_ref (backend);
+
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->remove_contacts) (backend, book, opid, id_list);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -424,7 +440,11 @@ e_book_backend_modify_contact (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->modify_contact);
 
+	g_object_ref (backend);
+
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->modify_contact) (backend, book, opid, vcard);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -449,7 +469,11 @@ e_book_backend_get_contact (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_contact);
 
+	g_object_ref (backend);
+
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_contact) (backend, book, opid, id);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -474,7 +498,11 @@ e_book_backend_get_contact_list (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list);
 
+	g_object_ref (backend);
+
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list) (backend, book, opid, query);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -494,7 +522,11 @@ e_book_backend_start_book_view (EBookBackend  *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->start_book_view);
 
+	g_object_ref (backend);
+
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->start_book_view) (backend, book_view);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -514,7 +546,11 @@ e_book_backend_stop_book_view (EBookBackend  *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->stop_book_view);
 
+	g_object_ref (backend);
+
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->stop_book_view) (backend, book_view);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -539,7 +575,11 @@ e_book_backend_get_changes (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_changes);
 
+	g_object_ref (backend);
+
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_changes) (backend, book, opid, change_id);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -568,7 +608,11 @@ e_book_backend_authenticate_user (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->authenticate_user);
 
+	g_object_ref (backend);
+
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->authenticate_user) (backend, book, opid, user, passwd, auth_method);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -591,7 +635,11 @@ e_book_backend_get_required_fields (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_required_fields);
 
+	g_object_ref (backend);
+
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_required_fields) (backend, book, opid);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -614,7 +662,11 @@ e_book_backend_get_supported_fields (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_supported_fields);
 
+	g_object_ref (backend);
+
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_supported_fields) (backend, book, opid);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -636,7 +688,11 @@ e_book_backend_get_supported_auth_methods (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_supported_auth_methods);
 
+	g_object_ref (backend);
+
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->get_supported_auth_methods) (backend, book, opid);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -657,7 +713,11 @@ e_book_backend_cancel_operation (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->cancel_operation);
 
+	g_object_ref (backend);
+
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->cancel_operation) (backend, book, error);
+
+	g_object_unref (backend);
 }
 
 static void
@@ -804,11 +864,19 @@ e_book_backend_has_out_of_proc_clients (EBookBackend *backend)
 gchar *
 e_book_backend_get_static_capabilities (EBookBackend *backend)
 {
+	gchar *capabilities;
+
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->get_static_capabilities);
 
-	return E_BOOK_BACKEND_GET_CLASS (backend)->get_static_capabilities (backend);
+	g_object_ref (backend);
+
+	capabilities = E_BOOK_BACKEND_GET_CLASS (backend)->get_static_capabilities (backend);
+
+	g_object_unref (backend);
+
+	return capabilities;
 }
 
 /**
@@ -924,8 +992,11 @@ e_book_backend_set_mode (EBookBackend *backend,
 
 	g_assert (E_BOOK_BACKEND_GET_CLASS (backend)->set_mode);
 
+	g_object_ref (backend);
+
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->set_mode) (backend,  mode);
 
+	g_object_unref (backend);
 }
 
 /**
@@ -943,8 +1014,12 @@ e_book_backend_sync (EBookBackend *backend)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
+	g_object_ref (backend);
+
 	if (E_BOOK_BACKEND_GET_CLASS (backend)->sync)
 		(* E_BOOK_BACKEND_GET_CLASS (backend)->sync) (backend);
+
+	g_object_unref (backend);
 }
 
 /**

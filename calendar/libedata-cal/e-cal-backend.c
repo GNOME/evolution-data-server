@@ -615,7 +615,12 @@ e_cal_backend_get_cal_address (ECalBackend *backend, EDataCal *cal, EServerMetho
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->get_cal_address != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->get_cal_address) (backend, cal, context);
+
+	g_object_unref (backend);
 }
 
 void
@@ -660,7 +665,12 @@ e_cal_backend_get_alarm_email_address (ECalBackend *backend, EDataCal *cal, ESer
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->get_alarm_email_address != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->get_alarm_email_address) (backend, cal, context);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -677,7 +687,12 @@ e_cal_backend_get_ldap_attribute (ECalBackend *backend, EDataCal *cal, EServerMe
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->get_ldap_attribute != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->get_ldap_attribute) (backend, cal, context);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -694,7 +709,12 @@ e_cal_backend_get_static_capabilities (ECalBackend *backend, EDataCal *cal, ESer
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->get_static_capabilities != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->get_static_capabilities) (backend, cal, context);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -718,7 +738,12 @@ e_cal_backend_open (ECalBackend *backend, EDataCal *cal, EServerMethodContext co
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->open != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->open) (backend, cal, context, only_if_exists, username, password);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -737,7 +762,12 @@ e_cal_backend_refresh (ECalBackend *backend, EDataCal *cal, EServerMethodContext
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->refresh != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->refresh) (backend, cal, context);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -754,7 +784,12 @@ e_cal_backend_remove (ECalBackend *backend, EDataCal *cal, EServerMethodContext 
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->remove != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->remove) (backend, cal, context);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -775,7 +810,12 @@ e_cal_backend_is_loaded (ECalBackend *backend)
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
 
 	g_assert (CLASS (backend)->is_loaded != NULL);
+
+	g_object_ref (backend);
+
 	result = (* CLASS (backend)->is_loaded) (backend);
+
+	g_object_unref (backend);
 
 	return result;
 }
@@ -795,7 +835,12 @@ e_cal_backend_is_read_only (ECalBackend *backend, EDataCal *cal)
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->is_read_only != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->is_read_only) (backend, cal);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -812,7 +857,12 @@ e_cal_backend_start_query (ECalBackend *backend, EDataCalView *query)
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->start_query != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->start_query) (backend, query);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -832,7 +882,12 @@ e_cal_backend_get_mode (ECalBackend *backend)
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
 
 	g_assert (CLASS (backend)->get_mode != NULL);
+
+	g_object_ref (backend);
+
 	result = (* CLASS (backend)->get_mode) (backend);
+
+	g_object_unref (backend);
 
 	return result;
 }
@@ -851,7 +906,12 @@ e_cal_backend_set_mode (ECalBackend *backend, CalMode mode)
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->set_mode != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->set_mode) (backend, mode);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -868,7 +928,12 @@ e_cal_backend_get_default_object (ECalBackend *backend, EDataCal *cal, EServerMe
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->get_default_object != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->get_default_object) (backend, cal, context);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -889,7 +954,12 @@ e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, EServerMethodCont
 	g_return_if_fail (uid != NULL);
 
 	g_assert (CLASS (backend)->get_object != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->get_object) (backend, cal, context, uid, rid);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -907,7 +977,12 @@ e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, EServerMetho
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->get_object_list != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->get_object_list) (backend, cal, context, sexp);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -928,7 +1003,12 @@ e_cal_backend_get_attachment_list (ECalBackend *backend, EDataCal *cal, EServerM
 	g_return_if_fail (uid != NULL);
 
 	g_assert (CLASS (backend)->get_object != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->get_attachment_list) (backend, cal, context, uid, rid);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -950,7 +1030,12 @@ e_cal_backend_get_free_busy (ECalBackend *backend, EDataCal *cal, EServerMethodC
 	g_return_if_fail (start <= end);
 
 	g_assert (CLASS (backend)->get_free_busy != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->get_free_busy) (backend, cal, context, users, start, end);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -970,7 +1055,12 @@ e_cal_backend_get_changes (ECalBackend *backend, EDataCal *cal, EServerMethodCon
 	g_return_if_fail (change_id != NULL);
 
 	g_assert (CLASS (backend)->get_changes != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->get_changes) (backend, cal, context, change_id);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -992,7 +1082,12 @@ e_cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, EServerMethodC
 	g_return_if_fail (auid != NULL);
 
 	g_assert (CLASS (backend)->discard_alarm != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->discard_alarm) (backend, cal, context, uid, auid);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -1010,10 +1105,14 @@ e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, EServerMethodC
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (calobj != NULL);
 
+	g_object_ref (backend);
+
 	if (CLASS (backend)->create_object)
 		(* CLASS (backend)->create_object) (backend, cal, context, calobj);
 	else
 		e_data_cal_notify_object_created (cal, context, EDC_ERROR (UnsupportedMethod), NULL, NULL);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -1032,10 +1131,14 @@ e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, EServerMethodC
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (calobj != NULL);
 
+	g_object_ref (backend);
+
 	if (CLASS (backend)->modify_object)
 		(* CLASS (backend)->modify_object) (backend, cal, context, calobj, mod);
 	else
 		e_data_cal_notify_object_removed (cal, context, EDC_ERROR (UnsupportedMethod), NULL, NULL, NULL);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -1057,7 +1160,12 @@ e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, EServerMethodC
 	g_return_if_fail (uid != NULL);
 
 	g_assert (CLASS (backend)->remove_object != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->remove_object) (backend, cal, context, uid, rid, mod);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -1076,7 +1184,12 @@ e_cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, EServerMetho
 	g_return_if_fail (calobj != NULL);
 
 	g_assert (CLASS (backend)->receive_objects != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->receive_objects) (backend, cal, context, calobj);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -1095,7 +1208,12 @@ e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, EServerMethodCo
 	g_return_if_fail (calobj != NULL);
 
 	g_assert (CLASS (backend)->send_objects != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->send_objects) (backend, cal, context, calobj);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -1116,7 +1234,12 @@ e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, EServerMethodCo
 	g_return_if_fail (tzid != NULL);
 
 	g_assert (CLASS (backend)->get_timezone != NULL);
+
+	g_object_ref (backend);
+
 	(* CLASS (backend)->get_timezone) (backend, cal, context, tzid);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -1135,7 +1258,11 @@ e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, EServerMeth
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (tzobj != NULL);
 
+	g_object_ref (backend);
+
 	(* CLASS (backend)->set_default_zone) (backend, cal, context, tzobj);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -1153,7 +1280,11 @@ e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, EServerMethodCo
 	g_return_if_fail (tzobj != NULL);
 	g_return_if_fail (CLASS (backend)->add_timezone != NULL);
 
+	g_object_ref (backend);
+
 	(* CLASS (backend)->add_timezone) (backend, cal, context, tzobj);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -1165,10 +1296,18 @@ e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, EServerMethodCo
 icaltimezone *
 e_cal_backend_internal_get_default_timezone (ECalBackend *backend)
 {
+	icaltimezone *timezone;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
 	g_return_val_if_fail (CLASS (backend)->internal_get_default_timezone != NULL, NULL);
 
-	return (* CLASS (backend)->internal_get_default_timezone) (backend);
+	g_object_ref (backend);
+
+	timezone = (* CLASS (backend)->internal_get_default_timezone) (backend);
+
+	g_object_unref (backend);
+
+	return timezone;
 }
 
 /**
@@ -1181,11 +1320,19 @@ e_cal_backend_internal_get_default_timezone (ECalBackend *backend)
 icaltimezone *
 e_cal_backend_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
 {
+	icaltimezone *timezone;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
 	g_return_val_if_fail (tzid != NULL, NULL);
 	g_return_val_if_fail (CLASS (backend)->internal_get_timezone != NULL, NULL);
 
-	return (* CLASS (backend)->internal_get_timezone) (backend, tzid);
+	g_object_ref (backend);
+
+	timezone = (* CLASS (backend)->internal_get_timezone) (backend, tzid);
+
+	g_object_unref (backend);
+
+	return timezone;
 }
 
 /**
