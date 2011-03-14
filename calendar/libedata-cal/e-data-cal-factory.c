@@ -355,7 +355,7 @@ impl_CalFactory_getCal (EGdbusCalFactory *object, GDBusMethodInvocation *invocat
 	if (!str_uri) {
 		g_object_unref (source);
 
-		error = g_error_new (E_DATA_CAL_ERROR, NoSuchCal, _("Invalid source"));
+		error = g_error_new (E_DATA_CAL_ERROR, NoSuchCal, _("Empty URI"));
 		g_dbus_method_invocation_return_gerror (invocation, error);
 		g_error_free (error);
 
@@ -365,6 +365,9 @@ impl_CalFactory_getCal (EGdbusCalFactory *object, GDBusMethodInvocation *invocat
 	/* Parse the uri */
 	uri = e_uri_new (str_uri);
 	if (!uri) {
+		g_object_unref (source);
+		g_free (str_uri);
+
 		error = g_error_new (E_DATA_CAL_ERROR, NoSuchCal, _("Invalid URI"));
 		g_dbus_method_invocation_return_gerror (invocation, error);
 		g_error_free (error);
