@@ -373,7 +373,7 @@ e_source_update_from_xml_node (ESource *source,
 
 		if (relative_uri && g_str_equal ((const gchar *) relative_uri, "system") &&
 		    (g_str_has_prefix ((const gchar *) absolute_uri, "file:") || g_str_equal ((const gchar *) absolute_uri, "local:/system")))
-			source->priv->absolute_uri = NULL;
+			source->priv->absolute_uri = g_strdup ("local:system");
 		else
 			source->priv->absolute_uri = g_strdup ((gchar *)absolute_uri);
 		changed = TRUE;

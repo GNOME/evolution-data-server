@@ -326,6 +326,18 @@ impl_BookFactory_getBook (EGdbusBookFactory *object, GDBusMethodInvocation *invo
 
 	uri = e_source_get_uri (source);
 
+	if (!uri || !*uri) {
+		g_mutex_unlock (priv->backends_lock);
+		g_object_unref (source);
+		g_free (uri);
+
+		error = g_error_new (E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_NO_SUCH_BOOK, _("Empty URI"));
+		g_dbus_method_invocation_return_gerror (invocation, error);
+		g_error_free (error);
+
+		return TRUE;
+	}
+
 	g_mutex_lock (priv->books_lock);
 	backend = g_hash_table_lookup (priv->backends, uri);
 
