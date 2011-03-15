@@ -1926,8 +1926,8 @@ msgstr[1] "%s లో మార్చబడిన సందేశాలను స
 #| msgid "Filtering new message(s)"
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
-msgstr[0] "'%s' నందలి కొత్త సందేశమును వడపోయుచున్నది"
-msgstr[1] "కొత్త సందేశాలను వడపోస్తున్నది"
+msgstr[0] "'%s' నందలి కొత్త సందేశంను వడపోస్తున్నది"
+msgstr[1] "'%s' నందలి కొత్త సందేశాలను వడపోస్తున్నది"
 
 #: ../camel/camel-folder.c:881
 #: ../camel/providers/local/camel-maildir-folder.c:293
