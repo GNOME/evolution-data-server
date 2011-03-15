@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.gnome-2-28.te\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&component=Misc.\n"
 "POT-Creation-Date: 2011-02-07 14:36+0000\n"
-"PO-Revision-Date: 2011-02-09 18:09+0530\n"
+"PO-Revision-Date: 2011-03-15 18:01+0530\n"
 "Last-Translator: Krishnababu Krothapalli <kkrothap@redhat.com>\n"
 "Language-Team: Telugu <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -741,10 +741,10 @@ msgstr " ఖాళీ URI"
 #: ../addressbook/libedata-book/e-data-book-factory.c:361
 #: ../calendar/libedata-cal/e-data-cal-factory.c:352
 #: ../calendar/libedata-cal/e-data-cal-factory.c:364
-#, fuzzy, c-format
+#, c-format
 #| msgid "%s: Invalid source."
 msgid "Invalid source"
-msgstr "%s: నిస్సారమైన మూలాధారం."
+msgstr "చెల్లని మూలాధారం"
 
 #: ../addressbook/libedata-book/e-data-book.c:173
 #: ../calendar/libedata-cal/e-data-cal.c:110
@@ -1506,66 +1506,66 @@ msgstr "క్యాలెండర్ ప్రణాళిక సమాచా�
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:709
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot save calendar data"
 msgid "Cannot open calendar: %s"
-msgstr "క్యాలెండర్ డాటాను దాయలేదు"
+msgstr "క్యాలెండరును తెరువలేదు: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:730
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot save calendar data"
 msgid "Cannot refresh calendar: %s"
-msgstr "క్యాలెండర్ డాటాను దాయలేదు"
+msgstr "క్యాలెండరును తాజాపరచలేదు చేయలేదు: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:749
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot save calendar data"
 msgid "Cannot remove calendar: %s"
-msgstr "క్యాలెండర్ డాటాను దాయలేదు"
+msgstr "క్యాలెండర్‌ను తీసివేయలేదు: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:770
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot create message: %s"
 msgid "Cannot create calendar object: %s"
-msgstr "%s సందేశాన్ని సృష్టించలేము:"
+msgstr "క్యాలెండర్ ఆబ్జక్టును సృష్టించలేదు: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:798
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot save calendar data"
 msgid "Cannot modify calendar object: %s"
-msgstr "క్యాలెండర్ డాటాను దాయలేదు"
+msgstr "క్యాలెండర్ ఆబ్జక్టును సవరించలేము: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:824
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot save calendar data"
 msgid "Cannot remove calendar object: %s"
-msgstr "క్యాలెండర్ డాటాను దాయలేదు"
+msgstr "క్యాలెండర్ ఆబ్జక్టును తీసివేయలేదు: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:845
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot save calendar data"
 msgid "Cannot receive calendar objects: %s"
-msgstr "క్యాలెండర్ డాటాను దాయలేదు"
+msgstr "క్యాలెండర్ ఆబ్జక్టులను స్వీకరించలేదు: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:864
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot save calendar data"
 msgid "Cannot discard calendar alarm: %s"
-msgstr "క్యాలెండర్ డాటాను దాయలేదు"
+msgstr "క్యాలెండర్ అలారమ్‌ను తీసివేయలేము: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:885
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot save calendar data"
 msgid "Cannot send calendar objects: %s"
-msgstr "క్యాలెండర్ డాటాను దాయలేదు"
+msgstr "క్యాలెండర్ ఆబ్జక్టులను పంపలేదు: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:912
@@ -1575,59 +1575,59 @@ msgstr "అప్రమేయ క్యాలెండర్ ఆబ్జక్�
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:937
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot save calendar data"
 msgid "Cannot retrieve calendar object path: %s"
-msgstr "క్యాలెండర్ డాటాను దాయలేదు"
+msgstr "క్యాలెండర్ ఆబ్జక్టు పాత్‌ను తిరిగిపొందలేదు: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:962
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot create folder lock on %s: %s"
 msgid "Cannot retrieve calendar object list: %s"
-msgstr "%s పై సంచయ తాళమును సృష్టించలేవు: %s"
+msgstr "క్యాలెండర్ ఆబ్జక్టు జాబితాను తిరిగిపొందలేదు: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:990
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not remove cache entry: %s: %s"
 msgid "Could not retrieve attachment list: %s"
-msgstr "క్యాచి ప్రవేశంను తీసివేయలేకపోయింది: %s: %s"
+msgstr "అనుభందిత జాబితాను తిరిగిపొందలేక పోయింది: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1016
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not open cache directory: %s"
 msgid "Could not complete calendar query: %s"
-msgstr "క్యాచి వివరాలను తెరువలేకపోయింది:%s"
+msgstr "క్యాలెండర్ క్వరీను పూర్తిచేయలేక పోయింది:%s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1041
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not rename folder: %s"
 msgid "Could not retrieve calendar time zone: %s"
-msgstr "సంచయ పేరును తిరిగిరాయలేము: %s"
+msgstr "క్యాలెండర్ సమయ క్షేత్రాన్ని తిరిగిపొందలేక పోయింది: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1066
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not rename folder: %s"
 msgid "Could not add calendar time zone: %s"
-msgstr "సంచయ పేరును తిరిగిరాయలేము: %s"
+msgstr "క్యాలెండర్ సమయ క్షేత్రం జతచేయలేక పోయింది: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1085
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not send message: %s"
 msgid "Could not set default calendar time zone: %s"
-msgstr "%s సందేశాన్ని పంపలేము:"
+msgstr "అప్రమేయ క్యాలెండర్ సమయ క్షేత్రాన్ని అమర్చలేక పోయింది: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1108
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot create folder: %s: %s"
 msgid "Cannot retrieve calendar changes: %s"
-msgstr "సంచయాన్ని సృష్టించలేము: %s: %s"
+msgstr "క్యాలెండర్ మార్పులను తిరిగిపొందలేక పోయింది: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1139
@@ -1636,10 +1636,10 @@ msgid "Cannot retrieve calendar free/busy list: %s"
 msgstr "క్యాలెండర్ ఖాళీ/రద్దీ జాబితాను పొందలేక పోవుచున్నది: %s"
 
 #: ../calendar/libedata-cal/e-data-cal-factory.c:374
-#, fuzzy, c-format
+#, c-format
 #| msgid "Invalid server URI"
 msgid "Invalid URI"
-msgstr "నిస్సార సేవిక యు ఆర్ ఐ"
+msgstr "చెల్లని URI"
 
 #: ../calendar/libedata-cal/e-data-cal-factory.c:392
 #, c-format
@@ -1647,10 +1647,10 @@ msgid "No backend factory for '%s' of '%s'"
 msgstr "'%2$s' యొక్క '%1$s' కొరకు యే బ్యాకెండ్ ఫాక్టరీలేదు"
 
 #: ../calendar/libedata-cal/e-data-cal-factory.c:442
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not create cache file"
 msgid "Could not instantiate backend"
-msgstr "క్యాచి దస్త్రాన్ని సృష్టించలేవు"
+msgstr "బ్యాకెండ్‌ను ఆరంభించలేక పోయింది"
 
 #: ../camel/camel-cipher-context.c:204
 #, c-format
@@ -1705,10 +1705,10 @@ msgid "Could not remove cache entry: %s: %s"
 msgstr "క్యాచి ప్రవేశంను తీసివేయలేకపోయింది: %s: %s"
 
 #: ../camel/camel-data-wrapper.c:147
-#, fuzzy, c-format
+#, c-format
 #| msgid "No such message available."
 msgid "No stream available"
-msgstr "అటువంటి సందేశము అందుబాటులోలేదు."
+msgstr "ఏ స్ట్రీము అందుబాటులోలేదు"
 
 #: ../camel/camel-db.c:455
 #, c-format
@@ -1906,27 +1906,27 @@ msgid "(%s) requires the folder set"
 msgstr "(%s) కు సంచయం సమితి అవసరం"
 
 #: ../camel/camel-folder.c:220
-#, fuzzy, c-format
+#, c-format
 #| msgid "Scanning for changed messages in %s"
 msgid "Learning new spam message in '%s'"
 msgid_plural "Learning new spam messages in '%s'"
-msgstr[0] "%s లో మార్చబడిన సందేశాలను సంశోధించుచున్నది"
+msgstr[0] "'%s' నందలి కొత్త స్పామ్ సందేశమును నేర్చుకొనుచున్నది"
 msgstr[1] "%s లో మార్చబడిన సందేశాలను సంశోధించుచున్నది"
 
 #: ../camel/camel-folder.c:244
-#, fuzzy, c-format
+#, c-format
 #| msgid "Scanning for changed messages in %s"
 msgid "Learning new ham message in '%s'"
 msgid_plural "Learning new ham messages in '%s'"
-msgstr[0] "%s లో మార్చబడిన సందేశాలను సంశోధించుచున్నది"
+msgstr[0] "'%s' నందలి కొత్త హామ్ సందేశమును నేర్చుకొనుచున్నది"
 msgstr[1] "%s లో మార్చబడిన సందేశాలను సంశోధించుచున్నది"
 
 #: ../camel/camel-folder.c:270
-#, fuzzy, c-format
+#, c-format
 #| msgid "Filtering new message(s)"
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
-msgstr[0] "కొత్త సందేశాలను వడపోస్తున్నది"
+msgstr[0] "'%s' నందలి కొత్త సందేశమును వడపోయుచున్నది"
 msgstr[1] "కొత్త సందేశాలను వడపోస్తున్నది"
 
 #: ../camel/camel-folder.c:881
@@ -1939,10 +1939,10 @@ msgid "Copying messages"
 msgstr "సందేశాలను నకలు తీస్తున్నది"
 
 #: ../camel/camel-folder.c:3253
-#, fuzzy, c-format
+#, c-format
 #| msgid "Retrieving POP message %d"
 msgid "Retrieving message '%s'"
-msgstr "POP సందేశం %d ను తిరిగిపొందుతోంది"
+msgstr "%s సందేశమును తిరిగిపొందుచున్నది"
 
 #: ../camel/camel-gpg-context.c:646 ../camel/camel-gpg-context.c:651
 #: ../camel/camel-gpg-context.c:1276
@@ -2011,7 +2011,7 @@ msgstr "'%s' కొరకు GnuPG నుండి ఊహించని మన�
 #: ../camel/providers/pop3/camel-pop3-folder.c:504
 #: ../camel/providers/pop3/camel-pop3-store.c:487
 #: ../libedataserverui/e-book-auth-util.c:229
-#, fuzzy, c-format
+#, c-format
 #| msgid "Canceled"
 msgid "Cancelled"
 msgstr "రద్దుచేయబడింది"
@@ -2032,10 +2032,9 @@ msgid "Failed to encrypt: No valid recipients specified."
 msgstr "ఎన్క్రిప్టు చేయుటలో విఫలమైంది: ఏ విలువైన స్వీకరణదారులు తెలుపబడలేదు."
 
 #: ../camel/camel-gpg-context.c:1539 ../camel/camel-smime-context.c:824
-#, fuzzy
 #| msgid "Could not generate signing data: %s"
 msgid "Could not generate signing data: "
-msgstr "సంతకపు డాటాను సంభవింపచేయలేదు: %s"
+msgstr "సంతకపు డాటాను సంభవింపచేయలేదు:"
 
 #: ../camel/camel-gpg-context.c:1586 ../camel/camel-gpg-context.c:1786
 #: ../camel/camel-gpg-context.c:1896 ../camel/camel-gpg-context.c:2042
@@ -2052,16 +2051,14 @@ msgid "Cannot verify message signature: Incorrect message format"
 msgstr "సంతక సందేశాన్ని పరీక్షించలేకపోయింది:సరిలేని సందేశ రూపలవణ్యం"
 
 #: ../camel/camel-gpg-context.c:1741
-#, fuzzy
 #| msgid "Cannot verify message signature: Incorrect message format"
 msgid "Cannot verify message signature: "
-msgstr "సంతక సందేశాన్ని పరీక్షించలేకపోయింది:సరిలేని సందేశ రూపలవణ్యం"
+msgstr "సందేశ సంతకాన్ని పరీక్షించలేకపోయింది: "
 
 #: ../camel/camel-gpg-context.c:1862
-#, fuzzy
 #| msgid "Could not generate encrypting data: %s"
 msgid "Could not generate encrypting data: "
-msgstr "%s "
+msgstr "ఎన్క్రిప్టింగ్ డాటాను సంభవింపచేయలేక పోయింది: "
 
 #: ../camel/camel-gpg-context.c:1915
 msgid "This is a digitally encrypted message part"
@@ -2108,7 +2105,7 @@ msgid "Could not create lock file for %s: %s"
 msgstr "లాక్ ఫైల్ ను %s కొరకు సృష్టించలేకపోయింది: %s"
 
 #: ../camel/camel-lock.c:145
-#, fuzzy, c-format
+#, c-format
 #| msgid "Timed out trying to get lock file on %s. Try again later."
 msgid "Timed out trying to get lock file on %s.  Try again later."
 msgstr "%s పైన లాక్ ఫైల్ పొందుటకు ప్రయత్నించుటలో కాలముమించినది. తర్వాత ప్రయత్నించుము."
@@ -2178,16 +2175,16 @@ msgid "Error copying mail temp file: %s"
 msgstr "%s తపాలా తాత్కాలిక ఫైల్ నకలుతీయుటలో దోషం ఏర్పడింది:"
 
 #: ../camel/camel-multipart-signed.c:322
-#, fuzzy, c-format
+#, c-format
 #| msgid "No description available"
 msgid "No content available"
-msgstr "ఏ వివరణ లభింఛలేదు"
+msgstr "ఏ విషయము అందుబాటులోలేదు"
 
 #: ../camel/camel-multipart-signed.c:330
-#, fuzzy, c-format
+#, c-format
 #| msgid "No description available"
 msgid "No signature available"
-msgstr "ఏ వివరణ లభింఛలేదు"
+msgstr "ఏ సంతకం అందుబాటులోలేదు"
 
 #: ../camel/camel-multipart-signed.c:658
 #, c-format
@@ -2467,13 +2464,13 @@ msgid "POP Source URI"
 msgstr "POP వనరు URI"
 
 #: ../camel/camel-sasl-popb4smtp.c:90
-#, fuzzy, c-format
+#, c-format
 #| msgid "POP Before SMTP auth using an unknown transport"
 msgid "POP Before SMTP authentication using an unknown transport"
 msgstr "తెలియని బదిలీకరణ ఉపయోగించి SMTP ముందు POP దృవీకరణ"
 
 #: ../camel/camel-sasl-popb4smtp.c:98
-#, fuzzy, c-format
+#, c-format
 #| msgid "POP Before SMTP auth using a non-pop source"
 msgid "POP Before SMTP authentication using a non-POP source"
 msgstr "నాన్-పాప్ మూలంను ఉపయోగించి SMTP ముందు POP దృవీకరణ"
@@ -2774,32 +2771,28 @@ msgid "Host is unreachable from SOCKS server"
 msgstr "SOCKS సేవికనుండి హోస్టు చేరదగునదిగా లేదు"
 
 #: ../camel/camel-tcp-stream-raw.c:895
-#, fuzzy
 #| msgid "Connection canceled"
 msgid "Connection refused"
-msgstr "బంధం రద్దుచేయబడింది"
+msgstr "అనుసంధానం తిరస్కరించబడెను"
 
 #: ../camel/camel-tcp-stream-raw.c:896
 msgid "Time-to-live expired"
 msgstr "జీవించుట-కు-సమయం మించిపోయింది"
 
 #: ../camel/camel-tcp-stream-raw.c:897
-#, fuzzy
 #| msgid "STLS not supported by server"
 msgid "Command not supported by SOCKS server"
-msgstr "STLS సేవిక ద్వారా మద్దతివ్వబడలేదు"
+msgstr "SOCKS సేవిక ద్వారా ఆదేశం మద్దతివ్వబడలేదు"
 
 #: ../camel/camel-tcp-stream-raw.c:898
-#, fuzzy
 #| msgid "STLS not supported by server"
 msgid "Address type not supported by SOCKS server"
-msgstr "STLS సేవిక ద్వారా మద్దతివ్వబడలేదు"
+msgstr "SOCKS సేవిక ద్వారా చిరునామా రకము మద్దతివ్వబడలేదు"
 
 #: ../camel/camel-tcp-stream-raw.c:899
-#, fuzzy
 #| msgid "Unknown error: %s"
 msgid "Unknown error from SOCKS server"
-msgstr "తెలియని దోషము: %s"
+msgstr "SOCKS సేవిక నుండి తెలియని దోషము"
 
 #: ../camel/camel-tcp-stream-raw.c:932
 #, c-format
@@ -2807,10 +2800,10 @@ msgid "Got unknown address type from SOCKS server"
 msgstr "SOCKS సేవికనుండి తెలియని చిరునామా రకమును పొందినది"
 
 #: ../camel/camel-tcp-stream-raw.c:950
-#, fuzzy, c-format
+#, c-format
 #| msgid "Invalid response from server"
 msgid "Incomplete reply from SOCKS server"
-msgstr "సేవికనుండి సరికాని ప్రతిస్పందన"
+msgstr "SOCKS సేవిక నుండి అసంపూర్ణ ప్రత్యుత్తరము"
 
 #: ../camel/camel-tcp-stream-raw.c:970
 #, c-format
@@ -2820,10 +2813,10 @@ msgstr "హోస్టుపేరు మరీ పోడవుగావుం�
 #. SOCKS5
 #. reserved - must be 0
 #: ../camel/camel-tcp-stream-raw.c:1002 ../camel/camel-tcp-stream-raw.c:1012
-#, fuzzy, c-format
+#, c-format
 #| msgid "Invalid response from server"
 msgid "Invalid reply from proxy server"
-msgstr "సేవికనుండి సరికాని ప్రతిస్పందన"
+msgstr "ప్రోక్సీ సేవికనుండి సరికాని ప్రత్యుత్తరం"
 
 #: ../camel/camel-tcp-stream-ssl.c:457
 #, c-format
@@ -2835,7 +2828,7 @@ msgid ""
 msgstr ""
 "విడుదలకారి:            %s\n"
 "సంగతి:           %s\n"
-"వేలుముద్ర:       %s\n"
+"వేలిముద్ర:       %s\n"
 "సంతకం:         %s"
 
 #: ../camel/camel-tcp-stream-ssl.c:463
@@ -2914,10 +2907,10 @@ msgid "No such message %s in %s"
 msgstr "%s లో %s ఎటువంటి సందేశంలేదు"
 
 #: ../camel/camel-vee-folder.c:1355
-#, fuzzy, c-format
+#, c-format
 #| msgid "Error storing '%s': %s"
 msgid "Error storing '%s': "
-msgstr "'%s' దాచుటలో దోషము: %s"
+msgstr "'%s' దాచుటలో దోషము: "
 
 #: ../camel/camel-vee-store.c:141 ../camel/camel-vee-store.c:143
 #: ../camel/camel-vee-store.c:322
@@ -3005,10 +2998,10 @@ msgstr "ఏటువంటి సందేశం లేదు"
 #: ../camel/providers/nntp/camel-nntp-folder.c:251
 #: ../camel/providers/nntp/camel-nntp-folder.c:418
 #: ../camel/providers/pop3/camel-pop3-folder.c:455
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot get message %s: %s"
 msgid "Cannot get message %s: "
-msgstr "%s సందేశాన్ని తీసుకురాలేకపోయింది: %s"
+msgstr "%s సందేశాన్ని పొందలేదు: "
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2685
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2695
@@ -3023,16 +3016,15 @@ msgid "Cannot get folder container %s"
 msgstr "%s సంచయం కలిగివున్నది పొందలేకపోయింది"
 
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:318
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot append message in offline mode: cache unavailable"
 msgid "Cannot append message in offline mode: cache unavailable"
-msgstr "%s లైనువెలుపల సంవిధానములో సందేశాన్ని జతచేయలేము:క్యాచి లభించలేదు"
+msgstr "ఆఫ్‌లైన్ రీతినందు సందేశమును కలుపలేదు: క్యాచీ అందుబాటులోలేదు"
 
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:335
-#, fuzzy
 #| msgid "Cannot append message in offline mode: %s"
 msgid "Cannot append message in offline mode: "
-msgstr "%s  లైనువెలుపలి సంవిధానంలో సందేశాన్ని జతచేయలేము:"
+msgstr "ఆఫ్‌లైన్ రీతినందు సందేశమును కలుపలేదు: "
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:48
 msgid "Checking for new mail"
@@ -3129,10 +3121,10 @@ msgid "Cannot create GroupWise folders in offline mode."
 msgstr "సముదాయపర సంచయాలను లైనువెలుపల విధములో సృష్టించలేము."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1233
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot delete folder '%s': Special folder"
 msgid "Cannot create a special system folder"
-msgstr "'%s' సంచయాన్ని తొలగించలేము: ప్రత్యేకమైన సంచయం"
+msgstr "ప్రత్యేక సిస్టమ్ సంచయం‌ను సృష్టించలేదు"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1243
 #: ../camel/providers/imap/camel-imap-store.c:1886
@@ -3262,10 +3254,9 @@ msgid "Scanning for changed messages in %s"
 msgstr "%s లో మార్చబడిన సందేశాలను సంశోధించుచున్నది"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3372
-#, fuzzy
 #| msgid "Unable to retrieve message: %s"
 msgid "Unable to retrieve message: "
-msgstr "%s సందేశాన్ని వెలికితీయలేకపోయింది:"
+msgstr "సందేశాన్ని తిరిగిపొందలేకపోయింది: "
 
 #: ../camel/providers/imap/camel-imap-folder.c:3407
 #: ../camel/providers/imapx/camel-imapx-server.c:5213
@@ -3302,10 +3293,9 @@ msgstr "ఫెఛ్ఛ్ ప్రత్యుత్తరములో సం�
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:193
 #: ../camel/providers/imap/camel-imap-message-cache.c:253
-#, fuzzy
 #| msgid "Could not open cache directory: %s"
 msgid "Could not open cache directory: "
-msgstr "క్యాచి వివరాలను తెరువలేకపోయింది:%s"
+msgstr "క్యాచీ డైరెక్టరీను తెరువలేకపోయింది: "
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:326
 #, c-format
@@ -3313,16 +3303,16 @@ msgid "Failed to cache message %s: %s"
 msgstr "%s క్యాచి సందేశంకు విఫలంచెందింది: %s "
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:391
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to cache message %s: %s"
 msgid "Failed to cache message %s: "
-msgstr "%s క్యాచి సందేశంకు విఫలంచెందింది: %s "
+msgstr "సందేశం %sను క్యాచీ చేయుటకు విఫలమైంది: "
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:529
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to cache %s: %s"
 msgid "Failed to cache %s: "
-msgstr "%s క్యాచికు విఫలంచెందింది: %s"
+msgstr "%s క్యాచికు విఫలంచెందింది: "
 
 #: ../camel/providers/imap/camel-imap-provider.c:40
 #: ../camel/providers/imapx/camel-imapx-provider.c:40
@@ -3345,10 +3335,9 @@ msgid "_Use custom command to connect to server"
 msgstr "సేవికకు బంధం మలుచు ఆదేశాన్ని వాడుము(_U)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:52
-#, fuzzy
 #| msgid "Command:"
 msgid "Co_mmand:"
-msgstr "ఆదేశం:"
+msgstr "ఆదేశం (_m):"
 
 #: ../camel/providers/imap/camel-imap-provider.c:56
 #: ../camel/providers/imapx/camel-imapx-provider.c:62
@@ -3367,10 +3356,9 @@ msgid "O_verride server-supplied folder namespace"
 msgstr "సేవిక-పంపిణి సంచయ నేమ్‌స్పేస్ ను తిరిగివ్రాయము(_v)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:62
-#, fuzzy
 #| msgid "Namespace:"
 msgid "Names_pace:"
-msgstr "నామస్థలము:"
+msgstr "నేమ్‌స్పేస్ (_p):"
 
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imapx/camel-imapx-provider.c:74
@@ -3418,10 +3406,10 @@ msgstr "ఎస్ ఎస్ ల్ లభించలేదు"
 
 #: ../camel/providers/imap/camel-imap-store.c:264
 #: ../camel/providers/nntp/camel-nntp-store.c:333
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not connect to %s: %s"
 msgid "Could not connect to %s: "
-msgstr "%s కు బంధం ఏర్పరచలేము: %s"
+msgstr "%s కు అనుసంధానం కాలేకపోయింది: "
 
 #: ../camel/providers/imap/camel-imap-store.c:370
 #: ../camel/providers/imap/camel-imap-store.c:390
@@ -3539,22 +3527,21 @@ msgid "Server unexpectedly disconnected"
 msgstr "సేవిక అనుకోకుండా అననుసంధానించబడింది"
 
 #: ../camel/providers/imap/camel-imap-store.c:3140
-#, fuzzy
 #| msgid "Server unexpectedly disconnected: %s"
 msgid "Server unexpectedly disconnected: "
-msgstr "%s సేవిక ఊహించని విధంగా తెంచబడింది:"
+msgstr "సేవిక అనుకోకుండా అననుసంధానించబడింది: "
 
 #: ../camel/providers/imapx/camel-imapx-folder.c:74
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not load summary for %s"
 msgid "Could not create folder summary for %s"
-msgstr "%s కొరకు సంక్షింప్తమును నింపలేకపోయింది"
+msgstr "%s కొరకు సంచయం సంగ్రహాన్ని సృష్టించలేకపోయింది"
 
 #: ../camel/providers/imapx/camel-imapx-folder.c:82
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not create cache file"
 msgid "Could not create cache for %s: "
-msgstr "క్యాచి దస్త్రాన్ని సృష్టించలేవు"
+msgstr "%s కొరకు క్యాచీను సృష్టించలేక పోయింది: "
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:42
 msgid "Use _Quick Resync if the server supports it"
@@ -3581,35 +3568,32 @@ msgid "IMAP+"
 msgstr "ఐమాప్+"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:1410
-#, fuzzy
 #| msgid "Error writing mail temp file: %s"
 msgid "Error writing to cache stream: "
-msgstr "%s తపాలా తాత్కాలిక ఫైల్ వ్రాయుటలో దోషం ఏర్పడింది: "
+msgstr "క్యాచీ స్ట్రీమ్‌నకు వ్రాయుటలో దోషము: "
 
 #: ../camel/providers/imapx/camel-imapx-server.c:2092
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to authenticate.\n"
 msgid "Not authenticated"
-msgstr "దృవీకరించుటకు విఫలమైంది.\n"
+msgstr "దృవీకరించలేదు"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:2865
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not connect to %s (port %s): %s"
 msgid "Could not connect to %s (port %s): "
-msgstr "%s (port %s)కు బంధం కుదుర్చలేవు: %s"
+msgstr "%s (port %s)కు అనుసంధానం కాలేకపోయింది: "
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3329
-#, fuzzy
 #| msgid "Posting failed: %s"
 msgid "Closing tmp stream failed: "
-msgstr "స్థానము విఫలమైంది: %s"
+msgstr "tmp స్ట్రీమ్ మూయుట విఫలమైంది: "
 
 #: ../camel/providers/imapx/camel-imapx-server.c:5363
 #: ../camel/providers/imapx/camel-imapx-server.c:5378
-#, fuzzy
 #| msgid "Cannot create message: %s"
 msgid "Cannot create spool file: "
-msgstr "%s సందేశాన్ని సృష్టించలేము:"
+msgstr "స్పూల్ ఫైలును సృష్టించలేదు: "
 
 #: ../camel/providers/imapx/camel-imapx-store.c:1136
 #: ../camel/providers/nntp/camel-nntp-store.c:1610
@@ -3623,10 +3607,10 @@ msgid "Source stream returned no data"
 msgstr "సోర్స్ స్ట్రీమ్ యే దత్తాంశమును తిప్పియీయలేదు"
 
 #: ../camel/providers/imapx/camel-imapx-stream.c:79
-#, fuzzy, c-format
+#, c-format
 #| msgid "service unavailable"
 msgid "Source stream unavailable"
-msgstr "సేవ అందుబాటులోలేదు"
+msgstr "మూలాధార స్ట్రీమ్ అందుబాటులోలేదు"
 
 #: ../camel/providers/local/camel-local-folder.c:182
 #, c-format
@@ -3637,7 +3621,7 @@ msgstr "~%s (%s)"
 #: ../camel/providers/local/camel-local-folder.c:201
 #, c-format
 msgid "mailbox: %s (%s)"
-msgstr "మెయిల్‌బాక్స్: %s (%s)"
+msgstr "ఉత్తరాలపెట్టె: %s (%s)"
 
 #: ../camel/providers/local/camel-local-folder.c:210
 #, c-format
@@ -3649,7 +3633,7 @@ msgid "Index message body data"
 msgstr "విషయసూచిక సందేశ ముఖ దత్తాంశం"
 
 #: ../camel/providers/local/camel-local-folder.c:685
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Cannot get message: %s from folder %s\n"
 #| "  %s"
@@ -3657,8 +3641,8 @@ msgid ""
 "Cannot get message %s from folder %s\n"
 "%s"
 msgstr ""
-"సందేశాన్ని పొందలేము: %s సంచయం నుండి %s\n"
-"  %s"
+"సందేశం %sను సంచయం %s నుండి పొందలేక పోయింది\n"
+"%s"
 
 #: ../camel/providers/local/camel-local-provider.c:44
 msgid "_Use the '.folders' folder summary file (exmh)"
@@ -3778,43 +3762,41 @@ msgid "Unable to add message to summary: unknown reason"
 msgstr "సంక్షిప్తముకు సందేశాన్ని జతచేయలేము:తెలియని కారణము"
 
 #: ../camel/providers/local/camel-maildir-folder.c:198
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot append message to maildir folder: %s: %s"
 msgid "Cannot append message to maildir folder: %s: "
-msgstr "సంచయ తపాలావివరమునకు సందేశమును జతచేయలేము:%s: %s"
+msgstr "సందేశమును maildir సంచయం‌కు కలుపలేదు: %s: "
 
 #: ../camel/providers/local/camel-maildir-folder.c:246
 #: ../camel/providers/local/camel-maildir-folder.c:256
 #: ../camel/providers/local/camel-mbox-folder.c:386
 #: ../camel/providers/local/camel-mh-folder.c:168
 #: ../camel/providers/local/camel-mh-folder.c:178
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Cannot get message: %s from folder %s\n"
 #| "  %s"
 msgid "Cannot get message %s from folder %s: "
-msgstr ""
-"సందేశాన్ని పొందలేము: %s సంచయం నుండి %s\n"
-"  %s"
+msgstr "సందేశం %s ను సంచయం %s నుండి పొందలేకపోయింది: "
 
 #: ../camel/providers/local/camel-maildir-folder.c:326
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot append message to maildir folder: %s: %s"
 msgid "Cannot transfer message to destination folder: %s"
-msgstr "సంచయ తపాలావివరమునకు సందేశమును జతచేయలేము:%s: %s"
+msgstr "సందేశంను గమ్య సంచయంకు బదిలీచేయలేదు: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:100
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot create folder: %s: folder exists"
 msgid "Cannot create folder: %s : Folder name cannot contain a dot"
-msgstr "%s:సంచయాన్ని సృష్టించలేవు:సంచయం కలిగివున్నది"
+msgstr "సంచయాన్ని సృష్టించలేదు: %s : ఫోల్డర్ పేరు చుక్కను కలిగివుండలేదు"
 
 #: ../camel/providers/local/camel-maildir-store.c:109
 #: ../camel/providers/local/camel-maildir-store.c:680
-#, fuzzy, c-format
+#, c-format
 #| msgid "Folder already exists"
 msgid "Folder %s already exists"
-msgstr "సంచయము ఇదివరకే కలిగివున్నది"
+msgstr "సంచయము %s ఇదివరకే వున్నది"
 
 #: ../camel/providers/local/camel-maildir-store.c:191
 #: ../camel/providers/local/camel-maildir-store.c:222
@@ -3863,10 +3845,10 @@ msgid "Could not scan folder '%s': %s"
 msgstr "'%s' సంచయాన్ని సంశోధించలేక పోయింది: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:671
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot create folder: %s: folder exists"
 msgid "Cannot rename the folder: %s: Folder name cannot contain a dot"
-msgstr "%s:సంచయాన్ని సృష్టించలేవు:సంచయం కలిగివున్నది"
+msgstr "సంచయానికి తిరిగి పేరుపెట్టలేవు: %s: సంచయం పేరు చుక్కను కలిగివుండలేదు"
 
 #: ../camel/providers/local/camel-maildir-summary.c:435
 #: ../camel/providers/local/camel-maildir-summary.c:565
@@ -3891,16 +3873,16 @@ msgid "Storing folder"
 msgstr "సంచయాన్ని దాచుతున్నది"
 
 #: ../camel/providers/local/camel-mbox-folder.c:183
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot open mailbox: %s: %s\n"
 msgid "Cannot open mailbox: %s: "
-msgstr "తపాలా పేటికను తెరువలేము: %s: %s\n"
+msgstr "ఉత్తరాలపెట్టె తెరువలేదు: %s: "
 
 #: ../camel/providers/local/camel-mbox-folder.c:249
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot append message to mbox file: %s: %s"
 msgid "Cannot append message to mbox file: %s: "
-msgstr "సందేశమును తపాలా పేటిక దస్త్రమునకు జతచేయలేము: %s: %s"
+msgstr "సందేశమును mbox ఫైలునకు కలుపలేదు: %s: "
 
 #: ../camel/providers/local/camel-mbox-folder.c:378
 msgid "The folder appears to be irrecoverably corrupted."
@@ -3985,10 +3967,10 @@ msgid "Could not open folder: %s: %s"
 msgstr "సంచయమును తెరువలేము: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:537
-#, fuzzy, c-format
+#, c-format
 #| msgid "Fatal mail parser error near position %ld in folder %s"
 msgid "Fatal mail parser error near position %s in folder %s"
-msgstr "స్థానము %ld సంచయం %s దగ్గరగా మెయిల్ పార్శర్ దోషం"
+msgstr "స్థానము %s వద్ద సంచయం %s నందు మెయిల్ పార్సర్ దోషము"
 
 #: ../camel/providers/local/camel-mbox-summary.c:622
 #, c-format
@@ -4062,10 +4044,10 @@ msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "తాత్కాలిక తపాలా పేటికకు వ్రాయుట విఫలమైంది: %s: %s"
 
 #: ../camel/providers/local/camel-mh-folder.c:115
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot append message to mh folder: %s: %s"
 msgid "Cannot append message to mh folder: %s: "
-msgstr "mh సంచయమునకు సందేశము జతచేయలేము: %s: %s"
+msgstr "mh సంచయమునకు సందేశము కలుపలేదు: %s: "
 
 #: ../camel/providers/local/camel-mh-store.c:483
 #, c-format
@@ -4133,7 +4115,7 @@ msgstr ""
 #: ../camel/providers/local/camel-spool-store.c:426
 #, c-format
 msgid "'%s' is not a mailbox file."
-msgstr "'%s' ఒక తపాలాపెట్టె ఫైల్ కాదు."
+msgstr "'%s' ఒక ఉత్తరాలపెట్టె ఫైల్ కాదు."
 
 #: ../camel/providers/local/camel-spool-store.c:462
 #, c-format
@@ -4153,13 +4135,13 @@ msgstr "బారులు తీరు సంచయాల పేరులను
 #: ../camel/providers/local/camel-spool-summary.c:169
 #: ../camel/providers/local/camel-spool-summary.c:181
 #: ../camel/providers/local/camel-spool-summary.c:193
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not sync temporary folder %s: %s"
 msgid "Could not synchronize temporary folder %s: %s"
 msgstr "తాత్కాలిక సంచయం %s ను సింక్‌చేయలేకపోయింది: %s"
 
 #: ../camel/providers/local/camel-spool-summary.c:211
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not sync spool folder %s: %s"
 msgid "Could not synchronize spool folder %s: %s"
 msgstr "స్పూల్ సంచయం %s ను సింక్‌చేయలేకపోయింది: %s"
@@ -4167,7 +4149,7 @@ msgstr "స్పూల్ సంచయం %s ను సింక్‌చేయ
 #: ../camel/providers/local/camel-spool-summary.c:243
 #: ../camel/providers/local/camel-spool-summary.c:262
 #: ../camel/providers/local/camel-spool-summary.c:275
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Could not sync spool folder %s: %s\n"
 #| "Folder may be corrupt, copy saved in '%s'"
@@ -4203,10 +4185,9 @@ msgid "Posting failed: %s"
 msgstr "స్థానము విఫలమైంది: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:525
-#, fuzzy
 #| msgid "Posting failed: %s"
 msgid "Posting failed: "
-msgstr "స్థానము విఫలమైంది: %s"
+msgstr "పోస్టుచేయుట విఫలమైంది: "
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:554
 #, c-format
@@ -4251,10 +4232,10 @@ msgid "Cannot authenticate to server: %s"
 msgstr "సేవికకు దృవీకరించలేము: %s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:346
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not read greeting from %s: %s"
 msgid "Could not read greeting from %s: "
-msgstr "%s నుండి వందనము చదవలేము: %s"
+msgstr "%s నుండి వందనము చదవలేము: "
 
 #: ../camel/providers/nntp/camel-nntp-store.c:359
 #, c-format
@@ -4315,10 +4296,9 @@ msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr "మీరు సంచయాన్ని సమాచార నిల్వనందు తీసివేయలేరు: బదులుగా చందావిరమించుకోండి."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1479
-#, fuzzy
 #| msgid "NNTP Command failed: %s"
 msgid "NNTP Command failed: "
-msgstr "NNTP ఆదేశం విఫలమైంది: %s"
+msgstr "NNTP ఆదేశం విఫలమైంది: "
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1553
 #, c-format
@@ -4448,10 +4428,10 @@ msgstr "STLS సేవిక ద్వారా మద్దతివ్వబ�
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
 #: ../camel/providers/pop3/camel-pop3-store.c:218
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to connect to POP server %s in secure mode: %s"
 msgid "Failed to connect to POP server %s in secure mode%s"
-msgstr "POP సేవిక %s కు రక్షితరీతి నందు అనుసంధానించుటకు విఫలమైంది: %s"
+msgstr "POP సేవిక %s కు రక్షితరీతి %s నందు అనుసంధానించుటకు విఫలమైంది"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:231
 msgid "TLS negotiations failed"
@@ -4471,10 +4451,10 @@ msgstr "POP సేవిక %s కు అనుసంధానించబడల
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
 #: ../camel/providers/pop3/camel-pop3-store.c:340
-#, fuzzy, c-format
+#, c-format
 #| msgid "SASL '%s' Login failed for POP server %s: %s"
 msgid "SASL '%s' Login failed for POP server %s%s"
-msgstr "SASL '%s' లాగిన్ POP సేవిక %s కొరకు విఫలమైంది: %s"
+msgstr "SASL '%s' లాగిన్ POP సేవిక %s%s కొరకు విఫలమైంది"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:357
 #, c-format
@@ -4482,10 +4462,10 @@ msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "POP సేవిక %s కు లాగిన్ కాలేకపోయింది: SASL నియమం దోషం"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:374
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to authenticate on POP server %s: %s"
 msgid "Failed to authenticate on POP server %s: "
-msgstr "POP సేవక %s పై దృవీకరించుటకు విఫలమైంది: %s"
+msgstr "POP సేవక %s పై దృవీకరించుటకు విఫలమైంది: "
 
 #: ../camel/providers/pop3/camel-pop3-store.c:439
 #, c-format
@@ -4507,7 +4487,7 @@ msgstr ""
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
 #: ../camel/providers/pop3/camel-pop3-store.c:505
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Unable to connect to POP server %s.\n"
 #| "Error sending username: %s"
@@ -4516,11 +4496,11 @@ msgid ""
 "Error sending username%s"
 msgstr ""
 "POP సేవిక %s కు అనుసంధానించబడలేక పోయింది.\n"
-"వినియోగదారిపేరు పంపుటలో దోషం: %s"
+"వినియోగదారిపేరు పంపుటలో దోషం %s"
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
 #: ../camel/providers/pop3/camel-pop3-store.c:518
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Unable to connect to POP server %s.\n"
 #| "Error sending password: %s"
@@ -4529,19 +4509,19 @@ msgid ""
 "Error sending password%s"
 msgstr ""
 "POP సేవిక %s కు అనుసంధానించబడలేకపోయింది.\n"
-"సంకేతపదం పంపుటలో దోషం: %s"
+"సంకేతపదం పంపుటలో దోషం %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:558
-#, fuzzy, c-format
+#, c-format
 #| msgid "IMAP server %s"
 msgid "POP3 server %s"
-msgstr "%s ఐమాప్ సేవిక"
+msgstr "POP3 సేవిక %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:562
-#, fuzzy, c-format
+#, c-format
 #| msgid "IMAP service for %s on %s"
 msgid "POP3 server for %s on %s"
-msgstr "%s పై %s కొరకు సేవ"
+msgstr "%s కొరకు %s పైన POP3 సేవిక"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:694
 #, c-format
@@ -4592,10 +4572,9 @@ msgid "Could not fork sendmail: %s: mail not sent"
 msgstr "మెయిల్‌పంపును ఫోర్క్  చేయలేకపోయింది: %s: మెయిల్ పంపబడలేదు"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:182
-#, fuzzy
 #| msgid "Could not send message: %s"
 msgid "Could not send message: "
-msgstr "%s సందేశాన్ని పంపలేము:"
+msgstr "సందేశాన్ని పంపలేక పోయింది: "
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:210
 #, c-format
@@ -4622,10 +4601,9 @@ msgstr "మెయిల్ చేరవేయుట కొరకు SMTP ఉప�
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:193
 #: ../camel/providers/smtp/camel-smtp-transport.c:200
-#, fuzzy
 #| msgid "Welcome response error"
 msgid "Welcome response error: "
-msgstr "స్వాగత స్పందన దోషం"
+msgstr "స్వాగత స్పందన దోషం: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:237
 #: ../camel/providers/smtp/camel-smtp-transport.c:277
@@ -4637,10 +4615,9 @@ msgstr "రక్షిత రీతిలో SMTP సేవిక %s కు అ
 #: ../camel/providers/smtp/camel-smtp-transport.c:246
 #: ../camel/providers/smtp/camel-smtp-transport.c:259
 #: ../camel/providers/smtp/camel-smtp-transport.c:266
-#, fuzzy
 #| msgid "STARTTLS command failed: %s"
 msgid "STARTTLS command failed: "
-msgstr "STARTTLS ఆదేశం విఫలమైంది: %s"
+msgstr "STARTTLS ఆదేశం విఫలమైంది: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:357
 #, c-format
@@ -4762,7 +4739,7 @@ msgstr "అభ్యర్దిత మెయిల్ చర్య తిరస
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:759
 msgid "Requested action not taken: mailbox name not allowed"
-msgstr "అభ్యర్ధించిన చర్య తీసుకోబడలేదు: తపాలాపెట్టె పేరు అందుబాటులోలేదు"
+msgstr "అభ్యర్ధించిన చర్య తీసుకోబడలేదు: ఉత్తరాలపెట్టె పేరు అందుబాటులోలేదు"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:761
 msgid "Start mail input; end with <CRLF>.<CRLF>"
@@ -4795,10 +4772,9 @@ msgstr "SMTP అభినందన"
 #: ../camel/providers/smtp/camel-smtp-transport.c:1057
 #: ../camel/providers/smtp/camel-smtp-transport.c:1074
 #: ../camel/providers/smtp/camel-smtp-transport.c:1082
-#, fuzzy
 #| msgid "HELO command failed: %s"
 msgid "HELO command failed: "
-msgstr "HELO ఆదేశం విఫలమైంది: %s"
+msgstr "HELO ఆదేశం విఫలమైంది: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1150
 msgid "SMTP Authentication"
@@ -4812,31 +4788,28 @@ msgstr "SASL దృవీకరణ ఆబ్జక్టు సృష్టి�
 #: ../camel/providers/smtp/camel-smtp-transport.c:1176
 #: ../camel/providers/smtp/camel-smtp-transport.c:1187
 #: ../camel/providers/smtp/camel-smtp-transport.c:1196
-#, fuzzy
 #| msgid "AUTH command failed: %s"
 msgid "AUTH command failed: "
-msgstr "AUTH ఆదేశం విఫలమైంది: %s"
+msgstr "AUTH ఆదేశం విఫలమైంది: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1304
 #: ../camel/providers/smtp/camel-smtp-transport.c:1318
 #: ../camel/providers/smtp/camel-smtp-transport.c:1327
-#, fuzzy
 #| msgid "MAIL FROM command failed"
 msgid "MAIL FROM command failed: "
-msgstr "ఆదేశంనుండి మెయిల్ విఫలమైంది"
+msgstr "MAIL FROM ఆదేశం విఫలమైంది: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1354
-#, fuzzy
 #| msgid "RSET command failed: %s"
 msgid "RCPT TO command failed: "
-msgstr "RSET ఆదేశం విఫలమైంది: %s"
+msgstr "RSET TO ఆదేశం విఫలమైంది: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1370
 #: ../camel/providers/smtp/camel-smtp-transport.c:1379
-#, fuzzy, c-format
+#, c-format
 #| msgid "RCPT TO <%s> failed"
 msgid "RCPT TO <%s> failed: "
-msgstr "RCPT <%s> కు విఫలం"
+msgstr "RCPT TO <%s> విఫలమైంది: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1421
 #: ../camel/providers/smtp/camel-smtp-transport.c:1431
@@ -4845,85 +4818,73 @@ msgstr "RCPT <%s> కు విఫలం"
 #: ../camel/providers/smtp/camel-smtp-transport.c:1519
 #: ../camel/providers/smtp/camel-smtp-transport.c:1532
 #: ../camel/providers/smtp/camel-smtp-transport.c:1540
-#, fuzzy
 #| msgid "DATA command failed"
 msgid "DATA command failed: "
-msgstr "DATA ఆదేశం విఫలమైంది"
+msgstr "DATA ఆదేశం విఫలమైంది: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1565
 #: ../camel/providers/smtp/camel-smtp-transport.c:1579
 #: ../camel/providers/smtp/camel-smtp-transport.c:1587
-#, fuzzy
 #| msgid "RSET command failed: %s"
 msgid "RSET command failed: "
-msgstr "RSET ఆదేశం విఫలమైంది: %s"
+msgstr "RSET ఆదేశం విఫలమైంది: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1612
 #: ../camel/providers/smtp/camel-smtp-transport.c:1626
 #: ../camel/providers/smtp/camel-smtp-transport.c:1633
-#, fuzzy
 #| msgid "QUIT command failed: %s"
 msgid "QUIT command failed: "
-msgstr "QUIT ఆదేశం విఫలమైంది: %s"
+msgstr "QUIT ఆదేశం విఫలమైంది: "
 
 #: ../libedataserver/e-categories.c:47
-#, fuzzy
 #| msgid "Anniversary"
 msgctxt "CategoryName"
 msgid "Anniversary"
 msgstr "వార్షికోత్సవం"
 
 #: ../libedataserver/e-categories.c:48
-#, fuzzy
 #| msgid "Birthday"
 msgctxt "CategoryName"
 msgid "Birthday"
 msgstr "జన్మదినం"
 
 #: ../libedataserver/e-categories.c:49
-#, fuzzy
 #| msgid "Business"
 msgctxt "CategoryName"
 msgid "Business"
 msgstr "వ్యాపారం"
 
 #: ../libedataserver/e-categories.c:50
-#, fuzzy
 #| msgid "Competition"
 msgctxt "CategoryName"
 msgid "Competition"
 msgstr "పోటీ"
 
 #: ../libedataserver/e-categories.c:51
-#, fuzzy
 #| msgid "Favorites"
 msgctxt "CategoryName"
 msgid "Favorites"
 msgstr "ఇష్టాలు"
 
 #: ../libedataserver/e-categories.c:52
-#, fuzzy
 #| msgid "Gifts"
 msgctxt "CategoryName"
 msgid "Gifts"
 msgstr "బహుమానాలు"
 
 #: ../libedataserver/e-categories.c:53
-#, fuzzy
 #| msgid "Goals/Objectives"
 msgctxt "CategoryName"
 msgid "Goals/Objectives"
 msgstr "లక్ష్యాలు/సాధనలు"
 
 #: ../libedataserver/e-categories.c:54
-#, fuzzy
 #| msgid "Holiday"
 msgctxt "CategoryName"
 msgid "Holiday"
 msgstr "సెలవు"
 
 #: ../libedataserver/e-categories.c:55
-#, fuzzy
 #| msgid "Holiday Cards"
 msgctxt "CategoryName"
 msgid "Holiday Cards"
@@ -4937,42 +4898,36 @@ msgid "Hot Contacts"
 msgstr "త్వరిత పరిచయాలు"
 
 #: ../libedataserver/e-categories.c:58
-#, fuzzy
 #| msgid "Ideas"
 msgctxt "CategoryName"
 msgid "Ideas"
 msgstr "ఆలోచనలు"
 
 #: ../libedataserver/e-categories.c:59
-#, fuzzy
 #| msgid "International"
 msgctxt "CategoryName"
 msgid "International"
 msgstr "అంతర్జాతీయ"
 
 #: ../libedataserver/e-categories.c:60
-#, fuzzy
 #| msgid "Key Customer"
 msgctxt "CategoryName"
 msgid "Key Customer"
 msgstr "కీ వినియోగదారి"
 
 #: ../libedataserver/e-categories.c:61
-#, fuzzy
 #| msgid "Miscellaneous"
 msgctxt "CategoryName"
 msgid "Miscellaneous"
 msgstr "సంకరమైన"
 
 #: ../libedataserver/e-categories.c:62
-#, fuzzy
 #| msgid "Personal"
 msgctxt "CategoryName"
 msgid "Personal"
 msgstr "వ్యక్తిగత"
 
 #: ../libedataserver/e-categories.c:63
-#, fuzzy
 #| msgid "Phone Calls"
 msgctxt "CategoryName"
 msgid "Phone Calls"
@@ -4980,46 +4935,40 @@ msgstr "ఫోన్ కాల్స్"
 
 #. Translators: "Status" is a category name; it can mean anything user wants to
 #: ../libedataserver/e-categories.c:65
-#, fuzzy
 #| msgid "Status"
 msgctxt "CategoryName"
 msgid "Status"
 msgstr "స్థితి"
 
 #: ../libedataserver/e-categories.c:66
-#, fuzzy
 #| msgid "Strategies"
 msgctxt "CategoryName"
 msgid "Strategies"
 msgstr "విధానాలు"
 
 #: ../libedataserver/e-categories.c:67
-#, fuzzy
 #| msgid "Suppliers"
 msgctxt "CategoryName"
 msgid "Suppliers"
 msgstr "పంపిణీదారులు"
 
 #: ../libedataserver/e-categories.c:68
-#, fuzzy
 #| msgid "Time & Expenses"
 msgctxt "CategoryName"
 msgid "Time & Expenses"
 msgstr "సమయం & ఖర్చులు"
 
 #: ../libedataserver/e-categories.c:69
-#, fuzzy
 #| msgid "VIP"
 msgctxt "CategoryName"
 msgid "VIP"
 msgstr "VIP"
 
 #: ../libedataserver/e-categories.c:70
-#, fuzzy
 #| msgid "Waiting"
 msgctxt "CategoryName"
 msgid "Waiting"
-msgstr "వేచిఉండుట"
+msgstr "వేచివుండుట"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format.
@@ -5234,10 +5183,9 @@ msgid "Any Category"
 msgstr "ఏ వర్గమైనా"
 
 #: ../libedataserverui/e-name-selector-dialog.c:237
-#, fuzzy
 #| msgid "Contacts"
 msgid "Co_ntacts"
-msgstr "పరిచయాలు"
+msgstr "పరిచయాలు (_n)"
 
 #: ../libedataserverui/e-name-selector-dialog.c:282
 msgid "Search"
@@ -5264,10 +5212,10 @@ msgid "_Remove"
 msgstr "తీసివేయు(_R)"
 
 #: ../libedataserverui/e-name-selector-dialog.c:888
-#, fuzzy, c-format
+#, c-format
 #| msgid "Error reading mail file: %s"
 msgid "Error loading address book: %s"
-msgstr "%s తపాలా ఫైల్ చదువుటలో దోషం ఏర్పడింది:"
+msgstr "చిరునామా పుస్తకం లోడుచేయుటలో దోషం: %s"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
 #: ../libedataserverui/e-name-selector-entry.c:2673
