@@ -16,7 +16,7 @@ libegdbus_cal_la_CPPFLAGS =			\
 	-DG_LOG_DOMAIN=\"libegdbus-cal\"	\
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/calendar		\
-	$(GNOME_PLATFORM_CFLAGS)
+	$(E_DATA_SERVER_CFLAGS)
 
 libegdbus_cal_la_SOURCES =			\
 	e-gdbus-egdbuscal.h			\
@@ -30,7 +30,7 @@ libegdbus_cal_la_SOURCES =			\
 	e-gdbus-typemappers.h
 
 libegdbus_cal_la_LIBADD =			\
-	$(GNOME_PLATFORM_LIBS)
+	$(E_DATA_SERVER_LIBS)
 
 libegdbus_cal_la_LDFLAGS = $(NO_UNDEFINED)
 
