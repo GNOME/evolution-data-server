@@ -50,6 +50,12 @@ static CamelProviderConfEntry pop3_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_END }
 };
 
+CamelProviderPortEntry pop3_port_entries[] = {
+						  { 110, N_("Default POP3 port"), FALSE },
+						  { 995, N_("POP3 over SSL"), TRUE },
+						  { 0, NULL, 0 }
+					     };
+
 static CamelProvider pop3_provider = {
 	"pop",
 
@@ -65,6 +71,8 @@ static CamelProvider pop3_provider = {
 	CAMEL_URL_NEED_USER | CAMEL_URL_NEED_HOST | CAMEL_URL_ALLOW_AUTH,
 
 	pop3_conf_entries,
+
+	pop3_port_entries,
 
 	/* ... */
 };

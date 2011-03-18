@@ -64,6 +64,10 @@ static CamelProvider vee_provider = {
 	CAMEL_PROVIDER_IS_STORAGE,
 	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
 
+	NULL,	/* extra conf */
+
+	NULL,   /* port providers */
+
 	/* ... */
 };
 

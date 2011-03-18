@@ -48,6 +48,12 @@ static CamelProviderConfEntry nntp_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_END }
 };
 
+CamelProviderPortEntry nntp_port_entries[] = {
+						  { 119, N_("Default NNTP port"), FALSE },
+						  { 563, N_("NNTP over SSL"), TRUE },
+					    	  { 0, NULL, 0 }
+					     };
+
 static CamelProvider news_provider = {
 	"nntp",
 	N_("USENET news"),
@@ -63,7 +69,9 @@ static CamelProvider news_provider = {
 	CAMEL_URL_NEED_HOST | CAMEL_URL_ALLOW_USER |
 	CAMEL_URL_ALLOW_PASSWORD | CAMEL_URL_ALLOW_AUTH,
 
-	nntp_conf_entries
+	nntp_conf_entries,
+
+	nntp_port_entries,
 
 	/* ... */
 };

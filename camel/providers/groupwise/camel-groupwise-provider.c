@@ -76,6 +76,11 @@ static CamelProviderConfEntry groupwise_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_END }
 };
 
+CamelProviderPortEntry groupwise_port_entries[] = {
+							{ 1677, N_("Default GroupWise port"), FALSE },
+							{ 0, NULL, 0 }
+						  };
+
 static CamelProvider groupwise_provider = {
 	"groupwise",
 	N_("Novell GroupWise"),
@@ -90,6 +95,8 @@ static CamelProvider groupwise_provider = {
 	CAMEL_URL_NEED_USER | CAMEL_URL_NEED_HOST | CAMEL_URL_ALLOW_AUTH,
 
 	groupwise_conf_entries,
+
+	groupwise_port_entries,
 
 	/* ... */
 };

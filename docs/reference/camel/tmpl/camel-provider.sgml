@@ -32,6 +32,7 @@ camel-provider
 @flags: 
 @url_flags: 
 @extra_conf: 
+@port_entries: 
 @auto_detect: 
 @object_types: 
 @authtypes: 
@@ -263,6 +264,7 @@ camel-provider
 @flags: 
 @url_flags: 
 @extra_conf: 
+@port_entries: 
 @auto_detect: 
 @object_types: 
 @authtypes: 

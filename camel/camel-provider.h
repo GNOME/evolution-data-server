@@ -157,6 +157,12 @@ typedef struct {
 	const gchar *text, *value;
 } CamelProviderConfEntry;
 
+typedef struct {
+	gint port;
+	const gchar *desc;
+	gboolean is_ssl;
+} CamelProviderPortEntry;
+
 /* Some defaults */
 #define CAMEL_PROVIDER_CONF_DEFAULT_USERNAME \
 	{ CAMEL_PROVIDER_CONF_LABEL, "username", NULL, N_("User_name:"), NULL }
@@ -197,6 +203,12 @@ typedef struct {
 
 	/* Extra configuration information */
 	CamelProviderConfEntry *extra_conf;
+
+	/* The list of CamelProviderPortEntry structs. Each struct contains 
+	 * port number and a short string description ("Default IMAP port"
+	 * or "POP3 over SSL" etc.
+	 */
+	CamelProviderPortEntry *port_entries;
 
 	/* auto-detection function */
 	CamelProviderAutoDetectFunc auto_detect;

@@ -82,12 +82,19 @@ CamelProviderConfEntry imapx_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_END }
 };
 
+CamelProviderPortEntry imapx_port_entries[] = {
+						{ 143, N_("Defalut IMAP port"), FALSE },
+						{ 993, N_("IMAP over SSL"), TRUE },
+						{ 0, NULL, 0 }
+					      };
+
 static CamelProvider imapx_provider = {
 	"imapx",
 
 	N_("IMAP+"),
 
 	N_("For reading and storing mail on IMAP servers."),
+
 	"mail",
 
 	CAMEL_PROVIDER_IS_REMOTE | CAMEL_PROVIDER_IS_SOURCE |
@@ -96,6 +103,8 @@ static CamelProvider imapx_provider = {
 	CAMEL_URL_NEED_USER | CAMEL_URL_NEED_HOST | CAMEL_URL_ALLOW_AUTH,
 
 	imapx_conf_entries,
+
+	imapx_port_entries,
 
 	/* ... */
 };

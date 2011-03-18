@@ -74,6 +74,12 @@ static CamelProviderConfEntry imap_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_END }
 };
 
+CamelProviderPortEntry imap_port_entries[] = {
+				   		{ 143, N_("IMAP default port"), FALSE },
+						{ 993, N_("IMAP over SSL"), TRUE },
+						{ 0, NULL, 0 }
+			    		     };
+
 static CamelProvider imap_provider = {
 	"imap",
 	N_("IMAP"),
@@ -90,6 +96,8 @@ static CamelProvider imap_provider = {
 
 	imap_conf_entries,
 
+	imap_port_entries,
+
 	/* ... */
 };
 
@@ -100,6 +108,7 @@ CamelServiceAuthType camel_imap_password_authtype = {
 	   "plaintext password."),
 
 	"",
+
 	TRUE
 };
 
