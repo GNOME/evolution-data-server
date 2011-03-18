@@ -179,9 +179,9 @@ maildir_store_get_folder_sync (CamelStore *store,
 
 	if (!g_ascii_strcasecmp (folder_name, "Inbox")) {
 		/* special case "." (aka inbox), may need to be created */
-		if (g_stat(tmp, &st) != 0 || !S_ISDIR(st.st_mode)
-		    || g_stat (cur, &st) != 0 || !S_ISDIR(st.st_mode)
-		    || g_stat (new, &st) != 0 || !S_ISDIR(st.st_mode)) {
+		if (g_stat (tmp, &st) != 0 || !S_ISDIR (st.st_mode)
+		    || g_stat (cur, &st) != 0 || !S_ISDIR (st.st_mode)
+		    || g_stat (new, &st) != 0 || !S_ISDIR (st.st_mode)) {
 			if (g_mkdir (tmp, 0700) != 0
 			    || g_mkdir (cur, 0700) != 0
 			    || g_mkdir (new, 0700) != 0) {

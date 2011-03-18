@@ -192,7 +192,7 @@ void		e_account_set_bool		(EAccount *account,
 						 e_account_item_t type,
 						 gboolean v_bool);
 gboolean	e_account_writable		(EAccount *account,
-				 		 e_account_item_t type);
+						 e_account_item_t type);
 gboolean	e_account_writable_option	(EAccount *account,
 						 const gchar *protocol,
 						 const gchar *option);
