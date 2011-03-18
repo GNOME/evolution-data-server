@@ -404,6 +404,10 @@ if test "x$enable_goa" = xyes; then
 fi
 AM_CONDITIONAL(HAVE_GOA, [test x$enable_goa = xyes])
 
+if test x$os_win32 = xno; then
+	PKG_CHECK_MODULES(GIO_UNIX, [gio-unix-2.0])
+fi
+
 dnl ***********************************
 dnl Check for GNOME Keyring.
 dnl ***********************************
