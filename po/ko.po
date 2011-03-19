@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&component=Misc\n"
 "POT-Creation-Date: 2011-02-13 03:29+0900\n"
-"PO-Revision-Date: 2011-02-13 03:44+0900\n"
+"PO-Revision-Date: 2011-03-19 23:03+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr@googlegroups.com>\n"
 "Language: Korean\n"
@@ -5067,7 +5067,7 @@ msgstr "%s 삭제(_D)"
 #: ../libedataserverui/e-passwords.c:127
 #, c-format
 msgid "Keyring key is unusable: no user or host name"
-msgstr "키링의 키를 사용할 수 없습니다. 그런 사용자나 호스트 이름이 없습니다."
+msgstr "키 모음의 키를 사용할 수 없습니다. 그런 사용자나 호스트 이름이 없습니다."
 
 #: ../libedataserverui/e-passwords.c:701
 msgid "You have the Caps Lock key on."
