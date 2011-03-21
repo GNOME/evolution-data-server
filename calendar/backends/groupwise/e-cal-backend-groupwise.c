@@ -2730,10 +2730,15 @@ e_cal_backend_groupwise_send_objects (ECalBackendSync *backend, EDataCal *cal, c
 			e_cal_component_get_attendee_list (comp, &attendee_list);
 			/* convert this into GList */
 			for (tmp = attendee_list; tmp; tmp = g_slist_next (tmp)) {
-				const gchar *attendee = tmp->data;
-
-				if (attendee)
-					*users = g_list_append (*users, g_strdup (attendee));
+				ECalComponentAttendee *attendee = NULL;
+				const gchar *email_id = NULL;
+				attendee = (ECalComponentAttendee *) (tmp->data);
+				if (attendee) {
+					email_id = attendee->value;
+					if (!g_ascii_strncasecmp (email_id, "mailto:", 7))
+						email_id += 7;
+					*users = g_list_append (*users, g_strdup (email_id));
+				}
 			}
 
 			g_object_unref (comp);
