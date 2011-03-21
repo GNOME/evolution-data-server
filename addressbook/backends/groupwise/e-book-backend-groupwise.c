@@ -2699,6 +2699,8 @@ build_cache (EBookBackendGroupwise *ebgw)
 				status_msg = g_strdup_printf (_("Downloading contacts (%d)... "),
 								 contact_num);
 				book_view_notify_status (book_view, status_msg);
+				e_data_book_view_notify_update (book_view, contact);
+
 				g_free (status_msg);
 			}
 
