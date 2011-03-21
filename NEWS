@@ -1,3 +1,54 @@
+Evolution-Data-Server 2.91.92 2011-03-21
+----------------------------------------
+
+Bug Fixes:
+	Bug 629032 - GW count is not updated while downloading contacts 
+	             (Punit Jain)
+	Bug 634663 - e-calendar-factory crashes while retracting a meeting.
+	             (Punit Jain)
+	Bug 641838 - More compiler warning fixes (Kjartan Maraas)
+	Bug 642783 - CamelLocalFolder: Let glibc's realpath() allocate for 
+	             us (Emilio Pozuelo Monfort)
+	Bug 643748 - Slow message_location search rule with maildir
+	             accounts (Milan Crha)
+	Bug 644367 - Check NNTP server capabilities before using OVER 
+	             command (Milan Crha)
+	Bug 644532 - Crash when opening ESource with local:/system URI
+	             (Milan Crha)
+
+Miscellaneous Fixes:
+	* Don't use gnome-keyring to store credentials on Windows
+	  (Fridrich Štrba)
+	* Miscellaneous build fixes for Windows (Fridrich Štrba)
+	* Improve camel_file_util_encode_fixed_string (Matthew Barnes)
+	* Allow special CAMEL_DEBUG=pop3 to debug pop3 communication only
+	  (Milan Crha)
+	* Add e-passwords-win32.c into POTFILES.in (Milan Crha)
+	* Finish documenting the libebackend API. (Matthew Barnes)
+	* Improve libedataserver API docs (Matthew Barnes)
+	* Ensure backend life-time during inner calls (Milan Crha)
+	* Fix linking in calendar/libegdbus/Makefile.am (Matthew Barnes)
+	* Coding style and whitespace cleanup. (Matthew Barnes)
+	* Remove ESoapMessage and ESoapResponse (David Woodhouse)
+
+Translations:
+	Mario Blättermann (de)
+	Michael Kotsarinis (el)
+	Bruce Cowan (en_GB)
+	Sweta Kothari (gu)
+	Gabor Kelemen (hu)
+	Changwoo Ryu (ko)
+	Rudolfs Mazurs (lv)
+	Piotr Drąg (pl)
+	Crenguta Bacaoanu (ro)
+	Lucian Adrian Grijincu (ro)
+	Matej Urbančič (sl)
+	Krishnababu K (te)
+	Daniel Korostil (uk)
+	Lele Long (zh_CN)
+	Chao-Hsiung Liao (zh_HK) (zh_TW)
+
+
 Evolution-Data-Server 2.91.91 2011-03-07
 ----------------------------------------
 
