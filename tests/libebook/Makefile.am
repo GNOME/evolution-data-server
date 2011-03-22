@@ -1,3 +1,5 @@
+SUBDIRS = vcard
+
 noinst_LTLIBRARIES = libebook-test-utils.la
 libebook_test_utils_la_SOURCES = ebook-test-utils.c ebook-test-utils.h
 

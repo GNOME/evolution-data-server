@@ -21,12 +21,7 @@
  * Author: Hans Petter Jansson <hpj@novell.com>
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#include "e-contact-store.h"
-#include <gtk/gtk.h>
+#include <libedataserverui/e-contact-store.h>
 
 static void
 entry_changed (GtkWidget *entry, EContactStore *contact_store)

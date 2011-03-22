@@ -1,0 +1,47 @@
+#include <libedata-cal/e-cal-backend-sexp.h>
+
+static void
+test_query (const gchar * query)
+{
+	ECalBackendSExp *sexp = e_cal_backend_sexp_new (query);
+	time_t start, end;
+
+	gboolean generator = e_cal_backend_sexp_evaluate_occur_times (sexp, &start, &end);
+
+	if (generator) {
+		printf ("%s: %ld - %ld\n", query, start, end);
+	} else {
+		printf ("%s: no time prunning possible\n", query);
+	}
+}
+
+gint main (gint argc, gchar **argv)
+{
+	g_type_init ();
+
+	/* e_sexp_add_variable(f, 0, "test", NULL); */
+
+	if (argc < 2 || !argv[1])
+	{
+		test_query ("(occur-in-time-range? (make-time \"20080727T220000Z\") (make-time \"20080907T220000Z\"))");
+		test_query ("(due-in-time-range? (make-time \"20080727T220000Z\") (make-time \"20080907T220000Z\"))");
+		test_query ("(has-alarms-in-range? (make-time \"20080727T220000Z\") (make-time \"20080907T220000Z\"))");
+		test_query ("(completed-before? (make-time \"20080727T220000Z\") )");
+
+		test_query ("(and (occur-in-time-range? (make-time \"20080727T220000Z\") (make-time \"20080907T220000Z\")) #t)");
+		test_query ("(or (occur-in-time-range? (make-time \"20080727T220000Z\")(make-time \"20080907T220000Z\")) #t)");
+
+		test_query ("(and (contains? \"substring\") (has-categories? \"blah\"))");
+		test_query ("(or (occur-in-time-range? (make-time \"20080727T220000Z\") (make-time \"20080907T220000Z\")) (contains? \"substring\"))");
+
+		test_query ("(and (and (occur-in-time-range? (make-time \"20080727T220000Z\") (make-time \"20080907T220000Z\"))"
+			    " (or (contains? \"substring\") (has-categories? \"blah\"))) (has-alarms?))");
+
+		test_query ("(or (and (occur-in-time-range? (make-time \"20080727T220000Z\") (make-time \"20080907T220000Z\"))"
+			    " (or (contains? \"substring\") (has-categories? \"blah\"))) (has-alarms?))");
+	}
+	else
+		test_query (argv[1]);
+
+	return 0;
+}

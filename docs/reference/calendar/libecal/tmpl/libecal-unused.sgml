@@ -506,24 +506,6 @@ ECalViewListener
 @void: 
 @Returns: 
 
-<!-- ##### FUNCTION e_cal_get_sources ##### -->
-<para>
-
-</para>
-
-@sources: 
-@type: 
-@error: 
-@Returns: 
-
-<!-- ##### FUNCTION e_cal_get_uri ##### -->
-<para>
-
-</para>
-
-@ecal: 
-@Returns: 
-
 <!-- ##### FUNCTION e_cal_listener_construct ##### -->
 <para>
 

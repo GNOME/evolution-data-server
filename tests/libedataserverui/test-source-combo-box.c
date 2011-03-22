@@ -20,13 +20,7 @@
  * Author: Ettore Perazzoli <ettore@ximian.com>
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#include "e-source-combo-box.h"
-
-#include <gtk/gtk.h>
+#include <libedataserverui/e-source-combo-box.h>
 
 static void
 source_changed_cb (ESourceComboBox *combo_box)

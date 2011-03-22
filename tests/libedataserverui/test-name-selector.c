@@ -21,14 +21,9 @@
  * Author: Hans Petter Jansson <hpj@novell.com>
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#include "e-name-selector-model.h"
-#include "e-name-selector-dialog.h"
-#include "e-name-selector-entry.h"
-#include <gtk/gtk.h>
+#include <libedataserverui/e-name-selector-model.h>
+#include <libedataserverui/e-name-selector-dialog.h>
+#include <libedataserverui/e-name-selector-entry.h>
 #include <camel/camel.h>
 
 static ENameSelectorDialog *name_selector_dialog;

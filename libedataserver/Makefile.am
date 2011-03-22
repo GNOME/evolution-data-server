@@ -1,5 +1,4 @@
 lib_LTLIBRARIES = libedataserver-1.2.la
-noinst_PROGRAMS = test-source-list
 
 libedataserver_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)							\
@@ -71,17 +70,6 @@ libedataserverinclude_HEADERS =		\
 	e-xml-utils.h			\
 	e-xml-hash-utils.h		\
 	eds-version.h
-
-test_source_list_CPPFLAGS = \
-	$(AM_CPPFLAGS)				\
-	-I$(top_srcdir)				\
-	-DG_LOG_DOMAIN=\"e-data-server\"	\
-	$(E_DATA_SERVER_CFLAGS)			\
-	$(SOUP_CFLAGS)
-
-test_source_list_SOURCES = test-source-list.c
-
-test_source_list_LDADD = libedataserver-1.2.la $(E_DATA_SERVER_LIBS)
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@

@@ -16,7 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "e-category-completion.h"
+#include <libedataserverui/e-category-completion.h>
 
 static gboolean
 on_idle_create_widget (void)

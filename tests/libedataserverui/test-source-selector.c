@@ -21,13 +21,7 @@
  * Author: Ettore Perazzoli <ettore@ximian.com>
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#include "e-source-selector.h"
-
-#include <gtk/gtk.h>
+#include <libedataserverui/e-source-selector.h>
 
 static void
 dump_selection (ESourceSelector *selector)

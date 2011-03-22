@@ -26,7 +26,7 @@
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-component.h>
 #include <libical/icalcomponent.h>
-#include "e-cal-backend-intervaltree.h"
+#include <libedata-cal/e-cal-backend-intervaltree.h>
 
 #define NUM_INTERVALS_CLOSED  100
 #define NUM_INTERVALS_OPEN  100
