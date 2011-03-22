@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gu\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&component=Misc.\n"
 "POT-Creation-Date: 2011-02-16 16:36+0000\n"
-"PO-Revision-Date: 2011-03-17 15:22+0530\n"
+"PO-Revision-Date: 2011-03-22 14:52+0530\n"
 "Last-Translator: Sweta Kothari <swkothar@redhat.com>\n"
 "Language-Team: Gujarati\n"
 "MIME-Version: 1.0\n"
@@ -61,7 +61,7 @@ msgstr "શોધી રહ્યા છીએ..."
 #. Query for new contacts asynchronously
 #: ../addressbook/backends/google/e-book-backend-google.c:589
 msgid "Querying for updated contacts…"
-msgstr ""
+msgstr "સુધારેલ સંપર્કો માટે પ્રશ્ર્ન કરી રહ્યા છે..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:624
 msgid "Personal"
@@ -84,19 +84,19 @@ msgstr ""
 #. Run the query asynchronously
 #: ../addressbook/backends/google/e-book-backend-google.c:707
 msgid "Querying for updated groups…"
-msgstr ""
+msgstr "સુધારેલ જૂથો માટે પ્રશ્ર્ન કરી રહ્યા છે..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:891
 msgid "Creating new contact…"
-msgstr ""
+msgstr "નવા સંપર્કને બનાવી રહ્યા છે..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:984
 msgid "Deleting contact…"
-msgstr ""
+msgstr "સંપર્કને કાઢી રહ્યા છે..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1092
 msgid "Modifying contact…"
-msgstr ""
+msgstr "સંપર્કને બદલી રહ્યા છે..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1199
 #| msgid "Loading..."
@@ -186,10 +186,10 @@ msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgstr ""
 
 #: ../addressbook/libebook/e-book.c:3064
-#, fuzzy, c-format
+#, c-format
 #| msgid "%s: there was no source for uid `%s' stored in gconf."
 msgid "%s: there was no source for UID '%s' stored in GConf."
-msgstr "%s: જીકોન્ફમાં સંગ્રહિત uid `%s' માટે ત્યાં કોઈ સ્રોત ન હતો."
+msgstr "%s: GConf માં સંગ્રહ થયેલ UID '%s' માટે સ્ત્રોત ન હતો."
 
 #: ../addressbook/libebook/e-book.c:3420
 #: ../addressbook/libedata-book/e-data-book.c:183
@@ -756,7 +756,7 @@ msgstr "નામ વગરની યાદી"
 #: ../addressbook/libedata-book/e-data-book-factory.c:304
 #, c-format
 msgid "Empty URI"
-msgstr ""
+msgstr "ખાલી URI"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:323
 #: ../addressbook/libedata-book/e-data-book-factory.c:361
@@ -770,7 +770,7 @@ msgstr "અયોગ્ય સ્રોત"
 #: ../addressbook/libedata-book/e-data-book.c:173
 #: ../calendar/libedata-cal/e-data-cal.c:110
 msgid "Success"
-msgstr ""
+msgstr "સફળતા"
 
 #: ../addressbook/libedata-book/e-data-book.c:174
 #: ../calendar/libedata-cal/e-data-cal.c:111
@@ -822,7 +822,7 @@ msgstr "TLS ઉપલબ્ધ નથી"
 
 #: ../addressbook/libedata-book/e-data-book.c:184
 msgid "Book removed"
-msgstr ""
+msgstr "દૂર કરેલ ચોપડી"
 
 #: ../addressbook/libedata-book/e-data-book.c:185
 #: ../calendar/libedata-cal/e-data-cal.c:125
@@ -953,24 +953,24 @@ msgstr "સંપર્કોને દૂર કરી શકાતુ નથ�
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:610
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot get message %s: %s"
 msgid "Cannot get supported fields: %s"
-msgstr "સંદેશો %s મેળવી શકતા નથી: %s"
+msgstr "આધારભૂત ક્ષેત્રોને મેળવી શકાતા નથી: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:625
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot get message %s: %s"
 msgid "Cannot get required fields: %s"
-msgstr "સંદેશો %s મેળવી શકતા નથી: %s"
+msgstr "જરૂરી ક્ષેત્રોને મેળવી શકાતા નથી: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:640
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unsupported authentication method"
 msgid "Cannot get supported authentication methods: %s"
-msgstr "બિનઆધારભૂત સત્તાધિકરણ પદ્દતિ"
+msgstr "આધારભૂત સત્તાધિકરણ પદ્દતિઓને મેળવી શકાતુ નથી: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:666
@@ -982,10 +982,10 @@ msgstr "અમાન્ય પ્રશ્ર્ન: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:713
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot get message %s: %s"
 msgid "Cannot get changes: %s"
-msgstr "સંદેશો %s મેળવી શકતા નથી: %s"
+msgstr "ફેરફારોને મેળવી શકાતા નથી: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:755
@@ -1021,7 +1021,7 @@ msgstr ""
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4241
 msgid "Calendar doesn't support Free/Busy"
-msgstr ""
+msgstr "કૅલેન્ડર મુક્ત/વ્યસ્ત ને આધાર આપતુ નથી"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:725
 msgid "Birthday"
@@ -2077,10 +2077,9 @@ msgid "Cannot verify message signature: Incorrect message format"
 msgstr "સંદેશાની સહી ચકાસી શકતા નથી: અયોગ્ય સંદેશા બંધારણ"
 
 #: ../camel/camel-gpg-context.c:1741
-#, fuzzy
 #| msgid "Cannot verify message signature: Incorrect message format"
 msgid "Cannot verify message signature: "
-msgstr "સંદેશાની સહી ચકાસી શકતા નથી: અયોગ્ય સંદેશા બંધારણ"
+msgstr "સંદેશાની સહી ચકાસી શકતા નથી: "
 
 #: ../camel/camel-gpg-context.c:1862
 #| msgid "Could not generate encrypting data: %s"
@@ -2761,7 +2760,7 @@ msgstr "ફોલ્ડરનું નામ બદલી શકતા નથ�
 #: ../camel/camel-tcp-stream-raw.c:749 ../camel/camel-tcp-stream-raw.c:760
 #, c-format
 msgid "The proxy host does not support SOCKS4"
-msgstr ""
+msgstr "પ્રોક્સી યજમાન SOCKS4 ને આધાર આપતુ નથી"
 
 #: ../camel/camel-tcp-stream-raw.c:771
 #, c-format
@@ -2771,7 +2770,7 @@ msgstr ""
 #: ../camel/camel-tcp-stream-raw.c:867 ../camel/camel-tcp-stream-raw.c:873
 #, c-format
 msgid "The proxy host does not support SOCKS5"
-msgstr ""
+msgstr "પ્રોક્સી યજમાન SOCKS5 ને આધાર આપતુ નથી"
 
 #: ../camel/camel-tcp-stream-raw.c:879
 #, fuzzy, c-format
@@ -2781,7 +2780,7 @@ msgstr "સત્તાધિકરણ પ્રકાર %s માટે કો
 
 #: ../camel/camel-tcp-stream-raw.c:891
 msgid "General SOCKS server failure"
-msgstr ""
+msgstr "સામાન્ય SOCKS સર્વર નિષ્ફળતા"
 
 #: ../camel/camel-tcp-stream-raw.c:892
 msgid "SOCKS server's rules do not allow connection"
@@ -2822,7 +2821,7 @@ msgstr "SOCKS સર્વરમાંથી અજ્ઞાત ભૂલ"
 #: ../camel/camel-tcp-stream-raw.c:932
 #, c-format
 msgid "Got unknown address type from SOCKS server"
-msgstr ""
+msgstr "SOCKS સર્વરમાંથી અજ્ઞાત સરનામાં પ્રકાર મળ્યા"
 
 #: ../camel/camel-tcp-stream-raw.c:950
 #, c-format
@@ -2833,7 +2832,7 @@ msgstr "SOCKS સર્વરમાંથી અપૂરતો જવાબ"
 #: ../camel/camel-tcp-stream-raw.c:970
 #, c-format
 msgid "Hostname is too long (maximum is 255 characters)"
-msgstr ""
+msgstr "યજમાનનામ ઘણુ લાંબુ છે (મહત્તમ 255 અક્ષરો છે)"
 
 #. SOCKS5
 #. reserved - must be 0
@@ -3556,16 +3555,16 @@ msgid "Server unexpectedly disconnected: "
 msgstr "સર્વરનું અનિચ્છનિય રીતે જોડાણ તૂટી ગયું: %s"
 
 #: ../camel/providers/imapx/camel-imapx-folder.c:74
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not load summary for %s"
 msgid "Could not create folder summary for %s"
-msgstr "%s માટે સાર લાવી શક્યા નહિં"
+msgstr "%s માટે ફોલ્ડર સારાંશ બનાવી શક્યા નહિં"
 
 #: ../camel/providers/imapx/camel-imapx-folder.c:82
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not create cache file"
 msgid "Could not create cache for %s: "
-msgstr "કેશ ફાઈલ બનાવી શકાઈ નહિ"
+msgstr "%s માટે કેશને બનાવી શક્યા નહિં: "
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:42
 msgid "Use _Quick Resync if the server supports it"
@@ -3659,7 +3658,7 @@ msgid "Index message body data"
 msgstr "અનુક્રમ સંદેશાની માહિતી"
 
 #: ../camel/providers/local/camel-local-folder.c:683
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Cannot get message: %s from folder %s\n"
 #| "  %s"
@@ -3667,8 +3666,8 @@ msgid ""
 "Cannot get message %s from folder %s\n"
 "%s"
 msgstr ""
-"સંદેશો મેળવી શકતા નથી: %s ને ફોલ્ડર %s માંથી\n"
-"  %s"
+"ફોલ્ડર %s માંથી સંદેશો %s ને મેળવી શકાતો નથી\n"
+"%s"
 
 #: ../camel/providers/local/camel-local-provider.c:44
 msgid "_Use the '.folders' folder summary file (exmh)"
@@ -3788,10 +3787,10 @@ msgid "Unable to add message to summary: unknown reason"
 msgstr "સારમાં સંદેશો ઉમેરવા માટે અસમર્થ: અજ્ઞાત કારણ"
 
 #: ../camel/providers/local/camel-maildir-folder.c:198
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot append message to maildir folder: %s: %s"
 msgid "Cannot append message to maildir folder: %s: "
-msgstr "Maildir ફોલ્ડરમાં સંદેશો ઉમેરી શકતા નથી: %s: %s"
+msgstr "Maildir ફોલ્ડરમાં સંદેશો ઉમેરી શકતા નથી: %s: "
 
 #: ../camel/providers/local/camel-maildir-folder.c:246
 #: ../camel/providers/local/camel-maildir-folder.c:256
@@ -3806,10 +3805,10 @@ msgid "Cannot get message %s from folder %s: "
 msgstr "ફોલ્ડર %s માંથી સંદેશો %s ને મેળવી શકાતુ નથી: "
 
 #: ../camel/providers/local/camel-maildir-folder.c:326
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot append message to maildir folder: %s: %s"
 msgid "Cannot transfer message to destination folder: %s"
-msgstr "Maildir ફોલ્ડરમાં સંદેશો ઉમેરી શકતા નથી: %s: %s"
+msgstr "લક્ષ્ય ફોલ્ડરમાં સંદેશાનું પરિવહન કરી શકાતુ નથી: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:100
 #, fuzzy, c-format
@@ -4175,7 +4174,7 @@ msgstr "સ્પુલ ફોલ્ડર %s ને સુમેળ કરી �
 #: ../camel/providers/local/camel-spool-summary.c:243
 #: ../camel/providers/local/camel-spool-summary.c:262
 #: ../camel/providers/local/camel-spool-summary.c:275
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Could not sync spool folder %s: %s\n"
 #| "Folder may be corrupt, copy saved in '%s'"
@@ -4434,7 +4433,7 @@ msgstr ""
 #. Translators: This is the separator between an error and an explanation
 #: ../camel/providers/pop3/camel-pop3-store.c:98
 msgid ": "
-msgstr ""
+msgstr ": "
 
 #: ../camel/providers/pop3/camel-pop3-store.c:181
 #, c-format
@@ -4488,10 +4487,10 @@ msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "POP સર્વર %s માં પ્રવેશી શકતા નથી: SASL પ્રોટોકોલ ભૂલ"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:374
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to authenticate on POP server %s: %s"
 msgid "Failed to authenticate on POP server %s: "
-msgstr "POP સર્વર %s પર સત્તાધિકરણ કરવામાં નિષ્ફળ: %s"
+msgstr "POP સર્વર %s પર સત્તાધિકરણ કરતી વખતે નિષ્ફળતા: "
 
 #: ../camel/providers/pop3/camel-pop3-store.c:439
 #, c-format
@@ -4513,7 +4512,7 @@ msgstr ""
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
 #: ../camel/providers/pop3/camel-pop3-store.c:505
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Unable to connect to POP server %s.\n"
 #| "Error sending username: %s"
@@ -4522,11 +4521,11 @@ msgid ""
 "Error sending username%s"
 msgstr ""
 "POP સર્વર %s સાથે સંપર્ક કરવામાં અસમર્થ.\n"
-"વપરાશકર્તા નામ મોકલવામાં ભૂલ: %s"
+"વપરાશકર્તા%s નામ મોકલવામાં ભૂલ"
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
 #: ../camel/providers/pop3/camel-pop3-store.c:518
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Unable to connect to POP server %s.\n"
 #| "Error sending password: %s"
@@ -4535,7 +4534,7 @@ msgid ""
 "Error sending password%s"
 msgstr ""
 "POP સર્વર %s સાથે સંપર્ક કરવામાં અસમર્થ.\n"
-"પાસવર્ડ મોકલતી વખતે ભૂલ: %s"
+"પાસવર્ડ %s મોકલતી વખતે ભૂલ"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:558
 #, c-format
@@ -4544,10 +4543,10 @@ msgid "POP3 server %s"
 msgstr "POP3 સર્વર %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:562
-#, fuzzy, c-format
+#, c-format
 #| msgid "IMAP service for %s on %s"
 msgid "POP3 server for %s on %s"
-msgstr "%s માટે %s પર IMAP સેવા"
+msgstr "%s પર %s માટે POP3 સર્વર"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:693
 #, c-format
@@ -5154,7 +5153,7 @@ msgstr "વર્ગ ચિહ્ન"
 
 #: ../libedataserverui/e-categories-dialog.c:195
 msgid "_No Image"
-msgstr ""
+msgstr "ઇમેજ નથી (_N)"
 
 #: ../libedataserverui/e-categories-dialog.c:406
 #, c-format
@@ -5165,7 +5164,7 @@ msgstr "રૂપરેખાંકનમાં પહેલાથી જ વર
 
 #: ../libedataserverui/e-categories-dialog.c:661
 msgid "Currently _used categories:"
-msgstr ""
+msgstr "હાલમાં વાપરેલ વર્ગો (_u):"
 
 #: ../libedataserverui/e-categories-dialog.c:668
 msgid "_Available Categories:"
@@ -5240,10 +5239,10 @@ msgid "_Remove"
 msgstr "દૂર કરો (_R)"
 
 #: ../libedataserverui/e-name-selector-dialog.c:884
-#, fuzzy, c-format
+#, c-format
 #| msgid "Error reading mail file: %s"
 msgid "Error loading address book: %s"
-msgstr "મેઈલ ફાઈલ વાંચવામાં ભૂલ: %s"
+msgstr "સરનામાં પુસ્તિકાને લાવતી વખતે ભૂલ: %s"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
 #: ../libedataserverui/e-name-selector-entry.c:2665
