@@ -45,9 +45,10 @@ CamelServiceAuthType camel_sasl_ntlm_authtype = {
 
 G_DEFINE_TYPE (CamelSaslNTLM, camel_sasl_ntlm, CAMEL_TYPE_SASL)
 
-#define NTLM_REQUEST "NTLMSSP\x00\x01\x00\x00\x00\x06\x82\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x30\x00\x00\x00\x00\x00\x00\x00\x30\x00\x00\x00"
+#define NTLM_REQUEST "NTLMSSP\x00\x01\x00\x00\x00\x06\x82\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x30\x00\x00\x00\x00\x00\x00\x00\x30\x00\x00\x00"
 
 #define NTLM_CHALLENGE_DOMAIN_OFFSET		12
+#define NTLM_CHALLENGE_FLAGS_OFFSET		20
 #define NTLM_CHALLENGE_NONCE_OFFSET		24
 
 #define NTLM_RESPONSE_HEADER         "NTLMSSP\x00\x03\x00\x00\x00"
@@ -672,12 +673,48 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 	if (!token || token->len < NTLM_CHALLENGE_NONCE_OFFSET + 8)
 		goto fail;
 
-	memcpy (nonce, token->data + NTLM_CHALLENGE_NONCE_OFFSET, 8);
-	ntlm_lanmanager_hash (service->url->passwd, (gchar *) hash);
-	ntlm_calc_response (hash, nonce, lm_resp);
-	ntlm_nt_hash (service->url->passwd, (gchar *) hash);
-	ntlm_calc_response (hash, nonce, nt_resp);
+	/* 0x00080000: Negotiate NTLM2 Key */
+	if (token->data[NTLM_CHALLENGE_FLAGS_OFFSET + 2] & 8) {
+		/* NTLM2 session response */
+		struct {
+			guint32 srv[2];
+			guint32 clnt[2];
+		} sess_nonce;
+		GChecksum *md5;
+		guint8 digest[16];
+		gsize digest_len = sizeof(digest);
 
+		sess_nonce.clnt[0] = g_random_int();
+		sess_nonce.clnt[1] = g_random_int();
+
+		/* LM response is 8-byte client nonce, NUL-padded to 24 */
+		memcpy(lm_resp, sess_nonce.clnt, 8);
+		memset(lm_resp + 8, 0, 16);
+
+		/* Session nonce is client nonce + server nonce */
+		memcpy (sess_nonce.srv,
+			token->data + NTLM_CHALLENGE_NONCE_OFFSET, 8);
+
+		/* Take MD5 of session nonce */
+		md5 = g_checksum_new (G_CHECKSUM_MD5);
+		g_checksum_update (md5, (void *)&sess_nonce, 16);
+		g_checksum_get_digest (md5, (void *)&digest, &digest_len);
+		g_checksum_get_digest (md5, digest, &digest_len);
+
+		g_checksum_free (md5);
+		ntlm_nt_hash (service->url->passwd, (gchar *) hash);
+
+		ntlm_calc_response (hash, digest, nt_resp);
+	} else {
+		/* NTLM1 */
+		memcpy (nonce, token->data + NTLM_CHALLENGE_NONCE_OFFSET, 8);
+		ntlm_lanmanager_hash (service->url->passwd, (gchar *) hash);
+		ntlm_calc_response (hash, nonce, lm_resp);
+		ntlm_nt_hash (service->url->passwd, (gchar *) hash);
+		ntlm_calc_response (hash, nonce, nt_resp);
+	}
+
+	/* FIXME: The server domain doesn't always match the user's domain */
 	domain = ntlm_get_string (token, NTLM_CHALLENGE_DOMAIN_OFFSET);
 	if (domain == NULL)
 		goto fail;
@@ -689,6 +726,9 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 		sizeof (NTLM_RESPONSE_HEADER) - 1);
 	memcpy (ret->data + NTLM_RESPONSE_FLAGS_OFFSET,
 		NTLM_RESPONSE_FLAGS, sizeof (NTLM_RESPONSE_FLAGS) - 1);
+	/* Mask in the NTLM2SESSION flag */
+	ret->data[NTLM_RESPONSE_FLAGS_OFFSET + 2] |=
+		token->data[NTLM_CHALLENGE_FLAGS_OFFSET + 2] & 8;
 
 	ntlm_set_string (ret, NTLM_RESPONSE_DOMAIN_OFFSET,
 			 domain->str, domain->len);
