@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gu\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&component=Misc.\n"
 "POT-Creation-Date: 2011-02-16 16:36+0000\n"
-"PO-Revision-Date: 2011-03-17 15:22+0530\n"
+"PO-Revision-Date: 2011-03-22 14:43+0530\n"
 "Last-Translator: Sweta Kothari <swkothar@redhat.com>\n"
 "Language-Team: Gujarati\n"
 "MIME-Version: 1.0\n"
@@ -61,7 +61,7 @@ msgstr "શોધી રહ્યા છીએ..."
 #. Query for new contacts asynchronously
 #: ../addressbook/backends/google/e-book-backend-google.c:589
 msgid "Querying for updated contacts…"
-msgstr ""
+msgstr "સુધારેલ સંપર્કો માટે પ્રશ્ર્ન કરી રહ્યા છે..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:624
 msgid "Personal"
@@ -84,19 +84,19 @@ msgstr ""
 #. Run the query asynchronously
 #: ../addressbook/backends/google/e-book-backend-google.c:707
 msgid "Querying for updated groups…"
-msgstr ""
+msgstr "સુધારેલ જૂથો માટે પ્રશ્ર્ન કરી રહ્યા છે..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:891
 msgid "Creating new contact…"
-msgstr ""
+msgstr "નવા સંપર્કને બનાવી રહ્યા છે..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:984
 msgid "Deleting contact…"
-msgstr ""
+msgstr "સંપર્કને કાઢી રહ્યા છે..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1092
 msgid "Modifying contact…"
-msgstr ""
+msgstr "સંપર્કને બદલી રહ્યા છે..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1199
 #| msgid "Loading..."
@@ -756,7 +756,7 @@ msgstr "નામ વગરની યાદી"
 #: ../addressbook/libedata-book/e-data-book-factory.c:304
 #, c-format
 msgid "Empty URI"
-msgstr ""
+msgstr "ખાલી URI"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:323
 #: ../addressbook/libedata-book/e-data-book-factory.c:361
@@ -770,7 +770,7 @@ msgstr "અયોગ્ય સ્રોત"
 #: ../addressbook/libedata-book/e-data-book.c:173
 #: ../calendar/libedata-cal/e-data-cal.c:110
 msgid "Success"
-msgstr ""
+msgstr "સફળતા"
 
 #: ../addressbook/libedata-book/e-data-book.c:174
 #: ../calendar/libedata-cal/e-data-cal.c:111
@@ -822,7 +822,7 @@ msgstr "TLS ઉપલબ્ધ નથી"
 
 #: ../addressbook/libedata-book/e-data-book.c:184
 msgid "Book removed"
-msgstr ""
+msgstr "દૂર કરેલ ચોપડી"
 
 #: ../addressbook/libedata-book/e-data-book.c:185
 #: ../calendar/libedata-cal/e-data-cal.c:125
@@ -1021,7 +1021,7 @@ msgstr ""
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4241
 msgid "Calendar doesn't support Free/Busy"
-msgstr ""
+msgstr "કૅલેન્ડર મુક્ત/વ્યસ્ત ને આધાર આપતુ નથી"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:725
 msgid "Birthday"
@@ -2761,7 +2761,7 @@ msgstr "ફોલ્ડરનું નામ બદલી શકતા નથ�
 #: ../camel/camel-tcp-stream-raw.c:749 ../camel/camel-tcp-stream-raw.c:760
 #, c-format
 msgid "The proxy host does not support SOCKS4"
-msgstr ""
+msgstr "પ્રોક્સી યજમાન SOCKS4 ને આધાર આપતુ નથી"
 
 #: ../camel/camel-tcp-stream-raw.c:771
 #, c-format
@@ -2771,7 +2771,7 @@ msgstr ""
 #: ../camel/camel-tcp-stream-raw.c:867 ../camel/camel-tcp-stream-raw.c:873
 #, c-format
 msgid "The proxy host does not support SOCKS5"
-msgstr ""
+msgstr "પ્રોક્સી યજમાન SOCKS5 ને આધાર આપતુ નથી"
 
 #: ../camel/camel-tcp-stream-raw.c:879
 #, fuzzy, c-format
@@ -2781,7 +2781,7 @@ msgstr "સત્તાધિકરણ પ્રકાર %s માટે કો
 
 #: ../camel/camel-tcp-stream-raw.c:891
 msgid "General SOCKS server failure"
-msgstr ""
+msgstr "સામાન્ય SOCKS સર્વર નિષ્ફળતા"
 
 #: ../camel/camel-tcp-stream-raw.c:892
 msgid "SOCKS server's rules do not allow connection"
@@ -2833,7 +2833,7 @@ msgstr "SOCKS સર્વરમાંથી અપૂરતો જવાબ"
 #: ../camel/camel-tcp-stream-raw.c:970
 #, c-format
 msgid "Hostname is too long (maximum is 255 characters)"
-msgstr ""
+msgstr "યજમાનનામ ઘણુ લાંબુ છે (મહત્તમ 255 અક્ષરો છે)"
 
 #. SOCKS5
 #. reserved - must be 0
@@ -3556,10 +3556,10 @@ msgid "Server unexpectedly disconnected: "
 msgstr "સર્વરનું અનિચ્છનિય રીતે જોડાણ તૂટી ગયું: %s"
 
 #: ../camel/providers/imapx/camel-imapx-folder.c:74
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not load summary for %s"
 msgid "Could not create folder summary for %s"
-msgstr "%s માટે સાર લાવી શક્યા નહિં"
+msgstr "%s માટે ફોલ્ડર સારાંશ બનાવી શક્યા નહિં"
 
 #: ../camel/providers/imapx/camel-imapx-folder.c:82
 #, fuzzy, c-format
@@ -4434,7 +4434,7 @@ msgstr ""
 #. Translators: This is the separator between an error and an explanation
 #: ../camel/providers/pop3/camel-pop3-store.c:98
 msgid ": "
-msgstr ""
+msgstr ": "
 
 #: ../camel/providers/pop3/camel-pop3-store.c:181
 #, c-format
@@ -5154,7 +5154,7 @@ msgstr "વર્ગ ચિહ્ન"
 
 #: ../libedataserverui/e-categories-dialog.c:195
 msgid "_No Image"
-msgstr ""
+msgstr "ઇમેજ નથી (_N)"
 
 #: ../libedataserverui/e-categories-dialog.c:406
 #, c-format
@@ -5165,7 +5165,7 @@ msgstr "રૂપરેખાંકનમાં પહેલાથી જ વર
 
 #: ../libedataserverui/e-categories-dialog.c:661
 msgid "Currently _used categories:"
-msgstr ""
+msgstr "હાલમાં વાપરેલ વર્ગો (_u):"
 
 #: ../libedataserverui/e-categories-dialog.c:668
 msgid "_Available Categories:"
@@ -5240,10 +5240,10 @@ msgid "_Remove"
 msgstr "દૂર કરો (_R)"
 
 #: ../libedataserverui/e-name-selector-dialog.c:884
-#, fuzzy, c-format
+#, c-format
 #| msgid "Error reading mail file: %s"
 msgid "Error loading address book: %s"
-msgstr "મેઈલ ફાઈલ વાંચવામાં ભૂલ: %s"
+msgstr "સરનામાં પુસ્તિકાને લાવતી વખતે ભૂલ: %s"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
 #: ../libedataserverui/e-name-selector-entry.c:2665
