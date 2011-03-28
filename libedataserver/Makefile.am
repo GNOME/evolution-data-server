@@ -23,8 +23,6 @@ libedataserver_1_2_la_CPPFLAGS = \
 
 libedataserver_1_2_la_SOURCES =		\
 	$(MARSHAL_GENERATED)		\
-	e-account-list.c		\
-	e-account.c			\
 	e-categories.c			\
 	e-client.c			\
 	e-client-private.h		\
@@ -64,8 +62,6 @@ libedataserver_1_2_la_LDFLAGS = \
 libedataserverincludedir = $(privincludedir)/libedataserver
 
 libedataserverinclude_HEADERS =		\
-	e-account-list.h		\
-	e-account.h			\
 	e-categories.h			\
 	e-client.h			\
 	e-credentials.h			\
