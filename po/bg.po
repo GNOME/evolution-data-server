@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-28 07:38+0300\n"
-"PO-Revision-Date: 2011-03-28 07:38+0300\n"
+"POT-Creation-Date: 2011-03-30 00:41+0300\n"
+"PO-Revision-Date: 2011-03-30 00:41+0300\n"
 "Last-Translator: Alexander Shopov <ash@kambanaria.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "Language: bg\n"
@@ -53,7 +53,7 @@ msgstr "Приятели"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:628
 msgid "Family"
-msgstr "Фамилия"
+msgstr "Семейство"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:630
 msgid "Coworkers"
@@ -168,7 +168,7 @@ msgstr ""
 #: ../addressbook/libebook/e-book.c:3516
 #: ../addressbook/libedata-book/e-data-book.c:183
 msgid "Address book does not exist"
-msgstr "Адресникът не съществува."
+msgstr "Адресникът не съществува"
 
 #. Dummy row as EContactField starts from 1
 #: ../addressbook/libebook/e-contact.c:115
@@ -177,7 +177,7 @@ msgstr "Уникален идентификатор"
 
 #: ../addressbook/libebook/e-contact.c:116
 msgid "File Under"
-msgstr "Записване под"
+msgstr "Записване в"
 
 #. URI of the book to which the contact belongs to
 #: ../addressbook/libebook/e-contact.c:118
@@ -371,7 +371,7 @@ msgstr "Адрес за състояние свободен/зает"
 
 #: ../addressbook/libebook/e-contact.c:183
 msgid "ICS Calendar"
-msgstr "Календар, тип ICS"
+msgstr "Календар ICS"
 
 #: ../addressbook/libebook/e-contact.c:184
 msgid "Video Conferencing URL"
@@ -744,7 +744,7 @@ msgstr "Идентификаторът на контакта вече същес
 #: ../addressbook/libedata-book/e-data-book.c:178
 #: ../calendar/libedata-cal/e-data-cal.c:115
 msgid "Authentication Failed"
-msgstr "Неуспех при удостоверяването"
+msgstr "Неуспешно удостоверяване"
 
 #: ../addressbook/libedata-book/e-data-book.c:179
 #: ../calendar/libedata-cal/e-data-cal.c:116
@@ -788,7 +788,7 @@ msgstr "Максималното време за търсене е надвиш�
 #: ../addressbook/libedata-book/e-data-book.c:188
 #: ../calendar/libedata-cal/e-data-cal.c:126
 msgid "Invalid query"
-msgstr "Невалидна заявка"
+msgstr "Неправилна заявка"
 
 #: ../addressbook/libedata-book/e-data-book.c:189
 #: ../calendar/libedata-cal/e-data-cal.c:127
@@ -798,14 +798,14 @@ msgstr "Заявката е отказана"
 #: ../addressbook/libedata-book/e-data-book.c:190
 #: ../calendar/libedata-cal/e-data-cal.c:128
 msgid "Could not cancel"
-msgstr "Неуспех при отмяната"
+msgstr "Неуспешна отмяна"
 
 #. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
 #. { OtherError,			N_("Other error") },
 #: ../addressbook/libedata-book/e-data-book.c:192
 #: ../calendar/libedata-cal/e-data-cal.c:130
 msgid "Invalid server version"
-msgstr "Невалидна версия на сървъра"
+msgstr "Грешна версия на сървъра"
 
 #: ../addressbook/libedata-book/e-data-book.c:193
 msgid "No space"
@@ -902,7 +902,6 @@ msgstr "Задължителните полета не могат да се по
 msgid "Cannot get supported authentication methods: %s"
 msgstr "Поддържаните методи за удостоверяване не могат да се получат: %s"
 
-# FIXME невалиден, authentication
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:666
 #: ../addressbook/libedata-book/e-data-book.c:677
@@ -916,7 +915,6 @@ msgstr "Грешна заявка: %s"
 msgid "Cannot get changes: %s"
 msgstr "Промените не могат да се получат: %s"
 
-# FIXME операция -> действие
 #. Translators: The '%s' is replaced with a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:755
 #, c-format
@@ -973,7 +971,7 @@ msgstr "Данните за календара не могат да бъдат �
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1130
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2101
 msgid "Reply Requested: by "
-msgstr "Изисква се отговор: до "
+msgstr "Изисква се отговор: преди "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1135
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2106
@@ -1009,11 +1007,11 @@ msgstr "Адресът на сървъра е неправилен"
 #: ../calendar/backends/http/e-cal-backend-http.c:783
 #: ../calendar/backends/weather/e-cal-backend-weather.c:520
 msgid "Could not create cache file"
-msgstr "Неуспех при създаването на файл с кеш"
+msgstr "Неуспешно създаване на файл с кеш"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1127
 msgid "Could not create thread for populating cache"
-msgstr "Неуспех при създаване на нишка за първоначално запълване на кеша"
+msgstr "Неуспешно създаване на нишка за първоначално запълване на кеша"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:423
 msgid "Redirected to Invalid URI"
@@ -1276,11 +1274,11 @@ msgstr "Протоколът не се поддържа"
 
 #: ../calendar/libecal/e-cal.c:4167
 msgid "Operation has been canceled"
-msgstr "Операцията беше отменена"
+msgstr "Отменено действие"
 
 #: ../calendar/libecal/e-cal.c:4169
 msgid "Could not cancel operation"
-msgstr "Неуспех при отмяната на операцията"
+msgstr "Неуспешна отмяна на действието"
 
 #: ../calendar/libecal/e-cal.c:4171
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1306
@@ -1291,7 +1289,7 @@ msgstr "Неуспех при отмяната на операцията"
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:120
 #, c-format
 msgid "Authentication failed"
-msgstr "Неуспех при удостоверяването"
+msgstr "Неуспешно удостоверяване"
 
 #: ../calendar/libecal/e-cal.c:4173
 #: ../camel/providers/smtp/camel-smtp-transport.c:775
@@ -1332,12 +1330,12 @@ msgstr "„%s“ очаква един аргумент"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:737
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
-msgstr "„%s“ очаква първия аргумент да бъде низ"
+msgstr "„%s“ очаква първият аргумент да бъде низ"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:123
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "„%s“ очаква първия аргумент да бъде низ за дата/време по ISO 8601"
+msgstr "„%s“ очаква първият аргумент да бъде низ за дата/време по ISO 8601"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:162
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:363
@@ -1357,19 +1355,19 @@ msgstr "„%s“ очаква два аргумента"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1096
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
-msgstr "„%s“ очаква първия аргумент да бъде „time_t“"
+msgstr "„%s“ очаква първият аргумент да бъде от вида time_t"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:176
 #, c-format
 msgid "\"%s\" expects the second argument to be an integer"
-msgstr "„%s“ очаква втория аргумент да бъде „integer“"
+msgstr "„%s“ очаква вторият аргумент да бъде от вида integer"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:377
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:430
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:878
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
-msgstr "„%s“ очаква втория аргумент да бъде „time_t“"
+msgstr "„%s“ очаква вторият аргумент да бъде от вида time_t"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:745
 #, c-format
@@ -1383,8 +1381,10 @@ msgid ""
 "\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
 "\"classification\""
 msgstr ""
-"„%s“ очаква първия аргумент да бъде „всякакъв“, „обобщение“, „описание“, "
-"„местоположение“, „участник“, „организатор“ или „поверителност“"
+"„%s“ очаква първият аргумент да бъде „any“ (всякакъв), "
+"„summary“ (обобщение), „description“ (описание), "
+"„location“ (местоположение), „attendee“ (участник), „attendee“ (организатор) "
+"или „classification“ (класификация)"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:927
 #, c-format
@@ -1615,12 +1615,12 @@ msgstr "Дешифриране на писмото"
 #: ../camel/camel-data-cache.c:178
 #, c-format
 msgid "Unable to create cache path"
-msgstr "Неуспех при създаването на път за кеша"
+msgstr "Неуспешно създаване на път за кеша"
 
 #: ../camel/camel-data-cache.c:496
 #, c-format
 msgid "Could not remove cache entry: %s: %s"
-msgstr "Записът в кеша %s не може да бъде изтрит: %s"
+msgstr "Записът в кеша „%s“ не може да бъде изтрит: %s"
 
 #: ../camel/camel-data-wrapper.c:143
 #, c-format
@@ -1639,7 +1639,7 @@ msgid ""
 "Further operations on this server will not be replayed when you\n"
 "reconnect to the network."
 msgstr ""
-"Неуспех при записа на действията: %s\n"
+"Неуспешен запис на действията: %s\n"
 "По-нататъшните операции на този сървър няма да бъдат\n"
 "възобновени, когато се включите наново в мрежата."
 
@@ -1651,7 +1651,7 @@ msgid ""
 "%s\n"
 "Changes made to this folder will not be resynchronized."
 msgstr ""
-"Неуспех при отварянето на „%s“:\n"
+"Неуспешно отваряне на „%s“:\n"
 "%s\n"
 "Направените промени в тази папка няма да бъдат синхронизирани."
 
@@ -1670,7 +1670,8 @@ msgstr "Подготвяне на папката „%s“ за режим „И�
 
 #: ../camel/camel-disco-folder.c:464 ../camel/camel-offline-folder.c:312
 msgid "Copy folder content locally for offline operation"
-msgstr "Копиране съдържанието на папката локално за работа в режим „Изключен“"
+msgstr ""
+"Копиране на съдържанието на папката локално за работа в режим „Изключен“"
 
 #: ../camel/camel-disco-store.c:420
 #: ../camel/providers/groupwise/camel-groupwise-store.c:228
@@ -1691,7 +1692,7 @@ msgstr "Копиране съдържанието на папката локал
 #: ../camel/providers/imapx/camel-imapx-store.c:1421
 #, c-format
 msgid "You must be working online to complete this operation"
-msgstr "Трябва да сте в режим „Включен“, за да завършите тази операция"
+msgstr "Трябва да сте в режим „Включен“, за да завършите това действие"
 
 #: ../camel/camel-file-utils.c:722
 #, c-format
@@ -1701,12 +1702,12 @@ msgstr "Отменено"
 #: ../camel/camel-filter-driver.c:817 ../camel/camel-filter-search.c:582
 #, c-format
 msgid "Failed to create child process '%s': %s"
-msgstr "Неуспех при създаване на дъщерен процес „%s“: %s"
+msgstr "Неуспешно създаване на дъщерен процес „%s“: %s"
 
 #: ../camel/camel-filter-driver.c:864
 #, c-format
 msgid "Invalid message stream received from %s: %s"
-msgstr "Получен е невалиден поток съобщения от %s: %s"
+msgstr "Получен е неправилен поток съобщения от %s: %s"
 
 #: ../camel/camel-filter-driver.c:1051 ../camel/camel-filter-driver.c:1060
 msgid "Syncing folders"
@@ -1725,12 +1726,12 @@ msgstr "Грешка при изпълнение на филтър: %s: %s"
 #: ../camel/camel-filter-driver.c:1256
 #, c-format
 msgid "Unable to open spool folder"
-msgstr "Неуспех при отварянето на папката-спулер"
+msgstr "Неуспешно отваряне на папката-спулер"
 
 #: ../camel/camel-filter-driver.c:1267
 #, c-format
 msgid "Unable to process spool folder"
-msgstr "Неуспех при обработката на папката-спулер"
+msgstr "Неуспешна обработка на папката-спулер"
 
 #: ../camel/camel-filter-driver.c:1285
 #, c-format
@@ -1762,7 +1763,7 @@ msgstr "Грешка при писмо %d от %d"
 
 #: ../camel/camel-filter-search.c:135
 msgid "Failed to retrieve message"
-msgstr "Неуспех при извличането на писмото"
+msgstr "Неуспешно извличане на писмото"
 
 #: ../camel/camel-filter-search.c:401
 msgid "Invalid arguments to (system-flag)"
@@ -1784,7 +1785,7 @@ msgid ""
 "Cannot parse search expression: %s:\n"
 "%s"
 msgstr ""
-"Неуспех при анализирането на израза за търсене: %s:\n"
+"Неуспешно анализиране на израза за търсене: %s:\n"
 "%s"
 
 #: ../camel/camel-folder-search.c:354 ../camel/camel-folder-search.c:465
@@ -1833,8 +1834,8 @@ msgstr[1] "Класифициране на нови писма в „%s“ ка�
 #, c-format
 msgid "Learning new ham message in '%s'"
 msgid_plural "Learning new ham messages in '%s'"
-msgstr[0] "Класифициране на ново писмо в „%s“, че не са спам"
-msgstr[1] "Класифициране на нови писма в „%s“, че не е спам"
+msgstr[0] "Класифициране на ново писмо в „%s“, че не е спам"
+msgstr[1] "Класифициране на нови писма в „%s“, че не са спам"
 
 #: ../camel/camel-folder.c:266
 #, c-format
@@ -1861,7 +1862,7 @@ msgstr "Получаване на писмо „%s“"
 #: ../camel/camel-gpg-context.c:1272
 #, c-format
 msgid "Failed to execute gpg: %s"
-msgstr "Неуспех при изпълнението на gpg: %s"
+msgstr "Неуспешно изпълнение на gpg: %s"
 
 #: ../camel/camel-gpg-context.c:647
 #: ../camel/providers/smtp/camel-smtp-transport.c:723
@@ -1883,13 +1884,12 @@ msgstr ""
 #: ../camel/camel-gpg-context.c:728
 #, c-format
 msgid "Failed to parse gpg userid hint."
-msgstr ""
-"Неуспех при анализа на подсказката за потребителски идентификатор на gpg."
+msgstr "Неуспешен анализ на подсказката за потребителски идентификатор на gpg."
 
 #: ../camel/camel-gpg-context.c:753 ../camel/camel-gpg-context.c:768
 #, c-format
 msgid "Failed to parse gpg passphrase request."
-msgstr "Неуспех при анализа на заявката за тайна фраза на gpg."
+msgstr "Неуспешен анализ на заявката за тайна фраза на gpg."
 
 #: ../camel/camel-gpg-context.c:789
 #, c-format
@@ -1932,7 +1932,7 @@ msgstr "Отменено"
 #: ../camel/camel-gpg-context.c:846
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
-msgstr "Неуспех при отключване на таен ключ: зададени 3 грешни фрази."
+msgstr "Неуспешно отключване на таен ключ: зададени 3 грешни фрази."
 
 #: ../camel/camel-gpg-context.c:858
 #, c-format
@@ -1942,17 +1942,17 @@ msgstr "Неочакван отговор от GnuPG: %s"
 #: ../camel/camel-gpg-context.c:989
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
-msgstr "Неуспех при шифрирането: няма зададени валидни получатели."
+msgstr "Неуспешно шифриране: няма зададени коректни получатели."
 
 #: ../camel/camel-gpg-context.c:1535 ../camel/camel-smime-context.c:824
 msgid "Could not generate signing data: "
-msgstr "Неуспех при генерирането на данни за подпис: "
+msgstr "Неуспешно генериране на данни за подпис: "
 
 #: ../camel/camel-gpg-context.c:1582 ../camel/camel-gpg-context.c:1782
 #: ../camel/camel-gpg-context.c:1892 ../camel/camel-gpg-context.c:2038
 #: ../camel/camel-gpg-context.c:2137 ../camel/camel-gpg-context.c:2185
 msgid "Failed to execute gpg."
-msgstr "Неуспех при изпълнението на gpg."
+msgstr "Неуспешно изпълнение на gpg."
 
 #: ../camel/camel-gpg-context.c:1662 ../camel/camel-gpg-context.c:1670
 #: ../camel/camel-gpg-context.c:1678 ../camel/camel-gpg-context.c:1697
@@ -1960,16 +1960,15 @@ msgstr "Неуспех при изпълнението на gpg."
 #: ../camel/camel-smime-context.c:971
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
-msgstr ""
-"Неуспех при проверката на подписа на писмото: неправилен формат на писмото"
+msgstr "Неуспешна проверка на подписа на писмото: неправилен формат на писмото"
 
 #: ../camel/camel-gpg-context.c:1737
 msgid "Cannot verify message signature: "
-msgstr "Неуспех при проверката на подписа на писмото: "
+msgstr "Неуспешна проверка на подписа на писмото: "
 
 #: ../camel/camel-gpg-context.c:1858
 msgid "Could not generate encrypting data: "
-msgstr "Неуспех при генерирането на данни за шифриране: "
+msgstr "Неуспешно генериране на данни за шифриране: "
 
 #: ../camel/camel-gpg-context.c:1911
 msgid "This is a digitally encrypted message part"
@@ -1979,12 +1978,12 @@ msgstr "Това е цифрово шифрирана част от писмот
 #: ../camel/camel-gpg-context.c:2001
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
-msgstr "Неуспех при дешифрирането на писмото: грешен формат на писмото"
+msgstr "Неуспешно дешифриране на писмото: грешен формат на писмото"
 
 #: ../camel/camel-gpg-context.c:1989
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
-msgstr "Неуспех при дешифрирането на част MIME: протоколна грешка"
+msgstr "Неуспешно дешифриране на част MIME: протоколна грешка"
 
 #: ../camel/camel-gpg-context.c:2078 ../camel/camel-smime-context.c:1255
 msgid "Encrypted content"
@@ -1993,12 +1992,12 @@ msgstr "Шифрирано съдържание"
 #: ../camel/camel-lock-client.c:106
 #, c-format
 msgid "Cannot build locking helper pipe: %s"
-msgstr "Неуспех при създаването на помощен програмен канал за заключване: %s"
+msgstr "Неуспешно създаване на помощен програмен канал за заключване: %s"
 
 #: ../camel/camel-lock-client.c:130
 #, c-format
 msgid "Cannot fork locking helper: %s"
-msgstr "Неуспех при създаването на процес за заключване: %s"
+msgstr "Неуспешно създаване на процес за заключване: %s"
 
 #: ../camel/camel-lock-client.c:211 ../camel/camel-lock-client.c:239
 #, c-format
@@ -2008,12 +2007,12 @@ msgstr "Грешка при заключване на „%s“: протокол
 #: ../camel/camel-lock-client.c:227
 #, c-format
 msgid "Could not lock '%s'"
-msgstr "Неуспех при заключването на „%s“"
+msgstr "Неуспешно заключване на „%s“"
 
 #: ../camel/camel-lock.c:102
 #, c-format
 msgid "Could not create lock file for %s: %s"
-msgstr "Неуспех при създаването на заключващ файл за %s: %s"
+msgstr "Неуспешно създаване на заключващ файл за %s: %s"
 
 #: ../camel/camel-lock.c:145
 #, c-format
@@ -2025,47 +2024,47 @@ msgstr ""
 #: ../camel/camel-lock.c:205
 #, c-format
 msgid "Failed to get lock using fcntl(2): %s"
-msgstr "Неуспех при получаване на lock чрез fcntl(2): %s"
+msgstr "Неуспешно получаване на lock чрез fcntl(2): %s"
 
 #: ../camel/camel-lock.c:272
 #, c-format
 msgid "Failed to get lock using flock(2): %s"
-msgstr "Неуспех при получаване на lock чрез flock(2): %s"
+msgstr "Неуспешно получаване на lock чрез flock(2): %s"
 
 #: ../camel/camel-movemail.c:105
 #, c-format
 msgid "Could not check mail file %s: %s"
-msgstr "Неуспех при проверката на пощенски файл %s: %s"
+msgstr "Неуспешна проверка на пощенски файл %s: %s"
 
 #: ../camel/camel-movemail.c:119
 #, c-format
 msgid "Could not open mail file %s: %s"
-msgstr "Неуспех при отварянето на пощенски файл %s: %s"
+msgstr "Неуспешно отваряне на пощенски файл %s: %s"
 
 #: ../camel/camel-movemail.c:129
 #, c-format
 msgid "Could not open temporary mail file %s: %s"
-msgstr "Неуспех при отварянето на временен пощенски файл %s: %s"
+msgstr "Неуспешно отваряне на временен пощенски файл %s: %s"
 
 #: ../camel/camel-movemail.c:159
 #, c-format
 msgid "Failed to store mail in temp file %s: %s"
-msgstr "Неуспех при запазване на поща във временен файл %s: %s"
+msgstr "Неуспешно запазване на поща във временен файл %s: %s"
 
 #: ../camel/camel-movemail.c:193
 #, c-format
 msgid "Could not create pipe: %s"
-msgstr "Неуспех при създаването на програмен канал: %s"
+msgstr "Неуспешно създаване на програмен канал: %s"
 
 #: ../camel/camel-movemail.c:207
 #, c-format
 msgid "Could not fork: %s"
-msgstr "Неуспех при разклоняването на процес: %s"
+msgstr "Неуспешно разклоняване на процес: %s"
 
 #: ../camel/camel-movemail.c:245
 #, c-format
 msgid "Movemail program failed: %s"
-msgstr "Програмата за преместване на поща се провали: %s"
+msgstr "Неуспешно изпълнение на програмата за преместване на поща: %s"
 
 #: ../camel/camel-movemail.c:246
 msgid "(Unknown error)"
@@ -2121,12 +2120,12 @@ msgstr "Откриване на адрес"
 
 #: ../camel/camel-net-utils.c:866
 msgid "Name lookup failed"
-msgstr "Прегледът на името е неуспешен"
+msgstr "Неуспешно търсене по адрес"
 
 #: ../camel/camel-net-utils.c:872
 #, c-format
 msgid "Name lookup failed: %s"
-msgstr "Прегледът на името е неуспешен: %s"
+msgstr "Неуспешно търсене по адрес: %s"
 
 #: ../camel/camel-offline-folder.c:189
 #, c-format
@@ -2137,8 +2136,8 @@ msgstr "Синхронизация на писмата в папка „%s“ с
 #, c-format
 msgid "Cannot write offline journal for folder '%s': %s"
 msgstr ""
-"Неуспех при запазването на журнала за работа в режим „Изключен“ за папката "
-"„%s“: %s"
+"Неуспешно запазване на журнала за работа в режим „Изключен“ за папката „%s“: "
+"%s"
 
 #: ../camel/camel-provider.c:58
 msgid "Virtual folder email provider"
@@ -2146,24 +2145,24 @@ msgstr "Доставчик на виртуални папки за е-поща"
 
 #: ../camel/camel-provider.c:60
 msgid "For reading mail as a query of another set of folders"
-msgstr "За четене на поща, като запитване до друг набор папки"
+msgstr "За четене на поща чрез заявки към друг набор папки"
 
 #: ../camel/camel-provider.c:192
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr ""
-"Неуспех при зареждането на %s: зареждането на модули не се поддържа от тази "
+"Неуспешно зареждане на %s: зареждането на модули не се поддържа от тази "
 "система."
 
 #: ../camel/camel-provider.c:201
 #, c-format
 msgid "Could not load %s: %s"
-msgstr "Неуспех при зареждането на %s: %s"
+msgstr "Неуспешно зареждане на %s: %s"
 
 #: ../camel/camel-provider.c:210
 #, c-format
 msgid "Could not load %s: No initialization code in module."
-msgstr "Неуспех при зареждането на %s: няма инициализиращ код в модула."
+msgstr "Неуспешно зареждане на %s: няма инициализиращ код в модула."
 
 #: ../camel/camel-provider.c:392 ../camel/camel-session.c:202
 #, c-format
@@ -2176,7 +2175,7 @@ msgstr "Анонимно"
 
 #: ../camel/camel-sasl-anonymous.c:37
 msgid "This option will connect to the server using an anonymous login."
-msgstr "Тази опция ще ви свързва със сървъра чрез анонимно влизане."
+msgstr "Тази настройка ще ви свързва със сървъра чрез анонимно влизане."
 
 #: ../camel/camel-sasl-anonymous.c:70
 #, c-format
@@ -2219,8 +2218,8 @@ msgid ""
 "This option will connect to the server using a secure CRAM-MD5 password, if "
 "the server supports it."
 msgstr ""
-"Тази опция ще ви свърже със сървъра чрез сигурна парола тип CRAM-MD5, ако "
-"той я поддържа."
+"Тази настройка ще ви свърже със сървъра чрез сигурна парола тип CRAM-MD5, "
+"ако той я поддържа."
 
 #: ../camel/camel-sasl-digest-md5.c:54
 msgid "DIGEST-MD5"
@@ -2231,8 +2230,8 @@ msgid ""
 "This option will connect to the server using a secure DIGEST-MD5 password, "
 "if the server supports it."
 msgstr ""
-"Тази опция ще ви свърже със сървъра чрез сигурна парола тип DIGEST-MD5, ако "
-"той я поддържа."
+"Тази настройка ще ви свърже със сървъра чрез сигурна парола тип DIGEST-MD5, "
+"ако той я поддържа."
 
 #: ../camel/camel-sasl-digest-md5.c:817
 #, c-format
@@ -2271,14 +2270,15 @@ msgstr "GSSAPI"
 
 #: ../camel/camel-sasl-gssapi.c:88
 msgid "This option will connect to the server using Kerberos 5 authentication."
-msgstr "Тази опция ще ви свърже със сървъра чрез удостоверяване Kerberos 5."
+msgstr ""
+"Тази настройка ще ви свърже със сървъра чрез удостоверяване Kerberos 5."
 
 #: ../camel/camel-sasl-gssapi.c:129
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
 msgstr ""
-"Указаният механизъм не се поддържа от предоставените удостоверения или не се "
+"Указаният механизъм не се поддържа от предоставените акредитации или не се "
 "разпознава от реализацията."
 
 #: ../camel/camel-sasl-gssapi.c:134
@@ -2297,7 +2297,7 @@ msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
 msgstr ""
-"input_token съдържа различни връзки с входни канали от зададените в "
+"input_token съдържа връзки с входни канали различни от зададените в "
 "параметъра input_chan_bindings."
 
 #: ../camel/camel-sasl-gssapi.c:146
@@ -2313,12 +2313,12 @@ msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
 msgstr ""
-"Указаните удостоверения не са валидни за контекста на инициализация или "
-"указателят на удостоверения не сочи никакви удостоверения."
+"Указаните акредитации не важат за контекста на инициализация или указателят "
+"на акредитации не сочи никакви акредитации."
 
 #: ../camel/camel-sasl-gssapi.c:155
 msgid "The supplied context handle did not refer to a valid context."
-msgstr "Подаденият указател на контекст не сочи към валиден контекст."
+msgstr "Подаденият указател на контекст не сочи към правилен контекст."
 
 #: ../camel/camel-sasl-gssapi.c:158
 msgid "The consistency checks performed on the input_token failed."
@@ -2326,11 +2326,11 @@ msgstr "Проверките на input_token за последователно�
 
 #: ../camel/camel-sasl-gssapi.c:161
 msgid "The consistency checks performed on the credential failed."
-msgstr "Проверките за последователност на препоръките с неуспешни."
+msgstr "Проверките за последователност на акредитациите са неуспешни."
 
 #: ../camel/camel-sasl-gssapi.c:164
 msgid "The referenced credentials have expired."
-msgstr "Указаните препоръки са изтекли."
+msgstr "Указаните акредитации са изтекли."
 
 #: ../camel/camel-sasl-gssapi.c:170 ../camel/camel-sasl-gssapi.c:310
 #: ../camel/camel-sasl-gssapi.c:354 ../camel/camel-sasl-gssapi.c:371
@@ -2350,7 +2350,7 @@ msgstr "Идентифициране"
 
 #: ../camel/camel-sasl-login.c:37 ../camel/camel-sasl-plain.c:41
 msgid "This option will connect to the server using a simple password."
-msgstr "Тази опция ще ви свърже със сървъра чрез нешифрирана парола."
+msgstr "Тази настройка ще ви свърже със сървъра чрез нешифрирана парола."
 
 #: ../camel/camel-sasl-login.c:91
 #, c-format
@@ -2366,8 +2366,8 @@ msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
 msgstr ""
-"Тази опция ще ви свърже със сървър, базиран на „Уиндоус“, чрез NTLM/Secure "
-"Password Authentication."
+"Тази настройка ще ви свърже със сървър, базиран на „Уиндоус“, чрез NTLM/"
+"Secure Password Authentication."
 
 #: ../camel/camel-sasl-plain.c:39
 msgid "PLAIN"
@@ -2379,7 +2379,7 @@ msgstr "POP преди SMTP"
 
 #: ../camel/camel-sasl-popb4smtp.c:44
 msgid "This option will authorise a POP connection before attempting SMTP"
-msgstr "Тази опция ще упълномощи връзка по POP преди SMTP"
+msgstr "Тази настройка ще упълномощи връзка по POP преди SMTP"
 
 #: ../camel/camel-sasl-popb4smtp.c:79
 msgid "POP Source URI"
@@ -2398,7 +2398,7 @@ msgstr "POP преди упълномощаване по SMTP чрез изто�
 #: ../camel/camel-search-private.c:112
 #, c-format
 msgid "Regular expression compilation failed: %s: %s"
-msgstr "Компилирането на регулярен израз пропадна: %s: %s"
+msgstr "Неуспешно компилиране на регулярен израз: %s: %s"
 
 #: ../camel/camel-service.c:85
 #, c-format
@@ -2421,7 +2421,7 @@ msgid ""
 "Could not create directory %s:\n"
 "%s"
 msgstr ""
-"Неуспех при създаването на папка %s:\n"
+"Неуспешно създаване на папка %s:\n"
 "%s"
 
 #: ../camel/camel-session.c:753
@@ -2432,35 +2432,35 @@ msgstr "Въведете паролата за %s за %s на хоста %s."
 #: ../camel/camel-smime-context.c:344 ../camel/camel-smime-context.c:1048
 #, c-format
 msgid "Cannot find certificate for '%s'"
-msgstr "Неуспех при намирането на сертификат за „%s“"
+msgstr "Неуспешно намиране на сертификат за „%s“"
 
 #: ../camel/camel-smime-context.c:372
 msgid "Cannot create CMS message"
-msgstr "Неуспех при създаването на съобщение за CMS"
+msgstr "Неуспешно създаване на съобщение за CMS"
 
 #: ../camel/camel-smime-context.c:377
 msgid "Cannot create CMS signed data"
-msgstr "Неуспех при създаването на подписани данни за CMS"
+msgstr "Неуспешно създаване на подписани данни за CMS"
 
 #: ../camel/camel-smime-context.c:383
 msgid "Cannot attach CMS signed data"
-msgstr "Неуспех при прикрепянето на подписани данни за CMS"
+msgstr "Неуспешно прикрепяне на подписани данни за CMS"
 
 #: ../camel/camel-smime-context.c:390
 msgid "Cannot attach CMS data"
-msgstr "Неуспех при прикрепянето на данни за CMS"
+msgstr "Неуспешно прикрепяне на данни за CMS"
 
 #: ../camel/camel-smime-context.c:396
 msgid "Cannot create CMS Signer information"
-msgstr "Неуспех при създаването на информация за подпис за CMS"
+msgstr "Неуспешно създаване на информация за подпис за CMS"
 
 #: ../camel/camel-smime-context.c:402
 msgid "Cannot find certificate chain"
-msgstr "Неуспех при намирането на удостоверителската верига"
+msgstr "Неуспешно намиране на удостоверителската верига"
 
 #: ../camel/camel-smime-context.c:408
 msgid "Cannot add CMS Signing time"
-msgstr "Неуспех при добавянето на времето на подписване на CMS"
+msgstr "Неуспешно добавяне на времето на подписване на CMS"
 
 #: ../camel/camel-smime-context.c:432 ../camel/camel-smime-context.c:447
 #, c-format
@@ -2469,19 +2469,19 @@ msgstr "Сертификатът за шифриране за „%s“ не съ
 
 #: ../camel/camel-smime-context.c:454
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
-msgstr "Неуспех при добавянето на атрибута SMIMEEncKeyPrefs"
+msgstr "Неуспешно добавяне на атрибута SMIMEEncKeyPrefs"
 
 #: ../camel/camel-smime-context.c:459
 msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
-msgstr "Неуспех при добавянето на атрибута MS SMIMEEncKeyPrefs"
+msgstr "Неуспешно добавяне на атрибута MS SMIMEEncKeyPrefs"
 
 #: ../camel/camel-smime-context.c:464
 msgid "Cannot add encryption certificate"
-msgstr "Неуспех при добавянето на сертификат за шифриране"
+msgstr "Неуспешно добавяне на сертификат за шифриране"
 
 #: ../camel/camel-smime-context.c:470
 msgid "Cannot add CMS Signer information"
-msgstr "Неуспех при добавянето на информация за подпис към CMS"
+msgstr "Неуспешно добавяне на информация за подпис към CMS"
 
 #. Translators: A fallback message when couldn't verify an SMIME signature
 #: ../camel/camel-smime-context.c:503
@@ -2490,11 +2490,11 @@ msgstr "Непотвърден"
 
 #: ../camel/camel-smime-context.c:505
 msgid "Good signature"
-msgstr "Валиден подпис"
+msgstr "Правилен подпис"
 
 #: ../camel/camel-smime-context.c:507
 msgid "Bad signature"
-msgstr "Невалиден подпис"
+msgstr "Неправилен подпис"
 
 #: ../camel/camel-smime-context.c:509
 msgid "Content tampered with or altered in transit"
@@ -2542,7 +2542,7 @@ msgstr "Извадките не могат да бъдат зададени"
 
 #: ../camel/camel-smime-context.c:616 ../camel/camel-smime-context.c:621
 msgid "Certificate import failed"
-msgstr "Внасянето на сертификат пропадна"
+msgstr "Неуспешно внасяне на сертификат"
 
 #: ../camel/camel-smime-context.c:631
 #, c-format
@@ -2558,7 +2558,7 @@ msgstr ""
 
 #: ../camel/camel-smime-context.c:638
 msgid "Cannot find signature digests"
-msgstr "Неуспех при намирането на извадките на подписите"
+msgstr "Неуспешно намиране на извадките на подписите"
 
 #: ../camel/camel-smime-context.c:654
 #, c-format
@@ -2567,56 +2567,55 @@ msgstr "Подписващ: %s <%s>: %s\n"
 
 #: ../camel/camel-smime-context.c:835 ../camel/camel-smime-context.c:1121
 msgid "Cannot create encoder context"
-msgstr "Неуспех при създаването на контекст за шифриране"
+msgstr "Неуспешно създаване на контекст за шифриране"
 
 #: ../camel/camel-smime-context.c:841
 msgid "Failed to add data to CMS encoder"
-msgstr "Неуспех при добавянето на данни към кодиращ CMS"
+msgstr "Неуспешно добавяне на данни към кодиращ CMS"
 
 #: ../camel/camel-smime-context.c:846 ../camel/camel-smime-context.c:1138
 msgid "Failed to encode data"
-msgstr "Неуспех при кодиране на данни"
+msgstr "Неуспешно кодиране на данни"
 
 #: ../camel/camel-smime-context.c:987 ../camel/camel-smime-context.c:1233
 msgid "Decoder failed"
-msgstr "Неуспех на декодера"
+msgstr "Неуспешно декодиране"
 
 #: ../camel/camel-smime-context.c:1056
 msgid "Cannot find common bulk encryption algorithm"
-msgstr ""
-"Неуспех при откриването на подходящ алгоритъм за шифриране на много данни"
+msgstr "Неуспешно търсене на подходящ алгоритъм за шифриране на много данни"
 
 #: ../camel/camel-smime-context.c:1064
 msgid "Cannot allocate slot for encryption bulk key"
-msgstr "Неуспех при заделянето на място за ключ за шифриране на много данни"
+msgstr "Неуспешно заделяне на място за ключ за шифриране на много данни"
 
 #: ../camel/camel-smime-context.c:1075
 msgid "Cannot create CMS Message"
-msgstr "Неуспех при създаването на съобщение по CMS"
+msgstr "Неуспешно създаване на съобщение по CMS"
 
 #: ../camel/camel-smime-context.c:1081
 msgid "Cannot create CMS Enveloped data"
-msgstr "Неуспех при създаването на обвити данни по CMS"
+msgstr "Неуспешно създаване на обвити данни по CMS"
 
 #: ../camel/camel-smime-context.c:1087
 msgid "Cannot attach CMS Enveloped data"
-msgstr "Неуспех при добавянето на обвити данни по CMS"
+msgstr "Неуспешно добавяне на обвити данни по CMS"
 
 #: ../camel/camel-smime-context.c:1093
 msgid "Cannot attach CMS data object"
-msgstr "Неуспех при прикрепянето на обект за данни по CMS"
+msgstr "Неуспешно прикрепяне на обект за данни по CMS"
 
 #: ../camel/camel-smime-context.c:1102
 msgid "Cannot create CMS Recipient information"
-msgstr "Неуспех при създаването на информация за получател по CMS"
+msgstr "Неуспешно създаване на информация за получател по CMS"
 
 #: ../camel/camel-smime-context.c:1107
 msgid "Cannot add CMS Recipient information"
-msgstr "Неуспех при добавянето на информация за получател по CMS"
+msgstr "Неуспешно добавяне на информация за получател по CMS"
 
 #: ../camel/camel-smime-context.c:1132
 msgid "Failed to add data to encoder"
-msgstr "Неуспех при добавянето на данни към декодера"
+msgstr "Неуспешно добавяне на данни към декодера"
 
 #: ../camel/camel-smime-context.c:1240
 msgid "S/MIME Decrypt: No encrypted content found"
@@ -2625,7 +2624,7 @@ msgstr "Дешифриране S/MIME: не е открито шифрирано
 #: ../camel/camel-store.c:2181
 #, c-format
 msgid "Cannot create folder '%s': folder exists"
-msgstr "Неуспех при създаването на папка „%s“: вече съществува"
+msgstr "Неуспешно създаване на папка „%s“: вече съществува"
 
 #. the name of the Trash folder, used for deleted messages
 #: ../camel/camel-store.c:2372 ../camel/camel-store.c:2382
@@ -2642,19 +2641,19 @@ msgstr "Спам"
 #: ../camel/camel-store.c:2829
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
-msgstr "Неуспех при създаването на папка: %s: вече съществува"
+msgstr "Неуспешно създаване на папка: %s: вече съществува"
 
 #: ../camel/camel-store.c:2956 ../camel/camel-vee-store.c:367
 #: ../camel/providers/local/camel-maildir-store.c:272
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
-msgstr "Неуспех при изтриването на папка: %s: грешна операция"
+msgstr "Неуспешно изтриване на папка: %s: грешна операция"
 
 #: ../camel/camel-store.c:3097 ../camel/camel-vee-store.c:417
 #: ../camel/providers/local/camel-maildir-store.c:668
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
-msgstr "Неуспех при преименуването на папка: %s: грешна операция"
+msgstr "Неуспешно преименуване на папка: %s: грешна операция"
 
 #: ../camel/camel-tcp-stream-raw.c:749 ../camel/camel-tcp-stream-raw.c:760
 #, c-format
@@ -2749,11 +2748,11 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-ssl.c:459
 msgid "GOOD"
-msgstr "ВАЛИДЕН"
+msgstr "ПРАВИЛЕН"
 
 #: ../camel/camel-tcp-stream-ssl.c:459
 msgid "BAD"
-msgstr "НЕВАЛИДЕН"
+msgstr "НЕПРАВИЛЕН"
 
 #. construct our user prompt
 #: ../camel/camel-tcp-stream-ssl.c:463
@@ -2810,13 +2809,12 @@ msgstr ""
 #: ../camel/camel-url.c:316
 #, c-format
 msgid "Could not parse URL '%s'"
-msgstr "Неуспех при анализирането на адреса „%s“"
+msgstr "Неуспешно анализиране на адреса „%s“"
 
 #: ../camel/camel-vee-folder.c:1235 ../camel/camel-vee-folder.c:1398
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
-msgstr ""
-"Неуспех при преместването или копирането на писмата във виртуалната папка"
+msgstr "Неуспешно преместване или копирането на писмата във виртуалната папка"
 
 #: ../camel/camel-vee-folder.c:1271
 #, c-format
@@ -2836,26 +2834,26 @@ msgstr "Несъвпадащи"
 #: ../camel/camel-vee-store.c:393
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
-msgstr "Неуспех при изтриването на папка: %s: няма такава папка"
+msgstr "Неуспешно изтриване на папка: %s: няма такава папка"
 
 #: ../camel/camel-vee-store.c:427
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
-msgstr "неуспех при преименуването на папка: %s: няма такава папка"
+msgstr "Неуспешно преименуване на папка: %s: няма такава папка"
 
 #: ../camel/camel-vtrash-folder.c:49
 msgid "Cannot copy messages to the Trash folder"
-msgstr "Неуспех при копирането на писмата в кошчето"
+msgstr "Неуспешно копиране на писмата в кошчето"
 
 #: ../camel/camel-vtrash-folder.c:51
 msgid "Cannot copy messages to the Junk folder"
-msgstr "Неуспех при копирането на писмата в папката за спам"
+msgstr "Неуспешно копиране на писмата в папката за спам"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:954
 #: ../camel/providers/imap/camel-imap-folder.c:392
 #, c-format
 msgid "Could not load summary for %s"
-msgstr "Неуспех при зареждането на обобщение на „%s“"
+msgstr "Неуспешно зареждане на обобщение на „%s“"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1030
 #, c-format
@@ -2879,18 +2877,18 @@ msgstr "Извличане на обобщена информация за но�
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2714
 #, c-format
 msgid "Could not get message"
-msgstr "Неуспех при получаването на писмото"
+msgstr "Неуспешно получаване на писмото"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2424
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2474
 #, c-format
 msgid "Cannot append message to folder '%s': %s"
-msgstr "Неуспех при добавянето на писмото към папката „%s“: %s"
+msgstr "Неуспешно добавяне на писмото към папката „%s“: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2460
 #, c-format
 msgid "Cannot create message: %s"
-msgstr "Неуспех при създаването на писмо: %s"
+msgstr "Неуспешно създаване на писмо: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2640
 #, c-format
@@ -2898,7 +2896,7 @@ msgid ""
 "Cannot get message: %s\n"
 "  %s"
 msgstr ""
-"Неуспех при получаването на писмо: %s\n"
+"Неуспешно получаване на писмо: %s\n"
 "  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2640
@@ -2916,7 +2914,7 @@ msgstr "Няма такова писмо"
 #: ../camel/providers/pop3/camel-pop3-folder.c:457
 #, c-format
 msgid "Cannot get message %s: "
-msgstr "Неуспех при получаването на писмо %s:"
+msgstr "Неуспешно получаване на писмо %s:"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2677
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2687
@@ -2928,16 +2926,16 @@ msgstr "Това писмо не е налично в режим „Изключ
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:248
 #, c-format
 msgid "Cannot get folder container %s"
-msgstr "Неуспех при получаването на контейнера %s"
+msgstr "Неуспешно получаване на контейнера %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:318
 #, c-format
 msgid "Cannot append message in offline mode: cache unavailable"
-msgstr "Неуспех при добавянето на писмо в режим „Изключен“: няма наличен кеш"
+msgstr "Неуспешно добавяне на писмо в режим „Изключен“: няма наличен кеш"
 
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:335
 msgid "Cannot append message in offline mode: "
-msgstr "Неуспех при добавянето на писмо в режим „Изключен“: "
+msgstr "Неуспешно добавяне на писмо в режим „Изключен“: "
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:48
 msgid "Checking for new mail"
@@ -2973,7 +2971,7 @@ msgstr "Проверка на новите писма за _спам"
 #: ../camel/providers/imap/camel-imap-provider.c:70
 #: ../camel/providers/imapx/camel-imapx-provider.c:78
 msgid "Only check for Junk messages in the IN_BOX folder"
-msgstr "Проверка за спам само в папката IN_BOX"
+msgstr "Проверка за спам само във _входящата поща (INBOX)"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:61
 msgid "Automatically synchroni_ze account locally"
@@ -3010,7 +3008,8 @@ msgstr "Парола"
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:107
 msgid ""
 "This option will connect to the GroupWise server using a plaintext password."
-msgstr "Тази опция ще ви свърже с сървър GroupWise чрез нешифрирана парола."
+msgstr ""
+"Тази настройка ще ви свърже с сървър GroupWise чрез нешифрирана парола."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:103
 #, c-format
@@ -3084,7 +3083,7 @@ msgstr "Изпращане на писмо"
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:107
 #, c-format
 msgid "Cannot get folder: Invalid operation on this store"
-msgstr "Неуспех при получаването на папката: грешна операция за това хранилище"
+msgstr "Неуспешно получаване на папката: грешна операция за това хранилище"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:154
 #, c-format
@@ -3100,7 +3099,7 @@ msgstr ""
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:159
 #, c-format
 msgid "Could not send message: %s"
-msgstr "Неуспех при изпращането на писмо: %s"
+msgstr "Неуспешно изпращане на писмо: %s"
 
 #: ../camel/providers/imap/camel-imap-command.c:197
 #: ../camel/providers/imap/camel-imap-command.c:301
@@ -3167,7 +3166,7 @@ msgstr "Винаги да се проверява за нова поща в та
 #: ../camel/providers/imap/camel-imap-folder.c:369
 #, c-format
 msgid "Could not create directory %s: %s"
-msgstr "Неуспех при създаването на папка %s: %s"
+msgstr "Неуспешно създаване на папка %s: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:992
 #: ../camel/providers/imapx/camel-imapx-server.c:3915
@@ -3177,13 +3176,13 @@ msgstr "Проверка за променени писма в %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3369
 msgid "Unable to retrieve message: "
-msgstr "Неуспех при получаването на писмото: "
+msgstr "Неуспешно получаване на писмото: "
 
 #: ../camel/providers/imap/camel-imap-folder.c:3404
 #: ../camel/providers/imapx/camel-imapx-server.c:5193
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
-msgstr "Неуспех при получаването на писмо с идентификатор %s: %s"
+msgstr "Неуспешно получаване на писмо с идентификатор %s: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3405
 #: ../camel/providers/imapx/camel-imapx-server.c:5194
@@ -3210,28 +3209,27 @@ msgstr "Непълен отговор от сървъра: писмо %d ням�
 #: ../camel/providers/imap/camel-imap-folder.c:4415
 #, c-format
 msgid "Could not find message body in FETCH response."
-msgstr ""
-"Неуспех при намирането на тялото на писмото в отговора на командата FETCH."
+msgstr "Неуспешно намиране на тялото на писмото в отговора на командата FETCH."
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:193
 #: ../camel/providers/imap/camel-imap-message-cache.c:253
 msgid "Could not open cache directory: "
-msgstr "Неуспех при отварянето на папката с кеш: "
+msgstr "Неуспешно отваряне на папката с кеш: "
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:326
 #, c-format
 msgid "Failed to cache message %s: %s"
-msgstr "Неуспех при кеширане на писмо %s: %s"
+msgstr "Неуспешно кеширане на писмо %s: %s"
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:391
 #, c-format
 msgid "Failed to cache message %s: "
-msgstr "Неуспех при кеширане на писмо %s: "
+msgstr "Неуспешно кеширане на писмо %s: "
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:529
 #, c-format
 msgid "Failed to cache %s: "
-msgstr "Неуспех при кеширането на %s: "
+msgstr "Неуспешно кеширане на %s: "
 
 #: ../camel/providers/imap/camel-imap-provider.c:40
 #: ../camel/providers/imapx/camel-imapx-provider.c:40
@@ -3308,7 +3306,8 @@ msgstr "За четене и запазване на поща на сървър�
 #: ../camel/providers/imap/camel-imap-provider.c:107
 #: ../camel/providers/imapx/camel-imapx-provider.c:115
 msgid "This option will connect to the IMAP server using a plaintext password."
-msgstr "Тази опция ще ви свърже със сървър за IMAP чрез нешифрирана парола."
+msgstr ""
+"Тази настройка ще ви свърже със сървър за IMAP чрез нешифрирана парола."
 
 #: ../camel/providers/imap/camel-imap-store.c:243
 #: ../camel/providers/nntp/camel-nntp-store.c:342
@@ -3316,7 +3315,7 @@ msgstr "Тази опция ще ви свърже със сървър за IMAP
 #: ../camel/providers/smtp/camel-smtp-transport.c:151
 #, c-format
 msgid "Could not connect to %s: %s"
-msgstr "Неуспех при свързването с %s: %s"
+msgstr "Неуспешно свързване с %s: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:244
 #: ../camel/providers/nntp/camel-nntp-store.c:343
@@ -3329,7 +3328,7 @@ msgstr "Липсва SSL"
 #: ../camel/providers/nntp/camel-nntp-store.c:362
 #, c-format
 msgid "Could not connect to %s: "
-msgstr "Неуспех при свързването с %s: "
+msgstr "Неуспешно свързване с %s: "
 
 #: ../camel/providers/imap/camel-imap-store.c:370
 #: ../camel/providers/imap/camel-imap-store.c:390
@@ -3339,7 +3338,7 @@ msgstr "Неуспех при свързването с %s: "
 #: ../camel/providers/imapx/camel-imapx-server.c:2967
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
-msgstr "Неуспех при свързването със сървъра за IMAP %s в сигурен режим: %s"
+msgstr "Неуспешно свързване със сървъра за IMAP %s в сигурен режим: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:371
 #: ../camel/providers/imapx/camel-imapx-server.c:2928
@@ -3367,7 +3366,7 @@ msgstr "Връзката е прекратена"
 #: ../camel/providers/imapx/camel-imapx-server.c:2760
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
-msgstr "Неуспех при свързването с команда „%s“: %s"
+msgstr "Неуспешно свързване с команда „%s“: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:740
 #: ../camel/providers/imapx/camel-imapx-server.c:3041
@@ -3390,7 +3389,7 @@ msgid ""
 "%s\n"
 "\n"
 msgstr ""
-"Неуспех при удостоверяването пред сървъра за IMAP.\n"
+"Неуспешно удостоверяване пред сървъра за IMAP.\n"
 "%s\n"
 "\n"
 
@@ -3454,12 +3453,12 @@ msgstr "Сървърът неочаквано прекрати връзката:
 #: ../camel/providers/imapx/camel-imapx-folder.c:74
 #, c-format
 msgid "Could not create folder summary for %s"
-msgstr "Неуспех при създаването на обобщение на папката за „%s“"
+msgstr "Неуспешно създаване на обобщение на папката за „%s“"
 
 #: ../camel/providers/imapx/camel-imapx-folder.c:82
 #, c-format
 msgid "Could not create cache for %s: "
-msgstr "Неуспех при създаването на кеш за %s"
+msgstr "Неуспешно създаване на кеш за %s"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:42
 msgid "Use _Quick Resync if the server supports it"
@@ -3502,7 +3501,7 @@ msgstr "Липсва идентификация"
 #: ../camel/providers/imapx/camel-imapx-server.c:2850
 #, c-format
 msgid "Could not connect to %s (port %s): "
-msgstr "Неуспех при свързването с %s (порт %s): "
+msgstr "Неуспешно свързване с %s (порт %s): "
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3311
 msgid "Closing tmp stream failed: "
@@ -3511,7 +3510,7 @@ msgstr "Неуспешно затваряне на временния поток
 #: ../camel/providers/imapx/camel-imapx-server.c:5343
 #: ../camel/providers/imapx/camel-imapx-server.c:5358
 msgid "Cannot create spool file: "
-msgstr "Неуспех при създаването на файл-спулер: "
+msgstr "Неуспешно създаване на файл-спулер: "
 
 #: ../camel/providers/imapx/camel-imapx-store.c:1135
 #: ../camel/providers/nntp/camel-nntp-store.c:1666
@@ -3555,7 +3554,7 @@ msgid ""
 "Cannot get message %s from folder %s\n"
 "%s"
 msgstr ""
-"Неуспех при получаването на писмо: %s от папка %s\n"
+"Неуспешно получаване на писмо: %s от папка %s\n"
 "%s"
 
 #: ../camel/providers/local/camel-local-provider.c:44
@@ -3585,7 +3584,7 @@ msgstr ""
 #: ../camel/providers/local/camel-local-provider.c:86
 #: ../camel/providers/local/camel-local-provider.c:106
 msgid "_Apply filters to new messages in INBOX"
-msgstr "Прилагане на _филтри за нови съобщения в INBOX"
+msgstr "Прилагане на _филтри за нови съобщения във входящата поща (INBOX)"
 
 #: ../camel/providers/local/camel-local-provider.c:93
 msgid "Maildir-format mail directories"
@@ -3639,7 +3638,7 @@ msgstr "Основната папка за запазване %s не е оби�
 #: ../camel/providers/local/camel-maildir-store.c:124
 #, c-format
 msgid "Cannot get folder: %s: %s"
-msgstr "Неуспех при отварянето на папка: %s: %s"
+msgstr "Неуспешно отваряне на папка: %s: %s"
 
 #: ../camel/providers/local/camel-local-store.c:220
 #, c-format
@@ -3654,34 +3653,34 @@ msgstr "Локален файл с поща %s"
 #: ../camel/providers/local/camel-local-store.c:393
 #, c-format
 msgid "Could not rename folder %s to %s: %s"
-msgstr "Неуспех при преименуването на папка %s на %s: %s"
+msgstr "Неуспешно преименуване на папка %s на %s: %s"
 
 #: ../camel/providers/local/camel-local-store.c:467
 #, c-format
 msgid "Could not rename '%s': %s"
-msgstr "Неуспех при преименуването на „%s“: %s"
+msgstr "Неуспешно преименуване на „%s“: %s"
 
 #: ../camel/providers/local/camel-local-store.c:498
 #: ../camel/providers/local/camel-mbox-store.c:695
 #, c-format
 msgid "Could not delete folder index file '%s': %s"
-msgstr "Неуспех при изтриване на индекс файл за папка „%s“: %s"
+msgstr "Неуспешно изтриване на индекс файл за папка „%s“: %s"
 
 #: ../camel/providers/local/camel-local-store.c:526
 #: ../camel/providers/local/camel-mbox-store.c:724
 #, c-format
 msgid "Could not delete folder meta file '%s': %s"
-msgstr "Неуспех при изтриване на мета-файла на папката „%s“: %s"
+msgstr "Неуспешно изтриване на мета-файла на папката „%s“: %s"
 
 #: ../camel/providers/local/camel-local-summary.c:548
 #, c-format
 msgid "Unable to add message to summary: unknown reason"
-msgstr "Неуспех при добавянето на писмо към обобщение: неизвестна причина"
+msgstr "Неуспешно добавяне на писмо към обобщение: неизвестна причина"
 
 #: ../camel/providers/local/camel-maildir-folder.c:198
 #, c-format
 msgid "Cannot append message to maildir folder: %s: "
-msgstr "Неуспех при добавянето на писмото в папка тип maildir: %s: "
+msgstr "Неуспешно добавяне на писмото в папка тип maildir: %s: "
 
 #: ../camel/providers/local/camel-maildir-folder.c:246
 #: ../camel/providers/local/camel-maildir-folder.c:256
@@ -3690,7 +3689,7 @@ msgstr "Неуспех при добавянето на писмото в пап
 #: ../camel/providers/local/camel-mh-folder.c:178
 #, c-format
 msgid "Cannot get message %s from folder %s: "
-msgstr "Неуспех при получаването на писмо: %s от папка %s: "
+msgstr "Неуспешно получаване на писмо: %s от папка %s: "
 
 #: ../camel/providers/local/camel-maildir-folder.c:326
 #, c-format
@@ -3701,7 +3700,7 @@ msgstr "Писмото не може да се прехвърли в целев�
 #, c-format
 msgid "Cannot create folder: %s : Folder name cannot contain a dot"
 msgstr ""
-"Неуспех при създаването на папка: %s: Името на папка не може да съдържа „.“"
+"Неуспешно създаване на папка: %s: Името на папка не може да съдържа „.“"
 
 #: ../camel/providers/local/camel-maildir-store.c:109
 #: ../camel/providers/local/camel-maildir-store.c:686
@@ -3715,33 +3714,33 @@ msgstr "Папката „%s“ вече съществува"
 #: ../camel/providers/local/camel-mbox-store.c:389
 #, c-format
 msgid "Cannot create folder '%s': %s"
-msgstr "Неуспех при създаване на папка „%s“: %s"
+msgstr "Неуспешно създаване на папка „%s“: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:206
 #: ../camel/providers/local/camel-mbox-store.c:341
 #: ../camel/providers/local/camel-mh-store.c:464
 #, c-format
 msgid "Cannot get folder '%s': %s"
-msgstr "Неуспех при извличане на папка „%s“: %s"
+msgstr "Неуспешно извличане на папка „%s“: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:212
 #: ../camel/providers/local/camel-mbox-store.c:351
 #: ../camel/providers/local/camel-mh-store.c:473
 #, c-format
 msgid "Cannot get folder '%s': folder does not exist."
-msgstr "Неуспех при извличане на папка „%s“: папката не съществува."
+msgstr "Неуспешно извличане на папка „%s“: папката не съществува."
 
 #: ../camel/providers/local/camel-maildir-store.c:239
 #, c-format
 msgid "Cannot get folder '%s': not a maildir directory."
-msgstr "Неуспех при извличане на папка „%s“: не е папка тип maildir."
+msgstr "Неуспешно извличане на папка „%s“: не е папка тип maildir."
 
 #: ../camel/providers/local/camel-maildir-store.c:293
 #: ../camel/providers/local/camel-maildir-store.c:333
 #: ../camel/providers/local/camel-mh-store.c:584
 #, c-format
 msgid "Could not delete folder '%s': %s"
-msgstr "Неуспех при изтриването на папка „%s“: %s"
+msgstr "Неуспешно изтриване на папка „%s“: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:295
 msgid "not a maildir directory"
@@ -3754,20 +3753,20 @@ msgstr "не е папка тип maildir"
 #, c-format
 msgid "Could not scan folder '%s': %s"
 msgstr ""
-"Неуспех при сканирането на папка „%s“:\n"
+"Неуспешно сканиране на папка „%s“:\n"
 "%s"
 
 #: ../camel/providers/local/camel-maildir-store.c:677
 #, c-format
 msgid "Cannot rename the folder: %s: Folder name cannot contain a dot"
 msgstr ""
-"Неуспех при създаването на папка: %s: Името на папка не трябва да съдържа „.“"
+"Неуспешно създаване на папка: %s: Името на папка не трябва да съдържа „.“"
 
 #: ../camel/providers/local/camel-maildir-summary.c:436
 #: ../camel/providers/local/camel-maildir-summary.c:566
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
-msgstr "Неуспех при отварянето на път до папка тип maildir: %s: %s"
+msgstr "Неуспешно отваряне на път до папка тип maildir: %s: %s"
 
 #: ../camel/providers/local/camel-maildir-summary.c:557
 msgid "Checking folder consistency"
@@ -3788,12 +3787,12 @@ msgstr "Запазване на папка"
 #: ../camel/providers/local/camel-mbox-folder.c:183
 #, c-format
 msgid "Cannot open mailbox: %s: "
-msgstr "Неуспех при отваряне на пощенска кутия: %s: "
+msgstr "Неуспешно отваряне на пощенска кутия: %s: "
 
 #: ../camel/providers/local/camel-mbox-folder.c:249
 #, c-format
 msgid "Cannot append message to mbox file: %s: "
-msgstr "Неуспех при добавянето на писмо към файл тип mbox: %s: "
+msgstr "Неуспешно добавяне на писмо към файл тип mbox: %s: "
 
 #: ../camel/providers/local/camel-mbox-folder.c:378
 msgid "The folder appears to be irrecoverably corrupted."
@@ -3803,7 +3802,7 @@ msgstr "Изглежда папката е повредена необратим
 #: ../camel/providers/local/camel-spool-folder.c:70
 #, c-format
 msgid "Cannot create folder lock on %s: %s"
-msgstr "Неуспех при заключването папката %s: %s"
+msgstr "Неуспешно заключване на папката %s: %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:363
 #: ../camel/providers/local/camel-mbox-store.c:534
@@ -3814,17 +3813,17 @@ msgstr "Не може да бъде създадена папка с таков�
 #: ../camel/providers/local/camel-mbox-store.c:400
 #, c-format
 msgid "Cannot get folder '%s': not a regular file."
-msgstr "Неуспех при извличането на папка „%s“: не е обикновен файл."
+msgstr "Неуспешно извличане на папка „%s“: не е обикновен файл."
 
 #: ../camel/providers/local/camel-mbox-store.c:550
 #, c-format
 msgid "Cannot create directory '%s': %s."
-msgstr "Неуспех при създаването на папка „%s“: %s"
+msgstr "Неуспешно създаване на папка „%s“: %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:566
 #, c-format
 msgid "Cannot create folder: %s: %s"
-msgstr "Неуспех при създаването на папка: %s: %s"
+msgstr "Неуспешно създаване на папка: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:568
 msgid "Folder already exists"
@@ -3838,7 +3837,7 @@ msgid ""
 "Could not delete folder '%s':\n"
 "%s"
 msgstr ""
-"Неуспех при изтриване на папката „%s“:\n"
+"Неуспешно изтриване на папката „%s“:\n"
 "%s"
 
 #: ../camel/providers/local/camel-mbox-store.c:632
@@ -3855,27 +3854,27 @@ msgstr "Папката „%s“ не е празна. Не е изтрита."
 #: ../camel/providers/local/camel-mbox-store.c:681
 #, c-format
 msgid "Could not delete folder summary file '%s': %s"
-msgstr "Неуспех при изтриване на файл с обобщение за папка „%s“: %s"
+msgstr "Неуспешно изтриване на файл с обобщение за папка „%s“: %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:761
 #, c-format
 msgid "The new folder name is illegal."
-msgstr "Новото име на папката е невалидно."
+msgstr "Новото име на папката е неправилно."
 
 #: ../camel/providers/local/camel-mbox-store.c:776
 #, c-format
 msgid "Could not rename '%s': '%s': %s"
-msgstr "Неуспех при преименуването на „%s“: „%s“: %s"
+msgstr "Неуспешно преименуване на „%s“: „%s“: %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:859
 #, c-format
 msgid "Could not rename '%s' to %s: %s"
-msgstr "Неуспех при преименуването от „%s“ на %s: %s"
+msgstr "Неуспешно преименуване от „%s“ на %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:476
 #, c-format
 msgid "Could not open folder: %s: %s"
-msgstr "Неуспех при отварянето на папката: %s: %s"
+msgstr "Неуспешно отваряне на папката: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:537
 #, c-format
@@ -3885,42 +3884,42 @@ msgstr "Фатална грешка при анализирането на по�
 #: ../camel/providers/local/camel-mbox-summary.c:622
 #, c-format
 msgid "Cannot check folder: %s: %s"
-msgstr "Неуспех при проверка на папка: %s: %s"
+msgstr "Неуспешна проверка на папка: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:697
 #: ../camel/providers/local/camel-mbox-summary.c:833
 #: ../camel/providers/local/camel-spool-summary.c:138
 #, c-format
 msgid "Could not open file: %s: %s"
-msgstr "Неуспех при отварянето на файл: %s: %s"
+msgstr "Неуспешно отваряне на файл: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:711
 #: ../camel/providers/local/camel-spool-summary.c:153
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
-msgstr "Неуспех при отварянето на временна кутия: %s"
+msgstr "Неуспешно отваряне на временна кутия: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:728
 #: ../camel/providers/local/camel-mbox-summary.c:949
 #, c-format
 msgid "Could not close source folder %s: %s"
-msgstr "Неуспех при затварянето на папката източник %s: %s"
+msgstr "Неуспешно затваряне на папката източник %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:739
 #, c-format
 msgid "Could not close temporary folder: %s"
-msgstr "Неуспех при затварянето на временната папка: %s"
+msgstr "Неуспешно затваряне на временната папка: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:756
 #, c-format
 msgid "Could not rename folder: %s"
-msgstr "Неуспех при преименуването на папка: %s"
+msgstr "Неуспешно преименуване на папка: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:846
 #: ../camel/providers/local/camel-mbox-summary.c:1099
 #, c-format
 msgid "Could not store folder: %s"
-msgstr "Неуспех при запазването на папка: %s"
+msgstr "Неуспешно запазване на папка: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:886
 #: ../camel/providers/local/camel-mbox-summary.c:1131
@@ -3948,32 +3947,32 @@ msgstr "Неизвестна грешка: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:1240
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
-msgstr "Неуспех при запазването във временна кутия: %s"
+msgstr "Неуспешно запазване във временна кутия: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:1229
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
-msgstr "Неуспех при запазването във временна кутия: %s: %s"
+msgstr "Неуспешно запазване във временна кутия: %s: %s"
 
 #: ../camel/providers/local/camel-mh-folder.c:115
 #, c-format
 msgid "Cannot append message to mh folder: %s: "
-msgstr "Неуспех при добавянето на писмо към папка MH: %s: "
+msgstr "Неуспешно добавяне на писмо към папка MH: %s: "
 
 #: ../camel/providers/local/camel-mh-store.c:483
 #, c-format
 msgid "Could not create folder '%s': %s"
-msgstr "Неуспех при създаването на папка „%s“: %s"
+msgstr "Неуспешно създаване на папка „%s“: %s"
 
 #: ../camel/providers/local/camel-mh-store.c:497
 #, c-format
 msgid "Cannot get folder '%s': not a directory."
-msgstr "Неуспех при извличането на папка „%s“: не е папка."
+msgstr "Неуспешно извличане на папка „%s“: не е папка."
 
 #: ../camel/providers/local/camel-mh-summary.c:227
 #, c-format
 msgid "Cannot open MH directory path: %s: %s"
-msgstr "Неуспех при отварянето на папка тип MH: %s: %s"
+msgstr "Неуспешно отваряне на папка тип MH: %s: %s"
 
 #: ../camel/providers/local/camel-spool-store.c:327
 #, c-format
@@ -4006,7 +4005,7 @@ msgid ""
 "Could not open folder '%s':\n"
 "%s"
 msgstr ""
-"Неуспех при отварянето на папката „%s“:\n"
+"Неуспешно отваряне на папката „%s“:\n"
 "%s"
 
 #: ../camel/providers/local/camel-spool-store.c:409
@@ -4020,13 +4019,13 @@ msgid ""
 "Could not create folder '%s':\n"
 "%s"
 msgstr ""
-"Неуспех при създаването на папка „%s“:\n"
+"Неуспешно създаване на папка „%s“:\n"
 "%s"
 
 #: ../camel/providers/local/camel-spool-store.c:426
 #, c-format
 msgid "'%s' is not a mailbox file."
-msgstr "„%s“ е невалиден файл тип mailbox."
+msgstr "„%s“ е неправилен файл тип mailbox."
 
 #: ../camel/providers/local/camel-spool-store.c:462
 #, c-format
@@ -4048,12 +4047,12 @@ msgstr "Папките на спулера не могат да бъдат пр�
 #: ../camel/providers/local/camel-spool-summary.c:193
 #, c-format
 msgid "Could not synchronize temporary folder %s: %s"
-msgstr "Неуспех при синхронизирането на временната папка: %s: %s"
+msgstr "Неуспешно синхронизиране на временната папка: %s: %s"
 
 #: ../camel/providers/local/camel-spool-summary.c:211
 #, c-format
 msgid "Could not synchronize spool folder %s: %s"
-msgstr "Неуспех при синхронизирането на папката-спулер „%s“: %s"
+msgstr "Неуспешно синхронизиране на папката-спулер „%s“: %s"
 
 #: ../camel/providers/local/camel-spool-summary.c:243
 #: ../camel/providers/local/camel-spool-summary.c:262
@@ -4063,7 +4062,7 @@ msgid ""
 "Could not synchronize spool folder %s: %s\n"
 "Folder may be corrupt, copy saved in '%s'"
 msgstr ""
-"Неуспех при синхронизирането на папката-спулер „%s“: %s\n"
+"Неуспешно синхронизиране на папката-спулер „%s“: %s\n"
 "Папката може би е повредена, копието е запазено в „%s“"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:195
@@ -4081,7 +4080,7 @@ msgstr "Вътрешна грешка: уникалният идентифика
 #: ../camel/providers/pop3/camel-pop3-folder.c:697
 #, c-format
 msgid "Cannot get message %s: %s"
-msgstr "Неуспех при получаването на писмо %s: %s"
+msgstr "Неуспешно получаване на писмо %s: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:472
 #: ../camel/providers/nntp/camel-nntp-folder.c:478
@@ -4135,7 +4134,8 @@ msgstr "Това е доставчик за четене и публикуван
 msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
-msgstr "Тази опция ще ви свърже със сървър тип NNTP чрез нешифрирана парола."
+msgstr ""
+"Тази настройка ще ви свърже със сървър тип NNTP чрез нешифрирана парола."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:73
 #, c-format
@@ -4145,12 +4145,12 @@ msgstr "Изисква се удостоверяване, но не е указ�
 #: ../camel/providers/nntp/camel-nntp-store.c:85
 #, c-format
 msgid "Cannot authenticate to server: %s"
-msgstr "Неуспех при удостоверяването пред сървъра: %s"
+msgstr "Неуспешно удостоверяване пред сървъра: %s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:375
 #, c-format
 msgid "Could not read greeting from %s: "
-msgstr "Неуспех при четенето на поздрава от %s: "
+msgstr "Неуспешно четене на поздрава от %s: "
 
 #: ../camel/providers/nntp/camel-nntp-store.c:388
 #, c-format
@@ -4180,7 +4180,7 @@ msgid ""
 "\n"
 "No such newsgroup. The selected item is a probably a parent folder."
 msgstr ""
-"Неуспех при абонирането за тази група новини:\n"
+"Неуспешно абониране за тази група новини:\n"
 "\n"
 "Няма такава група. Най-вероятно избраният обект е родителска папка."
 
@@ -4191,7 +4191,7 @@ msgid ""
 "\n"
 "newsgroup does not exist!"
 msgstr ""
-"Неуспех при отписването от тази група новини:\n"
+"Неуспешно отписване от тази група новини:\n"
 "\n"
 "Групата не съществува!"
 
@@ -4242,7 +4242,7 @@ msgstr "Неочакван отговор от сървър от „head“: %s"
 #: ../camel/providers/nntp/camel-nntp-summary.c:410
 #, c-format
 msgid "Operation failed: %s"
-msgstr "Операцията e неуспешна: %s"
+msgstr "Неуспешно действие: %s"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:277
 #: ../camel/providers/pop3/camel-pop3-folder.c:336
@@ -4266,7 +4266,7 @@ msgstr "Извличане на обобщение по POP"
 #: ../camel/providers/pop3/camel-pop3-folder.c:511
 #, c-format
 msgid "Cannot get POP summary: %s"
-msgstr "Неуспех при получаването на обобщението по POP: %s"
+msgstr "Неуспешно получаване на обобщението по POP: %s"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:563
 msgid "Expunging old messages"
@@ -4340,14 +4340,14 @@ msgstr ": "
 #: ../camel/providers/pop3/camel-pop3-store.c:181
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
-msgstr "Неуспех при получаването на валиден поздрав от сървъра за POP %s"
+msgstr "Неуспешно получаване на коректен поздрав от сървъра за POP %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:199
 #: ../camel/providers/pop3/camel-pop3-store.c:230
 #: ../camel/providers/pop3/camel-pop3-store.c:237
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
-msgstr "Неуспех при свързване със сървъра за POP %s в сигурен режим: %s"
+msgstr "Неуспешно свързване със сървъра за POP %s в сигурен режим: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:200
 msgid "STLS not supported by server"
@@ -4357,7 +4357,7 @@ msgstr "Сървърът не поддържа STLS"
 #: ../camel/providers/pop3/camel-pop3-store.c:218
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode%s"
-msgstr "Неуспех при свързване със сървъра за POP %s в сигурен режим %s"
+msgstr "Неуспешно свързване със сървъра за POP %s в сигурен режим %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:231
 msgid "TLS negotiations failed"
@@ -4374,24 +4374,24 @@ msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
 "mechanism."
 msgstr ""
-"Неуспех при свързването към сървъра за POP %s: липсва поддръжка за нужния "
+"Неуспешно свързване към сървъра за POP %s: липсва поддръжка за нужния "
 "механизъм за удостоверяване."
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
 #: ../camel/providers/pop3/camel-pop3-store.c:340
 #, c-format
 msgid "SASL '%s' Login failed for POP server %s%s"
-msgstr "Неуспех при влизането (тип SASL „%s“) в сървъра за POP %s %s"
+msgstr "Неуспешно влизане (тип SASL „%s“) в сървъра за POP %s %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:357
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
-msgstr "Неуспех при влизането в сървъра за POP %s: грешка в протокола SASL"
+msgstr "Неуспешно влизане в сървъра за POP %s: грешка в протокола SASL"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:374
 #, c-format
 msgid "Failed to authenticate on POP server %s: "
-msgstr "Неуспех при удостоверяването пред сървъра за POP %s: "
+msgstr "Неуспешно удостоверяване пред сървъра за POP %s: "
 
 #: ../camel/providers/pop3/camel-pop3-store.c:439
 #, c-format
@@ -4399,7 +4399,7 @@ msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
 "attack suspected. Please contact your admin."
 msgstr ""
-"Неуспех при свързването със сървъра за POP %s: получен е неправилен "
+"Неуспешно свързване със сървъра за POP %s: получен е неправилен "
 "идентификатор за APOP. Има вероятност това да е атака за подмяна на "
 "идентичността, свържете се с вашия администратор."
 
@@ -4409,7 +4409,7 @@ msgid ""
 "Unable to connect to POP server %s.\n"
 "Error sending password: %s"
 msgstr ""
-"Неуспех при свързването към сървъра за POP %s.\n"
+"Неуспешно свързване към сървъра за POP %s.\n"
 "Грешка при изпращането на парола: %s"
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
@@ -4419,7 +4419,7 @@ msgid ""
 "Unable to connect to POP server %s.\n"
 "Error sending username%s"
 msgstr ""
-"Неуспех при свързването към сървъра за POP %s.\n"
+"Неуспешно при свързване към сървъра за POP %s.\n"
 "Грешка при изпращането на потребителско име %s"
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
@@ -4429,7 +4429,7 @@ msgid ""
 "Unable to connect to POP server %s.\n"
 "Error sending password%s"
 msgstr ""
-"Неуспех при свързването към сървъра за POP %s.\n"
+"Неуспешно свързване към сървъра за POP %s.\n"
 "Грешка при изпращането на парола %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:558
@@ -4445,7 +4445,7 @@ msgstr "Сървър за POP за %s на %s"
 #: ../camel/providers/pop3/camel-pop3-store.c:693
 #, c-format
 msgid "Could not connect to POP server %s"
-msgstr "Неуспех при свързването със сървъра за POP %s"
+msgstr "Неуспешно свързване със сървъра за POP %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:720
 #, c-format
@@ -4480,23 +4480,22 @@ msgstr "Изпращане на поща чрез програмата sendmail"
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:86
 #, c-format
 msgid "Could not parse recipient list"
-msgstr "Неуспех при анализирането на списъка с получатели"
+msgstr "Неуспешно анализиране на списъка с получатели"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:119
 #, c-format
 msgid "Could not create pipe to sendmail: %s: mail not sent"
 msgstr ""
-"Неуспех при създаването на програмен канал за sendmail: %s: пощата не е "
-"изпратена"
+"Неуспешно създаване на програмен канал за sendmail: %s: пощата не е изпратена"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:141
 #, c-format
 msgid "Could not fork sendmail: %s: mail not sent"
-msgstr "Неуспех при стартирането на sendmail: %s: пощата не е изпратена"
+msgstr "Неуспешно стартиране на sendmail: %s: пощата не е изпратена"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:182
 msgid "Could not send message: "
-msgstr "Неуспех при изпращането на писмо: "
+msgstr "Неуспешно изпращане на писмо: "
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:210
 #, c-format
@@ -4506,7 +4505,7 @@ msgstr "sendmail завърши със сигнал %s: пощата не е и�
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:217
 #, c-format
 msgid "Could not execute %s: mail not sent."
-msgstr "Неуспех при изпълняването на %s: пощата не е изпратена"
+msgstr "Неуспешно изпълнение на %s: пощата не е изпратена"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:222
 #, c-format
@@ -4545,7 +4544,7 @@ msgstr "Грешка при отговора на поздрава: "
 #: ../camel/providers/smtp/camel-smtp-transport.c:284
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
-msgstr "Неуспех при свързването със сървъра за SMTP %s в сигурен режим: %s"
+msgstr "Неуспешно свързване със сървъра за SMTP %s в сигурен режим: %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:246
 #: ../camel/providers/smtp/camel-smtp-transport.c:259
@@ -4575,7 +4574,7 @@ msgid ""
 "%s\n"
 "\n"
 msgstr ""
-"Неуспех при удостоверяването пред сървъра за SMTP.\n"
+"Неуспешно удостоверяване пред сървъра за SMTP.\n"
 "%s\n"
 "\n"
 
@@ -4722,7 +4721,7 @@ msgstr "Удостоверяване по SMTP"
 #: ../camel/providers/smtp/camel-smtp-transport.c:1157
 #, c-format
 msgid "Error creating SASL authentication object."
-msgstr "Грешка при създаване на обект за удостоверяване по SASL."
+msgstr "Неуспешно създаване на обект за удостоверяване по SASL."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1176
 #: ../camel/providers/smtp/camel-smtp-transport.c:1187
@@ -5016,7 +5015,7 @@ msgstr "Анонимен достъп до сървър за LDAP"
 #: ../libedataserverui/e-book-auth-util.c:199
 #: ../libedataserverui/e-book-auth-util.c:435
 msgid "Failed to authenticate.\n"
-msgstr "Неуспех при удостоверяването.\n"
+msgstr "Неуспешно удостоверяване.\n"
 
 #: ../libedataserverui/e-categories-dialog.c:127
 msgid "Category Properties"
