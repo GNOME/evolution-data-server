@@ -36,7 +36,7 @@ m4_define([glib_minimum_version], [2.28])
 m4_define([gtk_minimum_version], [3.0])
 m4_define([gconf_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libxml_minimum_version], [2.0.0])		dnl XXX Just a Guess
-m4_define([libsoup_minimum_version], [2.3.0])
+m4_define([libsoup_minimum_version], [2.31.2])
 m4_define([libgdata_minimum_version], [0.7.0])
 m4_define([gnome_keyring_minimum_version], [2.20.1])
 m4_define([sqlite_minimum_version], [3.5])
