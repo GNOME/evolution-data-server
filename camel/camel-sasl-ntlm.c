@@ -663,8 +663,9 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 {
 	CamelService *service;
 	GByteArray *ret;
+	gchar *user;
 	guchar nonce[8], hash[21], lm_resp[24], nt_resp[24];
-	GString *domain;
+	GString *domain = NULL;
 
 	service = camel_sasl_get_service (sasl);
 
@@ -714,8 +715,18 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 		ntlm_calc_response (hash, nonce, nt_resp);
 	}
 
-	/* FIXME: The server domain doesn't always match the user's domain */
-	domain = ntlm_get_string (token, NTLM_CHALLENGE_DOMAIN_OFFSET);
+	/* If a domain is supplied as part of the username, use it */
+	user = strchr (service->url->user, '\\');
+	if (user) {
+		domain = g_string_new_len (service->url->user,
+					   user - service->url->user);
+		user++;
+	} else
+		user = service->url->user;
+
+	/* Otherwise, fall back to the domain of the server, if possible */
+	if (domain == NULL)
+		domain = ntlm_get_string (token, NTLM_CHALLENGE_DOMAIN_OFFSET);
 	if (domain == NULL)
 		goto fail;
 
@@ -733,8 +744,7 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 	ntlm_set_string (ret, NTLM_RESPONSE_DOMAIN_OFFSET,
 			 domain->str, domain->len);
 	ntlm_set_string (ret, NTLM_RESPONSE_USER_OFFSET,
-			 service->url->user,
-			 strlen (service->url->user));
+			 user, strlen (user));
 	ntlm_set_string (ret, NTLM_RESPONSE_HOST_OFFSET,
 			 "UNKNOWN", sizeof ("UNKNOWN") - 1);
 	ntlm_set_string (ret, NTLM_RESPONSE_LM_RESP_OFFSET,
