@@ -83,6 +83,15 @@ struct _CamelSaslClass {
 	GByteArray *	(*challenge_finish)	(CamelSasl *sasl,
 						 GAsyncResult *result,
 						 GError **error);
+	void		(*try_empty_password)	(CamelSasl *sasl,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*try_empty_password_finish)
+						(CamelSasl *sasl,
+						 GAsyncResult *result,
+						 GError **error);
 };
 
 GType		camel_sasl_get_type		(void);
@@ -92,6 +101,15 @@ CamelSasl *	camel_sasl_new			(const gchar *service_name,
 gboolean	camel_sasl_try_empty_password_sync
 						(CamelSasl *sasl,
 						 GCancellable *cancellable,
+						 GError **error);
+void		camel_sasl_try_empty_password	(CamelSasl *sasl,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_sasl_try_empty_password_finish
+						(CamelSasl *sasl,
+						 GAsyncResult *result,
 						 GError **error);
 gboolean	camel_sasl_get_authenticated	(CamelSasl *sasl);
 void		camel_sasl_set_authenticated	(CamelSasl *sasl,

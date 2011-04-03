@@ -288,6 +288,60 @@ sasl_challenge_finish (CamelSasl *sasl,
 }
 
 static void
+sasl_try_empty_password_thread (GSimpleAsyncResult *simple,
+				GObject *object,
+				GCancellable *cancellable)
+{
+	gboolean res;
+	GError *error = NULL;
+
+	res = camel_sasl_try_empty_password_sync (CAMEL_SASL (object), cancellable, &error);
+	g_simple_async_result_set_op_res_gboolean (simple, res);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+sasl_try_empty_password (CamelSasl *sasl,
+			 gint io_priority,
+			 GCancellable *cancellable,
+			 GAsyncReadyCallback callback,
+			 gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (sasl), callback, user_data, sasl_try_empty_password);
+
+	g_simple_async_result_run_in_thread (
+		simple, sasl_try_empty_password_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+sasl_try_empty_password_finish (CamelSasl *sasl,
+				GAsyncResult *result,
+				GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (sasl), sasl_try_empty_password), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_simple_async_result_get_op_res_gboolean (simple);
+}
+
+static void
 camel_sasl_class_init (CamelSaslClass *class)
 {
 	GObjectClass *object_class;
@@ -302,6 +356,8 @@ camel_sasl_class_init (CamelSaslClass *class)
 
 	class->challenge = sasl_challenge;
 	class->challenge_finish = sasl_challenge_finish;
+	class->try_empty_password = sasl_try_empty_password;
+	class->try_empty_password_finish = sasl_try_empty_password_finish;
 
 	g_object_class_install_property (
 		object_class,
@@ -446,6 +502,69 @@ camel_sasl_try_empty_password_sync (CamelSasl *sasl, GCancellable *cancellable,
 		return FALSE;
 
 	return class->try_empty_password_sync (sasl, cancellable, error);
+}
+
+/**
+ * camel_sasl_try_empty_password:
+ * @sasl: a #CamelSasl
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously determine whether @sasl can be used for password-less
+ * authentication, for example single-sign-on using system credentials.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_sasl_try_empty_password_finish() to get the result of the
+ * operation.
+ *
+ * Since: 3.2
+ **/
+void
+camel_sasl_try_empty_password (CamelSasl *sasl,
+			       gint io_priority,
+			       GCancellable *cancellable,
+			       GAsyncReadyCallback callback,
+			       gpointer user_data)
+{
+	CamelSaslClass *class;
+
+	g_return_if_fail (CAMEL_IS_SASL (sasl));
+
+	class = CAMEL_SASL_GET_CLASS (sasl);
+	g_return_if_fail (class->try_empty_password != NULL);
+
+	class->try_empty_password (
+		sasl, io_priority, cancellable, callback, user_data);
+}
+
+/**
+ * camel_sasl_try_empty_password_finish:
+ * @sasl: a #CamelSasl
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_sasl_try_empty_password().
+ *
+ * Returns: the SASL response.  If an error occurred, @error will also be set.
+ *
+ * Since: 3.2
+ **/
+gboolean
+camel_sasl_try_empty_password_finish (CamelSasl *sasl,
+				      GAsyncResult *result,
+				      GError **error)
+{
+	CamelSaslClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_SASL (sasl), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = CAMEL_SASL_GET_CLASS (sasl);
+	g_return_val_if_fail (class->try_empty_password_finish != NULL, FALSE);
+
+	return class->try_empty_password_finish (sasl, result, error);
 }
 
 /**
