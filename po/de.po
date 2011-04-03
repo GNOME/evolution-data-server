@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2011-03-17 09:53+0000\n"
+"POT-Creation-Date: 2011-03-21 19:01+0000\n"
 "PO-Revision-Date: 2011-03-17 10:56+0100\n"
 "Last-Translator: Mario Blättermann <mariobl@gnome.org>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
@@ -48,19 +48,14 @@ msgid "Querying for updated contacts…"
 msgstr "Aktualisierte Kontakte werden abgefragt …"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:624
-#| msgctxt "CategoryName"
-#| msgid "Personal"
 msgid "Personal"
 msgstr "Persönlich"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:626
-#| msgctxt "CategoryName"
-#| msgid "Favorites"
 msgid "Friends"
 msgstr "Freunde"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:628
-#| msgid "Family Name"
 msgid "Family"
 msgstr "Familie"
 
@@ -86,12 +81,10 @@ msgid "Modifying contact…"
 msgstr "Kontakt wird geändert …"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1199
-#| msgid "Loading..."
 msgid "Loading…"
 msgstr "Ladevorgang …"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1346
-#| msgid "Authentication Required"
 msgid "Authenticating with the server…"
 msgstr "Legitimation am Server …"
 
@@ -101,9 +94,9 @@ msgstr "Legitimation am Server …"
 msgid "Downloading contacts (%d)... "
 msgstr "Kontakte werden heruntergeladen (%d) …"
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2847
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3028
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3075
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2849
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3030
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3077
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Zwischenspeicher für Kontakte wird aktualisiert (%d) …"
@@ -1242,8 +1235,8 @@ msgstr "Geben Sie das Passwort für %s ein (Benutzer %s)"
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr ""
-"Geben Sie das Passwort für %s ein, um die Stellvertretung für den Benutzer %s "
-"zu aktivieren"
+"Geben Sie das Passwort für %s ein, um die Stellvertretung für den Benutzer %"
+"s zu aktivieren"
 
 #: ../calendar/libecal/e-cal.c:4145
 msgid "Backend is busy"
@@ -1409,8 +1402,8 @@ msgstr "»%s« erwartet mindestens ein Argument"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:941
 #, c-format
 msgid ""
-"\"%s\" expects all arguments to be strings or one and only one argument to be "
-"a boolean false (#f)"
+"\"%s\" expects all arguments to be strings or one and only one argument to "
+"be a boolean false (#f)"
 msgstr ""
 "»%s« erwartet als Argumente Zeichenketten, oder aber ein einziges Argument "
 "mit dem Wahrheitswert »falsch« (#f)"
@@ -2251,8 +2244,8 @@ msgstr "DIGEST-MD5"
 
 #: ../camel/camel-sasl-digest-md5.c:56
 msgid ""
-"This option will connect to the server using a secure DIGEST-MD5 password, if "
-"the server supports it."
+"This option will connect to the server using a secure DIGEST-MD5 password, "
+"if the server supports it."
 msgstr ""
 "Dies stellt eine Verbindung mit dem SMTP-Server her und verwendet dazu ein "
 "sicheres DIGEST-MD5-Passwort, falls der Server dies unterstützt."
@@ -2296,8 +2289,8 @@ msgstr "GSSAPI"
 #: ../camel/camel-sasl-gssapi.c:88
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr ""
-"Dies stellt eine Verbindung mit dem Server her und verwendet zur Legitimation "
-"Kerberos 5"
+"Dies stellt eine Verbindung mit dem Server her und verwendet zur "
+"Legitimation Kerberos 5"
 
 #: ../camel/camel-sasl-gssapi.c:129
 msgid ""
@@ -2732,7 +2725,7 @@ msgstr "Das Netzwerk ist für den SOCKS-Server unerreichbar"
 
 #: ../camel/camel-tcp-stream-raw.c:894
 msgid "Host is unreachable from SOCKS server"
-msgstr "Der Rechner ist für den SOCKS-Server unerreichbar"
+msgstr "Der Rechner ist für den SOCKS-Server unerreichbar"
 
 #: ../camel/camel-tcp-stream-raw.c:895
 msgid "Connection refused"
@@ -3136,8 +3129,8 @@ msgstr ""
 #, c-format
 msgid ""
 "You have exceeded this account's storage limit. Your messages are queued in "
-"your Outbox. Resend by pressing Send/Receive after deleting/archiving some of "
-"your mail.\n"
+"your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
+"of your mail.\n"
 msgstr ""
 "Sie haben das Speicherplatzlimit für dieses Konto überschritten. Ihre "
 "Nachrichten sind im Ausgang abgelegt. Senden Sie diese erneut durch drücken "
@@ -3711,7 +3704,8 @@ msgstr "Ordner-Metadatei »%s« konnte nicht gelöscht werden: %s"
 #, c-format
 msgid "Unable to add message to summary: unknown reason"
 msgstr ""
-"Nachricht konnte nicht zur Zusammenfassung hinzugefügt werden: Grund unbekannt"
+"Nachricht konnte nicht zur Zusammenfassung hinzugefügt werden: Grund "
+"unbekannt"
 
 #: ../camel/providers/local/camel-maildir-folder.c:198
 #, c-format
@@ -3735,7 +3729,8 @@ msgstr "Nachricht kann nicht in den Zielordner übertragen werden: %s"
 #: ../camel/providers/local/camel-maildir-store.c:100
 #, c-format
 msgid "Cannot create folder: %s : Folder name cannot contain a dot"
-msgstr "Ordner konnte nicht angelegt werden: %s: Ordnername enthält einen Punkt"
+msgstr ""
+"Ordner konnte nicht angelegt werden: %s: Ordnername enthält einen Punkt"
 
 #: ../camel/providers/local/camel-maildir-store.c:109
 #: ../camel/providers/local/camel-maildir-store.c:686
@@ -3914,8 +3909,8 @@ msgstr "Ordner konnte nicht geöffnet werden: %s: %s"
 #, c-format
 msgid "Fatal mail parser error near position %s in folder %s"
 msgstr ""
-"Schwerwiegender Fehler beim Verarbeiten der E-Mail nahe Position %s im Ordner "
-"%s"
+"Schwerwiegender Fehler beim Verarbeiten der E-Mail nahe Position %s im "
+"Ordner %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:622
 #, c-format
@@ -4162,7 +4157,8 @@ msgstr ""
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
 msgid ""
-"This option will authenticate with the NNTP server using a plaintext password."
+"This option will authenticate with the NNTP server using a plaintext "
+"password."
 msgstr ""
 "Dies führt die Legitimation am NNTP-Server mit einem unverschlüsselten "
 "Passwort durch."
@@ -4226,7 +4222,8 @@ msgstr "Sie können diese Newsgroup nicht abonnieren, da sie nicht existiert."
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
-"Sie können in Newsgroups keine Ordner anlegen: Abonnieren Sie sie stattdessen."
+"Sie können in Newsgroups keine Ordner anlegen: Abonnieren Sie sie "
+"stattdessen."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1306
 #, c-format
@@ -4344,8 +4341,8 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-provider.c:85
 msgid ""
 "This option will connect to the POP server using an encrypted password via "
-"the APOP protocol. This may not work for all users even on servers that claim "
-"to support it."
+"the APOP protocol. This may not work for all users even on servers that "
+"claim to support it."
 msgstr ""
 "Dies stellt unter Verwendung eines verschlüsselten Passworts eine Verbindung "
 "mit dem POP-Server über das APO-Protokoll her. Das funktioniert "
@@ -4599,7 +4596,8 @@ msgstr "Nachricht konnte nicht verschickt werden: Dienst nicht verbunden."
 #: ../camel/providers/smtp/camel-smtp-transport.c:620
 #, c-format
 msgid "Cannot send message: sender address not valid."
-msgstr "Nachricht konnte nicht verschickt werden: Absenderadresse nicht gültig."
+msgstr ""
+"Nachricht konnte nicht verschickt werden: Absenderadresse nicht gültig."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:624
 msgid "Sending message"
@@ -5049,7 +5047,8 @@ msgstr "_Kein Bild"
 #: ../libedataserverui/e-categories-dialog.c:406
 #, c-format
 msgid ""
-"There is already a category '%s' in the configuration. Please use another name"
+"There is already a category '%s' in the configuration. Please use another "
+"name"
 msgstr ""
 "Es gibt bereits eine Kategorie »%s« in dieser Konfiguration. Bitte einen "
 "anderen Namen verwenden."
