@@ -1,5 +1,5 @@
 # evolution-data-server ja.po.
-# Copyright (C) 2000-2011 Free Software Foundation, Inc.
+# Copyright (C) 2000-2011 evolution-data-server's COPYRIGHT HOLDER
 # Akira TAGOH <tagoh@gnome.gr.jp>, 2000-2001.
 # Yukihiro Nakai <nakai@gnome.gr.jp>, 2001.
 # Takuo KITAME <kitame@debian.org>, 2001.
@@ -7,20 +7,22 @@
 # Satoru SATOH <ss@gnome.gr.jp>, 2006.
 # Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 2009-2011.
 # Kiyotaka NISHIBORI <nl.nishibori.kiyotaka@gmail.com>, 2010.
+# Takayoshi OKANO <kano@na.rim.or.jp>, 2011.
+# Jiro Matsuzawa <matsuzawa.jr@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server gnome-3-0\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2011-03-30 12:21+0000\n"
-"PO-Revision-Date: 2011-03-30 21:37+0900\n"
-"Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
+"POT-Creation-Date: 2011-04-03 15:09+0000\n"
+"PO-Revision-Date: 2011-04-04 01:13+0900\n"
+"Last-Translator: Jiro Matsuzawa <matsuzawa.jr@gmail.com>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:570
@@ -605,7 +607,7 @@ msgstr "ICQ の ID 一覧です"
 
 #: ../addressbook/libebook/e-contact.c:256
 msgid "Wants HTML Mail"
-msgstr "HTML 形式のメ−ルを希望する"
+msgstr "HTML 形式のメールを希望する"
 
 #: ../addressbook/libebook/e-contact.c:258
 msgid "List"
@@ -1018,7 +1020,7 @@ msgstr "URI へのリダイレクトが無効です"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:456
 msgid "Bad file format."
-msgstr "ファイルのフォ−マットが間違っています。"
+msgstr "ファイルのフォーマットが間違っています。"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:463
 msgid "Not a calendar."
@@ -1380,9 +1382,9 @@ msgid ""
 "\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
 "\"classification\""
 msgstr ""
-"\"%s\" は最初の引数として \"any\", \"summary\" または \"description\"、"
-"\"location\"、\"attendee\"、\"organizer\"、\"classification\" のいずれか一つ"
-"が必要です"
+"\"%s\" は最初の引数として \"any\", \"summary\" または \"description"
+"\"、\"location\"、\"attendee\"、\"organizer\"、\"classification\" のいずれか"
+"一つが必要です"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:927
 #, c-format
@@ -1395,8 +1397,7 @@ msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 msgstr ""
-"\"%s\" はすべてまたは一つが文字列で、論理値 FAULSE (#f) を一つだけ必要としま"
-"す"
+"\"%s\" はすべてまたは一つが文字列で、論理値 FALSE (#f) を一つだけ必要とします"
 
 #: ../calendar/libedata-cal/e-data-cal.c:111
 msgid "Invalid range"
@@ -1882,7 +1883,7 @@ msgstr "GnuPG のユーザ ID ヒントの解析に失敗しました。"
 #: ../camel/camel-gpg-context.c:753 ../camel/camel-gpg-context.c:768
 #, c-format
 msgid "Failed to parse gpg passphrase request."
-msgstr "GnuPG のパスワード要求の解析に失敗しました。"
+msgstr "GnuPG のパスフレーズ要求の解析に失敗しました。"
 
 #: ../camel/camel-gpg-context.c:789
 #, c-format
@@ -1899,7 +1900,7 @@ msgid ""
 "You need a passphrase to unlock the key for\n"
 "user: \"%s\""
 msgstr ""
-"次のユーザのキーを解除するにはパスワードが必要です:\n"
+"次のユーザのキーを解除するにはパスフレーズが必要です:\n"
 " \"%s\""
 
 #: ../camel/camel-gpg-context.c:799
@@ -1925,7 +1926,7 @@ msgstr "キャンセル済み"
 #: ../camel/camel-gpg-context.c:846
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
-msgstr "秘密鍵の解除に失敗しました: 指定した三つのパスワードがおかしいです。"
+msgstr "秘密鍵の解除に失敗しました: 指定した三つのパスフレーズがおかしいです。"
 
 #: ../camel/camel-gpg-context.c:858
 #, c-format
@@ -2649,7 +2650,7 @@ msgstr "フォルダ名を変更できません: %s: 無効な操作です"
 #: ../camel/camel-tcp-stream-raw.c:749 ../camel/camel-tcp-stream-raw.c:760
 #, c-format
 msgid "The proxy host does not support SOCKS4"
-msgstr "プロキシホストは SOCKS 4 をサポートしていませ"
+msgstr "プロキシホストは SOCKS 4 をサポートしていません"
 
 #: ../camel/camel-tcp-stream-raw.c:771
 #, c-format
@@ -2966,7 +2967,7 @@ msgstr "受信箱にあるメールだけスパムかどうかチェックする
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:61
 msgid "Automatically synchroni_ze account locally"
-msgstr "ローカルのアカウントを自動的に同期する(_A)"
+msgstr "ローカルのアカウントを自動的に同期する(_Z)"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:66
 msgid "SOAP Settings"
@@ -2996,8 +2997,8 @@ msgstr "パスワード"
 msgid ""
 "This option will connect to the GroupWise server using a plaintext password."
 msgstr ""
-"このオプションはプレイン・テキストのパスワードを使って IMAP サーバに接続しま"
-"す。"
+"このオプションはプレイン・テキストのパスワードを使って GroupWise サーバに接続"
+"します。"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:103
 #, c-format
@@ -3444,7 +3445,7 @@ msgstr "%s のキャッシュを生成できませんでした: "
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:42
 msgid "Use _Quick Resync if the server supports it"
-msgstr "サーバがサポートするときは Quick Rysync を使用する(_Q)"
+msgstr "サーバがサポートするときは Quick Resync を使用する(_Q)"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:44
 msgid "Use I_dle if the server supports it"
@@ -4669,7 +4670,7 @@ msgstr "MAIL FROM コマンドが失敗しました: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1354
 msgid "RCPT TO command failed: "
-msgstr "RSET コマンドが失敗しました: "
+msgstr "RCPT TO コマンドが失敗しました: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1370
 #: ../camel/providers/smtp/camel-smtp-transport.c:1379
@@ -5053,7 +5054,7 @@ msgstr "削除(_R)"
 #: ../libedataserverui/e-name-selector-dialog.c:891
 #, c-format
 msgid "Error loading address book: %s"
-msgstr "アドレス悵の読み込み中にエラー: %s"
+msgstr "アドレス帳の読み込み中にエラー: %s"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
 #: ../libedataserverui/e-name-selector-entry.c:2661
