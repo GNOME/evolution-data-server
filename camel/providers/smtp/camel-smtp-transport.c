@@ -60,7 +60,7 @@ static gboolean		smtp_helo		(CamelSmtpTransport *transport,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean		smtp_auth		(CamelSmtpTransport *transport,
-						 const gchar *mech,
+						 CamelSasl *sasl,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean		smtp_mail		(CamelSmtpTransport *transport,
@@ -368,6 +368,7 @@ smtp_connect_sync (CamelService *service,
                    GError **error)
 {
 	CamelSmtpTransport *transport = CAMEL_SMTP_TRANSPORT (service);
+	CamelSasl *sasl = NULL;
 	gboolean has_authtypes;
 
 	/* We (probably) need to check popb4smtp before we connect ... */
@@ -423,13 +424,23 @@ smtp_connect_sync (CamelService *service,
 			return FALSE;
 		}
 
-		if (!authtype->need_password) {
-			/* authentication mechanism doesn't need a password,
-			   so if it fails there's nothing we can do */
-			authenticated = smtp_auth (
-				transport, authtype->authproto,
-				cancellable, error);
-			if (!authenticated) {
+		sasl = camel_sasl_new ("smtp", service->url->authmech,
+				       CAMEL_SERVICE (transport));
+
+		if (!sasl) {
+		nosasl:
+			g_set_error (
+				     error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+				     _("Error creating SASL authentication object."));
+			camel_service_disconnect_sync (service, TRUE, NULL);
+			return FALSE;
+		}
+		if (!authtype->need_password ||
+		    camel_sasl_try_empty_password_sync (sasl, cancellable, error)) {
+			authenticated = smtp_auth (transport, sasl, cancellable, error);
+			if (!authenticated && !authtype->need_password) {
+				/* authentication mechanism doesn't need a password,
+				   so if it fails there's nothing we can do */
 				camel_service_disconnect_sync (
 					service, TRUE, NULL);
 				return FALSE;
@@ -444,6 +455,7 @@ smtp_connect_sync (CamelService *service,
 
 			if (errbuf) {
 				/* We need to un-cache the password before prompting again */
+				password_flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
 				g_free (service->url->passwd);
 				service->url->passwd = NULL;
 			}
@@ -475,10 +487,14 @@ smtp_connect_sync (CamelService *service,
 					return FALSE;
 				}
 			}
+			if (!sasl)
+				sasl = camel_sasl_new ("smtp", service->url->authmech,
+						       CAMEL_SERVICE (transport));
+			if (!sasl)
+				goto nosasl;
 
-			authenticated = smtp_auth (
-				transport, authtype->authproto,
-				cancellable, &local_error);
+			authenticated = smtp_auth (transport, sasl, cancellable, &local_error);
+			sasl = NULL;
 			if (!authenticated) {
 				if (g_cancellable_is_cancelled (cancellable) ||
 				    g_error_matches (local_error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_UNAVAILABLE)) {
@@ -501,11 +517,6 @@ smtp_connect_sync (CamelService *service,
 				service->url->passwd = NULL;
 			}
 
-			/* Force a password prompt on the next pass, in
-			 * case we have an invalid password cached.  This
-			 * avoids repeated authentication attempts using
-			 * the same invalid password. */
-			password_flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
 		}
 	}
 
@@ -1136,36 +1147,28 @@ smtp_helo (CamelSmtpTransport *transport,
 
 static gboolean
 smtp_auth (CamelSmtpTransport *transport,
-           const gchar *mech,
+           CamelSasl *sasl,
            GCancellable *cancellable,
            GError **error)
 {
 	CamelService *service;
 	gchar *cmdbuf, *respbuf = NULL, *challenge;
 	gboolean auth_challenge = FALSE;
-	CamelSasl *sasl = NULL;
 
 	service = CAMEL_SERVICE (transport);
 
 	camel_operation_push_message (cancellable, _("SMTP Authentication"));
 
-	sasl = camel_sasl_new ("smtp", mech, service);
-	if (!sasl) {
-		camel_operation_pop_message (cancellable);
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Error creating SASL authentication object."));
-		return FALSE;
-	}
-
 	challenge = camel_sasl_challenge_base64_sync (
 		sasl, NULL, cancellable, error);
 	if (challenge) {
 		auth_challenge = TRUE;
-		cmdbuf = g_strdup_printf ("AUTH %s %s\r\n", mech, challenge);
+		cmdbuf = g_strdup_printf ("AUTH %s %s\r\n",
+					  service->url->authmech, challenge);
 		g_free (challenge);
 	} else {
-		cmdbuf = g_strdup_printf ("AUTH %s\r\n", mech);
+		cmdbuf = g_strdup_printf ("AUTH %s\r\n",
+					  service->url->authmech);
 	}
 
 	d(fprintf (stderr, "sending : %s", cmdbuf));
@@ -1203,7 +1206,7 @@ smtp_auth (CamelSmtpTransport *transport,
 				   "authentication mechanism is broken. Please report this to the\n"
 				   "appropriate vendor and suggest that they re-read rfc2554 again\n"
 				   "for the first time (specifically Section 4).\n",
-				   mech));
+				   service->url->authmech));
 		}
 
 		/* eat whtspc */

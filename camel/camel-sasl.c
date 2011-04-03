@@ -419,6 +419,36 @@ camel_sasl_get_authenticated (CamelSasl *sasl)
 }
 
 /**
+ * camel_sasl_try_empty_password_sync:
+ * @sasl: a #CamelSasl object
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Returns: whether or not @sasl can attempt to authenticate without a
+ * password being provided by the caller. This will be %TRUE for an
+ * authentication method which can attempt to use single-sign-on
+ * credentials, but which can fall back to using a provided password
+ * so it still has the @need_password flag set in its description.
+ *
+ * Since: 3.2
+ **/
+gboolean
+camel_sasl_try_empty_password_sync (CamelSasl *sasl, GCancellable *cancellable,
+				    GError **error)
+{
+	CamelSaslClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_SASL (sasl), FALSE);
+
+	class = CAMEL_SASL_GET_CLASS (sasl);
+
+	if (class->try_empty_password_sync == NULL)
+		return FALSE;
+
+	return class->try_empty_password_sync (sasl, cancellable, error);
+}
+
+/**
  * camel_sasl_set_authenticated:
  * @sasl: a #CamelSasl
  * @authenticated: whether we have successfully authenticated

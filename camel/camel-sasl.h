@@ -64,6 +64,10 @@ struct _CamelSaslClass {
 	CamelObjectClass parent_class;
 
 	/* Synchronous I/O Methods */
+	gboolean	(*try_empty_password_sync)
+						(CamelSasl *sasl,
+						 GCancellable *cancellable,
+						 GError **error);
 	GByteArray *	(*challenge_sync)	(CamelSasl *sasl,
 						 GByteArray *token,
 						 GCancellable *cancellable,
@@ -85,6 +89,10 @@ GType		camel_sasl_get_type		(void);
 CamelSasl *	camel_sasl_new			(const gchar *service_name,
 						 const gchar *mechanism,
 						 CamelService *service);
+gboolean	camel_sasl_try_empty_password_sync
+						(CamelSasl *sasl,
+						 GCancellable *cancellable,
+						 GError **error);
 gboolean	camel_sasl_get_authenticated	(CamelSasl *sasl);
 void		camel_sasl_set_authenticated	(CamelSasl *sasl,
 						 gboolean authenticated);
