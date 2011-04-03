@@ -28,9 +28,14 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-sasl-ntlm.h"
+#include "camel-stream-process.h"
 
 struct _CamelSaslNTLMPrivate {
 	gint placeholder;  /* allow for future expansion */
+#ifndef G_OS_WIN32
+	CamelStream *helper_stream;
+	gchar *type1_msg;
+#endif
 };
 
 CamelServiceAuthType camel_sasl_ntlm_authtype = {
@@ -60,6 +65,8 @@ G_DEFINE_TYPE (CamelSaslNTLM, camel_sasl_ntlm, CAMEL_TYPE_SASL)
 #define NTLM_RESPONSE_USER_OFFSET    36
 #define NTLM_RESPONSE_HOST_OFFSET    44
 #define NTLM_RESPONSE_FLAGS_OFFSET   60
+
+#define NTLM_AUTH_HELPER "/usr/bin/ntlm_auth"
 
 static void ntlm_calc_response   (const guchar key[21],
 				  const guchar plaintext[8],
@@ -661,6 +668,10 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
                           GCancellable *cancellable,
                           GError **error)
 {
+#ifndef G_OS_WIN32
+	CamelSaslNTLM *ntlm = CAMEL_SASL_NTLM (sasl);
+	CamelSaslNTLMPrivate *priv = ntlm->priv;
+#endif
 	CamelService *service;
 	GByteArray *ret;
 	gchar *user;
@@ -670,6 +681,49 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 	service = camel_sasl_get_service (sasl);
 
 	ret = g_byte_array_new ();
+
+#ifndef G_OS_WIN32
+	if (priv->helper_stream && !service->url->passwd) {
+		guchar *data;
+		gsize length = 0;
+		char buf[1024];
+		gsize s = 0;
+		buf [0] = 0;
+
+		if (!token || !token->len) {
+			if (priv->type1_msg) {
+				data = g_base64_decode (priv->type1_msg, &length);
+				g_byte_array_append (ret, data, length);
+				g_free (data);
+				g_free (priv->type1_msg);
+				priv->type1_msg = NULL;
+			}
+			return ret;
+		} else {
+			gchar *type2 = g_base64_encode (token->data, token->len);
+			if (camel_stream_printf (priv->helper_stream, "TT %s\n",
+						 type2) >= 0 &&
+			   (s = camel_stream_read (priv->helper_stream, buf,
+				   sizeof(buf), cancellable, NULL)) > 4 &&
+			   buf[0] == 'K' && buf[1] == 'K' && buf[2] == ' ' &&
+			   buf[s-1] == '\n') {
+				data = g_base64_decode (buf + 3, &length);
+				g_byte_array_append (ret, data, length);
+				g_free (data);
+			} else
+				g_warning ("Didn't get valid response from ntlm_auth helper");
+
+			g_free (type2);
+		}
+		/* On failure, we just return an empty string. Setting the
+		   GError would cause the providers to abort the whole
+		   connection, and we want them to ask the user for a password
+		   and continue. */
+		g_object_unref (priv->helper_stream);
+		priv->helper_stream = NULL;
+		return ret;
+	}
+#endif
 
 	if (!token || token->len < NTLM_CHALLENGE_NONCE_OFFSET + 8)
 		goto fail;
@@ -768,15 +822,97 @@ exit:
 	return ret;
 }
 
+static gboolean sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
+						   GCancellable *cancellable,
+						   GError **error)
+{
+#ifndef G_OS_WIN32
+	CamelStream *stream = camel_stream_process_new ();
+	CamelService *service = camel_sasl_get_service (sasl);
+	CamelSaslNTLM *ntlm = CAMEL_SASL_NTLM (sasl);
+	CamelSaslNTLMPrivate *priv = ntlm->priv;
+	gchar *user;
+	gchar buf[1024];
+	gsize s;
+	gchar *command;
+	int ret;
+
+	if (access (NTLM_AUTH_HELPER, X_OK))
+		return FALSE;
+
+	user = strchr (service->url->user, '\\');
+	if (user) {
+		command = g_strdup_printf ("%s --helper-protocol ntlmssp-client-1 "
+					   "--use-cached-creds --username '%s' "
+					   "--domain '%.*s'", NTLM_AUTH_HELPER,
+					   user + 1, (int)(user - service->url->user), 
+					   service->url->user);
+	} else {
+		command = g_strdup_printf ("%s --helper-protocol ntlmssp-client-1 "
+					   "--use-cached-creds --username '%s'",
+					   NTLM_AUTH_HELPER, service->url->user);
+	}
+	ret = camel_stream_process_connect (CAMEL_STREAM_PROCESS (stream), command, NULL);
+	g_free (command);
+	if (ret) {
+		g_object_unref (stream);
+		return FALSE;
+	}
+	if (camel_stream_printf (stream, "YR\n") < 0) {
+		g_object_unref (stream);
+		return FALSE;
+	}
+	s = camel_stream_read (stream, buf, sizeof(buf), cancellable, NULL);
+	if (s < 4) {
+		g_object_unref (stream);
+		return FALSE;
+	}
+	if (buf[0] != 'Y' || buf[1] != 'R' || buf[2] != ' ' || buf[s-1] != '\n') {
+		g_object_unref (stream);
+		return FALSE;
+	}
+
+	buf[s-1] = 0;
+
+	priv->helper_stream = stream;
+	priv->type1_msg = g_strdup (buf + 3);
+	return TRUE;
+#else
+	/* Win32 should be able to use SSPI here. */
+	return FALSE;
+#endif
+}
+
+static void
+sasl_ntlm_finalize (GObject *object)
+{
+#ifndef G_OS_WIN32
+	CamelSaslNTLM *ntlm = CAMEL_SASL_NTLM (object);
+	CamelSaslNTLMPrivate *priv = ntlm->priv;
+
+	if (priv->type1_msg)
+		g_free (priv->type1_msg);
+	if (priv->helper_stream)
+		g_object_unref (priv->helper_stream);
+#endif
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_sasl_ntlm_parent_class)->finalize (object);
+}
+
 static void
 camel_sasl_ntlm_class_init (CamelSaslNTLMClass *class)
 {
+	GObjectClass *object_class;
 	CamelSaslClass *sasl_class;
 
 	g_type_class_add_private (class, sizeof (CamelSaslNTLMPrivate));
 
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = sasl_ntlm_finalize;
+
 	sasl_class = CAMEL_SASL_CLASS (class);
 	sasl_class->challenge_sync = sasl_ntlm_challenge_sync;
+	sasl_class->try_empty_password_sync = sasl_ntlm_try_empty_password_sync;
 }
 
 static void
