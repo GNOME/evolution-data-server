@@ -1,3 +1,26 @@
+Evolution-Data-Server 3.0.0 2011-04-04
+--------------------------------------
+
+Bug Fixes:
+	Bug 646200 - Insufficient requirement on libsoup (Matthew Barnes)
+
+Translations:
+	Alexander Shopov (bg)
+	Jordi Serratosa (ca)
+	Kris Thomsen (da)
+	Wolfgang Stöggl (de)
+	Kristjan SCHMIDT (eo)
+	Rajesh Ranjan (hi)
+	Sweta Kothari (gu)
+	Luca Ferretti (it)
+	Takayuki KUSANO, Jiro Matsuzawa (ja)
+	Žygimantas Beručka (lt)
+	Sandeep Shedmake (mr)
+	Kjartan Maraas (nb)
+	Wouter Bolsterlee, Hannie Dumoleyn (nl)
+	Antonio Fernandes C. Neto (pt_BR)
+
+
 Evolution-Data-Server 2.91.92 2011-03-21
 ----------------------------------------
 
