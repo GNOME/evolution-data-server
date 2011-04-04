@@ -5,16 +5,16 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-04-04 14:49+0200\n"
-"PO-Revision-Date: 2011-04-04 14:48+0200\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
+"POT-Creation-Date: 2011-04-04 12:39+0000\n"
+"PO-Revision-Date: 2011-04-04 14:54+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n\n"
 "\n"
 "\n"
 
@@ -1923,8 +1923,7 @@ msgstr "Bertan behera utzita"
 #: ../camel/camel-gpg-context.c:846
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
-msgstr ""
-"Huts egin du gako sekretua desblokeatzean: 3 pasaesaldi oker eman dira."
+msgstr "Huts egin du gako sekretua desblokeatzean: 3 pasaesaldi oker eman dira."
 
 #: ../camel/camel-gpg-context.c:858
 #, c-format
@@ -2140,8 +2139,7 @@ msgstr "Mezuak beste karpeta-multzo bateko kontsulta gisa irakurtzeko"
 #: ../camel/camel-provider.c:188
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
-msgstr ""
-"Ezin izan da %s kargatu: moduluak kargatzea ez da onartzen sistema honetan."
+msgstr "Ezin izan da %s kargatu: moduluak kargatzea ez da onartzen sistema honetan."
 
 #: ../camel/camel-provider.c:197
 #, c-format
@@ -2296,8 +2294,7 @@ msgstr ""
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
-msgstr ""
-"input_token -ek daukan sinadura bat ez da baliozkoa, edo ezin da egiaztatu."
+msgstr "input_token -ek daukan sinadura bat ez da baliozkoa, edo ezin da egiaztatu."
 
 #: ../camel/camel-sasl-gssapi.c:150
 msgid ""
@@ -2343,8 +2340,7 @@ msgstr "Saio-hasiera"
 
 #: ../camel/camel-sasl-login.c:37 ../camel/camel-sasl-plain.c:41
 msgid "This option will connect to the server using a simple password."
-msgstr ""
-"Aukera honek zerbitzariarekin konektatuko zaitu pasahitz sinple baten bidez."
+msgstr "Aukera honek zerbitzariarekin konektatuko zaitu pasahitz sinple baten bidez."
 
 #: ../camel/camel-sasl-login.c:91
 #, c-format
@@ -2541,8 +2537,7 @@ msgstr "Ziurtagiria inportatzeak huts egin du"
 #: ../camel/camel-smime-context.c:631
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
-msgstr ""
-"Mezuaren edukiak ziurtagiria bakarrik du, ezin dira ziurtagiriak egiaztatu"
+msgstr "Mezuaren edukiak ziurtagiria bakarrik du, ezin dira ziurtagiriak egiaztatu"
 
 #: ../camel/camel-smime-context.c:634
 #, c-format
@@ -2834,8 +2829,7 @@ msgstr "Ezin da karpeta ezabatu: %s: ez dago horrelako karpetarik"
 #: ../camel/camel-vee-store.c:427
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
-msgstr ""
-"Ezin izan zaio izena aldatu karpetari: %s: ez dago horrelako karpetarik"
+msgstr "Ezin izan zaio izena aldatu karpetari: %s: ez dago horrelako karpetarik"
 
 #: ../camel/camel-vtrash-folder.c:49
 msgid "Cannot copy messages to the Trash folder"
@@ -2956,8 +2950,7 @@ msgstr "Aukerak"
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imapx/camel-imapx-provider.c:74
 msgid "_Apply filters to new messages in Inbox on this server"
-msgstr ""
-"_Aplikatu iragazkiak zerbitzari honetako 'Sarrera'ko ontziko mezu berriei"
+msgstr "_Aplikatu iragazkiak zerbitzari honetako 'Sarrera'ko ontziko mezu berriei"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:57
 msgid "Check new messages for J_unk contents"
@@ -2998,8 +2991,7 @@ msgid "Password"
 msgstr "Pasahitza"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:100
-msgid ""
-"This option will connect to the GroupWise server using a plaintext password."
+msgid "This option will connect to the GroupWise server using a plaintext password."
 msgstr ""
 "Aukera honek Groupwise zerbitzariarekin konektatuko zaitu testu arrunteko "
 "pasahitzaren bidez."
@@ -3018,8 +3010,7 @@ msgstr "Ez duzu idatzi pasahitza."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:328
 msgid "Some features may not work correctly with your current server version"
-msgstr ""
-"Funtzio batzuk ez dute uneko zure zerbitzariaren bertsioarekin funtzionatuko"
+msgstr "Funtzio batzuk ez dute uneko zure zerbitzariaren bertsioarekin funtzionatuko"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:556
 #: ../camel/providers/imap/camel-imap-store.c:1808
@@ -3192,8 +3183,7 @@ msgstr "Mezu hau orain ez dago erabilgarri"
 #: ../camel/providers/imap/camel-imap-folder.c:4176
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
-msgstr ""
-"Zerbitzariaren osatu gabeko erantzuna: ez da %d mezuaren informaziorik eman"
+msgstr "Zerbitzariaren osatu gabeko erantzuna: ez da %d mezuaren informaziorik eman"
 
 #: ../camel/providers/imap/camel-imap-folder.c:4186
 #, c-format
@@ -3358,8 +3348,7 @@ msgstr "Ezin da \"%s\" komandoarekin konektatu: %s"
 #: ../camel/providers/imapx/camel-imapx-server.c:3041
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
-msgstr ""
-"%s IMAP zerbitzariak ez du onartzen eskatutako %s motako autentifikazioa"
+msgstr "%s IMAP zerbitzariak ez du onartzen eskatutako %s motako autentifikazioa"
 
 #: ../camel/providers/imap/camel-imap-store.c:752
 #: ../camel/providers/imapx/camel-imapx-server.c:3053
@@ -3410,8 +3399,7 @@ msgstr "Sarrerako ontzia"
 #: ../camel/providers/imap/camel-imap-store.c:2259
 #: ../camel/providers/imapx/camel-imapx-store.c:1319
 #, c-format
-msgid ""
-"The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "\"%s\" karpeta-izena ez da baliozkoa, \"%c\" karakterea duelako."
 
 #: ../camel/providers/imap/camel-imap-store.c:1939
@@ -3680,8 +3668,7 @@ msgstr "Ezin da mezua helburuko karpetara transferitu: %s"
 #: ../camel/providers/local/camel-maildir-store.c:100
 #, c-format
 msgid "Cannot create folder: %s : Folder name cannot contain a dot"
-msgstr ""
-"Ezin da karpeta sortu: %s. Karpetaren izenak ezin du puntua karakterea eduki"
+msgstr "Ezin da karpeta sortu: %s. Karpetaren izenak ezin du puntua karakterea eduki"
 
 #: ../camel/providers/local/camel-maildir-store.c:109
 #: ../camel/providers/local/camel-maildir-store.c:686
@@ -3859,8 +3846,7 @@ msgstr "Ezin izan da karpeta ireki: %s: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:537
 #, c-format
 msgid "Fatal mail parser error near position %s in folder %s"
-msgstr ""
-"Posta-analizatzailearen errore larria %2$s karpetako %1$s posiziotik gertu"
+msgstr "Posta-analizatzailearen errore larria %2$s karpetako %1$s posiziotik gertu"
 
 #: ../camel/providers/local/camel-mbox-summary.c:622
 #, c-format
@@ -4085,15 +4071,12 @@ msgid "You cannot copy messages from a NNTP folder!"
 msgstr "Ezin duzu mezuak NNTP karpeta batean kopiatu"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:44
-msgid ""
-"_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
-msgstr ""
-"_Erakutsi karpetak idazkera laburrean (adib. c.o.linux comp.os.linux ordez)"
+msgid "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgstr "_Erakutsi karpetak idazkera laburrean (adib. c.o.linux comp.os.linux ordez)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
 msgid "In the subscription _dialog, show relative folder names"
-msgstr ""
-"Harpidetzaren _elkarrizketa-koadroan erakutsi karpeta erlatiboen izenak"
+msgstr "Harpidetzaren _elkarrizketa-koadroan erakutsi karpeta erlatiboen izenak"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:53
 msgid "USENET news"
@@ -4101,8 +4084,7 @@ msgstr "USENET berriak"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
 msgid "This is a provider for reading from and posting to USENET newsgroups."
-msgstr ""
-"Hau USENET berri-taldeetako mezuak irakurri eta bidaltzeko hornitzailea da."
+msgstr "Hau USENET berri-taldeetako mezuak irakurri eta bidaltzeko hornitzailea da."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
 msgid ""
@@ -4448,8 +4430,7 @@ msgstr "Ezin izan da hartzaileen zerrenda analizatu"
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:119
 #, c-format
 msgid "Could not create pipe to sendmail: %s: mail not sent"
-msgstr ""
-"Ezin izan da sendmail-erako kanalizaziorik sortu: %s: posta ez da bidali"
+msgstr "Ezin izan da sendmail-erako kanalizaziorik sortu: %s: posta ez da bidali"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:141
 #, c-format
@@ -4514,8 +4495,7 @@ msgstr "SMTP posta-banaketa %s bidez"
 #: ../camel/providers/smtp/camel-smtp-transport.c:408
 #, c-format
 msgid "SMTP server %s does not support requested authentication type %s."
-msgstr ""
-"%s SMTP zerbitzariak ez du onartzen eskatutako %s motako autentifikazioa."
+msgstr "%s SMTP zerbitzariak ez du onartzen eskatutako %s motako autentifikazioa."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:495
 #, c-format
@@ -4618,8 +4598,7 @@ msgstr "Ez da egin eskatutako ekintza: sistema-biltegia ez da nahikoa"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:757
 msgid "Requested mail action aborted: exceeded storage allocation"
-msgstr ""
-"Eskatutako posta-ekintza abortatu egin da: biltegi-esleipena gaindituta"
+msgstr "Eskatutako posta-ekintza abortatu egin da: biltegi-esleipena gaindituta"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:759
 msgid "Requested action not taken: mailbox name not allowed"
@@ -4711,6 +4690,126 @@ msgstr "RSET komandoak huts egin du: "
 #: ../camel/providers/smtp/camel-smtp-transport.c:1633
 msgid "QUIT command failed: "
 msgstr "QUIT komandoak huts egin du: "
+
+#: ../libedataserver/e-categories.c:47
+#| msgid "Anniversary"
+msgctxt "CategoryName"
+msgid "Anniversary"
+msgstr "Urteurrena"
+
+#: ../libedataserver/e-categories.c:48
+#| msgid "Birthday"
+msgctxt "CategoryName"
+msgid "Birthday"
+msgstr "Urtebetetzea"
+
+#: ../libedataserver/e-categories.c:49
+#| msgid "Business Fax"
+msgctxt "CategoryName"
+msgid "Business"
+msgstr "Lanekoa"
+
+#: ../libedataserver/e-categories.c:50
+#| msgid "Complete"
+msgctxt "CategoryName"
+msgid "Competition"
+msgstr "Lehia"
+
+#: ../libedataserver/e-categories.c:51
+#| msgid "Categories"
+msgctxt "CategoryName"
+msgid "Favorites"
+msgstr "Gogokoak"
+
+#: ../libedataserver/e-categories.c:52
+msgctxt "CategoryName"
+msgid "Gifts"
+msgstr "Opariak"
+
+#: ../libedataserver/e-categories.c:53
+msgctxt "CategoryName"
+msgid "Goals/Objectives"
+msgstr "Xedeak/Helburuak"
+
+#: ../libedataserver/e-categories.c:54
+msgctxt "CategoryName"
+msgid "Holiday"
+msgstr "Oporrak"
+
+#: ../libedataserver/e-categories.c:55
+msgctxt "CategoryName"
+msgid "Holiday Cards"
+msgstr "Oporretako txartelak"
+
+#. important people (e.g. new business partners)
+#: ../libedataserver/e-categories.c:57
+#| msgid "Show Contacts"
+msgctxt "CategoryName"
+msgid "Hot Contacts"
+msgstr "Kontaktu garrantzitsuak"
+
+#: ../libedataserver/e-categories.c:58
+msgctxt "CategoryName"
+msgid "Ideas"
+msgstr "Burutazioak"
+
+#: ../libedataserver/e-categories.c:59
+msgctxt "CategoryName"
+msgid "International"
+msgstr "Nazioartekoa"
+
+#: ../libedataserver/e-categories.c:60
+msgctxt "CategoryName"
+msgid "Key Customer"
+msgstr "Gako pertsonalizatua"
+
+#: ../libedataserver/e-categories.c:61
+msgctxt "CategoryName"
+msgid "Miscellaneous"
+msgstr "Hainbat"
+
+#: ../libedataserver/e-categories.c:62
+#| msgid "Personal"
+msgctxt "CategoryName"
+msgid "Personal"
+msgstr "Pertsonala"
+
+#: ../libedataserver/e-categories.c:63
+msgctxt "CategoryName"
+msgid "Phone Calls"
+msgstr "Telefono deiak"
+
+#. Translators: "Status" is a category name; it can mean anything user wants to
+#: ../libedataserver/e-categories.c:65
+msgctxt "CategoryName"
+msgid "Status"
+msgstr "Egoera"
+
+#: ../libedataserver/e-categories.c:66
+#| msgid "Categories"
+msgctxt "CategoryName"
+msgid "Strategies"
+msgstr "Estrategiak"
+
+#: ../libedataserver/e-categories.c:67
+msgctxt "CategoryName"
+msgid "Suppliers"
+msgstr "Hornitzaileak"
+
+#: ../libedataserver/e-categories.c:68
+msgctxt "CategoryName"
+msgid "Time & Expenses"
+msgstr "Denbora eta gastuak"
+
+#: ../libedataserver/e-categories.c:69
+msgctxt "CategoryName"
+msgid "VIP"
+msgstr "VIP"
+
+#: ../libedataserver/e-categories.c:70
+msgctxt "CategoryName"
+msgid "Waiting"
+msgstr "Zain"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format.
@@ -4988,8 +5087,7 @@ msgstr "E_zabatu %s"
 #: ../libedataserverui/e-passwords.c:127
 #, c-format
 msgid "Keyring key is unusable: no user or host name"
-msgstr ""
-"Gako-sortako gakoa ez da erabilgarri: ez du erabiltzaile- edo ostalari-izenik"
+msgstr "Gako-sortako gakoa ez da erabilgarri: ez du erabiltzaile- edo ostalari-izenik"
 
 #: ../libedataserverui/e-passwords.c:701
 #: ../libedataserverui/e-passwords-win32.c:612
@@ -5041,35 +5139,3 @@ msgstr "Zerbitzariak ez du erantzunik eman"
 msgid "Bad parameter"
 msgstr "Okerreko parametroa"
 
-#~ msgid "Default GroupWise port"
-#~ msgstr "GroupWise-ren ataka lehenetsia"
-
-#~ msgid "IMAP default port"
-#~ msgstr "IMAPen ataka lehenetsia"
-
-#~ msgid "IMAP over SSL"
-#~ msgstr "IMAP SSLren gainean"
-
-#~ msgid "Defalut IMAP port"
-#~ msgstr "IMAPen ataka lehenetsia"
-
-#~ msgid "Default NNTP port"
-#~ msgstr "NNTP-ren ataka lehenetsia"
-
-#~ msgid "NNTP over SSL"
-#~ msgstr "NNTP SSLren gainean"
-
-#~ msgid "Default POP3 port"
-#~ msgstr "POP3ren ataka lehenetsia"
-
-#~ msgid "POP3 over SSL"
-#~ msgstr "POP3 SSLren gainean"
-
-#~ msgid "Default SMTP port"
-#~ msgstr "SMTPren ataka lehenetsia"
-
-#~ msgid "SMTP over SSL"
-#~ msgstr "SMTP SSLren gainean"
-
-#~ msgid "Message submission port"
-#~ msgstr "Mezua bidaltzeko ataka"
