@@ -121,6 +121,7 @@
 	
       <arg name="appendeduid" type="s" direction="out"/>	    	          	    
       <arg name="success" type="b" direction="out"/>	    	                
+      <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="CamelMessageInfoVariant"/>                  
     </method>  
     <method name="getUids">
       <arg name="uids" type="as" direction="out"/>	    	    	    	    
@@ -142,6 +143,7 @@
       <arg name="uid" type="s" direction="in"/>	    	    	    	    	    
       <!-- Structure of CamelMessageInfoBase -->
       <arg name="info" type="(ssssssuutttiatasa(ss))" direction="out"/>	
+      <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="CamelMessageInfoVariant"/>                        
     </method>        
     <method name="transferMessagesTo">
       <arg name="uids" type="as" direction="in"/>	    	    	    	    	    
