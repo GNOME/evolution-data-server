@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE node SYSTEM "dbus.dtd">
+
+<!--
+  Author: Srinivasa Ragavan <sragavan@gnome.org>
+  Copyright (C) 2011 Intel Corporation
+-->
+<node>
+
+  <interface name="org.gnome.evolution.dataserver.mail.Folder">
+    <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="EMailDataFolder"/>
+    <annotation name="org.gtk.GDBus.Name" value="CF"/>
+
+    <!-- Sync APIs -->
+    <method name="refreshInfo">
+      <arg name="success" type="b" direction="out"/>	    	    
+    </method>
+    <method name="sync">
+      <arg name="expunge" type="b" direction="in"/>
+      <arg name="success" type="b" direction="out"/>	    
+    </method>
+    <method name="expunge">
+      <arg name="success" type="b" direction="out"/>	    	    
+    </method>
+    <signal name="FolderChanged">
+      <arg name="uids_added" type="as"/>
+      <arg name="uids_removed" type="as"/>
+      <arg name="uids_changed" type="as"/>
+      <arg name="uids_recent" type="as"/>
+    </signal>
+
+    <!-- Info on Folder -->
+    <method name="getName">
+      <arg name="name" type="s" direction="out"/>	    	    
+    </method>
+    <method name="setName">
+      <arg name="name" type="s" direction="in"/>	    	    
+    </method>
+    <method name="getFullName">
+      <arg name="name" type="s" direction="out"/>	    	    
+    </method>
+    <method name="setFullName">
+      <arg name="name" type="s" direction="in"/>	    	    
+    </method>
+    <method name="getDescription">
+      <arg name="desc" type="s" direction="out"/>	    	    
+    </method>
+    <method name="setDescription">
+      <arg name="desc" type="s" direction="in"/>	    	    
+    </method>    
+
+    <!-- Folder stuff-->
+    <method name="getPermanentFlags">
+      <arg name="flags" type="u" direction="out"/>	    	    
+    </method>
+    <method name="hasSummaryCapability">
+      <arg name="summary" type="b" direction="out"/>	    	    
+    </method>
+    <method name="hasSearchCapability">
+      <arg name="search" type="b" direction="out"/>	    	    
+    </method>    
+    <method name="totalMessageCount">
+      <arg name="count" type="i" direction="out"/>	    	    
+    </method>
+    <method name="unreadMessageCount">
+      <arg name="count" type="i" direction="out"/>	    	    
+    </method>    
+    <method name="deletedMessageCount">
+      <arg name="count" type="i" direction="out"/>	    	    
+    </method>      
+
+    <!-- Message & UID -->
+    <method name="getMessageFlags">
+      <arg name="uid" type="s" direction="in"/>	    	    	    
+      <arg name="flags" type="u" direction="out"/>	    	    
+    </method>    
+    <method name="setMessageFlags">
+      <arg name="uid" type="s" direction="in"/>	    	    	    
+      <arg name="flags" type="u" direction="in"/>	 
+      <arg name="set" type="u" direction="in"/>	    	          
+      <arg name="success" type="b" direction="out"/>	    	          
+    </method>        
+    <method name="getMessageUserFlag">
+      <arg name="uid" type="s" direction="in"/>	    	    	    
+      <arg name="flagname" type="s" direction="in"/>	 
+      <arg name="flag" type="b" direction="out"/>	    	    
+    </method> 
+    <method name="setMessageUserFlag">
+      <arg name="uid" type="s" direction="in"/>	    	
+      <arg name="flagname" type="s" direction="in"/>	 
+      <arg name="set" type="u" direction="in"/>	    	          
+    </method>        
+    <method name="getMessageUserTag">
+      <arg name="uid" type="s" direction="in"/>	   
+      <arg name="param" type="s" direction="in"/>	    	    	    	    
+      <arg name="value" type="s" direction="out"/>	    	    
+    </method> 
+    <method name="setMessageUserTag">
+      <arg name="uid" type="s" direction="in"/>	    	
+      <arg name="param" type="s" direction="in"/>	    	    	    	    
+      <arg name="value" type="s" direction="in"/>	    	    	    	    
+    </method>        
+
+    <!-- Folder operations -->    
+    <method name="getParentStore">
+      <arg name="store" type="o" direction="out"/>	    	    	    	    
+    </method>        
+    <method name="AppendMessage">
+      <!-- Structure of CamelMessageInfoBase
+         ssssss - uid, sub, from, to, cc, mlist
+	 uu - flags, size
+	 tt - date_sent, date_received
+	 t  - message_id
+	 iat - references
+	 as - userflags
+	 a(ss) - usertags
+	 /* We aren't now sending content_info & headers */
+      -->
+      <arg name="info" type="(ssssssuutttiatasa(ss))" direction="in"/>	
+      <arg name="message" type="s" direction="in"/>	    	          	    
+	
+      <arg name="appendeduid" type="s" direction="out"/>	    	          	    
+      <arg name="success" type="b" direction="out"/>	    	                
+    </method>  
+    <method name="getUids">
+      <arg name="uids" type="as" direction="out"/>	    	    	    	    
+    </method>        
+    <method name="getMessage">
+      <arg name="uid" type="s" direction="in"/>	    	    	    	    	    
+      <arg name="message" type="s" direction="out"/>	    	    	    	    
+    </method>        
+    <method name="searchByExpression">
+      <arg name="expression" type="s" direction="in"/>	    	    	    	    	    
+      <arg name="uids" type="as" direction="out"/>	    	    	    	    
+    </method>  
+    <method name="searchByUids">
+      <arg name="expression" type="s" direction="in"/>	    	    	    	    	    
+      <arg name="searchuids" type="as" direction="in"/>	    	    	    	    	    
+      <arg name="resultuids" type="as" direction="out"/>	    	    	    	    
+    </method>  
+    <method name="getMessageInfo">
+      <arg name="uid" type="s" direction="in"/>	    	    	    	    	    
+      <!-- Structure of CamelMessageInfoBase -->
+      <arg name="info" type="(ssssssuutttiatasa(ss))" direction="out"/>	
+    </method>        
+    <method name="transferMessagesTo">
+      <arg name="uids" type="as" direction="in"/>	    	    	    	    	    
+      <arg name="destfolder" type="o" direction="in"/>
+      <arg name="deleteoriginals" type="b" direction="in"/>	    	    	    	    	    
+      <arg name="returnuids" type="as" direction="out"/>	    	    	    	    	    
+    </method>        
+    <method name="prepareSummary">
+    </method>        
+    
+  </interface>
+
+
+</node>

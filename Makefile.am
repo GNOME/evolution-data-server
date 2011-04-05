@@ -6,8 +6,8 @@ if ENABLE_CALENDAR
 CALENDAR_DIR = calendar
 endif
 
-SUBDIRS = libedataserver libebackend servers camel addressbook $(CALENDAR_DIR) libedataserverui docs art po
-DIST_SUBDIRS = libedataserver libebackend servers camel addressbook calendar libedataserverui docs art po
+SUBDIRS = libedataserver libebackend servers camel addressbook $(CALENDAR_DIR) libedataserverui mail docs art po
+DIST_SUBDIRS = libedataserver libebackend servers camel addressbook calendar libedataserverui mail docs art po
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE node SYSTEM "dbus.dtd">
+
+<!--
+  Author: Srinivasa Ragavan <sragavan@gnome.org>
+  Copyright (C) 2011 Intel Corporation
+-->
+<node>
+
+  <interface name="org.gnome.evolution.dataserver.mail.Session">
+    <annotation name="org.gtk.GDBus.Name" value="CS"/>
+    <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="EMailDataSession"/>
+
+    <method name="getStore">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_Mail_Session_getStore"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg name="uri" type="s" direction="in"/>
+      <arg name="store" type="o" direction="out"/>
+    </method>
+
+    <method name="getLocalStore">
+      <arg name="store" type="o" direction="out"/>
+    </method>
+    <!-- 
+    FolderType should be a string "inbox" "draft" "outbox" "sent" "templates"
+    -->
+    <method name="getLocalFolder">
+      <arg name="type" type="s" direction="in"/>	    
+      <arg name="folder" type="o" direction="out"/>
+    </method>
+
+  </interface>
+
+</node>

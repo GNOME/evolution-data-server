@@ -1221,6 +1221,22 @@ AC_SUBST(E_BACKEND_CFLAGS)
 AC_SUBST(E_BACKEND_LIBS)
 
 dnl ******************************
+dnl Email daemon
+dnl ******************************
+PKG_CHECK_MODULES(E_MAIL_FACTORY, glib-2.0 gtk+-2.0 gdbus-codegen)
+
+AC_SUBST(E_MAIL_FACTORY_CFLAGS)
+AC_SUBST(E_MAIL_FACTORY_LIBS)
+
+PKG_CHECK_MODULES(E_MAIL_GDBUS_UTILS, glib-2.0 gtk+-2.0  gdbus-codegen)
+AC_SUBST(E_MAIL_GDBUS_UTILS_CFLAGS)
+AC_SUBST(E_MAIL_GDBUS_UTILS_LIBS)
+
+PKG_CHECK_MODULES(E_MAIL_UTILS, glib-2.0 gtk+-2.0 )
+AC_SUBST(E_MAIL_UTILS_CFLAGS)
+AC_SUBST(E_MAIL_UTILS_LIBS)
+
+dnl ******************************
 dnl evolution-addressbook flags
 dnl ******************************
 EVOLUTION_ADDRESSBOOK_DEPS="gio-2.0 libxml-2.0 gconf-2.0"
@@ -1497,6 +1513,11 @@ libedataserver/eds-version.h
 libedataserver/libedataserver.pc
 libedataserverui/Makefile
 libedataserverui/libedataserverui.pc
+mail/Makefile
+mail/libemailutils/Makefile
+mail/libemailutils/libemail-utils.pc
+mail/libegdbus/Makefile
+mail/daemon/Makefile
 servers/Makefile
 servers/groupwise/Makefile
 servers/groupwise/libegroupwise.pc
