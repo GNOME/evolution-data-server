@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE node SYSTEM "dbus.dtd">
+
+<!--
+  Author: Srinivasa Ragavan <sragavan@gnome.org>
+  Copyright (C) 2011 Intel Corporation
+-->
+<node>
+
+  <interface name="org.gnome.evolution.dataserver.mail.Store">
+    <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="EMailDataStore"/>
+    <annotation name="org.gtk.GDBus.Name" value="MS"/>
+
+
+    <method name="getFolder">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_Mail_Store_getFolder"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg name="full_name" type="s" direction="in"/>
+      <arg name="folder" type="o" direction="out"/>
+    </method>
+
+    <!--
+    GetFolderInfo: returns information about the folder, without opening the actual folder.
+                   Helps to keep the unread count shown on the folder tree, without loading
+		   the folder contents to memory.
+
+		   It returns the following in the Variant.
+		   string:uri,
+		   string:folder_name,
+		   string:full_name, /* parent/child_name*/
+		   uint32:flags,
+		   int:unread_count,
+		   int:total_mail_count
+    -->
+    <method name="getFolderInfo">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_Mail_Store_getFolderInfo"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg name="full_name" type="s" direction="in"/>
+      <arg name="flags" type="u" direction="in"/>
+      <arg name="infos" type="a(sssuii)" direction="out"/>
+    </method>
+
+    <!-- getInbox isn't implemented by non-local providers. Prevent using it. -->
+    <method name="getInbox">
+      <arg name="folder" type="o" direction="out"/>
+    </method>
+    <method name="getJunk">
+      <arg name="folder" type="o" direction="out"/>
+    </method>
+    <method name="getTrash">
+      <arg name="folder" type="o" direction="out"/>
+    </method>
+
+    <signal name="FolderOpened">
+    	<arg name="folder" type="o"/>
+    </signal>
+
+    <method name="createFolder">
+      <arg name="parent_name" type="s" direction="in"/>
+      <arg name="folder_name" type="s" direction="in"/>
+      <arg name="info" type="a(sssuii)" direction="out"/>	    
+    </method>
+    <signal name="FolderCreated">
+    	<arg name="info" type="a(sssuii)"/>
+    </signal>
+
+    <method name="deleteFolder">
+      <arg name="folder_name" type="s" direction="in"/>
+      <arg name="success" type="b" direction="out"/>	    
+    </method>
+    <signal name="FolderDeleted">
+    	<arg name="info" type="a(sssuii)"/>
+    </signal>
+    
+    <method name="renameFolder">
+      <arg name="old_folder_name" type="s" direction="in"/>
+      <arg name="new_folder_name" type="s" direction="in"/>	    
+      <arg name="success" type="b" direction="out"/>	    
+    </method>
+    <signal name="FolderRenamed">
+    	<arg name="old_name" type="s"/>	    
+    	<arg name="info" type="a(sssuii)"/>
+    </signal>
+
+    <method name="supportsSubscriptions">
+      <arg name="success" type="b" direction="out"/>	    
+    </method>    
+    <method name="isFolderSubscribed">
+      <arg name="folder_name" type="s" direction="in"/>
+      <arg name="success" type="b" direction="out"/>	    
+    </method>
+    <method name="subscribeFolder">
+      <arg name="folder_name" type="s" direction="in"/>
+      <arg name="success" type="b" direction="out"/>	    
+    </method>
+    <signal name="FolderSubscribed">
+    	<arg name="info" type="a(sssuii)"/>
+    </signal>    
+    <method name="unsubscribeFolder">
+      <arg name="folder_name" type="s" direction="in"/>
+      <arg name="success" type="b" direction="out"/>	    
+    </method>
+    <signal name="FolderUnsubscribed">
+    	<arg name="info" type="a(sssuii)"/>
+    </signal>
+
+    <method name="sync">
+      <arg name="expunge" type="b" direction="in"/>
+      <arg name="success" type="b" direction="out"/>	    
+    </method>
+    <method name="noop">
+      <arg name="success" type="b" direction="out"/>	    
+    </method>
+    <method name="canRefreshFolder">
+      <arg name="info" type="a(sssuii)" direction="in"/>	    	    
+      <arg name="success" type="b" direction="out"/>	    
+    </method>
+      
+  </interface>
+
+</node>
