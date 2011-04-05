@@ -38,6 +38,7 @@
       <arg name="full_name" type="s" direction="in"/>
       <arg name="flags" type="u" direction="in"/>
       <arg name="infos" type="a(sssuii)" direction="out"/>
+      <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="CamelFolderInfoArrayVariant"/>            
     </method>
 
     <!-- getInbox isn't implemented by non-local providers. Prevent using it. -->
@@ -58,10 +59,12 @@
     <method name="createFolder">
       <arg name="parent_name" type="s" direction="in"/>
       <arg name="folder_name" type="s" direction="in"/>
-      <arg name="info" type="a(sssuii)" direction="out"/>	    
+      <arg name="info" type="a(sssuii)" direction="out"/>	
+      <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="CamelFolderInfoArrayVariant"/>            
     </method>
     <signal name="FolderCreated">
-    	<arg name="info" type="a(sssuii)"/>
+      <arg name="info" type="a(sssuii)"/>
+      <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="CamelFolderInfoArrayVariant"/>            
     </signal>
 
     <method name="deleteFolder">
@@ -69,7 +72,8 @@
       <arg name="success" type="b" direction="out"/>	    
     </method>
     <signal name="FolderDeleted">
-    	<arg name="info" type="a(sssuii)"/>
+      <arg name="info" type="a(sssuii)"/>
+      <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="CamelFolderInfoArrayVariant"/>            	    
     </signal>
     
     <method name="renameFolder">
@@ -78,8 +82,9 @@
       <arg name="success" type="b" direction="out"/>	    
     </method>
     <signal name="FolderRenamed">
-    	<arg name="old_name" type="s"/>	    
-    	<arg name="info" type="a(sssuii)"/>
+      <arg name="old_name" type="s"/>	    
+      <arg name="info" type="a(sssuii)"/>
+      <annotation name="com.trolltech.QtDBus.QtTypeName.In1" value="CamelFolderInfoArrayVariant"/>            
     </signal>
 
     <method name="supportsSubscriptions">
@@ -94,14 +99,16 @@
       <arg name="success" type="b" direction="out"/>	    
     </method>
     <signal name="FolderSubscribed">
-    	<arg name="info" type="a(sssuii)"/>
+      <arg name="info" type="a(sssuii)"/>
+      <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="CamelFolderInfoArrayVariant"/>            	    
     </signal>    
     <method name="unsubscribeFolder">
       <arg name="folder_name" type="s" direction="in"/>
       <arg name="success" type="b" direction="out"/>	    
     </method>
     <signal name="FolderUnsubscribed">
-    	<arg name="info" type="a(sssuii)"/>
+      <arg name="info" type="a(sssuii)"/>
+      <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="CamelFolderInfoArrayVariant"/>            
     </signal>
 
     <method name="sync">
@@ -114,6 +121,7 @@
     <method name="canRefreshFolder">
       <arg name="info" type="a(sssuii)" direction="in"/>	    	    
       <arg name="success" type="b" direction="out"/>	    
+      <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="CamelFolderInfoArrayVariant"/>                  
     </method>
       
   </interface>
