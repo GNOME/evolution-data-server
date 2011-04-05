@@ -1,5 +1,6 @@
+factorydir = $(libexecdir)
 
-bin_PROGRAMS = e-mail-factory
+factory_PROGRAMS = e-mail-factory
 e_mail_factory_SOURCES = main.c	\
 			 e-mail-local.c	\
 			 e-mail-local.h	\
@@ -85,8 +86,17 @@ e_mail_factory_LDADD = \
 		$(E_MAIL_FACTORY_LIBS)				\
 		-lffi
 
+service_in_files = org.gnome.evolution.dataserver.Mail.service.in
+servicedir = $(datadir)/dbus-1/services
+service_DATA = $(service_in_files:.service.in=.service)
+@EVO_SUBST_SERVICE_RULE@
 
-EXTRA_DIST = 
 
-CLEANFILES = *~ #e-mail-factory.desktop
+EXTRA_DIST = e-mail-data-folder.xml  	\
+	     e-mail-data-session.xml  	\
+	     e-mail-data-store.xml	\
+	     $(service_in_files)
+
+
+CLEANFILES = *~ $(service_DATA)
 
