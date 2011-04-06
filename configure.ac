@@ -1223,12 +1223,12 @@ AC_SUBST(E_BACKEND_LIBS)
 dnl ******************************
 dnl Email daemon
 dnl ******************************
-PKG_CHECK_MODULES(E_MAIL_FACTORY, glib-2.0 gtk+-2.0 gdbus-codegen)
+PKG_CHECK_MODULES(E_MAIL_FACTORY, glib-2.0 gtk+-2.0 gdbus-codegen libffi)
 
 AC_SUBST(E_MAIL_FACTORY_CFLAGS)
 AC_SUBST(E_MAIL_FACTORY_LIBS)
 
-PKG_CHECK_MODULES(E_MAIL_GDBUS_UTILS, glib-2.0 gtk+-2.0  gdbus-codegen)
+PKG_CHECK_MODULES(E_MAIL_GDBUS_UTILS, glib-2.0 gtk+-2.0  gdbus-codegen libffi)
 AC_SUBST(E_MAIL_GDBUS_UTILS_CFLAGS)
 AC_SUBST(E_MAIL_GDBUS_UTILS_LIBS)
 
