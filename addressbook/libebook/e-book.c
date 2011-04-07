@@ -330,7 +330,6 @@ e_book_activate (GError **error)
 	}
 
 	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory_proxy));
-	g_dbus_connection_set_exit_on_close (connection, FALSE);
 	book_connection_closed_id = g_dbus_connection_signal_subscribe (connection,
 		NULL,						/* sender */
 		"org.freedesktop.DBus",				/* interface */
