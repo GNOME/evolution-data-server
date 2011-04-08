@@ -36,6 +36,7 @@ message_info_dump (CamelMessageInfoBase *mi)
 	printf("mailing list: %s\n", camel_message_info_mlist(mi));
 	printf("From: %s\n", camel_message_info_from(mi));
 	printf("UID: %s\n", camel_message_info_uid(mi));
+	printf("PREVIEW: %s\n", mi->preview);	
 	printf("Flags: %04x\n", camel_message_info_flags(mi));
 
 	printf("User flags: \t");
@@ -69,6 +70,9 @@ test_folder_basic (EGdbusFolderCF *folder_proxy, char *folder_path)
 
 	egdbus_folder_cf_call_get_description_sync (folder_proxy, &data, NULL, NULL);
 	printf("\n Description %s\n", data);
+
+	printf("\n Prepare Summary %d\n", egdbus_folder_cf_call_prepare_summary_sync (folder_proxy, NULL, NULL));
+
 }
 
 
@@ -113,6 +117,9 @@ info_from_variant (CamelFolder *folder, GVariant *vinfo)
 
 	item = g_variant_iter_next_value (&iter);
 	info->mlist = camel_pstring_strdup (g_variant_get_string(item, NULL));
+
+	item = g_variant_iter_next_value (&iter);
+	info->preview = g_strdup (g_variant_get_string(item, NULL));
 
 	/* Flags & size */
 	item = g_variant_iter_next_value (&iter);
@@ -203,6 +210,7 @@ variant_from_info (CamelMessageInfoBase *info)
 	g_variant_builder_add (builder, "s", VALUE_OR_NULL(info->to));
 	g_variant_builder_add (builder, "s", VALUE_OR_NULL(info->cc));
 	g_variant_builder_add (builder, "s", VALUE_OR_NULL(info->mlist));
+	g_variant_builder_add (builder, "s", VALUE_OR_NULL(info->preview));
 
 
 	g_variant_builder_add (builder, "u", info->flags);

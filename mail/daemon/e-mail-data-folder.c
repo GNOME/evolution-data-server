@@ -837,6 +837,9 @@ info_from_variant (CamelFolder *folder, GVariant *vinfo)
 	item = g_variant_iter_next_value (&iter);
 	info->mlist = camel_pstring_strdup (g_variant_get_string(item, NULL));
 
+	item = g_variant_iter_next_value (&iter);
+	info->preview = g_strdup (g_variant_get_string(item, NULL));
+	
 	/* Flags & size */
 	item = g_variant_iter_next_value (&iter);
 	info->flags = g_variant_get_uint32 (item);
@@ -1225,6 +1228,7 @@ variant_from_info (CamelMessageInfoBase *info)
 	g_variant_builder_add (builder, "s", VALUE_OR_NULL(info->to));
 	g_variant_builder_add (builder, "s", VALUE_OR_NULL(info->cc));
 	g_variant_builder_add (builder, "s", VALUE_OR_NULL(info->mlist));
+	g_variant_builder_add (builder, "s", VALUE_OR_NULL(info->preview));
 
 
 	g_variant_builder_add (builder, "u", info->flags);
