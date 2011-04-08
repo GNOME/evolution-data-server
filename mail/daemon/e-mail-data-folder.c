@@ -1250,7 +1250,7 @@ variant_from_info (CamelMessageInfoBase *info)
 		g_variant_builder_unref (b1);
 	
 		g_variant_builder_add_value (builder, v1);
-		g_variant_unref (v1);
+		//g_variant_unref (v1);
 	} else {
 		g_variant_builder_add (builder, "i", 0);
 		b1 = g_variant_builder_new (G_VARIANT_TYPE_ARRAY);
@@ -1327,7 +1327,7 @@ gmi_done (gboolean success, gpointer sdata, GError *error)
 	}
 
 	variant = variant_from_info (data->info);
-
+	micro(printf("MessageInfo: %s %p\n", data->info->uid, data->info));
 	egdbus_folder_cf_complete_get_message_info (data->object, data->invocation, variant);
 
 	camel_message_info_free (data->info);
@@ -1447,6 +1447,7 @@ ps_operate (CamelFolder *folder, gpointer sdata, GError **error)
 {
 	EMailFolderTransferData *data = (EMailFolderTransferData *)sdata;
 
+	camel_folder_summary_set_need_preview (folder->summary, TRUE);
 	camel_folder_summary_prepare_fetch_all (folder->summary, error);
 
 	return TRUE;

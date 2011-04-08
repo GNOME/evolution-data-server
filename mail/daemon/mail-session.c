@@ -452,6 +452,8 @@ alert_user(CamelSession *session, CamelSessionAlertType type, const gchar *promp
 	struct _user_message_msg *m;
 	gboolean result = TRUE;
 
+	if (1) /* For now accept all */
+		return TRUE;
 	m = mail_msg_new (&user_message_info);
 	m->ismain = mail_in_main_thread ();
 	m->type = type;
