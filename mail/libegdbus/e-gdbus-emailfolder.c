@@ -1131,7 +1131,7 @@ static const _ExtendedGDBusArgInfo _egdbus_folder_cf_method_info_append_message_
   {
     -1,
     "info",
-    "(ssssssuutttiatasa(ss))",
+    "(sssssssuutttiatasa(ss))",
     NULL
   },
   FALSE
@@ -1184,6 +1184,20 @@ static const _ExtendedGDBusArgInfo * const _egdbus_folder_cf_method_info_append_
   NULL
 };
 
+static const GDBusAnnotationInfo _egdbus_folder_cf_method_append_message_annotation_info_0 =
+{
+  -1,
+  "com.trolltech.QtDBus.QtTypeName.In0",
+  "CamelMessageInfoVariant",
+  NULL
+};
+
+static const GDBusAnnotationInfo * const _egdbus_folder_cf_method_append_message_annotation_info_pointers[] =
+{
+  &_egdbus_folder_cf_method_append_message_annotation_info_0,
+  NULL
+};
+
 static const _ExtendedGDBusMethodInfo _egdbus_folder_cf_method_info_append_message =
 {
   {
@@ -1191,7 +1205,7 @@ static const _ExtendedGDBusMethodInfo _egdbus_folder_cf_method_info_append_messa
     "AppendMessage",
     (GDBusArgInfo **) &_egdbus_folder_cf_method_info_append_message_IN_ARG_pointers,
     (GDBusArgInfo **) &_egdbus_folder_cf_method_info_append_message_OUT_ARG_pointers,
-    NULL
+    (GDBusAnnotationInfo **) &_egdbus_folder_cf_method_append_message_annotation_info_pointers
   },
   "handle-append-message"
 };
@@ -1397,7 +1411,7 @@ static const _ExtendedGDBusArgInfo _egdbus_folder_cf_method_info_get_message_inf
   {
     -1,
     "info",
-    "(ssssssuutttiatasa(ss))",
+    "(sssssssuutttiatasa(ss))",
     NULL
   },
   FALSE
@@ -1409,6 +1423,20 @@ static const _ExtendedGDBusArgInfo * const _egdbus_folder_cf_method_info_get_mes
   NULL
 };
 
+static const GDBusAnnotationInfo _egdbus_folder_cf_method_get_message_info_annotation_info_0 =
+{
+  -1,
+  "com.trolltech.QtDBus.QtTypeName.Out0",
+  "CamelMessageInfoVariant",
+  NULL
+};
+
+static const GDBusAnnotationInfo * const _egdbus_folder_cf_method_get_message_info_annotation_info_pointers[] =
+{
+  &_egdbus_folder_cf_method_get_message_info_annotation_info_0,
+  NULL
+};
+
 static const _ExtendedGDBusMethodInfo _egdbus_folder_cf_method_info_get_message_info =
 {
   {
@@ -1416,7 +1444,7 @@ static const _ExtendedGDBusMethodInfo _egdbus_folder_cf_method_info_get_message_
     "getMessageInfo",
     (GDBusArgInfo **) &_egdbus_folder_cf_method_info_get_message_info_IN_ARG_pointers,
     (GDBusArgInfo **) &_egdbus_folder_cf_method_info_get_message_info_OUT_ARG_pointers,
-    NULL
+    (GDBusAnnotationInfo **) &_egdbus_folder_cf_method_get_message_info_annotation_info_pointers
   },
   "handle-get-message-info"
 };
@@ -3409,7 +3437,7 @@ egdbus_folder_cf_call_append_message (
 {
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
     "AppendMessage",
-    g_variant_new ("(@(ssssssuutttiatasa(ss))s)",
+    g_variant_new ("(@(sssssssuutttiatasa(ss))s)",
                    info,
                    message),
     G_DBUS_CALL_FLAGS_NONE,
@@ -3453,7 +3481,7 @@ egdbus_folder_cf_call_append_message_sync (
   GVariant *_ret;
   _ret = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
     "AppendMessage",
-    g_variant_new ("(@(ssssssuutttiatasa(ss))s)",
+    g_variant_new ("(@(sssssssuutttiatasa(ss))s)",
                    info,
                    message),
     G_DBUS_CALL_FLAGS_NONE,
@@ -3762,7 +3790,7 @@ egdbus_folder_cf_call_get_message_info_finish (
   if (_ret == NULL)
     goto _out;
   g_variant_get (_ret,
-                 "(@(ssssssuutttiatasa(ss)))",
+                 "(@(sssssssuutttiatasa(ss)))",
                  out_info);
   g_variant_unref (_ret);
 _out:
@@ -3789,7 +3817,7 @@ egdbus_folder_cf_call_get_message_info_sync (
   if (_ret == NULL)
     goto _out;
   g_variant_get (_ret,
-                 "(@(ssssssuutttiatasa(ss)))",
+                 "(@(sssssssuutttiatasa(ss)))",
                  out_info);
   g_variant_unref (_ret);
 _out:
@@ -4222,7 +4250,7 @@ egdbus_folder_cf_complete_get_message_info (
     GVariant *info)
 {
   g_dbus_method_invocation_return_value (invocation,
-    g_variant_new ("(@(ssssssuutttiatasa(ss)))",
+    g_variant_new ("(@(sssssssuutttiatasa(ss)))",
                    info));
 }
 

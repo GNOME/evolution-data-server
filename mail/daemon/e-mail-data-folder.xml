@@ -107,7 +107,7 @@
     </method>        
     <method name="AppendMessage">
       <!-- Structure of CamelMessageInfoBase
-         ssssss - uid, sub, from, to, cc, mlist
+         sssssss - uid, sub, from, to, cc, mlist, preview
 	 uu - flags, size
 	 tt - date_sent, date_received
 	 t  - message_id
@@ -116,7 +116,7 @@
 	 a(ss) - usertags
 	 /* We aren't now sending content_info & headers */
       -->
-      <arg name="info" type="(ssssssuutttiatasa(ss))" direction="in"/>	
+      <arg name="info" type="(sssssssuutttiatasa(ss))" direction="in"/>	
       <arg name="message" type="s" direction="in"/>	    	          	    
 	
       <arg name="appendeduid" type="s" direction="out"/>	    	          	    
@@ -142,7 +142,7 @@
     <method name="getMessageInfo">
       <arg name="uid" type="s" direction="in"/>	    	    	    	    	    
       <!-- Structure of CamelMessageInfoBase -->
-      <arg name="info" type="(ssssssuutttiatasa(ss))" direction="out"/>	
+      <arg name="info" type="(sssssssuutttiatasa(ss))" direction="out"/>	
       <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="CamelMessageInfoVariant"/>                        
     </method>        
     <method name="transferMessagesTo">
