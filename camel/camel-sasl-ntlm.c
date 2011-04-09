@@ -707,6 +707,7 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 				   sizeof(buf), cancellable, NULL)) > 4 &&
 			   buf[0] == 'K' && buf[1] == 'K' && buf[2] == ' ' &&
 			   buf[s-1] == '\n') {
+				buf[s-1] = 0;
 				data = g_base64_decode (buf + 3, &length);
 				g_byte_array_append (ret, data, length);
 				g_free (data);
