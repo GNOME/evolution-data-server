@@ -130,6 +130,11 @@ impl_Mail_getStore (EGdbusSessionCS *object, GDBusMethodInvocation *invocation, 
 		g_source_remove (priv->exit_timeout);
 		priv->exit_timeout = 0;
 	}
+
+	if (!url || !*url) {
+		ipc(printf("GetStore: empty url passed\n"));
+		return FALSE;
+	}
 	
 	g_mutex_lock (priv->stores_lock);
 	g_mutex_lock (priv->datastores_lock);
