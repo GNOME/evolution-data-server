@@ -36,6 +36,8 @@ test_email_client_CPPFLAGS = \
 		$(E_MAIL_FACTORY_CFLAGS)	\
 		$(GNOME_PLATFORM_CFLAGS)	\
 		$(CAMEL_CFLAGS)			\
+		$(GDBUS_CODEGEN_CFLAGS)		\
+		$(FFI_CFLAGS)			\
 		-Wall -g3 -O0 -ggdb -DPKGDATADIR="\"$(pkgdatadir)\""	\
 		-I$(top_srcdir)/mail/					\
 		-I$(top_srcdir)/mail/libemailutils				\
@@ -50,10 +52,11 @@ test_email_client_LDADD = \
 		$(top_builddir)/camel/libcamel-provider-1.2.la		\
 		$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 		$(top_builddir)/libedataserverui/libedataserverui-1.2.la	\
+		$(GDBUS_CODEGEN_STATIC)					\
 		$(E_MAIL_FACTORY_LIBS)				\
 		$(GNOME_PLATFORM_LIBS)	\
 		$(CAMEL_LIBS)			\
-		-lffi
+		$(FFI_LIBS)			
 
 
 #desktopentry_DATA = e-mail-factory.desktop
@@ -67,6 +70,8 @@ e_mail_factory_CPPFLAGS = \
 		$(E_MAIL_FACTORY_CFLAGS)	\
 		$(CAMEL_CFLAGS)			\
 		$(GNOME_PLATFORM_CFLAGS)	\
+		$(GDBUS_CODEGEN_CFLAGS)		\
+		$(FFI_CFLAGS)			\
 		-Wall -g3 -O0 -ggdb -DPKGDATADIR="\"$(pkgdatadir)\""	\
 		-I$(top_srcdir)/mail/					\
 		-I$(top_srcdir)/mail/libemailutils				\
@@ -84,7 +89,8 @@ e_mail_factory_LDADD = \
 		$(top_builddir)/mail/libemailutils/libemail-utils.la	\
 		$(top_builddir)/mail/libegdbus/libegdbus-mail.la	\
 		$(E_MAIL_FACTORY_LIBS)				\
-		-lffi
+		$(GDBUS_CODEGEN_STATIC)				\
+		$(FFI_LIBS)
 
 service_in_files = org.gnome.evolution.dataserver.Mail.service.in
 servicedir = $(datadir)/dbus-1/services
