@@ -17,7 +17,9 @@ libegdbus_mail_la_CPPFLAGS =			\
 	$(AM_CPPFLAGS)				\
 	$(CAMEL_CFLAGS)				\
 	-DG_LOG_DOMAIN=\"libegdbus-mail\"	\
-	$(E_MAIL_GDBUS_UTILS_CFLAGS)
+	$(E_MAIL_GDBUS_UTILS_CFLAGS)		\
+	$(GDBUS_CODEGEN_CFLAGS)			\
+	$(FFI_CFLAGS)		
 
 libegdbus_mail_la_SOURCES =			\
 	e-gdbus-emailfolder.h			\
