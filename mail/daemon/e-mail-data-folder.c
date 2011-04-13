@@ -1563,6 +1563,8 @@ folder_changed_cb (CamelFolder *folder,
 	g_ptr_array_add (changes->uid_changed, NULL);
 	g_ptr_array_add (changes->uid_recent, NULL);
 
+	ipc(printf("Emitting Folder Changedin %s: %d %d %d %d\n", camel_folder_get_full_name(folder), changes->uid_added->len-1, 
+				changes->uid_removed->len-1, changes->uid_changed->len-1, changes->uid_recent->len -1));
 	egdbus_folder_cf_emit_folder_changed (priv->gdbus_object, 
 					(const gchar *const *) changes->uid_added->pdata, 
 					(const gchar *const *) changes->uid_removed->pdata, 
