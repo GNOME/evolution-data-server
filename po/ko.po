@@ -4978,3 +4978,7 @@ msgstr "서버에서 응답이 없습니다"
 #: ../servers/groupwise/e-gw-connection.c:239
 msgid "Bad parameter"
 msgstr "매개변수가 틀렸습니다"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "이 컴퓨터"

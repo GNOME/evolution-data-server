@@ -5954,3 +5954,7 @@ msgstr "Parámetru inválidu"
 #~ msgstr ""
 #~ "Nun pudo coneutase col sirvidor POP %s.\n"
 #~ "Fallu al unviar el nome d'usuariu: %s"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Nesti equipu"

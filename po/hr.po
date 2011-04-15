@@ -5409,3 +5409,7 @@ msgstr ""
 
 #~ msgid "Could not save summary: %s: %s"
 #~ msgstr "Nisam mogao sačuvati sažetak: %s: %s"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Na ovom računalu"

@@ -5453,3 +5453,7 @@ msgstr "O parámetro non é correcto"
 
 #~ msgid "This is a digitally signed message part"
 #~ msgstr "Esta é unha parte de mensaxe asinada dixitalmente"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Neste computador"

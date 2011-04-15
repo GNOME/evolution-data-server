@@ -5106,3 +5106,7 @@ msgstr "Немає відповіді від сервера"
 #: ../servers/groupwise/e-gw-connection.c:239
 msgid "Bad parameter"
 msgstr "Неправильний параметр"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "На цьому комп'ютері"

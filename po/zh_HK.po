@@ -5949,3 +5949,7 @@ msgstr "無效的伺服器回應"
 msgid "Bad parameter"
 msgstr "錯誤的參數"
 
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "我的電腦"

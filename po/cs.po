@@ -4993,3 +4993,7 @@ msgstr "Žádná odpověď serveru"
 #: ../servers/groupwise/e-gw-connection.c:239
 msgid "Bad parameter"
 msgstr "Špatný parametr"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "V tomto počítači"

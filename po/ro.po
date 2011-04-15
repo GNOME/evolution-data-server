@@ -5487,3 +5487,7 @@ msgstr "Parametru incorect"
 
 #~ msgid "Reviewer"
 #~ msgstr "Revizor"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Pe acest calculator"

@@ -5271,3 +5271,7 @@ msgstr "Инфо за бојата"
 msgid "The color to render"
 msgstr "Боја за рендерирање"
 
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "На овој компјутер"

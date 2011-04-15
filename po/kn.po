@@ -5278,3 +5278,7 @@ msgstr "ಸರಿಯಲ್ಲದ ನಿಯತಾಂಕ"
 
 #~ msgid "Evolution Data Server logging service"
 #~ msgstr "ಇವಲ್ಯೂಶನ್ ದತ್ತಾಂಶ ಪರಿಚಾರಕದ ಲಾಗಿಂಗ್ ಸೇವೆ"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "ಈ ಗಣಕದಲ್ಲಿ"

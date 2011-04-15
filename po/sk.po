@@ -4555,3 +4555,7 @@ msgstr ""
 
 #~ msgid "Evolution Addressbook file and LDAP backend"
 #~ msgstr "Backend pre lokálne LDAP kontakty Adresára Evolution"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Na tomto počítači"

@@ -5748,3 +5748,7 @@ msgstr "ਗਲਤ ਪੈਰਾਮੀਟਰ"
 
 #~ msgid "Addressbook..."
 #~ msgstr "ਐਡਰੈੱਸ ਕਿਤਾਬ..."
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "ਇਸ ਕੰਪਿਊਟਰ ਉੱਤੇ"

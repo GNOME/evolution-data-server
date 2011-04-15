@@ -5310,3 +5310,7 @@ msgstr "ལྷག་སྟོན་འབད་ནི་ཨིན་པའི་
 #~ msgid "Groupwise server %s"
 #~ msgstr "སྡེ་རིམ་སར་བར་ %s།"
 
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "གློག་རིག་འདི་གུ།"

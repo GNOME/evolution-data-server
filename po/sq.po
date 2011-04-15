@@ -5311,3 +5311,7 @@ msgstr "Informacione ngjyra"
 msgid "The color to render"
 msgstr "Ngjyra për tu krijuar"
 
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Në Këtë kompjuter"

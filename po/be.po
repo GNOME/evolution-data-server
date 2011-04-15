@@ -5168,3 +5168,7 @@ msgstr "Паслуга вядзеньня часопісу паслужніка 
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "З-за некалькіх збояў сэгмэнтацыі адлюстраваць дыялёг памылкі немагчыма\n"
 
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "На гэтым кампутэры"
