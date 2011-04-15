@@ -984,8 +984,17 @@ check_uri (ESource *source, gpointer uri)
 	g_return_val_if_fail (uri != NULL, FALSE);
 
 	suri = e_source_peek_absolute_uri (source);
+	if (suri)
+		return !g_ascii_strcasecmp (suri, uri);
+	else {
+		gboolean ret;
+		gchar *suri2;
 
-	return suri && g_ascii_strcasecmp (suri, uri) == 0;
+		suri2 = e_source_get_uri (source);
+		ret = !g_ascii_strcasecmp (suri2, uri);
+		g_free (suri2);
+		return ret;
+	}
 }
 
 /**
