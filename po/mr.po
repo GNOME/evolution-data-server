@@ -5299,3 +5299,6 @@ msgstr "सर्व्हरकडून प्रतिसाद नाही"
 msgid "Bad parameter"
 msgstr "खराब पैरामीटर"
 
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "ह्या संगणकावर"

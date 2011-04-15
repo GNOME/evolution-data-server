@@ -3819,3 +3819,7 @@ msgstr "Vigane parameeter"
 
 #~ msgid "Cannot create spool file: %s"
 #~ msgstr "Puhverfaili pole võimalik luua: %s"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Kohalikus arvutis"

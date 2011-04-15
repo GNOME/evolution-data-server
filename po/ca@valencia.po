@@ -6009,3 +6009,7 @@ msgstr "Paràmetre incorrecte"
 
 #~ msgid "Cannot rename GroupWise folders in offline mode."
 #~ msgstr "No es pot reanomenar les carpetes GroupWise en mode fora de línia."
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "En este ordinador"

@@ -4448,3 +4448,7 @@ msgstr "Birdən çox xəta baş verdi, xəta dialoqu göstərilə bilmir\n"
 
 #~ msgid "Evolution Addressbook file and LDAP backend"
 #~ msgstr "Evolution Ünvan Kitabçası fayl və LDAP backend-i"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Bu Kompüterdə"

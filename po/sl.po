@@ -5131,3 +5131,7 @@ msgstr "Slab parameter"
 #~ msgid "UnknownUser"
 #~ msgstr "Neznan uporabnik"
 
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Na tem računalniku"

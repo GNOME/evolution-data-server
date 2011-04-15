@@ -5134,3 +5134,7 @@ msgstr "Ugyldig parameter"
 
 #~ msgid "_Apply filters to new messages in INBOX on this server"
 #~ msgstr "_Bruk filtre for nye meldinger i INBOX på denne tjeneren"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "På denne datamaskinen"

@@ -6079,3 +6079,7 @@ msgstr "無效的伺服器回應"
 #: ../servers/groupwise/e-gw-connection.c:239
 msgid "Bad parameter"
 msgstr "錯誤的參數"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "我的電腦"

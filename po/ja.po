@@ -5804,3 +5804,7 @@ msgstr "パラメータが無効です"
 
 #~ msgid "Failed to create create child process '%s': %s"
 #~ msgstr "子プロセス '%s' の生成に失敗しました: %s"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "このコンピュータ"

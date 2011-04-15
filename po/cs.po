@@ -5144,3 +5144,7 @@ msgstr "Špatný parametr"
 
 #~ msgid "<b>Show Contacts</b>"
 #~ msgstr "<b>Zobrazit kontakty</b>"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "V tomto počítači"

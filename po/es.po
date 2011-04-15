@@ -5983,3 +5983,7 @@ msgstr "Parámetro erróneo"
 
 #~ msgid "Folder %s cannot be opened: %s"
 #~ msgstr "La carpeta «%s» no se puede abrir: %s"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "En este equipo"

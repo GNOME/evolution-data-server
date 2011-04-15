@@ -5794,3 +5794,7 @@ msgstr "Εσφαλμένη παράμετρος"
 
 #~ msgid "Drafts"
 #~ msgstr "Πρόχειρα"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Σε αυτό τον υπολογιστή"

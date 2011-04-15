@@ -4360,3 +4360,7 @@ msgstr ""
 
 #~ msgid "Evolution Addressbook file and LDAP backend"
 #~ msgstr "Evolution Addressbook file and LDAP backend"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Na ovom računalu"

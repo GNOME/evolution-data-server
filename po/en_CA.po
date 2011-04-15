@@ -5271,3 +5271,7 @@ msgstr "Evolution Data Server logging service"
 #, c-format
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr "Multiple segmentation faults occurred; cannot display error dialogue\n"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "On This Computer"

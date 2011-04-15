@@ -5513,9 +5513,6 @@ msgstr "פרמטר שגוי"
 #~ msgid "Create a new address book"
 #~ msgstr "הוסף משימה חדשה"
 
-#~ msgid "On This Computer"
-#~ msgstr "במחשב זה"
-
 #~ msgid "On LDAP Servers"
 #~ msgstr "על שרתי LDAP"
 
@@ -8628,3 +8625,8 @@ msgstr "פרמטר שגוי"
 
 #~ msgid "<b>Organizer</b>"
 #~ msgstr "<b>מארגן</b>"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "במחשב זה"
+

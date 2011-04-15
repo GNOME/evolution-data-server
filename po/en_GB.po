@@ -5960,3 +5960,7 @@ msgstr "Bad parameter"
 
 #~ msgid "Groupwise server %s"
 #~ msgstr "Groupwise server %s"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "On This Computer"

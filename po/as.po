@@ -6122,3 +6122,7 @@ msgstr "ভুল পৰামিতি"
 
 #~ msgid "Addressbook..."
 #~ msgstr "ঠিকনা বহি..."
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "ব্যৱহৃত কম্পিউটাৰত"

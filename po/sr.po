@@ -5570,3 +5570,7 @@ msgstr "Дошло је до вишеструких прекорачења се�
 #~ msgid "completed-before? expects argument 1 to be a time_t"
 #~ msgstr "готов-пре? очекује да аргумент 1 буде time_t"
 
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "На овом рачунару"

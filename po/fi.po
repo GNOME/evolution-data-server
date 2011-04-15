@@ -5702,3 +5702,7 @@ msgstr "Virheellinen parametri"
 
 #~ msgid "Error in Certificate Revocation List (CRL)"
 #~ msgstr "Virhe Varmenteiden hylkäyslistassa (CRL)"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Tällä tietokoneella"

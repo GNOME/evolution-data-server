@@ -5163,3 +5163,7 @@ msgstr "Липсва отговор от сървъра"
 #: ../servers/groupwise/e-gw-connection.c:239
 msgid "Bad parameter"
 msgstr "Лош параметър"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "На този компютър"

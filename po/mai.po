@@ -5128,3 +5128,7 @@ msgstr ""
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr ""
 
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "एहि कम्प्यूटर पर"

@@ -5139,3 +5139,7 @@ msgstr "Zerbitzariak ez du erantzunik eman"
 msgid "Bad parameter"
 msgstr "Okerreko parametroa"
 
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Ordenagailu honetan"

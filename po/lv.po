@@ -5749,3 +5749,7 @@ msgstr "Slikts parametrs"
 
 #~ msgid "_Apply filters to new messages in INBOX on this server"
 #~ msgstr "_Attiecināt filtrus uz jaunām vēstulēm INBOX šajā serverī"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Šajā datorā"
