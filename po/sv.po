@@ -5035,3 +5035,7 @@ msgstr "Felaktig parameter"
 #~ msgid "Unsupported operation: search by UIDs: for %s"
 #~ msgstr "Åtgärden stöds inte: sökning med uid: för %s"
 
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "På denna dator"

@@ -5471,3 +5471,7 @@ msgstr "Плохой параметр"
 
 #~ msgid "The color to render"
 #~ msgstr "Цвет для отображения"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "На этом компьютере"

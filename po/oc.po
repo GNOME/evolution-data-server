@@ -5173,3 +5173,7 @@ msgstr ""
 #: ../libedataserverui/e-cell-renderer-color.c:211
 msgid "The color to render"
 msgstr ""
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Sus aqueste ordenador"

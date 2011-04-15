@@ -5294,3 +5294,7 @@ msgstr "Evolution Data Server লগিং পরিসেবা"
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr "একাধিক সেগমেন্টেশন ফল্ট ঘটেছে; ত্রুটি সূচক ডায়লগ বক্স প্রদর্শন করা সম্ভব নয়\n"
 
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "ব্যবহৃত কম্পিউটারের মধ্যে"

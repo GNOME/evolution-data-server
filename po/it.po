@@ -5279,3 +5279,7 @@ msgstr "Nessuna risposta dal server"
 #: ../servers/groupwise/e-gw-connection.c:239
 msgid "Bad parameter"
 msgstr "Parametro errato"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Su questo computer"

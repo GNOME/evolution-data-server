@@ -5316,9 +5316,6 @@ msgstr "Digwyddodd sawl gwall segmentu; ni ellir dangos y deialog gwall\n"
 #~ msgid "Migrating `%s':"
 #~ msgstr "Yn trosi `%s':"
 
-#~ msgid "On This Computer"
-#~ msgstr "Ar y Cyfeiriadur Hwn"
-
 #~ msgid "On LDAP Servers"
 #~ msgstr "Ar Weinyddion LDAP"
 
@@ -6859,3 +6856,7 @@ msgstr "Digwyddodd sawl gwall segmentu; ni ellir dangos y deialog gwall\n"
 
 #~ msgid "Orientation"
 #~ msgstr "Gogwydd"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Ar y Cyfeiriadur Hwn"

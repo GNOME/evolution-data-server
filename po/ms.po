@@ -23753,3 +23753,7 @@ msgstr ""
 
 #~ msgid "Force upgrading of configuration files from Evolution 1.0.x"
 #~ msgstr "Peningkatan paksa fail konfigurasi daripada Evolution 1.0.x"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Pada Komputer Ini"

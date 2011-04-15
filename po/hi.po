@@ -5388,3 +5388,7 @@ msgstr "एवोल्यूशन पंचांग सर्वर लॉग
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr "बहुमुखी खंडन त्रुटि उत्पन्न हुई, त्रुटि संवाद दिखा नहीं सकता\n"
 
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "इस कम्प्यूटर पर"

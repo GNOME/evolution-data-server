@@ -4682,3 +4682,7 @@ msgstr "𐑯𐑴 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑓𐑮𐑪𐑥 𐑞 𐑕𐑻𐑝
 msgid "Bad parameter"
 msgstr "𐑚𐑨𐑛 𐑐𐑼𐑨𐑥𐑩𐑑𐑼"
 
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "𐑪𐑯 𐑞𐑦𐑕 𐑒𐑩𐑥𐑐𐑿𐑑𐑼"

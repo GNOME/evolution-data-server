@@ -5153,3 +5153,7 @@ msgstr ""
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:4
 msgid "Evolution Data Server logging service"
 msgstr ""
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Ar an Ríomhaire Seo"

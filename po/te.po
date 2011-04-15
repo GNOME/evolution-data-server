@@ -5243,3 +5243,7 @@ msgstr "ఎవాల్యూషన్ డాటా సేవిక అంతర
 msgid "Evolution Data Server logging service"
 msgstr "ఎవాల్యూషన్ డాటా సేవిక లాగింగ్ సేవ"
 
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "ఈ కంప్యూటర్ పైన"

@@ -5427,3 +5427,7 @@ msgstr ""
 
 #~ msgid "Folder %s cannot be opened: %s"
 #~ msgstr "Klasör %s  açılamıyor: %s"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Bu Bilgisayarda"

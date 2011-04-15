@@ -5132,3 +5132,7 @@ msgstr "Fehlerhafter Parameter"
 
 #~ msgid "MH append message canceled"
 #~ msgstr "Anhängen der Nachricht mit MH abgebrochen"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Auf diesem Rechner"

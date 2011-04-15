@@ -5265,3 +5265,7 @@ msgstr "ઈવોલ્યુશન માહિતી સર્વર ઈન્
 msgid "Evolution Data Server logging service"
 msgstr "ઈવોલ્યુશન માહિતી સર્વર પ્રવેશ સેવા"
 
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "આ કમ્પ્યુટરમાં"

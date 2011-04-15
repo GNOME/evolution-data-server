@@ -5694,3 +5694,7 @@ msgstr "无效参数"
 
 #~ msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 #~ msgstr "发生了多个段错误；无法显示错误对话框\n"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "在此计算机中"

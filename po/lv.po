@@ -5931,3 +5931,7 @@ msgstr "No servera nav saņemta nekāda atbilde"
 msgid "Bad parameter"
 msgstr "Slikts parametrs"
 
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Šajā datorā"

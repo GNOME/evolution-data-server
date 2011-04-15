@@ -5226,3 +5226,7 @@ msgstr "विस्तार डेटा सर्भर लग सेवा"
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr " बहुविध खण्डीकरण गल्ति देखा पर्‍‌यो; त्रुटि संवाद देखाउन सकिँदैन\n"
 
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "यस कम्प्युटरमा"

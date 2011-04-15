@@ -5294,3 +5294,7 @@ msgstr "Parâmetro inválido"
 #~ msgid "Cannot rename folder '%s' to '%s': Bad command"
 #~ msgstr ""
 #~ "Não foi possível renomear a pasta de \"%s\" para \"%s\": Comando inválido"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Neste computador"

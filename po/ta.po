@@ -4974,3 +4974,7 @@ msgstr "தவறான நிலையளவுரு"
 
 #~ msgid "UnknownUser"
 #~ msgstr "தெரியாத பயனர் "
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "இந்த கணிப்பொறியில்"

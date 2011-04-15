@@ -5393,3 +5393,7 @@ msgstr ""
 
 #~ msgid "Failed to send username to server"
 #~ msgstr "ارسال نام کاربر به کارگزار شکست خورد"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "در این کامپیوتر"

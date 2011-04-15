@@ -4806,3 +4806,7 @@ msgstr "ସର୍ଭରରୁ କୌଣସି ଉତ୍ତର ନାହିଁ"
 msgid "Bad parameter"
 msgstr "ଖରାପ ପ୍ରାଚଳ"
 
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "ଏହି କମ୍ପୁଟରରେ"

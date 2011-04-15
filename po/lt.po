@@ -5162,3 +5162,7 @@ msgstr "Iš serverio nėra jokio atsako"
 #: ../servers/groupwise/e-gw-connection.c:239
 msgid "Bad parameter"
 msgstr "Netinkamas parametras"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Šiame kompiuteryje"

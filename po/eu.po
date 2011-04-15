@@ -5352,3 +5352,7 @@ msgstr "Okerreko parametroa"
 
 #~ msgid "The color to render"
 #~ msgstr "Kolorea errendatzeko"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Ordenagailu honetan"

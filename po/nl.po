@@ -5069,3 +5069,7 @@ msgstr "Onjuiste parameter"
 
 #~ msgid "CORBA exception making \"%s\" call"
 #~ msgstr "CORBA-uitzondering roept ‘%s’ aan"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Op deze computer"

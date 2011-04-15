@@ -360,6 +360,7 @@ msgstr ""
 #: calendar/gui/migration.c:450 calendar/gui/migration.c:532
 #: mail/em-folder-tree-model.c:196 mail/em-folder-tree-model.c:198
 #: mail/mail-component.c:245 mail/mail-vfolder.c:218
+#: ../calendar/libecal/e-cal.c:1046
 msgid "On This Computer"
 msgstr ""
 

@@ -5915,3 +5915,7 @@ msgstr "Parâmetro inválido"
 
 #~ msgid "Evolution Addressbook file and LDAP backend"
 #~ msgstr "Backend LDAP e de ficheiros de Livro de Endereços Evolution"
+
+#: ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Neste Computador"
