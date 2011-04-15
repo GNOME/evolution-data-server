@@ -1028,6 +1028,56 @@ e_cal_new_from_uri (const gchar *uri, ECalSourceType type)
 	return cal;
 }
 
+static ECal *
+get_local_source (ECalSourceType type)
+{
+	ESourceList *sources;
+	ESourceGroup *on_this_computer;
+	GSList *local_sources, *iter;
+	gchar *source_uri = NULL;
+	ECal *ecal;
+
+	if (!e_cal_get_sources (&sources, type, NULL)) {
+		g_warning ("Could not get task sources from GConf!");
+		goto out;
+	}
+
+	on_this_computer = e_source_list_ensure_group (sources,
+						       _("On This Computer"),
+						       "local:", TRUE);
+	if (!on_this_computer) {
+		g_object_unref (sources);
+		goto out;
+	}
+
+	local_sources = e_source_group_peek_sources (on_this_computer);
+	for (iter = local_sources; !source_uri && iter != NULL; iter = iter->next) {
+		ESource *source = iter->data;
+		gchar *uri;
+
+		uri = e_source_get_uri (source);
+		if (g_strcmp0 (uri, "local:system") == 0)
+			source_uri = uri;
+		else
+			g_free (uri);
+	}
+	if (!source_uri) {
+		ESource *source;
+		source = e_source_new (_("Personal"), "system");
+		e_source_set_color_spec (source, "#BECEDD");
+		e_source_group_add_source (on_this_computer, source, -1);
+		g_object_unref (source);
+
+		if (!e_source_list_sync (sources, NULL))
+			g_warning ("Cannot add system source to GConf!");
+	}
+	g_object_unref (on_this_computer);
+	g_object_unref (sources);
+ out:
+	ecal = e_cal_new_from_uri (source_uri?:"local:system", type);
+	g_free (source_uri);
+	return ecal;
+}
 /**
  * e_cal_new_system_calendar:
  *
@@ -1041,7 +1091,7 @@ e_cal_new_from_uri (const gchar *uri, ECalSourceType type)
 ECal *
 e_cal_new_system_calendar (void)
 {
-	return e_cal_new_from_uri ("local:system", E_CAL_SOURCE_TYPE_EVENT);
+	return get_local_source (E_CAL_SOURCE_TYPE_EVENT);
 }
 
 /**
@@ -1057,7 +1107,7 @@ e_cal_new_system_calendar (void)
 ECal *
 e_cal_new_system_tasks (void)
 {
-	return e_cal_new_from_uri ("local:system", E_CAL_SOURCE_TYPE_TODO);
+	return get_local_source (E_CAL_SOURCE_TYPE_TODO);
 }
 
 /**
@@ -1073,7 +1123,7 @@ e_cal_new_system_tasks (void)
 ECal *
 e_cal_new_system_memos (void)
 {
-	return e_cal_new_from_uri ("local:system", E_CAL_SOURCE_TYPE_JOURNAL);
+	return get_local_source (E_CAL_SOURCE_TYPE_JOURNAL);
 }
 
 /**
