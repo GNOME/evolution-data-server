@@ -5225,3 +5225,7 @@ msgstr "Fehlerhafter Parameter"
 
 #~ msgid "Cannot create spool file: %s"
 #~ msgstr "Spool-Datei konnte nicht angelegt werden: %s"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Auf diesem Rechner"

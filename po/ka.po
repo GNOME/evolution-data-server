@@ -5516,3 +5516,7 @@ msgstr "Evolution მონაცემი სერვერი"
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "შეცდომა n"
 
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "ამ კომპიუტერზე"

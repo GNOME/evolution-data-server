@@ -5227,3 +5227,7 @@ msgstr "Fleire segmenteringsfeil oppstod, kan ikkje visa feildialog\n"
 
 #~ msgid "\t\t\t\t\t\t"
 #~ msgstr "\t\t\t\t\t\t"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "På denne datamaskina"

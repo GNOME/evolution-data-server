@@ -5009,3 +5009,7 @@ msgstr "خاتا پارامېتىر"
 
 #~ msgid "*"
 #~ msgstr "*"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "بۇ كومپيۇتېردا"

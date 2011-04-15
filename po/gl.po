@@ -5453,3 +5453,7 @@ msgstr "O parámetro non é válido"
 
 #~ msgid "Check new messages for _Junk contents"
 #~ msgstr "Comprobar nas novas mensaxes os contidos _non desexados"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Neste computador"

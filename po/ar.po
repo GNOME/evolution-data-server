@@ -6005,3 +6005,7 @@ msgstr "معامل رديء"
 
 #~ msgid "Addressbook..."
 #~ msgstr "دفتر عناوين..."
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "على هذا الحاسوب"

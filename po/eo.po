@@ -5035,3 +5035,7 @@ msgstr ""
 
 #~ msgid "<b>Show Contacts</b>"
 #~ msgstr "<b>Montri kontaktojn</b>"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "En ĉi tiu komputilo"

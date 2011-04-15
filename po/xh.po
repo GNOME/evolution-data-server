@@ -5015,3 +5015,7 @@ msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Kwenzeke iziphene xa kusahlulwahlulwa kaninzi; ayikwazi ukubonisa umboniso "
 "walo mpazamo\n"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Kule Khompyutha"

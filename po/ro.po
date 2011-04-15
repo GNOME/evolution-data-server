@@ -5284,3 +5284,7 @@ msgstr "Parametru incorect"
 
 #~ msgid "MH append message canceled"
 #~ msgstr "Adăugarea de mesaj MH anulată"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Pe acest calculator"

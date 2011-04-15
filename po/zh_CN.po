@@ -5102,3 +5102,7 @@ msgstr "无效参数"
 
 #~ msgid "Cannot create spool file: %s"
 #~ msgstr "无法创建脱机文件：%s"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "在此计算机中"

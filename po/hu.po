@@ -5140,3 +5140,7 @@ msgstr "Nem érkezett válasz a kiszolgálótól"
 #: ../servers/groupwise/e-gw-connection.c:239
 msgid "Bad parameter"
 msgstr "Hibás paraméter"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Ezen a számítógépen"

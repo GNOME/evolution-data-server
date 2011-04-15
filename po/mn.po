@@ -4355,3 +4355,7 @@ msgstr ""
 
 #~ msgid "Evolution Addressbook file and LDAP backend"
 #~ msgstr "Эволюц-Хаягийн дэвтэр-файл ба LDAP-Backend"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Энэ компьютер дээр"

@@ -5128,3 +5128,7 @@ msgstr "Ingen svar fra tjener"
 #: ../servers/groupwise/e-gw-connection.c:239
 msgid "Bad parameter"
 msgstr "Ugyldig parameter"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "På denne datamaskinen"

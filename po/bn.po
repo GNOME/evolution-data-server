@@ -5550,3 +5550,7 @@ msgstr "ভুল প্যারামিটার"
 
 #~ msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 #~ msgstr "একাধিক সেগমেন্টেশন ত্রুটি ঘটেছে; ত্রুটি ডায়লগ প্রদর্শন করা সম্ভব নয়\n"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "এই কম্পিউটারের মধ্যে"

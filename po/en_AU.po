@@ -5325,3 +5325,7 @@ msgstr ""
 
 #~ msgid "Query authorization at \"%s\""
 #~ msgstr "Query authorisation at \"%s\""
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr ""

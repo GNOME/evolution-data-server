@@ -5189,3 +5189,7 @@ msgstr "Netinkamas parametras"
 #~ msgid "_Apply filters to new messages in INBOX on this server"
 #~ msgstr ""
 #~ "_Pritaikyti filtrus naujiems laiškams šio serverio gautų laiškų aplanke"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Šiame kompiuteryje"

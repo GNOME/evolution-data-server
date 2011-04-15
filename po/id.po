@@ -5132,3 +5132,7 @@ msgstr "Tidak ada respon dari server"
 msgid "Bad parameter"
 msgstr "Salah parameter"
 
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Di Komputer Ini"

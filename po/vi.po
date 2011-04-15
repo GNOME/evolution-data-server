@@ -5311,3 +5311,7 @@ msgstr "Dịch vụ ghi lưu máy phục vụ dữ liệu Evolution"
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr "Gặp nhiều lỗi phân đoạn; không thể hiển thị hộp thoại lỗi\n"
 
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Trên máy này"

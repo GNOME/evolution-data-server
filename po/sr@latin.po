@@ -5570,3 +5570,7 @@ msgstr "Došlo je do višestrukih prekoračenja segmenata; nije moguće prikazat
 #~ msgid "completed-before? expects argument 1 to be a time_t"
 #~ msgstr "gotov-pre? očekuje da argument 1 bude time_t"
 
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Na ovom računaru"

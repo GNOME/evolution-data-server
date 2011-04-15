@@ -7345,3 +7345,7 @@ msgstr ""
 
 #~ msgid "rd"
 #~ msgstr "rd$"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr ""

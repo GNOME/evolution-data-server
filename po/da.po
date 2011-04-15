@@ -23994,3 +23994,7 @@ msgstr "Ugyldig parameter"
 
 #~ msgid "Bug buddy was not found in your $PATH."
 #~ msgstr "Bug buddy blev ikke fundet i din $PATH."
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "På denne maskine"

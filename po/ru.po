@@ -5293,3 +5293,7 @@ msgstr "Нет ответа от сервера"
 msgid "Bad parameter"
 msgstr "Неверный параметр"
 
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "На этом компьютере"

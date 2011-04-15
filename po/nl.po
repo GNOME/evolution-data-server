@@ -5245,3 +5245,7 @@ msgstr "Geen antwoord van de server"
 #: ../servers/groupwise/e-gw-connection.c:239
 msgid "Bad parameter"
 msgstr "Onjuiste parameter"
+
+#: ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Op deze computer"
