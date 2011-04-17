@@ -61,6 +61,7 @@ sasl_cram_md5_challenge_sync (CamelSasl *sasl,
 {
 	CamelService *service;
 	GChecksum *checksum;
+	CamelURL *url;
 	guint8 *digest;
 	gsize length;
 	gchar *passwd;
@@ -75,7 +76,9 @@ sasl_cram_md5_challenge_sync (CamelSasl *sasl,
 		return NULL;
 
 	service = camel_sasl_get_service (sasl);
-	g_return_val_if_fail (service->url->passwd != NULL, NULL);
+
+	url = camel_service_get_camel_url (service);
+	g_return_val_if_fail (url->passwd != NULL, NULL);
 
 	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
 	digest = g_alloca (length);
@@ -83,7 +86,7 @@ sasl_cram_md5_challenge_sync (CamelSasl *sasl,
 	memset (ipad, 0, sizeof (ipad));
 	memset (opad, 0, sizeof (opad));
 
-	passwd = service->url->passwd;
+	passwd = url->passwd;
 	pw_len = strlen (passwd);
 	if (pw_len <= 64) {
 		memcpy (ipad, passwd, pw_len);
@@ -117,7 +120,7 @@ sasl_cram_md5_challenge_sync (CamelSasl *sasl,
 	hex = g_checksum_get_string (checksum);
 
 	ret = g_byte_array_new ();
-	g_byte_array_append (ret, (guint8 *) service->url->user, strlen (service->url->user));
+	g_byte_array_append (ret, (guint8 *) url->user, strlen (url->user));
 	g_byte_array_append (ret, (guint8 *) " ", 1);
 	g_byte_array_append (ret, (guint8 *) hex, strlen (hex));
 

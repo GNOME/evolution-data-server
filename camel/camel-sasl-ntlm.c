@@ -673,17 +673,19 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 	CamelSaslNTLMPrivate *priv = ntlm->priv;
 #endif
 	CamelService *service;
+	CamelURL *url;
 	GByteArray *ret;
 	gchar *user;
 	guchar nonce[8], hash[21], lm_resp[24], nt_resp[24];
 	GString *domain = NULL;
 
 	service = camel_sasl_get_service (sasl);
+	url = camel_service_get_camel_url (service);
 
 	ret = g_byte_array_new ();
 
 #ifndef G_OS_WIN32
-	if (priv->helper_stream && !service->url->passwd) {
+	if (priv->helper_stream && !url->passwd) {
 		guchar *data;
 		gsize length = 0;
 		char buf[1024];
@@ -758,26 +760,25 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 		g_checksum_get_digest (md5, digest, &digest_len);
 
 		g_checksum_free (md5);
-		ntlm_nt_hash (service->url->passwd, (gchar *) hash);
+		ntlm_nt_hash (url->passwd, (gchar *) hash);
 
 		ntlm_calc_response (hash, digest, nt_resp);
 	} else {
 		/* NTLM1 */
 		memcpy (nonce, token->data + NTLM_CHALLENGE_NONCE_OFFSET, 8);
-		ntlm_lanmanager_hash (service->url->passwd, (gchar *) hash);
+		ntlm_lanmanager_hash (url->passwd, (gchar *) hash);
 		ntlm_calc_response (hash, nonce, lm_resp);
-		ntlm_nt_hash (service->url->passwd, (gchar *) hash);
+		ntlm_nt_hash (url->passwd, (gchar *) hash);
 		ntlm_calc_response (hash, nonce, nt_resp);
 	}
 
 	/* If a domain is supplied as part of the username, use it */
-	user = strchr (service->url->user, '\\');
+	user = strchr (url->user, '\\');
 	if (user) {
-		domain = g_string_new_len (service->url->user,
-					   user - service->url->user);
+		domain = g_string_new_len (url->user, user - url->user);
 		user++;
 	} else
-		user = service->url->user;
+		user = url->user;
 
 	/* Otherwise, fall back to the domain of the server, if possible */
 	if (domain == NULL)
@@ -823,13 +824,15 @@ exit:
 	return ret;
 }
 
-static gboolean sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
-						   GCancellable *cancellable,
-						   GError **error)
+static gboolean
+sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
+                                   GCancellable *cancellable,
+                                   GError **error)
 {
 #ifndef G_OS_WIN32
 	CamelStream *stream = camel_stream_process_new ();
-	CamelService *service = camel_sasl_get_service (sasl);
+	CamelService *service;
+	CamelURL *url;
 	CamelSaslNTLM *ntlm = CAMEL_SASL_NTLM (sasl);
 	CamelSaslNTLMPrivate *priv = ntlm->priv;
 	gchar *user;
@@ -841,19 +844,25 @@ static gboolean sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
 	if (access (NTLM_AUTH_HELPER, X_OK))
 		return FALSE;
 
-	user = strchr (service->url->user, '\\');
+	service = camel_sasl_get_service (sasl);
+	url = camel_service_get_camel_url (service);
+
+	user = strchr (url->user, '\\');
 	if (user) {
-		command = g_strdup_printf ("%s --helper-protocol ntlmssp-client-1 "
-					   "--use-cached-creds --username '%s' "
-					   "--domain '%.*s'", NTLM_AUTH_HELPER,
-					   user + 1, (int)(user - service->url->user), 
-					   service->url->user);
+		command = g_strdup_printf (
+			"%s --helper-protocol ntlmssp-client-1 "
+			"--use-cached-creds --username '%s' "
+			"--domain '%.*s'", NTLM_AUTH_HELPER,
+			user + 1, (int)(user - url->user), 
+			url->user);
 	} else {
-		command = g_strdup_printf ("%s --helper-protocol ntlmssp-client-1 "
-					   "--use-cached-creds --username '%s'",
-					   NTLM_AUTH_HELPER, service->url->user);
+		command = g_strdup_printf (
+			"%s --helper-protocol ntlmssp-client-1 "
+			"--use-cached-creds --username '%s'",
+			NTLM_AUTH_HELPER, url->user);
 	}
-	ret = camel_stream_process_connect (CAMEL_STREAM_PROCESS (stream), command, NULL);
+	ret = camel_stream_process_connect (
+		CAMEL_STREAM_PROCESS (stream), command, NULL);
 	g_free (command);
 	if (ret) {
 		g_object_unref (stream);

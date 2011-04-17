@@ -1896,7 +1896,7 @@ vee_folder_folder_changed (CamelVeeFolder *vee_folder,
 		return;
 
 	parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (vee_folder));
-	session = CAMEL_SERVICE (parent_store)->session;
+	session = camel_service_get_session (CAMEL_SERVICE (parent_store));
 
 	m = camel_session_thread_msg_new (session, &folder_changed_ops, sizeof (*m));
 	m->changes = camel_folder_change_info_new ();
@@ -2045,8 +2045,10 @@ camel_vee_folder_new (CamelStore *parent_store, const gchar *full, guint32 flags
 
 	if (vf) {
 		CamelObject *object = CAMEL_OBJECT (vf);
+		CamelURL *url;
 
-		tmp = g_strdup_printf ("%s/%s.cmeta", ((CamelService *)parent_store)->url->path, full);
+		url = camel_service_get_camel_url (CAMEL_SERVICE (parent_store));
+		tmp = g_strdup_printf ("%s/%s.cmeta", url->path, full);
 		camel_object_set_state_filename (object, tmp);
 		g_free (tmp);
 		if (camel_object_state_read (object) == -1) {

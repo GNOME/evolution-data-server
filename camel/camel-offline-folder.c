@@ -120,19 +120,24 @@ offline_folder_changed (CamelFolder *folder,
 {
 	CamelStore *parent_store;
 	CamelService *service;
+	CamelSession *session;
+	CamelURL *url;
 	gboolean offline_sync;
 
 	parent_store = camel_folder_get_parent_store (folder);
+
 	service = CAMEL_SERVICE (parent_store);
+	url = camel_service_get_camel_url (service);
+	session = camel_service_get_session (service);
 
 	offline_sync = camel_offline_folder_get_offline_sync (
 		CAMEL_OFFLINE_FOLDER (folder));
 
-	if (changes->uid_added->len > 0 && (offline_sync || camel_url_get_param (service->url, "sync_offline"))) {
-		CamelSession *session = service->session;
+	if (changes->uid_added->len > 0 && (offline_sync || camel_url_get_param (url, "sync_offline"))) {
 		struct _offline_downsync_msg *m;
 
-		m = camel_session_thread_msg_new (session, &offline_downsync_ops, sizeof (*m));
+		m = camel_session_thread_msg_new (
+			session, &offline_downsync_ops, sizeof (*m));
 		m->changes = camel_folder_change_info_new ();
 		camel_folder_change_info_cat (m->changes, changes);
 		m->folder = g_object_ref (folder);

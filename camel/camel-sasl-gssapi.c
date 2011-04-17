@@ -258,6 +258,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 {
 	CamelSaslGssapiPrivate *priv;
 	CamelService *service;
+	CamelURL *url;
 	OM_uint32 major, minor, flags, time;
 	gss_buffer_desc inbuf, outbuf;
 	GByteArray *challenge = NULL;
@@ -274,13 +275,14 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 	service = camel_sasl_get_service (sasl);
 	service_name = camel_sasl_get_service_name (sasl);
 
+	url = camel_service_get_camel_url (service);
+
 	switch (priv->state) {
 	case GSSAPI_STATE_INIT:
 		memset (&hints, 0, sizeof (hints));
 		hints.ai_flags = AI_CANONNAME;
 		ai = camel_getaddrinfo (
-			service->url->host ?
-			service->url->host : "localhost",
+			url->host ? url->host : "localhost",
 			NULL, &hints, cancellable, error);
 		if (ai == NULL)
 			return NULL;
@@ -333,7 +335,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 			if (major == (OM_uint32)GSS_S_FAILURE &&
 			    (minor == (OM_uint32)KRB5KRB_AP_ERR_TKT_EXPIRED ||
 			     minor == (OM_uint32)KRB5KDC_ERR_NEVER_VALID) &&
-			    send_dbus_message (service->url->user))
+			    send_dbus_message (url->user))
 					goto challenge;
 
 			gssapi_set_exception (major, minor, error);
@@ -387,11 +389,11 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 			return NULL;
 		}
 
-		inbuf.length = 4 + strlen (service->url->user);
+		inbuf.length = 4 + strlen (url->user);
 		inbuf.value = str = g_malloc (inbuf.length);
 		memcpy (inbuf.value, outbuf.value, 4);
 		str[0] = DESIRED_SECURITY_LAYER;
-		memcpy (str + 4, service->url->user, inbuf.length - 4);
+		memcpy (str + 4, url->user, inbuf.length - 4);
 
 #ifndef HAVE_HEIMDAL_KRB5
 		gss_release_buffer (&minor, &outbuf);

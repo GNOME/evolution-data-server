@@ -217,6 +217,7 @@ add_range_xover (CamelNNTPSummary *cns,
 {
 	CamelFolderSummary *s;
 	CamelMessageInfoBase *mi;
+	CamelURL *url;
 	struct _camel_header_raw *headers = NULL;
 	gchar *line, *tab;
 	guint len;
@@ -228,9 +229,10 @@ add_range_xover (CamelNNTPSummary *cns,
 	s = (CamelFolderSummary *)cns;
 	summary_table = camel_folder_summary_get_hashtable (s);
 
+	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
+
 	camel_operation_push_message (
-		cancellable, _("%s: Scanning new messages"),
-		((CamelService *)store)->url->host);
+		cancellable, _("%s: Scanning new messages"), url->host);
 
 	if ((store->capabilities & NNTP_CAPABILITY_OVER) != 0)
 		ret = camel_nntp_raw_command_auth (store, cancellable, error, &line, "over %r", low, high);
@@ -331,6 +333,7 @@ add_range_head (CamelNNTPSummary *cns,
                 GError **error)
 {
 	CamelFolderSummary *s;
+	CamelURL *url;
 	gint ret = -1;
 	gchar *line, *msgid;
 	guint i, n, count, total;
@@ -344,9 +347,10 @@ add_range_head (CamelNNTPSummary *cns,
 
 	mp = camel_mime_parser_new ();
 
+	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
+
 	camel_operation_push_message (
-		cancellable, _("%s: Scanning new messages"),
-		((CamelService *)store)->url->host);
+		cancellable, _("%s: Scanning new messages"), url->host);
 
 	count = 0;
 	total = high-low+1;

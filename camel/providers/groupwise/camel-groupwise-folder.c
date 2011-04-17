@@ -928,8 +928,11 @@ camel_gw_folder_new (CamelStore *store,
 {
 	CamelFolder *folder;
 	CamelGroupwiseFolder *gw_folder;
+	CamelURL *url;
 	gchar *summary_file, *state_file, *journal_file;
 	gchar *short_name;
+
+	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
 	short_name = strrchr (folder_name, '/');
 	if (short_name)
@@ -976,7 +979,7 @@ camel_gw_folder_new (CamelStore *store,
 	}
 
 	if (!strcmp (folder_name, "Mailbox")) {
-		if (camel_url_get_param (((CamelService *) store)->url, "filter"))
+		if (camel_url_get_param (url, "filter"))
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 	}
 
@@ -1007,6 +1010,8 @@ update_update (CamelSession *session,
 	EGwConnectionStatus status;
 	CamelGroupwiseStore *gw_store;
 	CamelStore *parent_store;
+	CamelService *service;
+	CamelServiceConnectionStatus conn_status;
 	GList *item_list, *items_full_list = NULL, *last_element=NULL;
 	gint cursor = 0;
 	const gchar *position = E_GW_CURSOR_POSITION_END;
@@ -1015,13 +1020,18 @@ update_update (CamelSession *session,
 	parent_store = camel_folder_get_parent_store (m->folder);
 	gw_store = CAMEL_GROUPWISE_STORE (parent_store);
 
+	service = CAMEL_SERVICE (gw_store);
+
 	/* Hold the connect_lock.
 	   In case if user went offline, don't do anything.
 	   m->cnc would have become invalid, as the store disconnect unrefs it.
 	 */
-	camel_service_lock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (gw_store)) ||
-			((CamelService *)gw_store)->status == CAMEL_SERVICE_DISCONNECTED) {
+	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
+
+	conn_status = camel_service_get_connection_status (service);
+	if (!camel_offline_store_get_online (
+			CAMEL_OFFLINE_STORE (gw_store)) ||
+			conn_status == CAMEL_SERVICE_DISCONNECTED) {
 		goto end1;
 	}
 
@@ -1044,7 +1054,8 @@ update_update (CamelSession *session,
 	while (!done) {
 
 		if (camel_application_is_exiting) {
-				camel_service_unlock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+				camel_service_unlock (
+					service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 				return;
 		}
 
@@ -1076,7 +1087,7 @@ update_update (CamelSession *session,
 	}
 	e_gw_connection_destroy_cursor (m->cnc, m->container_id, cursor);
 
-	camel_service_unlock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 	/* Take out only the first part in the list until the @ since it is guaranteed
 	   to be unique only until that symbol */
 
@@ -1102,7 +1113,7 @@ update_update (CamelSession *session,
 
 	return;
  end1:
-	camel_service_unlock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 	camel_operation_pop_message (msg->cancellable);
 	if (items_full_list) {
 		g_list_foreach (items_full_list, (GFunc)g_free, NULL);
@@ -1221,6 +1232,7 @@ groupwise_refresh_folder (CamelFolder *folder,
 	CamelGroupwiseFolder *gw_folder;
 	CamelGroupwiseSummary *summary = (CamelGroupwiseSummary *)folder->summary;
 	EGwConnection *cnc;
+	CamelService *service;
 	CamelSession *session;
 	CamelStore *parent_store;
 	gboolean is_proxy;
@@ -1239,7 +1251,8 @@ groupwise_refresh_folder (CamelFolder *folder,
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
 
-	session = CAMEL_SERVICE (parent_store)->session;
+	service = CAMEL_SERVICE (parent_store);
+	session = camel_service_get_session (service);
 	is_proxy = (parent_store->flags & CAMEL_STORE_PROXY);
 
 	gw_folder = CAMEL_GROUPWISE_FOLDER (folder);
@@ -1270,7 +1283,7 @@ groupwise_refresh_folder (CamelFolder *folder,
 		gw_folder->need_refresh = TRUE;
 	}
 
-	camel_service_lock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (!camel_groupwise_store_connected (gw_store, cancellable, error))
 		goto end1;
@@ -1359,7 +1372,7 @@ groupwise_refresh_folder (CamelFolder *folder,
 		update_summary_string (folder, new_sync_time);
 	}
 
-	camel_service_unlock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 	is_locked = FALSE;
 
 	/*
@@ -1390,7 +1403,7 @@ end2:
 	g_free (container_id);
 end1:
 	if (is_locked)
-		camel_service_unlock (CAMEL_SERVICE (gw_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+		camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 	return;
 }
 
@@ -2381,7 +2394,7 @@ groupwise_folder_constructed (GObject *object)
 	folder = CAMEL_FOLDER (object);
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
-	url = CAMEL_SERVICE (parent_store)->url;
+	url = camel_service_get_camel_url (CAMEL_SERVICE (parent_store));
 
 	description = g_strdup_printf (
 		"%s@%s:%s", url->user, url->host, full_name);

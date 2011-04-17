@@ -243,19 +243,24 @@ imapx_create_new_connection (CamelIMAPXConnManager *con_man,
 {
 	CamelIMAPXServer *conn;
 	CamelStore *store = con_man->priv->store;
+	CamelService *service;
+	CamelURL *url;
 	ConnectionInfo *cinfo = NULL;
+
+	service = CAMEL_SERVICE (store);
+	url = camel_service_get_camel_url (service);
 
 	CON_LOCK (con_man);
 
-	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
-	conn = camel_imapx_server_new (CAMEL_STORE (store), CAMEL_SERVICE (store)->url);
+	conn = camel_imapx_server_new (store, url);
 	if (camel_imapx_server_connect (conn, cancellable, error)) {
 		g_object_ref (conn);
 	} else {
 		g_object_unref (conn);
 
-		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+		camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 		CON_UNLOCK (con_man);
 
 		return NULL;
@@ -264,7 +269,7 @@ imapx_create_new_connection (CamelIMAPXConnManager *con_man,
 	g_signal_connect (conn, "shutdown", G_CALLBACK (imapx_conn_shutdown), con_man);
 	g_signal_connect (conn, "select_changed", G_CALLBACK (imapx_conn_update_select), con_man);
 
-	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	cinfo = g_new0 (ConnectionInfo, 1);
 	cinfo->conn = conn;

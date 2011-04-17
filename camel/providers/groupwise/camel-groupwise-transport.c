@@ -42,14 +42,18 @@ static gchar *
 groupwise_transport_get_name (CamelService *service,
                               gboolean brief)
 {
+	CamelURL *url;
+
+	url = camel_service_get_camel_url (service);
+
 	if (brief)
 		return g_strdup_printf (
 			_("GroupWise server %s"),
-			service->url->host);
+			url->host);
 	else
 		return g_strdup_printf (
 			_("GroupWise mail delivery via %s"),
-			service->url->host);
+			url->host);
 }
 
 static gboolean
@@ -69,7 +73,9 @@ groupwise_send_to_sync (CamelTransport *transport,
                         GError **error)
 {
 	CamelService *service;
-	CamelStore *store =  NULL;
+	CamelSession *session;
+	CamelStore *store = NULL;
+	CamelURL *service_url;
 	CamelGroupwiseStore *groupwise_store = NULL;
 	CamelGroupwiseStorePrivate *priv = NULL;
 	EGwItem *item ,*temp_item=NULL;
@@ -89,15 +95,17 @@ groupwise_send_to_sync (CamelTransport *transport,
 	}
 
 	service = CAMEL_SERVICE (transport);
-	url = camel_url_to_string (service->url,
-				   (CAMEL_URL_HIDE_PASSWORD |
-				    CAMEL_URL_HIDE_PARAMS   |
-				    CAMEL_URL_HIDE_AUTH) );
+	session = camel_service_get_session (service);
+	service_url = camel_service_get_camel_url (service);
+
+	url = camel_url_to_string (
+		service_url, CAMEL_URL_HIDE_PASSWORD |
+		CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH);
 
 	camel_operation_push_message (cancellable, _("Sending Message") );
 
 	/*camel groupwise store and cnc*/
-	store = camel_session_get_store (service->session, url, NULL);
+	store = camel_session_get_store (session, url, NULL);
 	g_free (url);
 	if (!store) {
 		g_warning ("ERROR: Could not get a pointer to the store");

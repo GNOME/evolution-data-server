@@ -242,7 +242,7 @@ imap_folder_constructed (GObject *object)
 	folder = CAMEL_FOLDER (object);
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
-	url = CAMEL_SERVICE (parent_store)->url;
+	url = camel_service_get_camel_url (CAMEL_SERVICE (parent_store));
 
 	description = g_strdup_printf (
 		"%s@%s:%s", url->user, url->host, full_name);
@@ -1497,6 +1497,7 @@ static gboolean
 is_google_account (CamelStore *store)
 {
 	CamelService *service;
+	CamelURL *url;
 
 	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
@@ -1504,9 +1505,11 @@ is_google_account (CamelStore *store)
 	service = CAMEL_SERVICE (store);
 	g_return_val_if_fail (service != NULL, FALSE);
 
-	return service->url && service->url->host && (
-		host_ends_with (service->url->host, "gmail.com") ||
-		host_ends_with (service->url->host, "googlemail.com"));
+	url = camel_service_get_camel_url (service);
+
+	return url != NULL && url->host != NULL && (
+		host_ends_with (url->host, "gmail.com") ||
+		host_ends_with (url->host, "googlemail.com"));
 }
 
 static void
@@ -3892,6 +3895,7 @@ imap_update_summary (CamelFolder *folder,
                      GError **error)
 {
 	CamelStore *parent_store;
+	CamelService *service;
 	CamelImapStore *store;
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
 	GPtrArray *fetch_data = NULL, *messages = NULL, *needheaders;
@@ -3907,6 +3911,7 @@ imap_update_summary (CamelFolder *folder,
 
 	parent_store = camel_folder_get_parent_store (folder);
 	store = CAMEL_IMAP_STORE (parent_store);
+	service = CAMEL_SERVICE (store);
 
 	if (store->server_level >= IMAP_LEVEL_IMAP4REV1) {
 		if (store->headers == IMAP_FETCH_ALL_HEADERS)
@@ -4008,7 +4013,7 @@ imap_update_summary (CamelFolder *folder,
 
 	if (type == CAMEL_IMAP_RESPONSE_ERROR || camel_application_is_exiting) {
 		if (type != CAMEL_IMAP_RESPONSE_ERROR && type != CAMEL_IMAP_RESPONSE_TAGGED)
-			camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+			camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 		goto lose;
 	}
@@ -4081,7 +4086,7 @@ imap_update_summary (CamelFolder *folder,
 				camel_operation_pop_message (cancellable);
 
 				if (type != CAMEL_IMAP_RESPONSE_ERROR && type != CAMEL_IMAP_RESPONSE_TAGGED)
-					camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+					camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 				goto lose;
 			}
@@ -4155,7 +4160,7 @@ imap_update_summary (CamelFolder *folder,
 		/* Just do this to build the junk required headers to be built*/
 		jdata.data = data;
 		jdata.mi = (CamelMessageInfoBase *) mi;
-		g_hash_table_foreach ((GHashTable *)camel_session_get_junk_headers (((CamelService *) store)->session), (GHFunc) construct_junk_headers, &jdata);
+		g_hash_table_foreach ((GHashTable *)camel_session_get_junk_headers (camel_service_get_session (service)), (GHFunc) construct_junk_headers, &jdata);
 		g_datalist_clear (&data);
 	}
 	g_ptr_array_free (fetch_data, TRUE);

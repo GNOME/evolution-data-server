@@ -99,19 +99,25 @@ static void
 cdf_folder_changed (CamelFolder *folder,
                     CamelFolderChangeInfo *changes)
 {
+	CamelService *parent_service;
 	CamelStore *parent_store;
+	CamelURL *url;
 	gboolean offline_sync;
 
 	parent_store = camel_folder_get_parent_store (folder);
+
+	parent_service = CAMEL_SERVICE (parent_store);
+	url = camel_service_get_camel_url (parent_service);
 
 	offline_sync = camel_disco_folder_get_offline_sync (
 		CAMEL_DISCO_FOLDER (folder));
 
 	if (changes->uid_added->len > 0 && (offline_sync
-		|| camel_url_get_param (CAMEL_SERVICE (parent_store)->url, "offline_sync"))) {
-		CamelSession *session = CAMEL_SERVICE (parent_store)->session;
+		|| camel_url_get_param (url, "offline_sync"))) {
+		CamelSession *session;
 		struct _cdf_sync_msg *m;
 
+		session = camel_service_get_session (parent_service);
 		m = camel_session_thread_msg_new (session, &cdf_sync_ops, sizeof (*m));
 		m->changes = camel_folder_change_info_new ();
 		camel_folder_change_info_cat (m->changes, changes);

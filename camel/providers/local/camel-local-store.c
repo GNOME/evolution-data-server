@@ -119,24 +119,28 @@ construct (CamelService *service,
 	if (!service_class->construct (service, session, provider, url, error))
 		return FALSE;
 
-	len = strlen (service->url->path);
-	if (!G_IS_DIR_SEPARATOR (service->url->path[len - 1]))
-		local_store->toplevel_dir = g_strdup_printf ("%s/", service->url->path);
+	len = strlen (url->path);
+	if (!G_IS_DIR_SEPARATOR (url->path[len - 1]))
+		local_store->toplevel_dir = g_strdup_printf ("%s/", url->path);
 	else
-		local_store->toplevel_dir = g_strdup (service->url->path);
+		local_store->toplevel_dir = g_strdup (url->path);
 
 	local_store->is_main_store = FALSE;
 
 	local_store_path = g_build_filename (e_get_user_data_dir (), "mail", "local", NULL);
 	local_store_uri = g_filename_to_uri (local_store_path, NULL, NULL);
 	if (local_store_uri) {
-		CamelProvider *provider = service->provider;
+		CamelProvider *provider;
 		CamelURL *local_store_url = camel_url_new (local_store_uri, NULL);
 
-		camel_url_set_protocol (local_store_url, service->url->protocol);
-		camel_url_set_host (local_store_url, service->url->host);
+		provider = camel_service_get_provider (service);
+		camel_url_set_protocol (local_store_url, url->protocol);
+		camel_url_set_host (local_store_url, url->host);
 
-		local_store->is_main_store = (provider && provider->url_equal) ? provider->url_equal (service->url, local_store_url) : camel_url_equal (service->url, local_store_url);
+		local_store->is_main_store =
+			provider && provider->url_equal ?
+			provider->url_equal (url, local_store_url) :
+			camel_url_equal (url, local_store_url);
 		camel_url_free (local_store_url);
 	}
 
@@ -485,8 +489,11 @@ local_store_delete_folder_sync (CamelStore *store,
 {
 	CamelFolderInfo *fi;
 	CamelFolder *lf;
+	CamelURL *url;
 	gchar *name;
 	gchar *str;
+
+	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
 	/* remove metadata only */
 	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
@@ -536,8 +543,9 @@ local_store_delete_folder_sync (CamelStore *store,
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (folder_name);
 	fi->name = g_path_get_basename (folder_name);
-	fi->uri = g_strdup_printf ("%s:%s#%s", ((CamelService *) store)->url->protocol,
-				   CAMEL_LOCAL_STORE (store)->toplevel_dir, folder_name);
+	fi->uri = g_strdup_printf (
+		"%s:%s#%s", url->protocol,
+		CAMEL_LOCAL_STORE (store)->toplevel_dir, folder_name);
 	fi->unread = -1;
 
 	camel_store_folder_deleted (store, fi);

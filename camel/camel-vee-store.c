@@ -65,6 +65,7 @@ change_folder (CamelStore *store,
 {
 	CamelFolderInfo *fi;
 	const gchar *tmp;
+	CamelURL *service_url;
 	CamelURL *url;
 
 	fi = camel_folder_info_new ();
@@ -76,7 +77,8 @@ change_folder (CamelStore *store,
 		tmp++;
 	fi->name = g_strdup (tmp);
 	url = camel_url_new ("vfolder:", NULL);
-	camel_url_set_path (url, ((CamelService *)store)->url->path);
+	service_url = camel_service_get_camel_url (CAMEL_SERVICE (store));
+	camel_url_set_path (url, service_url->path);
 	if (flags & CHANGE_NOSELECT)
 		camel_url_set_param (url, "noselect", "yes");
 	camel_url_set_fragment (url, name);
@@ -246,6 +248,7 @@ vee_store_get_folder_info_sync (CamelStore *store,
 
 		if (add) {
 			CamelStore *parent_store;
+			CamelURL *service_url;
 
 			/* ensures unread is correct */
 			if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
@@ -257,7 +260,9 @@ vee_store_get_folder_info_sync (CamelStore *store,
 
 			info = camel_folder_info_new ();
 			url = camel_url_new ("vfolder:", NULL);
-			camel_url_set_path (url, ((CamelService *) parent_store)->url->path);
+			service_url = camel_service_get_camel_url (
+				CAMEL_SERVICE (parent_store));
+			camel_url_set_path (url, service_url->path);
 			camel_url_set_fragment (url, full_name);
 			info->uri = camel_url_to_string (url, 0);
 			camel_url_free (url);
@@ -311,9 +316,12 @@ vee_store_get_folder_info_sync (CamelStore *store,
 	/* and always add UNMATCHED, if scanning from top/etc */
 	/* FIXME[disk-summary] comment it out well */
 	if ((top == NULL || top[0] == 0 || strncmp (top, CAMEL_UNMATCHED_NAME, strlen (CAMEL_UNMATCHED_NAME)) == 0)) {
+		CamelURL *service_url;
+
 		info = camel_folder_info_new ();
 		url = camel_url_new ("vfolder:", NULL);
-		camel_url_set_path (url, ((CamelService *)store)->url->path);
+		service_url = camel_service_get_camel_url (CAMEL_SERVICE (store));
+		camel_url_set_path (url, service_url->path);
 		camel_url_set_fragment (url, CAMEL_UNMATCHED_NAME);
 		info->uri = camel_url_to_string (url, 0);
 		camel_url_free (url);

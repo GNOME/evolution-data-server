@@ -3012,12 +3012,16 @@ imapx_reconnect (CamelIMAPXServer *is,
 {
 	CamelIMAPXCommand *ic;
 	gchar *errbuf = NULL;
-	CamelService *service = (CamelService *) is->store;
+	CamelService *service;
+	CamelURL *url;
 	const gchar *auth_domain = NULL;
 	gboolean authenticated = FALSE;
 	CamelServiceAuthType *authtype = NULL;
 	guint32 prompt_flags = CAMEL_SESSION_PASSWORD_SECRET;
 	gboolean need_password = FALSE;
+
+	service = CAMEL_SERVICE (is->store);
+	url = camel_service_get_camel_url (service);
 
 	while (!authenticated) {
 		CamelSasl *sasl = NULL;
@@ -3030,8 +3034,8 @@ imapx_reconnect (CamelIMAPXServer *is,
 		} else if (errbuf) {
 			/* We need to un-cache the password before prompting again */
 			prompt_flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
-			g_free (service->url->passwd);
-			service->url->passwd = NULL;
+			g_free (url->passwd);
+			url->passwd = NULL;
 		}
 
 		if (!imapx_connect_to_server (is, cancellable, error))
@@ -3040,26 +3044,25 @@ imapx_reconnect (CamelIMAPXServer *is,
 		if (is->state == IMAPX_AUTHENTICATED)
 			goto preauthed;
 
-		if (!authtype && service->url->authmech) {
-			if (!g_hash_table_lookup (is->cinfo->auth_types, service->url->authmech)) {
+		if (!authtype && url->authmech) {
+			if (!g_hash_table_lookup (is->cinfo->auth_types, url->authmech)) {
 				g_set_error (
 					error, CAMEL_SERVICE_ERROR,
 					CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 					_("IMAP server %s does not support requested "
 					  "authentication type %s"),
-					service->url->host,
-					service->url->authmech);
+					url->host, url->authmech);
 				goto exception;
 			}
 
-			authtype = camel_sasl_authtype (service->url->authmech);
+			authtype = camel_sasl_authtype (url->authmech);
 			if (!authtype) {
 			noauth:
 				g_set_error (
 					error, CAMEL_SERVICE_ERROR,
 					CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 					_("No support for authentication type %s"),
-					service->url->authmech);
+					url->authmech);
 				goto exception;
 			}
 		}
@@ -3077,29 +3080,30 @@ imapx_reconnect (CamelIMAPXServer *is,
 		} else
 			need_password = TRUE;
 
-		if (need_password && service->url->passwd == NULL) {
+		if (need_password && url->passwd == NULL) {
 			gchar *base_prompt;
 			gchar *full_prompt;
 
 			base_prompt = camel_session_build_password_prompt (
-					"IMAP", service->url->user, service->url->host);
+					"IMAP", url->user, url->host);
 
 			if (errbuf != NULL)
 				full_prompt = g_strconcat (errbuf, base_prompt, NULL);
 			else
 				full_prompt = g_strdup (base_prompt);
 
-			auth_domain = camel_url_get_param (service->url, "auth-domain");
-			service->url->passwd = camel_session_get_password (is->session, (CamelService *)is->store,
-					auth_domain,
-					full_prompt, "password", prompt_flags, error);
+			auth_domain = camel_url_get_param (url, "auth-domain");
+			url->passwd = camel_session_get_password (
+				is->session, (CamelService *)is->store,
+				auth_domain, full_prompt, "password",
+				prompt_flags, error);
 
 			g_free (base_prompt);
 			g_free (full_prompt);
 			g_free (errbuf);
 			errbuf = NULL;
 
-			if (!service->url->passwd) {
+			if (!url->passwd) {
 				g_set_error (
 					error, G_IO_ERROR,
 					G_IO_ERROR_CANCELLED,
@@ -3117,8 +3121,7 @@ imapx_reconnect (CamelIMAPXServer *is,
 		} else {
 			ic = camel_imapx_command_new (
 				is, "LOGIN", NULL, cancellable,
-				"LOGIN %s %s", service->url->user,
-				service->url->passwd);
+				"LOGIN %s %s", url->user, url->passwd);
 		}
 
 		imapx_command_run (is, ic);
@@ -5097,10 +5100,15 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 CamelIMAPXServer *
 camel_imapx_server_new (CamelStore *store, CamelURL *url)
 {
+	CamelService *service;
+	CamelSession *session;
 	CamelIMAPXServer *is;
 
+	service = CAMEL_SERVICE (store);
+	session = camel_service_get_session (service);
+
 	is = g_object_new (CAMEL_TYPE_IMAPX_SERVER, NULL);
-	is->session = g_object_ref (CAMEL_SERVICE (store)->session);
+	is->session = g_object_ref (session);
 	is->store = store;
 	is->url = camel_url_copy (url);
 

@@ -159,12 +159,15 @@ camel_imap_wrapper_new (CamelImapFolder *imap_folder,
 	CamelImapWrapper *imap_wrapper;
 	CamelStore *store;
 	CamelStream *stream;
+	CamelURL *url;
 	gboolean sync_offline = FALSE;
 
 	store = camel_folder_get_parent_store (CAMEL_FOLDER (imap_folder));
+	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 	sync_offline =
-		camel_url_get_param (((CamelService *) store)->url, "sync_offline") != NULL ||
-		camel_offline_folder_get_offline_sync (CAMEL_OFFLINE_FOLDER (imap_folder));
+		camel_url_get_param (url, "sync_offline") != NULL ||
+		camel_offline_folder_get_offline_sync (
+			CAMEL_OFFLINE_FOLDER (imap_folder));
 
 	imap_wrapper = g_object_new (CAMEL_TYPE_IMAP_WRAPPER, NULL);
 	camel_data_wrapper_set_mime_type_field (CAMEL_DATA_WRAPPER (imap_wrapper), type);

@@ -387,13 +387,24 @@ camel_imap_command_response (CamelImapStore *store,
 		else if (!g_ascii_strncasecmp (respbuf, "* OK [ALERT]", 12)
 			 || !g_ascii_strncasecmp (respbuf, "* NO [ALERT]", 12)
 			 || !g_ascii_strncasecmp (respbuf, "* BAD [ALERT]", 13)) {
+			CamelService *service;
+			CamelSession *session;
+			CamelURL *url;
 			gchar *msg;
 
 			/* for imap ALERT codes, account user@host */
-			/* we might get a ']' from a BAD response since we +12, but who cares? */
-			msg = g_strdup_printf(_("Alert from IMAP server %s@%s:\n%s"),
-					      ((CamelService *)store)->url->user, ((CamelService *)store)->url->host, respbuf+12);
-			camel_session_alert_user (((CamelService *)store)->session, CAMEL_SESSION_ALERT_WARNING, msg, FALSE);
+			/* we might get a ']' from a BAD response since we +12,
+			 * but who cares? */
+			service = CAMEL_SERVICE (store);
+			url = camel_service_get_camel_url (service);
+			session = camel_service_get_session (service);
+
+			msg = g_strdup_printf(
+				_("Alert from IMAP server %s@%s:\n%s"),
+				url->user, url->host, respbuf + 12);
+			camel_session_alert_user (
+				session, CAMEL_SESSION_ALERT_WARNING,
+				msg, FALSE);
 			g_free (msg);
 		}
 

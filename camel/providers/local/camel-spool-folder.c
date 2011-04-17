@@ -138,7 +138,10 @@ camel_spool_folder_new (CamelStore *parent_store,
                         GError **error)
 {
 	CamelFolder *folder;
+	CamelURL *url;
 	gchar *basename;
+
+	url = camel_service_get_camel_url (CAMEL_SERVICE (parent_store));
 
 	basename = g_path_get_basename (full_name);
 
@@ -155,7 +158,7 @@ camel_spool_folder_new (CamelStore *parent_store,
 	folder = (CamelFolder *)camel_local_folder_construct (
 		(CamelLocalFolder *)folder, flags, cancellable, error);
 	if (folder) {
-		if (camel_url_get_param(((CamelService *)parent_store)->url, "xstatus"))
+		if (camel_url_get_param (url, "xstatus"))
 			camel_mbox_summary_xstatus ((CamelMboxSummary *)folder->summary, TRUE);
 	}
 

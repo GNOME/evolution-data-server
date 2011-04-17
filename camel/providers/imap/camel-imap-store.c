@@ -221,6 +221,7 @@ connect_to_server (CamelService *service,
 {
 	CamelImapStore *store = (CamelImapStore *) service;
 	CamelSession *session;
+	CamelURL *url;
 	gchar *socks_host;
 	gint socks_port;
 	CamelImapResponse *response;
@@ -230,18 +231,21 @@ connect_to_server (CamelService *service,
 	gboolean clean_quit = TRUE;
 	gchar *buf;
 
+	url = camel_service_get_camel_url (service);
+	session = camel_service_get_session (service);
+
 	if (ssl_mode != MODE_CLEAR) {
 #ifdef CAMEL_HAVE_SSL
 		if (ssl_mode == MODE_TLS)
-			tcp_stream = camel_tcp_stream_ssl_new_raw (service->session, service->url->host, STARTTLS_FLAGS);
+			tcp_stream = camel_tcp_stream_ssl_new_raw (session, url->host, STARTTLS_FLAGS);
 		else
-			tcp_stream = camel_tcp_stream_ssl_new (service->session, service->url->host, SSL_PORT_FLAGS);
+			tcp_stream = camel_tcp_stream_ssl_new (session, url->host, SSL_PORT_FLAGS);
 #else
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_UNAVAILABLE,
 			_("Could not connect to %s: %s"),
-			service->url->host, _("SSL unavailable"));
+			url->host, _("SSL unavailable"));
 
 		return FALSE;
 
@@ -249,7 +253,6 @@ connect_to_server (CamelService *service,
 	} else
 		tcp_stream = camel_tcp_stream_raw_new ();
 
-	session = camel_service_get_session (service);
 	camel_session_get_socks_proxy (session, &socks_host, &socks_port);
 
 	if (socks_host) {
@@ -262,7 +265,7 @@ connect_to_server (CamelService *service,
 		fallback_port, cancellable, error) == -1) {
 		g_prefix_error (
 			error, _("Could not connect to %s: "),
-			service->url->host);
+			url->host);
 		g_object_unref (tcp_stream);
 		return FALSE;
 	}
@@ -368,7 +371,7 @@ connect_to_server (CamelService *service,
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Failed to connect to IMAP server %s in secure mode: %s"),
-			service->url->host, _("STARTTLS not supported"));
+			url->host, _("STARTTLS not supported"));
 
 		goto exception;
 	}
@@ -388,14 +391,14 @@ connect_to_server (CamelService *service,
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Failed to connect to IMAP server %s in secure mode: %s"),
-			service->url->host, _("SSL negotiations failed"));
+			url->host, _("SSL negotiations failed"));
 		goto exception;
 	}
 #else
 	g_set_error (
 		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 		_("Failed to connect to IMAP server %s in secure mode: %s"),
-		service->url->host, _("SSL is not available in this build"));
+		url->host, _("SSL is not available in this build"));
 	goto exception;
 #endif /* CAMEL_HAVE_SSL */
 
@@ -422,7 +425,7 @@ connect_to_server (CamelService *service,
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Failed to connect to IMAP server %s in secure mode: %s"),
-			service->url->host, _("Unknown error"));
+			url->host, _("Unknown error"));
 		goto exception;
 	}
 
@@ -464,27 +467,30 @@ connect_to_server_process (CamelService *service,
 {
 	CamelImapStore *store = (CamelImapStore *) service;
 	CamelStream *cmd_stream;
+	CamelURL *url;
 	gint ret, i = 0;
 	gchar *buf;
 	gchar *cmd_copy;
 	gchar *full_cmd;
 	gchar *child_env[7];
 
+	url = camel_service_get_camel_url (service);
+
 	/* Put full details in the environment, in case the connection
 	   program needs them */
-	buf = camel_url_to_string (service->url, 0);
+	buf = camel_url_to_string (url, 0);
 	child_env[i++] = g_strdup_printf("URL=%s", buf);
 	g_free (buf);
 
-	child_env[i++] = g_strdup_printf("URLHOST=%s", service->url->host);
-	if (service->url->port)
-		child_env[i++] = g_strdup_printf("URLPORT=%d", service->url->port);
-	if (service->url->user)
-		child_env[i++] = g_strdup_printf("URLUSER=%s", service->url->user);
-	if (service->url->passwd)
-		child_env[i++] = g_strdup_printf("URLPASSWD=%s", service->url->passwd);
-	if (service->url->path)
-		child_env[i++] = g_strdup_printf("URLPATH=%s", service->url->path);
+	child_env[i++] = g_strdup_printf("URLHOST=%s", url->host);
+	if (url->port)
+		child_env[i++] = g_strdup_printf("URLPORT=%d", url->port);
+	if (url->user)
+		child_env[i++] = g_strdup_printf("URLUSER=%s", url->user);
+	if (url->passwd)
+		child_env[i++] = g_strdup_printf("URLPASSWD=%s", url->passwd);
+	if (url->path)
+		child_env[i++] = g_strdup_printf("URLPATH=%s", url->path);
 	child_env[i] = NULL;
 
 	/* Now do %h, %u, etc. substitution in cmd */
@@ -513,10 +519,10 @@ connect_to_server_process (CamelService *service,
 
 		switch (pc[1]) {
 		case 'h':
-			var = service->url->host;
+			var = url->host;
 			break;
 		case 'u':
-			var = service->url->user;
+			var = url->user;
 			break;
 		}
 		if (!var) {
@@ -614,6 +620,7 @@ connect_to_server_wrapper (CamelService *service,
                            GCancellable *cancellable,
                            GError **error)
 {
+	CamelURL *url;
 	const gchar *ssl_mode;
 	gint mode, i;
 	const gchar *serv;
@@ -621,13 +628,17 @@ connect_to_server_wrapper (CamelService *service,
 
 #ifndef G_OS_WIN32
 	const gchar *command;
+#endif
 
-	if (camel_url_get_param(service->url, "use_command")
-	    && (command = camel_url_get_param(service->url, "command")))
+	url = camel_service_get_camel_url (service);
+
+#ifndef G_OS_WIN32
+	if (camel_url_get_param (url, "use_command")
+	    && (command = camel_url_get_param (url, "command")))
 		return connect_to_server_process (service, command, cancellable, error);
 #endif
 
-	if ((ssl_mode = camel_url_get_param (service->url, "use_ssl"))) {
+	if ((ssl_mode = camel_url_get_param (url, "use_ssl"))) {
 		for (i = 0; ssl_options[i].value; i++)
 			if (!strcmp (ssl_options[i].value, ssl_mode))
 				break;
@@ -640,14 +651,14 @@ connect_to_server_wrapper (CamelService *service,
 		fallback_port = IMAP_PORT;
 	}
 
-	if (service->url->port) {
+	if (url->port) {
 		serv = g_alloca (16);
-		sprintf ((gchar *)serv, "%d", service->url->port);
+		sprintf ((gchar *)serv, "%d", url->port);
 		fallback_port = 0;
 	}
 
 	return connect_to_server (
-		service, service->url->host, serv,
+		service, url->host, serv,
 		fallback_port, mode, cancellable, error);
 }
 
@@ -657,14 +668,18 @@ try_auth (CamelImapStore *store,
           GCancellable *cancellable,
           GError **error)
 {
-	CamelService *service = CAMEL_SERVICE (store);
+	CamelService *service;
 	CamelImapResponse *response;
+	CamelURL *url;
 	gchar *resp;
 	gchar *sasl_resp;
 
-	response = camel_imap_command (store, NULL, cancellable, error,
-				       "AUTHENTICATE %s",
-				       service->url->authmech);
+	service = CAMEL_SERVICE (store);
+	url = camel_service_get_camel_url (service);
+
+	response = camel_imap_command (
+		store, NULL, cancellable, error,
+		"AUTHENTICATE %s", url->authmech);
 	if (!response) {
 		g_object_unref (sasl);
 		return FALSE;
@@ -722,44 +737,45 @@ imap_auth_loop (CamelService *service,
 	CamelServiceAuthType *authtype = NULL;
 	CamelImapResponse *response;
 	CamelSasl *sasl = NULL;
+	CamelURL *url;
 	gchar *errbuf = NULL;
 	gboolean authenticated = FALSE;
 	const gchar *auth_domain;
 	guint32 prompt_flags = CAMEL_SESSION_PASSWORD_SECRET;
 
-	auth_domain = camel_url_get_param (service->url, "auth-domain");
+	url = camel_service_get_camel_url (service);
+	auth_domain = camel_url_get_param (url, "auth-domain");
 
 	if (store->preauthed) {
 		if (camel_verbose_debug)
 			fprintf(stderr, "Server %s has preauthenticated us.\n",
-				service->url->host);
+				url->host);
 		return TRUE;
 	}
 
-	if (service->url->authmech) {
-		if (!g_hash_table_lookup (store->authtypes, service->url->authmech)) {
+	if (url->authmech) {
+		if (!g_hash_table_lookup (store->authtypes, url->authmech)) {
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("IMAP server %s does not support requested "
 				  "authentication type %s"),
-				service->url->host,
-				service->url->authmech);
+				url->host, url->authmech);
 			return FALSE;
 		}
 
-		authtype = camel_sasl_authtype (service->url->authmech);
+		authtype = camel_sasl_authtype (url->authmech);
 		if (!authtype) {
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("No support for authentication type %s"),
-				service->url->authmech);
+				url->authmech);
 			return FALSE;
 		}
 
-		sasl = camel_sasl_new ("imap", service->url->authmech,
-				       CAMEL_SERVICE (store));
+		sasl = camel_sasl_new (
+			"imap", url->authmech, service);
 		if (!sasl) {
 		nosasl:
 			g_set_error (
@@ -783,23 +799,23 @@ imap_auth_loop (CamelService *service,
 		if (errbuf) {
 			/* We need to un-cache the password before prompting again */
 			prompt_flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
-			g_free (service->url->passwd);
-			service->url->passwd = NULL;
+			g_free (url->passwd);
+			url->passwd = NULL;
 		}
 
-		if (!service->url->passwd) {
+		if (!url->passwd) {
 			gchar *base_prompt;
 			gchar *full_prompt;
 
 			base_prompt = camel_session_build_password_prompt (
-				"IMAP", service->url->user, service->url->host);
+				"IMAP", url->user, url->host);
 
 			if (errbuf != NULL)
 				full_prompt = g_strconcat (errbuf, base_prompt, NULL);
 			else
 				full_prompt = g_strdup (base_prompt);
 
-			service->url->passwd = camel_session_get_password (
+			url->passwd = camel_session_get_password (
 				session, service, auth_domain, full_prompt,
 				"password", prompt_flags, error);
 
@@ -808,7 +824,7 @@ imap_auth_loop (CamelService *service,
 			g_free (errbuf);
 			errbuf = NULL;
 
-			if (!service->url->passwd) {
+			if (!url->passwd) {
 				g_set_error (
 					error, G_IO_ERROR,
 					G_IO_ERROR_CANCELLED,
@@ -829,18 +845,17 @@ imap_auth_loop (CamelService *service,
 
 		if (authtype) {
 			if (!sasl)
-				sasl = camel_sasl_new ("imap", service->url->authmech,
-						       CAMEL_SERVICE (store));
+				sasl = camel_sasl_new (
+					"imap", url->authmech, service);
 			if (!sasl)
 				goto nosasl;
 			authenticated = try_auth (store, sasl, cancellable,
 						  &local_error);
 			sasl = NULL;
 		} else {
-			response = camel_imap_command (store, NULL, cancellable, &local_error,
-						       "LOGIN %S %S",
-						       service->url->user,
-						       service->url->passwd);
+			response = camel_imap_command (
+				store, NULL, cancellable, &local_error,
+				"LOGIN %S %S", url->user, url->passwd);
 			if (response) {
 				camel_imap_response_free (store, response);
 				authenticated = TRUE;
@@ -928,9 +943,9 @@ imap_store_construct (CamelService *service,
 		return FALSE;
 
 	/* FIXME */
-	imap_store->base_url = camel_url_to_string (service->url, (CAMEL_URL_HIDE_PASSWORD |
-								   CAMEL_URL_HIDE_PARAMS |
-								   CAMEL_URL_HIDE_AUTH));
+	imap_store->base_url = camel_url_to_string (
+		url, CAMEL_URL_HIDE_PASSWORD |
+		CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH);
 
 	imap_store->parameters = 0;
 	if (camel_url_get_param (url, "use_lsub"))
@@ -1013,14 +1028,17 @@ static gchar *
 imap_store_get_name (CamelService *service,
                      gboolean brief)
 {
+	CamelURL *url;
+
+	url = camel_service_get_camel_url (service);
+
 	if (brief)
 		return g_strdup_printf (
-			_("IMAP server %s"),
-			service->url->host);
+			_("IMAP server %s"), url->host);
 	else
 		return g_strdup_printf (
 			_("IMAP service for %s on %s"),
-			service->url->user, service->url->host);
+			url->user, url->host);
 }
 
 static gboolean
@@ -2760,6 +2778,11 @@ imap_store_get_folder_info_sync (CamelStore *store,
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
 	CamelFolderInfo *tree = NULL;
+	CamelService *service;
+	CamelSession *session;
+
+	service = CAMEL_SERVICE (store);
+	session = camel_service_get_session (service);
 
 	/* If we have a list of folders already, use that, but if we haven't
 	   updated for a while, then trigger an asynchronous rescan.  Otherwise
@@ -2784,19 +2807,23 @@ imap_store_get_folder_info_sync (CamelStore *store,
 		now = time (NULL);
 		ref = now > imap_store->refresh_stamp+60*60*1;
 		if (ref) {
-			camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+			camel_service_lock (
+				service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 			ref = now > imap_store->refresh_stamp+60*60*1;
 			if (ref) {
 				struct _refresh_msg *m;
 
 				imap_store->refresh_stamp = now;
 
-				m = camel_session_thread_msg_new (((CamelService *)store)->session, &refresh_ops, sizeof (*m));
+				m = camel_session_thread_msg_new (
+					session, &refresh_ops, sizeof (*m));
 				m->store = g_object_ref (store);
 				m->error = NULL;
-				camel_session_thread_queue (((CamelService *)store)->session, &m->msg, 0);
+				camel_session_thread_queue (
+					session, &m->msg, 0);
 			}
-			camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+			camel_service_unlock (
+				service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 		}
 	} else {
 		gchar *pattern;
@@ -3191,12 +3218,17 @@ imap_can_refresh_folder (CamelStore *store,
                          CamelFolderInfo *info,
                          GError **error)
 {
+	CamelURL *url;
 	gboolean res;
 	GError *local_error = NULL;
 
-	res = CAMEL_STORE_CLASS (camel_imap_store_parent_class)->can_refresh_folder (store, info, &local_error) ||
-	      (camel_url_get_param (((CamelService *)store)->url, "check_all") != NULL) ||
-	      (camel_url_get_param (((CamelService *)store)->url, "check_lsub") != NULL && (info->flags & CAMEL_FOLDER_SUBSCRIBED) != 0);
+	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
+
+	res = CAMEL_STORE_CLASS (camel_imap_store_parent_class)->
+		can_refresh_folder (store, info, &local_error) ||
+		(camel_url_get_param (url, "check_all") != NULL) ||
+		(camel_url_get_param (url, "check_lsub") != NULL &&
+		(info->flags & CAMEL_FOLDER_SUBSCRIBED) != 0);
 
 	if (!res && local_error == NULL && CAMEL_IS_IMAP_STORE (store)) {
 		CamelStoreInfo *si;

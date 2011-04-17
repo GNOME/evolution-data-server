@@ -791,6 +791,7 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 	CamelSaslDigestMd5 *sasl_digest = CAMEL_SASL_DIGEST_MD5 (sasl);
 	struct _CamelSaslDigestMd5Private *priv = sasl_digest->priv;
 	CamelService *service;
+	CamelURL *url;
 	struct _param *rspauth;
 	GByteArray *ret = NULL;
 	gboolean abort = FALSE;
@@ -806,7 +807,9 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 
 	service = camel_sasl_get_service (sasl);
 	service_name = camel_sasl_get_service_name (sasl);
-	g_return_val_if_fail (service->url->passwd != NULL, NULL);
+
+	url = camel_service_get_camel_url (service);
+	g_return_val_if_fail (url->passwd != NULL, NULL);
 
 	switch (priv->state) {
 	case STATE_AUTH:
@@ -841,17 +844,16 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 		memset (&hints, 0, sizeof (hints));
 		hints.ai_flags = AI_CANONNAME;
 		ai = camel_getaddrinfo (
-			service->url->host ?
-			service->url->host : "localhost",
+			url->host ? url->host : "localhost",
 			NULL, &hints, cancellable, NULL);
 		if (ai && ai->ai_canonname)
 			ptr = ai->ai_canonname;
 		else
 			ptr = "localhost.localdomain";
 
-		priv->response = generate_response (priv->challenge, ptr, service_name,
-						    service->url->user,
-						    service->url->passwd);
+		priv->response = generate_response (
+			priv->challenge, ptr, service_name,
+			url->user, url->passwd);
 		if (ai)
 			camel_freeaddrinfo (ai);
 		ret = digest_response (priv->response);
@@ -894,7 +896,7 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 			return NULL;
 		}
 
-		compute_response (priv->response, service->url->passwd, FALSE, out);
+		compute_response (priv->response, url->passwd, FALSE, out);
 		if (memcmp (out, rspauth->value, 32) != 0) {
 			g_free (rspauth->name);
 			g_free (rspauth->value);

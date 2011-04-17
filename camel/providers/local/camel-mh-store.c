@@ -523,9 +523,10 @@ mh_store_get_folder_info_sync (CamelStore *store,
 	CamelURL *url;
 	gchar *root;
 
-	root = ((CamelService *)store)->url->path;
+	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
-	url = camel_url_copy (((CamelService *) store)->url);
+	root = url->path;
+	url = camel_url_copy (url);
 
 	/* use .folders if we are supposed to */
 	if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS) {

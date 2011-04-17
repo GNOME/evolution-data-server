@@ -114,6 +114,15 @@ CamelService
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_service_get_camel_url ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_service_get_url ##### -->
 <para>
 
@@ -149,6 +158,15 @@ CamelService
 @service: 
 @clean: 
 @error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_service_get_connection_status ##### -->
+<para>
+
+</para>
+
+@service: 
 @Returns: 
 
 

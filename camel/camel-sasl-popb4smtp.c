@@ -72,7 +72,7 @@ sasl_popb4smtp_challenge_sync (CamelSasl *sasl,
 	time_t now, *timep;
 
 	service = camel_sasl_get_service (sasl);
-	session = service->session;
+	session = camel_service_get_session (service);
 	camel_sasl_set_authenticated (sasl, FALSE);
 
 	popuri = camel_session_get_password (

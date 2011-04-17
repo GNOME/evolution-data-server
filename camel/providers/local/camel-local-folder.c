@@ -163,7 +163,7 @@ local_folder_constructed (GObject *object)
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
 
-	url = CAMEL_SERVICE (parent_store)->url;
+	url = camel_service_get_camel_url (CAMEL_SERVICE (parent_store));
 	if (url->path == NULL)
 		return;
 
@@ -520,7 +520,7 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 	parent_store = camel_folder_get_parent_store (folder);
 
 	ls = CAMEL_LOCAL_STORE (parent_store);
-	url = CAMEL_SERVICE (parent_store)->url;
+	url = camel_service_get_camel_url (CAMEL_SERVICE (parent_store));
 
 	root_dir_path = camel_local_store_get_toplevel_dir (ls);
 	/* strip the trailing '/' which is always present */

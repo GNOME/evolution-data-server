@@ -274,18 +274,18 @@ store_construct (CamelService *service,
 	if (!service_class->construct (service, session, provider, url, error))
 		return FALSE;
 
-	store_db_path = g_build_filename (service->url->path, CAMEL_DB_FILE, NULL);
+	store_db_path = g_build_filename (url->path, CAMEL_DB_FILE, NULL);
 
-	if (!service->url->path || strlen (store_db_path) < 2) {
+	if (!url->path || strlen (store_db_path) < 2) {
 		store_path = camel_session_get_storage_path (session, service, error);
 
 		g_free (store_db_path);
 		store_db_path = g_build_filename (store_path, CAMEL_DB_FILE, NULL);
 	}
 
-	if (!g_file_test (service->url->path ? service->url->path : store_path, G_FILE_TEST_EXISTS)) {
+	if (!g_file_test (url->path ? url->path : store_path, G_FILE_TEST_EXISTS)) {
 		/* Cache might be blown. Recreate. */
-		g_mkdir_with_parents (service->url->path ? service->url->path : store_path, S_IRWXU);
+		g_mkdir_with_parents (url->path ? url->path : store_path, S_IRWXU);
 	}
 
 	g_free (store_path);
@@ -1613,6 +1613,7 @@ add_special_info (CamelStore *store,
                   CamelFolderInfoFlags flags)
 {
 	CamelFolderInfo *fi, *vinfo, *parent;
+	CamelProvider *provider;
 	gchar *uri, *path;
 	CamelURL *url;
 
@@ -1625,9 +1626,11 @@ add_special_info (CamelStore *store,
 		parent = fi;
 	}
 
+	provider = camel_service_get_provider (CAMEL_SERVICE (store));
+
 	/* create our vTrash/vJunk URL */
 	url = camel_url_new (info->uri, NULL);
-	if (((CamelService *) store)->provider->url_flags & CAMEL_URL_FRAGMENT_IS_PATH) {
+	if (provider->url_flags & CAMEL_URL_FRAGMENT_IS_PATH) {
 		camel_url_set_fragment (url, name);
 	} else {
 		path = g_strdup_printf ("/%s", name);
@@ -2024,7 +2027,7 @@ camel_store_folder_uri_equal (CamelStore *store,
 	class = CAMEL_STORE_GET_CLASS (store);
 	g_return_val_if_fail (class->compare_folder_name != NULL, FALSE);
 
-	provider = ((CamelService *) store)->provider;
+	provider = camel_service_get_provider (CAMEL_SERVICE (store));
 
 	if (!(url0 = camel_url_new (uri0, NULL)))
 		return FALSE;
@@ -2397,8 +2400,14 @@ camel_store_get_folder_info_sync (CamelStore *store,
 	}
 
 	if (camel_debug_start("store:folder_info")) {
-		gchar *url = camel_url_to_string (((CamelService *)store)->url, CAMEL_URL_HIDE_ALL);
-		printf("Get folder info(%p:%s, '%s') =\n", (gpointer) store, url, top?top:"<null>");
+		CamelURL *curl;
+		gchar *url;
+
+		curl = camel_service_get_camel_url (CAMEL_SERVICE (store));
+		url = camel_url_to_string (curl, CAMEL_URL_HIDE_ALL);
+		printf (
+			"Get folder info(%p:%s, '%s') =\n",
+			(gpointer) store, url, top ? top : "<null>");
 		g_free (url);
 		dump_fi (info, 2);
 		camel_debug_end ();

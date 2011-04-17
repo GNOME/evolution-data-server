@@ -109,6 +109,7 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
                                      GError **error)
 {
 	CamelService *service = CAMEL_SERVICE (store);
+	CamelSession *session;
 	gboolean network_available;
 
 	g_return_val_if_fail (CAMEL_IS_OFFLINE_STORE (store), FALSE);
@@ -116,8 +117,9 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 	if (store->priv->online == online)
 		return TRUE;
 
-	network_available =
-		camel_session_get_network_available (service->session);
+	service = CAMEL_SERVICE (store);
+	session = camel_service_get_session (service);
+	network_available = camel_session_get_network_available (session);
 
 	if (store->priv->online) {
 		/* network available -> network unavailable */
@@ -125,9 +127,11 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 			if (((CamelStore *) store)->folders) {
 				GPtrArray *folders;
 				CamelFolder *folder;
+				CamelURL *url;
 				gint i, sync;
 
-				sync = camel_url_get_param (((CamelService *) store)->url, "sync_offline") != NULL;
+				url = camel_service_get_camel_url (service);
+				sync = camel_url_get_param (url, "sync_offline") != NULL;
 
 				folders = camel_object_bag_list (((CamelStore *) store)->folders);
 				for (i = 0; i < folders->len; i++) {
@@ -180,19 +184,23 @@ camel_offline_store_prepare_for_offline_sync (CamelOfflineStore *store,
                                               GError **error)
 {
 	CamelService *service;
+	CamelSession *session;
 
 	g_return_val_if_fail (CAMEL_IS_OFFLINE_STORE (store), FALSE);
 
 	service = CAMEL_SERVICE (store);
+	session = camel_service_get_session (service);
 
-	if (camel_session_get_network_available (service->session)) {
+	if (camel_session_get_network_available (session)) {
 		if (store->priv->online) {
 			if (((CamelStore *) store)->folders) {
 				GPtrArray *folders;
 				CamelFolder *folder;
+				CamelURL *url;
 				gint i, sync;
 
-				sync = camel_url_get_param (((CamelService *) store)->url, "sync_offline") != NULL;
+				url = camel_service_get_camel_url (service);
+				sync = camel_url_get_param (url, "sync_offline") != NULL;
 
 				folders = camel_object_bag_list (((CamelStore *) store)->folders);
 				for (i = 0; i < folders->len; i++) {

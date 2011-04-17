@@ -207,7 +207,7 @@ filter_filter (CamelSession *session,
 
 	full_name = camel_folder_get_full_name (m->folder);
 	parent_store = camel_folder_get_parent_store (m->folder);
-	csp = CAMEL_SERVICE (parent_store)->session->junk_plugin;
+	csp = session->junk_plugin;
 
 	if (m->junk) {
 		/* Translators: The %s is replaced with a folder name where the operation is running. */
@@ -1386,7 +1386,7 @@ folder_changed (CamelFolder *folder,
 	g_return_if_fail (info != NULL);
 
 	parent_store = camel_folder_get_parent_store (folder);
-	session = CAMEL_SERVICE (parent_store)->session;
+	session = camel_service_get_session (CAMEL_SERVICE (parent_store));
 
 	camel_folder_lock (folder, CAMEL_FOLDER_CHANGE_LOCK);
 	if (folder->priv->frozen) {
@@ -1862,6 +1862,7 @@ const gchar *
 camel_folder_get_uri (CamelFolder *folder)
 {
 	CamelService *service;
+	CamelProvider *provider;
 	CamelStore *parent_store;
 	const gchar *full_name;
 	CamelURL *url;
@@ -1875,11 +1876,13 @@ camel_folder_get_uri (CamelFolder *folder)
 
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
+
 	service = CAMEL_SERVICE (parent_store);
+	provider = camel_service_get_provider (service);
 
-	url = camel_url_copy (service->url);
+	url = camel_url_copy (camel_service_get_camel_url (service));
 
-	if (service->provider->url_flags & CAMEL_URL_FRAGMENT_IS_PATH) {
+	if (provider->url_flags & CAMEL_URL_FRAGMENT_IS_PATH) {
 		camel_url_set_fragment (url, full_name);
 	} else {
 		gchar *path = g_strdup_printf ("/%s", full_name);

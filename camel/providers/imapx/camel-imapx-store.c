@@ -143,7 +143,11 @@ imapx_store_finalize (GObject *object)
 }
 
 static gboolean
-imapx_construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, GError **error)
+imapx_construct (CamelService *service,
+                 CamelSession *session,
+                 CamelProvider *provider,
+                 CamelURL *url,
+                 GError **error)
 {
 	gchar *summary;
 	CamelIMAPXStore *store = (CamelIMAPXStore *)service;
@@ -153,10 +157,10 @@ imapx_construct (CamelService *service, CamelSession *session, CamelProvider *pr
 	if (!service_class->construct (service, session, provider, url, error))
 		return FALSE;
 
-	store->base_url = camel_url_to_string (service->url, (CAMEL_URL_HIDE_PASSWORD |
-								   CAMEL_URL_HIDE_PARAMS |
-								   CAMEL_URL_HIDE_AUTH));
-	imapx_parse_receiving_options (store, service->url);
+	store->base_url = camel_url_to_string (
+		url, CAMEL_URL_HIDE_PASSWORD |
+		CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH);
+	imapx_parse_receiving_options (store, url);
 
 	store->summary = camel_imapx_store_summary_new ();
 	store->storage_path = camel_session_get_storage_path (session, service, error);
@@ -167,7 +171,8 @@ imapx_construct (CamelService *service, CamelSession *session, CamelProvider *pr
 	summary = g_build_filename(store->storage_path, ".ev-store-summary", NULL);
 	camel_store_summary_set_filename ((CamelStoreSummary *)store->summary, summary);
 	/* FIXME: need to remove params, passwords, etc */
-	camel_store_summary_set_uri_base ((CamelStoreSummary *)store->summary, service->url);
+	camel_store_summary_set_uri_base (
+		(CamelStoreSummary *)store->summary, url);
 	camel_store_summary_load ((CamelStoreSummary *)store->summary);
 
 	g_free (summary);
@@ -178,11 +183,17 @@ imapx_construct (CamelService *service, CamelSession *session, CamelProvider *pr
 static gchar *
 imapx_get_name (CamelService *service, gboolean brief)
 {
+	CamelURL *url;
+
+	url = camel_service_get_camel_url (service);
+
 	if (brief)
-		return g_strdup_printf (_("IMAP server %s"), service->url->host);
+		return g_strdup_printf (
+			_("IMAP server %s"), url->host);
 	else
-		return g_strdup_printf (_("IMAP service for %s on %s"),
-					service->url->user, service->url->host);
+		return g_strdup_printf (
+			_("IMAP service for %s on %s"),
+			url->user, url->host);
 }
 
 CamelIMAPXServer *
@@ -265,6 +276,7 @@ imapx_query_auth_types_sync (CamelService *service,
 {
 	CamelIMAPXStore *istore = CAMEL_IMAPX_STORE (service);
 	CamelServiceAuthType *authtype;
+	CamelURL *url;
 	GList *sasl_types, *t, *next;
 	gboolean connected;
 	CamelIMAPXServer *server;
@@ -279,7 +291,8 @@ imapx_query_auth_types_sync (CamelService *service,
 
 	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
-	server = camel_imapx_server_new ((CamelStore *)istore, service->url);
+	url = camel_service_get_camel_url (service);
+	server = camel_imapx_server_new ((CamelStore *)istore, url);
 
 	connected = server->stream != NULL;
 	if (!connected)
@@ -1068,17 +1081,23 @@ discover_inbox (CamelStore *store,
 }
 
 static gboolean
-imapx_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, GError **error)
+imapx_can_refresh_folder (CamelStore *store,
+                          CamelFolderInfo *info,
+                          GError **error)
 {
 	CamelStoreClass *store_class;
+	CamelURL *url;
 	gboolean res;
 	GError *local_error = NULL;
 
 	store_class = CAMEL_STORE_CLASS (camel_imapx_store_parent_class);
 
+	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
+
 	res = store_class->can_refresh_folder (store, info, &local_error) ||
-	      (camel_url_get_param (((CamelService *)store)->url, "check_all") != NULL) ||
-	      (camel_url_get_param (((CamelService *)store)->url, "check_lsub") != NULL && (info->flags & CAMEL_FOLDER_SUBSCRIBED) != 0);
+		(camel_url_get_param (url, "check_all") != NULL) ||
+		(camel_url_get_param (url, "check_lsub") != NULL &&
+		(info->flags & CAMEL_FOLDER_SUBSCRIBED) != 0);
 
 	if (!res && local_error == NULL && CAMEL_IS_IMAPX_STORE (store)) {
 		CamelStoreInfo *si;
@@ -1148,8 +1167,11 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 {
 	CamelIMAPXStore *istore = (CamelIMAPXStore *)store;
 	CamelFolderInfo * fi= NULL;
+	CamelSession *session;
 	gboolean initial_setup = FALSE;
 	gchar *pattern;
+
+	session = camel_service_get_session (CAMEL_SERVICE (store));
 
 	if (top == NULL)
 		top = "";
@@ -1173,9 +1195,9 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 			struct _imapx_refresh_msg *m;
 
 			istore->last_refresh_time = time (NULL);
-			m = camel_session_thread_msg_new (((CamelService *)store)->session, &imapx_refresh_ops, sizeof (*m));
+			m = camel_session_thread_msg_new (session, &imapx_refresh_ops, sizeof (*m));
 			m->store = g_object_ref (store);
-			camel_session_thread_queue (((CamelService *)store)->session, &m->msg, 0);
+			camel_session_thread_queue (session, &m->msg, 0);
 		}
 
 		fi = get_folder_info_offline (store, top, flags, error);

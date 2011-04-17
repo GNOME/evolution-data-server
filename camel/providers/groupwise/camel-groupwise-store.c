@@ -78,9 +78,11 @@ static gint match_path (const gchar *path, const gchar *name);
 G_DEFINE_TYPE (CamelGroupwiseStore, camel_groupwise_store, CAMEL_TYPE_OFFLINE_STORE)
 
 static gboolean
-groupwise_store_construct (CamelService *service, CamelSession *session,
-			   CamelProvider *provider, CamelURL *url,
-			   GError **error)
+groupwise_store_construct (CamelService *service,
+                           CamelSession *session,
+                           CamelProvider *provider,
+                           CamelURL *url,
+                           GError **error)
 {
 	CamelServiceClass *service_class;
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (service);
@@ -121,9 +123,9 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 	priv->user = g_strdup (url->user);
 
 	/*base url*/
-	priv->base_url = camel_url_to_string (service->url, (CAMEL_URL_HIDE_PASSWORD |
-						       CAMEL_URL_HIDE_PARAMS   |
-						       CAMEL_URL_HIDE_AUTH)  );
+	priv->base_url = camel_url_to_string (
+		url, CAMEL_URL_HIDE_PASSWORD |
+		CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH);
 
 	/*soap port*/
 	property_value =  camel_url_get_param (url, "soap_port");
@@ -175,30 +177,34 @@ groupwise_auth_loop (CamelService *service,
 	CamelStore *store = CAMEL_STORE (service);
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (store);
 	CamelGroupwiseStorePrivate *priv = groupwise_store->priv;
+	CamelURL *url;
 	gboolean authenticated = FALSE;
 	gchar *uri;
 	guint32 prompt_flags = CAMEL_SESSION_PASSWORD_SECRET;
 	EGwConnectionErrors errors = {E_GW_CONNECTION_STATUS_INVALID_OBJECT, NULL};
 
+	url = camel_service_get_camel_url (service);
+
 	if (priv->use_ssl && !g_str_equal (priv->use_ssl, "never"))
 		uri = g_strconcat ("https://", priv->server_name, ":", priv->port, "/soap", NULL);
 	else
 		uri = g_strconcat ("http://", priv->server_name, ":", priv->port, "/soap", NULL);
-	service->url->passwd = NULL;
+	url->passwd = NULL;
 
 	while (!authenticated) {
 
-		if (!service->url->passwd && !(store->flags & CAMEL_STORE_PROXY)) {
+		if (!url->passwd && !(store->flags & CAMEL_STORE_PROXY)) {
 			gchar *prompt;
 
 			prompt = camel_session_build_password_prompt (
-				"GroupWise", service->url->user, service->url->host);
-			service->url->passwd =
-				camel_session_get_password (session, service, "Groupwise",
-							    prompt, "password", prompt_flags, error);
+				"GroupWise", url->user, url->host);
+			url->passwd =
+				camel_session_get_password (
+					session, service, "Groupwise", prompt,
+					"password", prompt_flags, error);
 			g_free (prompt);
 
-			if (!service->url->passwd) {
+			if (!url->passwd) {
 				g_set_error (
 					error, G_IO_ERROR,
 					G_IO_ERROR_CANCELLED,
@@ -207,18 +213,18 @@ groupwise_auth_loop (CamelService *service,
 			}
 		}
 
-		priv->cnc = e_gw_connection_new_with_error_handler (uri, priv->user, service->url->passwd, &errors);
+		priv->cnc = e_gw_connection_new_with_error_handler (uri, priv->user, url->passwd, &errors);
 		if (!E_IS_GW_CONNECTION(priv->cnc) && priv->use_ssl && g_str_equal (priv->use_ssl, "when-possible")) {
 			gchar *http_uri = g_strconcat ("http://", uri + 8, NULL);
-			priv->cnc = e_gw_connection_new (http_uri, priv->user, service->url->passwd);
+			priv->cnc = e_gw_connection_new (http_uri, priv->user, url->passwd);
 			g_free (http_uri);
 		}
 		if (!E_IS_GW_CONNECTION (priv->cnc)) {
 			if (errors.status == E_GW_CONNECTION_STATUS_INVALID_PASSWORD) {
 				/* We need to un-cache the password before prompting again */
 				prompt_flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
-				g_free (service->url->passwd);
-				service->url->passwd = NULL;
+				g_free (url->passwd);
+				url->passwd = NULL;
 			} else {
 				g_set_error (
 					error, CAMEL_SERVICE_ERROR,
@@ -292,17 +298,25 @@ groupwise_connect_sync (CamelService *service,
 	CamelGroupwiseStore *store = CAMEL_GROUPWISE_STORE (service);
 	CamelGroupwiseStorePrivate *priv = store->priv;
 	CamelGroupwiseStoreNamespace *ns;
-	CamelSession *session = service->session;
+	CamelServiceConnectionStatus status;
+	CamelProvider *provider;
+	CamelSession *session;
+	CamelURL *url;
 
 	d("in groupwise store connect\n");
 
-	if (service->status == CAMEL_SERVICE_DISCONNECTED)
+	url = camel_service_get_camel_url (service);
+	session = camel_service_get_session (service);
+	provider = camel_service_get_provider (service);
+	status = camel_service_get_connection_status (service);
+
+	if (status == CAMEL_SERVICE_DISCONNECTED)
 		return FALSE;
 
 	if (!priv) {
 		store->priv = g_new0 (CamelGroupwiseStorePrivate, 1);
 		priv = store->priv;
-		camel_service_construct (service, service->session, service->provider, service->url, error);
+		camel_service_construct (service, session, provider, url, error);
 	}
 
 	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
@@ -318,7 +332,6 @@ groupwise_connect_sync (CamelService *service,
 		return FALSE;
 	}
 
-	service->status = CAMEL_SERVICE_CONNECTED;
 	camel_offline_store_set_online_sync (
 		CAMEL_OFFLINE_STORE (store), TRUE, cancellable, NULL);
 
@@ -981,6 +994,7 @@ groupwise_folders_sync (CamelGroupwiseStore *store,
 	CamelFolderInfo *info = NULL, *hfi = NULL;
 	GHashTable *present;
 	CamelStoreInfo *si = NULL;
+	CamelURL *service_url;
 	gint count, i;
 
 	status = e_gw_connection_get_container_list (priv->cnc, "folders", &folder_list);
@@ -994,12 +1008,13 @@ groupwise_folders_sync (CamelGroupwiseStore *store,
 	temp_list = folder_list;
 	list = folder_list;
 
-	url = camel_url_to_string (CAMEL_SERVICE (store)->url,
-				   (CAMEL_URL_HIDE_PASSWORD|
-				    CAMEL_URL_HIDE_PARAMS|
-				    CAMEL_URL_HIDE_AUTH) );
+	service_url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
-	if ( url[strlen (url) - 1] != '/') {
+	url = camel_url_to_string (
+		service_url, CAMEL_URL_HIDE_PASSWORD |
+		CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH);
+
+	if (url[strlen (url) - 1] != '/') {
 		temp_url = g_strconcat (url, "/", NULL);
 		g_free ((gchar *)url);
 		url = temp_url;
@@ -1376,11 +1391,17 @@ groupwise_store_rename_folder_sync (CamelStore *store,
 gchar *
 groupwise_get_name (CamelService *service, gboolean brief)
 {
+	CamelURL *url;
+
+	url = camel_service_get_camel_url (service);
+
 	if (brief)
-		return g_strdup_printf(_("GroupWise server %s"), service->url->host);
+		return g_strdup_printf (
+			_("GroupWise server %s"), url->host);
 	else
-		return g_strdup_printf(_("GroupWise service for %s on %s"),
-				       service->url->user, service->url->host);
+		return g_strdup_printf (
+			_("GroupWise service for %s on %s"),
+			url->user, url->host);
 }
 
 const gchar *
@@ -1442,10 +1463,14 @@ groupwise_store_get_trash_folder_sync (CamelStore *store,
 static gboolean
 groupwise_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, GError **error)
 {
+	CamelURL *url;
 	gboolean res;
 
-	res = CAMEL_STORE_CLASS (camel_groupwise_store_parent_class)->can_refresh_folder (store, info, error) ||
-	      (camel_url_get_param (((CamelService *)store)->url, "check_all") != NULL);
+	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
+
+	res = CAMEL_STORE_CLASS (camel_groupwise_store_parent_class)->
+		can_refresh_folder (store, info, error) ||
+		(camel_url_get_param (url, "check_all") != NULL);
 
 	return res;
 }

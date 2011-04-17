@@ -512,21 +512,23 @@ camel_session_get_service_connected (CamelSession *session,
                                      CamelProviderType type,
                                      GError **error)
 {
-	CamelService *svc;
+	CamelService *service;
+	CamelServiceConnectionStatus status;
 
-	svc = camel_session_get_service (session, url_string, type, error);
-	if (svc == NULL)
+	service = camel_session_get_service (session, url_string, type, error);
+	if (service == NULL)
 		return NULL;
 
 	/* FIXME This blocks.  Need to take a GCancellable. */
-	if (svc->status != CAMEL_SERVICE_CONNECTED) {
-		if (!camel_service_connect_sync (svc, error)) {
-			g_object_unref (svc);
+	status = camel_service_get_connection_status (service);
+	if (status != CAMEL_SERVICE_CONNECTED) {
+		if (!camel_service_connect_sync (service, error)) {
+			g_object_unref (service);
 			return NULL;
 		}
 	}
 
-	return svc;
+	return service;
 }
 
 /**

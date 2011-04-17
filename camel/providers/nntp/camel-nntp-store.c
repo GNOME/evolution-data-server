@@ -61,13 +61,18 @@ camel_nntp_try_authenticate (CamelNNTPStore *store,
                              GCancellable *cancellable,
                              GError **error)
 {
-	CamelService *service = (CamelService *) store;
-	CamelSession *session = camel_service_get_session (service);
+	CamelService *service;
+	CamelSession *session;
+	CamelURL *url;
 	gint ret;
 	gchar *line = NULL;
 	GError *local_error = NULL;
 
-	if (!service->url->user) {
+	service = CAMEL_SERVICE (store);
+	url = camel_service_get_camel_url (service);
+	session = camel_service_get_session (service);
+
+	if (!url->user) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Authentication requested but no username provided"));
@@ -75,11 +80,11 @@ camel_nntp_try_authenticate (CamelNNTPStore *store,
 	}
 
 	/* if nessecary, prompt for the password */
-	if (!service->url->passwd) {
+	if (!url->passwd) {
 		gchar *prompt, *base;
 	retry:
 		base = camel_session_build_password_prompt (
-			"NNTP", service->url->user, service->url->host);
+			"NNTP", url->user, url->host);
 		if (line) {
 			gchar *top = g_markup_printf_escaped (
 				_("Cannot authenticate to server: %s"), line);
@@ -91,22 +96,22 @@ camel_nntp_try_authenticate (CamelNNTPStore *store,
 			base = NULL;
 		}
 
-		service->url->passwd =
+		url->passwd =
 			camel_session_get_password (session, service, NULL,
 						    prompt, "password", CAMEL_SESSION_PASSWORD_SECRET | (store->password_reprompt ? CAMEL_SESSION_PASSWORD_REPROMPT : 0), error);
 		g_free (prompt);
 		g_free (base);
 
-		if (!service->url->passwd)
+		if (!url->passwd)
 			return -1;
 
 		store->password_reprompt = FALSE;
 	}
 
 	/* now, send auth info (currently, only authinfo user/pass is supported) */
-	ret = camel_nntp_raw_command(store, cancellable, &local_error, &line, "authinfo user %s", service->url->user);
+	ret = camel_nntp_raw_command(store, cancellable, &local_error, &line, "authinfo user %s", url->user);
 	if (ret == NNTP_AUTH_CONTINUE)
-		ret = camel_nntp_raw_command(store, cancellable, &local_error, &line, "authinfo pass %s", service->url->passwd);
+		ret = camel_nntp_raw_command(store, cancellable, &local_error, &line, "authinfo pass %s", url->passwd);
 
 	if (ret != NNTP_AUTH_ACCEPTED) {
 		if (ret != -1) {
@@ -118,8 +123,8 @@ camel_nntp_try_authenticate (CamelNNTPStore *store,
 
 			/* To force password reprompt */
 			store->password_reprompt = TRUE;
-			g_free (service->url->passwd);
-			service->url->passwd = NULL;
+			g_free (url->passwd);
+			url->passwd = NULL;
 			goto retry;
 		}
 		return -1;
@@ -318,6 +323,7 @@ connect_to_server (CamelService *service,
 	CamelNNTPStore *store = (CamelNNTPStore *) service;
 	CamelDiscoStore *disco_store = (CamelDiscoStore*) service;
 	CamelSession *session;
+	CamelURL *url;
 	gchar *socks_host;
 	gint socks_port;
 	CamelStream *tcp_stream;
@@ -326,28 +332,30 @@ connect_to_server (CamelService *service,
 	guint len;
 	gchar *path;
 
+	url = camel_service_get_camel_url (service);
+	session = camel_service_get_session (service);
+
 	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (ssl_mode != MODE_CLEAR) {
 #ifdef CAMEL_HAVE_SSL
 		if (ssl_mode == MODE_TLS) {
-			tcp_stream = camel_tcp_stream_ssl_new_raw (service->session, service->url->host, STARTTLS_FLAGS);
+			tcp_stream = camel_tcp_stream_ssl_new_raw (session, url->host, STARTTLS_FLAGS);
 		} else {
-			tcp_stream = camel_tcp_stream_ssl_new (service->session, service->url->host, SSL_PORT_FLAGS);
+			tcp_stream = camel_tcp_stream_ssl_new (session, url->host, SSL_PORT_FLAGS);
 		}
 #else
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_UNAVAILABLE,
 			_("Could not connect to %s: %s"),
-			service->url->host, _("SSL unavailable"));
+			url->host, _("SSL unavailable"));
 		goto fail;
 #endif /* CAMEL_HAVE_SSL */
 	} else {
 		tcp_stream = camel_tcp_stream_raw_new ();
 	}
 
-	session = camel_service_get_session (service);
 	camel_session_get_socks_proxy (session, &socks_host, &socks_port);
 
 	if (socks_host) {
@@ -360,7 +368,7 @@ connect_to_server (CamelService *service,
 		fallback_port, cancellable, error) == -1) {
 		g_prefix_error (
 			error, _("Could not connect to %s: "),
-			service->url->host);
+			url->host);
 		g_object_unref (tcp_stream);
 
 		goto fail;
@@ -373,7 +381,7 @@ connect_to_server (CamelService *service,
 	if (camel_nntp_stream_line (store->stream, &buf, &len, cancellable, error) == -1) {
 		g_prefix_error (
 			error, _("Could not read greeting from %s: "),
-			service->url->host);
+			url->host);
 
 		g_object_unref (store->stream);
 		store->stream = NULL;
@@ -386,7 +394,7 @@ connect_to_server (CamelService *service,
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("NNTP server %s returned error code %d: %s"),
-			service->url->host, len, buf);
+			url->host, len, buf);
 
 		g_object_unref (store->stream);
 		store->stream = NULL;
@@ -395,8 +403,7 @@ connect_to_server (CamelService *service,
 	}
 
 	/* if we have username, try it here */
-	if (service->url->user != NULL
-	    && service->url->user[0]
+	if (url->user != NULL && url->user[0]
 	    && camel_nntp_try_authenticate (store, cancellable, error) != NNTP_AUTH_ACCEPTED)
 		goto fail;
 
@@ -443,13 +450,16 @@ nntp_connect_online (CamelService *service,
                      GError **error)
 {
 	CamelNNTPStore *store = CAMEL_NNTP_STORE (service);
+	CamelURL *url;
 	const gchar *ssl_mode;
 	gint mode, i;
 	gchar *serv;
 	gint fallback_port;
 	GError *local_error = NULL;
 
-	if ((ssl_mode = camel_url_get_param (service->url, "use_ssl"))) {
+	url = camel_service_get_camel_url (service);
+
+	if ((ssl_mode = camel_url_get_param (url, "use_ssl"))) {
 		for (i = 0; ssl_options[i].value; i++)
 			if (!strcmp (ssl_options[i].value, ssl_mode))
 				break;
@@ -462,14 +472,14 @@ nntp_connect_online (CamelService *service,
 		fallback_port = NNTP_PORT;
 	}
 
-	if (service->url->port) {
+	if (url->port) {
 		serv = g_alloca (16);
-		sprintf (serv, "%d", service->url->port);
+		sprintf (serv, "%d", url->port);
 		fallback_port = 0;
 	}
 
 	if (!connect_to_server (
-		service, service->url->host, serv,
+		service, url->host, serv,
 		fallback_port, mode, cancellable, error))
 		return FALSE;
 
@@ -493,7 +503,7 @@ nntp_connect_online (CamelService *service,
 	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return connect_to_server (
-		service, service->url->host, serv,
+		service, url->host, serv,
 		fallback_port, mode, cancellable, error);
 }
 
@@ -576,10 +586,14 @@ nntp_disconnect_offline (CamelService *service,
 static gchar *
 nntp_store_get_name (CamelService *service, gboolean brief)
 {
+	CamelURL *url;
+
+	url = camel_service_get_camel_url (service);
+
 	if (brief)
-		return g_strdup_printf ("%s", service->url->host);
+		return g_strdup_printf ("%s", url->host);
 	else
-		return g_strdup_printf (_("USENET News via %s"), service->url->host);
+		return g_strdup_printf (_("USENET News via %s"), url->host);
 
 }
 
@@ -652,12 +666,16 @@ nntp_newsgroup_name_short (const gchar *name)
  */
 
 static CamelFolderInfo *
-nntp_folder_info_from_store_info (CamelNNTPStore *store, gboolean short_notation, CamelStoreInfo *si)
+nntp_folder_info_from_store_info (CamelNNTPStore *store,
+                                  gboolean short_notation,
+                                  CamelStoreInfo *si)
 {
-	CamelURL *base_url = ((CamelService *) store)->url;
+	CamelURL *base_url;
 	CamelFolderInfo *fi;
 	CamelURL *url;
 	gchar *path;
+
+	base_url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (si->path);
@@ -682,10 +700,12 @@ nntp_folder_info_from_store_info (CamelNNTPStore *store, gboolean short_notation
 static CamelFolderInfo *
 nntp_folder_info_from_name (CamelNNTPStore *store, gboolean short_notation, const gchar *name)
 {
-	CamelURL *base_url = ((CamelService *)store)->url;
+	CamelURL *base_url;
 	CamelFolderInfo *fi;
 	CamelURL *url;
 	gchar *path;
+
+	base_url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (name);
@@ -711,11 +731,13 @@ static CamelNNTPStoreInfo *
 nntp_store_info_update (CamelNNTPStore *store, gchar *line)
 {
 	CamelStoreSummary *summ = (CamelStoreSummary *)store->summary;
-	CamelURL *base_url = ((CamelService *)store)->url;
+	CamelURL *base_url;
 	CamelNNTPStoreInfo *si, *fsi;
 	CamelURL *url;
 	gchar *relpath, *tmp;
 	guint32 last = 0, first = 0, new = 0;
+
+	base_url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
 	tmp = strchr (line, ' ');
 	if (tmp)
@@ -914,7 +936,10 @@ nntp_push_to_hierarchy (CamelURL *base_url, CamelFolderInfo *root, CamelFolderIn
  * get folder info, using the information in our StoreSummary
  */
 static CamelFolderInfo *
-nntp_store_get_cached_folder_info (CamelNNTPStore *store, const gchar *orig_top, guint flags, GError **error)
+nntp_store_get_cached_folder_info (CamelNNTPStore *store,
+                                   const gchar *orig_top,
+                                   guint flags,
+                                   GError **error)
 {
 	gint i;
 	gint subscribed_or_flag = (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) ? 0 : 1,
@@ -923,10 +948,13 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store, const gchar *orig_top,
 	    is_folder_list = flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST;
 	CamelStoreInfo *si;
 	CamelFolderInfo *first = NULL, *last = NULL, *fi = NULL;
+	CamelURL *url;
 	GHashTable *known; /* folder name to folder info */
 	gchar *tmpname;
 	gchar *top = g_strconcat(orig_top?orig_top:"", ".", NULL);
 	gint toplen = strlen (top);
+
+	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
 	known = g_hash_table_new (g_str_hash, g_str_equal);
 
@@ -976,7 +1004,7 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store, const gchar *orig_top,
 
 			if (is_folder_list) {
 				/* create a folder hierarchy rather than a flat list */
-				first = nntp_push_to_hierarchy (((CamelService *)store)->url, first, fi, known);
+				first = nntp_push_to_hierarchy (url, first, fi, known);
 			} else {
 				if (last)
 					last->next = fi;
@@ -1335,9 +1363,11 @@ nntp_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, GError **erro
 
 /* construction function in which we set some basic store properties */
 static gboolean
-nntp_construct (CamelService *service, CamelSession *session,
-		CamelProvider *provider, CamelURL *url,
-		GError **error)
+nntp_construct (CamelService *service,
+                CamelSession *session,
+                CamelProvider *provider,
+                CamelURL *url,
+                GError **error)
 {
 	CamelServiceClass *service_class;
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (service);
@@ -1355,9 +1385,9 @@ nntp_construct (CamelService *service, CamelSession *session,
 		return FALSE;
 
 	/* FIXME */
-	nntp_store->base_url = camel_url_to_string (service->url, (CAMEL_URL_HIDE_PASSWORD |
-								   CAMEL_URL_HIDE_PARAMS |
-								   CAMEL_URL_HIDE_AUTH));
+	nntp_store->base_url = camel_url_to_string (
+		url, CAMEL_URL_HIDE_PASSWORD |
+		CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH);
 
 	tmp = g_build_filename (nntp_store->storage_path, ".ev-store-summary", NULL);
 	nntp_store->summary = camel_nntp_store_summary_new ();

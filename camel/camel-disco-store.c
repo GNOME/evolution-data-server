@@ -231,14 +231,18 @@ disco_store_get_folder_info_sync (CamelStore *store,
 		info = class->get_folder_info_offline (
 			store, top, flags, cancellable, error);
 		if (!(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED))
-			CAMEL_CHECK_GERROR (store, get_folder_info_offline, info != NULL, error);
+			CAMEL_CHECK_GERROR (
+				store, get_folder_info_offline,
+				info != NULL, error);
 		return info;
 
 	case CAMEL_DISCO_STORE_RESYNCING:
 		info = class->get_folder_info_resyncing (
 			store, top, flags, cancellable, error);
 		if (!(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED))
-			CAMEL_CHECK_GERROR (store, get_folder_info_resyncing, info != NULL, error);
+			CAMEL_CHECK_GERROR (
+				store, get_folder_info_resyncing,
+				info != NULL, error);
 		return info;
 	}
 
@@ -251,17 +255,19 @@ disco_store_set_status (CamelDiscoStore *disco_store,
                         GCancellable *cancellable,
                         GError **error)
 {
-	CamelService *service = CAMEL_SERVICE (disco_store);
+	CamelService *service;
+	CamelSession *session;
 	gboolean network_available;
 
 	if (disco_store->status == status)
 		return TRUE;
 
-	/* Sync the folder fully if we've been told to sync online for this store or this folder
-	   and we're going offline */
+	/* Sync the folder fully if we've been told to sync online
+	 * for this store or this folder and we're going offline. */
 
-	network_available =
-		camel_session_get_network_available (service->session);
+	service = CAMEL_SERVICE (disco_store);
+	session = camel_service_get_session (service);
+	network_available = camel_session_get_network_available (session);
 
 	if (network_available) {
 		if (disco_store->status == CAMEL_DISCO_STORE_ONLINE
@@ -269,9 +275,11 @@ disco_store_set_status (CamelDiscoStore *disco_store,
 			if (((CamelStore *)disco_store)->folders) {
 				GPtrArray *folders;
 				CamelFolder *folder;
+				CamelURL *url;
 				gint i, sync;
 
-				sync =  camel_url_get_param(((CamelService *)disco_store)->url, "offline_sync") != NULL;
+				url = camel_service_get_camel_url (service);
+				sync =  camel_url_get_param (url, "offline_sync") != NULL;
 
 				folders = camel_object_bag_list (((CamelStore *)disco_store)->folders);
 				for (i=0;i<folders->len;i++) {
@@ -333,12 +341,17 @@ camel_disco_store_init (CamelDiscoStore *disco_store)
 CamelDiscoStoreStatus
 camel_disco_store_status (CamelDiscoStore *store)
 {
-	CamelService *service = CAMEL_SERVICE (store);
+	CamelService *service;
+	CamelSession *session;
 
-	g_return_val_if_fail (CAMEL_IS_DISCO_STORE (store), CAMEL_DISCO_STORE_ONLINE);
+	g_return_val_if_fail (
+		CAMEL_IS_DISCO_STORE (store), CAMEL_DISCO_STORE_ONLINE);
+
+	service = CAMEL_SERVICE (store);
+	session = camel_service_get_session (service);
 
 	if (store->status != CAMEL_DISCO_STORE_OFFLINE
-	    && !camel_session_get_online (service->session))
+	    && !camel_session_get_online (session))
 		store->status = CAMEL_DISCO_STORE_OFFLINE;
 
 	return store->status;
@@ -428,21 +441,26 @@ camel_disco_store_prepare_for_offline (CamelDiscoStore *disco_store,
                                        GError **error)
 {
 	CamelService *service;
+	CamelSession *session;
 
 	g_return_if_fail (CAMEL_IS_DISCO_STORE (disco_store));
 
 	service = CAMEL_SERVICE (disco_store);
+	session = camel_service_get_session (service);
 
-	/* Sync the folder fully if we've been told to sync online for this store or this folder */
+	/* Sync the folder fully if we've been told to
+	 * sync online for this store or this folder. */
 
-	if (camel_session_get_network_available (service->session)) {
+	if (camel_session_get_network_available (session)) {
 		if (disco_store->status == CAMEL_DISCO_STORE_ONLINE) {
 			if (((CamelStore *)disco_store)->folders) {
 				GPtrArray *folders;
 				CamelFolder *folder;
+				CamelURL *url;
 				gint i, sync;
 
-				sync =  camel_url_get_param(((CamelService *)disco_store)->url, "offline_sync") != NULL;
+				url = camel_service_get_camel_url (service);
+				sync = camel_url_get_param (url, "offline_sync") != NULL;
 
 				folders = camel_object_bag_list (((CamelStore *)disco_store)->folders);
 				for (i=0;i<folders->len;i++) {

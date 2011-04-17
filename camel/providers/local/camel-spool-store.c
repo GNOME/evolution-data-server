@@ -81,7 +81,8 @@ spool_new_fi (CamelStore *store,
 		name = full;
 
 	fi = camel_folder_info_new ();
-	url = camel_url_copy (((CamelService *)store)->url);
+	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
+	url = camel_url_copy (url);
 	camel_url_set_fragment (url, full);
 	fi->uri = camel_url_to_string (url, 0);
 	camel_url_free (url);
@@ -260,10 +261,13 @@ get_folder_info_elm (CamelStore *store,
 {
 	CamelFolderInfo *fi = NULL;
 	GHashTable *visited;
+	CamelURL *url;
 
 	visited = g_hash_table_new (inode_hash, inode_equal);
 
-	if (scan_dir (store, visited, ((CamelService *)store)->url->path, top, flags, NULL, &fi, cancellable, error) == -1 && fi != NULL) {
+	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
+
+	if (scan_dir (store, visited, url->path, top, flags, NULL, &fi, cancellable, error) == -1 && fi != NULL) {
 		camel_store_free_folder_info_full (store, fi);
 		fi = NULL;
 	}
@@ -311,21 +315,21 @@ spool_store_construct (CamelService *service,
 	if (!service_class->construct (service, session, provider, url, error))
 		return FALSE;
 
-	if (service->url->path[0] != '/') {
+	if (url->path[0] != '/') {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_NO_FOLDER,
 			_("Store root %s is not an absolute path"),
-			service->url->path);
+			url->path);
 		return FALSE;
 	}
 
-	if (g_stat (service->url->path, &st) == -1) {
+	if (g_stat (url->path, &st) == -1) {
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
 			_("Spool '%s' cannot be opened: %s"),
-			service->url->path, g_strerror (errno));
+			url->path, g_strerror (errno));
 		return FALSE;
 	}
 
@@ -339,7 +343,7 @@ spool_store_construct (CamelService *service,
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_NO_FOLDER,
 			_("Spool '%s' is not a regular file or directory"),
-			service->url->path);
+			url->path);
 		return FALSE;
 	}
 
@@ -350,11 +354,19 @@ static gchar *
 spool_store_get_name (CamelService *service,
                       gboolean brief)
 {
+	CamelURL *url;
+
+	url = camel_service_get_camel_url (service);
+
 	if (brief)
-		return g_strdup (service->url->path);
+		return g_strdup (url->path);
 	else
-		return g_strdup_printf (((CamelSpoolStore *)service)->type == CAMEL_SPOOL_STORE_MBOX?
-				       _("Spool mail file %s"):_("Spool folder tree %s"), service->url->path);
+		return g_strdup_printf (
+			((CamelSpoolStore *)service)->type ==
+				CAMEL_SPOOL_STORE_MBOX ?
+			_("Spool mail file %s") :
+			_("Spool folder tree %s"),
+			url->path);
 }
 
 static void
@@ -377,10 +389,13 @@ spool_store_get_folder_sync (CamelStore *store,
                              GError **error)
 {
 	CamelFolder *folder = NULL;
+	CamelURL *url;
 	struct stat st;
 	gchar *name;
 
 	d(printf("opening folder %s on path %s\n", folder_name, path));
+
+	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
 	/* we only support an 'INBOX' in mbox mode */
 	if (((CamelSpoolStore *)store)->type == CAMEL_SPOOL_STORE_MBOX) {
@@ -389,7 +404,7 @@ spool_store_get_folder_sync (CamelStore *store,
 				error, CAMEL_STORE_ERROR,
 				CAMEL_STORE_ERROR_NO_FOLDER,
 				_("Folder '%s/%s' does not exist."),
-				((CamelService *)store)->url->path, folder_name);
+				url->path, folder_name);
 		} else {
 			folder = camel_spool_folder_new (store, folder_name, flags, cancellable, error);
 		}
@@ -509,15 +524,21 @@ spool_store_get_meta_path (CamelLocalStore *ls,
                            const gchar *full_name,
                            const gchar *ext)
 {
-	gchar *root = camel_session_get_storage_path (((CamelService *)ls)->session, (CamelService *)ls, NULL);
+	CamelService *service;
+	CamelSession *session;
+	gchar *root;
 	gchar *path, *key;
+
+	service = CAMEL_SERVICE (ls);
+	session = camel_service_get_session (service);
+	root = camel_session_get_storage_path (session, service, NULL);
 
 	if (root == NULL)
 		return NULL;
 
 	g_mkdir_with_parents (root, 0700);
 	key = camel_file_util_safe_filename (full_name);
-	path = g_strdup_printf("%s/%s%s", root, key, ext);
+	path = g_strdup_printf ("%s/%s%s", root, key, ext);
 	g_free (key);
 	g_free (root);
 

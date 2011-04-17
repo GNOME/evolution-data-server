@@ -66,7 +66,8 @@ sasl_login_challenge_sync (CamelSasl *sasl,
 	priv = CAMEL_SASL_LOGIN (sasl)->priv;
 
 	service = camel_sasl_get_service (sasl);
-	url = service->url;
+
+	url = camel_service_get_camel_url (service);
 	g_return_val_if_fail (url->passwd != NULL, NULL);
 
 	/* Need to wait for the server */

@@ -102,12 +102,6 @@ typedef enum {
 struct _CamelService {
 	CamelObject parent;
 	CamelServicePrivate *priv;
-
-	struct _CamelSession *session;
-	CamelProvider *provider;
-	CamelServiceConnectionStatus status;
-	GCancellable *connect_op;
-	CamelURL *url;
 };
 
 struct _CamelServiceClass {
@@ -158,6 +152,7 @@ gchar *		camel_service_get_path		(CamelService *service);
 CamelProvider *	camel_service_get_provider	(CamelService *service);
 struct _CamelSession *
 		camel_service_get_session	(CamelService *service);
+CamelURL *	camel_service_get_camel_url	(CamelService *service);
 gchar *		camel_service_get_url		(CamelService *service);
 void		camel_service_cancel_connect	(CamelService *service);
 gboolean	camel_service_connect_sync	(CamelService *service,
@@ -165,6 +160,9 @@ gboolean	camel_service_connect_sync	(CamelService *service,
 gboolean	camel_service_disconnect_sync	(CamelService *service,
 						 gboolean clean,
 						 GError **error);
+CamelServiceConnectionStatus
+		camel_service_get_connection_status
+						(CamelService *service);
 GList *		camel_service_query_auth_types_sync
 						(CamelService *service,
 						 GCancellable *cancellable,

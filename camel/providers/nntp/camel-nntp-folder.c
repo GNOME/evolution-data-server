@@ -656,11 +656,14 @@ camel_nntp_folder_new (CamelStore *parent,
 	CamelNNTPFolder *nntp_folder;
 	gchar *root;
 	CamelService *service;
+	CamelSession *session;
 	CamelStoreInfo *si;
 	gboolean subscribed = TRUE;
 
-	service = (CamelService *) parent;
-	root = camel_session_get_storage_path (service->session, service, error);
+	service = CAMEL_SERVICE (parent);
+	session = camel_service_get_session (service);
+
+	root = camel_session_get_storage_path (session, service, error);
 	if (root == NULL)
 		return NULL;
 

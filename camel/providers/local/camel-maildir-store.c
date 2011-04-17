@@ -489,12 +489,16 @@ scan_dirs (CamelStore *store,
            GCancellable *cancellable,
            GError **error)
 {
-	const gchar *root = ((CamelService *)store)->url->path;
+	CamelURL *service_url;
+	const gchar *root;
 	GPtrArray *folders;
 	gint res = -1;
 	DIR *dir;
 	struct dirent *d;
 	gchar *meta_path = NULL;
+
+	service_url = camel_service_get_camel_url (CAMEL_SERVICE (store));
+	root = service_url->path;
 
 	folders = g_ptr_array_new ();
 	if (!g_ascii_strcasecmp ((*topfi)->full_name, "Inbox"))
@@ -604,11 +608,13 @@ maildir_store_get_folder_info_sync (CamelStore *store,
                                     GError **error)
 {
 	CamelFolderInfo *fi = NULL;
-	CamelLocalStore *local_store = (CamelLocalStore *)store;
+	CamelURL *service_url;
 	CamelURL *url;
 
-	url = camel_url_new("maildir:", NULL);
-	camel_url_set_path (url, ((CamelService *)local_store)->url->path);
+	service_url = camel_service_get_camel_url (CAMEL_SERVICE (store));
+
+	url = camel_url_new ("maildir:", NULL);
+	camel_url_set_path (url, service_url->path);
 
 	if (top == NULL || top[0] == 0) {
 		/* create a dummy "." parent inbox, use to scan, then put back at the top level */
@@ -787,12 +793,16 @@ static gint
 scan_old_dir_info (CamelStore *store, CamelFolderInfo *topfi, GError **error)
 {
 	CamelDList queue = CAMEL_DLIST_INITIALISER (queue);
+	CamelURL *url;
 	struct _scan_node *sn;
-	const gchar *root = ((CamelService *)store)->url->path;
+	const gchar *root;
 	gchar *tmp;
 	GHashTable *visited;
 	struct stat st;
 	gint res = -1;
+
+	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
+	root = url->path;
 
 	visited = g_hash_table_new (scan_hash, scan_equal);
 

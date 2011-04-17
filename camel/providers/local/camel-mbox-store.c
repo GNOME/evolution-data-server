@@ -449,7 +449,8 @@ mbox_store_get_folder_info_sync (CamelStore *store,
 
 		g_hash_table_insert (visited, inode, inode);
 #endif
-		url = camel_url_copy (((CamelService *) store)->url);
+		url = camel_service_get_camel_url (CAMEL_SERVICE (store));
+		url = camel_url_copy (url);
 		fi = scan_dir (store, url, visited, NULL, path, NULL, flags, error);
 		g_hash_table_foreach (visited, inode_free, NULL);
 		g_hash_table_destroy (visited);
@@ -469,7 +470,8 @@ mbox_store_get_folder_info_sync (CamelStore *store,
 
 	basename = g_path_get_basename (top);
 
-	url = camel_url_copy (((CamelService *) store)->url);
+	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
+	url = camel_url_copy (url);
 	camel_url_set_fragment (url, top);
 
 	fi = camel_folder_info_new ();
@@ -596,8 +598,11 @@ mbox_store_delete_folder_sync (CamelStore *store,
 {
 	CamelFolderInfo *fi;
 	CamelFolder *lf;
+	CamelURL *url;
 	gchar *name, *path;
 	struct stat st;
+
+	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
 	name = camel_local_store_get_full_path (store, folder_name);
 	path = g_strdup_printf("%s.sbd", name);
@@ -735,7 +740,7 @@ mbox_store_delete_folder_sync (CamelStore *store,
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (folder_name);
 	fi->name = g_path_get_basename (folder_name);
-	fi->uri = g_strdup_printf("mbox:%s#%s",((CamelService *) store)->url->path, folder_name);
+	fi->uri = g_strdup_printf ("mbox:%s#%s", url->path, folder_name);
 	fi->unread = -1;
 
 	camel_store_folder_deleted (store, fi);
@@ -764,8 +769,8 @@ mbox_store_rename_folder_sync (CamelStore *store,
 
 	/* try to rollback failures, has obvious races */
 
-	oldibex = camel_local_store_get_meta_path(store, old, ".ibex");
-	newibex = camel_local_store_get_meta_path(store, new, ".ibex");
+	oldibex = camel_local_store_get_meta_path (store, old, ".ibex");
+	newibex = camel_local_store_get_meta_path (store, new, ".ibex");
 
 	newdir = g_path_get_dirname (newibex);
 	if (g_mkdir_with_parents (newdir, 0700) == -1) {

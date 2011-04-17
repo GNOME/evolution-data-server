@@ -58,7 +58,8 @@ sasl_plain_challenge_sync (CamelSasl *sasl,
 	CamelURL *url;
 
 	service = camel_sasl_get_service (sasl);
-	url = service->url;
+
+	url = camel_service_get_camel_url (service);
 	g_return_val_if_fail (url->passwd != NULL, NULL);
 
 	/* FIXME: make sure these are "UTF8-SAFE" */

@@ -1558,7 +1558,7 @@ cfs_try_release_memory (CamelFolderSummary *s)
 	}
 
 	parent_store = camel_folder_get_parent_store (s->folder);
-	session = CAMEL_SERVICE (parent_store)->session;
+	session = camel_service_get_session (CAMEL_SERVICE (parent_store));
 
 	if (time (NULL) - s->cache_load_time < SUMMARY_CACHE_DROP)
 		return TRUE;
@@ -1707,6 +1707,7 @@ static gint
 cfs_reload_from_db (CamelFolderSummary *s, GError **error)
 {
 	CamelDB *cdb;
+	CamelSession *session;
 	CamelStore *parent_store;
 	const gchar *folder_name;
 	gint ret = 0;
@@ -1718,22 +1719,26 @@ cfs_reload_from_db (CamelFolderSummary *s, GError **error)
 
 	folder_name = camel_folder_get_full_name (s->folder);
 	parent_store = camel_folder_get_parent_store (s->folder);
+	session = camel_service_get_session (CAMEL_SERVICE (parent_store));
 	cdb = parent_store->cdb_r;
 
 	/* FIXME FOR SANKAR: No need to pass the address of summary here. */
 	data.summary = s;
 	data.add = FALSE;
-	ret = camel_db_read_message_info_records (cdb, folder_name, (gpointer)&data, camel_read_mir_callback, NULL);
+	ret = camel_db_read_message_info_records (
+		cdb, folder_name, (gpointer) &data,
+		camel_read_mir_callback, NULL);
 
 	cfs_schedule_info_release_timer (s);
 
 	if (s->priv->need_preview) {
 		struct _preview_update_msg *m;
 
-		m = camel_session_thread_msg_new (((CamelService *)parent_store)->session, &preview_update_ops, sizeof (*m));
+		m = camel_session_thread_msg_new (
+			session, &preview_update_ops, sizeof (*m));
 		m->folder = s->folder;
 		m->error = NULL;
-		camel_session_thread_queue (((CamelService *)parent_store)->session, &m->msg, 0);
+		camel_session_thread_queue (session, &m->msg, 0);
 	}
 
 	return ret == 0 ? 0 : -1;

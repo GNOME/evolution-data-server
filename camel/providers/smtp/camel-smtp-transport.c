@@ -124,6 +124,7 @@ connect_to_server (CamelService *service,
 {
 	CamelSmtpTransport *transport = CAMEL_SMTP_TRANSPORT (service);
 	CamelSession *session;
+	CamelURL *url;
 	gchar *socks_host;
 	gint socks_port;
 	CamelStream *tcp_stream;
@@ -137,19 +138,22 @@ connect_to_server (CamelService *service,
 	transport->flags = 0;
 	transport->authtypes = NULL;
 
+	url = camel_service_get_camel_url (service);
+	session = camel_service_get_session (service);
+
 	if (ssl_mode != MODE_CLEAR) {
 #ifdef CAMEL_HAVE_SSL
 		if (ssl_mode == MODE_TLS) {
-			tcp_stream = camel_tcp_stream_ssl_new_raw (service->session, service->url->host, STARTTLS_FLAGS);
+			tcp_stream = camel_tcp_stream_ssl_new_raw (session, url->host, STARTTLS_FLAGS);
 		} else {
-			tcp_stream = camel_tcp_stream_ssl_new (service->session, service->url->host, SSL_PORT_FLAGS);
+			tcp_stream = camel_tcp_stream_ssl_new (session, url->host, SSL_PORT_FLAGS);
 		}
 #else
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_UNAVAILABLE,
 			_("Could not connect to %s: %s"),
-			service->url->host, _("SSL unavailable"));
+			url->host, _("SSL unavailable"));
 
 		return FALSE;
 #endif /* CAMEL_HAVE_SSL */
@@ -157,7 +161,6 @@ connect_to_server (CamelService *service,
 		tcp_stream = camel_tcp_stream_raw_new ();
 	}
 
-	session = camel_service_get_session (service);
 	camel_session_get_socks_proxy (session, &socks_host, &socks_port);
 
 	if (socks_host) {
@@ -235,7 +238,7 @@ connect_to_server (CamelService *service,
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Failed to connect to SMTP server %s in secure mode: %s"),
-			service->url->host, _("STARTTLS not supported"));
+			url->host, _("STARTTLS not supported"));
 
 		goto exception_cleanup;
 	}
@@ -275,14 +278,14 @@ connect_to_server (CamelService *service,
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
 			_("Failed to connect to SMTP server %s in secure mode: %s"),
-			service->url->host, g_strerror (errno));
+			url->host, g_strerror (errno));
 		goto exception_cleanup;
 	}
 #else
 	g_set_error (
 		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 		_("Failed to connect to SMTP server %s in secure mode: %s"),
-		service->url->host, _("SSL is not available in this build"));
+		url->host, _("SSL is not available in this build"));
 	goto exception_cleanup;
 #endif /* CAMEL_HAVE_SSL */
 
@@ -314,12 +317,15 @@ connect_to_server_wrapper (CamelService *service,
                            GCancellable *cancellable,
                            GError **error)
 {
+	CamelURL *url;
 	const gchar *ssl_mode;
 	gint mode, i;
 	gchar *serv;
 	gint fallback_port;
 
-	if ((ssl_mode = camel_url_get_param (service->url, "use_ssl"))) {
+	url = camel_service_get_camel_url (service);
+
+	if ((ssl_mode = camel_url_get_param (url, "use_ssl"))) {
 		for (i = 0; ssl_options[i].value; i++)
 			if (!strcmp (ssl_options[i].value, ssl_mode))
 				break;
@@ -332,14 +338,14 @@ connect_to_server_wrapper (CamelService *service,
 		fallback_port = SMTP_PORT;
 	}
 
-	if (service->url->port) {
+	if (url->port) {
 		serv = g_alloca (16);
-		sprintf (serv, "%d", service->url->port);
+		sprintf (serv, "%d", url->port);
 		fallback_port = 0;
 	}
 
 	return connect_to_server (
-		service, service->url->host, serv,
+		service, url->host, serv,
 		fallback_port, mode, cancellable, error);
 }
 
@@ -352,14 +358,18 @@ authtypes_free (gpointer key, gpointer value, gpointer data)
 static gchar *
 smtp_get_name (CamelService *service, gboolean brief)
 {
+	CamelURL *url;
+
+	url = camel_service_get_camel_url (service);
+
 	if (brief)
 		return g_strdup_printf (
 			_("SMTP server %s"),
-			service->url->host);
+			url->host);
 	else
 		return g_strdup_printf (
 			_("SMTP mail delivery via %s"),
-			service->url->host);
+			url->host);
 }
 
 static gboolean
@@ -369,10 +379,13 @@ smtp_connect_sync (CamelService *service,
 {
 	CamelSmtpTransport *transport = CAMEL_SMTP_TRANSPORT (service);
 	CamelSasl *sasl = NULL;
+	CamelURL *url;
 	gboolean has_authtypes;
 
+	url = camel_service_get_camel_url (service);
+
 	/* We (probably) need to check popb4smtp before we connect ... */
-	if (service->url->authmech && !strcmp (service->url->authmech, "POPB4SMTP")) {
+	if (url->authmech && !strcmp (url->authmech, "POPB4SMTP")) {
 		gint truth;
 		GByteArray *chal;
 		CamelSasl *sasl;
@@ -395,36 +408,36 @@ smtp_connect_sync (CamelService *service,
 
 	/* check to see if AUTH is required, if so...then AUTH ourselves */
 	has_authtypes = transport->authtypes ? g_hash_table_size (transport->authtypes) > 0 : FALSE;
-	if (service->url->authmech && (transport->flags & CAMEL_SMTP_TRANSPORT_IS_ESMTP) && has_authtypes) {
+	if (url->authmech && (transport->flags & CAMEL_SMTP_TRANSPORT_IS_ESMTP) && has_authtypes) {
 		CamelSession *session = camel_service_get_session (service);
 		CamelServiceAuthType *authtype;
 		gboolean authenticated = FALSE;
 		guint32 password_flags;
 		gchar *errbuf = NULL;
 
-		if (!g_hash_table_lookup (transport->authtypes, service->url->authmech)) {
+		if (!g_hash_table_lookup (transport->authtypes, url->authmech)) {
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("SMTP server %s does not support "
 				  "requested authentication type %s."),
-				service->url->host, service->url->authmech);
+				url->host, url->authmech);
 			camel_service_disconnect_sync (service, TRUE, NULL);
 			return FALSE;
 		}
 
-		authtype = camel_sasl_authtype (service->url->authmech);
+		authtype = camel_sasl_authtype (url->authmech);
 		if (!authtype) {
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("No support for authentication type %s"),
-				service->url->authmech);
+				url->authmech);
 			camel_service_disconnect_sync (service, TRUE, NULL);
 			return FALSE;
 		}
 
-		sasl = camel_sasl_new ("smtp", service->url->authmech,
+		sasl = camel_sasl_new ("smtp", url->authmech,
 				       CAMEL_SERVICE (transport));
 
 		if (!sasl) {
@@ -456,23 +469,23 @@ smtp_connect_sync (CamelService *service,
 			if (errbuf) {
 				/* We need to un-cache the password before prompting again */
 				password_flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
-				g_free (service->url->passwd);
-				service->url->passwd = NULL;
+				g_free (url->passwd);
+				url->passwd = NULL;
 			}
 
-			if (!service->url->passwd) {
+			if (!url->passwd) {
 				gchar *base_prompt;
 				gchar *full_prompt;
 
 				base_prompt = camel_session_build_password_prompt (
-					"SMTP", service->url->user, service->url->host);
+					"SMTP", url->user, url->host);
 
 				if (errbuf != NULL)
 					full_prompt = g_strconcat (errbuf, base_prompt, NULL);
 				else
 					full_prompt = g_strdup (base_prompt);
 
-				service->url->passwd = camel_session_get_password (
+				url->passwd = camel_session_get_password (
 					session, service, NULL, full_prompt,
 					"password", password_flags, error);
 
@@ -481,14 +494,14 @@ smtp_connect_sync (CamelService *service,
 				g_free (errbuf);
 				errbuf = NULL;
 
-				if (!service->url->passwd) {
+				if (!url->passwd) {
 					camel_service_disconnect_sync (
 						service, TRUE, NULL);
 					return FALSE;
 				}
 			}
 			if (!sasl)
-				sasl = camel_sasl_new ("smtp", service->url->authmech,
+				sasl = camel_sasl_new ("smtp", url->authmech,
 						       CAMEL_SERVICE (transport));
 			if (!sasl)
 				goto nosasl;
@@ -498,8 +511,8 @@ smtp_connect_sync (CamelService *service,
 			if (!authenticated) {
 				if (g_cancellable_is_cancelled (cancellable) ||
 				    g_error_matches (local_error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_UNAVAILABLE)) {
-					g_free (service->url->passwd);
-					service->url->passwd = NULL;
+					g_free (url->passwd);
+					url->passwd = NULL;
 
 					if (local_error)
 						g_clear_error (&local_error);
@@ -513,8 +526,8 @@ smtp_connect_sync (CamelService *service,
 					local_error ? local_error->message : _("Unknown error"));
 				g_clear_error (&local_error);
 
-				g_free (service->url->passwd);
-				service->url->passwd = NULL;
+				g_free (url->passwd);
+				url->passwd = NULL;
 			}
 
 		}
@@ -577,6 +590,7 @@ smtp_query_auth_types_sync (CamelService *service,
 {
 	CamelSmtpTransport *transport = CAMEL_SMTP_TRANSPORT (service);
 	CamelServiceAuthType *authtype;
+	CamelProvider *provider;
 	GList *types, *t, *next;
 
 	if (!connect_to_server_wrapper (service, cancellable, error))
@@ -587,7 +601,9 @@ smtp_query_auth_types_sync (CamelService *service,
 		return NULL;
 	}
 
-	types = g_list_copy (service->provider->authtypes);
+	provider = camel_service_get_provider (service);
+	types = g_list_copy (provider->authtypes);
+
 	for (t = types; t; t = next) {
 		authtype = t->data;
 		next = t->next;
@@ -1152,10 +1168,12 @@ smtp_auth (CamelSmtpTransport *transport,
            GError **error)
 {
 	CamelService *service;
+	CamelURL *url;
 	gchar *cmdbuf, *respbuf = NULL, *challenge;
 	gboolean auth_challenge = FALSE;
 
 	service = CAMEL_SERVICE (transport);
+	url = camel_service_get_camel_url (service);
 
 	camel_operation_push_message (cancellable, _("SMTP Authentication"));
 
@@ -1163,12 +1181,12 @@ smtp_auth (CamelSmtpTransport *transport,
 		sasl, NULL, cancellable, error);
 	if (challenge) {
 		auth_challenge = TRUE;
-		cmdbuf = g_strdup_printf ("AUTH %s %s\r\n",
-					  service->url->authmech, challenge);
+		cmdbuf = g_strdup_printf (
+			"AUTH %s %s\r\n", url->authmech, challenge);
 		g_free (challenge);
 	} else {
-		cmdbuf = g_strdup_printf ("AUTH %s\r\n",
-					  service->url->authmech);
+		cmdbuf = g_strdup_printf (
+			"AUTH %s\r\n", url->authmech);
 	}
 
 	d(fprintf (stderr, "sending : %s", cmdbuf));
@@ -1206,7 +1224,7 @@ smtp_auth (CamelSmtpTransport *transport,
 				   "authentication mechanism is broken. Please report this to the\n"
 				   "appropriate vendor and suggest that they re-read rfc2554 again\n"
 				   "for the first time (specifically Section 4).\n",
-				   service->url->authmech));
+				   url->authmech));
 		}
 
 		/* eat whtspc */
@@ -1247,8 +1265,8 @@ smtp_auth (CamelSmtpTransport *transport,
 	/* If our authentication data was rejected, destroy the
 	 * password so that the user gets prompted to try again. */
 	if (strncmp (respbuf, "535", 3) == 0) {
-		g_free (service->url->passwd);
-		service->url->passwd = NULL;
+		g_free (url->passwd);
+		url->passwd = NULL;
 	}
 
 	/* Catch any other errors. */
