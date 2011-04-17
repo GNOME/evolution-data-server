@@ -233,8 +233,8 @@ camel_mime_filter_filter (CamelMimeFilter *filter,
  * Passes the input buffer, @in, through @filter and generates an
  * output buffer, @out and makes sure that all data is flushed to the
  * output buffer. This must be the last filtering call made, no
- * further calls to #camel_mime_filter_filter may be called on @filter
- * until @filter has been reset using #camel_mime_filter_reset.
+ * further calls to camel_mime_filter_filter() may be called on @filter
+ * until @filter has been reset using camel_mime_filter_reset().
  **/
 void
 camel_mime_filter_complete (CamelMimeFilter *filter,
@@ -287,7 +287,7 @@ camel_mime_filter_reset (CamelMimeFilter *filter)
  * @length: length of @data
  *
  * Saves @data to be used as prespace input data to the next call to
- * #camel_mime_filter_filter or #camel_mime_filter_complete.
+ * camel_mime_filter_filter() or camel_mime_filter_complete().
  *
  * Note: New calls replace old data.
  **/

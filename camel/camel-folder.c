@@ -1922,7 +1922,7 @@ camel_folder_get_message_count (CamelFolder *folder)
  * camel_folder_get_unread_message_count:
  * @folder: a #CamelFolder
  *
- * DEPRECATED: use #camel_object_get instead.
+ * DEPRECATED: use camel_object_get() instead.
  *
  * Returns: the number of unread messages in the folder, or %-1 if
  * unknown
@@ -1978,7 +1978,7 @@ camel_folder_get_permanent_flags (CamelFolder *folder)
  * @folder: a #CamelFolder
  * @uid: the UID of a message in @folder
  *
- * Deprecated: Use #camel_folder_get_message_info instead.
+ * Deprecated: Use camel_folder_get_message_info() instead.
  *
  * Returns: the #CamelMessageFlags that are set on the indicated
  * message.
@@ -2007,12 +2007,12 @@ camel_folder_get_message_flags (CamelFolder *folder,
  *
  * Sets those flags specified by @flags to the values specified by @set
  * on the indicated message. (This may or may not persist after the
- * folder or store is closed. See #camel_folder_get_permanent_flags)
+ * folder or store is closed. See camel_folder_get_permanent_flags())
  *
  * E.g. to set the deleted flag and clear the draft flag, use
- * #camel_folder_set_message_flags (folder, uid, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_DRAFT, CAMEL_MESSAGE_DELETED);
+ * camel_folder_set_message_flags (folder, uid, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_DRAFT, CAMEL_MESSAGE_DELETED);
  *
- * DEPRECATED: Use #camel_message_info_set_flags on the message info directly
+ * DEPRECATED: Use camel_message_info_set_flags() on the message info directly
  * (when it works)
  *
  * Returns: %TRUE if the flags were changed or %FALSE otherwise
@@ -2045,7 +2045,7 @@ camel_folder_set_message_flags (CamelFolder *folder,
  * @uid: the UID of a message in @folder
  * @name: the name of a user flag
  *
- * DEPRECATED: Use #camel_message_info_get_user_flag on the message
+ * DEPRECATED: Use camel_message_info_get_user_flag() on the message
  * info directly
  *
  * Returns: %TRUE if the given user flag is set on the message or
@@ -2075,12 +2075,12 @@ camel_folder_get_message_user_flag (CamelFolder *folder,
  * @name: the name of the user flag to set
  * @value: the value to set it to
  *
- * DEPRECATED: Use #camel_message_info_set_user_flag on the
+ * DEPRECATED: Use camel_message_info_set_user_flag() on the
  * #CamelMessageInfo directly (when it works)
  *
  * Sets the user flag specified by @name to the value specified by @value
  * on the indicated message. (This may or may not persist after the
- * folder or store is closed. See #camel_folder_get_permanent_flags)
+ * folder or store is closed. See camel_folder_get_permanent_flags())
  **/
 void
 camel_folder_set_message_user_flag (CamelFolder *folder,
@@ -2106,7 +2106,7 @@ camel_folder_set_message_user_flag (CamelFolder *folder,
  * @uid: the UID of a message in @folder
  * @name: the name of a user tag
  *
- * DEPRECATED: Use #camel_message_info_get_user_tag on the
+ * DEPRECATED: Use camel_message_info_get_user_tag() on the
  * #CamelMessageInfo directly.
  *
  * Returns: the value of the user tag
@@ -2136,12 +2136,12 @@ camel_folder_get_message_user_tag (CamelFolder *folder,
  * @name: the name of the user tag to set
  * @value: the value to set it to
  *
- * DEPRECATED: Use #camel_message_info_set_user_tag on the
+ * DEPRECATED: Use camel_message_info_set_user_tag() on the
  * #CamelMessageInfo directly (when it works).
  *
  * Sets the user tag specified by @name to the value specified by @value
  * on the indicated message. (This may or may not persist after the
- * folder or store is closed. See #camel_folder_get_permanent_flags)
+ * folder or store is closed. See camel_folder_get_permanent_flags())
  **/
 void
 camel_folder_set_message_user_tag (CamelFolder *folder,
@@ -2167,7 +2167,7 @@ camel_folder_set_message_user_tag (CamelFolder *folder,
  * @uid: the uid of a message
  *
  * Retrieve the #CamelMessageInfo for the specified @uid.  This return
- * must be freed using #camel_folder_free_message_info.
+ * must be freed using camel_folder_free_message_info().
  *
  * Returns: the summary information for the indicated message, or %NULL
  * if the uid does not exist
@@ -2193,7 +2193,7 @@ camel_folder_get_message_info (CamelFolder *folder,
  * @info: a #CamelMessageInfo
  *
  * Free (unref) a #CamelMessageInfo, previously obtained with
- * #camel_folder_get_message_info.
+ * camel_folder_get_message_info().
  **/
 void
 camel_folder_free_message_info (CamelFolder *folder,
@@ -2215,10 +2215,10 @@ camel_folder_free_message_info (CamelFolder *folder,
  * @folder: a #CamelFolder
  * @info: a #CamelMessageInfo
  *
- * DEPRECATED: Use #camel_message_info_ref directly.
+ * DEPRECATED: Use camel_message_info_ref() directly.
  *
  * Ref a #CamelMessageInfo, previously obtained with
- * #camel_folder_get_message_info.
+ * camel_folder_get_message_info().
  **/
 void
 camel_folder_ref_message_info (CamelFolder *folder,
@@ -2261,7 +2261,7 @@ camel_folder_has_summary_capability (CamelFolder *folder)
  * Get the list of UIDs available in a folder. This routine is useful
  * for finding what messages are available when the folder does not
  * support summaries. The returned array should not be modified, and
- * must be freed by passing it to #camel_folder_free_uids.
+ * must be freed by passing it to camel_folder_free_uids().
  *
  * Returns: a GPtrArray of UIDs corresponding to the messages available
  * in the folder
@@ -2284,7 +2284,7 @@ camel_folder_get_uids (CamelFolder *folder)
  * @folder: a #CamelFolder
  * @array: the array of uids to free
  *
- * Frees the array of UIDs returned by #camel_folder_get_uids.
+ * Frees the array of UIDs returned by camel_folder_get_uids().
  **/
 void
 camel_folder_free_uids (CamelFolder *folder,
@@ -2308,8 +2308,8 @@ camel_folder_free_uids (CamelFolder *folder,
  *
  * Returns the known-uncached uids from a list of uids. It may return uids
  * which are locally cached but should never filter out a uid which is not
- * locally cached. Free the result by called #camel_folder_free_uids.
- * Frees the array of UIDs returned by #camel_folder_get_uids.
+ * locally cached. Free the result by called camel_folder_free_uids().
+ * Frees the array of UIDs returned by camel_folder_get_uids().
  *
  * Since: 2.26
  **/
@@ -2393,7 +2393,7 @@ camel_folder_sort_uids (CamelFolder *folder,
  *
  * This returns the summary information for the folder. This array
  * should not be modified, and must be freed with
- * #camel_folder_free_summary.
+ * camel_folder_free_summary().
  *
  * Returns: an array of #CamelMessageInfo
  **/
@@ -2415,7 +2415,7 @@ camel_folder_get_summary (CamelFolder *folder)
  * @folder: a #CamelFolder
  * @array: the summary array to free
  *
- * Frees the summary array returned by #camel_folder_get_summary.
+ * Frees the summary array returned by camel_folder_get_summary().
  **/
 void
 camel_folder_free_summary (CamelFolder *folder,
@@ -2551,8 +2551,8 @@ camel_folder_search_by_uids (CamelFolder *folder,
  * @folder: a #CamelFolder
  * @result: search results to free
  *
- * Free the result of a search as gotten by #camel_folder_search or
- * #camel_folder_search_by_uids.
+ * Free the result of a search as gotten by camel_folder_search() or
+ * camel_folder_search_by_uids().
  **/
 void
 camel_folder_search_free (CamelFolder *folder,
@@ -2708,7 +2708,7 @@ camel_folder_changed (CamelFolder *folder,
  *
  * Freezes the folder so that a series of operation can be performed
  * without "folder_changed" signals being emitted.  When the folder is
- * later thawed with #camel_folder_thaw, the suppressed signals will
+ * later thawed with camel_folder_thaw(), the suppressed signals will
  * be emitted.
  **/
 void

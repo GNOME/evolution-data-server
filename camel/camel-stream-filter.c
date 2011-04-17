@@ -421,7 +421,7 @@ camel_stream_filter_add (CamelStreamFilter *stream,
 /**
  * camel_stream_filter_remove:
  * @stream: a #CamelStreamFilter object
- * @id: Filter id, as returned from #camel_stream_filter_add
+ * @id: Filter id, as returned from camel_stream_filter_add()
  *
  * Remove a processing filter from the stream by id.
  **/

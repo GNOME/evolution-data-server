@@ -533,7 +533,7 @@ camel_yencode_step (const guchar *in, gsize inlen, guchar *out,
  * @crc: crc state
  *
  * Call this function when finished encoding data with
- * #camel_yencode_step to flush off the remaining state.
+ * camel_yencode_step() to flush off the remaining state.
  *
  * #CAMEL_MIME_YENCODE_CRC_FINAL (@pcrc) will give you the crc32 of the
  * encoded "part". If there are more "parts" to encode, you should

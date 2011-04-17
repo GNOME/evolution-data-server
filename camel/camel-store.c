@@ -1690,9 +1690,9 @@ dump_fi (CamelFolderInfo *fi, gint depth)
 /**
  * camel_store_free_folder_info:
  * @store: a #CamelStore
- * @fi: a #CamelFolderInfo as gotten via #camel_store_get_folder_info
+ * @fi: a #CamelFolderInfo as gotten via camel_store_get_folder_info()
  *
- * Frees the data returned by #camel_store_get_folder_info. If @fi is %NULL,
+ * Frees the data returned by camel_store_get_folder_info(). If @fi is %NULL,
  * nothing is done, the routine simply returns.
  **/
 void
@@ -1715,7 +1715,7 @@ camel_store_free_folder_info (CamelStore *store,
 /**
  * camel_store_free_folder_info_full:
  * @store: a #CamelStore
- * @fi: a #CamelFolderInfo as gotten via #camel_store_get_folder_info
+ * @fi: a #CamelFolderInfo as gotten via camel_store_get_folder_info()
  *
  * An implementation for #CamelStore::free_folder_info. Frees all
  * of the data.
@@ -1730,7 +1730,7 @@ camel_store_free_folder_info_full (CamelStore *store,
 /**
  * camel_store_free_folder_info_nop:
  * @store: a #CamelStore
- * @fi: a #CamelFolderInfo as gotten via #camel_store_get_folder_info
+ * @fi: a #CamelFolderInfo as gotten via camel_store_get_folder_info()
  *
  * An implementation for #CamelStore::free_folder_info. Does nothing.
  **/
@@ -1795,7 +1795,7 @@ folder_info_cmp (gconstpointer ap,
  * to the hierarchy described by their full_names and @separator. If
  * @namespace is non-%NULL, then it will be ignored as a full_name
  * prefix, for purposes of comparison. If necessary,
- * #camel_folder_info_build will create additional #CamelFolderInfo with
+ * camel_folder_info_build() will create additional #CamelFolderInfo with
  * %NULL urls to fill in gaps in the tree. The value of @short_names
  * is used in constructing the names of these intermediate folders.
  *

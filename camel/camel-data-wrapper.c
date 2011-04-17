@@ -568,7 +568,7 @@ camel_data_wrapper_get_mime_type_field (CamelDataWrapper *data_wrapper)
  * @mime_type: a #CamelContentType
  *
  * This sets the data wrapper's MIME type. It suffers from the same
- * flaws as #camel_data_wrapper_set_mime_type.
+ * flaws as camel_data_wrapper_set_mime_type().
  **/
 void
 camel_data_wrapper_set_mime_type_field (CamelDataWrapper *data_wrapper,

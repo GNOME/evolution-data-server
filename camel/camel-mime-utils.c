@@ -89,7 +89,7 @@ static const guchar tohex[16] = {
  * @save: leftover bits that have not yet been encoded
  *
  * Uuencodes a chunk of data. Call this when finished encoding data
- * with #camel_uuencode_step to flush off the last little bit.
+ * with camel_uuencode_step() to flush off the last little bit.
  *
  * Returns: the number of bytes encoded
  **/
@@ -383,7 +383,7 @@ camel_uudecode_step (guchar *in, gsize len, guchar *out, gint *state, guint32 *s
  * @save: leftover bits that have not yet been encoded
  *
  * Quoted-printable encodes a block of text. Call this when finished
- * encoding data with #camel_quoted_encode_step to flush off
+ * encoding data with camel_quoted_encode_step() to flush off
  * the last little bit.
  *
  * Returns: the number of bytes encoded

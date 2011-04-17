@@ -284,7 +284,7 @@ camel_medium_get_header (CamelMedium *medium,
  * caller should not modify the returned data.
  *
  * Returns: the array of headers, which must be freed with
- * #camel_medium_free_headers.
+ * camel_medium_free_headers().
  **/
 GArray *
 camel_medium_get_headers (CamelMedium *medium)
@@ -302,7 +302,7 @@ camel_medium_get_headers (CamelMedium *medium)
 /**
  * camel_medium_free_headers:
  * @medium: a #CamelMedium object
- * @headers: an array of headers returned from #camel_medium_get_headers
+ * @headers: an array of headers returned from camel_medium_get_headers()
  *
  * Frees @headers.
  **/

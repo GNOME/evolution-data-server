@@ -415,7 +415,7 @@ camel_multipart_add_part (CamelMultipart *multipart,
  *
  * Adds the part to the multipart object after the @index'th
  * element. If @index is greater than the number of parts, it is
- * equivalent to #camel_multipart_add_part.
+ * equivalent to camel_multipart_add_part().
  **/
 void
 camel_multipart_add_part_at (CamelMultipart *multipart,

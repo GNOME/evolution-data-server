@@ -389,7 +389,7 @@ camel_stream_buffer_init (CamelStreamBuffer *stream)
  * buffer size (1024 bytes), automatically managed will be used
  * for buffering.
  *
- * See #camel_stream_buffer_new_with_vbuf for details on the
+ * See camel_stream_buffer_new_with_vbuf() for details on the
  * @mode parameter.
  *
  * Returns: a newly created buffered stream.

@@ -500,9 +500,9 @@ camel_session_get_service (CamelSession *session,
  * @type: the provider type
  * @error: return location for a #GError, or %NULL
  *
- * This works like #camel_session_get_service, but also ensures that
+ * This works like camel_session_get_service(), but also ensures that
  * the returned service will have been successfully connected (via
- * #camel_service_connect.)
+ * camel_service_connect().)
  *
  * Returns: the requested #CamelService, or %NULL
  **/
@@ -633,12 +633,12 @@ camel_session_get_password (CamelSession *session,
  *
  * This function is used by a #CamelService to tell the application
  * that the authentication information it provided via
- * #camel_session_get_password was rejected by the service. If the
+ * camel_session_get_password() was rejected by the service. If the
  * application was caching this information, it should stop,
  * and if the service asks for it again, it should ask the user.
  *
  * @service and @item identify the rejected authentication information,
- * as with #camel_session_get_password.
+ * as with camel_session_get_password().
  *
  * Returns: %TRUE on success, %FALSE on failure
  **/
