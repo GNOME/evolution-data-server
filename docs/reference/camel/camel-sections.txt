@@ -2880,6 +2880,9 @@ camel_url_get_param
 camel_url_hash
 camel_url_equal
 camel_url_copy
+<SUBSECTION Standard>
+CAMEL_TYPE_URL
+camel_url_get_type
 </SECTION>
 
 <SECTION>

@@ -32,10 +32,14 @@
 
 #include <glib.h>
 
+#define CAMEL_TYPE_URL (camel_url_get_type ())
+
 G_BEGIN_DECLS
 
+typedef struct _CamelURL CamelURL;
+
 /* if this changes, remember to change camel_url_copy */
-typedef struct _CamelURL {
+struct _CamelURL {
 	gchar  *protocol;
 	gchar  *user;
 	gchar  *authmech;
@@ -46,7 +50,7 @@ typedef struct _CamelURL {
 	GData *params;
 	gchar  *query;
 	gchar  *fragment;
-} CamelURL;
+};
 
 typedef enum {
 	CAMEL_URL_HIDE_PASSWORD = 1 << 0,
@@ -57,33 +61,49 @@ typedef enum {
 #define CAMEL_URL_HIDE_ALL \
 	(CAMEL_URL_HIDE_PASSWORD | CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH)
 
-CamelURL *camel_url_new_with_base (CamelURL *base, const gchar *url_string);
-CamelURL *camel_url_new (const gchar *url_string, GError **error);
-gchar *camel_url_to_string (CamelURL *url, CamelURLFlags flags);
-void camel_url_free (CamelURL *url);
+GType		camel_url_get_type		(void) G_GNUC_CONST;
+CamelURL *	camel_url_new_with_base		(CamelURL *base,
+						 const gchar *url_string);
+CamelURL *	camel_url_new			(const gchar *url_string,
+						 GError **error);
+gchar *		camel_url_to_string		(CamelURL *url,
+						 CamelURLFlags flags);
+guint		camel_url_hash			(gconstpointer v);
+gint		camel_url_equal			(gconstpointer v,
+						 gconstpointer v2);
+CamelURL *	camel_url_copy			(CamelURL *in);
+void		camel_url_free			(CamelURL *url);
 
-gchar *camel_url_encode (const gchar *part, const gchar *escape_extra);
-void camel_url_decode (gchar *part);
-gchar *camel_url_decode_path (const gchar *path);
+gchar *		camel_url_encode		(const gchar *part,
+						 const gchar *escape_extra);
+void		camel_url_decode		(gchar *part);
+gchar *		camel_url_decode_path		(const gchar *path);
 
 /* for editing url's */
-void camel_url_set_protocol (CamelURL *url, const gchar *protocol);
-void camel_url_set_user (CamelURL *url, const gchar *user);
-void camel_url_set_authmech (CamelURL *url, const gchar *authmech);
-void camel_url_set_passwd (CamelURL *url, const gchar *passwd);
-void camel_url_set_host (CamelURL *url, const gchar *host);
-void camel_url_set_port (CamelURL *url, gint port);
-void camel_url_set_path (CamelURL *url, const gchar *path);
-void camel_url_set_param (CamelURL *url, const gchar *name, const gchar *value);
-void camel_url_set_query (CamelURL *url, const gchar *query);
-void camel_url_set_fragment (CamelURL *url, const gchar *fragment);
+void		camel_url_set_protocol		(CamelURL *url,
+						 const gchar *protocol);
+void		camel_url_set_user		(CamelURL *url,
+						 const gchar *user);
+void		camel_url_set_authmech		(CamelURL *url,
+						 const gchar *authmech);
+void		camel_url_set_passwd		(CamelURL *url,
+						 const gchar *passwd);
+void		camel_url_set_host		(CamelURL *url,
+						 const gchar *host);
+void		camel_url_set_port		(CamelURL *url,
+						 gint port);
+void		camel_url_set_path		(CamelURL *url,
+						 const gchar *path);
+void		camel_url_set_param		(CamelURL *url,
+						 const gchar *name,
+						 const gchar *value);
+void		camel_url_set_query		(CamelURL *url,
+						 const gchar *query);
+void		camel_url_set_fragment		(CamelURL *url,
+						 const gchar *fragment);
 
-const gchar *camel_url_get_param (CamelURL *url, const gchar *name);
-
-/* for putting url's into hash tables */
-guint camel_url_hash (gconstpointer v);
-gint camel_url_equal (gconstpointer v, gconstpointer v2);
-CamelURL *camel_url_copy (const CamelURL *in);
+const gchar *	camel_url_get_param		(CamelURL *url,
+						 const gchar *name);
 
 G_END_DECLS
 

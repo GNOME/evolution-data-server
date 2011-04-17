@@ -45,6 +45,20 @@ static void output_param (GQuark key_id, gpointer data, gpointer user_data);
 
 static void append_url_encoded (GString *str, const gchar *in, const gchar *extra_enc_chars);
 
+GType
+camel_url_get_type (void)
+{
+	static GType type = G_TYPE_INVALID;
+
+	if (G_UNLIKELY (type == G_TYPE_INVALID))
+		type = g_boxed_type_register_static (
+			"CamelURL",
+			(GBoxedCopyFunc) camel_url_copy,
+			(GBoxedFreeFunc) camel_url_free);
+
+	return type;
+}
+
 /**
  * camel_url_new_with_base:
  * @base: a base URL
@@ -433,16 +447,6 @@ camel_url_free (CamelURL *url)
 	}
 }
 
-#define DEFINE_CAMEL_URL_SET(part)			\
-void							\
-camel_url_set_##part (CamelURL *url, const gchar *part)	\
-{							\
-	g_return_if_fail (url != NULL);			\
-							\
-	g_free (url->part);				\
-	url->part = g_strdup (part);			\
-}
-
 /**
  * camel_url_set_protocol:
  * @url: a #CamelURL
@@ -450,7 +454,15 @@ camel_url_set_##part (CamelURL *url, const gchar *part)	\
  *
  * Set the protocol of a #CamelURL.
  **/
-DEFINE_CAMEL_URL_SET (protocol)
+void
+camel_url_set_protocol (CamelURL *url,
+                        const gchar *protocol)
+{
+	g_return_if_fail (url != NULL);
+
+	g_free (url->protocol);
+	url->protocol = g_strdup (protocol);
+}
 
 /**
  * camel_url_set_user:
@@ -459,7 +471,16 @@ DEFINE_CAMEL_URL_SET (protocol)
  *
  * Set the user of a #CamelURL.
  **/
-DEFINE_CAMEL_URL_SET (user)
+void
+camel_url_set_user (CamelURL *url,
+                    const gchar *user)
+{
+	g_return_if_fail (url != NULL);
+
+	g_free (url->user);
+	url->user = g_strdup (user);
+}
+
 
 /**
  * camel_url_set_authmech:
@@ -468,7 +489,15 @@ DEFINE_CAMEL_URL_SET (user)
  *
  * Set the authmech of a #CamelURL.
  **/
-DEFINE_CAMEL_URL_SET (authmech)
+void
+camel_url_set_authmech (CamelURL *url,
+                        const gchar *authmech)
+{
+	g_return_if_fail (url != NULL);
+
+	g_free (url->authmech);
+	url->authmech = g_strdup (authmech);
+}
 
 /**
  * camel_url_set_passwd:
@@ -477,7 +506,15 @@ DEFINE_CAMEL_URL_SET (authmech)
  *
  * Set the password of a #CamelURL.
  **/
-DEFINE_CAMEL_URL_SET (passwd)
+void
+camel_url_set_passwd (CamelURL *url,
+                      const gchar *passwd)
+{
+	g_return_if_fail (url != NULL);
+
+	g_free (url->passwd);
+	url->passwd = g_strdup (passwd);
+}
 
 /**
  * camel_url_set_host:
@@ -486,7 +523,15 @@ DEFINE_CAMEL_URL_SET (passwd)
  *
  * Set the hostname of a #CamelURL.
  **/
-DEFINE_CAMEL_URL_SET (host)
+void
+camel_url_set_host (CamelURL *url,
+                    const gchar *host)
+{
+	g_return_if_fail (url != NULL);
+
+	g_free (url->host);
+	url->host = g_strdup (host);
+}
 
 /**
  * camel_url_set_path:
@@ -495,7 +540,15 @@ DEFINE_CAMEL_URL_SET (host)
  *
  * Set the path component of a #CamelURL.
  **/
-DEFINE_CAMEL_URL_SET (path)
+void
+camel_url_set_path (CamelURL *url,
+                    const gchar *path)
+{
+	g_return_if_fail (url != NULL);
+
+	g_free (url->path);
+	url->path = g_strdup (path);
+}
 
 /**
  * camel_url_set_query:
@@ -504,7 +557,15 @@ DEFINE_CAMEL_URL_SET (path)
  *
  * Set the query of a #CamelURL.
  **/
-DEFINE_CAMEL_URL_SET (query)
+void
+camel_url_set_query (CamelURL *url,
+                     const gchar *query)
+{
+	g_return_if_fail (url != NULL);
+
+	g_free (url->query);
+	url->query = g_strdup (query);
+}
 
 /**
  * camel_url_set_fragment:
@@ -513,7 +574,15 @@ DEFINE_CAMEL_URL_SET (query)
  *
  * Set the fragment of a #CamelURL.
  **/
-DEFINE_CAMEL_URL_SET (fragment)
+void
+camel_url_set_fragment (CamelURL *url,
+                        const gchar *fragment)
+{
+	g_return_if_fail (url != NULL);
+
+	g_free (url->fragment);
+	url->fragment = g_strdup (fragment);
+}
 
 /**
  * camel_url_set_port:
@@ -712,7 +781,7 @@ camel_url_equal (gconstpointer v, gconstpointer v2)
  * Returns: a duplicate copy of @in
  **/
 CamelURL *
-camel_url_copy (const CamelURL *in)
+camel_url_copy (CamelURL *in)
 {
 	CamelURL *out;
 
