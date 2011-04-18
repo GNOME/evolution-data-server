@@ -271,6 +271,11 @@ camel_provider_register (CamelProvider *provider)
 		l = l->next;
 	}
 
+	if (provider->port_entries)
+		provider->url_flags |= CAMEL_URL_NEED_PORT;
+	else
+		provider->url_flags &= ~CAMEL_URL_NEED_PORT;
+
 	g_hash_table_insert (
 		provider_table,
 		(gpointer) provider->protocol, provider);
