@@ -1209,7 +1209,6 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 {
 	struct icalrecurrencetype ir;
 	ECalComponentDateTime dt_start, dt_end;
-	GSList *rrules = NULL, *exrules = NULL, *elem, *rdates = NULL;
 
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (start != NULL);
@@ -1258,6 +1257,8 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 		/* ALARMS, EVENTS: DTEND and reccurences */
 
 		if (e_cal_component_has_recurrences (comp)) {
+			GSList *rrules = NULL, *exrules = NULL, *elem, *rdates = NULL;
+
 			/* Do the RRULEs, EXRULEs and RDATEs*/
 			e_cal_component_get_rrule_property_list (comp, &rrules);
 			e_cal_component_get_exrule_property_list (comp, &exrules);
@@ -1316,6 +1317,8 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 				else if (rdate_end > *end)
 					*end = rdate_end;
 			}
+
+			e_cal_component_free_period_list (rdates);
 		}
 
 		/* Get dtend of the component and convert it to UTC */

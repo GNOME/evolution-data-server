@@ -308,9 +308,9 @@ free_icalcomponent (ECalComponent *comp, gboolean free)
 	priv->categories = NULL;
 
 	priv->classification = NULL;
-	priv->comment_list = NULL;
+	priv->comment_list = free_slist (priv->comment_list);
 	priv->completed = NULL;
-	priv->contact_list = NULL;
+	priv->contact_list = free_slist (priv->contact_list);
 	priv->created = NULL;
 
 	priv->description_list = free_slist (priv->description_list);
