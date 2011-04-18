@@ -578,6 +578,7 @@ static void
 e_data_cal_factory_finalize (GObject *object)
 {
 	EDataCalFactory *factory = E_DATA_CAL_FACTORY (object);
+	gint ii;
 
 	g_return_if_fail (factory != NULL);
 
@@ -591,6 +592,16 @@ e_data_cal_factory_finalize (GObject *object)
 	g_hash_table_destroy (factory->priv->connections);
 
 	g_mutex_free (factory->priv->backends_mutex);
+
+	for (ii = 0; ii < E_CAL_SOURCE_TYPE_LAST; ii++) {
+		if (factory->priv->lists[ii]) {
+			g_object_unref (factory->priv->lists[ii]);
+			factory->priv->lists[ii] = NULL;
+		}
+
+		g_slist_free (factory->priv->backends_by_type[ii]);
+		factory->priv->backends_by_type[ii] = NULL;
+	}
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_cal_factory_parent_class)->finalize (object);

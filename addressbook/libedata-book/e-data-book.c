@@ -893,6 +893,19 @@ e_data_book_dispose (GObject *object)
 }
 
 static void
+data_book_finalize (GObject *object)
+{
+	EDataBook *book = E_DATA_BOOK (object);
+
+	if (book->priv->gdbus_object) {
+		g_object_unref (book->priv->gdbus_object);
+		book->priv->gdbus_object = NULL;
+	}
+
+	G_OBJECT_CLASS (e_data_book_parent_class)->finalize (object);
+}
+
+static void
 e_data_book_class_init (EDataBookClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -900,6 +913,7 @@ e_data_book_class_init (EDataBookClass *klass)
 	g_type_class_add_private (klass, sizeof (EDataBookPrivate));
 
 	object_class->dispose = e_data_book_dispose;
+	object_class->finalize = data_book_finalize;
 
 	if (!op_pool) {
 		op_pool = g_thread_pool_new (operation_thread, NULL, 10, FALSE, NULL);
