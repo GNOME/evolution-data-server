@@ -416,25 +416,23 @@ inode_free (gpointer k, gpointer v, gpointer d)
 	g_free (k);
 }
 
-static gboolean
-mh_folder_store_construct (CamelService *service,
-                           CamelSession *session,
-                           CamelProvider *provider,
-                           CamelURL *url,
-                           GError **error)
+static void
+mh_store_constructed (GObject *object)
 {
-	CamelServiceClass *service_class;
-	CamelMhStore *mh_store = (CamelMhStore *)service;
+	CamelMhStore *mh_store;
+	CamelService *service;
+	CamelURL *url;
 
-	/* Chain up to parent's construct() method. */
-	service_class = CAMEL_SERVICE_CLASS (camel_mh_store_parent_class);
-	if (!service_class->construct (service, session, provider, url, error))
-		return FALSE;
+	mh_store = CAMEL_MH_STORE (object);
+
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (camel_mh_store_parent_class)->constructed (object);
+
+	service = CAMEL_SERVICE (object);
+	url = camel_service_get_camel_url (service);
 
 	if (camel_url_get_param(url, "dotfolders"))
 		mh_store->flags |= CAMEL_MH_DOTFOLDERS;
-
-	return TRUE;
 }
 
 static CamelFolder *
@@ -625,11 +623,11 @@ mh_store_rename_folder_sync (CamelStore *store,
 static void
 camel_mh_store_class_init (CamelMhStoreClass *class)
 {
-	CamelServiceClass *service_class;
+	GObjectClass *object_class;
 	CamelStoreClass *store_class;
 
-	service_class = CAMEL_SERVICE_CLASS (class);
-	service_class->construct = mh_folder_store_construct;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->constructed = mh_store_constructed;
 
 	store_class = CAMEL_STORE_CLASS (class);
 	store_class->get_folder_sync = mh_store_get_folder_sync;

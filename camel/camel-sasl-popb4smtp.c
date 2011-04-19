@@ -65,33 +65,57 @@ sasl_popb4smtp_challenge_sync (CamelSasl *sasl,
                                GCancellable *cancellable,
                                GError **error)
 {
-	gchar *popuri;
 	CamelService *service;
 	CamelSession *session;
-	CamelStore *store;
 	time_t now, *timep;
+	const gchar *type_name;
+	const gchar *uid;
+	gchar *pop_uid;
 
 	service = camel_sasl_get_service (sasl);
 	session = camel_service_get_session (service);
+	uid = camel_service_get_uid (service);
+
 	camel_sasl_set_authenticated (sasl, FALSE);
 
-	popuri = camel_session_get_password (
-		session, service, NULL, _("POP Source URI"),
-		"popb4smtp_uri", 0, error);
+	pop_uid = camel_session_get_password (
+		session, service, NULL, _("POP Source UID"),
+		"popb4smtp_uid", 0, error);
 
-	if (popuri == NULL) {
+	if (pop_uid != NULL)
+		service = camel_session_get_service (session, pop_uid);
+	else
+		service = NULL;
+
+	if (service == NULL) {
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-			_("POP Before SMTP authentication using an unknown transport"));
+			_("POP Before SMTP authentication "
+			  "using an unknown transport"));
+		g_free (pop_uid);
 		return NULL;
 	}
 
-	if (g_ascii_strncasecmp(popuri, "pop:", 4) != 0) {
+	type_name = G_OBJECT_TYPE_NAME (service);
+
+	if (!CAMEL_IS_STORE (service)) {
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-			_("POP Before SMTP authentication using a non-POP source"));
+			_("POP Before SMTP authentication attempted "
+			  "with a %s service"), type_name);
+		g_free (pop_uid);
+		return NULL;
+	}
+
+	if (strstr (type_name, "POP") == NULL) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+			_("POP Before SMTP authentication attempted "
+			  "with a %s service"), type_name);
+		g_free (pop_uid);
 		return NULL;
 	}
 
@@ -101,24 +125,22 @@ sasl_popb4smtp_challenge_sync (CamelSasl *sasl,
 	/* need to lock around the whole thing until finished with timep */
 
 	POPB4SMTP_LOCK (lock);
-	timep = g_hash_table_lookup (poplast, popuri);
+	timep = g_hash_table_lookup (poplast, pop_uid);
 	if (timep) {
 		if ((*timep + POPB4SMTP_TIMEOUT) > now) {
 			camel_sasl_set_authenticated (sasl, TRUE);
 			POPB4SMTP_UNLOCK (lock);
-			g_free (popuri);
+			g_free (pop_uid);
 			return NULL;
 		}
 	} else {
 		timep = g_malloc0 (sizeof (*timep));
-		g_hash_table_insert (poplast, g_strdup (popuri), timep);
+		g_hash_table_insert (poplast, g_strdup (pop_uid), timep);
 	}
 
 	/* connect to pop session */
-	store = camel_session_get_store (session, popuri, error);
-	if (store) {
+	if (camel_service_connect_sync (service, error)) {
 		camel_sasl_set_authenticated (sasl, TRUE);
-		g_object_unref (store);
 		*timep = now;
 	} else {
 		camel_sasl_set_authenticated (sasl, FALSE);
@@ -127,7 +149,7 @@ sasl_popb4smtp_challenge_sync (CamelSasl *sasl,
 
 	POPB4SMTP_UNLOCK (lock);
 
-	g_free (popuri);
+	g_free (pop_uid);
 
 	return NULL;
 }

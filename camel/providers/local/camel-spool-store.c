@@ -40,7 +40,15 @@
 
 #define d(x)
 
-G_DEFINE_TYPE (CamelSpoolStore, camel_spool_store, CAMEL_TYPE_MBOX_STORE)
+static GInitableIface *parent_initable_interface;
+
+/* Forward Declarations */
+static void camel_spool_store_initable_init (GInitableIface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (
+	CamelSpoolStore, camel_spool_store, CAMEL_TYPE_MBOX_STORE,
+	G_IMPLEMENT_INTERFACE (
+		G_TYPE_INITABLE, camel_spool_store_initable_init))
 
 /* partially copied from mbox */
 static void
@@ -297,59 +305,6 @@ get_folder_info_mbox (CamelStore *store,
 	return fi;
 }
 
-static gboolean
-spool_store_construct (CamelService *service,
-                       CamelSession *session,
-                       CamelProvider *provider,
-                       CamelURL *url,
-                       GError **error)
-{
-	CamelServiceClass *service_class;
-	struct stat st;
-
-	d(printf("constructing store of type %s '%s:%s'\n",
-		 G_OBJECT_CLASS_NAME (((CamelObject *)service)->s.type), url->protocol, url->path));
-
-	/* Chain up to parent's construct() method. */
-	service_class = CAMEL_SERVICE_CLASS (camel_spool_store_parent_class);
-	if (!service_class->construct (service, session, provider, url, error))
-		return FALSE;
-
-	if (url->path[0] != '/') {
-		g_set_error (
-			error, CAMEL_STORE_ERROR,
-			CAMEL_STORE_ERROR_NO_FOLDER,
-			_("Store root %s is not an absolute path"),
-			url->path);
-		return FALSE;
-	}
-
-	if (g_stat (url->path, &st) == -1) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			_("Spool '%s' cannot be opened: %s"),
-			url->path, g_strerror (errno));
-		return FALSE;
-	}
-
-	if (S_ISREG (st.st_mode))
-		((CamelSpoolStore *)service)->type = CAMEL_SPOOL_STORE_MBOX;
-	else if (S_ISDIR (st.st_mode))
-		/* we could check here for slight variations */
-		((CamelSpoolStore *)service)->type = CAMEL_SPOOL_STORE_ELM;
-	else {
-		g_set_error (
-			error, CAMEL_STORE_ERROR,
-			CAMEL_STORE_ERROR_NO_FOLDER,
-			_("Spool '%s' is not a regular file or directory"),
-			url->path);
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
 static gchar *
 spool_store_get_name (CamelService *service,
                       gboolean brief)
@@ -526,23 +481,69 @@ spool_store_get_meta_path (CamelLocalStore *ls,
 {
 	CamelService *service;
 	CamelSession *session;
-	gchar *root;
+	const gchar *user_data_dir;
 	gchar *path, *key;
 
 	service = CAMEL_SERVICE (ls);
 	session = camel_service_get_session (service);
-	root = camel_session_get_storage_path (session, service, NULL);
+	user_data_dir = camel_service_get_user_data_dir (service);
 
-	if (root == NULL)
-		return NULL;
-
-	g_mkdir_with_parents (root, 0700);
 	key = camel_file_util_safe_filename (full_name);
-	path = g_strdup_printf ("%s/%s%s", root, key, ext);
+	path = g_strdup_printf ("%s/%s%s", user_data_dir, key, ext);
 	g_free (key);
-	g_free (root);
 
 	return path;
+}
+
+static gboolean
+spool_store_initable_init (GInitable *initable,
+                           GCancellable *cancellable,
+                           GError **error)
+{
+	CamelService *service;
+	CamelURL *url;
+	struct stat st;
+
+	/* Chain up to parent interface's init() method. */
+	if (!parent_initable_interface->init (initable, cancellable, error))
+		return FALSE;
+
+	service = CAMEL_SERVICE (initable);
+	url = camel_service_get_camel_url (service);
+
+	if (url->path[0] != '/') {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
+			_("Store root %s is not an absolute path"),
+			url->path);
+		return FALSE;
+	}
+
+	if (g_stat (url->path, &st) == -1) {
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			_("Spool '%s' cannot be opened: %s"),
+			url->path, g_strerror (errno));
+		return FALSE;
+	}
+
+	if (S_ISREG (st.st_mode))
+		((CamelSpoolStore *)service)->type = CAMEL_SPOOL_STORE_MBOX;
+	else if (S_ISDIR (st.st_mode))
+		/* we could check here for slight variations */
+		((CamelSpoolStore *)service)->type = CAMEL_SPOOL_STORE_ELM;
+	else {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
+			_("Spool '%s' is not a regular file or directory"),
+			url->path);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 static void
@@ -553,7 +554,6 @@ camel_spool_store_class_init (CamelSpoolStoreClass *class)
 	CamelLocalStoreClass *local_store_class;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
-	service_class->construct = spool_store_construct;
 	service_class->get_name = spool_store_get_name;
 
 	store_class = CAMEL_STORE_CLASS (class);
@@ -567,6 +567,14 @@ camel_spool_store_class_init (CamelSpoolStoreClass *class)
 	local_store_class = CAMEL_LOCAL_STORE_CLASS (class);
 	local_store_class->get_full_path = spool_store_get_full_path;
 	local_store_class->get_meta_path = spool_store_get_meta_path;
+}
+
+static void
+camel_spool_store_initable_init (GInitableIface *interface)
+{
+	parent_initable_interface = g_type_interface_peek_parent (interface);
+
+	interface->init = spool_store_initable_init;
 }
 
 static void

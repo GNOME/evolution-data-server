@@ -629,18 +629,22 @@ imap_get_filename (CamelFolder *folder,
 static void
 imap_rename (CamelFolder *folder, const gchar *new)
 {
+	CamelService *service;
 	CamelStore *parent_store;
 	CamelImapFolder *imap_folder = (CamelImapFolder *)folder;
-	CamelImapStore *imap_store;
+	const gchar *user_data_dir;
 	gchar *folder_dir, *summary_path, *state_file;
 	gchar *folders;
 
 	parent_store = camel_folder_get_parent_store (folder);
-	imap_store = CAMEL_IMAP_STORE (parent_store);
 
-	folders = g_strconcat (imap_store->storage_path, "/folders", NULL);
+	service = CAMEL_SERVICE (parent_store);
+	user_data_dir = camel_service_get_user_data_dir (service);
+
+	folders = g_strconcat (user_data_dir, "/folders", NULL);
 	folder_dir = imap_path_to_physical (folders, new);
 	g_free (folders);
+
 	summary_path = g_strdup_printf("%s/summary", folder_dir);
 
 	CAMEL_IMAP_FOLDER_REC_LOCK (folder, cache_lock);

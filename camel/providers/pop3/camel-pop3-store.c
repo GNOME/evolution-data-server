@@ -589,26 +589,21 @@ pop3_store_connect_sync (CamelService *service,
 {
 	CamelPOP3Store *store = (CamelPOP3Store *)service;
 	gboolean reprompt = FALSE;
-	CamelSession *session;
 	CamelURL *url;
+	const gchar *user_data_dir;
 	gchar *errbuf = NULL;
 	GError *local_error = NULL;
 
 	url = camel_service_get_camel_url (service);
-	session = camel_service_get_session (service);
+	user_data_dir = camel_service_get_user_data_dir (service);
 
 	if (store->cache == NULL) {
-		gchar *root;
-
-		root = camel_session_get_storage_path (session, service, error);
-		if (root) {
-			store->cache = camel_data_cache_new (root, error);
-			g_free (root);
-			if (store->cache) {
-				/* Ensure cache will never expire, otherwise it causes redownload of messages */
-				camel_data_cache_set_expire_age (store->cache, -1);
-				camel_data_cache_set_expire_access (store->cache, -1);
-			}
+		store->cache = camel_data_cache_new (user_data_dir, error);
+		if (store->cache) {
+			/* Ensure cache will never expire, otherwise
+			 * it causes redownload of messages. */
+			camel_data_cache_set_expire_age (store->cache, -1);
+			camel_data_cache_set_expire_access (store->cache, -1);
 		}
 	}
 

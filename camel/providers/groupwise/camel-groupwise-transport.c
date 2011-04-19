@@ -36,7 +36,32 @@
 
 #define REPLY_VIEW "default message attachments threading"
 
+#define CAMEL_GROUPWISE_TRANSPORT_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_GROUPWISE_TRANSPORT, CamelGroupwiseTransportPrivate))
+
 G_DEFINE_TYPE (CamelGroupwiseTransport, camel_groupwise_transport, CAMEL_TYPE_TRANSPORT)
+
+struct _CamelGroupwiseTransportPrivate {
+	CamelGroupwiseStore *store;
+};
+
+static void
+groupwise_transport_dispose (GObject *object)
+{
+	CamelGroupwiseTransportPrivate *priv;
+
+	priv = CAMEL_GROUPWISE_TRANSPORT_GET_PRIVATE (object);
+
+	if (priv->store != NULL) {
+		g_object_unref (priv->store);
+		priv->store = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_groupwise_transport_parent_class)->
+		dispose (object);
+}
 
 static gchar *
 groupwise_transport_get_name (CamelService *service,
@@ -72,17 +97,14 @@ groupwise_send_to_sync (CamelTransport *transport,
                         GCancellable *cancellable,
                         GError **error)
 {
+	CamelGroupwiseTransportPrivate *priv;
 	CamelService *service;
 	CamelSession *session;
-	CamelStore *store = NULL;
 	CamelURL *service_url;
-	CamelGroupwiseStore *groupwise_store = NULL;
-	CamelGroupwiseStorePrivate *priv = NULL;
 	EGwItem *item ,*temp_item=NULL;
 	EGwConnection *cnc = NULL;
 	EGwConnectionStatus status = 0;
 	GSList *sent_item_list = NULL;
-	gchar *url = NULL;
 	gchar *reply_request = NULL;
 	EGwItemLinkInfo *info = NULL;
 
@@ -94,31 +116,16 @@ groupwise_send_to_sync (CamelTransport *transport,
 		return FALSE;
 	}
 
+	priv = CAMEL_GROUPWISE_TRANSPORT_GET_PRIVATE (transport);
+
 	service = CAMEL_SERVICE (transport);
 	session = camel_service_get_session (service);
 	service_url = camel_service_get_camel_url (service);
 
-	url = camel_url_to_string (
-		service_url, CAMEL_URL_HIDE_PASSWORD |
-		CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH);
-
 	camel_operation_push_message (cancellable, _("Sending Message") );
 
 	/*camel groupwise store and cnc*/
-	store = camel_session_get_store (session, url, NULL);
-	g_free (url);
-	if (!store) {
-		g_warning ("ERROR: Could not get a pointer to the store");
-		g_set_error (
-			error, CAMEL_STORE_ERROR,
-			CAMEL_STORE_ERROR_INVALID,
-			_("Cannot get folder: Invalid operation on this store"));
-		return FALSE;
-	}
-	groupwise_store = CAMEL_GROUPWISE_STORE (store);
-	priv = groupwise_store->priv;
-
-	cnc = cnc_lookup (priv);
+	cnc = cnc_lookup (priv->store->priv);
 	if (!cnc) {
 		g_warning ("||| Eh!!! Failure |||\n");
 		camel_operation_pop_message (cancellable);
@@ -185,8 +192,15 @@ groupwise_send_to_sync (CamelTransport *transport,
 static void
 camel_groupwise_transport_class_init (CamelGroupwiseTransportClass *class)
 {
+	GObjectClass *object_class;
 	CamelServiceClass *service_class;
 	CamelTransportClass *transport_class;
+
+	g_type_class_add_private (
+		class, sizeof (CamelGroupwiseTransportPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = groupwise_transport_dispose;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->get_name = groupwise_transport_get_name;
@@ -197,6 +211,17 @@ camel_groupwise_transport_class_init (CamelGroupwiseTransportClass *class)
 }
 
 static void
-camel_groupwise_transport_init (CamelGroupwiseTransport *groupwise_transport)
+camel_groupwise_transport_init (CamelGroupwiseTransport *transport)
 {
+	transport->priv = CAMEL_GROUPWISE_TRANSPORT_GET_PRIVATE (transport);
+}
+
+void
+camel_groupwise_transport_set_store (CamelGroupwiseTransport *transport,
+                                     CamelGroupwiseStore *store)
+{
+	g_return_if_fail (CAMEL_IS_GROUPWISE_TRANSPORT (transport));
+	g_return_if_fail (CAMEL_IS_GROUPWISE_STORE (store));
+
+	transport->priv->store = g_object_ref (store);
 }

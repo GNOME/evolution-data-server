@@ -36,7 +36,6 @@ camel-provider
 @auto_detect: 
 @object_types: 
 @authtypes: 
-@service_cache: 
 @url_hash: 
 @url_equal: 
 @translation_domain: 
@@ -268,7 +267,6 @@ camel-provider
 @auto_detect: 
 @object_types: 
 @authtypes: 
-@service_cache: 
 @url_hash: 
 @url_equal: 
 @translation_domain: 

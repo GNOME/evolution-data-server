@@ -38,25 +38,25 @@
 
 G_DEFINE_TYPE (CamelDiscoStore, camel_disco_store, CAMEL_TYPE_STORE)
 
-static gboolean
-disco_store_construct (CamelService *service,
-                       CamelSession *session,
-                       CamelProvider *provider,
-                       CamelURL *url,
-                       GError **error)
+static void
+disco_store_constructed (GObject *object)
 {
-	CamelServiceClass *service_class;
-	CamelDiscoStore *disco = CAMEL_DISCO_STORE (service);
+	CamelDiscoStore *disco;
+	CamelService *service;
+	CamelSession *session;
 
-	/* Chain up to parent's construct() method. */
-	service_class = CAMEL_SERVICE_CLASS (camel_disco_store_parent_class);
-	if (!service_class->construct (service, session, provider, url, error))
-		return FALSE;
+	disco = CAMEL_DISCO_STORE (object);
 
-	disco->status = camel_session_get_online (session) ?
-		CAMEL_DISCO_STORE_ONLINE : CAMEL_DISCO_STORE_OFFLINE;
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (camel_disco_store_parent_class)->constructed (object);
 
-	return TRUE;
+	service = CAMEL_SERVICE (object);
+	session = camel_service_get_session (service);
+
+	if (camel_session_get_online (session))
+		disco->status = CAMEL_DISCO_STORE_ONLINE;
+	else
+		disco->status = CAMEL_DISCO_STORE_OFFLINE;
 }
 
 static void
@@ -311,11 +311,14 @@ disco_store_set_status (CamelDiscoStore *disco_store,
 static void
 camel_disco_store_class_init (CamelDiscoStoreClass *class)
 {
+	GObjectClass *object_class;
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 
+	object_class = G_OBJECT_CLASS (class);
+	object_class->constructed = disco_store_constructed;
+
 	service_class = CAMEL_SERVICE_CLASS (class);
-	service_class->construct = disco_store_construct;
 	service_class->cancel_connect = disco_store_cancel_connect;
 	service_class->connect_sync = disco_store_connect_sync;
 	service_class->disconnect_sync = disco_store_disconnect_sync;

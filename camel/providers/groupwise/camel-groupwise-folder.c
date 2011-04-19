@@ -355,19 +355,20 @@ static void
 groupwise_folder_rename (CamelFolder *folder, const gchar *new)
 {
 	CamelGroupwiseFolder *gw_folder;
-	CamelGroupwiseStore *gw_store;
 	CamelStore *parent_store;
-	gchar *folder_dir, *summary_path, *state_file, *storage_path;
+	CamelService *service;
+	const gchar *user_data_dir;
+	gchar *folder_dir, *summary_path, *state_file;
 	gchar *folders;
 
 	parent_store = camel_folder_get_parent_store (folder);
 
 	gw_folder = CAMEL_GROUPWISE_FOLDER (folder);
-	gw_store = CAMEL_GROUPWISE_STORE (parent_store);
 
-	storage_path = storage_path_lookup (gw_store->priv);
+	service = CAMEL_SERVICE (parent_store);
+	user_data_dir = camel_service_get_user_data_dir (service);
 
-	folders = g_strconcat (storage_path, "/folders", NULL);
+	folders = g_strconcat (user_data_dir, "/folders", NULL);
 	folder_dir = e_path_to_physical (folders, new);
 	g_free (folders);
 

@@ -107,14 +107,8 @@ struct _CamelService {
 struct _CamelServiceClass {
 	CamelObjectClass parent_class;
 
-	gboolean	(*construct)		(CamelService *service,
-						 struct _CamelSession *session,
-						 CamelProvider *provider,
-						 CamelURL *url,
-						 GError **error);
 	gchar *		(*get_name)		(CamelService *service,
 						 gboolean brief);
-	gchar *		(*get_path)		(CamelService *service);
 	void		(*cancel_connect)	(CamelService *service);
 
 	gboolean	(*connect_sync)		(CamelService *service,
@@ -141,17 +135,13 @@ typedef struct {
 
 GType		camel_service_get_type		(void);
 GQuark		camel_service_error_quark	(void) G_GNUC_CONST;
-gboolean	camel_service_construct		(CamelService *service,
-						 struct _CamelSession *session,
-						 CamelProvider *provider,
-						 CamelURL *url,
-						 GError **error);
+const gchar *	camel_service_get_user_data_dir	(CamelService *service);
 gchar *		camel_service_get_name		(CamelService *service,
 						 gboolean brief);
-gchar *		camel_service_get_path		(CamelService *service);
 CamelProvider *	camel_service_get_provider	(CamelService *service);
 struct _CamelSession *
 		camel_service_get_session	(CamelService *service);
+const gchar *	camel_service_get_uid		(CamelService *service);
 CamelURL *	camel_service_get_camel_url	(CamelService *service);
 gchar *		camel_service_get_url		(CamelService *service);
 void		camel_service_cancel_connect	(CamelService *service);

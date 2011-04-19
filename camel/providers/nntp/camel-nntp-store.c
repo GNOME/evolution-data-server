@@ -54,7 +54,15 @@
 
 #define DUMP_EXTENSIONS
 
-G_DEFINE_TYPE (CamelNNTPStore, camel_nntp_store, CAMEL_TYPE_DISCO_STORE)
+static GInitableIface *parent_initable_interface;
+
+/* Forward Declarations */
+static void camel_nntp_store_initable_init (GInitableIface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (
+	CamelNNTPStore, camel_nntp_store, CAMEL_TYPE_DISCO_STORE,
+	G_IMPLEMENT_INTERFACE (
+		G_TYPE_INITABLE, camel_nntp_store_initable_init))
 
 static gint
 camel_nntp_try_authenticate (CamelNNTPStore *store,
@@ -182,7 +190,6 @@ nntp_store_finalize (GObject *object)
 	struct _xover_header *xover, *xn;
 
 	g_free (nntp_store->base_url);
-	g_free (nntp_store->storage_path);
 
 	xover = nntp_store->xover;
 	while (xover) {
@@ -327,6 +334,7 @@ connect_to_server (CamelService *service,
 	gchar *socks_host;
 	gint socks_port;
 	CamelStream *tcp_stream;
+	const gchar *user_data_dir;
 	gboolean retval = FALSE;
 	guchar *buf;
 	guint len;
@@ -334,8 +342,9 @@ connect_to_server (CamelService *service,
 
 	url = camel_service_get_camel_url (service);
 	session = camel_service_get_session (service);
+	user_data_dir = camel_service_get_user_data_dir (service);
 
-	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (ssl_mode != MODE_CLEAR) {
 #ifdef CAMEL_HAVE_SSL
@@ -416,7 +425,7 @@ connect_to_server (CamelService *service,
 		goto fail;
 
 	if (!disco_store->diary) {
-		path = g_build_filename (store->storage_path, ".ev-journal", NULL);
+		path = g_build_filename (user_data_dir, ".ev-journal", NULL);
 		disco_store->diary = camel_disco_diary_new (disco_store, path, error);
 		g_free (path);
 	}
@@ -427,7 +436,7 @@ connect_to_server (CamelService *service,
 	store->current_folder = NULL;
 
  fail:
-	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 	return retval;
 }
 
@@ -514,14 +523,14 @@ nntp_connect_offline (CamelService *service,
 {
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (service);
 	CamelDiscoStore *disco_store = (CamelDiscoStore *) nntp_store;
+	const gchar *user_data_dir;
 	gchar *path;
 
-	if (nntp_store->storage_path == NULL)
-		return FALSE;
+	user_data_dir = camel_service_get_user_data_dir (service);
 
 	/* setup store-wide cache */
 	if (nntp_store->cache == NULL) {
-		nntp_store->cache = camel_data_cache_new (nntp_store->storage_path, error);
+		nntp_store->cache = camel_data_cache_new (user_data_dir, error);
 		if (nntp_store->cache == NULL)
 			return FALSE;
 
@@ -533,7 +542,7 @@ nntp_connect_offline (CamelService *service,
 	if (disco_store->diary)
 		return TRUE;
 
-	path = g_build_filename (nntp_store->storage_path, ".ev-journal", NULL);
+	path = g_build_filename (user_data_dir, ".ev-journal", NULL);
 	disco_store->diary = camel_disco_diary_new (disco_store, path, error);
 	g_free (path);
 
@@ -1361,35 +1370,36 @@ nntp_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, GError **erro
 	return TRUE;
 }
 
-/* construction function in which we set some basic store properties */
 static gboolean
-nntp_construct (CamelService *service,
-                CamelSession *session,
-                CamelProvider *provider,
-                CamelURL *url,
-                GError **error)
+nntp_store_initable_init (GInitable *initable,
+                          GCancellable *cancellable,
+                          GError **error)
 {
-	CamelServiceClass *service_class;
-	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (service);
+	CamelNNTPStore *nntp_store;
+	CamelService *service;
+	CamelSession *session;
 	CamelURL *summary_url;
+	CamelURL *url;
+	const gchar *user_data_dir;
 	gchar *tmp;
 
-	/* construct the parent first */
-	service_class = CAMEL_SERVICE_CLASS (camel_nntp_store_parent_class);
-	if (!service_class->construct (service, session, provider, url, error))
+	nntp_store = CAMEL_NNTP_STORE (initable);
+
+	/* Chain up to parent interface's init() method. */
+	if (!parent_initable_interface->init (initable, cancellable, error))
 		return FALSE;
 
-	/* find out the storage path, base url */
-	nntp_store->storage_path = camel_session_get_storage_path (session, service, error);
-	if (!nntp_store->storage_path)
-		return FALSE;
+	service = CAMEL_SERVICE (initable);
+	url = camel_service_get_camel_url (service);
+	session = camel_service_get_session (service);
+	user_data_dir = camel_service_get_user_data_dir (service);
 
 	/* FIXME */
 	nntp_store->base_url = camel_url_to_string (
 		url, CAMEL_URL_HIDE_PASSWORD |
 		CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH);
 
-	tmp = g_build_filename (nntp_store->storage_path, ".ev-store-summary", NULL);
+	tmp = g_build_filename (user_data_dir, ".ev-store-summary", NULL);
 	nntp_store->summary = camel_nntp_store_summary_new ();
 	camel_store_summary_set_filename ((CamelStoreSummary *) nntp_store->summary, tmp);
 	summary_url = camel_url_new (nntp_store->base_url, NULL);
@@ -1410,7 +1420,7 @@ nntp_construct (CamelService *service,
 		nntp_store->folder_hierarchy_relative = FALSE;
 
 	/* setup store-wide cache */
-	nntp_store->cache = camel_data_cache_new (nntp_store->storage_path, error);
+	nntp_store->cache = camel_data_cache_new (user_data_dir, error);
 	if (nntp_store->cache == NULL)
 		return FALSE;
 
@@ -1436,7 +1446,6 @@ camel_nntp_store_class_init (CamelNNTPStoreClass *class)
 	object_class->finalize = nntp_store_finalize;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
-	service_class->construct = nntp_construct;
 	service_class->get_name = nntp_store_get_name;
 	service_class->query_auth_types_sync = nntp_store_query_auth_types_sync;
 
@@ -1462,6 +1471,14 @@ camel_nntp_store_class_init (CamelNNTPStoreClass *class)
 	disco_store_class->get_folder_info_online = nntp_get_folder_info_online;
 	disco_store_class->get_folder_info_resyncing = nntp_get_folder_info_online;
 	disco_store_class->get_folder_info_offline = nntp_get_folder_info_offline;
+}
+
+static void
+camel_nntp_store_initable_init (GInitableIface *interface)
+{
+	parent_initable_interface = g_type_interface_peek_parent (interface);
+
+	interface->init = nntp_store_initable_init;
 }
 
 static void

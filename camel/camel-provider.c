@@ -243,12 +243,6 @@ camel_provider_register (CamelProvider *provider)
 		return;
 	}
 
-	for (i = 0; i < CAMEL_NUM_PROVIDER_TYPES; i++) {
-		if (provider->object_types[i])
-			provider->service_cache[i] = camel_object_bag_new (provider->url_hash, provider->url_equal,
-									   (CamelCopyFunc)camel_url_copy, (GFreeFunc)camel_url_free);
-	}
-
 	/* Translate all strings here */
 #define P_(string) dgettext (provider->translation_domain, string)
 

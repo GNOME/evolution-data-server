@@ -27,6 +27,7 @@
 #include <config.h>
 #endif
 
+#include <errno.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -43,6 +44,10 @@
 
 #define d(x)
 #define w(x)
+
+#define CAMEL_STORE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_STORE, CamelStorePrivate))
 
 typedef struct _AsyncContext AsyncContext;
 typedef struct _SignalData SignalData;
@@ -81,8 +86,15 @@ enum {
 };
 
 static guint signals[LAST_SIGNAL];
+static GInitableIface *parent_initable_interface;
 
-G_DEFINE_ABSTRACT_TYPE (CamelStore, camel_store, CAMEL_TYPE_SERVICE)
+/* Forward Declarations */
+static void camel_store_initable_init (GInitableIface *interface);
+
+G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
+	CamelStore, camel_store, CAMEL_TYPE_SERVICE,
+	G_IMPLEMENT_INTERFACE (
+		G_TYPE_INITABLE, camel_store_initable_init))
 
 static void
 async_context_free (AsyncContext *async_context)
@@ -256,76 +268,6 @@ store_constructed (GObject *object)
 			(CamelCopyFunc) g_strdup, g_free);
 	else
 		store->folders = NULL;
-}
-
-static gboolean
-store_construct (CamelService *service,
-                 CamelSession *session,
-                 CamelProvider *provider,
-                 CamelURL *url,
-                 GError **error)
-{
-	CamelServiceClass *service_class;
-	CamelStore *store = CAMEL_STORE (service);
-	gchar *store_db_path, *store_path = NULL;
-
-	/* Chain up to parent's construct() method. */
-	service_class = CAMEL_SERVICE_CLASS (camel_store_parent_class);
-	if (!service_class->construct (service, session, provider, url, error))
-		return FALSE;
-
-	store_db_path = g_build_filename (url->path, CAMEL_DB_FILE, NULL);
-
-	if (!url->path || strlen (store_db_path) < 2) {
-		store_path = camel_session_get_storage_path (session, service, error);
-
-		g_free (store_db_path);
-		store_db_path = g_build_filename (store_path, CAMEL_DB_FILE, NULL);
-	}
-
-	if (!g_file_test (url->path ? url->path : store_path, G_FILE_TEST_EXISTS)) {
-		/* Cache might be blown. Recreate. */
-		g_mkdir_with_parents (url->path ? url->path : store_path, S_IRWXU);
-	}
-
-	g_free (store_path);
-
-	/* This is for reading from the store */
-	store->cdb_r = camel_db_open (store_db_path, NULL);
-	if (camel_debug("sqlite"))
-		printf("store_db_path %s\n", store_db_path);
-	if (store->cdb_r == NULL) {
-		gchar *store_path;
-
-		if (camel_debug("sqlite"))
-			g_print ("Failure for store_db_path : [%s]\n", store_db_path);
-		g_free (store_db_path);
-
-		store_path =  camel_session_get_storage_path (session, service, NULL);
-		store_db_path = g_build_filename (store_path, CAMEL_DB_FILE, NULL);
-		g_free (store_path);
-
-		store->cdb_r = camel_db_open (store_db_path, NULL);
-		if (store->cdb_r == NULL) {
-			g_print("Retry with %s failed\n", store_db_path);
-			g_free (store_db_path);
-			return FALSE;
-		}
-	}
-	g_free (store_db_path);
-
-	if (camel_db_create_folders_table (store->cdb_r, error)) {
-		g_warning ("something went wrong terribly during db creation \n");
-		return FALSE;
-	}
-
-	/* This is for writing to the store */
-	store->cdb_w = camel_db_clone (store->cdb_r, error);
-
-	if (camel_url_get_param(url, "filter"))
-		store->flags |= CAMEL_STORE_FILTER_INBOX;
-
-	return TRUE;
 }
 
 static gboolean
@@ -1246,20 +1188,67 @@ store_noop_finish (CamelStore *store,
 	return !g_simple_async_result_propagate_error (simple, error);
 }
 
+static gboolean
+store_initable_init (GInitable *initable,
+                     GCancellable *cancellable,
+                     GError **error)
+{
+	CamelStore *store;
+	CamelService *service;
+	CamelSession *session;
+	CamelURL *url;
+	const gchar *user_data_dir;
+	gchar *filename;
+
+	store = CAMEL_STORE (initable);
+
+	/* Chain up to parent interface's init() method. */
+	if (!parent_initable_interface->init (initable, cancellable, error))
+		return FALSE;
+
+	service = CAMEL_SERVICE (initable);
+	url = camel_service_get_camel_url (service);
+	session = camel_service_get_session (service);
+	user_data_dir = camel_service_get_user_data_dir (service);
+
+	if (g_mkdir_with_parents (user_data_dir, S_IRWXU) == -1) {
+		g_set_error_literal (
+			error, G_FILE_ERROR,
+			g_file_error_from_errno (errno),
+			g_strerror (errno));
+		return FALSE;
+	}
+
+	/* This is for reading from the store */
+	filename = g_build_filename (user_data_dir, CAMEL_DB_FILE, NULL);
+	store->cdb_r = camel_db_open (filename, error);
+	g_free (filename);
+
+	if (store->cdb_r == NULL)
+		return FALSE;
+
+	if (camel_db_create_folders_table (store->cdb_r, error))
+		return FALSE;
+
+	/* This is for writing to the store */
+	store->cdb_w = camel_db_clone (store->cdb_r, error);
+
+	if (camel_url_get_param (url, "filter"))
+		store->flags |= CAMEL_STORE_FILTER_INBOX;
+
+	return TRUE;
+}
+
 static void
 camel_store_class_init (CamelStoreClass *class)
 {
 	GObjectClass *object_class;
-	CamelServiceClass *service_class;
 
 	g_type_class_add_private (class, sizeof (CamelStorePrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = store_finalize;
 	object_class->constructed = store_constructed;
-
-	service_class = CAMEL_SERVICE_CLASS (class);
-	service_class->construct = store_construct;
 
 	class->hash_folder_name = g_str_hash;
 	class->compare_folder_name = g_str_equal;
@@ -1359,10 +1348,17 @@ camel_store_class_init (CamelStoreClass *class)
 }
 
 static void
+camel_store_initable_init (GInitableIface *interface)
+{
+	parent_initable_interface = g_type_interface_peek_parent (interface);
+
+	interface->init = store_initable_init;
+}
+
+static void
 camel_store_init (CamelStore *store)
 {
-	store->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		store, CAMEL_TYPE_STORE, CamelStorePrivate);
+	store->priv = CAMEL_STORE_GET_PRIVATE (store);
 
 	/* set vtrash and vjunk on by default */
 	store->flags = CAMEL_STORE_VTRASH | CAMEL_STORE_VJUNK;

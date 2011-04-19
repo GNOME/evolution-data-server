@@ -70,7 +70,7 @@ struct _CamelIMAPXStore {
 	CamelIMAPXConnManager *con_man;
 
 	CamelIMAPXStoreSummary *summary; /* in-memory list of folders */
-	gchar *namespace, dir_sep, *base_url, *storage_path;
+	gchar *namespace, dir_sep, *base_url;
 
 	guint32 rec_options;
 

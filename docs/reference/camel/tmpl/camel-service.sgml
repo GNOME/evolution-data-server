@@ -26,6 +26,26 @@ CamelService
 </para>
 
 
+<!-- ##### ARG CamelService:provider ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG CamelService:session ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG CamelService:uid ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG CamelService:url ##### -->
+<para>
+
+</para>
+
 <!-- ##### MACRO CAMEL_SERVICE_ERROR ##### -->
 <para>
 
@@ -64,16 +84,12 @@ CamelService
 @authproto: 
 @need_password: 
 
-<!-- ##### FUNCTION camel_service_construct ##### -->
+<!-- ##### FUNCTION camel_service_get_user_data_dir ##### -->
 <para>
 
 </para>
 
 @service: 
-@session: 
-@provider: 
-@url: 
-@error: 
 @Returns: 
 
 
@@ -87,15 +103,6 @@ CamelService
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_service_get_path ##### -->
-<para>
-
-</para>
-
-@service: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_service_get_provider ##### -->
 <para>
 
@@ -106,6 +113,15 @@ CamelService
 
 
 <!-- ##### FUNCTION camel_service_get_session ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_service_get_uid ##### -->
 <para>
 
 </para>

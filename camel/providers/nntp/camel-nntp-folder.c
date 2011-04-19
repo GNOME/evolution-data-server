@@ -658,17 +658,12 @@ camel_nntp_folder_new (CamelStore *parent,
 	CamelService *service;
 	CamelSession *session;
 	CamelStoreInfo *si;
+	const gchar *user_data_dir;
 	gboolean subscribed = TRUE;
 
 	service = CAMEL_SERVICE (parent);
 	session = camel_service_get_session (service);
-
-	root = camel_session_get_storage_path (session, service, error);
-	if (root == NULL)
-		return NULL;
-
-	/* If this doesn't work, stuff wont save, but let it continue anyway */
-	g_mkdir_with_parents (root, 0700);
+	user_data_dir = camel_service_get_user_data_dir (service);
 
 	folder = g_object_new (
 		CAMEL_TYPE_NNTP_FOLDER,
@@ -677,10 +672,12 @@ camel_nntp_folder_new (CamelStore *parent,
 		"parent-store", parent, NULL);
 	nntp_folder = (CamelNNTPFolder *)folder;
 
-	folder->folder_flags |= CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY|CAMEL_FOLDER_HAS_SEARCH_CAPABILITY;
+	folder->folder_flags |=
+		CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |
+		CAMEL_FOLDER_HAS_SEARCH_CAPABILITY;
 
-	nntp_folder->storage_path = g_build_filename (root, folder_name, NULL);
-	g_free (root);
+	nntp_folder->storage_path =
+		g_build_filename (user_data_dir, folder_name, NULL);
 
 	root = g_strdup_printf ("%s.cmeta", nntp_folder->storage_path);
 	camel_object_set_state_filename (CAMEL_OBJECT (nntp_folder), root);

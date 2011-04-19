@@ -39,7 +39,6 @@
 
 #define d(x)
 
-static gboolean construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, GError **error);
 static CamelFolder *local_store_get_folder_sync (CamelStore *store, const gchar *folder_name, CamelStoreGetFolderFlags flags, GCancellable *cancellable, GError **error);
 static gchar *get_name (CamelService *service, gboolean brief);
 static CamelFolder *local_store_get_inbox_folder_sync (CamelStore *store, GCancellable *cancellable, GError **error);
@@ -55,6 +54,54 @@ static gchar *local_get_full_path (CamelLocalStore *lf, const gchar *full_name);
 static gchar *local_get_meta_path (CamelLocalStore *lf, const gchar *full_name, const gchar *ext);
 
 G_DEFINE_TYPE (CamelLocalStore, camel_local_store, CAMEL_TYPE_STORE)
+
+static void
+local_store_constructed (GObject *object)
+{
+	CamelLocalStore *local_store;
+	CamelService *service;
+	CamelURL *url;
+	gchar *local_store_path;
+	gchar *local_store_uri;
+	gint len;
+
+	local_store = CAMEL_LOCAL_STORE (object);
+
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (camel_local_store_parent_class)->constructed (object);
+
+	service = CAMEL_SERVICE (object);
+	url = camel_service_get_camel_url (service);
+
+	len = strlen (url->path);
+	if (!G_IS_DIR_SEPARATOR (url->path[len - 1]))
+		local_store->toplevel_dir = g_strdup_printf ("%s/", url->path);
+	else
+		local_store->toplevel_dir = g_strdup (url->path);
+
+	local_store->is_main_store = FALSE;
+
+	local_store_path = g_build_filename (
+		e_get_user_data_dir (), "mail", "local", NULL);
+	local_store_uri = g_filename_to_uri (local_store_path, NULL, NULL);
+	if (local_store_uri) {
+		CamelProvider *provider;
+		CamelURL *local_store_url = camel_url_new (local_store_uri, NULL);
+
+		provider = camel_service_get_provider (service);
+		camel_url_set_protocol (local_store_url, url->protocol);
+		camel_url_set_host (local_store_url, url->host);
+
+		local_store->is_main_store =
+			provider && provider->url_equal ?
+			provider->url_equal (url, local_store_url) :
+			camel_url_equal (url, local_store_url);
+		camel_url_free (local_store_url);
+	}
+
+	g_free (local_store_uri);
+	g_free (local_store_path);
+}
 
 static void
 local_store_finalize (GObject *object)
@@ -76,9 +123,9 @@ camel_local_store_class_init (CamelLocalStoreClass *class)
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = local_store_finalize;
+	object_class->constructed = local_store_constructed;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
-	service_class->construct = construct;
 	service_class->get_name = get_name;
 
 	store_class = CAMEL_STORE_CLASS (class);
@@ -100,54 +147,6 @@ camel_local_store_class_init (CamelLocalStoreClass *class)
 static void
 camel_local_store_init (CamelLocalStore *local_store)
 {
-}
-
-static gboolean
-construct (CamelService *service,
-           CamelSession *session,
-           CamelProvider *provider,
-           CamelURL *url,
-           GError **error)
-{
-	CamelLocalStore *local_store = CAMEL_LOCAL_STORE (service);
-	CamelServiceClass *service_class;
-	gint len;
-	gchar *local_store_path, *local_store_uri;
-
-	/* Chain up to parent's construct() method. */
-	service_class = CAMEL_SERVICE_CLASS (camel_local_store_parent_class);
-	if (!service_class->construct (service, session, provider, url, error))
-		return FALSE;
-
-	len = strlen (url->path);
-	if (!G_IS_DIR_SEPARATOR (url->path[len - 1]))
-		local_store->toplevel_dir = g_strdup_printf ("%s/", url->path);
-	else
-		local_store->toplevel_dir = g_strdup (url->path);
-
-	local_store->is_main_store = FALSE;
-
-	local_store_path = g_build_filename (e_get_user_data_dir (), "mail", "local", NULL);
-	local_store_uri = g_filename_to_uri (local_store_path, NULL, NULL);
-	if (local_store_uri) {
-		CamelProvider *provider;
-		CamelURL *local_store_url = camel_url_new (local_store_uri, NULL);
-
-		provider = camel_service_get_provider (service);
-		camel_url_set_protocol (local_store_url, url->protocol);
-		camel_url_set_host (local_store_url, url->host);
-
-		local_store->is_main_store =
-			provider && provider->url_equal ?
-			provider->url_equal (url, local_store_url) :
-			camel_url_equal (url, local_store_url);
-		camel_url_free (local_store_url);
-	}
-
-	g_free (local_store_uri);
-	g_free (local_store_path);
-
-	return TRUE;
 }
 
 const gchar *

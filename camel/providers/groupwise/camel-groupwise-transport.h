@@ -24,7 +24,7 @@
 #ifndef CAMEL_GROUPWISE_TRANSPORT_H
 #define CAMEL_GROUPWISE_TRANSPORT_H
 
-#include <camel/camel.h>
+#include "camel-groupwise-store.h"
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_GROUPWISE_TRANSPORT \
@@ -49,17 +49,21 @@ G_BEGIN_DECLS
 
 typedef struct _CamelGroupwiseTransport CamelGroupwiseTransport;
 typedef struct _CamelGroupwiseTransportClass CamelGroupwiseTransportClass;
+typedef struct _CamelGroupwiseTransportPrivate CamelGroupwiseTransportPrivate;
 
 struct _CamelGroupwiseTransport {
 	CamelTransport parent;
-	gboolean connected;
+	CamelGroupwiseTransportPrivate *priv;
 };
 
 struct _CamelGroupwiseTransportClass {
 	CamelTransportClass parent_class;
 };
 
-GType camel_groupwise_transport_get_type (void);
+GType		camel_groupwise_transport_get_type (void);
+void		camel_groupwise_transport_set_store
+					(CamelGroupwiseTransport *transport,
+					 CamelGroupwiseStore *store);
 
 G_END_DECLS
 

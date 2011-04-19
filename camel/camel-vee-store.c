@@ -115,37 +115,29 @@ vee_store_finalize (GObject *object)
 	G_OBJECT_CLASS (camel_vee_store_parent_class)->finalize (object);
 }
 
-static gboolean
-vee_store_construct (CamelService *service,
-                     CamelSession *session,
-                     CamelProvider *provider,
-                     CamelURL *url,
-                     GError **error)
+static void
+vee_store_constructed (GObject *object)
 {
-	CamelServiceClass *service_class;
-	CamelStore *store;
 	CamelVeeStore *vee_store;
 
-	store = CAMEL_STORE (service);
-	vee_store = CAMEL_VEE_STORE (service);
+	vee_store = CAMEL_VEE_STORE (object);
 
-	/* Chain up to parent's construct() method. */
-	service_class = CAMEL_SERVICE_CLASS (camel_vee_store_parent_class);
-	if (!service_class->construct (service, session, provider, url, error))
-		return FALSE;
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (camel_vee_store_parent_class)->constructed (object);
 
-	/* Set up unmatched folder */
 #ifndef VEE_UNMATCHED_ENABLE
+	/* Set up unmatched folder */
 	vee_store->unmatched_uids = g_hash_table_new (g_str_hash, g_str_equal);
 	vee_store->folder_unmatched = g_object_new (
 		CAMEL_TYPE_VEE_FOLDER,
 		"full-name", CAMEL_UNMATCHED_NAME,
-		"name", _("Unmatched"), "parent-store", store, NULL);
-	camel_vee_folder_construct (vee_store->folder_unmatched, CAMEL_STORE_FOLDER_PRIVATE);
-	camel_db_create_vfolder (store->cdb_r, _("Unmatched"), NULL);
+		"name", _("Unmatched"), "parent-store", vee_store, NULL);
+	camel_vee_folder_construct (
+		vee_store->folder_unmatched, CAMEL_STORE_FOLDER_PRIVATE);
+	camel_db_create_vfolder (
+		CAMEL_STORE (vee_store)->cdb_r, _("Unmatched"), NULL);
 #endif
 
-	return TRUE;
 }
 
 static gchar *
@@ -470,9 +462,9 @@ camel_vee_store_class_init (CamelVeeStoreClass *class)
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = vee_store_finalize;
+	object_class->constructed = vee_store_constructed;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
-	service_class->construct = vee_store_construct;
 	service_class->get_name = vee_store_get_name;
 
 	store_class = CAMEL_STORE_CLASS (class);

@@ -41,10 +41,12 @@ main (gint argc, gchar *argv[])
 	camel_init ("/tmp/test-camel-imapx", TRUE);
 	camel_provider_init ();
 
-	session = g_object_new (CAMEL_TYPE_SESSION, NULL);
-	camel_session_construct (session, "/tmp/test-camel-imapx");
+	session = g_object_new (
+		CAMEL_TYPE_SESSION,
+		"user-data-dir", "/tmp/test-camel-imapx", NULL);
 
-	service = camel_session_get_service (session, uri, CAMEL_PROVIDER_STORE, NULL);
+	service = camel_session_add_service (
+		session, "text-imapx", uri, CAMEL_PROVIDER_STORE, NULL);
 	camel_service_connect_sync (service, NULL);
 
 	camel_store_get_folder_info_sync (

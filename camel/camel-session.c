@@ -47,17 +47,23 @@
 #include "camel-folder.h"
 #include "camel-mime-message.h"
 
+#define CAMEL_SESSION_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_SESSION, CamelSessionPrivate))
+
 #define d(x)
 
 struct _CamelSessionPrivate {
 	GMutex *lock;		/* for locking everything basically */
 	GMutex *thread_lock;	/* locking threads */
 
+	gchar *user_data_dir;
+
 	gint thread_id;
 	GHashTable *thread_active;
 	GThreadPool *thread_pool;
 
-	GHashTable *thread_msg_op;
+	GHashTable *services;
 	GHashTable *junk_headers;
 
 	gchar *socks_proxy_host;
@@ -73,7 +79,7 @@ enum {
 	PROP_CHECK_JUNK,
 	PROP_NETWORK_AVAILABLE,
 	PROP_ONLINE,
-	PROP_STORAGE_PATH
+	PROP_USER_DATA_DIR,
 };
 
 G_DEFINE_TYPE (CamelSession, camel_session, CAMEL_TYPE_OBJECT)
@@ -90,6 +96,16 @@ cs_thread_status (CamelOperation *operation,
 	g_return_if_fail (class->thread_status != NULL);
 
 	class->thread_status (msg->session, msg, what, pc);
+}
+
+static void
+session_set_user_data_dir (CamelSession *session,
+                           const gchar *user_data_dir)
+{
+	g_return_if_fail (user_data_dir != NULL);
+	g_return_if_fail (session->priv->user_data_dir == NULL);
+
+	session->priv->user_data_dir = g_strdup (user_data_dir);
 }
 
 static void
@@ -115,6 +131,12 @@ session_set_property (GObject *object,
 			camel_session_set_online (
 				CAMEL_SESSION (object),
 				g_value_get_boolean (value));
+			return;
+
+		case PROP_USER_DATA_DIR:
+			session_set_user_data_dir (
+				CAMEL_SESSION (object),
+				g_value_get_string (value));
 			return;
 	}
 
@@ -145,33 +167,54 @@ session_get_property (GObject *object,
 				value, camel_session_get_online (
 				CAMEL_SESSION (object)));
 			return;
+
+		case PROP_USER_DATA_DIR:
+			g_value_set_string (
+				value, camel_session_get_user_data_dir (
+				CAMEL_SESSION (object)));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static void
+session_dispose (GObject *object)
+{
+	CamelSessionPrivate *priv;
+
+	priv = CAMEL_SESSION_GET_PRIVATE (object);
+
+	g_hash_table_remove_all (priv->services);
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_session_parent_class)->dispose (object);
+}
+
+static void
 session_finalize (GObject *object)
 {
-	CamelSession *session = CAMEL_SESSION (object);
-	GThreadPool *thread_pool = session->priv->thread_pool;
+	CamelSessionPrivate *priv;
 
-	g_hash_table_destroy (session->priv->thread_active);
+	priv = CAMEL_SESSION_GET_PRIVATE (object);
 
-	if (thread_pool != NULL) {
+	g_free (priv->user_data_dir);
+
+	g_hash_table_destroy (priv->services);
+	g_hash_table_destroy (priv->thread_active);
+
+	if (priv->thread_pool != NULL) {
 		/* there should be no unprocessed tasks */
-		g_assert (g_thread_pool_unprocessed (thread_pool) == 0);
-		g_thread_pool_free (thread_pool, FALSE, FALSE);
+		g_assert (g_thread_pool_unprocessed (priv->thread_pool) == 0);
+		g_thread_pool_free (priv->thread_pool, FALSE, FALSE);
 	}
 
-	g_free (session->storage_path);
+	g_mutex_free (priv->lock);
+	g_mutex_free (priv->thread_lock);
 
-	g_mutex_free (session->priv->lock);
-	g_mutex_free (session->priv->thread_lock);
-
-	if (session->priv->junk_headers) {
-		g_hash_table_remove_all (session->priv->junk_headers);
-		g_hash_table_destroy (session->priv->junk_headers);
+	if (priv->junk_headers) {
+		g_hash_table_remove_all (priv->junk_headers);
+		g_hash_table_destroy (priv->junk_headers);
 	}
 
 	/* Chain up to parent's finalize() method. */
@@ -179,87 +222,74 @@ session_finalize (GObject *object)
 }
 
 static CamelService *
-session_get_service (CamelSession *session,
+session_add_service (CamelSession *session,
+                     const gchar *uid,
                      const gchar *url_string,
                      CamelProviderType type,
                      GError **error)
 {
 	CamelURL *url;
-	CamelProvider *provider;
 	CamelService *service;
+	CamelProvider *provider;
+	GType service_type = G_TYPE_INVALID;
+
+	service = g_hash_table_lookup (session->priv->services, uid);
+	if (CAMEL_IS_SERVICE (service))
+		return service;
+
+	g_debug ("%s: Entering", G_STRFUNC);
 
 	url = camel_url_new (url_string, error);
-	if (!url)
+	if (url == NULL)
 		return NULL;
 
-	/* We need to look up the provider so we can then lookup
-	   the service in the provider's cache */
+	/* Try to find a suitable CamelService subclass. */
 	provider = camel_provider_get (url->protocol, error);
-	if (provider && !provider->object_types[type]) {
+	if (provider != NULL)
+		service_type = provider->object_types[type];
+
+	if (service_type == G_TYPE_INVALID) {
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_URL_INVALID,
 			_("No provider available for protocol '%s'"),
 			url->protocol);
-		provider = NULL;
-	}
-
-	if (!provider) {
 		camel_url_free (url);
 		return NULL;
 	}
 
-	/* If the provider doesn't use paths but the URL contains one,
-	 * ignore it.
-	 */
-	if (url->path && !CAMEL_PROVIDER_ALLOWS (provider, CAMEL_URL_PART_PATH))
+	if (!g_type_is_a (service_type, CAMEL_TYPE_SERVICE)) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_INVALID,
+			_("Invalid GType registered for protocol '%s'"),
+			url->protocol);
+		camel_url_free (url);
+		return NULL;
+	}
+
+	/* If the provider does not use paths but the URL contains one,
+	 * ignore it. */
+	if (!CAMEL_PROVIDER_ALLOWS (provider, CAMEL_URL_PART_PATH))
 		camel_url_set_path (url, NULL);
 
-	/* Now look up the service in the provider's cache */
-	service = camel_object_bag_reserve (provider->service_cache[type], url);
-	if (service == NULL) {
-		service = g_object_new (provider->object_types[type], NULL);
-		if (!camel_service_construct (service, session, provider, url, error)) {
-			g_object_unref (service);
-			service = NULL;
-			camel_object_bag_abort (provider->service_cache[type], url);
-		} else {
-			camel_object_bag_add (provider->service_cache[type], url, service);
-		}
-	}
+	service = g_initable_new (
+		service_type, NULL, error,
+		"provider", provider, "session",
+		session, "uid", uid, "url", url, NULL);
+
+	/* The hash table takes ownership of the new CamelService. */
+	if (service != NULL)
+		g_hash_table_insert (
+			session->priv->services,
+			g_strdup (uid), service);
+
+	if (service != NULL)
+		g_debug ("%s: Adding %s (%s)", G_STRFUNC, uid, url_string);
 
 	camel_url_free (url);
 
 	return service;
-}
-
-static gchar *
-session_get_storage_path (CamelSession *session,
-                          CamelService *service,
-                          GError **error)
-{
-	gchar *service_path;
-	gchar *storage_path;
-
-	service_path = camel_service_get_path (service);
-	storage_path = g_build_filename (
-		session->storage_path, service_path, NULL);
-	g_free (service_path);
-
-	if (g_access (storage_path, F_OK) == 0)
-		return storage_path;
-
-	if (g_mkdir_with_parents (storage_path, S_IRWXU) == -1) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			_("Could not create directory %s:\n%s"),
-			storage_path, g_strerror (errno));
-		g_free (storage_path);
-		storage_path = NULL;
-	}
-
-	return storage_path;
 }
 
 static gpointer
@@ -378,10 +408,10 @@ camel_session_class_init (CamelSessionClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = session_set_property;
 	object_class->get_property = session_get_property;
+	object_class->dispose = session_dispose;
 	object_class->finalize = session_finalize;
 
-	class->get_service = session_get_service;
-	class->get_storage_path = session_get_storage_path;
+	class->add_service = session_add_service;
 	class->thread_msg_new = session_thread_msg_new;
 	class->thread_msg_free = session_thread_msg_free;
 	class->thread_queue = session_thread_queue;
@@ -397,7 +427,8 @@ camel_session_class_init (CamelSessionClass *class)
 			"Check incoming messages for junk",
 			FALSE,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT));
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
 		object_class,
@@ -408,7 +439,8 @@ camel_session_class_init (CamelSessionClass *class)
 			"Whether the network is available",
 			TRUE,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT));
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
 		object_class,
@@ -419,58 +451,92 @@ camel_session_class_init (CamelSessionClass *class)
 			"Whether the shell is online",
 			TRUE,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT));
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_USER_DATA_DIR,
+		g_param_spec_string (
+			"user-data-dir",
+			"User Data Directory",
+			"User-specific base directory for mail data",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
 camel_session_init (CamelSession *session)
 {
-	session->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		session, CAMEL_TYPE_SESSION, CamelSessionPrivate);
+	GHashTable *services;
+
+	services = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) g_object_unref);
+
+	session->priv = CAMEL_SESSION_GET_PRIVATE (session);
+
 	session->priv->lock = g_mutex_new ();
 	session->priv->thread_lock = g_mutex_new ();
 	session->priv->thread_id = 1;
 	session->priv->thread_active = g_hash_table_new (NULL, NULL);
 	session->priv->thread_pool = NULL;
+	session->priv->services = services;
 	session->priv->junk_headers = NULL;
 }
 
 /**
- * camel_session_construct:
- * @session: a #CamelSession object to construct
- * @storage_path: path to a directory the session can use for
- * persistent storage. (This directory must already exist.)
+ * camel_session_get_user_data_dir:
+ * @session: a #CamelSession
  *
- * Constructs @session.
+ * Returns the base directory under which to store user-specific mail data.
+ *
+ * Returns: the base directory for mail data
+ *
+ * Since: 3.2
  **/
-void
-camel_session_construct (CamelSession *session, const gchar *storage_path)
+const gchar *
+camel_session_get_user_data_dir (CamelSession *session)
 {
-	session->storage_path = g_strdup (storage_path);
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
+
+	return session->priv->user_data_dir;
 }
 
 /**
- * camel_session_get_service:
- * @session: a #CamelSession object
- * @url_string: a #CamelURL describing the service to get
+ * camel_session_add_service:
+ * @session: a #CamelSession
+ * @uid: a unique identifier string
+ * @uri_string: a URI string describing the service
  * @type: the provider type (#CAMEL_PROVIDER_STORE or
- * #CAMEL_PROVIDER_TRANSPORT) to get, since some URLs may be able
- * to specify either type.
+ * #CAMEL_PROVIDER_TRANSPORT) to get, since some URLs may be able to
+ * specify either type
  * @error: return location for a #GError, or %NULL
  *
- * This resolves a #CamelURL into a #CamelService, including loading the
- * provider library for that service if it has not already been loaded.
+ * Instantiates a new #CamelService for @session.  The @uid identifies the
+ * service for future lookup.  The @uri_string describes which provider to
+ * use, authentication details, provider-specific options, etc.  The @type
+ * explicitly designates the service as a #CamelStore or #CamelTransport.
  *
- * Services are cached, and asking for "the same" @url_string multiple
- * times will return the same CamelService (with its reference count
- * incremented by one each time). What constitutes "the same" URL
- * depends in part on the provider.
+ * If the given @uid has already been added, the existing #CamelService
+ * with that @uid is returned regardless of whether it agrees with the
+ * given @uri_string and @type.
  *
- * Returns: the requested #CamelService, or %NULL
+ * If the @uri_string is invalid or no #CamelProvider is available to
+ * handle the @uri_string, the function sets @error and returns %NULL.
+ *
+ * Returns: a #CamelService instance, or %NULL
+ *
+ * Since: 3.2
  **/
 CamelService *
-camel_session_get_service (CamelSession *session,
-                           const gchar *url_string,
+camel_session_add_service (CamelSession *session,
+                           const gchar *uid,
+                           const gchar *uri_string,
                            CamelProviderType type,
                            GError **error)
 {
@@ -478,15 +544,16 @@ camel_session_get_service (CamelSession *session,
 	CamelService *service;
 
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
-	g_return_val_if_fail (url_string != NULL, NULL);
+	g_return_val_if_fail (uid != NULL, NULL);
+	g_return_val_if_fail (uri_string != NULL, NULL);
 
 	class = CAMEL_SESSION_GET_CLASS (session);
-	g_return_val_if_fail (class->get_service != NULL, NULL);
+	g_return_val_if_fail (class->add_service != NULL, NULL);
 
 	camel_session_lock (session, CAMEL_SESSION_SESSION_LOCK);
 
-	service = class->get_service (session, url_string, type, error);
-	CAMEL_CHECK_GERROR (session, get_service, service != NULL, error);
+	service = class->add_service (session, uid, uri_string, type, error);
+	CAMEL_CHECK_GERROR (session, add_service, service != NULL, error);
 
 	camel_session_unlock (session, CAMEL_SESSION_SESSION_LOCK);
 
@@ -494,81 +561,111 @@ camel_session_get_service (CamelSession *session,
 }
 
 /**
- * camel_session_get_service_connected:
- * @session: a #CamelSession object
- * @url_string: a #CamelURL describing the service to get
- * @type: the provider type
- * @error: return location for a #GError, or %NULL
+ * camel_session_get_service:
+ * @session: a #CamelSession
+ * @uid: a unique identifier string
  *
- * This works like camel_session_get_service(), but also ensures that
- * the returned service will have been successfully connected (via
- * camel_service_connect().)
+ * Looks up a #CamelService by its unique identifier string.  The service
+ * must have been previously added using camel_session_add_service().
  *
- * Returns: the requested #CamelService, or %NULL
+ * Returns: a #CamelService instance, or %NULL
  **/
 CamelService *
-camel_session_get_service_connected (CamelSession *session,
-                                     const gchar *url_string,
-                                     CamelProviderType type,
-                                     GError **error)
+camel_session_get_service (CamelSession *session,
+                           const gchar *uid)
 {
 	CamelService *service;
-	CamelServiceConnectionStatus status;
 
-	service = camel_session_get_service (session, url_string, type, error);
-	if (service == NULL)
-		return NULL;
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
+	g_return_val_if_fail (uid != NULL, NULL);
 
-	/* FIXME This blocks.  Need to take a GCancellable. */
-	status = camel_service_get_connection_status (service);
-	if (status != CAMEL_SERVICE_CONNECTED) {
-		if (!camel_service_connect_sync (service, error)) {
-			g_object_unref (service);
-			return NULL;
-		}
-	}
+	camel_session_lock (session, CAMEL_SESSION_SESSION_LOCK);
+
+	service = g_hash_table_lookup (session->priv->services, uid);
+
+	camel_session_unlock (session, CAMEL_SESSION_SESSION_LOCK);
 
 	return service;
 }
 
 /**
- * camel_session_get_storage_path:
- * @session: a #CamelSession object
- * @service: a #CamelService
- * @error: return location for a #GError, or %NULL
+ * camel_session_get_service_by_url:
+ * @session: a #CamelSession
+ * @url: a #CamelURL
  *
- * This returns the path to a directory which the service can use for
- * its own purposes. Data stored there will remain between Evolution
- * sessions. No code outside of that service should ever touch the
- * files in this directory. If the directory does not exist, it will
- * be created.
+ * Looks up a #CamelService by trying to match its #CamelURL against
+ * the given @url.  The service must have been previously added using
+ * camel_session_add_service().
  *
- * Returns: the path (which the caller must free), or %NULL if an error
- * occurs.
+ * Note this function is significantly slower than camel_session_get_service().
+ *
+ * Returns: a #CamelService instance, or %NULL
+ *
+ * Since: 3.2
  **/
-gchar *
-camel_session_get_storage_path (CamelSession *session,
-                                CamelService *service,
-                                GError **error)
+CamelService *
+camel_session_get_service_by_url (CamelSession *session,
+                                  CamelURL *url)
 {
-	CamelSessionClass *class;
-	gchar *storage_path;
+	CamelService *match = NULL;
+	GList *list, *iter;
 
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
-	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+	g_return_val_if_fail (url != NULL, NULL);
 
-	class = CAMEL_SESSION_GET_CLASS (session);
-	g_return_val_if_fail (class->get_storage_path != NULL, NULL);
+	list = camel_session_list_services (session);
 
-	storage_path = class->get_storage_path (session, service, error);
-	CAMEL_CHECK_GERROR (session, get_storage_path, storage_path != NULL, error);
+	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
+		CamelProvider *provider;
+		CamelService *service;
+		CamelURL *service_url;
 
-	return storage_path;
+		service = CAMEL_SERVICE (iter->data);
+		provider = camel_service_get_provider (service);
+		service_url = camel_service_get_camel_url (service);
+
+		if (provider->url_equal == NULL)
+			continue;
+
+		if (provider->url_equal (url, service_url)) {
+			match = service;
+			break;
+		}
+	}
+
+	g_list_free (list);
+
+	return match;
+}
+
+/**
+ * camel_session_list_services:
+ * @session: a #CamelSession
+ *
+ * Returns a list of all #CamelService objects previously added using
+ * camel_session_add_service().  Free the returned list using g_list_free().
+ *
+ * Returns: an unsorted list of #CamelService objects
+ **/
+GList *
+camel_session_list_services (CamelSession *session)
+{
+	GList *list;
+
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
+
+	camel_session_lock (session, CAMEL_SESSION_SESSION_LOCK);
+
+	list = g_hash_table_get_values (session->priv->services);
+
+	camel_session_unlock (session, CAMEL_SESSION_SESSION_LOCK);
+
+	return list;
 }
 
 /**
  * camel_session_get_password:
- * @session: a #CamelSession object
+ * @session: a #CamelSession
  * @service: the #CamelService this query is being made by
  * @domain: domain of password request.  May be null to use the default.
  * @prompt: prompt to provide to user
@@ -626,7 +723,7 @@ camel_session_get_password (CamelSession *session,
 
 /**
  * camel_session_forget_password:
- * @session: a #CamelSession object
+ * @session: a #CamelSession
  * @service: the #CamelService rejecting the password
  * @item: an identifier, unique within this service, for the information
  * @error: return location for a #GError, or %NULL
@@ -666,7 +763,7 @@ camel_session_forget_password (CamelSession *session,
 
 /**
  * camel_session_alert_user:
- * @session: a #CamelSession object
+ * @session: a #CamelSession
  * @type: the type of alert (info, warning, or error)
  * @prompt: the message for the user
  * @cancel: whether or not to provide a "Cancel" option in addition to
@@ -795,7 +892,7 @@ camel_session_set_online (CamelSession *session,
 
 /**
  * camel_session_get_filter_driver:
- * @session: a #CamelSession object
+ * @session: a #CamelSession
  * @type: the type of filter (eg, "incoming")
  * @error: return location for a #GError, or %NULL
  *
@@ -823,7 +920,7 @@ camel_session_get_filter_driver (CamelSession *session,
 
 /**
  * camel_session_thread_msg_new:
- * @session: a #CamelSession object
+ * @session: a #CamelSession
  * @ops: thread operations
  * @size: number of bytes
  *
@@ -854,7 +951,7 @@ camel_session_thread_msg_new (CamelSession *session,
 
 /**
  * camel_session_thread_msg_free:
- * @session: a #CamelSession object
+ * @session: a #CamelSession
  * @msg: a #CamelSessionThreadMsg
  *
  * Free a @msg.  Note that the message must have been allocated using
@@ -877,7 +974,7 @@ camel_session_thread_msg_free (CamelSession *session,
 
 /**
  * camel_session_thread_queue:
- * @session: a #CamelSession object
+ * @session: a #CamelSession
  * @msg: a #CamelSessionThreadMsg
  * @flags: queue type flags, currently 0.
  *
@@ -905,7 +1002,7 @@ camel_session_thread_queue (CamelSession *session,
 
 /**
  * camel_session_thread_wait:
- * @session: a #CamelSession object
+ * @session: a #CamelSession
  * @id: id of the operation to wait on
  *
  * Wait on an operation to complete (by id).

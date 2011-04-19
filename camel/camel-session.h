@@ -89,7 +89,6 @@ struct _CamelSession {
 	CamelObject parent;
 	CamelSessionPrivate *priv;
 
-	gchar *storage_path;
 	CamelJunkPlugin *junk_plugin;
 };
 
@@ -99,12 +98,10 @@ typedef struct _CamelSessionThreadMsg CamelSessionThreadMsg;
 struct _CamelSessionClass {
 	CamelObjectClass parent_class;
 
-	CamelService *	(*get_service)		(CamelSession *session,
+	CamelService *	(*add_service)		(CamelSession *session,
+						 const gchar *uid,
 						 const gchar *url_string,
 						 CamelProviderType type,
-						 GError **error);
-	gchar *		(*get_storage_path)	(CamelSession *session,
-						 CamelService *service,
 						 GError **error);
 	gchar *		(*get_password)		(CamelSession *session,
 						 CamelService *service,
@@ -153,36 +150,24 @@ struct _CamelSessionClass {
 };
 
 GType		camel_session_get_type		(void);
-void		camel_session_construct		(CamelSession *session,
-						 const gchar *storage_path);
-
+const gchar *	camel_session_get_user_data_dir	(CamelSession *session);
 void            camel_session_set_socks_proxy   (CamelSession *session,
 						 const gchar *socks_host,
 						 gint socks_port);
 void            camel_session_get_socks_proxy   (CamelSession *session,
 						 gchar **host_ret,
 						 gint *port_ret);
-
+CamelService *	camel_session_add_service	(CamelSession *session,
+						 const gchar *uid,
+						 const gchar *uri_string,
+						 CamelProviderType type,
+						 GError **error);
 CamelService *	camel_session_get_service	(CamelSession *session,
-						 const gchar *url_string,
-						 CamelProviderType type,
-						 GError **error);
-CamelService *	camel_session_get_service_connected
+						 const gchar *uid);
+CamelService *	camel_session_get_service_by_url
 						(CamelSession *session,
-						 const gchar *url_string,
-						 CamelProviderType type,
-						 GError **error);
-
-#define camel_session_get_store(session, url_string, error) \
-	((CamelStore *) camel_session_get_service_connected \
-	(session, url_string, CAMEL_PROVIDER_STORE, error))
-#define camel_session_get_transport(session, url_string, error) \
-	((CamelTransport *) camel_session_get_service_connected \
-	(session, url_string, CAMEL_PROVIDER_TRANSPORT, error))
-
-gchar *		camel_session_get_storage_path	(CamelSession *session,
-						 CamelService *service,
-						 GError **error);
+						 CamelURL *url);
+GList *		camel_session_list_services	(CamelSession *session);
 gchar *		camel_session_get_password	(CamelSession *session,
 						 CamelService *service,
 						 const gchar *domain,

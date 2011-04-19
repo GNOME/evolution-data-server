@@ -31,49 +31,47 @@
 #include "camel-offline-store.h"
 #include "camel-session.h"
 
+#define CAMEL_OFFLINE_STORE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_OFFLINE_STORE, CamelOfflineStorePrivate))
+
 struct _CamelOfflineStorePrivate {
 	gboolean online;
 };
 
 G_DEFINE_TYPE (CamelOfflineStore, camel_offline_store, CAMEL_TYPE_STORE)
 
-static gboolean
-offline_store_construct (CamelService *service,
-                         CamelSession *session,
-                         CamelProvider *provider,
-                         CamelURL *url,
-                         GError **error)
+static void
+offline_store_constructed (GObject *object)
 {
-	CamelOfflineStore *store = CAMEL_OFFLINE_STORE (service);
-	CamelServiceClass *service_class;
+	CamelOfflineStorePrivate *priv;
+	CamelSession *session;
 
-	/* Chain up to parent's construct() method. */
-	service_class = CAMEL_SERVICE_CLASS (camel_offline_store_parent_class);
-	if (!service_class->construct (service, session, provider, url, error))
-		return FALSE;
+	priv = CAMEL_OFFLINE_STORE_GET_PRIVATE (object);
 
-	store->priv->online = camel_session_get_online (session);
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (camel_offline_store_parent_class)->
+		constructed (object);
 
-	return TRUE;
+	session = camel_service_get_session (CAMEL_SERVICE (object));
+	priv->online = camel_session_get_online (session);
 }
 
 static void
 camel_offline_store_class_init (CamelOfflineStoreClass *class)
 {
-	CamelServiceClass *service_class;
+	GObjectClass *object_class;
 
 	g_type_class_add_private (class, sizeof (CamelOfflineStorePrivate));
 
-	service_class = CAMEL_SERVICE_CLASS (class);
-	service_class->construct = offline_store_construct;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->constructed = offline_store_constructed;
 }
 
 static void
 camel_offline_store_init (CamelOfflineStore *store)
 {
-	store->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		store, CAMEL_TYPE_OFFLINE_STORE, CamelOfflineStorePrivate);
-	store->priv->online = TRUE;
+	store->priv = CAMEL_OFFLINE_STORE_GET_PRIVATE (store);
 }
 
 /**
