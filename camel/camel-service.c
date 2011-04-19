@@ -34,8 +34,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/e-data-server-util.h>
-
 #include "camel-debug.h"
 #include "camel-operation.h"
 #include "camel-service.h"
@@ -164,97 +162,44 @@ service_get_name (CamelService *service,
 static gchar *
 service_get_path (CamelService *service)
 {
-<<<<<<< HEAD
 	CamelProvider *prov = service->provider;
 	CamelURL *url = service->url;
 	GString *gpath;
 	gchar *path;
-=======
-	CamelProvider *prov = service->priv->provider;
-	CamelURL *url = service->priv->url;
-	GString *use_path1 = NULL, *use_path2 = NULL;
-	gchar *ret_path = NULL;
->>>>>>> de8f0fc... Bug #645783 - Return safe paths from CamelService::get_path()
 
 	/* A sort of ad-hoc default implementation that works for our
 	 * current set of services.
 	 */
 
-<<<<<<< HEAD
 	gpath = g_string_new (service->provider->protocol);
-=======
->>>>>>> de8f0fc... Bug #645783 - Return safe paths from CamelService::get_path()
 	if (CAMEL_PROVIDER_ALLOWS (prov, CAMEL_URL_PART_USER)) {
-		use_path1 = g_string_new ("");
-
 		if (CAMEL_PROVIDER_ALLOWS (prov, CAMEL_URL_PART_HOST)) {
-			g_string_append_printf (use_path1, "%s@%s",
+			g_string_append_printf (gpath, "/%s@%s",
 						url->user ? url->user : "",
 						url->host ? url->host : "");
 
 			if (url->port)
-				g_string_append_printf (use_path1, ":%d", url->port);
+				g_string_append_printf (gpath, ":%d", url->port);
 		} else {
-			g_string_append_printf (use_path1, "%s%s", url->user ? url->user : "",
+			g_string_append_printf (gpath, "/%s%s", url->user ? url->user : "",
 						CAMEL_PROVIDER_NEEDS (prov, CAMEL_URL_PART_USER) ? "" : "@");
 		}
-
-		e_filename_make_safe (use_path1->str);
 	} else if (CAMEL_PROVIDER_ALLOWS (prov, CAMEL_URL_PART_HOST)) {
-		use_path1 = g_string_new ("");
-
-		g_string_append_printf (use_path1, "%s%s",
+		g_string_append_printf (gpath, "/%s%s",
 					CAMEL_PROVIDER_NEEDS (prov, CAMEL_URL_PART_HOST) ? "" : "@",
 					url->host ? url->host : "");
 
 		if (url->port)
-			g_string_append_printf (use_path1, ":%d", url->port);
-
-		e_filename_make_safe (use_path1->str);
+			g_string_append_printf (gpath, ":%d", url->port);
 	}
 
-	if (CAMEL_PROVIDER_NEEDS (prov, CAMEL_URL_PART_PATH) && url->path && *url->path) {
-		use_path2 = g_string_new (*url->path == '/' ? url->path + 1 : url->path);
+	if (CAMEL_PROVIDER_NEEDS (prov, CAMEL_URL_PART_PATH))
+		g_string_append_printf (gpath, "%s%s", *url->path == '/' ? "" : "/", url->path);
 
-		/* fix directory separators, if needed */
-		if (G_DIR_SEPARATOR != '/') {
-			gchar **elems = g_strsplit (use_path2->str, "/", -1);
+	path = gpath->str;
+	g_string_free (gpath, FALSE);
 
-			if (elems) {
-				gint ii;
-
-				g_string_truncate (use_path2, 0);
-
-				for (ii = 0; elems[ii]; ii++) {
-					gchar *elem = elems[ii];
-
-					if (*elem) {
-						e_filename_make_safe (elem);
-
-						if (use_path2->len)
-							g_string_append_c (use_path2, G_DIR_SEPARATOR);
-						g_string_append (use_path2, elem);
-					}
-				}
-
-				g_strfreev (elems);
-			}
-		}
-	}
-
-	if (!use_path1 && use_path2) {
-		use_path1 = use_path2;
-		use_path2 = NULL;
-	}
-
-	ret_path = g_build_filename (service->priv->provider->protocol, use_path1 ? use_path1->str : NULL, use_path2 ? use_path2->str : NULL, NULL);
-
-	if (use_path1)
-		g_string_free (use_path1, TRUE);
-	if (use_path2)
-		g_string_free (use_path2, TRUE);
-
-	return ret_path;
+	return path;
 }
 
 static void
