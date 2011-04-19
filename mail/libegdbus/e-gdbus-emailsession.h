@@ -47,6 +47,14 @@ struct _EGdbusSessionCSIface
     GDBusMethodInvocation *invocation,
     const gchar *type);
 
+
+  /* GObject signal class handlers for received D-Bus signals: */
+  void (*get_password) (
+    EGdbusSessionCS *object,
+    const gchar *title,
+    const gchar *prompt,
+    const gchar *key);
+
 };
 
 GType egdbus_session_cs_get_gtype (void) G_GNUC_CONST;
@@ -69,6 +77,15 @@ void egdbus_session_cs_complete_get_local_folder (
     EGdbusSessionCS *object,
     GDBusMethodInvocation *invocation,
     const gchar *folder);
+
+
+
+/* D-Bus signal emissions functions: */
+void egdbus_session_cs_emit_get_password (
+    EGdbusSessionCS *object,
+    const gchar *title,
+    const gchar *prompt,
+    const gchar *key);
 
 
 

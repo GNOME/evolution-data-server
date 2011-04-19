@@ -459,6 +459,64 @@ static const _ExtendedGDBusMethodInfo * const _egdbus_session_cs_method_info_poi
   NULL
 };
 
+static const _ExtendedGDBusArgInfo _egdbus_session_cs_signal_info_get_password_ARG_title =
+{
+  {
+    -1,
+    "title",
+    "s",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo _egdbus_session_cs_signal_info_get_password_ARG_prompt =
+{
+  {
+    -1,
+    "prompt",
+    "s",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo _egdbus_session_cs_signal_info_get_password_ARG_key =
+{
+  {
+    -1,
+    "key",
+    "s",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo * const _egdbus_session_cs_signal_info_get_password_ARG_pointers[] =
+{
+  &_egdbus_session_cs_signal_info_get_password_ARG_title,
+  &_egdbus_session_cs_signal_info_get_password_ARG_prompt,
+  &_egdbus_session_cs_signal_info_get_password_ARG_key,
+  NULL
+};
+
+static const _ExtendedGDBusSignalInfo _egdbus_session_cs_signal_info_get_password =
+{
+  {
+    -1,
+    "GetPassword",
+    (GDBusArgInfo **) &_egdbus_session_cs_signal_info_get_password_ARG_pointers,
+    NULL
+  },
+  "get-password"
+};
+
+static const _ExtendedGDBusSignalInfo * const _egdbus_session_cs_signal_info_pointers[] =
+{
+  &_egdbus_session_cs_signal_info_get_password,
+  NULL
+};
+
 static const GDBusAnnotationInfo _egdbus_session_cs_annotation_info_0 =
 {
   -1,
@@ -478,7 +536,7 @@ static const GDBusInterfaceInfo _egdbus_session_cs_interface_info =
   -1,
   "org.gnome.evolution.dataserver.mail.Session",
   (GDBusMethodInfo **) &_egdbus_session_cs_method_info_pointers,
-  NULL,
+  (GDBusSignalInfo **) &_egdbus_session_cs_signal_info_pointers,
   NULL,
   (GDBusAnnotationInfo **) &_egdbus_session_cs_annotation_info_pointers
 };
@@ -529,12 +587,33 @@ egdbus_session_cs_default_init (EGdbusSessionCSIface *iface)
     2,
     G_TYPE_DBUS_METHOD_INVOCATION, G_TYPE_STRING);
 
+  /* GObject signals for received D-Bus signals: */
+  g_signal_new ("get-password",
+    G_TYPE_FROM_INTERFACE (iface),
+    G_SIGNAL_RUN_LAST,
+    G_STRUCT_OFFSET (EGdbusSessionCSIface, get_password),
+    NULL,
+    NULL,
+    _cclosure_marshal_generic,
+    G_TYPE_NONE,
+    3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+
 }
 
 typedef EGdbusSessionCSIface EGdbusSessionCSInterface;
 #define egdbus_session_cs_get_type egdbus_session_cs_get_gtype
 G_DEFINE_INTERFACE (EGdbusSessionCS, egdbus_session_cs, G_TYPE_OBJECT);
 #undef egdbus_session_cs_get_type
+
+void
+egdbus_session_cs_emit_get_password (
+    EGdbusSessionCS *object,
+    const gchar *title,
+    const gchar *prompt,
+    const gchar *key)
+{
+  g_signal_emit_by_name (object, "get-password", title, prompt, key);
+}
 
 void
 egdbus_session_cs_call_get_store (
@@ -1207,8 +1286,27 @@ egdbus_session_cs_stub_dbus_interface_set_flags (GDBusInterface *interface,  GDB
 }
 
 static void
+_egdbus_session_cs_on_signal_get_password (
+    EGdbusSessionCS *object,
+    const gchar *title,
+    const gchar *prompt,
+    const gchar *key)
+{
+  EGdbusSessionCSStub *stub = EGDBUS_SESSION_CS_STUB (object);
+  if (stub->priv->connection == NULL)
+    return;
+  g_dbus_connection_emit_signal (stub->priv->connection,
+    NULL, stub->priv->object_path, "org.gnome.evolution.dataserver.mail.Session", "GetPassword",
+    g_variant_new ("(sss)",
+                   title,
+                   prompt,
+                   key), NULL);
+}
+
+static void
 egdbus_session_cs_stub_iface_init (EGdbusSessionCSIface *iface)
 {
+  iface->get_password = _egdbus_session_cs_on_signal_get_password;
 }
 
 static void
