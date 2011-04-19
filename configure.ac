@@ -1098,7 +1098,7 @@ AC_SUBST(DEFAULT_EDS_DBUS_TIMEOUT)
 dnl ***********
 dnl Kerberos 5
 dnl ***********
-EVO_KRB5_SUPPORT
+EVO_KRB5_SUPPORT(no)
 
 dnl ******************************
 dnl Purify support
