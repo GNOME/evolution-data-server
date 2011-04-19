@@ -412,3 +412,11 @@ e_mail_session_get_folder_from_path (EMailDataSession *msession, const char *pat
 
 	return NULL;	
 }
+
+void
+e_mail_session_emit_ask_password (EMailDataSession *msession, const char *title, const gchar *prompt, const gchar *key)
+{
+	EMailDataSessionPrivate *priv = DATA_SESSION_PRIVATE(msession);
+
+	egdbus_session_cs_emit_get_password (priv->gdbus_object, title, prompt, key);
+}
