@@ -3528,7 +3528,7 @@ msgid "Namespace:"
 msgstr "Namnrymd:"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:86
-msgid "Defalut IMAP port"
+msgid "Default IMAP port"
 msgstr "Standardport för IMAP"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:94

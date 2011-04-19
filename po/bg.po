@@ -3482,7 +3482,7 @@ msgid "Namespace:"
 msgstr "Пространство на имената:"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:86
-msgid "Defalut IMAP port"
+msgid "Default IMAP port"
 msgstr "Стандартен порт за IMAP"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:94

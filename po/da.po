@@ -3497,7 +3497,7 @@ msgstr "Navnerum:"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:86
 #, fuzzy
-msgid "Defalut IMAP port"
+msgid "Default IMAP port"
 msgstr "Standardprioritet:"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:94
