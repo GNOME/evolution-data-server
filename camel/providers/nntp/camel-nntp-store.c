@@ -1281,8 +1281,13 @@ camel_nntp_try_authenticate (CamelNNTPStore *store, GError **error)
 		g_free(prompt);
 		g_free(base);
 
-		if (!service->url->passwd)
+		if (!service->url->passwd) {
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_NEED_PASSWORD,
+				_("Need password for authentication"));
 			return -1;
+		}
 
 		store->password_reprompt = FALSE;
 	}

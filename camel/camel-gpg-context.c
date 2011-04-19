@@ -882,9 +882,9 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 		} else {
 			if (local_error == NULL)
 				g_set_error (
-					error, G_IO_ERROR,
-					G_IO_ERROR_CANCELLED,
-					_("Cancelled"));
+					error, CAMEL_SERVICE_ERROR,
+					CAMEL_SERVICE_ERROR_NEED_PASSWORD,
+					_("Need password for authentication"));
 			g_propagate_error (error, local_error);
 
 			return -1;

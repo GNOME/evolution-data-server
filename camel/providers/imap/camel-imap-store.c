@@ -1183,9 +1183,9 @@ imap_auth_loop (CamelService *service, GError **error)
 
 			if (!service->url->passwd) {
 				g_set_error (
-					error, G_IO_ERROR,
-					G_IO_ERROR_CANCELLED,
-					_("You did not enter a password."));
+					error, CAMEL_SERVICE_ERROR,
+					CAMEL_SERVICE_ERROR_NEED_PASSWORD,
+					_("Need password for authentication"));
 				return FALSE;
 			}
 		}

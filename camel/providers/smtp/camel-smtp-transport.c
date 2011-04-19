@@ -510,6 +510,10 @@ smtp_connect (CamelService *service, GError **error)
 				errbuf = NULL;
 
 				if (!service->url->passwd) {
+					g_set_error (
+						error, CAMEL_SERVICE_ERROR,
+						CAMEL_SERVICE_ERROR_NEED_PASSWORD,
+						_("Need password for authentication"));	
 					camel_service_disconnect (service, TRUE, NULL);
 					return FALSE;
 				}
