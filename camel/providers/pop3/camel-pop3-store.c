@@ -398,8 +398,13 @@ pop3_try_authenticate (CamelService *service,
 
 		g_free (base_prompt);
 		g_free (full_prompt);
-		if (!service->url->passwd)
+		if (!service->url->passwd) {
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_NEED_PASSWORD,
+				_("Need password for authentication"));
 			return -1;
+		}
 	}
 
 	if (!service->url->authmech) {
