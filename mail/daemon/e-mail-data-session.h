@@ -46,6 +46,7 @@ guint e_mail_data_session_register_gdbus_object (EMailDataSession *msession, GDB
 void e_mail_data_session_release (EMailDataSession *session, GDBusConnection *connection, const char *name);
 const char * e_mail_data_session_get_path_from_store (EMailDataSession *msession, gpointer store);
 CamelFolder * e_mail_session_get_folder_from_path (EMailDataSession *msession, const char *path);
+void e_mail_session_emit_ask_password (EMailDataSession *msession, const char *title, const gchar *prompt, const gchar *key);
 
 
 G_END_DECLS

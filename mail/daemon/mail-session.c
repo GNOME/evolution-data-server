@@ -52,10 +52,13 @@
 #include "mail-session.h"
 #include "mail-tools.h"
 #include "mail-send-recv.h"
+#include "e-mail-data-session.h"
 
 #define d(x)
 
 CamelSession *session;
+extern EMailDataSession *data_session;
+
 static guint session_check_junk_notify_id;
 static guint session_gconf_proxy_id;
 
@@ -192,10 +195,16 @@ get_password (CamelSession *session,
 	} else {
 		gchar *key = make_key(service, item);
 		EAccountService *config_service = NULL;
+		EFlag *timer;
+		GTimeVal tval;
+		int count=0;
+
+		timer = e_flag_new ();
+		tval.tv_sec = 60; /* Reprompt every 60sec*/
 
 		if (domain == NULL)
 			domain = "Mail";
-
+repeat:
 		ret = e_passwords_get_password(domain, key);
 		if (ret == NULL || (flags & CAMEL_SESSION_PASSWORD_REPROMPT)) {
 			gboolean remember;
@@ -213,7 +222,6 @@ get_password (CamelSession *session,
 			remember = config_service?config_service->save_passwd:FALSE;
 
 			if (!config_service || (config_service && !config_service->get_password_canceled)) {
-				guint32 eflags;
 				gchar *title;
 
 				if (flags & CAMEL_SESSION_PASSPHRASE) {
@@ -227,34 +235,17 @@ get_password (CamelSession *session,
 					else
 						title = g_strdup (_("Enter Password"));
 				}
-				if ((flags & CAMEL_SESSION_PASSWORD_STATIC) != 0)
-					eflags = E_PASSWORDS_REMEMBER_NEVER;
-				else if (config_service == NULL)
-					eflags = E_PASSWORDS_REMEMBER_SESSION;
-				else
-					eflags = E_PASSWORDS_REMEMBER_FOREVER;
-
-				if (flags & CAMEL_SESSION_PASSWORD_REPROMPT)
-					eflags |= E_PASSWORDS_REPROMPT;
-
-				if (flags & CAMEL_SESSION_PASSWORD_SECRET)
-					eflags |= E_PASSWORDS_SECRET;
-
-				if (flags & CAMEL_SESSION_PASSPHRASE)
-					eflags |= E_PASSWORDS_PASSPHRASE;
-
-				/* HACK: breaks abstraction ...
-				   e_account_writable doesn't use the eaccount, it also uses the same writable key for
-				   source and transport */
-				if (!e_account_writable(NULL, E_ACCOUNT_SOURCE_SAVE_PASSWD))
-					eflags |= E_PASSWORDS_DISABLE_REMEMBER;
-
-				ret = e_passwords_ask_password(title, domain, key, prompt, eflags, &remember, NULL);
-
-				if (!ret)
-					e_passwords_forget_password (domain, key);
-
+				
+				e_mail_session_emit_ask_password (data_session, title, prompt, key);
 				g_free(title);
+				
+				/* Repeat three times, every minute to check if password is available */
+				count++;
+				if (count <= 2) {
+					/* FIXME: This is an ugly hack for now. Ideally we should return and let the backends requery when NEED_PASSWORD error is returned. */
+					e_flag_timed_wait (timer, &tval);
+					goto repeat;
+				}
 
 				if (ret && config_service)
 					mail_config_service_set_save_passwd(config_service, remember);
@@ -263,17 +254,19 @@ get_password (CamelSession *session,
 					config_service->get_password_canceled = ret == NULL;
 			}
 		}
-
+		
+		e_flag_free (timer);
 		g_free(key);
 	}
 
 	g_free(url);
 
-	if (ret == NULL)
+	if (ret == NULL && error) {
 		g_set_error (
-			error, G_IO_ERROR,
-			G_IO_ERROR_CANCELLED,
-			_("User canceled operation."));
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_NEED_PASSWORD,
+			_("Need password for authentication"));
+	}
 
 	return ret;
 }

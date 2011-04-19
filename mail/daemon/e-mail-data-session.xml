@@ -28,6 +28,11 @@
       <arg name="type" type="s" direction="in"/>	    
       <arg name="folder" type="o" direction="out"/>
     </method>
+    <signal name="GetPassword">
+      <arg name="title" type="s"/>
+      <arg name="prompt" type="s"/>
+      <arg name="key" type="s"/>
+    </signal>
 
   </interface>
 
