@@ -103,17 +103,42 @@ maildir_folder_get_filename (CamelFolder *folder,
 
 	mdi = (CamelMaildirMessageInfo *)info;
 
-	/* what do we do if the message flags (and :info data) changes?  filename mismatch - need to recheck I guess 
-	   If filename is NULL, it means folder_summary_check is not yet executed. */
+	/* If filename is NULL, it means folder_summary_check is not yet executed.
+	   Try to find the file in the folder and use it, otherwise construct its
+	   name based on actual flags.
+	*/
 	if (!camel_maildir_info_filename (mdi)) {
-		gchar *temp;
+		const gchar *uid = camel_message_info_uid (info);
 
-		temp = camel_maildir_summary_info_to_name (mdi);
-		res = g_strdup_printf("%s/cur/%s", lf->folder_path, temp);
+		if (uid) {
+			GDir *dir;
+			gchar *dirname;
 
-		g_free (temp);
-	} else
-		res = g_strdup_printf("%s/cur/%s", lf->folder_path, camel_maildir_info_filename (mdi));
+			dirname = g_strdup_printf ("%s/cur", lf->folder_path);
+			dir = g_dir_open (dirname, 0, NULL);
+			g_free (dirname);
+
+			if (dir) {
+				const gchar *filename;
+				gint uid_len = strlen (uid);
+
+				while (filename = g_dir_read_name (dir), filename) {
+					if (g_str_has_prefix (filename, uid) && (filename[uid_len] == '\0' || filename[uid_len] == ':')) {
+						camel_maildir_info_set_filename (mdi, g_strdup (filename));
+						break;
+					}
+				}
+
+				g_dir_close (dir);
+			}
+		}
+
+		if (!camel_maildir_info_filename (mdi)) {
+			camel_maildir_info_set_filename (mdi, camel_maildir_summary_info_to_name (mdi));
+		}
+	}
+
+	res = g_strdup_printf ("%s/cur/%s", lf->folder_path, camel_maildir_info_filename (mdi));
 
 	camel_message_info_free (info);
 
