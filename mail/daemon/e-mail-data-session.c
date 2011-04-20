@@ -268,6 +268,72 @@ impl_Mail_getLocalFolder (EGdbusSessionCS *object, GDBusMethodInvocation *invoca
 }
 
 static void
+get_folder_done (gchar *uri, CamelFolder *folder,  gpointer d, GError *error)
+{
+	EMailGetStoreData *data = (EMailGetStoreData *)d;
+	EMailDataSessionPrivate *priv = DATA_SESSION_PRIVATE(data->msession);
+	CamelStore *store;
+	char *fpath, *spath;
+	char *url;
+	EMailDataStore *estore;
+	const gchar *sender;
+	GList *list;
+
+	if (folder == NULL) {
+		ipc(printf("Unable to get folder: %s\n", error->message));
+		g_dbus_method_invocation_return_gerror (data->invocation, error);		
+	}
+
+	store = camel_folder_get_parent_store (folder);
+	g_mutex_lock (priv->datastores_lock);
+	estore = g_hash_table_lookup (priv->datastores, store);
+	
+	if (estore == NULL) {
+		url = camel_url_to_string(((CamelService *)store)->url, CAMEL_URL_HIDE_ALL);
+		spath = construct_mail_session_path ();
+		estore = e_mail_data_store_new (store, url);
+
+		g_hash_table_insert (priv->datastores, store, estore);
+		e_mail_data_store_register_gdbus_object (estore, g_dbus_method_invocation_get_connection (data->invocation), spath, NULL);
+		g_free (url);
+		g_free (spath);	
+	}
+
+	g_mutex_unlock (priv->datastores_lock);
+
+	g_mutex_lock (priv->connections_lock);
+	sender = g_dbus_method_invocation_get_sender (data->invocation);
+
+	list = g_hash_table_lookup (priv->connections, sender);
+	list = g_list_prepend (list, estore);
+	g_hash_table_insert (priv->connections, g_strdup (sender), list);
+	g_mutex_unlock (priv->connections_lock);
+	
+	fpath = e_mail_data_store_get_folder_path (estore, g_dbus_method_invocation_get_connection (data->invocation), folder);
+
+	egdbus_session_cs_complete_get_folder_from_uri (data->object, data->invocation, fpath);
+
+	ipc (printf("EMailDataSession: Get Folder from URI : Success %s  for sender: '%s'\n", fpath, sender));
+
+	g_free (data);
+}
+static gboolean
+impl_Mail_getFolderFromUri (EGdbusSessionCS *object, GDBusMethodInvocation *invocation, const char *uri, EMailDataSession *msession)
+{
+	EMailDataSessionPrivate *priv = DATA_SESSION_PRIVATE(msession);
+	EMailGetStoreData *data = g_new0(EMailGetStoreData, 1);
+
+	data->invocation = invocation;
+	data->msession = msession;
+	data->object = object;
+
+	mail_get_folder (uri, 0,  get_folder_done, data, mail_msg_unordered_push);
+
+	return TRUE;
+}
+
+
+static void
 e_mail_data_session_get_property (GObject *object, guint property_id,
                               GValue *value, GParamSpec *pspec)
 {
@@ -323,6 +389,7 @@ e_mail_data_session_init (EMailDataSession *self)
 	g_signal_connect (priv->gdbus_object, "handle-get-store", G_CALLBACK (impl_Mail_getStore), self);
 	g_signal_connect (priv->gdbus_object, "handle-get-local-store", G_CALLBACK (impl_Mail_getLocalStore), self);
 	g_signal_connect (priv->gdbus_object, "handle-get-local-folder", G_CALLBACK (impl_Mail_getLocalFolder), self);
+	g_signal_connect (priv->gdbus_object, "handle-get-folder-from-uri", G_CALLBACK (impl_Mail_getFolderFromUri), self);
 
 	priv->stores_lock = g_mutex_new ();
 	priv->stores = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);

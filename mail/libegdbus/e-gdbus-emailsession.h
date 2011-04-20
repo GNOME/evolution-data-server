@@ -47,6 +47,11 @@ struct _EGdbusSessionCSIface
     GDBusMethodInvocation *invocation,
     const gchar *type);
 
+  gboolean (*handle_get_folder_from_uri) (
+    EGdbusSessionCS *object,
+    GDBusMethodInvocation *invocation,
+    const gchar *uri);
+
 
   /* GObject signal class handlers for received D-Bus signals: */
   void (*get_password) (
@@ -74,6 +79,11 @@ void egdbus_session_cs_complete_get_local_store (
     const gchar *store);
 
 void egdbus_session_cs_complete_get_local_folder (
+    EGdbusSessionCS *object,
+    GDBusMethodInvocation *invocation,
+    const gchar *folder);
+
+void egdbus_session_cs_complete_get_folder_from_uri (
     EGdbusSessionCS *object,
     GDBusMethodInvocation *invocation,
     const gchar *folder);
@@ -144,6 +154,26 @@ gboolean egdbus_session_cs_call_get_local_folder_finish (
 gboolean egdbus_session_cs_call_get_local_folder_sync (
     EGdbusSessionCS *proxy,
     const gchar *type,
+    gchar **out_folder,
+    GCancellable *cancellable,
+    GError **error);
+
+void egdbus_session_cs_call_get_folder_from_uri (
+    EGdbusSessionCS *proxy,
+    const gchar *uri,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data);
+
+gboolean egdbus_session_cs_call_get_folder_from_uri_finish (
+    EGdbusSessionCS *proxy,
+    gchar **out_folder,
+    GAsyncResult *res,
+    GError **error);
+
+gboolean egdbus_session_cs_call_get_folder_from_uri_sync (
+    EGdbusSessionCS *proxy,
+    const gchar *uri,
     gchar **out_folder,
     GCancellable *cancellable,
     GError **error);
