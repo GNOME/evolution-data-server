@@ -451,11 +451,58 @@ static const _ExtendedGDBusMethodInfo _egdbus_session_cs_method_info_get_local_f
   "handle-get-local-folder"
 };
 
+static const _ExtendedGDBusArgInfo _egdbus_session_cs_method_info_get_folder_from_uri_IN_ARG_uri =
+{
+  {
+    -1,
+    "uri",
+    "s",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo * const _egdbus_session_cs_method_info_get_folder_from_uri_IN_ARG_pointers[] =
+{
+  &_egdbus_session_cs_method_info_get_folder_from_uri_IN_ARG_uri,
+  NULL
+};
+
+static const _ExtendedGDBusArgInfo _egdbus_session_cs_method_info_get_folder_from_uri_OUT_ARG_folder =
+{
+  {
+    -1,
+    "folder",
+    "o",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo * const _egdbus_session_cs_method_info_get_folder_from_uri_OUT_ARG_pointers[] =
+{
+  &_egdbus_session_cs_method_info_get_folder_from_uri_OUT_ARG_folder,
+  NULL
+};
+
+static const _ExtendedGDBusMethodInfo _egdbus_session_cs_method_info_get_folder_from_uri =
+{
+  {
+    -1,
+    "getFolderFromUri",
+    (GDBusArgInfo **) &_egdbus_session_cs_method_info_get_folder_from_uri_IN_ARG_pointers,
+    (GDBusArgInfo **) &_egdbus_session_cs_method_info_get_folder_from_uri_OUT_ARG_pointers,
+    NULL
+  },
+  "handle-get-folder-from-uri"
+};
+
 static const _ExtendedGDBusMethodInfo * const _egdbus_session_cs_method_info_pointers[] =
 {
   &_egdbus_session_cs_method_info_get_store,
   &_egdbus_session_cs_method_info_get_local_store,
   &_egdbus_session_cs_method_info_get_local_folder,
+  &_egdbus_session_cs_method_info_get_folder_from_uri,
   NULL
 };
 
@@ -580,6 +627,17 @@ egdbus_session_cs_default_init (EGdbusSessionCSIface *iface)
     G_TYPE_FROM_INTERFACE (iface),
     G_SIGNAL_RUN_LAST,
     G_STRUCT_OFFSET (EGdbusSessionCSIface, handle_get_local_folder),
+    g_signal_accumulator_true_handled,
+    NULL,
+    _cclosure_marshal_generic,
+    G_TYPE_BOOLEAN,
+    2,
+    G_TYPE_DBUS_METHOD_INVOCATION, G_TYPE_STRING);
+
+  g_signal_new ("handle-get-folder-from-uri",
+    G_TYPE_FROM_INTERFACE (iface),
+    G_SIGNAL_RUN_LAST,
+    G_STRUCT_OFFSET (EGdbusSessionCSIface, handle_get_folder_from_uri),
     g_signal_accumulator_true_handled,
     NULL,
     _cclosure_marshal_generic,
@@ -807,6 +865,71 @@ _out:
 }
 
 void
+egdbus_session_cs_call_get_folder_from_uri (
+    EGdbusSessionCS *proxy,
+    const gchar *uri,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data)
+{
+  g_dbus_proxy_call (G_DBUS_PROXY (proxy),
+    "getFolderFromUri",
+    g_variant_new ("(s)",
+                   uri),
+    G_DBUS_CALL_FLAGS_NONE,
+    -1,
+    cancellable,
+    callback,
+    user_data);
+}
+
+gboolean
+egdbus_session_cs_call_get_folder_from_uri_finish (
+    EGdbusSessionCS *proxy,
+    gchar **out_folder,
+    GAsyncResult *res,
+    GError **error)
+{
+  GVariant *_ret;
+  _ret = g_dbus_proxy_call_finish (G_DBUS_PROXY (proxy), res, error);
+  if (_ret == NULL)
+    goto _out;
+  g_variant_get (_ret,
+                 "(o)",
+                 out_folder);
+  g_variant_unref (_ret);
+_out:
+  return _ret != NULL;
+}
+
+gboolean
+egdbus_session_cs_call_get_folder_from_uri_sync (
+    EGdbusSessionCS *proxy,
+    const gchar *uri,
+    gchar **out_folder,
+    GCancellable *cancellable,
+    GError **error)
+{
+  GVariant *_ret;
+  _ret = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
+    "getFolderFromUri",
+    g_variant_new ("(s)",
+                   uri),
+    G_DBUS_CALL_FLAGS_NONE,
+    -1,
+    cancellable,
+    error);
+  if (_ret == NULL)
+    goto _out;
+  g_variant_get (_ret,
+                 "(o)",
+                 out_folder);
+  g_variant_unref (_ret);
+_out:
+  return _ret != NULL;
+}
+
+void
 egdbus_session_cs_complete_get_store (
     EGdbusSessionCS *object,
     GDBusMethodInvocation *invocation,
@@ -830,6 +953,17 @@ egdbus_session_cs_complete_get_local_store (
 
 void
 egdbus_session_cs_complete_get_local_folder (
+    EGdbusSessionCS *object,
+    GDBusMethodInvocation *invocation,
+    const gchar *folder)
+{
+  g_dbus_method_invocation_return_value (invocation,
+    g_variant_new ("(o)",
+                   folder));
+}
+
+void
+egdbus_session_cs_complete_get_folder_from_uri (
     EGdbusSessionCS *object,
     GDBusMethodInvocation *invocation,
     const gchar *folder)
