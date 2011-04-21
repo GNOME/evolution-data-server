@@ -1,3 +1,27 @@
+Evolution-Data-Server 2.32.3 2011-04-21
+---------------------------------------
+
+Bug Fixes:
+	Bug 623933 - Crash under ESourceList::conf_changed_callback
+	             (Milan Crha)
+	Bug 639483 - Category list includes weather information (hao.h.li)
+	Bug 640829 - Can drop text/plain message lines in message preview
+	             (Milan Crha)
+	Bug 644532 - Crash when opening ESource with local:/system URI
+	             (Milan Crha)
+	Bug 645783 - Return safe paths from CamelService::get_path()
+	             (Milan Crha)
+	Bug 647873 - Sources should be created in GConf (David Woodhouse)
+
+Other Changes:
+	* Support NTLMv2 in camel-sasl-ntlm.c (David Woodhouse)
+	* Miscellaneous build fixes for Windows (Fridrich Štrba)
+
+Translations:
+	Yaron Shahrabani (he)
+	Rudolfs Mazurs (lv)
+
+
 Evolution-Data-Server 2.32.2 2011-02-07
 ---------------------------------------
 
