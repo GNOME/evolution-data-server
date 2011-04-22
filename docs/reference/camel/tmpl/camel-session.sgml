@@ -46,15 +46,6 @@ CamelSession
 
 </para>
 
-<!-- ##### USER_FUNCTION CamelTimeoutCallback ##### -->
-<para>
-
-</para>
-
-@data: 
-@Returns: 
-
-
 <!-- ##### ENUM CamelSessionAlertType ##### -->
 <para>
 

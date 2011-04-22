@@ -1909,7 +1909,6 @@ camel_service_error_quark
 <FILE>camel-session</FILE>
 <TITLE>CamelSession</TITLE>
 CamelSession
-CamelTimeoutCallback
 CamelSessionAlertType
 CamelSessionThreadOps
 CamelSessionThreadMsg

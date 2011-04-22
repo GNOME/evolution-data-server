@@ -61,7 +61,6 @@ typedef struct _CamelSession CamelSession;
 typedef struct _CamelSessionClass CamelSessionClass;
 typedef struct _CamelSessionPrivate CamelSessionPrivate;
 
-typedef gboolean (*CamelTimeoutCallback) (gpointer data);
 typedef enum {
 	CAMEL_SESSION_ALERT_INFO,
 	CAMEL_SESSION_ALERT_WARNING,
