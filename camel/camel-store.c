@@ -1198,7 +1198,6 @@ store_initable_init (GInitable *initable,
 {
 	CamelStore *store;
 	CamelService *service;
-	CamelSession *session;
 	CamelURL *url;
 	const gchar *user_data_dir;
 	gchar *filename;
@@ -1211,7 +1210,6 @@ store_initable_init (GInitable *initable,
 
 	service = CAMEL_SERVICE (initable);
 	url = camel_service_get_camel_url (service);
-	session = camel_service_get_session (service);
 	user_data_dir = camel_service_get_user_data_dir (service);
 
 	if (g_mkdir_with_parents (user_data_dir, S_IRWXU) == -1) {
