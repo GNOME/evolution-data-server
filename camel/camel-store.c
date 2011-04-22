@@ -258,6 +258,9 @@ store_constructed (GObject *object)
 	CamelStore *store;
 	CamelStoreClass *class;
 
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (camel_store_parent_class)->constructed (object);
+
 	store = CAMEL_STORE (object);
 	class = CAMEL_STORE_GET_CLASS (store);
 
