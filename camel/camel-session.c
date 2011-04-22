@@ -237,8 +237,6 @@ session_add_service (CamelSession *session,
 	if (CAMEL_IS_SERVICE (service))
 		return service;
 
-	g_debug ("%s: Entering", G_STRFUNC);
-
 	url = camel_url_new (url_string, error);
 	if (url == NULL)
 		return NULL;
@@ -283,9 +281,6 @@ session_add_service (CamelSession *session,
 		g_hash_table_insert (
 			session->priv->services,
 			g_strdup (uid), service);
-
-	if (service != NULL)
-		g_debug ("%s: Adding %s (%s)", G_STRFUNC, uid, url_string);
 
 	camel_url_free (url);
 
