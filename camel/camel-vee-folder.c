@@ -43,6 +43,8 @@
 #define d(x)
 #define dd(x) (camel_debug ("vfolder")?(x):0)
 
+typedef struct _FolderChangedData FolderChangedData;
+
 struct _CamelVeeFolderPrivate {
 	gboolean destroyed;
 	GList *folders;			/* lock using subfolder_lock before changing/accessing */
@@ -63,14 +65,23 @@ struct _update_data {
 	gboolean rebuilt, correlating;
 };
 
-struct _folder_changed_msg {
-	CamelSessionThreadMsg msg;
+struct _FolderChangedData {
 	CamelFolderChangeInfo *changes;
 	CamelFolder *sub;
 	CamelVeeFolder *vee_folder;
 };
 
 G_DEFINE_TYPE (CamelVeeFolder, camel_vee_folder, CAMEL_TYPE_FOLDER)
+
+static void
+folder_changed_data_free (FolderChangedData *data)
+{
+	camel_folder_change_info_free (data->changes);
+	g_object_unref (data->vee_folder);
+	g_object_unref (data->sub);
+
+	g_slice_free (FolderChangedData, data);
+}
 
 /* must be called with summary_lock held */
 static CamelVeeMessageInfo *
@@ -303,13 +314,15 @@ folder_changed_change_uid (CamelFolder *sub, const gchar *uid, const gchar hash[
 }
 
 static void
-folder_changed_change (CamelSession *session, CamelSessionThreadMsg *msg)
+folder_changed_change (CamelSession *session,
+                       GCancellable *cancellable,
+                       FolderChangedData *data,
+                       GError **error)
 {
-	struct _folder_changed_msg *m = (struct _folder_changed_msg *)msg;
-	CamelFolder *sub = m->sub;
-	CamelFolder *folder = (CamelFolder *)m->vee_folder;
-	CamelVeeFolder *vf = m->vee_folder;
-	CamelFolderChangeInfo *changes = m->changes;
+	CamelFolder *sub = data->sub;
+	CamelFolder *folder = CAMEL_FOLDER (data->vee_folder);
+	CamelVeeFolder *vf = data->vee_folder;
+	CamelFolderChangeInfo *changes = data->changes;
 	CamelStore *parent_store;
 	gchar *vuid = NULL, hash[8];
 	const gchar *uid;
@@ -646,21 +659,6 @@ subfolder_renamed_update (CamelVeeFolder *vf, CamelFolder *sub, gchar hash[8])
 		camel_folder_change_info_free (changes);
 	}
 }
-
-static void
-folder_changed_free (CamelSession *session, CamelSessionThreadMsg *msg)
-{
-	struct _folder_changed_msg *m = (struct _folder_changed_msg *)msg;
-
-	camel_folder_change_info_free (m->changes);
-	g_object_unref (m->vee_folder);
-	g_object_unref (m->sub);
-}
-
-static CamelSessionThreadOps folder_changed_ops = {
-	folder_changed_change,
-	folder_changed_free,
-};
 
 static gint
 vee_folder_rebuild_folder (CamelVeeFolder *vee_folder,
@@ -1888,7 +1886,7 @@ vee_folder_folder_changed (CamelVeeFolder *vee_folder,
                            CamelFolderChangeInfo *changes)
 {
 	CamelVeeFolderPrivate *p = vee_folder->priv;
-	struct _folder_changed_msg *m;
+	FolderChangedData *data;
 	CamelStore *parent_store;
 	CamelSession *session;
 
@@ -1898,12 +1896,16 @@ vee_folder_folder_changed (CamelVeeFolder *vee_folder,
 	parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (vee_folder));
 	session = camel_service_get_session (CAMEL_SERVICE (parent_store));
 
-	m = camel_session_thread_msg_new (session, &folder_changed_ops, sizeof (*m));
-	m->changes = camel_folder_change_info_new ();
-	camel_folder_change_info_cat (m->changes, changes);
-	m->sub = g_object_ref (sub);
-	m->vee_folder = g_object_ref (vee_folder);
-	camel_session_thread_queue (session, &m->msg, 0);
+	data = g_slice_new0 (FolderChangedData);
+	data->changes = camel_folder_change_info_new ();
+	camel_folder_change_info_cat (data->changes, changes);
+	data->sub = g_object_ref (sub);
+	data->vee_folder = g_object_ref (vee_folder);
+
+	camel_session_submit_job (
+		session, (CamelSessionCallback)
+		folder_changed_change, data,
+		(GDestroyNotify) folder_changed_data_free);
 }
 
 static void

@@ -47,6 +47,7 @@
 
 typedef struct _AsyncContext AsyncContext;
 typedef struct _SignalData SignalData;
+typedef struct _FolderFilterData FolderFilterData;
 
 struct _CamelFolderPrivate {
 	GStaticRecMutex lock;
@@ -91,15 +92,12 @@ struct _SignalData {
 	gchar *folder_name;
 };
 
-struct _folder_filter_msg {
-	CamelSessionThreadMsg msg;
-
+struct _FolderFilterData {
 	GPtrArray *recents;
 	GPtrArray *junk;
 	GPtrArray *notjunk;
 	CamelFolder *folder;
 	CamelFilterDriver *driver;
-	GError *error;
 };
 
 enum {
@@ -192,10 +190,32 @@ folder_emit_renamed_cb (SignalData *data)
 }
 
 static void
-filter_filter (CamelSession *session,
-               CamelSessionThreadMsg *tmsg)
+folder_filter_data_free (FolderFilterData *data)
 {
-	struct _folder_filter_msg *m = (struct _folder_filter_msg *) tmsg;
+	if (data->driver != NULL)
+		g_object_unref (data->driver);
+	if (data->recents != NULL)
+		camel_folder_free_deep (data->folder, data->recents);
+	if (data->junk != NULL)
+		camel_folder_free_deep (data->folder, data->junk);
+	if (data->notjunk != NULL)
+		camel_folder_free_deep (data->folder, data->notjunk);
+
+	/* XXX Too late to pass a GError here. */
+	camel_folder_summary_save_to_db (data->folder->summary, NULL);
+
+	camel_folder_thaw (data->folder);
+	g_object_unref (data->folder);
+
+	g_slice_free (FolderFilterData, data);
+}
+
+static void
+folder_filter (CamelSession *session,
+               GCancellable *cancellable,
+               FolderFilterData *data,
+               GError **error)
+{
 	CamelMessageInfo *info;
 	CamelStore *parent_store;
 	gint i, status = 0;
@@ -203,71 +223,97 @@ filter_filter (CamelSession *session,
 	gchar *source_url;
 	CamelJunkPlugin *csp;
 	const gchar *full_name;
-	GError *local_error = NULL;
 
-	full_name = camel_folder_get_full_name (m->folder);
-	parent_store = camel_folder_get_parent_store (m->folder);
+	full_name = camel_folder_get_full_name (data->folder);
+	parent_store = camel_folder_get_parent_store (data->folder);
 	csp = session->junk_plugin;
 
-	if (m->junk) {
-		/* Translators: The %s is replaced with a folder name where the operation is running. */
+	if (data->junk) {
+		/* Translators: The %s is replaced with the
+		 * folder name where the operation is running. */
 		camel_operation_push_message (
-			tmsg->cancellable, ngettext (
+			cancellable, ngettext (
 			"Learning new spam message in '%s'",
 			"Learning new spam messages in '%s'",
-			m->junk->len), full_name);
+			data->junk->len), full_name);
 
-		for (i = 0; i < m->junk->len; i++) {
-			/* FIXME Pass a GCancellable */
-			CamelMimeMessage *msg = camel_folder_get_message_sync (
-				m->folder, m->junk->pdata[i], NULL, NULL);
-			gint pc = 100 * i / m->junk->len;
+		for (i = 0; i < data->junk->len; i++) {
+			CamelMimeMessage *message;
+			gint pc = 100 * i / data->junk->len;
 
-			camel_operation_progress (tmsg->cancellable, pc);
+			if (g_cancellable_set_error_if_cancelled (
+				cancellable, error))
+				break;
 
-			if (msg) {
-				camel_junk_plugin_report_junk (csp, msg);
-				g_object_unref (msg);
-			}
+			message = camel_folder_get_message_sync (
+				data->folder, data->junk->pdata[i],
+				cancellable, error);
+
+			if (message == NULL)
+				break;
+
+			camel_operation_progress (cancellable, pc);
+			camel_junk_plugin_report_junk (csp, message);
+			g_object_unref (message);
 		}
-		camel_operation_pop_message (tmsg->cancellable);
+
+		camel_operation_pop_message (cancellable);
 	}
 
-	if (m->notjunk) {
-		/* Translators: The %s is replaced with a folder name where the operation is running. */
+	if (*error != NULL)
+		return;
+
+	if (data->notjunk) {
+		/* Translators: The %s is replaced with the
+		 * folder name where the operation is running. */
 		camel_operation_push_message (
-			tmsg->cancellable, ngettext (
+			cancellable, ngettext (
 			"Learning new ham message in '%s'",
 			"Learning new ham messages in '%s'",
-			m->notjunk->len), full_name);
-		for (i = 0; i < m->notjunk->len; i++) {
-			/* FIXME Pass a GCancellable */
-			CamelMimeMessage *msg = camel_folder_get_message_sync (
-				m->folder, m->notjunk->pdata[i], NULL, NULL);
-			gint pc = 100 * i / m->notjunk->len;
+			data->notjunk->len), full_name);
 
-			camel_operation_progress (tmsg->cancellable, pc);
+		for (i = 0; i < data->notjunk->len; i++) {
+			CamelMimeMessage *message;
+			gint pc = 100 * i / data->notjunk->len;
 
-			if (msg) {
-				camel_junk_plugin_report_notjunk (csp, msg);
-				g_object_unref (msg);
-			}
+			if (g_cancellable_set_error_if_cancelled (
+				cancellable, error))
+				break;
+
+			message = camel_folder_get_message_sync (
+				data->folder, data->notjunk->pdata[i],
+				cancellable, error);
+
+			if (message == NULL)
+				break;
+
+			camel_operation_progress (cancellable, pc);
+			camel_junk_plugin_report_notjunk (csp, message);
+			g_object_unref (message);
 		}
-		camel_operation_pop_message (tmsg->cancellable);
+
+		camel_operation_pop_message (cancellable);
 	}
 
-	if (m->junk || m->notjunk)
+	if (*error != NULL)
+		return;
+
+	if (data->junk || data->notjunk)
 		camel_junk_plugin_commit_reports (csp);
 
-	if (m->driver && m->recents) {
-		/* Translators: The %s is replaced with a folder name where the operation is running. */
+	if (data->driver && data->recents) {
+		CamelService *service;
+
+		/* Translators: The %s is replaced with the
+		 * folder name where the operation is running. */
 		camel_operation_push_message (
-			tmsg->cancellable, ngettext (
+			cancellable, ngettext (
 			"Filtering new message in '%s'",
 			"Filtering new messages in '%s'",
-			m->recents->len), full_name);
+			data->recents->len), full_name);
 
-		source_url = camel_service_get_url (CAMEL_SERVICE (parent_store));
+		service = CAMEL_SERVICE (parent_store);
+		source_url = camel_service_get_url (service);
 		uri = camel_url_new (source_url, NULL);
 		g_free (source_url);
 
@@ -282,59 +328,35 @@ filter_filter (CamelSession *session,
 		source_url = camel_url_to_string (uri, CAMEL_URL_HIDE_ALL);
 		camel_url_free (uri);
 
-		for (i=0;status == 0 && i<m->recents->len;i++) {
-			gchar *uid = m->recents->pdata[i];
-			gint pc = 100 * i / m->recents->len;
+		for (i = 0; status == 0 && i < data->recents->len; i++) {
+			gchar *uid = data->recents->pdata[i];
+			gint pc = 100 * i / data->recents->len;
 
-			camel_operation_progress (tmsg->cancellable, pc);
+			camel_operation_progress (cancellable, pc);
 
-			info = camel_folder_get_message_info (m->folder, uid);
+			info = camel_folder_get_message_info (
+				data->folder, uid);
 			if (info == NULL) {
-				g_warning ("uid %s vanished from folder: %s", uid, source_url);
+				g_warning (
+					"uid '%s' vanished from folder '%s'",
+					uid, source_url);
 				continue;
 			}
 
-			/* FIXME Pass a GCancellable */
 			status = camel_filter_driver_filter_message (
-				m->driver, NULL, info, uid, m->folder,
-				source_url, source_url, NULL, NULL);
+				data->driver, NULL, info, uid, data->folder,
+				source_url, source_url, cancellable, error);
 
-			camel_folder_free_message_info (m->folder, info);
+			camel_folder_free_message_info (data->folder, info);
 		}
-
-		camel_filter_driver_flush (m->driver, &local_error);
-		if (local_error != NULL)
-			g_propagate_error (&m->error, local_error);
 
 		g_free (source_url);
 
-		camel_operation_pop_message (tmsg->cancellable);
+		camel_operation_pop_message (cancellable);
+
+		camel_filter_driver_flush (data->driver, error);
 	}
 }
-
-static void
-filter_free (CamelSession *session, CamelSessionThreadMsg *msg)
-{
-	struct _folder_filter_msg *m = (struct _folder_filter_msg *)msg;
-
-	if (m->driver)
-		g_object_unref (m->driver);
-	if (m->recents)
-		camel_folder_free_deep (m->folder, m->recents);
-	if (m->junk)
-		camel_folder_free_deep (m->folder, m->junk);
-	if (m->notjunk)
-		camel_folder_free_deep (m->folder, m->notjunk);
-
-	camel_folder_summary_save_to_db (m->folder->summary, &m->error);
-	camel_folder_thaw (m->folder);
-	g_object_unref (m->folder);
-}
-
-static CamelSessionThreadOps filter_ops = {
-	filter_filter,
-	filter_free
-};
 
 static gint
 cmp_array_uids (gconstpointer a,
@@ -1435,24 +1457,28 @@ folder_changed (CamelFolder *folder,
 	}
 
 	if (driver || junk || notjunk) {
-		struct _folder_filter_msg *msg;
+		FolderFilterData *data;
 
-		d (printf ("* launching filter thread %d new mail, %d junk and %d not junk\n",
-			 recents?recents->len:0, junk?junk->len:0, notjunk?notjunk->len:0));
+		data = g_slice_new0 (FolderFilterData);
+		data->recents = recents;
+		data->junk = junk;
+		data->notjunk = notjunk;
+		data->folder = g_object_ref (folder);
+		data->driver = driver;
 
-		msg = camel_session_thread_msg_new (session, &filter_ops, sizeof (*msg));
-		msg->recents = recents;
-		msg->junk = junk;
-		msg->notjunk = notjunk;
-		msg->folder = g_object_ref (folder);
 		camel_folder_freeze (folder);
+
 		/* Copy changes back to changed_frozen list to retain
 		 * them while we are filtering */
 		camel_folder_lock (folder, CAMEL_FOLDER_CHANGE_LOCK);
-		camel_folder_change_info_cat (folder->priv->changed_frozen, info);
+		camel_folder_change_info_cat (
+			folder->priv->changed_frozen, info);
 		camel_folder_unlock (folder, CAMEL_FOLDER_CHANGE_LOCK);
-		msg->driver = driver;
-		camel_session_thread_queue (session, &msg->msg, 0);
+
+		camel_session_submit_job (
+			session, (CamelSessionCallback) folder_filter,
+			data, (GDestroyNotify) folder_filter_data_free);
+
 		g_signal_stop_emission (folder, signals[CHANGED], 0);
 	}
 }

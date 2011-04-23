@@ -39,6 +39,7 @@
 
 #include "camel-debug.h"
 #include "camel-file-utils.h"
+#include "camel-marshal.h"
 #include "camel-session.h"
 #include "camel-store.h"
 #include "camel-string-utils.h"
@@ -51,7 +52,11 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_SESSION, CamelSessionPrivate))
 
+#define JOB_PRIORITY G_PRIORITY_LOW
+
 #define d(x)
+
+typedef struct _JobData JobData;
 
 struct _CamelSessionPrivate {
 	GMutex *lock;		/* for locking everything basically */
@@ -59,12 +64,10 @@ struct _CamelSessionPrivate {
 
 	gchar *user_data_dir;
 
-	gint thread_id;
-	GHashTable *thread_active;
-	GThreadPool *thread_pool;
-
 	GHashTable *services;
 	GHashTable *junk_headers;
+
+	GMainContext *context;
 
 	gchar *socks_proxy_host;
 	gint socks_proxy_port;
@@ -72,6 +75,14 @@ struct _CamelSessionPrivate {
 	guint check_junk        : 1;
 	guint network_available : 1;
 	guint online            : 1;
+};
+
+struct _JobData {
+	CamelSession *session;
+	GCancellable *cancellable;
+	CamelSessionCallback callback;
+	gpointer user_data;
+	GDestroyNotify notify;
 };
 
 enum {
@@ -82,20 +93,92 @@ enum {
 	PROP_USER_DATA_DIR,
 };
 
+enum {
+	JOB_STARTED,
+	JOB_FINISHED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 G_DEFINE_TYPE (CamelSession, camel_session, CAMEL_TYPE_OBJECT)
 
 static void
-cs_thread_status (CamelOperation *operation,
-                  const gchar *what,
-                  gint pc,
-                  CamelSessionThreadMsg *msg)
+job_data_free (JobData *job_data)
 {
-	CamelSessionClass *class;
+	g_object_unref (job_data->session);
+	g_object_unref (job_data->cancellable);
 
-	class = CAMEL_SESSION_GET_CLASS (msg->session);
-	g_return_if_fail (class->thread_status != NULL);
+	if (job_data->notify != NULL)
+		job_data->notify (job_data->user_data);
 
-	class->thread_status (msg->session, msg, what, pc);
+	g_slice_free (JobData, job_data);
+}
+
+static void
+session_finish_job_cb (CamelSession *session,
+                       GSimpleAsyncResult *simple)
+{
+	JobData *job_data;
+	GError *error = NULL;
+
+	g_simple_async_result_propagate_error (simple, &error);
+	job_data = g_simple_async_result_get_op_res_gpointer (simple);
+
+	g_signal_emit (
+		job_data->session,
+		signals[JOB_FINISHED], 0,
+		job_data->cancellable, error);
+
+	g_clear_error (&error);
+}
+
+static void
+session_do_job_cb (GSimpleAsyncResult *simple,
+                   CamelSession *session,
+                   GCancellable *cancellable)
+{
+	JobData *job_data;
+	GError *error = NULL;
+
+	job_data = g_simple_async_result_get_op_res_gpointer (simple);
+
+	job_data->callback (
+		session, cancellable,
+		job_data->user_data, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static gboolean
+session_start_job_cb (JobData *job_data)
+{
+	GSimpleAsyncResult *simple;
+
+	g_signal_emit (
+		job_data->session,
+		signals[JOB_STARTED], 0,
+		job_data->cancellable);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (job_data->session),
+		(GAsyncReadyCallback) session_finish_job_cb,
+		NULL, camel_session_submit_job);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, job_data, (GDestroyNotify) job_data_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, (GSimpleAsyncThreadFunc)
+		session_do_job_cb, JOB_PRIORITY,
+		job_data->cancellable);
+
+	g_object_unref (simple);
+
+	return FALSE;
 }
 
 static void
@@ -201,13 +284,9 @@ session_finalize (GObject *object)
 	g_free (priv->user_data_dir);
 
 	g_hash_table_destroy (priv->services);
-	g_hash_table_destroy (priv->thread_active);
 
-	if (priv->thread_pool != NULL) {
-		/* there should be no unprocessed tasks */
-		g_assert (g_thread_pool_unprocessed (priv->thread_pool) == 0);
-		g_thread_pool_free (priv->thread_pool, FALSE, FALSE);
-	}
+	if (priv->context != NULL)
+		g_main_context_unref (priv->context);
 
 	g_mutex_free (priv->lock);
 	g_mutex_free (priv->thread_lock);
@@ -287,95 +366,6 @@ session_add_service (CamelSession *session,
 	return service;
 }
 
-static gpointer
-session_thread_msg_new (CamelSession *session,
-                        CamelSessionThreadOps *ops,
-                        guint size)
-{
-	CamelSessionThreadMsg *m;
-
-	m = g_malloc0 (size);
-	m->ops = ops;
-	m->session = g_object_ref (session);
-	m->cancellable = camel_operation_new ();
-	camel_session_lock (session, CAMEL_SESSION_THREAD_LOCK);
-	m->id = session->priv->thread_id++;
-	g_hash_table_insert (session->priv->thread_active, GINT_TO_POINTER (m->id), m);
-	camel_session_unlock (session, CAMEL_SESSION_THREAD_LOCK);
-
-	g_signal_connect (
-		m->cancellable, "status",
-		G_CALLBACK (cs_thread_status), m);
-
-	return m;
-}
-
-static void
-session_thread_msg_free (CamelSession *session,
-                         CamelSessionThreadMsg *msg)
-{
-	g_return_if_fail (CAMEL_IS_SESSION (session));
-	g_return_if_fail (msg != NULL && msg->ops != NULL);
-
-	d(printf("free message %p session %p\n", msg, session));
-
-	camel_session_lock (session, CAMEL_SESSION_THREAD_LOCK);
-	g_hash_table_remove (session->priv->thread_active, GINT_TO_POINTER (msg->id));
-	camel_session_unlock (session, CAMEL_SESSION_THREAD_LOCK);
-
-	d(printf("free msg, ops->free = %p\n", msg->ops->free));
-
-	if (msg->ops->free)
-		msg->ops->free (session, msg);
-	if (msg->cancellable)
-		g_object_unref (msg->cancellable);
-	g_clear_error (&msg->error);
-	g_object_unref (msg->session);
-	g_free (msg);
-}
-
-static void
-session_thread_proxy (CamelSessionThreadMsg *msg,
-                      CamelSession *session)
-{
-	if (msg->ops->receive)
-		msg->ops->receive (session, msg);
-
-	camel_session_thread_msg_free (session, msg);
-}
-
-static gint
-session_thread_queue (CamelSession *session,
-                      CamelSessionThreadMsg *msg,
-                      gint flags)
-{
-	GThreadPool *thread_pool;
-	gint id;
-
-	camel_session_lock (session, CAMEL_SESSION_THREAD_LOCK);
-	thread_pool = session->priv->thread_pool;
-	if (thread_pool == NULL) {
-		thread_pool = g_thread_pool_new (
-			(GFunc) session_thread_proxy,
-			session, 1, FALSE, NULL);
-		session->priv->thread_pool = thread_pool;
-	}
-	camel_session_unlock (session, CAMEL_SESSION_THREAD_LOCK);
-
-	id = msg->id;
-	g_thread_pool_push (thread_pool, msg, NULL);
-
-	return id;
-}
-
-static void
-session_thread_status (CamelSession *session,
-                       CamelSessionThreadMsg *msg,
-                       const gchar *text,
-                       gint pc)
-{
-}
-
 static void
 camel_session_class_init (CamelSessionClass *class)
 {
@@ -390,10 +380,6 @@ camel_session_class_init (CamelSessionClass *class)
 	object_class->finalize = session_finalize;
 
 	class->add_service = session_add_service;
-	class->thread_msg_new = session_thread_msg_new;
-	class->thread_msg_free = session_thread_msg_free;
-	class->thread_queue = session_thread_queue;
-	class->thread_status = session_thread_status;
 
 	g_object_class_install_property (
 		object_class,
@@ -442,6 +428,27 @@ camel_session_class_init (CamelSessionClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
+
+	signals[JOB_STARTED] = g_signal_new (
+		"job-started",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (CamelSessionClass, job_started),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__OBJECT,
+		G_TYPE_NONE, 1,
+		G_TYPE_CANCELLABLE);
+
+	signals[JOB_FINISHED] = g_signal_new (
+		"job-finished",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (CamelSessionClass, job_finished),
+		NULL, NULL,
+		camel_marshal_VOID__OBJECT_POINTER,
+		G_TYPE_NONE, 2,
+		G_TYPE_CANCELLABLE,
+		G_TYPE_POINTER);
 }
 
 static void
@@ -459,11 +466,12 @@ camel_session_init (CamelSession *session)
 
 	session->priv->lock = g_mutex_new ();
 	session->priv->thread_lock = g_mutex_new ();
-	session->priv->thread_id = 1;
-	session->priv->thread_active = g_hash_table_new (NULL, NULL);
-	session->priv->thread_pool = NULL;
 	session->priv->services = services;
 	session->priv->junk_headers = NULL;
+
+	session->priv->context = g_main_context_get_thread_default ();
+	if (session->priv->context != NULL)
+		g_main_context_ref (session->priv->context);
 }
 
 /**
@@ -896,85 +904,58 @@ camel_session_get_filter_driver (CamelSession *session,
 }
 
 /**
- * camel_session_thread_msg_new:
+ * camel_session_submit_job:
  * @session: a #CamelSession
- * @ops: thread operations
- * @size: number of bytes
+ * @callback: a #CamelSessionCallback
+ * @user_data: user data passed to the callback
+ * @notify: a #GDestroyNotify function
  *
- * Create a new thread message, using ops as the receive/reply/free
- * ops, of @size bytes.
+ * This function provides a simple mechanism for providers to initiate
+ * low-priority background jobs.  Jobs can be submitted from any thread,
+ * but execution of the jobs is always as follows:
  *
- * @ops points to the operations used to recieve/process and finally
- * free the message.
+ * 1) The #CamelSession:job-started signal is emitted from the thread
+ *    in which @session was created.  This is typically the same thread
+ *    that hosts the global default #GMainContext, or "main" thread.
  *
- * Returns: a new #CamelSessionThreadMsg
- **/
-gpointer
-camel_session_thread_msg_new (CamelSession *session,
-                              CamelSessionThreadOps *ops,
-                              guint size)
-{
-	CamelSessionClass *class;
-
-	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
-	g_return_val_if_fail (ops != NULL, NULL);
-	g_return_val_if_fail (size >= sizeof (CamelSessionThreadMsg), NULL);
-
-	class = CAMEL_SESSION_GET_CLASS (session);
-	g_return_val_if_fail (class->thread_msg_new != NULL, NULL);
-
-	return class->thread_msg_new (session, ops, size);
-}
-
-/**
- * camel_session_thread_msg_free:
- * @session: a #CamelSession
- * @msg: a #CamelSessionThreadMsg
+ * 2) The @callback function is invoked from a different thread where
+ *    it's safe to call synchronous functions.
  *
- * Free a @msg.  Note that the message must have been allocated using
- * msg_new, and must nto have been submitted to any queue function.
+ * 3) Once @callback has returned, the #CamelSesson:job-finished signal
+ *    is emitted from the same thread as #CamelSession:job-started was
+ *    emitted.
+ *
+ * 4) Finally if a @notify function was provided, it is invoked and
+ *    passed @user_data so that @user_data can be freed.
+ *
+ * Since: 3.2
  **/
 void
-camel_session_thread_msg_free (CamelSession *session,
-                               CamelSessionThreadMsg *msg)
+camel_session_submit_job (CamelSession *session,
+                          CamelSessionCallback callback,
+                          gpointer user_data,
+                          GDestroyNotify notify)
 {
-	CamelSessionClass *class;
+	GSource *source;
+	JobData *job_data;
 
 	g_return_if_fail (CAMEL_IS_SESSION (session));
-	g_return_if_fail (msg != NULL && msg->ops != NULL);
+	g_return_if_fail (callback != NULL);
 
-	class = CAMEL_SESSION_GET_CLASS (session);
-	g_return_if_fail (class->thread_msg_free != NULL);
+	job_data = g_slice_new0 (JobData);
+	job_data->session = g_object_ref (session);
+	job_data->cancellable = camel_operation_new ();
+	job_data->callback = callback;
+	job_data->user_data = user_data;
+	job_data->notify = notify;
 
-	class->thread_msg_free (session, msg);
-}
-
-/**
- * camel_session_thread_queue:
- * @session: a #CamelSession
- * @msg: a #CamelSessionThreadMsg
- * @flags: queue type flags, currently 0.
- *
- * Queue a thread message in another thread for processing.
- * The operation should be (but needn't) run in a queued manner
- * with other operations queued in this manner.
- *
- * Returns: the id of the operation queued
- **/
-gint
-camel_session_thread_queue (CamelSession *session,
-                            CamelSessionThreadMsg *msg,
-                            gint flags)
-{
-	CamelSessionClass *class;
-
-	g_return_val_if_fail (CAMEL_IS_SESSION (session), -1);
-	g_return_val_if_fail (msg != NULL, -1);
-
-	class = CAMEL_SESSION_GET_CLASS (session);
-	g_return_val_if_fail (class->thread_queue != NULL, -1);
-
-	return class->thread_queue (session, msg, flags);
+	source = g_idle_source_new ();
+	g_source_set_priority (source, JOB_PRIORITY);
+	g_source_set_callback (
+		source, (GSourceFunc) session_start_job_cb,
+		job_data, (GDestroyNotify) NULL);
+	g_source_attach (source, job_data->session->priv->context);
+	g_source_unref (source);
 }
 
 /**

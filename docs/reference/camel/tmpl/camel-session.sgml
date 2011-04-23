@@ -26,6 +26,23 @@ CamelSession
 </para>
 
 
+<!-- ##### SIGNAL CamelSession::job-finished ##### -->
+<para>
+
+</para>
+
+@camelsession: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL CamelSession::job-started ##### -->
+<para>
+
+</para>
+
+@camelsession: the object which received the signal.
+@arg1: 
+
 <!-- ##### ARG CamelSession:check-junk ##### -->
 <para>
 
@@ -54,27 +71,6 @@ CamelSession
 @CAMEL_SESSION_ALERT_INFO: 
 @CAMEL_SESSION_ALERT_WARNING: 
 @CAMEL_SESSION_ALERT_ERROR: 
-
-<!-- ##### STRUCT CamelSessionThreadOps ##### -->
-<para>
-
-</para>
-
-@receive: 
-@free: 
-
-<!-- ##### STRUCT CamelSessionThreadMsg ##### -->
-<para>
-
-</para>
-
-@msg: 
-@id: 
-@error: 
-@ops: 
-@cancellable: 
-@session: 
-@data: 
 
 <!-- ##### FUNCTION camel_session_get_user_data_dir ##### -->
 <para>
@@ -245,35 +241,26 @@ CamelSession
 @check_junk: 
 
 
-<!-- ##### FUNCTION camel_session_thread_msg_new ##### -->
+<!-- ##### USER_FUNCTION CamelSessionCallback ##### -->
 <para>
 
 </para>
 
 @session: 
-@ops: 
-@size: 
-@Returns: 
+@cancellable: 
+@user_data: 
+@error: 
 
 
-<!-- ##### FUNCTION camel_session_thread_msg_free ##### -->
+<!-- ##### FUNCTION camel_session_submit_job ##### -->
 <para>
 
 </para>
 
 @session: 
-@msg: 
-
-
-<!-- ##### FUNCTION camel_session_thread_queue ##### -->
-<para>
-
-</para>
-
-@session: 
-@msg: 
-@flags: 
-@Returns: 
+@callback: 
+@user_data: 
+@notify: 
 
 
 <!-- ##### FUNCTION camel_session_get_network_available ##### -->

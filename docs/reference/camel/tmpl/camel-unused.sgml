@@ -4393,6 +4393,27 @@ streams
 </para>
 
 
+<!-- ##### STRUCT CamelSessionThreadMsg ##### -->
+<para>
+
+</para>
+
+@msg: 
+@id: 
+@error: 
+@ops: 
+@cancellable: 
+@session: 
+@data: 
+
+<!-- ##### STRUCT CamelSessionThreadOps ##### -->
+<para>
+
+</para>
+
+@receive: 
+@free: 
+
 <!-- ##### STRUCT CamelSimpleDataWrapper ##### -->
 <para>
 
@@ -8631,6 +8652,34 @@ streams
 
 @session: 
 @network_state: 
+
+<!-- ##### FUNCTION camel_session_thread_msg_free ##### -->
+<para>
+
+</para>
+
+@session: 
+@msg: 
+
+<!-- ##### FUNCTION camel_session_thread_msg_new ##### -->
+<para>
+
+</para>
+
+@session: 
+@ops: 
+@size: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_session_thread_queue ##### -->
+<para>
+
+</para>
+
+@session: 
+@msg: 
+@flags: 
+@Returns: 
 
 <!-- ##### FUNCTION camel_spool_folder_new ##### -->
 <para>

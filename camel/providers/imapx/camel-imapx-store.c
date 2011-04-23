@@ -1008,40 +1008,23 @@ sync_folders (CamelIMAPXStore *istore,
 	return TRUE;
 }
 
-struct _imapx_refresh_msg {
-	CamelSessionThreadMsg msg;
-	CamelStore *store;
-};
-
 static void
-imapx_refresh_finfo (CamelSession *session, CamelSessionThreadMsg *msg)
+imapx_refresh_finfo (CamelSession *session,
+                     GCancellable *cancellable,
+                     CamelIMAPXStore *store,
+                     GError **error)
 {
-	struct _imapx_refresh_msg *m = (struct _imapx_refresh_msg *)msg;
-	CamelIMAPXStore *istore = (CamelIMAPXStore *)m->store;
-
-	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (istore)))
+	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)))
 		return;
 
-	if (!camel_service_connect_sync ((CamelService *)istore, &msg->error))
+	if (!camel_service_connect_sync (CAMEL_SERVICE (store), error))
 		return;
 
 	/* look in all namespaces */
-	sync_folders (istore, "", FALSE, msg->cancellable, &msg->error);
-	camel_store_summary_save ((CamelStoreSummary *)istore->summary);
+	sync_folders (store, "", FALSE, cancellable, error);
+
+	camel_store_summary_save (CAMEL_STORE_SUMMARY (store->summary));
 }
-
-static void
-imapx_refresh_free (CamelSession *session, CamelSessionThreadMsg *msg)
-{
-	struct _imapx_refresh_msg *m = (struct _imapx_refresh_msg *)msg;
-
-	g_object_unref (m->store);
-}
-
-static CamelSessionThreadOps imapx_refresh_ops = {
-	imapx_refresh_finfo,
-	imapx_refresh_free,
-};
 
 static void
 discover_inbox (CamelStore *store,
@@ -1172,12 +1155,13 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 		time_t now = time (NULL);
 
 		if (now - istore->last_refresh_time > FINFO_REFRESH_INTERVAL) {
-			struct _imapx_refresh_msg *m;
-
 			istore->last_refresh_time = time (NULL);
-			m = camel_session_thread_msg_new (session, &imapx_refresh_ops, sizeof (*m));
-			m->store = g_object_ref (store);
-			camel_session_thread_queue (session, &m->msg, 0);
+
+			camel_session_submit_job (
+				session, (CamelSessionCallback)
+				imapx_refresh_finfo,
+				g_object_ref (store),
+				(GDestroyNotify) g_object_unref);
 		}
 
 		fi = get_folder_info_offline (store, top, flags, error);

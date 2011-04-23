@@ -993,9 +993,9 @@ camel_gw_folder_new (CamelStore *store,
 	return folder;
 }
 
-struct _folder_update_msg {
-	CamelSessionThreadMsg msg;
+typedef struct _FolderUpdateData FolderUpdateData;
 
+struct _FolderUpdateData {
 	EGwConnection *cnc;
 	CamelFolder *folder;
 	gchar *container_id;
@@ -1004,10 +1004,23 @@ struct _folder_update_msg {
 };
 
 static void
-update_update (CamelSession *session,
-               CamelSessionThreadMsg *msg)
+folder_update_data_free (FolderUpdateData *data)
 {
-	struct _folder_update_msg *m = (struct _folder_update_msg *)msg;
+	g_free (data->t_str);
+	g_free (data->container_id);
+	g_object_unref (data->folder);
+	g_slist_foreach (data->slist, (GFunc) g_free, NULL);
+	g_slist_free (data->slist);
+
+	g_slice_free (FolderUpdateData, data);
+}
+
+static void
+update_update (CamelSession *session,
+               GCancellable *cancellable,
+               FolderUpdateData *data,
+               GError **error)
+{
 	EGwConnectionStatus status;
 	CamelGroupwiseStore *gw_store;
 	CamelStore *parent_store;
@@ -1018,14 +1031,14 @@ update_update (CamelSession *session,
 	const gchar *position = E_GW_CURSOR_POSITION_END;
 	gboolean done;
 
-	parent_store = camel_folder_get_parent_store (m->folder);
+	parent_store = camel_folder_get_parent_store (data->folder);
 	gw_store = CAMEL_GROUPWISE_STORE (parent_store);
 
 	service = CAMEL_SERVICE (gw_store);
 
 	/* Hold the connect_lock.
 	   In case if user went offline, don't do anything.
-	   m->cnc would have become invalid, as the store disconnect unrefs it.
+	   data->cnc would have become invalid, as the store disconnect unrefs it.
 	 */
 	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
@@ -1037,20 +1050,20 @@ update_update (CamelSession *session,
 	}
 
 	camel_operation_push_message (
-		msg->cancellable,
+		cancellable,
 		_("Checking for deleted messages %s"),
-		camel_folder_get_name (m->folder));
+		camel_folder_get_name (data->folder));
 
-	status = e_gw_connection_create_cursor (m->cnc, m->container_id, "id", NULL, &cursor);
+	status = e_gw_connection_create_cursor (data->cnc, data->container_id, "id", NULL, &cursor);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-		status = e_gw_connection_create_cursor (m->cnc, m->container_id, "id", NULL, &cursor);
+		status = e_gw_connection_create_cursor (data->cnc, data->container_id, "id", NULL, &cursor);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_warning ("ERROR update update\n");
 		goto end1;
 	}
 
 	done = FALSE;
-	m->slist = NULL;
+	data->slist = NULL;
 
 	while (!done) {
 
@@ -1061,10 +1074,10 @@ update_update (CamelSession *session,
 		}
 
 		item_list = NULL;
-		status = e_gw_connection_get_all_mail_uids (m->cnc, m->container_id, cursor, FALSE, READ_CURSOR_MAX_IDS, position, &item_list);
+		status = e_gw_connection_get_all_mail_uids (data->cnc, data->container_id, cursor, FALSE, READ_CURSOR_MAX_IDS, position, &item_list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			g_warning ("ERROR update update\n");
-			e_gw_connection_destroy_cursor (m->cnc, m->container_id, cursor);
+			e_gw_connection_destroy_cursor (data->cnc, data->container_id, cursor);
 			goto end1;
 		}
 
@@ -1086,7 +1099,7 @@ update_update (CamelSession *session,
 		}
 		position = E_GW_CURSOR_POSITION_CURRENT;
 	}
-	e_gw_connection_destroy_cursor (m->cnc, m->container_id, cursor);
+	e_gw_connection_destroy_cursor (data->cnc, data->container_id, cursor);
 
 	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 	/* Take out only the first part in the list until the @ since it is guaranteed
@@ -1109,37 +1122,19 @@ update_update (CamelSession *session,
 	  }*/
 
 	g_print ("\nNumber of items in the folder: %d \n", g_list_length(items_full_list));
-	gw_update_all_items (m->folder, items_full_list, NULL, NULL);
-	camel_operation_pop_message (msg->cancellable);
+	gw_update_all_items (data->folder, items_full_list, NULL, NULL);
+	camel_operation_pop_message (cancellable);
 
 	return;
  end1:
 	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
-	camel_operation_pop_message (msg->cancellable);
+	camel_operation_pop_message (cancellable);
 	if (items_full_list) {
 		g_list_foreach (items_full_list, (GFunc)g_free, NULL);
 		g_list_free (items_full_list);
 	}
 	return;
 }
-
-static void
-update_free (CamelSession *session, CamelSessionThreadMsg *msg)
-{
-	struct _folder_update_msg *m = (struct _folder_update_msg *)msg;
-
-	g_free (m->t_str);
-	g_free (m->container_id);
-	g_object_unref (m->folder);
-	g_slist_foreach (m->slist, (GFunc) g_free, NULL);
-	g_slist_free (m->slist);
-	m->slist = NULL;
-}
-
-static CamelSessionThreadOps update_ops = {
-	update_update,
-	update_free,
-};
 
 static gint
 check_for_new_mails_count (CamelGroupwiseSummary *gw_summary, GSList *ids)
@@ -1244,7 +1239,6 @@ groupwise_refresh_folder (CamelFolder *folder,
 	const gchar *full_name;
 	gchar *container_id = NULL;
 	gchar *old_sync_time = NULL, *new_sync_time = NULL, *modified_sync_time = NULL;
-	struct _folder_update_msg *msg;
 	gboolean sync_deleted = FALSE;
 	EGwContainer *container;
 	gint new_item_count = 0;
@@ -1384,13 +1378,18 @@ groupwise_refresh_folder (CamelFolder *folder,
 	 */
 	/*create a new session thread for the update all operation*/
 	if (sync_deleted || is_proxy) {
-		msg = camel_session_thread_msg_new (session, &update_ops, sizeof (*msg));
-		msg->cnc = cnc;
-		msg->t_str = g_strdup (old_sync_time);
-		msg->container_id = g_strdup (container_id);
-		msg->folder = g_object_ref (folder);
-		camel_session_thread_queue (session, &msg->msg, 0);
-		/*thread creation and queueing done*/
+		FolderUpdateData *data;
+
+		data = g_slice_new0 (FolderUpdateData);
+		data->cnc = cnc;
+		data->t_str = g_strdup (old_sync_time);
+		data->container_id = g_strdup (container_id);
+		data->folder = g_object_ref (folder);
+
+		camel_session_submit_job (
+			session, (CamelSessionCallback)
+			update_update, data,
+			(GDestroyNotify) folder_update_data_free);
 	}
 
 end3:

@@ -1496,29 +1496,27 @@ remove_item (gchar *key, CamelMessageInfoBase *info, GSList **to_free_list)
 	return FALSE;
 }
 
-struct _folder_summary_free_msg {
-	CamelSessionThreadMsg msg;
-	CamelFolderSummary *summary;
-};
-
 static void
-remove_cache (CamelSession *session, CamelSessionThreadMsg *msg)
+remove_cache (CamelSession *session,
+              GCancellable *cancellable,
+              CamelFolderSummary *summary,
+              GError **error)
 {
-	struct _folder_summary_free_msg *m = (struct _folder_summary_free_msg *)msg;
-	CamelFolderSummary *s = m->summary;
 	GSList *to_free_list = NULL, *l;
 
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 
-	if (time (NULL) - s->cache_load_time < SUMMARY_CACHE_DROP)
+	if (time (NULL) - summary->cache_load_time < SUMMARY_CACHE_DROP)
 		return;
 
 	/* FIXME[disk-summary] hack. fix it */
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (
+		summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_REF_LOCK);
-	g_hash_table_foreach_remove  (s->loaded_infos, (GHRFunc) remove_item, &to_free_list);
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_REF_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_REF_LOCK);
+	g_hash_table_foreach_remove (
+		summary->loaded_infos, (GHRFunc) remove_item, &to_free_list);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_REF_LOCK);
 
 	/* Deferred freeing as _free function will try to remove
 	   entries from the hash_table in foreach_remove otherwise */
@@ -1526,46 +1524,36 @@ remove_cache (CamelSession *session, CamelSessionThreadMsg *msg)
 		camel_message_info_free (l->data);
 	g_slist_free (to_free_list);
 
-	dd(printf("   done .. now %d\n", g_hash_table_size (s->loaded_infos)));
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (
+		summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
-	s->cache_load_time = time (NULL);
+	summary->cache_load_time = time (NULL);
 }
-
-static void remove_cache_end (CamelSession *session, CamelSessionThreadMsg *msg)
-{
-		struct _folder_summary_free_msg *m = (struct _folder_summary_free_msg *)msg;
-		g_object_unref (m->summary);
-}
-
-static CamelSessionThreadOps remove_timeout_ops = {
-	remove_cache,
-	remove_cache_end,
-};
 
 static gboolean
-cfs_try_release_memory (CamelFolderSummary *s)
+cfs_try_release_memory (CamelFolderSummary *summary)
 {
-	struct _folder_summary_free_msg *m;
 	CamelStore *parent_store;
 	CamelSession *session;
 
 	/* If folder is freed or if the cache is nil then clean up */
-	if (!s->folder || !g_hash_table_size (s->loaded_infos)) {
-		s->cache_load_time = 0;
-		s->timeout_handle = 0;
+	if (!summary->folder || !g_hash_table_size (summary->loaded_infos)) {
+		summary->cache_load_time = 0;
+		summary->timeout_handle = 0;
 		return FALSE;
 	}
 
-	parent_store = camel_folder_get_parent_store (s->folder);
+	parent_store = camel_folder_get_parent_store (summary->folder);
 	session = camel_service_get_session (CAMEL_SERVICE (parent_store));
 
-	if (time (NULL) - s->cache_load_time < SUMMARY_CACHE_DROP)
+	if (time (NULL) - summary->cache_load_time < SUMMARY_CACHE_DROP)
 		return TRUE;
 
-	m = camel_session_thread_msg_new (session, &remove_timeout_ops, sizeof (*m));
-	m->summary = g_object_ref (s);
-	camel_session_thread_queue (session, &m->msg, 0);
+	camel_session_submit_job (
+		session,
+		(CamelSessionCallback) remove_cache,
+		g_object_ref (summary),
+		(GDestroyNotify) g_object_unref);
 
 	return TRUE;
 }
@@ -1603,13 +1591,6 @@ cfs_cache_size (CamelFolderSummary *s)
 }
 
 /* Update preview of cached messages */
-
-struct _preview_update_msg {
-	CamelSessionThreadMsg msg;
-
-	CamelFolder *folder;
-	GError *error;
-};
 
 static void
 msg_update_preview (const gchar *uid, gpointer value, CamelFolder *folder)
@@ -1652,54 +1633,44 @@ fill_mi (const gchar *uid, const gchar *msg, CamelFolder *folder)
 }
 
 static void
-preview_update_exec (CamelSession *session, CamelSessionThreadMsg *msg)
+preview_update (CamelSession *session,
+                GCancellable *cancellable,
+                CamelFolder *folder,
+                GError **error)
 {
-	struct _preview_update_msg *m = (struct _preview_update_msg *)msg;
 	/* FIXME: Either lock & use or copy & use.*/
-	GPtrArray *uids_uncached= camel_folder_get_uncached_uids (m->folder, m->folder->summary->uids, NULL);
-	GHashTable *hash = camel_folder_summary_get_hashtable (m->folder->summary);
+	GPtrArray *uids_uncached= camel_folder_get_uncached_uids (folder, folder->summary->uids, NULL);
+	GHashTable *hash = camel_folder_summary_get_hashtable (folder->summary);
 	GHashTable *preview_data;
 	CamelStore *parent_store;
 	const gchar *full_name;
 	gint i;
 
-	full_name = camel_folder_get_full_name (m->folder);
-	parent_store = camel_folder_get_parent_store (m->folder);
+	full_name = camel_folder_get_full_name (folder);
+	parent_store = camel_folder_get_parent_store (folder);
 	preview_data = camel_db_get_folder_preview (parent_store->cdb_r, full_name, NULL);
 	if (preview_data) {
-		g_hash_table_foreach_remove (preview_data, (GHRFunc)fill_mi, m->folder);
+		g_hash_table_foreach_remove (preview_data, (GHRFunc)fill_mi, folder);
 		g_hash_table_destroy (preview_data);
 	}
 
-	camel_folder_summary_lock (m->folder->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-	g_hash_table_foreach (m->folder->summary->loaded_infos, (GHFunc)pick_uids, uids_uncached);
-	camel_folder_summary_unlock (m->folder->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (folder->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	g_hash_table_foreach (folder->summary->loaded_infos, (GHFunc)pick_uids, uids_uncached);
+	camel_folder_summary_unlock (folder->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	for (i=0; i < uids_uncached->len; i++) {
 		g_hash_table_remove (hash, uids_uncached->pdata[i]);
 		camel_pstring_free (uids_uncached->pdata[i]); /* unref the hash table key */
 	}
 
-	camel_folder_lock (m->folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
 	camel_db_begin_transaction (parent_store->cdb_w, NULL);
-	g_hash_table_foreach (hash, (GHFunc)msg_update_preview, m->folder);
+	g_hash_table_foreach (hash, (GHFunc)msg_update_preview, folder);
 	camel_db_end_transaction (parent_store->cdb_w, NULL);
-	camel_folder_unlock (m->folder, CAMEL_FOLDER_REC_LOCK);
-	camel_folder_free_uids (m->folder, uids_uncached);
+	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_free_uids (folder, uids_uncached);
 	camel_folder_summary_free_hashtable (hash);
 }
-
-static void
-preview_update_free (CamelSession *session, CamelSessionThreadMsg *msg)
-{
-	struct _preview_update_msg *m = (struct _preview_update_msg *)msg;
-
-	m=m;
-}
-static CamelSessionThreadOps preview_update_ops = {
-	preview_update_exec,
-	preview_update_free,
-};
 
 /* end */
 
@@ -1731,15 +1702,12 @@ cfs_reload_from_db (CamelFolderSummary *s, GError **error)
 
 	cfs_schedule_info_release_timer (s);
 
-	if (s->priv->need_preview) {
-		struct _preview_update_msg *m;
-
-		m = camel_session_thread_msg_new (
-			session, &preview_update_ops, sizeof (*m));
-		m->folder = s->folder;
-		m->error = NULL;
-		camel_session_thread_queue (session, &m->msg, 0);
-	}
+	if (s->priv->need_preview)
+		camel_session_submit_job (
+			session,
+			(CamelSessionCallback) preview_update,
+			g_object_ref (s->folder),
+			(GDestroyNotify) g_object_unref);
 
 	return ret == 0 ? 0 : -1;
 }

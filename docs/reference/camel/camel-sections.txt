@@ -1910,8 +1910,6 @@ camel_service_error_quark
 <TITLE>CamelSession</TITLE>
 CamelSession
 CamelSessionAlertType
-CamelSessionThreadOps
-CamelSessionThreadMsg
 camel_session_get_user_data_dir
 camel_session_set_socks_proxy
 camel_session_get_socks_proxy
@@ -1928,9 +1926,8 @@ camel_session_set_online
 camel_session_get_filter_driver
 camel_session_get_check_junk
 camel_session_set_check_junk
-camel_session_thread_msg_new
-camel_session_thread_msg_free
-camel_session_thread_queue
+CamelSessionCallback
+camel_session_submit_job
 camel_session_get_network_available
 camel_session_set_network_available
 camel_session_get_junk_headers

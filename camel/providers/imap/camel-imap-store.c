@@ -2773,51 +2773,35 @@ fill_fi (CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 	}
 }
 
-struct _refresh_msg {
-	CamelSessionThreadMsg msg;
-
-	CamelStore *store;
-	GError *error;
-};
-
 static void
-refresh_refresh (CamelSession *session, CamelSessionThreadMsg *msg)
+refresh_refresh (CamelSession *session,
+                 GCancellable *cancellable,
+                 CamelImapStore *store,
+                 GError **error)
 {
-	struct _refresh_msg *m = (struct _refresh_msg *)msg;
-	CamelImapStore *store = (CamelImapStore *)m->store;
+	camel_service_lock (
+		CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
-	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
-	if (!camel_imap_store_connected (store, &m->error))
+	if (!camel_imap_store_connected (store, error))
 		goto done;
 
 	if (store->users_namespace && store->users_namespace[0]) {
-		if (!get_folders_sync (store, "INBOX", NULL, &m->error))
+		if (!get_folders_sync (store, "INBOX", cancellable, error))
 			goto done;
 	} else {
-		get_folders_sync (store, "*", NULL, NULL);
+		if (!get_folders_sync (store, "*", cancellable, error))
+			goto done;
 	}
 
 	/* look in all namespaces */
-	get_folders_sync (store, NULL, NULL, &m->error);
-	camel_store_summary_save ((CamelStoreSummary *)store->summary);
+	get_folders_sync (store, NULL, cancellable, error);
+
+	camel_store_summary_save (CAMEL_STORE_SUMMARY (store->summary));
+
 done:
-	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+	camel_service_unlock (
+		CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 }
-
-static void
-refresh_free (CamelSession *session, CamelSessionThreadMsg *msg)
-{
-	struct _refresh_msg *m = (struct _refresh_msg *)msg;
-
-	g_object_unref (m->store);
-	g_clear_error (&m->error);
-}
-
-static CamelSessionThreadOps refresh_ops = {
-	refresh_refresh,
-	refresh_free,
-};
 
 static CamelFolderInfo *
 imap_store_get_folder_info_sync (CamelStore *store,
@@ -2861,16 +2845,13 @@ imap_store_get_folder_info_sync (CamelStore *store,
 				service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 			ref = now > imap_store->refresh_stamp+60*60*1;
 			if (ref) {
-				struct _refresh_msg *m;
-
 				imap_store->refresh_stamp = now;
 
-				m = camel_session_thread_msg_new (
-					session, &refresh_ops, sizeof (*m));
-				m->store = g_object_ref (store);
-				m->error = NULL;
-				camel_session_thread_queue (
-					session, &m->msg, 0);
+				camel_session_submit_job (
+					session, (CamelSessionCallback)
+					refresh_refresh,
+					g_object_ref (store),
+					(GDestroyNotify) g_object_unref);
 			}
 			camel_service_unlock (
 				service, CAMEL_SERVICE_REC_CONNECT_LOCK);

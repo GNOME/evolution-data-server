@@ -34,6 +34,7 @@
 #include "camel-store.h"
 
 typedef struct _AsyncContext AsyncContext;
+typedef struct _OfflineDownsyncData OfflineDownsyncData;
 
 struct _CamelOfflineFolderPrivate {
 	gboolean offline_sync;
@@ -44,9 +45,7 @@ struct _AsyncContext {
 	gchar *expression;
 };
 
-struct _offline_downsync_msg {
-	CamelSessionThreadMsg msg;
-
+struct _OfflineDownsyncData {
 	CamelFolder *folder;
 	CamelFolderChangeInfo *changes;
 };
@@ -69,50 +68,53 @@ async_context_free (AsyncContext *async_context)
 }
 
 static void
-offline_downsync_sync (CamelSession *session, CamelSessionThreadMsg *mm)
+offline_downsync_data_free (OfflineDownsyncData *data)
 {
-	struct _offline_downsync_msg *m = (struct _offline_downsync_msg *) mm;
-	gint i;
+	if (data->changes != NULL)
+		camel_folder_change_info_free (data->changes);
 
-	camel_operation_push_message (
-		mm->cancellable,
-		_("Downloading new messages for offline mode"));
+	g_object_unref (data->folder);
 
-	if (m->changes) {
-		for (i = 0; i < m->changes->uid_added->len; i++) {
-			gint pc = i * 100 / m->changes->uid_added->len;
-
-			camel_operation_progress (mm->cancellable, pc);
-			/* FIXME Pass a GCancellable */
-			camel_folder_synchronize_message_sync (
-				m->folder, m->changes->uid_added->pdata[i],
-				NULL, &mm->error);
-		}
-	} else {
-		/* FIXME Pass a GCancellable */
-		camel_offline_folder_downsync_sync (
-			(CamelOfflineFolder *) m->folder,
-			"(match-all)", NULL, &mm->error);
-	}
-
-	camel_operation_pop_message (mm->cancellable);
+	g_slice_free (OfflineDownsyncData, data);
 }
 
 static void
-offline_downsync_free (CamelSession *session, CamelSessionThreadMsg *mm)
+offline_folder_downsync_background (CamelSession *session,
+                                    GCancellable *cancellable,
+                                    OfflineDownsyncData *data,
+                                    GError **error)
 {
-	struct _offline_downsync_msg *m = (struct _offline_downsync_msg *) mm;
+	camel_operation_push_message (
+		cancellable,
+		_("Downloading new messages for offline mode"));
 
-	if (m->changes)
-		camel_folder_change_info_free (m->changes);
+	if (data->changes) {
+		GPtrArray *uid_added;
+		gboolean success = TRUE;
+		gint ii;
 
-	g_object_unref (m->folder);
+		uid_added = data->changes->uid_added;
+
+		for (ii = 0; success && ii < uid_added->len; ii++) {
+			const gchar *uid;
+			gint percent;
+
+			percent = ii * 100 / uid_added->len;
+			uid = g_ptr_array_index (uid_added, ii);
+
+			camel_operation_progress (cancellable, percent);
+
+			success = camel_folder_synchronize_message_sync (
+				data->folder, uid, cancellable, error);
+		}
+	} else {
+		camel_offline_folder_downsync_sync (
+			CAMEL_OFFLINE_FOLDER (data->folder),
+			"(match-all)", cancellable, error);
+	}
+
+	camel_operation_pop_message (cancellable);
 }
-
-static CamelSessionThreadOps offline_downsync_ops = {
-	offline_downsync_sync,
-	offline_downsync_free,
-};
 
 static void
 offline_folder_changed (CamelFolder *folder,
@@ -134,15 +136,17 @@ offline_folder_changed (CamelFolder *folder,
 		CAMEL_OFFLINE_FOLDER (folder));
 
 	if (changes->uid_added->len > 0 && (offline_sync || camel_url_get_param (url, "sync_offline"))) {
-		struct _offline_downsync_msg *m;
+		OfflineDownsyncData *data;
 
-		m = camel_session_thread_msg_new (
-			session, &offline_downsync_ops, sizeof (*m));
-		m->changes = camel_folder_change_info_new ();
-		camel_folder_change_info_cat (m->changes, changes);
-		m->folder = g_object_ref (folder);
+		data = g_slice_new0 (OfflineDownsyncData);
+		data->changes = camel_folder_change_info_new ();
+		camel_folder_change_info_cat (data->changes, changes);
+		data->folder = g_object_ref (folder);
 
-		camel_session_thread_queue (session, &m->msg, 0);
+		camel_session_submit_job (
+			session, (CamelSessionCallback)
+			offline_folder_downsync_background, data,
+			(GDestroyNotify) offline_downsync_data_free);
 	}
 }
 

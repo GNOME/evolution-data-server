@@ -36,9 +36,7 @@ struct _CamelDiscoFolderPrivate {
 	gboolean offline_sync;
 };
 
-struct _cdf_sync_msg {
-	CamelSessionThreadMsg msg;
-
+struct _cdf_sync_data {
 	CamelFolder *folder;
 	CamelFolderChangeInfo *changes;
 };
@@ -53,47 +51,47 @@ enum {
 G_DEFINE_TYPE (CamelDiscoFolder, camel_disco_folder, CAMEL_TYPE_FOLDER)
 
 static void
-cdf_sync_offline (CamelSession *session, CamelSessionThreadMsg *mm)
+cdf_sync_free (struct _cdf_sync_data *data)
 {
-	struct _cdf_sync_msg *m = (struct _cdf_sync_msg *)mm;
-	gint i;
+	if (data->changes != NULL)
+		camel_folder_change_info_free (data->changes);
+	g_object_unref (data->folder);
 
-	camel_operation_push_message (
-		mm->cancellable,
-		_("Downloading new messages for offline mode"));
-
-	if (m->changes) {
-		for (i=0;i<m->changes->uid_added->len;i++) {
-			gint pc = i * 100 / m->changes->uid_added->len;
-
-			camel_operation_progress (mm->cancellable, pc);
-			camel_disco_folder_cache_message ((CamelDiscoFolder *)m->folder,
-							 m->changes->uid_added->pdata[i],
-							 NULL, &mm->error);
-		}
-	} else {
-		camel_disco_folder_prepare_for_offline ((CamelDiscoFolder *)m->folder,
-						       "(match-all)",
-						       NULL, &mm->error);
-	}
-
-	camel_operation_pop_message (mm->cancellable);
+	g_slice_free (struct _cdf_sync_data, data);
 }
 
 static void
-cdf_sync_free (CamelSession *session, CamelSessionThreadMsg *mm)
+cdf_sync_offline (CamelSession *session,
+                  GCancellable *cancellable,
+                  struct _cdf_sync_data *data,
+                  GError **error)
 {
-	struct _cdf_sync_msg *m = (struct _cdf_sync_msg *)mm;
+	camel_operation_push_message (
+		cancellable,
+		_("Downloading new messages for offline mode"));
 
-	if (m->changes)
-		camel_folder_change_info_free (m->changes);
-	g_object_unref (m->folder);
+	if (data->changes != NULL) {
+		GPtrArray *uid_added;
+		gint ii;
+
+		uid_added = data->changes->uid_added;
+
+		for (ii = 0; ii < uid_added->len; ii++) {
+			gint pc = ii * 100 / uid_added->len;
+
+			camel_operation_progress (cancellable, pc);
+			camel_disco_folder_cache_message (
+				CAMEL_DISCO_FOLDER (data->folder),
+				uid_added->pdata[ii], NULL, error);
+		}
+	} else {
+		camel_disco_folder_prepare_for_offline (
+			CAMEL_DISCO_FOLDER (data->folder),
+			"(match-all)", NULL, error);
+	}
+
+	camel_operation_pop_message (cancellable);
 }
-
-static CamelSessionThreadOps cdf_sync_ops = {
-	cdf_sync_offline,
-	cdf_sync_free,
-};
 
 static void
 cdf_folder_changed (CamelFolder *folder,
@@ -101,6 +99,7 @@ cdf_folder_changed (CamelFolder *folder,
 {
 	CamelService *parent_service;
 	CamelStore *parent_store;
+	CamelSession *session;
 	CamelURL *url;
 	gboolean offline_sync;
 
@@ -108,21 +107,24 @@ cdf_folder_changed (CamelFolder *folder,
 
 	parent_service = CAMEL_SERVICE (parent_store);
 	url = camel_service_get_camel_url (parent_service);
+	session = camel_service_get_session (parent_service);
 
 	offline_sync = camel_disco_folder_get_offline_sync (
 		CAMEL_DISCO_FOLDER (folder));
 
 	if (changes->uid_added->len > 0 && (offline_sync
 		|| camel_url_get_param (url, "offline_sync"))) {
-		CamelSession *session;
-		struct _cdf_sync_msg *m;
+		struct _cdf_sync_data *data;
 
-		session = camel_service_get_session (parent_service);
-		m = camel_session_thread_msg_new (session, &cdf_sync_ops, sizeof (*m));
-		m->changes = camel_folder_change_info_new ();
-		camel_folder_change_info_cat (m->changes, changes);
-		m->folder = g_object_ref (folder);
-		camel_session_thread_queue (session, &m->msg, 0);
+		data = g_slice_new0 (struct _cdf_sync_data);
+		data->changes = camel_folder_change_info_new ();
+		camel_folder_change_info_cat (data->changes, changes);
+		data->folder = g_object_ref (folder);
+
+		camel_session_submit_job (
+			session,
+			(CamelSessionCallback) cdf_sync_offline,
+			data, (GDestroyNotify) cdf_sync_free);
 	}
 }
 

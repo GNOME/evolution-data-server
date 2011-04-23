@@ -91,8 +91,23 @@ struct _CamelSession {
 	CamelJunkPlugin *junk_plugin;
 };
 
-typedef struct _CamelSessionThreadOps CamelSessionThreadOps;
-typedef struct _CamelSessionThreadMsg CamelSessionThreadMsg;
+/**
+ * CamelSessionCallback:
+ * @session: a #CamelSession
+ * @cancellable: a #CamelOperation cast as a #GCancellable
+ * @user_data: data passed to camel_session_submit_job()
+ * @error: return location for a #GError
+ *
+ * This is the callback signature for jobs submitted to the CamelSession
+ * via camel_session_submit_job().  The @error pointer is always non-%NULL,
+ * so it's safe to dereference to check if a #GError has been set.
+ *
+ * Since: 3.2
+ **/
+typedef void	(*CamelSessionCallback)		(CamelSession *session,
+						 GCancellable *cancellable,
+						 gpointer user_data,
+						 GError **error);
 
 struct _CamelSessionClass {
 	CamelObjectClass parent_class;
@@ -122,21 +137,6 @@ struct _CamelSessionClass {
 			(*get_filter_driver)	(CamelSession *session,
 						 const gchar *type,
 						 GError **error);
-
-	/* mechanism for creating and maintaining multiple threads of control */
-	gpointer	(*thread_msg_new)	(CamelSession *session,
-						 CamelSessionThreadOps *ops,
-						 guint size);
-	void		(*thread_msg_free)	(CamelSession *session,
-						 CamelSessionThreadMsg *msg);
-	gint		(*thread_queue)		(CamelSession *session,
-						 CamelSessionThreadMsg *msg,
-						 gint flags);
-	void		(*thread_status)	(CamelSession *session,
-						 CamelSessionThreadMsg *msg,
-						 const gchar *text,
-						 gint pc);
-
 	gboolean	(*lookup_addressbook)	(CamelSession *session,
 						 const gchar *name);
 	gboolean	(*forward_to)		(CamelSession *session,
@@ -144,6 +144,13 @@ struct _CamelSessionClass {
 						 CamelMimeMessage *message,
 						 const gchar *address,
 						 GError **error);
+
+	/* Signals */
+	void		(*job_started)		(CamelSession *session,
+						 GCancellable *cancellable);
+	void		(*job_finished)		(CamelSession *session,
+						 GCancellable *cancellable,
+						 const GError *error);
 };
 
 GType		camel_session_get_type		(void);
@@ -195,36 +202,10 @@ CamelFilterDriver *
 gboolean	camel_session_get_check_junk	(CamelSession *session);
 void		camel_session_set_check_junk	(CamelSession *session,
 						 gboolean check_junk);
-
-struct _CamelSessionThreadOps {
-	void (*receive)(CamelSession *session, CamelSessionThreadMsg *m);
-	void (*free)(CamelSession *session, CamelSessionThreadMsg *m);
-};
-
-struct _CamelSessionThreadMsg {
-	CamelMsg msg;
-
-	gint id;
-
-	GError *error;
-	CamelSessionThreadOps *ops;
-	GCancellable *cancellable;
-	CamelSession *session;
-
-	gpointer data;	/* Free for implementation to define, not
-			 * used by Camel, do not use in client code. */
-
-	/* user fields follow */
-};
-
-gpointer	camel_session_thread_msg_new	(CamelSession *session,
-						 CamelSessionThreadOps *ops,
-						 guint size);
-void		camel_session_thread_msg_free	(CamelSession *session,
-						 CamelSessionThreadMsg *msg);
-gint		camel_session_thread_queue	(CamelSession *session,
-						 CamelSessionThreadMsg *msg,
-						 gint flags);
+void		camel_session_submit_job	(CamelSession *session,
+						 CamelSessionCallback callback,
+						 gpointer user_data,
+						 GDestroyNotify notify);
 gboolean	camel_session_get_network_available
 						(CamelSession *session);
 void		camel_session_set_network_available
