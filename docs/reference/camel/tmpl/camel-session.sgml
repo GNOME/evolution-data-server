@@ -276,15 +276,6 @@ CamelSession
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_session_thread_wait ##### -->
-<para>
-
-</para>
-
-@session: 
-@id: 
-
-
 <!-- ##### FUNCTION camel_session_get_network_available ##### -->
 <para>
 

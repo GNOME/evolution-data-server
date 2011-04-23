@@ -132,8 +132,6 @@ struct _CamelSessionClass {
 	gint		(*thread_queue)		(CamelSession *session,
 						 CamelSessionThreadMsg *msg,
 						 gint flags);
-	void		(*thread_wait)		(CamelSession *session,
-						 gint id);
 	void		(*thread_status)	(CamelSession *session,
 						 CamelSessionThreadMsg *msg,
 						 const gchar *text,
@@ -227,8 +225,6 @@ void		camel_session_thread_msg_free	(CamelSession *session,
 gint		camel_session_thread_queue	(CamelSession *session,
 						 CamelSessionThreadMsg *msg,
 						 gint flags);
-void		camel_session_thread_wait	(CamelSession *session,
-						 gint id);
 gboolean	camel_session_get_network_available
 						(CamelSession *session);
 void		camel_session_set_network_available

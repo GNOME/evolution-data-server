@@ -369,23 +369,6 @@ session_thread_queue (CamelSession *session,
 }
 
 static void
-session_thread_wait (CamelSession *session,
-                     gint id)
-{
-	gint wait;
-
-	/* we just busy wait, only other alternative is to setup a reply port? */
-	do {
-		camel_session_lock (session, CAMEL_SESSION_THREAD_LOCK);
-		wait = g_hash_table_lookup (session->priv->thread_active, GINT_TO_POINTER (id)) != NULL;
-		camel_session_unlock (session, CAMEL_SESSION_THREAD_LOCK);
-		if (wait) {
-			g_usleep (20000);
-		}
-	} while (wait);
-}
-
-static void
 session_thread_status (CamelSession *session,
                        CamelSessionThreadMsg *msg,
                        const gchar *text,
@@ -410,7 +393,6 @@ camel_session_class_init (CamelSessionClass *class)
 	class->thread_msg_new = session_thread_msg_new;
 	class->thread_msg_free = session_thread_msg_free;
 	class->thread_queue = session_thread_queue;
-	class->thread_wait = session_thread_wait;
 	class->thread_status = session_thread_status;
 
 	g_object_class_install_property (
@@ -993,30 +975,6 @@ camel_session_thread_queue (CamelSession *session,
 	g_return_val_if_fail (class->thread_queue != NULL, -1);
 
 	return class->thread_queue (session, msg, flags);
-}
-
-/**
- * camel_session_thread_wait:
- * @session: a #CamelSession
- * @id: id of the operation to wait on
- *
- * Wait on an operation to complete (by id).
- **/
-void
-camel_session_thread_wait (CamelSession *session,
-                           gint id)
-{
-	CamelSessionClass *class;
-
-	g_return_if_fail (CAMEL_IS_SESSION (session));
-
-	if (id == -1)
-		return;
-
-	class = CAMEL_SESSION_GET_CLASS (session);
-	g_return_if_fail (class->thread_wait != NULL);
-
-	class->thread_wait (session, id);
 }
 
 /**
