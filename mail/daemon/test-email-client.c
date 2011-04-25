@@ -988,6 +988,8 @@ start_test_client (gpointer foo)
 	const char *uri = e_account_get_string (account, E_ACCOUNT_SOURCE_URL);
 	GError *error = NULL;
 	EGdbusStoreMS *store_proxy;
+	EGdbusFolderCF *folder_proxy;
+	
 	char *path;
 	GVariant *infos = NULL;
 
@@ -1030,6 +1032,25 @@ start_test_client (gpointer foo)
 	g_signal_connect (store_proxy, "folder-renamed", G_CALLBACK (folder_renamed_cb), NULL);
 	g_signal_connect (store_proxy, "folder-subscribed", G_CALLBACK (folder_subscribed_cb), NULL);
 	g_signal_connect (store_proxy, "folder-unsubscribed", G_CALLBACK (folder_unsubscribed_cb), NULL);
+
+	/* Get SENT  folder */
+	if (!egdbus_session_cs_call_get_folder_from_uri_sync (
+		session_proxy, 
+		account->sent_folder_uri, /* Pass the full name */
+		&path,
+		NULL, 
+		&error))
+		printf("Error while getting folder SENT: %s\n", error->message);
+	
+	printf("Folder path for %s\n", path);
+		
+	folder_proxy = egdbus_folder_cf_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (session_proxy)),
+							G_DBUS_PROXY_FLAGS_NONE,
+							E_MAIL_DATA_FACTORY_SERVICE_NAME,
+							path,
+							NULL, &error);
+	printf("Success in getting FolderProxy for SENT ? %p %s\n", folder_proxy, error ? error->message : "Yahoo");
+
 
 	parse_infos (store_proxy, infos);
 	
