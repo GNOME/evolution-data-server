@@ -1,3 +1,24 @@
+Evolution-Data-Server 3.0.1 2011-04-25
+--------------------------------------
+
+Bug Fixes:
+	Bug #645498 - [maildir] Fails to show already read messages again (Milan Crha)
+	Bug #645783 - Return safe paths from CamelService::get_path() (Milan Crha)
+	Revert "Bug #645783 - Return safe paths from CamelService::get_path()" (David Woodhouse)
+	Bug #645783 - Return safe paths from CamelService::get_path() (Milan Crha)
+	Bug #645845 - Fix memory leak in get_changes() (Robert Peto)
+	Bug 647873 [2/2] - e_cal_new_system_foo() should create source in GConf (David Woodhouse)
+	Bug 647873 [1/2] - Fix comparison of URI in e_cal_new_from_uri(). (David Woodhouse)
+	Bug 46117 - e-calendar-factory does not exit (Matthew Barnes)
+
+Miscellaneous Fixes:
+	Fix few memory leaks (Milan Crha)
+
+Translations:
+	Amitakhya Phukan (as)
+	Inaki Larranaga Murgoitio (eu)
+
+
 Evolution-Data-Server 3.0.0 2011-04-04
 --------------------------------------
 
