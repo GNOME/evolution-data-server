@@ -4968,7 +4968,8 @@ imapx_server_finalize (GObject *object)
 
 	g_static_rec_mutex_free (&is->queue_lock);
 	g_static_rec_mutex_free (&is->ostream_lock);
-	g_hash_table_destroy (is->uid_eflags);
+	g_mutex_free (is->fetch_mutex);
+	g_cond_free (is->fetch_cond);
 
 	camel_folder_change_info_free (is->changes);
 
@@ -5094,7 +5095,8 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 	is->changes = camel_folder_change_info_new ();
 	is->parser_quit = FALSE;
 
-	is->uid_eflags = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify)g_free, (GDestroyNotify) e_flag_free);
+	is->fetch_mutex = g_mutex_new ();
+	is->fetch_cond = g_cond_new ();
 }
 
 CamelIMAPXServer *
@@ -5193,20 +5195,36 @@ imapx_server_get_message (CamelIMAPXServer *is,
 	CamelIMAPXJob *job;
 	CamelMessageInfo *mi;
 	gboolean registered;
-	EFlag *flag = NULL;
 	gboolean success;
 
 	QUEUE_LOCK (is);
 
 	if ((job = imapx_is_job_in_queue (is, folder, IMAPX_JOB_GET_MESSAGE, uid))) {
-		flag = g_hash_table_lookup (is->uid_eflags, uid);
-
 		if (pri > job->pri)
 			job->pri = pri;
 
-		QUEUE_UNLOCK (is);
+		/* Wait for the job to finish. This would be so much nicer if
+		   we could just use the queue lock with a GCond, but instead
+		   we have to use a GMutex. I miss the kernel waitqueues. */
+		do {
+			int this;
 
-		e_flag_wait (flag);
+			g_mutex_lock (is->fetch_mutex);
+			this = is->fetch_count;
+
+			QUEUE_UNLOCK (is);
+
+			while (is->fetch_count == this)
+				g_cond_wait (is->fetch_cond, is->fetch_mutex);
+
+			g_mutex_unlock (is->fetch_mutex);
+
+			QUEUE_LOCK (is);
+
+		} while (imapx_is_job_in_queue (is, folder,
+						IMAPX_JOB_GET_MESSAGE, uid));
+
+		QUEUE_UNLOCK (is);
 
 		stream = camel_data_cache_get (
 			ifolder->cache, "cur", uid, error);
@@ -5243,14 +5261,10 @@ imapx_server_get_message (CamelIMAPXServer *is,
 	job->u.get_message.size = ((CamelMessageInfoBase *) mi)->size;
 	camel_message_info_free (mi);
 	registered = imapx_register_job (is, job, error);
-	flag = e_flag_new ();
-	g_hash_table_insert (is->uid_eflags, g_strdup (uid), flag);
 
 	QUEUE_UNLOCK (is);
 
 	success = registered && imapx_run_job (is, job, error);
-
-	e_flag_set (flag);
 
 	if (success)
 		stream = job->u.get_message.stream;
@@ -5259,10 +5273,10 @@ imapx_server_get_message (CamelIMAPXServer *is,
 
 	g_free (job);
 
-	/* HACK FIXME just sleep for sometime so that the other waiting locks gets released by that time. Think of a
-	 better way..*/
-	g_usleep (1000);
-	g_hash_table_remove (is->uid_eflags, uid);
+	g_mutex_lock (is->fetch_mutex);
+	is->fetch_count++;
+	g_cond_broadcast (is->fetch_cond);
+	g_mutex_unlock (is->fetch_mutex);
 
 	return stream;
 }
