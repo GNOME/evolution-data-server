@@ -918,7 +918,8 @@ mail_send_queue(CamelFolder *queue, const gchar *destination,
 	m->data = data;
 
 	m->driver = camel_session_get_filter_driver (session, type, NULL);
-	camel_filter_driver_set_folder_func (m->driver, get_folder, get_data);
+	if (m->driver)
+		camel_filter_driver_set_folder_func (m->driver, get_folder, get_data);
 
 	mail_msg_unordered_push (m);
 }
