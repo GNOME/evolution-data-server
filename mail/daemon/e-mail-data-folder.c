@@ -1,6 +1,7 @@
 /* e-mail-data-folder.c */
 
 #include <glib/gi18n.h>
+#include "e-mail-local.h"
 #include "e-mail-data-folder.h"
 #include "e-mail-data-session.h"
 #include "e-gdbus-emailfolder.h"
@@ -934,6 +935,7 @@ app_msg_done (gboolean success, gpointer sdata, GError *error)
 {
 	EMailFolderMessageData *data = (EMailFolderMessageData *)sdata;
 	EMailDataFolderPrivate *priv = DATA_FOLDER_PRIVATE(data->mfolder);
+	CamelFolder *outbox;
 
 	if (error && error->message) {
 		g_warning ("Append message failed: %s: %s\n", priv->path, error->message);
@@ -945,6 +947,12 @@ app_msg_done (gboolean success, gpointer sdata, GError *error)
 	egdbus_folder_cf_complete_append_message (data->object, data->invocation, data->uid, success);
 	
 	ipc(printf("Apppend message: %s success: %s\n", priv->path, data->uid));
+
+	outbox = e_mail_local_get_folder (E_MAIL_FOLDER_OUTBOX);
+	if (priv->folder == outbox) {
+		/* We just appended to OUTBOX. Issue a Send command */
+		mail_send();
+	}
 
 	g_object_unref (data->message);
 	camel_message_info_free (data->info);

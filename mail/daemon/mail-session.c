@@ -200,7 +200,6 @@ get_password (CamelSession *session,
 		int count=0;
 
 		timer = e_flag_new ();
-		tval.tv_sec = 60; /* Reprompt every 60sec*/
 
 		if (domain == NULL)
 			domain = "Mail";
@@ -243,6 +242,10 @@ repeat:
 				count++;
 				if (count <= 2) {
 					/* FIXME: This is an ugly hack for now. Ideally we should return and let the backends requery when NEED_PASSWORD error is returned. */
+					
+					g_get_current_time (&tval);
+					g_time_val_add (&tval, 60*1000*1000);
+					g_debug ("Waiting 60secs for password: %s\n", key);
 					e_flag_timed_wait (timer, &tval);
 					goto repeat;
 				}
