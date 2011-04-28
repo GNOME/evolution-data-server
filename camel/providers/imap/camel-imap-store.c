@@ -2606,7 +2606,7 @@ get_folders_sync (CamelImapStore *imap_store,
 	CamelStoreInfo *si;
 	const gchar *pattern = ppattern;
 	CamelImapStoreNamespace *ns;
-	gboolean success = TRUE;
+	gboolean success = TRUE, first_namespace = TRUE;
 
 	/* We do a LIST followed by LSUB, and merge the results.  LSUB may not be a strict
 	   subset of LIST for some servers, so we can't use either or separately */
@@ -2615,7 +2615,7 @@ get_folders_sync (CamelImapStore *imap_store,
 	if (!pattern)
 		pattern = "";
 
-	for (ns = imap_store->summary->namespace; ns; ns = ns->next) {
+	for (ns = imap_store->summary->namespace; ns; ns = ns->next, first_namespace = FALSE) {
 		for (k = 0; k < 2; k++) {
 			gchar *tmp = NULL;
 
@@ -2632,7 +2632,7 @@ get_folders_sync (CamelImapStore *imap_store,
 			}
 
 			for (j = 0; j < 2; j++) {
-				response = camel_imap_command (imap_store, NULL, cancellable, error,
+				response = camel_imap_command (imap_store, NULL, cancellable, first_namespace ? error : NULL,
 								"%s \"\" %G", j==1 ? "LSUB" : "LIST",
 								pattern);
 				if (!response) {
