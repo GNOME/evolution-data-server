@@ -332,6 +332,20 @@ impl_Mail_getFolderFromUri (EGdbusSessionCS *object, GDBusMethodInvocation *invo
 	return TRUE;
 }
 
+static gboolean
+impl_Mail_addPassword (EGdbusSessionCS *object, GDBusMethodInvocation *invocation, const char *key, const char *password, gboolean remember, EMailDataSession *msession)
+{
+	EMailDataSessionPrivate *priv = DATA_SESSION_PRIVATE(msession);
+
+	ipc(printf("Adding Password for: %s (remember: %d)\n", key, remember));
+	e_passwords_add_password (key, password);
+	if (remember)
+		e_passwords_remember_password ("Mail", key);
+
+	return TRUE;
+}
+
+
 
 static void
 e_mail_data_session_get_property (GObject *object, guint property_id,
@@ -390,6 +404,7 @@ e_mail_data_session_init (EMailDataSession *self)
 	g_signal_connect (priv->gdbus_object, "handle-get-local-store", G_CALLBACK (impl_Mail_getLocalStore), self);
 	g_signal_connect (priv->gdbus_object, "handle-get-local-folder", G_CALLBACK (impl_Mail_getLocalFolder), self);
 	g_signal_connect (priv->gdbus_object, "handle-get-folder-from-uri", G_CALLBACK (impl_Mail_getFolderFromUri), self);
+	g_signal_connect (priv->gdbus_object, "handle-add-password", G_CALLBACK (impl_Mail_addPassword), self);
 
 	priv->stores_lock = g_mutex_new ();
 	priv->stores = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
