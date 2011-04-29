@@ -224,7 +224,7 @@ typedef struct {
 	GList *authtypes;
 
 	GHashFunc url_hash;
-	GCompareFunc url_equal;
+	GEqualFunc url_equal;
 
 	/* gettext translation domain (NULL for providers in the
 	 * evolution source tree).
