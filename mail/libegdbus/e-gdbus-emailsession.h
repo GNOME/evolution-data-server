@@ -45,6 +45,7 @@ struct _EGdbusSessionCSIface
   gboolean (*handle_add_password) (
     EGdbusSessionCS *object,
     GDBusMethodInvocation *invocation,
+    const gchar *key,
     const gchar *password,
     gboolean remember);
 
@@ -150,6 +151,7 @@ gboolean egdbus_session_cs_call_get_local_store_sync (
 
 void egdbus_session_cs_call_add_password (
     EGdbusSessionCS *proxy,
+    const gchar *key,
     const gchar *password,
     gboolean remember,
     GCancellable *cancellable,
@@ -163,6 +165,7 @@ gboolean egdbus_session_cs_call_add_password_finish (
 
 gboolean egdbus_session_cs_call_add_password_sync (
     EGdbusSessionCS *proxy,
+    const gchar *key,
     const gchar *password,
     gboolean remember,
     GCancellable *cancellable,
