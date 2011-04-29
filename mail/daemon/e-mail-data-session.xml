@@ -21,6 +21,12 @@
     <method name="getLocalStore">
       <arg name="store" type="o" direction="out"/>
     </method>
+
+    <method name="addPassword">
+      <arg name="password" type="s" direction="in"/>
+      <arg name="remember" type="b" direction="in"/>      
+    </method>
+
     <!-- 
     FolderType should be a string "inbox" "draft" "outbox" "sent" "templates"
     -->
