@@ -577,9 +577,11 @@ camel_session_get_service (CamelSession *session,
  * camel_session_get_service_by_url:
  * @session: a #CamelSession
  * @url: a #CamelURL
+ * @type: a #CamelProviderType
  *
- * Looks up a #CamelService by trying to match its #CamelURL against
- * the given @url.  The service must have been previously added using
+ * Looks up a #CamelService by trying to match its #CamelURL against the
+ * given @url and then checking that the object is of the desired @type.
+ * The service must have been previously added using
  * camel_session_add_service().
  *
  * Note this function is significantly slower than camel_session_get_service().
@@ -590,7 +592,8 @@ camel_session_get_service (CamelSession *session,
  **/
 CamelService *
 camel_session_get_service_by_url (CamelSession *session,
-                                  CamelURL *url)
+                                  CamelURL *url,
+                                  CamelProviderType type)
 {
 	CamelService *match = NULL;
 	GList *list, *iter;
@@ -612,10 +615,25 @@ camel_session_get_service_by_url (CamelSession *session,
 		if (provider->url_equal == NULL)
 			continue;
 
-		if (provider->url_equal (url, service_url)) {
-			match = service;
-			break;
+		if (!provider->url_equal (url, service_url))
+			continue;
+
+		switch (type) {
+			case CAMEL_PROVIDER_STORE:
+				if (CAMEL_IS_STORE (service))
+					match = service;
+				break;
+			case CAMEL_PROVIDER_TRANSPORT:
+				if (CAMEL_IS_TRANSPORT (service))
+					match = service;
+				break;
+			default:
+				g_warn_if_reached ();
+				break;
 		}
+
+		if (match != NULL)
+			break;
 	}
 
 	g_list_free (list);

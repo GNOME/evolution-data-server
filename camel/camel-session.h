@@ -170,7 +170,8 @@ CamelService *	camel_session_get_service	(CamelSession *session,
 						 const gchar *uid);
 CamelService *	camel_session_get_service_by_url
 						(CamelSession *session,
-						 CamelURL *url);
+						 CamelURL *url,
+						 CamelProviderType type);
 GList *		camel_session_list_services	(CamelSession *session);
 gchar *		camel_session_get_password	(CamelSession *session,
 						 CamelService *service,

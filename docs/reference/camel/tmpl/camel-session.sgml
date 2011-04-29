@@ -131,6 +131,7 @@ CamelSession
 
 @session: 
 @url: 
+@type: 
 @Returns: 
 
 
