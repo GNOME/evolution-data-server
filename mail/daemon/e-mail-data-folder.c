@@ -951,9 +951,11 @@ app_msg_done (gboolean success, gpointer sdata, GError *error)
 	outbox = e_mail_local_get_folder (E_MAIL_FOLDER_OUTBOX);
 	if (priv->folder == outbox) {
 		/* We just appended to OUTBOX. Issue a Send command */
+		micro(printf("Append to Outbox, so issuing a send command\n"));
 		mail_send();
-	}
-
+	} else
+		micro(printf("Append to %s\n", camel_folder_get_full_name (priv->folder)));
+		
 	g_object_unref (data->message);
 	camel_message_info_free (data->info);
 	g_free (data->uid);
