@@ -405,6 +405,47 @@ static const _ExtendedGDBusMethodInfo _egdbus_session_cs_method_info_get_local_s
   "handle-get-local-store"
 };
 
+static const _ExtendedGDBusArgInfo _egdbus_session_cs_method_info_add_password_IN_ARG_password =
+{
+  {
+    -1,
+    "password",
+    "s",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo _egdbus_session_cs_method_info_add_password_IN_ARG_remember =
+{
+  {
+    -1,
+    "remember",
+    "b",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo * const _egdbus_session_cs_method_info_add_password_IN_ARG_pointers[] =
+{
+  &_egdbus_session_cs_method_info_add_password_IN_ARG_password,
+  &_egdbus_session_cs_method_info_add_password_IN_ARG_remember,
+  NULL
+};
+
+static const _ExtendedGDBusMethodInfo _egdbus_session_cs_method_info_add_password =
+{
+  {
+    -1,
+    "addPassword",
+    (GDBusArgInfo **) &_egdbus_session_cs_method_info_add_password_IN_ARG_pointers,
+    NULL,
+    NULL
+  },
+  "handle-add-password"
+};
+
 static const _ExtendedGDBusArgInfo _egdbus_session_cs_method_info_get_local_folder_IN_ARG_type =
 {
   {
@@ -501,6 +542,7 @@ static const _ExtendedGDBusMethodInfo * const _egdbus_session_cs_method_info_poi
 {
   &_egdbus_session_cs_method_info_get_store,
   &_egdbus_session_cs_method_info_get_local_store,
+  &_egdbus_session_cs_method_info_add_password,
   &_egdbus_session_cs_method_info_get_local_folder,
   &_egdbus_session_cs_method_info_get_folder_from_uri,
   NULL
@@ -622,6 +664,17 @@ egdbus_session_cs_default_init (EGdbusSessionCSIface *iface)
     G_TYPE_BOOLEAN,
     1,
     G_TYPE_DBUS_METHOD_INVOCATION);
+
+  g_signal_new ("handle-add-password",
+    G_TYPE_FROM_INTERFACE (iface),
+    G_SIGNAL_RUN_LAST,
+    G_STRUCT_OFFSET (EGdbusSessionCSIface, handle_add_password),
+    g_signal_accumulator_true_handled,
+    NULL,
+    _cclosure_marshal_generic,
+    G_TYPE_BOOLEAN,
+    3,
+    G_TYPE_DBUS_METHOD_INVOCATION, G_TYPE_STRING, G_TYPE_BOOLEAN);
 
   g_signal_new ("handle-get-local-folder",
     G_TYPE_FROM_INTERFACE (iface),
@@ -800,6 +853,71 @@ _out:
 }
 
 void
+egdbus_session_cs_call_add_password (
+    EGdbusSessionCS *proxy,
+    const gchar *password,
+    gboolean remember,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data)
+{
+  g_dbus_proxy_call (G_DBUS_PROXY (proxy),
+    "addPassword",
+    g_variant_new ("(sb)",
+                   password,
+                   remember),
+    G_DBUS_CALL_FLAGS_NONE,
+    -1,
+    cancellable,
+    callback,
+    user_data);
+}
+
+gboolean
+egdbus_session_cs_call_add_password_finish (
+    EGdbusSessionCS *proxy,
+    GAsyncResult *res,
+    GError **error)
+{
+  GVariant *_ret;
+  _ret = g_dbus_proxy_call_finish (G_DBUS_PROXY (proxy), res, error);
+  if (_ret == NULL)
+    goto _out;
+  g_variant_get (_ret,
+                 "()");
+  g_variant_unref (_ret);
+_out:
+  return _ret != NULL;
+}
+
+gboolean
+egdbus_session_cs_call_add_password_sync (
+    EGdbusSessionCS *proxy,
+    const gchar *password,
+    gboolean remember,
+    GCancellable *cancellable,
+    GError **error)
+{
+  GVariant *_ret;
+  _ret = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
+    "addPassword",
+    g_variant_new ("(sb)",
+                   password,
+                   remember),
+    G_DBUS_CALL_FLAGS_NONE,
+    -1,
+    cancellable,
+    error);
+  if (_ret == NULL)
+    goto _out;
+  g_variant_get (_ret,
+                 "()");
+  g_variant_unref (_ret);
+_out:
+  return _ret != NULL;
+}
+
+void
 egdbus_session_cs_call_get_local_folder (
     EGdbusSessionCS *proxy,
     const gchar *type,
@@ -949,6 +1067,15 @@ egdbus_session_cs_complete_get_local_store (
   g_dbus_method_invocation_return_value (invocation,
     g_variant_new ("(o)",
                    store));
+}
+
+void
+egdbus_session_cs_complete_add_password (
+    EGdbusSessionCS *object,
+    GDBusMethodInvocation *invocation)
+{
+  g_dbus_method_invocation_return_value (invocation,
+    g_variant_new ("()"));
 }
 
 void
