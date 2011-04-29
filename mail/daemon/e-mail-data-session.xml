@@ -23,6 +23,7 @@
     </method>
 
     <method name="addPassword">
+      <arg name="key" type="s" direction="in"/>	    
       <arg name="password" type="s" direction="in"/>
       <arg name="remember" type="b" direction="in"/>      
     </method>

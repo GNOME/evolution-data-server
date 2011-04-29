@@ -405,6 +405,17 @@ static const _ExtendedGDBusMethodInfo _egdbus_session_cs_method_info_get_local_s
   "handle-get-local-store"
 };
 
+static const _ExtendedGDBusArgInfo _egdbus_session_cs_method_info_add_password_IN_ARG_key =
+{
+  {
+    -1,
+    "key",
+    "s",
+    NULL
+  },
+  FALSE
+};
+
 static const _ExtendedGDBusArgInfo _egdbus_session_cs_method_info_add_password_IN_ARG_password =
 {
   {
@@ -429,6 +440,7 @@ static const _ExtendedGDBusArgInfo _egdbus_session_cs_method_info_add_password_I
 
 static const _ExtendedGDBusArgInfo * const _egdbus_session_cs_method_info_add_password_IN_ARG_pointers[] =
 {
+  &_egdbus_session_cs_method_info_add_password_IN_ARG_key,
   &_egdbus_session_cs_method_info_add_password_IN_ARG_password,
   &_egdbus_session_cs_method_info_add_password_IN_ARG_remember,
   NULL
@@ -673,8 +685,8 @@ egdbus_session_cs_default_init (EGdbusSessionCSIface *iface)
     NULL,
     _cclosure_marshal_generic,
     G_TYPE_BOOLEAN,
-    3,
-    G_TYPE_DBUS_METHOD_INVOCATION, G_TYPE_STRING, G_TYPE_BOOLEAN);
+    4,
+    G_TYPE_DBUS_METHOD_INVOCATION, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
 
   g_signal_new ("handle-get-local-folder",
     G_TYPE_FROM_INTERFACE (iface),
@@ -855,6 +867,7 @@ _out:
 void
 egdbus_session_cs_call_add_password (
     EGdbusSessionCS *proxy,
+    const gchar *key,
     const gchar *password,
     gboolean remember,
     GCancellable *cancellable,
@@ -863,7 +876,8 @@ egdbus_session_cs_call_add_password (
 {
   g_dbus_proxy_call (G_DBUS_PROXY (proxy),
     "addPassword",
-    g_variant_new ("(sb)",
+    g_variant_new ("(ssb)",
+                   key,
                    password,
                    remember),
     G_DBUS_CALL_FLAGS_NONE,
@@ -893,6 +907,7 @@ _out:
 gboolean
 egdbus_session_cs_call_add_password_sync (
     EGdbusSessionCS *proxy,
+    const gchar *key,
     const gchar *password,
     gboolean remember,
     GCancellable *cancellable,
@@ -901,7 +916,8 @@ egdbus_session_cs_call_add_password_sync (
   GVariant *_ret;
   _ret = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
     "addPassword",
-    g_variant_new ("(sb)",
+    g_variant_new ("(ssb)",
+                   key,
                    password,
                    remember),
     G_DBUS_CALL_FLAGS_NONE,
