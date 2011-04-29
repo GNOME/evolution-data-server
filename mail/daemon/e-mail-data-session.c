@@ -484,6 +484,7 @@ void
 e_mail_session_emit_ask_password (EMailDataSession *msession, const char *title, const gchar *prompt, const gchar *key)
 {
 	EMailDataSessionPrivate *priv = DATA_SESSION_PRIVATE(msession);
-
+	
+	ipc(printf("Emitting for Ask Password: %s %s %s\n", title, prompt, key));
 	egdbus_session_cs_emit_get_password (priv->gdbus_object, title, prompt, key);
 }
