@@ -42,6 +42,12 @@ struct _EGdbusSessionCSIface
     EGdbusSessionCS *object,
     GDBusMethodInvocation *invocation);
 
+  gboolean (*handle_add_password) (
+    EGdbusSessionCS *object,
+    GDBusMethodInvocation *invocation,
+    const gchar *password,
+    gboolean remember);
+
   gboolean (*handle_get_local_folder) (
     EGdbusSessionCS *object,
     GDBusMethodInvocation *invocation,
@@ -77,6 +83,10 @@ void egdbus_session_cs_complete_get_local_store (
     EGdbusSessionCS *object,
     GDBusMethodInvocation *invocation,
     const gchar *store);
+
+void egdbus_session_cs_complete_add_password (
+    EGdbusSessionCS *object,
+    GDBusMethodInvocation *invocation);
 
 void egdbus_session_cs_complete_get_local_folder (
     EGdbusSessionCS *object,
@@ -135,6 +145,26 @@ gboolean egdbus_session_cs_call_get_local_store_finish (
 gboolean egdbus_session_cs_call_get_local_store_sync (
     EGdbusSessionCS *proxy,
     gchar **out_store,
+    GCancellable *cancellable,
+    GError **error);
+
+void egdbus_session_cs_call_add_password (
+    EGdbusSessionCS *proxy,
+    const gchar *password,
+    gboolean remember,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data);
+
+gboolean egdbus_session_cs_call_add_password_finish (
+    EGdbusSessionCS *proxy,
+    GAsyncResult *res,
+    GError **error);
+
+gboolean egdbus_session_cs_call_add_password_sync (
+    EGdbusSessionCS *proxy,
+    const gchar *password,
+    gboolean remember,
     GCancellable *cancellable,
     GError **error);
 
