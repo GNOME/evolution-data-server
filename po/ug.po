@@ -2,13 +2,13 @@
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the evolution-data-server package.
 # Gheyret Kenji<gheyret@gmail.com>, 2011.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2011-04-27 23:50+0000\n"
+"POT-Creation-Date: 2011-05-01 21:08+0000\n"
 "PO-Revision-Date: 2011-04-27 16:18+0600\n"
 "Last-Translator: Sahran <sahran.ug@gmail.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
@@ -143,11 +143,11 @@ msgstr "ئىزدەشتە خاتالىق كۆرۈلدى"
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:552
 #: ../calendar/backends/http/e-cal-backend-http.c:435
 #: ../calendar/libecal/e-cal.c:4235
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:160
-#: ../camel/providers/imap/camel-imap-command.c:481
-#: ../camel/providers/imap/camel-imap-store.c:425
-#: ../camel/providers/pop3/camel-pop3-store.c:495
-#: ../camel/providers/smtp/camel-smtp-transport.c:497
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:175
+#: ../camel/providers/imap/camel-imap-command.c:492
+#: ../camel/providers/imap/camel-imap-store.c:436
+#: ../camel/providers/pop3/camel-pop3-store.c:513
+#: ../camel/providers/smtp/camel-smtp-transport.c:526
 #: ../servers/groupwise/e-gw-connection.c:243
 msgid "Unknown error"
 msgstr "نامەلۇم خاتالىق"
@@ -968,12 +968,12 @@ msgid "Cannot save calendar data"
 msgstr "يىلنامە سانلىق-مەلۇماتلىرىنى ساقلىغىلى بولمىدى"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1130
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2101
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2114
 msgid "Reply Requested: by "
 msgstr "جاۋاب تەلەپ قىلىنىدۇ: تەلەپ قىلغۇچى "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1135
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2106
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2119
 msgid "Reply Requested: When convenient"
 msgstr "جاۋاب تەلەپ قىلىنىدۇ: قۇلاي ۋاقىتتا"
 
@@ -1284,18 +1284,18 @@ msgid "Could not cancel operation"
 msgstr "مەشغۇلاتتىن ۋاز كەچكىلى بولمىدى"
 
 #: ../calendar/libecal/e-cal.c:4229
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1306
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1324
-#: ../camel/providers/groupwise/camel-groupwise-store.c:628
-#: ../camel/providers/groupwise/camel-groupwise-store.c:810
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:87
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:120
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1314
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1332
+#: ../camel/providers/groupwise/camel-groupwise-store.c:578
+#: ../camel/providers/groupwise/camel-groupwise-store.c:760
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:115
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:135
 #, c-format
 msgid "Authentication failed"
 msgstr "دەلىللەش مەغلۇپ بولدى"
 
 #: ../calendar/libecal/e-cal.c:4231
-#: ../camel/providers/smtp/camel-smtp-transport.c:775
+#: ../camel/providers/smtp/camel-smtp-transport.c:802
 msgid "Authentication required"
 msgstr "سالاھىيەت دەلىللەش زۆرۈر"
 
@@ -1661,26 +1661,26 @@ msgstr ""
 msgid "Resynchronizing with server"
 msgstr "مۇلازىمېتىر بىلەن قايتا قەدەمداشلاش"
 
-#: ../camel/camel-disco-folder.c:63 ../camel/camel-offline-folder.c:79
+#: ../camel/camel-disco-folder.c:71 ../camel/camel-offline-folder.c:89
 msgid "Downloading new messages for offline mode"
 msgstr "تورسىز ھالەتتە ئىشلىتىش ئۈچۈن يېڭى ئۇچۇرلارنى چۈشۈرۈۋاتىدۇ"
 
-#: ../camel/camel-disco-folder.c:398
+#: ../camel/camel-disco-folder.c:406
 #, c-format
 msgid "Preparing folder '%s' for offline"
 msgstr "تورسىز ھالەتتە ئىشلىتىش ئۈچۈن «%s» نى تەييارلاۋاتىدۇ"
 
-#: ../camel/camel-disco-folder.c:464 ../camel/camel-offline-folder.c:312
+#: ../camel/camel-disco-folder.c:472 ../camel/camel-offline-folder.c:321
 msgid "Copy folder content locally for offline operation"
 msgstr ""
 "تورسىز ھالەتتىكى مەشغۇلاتتا ئىشلىتىش ئۈچۈن قىسقۇچ مەزمۇنىنى يەرلىككە كۆچۈرىدۇ"
 
-#: ../camel/camel-disco-store.c:420
-#: ../camel/providers/groupwise/camel-groupwise-store.c:228
-#: ../camel/providers/imap/camel-imap-store.c:1250
-#: ../camel/providers/imap/camel-imap-store.c:1771
-#: ../camel/providers/imap/camel-imap-store.c:2244
-#: ../camel/providers/imap/camel-imap-store.c:3094
+#: ../camel/camel-disco-store.c:436
+#: ../camel/providers/groupwise/camel-groupwise-store.c:164
+#: ../camel/providers/imap/camel-imap-store.c:1192
+#: ../camel/providers/imap/camel-imap-store.c:1850
+#: ../camel/providers/imap/camel-imap-store.c:2333
+#: ../camel/providers/imap/camel-imap-store.c:3173
 #: ../camel/providers/imapx/camel-imapx-folder.c:298
 #: ../camel/providers/imapx/camel-imapx-folder.c:331
 #: ../camel/providers/imapx/camel-imapx-folder.c:385
@@ -1688,10 +1688,10 @@ msgstr ""
 #: ../camel/providers/imapx/camel-imapx-folder.c:465
 #: ../camel/providers/imapx/camel-imapx-folder.c:505
 #: ../camel/providers/imapx/camel-imapx-folder.c:541
-#: ../camel/providers/imapx/camel-imapx-store.c:276
-#: ../camel/providers/imapx/camel-imapx-store.c:1298
-#: ../camel/providers/imapx/camel-imapx-store.c:1386
-#: ../camel/providers/imapx/camel-imapx-store.c:1421
+#: ../camel/providers/imapx/camel-imapx-store.c:258
+#: ../camel/providers/imapx/camel-imapx-store.c:1300
+#: ../camel/providers/imapx/camel-imapx-store.c:1388
+#: ../camel/providers/imapx/camel-imapx-store.c:1428
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "تورغا ئۇلانمىسا بۇ مەشغۇلاتنى قىلغىلى بولمايدۇ"
@@ -1825,34 +1825,34 @@ msgstr "(%s) تىزىق قايتۇرۇشنى ئارزۇ قىلىدۇ"
 msgid "(%s) requires the folder set"
 msgstr "(%s) غا قىسقۇچ توپلىمى كېرەك"
 
-#: ../camel/camel-folder.c:216
+#: ../camel/camel-folder.c:236
 #, c-format
 msgid "Learning new spam message in '%s'"
 msgid_plural "Learning new spam messages in '%s'"
 msgstr[0] "«%s» نىڭدىكى يېڭى spam ئۇچۇرلىرىنى ئۆگىنىۋاتىدۇ"
 
-#: ../camel/camel-folder.c:240
+#: ../camel/camel-folder.c:271
 #, c-format
 msgid "Learning new ham message in '%s'"
 msgid_plural "Learning new ham messages in '%s'"
 msgstr[0] "«%s» نىڭدىكى يېڭى ham ئۇچۇرلىرىنى ئۆگىنىۋاتىدۇ"
 
-#: ../camel/camel-folder.c:266
+#: ../camel/camel-folder.c:311
 #, c-format
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
 msgstr[0] "'%s' دىكى يېڭى ئۇچۇرنى سۈزۈۋاتىدۇ"
 
-#: ../camel/camel-folder.c:875
+#: ../camel/camel-folder.c:897
 #: ../camel/providers/local/camel-maildir-folder.c:318
 msgid "Moving messages"
 msgstr "ئۇچۇرلار يۆتكىلىۋاتىدۇ."
 
-#: ../camel/camel-folder.c:878
+#: ../camel/camel-folder.c:900
 msgid "Copying messages"
 msgstr "ئۇچۇرلار كۆچۈرۈلۈۋاتىدۇ"
 
-#: ../camel/camel-folder.c:3247
+#: ../camel/camel-folder.c:3276
 #, c-format
 msgid "Retrieving message '%s'"
 msgstr "ئۇچۇر '%s' نى ئېلىۋاتىدۇ"
@@ -1864,8 +1864,8 @@ msgid "Failed to execute gpg: %s"
 msgstr "gpg نى ئىجرا قىلىش مەغلۇپ بولدى: %s"
 
 #: ../camel/camel-gpg-context.c:647
-#: ../camel/providers/smtp/camel-smtp-transport.c:723
-#: ../camel/providers/smtp/camel-smtp-transport.c:778
+#: ../camel/providers/smtp/camel-smtp-transport.c:750
+#: ../camel/providers/smtp/camel-smtp-transport.c:805
 msgid "Unknown"
 msgstr "نامەلۇم"
 
@@ -1915,14 +1915,14 @@ msgstr "«%s» غا نىسبەتەن GnuPG نىڭدىن ئويلاپمۇ باق�
 
 #: ../camel/camel-gpg-context.c:828 ../camel/camel-net-utils.c:515
 #: ../camel/camel-tcp-stream-raw.c:255
-#: ../camel/providers/imapx/camel-imapx-server.c:4892
-#: ../camel/providers/imapx/camel-imapx-server.c:4909
-#: ../camel/providers/imapx/camel-imapx-store.c:198
-#: ../camel/providers/nntp/camel-nntp-summary.c:405
+#: ../camel/providers/imapx/camel-imapx-server.c:4918
+#: ../camel/providers/imapx/camel-imapx-server.c:4935
+#: ../camel/providers/imapx/camel-imapx-store.c:179
+#: ../camel/providers/nntp/camel-nntp-summary.c:409
 #: ../camel/providers/pop3/camel-pop3-folder.c:366
 #: ../camel/providers/pop3/camel-pop3-folder.c:431
 #: ../camel/providers/pop3/camel-pop3-folder.c:506
-#: ../camel/providers/pop3/camel-pop3-store.c:487
+#: ../camel/providers/pop3/camel-pop3-store.c:505
 #: ../libedataserverui/e-book-auth-util.c:229
 #, c-format
 msgid "Cancelled"
@@ -2126,7 +2126,7 @@ msgstr "ئاتىنى تېپىش مەغلۇپ بولدى"
 msgid "Name lookup failed: %s"
 msgstr "ئاتىنى تېپىش مەغلۇپ بولدى: %s"
 
-#: ../camel/camel-offline-folder.c:189
+#: ../camel/camel-offline-folder.c:198
 #, c-format
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "قىسقۇچ «%s» دىكى ئۇچۇرلار قەدەمداشلاپ دىسكىغا ساقلاۋاتىدۇ"
@@ -2144,23 +2144,23 @@ msgstr "مەۋھۇم قىسقۇچ ئېلخەت تەمىنلىگۈچى"
 msgid "For reading mail as a query of another set of folders"
 msgstr "باشقا قىسقۇچلار توپىنىڭ سۈرۈشتۈرمىسى سۈپىتىدە خەت ئوقۇش"
 
-#: ../camel/camel-provider.c:188
+#: ../camel/camel-provider.c:192
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr ""
 "%s نى ئوقۇغىلى بولمىدى: بۆلەك يۈكلەشنى بۇ سىستېمىدا ئىشلەتكىلى بولمايدۇ."
 
-#: ../camel/camel-provider.c:197
+#: ../camel/camel-provider.c:201
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "%s نى ئوقۇيالمىدى: %s"
 
-#: ../camel/camel-provider.c:206
+#: ../camel/camel-provider.c:210
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "%s نى ئوقۇغىلى بولمىدى: بۆلەكتە دەسلەپلەشتۈرۈش فۇنكسىيىسى يوق."
 
-#: ../camel/camel-provider.c:388 ../camel/camel-session.c:202
+#: ../camel/camel-provider.c:391 ../camel/camel-session.c:332
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "كېلىشىم «%s» نىڭ تەمىنلىگۈچىسى يوق"
@@ -2229,34 +2229,34 @@ msgstr ""
 "بۇ تاللانما ئىشلىتىلسە، مۇلازىمېتىرغا DIGEST-MD5 نى قوللىسا، مۇلازىمېتىرغا "
 "بىخەتەر DIGEST-MD5 ئىمىنى ئىشلىتىپ باغلىنىدۇ."
 
-#: ../camel/camel-sasl-digest-md5.c:817
+#: ../camel/camel-sasl-digest-md5.c:820
 #, c-format
 msgid "Server challenge too long (>2048 octets)"
 msgstr "مۇلازىمېتىرنىڭ تەلىپى بەك كوپ(>2048 octets دىن كوپ)"
 
-#: ../camel/camel-sasl-digest-md5.c:828
+#: ../camel/camel-sasl-digest-md5.c:831
 #, c-format
 msgid "Server challenge invalid\n"
 msgstr "مۇلازىمېتىرنىڭ تەلىپى ئىناۋەتسىز\n"
 
-#: ../camel/camel-sasl-digest-md5.c:836
+#: ../camel/camel-sasl-digest-md5.c:839
 #, c-format
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr ""
 "مۇلازىمېتىرنىڭ تەلىپىدە ئىناۋەتسىز «سۈپەتكە كاپالەتلىك قىلىش»(QOP: Quality of "
 "Protection) بۆلەكچىسى(token) بار"
 
-#: ../camel/camel-sasl-digest-md5.c:871
+#: ../camel/camel-sasl-digest-md5.c:873
 #, c-format
 msgid "Server response did not contain authorization data"
 msgstr "مۇلازىمېتىرنىڭ ئىنكاسىدا سالاھىيەت دەلىللەش سانلىق-مەلۇماتى يوق"
 
-#: ../camel/camel-sasl-digest-md5.c:892
+#: ../camel/camel-sasl-digest-md5.c:894
 #, c-format
 msgid "Server response contained incomplete authorization data"
 msgstr "مۇلازىمېتىرنىڭ ئىنكاسىدىكى سالاھىيەت دەلىللەش سانلىق-مەلۇماتى چالا"
 
-#: ../camel/camel-sasl-digest-md5.c:905
+#: ../camel/camel-sasl-digest-md5.c:907
 #, c-format
 msgid "Server response does not match"
 msgstr "مۇلازىمېتىرنىڭ ئىنكاسى ماس كەلمىدى"
@@ -2332,14 +2332,14 @@ msgstr "ئىسپاتنامىنىڭ نىڭ بىردەكلىكىنى تەكشۈر�
 msgid "The referenced credentials have expired."
 msgstr "پايدىلانغان ئىسپاتنامىنىڭ ۋاقتى ئۆتۈپتۇ."
 
-#: ../camel/camel-sasl-gssapi.c:170 ../camel/camel-sasl-gssapi.c:310
-#: ../camel/camel-sasl-gssapi.c:354 ../camel/camel-sasl-gssapi.c:371
-#: ../camel/providers/smtp/camel-smtp-transport.c:1256
+#: ../camel/camel-sasl-gssapi.c:170 ../camel/camel-sasl-gssapi.c:312
+#: ../camel/camel-sasl-gssapi.c:356 ../camel/camel-sasl-gssapi.c:373
+#: ../camel/providers/smtp/camel-smtp-transport.c:1277
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "مۇلازىمېتىردىن كەلگەن سالاھىيەت دەلىللەش جاۋابى خاتا."
 
-#: ../camel/camel-sasl-gssapi.c:383
+#: ../camel/camel-sasl-gssapi.c:385
 #, c-format
 msgid "Unsupported security layer."
 msgstr "قوللىمايدىغان(ئىشلەتكىلى بولمايدىغان) بىخەتەرلىك قەۋىتى."
@@ -2352,16 +2352,16 @@ msgstr "تىزىمغا كىر"
 msgid "This option will connect to the server using a simple password."
 msgstr "بۇ تاللانما ئىشلىتىلسە، مۇلازىمېتىرغا ئاددىي ئىم ئىشلىتىپ باغلىنىدۇ."
 
-#: ../camel/camel-sasl-login.c:91
+#: ../camel/camel-sasl-login.c:92
 #, c-format
 msgid "Unknown authentication state."
 msgstr "سالاھىيەت دەلىللەش ھالىتى نامەلۇم."
 
-#: ../camel/camel-sasl-ntlm.c:37
+#: ../camel/camel-sasl-ntlm.c:42
 msgid "NTLM / SPA"
 msgstr "NTLM / SPA"
 
-#: ../camel/camel-sasl-ntlm.c:39
+#: ../camel/camel-sasl-ntlm.c:44
 msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
@@ -2383,20 +2383,23 @@ msgstr ""
 "بۇ تاللانما ئىشلىتىلسە POP تا سالاھىيەت دەلىللەش ئېلىپ بارغاندىن كېيىن "
 "ئاندىن SMTP نى ئىشلىتىدۇ."
 
-#: ../camel/camel-sasl-popb4smtp.c:79
-msgid "POP Source URI"
+#: ../camel/camel-sasl-popb4smtp.c:82
+#, fuzzy
+#| msgid "POP Source URI"
+msgid "POP Source UID"
 msgstr "POP مەنبە URI"
 
-#: ../camel/camel-sasl-popb4smtp.c:86
+#: ../camel/camel-sasl-popb4smtp.c:94
 #, c-format
 msgid "POP Before SMTP authentication using an unknown transport"
 msgstr ""
 "نامەلۇم يوللاش ئۇسۇلى ئارقىلىق «SMTP دىن بۇرۇن POP» سالاھىيەت دەلىللىشىنى "
 "ئىشلەت"
 
-#: ../camel/camel-sasl-popb4smtp.c:94
-#, c-format
-msgid "POP Before SMTP authentication using a non-POP source"
+#: ../camel/camel-sasl-popb4smtp.c:106 ../camel/camel-sasl-popb4smtp.c:116
+#, fuzzy, c-format
+#| msgid "POP Before SMTP authentication using a non-POP source"
+msgid "POP Before SMTP authentication attempted with a %s service"
 msgstr ""
 "non-POP مەنبە ئىشلىتىپ «SMTP دىن بۇرۇن POP» سالاھىيەت دەلىللىشىنى ئىشلەت"
 
@@ -2405,31 +2408,29 @@ msgstr ""
 msgid "Regular expression compilation failed: %s: %s"
 msgstr "مۇنتىزىم ئىپادىنى تەھرىرلەش مەغلۇپ بولدى: %s: %s"
 
-#: ../camel/camel-service.c:87
-#, c-format
-msgid "URL '%s' needs a username component"
+#: ../camel/camel-service.c:406
+#, fuzzy, c-format
+#| msgid "URL '%s' needs a username component"
+msgid "URL '%s' needs a user component"
 msgstr "URL '%s' ئۈچۈن ئىشلەتكۈچى ئاتى بۆلىكى  بولۇش كېرەك"
 
-#: ../camel/camel-service.c:91
+#: ../camel/camel-service.c:417
 #, c-format
 msgid "URL '%s' needs a host component"
 msgstr "URL '%s' ئۈچۈن ئاساسىي ماشىنا بۆلىكى  بولۇش كېرەك"
 
-#: ../camel/camel-service.c:95
+#: ../camel/camel-service.c:428
 #, c-format
 msgid "URL '%s' needs a path component"
 msgstr "URL '%s' ئۈچۈن يول بۆلىكى  بولۇش كېرەك"
 
-#: ../camel/camel-session.c:256
-#, c-format
-msgid ""
-"Could not create directory %s:\n"
-"%s"
-msgstr ""
-"مۇندەرىجە %s نى قۇرۇغىلى بولمىدى:\n"
-"%s"
+#: ../camel/camel-session.c:342
+#, fuzzy, c-format
+#| msgid "No provider available for protocol '%s'"
+msgid "Invalid GType registered for protocol '%s'"
+msgstr "كېلىشىم «%s» نىڭ تەمىنلىگۈچىسى يوق"
 
-#: ../camel/camel-session.c:753
+#: ../camel/camel-session.c:855
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
 msgstr "%s%s@%s نىڭ ئىمىنى كىرگۈزۈڭ."
@@ -2641,19 +2642,19 @@ msgstr "ئەخلەتخانا"
 msgid "Junk"
 msgstr "ئەخلەت"
 
-#: ../camel/camel-store.c:2829
+#: ../camel/camel-store.c:2835
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "قىسقۇچ قۇرغىلى بولمىدى: %s:قىسقۇچ مەۋجۇت"
 
-#: ../camel/camel-store.c:2956 ../camel/camel-vee-store.c:367
+#: ../camel/camel-store.c:2962 ../camel/camel-vee-store.c:367
 #: ../camel/providers/local/camel-maildir-store.c:272
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "قىسقۇچنى ئۆچۈرگىلى بولمىدى: %s: ئىناۋەتسىز مەشغۇلات"
 
-#: ../camel/camel-store.c:3097 ../camel/camel-vee-store.c:417
-#: ../camel/providers/local/camel-maildir-store.c:668
+#: ../camel/camel-store.c:3103 ../camel/camel-vee-store.c:417
+#: ../camel/providers/local/camel-maildir-store.c:674
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "قىسقۇچ ئاتىنى ئۆزگەرتكىلى بولمىدى: %s: ئىناۋەتسىز مەشغۇلات"
@@ -2809,27 +2810,27 @@ msgstr ""
 "ئىسپاتنامىنى ئەمەلدىن قالدۇرۇش تىزىمىنىڭ ۋاقتى ئوتكەن: %s\n"
 "تارقاتقۇچى: %s"
 
-#: ../camel/camel-url.c:316
+#: ../camel/camel-url.c:330
 #, c-format
 msgid "Could not parse URL '%s'"
 msgstr "URL «%s» نى تەھلىل قىلالمىدى"
 
-#: ../camel/camel-vee-folder.c:1235 ../camel/camel-vee-folder.c:1398
+#: ../camel/camel-vee-folder.c:1233 ../camel/camel-vee-folder.c:1396
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "ئۇچۇرلارنى مەۋھۇم قىسقۇچقا كۆچۈرگىلى ياكى يۆتكىگىلى بولمىدى"
 
-#: ../camel/camel-vee-folder.c:1271
+#: ../camel/camel-vee-folder.c:1269
 #, c-format
 msgid "No such message %s in %s"
 msgstr "%2$s نىڭدا  %1$s ئۇچۇر يوق"
 
-#: ../camel/camel-vee-folder.c:1339
+#: ../camel/camel-vee-folder.c:1337
 #, c-format
 msgid "Error storing '%s': "
 msgstr "'%s' نى ساقلاۋاتقاندا خاتالىق كۆرۈلدى "
 
-#: ../camel/camel-vee-store.c:141 ../camel/camel-vee-store.c:143
+#: ../camel/camel-vee-store.c:134 ../camel/camel-vee-store.c:138
 #: ../camel/camel-vee-store.c:322
 msgid "Unmatched"
 msgstr "ماسلاشمىدى"
@@ -2852,48 +2853,48 @@ msgstr "ئۇچۇرلارنى ئەخلەت قىسقۇچىغا كۆچۈرگىلى 
 msgid "Cannot copy messages to the Junk folder"
 msgstr "ئۇچۇرلارنى كېرەكسىز قىسقۇچىغا كۆچۈرگىلى بولمىدى"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:954
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:958
 #: ../camel/providers/imap/camel-imap-folder.c:392
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "%s نىڭ ئۈزۈندىسىنى يۈكلىيەلمىدى"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1030
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1054
 #, c-format
 msgid "Checking for deleted messages %s"
 msgstr "ئۆچۈرۈلگەن %s ئۇچۇرلارنى تەكشۈرۈۋاتىدۇ"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1517
-#: ../camel/providers/groupwise/camel-groupwise-store.c:665
-#: ../camel/providers/groupwise/camel-groupwise-store.c:796
-#: ../camel/providers/imap/camel-imap-folder.c:3962
-#: ../camel/providers/imap/camel-imap-folder.c:4044
-#: ../camel/providers/imapx/camel-imapx-server.c:3871
-#: ../camel/providers/imapx/camel-imapx-server.c:4002
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1530
+#: ../camel/providers/groupwise/camel-groupwise-store.c:615
+#: ../camel/providers/groupwise/camel-groupwise-store.c:746
+#: ../camel/providers/imap/camel-imap-folder.c:3971
+#: ../camel/providers/imap/camel-imap-folder.c:4053
+#: ../camel/providers/imapx/camel-imapx-server.c:3897
+#: ../camel/providers/imapx/camel-imapx-server.c:4028
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "%s دىكى يېڭى ئۇچۇر ئۈچۈن ئۈزۈندى ئۇچۇرىغا ئېرىشىۋاتىدۇ"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1987
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2040
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2704
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2714
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2000
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2053
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2717
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2727
 #, c-format
 msgid "Could not get message"
 msgstr "ئۇچۇرغا ئېرىشەلمىدى"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2424
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2474
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2437
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2487
 #, c-format
 msgid "Cannot append message to folder '%s': %s"
 msgstr "قىسقۇچ '%s' غا ئۇچۇر قوشقىلى بولمىدى: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2460
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2473
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "ئۇچۇر قۇرغىلى بولمىدى: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2640
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2653
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2902,7 +2903,7 @@ msgstr ""
 "ئۇچۇرغا ئېرىشەلمىدى: %s\n"
 "%s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2640
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2653
 #: ../camel/providers/local/camel-maildir-folder.c:100
 #: ../camel/providers/local/camel-maildir-folder.c:332
 #: ../camel/providers/local/camel-mbox-folder.c:117
@@ -2911,7 +2912,7 @@ msgstr ""
 msgid "No such message"
 msgstr "ئۇچۇر مەۋجۇت ئەمەس"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2659
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2672
 #: ../camel/providers/nntp/camel-nntp-folder.c:246
 #: ../camel/providers/nntp/camel-nntp-folder.c:413
 #: ../camel/providers/pop3/camel-pop3-folder.c:457
@@ -2919,9 +2920,9 @@ msgstr "ئۇچۇر مەۋجۇت ئەمەس"
 msgid "Cannot get message %s: "
 msgstr "ئۇچۇر %s نى ئالغىلى بولمىدى: "
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2677
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2687
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2890
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2690
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2700
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2903
 #, c-format
 msgid "This message is not available in offline mode."
 msgstr "بۇ ئۇچۇرنى تورسىز ھالەتتە ئىشلەتكىلى بولمايدۇ."
@@ -2954,8 +2955,8 @@ msgstr "ھەممە قىسقۇچتىن يېڭى ئۇچۇرلارنى تەكشۈر
 #: ../camel/providers/imap/camel-imap-provider.c:64
 #: ../camel/providers/imapx/camel-imapx-provider.c:72
 #: ../camel/providers/local/camel-local-provider.c:42
-#: ../camel/providers/local/camel-local-provider.c:82
-#: ../camel/providers/local/camel-local-provider.c:102
+#: ../camel/providers/local/camel-local-provider.c:84
+#: ../camel/providers/local/camel-local-provider.c:105
 msgid "Options"
 msgstr "تاللانما"
 
@@ -2988,105 +2989,106 @@ msgstr "SOAP تەڭشەكلىرى"
 msgid "Post Office Agent SOAP _Port:"
 msgstr "Post Office Agent SOAP نىڭ ئېغىزى(_P):"
 
-#: ../camel/providers/groupwise/camel-groupwise-provider.c:81
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:80
+#, fuzzy
+#| msgid "Novell GroupWise"
+msgid "Default GroupWise port"
+msgstr "Novell GroupWise"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:86
 msgid "Novell GroupWise"
 msgstr "Novell GroupWise"
 
-#: ../camel/providers/groupwise/camel-groupwise-provider.c:83
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:88
 msgid "For accessing Novell GroupWise servers"
 msgstr "Novell GroupWise مۇلازىمېتىرىنى زىيارەت قىلىش ئۈچۈن ئىشلىتىلىدۇ"
 
-#: ../camel/providers/groupwise/camel-groupwise-provider.c:98
-#: ../camel/providers/imap/camel-imap-provider.c:97
-#: ../camel/providers/imapx/camel-imapx-provider.c:104
-#: ../camel/providers/nntp/camel-nntp-provider.c:72
-#: ../camel/providers/pop3/camel-pop3-provider.c:73
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:105
+#: ../camel/providers/imap/camel-imap-provider.c:105
+#: ../camel/providers/imapx/camel-imapx-provider.c:113
+#: ../camel/providers/nntp/camel-nntp-provider.c:80
+#: ../camel/providers/pop3/camel-pop3-provider.c:81
 msgid "Password"
 msgstr "ئىم"
 
-#: ../camel/providers/groupwise/camel-groupwise-provider.c:100
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:107
 msgid ""
 "This option will connect to the GroupWise server using a plaintext password."
 msgstr ""
 "بۇ تاللانما ئىشلىتىلسە Novell GroupWise مۇلازىمېتىرىغا ئادەتتىكى تېكىست ئىمى "
 "ئىشلىتىپ باغلىنىدۇ."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:103
-#, c-format
-msgid "Host or user not available in url"
-msgstr "url نىڭ ئىچىدە باش ئاپپارات ۋە ئىشلەتكۈچى يوق"
-
-#: ../camel/providers/groupwise/camel-groupwise-store.c:205
-#: ../camel/providers/imap/camel-imap-store.c:801
-#: ../camel/providers/imapx/camel-imapx-server.c:3085
+#: ../camel/providers/groupwise/camel-groupwise-store.c:141
+#: ../camel/providers/imap/camel-imap-store.c:839
+#: ../camel/providers/imapx/camel-imapx-server.c:3110
 #, c-format
 msgid "You did not enter a password."
 msgstr "ئىم كىرگۈزمىدىڭىز."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:328
+#: ../camel/providers/groupwise/camel-groupwise-store.c:267
 msgid "Some features may not work correctly with your current server version"
 msgstr ""
 "ھازىرقى نەشرىدىكى مۇلازىمېتىردا بىر قىسىم ئالاھىدىلىكلەرنى ئىشلەتكىلى "
 "بولماسلىقى مۇمكىن"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:556
-#: ../camel/providers/imap/camel-imap-store.c:1808
-#: ../camel/providers/imap/camel-imap-store.c:2005
-#: ../camel/providers/imapx/camel-imapx-store.c:341
+#: ../camel/providers/groupwise/camel-groupwise-store.c:501
+#: ../camel/providers/imap/camel-imap-store.c:1887
+#: ../camel/providers/imap/camel-imap-store.c:2089
+#: ../camel/providers/imapx/camel-imapx-store.c:329
 #, c-format
 msgid "No such folder %s"
 msgstr "ھۆججەت قىسقۇچ »%s« مەۋجۇت ئەمەس"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1217
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1169
 #, c-format
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "تورسىز ھالەتتە GroupWise قىسقۇچىنى قۇرغىلى بولمىدى."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1226
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1178
 #, c-format
 msgid "Cannot create a special system folder"
 msgstr "ئالاھىدە سىستېما قىسقۇچىنى قۇرغىلى بولمىدى"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1236
-#: ../camel/providers/imap/camel-imap-store.c:1886
-#: ../camel/providers/imap/camel-imap-store.c:2323
-#: ../camel/providers/imapx/camel-imapx-store.c:1340
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1188
+#: ../camel/providers/imap/camel-imap-store.c:1965
+#: ../camel/providers/imap/camel-imap-store.c:2412
+#: ../camel/providers/imapx/camel-imapx-store.c:1342
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "ئاتا قىسقۇچ بالا قىسقۇچنىڭ بولۇشىغا يول قويمايدۇ"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1321
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1346
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1278
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1303
 #, c-format
 msgid "Cannot rename GroupWise folder '%s' to '%s'"
 msgstr "GroupWise قىسقۇچىنىڭ ئاتىنى «%s» نىڭدىن  «%s» غا ئۆزگەرتكىلى بولمىدى"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1380
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:47
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1342
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:76
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise مۇلازىمېتىرى %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1382
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1345
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "%s نىڭ %s دىكى GroupWise مۇلازىمىتى"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:51
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1553
+#, c-format
+msgid "Host or user not available in url"
+msgstr "url نىڭ ئىچىدە باش ئاپپارات ۋە ئىشلەتكۈچى يوق"
+
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:80
 #, c-format
 msgid "GroupWise mail delivery via %s"
 msgstr "GroupWise خەتلىرىنى %s ئارىلىق يەتكۈزىدۇ"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:97
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:125
 msgid "Sending Message"
 msgstr "ئۇچۇر ئەۋەتىش"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:107
-#, c-format
-msgid "Cannot get folder: Invalid operation on this store"
-msgstr "قىسقۇچقا ئېرىشكىلى بولمىدى: بۇ يەردىكى ئىناۋەتسىز مەشغۇلات"
-
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:154
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:169
 #, c-format
 msgid ""
 "You have exceeded this account's storage limit. Your messages are queued in "
@@ -3097,7 +3099,7 @@ msgstr ""
 "قويۇلدى. بىر قىسىم خەتلەرنى ئۆچۈرۈش ياكى ئۇلارنى پرېسلاپ ئاندىن قايتا "
 "ئەۋەتىشنى بېسىڭ.\n"
 
-#: ../camel/providers/groupwise/camel-groupwise-transport.c:159
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:174
 #, c-format
 msgid "Could not send message: %s"
 msgstr "ئۇچۇر يوللىيالمايدۇ: %s"
@@ -3124,9 +3126,7 @@ msgstr "مەشغۇلات ئەمەلدىن قالدۇرۇلدى"
 msgid "Server unexpectedly disconnected: %s"
 msgstr "مۇلازىمېتىر ئويلىمىغان يەردىن ئۈزۈلدى: %s"
 
-#. for imap ALERT codes, account user@host
-#. we might get a ']' from a BAD response since we +12, but who cares?
-#: ../camel/providers/imap/camel-imap-command.c:394
+#: ../camel/providers/imap/camel-imap-command.c:403
 #, c-format
 msgid ""
 "Alert from IMAP server %s@%s:\n"
@@ -3135,27 +3135,27 @@ msgstr ""
 "IMAP مۇلازىمېتىرى %s@%s دىن كەلگەن ئۇچۇر:\n"
 "%s"
 
-#: ../camel/providers/imap/camel-imap-command.c:468
+#: ../camel/providers/imap/camel-imap-command.c:479
 #, c-format
 msgid "Unexpected response from IMAP server: %s"
 msgstr "IMAP مۇلازىمېتىرىدىن ئويلاپمۇ باقمىغان جاۋاب كەلدى: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:480
+#: ../camel/providers/imap/camel-imap-command.c:491
 #, c-format
 msgid "IMAP command failed: %s"
 msgstr "IMAP بۇيرۇقى مەغلۇپ بولدى: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:560
+#: ../camel/providers/imap/camel-imap-command.c:571
 #, c-format
 msgid "Server response ended too soon."
 msgstr "مۇلازىمېتىردىن كەلگەن جاۋاب بەكلا بالدۇر ئاخىرلىشىپ كەتتى."
 
-#: ../camel/providers/imap/camel-imap-command.c:771
+#: ../camel/providers/imap/camel-imap-command.c:782
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "IMAP مۇلازىمېتىرىنىڭ جاۋابىنىڭ ئىچىدە %s دېگەن ئۇچۇر يوق"
 
-#: ../camel/providers/imap/camel-imap-command.c:809
+#: ../camel/providers/imap/camel-imap-command.c:820
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "IMAP مۇلازىمېتىرىدىن ئويلاپمۇ باقمىغان OK جاۋابى كەلدى: %s"
@@ -3169,45 +3169,45 @@ msgstr "بۇ قىسقۇچتىكى يېڭى خەتلەرنى دائىم تەكش�
 msgid "Could not create directory %s: %s"
 msgstr "مۇندەرىجە %s قۇرۇغىلى بولمىدى: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:992
-#: ../camel/providers/imapx/camel-imapx-server.c:3915
+#: ../camel/providers/imap/camel-imap-folder.c:996
+#: ../camel/providers/imapx/camel-imapx-server.c:3941
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "%s دىكى ئۆزگەرتىلگەن ئۇچۇرلارنى تەكشۈرۈۋاتىدۇ"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3369
+#: ../camel/providers/imap/camel-imap-folder.c:3376
 msgid "Unable to retrieve message: "
 msgstr "ئۇچۇرنى ئوقۇغىلى بولمىدى. "
 
-#: ../camel/providers/imap/camel-imap-folder.c:3404
-#: ../camel/providers/imapx/camel-imapx-server.c:5211
+#: ../camel/providers/imap/camel-imap-folder.c:3411
+#: ../camel/providers/imapx/camel-imapx-server.c:5242
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "كىملىكى %s بولغان ئۇچۇرغا ئېرىشەلمىدى: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3405
-#: ../camel/providers/imapx/camel-imapx-server.c:5212
+#: ../camel/providers/imap/camel-imap-folder.c:3412
+#: ../camel/providers/imapx/camel-imapx-server.c:5243
 msgid "No such message available."
 msgstr "بۇنداق ئۇچۇر يوق."
 
-#: ../camel/providers/imap/camel-imap-folder.c:3480
-#: ../camel/providers/imap/camel-imap-folder.c:4375
+#: ../camel/providers/imap/camel-imap-folder.c:3487
+#: ../camel/providers/imap/camel-imap-folder.c:4384
 #: ../camel/providers/nntp/camel-nntp-folder.c:402
 #, c-format
 msgid "This message is not currently available"
 msgstr "بۇ ئۇچۇر ھازىر يوق"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4176
+#: ../camel/providers/imap/camel-imap-folder.c:4185
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "مۇلازىمېتىر جاۋابى چالا: ئۇچۇر %d ھەققىدىكى ئۇچۇرلار تەمىنلەنمىگەن"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4186
+#: ../camel/providers/imap/camel-imap-folder.c:4195
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "مۇلازىمېتىر جاۋابى چالا: ئۇچۇر %d نىڭ UID سى تەمىنلەنمىگەن"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4415
+#: ../camel/providers/imap/camel-imap-folder.c:4424
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "FETCH جاۋابىدا ئۇچۇر گەۋدىسى يوق."
@@ -3286,97 +3286,114 @@ msgstr "كېرەكسىز مەزمۇنلار قىسقۇچىدىكى يېڭى ئۇ
 msgid "Automatically synchroni_ze remote mail locally"
 msgstr "يىراقتىكى خەتلەرنى يەرلىككە ئاپتوماتىك قەدەمداشلا(_Z)"
 
+#: ../camel/providers/imap/camel-imap-provider.c:78
+msgid "IMAP default port"
+msgstr ""
+
 #: ../camel/providers/imap/camel-imap-provider.c:79
+#: ../camel/providers/imapx/camel-imapx-provider.c:87
+#, fuzzy
+#| msgid "IMAP server %s"
+msgid "IMAP over SSL"
+msgstr "IMAP مۇلازىمېتىرى %s"
+
+#: ../camel/providers/imap/camel-imap-provider.c:85
 msgid "IMAP"
 msgstr "IMAP"
 
-#: ../camel/providers/imap/camel-imap-provider.c:81
-#: ../camel/providers/imapx/camel-imapx-provider.c:90
+#: ../camel/providers/imap/camel-imap-provider.c:87
+#: ../camel/providers/imapx/camel-imapx-provider.c:96
 msgid "For reading and storing mail on IMAP servers."
 msgstr "IMAP مۇلازىمېتىرىدا خەتلەرنى ئوقۇش ۋە ساقلاش ئۈچۈن."
 
-#: ../camel/providers/imap/camel-imap-provider.c:99
-#: ../camel/providers/imapx/camel-imapx-provider.c:106
+#: ../camel/providers/imap/camel-imap-provider.c:107
+#: ../camel/providers/imapx/camel-imapx-provider.c:115
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "بۇ تاللانما ئىشلىتىلسە مۇلازىمېتىرغا ئادەتتىكى تېكىست ئىمىنى ئىشلىتىپ "
 "باغلىنىدۇ."
 
-#: ../camel/providers/imap/camel-imap-store.c:243
-#: ../camel/providers/nntp/camel-nntp-store.c:342
-#: ../camel/providers/pop3/camel-pop3-store.c:135
-#: ../camel/providers/smtp/camel-smtp-transport.c:151
+#: ../camel/providers/imap/camel-imap-store.c:255
+#: ../camel/providers/nntp/camel-nntp-store.c:360
+#: ../camel/providers/pop3/camel-pop3-store.c:139
+#: ../camel/providers/smtp/camel-smtp-transport.c:155
 #, c-format
 msgid "Could not connect to %s: %s"
 msgstr "%s بىلەن باغلىنىش مەغلۇپ بولدى: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:244
-#: ../camel/providers/nntp/camel-nntp-store.c:343
-#: ../camel/providers/pop3/camel-pop3-store.c:136
-#: ../camel/providers/smtp/camel-smtp-transport.c:152
+#: ../camel/providers/imap/camel-imap-store.c:256
+#: ../camel/providers/nntp/camel-nntp-store.c:361
+#: ../camel/providers/pop3/camel-pop3-store.c:140
+#: ../camel/providers/smtp/camel-smtp-transport.c:156
 msgid "SSL unavailable"
 msgstr "SSL يوق(ئىشلەتكىلى بولمايدۇ)"
 
-#: ../camel/providers/imap/camel-imap-store.c:264
-#: ../camel/providers/nntp/camel-nntp-store.c:362
+#: ../camel/providers/imap/camel-imap-store.c:275
+#: ../camel/providers/nntp/camel-nntp-store.c:379
 #, c-format
 msgid "Could not connect to %s: "
 msgstr "%s غا باغلانغىلى بولمىدى: "
 
-#: ../camel/providers/imap/camel-imap-store.c:370
-#: ../camel/providers/imap/camel-imap-store.c:390
-#: ../camel/providers/imap/camel-imap-store.c:397
-#: ../camel/providers/imap/camel-imap-store.c:424
+#: ../camel/providers/imap/camel-imap-store.c:381
+#: ../camel/providers/imap/camel-imap-store.c:401
+#: ../camel/providers/imap/camel-imap-store.c:408
+#: ../camel/providers/imap/camel-imap-store.c:435
 #: ../camel/providers/imapx/camel-imapx-server.c:2927
 #: ../camel/providers/imapx/camel-imapx-server.c:2967
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "IMAP مۇلازىمېتىرى %s غا بىخەتەر ھالەتتە باغلىنىش مەغلۇپ بولدى: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:371
+#: ../camel/providers/imap/camel-imap-store.c:382
 #: ../camel/providers/imapx/camel-imapx-server.c:2928
-#: ../camel/providers/smtp/camel-smtp-transport.c:238
+#: ../camel/providers/smtp/camel-smtp-transport.c:241
 msgid "STARTTLS not supported"
 msgstr "STARTTLS نى قوللىمايدۇ"
 
-#: ../camel/providers/imap/camel-imap-store.c:391
+#: ../camel/providers/imap/camel-imap-store.c:402
 #: ../camel/providers/imapx/camel-imapx-server.c:2968
 msgid "SSL negotiations failed"
 msgstr "SSL كېڭىشى مەغلۇپ بولدى"
 
-#: ../camel/providers/imap/camel-imap-store.c:398
-#: ../camel/providers/smtp/camel-smtp-transport.c:285
+#: ../camel/providers/imap/camel-imap-store.c:409
+#: ../camel/providers/smtp/camel-smtp-transport.c:288
 msgid "SSL is not available in this build"
 msgstr "بۇ ياسالمىدا SSL يوق"
 
-#: ../camel/providers/imap/camel-imap-store.c:549
+#: ../camel/providers/imap/camel-imap-store.c:563
 #: ../camel/providers/imapx/camel-imapx-server.c:2755
 #, c-format
 msgid "Connection cancelled"
 msgstr "باغلىنىش ئەمەلدىن قالدۇرۇلدى"
 
-#: ../camel/providers/imap/camel-imap-store.c:554
+#: ../camel/providers/imap/camel-imap-store.c:568
 #: ../camel/providers/imapx/camel-imapx-server.c:2760
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "\"%s\" بۇيرۇقىنى ئىشلىتىپ باغلانغىلى بولمىدى: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:740
-#: ../camel/providers/imapx/camel-imapx-server.c:3041
+#: ../camel/providers/imap/camel-imap-store.c:769
+#: ../camel/providers/imapx/camel-imapx-server.c:3052
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr ""
 "IMAP مۇلازىمېتىرى %s تەلەپ قىلىنغان سالاھىيەت دەلىللەش تىپى %s نى قوللىمايدۇ"
 
-#: ../camel/providers/imap/camel-imap-store.c:752
-#: ../camel/providers/imapx/camel-imapx-server.c:3053
-#: ../camel/providers/smtp/camel-smtp-transport.c:420
+#: ../camel/providers/imap/camel-imap-store.c:780
+#: ../camel/providers/imapx/camel-imapx-server.c:3064
+#: ../camel/providers/smtp/camel-smtp-transport.c:434
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "سالاھىيەت دەلىللەش تىپى %s نى قوللىمايدۇ"
 
-#: ../camel/providers/imap/camel-imap-store.c:836
-#: ../camel/providers/imapx/camel-imapx-server.c:3129
+#: ../camel/providers/imap/camel-imap-store.c:791
+#: ../camel/providers/smtp/camel-smtp-transport.c:447
+#, c-format
+msgid "Error creating SASL authentication object."
+msgstr "SASL سالاھىيەت دەلىللەش نەڭىنى قۇرۇش مەغلۇپ بولدى."
+
+#: ../camel/providers/imap/camel-imap-store.c:880
+#: ../camel/providers/imapx/camel-imapx-server.c:3155
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3387,60 +3404,60 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/imap/camel-imap-store.c:997
-#: ../camel/providers/imapx/camel-imapx-store.c:182
+#: ../camel/providers/imap/camel-imap-store.c:940
+#: ../camel/providers/imapx/camel-imapx-store.c:162
 #, c-format
 msgid "IMAP server %s"
 msgstr "IMAP مۇلازىمېتىرى %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1001
-#: ../camel/providers/imapx/camel-imapx-store.c:184
+#: ../camel/providers/imap/camel-imap-store.c:943
+#: ../camel/providers/imapx/camel-imapx-store.c:165
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "%s نىڭ %s دىكى IMAP مۇلازىمېتىرى"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/providers/imap/camel-imap-store.c:1367
-#: ../camel/providers/imap/camel-imap-store.c:2416
-#: ../camel/providers/imapx/camel-imapx-store.c:371
-#: ../camel/providers/imapx/camel-imapx-store.c:793
+#: ../camel/providers/imap/camel-imap-store.c:1420
+#: ../camel/providers/imap/camel-imap-store.c:2505
+#: ../camel/providers/imapx/camel-imapx-store.c:359
+#: ../camel/providers/imapx/camel-imapx-store.c:786
 #: ../camel/providers/local/camel-maildir-folder.c:434
 #: ../camel/providers/local/camel-maildir-store.c:273
-#: ../camel/providers/local/camel-maildir-store.c:615
 #: ../camel/providers/local/camel-maildir-store.c:621
-#: ../camel/providers/local/camel-maildir-store.c:669
-#: ../camel/providers/local/camel-spool-store.c:289
+#: ../camel/providers/local/camel-maildir-store.c:627
+#: ../camel/providers/local/camel-maildir-store.c:675
+#: ../camel/providers/local/camel-spool-store.c:301
 msgid "Inbox"
 msgstr "قوبۇللاش ساندۇقى"
 
-#: ../camel/providers/imap/camel-imap-store.c:1822
-#: ../camel/providers/imap/camel-imap-store.c:2259
-#: ../camel/providers/imapx/camel-imapx-store.c:1319
+#: ../camel/providers/imap/camel-imap-store.c:1901
+#: ../camel/providers/imap/camel-imap-store.c:2348
+#: ../camel/providers/imapx/camel-imapx-store.c:1321
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "قىسقۇچ ئاتى «%s» ئىناۋەتسىز، چۈنكى ئۇنىڭ تەركىبىدە «%c» دېگەن ھەرپ بار"
 
-#: ../camel/providers/imap/camel-imap-store.c:1939
+#: ../camel/providers/imap/camel-imap-store.c:2018
 #: ../camel/providers/local/camel-maildir-store.c:244
 #: ../camel/providers/local/camel-mbox-store.c:407
-#: ../camel/providers/local/camel-mh-store.c:504
+#: ../camel/providers/local/camel-mh-store.c:502
 #, c-format
 msgid "Cannot create folder '%s': folder exists."
 msgstr "قىسقۇچ «%s» نى قۇرغىلى بولمىدى: قىسقۇچ مەۋجۇت"
 
-#: ../camel/providers/imap/camel-imap-store.c:2272
-#: ../camel/providers/imapx/camel-imapx-store.c:1330
+#: ../camel/providers/imap/camel-imap-store.c:2361
+#: ../camel/providers/imapx/camel-imapx-store.c:1332
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "ئاتا قىسقۇچ نامەلۇم: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:3137
+#: ../camel/providers/imap/camel-imap-store.c:3216
 #, c-format
 msgid "Server unexpectedly disconnected"
 msgstr "مۇلازىمېتىر ئويلىمىغان يەردىن ئۈزۈلدى"
 
-#: ../camel/providers/imap/camel-imap-store.c:3140
+#: ../camel/providers/imap/camel-imap-store.c:3219
 msgid "Server unexpectedly disconnected: "
 msgstr "مۇلازىمېتىر ئويلىمىغان يەردىن ئۈزۈلدى: "
 
@@ -3474,7 +3491,11 @@ msgstr "ئىشلىتىدىغان غەملەنگەن باغلانما سانى"
 msgid "Namespace:"
 msgstr "ئات بوشلۇقى"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:88
+#: ../camel/providers/imapx/camel-imapx-provider.c:86
+msgid "Default IMAP port"
+msgstr ""
+
+#: ../camel/providers/imapx/camel-imapx-provider.c:94
 msgid "IMAP+"
 msgstr "IMAP+"
 
@@ -3492,17 +3513,17 @@ msgstr "سالاھىيىتى دەلىللەنمىگەن"
 msgid "Could not connect to %s (port %s): "
 msgstr "%s (ئېغىز %s) غا باغلىنالمىدى: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3311
+#: ../camel/providers/imapx/camel-imapx-server.c:3337
 msgid "Closing tmp stream failed: "
 msgstr "tmp ئېقىمىنى يېپىش مەغلۇپ بولدى: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5357
-#: ../camel/providers/imapx/camel-imapx-server.c:5372
+#: ../camel/providers/imapx/camel-imapx-server.c:5388
+#: ../camel/providers/imapx/camel-imapx-server.c:5403
 msgid "Cannot create spool file: "
 msgstr "spool ھۆججىتى قۇرغىلى بولمىدى: "
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1135
-#: ../camel/providers/nntp/camel-nntp-store.c:1666
+#: ../camel/providers/imapx/camel-imapx-store.c:1117
+#: ../camel/providers/nntp/camel-nntp-store.c:1713
 #, c-format
 msgid "No such folder: %s"
 msgstr "بۇنداق قىسقۇچ يوق: %s"
@@ -3558,11 +3579,11 @@ msgstr "MH-format خەت مۇندەرىجىلىرى"
 msgid "For storing local mail in MH-like mail directories."
 msgstr "يەرلىك خەتلەرنى MH-like خەت مۇندەرىجىلىرىدە ساقلاش ئۈچۈن ئىشلىتىلىدۇ."
 
-#: ../camel/providers/local/camel-local-provider.c:69
+#: ../camel/providers/local/camel-local-provider.c:70
 msgid "Local delivery"
 msgstr "يەرلىكتە يەتكۈز"
 
-#: ../camel/providers/local/camel-local-provider.c:70
+#: ../camel/providers/local/camel-local-provider.c:71
 msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
@@ -3570,29 +3591,29 @@ msgstr ""
 "يەرلىك خەتنى ئادەتتىكى mbox پىچىمىدىكى تورسىز قىسقۇچتىن ئېرىشىپ Evolution "
 "باشقۇرىدىغان قىسقۇچقا يۆتكەيدۇ."
 
-#: ../camel/providers/local/camel-local-provider.c:84
-#: ../camel/providers/local/camel-local-provider.c:103
+#: ../camel/providers/local/camel-local-provider.c:86
+#: ../camel/providers/local/camel-local-provider.c:106
 msgid "_Apply filters to new messages in INBOX"
 msgstr "خەتدان(INBOX) دىكى يېڭى خەتلەرگە سۈزگۈچنى قوللان(_A)"
 
-#: ../camel/providers/local/camel-local-provider.c:91
+#: ../camel/providers/local/camel-local-provider.c:93
 msgid "Maildir-format mail directories"
 msgstr "Maildir فورماتىدىكى خەت مۇندەرىجىلىرى"
 
-#: ../camel/providers/local/camel-local-provider.c:92
+#: ../camel/providers/local/camel-local-provider.c:94
 msgid "For storing local mail in maildir directories."
 msgstr "يەرلىك خەتلەرنى maildir مۇندەرىجىسىدە ساقلاش ئۈچۈن."
 
-#: ../camel/providers/local/camel-local-provider.c:104
+#: ../camel/providers/local/camel-local-provider.c:107
 msgid "_Store status headers in Elm/Pine/Mutt format"
 msgstr "ھالەت قېشىنى Elm/Pine/Mutt فورماتىدا ساقلا(_S)"
 
-#: ../camel/providers/local/camel-local-provider.c:111
+#: ../camel/providers/local/camel-local-provider.c:114
 msgid "Standard Unix mbox spool file"
 msgstr "ئۆلچەملىك Unix mbox spool ھۆججىتى"
 
-#: ../camel/providers/local/camel-local-provider.c:112
-#: ../camel/providers/local/camel-local-provider.c:123
+#: ../camel/providers/local/camel-local-provider.c:115
+#: ../camel/providers/local/camel-local-provider.c:127
 msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
@@ -3601,60 +3622,60 @@ msgstr ""
 "ئوخشاشلا Elm، Pine ياكى Mutt ئۇسلۇبىدىكى مۇندەرىجە شاخنى ئوقۇشقىمۇ "
 "ئىشلەتكىلى بولىدۇ"
 
-#: ../camel/providers/local/camel-local-provider.c:122
+#: ../camel/providers/local/camel-local-provider.c:126
 msgid "Standard Unix mbox spool directory"
 msgstr "ئۆلچەملىك Unix mbox spool مۇندەرىجىسى"
 
-#: ../camel/providers/local/camel-local-store.c:174
-#: ../camel/providers/local/camel-local-store.c:319
+#: ../camel/providers/local/camel-local-store.c:177
+#: ../camel/providers/local/camel-local-store.c:322
 #: ../camel/providers/local/camel-maildir-store.c:92
-#: ../camel/providers/local/camel-mbox-store.c:526
-#: ../camel/providers/local/camel-spool-store.c:318
+#: ../camel/providers/local/camel-mbox-store.c:528
+#: ../camel/providers/local/camel-spool-store.c:518
 #, c-format
 msgid "Store root %s is not an absolute path"
 msgstr "ساقلايدىغان root %s مۇتلەق يول ئەمەس"
 
-#: ../camel/providers/local/camel-local-store.c:183
+#: ../camel/providers/local/camel-local-store.c:186
 #, c-format
 msgid "Store root %s is not a regular directory"
 msgstr "ساقلايدىغان root %s مۇنتىزىم مۇندەرىجە ئەمەس"
 
-#: ../camel/providers/local/camel-local-store.c:194
-#: ../camel/providers/local/camel-local-store.c:204
-#: ../camel/providers/local/camel-local-store.c:332
+#: ../camel/providers/local/camel-local-store.c:197
+#: ../camel/providers/local/camel-local-store.c:207
+#: ../camel/providers/local/camel-local-store.c:335
 #: ../camel/providers/local/camel-maildir-store.c:124
 #, c-format
 msgid "Cannot get folder: %s: %s"
 msgstr "قىسقۇچنى ئالغىلى بولمىدى: %s: %s"
 
-#: ../camel/providers/local/camel-local-store.c:220
+#: ../camel/providers/local/camel-local-store.c:223
 #, c-format
 msgid "Local stores do not have an inbox"
 msgstr "يەرلىك ساقلىغۇچتا inbox يوق"
 
-#: ../camel/providers/local/camel-local-store.c:281
+#: ../camel/providers/local/camel-local-store.c:284
 #, c-format
 msgid "Local mail file %s"
 msgstr "يەرلىك خەت ھۆججىتى %s"
 
-#: ../camel/providers/local/camel-local-store.c:393
+#: ../camel/providers/local/camel-local-store.c:396
 #, c-format
 msgid "Could not rename folder %s to %s: %s"
 msgstr "قىسقۇچ %s نىڭ ئاتىنى %s غا ئۆزگەرتەلمىدى: %s"
 
-#: ../camel/providers/local/camel-local-store.c:467
+#: ../camel/providers/local/camel-local-store.c:470
 #, c-format
 msgid "Could not rename '%s': %s"
 msgstr "«%s» نىڭ ئاتىنى %s غا ئۆزگەرتەلمىدى"
 
-#: ../camel/providers/local/camel-local-store.c:498
-#: ../camel/providers/local/camel-mbox-store.c:695
+#: ../camel/providers/local/camel-local-store.c:504
+#: ../camel/providers/local/camel-mbox-store.c:700
 #, c-format
 msgid "Could not delete folder index file '%s': %s"
 msgstr "قىسقۇچ ئىندېكس ھۆججىتى «%s» نى ئۆچۈرەلمىدى:%s"
 
-#: ../camel/providers/local/camel-local-store.c:526
-#: ../camel/providers/local/camel-mbox-store.c:724
+#: ../camel/providers/local/camel-local-store.c:532
+#: ../camel/providers/local/camel-mbox-store.c:729
 #, c-format
 msgid "Could not delete folder meta file '%s': %s"
 msgstr "قىسقۇچ مەتا ھۆججىتى «%s» نى ئۆچۈرەلمىدى:%s"
@@ -3689,7 +3710,7 @@ msgid "Cannot create folder: %s : Folder name cannot contain a dot"
 msgstr "قىسقۇچ قۇرغىلى بولمىدى: %s: قىسقۇچ ئاتىدا چېكىت بولسا بولمايدۇ"
 
 #: ../camel/providers/local/camel-maildir-store.c:109
-#: ../camel/providers/local/camel-maildir-store.c:686
+#: ../camel/providers/local/camel-maildir-store.c:692
 #, c-format
 msgid "Folder %s already exists"
 msgstr "قىسقۇچ %s ئاللىقاچان مەۋجۇت"
@@ -3704,14 +3725,14 @@ msgstr "'%s' قىسقۇچ قۇرالمىدى: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:206
 #: ../camel/providers/local/camel-mbox-store.c:341
-#: ../camel/providers/local/camel-mh-store.c:464
+#: ../camel/providers/local/camel-mh-store.c:462
 #, c-format
 msgid "Cannot get folder '%s': %s"
 msgstr "قىسقۇچ «%s» نى ئالغىلى بولمىدى: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:212
 #: ../camel/providers/local/camel-mbox-store.c:351
-#: ../camel/providers/local/camel-mh-store.c:473
+#: ../camel/providers/local/camel-mh-store.c:471
 #, c-format
 msgid "Cannot get folder '%s': folder does not exist."
 msgstr "قىسقۇچ «%s» نى ئالغىلى بولمىدى: قىسقۇچ مەۋجۇت ئەمەس."
@@ -3723,7 +3744,7 @@ msgstr "قىسقۇچ «%s» نى ئالغىلى بولمىدى: maildir مۇند
 
 #: ../camel/providers/local/camel-maildir-store.c:293
 #: ../camel/providers/local/camel-maildir-store.c:333
-#: ../camel/providers/local/camel-mh-store.c:584
+#: ../camel/providers/local/camel-mh-store.c:583
 #, c-format
 msgid "Could not delete folder '%s': %s"
 msgstr "قىسقۇچ «%s» نى ئۆچۈرەلمىدى: %s"
@@ -3732,15 +3753,15 @@ msgstr "قىسقۇچ «%s» نى ئۆچۈرەلمىدى: %s"
 msgid "not a maildir directory"
 msgstr "maildir مۇندەرىجىسى ئەمەس"
 
-#: ../camel/providers/local/camel-maildir-store.c:508
-#: ../camel/providers/local/camel-maildir-store.c:825
-#: ../camel/providers/local/camel-spool-store.c:143
-#: ../camel/providers/local/camel-spool-store.c:159
+#: ../camel/providers/local/camel-maildir-store.c:512
+#: ../camel/providers/local/camel-maildir-store.c:835
+#: ../camel/providers/local/camel-spool-store.c:152
+#: ../camel/providers/local/camel-spool-store.c:168
 #, c-format
 msgid "Could not scan folder '%s': %s"
 msgstr "قىسقۇچ «%s» نى تەكشۈرەلمىدى: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:677
+#: ../camel/providers/local/camel-maildir-store.c:683
 #, c-format
 msgid "Cannot rename the folder: %s: Folder name cannot contain a dot"
 msgstr ""
@@ -3789,7 +3810,7 @@ msgid "Cannot create folder lock on %s: %s"
 msgstr "%s دېگەن قىسقۇچنىڭ قۇلۇپىنى قۇرغىلى بولمىدى: %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:363
-#: ../camel/providers/local/camel-mbox-store.c:534
+#: ../camel/providers/local/camel-mbox-store.c:536
 #, c-format
 msgid "Cannot create a folder by this name."
 msgstr "بۇ ئاتنى ئىشلىتىپ قىسقۇچ قۇرغىلى بولمىدى."
@@ -3799,23 +3820,23 @@ msgstr "بۇ ئاتنى ئىشلىتىپ قىسقۇچ قۇرغىلى بولمى�
 msgid "Cannot get folder '%s': not a regular file."
 msgstr "قىسقۇچ «%s» نى ئالغىلى بولمىدى: ئۆلچەملىك ھۆججەت ئەمەس."
 
-#: ../camel/providers/local/camel-mbox-store.c:550
+#: ../camel/providers/local/camel-mbox-store.c:552
 #, c-format
 msgid "Cannot create directory '%s': %s."
 msgstr "قىسقۇچ «%s» نى قۇرغىلى بولمىدى: %s."
 
-#: ../camel/providers/local/camel-mbox-store.c:566
+#: ../camel/providers/local/camel-mbox-store.c:568
 #, c-format
 msgid "Cannot create folder: %s: %s"
 msgstr "قىسقۇچ قۇرغىلى بولمىدى: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-store.c:568
+#: ../camel/providers/local/camel-mbox-store.c:570
 msgid "Folder already exists"
 msgstr "قىسقۇچ ئاللىقاچان مەۋجۇت"
 
-#: ../camel/providers/local/camel-mbox-store.c:609
-#: ../camel/providers/local/camel-mbox-store.c:622
-#: ../camel/providers/local/camel-mbox-store.c:651
+#: ../camel/providers/local/camel-mbox-store.c:614
+#: ../camel/providers/local/camel-mbox-store.c:627
+#: ../camel/providers/local/camel-mbox-store.c:656
 #, c-format
 msgid ""
 "Could not delete folder '%s':\n"
@@ -3824,33 +3845,33 @@ msgstr ""
 "قىسقۇچ «%s» نى ئۆچۈرەلمىدى:\n"
 "%s"
 
-#: ../camel/providers/local/camel-mbox-store.c:632
+#: ../camel/providers/local/camel-mbox-store.c:637
 #, c-format
 msgid "'%s' is not a regular file."
 msgstr "'%s' مۇنتىزىم ھۆججەت ئەمەس."
 
-#: ../camel/providers/local/camel-mbox-store.c:641
+#: ../camel/providers/local/camel-mbox-store.c:646
 #, c-format
 msgid "Folder '%s' is not empty. Not deleted."
 msgstr "قىسقۇچ '%s' قۇرۇق ئەمەس. ئۆچۈرۈلمىدى."
 
-#: ../camel/providers/local/camel-mbox-store.c:667
-#: ../camel/providers/local/camel-mbox-store.c:681
+#: ../camel/providers/local/camel-mbox-store.c:672
+#: ../camel/providers/local/camel-mbox-store.c:686
 #, c-format
 msgid "Could not delete folder summary file '%s': %s"
 msgstr "قىسقۇچنىڭ قىسقىچە مەزمۇن ھۆججىتى «%s» نى ئۆچۈرگىلى بولمىدى: %s"
 
-#: ../camel/providers/local/camel-mbox-store.c:761
+#: ../camel/providers/local/camel-mbox-store.c:766
 #, c-format
 msgid "The new folder name is illegal."
 msgstr "يېڭى قىسقۇچ ئاتى توغرا ئەمەس."
 
-#: ../camel/providers/local/camel-mbox-store.c:776
+#: ../camel/providers/local/camel-mbox-store.c:781
 #, c-format
 msgid "Could not rename '%s': '%s': %s"
 msgstr "«%s» نىڭ ئاتىنى «%s» غا ئۆزگەرتەلمىدى: %s"
 
-#: ../camel/providers/local/camel-mbox-store.c:859
+#: ../camel/providers/local/camel-mbox-store.c:864
 #, c-format
 msgid "Could not rename '%s' to %s: %s"
 msgstr "«%s» نىڭ ئاتىنى %s غا ئۆزگەرتەلمىدى: %s"
@@ -3943,12 +3964,12 @@ msgstr "ۋاقىتلىق mailbox قا يېزىش مەغلۇپ بولدى: %s: %s
 msgid "Cannot append message to mh folder: %s: "
 msgstr "mh قىسقۇچىغا ئۇچۇر قوشقىلى بولمىدى: %s: "
 
-#: ../camel/providers/local/camel-mh-store.c:483
+#: ../camel/providers/local/camel-mh-store.c:481
 #, c-format
 msgid "Could not create folder '%s': %s"
 msgstr "قىسقۇچ «%s» نى قۇرالمىدى:%s"
 
-#: ../camel/providers/local/camel-mh-store.c:497
+#: ../camel/providers/local/camel-mh-store.c:495
 #, c-format
 msgid "Cannot get folder '%s': not a directory."
 msgstr "قىسقۇچ «%s» نى ئالغىلى بولمىدى: مۇندەرىجە ئەمەس."
@@ -3958,32 +3979,22 @@ msgstr "قىسقۇچ «%s» نى ئالغىلى بولمىدى: مۇندەرىج
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "MH مۇندەرىجىسىنىڭ يولىنى ئاچقىلى بولمىدى: %s: %s"
 
-#: ../camel/providers/local/camel-spool-store.c:327
-#, c-format
-msgid "Spool '%s' cannot be opened: %s"
-msgstr "Spool '%s' نى ئاچقىنى بولمىدى: %s"
-
-#: ../camel/providers/local/camel-spool-store.c:341
-#, c-format
-msgid "Spool '%s' is not a regular file or directory"
-msgstr "Spool '%s' ئۆلچەملىك ھۆججەت ياكى مۇندەرىجە ئەمەس"
-
-#: ../camel/providers/local/camel-spool-store.c:357
+#: ../camel/providers/local/camel-spool-store.c:322
 #, c-format
 msgid "Spool mail file %s"
 msgstr "Spool خېتى ھۆججىتى %s"
 
-#: ../camel/providers/local/camel-spool-store.c:357
+#: ../camel/providers/local/camel-spool-store.c:323
 #, c-format
 msgid "Spool folder tree %s"
 msgstr "Spool قىسقۇچى دەرىخى %s"
 
-#: ../camel/providers/local/camel-spool-store.c:391
+#: ../camel/providers/local/camel-spool-store.c:361
 #, c-format
 msgid "Folder '%s/%s' does not exist."
 msgstr "قىسقۇچ '%s/%s' مەۋجۇت ئەمەس."
 
-#: ../camel/providers/local/camel-spool-store.c:403
+#: ../camel/providers/local/camel-spool-store.c:373
 #, c-format
 msgid ""
 "Could not open folder '%s':\n"
@@ -3992,12 +4003,12 @@ msgstr ""
 "قىسقۇچ «%s» نى ئاچالمىدى:\n"
 "%s"
 
-#: ../camel/providers/local/camel-spool-store.c:409
+#: ../camel/providers/local/camel-spool-store.c:379
 #, c-format
 msgid "Folder '%s' does not exist."
 msgstr "قىسقۇچ '%s' مەۋجۇت ئەمەس."
 
-#: ../camel/providers/local/camel-spool-store.c:416
+#: ../camel/providers/local/camel-spool-store.c:386
 #, c-format
 msgid ""
 "Could not create folder '%s':\n"
@@ -4006,25 +4017,35 @@ msgstr ""
 "قىسقۇچ «%s» نى قۇرالمىدى:\n"
 "%s"
 
-#: ../camel/providers/local/camel-spool-store.c:426
+#: ../camel/providers/local/camel-spool-store.c:396
 #, c-format
 msgid "'%s' is not a mailbox file."
 msgstr "'%s' خەت ساندۇقى(mailbox) ھۆججىتى ئەمەس."
 
-#: ../camel/providers/local/camel-spool-store.c:462
+#: ../camel/providers/local/camel-spool-store.c:432
 #, c-format
 msgid "Store does not support an INBOX"
 msgstr "INBOX قا ساقلاشنى قوللىمايدۇ"
 
-#: ../camel/providers/local/camel-spool-store.c:476
+#: ../camel/providers/local/camel-spool-store.c:446
 #, c-format
 msgid "Spool folders cannot be deleted"
 msgstr "Spool قىسقۇچىنى ئۆچۈرگىلى بولمىدى"
 
-#: ../camel/providers/local/camel-spool-store.c:491
+#: ../camel/providers/local/camel-spool-store.c:461
 #, c-format
 msgid "Spool folders cannot be renamed"
 msgstr "Spool قىسقۇچىنىڭ ئاتىنى ئۆزگەرتكىلى بولمىدى"
+
+#: ../camel/providers/local/camel-spool-store.c:527
+#, c-format
+msgid "Spool '%s' cannot be opened: %s"
+msgstr "Spool '%s' نى ئاچقىنى بولمىدى: %s"
+
+#: ../camel/providers/local/camel-spool-store.c:541
+#, c-format
+msgid "Spool '%s' is not a regular file or directory"
+msgstr "Spool '%s' ئۆلچەملىك ھۆججەت ياكى مۇندەرىجە ئەمەس"
 
 #: ../camel/providers/local/camel-spool-summary.c:169
 #: ../camel/providers/local/camel-spool-summary.c:181
@@ -4096,16 +4117,24 @@ msgstr "قىسقۇچلارنى قىسقارتىپ كۆرسەت(_S)(comp.os.linux
 msgid "In the subscription _dialog, show relative folder names"
 msgstr "مۇشتەرى سۆزلەشكۈسىدە مۇناسىۋەتلىك قىسقۇچ ئاتلىرىنى كۆرسەت"
 
+#: ../camel/providers/nntp/camel-nntp-provider.c:52
+msgid "Default NNTP port"
+msgstr ""
+
 #: ../camel/providers/nntp/camel-nntp-provider.c:53
+msgid "NNTP over SSL"
+msgstr ""
+
+#: ../camel/providers/nntp/camel-nntp-provider.c:59
 msgid "USENET news"
 msgstr "USENET خەۋەرلىرى"
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:55
+#: ../camel/providers/nntp/camel-nntp-provider.c:61
 msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr ""
 "بۇ USENET خەۋەر گۇرۇپپىسىدىن ئوقۇش ۋە ئۇنىڭ ئەۋەتىش ئىقتىدارىنى تەمىنلەيدۇ."
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:74
+#: ../camel/providers/nntp/camel-nntp-provider.c:82
 msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
@@ -4113,32 +4142,32 @@ msgstr ""
 "بۇ تاللانما ئىشلىتىلسە NNTP مۇلازىمېتىرى بىلەن ئادەتتىكى تېكىست ئىمى "
 "ئىشلىتىپ سالاھىيەت دەلىللەيدۇ."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:73
+#: ../camel/providers/nntp/camel-nntp-store.c:86
 #, c-format
 msgid "Authentication requested but no username provided"
 msgstr "سالاھىيەت دەلىللەش تەلەپ قىلىنىپ ئىشلەتكۈچى ئاتى تەمىنلەنمىگەن"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:85
+#: ../camel/providers/nntp/camel-nntp-store.c:98
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "مۇلازىمېتىرنىڭ سالاھىيىتىنى دەلىللىگىلى بولمىدى: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:375
+#: ../camel/providers/nntp/camel-nntp-store.c:392
 #, c-format
 msgid "Could not read greeting from %s: "
 msgstr "%s دىن كەلگەن سالامنى ئوقۇغىلى بولمىدى: "
 
-#: ../camel/providers/nntp/camel-nntp-store.c:388
+#: ../camel/providers/nntp/camel-nntp-store.c:405
 #, c-format
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "NNTP مۇلازىمېتىرى %s دىن خاتالىق كودى %d قايتىپ كەلدى: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:582
+#: ../camel/providers/nntp/camel-nntp-store.c:605
 #, c-format
 msgid "USENET News via %s"
 msgstr "%s ئارقىلىق كەلگەن USENET خەۋەرلىرى"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1100
+#: ../camel/providers/nntp/camel-nntp-store.c:1137
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -4149,7 +4178,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1215
+#: ../camel/providers/nntp/camel-nntp-store.c:1252
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -4160,7 +4189,7 @@ msgstr ""
 "\n"
 "بۇنداق خەۋەر گۇرۇپپىسى يوق. تاللانغىنى بەلكىم ئاتا قىسقۇچ بولۇشى مۇمكىن."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1257
+#: ../camel/providers/nntp/camel-nntp-store.c:1294
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -4171,49 +4200,49 @@ msgstr ""
 "\n"
 "بۇنداق خەۋەر گۇرۇپپىسى مەۋجۇت ئەمەس!"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1290
+#: ../camel/providers/nntp/camel-nntp-store.c:1327
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "News store نىڭ ئىچىگە يېڭى قىسقۇچ قۇرالمايسىز: مۇشتەرى بولۇڭ."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1306
+#: ../camel/providers/nntp/camel-nntp-store.c:1343
 #, c-format
 msgid "You cannot rename a folder in a News store."
 msgstr "News store نىڭ ئىچىدىكى قىسقۇچ ئاتىنى ئۆزگەرتەلمەيسىز."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1323
+#: ../camel/providers/nntp/camel-nntp-store.c:1360
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "News store نىڭ ئىچىدىكى قىسقۇچنى چىقىرىۋېتەلمەيسىز. مۇشتەرى بولمىسىڭىزلا "
 "بولىدۇ."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1535
+#: ../camel/providers/nntp/camel-nntp-store.c:1582
 msgid "NNTP Command failed: "
 msgstr "NNTP بۇيرۇقى مەغلۇپ بولدى: "
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1609
+#: ../camel/providers/nntp/camel-nntp-store.c:1656
 #, c-format
 msgid "Not connected."
 msgstr "باغلانمىغان."
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:232
-#: ../camel/providers/nntp/camel-nntp-summary.c:348
+#: ../camel/providers/nntp/camel-nntp-summary.c:235
+#: ../camel/providers/nntp/camel-nntp-summary.c:353
 #, c-format
 msgid "%s: Scanning new messages"
 msgstr "%s: يېڭى ئۇچۇرنى تەكشۈرۈۋاتىدۇ"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:249
+#: ../camel/providers/nntp/camel-nntp-summary.c:251
 #, c-format
 msgid "Unexpected server response from xover: %s"
 msgstr "xover دىن  ئويلاپمۇ باقمىغان مۇلازىمېتىرى جاۋابى كەلدى: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:365
+#: ../camel/providers/nntp/camel-nntp-summary.c:369
 #, c-format
 msgid "Unexpected server response from head: %s"
 msgstr "head دىن  ئويلاپمۇ باقمىغان مۇلازىمېتىرى جاۋابى كەلدى: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:410
+#: ../camel/providers/nntp/camel-nntp-summary.c:414
 #, c-format
 msgid "Operation failed: %s"
 msgstr "مەشغۇلات مەغلۇپ بولدى: %s"
@@ -4273,15 +4302,25 @@ msgstr ""
 msgid "Disable _support for all POP3 extensions"
 msgstr "بارلىق POP3 كېڭەيتىلمىلىرىنى قوللاشنى چەكلە(_S)"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:56
+#: ../camel/providers/pop3/camel-pop3-provider.c:54
+msgid "Default POP3 port"
+msgstr ""
+
+#: ../camel/providers/pop3/camel-pop3-provider.c:55
+#, fuzzy
+#| msgid "POP3 server %s"
+msgid "POP3 over SSL"
+msgstr "POP3 مۇلازىمېتىرى %s"
+
+#: ../camel/providers/pop3/camel-pop3-provider.c:62
 msgid "POP"
 msgstr "POP"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:58
+#: ../camel/providers/pop3/camel-pop3-provider.c:64
 msgid "For connecting to and downloading mail from POP servers."
 msgstr "باغلىنىپ خەتلەرنى POP مۇلازىمېتىرىدىن چۈشۈرۈش ئۈچۈن."
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:75
+#: ../camel/providers/pop3/camel-pop3-provider.c:83
 msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
@@ -4290,7 +4329,7 @@ msgstr ""
 "باغلىنىدۇ. بۇ نۇرغۇنلىغان POP مۇلازىمېتىرلىرىدا تەمىنلەنگەن بىردىن بىر "
 "تاللانما."
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:85
+#: ../camel/providers/pop3/camel-pop3-provider.c:93
 msgid ""
 "This option will connect to the POP server using an encrypted password via "
 "the APOP protocol. This may not work for all users even on servers that "
@@ -4305,38 +4344,38 @@ msgstr ""
 msgid ": "
 msgstr ": "
 
-#: ../camel/providers/pop3/camel-pop3-store.c:181
+#: ../camel/providers/pop3/camel-pop3-store.c:184
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
 msgstr "POP مۇلازىمېتىرى %s دىن ئىناۋەتلىك سالامنى ئوقۇش مەغلۇپ بولدى."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:199
-#: ../camel/providers/pop3/camel-pop3-store.c:230
-#: ../camel/providers/pop3/camel-pop3-store.c:237
+#: ../camel/providers/pop3/camel-pop3-store.c:202
+#: ../camel/providers/pop3/camel-pop3-store.c:233
+#: ../camel/providers/pop3/camel-pop3-store.c:240
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "POP مۇلازىمېتىرى %s غا بىخەتەر ھالەتتە باغلىنىش مەغلۇپ بولدى: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:200
+#: ../camel/providers/pop3/camel-pop3-store.c:203
 msgid "STLS not supported by server"
 msgstr "مۇلازىمېتىر STLS نى قوللىمايدۇ"
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
-#: ../camel/providers/pop3/camel-pop3-store.c:218
+#: ../camel/providers/pop3/camel-pop3-store.c:221
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode%s"
 msgstr "POP مۇلازىمېتىرى %s غا بىخەتەر ھالەت (mode%s) تە باغلىنىش مەغلۇپ بولدى"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:231
+#: ../camel/providers/pop3/camel-pop3-store.c:234
 msgid "TLS negotiations failed"
 msgstr "TLS كېڭىشى مەغلۇپ بولدى"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:238
+#: ../camel/providers/pop3/camel-pop3-store.c:241
 msgid "TLS is not available in this build"
 msgstr "بۇ ياسالمىدا TLS يوق"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:317
-#: ../camel/providers/pop3/camel-pop3-store.c:472
+#: ../camel/providers/pop3/camel-pop3-store.c:328
+#: ../camel/providers/pop3/camel-pop3-store.c:490
 #, c-format
 msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
@@ -4346,22 +4385,22 @@ msgstr ""
 "مېخانىزمىنى قوللىمايدۇ."
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
-#: ../camel/providers/pop3/camel-pop3-store.c:340
+#: ../camel/providers/pop3/camel-pop3-store.c:351
 #, c-format
 msgid "SASL '%s' Login failed for POP server %s%s"
 msgstr "SASL '%s' ئىشلىتىپ POP مۇلازىمېتىر %s%s غا كىرەلمىدى"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:357
+#: ../camel/providers/pop3/camel-pop3-store.c:367
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "POP مۇلازىمېتىرىغا كىرگىلى بولمىدى%s: SASL كېلىشىمى خاتا"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:374
+#: ../camel/providers/pop3/camel-pop3-store.c:384
 #, c-format
 msgid "Failed to authenticate on POP server %s: "
 msgstr "POP مۇلازىمېتىرى %s دا سالاھىيەت دەلىللەش مەغلۇپ بولدى: "
 
-#: ../camel/providers/pop3/camel-pop3-store.c:439
+#: ../camel/providers/pop3/camel-pop3-store.c:456
 #, c-format
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
@@ -4371,7 +4410,7 @@ msgstr ""
 "تاپشۇرۇۋالدى. نىقابلانغان ھۇجۇم دەپ قاراشقا بولىدۇ. باشقۇرغۇچى بىلەن ئالاقە "
 "قىلىڭ."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:492
+#: ../camel/providers/pop3/camel-pop3-store.c:510
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4381,7 +4420,7 @@ msgstr ""
 "ئىمنى ئەۋەتىشتە خاتالىق كۆرۈلدى: %s"
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
-#: ../camel/providers/pop3/camel-pop3-store.c:505
+#: ../camel/providers/pop3/camel-pop3-store.c:523
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4391,7 +4430,7 @@ msgstr ""
 "ئىشلەتكۈچى ئاتى %s ئەۋەتىشتە خاتالىق كۆرۈلدى"
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
-#: ../camel/providers/pop3/camel-pop3-store.c:518
+#: ../camel/providers/pop3/camel-pop3-store.c:535
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4400,27 +4439,27 @@ msgstr ""
 "POP مۇلازىمېتىرى %s غا باغلانغىلى بولمىدى.\n"
 "ئىم %s نى ئەۋەتىشتە خاتالىق كۆرۈلدى"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:558
+#: ../camel/providers/pop3/camel-pop3-store.c:578
 #, c-format
 msgid "POP3 server %s"
 msgstr "POP3 مۇلازىمېتىرى %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:562
+#: ../camel/providers/pop3/camel-pop3-store.c:581
 #, c-format
 msgid "POP3 server for %s on %s"
 msgstr "%s نىڭ %s دىكى POP3 مۇلازىمېتىرى"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:693
+#: ../camel/providers/pop3/camel-pop3-store.c:711
 #, c-format
 msgid "Could not connect to POP server %s"
 msgstr "POP مۇلازىمېتىرى %s غا باغلىنالمىدى."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:720
+#: ../camel/providers/pop3/camel-pop3-store.c:738
 #, c-format
 msgid "No such folder '%s'."
 msgstr "`%s' بۇنداق قىسقۇچ يوق"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:737
+#: ../camel/providers/pop3/camel-pop3-store.c:755
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr "POP3 ساقلىغۇچىدا قىسقۇچ قۇرۇلمىسى يوق"
@@ -4481,51 +4520,65 @@ msgid "sendmail exited with status %d: mail not sent."
 msgstr ""
 "sendmail پروگراممىسى %d دېگەن ھالەت بىلەن ئاخىرلىشىپ كەتتى: خەت ئەۋەتىلمىدى."
 
+#: ../camel/providers/smtp/camel-smtp-provider.c:42
+msgid "Default SMTP port"
+msgstr ""
+
 #: ../camel/providers/smtp/camel-smtp-provider.c:43
+#, fuzzy
+#| msgid "SMTP server %s"
+msgid "SMTP over SSL"
+msgstr "SMTP مۇلازىمېتىرى %s"
+
+#: ../camel/providers/smtp/camel-smtp-provider.c:44
+msgid "Message submission port"
+msgstr ""
+
+#: ../camel/providers/smtp/camel-smtp-provider.c:50
 msgid "SMTP"
 msgstr "SMTP"
 
-#: ../camel/providers/smtp/camel-smtp-provider.c:45
+#: ../camel/providers/smtp/camel-smtp-provider.c:52
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr ""
 "SMTP نى ئىشلىتىپ، يىراقتىكى mailhub غا باغلىنىپ، خەتلەرنى يەتكۈزۈش ئۈچۈن "
 "ئىشلىتىلىدۇ."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:193
-#: ../camel/providers/smtp/camel-smtp-transport.c:200
+#: ../camel/providers/smtp/camel-smtp-transport.c:196
+#: ../camel/providers/smtp/camel-smtp-transport.c:203
 msgid "Welcome response error: "
 msgstr "مەرھابا دېگەن جاۋاب خاتا: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:237
-#: ../camel/providers/smtp/camel-smtp-transport.c:277
-#: ../camel/providers/smtp/camel-smtp-transport.c:284
+#: ../camel/providers/smtp/camel-smtp-transport.c:240
+#: ../camel/providers/smtp/camel-smtp-transport.c:280
+#: ../camel/providers/smtp/camel-smtp-transport.c:287
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
 msgstr "SMTP مۇلازىمېتىرى %s غا بىخەتەر ھالەتتە باغلىنىش مەغلۇپ بولدى: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:246
-#: ../camel/providers/smtp/camel-smtp-transport.c:259
-#: ../camel/providers/smtp/camel-smtp-transport.c:266
+#: ../camel/providers/smtp/camel-smtp-transport.c:249
+#: ../camel/providers/smtp/camel-smtp-transport.c:262
+#: ../camel/providers/smtp/camel-smtp-transport.c:269
 msgid "STARTTLS command failed: "
 msgstr "STARTTLS بۇيرۇقى مەغلۇپ بولدى: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:357
+#: ../camel/providers/smtp/camel-smtp-transport.c:367
 #, c-format
 msgid "SMTP server %s"
 msgstr "SMTP مۇلازىمېتىرى %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:361
+#: ../camel/providers/smtp/camel-smtp-transport.c:371
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "SMTP خەتلىرىنى %s ئارىلىق يەتكۈزىدۇ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:408
+#: ../camel/providers/smtp/camel-smtp-transport.c:422
 #, c-format
 msgid "SMTP server %s does not support requested authentication type %s."
 msgstr ""
 "SMTP مۇلازىمېتىرى %s تەلەپ قىلىنغان سالاھىيەت دەلىللەش تىپى %s نى قوللىمايدۇ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:495
+#: ../camel/providers/smtp/camel-smtp-transport.c:524
 #, c-format
 msgid ""
 "Unable to authenticate to SMTP server.\n"
@@ -4536,192 +4589,187 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:613
+#: ../camel/providers/smtp/camel-smtp-transport.c:640
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "ئۇچۇرنى يوللىغىلى بولمىدى: مۇلازىمەتكە باغلانغىلى بولمىدى"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:620
+#: ../camel/providers/smtp/camel-smtp-transport.c:647
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "ئۇچۇرنى يوللىغىلى بولمىدى: ئەۋەتكۈچىنىڭ ئادرېسى ئىناۋەتسىز."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:624
+#: ../camel/providers/smtp/camel-smtp-transport.c:651
 msgid "Sending message"
 msgstr "ئۇچۇر يوللاۋاتىدۇ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:649
+#: ../camel/providers/smtp/camel-smtp-transport.c:676
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "ئۇچۇرنى يوللىغىلى بولمىدى: تاپشۇرۇپ ئالغۇچى يوق."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:662
+#: ../camel/providers/smtp/camel-smtp-transport.c:689
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "ئۇچۇرنى يوللىغىلى بولمىدى: كەم دېگەندە بىر تاپشۇرۇۋالغۇچى ئىناۋەتسىز"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:725
+#: ../camel/providers/smtp/camel-smtp-transport.c:752
 msgid "Syntax error, command unrecognized"
 msgstr "گرامماتىكىلىق خاتالىق، بۇيرۇق ناتونۇش"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:727
+#: ../camel/providers/smtp/camel-smtp-transport.c:754
 msgid "Syntax error in parameters or arguments"
 msgstr "پارامېتىردا ياكى تاللانمىدا گرامماتىكا خاتالىقى بار"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:729
+#: ../camel/providers/smtp/camel-smtp-transport.c:756
 msgid "Command not implemented"
 msgstr "بۇيرۇقنى تېخى ئىشلەتكىلى بولمايدۇ."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:731
+#: ../camel/providers/smtp/camel-smtp-transport.c:758
 msgid "Command parameter not implemented"
 msgstr "بۇيرۇق پارامېتىرىنى تېخى ئىشلەتكىلى بولمايدۇ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:733
+#: ../camel/providers/smtp/camel-smtp-transport.c:760
 msgid "System status, or system help reply"
 msgstr "سىستېما ھالىتى ياكى سىستېما ياردىمىنىڭ جاۋابى"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:735
+#: ../camel/providers/smtp/camel-smtp-transport.c:762
 msgid "Help message"
 msgstr "ياردەم ئۇچۇرى"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:737
+#: ../camel/providers/smtp/camel-smtp-transport.c:764
 msgid "Service ready"
 msgstr "مۇلازىمەت تەييار بولدى"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:739
+#: ../camel/providers/smtp/camel-smtp-transport.c:766
 msgid "Service closing transmission channel"
 msgstr "مۇلازىمەت يوللاش قانىلىنى يېپىۋاتىدۇ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:741
+#: ../camel/providers/smtp/camel-smtp-transport.c:768
 msgid "Service not available, closing transmission channel"
 msgstr "مۇلازىمەتنى ئىشلەتكىلى بولمايدۇ، يەتكۈزۈش قانىلىنى يېپىۋاتىدۇ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:743
+#: ../camel/providers/smtp/camel-smtp-transport.c:770
 msgid "Requested mail action okay, completed"
 msgstr "تەلەپ قىلىنغان خەت مەشغۇلاتى نورمال تاماملاندى"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:745
+#: ../camel/providers/smtp/camel-smtp-transport.c:772
 msgid "User not local; will forward to <forward-path>"
 msgstr "ئىشلەتكۈچى يەرلىك ئەمەس: <forward-path> غا يوللىنىدۇ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:747
+#: ../camel/providers/smtp/camel-smtp-transport.c:774
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr ""
 "تەلەپ قىلىنغان خەت مەشغۇلاتى تاماملانمىدى: خەت ساندۇقىنى ئىشلەتكىلى بولمايدۇ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:749
+#: ../camel/providers/smtp/camel-smtp-transport.c:776
 msgid "Requested action not taken: mailbox unavailable"
 msgstr ""
 "تەلەپ قىلىنغان مەشغۇلات تاماملانمىدى: خەت ساندۇقىنى ئىشلەتكىلى بولمايدۇ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:751
+#: ../camel/providers/smtp/camel-smtp-transport.c:778
 msgid "Requested action aborted: error in processing"
 msgstr ""
 "تەلەپ قىلىنغان مەشغۇلات توختىتىلدى: بىرتەرەپ قىلىش جەريانىدا خاتالىق كۆرۈلدى"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:753
+#: ../camel/providers/smtp/camel-smtp-transport.c:780
 msgid "User not local; please try <forward-path>"
 msgstr "ئىشلەتكۈچى يەرلىك ئەمەس؛ <forward-path> نى سىناپ كۆرۈڭ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:755
+#: ../camel/providers/smtp/camel-smtp-transport.c:782
 msgid "Requested action not taken: insufficient system storage"
 msgstr "تەلەپ قىلىنغان مەشغۇلات تاماملانمىدى: سىستېما ساقلىغۇچىسى يېتىشمىدى"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:757
+#: ../camel/providers/smtp/camel-smtp-transport.c:784
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr ""
 "تەلەپ قىلىنغان مەشغۇلات توختىتىلدى: تەقسىملەنگەن ساقلاش دائىرىسىدىن ئېشىپ "
 "كەتتى"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:759
+#: ../camel/providers/smtp/camel-smtp-transport.c:786
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr ""
 "تەلەپ قىلىنغان مەشغۇلات تاماملانمىدى: خەت ساندۇقى ئاتىغا رۇخسەت قىلىنمايدۇ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:761
+#: ../camel/providers/smtp/camel-smtp-transport.c:788
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "خەت كىرگۈزۈشنى باشلاڭ. ئاخىرلاشتۇرۇش ئۈچۈن <CRLF>.<CRLF> نى كىرگۈزۈڭ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:763
+#: ../camel/providers/smtp/camel-smtp-transport.c:790
 msgid "Transaction failed"
 msgstr "بىرتەرەپ قىلىش مەغلۇپ بولدى"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:767
+#: ../camel/providers/smtp/camel-smtp-transport.c:794
 msgid "A password transition is needed"
 msgstr "ئىم ئۆزگەرتىش زۆرۈر"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:769
+#: ../camel/providers/smtp/camel-smtp-transport.c:796
 msgid "Authentication mechanism is too weak"
 msgstr "سالاھىيەت دەلىللەش مېخانىزمى بەك ئاجىز"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:771
+#: ../camel/providers/smtp/camel-smtp-transport.c:798
 msgid "Encryption required for requested authentication mechanism"
 msgstr "تەلەپ قىلىنغان سالاھىيەت دەلىللەش مېخانىزمى ئۈچۈن شىفىرلاش زۆرۈر"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:773
+#: ../camel/providers/smtp/camel-smtp-transport.c:800
 msgid "Temporary authentication failure"
 msgstr "ۋاقىتلىق سالاھىيەت دەلىللەش خاتالىقى"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1030
+#: ../camel/providers/smtp/camel-smtp-transport.c:1057
 msgid "SMTP Greeting"
 msgstr "SMTP سالىمى"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1057
-#: ../camel/providers/smtp/camel-smtp-transport.c:1074
-#: ../camel/providers/smtp/camel-smtp-transport.c:1082
+#: ../camel/providers/smtp/camel-smtp-transport.c:1084
+#: ../camel/providers/smtp/camel-smtp-transport.c:1101
+#: ../camel/providers/smtp/camel-smtp-transport.c:1109
 msgid "HELO command failed: "
 msgstr "HELO بۇيرۇقى مەغلۇپ بولدى: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1150
+#: ../camel/providers/smtp/camel-smtp-transport.c:1178
 msgid "SMTP Authentication"
 msgstr "SMTP سالاھىيەت دەلىللىشى"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1157
-#, c-format
-msgid "Error creating SASL authentication object."
-msgstr "SASL سالاھىيەت دەلىللەش نەڭىنى قۇرۇش مەغلۇپ بولدى."
-
-#: ../camel/providers/smtp/camel-smtp-transport.c:1176
-#: ../camel/providers/smtp/camel-smtp-transport.c:1187
-#: ../camel/providers/smtp/camel-smtp-transport.c:1196
+#: ../camel/providers/smtp/camel-smtp-transport.c:1197
+#: ../camel/providers/smtp/camel-smtp-transport.c:1208
+#: ../camel/providers/smtp/camel-smtp-transport.c:1217
 msgid "AUTH command failed: "
 msgstr "AUTH بۇيرۇقى مەغلۇپ بولدى: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1304
-#: ../camel/providers/smtp/camel-smtp-transport.c:1318
-#: ../camel/providers/smtp/camel-smtp-transport.c:1327
+#: ../camel/providers/smtp/camel-smtp-transport.c:1325
+#: ../camel/providers/smtp/camel-smtp-transport.c:1339
+#: ../camel/providers/smtp/camel-smtp-transport.c:1348
 msgid "MAIL FROM command failed: "
 msgstr "MAIL FROM بۇيرۇقى مەغلۇپ بولدى "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1354
+#: ../camel/providers/smtp/camel-smtp-transport.c:1375
 msgid "RCPT TO command failed: "
 msgstr "RCPT TO بۇيرۇقى مەغلۇپ بولدى: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1370
-#: ../camel/providers/smtp/camel-smtp-transport.c:1379
+#: ../camel/providers/smtp/camel-smtp-transport.c:1391
+#: ../camel/providers/smtp/camel-smtp-transport.c:1400
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> مەغلۇپ بولدى: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1421
-#: ../camel/providers/smtp/camel-smtp-transport.c:1431
-#: ../camel/providers/smtp/camel-smtp-transport.c:1441
-#: ../camel/providers/smtp/camel-smtp-transport.c:1500
-#: ../camel/providers/smtp/camel-smtp-transport.c:1519
-#: ../camel/providers/smtp/camel-smtp-transport.c:1532
+#: ../camel/providers/smtp/camel-smtp-transport.c:1442
+#: ../camel/providers/smtp/camel-smtp-transport.c:1452
+#: ../camel/providers/smtp/camel-smtp-transport.c:1462
+#: ../camel/providers/smtp/camel-smtp-transport.c:1521
 #: ../camel/providers/smtp/camel-smtp-transport.c:1540
+#: ../camel/providers/smtp/camel-smtp-transport.c:1553
+#: ../camel/providers/smtp/camel-smtp-transport.c:1561
 msgid "DATA command failed: "
 msgstr "DATA بۇيرۇقى مەغلۇپ بولدى: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1565
-#: ../camel/providers/smtp/camel-smtp-transport.c:1579
-#: ../camel/providers/smtp/camel-smtp-transport.c:1587
+#: ../camel/providers/smtp/camel-smtp-transport.c:1586
+#: ../camel/providers/smtp/camel-smtp-transport.c:1600
+#: ../camel/providers/smtp/camel-smtp-transport.c:1608
 msgid "RSET command failed: "
 msgstr "RSET بۇيرۇقى مەغلۇپ بولدى: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1612
-#: ../camel/providers/smtp/camel-smtp-transport.c:1626
 #: ../camel/providers/smtp/camel-smtp-transport.c:1633
+#: ../camel/providers/smtp/camel-smtp-transport.c:1647
+#: ../camel/providers/smtp/camel-smtp-transport.c:1654
 msgid "QUIT command failed: "
 msgstr "QUIT بۇيرۇقى مەغلۇپ بولدى "
 
@@ -5166,6 +5214,16 @@ msgstr "مۇلازىمېتىردىن جاۋاب يوق"
 #: ../servers/groupwise/e-gw-connection.c:239
 msgid "Bad parameter"
 msgstr "خاتا پارامېتىر"
+
+#~ msgid ""
+#~ "Could not create directory %s:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "مۇندەرىجە %s نى قۇرۇغىلى بولمىدى:\n"
+#~ "%s"
+
+#~ msgid "Cannot get folder: Invalid operation on this store"
+#~ msgstr "قىسقۇچقا ئېرىشكىلى بولمىدى: بۇ يەردىكى ئىناۋەتسىز مەشغۇلات"
 
 #~ msgid "Verifying message"
 #~ msgstr "ئۇچۇرنى تەكشۈرۈۋاتىدۇ"
