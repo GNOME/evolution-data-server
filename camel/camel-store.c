@@ -1999,68 +1999,6 @@ camel_store_folder_is_subscribed (CamelStore *store,
 }
 
 /**
- * camel_store_folder_uri_equal:
- * @store: a #CamelStore
- * @uri0: a folder uri
- * @uri1: another folder uri
- *
- * Compares two folder uris to check that they are equal.
- *
- * Returns: %TRUE if they are equal or %FALSE otherwise
- **/
-gint
-camel_store_folder_uri_equal (CamelStore *store,
-                              const gchar *uri0,
-                              const gchar *uri1)
-{
-	CamelStoreClass *class;
-	CamelProvider *provider;
-	CamelURL *url0, *url1;
-	gint equal;
-
-	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
-	g_return_val_if_fail (uri0 && uri1, FALSE);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->compare_folder_name != NULL, FALSE);
-
-	provider = camel_service_get_provider (CAMEL_SERVICE (store));
-
-	if (!(url0 = camel_url_new (uri0, NULL)))
-		return FALSE;
-
-	if (!(url1 = camel_url_new (uri1, NULL))) {
-		camel_url_free (url0);
-		return FALSE;
-	}
-
-	if ((equal = provider->url_equal (url0, url1))) {
-		const gchar *name0, *name1;
-
-		if (provider->url_flags & CAMEL_URL_FRAGMENT_IS_PATH) {
-			name0 = url0->fragment;
-			name1 = url1->fragment;
-		} else {
-			name0 = url0->path && url0->path[0] == '/' ? url0->path + 1 : url0->path;
-			name1 = url1->path && url1->path[0] == '/' ? url1->path + 1 : url1->path;
-		}
-
-		if (name0 == NULL)
-			g_warning("URI is badly formed, missing folder name: %s", uri0);
-
-		if (name1 == NULL)
-			g_warning("URI is badly formed, missing folder name: %s", uri1);
-
-		equal = name0 && name1 && class->compare_folder_name (name0, name1);
-	}
-
-	camel_url_free (url0);
-	camel_url_free (url1);
-
-	return equal;
-}
-
-/**
  * camel_store_can_refresh_folder
  * @store: a #CamelStore
  * @info: a #CamelFolderInfo

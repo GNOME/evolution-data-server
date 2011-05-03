@@ -330,17 +330,6 @@ CamelStore
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_store_folder_uri_equal ##### -->
-<para>
-
-</para>
-
-@store: 
-@uri0: 
-@uri1: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_store_can_refresh_folder ##### -->
 <para>
 

@@ -482,9 +482,6 @@ gboolean	camel_store_supports_subscriptions
 						(CamelStore *store);
 gboolean	camel_store_folder_is_subscribed (CamelStore *store,
 						 const gchar *folder_name);
-gint		camel_store_folder_uri_equal	(CamelStore *store,
-						 const gchar *uri0,
-						 const gchar *uri1);
 gboolean	camel_store_can_refresh_folder	(CamelStore *store,
 						 CamelFolderInfo *info,
 						 GError **error);
