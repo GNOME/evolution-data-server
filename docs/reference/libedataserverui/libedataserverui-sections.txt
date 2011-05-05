@@ -26,6 +26,52 @@ e_categories_dialog_get_type
 </SECTION>
 
 <SECTION>
+<FILE>e-categories-editor</FILE>
+<TITLE>ECategoriesEditor</TITLE>
+ECategoriesEditor
+e_categories_editor_new
+e_categories_editor_get_categories
+e_categories_editor_set_categories
+e_categories_editor_get_entry_visible
+e_categories_editor_set_entry_visible
+<SUBSECTION Standard>
+E_CATEGORIES_EDITOR
+E_IS_CATEGORIES_EDITOR
+E_TYPE_CATEGORIES_EDITOR
+E_CATEGORIES_EDITOR_CLASS
+E_IS_CATEGORIES_EDITOR_CLASS
+E_CATEGORIES_EDITOR_GET_CLASS
+ECategoriesEditorClass
+<SUBSECTION Private>
+ECategoriesEditorPrivate
+e_categories_editor_get_type
+</SECTION>
+
+<SECTION>
+<FILE>e-categories-selector</FILE>
+<TITLE>ECategoriesSelector</TITLE>
+ECategoriesSelector
+e_categories_selector_new
+e_categories_selector_get_checked
+e_categories_selector_set_checked
+e_categories_selector_get_items_checkable
+e_categories_selector_set_items_checkable
+e_categories_selector_delete_selection
+e_categories_selector_get_selected
+<SUBSECTION Standard>
+E_CATEGORIES_SELECTOR
+E_IS_CATEGORIES_SELECTOR
+E_TYPE_CATEGORIES_SELECTOR
+E_CATEGORIES_SELECTOR_CLASS
+E_IS_CATEGORIES_SELECTOR_CLASS
+E_CATEGORIES_SELECTOR_GET_CLASS
+ECategoriesSelectorClass
+<SUBSECTION Private>
+ECategoriesSelectorPrivate
+e_categories_selector_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-category-completion</FILE>
 <TITLE>ECategoryCompletion</TITLE>
 ECategoryCompletion
@@ -41,6 +87,26 @@ ECategoryCompletionClass
 <SUBSECTION Private>
 ECategoryCompletionPrivate
 e_category_completion_get_type
+</SECTION>
+
+<SECTION>
+<FILE>e-category-editor</FILE>
+<TITLE>ECategoryEditor</TITLE>
+ECategoryEditor
+e_category_editor_new
+e_category_editor_create_category
+e_category_editor_edit_category
+<SUBSECTION Standard>
+E_CATEGORY_EDITOR
+E_IS_CATEGORY_EDITOR
+E_TYPE_CATEGORY_EDITOR
+E_CATEGORY_EDITOR_CLASS
+E_IS_CATEGORY_EDITOR_CLASS
+E_CATEGORY_EDITOR_GET_CLASS
+ECategoryEditorClass
+<SUBSECTION Private>
+ECategoryEditorPrivate
+e_category_editor_get_type
 </SECTION>
 
 <SECTION>

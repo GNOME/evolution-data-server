@@ -1,4 +1,7 @@
 #include <libedataserverui/e-categories-dialog.h>
+#include <libedataserverui/e-categories-editor.h>
+#include <libedataserverui/e-categories-selector.h>
+#include <libedataserverui/e-category-editor.h>
 #include <libedataserverui/e-contact-store.h>
 #include <libedataserverui/e-destination-store.h>
 #include <libedataserverui/e-name-selector.h>
@@ -12,6 +15,9 @@
 #include <libedataserverui/e-tree-model-generator.h>
 
 e_categories_dialog_get_type
+e_categories_editor_get_type
+e_categories_selector_get_type
+e_category_editor_get_type
 e_contact_store_get_type
 e_destination_store_get_type
 e_name_selector_get_type

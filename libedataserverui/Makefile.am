@@ -17,7 +17,10 @@ lib_LTLIBRARIES = libedataserverui-3.0.la
 
 libedataserveruiinclude_HEADERS =	\
 	e-categories-dialog.h		\
+	e-categories-editor.h		\
+	e-categories-selector.h		\
 	e-category-completion.h		\
+	e-category-editor.h		\
 	e-destination-store.h		\
 	e-book-auth-util.h		\
 	e-contact-store.h		\
@@ -44,7 +47,10 @@ endif
 libedataserverui_3_0_la_SOURCES =	\
 	$(MARSHAL_GENERATED)		\
 	e-categories-dialog.c		\
+	e-categories-editor.c		\
+	e-categories-selector.c		\
 	e-category-completion.c		\
+	e-category-editor.c		\
 	e-destination-store.c		\
 	e-book-auth-util.c		\
 	e-contact-store.c		\
