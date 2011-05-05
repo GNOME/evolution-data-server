@@ -1431,7 +1431,6 @@ addressbook/backends/file/Makefile
 addressbook/backends/vcf/Makefile
 addressbook/backends/ldap/Makefile
 addressbook/backends/google/Makefile
-addressbook/backends/groupwise/Makefile
 addressbook/backends/webdav/Makefile
 art/Makefile
 calendar/Makefile
@@ -1443,13 +1442,11 @@ calendar/libegdbus/Makefile
 calendar/backends/Makefile
 calendar/backends/caldav/Makefile
 calendar/backends/file/Makefile
-calendar/backends/groupwise/Makefile
 calendar/backends/http/Makefile
 calendar/backends/contacts/Makefile
 calendar/backends/weather/Makefile
 camel/Makefile
 camel/providers/Makefile
-camel/providers/groupwise/Makefile
 camel/providers/imap/Makefile
 camel/providers/imapx/Makefile
 camel/providers/local/Makefile
@@ -1473,9 +1470,6 @@ libedataserver/eds-version.h
 libedataserver/libedataserver.pc
 libedataserverui/Makefile
 libedataserverui/libedataserverui.pc
-servers/Makefile
-servers/groupwise/Makefile
-servers/groupwise/libegroupwise.pc
 tests/Makefile
 tests/libebook/Makefile
 tests/libebook/vcard/Makefile
