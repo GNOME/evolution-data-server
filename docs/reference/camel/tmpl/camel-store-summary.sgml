@@ -70,7 +70,6 @@ CamelStoreSummary
 </para>
 
 @CAMEL_STORE_SUMMARY_DIRTY: 
-@CAMEL_STORE_SUMMARY_FRAGMENT: 
 
 <!-- ##### FUNCTION camel_store_summary_new ##### -->
 <para>
