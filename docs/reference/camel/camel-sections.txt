@@ -403,7 +403,6 @@ camel_filter_driver_add_rule
 camel_filter_driver_remove_rule_by_name
 camel_filter_driver_flush
 camel_filter_driver_filter_message
-camel_filter_driver_filter_mbox
 camel_filter_driver_filter_folder
 <SUBSECTION Standard>
 CAMEL_FILTER_DRIVER

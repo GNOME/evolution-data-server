@@ -117,11 +117,6 @@ gint		camel_filter_driver_filter_message
 						 const gchar *original_source_url,
 						 GCancellable *cancellable,
 						 GError **error);
-gint		camel_filter_driver_filter_mbox	(CamelFilterDriver *driver,
-						 const gchar *mbox,
-						 const gchar *original_source_url,
-						 GCancellable *cancellable,
-						 GError **error);
 gint		camel_filter_driver_filter_folder
 						(CamelFilterDriver *driver,
 						 CamelFolder *folder,
