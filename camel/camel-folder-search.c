@@ -1833,9 +1833,20 @@ search_message_location (struct _ESExp *f, gint argc, struct _ESExpResult **argv
 
 	if (argc == 1 && argv[0]->type == ESEXP_RES_STRING) {
 		if (argv[0]->value.string && search->folder) {
-			const gchar *furi = camel_folder_get_uri (search->folder);
+			CamelStore *store;
+			const gchar *name;
+			const gchar *uid;
+			gchar *uri;
 
-			same = g_str_equal (furi ? furi : "", argv[0]->value.string);
+			/* FIXME Folder URI formats are Evolution-specific
+			 *       knowledge and doesn't belong here! */
+			store = camel_folder_get_parent_store (search->folder);
+			name = camel_folder_get_full_name (search->folder);
+			uid = camel_service_get_uid (CAMEL_SERVICE (store));
+
+			uri = g_strdup_printf ("folder://%s/%s", uid, name);
+			same = g_str_equal (uri, argv[0]->value.string);
+			g_free (uri);
 		}
 	}
 
