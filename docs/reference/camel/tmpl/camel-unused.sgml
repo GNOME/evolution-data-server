@@ -3268,6 +3268,12 @@ streams
 </para>
 
 
+<!-- ##### ARG CamelFolder:uri ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### STRUCT CamelGroupwiseFolder ##### -->
 <para>
 
@@ -5439,6 +5445,14 @@ streams
 @parent_store: 
 @full_name: 
 @name: 
+
+<!-- ##### FUNCTION camel_folder_get_uri ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
 
 <!-- ##### FUNCTION camel_folder_summary_array_free ##### -->
 <para>

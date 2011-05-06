@@ -62,7 +62,6 @@ struct _CamelFolderPrivate {
 	gchar *name;
 	gchar *full_name;
 	gchar *description;
-	gchar *uri;
 };
 
 struct _AsyncContext {
@@ -105,8 +104,7 @@ enum {
 	PROP_DESCRIPTION,
 	PROP_FULL_NAME,
 	PROP_NAME,
-	PROP_PARENT_STORE,
-	PROP_URI
+	PROP_PARENT_STORE
 };
 
 enum {
@@ -476,12 +474,6 @@ folder_get_property (GObject *object,
 				value, camel_folder_get_parent_store (
 				CAMEL_FOLDER (object)));
 			return;
-
-		case PROP_URI:
-			g_value_set_string (
-				value, camel_folder_get_uri (
-				CAMEL_FOLDER (object)));
-			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -519,7 +511,6 @@ folder_finalize (GObject *object)
 	g_free (priv->name);
 	g_free (priv->full_name);
 	g_free (priv->description);
-	g_free (priv->uri);
 
 	camel_folder_change_info_free (priv->changed_frozen);
 
@@ -1589,23 +1580,6 @@ camel_folder_class_init (CamelFolderClass *class)
 			G_PARAM_CONSTRUCT_ONLY));
 
 	/**
-	 * CamelFolder:uri
-	 *
-	 * The folder's URI.
-	 *
-	 * Since: 3.0
-	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_URI,
-		g_param_spec_string (
-			"uri",
-			"URI",
-			"The folder's URI",
-			NULL,
-			G_PARAM_READABLE));
-
-	/**
 	 * CamelFolder::changed
 	 * @folder: the #CamelFolder which emitted the signal
 	 **/
@@ -1783,22 +1757,12 @@ void
 camel_folder_set_full_name (CamelFolder *folder,
                             const gchar *full_name)
 {
-	GObject *object;
-
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
 	g_free (folder->priv->full_name);
 	folder->priv->full_name = g_strdup (full_name);
 
-	/* The URI property will need to be reconstructed. */
-	g_free (folder->priv->uri);
-	folder->priv->uri = NULL;
-
-	object = G_OBJECT (folder);
-	g_object_freeze_notify (object);
-	g_object_notify (object, "full-name");
-	g_object_notify (object, "uri");
-	g_object_thaw_notify (object);
+	g_object_notify (G_OBJECT (folder), "full-name");
 }
 
 /**
@@ -1856,57 +1820,6 @@ camel_folder_get_parent_store (CamelFolder *folder)
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 
 	return folder->priv->parent_store;
-}
-
-/**
- * camel_folder_get_uri:
- * @folder: a #CamelFolder
- *
- * Returns the folder's URI.
- *
- * Returns: the folder's URI
- *
- * Since: 3.0
- **/
-const gchar *
-camel_folder_get_uri (CamelFolder *folder)
-{
-	CamelService *service;
-	CamelProvider *provider;
-	CamelStore *parent_store;
-	const gchar *full_name;
-	CamelURL *url;
-
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
-
-	/* The URI is constructed on demand and then cached. */
-
-	if (folder->priv->uri != NULL)
-		goto exit;
-
-	full_name = camel_folder_get_full_name (folder);
-	parent_store = camel_folder_get_parent_store (folder);
-
-	service = CAMEL_SERVICE (parent_store);
-	provider = camel_service_get_provider (service);
-
-	url = camel_url_copy (camel_service_get_camel_url (service));
-
-	if (provider->url_flags & CAMEL_URL_FRAGMENT_IS_PATH) {
-		camel_url_set_fragment (url, full_name);
-	} else {
-		gchar *path = g_strdup_printf ("/%s", full_name);
-		camel_url_set_path (url, path);
-		g_free (path);
-	}
-
-	g_free (folder->priv->uri);
-	folder->priv->uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
-
-	camel_url_free (url);
-
-exit:
-	return folder->priv->uri;
 }
 
 /**

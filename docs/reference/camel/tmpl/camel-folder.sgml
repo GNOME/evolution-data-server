@@ -82,11 +82,6 @@ CamelFolder
 
 </para>
 
-<!-- ##### ARG CamelFolder:uri ##### -->
-<para>
-
-</para>
-
 <!-- ##### MACRO CAMEL_FOLDER_ERROR ##### -->
 <para>
 
@@ -199,15 +194,6 @@ CamelFolder
 
 @folder: 
 @description: 
-
-
-<!-- ##### FUNCTION camel_folder_get_uri ##### -->
-<para>
-
-</para>
-
-@folder: 
-@Returns: 
 
 
 <!-- ##### FUNCTION camel_folder_get_permanent_flags ##### -->
