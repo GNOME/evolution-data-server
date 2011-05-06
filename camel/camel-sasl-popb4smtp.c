@@ -69,12 +69,10 @@ sasl_popb4smtp_challenge_sync (CamelSasl *sasl,
 	CamelSession *session;
 	time_t now, *timep;
 	const gchar *type_name;
-	const gchar *uid;
 	gchar *pop_uid;
 
 	service = camel_sasl_get_service (sasl);
 	session = camel_service_get_session (service);
-	uid = camel_service_get_uid (service);
 
 	camel_sasl_set_authenticated (sasl, FALSE);
 
