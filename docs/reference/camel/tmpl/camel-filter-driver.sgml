@@ -155,8 +155,8 @@ CamelFilterDriver
 @info: 
 @uid: 
 @source: 
-@source_url: 
-@original_source_url: 
+@store_uid: 
+@original_store_uid: 
 @cancellable: 
 @error: 
 @Returns: 

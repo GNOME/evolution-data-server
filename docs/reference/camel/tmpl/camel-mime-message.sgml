@@ -212,7 +212,7 @@ CamelMimeMessage
 </para>
 
 @message: 
-@identity: 
+@source_uid: 
 
 
 <!-- ##### FUNCTION camel_mime_message_get_source ##### -->

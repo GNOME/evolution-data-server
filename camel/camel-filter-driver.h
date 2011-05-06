@@ -113,8 +113,8 @@ gint		camel_filter_driver_filter_message
 						 CamelMessageInfo *info,
 						 const gchar *uid,
 						 CamelFolder *source,
-						 const gchar *source_url,
-						 const gchar *original_source_url,
+						 const gchar *store_uid,
+						 const gchar *original_store_uid,
 						 GCancellable *cancellable,
 						 GError **error);
 gint		camel_filter_driver_filter_folder

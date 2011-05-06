@@ -464,11 +464,9 @@ static ESExpResult *
 header_source (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessageSearch *fms)
 {
 	CamelMimeMessage *message;
+	CamelService *service = NULL;
 	ESExpResult *r;
 	const gchar *src;
-	gint truth = FALSE, i;
-	CamelProvider *provider;
-	CamelURL *uria, *urib;
 
 	if (fms->source) {
 		src = fms->source;
@@ -477,24 +475,30 @@ header_source (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMe
 		src = camel_mime_message_get_source (message);
 	}
 
-	if (src
-	    && (provider = camel_provider_get (src, NULL))
-	    && provider->url_equal) {
-		uria = camel_url_new (src, NULL);
-		if (uria) {
-			for (i=0;i<argc && !truth;i++) {
-				if (argv[i]->type == ESEXP_RES_STRING
-				    && (urib = camel_url_new (argv[i]->value.string, NULL))) {
-					truth = provider->url_equal (uria, urib);
-					camel_url_free (urib);
-				}
-			}
-			camel_url_free (uria);
-		}
+	/* Source strings are now CamelService UIDs. */
+	if (src != NULL)
+		service = camel_session_get_service (fms->session, src);
+
+	/* For backward-compability, also handle CamelService URLs. */
+	if (service == NULL && src != NULL) {
+		CamelURL *url;
+
+		url = camel_url_new (src, NULL);
+
+		if (service == NULL && url != NULL)
+			service = camel_session_get_service_by_url (
+				fms->session, url, CAMEL_PROVIDER_STORE);
+
+		if (service == NULL && url != NULL)
+			service = camel_session_get_service_by_url (
+				fms->session, url, CAMEL_PROVIDER_TRANSPORT);
+
+		if (url != NULL)
+			camel_url_free (url);
 	}
 
 	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.boolean = truth;
+	r->value.boolean = (service != NULL);
 
 	return r;
 }

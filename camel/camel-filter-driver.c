@@ -48,6 +48,7 @@
 #include "camel-mime-message.h"
 #include "camel-service.h"
 #include "camel-session.h"
+#include "camel-store.h"
 #include "camel-stream-fs.h"
 #include "camel-stream-mem.h"
 
@@ -1197,25 +1198,6 @@ camel_filter_driver_flush (CamelFilterDriver *driver,
 		g_propagate_error (error, data.error);
 }
 
-static gint
-decode_flags_from_xev (const gchar *xev, CamelMessageInfoBase *mi)
-{
-	guint32 uid, flags = 0;
-	gchar *header;
-
-	/* check for uid/flags */
-	header = camel_header_token_decode (xev);
-	if (!(header && strlen(header) == strlen("00000000-0000")
-	    && sscanf(header, "%08x-%04x", &uid, &flags) == 2)) {
-		g_free (header);
-		return 0;
-	}
-	g_free (header);
-
-	mi->flags = flags;
-	return 0;
-}
-
 /**
  * camel_filter_driver_filter_folder:
  * @driver: CamelFilterDriver
@@ -1246,17 +1228,13 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 	CamelFilterDriverPrivate *p = driver->priv;
 	gboolean freeuids = FALSE;
 	CamelMessageInfo *info;
-	gchar *source_url, *service_url;
+	CamelStore *parent_store;
+	const gchar *store_uid;
 	gint status = 0;
-	CamelURL *url;
 	gint i;
 
-	service_url = camel_service_get_url (CAMEL_SERVICE (camel_folder_get_parent_store (folder)));
-	url = camel_url_new (service_url, NULL);
-	g_free (service_url);
-
-	source_url = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
-	camel_url_free (url);
+	parent_store = camel_folder_get_parent_store (folder);
+	store_uid = camel_service_get_uid (CAMEL_SERVICE (parent_store));
 
 	if (uids == NULL) {
 		uids = camel_folder_get_uids (folder);
@@ -1277,7 +1255,7 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 
 		status = camel_filter_driver_filter_message (
 			driver, NULL, info, uids->pdata[i], folder,
-			source_url, source_url, cancellable, &local_error);
+			store_uid, store_uid, cancellable, &local_error);
 
 		if (camel_folder_has_summary_capability (folder))
 			camel_folder_free_message_info (folder, info);
@@ -1314,41 +1292,37 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 	if (freeuids)
 		camel_folder_free_uids (folder, uids);
 
-	g_free (source_url);
-
 	return status;
 }
 
 struct _get_message {
-	struct _CamelFilterDriverPrivate *p;
-	const gchar *source_url;
+	struct _CamelFilterDriverPrivate *priv;
+	const gchar *store_uid;
 };
 
 static CamelMimeMessage *
 get_message_cb (gpointer data, GError **error)
 {
 	struct _get_message *msgdata = data;
-	struct _CamelFilterDriverPrivate *p = msgdata->p;
-	const gchar *source_url = msgdata->source_url;
 	CamelMimeMessage *message;
 
-	if (p->message) {
-		message = g_object_ref (p->message);
+	if (msgdata->priv->message) {
+		message = g_object_ref (msgdata->priv->message);
 	} else {
 		const gchar *uid;
 
-		if (p->uid)
-			uid = p->uid;
+		if (msgdata->priv->uid != NULL)
+			uid = msgdata->priv->uid;
 		else
-			uid = camel_message_info_uid (p->info);
+			uid = camel_message_info_uid (msgdata->priv->info);
 
 		/* FIXME Pass a GCancellable */
 		message = camel_folder_get_message_sync (
-			p->source, uid, NULL, error);
+			msgdata->priv->source, uid, NULL, error);
 	}
 
-	if (source_url && message && camel_mime_message_get_source (message) == NULL)
-		camel_mime_message_set_source (message, source_url);
+	if (message != NULL && camel_mime_message_get_source (message) == NULL)
+		camel_mime_message_set_source (message, msgdata->store_uid);
 
 	return message;
 }
@@ -1360,8 +1334,8 @@ get_message_cb (gpointer data, GError **error)
  * @info: message info or NULL
  * @uid: message uid or NULL
  * @source: source folder or NULL
- * @source_url: url of source folder or NULL
- * @original_source_url: url of original source folder (pre-movemail) or NULL
+ * @store_uid: UID of source store, or %NULL
+ * @original_store_uid: UID of source store (pre-movemail), or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -1381,8 +1355,8 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
                                     CamelMessageInfo *info,
                                     const gchar *uid,
                                     CamelFolder *source,
-                                    const gchar *source_url,
-                                    const gchar *original_source_url,
+                                    const gchar *store_uid,
+                                    const gchar *original_store_uid,
                                     GCancellable *cancellable,
                                     GError **error)
 {
@@ -1433,8 +1407,8 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 	p->uid = uid;
 	p->source = source;
 
-	if (message && original_source_url && camel_mime_message_get_source (message) == NULL)
-		camel_mime_message_set_source (message, original_source_url);
+	if (message != NULL && camel_mime_message_get_source (message) == NULL)
+		camel_mime_message_set_source (message, original_store_uid);
 
 	node = (struct _filter_rule *) p->rules.head;
 	result = CAMEL_SEARCH_NOMATCH;
@@ -1443,13 +1417,15 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 
 		d(printf("applying rule %s\naction %s\n", node->match, node->action));
 
-		data.p = p;
-		data.source_url = original_source_url;
+		data.priv = p;
+		data.store_uid = original_store_uid;
+
+		if (original_store_uid == NULL)
+			original_store_uid = store_uid;
 
 		result = camel_filter_search_match (
 			p->session, get_message_cb, &data, p->info,
-			original_source_url ? original_source_url : source_url,
-			node->match, &p->error);
+			original_store_uid, node->match, &p->error);
 
 		switch (result) {
 		case CAMEL_SEARCH_ERROR:

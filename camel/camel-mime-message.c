@@ -740,34 +740,49 @@ camel_mime_message_get_recipients (CamelMimeMessage *mime_message, const gchar *
 }
 
 void
-camel_mime_message_set_source (CamelMimeMessage *mime_message, const gchar *src)
+camel_mime_message_set_source (CamelMimeMessage *mime_message,
+                               const gchar *source_uid)
 {
-	CamelURL *url;
-	gchar *uri;
+	CamelMedium *medium;
+	const gchar *name;
 
-	g_assert (mime_message);
+	g_return_if_fail (CAMEL_IS_MIME_MESSAGE (mime_message));
 
-	url = camel_url_new (src, NULL);
-	if (url) {
-		uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
-		camel_medium_add_header (CAMEL_MEDIUM (mime_message), "X-Evolution-Source", uri);
-		g_free (uri);
-		camel_url_free (url);
-	}
+	/* FIXME The header name is Evolution-specific.
+	 *       "X" header prefix should be configurable
+	 *       somehow, perhaps through CamelSession. */
+
+	name = "X-Evolution-Source";
+	medium = CAMEL_MEDIUM (mime_message);
+
+	if (source_uid != NULL)
+		camel_medium_add_header (medium, name, source_uid);
+	else
+		camel_medium_remove_header (medium, name);
 }
 
 const gchar *
 camel_mime_message_get_source (CamelMimeMessage *mime_message)
 {
+	CamelMedium *medium;
+	const gchar *name;
 	const gchar *src;
 
-	g_assert (mime_message);
+	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (mime_message), NULL);
 
-	src = camel_medium_get_header (CAMEL_MEDIUM (mime_message), "X-Evolution-Source");
-	if (src) {
+	/* FIXME The header name is Evolution-specific.
+	 *       "X" header prefix should be configurable
+	 *       somehow, perhaps through CamelSession. */
+
+	name = "X-Evolution-Source";
+	medium = CAMEL_MEDIUM (mime_message);
+
+	src = camel_medium_get_header (medium, name);
+	if (src != NULL) {
 		while (*src && isspace ((unsigned) *src))
 			++src;
 	}
+
 	return src;
 }
 

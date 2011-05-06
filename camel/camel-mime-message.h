@@ -129,7 +129,7 @@ void		camel_mime_message_set_recipients
 						 const gchar *type,
 						 CamelInternetAddress *recipients);
 void		camel_mime_message_set_source	(CamelMimeMessage *message,
-						 const gchar *identity);
+						 const gchar *source_uid);
 const gchar *	camel_mime_message_get_source	(CamelMimeMessage *message);
 
 /* utility functions */

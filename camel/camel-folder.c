@@ -219,8 +219,6 @@ folder_filter (CamelSession *session,
 	CamelMessageInfo *info;
 	CamelStore *parent_store;
 	gint i, status = 0;
-	CamelURL *uri;
-	gchar *source_url;
 	CamelJunkPlugin *csp;
 	const gchar *full_name;
 
@@ -303,6 +301,7 @@ folder_filter (CamelSession *session,
 
 	if (data->driver && data->recents) {
 		CamelService *service;
+		const gchar *store_uid;
 
 		/* Translators: The %s is replaced with the
 		 * folder name where the operation is running. */
@@ -313,20 +312,7 @@ folder_filter (CamelSession *session,
 			data->recents->len), full_name);
 
 		service = CAMEL_SERVICE (parent_store);
-		source_url = camel_service_get_url (service);
-		uri = camel_url_new (source_url, NULL);
-		g_free (source_url);
-
-		if (full_name != NULL && *full_name != '/') {
-			gchar *tmp;
-
-			tmp = alloca (strlen (full_name) + 2);
-			sprintf (tmp, "/%s", full_name);
-			camel_url_set_path (uri, tmp);
-		} else
-			camel_url_set_path (uri, full_name);
-		source_url = camel_url_to_string (uri, CAMEL_URL_HIDE_ALL);
-		camel_url_free (uri);
+		store_uid = camel_service_get_uid (service);
 
 		for (i = 0; status == 0 && i < data->recents->len; i++) {
 			gchar *uid = data->recents->pdata[i];
@@ -339,18 +325,16 @@ folder_filter (CamelSession *session,
 			if (info == NULL) {
 				g_warning (
 					"uid '%s' vanished from folder '%s'",
-					uid, source_url);
+					uid, full_name);
 				continue;
 			}
 
 			status = camel_filter_driver_filter_message (
 				data->driver, NULL, info, uid, data->folder,
-				source_url, source_url, cancellable, error);
+				store_uid, store_uid, cancellable, error);
 
 			camel_folder_free_message_info (data->folder, info);
 		}
-
-		g_free (source_url);
 
 		camel_operation_pop_message (cancellable);
 
