@@ -65,8 +65,6 @@ change_folder (CamelStore *store,
 {
 	CamelFolderInfo *fi;
 	const gchar *tmp;
-	CamelURL *service_url;
-	CamelURL *url;
 
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (name);
@@ -76,19 +74,12 @@ change_folder (CamelStore *store,
 	else
 		tmp++;
 	fi->name = g_strdup (tmp);
-	url = camel_url_new ("vfolder:", NULL);
-	service_url = camel_service_get_camel_url (CAMEL_SERVICE (store));
-	camel_url_set_path (url, service_url->path);
-	if (flags & CHANGE_NOSELECT)
-		camel_url_set_param (url, "noselect", "yes");
-	camel_url_set_fragment (url, name);
-	fi->uri = camel_url_to_string (url, 0);
-	camel_url_free (url);
-	/*fi->url = g_strdup_printf ("vfolder:%s%s#%s", ((CamelService *)store)->url->path, (flags&CHANGE_NOSELECT)?";noselect=yes":"", name);*/
 	fi->unread = count;
 	fi->flags = CAMEL_FOLDER_VIRTUAL;
 	if (!(flags & CHANGE_DELETE))
 		fi->flags |= CAMEL_FOLDER_NOCHILDREN;
+	if (flags & CHANGE_NOSELECT)
+		fi->flags |= CAMEL_FOLDER_NOSELECT;
 	if (flags & CHANGE_DELETE)
 		camel_store_folder_deleted (store, fi);
 	else
