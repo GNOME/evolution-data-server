@@ -1610,10 +1610,8 @@ add_special_info (CamelStore *store,
                   CamelFolderInfoFlags flags)
 {
 	CamelFolderInfo *fi, *vinfo, *parent;
-	CamelProvider *provider;
-	gchar *uri, *path;
-	CamelURL *url;
 
+	g_return_if_fail (CAMEL_IS_STORE (store));
 	g_return_if_fail (info != NULL);
 
 	parent = NULL;
@@ -1623,34 +1621,22 @@ add_special_info (CamelStore *store,
 		parent = fi;
 	}
 
-	provider = camel_service_get_provider (CAMEL_SERVICE (store));
-
-	/* create our vTrash/vJunk URL */
-	url = camel_url_new (info->uri, NULL);
-	if (provider->url_flags & CAMEL_URL_FRAGMENT_IS_PATH) {
-		camel_url_set_fragment (url, name);
-	} else {
-		path = g_strdup_printf ("/%s", name);
-		camel_url_set_path (url, path);
-		g_free (path);
-	}
-
-	uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
-	camel_url_free (url);
-
 	if (fi) {
-		/* We're going to replace the physical Trash/Junk folder with our vTrash/vJunk folder */
+		/* We're going to replace the physical Trash/Junk
+		 * folder with our vTrash/vJunk folder. */
 		vinfo = fi;
-		g_free (vinfo->full_name);
 		g_free (vinfo->name);
-		g_free (vinfo->uri);
+		g_free (vinfo->full_name);
 	} else {
-		/* There wasn't a Trash/Junk folder so create a new folder entry */
+		/* There wasn't a Trash/Junk folder so create a new
+		 * folder entry. */
 		vinfo = camel_folder_info_new ();
 
 		g_assert (parent != NULL);
 
-		vinfo->flags |= CAMEL_FOLDER_NOINFERIORS | CAMEL_FOLDER_SUBSCRIBED;
+		vinfo->flags |=
+			CAMEL_FOLDER_NOINFERIORS |
+			CAMEL_FOLDER_SUBSCRIBED;
 
 		/* link it into the right spot */
 		vinfo->next = parent->next;
@@ -1661,7 +1647,7 @@ add_special_info (CamelStore *store,
 	vinfo->flags |= flags;
 	vinfo->full_name = g_strdup (name);
 	vinfo->name = g_strdup (translated);
-	vinfo->uri = uri;
+
 	if (!unread_count)
 		vinfo->unread = -1;
 }
@@ -1676,7 +1662,6 @@ dump_fi (CamelFolderInfo *fi, gint depth)
 	s[depth] = 0;
 
 	while (fi) {
-		printf("%suri: %s\n", s, fi->uri);
 		printf("%sfull_name: %s\n", s, fi->full_name);
 		printf("%sflags: %08x\n", s, fi->flags);
 		dump_fi (fi->child, depth+2);
@@ -1752,15 +1737,18 @@ camel_folder_info_free (CamelFolderInfo *fi)
 		camel_folder_info_free (fi->child);
 		g_free (fi->name);
 		g_free (fi->full_name);
-		g_free (fi->uri);
 		g_slice_free (CamelFolderInfo, fi);
 	}
 }
 
 /**
  * camel_folder_info_new:
+ * @store: a #CamelStore
  *
- * Returns: a new empty CamelFolderInfo instance
+ * Allocates a new #CamelFolderInfo instance.  Free it with
+ * camel_folder_info_free().
+ *
+ * Returns: a new #CamelFolderInfo instance
  *
  * Since: 2.22
  **/
@@ -1837,11 +1825,9 @@ camel_folder_info_build (GPtrArray *folders,
 			} else {
 				/* we are missing a folder in the heirarchy so
 				   create a fake folder node */
-				const gchar *path;
-				CamelURL *url;
-				gchar *sep;
 
 				pfi = camel_folder_info_new ();
+
 				if (short_names) {
 					pfi->name = strrchr (pname, separator);
 					if (pfi->name)
@@ -1851,25 +1837,11 @@ camel_folder_info_build (GPtrArray *folders,
 				} else
 					pfi->name = g_strdup (pname);
 
-				url = camel_url_new (fi->uri, NULL);
-				if (url->fragment)
-					path = url->fragment;
-				else
-					path = url->path + 1;
+				pfi->full_name = g_strdup (pname);
 
-				sep = strrchr (path, separator);
-				if (sep)
-					*sep = '\0';
-				else {
-					d(g_warning ("huh, no \"%c\" in \"%s\"?", separator, fi->uri));
-				}
-
-				pfi->full_name = g_strdup (path);
-
-				/* since this is a "fake" folder node, it is not selectable */
-				camel_url_set_param (url, "noselect", "yes");
-				pfi->uri = camel_url_to_string (url, 0);
-				camel_url_free (url);
+				/* Since this is a "fake" folder
+				 * node, it is not selectable. */
+				pfi->flags |= CAMEL_FOLDER_NOSELECT;
 
 				g_hash_table_insert (hash, pname, pfi);
 				g_ptr_array_add (folders, pfi);
@@ -1914,7 +1886,6 @@ folder_info_clone_rec (CamelFolderInfo *fi,
 
 	info = camel_folder_info_new ();
 	info->parent = parent;
-	info->uri = g_strdup (fi->uri);
 	info->name = g_strdup (fi->name);
 	info->full_name = g_strdup (fi->full_name);
 	info->unread = fi->unread;
@@ -2140,6 +2111,9 @@ camel_store_get_folder_sync (CamelStore *store,
 			}
 		}
 
+		camel_operation_push_message (
+			cancellable, _("Opening folder '%s'"), folder_name);
+
 		if ((store->flags & CAMEL_STORE_VTRASH) && strcmp (folder_name, CAMEL_VTRASH_NAME) == 0) {
 			folder = class->get_trash_folder_sync (store, cancellable, error);
 			CAMEL_CHECK_GERROR (store, get_trash_folder_sync, folder != NULL, error);
@@ -2167,6 +2141,8 @@ camel_store_get_folder_sync (CamelStore *store,
 				}
 			}
 		}
+
+		camel_operation_pop_message (cancellable);
 
 		if (store->folders) {
 			if (folder)
@@ -2305,10 +2281,10 @@ camel_store_get_folder_info_sync (CamelStore *store,
 			store, get_folder_info_sync, info != NULL, error);
 
 	if (info && (top == NULL || *top == '\0') && (flags & CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL) == 0) {
-		if (info->uri && (store->flags & CAMEL_STORE_VTRASH))
+		if (store->flags & CAMEL_STORE_VTRASH)
 			/* the name of the Trash folder, used for deleted messages */
 			add_special_info (store, info, CAMEL_VTRASH_NAME, _("Trash"), FALSE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_TRASH);
-		if (info->uri && (store->flags & CAMEL_STORE_VJUNK))
+		if (store->flags & CAMEL_STORE_VJUNK)
 			/* the name of the Junk folder, used for spam messages */
 			add_special_info (store, info, CAMEL_VJUNK_NAME, _("Junk"), TRUE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_JUNK);
 	} else if (!info && top && (flags & CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL) == 0) {
@@ -2316,11 +2292,11 @@ camel_store_get_folder_info_sync (CamelStore *store,
 
 		if ((store->flags & CAMEL_STORE_VTRASH) != 0 && g_str_equal (top, CAMEL_VTRASH_NAME)) {
 			root_info = class->get_folder_info_sync (store, NULL, flags & (~CAMEL_STORE_FOLDER_INFO_RECURSIVE), cancellable, error);
-			if (root_info && root_info->uri)
+			if (root_info)
 				add_special_info (store, root_info, CAMEL_VTRASH_NAME, _("Trash"), FALSE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_TRASH);
 		} else if ((store->flags & CAMEL_STORE_VJUNK) != 0 && g_str_equal (top, CAMEL_VJUNK_NAME)) {
 			root_info = class->get_folder_info_sync (store, NULL, flags & (~CAMEL_STORE_FOLDER_INFO_RECURSIVE), cancellable, error);
-			if (root_info && root_info->uri)
+			if (root_info)
 				add_special_info (store, root_info, CAMEL_VJUNK_NAME, _("Junk"), TRUE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_JUNK);
 		}
 

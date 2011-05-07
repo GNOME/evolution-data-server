@@ -191,7 +191,6 @@ vee_store_get_folder_info_sync (CamelStore *store,
 	CamelFolderInfo *info, *res = NULL, *tail;
 	GPtrArray *folders;
 	GHashTable *infos_hash;
-	CamelURL *url;
 	gint i;
 
 	d (printf ("Get folder info '%s'\n", top?top:"<null>"));
@@ -230,8 +229,7 @@ vee_store_get_folder_info_sync (CamelStore *store,
 		d (printf ("%sadding '%s'\n", add?"":"not ", name));
 
 		if (add) {
-			CamelStore *parent_store;
-			CamelURL *service_url;
+			gint32 unread;
 
 			/* ensures unread is correct */
 			if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
@@ -239,20 +237,16 @@ vee_store_get_folder_info_sync (CamelStore *store,
 					(CamelFolder *)folder,
 					cancellable, NULL);
 
-			parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (folder));
+			unread = camel_folder_get_unread_message_count (
+				CAMEL_FOLDER (folder));
 
 			info = camel_folder_info_new ();
-			url = camel_url_new ("vfolder:", NULL);
-			service_url = camel_service_get_camel_url (
-				CAMEL_SERVICE (parent_store));
-			camel_url_set_path (url, service_url->path);
-			camel_url_set_fragment (url, full_name);
-			info->uri = camel_url_to_string (url, 0);
-			camel_url_free (url);
-			info->full_name = g_strdup (full_name);
 			info->name = g_strdup (name);
-			info->unread = camel_folder_get_unread_message_count ((CamelFolder *)folder);
-			info->flags = CAMEL_FOLDER_NOCHILDREN|CAMEL_FOLDER_VIRTUAL;
+			info->full_name = g_strdup (full_name);
+			info->unread = unread;
+			info->flags =
+				CAMEL_FOLDER_NOCHILDREN |
+				CAMEL_FOLDER_VIRTUAL;
 			g_hash_table_insert (infos_hash, info->full_name, info);
 
 			if (res == NULL)
@@ -299,20 +293,15 @@ vee_store_get_folder_info_sync (CamelStore *store,
 	/* and always add UNMATCHED, if scanning from top/etc */
 	/* FIXME[disk-summary] comment it out well */
 	if ((top == NULL || top[0] == 0 || strncmp (top, CAMEL_UNMATCHED_NAME, strlen (CAMEL_UNMATCHED_NAME)) == 0)) {
-		CamelURL *service_url;
-
 		info = camel_folder_info_new ();
-		url = camel_url_new ("vfolder:", NULL);
-		service_url = camel_service_get_camel_url (CAMEL_SERVICE (store));
-		camel_url_set_path (url, service_url->path);
-		camel_url_set_fragment (url, CAMEL_UNMATCHED_NAME);
-		info->uri = camel_url_to_string (url, 0);
-		camel_url_free (url);
-		/*info->url = g_strdup_printf ("vfolder:%s#%s", ((CamelService *)store)->url->path, CAMEL_UNMATCHED_NAME);*/
-		info->full_name = g_strdup (CAMEL_UNMATCHED_NAME);
 		info->name = g_strdup (_("Unmatched"));
+		info->full_name = g_strdup (CAMEL_UNMATCHED_NAME);
 		info->unread = -1;
-		info->flags = CAMEL_FOLDER_NOCHILDREN|CAMEL_FOLDER_NOINFERIORS|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VIRTUAL;
+		info->flags =
+			CAMEL_FOLDER_NOCHILDREN |
+			CAMEL_FOLDER_NOINFERIORS |
+			CAMEL_FOLDER_SYSTEM |
+			CAMEL_FOLDER_VIRTUAL;
 
 		if (res == NULL)
 			res = info;

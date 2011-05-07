@@ -194,7 +194,6 @@ fill_fi (CamelStore *store,
 
 static CamelFolderInfo *
 folder_info_new (CamelStore *store,
-                 CamelURL *url,
                  const gchar *root,
                  const gchar *path,
                  guint32 flags,
@@ -206,16 +205,11 @@ folder_info_new (CamelStore *store,
 
 	base = strrchr (path, '/');
 
-	camel_url_set_fragment (url, path);
-
 	/* Build the folder info structure. */
 	fi = camel_folder_info_new ();
-	fi->uri = camel_url_to_string (url, 0);
 	fi->full_name = g_strdup (path);
 	fi->name = g_strdup (base?base+1:path);
 	fill_fi (store, fi, flags, cancellable);
-
-	d(printf("New folderinfo:\n '%s'\n '%s'\n '%s'\n", fi->full_name, fi->uri, fi->path));
 
 	return fi;
 }
@@ -230,7 +224,6 @@ struct _inode {
  * root and path should have a trailing "/" if they aren't empty. */
 static void
 recursive_scan (CamelStore *store,
-                CamelURL *url,
                 CamelFolderInfo **fip,
                 CamelFolderInfo *parent,
                 GHashTable *visited,
@@ -268,7 +261,7 @@ recursive_scan (CamelStore *store,
 	g_hash_table_insert (visited, inew, inew);
 
 	/* link in ... */
-	fi = folder_info_new (store, url, root, path, flags, cancellable);
+	fi = folder_info_new (store, root, path, flags, cancellable);
 	fi->parent = parent;
 	fi->next = *fip;
 	*fip = fi;
@@ -294,10 +287,10 @@ recursive_scan (CamelStore *store,
 			/* otherwise, treat at potential node, and recurse, a bit more expensive than needed, but tough! */
 			if (path[0]) {
 				tmp = g_strdup_printf("%s/%s", path, d->d_name);
-				recursive_scan (store, url, &fi->child, fi, visited, root, tmp, flags, cancellable);
+				recursive_scan (store, &fi->child, fi, visited, root, tmp, flags, cancellable);
 				g_free (tmp);
 			} else {
-				recursive_scan (store, url, &fi->child, fi, visited, root, d->d_name, flags, cancellable);
+				recursive_scan (store, &fi->child, fi, visited, root, d->d_name, flags, cancellable);
 			}
 		}
 
@@ -308,7 +301,6 @@ recursive_scan (CamelStore *store,
 /* scan a .folders file */
 static void
 folders_scan (CamelStore *store,
-              CamelURL *url,
               const gchar *root,
               const gchar *top,
               CamelFolderInfo **fip,
@@ -377,7 +369,7 @@ folders_scan (CamelStore *store,
 
 		path = g_strdup_printf("%s/%s", root, line);
 		if (g_stat (path, &st) == 0 && S_ISDIR (st.st_mode)) {
-			fi = folder_info_new (store, url, root, line, flags, cancellable);
+			fi = folder_info_new (store, root, line, flags, cancellable);
 			g_ptr_array_add (folders, fi);
 		}
 		g_free (path);
@@ -519,23 +511,22 @@ mh_store_get_folder_info_sync (CamelStore *store,
 {
 	CamelFolderInfo *fi = NULL;
 	CamelURL *url;
-	gchar *root;
 
 	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
-	root = url->path;
-	url = camel_url_copy (url);
-
 	/* use .folders if we are supposed to */
 	if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS) {
-		folders_scan (store, url, root, top, &fi, flags, cancellable);
+		folders_scan (
+			store, url->path, top, &fi, flags, cancellable);
 	} else {
 		GHashTable *visited = g_hash_table_new (inode_hash, inode_equal);
 
 		if (top == NULL)
 			top = "";
 
-		recursive_scan (store, url, &fi, NULL, visited, root, top, flags, cancellable);
+		recursive_scan (
+			store, &fi, NULL, visited, url->path,
+			top, flags, cancellable);
 
 		/* if we actually scanned from root, we have a "" root node we dont want */
 		if (fi != NULL && top[0] == 0) {
@@ -550,8 +541,6 @@ mh_store_get_folder_info_sync (CamelStore *store,
 		g_hash_table_foreach (visited, inode_free, NULL);
 		g_hash_table_destroy (visited);
 	}
-
-	camel_url_free (url);
 
 	return fi;
 }

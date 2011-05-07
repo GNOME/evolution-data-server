@@ -679,12 +679,7 @@ nntp_folder_info_from_store_info (CamelNNTPStore *store,
                                   gboolean short_notation,
                                   CamelStoreInfo *si)
 {
-	CamelURL *base_url;
 	CamelFolderInfo *fi;
-	CamelURL *url;
-	gchar *path;
-
-	base_url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (si->path);
@@ -697,24 +692,16 @@ nntp_folder_info_from_store_info (CamelNNTPStore *store,
 	fi->unread = si->unread;
 	fi->total = si->total;
 	fi->flags = si->flags;
-	path = alloca (strlen (fi->full_name)+2);
-	sprintf(path, "/%s", fi->full_name);
-	url = camel_url_new_with_base (base_url, path);
-	fi->uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
-	camel_url_free (url);
 
 	return fi;
 }
 
 static CamelFolderInfo *
-nntp_folder_info_from_name (CamelNNTPStore *store, gboolean short_notation, const gchar *name)
+nntp_folder_info_from_name (CamelNNTPStore *store,
+                            gboolean short_notation,
+                            const gchar *name)
 {
-	CamelURL *base_url;
 	CamelFolderInfo *fi;
-	CamelURL *url;
-	gchar *path;
-
-	base_url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (name);
@@ -725,12 +712,6 @@ nntp_folder_info_from_name (CamelNNTPStore *store, gboolean short_notation, cons
 		fi->name = g_strdup (name);
 
 	fi->unread = -1;
-
-	path = alloca (strlen (fi->full_name)+2);
-	sprintf(path, "/%s", fi->full_name);
-	url = camel_url_new_with_base (base_url, path);
-	fi->uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
-	camel_url_free (url);
 
 	return fi;
 }
@@ -892,7 +873,10 @@ tree_insert (CamelFolderInfo *root, CamelFolderInfo *last, CamelFolderInfo *fi)
 }
 /* returns new root */
 static CamelFolderInfo *
-nntp_push_to_hierarchy (CamelURL *base_url, CamelFolderInfo *root, CamelFolderInfo *pfi, GHashTable *known)
+nntp_push_to_hierarchy (CamelNNTPStore *store,
+                        CamelFolderInfo *root,
+                        CamelFolderInfo *pfi,
+                        GHashTable *known)
 {
 	CamelFolderInfo *fi, *last = NULL, *kfi;
 	gchar *name, *dot;
@@ -908,21 +892,15 @@ nntp_push_to_hierarchy (CamelURL *base_url, CamelFolderInfo *root, CamelFolderIn
 
 		kfi = g_hash_table_lookup (known, pfi->full_name);
 		if (!kfi) {
-			gchar *path;
-			CamelURL *url;
-
 			fi = camel_folder_info_new ();
 			fi->full_name = g_strdup (pfi->full_name);
 			fi->name = g_strdup (name);
 
 			fi->unread = 0;
 			fi->total = 0;
-			fi->flags = CAMEL_FOLDER_NOSELECT | CAMEL_FOLDER_CHILDREN;
-			path = alloca (strlen (fi->full_name) + 2);
-			sprintf (path, "/%s", fi->full_name);
-			url = camel_url_new_with_base (base_url, path);
-			fi->uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
-			camel_url_free (url);
+			fi->flags =
+				CAMEL_FOLDER_NOSELECT |
+				CAMEL_FOLDER_CHILDREN;
 
 			g_hash_table_insert (known, fi->full_name, fi);
 			root = tree_insert (root, last, fi);
@@ -957,13 +935,10 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store,
 	    is_folder_list = flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST;
 	CamelStoreInfo *si;
 	CamelFolderInfo *first = NULL, *last = NULL, *fi = NULL;
-	CamelURL *url;
 	GHashTable *known; /* folder name to folder info */
 	gchar *tmpname;
 	gchar *top = g_strconcat(orig_top?orig_top:"", ".", NULL);
 	gint toplen = strlen (top);
-
-	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
 	known = g_hash_table_new (g_str_hash, g_str_equal);
 
@@ -1013,7 +988,7 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store,
 
 			if (is_folder_list) {
 				/* create a folder hierarchy rather than a flat list */
-				first = nntp_push_to_hierarchy (url, first, fi, known);
+				first = nntp_push_to_hierarchy (store, first, fi, known);
 			} else {
 				if (last)
 					last->next = fi;
@@ -1377,7 +1352,6 @@ nntp_store_initable_init (GInitable *initable,
 {
 	CamelNNTPStore *nntp_store;
 	CamelService *service;
-	CamelSession *session;
 	CamelURL *summary_url;
 	CamelURL *url;
 	const gchar *user_data_dir;
@@ -1391,7 +1365,6 @@ nntp_store_initable_init (GInitable *initable,
 
 	service = CAMEL_SERVICE (initable);
 	url = camel_service_get_camel_url (service);
-	session = camel_service_get_session (service);
 	user_data_dir = camel_service_get_user_data_dir (service);
 
 	/* FIXME */

@@ -1397,7 +1397,6 @@ imap_set_server_level (CamelImapStore *store)
 static CamelFolderInfo *
 imap_build_folder_info (CamelImapStore *imap_store, const gchar *folder_name)
 {
-	CamelURL *url;
 	const gchar *name;
 	CamelFolderInfo *fi;
 
@@ -1406,11 +1405,6 @@ imap_build_folder_info (CamelImapStore *imap_store, const gchar *folder_name)
 	fi->unread = -1;
 	fi->total = -1;
 
-	url = camel_url_new (imap_store->base_url, NULL);
-	g_free (url->path);
-	url->path = g_strdup_printf ("/%s", folder_name);
-	fi->uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
-	camel_url_free (url);
 	name = strrchr (fi->full_name, '/');
 	if (name == NULL)
 		name = fi->full_name;
@@ -2475,8 +2469,7 @@ parse_list_response_as_folder_info (CamelImapStore *imap_store,
 {
 	CamelFolderInfo *fi;
 	gint flags;
-	gchar sep, *dir, *path;
-	CamelURL *url;
+	gchar sep, *dir;
 	CamelImapStoreInfo *si;
 	guint32 newflags;
 
@@ -2512,18 +2505,6 @@ parse_list_response_as_folder_info (CamelImapStore *imap_store,
 	if (flags & CAMEL_FOLDER_NOINFERIORS)
 		flags = (flags & ~CAMEL_FOLDER_NOINFERIORS) | CAMEL_FOLDER_NOCHILDREN;
 	fi->flags = flags;
-
-	url = camel_url_new (imap_store->base_url, NULL);
-	path = alloca (strlen (fi->full_name)+2);
-	sprintf(path, "/%s", fi->full_name);
-	camel_url_set_path (url, path);
-
-	if ((flags & CAMEL_FOLDER_NOSELECT) != 0 || fi->name[0] == 0)
-		camel_url_set_param (url, "noselect", "yes");
-	else
-		camel_url_set_param (url, "noselect", NULL);
-	fi->uri = camel_url_to_string (url, 0);
-	camel_url_free (url);
 
 	fi->total = -1;
 	fi->unread = -1;
@@ -2996,16 +2977,9 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 				fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK) | CAMEL_FOLDER_TYPE_JUNK;
 			}
 
-			if (si->flags & CAMEL_FOLDER_NOSELECT) {
-				CamelURL *url = camel_url_new (fi->uri, NULL);
-
-				camel_url_set_param (url, "noselect", "yes");
-				g_free (fi->uri);
-				fi->uri = camel_url_to_string (url, 0);
-				camel_url_free (url);
-			} else {
+			if (!(si->flags & CAMEL_FOLDER_NOSELECT))
 				fill_fi ((CamelStore *)imap_store, fi, 0);
-			}
+
 			if (!fi->child)
 				fi->flags |= CAMEL_FOLDER_NOCHILDREN;
 			g_ptr_array_add (folders, fi);

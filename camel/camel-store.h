@@ -156,7 +156,6 @@ typedef struct _CamelFolderInfo {
 	struct _CamelFolderInfo *parent;
 	struct _CamelFolderInfo *child;
 
-	gchar *uri;
 	gchar *name;
 	gchar *full_name;
 

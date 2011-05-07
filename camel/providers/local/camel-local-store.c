@@ -488,11 +488,8 @@ local_store_delete_folder_sync (CamelStore *store,
 {
 	CamelFolderInfo *fi;
 	CamelFolder *lf;
-	CamelURL *url;
 	gchar *name;
 	gchar *str;
-
-	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
 	/* remove metadata only */
 	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
@@ -542,9 +539,6 @@ local_store_delete_folder_sync (CamelStore *store,
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (folder_name);
 	fi->name = g_path_get_basename (folder_name);
-	fi->uri = g_strdup_printf (
-		"%s:%s#%s", url->protocol,
-		CAMEL_LOCAL_STORE (store)->toplevel_dir, folder_name);
 	fi->unread = -1;
 
 	camel_store_folder_deleted (store, fi);

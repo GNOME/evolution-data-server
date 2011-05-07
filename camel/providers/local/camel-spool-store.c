@@ -80,7 +80,6 @@ spool_new_fi (CamelStore *store,
 {
 	CamelFolderInfo *fi;
 	const gchar *name;
-	CamelURL *url;
 
 	name = strrchr (full, '/');
 	if (name)
@@ -89,11 +88,6 @@ spool_new_fi (CamelStore *store,
 		name = full;
 
 	fi = camel_folder_info_new ();
-	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
-	url = camel_url_copy (url);
-	camel_url_set_fragment (url, full);
-	fi->uri = camel_url_to_string (url, 0);
-	camel_url_free (url);
 	fi->full_name = g_strdup (full);
 	fi->name = g_strdup (name);
 	fi->unread = -1;
@@ -103,8 +97,6 @@ spool_new_fi (CamelStore *store,
 	fi->parent = parent;
 	fi->next = *fip;
 	*fip = fi;
-
-	d(printf("Adding spoold info: '%s' '%s' '%s' '%s'\n", fi->path, fi->name, fi->full_name, fi->url));
 
 	return fi;
 }
@@ -329,7 +321,6 @@ spool_store_free_folder_info (CamelStore *store,
                               CamelFolderInfo *fi)
 {
 	if (fi) {
-		g_free (fi->uri);
 		g_free (fi->name);
 		g_free (fi->full_name);
 		g_slice_free (CamelFolderInfo, fi);
@@ -480,12 +471,10 @@ spool_store_get_meta_path (CamelLocalStore *ls,
                            const gchar *ext)
 {
 	CamelService *service;
-	CamelSession *session;
 	const gchar *user_data_dir;
 	gchar *path, *key;
 
 	service = CAMEL_SERVICE (ls);
-	session = camel_service_get_session (service);
 	user_data_dir = camel_service_get_user_data_dir (service);
 
 	key = camel_file_util_safe_filename (full_name);

@@ -415,8 +415,6 @@ scan_fi (CamelStore *store,
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (full);
 	fi->name = g_strdup (name);
-	camel_url_set_fragment (url, fi->full_name);
-	fi->uri = camel_url_to_string (url, 0);
 
 	fi->unread = -1;
 	fi->total = -1;
@@ -428,9 +426,9 @@ scan_fi (CamelStore *store,
 	dir_name = maildir_full_name_to_dir_name (fi->full_name);
 	d(printf("Adding maildir info: '%s' '%s' '%s'\n", fi->name, dir_name, fi->uri));
 
-	tmp = g_build_filename(url->path, dir_name, "tmp", NULL);
-	cur = g_build_filename(url->path, dir_name, "cur", NULL);
-	new = g_build_filename(url->path, dir_name, "new", NULL);
+	tmp = g_build_filename (url->path, dir_name, "tmp", NULL);
+	cur = g_build_filename (url->path, dir_name, "cur", NULL);
+	new = g_build_filename (url->path, dir_name, "new", NULL);
 
 	if (!(g_stat (tmp, &st) == 0 && S_ISDIR (st.st_mode)
 	      && g_stat (cur, &st) == 0 && S_ISDIR (st.st_mode)

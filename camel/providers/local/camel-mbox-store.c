@@ -138,8 +138,13 @@ fill_fi (CamelStore *store,
 }
 
 static CamelFolderInfo *
-scan_dir (CamelStore *store, CamelURL *url, GHashTable *visited, CamelFolderInfo *parent, const gchar *root,
-	 const gchar *name, guint32 flags, GError **error)
+scan_dir (CamelStore *store,
+          GHashTable *visited,
+          CamelFolderInfo *parent,
+          const gchar *root,
+          const gchar *name,
+          guint32 flags,
+          GError **error)
 {
 	CamelFolderInfo *folders, *tail, *fi;
 	GHashTable *folder_hash;
@@ -204,9 +209,6 @@ scan_dir (CamelStore *store, CamelURL *url, GHashTable *visited, CamelFolderInfo
 			fi = camel_folder_info_new ();
 			fi->parent = parent;
 
-			camel_url_set_fragment (url, full_name);
-
-			fi->uri = camel_url_to_string (url, 0);
 			fi->name = short_name;
 			fi->full_name = full_name;
 			fi->unread = -1;
@@ -239,7 +241,7 @@ scan_dir (CamelStore *store, CamelURL *url, GHashTable *visited, CamelFolderInfo
 				*inew = in;
 				g_hash_table_insert (visited, inew, inew);
 #endif
-				if ((fi->child = scan_dir (store, url, visited, fi, path, fi->full_name, flags, error)))
+				if ((fi->child = scan_dir (store, visited, fi, path, fi->full_name, flags, error)))
 					fi->flags |= CAMEL_FOLDER_CHILDREN;
 				else
 					fi->flags =(fi->flags & ~CAMEL_FOLDER_CHILDREN) | CAMEL_FOLDER_NOCHILDREN;
@@ -429,7 +431,6 @@ mbox_store_get_folder_info_sync (CamelStore *store,
 	CamelFolderInfo *fi;
 	gchar *basename;
 	struct stat st;
-	CamelURL *url;
 
 	top = top ? top : "";
 	path = camel_local_store_get_full_path (store, top);
@@ -449,12 +450,9 @@ mbox_store_get_folder_info_sync (CamelStore *store,
 
 		g_hash_table_insert (visited, inode, inode);
 #endif
-		url = camel_service_get_camel_url (CAMEL_SERVICE (store));
-		url = camel_url_copy (url);
-		fi = scan_dir (store, url, visited, NULL, path, NULL, flags, error);
+		fi = scan_dir (store, visited, NULL, path, NULL, flags, error);
 		g_hash_table_foreach (visited, inode_free, NULL);
 		g_hash_table_destroy (visited);
-		camel_url_free (url);
 		g_free (path);
 
 		return fi;
@@ -470,13 +468,8 @@ mbox_store_get_folder_info_sync (CamelStore *store,
 
 	basename = g_path_get_basename (top);
 
-	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
-	url = camel_url_copy (url);
-	camel_url_set_fragment (url, top);
-
 	fi = camel_folder_info_new ();
 	fi->parent = NULL;
-	fi->uri = camel_url_to_string (url, 0);
 	fi->name = basename;
 	fi->full_name = g_strdup (top);
 	fi->unread = -1;
@@ -487,10 +480,8 @@ mbox_store_get_folder_info_sync (CamelStore *store,
 	subdir = g_strdup_printf("%s.sbd", path);
 	if (g_stat (subdir, &st) == 0) {
 		if  (S_ISDIR (st.st_mode))
-			fi->child = scan_dir (store, url, visited, fi, subdir, top, flags, error);
+			fi->child = scan_dir (store, visited, fi, subdir, top, flags, error);
 	}
-
-	camel_url_free (url);
 
 	if (fi->child)
 		fi->flags |= CAMEL_FOLDER_CHILDREN;
@@ -598,11 +589,8 @@ mbox_store_delete_folder_sync (CamelStore *store,
 {
 	CamelFolderInfo *fi;
 	CamelFolder *lf;
-	CamelURL *url;
 	gchar *name, *path;
 	struct stat st;
-
-	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
 	name = camel_local_store_get_full_path (store, folder_name);
 	path = g_strdup_printf("%s.sbd", name);
@@ -740,7 +728,6 @@ mbox_store_delete_folder_sync (CamelStore *store,
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (folder_name);
 	fi->name = g_path_get_basename (folder_name);
-	fi->uri = g_strdup_printf ("mbox:%s#%s", url->path, folder_name);
 	fi->unread = -1;
 
 	camel_store_folder_deleted (store, fi);

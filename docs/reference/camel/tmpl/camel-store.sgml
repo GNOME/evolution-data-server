@@ -134,7 +134,6 @@ CamelStore
 @next: 
 @parent: 
 @child: 
-@uri: 
 @name: 
 @full_name: 
 @flags: 

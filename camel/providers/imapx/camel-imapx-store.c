@@ -336,20 +336,14 @@ get_folder_offline (CamelStore *store, const gchar *folder_name,
 static CamelFolderInfo *
 imapx_build_folder_info (CamelIMAPXStore *imapx_store, const gchar *folder_name)
 {
-	CamelURL *url;
-	const gchar *name;
 	CamelFolderInfo *fi;
+	const gchar *name;
 
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (folder_name);
 	fi->unread = -1;
 	fi->total = -1;
 
-	url = camel_url_new (imapx_store->base_url, NULL);
-	g_free (url->path);
-	url->path = g_strdup_printf ("/%s", folder_name);
-	fi->uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
-	camel_url_free (url);
 	name = strrchr (fi->full_name, '/');
 	if (name == NULL)
 		name = fi->full_name;
@@ -714,16 +708,9 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 				fi->flags |= CAMEL_FOLDER_SYSTEM;
 			}
 
-			if (si->flags & CAMEL_FOLDER_NOSELECT) {
-				CamelURL *url = camel_url_new (fi->uri, NULL);
-
-				camel_url_set_param (url, "noselect", "yes");
-				g_free (fi->uri);
-				fi->uri = camel_url_to_string (url, 0);
-				camel_url_free (url);
-			} else {
+			if (!(si->flags & CAMEL_FOLDER_NOSELECT))
 				fill_fi ((CamelStore *)imapx_store, fi, 0);
-			}
+
 			if (!fi->child)
 				fi->flags |= CAMEL_FOLDER_NOCHILDREN;
 			g_ptr_array_add (folders, fi);
@@ -750,7 +737,6 @@ add_folders_to_summary (CamelIMAPXStore *istore, CamelIMAPXServer *server, GPtrA
 		guint32 new_flags;
 		CamelFolderInfo *fi, *sfi;
 		gchar *path;
-		CamelURL *url;
 
 		if (subscribed) {
 			path = camel_imapx_store_summary_path_to_full (istore->summary, li->name, li->separator);
@@ -793,16 +779,6 @@ add_folders_to_summary (CamelIMAPXStore *istore, CamelIMAPXServer *server, GPtrA
 		if (li->flags & CAMEL_FOLDER_NOINFERIORS)
 			li->flags = (li->flags & ~CAMEL_FOLDER_NOINFERIORS) | CAMEL_FOLDER_NOCHILDREN;
 		fi->flags = li->flags;
-
-		url = camel_url_new (istore->base_url, NULL);
-		path = alloca (strlen (fi->full_name)+2);
-		sprintf(path, "/%s", fi->full_name);
-		camel_url_set_path (url, path);
-
-		if (li->flags & CAMEL_FOLDER_NOSELECT || fi->name[0] == 0)
-			camel_url_set_param (url, "noselect", "yes");
-		fi->uri = camel_url_to_string (url, 0);
-		camel_url_free (url);
 
 		fi->total = -1;
 		fi->unread = -1;
@@ -1524,7 +1500,6 @@ imapx_store_initable_init (GInitable *initable,
 {
 	CamelIMAPXStore *store;
 	CamelService *service;
-	CamelSession *session;
 	CamelURL *url;
 	const gchar *user_data_dir;
 	gchar *summary;
@@ -1537,7 +1512,6 @@ imapx_store_initable_init (GInitable *initable,
 
 	service = CAMEL_SERVICE (initable);
 	url = camel_service_get_camel_url (service);
-	session = camel_service_get_session (service);
 	user_data_dir = camel_service_get_user_data_dir (service);
 
 	store->base_url = camel_url_to_string (

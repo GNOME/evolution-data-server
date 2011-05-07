@@ -656,13 +656,11 @@ camel_nntp_folder_new (CamelStore *parent,
 	CamelNNTPFolder *nntp_folder;
 	gchar *root;
 	CamelService *service;
-	CamelSession *session;
 	CamelStoreInfo *si;
 	const gchar *user_data_dir;
 	gboolean subscribed = TRUE;
 
 	service = CAMEL_SERVICE (parent);
-	session = camel_service_get_session (service);
 	user_data_dir = camel_service_get_user_data_dir (service);
 
 	folder = g_object_new (
