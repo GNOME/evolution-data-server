@@ -5207,7 +5207,7 @@ imapx_server_get_message (CamelIMAPXServer *is,
 		   we could just use the queue lock with a GCond, but instead
 		   we have to use a GMutex. I miss the kernel waitqueues. */
 		do {
-			int this;
+			gint this;
 
 			g_mutex_lock (is->fetch_mutex);
 			this = is->fetch_count;

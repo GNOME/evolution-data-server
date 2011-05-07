@@ -152,7 +152,7 @@ e_category_editor_init (ECategoryEditor *editor)
 		chooser_dialog, "update-preview",
 		G_CALLBACK (update_preview), NULL);
 
-	preview = gtk_image_new();
+	preview = gtk_image_new ();
 	gtk_file_chooser_set_preview_widget (
 		GTK_FILE_CHOOSER (chooser_dialog), preview);
 	gtk_file_chooser_set_preview_widget_active (

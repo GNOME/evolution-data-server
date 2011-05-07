@@ -51,7 +51,7 @@ static CamelProviderConfEntry nntp_conf_entries[] = {
 CamelProviderPortEntry nntp_port_entries[] = {
 						  { 119, N_("Default NNTP port"), FALSE },
 						  { 563, N_("NNTP over SSL"), TRUE },
-					    	  { 0, NULL, 0 }
+						  { 0, NULL, 0 }
 					     };
 
 static CamelProvider news_provider = {

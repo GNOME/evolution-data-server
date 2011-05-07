@@ -68,7 +68,6 @@ entry_changed_cb (GtkEntry *entry,
 	g_signal_emit (editor, signals[ENTRY_CHANGED], 0);
 }
 
-
 static void
 categories_editor_selection_changed_cb (ECategoriesEditor *editor,
                                         GtkTreeSelection *selection)
@@ -104,7 +103,7 @@ static void
 new_button_clicked_cb (GtkButton *button,
                        ECategoriesEditor *editor)
 {
-	ECategoryEditor *cat_editor = e_category_editor_new();
+	ECategoryEditor *cat_editor = e_category_editor_new ();
 
 	e_category_editor_create_category (cat_editor);
 
@@ -115,7 +114,7 @@ static void
 edit_button_clicked_cb (GtkButton *button,
                         ECategoriesEditor *editor)
 {
-	ECategoryEditor *cat_editor = e_category_editor_new();
+	ECategoryEditor *cat_editor = e_category_editor_new ();
 	const gchar *category;
 
 	category = e_categories_selector_get_selected (
