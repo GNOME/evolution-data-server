@@ -3268,6 +3268,12 @@ streams
 </para>
 
 
+<!-- ##### ARG CamelFolder:name ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### ARG CamelFolder:uri ##### -->
 <para>
 
@@ -5446,6 +5452,14 @@ streams
 @full_name: 
 @name: 
 
+<!-- ##### FUNCTION camel_folder_get_name ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_folder_get_uri ##### -->
 <para>
 
@@ -5453,6 +5467,14 @@ streams
 
 @folder: 
 @Returns: 
+
+<!-- ##### FUNCTION camel_folder_set_name ##### -->
+<para>
+
+</para>
+
+@folder: 
+@name: 
 
 <!-- ##### FUNCTION camel_folder_summary_array_free ##### -->
 <para>

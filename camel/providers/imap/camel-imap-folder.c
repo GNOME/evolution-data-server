@@ -994,7 +994,7 @@ imap_rescan (CamelFolder *folder,
 	/* Check UIDs and flags of all messages we already know of. */
 	camel_operation_push_message (
 		cancellable, _("Scanning for changed messages in %s"),
-		camel_folder_get_name (folder));
+		camel_folder_get_display_name (folder));
 	uid = camel_folder_summary_uid_from_index (folder->summary, summary_len - 1);
 
 	if (!uid) {
@@ -3969,7 +3969,7 @@ imap_update_summary (CamelFolder *folder,
 	camel_operation_push_message (
 		cancellable,
 		_("Fetching summary information for new messages in %s"),
-		camel_folder_get_name (folder));
+		camel_folder_get_display_name (folder));
 
 	/* Parse the responses. We can't add a message to the summary
 	 * until we've gotten its headers, and there's no guarantee
@@ -4051,7 +4051,7 @@ imap_update_summary (CamelFolder *folder,
 		camel_operation_push_message (
 			cancellable,
 			_("Fetching summary information for new messages in %s"),
-			camel_folder_get_name (folder));
+			camel_folder_get_display_name (folder));
 
 		while (uid < needheaders->len && !camel_application_is_exiting) {
 			uidset = imap_uid_array_to_set (folder->summary, needheaders, uid, UID_SET_LIMIT, &uid);

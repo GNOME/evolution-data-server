@@ -59,8 +59,8 @@ struct _CamelFolderPrivate {
 
 	CamelStore *parent_store;
 
-	gchar *name;
 	gchar *full_name;
+	gchar *display_name;
 	gchar *description;
 };
 
@@ -102,8 +102,8 @@ struct _FolderFilterData {
 enum {
 	PROP_0,
 	PROP_DESCRIPTION,
+	PROP_DISPLAY_NAME,
 	PROP_FULL_NAME,
-	PROP_NAME,
 	PROP_PARENT_STORE
 };
 
@@ -422,14 +422,14 @@ folder_set_property (GObject *object,
 				g_value_get_string (value));
 			return;
 
-		case PROP_FULL_NAME:
-			camel_folder_set_full_name (
+		case PROP_DISPLAY_NAME:
+			camel_folder_set_display_name (
 				CAMEL_FOLDER (object),
 				g_value_get_string (value));
 			return;
 
-		case PROP_NAME:
-			camel_folder_set_name (
+		case PROP_FULL_NAME:
+			camel_folder_set_full_name (
 				CAMEL_FOLDER (object),
 				g_value_get_string (value));
 			return;
@@ -457,15 +457,15 @@ folder_get_property (GObject *object,
 				CAMEL_FOLDER (object)));
 			return;
 
-		case PROP_FULL_NAME:
+		case PROP_DISPLAY_NAME:
 			g_value_set_string (
-				value, camel_folder_get_full_name (
+				value, camel_folder_get_display_name (
 				CAMEL_FOLDER (object)));
 			return;
 
-		case PROP_NAME:
+		case PROP_FULL_NAME:
 			g_value_set_string (
-				value, camel_folder_get_name (
+				value, camel_folder_get_full_name (
 				CAMEL_FOLDER (object)));
 			return;
 
@@ -508,8 +508,8 @@ folder_finalize (GObject *object)
 
 	priv = CAMEL_FOLDER (object)->priv;
 
-	g_free (priv->name);
 	g_free (priv->full_name);
+	g_free (priv->display_name);
 	g_free (priv->description);
 
 	camel_folder_change_info_free (priv->changed_frozen);
@@ -780,7 +780,7 @@ folder_rename (CamelFolder *folder,
 	camel_folder_set_full_name (folder, new);
 
 	tmp = strrchr (new, '/');
-	camel_folder_set_name (folder, (tmp != NULL) ? tmp + 1 : new);
+	camel_folder_set_display_name (folder, (tmp != NULL) ? tmp + 1 : new);
 }
 
 static void
@@ -1532,6 +1532,22 @@ camel_folder_class_init (CamelFolderClass *class)
 			G_PARAM_CONSTRUCT));
 
 	/**
+	 * CamelFolder:display-name
+	 *
+	 * The folder's display name.
+	 **/
+	g_object_class_install_property (
+		object_class,
+		PROP_DISPLAY_NAME,
+		g_param_spec_string (
+			"display-name",
+			"Display Name",
+			"The folder's display name",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT));
+
+	/**
 	 * CamelFolder:full-name
 	 *
 	 * The folder's fully qualified name.
@@ -1543,22 +1559,6 @@ camel_folder_class_init (CamelFolderClass *class)
 			"full-name",
 			"Full Name",
 			"The folder's fully qualified name",
-			NULL,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT));
-
-	/**
-	 * CamelFolder:name
-	 *
-	 * The folder's short name.
-	 **/
-	g_object_class_install_property (
-		object_class,
-		PROP_NAME,
-		g_param_spec_string (
-			"name",
-			"Name",
-			"The folder's short name",
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT));
@@ -1691,44 +1691,6 @@ camel_folder_get_filename (CamelFolder *folder,
 }
 
 /**
- * camel_folder_get_name:
- * @folder: a #CamelFolder
- *
- * Returns the short name of the folder.  The fully qualified name
- * can be obtained with camel_folder_get_full_name().
- *
- * Returns: the short name of the folder
- **/
-const gchar *
-camel_folder_get_name (CamelFolder *folder)
-{
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
-
-	return folder->priv->name;
-}
-
-/**
- * camel_folder_set_name:
- * @folder: a #CamelFolder
- * @name: a name for the folder
- *
- * Sets the short name of the folder.
- *
- * Since: 2.32
- **/
-void
-camel_folder_set_name (CamelFolder *folder,
-                       const gchar *name)
-{
-	g_return_if_fail (CAMEL_IS_FOLDER (folder));
-
-	g_free (folder->priv->name);
-	folder->priv->name = g_strdup (name);
-
-	g_object_notify (G_OBJECT (folder), "name");
-}
-
-/**
  * camel_folder_get_full_name:
  * @folder: a #CamelFolder
  *
@@ -1763,6 +1725,44 @@ camel_folder_set_full_name (CamelFolder *folder,
 	folder->priv->full_name = g_strdup (full_name);
 
 	g_object_notify (G_OBJECT (folder), "full-name");
+}
+
+/**
+ * camel_folder_get_display_name:
+ * @folder: a #CamelFolder
+ *
+ * Returns the display name for the folder.  The fully qualified name
+ * can be obtained with camel_folder_get_full_name().
+ *
+ * Returns: the display name of the folder
+ **/
+const gchar *
+camel_folder_get_display_name (CamelFolder *folder)
+{
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
+
+	return folder->priv->display_name;
+}
+
+/**
+ * camel_folder_set_display_name:
+ * @folder: a #CamelFolder
+ * @name: a display name for the folder
+ *
+ * Sets the display name for the folder.
+ *
+ * Since: 2.32
+ **/
+void
+camel_folder_set_display_name (CamelFolder *folder,
+                               const gchar *display_name)
+{
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	g_free (folder->priv->display_name);
+	folder->priv->display_name = g_strdup (display_name);
+
+	g_object_notify (G_OBJECT (folder), "display-name");
 }
 
 /**

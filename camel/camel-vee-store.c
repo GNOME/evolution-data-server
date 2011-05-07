@@ -201,13 +201,13 @@ vee_store_get_folder_info_sync (CamelStore *store,
 	for (i=0;i<folders->len;i++) {
 		CamelVeeFolder *folder = folders->pdata[i];
 		const gchar *full_name;
-		const gchar *name;
+		const gchar *display_name;
 		gint add = FALSE;
 		gchar *pname, *tmp;
 		CamelFolderInfo *pinfo;
 
-		name = camel_folder_get_name (CAMEL_FOLDER (folder));
 		full_name = camel_folder_get_full_name (CAMEL_FOLDER (folder));
+		display_name = camel_folder_get_display_name (CAMEL_FOLDER (folder));
 
 		/* check we have to include this one */
 		if (top) {
@@ -226,8 +226,6 @@ vee_store_get_folder_info_sync (CamelStore *store,
 				|| strchr (full_name, '/') == NULL;
 		}
 
-		d (printf ("%sadding '%s'\n", add?"":"not ", name));
-
 		if (add) {
 			gint32 unread;
 
@@ -242,7 +240,7 @@ vee_store_get_folder_info_sync (CamelStore *store,
 
 			info = camel_folder_info_new ();
 			info->full_name = g_strdup (full_name);
-			info->display_name = g_strdup (name);
+			info->display_name = g_strdup (display_name);
 			info->unread = unread;
 			info->flags =
 				CAMEL_FOLDER_NOCHILDREN |

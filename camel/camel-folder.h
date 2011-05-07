@@ -338,12 +338,12 @@ void		camel_folder_set_lock_async	(CamelFolder *folder,
 						 gboolean skip_folder_lock);
 struct _CamelStore *
 		camel_folder_get_parent_store	(CamelFolder *folder);
-const gchar *	camel_folder_get_name		(CamelFolder *folder);
-void		camel_folder_set_name		(CamelFolder *folder,
-						 const gchar *name);
 const gchar *	camel_folder_get_full_name	(CamelFolder *folder);
 void		camel_folder_set_full_name	(CamelFolder *folder,
 						 const gchar *full_name);
+const gchar *	camel_folder_get_display_name	(CamelFolder *folder);
+void		camel_folder_set_display_name	(CamelFolder *folder,
+						 const gchar *display_name);
 const gchar *	camel_folder_get_description	(CamelFolder *folder);
 void		camel_folder_set_description	(CamelFolder *folder,
 						 const gchar *description);

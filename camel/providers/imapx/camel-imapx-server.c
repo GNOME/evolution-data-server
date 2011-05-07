@@ -3895,7 +3895,7 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 			camel_operation_push_message (
 				job->cancellable,
 				_("Fetching summary information for new messages in %s"),
-				camel_folder_get_name (job->folder));
+				camel_folder_get_display_name (job->folder));
 			imapx_uidset_init (&job->u.refresh_info.uidset, BATCH_FETCH_COUNT, 0);
 			/* These are new messages which arrived since we last knew the unseen count;
 			   update it as they arrive. */
@@ -3939,7 +3939,7 @@ imapx_job_scan_changes_start (CamelIMAPXServer *is,
 	camel_operation_push_message (
 		job->cancellable,
 		_("Scanning for changed messages in %s"),
-		camel_folder_get_name (job->folder));
+		camel_folder_get_display_name (job->folder));
 
 	ic = camel_imapx_command_new (
 		is, "FETCH", job->folder, job->cancellable,
@@ -4026,7 +4026,7 @@ imapx_job_fetch_new_messages_start (CamelIMAPXServer *is,
 	camel_operation_push_message (
 		job->cancellable,
 		_("Fetching summary information for new messages in %s"),
-		camel_folder_get_name (folder));
+		camel_folder_get_display_name (folder));
 
 	if (diff > BATCH_FETCH_COUNT) {
 		ic = camel_imapx_command_new (

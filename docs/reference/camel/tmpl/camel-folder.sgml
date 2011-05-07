@@ -67,12 +67,12 @@ CamelFolder
 
 </para>
 
-<!-- ##### ARG CamelFolder:full-name ##### -->
+<!-- ##### ARG CamelFolder:display-name ##### -->
 <para>
 
 </para>
 
-<!-- ##### ARG CamelFolder:name ##### -->
+<!-- ##### ARG CamelFolder:full-name ##### -->
 <para>
 
 </para>
@@ -142,24 +142,6 @@ CamelFolder
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_folder_get_name ##### -->
-<para>
-
-</para>
-
-@folder: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_folder_set_name ##### -->
-<para>
-
-</para>
-
-@folder: 
-@name: 
-
-
 <!-- ##### FUNCTION camel_folder_get_full_name ##### -->
 <para>
 
@@ -176,6 +158,24 @@ CamelFolder
 
 @folder: 
 @full_name: 
+
+
+<!-- ##### FUNCTION camel_folder_get_display_name ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_set_display_name ##### -->
+<para>
+
+</para>
+
+@folder: 
+@display_name: 
 
 
 <!-- ##### FUNCTION camel_folder_get_description ##### -->
