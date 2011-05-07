@@ -67,7 +67,7 @@ void		e_categories_editor_set_categories
 						 const gchar *categories);
 gboolean	e_categories_editor_get_entry_visible
 						(ECategoriesEditor *editor);
-void 		e_categories_editor_set_entry_visible
+void		e_categories_editor_set_entry_visible
 						(ECategoriesEditor *editor,
 						 gboolean entry_visible);
 

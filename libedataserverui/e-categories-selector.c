@@ -332,7 +332,7 @@ e_categories_selector_init (ECategoriesSelector *selector)
 
 	g_signal_connect (
 		selector, "key-press-event",
-		G_CALLBACK(categories_selector_key_press_event), NULL);
+		G_CALLBACK (categories_selector_key_press_event), NULL);
 
 	e_categories_register_change_listener (
 		G_CALLBACK (categories_selector_listener_cb), selector);

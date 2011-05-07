@@ -399,7 +399,7 @@ camel_imap_command_response (CamelImapStore *store,
 			url = camel_service_get_camel_url (service);
 			session = camel_service_get_session (service);
 
-			msg = g_strdup_printf(
+			msg = g_strdup_printf (
 				_("Alert from IMAP server %s@%s:\n%s"),
 				url->user, url->host, respbuf + 12);
 			camel_session_alert_user (

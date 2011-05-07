@@ -688,9 +688,9 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 	if (priv->helper_stream && !url->passwd) {
 		guchar *data;
 		gsize length = 0;
-		char buf[1024];
+		gchar buf[1024];
 		gsize s = 0;
-		buf [0] = 0;
+		buf[0] = 0;
 
 		if (!token || !token->len) {
 			if (priv->type1_msg) {
@@ -706,7 +706,7 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 			if (camel_stream_printf (priv->helper_stream, "TT %s\n",
 						 type2) >= 0 &&
 			   (s = camel_stream_read (priv->helper_stream, buf,
-				   sizeof(buf), cancellable, NULL)) > 4 &&
+				   sizeof (buf), cancellable, NULL)) > 4 &&
 			   buf[0] == 'K' && buf[1] == 'K' && buf[2] == ' ' &&
 			   buf[s-1] == '\n') {
 				buf[s-1] = 0;
@@ -740,14 +740,14 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 		} sess_nonce;
 		GChecksum *md5;
 		guint8 digest[16];
-		gsize digest_len = sizeof(digest);
+		gsize digest_len = sizeof (digest);
 
-		sess_nonce.clnt[0] = g_random_int();
-		sess_nonce.clnt[1] = g_random_int();
+		sess_nonce.clnt[0] = g_random_int ();
+		sess_nonce.clnt[1] = g_random_int ();
 
 		/* LM response is 8-byte client nonce, NUL-padded to 24 */
-		memcpy(lm_resp, sess_nonce.clnt, 8);
-		memset(lm_resp + 8, 0, 16);
+		memcpy (lm_resp, sess_nonce.clnt, 8);
+		memset (lm_resp + 8, 0, 16);
 
 		/* Session nonce is client nonce + server nonce */
 		memcpy (sess_nonce.srv,
@@ -755,8 +755,8 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 
 		/* Take MD5 of session nonce */
 		md5 = g_checksum_new (G_CHECKSUM_MD5);
-		g_checksum_update (md5, (void *)&sess_nonce, 16);
-		g_checksum_get_digest (md5, (void *)&digest, &digest_len);
+		g_checksum_update (md5, (gpointer)&sess_nonce, 16);
+		g_checksum_get_digest (md5, (gpointer)&digest, &digest_len);
 		g_checksum_get_digest (md5, digest, &digest_len);
 
 		g_checksum_free (md5);
@@ -839,7 +839,7 @@ sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
 	gchar buf[1024];
 	gsize s;
 	gchar *command;
-	int ret;
+	gint ret;
 
 	if (access (NTLM_AUTH_HELPER, X_OK))
 		return FALSE;
@@ -853,7 +853,7 @@ sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
 			"%s --helper-protocol ntlmssp-client-1 "
 			"--use-cached-creds --username '%s' "
 			"--domain '%.*s'", NTLM_AUTH_HELPER,
-			user + 1, (int)(user - url->user), 
+			user + 1, (gint)(user - url->user),
 			url->user);
 	} else {
 		command = g_strdup_printf (
@@ -872,7 +872,7 @@ sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
 		g_object_unref (stream);
 		return FALSE;
 	}
-	s = camel_stream_read (stream, buf, sizeof(buf), cancellable, NULL);
+	s = camel_stream_read (stream, buf, sizeof (buf), cancellable, NULL);
 	if (s < 4) {
 		g_object_unref (stream);
 		return FALSE;

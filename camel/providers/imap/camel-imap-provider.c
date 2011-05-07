@@ -78,7 +78,7 @@ CamelProviderPortEntry imap_port_entries[] = {
 				   		{ 143, N_("IMAP default port"), FALSE },
 						{ 993, N_("IMAP over SSL"), TRUE },
 						{ 0, NULL, 0 }
-			    		     };
+					     };
 
 static CamelProvider imap_provider = {
 	"imap",

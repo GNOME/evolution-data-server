@@ -481,7 +481,6 @@ camel_url_set_user (CamelURL *url,
 	url->user = g_strdup (user);
 }
 
-
 /**
  * camel_url_set_authmech:
  * @url: a #CamelURL

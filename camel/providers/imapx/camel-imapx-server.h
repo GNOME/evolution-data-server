@@ -122,7 +122,7 @@ struct _CamelIMAPXServer {
 	/* used to synchronize duplicate get_message requests */
 	GCond *fetch_cond;
 	GMutex *fetch_mutex;
-	int fetch_count;
+	gint fetch_count;
 };
 
 struct _CamelIMAPXServerClass {
