@@ -350,18 +350,18 @@ imapx_build_folder_info (CamelIMAPXStore *imapx_store, const gchar *folder_name)
 	else
 		name++;
 	if (!g_ascii_strcasecmp (fi->full_name, "INBOX"))
-		fi->name = g_strdup (_("Inbox"));
+		fi->display_name = g_strdup (_("Inbox"));
 	/* Do not localize the rest, these are from a server, thus shouldn't be localized */
 	/*else if (!g_ascii_strcasecmp (fi->full_name, "Drafts"))
-		fi->name = g_strdup (_("Drafts"));
+		fi->display_name = g_strdup (_("Drafts"));
 	else if (!g_ascii_strcasecmp (fi->full_name, "Sent"))
-		fi->name = g_strdup (_("Sent"));
+		fi->display_name = g_strdup (_("Sent"));
 	else if (!g_ascii_strcasecmp (fi->full_name, "Templates"))
-		fi->name = g_strdup (_("Templates"));
+		fi->display_name = g_strdup (_("Templates"));
 	else if (!g_ascii_strcasecmp (fi->full_name, "Trash"))
-		fi->name = g_strdup (_("Trash"));*/
+		fi->display_name = g_strdup (_("Trash"));*/
 	else
-		fi->name = g_strdup (name);
+		fi->display_name = g_strdup (name);
 
 	return fi;
 }
@@ -769,9 +769,9 @@ add_folders_to_summary (CamelIMAPXStore *istore, CamelIMAPXServer *server, GPtrA
 		fi->full_name = g_strdup (camel_store_info_path (istore->summary, si));
 		if (!g_ascii_strcasecmp(fi->full_name, "inbox")) {
 			li->flags |= CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_TYPE_INBOX;
-			fi->name = g_strdup (_("Inbox"));
+			fi->display_name = g_strdup (_("Inbox"));
 		} else
-			fi->name = g_strdup (camel_store_info_name (istore->summary, si));
+			fi->display_name = g_strdup (camel_store_info_name (istore->summary, si));
 
 		/* HACK: some servers report noinferiors for all folders (uw-imapd)
 		   We just translate this into nochildren, and let the imap layer enforce

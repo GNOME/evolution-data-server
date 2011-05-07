@@ -208,7 +208,7 @@ folder_info_new (CamelStore *store,
 	/* Build the folder info structure. */
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (path);
-	fi->name = g_strdup (base?base+1:path);
+	fi->display_name = g_strdup (base?base+1:path);
 	fill_fi (store, fi, flags, cancellable);
 
 	return fi;

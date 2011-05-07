@@ -538,7 +538,7 @@ local_store_delete_folder_sync (CamelStore *store,
 
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (folder_name);
-	fi->name = g_path_get_basename (folder_name);
+	fi->display_name = g_path_get_basename (folder_name);
 	fi->unread = -1;
 
 	camel_store_folder_deleted (store, fi);

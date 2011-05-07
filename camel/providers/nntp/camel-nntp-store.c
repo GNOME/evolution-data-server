@@ -685,9 +685,9 @@ nntp_folder_info_from_store_info (CamelNNTPStore *store,
 	fi->full_name = g_strdup (si->path);
 
 	if (short_notation)
-		fi->name = nntp_newsgroup_name_short (si->path);
+		fi->display_name = nntp_newsgroup_name_short (si->path);
 	else
-		fi->name = g_strdup (si->path);
+		fi->display_name = g_strdup (si->path);
 
 	fi->unread = si->unread;
 	fi->total = si->total;
@@ -707,9 +707,9 @@ nntp_folder_info_from_name (CamelNNTPStore *store,
 	fi->full_name = g_strdup (name);
 
 	if (short_notation)
-		fi->name = nntp_newsgroup_name_short (name);
+		fi->display_name = nntp_newsgroup_name_short (name);
 	else
-		fi->name = g_strdup (name);
+		fi->display_name = g_strdup (name);
 
 	fi->unread = -1;
 
@@ -894,7 +894,7 @@ nntp_push_to_hierarchy (CamelNNTPStore *store,
 		if (!kfi) {
 			fi = camel_folder_info_new ();
 			fi->full_name = g_strdup (pfi->full_name);
-			fi->name = g_strdup (name);
+			fi->display_name = g_strdup (name);
 
 			fi->unread = 0;
 			fi->total = 0;
@@ -913,8 +913,8 @@ nntp_push_to_hierarchy (CamelNNTPStore *store,
 		name = dot + 1;
 	}
 
-	g_free (pfi->name);
-	pfi->name = g_strdup (name);
+	g_free (pfi->display_name);
+	pfi->display_name = g_strdup (name);
 
 	return tree_insert (root, last, pfi);
 }
@@ -951,8 +951,8 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store,
 				if (!fi)
 					continue;
 				if (store->folder_hierarchy_relative) {
-					g_free (fi->name);
-					fi->name = g_strdup (si->path + ((toplen == 1) ? 0 : toplen));
+					g_free (fi->display_name);
+					fi->display_name = g_strdup (si->path + ((toplen == 1) ? 0 : toplen));
 				}
 			} else {
 				/* apparently, this is an indirect subitem. if it's not a subitem of
@@ -969,8 +969,8 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store,
 
 					fi->flags |= CAMEL_FOLDER_NOSELECT;
 					if (store->folder_hierarchy_relative) {
-						g_free (fi->name);
-						fi->name = g_strdup (tmpname + ((toplen==1) ? 0 : toplen));
+						g_free (fi->display_name);
+						fi->display_name = g_strdup (tmpname + ((toplen==1) ? 0 : toplen));
 					}
 					g_free (tmpname);
 				} else {

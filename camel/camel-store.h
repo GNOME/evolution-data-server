@@ -156,8 +156,8 @@ typedef struct _CamelFolderInfo {
 	struct _CamelFolderInfo *parent;
 	struct _CamelFolderInfo *child;
 
-	gchar *name;
 	gchar *full_name;
+	gchar *display_name;
 
 	CamelFolderInfoFlags flags;
 	gint32 unread;

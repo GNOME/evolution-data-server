@@ -414,7 +414,7 @@ scan_fi (CamelStore *store,
 
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (full);
-	fi->name = g_strdup (name);
+	fi->display_name = g_strdup (name);
 
 	fi->unread = -1;
 	fi->total = -1;
@@ -868,7 +868,7 @@ scan_old_dir_info (CamelStore *store, CamelFolderInfo *topfi, GError **error)
 
 					fi = camel_folder_info_new ();
 					fi->full_name = full;
-					fi->name = g_strdup (d->d_name);
+					fi->display_name = g_strdup (d->d_name);
 					snew->fi = fi;
 
 					last->next =  snew->fi;
@@ -934,7 +934,7 @@ maildir_migrate_hierarchy (CamelMaildirStore *mstore, GCancellable *cancellable,
 
 	topfi = camel_folder_info_new ();
 	topfi->full_name = g_strdup (".");
-	topfi->name = g_strdup ("Inbox");
+	topfi->display_name = g_strdup ("Inbox");
 
 	if (scan_old_dir_info ((CamelStore *) mstore, topfi, error) == -1) {
 		g_warning ("Failed to scan the old folder info \n");

@@ -73,7 +73,7 @@ change_folder (CamelStore *store,
 		tmp = name;
 	else
 		tmp++;
-	fi->name = g_strdup (tmp);
+	fi->display_name = g_strdup (tmp);
 	fi->unread = count;
 	fi->flags = CAMEL_FOLDER_VIRTUAL;
 	if (!(flags & CHANGE_DELETE))
@@ -241,8 +241,8 @@ vee_store_get_folder_info_sync (CamelStore *store,
 				CAMEL_FOLDER (folder));
 
 			info = camel_folder_info_new ();
-			info->name = g_strdup (name);
 			info->full_name = g_strdup (full_name);
+			info->display_name = g_strdup (name);
 			info->unread = unread;
 			info->flags =
 				CAMEL_FOLDER_NOCHILDREN |
@@ -294,8 +294,8 @@ vee_store_get_folder_info_sync (CamelStore *store,
 	/* FIXME[disk-summary] comment it out well */
 	if ((top == NULL || top[0] == 0 || strncmp (top, CAMEL_UNMATCHED_NAME, strlen (CAMEL_UNMATCHED_NAME)) == 0)) {
 		info = camel_folder_info_new ();
-		info->name = g_strdup (_("Unmatched"));
 		info->full_name = g_strdup (CAMEL_UNMATCHED_NAME);
+		info->display_name = g_strdup (_("Unmatched"));
 		info->unread = -1;
 		info->flags =
 			CAMEL_FOLDER_NOCHILDREN |

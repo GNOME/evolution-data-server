@@ -209,8 +209,8 @@ scan_dir (CamelStore *store,
 			fi = camel_folder_info_new ();
 			fi->parent = parent;
 
-			fi->name = short_name;
 			fi->full_name = full_name;
+			fi->display_name = short_name;
 			fi->unread = -1;
 			fi->total = -1;
 
@@ -226,7 +226,7 @@ scan_dir (CamelStore *store,
 
 			tail = fi;
 
-			g_hash_table_insert (folder_hash, fi->name, fi);
+			g_hash_table_insert (folder_hash, fi->display_name, fi);
 		}
 
 		if (!S_ISDIR (st.st_mode)) {
@@ -470,8 +470,8 @@ mbox_store_get_folder_info_sync (CamelStore *store,
 
 	fi = camel_folder_info_new ();
 	fi->parent = NULL;
-	fi->name = basename;
 	fi->full_name = g_strdup (top);
+	fi->display_name = basename;
 	fi->unread = -1;
 	fi->total = -1;
 
@@ -727,7 +727,7 @@ mbox_store_delete_folder_sync (CamelStore *store,
 
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (folder_name);
-	fi->name = g_path_get_basename (folder_name);
+	fi->display_name = g_path_get_basename (folder_name);
 	fi->unread = -1;
 
 	camel_store_folder_deleted (store, fi);

@@ -134,8 +134,8 @@ CamelStore
 @next: 
 @parent: 
 @child: 
-@name: 
 @full_name: 
+@display_name: 
 @flags: 
 @unread: 
 @total: 

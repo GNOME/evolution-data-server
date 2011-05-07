@@ -1625,8 +1625,8 @@ add_special_info (CamelStore *store,
 		/* We're going to replace the physical Trash/Junk
 		 * folder with our vTrash/vJunk folder. */
 		vinfo = fi;
-		g_free (vinfo->name);
 		g_free (vinfo->full_name);
+		g_free (vinfo->display_name);
 	} else {
 		/* There wasn't a Trash/Junk folder so create a new
 		 * folder entry. */
@@ -1646,7 +1646,7 @@ add_special_info (CamelStore *store,
 	/* Fill in the new fields */
 	vinfo->flags |= flags;
 	vinfo->full_name = g_strdup (name);
-	vinfo->name = g_strdup (translated);
+	vinfo->display_name = g_strdup (translated);
 
 	if (!unread_count)
 		vinfo->unread = -1;
@@ -1735,8 +1735,8 @@ camel_folder_info_free (CamelFolderInfo *fi)
 	if (fi != NULL) {
 		camel_folder_info_free (fi->next);
 		camel_folder_info_free (fi->child);
-		g_free (fi->name);
 		g_free (fi->full_name);
+		g_free (fi->display_name);
 		g_slice_free (CamelFolderInfo, fi);
 	}
 }
@@ -1829,13 +1829,13 @@ camel_folder_info_build (GPtrArray *folders,
 				pfi = camel_folder_info_new ();
 
 				if (short_names) {
-					pfi->name = strrchr (pname, separator);
-					if (pfi->name)
-						pfi->name = g_strdup (pfi->name + 1);
+					pfi->display_name = strrchr (pname, separator);
+					if (pfi->display_name != NULL)
+						pfi->display_name = g_strdup (pfi->display_name + 1);
 					else
-						pfi->name = g_strdup (pname);
+						pfi->display_name = g_strdup (pname);
 				} else
-					pfi->name = g_strdup (pname);
+					pfi->display_name = g_strdup (pname);
 
 				pfi->full_name = g_strdup (pname);
 
@@ -1886,8 +1886,8 @@ folder_info_clone_rec (CamelFolderInfo *fi,
 
 	info = camel_folder_info_new ();
 	info->parent = parent;
-	info->name = g_strdup (fi->name);
 	info->full_name = g_strdup (fi->full_name);
+	info->display_name = g_strdup (fi->display_name);
 	info->unread = fi->unread;
 	info->flags = fi->flags;
 

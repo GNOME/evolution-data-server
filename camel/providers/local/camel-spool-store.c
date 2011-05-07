@@ -89,7 +89,7 @@ spool_new_fi (CamelStore *store,
 
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (full);
-	fi->name = g_strdup (name);
+	fi->display_name = g_strdup (name);
 	fi->unread = -1;
 	fi->total = -1;
 	fi->flags = flags;
@@ -289,8 +289,8 @@ get_folder_info_mbox (CamelStore *store,
 
 	if (top == NULL || strcmp(top, "INBOX") == 0) {
 		fi = spool_new_fi(store, NULL, &fip, "INBOX", CAMEL_FOLDER_NOINFERIORS|CAMEL_FOLDER_NOCHILDREN|CAMEL_FOLDER_SYSTEM);
-		g_free (fi->name);
-		fi->name = g_strdup(_("Inbox"));
+		g_free (fi->display_name);
+		fi->display_name = g_strdup(_("Inbox"));
 		spool_fill_fi (store, fi, flags, cancellable);
 	}
 
@@ -321,8 +321,8 @@ spool_store_free_folder_info (CamelStore *store,
                               CamelFolderInfo *fi)
 {
 	if (fi) {
-		g_free (fi->name);
 		g_free (fi->full_name);
+		g_free (fi->display_name);
 		g_slice_free (CamelFolderInfo, fi);
 	}
 }
