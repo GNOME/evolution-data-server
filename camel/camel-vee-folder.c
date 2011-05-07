@@ -2026,6 +2026,9 @@ camel_vee_folder_new (CamelStore *parent_store, const gchar *full, guint32 flags
 	CamelVeeFolder *vf;
 	gchar *tmp;
 
+	g_return_val_if_fail (CAMEL_IS_STORE (parent_store), NULL);
+	g_return_val_if_fail (full != NULL, NULL);
+
 	if (CAMEL_IS_VEE_STORE (parent_store) && strcmp (full, CAMEL_UNMATCHED_NAME) == 0) {
 		vf = ((CamelVeeStore *)parent_store)->folder_unmatched;
 		g_object_ref (vf);
