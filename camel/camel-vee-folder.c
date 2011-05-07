@@ -2041,7 +2041,7 @@ camel_vee_folder_new (CamelStore *parent_store, const gchar *full, guint32 flags
 			name++;
 		vf = g_object_new (
 			CAMEL_TYPE_VEE_FOLDER,
-			"name", name, "full-name", full,
+			"display-name", name, "full-name", full,
 			"parent-store", parent_store, NULL);
 		camel_vee_folder_construct (vf, flags);
 	}

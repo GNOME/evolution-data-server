@@ -656,7 +656,7 @@ camel_pop3_folder_new (CamelStore *parent,
 
 	folder = g_object_new (
 		CAMEL_TYPE_POP3_FOLDER,
-		"full-name", "inbox", "name", "inbox",
+		"full-name", "inbox", "display-name", "inbox",
 		"parent-store", parent, NULL);
 
 	/* mt-ok, since we dont have the folder-lock for new() */

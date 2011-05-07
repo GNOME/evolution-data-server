@@ -665,7 +665,7 @@ camel_nntp_folder_new (CamelStore *parent,
 
 	folder = g_object_new (
 		CAMEL_TYPE_NNTP_FOLDER,
-		"name", folder_name,
+		"display-name", folder_name,
 		"full-name", folder_name,
 		"parent-store", parent, NULL);
 	nntp_folder = (CamelNNTPFolder *)folder;

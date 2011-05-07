@@ -122,7 +122,8 @@ vee_store_constructed (GObject *object)
 	vee_store->folder_unmatched = g_object_new (
 		CAMEL_TYPE_VEE_FOLDER,
 		"full-name", CAMEL_UNMATCHED_NAME,
-		"name", _("Unmatched"), "parent-store", vee_store, NULL);
+		"display-name", _("Unmatched"),
+		"parent-store", vee_store, NULL);
 	camel_vee_folder_construct (
 		vee_store->folder_unmatched, CAMEL_STORE_FOLDER_PRIVATE);
 	camel_db_create_vfolder (

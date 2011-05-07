@@ -147,7 +147,7 @@ camel_spool_folder_new (CamelStore *parent_store,
 
 	folder = g_object_new (
 		CAMEL_TYPE_SPOOL_FOLDER,
-		"name", basename, "full-name", full_name,
+		"display-name", basename, "full-name", full_name,
 		"parent-store", parent_store, NULL);
 
 	if (parent_store->flags & CAMEL_STORE_FILTER_INBOX

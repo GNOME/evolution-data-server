@@ -379,7 +379,7 @@ camel_imap_folder_new (CamelStore *parent, const gchar *folder_name,
 	folder = g_object_new (
 		CAMEL_TYPE_IMAP_FOLDER,
 		"full-name", folder_name,
-		"name", short_name,
+		"display-name", short_name,
 		"parent-store", parent, NULL);
 
 	summary_file = g_strdup_printf ("%s/summary", folder_dir);

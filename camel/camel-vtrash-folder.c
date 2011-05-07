@@ -222,7 +222,7 @@ camel_vtrash_folder_new (CamelStore *parent_store, camel_vtrash_folder_t type)
 	vtrash = g_object_new (
 		CAMEL_TYPE_VTRASH_FOLDER,
 		"full-name", vdata[type].full_name,
-		"name", gettext (vdata[type].name),
+		"display-name", gettext (vdata[type].name),
 		"parent-store", parent_store, NULL);
 
 	camel_vee_folder_construct (

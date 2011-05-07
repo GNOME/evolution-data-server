@@ -59,7 +59,7 @@ camel_imapx_folder_new (CamelStore *store, const gchar *folder_dir, const gchar 
 
 	folder = g_object_new (
 		CAMEL_TYPE_IMAPX_FOLDER,
-		"name", short_name,
+		"display-name", short_name,
 		"full_name", folder_name,
 		"parent-store", store, NULL);
 	ifolder = (CamelIMAPXFolder *) folder;

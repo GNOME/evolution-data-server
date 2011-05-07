@@ -499,7 +499,7 @@ camel_mbox_folder_new (CamelStore *parent_store,
 
 	folder = g_object_new (
 		CAMEL_TYPE_MBOX_FOLDER,
-		"name", basename, "full-name", full_name,
+		"display-name", basename, "full-name", full_name,
 		"parent-store", parent_store, NULL);
 	folder = (CamelFolder *)camel_local_folder_construct (
 		(CamelLocalFolder *)folder, flags, cancellable, error);
