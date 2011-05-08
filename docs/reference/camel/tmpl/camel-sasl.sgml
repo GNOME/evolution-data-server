@@ -57,6 +57,40 @@ CamelSasl
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_sasl_try_empty_password_sync ##### -->
+<para>
+
+</para>
+
+@sasl: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_sasl_try_empty_password ##### -->
+<para>
+
+</para>
+
+@sasl: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_sasl_try_empty_password_finish ##### -->
+<para>
+
+</para>
+
+@sasl: 
+@result: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_sasl_get_authenticated ##### -->
 <para>
 
