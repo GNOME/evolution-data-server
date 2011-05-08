@@ -86,7 +86,7 @@ DISTCLEANFILES = eds-version.h $(pkgconfig_DATA)
 
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS =
-INTROSPECTION_SCANNER_ARGS = --identifier-prefix E
+INTROSPECTION_SCANNER_ARGS = --identifier-prefix E --pkg-export libedataserver-1.2
 INTROSPECTION_COMPILER_ARGS =
 
 if HAVE_INTROSPECTION
