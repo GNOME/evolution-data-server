@@ -1,3 +1,128 @@
+Evolution-Data-Server 3.1.1 2011-05-09
+--------------------------------------
+
+Announcements:
+
+* As of this release, the backend for Novell GroupWise servers has been
+  split off as a new module named evolution-groupwise.
+
+* Various Camel API breaks:
+  http://mail.gnome.org/archives/evolution-hackers/2011-April/msg00093.html
+  http://mail.gnome.org/archives/evolution-hackers/2011-April/msg00099.html
+  http://mail.gnome.org/archives/evolution-hackers/2011-May/msg00017.html
+
+Bug Fixes:
+	Bug 332497 - Add Edit -> Available Categories (Dan Vrátil)
+	Bug 418954 - Add a separate entry combo for port numbers (Dan Vráti)
+	Bug 628142 - Fix handling of simultaneous get_message requests
+	             (David Woodhouse)
+	Bug 645239 - Fix build error when enabling kerberos without specifying
+	             path (Niki Guldbrand)
+	Bug 645498 - [maildir] Fails to show already read messages again
+	             (Milan Crha)
+	Bug 645783 - Return safe paths from CamelService::get_path()
+	             (Milan Crha)
+	Bug 646117 - e-calendar-factory does not exit (Matthew Barnes)
+	Bug 646200 - Insufficient requirement on libsoup (Matthew Barnes)
+	Bug 646619 - Typo in user-visible string: "defalut" should be "default"
+	             (Milan Crha)
+	Bug 647429 - Hide port-entry for providers without port (Dan Vrátil)
+	Bug 647873 - Sources should be created in GConf (David Woodhouse)
+	Bug 648844 - IMAP Error: LIST failed: wildcards not permitted in
+	             username (Milan Crha)
+	Bug 649365 - Creation of new repository evolution-groupwise
+	             (Vibha Yadav)
+	Bug 649684 - GIR files should contain <package name=../>
+	             (Raul Gutierrez Segales)
+
+Other Changes:
+	* Collect all test code into a top-level "tests" directory
+	  (Matthew Barnes)
+	* Support NTLMv2 in camel-sasl-ntlm.c (David Woodhouse)
+	* Infer NTLM domain from username; don't assume it matches the server's
+	  domain (David Woodhouse)
+	* Add camel_sasl_try_empty_password_sync() method. (David Woodhouse)
+	* Add asynchronous camel_sasl_try_empty_password() (David Woodhouse)
+	* Add support for NTLM single-sign-on using /usr/bin/ntlm_auth
+	  (David Woodhouse)
+	* Fix read off end of string in NTLM SSO support (David Woodhouse)
+	* Pull in translations from Evolution for "On This Computer"
+	  (David Woodhouse)
+	* Seal up CamelService. (Matthew Barnes)
+	* Fix Gtk-Doc notation in Camel. (Matthew Barnes)
+	* Fix few memory leaks (Milan Crha)
+	* Define a boxed GType for CamelURL. (Matthew Barnes)
+	* Rework how CamelServices are added to CamelSession. (Matthew Barnes)
+	* CamelStore: Chain up in the constructed() method (Matthew Barnes)
+	* CamelSession: Remove some leftover debug messages. (Matthew Barnes)
+	* CamelStore: Remove a dead assignment. (Matthew Barnes)
+	* Remove unused CamelTimeoutCallback typedef. (Matthew Barnes)
+	* Remove unused camel_session_thread_wait(). (Matthew Barnes)
+	* Replace CamelSessionThreadMsg with a more modern API. (Matthew Barnes)
+	* Revise camel_session_get_service_by_url(). (Matthew Barnes)
+	* Fix definition of CamelProvider.url_equal(). (Matthew Barnes)
+	* Remove camel_store_folder_uri_equal(). (Matthew Barnes)
+	* Mark the param spec strings for translation correctly.
+	  (Kjartan Maraas)
+	* Remove camel_filter_driver_filter_mbox() (Matthew Barnes)
+	* Camel: Store UIDs in X-Evolution-Source headers. (Matthew Barnes)
+	* CamelFolderSearch: Hack to deal with "message-location".
+	  (Matthew Barnes)
+	* CamelFolder: Remove "uri" property. (Matthew Barnes)
+	* Remove CAMEL_STORE_SUMMARY_FRAGMENT flag. (Matthew Barnes)
+	* CamelVeeStore: Change handling of CHANGE_NOSELECT flag.
+	  (Matthew Barnes)
+	* Remove "uri" field of CamelFolderInfo. (Matthew Barnes)
+	* Rename "name" field of CamelFolderInfo to "display_name".
+	  (Matthew Barnes)
+	* Rename "name" property of CamelFolder to "display-name".
+	  (Matthew Barnes)
+
+Translations:
+	Alexander Shopov (bg)
+	Jordi Serratosa (ca)
+	Kris Thomsen (da)
+	Kristjan SCHMIDT (eo)
+	Daniel Mustieles (es)
+	Inaki Larranaga Murgoitio (eu)
+	Fran Diéguez (gl)
+	Sweta Kothari (gu)
+	Luca Ferretti (it)
+	Takayuki KUSANO (ja)
+	Jiro Matsuzawa (ja)
+	Žygimantas Beručka (lt)
+	Kjartan Maraas (nb)
+	Wouter Bolsterlee (nl)
+	Hannie Dumoleyn (nl)
+	Antonio Fernandes C. Neto (pt_BR)
+	Andrej Žnidaršič (sl)
+	Daniel Nylander (sv)
+	Abduxukur Abdurixit (ug)
+
+
+Evolution-Data-Server 3.0.0 2011-04-04
+--------------------------------------
+
+Bug Fixes:
+	Bug 646200 - Insufficient requirement on libsoup (Matthew Barnes)
+
+Translations:
+	Alexander Shopov (bg)
+	Jordi Serratosa (ca)
+	Kris Thomsen (da)
+	Wolfgang Stöggl (de)
+	Kristjan SCHMIDT (eo)
+	Rajesh Ranjan (hi)
+	Sweta Kothari (gu)
+	Luca Ferretti (it)
+	Takayuki KUSANO, Jiro Matsuzawa (ja)
+	Žygimantas Beručka (lt)
+	Sandeep Shedmake (mr)
+	Kjartan Maraas (nb)
+	Wouter Bolsterlee, Hannie Dumoleyn (nl)
+	Antonio Fernandes C. Neto (pt_BR)
+
+
 Evolution-Data-Server 2.91.92 2011-03-21
 ----------------------------------------
 
