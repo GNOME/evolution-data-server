@@ -47,7 +47,7 @@ G_DEFINE_TYPE (CamelVeeSummary, camel_vee_summary, CAMEL_TYPE_FOLDER_SUMMARY)
 static void
 vee_message_info_free (CamelFolderSummary *s, CamelMessageInfo *info)
 {
-	CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *)info;
+	CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *) info;
 
 	camel_pstring_free (info->uid);
 	g_object_unref (mi->summary);
@@ -57,15 +57,15 @@ static CamelMessageInfo *
 vee_message_info_clone (CamelFolderSummary *s, const CamelMessageInfo *mi)
 {
 	CamelVeeMessageInfo *to;
-	const CamelVeeMessageInfo *from = (const CamelVeeMessageInfo *)mi;
+	const CamelVeeMessageInfo *from = (const CamelVeeMessageInfo *) mi;
 
-	to = (CamelVeeMessageInfo *)camel_message_info_new (s);
+	to = (CamelVeeMessageInfo *) camel_message_info_new (s);
 
 	to->summary = g_object_ref (from->summary);
 	to->info.summary = s;
 	to->info.uid = camel_pstring_strdup (from->info.uid);
 
-	return (CamelMessageInfo *)to;
+	return (CamelMessageInfo *) to;
 }
 
 #define HANDLE_NULL_INFO(value) if (!rmi) { d(g_warning (G_STRLOC ": real info is NULL for %s, safeguarding\n", mi->uid)); return value; }
@@ -88,7 +88,7 @@ vee_info_ptr (const CamelMessageInfo *mi, gint id)
 static guint32
 vee_info_uint32 (const CamelMessageInfo *mi, gint id)
 {
-	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
+	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid+8);
 	guint32 ret;
 
 	HANDLE_NULL_INFO (0);
@@ -102,7 +102,7 @@ vee_info_uint32 (const CamelMessageInfo *mi, gint id)
 static time_t
 vee_info_time (const CamelMessageInfo *mi, gint id)
 {
-	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
+	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid+8);
 	time_t ret;
 
 	HANDLE_NULL_INFO (0);
@@ -115,7 +115,7 @@ vee_info_time (const CamelMessageInfo *mi, gint id)
 static gboolean
 vee_info_user_flag (const CamelMessageInfo *mi, const gchar *id)
 {
-	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
+	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid+8);
 	gboolean ret;
 
 	HANDLE_NULL_INFO (FALSE);
@@ -128,7 +128,7 @@ vee_info_user_flag (const CamelMessageInfo *mi, const gchar *id)
 static const gchar *
 vee_info_user_tag (const CamelMessageInfo *mi, const gchar *id)
 {
-	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
+	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid+8);
 	const gchar *ret;
 
 	HANDLE_NULL_INFO("");
@@ -143,7 +143,7 @@ vee_info_set_user_flag (CamelMessageInfo *mi, const gchar *name, gboolean value)
 {
 	gint res = FALSE;
 	gboolean hacked_unread_folder = FALSE;
-	CamelVeeFolder *vf = (CamelVeeFolder *)mi->summary->folder;
+	CamelVeeFolder *vf = (CamelVeeFolder *) mi->summary->folder;
 
 	if (camel_debug("vfolderexp"))
 		printf (
@@ -158,16 +158,16 @@ vee_info_set_user_flag (CamelMessageInfo *mi, const gchar *name, gboolean value)
 		hacked_unread_folder = TRUE;
 
 	if (mi->uid) {
-		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
+		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid+8);
 		HANDLE_NULL_INFO (FALSE);
 
 		if (hacked_unread_folder)
-			camel_vee_folder_mask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
+			camel_vee_folder_mask_event_folder_changed ((CamelVeeFolder *) mi->summary->folder, rmi->summary->folder);
 
 		res = camel_message_info_set_user_flag (rmi, name, value);
 
 		if (hacked_unread_folder)
-			camel_vee_folder_unmask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
+			camel_vee_folder_unmask_event_folder_changed ((CamelVeeFolder *) mi->summary->folder, rmi->summary->folder);
 
 		camel_message_info_free (rmi);
 	}
@@ -181,7 +181,7 @@ vee_info_set_user_tag (CamelMessageInfo *mi, const gchar *name, const gchar *val
 	gint res = FALSE;
 
 	if (mi->uid) {
-		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
+		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid+8);
 		HANDLE_NULL_INFO (FALSE);
 		res = camel_message_info_set_user_tag (rmi, name, value);
 		camel_message_info_free (rmi);
@@ -205,7 +205,7 @@ camel_vee_summary_load_check_unread_vfolder (CamelVeeSummary *vs)
 
 	g_return_if_fail (vs != NULL);
 
-	vf = (CamelVeeFolder *) ((CamelFolderSummary *)vs)->folder;
+	vf = (CamelVeeFolder *) ((CamelFolderSummary *) vs)->folder;
 
 	/* HACK: Ugliest of all hacks. Its virtually not possible now
 	 * to maintain counts and the non matching uids of unread vfolder here.
@@ -233,7 +233,7 @@ vee_info_set_flags (CamelMessageInfo *mi,
                     guint32 set)
 {
 	gint res = FALSE;
-	CamelVeeFolder *vf = (CamelVeeFolder *)mi->summary->folder;
+	CamelVeeFolder *vf = (CamelVeeFolder *) mi->summary->folder;
 	gboolean hacked_unread_folder = FALSE;
 
 	if (camel_debug("vfolderexp"))
@@ -250,8 +250,8 @@ vee_info_set_flags (CamelMessageInfo *mi,
 
 	if (mi->uid) {
 		guint32 old_visible, visible, old_unread;
-		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
-		CamelVeeSummary *vsummary = (CamelVeeSummary *)mi->summary;
+		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid+8);
+		CamelVeeSummary *vsummary = (CamelVeeSummary *) mi->summary;
 
 		HANDLE_NULL_INFO (FALSE);
 
@@ -260,7 +260,7 @@ vee_info_set_flags (CamelMessageInfo *mi,
 		camel_folder_summary_update_counts_by_flags (mi->summary, camel_message_info_flags (rmi), TRUE);
 
 		if (hacked_unread_folder)
-			camel_vee_folder_mask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
+			camel_vee_folder_mask_event_folder_changed ((CamelVeeFolder *) mi->summary->folder, rmi->summary->folder);
 
 		camel_folder_freeze (rmi->summary->folder);
 		res = camel_message_info_set_flags (rmi, flags, set);
@@ -268,7 +268,7 @@ vee_info_set_flags (CamelMessageInfo *mi,
 		camel_folder_thaw (rmi->summary->folder);
 
 		if (hacked_unread_folder)
-			camel_vee_folder_unmask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
+			camel_vee_folder_unmask_event_folder_changed ((CamelVeeFolder *) mi->summary->folder, rmi->summary->folder);
 
 		visible = rmi->summary->visible_count;
 
@@ -291,7 +291,7 @@ vee_info_set_flags (CamelMessageInfo *mi,
 			camel_folder_change_info_change_uid (changes, mi->uid);
 
 			array = g_ptr_array_new ();
-			g_ptr_array_add (array, (gpointer)rmi->uid);
+			g_ptr_array_add (array, (gpointer) rmi->uid);
 
 			match = camel_folder_search_by_uids (rmi->summary->folder, vf->expression, array, NULL);
 			if ((match && !match->len) || !match) {
@@ -424,7 +424,7 @@ GPtrArray *
 camel_vee_summary_get_ids (CamelVeeSummary *summary, gchar hash[8])
 {
 	gchar *shash = g_strdup_printf("%c%c%c%c%c%c%c%c", hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7]);
-	CamelFolderSummary *cfs = (CamelFolderSummary *)summary;
+	CamelFolderSummary *cfs = (CamelFolderSummary *) summary;
 	CamelStore *parent_store;
 	GPtrArray *array;
 	const gchar *full_name;
@@ -464,7 +464,7 @@ camel_vee_summary_add (CamelVeeSummary *s, CamelFolderSummary *summary, const gc
 		return mi;
 	}
 
-	mi = (CamelVeeMessageInfo *)camel_message_info_new (&s->summary);
+	mi = (CamelVeeMessageInfo *) camel_message_info_new (&s->summary);
 	mi->summary = g_object_ref (summary);
 	mi->info.uid = (gchar *) camel_pstring_strdup (vuid);
 	g_free (vuid);
@@ -477,7 +477,7 @@ camel_vee_summary_add (CamelVeeSummary *s, CamelFolderSummary *summary, const gc
 		camel_message_info_free (rmi);
 	}
 
-	camel_folder_summary_insert (&s->summary, (CamelMessageInfo *)mi, FALSE);
+	camel_folder_summary_insert (&s->summary, (CamelMessageInfo *) mi, FALSE);
 	camel_folder_summary_update_counts_by_flags (&s->summary, camel_message_info_flags (mi), FALSE);
 
 	return mi;

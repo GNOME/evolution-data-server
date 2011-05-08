@@ -100,7 +100,7 @@ stream_read (CamelStream *stream,
              GCancellable *cancellable,
              GError **error)
 {
-	CamelPOP3Stream *is = (CamelPOP3Stream *)stream;
+	CamelPOP3Stream *is = (CamelPOP3Stream *) stream;
 	gchar *o, *oe;
 	guchar *p, *e, c;
 	gint state;
@@ -176,7 +176,7 @@ stream_write (CamelStream *stream,
               GCancellable *cancellable,
               GError **error)
 {
-	CamelPOP3Stream *is = (CamelPOP3Stream *)stream;
+	CamelPOP3Stream *is = (CamelPOP3Stream *) stream;
 
 	if (strncmp (buffer, "PASS ", 5) != 0)
 		dd (printf ("POP3_STREAM_WRITE (%d):\n%.*s\n", (gint)n, (gint)n, buffer));
@@ -207,7 +207,7 @@ stream_flush (CamelStream *stream,
 static gboolean
 stream_eos (CamelStream *stream)
 {
-	CamelPOP3Stream *is = (CamelPOP3Stream *)stream;
+	CamelPOP3Stream *is = (CamelPOP3Stream *) stream;
 
 	return is->mode != CAMEL_POP3_STREAM_DATA;
 }
@@ -270,7 +270,7 @@ camel_pop3_stream_new (CamelStream *source)
 	is = g_object_new (CAMEL_TYPE_POP3_STREAM, NULL);
 	is->source = g_object_ref (source);
 
-	return (CamelStream *)is;
+	return (CamelStream *) is;
 }
 
 /* Get one line from the pop3 stream */

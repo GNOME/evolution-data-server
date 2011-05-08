@@ -166,7 +166,7 @@ camel_file_util_decode_##type (FILE *in, type *dest)	\
 	gint v = EOF;					\
 							\
 	while (i >= 0 && (v = fgetc (in)) != EOF) {	\
-		save |= ((type)v) << (i * 8);		\
+		save |= ((type) v) << (i * 8);		\
 		i--;					\
 	}						\
 	*dest = save;					\

@@ -111,7 +111,7 @@ nntp_stream_read (CamelStream *stream,
                   GCancellable *cancellable,
                   GError **error)
 {
-	CamelNNTPStream *is = (CamelNNTPStream *)stream;
+	CamelNNTPStream *is = (CamelNNTPStream *) stream;
 	gchar *o, *oe;
 	guchar *p, *e, c;
 	gint state;
@@ -187,7 +187,7 @@ nntp_stream_write (CamelStream *stream,
                    GCancellable *cancellable,
                    GError **error)
 {
-	CamelNNTPStream *is = (CamelNNTPStream *)stream;
+	CamelNNTPStream *is = (CamelNNTPStream *) stream;
 
 	return camel_stream_write (is->source, buffer, n, cancellable, error);
 }
@@ -213,7 +213,7 @@ nntp_stream_flush (CamelStream *stream,
 static gboolean
 nntp_stream_eos (CamelStream *stream)
 {
-	CamelNNTPStream *is = (CamelNNTPStream *)stream;
+	CamelNNTPStream *is = (CamelNNTPStream *) stream;
 
 	return is->mode != CAMEL_NNTP_STREAM_DATA;
 }
@@ -276,7 +276,7 @@ camel_nntp_stream_new (CamelStream *source)
 	is = g_object_new (CAMEL_TYPE_NNTP_STREAM, NULL);
 	is->source = g_object_ref (source);
 
-	return (CamelStream *)is;
+	return (CamelStream *) is;
 }
 
 /* Get one line from the nntp stream */

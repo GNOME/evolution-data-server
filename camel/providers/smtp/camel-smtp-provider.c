@@ -88,7 +88,7 @@ add_hash (guint *hash, gchar *s)
 static guint
 smtp_url_hash (gconstpointer key)
 {
-	const CamelURL *u = (CamelURL *)key;
+	const CamelURL *u = (CamelURL *) key;
 	guint hash = 0;
 
 	add_hash (&hash, u->user);

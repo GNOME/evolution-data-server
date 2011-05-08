@@ -131,9 +131,9 @@ book_record_new (ECalBackendContacts *cbc, ESource *source)
 	}
 
         /* Create book view */
-	fields = g_list_append (fields, (gchar *)e_contact_field_name (E_CONTACT_FILE_AS));
-	fields = g_list_append (fields, (gchar *)e_contact_field_name (E_CONTACT_BIRTH_DATE));
-	fields = g_list_append (fields, (gchar *)e_contact_field_name (E_CONTACT_ANNIVERSARY));
+	fields = g_list_append (fields, (gchar *) e_contact_field_name (E_CONTACT_FILE_AS));
+	fields = g_list_append (fields, (gchar *) e_contact_field_name (E_CONTACT_BIRTH_DATE));
+	fields = g_list_append (fields, (gchar *) e_contact_field_name (E_CONTACT_ANNIVERSARY));
         query = e_book_query_any_field_contains ("");
 
 	if (!e_book_get_book_view (book, query, fields, -1, &book_view, &error)) {
@@ -437,7 +437,7 @@ contacts_changed_cb (EBookView *book_view, const GList *contacts, gpointer user_
                 /* Because this is a change of contact, then always remove old tracked data
 		   and if possible, add with (possibly) new values.
 		*/
-		g_hash_table_remove (cbc->priv->tracked_contacts, (gchar *)uid);
+		g_hash_table_remove (cbc->priv->tracked_contacts, (gchar *) uid);
 
 		birthday = e_contact_get (contact, E_CONTACT_BIRTH_DATE);
 		anniversary = e_contact_get (contact, E_CONTACT_ANNIVERSARY);
@@ -1025,7 +1025,7 @@ e_cal_backend_contacts_open (ECalBackendSync *backend, EDataCal *cal,
 	}
 
 	/* initialize addressbook sources in new thread to make this function quick as much as possible */
-	if (!g_thread_create ((GThreadFunc)init_sources_cb, cbc, FALSE, &error)) {
+	if (!g_thread_create ((GThreadFunc) init_sources_cb, cbc, FALSE, &error)) {
 		e_flag_set (priv->init_done_flag);
 		g_warning ("%s: Cannot create thread to initialize sources! (%s)", G_STRFUNC, error ? error->message : "Unknown error");
 		if (error)
@@ -1253,7 +1253,7 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 	priv->addressbooks = g_hash_table_new_full (g_str_hash, g_str_equal,
 						    g_free, (GDestroyNotify) book_record_free);
 	priv->tracked_contacts = g_hash_table_new_full (g_str_hash, g_str_equal,
-							g_free, (GDestroyNotify)contact_record_free);
+							g_free, (GDestroyNotify) contact_record_free);
 
 	priv->zones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_zone);
 	priv->default_zone = icaltimezone_get_utc_timezone ();

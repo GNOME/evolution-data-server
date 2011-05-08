@@ -668,7 +668,7 @@ camel_nntp_folder_new (CamelStore *parent,
 		"display-name", folder_name,
 		"full-name", folder_name,
 		"parent-store", parent, NULL);
-	nntp_folder = (CamelNNTPFolder *)folder;
+	nntp_folder = (CamelNNTPFolder *) folder;
 
 	folder->folder_flags |=
 		CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |

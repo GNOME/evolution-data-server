@@ -272,7 +272,7 @@ disco_store_set_status (CamelDiscoStore *disco_store,
 	if (network_available) {
 		if (disco_store->status == CAMEL_DISCO_STORE_ONLINE
 		    && status == CAMEL_DISCO_STORE_OFFLINE) {
-			if (((CamelStore *)disco_store)->folders) {
+			if (((CamelStore *) disco_store)->folders) {
 				GPtrArray *folders;
 				CamelFolder *folder;
 				CamelURL *url;
@@ -281,7 +281,7 @@ disco_store_set_status (CamelDiscoStore *disco_store,
 				url = camel_service_get_camel_url (service);
 				sync =  camel_url_get_param (url, "offline_sync") != NULL;
 
-				folders = camel_object_bag_list (((CamelStore *)disco_store)->folders);
+				folders = camel_object_bag_list (((CamelStore *) disco_store)->folders);
 				for (i=0;i<folders->len;i++) {
 					folder = folders->pdata[i];
 					if (G_TYPE_CHECK_INSTANCE_TYPE (folder, CAMEL_TYPE_DISCO_FOLDER)
@@ -456,7 +456,7 @@ camel_disco_store_prepare_for_offline (CamelDiscoStore *disco_store,
 
 	if (camel_session_get_network_available (session)) {
 		if (disco_store->status == CAMEL_DISCO_STORE_ONLINE) {
-			if (((CamelStore *)disco_store)->folders) {
+			if (((CamelStore *) disco_store)->folders) {
 				GPtrArray *folders;
 				CamelFolder *folder;
 				CamelURL *url;
@@ -465,7 +465,7 @@ camel_disco_store_prepare_for_offline (CamelDiscoStore *disco_store,
 				url = camel_service_get_camel_url (service);
 				sync = camel_url_get_param (url, "offline_sync") != NULL;
 
-				folders = camel_object_bag_list (((CamelStore *)disco_store)->folders);
+				folders = camel_object_bag_list (((CamelStore *) disco_store)->folders);
 				for (i=0;i<folders->len;i++) {
 					folder = folders->pdata[i];
 					if (G_TYPE_CHECK_INSTANCE_TYPE (folder, CAMEL_TYPE_DISCO_FOLDER)

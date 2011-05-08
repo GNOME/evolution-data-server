@@ -494,14 +494,14 @@ des (guint32 ks[16][2], guchar block[8])
 	guint32 left, right, work;
 
 	/* Read input block and place in left/right in big-endian order */
-	left = ((guint32)block[0] << 24)
-	 | ((guint32)block[1] << 16)
-	 | ((guint32)block[2] << 8)
-	 | (guint32)block[3];
-	right = ((guint32)block[4] << 24)
-	 | ((guint32)block[5] << 16)
-	 | ((guint32)block[6] << 8)
-	 | (guint32)block[7];
+	left = ((guint32) block[0] << 24)
+	 | ((guint32) block[1] << 16)
+	 | ((guint32) block[2] << 8)
+	 | (guint32) block[3];
+	right = ((guint32) block[4] << 24)
+	 | ((guint32) block[5] << 16)
+	 | ((guint32) block[6] << 8)
+	 | (guint32) block[7];
 
 	/* Hoey's clever initial permutation algorithm, from Outerbridge
 	 * (see Schneier p 478)
@@ -651,14 +651,14 @@ deskey (DES_KS k, guchar *key, gint decrypt)
 			}
 		}
 		/* Now convert to packed odd/even interleaved form */
-		k[i][0] = ((guint32)ks[0] << 24)
-		 | ((guint32)ks[2] << 16)
-		 | ((guint32)ks[4] << 8)
-		 | ((guint32)ks[6]);
-		k[i][1] = ((guint32)ks[1] << 24)
-		 | ((guint32)ks[3] << 16)
-		 | ((guint32)ks[5] << 8)
-		 | ((guint32)ks[7]);
+		k[i][0] = ((guint32) ks[0] << 24)
+		 | ((guint32) ks[2] << 16)
+		 | ((guint32) ks[4] << 8)
+		 | ((guint32) ks[6]);
+		k[i][1] = ((guint32) ks[1] << 24)
+		 | ((guint32) ks[3] << 16)
+		 | ((guint32) ks[5] << 8)
+		 | ((guint32) ks[7]);
 	}
 }
 

@@ -93,7 +93,7 @@ vtrash_folder_append_message_sync (CamelFolder *folder,
 {
 	g_set_error (
 		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",
-		_(vdata[((CamelVTrashFolder *)folder)->type].error_copy));
+		_(vdata[((CamelVTrashFolder *) folder)->type].error_copy));
 
 	return FALSE;
 }
@@ -112,7 +112,7 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 	GHashTable *batch = NULL;
 	const gchar *tuid;
 	struct _transfer_data *md;
-	guint32 sbit = ((CamelVTrashFolder *)source)->bit;
+	guint32 sbit = ((CamelVTrashFolder *) source)->bit;
 
 	/* This is a special case of transfer_messages_to: Either the
 	 * source or the destination is a vtrash folder (but not both
@@ -127,7 +127,7 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 		if (!delete_originals) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",
-				_(vdata[((CamelVTrashFolder *)dest)->type].error_copy));
+				_(vdata[((CamelVTrashFolder *) dest)->type].error_copy));
 			return FALSE;
 		}
 
@@ -135,7 +135,7 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 		for (i = 0; i < uids->len; i++)
 			camel_folder_set_message_flags (
 				source, uids->pdata[i],
-				((CamelVTrashFolder *)dest)->bit, ~0);
+				((CamelVTrashFolder *) dest)->bit, ~0);
 		return TRUE;
 	}
 
@@ -146,7 +146,7 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 	 */
 
 	for (i = 0; i < uids->len; i++) {
-		mi = (CamelVeeMessageInfo *)camel_folder_get_message_info (source, uids->pdata[i]);
+		mi = (CamelVeeMessageInfo *) camel_folder_get_message_info (source, uids->pdata[i]);
 		if (mi == NULL) {
 			g_warning ("Cannot find uid %s in source folder during transfer", (gchar *) uids->pdata[i]);
 			continue;
@@ -176,11 +176,11 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 				tuid += 8;
 			g_ptr_array_add (md->uids, g_strdup (tuid));
 		}
-		camel_folder_free_message_info (source, (CamelMessageInfo *)mi);
+		camel_folder_free_message_info (source, (CamelMessageInfo *) mi);
 	}
 
 	if (batch) {
-		g_hash_table_foreach (batch, (GHFunc)transfer_messages, error);
+		g_hash_table_foreach (batch, (GHFunc) transfer_messages, error);
 		g_hash_table_destroy (batch);
 	}
 
@@ -232,10 +232,10 @@ camel_vtrash_folder_new (CamelStore *parent_store, camel_vtrash_folder_t type)
 		CAMEL_STORE_VEE_FOLDER_AUTO |
 		CAMEL_STORE_VEE_FOLDER_SPECIAL);
 
-	((CamelFolder *)vtrash)->folder_flags |= vdata[type].flags;
-	camel_vee_folder_set_expression ((CamelVeeFolder *)vtrash, vdata[type].expr);
+	((CamelFolder *) vtrash)->folder_flags |= vdata[type].flags;
+	camel_vee_folder_set_expression ((CamelVeeFolder *) vtrash, vdata[type].expr);
 	vtrash->bit = vdata[type].bit;
 	vtrash->type = type;
 
-	return (CamelFolder *)vtrash;
+	return (CamelFolder *) vtrash;
 }

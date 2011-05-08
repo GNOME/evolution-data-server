@@ -16,10 +16,10 @@ test_message_create_simple (void)
 	addr = camel_internet_address_new ();
 	camel_internet_address_add (addr, "Michael Zucchi", "zed@nowhere.com");
 	camel_mime_message_set_from (msg, addr);
-	camel_address_remove ((CamelAddress *)addr, -1);
+	camel_address_remove ((CamelAddress *) addr, -1);
 	camel_internet_address_add (addr, "POSTMASTER", "POSTMASTER@somewhere.net");
 	camel_mime_message_set_recipients (msg, CAMEL_RECIPIENT_TYPE_TO, addr);
-	camel_address_remove ((CamelAddress *)addr, -1);
+	camel_address_remove ((CamelAddress *) addr, -1);
 	camel_internet_address_add (addr, "Michael Zucchi", "zed@nowhere.com");
 	camel_mime_message_set_recipients (msg, CAMEL_RECIPIENT_TYPE_CC, addr);
 
@@ -50,24 +50,24 @@ test_message_set_content_simple (CamelMimePart *part, gint how, const gchar *typ
 		camel_mime_part_set_content (part, text, len, type);
 		break;
 	case 1:
-		content = (CamelStreamMem *)camel_stream_mem_new_with_buffer (text, len);
+		content = (CamelStreamMem *) camel_stream_mem_new_with_buffer (text, len);
 		break;
 	case 2:
-		content = (CamelStreamMem *)camel_stream_mem_new ();
+		content = (CamelStreamMem *) camel_stream_mem_new ();
 		camel_stream_mem_set_buffer (content, text, len);
 		break;
 	case 3:
 		ba = g_byte_array_new ();
 		g_byte_array_append (ba, (guint8 *) text, len);
 
-		content = (CamelStreamMem *)camel_stream_mem_new_with_byte_array (ba);
+		content = (CamelStreamMem *) camel_stream_mem_new_with_byte_array (ba);
 		ba = NULL;
 		break;
 	case 4:
 		ba = g_byte_array_new ();
 		g_byte_array_append (ba, (guint8 *) text, len);
 
-		content = (CamelStreamMem *)camel_stream_mem_new ();
+		content = (CamelStreamMem *) camel_stream_mem_new ();
 		camel_stream_mem_set_byte_array (content, ba);
 
 		g_object_weak_ref (
@@ -81,8 +81,8 @@ test_message_set_content_simple (CamelMimePart *part, gint how, const gchar *typ
 		camel_data_wrapper_set_mime_type (dw, type);
 
 		camel_data_wrapper_construct_from_stream_sync (
-			dw, (CamelStream *)content, NULL, NULL);
-		camel_medium_set_content ((CamelMedium *)part, dw);
+			dw, (CamelStream *) content, NULL, NULL);
+		camel_medium_set_content ((CamelMedium *) part, dw);
 
 		check_unref (content, 2);
 		check_unref (dw, 2);
@@ -267,7 +267,7 @@ message_dump_rec (CamelMimeMessage *msg, CamelMimePart *part, gint depth)
 	memset (s, ' ', depth);
 	s[depth] = 0;
 
-	mime_type = camel_data_wrapper_get_mime_type ((CamelDataWrapper *)part);
+	mime_type = camel_data_wrapper_get_mime_type ((CamelDataWrapper *) part);
 	printf ("%sPart <%s>\n", s, G_OBJECT_TYPE_NAME (part));
 	printf ("%sContent-Type: %s\n", s, mime_type);
 	g_free (mime_type);
@@ -294,12 +294,12 @@ message_dump_rec (CamelMimeMessage *msg, CamelMimePart *part, gint depth)
 			message_dump_rec (msg, part, depth+1);
 		}
 	} else if (CAMEL_IS_MIME_MESSAGE (containee)) {
-		message_dump_rec (msg, (CamelMimePart *)containee, depth+1);
+		message_dump_rec (msg, (CamelMimePart *) containee, depth+1);
 	}
 }
 
 void
 test_message_dump_structure (CamelMimeMessage *m)
 {
-	message_dump_rec (m, (CamelMimePart *)m, 0);
+	message_dump_rec (m, (CamelMimePart *) m, 0);
 }

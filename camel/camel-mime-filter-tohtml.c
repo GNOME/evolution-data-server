@@ -309,7 +309,7 @@ html_convert (CamelMimeFilter *mime_filter,
 			do {
 				if (camel_url_scanner_scan (priv->scanner, start, len - (len > 0 && start[len - 1] == 0 ? 1 : 0), &match)) {
 					/* write out anything before the first regex match */
-					outptr = writeln (mime_filter, (const guchar *)start, (const guchar *)start + match.um_so,
+					outptr = writeln (mime_filter, (const guchar *) start, (const guchar *) start + match.um_so,
 							  outptr, &outend);
 
 					start += match.um_so;
@@ -321,19 +321,19 @@ html_convert (CamelMimeFilter *mime_filter,
 					outptr = append_string_verbatim (mime_filter, "<a href=\"", outptr, &outend);
 					/* prefix shouldn't need escaping, but let's be safe */
 					outptr = writeln (mime_filter,
-							(const guchar *)match.prefix,
-							(const guchar *)match.prefix + strlen (match.prefix),
+							(const guchar *) match.prefix,
+							(const guchar *) match.prefix + strlen (match.prefix),
 							outptr, &outend);
 					outptr = writeln (mime_filter,
-							(const guchar *)start,
-							(const guchar *)start + matchlen,
+							(const guchar *) start,
+							(const guchar *) start + matchlen,
 							outptr, &outend);
 					outptr = append_string_verbatim (mime_filter, "\">", outptr, &outend);
 
 					/* now write the matched string */
 					outptr = writeln (mime_filter,
-							(const guchar *)start,
-							(const guchar *)start + matchlen,
+							(const guchar *) start,
+							(const guchar *) start + matchlen,
 							outptr, &outend);
 					priv->column += matchlen;
 					start += matchlen;
@@ -343,12 +343,12 @@ html_convert (CamelMimeFilter *mime_filter,
 					outptr = append_string_verbatim (mime_filter, "</a>", outptr, &outend);
 				} else {
 					/* nothing matched so write out the remainder of this line buffer */
-					outptr = writeln (mime_filter, (const guchar *)start, (const guchar *)start + len, outptr, &outend);
+					outptr = writeln (mime_filter, (const guchar *) start, (const guchar *) start + len, outptr, &outend);
 					break;
 				}
 			} while (len > 0);
 		} else {
-			outptr = writeln (mime_filter, (const guchar *)start, (const guchar *)inptr, outptr, &outend);
+			outptr = writeln (mime_filter, (const guchar *) start, (const guchar *) inptr, outptr, &outend);
 		}
 
 		if ((priv->flags & CAMEL_MIME_FILTER_TOHTML_MARK_CITATION) && depth > 0) {
@@ -371,7 +371,7 @@ html_convert (CamelMimeFilter *mime_filter,
 	if (flush) {
 		/* flush the rest of our input buffer */
 		if (start < inend)
-			outptr = writeln (mime_filter, (const guchar *)start, (const guchar *)inend, outptr, &outend);
+			outptr = writeln (mime_filter, (const guchar *) start, (const guchar *) inend, outptr, &outend);
 
 		if (priv->pre_open) {
 			/* close the pre-tag */

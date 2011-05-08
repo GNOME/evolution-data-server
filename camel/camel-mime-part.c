@@ -444,7 +444,7 @@ static void
 mime_part_remove_header (CamelMedium *medium,
                          const gchar *name)
 {
-	CamelMimePart *part = (CamelMimePart *)medium;
+	CamelMimePart *part = (CamelMimePart *) medium;
 
 	mime_part_process_header (medium, name, NULL);
 	camel_header_raw_remove (&part->headers, name);
@@ -454,7 +454,7 @@ static gconstpointer
 mime_part_get_header (CamelMedium *medium,
                       const gchar *name)
 {
-	CamelMimePart *part = (CamelMimePart *)medium;
+	CamelMimePart *part = (CamelMimePart *) medium;
 	const gchar *value;
 
 	value = camel_header_raw_find (&part->headers, name, NULL);
@@ -469,7 +469,7 @@ mime_part_get_header (CamelMedium *medium,
 static GArray *
 mime_part_get_headers (CamelMedium *medium)
 {
-	CamelMimePart *part = (CamelMimePart *)medium;
+	CamelMimePart *part = (CamelMimePart *) medium;
 	GArray *headers;
 	CamelMediumHeader header;
 	struct _camel_header_raw *h;
@@ -746,7 +746,7 @@ mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
 			    && headers->value != content)
 				camel_medium_add_header((CamelMedium *)dw, "X-Invalid-Content-Type", headers->value);
 			else
-				camel_medium_add_header ((CamelMedium *)dw, headers->name, headers->value);
+				camel_medium_add_header ((CamelMedium *) dw, headers->name, headers->value);
 			headers = headers->next;
 		}
 

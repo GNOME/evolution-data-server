@@ -413,7 +413,7 @@ e_book_backend_vcf_get_contact_list (EBookBackendSync *backend,
 	closure.card_sexp = e_book_backend_sexp_new (search);
 	closure.list = NULL;
 
-	g_list_foreach (bvcf->priv->contact_list, (GFunc)foreach_get_contact_compare, &closure);
+	g_list_foreach (bvcf->priv->contact_list, (GFunc) foreach_get_contact_compare, &closure);
 
 	g_object_unref (closure.card_sexp);
 
@@ -446,7 +446,7 @@ init_closure (EDataBookView *book_view, EBookBackendVCF *bvcf)
 	closure->running = e_flag_new ();
 
 	g_object_set_data_full (G_OBJECT (book_view), "EBookBackendVCF.BookView::closure",
-				closure, (GDestroyNotify)closure_destroy);
+				closure, (GDestroyNotify) closure_destroy);
 
 	return closure;
 }
@@ -577,7 +577,7 @@ e_book_backend_vcf_get_supported_fields (EBookBackendSync *backend,
 	/* XXX we need a way to say "we support everything", since the
 	   vcf backend does */
 	for (i = 0; i < E_CONTACT_FIELD_LAST; i++)
-		fields = g_list_append (fields, (gchar *)e_contact_field_name (i));
+		fields = g_list_append (fields, (gchar *) e_contact_field_name (i));
 
 	*fields_out = fields;
 }
@@ -716,7 +716,7 @@ e_book_backend_vcf_dispose (GObject *object)
 			save_file (bvcf);
 
 		g_hash_table_destroy (bvcf->priv->contacts);
-		g_list_foreach (bvcf->priv->contact_list, (GFunc)g_free, NULL);
+		g_list_foreach (bvcf->priv->contact_list, (GFunc) g_free, NULL);
 		g_list_free (bvcf->priv->contact_list);
 
 		g_free (bvcf->priv->filename);

@@ -67,7 +67,7 @@ static gboolean
 find_location_func (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *node, gpointer data)
 {
 	WeatherLocation *wl = NULL;
-	struct search_struct *search = (struct search_struct *)data;
+	struct search_struct *search = (struct search_struct *) data;
 
 	gtk_tree_model_get (model, node, GWEATHER_XML_COL_POINTER, &wl, -1);
 	if (!wl || !wl->name || !wl->code || !search || search->location)

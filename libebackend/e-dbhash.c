@@ -69,7 +69,7 @@ static void
 string_to_dbt (const gchar *str, DBT *dbt)
 {
 	memset (dbt, 0, sizeof (DBT));
-	dbt->data = (gpointer)str;
+	dbt->data = (gpointer) str;
 	dbt->size = strlen (str) + 1;
 }
 
@@ -77,7 +77,7 @@ static void
 md5_to_dbt (const guint8 str[16], DBT *dbt)
 {
 	memset (dbt, 0, sizeof (DBT));
-	dbt->data = (gpointer)str;
+	dbt->data = (gpointer) str;
 	dbt->size = 16;
 }
 
@@ -191,7 +191,7 @@ e_dbhash_foreach_key (EDbHash *edbh,
 	db_error = dbc->c_get (dbc, &dkey, &ddata, DB_FIRST);
 
 	while (db_error == 0) {
-		(*func) ((const gchar *)dkey.data, user_data);
+		(*func) ((const gchar *) dkey.data, user_data);
 
 		db_error = dbc->c_get (dbc, &dkey, &ddata, DB_NEXT);
 	}

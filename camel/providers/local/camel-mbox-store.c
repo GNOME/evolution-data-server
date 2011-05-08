@@ -119,11 +119,11 @@ fill_fi (CamelStore *store,
 		path = camel_local_store_get_meta_path(store, fi->full_name, ".ev-summary");
 		folderpath = camel_local_store_get_full_path (store, fi->full_name);
 
-		mbs = (CamelMboxSummary *)camel_mbox_summary_new (NULL, path, folderpath, NULL);
+		mbs = (CamelMboxSummary *) camel_mbox_summary_new (NULL, path, folderpath, NULL);
 		/* FIXME[disk-summary] track exception */
-		if (camel_folder_summary_header_load_from_db ((CamelFolderSummary *)mbs, store, fi->full_name, NULL) != -1) {
-			fi->unread = ((CamelFolderSummary *)mbs)->unread_count;
-			fi->total = ((CamelFolderSummary *)mbs)->saved_count;
+		if (camel_folder_summary_header_load_from_db ((CamelFolderSummary *) mbs, store, fi->full_name, NULL) != -1) {
+			fi->unread = ((CamelFolderSummary *) mbs)->unread_count;
+			fi->total = ((CamelFolderSummary *) mbs)->saved_count;
 		}
 
 		g_object_unref (mbs);
@@ -261,7 +261,7 @@ scan_dir (CamelStore *store,
 static gint
 xrename (CamelStore *store, const gchar *old_name, const gchar *new_name, const gchar *ext, gboolean missingok)
 {
-	CamelLocalStore *ls = (CamelLocalStore *)store;
+	CamelLocalStore *ls = (CamelLocalStore *) store;
 	gchar *oldpath, *newpath;
 	struct stat st;
 	gint ret = -1;

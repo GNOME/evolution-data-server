@@ -624,7 +624,7 @@ pass_response (GtkDialog *dialog, gint response, gpointer data)
 	GList *iter, *trash = NULL;
 
 	if (response == GTK_RESPONSE_OK) {
-		msg->password = g_strdup (gtk_entry_get_text ((GtkEntry *)msg->entry));
+		msg->password = g_strdup (gtk_entry_get_text ((GtkEntry *) msg->entry));
 
 		if (type != E_PASSWORDS_REMEMBER_NEVER) {
 			gint noreply = msg->noreply;
@@ -644,7 +644,7 @@ pass_response (GtkDialog *dialog, gint response, gpointer data)
 		}
 	}
 
-	gtk_widget_destroy ((GtkWidget *)dialog);
+	gtk_widget_destroy ((GtkWidget *) dialog);
 	password_dialog = NULL;
 
 	/* ok, here things get interesting, we suck up any pending

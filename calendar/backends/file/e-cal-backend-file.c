@@ -1807,7 +1807,7 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 	*objects = match_data.obj_list;
 
 	if (objs_occuring_in_tw) {
-		g_list_foreach (objs_occuring_in_tw, (GFunc)g_object_unref, NULL);
+		g_list_foreach (objs_occuring_in_tw, (GFunc) g_object_unref, NULL);
 		g_list_free (objs_occuring_in_tw);
 	}
 
@@ -1895,7 +1895,7 @@ e_cal_backend_file_start_query (ECalBackend *backend, EDataCalView *query)
 	}
 
 	if (objs_occuring_in_tw) {
-		g_list_foreach (objs_occuring_in_tw, (GFunc)g_object_unref, NULL);
+		g_list_foreach (objs_occuring_in_tw, (GFunc) g_object_unref, NULL);
 		g_list_free (objs_occuring_in_tw);
 	}
 	g_object_unref (match_data.obj_sexp);
@@ -2151,7 +2151,7 @@ e_cal_backend_file_compute_changes (ECalBackendFile *cbfile, const gchar *change
 	be_data.deletes = NULL;
 	be_data.ehash = ehash;
 
-	e_xmlhash_foreach_key_remove (ehash, (EXmlHashRemoveFunc)e_cal_backend_file_compute_changes_foreach_key, &be_data);
+	e_xmlhash_foreach_key_remove (ehash, (EXmlHashRemoveFunc) e_cal_backend_file_compute_changes_foreach_key, &be_data);
 
 	*deletes = be_data.deletes;
 
@@ -2237,10 +2237,10 @@ sanitize_component (ECalBackendFile *cbfile, ECalComponent *comp)
 	 * list */
 	e_cal_component_get_dtstart (comp, &dt);
 	if (dt.value && dt.tzid) {
-		zone = e_cal_backend_file_internal_get_timezone ((ECalBackend *)cbfile, dt.tzid);
+		zone = e_cal_backend_file_internal_get_timezone ((ECalBackend *) cbfile, dt.tzid);
 		if (!zone) {
-			default_zone = e_cal_backend_file_internal_get_default_timezone ((ECalBackend *)cbfile);
-			g_free ((gchar *)dt.tzid);
+			default_zone = e_cal_backend_file_internal_get_default_timezone ((ECalBackend *) cbfile);
+			g_free ((gchar *) dt.tzid);
 			dt.tzid = g_strdup (icaltimezone_get_tzid (default_zone));
 			e_cal_component_set_dtstart (comp, &dt);
 		}
@@ -2249,10 +2249,10 @@ sanitize_component (ECalBackendFile *cbfile, ECalComponent *comp)
 
 	e_cal_component_get_dtend (comp, &dt);
 	if (dt.value && dt.tzid) {
-		zone = e_cal_backend_file_internal_get_timezone ((ECalBackend *)cbfile, dt.tzid);
+		zone = e_cal_backend_file_internal_get_timezone ((ECalBackend *) cbfile, dt.tzid);
 		if (!zone) {
-			default_zone = e_cal_backend_file_internal_get_default_timezone ((ECalBackend *)cbfile);
-			g_free ((gchar *)dt.tzid);
+			default_zone = e_cal_backend_file_internal_get_default_timezone ((ECalBackend *) cbfile);
+			g_free ((gchar *) dt.tzid);
 			dt.tzid = g_strdup (icaltimezone_get_tzid (default_zone));
 			e_cal_component_set_dtend (comp, &dt);
 		}
@@ -2261,10 +2261,10 @@ sanitize_component (ECalBackendFile *cbfile, ECalComponent *comp)
 
 	e_cal_component_get_due (comp, &dt);
 	if (dt.value && dt.tzid) {
-		zone = e_cal_backend_file_internal_get_timezone ((ECalBackend *)cbfile, dt.tzid);
+		zone = e_cal_backend_file_internal_get_timezone ((ECalBackend *) cbfile, dt.tzid);
 		if (!zone) {
-			default_zone = e_cal_backend_file_internal_get_default_timezone ((ECalBackend *)cbfile);
-			g_free ((gchar *)dt.tzid);
+			default_zone = e_cal_backend_file_internal_get_default_timezone ((ECalBackend *) cbfile);
+			g_free ((gchar *) dt.tzid);
 			dt.tzid = g_strdup (icaltimezone_get_tzid (default_zone));
 			e_cal_component_set_due (comp, &dt);
 		}
@@ -2871,7 +2871,7 @@ fetch_attachments (ECalBackendSync *backend, ECalComponent *comp)
 		user_data_dir, "calendar", "system", NULL);
 
 	for (l = attach_list; l; l = l->next) {
-		gchar *sfname = g_filename_from_uri ((const gchar *)l->data, NULL, NULL);
+		gchar *sfname = g_filename_from_uri ((const gchar *) l->data, NULL, NULL);
 		gchar *filename, *new_filename;
 		GMappedFile *mapped_file;
 		GError *error = NULL;

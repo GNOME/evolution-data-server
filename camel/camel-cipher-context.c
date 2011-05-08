@@ -1594,7 +1594,7 @@ camel_cipher_validity_clone (CamelCipherValidity *vin)
 	vo->encrypt.status = vin->encrypt.status;
 	vo->encrypt.description = g_strdup (vin->encrypt.description);
 
-	info = (CamelCipherCertInfo *)vin->sign.signers.head;
+	info = (CamelCipherCertInfo *) vin->sign.signers.head;
 	while (info->next) {
 		if (info->cert_data && info->cert_data_clone && info->cert_data_free)
 			camel_cipher_validity_add_certinfo_ex (vo, CAMEL_CIPHER_VALIDITY_SIGN, info->name, info->email, info->cert_data_clone (info->cert_data), info->cert_data_free, info->cert_data_clone);
@@ -1603,7 +1603,7 @@ camel_cipher_validity_clone (CamelCipherValidity *vin)
 		info = info->next;
 	}
 
-	info = (CamelCipherCertInfo *)vin->encrypt.encrypters.head;
+	info = (CamelCipherCertInfo *) vin->encrypt.encrypters.head;
 	while (info->next) {
 		if (info->cert_data && info->cert_data_clone && info->cert_data_free)
 			camel_cipher_validity_add_certinfo_ex (vo, CAMEL_CIPHER_VALIDITY_SIGN, info->name, info->email, info->cert_data_clone (info->cert_data), info->cert_data_free, info->cert_data_clone);
@@ -1660,7 +1660,7 @@ camel_cipher_validity_add_certinfo_ex (CamelCipherValidity *vin, camel_cipher_va
 	}
 
 	list = (mode==CAMEL_CIPHER_VALIDITY_SIGN)?&vin->sign.signers:&vin->encrypt.encrypters;
-	camel_dlist_addtail (list, (CamelDListNode *)info);
+	camel_dlist_addtail (list, (CamelDListNode *) info);
 }
 
 /**
@@ -1683,7 +1683,7 @@ camel_cipher_validity_envelope (CamelCipherValidity *parent, CamelCipherValidity
 		/* case 1: only signed inside only encrypted -> merge both */
 		parent->encrypt.status = valid->encrypt.status;
 		parent->encrypt.description = g_strdup (valid->encrypt.description);
-		info = (CamelCipherCertInfo *)valid->encrypt.encrypters.head;
+		info = (CamelCipherCertInfo *) valid->encrypt.encrypters.head;
 		while (info->next) {
 			camel_cipher_validity_add_certinfo (parent, CAMEL_CIPHER_VALIDITY_ENCRYPT, info->name, info->email);
 			info = info->next;
@@ -1695,7 +1695,7 @@ camel_cipher_validity_envelope (CamelCipherValidity *parent, CamelCipherValidity
 		/* case 2: only encrypted inside only signed */
 		parent->sign.status = valid->sign.status;
 		parent->sign.description = g_strdup (valid->sign.description);
-		info = (CamelCipherCertInfo *)valid->sign.signers.head;
+		info = (CamelCipherCertInfo *) valid->sign.signers.head;
 		while (info->next) {
 			camel_cipher_validity_add_certinfo (parent, CAMEL_CIPHER_VALIDITY_SIGN, info->name, info->email);
 			info = info->next;
@@ -1713,13 +1713,13 @@ camel_cipher_validity_free (CamelCipherValidity *validity)
 	if (validity == NULL)
 		return;
 
-	while ((child = (CamelCipherValidity *)camel_dlist_remhead (&validity->children)))
+	while ((child = (CamelCipherValidity *) camel_dlist_remhead (&validity->children)))
 		camel_cipher_validity_free (child);
 
-	while ((info = (CamelCipherCertInfo *)camel_dlist_remhead (&validity->sign.signers)))
+	while ((info = (CamelCipherCertInfo *) camel_dlist_remhead (&validity->sign.signers)))
 		ccv_certinfo_free (info);
 
-	while ((info = (CamelCipherCertInfo *)camel_dlist_remhead (&validity->encrypt.encrypters)))
+	while ((info = (CamelCipherCertInfo *) camel_dlist_remhead (&validity->encrypt.encrypters)))
 		ccv_certinfo_free (info);
 
 	camel_cipher_validity_clear (validity);
@@ -1772,16 +1772,16 @@ cc_prepare_sign (CamelMimePart *part)
 	CamelTransferEncoding encoding;
 	gint parts, i;
 
-	dw = camel_medium_get_content ((CamelMedium *)part);
+	dw = camel_medium_get_content ((CamelMedium *) part);
 	if (!dw)
 		return;
 
 	if (CAMEL_IS_MULTIPART (dw)) {
-		parts = camel_multipart_get_number ((CamelMultipart *)dw);
+		parts = camel_multipart_get_number ((CamelMultipart *) dw);
 		for (i = 0; i < parts; i++)
-			cc_prepare_sign (camel_multipart_get_part ((CamelMultipart *)dw, i));
+			cc_prepare_sign (camel_multipart_get_part ((CamelMultipart *) dw, i));
 	} else if (CAMEL_IS_MIME_MESSAGE (dw)) {
-		cc_prepare_sign ((CamelMimePart *)dw);
+		cc_prepare_sign ((CamelMimePart *) dw);
 	} else {
 		encoding = camel_mime_part_get_encoding (part);
 

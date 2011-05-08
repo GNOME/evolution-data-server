@@ -58,8 +58,8 @@ spool_folder_lock (CamelLocalFolder *lf,
                    GError **error)
 {
 	gint retry = 0;
-	CamelMboxFolder *mf = (CamelMboxFolder *)lf;
-	CamelSpoolFolder *sf = (CamelSpoolFolder *)lf;
+	CamelMboxFolder *mf = (CamelMboxFolder *) lf;
+	CamelSpoolFolder *sf = (CamelSpoolFolder *) lf;
 	GError *local_error = NULL;
 
 	mf->lockfd = open (lf->folder_path, O_RDWR|O_LARGEFILE, 0);
@@ -101,8 +101,8 @@ spool_folder_lock (CamelLocalFolder *lf,
 static void
 spool_folder_unlock (CamelLocalFolder *lf)
 {
-	CamelMboxFolder *mf = (CamelMboxFolder *)lf;
-	CamelSpoolFolder *sf = (CamelSpoolFolder *)lf;
+	CamelMboxFolder *mf = (CamelMboxFolder *) lf;
+	CamelSpoolFolder *sf = (CamelSpoolFolder *) lf;
 
 	camel_lock_helper_unlock (sf->lockid);
 	sf->lockid = -1;
@@ -155,11 +155,11 @@ camel_spool_folder_new (CamelStore *parent_store,
 		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 	flags &= ~CAMEL_STORE_FOLDER_BODY_INDEX;
 
-	folder = (CamelFolder *)camel_local_folder_construct (
-		(CamelLocalFolder *)folder, flags, cancellable, error);
+	folder = (CamelFolder *) camel_local_folder_construct (
+		(CamelLocalFolder *) folder, flags, cancellable, error);
 	if (folder) {
 		if (camel_url_get_param (url, "xstatus"))
-			camel_mbox_summary_xstatus ((CamelMboxSummary *)folder->summary, TRUE);
+			camel_mbox_summary_xstatus ((CamelMboxSummary *) folder->summary, TRUE);
 	}
 
 	g_free (basename);

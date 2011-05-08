@@ -559,8 +559,8 @@ camel_mime_message_set_reply_to (CamelMimeMessage *msg, CamelInternetAddress *re
 		return;
 	}
 
-	msg->reply_to = (CamelInternetAddress *)camel_address_new_clone ((CamelAddress *)reply_to);
-	addr = camel_address_encode ((CamelAddress *)msg->reply_to);
+	msg->reply_to = (CamelInternetAddress *) camel_address_new_clone ((CamelAddress *) reply_to);
+	addr = camel_address_encode ((CamelAddress *) msg->reply_to);
 	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header (CAMEL_MEDIUM (msg), "Reply-To", addr);
 	g_free (addr);
 }
@@ -654,13 +654,13 @@ camel_mime_message_set_from (CamelMimeMessage *msg, CamelInternetAddress *from)
 		msg->from = NULL;
 	}
 
-	if (from == NULL || camel_address_length ((CamelAddress *)from) == 0) {
+	if (from == NULL || camel_address_length ((CamelAddress *) from) == 0) {
 		CAMEL_MEDIUM_CLASS(camel_mime_message_parent_class)->remove_header(CAMEL_MEDIUM(msg), "From");
 		return;
 	}
 
-	msg->from = (CamelInternetAddress *)camel_address_new_clone ((CamelAddress *)from);
-	addr = camel_address_encode ((CamelAddress *)msg->from);
+	msg->from = (CamelInternetAddress *) camel_address_new_clone ((CamelAddress *) from);
+	addr = camel_address_encode ((CamelAddress *) msg->from);
 	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header(CAMEL_MEDIUM(msg), "From", addr);
 	g_free (addr);
 }
@@ -707,14 +707,14 @@ camel_mime_message_set_recipients (CamelMimeMessage *mime_message, const gchar *
 		return;
 	}
 
-	if (r == NULL || camel_address_length ((CamelAddress *)r) == 0) {
-		camel_address_remove ((CamelAddress *)addr, -1);
+	if (r == NULL || camel_address_length ((CamelAddress *) r) == 0) {
+		camel_address_remove ((CamelAddress *) addr, -1);
 		CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->remove_header (CAMEL_MEDIUM (mime_message), type);
 		return;
 	}
 
 	/* note this does copy, and not append (cat) */
-	camel_address_copy ((CamelAddress *)addr, (CamelAddress *)r);
+	camel_address_copy ((CamelAddress *) addr, (CamelAddress *) r);
 
 	/* and sync our headers */
 	text = camel_address_encode (CAMEL_ADDRESS (addr));
@@ -812,7 +812,7 @@ message_foreach_part_rec (CamelMimeMessage *msg, CamelMimePart *part, CamelPartF
 			go = message_foreach_part_rec (msg, mpart, callback, data);
 		}
 	} else if (CAMEL_IS_MIME_MESSAGE (containee)) {
-		go = message_foreach_part_rec (msg, (CamelMimePart *)containee, callback, data);
+		go = message_foreach_part_rec (msg, (CamelMimePart *) containee, callback, data);
 	}
 
 	return go;
@@ -823,7 +823,7 @@ message_foreach_part_rec (CamelMimeMessage *msg, CamelMimePart *part, CamelPartF
 static void
 camel_mime_message_foreach_part (CamelMimeMessage *msg, CamelPartFunc callback, gpointer data)
 {
-	message_foreach_part_rec (msg, (CamelMimePart *)msg, callback, data);
+	message_foreach_part_rec (msg, (CamelMimePart *) msg, callback, data);
 }
 
 static gboolean
@@ -883,7 +883,7 @@ find_best_encoding (CamelMimePart *part,
 
 	d(printf("starting to check part\n"));
 
-	content = camel_medium_get_content ((CamelMedium *)part);
+	content = camel_medium_get_content ((CamelMedium *) part);
 	if (content == NULL) {
 		/* charset might not be right here, but it'll get the right stuff
 		   if it is ever set */
@@ -906,7 +906,7 @@ find_best_encoding (CamelMimePart *part,
 	flags |= callerflags;
 
 	/* first a null stream, so any filtering is thrown away; we only want the sideeffects */
-	null = (CamelStream *)camel_stream_null_new ();
+	null = (CamelStream *) camel_stream_null_new ();
 	filter = camel_stream_filter_new (null);
 
 	/* if we're looking for the best charset, then we need to convert to UTF-8 */
@@ -1147,7 +1147,7 @@ static const gchar tz_days[][4] = {
 gchar *
 camel_mime_message_build_mbox_from (CamelMimeMessage *message)
 {
-	struct _camel_header_raw *header = ((CamelMimePart *)message)->headers;
+	struct _camel_header_raw *header = ((CamelMimePart *) message)->headers;
 	GString *out = g_string_new("From ");
 	gchar *ret;
 	const gchar *tmp;
@@ -1204,7 +1204,7 @@ static gboolean
 find_attachment (CamelMimeMessage *msg, CamelMimePart *part, gpointer data)
 {
 	const CamelContentDisposition *cd;
-	gboolean *found = (gboolean *)data;
+	gboolean *found = (gboolean *) data;
 
 	g_return_val_if_fail (part != NULL, FALSE);
 
@@ -1259,7 +1259,7 @@ cmm_dump_rec (CamelMimeMessage *msg, CamelMimePart *part, gint body, gint depth)
 	printf("%sclass: %s\n", s, G_OBJECT_TYPE_NAME (part));
 	printf("%smime-type: %s\n", s, camel_content_type_format(((CamelDataWrapper *)part)->mime_type));
 
-	containee = camel_medium_get_content ((CamelMedium *)part);
+	containee = camel_medium_get_content ((CamelMedium *) part);
 
 	if (containee == NULL)
 		return;
@@ -1269,14 +1269,14 @@ cmm_dump_rec (CamelMimeMessage *msg, CamelMimePart *part, gint body, gint depth)
 
 	/* using the object types is more accurate than using the mime/types */
 	if (CAMEL_IS_MULTIPART (containee)) {
-		parts = camel_multipart_get_number ((CamelMultipart *)containee);
+		parts = camel_multipart_get_number ((CamelMultipart *) containee);
 		for (i = 0; go && i < parts; i++) {
-			CamelMimePart *mpart = camel_multipart_get_part ((CamelMultipart *)containee, i);
+			CamelMimePart *mpart = camel_multipart_get_part ((CamelMultipart *) containee, i);
 
 			cmm_dump_rec (msg, mpart, body, depth+2);
 		}
 	} else if (CAMEL_IS_MIME_MESSAGE (containee)) {
-		cmm_dump_rec (msg, (CamelMimePart *)containee, body, depth+2);
+		cmm_dump_rec (msg, (CamelMimePart *) containee, body, depth+2);
 	}
 }
 
@@ -1292,5 +1292,5 @@ cmm_dump_rec (CamelMimeMessage *msg, CamelMimePart *part, gint body, gint depth)
 void
 camel_mime_message_dump (CamelMimeMessage *msg, gint body)
 {
-	cmm_dump_rec (msg, (CamelMimePart *)msg, body, 0);
+	cmm_dump_rec (msg, (CamelMimePart *) msg, body, 0);
 }

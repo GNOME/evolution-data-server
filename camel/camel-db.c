@@ -266,7 +266,7 @@ camel_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs, const gchar *zPath, sqlite3_file *pF
 	g_return_val_if_fail (old_vfs != NULL, -1);
 	g_return_val_if_fail (pFile != NULL, -1);
 
-	cFile = (CamelSqlite3File *)pFile;
+	cFile = (CamelSqlite3File *) pFile;
 	cFile->old_vfs_file = g_malloc0 (old_vfs->szOsFile);
 
 	res = old_vfs->xOpen (old_vfs, zPath, cFile->old_vfs_file, flags, pOutFlags);
@@ -1183,7 +1183,7 @@ camel_db_get_folder_deleted_uids (CamelDB *db,
 static gint
 read_preview_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 {
-	GHashTable *hash = (GHashTable *)ref;
+	GHashTable *hash = (GHashTable *) ref;
 	const gchar *uid=NULL;
 	gchar *msg=NULL;
 	gint i;
@@ -1198,7 +1198,7 @@ read_preview_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 			msg = g_strdup (cols[i]);
 	}
 
-	g_hash_table_insert (hash, (gchar *)uid, msg);
+	g_hash_table_insert (hash, (gchar *) uid, msg);
 
 	return 0;
 }
@@ -1256,7 +1256,7 @@ camel_db_write_preview_record (CamelDB *db,
 static gint
 read_vuids_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 {
-	GPtrArray *array = (GPtrArray *)ref;
+	GPtrArray *array = (GPtrArray *) ref;
 
 	#if 0
 	gint i;

@@ -348,7 +348,7 @@ imap_entry_play (CamelOfflineJournal *journal,
 		camel_folder_free_message_info (journal->folder, info);
 
 		if (ret_uid) {
-			camel_imap_journal_uidmap_add ((CamelIMAPJournal *)journal, imap_entry->append_uid, ret_uid);
+			camel_imap_journal_uidmap_add ((CamelIMAPJournal *) journal, imap_entry->append_uid, ret_uid);
 			g_free (ret_uid);
 		}
 
@@ -377,7 +377,7 @@ imap_entry_play (CamelOfflineJournal *journal,
 			for (i = 0; i < imap_entry->uids->len; i++) {
 				if (!ret_uids->pdata[i])
 					continue;
-				camel_imap_journal_uidmap_add ((CamelIMAPJournal *)journal, imap_entry->uids->pdata[i], ret_uids->pdata[i]);
+				camel_imap_journal_uidmap_add ((CamelIMAPJournal *) journal, imap_entry->uids->pdata[i], ret_uids->pdata[i]);
 				g_free (ret_uids->pdata[i]);
 			}
 			g_ptr_array_free (ret_uids, TRUE);

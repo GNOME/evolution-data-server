@@ -127,7 +127,7 @@ main (gint argc, gchar **argv)
 			pull ();
 
 			push("compare original content");
-			test_message_compare_content (camel_medium_get_content ((CamelMedium *)msg), text, len);
+			test_message_compare_content (camel_medium_get_content ((CamelMedium *) msg), text, len);
 			pull ();
 
 			push("save message to test1.msg");
@@ -141,7 +141,7 @@ main (gint argc, gchar **argv)
 			pull ();
 
 			push("compare read with original content");
-			test_message_compare_content (camel_medium_get_content ((CamelMedium *)msg2), text, len);
+			test_message_compare_content (camel_medium_get_content ((CamelMedium *) msg2), text, len);
 			check_unref (msg2, 1);
 			pull ();
 
@@ -167,7 +167,7 @@ main (gint argc, gchar **argv)
 			test_message_set_content_simple((CamelMimePart *)msg, 0, "text/plain", text, len);
 			pull ();
 
-			camel_mime_part_set_encoding ((CamelMimePart *)msg, i);
+			camel_mime_part_set_encoding ((CamelMimePart *) msg, i);
 
 			push("save message to test1.msg");
 			unlink("test1.msg");
@@ -180,7 +180,7 @@ main (gint argc, gchar **argv)
 			pull ();
 
 			push("compare read with original content");
-			test_message_compare_content (camel_medium_get_content ((CamelMedium *)msg2), text, len);
+			test_message_compare_content (camel_medium_get_content ((CamelMedium *) msg2), text, len);
 			check_unref (msg2, 1);
 			pull ();
 

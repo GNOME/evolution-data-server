@@ -534,7 +534,7 @@ sockaddr_to_praddr (struct sockaddr *s, gint len, PRNetAddr *addr)
 	memset (addr, 0, sizeof (*addr));
 
 	if (s->sa_family == AF_INET) {
-		struct sockaddr_in *sin = (struct sockaddr_in *)s;
+		struct sockaddr_in *sin = (struct sockaddr_in *) s;
 
 		if (len < sizeof (*sin))
 			return -1;
@@ -547,7 +547,7 @@ sockaddr_to_praddr (struct sockaddr *s, gint len, PRNetAddr *addr)
 	}
 #ifdef ENABLE_IPv6
 	else if (s->sa_family == PR_AF_INET6) {
-		struct sockaddr_in6 *sin = (struct sockaddr_in6 *)s;
+		struct sockaddr_in6 *sin = (struct sockaddr_in6 *) s;
 
 		if (len < sizeof (*sin))
 			return -1;
@@ -1216,7 +1216,7 @@ sockaddr_from_praddr (PRNetAddr *addr, socklen_t *len)
 		memcpy (&sin->sin_addr, &addr->inet.ip, sizeof (sin->sin_addr));
 		*len = sizeof(*sin);
 
-		return (struct sockaddr *)sin;
+		return (struct sockaddr *) sin;
 	}
 #ifdef ENABLE_IPv6
 	else if (addr->raw.family == PR_AF_INET6) {
@@ -1229,7 +1229,7 @@ sockaddr_from_praddr (PRNetAddr *addr, socklen_t *len)
 		sin->sin6_scope_id = addr->ipv6.scope_id;
 		*len = sizeof(*sin);
 
-		return (struct sockaddr *)sin;
+		return (struct sockaddr *) sin;
 	}
 #endif
 

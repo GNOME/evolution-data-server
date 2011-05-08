@@ -64,7 +64,7 @@ camel_imapx_folder_new (CamelStore *store, const gchar *folder_dir, const gchar 
 		"parent-store", store, NULL);
 	ifolder = (CamelIMAPXFolder *) folder;
 
-	((CamelIMAPXFolder *)folder)->raw_name = g_strdup (folder_name);
+	((CamelIMAPXFolder *) folder)->raw_name = g_strdup (folder_name);
 
 	summary_file = g_strdup_printf ("%s/summary", folder_dir);
 	folder->summary = camel_imapx_summary_new (folder, summary_file);
@@ -400,7 +400,7 @@ imapx_get_message_sync (CamelFolder *folder,
 
 		g_mutex_lock (ifolder->stream_lock);
 		if (!camel_data_wrapper_construct_from_stream_sync (
-			(CamelDataWrapper *)msg, stream, cancellable, error)) {
+			(CamelDataWrapper *) msg, stream, cancellable, error)) {
 			g_object_unref (msg);
 			msg = NULL;
 		}
@@ -432,7 +432,7 @@ imapx_refresh_info_sync (CamelFolder *folder,
 		return FALSE;
 	}
 
-	if (!camel_service_connect_sync ((CamelService *)istore, error))
+	if (!camel_service_connect_sync ((CamelService *) istore, error))
 		return FALSE;
 
 	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);

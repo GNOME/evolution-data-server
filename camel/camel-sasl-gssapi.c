@@ -332,9 +332,9 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 			priv->state = GSSAPI_STATE_CONTINUE_NEEDED;
 			break;
 		default:
-			if (major == (OM_uint32)GSS_S_FAILURE &&
-			    (minor == (OM_uint32)KRB5KRB_AP_ERR_TKT_EXPIRED ||
-			     minor == (OM_uint32)KRB5KDC_ERR_NEVER_VALID) &&
+			if (major == (OM_uint32) GSS_S_FAILURE &&
+			    (minor == (OM_uint32) KRB5KRB_AP_ERR_TKT_EXPIRED ||
+			     minor == (OM_uint32) KRB5KDC_ERR_NEVER_VALID) &&
 			    send_dbus_message (url->user))
 					goto challenge;
 

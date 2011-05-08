@@ -57,7 +57,7 @@ compare_im (EContact *contact, const gchar *str,
 		}
 	}
 
-	g_list_foreach (aims, (GFunc)g_free, NULL);
+	g_list_foreach (aims, (GFunc) g_free, NULL);
 	g_list_free (aims);
 
 	return found_it;
@@ -229,7 +229,7 @@ compare_category (EContact *contact, const gchar *str,
 		}
 	}
 
-	g_list_foreach (categories, (GFunc)g_free, NULL);
+	g_list_foreach (categories, (GFunc) g_free, NULL);
 	g_list_free (categories);
 
 	return ret_val;
@@ -393,7 +393,7 @@ static void
 contains_helper_free_word (gpointer data, gpointer user_data)
 {
 	if (data) {
-		g_string_free ((GString *)data, TRUE);
+		g_string_free ((GString *) data, TRUE);
 	}
 }
 
@@ -407,7 +407,7 @@ try_contains_word (const gchar *s1, GSList *word)
 	if (s1 == NULL)
 		return NULL;
 	if (word == NULL)
-		return (gchar *)s1; /* previous was last word */
+		return (gchar *) s1; /* previous was last word */
 	if (word->data == NULL)
 		return NULL; /* illegal structure */
 
@@ -434,7 +434,7 @@ try_contains_word (const gchar *s1, GSList *word)
 				/* we read whole word and no illegal character has been found */
 				if (word->next == NULL ||
 				    try_contains_word (e_util_unicode_get_utf8 (o, &unival), word->next)) {
-					return (gchar *)o;
+					return (gchar *) o;
 				}
 			}
 		}
@@ -501,7 +501,7 @@ contains_helper (const gchar *s1, const gchar *s2)
 
 	/* the initial word contains an empty string for sure */
 	if (!*s2)
-		return (gchar *)s1;
+		return (gchar *) s1;
 
 	s1uni = chars_to_unistring_lowercase (s1);
 	if (s1uni == NULL)
@@ -521,7 +521,7 @@ contains_helper (const gchar *s1, const gchar *s2)
 
 		/* both are empty strings */
 		if (len1 == len2)
-			return (gchar *)s1;
+			return (gchar *) s1;
 
 		return NULL;
 	}
@@ -590,7 +590,7 @@ is_helper (const gchar *ps1, const gchar *ps2)
 	s2 = e_util_utf8_remove_accents (ps2);
 
 	if (!e_util_utf8_strcasecmp (s1, s2))
-		res = (gchar *)ps1;
+		res = (gchar *) ps1;
 	else
 		res = NULL;
 
@@ -620,7 +620,7 @@ endswith_helper (const gchar *ps1, const gchar *ps2)
 	if (s1len < s2len)
 		res = NULL;
 	else
-		res = (gchar *)e_util_utf8_strstrcase (g_utf8_offset_to_pointer (s1, s1len - s2len), s2);
+		res = (gchar *) e_util_utf8_strstrcase (g_utf8_offset_to_pointer (s1, s1len - s2len), s2);
 
 	g_free (s1);
 	g_free (s2);
@@ -645,7 +645,7 @@ beginswith_helper (const gchar *ps1, const gchar *ps2)
 
 	if ((p = (gchar *) e_util_utf8_strstrcase (s1, s2))
 	    && (p == s1))
-		res = (gchar *)ps1;
+		res = (gchar *) ps1;
 	else
 		res = NULL;
 
@@ -670,7 +670,7 @@ exists_helper (const gchar *ps1, const gchar *ps2)
 	gchar *s1 = e_util_utf8_remove_accents (ps1);
 	gchar *s2 = e_util_utf8_remove_accents (ps2);
 
-	res = (gchar *)e_util_utf8_strstrcase (s1, s2);
+	res = (gchar *) e_util_utf8_strstrcase (s1, s2);
 
 	g_free (s1);
 	g_free (s2);
@@ -875,7 +875,7 @@ e_book_backend_sexp_new (const gchar *text)
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1) {
 			e_sexp_add_ifunction (sexp->priv->search_sexp, 0, symbols[i].name,
-					     (ESExpIFunc *)symbols[i].func, sexp->priv->search_context);
+					     (ESExpIFunc *) symbols[i].func, sexp->priv->search_context);
 		}
 		else {
 			e_sexp_add_function (sexp->priv->search_sexp, 0, symbols[i].name,

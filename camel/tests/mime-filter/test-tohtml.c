@@ -49,7 +49,7 @@ test_filter (CamelMimeFilter *f, const gchar *inname, const gchar *outname)
 
 	filter = camel_stream_filter_new (indisk);
 	check_count (indisk, 2);
-	id = camel_stream_filter_add ((CamelStreamFilter *)filter, f);
+	id = camel_stream_filter_add ((CamelStreamFilter *) filter, f);
 	check_count (f, 2);
 
 	check (camel_stream_write_to_stream (filter, in, NULL, NULL) > 0);
@@ -60,7 +60,7 @@ test_filter (CamelMimeFilter *f, const gchar *inname, const gchar *outname)
 
 	camel_test_pull ();
 
-	camel_stream_filter_remove ((CamelStreamFilter *)filter, id);
+	camel_stream_filter_remove ((CamelStreamFilter *) filter, id);
 	check_count (f, 1);
 	camel_mime_filter_reset (f);
 
@@ -77,7 +77,7 @@ test_filter (CamelMimeFilter *f, const gchar *inname, const gchar *outname)
 	in = camel_stream_mem_new_with_byte_array (byte_array_in);
 	filter = camel_stream_filter_new (in);
 	check_count (in, 2);
-	id = camel_stream_filter_add ((CamelStreamFilter *)filter, f);
+	id = camel_stream_filter_add ((CamelStreamFilter *) filter, f);
 	check_count (f, 2);
 
 	check (camel_stream_write_to_stream (indisk, filter, NULL, NULL) > 0);
@@ -87,7 +87,7 @@ test_filter (CamelMimeFilter *f, const gchar *inname, const gchar *outname)
 		  "Buffer content mismatch, %d != %d, in = '%.*s' != out = '%.*s'", byte_array_in->len, byte_array_out->len,
 		  byte_array_in->len, byte_array_in->data, byte_array_out->len, byte_array_out->data);
 
-	camel_stream_filter_remove ((CamelStreamFilter *)filter, id);
+	camel_stream_filter_remove ((CamelStreamFilter *) filter, id);
 	check_unref (filter, 1);
 	check_unref (in, 1);
 	check_unref (indisk, 1);

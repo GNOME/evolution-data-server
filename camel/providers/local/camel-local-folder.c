@@ -278,7 +278,7 @@ local_folder_search_free (CamelFolder *folder,
 static void
 local_folder_delete (CamelFolder *folder)
 {
-	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
+	CamelLocalFolder *lf = (CamelLocalFolder *) folder;
 
 	if (lf->index)
 		camel_index_delete (lf->index);
@@ -290,7 +290,7 @@ static void
 local_folder_rename (CamelFolder *folder,
                      const gchar *newname)
 {
-	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
+	CamelLocalFolder *lf = (CamelLocalFolder *) folder;
 	gchar *statepath;
 	CamelLocalStore *ls;
 	CamelStore *parent_store;
@@ -315,8 +315,8 @@ local_folder_rename (CamelFolder *folder,
 
 	/* FIXME: Poke some internals, sigh */
 	camel_folder_summary_set_filename (folder->summary, lf->summary_path);
-	g_free (((CamelLocalSummary *)folder->summary)->folder_path);
-	((CamelLocalSummary *)folder->summary)->folder_path = g_strdup (lf->folder_path);
+	g_free (((CamelLocalSummary *) folder->summary)->folder_path);
+	((CamelLocalSummary *) folder->summary)->folder_path = g_strdup (lf->folder_path);
 
 	CAMEL_FOLDER_CLASS (camel_local_folder_parent_class)->rename (folder, newname);
 }
@@ -369,10 +369,10 @@ local_folder_refresh_info_sync (CamelFolder *folder,
                                 GCancellable *cancellable,
                                 GError **error)
 {
-	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
+	CamelLocalFolder *lf = (CamelLocalFolder *) folder;
 
 	if (lf->need_summary_check &&
-	    camel_local_summary_check ((CamelLocalSummary *)folder->summary, lf->changes, cancellable, error) == -1)
+	    camel_local_summary_check ((CamelLocalSummary *) folder->summary, lf->changes, cancellable, error) == -1)
 		return FALSE;
 
 	if (camel_folder_change_info_changed (lf->changes)) {
@@ -401,7 +401,7 @@ local_folder_synchronize_sync (CamelFolder *folder,
 
 	/* if sync fails, we'll pass it up on exit through ex */
 	success = (camel_local_summary_sync (
-		(CamelLocalSummary *)folder->summary,
+		(CamelLocalSummary *) folder->summary,
 		expunge, lf->changes, cancellable, error) == 0);
 	camel_local_folder_unlock (lf);
 
@@ -592,7 +592,7 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 		if (forceindex)
 			flag |= O_TRUNC;
 
-		lf->index = (CamelIndex *)camel_text_index_new (lf->index_path, flag);
+		lf->index = (CamelIndex *) camel_text_index_new (lf->index_path, flag);
 		if (lf->index == NULL) {
 			/* yes, this isn't fatal at all */
 			g_warning("Could not open/create index file: %s: indexing not performed", g_strerror (errno));
@@ -607,13 +607,13 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 		forceindex = FALSE;
 	}
 
-	folder->summary = (CamelFolderSummary *)CAMEL_LOCAL_FOLDER_GET_CLASS (lf)->create_summary (lf, lf->summary_path, lf->folder_path, lf->index);
-	if (!(flags & CAMEL_STORE_IS_MIGRATING) && camel_local_summary_load ((CamelLocalSummary *)folder->summary, forceindex, NULL) == -1) {
+	folder->summary = (CamelFolderSummary *) CAMEL_LOCAL_FOLDER_GET_CLASS (lf)->create_summary (lf, lf->summary_path, lf->folder_path, lf->index);
+	if (!(flags & CAMEL_STORE_IS_MIGRATING) && camel_local_summary_load ((CamelLocalSummary *) folder->summary, forceindex, NULL) == -1) {
 		/* ? */
 		if (lf->need_summary_check &&
-		    camel_local_summary_check ((CamelLocalSummary *)folder->summary, lf->changes, cancellable, error) == 0) {
+		    camel_local_summary_check ((CamelLocalSummary *) folder->summary, lf->changes, cancellable, error) == 0) {
 			/* we sync here so that any hard work setting up the folder isn't lost */
-			if (camel_local_summary_sync ((CamelLocalSummary *)folder->summary, FALSE, lf->changes, cancellable, error) == -1) {
+			if (camel_local_summary_sync ((CamelLocalSummary *) folder->summary, FALSE, lf->changes, cancellable, error) == -1) {
 				g_object_unref (CAMEL_OBJECT (folder));
 				return NULL;
 			}

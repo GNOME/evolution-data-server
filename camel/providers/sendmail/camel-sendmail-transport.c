@@ -158,7 +158,7 @@ sendmail_send_to_sync (CamelTransport *transport,
 		close (nullfd);
 		close (fd[1]);
 
-		execv (SENDMAIL_PATH, (gchar **)argv);
+		execv (SENDMAIL_PATH, (gchar **) argv);
 		_exit (255);
 	}
 	g_free (argv);

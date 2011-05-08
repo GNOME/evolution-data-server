@@ -2069,7 +2069,7 @@ camel_header_param (struct _camel_header_param *p, const gchar *name)
 struct _camel_header_param *
 camel_header_set_param (struct _camel_header_param **l, const gchar *name, const gchar *value)
 {
-	struct _camel_header_param *p = (struct _camel_header_param *)l, *pn;
+	struct _camel_header_param *p = (struct _camel_header_param *) l, *pn;
 
 	if (name == NULL)
 		return NULL;
@@ -2786,7 +2786,7 @@ camel_header_contentid_decode (const gchar *in)
 void
 camel_header_references_list_append_asis (struct _camel_header_references **list, gchar *ref)
 {
-	struct _camel_header_references *w = (struct _camel_header_references *)list, *n;
+	struct _camel_header_references *w = (struct _camel_header_references *) list, *n;
 	while (w->next)
 		w = w->next;
 	n = g_malloc (sizeof (*n));
@@ -3053,8 +3053,8 @@ struct _rfc2184_param {
 static gint
 rfc2184_param_cmp (gconstpointer ap, gconstpointer bp)
 {
-	const struct _rfc2184_param *a = *(gpointer *)ap;
-	const struct _rfc2184_param *b = *(gpointer *)bp;
+	const struct _rfc2184_param *a = *(gpointer *) ap;
+	const struct _rfc2184_param *b = *(gpointer *) bp;
 	gint res;
 
 	res = strcmp (a->param.name, b->param.name);
@@ -4274,7 +4274,7 @@ camel_header_raw_append (struct _camel_header_raw **list, const gchar *name, con
 #ifdef CHECKS
 	check_header (n);
 #endif
-	l = (struct _camel_header_raw *)list;
+	l = (struct _camel_header_raw *) list;
 	while (l->next) {
 		l = l->next;
 	}
@@ -4351,7 +4351,7 @@ camel_header_raw_remove (struct _camel_header_raw **list, const gchar *name)
 	struct _camel_header_raw *l, *p;
 
 	/* the next pointer is at the head of the structure, so this is safe */
-	p = (struct _camel_header_raw *)list;
+	p = (struct _camel_header_raw *) list;
 	l = *list;
 	while (l) {
 		if (!g_ascii_strcasecmp (l->name, name)) {
@@ -4654,7 +4654,7 @@ void
 camel_header_address_list_append_list (struct _camel_header_address **l, struct _camel_header_address **h)
 {
 	if (l) {
-		struct _camel_header_address *n = (struct _camel_header_address *)l;
+		struct _camel_header_address *n = (struct _camel_header_address *) l;
 
 		while (n->next)
 			n = n->next;
@@ -4830,7 +4830,7 @@ camel_header_address_fold (const gchar *in, gsize headerlen)
 	g_string_free (out, FALSE);
 
 	if (needunfold)
-		g_free ((gchar *)in);
+		g_free ((gchar *) in);
 
 	return ret;
 }
@@ -4921,7 +4921,7 @@ camel_header_fold (const gchar *in, gsize headerlen)
 	g_string_free (out, FALSE);
 
 	if (needunfold)
-		g_free ((gchar *)in);
+		g_free ((gchar *) in);
 
 	return ret;
 }

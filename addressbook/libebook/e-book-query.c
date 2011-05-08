@@ -113,7 +113,7 @@ conjoinv (EBookQueryType type, EBookQuery *q, va_list ap)
 
 	ret->type = type;
 	ret->query.andor.nqs = qs->len;
-	ret->query.andor.qs = (EBookQuery **)qs->pdata;
+	ret->query.andor.qs = (EBookQuery **) qs->pdata;
 	g_ptr_array_free (qs, FALSE);
 
 	return ret;
@@ -614,7 +614,7 @@ e_book_query_from_string  (const gchar *query_string)
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1) {
 			e_sexp_add_ifunction (sexp, 0, symbols[i].name,
-					     (ESExpIFunc *)symbols[i].func, &list);
+					     (ESExpIFunc *) symbols[i].func, &list);
 		} else {
 			e_sexp_add_function (sexp, 0, symbols[i].name,
 					    symbols[i].func, &list);
@@ -633,7 +633,7 @@ e_book_query_from_string  (const gchar *query_string)
 		if (list->next) {
 			g_warning ("conversion to EBookQuery");
 			retval = NULL;
-			g_list_foreach (list, (GFunc)e_book_query_unref, NULL);
+			g_list_foreach (list, (GFunc) e_book_query_unref, NULL);
 		}
 		else {
 			retval = list->data;

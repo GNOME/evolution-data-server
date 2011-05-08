@@ -99,7 +99,7 @@ camel_mh_summary_new (CamelFolder *folder,
 	CamelMhSummary *o;
 
 	o = g_object_new (CAMEL_TYPE_MH_SUMMARY, NULL);
-	((CamelFolderSummary *)o)->folder = folder;
+	((CamelFolderSummary *) o)->folder = folder;
 	if (folder) {
 		CamelStore *parent_store;
 
@@ -109,15 +109,15 @@ camel_mh_summary_new (CamelFolder *folder,
 		((CamelFolderSummary *)o)->collate = "mh_uid_sort";
 	}
 
-	camel_local_summary_construct ((CamelLocalSummary *)o, filename, mhdir, index);
+	camel_local_summary_construct ((CamelLocalSummary *) o, filename, mhdir, index);
 	return o;
 }
 
 static gchar *
 mh_summary_next_uid_string (CamelFolderSummary *s)
 {
-	CamelMhSummary *mhs = (CamelMhSummary *)s;
-	CamelLocalSummary *cls = (CamelLocalSummary *)s;
+	CamelMhSummary *mhs = (CamelMhSummary *) s;
+	CamelLocalSummary *cls = (CamelLocalSummary *) s;
 	gint fd = -1;
 	guint32 uid;
 	gchar *name;
@@ -155,7 +155,7 @@ camel_mh_summary_add (CamelLocalSummary *cls,
                       gint forceindex,
                       GCancellable *cancellable)
 {
-	CamelMhSummary *mhs = (CamelMhSummary *)cls;
+	CamelMhSummary *mhs = (CamelMhSummary *) cls;
 	gchar *filename = g_strdup_printf("%s/%s", cls->folder_path, name);
 	gint fd;
 	CamelMimeParser *mp;
@@ -173,15 +173,15 @@ camel_mh_summary_add (CamelLocalSummary *cls,
 	camel_mime_parser_init_with_fd (mp, fd);
 	if (cls->index && (forceindex || !camel_index_has_name (cls->index, name))) {
 		d(printf("forcing indexing of message content\n"));
-		camel_folder_summary_set_index ((CamelFolderSummary *)mhs, cls->index);
+		camel_folder_summary_set_index ((CamelFolderSummary *) mhs, cls->index);
 	} else {
-		camel_folder_summary_set_index ((CamelFolderSummary *)mhs, NULL);
+		camel_folder_summary_set_index ((CamelFolderSummary *) mhs, NULL);
 	}
-	mhs->priv->current_uid = (gchar *)name;
-	camel_folder_summary_add_from_parser ((CamelFolderSummary *)mhs, mp);
+	mhs->priv->current_uid = (gchar *) name;
+	camel_folder_summary_add_from_parser ((CamelFolderSummary *) mhs, mp);
 	g_object_unref (mp);
 	mhs->priv->current_uid = NULL;
-	camel_folder_summary_set_index ((CamelFolderSummary *)mhs, NULL);
+	camel_folder_summary_set_index ((CamelFolderSummary *) mhs, NULL);
 	g_free (filename);
 	return 0;
 }
@@ -194,7 +194,7 @@ remove_summary (gchar *key,
 	d(printf("removing message %s from summary\n", key));
 	if (cls->index)
 		camel_index_delete_name (cls->index, camel_message_info_uid (info));
-	camel_folder_summary_remove ((CamelFolderSummary *)cls, info);
+	camel_folder_summary_remove ((CamelFolderSummary *) cls, info);
 	camel_message_info_free (info);
 }
 
@@ -208,7 +208,7 @@ mh_summary_check (CamelLocalSummary *cls,
 	struct dirent *d;
 	gchar *p, c;
 	CamelMessageInfo *info;
-	CamelFolderSummary *s = (CamelFolderSummary *)cls;
+	CamelFolderSummary *s = (CamelFolderSummary *) cls;
 	GHashTable *left;
 	gint i, count;
 	gint forceindex;
@@ -231,13 +231,13 @@ mh_summary_check (CamelLocalSummary *cls,
 
 	/* keeps track of all uid's that have not been processed */
 	left = g_hash_table_new (g_str_hash, g_str_equal);
-	camel_folder_summary_prepare_fetch_all ((CamelFolderSummary *)cls, error);
-	count = camel_folder_summary_count ((CamelFolderSummary *)cls);
+	camel_folder_summary_prepare_fetch_all ((CamelFolderSummary *) cls, error);
+	count = camel_folder_summary_count ((CamelFolderSummary *) cls);
 	forceindex = count == 0;
 	for (i=0;i<count;i++) {
-		info = camel_folder_summary_index ((CamelFolderSummary *)cls, i);
+		info = camel_folder_summary_index ((CamelFolderSummary *) cls, i);
 		if (info) {
-			g_hash_table_insert (left, (gchar *)camel_message_info_uid (info), info);
+			g_hash_table_insert (left, (gchar *) camel_message_info_uid (info), info);
 		}
 	}
 
@@ -249,12 +249,12 @@ mh_summary_check (CamelLocalSummary *cls,
 				break;
 		}
 		if (c==0) {
-			info = camel_folder_summary_uid ((CamelFolderSummary *)cls, d->d_name);
+			info = camel_folder_summary_uid ((CamelFolderSummary *) cls, d->d_name);
 			if (info == NULL || (cls->index && (!camel_index_has_name (cls->index, d->d_name)))) {
 				/* need to add this file to the summary */
 				if (info != NULL) {
 					g_hash_table_remove (left, camel_message_info_uid (info));
-					camel_folder_summary_remove ((CamelFolderSummary *)cls, info);
+					camel_folder_summary_remove ((CamelFolderSummary *) cls, info);
 					camel_message_info_free (info);
 				}
 				camel_mh_summary_add (cls, d->d_name, forceindex, cancellable);
@@ -271,7 +271,7 @@ mh_summary_check (CamelLocalSummary *cls,
 		}
 	}
 	closedir (dir);
-	g_hash_table_foreach (left, (GHFunc)remove_summary, cls);
+	g_hash_table_foreach (left, (GHFunc) remove_summary, cls);
 	g_hash_table_destroy (left);
 
 	/* sort the summary based on message number (uid), since the directory order is not useful */
@@ -304,10 +304,10 @@ mh_summary_sync (CamelLocalSummary *cls,
 
 	/* FIXME: need to update/honour .mh_sequences or whatever it is */
 
-	camel_folder_summary_prepare_fetch_all ((CamelFolderSummary *)cls, error);
-	count = camel_folder_summary_count ((CamelFolderSummary *)cls);
+	camel_folder_summary_prepare_fetch_all ((CamelFolderSummary *) cls, error);
+	count = camel_folder_summary_count ((CamelFolderSummary *) cls);
 	for (i=count-1;i>=0;i--) {
-		info = (CamelLocalMessageInfo *)camel_folder_summary_index ((CamelFolderSummary *)cls, i);
+		info = (CamelLocalMessageInfo *) camel_folder_summary_index ((CamelFolderSummary *) cls, i);
 		g_assert (info);
 		if (expunge && (info->info.flags & CAMEL_MESSAGE_DELETED)) {
 			uid = camel_message_info_uid (info);
@@ -317,10 +317,10 @@ mh_summary_sync (CamelLocalSummary *cls,
 
 				/* FIXME: put this in folder_summary::remove()? */
 				if (cls->index)
-					camel_index_delete_name (cls->index, (gchar *)uid);
+					camel_index_delete_name (cls->index, (gchar *) uid);
 
 				camel_folder_change_info_remove_uid (changes, uid);
-				camel_folder_summary_remove ((CamelFolderSummary *)cls, (CamelMessageInfo *)info);
+				camel_folder_summary_remove ((CamelFolderSummary *) cls, (CamelMessageInfo *) info);
 			}
 			g_free (name);
 		} else if (info->info.flags & (CAMEL_MESSAGE_FOLDER_NOXEV|CAMEL_MESSAGE_FOLDER_FLAGGED)) {

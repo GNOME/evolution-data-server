@@ -150,7 +150,7 @@ vee_store_get_folder_sync (CamelStore *store,
 	CamelFolder *folder;
 	gchar *name, *p;
 
-	vf = (CamelVeeFolder *)camel_vee_folder_new (store, folder_name, flags);
+	vf = (CamelVeeFolder *) camel_vee_folder_new (store, folder_name, flags);
 	if (vf && ((vf->flags & CAMEL_STORE_FOLDER_PRIVATE) == 0)) {
 		const gchar *full_name;
 
@@ -176,10 +176,10 @@ vee_store_get_folder_sync (CamelStore *store,
 			*p++='/';
 		}
 
-		change_folder (store, full_name, CHANGE_ADD, camel_folder_get_message_count ((CamelFolder *)vf));
+		change_folder (store, full_name, CHANGE_ADD, camel_folder_get_message_count ((CamelFolder *) vf));
 	}
 
-	return (CamelFolder *)vf;
+	return (CamelFolder *) vf;
 }
 
 static CamelFolderInfo *
@@ -233,7 +233,7 @@ vee_store_get_folder_info_sync (CamelStore *store,
 			/* ensures unread is correct */
 			if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
 				camel_folder_refresh_info_sync (
-					(CamelFolder *)folder,
+					(CamelFolder *) folder,
 					cancellable, NULL);
 
 			unread = camel_folder_get_unread_message_count (
@@ -359,7 +359,7 @@ vee_store_delete_folder_sync (CamelStore *store,
 			camel_object_set_state_filename (object, NULL);
 		}
 
-		if ((((CamelVeeFolder *)folder)->flags & CAMEL_STORE_FOLDER_PRIVATE) == 0) {
+		if ((((CamelVeeFolder *) folder)->flags & CAMEL_STORE_FOLDER_PRIVATE) == 0) {
 			/* what about now-empty parents?  ignore? */
 			change_folder (store, folder_name, CHANGE_DELETE, -1);
 		}
@@ -417,7 +417,7 @@ vee_store_rename_folder_sync (CamelStore *store,
 		folder = camel_object_bag_reserve (store->folders, name);
 		if (folder == NULL) {
 			/* create a dummy vFolder for this, makes get_folder_info simpler */
-			folder = camel_vee_folder_new (store, name, ((CamelVeeFolder *)oldfolder)->flags);
+			folder = camel_vee_folder_new (store, name, ((CamelVeeFolder *) oldfolder)->flags);
 			camel_object_bag_add (store->folders, name, folder);
 			change_folder (store, name, CHANGE_ADD|CHANGE_NOSELECT, 0);
 			/* FIXME: this sort of leaks folder, nobody owns a ref to it but us */

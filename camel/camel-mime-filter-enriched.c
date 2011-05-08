@@ -596,7 +596,7 @@ camel_enriched_to_html (const gchar *in, guint32 flags)
 
 	filter = camel_mime_filter_enriched_new (flags);
 
-	camel_mime_filter_complete (filter, (gchar *)in, strlen (in), 0, &outbuf, &outlen, &outpre);
+	camel_mime_filter_complete (filter, (gchar *) in, strlen (in), 0, &outbuf, &outlen, &outpre);
 	outbuf = g_strndup (outbuf, outlen);
 	g_object_unref (filter);
 

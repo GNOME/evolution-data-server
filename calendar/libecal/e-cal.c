@@ -1742,7 +1742,7 @@ e_cal_get_local_attachment_store (ECal *ecal)
 	g_return_val_if_fail (E_IS_CAL (ecal), NULL);
 
 	priv = ecal->priv;
-	return (const gchar *)priv->local_attachment_store;
+	return (const gchar *) priv->local_attachment_store;
 }
 
 /**
@@ -2647,7 +2647,7 @@ build_free_busy_list (const gchar **seq)
 		icalcomponent *icalcomp;
 		icalcomponent_kind kind;
 
-		icalcomp = icalcomponent_new_from_string ((gchar *)seq[i]);
+		icalcomp = icalcomponent_new_from_string ((gchar *) seq[i]);
 		if (!icalcomp)
 			continue;
 

@@ -379,7 +379,7 @@ folder_transfer_message_to (CamelFolder *source,
 		info = camel_message_info_clone (minfo);
 		camel_folder_free_message_info (source, minfo);
 	} else
-		info = camel_message_info_new_from_header (NULL, ((CamelMimePart *)msg)->headers);
+		info = camel_message_info_new_from_header (NULL, ((CamelMimePart *) msg)->headers);
 
 	/* FIXME decide this based on the source folder */
 //	camel_message_info_set_flags (info, CAMEL_MESSAGE_DELETED, 0);
@@ -3855,7 +3855,7 @@ camel_folder_change_info_build_diff (CamelFolderChangeInfo *info)
 	p = info->priv;
 
 	if (p->uid_source) {
-		g_hash_table_foreach (p->uid_source, (GHFunc)change_info_remove, info);
+		g_hash_table_foreach (p->uid_source, (GHFunc) change_info_remove, info);
 		g_hash_table_destroy (p->uid_source);
 		p->uid_source = NULL;
 	}

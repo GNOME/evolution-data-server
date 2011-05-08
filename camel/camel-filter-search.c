@@ -734,7 +734,7 @@ camel_filter_search_match (CamelSession *session,
 
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1)
-			e_sexp_add_ifunction (sexp, 0, symbols[i].name, (ESExpIFunc *)symbols[i].func, &fms);
+			e_sexp_add_ifunction (sexp, 0, symbols[i].name, (ESExpIFunc *) symbols[i].func, &fms);
 		else
 			e_sexp_add_function (sexp, 0, symbols[i].name, symbols[i].func, &fms);
 	}

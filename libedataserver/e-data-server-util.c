@@ -411,7 +411,7 @@ e_util_utf8_remove_accents (const gchar *str)
 		return g_strdup (str);
 
 	for (i = 0, j = 0; res[i]; i++) {
-		if ((guchar)res[i] != 0xCC || res[i + 1] == 0) {
+		if ((guchar) res[i] != 0xCC || res[i + 1] == 0) {
 			res[j] = res[i];
 			j++;
 		} else {

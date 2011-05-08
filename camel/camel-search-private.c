@@ -218,7 +218,7 @@ camel_ustrstrcase (const gchar *haystack, const gchar *needle)
 	if (!p)
 		return NULL;
 
-	p = (const guchar *)haystack;
+	p = (const guchar *) haystack;
 	while ((u = camel_utf8_getc (&p))) {
 		gunichar c;
 
@@ -262,8 +262,8 @@ static gint
 camel_ustrcasecmp (const gchar *ps1, const gchar *ps2)
 {
 	gunichar u1, u2 = 0;
-	const guchar *s1 = (const guchar *)ps1;
-	const guchar *s2 = (const guchar *)ps2;
+	const guchar *s1 = (const guchar *) ps1;
+	const guchar *s2 = (const guchar *) ps2;
 
 	CAMEL_SEARCH_COMPARE (s1, s2, NULL);
 
@@ -294,8 +294,8 @@ static gint
 camel_ustrncasecmp (const gchar *ps1, const gchar *ps2, gsize len)
 {
 	gunichar u1, u2 = 0;
-	const guchar *s1 = (const guchar *)ps1;
-	const guchar *s2 = (const guchar *)ps2;
+	const guchar *s1 = (const guchar *) ps1;
+	const guchar *s2 = (const guchar *) ps2;
 
 	CAMEL_SEARCH_COMPARE (s1, s2, NULL);
 
@@ -344,7 +344,7 @@ header_match (const gchar *value, const gchar *match, camel_search_match_t how)
 
 	/* from dan the man, if we have mixed case, perform a case-sensitive match,
 	   otherwise not */
-	p = (const guchar *)match;
+	p = (const guchar *) match;
 	while ((c = camel_utf8_getc (&p))) {
 		if (g_unichar_isupper (c)) {
 			switch (how) {
@@ -391,9 +391,9 @@ camel_search_header_match (const gchar *value, const gchar *match, camel_search_
 	gchar *v, *vdom, *mdom;
 	gunichar c;
 
-	ptr = (const guchar *)value;
+	ptr = (const guchar *) value;
 	while ((c = camel_utf8_getc (&ptr)) && g_unichar_isspace (c))
-		value = (const gchar *)ptr;
+		value = (const gchar *) ptr;
 
 	switch (type) {
 	case CAMEL_SEARCH_TYPE_ENCODED:
@@ -412,12 +412,12 @@ camel_search_header_match (const gchar *value, const gchar *match, camel_search_
 			v = g_alloca (vdom-value+1);
 			memcpy (v, value, vdom-value);
 			v[vdom-value] = 0;
-			value = (gchar *)v;
+			value = (gchar *) v;
 		} else if (mdom != NULL && vdom == NULL) {
 			v = g_alloca (mdom-match+1);
 			memcpy (v, match, mdom-match);
 			v[mdom-match] = 0;
-			match = (gchar *)v;
+			match = (gchar *) v;
 		}
 		/* Falls through */
 	case CAMEL_SEARCH_TYPE_ASIS:
@@ -432,9 +432,9 @@ camel_search_header_match (const gchar *value, const gchar *match, camel_search_
 		/* Now we decode any addresses, and try asis matches on name and address parts */
 		cia = camel_internet_address_new ();
 		if (type == CAMEL_SEARCH_TYPE_ADDRESS_ENCODED)
-			camel_address_decode ((CamelAddress *)cia, value);
+			camel_address_decode ((CamelAddress *) cia, value);
 		else
-			camel_address_unformat ((CamelAddress *)cia, value);
+			camel_address_unformat ((CamelAddress *) cia, value);
 
 		for (i=0; !truth && camel_internet_address_get (cia, i, &name, &addr);i++)
 			truth = (name && header_match (name, match, how)) || (addr && header_match (addr, match, how));
@@ -464,13 +464,13 @@ camel_search_message_body_contains (CamelDataWrapper *object, regex_t *pattern)
 	if (CAMEL_IS_MULTIPART (containee)) {
 		parts = camel_multipart_get_number (CAMEL_MULTIPART (containee));
 		for (i = 0; i < parts && truth == FALSE; i++) {
-			CamelDataWrapper *part = (CamelDataWrapper *)camel_multipart_get_part (CAMEL_MULTIPART (containee), i);
+			CamelDataWrapper *part = (CamelDataWrapper *) camel_multipart_get_part (CAMEL_MULTIPART (containee), i);
 			if (part)
 				truth = camel_search_message_body_contains (part, pattern);
 		}
 	} else if (CAMEL_IS_MIME_MESSAGE (containee)) {
 		/* for messages we only look at its contents */
-		truth = camel_search_message_body_contains ((CamelDataWrapper *)containee, pattern);
+		truth = camel_search_message_body_contains ((CamelDataWrapper *) containee, pattern);
 	} else if (camel_content_type_is(CAMEL_DATA_WRAPPER (containee)->mime_type, "text", "*")
 		|| camel_content_type_is(CAMEL_DATA_WRAPPER (containee)->mime_type, "x-evolution", "evolution-rss-feed")) {
 		/* for all other text parts, we look inside, otherwise we dont care */
@@ -565,7 +565,7 @@ camel_search_words_split (const guchar *in)
 
 	g_string_free (w, TRUE);
 	words->len = list->len;
-	words->words = (struct _camel_search_word **)list->pdata;
+	words->words = (struct _camel_search_word **) list->pdata;
 	words->type = all;
 	g_ptr_array_free (list, FALSE);
 
@@ -617,7 +617,7 @@ camel_search_words_simple (struct _camel_search_words *wordin)
 	}
 
 	words->len = list->len;
-	words->words = (struct _camel_search_word **)list->pdata;
+	words->words = (struct _camel_search_word **) list->pdata;
 	words->type = all;
 	g_ptr_array_free (list, FALSE);
 

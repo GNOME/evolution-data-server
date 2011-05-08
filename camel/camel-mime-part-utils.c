@@ -122,7 +122,7 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw,
 		d(printf("Creating message part\n"));
 		content = (CamelDataWrapper *) camel_mime_message_new ();
 		success = camel_mime_part_construct_from_parser_sync (
-			(CamelMimePart *)content, mp, cancellable, error);
+			(CamelMimePart *) content, mp, cancellable, error);
 		break;
 	case CAMEL_MIME_PARSER_STATE_MULTIPART:
 		d(printf("Creating multi-part\n"));
@@ -133,7 +133,7 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw,
 		else
 			content = (CamelDataWrapper *) camel_multipart_new ();
 
-		camel_multipart_construct_from_parser ((CamelMultipart *)content, mp);
+		camel_multipart_construct_from_parser ((CamelMultipart *) content, mp);
 		d(printf("Created multi-part\n"));
 		break;
 	default:
@@ -146,7 +146,7 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw,
 
 		/* would you believe you have to set this BEFORE you set the content object???  oh my god !!!! */
 		camel_data_wrapper_set_mime_type_field (content, camel_mime_part_get_content_type (dw));
-		camel_medium_set_content ((CamelMedium *)dw, content);
+		camel_medium_set_content ((CamelMedium *) dw, content);
 		g_object_unref (content);
 	}
 
@@ -173,10 +173,10 @@ camel_mime_message_build_preview (CamelMimePart *msg,
 	CamelDataWrapper *dw;
 	gboolean got_plain = FALSE;
 
-	dw = camel_medium_get_content ((CamelMedium *)msg);
+	dw = camel_medium_get_content ((CamelMedium *) msg);
 	if (camel_content_type_is (dw->mime_type, "multipart", "*")) {
 		gint i, nparts;
-		CamelMultipart *mp = (CamelMultipart *)camel_medium_get_content ((CamelMedium *)msg);
+		CamelMultipart *mp = (CamelMultipart *) camel_medium_get_content ((CamelMedium *) msg);
 
 		if (!CAMEL_IS_MULTIPART (mp))
 			g_assert (0);
@@ -201,7 +201,7 @@ camel_mime_message_build_preview (CamelMimePart *msg,
 			bstream = camel_stream_buffer_new (mstream, CAMEL_STREAM_BUFFER_READ|CAMEL_STREAM_BUFFER_BUFFER);
 
 			/* We should fetch just 200 unquoted lines. */
-			while ((line = camel_stream_buffer_read_line ((CamelStreamBuffer *)bstream, NULL, NULL)) && str->len < 200) {
+			while ((line = camel_stream_buffer_read_line ((CamelStreamBuffer *) bstream, NULL, NULL)) && str->len < 200) {
 				gchar *tmp = line;
 				if (!line)
 					continue;

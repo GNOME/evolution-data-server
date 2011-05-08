@@ -247,8 +247,8 @@ ep_is_in_ignored (EProxy *proxy, const gchar *host)
 	hn = g_ascii_strdown (host, -1);
 
 	for (l = priv->ign_hosts; l; l = l->next) {
-		if (*((gchar *)l->data) == '*') {
-			if (g_str_has_suffix (hn, ((gchar *)l->data)+1)) {
+		if (*((gchar *) l->data) == '*') {
+			if (g_str_has_suffix (hn, ((gchar *) l->data)+1)) {
 				g_free (hn);
 				return TRUE;
 			}
@@ -292,12 +292,12 @@ ep_need_proxy_http (EProxy* proxy, const gchar * host)
 		if (so_addr->sa_family == AF_INET) {
 			struct in_addr in, *mask, *addr_in;
 
-			in = ((struct sockaddr_in *)so_addr)->sin_addr;
+			in = ((struct sockaddr_in *) so_addr)->sin_addr;
 			for (l = priv->ign_addrs; l; l = l->next) {
-				p_addr = (ProxyHostAddr *)l->data;
+				p_addr = (ProxyHostAddr *) l->data;
 				if (p_addr->type == PROXY_IPV4) {
-					addr_in =  ((struct in_addr *)p_addr->addr);
-					mask = ((struct in_addr *)p_addr->mask);
+					addr_in =  ((struct in_addr *) p_addr->addr);
+					mask = ((struct in_addr *) p_addr->mask);
 					d(g_print ("ep_need_proxy:ipv4: in: %ul\t mask: %ul\t addr: %ul\n",
 						   in.s_addr, mask->s_addr, addr_in->s_addr));
 					if ((in.s_addr & mask->s_addr) == addr_in->s_addr) {
@@ -310,12 +310,12 @@ ep_need_proxy_http (EProxy* proxy, const gchar * host)
 			struct in6_addr in6, net6;
 			struct in_addr *addr_in, *mask;
 
-			in6 = ((struct sockaddr_in6 *)so_addr)->sin6_addr;
+			in6 = ((struct sockaddr_in6 *) so_addr)->sin6_addr;
 			for (l = priv->ign_addrs; l; l = l->next) {
-				p_addr = (ProxyHostAddr *)l->data;
-				ipv6_network_addr (&in6, (struct in6_addr *)p_addr->mask, &net6);
+				p_addr = (ProxyHostAddr *) l->data;
+				ipv6_network_addr (&in6, (struct in6_addr *) p_addr->mask, &net6);
 				if (p_addr->type == PROXY_IPV6) {
-					if (IN6_ARE_ADDR_EQUAL (&net6, (struct in6_addr *)p_addr->addr)) {
+					if (IN6_ARE_ADDR_EQUAL (&net6, (struct in6_addr *) p_addr->addr)) {
 						d(g_print ("Host [%s] doesn't require proxy\n", host));
 						return FALSE;
 					}
@@ -323,8 +323,8 @@ ep_need_proxy_http (EProxy* proxy, const gchar * host)
 					   IN6_IS_ADDR_V4MAPPED (&net6)) {
 					guint32 v4addr;
 
-					addr_in =  ((struct in_addr *)p_addr->addr);
-					mask = ((struct in_addr *)p_addr->mask);
+					addr_in =  ((struct in_addr *) p_addr->addr);
+					mask = ((struct in_addr *) p_addr->mask);
 
 					v4addr = net6.s6_addr[12] << 24
 						| net6.s6_addr[13] << 16
@@ -449,7 +449,7 @@ ep_manipulate_ipv6 (ProxyHostAddr *host_addr,
 static void
 ep_parse_ignore_host (gpointer data, gpointer user_data)
 {
-	EProxy* proxy = (EProxy *)user_data;
+	EProxy* proxy = (EProxy *) user_data;
 	EProxyPrivate* priv = NULL;
 	SoupAddress *addr;
 	guint status;
@@ -461,7 +461,7 @@ ep_parse_ignore_host (gpointer data, gpointer user_data)
 		return;
 
 	priv = proxy->priv;
-	input = (gchar *)data;
+	input = (gchar *) data;
 
 	if ((netmask = strrchr (input, '/')) != NULL) {
 		hostname = g_strndup (input, netmask - input);
@@ -488,11 +488,11 @@ ep_parse_ignore_host (gpointer data, gpointer user_data)
 
 		if (so_addr->sa_family == AF_INET)
 			has_error = ep_manipulate_ipv4 (host_addr,
-							&((struct sockaddr_in *)so_addr)->sin_addr,
+							&((struct sockaddr_in *) so_addr)->sin_addr,
 							netmask);
 		else
 			has_error = ep_manipulate_ipv6 (host_addr,
-							&((struct sockaddr_in6 *)so_addr)->sin6_addr,
+							&((struct sockaddr_in6 *) so_addr)->sin6_addr,
 							netmask);
 
 		if (!has_error)
@@ -579,7 +579,7 @@ ep_set_proxy (GConfClient *client,
 {
 	gchar *proxy_server, *uri_http = NULL, *uri_https = NULL;
 	gint proxy_port, old_type;
-	EProxy* proxy = (EProxy *)user_data;
+	EProxy* proxy = (EProxy *) user_data;
 	EProxyPrivate* priv = proxy->priv;
 	GSList *ignore;
 	gboolean changed = FALSE, sys_manual = TRUE;
@@ -687,7 +687,7 @@ static void
 ep_setting_changed (GConfClient *client, guint32 cnxn_id, GConfEntry *entry, gpointer user_data)
 {
 	const gchar *key;
-	EProxy* proxy = (EProxy *)user_data;
+	EProxy* proxy = (EProxy *) user_data;
 	EProxyPrivate *priv;
 
 	if (!proxy || !proxy->priv)

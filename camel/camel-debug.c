@@ -172,7 +172,7 @@ i386_length_and_rw_bits (gint len, enum target_hw_bp_type type)
 #endif
       default:
 	internal_error (__FILE__, __LINE__, "\
-Invalid hw breakpoint type %d in i386_length_and_rw_bits.\n", (gint)type);
+Invalid hw breakpoint type %d in i386_length_and_rw_bits.\n", (gint) type);
     }
 
   switch (len)

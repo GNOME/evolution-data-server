@@ -123,7 +123,7 @@ stream_mem_write (CamelStream *stream,
 
 	/* FIXME: we shouldn't use g_byte_arrays or g_malloc perhaps? */
 	if (priv->position == priv->buffer->len) {
-		g_byte_array_append (priv->buffer, (const guint8 *)buffer, nwrite);
+		g_byte_array_append (priv->buffer, (const guint8 *) buffer, nwrite);
 	} else {
 		g_byte_array_set_size (priv->buffer, nwrite + priv->buffer->len);
 		memcpy (priv->buffer->data + priv->position, buffer, nwrite);
@@ -289,7 +289,7 @@ camel_stream_mem_new_with_buffer (const gchar *buffer,
 	g_return_val_if_fail (buffer != NULL, NULL);
 
 	ba = g_byte_array_new ();
-	g_byte_array_append (ba, (const guint8 *)buffer, len);
+	g_byte_array_append (ba, (const guint8 *) buffer, len);
 
 	return camel_stream_mem_new_with_byte_array (ba);
 }
@@ -404,7 +404,7 @@ camel_stream_mem_set_buffer (CamelStreamMem *mem,
 	g_return_if_fail (buffer != NULL);
 
 	ba = g_byte_array_new ();
-	g_byte_array_append (ba, (const guint8 *)buffer, len);
+	g_byte_array_append (ba, (const guint8 *) buffer, len);
 	camel_stream_mem_set_byte_array (mem, ba);
 	mem->priv->owner = TRUE;
 }

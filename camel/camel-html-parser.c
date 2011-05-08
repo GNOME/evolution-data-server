@@ -107,14 +107,14 @@ void camel_html_parser_set_data (CamelHTMLParser *hp, const gchar *start, gint l
 {
 	CamelHTMLParserPrivate *p = hp->priv;
 
-	p->inptr = p->inbuf = (gchar *)start;
-	p->inend = (gchar *)start+len;
+	p->inptr = p->inbuf = (gchar *) start;
+	p->inend = (gchar *) start+len;
 	p->eof = last;
 }
 
 camel_html_parser_t camel_html_parser_step (CamelHTMLParser *hp, const gchar **datap, gint *lenp)
 {
-	return tokenize_step (hp->priv, (gchar **)datap, lenp);
+	return tokenize_step (hp->priv, (gchar **) datap, lenp);
 }
 
 const gchar *camel_html_parser_left (CamelHTMLParser *hp, gint *lenp)
@@ -138,8 +138,8 @@ const gchar *camel_html_parser_attr (CamelHTMLParser *hp, const gchar *name)
 	CamelHTMLParserPrivate *p = hp->priv;
 
 	for (i=0;i<p->attrs->len;i++) {
-		if (!g_ascii_strcasecmp (((GString *)p->attrs->pdata[i])->str, name)) {
-			return ((GString *)p->values->pdata[i])->str;
+		if (!g_ascii_strcasecmp (((GString *) p->attrs->pdata[i])->str, name)) {
+			return ((GString *) p->values->pdata[i])->str;
 		}
 	}
 
@@ -444,7 +444,7 @@ static void tokenize_setup (void)
 	if (entities == NULL) {
 		entities = g_hash_table_new (g_str_hash, g_str_equal);
 		for (i = 0; i < G_N_ELEMENTS (entity_map); i++) {
-			g_hash_table_insert (entities, (gchar *)entity_map[i].name, GUINT_TO_POINTER (entity_map[i].val));
+			g_hash_table_insert (entities, (gchar *) entity_map[i].name, GUINT_TO_POINTER (entity_map[i].val));
 		}
 	}
 }

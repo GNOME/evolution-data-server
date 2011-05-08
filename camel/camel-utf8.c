@@ -215,7 +215,7 @@ static const guchar utf7_rank[256] = {
 gchar *
 camel_utf7_utf8 (const gchar *ptr)
 {
-	const guchar *p = (guchar *)ptr;
+	const guchar *p = (guchar *) ptr;
 	guint c;
 	guint32 v=0, x;
 	GString *out;
@@ -296,7 +296,7 @@ static void utf7_closeb64 (GString *out, guint32 v, guint32 i)
 gchar *
 camel_utf8_utf7 (const gchar *ptr)
 {
-	const guchar *p = (guchar *)ptr;
+	const guchar *p = (guchar *) ptr;
 	guint c;
 	guint32 x, v = 0;
 	gint state = 0;
@@ -385,7 +385,7 @@ camel_utf8_ucs2 (const gchar *pptr)
  **/
 gchar *camel_ucs2_utf8 (const gchar *ptr)
 {
-	guint16 *ucs = (guint16 *)ptr;
+	guint16 *ucs = (guint16 *) ptr;
 	guint32 c;
 	GString *work = g_string_new("");
 	gchar *out;

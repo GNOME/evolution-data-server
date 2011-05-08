@@ -405,18 +405,18 @@ e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *z
 	priv = cache->priv;
 
 	/* add the timezone to the cache file */
-	icalcomp = icaltimezone_get_component ((icaltimezone *)zone);
+	icalcomp = icaltimezone_get_component ((icaltimezone *) zone);
 	if (!icalcomp)
 		return FALSE;
 
 	obj = icalcomponent_as_ical_string_r (icalcomp);
-	if (e_file_cache_get_object (E_FILE_CACHE (cache), icaltimezone_get_tzid ((icaltimezone *)zone))) {
+	if (e_file_cache_get_object (E_FILE_CACHE (cache), icaltimezone_get_tzid ((icaltimezone *) zone))) {
 		retval = e_file_cache_replace_object (E_FILE_CACHE (cache),
-						      icaltimezone_get_tzid ((icaltimezone *)zone),
+						      icaltimezone_get_tzid ((icaltimezone *) zone),
 						      obj);
 	} else {
 		retval = e_file_cache_add_object (E_FILE_CACHE (cache),
-						  icaltimezone_get_tzid ((icaltimezone *)zone),
+						  icaltimezone_get_tzid ((icaltimezone *) zone),
 						  obj);
 	}
 	g_free (obj);

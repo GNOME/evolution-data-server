@@ -153,12 +153,12 @@ camel_nntp_address_add (CamelNNTPAddress *a, const gchar *name)
 
 	g_assert (CAMEL_IS_NNTP_ADDRESS (a));
 
-	index = ((CamelAddress *)a)->addresses->len;
+	index = ((CamelAddress *) a)->addresses->len;
 	for (i=0;i<index;i++)
-		if (!strcmp (g_ptr_array_index (((CamelAddress *)a)->addresses, i), name))
+		if (!strcmp (g_ptr_array_index (((CamelAddress *) a)->addresses, i), name))
 			return i;
 
-	g_ptr_array_add (((CamelAddress *)a)->addresses, g_strdup (name));
+	g_ptr_array_add (((CamelAddress *) a)->addresses, g_strdup (name));
 
 	return index;
 }
@@ -178,7 +178,7 @@ camel_nntp_address_get (CamelNNTPAddress *a, gint index, const gchar **namep)
 {
 	g_assert (CAMEL_IS_NNTP_ADDRESS (a));
 
-	if (index < 0 || index >= ((CamelAddress *)a)->addresses->len)
+	if (index < 0 || index >= ((CamelAddress *) a)->addresses->len)
 		return FALSE;
 
 	if (namep)

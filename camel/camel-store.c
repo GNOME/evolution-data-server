@@ -220,7 +220,7 @@ store_get_special (CamelStore *store,
 	folders = camel_object_bag_list (store->folders);
 	for (i=0;i<folders->len;i++) {
 		if (!CAMEL_IS_VTRASH_FOLDER (folders->pdata[i]))
-			camel_vee_folder_add_folder ((CamelVeeFolder *)folder, (CamelFolder *)folders->pdata[i]);
+			camel_vee_folder_add_folder ((CamelVeeFolder *) folder, (CamelFolder *) folders->pdata[i]);
 		g_object_unref (folders->pdata[i]);
 	}
 	g_ptr_array_free (folders, TRUE);
@@ -1762,8 +1762,8 @@ static gint
 folder_info_cmp (gconstpointer ap,
                  gconstpointer bp)
 {
-	const CamelFolderInfo *a = ((CamelFolderInfo **)ap)[0];
-	const CamelFolderInfo *b = ((CamelFolderInfo **)bp)[0];
+	const CamelFolderInfo *a = ((CamelFolderInfo **) ap)[0];
+	const CamelFolderInfo *b = ((CamelFolderInfo **) bp)[0];
 
 	return strcmp (a->full_name, b->full_name);
 }

@@ -39,7 +39,7 @@ do_compress (gint argc, gchar **argv)
 
 	for (i=2;i<argc;i++) {
 		printf("Opening index file: %s\n", argv[i]);
-		idx = (CamelIndex *)camel_text_index_new (argv[i], O_RDWR);
+		idx = (CamelIndex *) camel_text_index_new (argv[i], O_RDWR);
 		if (idx) {
 			printf(" Compressing ...\n");
 			if (camel_index_compress (idx) == -1) {
@@ -63,10 +63,10 @@ do_dump (gint argc, gchar **argv)
 
 	for (i=2;i<argc;i++) {
 		printf("Opening index file: %s\n", argv[i]);
-		idx = (CamelIndex *)camel_text_index_new (argv[i], O_RDONLY);
+		idx = (CamelIndex *) camel_text_index_new (argv[i], O_RDONLY);
 		if (idx) {
 			printf(" Dumping ...\n");
-			camel_text_index_dump ((CamelTextIndex *)idx);
+			camel_text_index_dump ((CamelTextIndex *) idx);
 			g_object_unref (idx);
 		} else {
 			printf(" Failed: %s\n", g_strerror (errno));
@@ -84,9 +84,9 @@ do_info (gint argc, gchar **argv)
 
 	for (i=2;i<argc;i++) {
 		printf("Opening index file: %s\n", argv[i]);
-		idx = (CamelIndex *)camel_text_index_new (argv[i], O_RDONLY);
+		idx = (CamelIndex *) camel_text_index_new (argv[i], O_RDONLY);
 		if (idx) {
-			camel_text_index_info ((CamelTextIndex *)idx);
+			camel_text_index_info ((CamelTextIndex *) idx);
 			g_object_unref (idx);
 		} else {
 			printf(" Failed: %s\n", g_strerror (errno));
@@ -104,9 +104,9 @@ do_check (gint argc, gchar **argv)
 
 	for (i=2;i<argc;i++) {
 		printf("Opening index file: %s\n", argv[i]);
-		idx = (CamelIndex *)camel_text_index_new (argv[i], O_RDONLY);
+		idx = (CamelIndex *) camel_text_index_new (argv[i], O_RDONLY);
 		if (idx) {
-			camel_text_index_validate ((CamelTextIndex *)idx);
+			camel_text_index_validate ((CamelTextIndex *) idx);
 			g_object_unref (idx);
 		} else {
 			printf(" Failed: %s\n", g_strerror (errno));
@@ -177,7 +177,7 @@ do_perf (gint argc, gchar **argv)
 	filter = camel_stream_filter_new (null);
 	g_object_unref (null);
 	filter_index = camel_mime_filter_index_new (idx);
-	camel_stream_filter_add ((CamelStreamFilter *)filter, filter_index);
+	camel_stream_filter_add ((CamelStreamFilter *) filter, filter_index);
 
 	while ((d = readdir (dir))) {
 		printf("indexing '%s'\n", d->d_name);

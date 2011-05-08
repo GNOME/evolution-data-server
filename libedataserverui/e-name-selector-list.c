@@ -108,7 +108,7 @@ enl_popup_grab (ENameSelectorList *list)
 			  NULL, NULL, GDK_CURRENT_TIME);
 
 	gdk_keyboard_grab (window, TRUE, GDK_CURRENT_TIME);
-	gtk_widget_grab_focus ((GtkWidget *)list);
+	gtk_widget_grab_focus ((GtkWidget *) list);
 
 	/* Build the listview from the model */
 	entry = E_NAME_SELECTOR_ENTRY (list);
@@ -152,7 +152,7 @@ enl_entry_focus_out (ENameSelectorList *list, GdkEventFocus *event, gpointer dum
 	if (gtk_widget_get_visible (GTK_WIDGET (list->priv->popup))
 	    && !gtk_widget_has_grab (GTK_WIDGET (list->priv->popup))) {
 		enl_popup_ungrab (list);
-		gtk_widget_hide ((GtkWidget *)list->priv->popup);
+		gtk_widget_hide ((GtkWidget *) list->priv->popup);
 
 		return FALSE;
 	}
@@ -169,7 +169,7 @@ enl_popup_button_press (GtkWidget *widget,
 		return FALSE;
 
 	/* if we come here, it's usually time to popdown */
-	gtk_widget_hide ((GtkWidget *)list->priv->popup);
+	gtk_widget_hide ((GtkWidget *) list->priv->popup);
 
 	return TRUE;
 }
@@ -438,9 +438,9 @@ enl_tree_button_press_event (GtkWidget *widget,
 	if (is_list) {
 		const GList *dests = e_destination_list_get_dests (destination);
 		GList *iters;
-		gint length = g_list_length ((GList *)dests);
+		gint length = g_list_length ((GList *) dests);
 
-		for (iters = (GList *)dests; iters; iters = iters->next) {
+		for (iters = (GList *) dests; iters; iters = iters->next) {
 			EDestination *dest = (EDestination *) iters->data;
 			const gchar *email = e_destination_get_email (dest);
 
@@ -548,7 +548,7 @@ enl_tree_key_press_event (GtkWidget *w,
 		   && event->keyval != GDK_KEY_Control_R && event->keyval != GDK_KEY_Control_L) {
 		enl_popup_ungrab (list);
 		gtk_widget_hide ( GTK_WIDGET (list->priv->popup));
-		gtk_widget_event (GTK_WIDGET (list), (GdkEvent *)event);
+		gtk_widget_event (GTK_WIDGET (list), (GdkEvent *) event);
 		return TRUE;
 	}
 

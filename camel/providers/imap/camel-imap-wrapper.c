@@ -171,8 +171,8 @@ camel_imap_wrapper_new (CamelImapFolder *imap_folder,
 
 	imap_wrapper = g_object_new (CAMEL_TYPE_IMAP_WRAPPER, NULL);
 	camel_data_wrapper_set_mime_type_field (CAMEL_DATA_WRAPPER (imap_wrapper), type);
-	((CamelDataWrapper *)imap_wrapper)->offline = !sync_offline;
-	((CamelDataWrapper *)imap_wrapper)->encoding = encoding;
+	((CamelDataWrapper *) imap_wrapper)->offline = !sync_offline;
+	((CamelDataWrapper *) imap_wrapper)->encoding = encoding;
 
 	imap_wrapper->folder = g_object_ref (imap_folder);
 	imap_wrapper->uid = g_strdup (uid);
@@ -190,5 +190,5 @@ camel_imap_wrapper_new (CamelImapFolder *imap_folder,
 		g_object_unref (stream);
 	}
 
-	return (CamelDataWrapper *)imap_wrapper;
+	return (CamelDataWrapper *) imap_wrapper;
 }

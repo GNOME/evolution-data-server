@@ -134,7 +134,7 @@ imapx_store_finalize (GObject *object)
 	/* SIGH */
 
 	camel_service_disconnect_sync (
-		(CamelService *)imapx_store, TRUE, NULL);
+		(CamelService *) imapx_store, TRUE, NULL);
 	if (imapx_store->con_man) {
 		g_object_unref (imapx_store->con_man);
 		imapx_store->con_man = NULL;
@@ -201,7 +201,7 @@ imapx_connect_sync (CamelService *service,
                     GCancellable *cancellable,
                     GError **error)
 {
-	CamelIMAPXStore *istore = (CamelIMAPXStore *)service;
+	CamelIMAPXStore *istore = (CamelIMAPXStore *) service;
 	CamelIMAPXServer *server;
 
 	server = camel_imapx_store_get_server (istore, NULL, cancellable, error);
@@ -262,7 +262,7 @@ imapx_query_auth_types_sync (CamelService *service,
 	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	url = camel_service_get_camel_url (service);
-	server = camel_imapx_server_new ((CamelStore *)istore, url);
+	server = camel_imapx_server_new ((CamelStore *) istore, url);
 
 	connected = server->stream != NULL;
 	if (!connected)
@@ -300,7 +300,7 @@ get_folder_offline (CamelStore *store, const gchar *folder_name,
 	service = CAMEL_SERVICE (store);
 	user_data_dir = camel_service_get_user_data_dir (service);
 
-	si = camel_store_summary_path ((CamelStoreSummary *)imapx_store->summary, folder_name);
+	si = camel_store_summary_path ((CamelStoreSummary *) imapx_store->summary, folder_name);
 	if (si) {
 		gchar *folder_dir, *storage_path;
 
@@ -321,7 +321,7 @@ get_folder_offline (CamelStore *store, const gchar *folder_name,
 		new_folder = camel_imapx_folder_new (store, folder_dir, folder_name, error);
 
 		g_free (folder_dir);
-		camel_store_summary_info_free ((CamelStoreSummary *)imapx_store->summary, si);
+		camel_store_summary_info_free ((CamelStoreSummary *) imapx_store->summary, si);
 	} else {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
@@ -380,8 +380,8 @@ fill_fi (CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 		else
 			ims = (CamelIMAPXSummary *) camel_imapx_summary_new (folder, NULL);
 
-		fi->unread = ((CamelFolderSummary *)ims)->unread_count;
-		fi->total = ((CamelFolderSummary *)ims)->saved_count;
+		fi->unread = ((CamelFolderSummary *) ims)->unread_count;
+		fi->total = ((CamelFolderSummary *) ims)->saved_count;
 
 		if (!folder->summary)
 			g_object_unref (ims);
@@ -451,14 +451,14 @@ imapx_unmark_folder_subscribed (CamelIMAPXStore *istore, const gchar *folder_nam
 {
 	CamelStoreInfo *si;
 
-	si = camel_store_summary_path ((CamelStoreSummary *)istore->summary, folder_name);
+	si = camel_store_summary_path ((CamelStoreSummary *) istore->summary, folder_name);
 	if (si) {
 		if (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) {
 			si->flags &= ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-			camel_store_summary_touch ((CamelStoreSummary *)istore->summary);
-			camel_store_summary_save ((CamelStoreSummary *)istore->summary);
+			camel_store_summary_touch ((CamelStoreSummary *) istore->summary);
+			camel_store_summary_save ((CamelStoreSummary *) istore->summary);
 		}
-		camel_store_summary_info_free ((CamelStoreSummary *)istore->summary, si);
+		camel_store_summary_info_free ((CamelStoreSummary *) istore->summary, si);
 	}
 
 	if (emit_signal) {
@@ -475,14 +475,14 @@ imapx_mark_folder_subscribed (CamelIMAPXStore *istore, const gchar *folder_name,
 {
 	CamelStoreInfo *si;
 
-	si = camel_store_summary_path ((CamelStoreSummary *)istore->summary, folder_name);
+	si = camel_store_summary_path ((CamelStoreSummary *) istore->summary, folder_name);
 	if (si) {
 		if ((si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) == 0) {
 			si->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-			camel_store_summary_touch ((CamelStoreSummary *)istore->summary);
-			camel_store_summary_save ((CamelStoreSummary *)istore->summary);
+			camel_store_summary_touch ((CamelStoreSummary *) istore->summary);
+			camel_store_summary_save ((CamelStoreSummary *) istore->summary);
 		}
-		camel_store_summary_info_free ((CamelStoreSummary *)istore->summary, si);
+		camel_store_summary_info_free ((CamelStoreSummary *) istore->summary, si);
 	}
 
 	if (emit_signal) {
@@ -575,7 +575,7 @@ imapx_delete_folder_from_cache (CamelIMAPXStore *istore, const gchar *folder_nam
 	g_unlink (state_file);
 	g_free (state_file);
 
-	camel_db_delete_folder (((CamelStore *)istore)->cdb_w, folder_name, NULL);
+	camel_db_delete_folder (((CamelStore *) istore)->cdb_w, folder_name, NULL);
 	g_rmdir (folder_dir);
 
 	state_file = g_strdup_printf("%s/subfolders", folder_dir);
@@ -586,8 +586,8 @@ imapx_delete_folder_from_cache (CamelIMAPXStore *istore, const gchar *folder_nam
 	g_free (folder_dir);
 
  event:
-	camel_store_summary_remove_path ((CamelStoreSummary *)istore->summary, folder_name);
-	camel_store_summary_save ((CamelStoreSummary *)istore->summary);
+	camel_store_summary_remove_path ((CamelStoreSummary *) istore->summary, folder_name);
+	camel_store_summary_save ((CamelStoreSummary *) istore->summary);
 
 	fi = imapx_build_folder_info (istore, folder_name);
 	camel_store_folder_deleted (CAMEL_STORE (istore), fi);
@@ -603,9 +603,9 @@ rename_folder_info (CamelIMAPXStore *istore, const gchar *old_name, const gchar 
 	const gchar *path;
 	gchar *npath, *nfull;
 
-	count = camel_store_summary_count ((CamelStoreSummary *)istore->summary);
+	count = camel_store_summary_count ((CamelStoreSummary *) istore->summary);
 	for (i=0;i<count;i++) {
-		si = camel_store_summary_index ((CamelStoreSummary *)istore->summary, i);
+		si = camel_store_summary_index ((CamelStoreSummary *) istore->summary, i);
 		if (si == NULL)
 			continue;
 		path = camel_store_info_path (istore->summary, si);
@@ -616,14 +616,14 @@ rename_folder_info (CamelIMAPXStore *istore, const gchar *old_name, const gchar 
 				npath = g_strdup (new_name);
 			nfull = camel_imapx_store_summary_path_to_full (istore->summary, npath, istore->dir_sep);
 
-			camel_store_info_set_string ((CamelStoreSummary *)istore->summary, si, CAMEL_STORE_INFO_PATH, npath);
-			camel_store_info_set_string ((CamelStoreSummary *)istore->summary, si, CAMEL_IMAPX_STORE_INFO_FULL_NAME, nfull);
+			camel_store_info_set_string ((CamelStoreSummary *) istore->summary, si, CAMEL_STORE_INFO_PATH, npath);
+			camel_store_info_set_string ((CamelStoreSummary *) istore->summary, si, CAMEL_IMAPX_STORE_INFO_FULL_NAME, nfull);
 
-			camel_store_summary_touch ((CamelStoreSummary *)istore->summary);
+			camel_store_summary_touch ((CamelStoreSummary *) istore->summary);
 			g_free (nfull);
 			g_free (npath);
 		}
-		camel_store_summary_info_free ((CamelStoreSummary *)istore->summary, si);
+		camel_store_summary_info_free ((CamelStoreSummary *) istore->summary, si);
 	}
 }
 
@@ -667,8 +667,8 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 	 * the moment. So let it do the right thing by bailing out if it's
 	 * not a folder we're explicitly interested in. */
 
-	for (i=0;i<camel_store_summary_count ((CamelStoreSummary *)imapx_store->summary);i++) {
-		CamelStoreInfo *si = camel_store_summary_index ((CamelStoreSummary *)imapx_store->summary, i);
+	for (i=0;i<camel_store_summary_count ((CamelStoreSummary *) imapx_store->summary);i++) {
+		CamelStoreInfo *si = camel_store_summary_index ((CamelStoreSummary *) imapx_store->summary, i);
 		const gchar *full_name;
 		CamelIMAPXStoreNamespace *ns;
 
@@ -677,7 +677,7 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 
 		full_name = camel_imapx_store_info_full_name (imapx_store->summary, si);
 		if (!full_name || !*full_name) {
-			camel_store_summary_info_free ((CamelStoreSummary *)imapx_store->summary, si);
+			camel_store_summary_info_free ((CamelStoreSummary *) imapx_store->summary, si);
 			continue;
 		}
 
@@ -692,7 +692,7 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 			|| (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)
 			|| (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST) != 0)) {
 
-			fi = imapx_build_folder_info (imapx_store, camel_store_info_path ((CamelStoreSummary *)imapx_store->summary, si));
+			fi = imapx_build_folder_info (imapx_store, camel_store_info_path ((CamelStoreSummary *) imapx_store->summary, si));
 			fi->unread = si->unread;
 			fi->total = si->total;
 			fi->flags = si->flags;
@@ -709,13 +709,13 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 			}
 
 			if (!(si->flags & CAMEL_FOLDER_NOSELECT))
-				fill_fi ((CamelStore *)imapx_store, fi, 0);
+				fill_fi ((CamelStore *) imapx_store, fi, 0);
 
 			if (!fi->child)
 				fi->flags |= CAMEL_FOLDER_NOCHILDREN;
 			g_ptr_array_add (folders, fi);
 		}
-		camel_store_summary_info_free ((CamelStoreSummary *)imapx_store->summary, si);
+		camel_store_summary_info_free ((CamelStoreSummary *) imapx_store->summary, si);
 	}
 	g_free (pattern);
 
@@ -947,7 +947,7 @@ sync_folders (CamelIMAPXStore *istore,
 
 		full_name = camel_imapx_store_info_full_name (istore->summary, si);
 		if (!full_name || !*full_name) {
-			camel_store_summary_info_free ((CamelStoreSummary *)istore->summary, si);
+			camel_store_summary_info_free ((CamelStoreSummary *) istore->summary, si);
 			continue;
 		}
 
@@ -955,7 +955,7 @@ sync_folders (CamelIMAPXStore *istore,
 			if ((fi = g_hash_table_lookup (folders_from_server, camel_store_info_path (istore->summary, si))) != NULL) {
 				if (((fi->flags ^ si->flags) & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)) {
 					si->flags = (si->flags & ~CAMEL_FOLDER_SUBSCRIBED) | (fi->flags & CAMEL_FOLDER_SUBSCRIBED);
-					camel_store_summary_touch ((CamelStoreSummary *)istore->summary);
+					camel_store_summary_touch ((CamelStoreSummary *) istore->summary);
 
 					camel_store_folder_created (CAMEL_STORE (istore), fi);
 					camel_store_folder_subscribed (CAMEL_STORE (istore), fi);
@@ -968,14 +968,14 @@ sync_folders (CamelIMAPXStore *istore,
 					imapx_delete_folder_from_cache (istore, dup_folder_name);
 					g_free (dup_folder_name);
 				} else {
-					camel_store_summary_remove ((CamelStoreSummary *)istore->summary, si);
+					camel_store_summary_remove ((CamelStoreSummary *) istore->summary, si);
 				}
 
 				total--;
 				i--;
 			}
 		}
-		camel_store_summary_info_free ((CamelStoreSummary *)istore->summary, si);
+		camel_store_summary_info_free ((CamelStoreSummary *) istore->summary, si);
 	}
 
 	g_hash_table_foreach (folders_from_server, imapx_get_folders_free, NULL);
@@ -1007,7 +1007,7 @@ discover_inbox (CamelStore *store,
                 GCancellable *cancellable)
 {
 	CamelStoreInfo *si;
-	CamelIMAPXStore *istore = (CamelIMAPXStore *)store;
+	CamelIMAPXStore *istore = (CamelIMAPXStore *) store;
 
 	si = camel_store_summary_path((CamelStoreSummary *) istore->summary, "INBOX");
 	if (si == NULL || (si->flags & CAMEL_FOLDER_SUBSCRIBED) == 0) {
@@ -1067,10 +1067,10 @@ imapx_folder_is_subscribed (CamelStore *store,
 	CamelStoreInfo *si;
 	gint is_subscribed = FALSE;
 
-	si = camel_store_summary_path ((CamelStoreSummary *)istore->summary, folder_name);
+	si = camel_store_summary_path ((CamelStoreSummary *) istore->summary, folder_name);
 	if (si) {
 		is_subscribed = (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0;
-		camel_store_summary_info_free ((CamelStoreSummary *)istore->summary, si);
+		camel_store_summary_info_free ((CamelStoreSummary *) istore->summary, si);
 	}
 
 	return is_subscribed;
@@ -1104,7 +1104,7 @@ imapx_store_get_folder_info_sync (CamelStore *store,
                                   GCancellable *cancellable,
                                   GError **error)
 {
-	CamelIMAPXStore *istore = (CamelIMAPXStore *)store;
+	CamelIMAPXStore *istore = (CamelIMAPXStore *) store;
 	CamelFolderInfo * fi= NULL;
 	CamelSession *session;
 	gboolean initial_setup = FALSE;
@@ -1145,7 +1145,7 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 		return fi;
 	}
 
-	if (!camel_service_connect_sync ((CamelService *)store, error)) {
+	if (!camel_service_connect_sync ((CamelService *) store, error)) {
 		g_mutex_unlock (istore->get_finfo_lock);
 		return NULL;
 	}
@@ -1310,7 +1310,7 @@ imapx_store_create_folder_sync (CamelStore *store,
 		return NULL;
 	}
 
-	si = camel_store_summary_path ((CamelStoreSummary *)istore->summary, parent_name);
+	si = camel_store_summary_path ((CamelStoreSummary *) istore->summary, parent_name);
 	if (si && si->flags & CAMEL_STORE_INFO_FOLDER_NOINFERIORS) {
 		g_set_error (
 			error, CAMEL_FOLDER_ERROR,
@@ -1335,7 +1335,7 @@ imapx_store_create_folder_sync (CamelStore *store,
 		CamelIMAPXStoreInfo *si;
 
 		si = camel_imapx_store_summary_add_from_full (istore->summary, full_name, dir_sep);
-		camel_store_summary_save ((CamelStoreSummary *)istore->summary);
+		camel_store_summary_save ((CamelStoreSummary *) istore->summary);
 		fi = imapx_build_folder_info (istore, camel_store_info_path (istore->summary, si));
 		fi->flags |= CAMEL_FOLDER_NOCHILDREN;
 		camel_store_folder_created (store, fi);
@@ -1522,11 +1522,11 @@ imapx_store_initable_init (GInitable *initable,
 	store->summary = camel_imapx_store_summary_new ();
 
 	summary = g_build_filename (user_data_dir, ".ev-store-summary", NULL);
-	camel_store_summary_set_filename ((CamelStoreSummary *)store->summary, summary);
+	camel_store_summary_set_filename ((CamelStoreSummary *) store->summary, summary);
 	/* FIXME: need to remove params, passwords, etc */
 	camel_store_summary_set_uri_base (
-		(CamelStoreSummary *)store->summary, url);
-	camel_store_summary_load ((CamelStoreSummary *)store->summary);
+		(CamelStoreSummary *) store->summary, url);
+	camel_store_summary_load ((CamelStoreSummary *) store->summary);
 
 	g_free (summary);
 

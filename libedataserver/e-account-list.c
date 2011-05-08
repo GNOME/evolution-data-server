@@ -141,7 +141,7 @@ gconf_accounts_changed (GConfClient *client, guint cnxn_id,
 		for (iter = e_list_get_iterator (old_accounts);
 		     e_iterator_is_valid (iter);
 		     e_iterator_next (iter)) {
-			account = (EAccount *)e_iterator_get (iter);
+			account = (EAccount *) e_iterator_get (iter);
 			if (!strcmp (account->uid, uid)) {
 				/* The account still exists, so remove
 				 * it from "old_accounts" and update it.
@@ -185,7 +185,7 @@ gconf_accounts_changed (GConfClient *client, guint cnxn_id,
 	for (iter = e_list_get_iterator (old_accounts);
 	     e_iterator_is_valid (iter);
 	     e_iterator_next (iter)) {
-		account = (EAccount *)e_iterator_get (iter);
+		account = (EAccount *) e_iterator_get (iter);
 		e_list_remove (E_LIST (account_list), account);
 		g_signal_emit (account_list, signals[ACCOUNT_REMOVED], 0, account);
 	}
@@ -196,7 +196,7 @@ gconf_accounts_changed (GConfClient *client, guint cnxn_id,
 static gpointer
 copy_func (gconstpointer data, gpointer closure)
 {
-	GObject *object = (GObject *)data;
+	GObject *object = (GObject *) data;
 
 	g_object_ref (object);
 	return object;
@@ -276,7 +276,7 @@ e_account_list_save (EAccountList *account_list)
 	for (iter = e_list_get_iterator (E_LIST (account_list));
 	     e_iterator_is_valid (iter);
 	     e_iterator_next (iter)) {
-		account = (EAccount *)e_iterator_get (iter);
+		account = (EAccount *) e_iterator_get (iter);
 
 		xmlbuf = e_account_to_xml (account);
 		if (xmlbuf)
@@ -305,7 +305,7 @@ e_account_list_prune_proxies (EAccountList *account_list)
 	for (iter = e_list_get_iterator (E_LIST (account_list));
 	     e_iterator_is_valid (iter);
 	     e_iterator_next (iter)) {
-		account = (EAccount *)e_iterator_get (iter);
+		account = (EAccount *) e_iterator_get (iter);
 		if (account->parent_uid)
 			e_account_list_remove (account_list, account);
 	}
@@ -319,7 +319,7 @@ e_account_list_remove_account_proxies (EAccountList *accounts, EAccount *account
 {
 	EAccount *child_account;
 
-	while ( (child_account = (EAccount *)e_account_list_find (accounts, E_ACCOUNT_FIND_PARENT_UID, account->uid))) {
+	while ( (child_account = (EAccount *) e_account_list_find (accounts, E_ACCOUNT_FIND_PARENT_UID, account->uid))) {
 		e_account_list_remove (accounts, child_account);
 		child_account = NULL;
 	}
@@ -431,7 +431,7 @@ e_account_list_get_default (EAccountList *account_list)
 
 	if (uid) {
 		for (;e_iterator_is_valid (it);e_iterator_next (it)) {
-			account = (const EAccount *)e_iterator_get (it);
+			account = (const EAccount *) e_iterator_get (it);
 
 			if (!strcmp (uid, account->uid))
 				break;
@@ -504,12 +504,12 @@ e_account_list_find (EAccountList *account_list,
 	if (!key)
 		return NULL;
 
-	for (it = e_list_get_iterator ((EList *)account_list);
+	for (it = e_list_get_iterator ((EList *) account_list);
 	     e_iterator_is_valid (it);
 	     e_iterator_next (it)) {
 		gint found = 0;
 
-		account = (const EAccount *)e_iterator_get (it);
+		account = (const EAccount *) e_iterator_get (it);
 
 		switch (type) {
 		case E_ACCOUNT_FIND_NAME:

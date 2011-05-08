@@ -379,7 +379,7 @@ camel_index_name_add_word (CamelIndexName *idn,
                            const gchar *word)
 {
 	CamelIndexNameClass *class;
-	gchar *b = (gchar *)word;
+	gchar *b = (gchar *) word;
 
 	g_return_if_fail (CAMEL_IS_INDEX_NAME (idn));
 

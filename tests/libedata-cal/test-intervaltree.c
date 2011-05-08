@@ -299,8 +299,8 @@ random_test (void)
 		}
 
 		/* g_print ("OK\n"); */
-		g_list_foreach (l1, (GFunc)g_object_unref, NULL);
-		g_list_foreach (l2, (GFunc)unref_comp, NULL);
+		g_list_foreach (l1, (GFunc) g_object_unref, NULL);
+		g_list_foreach (l2, (GFunc) unref_comp, NULL);
 		g_list_free (l1);
 		g_list_free (l2);
 	}
@@ -327,8 +327,8 @@ random_test (void)
 		}
 
 		/* g_print ("OK\n"); */
-		g_list_foreach (l1, (GFunc)g_object_unref, NULL);
-		g_list_foreach (l2, (GFunc)unref_comp, NULL);
+		g_list_foreach (l1, (GFunc) g_object_unref, NULL);
+		g_list_foreach (l2, (GFunc) unref_comp, NULL);
 		g_list_free (l1);
 		g_list_free (l2);
 	}
@@ -401,8 +401,8 @@ random_test (void)
 			return;
 		}
 
-		g_list_foreach (l1, (GFunc)g_object_unref, NULL);
-		g_list_foreach (l2, (GFunc)unref_comp, NULL);
+		g_list_foreach (l1, (GFunc) g_object_unref, NULL);
+		g_list_foreach (l2, (GFunc) unref_comp, NULL);
 		g_list_free (l1);
 		g_list_free (l2);
 
@@ -410,7 +410,7 @@ random_test (void)
 	}
 
 	e_intervaltree_destroy (tree);
-	g_list_foreach (list, (GFunc)unref_comp, NULL);
+	g_list_foreach (list, (GFunc) unref_comp, NULL);
 	g_list_free (list);
 }
 

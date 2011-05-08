@@ -1805,9 +1805,9 @@ e_time_parse_date_ex (const gchar *value,
 	}
 
 	if (two_digit_year)
-		g_free ((gchar *)format[0]);
+		g_free ((gchar *) format[0]);
 	else
-		g_free ((gchar *)format[1]);
+		g_free ((gchar *) format[1]);
 
 	return status;
 }

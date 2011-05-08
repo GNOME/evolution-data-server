@@ -124,7 +124,7 @@ e_list_remove_link (EList *list, GList *link)
 {
 	GList *iterators = list->iterators;
 	for (; iterators; iterators = iterators->next) {
-		if (((EListIterator *)iterators->data)->iterator == link) {
+		if (((EListIterator *) iterators->data)->iterator == link) {
 			e_iterator_prev (iterators->data);
 		}
 	}

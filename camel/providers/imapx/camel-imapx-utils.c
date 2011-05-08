@@ -255,7 +255,7 @@ gboolean
 imapx_update_message_info_flags (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags, CamelFolder *folder, gboolean unsolicited)
 {
 	gboolean changed = FALSE;
-	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)folder;
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
 	CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) info;
 
 	if (server_flags != xinfo->server_flags)
@@ -364,7 +364,7 @@ void
 imapx_update_summary_for_removed_message (CamelMessageInfo *info, CamelFolder *folder, gboolean unsolicited)
 {
 	CamelMessageInfoBase *dinfo = (CamelMessageInfoBase *) info;
-	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)folder;
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
 	gint unread=0, deleted=0, junk=0;
 	guint32 flags;
 
@@ -483,7 +483,7 @@ imapx_parse_capability (CamelIMAPXStream *stream,
 					*p++ = toupper(c);
 				if (!strncmp ((gchar *) token, "AUTH=", 5)) {
 					g_hash_table_insert (cinfo->auth_types,
-							g_strdup ((gchar *)token + 5),
+							g_strdup ((gchar *) token + 5),
 							GINT_TO_POINTER (1));
 					break;
 				}
@@ -1054,7 +1054,7 @@ imapx_parse_envelope (CamelIMAPXStream *is,
 
 	p(is->tagprefix, "envelope\n");
 
-	minfo = (CamelMessageInfoBase *)camel_message_info_new (NULL);
+	minfo = (CamelMessageInfoBase *) camel_message_info_new (NULL);
 
 	tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 	if (tok != '(') {
@@ -1149,7 +1149,7 @@ imapx_parse_envelope (CamelIMAPXStream *is,
 	if (local_error != NULL)
 		g_propagate_error (error, local_error);
 
-	return (CamelMessageInfo *)minfo;
+	return (CamelMessageInfo *) minfo;
 }
 
 struct _CamelMessageContentInfo *
@@ -1245,7 +1245,7 @@ imapx_parse_body (CamelIMAPXStream *is,
 			/* what do we do with the envelope?? */
 			minfo = imapx_parse_envelope (is, cancellable, &local_error);
 			/* what do we do with the message content info?? */
-			//((CamelMessageInfoBase *)minfo)->content = imapx_parse_body (is);
+			//((CamelMessageInfoBase *) minfo)->content = imapx_parse_body (is);
 			camel_message_info_free (minfo);
 			minfo = NULL;
 			d(is->tagprefix, "Scanned envelope - what do i do with it?\n");
@@ -1607,7 +1607,7 @@ imapx_parse_status_info (CamelIMAPXStream *is,
 		g_free (sinfo);
 		return NULL;
 	}
-	sinfo->name = camel_utf7_utf8 ((gchar *)token);
+	sinfo->name = camel_utf7_utf8 ((gchar *) token);
 
 	tok = camel_imapx_stream_token (is, &token, &len, cancellable, NULL);
 	if (tok != '(') {

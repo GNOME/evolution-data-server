@@ -2004,7 +2004,7 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend, GDataEntry *entry, EC
 			GList *values;
 
 			values = e_vcard_attribute_get_values (attr);
-			if (values && values->data && ((gchar *)values->data)[0])
+			if (values && values->data && ((gchar *) values->data)[0])
 				__debug__ ("unsupported vcard field: %s: %s", name, (gchar *)values->data);
 		}
 	}
@@ -2611,7 +2611,7 @@ get_google_primary_type_label (EVCardAttribute *attr, gboolean *primary, const g
 
 			values = e_vcard_attribute_param_get_values (params->data);
 			if (values && values->data &&
-				(((const gchar *)values->data)[0] == '1' ||
+				(((const gchar *) values->data)[0] == '1' ||
 				 0 == g_ascii_strcasecmp (values->data, "yes"))) {
 				*primary = TRUE;
 			}

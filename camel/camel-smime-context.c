@@ -93,14 +93,14 @@ smime_cert_data_clone (gpointer cert_data)
 static void
 sm_write_stream (gpointer arg, const gchar *buf, gulong len)
 {
-	camel_stream_write ((CamelStream *)arg, buf, len, NULL, NULL);
+	camel_stream_write ((CamelStream *) arg, buf, len, NULL, NULL);
 }
 
 static PK11SymKey *
 sm_decrypt_key (gpointer arg, SECAlgorithmID *algid)
 {
 	printf ("Decrypt key called\n");
-	return (PK11SymKey *)arg;
+	return (PK11SymKey *) arg;
 }
 
 static const gchar *
@@ -335,7 +335,7 @@ sm_signing_cmsmessage (CamelSMIMEContext *context,
 	g_return_val_if_fail (hash != NULL, NULL);
 
 	if ((cert = CERT_FindUserCertByUsage (p->certdb,
-					     (gchar *)nick,
+					     (gchar *) nick,
 					     certUsageEmailSigner,
 					     PR_TRUE,
 					     NULL)) == NULL) {
@@ -440,7 +440,7 @@ sm_signing_cmsmessage (CamelSMIMEContext *context,
 		} else {
 			/* encrypt key uses same nick */
 			if ((ekpcert = CERT_FindUserCertByUsage (
-				     p->certdb, (gchar *)nick,
+				     p->certdb, (gchar *) nick,
 				     certUsageEmailRecipient, PR_TRUE, NULL)) == NULL) {
 				g_set_error (
 					error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
@@ -529,7 +529,7 @@ sm_verify_cmsg (CamelCipherContext *context,
                 GCancellable *cancellable,
                 GError **error)
 {
-	CamelSMIMEContextPrivate *p = ((CamelSMIMEContext *)context)->priv;
+	CamelSMIMEContextPrivate *p = ((CamelSMIMEContext *) context)->priv;
 	NSSCMSSignedData *sigd = NULL;
 #if 0
 	NSSCMSEnvelopedData *envd;
@@ -561,7 +561,7 @@ sm_verify_cmsg (CamelCipherContext *context,
 
 		switch (typetag) {
 		case SEC_OID_PKCS7_SIGNED_DATA:
-			sigd = (NSSCMSSignedData *)NSS_CMSContentInfo_GetContent (cinfo);
+			sigd = (NSSCMSSignedData *) NSS_CMSContentInfo_GetContent (cinfo);
 			if (sigd == NULL) {
 				set_nss_error (error, _("No signed data in signature"));
 				goto fail;
@@ -804,8 +804,8 @@ smime_context_sign_sync (CamelCipherContext *context,
 	}
 
 	cmsg = sm_signing_cmsmessage (
-		(CamelSMIMEContext *)context, userid, &sechash,
-		((CamelSMIMEContext *)context)->priv->sign_mode == CAMEL_SMIME_SIGN_CLEARSIGN, error);
+		(CamelSMIMEContext *) context, userid, &sechash,
+		((CamelSMIMEContext *) context)->priv->sign_mode == CAMEL_SMIME_SIGN_CLEARSIGN, error);
 	if (cmsg == NULL)
 		return FALSE;
 
@@ -855,7 +855,7 @@ smime_context_sign_sync (CamelCipherContext *context,
 		dw, ostream, cancellable, NULL);
 	dw->encoding = CAMEL_TRANSFER_ENCODING_BINARY;
 
-	if (((CamelSMIMEContext *)context)->priv->sign_mode == CAMEL_SMIME_SIGN_CLEARSIGN) {
+	if (((CamelSMIMEContext *) context)->priv->sign_mode == CAMEL_SMIME_SIGN_CLEARSIGN) {
 		CamelMultipartSigned *mps;
 		CamelMimePart *sigpart;
 
@@ -865,7 +865,7 @@ smime_context_sign_sync (CamelCipherContext *context,
 		camel_data_wrapper_set_mime_type_field (dw, ct);
 		camel_content_type_unref (ct);
 
-		camel_medium_set_content ((CamelMedium *)sigpart, dw);
+		camel_medium_set_content ((CamelMedium *) sigpart, dw);
 
 		camel_mime_part_set_filename (sigpart, "smime.p7s");
 		camel_mime_part_set_disposition (sigpart, "attachment");
@@ -875,16 +875,16 @@ smime_context_sign_sync (CamelCipherContext *context,
 		ct = camel_content_type_new ("multipart", "signed");
 		camel_content_type_set_param (ct, "micalg", camel_cipher_context_hash_to_id (context, get_hash_from_oid (sechash)));
 		camel_content_type_set_param (ct, "protocol", class->sign_protocol);
-		camel_data_wrapper_set_mime_type_field ((CamelDataWrapper *)mps, ct);
+		camel_data_wrapper_set_mime_type_field ((CamelDataWrapper *) mps, ct);
 		camel_content_type_unref (ct);
-		camel_multipart_set_boundary ((CamelMultipart *)mps, NULL);
+		camel_multipart_set_boundary ((CamelMultipart *) mps, NULL);
 
 		mps->signature = sigpart;
 		mps->contentraw = istream;
 		camel_stream_reset (istream, NULL);
 		g_object_ref (istream);
 
-		camel_medium_set_content ((CamelMedium *)opart, (CamelDataWrapper *)mps);
+		camel_medium_set_content ((CamelMedium *) opart, (CamelDataWrapper *) mps);
 	} else {
 		ct = camel_content_type_new ("application", "x-pkcs7-mime");
 		camel_content_type_set_param (ct, "name", "smime.p7m");
@@ -892,7 +892,7 @@ smime_context_sign_sync (CamelCipherContext *context,
 		camel_data_wrapper_set_mime_type_field (dw, ct);
 		camel_content_type_unref (ct);
 
-		camel_medium_set_content ((CamelMedium *)opart, dw);
+		camel_medium_set_content ((CamelMedium *) opart, dw);
 
 		camel_mime_part_set_filename (opart, "smime.p7m");
 		camel_mime_part_set_description (opart, "S/MIME Signed Message");
@@ -928,7 +928,7 @@ smime_context_verify_sync (CamelCipherContext *context,
 
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 
-	dw = camel_medium_get_content ((CamelMedium *)ipart);
+	dw = camel_medium_get_content ((CamelMedium *) ipart);
 	ct = dw->mime_type;
 
 	/* FIXME: we should stream this to the decoder */
@@ -936,7 +936,7 @@ smime_context_verify_sync (CamelCipherContext *context,
 	mem = camel_stream_mem_new_with_byte_array (buffer);
 
 	if (camel_content_type_is (ct, "multipart", "signed")) {
-		CamelMultipart *mps = (CamelMultipart *)dw;
+		CamelMultipart *mps = (CamelMultipart *) dw;
 
 		tmp = camel_content_type_param (ct, "protocol");
 		if (!CAMEL_IS_MULTIPART_SIGNED (mps)
@@ -951,7 +951,7 @@ smime_context_verify_sync (CamelCipherContext *context,
 		}
 
 		constream = camel_multipart_signed_get_content_stream (
-			(CamelMultipartSigned *)mps, error);
+			(CamelMultipartSigned *) mps, error);
 		if (constream == NULL)
 			goto fail;
 
@@ -981,7 +981,7 @@ smime_context_verify_sync (CamelCipherContext *context,
 	camel_data_wrapper_decode_to_stream_sync (
 		camel_medium_get_content (
 			CAMEL_MEDIUM (sigpart)), mem, cancellable, NULL);
-	(void)NSS_CMSDecoder_Update (dec, (gchar *) buffer->data, buffer->len);
+	(void) NSS_CMSDecoder_Update (dec, (gchar *) buffer->data, buffer->len);
 	cmsg = NSS_CMSDecoder_Finish (dec);
 	if (cmsg == NULL) {
 		set_nss_error (error, _("Decoder failed"));
@@ -1008,7 +1008,7 @@ smime_context_encrypt_sync (CamelCipherContext *context,
                             GCancellable *cancellable,
                             GError **error)
 {
-	CamelSMIMEContextPrivate *p = ((CamelSMIMEContext *)context)->priv;
+	CamelSMIMEContextPrivate *p = ((CamelSMIMEContext *) context)->priv;
 	/*NSSCMSRecipientInfo **recipient_infos;*/
 	CERTCertificate **recipient_certs = NULL;
 	NSSCMSContentInfo *cinfo;
@@ -1034,7 +1034,7 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 	}
 
 	/* Lookup all recipients certs, for later working */
-	recipient_certs = (CERTCertificate **)PORT_ArenaZAlloc (poolp, sizeof (*recipient_certs[0])*(recipients->len + 1));
+	recipient_certs = (CERTCertificate **) PORT_ArenaZAlloc (poolp, sizeof (*recipient_certs[0])*(recipients->len + 1));
 	if (recipient_certs == NULL) {
 		set_nss_error (error, g_strerror (ENOMEM));
 		goto fail;
@@ -1157,7 +1157,7 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 	camel_data_wrapper_set_mime_type_field (dw, ct);
 	camel_content_type_unref (ct);
 
-	camel_medium_set_content ((CamelMedium *)opart, dw);
+	camel_medium_set_content ((CamelMedium *) opart, dw);
 	g_object_unref (dw);
 
 	camel_mime_part_set_disposition (opart, "attachment");
@@ -1359,7 +1359,7 @@ camel_smime_context_describe_part (CamelSMIMEContext *context, CamelMimePart *pa
 		istream = camel_stream_mem_new_with_byte_array (buffer);
 		/* FIXME Pass a GCancellable and GError here. */
 		camel_data_wrapper_decode_to_stream_sync (
-			camel_medium_get_content ((CamelMedium *)part),
+			camel_medium_get_content ((CamelMedium *) part),
 			istream, NULL, NULL);
 		camel_stream_reset (istream, NULL);
 

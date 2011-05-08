@@ -47,7 +47,7 @@ mh_folder_get_filename (CamelFolder *folder,
                         const gchar *uid,
                         GError **error)
 {
-	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
+	CamelLocalFolder *lf = (CamelLocalFolder *) folder;
 
 	return g_strdup_printf("%s/%s", lf->folder_path, uid);
 }
@@ -60,7 +60,7 @@ mh_folder_append_message_sync (CamelFolder *folder,
                                GCancellable *cancellable,
                                GError **error)
 {
-	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
+	CamelLocalFolder *lf = (CamelLocalFolder *) folder;
 	CamelStream *output_stream;
 	CamelMessageInfo *mi;
 	gchar *name;
@@ -74,7 +74,7 @@ mh_folder_append_message_sync (CamelFolder *folder,
 		return FALSE;
 
 	/* add it to the summary/assign the uid, etc */
-	mi = camel_local_summary_add ((CamelLocalSummary *)folder->summary, message, info, lf->changes, error);
+	mi = camel_local_summary_add ((CamelLocalSummary *) folder->summary, message, info, lf->changes, error);
 	if (mi == NULL)
 		goto check_changed;
 
@@ -91,7 +91,7 @@ mh_folder_append_message_sync (CamelFolder *folder,
 		goto fail_write;
 
 	if (camel_data_wrapper_write_to_stream_sync (
-		(CamelDataWrapper *)message, output_stream, cancellable, error) == -1
+		(CamelDataWrapper *) message, output_stream, cancellable, error) == -1
 	    || camel_stream_close (output_stream, cancellable, error) == -1)
 		goto fail_write;
 
@@ -138,7 +138,7 @@ mh_folder_get_message_sync (CamelFolder *folder,
                             GCancellable *cancellable,
                             GError **error)
 {
-	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
+	CamelLocalFolder *lf = (CamelLocalFolder *) folder;
 	CamelStream *message_stream = NULL;
 	CamelMimeMessage *message = NULL;
 	CamelMessageInfo *info;
@@ -172,7 +172,7 @@ mh_folder_get_message_sync (CamelFolder *folder,
 
 	message = camel_mime_message_new ();
 	if (!camel_data_wrapper_construct_from_stream_sync (
-		(CamelDataWrapper *)message,
+		(CamelDataWrapper *) message,
 		message_stream, cancellable, error)) {
 		g_prefix_error (
 			error, _("Cannot get message %s from folder %s: "),

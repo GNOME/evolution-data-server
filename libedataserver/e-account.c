@@ -214,7 +214,7 @@ xml_set_bool (xmlNodePtr node, const gchar *name, gboolean *val)
 	gboolean bool;
 	xmlChar *buf;
 
-	if ((buf = xmlGetProp (node, (xmlChar*)name))) {
+	if ((buf = xmlGetProp (node, (xmlChar*) name))) {
 		bool = (!strcmp ((gchar *)buf, "true") || !strcmp ((gchar *)buf, "yes"));
 		xmlFree (buf);
 
@@ -233,8 +233,8 @@ xml_set_int (xmlNodePtr node, const gchar *name, gint *val)
 	gint number;
 	xmlChar *buf;
 
-	if ((buf = xmlGetProp (node, (xmlChar*)name))) {
-		number = strtol ((gchar *)buf, NULL, 10);
+	if ((buf = xmlGetProp (node, (xmlChar*) name))) {
+		number = strtol ((gchar *) buf, NULL, 10);
 		xmlFree (buf);
 
 		if (number != *val) {
@@ -252,7 +252,7 @@ xml_set_prop (xmlNodePtr node, const gchar *name, gchar **val)
 	xmlChar *buf;
 	gint res;
 
-	buf = xmlGetProp (node, (xmlChar*)name);
+	buf = xmlGetProp (node, (xmlChar*) name);
 	if (buf == NULL) {
 		res = (*val != NULL);
 		if (res) {
@@ -260,7 +260,7 @@ xml_set_prop (xmlNodePtr node, const gchar *name, gchar **val)
 			*val = NULL;
 		}
 	} else {
-		res = *val == NULL || strcmp (*val, (gchar *)buf) != 0;
+		res = *val == NULL || strcmp (*val, (gchar *) buf) != 0;
 		if (res) {
 			g_free (*val);
 			*val = g_strdup((gchar *)buf);
@@ -299,7 +299,7 @@ receipt_policy_to_str (EAccountReceiptPolicy val)
 		break;
 	}
 
-	return (xmlChar*)ret;
+	return (xmlChar*) ret;
 }
 
 static gboolean
@@ -308,7 +308,7 @@ xml_set_receipt_policy (xmlNodePtr node, const gchar *name, EAccountReceiptPolic
 	EAccountReceiptPolicy new_val;
 	xmlChar *buf;
 
-	if ((buf = xmlGetProp (node, (xmlChar*)name))) {
+	if ((buf = xmlGetProp (node, (xmlChar*) name))) {
 		new_val = str_to_receipt_policy (buf);
 		xmlFree (buf);
 
@@ -335,7 +335,7 @@ xml_set_content (xmlNodePtr node, gchar **val)
 			*val = NULL;
 		}
 	} else {
-		res = *val == NULL || strcmp (*val, (gchar *)buf) != 0;
+		res = *val == NULL || strcmp (*val, (gchar *) buf) != 0;
 		if (res) {
 			g_free (*val);
 			*val = g_strdup((gchar *)buf);
@@ -516,7 +516,7 @@ e_account_set_from_xml (EAccount *account, const gchar *xml)
 	xmlDocPtr doc;
 	gboolean changed = FALSE;
 
-	if (!(doc = xmlParseDoc ((xmlChar*)xml)))
+	if (!(doc = xmlParseDoc ((xmlChar*) xml)))
 		return FALSE;
 
 	node = doc->children;
@@ -799,7 +799,7 @@ e_account_uid_from_xml (const gchar *xml)
 	xmlDocPtr doc;
 	gchar *uid = NULL;
 
-	if (!(doc = xmlParseDoc ((xmlChar *)xml)))
+	if (!(doc = xmlParseDoc ((xmlChar *) xml)))
 		return NULL;
 
 	node = doc->children;
@@ -967,7 +967,7 @@ ea_setting_setup (void)
 
 	ea_system_table = g_hash_table_new (g_str_hash, g_str_equal);
 	for (i = 0; i < G_N_ELEMENTS (system_perms); i++) {
-		g_hash_table_insert (ea_system_table, (gchar *)system_perms[i].key, &system_perms[i]);
+		g_hash_table_insert (ea_system_table, (gchar *) system_perms[i].key, &system_perms[i]);
 		sprintf(key, LOCK_BASE "/%s", system_perms[i].key);
 		entry = gconf_client_get_entry (gconf, key, NULL, TRUE, &err);
 		if (entry) {
@@ -981,35 +981,35 @@ ea_setting_setup (void)
 		g_error_free (err);
 	}
 
-	gconf_client_notify_add (gconf, LOCK_BASE, (GConfClientNotifyFunc)ea_setting_notify, NULL, NULL, NULL);
+	gconf_client_notify_add (gconf, LOCK_BASE, (GConfClientNotifyFunc) ea_setting_notify, NULL, NULL, NULL);
 	g_object_unref (gconf);
 }
 
 /* look up the item in the structure or the substructure using our table of reflection data */
 #define addr(ea, type) \
 	((account_info[type].type & TYPE_STRUCT)? \
-	(((gchar **)(((gchar *)ea)+account_info[type].offset))[0] + account_info[type].struct_offset): \
-	(((gchar *)ea)+account_info[type].offset))
+	(((gchar **)(((gchar *) ea)+account_info[type].offset))[0] + account_info[type].struct_offset): \
+	(((gchar *) ea)+account_info[type].offset))
 
 const gchar *
 e_account_get_string (EAccount *ea, e_account_item_t type)
 {
 	g_return_val_if_fail (ea != NULL, NULL);
-	return *((const gchar **)addr (ea, type));
+	return *((const gchar **) addr (ea, type));
 }
 
 gint
 e_account_get_int (EAccount *ea, e_account_item_t type)
 {
 	g_return_val_if_fail (ea != NULL, 0);
-	return *((gint *)addr (ea, type));
+	return *((gint *) addr (ea, type));
 }
 
 gboolean
 e_account_get_bool (EAccount *ea, e_account_item_t type)
 {
 	g_return_val_if_fail (ea != NULL, FALSE);
-	return *((gboolean *)addr (ea, type));
+	return *((gboolean *) addr (ea, type));
 }
 
 #if d(!)0
@@ -1036,7 +1036,7 @@ e_account_set_string (EAccount *ea, e_account_item_t type, const gchar *val)
 	if (!e_account_writable (ea, type)) {
 		g_warning("Trying to set non-writable option account value");
 	} else {
-		p = (gchar **)addr (ea, type);
+		p = (gchar **) addr (ea, type);
 		d(printf("Setting string %d: old '%s' new '%s'\n", type, *p, val));
 		if (*p != val
 		    && (*p == NULL || val == NULL || strcmp (*p, val) != 0)) {
@@ -1056,7 +1056,7 @@ e_account_set_int (EAccount *ea, e_account_item_t type, gint val)
 	if (!e_account_writable (ea, type)) {
 		g_warning("Trying to set non-writable option account value");
 	} else {
-		gint *p = (gint *)addr (ea, type);
+		gint *p = (gint *) addr (ea, type);
 
 		if (*p != val) {
 			*p = val;
@@ -1074,7 +1074,7 @@ e_account_set_bool (EAccount *ea, e_account_item_t type, gboolean val)
 	if (!e_account_writable (ea, type)) {
 		g_warning("Trying to set non-writable option account value");
 	} else {
-		gboolean *p = (gboolean *)addr (ea, type);
+		gboolean *p = (gboolean *) addr (ea, type);
 
 		if (*p != val) {
 			*p = val;

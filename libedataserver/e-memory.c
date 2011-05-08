@@ -113,7 +113,7 @@ e_memchunk_alloc (EMemChunk *memchunk)
 	if (f) {
 		f->atoms--;
 		if (f->atoms > 0) {
-			mem = ((gchar *)f) + (f->atoms * memchunk->atomsize);
+			mem = ((gchar *) f) + (f->atoms * memchunk->atomsize);
 		} else {
 			mem = f;
 			memchunk->free = memchunk->free->next;
@@ -257,7 +257,7 @@ e_memchunk_clean (EMemChunk *memchunk)
 		return;
 
 	/* first, setup the tree/list so we can map free block addresses to block addresses */
-	tree = g_tree_new ((GCompareFunc)tree_compare);
+	tree = g_tree_new ((GCompareFunc) tree_compare);
 	for (i = 0; i < memchunk->blocks->len; i++) {
 		ci = alloca (sizeof (*ci));
 		ci->count = 0;

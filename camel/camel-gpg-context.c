@@ -937,7 +937,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 				gpg->hadsig = TRUE;
 				status += 8;
 				/* there's a key ID, then the email address */
-				status = (const guchar *)strchr ((const gchar *)status, ' ');
+				status = (const guchar *) strchr ((const gchar *) status, ' ');
 				if (status) {
 					const gchar *str = (const gchar *) status + 1;
 					const gchar *eml = strchr (str, '<');
@@ -1597,7 +1597,7 @@ gpg_sign_sync (CamelCipherContext *context,
 	camel_data_wrapper_set_mime_type_field (dw, ct);
 	camel_content_type_unref (ct);
 
-	camel_medium_set_content ((CamelMedium *)sigpart, dw);
+	camel_medium_set_content ((CamelMedium *) sigpart, dw);
 	g_object_unref (dw);
 
 	camel_mime_part_set_description(sigpart, "This is a digitally signed message part");
@@ -1606,16 +1606,16 @@ gpg_sign_sync (CamelCipherContext *context,
 	ct = camel_content_type_new("multipart", "signed");
 	camel_content_type_set_param(ct, "micalg", camel_cipher_context_hash_to_id (context, hash == CAMEL_CIPHER_HASH_DEFAULT ? gpg->hash : hash));
 	camel_content_type_set_param(ct, "protocol", class->sign_protocol);
-	camel_data_wrapper_set_mime_type_field ((CamelDataWrapper *)mps, ct);
+	camel_data_wrapper_set_mime_type_field ((CamelDataWrapper *) mps, ct);
 	camel_content_type_unref (ct);
-	camel_multipart_set_boundary ((CamelMultipart *)mps, NULL);
+	camel_multipart_set_boundary ((CamelMultipart *) mps, NULL);
 
 	mps->signature = sigpart;
 	mps->contentraw = istream;
 	camel_stream_reset (istream, NULL);
 	g_object_ref (istream);
 
-	camel_medium_set_content ((CamelMedium *)opart, (CamelDataWrapper *)mps);
+	camel_medium_set_content ((CamelMedium *) opart, (CamelDataWrapper *) mps);
 fail:
 	g_object_unref (ostream);
 
@@ -1645,8 +1645,8 @@ gpg_verify_sync (CamelCipherContext *context,
 
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 
-	mps = (CamelMultipart *)camel_medium_get_content ((CamelMedium *)ipart);
-	ct = ((CamelDataWrapper *)mps)->mime_type;
+	mps = (CamelMultipart *) camel_medium_get_content ((CamelMedium *) ipart);
+	ct = ((CamelDataWrapper *) mps)->mime_type;
 
 	/* Inline signature (using our fake mime type) or PGP/Mime signature */
 	if (camel_content_type_is(ct, "multipart", "signed")) {
@@ -1721,7 +1721,7 @@ gpg_verify_sync (CamelCipherContext *context,
 			out = camel_stream_fs_new_with_name (name, O_CREAT|O_TRUNC|O_WRONLY, 0666);
 			if (out) {
 				printf("Writing gpg verify signature to '%s'\n", name);
-				camel_data_wrapper_write_to_stream ((CamelDataWrapper *)sigpart, out);
+				camel_data_wrapper_write_to_stream ((CamelDataWrapper *) sigpart, out);
 				g_object_unref (out);
 			}
 			g_free (name);
@@ -1905,7 +1905,7 @@ gpg_encrypt_sync (CamelCipherContext *context,
 	camel_data_wrapper_set_mime_type_field (dw, ct);
 	camel_content_type_unref (ct);
 
-	camel_medium_set_content ((CamelMedium *)encpart, dw);
+	camel_medium_set_content ((CamelMedium *) encpart, dw);
 	g_object_unref (dw);
 
 	camel_mime_part_set_description(encpart, _("This is a digitally encrypted message part"));
@@ -1920,24 +1920,24 @@ gpg_encrypt_sync (CamelCipherContext *context,
 	camel_data_wrapper_construct_from_stream_sync (
 		dw, vstream, NULL, NULL);
 	g_object_unref (vstream);
-	camel_medium_set_content ((CamelMedium *)verpart, dw);
+	camel_medium_set_content ((CamelMedium *) verpart, dw);
 	g_object_unref (dw);
 
 	mpe = camel_multipart_encrypted_new ();
 	ct = camel_content_type_new("multipart", "encrypted");
 	camel_content_type_set_param(ct, "protocol", class->encrypt_protocol);
-	camel_data_wrapper_set_mime_type_field ((CamelDataWrapper *)mpe, ct);
+	camel_data_wrapper_set_mime_type_field ((CamelDataWrapper *) mpe, ct);
 	camel_content_type_unref (ct);
-	camel_multipart_set_boundary ((CamelMultipart *)mpe, NULL);
+	camel_multipart_set_boundary ((CamelMultipart *) mpe, NULL);
 
 	mpe->decrypted = g_object_ref (ipart);
 
-	camel_multipart_add_part ((CamelMultipart *)mpe, verpart);
+	camel_multipart_add_part ((CamelMultipart *) mpe, verpart);
 	g_object_unref (verpart);
-	camel_multipart_add_part ((CamelMultipart *)mpe, encpart);
+	camel_multipart_add_part ((CamelMultipart *) mpe, encpart);
 	g_object_unref (encpart);
 
-	camel_medium_set_content ((CamelMedium *)opart, (CamelDataWrapper *)mpe);
+	camel_medium_set_content ((CamelMedium *) opart, (CamelDataWrapper *) mpe);
 fail:
 	gpg_ctx_free (gpg);
 fail1:
@@ -1970,7 +1970,7 @@ gpg_decrypt_sync (CamelCipherContext *context,
 		return NULL;
 	}
 
-	content = camel_medium_get_content ((CamelMedium *)ipart);
+	content = camel_medium_get_content ((CamelMedium *) ipart);
 
 	if (!content) {
 		g_set_error (
@@ -2011,7 +2011,7 @@ gpg_decrypt_sync (CamelCipherContext *context,
 	camel_stream_reset (istream, NULL);
 
 	ostream = camel_stream_mem_new ();
-	camel_stream_mem_set_secure ((CamelStreamMem *)ostream);
+	camel_stream_mem_set_secure ((CamelStreamMem *) ostream);
 
 	gpg = gpg_ctx_new (context);
 	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_DECRYPT);
@@ -2049,7 +2049,7 @@ gpg_decrypt_sync (CamelCipherContext *context,
 			CAMEL_DATA_WRAPPER (opart),
 			ostream, NULL, error);
 
-		dw = camel_medium_get_content ((CamelMedium *)opart);
+		dw = camel_medium_get_content ((CamelMedium *) opart);
 		if (!camel_data_wrapper_decode_to_stream_sync (
 			dw, null, cancellable, NULL)) {
 			/* nothing had been decoded from the stream, it doesn't
@@ -2067,7 +2067,7 @@ gpg_decrypt_sync (CamelCipherContext *context,
 		success = camel_data_wrapper_construct_from_stream_sync (
 			dw, ostream, NULL, error);
 		camel_data_wrapper_set_mime_type(dw, "application/octet-stream");
-		camel_medium_set_content ((CamelMedium *)opart, dw);
+		camel_medium_set_content ((CamelMedium *) opart, dw);
 		g_object_unref (dw);
 		/* Set mime/type of this new part to application/octet-stream to force type snooping */
 		camel_mime_part_set_content_type(opart, "application/octet-stream");

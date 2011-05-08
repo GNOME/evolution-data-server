@@ -21,13 +21,13 @@ struct _CamelImapFolderPrivate {
 
 #ifdef ENABLE_THREADS
 #define CAMEL_IMAP_FOLDER_LOCK(f, l) \
-	(g_static_mutex_lock (&((CamelImapFolder *)f)->priv->l))
+	(g_static_mutex_lock (&((CamelImapFolder *) f)->priv->l))
 #define CAMEL_IMAP_FOLDER_UNLOCK(f, l) \
-	(g_static_mutex_unlock (&((CamelImapFolder *)f)->priv->l))
+	(g_static_mutex_unlock (&((CamelImapFolder *) f)->priv->l))
 #define CAMEL_IMAP_FOLDER_REC_LOCK(f, l) \
-	(g_static_rec_mutex_lock (&((CamelImapFolder *)f)->priv->l))
+	(g_static_rec_mutex_lock (&((CamelImapFolder *) f)->priv->l))
 #define CAMEL_IMAP_FOLDER_REC_UNLOCK(f, l) \
-	(g_static_rec_mutex_unlock (&((CamelImapFolder *)f)->priv->l))
+	(g_static_rec_mutex_unlock (&((CamelImapFolder *) f)->priv->l))
 #else
 #define CAMEL_IMAP_FOLDER_LOCK(obj)
 #define CAMEL_IMAP_FOLDER_UNLOCK(obj)

@@ -67,7 +67,7 @@ contacts_added_cb (EGdbusBookView *object, const gchar * const *vcards, EBookVie
 
 	g_signal_emit (book_view, signals[CONTACTS_ADDED], 0, contacts);
 
-	g_list_foreach (contacts, (GFunc)g_object_unref, NULL);
+	g_list_foreach (contacts, (GFunc) g_object_unref, NULL);
 	g_list_free (contacts);
 }
 
@@ -87,7 +87,7 @@ contacts_changed_cb (EGdbusBookView *object, const gchar * const *vcards, EBookV
 
 	g_signal_emit (book_view, signals[CONTACTS_CHANGED], 0, contacts);
 
-	g_list_foreach (contacts, (GFunc)g_object_unref, NULL);
+	g_list_foreach (contacts, (GFunc) g_object_unref, NULL);
 	g_list_free (contacts);
 }
 

@@ -1280,7 +1280,7 @@ imap_uid_set_to_array (CamelFolderSummary *summary, const gchar *uids)
 	arr = g_ptr_array_new ();
 	scount = camel_folder_summary_count (summary);
 
-	p = (gchar *)uids;
+	p = (gchar *) uids;
 	si = 0;
 	do {
 		uid = strtoul (p, &q, 10);

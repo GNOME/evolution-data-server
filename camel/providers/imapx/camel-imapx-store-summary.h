@@ -142,7 +142,7 @@ void		camel_imapx_store_summary_set_namespaces
 /* helpe macro's */
 #define camel_imapx_store_info_full_name(s, i) \
 	(camel_store_info_string ( \
-		(CamelStoreSummary *)s, (const CamelStoreInfo *)i, \
+		(CamelStoreSummary *) s, (const CamelStoreInfo *) i, \
 		CAMEL_IMAPX_STORE_INFO_FULL_NAME))
 
 G_END_DECLS

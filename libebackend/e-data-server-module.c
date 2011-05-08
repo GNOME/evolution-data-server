@@ -294,7 +294,7 @@ e_data_server_module_add_type (GType type)
 
 	object = g_object_new (type, NULL);
 	g_object_weak_ref (object,
-			   (GWeakNotify)module_object_weak_notify,
+			   (GWeakNotify) module_object_weak_notify,
 			   NULL);
 
 	module_objects = g_list_prepend (module_objects, object);

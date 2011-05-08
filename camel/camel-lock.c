@@ -165,7 +165,7 @@ camel_unlock_dot (const gchar *path)
 	lock = alloca(strlen(path) + strlen(".lock") + 1);
 	sprintf(lock, "%s.lock", path);
 	d(printf("unlocking %s\n", lock));
-	(void)unlink (lock);
+	(void) unlink (lock);
 #endif
 }
 
@@ -289,7 +289,7 @@ camel_unlock_flock (gint fd)
 #ifdef USE_FLOCK
 	d(printf("flock unlocking %d\n", fd));
 
-	(void)flock (fd, LOCK_UN);
+	(void) flock (fd, LOCK_UN);
 #endif
 }
 

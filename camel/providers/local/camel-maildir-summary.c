@@ -151,16 +151,16 @@ CamelMaildirSummary
 	CamelMaildirSummary *o;
 
 	o = g_object_new (CAMEL_TYPE_MAILDIR_SUMMARY, NULL);
-	((CamelFolderSummary *)o)->folder = folder;
+	((CamelFolderSummary *) o)->folder = folder;
 	if (folder) {
 		CamelStore *parent_store;
 
 		parent_store = camel_folder_get_parent_store (folder);
 		camel_db_set_collate (parent_store->cdb_r, "dreceived", NULL, NULL);
 		((CamelFolderSummary *)o)->sort_by = "dreceived";
-		((CamelFolderSummary *)o)->collate = NULL;
+		((CamelFolderSummary *) o)->collate = NULL;
 	}
-	camel_local_summary_construct ((CamelLocalSummary *)o, filename, maildirdir, index);
+	camel_local_summary_construct ((CamelLocalSummary *) o, filename, maildirdir, index);
 	return o;
 }
 
@@ -267,21 +267,21 @@ maildir_summary_add (CamelLocalSummary *cls,
 		}
 	}
 
-	return (CamelMessageInfo *)mi;
+	return (CamelMessageInfo *) mi;
 }
 
 static CamelMessageInfo *
 message_info_new_from_header (CamelFolderSummary * s, struct _camel_header_raw *h)
 {
 	CamelMessageInfo *mi, *info;
-	CamelMaildirSummary *mds = (CamelMaildirSummary *)s;
+	CamelMaildirSummary *mds = (CamelMaildirSummary *) s;
 	CamelMaildirMessageInfo *mdi;
 	const gchar *uid;
 
 	mi = ((CamelFolderSummaryClass *) camel_maildir_summary_parent_class)->message_info_new_from_header (s, h);
 	/* assign the uid and new filename */
 	if (mi) {
-		mdi = (CamelMaildirMessageInfo *)mi;
+		mdi = (CamelMaildirMessageInfo *) mi;
 
 		uid = camel_message_info_uid (mi);
 		if (uid==NULL || uid[0] == 0)
@@ -336,7 +336,7 @@ message_info_new_from_header (CamelFolderSummary * s, struct _camel_header_raw *
 static void
 message_info_free (CamelFolderSummary *s, CamelMessageInfo *mi)
 {
-	CamelMaildirMessageInfo *mdi = (CamelMaildirMessageInfo *)mi;
+	CamelMaildirMessageInfo *mdi = (CamelMaildirMessageInfo *) mi;
 
 	g_free (mdi->filename);
 
@@ -345,7 +345,7 @@ message_info_free (CamelFolderSummary *s, CamelMessageInfo *mi)
 
 static gchar *maildir_summary_next_uid_string (CamelFolderSummary *s)
 {
-	CamelMaildirSummary *mds = (CamelMaildirSummary *)s;
+	CamelMaildirSummary *mds = (CamelMaildirSummary *) s;
 
 	d(printf("next uid string called?\n"));
 
@@ -363,7 +363,7 @@ static gchar *maildir_summary_next_uid_string (CamelFolderSummary *s)
 #if 0
 		return g_strdup_printf("%ld.%d_%u.%s", time(0), getpid(), camel_folder_summary_next_uid(s), mds->priv->hostname);
 #else
-		CamelLocalSummary *cls = (CamelLocalSummary *)s;
+		CamelLocalSummary *cls = (CamelLocalSummary *) s;
 		gchar *name = NULL, *uid = NULL;
 		struct stat st;
 		gint retry = 0;
@@ -393,7 +393,7 @@ static CamelMessageInfo *
 message_info_migrate (CamelFolderSummary *s, FILE *in)
 {
 	CamelMessageInfo *mi;
-	CamelMaildirSummary *mds = (CamelMaildirSummary *)s;
+	CamelMaildirSummary *mds = (CamelMaildirSummary *) s;
 
 	mi = ((CamelFolderSummaryClass *) camel_maildir_summary_parent_class)->message_info_migrate (s, in);
 	if (mi) {
@@ -403,7 +403,7 @@ message_info_migrate (CamelFolderSummary *s, FILE *in)
 		    && (name = g_hash_table_lookup (mds->priv->load_map, camel_message_info_uid (mi)))) {
 			d(printf("Setting filename of %s to %s\n", camel_message_info_uid(mi), name));
 			camel_maildir_info_set_filename (mi, g_strdup (name));
-			camel_maildir_summary_name_to_info ((CamelMaildirMessageInfo *)mi, name);
+			camel_maildir_summary_name_to_info ((CamelMaildirMessageInfo *) mi, name);
 		}
 	}
 
@@ -419,7 +419,7 @@ maildir_summary_load (CamelLocalSummary *cls,
 	gchar *cur;
 	DIR *dir;
 	struct dirent *d;
-	CamelMaildirSummary *mds = (CamelMaildirSummary *)cls;
+	CamelMaildirSummary *mds = (CamelMaildirSummary *) cls;
 	gchar *uid;
 	CamelMemPool *pool;
 	gint ret;
@@ -479,7 +479,7 @@ camel_maildir_summary_add (CamelLocalSummary *cls,
                            gint forceindex,
                            GCancellable *cancellable)
 {
-	CamelMaildirSummary *maildirs = (CamelMaildirSummary *)cls;
+	CamelMaildirSummary *maildirs = (CamelMaildirSummary *) cls;
 	gchar *filename = g_strdup_printf("%s/cur/%s", cls->folder_path, name);
 	gint fd;
 	CamelMimeParser *mp;
@@ -497,15 +497,15 @@ camel_maildir_summary_add (CamelLocalSummary *cls,
 	camel_mime_parser_init_with_fd (mp, fd);
 	if (cls->index && (forceindex || !camel_index_has_name (cls->index, name))) {
 		d(printf("forcing indexing of message content\n"));
-		camel_folder_summary_set_index ((CamelFolderSummary *)maildirs, cls->index);
+		camel_folder_summary_set_index ((CamelFolderSummary *) maildirs, cls->index);
 	} else {
-		camel_folder_summary_set_index ((CamelFolderSummary *)maildirs, NULL);
+		camel_folder_summary_set_index ((CamelFolderSummary *) maildirs, NULL);
 	}
-	maildirs->priv->current_file = (gchar *)name;
-	camel_folder_summary_add_from_parser ((CamelFolderSummary *)maildirs, mp);
+	maildirs->priv->current_file = (gchar *) name;
+	camel_folder_summary_add_from_parser ((CamelFolderSummary *) maildirs, mp);
 	g_object_unref (mp);
 	maildirs->priv->current_file = NULL;
-	camel_folder_summary_set_index ((CamelFolderSummary *)maildirs, NULL);
+	camel_folder_summary_set_index ((CamelFolderSummary *) maildirs, NULL);
 	g_free (filename);
 	return 0;
 }
@@ -523,7 +523,7 @@ remove_summary (gchar *key, CamelMessageInfo *info, struct _remove_data *rd)
 		camel_index_delete_name (rd->cls->index, camel_message_info_uid (info));
 	if (rd->changes)
 		camel_folder_change_info_remove_uid (rd->changes, key);
-	camel_folder_summary_remove ((CamelFolderSummary *)rd->cls, info);
+	camel_folder_summary_remove ((CamelFolderSummary *) rd->cls, info);
 	camel_message_info_free (info);
 }
 
@@ -538,7 +538,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 	gchar *p;
 	CamelMessageInfo *info;
 	CamelMaildirMessageInfo *mdi;
-	CamelFolderSummary *s = (CamelFolderSummary *)cls;
+	CamelFolderSummary *s = (CamelFolderSummary *) cls;
 	GHashTable *left;
 	gint i, count, total;
 	gint forceindex;
@@ -578,9 +578,9 @@ maildir_summary_check (CamelLocalSummary *cls,
 	count = camel_folder_summary_count (s);
 	forceindex = count == 0;
 	for (i=0;i<count;i++) {
-		info = camel_folder_summary_index ((CamelFolderSummary *)cls, i);
+		info = camel_folder_summary_index ((CamelFolderSummary *) cls, i);
 		if (info) {
-			g_hash_table_insert (left, (gchar *)camel_message_info_uid (info), info);
+			g_hash_table_insert (left, (gchar *) camel_message_info_uid (info), info);
 		}
 	}
 
@@ -615,7 +615,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 			g_hash_table_remove (left, uid);
 		}
 
-		info = camel_folder_summary_uid ((CamelFolderSummary *)cls, uid);
+		info = camel_folder_summary_uid ((CamelFolderSummary *) cls, uid);
 		if (info == NULL) {
 			/* must be a message incorporated by another client, this is not a 'recent' uid */
 			if (camel_maildir_summary_add (cls, d->d_name, forceindex, cancellable) == 0)
@@ -629,7 +629,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 				camel_maildir_summary_add (cls, d->d_name, forceindex, cancellable);
 			}
 
-			mdi = (CamelMaildirMessageInfo *)info;
+			mdi = (CamelMaildirMessageInfo *) info;
 			filename = camel_maildir_info_filename (mdi);
 			/* TODO: only store the extension in the mdi->filename struct, not the whole lot */
 			if (filename == NULL || strcmp (filename, d->d_name) != 0) {
@@ -641,7 +641,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 		g_free (uid);
 	}
 	closedir (dir);
-	g_hash_table_foreach (left, (GHFunc)remove_summary, &rd);
+	g_hash_table_foreach (left, (GHFunc) remove_summary, &rd);
 	g_hash_table_destroy (left);
 
 	camel_operation_pop_message (cancellable);
@@ -671,7 +671,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 				continue;
 
 			/* already in summary?  shouldn't happen, but just incase ... */
-			if ((info = camel_folder_summary_uid ((CamelFolderSummary *)cls, name))) {
+			if ((info = camel_folder_summary_uid ((CamelFolderSummary *) cls, name))) {
 				camel_message_info_free (info);
 				newname = destname = camel_folder_summary_next_uid_string (s);
 			} else {
@@ -742,13 +742,13 @@ maildir_summary_sync (CamelLocalSummary *cls,
 
 	camel_operation_push_message (cancellable, _("Storing folder"));
 
-	camel_folder_summary_prepare_fetch_all ((CamelFolderSummary *)cls, error);
-	count = camel_folder_summary_count ((CamelFolderSummary *)cls);
+	camel_folder_summary_prepare_fetch_all ((CamelFolderSummary *) cls, error);
+	count = camel_folder_summary_count ((CamelFolderSummary *) cls);
 	for (i=count-1;i>=0;i--) {
 		camel_operation_progress (cancellable, (count-i)*100/count);
 
-		info = camel_folder_summary_index ((CamelFolderSummary *)cls, i);
-		mdi = (CamelMaildirMessageInfo *)info;
+		info = camel_folder_summary_index ((CamelFolderSummary *) cls, i);
+		mdi = (CamelMaildirMessageInfo *) info;
 		if (mdi && (mdi->info.info.flags & CAMEL_MESSAGE_DELETED) && expunge) {
 			name = g_strdup_printf("%s/cur/%s", cls->folder_path, camel_maildir_info_filename(mdi));
 			d(printf("deleting %s\n", name));
@@ -759,7 +759,7 @@ maildir_summary_sync (CamelLocalSummary *cls,
 					camel_index_delete_name (cls->index, camel_message_info_uid (info));
 
 				camel_folder_change_info_remove_uid (changes, camel_message_info_uid (info));
-				camel_folder_summary_remove ((CamelFolderSummary *)cls, info);
+				camel_folder_summary_remove ((CamelFolderSummary *) cls, info);
 			}
 			g_free (name);
 		} else if (mdi && (mdi->info.info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {

@@ -87,7 +87,7 @@ camel_url_scanner_scan (CamelUrlScanner *scanner, const gchar *in, gsize inlen, 
 		return FALSE;
 
 	do {
-		if (!(pos = camel_trie_search (scanner->trie, (const gchar *)inptr, inlen, &pattern)))
+		if (!(pos = camel_trie_search (scanner->trie, (const gchar *) inptr, inlen, &pattern)))
 			return FALSE;
 
 		pat = g_ptr_array_index (scanner->patterns, pattern);
@@ -95,7 +95,7 @@ camel_url_scanner_scan (CamelUrlScanner *scanner, const gchar *in, gsize inlen, 
 		match->pattern = pat->pattern;
 		match->prefix = pat->prefix;
 
-		if (pat->start (in, pos, (const gchar *)inend, match) && pat->end (in, pos, (const gchar *)inend, match))
+		if (pat->start (in, pos, (const gchar *) inend, match) && pat->end (in, pos, (const gchar *) inend, match))
 			return TRUE;
 
 		inptr = (const guchar *) pos;

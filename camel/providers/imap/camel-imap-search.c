@@ -129,7 +129,7 @@ imap_search_finalize (GObject *object)
 
 	search = CAMEL_IMAP_SEARCH (object);
 
-	while ((mr = (struct _match_record *)camel_dlist_remtail (&search->matches)))
+	while ((mr = (struct _match_record *) camel_dlist_remtail (&search->matches)))
 		free_match (search, mr);
 
 	g_hash_table_destroy (search->matches_hash);
@@ -170,7 +170,7 @@ CamelFolderSearch *
 camel_imap_search_new (const gchar *cachedir)
 {
 	CamelFolderSearch *new = g_object_new (CAMEL_TYPE_IMAP_SEARCH, NULL);
-	CamelImapSearch *is = (CamelImapSearch *)new;
+	CamelImapSearch *is = (CamelImapSearch *) new;
 
 	camel_folder_search_construct (new);
 
@@ -318,7 +318,7 @@ sync_match (CamelImapSearch *is, struct _match_record *mr)
 	gchar *p, *result, *lasts = NULL;
 	CamelImapResponse *response = NULL;
 	guint32 uid;
-	CamelFolder *folder = ((CamelFolderSearch *)is)->folder;
+	CamelFolder *folder = ((CamelFolderSearch *) is)->folder;
 	CamelStore *parent_store;
 	CamelImapStore *store;
 	struct _camel_search_words *words;
@@ -396,7 +396,7 @@ get_match (CamelImapSearch *is, gint argc, struct _ESExpResult **argv)
 	mr = g_hash_table_lookup (is->matches_hash, hash);
 	if (mr == NULL) {
 		while (is->matches_count >= MATCH_CACHE_SIZE) {
-			mr = (struct _match_record *)camel_dlist_remtail (&is->matches);
+			mr = (struct _match_record *) camel_dlist_remtail (&is->matches);
 			if (mr) {
 				printf("expiring match '%s' (%s)\n", mr->hash, mr->terms[0]);
 				g_hash_table_remove (is->matches_hash, mr->hash);
@@ -410,10 +410,10 @@ get_match (CamelImapSearch *is, gint argc, struct _ESExpResult **argv)
 		g_hash_table_insert (is->matches_hash, mr->hash, mr);
 		is->matches_count++;
 	} else {
-		camel_dlist_remove ((CamelDListNode *)mr);
+		camel_dlist_remove ((CamelDListNode *) mr);
 	}
 
-	camel_dlist_addhead (&is->matches, (CamelDListNode *)mr);
+	camel_dlist_addhead (&is->matches, (CamelDListNode *) mr);
 
 	/* what about offline mode? */
 	/* We could cache those results too, or should we cache them elsewhere? */
@@ -427,7 +427,7 @@ imap_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Cam
 {
 	CamelStore *parent_store;
 	CamelImapStore *store;
-	CamelImapSearch *is = (CamelImapSearch *)s;
+	CamelImapSearch *is = (CamelImapSearch *) s;
 	gchar *uid;
 	ESExpResult *r;
 	GHashTable *uid_hash = NULL;
@@ -456,7 +456,7 @@ imap_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Cam
 			r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
 			r->value.ptrarray = g_ptr_array_new ();
 			for (i = 0; i < s->summary->len; i++) {
-				g_ptr_array_add (r->value.ptrarray, (gchar *)g_ptr_array_index (s->summary, i));
+				g_ptr_array_add (r->value.ptrarray, (gchar *) g_ptr_array_index (s->summary, i));
 			}
 		}
 	} else if (argc == 0 || s->summary->len == 0) {
@@ -472,14 +472,14 @@ imap_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Cam
 		gint truth = FALSE;
 
 		/* setup lastuid/validity for synchronising */
-		is->lastuid = strtoul ((gchar *)g_ptr_array_index (s->summary, s->summary->len-1), NULL, 10);
+		is->lastuid = strtoul ((gchar *) g_ptr_array_index (s->summary, s->summary->len-1), NULL, 10);
 		is->validity = ((CamelImapSummary *)(s->folder->summary))->validity;
 
 		mr = get_match (is, argc, argv);
 
 		if (s->current) {
 			uidn = strtoul (camel_message_info_uid (s->current), NULL, 10);
-			uidp = (guint32 *)mr->matches->data;
+			uidp = (guint32 *) mr->matches->data;
 			j = mr->matches->len;
 			for (i=0;i<j && !truth;i++)
 				truth = *uidp++ == uidn;
@@ -493,12 +493,12 @@ imap_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Cam
 			/* We use the summary's strings so we dont need to alloc more */
 			uid_hash = g_hash_table_new (NULL, NULL);
 			for (i = 0; i < s->summary->len; i++) {
-				uid = (gchar *)s->summary->pdata[i];
+				uid = (gchar *) s->summary->pdata[i];
 				uidn = strtoul (uid, NULL, 10);
 				g_hash_table_insert (uid_hash, GUINT_TO_POINTER (uidn), uid);
 			}
 
-			uidp = (guint32 *)mr->matches->data;
+			uidp = (guint32 *) mr->matches->data;
 			j = mr->matches->len;
 			for (i=0;i<j && !truth;i++) {
 				uid = g_hash_table_lookup (uid_hash, GUINT_TO_POINTER (*uidp++));

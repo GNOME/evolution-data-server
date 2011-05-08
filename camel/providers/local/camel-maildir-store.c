@@ -77,7 +77,7 @@ maildir_store_create_folder_sync (CamelStore *store,
 	       GCancellable *cancellable,
                GError **error)
 {
-	gchar *path = ((CamelLocalStore *)store)->toplevel_dir;
+	gchar *path = ((CamelLocalStore *) store)->toplevel_dir;
 	gchar *name;
 	CamelFolder *folder;
 	CamelFolderInfo *info = NULL;
@@ -371,7 +371,7 @@ fill_fi (CamelStore *store,
 		const gchar *root;
 
 		/* This should be fast enough not to have to test for INFO_FAST */
-		root = camel_local_store_get_toplevel_dir ((CamelLocalStore *)store);
+		root = camel_local_store_get_toplevel_dir ((CamelLocalStore *) store);
 
 		dir_name = maildir_full_name_to_dir_name (fi->full_name);
 
@@ -383,7 +383,7 @@ fill_fi (CamelStore *store,
 			folderpath = g_strdup_printf("%s%s", root, dir_name);
 		}
 
-		s = (CamelFolderSummary *)camel_maildir_summary_new (NULL, path, folderpath, NULL);
+		s = (CamelFolderSummary *) camel_maildir_summary_new (NULL, path, folderpath, NULL);
 		if (camel_folder_summary_header_load_from_db (s, store, fi->full_name, NULL) != -1) {
 			fi->unread = s->unread_count;
 			fi->total = s->saved_count;
@@ -806,7 +806,7 @@ scan_old_dir_info (CamelStore *store, CamelFolderInfo *topfi, GError **error)
 
 	sn = g_malloc0 (sizeof (*sn));
 	sn->fi = topfi;
-	camel_dlist_addtail (&queue, (CamelDListNode *)sn);
+	camel_dlist_addtail (&queue, (CamelDListNode *) sn);
 	g_hash_table_insert (visited, sn, sn);
 
 	while (!camel_dlist_empty (&queue)) {
@@ -815,7 +815,7 @@ scan_old_dir_info (CamelStore *store, CamelFolderInfo *topfi, GError **error)
 		struct dirent *d;
 		CamelFolderInfo *last;
 
-		sn = (struct _scan_node *)camel_dlist_remhead (&queue);
+		sn = (struct _scan_node *) camel_dlist_remhead (&queue);
 
 		last = (CamelFolderInfo *)&sn->fi->child;
 
@@ -876,7 +876,7 @@ scan_old_dir_info (CamelStore *store, CamelFolderInfo *topfi, GError **error)
 					snew->fi->parent = sn->fi;
 
 					g_hash_table_insert (visited, snew, snew);
-					camel_dlist_addtail (&queue, (CamelDListNode *)snew);
+					camel_dlist_addtail (&queue, (CamelDListNode *) snew);
 				}
 			}
 			g_free (tmp);
@@ -905,7 +905,7 @@ maildir_rename_old_folder (CamelMaildirStore *mstore, CamelFolderInfo *fi, GCanc
 
 	store_class = CAMEL_STORE_CLASS (camel_maildir_store_parent_class);
 	store_class->rename_folder_sync (
-		(CamelStore *)mstore, fi->full_name, new_name, cancellable, error);
+		(CamelStore *) mstore, fi->full_name, new_name, cancellable, error);
 
 	g_free (old_name);
 	g_free (new_name);

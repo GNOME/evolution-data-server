@@ -73,7 +73,7 @@ e_vcard_dispose (GObject *object)
 
 	if (evc->priv) {
 
-		g_list_foreach (evc->priv->attributes, (GFunc)e_vcard_attribute_free, NULL);
+		g_list_foreach (evc->priv->attributes, (GFunc) e_vcard_attribute_free, NULL);
 		g_list_free (evc->priv->attributes);
 
 		g_free (evc->priv);
@@ -990,7 +990,7 @@ e_vcard_dump_structure (EVCard *evc)
 				printf ("    |   [%d] = %s", i,param->name);
 				printf ("(");
 				for (v = param->values; v; v = v->next) {
-					gchar *value = e_vcard_escape_string ((gchar *)v->data);
+					gchar *value = e_vcard_escape_string ((gchar *) v->data);
 					printf ("%s", value);
 					if (v->next)
 						printf (",");
@@ -1368,11 +1368,11 @@ e_vcard_attribute_remove_values (EVCardAttribute *attr)
 {
 	g_return_if_fail (attr != NULL);
 
-	g_list_foreach (attr->values, (GFunc)g_free, NULL);
+	g_list_foreach (attr->values, (GFunc) g_free, NULL);
 	g_list_free (attr->values);
 	attr->values = NULL;
 
-	g_list_foreach (attr->decoded_values, (GFunc)free_gstring, NULL);
+	g_list_foreach (attr->decoded_values, (GFunc) free_gstring, NULL);
 	g_list_free (attr->decoded_values);
 	attr->decoded_values = NULL;
 }
@@ -1392,7 +1392,7 @@ e_vcard_attribute_remove_value (EVCardAttribute *attr, const gchar *s)
 	g_return_if_fail (attr != NULL);
 	g_return_if_fail (s != NULL);
 
-	l = g_list_find_custom (attr->values, s, (GCompareFunc)strcmp);
+	l = g_list_find_custom (attr->values, s, (GCompareFunc) strcmp);
 	if (l == NULL) {
 		return;
 	}
@@ -1440,7 +1440,7 @@ e_vcard_attribute_remove_params (EVCardAttribute *attr)
 {
 	g_return_if_fail (attr != NULL);
 
-	g_list_foreach (attr->params, (GFunc)e_vcard_attribute_param_free, NULL);
+	g_list_foreach (attr->params, (GFunc) e_vcard_attribute_param_free, NULL);
 	g_list_free (attr->params);
 	attr->params = NULL;
 
@@ -1551,11 +1551,11 @@ e_vcard_attribute_add_param (EVCardAttribute *attr,
 				const gchar *my_value;
 				GList *vals2,*v2;
 
-				my_value = (const gchar *)v->data;
+				my_value = (const gchar *) v->data;
 				vals2 = param2->values;
 
 				for (v2 = vals2; v2; v2 = v2->next) {
-					if (g_ascii_strcasecmp ((const gchar *)v2->data, my_value) == 0) {
+					if (g_ascii_strcasecmp ((const gchar *) v2->data, my_value) == 0) {
 						break;
 					}
 				}
@@ -1590,11 +1590,11 @@ e_vcard_attribute_add_param (EVCardAttribute *attr,
 			if (!g_ascii_strcasecmp ((gchar *)param->values->data, "b") ||
 			    !g_ascii_strcasecmp ((gchar *)param->values->data, "BASE64"))
 				attr->encoding = EVC_ENCODING_BASE64;
-			else if (!g_ascii_strcasecmp ((gchar *)param->values->data, EVC_QUOTEDPRINTABLE))
+			else if (!g_ascii_strcasecmp ((gchar *) param->values->data, EVC_QUOTEDPRINTABLE))
 				attr->encoding = EVC_ENCODING_QP;
 			else {
 				g_warning ("Unknown value `%s' for ENCODING parameter.  values will be treated as raw",
-					   (gchar *)param->values->data);
+					   (gchar *) param->values->data);
 			}
 
 			attr->encoding_set = TRUE;
@@ -1711,7 +1711,7 @@ e_vcard_attribute_param_remove_values (EVCardAttributeParam *param)
 {
 	g_return_if_fail (param != NULL);
 
-	g_list_foreach (param->values, (GFunc)g_free, NULL);
+	g_list_foreach (param->values, (GFunc) g_free, NULL);
 	g_list_free (param->values);
 	param->values = NULL;
 }
@@ -1739,7 +1739,7 @@ e_vcard_attribute_remove_param_value (EVCardAttribute *attr, const gchar *param_
 	for (l = params; l; l = l->next) {
 		param = l->data;
 		if (g_ascii_strcasecmp (e_vcard_attribute_param_get_name (param), param_name) == 0) {
-			l = g_list_find_custom (param->values, s, (GCompareFunc)strcmp);
+			l = g_list_find_custom (param->values, s, (GCompareFunc) strcmp);
 			if (l == NULL) {
 				return;
 			}
@@ -1872,7 +1872,7 @@ e_vcard_attribute_get_values_decoded (EVCardAttribute *attr)
 		switch (attr->encoding) {
 		case EVC_ENCODING_RAW:
 			for (l = attr->values; l; l = l->next)
-				attr->decoded_values = g_list_prepend (attr->decoded_values, g_string_new ((gchar *)l->data));
+				attr->decoded_values = g_list_prepend (attr->decoded_values, g_string_new ((gchar *) l->data));
 			attr->decoded_values = g_list_reverse (attr->decoded_values);
 			break;
 		case EVC_ENCODING_BASE64:
@@ -1935,7 +1935,7 @@ e_vcard_attribute_get_value (EVCardAttribute *attr)
 	if (!e_vcard_attribute_is_single_valued (attr))
 		g_warning ("e_vcard_attribute_get_value called on multivalued attribute");
 
-	return values ? g_strdup ((gchar *)values->data) : NULL;
+	return values ? g_strdup ((gchar *) values->data) : NULL;
 }
 
 /**
@@ -1996,7 +1996,7 @@ e_vcard_attribute_has_type (EVCardAttribute *attr, const gchar *typestr)
 			GList *v;
 
 			for (v = values; v; v = v->next) {
-				if (!g_ascii_strcasecmp ((gchar *)v->data, typestr))
+				if (!g_ascii_strcasecmp ((gchar *) v->data, typestr))
 					return TRUE;
 			}
 		}

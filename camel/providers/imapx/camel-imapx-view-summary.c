@@ -45,7 +45,7 @@ static CamelViewSummaryDiskClass *cmvs_parent;
 CamelIMAPXViewSummary *
 camel_imapx_view_summary_new (const gchar *base, GError **error)
 {
-	return (CamelIMAPXViewSummary *)camel_view_summary_disk_construct (camel_object_new (camel_imapx_view_summary_get_type ()), base, ex);
+	return (CamelIMAPXViewSummary *) camel_view_summary_disk_construct (camel_object_new (camel_imapx_view_summary_get_type ()), base, ex);
 }
 
 /* NB: must have write lock on folder */
@@ -55,7 +55,7 @@ guint32 camel_imapx_view_next_uid (CamelIMAPXView *view)
 	guint32 uid;
 
 	uid = view->nextuid++;
-	camel_view_changed ((CamelView *)view);
+	camel_view_changed ((CamelView *) view);
 
 	return uid;
 #endif
@@ -68,7 +68,7 @@ void camel_imapx_view_last_uid (CamelIMAPXView *view, guint32 uid)
 	uid++;
 	if (uid > view->nextuid) {
 		view->nextuid = uid;
-		camel_view_changed ((CamelView *)view);
+		camel_view_changed ((CamelView *) view);
 	}
 #endif
 }
@@ -78,18 +78,18 @@ imapx_view_decode (CamelViewSummaryDisk *s, CamelView *view, CamelRecordDecoder 
 {
 	gint tag, ver;
 
-	((CamelViewSummaryDiskClass *)cmvs_parent)->decode (s, view, crd);
+	((CamelViewSummaryDiskClass *) cmvs_parent)->decode (s, view, crd);
 
 	if (strchr (view->vid, 1) == NULL) {
 		camel_record_decoder_reset (crd);
 		while ((tag = camel_record_decoder_next_section (crd, &ver)) != CR_SECTION_INVALID) {
 			switch (tag) {
 			case CVS_IMAPX_SECTION_VIEWINFO:
-				((CamelIMAPXView *)view)->uidvalidity = camel_record_decoder_int32 (crd);
-				((CamelIMAPXView *)view)->permanentflags = camel_record_decoder_int32 (crd);
-				((CamelIMAPXView *)view)->exists = camel_record_decoder_int32 (crd);
-				((CamelIMAPXView *)view)->separator = camel_record_decoder_int8 (crd);
-				((CamelIMAPXView *)view)->raw_name = g_strdup (camel_record_decoder_string (crd));
+				((CamelIMAPXView *) view)->uidvalidity = camel_record_decoder_int32 (crd);
+				((CamelIMAPXView *) view)->permanentflags = camel_record_decoder_int32 (crd);
+				((CamelIMAPXView *) view)->exists = camel_record_decoder_int32 (crd);
+				((CamelIMAPXView *) view)->separator = camel_record_decoder_int8 (crd);
+				((CamelIMAPXView *) view)->raw_name = g_strdup (camel_record_decoder_string (crd));
 				break;
 			}
 		}
@@ -101,17 +101,17 @@ imapx_view_decode (CamelViewSummaryDisk *s, CamelView *view, CamelRecordDecoder 
 static void
 imapx_view_encode (CamelViewSummaryDisk *s, CamelView *view, CamelRecordEncoder *cre)
 {
-	((CamelViewSummaryDiskClass *)cmvs_parent)->encode (s, view, cre);
+	((CamelViewSummaryDiskClass *) cmvs_parent)->encode (s, view, cre);
 
 	/* We only store extra data on the root view */
 
 	if (strchr (view->vid, 1) == NULL) {
 		camel_record_encoder_start_section (cre, CVS_IMAPX_SECTION_VIEWINFO, 0);
-		camel_record_encoder_int32 (cre, ((CamelIMAPXView *)view)->uidvalidity);
-		camel_record_encoder_int32 (cre, ((CamelIMAPXView *)view)->permanentflags);
-		camel_record_encoder_int32 (cre, ((CamelIMAPXView *)view)->exists);
-		camel_record_encoder_int8 (cre, ((CamelIMAPXView *)view)->separator);
-		camel_record_encoder_string (cre, ((CamelIMAPXView *)view)->raw_name);
+		camel_record_encoder_int32 (cre, ((CamelIMAPXView *) view)->uidvalidity);
+		camel_record_encoder_int32 (cre, ((CamelIMAPXView *) view)->permanentflags);
+		camel_record_encoder_int32 (cre, ((CamelIMAPXView *) view)->exists);
+		camel_record_encoder_int8 (cre, ((CamelIMAPXView *) view)->separator);
+		camel_record_encoder_string (cre, ((CamelIMAPXView *) view)->raw_name);
 		camel_record_encoder_end_section (cre);
 	}
 }
@@ -119,7 +119,7 @@ imapx_view_encode (CamelViewSummaryDisk *s, CamelView *view, CamelRecordEncoder 
 static void
 camel_imapx_view_summary_init (CamelIMAPXViewSummary *obj)
 {
-	struct _CamelFolderSummary *s = (CamelFolderSummary *)obj;
+	struct _CamelFolderSummary *s = (CamelFolderSummary *) obj;
 
 	s = s;
 }
@@ -133,10 +133,10 @@ camel_imapx_view_summary_finalize (CamelObject *obj)
 static void
 camel_imapx_view_summary_class_init (CamelIMAPXViewSummaryClass *klass)
 {
-	((CamelViewSummaryClass *)klass)->view_sizeof = sizeof (CamelIMAPXView);
+	((CamelViewSummaryClass *) klass)->view_sizeof = sizeof (CamelIMAPXView);
 
-	((CamelViewSummaryDiskClass *)klass)->encode = imapx_view_encode;
-	((CamelViewSummaryDiskClass *)klass)->decode = imapx_view_decode;
+	((CamelViewSummaryDiskClass *) klass)->encode = imapx_view_encode;
+	((CamelViewSummaryDiskClass *) klass)->decode = imapx_view_decode;
 }
 
 CamelType
@@ -145,7 +145,7 @@ camel_imapx_view_summary_get_type (void)
 	static CamelType type = CAMEL_INVALID_TYPE;
 
 	if (type == CAMEL_INVALID_TYPE) {
-		cmvs_parent = (CamelViewSummaryDiskClass *)camel_view_summary_disk_get_type ();
+		cmvs_parent = (CamelViewSummaryDiskClass *) camel_view_summary_disk_get_type ();
 		type = camel_type_register((CamelType)cmvs_parent, "CamelIMAPXViewSummary",
 					   sizeof (CamelIMAPXViewSummary),
 					   sizeof (CamelIMAPXViewSummaryClass),

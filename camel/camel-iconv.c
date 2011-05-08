@@ -425,7 +425,7 @@ flush_entry (struct _iconv_cache *ic)
 {
 	struct _iconv_cache_node *in, *nn;
 
-	in = (struct _iconv_cache_node *)ic->open.head;
+	in = (struct _iconv_cache_node *) ic->open.head;
 	nn = in->next;
 	while (nn) {
 		if (in->ip != (iconv_t)-1) {
@@ -465,17 +465,17 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 
 	ic = g_hash_table_lookup (iconv_cache, tofrom);
 	if (ic) {
-		camel_dlist_remove ((CamelDListNode *)ic);
+		camel_dlist_remove ((CamelDListNode *) ic);
 	} else {
-		struct _iconv_cache *last = (struct _iconv_cache *)iconv_cache_list.tailpred;
+		struct _iconv_cache *last = (struct _iconv_cache *) iconv_cache_list.tailpred;
 		struct _iconv_cache *prev;
 
 		prev = last->prev;
 		while (prev && iconv_cache_size > E_ICONV_CACHE_SIZE) {
-			in = (struct _iconv_cache_node *)last->open.head;
+			in = (struct _iconv_cache_node *) last->open.head;
 			if (in->next && !in->busy) {
 				cd(printf("Flushing iconv converter '%s'\n", last->conv));
-				camel_dlist_remove ((CamelDListNode *)last);
+				camel_dlist_remove ((CamelDListNode *) last);
 				g_hash_table_remove (iconv_cache, last->conv);
 				flush_entry (last);
 				iconv_cache_size--;
@@ -493,10 +493,10 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 
 		cd(printf("Creating iconv converter '%s'\n", ic->conv));
 	}
-	camel_dlist_addhead (&iconv_cache_list, (CamelDListNode *)ic);
+	camel_dlist_addhead (&iconv_cache_list, (CamelDListNode *) ic);
 
 	/* If we have a free iconv, use it */
-	in = (struct _iconv_cache_node *)ic->open.tailpred;
+	in = (struct _iconv_cache_node *) ic->open.tailpred;
 	if (in->prev && !in->busy) {
 		cd(printf("using existing iconv converter '%s'\n", ic->conv));
 		ip = in->ip;
@@ -510,8 +510,8 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 			/* resets the converter */
 			iconv (ip, &buggy_iconv_buf, &buggy_iconv_len, &buggy_iconv_buf, &buggy_iconv_len);
 			in->busy = TRUE;
-			camel_dlist_remove ((CamelDListNode *)in);
-			camel_dlist_addhead (&ic->open, (CamelDListNode *)in);
+			camel_dlist_remove ((CamelDListNode *) in);
+			camel_dlist_addhead (&ic->open, (CamelDListNode *) in);
 		}
 	} else {
 		cd(printf("creating new iconv converter '%s'\n", ic->conv));
@@ -519,7 +519,7 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 		in = g_malloc (sizeof (*in));
 		in->ip = ip;
 		in->parent = ic;
-		camel_dlist_addhead (&ic->open, (CamelDListNode *)in);
+		camel_dlist_addhead (&ic->open, (CamelDListNode *) in);
 		if (ip != (iconv_t)-1) {
 			g_hash_table_insert (iconv_cache_open, ip, in);
 			in->busy = TRUE;
@@ -555,9 +555,9 @@ camel_iconv_close (iconv_t ip)
 	in = g_hash_table_lookup (iconv_cache_open, ip);
 	if (in) {
 		cd(printf("closing iconv converter '%s'\n", in->parent->conv));
-		camel_dlist_remove ((CamelDListNode *)in);
+		camel_dlist_remove ((CamelDListNode *) in);
 		in->busy = FALSE;
-		camel_dlist_addtail (&in->parent->open, (CamelDListNode *)in);
+		camel_dlist_addtail (&in->parent->open, (CamelDListNode *) in);
 	} else {
 		g_warning("trying to close iconv i dont know about: %p", ip);
 		iconv_close (ip);

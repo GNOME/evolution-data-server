@@ -125,7 +125,7 @@ init_closure (EDataBookView *book_view, EBookBackendWebdav *webdav)
 	closure->running = e_flag_new ();
 
 	g_object_set_data_full (G_OBJECT (book_view), WEBDAV_CLOSURE_NAME, closure,
-			(GDestroyNotify)closure_destroy);
+			(GDestroyNotify) closure_destroy);
 
 	return closure;
 }

@@ -241,7 +241,7 @@ camel_stream_process_connect (CamelStreamProcess *stream,
 
 	stream->childpid = fork ();
 	if (!stream->childpid) {
-		do_exec_command (sockfds[1], command, (gchar **)env);
+		do_exec_command (sockfds[1], command, (gchar **) env);
 	} else if (stream->childpid == -1) {
 		close (sockfds[0]);
 		close (sockfds[1]);

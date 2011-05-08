@@ -410,7 +410,7 @@ e_data_cal_view_init (EDataCalView *query)
 	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
 	priv->removes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
 
-	priv->ids = g_hash_table_new_full (id_hash, id_equal, (GDestroyNotify)e_cal_component_free_id, NULL);
+	priv->ids = g_hash_table_new_full (id_hash, id_equal, (GDestroyNotify) e_cal_component_free_id, NULL);
 
 	priv->pending_mutex = g_mutex_new ();
 	priv->flush_id = 0;
@@ -642,7 +642,7 @@ e_data_cal_view_notify_objects_added_1 (EDataCalView *view, const gchar *object)
 	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
 	g_return_if_fail (object);
 
-	l.data = (gpointer)object;
+	l.data = (gpointer) object;
 	e_data_cal_view_notify_objects_added (view, &l);
 }
 
@@ -690,7 +690,7 @@ e_data_cal_view_notify_objects_modified_1 (EDataCalView *view, const gchar *obje
 	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
 	g_return_if_fail (object);
 
-	l.data = (gpointer)object;
+	l.data = (gpointer) object;
 	e_data_cal_view_notify_objects_modified (view, &l);
 }
 
@@ -739,7 +739,7 @@ e_data_cal_view_notify_objects_removed_1 (EDataCalView *view, const ECalComponen
 	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
 	g_return_if_fail (id);
 
-	l.data = (gpointer)id;
+	l.data = (gpointer) id;
 	e_data_cal_view_notify_objects_removed (view, &l);
 }
 

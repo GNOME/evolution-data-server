@@ -19,7 +19,7 @@ print_email (EContact *contact)
 	for (e = emails; e; e = e->next) {
 		printf ("\t%s\n",  (gchar *)e->data);
 	}
-	g_list_foreach (emails, (GFunc)g_free, NULL);
+	g_list_foreach (emails, (GFunc) g_free, NULL);
 	g_list_free (emails);
 
 	printf ("\n");

@@ -134,7 +134,7 @@ camel_pop3_engine_new (CamelStream *source, guint32 flags)
 
 	pe = g_object_new (CAMEL_TYPE_POP3_ENGINE, NULL);
 
-	pe->stream = (CamelPOP3Stream *)camel_pop3_stream_new (source);
+	pe->stream = (CamelPOP3Stream *) camel_pop3_stream_new (source);
 	pe->state = CAMEL_POP3_ENGINE_AUTH;
 	pe->flags = flags;
 
@@ -246,13 +246,13 @@ engine_command_queue (CamelPOP3Engine *pe, CamelPOP3Command *pc)
 {
 	if (((pe->capa & CAMEL_POP3_CAP_PIPE) == 0 || (pe->sentlen + strlen (pc->data)) > CAMEL_POP3_SEND_LIMIT)
 	    && pe->current != NULL) {
-		camel_dlist_addtail (&pe->queue, (CamelDListNode *)pc);
+		camel_dlist_addtail (&pe->queue, (CamelDListNode *) pc);
 		return FALSE;
 	}
 
 	/* ??? */
-	if (camel_stream_write ((CamelStream *)pe->stream, pc->data, strlen (pc->data), NULL, NULL) == -1) {
-		camel_dlist_addtail (&pe->queue, (CamelDListNode *)pc);
+	if (camel_stream_write ((CamelStream *) pe->stream, pc->data, strlen (pc->data), NULL, NULL) == -1) {
+		camel_dlist_addtail (&pe->queue, (CamelDListNode *) pc);
 		return FALSE;
 	}
 
@@ -263,7 +263,7 @@ engine_command_queue (CamelPOP3Engine *pe, CamelPOP3Command *pc)
 	if (pe->current == NULL)
 		pe->current = pc;
 	else
-		camel_dlist_addtail (&pe->active, (CamelDListNode *)pc);
+		camel_dlist_addtail (&pe->active, (CamelDListNode *) pc);
 
 	return TRUE;
 }
@@ -317,14 +317,14 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 		break;
 	}
 
-	camel_dlist_addtail (&pe->done, (CamelDListNode *)pc);
+	camel_dlist_addtail (&pe->done, (CamelDListNode *) pc);
 	pe->sentlen -= strlen (pc->data);
 
 	/* Set next command */
-	pe->current = (CamelPOP3Command *)camel_dlist_remhead (&pe->active);
+	pe->current = (CamelPOP3Command *) camel_dlist_remhead (&pe->active);
 
 	/* check the queue for sending any we can now send also */
-	pw = (CamelPOP3Command *)pe->queue.head;
+	pw = (CamelPOP3Command *) pe->queue.head;
 	pn = pw->next;
 
 	while (pn) {
@@ -332,10 +332,10 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 		    && pe->current != NULL)
 			break;
 
-		if (camel_stream_write ((CamelStream *)pe->stream, pw->data, strlen (pw->data), NULL, NULL) == -1)
+		if (camel_stream_write ((CamelStream *) pe->stream, pw->data, strlen (pw->data), NULL, NULL) == -1)
 			goto ioerror;
 
-		camel_dlist_remove ((CamelDListNode *)pw);
+		camel_dlist_remove ((CamelDListNode *) pw);
 
 		pe->sentlen += strlen (pw->data);
 		pw->state = CAMEL_POP3_COMMAND_DISPATCHED;
@@ -343,7 +343,7 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 		if (pe->current == NULL)
 			pe->current = pw;
 		else
-			camel_dlist_addtail (&pe->active, (CamelDListNode *)pw);
+			camel_dlist_addtail (&pe->active, (CamelDListNode *) pw);
 
 		pw = pn;
 		pn = pn->next;
@@ -357,19 +357,19 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 	return pe->current==NULL?0:1;
 ioerror:
 	/* we assume all outstanding commands are gunna fail now */
-	while ((pw = (CamelPOP3Command*)camel_dlist_remhead (&pe->active))) {
+	while ((pw = (CamelPOP3Command*) camel_dlist_remhead (&pe->active))) {
 		pw->state = CAMEL_POP3_COMMAND_ERR;
-		camel_dlist_addtail (&pe->done, (CamelDListNode *)pw);
+		camel_dlist_addtail (&pe->done, (CamelDListNode *) pw);
 	}
 
-	while ((pw = (CamelPOP3Command*)camel_dlist_remhead (&pe->queue))) {
+	while ((pw = (CamelPOP3Command*) camel_dlist_remhead (&pe->queue))) {
 		pw->state = CAMEL_POP3_COMMAND_ERR;
-		camel_dlist_addtail (&pe->done, (CamelDListNode *)pw);
+		camel_dlist_addtail (&pe->done, (CamelDListNode *) pw);
 	}
 
 	if (pe->current) {
 		pe->current->state = CAMEL_POP3_COMMAND_ERR;
-		camel_dlist_addtail (&pe->done, (CamelDListNode *)pe->current);
+		camel_dlist_addtail (&pe->done, (CamelDListNode *) pe->current);
 		pe->current = NULL;
 	}
 
@@ -401,7 +401,7 @@ void
 camel_pop3_engine_command_free (CamelPOP3Engine *pe, CamelPOP3Command *pc)
 {
 	if (pe->current != pc)
-		camel_dlist_remove ((CamelDListNode *)pc);
+		camel_dlist_remove ((CamelDListNode *) pc);
 	g_free (pc->data);
 	g_free (pc);
 }

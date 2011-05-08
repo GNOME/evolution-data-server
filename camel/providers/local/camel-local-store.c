@@ -162,11 +162,11 @@ local_store_get_folder_sync (CamelStore *store,
                              GCancellable *cancellable,
                              GError **error)
 {
-	gint len = strlen (((CamelLocalStore *)store)->toplevel_dir);
+	gint len = strlen (((CamelLocalStore *) store)->toplevel_dir);
 	gchar *path = g_alloca (len + 1);
 	struct stat st;
 
-	strcpy (path, ((CamelLocalStore *)store)->toplevel_dir);
+	strcpy (path, ((CamelLocalStore *) store)->toplevel_dir);
 	if (G_IS_DIR_SEPARATOR (path[len-1]))
 		path[len-1] = '\0';
 
@@ -276,7 +276,7 @@ local_store_get_junk_folder_sync (CamelStore *store,
 static gchar *
 get_name (CamelService *service, gboolean brief)
 {
-	gchar *dir = ((CamelLocalStore*)service)->toplevel_dir;
+	gchar *dir = ((CamelLocalStore*) service)->toplevel_dir;
 
 	if (brief)
 		return g_strdup (dir);
@@ -307,7 +307,7 @@ local_store_create_folder_sync (CamelStore *store,
                                 GCancellable *cancellable,
                                 GError **error)
 {
-	gchar *path = ((CamelLocalStore *)store)->toplevel_dir;
+	gchar *path = ((CamelLocalStore *) store)->toplevel_dir;
 	gchar *name;
 	CamelFolder *folder;
 	CamelFolderInfo *info = NULL;

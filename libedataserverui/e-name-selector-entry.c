@@ -128,7 +128,7 @@ name_selector_entry_dispose (GObject *object)
 		priv->contact_store = NULL;
 	}
 
-	g_slist_foreach (priv->user_query_fields, (GFunc)g_free, NULL);
+	g_slist_foreach (priv->user_query_fields, (GFunc) g_free, NULL);
 	g_slist_free (priv->user_query_fields);
 	priv->user_query_fields = NULL;
 
@@ -1826,7 +1826,7 @@ contact_layout_pixbuffer (GtkCellLayout *cell_layout, GtkCellRenderer *cell, Gtk
 		GdkPixbufLoader *loader;
 
 		loader = gdk_pixbuf_loader_new ();
-		if (gdk_pixbuf_loader_write (loader, (guchar *)photo->data.inlined.data, photo->data.inlined.length, NULL) &&
+		if (gdk_pixbuf_loader_write (loader, (guchar *) photo->data.inlined.data, photo->data.inlined.length, NULL) &&
 		    gdk_pixbuf_loader_close (loader, NULL)) {
 			pixbuf = gdk_pixbuf_loader_get_pixbuf (loader);
 			if (pixbuf)
@@ -2589,9 +2589,9 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 	if (is_list) {
 		const GList *dests = e_destination_list_get_dests (destination);
 		GList *iter;
-		gint length = g_list_length ((GList *)dests);
+		gint length = g_list_length ((GList *) dests);
 
-		for (iter = (GList *)dests; iter; iter = iter->next) {
+		for (iter = (GList *) dests; iter; iter = iter->next) {
 			EDestination *dest = (EDestination *) iter->data;
 			const gchar *email = e_destination_get_email (dest);
 

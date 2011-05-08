@@ -365,7 +365,7 @@ camel_filter_driver_add_rule (CamelFilterDriver *d, const gchar *name, const gch
 	node->match = g_strdup (match);
 	node->action = g_strdup (action);
 	node->name = g_strdup (name);
-	camel_dlist_addtail (&d->priv->rules, (CamelDListNode *)node);
+	camel_dlist_addtail (&d->priv->rules, (CamelDListNode *) node);
 }
 
 gint

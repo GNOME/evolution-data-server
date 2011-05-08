@@ -309,7 +309,7 @@ spool_store_get_name (CamelService *service,
 		return g_strdup (url->path);
 	else
 		return g_strdup_printf (
-			((CamelSpoolStore *)service)->type ==
+			((CamelSpoolStore *) service)->type ==
 				CAMEL_SPOOL_STORE_MBOX ?
 			_("Spool mail file %s") :
 			_("Spool folder tree %s"),
@@ -344,7 +344,7 @@ spool_store_get_folder_sync (CamelStore *store,
 	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
 	/* we only support an 'INBOX' in mbox mode */
-	if (((CamelSpoolStore *)store)->type == CAMEL_SPOOL_STORE_MBOX) {
+	if (((CamelSpoolStore *) store)->type == CAMEL_SPOOL_STORE_MBOX) {
 		if (strcmp(folder_name, "INBOX") != 0) {
 			g_set_error (
 				error, CAMEL_STORE_ERROR,
@@ -401,7 +401,7 @@ spool_store_get_folder_info_sync (CamelStore *store,
                                   GCancellable *cancellable,
                                   GError **error)
 {
-	if (((CamelSpoolStore *)store)->type == CAMEL_SPOOL_STORE_MBOX)
+	if (((CamelSpoolStore *) store)->type == CAMEL_SPOOL_STORE_MBOX)
 		return get_folder_info_mbox (store, top, flags, cancellable, error);
 	else
 		return get_folder_info_elm (store, top, flags, cancellable, error);
@@ -412,7 +412,7 @@ spool_store_get_inbox_folder_sync (CamelStore *store,
                                    GCancellable *cancellable,
                                    GError **error)
 {
-	if (((CamelSpoolStore *)store)->type == CAMEL_SPOOL_STORE_MBOX)
+	if (((CamelSpoolStore *) store)->type == CAMEL_SPOOL_STORE_MBOX)
 		return spool_store_get_folder_sync (
 			store, "INBOX", CAMEL_STORE_FOLDER_CREATE,
 			cancellable, error);
@@ -458,7 +458,7 @@ static gchar *
 spool_store_get_full_path (CamelLocalStore *ls,
                            const gchar *full_name)
 {
-	if (((CamelSpoolStore *)ls)->type == CAMEL_SPOOL_STORE_MBOX)
+	if (((CamelSpoolStore *) ls)->type == CAMEL_SPOOL_STORE_MBOX)
 		/* a trailing / is always present on toplevel_dir from CamelLocalStore */
 		return g_strndup (ls->toplevel_dir, strlen (ls->toplevel_dir)-1);
 	else
@@ -519,10 +519,10 @@ spool_store_initable_init (GInitable *initable,
 	}
 
 	if (S_ISREG (st.st_mode))
-		((CamelSpoolStore *)service)->type = CAMEL_SPOOL_STORE_MBOX;
+		((CamelSpoolStore *) service)->type = CAMEL_SPOOL_STORE_MBOX;
 	else if (S_ISDIR (st.st_mode))
 		/* we could check here for slight variations */
-		((CamelSpoolStore *)service)->type = CAMEL_SPOOL_STORE_ELM;
+		((CamelSpoolStore *) service)->type = CAMEL_SPOOL_STORE_ELM;
 	else {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,

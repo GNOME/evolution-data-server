@@ -78,14 +78,14 @@ worker (gpointer d)
 
 		push ("getting message '%s'", res->pdata[0]);
 		msg = camel_folder_get_message_sync (
-			info->folder, (gchar *)res->pdata[0], NULL, &error);
+			info->folder, (gchar *) res->pdata[0], NULL, &error);
 		check_msg (error == NULL, "%s", error->message);
 		g_clear_error (&error);
 		pull ();
 
 		content = g_strdup_printf ("Test message %08x contents\n\n", id+i);
 		push ("comparing content '%s': '%s'", res->pdata[0], content);
-		test_message_compare_content (camel_medium_get_content ((CamelMedium *)msg), content, strlen (content));
+		test_message_compare_content (camel_medium_get_content ((CamelMedium *) msg), content, strlen (content));
 		test_free (content);
 		pull ();
 

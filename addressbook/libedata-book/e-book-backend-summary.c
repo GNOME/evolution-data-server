@@ -968,7 +968,7 @@ e_book_backend_summary_is_summary_query (EBookBackendSummary *summary, const gch
 	for (i = 0; i < G_N_ELEMENTS (check_symbols); i++) {
 		if (check_symbols[i].type == 1) {
 			e_sexp_add_ifunction (sexp, 0, check_symbols[i].name,
-					     (ESExpIFunc *)check_symbols[i].func, summary);
+					     (ESExpIFunc *) check_symbols[i].func, summary);
 		} else {
 			e_sexp_add_function (sexp, 0, check_symbols[i].name,
 					    check_symbols[i].func, summary);
@@ -1082,7 +1082,7 @@ is_helper (const gchar *ps1, const gchar *ps2)
 	gchar *res;
 
 	if (!e_util_utf8_strcasecmp (s1, s2))
-		res = (gchar *)ps1;
+		res = (gchar *) ps1;
 	else
 		res = NULL;
 
@@ -1112,7 +1112,7 @@ endswith_helper (const gchar *ps1, const gchar *ps2)
 	if (s1len < s2len)
 		res = NULL;
 	else
-		res = (gchar *)e_util_utf8_strstrcase (g_utf8_offset_to_pointer (s1, s1len - s2len), s2);
+		res = (gchar *) e_util_utf8_strstrcase (g_utf8_offset_to_pointer (s1, s1len - s2len), s2);
 
 	g_free (s1);
 	g_free (s2);
@@ -1137,7 +1137,7 @@ beginswith_helper (const gchar *ps1, const gchar *ps2)
 
 	if ((p = (gchar *) e_util_utf8_strstrcase (s1, s2))
 	    && (p == s1))
-		res = (gchar *)ps1;
+		res = (gchar *) ps1;
 	else
 		res = NULL;
 
@@ -1193,7 +1193,7 @@ e_book_backend_summary_search (EBookBackendSummary *summary, const gchar *query)
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1) {
 			e_sexp_add_ifunction (sexp, 0, symbols[i].name,
-					     (ESExpIFunc *)symbols[i].func, summary);
+					     (ESExpIFunc *) symbols[i].func, summary);
 		} else {
 			e_sexp_add_function (sexp, 0, symbols[i].name,
 					    symbols[i].func, summary);

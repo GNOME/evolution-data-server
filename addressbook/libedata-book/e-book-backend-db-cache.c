@@ -33,7 +33,7 @@ void
 string_to_dbt (const gchar *str, DBT *dbt)
 {
 	memset (dbt, 0, sizeof (dbt));
-	dbt->data = (gpointer)str;
+	dbt->data = (gpointer) str;
 	dbt->size = strlen (str) + 1;
 	dbt->flags = DB_DBT_USERMEM;
 }
@@ -142,7 +142,7 @@ e_book_backend_db_cache_get_contact (DB *db, const gchar *uid)
 		return NULL;
 	}
 
-	contact = e_contact_new_from_vcard ((const gchar *)vcard_dbt.data);
+	contact = e_contact_new_from_vcard ((const gchar *) vcard_dbt.data);
 	g_free (vcard_dbt.data);
 	return contact;
 }
@@ -169,8 +169,8 @@ e_book_backend_db_cache_add_contact (DB *db,
 	if (!uid) {
 		printf ("no uid\n");
 		printf("name:%s, email:%s\n",
-			(gchar *)e_contact_get (contact, E_CONTACT_GIVEN_NAME),
-			(gchar *)e_contact_get (contact, E_CONTACT_EMAIL_1));
+			(gchar *) e_contact_get (contact, E_CONTACT_GIVEN_NAME),
+			(gchar *) e_contact_get (contact, E_CONTACT_EMAIL_1));
 		return FALSE;
 	}
 	string_to_dbt (uid, &uid_dbt);

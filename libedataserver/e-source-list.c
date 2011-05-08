@@ -509,7 +509,7 @@ e_source_list_peek_group_by_properties (ESourceList *list, const gchar *property
 		if (!value)
 			break;
 
-		g_hash_table_insert (props, (gpointer)property_name, (gpointer)value);
+		g_hash_table_insert (props, (gpointer) property_name, (gpointer) value);
 		property_name = va_arg (ap, const gchar *);
 	}
 	va_end (ap);
@@ -905,8 +905,8 @@ e_source_list_is_gconf_updated (ESourceList *list)
 	/* From conf to list */
 
 	for (temp = conf_list; temp != NULL; temp = temp->next) {
-		gconf_xml = (gchar *)temp->data;
-		xmldoc = xmlParseDoc ((const xmlChar *)gconf_xml);
+		gconf_xml = (gchar *) temp->data;
+		xmldoc = xmlParseDoc ((const xmlChar *) gconf_xml);
 
 		if (xmldoc == NULL)
 			continue;
@@ -952,7 +952,7 @@ e_source_list_is_gconf_updated (ESourceList *list)
 		source_group_xml = e_source_group_to_xml (group);
 
 		for (temp = conf_list; temp != NULL; temp = temp->next) {
-			gconf_xml = (gchar *)temp->data;
+			gconf_xml = (gchar *) temp->data;
 			if (!e_source_group_xmlstr_equal (gconf_xml, source_group_xml))
 				continue;
 			else

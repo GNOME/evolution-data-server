@@ -80,7 +80,7 @@ folders_update (const gchar *root,
 		goto done;
 	}
 
-	while ((line = camel_stream_buffer_read_line ((CamelStreamBuffer *)in, cancellable, NULL))) {
+	while ((line = camel_stream_buffer_read_line ((CamelStreamBuffer *) in, cancellable, NULL))) {
 		gint copy = TRUE;
 
 		switch (mode) {
@@ -173,10 +173,10 @@ fill_fi (CamelStore *store,
 		   scan of all messages for their status flags.  But its probably not worth
 		   it as we need to read the top of every file, i.e. very very slow */
 
-		root = camel_local_store_get_toplevel_dir ((CamelLocalStore *)store);
+		root = camel_local_store_get_toplevel_dir ((CamelLocalStore *) store);
 		path = g_strdup_printf("%s/%s.ev-summary", root, fi->full_name);
 		folderpath = g_strdup_printf("%s/%s", root, fi->full_name);
-		s = (CamelFolderSummary *)camel_mh_summary_new (NULL, path, folderpath, NULL);
+		s = (CamelFolderSummary *) camel_mh_summary_new (NULL, path, folderpath, NULL);
 		if (camel_folder_summary_header_load_from_db (s, store, fi->full_name, NULL) != -1) {
 			fi->unread = s->unread_count;
 			fi->total = s->saved_count;
@@ -244,7 +244,7 @@ recursive_scan (CamelStore *store,
 		fullpath = alloca (strlen (root) + strlen (path) + 2);
 		sprintf (fullpath, "%s/%s", root, path);
 	} else
-		fullpath = (gchar *)root;
+		fullpath = (gchar *) root;
 
 	if (g_stat (fullpath, &st) == -1 || !S_ISDIR (st.st_mode))
 		return;
@@ -329,7 +329,7 @@ folders_scan (CamelStore *store,
 	visited = g_hash_table_new (g_str_hash, g_str_equal);
 	folders = g_ptr_array_new ();
 
-	while ( (len = camel_stream_buffer_gets ((CamelStreamBuffer *)in, line, sizeof (line), cancellable, NULL)) > 0) {
+	while ( (len = camel_stream_buffer_gets ((CamelStreamBuffer *) in, line, sizeof (line), cancellable, NULL)) > 0) {
 		/* ignore blank lines */
 		if (len <= 1)
 			continue;
@@ -379,7 +379,7 @@ folders_scan (CamelStore *store,
 		*fip = camel_folder_info_build(folders, top, '/', TRUE);
 	g_ptr_array_free (folders, TRUE);
 
-	g_hash_table_foreach (visited, (GHFunc)g_free, NULL);
+	g_hash_table_foreach (visited, (GHFunc) g_free, NULL);
 	g_hash_table_destroy (visited);
 
 	g_object_unref (in);
@@ -478,8 +478,8 @@ mh_store_get_folder_sync (CamelStore *store,
 
 		/* add to .folders if we are supposed to */
 		/* FIXME: throw exception on error */
-		if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS)
-			folders_update (((CamelLocalStore *)store)->toplevel_dir, UPDATE_ADD, folder_name, NULL, cancellable);
+		if (((CamelMhStore *) store)->flags & CAMEL_MH_DOTFOLDERS)
+			folders_update (((CamelLocalStore *) store)->toplevel_dir, UPDATE_ADD, folder_name, NULL, cancellable);
 	} else if (!S_ISDIR (st.st_mode)) {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
@@ -515,7 +515,7 @@ mh_store_get_folder_info_sync (CamelStore *store,
 	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
 	/* use .folders if we are supposed to */
-	if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS) {
+	if (((CamelMhStore *) store)->flags & CAMEL_MH_DOTFOLDERS) {
 		folders_scan (
 			store, url->path, top, &fi, flags, cancellable);
 	} else {
@@ -577,8 +577,8 @@ mh_store_delete_folder_sync (CamelStore *store,
 	g_free (name);
 
 	/* remove from .folders if we are supposed to */
-	if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS)
-		folders_update (((CamelLocalStore *)store)->toplevel_dir, UPDATE_REMOVE, folder_name, NULL, cancellable);
+	if (((CamelMhStore *) store)->flags & CAMEL_MH_DOTFOLDERS)
+		folders_update (((CamelLocalStore *) store)->toplevel_dir, UPDATE_REMOVE, folder_name, NULL, cancellable);
 
 	/* Chain up to parent's delete_folder() method. */
 	store_class = CAMEL_STORE_CLASS (camel_mh_store_parent_class);
@@ -601,9 +601,9 @@ mh_store_rename_folder_sync (CamelStore *store,
 		store, old, new, cancellable, error))
 		return FALSE;
 
-	if (((CamelMhStore *)store)->flags & CAMEL_MH_DOTFOLDERS) {
+	if (((CamelMhStore *) store)->flags & CAMEL_MH_DOTFOLDERS) {
 		/* yeah this is messy, but so is mh! */
-		folders_update (((CamelLocalStore *)store)->toplevel_dir, UPDATE_RENAME, old, new, cancellable);
+		folders_update (((CamelLocalStore *) store)->toplevel_dir, UPDATE_RENAME, old, new, cancellable);
 	}
 
 	return TRUE;

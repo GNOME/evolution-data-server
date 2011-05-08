@@ -487,7 +487,7 @@ _e_book_backend_get_required_fields (EBookBackend *backend,
 	e_data_book_respond_get_required_fields (book, opid, error, fields);
 
 	if (fields) {
-		g_list_foreach (fields, (GFunc)g_free, NULL);
+		g_list_foreach (fields, (GFunc) g_free, NULL);
 		g_list_free (fields);
 	}
 }
@@ -505,7 +505,7 @@ _e_book_backend_get_supported_fields (EBookBackend *backend,
 	e_data_book_respond_get_supported_fields (book, opid, error, fields);
 
 	if (fields) {
-		g_list_foreach (fields, (GFunc)g_free, NULL);
+		g_list_foreach (fields, (GFunc) g_free, NULL);
 		g_list_free (fields);
 	}
 }
@@ -523,7 +523,7 @@ _e_book_backend_get_supported_auth_methods (EBookBackend *backend,
 	e_data_book_respond_get_supported_auth_methods (book, opid, error, methods);
 
 	if (methods) {
-		g_list_foreach (methods, (GFunc)g_free, NULL);
+		g_list_foreach (methods, (GFunc) g_free, NULL);
 		g_list_free (methods);
 	}
 }

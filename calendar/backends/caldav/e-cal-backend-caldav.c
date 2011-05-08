@@ -1693,14 +1693,14 @@ remove_complist_from_cache_and_notify_cb (gpointer key, gpointer value, gpointer
 		if (e_cal_backend_store_remove_component (priv->store, id->uid, id->rid)) {
 			gchar *old_str = e_cal_component_get_as_string (old_comp);
 
-			e_cal_backend_notify_object_removed ((ECalBackend *)cbdav, id, old_str, NULL);
+			e_cal_backend_notify_object_removed ((ECalBackend *) cbdav, id, old_str, NULL);
 
 			g_free (old_str);
 		}
 
 		e_cal_component_free_id (id);
 	}
-	remove_cached_attachment (cbdav, (const gchar *)key);
+	remove_cached_attachment (cbdav, (const gchar *) key);
 
 	return FALSE;
 }
@@ -1760,7 +1760,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
 	/* do not store changes in cache immediately - makes things significantly quicker */
 	e_cal_backend_store_freeze_changes (priv->store);
 
-	c_uid2complist = g_tree_new_full ((GCompareDataFunc)g_strcmp0, NULL, g_free, free_comp_list);
+	c_uid2complist = g_tree_new_full ((GCompareDataFunc) g_strcmp0, NULL, g_free, free_comp_list);
 	c_href2uid = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
 	/* fill indexed hash and tree with cached components */
@@ -1800,7 +1800,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
 			/* uid is from a component or c_uid2complist key, thus will not be
 			   freed before a removal from c_uid2complist, thus do not duplicate it,
 			   rather save memory */
-			g_hash_table_insert (c_href2uid, href, (gpointer)uid);
+			g_hash_table_insert (c_href2uid, href, (gpointer) uid);
 		} else {
 			g_free (href);
 		}
@@ -2607,8 +2607,8 @@ remove_comp_from_cache (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar 
 		GSList *objects = e_cal_backend_store_get_components_by_uid (priv->store, uid);
 
 		if (objects) {
-			g_slist_foreach (objects, (GFunc)remove_comp_from_cache_cb, priv->store);
-			g_slist_foreach (objects, (GFunc)g_object_unref, NULL);
+			g_slist_foreach (objects, (GFunc) remove_comp_from_cache_cb, priv->store);
+			g_slist_foreach (objects, (GFunc) g_object_unref, NULL);
 			g_slist_free (objects);
 
 			res = TRUE;
@@ -2636,8 +2636,8 @@ sort_master_first (gconstpointer a, gconstpointer b)
 {
 	icalcomponent *ca, *cb;
 
-	ca = e_cal_component_get_icalcomponent ((ECalComponent *)a);
-	cb = e_cal_component_get_icalcomponent ((ECalComponent *)b);
+	ca = e_cal_component_get_icalcomponent ((ECalComponent *) a);
+	cb = e_cal_component_get_icalcomponent ((ECalComponent *) b);
 
 	if (!ca) {
 		if (!cb)
@@ -2692,7 +2692,7 @@ get_comp_from_cache (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *ri
 		if (etag)
 			*etag = ecalcomp_get_etag (objects->data);
 
-		g_slist_foreach (objects, (GFunc)g_object_unref, NULL);
+		g_slist_foreach (objects, (GFunc) g_object_unref, NULL);
 		g_slist_free (objects);
 	} else {
 		/* get the exact object */
@@ -2821,7 +2821,7 @@ convert_to_inline_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 	     p = icalcomponent_get_next_property (icalcomp, ICAL_ATTACH_PROPERTY)) {
 		icalattach *attach;
 
-		attach = icalproperty_get_attach ((const icalproperty *)p);
+		attach = icalproperty_get_attach ((const icalproperty *) p);
 		if (icalattach_get_is_url (attach)) {
 			const gchar *url;
 
@@ -2845,7 +2845,7 @@ convert_to_inline_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 		gchar *content;
 		gsize len;
 
-		attach = icalproperty_get_attach ((const icalproperty *)p);
+		attach = icalproperty_get_attach ((const icalproperty *) p);
 		if (!icalattach_get_is_url (attach))
 			continue;
 
@@ -2916,7 +2916,7 @@ convert_to_url_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 	     p = icalcomponent_get_next_property (icalcomp, ICAL_ATTACH_PROPERTY)) {
 		icalattach *attach;
 
-		attach = icalproperty_get_attach ((const icalproperty *)p);
+		attach = icalproperty_get_attach ((const icalproperty *) p);
 		if (!icalattach_get_is_url (attach))
 			to_remove = g_slist_prepend (to_remove, p);
 	}
@@ -2930,7 +2930,7 @@ convert_to_url_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 		icalattach *attach;
 		gchar *dir;
 
-		attach = icalproperty_get_attach ((const icalproperty *)p);
+		attach = icalproperty_get_attach ((const icalproperty *) p);
 		if (icalattach_get_is_url (attach))
 			continue;
 
@@ -2949,8 +2949,8 @@ convert_to_url_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 			dest = g_build_filename (dir, basename, NULL);
 			g_free (basename);
 
-			content = (gchar *)icalattach_get_data (attach);
-			decoded = (gchar *)g_base64_decode (content, &len);
+			content = (gchar *) icalattach_get_data (attach);
+			decoded = (gchar *) g_base64_decode (content, &len);
 			if (g_file_set_contents (dest, decoded, len, &error) == TRUE) {
 				icalproperty *prop;
 				gchar *url;
@@ -3018,7 +3018,7 @@ remove_cached_attachment (ECalBackendCalDAV *cbdav, const gchar *uid)
 	priv = cbdav->priv;
 	l = e_cal_backend_store_get_components_by_uid (priv->store, uid);
 	len = g_slist_length (l);
-	g_slist_foreach (l, (GFunc)g_object_unref, NULL);
+	g_slist_foreach (l, (GFunc) g_object_unref, NULL);
 	g_slist_free (l);
 	if (len > 0)
 		return;
@@ -3143,7 +3143,7 @@ sanitize_component (ECalBackend *cb, ECalComponent *comp)
 		zone = caldav_internal_get_timezone (cb, dt.tzid);
 		if (!zone) {
 			default_zone = caldav_internal_get_default_timezone (cb);
-			g_free ((gchar *)dt.tzid);
+			g_free ((gchar *) dt.tzid);
 			dt.tzid = g_strdup (icaltimezone_get_tzid (default_zone));
 			e_cal_component_set_dtstart (comp, &dt);
 		}
@@ -3155,7 +3155,7 @@ sanitize_component (ECalBackend *cb, ECalComponent *comp)
 		zone = caldav_internal_get_timezone (cb, dt.tzid);
 		if (!zone) {
 			default_zone = caldav_internal_get_default_timezone (cb);
-			g_free ((gchar *)dt.tzid);
+			g_free ((gchar *) dt.tzid);
 			dt.tzid = g_strdup (icaltimezone_get_tzid (default_zone));
 			e_cal_component_set_dtend (comp, &dt);
 		}
@@ -3167,7 +3167,7 @@ sanitize_component (ECalBackend *cb, ECalComponent *comp)
 		zone = caldav_internal_get_timezone (cb, dt.tzid);
 		if (!zone) {
 			default_zone = caldav_internal_get_default_timezone (cb);
-			g_free ((gchar *)dt.tzid);
+			g_free ((gchar *) dt.tzid);
 			dt.tzid = g_strdup (icaltimezone_get_tzid (default_zone));
 			e_cal_component_set_due (comp, &dt);
 		}
@@ -3367,7 +3367,7 @@ do_create_object (ECalBackendCalDAV *cbdav, gchar **calobj, gchar **uid, GError 
 	e_cal_component_set_last_modified (comp, &current);
 
 	/* sanitize the component*/
-	sanitize_component ((ECalBackend *)cbdav, comp);
+	sanitize_component ((ECalBackend *) cbdav, comp);
 
 	if (online) {
 		CalDAVObject object;
@@ -3446,7 +3446,7 @@ do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType m
 	e_cal_component_set_last_modified (comp, &current);
 
 	/* sanitize the component */
-	sanitize_component ((ECalBackend *)cbdav, comp);
+	sanitize_component ((ECalBackend *) cbdav, comp);
 
 	id = e_cal_component_get_id (comp);
 	e_return_data_cal_error_if_fail (id != NULL, InvalidObject);
@@ -4377,7 +4377,7 @@ caldav_get_free_busy (ECalBackendSync  *backend,
 							}
 						}
 
-						g_list_foreach (objects, (GFunc)icalcomponent_free, NULL);
+						g_list_foreach (objects, (GFunc) icalcomponent_free, NULL);
 						g_list_free (objects);
 
 						if (icalcomp)

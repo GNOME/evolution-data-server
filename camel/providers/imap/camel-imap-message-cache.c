@@ -681,7 +681,7 @@ camel_imap_message_cache_filter_cached (CamelImapMessageCache *cache, GPtrArray 
 			 */
 			part_find.found = 0;
 			part_find.disk_part_name = g_strdup_printf("%s" BASE_PART_SUFFIX,
-								   (gchar *)uids->pdata[i]);
+								   (gchar *) uids->pdata[i]);
 			g_ptr_array_foreach (parts_list, _match_part, &part_find);
 			g_free (part_find.disk_part_name);
 			if (part_find.found)
@@ -693,7 +693,7 @@ camel_imap_message_cache_filter_cached (CamelImapMessageCache *cache, GPtrArray 
 		/* No message parts, or message part "" not found: include the
 		 * uid in the result.
 		 */
-		g_ptr_array_add (result, (gchar *)camel_pstring_strdup (uids->pdata[i]));
+		g_ptr_array_add (result, (gchar *) camel_pstring_strdup (uids->pdata[i]));
 	}
 	return result;
 }

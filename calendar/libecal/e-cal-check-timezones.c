@@ -465,7 +465,7 @@ e_cal_tzlookup_ecal (const gchar *tzid,
                      gconstpointer custom,
                      GError **error)
 {
-	ECal *ecal = (ECal *)custom;
+	ECal *ecal = (ECal *) custom;
 	icaltimezone *zone = NULL;
 	GError *local_error = NULL;
 
@@ -503,7 +503,7 @@ e_cal_tzlookup_icomp (const gchar *tzid,
                       gconstpointer custom,
                       GError **error)
 {
-    icalcomponent *icomp = (icalcomponent *)custom;
+    icalcomponent *icomp = (icalcomponent *) custom;
 
-    return icalcomponent_get_timezone (icomp, (gchar *)tzid);
+    return icalcomponent_get_timezone (icomp, (gchar *) tzid);
 }

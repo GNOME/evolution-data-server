@@ -527,7 +527,7 @@ cs_waitinfo (gpointer (worker)(gpointer),
 			g_thread_join (thread);
 			d(printf("child done\n"));
 
-			reply = (struct _addrinfo_msg *)camel_msgport_try_pop (reply_port);
+			reply = (struct _addrinfo_msg *) camel_msgport_try_pop (reply_port);
 			if (reply != msg)
 				g_warning ("%s: Received msg reply %p doesn't match msg %p", G_STRFUNC, reply, msg);
 		}
@@ -628,7 +628,7 @@ cs_getaddrinfo (gpointer data)
 		res->ai_family = AF_INET;
 		res->ai_addrlen = sizeof (*sin);
 		res->ai_addr = g_malloc (sizeof (*sin));
-		sin = (struct sockaddr_in *)res->ai_addr;
+		sin = (struct sockaddr_in *) res->ai_addr;
 		sin->sin_family = AF_INET;
 		sin->sin_port = port;
 		memcpy (&sin->sin_addr, h.h_addr_list[i], sizeof (sin->sin_addr));
@@ -641,7 +641,7 @@ cs_getaddrinfo (gpointer data)
 		}
 	}
 reply:
-	camel_msgport_reply ((CamelMsg *)msg);
+	camel_msgport_reply ((CamelMsg *) msg);
 cancel:
 	return NULL;
 }
@@ -663,7 +663,7 @@ cs_getaddrinfo (gpointer data)
 	}
 
 	if (!info->cancelled)
-		camel_msgport_reply ((CamelMsg *)info);
+		camel_msgport_reply ((CamelMsg *) info);
 
 	return NULL;
 }
@@ -763,7 +763,7 @@ cs_getnameinfo (gpointer data)
 	struct _addrinfo_msg *msg = data;
 	gint herr;
 	struct hostent h;
-	struct sockaddr_in *sin = (struct sockaddr_in *)msg->addr;
+	struct sockaddr_in *sin = (struct sockaddr_in *) msg->addr;
 
 	/* FIXME: error code */
 	if (msg->addr->sa_family != AF_INET) {
@@ -801,7 +801,7 @@ cs_getnameinfo (gpointer data)
 		sprintf(msg->serv, "%d", sin->sin_port);
 
 	if (!msg->cancelled)
-		camel_msgport_reply ((CamelMsg *)msg);
+		camel_msgport_reply ((CamelMsg *) msg);
 cancel:
 	return NULL;
 }
@@ -815,7 +815,7 @@ cs_getnameinfo (gpointer data)
 	msg->result = getnameinfo (msg->addr, msg->addrlen, msg->host, msg->hostlen, msg->serv, msg->servlen, msg->flags);
 
 	if (!msg->cancelled)
-		camel_msgport_reply ((CamelMsg *)msg);
+		camel_msgport_reply ((CamelMsg *) msg);
 
 	return NULL;
 }

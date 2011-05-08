@@ -430,7 +430,7 @@ e_name_selector_dialog_finalize (GObject *object)
 
 	priv = E_NAME_SELECTOR_DIALOG (object)->priv;
 
-	g_slist_foreach (priv->user_query_fields, (GFunc)g_free, NULL);
+	g_slist_foreach (priv->user_query_fields, (GFunc) g_free, NULL);
 	g_slist_free (priv->user_query_fields);
 
 	g_array_free (priv->sections, TRUE);

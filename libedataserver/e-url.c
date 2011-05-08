@@ -114,7 +114,7 @@ uri_decode (gchar *part)
 {
 	guchar *s, *d;
 
-	s = d = (guchar *)part;
+	s = d = (guchar *) part;
 	while (*s) {
 		if (*s == '%') {
 			if (isxdigit (s[1]) && isxdigit (s[2])) {

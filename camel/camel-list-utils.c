@@ -206,7 +206,7 @@ camel_slist_addtail (CamelSList *l, CamelSListNode *n)
 {
 	CamelSListNode *p;
 
-	p = (CamelSListNode *)l;
+	p = (CamelSListNode *) l;
 	while (p->next)
 		p = p->next;
 	n->next = NULL;
@@ -220,7 +220,7 @@ camel_slist_remove (CamelSList *l, CamelSListNode *n)
 {
 	CamelSListNode *p, *q;
 
-	p = (CamelSListNode *)l;
+	p = (CamelSListNode *) l;
 	while ((q = p->next)) {
 		if (q == n) {
 			p->next = n->next;
@@ -254,7 +254,7 @@ camel_slist_remtail (CamelSList *l)
 	n = l->head;
 	if (l->head == NULL)
 		return NULL;
-	p = (CamelSListNode *)l;
+	p = (CamelSListNode *) l;
 	while (n->next) {
 		p = n;
 		n = n->next;

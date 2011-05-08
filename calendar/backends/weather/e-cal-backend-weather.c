@@ -431,7 +431,7 @@ create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_foreca
 	}
 	comp_summary.altrep = NULL;
 	e_cal_component_set_summary (cal_comp, &comp_summary);
-	g_free ((gchar *)comp_summary.value);
+	g_free ((gchar *) comp_summary.value);
 
 	tmp = weather_info_get_forecast (report);
 	comp_summary.value = weather_info_get_weather_summary (report);
@@ -441,7 +441,7 @@ create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_foreca
 	description->altrep = "";
 	text_list = g_slist_append (text_list, description);
 	e_cal_component_set_description_list (cal_comp, text_list);
-	g_free ((gchar *)comp_summary.value);
+	g_free ((gchar *) comp_summary.value);
 
 	/* Set category and visibility */
 	e_cal_component_set_categories (cal_comp, getCategory (report));

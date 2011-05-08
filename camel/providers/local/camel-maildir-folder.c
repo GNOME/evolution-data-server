@@ -88,7 +88,7 @@ maildir_folder_get_filename (CamelFolder *folder,
                              const gchar *uid,
                              GError **error)
 {
-	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
+	CamelLocalFolder *lf = (CamelLocalFolder *) folder;
 	CamelMaildirMessageInfo *mdi;
 	CamelMessageInfo *info;
 	gchar *res;
@@ -101,7 +101,7 @@ maildir_folder_get_filename (CamelFolder *folder,
 		return NULL;
 	}
 
-	mdi = (CamelMaildirMessageInfo *)info;
+	mdi = (CamelMaildirMessageInfo *) info;
 
 	/* If filename is NULL, it means folder_summary_check is not yet executed.
 	   Try to find the file in the folder and use it, otherwise construct its
@@ -153,7 +153,7 @@ maildir_folder_append_message_sync (CamelFolder *folder,
                                     GCancellable *cancellable,
                                     GError **error)
 {
-	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
+	CamelLocalFolder *lf = (CamelLocalFolder *) folder;
 	CamelStream *output_stream;
 	CamelMessageInfo *mi;
 	CamelMaildirMessageInfo *mdi;
@@ -176,7 +176,7 @@ maildir_folder_append_message_sync (CamelFolder *folder,
 	if ((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) && !camel_mime_message_has_attachment (message))
 		camel_message_info_set_flags (mi, CAMEL_MESSAGE_ATTACHMENTS, 0);
 
-	mdi = (CamelMaildirMessageInfo *)mi;
+	mdi = (CamelMaildirMessageInfo *) mi;
 
 	d(printf("Appending message: uid is %s filename is %s\n", camel_message_info_uid(mi), mdi->filename));
 
@@ -188,7 +188,7 @@ maildir_folder_append_message_sync (CamelFolder *folder,
 		goto fail_write;
 
 	if (camel_data_wrapper_write_to_stream_sync (
-		(CamelDataWrapper *)message, output_stream, cancellable, error) == -1
+		(CamelDataWrapper *) message, output_stream, cancellable, error) == -1
 	    || camel_stream_close (output_stream, cancellable, error) == -1)
 		goto fail_write;
 
@@ -250,7 +250,7 @@ maildir_folder_get_message_sync (CamelFolder *folder,
                                  GCancellable *cancellable,
                                  GError **error)
 {
-	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
+	CamelLocalFolder *lf = (CamelLocalFolder *) folder;
 	CamelStream *message_stream = NULL;
 	CamelMimeMessage *message = NULL;
 	gchar *name = NULL;
@@ -275,7 +275,7 @@ maildir_folder_get_message_sync (CamelFolder *folder,
 
 	message = camel_mime_message_new ();
 	if (!camel_data_wrapper_construct_from_stream_sync (
-		(CamelDataWrapper *)message,
+		(CamelDataWrapper *) message,
 		message_stream, cancellable, error)) {
 		g_prefix_error (
 			error, _("Cannot get message %s from folder %s: "),

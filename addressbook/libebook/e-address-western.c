@@ -310,7 +310,7 @@ e_address_western_parse (const gchar *in_address)
 	if (in_address == NULL)
 		return NULL;
 
-	eaw = (EAddressWestern *)g_malloc (sizeof (EAddressWestern));
+	eaw = (EAddressWestern *) g_malloc (sizeof (EAddressWestern));
 	eaw->po_box = NULL;
 	eaw->extended = NULL;
 	eaw->street = NULL;
@@ -335,7 +335,7 @@ e_address_western_parse (const gchar *in_address)
 	}
 
 	/* ... tally them. */
-	lines = (gchar **)g_malloc (sizeof (gchar *) * (linecntr+3));
+	lines = (gchar **) g_malloc (sizeof (gchar *) * (linecntr+3));
 	lineindex = 0;
 	lines[0] = &address[0];
 	linecntr = 1;

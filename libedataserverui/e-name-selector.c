@@ -525,6 +525,6 @@ e_name_selector_peek_section_list (ENameSelector *name_selector, const gchar *na
 		g_object_unref (contact_store);
 	}
 
-	return (ENameSelectorList *)section->entry;
+	return (ENameSelectorList *) section->entry;
 }
 

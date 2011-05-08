@@ -63,7 +63,7 @@ die (gint sig)
 	if (!indie) {
 		indie = 1;
 		printf("\n\nReceived fatal signal %d\n", sig);
-		g_hash_table_foreach (info_table, (GHFunc)dump_action, 0);
+		g_hash_table_foreach (info_table, (GHFunc) dump_action, 0);
 
 		if (camel_test_verbose > 2) {
 			printf("Attach debugger to pid %d to debug\n", getpid());
@@ -249,7 +249,7 @@ void camel_test_failv (const gchar *why, va_list ap)
 
 	if ((s->nonfatal == 0 && camel_test_verbose > 0)
 	    || (s->nonfatal && camel_test_verbose > 2)) {
-		g_hash_table_foreach (info_table, (GHFunc)dump_action, 0);
+		g_hash_table_foreach (info_table, (GHFunc) dump_action, 0);
 	}
 
 	if (s->nonfatal == 0) {

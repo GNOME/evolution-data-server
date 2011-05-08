@@ -234,7 +234,7 @@ store_summary_store_info_string (CamelStoreSummary *summary,
 			CamelURL *uri;
 
 			uri = camel_url_new_with_base (summary->uri_base, info->path);
-			((CamelStoreInfo *)info)->uri = camel_url_to_string (uri, 0);
+			((CamelStoreInfo *) info)->uri = camel_url_to_string (uri, 0);
 			camel_url_free (uri);
 		}
 		return info->uri;
@@ -258,18 +258,18 @@ store_summary_store_info_set_string (CamelStoreSummary *summary,
 	switch (type) {
 	case CAMEL_STORE_INFO_PATH:
 		camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-		g_hash_table_remove (summary->folders_path, (gchar *)camel_store_info_path (summary, info));
+		g_hash_table_remove (summary->folders_path, (gchar *) camel_store_info_path (summary, info));
 		g_free (info->path);
 		g_free (info->uri);
 		info->uri = NULL;
 		info->path = g_strdup (str);
-		g_hash_table_insert (summary->folders_path, (gchar *)camel_store_info_path (summary, info), info);
+		g_hash_table_insert (summary->folders_path, (gchar *) camel_store_info_path (summary, info), info);
 		summary->flags |= CAMEL_STORE_SUMMARY_DIRTY;
 		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 		break;
 	case CAMEL_STORE_INFO_NAME:
 		camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-		g_hash_table_remove (summary->folders_path, (gchar *)camel_store_info_path (summary, info));
+		g_hash_table_remove (summary->folders_path, (gchar *) camel_store_info_path (summary, info));
 		p = strrchr (info->path, '/');
 		if (p) {
 			len = p-info->path+1;
@@ -283,7 +283,7 @@ store_summary_store_info_set_string (CamelStoreSummary *summary,
 		info->path = v;
 		g_free (info->uri);
 		info->uri = NULL;
-		g_hash_table_insert (summary->folders_path, (gchar *)camel_store_info_path (summary, info), info);
+		g_hash_table_insert (summary->folders_path, (gchar *) camel_store_info_path (summary, info), info);
 		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 		break;
 	case CAMEL_STORE_INFO_URI:
@@ -753,7 +753,7 @@ camel_store_summary_add (CamelStoreSummary *summary,
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 
 	g_ptr_array_add (summary->folders, info);
-	g_hash_table_insert (summary->folders_path, (gchar *)camel_store_info_path (summary, info), info);
+	g_hash_table_insert (summary->folders_path, (gchar *) camel_store_info_path (summary, info), info);
 	summary->flags |= CAMEL_STORE_SUMMARY_DIRTY;
 
 	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
@@ -786,7 +786,7 @@ camel_store_summary_add_from_path (CamelStoreSummary *summary,
 	} else {
 		info = camel_store_summary_info_new_from_path (summary, path);
 		g_ptr_array_add (summary->folders, info);
-		g_hash_table_insert (summary->folders_path, (gchar *)camel_store_info_path (summary, info), info);
+		g_hash_table_insert (summary->folders_path, (gchar *) camel_store_info_path (summary, info), info);
 		summary->flags |= CAMEL_STORE_SUMMARY_DIRTY;
 	}
 

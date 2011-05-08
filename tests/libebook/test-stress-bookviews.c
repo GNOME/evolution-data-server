@@ -16,7 +16,7 @@ print_contact (EContact *contact)
 	for (e = emails; e; e = e->next) {
 		printf ("\t%s\n",  (gchar *)e->data);
 	}
-	g_list_foreach (emails, (GFunc)g_free, NULL);
+	g_list_foreach (emails, (GFunc) g_free, NULL);
 	g_list_free (emails);
 
 	printf ("\n");
@@ -27,7 +27,7 @@ contacts_added (EBookView *book_view, const GList *contacts)
 {
   GList *l;
 
-  for (l = (GList*)contacts; l; l = l->next) {
+  for (l = (GList*) contacts; l; l = l->next) {
     print_contact (l->data);
   }
 }
@@ -37,7 +37,7 @@ contacts_removed (EBookView *book_view, const GList *ids)
 {
   GList *l;
 
-  for (l = (GList*)ids; l; l = l->next) {
+  for (l = (GList*) ids; l; l = l->next) {
     printf ("Removed contact: %s\n", (gchar *)l->data);
   }
 }

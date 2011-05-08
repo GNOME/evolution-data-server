@@ -57,7 +57,7 @@ mime_filter_canon_run (CamelMimeFilter *mime_filter,
 	priv = CAMEL_MIME_FILTER_CANON (mime_filter)->priv;
 
 	/* first, work out how much space we need */
-	inptr = (guchar *)in;
+	inptr = (guchar *) in;
 	inend = (const guchar *) (in+len);
 	while (inptr < inend)
 		if (*inptr++ == '\n')
@@ -70,7 +70,7 @@ mime_filter_canon_run (CamelMimeFilter *mime_filter,
 	camel_mime_filter_set_size (mime_filter, len+lf*3+4, FALSE);
 
 	o = mime_filter->outbuf;
-	inptr = (guchar *)in;
+	inptr = (guchar *) in;
 	start = inptr;
 	starto = o;
 	while (inptr < inend) {
@@ -131,7 +131,7 @@ mime_filter_canon_run (CamelMimeFilter *mime_filter,
 		*outlen = o - mime_filter->outbuf;
 	} else {
 		camel_mime_filter_backup (
-			mime_filter, (const gchar *)start, inend - start);
+			mime_filter, (const gchar *) start, inend - start);
 		*outlen = starto - mime_filter->outbuf;
 	}
 

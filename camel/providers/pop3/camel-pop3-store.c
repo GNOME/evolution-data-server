@@ -396,7 +396,7 @@ pop3_try_authenticate (CamelService *service,
                        GCancellable *cancellable,
                        GError **error)
 {
-	CamelPOP3Store *store = (CamelPOP3Store *)service;
+	CamelPOP3Store *store = (CamelPOP3Store *) service;
 	CamelPOP3Command *pcu = NULL, *pcp = NULL;
 	CamelURL *url;
 	gint status;
@@ -554,7 +554,7 @@ pop3_store_finalize (GObject *object)
 	/* force disconnect so we dont have it run later, after we've cleaned up some stuff */
 	/* SIGH */
 
-	camel_service_disconnect_sync ((CamelService *)pop3_store, TRUE, NULL);
+	camel_service_disconnect_sync ((CamelService *) pop3_store, TRUE, NULL);
 
 	if (pop3_store->engine)
 		g_object_unref (pop3_store->engine);
@@ -587,7 +587,7 @@ pop3_store_connect_sync (CamelService *service,
                          GCancellable *cancellable,
                          GError **error)
 {
-	CamelPOP3Store *store = (CamelPOP3Store *)service;
+	CamelPOP3Store *store = (CamelPOP3Store *) service;
 	gboolean reprompt = FALSE;
 	CamelURL *url;
 	const gchar *user_data_dir;

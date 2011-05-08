@@ -280,7 +280,7 @@ term_eval_and (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer d
 			gchar **a1;
 			gint l1, j;
 
-			a1 = (gchar **)r1->value.ptrarray->pdata;
+			a1 = (gchar **) r1->value.ptrarray->pdata;
 			l1 = r1->value.ptrarray->len;
 			for (j=0;j<l1;j++) {
 				gpointer ptr;
@@ -298,7 +298,7 @@ term_eval_and (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer d
 	if (type == ESEXP_RES_ARRAY_PTR) {
 		lambdafoo.count = argc;
 		lambdafoo.uids = g_ptr_array_new ();
-		g_hash_table_foreach (ht, (GHFunc)htand, &lambdafoo);
+		g_hash_table_foreach (ht, (GHFunc) htand, &lambdafoo);
 		r->type = ESEXP_RES_ARRAY_PTR;
 		r->value.ptrarray = lambdafoo.uids;
 	} else if (type == ESEXP_RES_BOOL) {
@@ -343,10 +343,10 @@ term_eval_or (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer da
 			gchar **a1;
 			gint l1, j;
 
-			a1 = (gchar **)r1->value.ptrarray->pdata;
+			a1 = (gchar **) r1->value.ptrarray->pdata;
 			l1 = r1->value.ptrarray->len;
 			for (j=0;j<l1;j++) {
-				g_hash_table_insert (ht, a1[j], (gpointer)1);
+				g_hash_table_insert (ht, a1[j], (gpointer) 1);
 			}
 		} else if (r1->type == ESEXP_RES_BOOL) {
 			bool |= r1->value.boolean;
@@ -357,7 +357,7 @@ term_eval_or (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer da
 	if (type == ESEXP_RES_ARRAY_PTR) {
 		lambdafoo.count = argc;
 		lambdafoo.uids = g_ptr_array_new ();
-		g_hash_table_foreach (ht, (GHFunc)htor, &lambdafoo);
+		g_hash_table_foreach (ht, (GHFunc) htor, &lambdafoo);
 		r->type = ESEXP_RES_ARRAY_PTR;
 		r->value.ptrarray = lambdafoo.uids;
 	} else if (type == ESEXP_RES_BOOL) {
@@ -1367,7 +1367,7 @@ free_symbol (gpointer key, gpointer value, gpointer data)
 static void
 e_sexp_finalise (gpointer o)
 {
-	ESExp *s = (ESExp *)o;
+	ESExp *s = (ESExp *) o;
 
 	if (s->tree) {
 		parse_term_free (s, s->tree);
@@ -1397,7 +1397,7 @@ e_sexp_init (ESExp *s)
 	/* load in builtin symbols? */
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1) {
-			e_sexp_add_ifunction (s, 0, symbols[i].name, (ESExpIFunc *)symbols[i].func, (gpointer)&symbols[i]);
+			e_sexp_add_ifunction (s, 0, symbols[i].name, (ESExpIFunc *) symbols[i].func, (gpointer)&symbols[i]);
 		} else {
 			e_sexp_add_function (s, 0, symbols[i].name, symbols[i].func, (gpointer)&symbols[i]);
 		}

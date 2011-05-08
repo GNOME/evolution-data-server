@@ -1236,7 +1236,7 @@ create_user_free_busy (ECalBackendHttp *cbhttp, const gchar *address, const gcha
 						vfb,
 						resolve_tzid,
 						vcalendar_comp,
-						(icaltimezone *)e_cal_backend_store_get_default_timezone (store));
+						(icaltimezone *) e_cal_backend_store_get_default_timezone (store));
 	}
 	g_object_unref (obj_sexp);
 

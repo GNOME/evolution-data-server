@@ -411,7 +411,7 @@ output_param (GQuark key_id, gpointer data, gpointer user_data)
 
 	g_string_append_c (str, ';');
 	append_url_encoded (str, g_quark_to_string (key_id), "?=");
-	if (*(gchar *)data) {
+	if (*(gchar *) data) {
 		g_string_append_c (str, '=');
 		append_url_encoded (str, data, "?");
 	}
@@ -657,7 +657,7 @@ static const gchar url_encoded_char[] = {
 static void
 append_url_encoded (GString *str, const gchar *in, const gchar *extra_enc_chars)
 {
-	const guchar *s = (const guchar *)in;
+	const guchar *s = (const guchar *) in;
 
 	while (*s) {
 		if (url_encoded_char[*s] ||
@@ -712,7 +712,7 @@ camel_url_decode (gchar *part)
 
 #define XDIGIT(c) ((c) <= '9' ? (c) - '0' : ((c) & 0x4F) - 'A' + 10)
 
-	s = d = (guchar *)part;
+	s = d = (guchar *) part;
 	do {
 		if (*s == '%' && isxdigit (s[1]) && isxdigit (s[2])) {
 			*d++ = (XDIGIT (s[1]) << 4) + XDIGIT (s[2]);
@@ -796,7 +796,7 @@ camel_url_copy (CamelURL *in)
 	out->path = g_strdup (in->path);
 	out->params = NULL;
 	if (in->params)
-		g_datalist_foreach (&((CamelURL *)in)->params, copy_param, &out->params);
+		g_datalist_foreach (&((CamelURL *) in)->params, copy_param, &out->params);
 	out->query = g_strdup (in->query);
 	out->fragment = g_strdup (in->fragment);
 

@@ -1630,7 +1630,7 @@ set_attachment_list (icalcomponent *icalcomp,
 		gchar *buf;
 
 		attachment = g_new0 (struct attachment, 1);
-		buf_size = 2 * strlen ((gchar *)l->data);
+		buf_size = 2 * strlen ((gchar *) l->data);
 		buf = g_malloc0 (buf_size);
 		icalvalue_encode_ical_string (l->data, buf, buf_size);
 		attachment->attach = icalattach_new_from_url ((gchar *) buf);
@@ -4848,7 +4848,7 @@ e_cal_component_free_datetime (ECalComponentDateTime *dt)
 	g_return_if_fail (dt != NULL);
 
 	g_free (dt->value);
-	g_free ((gchar *)dt->tzid);
+	g_free ((gchar *) dt->tzid);
 
 	dt->value = NULL;
 	dt->tzid = NULL;
@@ -4888,7 +4888,7 @@ e_cal_component_free_exdate_list (GSList *exdate_list)
 
 		g_return_if_fail (cdt->value != NULL);
 		g_free (cdt->value);
-		g_free ((gchar *)cdt->tzid);
+		g_free ((gchar *) cdt->tzid);
 
 		g_free (cdt);
 	}

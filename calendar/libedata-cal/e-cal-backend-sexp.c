@@ -1386,7 +1386,7 @@ e_cal_backend_sexp_new (const gchar *text)
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1) {
 			e_sexp_add_ifunction (sexp->priv->search_sexp, 0, symbols[i].name,
-					     (ESExpIFunc *)symbols[i].func, sexp->priv->search_context);
+					     (ESExpIFunc *) symbols[i].func, sexp->priv->search_context);
 		} else {
 			e_sexp_add_function (sexp->priv->search_sexp, 0, symbols[i].name,
 					    symbols[i].func, sexp->priv->search_context);

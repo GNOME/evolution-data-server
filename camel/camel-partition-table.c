@@ -59,7 +59,7 @@ partition_table_finalize (GObject *object)
 	CamelBlock *bl;
 
 	if (table->blocks) {
-		while ((bl = (CamelBlock *)camel_dlist_remhead (&table->partition))) {
+		while ((bl = (CamelBlock *) camel_dlist_remhead (&table->partition))) {
 			camel_block_file_sync_block (table->blocks, bl);
 			camel_block_file_unref_block (table->blocks, bl);
 		}
@@ -134,7 +134,7 @@ static CamelBlock *find_partition (CamelPartitionTable *cpi, camel_hash_t id, gi
 	CamelPartitionMap *part;
 
 	/* first, find the block this key might be in, then binary search the block */
-	bl = (CamelBlock *)cpi->partition.head;
+	bl = (CamelBlock *) cpi->partition.head;
 	while (bl->next) {
 		ptb = (CamelPartitionMapBlock *)&bl->data;
 		part = ptb->partition;
@@ -220,7 +220,7 @@ camel_partition_table_new (CamelBlockFile *bs,
 
 		root = ptb->next;
 		camel_block_file_detach_block (bs, block);
-		camel_dlist_addtail (&cpi->partition, (CamelDListNode *)block);
+		camel_dlist_addtail (&cpi->partition, (CamelDListNode *) block);
 	} while (root);
 
 	return cpi;
@@ -242,7 +242,7 @@ camel_partition_table_sync (CamelPartitionTable *cpi)
 	CAMEL_PARTITION_TABLE_LOCK (cpi, lock);
 
 	if (cpi->blocks) {
-		bl = (CamelBlock *)cpi->partition.head;
+		bl = (CamelBlock *) cpi->partition.head;
 		bn = bl->next;
 		while (bn) {
 			ret = camel_block_file_sync_block (cpi->blocks, bl);

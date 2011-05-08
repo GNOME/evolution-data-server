@@ -376,11 +376,11 @@ impl_Cal_getFreeBusy (EGdbusCal *object, GDBusMethodInvocation *invocation, cons
 		gint i;
 
 		for (i = 0; user_list[i]; i++)
-			users = g_list_append (users, (gpointer)user_list[i]);
+			users = g_list_append (users, (gpointer) user_list[i]);
 	}
 
 	/* call the backend's get_free_busy method */
-	e_cal_backend_get_free_busy (cal->priv->backend, cal, invocation, users, (time_t)start, (time_t)end);
+	e_cal_backend_get_free_busy (cal->priv->backend, cal, invocation, users, (time_t) start, (time_t) end);
 
 	return TRUE;
 }

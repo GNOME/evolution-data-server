@@ -227,7 +227,7 @@ e_source_new_from_xml_node (xmlNodePtr node)
 
 	source = g_object_new (E_TYPE_SOURCE, NULL);
 
-	source->priv->uid = g_strdup ((gchar *)uid);
+	source->priv->uid = g_strdup ((gchar *) uid);
 	xmlFree (uid);
 
 	if (e_source_update_from_xml_node (source, node, NULL))
@@ -254,7 +254,7 @@ import_properties (ESource *source,
 		value = xmlGetProp (prop_node, (xmlChar *)"value");
 
 		if (name && value)
-			g_hash_table_insert (priv->properties, g_strdup ((gchar *)name), g_strdup ((gchar *)value));
+			g_hash_table_insert (priv->properties, g_strdup ((gchar *) name), g_strdup ((gchar *) value));
 
 		if (name)
 			xmlFree (name);
@@ -331,14 +331,14 @@ e_source_update_from_xml_node (ESource *source,
 		goto done;
 
 	if (source->priv->name == NULL
-	    || strcmp ((gchar *)name, source->priv->name) != 0
+	    || strcmp ((gchar *) name, source->priv->name) != 0
 	    || (source->priv->relative_uri == NULL && relative_uri != NULL)
 	    || (source->priv->relative_uri != NULL && relative_uri == NULL)
-	    || (relative_uri && source->priv->relative_uri && strcmp ((gchar *)relative_uri, source->priv->relative_uri) != 0)) {
+	    || (relative_uri && source->priv->relative_uri && strcmp ((gchar *) relative_uri, source->priv->relative_uri) != 0)) {
 		gchar *abs_uri = NULL;
 
 		g_free (source->priv->name);
-		source->priv->name = g_strdup ((gchar *)name);
+		source->priv->name = g_strdup ((gchar *) name);
 
 		if (source->priv->group) {
 			abs_uri = e_source_build_absolute_uri (source);
@@ -355,7 +355,7 @@ e_source_update_from_xml_node (ESource *source,
 			gchar *tmp = source->priv->absolute_uri;
 
 			tmp[strlen (tmp) - strlen (source->priv->relative_uri)] = 0;
-			source->priv->absolute_uri = g_strconcat (tmp, (gchar *)relative_uri, NULL);
+			source->priv->absolute_uri = g_strconcat (tmp, (gchar *) relative_uri, NULL);
 
 			g_free (tmp);
 		}
@@ -363,7 +363,7 @@ e_source_update_from_xml_node (ESource *source,
 		g_free (abs_uri);
 
 		g_free (source->priv->relative_uri);
-		source->priv->relative_uri = g_strdup ((gchar *)relative_uri);
+		source->priv->relative_uri = g_strdup ((gchar *) relative_uri);
 
 		changed = TRUE;
 	}
@@ -375,13 +375,13 @@ e_source_update_from_xml_node (ESource *source,
 		    (g_str_has_prefix ((const gchar *) absolute_uri, "file:") || g_str_equal ((const gchar *) absolute_uri, "local:/system")))
 			source->priv->absolute_uri = g_strdup ("local:system");
 		else
-			source->priv->absolute_uri = g_strdup ((gchar *)absolute_uri);
+			source->priv->absolute_uri = g_strdup ((gchar *) absolute_uri);
 		changed = TRUE;
 	}
 
 	if (color == NULL) {
 		/* It is okay for color_spec to be NULL. */
-		changed |= set_color_spec (source, (gchar *)color_spec);
+		changed |= set_color_spec (source, (gchar *) color_spec);
 	} else {
 		gchar buffer[8];
 		g_snprintf (buffer, sizeof (buffer), "#%s", color);
@@ -1064,7 +1064,7 @@ e_source_new_from_standalone_xml (const gchar *xml)
 	xmlNodePtr root;
 	ESource *source;
 
-	doc = xmlParseDoc ((xmlChar *)xml);
+	doc = xmlParseDoc ((xmlChar *) xml);
 	if (doc == NULL)
 		return NULL;
 

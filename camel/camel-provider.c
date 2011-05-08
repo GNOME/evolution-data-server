@@ -280,8 +280,8 @@ camel_provider_register (CamelProvider *provider)
 static gint
 provider_compare (gconstpointer a, gconstpointer b)
 {
-	const CamelProvider *cpa = (const CamelProvider *)a;
-	const CamelProvider *cpb = (const CamelProvider *)b;
+	const CamelProvider *cpa = (const CamelProvider *) a;
+	const CamelProvider *cpb = (const CamelProvider *) b;
 
 	return strcmp (cpa->name, cpb->name);
 }

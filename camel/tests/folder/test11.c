@@ -41,8 +41,8 @@ static CamelFolderInfo fi_list_3[] = {
 static gint
 cmp_fi (gconstpointer a, gconstpointer b)
 {
-	const CamelFolderInfo *fa = ((const CamelFolderInfo **)a)[0];
-	const CamelFolderInfo *fb = ((const CamelFolderInfo **)b)[0];
+	const CamelFolderInfo *fa = ((const CamelFolderInfo **) a)[0];
+	const CamelFolderInfo *fb = ((const CamelFolderInfo **) b)[0];
 
 	return strcmp (fa->full_name, fb->full_name);
 }

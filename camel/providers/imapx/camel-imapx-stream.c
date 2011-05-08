@@ -113,7 +113,7 @@ imapx_stream_read (CamelStream *stream,
                    GCancellable *cancellable,
                    GError **error)
 {
-	CamelIMAPXStream *is = (CamelIMAPXStream *)stream;
+	CamelIMAPXStream *is = (CamelIMAPXStream *) stream;
 	gssize max;
 
 	if (is->literal == 0 || n == 0)
@@ -146,7 +146,7 @@ imapx_stream_write (CamelStream *stream,
                     GCancellable *cancellable,
                     GError **error)
 {
-	CamelIMAPXStream *is = (CamelIMAPXStream *)stream;
+	CamelIMAPXStream *is = (CamelIMAPXStream *) stream;
 
 	io(is->tagprefix, "camel_imapx_write: '%.*s'\n", (gint)n, buffer);
 
@@ -174,7 +174,7 @@ imapx_stream_flush (CamelStream *stream,
 static gboolean
 imapx_stream_eos (CamelStream *stream)
 {
-	CamelIMAPXStream *is = (CamelIMAPXStream *)stream;
+	CamelIMAPXStream *is = (CamelIMAPXStream *) stream;
 
 	return is->literal == 0;
 }
@@ -257,7 +257,7 @@ camel_imapx_stream_new (CamelStream *source)
 	is = g_object_new (CAMEL_TYPE_IMAPX_STREAM, NULL);
 	is->source = g_object_ref (source);
 
-	return (CamelStream *)is;
+	return (CamelStream *) is;
 }
 
 GQuark
@@ -459,14 +459,14 @@ camel_imapx_stream_nstring_stream (CamelIMAPXStream *is,
 
 	switch (camel_imapx_stream_token (is, &token, &len, cancellable, &local_error)) {
 		case IMAPX_TOK_STRING:
-			mem = camel_stream_mem_new_with_buffer ((gchar *)token, len);
+			mem = camel_stream_mem_new_with_buffer ((gchar *) token, len);
 			*stream = mem;
 			break;
 		case IMAPX_TOK_LITERAL:
 			/* if len is big, we could automatically use a file backing */
 			camel_imapx_stream_set_literal (is, len);
 			mem = camel_stream_mem_new ();
-			if (camel_stream_write_to_stream ((CamelStream *)is, mem, cancellable, error) == -1) {
+			if (camel_stream_write_to_stream ((CamelStream *) is, mem, cancellable, error) == -1) {
 				g_object_unref (mem);
 				ret = -1;
 				break;
@@ -507,7 +507,7 @@ camel_imapx_stream_number (CamelIMAPXStream *is,
 		return 0;
 	}
 
-	return strtoull ((gchar *)token, 0, 10);
+	return strtoull ((gchar *) token, 0, 10);
 }
 
 gint

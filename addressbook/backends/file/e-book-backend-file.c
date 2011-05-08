@@ -115,7 +115,7 @@ static void
 string_to_dbt (const gchar *str, DBT *dbt)
 {
 	memset (dbt, 0, sizeof (*dbt));
-	dbt->data = (gpointer)str;
+	dbt->data = (gpointer) str;
 	dbt->size = strlen (str) + 1;
 	dbt->flags = DB_DBT_USERMEM;
 }
@@ -524,7 +524,7 @@ init_closure (EDataBookView *book_view, EBookBackendFile *bf)
 	closure->running = e_flag_new ();
 
 	g_object_set_data_full (G_OBJECT (book_view), "EBookBackendFile.BookView::closure",
-				closure, (GDestroyNotify)closure_destroy);
+				closure, (GDestroyNotify) closure_destroy);
 
 	return closure;
 }
@@ -821,7 +821,7 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 		dbc->c_close (dbc);
 	}
 
-	e_dbhash_foreach_key (ehash, (EDbHashFunc)e_book_backend_file_changes_foreach_key, &ctx);
+	e_dbhash_foreach_key (ehash, (EDbHashFunc) e_book_backend_file_changes_foreach_key, &ctx);
 
 	/* Send the changes */
 	if (db_error != DB_NOTFOUND) {
@@ -1139,8 +1139,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		env->set_errcall (env, file_errcall);
 
 		/* Set the allocation routines to the non-aborting GLib functions */
-		env->set_alloc (env, (gpointer (*)(gsize))g_try_malloc,
-				(gpointer (*)(gpointer , gsize))g_try_realloc,
+		env->set_alloc (env, (gpointer (*)(gsize)) g_try_malloc,
+				(gpointer (*)(gpointer , gsize)) g_try_realloc,
 				g_free);
 
 		db_error = (*env->open) (env, NULL, DB_CREATE | DB_INIT_MPOOL | DB_PRIVATE | DB_THREAD, 0);

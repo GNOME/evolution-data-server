@@ -1097,7 +1097,7 @@ e_book_backend_foreach_view (EBookBackend *backend,
 	iter = e_list_get_iterator (views);
 
 	while (e_iterator_is_valid (iter)) {
-		view = (EDataBookView*)e_iterator_get (iter);
+		view = (EDataBookView*) e_iterator_get (iter);
 
 		e_data_book_view_ref (view);
 		callback (view, user_data);
@@ -1155,7 +1155,7 @@ view_notify_remove (EDataBookView *view, gpointer id)
 void
 e_book_backend_notify_remove (EBookBackend *backend, const gchar *id)
 {
-	e_book_backend_foreach_view (backend, view_notify_remove, (gpointer)id);
+	e_book_backend_foreach_view (backend, view_notify_remove, (gpointer) id);
 }
 
 static void

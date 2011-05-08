@@ -588,7 +588,7 @@ camel_http_stream_new (CamelHttpMethod method, struct _CamelSession *session, Ca
 	stream->url = camel_url_new (str, NULL);
 	g_free (str);
 
-	return (CamelStream *)stream;
+	return (CamelStream *) stream;
 }
 
 CamelContentType *

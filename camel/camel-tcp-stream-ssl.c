@@ -191,7 +191,7 @@ ssl_auth_cert (gpointer data, PRFileDesc *sockfd, PRBool checksig, PRBool is_ser
 
 	cert = SSL_PeerCertificate (sockfd);
 	pinarg = SSL_RevealPinArg (sockfd);
-	status = CERT_VerifyCertNow ((CERTCertDBHandle *)data, cert,
+	status = CERT_VerifyCertNow ((CERTCertDBHandle *) data, cert,
 				     checksig, certUsageSSLClient, pinarg);
 
 	if (status != SECSuccess)
@@ -518,7 +518,7 @@ ssl_bad_cert (gpointer data, PRFileDesc *sockfd)
 				printf("adding cert '%s'\n", nick);
 
 				if (!cert->trust) {
-					cert->trust = (CERTCertTrust*)PORT_ArenaZAlloc (cert->arena, sizeof (CERTCertTrust));
+					cert->trust = (CERTCertTrust*) PORT_ArenaZAlloc (cert->arena, sizeof (CERTCertTrust));
 					CERT_DecodeTrustString(cert->trust, "P");
 				}
 

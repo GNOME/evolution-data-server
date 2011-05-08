@@ -78,7 +78,7 @@ e_xml_to_hash (xmlDoc *doc, EXmlHashType type)
 			continue;
 		}
 
-		g_hash_table_insert (hash, g_strdup ((gchar *)key), g_strdup ((gchar *)value));
+		g_hash_table_insert (hash, g_strdup ((gchar *) key), g_strdup ((gchar *) value));
 		xmlFree (key);
 		xmlFree (value);
 	}
@@ -135,7 +135,7 @@ e_xml_from_hash (GHashTable *hash,
 	doc->encoding = xmlStrdup ((xmlChar*)"UTF-8");
 	sd.type = type;
 	sd.doc = doc;
-	sd.root = xmlNewDocNode (doc, NULL, (xmlChar*)root_name, NULL);
+	sd.root = xmlNewDocNode (doc, NULL, (xmlChar*) root_name, NULL);
 	xmlDocSetRootElement (doc, sd.root);
 
 	g_hash_table_foreach (hash, foreach_save_func, &sd);
@@ -344,7 +344,7 @@ e_xmlhash_foreach_key_remove (EXmlHash *hash,
 	g_return_if_fail (hash != NULL);
 	g_return_if_fail (func != NULL);
 
-	g_hash_table_foreach_remove (hash->objects, (GHRFunc)func, user_data);
+	g_hash_table_foreach_remove (hash->objects, (GHRFunc) func, user_data);
 }
 
 /**

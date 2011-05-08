@@ -28,7 +28,7 @@ gint main (gint argc, gchar **argv)
 	camel_multipart_set_boundary(mp, "_=,.XYZ_Kangaroo_Meat_is_!_ABADF00D");
 	check(strcmp(camel_multipart_get_boundary(mp), "_=,.XYZ_Kangaroo_Meat_is_!_ABADF00D") == 0);
 
-	camel_medium_set_content ((CamelMedium *)msg, (CamelDataWrapper *)mp);
+	camel_medium_set_content ((CamelMedium *) msg, (CamelDataWrapper *) mp);
 	check (camel_multipart_get_number (mp) == 0);
 	check (camel_multipart_get_part (mp, 0) == NULL);
 	check (camel_multipart_get_part (mp, 1) == NULL);
@@ -100,7 +100,7 @@ gint main (gint argc, gchar **argv)
 	pull ();
 
 	push("compre content of multipart");
-	mp2 = (CamelMultipart *)camel_medium_get_content ((CamelMedium *)msg2);
+	mp2 = (CamelMultipart *) camel_medium_get_content ((CamelMedium *) msg2);
 	check (mp2 != NULL);
 	check (CAMEL_IS_MULTIPART (mp2));
 	check (camel_multipart_get_number (mp2) == 3);
@@ -127,7 +127,7 @@ gint main (gint argc, gchar **argv)
 	msg3 = test_message_read_file("test3-2.msg");
 
 	push("comparing again");
-	mp2 = (CamelMultipart *)camel_medium_get_content ((CamelMedium *)msg3);
+	mp2 = (CamelMultipart *) camel_medium_get_content ((CamelMedium *) msg3);
 	check (mp2 != NULL);
 	check (CAMEL_IS_MULTIPART (mp2));
 	check (camel_multipart_get_number (mp2) == 3);
@@ -161,7 +161,7 @@ gint main (gint argc, gchar **argv)
 	test_message_write_file(msg, "test3-3.msg");
 	msg2 = test_message_read_file("test3-3.msg");
 
-	mp2 = (CamelMultipart *)camel_medium_get_content ((CamelMedium *)msg2);
+	mp2 = (CamelMultipart *) camel_medium_get_content ((CamelMedium *) msg2);
 	check (mp2 != NULL);
 	check (CAMEL_IS_MULTIPART (mp2));
 	check (camel_multipart_get_number (mp2) == 3);
