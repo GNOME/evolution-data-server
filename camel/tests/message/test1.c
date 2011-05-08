@@ -40,17 +40,17 @@ setup (void)
 	gchar *p;
 
 	/* setup various edge and other general cases */
-	texts[0].text = "";
+	texts[0].text = g_strdup ("");
 	texts[0].len = 0;
-	texts[1].text = "";
+	texts[1].text = g_strdup ("");
 	texts[1].len = 1;
-	texts[2].text = "\n";
+	texts[2].text = g_strdup ("\n");
 	texts[2].len = 1;
-	texts[3].text = "A";
+	texts[3].text = g_strdup ("A");
 	texts[3].len = 1;
-	texts[4].text = "This is a test.\n.";
+	texts[4].text = g_strdup ("This is a test.\n.");
 	texts[4].len = strlen (texts[4].text);
-	texts[5].text = "This is a test.\n\n.\n";
+	texts[5].text = g_strdup ("This is a test.\n\n.\n");
 	texts[5].len = strlen (texts[5].text);
 	texts[6].text = g_malloc0 (1024);
 	texts[6].len = 1024;
@@ -90,16 +90,17 @@ setup (void)
 	texts[13].len = 102400;
 }
 
-static void cleanup (void)
+static void
+cleanup (void)
 {
 	gint i;
 
-	for (i=6;i<14;i++) {
+	for (i = 0; i < MAX_TEXTS; i++)
 		g_free (texts[i].text);
-	}
 }
 
-gint main (gint argc, gchar **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	CamelMimeMessage *msg, *msg2;
 	gint i, j;

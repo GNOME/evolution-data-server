@@ -121,6 +121,7 @@ gint main (gint argc, gchar **argv)
 	gint i, j, index;
 	gchar *path;
 	CamelStore *store;
+	CamelService *service;
 	GThread *threads[MAX_THREADS];
 	struct _threadinfo *info;
 	CamelFolder *folder;
@@ -137,15 +138,22 @@ gint main (gint argc, gchar **argv)
 
 	for (j = 0; j < G_N_ELEMENTS (local_providers); j++) {
 		for (index=0;index<2;index++) {
+			gchar *uid;
+
 			path = g_strdup_printf ("method %s %s", local_providers[j], index?"indexed":"nonindexed");
 			camel_test_start (path);
 			test_free (path);
 
 			push ("trying %s index %d", local_providers[j], index);
+			uid = g_strdup_printf ("test-uid-%d", j);
 			path = g_strdup_printf ("%s:///tmp/camel-test/%s", local_providers[j], local_providers[j]);
-			store = camel_session_get_store (session, path, &error);
+			service = camel_session_add_service (
+				session, uid, path,
+				CAMEL_PROVIDER_STORE, &error);
+			g_free (uid);
 			check_msg (error == NULL, "%s", error->message);
-			g_clear_error (&error);
+			check (CAMEL_IS_STORE (service));
+			store = CAMEL_STORE (service);
 			test_free (path);
 
 			if (index == 0)

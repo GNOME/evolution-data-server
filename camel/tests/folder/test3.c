@@ -137,6 +137,7 @@ static const gchar *stores[] = {
 
 gint main (gint argc, gchar **argv)
 {
+	CamelService *service;
 	CamelSession *session;
 	CamelStore *store;
 	CamelFolder *folder;
@@ -162,15 +163,21 @@ gint main (gint argc, gchar **argv)
 		const gchar *name = stores[i];
 		for (indexed = 0;indexed<2;indexed++) {
 			gchar *what = g_strdup_printf ("folder search: %s (%sindexed)", name, indexed?"":"non-");
+			gchar *uid;
 			gint flags;
 
 			camel_test_start (what);
 			test_free (what);
 
 			push ("getting store");
-			store = camel_session_get_store (session, stores[i], &error);
-			check_msg (error == NULL, "getting store: %s", error->message);
-			check (store != NULL);
+			uid = g_strdup_printf ("test-uid-%d", i);
+			service = camel_session_add_service (
+				session, uid, stores[i],
+				CAMEL_PROVIDER_STORE, &error);
+			g_free (uid);
+			check_msg (error == NULL, "adding store: %s", error->message);
+			check (CAMEL_IS_STORE (service));
+			store = CAMEL_STORE (service);
 			g_clear_error (&error);
 			pull ();
 

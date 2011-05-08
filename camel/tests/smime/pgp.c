@@ -80,12 +80,9 @@ camel_pgp_session_init (CamelPgpSession *session)
 static CamelSession *
 camel_pgp_session_new (const gchar *path)
 {
-	CamelSession *session;
-
-	session = g_object_new (CAMEL_TYPE_PGP_SESSION, NULL);
-	camel_session_construct (session, path);
-
-	return session;
+	return g_object_new (
+		CAMEL_TYPE_PGP_SESSION,
+		"user-data-dir", path, NULL);
 }
 
 gint main (gint argc, gchar **argv)

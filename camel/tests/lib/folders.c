@@ -195,6 +195,7 @@ test_folder_basic (CamelSession *session, const gchar *storename, gint local, gi
 {
 	CamelStore *store;
 	CamelFolder *folder;
+	CamelService *service;
 	gchar *what = g_strdup_printf ("testing store: %s", storename);
 	GError *error = NULL;
 
@@ -202,10 +203,11 @@ test_folder_basic (CamelSession *session, const gchar *storename, gint local, gi
 	test_free (what);
 
 	push ("getting store");
-	store = camel_session_get_store (session, storename, &error);
-	check_msg (error == NULL, "getting store: %s", error->message);
-	check (store != NULL);
-	g_clear_error (&error);
+	service = camel_session_add_service (
+		session, storename, storename, CAMEL_PROVIDER_STORE, &error);
+	check_msg (error == NULL, "adding store: %s", error->message);
+	check (CAMEL_IS_STORE (service));
+	store = CAMEL_STORE (service);
 	pull ();
 
 	/* local providers == no inbox */
@@ -329,6 +331,7 @@ void
 test_folder_message_ops (CamelSession *session, const gchar *name, gint local, const gchar *mailbox)
 {
 	CamelStore *store;
+	CamelService *service;
 	CamelFolder *folder;
 	CamelMimeMessage *msg;
 	gint j;
@@ -347,9 +350,11 @@ test_folder_message_ops (CamelSession *session, const gchar *name, gint local, c
 		test_free (what);
 
 		push ("getting store");
-		store = camel_session_get_store (session, name, &error);
-		check_msg (error == NULL, "getting store: %s", error->message);
-		check (store != NULL);
+		service = camel_session_add_service (
+			session, name, name, CAMEL_PROVIDER_STORE, &error);
+		check_msg (error == NULL, "adding store: %s", error->message);
+		check (CAMEL_IS_STORE (service));
+		store = CAMEL_STORE (service);
 		g_clear_error (&error);
 		pull ();
 

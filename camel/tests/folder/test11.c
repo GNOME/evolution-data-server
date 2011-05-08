@@ -17,25 +17,25 @@ static CamelSession *session;
 /* FIXME: flags aren't really right yet */
 /* ASCII sorted on full_name */
 static CamelFolderInfo fi_list_1[] = {
-	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#.", "Inbox", ".", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#.%23evolution/Junk", "Junk", ".#evolution/Junk", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#.%23evolution/Trash", "Trash", ".#evolution/Trash", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#testbox", "testbox", "testbox", CAMEL_FOLDER_CHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#testbox/foo", "foo", "testbox/foo", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#testbox2", "testbox2", "testbox2", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, ".", "Inbox", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, ".#evolution/Junk", "Junk", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, ".#evolution/Trash", "Trash", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, "testbox", "testbox", CAMEL_FOLDER_CHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, "testbox/foo", "foo", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, "testbox2", "testbox2", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
 };
 
 static CamelFolderInfo fi_list_2[] = {
-	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#.", "Inbox", ".", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#.%23evolution/Junk", "Junk", ".#evolution/Junk", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#.%23evolution/Trash", "Trash", ".#evolution/Trash", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#testbox", "testbox", "testbox", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#testbox2", "testbox2", "testbox2", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, ".", "Inbox", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, ".#evolution/Junk", "Junk", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, ".#evolution/Trash", "Trash", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, "testbox", "testbox", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, "testbox2", "testbox2", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
 };
 
 static CamelFolderInfo fi_list_3[] = {
-	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#testbox", "testbox", "testbox", CAMEL_FOLDER_CHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#testbox/foo", "foo", "testbox/foo", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, "testbox", "testbox", CAMEL_FOLDER_CHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, "testbox/foo", "foo", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
 };
 
 static gint
@@ -70,14 +70,13 @@ check_fi (CamelFolderInfo *fi, CamelFolderInfo *list, gint len)
 	for (i=0;i<len;i++) {
 		CamelFolderInfo *f = folders->pdata[i];
 
-		camel_test_push ("checking folder '%s'", list[i].uri);
+		camel_test_push ("checking folder '%s'", list[i].display_name);
 
-		check_msg (!strcmp (f->uri, list[i].uri), "got '%s' expecting '%s'", f->uri, list[i].uri);
 		check (!strcmp (f->full_name, list[i].full_name));
 
 		/* this might be translated, but we can't know */
 		camel_test_nonfatal ("Inbox not english");
-		check (!strcmp (f->name, list[i].name));
+		check (!strcmp (f->display_name, list[i].display_name));
 		camel_test_fatal ();
 
 		camel_test_nonfatal ("Flags mismatch");
@@ -95,6 +94,7 @@ main (gint argc, gchar **argv)
 {
 	CamelFolder *f1, *f2;
 	CamelStore *store;
+	CamelService *service;
 	CamelFolderInfo *fi;
 	GError *error = NULL;
 
@@ -105,7 +105,11 @@ main (gint argc, gchar **argv)
 	system ("/bin/rm -rf /tmp/camel-test");
 
 	session = camel_test_session_new ("/tmp/camel-test");
-	store = camel_session_get_store (session, "maildir:///tmp/camel-test/maildir", NULL);
+	service = camel_session_add_service (
+		session, "test-uid",
+		"maildir:///tmp/camel-test/maildir",
+		CAMEL_PROVIDER_STORE, NULL);
+	store = CAMEL_STORE (service);
 
 	camel_test_start ("Maildir backward compatability tests");
 
