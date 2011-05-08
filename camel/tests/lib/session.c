@@ -19,10 +19,7 @@ camel_test_session_init (CamelTestSession *test_session)
 CamelSession *
 camel_test_session_new (const gchar *path)
 {
-	CamelSession *session;
-
-	session = g_object_new (CAMEL_TYPE_TEST_SESSION, NULL);
-	camel_session_construct (session, path);
-
-	return session;
+	return g_object_new (
+		CAMEL_TYPE_TEST_SESSION,
+		"user-data-dir", path, NULL);
 }

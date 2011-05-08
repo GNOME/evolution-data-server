@@ -82,6 +82,7 @@ get_folder (CamelFilterDriver *d,
 
 gint main (gint argc, gchar **argv)
 {
+	CamelService *service;
 	CamelSession *session;
 	CamelStore *store;
 	CamelFolder *folder;
@@ -105,9 +106,12 @@ gint main (gint argc, gchar **argv)
 	/* todo: work out how to do imap/pop/nntp tests */
 
 	push ("getting store");
-	store = camel_session_get_store (session, "mbox:///tmp/camel-test/mbox", &error);
+	service = camel_session_add_service (
+		session, "test-uid", "mbox:///tmp/camel-test/mbox",
+		CAMEL_PROVIDER_STORE, &error);
 	check_msg (error == NULL, "getting store: %s", error->message);
-	check (store != NULL);
+	check (CAMEL_IS_STORE (service));
+	store = CAMEL_STORE (service);
 	g_clear_error (&error);
 	pull ();
 
@@ -173,8 +177,10 @@ gint main (gint argc, gchar **argv)
 
 	push ("Executing filters");
 	camel_filter_driver_set_default_folder (driver, mailboxes[0].folder);
+#if 0  /* FIXME We no longer filter mbox files. */
 	camel_filter_driver_filter_mbox (
 		driver, "/tmp/camel-test/inbox", NULL, NULL, &error);
+#endif
 	check_msg (error == NULL, "%s", error->message);
 
 	/* now need to check the folder counts/etc */
@@ -190,8 +196,10 @@ gint main (gint argc, gchar **argv)
 		driver = camel_filter_driver_new (session);
 		camel_filter_driver_set_folder_func (driver, get_folder, NULL);
 		camel_filter_driver_add_rule (driver, brokens[i].name, brokens[i].match, brokens[i].action);
+#if 0  /* FIXME We no longer filter mbox files. */
 		camel_filter_driver_filter_mbox (
 			driver, "/tmp/camel-test/inbox", NULL, NULL, &error);
+#endif
 		check (error != NULL);
 		check_unref (driver, 1);
 		g_clear_error (&error);
@@ -205,8 +213,10 @@ gint main (gint argc, gchar **argv)
 		driver = camel_filter_driver_new (session);
 		camel_filter_driver_set_folder_func (driver, get_folder, NULL);
 		camel_filter_driver_add_rule (driver, brokena[i].name, brokena[i].match, brokena[i].action);
+#if 0  /* FIXME We no longer filter mbox files. */
 		camel_filter_driver_filter_mbox (
 			driver, "/tmp/camel-test/inbox", NULL, NULL, &error);
+#endif
 		check (error != NULL);
 		check_unref (driver, 1);
 		g_clear_error (&error);

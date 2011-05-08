@@ -29,10 +29,20 @@ worker (gpointer d)
 {
 	gint i;
 	CamelStore *store;
+	CamelService *service;
 	CamelFolder *folder;
 
 	for (i=0;i<MAX_LOOP;i++) {
-		store = camel_session_get_store (session, path, NULL);
+		gchar *uid;
+
+		uid = g_strdup_printf ("test-uid-%d", i);
+		service = camel_session_add_service (
+			session, uid, path, CAMEL_PROVIDER_STORE, NULL);
+		g_free (uid);
+
+		check (CAMEL_IS_STORE (service));
+		store = CAMEL_STORE (service);
+
 		folder = camel_store_get_folder_sync (
 			store, "testbox",
 			CAMEL_STORE_FOLDER_CREATE, NULL, NULL);
