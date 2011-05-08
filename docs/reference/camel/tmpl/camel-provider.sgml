@@ -219,6 +219,15 @@ camel-provider
 @text: 
 @value: 
 
+<!-- ##### STRUCT CamelProviderPortEntry ##### -->
+<para>
+
+</para>
+
+@port: 
+@desc: 
+@is_ssl: 
+
 <!-- ##### MACRO CAMEL_PROVIDER_CONF_DEFAULT_USERNAME ##### -->
 <para>
 
