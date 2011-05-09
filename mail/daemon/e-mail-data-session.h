@@ -47,6 +47,7 @@ void e_mail_data_session_release (EMailDataSession *session, GDBusConnection *co
 const char * e_mail_data_session_get_path_from_store (EMailDataSession *msession, gpointer store);
 CamelFolder * e_mail_session_get_folder_from_path (EMailDataSession *msession, const char *path);
 void e_mail_session_emit_ask_password (EMailDataSession *msession, const char *title, const gchar *prompt, const gchar *key);
+void e_mail_session_emit_send_receive_completed (EMailDataSession *msession);
 
 
 G_END_DECLS

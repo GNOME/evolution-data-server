@@ -342,10 +342,21 @@ impl_Mail_addPassword (EGdbusSessionCS *object, GDBusMethodInvocation *invocatio
 	if (remember)
 		e_passwords_remember_password ("Mail", key);
 
+	egdbus_session_cs_complete_add_password (object, invocation);
+
 	return TRUE;
 }
 
+static gboolean
+impl_Mail_sendReceive (EGdbusSessionCS *object, GDBusMethodInvocation *invocation, EMailDataSession *msession)
+{
+	ipc(printf("Initiating Send/Receive\n"));
 
+	mail_send_receive (NULL);
+
+	egdbus_session_cs_complete_send_receive (object, invocation);
+	return TRUE;
+}
 
 static void
 e_mail_data_session_get_property (GObject *object, guint property_id,
@@ -405,6 +416,7 @@ e_mail_data_session_init (EMailDataSession *self)
 	g_signal_connect (priv->gdbus_object, "handle-get-local-folder", G_CALLBACK (impl_Mail_getLocalFolder), self);
 	g_signal_connect (priv->gdbus_object, "handle-get-folder-from-uri", G_CALLBACK (impl_Mail_getFolderFromUri), self);
 	g_signal_connect (priv->gdbus_object, "handle-add-password", G_CALLBACK (impl_Mail_addPassword), self);
+	g_signal_connect (priv->gdbus_object, "handle-send-receive", G_CALLBACK (impl_Mail_sendReceive), self);
 
 	priv->stores_lock = g_mutex_new ();
 	priv->stores = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
@@ -502,4 +514,13 @@ e_mail_session_emit_ask_password (EMailDataSession *msession, const char *title,
 	
 	ipc(printf("Emitting for Ask Password: %s %s %s\n", title, prompt, key));
 	egdbus_session_cs_emit_get_password (priv->gdbus_object, title, prompt, key);
+}
+
+void
+e_mail_session_emit_send_receive_completed (EMailDataSession *msession)
+{
+	EMailDataSessionPrivate *priv = DATA_SESSION_PRIVATE(msession);
+	
+	ipc(printf("Emitting Send/Receive completed signal\n"));
+	egdbus_session_cs_emit_send_receive_complete (priv->gdbus_object);
 }
