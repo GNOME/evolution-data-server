@@ -63,6 +63,10 @@ struct _EGdbusSessionCSIface
     EGdbusSessionCS *object,
     GDBusMethodInvocation *invocation);
 
+  gboolean (*handle_cancel_operations) (
+    EGdbusSessionCS *object,
+    GDBusMethodInvocation *invocation);
+
 
   /* GObject signal class handlers for received D-Bus signals: */
   void (*send_receive_complete) (
@@ -107,6 +111,10 @@ void egdbus_session_cs_complete_get_folder_from_uri (
     const gchar *folder);
 
 void egdbus_session_cs_complete_send_receive (
+    EGdbusSessionCS *object,
+    GDBusMethodInvocation *invocation);
+
+void egdbus_session_cs_complete_cancel_operations (
     EGdbusSessionCS *object,
     GDBusMethodInvocation *invocation);
 
@@ -237,6 +245,22 @@ gboolean egdbus_session_cs_call_send_receive_finish (
     GError **error);
 
 gboolean egdbus_session_cs_call_send_receive_sync (
+    EGdbusSessionCS *proxy,
+    GCancellable *cancellable,
+    GError **error);
+
+void egdbus_session_cs_call_cancel_operations (
+    EGdbusSessionCS *proxy,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data);
+
+gboolean egdbus_session_cs_call_cancel_operations_finish (
+    EGdbusSessionCS *proxy,
+    GAsyncResult *res,
+    GError **error);
+
+gboolean egdbus_session_cs_call_cancel_operations_sync (
     EGdbusSessionCS *proxy,
     GCancellable *cancellable,
     GError **error);
