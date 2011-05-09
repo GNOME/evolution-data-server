@@ -40,6 +40,11 @@
       <arg name="folder" type="o" direction="out"/>
     </method>
 
+    <method name="sendReceive">
+    </method>
+    <signal name="sendReceiveComplete">
+    </signal>
+
     <signal name="GetPassword">
       <arg name="title" type="s"/>
       <arg name="prompt" type="s"/>

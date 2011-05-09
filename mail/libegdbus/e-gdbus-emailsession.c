@@ -550,6 +550,18 @@ static const _ExtendedGDBusMethodInfo _egdbus_session_cs_method_info_get_folder_
   "handle-get-folder-from-uri"
 };
 
+static const _ExtendedGDBusMethodInfo _egdbus_session_cs_method_info_send_receive =
+{
+  {
+    -1,
+    "sendReceive",
+    NULL,
+    NULL,
+    NULL
+  },
+  "handle-send-receive"
+};
+
 static const _ExtendedGDBusMethodInfo * const _egdbus_session_cs_method_info_pointers[] =
 {
   &_egdbus_session_cs_method_info_get_store,
@@ -557,7 +569,19 @@ static const _ExtendedGDBusMethodInfo * const _egdbus_session_cs_method_info_poi
   &_egdbus_session_cs_method_info_add_password,
   &_egdbus_session_cs_method_info_get_local_folder,
   &_egdbus_session_cs_method_info_get_folder_from_uri,
+  &_egdbus_session_cs_method_info_send_receive,
   NULL
+};
+
+static const _ExtendedGDBusSignalInfo _egdbus_session_cs_signal_info_send_receive_complete =
+{
+  {
+    -1,
+    "sendReceiveComplete",
+    NULL,
+    NULL
+  },
+  "send-receive-complete"
 };
 
 static const _ExtendedGDBusArgInfo _egdbus_session_cs_signal_info_get_password_ARG_title =
@@ -614,6 +638,7 @@ static const _ExtendedGDBusSignalInfo _egdbus_session_cs_signal_info_get_passwor
 
 static const _ExtendedGDBusSignalInfo * const _egdbus_session_cs_signal_info_pointers[] =
 {
+  &_egdbus_session_cs_signal_info_send_receive_complete,
   &_egdbus_session_cs_signal_info_get_password,
   NULL
 };
@@ -710,7 +735,28 @@ egdbus_session_cs_default_init (EGdbusSessionCSIface *iface)
     2,
     G_TYPE_DBUS_METHOD_INVOCATION, G_TYPE_STRING);
 
+  g_signal_new ("handle-send-receive",
+    G_TYPE_FROM_INTERFACE (iface),
+    G_SIGNAL_RUN_LAST,
+    G_STRUCT_OFFSET (EGdbusSessionCSIface, handle_send_receive),
+    g_signal_accumulator_true_handled,
+    NULL,
+    _cclosure_marshal_generic,
+    G_TYPE_BOOLEAN,
+    1,
+    G_TYPE_DBUS_METHOD_INVOCATION);
+
   /* GObject signals for received D-Bus signals: */
+  g_signal_new ("send-receive-complete",
+    G_TYPE_FROM_INTERFACE (iface),
+    G_SIGNAL_RUN_LAST,
+    G_STRUCT_OFFSET (EGdbusSessionCSIface, send_receive_complete),
+    NULL,
+    NULL,
+    _cclosure_marshal_generic,
+    G_TYPE_NONE,
+    0);
+
   g_signal_new ("get-password",
     G_TYPE_FROM_INTERFACE (iface),
     G_SIGNAL_RUN_LAST,
@@ -727,6 +773,13 @@ typedef EGdbusSessionCSIface EGdbusSessionCSInterface;
 #define egdbus_session_cs_get_type egdbus_session_cs_get_gtype
 G_DEFINE_INTERFACE (EGdbusSessionCS, egdbus_session_cs, G_TYPE_OBJECT);
 #undef egdbus_session_cs_get_type
+
+void
+egdbus_session_cs_emit_send_receive_complete (
+    EGdbusSessionCS *object)
+{
+  g_signal_emit_by_name (object, "send-receive-complete");
+}
 
 void
 egdbus_session_cs_emit_get_password (
@@ -1064,6 +1117,63 @@ _out:
 }
 
 void
+egdbus_session_cs_call_send_receive (
+    EGdbusSessionCS *proxy,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data)
+{
+  g_dbus_proxy_call (G_DBUS_PROXY (proxy),
+    "sendReceive",
+    g_variant_new ("()"),
+    G_DBUS_CALL_FLAGS_NONE,
+    -1,
+    cancellable,
+    callback,
+    user_data);
+}
+
+gboolean
+egdbus_session_cs_call_send_receive_finish (
+    EGdbusSessionCS *proxy,
+    GAsyncResult *res,
+    GError **error)
+{
+  GVariant *_ret;
+  _ret = g_dbus_proxy_call_finish (G_DBUS_PROXY (proxy), res, error);
+  if (_ret == NULL)
+    goto _out;
+  g_variant_get (_ret,
+                 "()");
+  g_variant_unref (_ret);
+_out:
+  return _ret != NULL;
+}
+
+gboolean
+egdbus_session_cs_call_send_receive_sync (
+    EGdbusSessionCS *proxy,
+    GCancellable *cancellable,
+    GError **error)
+{
+  GVariant *_ret;
+  _ret = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
+    "sendReceive",
+    g_variant_new ("()"),
+    G_DBUS_CALL_FLAGS_NONE,
+    -1,
+    cancellable,
+    error);
+  if (_ret == NULL)
+    goto _out;
+  g_variant_get (_ret,
+                 "()");
+  g_variant_unref (_ret);
+_out:
+  return _ret != NULL;
+}
+
+void
 egdbus_session_cs_complete_get_store (
     EGdbusSessionCS *object,
     GDBusMethodInvocation *invocation,
@@ -1114,6 +1224,15 @@ egdbus_session_cs_complete_get_folder_from_uri (
   g_dbus_method_invocation_return_value (invocation,
     g_variant_new ("(o)",
                    folder));
+}
+
+void
+egdbus_session_cs_complete_send_receive (
+    EGdbusSessionCS *object,
+    GDBusMethodInvocation *invocation)
+{
+  g_dbus_method_invocation_return_value (invocation,
+    g_variant_new ("()"));
 }
 
 /* ------------------------------------------------------------------------ */
@@ -1563,6 +1682,18 @@ egdbus_session_cs_stub_dbus_interface_set_flags (GDBusInterface *interface,  GDB
 }
 
 static void
+_egdbus_session_cs_on_signal_send_receive_complete (
+    EGdbusSessionCS *object)
+{
+  EGdbusSessionCSStub *stub = EGDBUS_SESSION_CS_STUB (object);
+  if (stub->priv->connection == NULL)
+    return;
+  g_dbus_connection_emit_signal (stub->priv->connection,
+    NULL, stub->priv->object_path, "org.gnome.evolution.dataserver.mail.Session", "sendReceiveComplete",
+    g_variant_new ("()"), NULL);
+}
+
+static void
 _egdbus_session_cs_on_signal_get_password (
     EGdbusSessionCS *object,
     const gchar *title,
@@ -1583,6 +1714,7 @@ _egdbus_session_cs_on_signal_get_password (
 static void
 egdbus_session_cs_stub_iface_init (EGdbusSessionCSIface *iface)
 {
+  iface->send_receive_complete = _egdbus_session_cs_on_signal_send_receive_complete;
   iface->get_password = _egdbus_session_cs_on_signal_get_password;
 }
 
