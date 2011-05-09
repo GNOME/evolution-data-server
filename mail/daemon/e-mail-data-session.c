@@ -358,6 +358,18 @@ impl_Mail_sendReceive (EGdbusSessionCS *object, GDBusMethodInvocation *invocatio
 	return TRUE;
 }
 
+static gboolean
+impl_Mail_cancelOperations (EGdbusSessionCS *object, GDBusMethodInvocation *invocation, EMailDataSession *msession)
+{
+	ipc(printf("Canceling all Mail Operations\n"));
+
+	/* This is the only known reliable way to cancel an issued operation. No harm in canceling this. */
+	mail_cancel_all ();
+
+	egdbus_session_cs_complete_cancel_operations (object, invocation);
+	return TRUE;
+}
+
 static void
 e_mail_data_session_get_property (GObject *object, guint property_id,
                               GValue *value, GParamSpec *pspec)
@@ -417,6 +429,7 @@ e_mail_data_session_init (EMailDataSession *self)
 	g_signal_connect (priv->gdbus_object, "handle-get-folder-from-uri", G_CALLBACK (impl_Mail_getFolderFromUri), self);
 	g_signal_connect (priv->gdbus_object, "handle-add-password", G_CALLBACK (impl_Mail_addPassword), self);
 	g_signal_connect (priv->gdbus_object, "handle-send-receive", G_CALLBACK (impl_Mail_sendReceive), self);
+	g_signal_connect (priv->gdbus_object, "handle-cancel-operations", G_CALLBACK (impl_Mail_cancelOperations), self);
 
 	priv->stores_lock = g_mutex_new ();
 	priv->stores = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);

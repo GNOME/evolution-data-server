@@ -42,6 +42,8 @@
 
     <method name="sendReceive">
     </method>
+    <method name="cancelOperations">
+    </method>    
     <signal name="sendReceiveComplete">
     </signal>
 
