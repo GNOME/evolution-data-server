@@ -59,8 +59,15 @@ struct _EGdbusSessionCSIface
     GDBusMethodInvocation *invocation,
     const gchar *uri);
 
+  gboolean (*handle_send_receive) (
+    EGdbusSessionCS *object,
+    GDBusMethodInvocation *invocation);
+
 
   /* GObject signal class handlers for received D-Bus signals: */
+  void (*send_receive_complete) (
+    EGdbusSessionCS *object);
+
   void (*get_password) (
     EGdbusSessionCS *object,
     const gchar *title,
@@ -99,9 +106,16 @@ void egdbus_session_cs_complete_get_folder_from_uri (
     GDBusMethodInvocation *invocation,
     const gchar *folder);
 
+void egdbus_session_cs_complete_send_receive (
+    EGdbusSessionCS *object,
+    GDBusMethodInvocation *invocation);
+
 
 
 /* D-Bus signal emissions functions: */
+void egdbus_session_cs_emit_send_receive_complete (
+    EGdbusSessionCS *object);
+
 void egdbus_session_cs_emit_get_password (
     EGdbusSessionCS *object,
     const gchar *title,
@@ -208,6 +222,22 @@ gboolean egdbus_session_cs_call_get_folder_from_uri_sync (
     EGdbusSessionCS *proxy,
     const gchar *uri,
     gchar **out_folder,
+    GCancellable *cancellable,
+    GError **error);
+
+void egdbus_session_cs_call_send_receive (
+    EGdbusSessionCS *proxy,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data);
+
+gboolean egdbus_session_cs_call_send_receive_finish (
+    EGdbusSessionCS *proxy,
+    GAsyncResult *res,
+    GError **error);
+
+gboolean egdbus_session_cs_call_send_receive_sync (
+    EGdbusSessionCS *proxy,
     GCancellable *cancellable,
     GError **error);
 
