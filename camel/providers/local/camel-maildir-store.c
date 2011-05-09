@@ -655,6 +655,37 @@ maildir_store_get_inbox_sync (CamelStore *store,
 }
 
 static gboolean
+rename_traverse_fi (CamelStore *store, CamelStoreClass *store_class, CamelFolderInfo *fi, const gchar *old_full_name_prefix, const gchar *new_full_name_prefix, GCancellable *cancellable, GError **error)
+{
+	gint old_prefix_len = strlen (old_full_name_prefix);
+	gboolean ret = TRUE;
+
+	while (fi && ret) {
+		if (fi->full_name && g_str_has_prefix (fi->full_name, old_full_name_prefix)) {
+			gchar *new_full_name, *old_dir, *new_dir;
+
+			new_full_name = g_strconcat (new_full_name_prefix, fi->full_name + old_prefix_len, NULL);
+			old_dir = maildir_full_name_to_dir_name (fi->full_name);
+			new_dir = maildir_full_name_to_dir_name (new_full_name);
+
+			/* Chain up to parent's rename_folder_sync() method. */
+			ret = store_class->rename_folder_sync (store, old_dir, new_dir, cancellable, error);
+
+			g_free (old_dir);
+			g_free (new_dir);
+			g_free (new_full_name);
+		}
+
+		if (fi->child && !rename_traverse_fi (store, store_class, fi->child, old_full_name_prefix, new_full_name_prefix, cancellable, error))
+			return FALSE;
+
+		fi = fi->next;
+	}
+
+	return ret;
+}
+
+static gboolean
 maildir_store_rename_folder_sync (CamelStore *store,
                                   const gchar *old,
                                   const gchar *new,
@@ -664,6 +695,7 @@ maildir_store_rename_folder_sync (CamelStore *store,
 	CamelStoreClass *store_class;
 	gboolean ret;
 	gchar *old_dir, *new_dir;
+	CamelFolderInfo *subfolders;
 
 	if (strcmp(old, ".") == 0) {
 		g_set_error (
@@ -691,6 +723,8 @@ maildir_store_rename_folder_sync (CamelStore *store,
 		return FALSE;
 	}
 
+	subfolders = maildir_store_get_folder_info_sync (store, old, CAMEL_STORE_FOLDER_INFO_RECURSIVE | CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL, cancellable, NULL);
+
 	old_dir = maildir_full_name_to_dir_name (old);
 	new_dir = maildir_full_name_to_dir_name (new);
 
@@ -698,6 +732,13 @@ maildir_store_rename_folder_sync (CamelStore *store,
 	store_class = CAMEL_STORE_CLASS (camel_maildir_store_parent_class);
 	ret = store_class->rename_folder_sync (
 		store, old_dir, new_dir, cancellable, error);
+
+	if (subfolders) {
+		if (ret)
+			ret = rename_traverse_fi (store, store_class, subfolders->child, old, new, cancellable, error);
+
+		camel_store_free_folder_info (store, subfolders);
+	}
 
 	g_free (old_dir);
 	g_free (new_dir);
