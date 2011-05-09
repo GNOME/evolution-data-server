@@ -41,6 +41,7 @@
 #include "mail-send-recv.h"
 #include "mail-session.h"
 #include "mail-tools.h"
+#include "e-mail-data-session.h"
 
 #define d(x) x
 
@@ -52,6 +53,9 @@
 
 /* Prefix for window size GConf keys */
 #define GCONF_KEY_PREFIX "/apps/evolution/mail/send_recv"
+
+/* Data Session for IPC stuffs */
+extern EMailDataSession *data_session;
 
 /* send/receive email */
 
@@ -787,6 +791,7 @@ receive_done (const gchar *uri, gpointer data)
 	info->data->infos = g_list_remove(info->data->infos, info);
 
 	if (g_hash_table_size(info->data->active) == 0) {
+		e_mail_session_emit_send_receive_completed (data_session);
 		if (info->data->gd)
 			gtk_widget_destroy((GtkWidget *)info->data->gd);
 		free_send_data();
@@ -983,10 +988,13 @@ mail_send_receive (GtkWindow *parent)
 	EAccount *account;
 	GList *scan;
 
+	
 	if (send_recv_dialog != NULL) {
+#if 0		
 		if (parent != NULL && gtk_widget_get_realized (send_recv_dialog)) {
 			gtk_window_present (GTK_WINDOW (send_recv_dialog));
 		}
+#endif		
 		return send_recv_dialog;
 	}
 
