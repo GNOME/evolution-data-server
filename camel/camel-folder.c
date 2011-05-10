@@ -3170,7 +3170,8 @@ camel_folder_get_message_sync (CamelFolder *folder,
 	g_return_val_if_fail (class->get_message_sync != NULL, NULL);
 
 	camel_operation_push_message (
-		cancellable, _("Retrieving message '%s'"), message_uid);
+		cancellable, _("Retrieving message '%s' in %s"),
+		message_uid, camel_folder_get_display_name (folder));
 
 	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
 
