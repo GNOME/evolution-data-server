@@ -724,7 +724,7 @@ msgstr "Uspešno zaključeno"
 #: ../addressbook/libedata-book/e-data-book.c:174
 #: ../calendar/libedata-cal/e-data-cal.c:109
 msgid "Repository offline"
-msgstr "Odložišče ni povezano"
+msgstr "Skladišče ni povezano"
 
 #: ../addressbook/libedata-book/e-data-book.c:175
 #: ../calendar/libecal/e-cal.c:4159
@@ -1240,7 +1240,7 @@ msgstr "Zaledje je zaposleno"
 
 #: ../calendar/libecal/e-cal.c:4147
 msgid "Repository is offline"
-msgstr "Odložišče ni na zvezi"
+msgstr "Skladišče ni na zvezi"
 
 #: ../calendar/libecal/e-cal.c:4149
 msgid "No such calendar"
