@@ -1171,9 +1171,9 @@ compare_uids (gconstpointer a,
 	info2 = (CamelMessageInfoBase *)camel_folder_get_message_info (folder, uid2);
 
 	if (data->sort == 'u') {
-		ret = g_strcmp0 (info1->subject, info2->subject);
+		ret = g_ascii_strcasecmp (info1->subject ? info1->subject : "", info2->subject ? info2->subject : "");
 	} else if (data->sort == 'e') {
-		ret = g_strcmp0 (info1->from, info2->from);
+		ret = g_ascii_strcasecmp (info1->from ? info1->from : "" , info2->from ? info2->from : "");
 	} else if (data->sort == 'r') {
 		ret = info1->date_received - info2->date_received;
 	}
