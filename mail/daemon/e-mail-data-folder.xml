@@ -134,6 +134,12 @@
       <arg name="expression" type="s" direction="in"/>	    	    	    	    	    
       <arg name="uids" type="as" direction="out"/>	    	    	    	    
     </method>  
+    <method name="searchSortByExpression">
+      <arg name="expression" type="s" direction="in"/>	    	    	    	    	    
+      <arg name="sort" type="s" direction="in"/>	    	    	    	    	    
+      <arg name="ascending" type="b" direction="in"/>	    	    	    	    	    
+      <arg name="uids" type="as" direction="out"/>	    	    	    	    
+    </method>      
     <method name="searchByUids">
       <arg name="expression" type="s" direction="in"/>	    	    	    	    	    
       <arg name="searchuids" type="as" direction="in"/>	    	    	    	    	    

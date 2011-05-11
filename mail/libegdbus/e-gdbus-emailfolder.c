@@ -1331,6 +1331,76 @@ static const _ExtendedGDBusMethodInfo _egdbus_folder_cf_method_info_search_by_ex
   "handle-search-by-expression"
 };
 
+static const _ExtendedGDBusArgInfo _egdbus_folder_cf_method_info_search_sort_by_expression_IN_ARG_expression =
+{
+  {
+    -1,
+    "expression",
+    "s",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo _egdbus_folder_cf_method_info_search_sort_by_expression_IN_ARG_sort =
+{
+  {
+    -1,
+    "sort",
+    "s",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo _egdbus_folder_cf_method_info_search_sort_by_expression_IN_ARG_ascending =
+{
+  {
+    -1,
+    "ascending",
+    "b",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo * const _egdbus_folder_cf_method_info_search_sort_by_expression_IN_ARG_pointers[] =
+{
+  &_egdbus_folder_cf_method_info_search_sort_by_expression_IN_ARG_expression,
+  &_egdbus_folder_cf_method_info_search_sort_by_expression_IN_ARG_sort,
+  &_egdbus_folder_cf_method_info_search_sort_by_expression_IN_ARG_ascending,
+  NULL
+};
+
+static const _ExtendedGDBusArgInfo _egdbus_folder_cf_method_info_search_sort_by_expression_OUT_ARG_uids =
+{
+  {
+    -1,
+    "uids",
+    "as",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo * const _egdbus_folder_cf_method_info_search_sort_by_expression_OUT_ARG_pointers[] =
+{
+  &_egdbus_folder_cf_method_info_search_sort_by_expression_OUT_ARG_uids,
+  NULL
+};
+
+static const _ExtendedGDBusMethodInfo _egdbus_folder_cf_method_info_search_sort_by_expression =
+{
+  {
+    -1,
+    "searchSortByExpression",
+    (GDBusArgInfo **) &_egdbus_folder_cf_method_info_search_sort_by_expression_IN_ARG_pointers,
+    (GDBusArgInfo **) &_egdbus_folder_cf_method_info_search_sort_by_expression_OUT_ARG_pointers,
+    NULL
+  },
+  "handle-search-sort-by-expression"
+};
+
 static const _ExtendedGDBusArgInfo _egdbus_folder_cf_method_info_search_by_uids_IN_ARG_expression =
 {
   {
@@ -1559,6 +1629,7 @@ static const _ExtendedGDBusMethodInfo * const _egdbus_folder_cf_method_info_poin
   &_egdbus_folder_cf_method_info_get_uids,
   &_egdbus_folder_cf_method_info_get_message,
   &_egdbus_folder_cf_method_info_search_by_expression,
+  &_egdbus_folder_cf_method_info_search_sort_by_expression,
   &_egdbus_folder_cf_method_info_search_by_uids,
   &_egdbus_folder_cf_method_info_get_message_info,
   &_egdbus_folder_cf_method_info_transfer_messages_to,
@@ -1958,6 +2029,17 @@ egdbus_folder_cf_default_init (EGdbusFolderCFIface *iface)
     G_TYPE_BOOLEAN,
     2,
     G_TYPE_DBUS_METHOD_INVOCATION, G_TYPE_STRING);
+
+  g_signal_new ("handle-search-sort-by-expression",
+    G_TYPE_FROM_INTERFACE (iface),
+    G_SIGNAL_RUN_LAST,
+    G_STRUCT_OFFSET (EGdbusFolderCFIface, handle_search_sort_by_expression),
+    g_signal_accumulator_true_handled,
+    NULL,
+    _cclosure_marshal_generic,
+    G_TYPE_BOOLEAN,
+    4,
+    G_TYPE_DBUS_METHOD_INVOCATION, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
 
   g_signal_new ("handle-search-by-uids",
     G_TYPE_FROM_INTERFACE (iface),
@@ -3691,6 +3773,79 @@ _out:
 }
 
 void
+egdbus_folder_cf_call_search_sort_by_expression (
+    EGdbusFolderCF *proxy,
+    const gchar *expression,
+    const gchar *sort,
+    gboolean ascending,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data)
+{
+  g_dbus_proxy_call (G_DBUS_PROXY (proxy),
+    "searchSortByExpression",
+    g_variant_new ("(ssb)",
+                   expression,
+                   sort,
+                   ascending),
+    G_DBUS_CALL_FLAGS_NONE,
+    -1,
+    cancellable,
+    callback,
+    user_data);
+}
+
+gboolean
+egdbus_folder_cf_call_search_sort_by_expression_finish (
+    EGdbusFolderCF *proxy,
+    gchar ***out_uids,
+    GAsyncResult *res,
+    GError **error)
+{
+  GVariant *_ret;
+  _ret = g_dbus_proxy_call_finish (G_DBUS_PROXY (proxy), res, error);
+  if (_ret == NULL)
+    goto _out;
+  g_variant_get (_ret,
+                 "(^as)",
+                 out_uids);
+  g_variant_unref (_ret);
+_out:
+  return _ret != NULL;
+}
+
+gboolean
+egdbus_folder_cf_call_search_sort_by_expression_sync (
+    EGdbusFolderCF *proxy,
+    const gchar *expression,
+    const gchar *sort,
+    gboolean ascending,
+    gchar ***out_uids,
+    GCancellable *cancellable,
+    GError **error)
+{
+  GVariant *_ret;
+  _ret = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
+    "searchSortByExpression",
+    g_variant_new ("(ssb)",
+                   expression,
+                   sort,
+                   ascending),
+    G_DBUS_CALL_FLAGS_NONE,
+    -1,
+    cancellable,
+    error);
+  if (_ret == NULL)
+    goto _out;
+  g_variant_get (_ret,
+                 "(^as)",
+                 out_uids);
+  g_variant_unref (_ret);
+_out:
+  return _ret != NULL;
+}
+
+void
 egdbus_folder_cf_call_search_by_uids (
     EGdbusFolderCF *proxy,
     const gchar *expression,
@@ -4223,6 +4378,17 @@ egdbus_folder_cf_complete_get_message (
 
 void
 egdbus_folder_cf_complete_search_by_expression (
+    EGdbusFolderCF *object,
+    GDBusMethodInvocation *invocation,
+    const gchar *const *uids)
+{
+  g_dbus_method_invocation_return_value (invocation,
+    g_variant_new ("(^as)",
+                   uids));
+}
+
+void
+egdbus_folder_cf_complete_search_sort_by_expression (
     EGdbusFolderCF *object,
     GDBusMethodInvocation *invocation,
     const gchar *const *uids)

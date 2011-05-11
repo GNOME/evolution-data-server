@@ -5,6 +5,7 @@
 #include "e-mail-data-folder.h"
 #include "e-mail-data-session.h"
 #include "e-gdbus-emailfolder.h"
+#include "mail-send-recv.h"
 #include <camel/camel.h>
 #include "mail-ops.h"
 #include "utils.h"
@@ -883,7 +884,7 @@ info_from_variant (CamelFolder *folder, GVariant *vinfo)
       	g_variant_iter_init (&aiter, item);
 	
       	while ((aitem = g_variant_iter_next_value (&aiter))) {
-		char *str = g_variant_get_string (aitem, NULL);
+		const char *str = g_variant_get_string (aitem, NULL);
 		if (str && *str)
 			camel_flag_set (&info->user_flags, str, TRUE);
         }
@@ -1086,6 +1087,8 @@ typedef struct _email_folder_search_data {
 	EGdbusFolderCF *object;
 	GDBusMethodInvocation *invocation;
 	char *query;
+	char *sort;
+	gboolean ascending;
 	GPtrArray *query_uids;
 	GPtrArray *result_uids;
 }EMailFolderSearchData;
@@ -1141,6 +1144,115 @@ impl_Mail_searchByExpression (EGdbusFolderCF *object, GDBusMethodInvocation *inv
 	ipc(printf("Search by expr : %s : %s\n", priv->path, expression));
 
 	mail_operate_on_folder (priv->folder, search_expr_operate, search_expr_done, data);
+	
+
+	return TRUE;
+}
+
+struct _sort_data {
+	CamelFolder *folder;
+	char sort; /* u- subject, e- sender, r-datereceived */
+	gboolean ascending;
+};
+
+static gint
+compare_uids (gconstpointer a,
+              gconstpointer b,
+              gpointer user_data)
+{
+	const gchar *uid1 = *(const gchar **) a;
+	const gchar *uid2 = *(const gchar **) b;
+	struct _sort_data *data = (struct _sort_data *) user_data;
+	CamelFolder *folder = data->folder;
+	CamelMessageInfoBase *info1, *info2;
+	gint ret=0;
+
+	info1 = (CamelMessageInfoBase *)camel_folder_get_message_info (folder, uid1);
+	info2 = (CamelMessageInfoBase *)camel_folder_get_message_info (folder, uid2);
+
+	if (data->sort == 'u') {
+		ret = g_strcmp0 (info1->subject, info2->subject);
+	} else if (data->sort == 'e') {
+		ret = g_strcmp0 (info1->from, info2->from);
+	} else if (data->sort == 'r') {
+		ret = info1->date_received - info2->date_received;
+	}
+
+	if (!data->ascending)
+		ret = -ret;
+
+	camel_message_info_free (info1);
+	camel_message_info_free (info2);
+
+	return ret;
+}
+
+static gboolean
+search_sort_expr_operate (CamelFolder *folder, gpointer sdata, GError **error)
+{
+	EMailFolderSearchData *data = (EMailFolderSearchData *)sdata;
+	struct _sort_data *sort = g_new0(struct _sort_data, 1);
+
+	sort->folder = folder;
+	if (g_strcmp0 (data->sort, "subject") == 0)
+		sort->sort = 'u';
+	else if (g_strcmp0 (data->sort, "sender") == 0)
+		sort->sort = 'e';
+	else /* Date received*/
+		sort->sort = 'r';
+	
+	sort->ascending = data->ascending;
+
+	data->result_uids = camel_folder_search_by_expression (folder, data->query, error);
+	g_qsort_with_data (data->result_uids->pdata, data->result_uids->len, sizeof (gpointer), compare_uids, sort);
+	g_free (sort);
+
+	return TRUE;
+}
+
+static void
+search_sort_expr_done (gboolean success, gpointer sdata, GError *error)
+{
+	EMailFolderSearchData *data = (EMailFolderSearchData *)sdata;
+	EMailDataFolderPrivate *priv = DATA_FOLDER_PRIVATE(data->mfolder);
+	
+	g_ptr_array_add (data->result_uids, NULL);
+
+	if (error && error->message) {
+		g_warning ("Search Sort by expr failed: %s: %s\n", priv->path, error->message);
+		g_dbus_method_invocation_return_gerror (data->invocation, error);		
+		ipc(printf("Search Sort by expr : %s failed: %s\n", priv->path, error->message));
+		return;
+	}
+
+	egdbus_folder_cf_complete_search_sort_by_expression (data->object, data->invocation, (const gchar *const *)data->result_uids->pdata);
+
+	g_ptr_array_remove_index_fast (data->result_uids, data->result_uids->len-1);
+	ipc(printf("Search Sort messages by expr: %s success: %d results\n", priv->path, data->result_uids->len));
+
+	camel_folder_search_free (priv->folder, data->result_uids);
+	g_free (data->query);
+	g_free (data->sort);
+	g_free (data);
+}
+
+static gboolean
+impl_Mail_searchSortByExpression (EGdbusFolderCF *object, GDBusMethodInvocation *invocation, const char *expression, const char *sort, gboolean ascending, EMailDataFolder *mfolder)
+{
+	EMailDataFolderPrivate *priv = DATA_FOLDER_PRIVATE(mfolder);
+	EMailFolderSearchData *data;
+
+
+	data = g_new0 (EMailFolderSearchData, 1);
+	data->object = object;
+	data->mfolder = mfolder;	
+	data->invocation = invocation;
+	data->query = g_strdup (expression);
+	data->sort = g_strdup (sort);
+	data->ascending = ascending;
+	ipc(printf("Search Sort by expr : %s : %s: %s: %d\n", priv->path, expression, sort, ascending));
+
+	mail_operate_on_folder (priv->folder, search_sort_expr_operate, search_sort_expr_done, data);
 	
 
 	return TRUE;
@@ -1540,6 +1652,7 @@ e_mail_data_folder_init (EMailDataFolder *self)
 	g_signal_connect (priv->gdbus_object, "handle-get-uids", G_CALLBACK (impl_Mail_getUids), self);
 	g_signal_connect (priv->gdbus_object, "handle-get-message", G_CALLBACK (impl_Mail_getMessage), self);
 	g_signal_connect (priv->gdbus_object, "handle-search-by-expression", G_CALLBACK (impl_Mail_searchByExpression), self);
+	g_signal_connect (priv->gdbus_object, "handle-search-sort-by-expression", G_CALLBACK (impl_Mail_searchSortByExpression), self);	
 	g_signal_connect (priv->gdbus_object, "handle-search-by-uids", G_CALLBACK (impl_Mail_searchByUids), self);
 	g_signal_connect (priv->gdbus_object, "handle-get-message-info", G_CALLBACK (impl_Mail_getMessageInfo), self);
 	g_signal_connect (priv->gdbus_object, "handle-transfer-messages-to", G_CALLBACK (impl_Mail_transferMessagesTo), self);
