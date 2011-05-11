@@ -159,6 +159,13 @@ struct _EGdbusFolderCFIface
     GDBusMethodInvocation *invocation,
     const gchar *expression);
 
+  gboolean (*handle_search_sort_by_expression) (
+    EGdbusFolderCF *object,
+    GDBusMethodInvocation *invocation,
+    const gchar *expression,
+    const gchar *sort,
+    gboolean ascending);
+
   gboolean (*handle_search_by_uids) (
     EGdbusFolderCF *object,
     GDBusMethodInvocation *invocation,
@@ -320,6 +327,11 @@ void egdbus_folder_cf_complete_get_message (
     const gchar *message);
 
 void egdbus_folder_cf_complete_search_by_expression (
+    EGdbusFolderCF *object,
+    GDBusMethodInvocation *invocation,
+    const gchar *const *uids);
+
+void egdbus_folder_cf_complete_search_sort_by_expression (
     EGdbusFolderCF *object,
     GDBusMethodInvocation *invocation,
     const gchar *const *uids);
@@ -856,6 +868,30 @@ gboolean egdbus_folder_cf_call_search_by_expression_finish (
 gboolean egdbus_folder_cf_call_search_by_expression_sync (
     EGdbusFolderCF *proxy,
     const gchar *expression,
+    gchar ***out_uids,
+    GCancellable *cancellable,
+    GError **error);
+
+void egdbus_folder_cf_call_search_sort_by_expression (
+    EGdbusFolderCF *proxy,
+    const gchar *expression,
+    const gchar *sort,
+    gboolean ascending,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data);
+
+gboolean egdbus_folder_cf_call_search_sort_by_expression_finish (
+    EGdbusFolderCF *proxy,
+    gchar ***out_uids,
+    GAsyncResult *res,
+    GError **error);
+
+gboolean egdbus_folder_cf_call_search_sort_by_expression_sync (
+    EGdbusFolderCF *proxy,
+    const gchar *expression,
+    const gchar *sort,
+    gboolean ascending,
     gchar ***out_uids,
     GCancellable *cancellable,
     GError **error);
