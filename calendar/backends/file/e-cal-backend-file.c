@@ -2629,47 +2629,94 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 }
 
-static void
-remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const gchar *rid)
+/**
+ * Remove one and only one instance. The object may be empty
+ * afterwards, in which case it will be removed completely.
+ *
+ * @uid    pointer to UID which must remain valid even if the object gets
+ *         removed
+ * @rid    NULL, "", or non-empty string when manipulating a specific recurrence;
+ *         also must remain valid
+ * @return modified object or NULL if it got removed
+ */
+static ECalBackendFileObject *
+remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const gchar *uid, const gchar *rid)
 {
 	gchar *hash_rid;
 	ECalComponent *comp;
 	struct icaltimetype current;
 
-	if (!rid || !*rid)
-		return;
+	/* only check for non-NULL below, empty string is detected here */
+	if (rid && !*rid)
+		rid = NULL;
 
-	if (g_hash_table_lookup_extended (obj_data->recurrences, rid, (gpointer *)&hash_rid, (gpointer *)&comp)) {
-		/* remove the component from our data */
+	if (rid) {
+		/* remove recurrence */
+		if (g_hash_table_lookup_extended (obj_data->recurrences, rid,
+		                                  (gpointer *)&hash_rid, (gpointer *)&comp)) {
+			/* remove the component from our data */
+			icalcomponent_remove_component (cbfile->priv->icalcomp,
+							e_cal_component_get_icalcomponent (comp));
+			cbfile->priv->comp = g_list_remove (cbfile->priv->comp, comp);
+			obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, comp);
+			g_hash_table_remove (obj_data->recurrences, rid);
+		} else {
+			/* not an error, only add EXDATE */
+		}
+		/* component empty? */
+		if (!obj_data->full_object) {
+			if (!obj_data->recurrences_list) {
+				/* empty now, remove it */
+				remove_component (cbfile, uid, obj_data);
+				return NULL;
+			} else {
+				return obj_data;
+			}
+		}
+		/* remove the main component from our data before modifying it */
 		icalcomponent_remove_component (cbfile->priv->icalcomp,
-						e_cal_component_get_icalcomponent (comp));
-		cbfile->priv->comp = g_list_remove (cbfile->priv->comp, comp);
-		obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, comp);
-		g_hash_table_remove (obj_data->recurrences, rid);
+						e_cal_component_get_icalcomponent (obj_data->full_object));
+		cbfile->priv->comp = g_list_remove (cbfile->priv->comp, obj_data->full_object);
+
+		/* add EXDATE or EXRULE to parent */
+		e_cal_util_remove_instances (e_cal_component_get_icalcomponent (obj_data->full_object),
+					     icaltime_from_string (rid), CALOBJ_MOD_THIS);
+
+		/* Since we are only removing one instance of recurrence
+		   event, update the last modified time on the component */
+		current = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
+		e_cal_component_set_last_modified (obj_data->full_object, &current);
+
+		/* add the modified object to the beginning of the list,
+		   so that it's always before any detached instance we
+		   might have */
+		icalcomponent_add_component (cbfile->priv->icalcomp,
+					     e_cal_component_get_icalcomponent (obj_data->full_object));
+		cbfile->priv->comp = g_list_prepend (cbfile->priv->comp, obj_data->full_object);
+	} else {
+		/* remove the main component from our data before deleting it */
+		if (!remove_component_from_intervaltree (cbfile, obj_data->full_object)) {
+			/* return without changing anything */
+			g_message (G_STRLOC " Could not remove component from interval tree!");
+			return obj_data;
+		}
+		icalcomponent_remove_component (cbfile->priv->icalcomp,
+						e_cal_component_get_icalcomponent (obj_data->full_object));
+		cbfile->priv->comp = g_list_remove (cbfile->priv->comp, obj_data->full_object);
+
+		/* remove parent */
+		g_object_unref (obj_data->full_object);
+		obj_data->full_object = NULL;
+
+		/* component may be empty now, check that */
+		if (!obj_data->recurrences_list) {
+			remove_component (cbfile, uid, obj_data);
+			return NULL;
+		}
 	}
 
-	if (!obj_data->full_object)
-		return;
-
-	/* remove the component from our data, temporarily */
-	icalcomponent_remove_component (cbfile->priv->icalcomp,
-					e_cal_component_get_icalcomponent (obj_data->full_object));
-	cbfile->priv->comp = g_list_remove (cbfile->priv->comp, obj_data->full_object);
-
-	e_cal_util_remove_instances (e_cal_component_get_icalcomponent (obj_data->full_object),
-				     icaltime_from_string (rid), CALOBJ_MOD_THIS);
-
-	/* Since we are only removing one instance of recurrence
-	   event, update the last modified time on the component */
-	current = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-	e_cal_component_set_last_modified (obj_data->full_object, &current);
-
-	/* add the modified object to the beginning of the list,
-	   so that it's always before any detached instance we
-	   might have */
-	icalcomponent_add_component (cbfile->priv->icalcomp,
-				     e_cal_component_get_icalcomponent (obj_data->full_object));
-	cbfile->priv->comp = g_list_prepend (cbfile->priv->comp, obj_data->full_object);
+	/* component still exists in a modified form */
+	return obj_data;
 }
 
 static gchar *
@@ -2730,8 +2777,6 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	if (rid && *rid)
 		recur_id = rid;
 
-	comp = obj_data->full_object;
-
 	switch (mod) {
 	case CALOBJ_MOD_ALL :
 		*old_object = get_object_string_from_fileobject (obj_data, recur_id);
@@ -2740,20 +2785,16 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 		*object = NULL;
 		break;
 	case CALOBJ_MOD_THIS :
-		if (!recur_id) {
-			*old_object = get_object_string_from_fileobject (obj_data, recur_id);
-			remove_component (cbfile, uid, obj_data);
-			*object = NULL;
-		} else {
-			*old_object = get_object_string_from_fileobject (obj_data, recur_id);
+		*old_object = get_object_string_from_fileobject (obj_data, recur_id);
 
-			remove_instance (cbfile, obj_data, recur_id);
-			if (comp)
-				*object = e_cal_component_get_as_string (comp);
-		}
+		obj_data = remove_instance (cbfile, obj_data, uid, recur_id);
+		if (obj_data && obj_data->full_object)
+			*object = e_cal_component_get_as_string (obj_data->full_object);
 		break;
 	case CALOBJ_MOD_THISANDPRIOR :
 	case CALOBJ_MOD_THISANDFUTURE :
+		comp = obj_data->full_object;
+
 		if (!recur_id || !*recur_id) {
 			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 			g_propagate_error (error, EDC_ERROR (ObjectNotFound));
@@ -2802,6 +2843,7 @@ cancel_received_object (ECalBackendFile *cbfile, icalcomponent *icalcomp, gchar 
 	ECalBackendFilePrivate *priv;
 	gchar *rid;
 	ECalComponent *comp;
+	const gchar *uid = icalcomponent_get_uid (icalcomp);
 
 	priv = cbfile->priv;
 
@@ -2809,7 +2851,7 @@ cancel_received_object (ECalBackendFile *cbfile, icalcomponent *icalcomp, gchar 
 	*new_object = NULL;
 
 	/* Find the old version of the component. */
-	obj_data = g_hash_table_lookup (priv->comp_uid_hash, icalcomponent_get_uid (icalcomp));
+	obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
 	if (!obj_data)
 		return FALSE;
 
@@ -2826,11 +2868,11 @@ cancel_received_object (ECalBackendFile *cbfile, icalcomponent *icalcomp, gchar 
 	/* new_object is kept NULL if not removing the instance */
 	rid = e_cal_component_get_recurid_as_string (comp);
 	if (rid && *rid) {
-		remove_instance (cbfile, obj_data, rid);
-		if (obj_data->full_object)
+		obj_data = remove_instance (cbfile, obj_data, uid, rid);
+		if (obj_data && obj_data->full_object)
 			*new_object = e_cal_component_get_as_string (obj_data->full_object);
 	} else
-		remove_component (cbfile, icalcomponent_get_uid (icalcomp), obj_data);
+		remove_component (cbfile, uid, obj_data);
 
 	g_free (rid);
 
@@ -3071,7 +3113,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 				if (obj_data->full_object)
 					old_object = e_cal_component_get_as_string (obj_data->full_object);
 				if (rid)
-					remove_instance (cbfile, obj_data, rid);
+					remove_instance (cbfile, obj_data, uid, rid);
 				else
 					remove_component (cbfile, uid, obj_data);
 
