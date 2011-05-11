@@ -1371,7 +1371,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 		gboolean sel=FALSE;
 
 		if (destination)
-			email = e_destination_get_address (destination);
+			email = e_destination_get_textrep (destination, TRUE);
 
 		if (!email || !*email)
 			continue;
@@ -1444,7 +1444,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 			const gchar *email=NULL;
 
 			if (destination1)
-				email = e_destination_get_address (destination1);
+				email = e_destination_get_textrep (destination1, TRUE);
 
 			if (email && *email) {
 
@@ -2476,7 +2476,7 @@ popup_activate_cut (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_ite
 	GtkClipboard *clipboard;
 
 	destination = name_selector_entry->priv->popup_destination;
-	contact_email =e_destination_get_address (destination);
+	contact_email =e_destination_get_textrep (destination, TRUE);
 
 	g_signal_handlers_block_by_func (name_selector_entry, user_insert_text, name_selector_entry);
 	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
@@ -2505,7 +2505,7 @@ popup_activate_copy (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_it
 	GtkClipboard *clipboard;
 
 	destination = name_selector_entry->priv->popup_destination;
-	contact_email = e_destination_get_address (destination);
+	contact_email = e_destination_get_textrep (destination, TRUE);
 
 	g_signal_handlers_block_by_func (name_selector_entry, user_insert_text, name_selector_entry);
 	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
@@ -2777,11 +2777,11 @@ copy_or_cut_clipboard (ENameSelectorEntry *name_selector_entry,
 		} else {
 			/* the contact is whole selected */
 			dest = find_destination_by_index (name_selector_entry, index);
-			if (dest && e_destination_get_address (dest)) {
+			if (dest && e_destination_get_textrep (dest, TRUE)) {
 				if (addresses->str && *addresses->str)
 					g_string_append (addresses, ", ");
 
-				g_string_append (addresses, e_destination_get_address (dest));
+				g_string_append (addresses, e_destination_get_textrep (dest, TRUE));
 
 				/* store the 'dest' as a value for the index */
 				g_hash_table_insert (hash, GINT_TO_POINTER (index), dest);
