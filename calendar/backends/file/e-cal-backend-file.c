@@ -446,6 +446,7 @@ e_cal_backend_file_get_static_capabilities (ECalBackendSync *backend, EDataCal *
 	*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS ","
 				  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
 				  CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED ","
+				  CAL_STATIC_CAPABILITY_REMOVE_ONLY_THIS ","
 				  CAL_STATIC_CAPABILITY_NO_THISANDPRIOR);
 }
 
@@ -2675,12 +2676,16 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data,
 		/* remove recurrence */
 		if (g_hash_table_lookup_extended (obj_data->recurrences, rid,
 		                                  (gpointer *)&hash_rid, (gpointer *)&comp)) {
-			/* Removing without parent? Report as removal. */
-			if (old_object && !obj_data->full_object)
+			/* Removing without parent or not modifying parent?
+			   Report removal to caller. */
+			if (old_object &&
+			    (!obj_data->full_object || mod == CALOBJ_MOD_ONLY_THIS))
 				*old_object = e_cal_component_get_as_string (comp);
 
-			/* Removing with parent? Report directly instead of going via caller. */
-			if (obj_data->full_object) {
+			/* Reporting parent modification to caller?
+			   Report directly instead of going via caller. */
+			if (obj_data->full_object &&
+			    mod != CALOBJ_MOD_ONLY_THIS) {
 				/* old object string not provided,
 				   instead rely on the view detecting
 				   whether it contains the id */
@@ -2696,6 +2701,10 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data,
 			cbfile->priv->comp = g_list_remove (cbfile->priv->comp, comp);
 			obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, comp);
 			g_hash_table_remove (obj_data->recurrences, rid);
+		} else if (mod == CALOBJ_MOD_ONLY_THIS) {
+			if (error)
+				g_propagate_error (error, EDC_ERROR (ObjectNotFound));
+			return obj_data;
 		} else {
 			/* not an error, only add EXDATE */
 		}
@@ -2709,6 +2718,11 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data,
 				return obj_data;
 			}
 		}
+
+		/* avoid modifying parent? */
+		if (mod == CALOBJ_MOD_ONLY_THIS)
+			return obj_data;
+
 		/* remove the main component from our data before modifying it */
 		icalcomponent_remove_component (cbfile->priv->icalcomp,
 						e_cal_component_get_icalcomponent (obj_data->full_object));
@@ -2736,6 +2750,15 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data,
 					     e_cal_component_get_icalcomponent (obj_data->full_object));
 		cbfile->priv->comp = g_list_prepend (cbfile->priv->comp, obj_data->full_object);
 	} else {
+		if (!obj_data->full_object) {
+			/* Nothing to do, parent doesn't exist. Tell
+			   caller about this? Not an error with
+			   CALOBJ_MOD_THIS. */
+			if (mod == CALOBJ_MOD_ONLY_THIS && error)
+				g_propagate_error (error, EDC_ERROR (ObjectNotFound));
+			return obj_data;
+		}
+
 		/* remove the main component from our data before deleting it */
 		if (!remove_component_from_intervaltree (cbfile, obj_data->full_object)) {
 			/* return without changing anything */
@@ -2810,6 +2833,7 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 	case CALOBJ_MOD_THIS:
 	case CALOBJ_MOD_THISANDPRIOR:
 	case CALOBJ_MOD_THISANDFUTURE:
+	case CALOBJ_MOD_ONLY_THIS:
 	case CALOBJ_MOD_ALL:
 		break;
 	default:
@@ -2839,8 +2863,6 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 		*object = NULL;
 		break;
 	case CALOBJ_MOD_ONLY_THIS:
-		/* not reached, keep compiler happy */
-		break;
 	case CALOBJ_MOD_THIS :
 		obj_data = remove_instance (cbfile, obj_data, uid, recur_id, mod, old_object, object, error);
 		break;
