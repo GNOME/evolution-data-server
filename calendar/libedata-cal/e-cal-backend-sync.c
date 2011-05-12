@@ -629,7 +629,7 @@ cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, guint32 opid, GC
 	ECalComponentId compid;
 
 	compid.uid = (gchar *) uid;
-	compid.rid = (gchar *) (mod == CALOBJ_MOD_THIS ? rid : NULL);
+	compid.rid = (gchar *) ((mod == CALOBJ_MOD_THIS || mod == CALOBJ_MOD_ONLY_THIS) ? rid : NULL);
 
 	e_cal_backend_sync_remove_object (E_CAL_BACKEND_SYNC (backend), cal, cancellable, uid, rid, mod, &old_object, &new_object, &error);
 
