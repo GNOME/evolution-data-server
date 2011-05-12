@@ -2196,6 +2196,16 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, GCanc
 
 	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, NoSuchCal);
 	e_return_data_cal_error_if_fail (calobj != NULL, ObjectNotFound);
+	switch (mod) {
+	case CALOBJ_MOD_THIS:
+	case CALOBJ_MOD_THISANDPRIOR:
+	case CALOBJ_MOD_THISANDFUTURE:
+	case CALOBJ_MOD_ALL:
+		break;
+	default:
+		g_propagate_error (error, EDC_ERROR (NotSupported));
+		return;
+	}
 
 	/* Parse the icalendar text */
 	icalcomp = icalparser_parse_string ((gchar *) calobj);
@@ -2394,6 +2404,9 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, GCanc
 			g_list_free (detached);
 		}
 		break;
+	case CALOBJ_MOD_ONLY_THIS:
+		// not reached, keep compiler happy
+		break;
 	}
 
 	save (cbfile);
@@ -2538,6 +2551,16 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal, GCanc
 
 	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, NoSuchCal);
 	e_return_data_cal_error_if_fail (uid != NULL, ObjectNotFound);
+	switch (mod) {
+	case CALOBJ_MOD_THIS:
+	case CALOBJ_MOD_THISANDPRIOR:
+	case CALOBJ_MOD_THISANDFUTURE:
+	case CALOBJ_MOD_ALL:
+		break;
+	default:
+		g_propagate_error (error, EDC_ERROR (NotSupported));
+		return;
+	}
 
 	*old_object = *object = NULL;
 
@@ -2559,6 +2582,9 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal, GCanc
 		remove_component (cbfile, uid, obj_data);
 
 		*object = NULL;
+		break;
+	case CALOBJ_MOD_ONLY_THIS:
+		/* not reached, keep compiler happy */
 		break;
 	case CALOBJ_MOD_THIS :
 		*old_object = get_object_string_from_fileobject (obj_data, recur_id);
