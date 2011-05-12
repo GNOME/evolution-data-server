@@ -2646,14 +2646,22 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
  * Remove one and only one instance. The object may be empty
  * afterwards, in which case it will be removed completely.
  *
+ * @mod    CALOBJ_MOD_THIS or CAL_OBJ_MOD_ONLY_THIS: the later only removes
+ *         the instance, the former also adds an EXDATE if rid is set
+ *         TODO: CAL_OBJ_MOD_ONLY_THIS
  * @uid    pointer to UID which must remain valid even if the object gets
  *         removed
  * @rid    NULL, "", or non-empty string when manipulating a specific recurrence;
  *         also must remain valid
+ * @error  may be NULL if caller is not interested in errors
  * @return modified object or NULL if it got removed
  */
 static ECalBackendFileObject *
-remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const gchar *uid, const gchar *rid)
+remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data,
+		 const gchar *uid, const gchar *rid,
+		 CalObjModType mod,
+		 gchar **old_object, gchar **object,
+		 GError **error)
 {
 	gchar *hash_rid;
 	ECalComponent *comp;
@@ -2667,6 +2675,10 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const
 		/* remove recurrence */
 		if (g_hash_table_lookup_extended (obj_data->recurrences, rid,
 		                                  (gpointer *)&hash_rid, (gpointer *)&comp)) {
+			/* Removing without parent? Report as removal. */
+			if (old_object && !obj_data->full_object)
+				*old_object = e_cal_component_get_as_string (comp);
+
 			/* remove the component from our data */
 			icalcomponent_remove_component (cbfile->priv->icalcomp,
 							e_cal_component_get_icalcomponent (comp));
@@ -2691,7 +2703,9 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const
 						e_cal_component_get_icalcomponent (obj_data->full_object));
 		cbfile->priv->comp = g_list_remove (cbfile->priv->comp, obj_data->full_object);
 
-		/* add EXDATE or EXRULE to parent */
+		/* add EXDATE or EXRULE to parent, report as update */
+		if (old_object)
+			*old_object = e_cal_component_get_as_string (obj_data->full_object);
 		e_cal_util_remove_instances (e_cal_component_get_icalcomponent (obj_data->full_object),
 					     icaltime_from_string (rid), CALOBJ_MOD_THIS);
 
@@ -2699,6 +2713,10 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const
 		   event, update the last modified time on the component */
 		current = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
 		e_cal_component_set_last_modified (obj_data->full_object, &current);
+
+		/* report update */
+		if (object)
+			*object = e_cal_component_get_as_string (obj_data->full_object);
 
 		/* add the modified object to the beginning of the list,
 		   so that it's always before any detached instance we
@@ -2717,7 +2735,9 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const
 						e_cal_component_get_icalcomponent (obj_data->full_object));
 		cbfile->priv->comp = g_list_remove (cbfile->priv->comp, obj_data->full_object);
 
-		/* remove parent */
+		/* remove parent, report as removal */
+		if (old_object)
+			*old_object = e_cal_component_get_as_string (obj_data->full_object);
 		g_object_unref (obj_data->full_object);
 		obj_data->full_object = NULL;
 
@@ -2811,11 +2831,7 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 		/* not reached, keep compiler happy */
 		break;
 	case CALOBJ_MOD_THIS :
-		*old_object = get_object_string_from_fileobject (obj_data, recur_id);
-
-		obj_data = remove_instance (cbfile, obj_data, uid, recur_id);
-		if (obj_data && obj_data->full_object)
-			*object = e_cal_component_get_as_string (obj_data->full_object);
+		obj_data = remove_instance (cbfile, obj_data, uid, recur_id, mod, old_object, object, error);
 		break;
 	case CALOBJ_MOD_THISANDPRIOR :
 	case CALOBJ_MOD_THISANDFUTURE :
@@ -2888,17 +2904,17 @@ cancel_received_object (ECalBackendFile *cbfile, icalcomponent *icalcomp, gchar 
 		return FALSE;
 	}
 
-	if (obj_data->full_object)
-		*old_object = e_cal_component_get_as_string (obj_data->full_object);
-
-	/* new_object is kept NULL if not removing the instance */
 	rid = e_cal_component_get_recurid_as_string (comp);
 	if (rid && *rid) {
-		obj_data = remove_instance (cbfile, obj_data, uid, rid);
+		obj_data = remove_instance (cbfile, obj_data, uid, rid, CALOBJ_MOD_THIS, old_object, new_object, NULL);
 		if (obj_data && obj_data->full_object)
 			*new_object = e_cal_component_get_as_string (obj_data->full_object);
-	} else
+	} else {
+		/* report as removal by keeping *new_object NULL */
+		if (obj_data->full_object)
+			*old_object = e_cal_component_get_as_string (obj_data->full_object);
 		remove_component (cbfile, uid, obj_data);
+	}
 
 	g_free (rid);
 
@@ -3136,12 +3152,14 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 				fetch_attachments (backend, comp);
 			obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
 			if (obj_data) {
-				if (obj_data->full_object)
-					old_object = e_cal_component_get_as_string (obj_data->full_object);
-				if (rid)
-					remove_instance (cbfile, obj_data, uid, rid);
-				else
+				if (rid) {
+					remove_instance (cbfile, obj_data, uid, rid, CALOBJ_MOD_THIS,
+							 &old_object, &new_object, NULL);
+				} else {
+					if (obj_data->full_object)
+						old_object = e_cal_component_get_as_string (obj_data->full_object);
 					remove_component (cbfile, uid, obj_data);
+				}
 
 				if (!is_declined)
 					add_component (cbfile, comp, FALSE);
