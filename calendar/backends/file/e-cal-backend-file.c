@@ -2679,6 +2679,17 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data,
 			if (old_object && !obj_data->full_object)
 				*old_object = e_cal_component_get_as_string (comp);
 
+			/* Removing with parent? Report directly instead of going via caller. */
+			if (obj_data->full_object) {
+				/* old object string not provided,
+				   instead rely on the view detecting
+				   whether it contains the id */
+				ECalComponentId id;
+				id.uid = (gchar *)uid;
+				id.rid = (gchar *)rid;
+				e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbfile), &id, NULL, NULL);
+			}
+
 			/* remove the component from our data */
 			icalcomponent_remove_component (cbfile->priv->icalcomp,
 							e_cal_component_get_icalcomponent (comp));
