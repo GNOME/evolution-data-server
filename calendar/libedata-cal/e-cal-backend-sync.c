@@ -670,7 +670,7 @@ _e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, EServerMethod
 		ECalComponentId *id = g_new0 (ECalComponentId, 1);
 		id->uid = g_strdup (uid);
 
-		if (mod == CALOBJ_MOD_THIS)
+		if (mod == CALOBJ_MOD_THIS || mod == CALOBJ_MOD_ONLY_THIS)
 			id->rid = g_strdup (rid);
 
 		if (!object)
