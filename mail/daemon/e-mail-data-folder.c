@@ -1204,7 +1204,9 @@ search_sort_expr_operate (CamelFolder *folder, gpointer sdata, GError **error)
 	sort->ascending = data->ascending;
 
 	data->result_uids = camel_folder_search_by_expression (folder, data->query, error);
+	micro(printf("Search returned: %d\n", data->result_uids->len));
 	g_qsort_with_data (data->result_uids->pdata, data->result_uids->len, sizeof (gpointer), compare_uids, sort);
+	micro(printf("Sorting completed\n"));
 	g_free (sort);
 
 	return TRUE;
