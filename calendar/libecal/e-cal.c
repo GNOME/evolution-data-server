@@ -3381,6 +3381,8 @@ e_cal_get_alarms_for_object (ECal *ecal, const ECalComponentId *id,
  * update internal information about the alarm be discarded, or, like
  * the file backend does, ignore the operation.
  *
+ * CALOBJ_MOD_ONLY_THIS is not supported in this call.
+ *
  * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
@@ -3674,19 +3676,45 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
 /**
  * e_cal_remove_object_with_mod:
  * @ecal: A calendar client.
- * @uid: UID og the object to remove.
+ * @uid: UID of the object to remove.
  * @rid: Recurrence ID of the specific recurrence to remove.
  * @mod: Type of removal.
  * @error: Placeholder for error information.
  *
  * This function allows the removal of instances of a recurrent
- * appointment. By using a combination of the @uid, @rid and @mod
- * arguments, you can remove specific instances. If what you want
- * is to remove all instances, use e_cal_remove_object instead.
+ * appointment. If what you want is to remove all instances, use
+ * e_cal_remove_object instead.
  *
- * If not all instances are removed, the client will get a "obj_modified"
- * signal, while it will get a "obj_removed" signal when all instances
- * are removed.
+ * By using a combination of the @uid, @rid and @mod arguments, you
+ * can remove specific instances. @uid is mandatory.  Empty or NULL
+ * @rid selects the parent appointment (the one with the recurrence
+ * rule). A non-empty @rid selects the recurrence at the time specified
+ * in @rid, using the same time zone as the parent appointment's start
+ * time.
+ *
+ * The exact semantic then depends on @mod. CALOBJ_MOD_THIS,
+ * CALOBJ_MOD_THISANDPRIOR, CALOBJ_MOD_THISANDFUTURE and
+ * CALOBJ_MOD_ALL ensure that the event does not recur at the selected
+ * instance(s). This is done by removing any detached recurrence
+ * matching the selection criteria and modifying the parent
+ * appointment (adding EXDATE, adjusting recurrence rules, etc.).  It
+ * is not an error if @uid+@rid do not match an existing instance.
+ *
+ * If not all instances are removed, the client will get a
+ * "obj_modified" signal for the parent appointment, while it will get
+ * an "obj_removed" signal when all instances are removed.
+ *
+ * CALOBJ_MOD_ONLY_THIS changes the semantic of CALOBJ_MOD_THIS: @uid
+ * and @rid must select an existing instance. That instance is
+ * removed without modifying the parent appointment. In other words,
+ * e_cal_remove_object_with_mod(CALOBJ_MOD_ONLY_THIS) is the inverse
+ * operation for adding a detached recurrence. The client is
+ * always sent an "obj_removed" signal.
+ *
+ * Note that not all backends support CALOBJ_MOD_ONLY_THIS. Check for
+ * the CAL_STATIC_CAPABILITY_REMOVE_ONLY_THIS capability before using
+ * it. Previous releases did not check consistently for unknown
+ * @mod values, using it with them may have had unexpected results.
  *
  * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
