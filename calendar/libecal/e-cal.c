@@ -3655,7 +3655,15 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomp, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomponent_is_valid (icalcomp), E_CALENDAR_STATUS_INVALID_ARG);
-	e_return_error_if_fail (mod & CALOBJ_MOD_ALL, E_CALENDAR_STATUS_INVALID_ARG);
+	switch (mod) {
+	case CALOBJ_MOD_THIS:
+	case CALOBJ_MOD_THISANDPRIOR:
+	case CALOBJ_MOD_THISANDFUTURE:
+	case CALOBJ_MOD_ALL:
+		break;
+	default:
+		e_return_error_if_fail ("valid CalObjModType" && FALSE, E_CALENDAR_STATUS_INVALID_ARG);
+	}
 	priv = ecal->priv;
 	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
@@ -3726,7 +3734,16 @@ e_cal_remove_object_with_mod (ECal *ecal, const gchar *uid,
 
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (uid, E_CALENDAR_STATUS_INVALID_ARG);
-	e_return_error_if_fail (mod & CALOBJ_MOD_ALL, E_CALENDAR_STATUS_INVALID_ARG);
+	switch (mod) {
+	case CALOBJ_MOD_THIS:
+	case CALOBJ_MOD_THISANDPRIOR:
+	case CALOBJ_MOD_THISANDFUTURE:
+	case CALOBJ_MOD_ONLY_THIS:
+	case CALOBJ_MOD_ALL:
+		break;
+	default:
+		e_return_error_if_fail ("valid CalObjModType" && FALSE, E_CALENDAR_STATUS_INVALID_ARG);
+	}
 	priv = ecal->priv;
 	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
