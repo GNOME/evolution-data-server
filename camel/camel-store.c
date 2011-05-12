@@ -2268,11 +2268,17 @@ camel_store_get_folder_info_sync (CamelStore *store,
 {
 	CamelStoreClass *class;
 	CamelFolderInfo *info;
+	gchar *name;
 
 	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
 
 	class = CAMEL_STORE_GET_CLASS (store);
 	g_return_val_if_fail (class->get_folder_info_sync != NULL, NULL);
+
+	name = camel_service_get_name (CAMEL_SERVICE (store), TRUE);
+	camel_operation_push_message (
+		cancellable, _("Scanning folders in '%s'"), name);
+	g_free (name);
 
 	info = class->get_folder_info_sync (
 		store, top, flags, cancellable, error);
@@ -2309,6 +2315,8 @@ camel_store_get_folder_info_sync (CamelStore *store,
 			camel_store_free_folder_info (store, root_info);
 		}
 	}
+
+	camel_operation_pop_message (cancellable);
 
 	if (camel_debug_start("store:folder_info")) {
 		CamelURL *curl;
