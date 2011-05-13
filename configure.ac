@@ -1410,6 +1410,39 @@ fi
 GOBJECT_INTROSPECTION_CHECK([0.9.12])
 
 dnl ******************************
+dnl Vala binding
+dnl ******************************
+AC_ARG_ENABLE(vala-bindings,
+        AC_HELP_STRING([--enable-vala-bindings],
+        [build the EXPERIMENTAL Vala bindings]),
+        enable_vala_bindings=$enableval,
+        enable_vala_bindings=no)
+
+if test x$enable_vala_bindings = xyes; then
+  if test "x$INTROSPECTION_SCANNER" = x; then
+    AC_MSG_ERROR([GObject-Introspection must be enabled for Vala bindings])
+  fi
+
+  AM_PROG_VALAC([0.12.0])
+  have_vala=yes
+
+  AC_PATH_PROG(VALAC, valac, valac)
+  AC_SUBST(VALAC)
+  AC_SUBST(VALAFLAGS)
+
+  AC_PATH_PROG([VAPIGEN], [vapigen], [false])
+
+  if test "x$VAPIGEN" = "xfalse"; then
+    AC_MSG_ERROR([vapigen not found. Was vala compiled with --enable-vapigen?])
+  fi
+
+  AC_SUBST(VAPIGEN)
+fi
+
+AM_CONDITIONAL([HAVE_VALA], [test "x$have_vala" = "xyes"])
+AC_SUBST(HAVE_VALA)
+
+dnl ******************************
 dnl Makefiles
 dnl ******************************
 export privlibdir
@@ -1490,6 +1523,7 @@ docs/reference/libedataserver/Makefile
 docs/reference/libedataserverui/Makefile
 docs/reference/libebackend/Makefile
 po/Makefile.in
+vala/Makefile
 ])
 AC_OUTPUT
 

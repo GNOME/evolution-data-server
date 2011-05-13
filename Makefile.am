@@ -9,6 +9,12 @@ endif
 SUBDIRS = libedataserver libebackend camel addressbook $(CALENDAR_DIR) libedataserverui tests docs art po
 DIST_SUBDIRS = libedataserver libebackend camel addressbook calendar libedataserverui tests docs art po
 
+if HAVE_INTROSPECTION
+if HAVE_VALA
+SUBDIRS += vala
+endif
+endif
+
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@
 
