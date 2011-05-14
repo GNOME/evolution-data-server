@@ -129,6 +129,8 @@ typedef enum {
 
 #define E_TYPE_VCARD_ATTRIBUTE  (e_vcard_attribute_get_type ())
 
+#define E_TYPE_VCARD_PARAM_ATTRIBUTE  (e_vcard_attribute_param_get_type ())
+
 typedef struct _EVCard EVCard;
 typedef struct _EVCardClass EVCardClass;
 typedef struct _EVCardPrivate EVCardPrivate;
@@ -186,6 +188,7 @@ void             e_vcard_attribute_remove_param      (EVCardAttribute *attr, con
 void             e_vcard_attribute_remove_param_value (EVCardAttribute *attr, const gchar *param_name, const gchar *s);
 
 /* attribute parameters */
+GType                 e_vcard_attribute_param_get_type        (void);
 EVCardAttributeParam* e_vcard_attribute_param_new             (const gchar *name);
 void                  e_vcard_attribute_param_free            (EVCardAttributeParam *param);
 EVCardAttributeParam* e_vcard_attribute_param_copy            (EVCardAttributeParam *param);
