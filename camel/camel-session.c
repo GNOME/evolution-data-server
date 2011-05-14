@@ -312,7 +312,7 @@ session_add_service (CamelSession *session,
 	CamelProvider *provider;
 	GType service_type = G_TYPE_INVALID;
 
-	service = g_hash_table_lookup (session->priv->services, uid);
+	service = camel_session_get_service (session, uid);
 	if (CAMEL_IS_SERVICE (service))
 		return service;
 
@@ -356,10 +356,15 @@ session_add_service (CamelSession *session,
 		session, "uid", uid, "url", url, NULL);
 
 	/* The hash table takes ownership of the new CamelService. */
-	if (service != NULL)
+	if (service != NULL) {
+		camel_session_lock (session, CAMEL_SESSION_SESSION_LOCK);
+
 		g_hash_table_insert (
 			session->priv->services,
 			g_strdup (uid), service);
+
+		camel_session_unlock (session, CAMEL_SESSION_SESSION_LOCK);
+	}
 
 	camel_url_free (url);
 
@@ -535,12 +540,8 @@ camel_session_add_service (CamelSession *session,
 	class = CAMEL_SESSION_GET_CLASS (session);
 	g_return_val_if_fail (class->add_service != NULL, NULL);
 
-	camel_session_lock (session, CAMEL_SESSION_SESSION_LOCK);
-
 	service = class->add_service (session, uid, uri_string, type, error);
 	CAMEL_CHECK_GERROR (session, add_service, service != NULL, error);
-
-	camel_session_unlock (session, CAMEL_SESSION_SESSION_LOCK);
 
 	return service;
 }
