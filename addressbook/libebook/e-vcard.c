@@ -1762,7 +1762,8 @@ e_vcard_attribute_remove_param_value (EVCardAttribute *attr, const gchar *param_
  * Gets the list of attributes from @evcard. The list and its
  * contents are owned by @evcard, and must not be freed.
  *
- * Returns: A list of attributes of type #EVCardAttribute.
+ * Returns: (transfer none) (element-type EVCardAttribute): A list of attributes
+ * of type #EVCardAttribute.
  **/
 GList*
 e_vcard_get_attributes (EVCard *evcard)
@@ -1842,7 +1843,7 @@ e_vcard_attribute_get_name (EVCardAttribute *attr)
  * Gets the list of values from @attr. The list and its
  * contents are owned by @attr, and must not be freed.
  *
- * Returns: A list of string values.
+ * Returns: (transfer none) (element-type utf8): A list of string values.
  **/
 GList*
 e_vcard_attribute_get_values (EVCardAttribute *attr)
@@ -1860,7 +1861,7 @@ e_vcard_attribute_get_values (EVCardAttribute *attr)
  * necessary. The list and its contents are owned by @attr,
  * and must not be freed.
  *
- * Returns: (transfer: none) (element-type: GString): A list of values of type #GString.
+ * Returns: (transfer none) (element-type GString): A list of values of type #GString.
  **/
 GList*
 e_vcard_attribute_get_values_decoded (EVCardAttribute *attr)
@@ -2012,7 +2013,8 @@ e_vcard_attribute_has_type (EVCardAttribute *attr, const gchar *typestr)
  * Gets the list of parameters from @attr. The list and its
  * contents are owned by @attr, and must not be freed.
  *
- * Returns: A list of elements of type #EVCardAttributeParam.
+ * Returns: (transfer none) (element-type EVCardAttributeParam): A list of
+ * elements of type #EVCardAttributeParam.
  **/
 GList*
 e_vcard_attribute_get_params (EVCardAttribute *attr)
@@ -2030,7 +2032,8 @@ e_vcard_attribute_get_params (EVCardAttribute *attr)
  * Gets the list of values for the paramater @name from @attr. The list and its
  * contents are owned by @attr, and must not be freed.
  *
- * Returns: (transfer: none) (element-type: utf8): A list of string elements representing the parameter's values.
+ * Returns: (transfer none) (element-type utf8): A list of string elements
+ * representing the parameter's values.
  **/
 GList *
 e_vcard_attribute_get_param (EVCardAttribute *attr, const gchar *name)
@@ -2075,7 +2078,8 @@ e_vcard_attribute_param_get_name (EVCardAttributeParam *param)
  * Gets the list of values from @param. The list and its
  * contents are owned by @param, and must not be freed.
  *
- * Returns: (transfer:none) (element-type: utf8): A list of string elements representing the parameter's values.
+ * Returns: (transfer none) (element-type utf8): A list of string elements
+ * representing the parameter's values.
  **/
 GList*
 e_vcard_attribute_param_get_values (EVCardAttributeParam *param)

@@ -195,7 +195,7 @@ _e_book_view_new (EBook *book, EGdbusBookView *gdbus_bookview)
  *
  * Returns the #EBook that this book view is monitoring.
  *
- * Returns: an #EBook.
+ * Returns: (transfer none): an #EBook.
  *
  * Since: 2.22
  **/

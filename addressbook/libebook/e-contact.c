@@ -1267,7 +1267,7 @@ e_contact_new_from_vcard  (const gchar *vcard)
  *
  * Creates a copy of @contact.
  *
- * Returns: A new #EContact identical to @contact.
+ * Returns: (transfer full): A new #EContact identical to @contact.
  **/
 EContact*
 e_contact_duplicate (EContact *contact)
@@ -1581,7 +1581,8 @@ e_contact_get (EContact *contact, EContactField field_id)
  * Gets the value of @contact's field specified by @field_id, caching
  * the result so it can be freed later.
  *
- * Returns: Depends on the field's type, owned by the #EContact.
+ * Returns: (transfer none): Depends on the field's type, owned by the
+ * #EContact.
  **/
 gconstpointer
 e_contact_get_const (EContact *contact, EContactField field_id)
@@ -1634,7 +1635,8 @@ e_contact_set (EContact *contact, EContactField field_id, gconstpointer value)
  *
  * Gets a list of the vcard attributes for @contact's @field_id.
  *
- * Returns: (element-type EVCardAttribute) (transfer: full): A #GList of pointers to #EVCardAttribute, owned by the caller.
+ * Returns: (transfer full) (element-type EVCardAttribute): A #GList of pointers
+ * to #EVCardAttribute, owned by the caller.
  **/
 GList*
 e_contact_get_attributes (EContact *contact, EContactField field_id)

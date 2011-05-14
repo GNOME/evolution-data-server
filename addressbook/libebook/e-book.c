@@ -453,7 +453,7 @@ add_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  * e_book_async_add_contact:
  * @book: an #EBook
  * @contact: an #EContact
- * @cb: function to call when the operation finishes
+ * @cb: (scope async): function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Adds @contact to @book without blocking.
@@ -497,7 +497,7 @@ e_book_async_add_contact (EBook *book,
  * e_book_add_contact_async:
  * @book: an #EBook
  * @contact: an #EContact
- * @cb: function to call when the operation finishes
+ * @cb: (scope async): function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Adds @contact to @book without blocking.
@@ -603,7 +603,7 @@ modify_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data
  * e_book_async_commit_contact:
  * @book: an #EBook
  * @contact: an #EContact
- * @cb: function to call when the operation finishes
+ * @cb: (scope async): function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Applies the changes made to @contact to the stored version in
@@ -648,7 +648,7 @@ e_book_async_commit_contact (EBook *book,
  * e_book_commit_contact_async:
  * @book: an #EBook
  * @contact: an #EContact
- * @cb: function to call when the operation finishes
+ * @cb: (scope async): function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Applies the changes made to @contact to the stored version in
@@ -763,7 +763,7 @@ get_required_fields_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user
 /**
  * e_book_async_get_required_fields:
  * @book: an #EBook
- * @cb: function to call when the operation finishes
+ * @cb: (scope async): function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Gets a list of fields that are required to be filled in for
@@ -799,7 +799,7 @@ e_book_async_get_required_fields (EBook *book,
 /**
  * e_book_get_required_fields_async:
  * @book: an #EBook
- * @cb: function to call when the operation finishes
+ * @cb: (scope async): function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Gets a list of fields that are required to be filled in for
@@ -906,7 +906,7 @@ get_supported_fields_reply (GObject *gdbus_book, GAsyncResult *res, gpointer use
 /**
  * e_book_async_get_supported_fields:
  * @book: an #EBook
- * @cb: function to call when the operation finishes
+ * @cb: (scope async): function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Gets a list of fields that can be stored for contacts
@@ -943,7 +943,7 @@ e_book_async_get_supported_fields (EBook *book,
 /**
  * e_book_get_supported_fields_async:
  * @book: an #EBook
- * @cb: function to call when the operation finishes
+ * @cb: (scope async): function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Gets a list of fields that can be stored for contacts
@@ -1050,7 +1050,7 @@ get_supported_auth_methods_reply (GObject *gdbus_book, GAsyncResult *res, gpoint
 /**
  * e_book_async_get_supported_auth_methods:
  * @book: an #EBook
- * @cb: function to call when the operation finishes
+ * @cb: (scope async): function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Queries @book for the list of authentication methods it supports.
@@ -1086,7 +1086,7 @@ e_book_async_get_supported_auth_methods (EBook *book,
 /**
  * e_book_get_supported_auth_methods_async:
  * @book: an #EBook
- * @cb: function to call when the operation finishes
+ * @cb: (scope async): function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Queries @book for the list of authentication methods it supports.
@@ -1194,7 +1194,7 @@ authenticate_user_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_d
  * @user: user name
  * @passwd: password
  * @auth_method: string indicating authentication method
- * @cb: function to call when the operation finishes
+ * @cb: (scope async): function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Authenticate @user with @passwd, using the auth method
@@ -1249,7 +1249,7 @@ e_book_async_authenticate_user (EBook *book,
  * @user: user name
  * @passwd: password
  * @auth_method: string indicating authentication method
- * @cb: function to call when the operation finishes
+ * @cb: (scope async): function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Authenticate @user with @passwd, using the auth method
@@ -1374,7 +1374,7 @@ get_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  * e_book_async_get_contact:
  * @book: an #EBook
  * @id: a unique string ID specifying the contact
- * @cb: function to call when operation finishes
+ * @cb: (scope async): function to call when operation finishes
  * @closure: data to pass to callback function
  *
  * Retrieves a contact specified by @id from @book.
@@ -1415,7 +1415,7 @@ e_book_async_get_contact (EBook *book,
  * e_book_get_contact_async:
  * @book: an #EBook
  * @id: a unique string ID specifying the contact
- * @cb: function to call when operation finishes
+ * @cb: (scope async): function to call when operation finishes
  * @closure: data to pass to callback function
  *
  * Retrieves a contact specified by @id from @book.
@@ -1554,7 +1554,7 @@ e_book_remove_contacts (EBook *book,
  * e_book_async_remove_contact:
  * @book: an #EBook
  * @contact: an #EContact
- * @cb: a function to call when the operation finishes
+ * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Removes @contact from @book.
@@ -1598,7 +1598,7 @@ e_book_async_remove_contact (EBook *book,
  * e_book_remove_contact_async:
  * @book: an #EBook
  * @contact: an #EContact
- * @cb: a function to call when the operation finishes
+ * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Removes @contact from @book.
@@ -1670,7 +1670,7 @@ remove_contact_by_id_reply (GObject *gdbus_book, GAsyncResult *res, gpointer use
  * e_book_async_remove_contact_by_id:
  * @book: an #EBook
  * @id: a unique ID string specifying the contact
- * @cb: a function to call when the operation finishes
+ * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Removes the contact with id @id from @book.
@@ -1714,7 +1714,7 @@ e_book_async_remove_contact_by_id (EBook *book,
  * e_book_remove_contact_by_id_async:
  * @book: an #EBook
  * @id: a unique ID string specifying the contact
- * @cb: a function to call when the operation finishes
+ * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Removes the contact with id @id from @book.
@@ -1786,7 +1786,7 @@ remove_contacts_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_dat
  * e_book_async_remove_contacts:
  * @book: an #EBook
  * @ids: a #GList of const gchar *id's
- * @cb: a function to call when the operation finishes
+ * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Removes the contacts with ids from the list @ids from @book.  This is
@@ -1837,7 +1837,7 @@ e_book_async_remove_contacts (EBook *book,
  * e_book_remove_contacts_async:
  * @book: an #EBook
  * @ids: a #GList of const gchar *id's
- * @cb: a function to call when the operation finishes
+ * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Removes the contacts with ids from the list @ids from @book.  This is
@@ -2186,7 +2186,7 @@ get_contacts_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  * e_book_async_get_contacts:
  * @book: an #EBook
  * @query: an #EBookQuery
- * @cb: a function to call when the operation finishes
+ * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Query @book with @query.
@@ -2230,7 +2230,7 @@ e_book_async_get_contacts (EBook *book,
  * e_book_get_contacts_async:
  * @book: an #EBook
  * @query: an #EBookQuery
- * @cb: a function to call when the operation finishes
+ * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Query @book with @query.
@@ -2383,7 +2383,7 @@ get_changes_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  * e_book_async_get_changes:
  * @book: an #EBook
  * @changeid:  the change ID
- * @cb: function to call when operation finishes
+ * @cb: (scope async): function to call when operation finishes
  * @closure: data to pass to callback function
  *
  * Get the set of changes since the previous call to
@@ -2424,7 +2424,7 @@ e_book_async_get_changes (EBook *book,
  * e_book_get_changes_async:
  * @book: an #EBook
  * @changeid:  the change ID
- * @cb: function to call when operation finishes
+ * @cb: (scope async): function to call when operation finishes
  * @closure: data to pass to callback function
  *
  * Get the set of changes since the previous call to
@@ -2727,7 +2727,7 @@ remove_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 /**
  * e_book_async_remove:
  * @book: an #EBook
- * @cb: a function to call when the operation finishes
+ * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Remove the backing data for this #EBook. For example, with the file backend this
@@ -2763,7 +2763,7 @@ e_book_async_remove (EBook *book,
 /**
  * e_book_remove_async:
  * @book: an #EBook
- * @cb: a function to call when the operation finishes
+ * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Remove the backing data for this #EBook. For example, with the file backend this
@@ -2817,7 +2817,7 @@ e_book_get_uri (EBook *book)
  *
  * Get the #ESource that this book has loaded.
  *
- * Returns: The source.
+ * Returns: (transfer none): The source.
  */
 ESource *
 e_book_get_source (EBook *book)
