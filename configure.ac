@@ -1542,4 +1542,6 @@ echo "
 	File Locking:		$msg_file
 	Large files:		$enable_largefile
 	Gtk Doc:		$enable_gtk_doc
+	Introspection:		$enable_introspection
+	Vala bindings:		$enable_vala_bindings
 "
