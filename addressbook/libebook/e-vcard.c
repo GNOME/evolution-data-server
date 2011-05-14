@@ -1078,6 +1078,25 @@ e_vcard_attribute_copy (EVCardAttribute *attr)
 	return a;
 }
 
+GType
+e_vcard_attribute_get_type (void)
+{
+	static volatile gsize type_id__volatile = 0;
+
+	if (g_once_init_enter (&type_id__volatile)) {
+		GType type_id;
+
+		type_id = g_boxed_type_register_static ("EVCardAttribute",
+							(GBoxedCopyFunc) e_vcard_attribute_copy,
+							(GBoxedFreeFunc) e_vcard_attribute_free);
+
+		g_once_init_leave (&type_id__volatile, type_id);
+	}
+
+	return type_id__volatile;
+}
+
+
 /**
  * e_vcard_remove_attributes:
  * @evc: vcard object

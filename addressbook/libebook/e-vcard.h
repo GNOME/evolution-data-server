@@ -127,6 +127,8 @@ typedef enum {
 #define E_IS_VCARD_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_VCARD))
 #define E_VCARD_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_VCARD, EVCardClass))
 
+#define E_TYPE_VCARD_ATTRIBUTE  (e_vcard_attribute_get_type ())
+
 typedef struct _EVCard EVCard;
 typedef struct _EVCardClass EVCardClass;
 typedef struct _EVCardPrivate EVCardPrivate;
@@ -162,6 +164,7 @@ gchar *   e_vcard_to_string                    (EVCard *evc, EVCardFormat format
 void    e_vcard_dump_structure               (EVCard *evc);
 
 /* attributes */
+GType            e_vcard_attribute_get_type          (void);
 EVCardAttribute *e_vcard_attribute_new               (const gchar *attr_group, const gchar *attr_name);
 void             e_vcard_attribute_free              (EVCardAttribute *attr);
 EVCardAttribute *e_vcard_attribute_copy              (EVCardAttribute *attr);
