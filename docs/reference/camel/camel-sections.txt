@@ -468,7 +468,6 @@ camel_folder_freeze
 camel_folder_thaw
 camel_folder_is_frozen
 camel_folder_get_frozen_count
-camel_folder_get_quota_info
 camel_folder_quota_info_new
 camel_folder_quota_info_clone
 camel_folder_quota_info_free
@@ -485,6 +484,9 @@ camel_folder_expunge_finish
 camel_folder_get_message_sync
 camel_folder_get_message
 camel_folder_get_message_finish
+camel_folder_get_quota_info_sync
+camel_folder_get_quota_info
+camel_folder_get_quota_info_finish
 camel_folder_refresh_info_sync
 camel_folder_refresh_info
 camel_folder_refresh_info_finish

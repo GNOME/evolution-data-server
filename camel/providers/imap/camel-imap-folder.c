@@ -119,7 +119,10 @@ static GPtrArray *imap_search_by_uids	    (CamelFolder *folder, const gchar *exp
 static void       imap_search_free          (CamelFolder *folder, GPtrArray *uids);
 
 static void imap_thaw (CamelFolder *folder);
-static CamelFolderQuotaInfo *imap_get_quota_info (CamelFolder *folder);
+static CamelFolderQuotaInfo *
+		imap_get_quota_info_sync	(CamelFolder *folder,
+						 GCancellable *cancellable,
+						 GError **error);
 
 static GData *parse_fetch_response (CamelImapFolder *imap_folder, gchar *msg_att);
 
@@ -272,12 +275,12 @@ camel_imap_folder_class_init (CamelImapFolderClass *class)
 	folder_class->search_by_uids = imap_search_by_uids;
 	folder_class->search_free = imap_search_free;
 	folder_class->thaw = imap_thaw;
-	folder_class->get_quota_info = imap_get_quota_info;
 	folder_class->get_uncached_uids = imap_get_uncached_uids;
 	folder_class->get_filename = imap_get_filename;
 	folder_class->append_message_sync = imap_append_online;
 	folder_class->expunge_sync = imap_expunge_sync;
 	folder_class->get_message_sync = imap_get_message_sync;
+	folder_class->get_quota_info_sync = imap_get_quota_info_sync;
 	folder_class->refresh_info_sync = imap_refresh_info_sync;
 	folder_class->synchronize_sync = imap_synchronize_sync;
 	folder_class->synchronize_message_sync = imap_synchronize_message_sync;
@@ -4582,7 +4585,9 @@ parse_fetch_response (CamelImapFolder *imap_folder, gchar *response)
 
 /* it uses connect_lock, thus be sure it doesn't run in main thread */
 static CamelFolderQuotaInfo *
-imap_get_quota_info (CamelFolder *folder)
+imap_get_quota_info_sync (CamelFolder *folder,
+                          GCancellable *cancellable,
+                          GError **error)
 {
 	CamelStore *parent_store;
 	CamelImapStore *imap_store;
@@ -4605,7 +4610,7 @@ imap_get_quota_info (CamelFolder *folder)
 		CamelImapStoreNamespace *ns = camel_imap_store_summary_namespace_find_full (imap_store->summary, full_name);
 		gchar *folder_name = camel_imap_store_summary_path_to_full (imap_store->summary, full_name, ns ? ns->sep : '/');
 
-		response = camel_imap_command (imap_store, NULL, NULL, NULL, "GETQUOTAROOT \"%s\"", folder_name);
+		response = camel_imap_command (imap_store, NULL, cancellable, error, "GETQUOTAROOT \"%s\"", folder_name);
 
 		if (response) {
 			gint i;

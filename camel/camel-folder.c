@@ -76,6 +76,7 @@ struct _AsyncContext {
 
 	/* results */
 	GPtrArray *transferred_uids;
+	CamelFolderQuotaInfo *quota_info;
 };
 
 struct _CamelFolderChangeInfoPrivate {
@@ -143,6 +144,9 @@ async_context_free (AsyncContext *async_context)
 			async_context->transferred_uids, (GFunc) g_free, NULL);
 		g_ptr_array_free (async_context->transferred_uids, TRUE);
 	}
+
+	if (async_context->quota_info != NULL)
+		camel_folder_quota_info_free (async_context->quota_info);
 
 	g_free (async_context->message_uid);
 
@@ -829,12 +833,6 @@ folder_is_frozen (CamelFolder *folder)
 	return folder->priv->frozen != 0;
 }
 
-static CamelFolderQuotaInfo *
-folder_get_quota_info (CamelFolder *folder)
-{
-	return NULL;
-}
-
 static gboolean
 folder_refresh_info_sync (CamelFolder *folder,
                           GCancellable *cancellable,
@@ -1099,6 +1097,89 @@ folder_get_message_finish (CamelFolder *folder,
 		return NULL;
 
 	return g_object_ref (async_context->message);
+}
+
+static void
+folder_get_quota_info_thread (GSimpleAsyncResult *simple,
+                              GObject *object,
+                              GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	async_context->quota_info = camel_folder_get_quota_info_sync (
+		CAMEL_FOLDER (object), cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static CamelFolderQuotaInfo *
+folder_get_quota_info_sync (CamelFolder *folder,
+                            GCancellable *cancellable,
+                            GError **error)
+{
+	g_set_error (
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		_("Quota information not supported for folder '%s'"),
+		camel_folder_get_display_name (folder));
+
+	return NULL;
+}
+
+static void
+folder_get_quota_info (CamelFolder *folder,
+                       gint io_priority,
+                       GCancellable *cancellable,
+                       GAsyncReadyCallback callback,
+                       gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (folder), callback,
+		user_data, folder_get_quota_info);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, folder_get_quota_info_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static CamelFolderQuotaInfo *
+folder_get_quota_info_finish (CamelFolder *folder,
+                              GAsyncResult *result,
+                              GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	CamelFolderQuotaInfo *quota_info;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (folder), folder_get_quota_info), NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	quota_info = async_context->quota_info;
+	async_context->quota_info = NULL;
+
+	return quota_info;
 }
 
 static void
@@ -1495,7 +1576,7 @@ camel_folder_class_init (CamelFolderClass *class)
 	class->freeze = folder_freeze;
 	class->thaw = folder_thaw;
 	class->is_frozen = folder_is_frozen;
-	class->get_quota_info = folder_get_quota_info;
+	class->get_quota_info_sync = folder_get_quota_info_sync;
 	class->refresh_info_sync = folder_refresh_info_sync;
 	class->transfer_messages_to_sync = folder_transfer_messages_to_sync;
 	class->changed = folder_changed;
@@ -1506,6 +1587,8 @@ camel_folder_class_init (CamelFolderClass *class)
 	class->expunge_finish = folder_expunge_finish;
 	class->get_message = folder_get_message;
 	class->get_message_finish = folder_get_message_finish;
+	class->get_quota_info = folder_get_quota_info;
+	class->get_quota_info_finish = folder_get_quota_info_finish;
 	class->refresh_info = folder_refresh_info;
 	class->refresh_info_finish = folder_refresh_info_finish;
 	class->synchronize = folder_synchronize;
@@ -2704,27 +2787,6 @@ camel_folder_get_frozen_count (CamelFolder *folder)
 }
 
 /**
- * camel_folder_get_quota_info:
- * @folder: a #CamelFolder
- *
- * Returns: list of known quota(s) for the folder.
- *
- * Since: 2.24
- **/
-CamelFolderQuotaInfo *
-camel_folder_get_quota_info (CamelFolder *folder)
-{
-	CamelFolderClass *class;
-
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_val_if_fail (class->get_quota_info != NULL, NULL);
-
-	return class->get_quota_info (folder);
-}
-
-/**
  * camel_folder_quota_info_new:
  * @name: Name of the quota.
  * @used: Current usage of the quota.
@@ -3262,6 +3324,115 @@ camel_folder_get_message_finish (CamelFolder *folder,
 	g_return_val_if_fail (class->get_message_finish != NULL, NULL);
 
 	return class->get_message_finish (folder, result, error);
+}
+
+/**
+ * camel_folder_get_quota_info_sync:
+ * @folder: a #CamelFolder
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Gets a list of known quotas for @folder.  Free the returned
+ * #CamelFolderQuotaInfo struct with camel_folder_quota_info_free().
+ *
+ * If quotas are not supported for @folder, the function returns %NULL
+ * and sets @error to #G_IO_ERROR_NOT_SUPPORTED.
+ *
+ * Returns: a #CamelFolderQuotaInfo, or %NULL
+ *
+ * Since: 3.2
+ **/
+CamelFolderQuotaInfo *
+camel_folder_get_quota_info_sync (CamelFolder *folder,
+                                  GCancellable *cancellable,
+                                  GError **error)
+{
+	CamelFolderClass *class;
+	CamelFolderQuotaInfo *quota_info;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class->get_quota_info_sync != NULL, NULL);
+
+	camel_operation_push_message (
+		cancellable, _("Retrieving quota information for '%s'"),
+		camel_folder_get_display_name (folder));
+
+	quota_info = class->get_quota_info_sync (folder, cancellable, error);
+	CAMEL_CHECK_GERROR (
+		folder, get_quota_info_sync, quota_info != NULL, error);
+
+	camel_operation_pop_message (cancellable);
+
+	return quota_info;
+}
+
+/**
+ * camel_folder_get_quota_info:
+ * @folder: a #CamelFolder
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously gets a list of known quotas for @folder.
+ *
+ * When the operation is finished, @callback will be called.  You can
+ * then call camel_folder_get_quota_info_finish() to get the result of
+ * the operation.
+ *
+ * Since: 3.2
+ **/
+void
+camel_folder_get_quota_info (CamelFolder *folder,
+                             gint io_priority,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
+{
+	CamelFolderClass *class;
+
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class->get_quota_info != NULL);
+
+	class->get_quota_info (
+		folder, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_folder_get_quota_info_finish:
+ * @folder: a #CamelFolder
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError or %NULL
+ *
+ * Finishes the operation started with camel_folder_get_quota_info().
+ * Free the returned #CamelFolderQuotaInfo struct with
+ * camel_folder_quota_info_free().
+ *
+ * If quotas are not supported for @folder, the function returns %NULL
+ * and sets @error to #G_IO_ERROR_NOT_SUPPORTED.
+ *
+ * Returns: a #CamelFolderQuotaInfo, or %NULL
+ *
+ * Since: 3.2
+ **/
+CamelFolderQuotaInfo *
+camel_folder_get_quota_info_finish (CamelFolder *folder,
+                                    GAsyncResult *result,
+                                    GError **error)
+{
+	CamelFolderClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class->get_quota_info_finish != NULL, NULL);
+
+	return class->get_quota_info_finish (folder, result, error);
 }
 
 /**

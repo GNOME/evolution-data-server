@@ -523,15 +523,6 @@ CamelFolder
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_folder_get_quota_info ##### -->
-<para>
-
-</para>
-
-@folder: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_folder_quota_info_new ##### -->
 <para>
 
@@ -698,6 +689,40 @@ CamelFolder
 
 
 <!-- ##### FUNCTION camel_folder_get_message_finish ##### -->
+<para>
+
+</para>
+
+@folder: 
+@result: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_get_quota_info_sync ##### -->
+<para>
+
+</para>
+
+@folder: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_get_quota_info ##### -->
+<para>
+
+</para>
+
+@folder: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_folder_get_quota_info_finish ##### -->
 <para>
 
 </para>

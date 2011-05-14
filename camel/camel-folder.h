@@ -204,8 +204,6 @@ struct _CamelFolderClass {
 	void		(*freeze)		(CamelFolder *folder);
 	void		(*thaw)			(CamelFolder *folder);
 	gboolean	(*is_frozen)		(CamelFolder *folder);
-	CamelFolderQuotaInfo *
-			(*get_quota_info)	(CamelFolder *folder);
 	guint32		(*count_by_expression)	(CamelFolder *folder,
 						 const gchar *expression,
 						 GError **error);
@@ -229,6 +227,10 @@ struct _CamelFolderClass {
 	CamelMimeMessage *
 			(*get_message_sync)	(CamelFolder *folder,
 						 const gchar *message_uid,
+						 GCancellable *cancellable,
+						 GError **error);
+	CamelFolderQuotaInfo *
+			(*get_quota_info_sync)	(CamelFolder *folder,
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(*refresh_info_sync)	(CamelFolder *folder,
@@ -281,6 +283,16 @@ struct _CamelFolderClass {
 						 gpointer user_data);
 	CamelMimeMessage *
 			(*get_message_finish)	(CamelFolder *folder,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*get_quota_info)	(CamelFolder *folder,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	CamelFolderQuotaInfo *
+			(*get_quota_info_finish)
+						(CamelFolder *folder,
 						 GAsyncResult *result,
 						 GError **error);
 	void		(*refresh_info)		(CamelFolder *folder,
@@ -441,8 +453,6 @@ void		camel_folder_thaw		(CamelFolder *folder);
 gboolean	camel_folder_is_frozen		(CamelFolder *folder);
 gint		camel_folder_get_frozen_count	(CamelFolder *folder);
 CamelFolderQuotaInfo *
-		camel_folder_get_quota_info	(CamelFolder *folder);
-CamelFolderQuotaInfo *
 		camel_folder_quota_info_new	(const gchar *name,
 						 guint64 used,
 						 guint64 total);
@@ -506,6 +516,21 @@ void		camel_folder_get_message	(CamelFolder *folder,
 						 gpointer user_data);
 CamelMimeMessage *
 		camel_folder_get_message_finish	(CamelFolder *folder,
+						 GAsyncResult *result,
+						 GError **error);
+CamelFolderQuotaInfo *
+		camel_folder_get_quota_info_sync
+						(CamelFolder *folder,
+						 GCancellable *cancellable,
+						 GError **error);
+void		camel_folder_get_quota_info	(CamelFolder *folder,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+CamelFolderQuotaInfo *
+		camel_folder_get_quota_info_finish
+						(CamelFolder *folder,
 						 GAsyncResult *result,
 						 GError **error);
 gboolean	camel_folder_refresh_info_sync	(CamelFolder *folder,
