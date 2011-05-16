@@ -672,6 +672,11 @@ e_source_group_peek_sources (ESourceGroup *group)
 	return group->priv->sources;
 }
 
+/**
+ * e_source_group_peek_source_by_uid:
+ *
+ * Returns: (transfer none): the #ESource
+ */
 ESource *
 e_source_group_peek_source_by_uid (ESourceGroup *group,
 				   const gchar *uid)
@@ -686,6 +691,11 @@ e_source_group_peek_source_by_uid (ESourceGroup *group,
 	return NULL;
 }
 
+/**
+ * e_source_group_peek_source_by_name:
+ *
+ * Returns: (transfer none): the #ESource
+ */
 ESource *
 e_source_group_peek_source_by_name (ESourceGroup *group,
 				    const gchar *name)
@@ -968,6 +978,9 @@ e_source_group_set_property (ESourceGroup *source_group,
 
 /**
  * e_source_group_foreach_property:
+ * @source_group: the #ESourceGroup
+ * @func: (scope call): the func to call on each property
+ * @data: the user data
  *
  * Since: 1.12
  **/

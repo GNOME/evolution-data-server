@@ -552,9 +552,9 @@ initialize_categories (void)
  *
  * Returns a sorted list of all the category names currently configured.
  *
- * Returns: a sorted GList containing the names of the categories. The
- * list should be freed using g_list_free, but the names of the categories
- * should not be touched at all, they are internal strings.
+ * Returns: (transfer container): a sorted GList containing the names of the
+ * categories.The list should be freed using g_list_free, but the names of
+ * the categories should not be touched at all, they are internal strings.
  */
 GList *
 e_categories_get_list (void)
@@ -726,7 +726,7 @@ e_categories_is_searchable (const gchar *category)
 
 /**
  * e_categories_register_change_listener:
- * @listener: the callback to be called on any category change.
+ * @listener: (scope async): the callback to be called on any category change.
  * @user_data: used data passed to the @listener when called.
  *
  * Registers callback to be called on change of any category.
@@ -746,7 +746,7 @@ e_categories_register_change_listener (GCallback listener, gpointer user_data)
 
 /**
  * e_categories_unregister_change_listener:
- * @listener: Callback to be removed.
+ * @listener: (scope async): Callback to be removed.
  * @user_data: User data as passed with call to @e_categories_register_change_listener.
  *
  * Removes previously registered callback from the list of listeners on changes.

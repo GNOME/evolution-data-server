@@ -405,6 +405,12 @@ e_source_list_peek_groups (ESourceList *list)
 	return list->priv->groups;
 }
 
+
+/**
+ * e_source_list_peek_group_by_uid:
+ *
+ * Return value: (transfer none): the #ESourceGroup
+ */
 ESourceGroup *
 e_source_list_peek_group_by_uid (ESourceList *list,
 				 const gchar *uid)
@@ -433,7 +439,7 @@ e_source_list_peek_group_by_uid (ESourceList *list,
  * The base URI is usually just the URI scheme, such as "http://".
  * If no such group is present in @list, the function returns %NULL.
  *
- * Returns: an #ESourceGroup with a matching base URI, or %NULL
+ * Returns: (transfer none): an #ESourceGroup with a matching base URI, or %NULL
  *
  * Since: 2.28
  **/
@@ -488,6 +494,8 @@ check_group_property (const gchar *property_name, const gchar *property_value, s
  * is returned only if matches all the properties. Values are compared
  * case insensitively.
  *
+ * Returns: (transfer none): the #ESourceGroup
+ *
  * Since: 2.28
  **/
 ESourceGroup *
@@ -533,6 +541,11 @@ e_source_list_peek_group_by_properties (ESourceList *list, const gchar *property
 	return NULL;
 }
 
+/**
+ * e_source_list_peek_source_by_uid:
+ *
+ * Return value: (transfer none): the #ESource
+ */
 ESource *
 e_source_list_peek_source_by_uid (ESourceList *list,
 				  const gchar *uid)
@@ -554,6 +567,11 @@ e_source_list_peek_source_by_uid (ESourceList *list,
 	return NULL;
 }
 
+/**
+ * e_source_list_peek_source_any:
+ *
+ * Returns: (transfer none): the #ESource
+ */
 ESource *
 e_source_list_peek_source_any (ESourceList *list)
 {
@@ -582,7 +600,7 @@ e_source_list_peek_source_any (ESourceList *list)
  * property named "system".  If no such #ESource exists, the function
  * returns %NULL.
  *
- * Returns: the default #ESource in @source_list, or %NULL
+ * Returns: (transfer none): the default #ESource in @source_list, or %NULL
  *
  * Since: 2.32
  **/
@@ -727,7 +745,8 @@ e_source_list_remove_group_by_uid (ESourceList *list,
  * renames its to the given name.  If @ret_it is %TRUE, the matching group
  * will be returned and should be unreferenced with g_object_unref().
  *
- * Returns: the matching #ESourceGroup if @ret_it is %TRUE, otherwise %NULL
+ * Returns: (transfer full): the matching #ESourceGroup if @ret_it is %TRUE,
+ *          otherwise %NULL
  *
  * Since: 2.28
  **/

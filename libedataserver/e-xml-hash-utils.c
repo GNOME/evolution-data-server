@@ -44,7 +44,8 @@
  * %E_XML_HASH_TYPE_OBJECT_UID, then XML objects will be indexed in
  * the hash by their UID (other nodes will still be indexed by name).
  *
- * Returns: The newly-created #GHashTable representation of @doc.
+ * Returns: (transfer full): The newly-created #GHashTable representation
+ * of @doc.
  **/
 GHashTable *
 e_xml_to_hash (xmlDoc *doc, EXmlHashType type)
@@ -307,7 +308,7 @@ foreach_hash_func (gpointer  key, gpointer value, gpointer user_data)
 /**
  * e_xmlhash_foreach_key:
  * @hash: an #EXmlHash
- * @func: the #EXmlHashFunc to execute on the data in @hash
+ * @func: (scope async): the #EXmlHashFunc to execute on the data in @hash
  * @user_data: the data to pass to @func
  *
  * Executes @func against each key/value pair in @hash.
@@ -330,7 +331,7 @@ e_xmlhash_foreach_key (EXmlHash *hash,
 /**
  * e_xmlhash_foreach_key_remove:
  * @hash: an #EXmlHash
- * @func: the #EXmlHashFunc to execute on the data in @hash
+ * @func: (scope async): the #EXmlHashFunc to execute on the data in @hash
  * @user_data: the data to pass to @func
  *
  * Calls g_hash_table_foreach_remove() on @hash<!-- -->'s internal hash

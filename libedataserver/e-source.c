@@ -715,7 +715,7 @@ e_source_set_color_spec (ESource *source,
  * Returns the #ESourceGroup to which @source belongs, or %NULL if it
  * does not belong to a group.
  *
- * Returns: the group to which the source belongs
+ * Returns: (transfer none): the group to which the source belongs
  **/
 ESourceGroup *
 e_source_peek_group (ESource *source)
@@ -1164,7 +1164,7 @@ e_source_set_property (ESource *source,
 /**
  * e_source_foreach_property:
  * @source: an #ESource
- * @func: the function to call for each property
+ * @func: (scope call): the function to call for each property
  * @user_data: user data to pass to the function
  *
  * Calls the given function for each property in @source.  The function
@@ -1197,7 +1197,7 @@ copy_property (const gchar *key,
  * Creates a new #ESource instance from @source, such that passing @source
  * and the newly created instance to e_source_equal() would return %TRUE.
  *
- * Returns: a newly-created #ESource
+ * Returns: (transfer full): a newly-created #ESource
  **/
 ESource *
 e_source_copy (ESource *source)

@@ -35,6 +35,14 @@ e_list_init (EList *list)
 	list->iterators = NULL;
 }
 
+/**
+ * e_list_new:
+ * @copy: (scope call): the copy func
+ * @free: (scope call): the free func
+ * @closure: user data
+ *
+ * Returns: (transfer full): The new #EList.
+ **/
 EList *
 e_list_new (EListCopyFunc copy, EListFreeFunc free, gpointer closure)
 {
@@ -43,6 +51,14 @@ e_list_new (EListCopyFunc copy, EListFreeFunc free, gpointer closure)
 	return list;
 }
 
+/**
+ * e_list_construct:
+ * @list: The #EList.
+ * @copy: (scope call): the copy func
+ * @free: (scope call): the free func
+ * @closure: user data
+ *
+ **/
 void
 e_list_construct (EList *list, EListCopyFunc copy, EListFreeFunc free, gpointer closure)
 {
@@ -51,6 +67,12 @@ e_list_construct (EList *list, EListCopyFunc copy, EListFreeFunc free, gpointer 
 	list->closure = closure;
 }
 
+/**
+ * e_list_duplicate:
+ * @old: The #EList object.
+ *
+ * Returns: (transfer full): The duplicated #EList.
+ **/
 EList *
 e_list_duplicate (EList *old)
 {
@@ -69,6 +91,12 @@ e_list_duplicate (EList *old)
 	return list;
 }
 
+/**
+ * e_list_get_iterator:
+ * @list: The #EList object.
+ *
+ * Returns: (transfer none): the #EIterator.
+ **/
 EIterator *
 e_list_get_iterator (EList *list)
 {
