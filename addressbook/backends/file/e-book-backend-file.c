@@ -1143,7 +1143,18 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 				(gpointer (*)(gpointer , gsize)) g_try_realloc,
 				g_free);
 
-		db_error = (*env->open) (env, NULL, DB_CREATE | DB_INIT_MPOOL | DB_PRIVATE | DB_THREAD, 0);
+		/*
+		 * We need either DB_INIT_CDB or DB_INIT_LOCK, because we will have
+		 * multiple threads reading and writing concurrently without
+		 * any locking above libdb.
+		 *
+		 * DB_INIT_CDB enforces multiple reader/single writer by locking inside
+		 * the database. It is used instead of DB_INIT_LOCK because DB_INIT_LOCK
+		 * may deadlock, which would have to be called in a separate thread.
+		 * Considered too complicated for not enough gain (= concurrent writes)
+		 * at this point.
+		 */
+		db_error = (*env->open) (env, NULL, DB_INIT_CDB | DB_CREATE | DB_INIT_MPOOL | DB_PRIVATE | DB_THREAD, 0);
 		if (db_error != 0) {
 			env->close (env, 0);
 			g_warning ("db_env_open failed with %s", db_strerror (db_error));
