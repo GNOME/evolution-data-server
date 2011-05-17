@@ -772,7 +772,7 @@ e_mail_data_store_new (CamelStore *store, const char *url)
 
   	estore = g_object_new (EMAIL_TYPE_DATA_STORE, NULL);
 	priv = DATA_STORE_PRIVATE(estore);
-	priv->store = store;
+	priv->store = g_object_ref(store);
 	priv->url = g_strdup (url);
 
 	return estore;
