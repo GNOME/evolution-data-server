@@ -1817,9 +1817,7 @@ e_gw_connection_get_date_from_string (const gchar *dtstring)
 
 	g_return_val_if_fail (dtstring != NULL, 0);
 
-	if (g_time_val_from_iso8601 (dtstring, &t_val)) {
-		t = (time_t) t_val.tv_sec;
-	} else if (strlen (dtstring) == 8) {
+	if (strlen (dtstring) == 8) {
 		/* It might be a date value */
 		GDate date;
 		struct tm tt;
@@ -1843,6 +1841,8 @@ e_gw_connection_get_date_from_string (const gchar *dtstring)
 		g_date_to_struct_tm (&date, &tt);
 		t = mktime (&tt);
 
+	} else if (g_time_val_from_iso8601 (dtstring, &t_val)) {
+		t = (time_t) t_val.tv_sec;
 	} else
 		g_warning ("Could not parse the string \n");
 
