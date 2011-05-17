@@ -90,6 +90,8 @@ gchar *		camel_data_cache_get_filename	(CamelDataCache *cdc,
 						 const gchar *path,
 						 const gchar *key,
 						 GError **error);
+void		camel_data_cache_clear		(CamelDataCache *cdc,
+						 const gchar *path);
 
 G_END_DECLS
 

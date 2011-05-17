@@ -265,11 +265,10 @@ camel_data_cache_set_expire_access (CamelDataCache *cdc, time_t when)
 }
 
 static void
-data_cache_expire (CamelDataCache *cdc, const gchar *path, const gchar *keep, time_t now)
+data_cache_expire (CamelDataCache *cdc, const gchar *path, const gchar *keep, time_t now, gboolean expire_all)
 {
 	GDir *dir;
 	const gchar *dname;
-	GString *s;
 	struct stat st;
 	CamelStream *stream;
 
@@ -277,25 +276,29 @@ data_cache_expire (CamelDataCache *cdc, const gchar *path, const gchar *keep, ti
 	if (dir == NULL)
 		return;
 
-	s = g_string_new("");
 	while ((dname = g_dir_read_name (dir))) {
-		if (strcmp (dname, keep) == 0)
+		gchar *dpath;
+
+		if (keep && strcmp (dname, keep) == 0)
 			continue;
 
-		g_string_printf (s, "%s/%s", path, dname);
-		if (g_stat (s->str, &st) == 0
+		dpath = g_build_filename (path, dname, NULL);
+
+		if (g_stat (dpath, &st) == 0
 		    && S_ISREG (st.st_mode)
-		    && ((cdc->priv->expire_age != -1 && st.st_mtime + cdc->priv->expire_age < now)
+		    && (expire_all
+		        || (cdc->priv->expire_age != -1 && st.st_mtime + cdc->priv->expire_age < now)
 			|| (cdc->priv->expire_access != -1 && st.st_atime + cdc->priv->expire_access < now))) {
-			g_unlink (s->str);
-			stream = camel_object_bag_get (cdc->priv->busy_bag, s->str);
+			g_unlink (dpath);
+			stream = camel_object_bag_get (cdc->priv->busy_bag, dpath);
 			if (stream) {
 				camel_object_bag_remove (cdc->priv->busy_bag, stream);
 				g_object_unref (stream);
 			}
 		}
+
+		g_free (dpath);
 	}
-	g_string_free (s, TRUE);
 	g_dir_close (dir);
 }
 
@@ -314,11 +317,7 @@ data_cache_path (CamelDataCache *cdc, gint create, const gchar *path, const gcha
 	dir = alloca (strlen (cdc->priv->path) + strlen (path) + 8);
 	sprintf(dir, "%s/%s/%02x", cdc->priv->path, path, hash);
 
-#ifdef G_OS_WIN32
 	if (g_access (dir, F_OK) == -1) {
-#else
-	if (access (dir, F_OK) == -1) {
-#endif
 		if (create)
 			g_mkdir_with_parents (dir, 0700);
 	} else if (cdc->priv->expire_age != -1 || cdc->priv->expire_access != -1) {
@@ -328,7 +327,7 @@ data_cache_path (CamelDataCache *cdc, gint create, const gchar *path, const gcha
 		now = time (NULL);
 		if (cdc->priv->expire_last[hash] + CAMEL_DATA_CACHE_CYCLE_TIME < now) {
 			cdc->priv->expire_last[hash] = now;
-			data_cache_expire (cdc, dir, key, now);
+			data_cache_expire (cdc, dir, key, now, FALSE);
 		}
 	}
 
@@ -505,3 +504,47 @@ camel_data_cache_remove (CamelDataCache *cdc,
 	return ret;
 }
 
+/**
+ * camel_data_cache_clear:
+ * @cdc: a #CamelDataCache
+ * @path: Path to the (sub) cache the item exists in.
+ *
+ * Clear cache's content in @path.
+ **/
+void
+camel_data_cache_clear (CamelDataCache *cdc, const gchar *path)
+{
+	gchar *base_dir;
+	GDir *dir;
+	const gchar *dname;
+	struct stat st;
+
+	g_return_if_fail (cdc != NULL);
+	g_return_if_fail (path != NULL);
+
+	base_dir = g_build_filename (cdc->priv->path, path, NULL);
+
+	dir = g_dir_open (base_dir, 0, NULL);
+	if (dir == NULL) {
+		g_free (base_dir);
+		return;
+	}
+
+	while ((dname = g_dir_read_name (dir))) {
+		gchar *dpath;
+
+		dpath = g_build_filename (base_dir, dname, NULL);
+
+		if (g_stat (dpath, &st) == 0
+		    && S_ISDIR (st.st_mode)
+		    && !g_str_equal (dname, ".")
+		    && !g_str_equal (dname, "..")) {
+			data_cache_expire (cdc, dpath, NULL, -1, TRUE);
+		}
+
+		g_free (dpath);
+	}
+
+	g_dir_close (dir);
+	g_free (base_dir);
+}

@@ -1236,6 +1236,43 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *imap, gchar *uid, gboolean uns
 	}
 }
 
+static void
+invalidate_local_cache (CamelIMAPXFolder *ifolder, guint64 new_uidvalidity)
+{
+	CamelFolder *cfolder;
+	CamelFolderChangeInfo *changes;
+	GPtrArray *uids;
+	gint ii;
+
+	g_return_if_fail (ifolder != NULL);
+
+	cfolder = CAMEL_FOLDER (ifolder);
+	g_return_if_fail (cfolder != NULL);
+
+	changes = camel_folder_change_info_new ();
+
+	uids = camel_folder_summary_array (cfolder->summary);
+	for (ii = 0; uids && ii < uids->len; ii++) {
+		const gchar *uid = uids->pdata[ii];
+
+		if (uid)
+			camel_folder_change_info_change_uid (changes, uid);
+	}
+
+	g_ptr_array_foreach (uids, (GFunc) camel_pstring_free, NULL);
+	g_ptr_array_free (uids, TRUE);
+
+	CAMEL_IMAPX_SUMMARY (cfolder->summary)->validity = new_uidvalidity;
+	camel_folder_summary_touch (cfolder->summary);
+	camel_folder_summary_save_to_db (cfolder->summary, NULL);
+
+	camel_data_cache_clear (ifolder->cache, "cache");
+	camel_data_cache_clear (ifolder->cache, "cur");
+
+	camel_folder_changed (cfolder, changes);
+	camel_folder_change_info_free (changes);
+}
+
 /* handle any untagged responses */
 static gint
 imapx_untagged (CamelIMAPXServer *imap,
@@ -1637,11 +1674,15 @@ imapx_untagged (CamelIMAPXServer *imap,
 				}
 			}
 			if (ifolder) {
+				CamelFolder *cfolder = CAMEL_FOLDER (ifolder);
+
 				ifolder->unread_on_server = sinfo->unseen;
 				ifolder->exists_on_server = sinfo->messages;
 				ifolder->modseq_on_server = sinfo->highestmodseq;
 				ifolder->uidnext_on_server = sinfo->uidnext;
 				ifolder->uidvalidity_on_server = sinfo->uidvalidity;
+				if (sinfo->uidvalidity && sinfo->uidvalidity != ((CamelIMAPXSummary *) cfolder->summary)->validity)
+					invalidate_local_cache (ifolder, sinfo->uidvalidity);
 			} else {
 				c(imap->tagprefix, "Received STATUS for unknown folder '%s'\n", sinfo->name);
 			}
@@ -2491,6 +2532,8 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		is->state = IMAPX_INITIALISED;
 	} else {
 		CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) is->select_pending;
+		CamelFolder *cfolder = is->select_pending;
+
 		c(is->tagprefix, "Select ok!\n");
 
 		if (!is->select_folder) {
@@ -2508,11 +2551,11 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		}
 		ifolder->uidvalidity_on_server = is->uidvalidity;
 		selected_folder = camel_folder_get_full_name (is->select_folder);
-#if 0
-		/* This must trigger a complete index rebuild! */
-		if (is->uidvalidity && is->uidvalidity != ((CamelIMAPXSummary *) is->select_folder->summary)->uidvalidity)
-			g_warning("uidvalidity doesn't match!");
 
+		if (is->uidvalidity && is->uidvalidity != ((CamelIMAPXSummary *) cfolder->summary)->validity)
+			invalidate_local_cache (ifolder, is->uidvalidity);
+
+#if 0
 		/* This should trigger a new messages scan */
 		if (is->exists != is->select_folder->summary->root_view->total_count)
 			g_warning("exists is %d our summary is %d and summary exists is %d\n", is->exists,
@@ -4077,6 +4120,11 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is,
 		is_selected = TRUE;
 #endif
 	total = camel_folder_summary_count (folder->summary);
+
+	if (ifolder->uidvalidity_on_server && isum->validity && isum->validity != ifolder->uidvalidity_on_server) {
+		invalidate_local_cache (ifolder, ifolder->uidvalidity_on_server);
+		need_rescan = TRUE;
+	}
 
 	/* We don't have valid unread count or modseq for currently-selected server
 	   (unless we want to re-SELECT it). We fake unread count when fetching
