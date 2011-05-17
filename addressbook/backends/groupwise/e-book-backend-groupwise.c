@@ -1141,9 +1141,7 @@ fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTable *categor
 	gint element_type;
 	gint i;
 	gboolean is_contact_list;
-	gboolean is_organization;
 
-	is_organization = e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_ORGANISATION ? TRUE: FALSE;
 	is_contact_list = e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_GROUP ? TRUE: FALSE;
 
 	e_contact_set (contact, E_CONTACT_IS_LIST, GINT_TO_POINTER (is_contact_list));
@@ -1155,11 +1153,9 @@ fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTable *categor
 
 		if (element_type == ELEMENT_TYPE_SIMPLE) {
 			if (mappings[i].field_id != E_CONTACT_BOOK_URI) {
-				if (!is_organization) {
-					value = e_gw_item_get_field_value (item, mappings[i].element_name);
-					if (value != NULL)
-						e_contact_set (contact, mappings[i].field_id, value);
-				}
+				value = e_gw_item_get_field_value (item, mappings[i].element_name);
+				if (value != NULL)
+				e_contact_set (contact, mappings[i].field_id, value);
 			}
 		} else if (element_type == ELEMENT_TYPE_COMPLEX) {
 			if (mappings[i].field_id == E_CONTACT_CATEGORIES) {
@@ -2686,6 +2682,14 @@ build_cache (EBookBackendGroupwise *ebgw)
 			contact = e_contact_new ();
 			fill_contact_from_gw_item (contact, E_GW_ITEM (l->data),
 						   ebgw->priv->categories_by_id);
+			
+			if (!e_contact_get_const (contact, E_CONTACT_UID)) {
+				g_object_unref (contact);
+				g_object_unref (l->data);
+				g_warning ("found a contact with null uid");
+				continue;
+			}
+				
 			e_contact_set (contact, E_CONTACT_BOOK_URI, priv->original_uri);
 			e_book_backend_db_cache_add_contact (ebgw->priv->file_db, contact);
 			e_book_backend_summary_add_contact (ebgw->priv->summary, contact);

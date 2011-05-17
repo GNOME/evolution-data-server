@@ -1345,7 +1345,8 @@ set_group_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 				member->id = id;
 				member->email = email;
 				second_level_child = soup_soap_parameter_get_first_child_by_name (temp, "name");
-				member->name =  soup_soap_parameter_get_string_value (second_level_child);
+				if (second_level_child)
+					member->name =  soup_soap_parameter_get_string_value (second_level_child);
 				item->priv->member_list = g_list_append (item->priv->member_list, member);
 			} else {
 				g_free (id);
