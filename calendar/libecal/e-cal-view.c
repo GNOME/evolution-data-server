@@ -92,9 +92,18 @@ build_id_list (const gchar * const *seq)
 	list = NULL;
 	for (i = 0; seq[i]; i++) {
 		ECalComponentId *id;
+		const gchar * eol;
+
 		id = g_new (ECalComponentId, 1);
-		id->uid = g_strdup (seq[i]);
-		id->rid = NULL; /* TODO */
+		/* match encoding as in notify_remove() in e-data-cal-view.c: <uid>[\n<rid>] */
+		eol = strchr (seq[i], '\n');
+		if (eol) {
+			id->uid = g_strndup (seq[i], eol - seq[i]);
+			id->rid = g_strdup (eol + 1);
+		} else {
+			id->uid = g_strdup (seq[i]);
+			id->rid = NULL;
+		}
 		list = g_list_prepend (list, id);
 	}
 
@@ -138,14 +147,14 @@ objects_modified_cb (EGdbusCalView *gdbus_calview, const gchar * const *objects,
 }
 
 static void
-objects_removed_cb (EGdbusCalView *gdbus_calview, const gchar * const *uids, ECalView *view)
+objects_removed_cb (EGdbusCalView *gdbus_calview, const gchar * const *seq, ECalView *view)
 {
         GList *list;
 
 	g_return_if_fail (E_IS_CAL_VIEW (view));
 	g_object_ref (view);
 
-	list = build_id_list (uids);
+	list = build_id_list (seq);
 
 	g_signal_emit (G_OBJECT (view), signals[OBJECTS_REMOVED], 0, list);
 
