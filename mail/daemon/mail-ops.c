@@ -406,8 +406,9 @@ mail_fetch_mail (const gchar *source, gint keep, const gchar *type, CamelOperati
 	m->data = data;
 
 	fm->driver = camel_session_get_filter_driver (session, type, NULL);
-	camel_filter_driver_set_folder_func (fm->driver, get_folder, get_data);
-	if (status)
+	if (fm->driver)
+		camel_filter_driver_set_folder_func (fm->driver, get_folder, get_data);
+	if (fm->driver && status)
 		camel_filter_driver_set_status_func (fm->driver, status, status_data);
 
 	mail_msg_unordered_push (m);

@@ -474,7 +474,7 @@ alert_user(CamelSession *session, CamelSessionAlertType type, const gchar *promp
 
 	return result;
 }
-/*
+
 static CamelFolder *
 get_folder (CamelFilterDriver *d,
             const gchar *uri,
@@ -483,7 +483,7 @@ get_folder (CamelFilterDriver *d,
 {
 	return mail_tool_uri_to_folder (uri, 0, error);
 }
-
+/*
 static void
 main_play_sound (CamelFilterDriver *driver, gchar *filename, gpointer user_data)
 {
@@ -530,19 +530,20 @@ session_system_beep (CamelFilterDriver *driver, gpointer user_data)
 	mail_async_event_emit (ms->async, MAIL_ASYNC_GUI, (MailAsyncFunc) main_system_beep,
 			       driver, user_data, NULL);
 }
+#endif
 
 static CamelFilterDriver *
 main_get_filter_driver (CamelSession *session, const gchar *type, GError **error)
 {
 	CamelFilterDriver *driver;
-	EFilterRule *rule = NULL;
-	const gchar *config_dir;
-	gchar *user, *system;
+	//EFilterRule *rule = NULL;
+	//const gchar *config_dir;
+	//gchar *user, *system;
 	GConfClient *gconf;
-	ERuleContext *fc;
+	//ERuleContext *fc;
 
 	gconf = mail_config_get_gconf_client ();
-
+#if 0
 	config_dir = mail_session_get_config_dir ();
 	user = g_build_filename (config_dir, "filters.xml", NULL);
 	system = g_build_filename (EVOLUTION_PRIVDATADIR, "filtertypes.xml", NULL);
@@ -550,6 +551,7 @@ main_get_filter_driver (CamelSession *session, const gchar *type, GError **error
 	e_rule_context_load (fc, system, user);
 	g_free (system);
 	g_free (user);
+#endif
 
 	driver = camel_filter_driver_new (session);
 	camel_filter_driver_set_folder_func (driver, get_folder, NULL);
@@ -570,11 +572,12 @@ main_get_filter_driver (CamelSession *session, const gchar *type, GError **error
 		if (ms->filter_logfile)
 			camel_filter_driver_set_logfile (driver, ms->filter_logfile);
 	}
-
+/*
 	camel_filter_driver_set_shell_func (driver, mail_execute_shell_command, NULL);
 	camel_filter_driver_set_play_sound_func (driver, session_play_sound, NULL);
 	camel_filter_driver_set_system_beep_func (driver, session_system_beep, NULL);
-
+*/
+#if 0
 	if ((!strcmp (type, E_FILTER_SOURCE_INCOMING) || !strcmp (type, E_FILTER_SOURCE_JUNKTEST))
 	    && camel_session_get_check_junk (session)) {
 		/* implicit junk check as 1st rule */
@@ -607,23 +610,19 @@ main_get_filter_driver (CamelSession *session, const gchar *type, GError **error
 		g_string_free (fsearch, TRUE);
 		g_string_free (faction, TRUE);
 	}
-
 	g_object_unref (fc);
 
+#endif
 	return driver;
 }
-#endif 
 
 static CamelFilterDriver *
 get_filter_driver (CamelSession *session, const gchar *type, GError **error)
 {
-	/* Filtering needs more attention to be built */	
-	return NULL;
-/*	
 	return (CamelFilterDriver *) mail_call_main (
 		MAIL_CALL_p_ppp, (MailMainFunc) main_get_filter_driver,
 		session, type, error);
-*/
+
 }
 
 /* TODO: This is very temporary, until we have a better way to do the progress reporting,
