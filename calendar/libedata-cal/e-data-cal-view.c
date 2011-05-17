@@ -227,7 +227,7 @@ send_pending_removes (EDataCalView *view)
 	if (priv->removes->len == 0)
 		return;
 
-	/* TODO: send ECalComponentIds as a list of pairs */
+	/* send ECalComponentIds as <uid>[\n<rid>], as encoded in notify_remove() */
 	e_gdbus_cal_view_emit_objects_removed (view->priv->gdbus_object, (const gchar * const *) priv->removes->data);
 	reset_array (priv->removes);
 }
@@ -306,7 +306,9 @@ static void
 notify_remove (EDataCalView *view, ECalComponentId *id)
 {
 	EDataCalViewPrivate *priv = view->priv;
-	gchar *uid;
+	gchar *ids;
+	gchar *uid, *rid;
+	size_t uid_len, rid_len;
 
 	send_pending_adds (view);
 	send_pending_changes (view);
@@ -315,9 +317,38 @@ notify_remove (EDataCalView *view, ECalComponentId *id)
 		send_pending_removes (view);
 	}
 
-	/* TODO: store ECalComponentId instead of just uid*/
-	uid = e_util_utf8_make_valid (id->uid);
-	g_array_append_val (priv->removes, uid);
+	/* store ECalComponentId as <uid>[\n<rid>] (matches D-Bus API) */
+	if (id->uid) {
+		uid = e_util_utf8_make_valid (id->uid);
+		uid_len = strlen (uid);
+	} else {
+		uid = NULL;
+		uid_len = 0;
+	}
+	if (id->rid) {
+		rid = e_util_utf8_make_valid (id->rid);
+		rid_len = strlen (rid);
+	} else {
+		rid = NULL;
+		rid_len = 0;
+	}
+	if (uid_len && !rid_len) {
+		/* shortcut */
+		ids = uid;
+		uid = NULL;
+	} else {
+		/* concatenate */
+		ids = g_malloc (uid_len + rid_len + (rid_len ? 2 : 1));
+		if (uid_len)
+			strcpy (ids, uid);
+		if (rid_len) {
+			ids[uid_len] = '\n';
+			strcpy (ids + uid_len + 1, rid);
+		}
+	}
+	g_array_append_val (priv->removes, ids);
+	g_free (uid);
+	g_free (rid);
 
 	g_hash_table_remove (priv->ids, id);
 
