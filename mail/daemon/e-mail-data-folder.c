@@ -1,6 +1,7 @@
 /* e-mail-data-folder.c */
 
 #include <glib/gi18n.h>
+#include <gconf/gconf-client.h>
 #include "e-mail-local.h"
 #include "e-mail-data-folder.h"
 #include "e-mail-data-session.h"
@@ -1020,6 +1021,10 @@ app_getmsg_operate (CamelFolder *folder, gpointer sdata, GError **error)
 	CamelMimeMessage *msg;
 	CamelStream *stream;
 	GByteArray *array;
+	CamelStream *filter_stream = NULL;
+	CamelMimeFilter *charenc = NULL;
+	static char *charset = NULL;
+	GConfClient *gconf;
 
 	msg = camel_folder_get_message (folder, data->uid, error);
 
@@ -1027,12 +1032,24 @@ app_getmsg_operate (CamelFolder *folder, gpointer sdata, GError **error)
 		return FALSE;
 
 	stream = camel_stream_mem_new ();
+	filter_stream = camel_stream_filter_new (stream);
 
-	camel_data_wrapper_decode_to_stream ((CamelDataWrapper *)msg, stream, NULL);
+	if (!charset)  {
+		gconf = gconf_client_get_default ();
+		charset = gconf_client_get_string (gconf, "/apps/evolution/mail/display/charset",NULL);
+		g_object_unref (gconf);
+	}
+	
+	charenc = camel_mime_filter_charset_new (charset, "UTF-8");
+	camel_stream_filter_add (CAMEL_STREAM_FILTER (filter_stream), charenc);
+	g_object_unref (charenc);
+	g_object_unref (stream);
+
+	camel_data_wrapper_decode_to_stream ((CamelDataWrapper *)msg, filter_stream, NULL);
 	array = camel_stream_mem_get_byte_array ((CamelStreamMem *)stream);
 	data->msg_buf = g_strndup ((gchar *) array->data, array->len);
 
-	g_object_unref (stream);
+	g_object_unref (filter_stream);
 	g_object_unref (msg);
 
 	return TRUE;
@@ -1573,7 +1590,7 @@ impl_Mail_transferMessagesTo (EGdbusFolderCF *object, GDBusMethodInvocation *inv
 static gboolean
 ps_operate (CamelFolder *folder, gpointer sdata, GError **error)
 {
-	EMailFolderTransferData *data = (EMailFolderTransferData *)sdata;
+	//EMailFolderTransferData *data = (EMailFolderTransferData *)sdata;
 
 	camel_folder_summary_set_need_preview (folder->summary, TRUE);
 	camel_folder_summary_prepare_fetch_all (folder->summary, error);
@@ -1606,7 +1623,6 @@ impl_Mail_prepareSummary (EGdbusFolderCF *object, GDBusMethodInvocation *invocat
 {
 	EMailDataFolderPrivate *priv = DATA_FOLDER_PRIVATE(mfolder);	
 	EMailFolderTransferData *data = g_new0 (EMailFolderTransferData, 1);
-	int i;
 
 	data->object = object;
 	data->invocation = invocation;
