@@ -107,10 +107,12 @@ struct _CamelService {
 struct _CamelServiceClass {
 	CamelObjectClass parent_class;
 
+	/* Non-Blocking Methods */
 	gchar *		(*get_name)		(CamelService *service,
 						 gboolean brief);
 	void		(*cancel_connect)	(CamelService *service);
 
+	/* Synchronous I/O Methods */
 	gboolean	(*connect_sync)		(CamelService *service,
 						 GCancellable *cancellable,
 						 GError **error);
@@ -121,6 +123,17 @@ struct _CamelServiceClass {
 	GList *		(*query_auth_types_sync)
 						(CamelService *service,
 						 GCancellable *cancellable,
+						 GError **error);
+
+	/* Asynchronous I/O Methods (all have defaults) */
+	void		(*query_auth_types)	(CamelService *service,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	GList *		(*query_auth_types_finish)
+						(CamelService *service,
+						 GAsyncResult *result,
 						 GError **error);
 };
 
@@ -153,14 +166,24 @@ gboolean	camel_service_disconnect_sync	(CamelService *service,
 CamelServiceConnectionStatus
 		camel_service_get_connection_status
 						(CamelService *service);
-GList *		camel_service_query_auth_types_sync
-						(CamelService *service,
-						 GCancellable *cancellable,
-						 GError **error);
 void		camel_service_lock		(CamelService *service,
 						 CamelServiceLock lock);
 void		camel_service_unlock		(CamelService *service,
 						 CamelServiceLock lock);
+
+GList *		camel_service_query_auth_types_sync
+						(CamelService *service,
+						 GCancellable *cancellable,
+						 GError **error);
+void		camel_service_query_auth_types	(CamelService *service,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+GList *		camel_service_query_auth_types_finish
+						(CamelService *service,
+						 GAsyncResult *result,
+						 GError **error);
 
 G_END_DECLS
 

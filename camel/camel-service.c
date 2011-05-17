@@ -49,6 +49,8 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_SERVICE, CamelServicePrivate))
 
+typedef struct _AsyncContext AsyncContext;
+
 struct _CamelServicePrivate {
 	CamelProvider *provider;
 	CamelSession *session;
@@ -62,6 +64,10 @@ struct _CamelServicePrivate {
 
 	GStaticRecMutex connect_lock;	/* for locking connection operations */
 	GStaticMutex connect_op_lock;	/* for locking the connection_op */
+};
+
+struct _AsyncContext {
+	GList *auth_types;
 };
 
 enum {
@@ -78,6 +84,14 @@ static void camel_service_initable_init (GInitableIface *interface);
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
 	CamelService, camel_service, CAMEL_TYPE_OBJECT,
 	G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, camel_service_initable_init))
+
+static void
+async_context_free (AsyncContext *async_context)
+{
+	g_list_free (async_context->auth_types);
+
+	g_slice_free (AsyncContext, async_context);
+}
 
 static gchar *
 service_find_old_data_dir (CamelService *service)
@@ -379,6 +393,73 @@ service_query_auth_types_sync (CamelService *service,
 	return NULL;
 }
 
+static void
+service_query_auth_types_thread (GSimpleAsyncResult *simple,
+                                 GObject *object,
+                                 GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	async_context->auth_types = camel_service_query_auth_types_sync (
+		CAMEL_SERVICE (object), cancellable, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		g_error_free (error);
+	}
+}
+
+static void
+service_query_auth_types (CamelService *service,
+                          gint io_priority,
+                          GCancellable *cancellable,
+                          GAsyncReadyCallback callback,
+                          gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (service), callback,
+		user_data, service_query_auth_types);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, service_query_auth_types_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static GList *
+service_query_auth_types_finish (CamelService *service,
+                                 GAsyncResult *result,
+                                 GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (service),
+		service_query_auth_types), NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	return g_list_copy (async_context->auth_types);
+}
+
 static gboolean
 service_initable_init (GInitable *initable,
                        GCancellable *cancellable,
@@ -468,6 +549,9 @@ camel_service_class_init (CamelServiceClass *class)
 	class->connect_sync = service_connect_sync;
 	class->disconnect_sync = service_disconnect_sync;
 	class->query_auth_types_sync = service_query_auth_types_sync;
+
+	class->query_auth_types = service_query_auth_types;
+	class->query_auth_types_finish = service_query_auth_types_finish;
 
 	g_object_class_install_property (
 		object_class,
@@ -839,41 +923,6 @@ camel_service_get_connection_status (CamelService *service)
 }
 
 /**
- * camel_service_query_auth_types_sync:
- * @service: a #CamelService
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * This is used by the mail source wizard to get the list of
- * authentication types supported by the protocol, and information
- * about them.
- *
- * Returns: a list of #CamelServiceAuthType records. The caller
- * must free the list with #g_list_free when it is done with it.
- **/
-GList *
-camel_service_query_auth_types_sync (CamelService *service,
-                                     GCancellable *cancellable,
-                                     GError **error)
-{
-	CamelServiceClass *class;
-	GList *ret;
-
-	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
-
-	class = CAMEL_SERVICE_GET_CLASS (service);
-	g_return_val_if_fail (class->query_auth_types_sync != NULL, NULL);
-
-	/* Note that we get the connect lock here, which means the
-	 * callee must not call the connect functions itself. */
-	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
-	ret = class->query_auth_types_sync (service, cancellable, error);
-	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
-
-	return ret;
-}
-
-/**
  * camel_service_lock:
  * @service: a #CamelService
  * @lock: lock type to lock
@@ -926,3 +975,102 @@ camel_service_unlock (CamelService *service,
 			g_return_if_reached ();
 	}
 }
+
+/**
+ * camel_service_query_auth_types_sync:
+ * @service: a #CamelService
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Obtains a list of authentication types supported by @service.
+ * Free the returned list with g_list_free().
+ *
+ * Returns: a list of #CamelServiceAuthType structs
+ **/
+GList *
+camel_service_query_auth_types_sync (CamelService *service,
+                                     GCancellable *cancellable,
+                                     GError **error)
+{
+	CamelServiceClass *class;
+	GList *list;
+
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+
+	class = CAMEL_SERVICE_GET_CLASS (service);
+	g_return_val_if_fail (class->query_auth_types_sync != NULL, NULL);
+
+	/* Note that we get the connect lock here, which means the
+	 * callee must not call the connect functions itself. */
+	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
+	list = class->query_auth_types_sync (service, cancellable, error);
+	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
+
+	return list;
+}
+
+/**
+ * camel_service_query_auth_types:
+ * @service: a #CamelService
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously obtains a list of authentication types supported by
+ * @service.
+ *
+ * When the operation is finished, @callback will be called.  You can
+ * then call camel_service_query_auth_types_finish() to get the result
+ * of the operation.
+ *
+ * Since: 3.2
+ **/
+void
+camel_service_query_auth_types (CamelService *service,
+                                gint io_priority,
+                                GCancellable *cancellable,
+                                GAsyncReadyCallback callback,
+                                gpointer user_data)
+{
+	CamelServiceClass *class;
+
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
+
+	class = CAMEL_SERVICE_GET_CLASS (service);
+	g_return_if_fail (class->query_auth_types != NULL);
+
+	class->query_auth_types (
+		service, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_service_query_auth_types_finish:
+ * @service: a #CamelService
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_service_query_auth_types().
+ * Free the returned list with g_list_free().
+ *
+ * Returns: a list of #CamelServiceAuthType structs
+ *
+ * Since: 3.2
+ **/
+GList *
+camel_service_query_auth_types_finish (CamelService *service,
+                                       GAsyncResult *result,
+                                       GError **error)
+{
+	CamelServiceClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
+
+	class = CAMEL_SERVICE_GET_CLASS (service);
+	g_return_val_if_fail (class->query_auth_types_finish != NULL, NULL);
+
+	return class->query_auth_types_finish (service, result, error);
+}
+

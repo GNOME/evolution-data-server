@@ -186,17 +186,6 @@ CamelService
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_service_query_auth_types_sync ##### -->
-<para>
-
-</para>
-
-@service: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
 <!-- ##### ENUM CamelServiceLock ##### -->
 <para>
 
@@ -221,5 +210,39 @@ CamelService
 
 @service: 
 @lock: 
+
+
+<!-- ##### FUNCTION camel_service_query_auth_types_sync ##### -->
+<para>
+
+</para>
+
+@service: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_service_query_auth_types ##### -->
+<para>
+
+</para>
+
+@service: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_service_query_auth_types_finish ##### -->
+<para>
+
+</para>
+
+@service: 
+@result: 
+@error: 
+@Returns: 
 
 

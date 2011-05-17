@@ -8605,16 +8605,6 @@ streams
 @service: 
 @Returns: 
 
-<!-- ##### FUNCTION camel_service_query_auth_types ##### -->
-<para>
-
-</para>
-
-@service: 
-@cancellable: 
-@error: 
-@Returns: 
-
 <!-- ##### FUNCTION camel_session_check_junk ##### -->
 <para>
 
