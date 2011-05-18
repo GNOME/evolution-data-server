@@ -86,16 +86,20 @@ DISTCLEANFILES = eds-version.h $(pkgconfig_DATA)
 
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS =
-INTROSPECTION_SCANNER_ARGS = --identifier-prefix E --pkg-export libedataserver-1.2  --c-include="libedataserver/e-account.h" --c-include="libedataserver/e-source.h"
+INTROSPECTION_SCANNER_ARGS = --identifier-prefix E --pkg-export \
+	libedataserver-1.2  --c-include="libedataserver/e-account.h" \
+	--c-include="libedataserver/e-source.h"
 INTROSPECTION_COMPILER_ARGS =
 
 if HAVE_INTROSPECTION
 introspection_sources = \
-	$(filter-out %-private.h e-sexp.h, $(libedataserverinclude_HEADERS) $(libedataserver_1_2_la_SOURCES))
+	$(filter-out %-private.h e-sexp.h, $(libedataserverinclude_HEADERS) \
+	$(libedataserver_1_2_la_SOURCES))
 
 EDataServer-1.2.gir: libedataserver-1.2.la
 EDataServer_1_2_gir_INCLUDES = GObject-2.0 libxml2-2.0
-EDataServer_1_2_gir_CFLAGS = -I$(top_srcdir) $(E_DATA_SERVER_CFLAGS) $(SOUP_CFLAGS)
+EDataServer_1_2_gir_CFLAGS = -I$(top_srcdir) $(E_DATA_SERVER_CFLAGS) \
+	$(SOUP_CFLAGS)
 EDataServer_1_2_gir_LIBS = libedataserver-1.2.la
 EDataServer_1_2_gir_FILES = $(introspection_sources)
 INTROSPECTION_GIRS += EDataServer-1.2.gir
