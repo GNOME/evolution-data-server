@@ -69,8 +69,11 @@ pkgconfig_DATA = libebook-$(API_VERSION).pc
 
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS =
-INTROSPECTION_SCANNER_ARGS = --add-include-path=$(top_builddir)/libedataserver --add-include-path=$(srcdir) --identifier-prefix=E --c-include="libebook/e-book.h"
-INTROSPECTION_COMPILER_ARGS = --includedir=$(top_builddir)/libedataserver --includedir=$(srcdir)
+INTROSPECTION_SCANNER_ARGS = --add-include-path=$(top_builddir)/libedataserver \
+	--add-include-path=$(srcdir) --identifier-prefix=E --pkg-export \
+	libebook-1.2 --c-include="libebook/e-book.h"
+INTROSPECTION_COMPILER_ARGS = --includedir=$(top_builddir)/libedataserver \
+	--includedir=$(srcdir)
 
 if HAVE_INTROSPECTION
 introspection_sources = $(libebook_1_2_la_SOURCES)
@@ -87,7 +90,8 @@ EBook_1_2_gir_CFLAGS = $(INCLUDES) \
 		       -I$(top_builddir)/addressbook/ \
 		       -I$(top_builddir)/addressbook/libebook \
 			$(NULL)
-EBook_1_2_gir_LIBS = libebook-1.2.la $(top_builddir)/libedataserver/libedataserver-1.2.la
+EBook_1_2_gir_LIBS = \
+	libebook-1.2.la $(top_builddir)/libedataserver/libedataserver-1.2.la
 EBook_1_2_gir_FILES = e-contact.c e-contact.h \
 		      e-vcard.c e-vcard.h \
 		      e-book.c e-book.h \
