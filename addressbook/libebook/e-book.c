@@ -2047,7 +2047,8 @@ e_book_async_get_book_view (EBook *book,
  * e_book_get_book_view_async:
  * @book: an #EBook
  * @query: an #EBookQuery
- * @requested_fields: a #GList containing the names of fields to return, or NULL for all
+ * @requested_fields: (allow-none): a #GList containing the names of fields to
+ * return, or NULL for all
  * @max_results: the maximum number of contacts to show (or 0 for all)
  * @cb: (scope call): a function to call when the operation finishes
  * @closure: data to pass to callback function
@@ -2977,8 +2978,8 @@ make_me_card (void)
 
 /**
  * e_book_get_self:
- * @contact: an #EContact pointer to set
- * @book: an #EBook pointer to set
+ * @contact: (out): an #EContact pointer to set
+ * @book: (out): an #EBook pointer to set
  * @error: a #GError to set on failure
  *
  * Get the #EContact referring to the user of the address book
