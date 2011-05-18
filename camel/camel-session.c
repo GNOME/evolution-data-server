@@ -737,8 +737,8 @@ camel_session_build_password_prompt (const gchar *type,
                                      const gchar *user,
                                      const gchar *host)
 {
-	gchar *user_markup;
-	gchar *host_markup;
+	/* gchar *user_markup;*/
+	/* gchar *host_markup;*/
 	gchar *prompt;
 
 	g_return_val_if_fail (type != NULL, NULL);
@@ -748,18 +748,18 @@ camel_session_build_password_prompt (const gchar *type,
 	/* Add bold tags to the "user" and "host" strings.  We use
 	 * separate strings here to avoid putting markup tags in the
 	 * translatable string below. */
-	user_markup = g_markup_printf_escaped ("<b>%s</b>", user);
-	host_markup = g_markup_printf_escaped ("<b>%s</b>", host);
+	/* user_markup = g_markup_printf_escaped ("<b>%s</b>", user);
+	host_markup = g_markup_printf_escaped ("<b>%s</b>", host); */
 
 	/* Translators: The first argument is the account type
 	 * (e.g. "IMAP"), the second is the user name, and the
 	 * third is the host name. */
 	prompt = g_strdup_printf (
 		_("Please enter the %s password for %s on host %s."),
-		type, user_markup, host_markup);
+		type, user , host );
 
-	g_free (user_markup);
-	g_free (host_markup);
+	/* g_free (user_markup);
+	g_free (host_markup); */
 
 	return prompt;
 }
