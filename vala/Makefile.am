@@ -22,6 +22,7 @@ libedataserver-1.2.vapi: $(top_builddir)/libedataserver/EDataServer-1.2.gir
 	$(AM_V_GEN)sed \
 		'-e s/xml\.NodePtr/Xml\.Node/' \
 		'-e s/xml\.DocPtr/Xml\.Doc/' \
+		'-e s/xml\.Doc /Xml\.Doc /' \
 		< libedataserver-1.2.vapi.tmp > $@
 	@rm  libedataserver-1.2.vapi.tmp
 
