@@ -18,6 +18,12 @@ libedataserver-1.2.vapi: $(top_builddir)/libedataserver/EDataServer-1.2.gir
 		--library libedataserver-1.2 \
 		$< \
 		$(NULL)
+	@mv $@ libedataserver-1.2.vapi.tmp
+	$(AM_V_GEN)sed \
+		'-e s/xml\.NodePtr/Xml\.Node/' \
+		'-e s/xml\.DocPtr/Xml\.Doc/' \
+		< libedataserver-1.2.vapi.tmp > $@
+	@rm  libedataserver-1.2.vapi.tmp
 
 libebook-1.2.vapi: $(top_builddir)/addressbook/libebook/EBook-1.2.gir libedataserver-1.2.vapi
 	$(VAPIGEN_V)$(VAPIGEN) \
