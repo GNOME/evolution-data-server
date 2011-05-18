@@ -7,6 +7,8 @@ dist_vapi_DATA = \
 	libebook-1.2.deps \
 	$(NULL)
 
+EXTRA_DIST = EBook-1.2.metadata
+
 BUILT_SOURCES = \
 	$(vapi_DATA) \
 	$(NULL)
