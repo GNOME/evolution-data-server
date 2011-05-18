@@ -239,6 +239,51 @@ uid_cachename_hack (CamelStore *store)
 	return filename;
 }
 
+static CamelFolder *
+fetch_pop3_folder (const char *uri)
+{
+	CamelStore *local = e_mail_local_get_store ();
+	CamelFolder *destination=NULL;
+	EAccountList *accounts;
+	EAccount *account = NULL;
+	EIterator *iter;
+	const char *email;
+	char *folder_name;
+
+	accounts = e_get_account_list ();
+	iter = e_list_get_iterator ((EList *) accounts);
+	while (e_iterator_is_valid (iter)) {
+		account = (EAccount *) e_iterator_get (iter);
+
+		if (account->source->url && strcmp (account->source->url, uri) == 0) {
+			break;
+		}
+
+		e_iterator_next (iter);
+		account = NULL;
+	}
+
+	g_object_unref (iter);
+	email = e_account_get_string(account, E_ACCOUNT_ID_ADDRESS);
+	folder_name = g_strdup_printf ("%s/Inbox", email);
+
+	destination = camel_store_get_folder (local, folder_name, 0, NULL);
+	if (!destination) {
+		/* If its first time, create that folder. */
+		CamelFolderInfo *info;
+
+		info = camel_store_create_folder (local, NULL, folder_name, NULL);
+		if (!info) 
+			g_warning ("Unable to create POP3 folder: %s\n", folder_name);
+		else {
+			destination = camel_store_get_folder (local, folder_name, 0, NULL);
+		}
+	}
+	g_free (folder_name);
+
+	return destination;
+}
+
 static gchar *
 fetch_mail_desc (struct _fetch_mail_msg *m)
 {
@@ -297,6 +342,10 @@ fetch_mail_exec (struct _fetch_mail_msg *m)
 
 			if (cache) {
 				GPtrArray *folder_uids, *cache_uids, *uids;
+
+				g_object_unref (fm->destination);
+				fm->destination = fetch_pop3_folder (m->source_uri);
+				g_object_ref (fm->destination);
 
 				folder_uids = camel_folder_get_uids (folder);
 				cache_uids = camel_uid_cache_get_new_uids (cache, folder_uids);
