@@ -31,6 +31,7 @@ libebook-1.2.vapi: $(top_builddir)/addressbook/libebook/EBook-1.2.gir libedatase
 		--vapidir=. \
 		--pkg libedataserver-1.2 \
 		--library libebook-1.2 \
+		--metadatadir=. \
 		$< \
 		$(NULL)
 

@@ -1,0 +1,3 @@
+BookView.contacts_added#signal.object type="GLib.List<weak void*>"
+BookView.contacts_removed#signal.object type="GLib.List<weak void*>"
+BookView.contacts_changed#signal.object type="GLib.List<weak void*>"
