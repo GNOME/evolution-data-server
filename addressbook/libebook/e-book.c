@@ -1887,9 +1887,10 @@ e_book_remove_contacts_async (EBook *book,
  * e_book_get_book_view:
  * @book: an #EBook
  * @query: an #EBookQuery
- * @requested_fields: a #GList containing the names of fields to return, or NULL for all
+ * @requested_fields: (allow-none): a #GList containing the names of fields to
+ * return, or NULL for all
  * @max_results: the maximum number of contacts to show (or 0 for all)
- * @book_view: A #EBookView pointer, will be set to the view
+ * @book_view: (out): A #EBookView pointer, will be set to the view
  * @error: a #GError to set on failure
  *
  * Query @book with @query, creating a #EBookView in @book_view with the fields
