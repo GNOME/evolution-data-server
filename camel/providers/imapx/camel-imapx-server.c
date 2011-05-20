@@ -316,7 +316,7 @@ static void imapx_job_done (CamelIMAPXServer *is, CamelIMAPXJob *job);
 static gboolean imapx_run_job (CamelIMAPXServer *is, CamelIMAPXJob *job, GError **error);
 static void imapx_job_fetch_new_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job);
 static void imapx_command_copy_messages_step_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic);
-static gint imapx_refresh_info_uid_cmp(gconstpointer ap, gconstpointer bp);
+static gint imapx_refresh_info_uid_cmp (gconstpointer ap, gconstpointer bp, gboolean ascending);
 static gint imapx_uids_array_cmp (gconstpointer ap, gconstpointer bp);
 static gboolean imapx_server_sync_changes(CamelIMAPXServer *is, CamelFolder *folder, gint pri, GError **error);
 
@@ -363,6 +363,26 @@ enum {
 static gboolean imapx_select(CamelIMAPXServer *is, CamelFolder *folder, gboolean force, GError **error);
 
 G_DEFINE_TYPE (CamelIMAPXServer, camel_imapx_server, CAMEL_TYPE_OBJECT)
+
+
+static guint
+get_batch_fetch_count (CamelIMAPXServer *is)
+{
+	static guint count = 0;
+	const gchar *fetch_count;
+	
+	if (count)
+		return count;
+	
+	fetch_count = camel_url_get_param (is->url, "batch-fetch-count");
+	if (fetch_count)
+		count = strtoul (fetch_count, NULL, 10);
+	
+	if (count <= 0)
+		count = BATCH_FETCH_COUNT;
+
+	return count;
+}
 
 /*
   this creates a uid (or sequence number) set directly into a command,
@@ -1505,7 +1525,7 @@ imapx_untagged(CamelIMAPXServer *imap, GError **error)
 
 							mid = (min + max)/2;
 							r = &g_array_index(infos, struct _refresh_info, mid);
-							cmp = imapx_uid_cmp (finfo->uid, r->uid, NULL);
+							cmp = imapx_refresh_info_uid_cmp (finfo->uid, r->uid, !imap->descending);
 
 							if (cmp > 0)
 								min = mid + 1;
@@ -3484,7 +3504,7 @@ imapx_job_append_message_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 /* ********************************************************************** */
 
 static gint
-imapx_refresh_info_uid_cmp (gconstpointer ap, gconstpointer bp)
+imapx_refresh_info_uid_cmp (gconstpointer ap, gconstpointer bp, gboolean ascending)
 {
 	guint av, bv;
 
@@ -3492,9 +3512,9 @@ imapx_refresh_info_uid_cmp (gconstpointer ap, gconstpointer bp)
 	bv = g_ascii_strtoull ((const gchar *)bp, NULL, 10);
 
 	if (av<bv)
-		return -1;
+		return ascending ? -1 : 1;
 	else if (av>bv)
-		return 1;
+		return ascending ? 1 : -1;
 	else
 		return 0;
 }
@@ -3505,7 +3525,7 @@ imapx_uids_array_cmp (gconstpointer ap, gconstpointer bp)
 	const gchar **a = (const gchar **) ap;
         const gchar **b = (const gchar **) bp;
 
-	return imapx_refresh_info_uid_cmp (*a, *b);
+	return imapx_refresh_info_uid_cmp (*a, *b, TRUE);
 }
 
 static gint
@@ -3514,7 +3534,17 @@ imapx_refresh_info_cmp (gconstpointer ap, gconstpointer bp)
 	const struct _refresh_info *a = ap;
 	const struct _refresh_info *b = bp;
 
-	return imapx_refresh_info_uid_cmp (a->uid, b->uid);
+	return imapx_refresh_info_uid_cmp (a->uid, b->uid, TRUE);
+}
+
+static gint
+imapx_refresh_info_cmp_descending (gconstpointer ap, gconstpointer bp)
+{
+	const struct _refresh_info *a = ap;
+	const struct _refresh_info *b = bp;
+
+	return imapx_refresh_info_uid_cmp (a->uid, b->uid, FALSE);
+
 }
 
 /* skips over non-server uids (pending appends) */
@@ -3795,7 +3825,8 @@ imapx_job_scan_changes_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			camel_operation_start (
 				job->op, _("Fetching summary information for new messages in %s"),
 				camel_folder_get_name (job->folder));
-			imapx_uidset_init(&job->u.refresh_info.uidset, BATCH_FETCH_COUNT, 0);
+			imapx_uidset_init (&job->u.refresh_info.uidset, get_batch_fetch_count (is), 0);
+
 			/* These are new messages which arrived since we last knew the unseen count;
 			   update it as they arrive. */
 			job->u.refresh_info.update_unseen = TRUE;
@@ -3900,6 +3931,17 @@ exception:
 }
 
 static void
+imapx_command_fetch_new_uids_done	(CamelIMAPXServer *is,
+	                                 CamelIMAPXCommand *ic)
+{
+	CamelIMAPXJob *job = ic->job;
+	GArray *infos = job->u.refresh_info.infos;
+
+	qsort (infos->data, infos->len, sizeof (struct _refresh_info), imapx_refresh_info_cmp_descending);
+	imapx_command_step_fetch_done (is, ic);
+}
+
+static void
 imapx_job_fetch_new_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
@@ -3924,13 +3966,18 @@ imapx_job_fetch_new_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 		job->op, _("Fetching summary information for new messages in %s"),
 		camel_folder_get_name (folder));
 
-	if (diff > BATCH_FETCH_COUNT) {
+	if (diff > get_batch_fetch_count (is) || is->descending) {
 		ic = camel_imapx_command_new (is, "FETCH", job->folder,
 				     "UID FETCH %s:* (UID FLAGS)", uid);
-		imapx_uidset_init(&job->u.refresh_info.uidset, BATCH_FETCH_COUNT, 0);
+		imapx_uidset_init (&job->u.refresh_info.uidset, get_batch_fetch_count (is), 0);
 		job->u.refresh_info.infos = g_array_new (0, 0, sizeof(struct _refresh_info));
 		ic->pri = job->pri;
-		ic->complete = imapx_command_step_fetch_done;
+		
+		if (is->descending)
+			ic->complete = imapx_command_fetch_new_uids_done;
+		else 
+			ic->complete = imapx_command_step_fetch_done;
+
 	} else {
 		ic = camel_imapx_command_new (is, "FETCH", job->folder,
 					"UID FETCH %s:* (RFC822.SIZE RFC822.HEADER FLAGS)", uid);
@@ -4938,11 +4985,19 @@ CamelIMAPXServer *
 camel_imapx_server_new(CamelStore *store, CamelURL *url)
 {
 	CamelIMAPXServer *is;
+	const gchar *order;
 
 	is = g_object_new (CAMEL_TYPE_IMAPX_SERVER, NULL);
 	is->session = g_object_ref (CAMEL_SERVICE (store)->session);
 	is->store = store;
 	is->url = camel_url_copy(url);
+
+	/* order in which new messages should be fetched */
+	order = camel_url_get_param (url, "fetch-order");
+	if (order && !strcmp (order, "descending"))
+		is->descending = TRUE;
+	else
+		is->descending = FALSE;
 
 	return is;
 }
