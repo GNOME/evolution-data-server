@@ -24,8 +24,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <glib-object.h>
 #include <glib/gi18n.h>
+
+#ifdef G_OS_UNIX
+#if GLIB_CHECK_VERSION(2,29,5)
+#include <glib-unix.h>
+#endif
+#endif
+
 #include <libebackend/e-data-server-module.h>
 #include <libebackend/e-offline-listener.h>
 #include "e-book-backend-factory.h"
@@ -576,28 +582,17 @@ on_name_lost (GDBusConnection *connection,
 	g_mutex_unlock (factory->priv->connections_lock);
 }
 
-#ifndef G_OS_WIN32
-static void
-term_signal (gint sig)
+#ifdef G_OS_UNIX
+#if GLIB_CHECK_VERSION(2,29,5)
+static gboolean
+handle_term_signal (gpointer data)
 {
-	g_return_if_fail (sig == SIGTERM);
-
 	g_print ("Received terminate signal...\n");
 	g_main_loop_quit (loop);
+
+	return FALSE;
 }
-
-static void
-setup_term_signal (void)
-{
-	struct sigaction sa, osa;
-
-	sigaction (SIGTERM, NULL, &osa);
-
-	sa.sa_flags = 0;
-	sigemptyset (&sa.sa_mask);
-	sa.sa_handler = term_signal;
-	sigaction (SIGTERM, &sa, NULL);
-}
+#endif
 #endif
 
 static GOptionEntry entries[] = {
@@ -677,8 +672,12 @@ main (gint argc, gchar **argv)
 	/* Migrate user data from ~/.evolution to XDG base directories. */
 	e_data_book_migrate_basedir ();
 
-#ifndef G_OS_WIN32
-	setup_term_signal ();
+#ifdef G_OS_UNIX
+#if GLIB_CHECK_VERSION(2,29,5)
+	g_unix_signal_add_watch_full (
+		SIGTERM, G_PRIORITY_DEFAULT,
+		handle_term_signal, NULL, NULL);
+#endif
 #endif
 
 	g_print ("Server is up and running...\n");
