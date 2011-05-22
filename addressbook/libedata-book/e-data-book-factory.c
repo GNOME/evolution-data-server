@@ -578,25 +578,25 @@ on_name_lost (GDBusConnection *connection,
 
 #ifndef G_OS_WIN32
 static void
-quit_signal (gint sig)
+term_signal (gint sig)
 {
-	g_return_if_fail (sig == SIGQUIT);
+	g_return_if_fail (sig == SIGTERM);
 
-	g_print ("Received quit signal...\n");
+	g_print ("Received terminate signal...\n");
 	g_main_loop_quit (loop);
 }
 
 static void
-setup_quit_signal (void)
+setup_term_signal (void)
 {
 	struct sigaction sa, osa;
 
-	sigaction (SIGQUIT, NULL, &osa);
+	sigaction (SIGTERM, NULL, &osa);
 
 	sa.sa_flags = 0;
 	sigemptyset (&sa.sa_mask);
-	sa.sa_handler = quit_signal;
-	sigaction (SIGQUIT, &sa, NULL);
+	sa.sa_handler = term_signal;
+	sigaction (SIGTERM, &sa, NULL);
 }
 #endif
 
@@ -678,7 +678,7 @@ main (gint argc, gchar **argv)
 	e_data_book_migrate_basedir ();
 
 #ifndef G_OS_WIN32
-	setup_quit_signal ();
+	setup_term_signal ();
 #endif
 
 	g_print ("Server is up and running...\n");
