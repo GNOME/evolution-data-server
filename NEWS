@@ -1,3 +1,22 @@
+Evolution-Data-Server 3.0.2 2011-05-23
+--------------------------------------
+
+Bug Fixes:
+	Bug 599745 GW incorrect dates are displayed in message list for memos (Punit Jain)
+	Bug 628684 groupwise critical warnings (Punit Jain)
+	Bug 649762 - Add support for Vala bindings (Raul Gutierrez Segales)
+	Bug 649761 - Add gobject-introspection build system to libebook (Raul Gutierrez Segales)
+	Bug 648454 - Subfolders disappear when moving a folder (Milan Crha)
+	Bug 649433 - e-calendar-factory SIGSEGV while reading hash_table (David Woodhouse)
+	Bug 649684 - GIR files should contain <package name=../> (Raul Gutierrez Segales)
+	Bug 628142 - Fix handling of simultaneous get_message requests (David Woodhouse)
+
+Miscellaneous Fixes:
+	addressbook file backend: libdb must be initialized for concurrent read/write (Patrick Ohly)
+
+Translations:
+	Abduxukur Abdurixit (ug)
+
 Evolution-Data-Server 3.0.1 2011-04-25
 --------------------------------------
 
