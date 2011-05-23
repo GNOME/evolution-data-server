@@ -22,6 +22,8 @@
 #ifndef E_CAL_H
 #define E_CAL_H
 
+#ifndef E_CAL_DISABLE_DEPRECATED
+
 #include <glib-object.h>
 #include "libedataserver/e-source-list.h"
 #include "libedataserver/e-source.h"
@@ -69,6 +71,14 @@ typedef enum {
 	E_CAL_LOAD_LOADING,
 	E_CAL_LOAD_LOADED
 } ECalLoadState;
+
+#ifndef E_CAL_DISABLE_DEPRECATED
+typedef enum {
+	Local = 1 << 0,
+	Remote = 1 << 1,
+	AnyMode = 0x07
+} EDataCalMode;
+#endif
 
 struct _ECal {
 	GObject object;
@@ -214,5 +224,7 @@ gboolean e_cal_get_recurrences_no_master (ECal *ecal);
 gboolean e_cal_get_attachments_for_comp (ECal *ecal, const gchar *uid, const gchar *rid, GSList **list, GError **error);
 
 G_END_DECLS
+
+#endif /* E_CAL_DISABLE_DEPRECATED */
 
 #endif

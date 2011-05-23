@@ -39,7 +39,7 @@
 #include "e-data-book.h"
 #include "e-book-backend.h"
 
-#include "e-gdbus-egdbusbookfactory.h"
+#include "e-gdbus-book-factory.h"
 
 #ifdef G_OS_WIN32
 #include <windows.h>
@@ -90,7 +90,8 @@ struct _EDataBookFactoryPrivate {
 
 	guint exit_timeout;
 
-        gint mode;
+	/* whether should be online */
+        gboolean is_online;
 };
 
 /* Forward Declarations */
@@ -167,28 +168,27 @@ set_backend_online_status (gpointer key, gpointer value, gpointer data)
 
 	g_return_if_fail (backend != NULL);
 
-	e_book_backend_set_mode (backend,  GPOINTER_TO_INT (data));
+	e_book_backend_set_online (backend,  GPOINTER_TO_INT (data));
 }
 
 /**
- * e_data_book_factory_set_backend_mode:
+ * e_data_book_factory_set_backend_online:
  * @factory: A bookendar factory.
- * @mode: Online mode to set.
+ * @is_online: Online mode to set.
  *
  * Sets the online mode for all backends created by the given factory.
  */
 void
-e_data_book_factory_set_backend_mode (EDataBookFactory *factory,
-                                      gint mode)
+e_data_book_factory_set_backend_online (EDataBookFactory *factory, gboolean is_online)
 {
 	g_return_if_fail (E_IS_DATA_BOOK_FACTORY (factory));
 
-	factory->priv->mode = mode;
+	factory->priv->is_online = is_online;
 	g_mutex_lock (factory->priv->backends_lock);
 	g_hash_table_foreach (
 		factory->priv->backends,
 		set_backend_online_status,
-		GINT_TO_POINTER (factory->priv->mode));
+		GINT_TO_POINTER (factory->priv->is_online));
 	g_mutex_unlock (factory->priv->backends_lock);
 }
 
@@ -291,6 +291,14 @@ backend_gone_cb (EDataBookFactory *factory, GObject *dead)
 	g_mutex_unlock (priv->backends_lock);
 }
 
+static void
+last_client_gone_cb (EBookBackend *backend, EDataBookFactory *factory)
+{
+	backend_gone_cb (factory, (GObject *) backend);
+	g_object_weak_unref (G_OBJECT (backend), (GWeakNotify) backend_gone_cb, factory);
+	g_object_unref (backend);
+}
+
 static gboolean
 impl_BookFactory_getBook (EGdbusBookFactory *object, GDBusMethodInvocation *invocation, const gchar *in_source, EDataBookFactory *factory)
 {
@@ -309,12 +317,6 @@ impl_BookFactory_getBook (EGdbusBookFactory *object, GDBusMethodInvocation *invo
 		g_error_free (error);
 
 		return TRUE;
-	}
-
-	/* Remove a pending exit */
-	if (priv->exit_timeout) {
-		g_source_remove (priv->exit_timeout);
-		priv->exit_timeout = 0;
 	}
 
 	g_mutex_lock (priv->backends_lock);
@@ -361,8 +363,8 @@ impl_BookFactory_getBook (EGdbusBookFactory *object, GDBusMethodInvocation *invo
 			g_hash_table_insert (
 				priv->backends, uri_key, backend);
 			g_object_weak_ref (G_OBJECT (backend), (GWeakNotify) backend_gone_cb, factory);
-			g_signal_connect (backend, "last-client-gone", G_CALLBACK (g_object_unref), NULL);
-			e_book_backend_set_mode (backend, priv->mode);
+			g_signal_connect (backend, "last-client-gone", G_CALLBACK (last_client_gone_cb), factory);
+			e_book_backend_set_online (backend, priv->is_online);
 		}
 	}
 
@@ -378,6 +380,12 @@ impl_BookFactory_getBook (EGdbusBookFactory *object, GDBusMethodInvocation *invo
 		g_error_free (error);
 
 		return TRUE;
+	}
+
+	/* Remove a pending exit */
+	if (priv->exit_timeout) {
+		g_source_remove (priv->exit_timeout);
+		priv->exit_timeout = 0;
 	}
 
 	path = construct_book_factory_path ();
@@ -403,11 +411,10 @@ impl_BookFactory_getBook (EGdbusBookFactory *object, GDBusMethodInvocation *invo
 	g_object_unref (source);
 	g_free (uri);
 
-	if (error) {
-		g_dbus_method_invocation_return_gerror (invocation, error);
+	e_gdbus_book_factory_complete_get_book (object, invocation, path, error);
+
+	if (error)
 		g_error_free (error);
-	} else
-		e_gdbus_book_factory_complete_get_book (object, invocation, path);
 
 	g_free (path);
 
@@ -523,9 +530,7 @@ offline_state_changed_cb (EOfflineListener *eol, EDataBookFactory *factory)
 
 	g_return_if_fail (state == EOL_STATE_ONLINE || state == EOL_STATE_OFFLINE);
 
-	e_data_book_factory_set_backend_mode (
-		factory, state == EOL_STATE_ONLINE ?
-		E_DATA_BOOK_MODE_REMOTE : E_DATA_BOOK_MODE_LOCAL);
+	e_data_book_factory_set_backend_online (factory, state == EOL_STATE_ONLINE);
 }
 
 static void

@@ -23,6 +23,7 @@
 #define __E_BOOK_VIEW_PRIVATE_H__
 
 #include "e-book.h"
+#include "e-book-client.h"
 #include "e-book-view.h"
 
 struct _EGdbusBookView;

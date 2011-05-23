@@ -28,6 +28,8 @@ G_BEGIN_DECLS
 
 
 
+#ifndef E_CAL_DISABLE_DEPRECATED
+
 #define E_CALENDAR_ERROR e_calendar_error_quark()
 
 GQuark e_calendar_error_quark (void) G_GNUC_CONST;
@@ -68,7 +70,6 @@ typedef enum {
 	E_CALENDAR_STATUS_NOT_SUPPORTED
 } ECalendarStatus;
 
-#ifndef E_CAL_DISABLE_DEPRECATED
 #define E_CALENDAR_STATUS_CORBA_EXCEPTION E_CALENDAR_STATUS_DBUS_EXCEPTION
 #endif
 

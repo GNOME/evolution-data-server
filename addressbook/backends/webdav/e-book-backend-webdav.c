@@ -65,7 +65,7 @@ G_DEFINE_TYPE (EBookBackendWebdav, e_book_backend_webdav, E_TYPE_BOOK_BACKEND)
 static EBookBackendClass *parent_class;
 
 struct _EBookBackendWebdavPrivate {
-	gint                mode;
+	gboolean           is_online;
 	gboolean           marked_for_offline;
 	SoupSession       *session;
 	EProxy		  *proxy;
@@ -288,7 +288,7 @@ webdav_handle_auth_request (EBookBackendWebdav *webdav)
 	if (priv->username != NULL) {
 		g_free (priv->username);
 		priv->username = NULL;
-		g_free (priv->password);
+		e_credentials_util_safe_free_string (priv->password);
 		priv->password = NULL;
 
 		return EDB_ERROR (AUTHENTICATION_FAILED);
@@ -298,8 +298,7 @@ webdav_handle_auth_request (EBookBackendWebdav *webdav)
 }
 
 static void
-e_book_backend_webdav_create_contact (EBookBackend *backend,
-		EDataBook *book, guint32 opid, const gchar *vcard)
+e_book_backend_webdav_create_contact (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *vcard)
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
@@ -308,7 +307,7 @@ e_book_backend_webdav_create_contact (EBookBackend *backend,
 	guint                      status;
 	gchar			  *status_reason = NULL;
 
-	if (priv->mode == E_DATA_BOOK_MODE_LOCAL) {
+	if (!priv->is_online) {
 		e_data_book_respond_create (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
 		return;
 	}
@@ -386,15 +385,14 @@ delete_contact (EBookBackendWebdav *webdav, const gchar *uri)
 }
 
 static void
-e_book_backend_webdav_remove_contacts (EBookBackend *backend,
-		EDataBook *book, guint32 opid, GList *id_list)
+e_book_backend_webdav_remove_contacts (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const GSList *id_list)
 {
 	EBookBackendWebdav        *webdav      = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv        = webdav->priv;
-	GList                     *deleted_ids = NULL;
-	GList                     *list;
+	GSList                    *deleted_ids = NULL;
+	const GSList              *list;
 
-	if (priv->mode == E_DATA_BOOK_MODE_LOCAL) {
+	if (!priv->is_online) {
 		e_data_book_respond_remove_contacts (book, opid,
 				EDB_ERROR (REPOSITORY_OFFLINE), NULL);
 		return;
@@ -415,16 +413,17 @@ e_book_backend_webdav_remove_contacts (EBookBackend *backend,
 			continue;
 		}
 		e_book_backend_cache_remove_contact (priv->cache, uid);
-		deleted_ids = g_list_append (deleted_ids, list->data);
+		deleted_ids = g_slist_append (deleted_ids, list->data);
 	}
 
 	e_data_book_respond_remove_contacts (book, opid,
 			EDB_ERROR (SUCCESS),  deleted_ids);
+
+	g_slist_free (deleted_ids);
 }
 
 static void
-e_book_backend_webdav_modify_contact (EBookBackend *backend,
-		EDataBook *book, guint32 opid, const gchar *vcard)
+e_book_backend_webdav_modify_contact (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *vcard)
 {
 	EBookBackendWebdav        *webdav  = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv    = webdav->priv;
@@ -434,7 +433,7 @@ e_book_backend_webdav_modify_contact (EBookBackend *backend,
 	guint status;
 	gchar *status_reason = NULL;
 
-	if (priv->mode == E_DATA_BOOK_MODE_LOCAL) {
+	if (!priv->is_online) {
 		e_data_book_respond_create (book, opid,
 				EDB_ERROR (REPOSITORY_OFFLINE), NULL);
 		g_object_unref (contact);
@@ -494,15 +493,14 @@ e_book_backend_webdav_modify_contact (EBookBackend *backend,
 }
 
 static void
-e_book_backend_webdav_get_contact (EBookBackend *backend, EDataBook *book,
-		guint32 opid, const gchar *uid)
+e_book_backend_webdav_get_contact (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *uid)
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
 	EContact                  *contact;
 	gchar                      *vcard;
 
-	if (priv->mode == E_DATA_BOOK_MODE_LOCAL) {
+	if (!priv->is_online) {
 		contact = e_book_backend_cache_get_contact (priv->cache, uid);
 	} else {
 		contact = download_contact (webdav, uid);
@@ -860,7 +858,7 @@ download_contacts (EBookBackendWebdav *webdav, EFlag *running,
 	}
 
 	if (book_view != NULL) {
-		e_data_book_view_notify_status_message (book_view,
+		e_data_book_view_notify_progress (book_view, -1,
 				"Loading Addressbook summary...");
 	}
 
@@ -920,7 +918,7 @@ download_contacts (EBookBackendWebdav *webdav, EFlag *running,
 			gfloat percent = 100.0 / count * i;
 			gchar buf[100];
 			snprintf(buf, sizeof(buf), "Loading Contacts (%d%%)", (gint)percent);
-			e_data_book_view_notify_status_message (book_view, buf);
+			e_data_book_view_notify_progress (book_view, -1, buf);
 		}
 
 		/* skip collections */
@@ -1012,7 +1010,7 @@ e_book_backend_webdav_start_book_view (EBookBackend *backend,
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
 
-	if (priv->mode == E_DATA_BOOK_MODE_REMOTE) {
+	if (priv->is_online) {
 		WebdavBackendSearchClosure *closure
 			= init_closure (book_view, E_BOOK_BACKEND_WEBDAV (backend));
 
@@ -1043,7 +1041,7 @@ e_book_backend_webdav_stop_book_view (EBookBackend *backend,
 	WebdavBackendSearchClosure *closure;
 	gboolean                    need_join;
 
-	if (webdav->priv->mode == E_DATA_BOOK_MODE_LOCAL)
+	if (!webdav->priv->is_online)
 		return;
 
 	closure = get_closure (book_view);
@@ -1059,16 +1057,15 @@ e_book_backend_webdav_stop_book_view (EBookBackend *backend,
 }
 
 static void
-e_book_backend_webdav_get_contact_list (EBookBackend *backend, EDataBook *book,
-		guint32 opid, const gchar *query)
+e_book_backend_webdav_get_contact_list (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query)
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
 	GList                     *contact_list;
-	GList                     *vcard_list;
+	GSList                    *vcard_list;
 	GList                     *c;
 
-	if (priv->mode == E_DATA_BOOK_MODE_REMOTE) {
+	if (priv->is_online) {
 		/* make sure the cache is up to date */
 		GError *error = download_contacts (webdav, NULL, NULL);
 
@@ -1085,26 +1082,27 @@ e_book_backend_webdav_get_contact_list (EBookBackend *backend, EDataBook *book,
 		EContact *contact = c->data;
 		gchar     *vcard
 			= e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-		vcard_list = g_list_append (vcard_list, vcard);
+		vcard_list = g_slist_append (vcard_list, vcard);
 		g_object_unref (contact);
 	}
 	g_list_free (contact_list);
 
 	e_data_book_respond_get_contact_list (book, opid, EDB_ERROR (SUCCESS), vcard_list);
+
+	g_slist_foreach (vcard_list, (GFunc) g_free, NULL);
+	g_slist_free (vcard_list);
 }
 
 static void
-e_book_backend_webdav_authenticate_user (EBookBackend *backend, EDataBook *book,
-		guint32 opid, const gchar *user, const gchar *password,
-		const gchar *auth_method)
+e_book_backend_webdav_authenticate_user (EBookBackend *backend, GCancellable *cancellable, ECredentials *credentials)
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
 	SoupMessage               *message;
 	guint                      status;
 
-	priv->username = g_strdup (user);
-	priv->password = g_strdup (password);
+	priv->username = e_credentials_get (credentials, E_CREDENTIALS_KEY_USERNAME);
+	priv->password = e_credentials_get (credentials, E_CREDENTIALS_KEY_PASSWORD);
 
 	/* Evolution API requires a direct feedback on the authentication,
 	 * so we send a PROPFIND to test wether user/password is correct */
@@ -1115,58 +1113,13 @@ e_book_backend_webdav_authenticate_user (EBookBackend *backend, EDataBook *book,
 	if (status == 401 || status == 407) {
 		g_free (priv->username);
 		priv->username = NULL;
-		g_free (priv->password);
+		e_credentials_util_safe_free_string (priv->password);
 		priv->password = NULL;
 
-		e_data_book_respond_authenticate_user (book, opid, EDB_ERROR (AUTHENTICATION_FAILED));
+		e_book_backend_notify_opened (backend, EDB_ERROR (AUTHENTICATION_FAILED));
 	} else {
-		e_data_book_respond_authenticate_user (book, opid, EDB_ERROR (SUCCESS));
+		e_book_backend_notify_opened (backend, EDB_ERROR (SUCCESS));
 	}
-}
-
-static void
-e_book_backend_webdav_get_supported_fields (EBookBackend *backend,
-		EDataBook *book, guint32 opid)
-{
-	GList *fields = NULL;
-	gint    i;
-
-	/* we support everything */
-	for (i = 1; i < E_CONTACT_FIELD_LAST; ++i) {
-		fields = g_list_append (fields, g_strdup (e_contact_field_name (i)));
-	}
-
-	e_data_book_respond_get_supported_fields (book, opid, EDB_ERROR (SUCCESS), fields);
-	g_list_foreach (fields, (GFunc) g_free, NULL);
-	g_list_free (fields);
-}
-
-static void
-e_book_backend_webdav_get_supported_auth_methods (EBookBackend *backend,
-		EDataBook *book, guint32 opid)
-{
-	GList *auth_methods = NULL;
-
-	auth_methods = g_list_append(auth_methods, g_strdup("plain/password"));
-
-	e_data_book_respond_get_supported_auth_methods (book, opid, EDB_ERROR (SUCCESS), auth_methods);
-
-	g_list_foreach (auth_methods, (GFunc) g_free, NULL);
-	g_list_free (auth_methods);
-}
-
-static void
-e_book_backend_webdav_get_required_fields (EBookBackend *backend,
-		EDataBook *book, guint32 opid)
-{
-	GList       *fields = NULL;
-	const gchar *field_name;
-
-	field_name = e_contact_field_name (E_CONTACT_FILE_AS);
-	fields     = g_list_append (fields , g_strdup (field_name));
-
-	e_data_book_respond_get_supported_fields (book, opid, EDB_ERROR (SUCCESS), fields);
-	g_list_free (fields);
 }
 
 /** authentication callback for libsoup */
@@ -1180,8 +1133,7 @@ static void soup_authenticate (SoupSession *session, SoupMessage *message,
 		return;
 
 	if (priv->username != NULL) {
-		soup_auth_authenticate (auth, g_strdup (priv->username),
-				       g_strdup (priv->password));
+		soup_auth_authenticate (auth, priv->username, priv->password);
 	}
 }
 
@@ -1203,11 +1155,11 @@ proxy_settings_changed (EProxy *proxy, gpointer user_data)
 }
 
 static void
-e_book_backend_webdav_load_source (EBookBackend *backend,
-                                  ESource *source, gboolean only_if_exists, GError **perror)
+e_book_backend_webdav_open (EBookBackend *backend, EDataBook *book, guint opid, GCancellable *cancellable, gboolean only_if_exists)
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
+	ESource			  *source = e_book_backend_get_source (backend);
 	gchar                     *uri;
 	const gchar               *cache_dir;
 	const gchar               *offline;
@@ -1224,7 +1176,7 @@ e_book_backend_webdav_load_source (EBookBackend *backend,
 
 	uri = e_source_get_uri (source);
 	if (uri == NULL) {
-		g_propagate_error (perror, EDB_ERROR_EX (OTHER_ERROR, "No uri given for addressbook"));
+		e_book_backend_respond_opened (backend, book, opid, EDB_ERROR_EX (OTHER_ERROR, "No uri given for addressbook"));
 		return;
 	}
 
@@ -1232,7 +1184,7 @@ e_book_backend_webdav_load_source (EBookBackend *backend,
 	g_free (uri);
 
 	if (!suri) {
-		g_propagate_error (perror, EDB_ERROR_EX (OTHER_ERROR, "Invalid uri given for addressbook"));
+		e_book_backend_respond_opened (backend, book, opid, EDB_ERROR_EX (OTHER_ERROR, "Invalid uri given for addressbook"));
 		return;
 	}
 
@@ -1240,17 +1192,16 @@ e_book_backend_webdav_load_source (EBookBackend *backend,
 	if (offline && g_str_equal(offline, "1"))
 		priv->marked_for_offline = TRUE;
 
-	if (priv->mode == E_DATA_BOOK_MODE_LOCAL
-			&& !priv->marked_for_offline ) {
+	if (!priv->is_online && !priv->marked_for_offline ) {
 		soup_uri_free (suri);
-		g_propagate_error (perror, EDB_ERROR (OFFLINE_UNAVAILABLE));
+		e_book_backend_respond_opened (backend, book, opid, EDB_ERROR (OFFLINE_UNAVAILABLE));
 		return;
 	}
 
 	if (!suri->scheme || !g_str_equal (suri->scheme, "webdav")) {
 		/* the book is not for us */
 		soup_uri_free (suri);
-		g_propagate_error (perror, EDB_ERROR_EX (OTHER_ERROR, "Not a webdav uri"));
+		e_book_backend_respond_opened (backend, book, opid, EDB_ERROR_EX (OTHER_ERROR, "Not a webdav uri"));
 		return;
 	}
 
@@ -1291,7 +1242,7 @@ e_book_backend_webdav_load_source (EBookBackend *backend,
 	priv->uri = soup_uri_to_string (suri, FALSE);
 	if (!priv->uri) {
 		soup_uri_free (suri);
-		g_propagate_error (perror, EDB_ERROR_EX (OTHER_ERROR, "Cannot transform SoupURI to string"));
+		e_book_backend_respond_opened (backend, book, opid, EDB_ERROR_EX (OTHER_ERROR, "Cannot transform SoupURI to string"));
 		return;
 	}
 
@@ -1310,55 +1261,71 @@ e_book_backend_webdav_load_source (EBookBackend *backend,
 	proxy_settings_changed (priv->proxy, priv);
 	webdav_debug_setup (priv->session);
 
-	e_book_backend_notify_auth_required (backend);
-	e_book_backend_set_is_loaded (backend, TRUE);
-	e_book_backend_notify_connection_status (backend, TRUE);
-	e_book_backend_set_is_writable (backend, TRUE);
-	e_book_backend_notify_writable (backend, TRUE);
+	e_book_backend_notify_auth_required (backend, TRUE, NULL);
+	e_book_backend_notify_online (backend, TRUE);
+	e_book_backend_notify_readonly (backend, FALSE);
 
 	soup_uri_free (suri);
+
+	e_data_book_respond_open (book, opid, NULL /* Success */);
 }
 
 static void
-e_book_backend_webdav_remove (EBookBackend *backend,	EDataBook *book,
-		guint32 opid)
+e_book_backend_webdav_remove (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable)
 {
 	e_data_book_respond_remove (book, opid, EDB_ERROR (SUCCESS));
 }
 
 static void
-e_book_backend_webdav_set_mode (EBookBackend *backend,
-                               EDataBookMode mode)
+e_book_backend_webdav_set_online (EBookBackend *backend, gboolean is_online)
 {
 	EBookBackendWebdav *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 
-	webdav->priv->mode = mode;
+	webdav->priv->is_online = is_online;
 
 	/* set_mode is called before the backend is loaded */
-	if (!e_book_backend_is_loaded (backend))
+	if (!e_book_backend_is_opened (backend))
 		return;
 
-	if (mode == E_DATA_BOOK_MODE_LOCAL) {
-		e_book_backend_set_is_writable (backend, FALSE);
-		e_book_backend_notify_writable (backend, FALSE);
-		e_book_backend_notify_connection_status (backend, FALSE);
-	} else if (mode == E_DATA_BOOK_MODE_REMOTE) {
-		e_book_backend_set_is_writable (backend, TRUE);
-		e_book_backend_notify_writable (backend, TRUE);
-		e_book_backend_notify_connection_status (backend, TRUE);
+	if (!is_online) {
+		e_book_backend_notify_readonly (backend, TRUE);
+		e_book_backend_notify_online (backend, FALSE);
+	} else {
+		e_book_backend_notify_readonly (backend, FALSE);
+		e_book_backend_notify_online (backend, TRUE);
 	}
 }
 
-static gchar *
-e_book_backend_webdav_get_static_capabilities (EBookBackend *backend)
-{
-	return g_strdup("net,do-initial-query,contact-lists");
-}
-
 static void
-e_book_backend_webdav_cancel_operation (EBookBackend *backend, EDataBook *book, GError **perror)
+e_book_backend_webdav_get_backend_property (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *prop_name)
 {
-	g_propagate_error (perror, EDB_ERROR (COULD_NOT_CANCEL));
+	g_return_if_fail (prop_name != NULL);
+
+	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
+		e_data_book_respond_get_backend_property (book, opid, NULL, "net,do-initial-query,contact-lists");
+	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
+		e_data_book_respond_get_backend_property (book, opid, NULL, e_contact_field_name (E_CONTACT_FILE_AS));
+	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
+		gchar *fields_str;
+		GSList *fields = NULL;
+		gint    i;
+
+		/* we support everything */
+		for (i = 1; i < E_CONTACT_FIELD_LAST; ++i) {
+			fields = g_slist_append (fields, (gpointer) e_contact_field_name (i));
+		}
+
+		fields_str = e_data_book_string_slist_to_comma_string (fields);
+
+		e_data_book_respond_get_backend_property (book, opid, NULL, fields_str);
+
+		g_slist_free (fields);
+		g_free (fields_str);
+	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS)) {
+		e_data_book_respond_get_backend_property (book, opid, NULL, "plain/password");
+	} else {
+		E_BOOK_BACKEND_CLASS (e_book_backend_webdav_parent_class)->get_backend_property (backend, book, opid, cancellable, prop_name);
+	}
 }
 
 EBookBackend *
@@ -1381,7 +1348,7 @@ e_book_backend_webdav_dispose (GObject *object)
 	do_unref (priv->cache);
 	do_free (priv->uri);
 	do_free (priv->username);
-	do_free (priv->password);
+	if (priv->password) { e_credentials_util_safe_free_string (priv->password); priv->password = NULL; }
 
 	#undef do_unref
 	#undef do_free
@@ -1400,25 +1367,21 @@ e_book_backend_webdav_class_init (EBookBackendWebdavClass *klass)
 	backend_class = E_BOOK_BACKEND_CLASS (klass);
 
 	/* Set the virtual methods. */
-	backend_class->load_source                = e_book_backend_webdav_load_source;
-	backend_class->get_static_capabilities    = e_book_backend_webdav_get_static_capabilities;
+	backend_class->open			= e_book_backend_webdav_open;
+	backend_class->get_backend_property	= e_book_backend_webdav_get_backend_property;
 
-	backend_class->create_contact             = e_book_backend_webdav_create_contact;
-	backend_class->remove_contacts            = e_book_backend_webdav_remove_contacts;
-	backend_class->modify_contact             = e_book_backend_webdav_modify_contact;
-	backend_class->get_contact                = e_book_backend_webdav_get_contact;
-	backend_class->get_contact_list           = e_book_backend_webdav_get_contact_list;
-	backend_class->start_book_view            = e_book_backend_webdav_start_book_view;
-	backend_class->stop_book_view             = e_book_backend_webdav_stop_book_view;
-	backend_class->authenticate_user          = e_book_backend_webdav_authenticate_user;
-	backend_class->get_supported_fields       = e_book_backend_webdav_get_supported_fields;
-	backend_class->get_required_fields        = e_book_backend_webdav_get_required_fields;
-	backend_class->cancel_operation           = e_book_backend_webdav_cancel_operation;
-	backend_class->get_supported_auth_methods = e_book_backend_webdav_get_supported_auth_methods;
-	backend_class->remove                     = e_book_backend_webdav_remove;
-	backend_class->set_mode                   = e_book_backend_webdav_set_mode;
+	backend_class->create_contact		= e_book_backend_webdav_create_contact;
+	backend_class->remove_contacts		= e_book_backend_webdav_remove_contacts;
+	backend_class->modify_contact		= e_book_backend_webdav_modify_contact;
+	backend_class->get_contact		= e_book_backend_webdav_get_contact;
+	backend_class->get_contact_list		= e_book_backend_webdav_get_contact_list;
+	backend_class->start_book_view		= e_book_backend_webdav_start_book_view;
+	backend_class->stop_book_view		= e_book_backend_webdav_stop_book_view;
+	backend_class->authenticate_user	= e_book_backend_webdav_authenticate_user;
+	backend_class->remove			= e_book_backend_webdav_remove;
+	backend_class->set_online		= e_book_backend_webdav_set_online;
 
-	object_class->dispose                     = e_book_backend_webdav_dispose;
+	object_class->dispose			= e_book_backend_webdav_dispose;
 
 	g_type_class_add_private (object_class, sizeof (EBookBackendWebdavPrivate));
 }

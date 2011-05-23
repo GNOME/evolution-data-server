@@ -11,6 +11,8 @@
 #ifndef __E_BOOK_VIEW_H__
 #define __E_BOOK_VIEW_H__
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
+
 #include <glib.h>
 #include <glib-object.h>
 #include "e-book-types.h"
@@ -59,13 +61,15 @@ struct _EBookViewClass {
 	void (*_ebook_reserved4) (void);
 };
 
-GType              e_book_view_get_type               (void);
+GType			e_book_view_get_type		(void);
 
-void               e_book_view_start                  (EBookView *book_view);
-void               e_book_view_stop                   (EBookView *book_view);
+void			e_book_view_start		(EBookView *book_view);
+void			e_book_view_stop		(EBookView *book_view);
 
-struct _EBook     *e_book_view_get_book               (EBookView *book_view);
+struct _EBook *		e_book_view_get_book		(EBookView *book_view);
 
 G_END_DECLS
+
+#endif /* E_BOOK_DISABLE_DEPRECATED */
 
 #endif /* __E_BOOK_VIEW_H__ */

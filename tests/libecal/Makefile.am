@@ -1,3 +1,5 @@
+SUBDIRS = client
+
 noinst_LTLIBRARIES = libecal-test-utils.la
 libecal_test_utils_la_SOURCES = ecal-test-utils.c ecal-test-utils.h
 

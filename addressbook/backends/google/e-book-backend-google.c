@@ -51,7 +51,7 @@ typedef enum {
 } CacheType;
 
 struct _EBookBackendGooglePrivate {
-	EDataBookMode mode;
+	gboolean is_online;
 	GList *bookviews;
 
 	CacheType cache_type;
@@ -371,7 +371,7 @@ cache_needs_update (EBookBackend *backend, guint *remaining_secs)
 		*remaining_secs = G_MAXUINT;
 
 	/* We never want to update in offline mode */
-	if (priv->mode != E_DATA_BOOK_MODE_REMOTE)
+	if (!priv->is_online)
 		return FALSE;
 
 	rv = cache_get_last_update_tv (backend, &last);
@@ -463,19 +463,21 @@ on_sequence_complete (EBookBackend *backend, GError *error)
 }
 
 static GCancellable *
-start_operation (EBookBackend *backend, guint32 opid, const gchar *message)
+start_operation (EBookBackend *backend, guint32 opid, GCancellable *cancellable, const gchar *message)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
-	GCancellable *cancellable;
 	GList *iter;
 
 	/* Insert the operation into the set of active cancellable operations */
-	cancellable = g_cancellable_new ();
+	if (cancellable)
+		g_object_ref (cancellable);
+	else
+		cancellable = g_cancellable_new ();
 	g_hash_table_insert (priv->cancellables, GUINT_TO_POINTER (opid), g_object_ref (cancellable));
 
 	/* Send out a status message to each view */
 	for (iter = priv->bookviews; iter; iter = iter->next)
-		e_data_book_view_notify_status_message (E_DATA_BOOK_VIEW (iter->data), message);
+		e_data_book_view_notify_progress (E_DATA_BOOK_VIEW (iter->data), -1, message);
 
 	return cancellable;
 }
@@ -586,7 +588,7 @@ get_new_contacts (EBookBackend *backend)
 	}
 
 	/* Query for new contacts asynchronously */
-	cancellable = start_operation (backend, 0, _("Querying for updated contacts…"));
+	cancellable = start_operation (backend, 0, NULL, _("Querying for updated contacts…"));
 	gdata_contacts_service_query_contacts_async (GDATA_CONTACTS_SERVICE (priv->service), query, cancellable,
 						     (GDataQueryProgressCallback) (last_updated ? process_subsequent_entry : process_initial_entry),
 						     backend, (GAsyncReadyCallback) get_new_contacts_cb, backend);
@@ -704,7 +706,7 @@ get_groups (EBookBackend *backend)
 	}
 
 	/* Run the query asynchronously */
-	cancellable = start_operation (backend, 1, _("Querying for updated groups…"));
+	cancellable = start_operation (backend, 1, NULL, _("Querying for updated groups…"));
 	gdata_contacts_service_query_groups_async (GDATA_CONTACTS_SERVICE (priv->service), query, cancellable,
 						   (GDataQueryProgressCallback) process_group, backend, (GAsyncReadyCallback) get_groups_cb, backend);
 
@@ -768,8 +770,8 @@ cache_refresh_if_needed (EBookBackend *backend)
 
 	__debug__ (G_STRFUNC);
 
-	if (priv->mode != E_DATA_BOOK_MODE_REMOTE || !priv->service || !gdata_service_is_authenticated (priv->service)) {
-		__debug__ ("We are not connected to Google%s.", (priv->mode != E_DATA_BOOK_MODE_REMOTE) ? " (offline mode)" : "");
+	if (!priv->is_online || !priv->service || !gdata_service_is_authenticated (priv->service)) {
+		__debug__ ("We are not connected to Google%s.", (!priv->is_online) ? " (offline mode)" : "");
 		return TRUE;
 	}
 
@@ -852,20 +854,19 @@ finish:
 }
 
 static void
-e_book_backend_google_create_contact (EBookBackend *backend, EDataBook *book, guint32 opid, const gchar *vcard_str)
+e_book_backend_google_create_contact (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *vcard_str)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	EContact *contact;
 	GDataEntry *entry;
 	gchar *xml;
 	CreateContactData *data;
-	GCancellable *cancellable;
 
 	__debug__ (G_STRFUNC);
 
 	__debug__ ("Creating: %s", vcard_str);
 
-	if (priv->mode != E_DATA_BOOK_MODE_REMOTE) {
+	if (!priv->is_online) {
 		e_data_book_respond_create (book, opid, EDB_ERROR (OFFLINE_UNAVAILABLE), NULL);
 		return;
 	}
@@ -888,7 +889,7 @@ e_book_backend_google_create_contact (EBookBackend *backend, EDataBook *book, gu
 	data->book = g_object_ref (book);
 	data->opid = opid;
 
-	cancellable = start_operation (backend, opid, _("Creating new contact…"));
+	cancellable = start_operation (backend, opid, cancellable, _("Creating new contact…"));
 	gdata_contacts_service_insert_contact_async (GDATA_CONTACTS_SERVICE (priv->service), GDATA_CONTACTS_CONTACT (entry), cancellable,
 						     (GAsyncReadyCallback) create_contact_cb, data);
 	g_object_unref (cancellable);
@@ -907,7 +908,7 @@ remove_contact_cb (GDataService *service, GAsyncResult *result, RemoveContactDat
 {
 	GError *gdata_error = NULL;
 	gboolean success;
-	GList *ids;
+	GSList *ids;
 
 	__debug__ (G_STRFUNC);
 
@@ -925,9 +926,9 @@ remove_contact_cb (GDataService *service, GAsyncResult *result, RemoveContactDat
 	}
 
 	/* List the entry's ID in the success list */
-	ids = g_list_prepend (NULL, data->uid);
+	ids = g_slist_prepend (NULL, data->uid);
 	e_data_book_respond_remove_contacts (data->book, data->opid, NULL, ids);
-	g_list_free (ids);
+	g_slist_free (ids);
 
 finish:
 	g_free (data->uid);
@@ -937,18 +938,17 @@ finish:
 }
 
 static void
-e_book_backend_google_remove_contacts (EBookBackend *backend, EDataBook *book, guint32 opid, GList *id_list)
+e_book_backend_google_remove_contacts (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const GSList *id_list)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	const gchar *uid = id_list->data;
 	GDataEntry *entry = NULL;
 	EContact *cached_contact;
-	GCancellable *cancellable;
 	RemoveContactData *data;
 
 	__debug__ (G_STRFUNC);
 
-	if (priv->mode != E_DATA_BOOK_MODE_REMOTE) {
+	if (!priv->is_online) {
 		e_data_book_respond_remove_contacts (book, opid, EDB_ERROR (OFFLINE_UNAVAILABLE), NULL);
 		return;
 	}
@@ -981,7 +981,7 @@ e_book_backend_google_remove_contacts (EBookBackend *backend, EDataBook *book, g
 	data->opid = opid;
 	data->uid = g_strdup (uid);
 
-	cancellable = start_operation (backend, opid, _("Deleting contact…"));
+	cancellable = start_operation (backend, opid, cancellable, _("Deleting contact…"));
 	gdata_service_delete_entry_async (GDATA_SERVICE (priv->service), entry, cancellable, (GAsyncReadyCallback) remove_contact_cb, data);
 	g_object_unref (cancellable);
 	g_object_unref (entry);
@@ -1035,20 +1035,19 @@ finish:
 }
 
 static void
-e_book_backend_google_modify_contact (EBookBackend *backend, EDataBook *book, guint32 opid, const gchar *vcard_str)
+e_book_backend_google_modify_contact (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *vcard_str)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	EContact *contact, *cached_contact;
 	GDataEntry *entry = NULL;
 	const gchar *uid;
 	ModifyContactData *data;
-	GCancellable *cancellable;
 
 	__debug__ (G_STRFUNC);
 
 	__debug__ ("Updating: %s", vcard_str);
 
-	if (priv->mode != E_DATA_BOOK_MODE_REMOTE) {
+	if (!priv->is_online) {
 		e_data_book_respond_modify (book, opid, EDB_ERROR (OFFLINE_UNAVAILABLE), NULL);
 		return;
 	}
@@ -1089,14 +1088,14 @@ e_book_backend_google_modify_contact (EBookBackend *backend, EDataBook *book, gu
 	data->book = g_object_ref (book);
 	data->opid = opid;
 
-	cancellable = start_operation (backend, opid, _("Modifying contact…"));
+	cancellable = start_operation (backend, opid, cancellable, _("Modifying contact…"));
 	gdata_service_update_entry_async (GDATA_SERVICE (priv->service), entry, cancellable, (GAsyncReadyCallback) modify_contact_cb, data);
 	g_object_unref (cancellable);
 	g_object_unref (entry);
 }
 
 static void
-e_book_backend_google_get_contact (EBookBackend *backend, EDataBook *book, guint32 opid, const gchar *uid)
+e_book_backend_google_get_contact (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *uid)
 {
 	EContact *contact;
 	gchar *vcard_str;
@@ -1120,10 +1119,11 @@ e_book_backend_google_get_contact (EBookBackend *backend, EDataBook *book, guint
 }
 
 static void
-e_book_backend_google_get_contact_list (EBookBackend *backend, EDataBook *book, guint32 opid, const gchar *query)
+e_book_backend_google_get_contact_list (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query)
 {
 	EBookBackendSExp *sexp;
-	GList *all_contacts, *filtered_contacts = NULL;
+	GList *all_contacts;
+	GSList *filtered_contacts = NULL;
 
 	__debug__ (G_STRFUNC);
 
@@ -1137,7 +1137,7 @@ e_book_backend_google_get_contact_list (EBookBackend *backend, EDataBook *book, 
 		/* If the search expression matches the contact, include it in the search results */
 		if (e_book_backend_sexp_match_contact (sexp, contact)) {
 			gchar *vcard_str = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-			filtered_contacts = g_list_append (filtered_contacts, vcard_str);
+			filtered_contacts = g_slist_append (filtered_contacts, vcard_str);
 		}
 
 		g_object_unref (contact);
@@ -1146,7 +1146,9 @@ e_book_backend_google_get_contact_list (EBookBackend *backend, EDataBook *book, 
 	g_object_unref (sexp);
 
 	e_data_book_respond_get_contact_list (book, opid, NULL, filtered_contacts);
-	g_list_free (filtered_contacts);
+
+	g_slist_foreach (filtered_contacts, (GFunc) g_free, NULL);
+	g_slist_free (filtered_contacts);
 }
 
 static gboolean
@@ -1196,7 +1198,7 @@ e_book_backend_google_start_book_view (EBookBackend *backend, EDataBookView *boo
 	priv->bookviews = g_list_append (priv->bookviews, bookview);
 
 	e_data_book_view_ref (bookview);
-	e_data_book_view_notify_status_message (bookview, _("Loading…"));
+	e_data_book_view_notify_progress (bookview, -1, _("Loading…"));
 
 	/* Ensure that we're ready to support a view */
 	set_live_mode (backend, TRUE);
@@ -1205,7 +1207,7 @@ e_book_backend_google_start_book_view (EBookBackend *backend, EDataBookView *boo
 	if (cache_needs_update (backend, NULL)) {
 		if (!priv->service || !gdata_service_is_authenticated (priv->service)) {
 			/* We need authorization first */
-			e_book_backend_notify_auth_required (backend);
+			e_book_backend_notify_auth_required (backend, TRUE, NULL);
 		} else {
 			/* Update in an idle function, so that this call doesn't block */
 			priv->idle_id = g_idle_add ((GSourceFunc) on_refresh_idle, backend);
@@ -1268,7 +1270,6 @@ proxy_settings_changed (EProxy *proxy, EBookBackend *backend)
 
 typedef struct {
 	EBookBackend *backend;
-	EDataBook *book;
 	guint32 opid;
 } AuthenticateUserData;
 
@@ -1288,40 +1289,38 @@ authenticate_user_cb (GDataService *service, GAsyncResult *result, AuthenticateU
 	}
 
 	finish_operation (data->backend, data->opid);
-	e_book_backend_notify_writable (data->backend, (!gdata_error) ? TRUE : FALSE);
-	e_data_book_respond_authenticate_user (data->book, data->opid, book_error);
+	e_book_backend_notify_readonly (data->backend, gdata_error ? TRUE : FALSE);
+	e_book_backend_notify_opened (data->backend, book_error);
 
-	g_object_unref (data->book);
 	g_object_unref (data->backend);
 	g_slice_free (AuthenticateUserData, data);
 }
 
 static void
-e_book_backend_google_authenticate_user (EBookBackend *backend, EDataBook *book, guint32 opid,
-                                         const gchar *username, const gchar *password, const gchar *auth_method)
+e_book_backend_google_authenticate_user (EBookBackend *backend, GCancellable *cancellable, ECredentials *credentials)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	AuthenticateUserData *data;
-	GCancellable *cancellable;
+	guint32 opid;
 
 	__debug__ (G_STRFUNC);
 
-	if (priv->mode != E_DATA_BOOK_MODE_REMOTE) {
-		e_book_backend_notify_writable (backend, FALSE);
-		e_book_backend_notify_connection_status (backend, FALSE);
-		e_data_book_respond_authenticate_user (book, opid, EDB_ERROR (SUCCESS));
+	if (!priv->is_online) {
+		e_book_backend_notify_readonly (backend, TRUE);
+		e_book_backend_notify_online (backend, FALSE);
+		e_book_backend_notify_opened (backend, EDB_ERROR (SUCCESS));
 		return;
 	}
 
 	if (priv->service && gdata_service_is_authenticated (priv->service)) {
 		g_warning ("Connection to Google already established.");
-		e_book_backend_notify_writable (backend, TRUE);
-		e_data_book_respond_authenticate_user (book, opid, NULL);
+		e_book_backend_notify_readonly (backend, FALSE);
+		e_book_backend_notify_opened (backend, NULL);
 		return;
 	}
 
-	if (!username || username[0] == 0 || !password || password[0] == 0) {
-		e_data_book_respond_authenticate_user (book, opid, EDB_ERROR (AUTHENTICATION_FAILED));
+	if (!credentials || !e_credentials_has_key (credentials, E_CREDENTIALS_KEY_USERNAME) || !e_credentials_has_key (credentials, E_CREDENTIALS_KEY_PASSWORD)) {
+		e_book_backend_notify_opened (backend, EDB_ERROR (AUTHENTICATION_REQUIRED));
 		return;
 	}
 
@@ -1337,183 +1336,40 @@ e_book_backend_google_authenticate_user (EBookBackend *backend, EDataBook *book,
 		g_signal_connect (priv->proxy, "changed", G_CALLBACK (proxy_settings_changed), backend);
 	}
 
+	opid = -1;
+	while (g_hash_table_lookup (priv->cancellables, GUINT_TO_POINTER (opid)))
+		opid--;
+
 	/* Authenticate with the server asynchronously */
 	data = g_slice_new (AuthenticateUserData);
 	data->backend = g_object_ref (backend);
-	data->book = g_object_ref (book);
 	data->opid = opid;
 
-	cancellable = start_operation (backend, opid, _("Authenticating with the server…"));
-	gdata_service_authenticate_async (priv->service, username, password, cancellable, (GAsyncReadyCallback) authenticate_user_cb, data);
+	cancellable = start_operation (backend, opid, cancellable, _("Authenticating with the server…"));
+	gdata_service_authenticate_async (priv->service, e_credentials_peek (credentials, E_CREDENTIALS_KEY_USERNAME), e_credentials_peek (credentials, E_CREDENTIALS_KEY_PASSWORD), cancellable, (GAsyncReadyCallback) authenticate_user_cb, data);
 	g_object_unref (cancellable);
 }
 
 static void
-e_book_backend_google_get_supported_auth_methods (EBookBackend *backend, EDataBook *book, guint32 opid)
-{
-	GList methods = { (gpointer) "plain/password", NULL, NULL };
-
-	__debug__ (G_STRFUNC);
-	e_data_book_respond_get_supported_auth_methods (book, opid, NULL, &methods);
-}
-
-static void
-e_book_backend_google_get_required_fields (EBookBackend *backend, EDataBook *book, guint32 opid)
-{
-	__debug__ (G_STRFUNC);
-	e_data_book_respond_get_required_fields (book, opid, NULL, NULL);
-}
-
-static void
-e_book_backend_google_get_supported_fields (EBookBackend *backend, EDataBook *book, guint32 opid)
-{
-	GList *fields = NULL;
-	guint i;
-	const gint supported_fields[] = {
-		E_CONTACT_FULL_NAME,
-		E_CONTACT_EMAIL_1,
-		E_CONTACT_EMAIL_2,
-		E_CONTACT_EMAIL_3,
-		E_CONTACT_EMAIL_4,
-		E_CONTACT_ADDRESS_LABEL_HOME,
-		E_CONTACT_ADDRESS_LABEL_WORK,
-		E_CONTACT_ADDRESS_LABEL_OTHER,
-		E_CONTACT_PHONE_HOME,
-		E_CONTACT_PHONE_HOME_FAX,
-		E_CONTACT_PHONE_BUSINESS,
-		E_CONTACT_PHONE_BUSINESS_FAX,
-		E_CONTACT_PHONE_MOBILE,
-		E_CONTACT_PHONE_PAGER,
-		E_CONTACT_IM_AIM,
-		E_CONTACT_IM_JABBER,
-		E_CONTACT_IM_YAHOO,
-		E_CONTACT_IM_MSN,
-		E_CONTACT_IM_ICQ,
-		E_CONTACT_IM_SKYPE,
-		E_CONTACT_IM_GADUGADU,
-		E_CONTACT_IM_GROUPWISE,
-		E_CONTACT_ADDRESS,
-		E_CONTACT_ADDRESS_HOME,
-		E_CONTACT_ADDRESS_WORK,
-		E_CONTACT_ADDRESS_OTHER,
-		E_CONTACT_NAME,
-		E_CONTACT_GIVEN_NAME,
-		E_CONTACT_FAMILY_NAME,
-		E_CONTACT_PHONE_ASSISTANT,
-		E_CONTACT_PHONE_BUSINESS_2,
-		E_CONTACT_PHONE_CALLBACK,
-		E_CONTACT_PHONE_CAR,
-		E_CONTACT_PHONE_COMPANY,
-		E_CONTACT_PHONE_HOME_2,
-		E_CONTACT_PHONE_ISDN,
-		E_CONTACT_PHONE_OTHER,
-		E_CONTACT_PHONE_OTHER_FAX,
-		E_CONTACT_PHONE_PRIMARY,
-		E_CONTACT_PHONE_RADIO,
-		E_CONTACT_PHONE_TELEX,
-		E_CONTACT_PHONE_TTYTDD,
-		E_CONTACT_IM_AIM_HOME_1,
-		E_CONTACT_IM_AIM_HOME_2,
-		E_CONTACT_IM_AIM_HOME_3,
-		E_CONTACT_IM_AIM_WORK_1,
-		E_CONTACT_IM_AIM_WORK_2,
-		E_CONTACT_IM_AIM_WORK_3,
-		E_CONTACT_IM_GROUPWISE_HOME_1,
-		E_CONTACT_IM_GROUPWISE_HOME_2,
-		E_CONTACT_IM_GROUPWISE_HOME_3,
-		E_CONTACT_IM_GROUPWISE_WORK_1,
-		E_CONTACT_IM_GROUPWISE_WORK_2,
-		E_CONTACT_IM_GROUPWISE_WORK_3,
-		E_CONTACT_IM_JABBER_HOME_1,
-		E_CONTACT_IM_JABBER_HOME_2,
-		E_CONTACT_IM_JABBER_HOME_3,
-		E_CONTACT_IM_JABBER_WORK_1,
-		E_CONTACT_IM_JABBER_WORK_2,
-		E_CONTACT_IM_JABBER_WORK_3,
-		E_CONTACT_IM_YAHOO_HOME_1,
-		E_CONTACT_IM_YAHOO_HOME_2,
-		E_CONTACT_IM_YAHOO_HOME_3,
-		E_CONTACT_IM_YAHOO_WORK_1,
-		E_CONTACT_IM_YAHOO_WORK_2,
-		E_CONTACT_IM_YAHOO_WORK_3,
-		E_CONTACT_IM_MSN_HOME_1,
-		E_CONTACT_IM_MSN_HOME_2,
-		E_CONTACT_IM_MSN_HOME_3,
-		E_CONTACT_IM_MSN_WORK_1,
-		E_CONTACT_IM_MSN_WORK_2,
-		E_CONTACT_IM_MSN_WORK_3,
-		E_CONTACT_IM_ICQ_HOME_1,
-		E_CONTACT_IM_ICQ_HOME_2,
-		E_CONTACT_IM_ICQ_HOME_3,
-		E_CONTACT_IM_ICQ_WORK_1,
-		E_CONTACT_IM_ICQ_WORK_2,
-		E_CONTACT_IM_ICQ_WORK_3,
-		E_CONTACT_EMAIL,
-		E_CONTACT_IM_GADUGADU_HOME_1,
-		E_CONTACT_IM_GADUGADU_HOME_2,
-		E_CONTACT_IM_GADUGADU_HOME_3,
-		E_CONTACT_IM_GADUGADU_WORK_1,
-		E_CONTACT_IM_GADUGADU_WORK_2,
-		E_CONTACT_IM_GADUGADU_WORK_3,
-		E_CONTACT_TEL,
-		E_CONTACT_IM_SKYPE_HOME_1,
-		E_CONTACT_IM_SKYPE_HOME_2,
-		E_CONTACT_IM_SKYPE_HOME_3,
-		E_CONTACT_IM_SKYPE_WORK_1,
-		E_CONTACT_IM_SKYPE_WORK_2,
-		E_CONTACT_IM_SKYPE_WORK_3,
-		E_CONTACT_SIP,
-		E_CONTACT_ORG,
-		E_CONTACT_ORG_UNIT,
-		E_CONTACT_TITLE,
-		E_CONTACT_ROLE,
-		E_CONTACT_HOMEPAGE_URL,
-		E_CONTACT_BLOG_URL,
-		E_CONTACT_BIRTH_DATE,
-		E_CONTACT_ANNIVERSARY,
-		E_CONTACT_NOTE,
-		E_CONTACT_CATEGORIES,
-		E_CONTACT_CATEGORY_LIST
-	};
-
-	__debug__ (G_STRFUNC);
-
-	/* Add all the fields above to the list */
-	for (i = 0; i < G_N_ELEMENTS (supported_fields); i++) {
-		const gchar *field_name = e_contact_field_name (supported_fields[i]);
-		fields = g_list_prepend (fields, (gpointer) field_name);
-	}
-
-	e_data_book_respond_get_supported_fields (book, opid, NULL, fields);
-	g_list_free (fields);
-}
-
-static void
-e_book_backend_google_get_changes (EBookBackend *backend, EDataBook *book, guint32 opid, const gchar *change_id)
-{
-	__debug__ (G_STRFUNC);
-	e_data_book_respond_get_changes (book, opid, EDB_ERROR (OTHER_ERROR), NULL);
-}
-
-static void
-e_book_backend_google_remove (EBookBackend *backend, EDataBook *book, guint32 opid)
+e_book_backend_google_remove (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable)
 {
 	__debug__ (G_STRFUNC);
 	e_data_book_respond_remove (book, opid, NULL);
 }
 
 static void
-e_book_backend_google_load_source (EBookBackend *backend, ESource *source, gboolean only_if_exists, GError **error)
+e_book_backend_google_open (EBookBackend *backend, EDataBook *book, guint opid, GCancellable *cancellable, gboolean only_if_exists)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	const gchar *refresh_interval_str, *use_ssl_str, *use_cache_str;
 	guint refresh_interval;
 	gboolean use_ssl, use_cache;
+	ESource *source = e_book_backend_get_source (backend);
 
 	__debug__ (G_STRFUNC);
 
 	if (priv->cancellables) {
-		g_propagate_error (error, EDB_ERROR_EX (OTHER_ERROR, "Source already loaded!"));
+		e_book_backend_respond_opened (backend, book, opid, EDB_ERROR_EX (OTHER_ERROR, "Source already loaded!"));
 		return;
 	}
 
@@ -1551,26 +1407,163 @@ e_book_backend_google_load_source (EBookBackend *backend, ESource *source, gbool
 	}
 
 	/* Set up ready to be interacted with */
-	e_book_backend_set_is_loaded (backend, TRUE);
-	e_book_backend_set_is_writable (backend, FALSE);
-	e_book_backend_notify_connection_status (backend, (priv->mode == E_DATA_BOOK_MODE_REMOTE) ? TRUE : FALSE);
+	e_book_backend_notify_online (backend, priv->is_online);
+	e_book_backend_notify_readonly (backend, TRUE);
 
-	if (priv->mode == E_DATA_BOOK_MODE_REMOTE) {
+	if (priv->is_online) {
 		/* We're going online, so we need to authenticate and create the service and proxy.
 		 * This is done in e_book_backend_google_authenticate_user() when it gets the authentication data. */
-		e_book_backend_notify_auth_required (backend);
+		e_book_backend_notify_auth_required (backend, TRUE, NULL);
+	} else {
+		e_book_backend_notify_opened (backend, NULL /* Success */);
 	}
-}
 
-static gchar *
-e_book_backend_google_get_static_capabilities (EBookBackend *backend)
-{
-	__debug__ (G_STRFUNC);
-	return g_strdup ("net,do-initial-query,contact-lists");
+	e_data_book_respond_open (book, opid, NULL /* Success */);
 }
 
 static void
-e_book_backend_google_cancel_operation (EBookBackend *backend, EDataBook *book, GError **error)
+e_book_backend_google_get_backend_property (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *prop_name)
+{
+	__debug__ (G_STRFUNC);
+
+	g_return_if_fail (prop_name != NULL);
+
+	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
+		e_data_book_respond_get_backend_property (book, opid, NULL, "net,do-initial-query,contact-lists");
+	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
+		e_data_book_respond_get_backend_property (book, opid, NULL, "");
+	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
+		GSList *fields = NULL;
+		gchar *fields_str;
+		guint i;
+		const gint supported_fields[] = {
+			E_CONTACT_FULL_NAME,
+			E_CONTACT_EMAIL_1,
+			E_CONTACT_EMAIL_2,
+			E_CONTACT_EMAIL_3,
+			E_CONTACT_EMAIL_4,
+			E_CONTACT_ADDRESS_LABEL_HOME,
+			E_CONTACT_ADDRESS_LABEL_WORK,
+			E_CONTACT_ADDRESS_LABEL_OTHER,
+			E_CONTACT_PHONE_HOME,
+			E_CONTACT_PHONE_HOME_FAX,
+			E_CONTACT_PHONE_BUSINESS,
+			E_CONTACT_PHONE_BUSINESS_FAX,
+			E_CONTACT_PHONE_MOBILE,
+			E_CONTACT_PHONE_PAGER,
+			E_CONTACT_IM_AIM,
+			E_CONTACT_IM_JABBER,
+			E_CONTACT_IM_YAHOO,
+			E_CONTACT_IM_MSN,
+			E_CONTACT_IM_ICQ,
+			E_CONTACT_IM_SKYPE,
+			E_CONTACT_IM_GADUGADU,
+			E_CONTACT_IM_GROUPWISE,
+			E_CONTACT_ADDRESS,
+			E_CONTACT_ADDRESS_HOME,
+			E_CONTACT_ADDRESS_WORK,
+			E_CONTACT_ADDRESS_OTHER,
+			E_CONTACT_NAME,
+			E_CONTACT_GIVEN_NAME,
+			E_CONTACT_FAMILY_NAME,
+			E_CONTACT_PHONE_ASSISTANT,
+			E_CONTACT_PHONE_BUSINESS_2,
+			E_CONTACT_PHONE_CALLBACK,
+			E_CONTACT_PHONE_CAR,
+			E_CONTACT_PHONE_COMPANY,
+			E_CONTACT_PHONE_HOME_2,
+			E_CONTACT_PHONE_ISDN,
+			E_CONTACT_PHONE_OTHER,
+			E_CONTACT_PHONE_OTHER_FAX,
+			E_CONTACT_PHONE_PRIMARY,
+			E_CONTACT_PHONE_RADIO,
+			E_CONTACT_PHONE_TELEX,
+			E_CONTACT_PHONE_TTYTDD,
+			E_CONTACT_IM_AIM_HOME_1,
+			E_CONTACT_IM_AIM_HOME_2,
+			E_CONTACT_IM_AIM_HOME_3,
+			E_CONTACT_IM_AIM_WORK_1,
+			E_CONTACT_IM_AIM_WORK_2,
+			E_CONTACT_IM_AIM_WORK_3,
+			E_CONTACT_IM_GROUPWISE_HOME_1,
+			E_CONTACT_IM_GROUPWISE_HOME_2,
+			E_CONTACT_IM_GROUPWISE_HOME_3,
+			E_CONTACT_IM_GROUPWISE_WORK_1,
+			E_CONTACT_IM_GROUPWISE_WORK_2,
+			E_CONTACT_IM_GROUPWISE_WORK_3,
+			E_CONTACT_IM_JABBER_HOME_1,
+			E_CONTACT_IM_JABBER_HOME_2,
+			E_CONTACT_IM_JABBER_HOME_3,
+			E_CONTACT_IM_JABBER_WORK_1,
+			E_CONTACT_IM_JABBER_WORK_2,
+			E_CONTACT_IM_JABBER_WORK_3,
+			E_CONTACT_IM_YAHOO_HOME_1,
+			E_CONTACT_IM_YAHOO_HOME_2,
+			E_CONTACT_IM_YAHOO_HOME_3,
+			E_CONTACT_IM_YAHOO_WORK_1,
+			E_CONTACT_IM_YAHOO_WORK_2,
+			E_CONTACT_IM_YAHOO_WORK_3,
+			E_CONTACT_IM_MSN_HOME_1,
+			E_CONTACT_IM_MSN_HOME_2,
+			E_CONTACT_IM_MSN_HOME_3,
+			E_CONTACT_IM_MSN_WORK_1,
+			E_CONTACT_IM_MSN_WORK_2,
+			E_CONTACT_IM_MSN_WORK_3,
+			E_CONTACT_IM_ICQ_HOME_1,
+			E_CONTACT_IM_ICQ_HOME_2,
+			E_CONTACT_IM_ICQ_HOME_3,
+			E_CONTACT_IM_ICQ_WORK_1,
+			E_CONTACT_IM_ICQ_WORK_2,
+			E_CONTACT_IM_ICQ_WORK_3,
+			E_CONTACT_EMAIL,
+			E_CONTACT_IM_GADUGADU_HOME_1,
+			E_CONTACT_IM_GADUGADU_HOME_2,
+			E_CONTACT_IM_GADUGADU_HOME_3,
+			E_CONTACT_IM_GADUGADU_WORK_1,
+			E_CONTACT_IM_GADUGADU_WORK_2,
+			E_CONTACT_IM_GADUGADU_WORK_3,
+			E_CONTACT_TEL,
+			E_CONTACT_IM_SKYPE_HOME_1,
+			E_CONTACT_IM_SKYPE_HOME_2,
+			E_CONTACT_IM_SKYPE_HOME_3,
+			E_CONTACT_IM_SKYPE_WORK_1,
+			E_CONTACT_IM_SKYPE_WORK_2,
+			E_CONTACT_IM_SKYPE_WORK_3,
+			E_CONTACT_SIP,
+			E_CONTACT_ORG,
+			E_CONTACT_ORG_UNIT,
+			E_CONTACT_TITLE,
+			E_CONTACT_ROLE,
+			E_CONTACT_HOMEPAGE_URL,
+			E_CONTACT_BLOG_URL,
+			E_CONTACT_BIRTH_DATE,
+			E_CONTACT_ANNIVERSARY,
+			E_CONTACT_NOTE,
+			E_CONTACT_CATEGORIES,
+			E_CONTACT_CATEGORY_LIST
+		};
+
+		/* Add all the fields above to the list */
+		for (i = 0; i < G_N_ELEMENTS (supported_fields); i++) {
+			const gchar *field_name = e_contact_field_name (supported_fields[i]);
+			fields = g_slist_prepend (fields, (gpointer) field_name);
+		}
+
+		fields_str = e_data_book_string_slist_to_comma_string (fields);
+
+		e_data_book_respond_get_backend_property (book, opid, NULL, fields_str);
+
+		g_slist_free (fields);
+		g_free (fields_str);
+	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS)) {
+		e_data_book_respond_get_backend_property (book, opid, NULL, "plain/password");
+	} else {
+		E_BOOK_BACKEND_CLASS (e_book_backend_google_parent_class)->get_backend_property (backend, book, opid, cancellable, prop_name);
+	}
+}
+
+static void
+google_cancel_all_operations (EBookBackend *backend)
 {
 	GHashTableIter iter;
 	gpointer opid_ptr;
@@ -1578,6 +1571,9 @@ e_book_backend_google_cancel_operation (EBookBackend *backend, EDataBook *book, 
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 
 	__debug__ (G_STRFUNC);
+
+	if (!priv->cancellables)
+		return;
 
 	/* Cancel all active operations */
 	g_hash_table_iter_init (&iter, priv->cancellables);
@@ -1587,31 +1583,29 @@ e_book_backend_google_cancel_operation (EBookBackend *backend, EDataBook *book, 
 }
 
 static void
-e_book_backend_google_set_mode (EBookBackend *backend, EDataBookMode mode)
+e_book_backend_google_set_online (EBookBackend *backend, gboolean is_online)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
-	gboolean online = (mode == E_DATA_BOOK_MODE_REMOTE);
-
 	__debug__ (G_STRFUNC);
 
-	if (mode == priv->mode)
+	if (is_online == priv->is_online)
 		return;
 
-	priv->mode = mode;
+	priv->is_online = is_online;
 
-	e_book_backend_notify_connection_status (backend, online);
+	e_book_backend_notify_online (backend, is_online);
 
-	if (online) {
+	if (is_online && e_book_backend_is_opened (backend)) {
 		/* Going online, so we need to re-authenticate and re-create the service and proxy.
 		 * This is done in e_book_backend_google_authenticate_user() when it gets the authentication data. */
-		e_book_backend_notify_auth_required (backend);
+		e_book_backend_notify_auth_required (backend, TRUE, NULL);
 	} else {
 		/* Going offline, so cancel all running operations */
-		e_book_backend_google_cancel_operation (backend, NULL, NULL);
+		google_cancel_all_operations (backend);
 
 		/* Mark the book as unwriteable if we're going offline, but don't do the inverse when we go online;
 		 * e_book_backend_google_authenticate_user() will mark us as writeable again once the user's authenticated again. */
-		e_book_backend_notify_writable (backend, FALSE);
+		e_book_backend_notify_readonly (backend, TRUE);
 
 		/* We can free our service and proxy */
 		if (priv->service)
@@ -1632,7 +1626,7 @@ e_book_backend_google_dispose (GObject *object)
 	__debug__ (G_STRFUNC);
 
 	/* Cancel all outstanding operations */
-	e_book_backend_google_cancel_operation (E_BOOK_BACKEND (object), NULL, NULL);
+	google_cancel_all_operations (E_BOOK_BACKEND (object));
 
 	while (priv->bookviews) {
 		e_data_book_view_unref (priv->bookviews->data);
@@ -1664,9 +1658,11 @@ e_book_backend_google_finalize (GObject *object)
 
 	__debug__ (G_STRFUNC);
 
-	g_hash_table_destroy (priv->groups_by_id);
-	g_hash_table_destroy (priv->groups_by_name);
-	g_hash_table_destroy (priv->cancellables);
+	if (priv->cancellables) {
+		g_hash_table_destroy (priv->groups_by_id);
+		g_hash_table_destroy (priv->groups_by_name);
+		g_hash_table_destroy (priv->cancellables);
+	}
 
 	G_OBJECT_CLASS (e_book_backend_google_parent_class)->finalize (object);
 }
@@ -1680,23 +1676,18 @@ e_book_backend_google_class_init (EBookBackendGoogleClass *klass)
 	g_type_class_add_private (klass, sizeof (EBookBackendGooglePrivate));
 
 	/* Set the virtual methods. */
-	backend_class->load_source                  = e_book_backend_google_load_source;
-	backend_class->get_static_capabilities      = e_book_backend_google_get_static_capabilities;
-	backend_class->start_book_view              = e_book_backend_google_start_book_view;
-	backend_class->stop_book_view               = e_book_backend_google_stop_book_view;
-	backend_class->cancel_operation             = e_book_backend_google_cancel_operation;
-	backend_class->set_mode                     = e_book_backend_google_set_mode;
-	backend_class->remove                       = e_book_backend_google_remove;
-	backend_class->create_contact               = e_book_backend_google_create_contact;
-	backend_class->remove_contacts              = e_book_backend_google_remove_contacts;
-	backend_class->modify_contact               = e_book_backend_google_modify_contact;
-	backend_class->get_contact                  = e_book_backend_google_get_contact;
-	backend_class->get_contact_list             = e_book_backend_google_get_contact_list;
-	backend_class->get_changes                  = e_book_backend_google_get_changes;
-	backend_class->authenticate_user            = e_book_backend_google_authenticate_user;
-	backend_class->get_supported_fields         = e_book_backend_google_get_supported_fields;
-	backend_class->get_required_fields          = e_book_backend_google_get_required_fields;
-	backend_class->get_supported_auth_methods   = e_book_backend_google_get_supported_auth_methods;
+	backend_class->open			= e_book_backend_google_open;
+	backend_class->get_backend_property	= e_book_backend_google_get_backend_property;
+	backend_class->start_book_view		= e_book_backend_google_start_book_view;
+	backend_class->stop_book_view		= e_book_backend_google_stop_book_view;
+	backend_class->set_online		= e_book_backend_google_set_online;
+	backend_class->remove			= e_book_backend_google_remove;
+	backend_class->create_contact		= e_book_backend_google_create_contact;
+	backend_class->remove_contacts		= e_book_backend_google_remove_contacts;
+	backend_class->modify_contact		= e_book_backend_google_modify_contact;
+	backend_class->get_contact		= e_book_backend_google_get_contact;
+	backend_class->get_contact_list		= e_book_backend_google_get_contact_list;
+	backend_class->authenticate_user	= e_book_backend_google_authenticate_user;
 
 	object_class->dispose  = e_book_backend_google_dispose;
 	object_class->finalize = e_book_backend_google_finalize;

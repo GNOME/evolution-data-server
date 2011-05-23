@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* Evolution calendar - Live search query implementation
+/* Evolution calendar - Live search view implementation
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  * Copyright (C) 2009 Intel Corporation
@@ -33,7 +33,7 @@
 #include "libedataserver/e-data-server-util.h"
 #include "e-cal-backend-sexp.h"
 #include "e-data-cal-view.h"
-#include "e-gdbus-egdbuscalview.h"
+#include "e-gdbus-cal-view.h"
 
 static void ensure_pending_flush_timeout (EDataCalView *view);
 
@@ -48,9 +48,9 @@ struct _EDataCalViewPrivate {
 
 	gboolean started;
 	gboolean stopped;
-	gboolean done;
+	gboolean complete;
 
-	/* Sexp that defines the query */
+	/* Sexp that defines the view */
 	ECalBackendSExp *sexp;
 
 	GArray *adds;
@@ -61,6 +61,9 @@ struct _EDataCalViewPrivate {
 
 	GMutex *pending_mutex;
 	guint flush_id;
+
+	/* which fields is listener interested in */
+	GHashTable *fields_of_interest;
 };
 
 G_DEFINE_TYPE (EDataCalView, e_data_cal_view, G_TYPE_OBJECT);
@@ -102,6 +105,43 @@ e_data_cal_view_class_init (EDataCalViewClass *klass)
 }
 
 static guint
+str_ic_hash (gconstpointer key)
+{
+	guint32 hash = 5381;
+	const gchar *str = key;
+	gint ii;
+
+	if (!str)
+		return hash;
+
+	for (ii = 0; str[ii]; ii++) {
+		hash = hash * 33 + g_ascii_tolower (str[ii]);
+	}
+
+	return hash;
+}
+
+static gboolean
+str_ic_equal (gconstpointer a, gconstpointer b)
+{
+	const gchar *stra = a, *strb = b;
+	gint ii;
+
+	if (!stra && !strb)
+		return TRUE;
+
+	if (!stra || !strb)
+		return FALSE;
+
+	for (ii = 0; stra[ii] && strb[ii]; ii++) {
+		if (g_ascii_tolower (stra[ii]) != g_ascii_tolower (strb[ii]))
+			return FALSE;
+	}
+
+	return stra[ii] == strb[ii];
+}
+
+static guint
 id_hash (gconstpointer key)
 {
 	const ECalComponentId *id = key;
@@ -118,11 +158,11 @@ id_equal (gconstpointer a, gconstpointer b)
 EDataCalView *
 e_data_cal_view_new (ECalBackend *backend, ECalBackendSExp *sexp)
 {
-	EDataCalView *query;
+	EDataCalView *view;
 
-	query = g_object_new (E_DATA_CAL_VIEW_TYPE, "backend", backend, "sexp", sexp, NULL);
+	view = g_object_new (E_DATA_CAL_VIEW_TYPE, "backend", backend, "sexp", sexp, NULL);
 
-	return query;
+	return view;
 }
 
 /**
@@ -131,14 +171,14 @@ e_data_cal_view_new (ECalBackend *backend, ECalBackendSExp *sexp)
  * Since: 2.32
  **/
 guint
-e_data_cal_view_register_gdbus_object (EDataCalView *query, GDBusConnection *connection, const gchar *object_path, GError **error)
+e_data_cal_view_register_gdbus_object (EDataCalView *view, GDBusConnection *connection, const gchar *object_path, GError **error)
 {
-	g_return_val_if_fail (query != NULL, 0);
-	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (query), 0);
+	g_return_val_if_fail (view != NULL, 0);
+	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), 0);
 	g_return_val_if_fail (connection != NULL, 0);
 	g_return_val_if_fail (object_path != NULL, 0);
 
-	return e_gdbus_cal_view_register_object (query->priv->gdbus_object, connection, object_path, error);
+	return e_gdbus_cal_view_register_object (view->priv->gdbus_object, connection, object_path, error);
 }
 
 static void
@@ -221,7 +261,7 @@ ensure_pending_flush_timeout (EDataCalView *view)
 	if (priv->flush_id)
 		return;
 
-	priv->flush_id = g_timeout_add (e_data_cal_view_is_done (view) ? 10 : (THRESHOLD_SECONDS * 1000), pending_flush_timeout_cb, view);
+	priv->flush_id = g_timeout_add (e_data_cal_view_is_completed (view) ? 10 : (THRESHOLD_SECONDS * 1000), pending_flush_timeout_cb, view);
 }
 
 static void
@@ -287,57 +327,94 @@ notify_remove (EDataCalView *view, ECalComponentId *id)
 }
 
 static void
-notify_done (EDataCalView *view, const GError *error)
+notify_complete (EDataCalView *view, const GError *error)
 {
-	gchar *gdbus_error_msg = NULL;
+	gchar **error_strv;
 
 	send_pending_adds (view);
 	send_pending_changes (view);
 	send_pending_removes (view);
 
-	e_gdbus_cal_view_emit_done (view->priv->gdbus_object, error ? error->code : 0, e_util_ensure_gdbus_string (error ? error->message : "", &gdbus_error_msg));
+	error_strv = e_gdbus_templates_encode_error (error);
 
-	g_free (gdbus_error_msg);
+	e_gdbus_cal_view_emit_complete (view->priv->gdbus_object, (const gchar * const *) error_strv);
+
+	g_strfreev (error_strv);
 }
 
 static gboolean
-impl_DataCalView_start (EGdbusCalView *object, GDBusMethodInvocation *invocation, EDataCalView *query)
+impl_DataCalView_start (EGdbusCalView *object, GDBusMethodInvocation *invocation, EDataCalView *view)
 {
 	EDataCalViewPrivate *priv;
 
-	priv = query->priv;
+	priv = view->priv;
 
 	if (!priv->started) {
 		priv->started = TRUE;
-		e_debug_log(FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES, "---;%p;QUERY-START;%s;%s", query, e_data_cal_view_get_text (query), G_OBJECT_TYPE_NAME(priv->backend));
-		e_cal_backend_start_query (priv->backend, query);
+		e_debug_log(FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES, "---;%p;VIEW-START;%s;%s", view, e_data_cal_view_get_text (view), G_OBJECT_TYPE_NAME(priv->backend));
+		e_cal_backend_start_view (priv->backend, view);
 	}
 
-	e_gdbus_cal_view_complete_start (object, invocation);
+	e_gdbus_cal_view_complete_start (object, invocation, NULL);
 
 	return TRUE;
 }
 
 static gboolean
-impl_DataCalView_stop (EGdbusCalView *object, GDBusMethodInvocation *invocation, EDataCalView *query)
+impl_DataCalView_stop (EGdbusCalView *object, GDBusMethodInvocation *invocation, EDataCalView *view)
 {
 	EDataCalViewPrivate *priv;
 
-	priv = query->priv;
+	priv = view->priv;
 
 	priv->stopped = TRUE;
 
-	e_gdbus_cal_view_complete_stop (object, invocation);
+	e_gdbus_cal_view_complete_stop (object, invocation, NULL);
+	e_cal_backend_stop_view (priv->backend, view);
 
 	return TRUE;
 }
 
 static gboolean
-impl_DataCalView_dispose (EGdbusCalView *object, GDBusMethodInvocation *invocation, EDataCalView *query)
+impl_DataCalView_dispose (EGdbusCalView *object, GDBusMethodInvocation *invocation, EDataCalView *view)
 {
-	e_gdbus_cal_view_complete_dispose (object, invocation);
+	e_gdbus_cal_view_complete_dispose (object, invocation, NULL);
 
-	g_object_unref (query);
+	view->priv->stopped = TRUE;
+	e_cal_backend_stop_view (view->priv->backend, view);
+
+	g_object_unref (view);
+
+	return TRUE;
+}
+
+static gboolean
+impl_DataCalView_setFieldsOfInterest (EGdbusCalView *object, GDBusMethodInvocation *invocation, const gchar * const *in_fields_of_interest, EDataCalView *view)
+{
+	EDataCalViewPrivate *priv;
+	gint ii;
+
+	g_return_val_if_fail (in_fields_of_interest != NULL, TRUE);
+
+	priv = view->priv;
+
+	if (priv->fields_of_interest)
+		g_hash_table_destroy (priv->fields_of_interest);
+	priv->fields_of_interest = NULL;
+
+	for (ii = 0; in_fields_of_interest[ii]; ii++) {
+		const gchar *field = in_fields_of_interest[ii];
+
+		if (!*field)
+			continue;
+
+		if (!priv->fields_of_interest)
+			priv->fields_of_interest = g_hash_table_new_full (str_ic_hash, str_ic_equal, g_free, NULL);
+
+		g_hash_table_insert (priv->fields_of_interest, g_strdup (field), GINT_TO_POINTER (1));
+	}
+
+	e_gdbus_cal_view_complete_set_fields_of_interest (object, invocation, NULL);
 
 	return TRUE;
 }
@@ -345,11 +422,11 @@ impl_DataCalView_dispose (EGdbusCalView *object, GDBusMethodInvocation *invocati
 static void
 e_data_cal_view_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
-	EDataCalView *query;
+	EDataCalView *view;
 	EDataCalViewPrivate *priv;
 
-	query = QUERY (object);
-	priv = query->priv;
+	view = E_DATA_CAL_VIEW (object);
+	priv = view->priv;
 
 	switch (property_id) {
 	case PROP_BACKEND:
@@ -367,11 +444,11 @@ e_data_cal_view_set_property (GObject *object, guint property_id, const GValue *
 static void
 e_data_cal_view_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	EDataCalView *query;
+	EDataCalView *view;
 	EDataCalViewPrivate *priv;
 
-	query = QUERY (object);
-	priv = query->priv;
+	view = E_DATA_CAL_VIEW (object);
+	priv = view->priv;
 
 	switch (property_id) {
 	case PROP_BACKEND:
@@ -388,23 +465,25 @@ e_data_cal_view_get_property (GObject *object, guint property_id, GValue *value,
 
 /* Instance init */
 static void
-e_data_cal_view_init (EDataCalView *query)
+e_data_cal_view_init (EDataCalView *view)
 {
 	EDataCalViewPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		query, E_DATA_CAL_VIEW_TYPE, EDataCalViewPrivate);
+		view, E_DATA_CAL_VIEW_TYPE, EDataCalViewPrivate);
 
-	query->priv = priv;
+	view->priv = priv;
 
 	priv->gdbus_object = e_gdbus_cal_view_stub_new ();
-	g_signal_connect (priv->gdbus_object, "handle-start", G_CALLBACK (impl_DataCalView_start), query);
-	g_signal_connect (priv->gdbus_object, "handle-stop", G_CALLBACK (impl_DataCalView_stop), query);
-	g_signal_connect (priv->gdbus_object, "handle-dispose", G_CALLBACK (impl_DataCalView_dispose), query);
+	g_signal_connect (priv->gdbus_object, "handle-start", G_CALLBACK (impl_DataCalView_start), view);
+	g_signal_connect (priv->gdbus_object, "handle-stop", G_CALLBACK (impl_DataCalView_stop), view);
+	g_signal_connect (priv->gdbus_object, "handle-dispose", G_CALLBACK (impl_DataCalView_dispose), view);
+	g_signal_connect (priv->gdbus_object, "handle-set-fields-of-interest", G_CALLBACK (impl_DataCalView_setFieldsOfInterest), view);
 
 	priv->backend = NULL;
 	priv->started = FALSE;
 	priv->stopped = FALSE;
-	priv->done = FALSE;
+	priv->complete = FALSE;
 	priv->sexp = NULL;
+	priv->fields_of_interest = NULL;
 
 	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
 	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
@@ -419,17 +498,17 @@ e_data_cal_view_init (EDataCalView *query)
 static void
 e_data_cal_view_dispose (GObject *object)
 {
-	EDataCalView *query;
+	EDataCalView *view;
 	EDataCalViewPrivate *priv;
 
 	g_return_if_fail (object != NULL);
-	g_return_if_fail (IS_QUERY (object));
+	g_return_if_fail (E_IS_DATA_CAL_VIEW (object));
 
-	query = QUERY (object);
-	priv = query->priv;
+	view = E_DATA_CAL_VIEW (object);
+	priv = view->priv;
 
 	if (priv->backend) {
-		e_cal_backend_remove_query (priv->backend, query);
+		e_cal_backend_remove_view (priv->backend, view);
 		g_object_unref (priv->backend);
 		priv->backend = NULL;
 	}
@@ -454,16 +533,27 @@ e_data_cal_view_dispose (GObject *object)
 static void
 e_data_cal_view_finalize (GObject *object)
 {
-	EDataCalView *query;
+	EDataCalView *view;
 	EDataCalViewPrivate *priv;
 
 	g_return_if_fail (object != NULL);
-	g_return_if_fail (IS_QUERY (object));
+	g_return_if_fail (E_IS_DATA_CAL_VIEW (object));
 
-	query = QUERY (object);
-	priv = query->priv;
+	view = E_DATA_CAL_VIEW (object);
+	priv = view->priv;
+
+	reset_array (priv->adds);
+	reset_array (priv->changes);
+	reset_array (priv->removes);
+
+	g_array_free (priv->adds, TRUE);
+	g_array_free (priv->changes, TRUE);
+	g_array_free (priv->removes, TRUE);
 
 	g_hash_table_destroy (priv->ids);
+
+	if (priv->fields_of_interest)
+		g_hash_table_destroy (priv->fields_of_interest);
 
 	g_mutex_free (priv->pending_mutex);
 
@@ -472,83 +562,67 @@ e_data_cal_view_finalize (GObject *object)
 
 /**
  * e_data_cal_view_get_text:
- * @query: A #EDataCalView object.
+ * @view: A #EDataCalView object.
  *
- * Get the expression used for the given query.
+ * Get the expression used for the given view.
  *
- * Returns: the query expression used to search.
+ * Returns: the view expression used to search.
  */
 const gchar *
-e_data_cal_view_get_text (EDataCalView *query)
+e_data_cal_view_get_text (EDataCalView *view)
 {
-	g_return_val_if_fail (IS_QUERY (query), NULL);
+	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), NULL);
 
-	return e_cal_backend_sexp_text (query->priv->sexp);
+	return e_cal_backend_sexp_text (view->priv->sexp);
 }
 
 /**
  * e_data_cal_view_get_object_sexp:
- * @query: A query object.
+ * @view: A view object.
  *
- * Get the #ECalBackendSExp object used for the given query.
+ * Get the #ECalBackendSExp object used for the given view.
  *
  * Returns: The expression object used to search.
  */
 ECalBackendSExp *
-e_data_cal_view_get_object_sexp (EDataCalView *query)
+e_data_cal_view_get_object_sexp (EDataCalView *view)
 {
-	g_return_val_if_fail (IS_QUERY (query), NULL);
+	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), NULL);
 
-	return query->priv->sexp;
+	return view->priv->sexp;
 }
 
 /**
  * e_data_cal_view_object_matches:
- * @query: A query object.
+ * @view: A view object.
  * @object: Object to match.
  *
  * Compares the given @object to the regular expression used for the
- * given query.
+ * given view.
  *
  * Returns: TRUE if the object matches the expression, FALSE if not.
  */
 gboolean
-e_data_cal_view_object_matches (EDataCalView *query, const gchar *object)
+e_data_cal_view_object_matches (EDataCalView *view, const gchar *object)
 {
 	EDataCalViewPrivate *priv;
 
-	g_return_val_if_fail (query != NULL, FALSE);
-	g_return_val_if_fail (IS_QUERY (query), FALSE);
+	g_return_val_if_fail (view != NULL, FALSE);
+	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), FALSE);
 	g_return_val_if_fail (object != NULL, FALSE);
 
-	priv = query->priv;
+	priv = view->priv;
 
 	return e_cal_backend_sexp_match_object (priv->sexp, object, priv->backend);
 }
 
 /**
- * e_data_cal_view_get_matched_objects:
- * @query: A query object.
- *
- * Gets the list of objects already matched for the given query.
- *
- * Returns: A list of matched objects.
- */
-GList *
-e_data_cal_view_get_matched_objects (EDataCalView *query)
-{
-	g_return_val_if_fail (IS_QUERY (query), NULL);
-	/* TODO e_data_cal_view_get_matched_objects */
-	return NULL;
-}
-
-/**
  * e_data_cal_view_is_started:
- * @query: A query object.
+ * @view: A view object.
  *
- * Checks whether the given query has already been started.
+ * Checks whether the given view has already been started.
  *
- * Returns: TRUE if the query has already been started, FALSE otherwise.
+ * Returns: TRUE if the view has already been started, FALSE otherwise.
  */
 gboolean
 e_data_cal_view_is_started (EDataCalView *view)
@@ -560,11 +634,11 @@ e_data_cal_view_is_started (EDataCalView *view)
 
 /**
  * e_data_cal_view_is_stopped:
- * @query: A query object.
+ * @view: A view object.
  *
- * Checks whether the given query has been stopped.
+ * Checks whether the given view has been stopped.
  *
- * Returns: TRUE if the query has been stopped, FALSE otherwise.
+ * Returns: TRUE if the view has been stopped, FALSE otherwise.
  *
  * Since: 2.32
  */
@@ -577,40 +651,56 @@ e_data_cal_view_is_stopped (EDataCalView *view)
 }
 
 /**
- * e_data_cal_view_is_done:
- * @query: A query object.
+ * e_data_cal_view_is_completed:
+ * @view: A view object.
  *
- * Checks whether the given query is already done. Being done means the initial
+ * Checks whether the given view is already completed. Being completed means the initial
  * matching of objects have been finished, not that no more notifications about
- * changes will be sent. In fact, even after done, notifications will still be sent
- * if there are changes in the objects matching the query search expression.
+ * changes will be sent. In fact, even after completed, notifications will still be sent
+ * if there are changes in the objects matching the view search expression.
  *
- * Returns: TRUE if the query is done, FALSE if still in progress.
+ * Returns: TRUE if the view is completed, FALSE if still in progress.
  */
 gboolean
-e_data_cal_view_is_done (EDataCalView *query)
+e_data_cal_view_is_completed (EDataCalView *view)
 {
-	EDataCalViewPrivate *priv;
+	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), FALSE);
 
-	g_return_val_if_fail (IS_QUERY (query), FALSE);
+	return view->priv->complete;
+}
 
-	priv = query->priv;
+/**
+ * e_data_cal_view_get_fields_of_interest:
+ * @view: A view object.
+ *
+ * Returns: Hash table of field names which the listener is interested in.
+ * Backends can return fully populated objects, but the listener advertised
+ * that it will use only these. Returns %NULL for all available fields.
+ *
+ * Note: The data pointer in the hash table has no special meaning, it's
+ * only GINT_TO_POINTER(1) for easier checking. Also, field names are
+ * compared case insensitively.
+ **/
+/* const */ GHashTable *
+e_data_cal_view_get_fields_of_interest (EDataCalView *view)
+{
+	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), NULL);
 
-	return priv->done;
+	return view->priv->fields_of_interest;
 }
 
 /**
  * e_data_cal_view_notify_objects_added:
- * @query: A query object.
+ * @view: A view object.
  * @objects: List of objects that have been added.
  *
- * Notifies all query listeners of the addition of a list of objects.
+ * Notifies all view listeners of the addition of a list of objects.
  */
 void
-e_data_cal_view_notify_objects_added (EDataCalView *view, const GList *objects)
+e_data_cal_view_notify_objects_added (EDataCalView *view, const GSList *objects)
 {
 	EDataCalViewPrivate *priv;
-	const GList *l;
+	const GSList *l;
 
 	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
 	priv = view->priv;
@@ -629,15 +719,15 @@ e_data_cal_view_notify_objects_added (EDataCalView *view, const GList *objects)
 
 /**
  * e_data_cal_view_notify_objects_added_1:
- * @query: A query object.
+ * @view: A view object.
  * @object: The object that has been added.
  *
- * Notifies all the query listeners of the addition of a single object.
+ * Notifies all the view listeners of the addition of a single object.
  */
 void
 e_data_cal_view_notify_objects_added_1 (EDataCalView *view, const gchar *object)
 {
-	GList l = {NULL,};
+	GSList l = {NULL,};
 
 	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
 	g_return_if_fail (object);
@@ -648,16 +738,16 @@ e_data_cal_view_notify_objects_added_1 (EDataCalView *view, const gchar *object)
 
 /**
  * e_data_cal_view_notify_objects_modified:
- * @query: A query object.
+ * @view: A view object.
  * @objects: List of modified objects.
  *
- * Notifies all query listeners of the modification of a list of objects.
+ * Notifies all view listeners of the modification of a list of objects.
  */
 void
-e_data_cal_view_notify_objects_modified (EDataCalView *view, const GList *objects)
+e_data_cal_view_notify_objects_modified (EDataCalView *view, const GSList *objects)
 {
 	EDataCalViewPrivate *priv;
-	const GList *l;
+	const GSList *l;
 
 	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
 	priv = view->priv;
@@ -677,15 +767,15 @@ e_data_cal_view_notify_objects_modified (EDataCalView *view, const GList *object
 
 /**
  * e_data_cal_view_notify_objects_modified_1:
- * @query: A query object.
+ * @view: A view object.
  * @object: The modified object.
  *
- * Notifies all query listeners of the modification of a single object.
+ * Notifies all view listeners of the modification of a single object.
  */
 void
 e_data_cal_view_notify_objects_modified_1 (EDataCalView *view, const gchar *object)
 {
-	GList l = {NULL,};
+	GSList l = {NULL,};
 
 	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
 	g_return_if_fail (object);
@@ -696,16 +786,16 @@ e_data_cal_view_notify_objects_modified_1 (EDataCalView *view, const gchar *obje
 
 /**
  * e_data_cal_view_notify_objects_removed:
- * @query: A query object.
+ * @view: A view object.
  * @ids: List of IDs for the objects that have been removed.
  *
- * Notifies all query listener of the removal of a list of objects.
+ * Notifies all view listener of the removal of a list of objects.
  */
 void
-e_data_cal_view_notify_objects_removed (EDataCalView *view, const GList *ids)
+e_data_cal_view_notify_objects_removed (EDataCalView *view, const GSList *ids)
 {
 	EDataCalViewPrivate *priv;
-	const GList *l;
+	const GSList *l;
 
 	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
 	priv = view->priv;
@@ -726,15 +816,15 @@ e_data_cal_view_notify_objects_removed (EDataCalView *view, const GList *ids)
 
 /**
  * e_data_cal_view_notify_objects_removed_1:
- * @query: A query object.
+ * @view: A view object.
  * @id: ID of the removed object.
  *
- * Notifies all query listener of the removal of a single object.
+ * Notifies all view listener of the removal of a single object.
  */
 void
 e_data_cal_view_notify_objects_removed_1 (EDataCalView *view, const ECalComponentId *id)
 {
-	GList l = {NULL,};
+	GSList l = {NULL,};
 
 	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
 	g_return_if_fail (id);
@@ -745,14 +835,14 @@ e_data_cal_view_notify_objects_removed_1 (EDataCalView *view, const ECalComponen
 
 /**
  * e_data_cal_view_notify_progress:
- * @query: A query object.
- * @message: Progress message to send to listeners.
+ * @view: A view object.
  * @percent: Percentage completed.
+ * @message: Progress message to send to listeners.
  *
- * Notifies all query listeners of progress messages.
+ * Notifies all view listeners of progress messages.
  */
 void
-e_data_cal_view_notify_progress (EDataCalView *view, const gchar *message, gint percent)
+e_data_cal_view_notify_progress (EDataCalView *view, gint percent, const gchar *message)
 {
 	EDataCalViewPrivate *priv;
 	gchar *gdbus_message = NULL;
@@ -763,21 +853,21 @@ e_data_cal_view_notify_progress (EDataCalView *view, const gchar *message, gint 
 	if (!priv->started || priv->stopped)
 		return;
 
-	e_gdbus_cal_view_emit_progress (view->priv->gdbus_object, e_util_ensure_gdbus_string (message, &gdbus_message), percent);
+	e_gdbus_cal_view_emit_progress (view->priv->gdbus_object, percent, e_util_ensure_gdbus_string (message, &gdbus_message));
 
 	g_free (gdbus_message);
 }
 
 /**
- * e_data_cal_view_notify_done:
- * @query: A query object.
- * @error: Query completion error, if any.
+ * e_data_cal_view_notify_complete:
+ * @view: A view object.
+ * @error: View completion error, if any.
  *
- * Notifies all query listeners of the completion of the query, including a
+ * Notifies all view listeners of the completion of the view, including a
  * status code.
  */
 void
-e_data_cal_view_notify_done (EDataCalView *view, const GError *error)
+e_data_cal_view_notify_complete (EDataCalView *view, const GError *error)
 {
 	EDataCalViewPrivate *priv;
 
@@ -789,9 +879,9 @@ e_data_cal_view_notify_done (EDataCalView *view, const GError *error)
 
 	g_mutex_lock (priv->pending_mutex);
 
-	priv->done = TRUE;
+	priv->complete = TRUE;
 
-	notify_done (view, error);
+	notify_complete (view, error);
 
 	g_mutex_unlock (priv->pending_mutex);
 }

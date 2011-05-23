@@ -1,3 +1,7 @@
+# The marshallers
+MARSHAL_GENERATED = e-gdbus-marshallers.c e-gdbus-marshallers.h
+@EVO_MARSHAL_RULE@
+
 lib_LTLIBRARIES = libedataserver-1.2.la
 
 libedataserver_1_2_la_CPPFLAGS = \
@@ -14,14 +18,21 @@ libedataserver_1_2_la_CPPFLAGS = \
 	$(SOUP_CFLAGS)
 
 libedataserver_1_2_la_SOURCES =		\
+	$(MARSHAL_GENERATED)		\
 	e-account-list.c		\
 	e-account.c			\
 	e-categories.c			\
+	e-client.c			\
+	e-client-private.h		\
+	e-credentials.c			\
 	e-flag.c			\
+	e-gdbus-templates.h		\
+	e-gdbus-templates.c		\
 	e-iterator.c			\
 	e-list.c			\
 	e-list-iterator.c		\
 	e-memory.c			\
+	e-operation-pool.c		\
 	e-proxy.c			\
 	e-sexp.c			\
 	e-source-group.c		\
@@ -52,11 +63,14 @@ libedataserverinclude_HEADERS =		\
 	e-account-list.h		\
 	e-account.h			\
 	e-categories.h			\
+	e-client.h			\
+	e-credentials.h			\
 	e-flag.h			\
 	e-iterator.h			\
 	e-list.h			\
 	e-list-iterator.h		\
 	e-memory.h			\
+	e-operation-pool.h		\
 	e-proxy.h			\
 	e-sexp.h			\
 	e-source-group.h		\
@@ -81,7 +95,8 @@ EXTRA_DIST = 						\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
 	eds-version.h.in
 
-CLEANFILES =
+BUILT_SOURCES = $(MARSHAL_GENERATED)
+CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES = eds-version.h $(pkgconfig_DATA)
 
 -include $(INTROSPECTION_MAKEFILE)

@@ -55,8 +55,8 @@ EDS_MICRO_VERSION=eds_micro_version
 dnl ******************************
 dnl D-Bus versioning
 dnl ******************************
-ADDRESS_BOOK_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.AddressBook0"
-CALENDAR_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Calendar0"
+ADDRESS_BOOK_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.AddressBook1"
+CALENDAR_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Calendar1"
 
 AC_DEFINE_UNQUOTED(
        ADDRESS_BOOK_DBUS_SERVICE_NAME,
@@ -82,19 +82,19 @@ LIBEDATASERVERUI_CURRENT=0
 LIBEDATASERVERUI_REVISION=0
 LIBEDATASERVERUI_AGE=0
 
-LIBECAL_CURRENT=10
+LIBECAL_CURRENT=11
 LIBECAL_REVISION=2
 LIBECAL_AGE=2
 
-LIBEDATACAL_CURRENT=11
+LIBEDATACAL_CURRENT=12
 LIBEDATACAL_REVISION=0
 LIBEDATACAL_AGE=0
 
-LIBEDATABOOK_CURRENT=9
+LIBEDATABOOK_CURRENT=10
 LIBEDATABOOK_REVISION=0
 LIBEDATABOOK_AGE=0
 
-LIBEBOOK_CURRENT=13
+LIBEBOOK_CURRENT=14
 LIBEBOOK_REVISION=1
 LIBEBOOK_AGE=3
 
@@ -1505,8 +1505,10 @@ libedataserverui/Makefile
 libedataserverui/libedataserverui.pc
 tests/Makefile
 tests/libebook/Makefile
+tests/libebook/client/Makefile
 tests/libebook/vcard/Makefile
 tests/libecal/Makefile
+tests/libecal/client/Makefile
 tests/libedata-cal/Makefile
 tests/libedataserver/Makefile
 tests/libedataserverui/Makefile

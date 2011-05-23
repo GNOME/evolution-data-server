@@ -21,6 +21,8 @@
 #ifndef E_CAL_VIEW_H
 #define E_CAL_VIEW_H
 
+#ifndef E_CAL_DISABLE_DEPRECATED
+
 #include <glib-object.h>
 #include <libecal/e-cal-types.h>
 
@@ -35,6 +37,7 @@ G_BEGIN_DECLS
 typedef struct _ECalView ECalView;
 typedef struct _ECalViewClass ECalViewClass;
 typedef struct _ECalViewPrivate ECalViewPrivate;
+
 struct _ECal;
 
 struct _ECalView {
@@ -61,9 +64,12 @@ struct _ECalViewClass {
 GType      e_cal_view_get_type (void);
 
 struct _ECal *e_cal_view_get_client (ECalView *view);
+
 void e_cal_view_start (ECalView *view);
 void e_cal_view_stop (ECalView *view);
 
 G_END_DECLS
+
+#endif /* E_CAL_DISABLE_DEPRECATED */
 
 #endif

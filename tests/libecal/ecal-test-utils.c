@@ -632,7 +632,6 @@ ecal_test_utils_cal_get_free_busy (ECal   *cal,
 
 			comp_string = e_cal_component_get_as_string (comp);
 			test_print ("%s\n", comp_string);
-			g_object_unref (comp);
 			g_free (comp_string);
 		}
 	} else {

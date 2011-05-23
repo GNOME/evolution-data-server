@@ -23,6 +23,9 @@ libebook_1_2_la_CPPFLAGS = \
 libebook_1_2_la_SOURCES =				\
 	$(MARSHAL_GENERATED)				\
 	e-address-western.c				\
+	e-book-client.c					\
+	e-book-client-view.c				\
+	e-book-client-view-private.h			\
 	e-book-query.c					\
 	e-book-view-private.h				\
 	e-book-view.c					\
@@ -48,6 +51,8 @@ libebookincludedir = $(privincludedir)/libebook
 
 libebookinclude_HEADERS =				\
 	e-address-western.h				\
+	e-book-client.h					\
+	e-book-client-view.h				\
 	e-book-query.h					\
 	e-book-view.h					\
 	e-book-types.h					\

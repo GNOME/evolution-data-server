@@ -30,13 +30,13 @@
 #include "e-cal.h"
 #include "e-cal-view.h"
 #include "e-cal-view-private.h"
-#include "e-gdbus-egdbuscalview.h"
+#include "e-gdbus-cal-view.h"
 
 G_DEFINE_TYPE (ECalView, e_cal_view, G_TYPE_OBJECT);
 
 /* Private part of the ECalView structure */
 struct _ECalViewPrivate {
-	EGdbusCalView *gdbus_calview;
+	GDBusProxy *gdbus_calview;
 	ECal *client;
 };
 
@@ -155,7 +155,7 @@ objects_removed_cb (EGdbusCalView *gdbus_calview, const gchar * const *uids, ECa
 }
 
 static void
-progress_cb (EGdbusCalView *gdbus_calview, const gchar *message, guint percent, ECalView *view)
+progress_cb (EGdbusCalView *gdbus_calview, guint percent, const gchar *message, ECalView *view)
 {
 	g_return_if_fail (E_IS_CAL_VIEW (view));
 
@@ -163,15 +163,22 @@ progress_cb (EGdbusCalView *gdbus_calview, const gchar *message, guint percent, 
 }
 
 static void
-done_cb (EGdbusCalView *gdbus_calview, /* ECalendarStatus */ guint status, const gchar *message, ECalView *view)
+complete_cb (EGdbusCalView *gdbus_calview, const gchar * const *arg_error, ECalView *view)
 {
+	GError *error = NULL;
+
 	g_return_if_fail (E_IS_CAL_VIEW (view));
 
+	g_return_if_fail (e_gdbus_templates_decode_error (arg_error, &error));
+
 	#ifndef E_CAL_DISABLE_DEPRECATED
-	g_signal_emit (G_OBJECT (view), signals[VIEW_DONE], 0, status);
+	g_signal_emit (G_OBJECT (view), signals[VIEW_DONE], 0, error ? error->code : 0);
 	#endif
 
-	g_signal_emit (G_OBJECT (view), signals[VIEW_COMPLETE], 0, status, message);
+	g_signal_emit (G_OBJECT (view), signals[VIEW_COMPLETE], 0, error ? error->code : 0, error ? error->message : "");
+
+	if (error)
+		g_error_free (error);
 }
 
 /* Object initialization function for the calendar view */
@@ -201,7 +208,7 @@ e_cal_view_set_property (GObject *object, guint property_id, const GValue *value
 		g_signal_connect (priv->gdbus_calview, "objects-modified", G_CALLBACK (objects_modified_cb), view);
 		g_signal_connect (priv->gdbus_calview, "objects-removed", G_CALLBACK (objects_removed_cb), view);
 		g_signal_connect (priv->gdbus_calview, "progress", G_CALLBACK (progress_cb), view);
-		g_signal_connect (priv->gdbus_calview, "done", G_CALLBACK (done_cb), view);
+		g_signal_connect (priv->gdbus_calview, "complete", G_CALLBACK (complete_cb), view);
 		break;
 	case PROP_CLIENT:
 		priv->client = E_CAL (g_value_dup_object (value));
@@ -261,7 +268,10 @@ e_cal_view_finalize (GObject *object)
 		}
 	}
 
-	g_object_unref (priv->client);
+	if (priv->client) {
+		g_object_unref (priv->client);
+		priv->client = NULL;
+	}
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_view_parent_class)->finalize (object);
@@ -358,7 +368,7 @@ e_cal_view_class_init (ECalViewClass *klass)
 }
 
 /**
- * _e_cal_view_new:
+ * _e_cal_view_new_for_ecal:
  * @client: An #ECal object.
  * @gdbuc_calview: The GDBus object for the view.
  *
@@ -366,14 +376,16 @@ e_cal_view_class_init (ECalViewClass *klass)
  * calendar server.
  *
  * Returns: A newly-created view object, or NULL if the request failed.
+ *
+ * Deprecated: 3.2: Use #ECalClientView
  **/
 ECalView *
-_e_cal_view_new (ECal *client, EGdbusCalView *gdbus_calview)
+_e_cal_view_new (ECal *ecal, EGdbusCalView *gdbus_calview)
 {
 	ECalView *view;
 
 	view = g_object_new (E_TYPE_CAL_VIEW,
-		"client", client,
+		"client", ecal,
 		"view", gdbus_calview,
 		NULL);
 
@@ -389,6 +401,8 @@ _e_cal_view_new (ECal *client, EGdbusCalView *gdbus_calview)
  * Returns: the associated client.
  *
  * Since: 2.22
+ *
+ * Deprecated: 3.2: Use #ECalClientView
  */
 ECal *
 e_cal_view_get_client (ECalView *view)
@@ -405,6 +419,8 @@ e_cal_view_get_client (ECalView *view)
  * Starts a live query to the calendar/tasks backend.
  *
  * Since: 2.22
+ *
+ * Deprecated: 3.2: Use #ECalClientView
  */
 void
 e_cal_view_start (ECalView *view)
@@ -441,6 +457,8 @@ e_cal_view_start (ECalView *view)
  * Stops a live query to the calendar/tasks backend.
  *
  * Since: 2.32
+ *
+ * Deprecated: 3.2: Use #ECalClientView
  */
 void
 e_cal_view_stop (ECalView *view)

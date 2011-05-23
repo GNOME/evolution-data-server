@@ -55,16 +55,13 @@ typedef enum {
 GQuark e_data_cal_factory_error_quark (void);
 #define E_DATA_CAL_FACTORY_ERROR e_data_cal_factory_error_quark ()
 
-GType       e_data_cal_factory_get_type        (void);
+GType	e_data_cal_factory_get_type        (void);
 
-void        e_data_cal_factory_register_backend  (EDataCalFactory *factory,
-						  ECalBackendFactory *backend_factory);
-
-void	    e_data_cal_factory_register_backends    (EDataCalFactory    *factory);
-
-gint         e_data_cal_factory_get_n_backends       (EDataCalFactory *factory);
-void        e_data_cal_factory_dump_active_backends (EDataCalFactory *factory);
-void        e_data_cal_factory_set_backend_mode (EDataCalFactory *factory, gint mode);
+void	e_data_cal_factory_register_backend	(EDataCalFactory *factory, ECalBackendFactory *backend_factory);
+void	e_data_cal_factory_register_backends	(EDataCalFactory *factory);
+gint	e_data_cal_factory_get_n_backends	(EDataCalFactory *factory);
+void	e_data_cal_factory_dump_active_backends	(EDataCalFactory *factory);
+void	e_data_cal_factory_set_backend_online	(EDataCalFactory *factory, gboolean is_online);
 
 G_END_DECLS
 

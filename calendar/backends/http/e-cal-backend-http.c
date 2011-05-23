@@ -54,17 +54,10 @@ struct _ECalBackendHttpPrivate {
 	gchar *uri;
 
 	/* Local/remote mode */
-	CalMode mode;
+	gboolean is_online;
 
 	/* The file cache */
 	ECalBackendStore *store;
-
-	/* The calendar's default timezone, used for resolving DATE and
-	   floating DATE-TIME values. */
-	icaltimezone *default_zone;
-
-	/* The list of live queries */
-	GList *queries;
 
 	/* Soup handles for remote file */
 	SoupSession *soup_session;
@@ -75,9 +68,9 @@ struct _ECalBackendHttpPrivate {
 
 	/* Flags */
 	gboolean opened;
+	gboolean requires_auth;
 
-	gchar *username;
-	gchar *password;
+	ECredentials *credentials;
 };
 
 
@@ -87,7 +80,7 @@ struct _ECalBackendHttpPrivate {
 static void e_cal_backend_http_dispose (GObject *object);
 static void e_cal_backend_http_finalize (GObject *object);
 static gboolean begin_retrieval_cb (ECalBackendHttp *cbhttp);
-static void e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj, GError **perror);
+static void e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **perror);
 
 static ECalBackendSyncClass *parent_class;
 
@@ -103,10 +96,8 @@ e_cal_backend_http_dispose (GObject *object)
 	cbhttp = E_CAL_BACKEND_HTTP (object);
 	priv = cbhttp->priv;
 
-	g_free (priv->username);
-	g_free (priv->password);
-	priv->username = NULL;
-	priv->password = NULL;
+	e_credentials_free (priv->credentials);
+	priv->credentials = NULL;
 
 	if (priv->source_changed_id) {
 		g_signal_handler_disconnect (e_cal_backend_get_source (E_CAL_BACKEND (cbhttp)), priv->source_changed_id);
@@ -142,11 +133,6 @@ e_cal_backend_http_finalize (GObject *object)
 		priv->uri = NULL;
 	}
 
-	if (priv->default_zone) {
-		icaltimezone_free (priv->default_zone, 1);
-		priv->default_zone = NULL;
-	}
-
 	if (priv->soup_session) {
 		soup_session_abort (priv->soup_session);
 		g_object_unref (priv->soup_session);
@@ -169,45 +155,36 @@ e_cal_backend_http_finalize (GObject *object)
 
 /* Calendar backend methods */
 
-/* Is_read_only handler for the file backend */
-static void
-e_cal_backend_http_is_read_only (ECalBackendSync *backend, EDataCal *cal, gboolean *read_only, GError **perror)
+static gboolean
+e_cal_backend_http_get_backend_property (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *prop_name, gchar **prop_value, GError **perror)
 {
-	*read_only = TRUE;
-}
+	gboolean processed = TRUE;
 
-/* Get_email_address handler for the file backend */
-static void
-e_cal_backend_http_get_cal_address (ECalBackendSync *backend, EDataCal *cal, gchar **address, GError **perror)
-{
-	/* A HTTP backend has no particular email address associated
-	 * with it (although that would be a useful feature some day).
-	 */
-	*address = NULL;
-}
+	g_return_val_if_fail (prop_name != NULL, FALSE);
+	g_return_val_if_fail (prop_value != NULL, FALSE);
 
-static void
-e_cal_backend_http_get_ldap_attribute (ECalBackendSync *backend, EDataCal *cal, gchar **attribute, GError **perror)
-{
-	*attribute = NULL;
-}
+	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
+		*prop_value = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS ","
+					CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED);
+	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
+		   g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
+		/* A HTTP backend has no particular email address associated
+		 * with it (although that would be a useful feature some day).
+		 */
+		*prop_value = NULL;
+	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT)) {
+		icalcomponent *icalcomp;
+		icalcomponent_kind kind;
 
-static void
-e_cal_backend_http_get_alarm_email_address (ECalBackendSync *backend, EDataCal *cal, gchar **address, GError **perror)
-{
-	/* A HTTP backend has no particular email address associated
-	 * with it (although that would be a useful feature some day).
-	 */
-	*address = NULL;
-}
+		kind = e_cal_backend_get_kind (E_CAL_BACKEND (backend));
+		icalcomp = e_cal_util_new_component (kind);
+		*prop_value = icalcomponent_as_ical_string_r (icalcomp);
+		icalcomponent_free (icalcomp);
+	} else {
+		processed = FALSE;
+	}
 
-static void
-e_cal_backend_http_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal, gchar **capabilities, GError **perror)
-{
-	*capabilities = g_strdup (
-		CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS ","
-		CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED
-		);
+	return processed;
 }
 
 static gchar *
@@ -346,6 +323,11 @@ put_component_to_store (ECalBackendHttp *cb,
 				changed = (sequence1 != NULL && sequence2 == NULL) ||
 					  (sequence1 == NULL && sequence2 != NULL) ||
 					  (sequence1 != NULL && sequence2 != NULL && *sequence1 != *sequence2);
+
+				if (sequence1)
+					e_cal_component_free_sequence (sequence1);
+				if (sequence2)
+					e_cal_component_free_sequence (sequence2);
 			}
 		}
 
@@ -356,7 +338,7 @@ put_component_to_store (ECalBackendHttp *cb,
 	}
 
 	e_cal_util_get_component_occur_times (comp, &time_start, &time_end,
-				   resolve_tzid, cb, priv->default_zone,
+				   resolve_tzid, cb, icaltimezone_get_utc_timezone (),
 				   e_cal_backend_get_kind (E_CAL_BACKEND (cb)));
 
 	e_cal_backend_store_put_component_with_time_range (priv->store, comp, time_start, time_end);
@@ -430,9 +412,14 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 	/* check status code */
 	if (!SOUP_STATUS_IS_SUCCESSFUL (msg->status_code)) {
 		if (!priv->opened) {
-			e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp),
-				msg->reason_phrase && *msg->reason_phrase ? msg->reason_phrase :
-				(soup_status_get_phrase (msg->status_code) ? soup_status_get_phrase (msg->status_code) : _("Unknown error")));
+			if (msg->status_code == 401 || msg->status_code == 403) {
+				priv->requires_auth = TRUE;
+				e_cal_backend_notify_auth_required (E_CAL_BACKEND (cbhttp), TRUE, priv->credentials);
+				return;
+			} else
+				e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp),
+					msg->reason_phrase && *msg->reason_phrase ? msg->reason_phrase :
+					(soup_status_get_phrase (msg->status_code) ? soup_status_get_phrase (msg->status_code) : _("Unknown error")));
 		}
 
 		empty_cache (cbhttp);
@@ -564,11 +551,10 @@ soup_authenticate (SoupSession  *session,
 	cbhttp = E_CAL_BACKEND_HTTP (data);
 	priv =  cbhttp->priv;
 
-	soup_auth_authenticate (auth, priv->username, priv->password);
-
-	priv->username = NULL;
-	priv->password = NULL;
-
+	if (!retrying && priv->credentials && e_credentials_has_key (priv->credentials, E_CREDENTIALS_KEY_USERNAME)) {
+		soup_auth_authenticate (auth, e_credentials_peek (priv->credentials, E_CREDENTIALS_KEY_USERNAME), e_credentials_peek (priv->credentials, E_CREDENTIALS_KEY_PASSWORD));
+		e_credentials_clear_peek (priv->credentials);
+	}
 }
 
 static gboolean reload_cb                  (ECalBackendHttp *cbhttp);
@@ -582,7 +568,7 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 
 	priv = cbhttp->priv;
 
-	if (priv->mode != CAL_MODE_REMOTE)
+	if (!priv->is_online)
 		return FALSE;
 
 	maybe_start_reload_timeout (cbhttp);
@@ -733,8 +719,7 @@ source_changed_cb (ESource *source, ECalBackendHttp *cbhttp)
 
 /* Open handler for the file backend */
 static void
-e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists,
-			 const gchar *username, const gchar *password, GError **perror)
+e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, gboolean only_if_exists, GError **perror)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -745,8 +730,10 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	priv = cbhttp->priv;
 
 	/* already opened, thus can skip all this initialization */
-	if (priv->opened)
+	if (priv->opened) {
+		e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
 		return;
+	}
 
 	source = e_cal_backend_get_source (E_CAL_BACKEND (backend));
 
@@ -758,16 +745,6 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	tmp = priv->uri;
 	priv->uri = NULL;
 	g_free (tmp);
-
-	if (e_source_get_property (source, "auth") != NULL) {
-		if ((username == NULL || password == NULL)) {
-			g_propagate_error (perror, EDC_ERROR (AuthenticationRequired));
-			return;
-		}
-
-		priv->username = g_strdup (username);
-		priv->password = g_strdup (password);
-	}
 
 	if (!priv->store) {
 		const gchar *cache_dir;
@@ -781,20 +758,58 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 
 		if (!priv->store) {
 			g_propagate_error (perror, EDC_ERROR_EX (OtherError, _("Could not create cache file")));
+			e_cal_backend_notify_opened (E_CAL_BACKEND (backend), EDC_ERROR_EX (OtherError, _("Could not create cache file")));
 			return;
-		}
-
-		if (priv->default_zone) {
-			e_cal_backend_store_set_default_timezone (priv->store, priv->default_zone);
 		}
 	}
 
-	if (priv->mode != CAL_MODE_LOCAL)
-		g_idle_add ((GSourceFunc) begin_retrieval_cb, cbhttp);
+	e_cal_backend_notify_readonly (E_CAL_BACKEND (backend), TRUE);
+	e_cal_backend_notify_online (E_CAL_BACKEND (backend), priv->is_online);
+
+	if (priv->is_online) {
+		if (e_source_get_property (source, "auth")) {
+			e_cal_backend_notify_auth_required (E_CAL_BACKEND (cbhttp), TRUE, priv->credentials);
+		} else if (priv->requires_auth && perror && !*perror) {
+			g_propagate_error (perror, EDC_ERROR (AuthenticationRequired));
+			e_cal_backend_notify_opened (E_CAL_BACKEND (backend), EDC_ERROR (AuthenticationRequired));
+		} else {
+			e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
+			g_idle_add ((GSourceFunc) begin_retrieval_cb, cbhttp);
+		}
+	} else {
+		e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
+	}
 }
 
 static void
-e_cal_backend_http_refresh (ECalBackendSync *backend, EDataCal *cal, GError **perror)
+e_cal_backend_http_authenticate_user (ECalBackendSync *backend, GCancellable *cancellable, ECredentials *credentials, GError **error)
+{
+	ECalBackendHttp        *cbhttp;
+	ECalBackendHttpPrivate *priv;
+
+	cbhttp = E_CAL_BACKEND_HTTP (backend);
+	priv  = cbhttp->priv;
+
+	if (priv->credentials && credentials && e_credentials_equal_keys (priv->credentials, credentials, E_CREDENTIALS_KEY_USERNAME, E_CREDENTIALS_KEY_PASSWORD, NULL)) {
+		g_propagate_error (error, EDC_ERROR (AuthenticationRequired));
+		return;
+	}
+
+	e_credentials_free (priv->credentials);
+	priv->credentials = NULL;
+
+	if (!credentials || !e_credentials_has_key (credentials, E_CREDENTIALS_KEY_USERNAME)) {
+		g_propagate_error (error, EDC_ERROR (AuthenticationRequired));
+		return;
+	}
+
+	priv->credentials = e_credentials_new_clone (credentials);
+
+	g_idle_add ((GSourceFunc) begin_retrieval_cb, cbhttp);
+}
+
+static void
+e_cal_backend_http_refresh (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, GError **perror)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -815,7 +830,7 @@ e_cal_backend_http_refresh (ECalBackendSync *backend, EDataCal *cal, GError **pe
 }
 
 static void
-e_cal_backend_http_remove (ECalBackendSync *backend, EDataCal *cal, GError **perror)
+e_cal_backend_http_remove (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, GError **perror)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -829,106 +844,39 @@ e_cal_backend_http_remove (ECalBackendSync *backend, EDataCal *cal, GError **per
 	e_cal_backend_store_remove (priv->store);
 }
 
-/* is_loaded handler for the file backend */
-static gboolean
-e_cal_backend_http_is_loaded (ECalBackend *backend)
-{
-	ECalBackendHttp *cbhttp;
-	ECalBackendHttpPrivate *priv;
-
-	cbhttp = E_CAL_BACKEND_HTTP (backend);
-	priv = cbhttp->priv;
-
-	if (!priv->store)
-		return FALSE;
-
-	return TRUE;
-}
-
-/* is_remote handler for the http backend */
-static CalMode
-e_cal_backend_http_get_mode (ECalBackend *backend)
-{
-	ECalBackendHttp *cbhttp;
-	ECalBackendHttpPrivate *priv;
-
-	cbhttp = E_CAL_BACKEND_HTTP (backend);
-	priv = cbhttp->priv;
-
-	return priv->mode;
-}
-
 /* Set_mode handler for the http backend */
 static void
-e_cal_backend_http_set_mode (ECalBackend *backend, CalMode mode)
+e_cal_backend_http_set_online (ECalBackend *backend, gboolean is_online)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
-	EDataCalMode set_mode;
 	gboolean loaded;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
-	loaded = e_cal_backend_http_is_loaded (backend);
+	loaded = e_cal_backend_is_opened (backend);
 
-	if (priv->mode != mode) {
-		switch (mode) {
-			case CAL_MODE_LOCAL:
-				priv->mode = mode;
-				set_mode = cal_mode_to_corba (mode);
-				if (loaded && priv->reload_timeout_id) {
-					g_source_remove (priv->reload_timeout_id);
-					priv->reload_timeout_id = 0;
-				}
-				break;
-			case CAL_MODE_REMOTE:
-			case CAL_MODE_ANY:
-				priv->mode = mode;
-				set_mode = cal_mode_to_corba (mode);
-				if (loaded)
-					g_idle_add ((GSourceFunc) begin_retrieval_cb, backend);
-				break;
-
-				priv->mode = CAL_MODE_REMOTE;
-				set_mode = Remote;
-				break;
-			default:
-				set_mode = AnyMode;
-				break;
+	if ((priv->is_online ? 1 : 0) != (is_online ? 1 : 0)) {
+		priv->is_online = is_online;
+		if (!priv->is_online) {
+			if (loaded && priv->reload_timeout_id) {
+				g_source_remove (priv->reload_timeout_id);
+				priv->reload_timeout_id = 0;
+			}
+		} else {
+			if (loaded)
+				g_idle_add ((GSourceFunc) begin_retrieval_cb, backend);
 		}
-	} else {
-		set_mode = cal_mode_to_corba (priv->mode);
 	}
 
-	if (loaded) {
-
-		if (set_mode == AnyMode)
-			e_cal_backend_notify_mode (backend,
-						   ModeNotSupported,
-						   cal_mode_to_corba (priv->mode));
-		else
-			e_cal_backend_notify_mode (backend,
-						   ModeSet,
-						   set_mode);
-	}
-}
-
-static void
-e_cal_backend_http_get_default_object (ECalBackendSync *backend, EDataCal *cal, gchar **object, GError **perror)
-{
-	icalcomponent *icalcomp;
-	icalcomponent_kind kind;
-
-	kind = e_cal_backend_get_kind (E_CAL_BACKEND (backend));
-	icalcomp = e_cal_util_new_component (kind);
-	*object = icalcomponent_as_ical_string_r (icalcomp);
-	icalcomponent_free (icalcomp);
+	if (loaded)
+		e_cal_backend_notify_online (backend, priv->is_online);
 }
 
 /* Get_object_component handler for the http backend */
 static void
-e_cal_backend_http_get_object (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, gchar **object, GError **error)
+e_cal_backend_http_get_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, gchar **object, GError **error)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -956,7 +904,7 @@ e_cal_backend_http_get_object (ECalBackendSync *backend, EDataCal *cal, const gc
 
 /* Add_timezone handler for the file backend */
 static void
-e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj, GError **error)
+e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **error)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -987,40 +935,9 @@ e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 	e_cal_backend_store_put_timezone (priv->store, zone);
 }
 
-static void
-e_cal_backend_http_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj, GError **error)
-{
-	icalcomponent *tz_comp;
-	ECalBackendHttp *cbhttp;
-	ECalBackendHttpPrivate *priv;
-	icaltimezone *zone;
-
-	cbhttp = (ECalBackendHttp *) backend;
-
-	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_HTTP (cbhttp), InvalidArg);
-	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
-
-	priv = cbhttp->priv;
-
-	tz_comp = icalparser_parse_string (tzobj);
-	if (!tz_comp) {
-		g_propagate_error (error, EDC_ERROR (InvalidObject));
-		return;
-	}
-
-	zone = icaltimezone_new ();
-	icaltimezone_set_component (zone, tz_comp);
-
-	if (priv->default_zone)
-		icaltimezone_free (priv->default_zone, 1);
-
-	/* Set the default timezone to it. */
-	priv->default_zone = zone;
-}
-
 /* Get_objects_in_range handler for the file backend */
 static void
-e_cal_backend_http_get_object_list (ECalBackendSync *backend, EDataCal *cal, const gchar *sexp, GList **objects, GError **perror)
+e_cal_backend_http_get_object_list (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *sexp, GSList **objects, GError **perror)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -1051,7 +968,7 @@ e_cal_backend_http_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 
 	for (l = components; l != NULL; l = g_slist_next (l)) {
 		if (e_cal_backend_sexp_match_comp (cbsexp, E_CAL_COMPONENT (l->data), E_CAL_BACKEND (backend))) {
-			*objects = g_list_append (*objects, e_cal_component_get_as_string (l->data));
+			*objects = g_slist_append (*objects, e_cal_component_get_as_string (l->data));
 		}
 	}
 
@@ -1060,14 +977,13 @@ e_cal_backend_http_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
 	g_object_unref (cbsexp);
 }
 
-/* get_query handler for the file backend */
 static void
-e_cal_backend_http_start_query (ECalBackend *backend, EDataCalView *query)
+e_cal_backend_http_start_view (ECalBackend *backend, EDataCalView *query)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
 	GSList *components, *l;
-	GList *objects = NULL;
+	GSList *objects = NULL;
 	ECalBackendSExp *cbsexp;
 	time_t occur_start = -1, occur_end = -1;
 	gboolean prunning_by_time;
@@ -1079,7 +995,7 @@ e_cal_backend_http_start_query (ECalBackend *backend, EDataCalView *query)
 
 	if (!priv->store) {
 		GError *error = EDC_ERROR (NoSuchCal);
-		e_data_cal_view_notify_done (query, error);
+		e_data_cal_view_notify_complete (query, error);
 		g_error_free (error);
 		return;
 	}
@@ -1098,19 +1014,19 @@ e_cal_backend_http_start_query (ECalBackend *backend, EDataCalView *query)
 
 	for (l = components; l != NULL; l = g_slist_next (l)) {
 		if (e_cal_backend_sexp_match_comp (cbsexp, E_CAL_COMPONENT (l->data), E_CAL_BACKEND (backend))) {
-			objects = g_list_append (objects, e_cal_component_get_as_string (l->data));
+			objects = g_slist_append (objects, e_cal_component_get_as_string (l->data));
 		}
 	}
 
-	e_data_cal_view_notify_objects_added (query, (const GList *) objects);
+	e_data_cal_view_notify_objects_added (query, objects);
 
 	g_slist_foreach (components, (GFunc) g_object_unref, NULL);
 	g_slist_free (components);
-	g_list_foreach (objects, (GFunc) g_free, NULL);
-	g_list_free (objects);
+	g_slist_foreach (objects, (GFunc) g_free, NULL);
+	g_slist_free (objects);
 	g_object_unref (cbsexp);
 
-	e_data_cal_view_notify_done (query, NULL /* Success */);
+	e_data_cal_view_notify_complete (query, NULL /* Success */);
 }
 
 /***** static icaltimezone *
@@ -1236,7 +1152,7 @@ create_user_free_busy (ECalBackendHttp *cbhttp, const gchar *address, const gcha
 						vfb,
 						resolve_tzid,
 						vcalendar_comp,
-						(icaltimezone *) e_cal_backend_store_get_default_timezone (store));
+						icaltimezone_get_utc_timezone ());
 	}
 	g_object_unref (obj_sexp);
 
@@ -1245,8 +1161,8 @@ create_user_free_busy (ECalBackendHttp *cbhttp, const gchar *address, const gcha
 
 /* Get_free_busy handler for the file backend */
 static void
-e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList *users,
-				time_t start, time_t end, GList **freebusy, GError **error)
+e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const GSList *users,
+				time_t start, time_t end, GSList **freebusy, GError **error)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -1269,19 +1185,19 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 		if (e_cal_backend_mail_account_get_default (&address, &name)) {
 			vfb = create_user_free_busy (cbhttp, address, name, start, end);
 			calobj = icalcomponent_as_ical_string_r (vfb);
-                        *freebusy = g_list_append (*freebusy, calobj);
+                        *freebusy = g_slist_append (*freebusy, calobj);
 			icalcomponent_free (vfb);
 			g_free (address);
 			g_free (name);
 		}
 	} else {
-		GList *l;
+		const GSList *l;
 		for (l = users; l != NULL; l = l->next ) {
 			address = l->data;
 			if (e_cal_backend_mail_account_is_valid (address, &name)) {
 				vfb = create_user_free_busy (cbhttp, address, name, start, end);
 				calobj = icalcomponent_as_ical_string_r (vfb);
-                                *freebusy = g_list_append (*freebusy, calobj);
+                                *freebusy = g_slist_append (*freebusy, calobj);
 				icalcomponent_free (vfb);
 				g_free (name);
 			}
@@ -1289,29 +1205,14 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 	}
 }
 
-/* Get_changes handler for the file backend */
 static void
-e_cal_backend_http_get_changes (ECalBackendSync *backend, EDataCal *cal, const gchar *change_id,
-				GList **adds, GList **modifies, GList **deletes, GError **perror)
-{
-	g_propagate_error (perror, EDC_ERROR (NotSupported));
-}
-
-/* Discard_alarm handler for the file backend */
-static void
-e_cal_backend_http_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *auid, GError **perror)
-{
-	/* FIXME */
-}
-
-static void
-e_cal_backend_http_create_object (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid, GError **perror)
+e_cal_backend_http_create_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, gchar **uid, gchar **new_calobj, GError **perror)
 {
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
 static void
-e_cal_backend_http_modify_object (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj,
+e_cal_backend_http_modify_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj,
 				CalObjModType mod, gchar **old_object, gchar **new_object, GError **perror)
 {
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
@@ -1319,7 +1220,7 @@ e_cal_backend_http_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 
 /* Remove_object handler for the file backend */
 static void
-e_cal_backend_http_remove_object (ECalBackendSync *backend, EDataCal *cal,
+e_cal_backend_http_remove_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable,
 				const gchar *uid, const gchar *rid,
 				CalObjModType mod, gchar **old_object,
 				gchar **object, GError **perror)
@@ -1331,34 +1232,19 @@ e_cal_backend_http_remove_object (ECalBackendSync *backend, EDataCal *cal,
 
 /* Update_objects handler for the file backend. */
 static void
-e_cal_backend_http_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GError **perror)
+e_cal_backend_http_receive_objects (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GError **perror)
 {
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
 static void
-e_cal_backend_http_send_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GList **users,
+e_cal_backend_http_send_objects (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GSList **users,
 				 gchar **modified_calobj, GError **perror)
 {
 	*users = NULL;
 	*modified_calobj = NULL;
 
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
-}
-
-static icaltimezone *
-e_cal_backend_http_internal_get_default_timezone (ECalBackend *backend)
-{
-	ECalBackendHttp *cbhttp;
-	ECalBackendHttpPrivate *priv;
-
-	cbhttp = E_CAL_BACKEND_HTTP (backend);
-	priv = cbhttp->priv;
-
-	if (!priv->store)
-		return NULL;
-
-	return NULL;
 }
 
 static icaltimezone *
@@ -1419,33 +1305,22 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 	object_class->dispose = e_cal_backend_http_dispose;
 	object_class->finalize = e_cal_backend_http_finalize;
 
-	sync_class->is_read_only_sync = e_cal_backend_http_is_read_only;
-	sync_class->get_cal_address_sync = e_cal_backend_http_get_cal_address;
-	sync_class->get_alarm_email_address_sync = e_cal_backend_http_get_alarm_email_address;
-	sync_class->get_ldap_attribute_sync = e_cal_backend_http_get_ldap_attribute;
-	sync_class->get_static_capabilities_sync = e_cal_backend_http_get_static_capabilities;
-	sync_class->open_sync = e_cal_backend_http_open;
-	sync_class->refresh_sync = e_cal_backend_http_refresh;
-	sync_class->remove_sync = e_cal_backend_http_remove;
-	sync_class->create_object_sync = e_cal_backend_http_create_object;
-	sync_class->modify_object_sync = e_cal_backend_http_modify_object;
-	sync_class->remove_object_sync = e_cal_backend_http_remove_object;
-	sync_class->discard_alarm_sync = e_cal_backend_http_discard_alarm;
-	sync_class->receive_objects_sync = e_cal_backend_http_receive_objects;
-	sync_class->send_objects_sync = e_cal_backend_http_send_objects;
-	sync_class->get_default_object_sync = e_cal_backend_http_get_default_object;
-	sync_class->get_object_sync = e_cal_backend_http_get_object;
-	sync_class->get_object_list_sync = e_cal_backend_http_get_object_list;
-	sync_class->add_timezone_sync = e_cal_backend_http_add_timezone;
-	sync_class->set_default_zone_sync = e_cal_backend_http_set_default_zone;
-	sync_class->get_freebusy_sync = e_cal_backend_http_get_free_busy;
-	sync_class->get_changes_sync = e_cal_backend_http_get_changes;
+	sync_class->get_backend_property_sync	= e_cal_backend_http_get_backend_property;
+	sync_class->open_sync			= e_cal_backend_http_open;
+	sync_class->authenticate_user_sync	= e_cal_backend_http_authenticate_user;
+	sync_class->refresh_sync		= e_cal_backend_http_refresh;
+	sync_class->remove_sync			= e_cal_backend_http_remove;
+	sync_class->create_object_sync		= e_cal_backend_http_create_object;
+	sync_class->modify_object_sync		= e_cal_backend_http_modify_object;
+	sync_class->remove_object_sync		= e_cal_backend_http_remove_object;
+	sync_class->receive_objects_sync	= e_cal_backend_http_receive_objects;
+	sync_class->send_objects_sync		= e_cal_backend_http_send_objects;
+	sync_class->get_object_sync		= e_cal_backend_http_get_object;
+	sync_class->get_object_list_sync	= e_cal_backend_http_get_object_list;
+	sync_class->add_timezone_sync		= e_cal_backend_http_add_timezone;
+	sync_class->get_free_busy_sync		= e_cal_backend_http_get_free_busy;
 
-	backend_class->is_loaded = e_cal_backend_http_is_loaded;
-	backend_class->start_query = e_cal_backend_http_start_query;
-	backend_class->get_mode = e_cal_backend_http_get_mode;
-	backend_class->set_mode = e_cal_backend_http_set_mode;
-
-	backend_class->internal_get_default_timezone = e_cal_backend_http_internal_get_default_timezone;
-	backend_class->internal_get_timezone = e_cal_backend_http_internal_get_timezone;
+	backend_class->start_view		= e_cal_backend_http_start_view;
+	backend_class->set_online		= e_cal_backend_http_set_online;
+	backend_class->internal_get_timezone	= e_cal_backend_http_internal_get_timezone;
 }

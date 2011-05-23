@@ -74,7 +74,7 @@ typedef enum {
 struct _ECalBackendCalDAVPrivate {
 
 	/* online/offline */
-	CalMode mode;
+	gboolean is_online;
 
 	/* The local disk cache */
 	ECalBackendStore *store;
@@ -113,14 +113,11 @@ struct _ECalBackendCalDAVPrivate {
 	gchar *uri;
 
 	/* Authentication info */
-	gchar *username;
-	gchar *password;
+	ECredentials *credentials;
 	gboolean need_auth;
 
 	/* object cleanup */
 	gboolean disposed;
-
-	icaltimezone *default_zone;
 
 	/* support for 'getctag' extension */
 	gboolean ctag_supported;
@@ -302,7 +299,6 @@ put_component_to_store (ECalBackendCalDAV *cbdav,
 
 static ECalBackendSyncClass *parent_class = NULL;
 
-static icaltimezone *caldav_internal_get_default_timezone (ECalBackend *backend);
 static icaltimezone *caldav_internal_get_timezone (ECalBackend *backend, const gchar *tzid);
 static void caldav_source_changed_cb (ESource *source, ECalBackendCalDAV *cbdav);
 
@@ -571,7 +567,7 @@ check_state (ECalBackendCalDAV *cbdav, gboolean *online, GError **perror)
 		return FALSE;
 	}
 
-	if (priv->mode == CAL_MODE_LOCAL) {
+	if (!priv->is_online) {
 
 		if (!priv->do_offline) {
 			g_propagate_error (perror, EDC_ERROR (RepositoryOffline));
@@ -906,8 +902,10 @@ soup_authenticate (SoupSession  *session,
 	priv = cbdav->priv;
 
 	/* do not send same password twice, but keep it for later use */
-	if (!retrying)
-		soup_auth_authenticate (auth, priv->username, priv->password);
+	if (!retrying && priv->credentials && e_credentials_has_key (priv->credentials, E_CREDENTIALS_KEY_USERNAME)) {
+		soup_auth_authenticate (auth, e_credentials_peek (priv->credentials, E_CREDENTIALS_KEY_USERNAME), e_credentials_peek (priv->credentials, E_CREDENTIALS_KEY_PASSWORD));
+		e_credentials_clear_peek (priv->credentials);
+	}
 }
 
 /* ************************************************************************* */
@@ -2106,6 +2104,7 @@ caldav_synch_slave_loop (gpointer data)
 			}
 
 			e_cal_backend_notify_readonly (E_CAL_BACKEND (cbdav), priv->read_only);
+			e_cal_backend_notify_online (E_CAL_BACKEND (cbdav), priv->is_online);
 		}
 
 		if (priv->opened) {
@@ -2187,8 +2186,8 @@ get_usermail (ECalBackend *backend)
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = cbdav->priv;
 
-	if (priv && priv->is_google && priv->username) {
-		res = maybe_append_email_domain (priv->username, "@gmail.com");
+	if (priv && priv->is_google && priv->credentials) {
+		res = maybe_append_email_domain (e_credentials_peek (priv->credentials, E_CREDENTIALS_KEY_USERNAME), "@gmail.com");
 	}
 
 	return res;
@@ -2197,82 +2196,69 @@ get_usermail (ECalBackend *backend)
 /* ************************************************************************* */
 /* ********** ECalBackendSync virtual function implementation *************  */
 
-static void
-caldav_is_read_only (ECalBackendSync *backend,
-		     EDataCal        *cal,
-		     gboolean        *read_only,
-		     GError         **perror)
+static gboolean
+caldav_get_backend_property (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *prop_name, gchar **prop_value, GError **perror)
 {
-	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
+	gboolean processed = TRUE;
 
-	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = cbdav->priv;
+	g_return_val_if_fail (prop_name != NULL, FALSE);
+	g_return_val_if_fail (prop_value != NULL, FALSE);
 
-	/* no write support in offline mode yet! */
-	if (priv->mode == CAL_MODE_LOCAL) {
-		*read_only = TRUE;
+	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
+		ESource *source;
+		GString *caps;
+		gchar *usermail;
+
+		caps = g_string_new (CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
+				     CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
+				     CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED);
+
+		usermail = get_usermail (E_CAL_BACKEND (backend));
+		if (!usermail || !*usermail)
+			g_string_append (caps, "," CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS);
+		g_free (usermail);
+
+		source = e_cal_backend_get_source (E_CAL_BACKEND (backend));
+		if (source) {
+			const gchar *prop = e_source_get_property (source, "autoschedule");
+
+			if (prop && g_str_equal (prop, "1"))
+				g_string_append (caps, "," CAL_STATIC_CAPABILITY_CREATE_MESSAGES
+						       "," CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
+		}
+
+		*prop_value = g_string_free (caps, FALSE);
+	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
+		   g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
+		*prop_value = get_usermail (E_CAL_BACKEND (backend));
+	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT)) {
+		ECalComponent *comp;
+
+		comp = e_cal_component_new ();
+
+		switch (e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
+		case ICAL_VEVENT_COMPONENT:
+			e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
+			break;
+		case ICAL_VTODO_COMPONENT:
+			e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
+			break;
+		case ICAL_VJOURNAL_COMPONENT:
+			e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_JOURNAL);
+			break;
+		default:
+			g_object_unref (comp);
+			g_propagate_error (perror, EDC_ERROR (ObjectNotFound));
+			return TRUE;
+		}
+
+		*prop_value = e_cal_component_get_as_string (comp);
+		g_object_unref (comp);
 	} else {
-		*read_only = priv->read_only;
-	}
-}
-
-static void
-caldav_get_cal_address (ECalBackendSync  *backend,
-			EDataCal         *cal,
-			gchar           **address,
-			GError          **perror)
-{
-	*address = get_usermail (E_CAL_BACKEND (backend));
-}
-
-static void
-caldav_get_alarm_email_address (ECalBackendSync  *backend,
-				EDataCal         *cal,
-				gchar           **address,
-				GError          **perror)
-{
-	*address = get_usermail (E_CAL_BACKEND (backend));
-}
-
-static void
-caldav_get_ldap_attribute (ECalBackendSync  *backend,
-			   EDataCal         *cal,
-			   gchar           **attribute,
-			   GError          **perror)
-{
-	*attribute = NULL;
-}
-
-static void
-caldav_get_static_capabilities (ECalBackendSync  *backend,
-				EDataCal         *cal,
-				gchar           **capabilities,
-				GError          **perror)
-{
-	ESource *source;
-	GString *caps;
-	gchar *usermail;
-
-	caps = g_string_new (CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
-			     CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
-			     CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED);
-
-	usermail = get_usermail (E_CAL_BACKEND (backend));
-	if (!usermail || !*usermail)
-		g_string_append (caps, "," CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS);
-	g_free (usermail);
-
-	source = e_cal_backend_get_source (E_CAL_BACKEND (backend));
-	if (source) {
-		const gchar *prop = e_source_get_property (source, "autoschedule");
-
-		if (prop && g_str_equal (prop, "1"))
-			g_string_append (caps, "," CAL_STATIC_CAPABILITY_CREATE_MESSAGES
-					       "," CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
+		processed = FALSE;
 	}
 
-	*capabilities = g_string_free (caps, FALSE);
+	return processed;
 }
 
 static gboolean
@@ -2431,12 +2417,40 @@ proxy_settings_changed (EProxy *proxy, gpointer user_data)
 }
 
 static void
-caldav_do_open (ECalBackendSync *backend,
-		EDataCal        *cal,
-		gboolean         only_if_exists,
-		const gchar      *username,
-		const gchar      *password,
-		GError          **perror)
+open_calendar (ECalBackendCalDAV *cbdav, GError **error)
+{
+	gboolean server_unreachable = FALSE;
+	ECalBackendCalDAVPrivate *priv;
+	GError *local_error = NULL;
+
+	g_return_if_fail (cbdav != NULL);
+
+	priv  = cbdav->priv;
+
+	/* set forward proxy */
+	proxy_settings_changed (priv->proxy, priv);
+
+	if (caldav_server_open_calendar (cbdav, &server_unreachable, &local_error)) {
+		priv->slave_cmd = SLAVE_SHOULD_WORK;
+		g_cond_signal (priv->cond);
+
+		priv->is_google = is_google_uri (priv->uri);
+	} else if (server_unreachable) {
+		priv->opened = FALSE;
+		priv->read_only = TRUE;
+		if (local_error) {
+			gchar *msg = g_strdup_printf (_("Server is unreachable, calendar is opened in read-only mode.\nError message: %s"), local_error->message);
+			e_cal_backend_notify_error (E_CAL_BACKEND (cbdav), msg);
+			g_free (msg);
+			g_clear_error (&local_error);
+		}
+	} else if (local_error) {
+		g_propagate_error (error, local_error);
+	}
+}
+
+static void
+caldav_do_open (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, gboolean only_if_exists, GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -2454,20 +2468,7 @@ caldav_do_open (ECalBackendSync *backend,
 		return;
 	}
 
-	if (priv->need_auth) {
-		if ((username == NULL || password == NULL)) {
-			g_mutex_unlock (priv->busy_lock);
-			g_propagate_error (perror, EDC_ERROR (AuthenticationRequired));
-			return;
-		}
-
-		g_free (priv->username);
-		priv->username = g_strdup (username);
-		g_free (priv->password);
-		priv->password = g_strdup (password);
-	}
-
-	if (!priv->do_offline && priv->mode == CAL_MODE_LOCAL) {
+	if (!priv->do_offline && !priv->is_online) {
 		g_mutex_unlock (priv->busy_lock);
 		g_propagate_error (perror, EDC_ERROR (RepositoryOffline));
 		return;
@@ -2477,39 +2478,60 @@ caldav_do_open (ECalBackendSync *backend,
 	priv->opened = TRUE;
 	priv->is_google = FALSE;
 
-	if (priv->mode == CAL_MODE_REMOTE) {
-		gboolean server_unreachable = FALSE;
+	if (priv->is_online) {
 		GError *local_error = NULL;
 
-		/* set forward proxy */
-		proxy_settings_changed (priv->proxy, priv);
+		open_calendar (cbdav, &local_error);
 
-		if (caldav_server_open_calendar (cbdav, &server_unreachable, &local_error)) {
-			priv->slave_cmd = SLAVE_SHOULD_WORK;
-			g_cond_signal (priv->cond);
-
-			priv->is_google = is_google_uri (priv->uri);
-		} else if (server_unreachable) {
-			priv->opened = FALSE;
-			priv->read_only = TRUE;
-			if (local_error) {
-				gchar *msg = g_strdup_printf (_("Server is unreachable, calendar is opened in read-only mode.\nError message: %s"), local_error->message);
-				e_cal_backend_notify_error (E_CAL_BACKEND (backend), msg);
-				g_free (msg);
-				g_clear_error (&local_error);
-			}
+		if (g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationRequired) || g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationFailed)) {
+			g_clear_error (&local_error);
+			e_cal_backend_notify_auth_required (E_CAL_BACKEND (cbdav), TRUE, priv->credentials);
 		} else {
-			g_propagate_error (perror, local_error);
+			e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
 		}
+
+		if (local_error)
+			g_propagate_error (perror, local_error);
 	} else {
 		priv->read_only = TRUE;
+		e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
 	}
+
+	e_cal_backend_notify_readonly (E_CAL_BACKEND (backend), priv->read_only);
+	e_cal_backend_notify_online (E_CAL_BACKEND (backend), priv->is_online);
 
 	g_mutex_unlock (priv->busy_lock);
 }
 
 static void
-caldav_refresh (ECalBackendSync *backend, EDataCal *cal, GError **perror)
+caldav_authenticate_user (ECalBackendSync *backend, GCancellable *cancellable, ECredentials *credentials, GError **error)
+{
+	ECalBackendCalDAV        *cbdav;
+	ECalBackendCalDAVPrivate *priv;
+
+	cbdav = E_CAL_BACKEND_CALDAV (backend);
+	priv  = cbdav->priv;
+
+	g_mutex_lock (priv->busy_lock);
+
+	e_credentials_free (priv->credentials);
+	priv->credentials = NULL;
+
+	if (!credentials || !e_credentials_has_key (credentials, E_CREDENTIALS_KEY_USERNAME)) {
+		g_mutex_unlock (priv->busy_lock);
+		g_propagate_error (error, EDC_ERROR (AuthenticationRequired));
+		return;
+	}
+
+	priv->credentials = e_credentials_new_clone (credentials);
+
+	open_calendar (cbdav, error);
+
+	g_mutex_unlock (priv->busy_lock);
+}
+
+static void
+caldav_refresh (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -2536,9 +2558,7 @@ caldav_refresh (ECalBackendSync *backend, EDataCal *cal, GError **perror)
 }
 
 static void
-caldav_remove (ECalBackendSync *backend,
-	       EDataCal        *cal,
-	       GError         **perror)
+caldav_remove (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -3133,7 +3153,7 @@ static void
 sanitize_component (ECalBackend *cb, ECalComponent *comp)
 {
 	ECalComponentDateTime dt;
-	icaltimezone *zone, *default_zone;
+	icaltimezone *zone;
 
 	/* Check dtstart, dtend and due's timezone, and convert it to local
 	 * default timezone if the timezone is not in our builtin timezone
@@ -3142,9 +3162,8 @@ sanitize_component (ECalBackend *cb, ECalComponent *comp)
 	if (dt.value && dt.tzid) {
 		zone = caldav_internal_get_timezone (cb, dt.tzid);
 		if (!zone) {
-			default_zone = caldav_internal_get_default_timezone (cb);
 			g_free ((gchar *) dt.tzid);
-			dt.tzid = g_strdup (icaltimezone_get_tzid (default_zone));
+			dt.tzid = g_strdup ("UTC");
 			e_cal_component_set_dtstart (comp, &dt);
 		}
 	}
@@ -3154,9 +3173,8 @@ sanitize_component (ECalBackend *cb, ECalComponent *comp)
 	if (dt.value && dt.tzid) {
 		zone = caldav_internal_get_timezone (cb, dt.tzid);
 		if (!zone) {
-			default_zone = caldav_internal_get_default_timezone (cb);
 			g_free ((gchar *) dt.tzid);
-			dt.tzid = g_strdup (icaltimezone_get_tzid (default_zone));
+			dt.tzid = g_strdup ("UTC");
 			e_cal_component_set_dtend (comp, &dt);
 		}
 	}
@@ -3166,9 +3184,8 @@ sanitize_component (ECalBackend *cb, ECalComponent *comp)
 	if (dt.value && dt.tzid) {
 		zone = caldav_internal_get_timezone (cb, dt.tzid);
 		if (!zone) {
-			default_zone = caldav_internal_get_default_timezone (cb);
 			g_free ((gchar *) dt.tzid);
-			dt.tzid = g_strdup (icaltimezone_get_tzid (default_zone));
+			dt.tzid = g_strdup ("UTC");
 			e_cal_component_set_due (comp, &dt);
 		}
 	}
@@ -3312,7 +3329,7 @@ replace_master (ECalBackendCalDAV *cbdav, icalcomponent *old_comp, icalcomponent
 
 /* a busy_lock is supposed to be locked already, when calling this function */
 static void
-do_create_object (ECalBackendCalDAV *cbdav, gchar **calobj, gchar **uid, GError **perror)
+do_create_object (ECalBackendCalDAV *cbdav, const gchar *in_calobj, gchar **uid, gchar **new_calobj, GError **perror)
 {
 	ECalComponent            *comp;
 	gboolean                  online, did_put = FALSE;
@@ -3323,7 +3340,7 @@ do_create_object (ECalBackendCalDAV *cbdav, gchar **calobj, gchar **uid, GError 
 	if (!check_state (cbdav, &online, perror))
 		return;
 
-	comp = e_cal_component_new_from_string (*calobj);
+	comp = e_cal_component_new_from_string (in_calobj);
 
 	if (comp == NULL) {
 		g_propagate_error (perror, EDC_ERROR (InvalidObject));
@@ -3394,13 +3411,13 @@ do_create_object (ECalBackendCalDAV *cbdav, gchar **calobj, gchar **uid, GError 
 			icalcomponent *master = get_master_comp (cbdav, icalcomp);
 
 			if (!master)
-				*calobj = e_cal_component_get_as_string (comp);
+				*new_calobj = e_cal_component_get_as_string (comp);
 			else
-				*calobj = icalcomponent_as_ical_string_r (master);
+				*new_calobj = icalcomponent_as_ical_string_r (master);
 
 			icalcomponent_free (icalcomp);
 		} else {
-			*calobj = e_cal_component_get_as_string (comp);
+			*new_calobj = e_cal_component_get_as_string (comp);
 		}
 	}
 
@@ -3677,7 +3694,7 @@ do_remove_object (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid, 
 static void
 extract_objects (icalcomponent       *icomp,
 		 icalcomponent_kind   ekind,
-		 GList              **objects,
+		 GSList             **objects,
 		 GError             **error)
 {
 	icalcomponent         *scomp;
@@ -3689,7 +3706,7 @@ extract_objects (icalcomponent       *icomp,
 	kind = icalcomponent_isa (icomp);
 
 	if (kind == ekind) {
-		*objects = g_list_prepend (NULL, icomp);
+		*objects = g_slist_prepend (NULL, icomp);
 		return;
 	}
 
@@ -3704,7 +3721,7 @@ extract_objects (icalcomponent       *icomp,
 
 	while (scomp) {
 		/* Remove components from toplevel here */
-		*objects = g_list_prepend (*objects, scomp);
+		*objects = g_slist_prepend (*objects, scomp);
 		icalcomponent_remove_component (icomp, scomp);
 
 		scomp = icalcomponent_get_next_component (icomp, ekind);
@@ -3715,7 +3732,7 @@ static gboolean
 extract_timezones (ECalBackendCalDAV *cbdav, icalcomponent *icomp)
 {
 	ECalBackendCalDAVPrivate *priv;
-	GList *timezones = NULL, *iter;
+	GSList *timezones = NULL, *iter;
 	icaltimezone *zone;
 	GError *err = NULL;
 
@@ -3740,7 +3757,7 @@ extract_timezones (ECalBackendCalDAV *cbdav, icalcomponent *icomp)
 	}
 
 	icaltimezone_free (zone, TRUE);
-	g_list_free (timezones);
+	g_slist_free (timezones);
 
 	return TRUE;
 }
@@ -3812,7 +3829,7 @@ process_object (ECalBackendCalDAV   *cbdav,
 		} else if (!is_declined) {
 			gchar *new_object = new_obj_str;
 
-			do_create_object (cbdav, &new_object, NULL, &err);
+			do_create_object (cbdav, new_object, NULL, &new_object, &err);
 			if (!err) {
 				e_cal_backend_notify_object_created (backend, new_object);
 			}
@@ -3854,15 +3871,14 @@ process_object (ECalBackendCalDAV   *cbdav,
 }
 
 static void
-do_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GError **perror)
+do_receive_objects (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	icalcomponent            *icomp;
 	icalcomponent_kind        kind;
 	icalproperty_method       tmethod;
 	gboolean                  online;
-	GList                    *objects;
-	GList                    *iter;
+	GSList                   *objects, *iter;
 	GError *err = NULL;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
@@ -3913,7 +3929,7 @@ do_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj
 		g_object_unref (ecomp);
 	}
 
-	g_list_free (objects);
+	g_slist_free (objects);
 
 	icalcomponent_free (icomp);
 
@@ -3954,62 +3970,30 @@ _func_name _params							\
 }
 
 caldav_busy_stub (
-	caldav_create_object, (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid, GError **perror),
-	do_create_object, (cbdav, calobj, uid, perror))
+	caldav_create_object, (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *in_calobj, gchar **uid, gchar **new_calobj, GError **perror),
+	do_create_object, (cbdav, in_calobj, uid, new_calobj, perror))
 
 caldav_busy_stub (
-	caldav_modify_object, (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, CalObjModType mod, gchar **old_object, gchar **new_object, GError **perror),
+	caldav_modify_object, (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, CalObjModType mod, gchar **old_object, gchar **new_object, GError **perror),
 	do_modify_object, (cbdav, calobj, mod, old_object, new_object, perror))
 
 caldav_busy_stub (
-	caldav_remove_object, (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, CalObjModType mod, gchar **old_object, gchar **object, GError **perror),
+	caldav_remove_object, (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, CalObjModType mod, gchar **old_object, gchar **object, GError **perror),
 	do_remove_object, (cbdav, uid, rid, mod, old_object, object, perror))
 
 caldav_busy_stub (
-	caldav_receive_objects, (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GError **perror),
-	do_receive_objects, (backend, cal, calobj, perror))
+	caldav_receive_objects, (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GError **perror),
+	do_receive_objects, (backend, cal, cancellable, calobj, perror))
 
 static void
-caldav_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *auid, GError **perror)
-{
-}
-
-static void
-caldav_send_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GList **users, gchar **modified_calobj, GError **perror)
+caldav_send_objects (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GSList **users, gchar **modified_calobj, GError **perror)
 {
 	*users = NULL;
 	*modified_calobj = g_strdup (calobj);
 }
 
 static void
-caldav_get_default_object (ECalBackendSync *backend, EDataCal *cal, gchar **object, GError **perror)
-{
-	ECalComponent *comp;
-
-	comp = e_cal_component_new ();
-
-	switch (e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
-	case ICAL_VEVENT_COMPONENT:
-		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
-		break;
-	case ICAL_VTODO_COMPONENT:
-		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
-		break;
-	case ICAL_VJOURNAL_COMPONENT:
-		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_JOURNAL);
-		break;
-	default:
-		g_object_unref (comp);
-		g_propagate_error (perror, EDC_ERROR (ObjectNotFound));
-		return;
-	}
-
-	*object = e_cal_component_get_as_string (comp);
-	g_object_unref (comp);
-}
-
-static void
-caldav_get_object (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, gchar **object, GError **perror)
+caldav_get_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, gchar **object, GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	icalcomponent            *icalcomp;
@@ -4029,10 +4013,7 @@ caldav_get_object (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, co
 }
 
 static void
-caldav_add_timezone (ECalBackendSync *backend,
-		     EDataCal        *cal,
-		     const gchar      *tzobj,
-		     GError **error)
+caldav_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **error)
 {
 	icalcomponent *tz_comp;
 	ECalBackendCalDAV *cbdav;
@@ -4066,44 +4047,7 @@ caldav_add_timezone (ECalBackendSync *backend,
 }
 
 static void
-caldav_set_default_zone (ECalBackendSync *backend,
-			     EDataCal        *cal,
-			     const gchar      *tzobj,
-			     GError **error)
-{
-	icalcomponent *tz_comp;
-	ECalBackendCalDAV *cbdav;
-	ECalBackendCalDAVPrivate *priv;
-	icaltimezone *zone;
-
-	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_CALDAV (backend), InvalidArg);
-	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
-
-	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = cbdav->priv;
-
-	tz_comp = icalparser_parse_string (tzobj);
-	if (!tz_comp) {
-		g_propagate_error (error, EDC_ERROR (InvalidObject));
-		return;
-	}
-
-	zone = icaltimezone_new ();
-	icaltimezone_set_component (zone, tz_comp);
-
-	if (priv->default_zone != icaltimezone_get_utc_timezone ())
-		icaltimezone_free (priv->default_zone, 1);
-
-	/* Set the default timezone to it. */
-	priv->default_zone = zone;
-}
-
-static void
-caldav_get_object_list (ECalBackendSync  *backend,
-			EDataCal         *cal,
-			const gchar       *sexp_string,
-			GList           **objects,
-			GError **perror)
+caldav_get_object_list (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *sexp_string, GSList **objects, GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -4132,9 +4076,7 @@ caldav_get_object_list (ECalBackendSync  *backend,
 
 	*objects = NULL;
 
-	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (sexp,
-									    &occur_start,
-									    &occur_end);
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (sexp, &occur_start, &occur_end);
 
 	bkend = E_CAL_BACKEND (backend);
 
@@ -4149,7 +4091,7 @@ caldav_get_object_list (ECalBackendSync  *backend,
 
 		if (!do_search ||
 		    e_cal_backend_sexp_match_comp (sexp, comp, bkend)) {
-			*objects = g_list_prepend (*objects, e_cal_component_get_as_string (comp));
+			*objects = g_slist_prepend (*objects, e_cal_component_get_as_string (comp));
 		}
 
 		g_object_unref (comp);
@@ -4160,8 +4102,7 @@ caldav_get_object_list (ECalBackendSync  *backend,
 }
 
 static void
-caldav_start_query (ECalBackend  *backend,
-		    EDataCalView *query)
+caldav_start_view (ECalBackend *backend, EDataCalView *query)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -4211,17 +4152,11 @@ caldav_start_query (ECalBackend  *backend,
 	g_object_unref (sexp);
 	g_slist_free (list);
 
-	e_data_cal_view_notify_done (query, NULL /* Success */);
+	e_data_cal_view_notify_complete (query, NULL /* Success */);
 }
 
 static void
-caldav_get_free_busy (ECalBackendSync  *backend,
-		      EDataCal         *cal,
-		      GList            *users,
-		      time_t            start,
-		      time_t            end,
-		      GList           **freebusy,
-		      GError **error)
+caldav_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const GSList *users, time_t start, time_t end, GSList **freebusy, GError **error)
 {
 	ECalBackendCalDAV *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -4231,7 +4166,7 @@ caldav_get_free_busy (ECalBackendSync  *backend,
 	struct icaltimetype dtvalue;
 	icaltimezone *utc;
 	gchar *str, *usermail;
-	GList *u;
+	const GSList *u;
 	GSList *attendees = NULL, *to_free = NULL;
 	GError *err = NULL;
 
@@ -4283,10 +4218,10 @@ caldav_get_free_busy (ECalBackendSync  *backend,
 		usermail = NULL;
 	}
 
-	if (priv->username || usermail) {
+	if ((priv->credentials && e_credentials_has_key (priv->credentials, E_CREDENTIALS_KEY_USERNAME)) || usermail) {
 		ECalComponentOrganizer organizer = {NULL};
 
-		organizer.value = usermail ? usermail : priv->username;
+		organizer.value = usermail ? usermail : e_credentials_peek (priv->credentials, E_CREDENTIALS_KEY_USERNAME);
 		organizer.value = g_strconcat ("mailto:", organizer.value, NULL);
 
 		e_cal_component_set_organizer (comp, &organizer);
@@ -4361,7 +4296,7 @@ caldav_get_free_busy (ECalBackendSync  *backend,
 
 					tmp = xp_object_get_string (xpath_eval (xpctx, "string(/C:schedule-response/C:response[%d]/C:calendar-data)", i + 1));
 					if (tmp && *tmp) {
-						GList *objects = NULL, *o;
+						GSList *objects = NULL, *o;
 
 						icalcomp = icalparser_parse_string (tmp);
 						if (icalcomp)
@@ -4371,14 +4306,14 @@ caldav_get_free_busy (ECalBackendSync  *backend,
 								gchar *obj_str = icalcomponent_as_ical_string_r (o->data);
 
 								if (obj_str && *obj_str)
-									*freebusy = g_list_append (*freebusy, obj_str);
+									*freebusy = g_slist_append (*freebusy, obj_str);
 								else
 									g_free (obj_str);
 							}
 						}
 
-						g_list_foreach (objects, (GFunc) icalcomponent_free, NULL);
-						g_list_free (objects);
+						g_slist_foreach (objects, (GFunc) icalcomponent_free, NULL);
+						g_slist_free (objects);
 
 						if (icalcomp)
 							icalcomponent_free (icalcomp);
@@ -4405,44 +4340,7 @@ caldav_get_free_busy (ECalBackendSync  *backend,
 }
 
 static void
-caldav_get_changes (ECalBackendSync  *backend,
-		    EDataCal         *cal,
-		    const gchar       *change_id,
-		    GList           **adds,
-		    GList           **modifies,
-		    GList **deletes,
-		    GError **perror)
-{
-	/* FIXME: implement me! */
-	g_propagate_error (perror, EDC_ERROR (NotSupported));
-}
-
-static gboolean
-caldav_is_loaded (ECalBackend *backend)
-{
-	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
-
-	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = cbdav->priv;
-
-	return priv->loaded;
-}
-
-static CalMode
-caldav_get_mode (ECalBackend *backend)
-{
-	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
-
-	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = cbdav->priv;
-
-	return priv->mode;
-}
-
-static void
-caldav_set_mode (ECalBackend *backend, CalMode mode)
+caldav_set_online (ECalBackend *backend, gboolean is_online)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -4452,28 +4350,16 @@ caldav_set_mode (ECalBackend *backend, CalMode mode)
 
 	/*g_mutex_lock (priv->busy_lock);*/
 
-	/* We only support online and offline */
-	if (mode != CAL_MODE_REMOTE &&
-	    mode != CAL_MODE_LOCAL) {
-		e_cal_backend_notify_mode (backend,
-					   ModeNotSupported,
-					   cal_mode_to_corba (mode));
+	if ((priv->is_online ? 1: 0) == (is_online ? 1 : 0) || !priv->loaded) {
+		priv->is_online = is_online;
+		e_cal_backend_notify_online (backend, is_online);
 		/*g_mutex_unlock (priv->busy_lock);*/
 		return;
 	}
 
-	if (priv->mode == mode || !priv->loaded) {
-		priv->mode = mode;
-		e_cal_backend_notify_mode (backend,
-					   ModeSet,
-					   cal_mode_to_corba (mode));
-		/*g_mutex_unlock (priv->busy_lock);*/
-		return;
-	}
+	priv->is_online = is_online;
 
-	priv->mode = mode;
-
-	if (mode == CAL_MODE_REMOTE) {
+	if (is_online) {
 		/* Wake up the slave thread */
 		priv->slave_cmd = SLAVE_SHOULD_WORK;
 		g_cond_signal (priv->cond);
@@ -4482,27 +4368,9 @@ caldav_set_mode (ECalBackend *backend, CalMode mode)
 		priv->slave_cmd = SLAVE_SHOULD_SLEEP;
 	}
 
-	e_cal_backend_notify_mode (backend,
-				   ModeSet,
-				   cal_mode_to_corba (mode));
+	e_cal_backend_notify_online (backend, is_online);
 
 	/*g_mutex_unlock (priv->busy_lock);*/
-}
-
-static icaltimezone *
-caldav_internal_get_default_timezone (ECalBackend *backend)
-{
-	ECalBackendCalDAV *cbdav;
-	ECalBackendCalDAVPrivate *priv;
-
-	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (backend), NULL);
-
-	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = cbdav->priv;
-
-	g_return_val_if_fail (priv->default_zone != NULL, NULL);
-
-	return priv->default_zone;
 }
 
 static icaltimezone *
@@ -4598,8 +4466,9 @@ e_cal_backend_caldav_dispose (GObject *object)
 	g_object_unref (priv->session);
 	g_object_unref (priv->proxy);
 
-	g_free (priv->username);
-	g_free (priv->password);
+	e_credentials_free (priv->credentials);
+	priv->credentials = NULL;
+
 	g_free (priv->uri);
 	g_free (priv->schedule_outbox_url);
 
@@ -4627,11 +4496,6 @@ e_cal_backend_caldav_finalize (GObject *object)
 	g_cond_free (priv->cond);
 	g_cond_free (priv->slave_gone_cond);
 
-	if (priv->default_zone && priv->default_zone != icaltimezone_get_utc_timezone ()) {
-		icaltimezone_free (priv->default_zone, 1);
-	}
-	priv->default_zone = NULL;
-
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -4651,8 +4515,6 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 
 	if (G_UNLIKELY (caldav_debug_show (DEBUG_MESSAGE)))
 		caldav_debug_setup (cbdav->priv->session);
-
-	cbdav->priv->default_zone = icaltimezone_get_utc_timezone ();
 
 	cbdav->priv->disposed = FALSE;
 	cbdav->priv->loaded   = FALSE;
@@ -4701,36 +4563,26 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *class)
 	object_class->dispose  = e_cal_backend_caldav_dispose;
 	object_class->finalize = e_cal_backend_caldav_finalize;
 
-	sync_class->is_read_only_sync            = caldav_is_read_only;
-	sync_class->get_cal_address_sync         = caldav_get_cal_address;
-	sync_class->get_alarm_email_address_sync = caldav_get_alarm_email_address;
-	sync_class->get_ldap_attribute_sync      = caldav_get_ldap_attribute;
-	sync_class->get_static_capabilities_sync = caldav_get_static_capabilities;
+	sync_class->get_backend_property_sync	= caldav_get_backend_property;
 
-	sync_class->open_sync                    = caldav_do_open;
-	sync_class->refresh_sync                 = caldav_refresh;
-	sync_class->remove_sync                  = caldav_remove;
+	sync_class->open_sync			= caldav_do_open;
+	sync_class->authenticate_user_sync	= caldav_authenticate_user;
+	sync_class->refresh_sync		= caldav_refresh;
+	sync_class->remove_sync			= caldav_remove;
 
-	sync_class->create_object_sync = caldav_create_object;
-	sync_class->modify_object_sync = caldav_modify_object;
-	sync_class->remove_object_sync = caldav_remove_object;
+	sync_class->create_object_sync		= caldav_create_object;
+	sync_class->modify_object_sync		= caldav_modify_object;
+	sync_class->remove_object_sync		= caldav_remove_object;
 
-	sync_class->discard_alarm_sync        = caldav_discard_alarm;
-	sync_class->receive_objects_sync      = caldav_receive_objects;
-	sync_class->send_objects_sync         = caldav_send_objects;
-	sync_class->get_default_object_sync   = caldav_get_default_object;
-	sync_class->get_object_sync           = caldav_get_object;
-	sync_class->get_object_list_sync      = caldav_get_object_list;
-	sync_class->add_timezone_sync         = caldav_add_timezone;
-	sync_class->set_default_zone_sync = caldav_set_default_zone;
-	sync_class->get_freebusy_sync         = caldav_get_free_busy;
-	sync_class->get_changes_sync          = caldav_get_changes;
+	sync_class->receive_objects_sync	= caldav_receive_objects;
+	sync_class->send_objects_sync		= caldav_send_objects;
+	sync_class->get_object_sync		= caldav_get_object;
+	sync_class->get_object_list_sync	= caldav_get_object_list;
+	sync_class->add_timezone_sync		= caldav_add_timezone;
+	sync_class->get_free_busy_sync		= caldav_get_free_busy;
 
-	backend_class->is_loaded   = caldav_is_loaded;
-	backend_class->start_query = caldav_start_query;
-	backend_class->get_mode    = caldav_get_mode;
-	backend_class->set_mode    = caldav_set_mode;
+	backend_class->start_view		= caldav_start_view;
+	backend_class->set_online		= caldav_set_online;
 
-	backend_class->internal_get_default_timezone = caldav_internal_get_default_timezone;
-	backend_class->internal_get_timezone         = caldav_internal_get_timezone;
+	backend_class->internal_get_timezone	= caldav_internal_get_timezone;
 }

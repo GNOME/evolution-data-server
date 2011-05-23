@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include <libebook/e-book.h>
+#include <libebook/e-contact.h>
 
 gint
 main (gint argc, gchar **argv)

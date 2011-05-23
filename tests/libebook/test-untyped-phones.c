@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include <libebook/e-book.h>
+#include <libebook/e-contact.h>
 
 /* TEL;WORK:... should map to PHONE_BUSINESS
    TEL;FAX:... should map to OTHER_FAX. */

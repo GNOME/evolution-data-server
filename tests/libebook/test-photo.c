@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include <libebook/e-book.h>
+#include <libebook/e-contact.h>
 
 static const gchar *photo_data =
 "/9j/4AAQSkZJRgABAQEARwBHAAD//gAXQ3JlYXRlZCB3aXRoIFRoZSBHSU1Q/9sAQwAIBgYHB\

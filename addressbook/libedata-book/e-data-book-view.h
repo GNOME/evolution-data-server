@@ -52,40 +52,25 @@ struct _EDataBookViewClass {
 	GObjectClass parent;
 };
 
-EDataBookView *e_data_book_view_new                  (EDataBook        *book,
-						      const gchar      *card_query,
-						      EBookBackendSExp *card_sexp,
-						      gint              max_results);
+GType			e_data_book_view_get_type		(void);
+EDataBookView *		e_data_book_view_new			(EDataBook *book, const gchar *card_query, EBookBackendSExp *card_sexp);
+guint			e_data_book_view_register_gdbus_object	(EDataBookView *query, GDBusConnection *connection, const gchar *object_path, GError **error);
 
-guint e_data_book_view_register_gdbus_object (EDataBookView *query, GDBusConnection *connection, const gchar *object_path, GError **error);
+const gchar *		e_data_book_view_get_card_query		(EDataBookView *book_view);
+EBookBackendSExp *	e_data_book_view_get_card_sexp		(EDataBookView *book_view);
+EBookBackend *		e_data_book_view_get_backend		(EDataBookView *book_view);
+void			e_data_book_view_notify_update		(EDataBookView *book_view, const EContact *contact);
 
-void              e_data_book_view_set_thresholds    (EDataBookView *book_view,
-						      gint minimum_grouping_threshold,
-						      gint maximum_grouping_threshold);
+void			e_data_book_view_notify_update_vcard	(EDataBookView *book_view, gchar *vcard);
+void			e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *book_view, const gchar *id, gchar *vcard);
 
-const gchar *       e_data_book_view_get_card_query    (EDataBookView                *book_view);
-EBookBackendSExp* e_data_book_view_get_card_sexp     (EDataBookView                *book_view);
-gint               e_data_book_view_get_max_results   (EDataBookView                *book_view);
-EBookBackend*     e_data_book_view_get_backend       (EDataBookView                *book_view);
-void         e_data_book_view_notify_update          (EDataBookView                *book_view,
-						      EContact                     *contact);
+void			e_data_book_view_notify_remove		(EDataBookView *book_view, const gchar *id);
+void			e_data_book_view_notify_complete	(EDataBookView *book_view, const GError *error);
+void			e_data_book_view_notify_progress        (EDataBookView *book_view, guint percent, const gchar *message);
+void			e_data_book_view_ref			(EDataBookView *book_view);
+void			e_data_book_view_unref			(EDataBookView *book_view);
 
-void         e_data_book_view_notify_update_vcard    (EDataBookView                *book_view,
-						      gchar                         *vcard);
-void         e_data_book_view_notify_update_prefiltered_vcard (EDataBookView       *book_view,
-                                                               const gchar          *id,
-                                                               gchar                *vcard);
-
-void         e_data_book_view_notify_remove          (EDataBookView                *book_view,
-						      const gchar                   *id);
-void         e_data_book_view_notify_complete        (EDataBookView                *book_view,
-						      const GError                 *error);
-void         e_data_book_view_notify_status_message  (EDataBookView                *book_view,
-						      const gchar                   *message);
-void         e_data_book_view_ref                    (EDataBookView                *book_view);
-void         e_data_book_view_unref                  (EDataBookView                *book_view);
-
-GType        e_data_book_view_get_type               (void);
+/* const */ GHashTable *e_data_book_view_get_fields_of_interest	(EDataBookView *view);
 
 G_END_DECLS
 

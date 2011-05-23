@@ -67,7 +67,6 @@ struct _ECalBackendContactsPrivate {
         GHashTable   *tracked_contacts;   /* UID -> ContactRecord */
 
 	GHashTable *zones;
-	icaltimezone *default_zone;
 
 	EFlag   *init_done_flag; /* is set, when the init thread gone */
 
@@ -106,7 +105,7 @@ static ECalComponent * create_anniversary (ECalBackendContacts *cbc, EContact *c
 static void contacts_changed_cb (EBookView *book_view, const GList *contacts, gpointer user_data);
 static void contacts_added_cb   (EBookView *book_view, const GList *contacts, gpointer user_data);
 static void contacts_removed_cb (EBookView *book_view, const GList *contact_ids, gpointer user_data);
-static void e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj, GError **perror);
+static void e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **perror);
 static void setup_alarm (ECalBackendContacts *cbc, ECalComponent *comp);
 
 /* BookRecord methods */
@@ -258,7 +257,7 @@ contact_record_free (ContactRecord *cr)
 typedef struct _ContactRecordCB {
         ECalBackendContacts *cbc;
         ECalBackendSExp     *sexp;
-        GList               *result;
+        GSList              *result;
 } ContactRecordCB;
 
 static ContactRecordCB *
@@ -276,8 +275,8 @@ contact_record_cb_new (ECalBackendContacts *cbc, ECalBackendSExp *sexp)
 static void
 contact_record_cb_free (ContactRecordCB *cb_data)
 {
-	g_list_foreach (cb_data->result, (GFunc) g_free, NULL);
-	g_list_free (cb_data->result);
+	g_slist_foreach (cb_data->result, (GFunc) g_free, NULL);
+	g_slist_free (cb_data->result);
 
 	g_free (cb_data);
 }
@@ -290,12 +289,12 @@ contact_record_cb (gpointer key, gpointer value, gpointer user_data)
 
 	if (record->comp_birthday && e_cal_backend_sexp_match_comp (cb_data->sexp, record->comp_birthday, E_CAL_BACKEND (cb_data->cbc))) {
 		gchar * comp_str = e_cal_component_get_as_string (record->comp_birthday);
-		cb_data->result = g_list_append (cb_data->result, comp_str);
+		cb_data->result = g_slist_append (cb_data->result, comp_str);
 	}
 
 	if (record->comp_anniversary && e_cal_backend_sexp_match_comp (cb_data->sexp, record->comp_anniversary, E_CAL_BACKEND (cb_data->cbc))) {
 		gchar * comp_str = e_cal_component_get_as_string (record->comp_anniversary);
-		cb_data->result = g_list_append (cb_data->result, comp_str);
+		cb_data->result = g_slist_append (cb_data->result, comp_str);
 	}
 }
 
@@ -791,56 +790,40 @@ create_anniversary (ECalBackendContacts *cbc, EContact *contact)
 
 /* First the empty stubs */
 
-static void
-e_cal_backend_contacts_get_cal_address (ECalBackendSync *backend, EDataCal *cal,
-					gchar **address, GError **perror)
+static gboolean
+e_cal_backend_contacts_get_backend_property (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *prop_name, gchar **prop_value, GError **perror)
 {
-	/* A contact backend has no particular email address associated
-	 * with it (although that would be a useful feature some day).
-	 */
-	*address = NULL;
+	gboolean processed = TRUE;
+
+	g_return_val_if_fail (prop_name != NULL, FALSE);
+	g_return_val_if_fail (prop_value != NULL, FALSE);
+
+	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
+		*prop_value = NULL;
+	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
+		   g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
+		/* A contact backend has no particular email address associated
+		 * with it (although that would be a useful feature some day).
+		 */
+		*prop_value = NULL;
+	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT)) {
+		g_propagate_error (perror, EDC_ERROR (UnsupportedMethod));
+	} else {
+		processed = FALSE;
+	}
+
+	return processed;
 }
 
 static void
-e_cal_backend_contacts_get_ldap_attribute (ECalBackendSync *backend, EDataCal *cal,
-					   gchar **attribute, GError **perror)
-{
-	*attribute = NULL;
-}
-
-static void
-e_cal_backend_contacts_get_alarm_email_address (ECalBackendSync *backend, EDataCal *cal,
-						gchar **address, GError **perror)
-{
-	/* A contact backend has no particular email address associated
-	 * with it (although that would be a useful feature some day).
-	 */
-	*address = NULL;
-}
-
-static void
-e_cal_backend_contacts_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal,
-						gchar **capabilities, GError **perror)
-{
-	*capabilities = NULL;
-}
-
-static void
-e_cal_backend_contacts_remove (ECalBackendSync *backend, EDataCal *cal, GError **perror)
+e_cal_backend_contacts_remove (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, GError **perror)
 {
 	/* WRITE ME */
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
 static void
-e_cal_backend_contacts_get_default_object (ECalBackendSync *backend, EDataCal *cal,
-					   gchar **object, GError **perror)
-{
-	g_propagate_error (perror, EDC_ERROR (UnsupportedMethod));
-}
-
-static void
-e_cal_backend_contacts_get_object (ECalBackendSync *backend, EDataCal *cal,
+e_cal_backend_contacts_get_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable,
 				   const gchar *uid, const gchar *rid,
 				   gchar **object, GError **perror)
 {
@@ -889,9 +872,9 @@ e_cal_backend_contacts_get_object (ECalBackendSync *backend, EDataCal *cal,
 }
 
 static void
-e_cal_backend_contacts_get_free_busy (ECalBackendSync *backend, EDataCal *cal,
-				      GList *users, time_t start, time_t end,
-				      GList **freebusy, GError **perror)
+e_cal_backend_contacts_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, 
+				      const GSList *users, time_t start, time_t end,
+				      GSList **freebusy, GError **perror)
 {
 	/* Birthdays/anniversaries don't count as busy time */
 
@@ -916,7 +899,7 @@ e_cal_backend_contacts_get_free_busy (ECalBackendSync *backend, EDataCal *cal,
 	icalcomponent_set_dtend (vfb, icaltime_from_timet_with_zone (end, FALSE, utc_zone));
 
 	calobj = icalcomponent_as_ical_string_r (vfb);
-	*freebusy = g_list_append (NULL, calobj);
+	*freebusy = g_slist_append (NULL, calobj);
 	icalcomponent_free (vfb);
 
 	/* WRITE ME */
@@ -924,30 +907,15 @@ e_cal_backend_contacts_get_free_busy (ECalBackendSync *backend, EDataCal *cal,
 }
 
 static void
-e_cal_backend_contacts_get_changes (ECalBackendSync *backend, EDataCal *cal,
-				    const gchar *change_id,
-				    GList **adds, GList **modifies, GList **deletes, GError **perror)
-{
-	/* WRITE ME */
-}
-
-static void
-e_cal_backend_contacts_discard_alarm (ECalBackendSync *backend, EDataCal *cal,
-				      const gchar *uid, const gchar *auid, GError **perror)
-{
-	/* WRITE ME */
-}
-
-static void
-e_cal_backend_contacts_receive_objects (ECalBackendSync *backend, EDataCal *cal,
+e_cal_backend_contacts_receive_objects (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable,
 					const gchar *calobj, GError **perror)
 {
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
 static void
-e_cal_backend_contacts_send_objects (ECalBackendSync *backend, EDataCal *cal,
-				     const gchar *calobj, GList **users, gchar **modified_calobj, GError **perror)
+e_cal_backend_contacts_send_objects (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable,
+				     const gchar *calobj, GSList **users, gchar **modified_calobj, GError **perror)
 {
 	*users = NULL;
 	*modified_calobj = NULL;
@@ -957,23 +925,11 @@ e_cal_backend_contacts_send_objects (ECalBackendSync *backend, EDataCal *cal,
 
 /* Then the real implementations */
 
-static CalMode
-e_cal_backend_contacts_get_mode (ECalBackend *backend)
-{
-	return CAL_MODE_LOCAL;
-}
-
 static void
-e_cal_backend_contacts_set_mode (ECalBackend *backend, CalMode mode)
+e_cal_backend_contacts_set_online (ECalBackend *backend, gboolean is_online)
 {
-	e_cal_backend_notify_mode (backend, ModeNotSupported, Local);
-}
-
-static void
-e_cal_backend_contacts_is_read_only (ECalBackendSync *backend, EDataCal *cal,
-				     gboolean *read_only, GError **perror)
-{
-	*read_only = TRUE;
+	e_cal_backend_notify_online (backend, is_online);
+	e_cal_backend_notify_readonly (backend, TRUE);
 }
 
 static gpointer
@@ -1004,9 +960,8 @@ init_sources_cb (ECalBackendContacts *cbc)
 }
 
 static void
-e_cal_backend_contacts_open (ECalBackendSync *backend, EDataCal *cal,
-			     gboolean only_if_exists,
-			     const gchar *username, const gchar *password, GError **perror)
+e_cal_backend_contacts_open (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable,
+			     gboolean only_if_exists, GError **perror)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (backend);
 	ECalBackendContactsPrivate *priv = cbc->priv;
@@ -1014,15 +969,6 @@ e_cal_backend_contacts_open (ECalBackendSync *backend, EDataCal *cal,
 
 	if (priv->addressbook_loaded)
 		return;
-
-	if (priv->default_zone && priv->default_zone != icaltimezone_get_utc_timezone ()) {
-		icalcomponent *icalcomp = icaltimezone_get_component (priv->default_zone);
-		icaltimezone *zone = icaltimezone_new ();
-
-		icaltimezone_set_component (zone, icalcomponent_new_clone (icalcomp));
-
-		g_hash_table_insert (priv->zones, g_strdup (icaltimezone_get_tzid (zone)), zone);
-	}
 
 	/* initialize addressbook sources in new thread to make this function quick as much as possible */
 	if (!g_thread_create ((GThreadFunc) init_sources_cb, cbc, FALSE, &error)) {
@@ -1032,24 +978,19 @@ e_cal_backend_contacts_open (ECalBackendSync *backend, EDataCal *cal,
 			g_error_free (error);
 
 		g_propagate_error (perror, EDC_ERROR (OtherError));
+		e_cal_backend_notify_opened (E_CAL_BACKEND (backend), EDC_ERROR (OtherError));
 		return;
 	}
 
 	priv->addressbook_loaded = TRUE;
-}
-
-static gboolean
-e_cal_backend_contacts_is_loaded (ECalBackend *backend)
-{
-	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (backend);
-	ECalBackendContactsPrivate *priv = cbc->priv;
-
-	return priv->addressbook_loaded;
+	e_cal_backend_notify_readonly (E_CAL_BACKEND (backend), TRUE);
+	e_cal_backend_notify_online (E_CAL_BACKEND (backend), TRUE);
+	e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
 }
 
 /* Add_timezone handler for the file backend */
 static void
-e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj, GError **error)
+e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **error)
 {
 	ECalBackendContacts *cbcontacts;
 	ECalBackendContactsPrivate *priv;
@@ -1087,39 +1028,8 @@ e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, co
 }
 
 static void
-e_cal_backend_contacts_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj, GError **error)
-{
-	icalcomponent *tz_comp;
-	ECalBackendContacts *cbcontacts;
-	ECalBackendContactsPrivate *priv;
-	icaltimezone *zone;
-
-	cbcontacts = (ECalBackendContacts *) backend;
-
-	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbcontacts), InvalidArg);
-	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
-
-	priv = cbcontacts->priv;
-
-	tz_comp = icalparser_parse_string (tzobj);
-	if (!tz_comp) {
-		g_propagate_error (error, EDC_ERROR (InvalidObject));
-		return;
-	}
-
-	zone = icaltimezone_new ();
-	icaltimezone_set_component (zone, tz_comp);
-
-	if (priv->default_zone && priv->default_zone != icaltimezone_get_utc_timezone ())
-		icaltimezone_free (priv->default_zone, 1);
-
-	/* Set the default timezone to it. */
-	priv->default_zone = zone;
-}
-
-static void
-e_cal_backend_contacts_get_object_list (ECalBackendSync *backend, EDataCal *cal,
-					const gchar *sexp_string, GList **objects, GError **perror)
+e_cal_backend_contacts_get_object_list (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable,
+					const gchar *sexp_string, GSList **objects, GError **perror)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (backend);
 	ECalBackendContactsPrivate *priv = cbc->priv;
@@ -1141,7 +1051,7 @@ e_cal_backend_contacts_get_object_list (ECalBackendSync *backend, EDataCal *cal,
 }
 
 static void
-e_cal_backend_contacts_start_query (ECalBackend *backend, EDataCalView *query)
+e_cal_backend_contacts_start_view (ECalBackend *backend, EDataCalView *query)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (backend);
 	ECalBackendContactsPrivate *priv = cbc->priv;
@@ -1151,7 +1061,7 @@ e_cal_backend_contacts_start_query (ECalBackend *backend, EDataCalView *query)
 	sexp = e_data_cal_view_get_object_sexp (query);
 	if (!sexp) {
 		GError *error = EDC_ERROR (InvalidQuery);
-		e_data_cal_view_notify_done (query, error);
+		e_data_cal_view_notify_complete (query, error);
 		g_error_free (error);
 		return;
 	}
@@ -1163,15 +1073,7 @@ e_cal_backend_contacts_start_query (ECalBackend *backend, EDataCalView *query)
 
 	contact_record_cb_free (cb_data);
 
-	e_data_cal_view_notify_done (query, NULL /* Success */);
-}
-
-static icaltimezone *
-e_cal_backend_contacts_internal_get_default_timezone (ECalBackend *backend)
-{
-	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (backend);
-
-	return cbc->priv->default_zone;
+	e_data_cal_view_notify_complete (query, NULL /* Success */);
 }
 
 static icaltimezone *
@@ -1179,7 +1081,7 @@ e_cal_backend_contacts_internal_get_timezone (ECalBackend *backend, const gchar 
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (backend);
 
-	return cbc->priv->default_zone;
+	return g_hash_table_lookup (cbc->priv->zones, tzid ? tzid : "");
 }
 
 /***********************************************************************************
@@ -1215,11 +1117,6 @@ e_cal_backend_contacts_finalize (GObject *object)
 		priv->update_alarms_id = 0;
 	}
 
-	if (priv->default_zone && priv->default_zone != icaltimezone_get_utc_timezone ()) {
-		icaltimezone_free (priv->default_zone, 1);
-	}
-
-	priv->default_zone = NULL;
 	g_object_unref (priv->addressbook_sources);
 	g_hash_table_destroy (priv->addressbooks);
 	g_hash_table_destroy (priv->tracked_contacts);
@@ -1256,7 +1153,6 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 							g_free, (GDestroyNotify) contact_record_free);
 
 	priv->zones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_zone);
-	priv->default_zone = icaltimezone_get_utc_timezone ();
 	priv->init_done_flag = e_flag_new ();
 	priv->conf_client = gconf_client_get_default ();
 	priv->notifyid1 = 0;
@@ -1273,7 +1169,7 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 }
 
 static void
-e_cal_backend_contacts_create_object (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid, GError **perror)
+e_cal_backend_contacts_create_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, gchar **uid, gchar **new_calobj, GError **perror)
 {
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
@@ -1294,29 +1190,18 @@ e_cal_backend_contacts_class_init (ECalBackendContactsClass *class)
 
 	object_class->finalize = e_cal_backend_contacts_finalize;
 
-	sync_class->is_read_only_sync = e_cal_backend_contacts_is_read_only;
-	sync_class->get_cal_address_sync = e_cal_backend_contacts_get_cal_address;
-	sync_class->get_alarm_email_address_sync = e_cal_backend_contacts_get_alarm_email_address;
-	sync_class->get_ldap_attribute_sync = e_cal_backend_contacts_get_ldap_attribute;
-	sync_class->get_static_capabilities_sync = e_cal_backend_contacts_get_static_capabilities;
-	sync_class->open_sync = e_cal_backend_contacts_open;
-	sync_class->remove_sync = e_cal_backend_contacts_remove;
-	sync_class->create_object_sync = e_cal_backend_contacts_create_object;
-	sync_class->discard_alarm_sync = e_cal_backend_contacts_discard_alarm;
-	sync_class->receive_objects_sync = e_cal_backend_contacts_receive_objects;
-	sync_class->send_objects_sync = e_cal_backend_contacts_send_objects;
-	sync_class->get_default_object_sync = e_cal_backend_contacts_get_default_object;
-	sync_class->get_object_sync = e_cal_backend_contacts_get_object;
-	sync_class->get_object_list_sync = e_cal_backend_contacts_get_object_list;
-	sync_class->add_timezone_sync = e_cal_backend_contacts_add_timezone;
-	sync_class->set_default_zone_sync = e_cal_backend_contacts_set_default_zone;
-	sync_class->get_freebusy_sync = e_cal_backend_contacts_get_free_busy;
-	sync_class->get_changes_sync = e_cal_backend_contacts_get_changes;
-	backend_class->is_loaded = e_cal_backend_contacts_is_loaded;
-	backend_class->start_query = e_cal_backend_contacts_start_query;
-	backend_class->get_mode = e_cal_backend_contacts_get_mode;
-	backend_class->set_mode = e_cal_backend_contacts_set_mode;
+	sync_class->get_backend_property_sync	= e_cal_backend_contacts_get_backend_property;
+	sync_class->open_sync			= e_cal_backend_contacts_open;
+	sync_class->remove_sync			= e_cal_backend_contacts_remove;
+	sync_class->create_object_sync		= e_cal_backend_contacts_create_object;
+	sync_class->receive_objects_sync	= e_cal_backend_contacts_receive_objects;
+	sync_class->send_objects_sync		= e_cal_backend_contacts_send_objects;
+	sync_class->get_object_sync		= e_cal_backend_contacts_get_object;
+	sync_class->get_object_list_sync	= e_cal_backend_contacts_get_object_list;
+	sync_class->add_timezone_sync		= e_cal_backend_contacts_add_timezone;
+	sync_class->get_free_busy_sync		= e_cal_backend_contacts_get_free_busy;
 
-	backend_class->internal_get_default_timezone = e_cal_backend_contacts_internal_get_default_timezone;
-	backend_class->internal_get_timezone = e_cal_backend_contacts_internal_get_timezone;
+	backend_class->start_view		= e_cal_backend_contacts_start_view;
+	backend_class->set_online		= e_cal_backend_contacts_set_online;
+	backend_class->internal_get_timezone	= e_cal_backend_contacts_internal_get_timezone;
 }

@@ -11,6 +11,9 @@
 #ifndef __E_BOOK_H__
 #define __E_BOOK_H__
 
+/* e-book deprecated since 3.2, use e-book-client instead */
+#ifndef E_BOOK_DISABLE_DEPRECATED
+
 #include <glib.h>
 #include <glib-object.h>
 
@@ -410,5 +413,7 @@ gboolean    e_book_get_addressbooks        (ESourceList** addressbook_sources, G
 GType        e_book_get_type                  (void);
 
 G_END_DECLS
+
+#endif /* E_BOOK_DISABLE_DEPRECATED */
 
 #endif /* __E_BOOK_H__ */

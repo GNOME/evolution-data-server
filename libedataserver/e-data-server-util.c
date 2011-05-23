@@ -910,3 +910,87 @@ e_data_server_util_get_dbus_call_timeout (void)
 {
 	return default_dbus_timeout;
 }
+
+G_LOCK_DEFINE_STATIC (ptr_tracker);
+static GHashTable *ptr_tracker = NULL;
+
+static void
+dump_left_ptrs_cb (gpointer ptr, gpointer info, gpointer user_data)
+{
+	g_print ("      %p %s%s%s", ptr, info ? "(" : "", info ? (const gchar *) info : "", info ? ")" : "");
+}
+
+static void
+dump_tracked_ptrs (gboolean is_at_exit)
+{
+	G_LOCK (ptr_tracker);
+
+	if (ptr_tracker) {
+		g_print ("\n----------------------------------------------------------\n");
+		if (g_hash_table_size (ptr_tracker) == 0) {
+			g_print ("   All tracked pointers were properly removed\n");
+		} else {
+			g_print ("   Left %d tracked pointers:\n", g_hash_table_size (ptr_tracker));
+			g_hash_table_foreach (ptr_tracker, dump_left_ptrs_cb, NULL);
+		}
+		g_print ("----------------------------------------------------------\n");
+	} else if (!is_at_exit) {
+		g_print ("\n----------------------------------------------------------\n");
+		g_print ("   Did not track any pointers yet\n");
+		g_print ("----------------------------------------------------------\n");
+	}
+
+	G_UNLOCK (ptr_tracker);
+}
+
+static void
+dump_left_at_exit_cb (void)
+{
+	dump_tracked_ptrs (TRUE);
+
+	G_LOCK (ptr_tracker);
+	if (ptr_tracker) {
+		g_hash_table_destroy (ptr_tracker);
+		ptr_tracker = NULL;
+	}
+	G_UNLOCK (ptr_tracker);
+}
+
+void
+e_pointer_tracker_track_with_info (gpointer ptr, const gchar *info)
+{
+	g_return_if_fail (ptr != NULL);
+
+	G_LOCK (ptr_tracker);
+	if (!ptr_tracker) {
+		ptr_tracker = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_free);
+		g_atexit (dump_left_at_exit_cb);
+	}
+
+	g_hash_table_insert (ptr_tracker, ptr, g_strdup (info));
+
+	G_UNLOCK (ptr_tracker);
+}
+
+void
+e_pointer_tracker_untrack (gpointer ptr)
+{
+	g_return_if_fail (ptr != NULL);
+
+	G_LOCK (ptr_tracker);
+
+	if (!ptr_tracker)
+		g_printerr ("Pointer tracker not initialized, thus cannot remove %p\n", ptr);
+	else if (!g_hash_table_lookup (ptr_tracker, ptr))
+		g_printerr ("Pointer %p is not tracked\n", ptr);
+	else
+		g_hash_table_remove (ptr_tracker, ptr);
+
+	G_UNLOCK (ptr_tracker);
+}
+
+void
+e_pointer_tracker_dump (void)
+{
+	dump_tracked_ptrs (FALSE);
+}

@@ -52,7 +52,7 @@ GQuark e_data_book_factory_error_quark (void);
 
 GType e_data_book_factory_get_type (void);
 
-void e_data_book_factory_set_backend_mode (EDataBookFactory *factory, gint mode);
+void e_data_book_factory_set_backend_online (EDataBookFactory *factory, gboolean is_online);
 
 G_END_DECLS
 

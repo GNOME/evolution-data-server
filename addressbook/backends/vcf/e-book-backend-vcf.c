@@ -273,7 +273,7 @@ do_create (EBookBackendVCF  *bvcf,
 static void
 e_book_backend_vcf_create_contact (EBookBackendSync *backend,
 				   EDataBook *book,
-				   guint32 opid,
+				   GCancellable *cancellable,
 				   const gchar *vcard,
 				   EContact **contact,
 				   GError **perror)
@@ -291,14 +291,14 @@ e_book_backend_vcf_create_contact (EBookBackendSync *backend,
 static void
 e_book_backend_vcf_remove_contacts (EBookBackendSync *backend,
 				    EDataBook *book,
-				    guint32 opid,
-				    GList *id_list,
-				    GList **ids,
+				    GCancellable *cancellable,
+				    const GSList *id_list,
+				    GSList **ids,
 				    GError **perror)
 {
 	/* FIXME: make this handle bulk deletes like the file backend does */
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
-	gchar *id = id_list->data;
+	const gchar *id = id_list->data;
 	GList *elem;
 
 	g_mutex_lock (bvcf->priv->mutex);
@@ -324,13 +324,13 @@ e_book_backend_vcf_remove_contacts (EBookBackendSync *backend,
 							       vcf_flush_file, bvcf);
 	g_mutex_unlock (bvcf->priv->mutex);
 
-	*ids = g_list_append (*ids, id);
+	*ids = g_slist_append (*ids, g_strdup (id));
 }
 
 static void
 e_book_backend_vcf_modify_contact (EBookBackendSync *backend,
 				   EDataBook *book,
-				   guint32 opid,
+				   GCancellable *cancellable,
 				   const gchar *vcard,
 				   EContact **contact,
 				   GError **perror)
@@ -363,7 +363,7 @@ e_book_backend_vcf_modify_contact (EBookBackendSync *backend,
 static void
 e_book_backend_vcf_get_contact (EBookBackendSync *backend,
 				EDataBook *book,
-				guint32 opid,
+				GCancellable *cancellable,
 				const gchar *id,
 				gchar **vcard,
 				GError **perror)
@@ -385,23 +385,23 @@ typedef struct {
 	EBookBackendVCF      *bvcf;
 	gboolean            search_needed;
 	EBookBackendSExp *card_sexp;
-	GList              *list;
+	GSList              *list;
 } GetContactListClosure;
 
 static void
 foreach_get_contact_compare (gchar *vcard_string, GetContactListClosure *closure)
 {
 	if ((!closure->search_needed) || e_book_backend_sexp_match_vcard  (closure->card_sexp, vcard_string)) {
-		closure->list = g_list_append (closure->list, g_strdup (vcard_string));
+		closure->list = g_slist_append (closure->list, g_strdup (vcard_string));
 	}
 }
 
 static void
 e_book_backend_vcf_get_contact_list (EBookBackendSync *backend,
 				     EDataBook *book,
-				     guint32 opid,
+				     GCancellable *cancellable,
 				     const gchar *query,
-				     GList **contacts,
+				     GSList **contacts,
 				     GError **perror)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
@@ -472,9 +472,9 @@ book_view_thread (gpointer data)
 	query = e_data_book_view_get_card_query (book_view);
 
 	if ( !strcmp (query, "(contains \"x-evolution-any-field\" \"\")"))
-		e_data_book_view_notify_status_message (book_view, _("Loading..."));
+		e_data_book_view_notify_progress (book_view, -1, _("Loading..."));
 	else
-		e_data_book_view_notify_status_message (book_view, _("Searching..."));
+		e_data_book_view_notify_progress (book_view, -1, _("Searching..."));
 
 	d(printf ("signalling parent thread\n"));
 	e_flag_set (closure->running);
@@ -541,45 +541,11 @@ e_book_backend_vcf_extract_path_from_uri (const gchar *uri)
 
 static void
 e_book_backend_vcf_authenticate_user (EBookBackendSync *backend,
-				      EDataBook *book,
-				      guint32 opid,
-				      const gchar *user,
-				      const gchar *passwd,
-				      const gchar *auth_method,
+				      GCancellable *cancellable,
+				      ECredentials *credentials,
 				      GError **perror)
 {
 	/* Success */
-}
-
-static void
-e_book_backend_vcf_get_required_fields (EBookBackendSync *backend,
-					EDataBook *book,
-					guint32 opid,
-					GList **fields_out,
-					GError **perror)
-{
-	GList *fields = NULL;
-
-	fields = g_list_append (fields , g_strdup (e_contact_field_name (E_CONTACT_FILE_AS)));
-	*fields_out = fields;
-}
-
-static void
-e_book_backend_vcf_get_supported_fields (EBookBackendSync *backend,
-					 EDataBook *book,
-					 guint32 opid,
-					 GList **fields_out,
-					 GError **perror)
-{
-	GList *fields = NULL;
-	gint i;
-
-	/* XXX we need a way to say "we support everything", since the
-	   vcf backend does */
-	for (i = 0; i < E_CONTACT_FIELD_LAST; i++)
-		fields = g_list_append (fields, (gchar *) e_contact_field_name (i));
-
-	*fields_out = fields;
 }
 
 #ifdef CREATE_DEFAULT_VCARD
@@ -587,14 +553,16 @@ e_book_backend_vcf_get_supported_fields (EBookBackendSync *backend,
 #endif
 
 static void
-e_book_backend_vcf_load_source (EBookBackend             *backend,
-				ESource                  *source,
-				gboolean                  only_if_exists,
-				GError                  **perror)
+e_book_backend_vcf_open (EBookBackendSync        *backend,
+			 EDataBook		 *book,
+			 GCancellable		 *cancellable,
+			 gboolean		  only_if_exists,
+			 GError			**perror)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
+	ESource *source = e_book_backend_get_source (E_BOOK_BACKEND (backend));
 	gchar           *dirname;
-	gboolean        writable = FALSE;
+	gboolean        readonly = TRUE;
 	gchar          *uri;
 	gint fd;
 
@@ -611,7 +579,7 @@ e_book_backend_vcf_load_source (EBookBackend             *backend,
 		(GDestroyNotify) NULL);
 
 	if (fd != -1) {
-		writable = TRUE;
+		readonly = FALSE;
 	} else {
 		fd = g_open (bvcf->priv->filename, O_RDONLY | O_BINARY, 0);
 
@@ -644,7 +612,7 @@ e_book_backend_vcf_load_source (EBookBackend             *backend,
 				g_object_unref (contact);
 #endif
 
-				writable = TRUE;
+				readonly = FALSE;
 			}
 		}
 	}
@@ -659,32 +627,50 @@ e_book_backend_vcf_load_source (EBookBackend             *backend,
 
 	load_file (bvcf, fd);
 
-	e_book_backend_set_is_loaded (backend, TRUE);
-	e_book_backend_set_is_writable (backend, writable);
+	e_book_backend_notify_readonly (E_BOOK_BACKEND (backend), readonly);
+	e_book_backend_notify_online (E_BOOK_BACKEND (backend), TRUE);
+	e_book_backend_notify_opened (E_BOOK_BACKEND (backend), NULL);
 
 	g_free (uri);
 }
 
-static gchar *
-e_book_backend_vcf_get_static_capabilities (EBookBackend *backend)
+static gboolean
+e_book_backend_vcf_get_backend_property (EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *prop_name, gchar **prop_value, GError **error)
 {
-	return g_strdup("local,do-initial-query,contact-lists");
-}
+	gboolean processed = TRUE;
 
-static void
-e_book_backend_vcf_cancel_operation (EBookBackend *backend, EDataBook *book, GError **perror)
-{
-	g_propagate_error (perror, EDB_ERROR (COULD_NOT_CANCEL));
-}
+	g_return_val_if_fail (prop_name != NULL, FALSE);
+	g_return_val_if_fail (prop_value != NULL, FALSE);
 
-static void
-e_book_backend_vcf_set_mode (EBookBackend *backend,
-                             EDataBookMode mode)
-{
-	if (e_book_backend_is_loaded (backend)) {
-		e_book_backend_notify_writable (backend, TRUE);
-		e_book_backend_notify_connection_status (backend, TRUE);
+	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
+		*prop_value = g_strdup ("local,do-initial-query,contact-lists");
+	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
+		*prop_value = g_strdup (e_contact_field_name (E_CONTACT_FILE_AS));
+	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
+		GSList *fields = NULL;
+		gint i;
+
+		/* XXX we need a way to say "we support everything", since the
+		   vcf backend does */
+		for (i = 1; i < E_CONTACT_FIELD_LAST; i++)
+			fields = g_slist_append (fields, (gpointer) e_contact_field_name (i));
+
+		*prop_value = e_data_book_string_slist_to_comma_string (fields);
+		g_slist_free (fields);
+	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS)) {
+		*prop_value = NULL;
+	} else {
+		processed = FALSE;
 	}
+
+	return processed;
+}
+
+static void
+e_book_backend_vcf_set_online (EBookBackend *backend, gboolean is_online)
+{
+	if (e_book_backend_is_opened (backend))
+		e_book_backend_notify_online (backend, TRUE);
 }
 
 /**
@@ -743,20 +729,18 @@ e_book_backend_vcf_class_init (EBookBackendVCFClass *klass)
 	backend_class = E_BOOK_BACKEND_CLASS (klass);
 
 	/* Set the virtual methods. */
-	backend_class->load_source             = e_book_backend_vcf_load_source;
-	backend_class->get_static_capabilities = e_book_backend_vcf_get_static_capabilities;
-	backend_class->start_book_view         = e_book_backend_vcf_start_book_view;
-	backend_class->stop_book_view          = e_book_backend_vcf_stop_book_view;
-	backend_class->cancel_operation        = e_book_backend_vcf_cancel_operation;
-	backend_class->set_mode                = e_book_backend_vcf_set_mode;
-	sync_class->create_contact_sync        = e_book_backend_vcf_create_contact;
-	sync_class->remove_contacts_sync       = e_book_backend_vcf_remove_contacts;
-	sync_class->modify_contact_sync        = e_book_backend_vcf_modify_contact;
-	sync_class->get_contact_sync           = e_book_backend_vcf_get_contact;
-	sync_class->get_contact_list_sync      = e_book_backend_vcf_get_contact_list;
-	sync_class->authenticate_user_sync     = e_book_backend_vcf_authenticate_user;
-	sync_class->get_required_fields_sync   = e_book_backend_vcf_get_required_fields;
-	sync_class->get_supported_fields_sync  = e_book_backend_vcf_get_supported_fields;
+	backend_class->start_book_view		= e_book_backend_vcf_start_book_view;
+	backend_class->stop_book_view		= e_book_backend_vcf_stop_book_view;
+	backend_class->set_online		= e_book_backend_vcf_set_online;
+
+	sync_class->open_sync			= e_book_backend_vcf_open;
+	sync_class->get_backend_property_sync	= e_book_backend_vcf_get_backend_property;
+	sync_class->create_contact_sync		= e_book_backend_vcf_create_contact;
+	sync_class->remove_contacts_sync	= e_book_backend_vcf_remove_contacts;
+	sync_class->modify_contact_sync		= e_book_backend_vcf_modify_contact;
+	sync_class->get_contact_sync		= e_book_backend_vcf_get_contact;
+	sync_class->get_contact_list_sync	= e_book_backend_vcf_get_contact_list;
+	sync_class->authenticate_user_sync	= e_book_backend_vcf_authenticate_user;
 
 	object_class->dispose = e_book_backend_vcf_dispose;
 }

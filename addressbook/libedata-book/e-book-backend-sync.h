@@ -29,67 +29,36 @@ struct _EBookBackendSyncClass {
 	EBookBackendClass parent_class;
 
 	/* Virtual methods */
-	void (*remove_sync) (EBookBackendSync *backend, EDataBook *book, guint32 opid, GError **perror);
-	void (*create_contact_sync)  (EBookBackendSync *backend, EDataBook *book,
-							guint32 opid,
-							const gchar *vcard, EContact **contact, GError **perror);
-	void (*remove_contacts_sync) (EBookBackendSync *backend, EDataBook *book,
-							guint32 opid,
-							GList *id_list, GList **removed_ids, GError **perror);
-	void (*modify_contact_sync)  (EBookBackendSync *backend, EDataBook *book,
-							guint32 opid,
-							const gchar *vcard, EContact **contact, GError **perror);
-	void (*get_contact_sync) (EBookBackendSync *backend, EDataBook *book,
-						    guint32 opid,
-						    const gchar *id, gchar **vcard, GError **perror);
-	void (*get_contact_list_sync) (EBookBackendSync *backend, EDataBook *book,
-							 guint32 opid,
-							 const gchar *query, GList **contacts, GError **perror);
-	void (*get_changes_sync) (EBookBackendSync *backend, EDataBook *book,
-						    guint32 opid,
-						    const gchar *change_id, GList **changes, GError **perror);
-	void (*authenticate_user_sync) (EBookBackendSync *backend, EDataBook *book,
-							  guint32 opid,
-							  const gchar *user,
-							  const gchar *passwd,
-							  const gchar *auth_method, GError **perror);
+	void (*open_sync)			(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, gboolean only_if_exists, GError **error);
+	void (*remove_sync)			(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, GError **error);
+	void (* refresh_sync)			(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, GError **error);
+	gboolean (*get_backend_property_sync)	(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *prop_name, gchar **prop_value, GError **error);
+	gboolean (*set_backend_property_sync)	(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *prop_name, const gchar *prop_value, GError **error);
+	void (*create_contact_sync)		(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *vcard, EContact **contact, GError **error);
+	void (*remove_contacts_sync)		(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const GSList *id_list, GSList **removed_ids, GError **error);
+	void (*modify_contact_sync)		(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *vcard, EContact **contact, GError **error);
+	void (*get_contact_sync)		(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *id, gchar **vcard, GError **error);
+	void (*get_contact_list_sync)		(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *query, GSList **contacts, GError **error);
 
-	void (*get_required_fields_sync) (EBookBackendSync *backend, EDataBook *book,
-							     guint32 opid,
-							     GList **fields, GError **perror);
-
-	void (*get_supported_fields_sync) (EBookBackendSync *backend, EDataBook *book,
-							     guint32 opid,
-							     GList **fields, GError **perror);
-	void (*get_supported_auth_methods_sync) (EBookBackendSync *backend, EDataBook *book,
-								   guint32 opid,
-								   GList **methods, GError **perror);
-
-	/* Padding for future expansion */
-	void (*_pas_reserved0) (void);
-	void (*_pas_reserved1) (void);
-	void (*_pas_reserved2) (void);
-	void (*_pas_reserved3) (void);
-	void (*_pas_reserved4) (void);
-
+	void (*authenticate_user_sync)		(EBookBackendSync *backend, GCancellable *cancellable, ECredentials *credentials, GError **error);
 };
 
-gboolean    e_book_backend_sync_construct                (EBookBackendSync             *backend);
+GType		e_book_backend_sync_get_type		(void);
 
-GType       e_book_backend_sync_get_type                 (void);
+gboolean	e_book_backend_sync_construct		(EBookBackendSync *backend);
 
-void e_book_backend_sync_remove  (EBookBackendSync *backend, EDataBook *book, guint32 opid, GError **perror);
-void e_book_backend_sync_create_contact  (EBookBackendSync *backend, EDataBook *book, guint32 opid, const gchar *vcard, EContact **contact, GError **perror);
-void e_book_backend_sync_remove_contacts (EBookBackendSync *backend, EDataBook *book, guint32 opid, GList *id_list, GList **removed_ids, GError **perror);
-void e_book_backend_sync_modify_contact  (EBookBackendSync *backend, EDataBook *book, guint32 opid, const gchar *vcard, EContact **contact, GError **perror);
-void e_book_backend_sync_get_contact (EBookBackendSync *backend, EDataBook *book, guint32 opid, const gchar *id, gchar **vcard, GError **perror);
-void e_book_backend_sync_get_contact_list (EBookBackendSync *backend, EDataBook *book, guint32 opid, const gchar *query, GList **contacts, GError **perror);
-void e_book_backend_sync_get_changes (EBookBackendSync *backend, EDataBook *book, guint32 opid, const gchar *change_id, GList **changes, GError **perror);
-void e_book_backend_sync_authenticate_user (EBookBackendSync *backend, EDataBook *book, guint32 opid, const gchar *user, const gchar *passwd, const gchar *auth_method, GError **perror);
+void		e_book_backend_sync_open		(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, gboolean only_if_exists, GError **error);
+void		e_book_backend_sync_remove		(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, GError **error);
+void		e_book_backend_sync_refresh		(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, GError **error);
+gboolean	e_book_backend_sync_get_backend_property(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *prop_name, gchar **prop_value, GError **error);
+gboolean	e_book_backend_sync_set_backend_property(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *prop_name, const gchar *prop_value, GError **error);
+void		e_book_backend_sync_create_contact	(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *vcard, EContact **contact, GError **error);
+void		e_book_backend_sync_remove_contacts	(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const GSList *id_list, GSList **removed_ids, GError **error);
+void		e_book_backend_sync_modify_contact	(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *vcard, EContact **contact, GError **error);
+void		e_book_backend_sync_get_contact		(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *id, gchar **vcard, GError **error);
+void		e_book_backend_sync_get_contact_list	(EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *query, GSList **contacts, GError **error);
 
-void e_book_backend_sync_get_required_fields (EBookBackendSync *backend, EDataBook *book, guint32 opid, GList **fields, GError **perror);
-void e_book_backend_sync_get_supported_fields (EBookBackendSync *backend, EDataBook *book, guint32 opid, GList **fields, GError **perror);
-void e_book_backend_sync_get_supported_auth_methods (EBookBackendSync *backend, EDataBook *book, guint32 opid, GList **methods, GError **perror);
+void		e_book_backend_sync_authenticate_user	(EBookBackendSync *backend, GCancellable *cancellable, ECredentials *credentials, GError **error);
 
 G_END_DECLS
 

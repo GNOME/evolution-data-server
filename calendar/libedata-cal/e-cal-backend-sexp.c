@@ -382,9 +382,7 @@ func_occur_in_time_range (ESExp *esexp, gint argc, ESExpResult **argv, gpointer 
 	end = argv[1]->value.time;
 
 	/* See if the object occurs in the specified time range */
-	default_zone = e_cal_backend_internal_get_default_timezone (ctx->backend);
-	if (!default_zone)
-		default_zone = icaltimezone_get_utc_timezone ();
+	default_zone = icaltimezone_get_utc_timezone ();
 
 	ctx->occurs = FALSE;
 	e_cal_recur_generate_instances (ctx->comp, start, end,
@@ -883,9 +881,7 @@ func_has_alarms_in_range (ESExp *esexp, gint argc, ESExpResult **argv, gpointer 
 	end = argv[1]->value.time;
 
 	/* See if the object has alarms in the given time range */
-	default_zone = e_cal_backend_internal_get_default_timezone (ctx->backend);
-	if (!default_zone)
-		default_zone = icaltimezone_get_utc_timezone ();
+	default_zone = icaltimezone_get_utc_timezone ();
 
 	alarms = e_cal_util_generate_alarms_for_comp (ctx->comp, start, end,
 						      omit, resolve_tzid,

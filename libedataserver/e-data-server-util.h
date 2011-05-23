@@ -73,6 +73,11 @@ gint		e_data_server_util_get_dbus_call_timeout
 void		e_data_server_util_set_dbus_call_timeout
 						(gint timeout_msec);
 
+#define		e_pointer_tracker_track(ptr) e_pointer_tracker_track_with_info (ptr, G_STRFUNC)
+void		e_pointer_tracker_track_with_info (gpointer ptr, const gchar *info);
+void		e_pointer_tracker_untrack (gpointer ptr);
+void		e_pointer_tracker_dump (void);
+
 G_END_DECLS
 
 #endif /* E_DATA_SERVER_UTIL_H */

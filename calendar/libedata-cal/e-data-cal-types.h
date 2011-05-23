@@ -6,6 +6,7 @@ G_BEGIN_DECLS
 
 typedef enum {
 	Success,
+	Busy,
 	RepositoryOffline,
 	PermissionDenied,
 	InvalidRange,
@@ -39,12 +40,6 @@ typedef enum {
 } EDataCalCallStatus;
 
 typedef enum {
-	ModeSet,                    /* All OK */
-	ModeNotSet,                /* Generic error */
-	ModeNotSupported           /* Mode not supported */
-} EDataCalViewListenerSetModeStatus;
-
-typedef enum {
 	Event = 1 << 0,
 	Todo = 1 << 1,
 	Journal = 1 << 2,
@@ -57,12 +52,6 @@ typedef enum {
 	ThisAndFuture = 1 << 2,
 	All = 0x07
 } EDataCalObjModType;
-
-typedef enum {
-	Local = 1 << 0,
-	Remote = 1 << 1,
-	AnyMode = 0x07
-} EDataCalMode;
 
 G_END_DECLS
 

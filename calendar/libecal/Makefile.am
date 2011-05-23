@@ -15,7 +15,7 @@ libecal_INCLUDES = \
 
 libecal_1_2_la_CPPFLAGS =			\
 	$(AM_CPPFLAGS)				\
-	$(libecal_INCLUDES)				\
+	$(libecal_INCLUDES)			\
 	-DG_LOG_DOMAIN=\"libecal\"		\
 	$(LIBICAL_CFLAGS)			\
 	$(EVOLUTION_CALENDAR_CFLAGS)
@@ -23,6 +23,9 @@ libecal_1_2_la_CPPFLAGS =			\
 libecal_1_2_la_SOURCES =			\
 	$(MARSHAL_GENERATED)			\
 	e-cal.c					\
+	e-cal-client.c				\
+	e-cal-client-view.c			\
+	e-cal-client-view-private.h		\
 	e-cal-component.c			\
 	e-cal-recur.c				\
 	e-cal-time-util.c			\
@@ -46,6 +49,8 @@ libecalincludedir = $(privincludedir)/libecal
 
 libecalinclude_HEADERS =	\
 	e-cal.h			\
+	e-cal-client.h		\
+	e-cal-client-view.h	\
 	e-cal-component.h	\
 	e-cal-recur.h		\
 	e-cal-time-util.h	\

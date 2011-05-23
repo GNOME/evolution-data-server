@@ -1,5 +1,5 @@
 #include <string.h>
-#include <libebook/e-book.h>
+#include <libebook/e-book-query.h>
 
 #define QUERY_STRING1
 #define QUERY_STRING2

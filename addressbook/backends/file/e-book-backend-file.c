@@ -248,7 +248,7 @@ do_create (EBookBackendFile  *bf,
 static void
 e_book_backend_file_create_contact (EBookBackendSync *backend,
 				    EDataBook *book,
-				    guint32 opid,
+				    GCancellable *cancellable,
 				    const gchar *vcard,
 				    EContact **contact,
 				    GError **perror)
@@ -263,18 +263,18 @@ e_book_backend_file_create_contact (EBookBackendSync *backend,
 static void
 e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 				     EDataBook *book,
-				     guint32 opid,
-				     GList *id_list,
-				     GList **ids,
+				     GCancellable *cancellable,
+				     const GSList *id_list,
+				     GSList **ids,
 				     GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	DB             *db = bf->priv->file_db;
 	DBT            id_dbt;
 	gint            db_error;
-	gchar          *id;
-	GList         *l;
-	GList         *removed_cards = NULL;
+	const gchar    *id;
+	const GSList   *l;
+	GSList         *removed_cards = NULL;
 
 	for (l = id_list; l; l = l->next) {
 		id = l->data;
@@ -288,7 +288,7 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 			continue;
 		}
 
-		removed_cards = g_list_prepend (removed_cards, id);
+		removed_cards = g_slist_prepend (removed_cards, g_strdup (id));
 	}
 
 	/* if we actually removed some, try to sync */
@@ -301,7 +301,7 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 	*ids = removed_cards;
 
 	for (l = removed_cards; l; l = l->next) {
-		gchar *id = l->data;
+		id = l->data;
 		e_book_backend_summary_remove_contact (bf->priv->summary, id);
 	}
 }
@@ -309,7 +309,7 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 static void
 e_book_backend_file_modify_contact (EBookBackendSync *backend,
 				    EDataBook *book,
-				    guint32 opid,
+				    GCancellable *cancellable,
 				    const gchar *vcard,
 				    EContact **contact,
 				    GError **perror)
@@ -368,7 +368,7 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 static void
 e_book_backend_file_get_contact (EBookBackendSync *backend,
 				 EDataBook *book,
-				 guint32 opid,
+				 GCancellable *cancellable,
 				 const gchar *id,
 				 gchar **vcard,
 				 GError **perror)
@@ -400,9 +400,9 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 static void
 e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 				      EDataBook *book,
-				      guint32 opid,
+				      GCancellable *cancellable,
 				      const gchar *query,
-				      GList **contacts,
+				      GSList **contacts,
 				      GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
@@ -413,7 +413,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 	EBookBackendSExp *card_sexp = NULL;
 	gboolean search_needed;
 	const gchar *search = query;
-	GList *contact_list = NULL;
+	GSList *contact_list = NULL;
 
 	d(printf ("e_book_backend_file_get_contact_list (%s)\n", search));
 	if (e_book_backend_summary_is_summary_query (bf->priv->summary, search)) {
@@ -435,7 +435,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 
 			db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
 			if (db_error == 0) {
-				contact_list = g_list_prepend (contact_list, vcard_dbt.data);
+				contact_list = g_slist_prepend (contact_list, vcard_dbt.data);
 			} else {
 				g_warning (G_STRLOC ": db->get failed with %s", db_strerror (db_error));
 				db_error_to_gerror (db_error, perror);
@@ -475,7 +475,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 			    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
 
 				if ((!search_needed) || (card_sexp != NULL && e_book_backend_sexp_match_vcard  (card_sexp, vcard_dbt.data))) {
-					contact_list = g_list_prepend (contact_list, vcard_dbt.data);
+					contact_list = g_slist_prepend (contact_list, vcard_dbt.data);
 				}
 			}
 
@@ -567,10 +567,10 @@ book_view_thread (gpointer data)
 	query = e_data_book_view_get_card_query (book_view);
 
 	if ( !strcmp (query, "(contains \"x-evolution-any-field\" \"\")")) {
-		e_data_book_view_notify_status_message (book_view, _("Loading..."));
+		e_data_book_view_notify_progress (book_view, -1, _("Loading..."));
 		allcontacts = TRUE;
 	} else {
-		e_data_book_view_notify_status_message (book_view, _("Searching..."));
+		e_data_book_view_notify_progress (book_view, -1, _("Searching..."));
 		allcontacts = FALSE;
 	}
 
@@ -695,260 +695,57 @@ e_book_backend_file_stop_book_view (EBookBackend  *backend,
 		g_thread_join (closure->thread);
 }
 
-typedef struct {
-	DB *db;
-
-	GList *add_cards;
-	GList *add_ids;
-	GList *mod_cards;
-	GList *mod_ids;
-	GList *del_ids;
-	GList *del_cards;
-} EBookBackendFileChangeContext;
-
-static void
-e_book_backend_file_changes_foreach_key (const gchar *key, gpointer user_data)
-{
-	EBookBackendFileChangeContext *ctx = user_data;
-	DB      *db = ctx->db;
-	DBT     id_dbt, vcard_dbt;
-	gint     db_error = 0;
-
-	string_to_dbt (key, &id_dbt);
-	memset (&vcard_dbt, 0, sizeof (vcard_dbt));
-	vcard_dbt.flags = DB_DBT_MALLOC;
-
-	db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
-
-	if (db_error != 0) {
-		EContact *contact;
-		gchar *id = id_dbt.data;
-		gchar *vcard_string;
-
-		contact = e_contact_new ();
-		e_contact_set (contact, E_CONTACT_UID, id);
-
-		vcard_string = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-
-		ctx->del_ids = g_list_append (ctx->del_ids,
-					      g_strdup (id));
-		ctx->del_cards = g_list_append (ctx->del_cards,
-						vcard_string);
-
-		g_object_unref (contact);
-
-		g_free (vcard_dbt.data);
-	}
-}
-
-static void
-e_book_backend_file_get_changes (EBookBackendSync *backend,
-				 EDataBook *book,
-				 guint32 opid,
-				 const gchar *change_id,
-				 GList **changes_out,
-				 GError **perror)
-{
-	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
-	gint     db_error = 0;
-	DBT     id_dbt, vcard_dbt;
-	gchar    *filename;
-	EDbHash *ehash;
-	GList *i, *v;
-	DB      *db = bf->priv->file_db;
-	DBC *dbc;
-	GList *changes = NULL;
-	EBookBackendFileChangeContext ctx;
-
-	memset (&id_dbt, 0, sizeof (id_dbt));
-	memset (&vcard_dbt, 0, sizeof (vcard_dbt));
-
-	memset (&ctx, 0, sizeof (ctx));
-
-	ctx.db = db;
-
-	/* Find the changed ids */
-	filename = g_strdup_printf ("%s/%s" CHANGES_DB_SUFFIX, bf->priv->dirname, change_id);
-	ehash = e_dbhash_new (filename);
-	g_free (filename);
-
-	db_error = db->cursor (db, NULL, &dbc, 0);
-
-	if (db_error != 0) {
-		g_warning (G_STRLOC ": db->cursor failed with %s", db_strerror (db_error));
-	} else {
-		db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_FIRST);
-
-		while (db_error == 0) {
-
-			/* don't include the version in the list of cards */
-			if (id_dbt.size != strlen (E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
-			    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
-				EContact *contact;
-				gchar *id = id_dbt.data;
-				gchar *vcard_string;
-
-				/* Remove fields the user can't change
-				 * and can change without the rest of the
-				 * card changing
-				 */
-				contact = create_contact (id_dbt.data, vcard_dbt.data);
-
-#ifdef notyet
-				g_object_set (card, "last_use", NULL, "use_score", 0.0, NULL);
-#endif
-				vcard_string = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-				g_object_unref (contact);
-
-				/* check what type of change has occurred, if any */
-				switch (e_dbhash_compare (ehash, id, vcard_string)) {
-				case E_DBHASH_STATUS_SAME:
-					g_free (vcard_string);
-					break;
-				case E_DBHASH_STATUS_NOT_FOUND:
-					ctx.add_cards = g_list_append (ctx.add_cards, vcard_string);
-					ctx.add_ids = g_list_append (ctx.add_ids, g_strdup (id));
-					break;
-				case E_DBHASH_STATUS_DIFFERENT:
-					ctx.mod_cards = g_list_append (ctx.mod_cards, vcard_string);
-					ctx.mod_ids = g_list_append (ctx.mod_ids, g_strdup (id));
-					break;
-				}
-			}
-
-			db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_NEXT);
-		}
-		dbc->c_close (dbc);
-	}
-
-	e_dbhash_foreach_key (ehash, (EDbHashFunc) e_book_backend_file_changes_foreach_key, &ctx);
-
-	/* Send the changes */
-	if (db_error != DB_NOTFOUND) {
-		g_warning ("e_book_backend_file_changes: error building list\n");
-		*changes_out = NULL;
-		db_error_to_gerror (db_error, perror);
-	}
-	else {
-		/* Update the hash and build our changes list */
-		for (i = ctx.add_ids, v = ctx.add_cards; i != NULL; i = i->next, v = v->next) {
-			gchar *id = i->data;
-			gchar *vcard = v->data;
-
-			e_dbhash_add (ehash, id, vcard);
-			changes = g_list_prepend (changes,
-						  e_book_backend_change_add_new (vcard));
-
-			g_free (i->data);
-			g_free (v->data);
-		}
-		for (i = ctx.mod_ids, v = ctx.mod_cards; i != NULL; i = i->next, v = v->next) {
-			gchar *id = i->data;
-			gchar *vcard = v->data;
-
-			e_dbhash_add (ehash, id, vcard);
-			changes = g_list_prepend (changes,
-						  e_book_backend_change_modify_new (vcard));
-
-			g_free (i->data);
-			g_free (v->data);
-		}
-		for (i = ctx.del_ids, v = ctx.del_cards; i != NULL; i = i->next, v = v->next) {
-			gchar *id = i->data;
-			gchar *vcard = v->data;
-
-			e_dbhash_remove (ehash, id);
-
-			changes = g_list_prepend (changes,
-						  e_book_backend_change_delete_new (vcard));
-			g_free (i->data);
-			g_free (v->data);
-		}
-
-		e_dbhash_write (ehash);
-
-		*changes_out = changes;
-	}
-
-	e_dbhash_destroy (ehash);
-}
-
 static gchar *
 e_book_backend_file_extract_path_from_source (ESource *source)
 {
-	const gchar *user_data_dir;
-	const gchar *source_dir;
-	gchar *mangled_source_dir;
-	gchar *filename;
+	gchar *filename = NULL;
+	const gchar *absolute_uri;
 
-	user_data_dir = e_get_user_data_dir ();
-	source_dir = e_source_peek_relative_uri (source);
+	absolute_uri = e_source_peek_absolute_uri (source);
 
-	if (!source_dir || !g_str_equal (source_dir, "system"))
-		source_dir = e_source_peek_uid (source);
+	if (absolute_uri && g_str_has_prefix (absolute_uri, "local://")) {
+		gchar *uri;
 
-	/* Mangle the URI to not contain invalid characters. */
-	mangled_source_dir = g_strdelimit (g_strdup (source_dir), ":/", '_');
+		uri = g_strconcat ("file://", absolute_uri + 8, NULL);
+		filename = g_filename_from_uri (uri, NULL, NULL);
+		g_free (uri);
 
-	filename = g_build_filename (
-		user_data_dir, "addressbook", mangled_source_dir, NULL);
+		if (!g_file_test (filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
+			g_free (filename);
+			filename = NULL;
+ 		}
+	}
 
-	g_free (mangled_source_dir);
+	if (!filename) {
+		const gchar *user_data_dir;
+		const gchar *source_dir;
+		gchar *mangled_source_dir;
+
+		user_data_dir = e_get_user_data_dir ();
+		source_dir = e_source_peek_relative_uri (source);
+
+		if (!source_dir || !g_str_equal (source_dir, "system"))
+			source_dir = e_source_peek_uid (source);
+
+		/* Mangle the URI to not contain invalid characters. */
+		mangled_source_dir = g_strdelimit (g_strdup (source_dir), ":/", '_');
+
+		filename = g_build_filename (
+			user_data_dir, "addressbook", mangled_source_dir, NULL);
+
+		g_free (mangled_source_dir);
+	}
 
 	return filename;
 }
 
 static void
 e_book_backend_file_authenticate_user (EBookBackendSync *backend,
-				       EDataBook *book,
-				       guint32 opid,
-				       const gchar *user,
-				       const gchar *passwd,
-				       const gchar *auth_method,
+				       GCancellable *cancellable,
+				       ECredentials *credentials,
 				       GError **perror)
 {
 	/* Success */
-}
-
-static void
-e_book_backend_file_get_required_fields (EBookBackendSync *backend,
-					  EDataBook *book,
-					  guint32 opid,
-					  GList **fields_out,
-					  GError **perror)
-{
-	GList *fields = NULL;
-
-	fields = g_list_append (fields , g_strdup (e_contact_field_name (E_CONTACT_FILE_AS)));
-	*fields_out = fields;
-}
-
-static void
-e_book_backend_file_get_supported_auth_methods (EBookBackendSync *backend,
-						EDataBook *book,
-						guint32 opid,
-						GList **methods_out,
-						GError **perror)
-{
-	*methods_out = NULL;
-}
-
-static void
-e_book_backend_file_get_supported_fields (EBookBackendSync *backend,
-					  EDataBook *book,
-					  guint32 opid,
-					  GList **fields_out,
-					  GError **perror)
-{
-	GList *fields = NULL;
-	gint i;
-
-	/* XXX we need a way to say "we support everything", since the
-	   file backend does */
-	for (i = 1; i < E_CONTACT_FIELD_LAST; i++)
-		fields = g_list_append (fields, g_strdup (e_contact_field_name (i)));
-
-	*fields_out = fields;
 }
 
 /*
@@ -1095,14 +892,16 @@ file_errcall (const gchar *buf1, gchar *buf2)
 }
 
 static void
-e_book_backend_file_load_source (EBookBackend           *backend,
-				 ESource                *source,
-				 gboolean                only_if_exists,
-				 GError                **perror)
+e_book_backend_file_open (EBookBackendSync       *backend,
+			  EDataBook              *book,
+			  GCancellable		*cancellable,
+			  gboolean               only_if_exists,
+			  GError	       **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	gchar           *dirname, *filename;
-	gboolean        writable = FALSE;
+	gboolean        readonly = TRUE;
+	ESource *source = e_book_backend_get_source (E_BOOK_BACKEND (backend));
 	gint             db_error;
 	DB *db;
 	DB_ENV *env;
@@ -1208,7 +1007,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 	}
 
 	if (db_error == 0) {
-		writable = TRUE;
+		readonly = FALSE;
 	} else {
 		db->close (db, 0);
 		db_error = db_create (&db, env, 0);
@@ -1252,7 +1051,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_CREATE | DB_THREAD, 0666);
 			if (db_error != 0) {
 				db->close (db, 0);
-				g_warning ("db->open (... DB_CREATE ...) failed with %s", db_strerror (db_error));
+				g_warning ("db->open (... %s ... DB_CREATE ...) failed with %s", filename, db_strerror (db_error));
 			}
 			else {
 #ifdef CREATE_DEFAULT_VCARD
@@ -1264,7 +1063,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 					g_object_unref (contact);
 #endif
 
-				writable = TRUE;
+				readonly = FALSE;
 			}
 		}
 	}
@@ -1313,8 +1112,9 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		}
 	}
 
-	e_book_backend_set_is_loaded (backend, TRUE);
-	e_book_backend_set_is_writable (backend, writable);
+	e_book_backend_notify_online (E_BOOK_BACKEND (backend), TRUE);
+	e_book_backend_notify_readonly (E_BOOK_BACKEND (backend), readonly);
+	e_book_backend_notify_opened (E_BOOK_BACKEND (backend), NULL /* Success */);
 }
 
 static gboolean
@@ -1338,7 +1138,7 @@ select_changes (const gchar *name)
 static void
 e_book_backend_file_remove (EBookBackendSync *backend,
 			    EDataBook        *book,
-			    guint32           opid,
+			    GCancellable *cancellable,
 			    GError          **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
@@ -1386,25 +1186,43 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 	   that the addressbook is still valid */
 }
 
-static gchar *
-e_book_backend_file_get_static_capabilities (EBookBackend *backend)
+static gboolean
+e_book_backend_file_get_backend_property (EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *prop_name, gchar **prop_value, GError **error)
 {
-	return g_strdup("local,do-initial-query,bulk-removes,contact-lists");
-}
+	gboolean processed = TRUE;
 
-static void
-e_book_backend_file_cancel_operation (EBookBackend *backend, EDataBook *book, GError **perror)
-{
-	g_propagate_error (perror, EDB_ERROR (COULD_NOT_CANCEL));
-}
+	g_return_val_if_fail (prop_name != NULL, FALSE);
+	g_return_val_if_fail (prop_value != NULL, FALSE);
 
-static void
-e_book_backend_file_set_mode (EBookBackend *backend, EDataBookMode mode)
-{
-	if (e_book_backend_is_loaded (backend)) {
-		e_book_backend_notify_writable (backend, TRUE);
-		e_book_backend_notify_connection_status (backend, TRUE);
+	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
+		*prop_value = g_strdup ("local,do-initial-query,bulk-removes,contact-lists");
+	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
+		*prop_value = g_strdup (e_contact_field_name (E_CONTACT_FILE_AS));
+	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
+		GSList *fields = NULL;
+		gint i;
+
+		/* XXX we need a way to say "we support everything", since the
+		   file backend does */
+		for (i = 1; i < E_CONTACT_FIELD_LAST; i++)
+			fields = g_slist_append (fields, (gpointer) e_contact_field_name (i));
+
+		*prop_value = e_data_book_string_slist_to_comma_string (fields);
+		g_slist_free (fields);
+	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS)) {
+		*prop_value = NULL;
+	} else {
+		processed = FALSE;
 	}
+
+	return processed;
+}
+
+static void
+e_book_backend_file_set_online (EBookBackend *backend, gboolean is_online)
+{
+	if (e_book_backend_is_opened (backend))
+		e_book_backend_notify_online (backend, TRUE);
 }
 
 static void
@@ -1530,24 +1348,20 @@ e_book_backend_file_class_init (EBookBackendFileClass *klass)
 	backend_class = E_BOOK_BACKEND_CLASS (klass);
 
 	/* Set the virtual methods. */
-	backend_class->load_source			= e_book_backend_file_load_source;
-	backend_class->get_static_capabilities		= e_book_backend_file_get_static_capabilities;
-	backend_class->start_book_view			= e_book_backend_file_start_book_view;
-	backend_class->stop_book_view			= e_book_backend_file_stop_book_view;
-	backend_class->cancel_operation			= e_book_backend_file_cancel_operation;
-	backend_class->set_mode				= e_book_backend_file_set_mode;
-	backend_class->sync				= e_book_backend_file_sync;
-	sync_class->remove_sync				= e_book_backend_file_remove;
-	sync_class->create_contact_sync			= e_book_backend_file_create_contact;
-	sync_class->remove_contacts_sync		= e_book_backend_file_remove_contacts;
-	sync_class->modify_contact_sync			= e_book_backend_file_modify_contact;
-	sync_class->get_contact_sync			= e_book_backend_file_get_contact;
-	sync_class->get_contact_list_sync		= e_book_backend_file_get_contact_list;
-	sync_class->get_changes_sync			= e_book_backend_file_get_changes;
-	sync_class->authenticate_user_sync		= e_book_backend_file_authenticate_user;
-	sync_class->get_supported_auth_methods_sync	= e_book_backend_file_get_supported_auth_methods;
-	sync_class->get_supported_fields_sync		= e_book_backend_file_get_supported_fields;
-	sync_class->get_required_fields_sync		= e_book_backend_file_get_required_fields;
+	backend_class->start_book_view		= e_book_backend_file_start_book_view;
+	backend_class->stop_book_view		= e_book_backend_file_stop_book_view;
+	backend_class->set_online		= e_book_backend_file_set_online;
+	backend_class->sync			= e_book_backend_file_sync;
+
+	sync_class->open_sync			= e_book_backend_file_open;
+	sync_class->remove_sync			= e_book_backend_file_remove;
+	sync_class->get_backend_property_sync	= e_book_backend_file_get_backend_property;
+	sync_class->create_contact_sync		= e_book_backend_file_create_contact;
+	sync_class->remove_contacts_sync	= e_book_backend_file_remove_contacts;
+	sync_class->modify_contact_sync		= e_book_backend_file_modify_contact;
+	sync_class->get_contact_sync		= e_book_backend_file_get_contact;
+	sync_class->get_contact_list_sync	= e_book_backend_file_get_contact_list;
+	sync_class->authenticate_user_sync	= e_book_backend_file_authenticate_user;
 
 	object_class->dispose = e_book_backend_file_dispose;
 	object_class->finalize = e_book_backend_file_finalize;

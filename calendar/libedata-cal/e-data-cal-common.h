@@ -39,9 +39,6 @@ typedef struct _EDataCalViewClass EDataCalViewClass;
 typedef struct _ECalBackendSExp ECalBackendSExp;
 typedef struct _ECalBackendSExpClass ECalBackendSExpClass;
 
-/* Opaque type for backend method context */
-typedef gpointer EServerMethodContext;
-
 
 
 G_END_DECLS

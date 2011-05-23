@@ -7,11 +7,14 @@ CPPFLAGS = \
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/addressbook		\
 	-I$(top_builddir)/addressbook		\
+	-I$(top_srcdir)/calendar		\
+	-I$(top_builddir)/calendar		\
 	-DG_LOG_DOMAIN=\"e-data-server-ui\"	\
 	-DE_DATA_SERVER_UI_UIDIR=\""$(uidir)"\"	\
 	$(E_DATA_SERVER_UI_CFLAGS)		\
 	$(GNOME_KEYRING_CFLAGS)			\
-	$(CAMEL_CFLAGS)
+	$(CAMEL_CFLAGS)				\
+	$(SOUP_CFLAGS)
 
 lib_LTLIBRARIES = libedataserverui-3.0.la
 
@@ -23,6 +26,7 @@ libedataserveruiinclude_HEADERS =	\
 	e-category-editor.h		\
 	e-destination-store.h		\
 	e-book-auth-util.h		\
+	e-client-utils.h		\
 	e-contact-store.h		\
 	e-name-selector.h		\
 	e-name-selector-dialog.h	\
@@ -53,6 +57,7 @@ libedataserverui_3_0_la_SOURCES =	\
 	e-category-editor.c		\
 	e-destination-store.c		\
 	e-book-auth-util.c		\
+	e-client-utils.c		\
 	e-contact-store.c		\
 	e-name-selector.c		\
 	e-name-selector-dialog.c	\
@@ -70,11 +75,13 @@ libedataserverui_3_0_la_CPPFLAGS = $(CPPFLAGS)
 
 libedataserverui_3_0_la_LIBADD = 				\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
+	$(top_builddir)/calendar/libecal/libecal-1.2.la		\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(top_builddir)/camel/libcamel-1.2.la			\
 	$(E_DATA_SERVER_UI_LIBS)				\
 	$(GNOME_KEYRING_LIBS)					\
-	$(CAMEL_LIBS)
+	$(CAMEL_LIBS)						\
+	$(SOUP_LIBS)
 
 libedataserverui_3_0_la_LDFLAGS = \
 	-version-info $(LIBEDATASERVERUI_CURRENT):$(LIBEDATASERVERUI_REVISION):$(LIBEDATASERVERUI_AGE) $(NO_UNDEFINED)
