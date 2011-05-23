@@ -3,7 +3,6 @@
 [encoding: UTF-8]
 addressbook/backends/file/e-book-backend-file.c
 addressbook/backends/google/e-book-backend-google.c
-addressbook/backends/groupwise/e-book-backend-groupwise.c
 addressbook/backends/ldap/e-book-backend-ldap.c
 addressbook/backends/vcf/e-book-backend-vcf.c
 addressbook/backends/webdav/e-book-backend-webdav.c
@@ -18,8 +17,6 @@ addressbook/libedata-book/e-data-book.c
 calendar/backends/caldav/e-cal-backend-caldav.c
 calendar/backends/contacts/e-cal-backend-contacts.c
 calendar/backends/file/e-cal-backend-file.c
-calendar/backends/groupwise/e-cal-backend-groupwise-utils.c
-calendar/backends/groupwise/e-cal-backend-groupwise.c
 calendar/backends/http/e-cal-backend-http.c
 calendar/backends/weather/e-cal-backend-weather.c
 calendar/libecal/e-cal-client.c
@@ -134,14 +131,6 @@ camel/camel-vee-store.c
 camel/camel-vee-summary.c
 camel/camel-vtrash-folder.c
 camel/camel.c
-camel/providers/groupwise/camel-groupwise-folder.c
-camel/providers/groupwise/camel-groupwise-journal.c
-camel/providers/groupwise/camel-groupwise-provider.c
-camel/providers/groupwise/camel-groupwise-store-summary.c
-camel/providers/groupwise/camel-groupwise-store.c
-camel/providers/groupwise/camel-groupwise-summary.c
-camel/providers/groupwise/camel-groupwise-transport.c
-camel/providers/groupwise/camel-groupwise-utils.c
 camel/providers/imap/camel-imap-command.c
 camel/providers/imap/camel-imap-folder.c
 camel/providers/imap/camel-imap-journal.c
@@ -203,4 +192,3 @@ libedataserverui/e-name-selector-list.c
 libedataserverui/e-passwords.c
 libedataserverui/e-passwords-win32.c
 libedataserverui/e-source-selector-dialog.c
-servers/groupwise/e-gw-connection.c
