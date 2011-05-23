@@ -2767,9 +2767,14 @@ camel_store_create_folder_sync (CamelStore *store,
 		return NULL;
 	}
 
+	camel_operation_push_message (
+		cancellable, _("Creating folder '%s'"), folder_name);
+
 	fi = class->create_folder_sync (
 		store, parent_name, folder_name, cancellable, error);
 	CAMEL_CHECK_GERROR (store, create_folder_sync, fi != NULL, error);
+
+	camel_operation_pop_message (cancellable);
 
 	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
 
