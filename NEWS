@@ -1,3 +1,13 @@
+Evolution-Data-Server 3.0.2.1 2011-05-23
+----------------------------------------
+
+Vala itself still has too many issues, so revert the Vala bindings
+from the gnome-3-0 branch.  They should be available in E-D-S 3.2.
+
+Second attempt at fixing Bug 550414: "Corruption of mailbox and can't
+expunge trash".
+
+
 Evolution-Data-Server 3.0.2 2011-05-23
 --------------------------------------
 
