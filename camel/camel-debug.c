@@ -171,8 +171,7 @@ i386_length_and_rw_bits (gint len, enum target_hw_bp_type type)
 	break;
 #endif
       default:
-	internal_error (__FILE__, __LINE__, "\
-Invalid hw breakpoint type %d in i386_length_and_rw_bits.\n", (gint) type);
+	internal_error (__FILE__, __LINE__, "Invalid hw breakpoint type %d in i386_length_and_rw_bits.\n", (gint) type);
     }
 
   switch (len)
@@ -187,8 +186,7 @@ Invalid hw breakpoint type %d in i386_length_and_rw_bits.\n", (gint) type);
 	if (TARGET_HAS_DR_LEN_8)
 	  return (DR_LEN_8 | rw);
       default:
-	internal_error (__FILE__, __LINE__, "\
-Invalid hw breakpoint length %d in i386_length_and_rw_bits.\n", len);
+	internal_error (__FILE__, __LINE__, "Invalid hw breakpoint length %d in i386_length_and_rw_bits.\n", len);
     }
 }
 

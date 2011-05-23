@@ -183,7 +183,10 @@ libedataserver/e-client.c
 libedataserver/e-time-utils.c
 libedataserverui/e-book-auth-util.c
 libedataserverui/e-categories-dialog.c
+libedataserverui/e-categories-editor.c
+libedataserverui/e-categories-selector.c
 libedataserverui/e-category-completion.c
+libedataserverui/e-category-editor.c
 libedataserverui/e-cell-renderer-color.c
 libedataserverui/e-client-utils.c
 libedataserverui/e-name-selector-dialog.c
