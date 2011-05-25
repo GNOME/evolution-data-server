@@ -241,10 +241,6 @@ store_finalize (GObject *object)
 	if (store->cdb_r != NULL) {
 		camel_db_close (store->cdb_r);
 		store->cdb_r = NULL;
-	}
-
-	if (store->cdb_w != NULL) {
-		camel_db_close (store->cdb_w);
 		store->cdb_w = NULL;
 	}
 
@@ -1231,8 +1227,8 @@ store_initable_init (GInitable *initable,
 	if (camel_db_create_folders_table (store->cdb_r, error))
 		return FALSE;
 
-	/* This is for writing to the store */
-	store->cdb_w = camel_db_clone (store->cdb_r, error);
+	/* keep cb_w to not break the ABI */
+	store->cdb_w = store->cdb_r;
 
 	if (camel_url_get_param (url, "filter"))
 		store->flags |= CAMEL_STORE_FILTER_INBOX;

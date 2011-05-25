@@ -42,6 +42,12 @@
 /* how long to wait before invoking sync on the file */
 #define SYNC_TIMEOUT_SECONDS 5
 
+#define READER_LOCK(cdb) g_static_rw_lock_reader_lock (&cdb->priv->rwlock)
+#define READER_UNLOCK(cdb) g_static_rw_lock_reader_unlock (&cdb->priv->rwlock)
+#define WRITER_LOCK(cdb) g_static_rw_lock_writer_lock (&cdb->priv->rwlock)
+#define WRITER_UNLOCK(cdb) g_static_rw_lock_writer_unlock (&cdb->priv->rwlock)
+
+
 static sqlite3_vfs *old_vfs = NULL;
 static GThreadPool *sync_pool = NULL;
 
@@ -344,14 +350,23 @@ init_sqlite_vfs (void)
 
 struct _CamelDBPrivate {
 	GTimer *timer;
+	GStaticRWLock rwlock;
 	gchar *file_name;
 };
 
-static GStaticRecMutex trans_lock = G_STATIC_REC_MUTEX_INIT;
-
+/**
+ * cdb_sql_exec 
+ * @db: 
+ * @stmt: 
+ * @error: 
+ * 
+ * Callers should hold the lock
+ **/
 static gint
 cdb_sql_exec (sqlite3 *db,
               const gchar *stmt,
+	      gint (*callback)(void*,gint,gchar**,gchar**),
+	      gpointer data,
               GError **error)
 {
 	gchar *errmsg = NULL;
@@ -359,7 +374,7 @@ cdb_sql_exec (sqlite3 *db,
 
 	d(g_print("Camel SQL Exec:\n%s\n", stmt));
 
-	ret = sqlite3_exec (db, stmt, NULL, NULL, &errmsg);
+	ret = sqlite3_exec (db, stmt, callback, data, &errmsg);
 	while (ret == SQLITE_BUSY || ret == SQLITE_LOCKED || ret == -1) {
 		if (errmsg) {
 			sqlite3_free (errmsg);
@@ -467,9 +482,9 @@ camel_db_open (const gchar *path,
 
 	cdb = g_new (CamelDB, 1);
 	cdb->db = db;
-	cdb->lock = g_mutex_new ();
 	cdb->priv = g_new (CamelDBPrivate, 1);
 	cdb->priv->file_name = g_strdup (path);
+	g_static_rw_lock_init (&cdb->priv->rwlock);
 	cdb->priv->timer = NULL;
 	d(g_print ("\nDatabase succesfully opened  \n"));
 
@@ -519,7 +534,9 @@ camel_db_close (CamelDB *cdb)
 {
 	if (cdb) {
 		sqlite3_close (cdb->db);
-		g_mutex_free (cdb->lock);
+		g_static_rw_lock_free (&cdb->priv->rwlock);
+		g_free (cdb->priv->file_name);
+		g_free (cdb->priv);
 		g_free (cdb);
 		d(g_print ("\nDatabase succesfully closed \n"));
 	}
@@ -538,11 +555,11 @@ camel_db_set_collate (CamelDB *cdb, const gchar *col, const gchar *collate, Came
 		if (!cdb)
 			return 0;
 
-		g_mutex_lock (cdb->lock);
+		WRITER_LOCK (cdb);
 		d(g_print("Creating Collation %s on %s with %p\n", collate, col, (gpointer) func));
 		if (collate && func)
 			ret = sqlite3_create_collation (cdb->db, collate, SQLITE_UTF8,  NULL, func);
-		g_mutex_unlock (cdb->lock);
+		WRITER_UNLOCK (cdb);
 
 		return ret;
 }
@@ -561,12 +578,15 @@ camel_db_command (CamelDB *cdb,
 
 	if (!cdb)
 		return TRUE;
-	g_mutex_lock (cdb->lock);
+	
+	WRITER_LOCK (cdb);
 
 	START (stmt);
-	ret = cdb_sql_exec (cdb->db, stmt, error);
+	ret = cdb_sql_exec (cdb->db, stmt, NULL, NULL, error);
 	END;
-	g_mutex_unlock (cdb->lock);
+	
+	WRITER_UNLOCK (cdb);
+
 
 	return ret;
 }
@@ -582,13 +602,11 @@ camel_db_begin_transaction (CamelDB *cdb,
 {
 	if (!cdb)
 		return -1;
-	if (g_getenv("SQLITE_TRANSLOCK"))
-		g_static_rec_mutex_lock (&trans_lock);
 
-	g_mutex_lock (cdb->lock);
+	WRITER_LOCK (cdb);
 	STARTTS("BEGIN");
 
-	return (cdb_sql_exec (cdb->db, "BEGIN", error));
+	return (cdb_sql_exec (cdb->db, "BEGIN", NULL, NULL, error));
 }
 
 /**
@@ -604,12 +622,10 @@ camel_db_end_transaction (CamelDB *cdb,
 	if (!cdb)
 		return -1;
 
-	ret = cdb_sql_exec (cdb->db, "COMMIT", error);
+	ret = cdb_sql_exec (cdb->db, "COMMIT", NULL, NULL, error);
+	
 	ENDTS;
-	g_mutex_unlock (cdb->lock);
-	if (g_getenv("SQLITE_TRANSLOCK"))
-		g_static_rec_mutex_unlock (&trans_lock);
-
+	WRITER_UNLOCK (cdb);
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 
 	return ret;
@@ -626,10 +642,9 @@ camel_db_abort_transaction (CamelDB *cdb,
 {
 	gint ret;
 
-	ret = cdb_sql_exec (cdb->db, "ROLLBACK", error);
-	g_mutex_unlock (cdb->lock);
-	if (g_getenv("SQLITE_TRANSLOCK"))
-		g_static_rec_mutex_unlock (&trans_lock);
+	ret = cdb_sql_exec (cdb->db, "ROLLBACK", NULL, NULL, error);
+
+	WRITER_UNLOCK (cdb);
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 
 	return ret;
@@ -648,7 +663,7 @@ camel_db_add_to_transaction (CamelDB *cdb,
 	if (!cdb)
 		return -1;
 
-	return (cdb_sql_exec (cdb->db, stmt, error));
+	return (cdb_sql_exec (cdb->db, stmt, NULL, NULL, error));
 }
 
 /**
@@ -667,24 +682,25 @@ camel_db_transaction_command (CamelDB *cdb,
 	if (!cdb)
 		return -1;
 
-	g_mutex_lock (cdb->lock);
+	WRITER_LOCK (cdb);
+
 	STARTTS("BEGIN");
-	ret = cdb_sql_exec (cdb->db, "BEGIN", error);
+	ret = cdb_sql_exec (cdb->db, "BEGIN", NULL, NULL, error);
 	if (ret)
 		goto end;
 
 	while (qry_list) {
 		query = qry_list->data;
-		ret = cdb_sql_exec (cdb->db, query, error);
+		ret = cdb_sql_exec (cdb->db, query, NULL, NULL, error);
 		if (ret)
 			goto end;
 		qry_list = g_slist_next (qry_list);
 	}
 
-	ret = cdb_sql_exec (cdb->db, "COMMIT", error);
+	ret = cdb_sql_exec (cdb->db, "COMMIT", NULL, NULL, error);
 	ENDTS;
 end:
-	g_mutex_unlock (cdb->lock);
+	WRITER_UNLOCK (cdb);
 	return ret;
 }
 
@@ -714,40 +730,17 @@ camel_db_count_message_info (CamelDB *cdb,
                              GError **error)
 {
 	gint ret = -1;
-	gchar *errmsg = NULL;
 
-	g_mutex_lock (cdb->lock);
 
+	READER_LOCK (cdb);
+	
 	START (query);
-	ret = sqlite3_exec (cdb->db, query, count_cb, count, &errmsg);
-	while (ret == SQLITE_BUSY || ret == SQLITE_LOCKED) {
-		if (errmsg) {
-			sqlite3_free (errmsg);
-			errmsg = NULL;
-		}
-
-		ret = sqlite3_exec (cdb->db, query, count_cb, count, &errmsg);
-	}
-
+	ret = cdb_sql_exec (cdb->db, query, count_cb, count, error);
 	END;
 
-	g_mutex_unlock (cdb->lock);
+	READER_UNLOCK (cdb);
 
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
-
-	if (ret != SQLITE_OK) {
-		d(g_print ("Error in SQL SELECT statement: %s [%s]\n", query, errmsg));
-		g_set_error (
-			error, CAMEL_ERROR,
-			CAMEL_ERROR_GENERIC, "%s", errmsg);
-		sqlite3_free (errmsg);
-		errmsg = NULL;
-	}
-
-	if (errmsg) {
-		sqlite3_free (errmsg);
-		errmsg = NULL;
-	}
 
 	return ret;
 }
@@ -940,45 +933,20 @@ camel_db_select (CamelDB *cdb,
                  gpointer data,
                  GError **error)
 {
-	gchar *errmsg = NULL;
-	/*int nrecs = 0;*/
 	gint ret = -1;
 
 	if (!cdb)
 		return ret;
 
 	d(g_print ("\n%s:\n%s \n", G_STRFUNC, stmt));
-	g_mutex_lock (cdb->lock);
+	READER_LOCK (cdb);
 
 	START (stmt);
-	ret = sqlite3_exec (cdb->db, stmt, callback, data, &errmsg);
-	while (ret == SQLITE_BUSY || ret == SQLITE_LOCKED) {
-		if (errmsg) {
-			sqlite3_free (errmsg);
-			errmsg = NULL;
-		}
-
-		ret = sqlite3_exec (cdb->db, stmt, callback, data, &errmsg);
-	}
-
+	ret = cdb_sql_exec (cdb->db, stmt, callback, data, error);
 	END;
 
-	g_mutex_unlock (cdb->lock);
+	READER_UNLOCK (cdb);
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
-
-	if (ret != SQLITE_OK) {
-		d(g_warning ("Error in select statement '%s' [%s].\n", stmt, errmsg));
-		g_set_error (
-			error, CAMEL_ERROR,
-			CAMEL_ERROR_GENERIC, "%s", errmsg);
-		sqlite3_free (errmsg);
-		errmsg = NULL;
-	}
-
-	if (errmsg) {
-		sqlite3_free (errmsg);
-		errmsg = NULL;
-	}
 
 	return ret;
 }
