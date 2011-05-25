@@ -17,7 +17,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2011-05-23 17:35+0000\n"
+"POT-Creation-Date: 2011-05-25 17:11+0000\n"
 "PO-Revision-Date: 2011-05-24 10:17+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
@@ -169,19 +169,16 @@ msgid "No such book"
 msgstr "No existe la carpeta %s"
 
 #: ../addressbook/libebook/e-book-client.c:88
-#| msgid "Contact not found"
 msgctxt "BookClientError"
 msgid "Contact not found"
 msgstr "Contacto no encontrado"
 
 #: ../addressbook/libebook/e-book-client.c:90
-#| msgid "Contact ID already exists"
 msgctxt "BookClientError"
 msgid "Contact ID already exists"
 msgstr "Ya existe el ID del contacto"
 
 #: ../addressbook/libebook/e-book-client.c:92
-#| msgid "TLS not available"
 msgctxt "BookClientError"
 msgid "TLS not available"
 msgstr "TLS no disponible"
@@ -208,13 +205,11 @@ msgid "Unsupported authentication method"
 msgstr "Método de autenticación no soportado"
 
 #: ../addressbook/libebook/e-book-client.c:100
-#| msgid "No space"
 msgctxt "BookClientError"
 msgid "No space"
 msgstr "Sin espacio"
 
 #: ../addressbook/libebook/e-book-client.c:103
-#| msgid "Unknown error"
 msgctxt "BookClientError"
 msgid "Unknown error"
 msgstr "Error desconocido"
@@ -242,7 +237,7 @@ msgstr "Fuente inválida"
 #: ../calendar/libecal/e-cal-client.c:633
 #, c-format
 msgid "Incorrect uri '%s'"
-msgstr ""
+msgstr "URI «%s» incorrecto"
 
 #: ../addressbook/libebook/e-book-client.c:562
 #, fuzzy
@@ -252,17 +247,16 @@ msgstr "Error en el mensaje %d"
 
 #: ../addressbook/libebook/e-book-client.c:669
 #: ../calendar/libecal/e-cal-client.c:781
-#, fuzzy, c-format
+#, c-format
 #| msgid "%s: there was no source for UID '%s' stored in GConf."
 msgid "There was no source for UID '%s' stored in a source list."
-msgstr "%s: no había origen para el UID «%s» almacenado en GConf."
+msgstr "No había origen para el UID «%s» almacenado en la lista de origen."
 
 #: ../addressbook/libebook/e-book-client.c:1860
 #: ../calendar/libecal/e-cal-client.c:3469
-#, fuzzy
 #| msgid "Cannot get contact list: %s"
 msgid "Cannot get connection to view"
-msgstr "No se puede obtener la lista de contactos: %s"
+msgstr "No se puede obtener conexión para ver"
 
 #: ../addressbook/libebook/e-book-client-view.c:218
 #: ../calendar/libecal/e-cal-client-view.c:455
@@ -843,7 +837,6 @@ msgstr "URI vacío"
 #: ../addressbook/libedata-book/e-data-book.c:189
 #: ../addressbook/libedata-book/e-data-book.c:202
 #: ../addressbook/libedata-book/e-data-book.c:663
-#| msgid "Invalid query: %s"
 msgid "Invalid query: "
 msgstr "Consulta no válida: "
 
@@ -965,79 +958,67 @@ msgstr "Otro error"
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:527
 #: ../addressbook/libedata-book/e-data-book.c:835
-#| msgid "Cannot get contact: %s"
 msgid "Cannot get contact: "
 msgstr "No se puede obtener el contacto: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:549
-#| msgid "Empty query: %s"
 msgid "Empty query: "
 msgstr "Consulta vacía: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:571
 #: ../addressbook/libedata-book/e-data-book.c:877
-#| msgid "Cannot add contact: %s"
 msgid "Cannot add contact: "
 msgstr "No se puede añadir el contacto: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:593
 #: ../addressbook/libedata-book/e-data-book.c:896
-#| msgid "Cannot modify contact: %s"
 msgid "Cannot modify contact: "
 msgstr "No se puede modificar el contacto: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:686
 #: ../calendar/libedata-cal/e-data-cal.c:824
-#| msgid "Cannot authenticate user: %s"
 msgid "Cannot authenticate user: "
 msgstr "No se puede autenticar al usuario: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:748
-#| msgid "Cannot open book: %s"
 msgid "Cannot open book: "
 msgstr "No se puede abrir la libreta: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:762
-#| msgid "Cannot remove book: %s"
 msgid "Cannot remove book: "
 msgstr "No se puede quitar la libreta: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:787
-#| msgid "Cannot refresh calendar: %s"
 msgid "Cannot refresh address book: "
 msgstr "No se puede actualizar la libreta de direcciones: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:803
-#, fuzzy
 #| msgid "Cannot create calendar object: %s"
 msgid "Cannot get backend property: "
-msgstr "No se puede crear el objeto del calendario: %s"
+msgstr "No se puede obtener la propierdad del «backend»:"
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:819
 #: ../calendar/libedata-cal/e-data-cal.c:1001
-#, fuzzy
 #| msgid "Cannot send calendar objects: %s"
 msgid "Cannot set backend property: "
-msgstr "No se pueden enviar los objetos del calendario: %s"
+msgstr "No se puede establecer la propierdad del «backend»:"
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:850
-#| msgid "Cannot get contact list: %s"
 msgid "Cannot get contact list: "
 msgstr "No se puede obtener la lista de contactos: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:914
-#| msgid "Cannot remove contacts: %s"
 msgid "Cannot remove contacts: "
 msgstr "No se pueden quitar los contactos: "
 
@@ -1152,38 +1133,32 @@ msgid "Forecast"
 msgstr "Pronóstico"
 
 #: ../calendar/libecal/e-cal-client.c:128
-#, fuzzy
 #| msgid "No such calendar"
 msgctxt "CalClientError"
 msgid "No such calendar"
-msgstr "No existe el calendario"
+msgstr "No existe tal calendario"
 
 #: ../calendar/libecal/e-cal-client.c:130
-#| msgid "Object not found"
 msgctxt "CalClientError"
 msgid "Object not found"
 msgstr "Objeto no encontrado"
 
 #: ../calendar/libecal/e-cal-client.c:132
-#| msgid "Invalid object"
 msgctxt "CalClientError"
 msgid "Invalid object"
 msgstr "Objeto no válido"
 
 #: ../calendar/libecal/e-cal-client.c:134
-#| msgid "Unknown user"
 msgctxt "CalClientError"
 msgid "Unknown user"
 msgstr "Usuario desconocido"
 
 #: ../calendar/libecal/e-cal-client.c:136
-#| msgid "Object ID already exists"
 msgctxt "CalClientError"
 msgid "Object ID already exists"
 msgstr "El ID del objeto ya existe"
 
 #: ../calendar/libecal/e-cal-client.c:139
-#| msgid "Unknown error"
 msgctxt "CalClientError"
 msgid "Unknown error"
 msgstr "Error desconocido"
@@ -1193,16 +1168,14 @@ msgid "D-Bus calendar proxy gone"
 msgstr ""
 
 #: ../calendar/libecal/e-cal-client.c:515
-#, fuzzy
 #| msgid "Failed to encode data"
 msgid "Failed to run calendar factory"
-msgstr "Falló al codificar datos"
+msgstr "Falló al ejecutar la fábrica del calendario"
 
 #: ../calendar/libecal/e-cal-client.c:672
-#, fuzzy
 #| msgid "Failed to encode data"
 msgid "Failed to find system calendar"
-msgstr "Falló al codificar datos"
+msgstr "Falló al buscar el calendario del sistema"
 
 #: ../calendar/libecal/e-cal-client.c:710
 #: ../calendar/libedata-cal/e-data-cal.c:428
@@ -1210,7 +1183,6 @@ msgid "Calendar does not exist"
 msgstr "El calendatio no existe"
 
 #: ../calendar/libecal/e-cal-client.c:820
-#| msgid "Invalid source"
 msgid "Invalid source type"
 msgstr "Tipo de fuente no válida"
 
@@ -1568,19 +1540,16 @@ msgstr "Usuario desconocido"
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:909
-#| msgid "Cannot open calendar: %s"
 msgid "Cannot open calendar: "
 msgstr "No se puede abrir el calendario: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:930
-#| msgid "Cannot remove calendar: %s"
 msgid "Cannot remove calendar: "
 msgstr "No se puede quitar el calendario: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:955
-#| msgid "Cannot refresh calendar: %s"
 msgid "Cannot refresh calendar: "
 msgstr "No se puede actualizar el calendario: "
 
@@ -1593,7 +1562,6 @@ msgstr "No se puede obtener la dirección del calendario: %s"
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1025
-#| msgid "Cannot retrieve calendar object path: %s"
 msgid "Cannot retrieve calendar object path: "
 msgstr "No se puede obtener la ruta del objeto del calendario: "
 
@@ -2777,7 +2745,6 @@ msgstr "No se pudo crear la carpeta: %s: la carpeta existe"
 
 #: ../camel/camel-store.c:2771
 #, c-format
-#| msgid "Cannot get folder '%s': %s"
 msgid "Creating folder '%s'"
 msgstr "Creando carpeta «%s»"
 
@@ -4841,7 +4808,6 @@ msgid "Waiting"
 msgstr "En espera"
 
 #: ../libedataserver/e-client.c:109
-#| msgid "Invalid argument"
 msgctxt "ClientError"
 msgid "Invalid argument"
 msgstr "Argumento no válido"
@@ -4868,61 +4834,51 @@ msgid "Source already loaded"
 msgstr "URI ya cargado"
 
 #: ../libedataserver/e-client.c:117
-#| msgid "Authentication failed"
 msgctxt "ClientError"
 msgid "Authentication failed"
 msgstr "Falló la autenticación"
 
 #: ../libedataserver/e-client.c:119
-#| msgid "Authentication required"
 msgctxt "ClientError"
 msgid "Authentication required"
 msgstr "Autenticación requerida"
 
 #: ../libedataserver/e-client.c:121
-#| msgid "Repository offline"
 msgctxt "ClientError"
 msgid "Repository offline"
 msgstr "Repositorio desconectado"
 
 #: ../libedataserver/e-client.c:123
-#| msgid "Permission denied"
 msgctxt "ClientError"
 msgid "Permission denied"
 msgstr "Permiso denegado"
 
 #: ../libedataserver/e-client.c:125
-#| msgid "Cancelled"
 msgctxt "ClientError"
 msgid "Cancelled"
 msgstr "Cancelado"
 
 #: ../libedataserver/e-client.c:127
-#| msgid "Could not cancel"
 msgctxt "ClientError"
 msgid "Could not cancel"
 msgstr "No se pudo cancelar"
 
 #: ../libedataserver/e-client.c:129
-#| msgid "Not supported"
 msgctxt "ClientError"
 msgid "Not supported"
 msgstr "No soportado"
 
 #: ../libedataserver/e-client.c:131
-#| msgid "parse error"
 msgctxt "ClientError"
 msgid "D-Bus error"
 msgstr "Error de D-Bus"
 
 #: ../libedataserver/e-client.c:133
-#| msgid "Other error"
 msgctxt "ClientError"
 msgid "Other error"
 msgstr "Otro error"
 
 #: ../libedataserver/e-client.c:136
-#| msgid "Unknown error"
 msgctxt "ClientError"
 msgid "Unknown error"
 msgstr "Error desconocido"
@@ -5123,12 +5079,10 @@ msgid ""
 msgstr "Introduzca la contraseña para %s (usuario %s)"
 
 #: ../libedataserverui/e-client-utils.c:749
-#| msgid "Enter password"
 msgid "Enter Passphrase"
 msgstr "Introduzca la frase de paso"
 
 #: ../libedataserverui/e-client-utils.c:751
-#| msgid "Enter password"
 msgid "Enter Password"
 msgstr "Introduzca contraseña"
 
