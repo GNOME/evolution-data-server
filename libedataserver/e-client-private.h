@@ -24,9 +24,7 @@
 
 #include <gio/gio.h>
 
-#include "libedataserver/e-credentials.h"
 #include "libedataserver/e-source.h"
-#include "libedataserver/e-source-list.h"
 #include "libedataserver/e-client.h"
 
 G_BEGIN_DECLS
@@ -36,9 +34,7 @@ void		e_client_set_readonly		(EClient *client, gboolean readonly);
 void		e_client_set_online		(EClient *client, gboolean is_online);
 guint32		e_client_register_op		(EClient *client, GCancellable *cancellable);
 void		e_client_unregister_op		(EClient *client, guint32 opid);
-void		e_client_process_authentication	(EClient *client, const ECredentials *credentials);
 
-gboolean	e_client_emit_authenticate	(EClient *client, ECredentials *credentials);
 void		e_client_emit_opened		(EClient *client, const GError *error);
 void		e_client_emit_backend_error	(EClient *client, const gchar *error_msg);
 void		e_client_emit_backend_died	(EClient *client);
@@ -46,10 +42,6 @@ void		e_client_emit_backend_property_changed   (EClient *client, const gchar *pr
 
 void		e_client_update_backend_property_cache   (EClient *client, const gchar *prop_name, const gchar *prop_value);
 gchar *		e_client_get_backend_property_from_cache (EClient *client, const gchar *prop_name);
-
-ESource *	e_client_util_get_system_source	(ESourceList *source_list);
-gboolean	e_client_util_set_default	(ESourceList *source_list, ESource *source);
-ESource *	e_client_util_get_source_for_uri (ESourceList *source_list, const gchar *uri);
 
 /* protected functions simplifying sync/async calls */
 void		e_client_finish_async_without_dbus (EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data, gpointer soure_tag, gpointer op_res, GDestroyNotify destroy_op_res);

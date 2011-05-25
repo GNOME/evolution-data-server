@@ -65,7 +65,6 @@ enum {
 };
 
 enum {
-	AUTHENTICATE,
 	OPENED,
 	BACKEND_ERROR,
 	BACKEND_DIED,
@@ -188,7 +187,6 @@ e_client_error_create (EClientError code,
 }
 
 static void client_set_source (EClient *client, ESource *source);
-static void client_handle_authentication (EClient *client, const ECredentials *credentials);
 
 static void
 e_client_init (EClient *client)
@@ -376,16 +374,6 @@ e_client_class_init (EClientClass *class)
 			FALSE,
 			G_PARAM_READABLE));
 
-	signals[AUTHENTICATE] = g_signal_new (
-		"authenticate",
-		G_OBJECT_CLASS_TYPE (class),
-		G_SIGNAL_RUN_LAST,
-		G_STRUCT_OFFSET (EClientClass, authenticate),
-		NULL, NULL,
-		e_gdbus_marshallers_BOOLEAN__POINTER,
-		G_TYPE_BOOLEAN, 1,
-		G_TYPE_POINTER);
-
 	signals[OPENED] = g_signal_new (
 		"opened",
 		G_OBJECT_CLASS_TYPE (class),
@@ -456,27 +444,6 @@ e_client_get_source (EClient *client)
 	g_return_val_if_fail (E_IS_CLIENT (client), NULL);
 
 	return client->priv->source;
-}
-
-/**
- * e_client_get_uri:
- * @client: an #EClient
- *
- * Get the URI that this client has assigned. This string should not be freed.
- *
- * Returns: The URI.
- *
- * Since: 3.2
- **/
-const gchar *
-e_client_get_uri (EClient *client)
-{
-	g_return_val_if_fail (E_IS_CLIENT (client), NULL);
-
-	if (!client->priv->uri)
-		client->priv->uri = e_source_get_uri (e_client_get_source (client));
-
-	return client->priv->uri;
 }
 
 static void
@@ -815,107 +782,6 @@ e_client_unregister_op (EClient *client,
 	g_static_rec_mutex_lock (&client->priv->ops_mutex);
 	g_hash_table_remove (client->priv->ops, GINT_TO_POINTER (opid));
 	g_static_rec_mutex_unlock (&client->priv->ops_mutex);
-}
-
-static void
-client_handle_authentication (EClient *client,
-                              const ECredentials *credentials)
-{
-	EClientClass *class;
-
-	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (credentials != NULL);
-
-	class = E_CLIENT_GET_CLASS (client);
-	g_return_if_fail (class != NULL);
-	g_return_if_fail (class->handle_authentication != NULL);
-
-	return class->handle_authentication (client, credentials);
-}
-
-struct EClientAuthData {
-	EClient *client;
-	ECredentials *credentials;
-};
-
-static gboolean
-client_process_authentication_idle_cb (gpointer user_data)
-{
-	static gboolean processing_one = FALSE;
-	struct EClientAuthData *auth_data = user_data;
-
-	g_return_val_if_fail (auth_data != NULL, FALSE);
-
-	/* there is one currently processing, postpone this request for later */
-	if (processing_one)
-		return TRUE;
-
-	/* no need for locking, this is always main-thread's idle */
-	processing_one = TRUE;
-
-	if (e_client_emit_authenticate (auth_data->client, auth_data->credentials)) {
-		client_handle_authentication (auth_data->client, auth_data->credentials);
-	} else {
-		/* Always pass credentials to backend to finish opening phase.
-		 * Empty username indicates that either user cancelled password prompt
-		 * or there was no authentication callback set.
-		*/
-		e_credentials_set (auth_data->credentials, E_CREDENTIALS_KEY_USERNAME, NULL);
-		client_handle_authentication (auth_data->client, auth_data->credentials);
-
-		if (g_strcmp0 (e_credentials_peek (auth_data->credentials, E_CREDENTIALS_KEY_FOREIGN_REQUEST), "1") != 0) {
-			GError *error;
-
-			error = e_client_error_create (E_CLIENT_ERROR_AUTHENTICATION_REQUIRED, NULL);
-			e_client_emit_opened (auth_data->client, error);
-			g_error_free (error);
-		}
-	}
-
-	e_credentials_free (auth_data->credentials);
-	g_object_unref (auth_data->client);
-	g_free (auth_data);
-
-	processing_one = FALSE;
-
-	return FALSE;
-}
-
-/* Processes authentication request in idle callback. Usual steps are:
- * a) backend sends an auth - required signal
- * b) EClient implementation calls this function
- * c) a new idle callback is run which emits authenticate signal by e_client_emit_authenticate ()
- * d) if anyone responds (returns true), the EClient::handle_authentication
- *    is called from the same idle callback with new credentials
- * e) EClient implementation passes results to backend in the EClient::handle_authentication
-*/
-void
-e_client_process_authentication (EClient *client,
-                                 const ECredentials *credentials)
-{
-	struct EClientAuthData *auth_data;
-
-	g_return_if_fail (E_IS_CLIENT (client));
-
-	auth_data = g_new0 (struct EClientAuthData, 1);
-	auth_data->client = g_object_ref (client);
-	auth_data->credentials = credentials ? e_credentials_new_clone (credentials) : e_credentials_new ();
-
-	g_idle_add (client_process_authentication_idle_cb, auth_data);
-}
-
-gboolean
-e_client_emit_authenticate (EClient *client,
-                            ECredentials *credentials)
-{
-	gboolean handled = FALSE;
-
-	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
-	g_return_val_if_fail (credentials != NULL, FALSE);
-
-	g_signal_emit (client, signals[AUTHENTICATE], 0, credentials, &handled);
-
-	return handled;
 }
 
 void
@@ -1728,192 +1594,6 @@ e_client_util_parse_comma_strings (const gchar *strings)
 	g_strfreev (strs_strv);
 
 	return g_slist_reverse (strs_slist);
-}
-
-/* for each known source calls check_func, which should return TRUE if the required
- * source have been found. Function returns NULL or the source on which was returned
- * TRUE by the check_func. Non - NULL pointer should be unreffed by g_object_unref. */
-static ESource *
-search_known_sources (ESourceList *sources,
-                      gboolean (*check_func) (ESource *source,
-                                              gpointer user_data),
-                      gpointer user_data)
-{
-	ESource *res = NULL;
-	GSList *g;
-
-	g_return_val_if_fail (check_func != NULL, NULL);
-	g_return_val_if_fail (sources != NULL, NULL);
-
-	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
-		ESourceGroup *group = E_SOURCE_GROUP (g->data);
-		GSList *s;
-
-		for (s = e_source_group_peek_sources (group); s; s = s->next) {
-			ESource *source = E_SOURCE (s->data);
-
-			if (check_func (source, user_data)) {
-				res = g_object_ref (source);
-				break;
-			}
-		}
-
-		if (res)
-			break;
-	}
-
-	return res;
-}
-
-static gboolean
-check_uri (ESource *source,
-           gpointer uri)
-{
-	const gchar *suri;
-	gchar *suri2;
-	gboolean res;
-
-	g_return_val_if_fail (source != NULL, FALSE);
-	g_return_val_if_fail (uri != NULL, FALSE);
-
-	suri = e_source_peek_absolute_uri (source);
-
-	if (suri)
-		return g_ascii_strcasecmp (suri, uri) == 0;
-
-	suri2 = e_source_get_uri (source);
-	res = suri2 && g_ascii_strcasecmp (suri2, uri) == 0;
-	g_free (suri2);
-
-	return res;
-}
-
-struct check_system_data
-{
-	const gchar *uri;
-	ESource *uri_source;
-};
-
-static gboolean
-check_system (ESource *source,
-              gpointer data)
-{
-	struct check_system_data *csd = data;
-
-	g_return_val_if_fail (source != NULL, FALSE);
-	g_return_val_if_fail (data != NULL, FALSE);
-
-	if (e_source_get_property (source, "system")) {
-		return TRUE;
-	}
-
-	if (check_uri (source, (gpointer) csd->uri)) {
-		if (csd->uri_source)
-			g_object_unref (csd->uri_source);
-		csd->uri_source = g_object_ref (source);
-	}
-
-	return FALSE;
-}
-
-ESource *
-e_client_util_get_system_source (ESourceList *source_list)
-{
-	struct check_system_data csd;
-	ESource *system_source = NULL;
-
-	g_return_val_if_fail (source_list != NULL, NULL);
-	g_return_val_if_fail (E_IS_SOURCE_LIST (source_list), NULL);
-
-	csd.uri = "local:system";
-	csd.uri_source = NULL;
-
-	system_source = search_known_sources (source_list, check_system, &csd);
-
-	if (!system_source) {
-		system_source = csd.uri_source;
-		csd.uri_source = NULL;
-	}
-
-	if (csd.uri_source)
-		g_object_unref (csd.uri_source);
-
-	if (!system_source) {
-		/* create a new one, if not found */
-		ESourceGroup *on_this_computer;
-
-		on_this_computer = e_source_list_ensure_group (source_list,
-						       _("On This Computer"),
-						       "local:", TRUE);
-		if (on_this_computer) {
-			GError *error = NULL;
-
-			system_source = e_source_new (_("Personal"), "system");
-			e_source_set_color_spec (system_source, "#BECEDD");
-			e_source_group_add_source (on_this_computer, system_source, -1);
-
-			if (!e_source_list_sync (source_list, &error))
-				g_warning ("Cannot add system source to GConf: %s", error ? error->message : "Unknown error");
-
-			if (error)
-				g_error_free (error);
-		}
-	}
-
-	return system_source;
-}
-
-gboolean
-e_client_util_set_default (ESourceList *source_list,
-                           ESource *source)
-{
-	const gchar *uid;
-	GSList *g;
-
-	g_return_val_if_fail (source_list != NULL, FALSE);
-	g_return_val_if_fail (E_IS_SOURCE_LIST (source_list), FALSE);
-	g_return_val_if_fail (source != NULL, FALSE);
-	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
-
-	uid = e_source_get_uid (source);
-
-	/* make sure the source is actually in the ESourceList.  If
-	 * it's not we don't bother adding it, just return an error */
-	source = e_source_list_peek_source_by_uid (source_list, uid);
-	if (!source)
-		return FALSE;
-
-	/* loop over all the sources clearing out any "default"
-	 * properties we find */
-	for (g = e_source_list_peek_groups (source_list); g; g = g->next) {
-		GSList *s;
-		for (s = e_source_group_peek_sources (E_SOURCE_GROUP (g->data));
-		     s; s = s->next) {
-			e_source_set_property (E_SOURCE (s->data), "default", NULL);
-		}
-	}
-
-	/* set the "default" property on the source */
-	e_source_set_property (source, "default", "true");
-
-	return TRUE;
-}
-
-ESource *
-e_client_util_get_source_for_uri (ESourceList *source_list,
-                                  const gchar *uri)
-{
-	ESource *source;
-
-	g_return_val_if_fail (source_list != NULL, NULL);
-	g_return_val_if_fail (E_IS_SOURCE_LIST (source_list), NULL);
-	g_return_val_if_fail (uri != NULL, NULL);
-
-	source = search_known_sources (source_list, check_uri, (gpointer) uri);
-	if (!source)
-		source = e_source_new_with_absolute_uri ("", uri);
-
-	return source;
 }
 
 void

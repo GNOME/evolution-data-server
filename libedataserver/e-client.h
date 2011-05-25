@@ -24,9 +24,7 @@
 
 #include <gio/gio.h>
 
-#include <libedataserver/e-credentials.h>
 #include <libedataserver/e-source.h>
-#include <libedataserver/e-source-list.h>
 
 #define E_TYPE_CLIENT		(e_client_get_type ())
 #define E_CLIENT(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_CLIENT, EClient))
@@ -210,10 +208,6 @@ struct _EClientClass {
 	gboolean	(* refresh_finish) (EClient *client, GAsyncResult *result, GError **error);
 	gboolean	(* refresh_sync) (EClient *client, GCancellable *cancellable, GError **error);
 
-	void		(* handle_authentication) (EClient *client, const ECredentials *credentials);
-
-	/* signals */
-	gboolean	(* authenticate) (EClient *client, ECredentials *credentials);
 	void		(* opened) (EClient *client, const GError *error);
 	void		(* backend_error) (EClient *client, const gchar *error_msg);
 	void		(* backend_died) (EClient *client);
@@ -223,7 +217,6 @@ struct _EClientClass {
 GType		e_client_get_type			(void);
 
 ESource *	e_client_get_source			(EClient *client);
-const gchar *	e_client_get_uri			(EClient *client);
 const GSList *	e_client_get_capabilities		(EClient *client);
 gboolean	e_client_check_capability		(EClient *client, const gchar *capability);
 gboolean	e_client_check_refresh_supported	(EClient *client);

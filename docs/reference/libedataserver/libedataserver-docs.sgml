@@ -49,7 +49,6 @@
     <title>Miscellaneous Utilities</title>
     <xi:include href="xml/e-categories.xml"/>
     <xi:include href="xml/e-client.xml"/>
-    <xi:include href="xml/e-credentials.xml"/>
     <xi:include href="xml/e-debug-log.xml"/>
     <xi:include href="xml/e-flag.xml"/>
     <xi:include href="xml/e-memory.xml"/>
@@ -66,6 +65,7 @@
 
   <chapter>
     <title>Deprecated Classes</title>
+    <xi:include href="xml/e-credentials.xml"/>
     <xi:include href="xml/e-iterator.xml"/>
     <xi:include href="xml/e-list.xml"/>
     <xi:include href="xml/e-list-iterator.xml"/>
