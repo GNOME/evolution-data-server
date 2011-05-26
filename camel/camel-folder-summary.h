@@ -352,7 +352,6 @@ gint camel_folder_summary_save_to_db (CamelFolderSummary *s, GError **error);
 gint camel_folder_summary_load_from_db (CamelFolderSummary *s, GError **error);
 
 /* only load the header */
-gint camel_folder_summary_header_load (CamelFolderSummary *summary);
 gint camel_folder_summary_header_load_from_db (CamelFolderSummary *s, struct _CamelStore *store, const gchar *folder_name, GError **error);
 gint camel_folder_summary_header_save_to_db (CamelFolderSummary *s, GError **error);
 
