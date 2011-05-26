@@ -352,6 +352,7 @@ struct _CamelDBPrivate {
 	GTimer *timer;
 	GStaticRWLock rwlock;
 	gchar *file_name;
+	gboolean transaction_is_on;
 };
 
 /**
@@ -606,6 +607,8 @@ camel_db_begin_transaction (CamelDB *cdb,
 	WRITER_LOCK (cdb);
 	STARTTS("BEGIN");
 
+	cdb->priv->transaction_is_on = TRUE;
+
 	return (cdb_sql_exec (cdb->db, "BEGIN", NULL, NULL, error));
 }
 
@@ -623,6 +626,7 @@ camel_db_end_transaction (CamelDB *cdb,
 		return -1;
 
 	ret = cdb_sql_exec (cdb->db, "COMMIT", NULL, NULL, error);
+	cdb->priv->transaction_is_on = FALSE;
 	
 	ENDTS;
 	WRITER_UNLOCK (cdb);
@@ -643,6 +647,7 @@ camel_db_abort_transaction (CamelDB *cdb,
 	gint ret;
 
 	ret = cdb_sql_exec (cdb->db, "ROLLBACK", NULL, NULL, error);
+	cdb->priv->transaction_is_on = FALSE;
 
 	WRITER_UNLOCK (cdb);
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
@@ -662,6 +667,8 @@ camel_db_add_to_transaction (CamelDB *cdb,
 {
 	if (!cdb)
 		return -1;
+
+	g_assert (cdb->priv->transaction_is_on == TRUE);
 
 	return (cdb_sql_exec (cdb->db, stmt, NULL, NULL, error));
 }
