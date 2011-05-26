@@ -76,12 +76,3 @@ Implementation of the calendar CORBA factory.
 @factory: 
 
 
-<!-- ##### FUNCTION e_data_cal_factory_set_backend_mode ##### -->
-<para>
-
-</para>
-
-@factory: 
-@mode: 
-
-

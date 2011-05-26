@@ -242,6 +242,39 @@ e-data-book-types
 @uri: 
 @Returns: 
 
+<!-- ##### FUNCTION e_book_backend_cancel_operation ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@error: 
+
+<!-- ##### FUNCTION e_book_backend_change_add_new ##### -->
+<para>
+
+</para>
+
+@vcard: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_backend_change_delete_new ##### -->
+<para>
+
+</para>
+
+@id: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_backend_change_modify_new ##### -->
+<para>
+
+</para>
+
+@vcard: 
+@Returns: 
+
 <!-- ##### FUNCTION e_book_backend_construct ##### -->
 <para>
 
@@ -249,6 +282,178 @@ e-data-book-types
 
 @backend: 
 @Returns: 
+
+<!-- ##### FUNCTION e_book_backend_get_book_views ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_backend_get_changes ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@change_id: 
+
+<!-- ##### FUNCTION e_book_backend_get_required_fields ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+
+<!-- ##### FUNCTION e_book_backend_get_static_capabilities ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_backend_get_supported_auth_methods ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+
+<!-- ##### FUNCTION e_book_backend_get_supported_fields ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+
+<!-- ##### FUNCTION e_book_backend_has_out_of_proc_clients ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_backend_is_loaded ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_backend_is_writable ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_backend_load_source ##### -->
+<para>
+
+</para>
+
+@backend: 
+@source: 
+@only_if_exists: 
+@error: 
+
+<!-- ##### FUNCTION e_book_backend_notify_connection_status ##### -->
+<para>
+
+</para>
+
+@backend: 
+@is_online: 
+
+<!-- ##### FUNCTION e_book_backend_notify_writable ##### -->
+<para>
+
+</para>
+
+@backend: 
+@is_writable: 
+
+<!-- ##### FUNCTION e_book_backend_set_is_loaded ##### -->
+<para>
+
+</para>
+
+@backend: 
+@is_loaded: 
+
+<!-- ##### FUNCTION e_book_backend_set_is_writable ##### -->
+<para>
+
+</para>
+
+@backend: 
+@is_writable: 
+
+<!-- ##### FUNCTION e_book_backend_set_mode ##### -->
+<para>
+
+</para>
+
+@backend: 
+@mode: 
+
+<!-- ##### FUNCTION e_book_backend_sync_get_changes ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@change_id: 
+@changes: 
+@perror: 
+
+<!-- ##### FUNCTION e_book_backend_sync_get_required_fields ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@fields: 
+@perror: 
+
+<!-- ##### FUNCTION e_book_backend_sync_get_supported_auth_methods ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@methods: 
+@perror: 
+
+<!-- ##### FUNCTION e_book_backend_sync_get_supported_fields ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@fields: 
+@perror: 
 
 <!-- ##### FUNCTION e_data_book_factory_activate ##### -->
 <para>
@@ -296,6 +501,14 @@ e-data-book-types
 
 @factory: 
 
+<!-- ##### FUNCTION e_data_book_factory_set_backend_mode ##### -->
+<para>
+
+</para>
+
+@factory: 
+@mode: 
+
 <!-- ##### FUNCTION e_data_book_get_listener ##### -->
 <para>
 
@@ -328,6 +541,31 @@ e-data-book-types
 </para>
 
 
+<!-- ##### FUNCTION e_data_book_report_connection_status ##### -->
+<para>
+
+</para>
+
+@book: 
+@is_online: 
+
+<!-- ##### FUNCTION e_data_book_report_writable ##### -->
+<para>
+
+</para>
+
+@book: 
+@writable: 
+
+<!-- ##### FUNCTION e_data_book_respond_authenticate_user ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@error: 
+
 <!-- ##### FUNCTION e_data_book_respond_get_book_view ##### -->
 <para>
 
@@ -338,7 +576,55 @@ e-data-book-types
 @status: 
 @book_view: 
 
+<!-- ##### FUNCTION e_data_book_respond_get_changes ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@error: 
+@changes: 
+
+<!-- ##### FUNCTION e_data_book_respond_get_required_fields ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@error: 
+@fields: 
+
+<!-- ##### FUNCTION e_data_book_respond_get_supported_auth_methods ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@error: 
+@fields: 
+
+<!-- ##### FUNCTION e_data_book_respond_get_supported_fields ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@error: 
+@fields: 
+
 <!-- ##### FUNCTION e_data_book_view_get_listener ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@Returns: 
+
+<!-- ##### FUNCTION e_data_book_view_get_max_results ##### -->
 <para>
 
 </para>
@@ -353,4 +639,21 @@ e-data-book-types
 
 @book_view: 
 @Returns: 
+
+<!-- ##### FUNCTION e_data_book_view_notify_status_message ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@message: 
+
+<!-- ##### FUNCTION e_data_book_view_set_thresholds ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@minimum_grouping_threshold: 
+@maximum_grouping_threshold: 
 

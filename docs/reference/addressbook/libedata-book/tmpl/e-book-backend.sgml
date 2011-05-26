@@ -56,17 +56,6 @@ EBookBackend
 @cache_dir: 
 
 
-<!-- ##### FUNCTION e_book_backend_load_source ##### -->
-<para>
-
-</para>
-
-@backend: 
-@source: 
-@only_if_exists: 
-@error: 
-
-
 <!-- ##### FUNCTION e_book_backend_get_source ##### -->
 <para>
 
@@ -95,42 +84,6 @@ EBookBackend
 @book: 
 
 
-<!-- ##### FUNCTION e_book_backend_has_out_of_proc_clients ##### -->
-<para>
-
-</para>
-
-@backend: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_book_backend_get_static_capabilities ##### -->
-<para>
-
-</para>
-
-@backend: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_book_backend_is_loaded ##### -->
-<para>
-
-</para>
-
-@backend: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_book_backend_is_writable ##### -->
-<para>
-
-</para>
-
-@backend: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_book_backend_is_removed ##### -->
 <para>
 
@@ -148,6 +101,7 @@ EBookBackend
 @backend: 
 @book: 
 @opid: 
+@cancellable: 
 @only_if_exists: 
 
 
@@ -159,6 +113,7 @@ EBookBackend
 @backend: 
 @book: 
 @opid: 
+@cancellable: 
 
 
 <!-- ##### FUNCTION e_book_backend_create_contact ##### -->
@@ -169,6 +124,7 @@ EBookBackend
 @backend: 
 @book: 
 @opid: 
+@cancellable: 
 @vcard: 
 
 
@@ -180,6 +136,7 @@ EBookBackend
 @backend: 
 @book: 
 @opid: 
+@cancellable: 
 @id_list: 
 
 
@@ -191,6 +148,7 @@ EBookBackend
 @backend: 
 @book: 
 @opid: 
+@cancellable: 
 @vcard: 
 
 
@@ -202,6 +160,7 @@ EBookBackend
 @backend: 
 @book: 
 @opid: 
+@cancellable: 
 @id: 
 
 
@@ -213,18 +172,8 @@ EBookBackend
 @backend: 
 @book: 
 @opid: 
+@cancellable: 
 @query: 
-
-
-<!-- ##### FUNCTION e_book_backend_get_changes ##### -->
-<para>
-
-</para>
-
-@backend: 
-@book: 
-@opid: 
-@change_id: 
 
 
 <!-- ##### FUNCTION e_book_backend_authenticate_user ##### -->
@@ -233,60 +182,8 @@ EBookBackend
 </para>
 
 @backend: 
-@book: 
-@opid: 
-@user: 
-@passwd: 
-@auth_method: 
-
-
-<!-- ##### FUNCTION e_book_backend_get_supported_fields ##### -->
-<para>
-
-</para>
-
-@backend: 
-@book: 
-@opid: 
-
-
-<!-- ##### FUNCTION e_book_backend_get_required_fields ##### -->
-<para>
-
-</para>
-
-@backend: 
-@book: 
-@opid: 
-
-
-<!-- ##### FUNCTION e_book_backend_get_supported_auth_methods ##### -->
-<para>
-
-</para>
-
-@backend: 
-@book: 
-@opid: 
-
-
-<!-- ##### FUNCTION e_book_backend_cancel_operation ##### -->
-<para>
-
-</para>
-
-@backend: 
-@book: 
-@error: 
-
-
-<!-- ##### FUNCTION e_book_backend_set_mode ##### -->
-<para>
-
-</para>
-
-@backend: 
-@mode: 
+@cancellable: 
+@credentials: 
 
 
 <!-- ##### FUNCTION e_book_backend_start_book_view ##### -->
@@ -325,15 +222,6 @@ EBookBackend
 @view: 
 
 
-<!-- ##### FUNCTION e_book_backend_get_book_views ##### -->
-<para>
-
-</para>
-
-@backend: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_book_backend_notify_update ##### -->
 <para>
 
@@ -360,30 +248,14 @@ EBookBackend
 @backend: 
 
 
-<!-- ##### FUNCTION e_book_backend_notify_writable ##### -->
-<para>
-
-</para>
-
-@backend: 
-@is_writable: 
-
-
-<!-- ##### FUNCTION e_book_backend_notify_connection_status ##### -->
-<para>
-
-</para>
-
-@backend: 
-@is_online: 
-
-
 <!-- ##### FUNCTION e_book_backend_notify_auth_required ##### -->
 <para>
 
 </para>
 
 @backend: 
+@is_self: 
+@credentials: 
 
 
 <!-- ##### FUNCTION e_book_backend_sync ##### -->
@@ -392,24 +264,6 @@ EBookBackend
 </para>
 
 @backend: 
-
-
-<!-- ##### FUNCTION e_book_backend_set_is_loaded ##### -->
-<para>
-
-</para>
-
-@backend: 
-@is_loaded: 
-
-
-<!-- ##### FUNCTION e_book_backend_set_is_writable ##### -->
-<para>
-
-</para>
-
-@backend: 
-@is_writable: 
 
 
 <!-- ##### FUNCTION e_book_backend_set_is_removed ##### -->
@@ -421,42 +275,19 @@ EBookBackend
 @is_removed: 
 
 
-<!-- ##### FUNCTION e_book_backend_change_add_new ##### -->
-<para>
-
-</para>
-
-@vcard: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_book_backend_change_modify_new ##### -->
-<para>
-
-</para>
-
-@vcard: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_book_backend_change_delete_new ##### -->
-<para>
-
-</para>
-
-@id: 
-@Returns: 
-
-
 <!-- ##### STRUCT EBookBackendClass ##### -->
 <para>
 
 </para>
 
 @parent_class: 
-@load_source: 
+@get_backend_property: 
+@set_backend_property: 
+@open: 
 @remove: 
-@get_static_capabilities: 
+@set_online: 
+@authenticate_user: 
+@refresh: 
 @create_contact: 
 @remove_contacts: 
 @modify_contact: 
@@ -464,17 +295,6 @@ EBookBackend
 @get_contact_list: 
 @start_book_view: 
 @stop_book_view: 
-@get_changes: 
-@authenticate_user: 
-@get_required_fields: 
-@get_supported_fields: 
-@get_supported_auth_methods: 
-@cancel_operation: 
-@set_mode: 
 @last_client_gone: 
 @sync: 
-@_pas_reserved1: 
-@_pas_reserved2: 
-@_pas_reserved3: 
-@_pas_reserved4: 
 

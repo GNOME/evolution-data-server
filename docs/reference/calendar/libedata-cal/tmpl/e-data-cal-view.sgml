@@ -20,22 +20,6 @@ Implementation of the calendar CORBA search interface.
 <!-- ##### SECTION Image ##### -->
 
 
-<!-- ##### MACRO QUERY ##### -->
-<para>
-
-</para>
-
-@obj: 
-
-
-<!-- ##### MACRO IS_QUERY ##### -->
-<para>
-
-</para>
-
-@obj: 
-
-
 <!-- ##### FUNCTION e_data_cal_view_new ##### -->
 <para>
 
@@ -51,7 +35,7 @@ Implementation of the calendar CORBA search interface.
 
 </para>
 
-@query: 
+@view: 
 @connection: 
 @object_path: 
 @error: 
@@ -63,7 +47,7 @@ Implementation of the calendar CORBA search interface.
 
 </para>
 
-@query: 
+@view: 
 @Returns: 
 
 
@@ -72,7 +56,7 @@ Implementation of the calendar CORBA search interface.
 
 </para>
 
-@query: 
+@view: 
 @Returns: 
 
 
@@ -81,17 +65,8 @@ Implementation of the calendar CORBA search interface.
 
 </para>
 
-@query: 
+@view: 
 @object: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_data_cal_view_get_matched_objects ##### -->
-<para>
-
-</para>
-
-@query: 
 @Returns: 
 
 
@@ -100,16 +75,7 @@ Implementation of the calendar CORBA search interface.
 
 </para>
 
-@query: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_data_cal_view_is_done ##### -->
-<para>
-
-</para>
-
-@query: 
+@view: 
 @Returns: 
 
 
@@ -118,7 +84,7 @@ Implementation of the calendar CORBA search interface.
 
 </para>
 
-@query: 
+@view: 
 @Returns: 
 
 
@@ -127,7 +93,7 @@ Implementation of the calendar CORBA search interface.
 
 </para>
 
-@query: 
+@view: 
 @objects: 
 
 
@@ -136,7 +102,7 @@ Implementation of the calendar CORBA search interface.
 
 </para>
 
-@query: 
+@view: 
 @object: 
 
 
@@ -145,7 +111,7 @@ Implementation of the calendar CORBA search interface.
 
 </para>
 
-@query: 
+@view: 
 @objects: 
 
 
@@ -154,7 +120,7 @@ Implementation of the calendar CORBA search interface.
 
 </para>
 
-@query: 
+@view: 
 @object: 
 
 
@@ -163,7 +129,7 @@ Implementation of the calendar CORBA search interface.
 
 </para>
 
-@query: 
+@view: 
 @ids: 
 
 
@@ -172,7 +138,7 @@ Implementation of the calendar CORBA search interface.
 
 </para>
 
-@query: 
+@view: 
 @id: 
 
 
@@ -181,17 +147,8 @@ Implementation of the calendar CORBA search interface.
 
 </para>
 
-@query: 
-@message: 
+@view: 
 @percent: 
-
-
-<!-- ##### FUNCTION e_data_cal_view_notify_done ##### -->
-<para>
-
-</para>
-
-@query: 
-@error: 
+@message: 
 
 

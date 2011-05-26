@@ -45,7 +45,7 @@ ESourceComboBox
 
 </para>
 
-@source_combo_box: 
+@combo_box: 
 @Returns: 
 
 
@@ -54,7 +54,7 @@ ESourceComboBox
 
 </para>
 
-@source_combo_box: 
+@combo_box: 
 @source_list: 
 
 
@@ -63,7 +63,7 @@ ESourceComboBox
 
 </para>
 
-@source_combo_box: 
+@combo_box: 
 @Returns: 
 
 
@@ -72,7 +72,7 @@ ESourceComboBox
 
 </para>
 
-@source_combo_box: 
+@combo_box: 
 @source: 
 
 
@@ -81,7 +81,7 @@ ESourceComboBox
 
 </para>
 
-@source_combo_box: 
+@combo_box: 
 @Returns: 
 
 
@@ -90,7 +90,7 @@ ESourceComboBox
 
 </para>
 
-@source_combo_box: 
+@combo_box: 
 @uid: 
 @Returns: 
 

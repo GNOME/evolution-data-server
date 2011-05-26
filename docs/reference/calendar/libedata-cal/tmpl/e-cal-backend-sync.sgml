@@ -26,15 +26,6 @@ Base class for synchronous backends.
 </para>
 
 
-<!-- ##### USER_FUNCTION ECalBackendSyncFactoryFn ##### -->
-<para>
-
-</para>
-
-@void: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_cal_backend_sync_set_lock ##### -->
 <para>
 
@@ -44,61 +35,6 @@ Base class for synchronous backends.
 @lock: 
 
 
-<!-- ##### FUNCTION e_cal_backend_sync_is_read_only ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@read_only: 
-@error: 
-
-
-<!-- ##### FUNCTION e_cal_backend_sync_get_cal_address ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@address: 
-@error: 
-
-
-<!-- ##### FUNCTION e_cal_backend_sync_get_alarm_email_address ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@address: 
-@error: 
-
-
-<!-- ##### FUNCTION e_cal_backend_sync_get_ldap_attribute ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@attribute: 
-@error: 
-
-
-<!-- ##### FUNCTION e_cal_backend_sync_get_static_capabilities ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@capabiliites: 
-@error: 
-
-
 <!-- ##### FUNCTION e_cal_backend_sync_open ##### -->
 <para>
 
@@ -106,9 +42,8 @@ Base class for synchronous backends.
 
 @backend: 
 @cal: 
+@cancellable: 
 @only_if_exists: 
-@username: 
-@password: 
 @error: 
 
 
@@ -119,6 +54,7 @@ Base class for synchronous backends.
 
 @backend: 
 @cal: 
+@cancellable: 
 @error: 
 
 
@@ -129,6 +65,7 @@ Base class for synchronous backends.
 
 @backend: 
 @cal: 
+@cancellable: 
 @error: 
 
 
@@ -139,8 +76,10 @@ Base class for synchronous backends.
 
 @backend: 
 @cal: 
+@cancellable: 
 @calobj: 
 @uid: 
+@new_object: 
 @error: 
 
 
@@ -151,6 +90,7 @@ Base class for synchronous backends.
 
 @backend: 
 @cal: 
+@cancellable: 
 @calobj: 
 @mod: 
 @old_object: 
@@ -165,24 +105,12 @@ Base class for synchronous backends.
 
 @backend: 
 @cal: 
+@cancellable: 
 @uid: 
 @rid: 
 @mod: 
 @old_object: 
-@object: 
-@error: 
-
-
-<!-- ##### FUNCTION e_cal_backend_sync_get_attachment_list ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@uid: 
-@rid: 
-@attachments: 
+@new_object: 
 @error: 
 
 
@@ -193,7 +121,9 @@ Base class for synchronous backends.
 
 @backend: 
 @cal: 
+@cancellable: 
 @uid: 
+@rid: 
 @auid: 
 @error: 
 
@@ -205,6 +135,7 @@ Base class for synchronous backends.
 
 @backend: 
 @cal: 
+@cancellable: 
 @calobj: 
 @error: 
 
@@ -216,20 +147,10 @@ Base class for synchronous backends.
 
 @backend: 
 @cal: 
+@cancellable: 
 @calobj: 
 @users: 
 @modified_calobj: 
-@error: 
-
-
-<!-- ##### FUNCTION e_cal_backend_sync_get_default_object ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@object: 
 @error: 
 
 
@@ -240,9 +161,10 @@ Base class for synchronous backends.
 
 @backend: 
 @cal: 
+@cancellable: 
 @uid: 
 @rid: 
-@object: 
+@calobj: 
 @error: 
 
 
@@ -253,8 +175,9 @@ Base class for synchronous backends.
 
 @backend: 
 @cal: 
+@cancellable: 
 @sexp: 
-@objects: 
+@calobjs: 
 @error: 
 
 
@@ -265,8 +188,9 @@ Base class for synchronous backends.
 
 @backend: 
 @cal: 
+@cancellable: 
 @tzid: 
-@object: 
+@tzobject: 
 @error: 
 
 
@@ -277,32 +201,8 @@ Base class for synchronous backends.
 
 @backend: 
 @cal: 
-@tzobj: 
-@error: 
-
-
-<!-- ##### FUNCTION e_cal_backend_sync_set_default_zone ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@tzobj: 
-@error: 
-
-
-<!-- ##### FUNCTION e_cal_backend_sync_get_changes ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@change_id: 
-@adds: 
-@modifies: 
-@deletes: 
+@cancellable: 
+@tzobject: 
 @error: 
 
 
@@ -313,10 +213,11 @@ Base class for synchronous backends.
 
 @backend: 
 @cal: 
+@cancellable: 
 @users: 
 @start: 
 @end: 
-@freebusy: 
+@freebusyobjs: 
 @error: 
 
 

@@ -42,12 +42,3 @@ EDataBookFactory
 @parent: 
 @priv: 
 
-<!-- ##### FUNCTION e_data_book_factory_set_backend_mode ##### -->
-<para>
-
-</para>
-
-@factory: 
-@mode: 
-
-

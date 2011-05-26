@@ -116,82 +116,6 @@ Base class for calendar/tasks backend implementations.
 @cal: 
 
 
-<!-- ##### FUNCTION e_cal_backend_add_query ##### -->
-<para>
-
-</para>
-
-@backend: 
-@query: 
-
-
-<!-- ##### FUNCTION e_cal_backend_get_queries ##### -->
-<para>
-
-</para>
-
-@backend: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_cal_backend_remove_query ##### -->
-<para>
-
-</para>
-
-@backend: 
-@query: 
-
-
-<!-- ##### FUNCTION e_cal_backend_is_read_only ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-
-
-<!-- ##### FUNCTION e_cal_backend_get_cal_address ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@context: 
-
-
-<!-- ##### FUNCTION e_cal_backend_get_alarm_email_address ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@context: 
-
-
-<!-- ##### FUNCTION e_cal_backend_get_ldap_attribute ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@context: 
-
-
-<!-- ##### FUNCTION e_cal_backend_get_static_capabilities ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@context: 
-
-
 <!-- ##### FUNCTION e_cal_backend_open ##### -->
 <para>
 
@@ -199,10 +123,9 @@ Base class for calendar/tasks backend implementations.
 
 @backend: 
 @cal: 
-@context: 
+@opid: 
+@cancellable: 
 @only_if_exists: 
-@username: 
-@password: 
 
 
 <!-- ##### FUNCTION e_cal_backend_refresh ##### -->
@@ -212,7 +135,8 @@ Base class for calendar/tasks backend implementations.
 
 @backend: 
 @cal: 
-@context: 
+@opid: 
+@cancellable: 
 
 
 <!-- ##### FUNCTION e_cal_backend_remove ##### -->
@@ -222,7 +146,8 @@ Base class for calendar/tasks backend implementations.
 
 @backend: 
 @cal: 
-@context: 
+@opid: 
+@cancellable: 
 
 
 <!-- ##### FUNCTION e_cal_backend_create_object ##### -->
@@ -232,7 +157,8 @@ Base class for calendar/tasks backend implementations.
 
 @backend: 
 @cal: 
-@context: 
+@opid: 
+@cancellable: 
 @calobj: 
 
 
@@ -243,7 +169,8 @@ Base class for calendar/tasks backend implementations.
 
 @backend: 
 @cal: 
-@context: 
+@opid: 
+@cancellable: 
 @calobj: 
 @mod: 
 
@@ -255,7 +182,8 @@ Base class for calendar/tasks backend implementations.
 
 @backend: 
 @cal: 
-@context: 
+@opid: 
+@cancellable: 
 @uid: 
 @rid: 
 @mod: 
@@ -268,8 +196,10 @@ Base class for calendar/tasks backend implementations.
 
 @backend: 
 @cal: 
-@context: 
+@opid: 
+@cancellable: 
 @uid: 
+@rid: 
 @auid: 
 
 
@@ -280,7 +210,8 @@ Base class for calendar/tasks backend implementations.
 
 @backend: 
 @cal: 
-@context: 
+@opid: 
+@cancellable: 
 @calobj: 
 
 
@@ -291,18 +222,9 @@ Base class for calendar/tasks backend implementations.
 
 @backend: 
 @cal: 
-@context: 
+@opid: 
+@cancellable: 
 @calobj: 
-
-
-<!-- ##### FUNCTION e_cal_backend_get_default_object ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@context: 
 
 
 <!-- ##### FUNCTION e_cal_backend_get_object ##### -->
@@ -312,7 +234,8 @@ Base class for calendar/tasks backend implementations.
 
 @backend: 
 @cal: 
-@context: 
+@opid: 
+@cancellable: 
 @uid: 
 @rid: 
 
@@ -324,56 +247,9 @@ Base class for calendar/tasks backend implementations.
 
 @backend: 
 @cal: 
-@context: 
+@opid: 
+@cancellable: 
 @sexp: 
-
-
-<!-- ##### FUNCTION e_cal_backend_get_attachment_list ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@context: 
-@uid: 
-@rid: 
-
-
-<!-- ##### FUNCTION e_cal_backend_is_loaded ##### -->
-<para>
-
-</para>
-
-@backend: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_cal_backend_start_query ##### -->
-<para>
-
-</para>
-
-@backend: 
-@query: 
-
-
-<!-- ##### FUNCTION e_cal_backend_get_mode ##### -->
-<para>
-
-</para>
-
-@backend: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_cal_backend_set_mode ##### -->
-<para>
-
-</para>
-
-@backend: 
-@mode: 
 
 
 <!-- ##### FUNCTION e_cal_backend_get_timezone ##### -->
@@ -383,7 +259,8 @@ Base class for calendar/tasks backend implementations.
 
 @backend: 
 @cal: 
-@context: 
+@opid: 
+@cancellable: 
 @tzid: 
 
 
@@ -394,30 +271,9 @@ Base class for calendar/tasks backend implementations.
 
 @backend: 
 @cal: 
-@context: 
-@object: 
-
-
-<!-- ##### FUNCTION e_cal_backend_set_default_zone ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@context: 
-@tzobj: 
-
-
-<!-- ##### FUNCTION e_cal_backend_get_changes ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@context: 
-@change_id: 
+@opid: 
+@cancellable: 
+@tzobject: 
 
 
 <!-- ##### FUNCTION e_cal_backend_get_free_busy ##### -->
@@ -427,19 +283,11 @@ Base class for calendar/tasks backend implementations.
 
 @backend: 
 @cal: 
-@context: 
+@opid: 
+@cancellable: 
 @users: 
 @start: 
 @end: 
-
-
-<!-- ##### FUNCTION e_cal_backend_internal_get_default_timezone ##### -->
-<para>
-
-</para>
-
-@backend: 
-@Returns: 
 
 
 <!-- ##### FUNCTION e_cal_backend_internal_get_timezone ##### -->
@@ -491,22 +339,14 @@ Base class for calendar/tasks backend implementations.
 @object: 
 
 
-<!-- ##### FUNCTION e_cal_backend_notify_mode ##### -->
-<para>
-
-</para>
-
-@backend: 
-@status: 
-@mode: 
-
-
 <!-- ##### FUNCTION e_cal_backend_notify_auth_required ##### -->
 <para>
 
 </para>
 
 @backend: 
+@is_self: 
+@credentials: 
 
 
 <!-- ##### FUNCTION e_cal_backend_notify_error ##### -->
@@ -518,50 +358,13 @@ Base class for calendar/tasks backend implementations.
 @message: 
 
 
-<!-- ##### FUNCTION e_cal_backend_notify_view_done ##### -->
-<para>
-
-</para>
-
-@backend: 
-@error: 
-
-
-<!-- ##### FUNCTION e_cal_backend_notify_view_progress_start ##### -->
-<para>
-
-</para>
-
-@backend: 
-
-
-<!-- ##### FUNCTION e_cal_backend_notify_view_progress ##### -->
-<para>
-
-</para>
-
-@backend: 
-@message: 
-@percent: 
-
-
 <!-- ##### FUNCTION e_cal_backend_notify_readonly ##### -->
 <para>
 
 </para>
 
 @backend: 
-@read_only: 
-
-
-<!-- ##### FUNCTION e_cal_backend_notify_cal_address ##### -->
-<para>
-
-</para>
-
-@backend: 
-@context: 
-@address: 
+@is_readonly: 
 
 
 <!-- ##### FUNCTION e_cal_backend_notify_objects_added ##### -->
@@ -570,7 +373,7 @@ Base class for calendar/tasks backend implementations.
 </para>
 
 @backend: 
-@query: 
+@view: 
 @objects: 
 
 
@@ -580,7 +383,7 @@ Base class for calendar/tasks backend implementations.
 </para>
 
 @backend: 
-@query: 
+@view: 
 @ids: 
 
 
@@ -590,7 +393,7 @@ Base class for calendar/tasks backend implementations.
 </para>
 
 @backend: 
-@query: 
+@view: 
 @objects: 
 
 
