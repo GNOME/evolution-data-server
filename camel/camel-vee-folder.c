@@ -942,7 +942,11 @@ vee_folder_dispose (GObject *object)
 			folder = CAMEL_FOLDER (vf);
 			parent_store = camel_folder_get_parent_store (folder);
 			record = summary_header_to_db (folder->summary, NULL);
+			
+			camel_db_begin_transaction (parent_store->cdb_w, NULL);
 			camel_db_write_folder_info_record (parent_store->cdb_w, record, NULL);
+			camel_db_end_transaction (parent_store->cdb_w, NULL);
+
 			g_free (record->folder_name);
 			g_free (record);
 		}
@@ -2400,7 +2404,9 @@ camel_vee_folder_sync_headers (CamelFolder *vf,
 	/* Save the counts to DB */
 	record = summary_header_to_db (vf->summary, error);
 	parent_store = camel_folder_get_parent_store (vf);
+	camel_db_begin_transaction (parent_store->cdb_w, NULL);
 	camel_db_write_folder_info_record (parent_store->cdb_w, record, error);
+	camel_db_end_transaction (parent_store->cdb_w, NULL);
 
 	g_free (record->folder_name);
 	g_free (record);
