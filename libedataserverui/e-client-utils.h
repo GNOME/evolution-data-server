@@ -41,32 +41,11 @@ typedef enum {
 	E_CLIENT_SOURCE_TYPE_LAST
 } EClientSourceType;
 
-/**
- * EClientUtilsAuthenticateHandler:
- *
- * Since: 3.2
- **/
-typedef gboolean (* EClientUtilsAuthenticateHandler) (EClient *client, ECredentials *credentials, gpointer user_data);
-
 EClient	*	e_client_utils_new			(ESource *source, EClientSourceType source_type, GError **error);
-EClient *	e_client_utils_new_from_uri		(const gchar *uri, EClientSourceType source_type, GError **error);
-EClient *	e_client_utils_new_system		(EClientSourceType source_type, GError **error);
-EClient *	e_client_utils_new_default		(EClientSourceType source_type, GError **error);
-
-gboolean	e_client_utils_set_default		(EClient *client, EClientSourceType source_type, GError **error);
-gboolean	e_client_utils_set_default_source	(ESource *source, EClientSourceType source_type, GError **error);
-gboolean	e_client_utils_get_sources		(ESourceList **sources, EClientSourceType source_type, GError **error);
 
 void		e_client_utils_open_new			(ESource *source, EClientSourceType source_type, gboolean only_if_exists, GCancellable *cancellable,
-							 EClientUtilsAuthenticateHandler auth_handler, gpointer auth_handler_user_data,
 							 GAsyncReadyCallback async_cb, gpointer async_cb_user_data);
 gboolean	e_client_utils_open_new_finish		(ESource *source, GAsyncResult *result, EClient **client, GError **error);
-
-gboolean	e_client_utils_authenticate_handler	(EClient *client, ECredentials *credentials, gpointer gtk_window_parent);
-void		e_client_utils_forget_password		(EClient *client);
-
-gboolean	e_credentials_authenticate_helper	(ECredentials *credentials, GtkWindow *parent, gboolean *remember_password);
-void		e_credentials_forget_password		(const ECredentials *credentials);
 
 G_END_DECLS
 

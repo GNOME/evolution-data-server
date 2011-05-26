@@ -130,20 +130,9 @@ e_cell_renderer_color_get_type
 <FILE>e-client-utils</FILE>
 <TITLE>EClient Utilities</TITLE>
 EClientSourceType
-EClientUtilsAuthenticateHandler
 e_client_utils_new
-e_client_utils_new_from_uri
-e_client_utils_new_system
-e_client_utils_new_default
-e_client_utils_set_default
-e_client_utils_set_default_source
-e_client_utils_get_sources
 e_client_utils_open_new
 e_client_utils_open_new_finish
-e_client_utils_authenticate_handler
-e_client_utils_forget_password
-e_credentials_authenticate_helper
-e_credentials_forget_password
 </SECTION>
 
 <SECTION>
